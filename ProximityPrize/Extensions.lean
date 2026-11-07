@@ -70,6 +70,8 @@ import ProximityPrize.Extensions.Data.Polynomial.SplitFold
 import ProximityPrize.Extensions.Data.Polynomial.Trivariate
 import ProximityPrize.Extensions.Data.Probability.Combinatorial
 import ProximityPrize.Extensions.Data.Probability.Instances
+import ProximityPrize.Extensions.Interaction.Oracle.Security.StateRestorationRandomized
+import ProximityPrize.Extensions.Interaction.Oracle.Security.StateRestorationRandomizedKnowledge
 import ProximityPrize.Extensions.OracleReduction.BCS.Basic
 import ProximityPrize.Extensions.OracleReduction.Basic
 import ProximityPrize.Extensions.OracleReduction.Cast
@@ -136,6 +138,9 @@ import ProximityPrize.Extensions.ProofSystem.Stir.MainThm
 import ProximityPrize.Extensions.ProofSystem.Stir.ProximityGap
 import ProximityPrize.Extensions.ProofSystem.Stir.Quotienting
 import ProximityPrize.Extensions.ProofSystem.Sumcheck.Domain
+import ProximityPrize.Extensions.ProofSystem.Sumcheck.Interaction.StateRestorationCertificate
+import ProximityPrize.Extensions.ProofSystem.Sumcheck.Interaction.StateRestorationEvaluation
+import ProximityPrize.Extensions.ProofSystem.Sumcheck.Interaction.StateRestorationSoundness
 import ProximityPrize.Extensions.ProofSystem.Sumcheck.Spec.SingleRound
 import ProximityPrize.Extensions.ProofSystem.Sumcheck.Structured
 import ProximityPrize.Extensions.ProofSystem.Sumcheck.Structured.SingleRound

@@ -131,6 +131,13 @@ from the stronger arbitrary-function result; global disagreement alone is insuff
 
 ## Compatibility APIs
 
+The downstream [randomized state restoration](../../ProximityPrize/Extensions/Interaction/Oracle/Security/StateRestorationRandomized.lean)
+and [native Sumcheck soundness](../../ProximityPrize/Extensions/ProofSystem/Sumcheck/Interaction/StateRestorationSoundness.lean)
+modules port the corresponding sources from [PR #216 at `e36fe8a90`](https://github.com/SlopDotCash/proximityprize/tree/e36fe8a90889ddbc1eea94b76370911b0195c92c).
+The restoration proofs use VCVio's logged random-oracle execution to account for interleaved
+private sampling and fresh queries. The Sumcheck client uses a Unit witness to certify ordinary
+soundness for the native verifier, with both expected and bounded query formulations.
+
 | Development | Canonical API | Retained downstream surface |
 | --- | --- | --- |
 | Algebraic group representations | `AGM.GroupRepresentation` uses one coefficient per finite basis index | `ProximityPrize.Compatibility.AGM.ListRepresentation` retains the list model and completed handle simulator; explicit length-aware bridges connect the representations |
