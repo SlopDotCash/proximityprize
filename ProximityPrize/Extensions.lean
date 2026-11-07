@@ -3,6 +3,8 @@ import ProximityPrize.Extensions.Commitments.Functional.Basic
 import ProximityPrize.Extensions.Commitments.Functional.Hachi.InnerOuter.Arithmetic
 import ProximityPrize.Extensions.Commitments.Functional.Hachi.InnerOuter.Correctness
 import ProximityPrize.Extensions.Commitments.Functional.Hachi.InnerOuter.Security
+import ProximityPrize.Extensions.Commitments.Functional.KZG.ConcreteTrapdoor
+import ProximityPrize.Extensions.Commitments.Functional.KZG.ConcreteVacuity
 import ProximityPrize.Extensions.Data.Classes.FunEquiv
 import ProximityPrize.Extensions.Data.Classes.Slice
 import ProximityPrize.Extensions.Data.CodingTheory.AGL24FailureProbGuard

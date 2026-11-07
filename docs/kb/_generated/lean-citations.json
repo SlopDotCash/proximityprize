@@ -1,8 +1,8 @@
 {
   "counts": {
-    "files_with_citations": 1385,
+    "files_with_citations": 1386,
     "keys_cited": 80,
-    "total_citation_edges": 1768
+    "total_citation_edges": 1769
   },
   "files": {
     "ArkLib/AGM/Basic.lean": [
@@ -3623,6 +3623,9 @@
       "NOZ26",
       "NS24"
     ],
+    "ProximityPrize/Extensions/Commitments/Functional/KZG/ConcreteVacuity.lean": [
+      "KZG10"
+    ],
     "ProximityPrize/Extensions/Data/CodingTheory/AGL24FailureProbGuard.lean": [
       "AGL24"
     ],
@@ -6243,7 +6246,8 @@
       "ArkLib/Data/CodingTheory/ReedSolomon/Multiplicity.lean"
     ],
     "KZG10": [
-      "ArkLib/Commitments/Functional/KZG/Basic.lean"
+      "ArkLib/Commitments/Functional/KZG/Basic.lean",
+      "ProximityPrize/Extensions/Commitments/Functional/KZG/ConcreteVacuity.lean"
     ],
     "KZG10TR": [
       "ArkLib/Commitments/Functional/KZG/Binding.lean"

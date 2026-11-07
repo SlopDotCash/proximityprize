@@ -300,6 +300,24 @@ contributions use explicitly named `CanonicalBatchingSeam` interfaces. The
 checked two-input countermodel. The shared `Verifier.reduction_run_run_nf` now delegates to
 canonical execution through `ProximityPrize.Compatibility.ReductionRunNormalForm`.
 
+## Concrete-group KZG hardness hypotheses
+
+The downstream trapdoor-recovery module uses `Classical.choice` to recover the exponent from
+the public verifier SRS leg. The concrete-game adversaries use that recovery under `pure`,
+so they make zero oracle queries and win with probability one. The t-SDH attack requires
+`g₂ ≠ 1`. The ARSDH attack also requires `g₁ ≠ 1` and `D + 2 ≤ p`.
+[Trapdoor recovery](../../ProximityPrize/Extensions/Commitments/Functional/KZG/ConcreteTrapdoor.lean) ·
+[Concrete-game refutations](../../ProximityPrize/Extensions/Commitments/Functional/KZG/ConcreteVacuity.lean)
+
+In the canonical binding reductions, pairing nondegeneracy forces `g₂ ≠ 1`, and function
+binding already assumes `g₁ ≠ 1` and `n + 2 ≤ p`. The concrete-group hardness hypotheses
+are therefore unsatisfiable for an error below one at those parameters. At error one or
+above, a success-probability bound follows from the ordinary upper bound of one. The
+formal results concern unrestricted concrete-group functions. Efficient adversaries and
+generic-group encodings require separate hardness arguments.
+[Evaluation binding](../../ArkLib/Commitments/Functional/KZG/Binding.lean) ·
+[Function binding](../../ArkLib/Commitments/Functional/KZG/FunctionBinding/Basic.lean)
+
 ## Integrating another upstream snapshot
 
 For proofs with large concrete finite intervals, prove the interval identity and bound with
