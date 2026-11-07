@@ -52,6 +52,23 @@ class ResearchCoverage(unittest.TestCase):
                              ['ArkLib/Citation.lean', 'Research/Citation.lean'])
             self.assertEqual(payload['lean_roots'], ['ArkLib', 'Research'])
 
+    def test_citation_catalog_deterministic_posix_sort_order(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / 'ArkLib'
+            source.mkdir()
+            (source / 'Curves.lean').write_text('/- [Example] -/\n', encoding='utf-8')
+            (source / 'Curves').mkdir()
+            (source / 'Curves' / 'AgreementCount.lean').write_text('/- [Example] -/\n', encoding='utf-8')
+            (source / '_B2.lean').write_text('/- [Example] -/\n', encoding='utf-8')
+            (source / 'Basic.lean').write_text('/- [Example] -/\n', encoding='utf-8')
+            payload = extract_citations([source], ['Example'])
+            self.assertEqual(payload['keys']['Example'],
+                             ['ArkLib/Basic.lean',
+                              'ArkLib/Curves/AgreementCount.lean',
+                              'ArkLib/Curves.lean',
+                              'ArkLib/_B2.lean'])
+
     def test_boundary_rejects_each_live_research_import(self):
         self.assertEqual(boundary.research_imports(
             'import ArkLib.Basic Research.ProximityPrize.All\npublic import Research.Other\n'),
