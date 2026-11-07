@@ -16,6 +16,7 @@ iff these n/2 labels are pairwise distinct. A collision L_d=L_e is equivalent to
 
 This probe verifies the equivalence against direct ordered-pair enumeration and prints the
 large exceptional n=32 cells identified by the referee.
+Certificate checks raise ValueError on failure, including under python -O/-OO.
 """
 from collections import Counter
 
@@ -34,7 +35,8 @@ def factor(x):
 
 
 def primitive_n_root(p, n):
-    assert (p - 1) % n == 0
+    if (p - 1) % n != 0:
+        raise ValueError(f"order divisibility failed: n={n} does not divide p-1={p - 1}")
     for g in range(2, p):
         if pow(g, n, p) != 1:
             continue
@@ -50,7 +52,8 @@ def direct_partition(p, n, g):
     for t, multiplicity in rep.items():
         if t:
             classes[pow(t, n, p)] += multiplicity
-    assert all(v % n == 0 for v in classes.values())
+    if any(v % n != 0 for v in classes.values()):
+        raise ValueError(f"orbit divisibility failed at p={p}, n={n}: {dict(classes)}")
     return sorted((v // n for v in classes.values()), reverse=True)
 
 
@@ -71,14 +74,22 @@ def analyze(p, n):
     g = primitive_n_root(p, n)
     direct = direct_partition(p, n, g)
     primitive, atoms, collisions = primitive_partition(p, n, g)
-    assert direct == primitive
+    if direct != primitive:
+        raise ValueError(
+            f"partition mismatch at p={p}, n={n}: direct={direct}, primitive={primitive}"
+        )
     floor = 2 * n - 3
     sumsq = sum(k * k for k in direct)
     labels = [x[0] for x in atoms]
     distinct = len(set(labels)) == len(labels)
     flat_hist = (len(direct) == n // 2 and direct.count(1) == 1 and direct.count(2) == n // 2 - 1)
     floor_eq = sumsq == floor
-    assert floor_eq == flat_hist == distinct == (not collisions)
+    if not (floor_eq == flat_hist == distinct == (not collisions)):
+        raise ValueError(
+            f"flatness equivalence failed at p={p}, n={n}: "
+            f"floor_eq={floor_eq}, flat_hist={flat_hist}, "
+            f"distinct={distinct}, collisions={collisions}"
+        )
 
     # Verify every collision gives the advertised direct weighted relation.
     Gset = {pow(g, i, p) for i in range(n)}
@@ -91,8 +102,14 @@ def analyze(p, n):
                 xd = (1 + pow(g, d, p)) % p
                 xe = (1 + pow(g, e, p)) % p
                 a = xd * pow(xe, p - 2, p) % p
-                assert a in Gset
-                assert (1 + pow(g, d, p) - a * (1 + pow(g, e, p))) % p == 0
+                if a not in Gset:
+                    raise ValueError(
+                        f"subgroup membership failed at p={p}, n={n}, d={d}, e={e}: a={a}"
+                    )
+                if (1 + pow(g, d, p) - a * (1 + pow(g, e, p))) % p != 0:
+                    raise ValueError(
+                        f"weighted relation failed at p={p}, n={n}, d={d}, e={e}: a={a}"
+                    )
                 relations.append((d, e, a, label))
     return dict(p=p, n=n, g=g, ks=direct, sumsq=sumsq, floor=floor,
                 distinct=distinct, collisions=collisions, relations=relations)
