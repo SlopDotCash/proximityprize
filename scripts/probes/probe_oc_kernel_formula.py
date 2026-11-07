@@ -16,12 +16,21 @@ Goals:
   2. Also: is A(n,r) = the constant term of (sum_j (x_j + x_j^{-1}))^r under the torus,
      i.e. the number of closed walks -> A(n,r) = sum_{k: |k|... } . Equivalent:
      A(n,r) = r! * [coeff] of prod I-like. We just verify the multinomial sum.
-  3. p-threshold p*(n,r): smallest prime above which S0 == A(n,r) stably.
-     (Below p*, extra 'accidental' char-p zero-sums inflate S0 = the SYZ53 artifact.)
-  4. Thinness-essential check: for ODD n there are NO antipodes; the analogous
-     'balanced' count is 0 for the same pairing, yet S0 != 0 generically -> so the
-     dyadic formula is SPECIFIC to the 2-power subgroup. Confirm S0(odd n) is NOT given
-     by any antipodal formula and instead tracks generic n^r/q asymptotically.
+  3. Observed stabilization prime: the first prime of the LAST run of >= 4 consecutive
+     scanned primes p = 1 (mod n), p < 8000, with S0 == A(n,r).  This is a finite-scan
+     statistic only: it is NOT a proved global threshold p*(n,r), and no prime-uniform
+     stabilization theorem is supplied by the scan.  (Small-p excess zero-sums are the
+     SYZ53-type small-characteristic artifact.)
+  4. Odd-order control: for ODD n there are no antipodes (-1 is not in mu_n), so the
+     antipodal count is 0.  But odd-order CYCLOTOMIC relations survive in every
+     characteristic: for prime n the minimal relation is 1 + w + ... + w^{n-1} = 0, and in
+     characteristic 0 a tuple sums to zero iff every root occurs equally often, giving
+     C(n,r) = r!/(k!)^n if r = k*n, else 0.  E.g. n = 3, r = 3: for EVERY prime p = 1 mod 3,
+     the six orderings of (1, g, g^2) are zero-sums, no all-equal triple sums to zero
+     (p != 3), and two-equal triples would need -2 in mu_3, i.e. p | 9; so S0 = 6 exactly,
+     independent of p (not ~ 27/p).  The probe compares odd-n S0 with C(n,r): the dyadic
+     antipodal formula is specific to the 2-power subgroup, but odd-n S0 is ALSO a
+     field-independent constant at large p, given by a different relation family.
 """
 import itertools, math
 from collections import Counter
@@ -65,8 +74,6 @@ def A_formula(n,r):
     R=r//2
     total=0
     # distribute R 'pairs-worth' : need k_0+..+k_{m-1}=R, term = r!/ prod (k_j!)^2
-    for ks in itertools.combinations_with_replacement(range(m),0):  # placeholder
-        pass
     # iterate compositions of R into m nonneg parts
     def compositions(total_sum,parts):
         if parts==1:
@@ -79,6 +86,15 @@ def A_formula(n,r):
         for k in ks: denom*=factorial(k)**2
         total+=factorial(r)//denom
     return total
+
+def C_prime_order(n,r):
+    """Characteristic-0 zero-sum count for PRIME n: the only Q-relation among the n-th roots
+    of unity is 1 + w + ... + w^{n-1} = 0, so a tuple sums to zero iff every root occurs
+    equally often (k = r/n times each): r!/(k!)^n ordered tuples, and 0 if n does not divide r."""
+    assert n>=2 and is_prime(n), "C_prime_order is the char-0 count only for prime n"
+    if r%n!=0: return 0
+    k=r//n
+    return factorial(r)//factorial(k)**n
 
 if __name__=="__main__":
     print("="*80)
@@ -97,7 +113,8 @@ if __name__=="__main__":
                 if g: s0s.append(S0_exact(p,g,n,r))
             print(f"n={n} r={r}: A_formula={Af:>7}  stabilized_S0={s0s}  match={all(s==Af for s in s0s)}")
     print()
-    print("p-THRESHOLD p*(n,r): smallest prime above which S0==A(n,r) stays stable")
+    print("OBSERVED stabilization (finite scan, primes p=1 mod n, p<8000): first prime of the")
+    print("last run of >=4 consecutive matches S0==A(n,r). Not a proved global threshold.")
     for n in [4,8]:
         for r in [2,4,6]:
             Af=A_formula(n,r)
@@ -113,15 +130,22 @@ if __name__=="__main__":
                 else:
                     ok_streak=0; pstar=None
                 if ok_streak==1: p_first_stable=p
-            print(f"n={n} r={r}: A={Af:>7}  p* (stable from) = {pstar}")
+            print(f"n={n} r={r}: A={Af:>7}  observed last-streak start (scan<8000) = {pstar}")
     print()
-    print("THINNESS-ESSENTIAL: ODD n has A=0 for odd r and NO antipodal balancing.")
-    print("Compare S0(odd n) to any antipodal formula:")
+    print("ODD-ORDER CONTROL: odd n has no antipodes (-1 not in mu_n), so the antipodal count")
+    print("is 0; compare S0(odd n) with the char-0 prime-order cyclotomic count C(n,r):")
     for n in [3,5]:
-        for r in [2,3,4]:
+        for r in [2,3,4,5]:
             ps=[x for x in range(200,6000) if is_prime(x) and (x-1)%n==0][:3]
             s0s=[]
             for p in ps:
                 g=find_gen(p,n)
                 if g: s0s.append((p,S0_exact(p,g,n,r)))
-            print(f"  odd n={n} r={r}: (p,S0)={s0s}  <- varies with p (generic ~ (n^r-?)/q), NOT a dyadic constant")
+            Cn=C_prime_order(n,r)
+            same=all(s==Cn for _,s in s0s)
+            print(f"  odd n={n} r={r}: (p,S0)={s0s}  C(n,r)={Cn}  match={same}"
+                  "  <- field-independent cyclotomic relations, not antipodal")
+    ps3=[x for x in range(7,3000) if is_prime(x) and (x-1)%3==0]
+    bad3=[p for p in ps3 if S0_exact(p,find_gen(p,3),3,3)!=6]
+    print(f"  n=3 r=3: S0==6 at all {len(ps3)} primes p=1 mod 3 in [7,3000): {not bad3}"
+          " (proved for every such p: see docstring item 4)")

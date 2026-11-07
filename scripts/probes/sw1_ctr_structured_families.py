@@ -12,7 +12,10 @@ Exact objects (ABF26 Def 4.3 / in-tree `mcaEvent`, workbench `badScalars`):
    bad = close = the far-line incidence.)
   aligned directions (u1 a codeword multiple) carry zero bad scalars and are excluded.
 
-Engine (exact, any prime p < 2^29, int64 modular arithmetic, no floats):
+Engine (exact, any prime p < 2^29, int64 modular arithmetic, no floats; p < 2^29 only bounds a
+single product (p-1)^2 < 2^58, so every k-term modular dot product is accumulated in blocks of
+at most `mod_dot_block(p)` (>= 32) products with a reduction mod p after each block -- an
+unblocked k-term int64 sum overflows for large k, e.g. n=128, k=80, p=536870657):
   * a COVERING FAMILY of k-node sets T such that every a-subset of [n] contains some T
     (pigeonhole base / m-part partition / half+1); any codeword agreeing on >= a points is
     the interpolant through one of the T's.  For node set T:
@@ -146,6 +149,18 @@ def mu_points(p: int, n: int):
 
 
 # --------------------------------------------------------------------------- modular linear algebra
+INT64_MAX = (1 << 63) - 1
+
+
+def mod_dot_block(p: int) -> int:
+    """Largest b with (p-1) + b*(p-1)^2 <= INT64_MAX: the number of products of residues mod p
+    that may be added to a reduced accumulator in int64 without overflow."""
+    b = (INT64_MAX - (p - 1)) // max(1, (p - 1) ** 2)
+    if b < 1:
+        raise ValueError(f"p = {p} too large for int64 modular products")
+    return b
+
+
 def nullspace_mod(rows, ncols: int, p: int):
     """Basis of {x in F_p^ncols : R x = 0} (python ints, exact)."""
     M = [[int(v) % p for v in r] for r in rows]
@@ -243,6 +258,10 @@ class Engine:
     def __init__(self, n, k, p, a, chunk_T=24000):
         assert is_prime(p) and (p - 1) % n == 0 and p < (1 << 29)
         self.n, self.k, self.p, self.a = n, k, p, a
+        # p < 2^29 bounds each product of two residues by (p-1)^2 < 2^58, NOT a sum of k of
+        # them; every modular dot product in the engine goes through `interp`, which sums at
+        # most `dot_block` products between reductions (dot_block >= 32 for p < 2^29).
+        self.dot_block = mod_dot_block(p)
         self.om, self.xs = mu_points(p, n)
         self.x = np.array(self.xs, dtype=np.int64)
         self.D = (self.x[:, None] - self.x[None, :]) % p          # D[l, s] = x_l - x_s
@@ -277,8 +296,20 @@ class Engine:
             yield self._L[ci]
 
     def interp(self, U, Tc, Lc):
-        """U (N, n) -> (N, Pc, n): interpolant of each row through each node set."""
-        return np.einsum("ptl,npt->npl", Lc, U[:, Tc]) % self.p
+        """U (N, n) -> (N, Pc, n): interpolant of each row through each node set.
+
+        Precondition: entries of U and Lc are residues in [0, p).  The k-term dot product is
+        accumulated in blocks of at most `self.dot_block` products, reducing mod p after each
+        block, so every int64 intermediate stays <= (p-1) + dot_block*(p-1)^2 <= INT64_MAX
+        whatever k is (an unblocked sum of k products overflows once k*(p-1)^2 > INT64_MAX,
+        e.g. n=128, k=80, p=536870657)."""
+        p, k, bs = self.p, Lc.shape[1], self.dot_block
+        Ut = U[:, Tc]                                               # (N, Pc, k)
+        acc = None
+        for s in range(0, k, bs):
+            part = np.einsum("ptl,npt->npl", Lc[:, s:s + bs, :], Ut[:, :, s:s + bs])
+            acc = part % p if acc is None else (acc + part) % p
+        return acc
 
     def modinv_arr(self, B):
         p = self.p
@@ -294,6 +325,10 @@ class Engine:
 
     # ---- direction pack
     def pack(self, u1):
+        """Precompute B = u1 - interp_T(u1) per node set.  `agreemax` is the largest agreement
+        seen over the level-a covering only: it is exact whenever the true maximum agreement is
+        >= a (that agreement set contains some covering node set), so the far/close decision at
+        threshold a is exact, but below a it is only a LOWER bound on max agreement."""
         u1 = np.asarray(u1, dtype=np.int64) % self.p
         parts, agreemax = [], 0
         for Tc, Lc in self.chunks():
@@ -373,8 +408,8 @@ class Engine:
                     if c >= tv[i] and int(g) not in wit:
                         g = int(g)
                         w = (u0 + g * pk["u1"]) % p
-                        # codeword = interpolant of w through Tc[i]
-                        hh = np.einsum("tl,t->l", Lc[i], w[Tc[i]]) % p
+                        # codeword = interpolant of w through Tc[i] (overflow-safe path)
+                        hh = self.interp(w[None, :], Tc[i:i + 1], Lc[i:i + 1])[0, 0]
                         S = tuple(int(l) for l in np.nonzero(hh == w)[0])
                         wit[g] = (S, hh.tolist())
         return wit
@@ -496,6 +531,8 @@ class Engine:
     def brute_counts_all_codewords(self, u0, u1):
         """Independent: enumerate ALL p^k codewords, all gamma (small p only). MCA rule."""
         p, k, n, a = self.p, self.k, self.n, self.a
+        # the matmul below is an unblocked k-term int64 sum (fine for the tiny selftest p)
+        assert k <= self.dot_block, "brute enumeration needs k*(p-1)^2 to fit in int64"
         coeffs = np.array(list(itertools.product(range(p), repeat=k)), dtype=np.int64)
         V = np.array([[pow(x, d, p) for d in range(k)] for x in self.xs], dtype=np.int64)
         C = coeffs @ V.T % p                                          # (p^k, n)

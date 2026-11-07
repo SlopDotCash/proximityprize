@@ -8,9 +8,22 @@ import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2KeystoneReindex
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2FubiniReabsorb
 
 /-!
-# P2ClearedBridge
+# P2ClearedBridge — the global cleared-representative resummation (statement only, OPEN)
 
-Module docstring for `P2ClearedBridge.lean`.
+This file defines the cleared-representative Faà-di-Bruno double sum
+`clearedRepresentativeFaaDiBrunoSum` and the proposition
+`globalClearedRepresentativeResummationMatch` asserting that it equals
+`restrictedFaaDiBrunoSum`. That proposition is a `def … : Prop` — an **unproved statement**, not a
+theorem. Nothing in this file proves it, and `#print axioms` on it only audits the dependencies of
+the statement. It does **not** discharge the non-monic obstruction of #139.
+
+Status context: multiplying both sides of the restricted match by a power of the (nonzero) leading
+coefficient is equivalent to the restricted match for every `H`
+(`ClearedFaaDiBrunoProof.cleared_iff_restricted`), so such clearing cannot by itself repair the
+non-monic case; the non-monic order-zero unrestricted match is refuted
+(`P2OrderZeroRefutationWitness`). The monic restricted match is proved
+(`restrictedFaaDiBrunoMatch_of_monic`). A genuine non-monic bridge still needs correct hypotheses
+and a proved non-monic normalization before it can be stated as a theorem.
 -/
 
 
@@ -40,8 +53,10 @@ noncomputable def clearedRepresentativeFaaDiBrunoSum (x₀ : F) (R : F[X][X][Y])
             * (lam.parts.map
                 (fun j => PowerSeries.coeff j (βHenselAssembled H x₀ R hHyp))).prod)
 
-/-- The final bridge theorem that ties the double sum to the non-monic Newton-Hensel root
-    using the global cleared-representative resummation, fully discharging the non-monic obstruction. -/
+/-- **Unproved statement (OPEN, #139).** The proposition that the restricted Faà-di-Bruno sum
+equals the cleared-representative double sum at order `t`. This is a `Prop`-valued definition, not
+a proof: nothing in-tree proves it, and it does not discharge the non-monic obstruction. It is the
+canonical form of this statement; `BCIKS20AppA.faa_di_bruno_global_cleared_match` is an alias. -/
 def globalClearedRepresentativeResummationMatch (x₀ : F) (R : F[X][X][Y])
     (hHyp : ClaimA2.Hypotheses x₀ R H) (t : ℕ) : Prop :=
     restrictedFaaDiBrunoSum H x₀ R hHyp t

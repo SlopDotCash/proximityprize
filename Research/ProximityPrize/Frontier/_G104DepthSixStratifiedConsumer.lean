@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib
+import Research.ProximityPrize.Frontier._G87DepthFourPairSumReduction
 
 /-!
 # G104: depth six via the stratified-L² primitive-concentration ladder
@@ -30,15 +31,25 @@ split as `P + A + B` along the strata:
   `J₄ ≤ (M₄ᵖ + 6n² + 4Z₃)·n⁴`,
   `4·(P+A+B)² ≤ 5P² + 40A² + 40B²`   (exact: the defect is `(P−4A−4B)² + 20(A−B)²`),
 
-so `4·J₆ ≤ 5·M₄ᵖn⁸ + 40·36n²·J₄ + 40·16Z₃²n⁵`, and the production kernel closes at the
-**uniform hypothesis level** `(M₄ᵖ, Z₃) = (2^22, 2^22) = 4·n^{2/3}` — the same level as the
-Stepanov pair bound, margin `2^{1.95}`.  Remarkably, depth six needs NO pair-concentration
-hypothesis at all: the crude `pairCount ≤ n` suffices inside the recursion.
+so `4·J₆ ≤ 5·M₄ᵖn⁸ + 40·36n²·J₄ + 40·16Z₃²n⁵`, and the production kernel closes at
+`(M₄ᵖ, Z₃) = (2^22, 2^53)`: a *pointwise* primitive-quad cap at the Stepanov level
+`4·n^{2/3} = 2^22` and a *total* zero-triple count up to `2^53` (the `Z₃` term is far from
+binding at `2^22`; exact recomputation shows the kernel holds up to `log₂ Z₃ ≈ 53.26`).  The two
+hypotheses are of different kinds and are not "at the same level".  For a multiplicative
+subgroup `S`, scaling by `S` acts freely on zero-sum triples, so `Z₃ ∈ |S|·ℕ`
+(`_G105ZeroTripleQuantizationFence.lean`).  Depth six needs NO pair-concentration hypothesis
+at all: the crude `pairCount ≤ n` suffices inside the recursion.
 
 The probes measure the primitive quadruple concentration of real `μ_n` at `4!·{1,1,1,1,3,7}`
-(O(1)-ish; `2^{19}` headroom) and the threshold band `n^{0.73..0.87}` stable across ALL
-depths 5..110 — the uniform PrimitiveConcentration family is the pinned input interface of
-the whole padded-collision lane.  Probes:
+at small scale (O(1)-ish; the `2^{19}` headroom is an extrapolation to production).  The
+scoping archive's proposed all-depth input — one uniform PrimitiveConcentration cap
+`4·n^{2/3}` for every arity `3..108` — is **refuted** at production scale (arity 8 by an
+averaging/pigeonhole argument, arity 11 by
+`scripts/probes/probe_466_g104_primitive_concentration_factorial_no_go.py`), and its
+`n^{0.73..0.87}` threshold band used a `C(110,s)²` envelope rather than the formal
+`descFactorial(110,s)²` decoder normalization (audit T117).  It is not an input interface
+for the padded-collision lane; the depth-six consumer here, with its explicit primitive-quad
+hypothesis `M₄ᵖ`, is unaffected.  Probes:
 `scripts/probes/_out_466_g104_ladder_scoping.txt`,
 `scripts/probes/probe_466_g103_centered_triple_concentration.py`.  Issue #466/#505.
 -/
@@ -110,44 +121,31 @@ def sextCount (S : Finset G) (a : G) : ℕ :=
 def equalSumSextMass (S : Finset G) : ℕ :=
   ∑ a : G, sextCount S a ^ 2
 
-/-! ## Elementary identities (mirroring G103) -/
+/-! ## Elementary identities (delegated to the G87 depth-four kernel)
 
-theorem pairCount_le_card (S : Finset G) (c : G) : pairCount S c ≤ S.card := by
-  classical
-  unfold pairCount
-  have hsub : ∀ q ∈ (S ×ˢ S).filter (fun q : G × G => q.1 + q.2 = c), q.1 ∈ S :=
-    fun q hq => (Finset.mem_product.mp (Finset.mem_filter.mp hq).1).1
-  have hinj : Set.InjOn (fun q : G × G => q.1)
-      (((S ×ˢ S).filter (fun q : G × G => q.1 + q.2 = c) : Finset (G × G)) :
-        Set (G × G)) := by
-    rintro ⟨a1, a2⟩ ha ⟨b1, b2⟩ hb h
-    have ha' : a1 + a2 = c := (Finset.mem_filter.mp (Finset.mem_coe.mp ha)).2
-    have hb' : b1 + b2 = c := (Finset.mem_filter.mp (Finset.mem_coe.mp hb)).2
-    have h1 : a1 = b1 := h
-    have h2 : a2 = b2 := by
-      rw [h1] at ha'
-      exact add_left_cancel (ha'.trans hb'.symm)
-    simp [h1, h2]
-  exact Finset.card_le_card_of_injOn _ hsub hinj
+`pairCount` here is definitionally G87's `pairCount`, and `quadCount` agrees with G87's
+`quadCount` up to reassociation of the sum; the pair/quad kernel lemmas are taken from
+`_G87DepthFourPairSumReduction.lean` rather than re-proved. -/
 
-theorem sum_pairCount (S : Finset G) : ∑ c : G, pairCount S c = S.card ^ 2 := by
-  classical
-  have h : (S ×ˢ S).card =
-      ∑ c ∈ Finset.univ, ((S ×ˢ S).filter fun q : G × G => q.1 + q.2 = c).card :=
-    Finset.card_eq_sum_card_fiberwise fun q _ => Finset.mem_univ _
-  unfold pairCount
-  rw [← h, Finset.card_product]
-  ring
+theorem pairCount_eq_G87 (S : Finset G) (c : G) :
+    pairCount S c = ArkLib.ProximityGap.Frontier.G87DepthFourPairSumReduction.pairCount S c :=
+  rfl
+
+theorem quadCount_eq_G87 (S : Finset G) (x : G) :
+    quadCount S x = ArkLib.ProximityGap.Frontier.G87DepthFourPairSumReduction.quadCount S x := by
+  unfold quadCount ArkLib.ProximityGap.Frontier.G87DepthFourPairSumReduction.quadCount qsum
+  congr 1
+  exact Finset.filter_congr fun t _ => by rw [add_assoc (t.1.1 + t.1.2)]
+
+theorem pairCount_le_card (S : Finset G) (c : G) : pairCount S c ≤ S.card :=
+  ArkLib.ProximityGap.Frontier.G87DepthFourPairSumReduction.pairCount_le_card S c
+
+theorem sum_pairCount (S : Finset G) : ∑ c : G, pairCount S c = S.card ^ 2 :=
+  ArkLib.ProximityGap.Frontier.G87DepthFourPairSumReduction.sum_pairCount S
 
 theorem sum_quadCount (S : Finset G) : ∑ x : G, quadCount S x = S.card ^ 4 := by
-  classical
-  have h : (((S ×ˢ S) ×ˢ (S ×ˢ S)).card) =
-      ∑ x ∈ Finset.univ, (((S ×ˢ S) ×ˢ (S ×ˢ S)).filter fun t => qsum t = x).card :=
-    Finset.card_eq_sum_card_fiberwise fun t _ => Finset.mem_univ _
-  unfold quadCount
-  rw [← h]
-  simp only [Finset.card_product]
-  ring
+  simp only [quadCount_eq_G87]
+  exact ArkLib.ProximityGap.Frontier.G87DepthFourPairSumReduction.sum_quadCount S
 
 /-- Exact stratum partition of the 4-tuple fiber. -/
 theorem quadCount_split (S : Finset G) (x : G) :
@@ -174,28 +172,118 @@ theorem quadCount_split (S : Finset G) (x : G) :
   · rw [Finset.filter_filter, Finset.filter_filter]
   · rw [Finset.filter_filter, Finset.filter_filter]
 
-/-! ## The antipodal stratum: six position-pair injections -/
+/-! ## Fixed-position filters and coordinate permutations
 
-/-- The fixed-position filter shape used by the six antipodal injections. -/
+Both degenerate strata are covered by *fixed-position* filters `qsum t = x ∧ P t`.  Instead of
+one injection per position set, we prove one base injection per stratum and transport it to
+every other position set by a coordinate permutation `σ` of the 4-tuple, which preserves the
+box `S⁴` and the total sum `qsum`. -/
+
+private theorem mem4 (S : Finset G) (t : (G × G) × (G × G))
+    (ht : t ∈ (S ×ˢ S) ×ˢ (S ×ˢ S)) :
+    t.1.1 ∈ S ∧ t.1.2 ∈ S ∧ t.2.1 ∈ S ∧ t.2.2 ∈ S := by
+  have h1 := Finset.mem_product.mp ht
+  have h2 := Finset.mem_product.mp h1.1
+  have h3 := Finset.mem_product.mp h1.2
+  exact ⟨h2.1, h2.2, h3.1, h3.2⟩
+
+private theorem mem4_mk (S : Finset G) {a b c d : G}
+    (ha : a ∈ S) (hb : b ∈ S) (hc : c ∈ S) (hd : d ∈ S) :
+    ((a, b), (c, d)) ∈ (S ×ˢ S) ×ˢ (S ×ˢ S) :=
+  Finset.mem_product.mpr ⟨Finset.mem_product.mpr ⟨ha, hb⟩, Finset.mem_product.mpr ⟨hc, hd⟩⟩
+
+/-- The fixed-position filter shape used by the stratum injections. -/
 private def fixedFilter (S : Finset G) (x : G) (P : (G × G) × (G × G) → Prop)
     [DecidablePred P] : Finset ((G × G) × (G × G)) :=
   ((S ×ˢ S) ×ˢ (S ×ˢ S)).filter fun t => qsum t = x ∧ P t
 
-/-- The fixed-position antipodal fiber injects into `S × (pair fiber)`. -/
-private theorem antip_fixed_le (S : Finset G) (x : G)
-    (P : (G × G) × (G × G) → Prop) [DecidablePred P]
-    (val : (G × G) × (G × G) → G) (rest : (G × G) × (G × G) → G × G)
-    (hval : ∀ t ∈ fixedFilter S x P, val t ∈ S)
-    (hrest : ∀ t ∈ fixedFilter S x P,
-      rest t ∈ (S ×ˢ S).filter fun q : G × G => q.1 + q.2 = x)
-    (hinj : Set.InjOn (fun t => (val t, rest t))
-      ((fixedFilter S x P : Finset ((G × G) × (G × G))) : Set ((G × G) × (G × G)))) :
-    (fixedFilter S x P).card ≤ S.card * pairCount S x := by
+/-- A coordinate permutation `σ` (injective, box- and sum-preserving) transports the
+fixed-position filter of `P ∘ σ` into that of `P`. -/
+private theorem fixedFilter_comp_card_le (S : Finset G) (x : G)
+    (σ : (G × G) × (G × G) → (G × G) × (G × G)) (hσ : Function.Injective σ)
+    (hbox : ∀ t ∈ (S ×ˢ S) ×ˢ (S ×ˢ S), σ t ∈ (S ×ˢ S) ×ˢ (S ×ˢ S))
+    (hsum : ∀ t, qsum (σ t) = qsum t)
+    (P : (G × G) × (G × G) → Prop) [DecidablePred P] :
+    (fixedFilter S x (fun t => P (σ t))).card ≤ (fixedFilter S x P).card := by
   classical
-  have := Finset.card_le_card_of_injOn (fun t => (val t, rest t))
-    (fun t ht => Finset.mem_product.mpr ⟨hval t ht, hrest t ht⟩) hinj
-  calc (fixedFilter S x P).card
-      ≤ (S ×ˢ ((S ×ˢ S).filter fun q : G × G => q.1 + q.2 = x)).card := this
+  refine Finset.card_le_card_of_injOn σ (fun t ht => ?_) hσ.injOn
+  have ht' := Finset.mem_filter.mp ht
+  exact Finset.mem_filter.mpr ⟨hbox t ht'.1, (hsum t).trans ht'.2.1, ht'.2.2⟩
+
+/-- The coordinate permutations of `((a,b),(c,d))` used by the stratum transports:
+`0..4` move the antipodal pair `(1,3),(1,4),(2,3),(2,4),(3,4)` to the front, and `5..7` move
+the zero triple `(1,2,4),(1,3,4),(2,3,4)` to the front.  Injectivity, box and sum preservation
+are discharged uniformly. -/
+private def perm4 (k : Fin 8) (t : (G × G) × (G × G)) : (G × G) × (G × G) :=
+  match k with
+  | 0 => ((t.1.1, t.2.1), (t.1.2, t.2.2))
+  | 1 => ((t.1.1, t.2.2), (t.1.2, t.2.1))
+  | 2 => ((t.1.2, t.2.1), (t.1.1, t.2.2))
+  | 3 => ((t.1.2, t.2.2), (t.1.1, t.2.1))
+  | 4 => ((t.2.1, t.2.2), (t.1.1, t.1.2))
+  | 5 => ((t.1.1, t.1.2), (t.2.2, t.2.1))
+  | 6 => ((t.1.1, t.2.1), (t.2.2, t.1.2))
+  | 7 => ((t.1.2, t.2.1), (t.2.2, t.1.1))
+
+private theorem perm4_injective (k : Fin 8) : Function.Injective (perm4 (G := G) k) := by
+  rintro ⟨⟨a1, a2⟩, a3, a4⟩ ⟨⟨b1, b2⟩, b3, b4⟩ h
+  fin_cases k <;> simp_all [perm4]
+
+private theorem perm4_box (S : Finset G) (k : Fin 8) :
+    ∀ t ∈ (S ×ˢ S) ×ˢ (S ×ˢ S), perm4 k t ∈ (S ×ˢ S) ×ˢ (S ×ˢ S) := by
+  intro t ht
+  obtain ⟨h1, h2, h3, h4⟩ := mem4 S t ht
+  fin_cases k <;> exact mem4_mk S ‹_› ‹_› ‹_› ‹_›
+
+private theorem perm4_qsum (k : Fin 8) (t : (G × G) × (G × G)) :
+    qsum (perm4 k t) = qsum t := by
+  fin_cases k <;> simp only [perm4, qsum] <;> abel
+
+/-- Transport of a fixed-position bound along `perm4 k`. -/
+private theorem fixedFilter_perm4_le (S : Finset G) (x : G) (k : Fin 8)
+    (P : (G × G) × (G × G) → Prop) [DecidablePred P] :
+    (fixedFilter S x (fun t => P (perm4 k t))).card ≤ (fixedFilter S x P).card :=
+  fixedFilter_comp_card_le S x (perm4 k) (perm4_injective k) (perm4_box S k) (perm4_qsum k) P
+
+/-- Cardinality of a six- (or four-) fold union of fixed-position filters. -/
+private theorem card_union_le_sum {α : Type*} [DecidableEq α] (A B C D : Finset α) :
+    (A ∪ B ∪ C ∪ D).card ≤ A.card + B.card + C.card + D.card := by
+  refine le_trans (Finset.card_union_le _ _) (Nat.add_le_add_right ?_ _)
+  refine le_trans (Finset.card_union_le _ _) (Nat.add_le_add_right ?_ _)
+  exact Finset.card_union_le _ _
+
+/-! ## The antipodal stratum: one base injection, five permutations -/
+
+/-- Base case: the `(1,2)`-antipodal fiber injects into `S × (pair fiber)` via
+`t ↦ (t₁, (t₃, t₄))`. -/
+private theorem antip12_le (S : Finset G) (x : G) :
+    (fixedFilter S x (fun t => t.1.1 + t.1.2 = 0)).card ≤ S.card * pairCount S x := by
+  classical
+  have hmaps : ∀ t ∈ fixedFilter S x (fun t => t.1.1 + t.1.2 = 0),
+      (t.1.1, (t.2.1, t.2.2)) ∈ S ×ˢ ((S ×ˢ S).filter fun q : G × G => q.1 + q.2 = x) := by
+    intro t ht
+    have hm := mem4 S t (Finset.mem_filter.mp ht).1
+    have hc := (Finset.mem_filter.mp ht).2
+    refine Finset.mem_product.mpr ⟨hm.1, Finset.mem_filter.mpr
+      ⟨Finset.mem_product.mpr ⟨hm.2.2.1, hm.2.2.2⟩, ?_⟩⟩
+    have hq : t.1.1 + t.1.2 + t.2.1 + t.2.2 = x := hc.1
+    have : t.1.1 + t.1.2 + t.2.1 + t.2.2 = (t.1.1 + t.1.2) + (t.2.1 + t.2.2) := by abel
+    rw [this, hc.2, zero_add] at hq
+    exact hq
+  have hinj : Set.InjOn (fun t : (G × G) × (G × G) => (t.1.1, (t.2.1, t.2.2)))
+      ((fixedFilter S x (fun t => t.1.1 + t.1.2 = 0) : Finset ((G × G) × (G × G))) :
+        Set ((G × G) × (G × G))) := by
+    rintro ⟨⟨a1, a2⟩, a3, a4⟩ ha ⟨⟨b1, b2⟩, b3, b4⟩ hb h
+    have ha' : a1 + a2 = 0 := (Finset.mem_filter.mp (Finset.mem_coe.mp ha)).2.2
+    have hb' : b1 + b2 = 0 := (Finset.mem_filter.mp (Finset.mem_coe.mp hb)).2.2
+    simp only [Prod.mk.injEq] at h
+    obtain ⟨h1, h3, h4⟩ := h
+    have h2 : a2 = b2 := by
+      rw [(neg_eq_of_add_eq_zero_right ha').symm, (neg_eq_of_add_eq_zero_right hb').symm, h1]
+    simp [h1, h2, h3, h4]
+  calc (fixedFilter S x (fun t => t.1.1 + t.1.2 = 0)).card
+      ≤ (S ×ˢ ((S ×ˢ S).filter fun q : G × G => q.1 + q.2 = x)).card :=
+        Finset.card_le_card_of_injOn _ hmaps hinj
     _ = S.card * pairCount S x := by rw [Finset.card_product]; rfl
 
 /-- **Antipodal stratum bound**: at most `6·n·pairCount x`. -/
@@ -204,15 +292,14 @@ theorem antipQuadCount_le (S : Finset G) (x : G) :
   classical
   unfold antipQuadCount
   have hsubset : (((S ×ˢ S) ×ˢ (S ×ˢ S)).filter fun t => qsum t = x ∧ HasAntipodal t) ⊆
-      fixedFilter S x (fun t => t.1.1 + t.1.2 = 0) ∪
+      (fixedFilter S x (fun t => t.1.1 + t.1.2 = 0) ∪
       fixedFilter S x (fun t => t.1.1 + t.2.1 = 0) ∪
-      fixedFilter S x (fun t => t.1.1 + t.2.2 = 0) ∪
+      fixedFilter S x (fun t => t.1.1 + t.2.2 = 0)) ∪
       fixedFilter S x (fun t => t.1.2 + t.2.1 = 0) ∪
       fixedFilter S x (fun t => t.1.2 + t.2.2 = 0) ∪
       fixedFilter S x (fun t => t.2.1 + t.2.2 = 0) := by
     intro t ht
-    have ht' : t ∈ ((S ×ˢ S) ×ˢ (S ×ˢ S)) ∧ (qsum t = x ∧ HasAntipodal t) :=
-      Finset.mem_filter.mp ht
+    have ht' := Finset.mem_filter.mp ht
     simp only [Finset.mem_union]
     rcases ht'.2.2 with h | h | h | h | h | h
     · exact Or.inl <| Or.inl <| Or.inl <| Or.inl <| Or.inl <|
@@ -224,392 +311,116 @@ theorem antipQuadCount_le (S : Finset G) (x : G) :
     · exact Or.inl <| Or.inl <| Or.inr <| Finset.mem_filter.mpr ⟨ht'.1, ht'.2.1, h⟩
     · exact Or.inl <| Or.inr <| Finset.mem_filter.mpr ⟨ht'.1, ht'.2.1, h⟩
     · exact Or.inr <| Finset.mem_filter.mpr ⟨ht'.1, ht'.2.1, h⟩
-  -- generic membership/injectivity facts for each of the six shapes
-  have hmemS : ∀ t ∈ ((S ×ˢ S) ×ˢ (S ×ˢ S)),
-      t.1.1 ∈ S ∧ t.1.2 ∈ S ∧ t.2.1 ∈ S ∧ t.2.2 ∈ S := by
-    intro t ht
-    have h1 := Finset.mem_product.mp ht
-    have h2 := Finset.mem_product.mp h1.1
-    have h3 := Finset.mem_product.mp h1.2
-    exact ⟨h2.1, h2.2, h3.1, h3.2⟩
-  -- six instances of the fixed-position bound
-  have h12 := antip_fixed_le S x (fun t => t.1.1 + t.1.2 = 0)
-    (fun t => t.1.1) (fun t => (t.2.1, t.2.2))
-    (fun t ht => (hmemS t (Finset.mem_filter.mp ht).1).1)
-    (fun t ht => by
-      have hm := hmemS t (Finset.mem_filter.mp ht).1
-      have hc := (Finset.mem_filter.mp ht).2
-      refine Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨hm.2.2.1, hm.2.2.2⟩, ?_⟩
-      have hq : t.1.1 + t.1.2 + t.2.1 + t.2.2 = x := hc.1
-      have h0 : t.1.1 + t.1.2 = 0 := hc.2
-      have : t.1.1 + t.1.2 + t.2.1 + t.2.2 = (t.1.1 + t.1.2) + (t.2.1 + t.2.2) := by
-        abel
-      rw [this, h0, zero_add] at hq
-      exact hq)
-    (by
-      rintro ⟨⟨a1, a2⟩, a3, a4⟩ ha ⟨⟨b1, b2⟩, b3, b4⟩ hb h
-      have ha' : qsum ((a1, a2), a3, a4) = x ∧ a1 + a2 = 0 :=
-        (Finset.mem_filter.mp (Finset.mem_coe.mp ha)).2
-      have hb' : qsum ((b1, b2), b3, b4) = x ∧ b1 + b2 = 0 :=
-        (Finset.mem_filter.mp (Finset.mem_coe.mp hb)).2
-      simp only [Prod.mk.injEq] at h
-      obtain ⟨h1, h3, h4⟩ := h
-      have h2 : a2 = b2 := by
-        have e1 : a2 = -a1 := (neg_eq_of_add_eq_zero_right ha'.2).symm
-        have e2 : b2 = -b1 := (neg_eq_of_add_eq_zero_right hb'.2).symm
-        rw [e1, e2, h1]
-      simp [h1, h2, h3, h4])
-  have h13 := antip_fixed_le S x (fun t => t.1.1 + t.2.1 = 0)
-    (fun t => t.1.1) (fun t => (t.1.2, t.2.2))
-    (fun t ht => (hmemS t (Finset.mem_filter.mp ht).1).1)
-    (fun t ht => by
-      have hm := hmemS t (Finset.mem_filter.mp ht).1
-      have hc := (Finset.mem_filter.mp ht).2
-      refine Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨hm.2.1, hm.2.2.2⟩, ?_⟩
-      have hq : t.1.1 + t.1.2 + t.2.1 + t.2.2 = x := hc.1
-      have h0 : t.1.1 + t.2.1 = 0 := hc.2
-      have : t.1.1 + t.1.2 + t.2.1 + t.2.2 = (t.1.1 + t.2.1) + (t.1.2 + t.2.2) := by
-        abel
-      rw [this, h0, zero_add] at hq
-      exact hq)
-    (by
-      rintro ⟨⟨a1, a2⟩, a3, a4⟩ ha ⟨⟨b1, b2⟩, b3, b4⟩ hb h
-      have ha' : qsum ((a1, a2), a3, a4) = x ∧ a1 + a3 = 0 :=
-        (Finset.mem_filter.mp (Finset.mem_coe.mp ha)).2
-      have hb' : qsum ((b1, b2), b3, b4) = x ∧ b1 + b3 = 0 :=
-        (Finset.mem_filter.mp (Finset.mem_coe.mp hb)).2
-      simp only [Prod.mk.injEq] at h
-      obtain ⟨h1, h2, h4⟩ := h
-      have h3 : a3 = b3 := by
-        have e1 : a3 = -a1 := (neg_eq_of_add_eq_zero_right ha'.2).symm
-        have e2 : b3 = -b1 := (neg_eq_of_add_eq_zero_right hb'.2).symm
-        rw [e1, e2, h1]
-      simp [h1, h2, h3, h4])
-  have h14 := antip_fixed_le S x (fun t => t.1.1 + t.2.2 = 0)
-    (fun t => t.1.1) (fun t => (t.1.2, t.2.1))
-    (fun t ht => (hmemS t (Finset.mem_filter.mp ht).1).1)
-    (fun t ht => by
-      have hm := hmemS t (Finset.mem_filter.mp ht).1
-      have hc := (Finset.mem_filter.mp ht).2
-      refine Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨hm.2.1, hm.2.2.1⟩, ?_⟩
-      have hq : t.1.1 + t.1.2 + t.2.1 + t.2.2 = x := hc.1
-      have h0 : t.1.1 + t.2.2 = 0 := hc.2
-      have : t.1.1 + t.1.2 + t.2.1 + t.2.2 = (t.1.1 + t.2.2) + (t.1.2 + t.2.1) := by
-        abel
-      rw [this, h0, zero_add] at hq
-      exact hq)
-    (by
-      rintro ⟨⟨a1, a2⟩, a3, a4⟩ ha ⟨⟨b1, b2⟩, b3, b4⟩ hb h
-      have ha' : qsum ((a1, a2), a3, a4) = x ∧ a1 + a4 = 0 :=
-        (Finset.mem_filter.mp (Finset.mem_coe.mp ha)).2
-      have hb' : qsum ((b1, b2), b3, b4) = x ∧ b1 + b4 = 0 :=
-        (Finset.mem_filter.mp (Finset.mem_coe.mp hb)).2
-      simp only [Prod.mk.injEq] at h
-      obtain ⟨h1, h2, h3⟩ := h
-      have h4 : a4 = b4 := by
-        have e1 : a4 = -a1 := (neg_eq_of_add_eq_zero_right ha'.2).symm
-        have e2 : b4 = -b1 := (neg_eq_of_add_eq_zero_right hb'.2).symm
-        rw [e1, e2, h1]
-      simp [h1, h2, h3, h4])
-  have h23 := antip_fixed_le S x (fun t => t.1.2 + t.2.1 = 0)
-    (fun t => t.1.2) (fun t => (t.1.1, t.2.2))
-    (fun t ht => (hmemS t (Finset.mem_filter.mp ht).1).2.1)
-    (fun t ht => by
-      have hm := hmemS t (Finset.mem_filter.mp ht).1
-      have hc := (Finset.mem_filter.mp ht).2
-      refine Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨hm.1, hm.2.2.2⟩, ?_⟩
-      have hq : t.1.1 + t.1.2 + t.2.1 + t.2.2 = x := hc.1
-      have h0 : t.1.2 + t.2.1 = 0 := hc.2
-      have : t.1.1 + t.1.2 + t.2.1 + t.2.2 = (t.1.2 + t.2.1) + (t.1.1 + t.2.2) := by
-        abel
-      rw [this, h0, zero_add] at hq
-      exact hq)
-    (by
-      rintro ⟨⟨a1, a2⟩, a3, a4⟩ ha ⟨⟨b1, b2⟩, b3, b4⟩ hb h
-      have ha' : qsum ((a1, a2), a3, a4) = x ∧ a2 + a3 = 0 :=
-        (Finset.mem_filter.mp (Finset.mem_coe.mp ha)).2
-      have hb' : qsum ((b1, b2), b3, b4) = x ∧ b2 + b3 = 0 :=
-        (Finset.mem_filter.mp (Finset.mem_coe.mp hb)).2
-      simp only [Prod.mk.injEq] at h
-      obtain ⟨h2, h1, h4⟩ := h
-      have h3 : a3 = b3 := by
-        have e1 : a3 = -a2 := (neg_eq_of_add_eq_zero_right ha'.2).symm
-        have e2 : b3 = -b2 := (neg_eq_of_add_eq_zero_right hb'.2).symm
-        rw [e1, e2, h2]
-      simp [h1, h2, h3, h4])
-  have h24 := antip_fixed_le S x (fun t => t.1.2 + t.2.2 = 0)
-    (fun t => t.1.2) (fun t => (t.1.1, t.2.1))
-    (fun t ht => (hmemS t (Finset.mem_filter.mp ht).1).2.1)
-    (fun t ht => by
-      have hm := hmemS t (Finset.mem_filter.mp ht).1
-      have hc := (Finset.mem_filter.mp ht).2
-      refine Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨hm.1, hm.2.2.1⟩, ?_⟩
-      have hq : t.1.1 + t.1.2 + t.2.1 + t.2.2 = x := hc.1
-      have h0 : t.1.2 + t.2.2 = 0 := hc.2
-      have : t.1.1 + t.1.2 + t.2.1 + t.2.2 = (t.1.2 + t.2.2) + (t.1.1 + t.2.1) := by
-        abel
-      rw [this, h0, zero_add] at hq
-      exact hq)
-    (by
-      rintro ⟨⟨a1, a2⟩, a3, a4⟩ ha ⟨⟨b1, b2⟩, b3, b4⟩ hb h
-      have ha' : qsum ((a1, a2), a3, a4) = x ∧ a2 + a4 = 0 :=
-        (Finset.mem_filter.mp (Finset.mem_coe.mp ha)).2
-      have hb' : qsum ((b1, b2), b3, b4) = x ∧ b2 + b4 = 0 :=
-        (Finset.mem_filter.mp (Finset.mem_coe.mp hb)).2
-      simp only [Prod.mk.injEq] at h
-      obtain ⟨h2, h1, h3⟩ := h
-      have h4 : a4 = b4 := by
-        have e1 : a4 = -a2 := (neg_eq_of_add_eq_zero_right ha'.2).symm
-        have e2 : b4 = -b2 := (neg_eq_of_add_eq_zero_right hb'.2).symm
-        rw [e1, e2, h2]
-      simp [h1, h2, h3, h4])
-  have h34 := antip_fixed_le S x (fun t => t.2.1 + t.2.2 = 0)
-    (fun t => t.2.1) (fun t => (t.1.1, t.1.2))
-    (fun t ht => (hmemS t (Finset.mem_filter.mp ht).1).2.2.1)
-    (fun t ht => by
-      have hm := hmemS t (Finset.mem_filter.mp ht).1
-      have hc := (Finset.mem_filter.mp ht).2
-      refine Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨hm.1, hm.2.1⟩, ?_⟩
-      have hq : t.1.1 + t.1.2 + t.2.1 + t.2.2 = x := hc.1
-      have h0 : t.2.1 + t.2.2 = 0 := hc.2
-      have : t.1.1 + t.1.2 + t.2.1 + t.2.2 = (t.2.1 + t.2.2) + (t.1.1 + t.1.2) := by
-        abel
-      rw [this, h0, zero_add] at hq
-      exact hq)
-    (by
-      rintro ⟨⟨a1, a2⟩, a3, a4⟩ ha ⟨⟨b1, b2⟩, b3, b4⟩ hb h
-      have ha' : qsum ((a1, a2), a3, a4) = x ∧ a3 + a4 = 0 :=
-        (Finset.mem_filter.mp (Finset.mem_coe.mp ha)).2
-      have hb' : qsum ((b1, b2), b3, b4) = x ∧ b3 + b4 = 0 :=
-        (Finset.mem_filter.mp (Finset.mem_coe.mp hb)).2
-      simp only [Prod.mk.injEq] at h
-      obtain ⟨h3, h1, h2⟩ := h
-      have h4 : a4 = b4 := by
-        have e1 : a4 = -a3 := (neg_eq_of_add_eq_zero_right ha'.2).symm
-        have e2 : b4 = -b3 := (neg_eq_of_add_eq_zero_right hb'.2).symm
-        rw [e1, e2, h3]
-      simp [h1, h2, h3, h4])
-  calc (((S ×ˢ S) ×ˢ (S ×ˢ S)).filter fun t => qsum t = x ∧ HasAntipodal t).card
-      ≤ (fixedFilter S x (fun t => t.1.1 + t.1.2 = 0) ∪
-        fixedFilter S x (fun t => t.1.1 + t.2.1 = 0) ∪
-        fixedFilter S x (fun t => t.1.1 + t.2.2 = 0) ∪
-        fixedFilter S x (fun t => t.1.2 + t.2.1 = 0) ∪
-        fixedFilter S x (fun t => t.1.2 + t.2.2 = 0) ∪
-        fixedFilter S x (fun t => t.2.1 + t.2.2 = 0)).card :=
-        Finset.card_le_card hsubset
-    _ ≤ (fixedFilter S x (fun t => t.1.1 + t.1.2 = 0)).card +
-        (fixedFilter S x (fun t => t.1.1 + t.2.1 = 0)).card +
-        (fixedFilter S x (fun t => t.1.1 + t.2.2 = 0)).card +
-        (fixedFilter S x (fun t => t.1.2 + t.2.1 = 0)).card +
-        (fixedFilter S x (fun t => t.1.2 + t.2.2 = 0)).card +
-        (fixedFilter S x (fun t => t.2.1 + t.2.2 = 0)).card := by
-        refine le_trans (Finset.card_union_le _ _) ?_
-        refine Nat.add_le_add_right ?_ _
-        refine le_trans (Finset.card_union_le _ _) ?_
-        refine Nat.add_le_add_right ?_ _
-        refine le_trans (Finset.card_union_le _ _) ?_
-        refine Nat.add_le_add_right ?_ _
-        refine le_trans (Finset.card_union_le _ _) ?_
-        refine Nat.add_le_add_right ?_ _
-        exact Finset.card_union_le _ _
-    _ ≤ 6 * (S.card * pairCount S x) := by
-        have := h12
-        have := h13
-        have := h14
-        have := h23
-        have := h24
-        have := h34
-        omega
+  have h12 := antip12_le S x
+  have h13 : (fixedFilter S x (fun t => t.1.1 + t.2.1 = 0)).card ≤
+      (fixedFilter S x (fun t => t.1.1 + t.1.2 = 0)).card :=
+    fixedFilter_perm4_le S x 0 (fun t => t.1.1 + t.1.2 = 0)
+  have h14 : (fixedFilter S x (fun t => t.1.1 + t.2.2 = 0)).card ≤
+      (fixedFilter S x (fun t => t.1.1 + t.1.2 = 0)).card :=
+    fixedFilter_perm4_le S x 1 (fun t => t.1.1 + t.1.2 = 0)
+  have h23 : (fixedFilter S x (fun t => t.1.2 + t.2.1 = 0)).card ≤
+      (fixedFilter S x (fun t => t.1.1 + t.1.2 = 0)).card :=
+    fixedFilter_perm4_le S x 2 (fun t => t.1.1 + t.1.2 = 0)
+  have h24 : (fixedFilter S x (fun t => t.1.2 + t.2.2 = 0)).card ≤
+      (fixedFilter S x (fun t => t.1.1 + t.1.2 = 0)).card :=
+    fixedFilter_perm4_le S x 3 (fun t => t.1.1 + t.1.2 = 0)
+  have h34 : (fixedFilter S x (fun t => t.2.1 + t.2.2 = 0)).card ≤
+      (fixedFilter S x (fun t => t.1.1 + t.1.2 = 0)).card :=
+    fixedFilter_perm4_le S x 4 (fun t => t.1.1 + t.1.2 = 0)
+  have hA := card_union_le_sum
+    (fixedFilter S x (fun t => t.1.1 + t.1.2 = 0))
+    (fixedFilter S x (fun t => t.1.1 + t.2.1 = 0))
+    (fixedFilter S x (fun t => t.1.1 + t.2.2 = 0))
+    (fixedFilter S x (fun t => t.1.2 + t.2.1 = 0))
+  have hB := card_union_le_sum
+    (fixedFilter S x (fun t => t.1.1 + t.1.2 = 0) ∪
+      fixedFilter S x (fun t => t.1.1 + t.2.1 = 0) ∪
+      fixedFilter S x (fun t => t.1.1 + t.2.2 = 0))
+    (fixedFilter S x (fun t => t.1.2 + t.2.1 = 0))
+    (fixedFilter S x (fun t => t.1.2 + t.2.2 = 0))
+    (fixedFilter S x (fun t => t.2.1 + t.2.2 = 0))
+  have hC := Finset.card_le_card hsubset
+  have hU3 : (fixedFilter S x (fun t => t.1.1 + t.1.2 = 0) ∪
+      fixedFilter S x (fun t => t.1.1 + t.2.1 = 0) ∪
+      fixedFilter S x (fun t => t.1.1 + t.2.2 = 0)).card ≤
+      (fixedFilter S x (fun t => t.1.1 + t.1.2 = 0)).card +
+      (fixedFilter S x (fun t => t.1.1 + t.2.1 = 0)).card +
+      (fixedFilter S x (fun t => t.1.1 + t.2.2 = 0)).card :=
+    le_trans (Finset.card_union_le _ _) (Nat.add_le_add_right (Finset.card_union_le _ _) _)
+  omega
 
-/-! ## The zero-triple stratum: four position-triple injections -/
+/-! ## The zero-triple stratum: one base injection, three permutations -/
 
-/-- The fixed-position filter shape used by the four zero-triple injections. -/
-private def fixedFilterZ (S : Finset G) (x : G) (P : (G × G) × (G × G) → Prop)
-    [DecidablePred P] : Finset ((G × G) × (G × G)) :=
-  ((S ×ˢ S) ×ˢ (S ×ˢ S)).filter fun t => (qsum t = x ∧ ¬HasAntipodal t) ∧ P t
+/-- Base case: the `(1,2,3)`-zero-triple fiber injects into the zero-sum triples via
+`t ↦ (t₁, t₂, t₃)` (the fourth entry is recovered from the sum). -/
+private theorem zt123_le (S : Finset G) (x : G) :
+    (fixedFilter S x (fun t => t.1.1 + t.1.2 + t.2.1 = 0)).card ≤ zeroTripleCount S := by
+  apply Finset.card_le_card_of_injOn (fun t => (t.1.1, t.1.2, t.2.1))
+  · intro t ht
+    have hm := mem4 S t (Finset.mem_filter.mp ht).1
+    have hc := (Finset.mem_filter.mp ht).2
+    exact Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨hm.1,
+      Finset.mem_product.mpr ⟨hm.2.1, hm.2.2.1⟩⟩, hc.2⟩
+  · rintro ⟨⟨a1, a2⟩, a3, a4⟩ ha ⟨⟨b1, b2⟩, b3, b4⟩ hb h
+    have ha' : qsum ((a1, a2), a3, a4) = x ∧ a1 + a2 + a3 = 0 :=
+      (Finset.mem_filter.mp (Finset.mem_coe.mp ha)).2
+    have hb' : qsum ((b1, b2), b3, b4) = x ∧ b1 + b2 + b3 = 0 :=
+      (Finset.mem_filter.mp (Finset.mem_coe.mp hb)).2
+    simp only [Prod.mk.injEq] at h
+    obtain ⟨h1, h2, h3⟩ := h
+    have h4 : a4 = b4 := by
+      have e1 : a1 + a2 + a3 + a4 = x := ha'.1
+      have e2 : b1 + b2 + b3 + b4 = x := hb'.1
+      rw [ha'.2, zero_add] at e1
+      rw [hb'.2, zero_add] at e2
+      exact e1.trans e2.symm
+    simp [h1, h2, h3, h4]
 
-/-- **Zero-triple stratum bound**: at most `4·zeroTripleCount`. -/
+/-- **Zero-triple stratum bound**: at most `4·zeroTripleCount`.  (The `¬HasAntipodal`
+side condition of the stratum is not needed for this bound.) -/
 theorem ztQuadCount_le (S : Finset G) (x : G) :
     ztQuadCount S x ≤ 4 * zeroTripleCount S := by
   classical
   unfold ztQuadCount
   have hsubset : (((S ×ˢ S) ×ˢ (S ×ˢ S)).filter
       fun t => qsum t = x ∧ ¬HasAntipodal t ∧ HasZeroTriple t) ⊆
-      fixedFilterZ S x (fun t => t.1.1 + t.1.2 + t.2.1 = 0) ∪
-      fixedFilterZ S x (fun t => t.1.1 + t.1.2 + t.2.2 = 0) ∪
-      fixedFilterZ S x (fun t => t.1.1 + t.2.1 + t.2.2 = 0) ∪
-      fixedFilterZ S x (fun t => t.1.2 + t.2.1 + t.2.2 = 0) := by
+      fixedFilter S x (fun t => t.1.1 + t.1.2 + t.2.1 = 0) ∪
+      fixedFilter S x (fun t => t.1.1 + t.1.2 + t.2.2 = 0) ∪
+      fixedFilter S x (fun t => t.1.1 + t.2.1 + t.2.2 = 0) ∪
+      fixedFilter S x (fun t => t.1.2 + t.2.1 + t.2.2 = 0) := by
     intro t ht
-    have ht' : t ∈ ((S ×ˢ S) ×ˢ (S ×ˢ S)) ∧
-        (qsum t = x ∧ ¬HasAntipodal t ∧ HasZeroTriple t) := Finset.mem_filter.mp ht
+    have ht' := Finset.mem_filter.mp ht
     simp only [Finset.mem_union]
     rcases ht'.2.2.2 with h | h | h | h
-    · exact Or.inl <| Or.inl <| Or.inl <|
-        Finset.mem_filter.mpr ⟨ht'.1, ⟨ht'.2.1, ht'.2.2.1⟩, h⟩
-    · exact Or.inl <| Or.inl <| Or.inr <|
-        Finset.mem_filter.mpr ⟨ht'.1, ⟨ht'.2.1, ht'.2.2.1⟩, h⟩
-    · exact Or.inl <| Or.inr <| Finset.mem_filter.mpr ⟨ht'.1, ⟨ht'.2.1, ht'.2.2.1⟩, h⟩
-    · exact Or.inr <| Finset.mem_filter.mpr ⟨ht'.1, ⟨ht'.2.1, ht'.2.2.1⟩, h⟩
-  have hmemS : ∀ t ∈ ((S ×ˢ S) ×ˢ (S ×ˢ S)),
-      t.1.1 ∈ S ∧ t.1.2 ∈ S ∧ t.2.1 ∈ S ∧ t.2.2 ∈ S := by
-    intro t ht
-    have h1 := Finset.mem_product.mp ht
-    have h2 := Finset.mem_product.mp h1.1
-    have h3 := Finset.mem_product.mp h1.2
-    exact ⟨h2.1, h2.2, h3.1, h3.2⟩
-  -- the four fixed-position bounds
-  have h123 : (fixedFilterZ S x (fun t => t.1.1 + t.1.2 + t.2.1 = 0)).card ≤ zeroTripleCount S := by
-    apply Finset.card_le_card_of_injOn (fun t => (t.1.1, t.1.2, t.2.1))
-    · intro t ht
-      have hm := hmemS t (Finset.mem_filter.mp ht).1
-      have hc := (Finset.mem_filter.mp ht).2
-      exact Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨hm.1,
-        Finset.mem_product.mpr ⟨hm.2.1, hm.2.2.1⟩⟩, hc.2⟩
-    · rintro ⟨⟨a1, a2⟩, a3, a4⟩ ha ⟨⟨b1, b2⟩, b3, b4⟩ hb h
-      have ha' : (qsum ((a1, a2), a3, a4) = x ∧ _) ∧ a1 + a2 + a3 = 0 :=
-        (Finset.mem_filter.mp (Finset.mem_coe.mp ha)).2
-      have hb' : (qsum ((b1, b2), b3, b4) = x ∧ _) ∧ b1 + b2 + b3 = 0 :=
-        (Finset.mem_filter.mp (Finset.mem_coe.mp hb)).2
-      simp only [Prod.mk.injEq] at h
-      obtain ⟨h1, h2, h3⟩ := h
-      have hq1 : qsum ((a1, a2), a3, a4) = x := ha'.1.1
-      have hq2 : qsum ((b1, b2), b3, b4) = x := hb'.1.1
-      have h4 : a4 = b4 := by
-        have e1 : a1 + a2 + a3 + a4 = x := hq1
-        have e2 : b1 + b2 + b3 + b4 = x := hq2
-        rw [ha'.2, zero_add] at e1
-        rw [hb'.2, zero_add] at e2
-        exact e1.trans e2.symm
-      simp [h1, h2, h3, h4]
-  have h124 : (fixedFilterZ S x (fun t => t.1.1 + t.1.2 + t.2.2 = 0)).card ≤ zeroTripleCount S := by
-    apply Finset.card_le_card_of_injOn (fun t => (t.1.1, t.1.2, t.2.2))
-    · intro t ht
-      have hm := hmemS t (Finset.mem_filter.mp ht).1
-      have hc := (Finset.mem_filter.mp ht).2
-      exact Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨hm.1,
-        Finset.mem_product.mpr ⟨hm.2.1, hm.2.2.2⟩⟩, hc.2⟩
-    · rintro ⟨⟨a1, a2⟩, a3, a4⟩ ha ⟨⟨b1, b2⟩, b3, b4⟩ hb h
-      have ha' : (qsum ((a1, a2), a3, a4) = x ∧ _) ∧ a1 + a2 + a4 = 0 :=
-        (Finset.mem_filter.mp (Finset.mem_coe.mp ha)).2
-      have hb' : (qsum ((b1, b2), b3, b4) = x ∧ _) ∧ b1 + b2 + b4 = 0 :=
-        (Finset.mem_filter.mp (Finset.mem_coe.mp hb)).2
-      simp only [Prod.mk.injEq] at h
-      obtain ⟨h1, h2, h4⟩ := h
-      have h3 : a3 = b3 := by
-        have e1 : a1 + a2 + a3 + a4 = x := ha'.1.1
-        have e2 : b1 + b2 + b3 + b4 = x := hb'.1.1
-        have r1 : a1 + a2 + a3 + a4 = (a1 + a2 + a4) + a3 := by abel
-        have r2 : b1 + b2 + b3 + b4 = (b1 + b2 + b4) + b3 := by abel
-        rw [r1, ha'.2, zero_add] at e1
-        rw [r2, hb'.2, zero_add] at e2
-        exact e1.trans e2.symm
-      simp [h1, h2, h3, h4]
-  have h134 : (fixedFilterZ S x (fun t => t.1.1 + t.2.1 + t.2.2 = 0)).card ≤ zeroTripleCount S := by
-    apply Finset.card_le_card_of_injOn (fun t => (t.1.1, t.2.1, t.2.2))
-    · intro t ht
-      have hm := hmemS t (Finset.mem_filter.mp ht).1
-      have hc := (Finset.mem_filter.mp ht).2
-      exact Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨hm.1,
-        Finset.mem_product.mpr ⟨hm.2.2.1, hm.2.2.2⟩⟩, hc.2⟩
-    · rintro ⟨⟨a1, a2⟩, a3, a4⟩ ha ⟨⟨b1, b2⟩, b3, b4⟩ hb h
-      have ha' : (qsum ((a1, a2), a3, a4) = x ∧ _) ∧ a1 + a3 + a4 = 0 :=
-        (Finset.mem_filter.mp (Finset.mem_coe.mp ha)).2
-      have hb' : (qsum ((b1, b2), b3, b4) = x ∧ _) ∧ b1 + b3 + b4 = 0 :=
-        (Finset.mem_filter.mp (Finset.mem_coe.mp hb)).2
-      simp only [Prod.mk.injEq] at h
-      obtain ⟨h1, h3, h4⟩ := h
-      have h2 : a2 = b2 := by
-        have e1 : a1 + a2 + a3 + a4 = x := ha'.1.1
-        have e2 : b1 + b2 + b3 + b4 = x := hb'.1.1
-        have r1 : a1 + a2 + a3 + a4 = (a1 + a3 + a4) + a2 := by abel
-        have r2 : b1 + b2 + b3 + b4 = (b1 + b3 + b4) + b2 := by abel
-        rw [r1, ha'.2, zero_add] at e1
-        rw [r2, hb'.2, zero_add] at e2
-        exact e1.trans e2.symm
-      simp [h1, h2, h3, h4]
-  have h234 : (fixedFilterZ S x (fun t => t.1.2 + t.2.1 + t.2.2 = 0)).card ≤ zeroTripleCount S := by
-    apply Finset.card_le_card_of_injOn (fun t => (t.1.2, t.2.1, t.2.2))
-    · intro t ht
-      have hm := hmemS t (Finset.mem_filter.mp ht).1
-      have hc := (Finset.mem_filter.mp ht).2
-      exact Finset.mem_filter.mpr ⟨Finset.mem_product.mpr ⟨hm.2.1,
-        Finset.mem_product.mpr ⟨hm.2.2.1, hm.2.2.2⟩⟩, hc.2⟩
-    · rintro ⟨⟨a1, a2⟩, a3, a4⟩ ha ⟨⟨b1, b2⟩, b3, b4⟩ hb h
-      have ha' : (qsum ((a1, a2), a3, a4) = x ∧ _) ∧ a2 + a3 + a4 = 0 :=
-        (Finset.mem_filter.mp (Finset.mem_coe.mp ha)).2
-      have hb' : (qsum ((b1, b2), b3, b4) = x ∧ _) ∧ b2 + b3 + b4 = 0 :=
-        (Finset.mem_filter.mp (Finset.mem_coe.mp hb)).2
-      simp only [Prod.mk.injEq] at h
-      obtain ⟨h2, h3, h4⟩ := h
-      have h1 : a1 = b1 := by
-        have e1 : a1 + a2 + a3 + a4 = x := ha'.1.1
-        have e2 : b1 + b2 + b3 + b4 = x := hb'.1.1
-        have r1 : a1 + a2 + a3 + a4 = (a2 + a3 + a4) + a1 := by abel
-        have r2 : b1 + b2 + b3 + b4 = (b2 + b3 + b4) + b1 := by abel
-        rw [r1, ha'.2, zero_add] at e1
-        rw [r2, hb'.2, zero_add] at e2
-        exact e1.trans e2.symm
-      simp [h1, h2, h3, h4]
-  calc (((S ×ˢ S) ×ˢ (S ×ˢ S)).filter
-        fun t => qsum t = x ∧ ¬HasAntipodal t ∧ HasZeroTriple t).card
-      ≤ (fixedFilterZ S x (fun t => t.1.1 + t.1.2 + t.2.1 = 0) ∪
-        fixedFilterZ S x (fun t => t.1.1 + t.1.2 + t.2.2 = 0) ∪
-        fixedFilterZ S x (fun t => t.1.1 + t.2.1 + t.2.2 = 0) ∪
-        fixedFilterZ S x (fun t => t.1.2 + t.2.1 + t.2.2 = 0)).card := by
-        exact Finset.card_le_card hsubset
-    _ ≤ (fixedFilterZ S x (fun t => t.1.1 + t.1.2 + t.2.1 = 0)).card +
-        (fixedFilterZ S x (fun t => t.1.1 + t.1.2 + t.2.2 = 0)).card +
-        (fixedFilterZ S x (fun t => t.1.1 + t.2.1 + t.2.2 = 0)).card +
-        (fixedFilterZ S x (fun t => t.1.2 + t.2.1 + t.2.2 = 0)).card := by
-        refine le_trans (Finset.card_union_le _ _) ?_
-        refine Nat.add_le_add_right ?_ _
-        refine le_trans (Finset.card_union_le _ _) ?_
-        refine Nat.add_le_add_right ?_ _
-        exact Finset.card_union_le _ _
-    _ ≤ 4 * zeroTripleCount S := by
-        have := h123
-        have := h124
-        have := h134
-        have := h234
-        omega
+    · exact Or.inl <| Or.inl <| Or.inl <| Finset.mem_filter.mpr ⟨ht'.1, ht'.2.1, h⟩
+    · exact Or.inl <| Or.inl <| Or.inr <| Finset.mem_filter.mpr ⟨ht'.1, ht'.2.1, h⟩
+    · exact Or.inl <| Or.inr <| Finset.mem_filter.mpr ⟨ht'.1, ht'.2.1, h⟩
+    · exact Or.inr <| Finset.mem_filter.mpr ⟨ht'.1, ht'.2.1, h⟩
+  have h123 := zt123_le S x
+  have h124 : (fixedFilter S x (fun t => t.1.1 + t.1.2 + t.2.2 = 0)).card ≤
+      (fixedFilter S x (fun t => t.1.1 + t.1.2 + t.2.1 = 0)).card :=
+    fixedFilter_perm4_le S x 5 (fun t => t.1.1 + t.1.2 + t.2.1 = 0)
+  have h134 : (fixedFilter S x (fun t => t.1.1 + t.2.1 + t.2.2 = 0)).card ≤
+      (fixedFilter S x (fun t => t.1.1 + t.1.2 + t.2.1 = 0)).card :=
+    fixedFilter_perm4_le S x 6 (fun t => t.1.1 + t.1.2 + t.2.1 = 0)
+  have h234 : (fixedFilter S x (fun t => t.1.2 + t.2.1 + t.2.2 = 0)).card ≤
+      (fixedFilter S x (fun t => t.1.1 + t.1.2 + t.2.1 = 0)).card :=
+    fixedFilter_perm4_le S x 7 (fun t => t.1.1 + t.1.2 + t.2.1 = 0)
+  have hU := card_union_le_sum
+    (fixedFilter S x (fun t => t.1.1 + t.1.2 + t.2.1 = 0))
+    (fixedFilter S x (fun t => t.1.1 + t.1.2 + t.2.2 = 0))
+    (fixedFilter S x (fun t => t.1.1 + t.2.1 + t.2.2 = 0))
+    (fixedFilter S x (fun t => t.1.2 + t.2.1 + t.2.2 = 0))
+  have hC := Finset.card_le_card hsubset
+  omega
 
 /-! ## The (2,4) and (2,2) convolution identities -/
 
-/-- The depth-4 fiber over a fixed first-pair sum `c` is a product of two pair fibers. -/
-theorem quad_fiber_eq_product (S : Finset G) (x c : G) :
-    ((((S ×ˢ S) ×ˢ (S ×ˢ S)).filter fun t => qsum t = x).filter
-      fun t => t.1.1 + t.1.2 = c) =
-    ((S ×ˢ S).filter fun q : G × G => q.1 + q.2 = c) ×ˢ
-      ((S ×ˢ S).filter fun q : G × G => q.1 + q.2 = x - c) := by
-  classical
-  ext t
-  simp only [Finset.mem_filter, Finset.mem_product]
-  constructor
-  · rintro ⟨⟨⟨h1, h2⟩, htot⟩, hfst⟩
-    have htot' : t.1.1 + t.1.2 + t.2.1 + t.2.2 = x := htot
-    refine ⟨⟨h1, hfst⟩, h2, ?_⟩
-    calc t.2.1 + t.2.2
-        = (t.1.1 + t.1.2 + t.2.1 + t.2.2) - (t.1.1 + t.1.2) := by abel
-      _ = x - c := by rw [htot', hfst]
-  · rintro ⟨⟨h1, hfst⟩, h2, hsnd⟩
-    refine ⟨⟨⟨h1, h2⟩, ?_⟩, hfst⟩
-    show t.1.1 + t.1.2 + t.2.1 + t.2.2 = x
-    calc t.1.1 + t.1.2 + t.2.1 + t.2.2
-        = (t.1.1 + t.1.2) + (t.2.1 + t.2.2) := by abel
-      _ = c + (x - c) := by rw [hfst, hsnd]
-      _ = x := by abel
-
-/-- **Depth-4 convolution identity**. -/
+/-- **Depth-4 convolution identity** (G87's `quadCount_eq_conv`). -/
 theorem quadCount_eq_conv (S : Finset G) (x : G) :
     quadCount S x = ∑ c : G, pairCount S c * pairCount S (x - c) := by
-  classical
-  unfold quadCount
-  rw [Finset.card_eq_sum_card_fiberwise
-    (f := fun t : (G × G) × (G × G) => t.1.1 + t.1.2) (t := Finset.univ)
-    (fun t _ => Finset.mem_univ _)]
-  refine Finset.sum_congr rfl fun c _ => ?_
-  rw [quad_fiber_eq_product S x c, Finset.card_product]
-  rfl
+  rw [quadCount_eq_G87]
+  exact ArkLib.ProximityGap.Frontier.G87DepthFourPairSumReduction.quadCount_eq_conv S x
 
 /-- The depth-6 fiber over a fixed leading-pair sum `c` splits off a full quad fiber. -/
 theorem sext_fiber_eq_product (S : Finset G) (a c : G) :
@@ -671,14 +482,6 @@ theorem sextCount_split (S : Finset G) (a : G) :
   ring
 
 /-! ## Total masses of the strata -/
-
-private theorem mem4 (S : Finset G) (t : (G × G) × (G × G))
-    (ht : t ∈ (S ×ˢ S) ×ˢ (S ×ˢ S)) :
-    t.1.1 ∈ S ∧ t.1.2 ∈ S ∧ t.2.1 ∈ S ∧ t.2.2 ∈ S := by
-  have h1 := Finset.mem_product.mp ht
-  have h2 := Finset.mem_product.mp h1.1
-  have h3 := Finset.mem_product.mp h1.2
-  exact ⟨h2.1, h2.2, h3.1, h3.2⟩
 
 theorem primQuadCount_le_quadCount (S : Finset G) (x : G) :
     primQuadCount S x ≤ quadCount S x := by
@@ -925,16 +728,16 @@ theorem weighted_sq (p a b : ℕ) :
 
 /-- **The stratified depth-6 mass bound at production numbers**:
 `4·J₆ ≤ 5·ΣP² + 40·ΣA² + 40·ΣB²` with each stratum square-mass instantiated at
-`(M₄ᵖ, Z₃, n) = (2^22, 2^22, 2^30)`. -/
-theorem four_mul_mass_le (S : Finset G)
+`(M₄ᵖ, n) = (2^22, 2^30)` and a **parametric** zero-triple total `Z₃`. -/
+theorem four_mul_mass_le (S : Finset G) {Z3 : ℕ}
     (hcard : S.card = 2 ^ 30)
     (hM4 : ∀ x : G, primQuadCount S x ≤ 2 ^ 22)
-    (hZ3 : zeroTripleCount S ≤ 2 ^ 22) :
+    (hZ3 : zeroTripleCount S ≤ Z3) :
     4 * equalSumSextMass S ≤
       5 * (2 ^ 22 * (2 ^ 30) ^ 2 * ((2 ^ 30) ^ 2 * (2 ^ 30) ^ 4)) +
         40 * (36 * (2 ^ 30) ^ 2 *
-          ((2 ^ 22 + 6 * (2 ^ 30) ^ 2 + 4 * 2 ^ 22) * (2 ^ 30) ^ 4)) +
-        40 * ((4 * 2 ^ 22 * (2 ^ 30) ^ 2) * ((2 ^ 30) ^ 2 * (4 * 2 ^ 22 * (2 ^ 30)))) := by
+          ((2 ^ 22 + 6 * (2 ^ 30) ^ 2 + 4 * Z3) * (2 ^ 30) ^ 4)) +
+        40 * ((4 * Z3 * (2 ^ 30) ^ 2) * ((2 ^ 30) ^ 2 * (4 * Z3 * (2 ^ 30)))) := by
   have hstep : 4 * equalSumSextMass S ≤
       5 * ∑ a : G, convP S a ^ 2 + 40 * ∑ a : G, convA S a ^ 2 +
         40 * ∑ a : G, convB S a ^ 2 := by
@@ -955,10 +758,10 @@ theorem four_mul_mass_le (S : Finset G)
   have hB := sum_convB_sq S hZ3
   rw [hcard] at hP hA hJ4 hB
   have hA' : ∑ a : G, convA S a ^ 2 ≤
-      36 * (2 ^ 30) ^ 2 * ((2 ^ 22 + 6 * (2 ^ 30) ^ 2 + 4 * 2 ^ 22) * (2 ^ 30) ^ 4) := by
+      36 * (2 ^ 30) ^ 2 * ((2 ^ 22 + 6 * (2 ^ 30) ^ 2 + 4 * Z3) * (2 ^ 30) ^ 4) := by
     calc ∑ a : G, convA S a ^ 2
         ≤ 36 * (2 ^ 30) ^ 2 * ∑ x : G, quadCount S x ^ 2 := hA
-      _ ≤ 36 * (2 ^ 30) ^ 2 * ((2 ^ 22 + 6 * (2 ^ 30) ^ 2 + 4 * 2 ^ 22) * (2 ^ 30) ^ 4) :=
+      _ ≤ 36 * (2 ^ 30) ^ 2 * ((2 ^ 22 + 6 * (2 ^ 30) ^ 2 + 4 * Z3) * (2 ^ 30) ^ 4) :=
           Nat.mul_le_mul_left _ hJ4
   refine le_trans hstep ?_
   exact Nat.add_le_add (Nat.add_le_add (Nat.mul_le_mul_left _ hP)
@@ -968,27 +771,31 @@ theorem choose_110_6 : Nat.choose 110 6 = 2141851635 := by
   rw [Nat.choose_eq_descFactorial_div_factorial]
   rfl
 
-/-- Production kernel: the stratified depth-6 bound at `(M₄ᵖ, Z₃) = (2^22, 2^22)` fits inside
+/-- Production kernel: the stratified depth-6 bound at `(M₄ᵖ, Z₃) = (2^22, 2^53)` fits inside
 four times the depth-6 share of one full Wick budget at `(n, r) = (2^30, 110)`
-(margin `2^{1.95}`). -/
+(margin `≈ 2^{0.37}`; the kernel fails at `Z₃ = 2^54`, so `2^53` is the largest power of two
+the stratified chain absorbs). -/
 theorem production_kernel :
     (5 * (2 ^ 22 * (2 ^ 30) ^ 2 * ((2 ^ 30) ^ 2 * (2 ^ 30) ^ 4)) +
         40 * (36 * (2 ^ 30) ^ 2 *
-          ((2 ^ 22 + 6 * (2 ^ 30) ^ 2 + 4 * 2 ^ 22) * (2 ^ 30) ^ 4)) +
-        40 * ((4 * 2 ^ 22 * (2 ^ 30) ^ 2) * ((2 ^ 30) ^ 2 * (4 * 2 ^ 22 * (2 ^ 30))))) *
+          ((2 ^ 22 + 6 * (2 ^ 30) ^ 2 + 4 * 2 ^ 53) * (2 ^ 30) ^ 4)) +
+        40 * ((4 * 2 ^ 53 * (2 ^ 30) ^ 2) * ((2 ^ 30) ^ 2 * (4 * 2 ^ 53 * (2 ^ 30))))) *
       (2141851635 ^ 2 * (104)!) ≤ 4 * (Nat.doubleFactorial 219 * (2 ^ 30) ^ 6) := by
   decide
 
 /-- **Headline: depth six is absorbed under primitive-quad concentration `2^22` and
-zero-triple total `2^22`.**  Both hypotheses sit at the Stepanov level `4·n^{2/3}`; the
-probe measures the primitive quadruple concentration at `O(1)` and the zero-triple total
-at `≈ n·polylog` for real `μ_n` — named external hypotheses, consumed arithmetically here.
-Remarkably, no pair-concentration hypothesis is needed: the crude `pairCount ≤ n` suffices
-inside the stratified L² recursion. -/
+zero-triple total `2^53`.**  The two hypotheses are of different kinds: `M₄ᵖ ≤ 2^22` is a
+*pointwise* fiber cap (the Stepanov level `4·n^{2/3}`), while `Z₃ ≤ 2^53` bounds the *total*
+number of ordered zero-sum triples; they are not "at the same level".  For a multiplicative
+subgroup such as `μ_n`, scaling by the subgroup acts freely on zero-sum triples, so `Z₃` is a
+multiple of `n = 2^30` (see `_G105ZeroTripleQuantizationFence.lean`); the hypothesis thus
+allows at most `2^23` packets of triples.  Both are named external hypotheses, consumed
+arithmetically here.  No pair-concentration hypothesis is needed: the crude `pairCount ≤ n`
+suffices inside the stratified L² recursion. -/
 theorem production_depth6_of_primitive_quad (S : Finset G)
     (hcard : S.card = 2 ^ 30)
     (hM4 : ∀ x : G, primQuadCount S x ≤ 2 ^ 22)
-    (hZ3 : zeroTripleCount S ≤ 2 ^ 22) :
+    (hZ3 : zeroTripleCount S ≤ 2 ^ 53) :
     equalSumSextMass S * (Nat.choose 110 6 ^ 2 * (104)!) ≤
       Nat.doubleFactorial 219 * (2 ^ 30) ^ 6 := by
   have h4 := four_mul_mass_le S hcard hM4 hZ3
@@ -999,9 +806,9 @@ theorem production_depth6_of_primitive_quad (S : Finset G)
         = (4 * equalSumSextMass S) * (2141851635 ^ 2 * (104)!) := by ring
       _ ≤ (5 * (2 ^ 22 * (2 ^ 30) ^ 2 * ((2 ^ 30) ^ 2 * (2 ^ 30) ^ 4)) +
             40 * (36 * (2 ^ 30) ^ 2 *
-              ((2 ^ 22 + 6 * (2 ^ 30) ^ 2 + 4 * 2 ^ 22) * (2 ^ 30) ^ 4)) +
-            40 * ((4 * 2 ^ 22 * (2 ^ 30) ^ 2) *
-              ((2 ^ 30) ^ 2 * (4 * 2 ^ 22 * (2 ^ 30))))) *
+              ((2 ^ 22 + 6 * (2 ^ 30) ^ 2 + 4 * 2 ^ 53) * (2 ^ 30) ^ 4)) +
+            40 * ((4 * 2 ^ 53 * (2 ^ 30) ^ 2) *
+              ((2 ^ 30) ^ 2 * (4 * 2 ^ 53 * (2 ^ 30))))) *
             (2141851635 ^ 2 * (104)!) :=
           Nat.mul_le_mul_right _ h4
       _ ≤ 4 * (Nat.doubleFactorial 219 * (2 ^ 30) ^ 6) := production_kernel

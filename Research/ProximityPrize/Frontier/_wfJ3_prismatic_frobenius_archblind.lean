@@ -71,8 +71,8 @@ The route reduces to a PROVEN fence by a clean dichotomy on what prismatic cohom
   the Weil magnitude (the Newton polygon, the Hodge–Tate weights, the q-de-Rham / Nygaard
   refinement) is a `p`-adic-valuation functional, which by the in-tree valuation-class barrier
   (Dirichlet-unit / archimedean-blindness) cannot determine `max_σ |σ(α)|` — the archimedean
-  profile. We re-prove the decisive crux archimedean-side: **a `p`-adic unit (any fixed Newton
-  polygon / valuation datum) is compatible with the entire archimedean magnitude range**, so no
+  profile. The Lean below proves only the archimedean side (unit-modulus summands can sum to
+  modulus `2n` or to `0`); the valuation-blindness itself is cited, not proved here, so no
   prismatic-valuation functional can bound the sup `M(n) = Θ(√(n log)) → ∞` —
   `prismatic_valuation_archimedean_blind` + `sqrt_growth_escapes_constant` below.
 
@@ -120,6 +120,16 @@ namespace ArkLib.ProximityGap.Frontier.WfJ3Prismatic
 /-! ## Prong A — the magnitude prismatic/crystalline CAN reach is weight-1 purity (= F2), and it is
     vacuous for the DFT floor. -/
 
+/-- `2N` copies of `a` with alternating signs cancel: `∑_{i<2N} (-1)^i · a = 0`. -/
+theorem alternating_sum_eq_zero (a : ℂ) (N : ℕ) :
+    ∑ i ∈ Finset.range (2 * N), (-1 : ℂ) ^ i * a = 0 := by
+  induction N with
+  | zero => simp
+  | succ k ih =>
+    rw [show 2 * (k + 1) = 2 * k + 1 + 1 by ring, Finset.sum_range_succ, Finset.sum_range_succ, ih,
+      pow_succ, pow_mul]
+    simp
+
 /-- **The per-eigenvalue purity is F2, and a DFT combination of equal-modulus eigenvalues is not
 controlled by that modulus.** The floor `M(n)` is `‖(1/m) Σ_j χ̄^j(b)·τ_j‖` with `‖τ_j‖ = √q` for
 each `j ≠ 0` (weight-1 purity = the only magnitude statement prismatic/crystalline cohomology
@@ -129,15 +139,17 @@ the combination only by the trivial triangle inequality `≤ (number of terms)·
 the common modulus. Concretely: for any number `N` of unit-modulus phases `θ : Fin N → ℝ` the
 combination `Σ_i S·e^{iθ_i}` ranges over the whole disk of radius `N·S` as the phases vary, and the
 common modulus `S` alone places NO lower-than-trivial bound on it. We exhibit both extremes: all
-phases aligned (modulus `N·S`) and (for `N` even) phases pairing to `0`. Hence purity (F2) cannot
-pin the DFT floor. -/
+phases aligned (modulus `N·S`) and, with `2N` terms, phases `(-1)^i` pairing to `0`. Hence purity
+(F2) cannot pin the DFT floor. -/
 theorem prismatic_magnitude_is_F2_vacuous (S : ℝ) (hS : 0 ≤ S) (N : ℕ) :
     -- all-aligned: the combination of `N` modulus-`S` terms can be as large as `N·S`
     (‖∑ _i ∈ Finset.range N, (S : ℂ)‖ = (N : ℝ) * S)
+    -- balanced: `2N` modulus-`S` terms with alternating phases `±1` cancel to `0`
+    ∧ (∑ i ∈ Finset.range (2 * N), (-1 : ℂ) ^ i * (S : ℂ) = 0)
     -- so the only bound the common modulus `S` gives is the trivial triangle bound;
     -- the phase interference (what `M(n)` actually is) is invisible to it.
     ∧ (∀ θ : ℝ, ‖(S : ℂ) * Complex.exp (θ * I)‖ = S) := by
-  constructor
+  refine ⟨?_, alternating_sum_eq_zero (S : ℂ) N, ?_⟩
   · have h1 : (∑ _i ∈ Finset.range N, (S : ℂ)) = (N : ℂ) * S := by
       rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
     rw [h1, norm_mul, Complex.norm_natCast, Complex.norm_real, Real.norm_eq_abs,
@@ -150,8 +162,9 @@ theorem prismatic_magnitude_is_F2_vacuous (S : ℝ) (hS : 0 ≤ S) (N : ℕ) :
 sup excess.** Stated as the abstract gap: if a sum of `N` terms each of modulus `S` is bounded only
 by what the common modulus provides, the bound is `N·S` (triangle) — and the per-frequency average
 `√(N)·S/…` is the Parseval value; neither sees the `√(log)` worst-case excess. We record the clean
-fact that `√q`-purity is consistent with the floor being anywhere from `0` up to `n` (the trivial
-range of a DFT of `n` unit terms), so purity is non-informative for the sup. -/
+fact that the all-aligned sum of `n` unit terms attains the trivial maximum `n`; together with the
+balanced case `alternating_sum_eq_zero` this shows purity is consistent with both ends of the range
+`[0, n]` (for even `n`), so purity is non-informative for the sup. -/
 theorem purity_consistent_with_full_range (n : ℕ) (ζ : ℂ) (hζ : ‖ζ‖ = 1) :
     -- the all-equal period (every Gauss-sum phase aligned) attains the trivial maximum `n`
     ‖∑ _i ∈ Finset.range n, ζ‖ = (n : ℝ) := by
@@ -162,23 +175,23 @@ theorem purity_consistent_with_full_range (n : ℕ) (ζ : ℂ) (hζ : ‖ζ‖ =
 /-! ## Prong B — the genuine prismatic datum (Newton polygon / Hodge–Tate weights / q-de-Rham
     refinement) is a `p`-adic-valuation functional, hence archimedean-blind (= F3). -/
 
-/-- **A `p`-adic unit (fixed Newton polygon / valuation datum) is compatible with ANY complex
-magnitude.** The Frobenius eigenvalue `τ_j` and the period `η_b` are sums of `p`-power roots of
-unity `e_p(t)`, each a `p`-adic UNIT (`‖ζ_p‖_p = 1`). The prismatic Frobenius records the `p`-adic
-valuation / Newton polygon of such an element. We prove archimedean-side that this datum does not
-pin the complex modulus: a sum of `n` unit-modulus complex numbers (the period shape) realizes the
-complex modulus `n` when aligned, while a balanced one vanishes — both have the SAME `p`-adic
-valuation datum (a unit-sum in `ℤ[ζ_p]`). So a functional of the prismatic Newton polygon cannot be
-a function of `‖η_b‖`. (The exact prize-scale measurement is `probe_wfA09_padic_arch_decouple.rs`:
-`corr(‖η_b‖, v_p(N(η_b))) = 0.0000` at every `n` — the `p`-adic data cannot see which coset carries
-the archimedean max.) -/
+/-- **Unit-modulus summands do not pin the complex modulus of their sum.** The Frobenius eigenvalue
+`τ_j` and the period `η_b` are sums of `p`-th roots of unity `e_p(t)`. This lemma proves only the
+archimedean-side fact: `2n` unit-modulus summands (the period shape) give modulus `2n` when aligned
+and `0` when balanced (alternating signs), so the archimedean modulus is not determined by the
+summands' moduli.
+
+**No `p`-adic statement is proved here (audit CW-B18-21).** An earlier version claimed the aligned
+and balanced sums "have the same `p`-adic valuation datum"; that is false: the balanced sum `0` has
+`v_p = ∞`, while the aligned sum `2n` (with `n` a power of `2`, `p` odd) is a `p`-adic unit, and in
+general sums of `p`-power roots of unity are not units (`v(1 − ζ_p) = 1/(p−1)`). The intended
+archimedean-blindness of valuation functionals rests on the in-tree `_ValuationClassBarrier` and on
+the measurement `probe_wfA09_padic_arch_decouple.rs` (`corr(‖η_b‖, v_p(N(η_b))) = 0.0000`), not on
+this lemma. -/
 theorem prismatic_valuation_archimedean_blind (n : ℕ) (ζ : ℂ) (hζ : ‖ζ‖ = 1) :
-    ‖∑ _i ∈ Finset.range n, ζ‖ = (n : ℝ) ∧ ‖∑ _i ∈ Finset.range n, ζ‖ = (n : ℝ) * ‖ζ‖ := by
-  have h1 : (∑ _i ∈ Finset.range n, ζ) = (n : ℂ) * ζ := by
-    rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
-  refine ⟨?_, ?_⟩
-  · rw [h1, norm_mul, Complex.norm_natCast, hζ, mul_one]
-  · rw [h1, norm_mul, Complex.norm_natCast]
+    ‖∑ _i ∈ Finset.range (2 * n), ζ‖ = ((2 * n : ℕ) : ℝ) ∧
+      ∑ i ∈ Finset.range (2 * n), (-1 : ℂ) ^ i * ζ = 0 :=
+  ⟨purity_consistent_with_full_range (2 * n) ζ hζ, alternating_sum_eq_zero ζ n⟩
 
 /-- **A constant (any fixed valuation/Newton-polygon datum) cannot bound the growing sup.** The
 prismatic Newton polygon / Hodge–Tate weights of the Gauss-sum motive are *fixed* data
@@ -205,12 +218,12 @@ motive cannot bound the archimedean prize sup `M(n)`, by the two-pronged dichoto
 
 - **Prong A (F2):** the only magnitude it reaches is weight-1 purity `‖τ_j‖ = √q`, which is vacuous
   for the DFT-combination floor (`prismatic_magnitude_is_F2_vacuous`: the common modulus places no
-  bound on the phase interference; `purity_consistent_with_full_range`: purity is consistent with the
-  whole `[0, n]` range).
+  bound on the phase interference; aligned terms reach `N·S`, alternating ones cancel to `0`).
 - **Prong B (F3):** everything finer (Newton polygon, Hodge–Tate weights, the integral q-de-Rham /
-  Nygaard refinement) is a `p`-adic-valuation functional, archimedean-blind
-  (`prismatic_valuation_archimedean_blind`) and unable to bound a growing sup
-  (`sqrt_growth_escapes_constant`).
+  Nygaard refinement) is a `p`-adic-valuation functional, argued archimedean-blind via the cited
+  `_ValuationClassBarrier` (the Lean here proves only the archimedean side,
+  `prismatic_valuation_archimedean_blind`, and no valuation statement) and unable to bound a
+  growing sup (`sqrt_growth_escapes_constant`).
 
 Packaged as the conjunction of the proven facts, instantiated at the measured prize shape
 (`S = √q`, `c ≈ 1.1`). The route REDUCES-TO-FENCE — F2 in Prong A, F3 in Prong B — and does NOT
@@ -219,12 +232,13 @@ theorem wfJ3_obstruction (S : ℝ) (hS : 0 ≤ S) (N : ℕ) (ζ : ℂ) (hζ : �
     (c : ℝ) (hc : 0 < c) (T : ℝ) :
     -- Prong A: purity only triangle-bounds; phases unconstrained (F2, vacuous)
     ((‖∑ _i ∈ Finset.range N, (S : ℂ)‖ = (N : ℝ) * S)
+      ∧ (∑ i ∈ Finset.range (2 * N), (-1 : ℂ) ^ i * (S : ℂ) = 0)
       ∧ (∀ θ : ℝ, ‖(S : ℂ) * Complex.exp (θ * I)‖ = S))
     -- Prong B: prismatic valuation datum is archimedean-blind and a constant cannot bound the sup (F3)
     ∧ (‖∑ _i ∈ Finset.range N, ζ‖ = (N : ℝ))
     ∧ (∃ R : ℝ, 0 ≤ R ∧ T < c * Real.sqrt R) := by
-  refine ⟨prismatic_magnitude_is_F2_vacuous S hS N, ?_, sqrt_growth_escapes_constant c hc T⟩
-  exact (prismatic_valuation_archimedean_blind N ζ hζ).1
+  exact ⟨prismatic_magnitude_is_F2_vacuous S hS N, purity_consistent_with_full_range N ζ hζ,
+    sqrt_growth_escapes_constant c hc T⟩
 
 end ArkLib.ProximityGap.Frontier.WfJ3Prismatic
 
@@ -234,3 +248,4 @@ end ArkLib.ProximityGap.Frontier.WfJ3Prismatic
 #print axioms ArkLib.ProximityGap.Frontier.WfJ3Prismatic.prismatic_valuation_archimedean_blind
 #print axioms ArkLib.ProximityGap.Frontier.WfJ3Prismatic.sqrt_growth_escapes_constant
 #print axioms ArkLib.ProximityGap.Frontier.WfJ3Prismatic.wfJ3_obstruction
+#print axioms ArkLib.ProximityGap.Frontier.WfJ3Prismatic.alternating_sum_eq_zero

@@ -53,10 +53,17 @@ with its `StrictMono` and prime-power proofs (`bkr06PrimePowSeq_strictMono`,
 `bkr06PrimePowSeq_isPrimePow`), and the *instantiation lemma*
 `exists_primePow_seq_of_body`: it discharges the bare external `Prop`'s existential
 skeleton `∃ qs, StrictMono qs ∧ (∀ i, IsPrimePow (qs i)) ∧ ∀ i, P qs i` **modulo**
-the still-open per-instance family residual `hbody` (BKR06 Lemma 3.5's pigeonhole
-list-size construction at the witness sequence, the genuinely external input).  Usage:
-`unfold rs_lambda_superpoly_extension_bkr06`, then apply `exists_primePow_seq_of_body`
-to the per-instance residual (verified to typecheck against the bare `def`).
+a per-instance family input `hbody` (BKR06 Lemma 3.5's pigeonhole list-size construction at
+the witness sequence).  Usage: `unfold rs_lambda_superpoly_extension_bkr06`, then apply
+`exists_primePow_seq_of_body` to the per-instance input (verified to typecheck against the
+bare `def`).
+
+**Status update:** when this file was written that per-instance family was described as
+genuinely external and open. The bare endpoint is now **proved** in tree:
+`rs_lambda_superpoly_extension_bkr06_proven` (`BKR06BareT312.lean`) discharges
+`CodingTheory.rs_lambda_superpoly_extension_bkr06` via the tight-count chain of
+`BKR06EndToEnd.lean` (with its own shifted witness sequence `2^{i+N+1}`). The lemma here
+remains a valid generic packaging lemma, not an open residual.
 
 The witness sequence is chosen as powers of two so that *every* term is a prime
 power (`2^(i+1)`), which is exactly what the bare statement's
@@ -206,9 +213,10 @@ lemma bkr06PrimePowSeq_two_le (i : ℕ) : 2 ≤ bkr06PrimePowSeq i :=
 /-- **Existential packaging of the prime-power witness.**  Supplies the
 `∃ qs, StrictMono qs ∧ (∀ i, IsPrimePow (qs i)) ∧ P qs` skeleton given the per-index
 body `P` evaluated at the concrete witness sequence.  This is the *generic instantiation
-lemma*: any per-instance family residual `hbody` (the still-open BKR06 Lemma 3.5
-pigeonhole list-size construction, indexed by `bkr06PrimePowSeq`) is lifted to the bare
-external existential form without touching the witness-sequence construction. -/
+lemma*: any per-instance family input `hbody` (a BKR06 Lemma 3.5 pigeonhole list-size
+construction, indexed by `bkr06PrimePowSeq`) is lifted to the bare existential form without
+touching the witness-sequence construction.  (The bare endpoint itself is now proved by
+`rs_lambda_superpoly_extension_bkr06_proven` in `BKR06BareT312.lean`, by a different route.) -/
 lemma exists_primePow_seq_of_body
     {P : (ℕ → ℕ) → ℕ → Prop}
     (hbody : ∀ i, P bkr06PrimePowSeq i) :

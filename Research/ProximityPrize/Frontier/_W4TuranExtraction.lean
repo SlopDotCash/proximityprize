@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._ConstantWeightPlotkinBound
 import Research.ProximityPrize.Frontier._HalfPredecessorSecantLines
+import Research.ProximityPrize.Frontier._P1RateQuarterAgreementOverlapGraph
 import Mathlib.Combinatorics.SimpleGraph.Clique
 
 /-!
@@ -60,9 +61,10 @@ exact over `F_10007` at the ratio-faithful toy point `n=32, k=8, t=18`):
   position dies at `m = 5` at these ratios; large cliques are
   collinearity-dominated, supporting (not proving) the named residual.
 
-Provenance: the six-set forcing statement and the overlap-graph construction
-parallel the in-flight lane `_P1RateQuarterAgreementOverlapGraph.lean`
-(restated locally; that file has no olean).  The `secantCore` shorthand
+Provenance: the six-set forcing statement is delegated to
+`_P1RateQuarterAgreementOverlapGraph.exists_pair_inter_card_ge_K_of_six` (imported; the local
+name is kept as an alias for callers), and the overlap-graph construction parallels that lane.
+The `secantCore` shorthand
 parallels the in-flight `_P1RateQuarterForcedSecantMatching.lean`.
 -/
 
@@ -204,35 +206,14 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 /-- **Six-set overlap forcing.**  Among any six subsets of the P1 coordinate
 set, each of cardinality at least the predecessor agreement threshold, two
 distinct sets overlap in at least the Reed--Solomon dimension `K`.
-(Restatement of the pin in the in-flight `_P1RateQuarterAgreementOverlapGraph`
-lane, kept local because that file has no olean.) -/
+(Alias of the canonical
+`P1RateQuarterAgreementOverlapGraph.exists_pair_inter_card_ge_K_of_six`, whose `N`, `K`, `T`
+are the same literals.) -/
 theorem exists_pair_inter_card_ge_K_of_six
     (A : Fin 6 → Finset (Fin N))
     (hsize : ∀ i, T ≤ (A i).card) :
-    ∃ i j : Fin 6, i ≠ j ∧ K ≤ (A i ∩ A j).card := by
-  classical
-  by_contra hnot
-  push Not at hnot
-  let A' : Fin 6 → Finset (Fin N) := fun i =>
-    Classical.choose (Finset.exists_subset_card_eq (hsize i))
-  have hA'sub : ∀ i, A' i ⊆ A i := by
-    intro i
-    exact (Classical.choose_spec
-      (Finset.exists_subset_card_eq (hsize i))).1
-  have hA'card : ∀ i, (A' i).card = T := by
-    intro i
-    exact (Classical.choose_spec
-      (Finset.exists_subset_card_eq (hsize i))).2
-  have hpair : ∀ i j, i ≠ j → (A' i ∩ A' j).card ≤ K - 1 := by
-    intro i j hij
-    have hsmall : (A i ∩ A j).card < K := hnot i j hij
-    have hsub : A' i ∩ A' j ⊆ A i ∩ A j :=
-      Finset.inter_subset_inter (hA'sub i) (hA'sub j)
-    have hle := Finset.card_le_card hsub
-    omega
-  have hplot := constantWeight_plotkin A' T (K - 1) hA'card hpair
-  simp only [Fintype.card_fin] at hplot
-  norm_num [N, K, T] at hplot
+    ∃ i j : Fin 6, i ≠ j ∧ K ≤ (A i ∩ A j).card :=
+  P1RateQuarterAgreementOverlapGraph.exists_pair_inter_card_ge_K_of_six A hsize
 
 /-- The agreement-overlap graph on the scalar field: two scalars are adjacent
 when both are selected and their full agreement sets overlap on at least the

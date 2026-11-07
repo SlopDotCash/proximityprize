@@ -5,16 +5,20 @@ Authors: ArkLib Contributors
 -/
 
 import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
+import ArkLib.Data.CodingTheory.ProximityGap.TwoLineExtraction
 import Research.ProximityPrize.GrandChallenges
 
 /-!
 # A universal upper bound on `ε_mca` via witness-set pinning
 
-This file proves a **new, universal** upper bound on the mutual correlated agreement error
+This file proves a **universal** (but weak) upper bound on the mutual correlated agreement error
 `ε_mca` (ABF26 Definition 4.3, `ProximityGap.epsMCA`) for *every* `F`-submodule code and at
 *every* proximity radius `δ`:
 
   `ε_mca(MC, δ) ≤ 2^n / |F|`,  where `n := |ι|`.
+
+The bound holds for every submodule code but is exponential in `n`; for Reed–Solomon codes the
+in-tree canonical-witness window bound `epsMCA_le_choose_div` (`MCAPlateauWindow`) is much sharper.
 
 ## The pinning argument
 
@@ -27,8 +31,10 @@ on the bad set: if two distinct bad scalars `γ ≠ γ'` shared a witness set `S
   `v₁ := (γ - γ')⁻¹ • (w - w')`,   `v₀ := w - γ • v₁`
 
 lies in `MC` (submodule `smul`/`sub` closure, using `γ - γ' ≠ 0`) and matches `(u₀, u₁)` on
-`S` — a *forbidden* joint codeword pair. So each witness set pins at most one bad `γ`, and the
-number of bad `γ` is at most the number of subsets of `ι`, i.e. `2^n`. Dividing by `|F|`
+`S` — a *forbidden* joint codeword pair. This joint-codeword construction is the `S' = S` case of
+the canonical `ProximityGap.exists_joint_codewords_of_two_lines` (`TwoLineExtraction.lean`), to
+which `pairJointAgreesOn_of_two_lines` delegates. So each witness set pins at most one bad
+`γ`, and the number of bad `γ` is at most the number of subsets of `ι`, i.e. `2^n`. Dividing by `|F|`
 (uniform `γ`) gives the bound, and taking the supremum over stacks yields `ε_mca ≤ 2^n / |F|`.
 
 Only `smul`/`sub` closure of `MC` and field-invertibility of `F`-scalars are used, so the
@@ -77,34 +83,9 @@ theorem pairJointAgreesOn_of_two_lines
     {w : ι → A} (hw : w ∈ (MC : Set (ι → A))) (hwline : ∀ i ∈ S, w i = u₀ i + γ • u₁ i)
     {w' : ι → A} (hw' : w' ∈ (MC : Set (ι → A))) (hw'line : ∀ i ∈ S, w' i = u₀ i + γ' • u₁ i) :
     pairJointAgreesOn (MC : Set (ι → A)) S u₀ u₁ := by
-  -- `γ - γ' ≠ 0`, hence invertible.
-  have hsub : γ - γ' ≠ 0 := sub_ne_zero.mpr hne
-  -- The two witness codewords and their submodule combinations.
-  set v₁ : ι → A := (γ - γ')⁻¹ • (w - w') with hv₁
-  set v₀ : ι → A := w - γ • v₁ with hv₀
-  have hv₁mem : v₁ ∈ (MC : Set (ι → A)) := by
-    rw [hv₁, SetLike.mem_coe]
-    exact MC.smul_mem _ (MC.sub_mem hw hw')
-  have hv₀mem : v₀ ∈ (MC : Set (ι → A)) := by
-    rw [hv₀, SetLike.mem_coe]
-    exact MC.sub_mem hw (MC.smul_mem _ hv₁mem)
-  refine ⟨v₀, hv₀mem, v₁, hv₁mem, ?_⟩
-  intro i hi
-  -- On `S`: `(w - w') i = (γ - γ') • u₁ i`.
-  have hdiff : (w - w') i = (γ - γ') • u₁ i := by
-    have h1 : w i = u₀ i + γ • u₁ i := hwline i hi
-    have h2 : w' i = u₀ i + γ' • u₁ i := hw'line i hi
-    simp only [Pi.sub_apply, h1, h2]
-    rw [sub_smul]
-    abel
-  -- Hence `v₁ i = u₁ i`.
-  have hv₁i : v₁ i = u₁ i := by
-    rw [hv₁, Pi.smul_apply, hdiff, smul_smul, inv_mul_cancel₀ hsub, one_smul]
-  -- And `v₀ i = w i - γ • u₁ i = u₀ i`.
-  have hv₀i : v₀ i = u₀ i := by
-    rw [hv₀, Pi.sub_apply, Pi.smul_apply, hv₁i, hwline i hi]
-    abel
-  exact ⟨hv₀i, hv₁i⟩
+  obtain ⟨v₀, hv₀, v₁, hv₁, hagree⟩ :=
+    exists_joint_codewords_of_two_lines MC hne hw hw' hwline hw'line
+  exact ⟨v₀, hv₀, v₁, hv₁, fun i hi => hagree i (Finset.mem_inter.mpr ⟨hi, hi⟩)⟩
 
 /-! ## Per-stack probability bound -/
 
@@ -160,8 +141,9 @@ theorem mcaEvent_prob_le_two_pow_card_div
 
 /-! ## The universal bound -/
 
-/-- **NEW RESULT: universal pinning bound.** For *every* `F`-submodule code `MC` and *every*
-radius `δ`, `ε_mca(MC, δ) ≤ 2^n / |F|`, where `n := |ι|`.
+/-- **Universal pinning bound.** For *every* `F`-submodule code `MC` and *every* radius `δ`,
+`ε_mca(MC, δ) ≤ 2^n / |F|`, where `n := |ι|`. This is a weak, exponential-in-`n` bound; for
+Reed–Solomon codes `epsMCA_le_choose_div` (`MCAPlateauWindow`) is much sharper.
 
 Each bad scalar's chosen mutual-witness set pins it uniquely (two distinct bad scalars
 sharing a witness set `S` would yield the forbidden joint pair

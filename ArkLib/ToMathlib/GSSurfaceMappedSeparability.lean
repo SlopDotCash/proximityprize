@@ -50,6 +50,12 @@ itself — it relocates the open content from "Bézout in the trivariate ring `F
 (false outside unit-resultant regimes) to "per-place residue separability over `F`", which
 is finite, discriminant-checkable data.
 
+**Scope caveat (F7).**  The decoded-roots and global variants here keep the rational branch
+separation `hbranch` / `hbr` of their originals, which `BranchSeparationUnsat`
+(`matchingSet_eq_empty_of_hbranch`, `branchCert_eq_zero`) refutes for `2 ≤ H.natDegree`; the
+weaker separability hypothesis does not change that, so those variants can be non-vacuous only
+for linear `H`.
+
 ## References
 * [BCIKS20] §5–§6, Appendix A; the F-series ledger on issue #304.
 -/

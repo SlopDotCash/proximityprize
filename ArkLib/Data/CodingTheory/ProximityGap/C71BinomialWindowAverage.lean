@@ -8,7 +8,7 @@ import Mathlib.Data.Finset.Card
 import ArkLib.Data.CodingTheory.ProximityGap.C71BinomialIncidence
 
 /-!
-# Conjecture 7.1 residual: the binomial strata **dilation-window total/average** incidence (#444)
+# Conjecture 7.1 residual: the binomial strata **full scalar-window total/average** incidence (#444)
 
 ## Context (extends `C71BinomialIncidence` / `C71BinomialIncidenceGcd`)
 `C71BinomialIncidenceGcd.binomial_incidence_card_le_gcd` (`c71binom`) gave the SHARP *per-direction*
@@ -21,18 +21,27 @@ incidence. The open residual named there is exactly an *amortized* control acros
 window.
 
 ## The window-total fact (this file)
-Fix the exponent gap `d = i - j`. The dilation scalar `c` ranges over the window `μ_n` (the
-dilation orbit of a normalized direction). The map `x ↦ x^d` sends `μ_n → μ_n` (a subgroup is
-closed under powers), so summing the per-`c` incidence over the whole window simply re-counts each
-domain point once:
+Fix the exponent gap `d = i - j`. The scalar `c` ranges over the **full window** `μ_n` (every
+`n`-th root of unity, as for a *uniform independent choice* of the relative coefficient). The map
+`x ↦ x^d` sends `μ_n → μ_n` (a subgroup is closed under powers), so summing the per-`c` incidence
+over the whole window simply re-counts each domain point once:
 
 > `Σ_{c ∈ μ_n} #{x ∈ μ_n : x ≠ 0, x^d = c}  =  #{x ∈ μ_n : x ≠ 0}  =  n`.
 
-Hence the **dilation-window AVERAGE incidence is exactly `1`** — even though the worst single-`c`
-incidence is `gcd(d,n)`. This is the soundness-relevant amortized cap the per-direction worst-case
-gcd bound misses: across a full dilation orbit the binomial strata contribute, on average, a SINGLE
-incidence per scalar; the `gcd(d,n)` mass at the worst `c` is exactly compensated by the empty
+Hence the **full-window AVERAGE incidence is exactly `1`** — even though the worst single-`c`
+incidence is `gcd(d,n)`: the `gcd(d,n)` mass at the `d`-th-power scalars is compensated by the empty
 fibers at the non-`d`-th-power scalars.
+
+**Caveat: the full window is NOT the dilation orbit of a fixed direction.** A coordinate dilation
+`x ↦ g·x` (`g ∈ μ_n`) changes the relative coefficient of `X^i - c·X^j` by a factor `g^{±d}`, so the
+dilation orbit of `c` is the coset `c·μ_n^d`, of size `n / gcd(d,n)`, not all of `μ_n`.  On a
+reachable orbit every fibre of `x ↦ x^d` has size `gcd(d,n)` (or every fibre is empty), so the
+**orbit** average stays `gcd(d,n)` — no amortized gain.  Example (audit PG-210): `μ_8 ⊂ F_17`,
+generator `2`, `d = 4`, `c = 1`: the orbit is `{1, 16}`, each with `4` roots, average `4`; the full
+`8`-scalar window adds six unreachable empty fibres, giving the different average `1`.  So the
+identity below is a statement about a uniform independent coefficient choice; it is **not** a
+soundness-relevant amortization over random domain dilations, and any such use needs a separate
+distribution/orbit bridge (open, not supplied here).
 
 Probe `scripts/probes/probe_binomial_window_avg_incidence.py` (EXACT, thin `μ_n` `n = 2^a`
 (`a = 2,3,4`), `p ≡ 1 mod n`, `(p-1)/n ≥ 2`, multi-prime incl `p > n^3` and Fermat `257`, NEVER
@@ -53,10 +62,10 @@ and `#S₀ = n` (since `0 ∉ μ_n`), giving the window total `= n`.
 * `windowSum_binomial_incidence_eq_card`  : the same with the fiber written in the genuine
   binomial-direction vocabulary `x^i - c·x^j = 0` (via `binomial_root_iff_pow_eq`).
 * `windowSum_binomial_incidence_eq_card_of_subgroup` (HEADLINE) : when `S` is `(· ^ d)`-closed and
-  `0 ∉ S` (the `μ_n` case), the dilation-window total incidence equals `#S` exactly — so the window
-  average is `(#S)/(#W) = 1` when `W = S`. The amortized `O(1)` cap.
+  `0 ∉ S` (the `μ_n` case), the full-window total incidence equals `#S` exactly — so the window
+  average is `(#S)/(#W) = 1` when `W = S` (full window, not a dilation orbit; see the caveat).
 * `exists_window_scalar_binomial_incidence_le_one` : the pigeonhole consequence — every nonempty
-  full dilation window contains a scalar whose binomial incidence is at most `1`.
+  full window `W = S` contains a scalar whose binomial incidence is at most `1`.
 
 These EXTEND the `C71BinomialIncidence(Gcd)` per-direction counts with the **amortized** window
 identity; pure `Finset` fiber combinatorics, no character-sum / BGK content. NON-MOMENT,
@@ -75,7 +84,7 @@ namespace ArkLib.ProximityGap.C71BinomialWindowAverage
 
 variable {F : Type*} [Field F] [DecidableEq F]
 
-/-- **The abstract dilation-window fiberwise identity.** If `x ↦ x^d` maps the nonzero points of
+/-- **The abstract scalar-window fiberwise identity.** If `x ↦ x^d` maps the nonzero points of
 `S` into the window `W`, then summing the fiber `{x ∈ S : x ≠ 0, x^d = c}` over `c ∈ W` re-counts
 each nonzero point of `S` once: `Σ_{c ∈ W} #(fiber c) = #{x ∈ S : x ≠ 0}`. -/
 theorem windowSum_pow_fiber_eq_card (S W : Finset F) (d : ℕ)
@@ -123,11 +132,12 @@ theorem windowSum_binomial_incidence_eq_card (S W : Finset F)
     refine ⟨hxne, ?_⟩
     exact (ArkLib.ProximityGap.C71BinomialIncidence.binomial_root_iff_pow_eq c x hxne hij).mpr hpow
 
-/-- **The dilation-window total incidence equals `#S` (HEADLINE).** When the window `W = S` is the
+/-- **The full-window total incidence equals `#S` (HEADLINE).** When the window `W = S` is the
 domain itself, `S` is closed under `x ↦ x^(i-j)` (the `μ_n` subgroup property), and `0 ∉ S`
-(`μ_n` has no zero), the dilation-window total of the binomial-direction incidence equals `#S`
-exactly. For `S = μ_n` this is `n` — so the dilation-window AVERAGE incidence is `#S / #S = 1`,
-the amortized `O(1)` cap that the per-direction worst-case `gcd(i-j, n)` bound does not give. -/
+(`μ_n` has no zero), the full-window total of the binomial-direction incidence equals `#S`
+exactly. For `S = μ_n` this is `n` — so the full-window AVERAGE incidence over all `c ∈ μ_n` is
+`#S / #S = 1`. This average is over the whole window, not over the dilation orbit `c·μ_n^{i-j}` of
+a fixed direction (on which the average stays `gcd(i-j, n)`); see the module caveat. -/
 theorem windowSum_binomial_incidence_eq_card_of_subgroup (S : Finset F)
     {i j : ℕ} (hij : j ≤ i)
     (hclosed : ∀ x ∈ S, x ^ (i - j) ∈ S) (hzero : (0 : F) ∉ S) :
@@ -143,7 +153,7 @@ theorem windowSum_binomial_incidence_eq_card_of_subgroup (S : Finset F)
 
 /-- **Caller-facing unpunctured window total on `μ_n`.** If every point of `S` is an `n`-th root
 of unity with `n > 0`, the explicit nonzero guard in the binomial window-average theorem is
-redundant at every scalar. Thus the exact dilation-window total applies directly to the ordinary
+redundant at every scalar. Thus the exact full-window total applies directly to the ordinary
 vanishing filter used by incidence callers. This is the unpunctured companion to
 `windowSum_binomial_incidence_eq_card_of_subgroup`. -/
 theorem windowSum_binomial_incidence_eq_card_unpunctured_of_roots (S : Finset F) {n : ℕ}
@@ -164,11 +174,12 @@ theorem windowSum_binomial_incidence_eq_card_unpunctured_of_roots (S : Finset F)
             (S := S) (c := c) (hn := hn) (hSn := hSn)]
     _ = S.card := windowSum_binomial_incidence_eq_card_of_subgroup S hij hclosed hzero
 
-/-- **There is a light scalar in every nonempty dilation window.** In the subgroup-window case,
+/-- **There is a light scalar in every nonempty full scalar window.** In the subgroup-window case,
 the exact total `Σ_c incidence(c) = #S` immediately implies that some scalar `c ∈ S` has binomial
 incidence at most `1`. This is the pigeonhole form of the window-average `= 1` law: the large
-`gcd(i-j, #S)` fibers are compensated by empty/light fibers, so a full dilation orbit always
-contains a scalar with `O(1)` incidence. -/
+`gcd(i-j, #S)` fibers are compensated by empty/light fibers, so the full window `W = S` always
+contains a scalar with incidence `≤ 1` (possibly an unreachable empty fibre; this is not a
+statement about the dilation orbit of a fixed direction). -/
 theorem exists_window_scalar_binomial_incidence_le_one (S : Finset F)
     {i j : ℕ} (hij : j ≤ i)
     (hclosed : ∀ x ∈ S, x ^ (i - j) ∈ S) (hzero : (0 : F) ∉ S)
@@ -194,7 +205,8 @@ theorem exists_window_scalar_binomial_incidence_le_one (S : Finset F)
   omega
 
 /-- **Caller-facing light scalar for ordinary vanishing incidence on `μ_n`.** In every nonempty
-positive-order root-of-unity dilation window, some scalar has ordinary binomial vanishing incidence
+positive-order root-of-unity full scalar window `W = S`, some scalar has ordinary binomial vanishing
+incidence
 at most `1`. This is the unpunctured pigeonhole form consumed by incidence callers. -/
 theorem exists_window_scalar_binomial_incidence_unpunctured_le_one (S : Finset F) {n : ℕ}
     {i j : ℕ} (hn : 0 < n) (hij : j ≤ i)

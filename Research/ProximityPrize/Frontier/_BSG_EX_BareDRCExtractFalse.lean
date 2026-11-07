@@ -4,13 +4,26 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._BSG_DRC1
+import Research.ProximityPrize.Frontier._BSG_DRC2
+import Research.ProximityPrize.Frontier._BSG_BareDRCExtract
 
 /-!
-# BSG — refutation of `BareDRCExtract` at the trivial constants `(1,1,1)` (negative brick)
+# BSG — refutation of the energy-stripped DRC residuals (negative brick)
 
 `BareDRCExtract C₁ C₂ c` is the post-averaging dependent-random-choice extraction residual
-(`_BSG_DRC1.lean`). At the **trivial constants** `C₁ = C₂ = c = 1` it is **false**: this file
-exhibits a machine-checked countermodel and proves `¬ BareDRCExtract 1 1 1`.
+(`_BSG_DRC1.lean`). This file proves it **false for every choice of constants**
+(`bareDRCExtract_false`), and with it the other energy-stripped residuals of the old BSG ladder:
+`BareDRC` (`_BSG_Reduce`, `bareDRC_false`), `DRCKernel` (`_BSG_DRC2`, `drcKernel_false`) and
+`DRCRefinedReps` (`_BSG_BareDRCExtract`, `drcRefinedReps_false`). None of these is a remaining
+open input: each is unsatisfiable, so the conditional implications out of them
+(`bareDRC_of_extract`, `bsgCore_of_bareDRC`, `bareDRC_of_kernel`, `bareDRCExtract_of_refinedReps`)
+are vacuous. The standard BSG theorem is not affected: its proof uses additive-energy information
+that these graph-only interfaces discard. The energy-coupled replacement interface is
+`DRCKernelEnergy` in `_BSGC_attempt4.lean` (still open, and not certified satisfiable).
+
+The first section keeps the original small brick: at the **trivial constants**
+`C₁ = C₂ = c = 1` an explicit `ZMod 7` countermodel proves `¬ BareDRCExtract 1 1 1`. The
+all-constants refutation follows at the end of the file.
 
 ## The countermodel
 
@@ -105,7 +118,135 @@ theorem bareDRCExtract_false_1_1_1 : ¬ Finset.BSG.BareDRCExtract 1 1 1 := by
   rw [card_exA] at this
   omega
 
+/-! ## Refutation for every choice of constants
+
+The `ZMod 7` brick above only refutes `(1,1,1)`. The same obstruction works for **every**
+`C₁, C₂, c`: take `K = 1`, the complete graph `G = A ×ˢ A`, and a Sidon set `A` of size
+`N = C₁ * (C₂ + 1) + 1`. All graph hypotheses hold at `K = 1` for *every* nonempty `A` (edge count
+`#A²`, cherry sum `#A³`, every right degree `#A`), while in a Sidon set every nonempty `B ⊆ A`
+has `#(B - B) ≥ #B * #B - #B`. So `#(B - B) ≤ C₂ * #B` forces `#B ≤ C₂ + 1`, contradicting
+`C₁ * #B ≥ #A = N`. (The exponent `c` is irrelevant at `K = 1`.)
+
+The Sidon set used is the unit-vector set `{e_i}` in `Fin N → ℤ`, whose ordered off-diagonal
+differences `e_i - e_j` are pairwise distinct. -/
+
+/-- The unit-vector set `{e_i : i : Fin N}` in `Fin N → ℤ` (a Sidon set of size `N`). -/
+noncomputable def sidonUnitVecs (N : ℕ) : Finset (Fin N → ℤ) :=
+  Finset.univ.image (fun i : Fin N => (Pi.single i (1 : ℤ) : Fin N → ℤ))
+
+lemma card_sidonUnitVecs (N : ℕ) : #(sidonUnitVecs N) = N := by
+  classical
+  rw [sidonUnitVecs, Finset.card_image_of_injective, Finset.card_univ, Fintype.card_fin]
+  intro i j hij
+  have h := congrFun hij i
+  by_contra hne
+  simp [Ne.symm hne] at h
+
+/-- **Sidon property of the unit vectors.** An off-diagonal difference `x - y` of unit vectors
+determines the ordered pair `(x, y)`. -/
+lemma sidonUnitVecs_sub_eq {N : ℕ} {x y x' y' : Fin N → ℤ}
+    (hx : x ∈ sidonUnitVecs N) (hy : y ∈ sidonUnitVecs N)
+    (hx' : x' ∈ sidonUnitVecs N) (hy' : y' ∈ sidonUnitVecs N)
+    (hxy : x ≠ y) (h : x - y = x' - y') : x = x' ∧ y = y' := by
+  classical
+  simp only [sidonUnitVecs, Finset.mem_image, Finset.mem_univ, true_and] at hx hy hx' hy'
+  obtain ⟨i, rfl⟩ := hx
+  obtain ⟨j, rfl⟩ := hy
+  obtain ⟨k, rfl⟩ := hx'
+  obtain ⟨l, rfl⟩ := hy'
+  have hij : i ≠ j := fun hij => hxy (by rw [hij])
+  have hi := congrFun h i
+  have hj := congrFun h j
+  simp only [Pi.sub_apply, Pi.single_apply, if_neg hij, if_neg (Ne.symm hij)] at hi hj
+  have hik : i = k := by
+    by_contra hik
+    rw [if_neg hik] at hi
+    split_ifs at hi <;> omega
+  have hjl : j = l := by
+    by_contra hjl
+    rw [if_neg hjl] at hj
+    split_ifs at hj <;> omega
+  exact ⟨by rw [hik], by rw [hjl]⟩
+
+/-- In a subset of the Sidon unit-vector set, the difference set has at least `#B² - #B`
+elements (the off-diagonal differences are pairwise distinct). -/
+lemma card_sub_ge_of_subset_sidonUnitVecs {N : ℕ} {B : Finset (Fin N → ℤ)}
+    (hB : B ⊆ sidonUnitVecs N) : #B * #B - #B ≤ #(B - B) := by
+  classical
+  rw [← Finset.offDiag_card]
+  refine Finset.card_le_card_of_injOn (fun p => p.1 - p.2) ?_ ?_
+  · intro p hp
+    rw [Finset.mem_coe, Finset.mem_offDiag] at hp
+    exact Finset.sub_mem_sub hp.1 hp.2.1
+  · intro p hp q hq hpq
+    rw [Finset.mem_coe, Finset.mem_offDiag] at hp hq
+    obtain ⟨h1, h2⟩ :=
+      sidonUnitVecs_sub_eq (hB hp.1) (hB hp.2.1) (hB hq.1) (hB hq.2.1) hp.2.2 hpq
+    exact Prod.ext h1 h2
+
+/-- **`BareDRCExtract` is false for every choice of constants.** -/
+theorem bareDRCExtract_false (C₁ C₂ c : ℕ) : ¬ BareDRCExtract C₁ C₂ c := by
+  intro h
+  classical
+  set N : ℕ := C₁ * (C₂ + 1) + 1 with hN
+  set A : Finset (Fin N → ℤ) := sidonUnitVecs N with hAdef
+  have hAcard : #A = N := card_sidonUnitVecs N
+  have hAne : A.Nonempty := Finset.card_pos.mp (by omega)
+  obtain ⟨b₀, hb₀⟩ := hAne
+  have hdeg : ∀ b ∈ A, rDeg A (A ×ˢ A) b = #A := by
+    intro b hb
+    rw [rDeg, Finset.filter_true_of_mem]
+    intro a ha
+    exact Finset.mem_product.mpr ⟨ha, hb⟩
+  have hsum : ∑ b ∈ A, rDeg A (A ×ˢ A) b ^ 2 = #A * #A ^ 2 := by
+    rw [Finset.sum_congr rfl (fun b hb => by rw [hdeg b hb]), Finset.sum_const, smul_eq_mul]
+  have h1 : #A ^ 2 ≤ 4 * 1 ^ 2 * #(A ×ˢ A) := by
+    rw [Finset.card_product]; nlinarith
+  have h2 : #A ^ 4 ≤ 16 * 1 ^ 4 * (#A * ∑ b ∈ A, rDeg A (A ×ˢ A) b ^ 2) := by
+    rw [hsum]; nlinarith
+  have h3 : #A ≤ 4 * 1 ^ 2 * rDeg A (A ×ˢ A) b₀ := by
+    rw [hdeg b₀ hb₀]; omega
+  obtain ⟨B, hBA, hBne, hsize, hdoub⟩ :=
+    h A 1 (A ×ˢ A) b₀ one_pos ⟨b₀, hb₀⟩ subset_rfl hb₀ h1 h2 h3
+  have hoff := card_sub_ge_of_subset_sidonUnitVecs hBA
+  simp only [one_pow, mul_one] at hsize hdoub
+  have hBpos : 0 < #B := hBne.card_pos
+  have hBle : #B ≤ C₂ + 1 := by
+    have hsq : #B * #B ≤ (C₂ + 1) * #B := by
+      have h' : #B * #B - #B ≤ C₂ * #B := le_trans hoff hdoub
+      have h'' : #B ≤ #B * #B := Nat.le_mul_of_pos_left _ hBpos
+      rw [add_mul, one_mul]
+      omega
+    exact Nat.le_of_mul_le_mul_right hsq hBpos
+  have hC : C₁ * #B ≤ C₁ * (C₂ + 1) := Nat.mul_le_mul_left _ hBle
+  rw [hAcard] at hsize
+  omega
+
+/-- `BareDRC` (no distinguished vertex) implies `BareDRCExtract` (which has extra hypotheses). -/
+theorem bareDRCExtract_of_bareDRC {C₁ C₂ c : ℕ} (h : BareDRC C₁ C₂ c) :
+    BareDRCExtract C₁ C₂ c := by
+  intro α _ _ A K G _b₀ hK hA hGsub _hb₀ hdense hcherry _hgood
+  exact h A K G hK hA hGsub hdense hcherry
+
+/-- **`BareDRC` is false for every choice of constants.** -/
+theorem bareDRC_false (C₁ C₂ c : ℕ) : ¬ BareDRC C₁ C₂ c :=
+  fun h => bareDRCExtract_false C₁ C₂ c (bareDRCExtract_of_bareDRC h)
+
+/-- **`DRCKernel` (`_BSG_DRC2`) is false for every choice of constants**, since it implies
+`BareDRC` (`bareDRC_of_kernel`). -/
+theorem drcKernel_false (C₁ C₂ c : ℕ) : ¬ DRCKernel C₁ C₂ c :=
+  fun h => bareDRC_false C₁ C₂ c (bareDRC_of_kernel h)
+
+/-- **`DRCRefinedReps` (`_BSG_BareDRCExtract`) is false for every choice of constants**, since it
+implies `BareDRCExtract` (`bareDRCExtract_of_refinedReps`). -/
+theorem drcRefinedReps_false (C₁ C₂ c : ℕ) : ¬ DRCRefinedReps C₁ C₂ c :=
+  fun h => bareDRCExtract_false C₁ C₂ c (bareDRCExtract_of_refinedReps h)
+
 end Finset.BSG
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound — and NO sorryAx).
 #print axioms Finset.BSG.bareDRCExtract_false_1_1_1
+#print axioms Finset.BSG.bareDRCExtract_false
+#print axioms Finset.BSG.bareDRC_false
+#print axioms Finset.BSG.drcKernel_false
+#print axioms Finset.BSG.drcRefinedReps_false

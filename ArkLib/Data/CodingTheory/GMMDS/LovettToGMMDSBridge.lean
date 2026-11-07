@@ -40,7 +40,7 @@ dual.
 ## What is proven here, and the exact remaining gap
 
 The translation from a `GZPCondition` to a `V*(k)` system, the Schwartz–Zippel
-specialization, and the dual-space repackaging are a *single* faithful import step from the
+specialization, and the dual-space repackaging were intended as a *single* import step from the
 GM-MDS literature, not yet formalized in-tree.  Following the project's modularity
 convention, that step is isolated as **one** named `Prop`, `LovettToGZPDualBridge`, which is
 stated to consume *exactly* `LovettThm17`'s conclusion (polynomial-family independence) and
@@ -54,6 +54,13 @@ closes the **wiring** gap: once Lovett's Theorem 1.7 is discharged (via
 met.  The remaining mathematical content is concentrated in the one named residual
 `LovettToGZPDualBridge` — the GM-MDS matrix construction (GZP→`V*`, Schwartz–Zippel,
 dual repackaging).
+
+**Status correction.** The target `GMMDSDualZeroPatternTheorem` is refuted for every
+`k < card ι` (`AGL24.not_gmmDsDualZeroPatternTheorem`, the 13th false-residual catch: it omits
+the dimension count `∑ⱼ δⱼ = card ι − k`), and since Lovett's Theorem 1.7 is now proved
+unconditionally, `LovettToGZPDualBridge` is false in that regime as well. So this is not a
+faithful import step; the wiring is kept as a historical conditional. The dimension-pinned
+target is `AGL24.GMMDSDualZeroPatternTheoremPinned`.
 
 Issue #389.
 -/

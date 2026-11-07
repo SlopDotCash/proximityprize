@@ -6,10 +6,13 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.RungInstanceF12289
 
 /-!
-# The rung class partition (#371): big-overlap pairs share a frame class
+# The rung class keystone (#371): big-overlap pairs share a frame class
 
-The keystone of the census assembly.  Scalars whose witnesses overlap in
-`≥ k` points are not merely cross-agreeing: they attach to the SAME
+(The module name says "partition"; only the pairwise statement is proved —
+see the scope note below.)
+
+The pairwise keystone of the census assembly.  Two scalars whose witnesses
+overlap in `≥ k` points are not merely cross-agreeing: they attach to the SAME
 maximal agreement set `A` of the direction row with the SAME frame
 polynomial `r`, and both defect identities convert exactly into the
 `(A, h, r)` frame form
@@ -17,19 +20,38 @@ polynomial `r`, and both defect identities convert exactly into the
   `(R₀ − r) + C γⱼ·(m_A·h) = gⱼ·m_{Sⱼ}`
 
 consumed by `maximal_frame_attached_card_le` (off-part disjointness,
-per-class cap `n − |A|`).  Hence the bad set of any stack decomposes into
+per-class cap `n − |A|`).
+
+**Scope: this is a PAIRWISE statement, not a global partition.**  The
+theorems below attach each *pair* of witnesses with overlap `≥ k` to a
+common frame.  They do **not** show that the bad set decomposes into
 *solo* scalars (pairwise `< k` witness overlaps — the Fisher regime) and
-*frame classes* of size ≥ 2 (the reservoir regime):
+disjoint *frame classes* (the reservoir regime): the relation "witnesses
+overlap in `≥ k` points" need not be transitive, and one scalar can attach
+to different frames through different neighbours.  Concrete instance
+(checked by exact `F₁₇` enumeration in the 2026-10-28 audit, not in Lean):
+`D = (1,2,4,8,16,15,13,9) = μ₈ ⊂ F₁₇`, `k = 2`, radius `5/8`,
+`u₀ = (0,0,0,13,6,0,0,0)`, `u₁ = (1,0,0,4,3,1,1,1)`.  Scalars `0, 1, 2`
+have bad witnesses `S₀ = {0,1,2}`, `S₁ = {1,2,3}`, `S₂ = {2,3,4}` explained
+by `0, 0, X − 4`; adjacent overlaps have size `2`, the outer one size `1`.
+The pair `(0,1)` gets cross polynomial `0`, maximal agreement set `{1,2}`
+and frame `0`; the pair `(1,2)` gets `X − 4`, agreement set `{2,3}` and
+frame `4 − X`.  So scalar `1` lies in two distinct pair-induced frames.
+This does not rule out a cleverly chosen alternative witness assignment
+or a later global covering argument, but a class partition (or a cover
+with controlled multiplicities) needs a separate global
+uniqueness/selection theorem, which is not proved here.  The declarations:
 
 * `eq_of_degree_lt_of_agree` — interpolation uniqueness on the domain;
 * `cross_frame_poly_eq` — the two scalars' frames coincide as polynomials;
-* **`paired_scalars_share_class`** — the full keystone: the maximal
-  agreement set, the `m_A·h` factorization, frame equality, and both
-  frame-form identities, packaged.
+* **`paired_scalars_share_class`** — the pairwise keystone: for one pair,
+  the maximal agreement set, the `m_A·h` factorization, frame equality,
+  and both frame-form identities, packaged.
 
-Probe record: the pencil (16 = 2 classes × 8) and the 2-block record
-(20 = 2 × 10) are exactly 2-class configurations; the census ceiling 22
-adds two fiber-tuned extras (`probe_wb371_blockladder2.py`).
+Probe record (empirical, specific instances only): the pencil
+(16 = 2 classes × 8) and the 2-block record (20 = 2 × 10) are exactly
+2-class configurations; the census ceiling 22 adds two fiber-tuned extras
+(`probe_wb371_blockladder2.py`).
 -/
 
 open Finset Polynomial

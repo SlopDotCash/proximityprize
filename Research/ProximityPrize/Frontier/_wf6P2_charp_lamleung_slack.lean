@@ -52,18 +52,19 @@ So `(S-M1)` reduces, with the char-`0` half **already proven in tree**, to ONE r
 ## What is PROVEN here (axiom-clean ℝ/ℕ arithmetic)
 
 * `charp_energy_split` — the additive-energy decomposition `A = ZeroSumℤ + Spur` (definitional).
-* `slack_domination_implies_SM1` — `(P2-Slack)` and the char-`0` ceiling ⟹ `(S-M1)`: the slack
-  route's load-bearing implication, `A ≤ ceiling`.
+* `slack_domination_implies_SM1` — `(P2-Slack)` ⟹ `(S-M1)`: `S ≤ ceiling − Z ⟹ Z + S ≤ ceiling`.
+  This is a one-line rearrangement; it does NOT use the char-`0` ceiling `Z ≤ ceiling` (audit
+  2026-10-28, CW-B18-08).  All the content sits in the residual `(P2-Slack)` itself.
 * `nonprincipal_le_of_additive_le` — `(S-M1) ⟹ E_r' ≤ ceiling`: drop the nonnegative principal
   subtraction `n^{2r}/q ≥ 0`.  This is the wf-P1 bridge in count form.
 * `prize_constant_of_nonprincipal_le` — the `2r`-th-root constant transfer with `K = 1`: the prize
   envelope `(q·E_r')^{1/2r} ≤ (q·ceiling)^{1/2r}` with **no** `(1+ε)^{1/2r}` factor (the sharp form
   of wf-M1's `countRoute_prize_constant` at `ε = 0`).
-* `slack_route_full` — the end-to-end chain: char-`0` ceiling + `(P2-Slack)` + principal `≥ 0`
+* `slack_route_full` — the end-to-end chain: `(P2-Slack)` + principal `≥ 0`
   ⟹ `E_r' ≤ ceiling` ⟹ moment envelope `≤ (q·ceiling)^{1/2r}`.
 
-The char-`0` ceiling hypothesis is discharged in tree by
-`ArkLib.ProximityGap.NegationClosedWalk.zeroSumCount_le_doubleFactorial_dyadic`; the remaining
+The char-`0` ceiling (`ArkLib.ProximityGap.NegationClosedWalk.zeroSumCount_le_doubleFactorial_dyadic`)
+is not an input of the chain; it only shows `(P2-Slack)` is satisfiable (slack `≥ 0`).  The
 **open** residual is exactly `(P2-Slack)` (an arithmetic statement on the prize prime — that it does
 not divide so many small cyclotomic norms `N(σ_T)` as to overflow the Lam–Leung slack; BGK-adjacent,
 numerically robust at `Spur/Slack ≤ 0.11`).
@@ -85,9 +86,9 @@ theorem charp_energy_split (Z S : ℝ) : Z + S = Z + S := rfl
 
 /-- **The slack-domination implication `(P2-Slack) ⟹ (S-M1)`.**  Write `A = Z + S` (char-`p` energy =
 char-`0` zero-sum count + spurious count).  If the spurious count fits in the Lam–Leung *slack*
-`ceiling − Z` — i.e. `S ≤ ceiling − Z`, the residual `(P2-Slack)` — then the char-`p` energy obeys
-the char-`0` ceiling: `A ≤ ceiling`.  This is the heart of lane wf-P2: it consumes the **proven**
-char-`0` ceiling on `Z` and the open slack-domination on `S`. -/
+`ceiling − Z` — i.e. `S ≤ ceiling − Z`, the residual `(P2-Slack)` — then `A ≤ ceiling`.  This is a
+pure rearrangement of the hypothesis: it does NOT consume the char-`0` ceiling `Z ≤ ceiling` (which
+only certifies that `(P2-Slack)` is satisfiable, e.g. by `S = 0`).  All content is in `(P2-Slack)`. -/
 theorem slack_domination_implies_SM1 (Z S ceiling : ℝ)
     (hslack : S ≤ ceiling - Z) :
     Z + S ≤ ceiling := by
@@ -115,17 +116,16 @@ theorem prize_constant_of_nonprincipal_le (q Eprime ceiling : ℝ) (r : ℕ)
   · positivity
 
 /-- **End-to-end slack route.**  Assemble the whole chain in count form:
-* `hZceiling` : char-`0` Lam–Leung ceiling on the zero-sum count `Z ≤ ceiling` (PROVEN in tree by
-  `zeroSumCount_le_doubleFactorial_dyadic` — supplied here as a hypothesis so the brick is
-  substrate-light and fast-iterating);
 * `hslack`    : the open residual `(P2-Slack)`, `S ≤ ceiling − Z` (spurious fits in the slack);
 * `hprinc`    : the principal subtraction is nonnegative, `0 ≤ principal`.
 
 Conclusion: the nonprincipal energy `Eprime = (Z + S) − principal` obeys the char-`0` ceiling AND its
-moment→sup envelope is bounded by the char-`0` envelope with `K = 1`.  (`hEnn` records `Eprime ≥ 0`,
+moment→sup envelope is bounded by the char-`0` envelope with `K = 1`.  (An earlier version also took
+`hZceiling : Z ≤ ceiling`; it was never used — `hslack` alone gives `Z + S ≤ ceiling` — and has been
+dropped, audit 2026-10-28, CW-B18-08.)  (`hEnn` records `Eprime ≥ 0`,
 needed for the monotone `2r`-th root; it holds since `Eprime = (1/q)Σ_{b≠0} η_b^{2r} ≥ 0`.) -/
 theorem slack_route_full (q Z S principal ceiling : ℝ) (r : ℕ)
-    (hq : 0 ≤ q) (hZceiling : Z ≤ ceiling) (hslack : S ≤ ceiling - Z)
+    (hq : 0 ≤ q) (hslack : S ≤ ceiling - Z)
     (hprinc : 0 ≤ principal) (hEnn : 0 ≤ (Z + S) - principal) :
     ((Z + S) - principal ≤ ceiling) ∧
     (q * ((Z + S) - principal)) ^ ((2 * r : ℝ)⁻¹) ≤ (q * ceiling) ^ ((2 * r : ℝ)⁻¹) := by

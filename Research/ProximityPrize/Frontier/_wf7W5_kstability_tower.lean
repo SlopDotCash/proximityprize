@@ -46,12 +46,15 @@ OPEN-CRUX (the numerical frontier, NOT closed here): whether the per-level K-sta
 `crossA_r ≤ K^r·(Wick(n,r) − 2·Wick(n/2,r))` actually holds at `r ≈ ln q` for an absolute `K`. The
 probe `scripts/probes/rust/wf7W5_kcross_fast.rs` measures, at `β = 4` (prize regime) and depth
 `r* = ⌊ln q / 2⌋`, the per-level increment `Kcross(n) := (crossA_r/[(2r−1)‼(n^r−2(n/2)^r)])^{1/r}`:
-it is `0.90, 0.91, 0.96, 0.96` at `n = 8,16,32,64,128` (one prime each) — **bounded below 1 at
-depth**, but drifting up toward 1 as `n` grows; the *peak over r* grazes `1.000` at `r = 2`. So the
+the recorded values are `0.90, 0.91, 0.96, 0.96` over the range `n = 8,…,128` (one prime each;
+only four values are recorded for the five listed `n`, and the probe source is not in tree, so the
+per-`n` assignment is unverified) — **bounded below 1 at depth**, but drifting up toward 1 as `n` grows; the *peak over r* grazes `1.000` at `r = 2`. So the
 measured constant is `K = 1 + o(1)` (consistent with the char-0 Lam–Leung `K = 1` being tight). The
-file therefore delivers the engine; the input `K`-stability bound is the open analytic step. (`r = 1`
-is exactly the second-moment point where `crossA_1 = 0` since `Wick(n,1) − 2·Wick(n/2,1) = n − n = 0`;
-the cross term is genuinely supported at `r ≥ 2`, matching `N0_dyadic_two_le`.)
+file therefore delivers the engine; the input `K`-stability bound is the open analytic step. (At
+`r = 1` only the *Wick* cross vanishes: `Wick(n,1) − 2·Wick(n/2,1) = n − n = 0`.  The DC-subtracted
+cross does **not** vanish: since `E_1(μ_n) = n`, `A_1(μ_n) = n − n²/p`, so
+`crossA_1 = (n − n²/p) − 2(n/2 − n²/(4p)) = −n²/(2p) ≤ 0`, and K-stability holds trivially at
+`r = 1` for every `K`.  The nontrivial cross term lives at `r ≥ 2`, matching `N0_dyadic_two_le`.)
 
 Issues #389, #407, #444.
 -/
@@ -69,8 +72,9 @@ def wick (dfac : ℝ) (n : ℝ) (r : ℕ) : ℝ := dfac * n ^ r
 
 /-- **The dyadic Wick cross is nonnegative for `r ≥ 1`.** `Wick(n,r) − 2·Wick(n/2,r)
 = dfac·(n^r − 2·(n/2)^r) = dfac·n^r·(1 − 2^{1−r}) ≥ 0` for `r ≥ 1` (and `= 0` at `r = 1`). This is
-the denominator of the per-level `K`-increment; its vanishing at `r = 1` is exactly why the cross
-term lives at `r ≥ 2`. -/
+the denominator of the per-level `K`-increment.  At `r = 1` it vanishes, while the DC-subtracted
+cross `crossA_1 = −n²/(2p)` is `≤ 0`, so the K-stability hypothesis is trivially satisfied there;
+the nontrivial content is at `r ≥ 2`. -/
 theorem wick_cross_nonneg {dfac n : ℝ} (hd : 0 ≤ dfac) (hn : 0 ≤ n) {r : ℕ} (hr : 1 ≤ r) :
     0 ≤ wick dfac n r - 2 * wick dfac (n / 2) r := by
   unfold wick

@@ -11,18 +11,27 @@ and deficiency d >= (n-k) - min over partitions P of that sum.
 
 CLAIM to test:  d == max(0, (n-k) - min_{partitions P} sum_G (|∪G| - k)_+ )   EXACTLY?
 i.e. the true deficiency equals the best (smallest) envelope bound over ALL set-partitions.
-If exact, this is a clean, field-independent, general-D structural theorem generalizing SYZ28.
+If exact, this would be a candidate general-D structural theorem generalizing SYZ28.
+SCOPE: deficiencies are computed over the single prime field F_65537 on a seeded sample plus one
+exhaustive small cell; this is finite evidence only, not a proof of exactness or of
+field-independence.
 """
 import random
 from itertools import combinations
 
 
-def matnullity(M, p):
+def matnullity(M, p, cols):
+    """Nullity of the ``len(M) x cols`` matrix ``M`` over F_p.
+
+    ``cols`` (the number of unknowns) is passed explicitly so that an empty
+    system (no equations, e.g. pairwise-disjoint cores) correctly has nullity
+    ``cols`` rather than 0.
+    """
     if not M:
-        return 0
+        return cols
     M = [r[:] for r in M]
     rows = len(M)
-    cols = len(M[0])
+    assert all(len(r) == cols for r in M)
     r = 0
     for c in range(cols):
         piv = None
@@ -60,7 +69,7 @@ def deficiency_exact(points, cores, k, p):
                     row[i * k + d] = (row[i * k + d] + xd) % p
                     row[j * k + d] = (row[j * k + d] - xd) % p
                 rows.append(row)
-    return matnullity(rows, p) - k
+    return matnullity(rows, p, ncols) - k
 
 
 def all_partitions(collection):
@@ -150,7 +159,7 @@ def main():
                             print("  cores:", cores)
     print(f"seeded random sample: checked={checked} mismatches={mismatches}")
     if mismatches == 0:
-        print("  -> d == envelope-partition bound on the entire seeded sample (D in {3,4,5}).")
+        print("  -> d == envelope-partition bound on the entire seeded sample (D in {3,4,5}, p=65537).")
     else:
         print("  -> formula is only a BOUND, not exact.")
 
@@ -161,8 +170,9 @@ def main():
     ec, em = exhaustive_cell(12, 6, 10, 3, 65537)
     print(f"exhaustive: checked={ec} mismatches={em}")
     if em == 0 and mismatches == 0:
-        print("EXACT (exhaustive at the small cell + reproducible sample elsewhere):")
-        print("  d == envelope-partition bound. General-D structural theorem candidate; upper-bound half formalized in G170.")
+        print("NO MISMATCH (exhaustive at the small cell + reproducible sample elsewhere, over F_65537):")
+        print("  d == envelope-partition bound on all checked cases. General-D structural theorem CANDIDATE")
+        print("  (finite evidence only); upper-bound half formalized in G170.")
     else:
         print("characterization is NOT exact as stated.")
 

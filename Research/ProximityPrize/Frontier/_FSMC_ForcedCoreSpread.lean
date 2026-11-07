@@ -54,10 +54,6 @@ core system — how the matched pairs distribute over distinct polynomial lines
   unbounded — the Plotkin denominator vanishes at `w = K` — so pure
   set-system statistics provably cannot finish the consolidation.)
 
-The rigidity input `jointCore_inter_card_le_of_ne` is restated locally (same
-proof as in `_P1RateQuarterForcedSecantMatching`, whose compiled interface is
-not yet available) to keep this file's build footprint on already-built
-substrate.
 -/
 
 set_option autoImplicit false

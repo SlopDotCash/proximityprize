@@ -39,10 +39,16 @@ assembles the **completeness transfer** for that lift:
 * `firstSumcheck_perfectCompleteness` — the phase completeness, obtained from
   `OracleReduction.liftContextLegacy_perfectCompleteness` applied to the inner multi-round sum-check
   perfect completeness `h_inner`, the coherence instance `firstSumcheckCoherent` (#433), and
-  `firstSumcheckLensComplete`. It is stated taking `h_inner` as a hypothesis: the inner full
-  sum-check perfect completeness is the sequential-composition keystone currently being assembled in
-  the `OracleReduction/Composition/Sequential` framework layer; once it lands as a closed theorem,
-  this transfer becomes unconditional by feeding it in.
+  `firstSumcheckLensComplete`. It is stated taking `h_inner` as a hypothesis. When this file was
+  written, the inner full sum-check perfect completeness was a framework theorem still being
+  assembled. **Current status:** it is now a closed theorem,
+  `Sumcheck.Spec.oracleReduction_perfectCompleteness_unconditional`
+  (`OracleCompletenessUncondCorrect.lean`, under the execution-model side conditions
+  `hInit`/`hImplSupp`), and the explicit consumer
+  `firstSumcheck_perfectCompleteness_bridgeFree` (`FirstSumcheckBridgeFree.lean`) feeds it in to
+  give the phase completeness without `h_inner`. (The older
+  `firstSumcheck_perfectCompleteness_unconditional` in `SpartanSumcheckUnconditional.lean` still
+  takes a verifier-fusion bridge `hBridge`, despite its name.)
 -/
 
 open MvPolynomial OracleComp Sumcheck
@@ -107,8 +113,10 @@ The transfer is `OracleReduction.liftContextLegacy_perfectCompleteness` applied 
 `hStmt = rfl` (`firstSumcheckOracleLens.toLens = firstSumcheckContextLens.stmt` by construction).
 
 `h_inner` is the perfect completeness of the generic full sum-check oracle reduction over `ℓ_m`
-variables (degree `3`, Boolean domain) — the sequential-composition completeness being assembled in
-the framework layer; once it is a closed theorem, this transfer is unconditional. -/
+variables (degree `3`, Boolean domain). It is now supplied by the closed theorem
+`Sumcheck.Spec.oracleReduction_perfectCompleteness_unconditional` (under `hInit`/`hImplSupp`); the
+resulting phase statement without `h_inner` (still under `hInit`/`hImplSupp`) is
+`firstSumcheck_perfectCompleteness_bridgeFree` (`FirstSumcheckBridgeFree.lean`). -/
 theorem firstSumcheck_perfectCompleteness
     {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
     (h_inner :

@@ -104,8 +104,11 @@ theorem M_eq_zero_of_paramsSum_eq_one (P : Params ιs F)
 /-- **The bridge at its honest gate**: `whir_rbr_soundness_of_checkedVectorIOP_rbr` with the
 challenge-cardinality pin replaced by its exact characterization `∑ foldingParam = 1` (the
 unit-fold instance — see `whirPaper_challengeCard_eq_iff`). Hypotheses are verbatim those of the
-bridge; only the structural gate is restated in its true form. The sole remaining gate is
-`hSound` (the genuine open soundness mathematics). -/
+bridge; only the structural gate is restated in its true form. The remaining gate is `hSound`.
+It is not open mathematics for the checked verifier as it stands: that verifier never queries
+the input oracle (`whirCheckingBool_allZero`), so, as recorded in `CheckedObliviousness.lean`,
+`hSound` cannot hold when a δ-far input exists and the per-challenge budgets sum to less than one.
+-/
 theorem whir_rbr_soundness_of_checkedVectorIOP_rbr_unitFold
     {d dstar : ℕ}
     {P : Params ιs F} {S : ∀ i : Fin (M + 1), Finset (ιs i)}
@@ -124,18 +127,16 @@ theorem whir_rbr_soundness_of_checkedVectorIOP_rbr_unitFold
           Fintype (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := h.inst1 0
         let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
           Nonempty (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := h.inst2 0
-        ∀ j : Fin ((P.foldingParam 0) + 1),
-          let errStar_0 j := h.errStar 0 j (h.C 0 j) (h.Gen_α 0 j).parℓ (h.δ 0)
+        let errStar_0 j := h.errStar 0 j (h.C 0 j) (h.Gen_α 0 j).parℓ (h.δ 0)
         ∀ j : Fin (P.foldingParam 0),
-          ε_fold 0 j ≤ ((dstar * (h.dist 0 j.castSucc)) / Fintype.card F) + (errStar_0 j.succ))
+          ((dstar * (h.dist 0 j.castSucc)) / Fintype.card F) + (errStar_0 j.succ) ≤ ε_fold 0 j)
     (h_out :
-        ∀ i : Fin (M + 1),
-          ε_out i ≤
-            2^(P.varCount i) * (h.dist i 0)^2 / (2 * Fintype.card F))
+        ∀ i : Fin M,
+          2^(P.varCount i.succ) * (h.dist i.succ 0)^2 / (2 * Fintype.card F) ≤ ε_out i.succ)
     (h_shift :
         ∀ i : Fin M,
-          ε_shift i ≤ (1 - (h.δ i.castSucc))^(P.repeatParam i.castSucc)
-            + ((h.dist i.succ 0) * (P.repeatParam i.castSucc) + 1) / Fintype.card F)
+          (1 - (h.δ i.castSucc))^(P.repeatParam i.castSucc)
+            + (h.dist i.succ 0) * (P.repeatParam i.castSucc + 1) / Fintype.card F ≤ ε_shift i)
     (h_fold_i :
         let maxDeg := (Finset.univ : Finset (Fin m_0)).sup (fun i => wPoly₀.degreeOf (Fin.succ i))
         let dstar := 1 + (wPoly₀.degreeOf 0) + maxDeg
@@ -144,12 +145,12 @@ theorem whir_rbr_soundness_of_checkedVectorIOP_rbr_unitFold
           Fintype (BlockRelDistance.Generic.indexPowT (S i) (P.φ i) j) := h.inst1
         let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
           Nonempty (BlockRelDistance.Generic.indexPowT (S i) (P.φ i) j) := h.inst2
-        ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
-          let errStar i j := h.errStar i j (h.C i j) (h.Gen_α i j).parℓ (h.δ i)
-        ∀ i : Fin (M + 1), ∀ j : Fin (P.foldingParam i),
-          ε_fold i j ≤ d * (h.dist i j.castSucc) / Fintype.card F + errStar i j.succ)
+        let errStar i j := h.errStar i j (h.C i j) (h.Gen_α i j).parℓ (h.δ i)
+        ∀ i : Fin M, ∀ j : Fin (P.foldingParam i.succ),
+          d * (h.dist i.succ j.castSucc) / Fintype.card F + errStar i.succ j.succ
+            ≤ ε_fold i.succ j)
     (h_fin :
-        ε_fin ≤ (1 - h.δ (Fin.last M))^(P.repeatParam (Fin.last M)))
+        (1 - h.δ (Fin.last M))^(P.repeatParam (Fin.last M)) ≤ ε_fin)
     (d' : ℕ)
     (hSum : (∑ i, P.foldingParam i) = 1)
     (hSound : OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
@@ -163,7 +164,8 @@ theorem whir_rbr_soundness_of_checkedVectorIOP_rbr_unitFold
     whir_rbr_soundness (F := F) (M := M) ιs (d := d) (dstar := dstar)
       (P := P) (S := S) (hParams := hParams) (h := h)
       hm_0 (σ₀ := σ₀) (wPoly₀ := wPoly₀) (δ := δ)
-      ε_fold ε_out ε_shift ε_fin h_fold_0 h_out h_shift h_fold_i h_fin :=
+      ε_fold ε_out ε_shift ε_fin h_fold_0 h_out h_shift h_fold_i h_fin
+      (whirPaperTranscriptVectorSpec P d') (whirCheckedVectorIOP P d') :=
   whir_rbr_soundness_of_checkedVectorIOP_rbr hm_0
     ε_fold ε_out ε_shift ε_fin h_fold_0 h_out h_shift h_fold_i h_fin d'
     ((whirPaper_challengeCard_eq_iff P d').mpr hSum) hSound

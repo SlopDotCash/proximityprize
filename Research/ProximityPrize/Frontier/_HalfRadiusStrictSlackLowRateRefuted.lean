@@ -14,7 +14,8 @@ Take the nine Vandermonde parity columns
 
 `v(x) = (1,x,x^2,...,x^6)`, for `x = 0,...,8`,
 
-over `ZMod 11`.  They are the parity frame of a `[9,2]` Reed--Solomon code.  In
+over `ZMod 11`.  They are the parity frame of a `[9,2]` generalized Reed--Solomon code (the dual
+of the `[9,7]` Reed--Solomon code they generate, i.e. Reed--Solomon only up to column scaling).  In
 the seven-dimensional syndrome space, let `P` be the projective line with basis
 
 ```text
@@ -33,8 +34,11 @@ facets of two five-sets
 which overlap in one coordinate.  No displayed support contains the whole
 projective line.  Thus the proper weight-four incidence is at least `10 > 9`.
 
-This refutes the field-uniform line bound even with two units of strict slack
-and in the low-rate range:
+The instance of the field-uniform line bound for this frame and line is stated as the `Prop`
+`ProperIncidenceLeLength` (every family of pairwise projectively distinct, nonzero, proper
+weight-four points on `P` has at most `9 = n` members), and `not_properIncidenceLeLength`
+combines the ten certificates into its negation.  This refutes the field-uniform line bound
+(at this explicit instance) even with two units of strict slack and in the low-rate range:
 
 ```text
 2e = 8 < 9,   e+k+1 = 7 < 9,   k = 2 <= 9/4.
@@ -418,6 +422,43 @@ theorem every_representative_proper :
 /-- There are ten certified proper projective points, strictly more than the length. -/
 theorem ten_gt_length : 9 < Fintype.card (Fin 10) := by decide
 
+/-- Every displayed representative lies on the projective line `P`. -/
+theorem representative_mem_line :
+    forall i : Fin 10, exists alpha beta : F, representative i = lineVector alpha beta := by
+  intro i
+  fin_cases i
+  · exact ⟨1, 0, rfl⟩
+  · exact ⟨1, 1, rfl⟩
+  · exact ⟨1, 3, rfl⟩
+  · exact ⟨1, 4, rfl⟩
+  · exact ⟨1, 5, rfl⟩
+  · exact ⟨1, 6, rfl⟩
+  · exact ⟨1, 7, rfl⟩
+  · exact ⟨1, 9, rfl⟩
+  · exact ⟨1, 10, rfl⟩
+  · refine ⟨0, 1, ?_⟩
+    funext j
+    simp [representative, lineVector]
+
+/-- **The field-uniform line bound, instantiated at this frame and line.**  Every family of
+pairwise projectively distinct, nonzero points of the line `P` that are proper weight-four
+points (relative to the nine parity columns) has at most `n = 9` members. -/
+def ProperIncidenceLeLength : Prop :=
+  forall (m : Nat) (R : Fin m -> V),
+    (forall i, exists alpha beta : F, R i = lineVector alpha beta) ->
+    (forall i, R i ≠ 0) ->
+    (forall i j, Proportional (R i) (R j) -> i = j) ->
+    (forall i, ProperLowWeightPoint (R i)) ->
+    m <= 9
+
+/-- **Refutation.**  The ten certified representatives give proper weight-four incidence
+`10 > 9`, so the instantiated field-uniform line bound fails. -/
+theorem not_properIncidenceLeLength : Not ProperIncidenceLeLength := by
+  intro h
+  have h10 := h 10 representative representative_mem_line representative_ne_zero
+    representative_projectively_injective every_representative_proper
+  omega
+
 /-! ## Vandermonde MDS and numerical hypotheses -/
 
 theorem domain_injective : Function.Injective domain := domain.injective
@@ -450,3 +491,5 @@ end ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted
   ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted.no_fourColumnSpan_contains_line
 #print axioms
   ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted.representative_ne_zero
+#print axioms
+  ArkLib.ProximityGap.Frontier.HalfRadiusStrictSlackLowRateRefuted.not_properIncidenceLeLength

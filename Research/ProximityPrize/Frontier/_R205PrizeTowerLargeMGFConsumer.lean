@@ -14,6 +14,12 @@ dyadic child of the prize quotient-index tower has index at least `1024`.
 This file combines them: if a spectrum family has cardinality equal to the
 prize tower index at some depth, the R189 normalized budget hypotheses imply
 `DyadicQuarterMGFBound` directly.
+
+`PrizeTopIndex` is the certified production quotient index `2^128 + 192` (audit
+R-034; formerly the unattainable power-of-two proxy `2^128`).  The cardinality
+equality is only used to derive `1024 ≤ s.card`; for the actual production
+instance `s` must be a quotient coset transversal of the depth-`depth` child,
+whose size is `(2^128 + 192) * 2^depth`.
 -/
 
 open Finset

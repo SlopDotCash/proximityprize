@@ -39,17 +39,23 @@ middle = *no realizable triple has `max(a,b,c) < δ₁ ≤ ⌊S/2⌋ − 2`*.
 
 - §1 **Convention bridge**: `const_syzygy_cofactor_degree_zero`, `const_slot_product_degree_eq`
   (`natDegree_C_mul`), `const_syzygy_product_degree_eq_max` (leading slot attains `d`, all slots
-  `≤ d`), and the `ℕ` bridge `convention_bridge`.
+  `≤ d`).  (The former `ℕ` "bridge" `convention_bridge` was the identity `h ↦ h` and was removed.)
 - §2 **Empty-middle dichotomy** (pure `ℕ`): `no_middle_iff_dichotomy` — under the floor + degree-sum
   law, *not in the middle band* ⟺ `δ₁ = max ∨ δ₁ ≥ ⌊S/2⌋ − 1`; the near-balance branch feeds
   `ι ≤ 1` (`near_balance_imbalance_le_one`); `empty_middle_dichotomy` packages it.
-- §3 **Finite `decide` census** (`n ≤ 20`, product convention): `productCensus` over balanced
-  profiles `d ∈ {3,4,5}`; `realizable_floor_attained` (`δ₁ = max` on every witness) and
-  `realizable_no_middle` (none in the middle band).
+- §3 **Hand-entered constant-syzygy examples** (renamed from the former "`n ≤ 20` census"
+  `productCensus` / `realizable_floor_attained` / `realizable_no_middle`):
+  `constSyzygyExamples` lists `(d,d,d,δ₁ = d)` for `d ∈ {3,4,5}` with `δ₁` typed equal to `max`, so
+  `constSyzygyExamples_floor_attained` / `constSyzygyExamples_no_middle` are true by construction and
+  are not a census of realizable triples; `(3,3,3)` is not balanced-interior.
 - §4 **General status / residual**: `general_empty_middle_from_geometry` (interface: given the
-  geometric no-middle residual, dichotomy is unconditional) and `wronskian_no_jump` — the pure
-  inequality showing the derivative/Wronskian route does **not** close it (a second-order relation
-  has product-degree `dᵢ+dⱼ−1 ≥ max` in the balanced regime, forcing no degree jump below the floor).
+  geometric no-middle residual, the dichotomy follows).  The former `wronskian_no_jump` skeleton
+  (hypotheses forcing `dᵢ = dⱼ = max`) was removed; the Wronskian route is recorded as not closing
+  the gap in prose only.
+
+**Correction (SYZ71).** The empty middle is contradicted at `n = 20`: SYZ71's band-realizable
+`μ₂₀ ⊂ 𝔽₄₁` probe witness (`P = (29+10X)W_AC + (30+X)W_BC`, `deg P = 7`, rank 3, no constant
+syzygy) occupies `middleBand 6 6 6 7`.  The claims below about an "`n ≤ 20` census" are superseded.
 
 ## General-proof status: OPEN
 

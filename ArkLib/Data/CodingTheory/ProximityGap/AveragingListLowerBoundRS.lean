@@ -12,7 +12,9 @@ import Mathlib.Combinatorics.Pigeonhole
 import Mathlib.Data.Nat.Choose.Basic
 
 /-!
-  Angle 4 — The averaging list LOWER bound as a GENUINE Reed–Solomon theorem.
+  Angle 4 — Averaging AGREEMENT FAMILIES (polynomial perturbations agreeing with a
+  fixed word on `a` points).  This is NOT a fixed-word Reed–Solomon list lower
+  bound: no degree-`< k` conclusion is proved (see "WHAT IS *NOT* PROVED").
 
   Ethereum Proximity Prize (ABF26 / ArkLib #232) attack support.
 
@@ -42,22 +44,27 @@ import Mathlib.Data.Nat.Choose.Basic
                                      `S ↦ pS g v S` is injective on the `a`-subsets.
    (4) `averaging_pigeonhole`     — for ANY classifying map `cls` from the `a`-subsets
                                      into a type with `q^t` values, some class has
-                                     `≥ ⌈C(n,a)/q^t⌉` subsets (the `q^t` elementary-
-                                     symmetric classes of the top `t` coefficients).
+                                     `≥ ⌊C(n,a)/q^t⌋` subsets (natural-number
+                                     division, i.e. the floor, not the ceiling).
    (5) `averaging_list_lower_bound` — THE MAIN THEOREM.  Combining (3) and (4):
                                      there is a class of subsets, all mapping under
-                                     `S ↦ pS g v S` to DISTINCT codewords, of size
-                                     `≥ C(n, a) / q^t`.  In particular the number of
-                                     codewords that agree with `g` on `a := k+t`
-                                     of the `n` points is `≥ C(n, k+t) / q^t`.
+                                     `S ↦ pS g v S` to DISTINCT polynomials (each of
+                                     degree `≤ max(deg g, a)`, agreeing with `g` on
+                                     the `a` points of its subset), of size
+                                     `≥ ⌊C(n, a) / q^t⌋`.
 
-  This is exactly the averaging LOWER bound used in the bracket:
-      maxList(1 - (k+t)/n)  ≥  C(n, k+t) / q^t ,
-  here stated and PROVED about real Reed–Solomon agreement counts, with the
-  classifying ("degree-drop into the q^t elementary-symmetric classes") map taken
-  as a parameter so that the pigeonhole is dischargeable for any concrete RS
-  instance (the `t` top coefficients of `nodal S v` live in `F`, giving `q^t`
-  classes).
+  This is a family of polynomial agreement witnesses, NOT the bracket's list
+  lower bound `maxList(1 - (k+t)/n) ≥ C(n, k+t) / q^t` for the fixed word `g`:
+  nothing says any `pS g v S` has degree `< k`, and an arbitrary heavy class need
+  not be the class that makes this fixed `g` drop to degree `< k`.  Concrete
+  obstruction: `F = F_17`, `T = μ_8 = {1,2,4,8,16,15,13,9}`, `k = 2`, `t = 1`,
+  `a = 3`, `g = X^3`.  If `X^3 − h` with `deg h < 2` vanishes on 3 distinct domain
+  points it equals their monic nodal cubic, whose `X^2` coefficient is minus the
+  triple sum; so the triple sum is `0`.  No triple in `μ_8` has sum `0` in `F_17`,
+  hence the genuine degree-`< 2` list of `X^3` at agreement 3 is EMPTY, while the
+  formal statement here still yields `⌊56/17⌋ = 3` distinct agreeing polynomials.
+  The genuine existential list lower bound (choosing the word `g` to match the
+  heavy target) is `ListInteriorUnconditionalT1`.
 
   ----------------------------------------------------------------------------
   WHAT IS *NOT* PROVED (honest scope)
@@ -68,16 +75,17 @@ import Mathlib.Data.Nat.Choose.Basic
     the top `t+1` coefficients of `pS` cancel; here we keep the classifying map
     abstract (any map into a `q^t`-element type) so the pigeonhole and distinctness
     are FULLY rigorous, and instantiate it with the genuine `nodal`-coefficient
-    classifier for the non-vacuity witness.  The degree-drop refinement is the one
-    remaining ingredient to turn "agree on `a` points" into "is a degree-`<k`
-    codeword"; it is flagged, not assumed.
+    classifier for the non-vacuity witness.  The degree-drop refinement (with a
+    word `g` matched to the heavy class) is the missing ingredient to turn "agree
+    on `a` points" into "is a degree-`<k` codeword"; for a FIXED `g` it can fail
+    outright (the `F_17` example above).  It is flagged, not assumed.
   * No claim is made that this lower bound CROSSES `ε*|F|` at the proximity gap;
     that is the separate (open) interior question.
 
-  Non-vacuity: the final section instantiates `F = ZMod 5`, `n = 4`, `t = 1`,
-  `a = 2`, an explicit injective `v`, and a concrete `g` with `g.coeff 2 ≠ 0`,
-  exhibiting a class of size `≥ C(4,2)/5 = ⌈6/5⌉ = 2` of distinct agreeing
-  codewords — a concrete positive bound, all hypotheses satisfied by witnesses.
+  Non-vacuity: the final section instantiates `F = ZMod 5`, `n = 5`, `t = 1`,
+  `a = 2`, an explicit injective `v`, and `g = X^2` (`g.coeff 2 ≠ 0`),
+  exhibiting a class of size `≥ ⌊C(5,2)/5⌋ = 2` of distinct agreeing
+  polynomials — all hypotheses satisfied by witnesses.
 -/
 
 namespace ArkLib.CodingTheory.Round11RSAveraging
@@ -183,24 +191,23 @@ theorem averaging_pigeonhole {β : Type*} [Fintype β] [Nonempty β] [DecidableE
   exact ⟨y, hy⟩
 
 /--
-**Main theorem — the averaging list LOWER bound as a genuine RS statement.**
+**Main theorem — averaging agreement families (not a degree-`< k` list bound).**
 
 Fix a finite field `F`, an injective evaluation map `v` on an `n`-point set
 `T`, a word `g : F[X]` whose degree-`a` coefficient is nonzero (`a := k+t`),
-and ANY classifying map `cls` of the `a`-subsets into a `q^t`-element type `β`
-(the elementary-symmetric classes of the top `t` nodal coefficients).
+and ANY classifying map `cls` of the `a`-subsets into a `q^t`-element type `β`.
 
 Then there is a class `y : β` and a set `𝒮` of `a`-subsets of `T`, all in class
-`y`, of size at least `C(n, a) / q^t`, such that the averaging map
-`S ↦ pS g v S = g - C (g.coeff a) · nodal S v`
+`y`, of size at least `⌊C(n, a) / q^t⌋` (natural-number division), such that
+the averaging map `S ↦ pS g v S = g - C (g.coeff a) · nodal S v`
 
-  * is INJECTIVE on `𝒮` (distinct subsets ⇒ distinct codewords), and
+  * is INJECTIVE on `𝒮` (distinct subsets ⇒ distinct polynomials), and
   * each `pS g v S` AGREES with `g` at all `a` evaluation points of `S`.
 
-In particular, the number of distinct codewords agreeing with `g` on `a = k+t`
-of the `n` points is at least `C(n, k+t) / q^t`, i.e.
-
-    maxList(1 − (k+t)/n)  ≥  C(n, k+t) / q^t .
+No degree bound `deg (pS g v S) < k` is asserted, so this does NOT give
+`maxList(1 − (k+t)/n) ≥ C(n, k+t) / q^t` for the fixed word `g`; for
+`F_17`, `μ_8`, `k = 2`, `a = 3`, `g = X^3` the genuine degree-`< 2` list at
+agreement 3 is empty (module docstring).
 -/
 theorem averaging_list_lower_bound
     {β : Type*} [Fintype β] [Nonempty β] [DecidableEq β]
@@ -235,8 +242,9 @@ the injective evaluation map `v i = (i : ZMod 5)`, and the word `g = X^2`
 All hypotheses of `averaging_list_lower_bound` are met by explicit witnesses,
 and the resulting bound is the CONCRETE POSITIVE number
     C(5, 2) / 5^1 = 10 / 5 = 2,
-so there really exist `≥ 2` distinct codewords agreeing with `X^2` on `2` of
-the `5` points — the averaging lower bound is non-vacuous. -/
+so there really exist `≥ 2` distinct polynomials of degree `≤ 2` agreeing with
+`X^2` on `2` of the `5` points (no degree-`< k` claim) — the averaging
+agreement-family statement is non-vacuous. -/
 
 instance primeFact_AveragingListLowerBoundRS_1 : Fact (Nat.Prime 5) := ⟨by norm_num⟩
 
@@ -252,7 +260,7 @@ theorem gWit_coeff_ne : (X ^ 2 : (ZMod 5)[X]).coeff 2 ≠ 0 := by
   rw [coeff_X_pow]; decide
 
 /-- Non-vacuous concrete bound: there is a class of `≥ 2` distinct degree-≤2
-codewords (`X^2 - C 1 · nodal S vWit`), all agreeing with `X^2` on the `2`
+polynomials (`X^2 - C 1 · nodal S vWit`), all agreeing with `X^2` on the `2`
 evaluation points of their subset `S`, within a single elementary-symmetric
 class of the nodal top coefficient. -/
 theorem averaging_witness :

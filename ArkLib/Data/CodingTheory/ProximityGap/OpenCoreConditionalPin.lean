@@ -66,9 +66,17 @@ Johnson→capacity gap for explicit fixed Reed–Solomon codes; it is the prize 
 ## Honest scope
 
 * The `Prop` `WorstCaseIncidenceBounded C δ B` at the window radius **is** the recognized open
-  problem (the prize core).  It is stated, NOT proved.  Best known unconditional incidence bounds
-  are `n^{1-o(1)}` (BGK/Paley short-character-sum cancellation), which is vacuous at the budget
-  `≈ n` in the window interior.  Nothing here closes it.
+  problem (the prize core).  It is stated, NOT proved, and nothing here closes it.  Caution on
+  the literature comparison: BGK/Paley-type results give `n^{1-o(1)}`-type cancellation for
+  *additive-character sums* over the subgroup; that is a different object from this module's
+  worst-case bad-scalar count `#{γ : mcaEvent …}`.  No proved bridge in this file (or cited
+  here) converts such a character-sum bound, with its constants and normalization, into a bound
+  on `WorstCaseIncidenceBounded` (cf. `WeilRegimeClosure.lean`, whose conditional
+  representation input faces the same character-sum-to-incidence dictionary gap).
+  Note also that an actual incidence upper bound of the form `I(δ) ≤ c·n^{1-θ}` with `θ ≥ 0`
+  and controlled constant `c ≤ 1` would NOT be vacuous at the budget `≈ n` — it would meet or
+  beat it, since `n^{1-θ} ≤ n`; the obstruction is the missing bridge (and constants), not the
+  exponent.  The budget must only be evaluated after such a bridge is proved.
 * The conditional implication `Prop ⟹ δ ≥ window-radius` **is** proved, axiom-clean.  This makes
   the prize's remaining open content a single explicit, precisely-stated `Prop` with everything
   else proven around it — the honest "closed conditional conjecture".

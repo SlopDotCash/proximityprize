@@ -11,10 +11,16 @@ import Mathlib.Tactic
 
 The open core of #232 reduces (see `MomentCollisionWeilConditional`, `StepanovFrobeniusReduction`,
 `StepanovNonVanishing`) to the **Weil bound for curves over `𝔽_q`** — equivalently the Hasse–Weil
-point count `|#C(𝔽_q) − (q+1)| ≤ 2g·√q`. The *general* (asymptotic, all-`q`) statement is genuinely
-open in Lean (it is RH-for-curves, which mathlib lacks, and for the deep-interior subgroup regime it
-is unsolved research). This file does the part that **is** unconditionally provable: it *proves*, by
-finite computation, that the Weil/Hasse bound **holds for concrete curves over concrete fields**.
+point count `|#C(𝔽_q) − (q+1)| ≤ 2g·√q` for smooth projective curves. Two different statements
+must be kept apart:
+* the **classical Hasse–Weil theorem** (all `q`, all smooth projective curves; Weil 1948) is a
+  known theorem of mathematics, but it is NOT formalised in Lean / mathlib (it is RH-for-curves);
+* the **stronger incomplete / subgroup-restricted character-sum bound** in the deep-interior
+  (thin-subgroup) regime that #232 actually needs is a different, stronger statement, and that is
+  the part which is open research.
+This file does the part that **is** unconditionally provable here: it *proves*, by finite
+computation, that the relevant numeric inequalities **hold for concrete curves over concrete
+fields**.
 
 For the elliptic curve `y² = x³ + x + 1` (nonsingular over each field below), the projective count is
 `#E = affineCount + 1`, so Hasse `|#E − (p+1)| ≤ 2√p` is exactly `(affineCount − p)² ≤ 4p` — the
@@ -57,18 +63,34 @@ theorem hasse_F13 : ((affineCount 13 (cubic 13) : ℤ) - 13) ^ 2 ≤ 4 * 13 := b
 /-- Weil/Hasse bound for `y² = x³ + x + 1` over `𝔽₁₇`. -/
 theorem hasse_F17 : ((affineCount 17 (cubic 17) : ℤ) - 17) ^ 2 ≤ 4 * 17 := by decide
 
-/-! ### A genus-2 example: the general `2g·√q` Weil scaling (`g = 2`, `deg f = 5`).
+/-! ### The quintic `y² = x⁵ + x + 1`: the `2g·√q` scaling with `g = 2`, `deg f = 5`.
 
-For `y² = x⁵ + x + 1` (odd degree ⟹ one point at infinity, `#C = affineCount + 1`), the genus is
-`g = 2`, so the Weil bound is `|#C − (p+1)| ≤ 2·2·√p`, i.e. `(affineCount − p)² ≤ 16p`. -/
+When `f = x⁵ + x + 1` is squarefree over `𝔽_p`, `y² = f(x)` is a smooth genus-2 hyperelliptic curve
+with one point at infinity (odd degree), so `#C = affineCount + 1` and the Weil bound
+`|#C − (p+1)| ≤ 2·2·√p` reads `(affineCount − p)² ≤ 16p`.
 
-/-- The quintic for the genus-2 hyperelliptic curve `y² = x⁵ + x + 1`. -/
+**This hypothesis FAILS over `𝔽₇`.**  There `X⁵ + X + 1 = (X − 4)²·(X³ + X² + 6X + 4)`: both `f(4)`
+and `f'(4) = 5·4⁴ + 1` vanish (`quintic_F7_singular`), so `(4, 0)` is a singular point, the curve is
+not a smooth genus-2 curve (its normalization has smaller genus), and `affineCount + 1` is not a
+smooth genus-2 projective count.  `weil_genus2_F7` is therefore only a true numeric inequality for
+this singular affine curve, not an instance of the genus-2 Hasse–Weil theorem.  Over `𝔽₁₁`,
+`gcd(f, f') = 1` in `𝔽₁₁[X]` (checked by a polynomial-gcd computation, not formalised here), so the
+curve is smooth there and `weil_genus2_F11` is a genuine genus-2 instance. -/
+
+/-- The quintic `x⁵ + x + 1` (right-hand side of `y² = x⁵ + x + 1`; genus 2 only where it is
+squarefree, e.g. over `𝔽₁₁` but NOT over `𝔽₇`). -/
 def quintic (p : ℕ) (x : ZMod p) : ZMod p := x ^ 5 + x + 1
 
-/-- Genus-2 Weil bound `(affineCount − p)² ≤ 16p` over `𝔽₇`. -/
+/-- Over `𝔽₇` the quintic has a repeated root at `x = 4`: `f(4) = 0` and `f'(4) = 5·4⁴ + 1 = 0`,
+so `y² = x⁵ + x + 1` is singular at `(4, 0)`. -/
+theorem quintic_F7_singular : quintic 7 4 = 0 ∧ (5 * 4 ^ 4 + 1 : ZMod 7) = 0 := by decide
+
+/-- Numeric inequality `(affineCount − p)² ≤ 16p` over `𝔽₇` for the SINGULAR affine curve
+`y² = x⁵ + x + 1` (see `quintic_F7_singular`).  True, but not a smooth genus-2 Hasse–Weil
+instance. -/
 theorem weil_genus2_F7 : ((affineCount 7 (quintic 7) : ℤ) - 7) ^ 2 ≤ 16 * 7 := by decide
 
-/-- Genus-2 Weil bound over `𝔽₁₁`. -/
+/-- Genus-2 Weil bound over `𝔽₁₁` (where `x⁵ + x + 1` is squarefree). -/
 theorem weil_genus2_F11 : ((affineCount 11 (quintic 11) : ℤ) - 11) ^ 2 ≤ 16 * 11 := by decide
 
 /-! ### The multiplicative Weil **character-sum** bound `(∑ₓ χ(f x))² ≤ (deg f − 1)²·p`.
@@ -112,6 +134,7 @@ open ArkLib.CodingTheory.HasseWeilInstances
 #print axioms hasse_F11
 #print axioms hasse_F13
 #print axioms hasse_F17
+#print axioms quintic_F7_singular
 #print axioms weil_genus2_F7
 #print axioms weil_genus2_F11
 #print axioms weilchar_cubic_F7

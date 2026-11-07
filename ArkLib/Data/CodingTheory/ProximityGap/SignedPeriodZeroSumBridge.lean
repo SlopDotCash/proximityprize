@@ -18,10 +18,14 @@ signed period-power sum plugs directly into the `zeroSumCount`-based machinery:
 >   `∑_ψ η_ψ^r = q · zeroSumCount S r`     (`signedPeriodPow_eq_q_mul_zeroSumCount`)
 
 and, in particular, at general (incl. ODD) order `r` — the regime the additive-energy framework
-(always `2r`-fold, sum-of-squares, hence sign-blind) cannot express. This is the structural reason the
-SIGNED sum carries the thinness signal the moment route's `|·|` discards (`DISPROOF_LOG`): for odd `r`
-the period-power sum is `q·zeroSumCount` of an ODD-length walk, which is NOT a sum of squares and can be
-negative, whereas every `|·|`/energy packaging is `2r`-fold and non-negative.
+(always `2r`-fold, sum-of-squares) cannot express. The FULL sum over all characters is always the
+nonnegative real number `q·zeroSumCount S r`, also for odd `r` (audit PG-046): it is never
+negative. The sign information lives only in the DC-subtracted, nonzero-character sum
+`∑_{ψ≠0} η_ψ^r = q·zeroSumCount S r − |S|^r` (`nonzeroSignedPeriodPow_eq_zeroSumCount`): for odd
+`r` its individual terms `η_ψ^r` are not squares and it can be negative (e.g. `S = {1}`, `r = 1`
+gives `q·0 − 1 = −1`), whereas every `|·|`/energy packaging is `2r`-fold and non-negative.
+This is the sense in which the SIGNED nonzero-character sum can carry information the moment
+route's `|·|` discards (`DISPROOF_LOG`).
 
 Honest scope: a definitional bridge (`zeroSumCount` unfolds to exactly the headline's filter-count), so
 the signed identity now lives in the canonical vocabulary. NON-MOMENT, EXTEND of the just-landed

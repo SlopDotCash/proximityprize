@@ -117,9 +117,13 @@ discharging `stir_main` / `stir_rbr_soundness`.
   `stir_rbr_soundness_of_checkingIOP_large`, and
   `stir_main_of_checkingIOP_large` consume the honest large-good-set
   `StrictCoeffPolysLargeResidual` family plus the same checking bridge.
-- `ArkLib.ProofSystem.Stir.ErrorAccumulation.PerRoundProximityGap.refl` is the named
-  reflexive keystone used when front doors choose accounting errors equal to the proximity-gap
-  bounds.
+- `ArkLib.ProofSystem.Stir.ErrorAccumulation.PerRoundProximityGap.refl` is the reflexive
+  budget identification (`∀ i, e i = B i` with `e := B`) used when front doors choose
+  accounting errors equal to the proximity-gap bounds. Despite the historical name,
+  `PerRoundProximityGap` is an equation between chosen numbers, not the BCIKS20 proximity-gap
+  theorem; discharging it does not discharge any soundness obligation (audit L77). The
+  per-round soundness content is carried separately (`StrictCoeffPolysResidual` families and
+  the `SubUnitRbr` route above).
 - `stir_main` now states input-query complexity as
   `(qNumtoInput : ℝ) >= secpar / (- Real.log (1 - δ))`; the multi-round and checking front
   doors are aligned with this inequality form rather than the older exact equality.
@@ -193,6 +197,14 @@ Targeted checks used while avoiding a full rebuild:
 - The tail `stir_rbr_soundness` inequalities are indexed by `j : Fin M`, where `j.succ`
   corresponds to paper round `i = j + 1`. Do not guard these obligations with `j.val != 0`;
   that would accidentally skip the first shifted round.
+- Statement repairs of 2026-10-28 (audit L36), mirrored in every front door:
+  `ParamConditions` requires `degree < |ι|` (rate `< 1`; the old reversed condition forced rate
+  `1` and left `stir_rbr_soundness` without admissible parameters); the shift term applies
+  `proximityError` at `repeatParam j.castSucc + s`; the final-round bound is a separate
+  conjunct (`hfin`) outside the tail quantifier; and `stir_main`'s `hF` is the lower-bound
+  `FieldSizeCondition` with a real exponent `7/2`. `stir_main` still quantifies over an
+  arbitrary protocol, and its complexity conjuncts constrain free parameters with
+  per-instance constants (`ComplexityLegs.lean`).
 
 ## 2026-06-10 protocol-object campaign (session summary)
 

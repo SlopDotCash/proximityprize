@@ -14,21 +14,26 @@ multiplicity of coherent cores — is here given its exact structural reduction:
 * `fiber_subset_explainable` — the coherent cores sharing a value `γ` all
   explain ONE word, the line `Q∘dom + γ·x^k`; the fiber of `γ` is contained in
   the explainable-core family of that single word.
-* `ExplainableCoreSupply B` — the named residual: every word admits at most
-  `B` explainable `(k+m+1)`-cores.  This is the multiplicity number in its
-  final isolated form (the degenerate stratum — words ON the code — shows a
-  uniform small `B` cannot be free: `B = C(n,k+m+1)` is attained there, so a
-  useful supply must come from second-moment or list-geometry input; that is
-  the precise remaining mathematics).
+* `ExplainableCoreSupply B` — every word admits at most `B` explainable
+  `(k+m+1)`-cores.  Because it quantifies over **every** word, including the
+  codewords, its exact maximum is trivial: `explainableCoreSupply_iff` proves
+  `ExplainableCoreSupply dom k m B ↔ C(n,k+m+1) ≤ B` (the zero codeword makes
+  every core explainable; the upper bound is the filter-cardinality bound).
+  So every sub-binomial instance `B < C(n,k+m+1)` is **refuted**, and no
+  second-moment or list-geometry input can shrink `B` while the word
+  quantifier stays unrestricted (audit 2026-10-28, PG-079).  Research on a
+  smaller budget must use an agreement-capped / far-word predicate such as
+  `SubJohnsonSupplyResidual` (`JohnsonSplitSupply`).
 * `deep_band_badSet_card_of_supply` — **the reduction theorem**: given the
   supply, at every band radius,
 
     **`∃ Q₀ : C(n,k+m+1) ≤ #badSet(Q₀, x^k) · q^m · B`** —
 
-  the witness-mass law converts into a bad-scalar COUNT.  At `B` polynomial
-  in `n` this gives production-regime failure at depth `m`; the trivial
-  instance `B = C(n,k+m+1)` (`explainableCoreSupply_trivial`) keeps the chain
-  nonvacuous unconditionally.
+  the witness-mass law converts into a bad-scalar COUNT.  The theorem is
+  valid, but by `explainableCoreSupply_iff` its only admissible inputs have
+  `B ≥ C(n,k+m+1)`, so with the uncapped predicate it yields at best
+  `1 ≤ #badSet · q^m`; the trivial instance `B = C(n,k+m+1)`
+  (`explainableCoreSupply_trivial`) is the optimal one.
 -/
 
 open Finset Polynomial
@@ -47,8 +52,10 @@ def ExplainableOn (dom : Fin n ↪ F) (k : ℕ) (w : Fin n → F)
   ∃ c ∈ (rsCode dom k : Submodule F (Fin n → F)), ∀ i ∈ T, c i = w i
 
 open Classical in
-/-- **The named residual**: every word admits at most `B` explainable
-`(k+m+1)`-cores. -/
+/-- **The uncapped core supply**: every word admits at most `B` explainable
+`(k+m+1)`-cores.  Since the quantifier includes codewords, this holds exactly
+when `C(n,k+m+1) ≤ B` (`explainableCoreSupply_iff`); it is not an open
+residual. -/
 def ExplainableCoreSupply (dom : Fin n ↪ F) (k m : ℕ) (B : ℕ) : Prop :=
   ∀ w : Fin n → F,
     (((Finset.univ : Finset (Fin n)).powersetCard (k + m + 1)).filter
@@ -65,6 +72,27 @@ theorem explainableCoreSupply_trivial (dom : Fin n ↪ F) (k m : ℕ) :
         Finset.card_filter_le _ _
     _ = n.choose (k + m + 1) := by
         rw [Finset.card_powersetCard, Finset.card_univ, Fintype.card_fin]
+
+open Classical in
+/-- **The exact uncapped supply (PG-079).**  `ExplainableCoreSupply dom k m B` holds iff
+`C(n,k+m+1) ≤ B`: the zero codeword makes every `(k+m+1)`-core explainable, and
+`explainableCoreSupply_trivial` gives the matching upper bound.  Hence every sub-binomial
+instance is refuted; a smaller budget needs a capped / far-word predicate. -/
+theorem explainableCoreSupply_iff (dom : Fin n ↪ F) (k m B : ℕ) :
+    ExplainableCoreSupply dom k m B ↔ n.choose (k + m + 1) ≤ B := by
+  refine ⟨fun hB => ?_, fun hB w => le_trans (explainableCoreSupply_trivial dom k m w) hB⟩
+  have h := hB 0
+  rw [Finset.filter_true_of_mem
+      (fun T _ => ⟨0, Submodule.zero_mem _, fun i _ => rfl⟩),
+    Finset.card_powersetCard, Finset.card_univ, Fintype.card_fin] at h
+  exact h
+
+open Classical in
+/-- **Sub-binomial uncapped supplies are refuted (PG-079).** -/
+theorem not_explainableCoreSupply_of_lt (dom : Fin n ↪ F) {k m B : ℕ}
+    (hB : B < n.choose (k + m + 1)) :
+    ¬ ExplainableCoreSupply dom k m B := fun h =>
+  absurd ((explainableCoreSupply_iff dom k m B).mp h) (not_le.mpr hB)
 
 open Classical in
 /-- **The fiber structure**: a coherent core explains the line of its pinned
@@ -170,5 +198,7 @@ theorem deep_band_badSet_card_of_supply (dom : Fin n ↪ F) {k m : ℕ}
 end ProximityGap.Ownership
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only)
+#print axioms ProximityGap.Ownership.explainableCoreSupply_iff
+#print axioms ProximityGap.Ownership.not_explainableCoreSupply_of_lt
 #print axioms ProximityGap.Ownership.coherent_explains_line
 #print axioms ProximityGap.Ownership.deep_band_badSet_card_of_supply

@@ -38,10 +38,15 @@ and the main lemma were `sorry`s — against repo convention):
   `KeyLemmaStatementEager` (the deleted ladder used a salted single-log
   `BasicFiatShamirGameOutput` surface incompatible with the in-tree games, and its `lemma_5_1`
   targeted the numerically over-strong `ηStar` with exponent `C+1`);
-- `Hyb₃`'s bridge `d2sCodecBridgeImplMemoEager` re-keys the salted Eq. 16 bridge onto the
-  unsalted FS oracle by erasing the salt at the `fᵢ`-query boundary — exactly mirroring the
-  salt erasure performed by the witness `eagerSimulatedProver`, so the `Hyb₃ → Hyb₄` step is
-  the genuine verifier-replay gap (CO25 Claim 5.24) and not a salt-format mismatch;
+- `Hyb₃` (as currently defined below, after the issue #314 ladder repair) uses the **salted**
+  basic-FS challenge functions with the memoized Eq. 16 bridge `d2sCodecBridgeImplMemo`,
+  **without** salt erasure inside the bridge; salt is erased only in the line-4 output-log
+  projection (`hyb3Line4SaltErase`). (An earlier version used the salt-erasing bridge
+  `d2sCodecBridgeImplMemoEager`, which re-keyed the salted bridge onto the unsalted FS oracle at
+  the `fᵢ`-query boundary; that made `Δ(Hyb₂, Hyb₃) = 0` false by correlating challenges across
+  salts, see the docstring of `Hyb3`.) The salt-collision cost therefore sits on the
+  `Hyb₃ → Hyb₄` leg together with the verifier-replay budget (CO25 Claim 5.24); the successor
+  salted residual interfaces are in `KeyLemmaSalted.lean`;
 - the per-step obligations are named `*Residual : Prop` definitions (never `sorry`s), and the
   ladder assembly `keyLemmaEager_of_steps` is **proven**: the four step residuals plus the
   witness budget residuals (M1c/M1d of `KeyLemmaFoundations`) imply `KeyLemmaEagerResidual`.
@@ -774,7 +779,13 @@ def Hyb23StepResidual [SampleableType U]
 verifier rederives challenges through `D2SQuery` (and can abort on parse failure), `Hyb₄`'s
 standard FS verifier replays the transcript directly against `f`. Open: requires the
 verifier-replay analysis of CO25 §5.8 (the event `E_𝒱` that the replayed transcript diverges
-from the simulator's committed one). -/
+from the simulator's committed one).
+
+**Boundary caveat (`L = 0`).** For protocols with `pSpec.totalNumPermQueries = 0` the guard
+admits `L = 0`, where `claim5_24Bound U tₕ tₚ tₚᵢ 0 < 0`
+(`claim5_24Bound_neg_of_L_eq_zero`), so this residual is unsatisfiable for zero-permutation
+protocols. A `1 ≤ L` guard would repair it, but must then be threaded through
+`keyLemmaEager_of_steps` and `VerifierReplay.hyb34Step_of_strictSplit`; that is not done here. -/
 def Hyb34StepResidual [SampleableType U]
     [∀ i, Fintype (pSpec.Challenge i)] [∀ i, DecidableEq (pSpec.Challenge i)]
     (T_H T_P : Type) [LawfulTraceNablaImpl T_H T_P StmtIn U] (δ : ℕ)

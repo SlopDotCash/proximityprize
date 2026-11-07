@@ -4,13 +4,14 @@
 > TOO OPTIMISTIC. It rested on a worst-direction `exp(c·n)` extrapolation that never measured the exact
 > n=32 edge cell. The fuller core-stratified decay-rate workflow (06) shows the PURE window-edge
 > multiplier GROWS 1→13, the "3504 spike" was char-p polluted, and all 10 decay angles reduce to the
-> open Gauss-period bound. The PROVEN bricks below (p-independence, support law, recursion) stand;
-> the floor-holds conclusion does NOT. Read doc 06 for the reconciled verdict.
+> open Gauss-period bound. The PROVEN bricks below (support law, recursion) stand. The p-independence
+> brick does not (see the audit-T163 correction in brick 1), and the floor-holds conclusion does NOT. Read doc 06 for the reconciled verdict.
 
 9-thread workflow on the q-independent finite incidence. Synthesis of 8 completed threads
-(+ 9th, a √2-orbit plateau lower-bound for n=64, consistent). **This is the most positive
-result of the campaign: the prize FLOOR HOLDS at the window edge, empirically n≤32 + 3 proven
-bricks — with a precisely-located remaining gap.**
+(+ 9th, a √2-orbit plateau lower-bound for n=64, consistent). **Originally headlined as "the prize
+FLOOR HOLDS at the window edge, empirically n≤32 + 3 proven bricks". That headline is withdrawn. The
+floor-holds conclusion falls to the CORRECTION above, and the "3 proven bricks" count to the brick-1
+correction below.**
 
 ## Object disambiguation (resolves all cross-thread "contradictions")
 Three distinct invariants of `e₁(S)` over `e₂(S)=0` w-subsets were measured:
@@ -22,13 +23,24 @@ Three distinct invariants of `e₁(S)` over `e₂(S)=0` w-subsets were measured:
 | worst-dir k=2 raw-γ (DIFFERENT object) | `(n/2−1)²` | a9a63bf4 (flagged as conflation) |
 All consistent once disambiguated; orbits free of size n ⇒ raw = n·orbits.
 
-## Three PROVEN bricks (genuine, not empirical)
-1. **p-independence — RIGOROUS, Lean axiom-clean (1874-job build).** `I(δ) = deg(Z_{n,δ})` for
-   `q > q₀(n)`, where `Z_{n,δ}` is a 0-dim scheme = per-S root set of one univariate resultant
-   `R_S(γ)=∏_{z∈S}(Q₀(z)+γQ₁(z)−W(z))` of q-independent degree ≤ s. Threshold `q₀(n) ≈ n²`
-   (over-determined band, bad-prime exponent stable ≈2: n=16→17, n=32→2113, n=64→2753), so
-   `q₀ < n⁴ ≪` prize prime `n·2^128`. **⇒ the prize-scale incidence IS the char-0 count, proven.**
-   (Settles the long-open "is the incidence q-independent at prize scale" — YES, with margin.)
+## Three claimed bricks (two proven; brick 1 corrected)
+1. **p-independence — NOT established as stated (corrected, audit T163).** The original claim was
+   `I(δ) = deg(Z_{n,δ})` for `q > q₀(n)`, with `Z_{n,δ}` the per-S root set of one univariate
+   resultant `R_S(γ)=∏_{z∈S}(Q₀(z)+γQ₁(z)−W(z))` of q-independent degree ≤ s.
+   **That product encodes the wrong event.** `R_S(γ)=0` iff *some* factor vanishes, i.e. the line
+   point at `γ` matches at **at least one** `z∈S`. Agreement on `S` needs the residual to vanish at
+   **every** `z∈S`, so the per-S bad set is the **common** root set of the `s` factors (the roots of
+   their gcd), not the union of their roots.
+   Each factor is linear in `γ`. So when some `Q₁(z)≠0`, the per-S bad set has at most one element:
+   it is nonempty iff all per-point roots `γ_z = (W(z)−Q₀(z))/Q₁(z)` coincide (and `Q₀(z)=W(z)`
+   wherever `Q₁(z)=0`). Counting how often they coincide mod `p` is a coincidence/discriminant question
+   about the `γ_z`. The root count of `R_S` does not compute it: `deg R_S = #{z: Q₁(z)≠0}` counts
+   per-point roots, not bad scalars.
+   What stands: the Lean file `Frontier/_PIndependenceLangWeil.lean` proves generic root-count = degree
+   facts for split separable polynomials, and their transfer under good reduction, axiom-clean. Its
+   identification of those counts with the incidence `I(δ)` rests on the product formula above, so it
+   is **not** a proof that the prize-scale incidence equals the char-0 count. The measured bad-prime
+   thresholds (n=16→17, n=32→2113, n=64→2753) remain empirical data about the probe's own computation.
 2. **Support/vanishing law — PROVEN via Lam-Leung.** `I(n,w)=0` for `w ≡ 2,3 (mod 4)`: a vanishing
    sum of 2^a-th roots needs an even # of terms, `C(w,2)` even ⟺ `w ≡ 0,1 (mod 4)`.
 3. **Tower descent recursion — VERIFIED exact.** `I(2N,k,2m') = I(N,k/2,m')` (imprimitive descent);
@@ -53,12 +65,14 @@ window edge at the near-capacity plateau**. Correctly indexed by offset j, the n
 O(1)–O(n). Floor holds. My round-4 quadratic was the explosion band, not the edge.
 
 ## Honest gap (why this is not yet a closure)
-Empirical (n ≤ 32) + a *fitted* `exp(c·n)` near-capacity law + the 3 proven bricks. The remaining
+Empirical (n ≤ 32) + a *fitted* `exp(c·n)` near-capacity law + the 2 proven bricks (brick 1, p-independence,
+is not established; see its correction). The remaining
 step is the **asymptotic decay-rate proof**: that the near-capacity explosion stays confined below
 `j* = n/log n` for ALL n. That is where the open Gauss-period/Paley core may re-enter — BUT the
 needed statement is potentially **weaker** than full `B ≤ 2√n`: only that the explosion is confined
 shallower than the log-backoff window. **This is a genuinely new, possibly-provable handle** that the
 72-sweep's blanket "= open Gauss-period" did not isolate. Fed directly into the decay-rate workflow.
 
-Tools: /tmp/c32*, /tmp/prize_attack/. Threads' Lean brick: the p-independence resultant scheme.
+Tools: /tmp/c32*, /tmp/prize_attack/. Threads' Lean brick: the p-independence resultant scheme (generic root-count law only; its link to the
+incidence is the flawed product formula corrected in brick 1).
 Related: [[arklib-407-multiplier-decay]], [[arklib-407-72-conjecture-sweep]], [[arklib-407-r4-char0-correction]].

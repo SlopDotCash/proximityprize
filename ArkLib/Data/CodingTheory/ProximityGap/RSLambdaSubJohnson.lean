@@ -11,8 +11,12 @@ import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
 # The sub-Johnson `Λ` bound for Reed–Solomon codes (#389, the LD⇒MCA input)
 
 The in-tree `Λ` bounds for RS codes are gated on the **Johnson condition**
-(`Lambda_le_of_johnson_condition`, `a² > n(k−1)`).  Below the Johnson radius that bound is
-vacuous.  This file lands the **sub-Johnson** `Λ` bound, valid at every radius, by pushing
+(`Lambda_le_of_johnson_condition`, `a² > n(k−1)`).  That bound applies *within* the Johnson
+radius (large agreement, e.g. `n = 100, k = 25, δ = 0.1, a = 90`: `a² = 8100 > 2400`) and is
+unavailable *beyond* the Johnson radius, i.e. once the required agreement `a` drops to or below
+`√(n(k−1))`.  "Sub-Johnson" in the names below refers to this sub-Johnson *agreement* regime (beyond
+the Johnson *radius*).  This file lands the **sub-Johnson** `Λ` bound, valid at every radius, by
+pushing
 `rsCode_subJohnson_list_card_le` (the Deza–Frankl list bound) through the distance↔agreement
 bridge:
 
@@ -22,8 +26,9 @@ bridge:
 > ```
 
 This is exactly the `Λ(C,δ) ≤ L` hypothesis that ABF26 **Theorem 5.1**
-(`linear_listSize_to_epsMCA_gcxk25`, the LD⇒MCA bridge) consumes — now available **below
-Johnson** for explicit RS codes, where the Johnson-gated bound does not apply.  It is the
+(`linear_listSize_to_epsMCA_gcxk25`, the LD⇒MCA bridge) consumes — now available **beyond the
+Johnson radius** (agreement below `√(n(k−1))`) for explicit RS codes, where the Johnson-gated bound
+does not apply.  It is the
 list-decoding side of the proximity challenge fed directly into the MCA side.
 -/
 
@@ -68,8 +73,9 @@ omit [NeZero n] in
 open Classical in
 /-- **The sub-Johnson `Λ` bound**: `Λ(rsCode dom k, δ) ≤ C(n,k)/C(a,k)` whenever `k ≤ a` and the
 integer agreement target `a` is below the radius-`δ` agreement line `(1−δ)·n`.  Valid at every
-radius — in particular below the Johnson radius, where `Lambda_le_of_johnson_condition` is
-vacuous.  This is the LD⇒MCA (ABF26 T5.1) list-size input for explicit RS codes. -/
+radius — in particular beyond the Johnson radius (`a² ≤ n(k−1)`), where
+`Lambda_le_of_johnson_condition` does not apply.  This is the LD⇒MCA (ABF26 T5.1) list-size
+input for explicit RS codes. -/
 theorem rsCode_Lambda_subJohnson_le (dom : Fin n ↪ F) {k a : ℕ} {δ : ℝ}
     (hk : 1 ≤ k) (hka : k ≤ a) (hn : 0 < Fintype.card (Fin n))
     (ha : (a : ℝ) ≤ (1 - δ) * (Fintype.card (Fin n) : ℝ)) :

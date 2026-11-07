@@ -9,11 +9,13 @@ import ProximityPrize.Extensions.Data.CodingTheory.JohnsonBound.Family
 /-!
 # Johnson-bound statement-level witness data
 
-This file records the concrete three-word binary code used to audit
-`johnson_bound_lambda_le_ell`.  The full Lambda contradiction is intentionally not asserted here:
-the current kernel-clean artifact is the finite witness and its minimum-distance computation.
-The *complete* machine-checked refutation (the `Λ ≥ 3 > 2 = ℓ` contradiction and the
-inconsistency implication) lives in `FamilyRefutationComplete.lean`; see disposition
+This file records the concrete three-word binary code once used to audit
+`johnson_bound_lambda_le_ell`.  It does **not** refute the current statement: that refutation
+targeted an obsolete `Jqℓ` with factor `ℓ/(ℓ-1)`.  Canonical upstream uses `(ℓ-1)/ℓ` and proves
+`CodingTheory.johnson_bound_lambda_le_ell`; the obsolete radius-equality and inconsistency claims
+are retired (`scripts/integration/johnson-radius-retirement.json`, and the header of
+`FamilyRefutationComplete.lean`).  Only the valid finite-code facts (the witness and its
+minimum-distance computation) are kept; see the historical disposition
 `docs/kb/audits/proximity-prize/dispositions/issue-49-johnson-family.md` (lalalune/ArkLib#49).
 -/
 
@@ -23,7 +25,7 @@ namespace JohnsonBound.FamilyRefutation
 
 open ListDecodable JohnsonBound Code
 
-/-- The refuting alphabet/index types: `ι = α = Fin 2` (so `n = 2`, `q = 2`). -/
+/-- The witness alphabet/index types: `ι = α = Fin 2` (so `n = 2`, `q = 2`). -/
 abbrev ι : Type := Fin 2
 abbrev α : Type := Fin 2
 

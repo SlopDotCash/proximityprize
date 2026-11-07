@@ -1,5 +1,20 @@
 # δ* as an offset law + the monotonicity localization (2026-06-15)
 
+> **Correction (2026-10-28 audit, T48; cross R-113/PG-073).**
+> - **The monotonicity is not proved.** The "PROVEN ring-hom monotonicity `δ*_prize ≥ δ*_char0`"
+>   would need a unital ring homomorphism from a characteristic-zero field to a prime field, and no
+>   such homomorphism exists. Reduction goes through an integral model (for example
+>   `ℤ[ζ] → F_p`). Reduction can create extra solutions modulo `p` as well as identify values, so
+>   "char-p deletes bad scalars, never creates" is not established in the direction claimed.
+> - **No exact cutoff.** The threshold `q₀(n) ≈ 2^n` and the exact cutoff `n ≤ 128` rest on a finite
+>   match and a sufficient norm bound. Neither establishes "δ*_prize = δ*_char0 EXACTLY" for those
+>   `n`.
+> - **What the trend shows.** A three-value offset trend (`3, 3, ≥ 5`) can refute the constant `3`,
+>   but it cannot refute every `O(1)` law, nor confirm `Θ(n/log n)`.
+>
+> The `δ*` values used here are worst-direction incidence crossings, not MCA thresholds over all
+> stacks.
+
 A fresh attack from the exact-`δ*`-curve side (not the character sum). Genuinely promising lead, honestly
 tested, with one real structural takeaway that survives. NOT a closure.
 

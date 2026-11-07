@@ -20,18 +20,26 @@ prove the Paley bound — the **frequency-migration obstruction**.
 
 ## The recursion and the obstruction
 Taking absolute values and maximizing, the triangle inequality gives only
-`M(μ_n) ≤ 2·M(μ_{n/2})` (factor **2**), which iterates to the trivial `M ≤ n`. The *actual*
-recursion is `≈ √2` (giving `M ≈ √n`, the conjecture), and the `√2`-vs-`2` gap **compounded over the
-`μ` dyadic levels is exactly the open half-power gap** `n^{1-o(1)}` vs `√n`.
+`M(μ_n) ≤ 2·M(μ_{n/2})` (factor **2**), which iterates to the trivial `M ≤ n`. A per-level ratio
+of `√2` would give `M ≈ √n` (the conjecture); the `√2`-vs-`2` gap compounded over the `μ` dyadic
+levels is the open half-power gap `n^{1-o(1)}` vs `√n`.
 
-The improvement from `2` to `√2` would follow if, at the worst frequency `b*` for `μ_n`, the two
-half-periods `η_{b*}(μ_{n/2})` and `η_{ζ b*}(μ_{n/2})` were not *both* near-maximal. They are NOT
-independently controllable: the worst `b*` for `μ_n` **migrates** away from the argmax of
-`μ_{n/2}` (an L²-vs-L∞ phenomenon), and the two half-periods provably *align in phase* at `b*` (the
-cross-term `2 Re(η_{b*} \overline{η_{ζ b*}})` is positive, ≈50% of the total — measured). So the
-recursion's saving is governed by the **joint distribution of `(η_b, η_{ζb})` over `b`** — a
-2-dimensional instance of the same Gauss-period problem. That joint object is the wall; the
-single-level recursion cannot be closed without it.
+**Scope (audit R-083/R-054 extension, 2026-10-28).**  The statements below prove only the disjoint
+coset sum, a conditional abstract frequency-migration split, and the triangle factor `2`.  The
+sentences in this section about the "actual recursion ≈ √2" and phase alignment are **sampled
+probe observations, not proved recurrences**: no theorem here bounds the per-level ratio below `2`
+or proves phase alignment at the worst frequency.  A strict universal `√2` per-level descent is
+not established, and later probe work in this cone (e.g. `_DoorIVWorstBPerLevelGrowthFloor.lean`
+reports per-level ratios `1.75, 1.57, 1.47` above `√2`) argues against it.
+
+The improvement from `2` toward `√2` would follow if, at the worst frequency `b*` for `μ_n`, the two
+half-periods `η_{b*}(μ_{n/2})` and `η_{ζ b*}(μ_{n/2})` were not *both* near-maximal. In the probes
+they do not look independently controllable: the worst `b*` for `μ_n` was observed to **migrate**
+away from the argmax of `μ_{n/2}` (an L²-vs-L∞ phenomenon), and the two half-periods were observed
+to align in phase at `b*` (the cross-term `2 Re(η_{b*} \overline{η_{ζ b*}})` measured positive,
+≈50% of the total — sampled, not proved). So the recursion's saving is governed by the **joint
+distribution of `(η_b, η_{ζb})` over `b`** — a 2-dimensional instance of the same Gauss-period
+problem; the single-level recursion does not close without control of that joint object.
 
 ## Results (axiom-clean)
 * `sum_coset_tower` — `Σ_{x∈H ⊔ gH} f x = Σ_{x∈H} f x + Σ_{x∈H} f (g·x)` (disjoint coset split).
@@ -76,7 +84,8 @@ theorem period_tower_recursion {α β M : Type*} [AddCommMonoid M] [DecidableEq 
 
 /-- **The lossy triangle consequence (proven).** If `‖η_b(μ_n)‖ = ‖η_b(μ_{n/2}) + η_{ζb}(μ_{n/2})‖`
 and both half-period norms are `≤ Mhalf`, then `‖η_b(μ_n)‖ ≤ 2·Mhalf`. This is the factor-2 bound;
-its per-level `√2` slack vs the true recursion compounds to the open half-power gap. -/
+its per-level slack relative to a hypothetical `√2` recursion (not proved) compounds to the open
+half-power gap. -/
 theorem sup_le_two_mul_sup {M : Type*} [NormedAddCommGroup M]
     (etaFull etaLo etaHi : M) (Mhalf : ℝ)
     (hsplit : etaFull = etaLo + etaHi) (hlo : ‖etaLo‖ ≤ Mhalf) (hhi : ‖etaHi‖ ≤ Mhalf) :

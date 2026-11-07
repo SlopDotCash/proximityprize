@@ -42,10 +42,14 @@ power-series identifications that previously *consumed* the residual as a hypoth
   `δ_ε_correlatedAgreementCurves` in the strict square-root Johnson regime, reached through the
   `betaRec`-native front door
   `KeystoneStrictResidual.correlatedAgreement_affine_curves_johnson_of_betaRecFin_strict`.  Its
-  hypothesis list contains **no β-identification residual** at all: the only input is the genuine
-  geometric per-word `BetaCurveInputFin` bundle (built from `betaRec`), and the closed boundary is
-  ruled out by the strict radius.  This is the milestone whose statement the `L13` definition makes
-  residual-free.
+  hypothesis list contains **no separate β-identification hypothesis** (`hβ`/`BetaEmbedEq`): the
+  only input is a supplier of the per-(word, decoded family) `BetaCurveInputFin` bundle, and the
+  closed boundary is ruled out by the strict radius.  This removes the separate `hβ` hypothesis
+  only; it does not make the bundle satisfiable.  No inhabitant of `BetaCurveInputFin` is
+  constructed in-tree, its centred `hγ`/`hrep` fields still name the in-tree `γ` built from the
+  legacy `β`, and the supplier implies `StrictCoeffPolysResidual`, which is refuted in-tree (see the
+  `KeystoneStrictResidual` module docstring, which also records the audit-L72 per-`P` repair of
+  the bundle).
 
 ## Boundary with the legacy concrete assembly
 
@@ -147,14 +151,15 @@ theorem betaEmbedEqStrong_holds (x₀ : F) (R : F[X][X][Y]) (H : F[X][Y])
 
 end L13Milestone
 
-/-! ## The §5 keystone milestone with a residual-free hypothesis list
+/-! ## The §5 keystone milestone with no separate β-identification hypothesis
 
 `δ_ε_correlatedAgreementCurves` reached through the `betaRec`-native front door.  Its
-hypothesis list contains **no β-identification residual**: the only input is the genuine
-geometric per-received-word
-`BetaCurveInputFin` bundle (built from `betaRec`), with the closed boundary ruled out by the strict
-square-root radius.  This is the milestone the `L13` definition makes residual-free — the numerator
-identification is no longer a hypothesis anywhere on the path. -/
+hypothesis list contains **no separate β-identification hypothesis**: the only input is a supplier
+of the per-(received word, decoded family) `BetaCurveInputFin` bundle, with the closed boundary
+ruled out by the strict square-root radius.  These are conditional reductions: the bundle is not
+shown to be inhabited, its centred `hγ` field is still stated against the in-tree `γ` built from
+the legacy `β`, and the supplier implies the refuted `StrictCoeffPolysResidual` (see the module
+docstring and `KeystoneStrictResidual`). -/
 
 namespace L13Milestone
 
@@ -171,15 +176,15 @@ private noncomputable local instance : SampleableType F := SampleableType.ofFint
 /-- **The §5 keystone, β-identification-residual-free (L13 milestone).**
 
 The BCIKS20 keystone goal `δ_ε_correlatedAgreementCurves` holds in the strict square-root Johnson
-regime, with the Johnson branch driven by the per-received-word `betaRec` input bundle
-`KeystoneStrictResidual.BetaCurveInputFin`.  Crucially, **no hypothesis is a
-numerator-identification residual** (`hβ`/`BetaEmbedEq`): the bundle is the genuine
-§5/App-A.4 geometric input built from the
-real recursion `betaRec`, and the L13 strengthening (`betaEmbedEqStrong_holds`,
-`alpha_strong_eq_alphaFromBeta`, `gamma_strong_eq_γ'`) shows the in-tree strong numerator coincides
-with `betaRec` *by definition*, so nothing on this path assumes the identification.
+regime, given a supplier of the per-(received word, decoded family) `betaRec` input bundle
+`KeystoneStrictResidual.BetaCurveInputFin u P`.  **No separate hypothesis is a
+numerator-identification residual** (`hβ`/`BetaEmbedEq`), and the L13 strengthening
+(`betaEmbedEqStrong_holds`, `alpha_strong_eq_alphaFromBeta`, `gamma_strong_eq_γ'`) shows the strong
+numerator coincides with `betaRec` *by definition*.  This does not make the bundle satisfiable:
+its centred `hγ`/`hrep` fields are still stated against the in-tree `γ` built from the legacy `β`,
+no inhabitant is constructed, and the supplier implies the refuted `StrictCoeffPolysResidual`.
 
-This forwards verbatim to the proven betaRec-native keystone
+This forwards verbatim to the conditional betaRec-native keystone
 `correlatedAgreement_affine_curves_johnson_of_betaRecFin_strict`. -/
 theorem correlatedAgreement_affine_curves_strongBeta_of_betaRecFin
     {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
@@ -191,7 +196,12 @@ theorem correlatedAgreement_affine_curves_strongBeta_of_betaRecFin
           ((k : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      BetaCurveInputFin (k := k) (deg := deg) (domain := domain) (δ := δ) u) :
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t,
+              (P z).eval ∘ domain) ≤ δ) →
+        BetaCurveInputFin (k := k) (deg := deg) (domain := domain) (δ := δ) u P) :
     δ_ε_correlatedAgreementCurves (k := k) (A := F) (F := F) (ι := ι)
       (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) :=
   correlatedAgreement_affine_curves_johnson_of_betaRecFin_strict
@@ -201,8 +211,9 @@ theorem correlatedAgreement_affine_curves_strongBeta_of_betaRecFin
 
 This is the non-strict companion to
 `correlatedAgreement_affine_curves_strongBeta_of_betaRecFin`.  The strict Johnson branch is still
-driven by the `betaRec`-native `BetaCurveInputFin` bundle, so there is no `hβ` /
-`BetaEmbedEq` numerator-identification residual.  The closed square-root boundary is reconstructed
+taken from a supplier of the per-`(u, P)` `betaRec`-native `BetaCurveInputFin` bundle, so there is
+no separate `hβ` / `BetaEmbedEq` hypothesis (the same caveats about the bundle apply).  The closed
+square-root boundary is reconstructed
 from the quantization split in `BoundaryCardResidual.lean`: the non-lattice part is moved to a
 strict subradius by `hStrictBoundary`, and the exact `1/n` lattice points are isolated in
 `BoundaryCardLatticeResidual`. -/
@@ -216,7 +227,12 @@ theorem correlatedAgreement_affine_curves_strongBeta_of_betaRecFin_lattice_resid
           ((k : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      BetaCurveInputFin (k := k) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t,
+              (P z).eval ∘ domain) ≤ δ) →
+        BetaCurveInputFin (k := k) (deg := deg) (domain := domain) (δ := δ) u P)
     (hStrictBoundary : ∀ (u : WordStack F (Fin (k + 1)) ι) (δ' : ℝ≥0),
       δ' < δ →
       Nat.floor (δ' * Fintype.card ι) = Nat.floor (δ * Fintype.card ι) →
@@ -252,7 +268,12 @@ theorem correlatedAgreement_affine_curves_strongBeta_of_betaRecFin_boundaryData
           ((k : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      BetaCurveInputFin (k := k) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t,
+              (P z).eval ∘ domain) ≤ δ) →
+        BetaCurveInputFin (k := k) (deg := deg) (domain := domain) (δ := δ) u P)
     (hStrictBoundary : ∀ (u : WordStack F (Fin (k + 1)) ι) (δ' : ℝ≥0),
       δ' < δ →
       Nat.floor (δ' * Fintype.card ι) = Nat.floor (δ * Fintype.card ι) →

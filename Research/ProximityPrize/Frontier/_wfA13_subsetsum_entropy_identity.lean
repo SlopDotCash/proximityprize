@@ -170,18 +170,30 @@ theorem A13_entropy_route_reduces_to_energy {p n E : ℝ} (r : ℕ)
    entropy_M_bound_eq_energy_bound r (ne_of_gt hp) (ne_of_gt hn),
    Mbound_strictAnti_in_entropy r hp hn hr⟩
 
-/-- **Non-vacuity at prize scale (`n=32, p≈10⁶, β≈4`).** With the orchestrator-measured
-energy at depth `r=2` (`CP₂ = E₂/(p n⁴)`, `E₂ = 3n²−2n` is the char-0 second-moment value
-`(2·2−1)!! n² = 3n²` minus the negligible correction; here we instantiate the *identity* with
-concrete positive `p, n, E`), all three statements hold simultaneously. This certifies the
-obstruction is about the genuine thin-subgroup object, not vacuous. -/
+/-- **Concrete instance at prize scale (`n = 32`, `p = 1000033`, `r = 2`).** Here
+`E₂ = Σ_b |η_b|⁴ = p · Z` where `Z = #{(x₁,…,x₄) ∈ μ_n⁴ : x₁+x₂ = x₃+x₄}` is the 4-tuple
+collision count, NOT the count `Z` itself.  We use the char-0 (spur-free) value
+`Z = 3n(n−1) = 3n² − 3n` (`= 2976` at `n = 32`; `168` at `n = 8`, `720` at `n = 16`).  In-tree that
+value is proven for `μ_n ⊂ F_p` only under `p > 2^n` (`mu_n_additiveEnergy_eq`), which
+`p = 1000033 < 2^32` does not satisfy, so here it is an assumed (spur-free) input, not a
+pinned value.  With it, `E₂ = 1000033·2976 ≥ n⁴` (the principal term), so `CP₂ ≥ 1/p` and
+`entropyMBound = E₂ − n⁴ = 2975049632 > 0`: the instance is realizable in shape.  The theorem
+itself only instantiates the three general identities at these numbers. -/
 theorem A13_instance_prize_scale :
-    (H2 (1000033 : ℝ) 32 (3 * 32 ^ 2) 2
-        = Real.logb 2 1000033 + (2 * 2 : ℝ) * Real.logb 2 32 - Real.logb 2 (3 * 32 ^ 2))
-    ∧ (entropyMBound (1000033 : ℝ) 32 (3 * 32 ^ 2) 2 = (3 * 32 ^ 2) - 32 ^ (2 * 2))
+    (H2 (1000033 : ℝ) 32 (1000033 * (3 * 32 * 31)) 2
+        = Real.logb 2 1000033 + (2 * 2 : ℝ) * Real.logb 2 32
+          - Real.logb 2 (1000033 * (3 * 32 * 31)))
+    ∧ (entropyMBound (1000033 : ℝ) 32 (1000033 * (3 * 32 * 31)) 2
+        = (1000033 * (3 * 32 * 31)) - 32 ^ (2 * 2))
     ∧ (∀ ⦃a b : ℝ⦄, a < b → 0 < (1000033 : ℝ) * (2 : ℝ) ^ (-b) - 1 →
         MboundOfEntropy (1000033 : ℝ) 32 2 b < MboundOfEntropy (1000033 : ℝ) 32 2 a) :=
   A13_entropy_route_reduces_to_energy 2 (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+
+/-- In the concrete instance the information-side bound is positive (`E₂ > n⁴`), i.e. the
+instance respects `CP₂ ≥ 1/p` — unlike the earlier `E = 3n²` instance, which had `E < n⁴`. -/
+theorem A13_instance_entropyMBound_pos :
+    0 < entropyMBound (1000033 : ℝ) 32 (1000033 * (3 * 32 * 31)) 2 := by
+  rw [A13_instance_prize_scale.2.1]; norm_num
 
 end ProximityGap.Frontier.WfA13SubsetSumEntropy
 
@@ -189,3 +201,5 @@ open ProximityGap.Frontier.WfA13SubsetSumEntropy in
 #print axioms A13_entropy_route_reduces_to_energy
 open ProximityGap.Frontier.WfA13SubsetSumEntropy in
 #print axioms A13_instance_prize_scale
+open ProximityGap.Frontier.WfA13SubsetSumEntropy in
+#print axioms A13_instance_entropyMBound_pos

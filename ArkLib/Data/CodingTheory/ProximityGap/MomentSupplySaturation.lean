@@ -28,8 +28,14 @@ sole live structural tool (the coset-union / incidence generating function `Z(t)
 
 Probe-validated (exact mod-`p`, PROPER `μ_n`, `p ≫ n^3`, `p ≡ 1 (mod n)`, NEVER `n = q-1`,
 multi-prime, n=8/16/32): for a codeword word `N_j = C(n,j)` at every `j ≥ k`; for a generic
-(random) word `N_j = 0` for `j > k` (the supply collapses to the frozen base), confirming the
-codeword word is the unique per-level maximiser of the moment-supply sequence.
+(random) word `N_j = 0` for `j > k` (the supply collapses to the frozen base).
+
+The codeword word is NOT a unique per-level maximiser in general, and no uniqueness is proved
+here: at the base level `j = k` EVERY word has `N_k(w) = C(n,k)` (`moment_identity_base`), so a
+proper RS code's non-codewords share that maximum; for `j ≤ k` every `j`-set is likewise
+explainable by interpolation; and for `j > n` both sides are `0`.  Only in the range
+`k < j ≤ n` could equality `N_j(w) = C(n,j)` plausibly force `w` to be a codeword, and that
+characterisation is not formalised in this file.
 
 HONEST SCOPE (rule-3, rule-6): this is supply-side IDENTITY infrastructure on the
 moment-supply sequence — a sharp ceiling with its equality witness.  It is NOT a CORE

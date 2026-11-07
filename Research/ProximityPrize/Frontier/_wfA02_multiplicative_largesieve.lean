@@ -29,7 +29,8 @@ ceilings on the worst coset-mass available from this spectrum:
 **The measured fact (`probe_wfA02_multiplicative_largesieve.rs`, exact, β=4, n=8..128):** the
 dilation spectrum is **Ramanujan-flat** — `max_{k≠0}|W(k)| ≈ W(0)/√m` and
 `L¹/W(0) = (1.17–1.23)·√m` (flat ratio to `√m` across five `n`), while `L²/W(0) ≈ 1.62–1.70`
-(flat, bounded; `(L²/W(0))² ≈ 2.6–2.9` is exactly the fourth-moment PAPR `E₂/(mean)²`). So:
+(flat, bounded; `(L²/W(0))² ≈ 2.6–2.9` is the fourth-moment ratio `E|η|⁴/(E|η|²)²`, i.e.
+`E₂/(mean)²` — a kurtosis-type ratio, not a peak-to-average (PAPR) ratio). So:
 
 * The `ℓ¹` ceiling is `L¹/W(0) = Θ(√m) = Θ(√p/n)` — **vacuous** (it is `≫` any polylog target
   `√(log(p/n))`; at the prize point `m≈2^90`, `√m≈2^45 ≫ √(90)≈9.5`). The multiplicative large

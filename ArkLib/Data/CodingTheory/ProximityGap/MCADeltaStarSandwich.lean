@@ -12,8 +12,10 @@ import ArkLib.Data.CodingTheory.ProximityGap.MCAWitnessSpread
 
 The campaign's R1 hypothesis: δ* is governed, on both sides, by interleaved
 list-decoding behaviour.  This file welds the two in-tree dictionary halves into the
-two-sided bracket on the formal threshold `mcaDeltaStar` — making "pin δ*" formally
-equivalent to supplying list data at the two radii until they meet:
+two-sided bracket on the formal threshold `mcaDeltaStar`.  The bracket is a *sufficient*
+certificate only: supplying list data at two radii pins δ* to within their gap, but the
+converse (that every pinning of δ* arises this way) is not proved and is false for these
+particular suppliers (see "Scope" below):
 
 * **Good side** (`mcaDeltaStar_ge_of_interleavedList`): an interleaved list-size bound
   `L` at radius `δ` with `(1 + (n − (2t − n))·L)/q ≤ ε*` forces `δ ≤ mcaDeltaStar` —
@@ -26,13 +28,16 @@ equivalent to supplying list data at the two radii until they meet:
 * **The sandwich** (`mcaDeltaStar_sandwich`): both at once,
   `δgood ≤ mcaDeltaStar C ε* ≤ δbad`.
 
-Pinning δ* for a given code and `ε*` is now *literally* the statement that the two
-kinds of list data exist at radii `δgood, δbad` with `δbad − δgood → 0`: the upper
-data is interleaved list-decodability (the open beyond-Johnson question for explicit
-RS), the lower data is a separated list configuration (KKH26-style constructions,
-supplied in-tree by `deep_quotient_epsMCA_lower_bound`).  The conjecture-level content
-of the problem is exactly the gap between the radii at which the two suppliers
-currently operate.
+**Scope.** If the two kinds of data exist at radii `δgood, δbad` with `δbad − δgood → 0`,
+then δ* is pinned; the upper data is interleaved list-decodability (the open
+beyond-Johnson question for explicit RS), the lower data is a separated list
+configuration (KKH26-style constructions, supplied in-tree by
+`deep_quotient_epsMCA_lower_bound`).  This is one-directional.  The good-side budget
+`(1 + (…)·L)/q` is always at least `1/q`, so for `ε* < 1/q` the good-side supplier cannot
+certify any `δgood`, even for a code with `epsMCA ≡ 0` such as the full space (threshold
+`1`), for which no bad family exists either.  A genuine characterization of δ* would have
+to be stated with the actual good/bad predicates and the finite-step endpoint behaviour of
+`mcaDeltaStar`; it is not proved here.
 -/
 
 open Finset Code InterleavedMCACollapse Round17CAPair
@@ -78,8 +83,9 @@ open Classical in
 
   `δgood ≤ mcaDeltaStar C ε* ≤ δbad`.
 
-The threshold problem for `(C, ε*)` is *equivalent* to driving the two data sources
-toward a common radius. -/
+This is a sufficient bracket: driving the two data sources toward a common radius pins the
+threshold for `(C, ε*)`, but the threshold problem is not equivalent to it (e.g. for
+`ε* < 1/q` the good-side hypothesis `hε` is unsatisfiable). -/
 theorem mcaDeltaStar_sandwich (C : Finset (ι → F))
     (hC : Round17CAPair.PairClosed C) (εstar : ℝ≥0∞)
     {δgood δbad : ℝ≥0} (hδg : δgood ≤ 1) (L : ℕ)

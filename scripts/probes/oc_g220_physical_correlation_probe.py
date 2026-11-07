@@ -16,10 +16,12 @@
 #
 # W(x) = #{(y,z) in G^2 : 2y - z = x}  (the subgroup-translate profile; note the
 #   dyadic "2" is the 2-power-subgroup fingerprint).
-# R_r(x) = #{(A,B) : A in C(G,r), B in C(G,r-1), sum(A) - sum(B) = x}  (adjacent
-#   subset-sum correlation) — wait, R_r as defined is the r-subset-sum COUNT.
-# We take R_r(x) = #{A in C(G,r) : sum(A)=x} (Fable's definition) so that
+# OBJECT (audit 2026-10-28, L103): this probe uses the SINGLE r-subset-sum histogram
+#   R_r(x) = #{A in C(G,r) : sum(A)=x}  (Fable's definition), so that
 #   R̂_r(χ) = Σ_x R_r(x) χ(x) is the r-th elementary-symmetric character transform.
+# It is NOT the adjacent-rank correlation dp_r * dp_{r-1}
+#   (#{(A,B) : |A|=r, |B|=r-1, sum(A) - sum(B) = x}) used by the CORE gate (G228+), and its
+#   conclusions do not transfer to that other object without a separate argument.
 #
 # HYPOTHESES:
 #   H_diag  : C_r = Σ_x W(x) R_r(x) is dominated by a DIAGONAL/support-overlap
@@ -28,7 +30,11 @@
 #             lower bound in physical space that Mellin phases hide.  Thinner-than-BGK.
 #   H_null  : C_r - (Σ W)(Σ R)/p (the DC-subtracted signed correlation) has NO
 #             forced sign / equidistributes in sign across cells => physical space
-#             is the SAME wall, no structural dominance.  (matches Mellin no-go.)
+#             shows no forced sign on these cells (consistent with the Mellin probes).
+#
+# SCOPE: the sign computations are exact integers, but they are finite measurements on the
+# listed cells. A sign that is not forced on these cells does not rule out every structural
+# physical-space decomposition (other weights, guards, or asymptotic regimes).
 #
 # We compute EVERYTHING as exact integers (no floats for the sign claim).
 import sys
@@ -136,7 +142,9 @@ def parseval_crosscheck(p, n, r):
 
 
 def main():
-    # Prize-faithful cells: n=2^k, p prime, n|p-1, p>n^3-ish, m=(p-1)/n>1, never n=p-1.
+    # Test cells: n=2^k, p prime, n|p-1, m=(p-1)/n>1, never n=p-1. These are NOT all in the
+    # prize-faithful thin regime: several have p < n^2 (e.g. n=32, p=193; n=64, p=641), and
+    # none of the n>=16 cells has p > n^3. Treat them as a mixed finite sample.
     cells = [
         (8, 41), (8, 73), (8, 97), (8, 257), (8, 60017),
         (16, 97), (16, 257), (16, 881), (16, 977), (16, 1153),
@@ -180,7 +188,7 @@ def main():
         neg = sum(1 for v in s if v < 0)
         zer = sum(1 for v in s if v == 0)
         print(f"r={r}: {pos} pos, {neg} neg, {zer} zero out of {len(s)} cells "
-              f"=> {'FORCED-SIGN candidate' if (pos == 0 or neg == 0) and zer == 0 else 'SIGN NOT FORCED (physical space = same wall)'}")
+              f"=> {'FORCED-SIGN candidate on these cells' if (pos == 0 or neg == 0) and zer == 0 else 'sign NOT forced on these finite cells (single r-subset histogram)'}")
     # Joint sign realization (the G214 object): are all 4 quadrants of
     # (sign A5, sign A6) realized in physical space too?
     bycell = {}
@@ -191,7 +199,7 @@ def main():
         if 5 in v and 6 in v:
             quads.add((v[5], v[6]))
     print(f"\nJOINT (sign A5, sign A6) quadrants realized in PHYSICAL space: {sorted(quads)}")
-    print(f"  => {'ALL 4 realized => physical space no more structured than Mellin (G214 mirror)' if len(quads) >= 4 else 'NOT all 4 => possible physical-space structural constraint'}")
+    print(f"  => {'ALL 4 realized on these cells for the single-histogram object (no joint sign lock seen; not a proof about other decompositions or the adjacent-rank object)' if len(quads) >= 4 else 'NOT all 4 realized on these cells => possible physical-space structural constraint'}")
 
 
 def r_max_check(n, p):

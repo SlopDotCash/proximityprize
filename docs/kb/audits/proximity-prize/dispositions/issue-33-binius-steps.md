@@ -24,6 +24,14 @@ and finalSumcheck `toFun_next`/`toFun_full` back-transport.
     `Steps/FinalSumcheck.lean:141` `finalSumcheckOracleReduction_perfectCompleteness`.
   - `toFun_full` extractor proofs in Fold/Commit/FinalSumcheck/Relay.
   - `*_rbrKnowledgeSoundness` in all four steps.
+
+> **Correction (2026-10-28): the two Fold entries above are not proofs in the current tree.**
+> `foldKnowledgeStateFunction` gets its `toFun_full` from the explicit hypothesis
+> `FoldKnowledgeStateToFunFull`. That hypothesis was the custom axiom
+> `foldKnowledgeStateFunction_toFun_full`, and its docstring explains why it is expected to be false
+> at commitment rounds. There is no single-round `foldOracleVerifier_rbrKnowledgeSoundness`
+> theorem; the unused custom axiom of that name was removed. See
+> `ArkLib/ProofSystem/Binius/BinaryBasefold/Steps/Fold.lean`.
 - `#32` (Prelude port) resolved.
 - Whole-tree comment-stripped scan of `ArkLib/ProofSystem/Binius/BinaryBasefold/**` → **zero**
   `sorry`/`admit`.

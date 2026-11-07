@@ -17,6 +17,8 @@ This probe computes, EXACTLY,
   * the rank of the per-node constraint map Phi (by block decomposition, cross-checked
     against brute-force modular Gaussian elimination at small sizes),
   * the least agreement A with dim Q > n * rank(Phi)  (existence of a nonzero interpolant),
+    found by bisection: the reported A satisfies the gate, but "least" assumes the gate is
+    monotone in A, which is not proved here (ranks are exact over F_P, P = 2^31 - 1),
 and scans (m, s, L) at rate 1/2 to see how far beyond the Johnson agreement sqrt(n(k-1)) the
 d=1 interpolation threshold moves.  It also checks the contact constraint semantically on
 random instances over F_p (Q in kernel  =>  Q(alpha+T, P(alpha+T), P'(alpha+T)) = 0 mod T^m).
@@ -142,7 +144,8 @@ def ld_min_agreement(n, k, m, s, A_lo=None, A_hi=None):
     w = k - 1
     lo = A_lo or (k)
     hi = A_hi or n
-    # monotone in A (dim grows faster than rank); binary search for first A satisfying
+    # binary search for the first A satisfying the gate; this ASSUMES monotonicity in A
+    # (dim grows faster than rank), which is expected but not proved here
     def ok(A):
         D = m * A
         return ld_dim(D, w, s) > n * ld_rank_formula(D, w, s, m)
@@ -448,6 +451,7 @@ def main():
     D = m * a
     dimQ = line_dim(D, w, s, L)
     print(f"  dim Q = {dimQ}  (PR states 13096794720)  {'OK' if dimQ == 13096794720 else 'DIFF'}")
+    fails += 0 if dimQ == 13096794720 else 1
     if not args.quick:
         r, rt, ct = line_rank_blocks(D, w, s, L, m)
         print(f"  exact per-node rank (y1!=0) = {r}   n*rank = {n * r}   "

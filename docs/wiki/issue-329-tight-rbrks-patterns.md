@@ -32,8 +32,9 @@ directions, neither needing an accepting-transcript construction:
   implies the transported relation, because every compatible witness is pinned.
 
 The terminal sum-check relation collapses to the direct evaluation identity via
-`relationRound_last_iff_deg` (degree-generic; the deg-3 copy in `TightMidLeaves.lean` should be
-deduped into it).
+`relationRound_last_iff_deg` (degree-generic, in `TightMidLeaves.lean`). The deduplication is
+done: the degree-three `relationRound_last_iff` in the same file is now a one-line corollary of
+`relationRound_last_iff_deg`.
 
 ## The kernel leaf (the 1/|R| shape)
 
@@ -55,12 +56,15 @@ no support analysis of the multi-round run needed.
 
 ## Guarded terminal checks
 
-The oracle `CheckClaim` **discards** its predicate's `Prop` (`do let _ ← pred stmt; return
-stmt`): the binding content must live in the *semantic output relation* (the next stage's input
+The canonical oracle `CheckClaim` is a **pure pass-through** (`verify := fun stmt _ => pure
+stmt`): it takes no predicate and never rejects, so an input violating the intended check is
+accepted exactly like one satisfying it. (The older version ran `pred` and discarded the
+resulting `Prop`, with the same effect.) The binding content must therefore live in the *semantic output relation* (the next stage's input
 relation), never in `Set.univ` front doors. The pred-generic transport leaf is
 `CheckClaim.oracleVerifier_rbrKnowledgeSoundness_transport` (`FinalCheckWithClaimLeaf.lean`);
 `tightFinalRelOut` shows the honest endpoint shape: quantifier-free identities over the final
-statement and oracles.
+statement and oracles. These relation-preserving leaves are semantic obligations carried to a later stage; they
+are not proofs that the terminal verifier enforces the check.
 
 ## Assembly mechanics
 

@@ -77,6 +77,55 @@ theorem getSumcheckRoundPoly_eval_eq_sum_cons {d : ℕ} (i : Fin ℓ)
   simp only [getSumcheckRoundPoly, Polynomial.eval_finsetSum]
   exact Finset.sum_congr rfl fun x _ => MvPolynomial.eval_evalExcept_first _ x h.val r
 
+/-- Peel the first coordinate off a product-cube sum, with an arity equation `m = n + 1`. -/
+theorem sum_eval_cons_cast_piFinset {m n : ℕ} (hm : m = n + 1)
+    (S : Fin m → Finset L) (p : MvPolynomial (Fin m) L) :
+    ∑ a ∈ S ⟨0, by omega⟩, ∑ x ∈ Fintype.piFinset (fun j : Fin n => S ⟨j + 1, by omega⟩),
+        MvPolynomial.eval (Fin.cons a x ∘ Fin.cast hm) p =
+      ∑ x ∈ Fintype.piFinset S, MvPolynomial.eval x p := by
+  subst hm
+  rw [Fin.sum_piFinset_cons S (fun x => MvPolynomial.eval x p)]
+  rfl
+
+/-- **Heterogeneous honest round check.** For an arbitrary per-coordinate domain family `D`
+(hyperprism / mixed domains, not only uniform ones), summing the round polynomial over coordinate
+`i`'s domain `D.points i` — exactly what `roundOracleVerifier` checks — gives the sum of the round
+witness over the suffix cube `(D.drop i).cube` on coordinates `i, …, ℓ-1`.
+
+This records that the canonical round consumes coordinates front-first consistently: the free
+indeterminate is variable `0` (original coordinate `i`, summed by the verifier over
+`D.points i`), the remaining variables `1, …` are original coordinates `i+1, …` (summed by the
+prover over `D.drop (i+1)`), and `projectToNextSumcheckPoly` fixes variable `0`
+(`sum_projectToNextSumcheckPoly`). In particular the asymmetric two-coordinate example
+`D₀ = {0}`, `D₁ = {1}`, `H = X₀` (honest sum `0`) is accepted. -/
+theorem sum_getSumcheckRoundPoly {d : ℕ} (i : Fin ℓ)
+    (h : ↥L⦃≤ d⦄[X Fin (ℓ - ↑i.castSucc)]) :
+    ∑ b ∈ D.points i, (getSumcheckRoundPoly ℓ D (i := i) h).val.eval b =
+      ∑ x ∈ (D.drop ↑i.castSucc).cube, MvPolynomial.eval x h.val := by
+  have hm : ℓ - ↑i.castSucc = (ℓ - ↑i.castSucc - 1) + 1 := by
+    have := i.isLt; simp only [Fin.val_castSucc]; omega
+  simp_rw [getSumcheckRoundPoly_eval_eq_sum_cons]
+  have h0 : D.points i = (D.drop ↑i.castSucc).points ⟨0, by omega⟩ := by
+    rw [SumcheckDomain.points_drop]; congr 1
+  have h1 : (D.drop (↑i.castSucc + 1)).cube = Fintype.piFinset
+      (fun j : Fin (ℓ - ↑i.castSucc - 1) => (D.drop ↑i.castSucc).points ⟨j + 1, by omega⟩) := by
+    unfold SumcheckDomain.cube; congr 1; funext j
+    rw [SumcheckDomain.points_drop, SumcheckDomain.points_drop]; congr 1; ext; simp; omega
+  rw [h0, h1]
+  exact sum_eval_cons_cast_piFinset hm _ _
+
+/-- **Heterogeneous honest next-round claim.** For an arbitrary domain family `D`, the round
+polynomial evaluated at the challenge `c` equals the sum of the advanced witness
+`projectToNextSumcheckPoly ℓ i H c` over the next suffix cube `(D.drop (i+1)).cube`. -/
+theorem sum_projectToNextSumcheckPoly (i : Fin ℓ) (H : MultiquadraticPoly L (ℓ - i)) (c : L) :
+    ∑ x ∈ (D.drop ↑i.succ).cube, (projectToNextSumcheckPoly ℓ i H c).val.eval x =
+      (getSumcheckRoundPoly ℓ D i H).val.eval c := by
+  rw [getSumcheckRoundPoly_eval_eq_sum_cons]
+  refine Finset.sum_congr rfl fun x _ => ?_
+  simp only [projectToNextSumcheckPoly, fixPrefix, eval_rename]
+  rw [eval_fixFirstVariablesOfMQP_one (by omega)]
+  rfl
+
 /-- The two-point round check delegates to the canonical uniform-domain identity. -/
 theorem getSumcheckRoundPoly_sum_eq {𝓑 : Fin 2 ↪ L} (i : Fin ℓ)
     (h : ↥L⦃≤ 2⦄[X Fin (ℓ - ↑i.castSucc)]) :
@@ -137,3 +186,5 @@ end Sumcheck.Structured
 
 #print axioms Sumcheck.Structured.getSumcheckRoundPoly_eval_eq_sum_cons
 #print axioms Sumcheck.Structured.getSumcheckRoundPoly_sum_eq
+#print axioms Sumcheck.Structured.sum_getSumcheckRoundPoly
+#print axioms Sumcheck.Structured.sum_projectToNextSumcheckPoly

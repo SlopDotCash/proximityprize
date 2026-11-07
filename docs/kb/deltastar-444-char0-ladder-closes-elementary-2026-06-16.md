@@ -1,5 +1,19 @@
 # The elementary combinatorics CLOSES the char-0 DC-Wick ladder (#444, 2026-06-16)
 
+> **Scope correction (2026-10-28 audit, T48; cross T87/T104).** The antipodal (Lam–Leung)
+> combinatorics is valid, and no failure of the characteristic-zero Bessel inequality is alleged.
+> - **Finite data are not the generating function.** The cumulant and coefficient data through
+>   depth 8 (`κ_{2r} = c_r·n` "linear to r=8"; ratios `a_{r+1}/a_r → L ≈ 0.6`) do not prove an
+>   all-depth convergence radius or the advertised coefficient pattern at every depth. "Analytic of
+>   radius `1/√L`" and "CLOSES" need the actual generating function and its established domain
+>   before the MGF inequality is claimed.
+> - **No transfer to raw finite-field energy.** At deep `r`, the raw energy is bounded below by the
+>   principal-mode floor `n^(2r)/p`, so the "char-p faithfulness of E_r to depth log m" reduction is
+>   meaningful only for the DC-subtracted nonzero-period energy (as the honest-scope paragraph
+>   below begins to say).
+> - **"Reduces to exactly" overstates.** The prize does not reduce to exactly this statement; the
+>   MCA bridge and other inputs are separate.
+
 **Status: a genuine structural advance — the char-0 floor closes via elementary combinatorics. NOT the
 prize (which is char-p); the prize gap is now ISOLATED to a single char-p-faithfulness statement.**
 

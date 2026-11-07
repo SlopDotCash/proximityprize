@@ -20,13 +20,19 @@ The preferred finite family is the used-profile image `usedProfileRepFamily prof
 older full image `(Finset.univ : Finset P).image rep` remains available when a caller has already
 budgeted every profile, including unattained ones.
 
-It is not a prize proof.  It packages the remaining obligation:
+It is not a prize proof.  The Linnik/TZ contracts package the remaining obligation:
 
 * exact singleton floor-bad scanner evidence;
-* sub-prize least-prime supply;
+* sub-prize least-prime (or TZ) supply;
 * floor-goodness budgets the chosen representative family;
 * profile representatives are exact fiber maximizers;
 * the scaled MCA budget is small enough.
+
+The least-prime/TZ supply does counting work only through the floor-goodness-to-budget input
+`FloorGoodFamilyBudget`.  When a profile scanner already proves the used-profile budget directly,
+`deltaStar_pin_of_profileScannerBudget` closes the pin with no number-theoretic input at all;
+wrappers that took Linnik/TZ hypotheses alongside such a scanner budget (and ignored them) have
+been removed (audit CW-B09-08).
 -/
 
 set_option autoImplicit false
@@ -574,67 +580,6 @@ theorem deltaStar_pin_of_linnik_candidateListExactSmallest_usedProfileScannerCon
     hcardPrime hcardMod hcardPrize C εstar hδ hfloorBudget
     (floorFamilyContainsGlobalMax_of_no_bad_used_profile_usedProfileFamily C δ hno) hbudget
 
-/-- Linnik-form floor closure with only local profile scanner certificates for max-containment and
-the used-profile family budget. -/
-theorem deltaStar_pin_of_linnik_candidateListExactSmallest_usedProfileBudgetScannerContract
-    (FloorBad : ℕ -> ℕ -> Prop)
-    (hexact : FloorClosureContract.CandidateListExactSmallestFamily FloorBad)
-    (hLeast : LinnikLeastPrimeBelowPrize)
-    (a : ℕ) (ha : 4 ≤ a)
-    (hcardPrime : (Fintype.card F).Prime)
-    (hcardMod : Fintype.card F % (2 ^ a) = 1)
-    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
-    (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
-    (hδ : δ ≤ 1)
-    {P : Type} [Finite P]
-    {profile : WordStack A (Fin 2) ι -> P}
-    {rep : P -> WordStack A (Fin 2) ι}
-    (hnoMaxBad : ¬ ∃ p : P, StackProfileFiberMax.UsedProfile profile p ∧
-      (profile (rep p) ≠ p ∨
-        ∃ u : WordStack A (Fin 2) ι, profile u = p ∧
-          StackProfileFiberMax.StackBadCount F C δ (rep p) <
-            StackProfileFiberMax.StackBadCount F C δ u))
-    (hnoBudgetBad : ¬ ∃ p : P, StackProfileFiberMax.UsedProfile profile p ∧
-      B < StackProfileFiberMax.StackBadCount F C δ (rep p))
-    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
-    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar := by
-  classical
-  letI : Fintype P := Fintype.ofFinite P
-  exact
-    deltaStar_pin_of_linnik_candidateListExactSmallest_usedProfileScannerContract
-      (F := F) (A := A) FloorBad hexact hLeast a ha
-      hcardPrime hcardMod hcardPrize C εstar hδ
-      (floorGoodFamilyBudget_of_no_usedProfile_budget_lt
-        (F := F) (A := A) FloorBad a C δ hnoBudgetBad)
-      hnoMaxBad hbudget
-
-/-- No-laundering form of the Linnik profile-budget scanner contract.  Once the scanner already
-proves max-containment and the used-profile budget, the delta-star pin follows directly from the
-local scanner theorem; Linnik/floor-localization inputs are not the source of the counting bound. -/
-theorem deltaStar_pin_of_profileBudgetScanner_of_linnikInputs
-    (FloorBad : ℕ -> ℕ -> Prop)
-    (_hexact : FloorClosureContract.CandidateListExactSmallestFamily FloorBad)
-    (_hLeast : LinnikLeastPrimeBelowPrize)
-    (a : ℕ) (_ha : 4 ≤ a)
-    (_hcardPrime : (Fintype.card F).Prime)
-    (_hcardMod : Fintype.card F % (2 ^ a) = 1)
-    (_hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
-    (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
-    (hδ : δ ≤ 1)
-    {P : Type}
-    {profile : WordStack A (Fin 2) ι -> P}
-    {rep : P -> WordStack A (Fin 2) ι}
-    (hnoMaxBad : ¬ ∃ p : P, StackProfileFiberMax.UsedProfile profile p ∧
-      (profile (rep p) ≠ p ∨
-        ∃ u : WordStack A (Fin 2) ι, profile u = p ∧
-          StackProfileFiberMax.StackBadCount F C δ (rep p) <
-            StackProfileFiberMax.StackBadCount F C δ u))
-    (hnoBudgetBad : ¬ ∃ p : P, StackProfileFiberMax.UsedProfile profile p ∧
-      B < StackProfileFiberMax.StackBadCount F C δ (rep p))
-    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
-    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
-  deltaStar_pin_of_profileScannerBudget C εstar hδ hnoMaxBad hnoBudgetBad hbudget
-
 /-- TZ-form floor closure with profile-fiber representatives as the max-containment certificate. -/
 theorem deltaStar_pin_of_tz_candidateListExactSmallest_profileFiberMaxContract
     (FloorBad : ℕ -> ℕ -> Prop)
@@ -714,67 +659,6 @@ theorem deltaStar_pin_of_tz_candidateListExactSmallest_usedProfileScannerContrac
     hcardPrime hcardMod hcardPrize C εstar hδ hfloorBudget
     (floorFamilyContainsGlobalMax_of_no_bad_used_profile_usedProfileFamily C δ hno) hbudget
 
-/-- TZ-form floor closure with only local profile scanner certificates for max-containment and the
-used-profile family budget. -/
-theorem deltaStar_pin_of_tz_candidateListExactSmallest_usedProfileBudgetScannerContract
-    (FloorBad : ℕ -> ℕ -> Prop)
-    (hexact : FloorClosureContract.CandidateListExactSmallestFamily FloorBad)
-    {β : ℝ} (hβ : β ≤ 3)
-    (hTZfam : ∀ a : ℕ, 4 ≤ a -> TZPrimeSupply (2 ^ a) β 1)
-    (a : ℕ) (ha : 4 ≤ a)
-    (hcardPrime : (Fintype.card F).Prime)
-    (hcardMod : Fintype.card F % (2 ^ a) = 1)
-    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
-    (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
-    (hδ : δ ≤ 1)
-    {P : Type} [Finite P]
-    {profile : WordStack A (Fin 2) ι -> P}
-    {rep : P -> WordStack A (Fin 2) ι}
-    (hnoMaxBad : ¬ ∃ p : P, StackProfileFiberMax.UsedProfile profile p ∧
-      (profile (rep p) ≠ p ∨
-        ∃ u : WordStack A (Fin 2) ι, profile u = p ∧
-          StackProfileFiberMax.StackBadCount F C δ (rep p) <
-            StackProfileFiberMax.StackBadCount F C δ u))
-    (hnoBudgetBad : ¬ ∃ p : P, StackProfileFiberMax.UsedProfile profile p ∧
-      B < StackProfileFiberMax.StackBadCount F C δ (rep p))
-    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
-    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar := by
-  classical
-  letI : Fintype P := Fintype.ofFinite P
-  exact
-    deltaStar_pin_of_tz_candidateListExactSmallest_usedProfileScannerContract
-      (F := F) (A := A) FloorBad hexact hβ hTZfam a ha
-      hcardPrime hcardMod hcardPrize C εstar hδ
-      (floorGoodFamilyBudget_of_no_usedProfile_budget_lt
-        (F := F) (A := A) FloorBad a C δ hnoBudgetBad)
-      hnoMaxBad hbudget
-
-/-- No-laundering form of the TZ profile-budget scanner contract. -/
-theorem deltaStar_pin_of_profileBudgetScanner_of_tzInputs
-    (FloorBad : ℕ -> ℕ -> Prop)
-    (_hexact : FloorClosureContract.CandidateListExactSmallestFamily FloorBad)
-    {β : ℝ} (_hβ : β ≤ 3)
-    (_hTZfam : ∀ a : ℕ, 4 ≤ a -> TZPrimeSupply (2 ^ a) β 1)
-    (a : ℕ) (_ha : 4 ≤ a)
-    (_hcardPrime : (Fintype.card F).Prime)
-    (_hcardMod : Fintype.card F % (2 ^ a) = 1)
-    (_hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
-    (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
-    (hδ : δ ≤ 1)
-    {P : Type}
-    {profile : WordStack A (Fin 2) ι -> P}
-    {rep : P -> WordStack A (Fin 2) ι}
-    (hnoMaxBad : ¬ ∃ p : P, StackProfileFiberMax.UsedProfile profile p ∧
-      (profile (rep p) ≠ p ∨
-        ∃ u : WordStack A (Fin 2) ι, profile u = p ∧
-          StackProfileFiberMax.StackBadCount F C δ (rep p) <
-            StackProfileFiberMax.StackBadCount F C δ u))
-    (hnoBudgetBad : ¬ ∃ p : P, StackProfileFiberMax.UsedProfile profile p ∧
-      B < StackProfileFiberMax.StackBadCount F C δ (rep p))
-    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
-    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
-  deltaStar_pin_of_profileScannerBudget C εstar hδ hnoMaxBad hnoBudgetBad hbudget
-
 end ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge
 
 /-! ## Axiom audit -/
@@ -803,10 +687,6 @@ end ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.deltaStar_pin_of_linnik_candidateListExactSmallest_profileFiberMaxContract
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.deltaStar_pin_of_linnik_candidateListExactSmallest_usedProfileFiberMaxContract
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.deltaStar_pin_of_linnik_candidateListExactSmallest_usedProfileScannerContract
-#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.deltaStar_pin_of_linnik_candidateListExactSmallest_usedProfileBudgetScannerContract
-#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.deltaStar_pin_of_profileBudgetScanner_of_linnikInputs
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.deltaStar_pin_of_tz_candidateListExactSmallest_profileFiberMaxContract
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.deltaStar_pin_of_tz_candidateListExactSmallest_usedProfileFiberMaxContract
 #print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.deltaStar_pin_of_tz_candidateListExactSmallest_usedProfileScannerContract
-#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.deltaStar_pin_of_tz_candidateListExactSmallest_usedProfileBudgetScannerContract
-#print axioms ArkLib.ProximityGap.Frontier.ProfileFiberMaxFloorBridge.deltaStar_pin_of_profileBudgetScanner_of_tzInputs

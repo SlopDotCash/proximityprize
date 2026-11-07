@@ -33,8 +33,11 @@ weight**:
 
 This is the *exact* Galois-module content of the Stickelberger angle on the archimedean side: the
 `p`-adic valuation that Stickelberger pins is Galois-invariant across the conjugate orbit and carries
-**zero** archimedean spread information (cf. lane C26), so the only Galois-derivable bound on `|N|` is
-this uniform conjugate cap. We model it as the hypothesis `normAbs_le_weightPow` below (one inequality
+**zero** archimedean spread information (cf. lane C26). The uniform conjugate cap is the simplest
+Galois-derivable bound on `|N|`, but **not the only or best one** (audit CW-B18-22): Parseval over the
+conjugates, `Σ_σ |σ(σ_T)|² = |G|·w`, combined with AM-GM gives `|N| ≤ w^{n/4}`, which doubles the
+threshold exponent below to `p^{4/n}`; that still tends to `1`, so the collapse verdict is unchanged.
+We model the triangle cap as the hypothesis `normAbs_le_weightPow` below (one inequality
 per the triangle bound; not re-derived from the analytic embedding here) and run it to its conclusion.
 
 ## The per-weight threshold and its COLLAPSE (the obstruction, axiom-clean)
@@ -42,7 +45,8 @@ per the triangle bound; not re-derived from the analytic embedding here) and run
 A spurious config needs `p ∣ N(σ_T)` with `N(σ_T) ≠ 0` (the config is `ℂ`-nonzero, antipodal-free),
 hence `p ≤ |N(σ_T)| ≤ w^{n/2}`, i.e.
 
-> **`weight_ge_of_spurious`** : a spurious config at prime `p` has weight `w ≥ p^{2/n}`.
+> **`prime_le_weightPow_of_spurious`** : a spurious config at prime `p` has `p ≤ w^{n/2}`
+> (equivalently, for `n ≥ 2`, weight `w ≥ p^{2/n}`; the real-power form is not stated in Lean).
 
 So **no** spurious config of weight `< p^{2/n}` exists — the char-0 → char-`p` transfer is EXACT up to
 weight `⌈p^{2/n}⌉ − 1`. With `p = n^β` this threshold is
@@ -52,9 +56,8 @@ weight `⌈p^{2/n}⌉ − 1`. With `p = n^β` this threshold is
 `weight_threshold_eq_exp` below. The deep moment `E_r` involves configs of weight up to `2r ≈ 2 ln q
 = 2 β ln n`. The transfer is EXACT to depth `r` iff `2r < p^{2/n}`, i.e. `β ln n < exp(2β ln n / n)`.
 
-> **`threshold_exceeds_depth_iff`** : the norm certificate covers the depth-`r` band
-> (`2r < p^{2/n}`) **iff** `n < 2 · (n/2 · p^{2/n}) / (2r)` … made precise as the clean inequality
-> `(2*r : ℝ) < Real.exp (2 * β * Real.log n / n)`.
+(The depth-coverage condition `(2*r : ℝ) < Real.exp (2 * β * Real.log n / n)` is stated here
+informally only; no Lean theorem in this file formalizes it.)
 
 **The collapse (`threshold_collapses_at_prize`, axiom-clean).** As `n → ∞` with `β` FIXED, the
 exponent `2 β ln n / n → 0`, so `p^{2/n} = exp(2β ln n / n) → 1`. Concretely at the prize scale
@@ -70,8 +73,8 @@ Galois-derivable handle on the norm — the `n/2`-fold conjugate product — giv
 
 ## Honest scope (rules 1, 3, 6)
 
-NOT a CORE closure. `weight_ge_of_spurious` is a genuine (axiom-clean) per-weight transfer-true
-theorem; `threshold_collapses_at_prize` proves it is asymptotically vacuous. Verdict OBSTRUCTION /
+NOT a CORE closure. `prime_le_weightPow_of_spurious` is a genuine (axiom-clean, one-line
+`le_trans`) per-weight transfer-true consequence of the hypothesised conjugate cap; `threshold_collapses_at_prize` proves it is asymptotically vacuous. Verdict OBSTRUCTION /
 THRESHOLD-PUSHED: the certificate is sharpened to the per-weight form `w ≥ p^{2/n}` (wider than the
 global `p > (2r)^{n/2}` reading: it is monotone in the actual weight, not the worst `2r`), and we pin
 exactly why it cannot reach the prize depth. CORE (`M(μ_n) ≤ C√(n log(p/n))` at `r ≈ ln q`) stays OPEN.
@@ -112,15 +115,6 @@ theorem prime_le_weightPow_of_spurious
     {p Nabs : ℝ} {w n : ℕ} (hpN : p ≤ Nabs) (hcap : NormConjugateCap Nabs w n) :
     p ≤ (w : ℝ) ^ (n / 2) :=
   le_trans hpN hcap
-
-/-- **The per-weight transfer threshold as a lower bound on the weight (the certificate).**
-For `n ≥ 2` and `w ≥ 1`, a spurious config at `p` forces `(p : ℝ) ^ (2 / n) ≤ w` — i.e. the weight is
-at least `p^{2/n}`. (`n/2 ≥ 1` natural division; we use the real-power monotonicity in the explicit
-collapse statement below; here we keep the directly-usable `p ≤ w^{n/2}` consequence.) -/
-theorem weight_ge_of_spurious
-    {p Nabs : ℝ} {w n : ℕ} (hpN : p ≤ Nabs) (hcap : NormConjugateCap Nabs w n) :
-    p ≤ (w : ℝ) ^ (n / 2) :=
-  prime_le_weightPow_of_spurious hpN hcap
 
 /-! ## 2. The threshold value `p^{2/n} = exp(2β ln n / n)` and its prize-scale COLLAPSE -/
 
@@ -171,7 +165,6 @@ theorem threshold_eventually_below_two (β : ℝ) :
 end ProximityGap.Frontier.StickelbergerPerWeightThreshold
 
 /-! ## Axiom audit -/
-#print axioms ProximityGap.Frontier.StickelbergerPerWeightThreshold.weight_ge_of_spurious
 #print axioms ProximityGap.Frontier.StickelbergerPerWeightThreshold.weight_threshold_eq_exp
 #print axioms ProximityGap.Frontier.StickelbergerPerWeightThreshold.collapse_exponent_tendsto_zero
 #print axioms ProximityGap.Frontier.StickelbergerPerWeightThreshold.threshold_collapses_at_prize

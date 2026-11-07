@@ -55,7 +55,10 @@ step, with only per-instance finite bookkeeping (kernel-infeasible at scale, aud
    functional depends on a cap point `c` only through `(S, J) = (Σc_j, Σ j·c_j)`, so the cap
    design space collapses to `0 ≤ o(S,J) ≤ ν_d(S,J)` with `ν_d` and the row density computed
    by ray-convolution DPs LINEAR in `d`.  `ρ·IQ − IR` is convex in `o` (bang-bang optima),
-   solved by iterated marginal pricing; midpoint grids + Richardson `h`-ladder.  Validation:
+   searched by iterated marginal pricing from selected starts — a local heuristic, so a
+   positive margin exhibits a feasible occupancy but a nonpositive one is unresolved, not an
+   infeasibility certificate; midpoint grids + two-grid Richardson `h`-ladder, an extrapolated
+   estimate with no proved error bound (audit 2026-10-28, L105).  Validation:
    reproduces `hd1_continuum_limit.py` to ≤ 4·10⁻⁵ in the ratio at rates 1/2, 1/4, 1/8.
 3. **`hdspec_search.py`** — exact-integer SPECTRAL caps: `cap(Ω) = {bs : (Σb, Σjb) ∈ Ω}` for a
    set `Ω` of integer pairs; multiplicities by unbounded-knapsack DP; `W = w·S − J` exactly, so

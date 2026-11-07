@@ -13,10 +13,15 @@ import ArkLib.ToMathlib.CentreVanishingSupply
 # Issue #304 — THE MATCHING-LANE PRODUCER: `GSSurfaceData` from named §5/§6 facts
 
 The full assembly of every produced field: a single producer of the (Taylor-faithful)
-keystone bundle whose inputs are **only** the named §5/§6 GS-construction facts —
+keystone bundle whose inputs are **only** the named §5/§6 inputs below —
 
 * the surface: monic, positive-degree, separable specialization; trivariate separability
-  (the known-open supply); fiber-degree ≥ 2;
+  (the known-open supply); fiber-degree ≥ 2.  Both separability inputs are **ring-level**
+  (`Separable` over `F[Z][X]` resp. `F[Z]`, a Bézout identity with the derivative), strictly
+  stronger than separability over the fraction field or `discr ≠ 0`.  They can hold (e.g. for
+  constant-discriminant products such as `T·(T − 1)`), so the interface is not inconsistent;
+  but they force unit branch separations (`SliceSeparabilityBoundary`) and so cannot be
+  supplied for arbitrary honest variable-discriminant GS surfaces (e.g. a slice `T·(T − Z)`);
 * the section `v` with the per-place incidence `(P z).eval x₀ = v(z)` (the §6 output);
 * the per-place specialized matching divisibility (the S10-converse output);
 * the numerics: the uniform section budget/count, the pigeonhole matching pack (decoded
@@ -30,6 +35,10 @@ Internally: `hdvd`/`Hypotheses` via the monic factorization + pigeonhole
 centre-vanishing swap), `htail` via the Claim-5.8′ ab-initio capstone
 (`GSSurfaceHtailPigeonhole`), `hdegc` via the weight collapse (`GSSurfaceDegSupply`),
 `hdvdP`/`hcong` via the Taylor-faithful cargo adapters (`GSSurfaceTaylorRepair`).
+
+This is a correct **conditional** producer: the named inputs (in particular the two
+ring-level separability hypotheses) are open supplies, not consequences of the generic GS
+construction, and are not discharged here.
 
 ## References
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon
@@ -57,8 +66,10 @@ variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 open ProximityGap Code NNReal Function ProbabilityTheory
 open scoped ENNReal ProbabilityTheory LinearCode
 
-/-- **THE MATCHING-LANE PRODUCER**: the Taylor-faithful keystone bundle from named §5/§6
-GS-construction facts only. -/
+/-- **THE MATCHING-LANE PRODUCER**: the Taylor-faithful keystone bundle from the named §5/§6
+inputs listed in the module docstring.  `hsep`/`hsepR` are ring-level separability over
+`F[Z]`/`F[Z][X]` — a known-open supply that fails at slices with non-unit branch
+separation — not generic GS-construction facts. -/
 noncomputable def gsSurfaceData_of_matching_lane
     {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}
@@ -142,8 +153,8 @@ noncomputable def gsSurfaceData_of_matching_lane
   · -- hcong: the Taylor-faithful congruence at the decoded branch value
     exact fun z hz => hcong_of_branch_value _ z (rootSection v z) (hval z hz)
 
-/-- **The per-`(u, P)` matching-lane pack**: every named §5/§6 GS-construction fact the
-producer consumes, bundled. -/
+/-- **The per-`(u, P)` matching-lane pack**: every named §5/§6 input the producer consumes,
+bundled (including the open ring-level separability supplies `hsep`, `hsepR`). -/
 structure MatchingLaneData {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     (u : WordStack F (Fin (k + 1)) ι) (P : F → Polynomial F) : Type where
   x₀ : F
@@ -192,7 +203,9 @@ structure MatchingLaneData {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
 /-- **THE END-TO-END KEYSTONE (matching-lane interface)**: correlated agreement for affine
 curves in the Johnson regime from a per-`(u, P)` pack of named §5/§6 GS-construction facts —
 through the Taylor-faithful front door, the section pigeonhole, the Claim-5.8′ tail, the
-weight collapse, and the faithful per-place cargo, all PROVEN. -/
+weight collapse, and the faithful per-place cargo, all PROVEN.  Conditional on the pack,
+whose ring-level separability fields (`hsep`, `hsepR`) are open supplies that cannot hold
+for arbitrary variable-discriminant GS surfaces. -/
 theorem correlatedAgreement_affine_curves_of_matching_lane
     {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)

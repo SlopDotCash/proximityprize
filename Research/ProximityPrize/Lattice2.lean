@@ -61,7 +61,7 @@ duplicate** — both are kept and both are fully proven (axiom-clean):
   indexes the lattice by `Finset ℕ` (`Finset.range (n+1) |>.filter …`). Its
   `listLatticeSet` / `listLatticeThreshold` are the canonical objects the downstream
   Grand-Challenge LD-threshold bracket files consume
-  (`GrandChallengeLDThreshold{,Elias,JohnsonSq,HalfDist}.lean`), which rewrite by
+  (`LDThreshold{,Elias,JohnsonSq,HalfDist}.lean`), which rewrite by
   `GrandChallenges.listLatticeSet, Finset.mem_filter, Finset.mem_range` and therefore
   depend on that `Finset ℕ` representation.
 

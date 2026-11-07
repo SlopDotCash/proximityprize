@@ -6,46 +6,60 @@ Authors: ArkLib Contributors
 import Mathlib
 
 /-!
-# The tower-martingale (Azuma) self-improvement is NOT a contraction (#407, cumulant-deep-nonbetti)
+# A hypothetical Azuma tower recursion is not a contraction (model only; #407)
 
-This file is the honest, machine-checked statement of the **central new obstruction found by the
-cumulant-deep-nonbetti lane**: the natural NON-Betti route to the deep cumulants of the Gauss-period
-measure — a martingale/Azuma bound on the dyadic tower `μ_2 < μ_4 < … < μ_{2^a} = μ_n` — does not
-close, and the exact size of its failure is `√(2 ln m)`.
+**Scope.** Everything *declared* in this file is elementary real arithmetic about one explicit
+numerical model: the recursion `B_a ≤ √(2L·∑_{k<a} B_k²)` evaluated at the input
+`B_k = C·√(2^k·L)`. Nothing here analyses actual Gauss periods, constructs a filtration, or proves
+an Azuma/Freedman inequality for them; and nothing here proves a universal impossibility of
+martingale/concentration approaches. The no-go is limited to the explicitly analysed model.
 
-## Setup (the proven structural facts this builds on)
+## Setup (heuristic motivation, not formalized here)
 
 `B_j := B(μ_{2^j}) = max_{b≠0} ‖η^{(2^j)}_b‖` is the Gauss-period house at tower level `j`
 (`GaussPeriodCosetReduction.eta_image_card_mul_le`: a max over `m = (q−1)/n` periods). The tower
-telescopes: with `μ_{2^{k}} = μ_{2^{k−1}} ∪ w_{k−1}·μ_{2^{k−1}}`,
+telescopes: with `μ_{2^{k}} = μ_{2^{k−1}} ∪ w_{k−1}·μ_{2^{k−1}}` and `η^{(1)}_b = η_{μ_1}(b) = ψ(b)`,
 
-  `η^{(2^a)}_b = ∑_{k=1}^{a} Δ_k(b)`,   `Δ_k(b) = η^{(2^{k−1})}_{b·w_{k−1}}`,   `|Δ_k(b)| ≤ B_{k−1}`.
+  `η^{(2^a)}_b = ψ(b) + ∑_{k=1}^{a} Δ_k(b)`,   `Δ_k(b) = η^{(2^{k−1})}_{b·w_{k−1}}`,
+  `|Δ_k(b)| ≤ B_{k−1}`.
 
-The increments are pairwise *uncorrelated* over the cosets `b` (Parseval orthogonality of distinct
-Gauss periods; measured `corr ≈ 0`, `probe_cumulant_hyper_tower.py`). This is exactly the hypothesis
-shape of a bounded-difference martingale, so one is tempted to apply Azuma–Hoeffding + a union bound
-over the `m` cosets:
+(The initial term `ψ(b)` is needed: at `a = 1`, `μ_2 = {1, −1}` gives
+`η^{(2)}_b = ψ(b) + ψ(−b)`, while the sum of increments alone is `ψ(−b)`.)
 
-  `B_a ≤ √(2 ln m · ∑_{k=0}^{a−1} B_k²)`.        (the *Azuma tower recursion*)
+The increments are measured to be nearly *uncorrelated* over the cosets `b` (`corr ≈ 0`,
+`probe_cumulant_hyper_tower.py`). This is **not** a martingale-difference property: Azuma–Hoeffding
+needs a filtration and zero conditional expectations, which pairwise uncorrelatedness does not
+supply. Nor does full-frequency Parseval orthogonality supply it automatically: averaging over only
+the nonzero frequencies `b ≠ 0` introduces nonzero cross covariances even between periods with
+disjoint supports. So the following is a **hypothetical** bounded-difference inequality, not a
+consequence of the period analysis: if Azuma–Hoeffding plus a union bound over the `m` cosets were
+available, one would get
 
-## The obstruction this file proves
+  `B_a ≤ √(2 ln m · ∑_{k=0}^{a−1} B_k²)`.        (the *hypothetical Azuma tower recursion*)
 
-Substitute the conjectured self-consistent house `B_j = C·√(2^j · ln m)` (the prize answer at level
-`j`). Then `∑_{k=0}^{a−1} B_k² = C²·ln m·(2^a − 1)`, so the recursion *returns*
+## What this file proves (in the model)
 
-  `B_a ≤ C·√(2 ln m · ln m · (2^a − 1)) = C·√(2 ln m)·√(ln m)·√(n−1) ... = C·(ln m)·√2·√(n−1).`
+Substitute the conjectured self-consistent house `B_j = C·√(2^j · L)`, `L = ln m` (the prize answer
+at level `j`). Then `∑_{k=0}^{a−1} B_k² = C²·L·(2^a − 1)` (`tower_sum_of_squares`), so the recursion
+*returns* (`azuma_tower_output`)
 
-Compared with the input value `B_a = C·√(2^a · ln m) = C·√(n·ln m)`, the recursion **inflates by the
-factor `√(2 ln m)`**: it is *not* a contraction, so it cannot be iterated to a fixed point. This is the
-precise, quantitative reason the tower-martingale route fails — and `√(2 ln m) = Θ(√(β log n))` *grows*
+  `√(2L · C²·L·(2^a − 1)) = C·L·√2·√(2^a − 1)`.
+
+Compared with the target input `B_a = C·√(2^a · L)`, the exact output/target ratio is
+
+  `√(2L)·√(1 − 2^{−a})`,
+
+which tends to `√(2L)` as `a → ∞` but is **not** uniformly `≥ 1`: e.g. at `a = 1`, `L = ln 2` it is
+`√(ln 2) < 1`. What is proved is the lower bound `output ≥ √L · target` for `a ≥ 1`
+(`azuma_inflates_target`), so for `C > 0` and `L > 1` the model output strictly exceeds the target,
+and `√(2L) > 1` whenever `L > 1/2` (`azuma_factor_gt_one`). In this sense the hypothetical recursion,
+at this model input, is not a contraction at large `L`, and the asymptotic loss `√(2 ln m)` grows
 with the prize size.
 
-`azuma_tower_inflation_factor` proves this ratio exactly (as an `ℝ` identity, for the model
-`B_j = C√(2^j L)`, `L = ln m`): the Azuma output over the target input is `√(2L)`. `azuma_not_contraction`
-records that this factor exceeds `1` whenever `L > 1/2` (i.e. `m ≥ 2`), so the recursion strictly
-inflates at every prize scale.
+## Why this is the *right* obstruction (heuristic reasoning, recorded — not formalized here)
 
-## Why this is the *right* obstruction (the deeper reason, recorded — not formalized here)
+The following is lane commentary supported by numerical probes; none of it is proved here, and it
+does not establish a universal Azuma/Freedman impossibility.
 
 The increment `Δ_k` is itself a full order-`2^{k−1}` period: its `L^∞` bound `B_{k−1}` is `√(ln m)`
 times larger than its `L²` size `√(2^{k−1})`. Azuma can only use the `L^∞` bound, so it pays the
@@ -120,8 +134,9 @@ For `a ≥ 1` (so `2^a − 1 ≥ 2^{a−1}`, ratio ≥ √L) and in the limit, t
 conjectured bound by `Θ(√L) = Θ(√ln m)`: it is NOT a contraction.
 
 We prove the clean lower bound on the ratio: `B_a^Azuma ≥ √L · B_a^target` for `a ≥ 1`, `C, L ≥ 0`.
-Hence whenever `L > 1` (`m > e`, every prize scale) the Azuma output strictly exceeds the target — the
-self-improvement does not close. -/
+Hence whenever `L > 1` (`m > e`, every prize scale) and `C > 0` the model Azuma output strictly
+exceeds the target — the hypothetical self-improvement does not close *in this model*. (This is
+arithmetic about the model recursion only; it is not an analysis of actual Gauss periods.) -/
 theorem azuma_inflates_target (C L : ℝ) (hC : 0 ≤ C) (hL : 0 ≤ L) {a : ℕ} (ha : 1 ≤ a) :
     Real.sqrt L * (C * Real.sqrt (2 ^ a * L))
       ≤ C * L * Real.sqrt 2 * Real.sqrt (2 ^ a - 1) := by
@@ -147,9 +162,11 @@ theorem azuma_inflates_target (C L : ℝ) (hC : 0 ≤ C) (hL : 0 ≤ L) {a : ℕ
   exact mul_le_mul_of_nonneg_left hmono hCL
 
 /-- **`√(2 ln m)` strictly exceeds 1 at every prize scale.** The inflation factor `√(2L)` of the
-Azuma tower recursion is `> 1` as soon as `L = ln m > 1/2`, i.e. `m ≥ 2`. Since the prize has
-`m = (q−1)/n ≈ 2^128 ≫ 2`, the recursion strictly inflates: it can never be iterated to the
-conjectured `B = C√(n ln m)`. (The factor is `√(2·128·ln 2) ≈ 13.3` at the prize.) -/
+Azuma tower recursion is `> 1` as soon as `L = ln m > 1/2`, i.e. `m ≥ 2`. Note `√(2L)` is only the
+`a → ∞` limit of the exact model ratio `√(2L)·√(1 − 2^{−a})` (which is `< 1` at `a = 1`,
+`L = ln 2`). At the prize, `m = (q−1)/n ≈ 2^128 ≫ 2`, so in the model the hypothetical recursion
+inflates and cannot be iterated to the conjectured `B = C√(n ln m)`. (The limiting factor is
+`√(2·128·ln 2) ≈ 13.3` at the prize.) -/
 theorem azuma_factor_gt_one {L : ℝ} (hL : 1 / 2 < L) : 1 < Real.sqrt (2 * L) := by
   have h1 : (1 : ℝ) < 2 * L := by linarith
   calc (1 : ℝ) = Real.sqrt 1 := (Real.sqrt_one).symm

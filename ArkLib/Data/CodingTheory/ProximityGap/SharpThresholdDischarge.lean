@@ -31,8 +31,12 @@ KKH26 collision resultants and discharges the divisibility hypothesis of
    (`3/4 < 59/64 < 15/16` = capacity), **at the literal challenge budget on an `n = 64`
    domain** — the first unconditional `δ*` past the old threshold's reach.
 
-Every μ = 6 band of `Mu6LiteralBands.lean` is now equally dischargeable (their primes all
-exceed `2^{144}`); this file lands the flagship instance.
+Not every μ = 6 band of `Mu6LiteralBands.lean` is cleared by this envelope (corrected
+2026-10-28 audit, PG-238): the threshold is `P > 2^{143}`, which holds on the whole band for
+rungs `r ≥ 4` (`SharpResultantBound.landau_envelope_lt_sq_of_ge_mu6_r4_band`), on only part of
+the `r = 3` band, and on none of the `r = 2` band `[1008·2^{128}, 1984·2^{128})`
+(`SharpResultantBound.mu6_r2_band_sq_lt_landau_envelope`).  This file lands the flagship
+`r = 5` instance.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/

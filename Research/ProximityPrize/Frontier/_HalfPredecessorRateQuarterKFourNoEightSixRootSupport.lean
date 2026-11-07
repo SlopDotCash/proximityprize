@@ -63,6 +63,16 @@ noncomputable def sourceMissedSet
     (line : LineParameter F) (gamma : F) : Finset I :=
   sourceComplement family line \ sourceFreshAgreement family line gamma
 
+/-- `sourceMissedSet` is definitionally the canonical missed set
+`RegularSignatureRigidity.regularMissedEdge`; the local name is kept because downstream proofs
+rewrite with its unfolding. -/
+theorem sourceMissedSet_eq_regularMissedEdge
+    {dom : I ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) I}
+    (family : BadScalarRichPointFamily dom 4 delta u)
+    (line : LineParameter F) (gamma : F) :
+    sourceMissedSet family line gamma = regularMissedEdge family line gamma :=
+  rfl
+
 /-- Once the residual has been factored through its source-core root
 locator, missed support is exactly failure of the corresponding affine-row
 equation.  This records equality of supports, rather than only an upper

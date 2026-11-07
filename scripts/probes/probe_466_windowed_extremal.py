@@ -22,16 +22,25 @@ condition A_l + gamma*B_l = 0 with A_l = u0_l - P0_p(x_l) (P0_p = interpolant
 of u0 on p), B_l = u1_l - P1_p(x_l).  So per (u0,u1,p): positions with
 A=B=0 agree for ALL gamma (count 'base', always >= k), positions with B!=0
 agree exactly at gamma_l = -A_l/B_l.  gamma is bad via p iff
-base_p + mult_p(gamma) >= a.  Bad set = union over p; count = q iff some
-base_p >= a iff u1 is a-close to the code (degenerate direction; proven both
-ways below and ASSERTED at runtime).
+base_p + mult_p(gamma) >= a.  Bad set = union over p.  If some base_p >= a then
+count = q and u1 is a-close to the code (B = 0 on >= a positions); conversely,
+when q exceeds the finite root-union cap (at most C(n,k)*n gammas from B != 0
+positions) count = q forces some base_p >= a.  For an ARBITRARY offset u0 an
+a-close direction need NOT give count = q (audit 2026-10-28, L103: k=2, a=3,
+u1 = 0, u0 = X^2 on eight distinct F_17 points has count 0).  What is ASSERTED
+at runtime is the per-direction invariant  max over the u0-pool of count == q
+<=> u1 is a-close, which holds because the pool contains u0 = 0 (for which
+an a-close u1 gives base_p >= a) and the selected q are above the cap.
 
 WORST-u0 SEARCH (heuristic, stated honestly in output): monomials, far-coset
 family w_g = x^{3n/4} + g x^{n/2}, piecewise-codeword words, >=2000 random
 words, per-u1 CHAINED interpolation-adversarial words (blocks u0 = c_t - g_t*u1
 glued on k-point overlaps -- the sumset mechanism), plus hill-climb refinement
 on the decision-critical directions.  Exact per candidate; max is a lower
-bound on the true worst case.
+bound on the true worst case.  Consequently every per-level verdict below
+compares LOWER bounds: "spread exceeds the monomials" means a spread direction's
+found count exceeds every monomial's FOUND count, not its true worst case, and
+"monomials dominate" likewise only describes the searched pool.
 
 Independent verification: brute force over ALL gamma in F_q (separate code
 path) asserted equal on random pairs and on every decision-critical witness.
@@ -235,12 +244,15 @@ class Setting:
 def chained_u0(st, u1, a, rng):
     """Interpolation-adversarial: blocks u0 = c_t(x) - g_t*u1 glued on k-point
     overlaps with the PREVIOUS block (c_{t+1} = c_t + (g_{t+1}-g_t)*interp(u1|O)).
-    Yields 1 + floor((n-a)/(a-k)) bad gammas by construction (the sumset mechanism)."""
+    Each block makes its scalar g_t bad; the scalars are drawn pairwise DISTINCT
+    (not merely distinct from the previous one), so the construction yields
+    1 + floor((n-a)/(a-k)) distinct bad gammas (the sumset mechanism)."""
     n, k, q, xs = st.n, st.k, st.q, st.xs
     perm = rng.permutation(n)
     S1 = [int(x) for x in perm[:a]]
     rest = [int(x) for x in perm[a:]]
     g = int(rng.integers(1, q))
+    used = {g}
     c = [int(rng.integers(q)) for _ in range(k)]
     u0 = np.full(n, -1, dtype=np.int64)
     cv = poly_eval_vec(c, xs, q)
@@ -251,8 +263,9 @@ def chained_u0(st, u1, a, rng):
         O = [int(x) for x in rng.choice(np.array(prev), size=k, replace=False)]
         h = interp_poly([int(xs[o]) for o in O], [int(u1[o]) for o in O], q)
         gn = int(rng.integers(1, q))
-        while gn == g:
+        while gn in used:
             gn = int(rng.integers(1, q))
+        used.add(gn)
         c = [(c[j] + (gn - g) * h[j]) % q for j in range(k)]
         g = gn
         Nt = rest[i:i + (a - k)]
@@ -433,17 +446,19 @@ def run_setting(n, k, q, a_list, interior_as, rng, cfg):
               flush=True)
 
         if winners:
-            v = "REFUTED-candidate"
-            print(f"  >>> a={a}: SPREAD BEATS EVERY MONOMIAL: {winners[:8]} "
-                  f"vs best monomial {best_m_lab}={best_m}", flush=True)
+            v = "SPREAD-EXCEEDS-FOUND-MONOMIAL-BOUNDS"
+            print(f"  >>> a={a}: spread found counts exceed every monomial's FOUND count "
+                  f"(lower bounds from finite pools; not an upper bound on monomials): "
+                  f"{winners[:8]} vs best monomial {best_m_lab}={best_m}", flush=True)
         elif best_s == best_m:
-            v = "TIE"
-            print(f"  >>> a={a}: TIE at {best_m} ({best_s_lab} vs {best_m_lab}) "
-                  f"-- monomials NOT strictly beaten", flush=True)
+            v = "TIE-ON-POOL"
+            print(f"  >>> a={a}: TIE of found counts at {best_m} ({best_s_lab} vs "
+                  f"{best_m_lab}) -- monomials NOT strictly beaten on this pool", flush=True)
         else:
-            v = "MONOMIALS-DOMINATE"
-            print(f"  >>> a={a}: monomials dominate: best mono {best_m_lab}={best_m} "
-                  f">= best spread {best_s_lab}={best_s}", flush=True)
+            v = "MONOMIALS-DOMINATE-ON-POOL"
+            print(f"  >>> a={a}: monomials dominate on this pool: best mono "
+                  f"{best_m_lab}={best_m} >= best spread {best_s_lab}={best_s} "
+                  f"(found lower bounds)", flush=True)
         verdicts[a] = dict(verdict=v, best_mono=(best_m_lab, best_m),
                            best_spread=(best_s_lab, best_s),
                            interior=(a in interior_as),

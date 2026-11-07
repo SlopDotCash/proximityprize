@@ -18,12 +18,27 @@ the order-`m`-index multiplicative subgroup), define the **subgroup tangent sum*
 
   `T(φ) := ∑_{w ∈ ker χ} φ(1 − w)`.
 
-This is the multiplicative incomplete subgroup sum whose flatness (the `√|ker χ|` cancellation in `φ`)
-controls — *exactly*, via the machine-verified autocorrelation identity `A_h = m·conj(τ_h)·T_h` with
-`|τ_h| = √q` the perfectly-flat Gauss sum (Weil) — the worst-case Gauss-period house
-`B = max_b |∑_{x∈ker χ} ψ(bx)|`, the object the prize floor `δ* = average` reduces to. Since the Gauss
-factor is flat, *all* house concentration is carried by `T`; this brick puts `T` on the Jacobi-sum
-(Deligne–Katz equidistribution) surface, the in-regime toolbox for `n < p^{1/4}`.
+This is the multiplicative incomplete subgroup sum that enters the (unformalized, probe-checked)
+autocorrelation identity **I3** `A_h = m·conj(τ_h)·T_h` relating it to the Gauss-period house
+`B = max_b |∑_{x∈ker χ} ψ(bx)|`.
+
+**Correction (audit 2026-10-28, PG-108): I3 holds only for nonzero frequencies and does not give
+exact house control.** An earlier version of this header stated I3 unqualified, with `|τ_h| = √q`
+"perfectly flat", and concluded that `T` controls the house *exactly*. Two corrections:
+
+* **The zero frequency is an exception.** At `h = 0`, `τ_0 = −1` is the trivial-character Gauss
+  sum (not of modulus `√q`), `T_0 = n − 1`, and the actual autocorrelation is
+  `A_0 = (m−1)·q + 1`, whereas the displayed right side is `−m·(n − 1)`. So I3 (and
+  `|τ_h| = √q`) requires `h ≠ 0` (nontrivial character), and the diagonal `h = 0` term must be
+  treated separately in any I3-based reduction.
+* **Pointwise tangent bounds are not equivalent to a house bound.** Even for `h ≠ 0`, passing from
+  bounds on the magnitudes `|T_h|` to a bound on `max_b |η_b|` needs Fourier inversion with phase /
+  coherence accounting; "all house concentration is carried by `T`" is not a proved equivalence.
+
+See the archived `Research/ProximityPrize/kb/archive/RESEARCH_SYNTHESIS_407_TANGENT.md` for the
+research-lane findings on the I3 route. The identity **I4** proved in this file does **not** depend
+on I3: it holds for arbitrary multiplicative characters `χ, φ` (including trivial ones). This brick
+puts `T` on the Jacobi-sum surface; it does not by itself control the house.
 
 ## Main result (machine-verified exact in the probe; here proven axiom-clean)
 

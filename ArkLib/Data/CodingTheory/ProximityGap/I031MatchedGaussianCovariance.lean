@@ -24,15 +24,27 @@ Using `E[g_x · conj g_{x'}] = [x = x']`:
   We *define* `matchedSqMetric b b' := 2|G| − 2 Re(η ψ G (b − b'))` and prove its structural facts.
 
 **The flat-metric phenomenon (probes `probe_i031_metric_flatness_vs_collapse.py`).** Empirically the
-quotient metric is FLAT: `d(b,b') ≈ √(2|G|)` for almost every distinct pair, with the fraction of
-close pairs `→ 0` as `|G|` grows. The rigorous skeleton of that flatness is the **L²-average of the
-metric over difference frequencies**: by the second moment `Σ_c ‖η_c‖² = q|G|`, the average of
-`‖η_c‖²` over all frequencies `c` is exactly `|G|`, so the typical covariance has size `√|G|` (vanishing
-relative to the diagonal `|G|`), the average squared metric is the flat `2|G|`, and the close pairs
-(`Re η_c` near `|G|`) are a vanishing fraction. We prove the exact average identity here; it certifies
-that the I031 "collapse log q → log m" is the index-count reduction (union bound over `m = q/|G|`
-orbits), NOT a multi-scale chaining gain — consistent with the Salem–Zygmund self-refutation
-(`docs/kb/deltastar-salem-zygmund-gausssum-chaining-2026-06-13.md`).
+metric is FLAT: `d(b,b') ≈ √(2|G|)` for almost every distinct pair, with the fraction of close pairs
+`→ 0` as `|G|` grows. What is proved here is only the **L²-average of the covariance over difference
+frequencies**: by the second moment `Σ_c ‖η_c‖² = q|G|`, the average of `‖η_c‖²` over all `q`
+frequencies `c` is exactly `|G|`, so the **root-mean-square** covariance is `√|G|`. This L²
+information does not by itself say that a *typical* covariance has size `√|G|`, that the typical
+squared metric is `2|G|`, or that close pairs are a vanishing fraction (compare audit finding
+PG-048); those remain probe observations.
+
+**No quotient / index reduction for the Gaussian process (audit finding PG-148).** The deterministic
+periods are constant on multiplicative cosets (`η_{hb} = η_b` for `h ∈ G`), but the matched Gaussian
+process `G_b = Σ_{x∈G} g_x ψ(b·x)` does **not** inherit this samplewise: dilation `b ↦ hb` permutes
+the iid coefficients `g_x`, which preserves the joint law but does not identify `G_b` with `G_{hb}`.
+Correspondingly the metric is built from `η_{b−b'}`, not from `η_b − η_{b'}`, and it does not
+descend to the coset quotient. Example: `G = {1, −1} ⊆ F₅`, `ψ(t) = exp(2πit/5)`; the frequencies
+`1` and `4` lie in one coset and `η_1 = η_4`, yet `d(1,4)² = 4 − 4cos(4π/5) > 0`. So a union
+bound over only `m = (q−1)/|G|` Gaussian indices cannot be inferred from the deterministic coset
+invariance; a comparison must either keep the full Gaussian index set or state a
+representative-indexed comparison and prove the domination it needs, which is not done here.
+(The Salem–Zygmund discussion in
+`docs/kb/deltastar-salem-zygmund-gausssum-chaining-2026-06-13.md` is background, not a
+consequence of this file.)
 
 This is the honest, axiom-clean Step-(b)-(i) deliverable: the covariance structure and chaining
 metric of the matched Gaussian process are pinned exactly; the remaining open content (Step (b)-(iv))
@@ -125,10 +137,10 @@ theorem matchedSqMetric_nonneg_le (ψ : AddChar F ℂ) (G : Finset F) (b b' : F)
 
 /-- **The flat-metric certificate: the L²-average of the covariance over all difference frequencies.**
 `Σ_c ‖matchedCov b (b−c)‖² = Σ_c ‖η_c‖² = q|G|`, so the average of `‖η_c‖²` over the `q` frequencies is
-exactly `|G|`. Hence the *typical* covariance has size `√|G|` (vanishing relative to the diagonal
-`|G|`), the average squared metric is the flat `2|G|`, and close pairs are a vanishing fraction. This
-is the rigorous half of the metric-flatness phenomenon: the I031 gain is the index reduction
-`q → m = q/|G|` (union bound over orbits), not multi-scale chaining. No Weil. -/
+exactly `|G|`, i.e. the root-mean-square covariance is `√|G|`. This is L² information only: it does
+not prove that a typical covariance has that size or that close pairs are rare, and it does not
+justify reducing the Gaussian index set from `q` frequencies to `m = (q−1)/|G|` cosets (the matched
+metric does not descend to the coset quotient; see the module docstring). No Weil. -/
 theorem matchedCov_l2_average {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F) (b : F) :
     ∑ c : F, ‖matchedCov ψ G b (b - c)‖ ^ 2 = (Fintype.card F : ℝ) * G.card := by
   have hre : ∀ c : F, matchedCov ψ G b (b - c) = eta ψ G c := by

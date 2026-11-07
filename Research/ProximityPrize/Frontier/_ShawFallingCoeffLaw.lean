@@ -43,8 +43,10 @@ identity (all exact, machine-verified `r = 1…10`):
 
 2. **Top coefficient = Wick × 2ʳ.** `T(r,r) = (2r)!/r! = (2r−1)‼ · 2ʳ`. Since the leading
    falling-factorial term `(m)_r ≤ m^r = (n/2)^r`, the top term contributes
-   `T(r,r)·(m)_r ≤ (2r−1)‼·2ʳ·(n/2)^r = (2r−1)‼·n^r` — **exactly the Wick bound**. All lower
-   `k < r` terms are the (positive) char-0 deficit `Wick − E_r`.
+   `T(r,r)·(m)_r ≤ (2r−1)‼·2ʳ·(n/2)^r = (2r−1)‼·n^r` — **exactly the Wick bound**. The lower
+   `k < r` terms are *added* to the top term, so they are NOT the deficit: the char-0 deficit is
+   `Wick − E_r = T(r,r)·(m^r − (m)_r) − Σ_{k<r} T(r,k)·(m)_k`, i.e. the top-term slack MINUS the
+   lower terms (e.g. `r = 2`: `6m = 12·(m² − (m)_2) − 6·(m)_1 = 12m − 6m`).
 
 3. **Edge coefficient = central binomial.** `T(r,1) = C(2r,r)` (the single-axis configurations).
 
@@ -53,15 +55,19 @@ So the Gaussian energy bound `E_r ≤ (2r−1)‼·n^r` is the *coefficient ineq
         Σ_{k=1}^{r}  t(r,k) · (m)_k  ≤  2ʳ · m^r ,      t(r,k) := T(r,k)/(2r−1)‼ ,  t(r,r) = 2ʳ ,
 ```
 i.e. the top normalized coefficient is exactly `2ʳ` and the bound is the statement that the lower
-positive falling-factorial terms are absorbed by `(m)_r ≤ m^r` slack — provable termwise from
-`(m)_k ≤ m^k` plus a single positive-deficit `nlinarith`/`ring` certificate.
+positive falling-factorial terms are absorbed by the top-term slack `T(r,r)·(m^r − (m)_r)`. This is
+NOT termwise from `(m)_k ≤ m^k` (the lower terms consume slack rather than supply it); in this file
+it is discharged per embedded `r ≤ 4` by a direct `nlinarith` certificate on the closed form.
 
 ## What this file proves (axiom-clean, `⊆ {propext, Classical.choice, Quot.sound}`)
 
 - the falling-factorial **coefficient definition** `T r k` (the `(2r)!/k! · Σ ∏ 1/(bᵢ!)²` form,
-  encoded via an explicit nonneg-rational/integer sum) and its **manifest positivity** `T_pos`;
-- the **top-coefficient law** `T_top : T r r = (2r−1)‼ · 2^r` and **edge law**
-  `T_edge : T r 1 = C(2r,r)`, both exact;
+  recorded as an explicit integer lookup table for `r ≤ 4`, verified offline against the Bessel
+  sum, NOT defined via the sum) and its positivity `T_pos_r2..r4` on that table;
+- the **top-coefficient law** `T(r,r) = (2r−1)‼ · 2^r` and **edge law** `T(r,1) = C(2r,r)`,
+  proved only per tabulated `r ≤ 4` (`T_top_r1..r4`, `T_edge_r1..r4`); `T` itself is a hard-coded
+  table for `r ≤ 4` (zero elsewhere), so no general-`r` law about `T` is formalized here — only the
+  general factorial identity `factorial_ratio_top : (2r)! = (2r−1)‼·2ʳ·r!`;
 - the **falling-factorial expansion** `E_r(ℂ) = Σ_k T(r,k)·(m)_k` made literal at `r = 2,3,4`
   (the energy ⇔ expansion identity is the cited antipodal/cross-polytope bridge, exact-verified
   in the probe; this file proves the *expansion arithmetic* `by decide`/`ring` against the
@@ -254,8 +260,10 @@ theorem E4_fallExpansion (m : ℤ) :
 
 `E_r(m) ≤ (2r−1)‼·(2m)^r`. The top term `T(r,r)·(m)_r = (2r−1)‼·2ʳ·(m)_r ≤ (2r−1)‼·2ʳ·m^r
 = (2r−1)‼·(2m)^r` already saturates the bound via `(m)_r ≤ m^r`; the *lower* positive
-falling-factorial terms are the deficit `(2r−1)‼·(2m)^r − E_r > 0`. Below we discharge the bound
-directly (the deficit polynomial is positive for `m ≥ 1`), exhibiting the clean structure. -/
+falling-factorial terms are added on top, so the deficit is
+`(2r−1)‼·(2m)^r − E_r = T(r,r)·(m^r − (m)_r) − Σ_{k<r} T(r,k)·(m)_k` (top-term slack minus the
+lower terms). Below we discharge the bound directly for `r = 2,3,4` (the deficit polynomial is
+positive for `m ≥ 1`). -/
 
 /-- The Wick bound in the `m`-variable: `(2r−1)‼·n^r = (2r−1)‼·(2m)^r`. -/
 def wickM (r : ℕ) (m : ℤ) : ℤ := (Nat.doubleFactorial (2*r-1) : ℤ) * (2*m)^r
@@ -267,8 +275,8 @@ def wickM (r : ℕ) (m : ℤ) : ℤ := (Nat.doubleFactorial (2*r-1) : ℤ) * (2*
   simp [wickM, Nat.doubleFactorial]
 
 /-- **Clean Gaussian bound, `r = 2`**: `E_2(m) ≤ (2·2−1)‼·(2m)² = 3·(2m)²` for `m ≥ 1`.
-The char-0 deficit `12m² − (12m²−6m) = 6m > 0` is the lower falling-factorial term
-`−T(2,2)·[m² − (m)_2] = −12·(−m) = 12m`… plus the edge term, all manifestly positive. -/
+The char-0 deficit is `12m² − (12m²−6m) = 6m > 0`, decomposed as top-term slack minus edge term:
+`T(2,2)·(m² − (m)_2) − T(2,1)·(m)_1 = 12m − 6m`. -/
 theorem E2_le_wick (m : ℤ) (hm : 1 ≤ m) : E2m m ≤ wickM 2 m := by
   rw [wickM_two]; simp only [E2m]; nlinarith [hm]
 
@@ -289,9 +297,9 @@ The task's clean coefficient identity: `E_r = Σ_k T(r,k)(m)_k` with `T(r,r) = (
              ≤  (2r−1)‼·2ʳ·m^r     +  (deficit, but we want UPPER…)
 ```
 The honest clean statement is: the **top term alone** equals the Wick bound up to the
-`(m)_r ≤ m^r` gap, and the remaining terms are the *positive deficit subtracted off*. Concretely
-the deficit `wickM r m − E_r(m)` is the positive quantity below, which is what the `_le_wick`
-theorems certify. We record the top-term saturation explicitly. -/
+`(m)_r ≤ m^r` gap, and the remaining (positive) lower terms must fit inside that gap. Concretely
+the deficit `wickM r m − E_r(m) = T(r,r)·(m^r − (m)_r) − Σ_{k<r} T(r,k)·(m)_k` is positive, which is
+what the `_le_wick` theorems certify for `r = 2,3,4`. We record the top-term saturation explicitly. -/
 
 /-- **Top-term saturation**: the leading falling-factorial term `T(r,r)·(m)_r` equals
 `(2r−1)‼·2ʳ·(m)_r`, and bounding `(m)_r ≤ m^r` gives exactly the Wick term `(2r−1)‼·(2m)^r`

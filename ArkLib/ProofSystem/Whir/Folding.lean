@@ -631,7 +631,13 @@ omit [Pow ι ℕ] in
   = linearMvExtension (powAlgHom (partialEval (mVdecode f) αs hk)) = partialEval (mVdecode f) αs
   hk`,
   the last step by the left inverse `linearMvExtension_powAlgHom` (valid since `partialEval` of a
-  degreewise-linear polynomial is degreewise-linear, `partialEval_mem_restrictDegree`). -/
+  degreewise-linear polynomial is degreewise-linear, `partialEval_mem_restrictDegree`).
+
+  **Scope.** Because `linearMvExtension` and `powAlgHom` are mutually inverse on degreewise-linear
+  polynomials, the hypothesis `hgp` is equivalent to the conclusion: this lemma transports the
+  assumed univariate identity to its multilinear form. It is a compatibility wrapper between the
+  two encodings, not an independent proof that `g` is the fold of `f` (the function-level fold
+  fact is `fold_f_g`), and it should not be counted as new folding/MCA content. -/
 lemma fold_f_g_poly
     {S : Finset ι} {φ : ι ↪ F} {k m : ℕ}
   {φ_0 : (indexPowT S φ 0) ↪ F} {φ_k : (indexPowT S φ k) ↪ F}
@@ -722,7 +728,7 @@ This is sorry-free and axiom-clean (`propext, Classical.choice, Quot.sound` only
 the genuinely-closable probabilistic component of the (conditional) Theorem 4.20: the
 remaining content — exhibiting the per-round events `Q i` and discharging each
 `Pr[Q i] ≤ errStar i …` from the round-`i` mutual-correlated-agreement hypothesis
-(`params.h i`), together with the strictness of the final `<` — is exactly what the
+(`params.h i`) — is exactly what the
 inductive lemmas `folding_preserves_listdecoding_base` (L4.21) /
 `…_bound` (L4.22) / `…_base_ne_subset` (L4.23) supply, and is not derivable from the
 loose `indexPowT` data available here. The capstone Theorem 4.20 below therefore remains a
@@ -783,6 +789,23 @@ lemma Pr_set_ne_le_Pr_not_subset_of_subset {α β : Type} (D : PMF.{0} α)
   Below, we use an instance of the class `GenMutualCorrParams` to capture the
   conditions of proxmity generator with mutual correlated agreement for codes
   C⁰,...,C^{k}.
+
+  **Statement repair: `≤`, not the paper's `<`.** `GenMutualCorrParams.h` only asserts the
+  mutual-correlated-agreement bound `Pr ≤ errStar` and carries no positivity field, so
+  `errStar = 0` is admissible (e.g. full generator codes, where the MCA bad event is
+  impossible). With the paper's strict `<` the proposition then demands a nonnegative
+  probability strictly below `0`, already at `k = 0`. The encoded conclusion is therefore the
+  non-strict `≤ ∑ i, errStar i …`, matching the `≤ errStar` that the MCA bridge
+  (`folding_preserves_listdecoding_base_of_mca_bridge`) actually delivers.
+
+  **Known remaining specification gap (not claimed true as stated).** The generator codes
+  `(params.Gen_α i).C`, their embeddings `params.φ_i` and degree `params.m` are *not* pinned to
+  the folding chain of the input code `C = smoothCode φ' m` (`Gen_α` is an overridable field,
+  and even its default uses `params.m`/`params.φ_i` with no equations to `m`/`φ'`). In
+  particular the level-`k` list `listHamming` is taken in an arbitrary MCA code, so for
+  mismatched parameter records this `Prop` can fail. It is an interface for the ABF26 §4
+  induction, not a faithful encoding of Theorem 4.20; the missing pieces are that wiring and
+  the reverse-event bridge (see `Whir/FoldingListDecodingReduction.lean`).
 -/
 
 -- NOTE: need to align this better with the inductive way this is shown via the other lemmas below.
@@ -830,7 +853,7 @@ def folding_listdecoding_if_genMutualCorrAgreement
           let Cₖ := (params.Gen_α kFin).C
           let listHamming := closeCodewordsRel Cₖ fold δ
           foldSet ≠ listHamming
-        ] <
+        ] ≤
         (∑ i : Fin (k + 1), params.errStar i (params.Gen_α i).C (params.Gen_α i).parℓ δ))
 
 /-- Lemma 4.21
@@ -1282,7 +1305,11 @@ lemma folding_preserves_listdecoding_bound
   but after that lemma's repair the dependency reverses (the base lemma now *consumes* this
   reverse bound as its `hrev` hypothesis), so to avoid circularity the genuine
   MCA-delivered reverse bound is threaded in directly as `hrev`. See the docstring of
-  `folding_preserves_listdecoding_base` for the full justification. -/
+  `folding_preserves_listdecoding_base` for the full justification.
+
+  **Scope.** After this repair the conclusion is literally the hypothesis `hrev` (the proof is
+  `hrev`). This declaration is a restatement that keeps the Lemma 4.23 name available; it is
+  not a proof of Lemma 4.23, whose probabilistic reverse bound remains an open input. -/
 lemma folding_preserves_listdecoding_base_ne_subset
     [Fintype F] {S : Finset ι} {k m : ℕ} (hm : 1 ≤ m) {φ : ι ↪ F}
   [Fintype ι] [DecidableEq ι] [Smooth φ] {δ : ℝ≥0}

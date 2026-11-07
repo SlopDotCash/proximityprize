@@ -1,5 +1,15 @@
 # DECISIVE: the far-line incidence δ* → 1/2 (below Johnson) — it is a Plotkin proxy, NOT the MCA δ* — #407
 
+> **Scope correction (2026-10-28 audit, T48; see the banner in
+> `deltastar-RESOLUTION-tracks-floor-not-half.md`).** The formula `δ* = ½ + (1/(2ρ) − 1)/n → ½` is
+> fitted to rows with `n ≤ 24`, so "exact" and "→ ½" are extrapolations. The later RESOLUTION note
+> reports that the fitted formula breaks at `n = 32`, and that note's own opposite extrapolation is
+> not established either. Both rest on a handful of finite rows, and the RESOLUTION rows (fixed
+> `k = 2`) also change the rate with `n`.
+> The conclusion that the far-line incidence is a proxy rather than the MCA `δ*` is consistent with
+> the later guard: `δ*` remains an interval, and no incidence count for one stack family gives the
+> MCA threshold without an extremality theorem.
+
 Exact computation (validated Rust engine, matches the canonical probe δ*(μ₁₆,k=4)=9/16) of the in-tree far-line
 incidence threshold, with the in-tree budget `= q·ε* = (n·2^128)·2^-128 = n`:
 

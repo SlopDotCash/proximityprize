@@ -9,7 +9,7 @@ import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Positivity
 
 /-!
-# BSG reduction — `BSGCore ≤ BareDRC` (the genuinely smaller dependent-random-choice residual)
+# BSG reduction — `BSGCore ≤ BareDRC` (a graph-only DRC interface, refuted for all constants)
 
 This file performs the **actual reduction** of the in-tree `Finset.BSGCore` to a *strictly
 smaller* named residual `BareDRC`, by chaining the already-proven elementary lemmas `L1`–`L4`
@@ -47,10 +47,14 @@ i.e. `BSGCore ≤ BareDRC`.
 
 ## Status
 
-`REDUCED` — `BSGCore` is reduced to the strictly smaller `BareDRC` by chaining the proven `L2` with
-local `L3`/`L4`. The reduction theorem `bsgCore_of_bareDRC` is axiom-clean. `BareDRC` itself
-(the bare dependent-random-choice extraction) remains a named open residual — *not* a hidden
-`sorry`.
+`REDUCED` (vacuously) — `BSGCore` is reduced to `BareDRC` by chaining the proven `L2` with local
+`L3`/`L4`, and the reduction theorem `bsgCore_of_bareDRC` is axiom-clean. However, `BareDRC` is
+**false for every choice of constants** (`bareDRC_false` in `_BSG_EX_BareDRCExtractFalse.lean`):
+at `K = 1` the complete graph `A ×ˢ A` on any nonempty `A` satisfies both density hypotheses,
+while a large Sidon set has no constant-fraction subset with linear doubling. Dropping the energy
+hypothesis discards information the BSG theorem needs, so `BareDRC` is not an open residual and
+the reduction supplies no route to `BSGCore`. The energy→graph lemmas `L1`–`L4` proven here remain
+valid and are reused by the energy-coupled interface `DRCKernelEnergy` (`_BSGC_attempt4.lean`).
 
 ## References
 
@@ -172,10 +176,10 @@ a bipartite graph `G ⊆ A ×ˢ A` that is edge-dense (`#A ^ 2 ≤ 4 * K ^ 2 * #
 
 Conclusion (the BSG output): a constant-fraction subset `A'` with small difference set.
 
-This is the *genuine* dependent-random-choice step: pick a random vertex/pair, exploit that the
-expected neighbourhood is large while the expected number of badly-connected pairs is small,
-pigeonhole to a good vertex, and refine. The energy→graph reduction is **not** part of this
-obligation — it is discharged by `bsgCore_of_bareDRC` below. -/
+It was intended as the dependent-random-choice step in isolation. **As stated it is false for
+every choice of constants** (`bareDRC_false`, `_BSG_EX_BareDRCExtractFalse.lean`): the complete
+graph on a large Sidon set satisfies both hypotheses at `K = 1`. The graph-only hypotheses lose
+the additive structure that the genuine DRC step exploits. -/
 def BareDRC (C₁ C₂ c : ℕ) : Prop :=
   ∀ {α : Type} [inst : AddCommGroup α] [inst2 : DecidableEq α],
     ∀ (A : Finset α) (K : ℕ) (G : Finset (α × α)),

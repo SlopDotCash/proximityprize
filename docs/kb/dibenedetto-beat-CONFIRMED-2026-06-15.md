@@ -1,5 +1,22 @@
 # CONFIRMED: beating di Benedetto for the 2-power subgroup (#444) — exponent 0.9892 -> 0.9583, extends into the prize regime
 
+> **Correction (2026-10-28 audit, T48; see also R-260).** This summary is conditional and over-scoped:
+> - **Arithmetic.** The displayed rewrite `|H|^{65/72} p^{1/72} = |H|^{1 − 1/24} p^{1/72}` is false:
+>   `65/72 ≠ 23/24`. Only after substituting `p = |H|^4` does `65/72 + 4/72 = 23/24` give `|H|^{23/24}`.
+>   The table's conditional `β = 4` / `β = 5` exponents do match the original `65/72` expression.
+> - **Hypothesis range.** The [published Theorem 3.1](https://arxiv.org/html/2003.06165v1) assumes
+>   `p^{1/4} < H < p^{1/2}`. The `β = 4` row sits at the excluded endpoint, and the `β = 5` row and the
+>   `p^{1/7}` threshold lie outside the range. Extending below `p^{1/4}` needs a separately checked
+>   argument and its own energy inputs, so "extends into the prize regime" is not established.
+> - **Energy inputs need characteristic transfer.** `T_2(μ_n) = 3n² − 3n` and
+>   `T_3(μ_n) = 15n³ − 45n² + 40n` are characteristic-zero values. They are not universal identities
+>   over `F_p`, and "E_3 is p-INVARIANT" and "EXACT ... to n<=64 incl extreme structured primes"
+>   describe selected primes only. Recorded thin cells refute the universal equalities: `μ₃₂ ⊆ F₃₂₉₉₃`
+>   has `T_2 = 3744 ≠ 2976`, and `n = 64`, `p = 17318209` has `T_2 = 13632 ≠ 12096` (T91). These cells
+>   do not refute every weaker, suitably restricted `O(n³)` hypothesis.
+>
+> No new analytic estimate is certified by this correction; the note is kept as history.
+
 GOAL ACHIEVED (rigorously verified Phase 2, against the arXiv LaTeX source /tmp/ExpSum-IntSubgr.tex).
 
 ## Result

@@ -228,14 +228,74 @@ lemma no_data_queryReps_of_function_binding_cond {n L : ℕ}
   change (CPolynomial.ofFn d).eval (queryOf j) = responseOf i
   rw [hd j hj, hresp]
 
+/-- The fixed `n`-point base used by `findA`: the first `n` elements of `U` in sorted order. -/
+def findABase {L : ℕ} (U : Finset (Fin L)) (n : ℕ) : Finset (Fin L) :=
+  ((U.sort (· ≤ ·)).take n).toFinset
+
+/-- The `findA` candidates: the base `findABase U n` extended by one further element of `U`. -/
+def findACandidates {L : ℕ} (U : Finset (Fin L)) (n : ℕ) : List (Finset (Fin L)) :=
+  ((U.sort (· ≤ ·)).filter fun i => decide (i ∉ findABase U n)).map
+    fun i => insert i (findABase U n)
+
 /-- Step 4a (from the paper reduction):
-    find a subset whose interpolation polynomial has degree `n`. -/
+    find a subset whose interpolation polynomial has degree `n`.
+
+The search fixes the first `n` elements `T` of `U` and only tries the `|U| - n` one-point
+extensions `insert i T`; if all of them interpolate with degree `< n`, the degree-`< n`
+interpolant on `T` fits all of `U` (`find_a_successful`). This replaces enumerating all
+`(n + 1)`-element subsets of `U`: at most `U.card` interpolations are performed
+(`findACandidates_length_le`). -/
 def findA {L : ℕ} (U : Finset (Fin L)) (n : ℕ)
     (query : Fin L → ZMod p) (response : Fin L → ZMod p) :
     Option (Finset (Fin L)) :=
-  let candidateslist := (U.sort (· ≤ ·)).sublistsLen (n + 1)
-  let candidates := candidateslist.map List.toFinset
-  candidates.find? fun s => (CLagrange.interpolate s query response).degree = n
+  (findACandidates U n).find? fun s => (CLagrange.interpolate s query response).degree = n
+
+/-- Cost statement for `findA`: it interpolates at most `U.card` candidate sets. -/
+lemma findACandidates_length_le {L : ℕ} (U : Finset (Fin L)) (n : ℕ) :
+    (findACandidates U n).length ≤ U.card := by
+  unfold findACandidates
+  rw [List.length_map]
+  exact (List.length_filter_le _ _).trans (Finset.length_sort _).le
+
+/-- The `findA` base is contained in the search universe. -/
+lemma findABase_subset {L : ℕ} (U : Finset (Fin L)) (n : ℕ) : findABase U n ⊆ U := by
+  intro x hx
+  have hx' : x ∈ (U.sort (· ≤ ·)).take n := by simpa [findABase] using hx
+  simpa using List.mem_of_mem_take hx'
+
+/-- Membership in the `findA` candidate list. -/
+lemma mem_findACandidates {L : ℕ} {U : Finset (Fin L)} {n : ℕ} {s : Finset (Fin L)} :
+    s ∈ findACandidates U n ↔ ∃ i ∈ U, i ∉ findABase U n ∧ s = insert i (findABase U n) := by
+  unfold findACandidates
+  simp only [List.mem_map, List.mem_filter, Finset.mem_sort, decide_eq_true_eq]
+  constructor
+  · rintro ⟨i, ⟨hiU, hiT⟩, rfl⟩
+    exact ⟨i, hiU, hiT, rfl⟩
+  · rintro ⟨i, hiU, hiT, rfl⟩
+    exact ⟨i, ⟨hiU, hiT⟩, rfl⟩
+
+/-- If some element of `U` lies outside the base, the base has exactly `n` elements. -/
+lemma findABase_card {L : ℕ} {U : Finset (Fin L)} {n : ℕ} {i : Fin L}
+    (hiU : i ∈ U) (hiT : i ∉ findABase U n) : (findABase U n).card = n := by
+  have hnodup : ((U.sort (· ≤ ·)).take n).Nodup :=
+    (List.take_sublist n _).nodup (U.sort_nodup (· ≤ ·))
+  unfold findABase
+  rw [List.toFinset_card_of_nodup hnodup, List.length_take, Finset.length_sort]
+  by_contra hne
+  have hle : U.card ≤ n := by omega
+  apply hiT
+  have htake : (U.sort (· ≤ ·)).take n = U.sort (· ≤ ·) :=
+    List.take_of_length_le (by rw [Finset.length_sort]; exact hle)
+  simp [findABase, htake, hiU]
+
+/-- The `findA` base has exactly `n` elements whenever `n ≤ U.card`. -/
+lemma findABase_card_of_le {L : ℕ} {U : Finset (Fin L)} {n : ℕ} (hn : n ≤ U.card) :
+    (findABase U n).card = n := by
+  have hnodup : ((U.sort (· ≤ ·)).take n).Nodup :=
+    (List.take_sublist n _).nodup (U.sort_nodup (· ≤ ·))
+  unfold findABase
+  rw [List.toFinset_card_of_nodup hnodup, List.length_take, Finset.length_sort]
+  omega
 
 /-- A successful `findA` result is a subset of the search universe. -/
 lemma find_a_subset {L : ℕ} (U A : Finset (Fin L)) (n : ℕ)
@@ -243,15 +303,8 @@ lemma find_a_subset {L : ℕ} (U A : Finset (Fin L)) (n : ℕ)
     (hres : some A = findA U n query response) :
     A ⊆ U := by
   unfold findA at hres
-  have hmem := List.mem_of_find?_eq_some hres.symm
-  rw [List.mem_map] at hmem
-  obtain ⟨l, hl_mem, hl_eq⟩ := hmem
-  rw [List.mem_sublistsLen] at hl_mem
-  obtain ⟨hl_sub, _⟩ := hl_mem
-  intro x hx
-  rw [← hl_eq] at hx
-  have hx_l : x ∈ l := by simpa using hx
-  simpa using (hl_sub.subset hx_l)
+  obtain ⟨i, hiU, -, rfl⟩ := mem_findACandidates.mp (List.mem_of_find?_eq_some hres.symm)
+  exact Finset.insert_subset hiU (findABase_subset U n)
 
 /-- A successful `findA` result has cardinality `n + 1`. -/
 lemma find_a_card {L : ℕ} (U A : Finset (Fin L)) (n : ℕ)
@@ -259,12 +312,8 @@ lemma find_a_card {L : ℕ} (U A : Finset (Fin L)) (n : ℕ)
     (hres : some A = findA U n query response) :
     A.card = n + 1 := by
   unfold findA at hres
-  have hmem := List.mem_of_find?_eq_some hres.symm
-  rw [List.mem_map] at hmem
-  obtain ⟨l, hl_mem, hl_eq⟩ := hmem
-  rw [List.mem_sublistsLen] at hl_mem
-  obtain ⟨hl_sub, hl_len⟩ := hl_mem
-  rw [← hl_eq, List.toFinset_card_of_nodup ((U.sort_nodup (· ≤ ·)).sublist hl_sub), hl_len]
+  obtain ⟨i, hiU, hiT, rfl⟩ := mem_findACandidates.mp (List.mem_of_find?_eq_some hres.symm)
+  rw [Finset.card_insert_of_notMem hiT, findABase_card hiU hiT]
 
 /-- A successful `findA` result has interpolation degree exactly `n`. -/
 lemma find_a_deg {L : ℕ} (U A : Finset (Fin L)) (n : ℕ)
@@ -320,16 +369,19 @@ lemma find_a_successful {L : ℕ} (U : Finset (Fin L)) (n : ℕ)
   unfold findA at h_none
   rw [List.find?_eq_none] at h_none
   simp only [decide_eq_true_eq] at h_none
-  have h_deg_lt : ∀ (s : Finset (Fin L)), s ⊆ U → s.card = n + 1 →
-      (CLagrange.interpolate s query response).degree < ↑n := by
-    intro s hsU hs
-    exact lt_of_le_of_ne
-      (interp_degree_le_of_card s query response (hqueryU.mono hsU) hs)
-      (h_none s (finset_subset_mem_sublists_len_map s U hsU hs))
   -- Core argument: construct a polynomial of degree < n agreeing with all L values
-  -- Pick a subset T of size n
-  obtain ⟨T, hTU, hTcard⟩ :=
-    Finset.exists_subset_card_eq (n := n) (s := U) (by omega)
+  -- Use the `findA` base `T`, of size `n`.
+  set T := findABase U n with hT_def
+  have hTU : T ⊆ U := findABase_subset U n
+  have hTcard : T.card = n := findABase_card_of_le (by omega)
+  have h_deg_lt : ∀ i ∈ U, i ∉ T →
+      (CLagrange.interpolate (insert i T) query response).degree < ↑n := by
+    intro i hiU hiT
+    have hsU : insert i T ⊆ U := Finset.insert_subset hiU hTU
+    have hs : (insert i T).card = n + 1 := by rw [Finset.card_insert_of_notMem hiT, hTcard]
+    exact lt_of_le_of_ne
+      (interp_degree_le_of_card _ query response (hqueryU.mono hsU) hs)
+      (h_none _ (mem_findACandidates.mpr ⟨i, hiU, hiT, rfl⟩))
   -- Let Q_T be the Mathlib interpolation over T
   set Q_T := Lagrange.interpolate T query response with hQ_T_def
   have hQ_T_deg : Q_T.degree < ↑n := by
@@ -348,11 +400,9 @@ lemma find_a_successful {L : ℕ} (U : Finset (Fin L)) (n : ℕ)
         rcases hx with rfl | hxT
         · exact hiU
         · exact hTU hxT
-      have hSicard : Si.card = n + 1 := by
-        rw [Finset.card_insert_of_notMem hiT, hTcard]
       -- The interpolation over Si also has degree < n (via CPolynomial bridge)
       have hSi_deg_lt : (CLagrange.interpolate Si query response).degree < ↑n :=
-        h_deg_lt Si hSiU hSicard
+        h_deg_lt i hiU hiT
       -- Transfer to Polynomial world
       set Q_Si := Lagrange.interpolate Si query response with hQ_Si_def
       have hQ_Si_deg : Q_Si.degree < ↑n := by

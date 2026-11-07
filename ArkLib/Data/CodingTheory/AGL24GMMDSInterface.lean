@@ -19,9 +19,17 @@ one row for each element of `GZPCopyIdx delta`. The theorem below says that ever
 has such copied rows. The final wrapper forgets this structured index by enumerating the
 finite copy type with `Fin d`, yielding the older `GMMDSResidual` interface.
 
-This file does not prove the GM-MDS theorem itself. It records the faithful imported
-boundary in the form nearest to the paper and proves the in-tree plumbing from that
-boundary to the residual consumed by `symbolicFullRank_of_classical_imports`.
+This file does not prove the GM-MDS theorem itself. **Status: the boundary
+`GMMDSDualZeroPatternTheorem` recorded here is NOT a faithful import — it is refuted** for every
+`k < card ι` (`not_gmmDsDualZeroPatternTheorem`, `AGL24DualZeroPatternPinned.lean`, the 13th
+false-residual catch, #354/#389): `GZPCondition` holds vacuously at `δ ≡ 0`, whose copy index
+is empty, so the demanded span is `⊥` while the Reed–Solomon dual is nonzero. This refutes the
+*encoded boundary*, not the published AGL24/GM-MDS theorem, which carries the dimension count.
+The definition and plumbing are kept as historical records; consumers should use the
+dimension-pinned `GMMDSDualZeroPatternTheoremPinned` and
+`symbolicFullRank_of_classical_imports_pinned`. (The pinned target is still conditional: an
+evaluation embedding needs enough field elements, so it is not an unconditional statement over
+arbitrarily small fields.)
 -/
 
 open Finset
@@ -40,9 +48,12 @@ abbrev GZPCopyIdx (delta : V -> Nat) : Type _ :=
 def GZPCopyIdx.vertex {delta : V -> Nat} (a : GZPCopyIdx delta) : V :=
   a.1
 
-/-- Structured, paper-shaped GM-MDS import boundary: for every GZP, there are evaluation
-points and one dual row per copied vertex, each supported on the coordinates whose edge
-contains that vertex, and these rows span the Reed-Solomon dual. -/
+/-- Structured, paper-shaped GM-MDS boundary (**historical; refuted as stated**): for every
+GZP, there are evaluation points and one dual row per copied vertex, each supported on the
+coordinates whose edge contains that vertex, and these rows span the Reed-Solomon dual.
+
+It omits the GM-MDS dimension count `∑ⱼ δⱼ = card ι − k`, and is `False` whenever
+`k < card ι` (`not_gmmDsDualZeroPatternTheorem`). Use `GMMDSDualZeroPatternTheoremPinned`. -/
 def GMMDSDualZeroPatternTheorem (k : Nat) : Prop :=
   forall {t : Nat}, forall e : ι -> Finset (Fin (t + 1)), forall delta : Fin (t + 1) -> Nat,
     GZPCondition e delta k ->

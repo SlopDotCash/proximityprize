@@ -81,7 +81,15 @@ exactly* (machine-verified, parent repo `conj3-proof/INVOLUTION-STRUCTURE-2026-0
 the failure landscape of the k-wpc rigidity property at the gateway parameters is
 completely classified by a Möbius-involution law — the global dihedral symmetries
 `t ↦ -t`, `t ↦ ξ/t` of `μ_n` plus a Beukers–Smyth-bounded sporadic remainder — with
-failure count `Θ(n⁴)`, polynomially negligible against the prize budget `ε*·|F|`.
+failure count `Θ(n⁴)`.  That count is **not** shown to be negligible against the prize
+budget `ε*·|F|`: at the sponsor field shape `q = n·(2^128 + 192) + 1` with `ε* = 2^-128`
+the budget is `n + (192n + 1)/2^128`, essentially `n`, so a `Θ(n⁴)` count exceeds it by
+order `n³` (scale ratio `≈ 2^90` at `n = 2^30`, before the unknown constant).  Such a
+comparison would need a separate, much stronger field lower bound (e.g. `q ≫ 2^128·n⁴`).
+Moreover the counted rigidity-failure configurations have not been mapped to the actual
+bad-scalar set, so neither a budget violation nor budget safety follows from this count.
+(See the 2026-10-28 repository audit, findings PG-307 and the related field-budget
+direction corrections T73 / R-222, for the same caution elsewhere.)
 The old CONJ-A/CONJ-3 notes are superseded (banners in the parent research dossiers);
 `mu8_list_three` below records the stable structural anchor: `μ_8` *saturates* the
 `L = 2` generalized-Singleton boundary (a 3-element list at agreement 4 for `n = 8,

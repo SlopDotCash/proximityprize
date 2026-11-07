@@ -19,9 +19,14 @@ a **shell**. Any `x ∈ B(0,r) ∩ B(v,r)` has `dist(x,0) ≥ wt(v) − r` (tria
 
   `ballInterCount(r, v) ≤ #{x : dist(x,0) ≤ r ∧ wt(v) ≤ dist(x,0) + r}`,
 
-i.e. the intersection is confined to the Hamming shell `wt(v) − r ≤ dist(x,0) ≤ r`. As `wt(v)`
-grows toward `2r` the inner radius `wt(v) − r` rises to `r`, thinning the shell to a sphere — the
-distance dependence the tight second-moment estimate (and CS25's `√`-deviation term) requires.
+i.e. the intersection is confined to the Hamming shell `wt(v) − r ≤ dist(x,0) ≤ r`. The shell
+bound is **nonincreasing** in `wt(v)`, but not strictly: for every `wt(v) ≤ r` the condition
+`wt(v) ≤ dist(x,0) + r` holds for all `x ∈ B(0,r)`, so the shell is the entire ball and the bound
+equals the loose `V`. Only for `r < wt(v)` does it drop below `V` (the point `x = 0` is excluded),
+and as `wt(v)` grows toward `2r` the inner radius `wt(v) − r` rises to `r`, thinning the shell to
+a sphere. This weak distance dependence is an input to, not a proof of, the tight second-moment
+estimate (and CS25's `√`-deviation term), which still needs the quantitative shell/enumerator
+analysis.
 -/
 
 open scoped BigOperators
@@ -50,10 +55,11 @@ theorem ballInterCount_le_shell (r : ℕ) (v : ι → F) :
 
 /-- **Explicit distance dependence.** The ball-intersection count plus the *inner-exclusion* count
 `#{x ∈ B(0,r) : dist(x,0) + r < wt(v)}` is at most the full ball volume `V = #B(0,r)`. The
-inner-exclusion count is monotone increasing in `wt(v)` (more of the ball is excluded as the centers
-separate), so this exhibits `ballInterCount(r,v) ≤ V − (increasing-in-wt(v))` — the strictly
-decreasing distance dependence the tight second-moment estimate needs, replacing the loose
-`ballInterCount ≤ V`. -/
+inner-exclusion count is nondecreasing in `wt(v)` (`innerExclusionMonotonicity`), so this exhibits
+`ballInterCount(r,v) ≤ V − (nondecreasing-in-wt(v))`, a weakly sharper replacement for the loose
+`ballInterCount ≤ V`. It is not strictly decreasing: the exclusion count is `0` for all
+`wt(v) ≤ r` (e.g. `n = 2`, `r = 1` over `F₂`: centers of weight `0` and `1` both give exclusion
+`0` and bound `3 = V`), and it improves on `V` only once `wt(v) > r`. -/
 theorem ballInterCount_add_inner_le_ball (r : ℕ) (v : ι → F) :
     ballInterCount r v
       + ((Finset.univ.filter (fun x : ι → F => hammingDist x 0 ≤ r)).filter

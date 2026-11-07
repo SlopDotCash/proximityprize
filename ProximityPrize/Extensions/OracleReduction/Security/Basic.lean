@@ -300,6 +300,51 @@ private lemma Reduction.run_mk_verifier_id {WitIn WitOut : Type}
     monadLift_bind, Function.comp_apply, monadLift_pure,
     pure_bind, Option.getM, map_eq_bind_pure_comp]
 
+/-- Lifting an `OracleComp spec₁` computation into `OptionT (OracleComp (spec₁ + spec₂))` never
+fails: its run is the `some`-image of the lifted computation. This evaluates the extraction step
+`liftM (extractor …).run` of `Verifier.knowledgeSoundnessWith`. -/
+theorem OracleComp.run_liftM_optionT_add_eq_map_some {ι₁ ι₂ : Type} {spec₁ : OracleSpec ι₁}
+    {spec₂ : OracleSpec ι₂} {α : Type} (X : OracleComp spec₁ α) :
+    (liftM X : OptionT (OracleComp (spec₁ + spec₂)) α).run =
+      some <$> (liftM X : OracleComp (spec₁ + spec₂) α) := by
+  change (liftM (X >>= fun a => pure (some a)) : OracleComp (spec₁ + spec₂) _) = _
+  rw [liftM_bind]
+  simp [map_eq_bind_pure_comp]
+
+/-- **Regression for the extraction-failure semantics of `Verifier.knowledgeSoundness`.**
+
+The identity verifier accepts every input statement. Over the empty input relation and the full
+output relation, the bad event of the knowledge game therefore holds on *every* successful run,
+whatever the extractor does: a returned witness is never valid for `∅`, and a failed extraction
+(observed as `none`) is scored as bad. With the identity prover the run always succeeds, so every
+extractor has knowledge error `1`; in particular the always-failing extractor
+`fun _ _ _ _ _ => failure` does not witness knowledge soundness. Hence the accept-all identity
+verifier is not knowledge sound for any error `< 1`, and in particular not at error `0`. -/
+theorem Verifier.id_not_knowledgeSoundness_empty_relIn [Inhabited StmtIn] [Inhabited WitIn]
+    {knowledgeError : ℝ≥0} (hError : knowledgeError < 1) :
+    ¬ (Verifier.id : Verifier oSpec StmtIn StmtIn !p[]).knowledgeSoundness init impl
+      (∅ : Set (StmtIn × WitIn)) (Set.univ : Set (StmtIn × WitIn)) knowledgeError := by
+  rintro ⟨extractor, hExtractor⟩
+  have hBound := hExtractor WitIn default default Prover.id
+  dsimp only at hBound
+  rw [show (Reduction.mk Prover.id Verifier.id :
+      Reduction oSpec StmtIn WitIn StmtIn WitIn !p[]) = Reduction.id from rfl,
+    Reduction.id_runWithLog] at hBound
+  refine absurd hBound (not_le.mpr (lt_of_lt_of_le (b := 1) ?_ ?_))
+  · exact_mod_cast hError
+  -- The game never aborts (the identity run succeeds and the extraction step is lifted with
+  -- `OptionT.run`, so its failure is an observation), and every output satisfies the bad event.
+  refine le_of_eq (Eq.symm ?_)
+  rw [OptionT.prEvent_mk_eq_one_iff]
+  intro o ho
+  simp only [pure_bind, OptionT.run_bind, Option.elimM, OptionT.run_pure,
+    OracleComp.run_liftM_optionT_add_eq_map_some, bind_map_left, Option.elim_some,
+    simulateQ_bind, simulateQ_pure, StateT.run'_eq, StateT.run_bind, StateT.run_pure,
+    support_map, support_bind, support_pure, Set.mem_image, Set.mem_iUnion,
+    Set.mem_singleton_iff] at ho
+  obtain ⟨_, _, _, ⟨_, _, rfl⟩, rfl⟩ := ho
+  exact ⟨_, rfl, by simp⟩
+
 end Trivial
 
 end

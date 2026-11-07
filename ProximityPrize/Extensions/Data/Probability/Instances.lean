@@ -588,7 +588,7 @@ theorem PMF.map_uniformOfFintype_of_fiber_const
 
 The two collision-probability bounds feeding the two applications of Claim B.1
 (`Probability.exists_large_image_of_pairwise_collision_bound`) in the proof of
-ABF26 Lemma 6.12 (`ToyProblem.simplified_iop_soundness_listDecoding_lb`):
+ABF26 Lemma 6.12 (canonically `ToyProblem.exists_winningSetFor_ncard_ge_of_lambda_lt_card`):
 
 * `Pr_map_eq` — a pushforward probability identity (change of variables for a
   `PMF.map`), used to reduce `Pr` over the distribution of collision maps `φ_v`

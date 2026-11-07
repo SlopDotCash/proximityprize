@@ -20,6 +20,31 @@ import VCVio.OracleComp.QueryTracking.CostModel
   # Rewinding Knowledge Soundness
 
   This file defines rewinding knowledge soundness for (oracle) reductions.
+
+  ## Oracle semantics of the non-interactive (NARG) predicates
+
+  `Verifier.failureProbability`, `Verifier.rewindingKnowledgeSoundnessGame` /
+  `Verifier.rewindingKnowledgeSoundness` and their `…Family` wrappers measure a raw
+  `OracleComp oSpec` with `Pr{…}[…]` under `[OracleSpec.UniformAnswerMeasure oSpec]`. They take no
+  oracle interpreter, cached random-function table or ideal-permutation implementation, so every
+  query is answered by an **independent fresh uniform sample**. These predicates are therefore
+  **memoryless-oracle** notions:
+
+  * repeated queries are not consistent: querying the same Boolean-valued key twice yields
+    disagreeing answers with probability `1/2`, whereas under a (lazily sampled) random function
+    they always agree;
+  * forward/inverse consistency of an ideal permutation is not enforced either.
+
+  So, by themselves, they do **not** express security in the cached random-oracle model or the
+  ideal-permutation model. A ROM or ideal-permutation claim needs either versions of these games
+  parameterized by the intended shared oracle interpretation (with the interpreter/cache preserved
+  across the prover, verifier and rewinding calls) or an explicit interpretation bridge; neither is
+  provided in this file.
+
+  The expected-time clause (`Extractor.RewindingNARG.expectedCostBound`) is likewise an expected
+  **oracle-cost** bound: its `CostModel` charges oracle operations only, and pure local
+  computation is free. It is not a bound on arbitrary local running time without a separate
+  computation model.
 -/
 
 noncomputable section

@@ -23,6 +23,14 @@ The Folded Reed-Solomon construction groups `N` symbols into `N/s` blocks of siz
 A single error in a standard RS symbol corrupts the entire corresponding FRS block.
 A worst-case adversary will perfectly space out their standard RS errors so that
 no two errors fall in the same FRS block, maximizing the FRS error rate.
+
+**Regime caveat.** Spacing `E` errors into distinct blocks is only possible when `E ≤ N/s`. In
+general (for `s > 0`, `s ∣ N`) the worst-case number of corrupted blocks is `min(E, N/s)`, so the
+achievable block-error rate saturates at `min(E, N/s)/(N/s) ≤ 1`. For example, `N = 8, s = 4,
+E = 3` yields at most two corrupted blocks (rate `1`), whereas the unsaturated expression
+`E/(N/s)` is `3/2`. The theorems below are arithmetic identities/inequalities about the
+unsaturated expression `E/(N/s)`; they do **not** formalize the existence of the claimed error
+placement, and they are meaningful as error-rate statements only in the regime `E ≤ N/s`.
 -/
 
 namespace ArkLib.ProximityGap.DisproofFoldedRS
@@ -33,8 +41,11 @@ variable {N E s : ℕ}
 def num_frs_blocks (N s : ℕ) : ℕ := N / s
 
 /-- The standard Reed-Solomon error rate is `δ = E / N`.
-The induced FRS block-error rate is `E / (N / s)`.
-We formally show this perfectly scales the error rate by a factor of `s`.
+In the unsaturated regime `E ≤ N / s` (errors placeable in distinct blocks), the induced
+worst-case FRS block-error rate is `E / (N / s)`; in general it is `min(E, N/s) / (N/s)`.
+We formally show the arithmetic identity `E / (N / s) = s · δ`. This theorem does not assume
+`E ≤ N / s` and does not construct the error placement, so it is an identity for the expression
+only; read it as a block-error rate only when `E ≤ N / s`.
 -/
 theorem anti_clustering_explosion (hs_pos : 0 < s) (hdiv : s ∣ N)
     (δ : ℝ) (hδ : δ = (E : ℝ) / (N : ℝ)) :
@@ -49,13 +60,14 @@ theorem anti_clustering_explosion (hs_pos : 0 < s) (hdiv : s ∣ N)
 
 /--
 If the FRS decoder achieves capacity `1 - R`, it can list-decode when the
-FRS block-error rate is strictly less than `1 - R`. However, because of the worst-case
-anti-clustering adversary, the effective FRS block-error rate is `s * δ`.
+FRS block-error rate is strictly less than `1 - R`. In the unsaturated regime `E ≤ N / s`, the
+worst-case anti-clustering adversary realizes the FRS block-error rate `s * δ` (this placement is
+argued informally, not formalized here).
 
 Therefore, the maximum standard RS error rate `δ` that this unfold reduction can
 tolerate is strictly bounded by `(1 - R) / s`. Since `s ≥ 2`, this bound is at best
-`(1 - R) / 2`, which is drastically worse than true capacity `1 - R` and
-algebraically obliterates the reduction.
+`(1 - R) / 2`, which is drastically worse than true capacity `1 - R`. Formally, this theorem
+is only the division step `s·δ < 1 - R → δ < (1 - R)/s`.
 -/
 theorem unfolded_capacity_bound (hs_pos : 0 < s) (R : ℝ) (δ : ℝ)
     (_hδ : δ = (E : ℝ) / (N : ℝ))

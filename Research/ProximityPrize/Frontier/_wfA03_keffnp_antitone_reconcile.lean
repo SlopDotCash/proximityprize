@@ -13,7 +13,7 @@ import Research.ProximityPrize.Frontier._wf6F1_gaussian_step_telescope
 
 The S1 dichotomy (`_wfS1_transfer_slack_prize`) reduces the `K = 1` (sharp char-0 constant) prize to
 the **char-0-limit transfer** `E_r^{NP} ≤ (2r-1)‼ · n^r`, and its anchored form
-`charzero_limit_of_anchor_antitone` discharges this from the Parseval anchor `E_1^{NP} ≤ n` PLUS the
+`charzero_limit_of_anchor_ratio_envelope` discharges this from the Parseval anchor `E_1^{NP} ≤ n` PLUS the
 **per-`r` envelope** `E_r^{NP} ≤ E_1^{NP} · (2r-1)‼ · n^{r-1}`. Equivalently, writing
 `g_r := E_r^{NP} / ((2r-1)‼ · n^r)` (the Wick-normalized **ratio**, `g_1 = K_eff^{NP}(1) = 1 − n/p`),
 the envelope is exactly **`g_r ≤ g_1`** — the *geometric-mean/ratio* statement
@@ -101,7 +101,7 @@ noncomputable def wickRatio (M : ℕ → ℝ) (s : ℝ) (r : ℕ) : ℝ :=
 /-- The **S1 ratio object**: `g_r` is non-increasing from `r = 1` on. Equivalent to
 `K_eff^{NP}(r) = g_r^{1/r}` antitone-anchored at `r = 1` (when `g` is positive). This — not
 `StepRatioAntitone` — is the object the S1 `K = 1` transfer consumes
-(`WFS1.charzero_limit_of_anchor_antitone`). -/
+(`WFS1.charzero_limit_of_anchor_ratio_envelope`). -/
 def RatioDecreasing (M : ℕ → ℝ) (s : ℝ) : Prop :=
   ∀ r : ℕ, 1 ≤ r → wickRatio M s (r + 1) ≤ wickRatio M s r
 

@@ -115,9 +115,23 @@ class Codec {n : ℕ} (pSpec : ProtocolSpec n) (U : Type)
   /-- For every `i`, `decode i` is surjective: every challenge has at least one encoded preimage.
     Required for the `ψ⁻¹` sampler in the Section 5.8 reduction. -/
   decode_surjective : ∀ i, Function.Surjective (decode i)
-  /-- `ψᵢ⁻¹ : Challenge i → ProbComp (Σ^{ℓ_V(i)})` — preimage sampler (CO25 Def. 4.1). -/
+  /-- Candidate `ψᵢ⁻¹ : Challenge i → ProbComp (Σ^{ℓ_V(i)})` preimage sampler (CO25 Def. 4.1).
+
+    Its only law is `sampleChallengePreimage_decode` (support soundness: every supported sample
+    decodes back to the requested challenge). The **conditional-uniform fiber law** of CO25
+    (`ψᵢ⁻¹(ρ)` is uniform on `{ρ̂ | ψᵢ(ρ̂) = ρ}`) is *not* imposed, so a consumer that needs the
+    paper's uniform inverse sampler must not rely on this field. The active §5.8 transforms do
+    not use this field: they sample through
+    `ProverTransform.uniformDeserializePreimage`, which is uniform over the decoder fiber by
+    construction. -/
   sampleChallengePreimage :
     (i : pSpec.ChallengeIdx) → pSpec.Challenge i → ProbComp (Vector U (challengeSize i))
+  /-- Support soundness of `sampleChallengePreimage`: every sample it can output is a genuine
+    `decode i`-preimage of the requested challenge. (The conditional-uniform fiber law is not
+    part of the class; see `sampleChallengePreimage`.) -/
+  sampleChallengePreimage_decode :
+    ∀ (i : pSpec.ChallengeIdx) (c : pSpec.Challenge i) (v : Vector U (challengeSize i)),
+      v ∈ support (sampleChallengePreimage i c) → decode i v = c
 
 namespace Codec
 
@@ -138,7 +152,9 @@ instance (priority := high) instDeserializeChallenge [c : Codec pSpec U] (i : pS
 
 /-- hax-pipeline constructor: assemble a `Codec` from external `Serialize`/`Deserialize`
     instances supplied by Rust→hax extraction, plus the math-side metadata. `decodingBias` is
-    derived from `[decChalUniform]`'s `ε` field; no separate bias parameter is needed. -/
+    derived from `[decChalUniform]`'s `ε` field; no separate bias parameter is needed. The
+    supplied `sampler` must come with `samplerSound`, the support-soundness law
+    `sampleChallengePreimage_decode`; no conditional-uniformity law is required. -/
 def mk' {n : ℕ} (pSpec : ProtocolSpec n) (U : Type)
     (mSize : pSpec.MessageIdx → Nat) (cSize : pSpec.ChallengeIdx → Nat)
     [∀ i, Fintype (Vector U (cSize i))] [∀ i, Nonempty (Vector U (cSize i))]
@@ -148,7 +164,9 @@ def mk' {n : ℕ} (pSpec : ProtocolSpec n) (U : Type)
     [decChal : ∀ i, Deserialize (pSpec.Challenge i) (Vector U (cSize i))]
     [decChalUniform : ∀ i, Deserialize.PMFCloseToUniform (pSpec.Challenge i) (Vector U (cSize i))]
     (dechalSurj : ∀ i, Function.Surjective ((decChal i).deserialize))
-    (sampler : (i : pSpec.ChallengeIdx) → pSpec.Challenge i → ProbComp (Vector U (cSize i))) :
+    (sampler : (i : pSpec.ChallengeIdx) → pSpec.Challenge i → ProbComp (Vector U (cSize i)))
+    (samplerSound : ∀ (i : pSpec.ChallengeIdx) (c : pSpec.Challenge i) (v : Vector U (cSize i)),
+      v ∈ support (sampler i c) → (decChal i).deserialize v = c) :
     Codec pSpec U where
   messageSize := mSize
   challengeSize := cSize
@@ -163,6 +181,7 @@ def mk' {n : ℕ} (pSpec : ProtocolSpec n) (U : Type)
     convert (decChalUniform i).ε_close using 4
   decode_surjective := dechalSurj
   sampleChallengePreimage := sampler
+  sampleChallengePreimage_decode := samplerSound
 
 /-- Backwards-compatible wrapper class for the codec semantic laws (CO25 Definition 4.1).
 
@@ -238,7 +257,11 @@ It is indexed over the challenge rounds of the protocol specification, and for e
   a vector of units of size `Lₚ(j)` (the number of queries to the permutation oracle needed to
   absorb the `j`-th message)
 - The output is a vector of units of size `Lᵥ(i)` (the number of queries to the permutation oracle
-  needed to absorb the `i`-th challenge) -/
+  needed to absorb the `i`-th challenge)
+
+Note: this older surface sizes its vectors by permutation-query counts (`Lₚᵢ`, `Lᵥᵢ`), not by the
+codec encoding lengths `messageSize` / `challengeSize`. The active Section 5.8 surfaces `gSpec` /
+`eSpec` below use the encoding lengths; this oracle is kept as an API-consolidation candidate. -/
 def duplexSpongeHybridOracle : OracleSpec
     ((i : pSpec.ChallengeIdx) × StmtIn ×
       ((j : pSpec.MessageIdx) → (hj : j.1 < i.1) → Vector U (pSpec.Lₚᵢ j))) :=

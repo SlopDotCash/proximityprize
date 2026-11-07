@@ -648,9 +648,12 @@ theorem e_of_hasFirstPermCapacityBeforeForwardOutputPaper
 The legacy `Lemma5_14HonestFalseStatement` / `Lemma5_16HonestFalseAsStated` are REFUTED as stated
 (machine-checked countermodels exploiting the legacy dedup's certificate deviation). These are
 the same confinement statements against the **paper-faithful** combined event
-`BadEventDSPaper.E` — correctly stated, honestly OPEN named Props awaiting discharge against
-the repaired semantics. The honest events themselves (`E_inv_honest`/`E_fork_honest`/
-`E_time_honest`) are dedup-independent and unchanged. -/
+`BadEventDSPaper.E` — correctly stated named Props. When they were introduced here they were
+open; **all three are now discharged** in other modules:
+`lemma5_12HonestResidualPaper_holds` and `lemma5_16HonestResidualPaper_holds`
+(`Lemma512PaperCascade.lean`) and `lemma5_14HonestResidualPaper_holds`
+(`Lemma514PaperFork.lean`), with duplicate naming routes. The honest events themselves
+(`E_inv_honest`/`E_fork_honest`/`E_time_honest`) are dedup-independent and unchanged. -/
 
 open DuplexSpongeFS.KeyLemmaFoundations in
 /-- CO25 Lemma 5.12 (honest form), **paper semantics**: off the paper combined bad event, no
@@ -943,10 +946,14 @@ theorem e_of_hasFirstHashPermCapNatPaper
 /-! ## The 5.16 hash half, paper semantics — DISCHARGED
 
 The legacy chain forced the chain witness to be a *forward* entry via the inverse-exclusion
-keystone ("no raw inverse off `E`") — which is exactly what is **false** under paper semantics
-(an inverse whose pair was earlier queried forward is legitimate). The direction-agnostic shape
-redesign makes that keystone unnecessary: the chain-recording lemma yields a perm-**or**-inverse
-witness, the generalized shape absorbs it, and the production is entirely semantics-free. -/
+keystone ("no raw inverse off `E`"). For **raw** trace entries that is false under paper
+semantics: a repeated raw inverse whose pair was earlier queried forward is legitimate. It is
+**not** false at the *selected* anchor: the actual Backtrack index chooses a first occurrence,
+and the proved cascade (`index_entry_forward_of_not_E`, used by `lemma5_12_paper` in
+`Lemma512PaperCascade.lean`) correctly excludes an inverse at that selected first-occurrence
+anchor off the paper bad event. The direction-agnostic shape redesign used here avoids needing
+any inverse exclusion: the chain-recording lemma yields a perm-**or**-inverse witness, the
+generalized shape absorbs it, and the production is entirely semantics-free. -/
 
 /-- Off the **paper** combined bad event, an honest hash-timing witness yields the
 direction-agnostic first-hash collision shape in the raw trace — no inverse-exclusion needed. -/

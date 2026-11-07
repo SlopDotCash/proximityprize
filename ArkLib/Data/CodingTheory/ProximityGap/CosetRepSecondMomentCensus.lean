@@ -20,11 +20,14 @@ so `∑_reps ‖η_rep‖² = q − n`):
 
 > the *average* coset Gauss-period magnitude is `‖η_rep‖²_avg = (q − n)/m = n·(q − n)/(q − 1) ≈ n`,
 
-i.e. the **Parseval floor `√n`** holds for the *typical* coset. The entire open CORE is the gap
-between this exact average and the **worst** coset rep `M(n) = max_rep ‖η_rep‖`: the prize asserts
-`M ≤ C·√(n·log(p/n))`, i.e. the worst rep exceeds the `√n` average by at most a `√(log(p/n))`
-factor. This file pins the *average* side **exactly** (it is `n`, a flat Parseval floor) — so the
-beyond-`√n` content lives **entirely** in the max-vs-average spread, NOT in the second moment.
+i.e. the **mean-square** coset magnitude is `n·(q − n)/(q − 1)`, slightly below `n` (it equals
+`n·(1 − (n−1)/(q−1))`).  An average says nothing about a *typical* coset: it only forces the worst
+rep to satisfy `M(n)² ≥ n·(q − n)/(q − 1)` (a Parseval floor for the maximum), while individual
+cosets may lie far below it.  The open CORE is the gap between this exact average and the
+**worst** coset rep `M(n) = max_rep ‖η_rep‖`: the prize asserts `M ≤ C·√(n·log(p/n))`, i.e. the
+worst rep exceeds the root-mean-square value by at most a `√(log(p/n))` factor. This file pins the
+*average* side **exactly** (it is `n·(q − n)/(q − 1)`, not exactly `n`) — so the beyond-`√n`
+content lives **entirely** in the max-vs-average spread, NOT in the second moment.
 
 NON-MOMENT in spirit (the census is an exact Parseval identity composed with the orbit partition;
 it does NOT attempt a moment *bound* on the max — that route is loose at `r=1`, needing `r ~ log m`).

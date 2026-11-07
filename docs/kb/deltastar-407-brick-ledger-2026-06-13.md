@@ -1,5 +1,21 @@
 # #407 BRICK LEDGER — every named open brick/conjecture resolved + adversarially verified (2026-06-13)
 
+> **Scope correction (2026-10-28 audit, T48; cross R-001).** The exact identities listed here are
+> valid: the Parseval moment identity, the Gauss-sum duality `k·η_b = Σ_χ χ̄(b)g(χ)` and the
+> excess identity. Neither they nor a true square-root character bound **equate** the different
+> objects in this ledger:
+> - the MCA bad-scalar count,
+> - the list size,
+> - the spectral supremum `M(n)`,
+> - the moments `E_k`.
+>
+> Moment identities relate averages, a supremum bound controls moments only one way, and a spectral
+> bound reaches bad-scalar counts only through a separate MCA bridge. So "every open count reduces
+> — by an EXACT machine-verified identity — to the same BGK core", the `⟺` links in the closing
+> paragraph, and "resonance-freeness ⟺ M(n) ≤ √(n log q) EXACTLY" overstate one-way or conditional
+> relations as equivalences. In particular, the trivial-character term must also be accounted for
+> in the duality.
+
 10 named bricks from the 46-comment #407 thread, one expert each, adversarially verified (all verdicts held).
 8 resolved (2 throttled by session limit: "2-adic descent" and "√2 constant" — covered by the dual-assault
 synthesis already). **Verdict: 1 PROVED, 1 REFUTED, 5 PARTIAL (proven-core + open-tail), 2 OPEN-equiv-BGK.**

@@ -1,4 +1,16 @@
-# CLOSED LAW: s_max(μ_{2^μ}) = μ−1, and δ* = the s_max integer staircase crossing log_n(ε*q) (2026-06-13)
+# RETRACTED (n = 64) — formerly "CLOSED LAW": s_max(μ_{2^μ}) = μ−1, and δ* = the s_max integer staircase crossing log_n(ε*q) (2026-06-13)
+
+> **Retracted / corrected (see `issue400-smax-law-CORRECTION-mu-minus-1-REFUTED-2026-06-13.md`;
+> heading qualified 2026-10-28, audit T48).** The law `s_max = μ − 1` is false: `s_max(64) ≥ 6`.
+> Two further corrections apply to the staircase reading below.
+> - **Budget exponent.** At the actual first-prime production shape `q·2^{−128} ≈ n` (for example
+>   `n = 2^30`, `q ≈ 2^158`), so `log_n(ε*q) ≈ 1`, not `2.13`. A `Θ(n²)` bad count is then not
+>   automatically below budget, and the "safe bands are `s_max ≤ 2`" argument does not hold.
+> - **Asymptotics vs. an exact budget.** An asymptotic `#bad = Θ(n^{s_max})` cannot settle an
+>   exact finite budget without explicit constants (cross T73/T98). The `Θ` claim itself comes from
+>   finite data.
+>
+> The structural balance criterion and the finite counts remain useful history.
 
 Building on the signed-single decomposition (`issue400-e2zero-singles-decomposition-…`): `#bad = Θ(n^{s_max})`,
 `s_max` = max number of "single" antipodal classes in a valid `e_2=0` config. This note PINS `s_max`.

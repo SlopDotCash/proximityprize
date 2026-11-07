@@ -122,22 +122,19 @@ theorem epsMCA_le_of_lt_mcaDeltaStar (C : Set (ι → A)) (εstar : ℝ≥0∞) 
 /-! ## Converse step 2 — each stack's incidence obeys the budget -/
 
 open Classical in
-/-- **THE CONVERSE per-stack incidence bound.** If `δ < mcaDeltaStar C ε*`, then for EVERY stack
-`u` the far-line incidence (bad-scalar count) is at most `q·ε*`:
+/-- **Pointwise budget reading of `ε_mca`.** If `ε_mca(C, δ) ≤ ε*`, then for EVERY stack `u` the
+far-line incidence (bad-scalar count) is at most `q·ε*`:
 
   `(#{γ : mcaEvent C δ (u 0) (u 1) γ} : ℝ≥0∞) ≤ q · ε*`.
 
-This is the exact converse of `epsMCA_le_of_worstCaseIncidence`: there a uniform incidence bound
-gives `ε_mca ≤ B/q`; here a δ*-lower-bound gives `ε_mca ≤ ε*` (step 1), then each stack's
-incidence-probability `I_u/q ≤ ε_mca` (term ≤ sup, via the exact uniform-probability identity)
-yields `I_u ≤ q·ε*`. -/
-theorem incidence_le_of_lt_mcaDeltaStar (C : Set (ι → A)) (εstar : ℝ≥0∞) {δ : ℝ≥0}
-    (hδ : δ < mcaDeltaStar (F := F) (A := A) C εstar)
+Each stack's incidence-probability `I_u/q` is a term of the supremum `ε_mca` (via the exact
+uniform-probability identity), so `I_u/q ≤ ε*`, i.e. `I_u ≤ q·ε*`. This is the shared pointwise
+core used both by `incidence_le_of_lt_mcaDeltaStar` below and by downstream budget `iff`s. -/
+theorem incidence_le_of_epsMCA_le (C : Set (ι → A)) (εstar : ℝ≥0∞) {δ : ℝ≥0}
+    (hgood : epsMCA (F := F) (A := A) C δ ≤ εstar)
     (u : WordStack A (Fin 2) ι) :
     ((Finset.univ.filter (fun γ : F => mcaEvent (F := F) C δ (u 0) (u 1) γ)).card : ℝ≥0∞)
       ≤ (Fintype.card F : ℝ≥0∞) * εstar := by
-  have hgood : epsMCA (F := F) (A := A) C δ ≤ εstar :=
-    epsMCA_le_of_lt_mcaDeltaStar (F := F) (A := A) C εstar hδ
   -- This stack's probability is ≤ the supremum ε_mca.
   have hterm : Pr_{let γ ← $ᵖ F}[mcaEvent (F := F) C δ (u 0) (u 1) γ]
       ≤ epsMCA (F := F) (A := A) C δ := by
@@ -158,6 +155,23 @@ theorem incidence_le_of_lt_mcaDeltaStar (C : Set (ι → A)) (εstar : ℝ≥0�
   have hqtop : (Fintype.card F : ℝ≥0∞) ≠ ⊤ := by simp
   rw [ENNReal.div_le_iff hq0 hqtop] at hcard
   rwa [mul_comm] at hcard
+
+open Classical in
+/-- **THE CONVERSE per-stack incidence bound.** If `δ < mcaDeltaStar C ε*`, then for EVERY stack
+`u` the far-line incidence (bad-scalar count) is at most `q·ε*`:
+
+  `(#{γ : mcaEvent C δ (u 0) (u 1) γ} : ℝ≥0∞) ≤ q · ε*`.
+
+This is the exact converse of `epsMCA_le_of_worstCaseIncidence`: there a uniform incidence bound
+gives `ε_mca ≤ B/q`; here a δ*-lower-bound gives `ε_mca ≤ ε*` (step 1), and the pointwise reading
+`incidence_le_of_epsMCA_le` yields `I_u ≤ q·ε*`. -/
+theorem incidence_le_of_lt_mcaDeltaStar (C : Set (ι → A)) (εstar : ℝ≥0∞) {δ : ℝ≥0}
+    (hδ : δ < mcaDeltaStar (F := F) (A := A) C εstar)
+    (u : WordStack A (Fin 2) ι) :
+    ((Finset.univ.filter (fun γ : F => mcaEvent (F := F) C δ (u 0) (u 1) γ)).card : ℝ≥0∞)
+      ≤ (Fintype.card F : ℝ≥0∞) * εstar :=
+  incidence_le_of_epsMCA_le (F := F) (A := A) C εstar
+    (epsMCA_le_of_lt_mcaDeltaStar (F := F) (A := A) C εstar hδ) u
 
 /-! ## Converse step 3 — the WorstCaseIncidenceBounded property at the budget -/
 
@@ -278,6 +292,7 @@ end ProximityGap.OpenCoreConverse
 
 /-! ## Axiom audit (expected: propext, Classical.choice, Quot.sound only) -/
 #print axioms ProximityGap.OpenCoreConverse.epsMCA_le_of_lt_mcaDeltaStar
+#print axioms ProximityGap.OpenCoreConverse.incidence_le_of_epsMCA_le
 #print axioms ProximityGap.OpenCoreConverse.incidence_le_of_lt_mcaDeltaStar
 #print axioms ProximityGap.OpenCoreConverse.worstCaseIncidence_of_lt_mcaDeltaStar
 #print axioms ProximityGap.OpenCoreConverse.stackIncidence_le_of_lt_mcaDeltaStar

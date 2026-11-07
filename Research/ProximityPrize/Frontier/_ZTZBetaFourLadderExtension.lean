@@ -13,21 +13,25 @@ import Mathlib.Tactic.NormNum.Prime
 **Target.**  The explicit-certificate **quartic** ladder discharging the named hypothesis
 `TZPrimeSupply n (4 : ℝ) supply` (`KKH26ThornerZaman.lean`) previously reached only
 `n = 64` at supply 16 (`tzPrimeSupply_64_four` in
-`Frontier/ThornerZamanInstance.lean`; the sibling `_TZSubquarticBookkeeping.lean` adds
-`n = 128` at supply 12 and `n = 256` at supply 8, both via slow trial-division
-`norm_num` primality that does not scale past ~33 bits).  This file lands the
+`Frontier/ThornerZamanInstance.lean`).  The sibling `_TZSubquarticBookkeeping.lean` once
+carried separate trial-division proofs at `n = 128` (supply 12) and `n = 256` (supply 8); it now
+delegates both to the rungs here.  This file lands the
 **quartic** ladder uniformly, at the uniform supply 12, at
 
 > **`tzPrimeSupply_{128,256,512,1024}_four`** — `TZPrimeSupply n (4 : ℝ) 12`:
 > the window `[n⁴, 2·n⁴]` contains (at least) twelve explicit primes `≡ 1 (mod n)`,
 > each Lucas-certified so the certificate cost is logarithmic in `p`, not `√p`.
 
-**Why β = 4 (prize relevance).**  β = 4 is the *analytic-diagonal* exponent: it is the
-largest exponent for which the [KKH26] Lemma 2 bad-prime budget stays sub-supply while the
-[TZ24] short-interval supply `~ n^{β−1−o(1)}` remains unconditional (`β > 12/5`), and it is
-the exponent the polynomial-field δ* ceiling consumer `kkh26_mcaDeltaStar_le_of_TZ` is tuned
-to.  The β = 2 ladder cannot feed that consumer (recorded in `_W16TZPrizeScaleP30.lean`);
-extending the **quartic** ladder is therefore the most prize-relevant certificate progress.
+**Why β = 4 (prize relevance).**  The polynomial-field δ* ceiling consumer
+`kkh26_mcaDeltaStar_le_of_TZ` has **no** `β` hypothesis: any β works once its budget
+inequality `hcount` (`|pairs|·log M / (β·log n) < supply`) holds.  That budget *decreases* in
+β while the [TZ24] supply `~ n^{β−1−o(1)}` (unconditional for `β > 12/5`) *increases*, so
+β = 4 is not a "largest admissible exponent" — every β > 4 is at least as good (the repo's β = 5
+ladders are examples).  Nor is the β = 2 ladder useless in general: the "β = 2 cannot feed the
+consumer" caveat of `_W16TZPrizeScaleP30.lean` is specific to `μ = 7` (`s = 128`) at
+`n = 2^30`; e.g. at `μ = 2`, `r = 2`, `n = 2^30` the β = 2 budget is `12·log 16/log 2^60 = 0.8`,
+below the supply `20` of `tzPrimeSupply_1073741824_two`.  The quartic ladder is one useful family
+of concrete certificates among these.
 
 **Certificate technology (mirrors `_ZTZBetaThreeLadderExtension.lean` /
 `_W16TZPrizeScaleP30.lean`).**  The window primes here are 28–41 bits, sieved

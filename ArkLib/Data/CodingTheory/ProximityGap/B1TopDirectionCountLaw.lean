@@ -15,9 +15,15 @@ Goal proven here (axiom-clean target):
   equals
       `(-1)^(#R-1) * (∏_{i∈R} v i)⁻¹`.
 
-This pins B1's open Prop TopDirectionDistinctCountEqN: the value depends ONLY on the product
-`∏ v i ∈ μ_n`, so as `R` ranges over `(k+1)`-subsets the value ranges over `μ_n` (n values),
-and the count of distinct readouts is exactly `n`.
+This pins B1's Prop TopDirectionDistinctCountEqN: the value depends ONLY on the product
+`∏ v i ∈ μ_n`, so as `R` ranges over `(k+1)`-subsets the value ranges inside the **signed coset**
+`(-1)^k · μ_n` (since `μ_n⁻¹ = μ_n`). For even `n`, or even `k`, this coset is `μ_n` itself; for
+odd `n` and odd `k` it is the distinct coset `-μ_n` (e.g. `n = 3`, `k = 1` in characteristic `0`:
+every top readout cubes to `-1`). Inversion and the fixed sign are injective, so the count of
+distinct readouts equals the number of distinct subset products, at most `n`
+(`topReadouts_card_le`), and exactly `n` on the canonical domain: the subset-product
+surjectivity is proved in `B1CountLawUnconditional.lean` (`subsetProductSurjectsMu_holds`,
+`topReadouts_card_eq_n_unconditional`, for a primitive `n`-th root, `2 ≤ n`, `1 ≤ k ≤ n-2`).
 
 Mechanism (NOT a single Z_n orbit): the readout is a *function of the product of the roots*,
 `h_{n-1-k}(R) = (-1)^k (∏ v_i)^{-1}`. The Z_n-equivariance (multiply by ξ = w^{n-1-k}) is a
@@ -103,9 +109,11 @@ unity, `v i ^ n = 1`, hence `v i ≠ 0`), the top-direction complete-homogeneous
   `(-1)^(#R-1) * (∏_{i∈R} v i)⁻¹`.
 
 So the readout value is a *function of the product of the roots* `∏ v i ∈ μ_n` only.
-This is the mechanism behind `TopDirectionDistinctCountEqN`: as `R` ranges over `(k+1)`-subsets,
-`∏ v i` ranges over all of `μ_n` (subset-sum mod `n` is surjective for `1 ≤ #R ≤ n-1`), and the
-fixed sign `(-1)^(#R-1)` keeps the `n` values `(-1)^(#R-1) ζ^{-s}` distinct, giving exactly `n`.
+This is the mechanism behind `TopDirectionDistinctCountEqN`: on the canonical domain (a primitive
+`n`-th root, nodes all of `μ_n`), as `R` ranges over `(k+1)`-subsets with `1 ≤ k ≤ n-2`, `∏ v i`
+ranges over all of `μ_n` (proved in `B1CountLawUnconditional.lean`), and the fixed sign
+`(-1)^(#R-1)` keeps the `n` values `(-1)^(#R-1) ζ^{-s}` distinct, giving exactly `n`. These values
+lie in the signed coset `(-1)^(#R-1)·μ_n`, which is `-μ_n ≠ μ_n` when `n` and `#R-1` are odd.
 -/
 theorem topDirectionReadout_eq (R : Finset ι) (v : ι → F) (n : ℕ) (hn : 0 < n)
     (hvs : Set.InjOn v R) (hR : R.Nonempty) (hroot : ∀ i ∈ R, v i ^ n = 1) :
@@ -164,12 +172,16 @@ theorem completeHom_top_eq (R : Finset ι) (v : ι → F) (n k : ℕ) (hn : 0 < 
 Consequently the number of distinct top-direction readouts over `(k+1)`-subsets of `μ_n` equals
 the number of distinct products `∏ v i` realized by `(k+1)`-subsets — a purely combinatorial
 subset-product count inside `μ_n`.  This is the mechanism behind `TopDirectionDistinctCountEqN`:
-the count is `n` exactly when those products are surjective onto `μ_n` (true for `1 ≤ k ≤ n-2`).
+the count is `n` exactly when those products are surjective onto `μ_n` (proved for the canonical
+domain with `1 ≤ k ≤ n-2` in `B1CountLawUnconditional.lean`).
 
-We prove the harder direction here as a clean inequality: the readout value lies in the coset
-`(-1)^k · μ_n⁻¹ ⊆ μ_n`-image, hence the distinct count is `≤ n` whenever all node products are
-`n`-th roots of unity.  (The matching `≥ n` is the subset-product surjectivity, a separate
-elementary combinatorial fact — stated as `SubsetProductSurjectsMu` below.)
+The statement below records that the readout value lies in the signed coset
+`(-1)^k · μ_n⁻¹ = (-1)^k · μ_n`: its `n`-th power is `((-1)^k)^n`. This coset is `μ_n` when `n`
+or `k` is even, and the distinct coset `-μ_n` when both are odd (then every readout has `n`-th
+power `-1`). Since `x ↦ (-1)^k x⁻¹` is injective, the distinct count is still `≤ n`
+(`topReadouts_card_le`). (The matching `≥ n` is the subset-product surjectivity
+`SubsetProductSurjectsMu` below, discharged on the canonical domain by
+`B1CountLawUnconditional.subsetProductSurjectsMu_holds`.)
 -/
 theorem readout_mem_image (R : Finset ι) (v : ι → F) (n k : ℕ) (hn : 0 < n)
     (hRcard : #R = k + 1) (hk : k ≤ n - 1)
@@ -268,19 +280,22 @@ theorem topReadouts_card_le (nodes : Finset ι) (v : ι → F) (n k : ℕ) (hn :
         exact le_trans (Multiset.toFinset_card_le _) (Polynomial.card_nthRoots n 1)
 
 /--
-**The matching lower bound `≥ n` (the elementary combinatorial residual, named OPEN Prop).**
+**The matching lower bound `≥ n` (the subset-product surjectivity `Prop`).**
 
-To reach `= n` it remains to show the subset-products `{∏_{i∈R} v i : R ∈ powersetCard (k+1)}`
+To reach `= n` one needs the subset-products `{∏_{i∈R} v i : R ∈ powersetCard (k+1)}` to
 realize *all* `n` of the `n`-th roots of unity, i.e. `subsetProducts = nthRootsFinset n 1`.  With
 `v` the inclusion of `μ_n` and `w` a primitive root, `∏ v i = w^{(sum of exponents of R)}`, and
 the claim is that the `(k+1)`-subset-sum of `{0,…,n-1}` is surjective mod `n` for `1 ≤ k ≤ n-2`.
-This is a purely additive-combinatorics fact (no character sums, no roots of unity), verified
-exhaustively for `n ∈ {7,8,9,11,12,16,20,32}`.  Stated as the explicit residual `Prop`. -/
+This `Prop` is stated here for general `nodes`/`v`; for the canonical instance (a primitive
+`n`-th root, `nodes = nthRootsFinset n 1`, `v = id`, `2 ≤ n`, `1 ≤ k ≤ n-2`) it is **proved** in
+`B1CountLawUnconditional.lean` (`subsetProductSurjectsMu_holds`), giving the unconditional count
+`topReadouts_card_eq_n_unconditional`. It need not hold for arbitrary node sets. -/
 def SubsetProductSurjectsMu (nodes : Finset ι) (v : ι → F) (n k : ℕ) : Prop :=
   subsetProducts nodes v k = Polynomial.nthRootsFinset n (1 : F)
 
-/-- **B1 COUNT LAW, full `= n` (PROVED modulo the named surjectivity residual).**
-Given the elementary `SubsetProductSurjectsMu`, the distinct top-direction readout count is
+/-- **B1 COUNT LAW, full `= n` (conditional form).**
+Given `SubsetProductSurjectsMu` (discharged on the canonical domain in
+`B1CountLawUnconditional.lean`), the distinct top-direction readout count is
 exactly `n`, where `n = #(nthRootsFinset n 1)` (the full root group, e.g. when `F` carries a
 primitive `n`-th root). -/
 theorem topReadouts_card_eq_n_of_surjects

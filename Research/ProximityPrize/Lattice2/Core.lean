@@ -181,9 +181,10 @@ theorem mcaEvent_j1_witness_inventory
 /-- A radius-`1/n` MCA event over Reed-Solomon produces the ratio constraints needed for
 the J1 quadratic/algebraic cap.
 
-The theorem packages only the formal reduction.  The remaining hard input is the independent
-algebraic statement that the set of scalars satisfying these constraints has cardinality at
-most two. -/
+The theorem packages only the formal reduction.  The complementary algebraic statement — that
+the set of scalars satisfying these constraints has cardinality at most two — is proved
+unconditionally downstream in `J1Cap.lean` (`not_three_j1_ratioConstraints`,
+`j1RatioConstraintBadScalars_card_le_two`, `mcaBadCount_j1_le_two`). -/
 theorem mcaEvent_j1_exists_window_ratio_constraints
     (domain : ι ↪ F) {k : ℕ} {u₀ u₁ : ι → F} {γ : F}
     (h : mcaEvent (F := F)
@@ -844,8 +845,8 @@ theorem j1RatioConstraint_eval_j1FullTopQuadratic_eq_zero
 open Classical in
 /-- The finite scalar set cut out by the J1 window ratio constraints.
 
-The remaining J1 algebraic core is to show this set has cardinality at most two for every
-stack `(u₀,u₁)`. -/
+That this set has cardinality at most two for every stack `(u₀,u₁)` is proved downstream in
+`J1Cap.lean` (`j1RatioConstraintBadScalars_card_le_two`). -/
 noncomputable def j1RatioConstraintBadScalars
     (domain : ι ↪ F) (k : ℕ) (u₀ u₁ : ι → F) : Finset F :=
   Finset.univ.filter (j1RatioConstraint domain k u₀ u₁)
@@ -857,8 +858,9 @@ open Classical in
       j1RatioConstraint domain k u₀ u₁ γ := by
   simp [j1RatioConstraintBadScalars]
 
-/-- Finite-set form of the remaining J1 algebraic core: it is enough to rule out three
-distinct scalars satisfying the J1 ratio constraint. -/
+/-- Finite-set form of the J1 algebraic cap: it is enough to rule out three distinct scalars
+satisfying the J1 ratio constraint (done unconditionally in `J1Cap.lean`,
+`not_three_j1_ratioConstraints`). -/
 theorem j1RatioConstraintBadScalars_card_le_two_of_not_three
     (domain : ι ↪ F) {k : ℕ} (u₀ u₁ : ι → F)
     (hno : ¬ ∃ γ₀ γ₁ γ₂ : F,
@@ -878,9 +880,9 @@ theorem j1RatioConstraintBadScalars_card_le_two_of_not_three
   rw [mem_j1RatioConstraintBadScalars] at hγ₂
   exact hno ⟨γ₀, γ₁, γ₂, h01, h02, h12, hγ₀, hγ₁, hγ₂⟩
 
-/-- Conditional J1 bad-count cap.  Once the independent finite-algebra theorem
-`(j1RatioConstraintBadScalars domain k u₀ u₁).card ≤ 2` is proved, every actual bad scalar
-at radius `1/n` injects into that constraint set. -/
+/-- J1 bad-count cap from the finite-algebra cap: every actual bad scalar at radius `1/n`
+injects into the ratio-constraint set, so `(j1RatioConstraintBadScalars domain k u₀ u₁).card ≤ 2`
+(proved unconditionally in `J1Cap.lean`) yields the bad-count cap. -/
 theorem mcaBadCount_j1_le_two_of_ratioConstraint_card_le_two
     (domain : ι ↪ F) {k : ℕ} (u₀ u₁ : ι → F)
     (hcard : (j1RatioConstraintBadScalars domain k u₀ u₁).card ≤ 2) :
@@ -901,8 +903,8 @@ theorem mcaBadCount_j1_le_two_of_ratioConstraint_card_le_two
     ⟨S, hshape, hneS, hconstraints, _T, _hTS, _hTcard, _hne0, _hγ⟩
   exact ⟨S, hshape, hneS, hconstraints⟩
 
-/-- Conditional J1 bad-count cap in the cleaner no-three form.  The remaining algebra can now
-target `not_three_j1_ratioConstraints` directly. -/
+/-- J1 bad-count cap in the no-three form.  The hypothesis is discharged unconditionally by
+`not_three_j1_ratioConstraints` (`J1Cap.lean`), giving `mcaBadCount_j1_le_two`. -/
 theorem mcaBadCount_j1_le_two_of_not_three_ratioConstraints
     (domain : ι ↪ F) {k : ℕ} (u₀ u₁ : ι → F)
     (hno : ¬ ∃ γ₀ γ₁ γ₂ : F,

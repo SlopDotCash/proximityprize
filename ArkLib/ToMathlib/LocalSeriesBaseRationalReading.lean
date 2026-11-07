@@ -55,6 +55,15 @@ supplied on `[k, T]` by `αGenuine_eq_zero_on_range_of_matching_monic` and beyon
 algebraic-degree lane), and the decoded-side GS cargo `hdvd`/`hcong` (`MatchingFactorLift`).
 The per-`z` base-rational reading `htrunc` is no longer one of them.
 
+**Branch-degree qualification (F6).**  `hbase` and `hvanish` both reach order `0`.  For `n > 0`,
+`hbase 0` asserts `αGenuine 0 = α₀ = T/W` is a ground-line lift.  For `n = 0`, `hvanish 0`
+asserts `α₀ = 0`.  Both are impossible whenever `2 ≤ H.natDegree`
+(`ZLinearClosureAudit.α₀_ne_lift`).  So the producers below are vacuous in that regime
+(kernel-checked as `LocalSeriesCorrected.baseRational_inputs_false_of_two_le_natDegree`).
+The descent, place reading and transposition steps are correct conditional algebra, but they
+do not supply the missing general base-rational input; only the `d_H = 1` lane is not
+obstructed.
+
 ## References
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon Codes*,
   §5 (Prop. 5.5), §6.2 (Hensel uniqueness `π_z(γ) = P_z`), Appendix A.3–A.4.
@@ -255,7 +264,10 @@ The per-`z` base-rational reading is DERIVED: `hbase` (the §5 rational-section 
 `curveHenselDatum_of_truncatedLocalRoot_genuine` at the transposed coefficients
 `transposedCurveCoeffs x₀ n c`, with truncation length any `N ≥ n` exceeding every
 `natDegree (c t)`.  Remaining inputs: `hbase`, `hvanish`, and the decoded-side GS cargo
-`hdvd`/`hcong` — `htrunc` is gone. -/
+`hdvd`/`hcong` — `htrunc` is gone.  At `2 ≤ H.natDegree` the pair `hbase`/`hvanish` is jointly
+unsatisfiable (order `0`: `α₀ = T/W` is neither a lift nor `0`;
+`LocalSeriesCorrected.baseRational_inputs_false_of_two_le_natDegree`), so this producer is
+vacuous there. -/
 noncomputable def curveHenselDatum_of_baseRational {k deg : ℕ} {domain : ι ↪ F}
     {δ : ℝ≥0} {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}
     {x₀ : F} {R : F[X][X][Y]} (hHyp : Hypotheses x₀ R H)

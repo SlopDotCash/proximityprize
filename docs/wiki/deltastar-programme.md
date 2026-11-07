@@ -81,9 +81,13 @@ bounds.  The file chain (all axiom-clean, in `ArkLib/Data/CodingTheory/Proximity
 | Ladder cliff (`= 0` below band) + band packing law | `BandPackingLaw.lean` |
 | Band attainment + two-sided bracket at every band | `BandAttainment.lean` |
 
-Solved landscape (final, rounds 64–80): boundary band sup `= C(n,k+1)`
-(attained + universal) and production boundary failure `ε_mca ≈ 1`
-unconditionally (`ProductionBoundaryFailure.lean`); ladder curve exact at all
+Solved landscape (final, rounds 64–80): boundary band sup `≤ C(n,k+1)` for all
+stacks (`UniversalBoundaryBound.lean`), with equality attained when `k ≥ 1` and
+`C(n,k+1)² ≤ q` (the field-size guard of
+`GenericFarPin.exists_genericFar_badSet_card`; without it only the upper bound is
+proved; guard restored 2026-10-28, audit T48), and production boundary failure `ε_mca ≈ 1`
+unconditionally (`ProductionBoundaryFailure.lean`, a separate averaging bound
+`N·q ≤ #badSet·(q + N − 1)`, `N = C(n,k+1)`); ladder curve exact at all
 radii; band `m ≥ 1` bracketed `[⌊(n−k)/(m+1)⌋, C(n,k+1)/C(k+m+1,k+1)]`
 (`BandAttainmentChained.lean`), witness-mass dense (`DeepBandCoherence.lean`),
 multiplicity-reduced to the named `ExplainableCoreSupply`
@@ -101,7 +105,14 @@ theorem yet carries `428 > 2n = 160` mass at `(q,n) = (101,80)` — prime field,
 `n < q`, no subfield structure.  Corrected named targets:
 `CappedSupplyTwoRegimeLaw` (prime, calibrated `C₀ ≤ 1.91`, false over extension
 fields by subfield transport) and `SmoothDomainTwoRegimeLaw` (μ_n production
-form).  SS13 free-domain asymptotic red-team recorded.
+form).  SS13 free-domain asymptotic red-team recorded.  **Later correction
+(2026-10-28 audit, PG-308):** both named laws are REFUTED at `C₀ = 2` in Lean
+(`TwoBranchSmoothDomainRefutation.lean`, `smoothDomainTwoRegimeLaw_two_false` /
+`cappedSupplyTwoRegimeLaw_two_false`): on the prime-field smooth domain
+`μ₃₂ ⊆ 𝔽₆₅₅₃₇` with `k = 14`, `m = 1`, the capped word `X^16` has at least
+`70 > 64` explainable cores from the multiplicative coset supply
+(`EsymmFiber.rootsOfUnity_dyadic_supply`).  The `C₀ ≤ 1.91` calibration is
+empirical only; any replacement law must include the coset supply term.
 
 **2026-06-13 — the all-`k` power-word list is exactly a zero-sum fiber.**
 `PowerWordListBound.lean` proves the exact list identity

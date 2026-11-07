@@ -410,13 +410,19 @@ theorem mle_eval_eq_eqTilde_sum (f : (σ → Fin 2) → R) (r : σ → R) :
   MvPolynomial.MLE_eval_eq_sum_eqTilde f r
 
 open Matrix in
-/-- **Final-check consistency: the reconstructed terminal value equals the bundled claim value.**
+/-- **An initial-value (sum) identity for the second sum-check claim — not the terminal check.**
 
-The verifier's terminal reconstruction `∑_x eq̃(r, x) · (M *ᵥ 𝕫)(e x)` (the `eq̃`-weighted hypercube
-sum over rows that `finalExpectedClaimFromOracles` accumulates) equals the bundled claim value
-`MLE((M *ᵥ 𝕫) ∘ e)(r)`. Hence `target = expected` in the final `CheckClaim` is the SAME number the
-second sum-check was reducing — the honest-prover terminal identity. Reduces to
-`MLE_eval_eq_sum_eqTilde`. -/
+What is proved: `MLE((M *ᵥ 𝕫) ∘ e)(r)` equals the `eq̃`-weighted hypercube sum over rows
+`∑_x eq̃(r, x) · (M *ᵥ 𝕫)(e x)`; it is `MLE_eval_eq_sum_eqTilde` specialized to `(M *ᵥ 𝕫) ∘ e`.
+
+Scope correction: despite its name, this does **not** describe Spartan's terminal reconstruction.
+The actual terminal value (`finalExpectedClaimFromOracles` / `finalExpectedClaimValue` in
+`ToMathlib/SpartanBricks.lean`) is `matrixMLE(r_x, r_y) · ZMLE(r_y)`, and its correct endpoint
+theorems are `secondSumCheckVirtualPolynomial_eval_eq_finalExpectedClaimValue` and
+`secondSumcheckTerminalEndpointResidual_holds` there. The terminal evaluation need not equal this
+initial sum: e.g. `M = (1, 0)`, `𝕫 = (1, 0)`, zero row variables and Boolean `r_y = 1` give
+initial value `1` and terminal value `0`. The algebra here is valid; it is not a Spartan verifier
+defect, only a narrower result than the name suggests. -/
 theorem final_check_consistency {m n : ℕ}
     (M : Matrix (Fin (2 ^ m)) (Fin (2 ^ n)) R) (z : Fin (2 ^ n) → R)
     (r : Fin m → R) :

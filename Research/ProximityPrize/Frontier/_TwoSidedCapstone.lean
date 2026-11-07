@@ -39,14 +39,17 @@ Prop at the budget `⌊q·ε*⌋`) is proved here from the `iff`.
    of per-stack counts and reading the budget pointwise.  This is the load-bearing equivalence: the
    incidence Prop and the governing-law budget are the SAME object, both ways.
 
-2. `deltaStar_good_iff_worstCaseIncidenceBounded_budget` — the `δ*`-membership `iff` at a natural
-   budget `E` with `ε* = E/q`:  a radius `δ ≤ 1` is `ε*`-good (`ε_mca(C, δ) ≤ ε*`, i.e. it enters
-   the `δ*` good-radius set) **iff** `WorstCaseIncidenceBounded C δ E`.  Both directions axiom-clean.
+   Specialized to `ε* = E/q`, "`δ` is `ε*`-good" (`ε_mca(C, δ) ≤ E/q`, i.e. membership of `δ` in
+   the `δ*` good-radius set when `δ ≤ 1`) is therefore equivalent to
+   `WorstCaseIncidenceBounded C δ E`; we do not restate this as a separate alias.
 
-3. `deltaStar_floor_iff_incidence_capstone` — the capstone `iff` in `δ*` form:
-   * (SUFFICIENCY, ⟸) `WorstCaseIncidenceBounded C δ E ⟹ δ ≤ mcaDeltaStar C (E/q)`
-     (the in-tree `worstCaseIncidence_pin_budget`); AND
-   * (NECESSITY, ⟹, LOCAL form) if `δ` is itself `ε*`-good then `WorstCaseIncidenceBounded C δ E`.
+2. The capstone in `δ*` form:
+   * (SUFFICIENCY) `deltaStar_floor_of_incidence`: `WorstCaseIncidenceBounded C δ E` with
+     `δ ≤ 1` gives `δ ≤ mcaDeltaStar C (E/q)` (the in-tree `worstCaseIncidence_pin_budget`); AND
+   * (NECESSITY, LOCAL form) `incidence_of_deltaStar_good`: if `δ` is itself `ε*`-good then
+     `WorstCaseIncidenceBounded C δ E`;
+   * `deltaStar_strictInterior_iff_incidence_budget`: the strict-interior re-export of
+     `OpenCoreConverse.deltaStar_iff_incidence_budget`.
    The honest necessity subtlety (why the global `δ ≤ δ*` alone does NOT give the incidence Prop
    at `δ`) is stated explicitly below and packaged as the named hypothesis `hGoodAt`.
 
@@ -100,39 +103,17 @@ open Classical in
 /-- **The reverse direction (proved here): the budget forces the incidence Prop.**  If
 `ε_mca(C, δ) ≤ B/q`, then for every stack the bad-scalar count is `≤ B`, i.e.
 `WorstCaseIncidenceBounded C δ B`.  Reads the `iSup` definition of `ε_mca` pointwise: each stack's
-probability `= (#bad)/q` is `≤ ε_mca ≤ B/q`, and dividing out `q` gives `#bad ≤ B`. -/
+probability `= (#bad)/q` is `≤ ε_mca ≤ B/q`, and dividing out `q` gives `#bad ≤ B`.  The
+pointwise core is the shared `OpenCoreConverse.incidence_le_of_epsMCA_le`. -/
 theorem worstCaseIncidenceBounded_of_epsMCA_le (C : Set (ι → A)) (δ : ℝ≥0) {B : ℕ}
     (h : epsMCA (F := F) (A := A) C δ ≤ (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) :
     WorstCaseIncidenceBounded (F := F) (A := A) C δ B := by
   intro u
-  -- q > 0, finite: the common denominator we cancel
-  have hqpos : (0 : ℝ≥0∞) < (Fintype.card F : ℝ≥0∞) := by
-    exact_mod_cast Fintype.card_pos
-  have hqne : (Fintype.card F : ℝ≥0∞) ≠ 0 := ne_of_gt hqpos
-  have hqfin : (Fintype.card F : ℝ≥0∞) ≠ ⊤ := ENNReal.natCast_ne_top _
-  -- the per-stack probability is (#bad)/q and is ≤ ε_mca (as a summand of the ⨆) ≤ B/q
-  have hstack : ((Finset.univ.filter
-        (fun γ : F => mcaEvent (F := F) C δ (u 0) (u 1) γ)).card : ℝ≥0∞)
-        / (Fintype.card F : ℝ≥0∞)
-      ≤ (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) := by
-    refine le_trans ?_ h
-    have hprob : Pr_{let γ ← $ᵖ F}[mcaEvent (F := F) C δ (u 0) (u 1) γ]
-        = ((Finset.univ.filter
-            (fun γ : F => mcaEvent (F := F) C δ (u 0) (u 1) γ)).card : ℝ≥0∞)
-          / (Fintype.card F : ℝ≥0∞) := prob_uniform_eq_card_filter_div_card _
-    calc ((Finset.univ.filter
-            (fun γ : F => mcaEvent (F := F) C δ (u 0) (u 1) γ)).card : ℝ≥0∞)
-          / (Fintype.card F : ℝ≥0∞)
-        = Pr_{let γ ← $ᵖ F}[mcaEvent (F := F) C δ (u 0) (u 1) γ] := hprob.symm
-      _ ≤ epsMCA (F := F) (A := A) C δ :=
-          ProximityGap.mcaEvent_prob_le_epsMCA (F := F) (A := A) C δ u
-  -- cancel the common positive finite denominator: a/q ≤ B/q ⟹ a ≤ B
-  have hle : ((Finset.univ.filter
-        (fun γ : F => mcaEvent (F := F) C δ (u 0) (u 1) γ)).card : ℝ≥0∞)
-      ≤ (B : ℝ≥0∞) := by
-    -- a/q ≤ B/q  ⟹  a ≤ (B/q)·q = B
-    rw [ENNReal.div_le_iff_le_mul (Or.inl hqne) (Or.inl hqfin)] at hstack
-    rwa [ENNReal.div_mul_cancel hqne hqfin] at hstack
+  have hq0 : (Fintype.card F : ℝ≥0∞) ≠ 0 := by simp [Fintype.card_ne_zero]
+  have hqtop : (Fintype.card F : ℝ≥0∞) ≠ ⊤ := by simp
+  have hle := ProximityGap.OpenCoreConverse.incidence_le_of_epsMCA_le (F := F) (A := A) C
+    ((B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) h u
+  rw [ENNReal.mul_div_cancel hq0 hqtop] at hle
   exact_mod_cast hle
 
 open Classical in
@@ -148,21 +129,7 @@ theorem epsMCA_le_iff_worstCaseIncidenceBounded (C : Set (ι → A)) (δ : ℝ�
   ⟨fun h => worstCaseIncidenceBounded_of_epsMCA_le C δ h,
     fun hI => epsMCA_le_of_worstCaseIncidence (F := F) (A := A) C δ hI⟩
 
-/-! ### (2) The `δ*`-good-radius membership `iff` at a natural budget. -/
-
-open Classical in
-/-- **`δ*`-goodness `iff` the incidence Prop, at the prize budget form `ε* = E/q`.**  A radius `δ`
-(with `δ ≤ 1`) is `ε*`-*good at `δ`* — `ε_mca(C, δ) ≤ ε*` with `ε* = E/q` — **iff**
-`WorstCaseIncidenceBounded C δ E`.  This is exactly the (2) `iff` specialized to `ε* = E/q`; both
-directions axiom-clean.  "Good at `δ`" is precisely membership of `δ` in the `δ*` good-radius set
-(`MCAThresholdLedger.mcaGoodRadii`), the object whose `sSup` is `mcaDeltaStar`. -/
-theorem deltaStar_good_iff_worstCaseIncidenceBounded_budget
-    (C : Set (ι → A)) (δ : ℝ≥0) (E : ℕ) :
-    epsMCA (F := F) (A := A) C δ ≤ ((E : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞))
-      ↔ WorstCaseIncidenceBounded (F := F) (A := A) C δ E :=
-  epsMCA_le_iff_worstCaseIncidenceBounded C δ E
-
-/-! ### (3) The capstone `iff` in `δ*` form: sufficiency (proven) + necessity (local, named). -/
+/-! ### (2) The capstone in `δ*` form: sufficiency (proven) + necessity (local, named). -/
 
 open Classical in
 /-- **SUFFICIENCY (⟸), FULLY PROVEN, axiom-clean.**  The incidence Prop at budget `E` forces the
@@ -177,7 +144,8 @@ theorem deltaStar_floor_of_incidence
 open Classical in
 /-- **NECESSITY (⟹), LOCAL/POINTWISE form, PROVEN axiom-clean.**  If the radius `δ` is itself
 `ε*`-good — `ε_mca(C, δ) ≤ E/q` (the named hypothesis `hGoodAt`, goodness AT `δ`) — then the
-incidence Prop holds at budget `E`.  This is the `.mp` of the two-sided `iff`.
+incidence Prop holds at budget `E`.  This is the `.mp` of the two-sided `iff`
+`epsMCA_le_iff_worstCaseIncidenceBounded`.
 
 HONEST NOTE on why `hGoodAt` is NOT derivable from `δ ≤ mcaDeltaStar C (E/q)` alone: the floor
 `δ ≤ δ*` says the *supremum* of good radii is `≥ δ`; monotonicity of `ε_mca`
@@ -189,32 +157,7 @@ theorem incidence_of_deltaStar_good
     (C : Set (ι → A)) (δ : ℝ≥0) (E : ℕ)
     (hGoodAt : epsMCA (F := F) (A := A) C δ ≤ ((E : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞))) :
     WorstCaseIncidenceBounded (F := F) (A := A) C δ E :=
-  (deltaStar_good_iff_worstCaseIncidenceBounded_budget C δ E).mp hGoodAt
-
-open Classical in
-/-- **THE TWO-SIDED CAPSTONE `iff` (assembled, honest about each direction).**
-
-For a code `C`, radius `δ ≤ 1`, natural budget `E`, and target `ε* = E/q`, the following are
-EQUIVALENT (both directions axiom-clean):
-
-* `WorstCaseIncidenceBounded C δ E` — the incidence Prop (the δ*-side shadow of
-  `WallHolds ∧ HyperplaneCancellation`); and
-* `epsMCA(C, δ) ≤ ε*` — `δ` is `ε*`-good, i.e. `δ` lies in the `δ*` good-radius set.
-
-Reading the equivalence:
-* **(⟸) SUFFICIENCY** — the incidence Prop gives goodness-at-`δ`, hence (via
-  `deltaStar_floor_of_incidence`) the `δ*` floor `δ ≤ mcaDeltaStar C ε*`.  FULLY PROVEN.
-* **(⟹) NECESSITY (local)** — goodness-at-`δ` gives the incidence Prop.  PROVEN, but this is the
-  *pointwise* necessity (`ε_mca ≤ ε*` at `δ`), the honest necessary condition; the raw floor
-  `δ ≤ δ*` gives it only strictly below the sup (see `incidence_of_deltaStar_good`).
-
-This is the campaign's final reduction certificate: the `δ*`-membership object and the open
-incidence Prop are the SAME, machine-checked, both ways. -/
-theorem deltaStar_good_iff_incidence_capstone
-    (C : Set (ι → A)) (δ : ℝ≥0) (E : ℕ) :
-    epsMCA (F := F) (A := A) C δ ≤ ((E : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞))
-      ↔ WorstCaseIncidenceBounded (F := F) (A := A) C δ E :=
-  deltaStar_good_iff_worstCaseIncidenceBounded_budget C δ E
+  (epsMCA_le_iff_worstCaseIncidenceBounded C δ E).mp hGoodAt
 
 open Classical in
 /-- **Strict-interior `δ*` capstone.**  At target `ε* = E/q`, the honest `sSup` boundary gap is
@@ -234,7 +177,7 @@ theorem deltaStar_strictInterior_iff_incidence_budget
         δ ≤ mcaDeltaStar (F := F) (A := A) C ((E : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞))) :=
   ProximityGap.OpenCoreConverse.deltaStar_iff_incidence_budget (F := F) (A := A) C hδ1
 
-/-! ### (4) Wiring the incidence Prop to the two open Props (named glue, NOT re-proved). -/
+/-! ### (3) Wiring the incidence Prop to the two open Props (named glue, NOT re-proved). -/
 
 open Classical in
 /-- **The named glue tying the incidence Prop to the wall's `M` (VACUOUS at the prize budget).**
@@ -262,12 +205,8 @@ end ArkLib.ProximityGap.Frontier.TwoSidedCapstone
 #print axioms
   ArkLib.ProximityGap.Frontier.TwoSidedCapstone.epsMCA_le_iff_worstCaseIncidenceBounded
 #print axioms
-  ArkLib.ProximityGap.Frontier.TwoSidedCapstone.deltaStar_good_iff_worstCaseIncidenceBounded_budget
-#print axioms
   ArkLib.ProximityGap.Frontier.TwoSidedCapstone.deltaStar_floor_of_incidence
 #print axioms
   ArkLib.ProximityGap.Frontier.TwoSidedCapstone.incidence_of_deltaStar_good
-#print axioms
-  ArkLib.ProximityGap.Frontier.TwoSidedCapstone.deltaStar_good_iff_incidence_capstone
 #print axioms
   ArkLib.ProximityGap.Frontier.TwoSidedCapstone.deltaStar_strictInterior_iff_incidence_budget

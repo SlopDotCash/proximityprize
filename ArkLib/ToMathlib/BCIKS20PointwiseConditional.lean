@@ -31,8 +31,10 @@ for some polynomials $v_0, v_1 \in F[X]$, where $\phi$ is the canonical map from
 the power series ring.
 
 ## References
-* [BCIKS20] Binswood, Crites, Iyer, Kamara, Stewart. *Solving Algebraic Equations over Power
-Series*, 2020.
+
+* [Ben-Sasson, E., Carmon, D., Ishai, Y., Kopparty, S., and Saraf, S., *Proximity Gaps
+    for Reed-Solomon Codes*][BCIKS20] (ePrint 2020/654; entry `BCIKS20` in
+    `blueprint/src/references.bib`)
 -/
 
 set_option linter.style.longLine false

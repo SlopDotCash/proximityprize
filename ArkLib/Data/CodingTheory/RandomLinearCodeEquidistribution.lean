@@ -16,10 +16,19 @@ For a uniformly random generator matrix `G : Matrix (Fin k) ι F` over a finite 
 `ι → F`.
 
 This is the foundational counting fact behind the GLMRSW22 / ABF26 T3.11 first-moment argument
-for random linear codes (issue #79): the expected number of "bad" codewords of a random linear
-code is `(q^k - 1) · |Bad| / q^n`, computed by summing, over each nonzero message `m`, the
-probability `Pr[m ᵥ* G ∈ Bad] = |Bad| / q^n` — and that per-message probability is exactly the
-uniformity proved here.
+for random linear codes (issue #79): the expected number of **nonzero messages** `m` with
+`m ᵥ* G ∈ Bad` is `(q^k - 1) · |Bad| / q^n`, computed by summing, over each nonzero message `m`,
+the probability `Pr[m ᵥ* G ∈ Bad] = |Bad| / q^n` — and that per-message probability is exactly
+the uniformity proved here.
+
+**Messages vs. distinct codewords.** Under the unconditioned uniform generator `G` need not have
+full rank, so distinct messages may map to the same codeword. The message-count expectation above
+therefore counts bad codewords *with multiplicity* and only **upper-bounds** the expected number
+of distinct bad codewords in the image code. Example: `k = 2`, `n = 1`, `F = 𝔽₂`, `Bad = {1}`:
+the expected number of nonzero messages mapping to `1` is `3/2`, while the expected number of
+distinct bad codewords in the image is `3/4`. Upper bounds may use the message count; an exact or
+lower-bound statement about distinct codewords needs full-rank (injective-encoder) conditioning or
+explicit message multiplicity.
 
 `ArkLib/Data/CodingTheory/ListDecoding/Bounds.lean` defines `uniformRandomLinearGeneratorMatrix
 F k ι` as `PMF.uniformOfFintype (Matrix (Fin k) ι F)` (definitionally), so the headline theorem
@@ -197,7 +206,7 @@ theorem vecMul_uniform_apply {m : Fin k → F} (hm : m ≠ 0) (v : ι → F) :
 /-- **The first-moment summand.** For a fixed nonzero message `m` and any target set `S` of
 codewords, the random codeword `m ᵥ* G` lands in `S` with probability `|S| / q^n`. This is
 exactly the per-message term the GLMRSW22 first moment sums over the `q^k − 1` nonzero
-messages. -/
+messages (a count of messages, i.e. codewords with multiplicity). -/
 theorem vecMul_uniform_mem_prob {m : Fin k → F} (hm : m ≠ 0)
     (S : Set (ι → F)) [Fintype S] :
     ((ProximityPrize.Compatibility.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => m ᵥ* G)).toOuterMeasure S
@@ -207,7 +216,9 @@ theorem vecMul_uniform_mem_prob {m : Fin k → F} (hm : m ≠ 0)
 /-- **The first-moment count (division-free `ℕ` form).** For a fixed nonzero message `m` and any
 finite set `S` of codewords, `|{G : m ᵥ* G ∈ S}| · |ι → F| = |S| · |Matrix|`: a fixed nonzero
 message hits `S` from exactly a `|S| / q^n` fraction of all generator matrices. Summed over the
-`q^k − 1` nonzero messages this is the GLMRSW22 first moment of the number of codewords in `S`. -/
+`q^k − 1` nonzero messages this is the GLMRSW22 first moment of the number of nonzero
+*messages* encoding into `S` (codewords counted with message multiplicity; this only
+upper-bounds the number of distinct image codewords in `S` unless `G` has full rank). -/
 theorem card_vecMul_mem_mul (S : Finset (ι → F)) {m : Fin k → F} (hm : m ≠ 0) :
     (Finset.univ.filter (fun G : Matrix (Fin k) ι F => m ᵥ* G ∈ S)).card
         * Fintype.card (ι → F)

@@ -56,8 +56,9 @@ theorem conj_eta_nthRoots (ψ : AddChar F ℂ) (k : ℕ) (hk : 0 < k) (b : F) :
   · intro x _; rfl
 
 omit [Fintype F] in
-/-- **The dyadic halving recursion.** For `ζ^k = -1` (a primitive `2k`-th root), in odd characteristic
-(`(1:F) ≠ -1`), the `2k`-period splits as two `k`-periods, the second at the shifted frequency `b·ζ`. -/
+/-- **The dyadic halving recursion.** For any `ζ` with `ζ^k = -1` (not necessarily a primitive
+`2k`-th root: e.g. `ζ = -1` for odd `k`), in odd characteristic (`(1:F) ≠ -1`), the `2k`-period
+splits as two `k`-periods, the second at the shifted frequency `b·ζ`. -/
 theorem eta_halving (ψ : AddChar F ℂ) (k : ℕ) (hk : 0 < k) (b : F)
     (htwo : (1 : F) ≠ -1) {ζ : F} (hζ : ζ ^ k = -1) :
     eta ψ (Polynomial.nthRootsFinset (2 * k) (1 : F)) b

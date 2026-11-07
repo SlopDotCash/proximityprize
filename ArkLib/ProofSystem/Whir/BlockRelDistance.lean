@@ -210,8 +210,9 @@ omit [Pow ι ℕ] in
   ## Statement repair (paper-faithful hypotheses)
 
   As literally stated over the file's loose `indexPowT`/instance setup the claim is not provable
-  for an arbitrary evaluation embedding `φ'`, an arbitrary `S'`, or arbitrary subtype `Fintype`
-  instances; the paper's smooth-domain setting silently supplies extra structure. We make that
+  for an arbitrary evaluation embedding `φ'`, an arbitrary `S'`, or an arbitrary subset `S`
+  (one that is not a union of complete power fibers); the paper's smooth-domain setting silently
+  supplies extra structure. We make that
   structure explicit, exactly mirroring the repair documented on
   `blockRelDistance_eq_relHammingDist_of_k_eq_i` (the `k = i` case proven above):
 
@@ -223,8 +224,11 @@ omit [Pow ι ℕ] in
   * `hcard : Fintype.card (indexPowT S φ i) = 2 ^ (k - i) * Fintype.card (indexPowT S φ k)` is the
     2-adic cardinality relation that holds for genuine smooth domains (the `x ↦ x^(2^(k-i))` map
     is `2^(k-i)`-to-`1`). It is **not** derivable from the file's `indexPowT` definition together
-    with `[Smooth φ]` alone, because that data does not pin the subtype `Fintype` instances, so we
-    take it as a documented hypothesis.
+    with `[Smooth φ]` alone: the cardinality of a finite type does not depend on the chosen
+    `Fintype` instance, but `S` is an arbitrary subset of the smooth domain and need not contain
+    complete power fibers (e.g. for a singleton `S = {x}` with `φ x ≠ 0` both image types have
+    cardinality `1`, even though the ambient power map is `2^(k-i)`-to-`1`). So we take it as a
+    documented hypothesis on the domain.
 
   Both this lemma and its only consumer in this file (`listBlock_subset_listHamming`, Claim 4.19
   Part 2, which cites Part 1 verbatim) are otherwise-unused leaf lemmas — `git grep` confirms no

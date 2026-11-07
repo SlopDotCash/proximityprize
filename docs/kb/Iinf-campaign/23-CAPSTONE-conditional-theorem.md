@@ -28,6 +28,10 @@ worst-case, and the same threshold governs the Grand-list-decoding challenge `|�
 4. **Ceiling + floor ⟹ exact pin (PROVEN given (FLOOR)).** 2 + 3 squeeze δ* to the window edge exactly.
 5. **MCA = list-decoding, one threshold (PROVEN, in-tree `SuperCodeListBridge`, `MCADeltaStarListReduction`).**
    The MCA δ* and the list-decoding δ* coincide; the theorem solves BOTH grand challenges at once.
+   Audit correction (2026-10-28, PG-049): `MCADeltaStarListReduction` does not prove this coincidence.
+   It proves only a one-way list bound for the single direction `u₁ = xᵏ` and, separately, a `δ*` lower
+   bound from a bad-scalar bound assumed uniformly over all stacks; no all-direction normalization and no
+   converse are proved there.
 6. **char-0 case of (FLOOR) is PROVEN (in-tree `_CharZeroWickEnergy`, all r).** `E_r(μ_n) ≤ (2r−1)‼·n^r` over any
    char-0 field (Lam–Leung antipodal pairing). So (FLOOR) holds in char 0; the hypothesis is ONLY its char-p
    transfer at the fixed prime to depth r≈log m.

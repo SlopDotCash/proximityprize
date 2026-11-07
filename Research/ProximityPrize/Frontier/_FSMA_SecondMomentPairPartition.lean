@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._ConstantWeightPlotkinBound
 import Research.ProximityPrize.Frontier._HalfPredecessorSecantLines
+import Research.ProximityPrize.Frontier._P1RateQuarterForcedSecantMatching
 
 /-!
 # P1 rate-quarter predecessor: second-moment core caps for the pair partition
@@ -36,7 +37,12 @@ Second-moment / convexity attack on the pair-partition identity
   `four_cores_impossible_at_618146628`, `three_cores_impossible_at_652432610`,
   `two_cores_impossible_at_733379304`): at most `4/3/2/1` pairwise-`(K-1)`
   subsets of size at least `599424501 / 618146628 / 652432610 / 733379304`.
-  All four thresholds are exact (the inequality flips one below).  Note the
+  All four thresholds are exact *for the Plotkin route* (the Plotkin inequality flips one
+  below); they are not the true extremal thresholds.  For two and three cores the elementary
+  inclusion-exclusion (Bonferroni) bound is strictly stronger
+  (`two_cores_impossible_at_671088640`, `three_cores_impossible_at_626349397`):
+  `2t-(K-1) > N` forbids two cores once `t >= 671088640 < 733379304`, and
+  `3t-3(K-1) > N` forbids three cores once `t >= 626349397 < 652432610`.  Note the
   count drops to *four* exactly at core size `T + 6629535`: the first
   Plotkin-visible shadow of the conjectured four-pencil structure sits just
   above the agreement threshold.
@@ -44,8 +50,9 @@ Second-moment / convexity attack on the pair-partition identity
 * **Line-level cap** (`lines_with_core_ge_floor_card_le_five`): at most `5`
   pairwise-distinct polynomial lines `(a,r)` with components of degree `< K`
   have joint cores of size at least `fivePencilCoreFloor`.  Uses the
-  distinct-line core rigidity (`line_core_inter_card_le_of_ne`, restated
-  locally from the root bound): distinct degree-`< K` lines share at most
+  distinct-line core rigidity (`line_core_inter_card_le_of_ne`, delegating to
+  `P1RateQuarterForcedSecantMatching.jointCore_inter_card_le_of_ne`): distinct degree-`< K` lines
+  share at most
   `K-1` core coordinates.
 
 * **Big-line dichotomy** (`bigLine_core_ge_floor`, `bigLines_card_le_five`):
@@ -172,7 +179,7 @@ theorem six_cores_floor_pred_plotkin_satisfiable :
   norm_num [N, K, fivePencilCoreFloor]
 
 /-- At most four pairwise-`(K-1)` cores of size at least `599424501`
-(`= T + 6629535`; sharp threshold). -/
+(`= T + 6629535`; least threshold for the Plotkin route). -/
 theorem five_cores_impossible_at_599424501
     (A : Fin 5 → Finset (Fin N))
     (hsize : ∀ i, 599424501 ≤ (A i).card)
@@ -182,7 +189,7 @@ theorem five_cores_impossible_at_599424501
   norm_num [N, K]
 
 /-- At most three pairwise-`(K-1)` cores of size at least `618146628`
-(sharp threshold). -/
+(least threshold for the Plotkin route). -/
 theorem four_cores_impossible_at_618146628
     (A : Fin 4 → Finset (Fin N))
     (hsize : ∀ i, 618146628 ≤ (A i).card)
@@ -192,7 +199,8 @@ theorem four_cores_impossible_at_618146628
   norm_num [N, K]
 
 /-- At most two pairwise-`(K-1)` cores of size at least `652432610`
-(sharp threshold). -/
+(least threshold for the Plotkin route only; superseded by the inclusion-exclusion cap
+`three_cores_impossible_at_626349397`). -/
 theorem three_cores_impossible_at_652432610
     (A : Fin 3 → Finset (Fin N))
     (hsize : ∀ i, 652432610 ≤ (A i).card)
@@ -202,7 +210,8 @@ theorem three_cores_impossible_at_652432610
   norm_num [N, K]
 
 /-- At most one core of size at least `733379304` in any pairwise-`(K-1)`
-family (sharp threshold). -/
+family (least threshold for the Plotkin route only; superseded by the inclusion-exclusion cap
+`two_cores_impossible_at_671088640`). -/
 theorem two_cores_impossible_at_733379304
     (A : Fin 2 → Finset (Fin N))
     (hsize : ∀ i, 733379304 ≤ (A i).card)
@@ -211,11 +220,49 @@ theorem two_cores_impossible_at_733379304
   rw [Fintype.card_fin]
   norm_num [N, K]
 
-/-! ## Distinct-line core rigidity (local restatement)
+/-- **Inclusion-exclusion two-core cap** (stronger than the Plotkin route): two subsets of
+`Fin N` of size at least `671088640` meeting in at most `K - 1` points would need
+`2*671088640 - (K-1) = N + 1 > N` coordinates. -/
+theorem two_cores_impossible_at_671088640
+    (A : Fin 2 → Finset (Fin N))
+    (hsize : ∀ i, 671088640 ≤ (A i).card)
+    (hpair : ∀ i j, i ≠ j → (A i ∩ A j).card ≤ K - 1) : False := by
+  have h1 := Finset.card_union_add_card_inter (A 0) (A 1)
+  have h2 : (A 0 ∪ A 1).card ≤ N := by
+    simpa using Finset.card_le_univ (A 0 ∪ A 1)
+  have h3 := hpair 0 1 (by decide)
+  have h4 := hsize 0
+  have h5 := hsize 1
+  norm_num [N, K] at h2 h3
+  omega
 
-Restated from the root bound because `_P1RateQuarterForcedSecantMatching`
-has no build artifact yet; this keeps the file's import cone inside the
-already-built substrate. -/
+/-- **Inclusion-exclusion three-core cap** (stronger than the Plotkin route): three subsets of
+`Fin N` of size at least `626349397`, pairwise meeting in at most `K - 1` points, would need
+`3*626349397 - 3*(K-1) > N` coordinates (Bonferroni). -/
+theorem three_cores_impossible_at_626349397
+    (A : Fin 3 → Finset (Fin N))
+    (hsize : ∀ i, 626349397 ≤ (A i).card)
+    (hpair : ∀ i j, i ≠ j → (A i ∩ A j).card ≤ K - 1) : False := by
+  have h1 := Finset.card_union_add_card_inter (A 0) (A 1)
+  have h2 := Finset.card_union_add_card_inter (A 0 ∪ A 1) (A 2)
+  have h3 : ((A 0 ∪ A 1) ∩ A 2).card ≤ (A 0 ∩ A 2).card + (A 1 ∩ A 2).card := by
+    rw [Finset.union_inter_distrib_right]
+    exact Finset.card_union_le _ _
+  have hU : (A 0 ∪ A 1 ∪ A 2).card ≤ N := by
+    simpa using Finset.card_le_univ (A 0 ∪ A 1 ∪ A 2)
+  have p01 := hpair 0 1 (by decide)
+  have p02 := hpair 0 2 (by decide)
+  have p12 := hpair 1 2 (by decide)
+  have s0 := hsize 0
+  have s1 := hsize 1
+  have s2 := hsize 2
+  norm_num [N, K] at hU p01 p02 p12
+  omega
+
+/-! ## Distinct-line core rigidity
+
+The canonical statement is `P1RateQuarterForcedSecantMatching.jointCore_inter_card_le_of_ne`;
+the local name below is kept as a one-line delegation. -/
 
 section Rigidity
 
@@ -231,28 +278,10 @@ theorem line_core_inter_card_le_of_ne
     (hadeg : a.natDegree < k) (hrdeg : r.natDegree < k)
     (hadeg' : a'.natDegree < k) (hrdeg' : r'.natDegree < k)
     (hne : a ≠ a' ∨ r ≠ r') :
-    (jointCore dom u₀ u₁ a r ∩ jointCore dom u₀ u₁ a' r').card ≤ k - 1 := by
-  rcases hne with hne | hne
-  · have hp0 : a - a' ≠ 0 := sub_ne_zero.mpr hne
-    have hpdeg : (a - a').natDegree < k :=
-      lt_of_le_of_lt (natDegree_sub_le _ _) (max_lt hadeg hadeg')
-    refine le_trans (Finset.card_le_card ?_)
-      (domain_root_card_le_pred dom hk _ hp0 hpdeg)
-    intro i hi
-    simp only [Finset.mem_inter, jointCore, Finset.mem_filter,
-      Finset.mem_univ, true_and] at hi
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and, eval_sub]
-    rw [hi.1.1, hi.2.1, sub_self]
-  · have hp0 : r - r' ≠ 0 := sub_ne_zero.mpr hne
-    have hpdeg : (r - r').natDegree < k :=
-      lt_of_le_of_lt (natDegree_sub_le _ _) (max_lt hrdeg hrdeg')
-    refine le_trans (Finset.card_le_card ?_)
-      (domain_root_card_le_pred dom hk _ hp0 hpdeg)
-    intro i hi
-    simp only [Finset.mem_inter, jointCore, Finset.mem_filter,
-      Finset.mem_univ, true_and] at hi
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and, eval_sub]
-    rw [hi.1.2, hi.2.2, sub_self]
+    (jointCore dom u₀ u₁ a r ∩ jointCore dom u₀ u₁ a' r').card ≤ k - 1 :=
+  P1RateQuarterForcedSecantMatching.jointCore_inter_card_le_of_ne dom u₀ u₁ hk
+    hadeg hrdeg hadeg' hrdeg' hne
+
 
 end Rigidity
 

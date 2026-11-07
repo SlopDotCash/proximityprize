@@ -25,7 +25,10 @@ floor-good at |F| -> every used profile representative plus slack is within B.
 ```
 
 Together with slack domination, that is enough for `WorstCaseIncidenceBounded` and the usual
-delta-star pin.  The refutation surface is explicit: floor still bad, a stack exceeds its
+delta-star pin.  The field-level certificate `ProfileSlackClosureAtField` is just slack domination
+plus the slack budget: floor-goodness is consumed only when *constructing* it
+(`profileSlackClosureAtField_of_floorGoodProfileSlackBudget`), never by the consumers, so it is not
+carried as a decorative conjunct.  The refutation surface is explicit: a stack exceeds its
 representative-plus-slack allowance, or a used profile's allowance is above budget.
 -/
 
@@ -107,15 +110,16 @@ theorem not_floorGoodProfileSlackBudget_iff_floorGood_and_exists_usedProfile_bud
         (ProfileFiberSlackDominance.not_profileFiberSlackBudgeted_iff_exists_usedProfile_budget_lt
           C δ profile rep slack B).mpr hbad⟩
 
-/-- Field-level slack closure certificate: the floor predicate is good at the deployed field,
-profile representatives plus slack are budgeted, and slack domination covers every stack. -/
-def ProfileSlackClosureAtField (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+/-- Field-level slack closure certificate: profile representatives plus slack are budgeted, and
+slack domination covers every stack.  (Earlier versions also carried `¬ FloorBad` as a first
+conjunct; no consumer used it, so floor-goodness now enters only through
+`profileSlackClosureAtField_of_floorGoodProfileSlackBudget`.) -/
+def ProfileSlackClosureAtField
     (C : Set (ι -> A)) (δ : ℝ≥0)
     {P : Type} (profile : WordStack A (Fin 2) ι -> P)
     (rep : P -> WordStack A (Fin 2) ι) (slack : P -> ℕ) (B : ℕ) : Prop :=
-  ¬ FloorBad (2 ^ a) (Fintype.card F) ∧
-    ProfileFiberSlackDominance.ProfileFiberSlackDominates F C δ profile rep slack ∧
-      ProfileFiberSlackDominance.ProfileFiberSlackBudgeted F C δ profile rep slack B
+  ProfileFiberSlackDominance.ProfileFiberSlackDominates F C δ profile rep slack ∧
+    ProfileFiberSlackDominance.ProfileFiberSlackBudgeted F C δ profile rep slack B
 
 /-- Floor-goodness plus the floor-to-slack-budget bridge and slack domination give the concrete
 field-level closure certificate. -/
@@ -129,121 +133,83 @@ theorem profileSlackClosureAtField_of_floorGoodProfileSlackBudget
       FloorBad a C δ profile rep slack B)
     (hdom : ProfileFiberSlackDominance.ProfileFiberSlackDominates F C δ profile rep slack) :
     ProfileSlackClosureAtField (F := F) (A := A)
-      FloorBad a C δ profile rep slack B :=
-  ⟨hgood, hdom, hfloorBudget hgood⟩
+      C δ profile rep slack B :=
+  ⟨hdom, hfloorBudget hgood⟩
 
 /-- A field-level slack closure certificate gives the actual universal incidence hypothesis. -/
 theorem worstCaseIncidenceBounded_of_profileSlackClosureAtField
-    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
     (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
     {P : Type} {profile : WordStack A (Fin 2) ι -> P}
     {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ}
     (hcert : ProfileSlackClosureAtField (F := F) (A := A)
-      FloorBad a C δ profile rep slack B) :
+      C δ profile rep slack B) :
     ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded
         (F := F) (A := A) C δ B :=
   ProfileFiberSlackDominance.worstCaseIncidenceBounded_of_profileFiberSlack
-    C δ hcert.2.1 hcert.2.2
+    C δ hcert.1 hcert.2
 
 /-- Delta-star consumer for a field-level slack closure certificate. -/
 theorem deltaStar_pin_of_profileSlackClosureAtField
-    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
     (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
     (hδ : δ ≤ 1)
     {P : Type} {profile : WordStack A (Fin 2) ι -> P}
     {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ}
     (hcert : ProfileSlackClosureAtField (F := F) (A := A)
-      FloorBad a C δ profile rep slack B)
+      C δ profile rep slack B)
     (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
     δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
   ProfileFiberSlackDominance.deltaStar_pin_of_profileFiberSlack
-    C εstar hδ hcert.2.1 hcert.2.2 hbudget
+    C εstar hδ hcert.1 hcert.2 hbudget
 
 /-- A field-level slack closure certificate bounds the realized bad-count image by `[0, B]`. -/
 theorem stackBadCountImage_card_le_budget_add_one_of_profileSlackClosureAtField
-    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
     (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
     {P : Type} {profile : WordStack A (Fin 2) ι -> P}
     {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ}
     (hcert : ProfileSlackClosureAtField (F := F) (A := A)
-      FloorBad a C δ profile rep slack B) :
-    (ProfileFiberSlackDominance.StackBadCountImage F C δ).card ≤ B + 1 := by
-  have hsubset :
-      ProfileFiberSlackDominance.StackBadCountImage F C δ ⊆ Finset.Icc 0 B := by
-    intro b hb
-    change b ∈ (Finset.univ : Finset (WordStack A (Fin 2) ι)).image
-      (fun u => ProfileFiberSlackDominance.StackBadCount F C δ u) at hb
-    rcases Finset.mem_image.mp hb with ⟨u, _hu, hu⟩
-    rw [← hu]
-    exact Finset.mem_Icc.mpr
-      ⟨Nat.zero_le _,
-        le_trans (hcert.2.1 u) (hcert.2.2 (profile u) ⟨u, rfl⟩)⟩
-  calc
-    (ProfileFiberSlackDominance.StackBadCountImage F C δ).card ≤ (Finset.Icc 0 B).card :=
-      Finset.card_le_card hsubset
-    _ = B + 1 := by
-      rw [Nat.card_Icc]
-      omega
+      C δ profile rep slack B) :
+    (ProfileFiberSlackDominance.StackBadCountImage F C δ).card ≤ B + 1 :=
+  ProfileFiberSlackDominance.stackBadCountImage_card_le_budget_add_one_of_profileFiberSlack
+    C δ hcert.1 hcert.2
 
 /-- Image-size refuter for field-level slack closure: no closure certificate with budget `B` can
 explain more than `B + 1` distinct realized bad-count values. -/
 theorem not_profileSlackClosureAtField_of_budget_add_one_lt_stackBadCountImage
-    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
     (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
     {P : Type} {profile : WordStack A (Fin 2) ι -> P}
     {rep : P -> WordStack A (Fin 2) ι} {slack : P -> ℕ}
     (hsmall : B + 1 <
       (ProfileFiberSlackDominance.StackBadCountImage F C δ).card) :
     ¬ ProfileSlackClosureAtField (F := F) (A := A)
-      FloorBad a C δ profile rep slack B := by
+      C δ profile rep slack B := by
   intro hcert
   exact (not_lt_of_ge
     (stackBadCountImage_card_le_budget_add_one_of_profileSlackClosureAtField
-      FloorBad a C δ hcert)) hsmall
+      C δ hcert)) hsmall
 
-/-- Exact scanner form for the field-level slack closure certificate.  It fails precisely when the
-floor predicate is still bad, a stack exceeds its representative-plus-slack allowance, or a used
-profile's allowance exceeds budget. -/
-theorem not_profileSlackClosureAtField_iff_bad_or_stack_exceeds_slack_or_usedProfile_budget_lt
-    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+/-- Exact scanner form for the field-level slack closure certificate.  It fails precisely when a
+stack exceeds its representative-plus-slack allowance, or a used profile's allowance exceeds
+budget. -/
+theorem not_profileSlackClosureAtField_iff_stack_exceeds_slack_or_usedProfile_budget_lt
     (C : Set (ι -> A)) (δ : ℝ≥0)
     {P : Type} (profile : WordStack A (Fin 2) ι -> P)
     (rep : P -> WordStack A (Fin 2) ι) (slack : P -> ℕ) (B : ℕ) :
     (¬ ProfileSlackClosureAtField (F := F) (A := A)
-        FloorBad a C δ profile rep slack B) ↔
-      FloorBad (2 ^ a) (Fintype.card F) ∨
-        (∃ u : WordStack A (Fin 2) ι,
+        C δ profile rep slack B) ↔
+      (∃ u : WordStack A (Fin 2) ι,
           ProfileFiberSlackDominance.StackBadCount F C δ (rep (profile u)) +
               slack (profile u) <
             ProfileFiberSlackDominance.StackBadCount F C δ u) ∨
-          ∃ p : P, ProfileFiberSlackDominance.UsedProfile profile p ∧
-            B < ProfileFiberSlackDominance.StackBadCount F C δ (rep p) + slack p := by
+        ∃ p : P, ProfileFiberSlackDominance.UsedProfile profile p ∧
+          B < ProfileFiberSlackDominance.StackBadCount F C δ (rep p) + slack p := by
   classical
   unfold ProfileSlackClosureAtField
-  constructor
-  · intro hnot
-    by_cases hbad : FloorBad (2 ^ a) (Fintype.card F)
-    · exact Or.inl hbad
-    · have hnotPair :
-          ¬ (ProfileFiberSlackDominance.ProfileFiberSlackDominates F C δ profile rep slack ∧
-            ProfileFiberSlackDominance.ProfileFiberSlackBudgeted F C δ profile rep slack B) := by
-        intro hpair
-        exact hnot ⟨hbad, hpair⟩
-      rw [not_and_or] at hnotPair
-      rcases hnotPair with hnotDom | hnotBudget
-      · exact Or.inr <| Or.inl
-          ((ProfileFiberSlackDominance.not_profileFiberSlackDominates_iff_exists_stack_exceeds_slack
-            C δ profile rep slack).mp hnotDom)
-      · exact Or.inr <| Or.inr
-          ((ProfileFiberSlackDominance.not_profileFiberSlackBudgeted_iff_exists_usedProfile_budget_lt
-            C δ profile rep slack B).mp hnotBudget)
-  · rintro (hbad | hdomOrBudget) hcert
-    · exact hcert.1 hbad
-    · rcases hdomOrBudget with hstack | hbudget
-      · exact ((ProfileFiberSlackDominance.not_profileFiberSlackDominates_iff_exists_stack_exceeds_slack
-          C δ profile rep slack).mpr hstack) hcert.2.1
-      · exact ((ProfileFiberSlackDominance.not_profileFiberSlackBudgeted_iff_exists_usedProfile_budget_lt
-          C δ profile rep slack B).mpr hbudget) hcert.2.2
+  rw [not_and_or]
+  exact Iff.or
+    (ProfileFiberSlackDominance.not_profileFiberSlackDominates_iff_exists_stack_exceeds_slack
+      C δ profile rep slack)
+    (ProfileFiberSlackDominance.not_profileFiberSlackBudgeted_iff_exists_usedProfile_budget_lt
+      C δ profile rep slack B)
 
 /-- Linnik-form localization plus the floor-to-slack-budget bridge gives a profile slack budget. -/
 theorem profileFiberSlackBudgeted_of_linnik_floorGood
@@ -458,7 +424,7 @@ theorem deltaStar_pin_of_tz_candidateListExactSmallest_profileSlackContract
 #print axioms deltaStar_pin_of_profileSlackClosureAtField
 #print axioms stackBadCountImage_card_le_budget_add_one_of_profileSlackClosureAtField
 #print axioms not_profileSlackClosureAtField_of_budget_add_one_lt_stackBadCountImage
-#print axioms not_profileSlackClosureAtField_iff_bad_or_stack_exceeds_slack_or_usedProfile_budget_lt
+#print axioms not_profileSlackClosureAtField_iff_stack_exceeds_slack_or_usedProfile_budget_lt
 #print axioms profileFiberSlackBudgeted_of_linnik_candidateListExactSmallest
 #print axioms worstCaseIncidenceBounded_of_linnik_candidateListExactSmallest_profileSlackContract
 #print axioms deltaStar_pin_of_linnik_candidateListExactSmallest_profileSlackContract

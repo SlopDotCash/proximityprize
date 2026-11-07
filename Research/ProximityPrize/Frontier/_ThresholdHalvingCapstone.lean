@@ -99,25 +99,26 @@ per-round FRI soundness error is bounded as
   `ε ≤ 1/|F| + (1 − δ/2)^q`.
 
 The `1/|F|` term is the **PROVEN** correlated-agreement floor (`caFailureMeasure_le_inv_card`, via
-`thresholdHalving_perRound_caDischarged`), taken at the analysis radius `δ/2` that the window
-arithmetic locks below Johnson. The ONLY unproven input is the named `QuerySoundnessBound`. -/
+`thresholdHalving_perRound_caDischarged`), which needs only `hjoint`; the window hypotheses
+`_hρ0`, `_hρ1`, `_hδwin` are not used by the proof (they only record the intended regime), and the
+`n·R` envelope equals `1/|F|` by the caller's choice `hR` rather than by a derived round-count
+scaling (audit CW-B15-06). The ONLY unproven input is the named `QuerySoundnessBound`. -/
 theorem perRound_error_clean [Fintype F]
-    {ρ : ℝ} (hρ0 : 0 ≤ ρ) (hρ1 : ρ ≤ 1)
+    {ρ : ℝ} (_hρ0 : 0 ≤ ρ) (_hρ1 : ρ ≤ 1)
     (C : Submodule F (ι → F)) (f₁ f₂ : ι → F) {δ : ℝ≥0}
-    (hδwin : (δ : ℝ) < windowTop ρ)
+    (_hδwin : (δ : ℝ) < windowTop ρ)
     (hjoint : (δ : ENNReal) < jointRelDist f₁ f₂ C)
     {ε qErr R : ℝ} {q : ℕ}
     (hR : (Fintype.card ι : ℝ) * R = 1 / (Fintype.card F : ℝ))
     (hsplit : ε ≤ caFailureMeasure C f₁ f₂ δ + qErr)
     (hQuery : QuerySoundnessBound qErr ((δ / 2 : ℝ≥0) : ℝ) q) :
     ε ≤ 1 / (Fintype.card F : ℝ) + (1 - (δ : ℝ) / 2) ^ q := by
-  -- The per-round assembly: CA half proven, query half named. The `BelowJohnsonRegime` slot of
-  -- `thresholdHalving_perRound_caDischarged` is its triggering inequality `r < johnsonRadius ρ`
-  -- (modelling def), so it is discharged HERE by `fun _ hr => hr` — it is NOT an external input.
+  -- The per-round assembly: CA half via the `hR` normalization `n·R = 1/|F|`, query half named.
+  -- (`thresholdHalving_perRound_caDischarged` no longer takes the unused window / BCIKS
+  -- hypotheses, audit CW-B15-06; `_hρ0`, `_hρ1`, `_hδwin` are kept here only to state the regime.)
   have hper :
       PerRoundFRIError ε (Fintype.card ι) R q ((δ / 2 : ℝ≥0) : ℝ) :=
-    thresholdHalving_perRound_caDischarged hρ0 hρ1 C f₁ f₂ hδwin hjoint
-      (fun _ hr => hr) hR hsplit hQuery
+    thresholdHalving_perRound_caDischarged C f₁ f₂ hjoint hR hsplit hQuery
   -- Unfold `PerRoundFRIError ε n R q (δ/2)` to `ε ≤ n·R + (1 − δ/2)^q`, then substitute
   -- `n·R = 1/|F|` and `((δ/2 : ℝ≥0) : ℝ) = (δ:ℝ)/2`.
   unfold PerRoundFRIError at hper

@@ -30,7 +30,12 @@ middle band (δ≈1/2), not a one-sided threshold — which is NOT how δ* behav
 
 ## Status (honest, no overclaim)
 SOLID: signed-single decomposition; `e_2=0 ⟺ P(ζ)²=P(ζ²)` (verified 50626 cases); `#bad=Θ(n^{s_max(w)})`;
-the per-band curve + `#orbits(w=4)=n/4−1` law. OPEN/UNCLOSED: (i) closed `s_max(w)` formula (non-monotone,
+the per-band curve + `#orbits(w=4)=n/4−1` law.
+*(Scope correction 2026-10-28, audit T48: `#bad = Θ(n^{s_max(w)})` and `#orbits(w=4) = n/4 − 1` are
+fits to finite data (four values of `n` for the latter), not proved asymptotics. The counts are
+characteristic-zero computations, so "q-independent" needs a characteristic-transfer hypothesis:
+the step `e_2 = 0 ⟺ p_1² = p_2` needs `2` invertible, and further Newton steps need their indices
+invertible.)* OPEN/UNCLOSED: (i) closed `s_max(w)` formula (non-monotone,
 global s_max grows 2,3,4,≥6 — no formula yet); (ii) the band-calibration `w ↦ δ` that would turn the
 curve into δ*. RETRACTED earlier: `s_max=μ−1` (false at n=64). No δ* closure; genuine q-independent
 structural data committed.

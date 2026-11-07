@@ -8,8 +8,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.WeilRegimeClosure
 /-!
 # A RESIDUAL-FREE end-to-end instance (#389)
 
-The general wall closure (`wall_closes_in_weil_regime`) is conditional on the standard
-Weil energy bound.  This file discharges that bound *by computation* for a concrete
+The general conditional representation bound (`wall_closes_in_weil_regime`, historical
+name) assumes a probe-motivated, unproved Weil-form energy-excess input (not a known
+theorem; see `WeilRegimeClosure`).  This file discharges that input *by computation* for a concrete
 deployed-shape instance, giving a **fully residual-free** end-to-end Garcia–Voloch
 representation bound — every hypothesis decided, no open input.
 
@@ -21,8 +22,9 @@ representation bound — every hypothesis decided, no open input.
 > **`mu6_F37_gvRepBound`** — `GVRepBound (μ_6 ⊆ F_37) 5`: every nonzero `t` has at most
 > `5` additive representations, the optimal `√(3·6) ≈ 4.2` scale.
 
-This is the complete supply-wall closure realised end-to-end on a concrete subgroup,
-demonstrating that the `δ*`-pinning machinery is residual-free once the energy is known.
+This realises the conditional representation bound residual-free on a concrete subgroup
+once the energy is known.  It is a representation-count bound only: no list-size, `ε_mca`
+or `δ*` statement follows without further bridges that are not supplied here.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.
 -/

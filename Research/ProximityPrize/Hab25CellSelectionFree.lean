@@ -26,6 +26,12 @@ linear branch.  This eliminates the GK1 selection leg of
 `cell_improvement_of_pinning_package'` entirely; the remaining legs are the tail, the
 heavy sets, and the numerics (GK3–GK5).
 
+*Scope (audit 2026-10-28, R-211).* "Free" is conditional on the strong `section_link`
+hypothesis: an irreducible cell divisible by the entered linear section `Y′ − C w` is forced to
+be associate to that section, i.e. **linear** in `Y`. The generic GS cell producer must still
+supply that section link; for an arbitrary nonlinear irreducible cell no such section is
+constructed here, so selection is free only for section-linked (hence linear) cells.
+
 Axiom-clean: `[propext, Classical.choice, Quot.sound]` (audited at end of file).
 -/
 
@@ -69,13 +75,9 @@ theorem evalX_eq_unit_mul_sectionBranch {R : (F₀[X])[X][Y]}
         = Polynomial.C (Polynomial.C a) * sectionBranch w x₀ := by
   classical
   -- `R` is an associate of the surface factor
-  have hXw_nu : ¬ IsUnit (Polynomial.X - Polynomial.C w) := by
-    intro hu
-    have h1 := Polynomial.natDegree_eq_zero_of_isUnit hu
-    rw [Polynomial.natDegree_X_sub_C] at h1
-    exact one_ne_zero h1
   obtain ⟨c, hc⟩ := hwdvd
-  have hcu : IsUnit c := (hRirr.isUnit_or_isUnit hc).resolve_left hXw_nu
+  have hcu : IsUnit c :=
+    BCIKS20.CurveCellStrictExtraction.isUnit_cofactor_of_irreducible hRirr hc
   -- the unit is a nonzero `F₀`-constant (units of the iterated polynomial ring)
   obtain ⟨q, hq⟩ := Polynomial.isUnit_iff.mp hcu
   obtain ⟨a, ha⟩ := Polynomial.isUnit_iff.mp hq.1

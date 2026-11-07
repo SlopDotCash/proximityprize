@@ -659,10 +659,16 @@ theorem folding_preserves_distance_johnson_of_betaRec
             ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate (d / (2 ^ k))
         (domain.subdomain k : Fin (2 ^ (n - k)) ↪ F) →
-      ArkLib.KeystoneStrictResidual.BetaCurveInput
-        (k := 2 ^ k - 1) (deg := d / (2 ^ k))
-        (domain := (domain.subdomain k : Fin (2 ^ (n - k)) ↪ F))
-        (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 2 ^ k - 1) (deg := d / (2 ^ k))
+            (domain := (domain.subdomain k : Fin (2 ^ (n - k)) ↪ F)) u δ,
+          (P z).natDegree < d / (2 ^ k) ∧
+            δᵣ(∑ t : Fin ((2 ^ k - 1) + 1), (z ^ (t : ℕ)) • u t,
+              (P z).eval ∘ (domain.subdomain k : Fin (2 ^ (n - k)) ↪ F)) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInput
+          (k := 2 ^ k - 1) (deg := d / (2 ^ k))
+          (domain := (domain.subdomain k : Fin (2 ^ (n - k)) ↪ F))
+          (δ := δ) u P)
   (δ_gt_0 : 0 < δ)
   (δ_lt : δ < min (δᵣ(f, ReedSolomon.code (domain : Fin (2 ^ n) ↪ F) d))
     (1 - (ReedSolomon.sqrtRate d (domain : Fin (2 ^ n) ↪ F)))) :

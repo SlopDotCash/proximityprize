@@ -21,6 +21,12 @@ energy bound.  This is deliberately small but useful: it turns the remaining ana
 a uniform bound for one explicit oscillatory convolution coefficient, the natural landing zone for
 Katz-style vertical equidistribution of the Jacobi angle family.
 
+**Redundancy note (audit CW-B11-06).**  The file states the same pointwise target under six
+names (generic Hermitian, generic additive-triple, `TripleConvPointwiseBound`, and three
+Jacobi-specialized forms).  They are proved mutually equivalent (`*_iff_tripleConvPointwiseBound`),
+and `TripleConvPointwiseBound` is canonical.  The remaining mono/compose wrappers are a
+compatibility surface only.
+
 Axiom-clean (`propext, Classical.choice, Quot.sound`).  Issue #466, round 26, LANE B2.
 -/
 
@@ -310,6 +316,48 @@ theorem jacobiHermitianSixInput_iff_tripleConvPointwiseBound {C : ℝ} :
     rw [jacobiAdditiveTripleHermitianExpansion_eq_norm_sq_tripleConv
       (χ := χ) (lam := lam) d]
     exact h d
+
+/-! ### All six pointwise predicates are the same statement
+
+Audit CW-B11-06 (2026-10-29): `AdditiveTripleHermitianPointwiseBound`,
+`AdditiveTriplePointwiseBound`, `JacobiAdditiveTripleHermitianPointwiseBound`,
+`JacobiAdditiveTripleHermitianExpandedPointwiseBound` and `JacobiHermitianSixInput` are each
+equivalent to `TripleConvPointwiseBound` (for the relevant coefficient family).  They are
+equivalent by the identities above, not by definitional unfolding, and the `iff` lemmas below
+record this.  `TripleConvPointwiseBound` is the canonical predicate.  The other names and the
+mono/compose/sextic/sup-face wrappers further down are kept only as a compatibility surface
+for existing consumers (`_R27`, `_R88`, `_R91`–`_R96`).  They add no mathematical content and
+should not be cited as separate inputs. -/
+
+theorem additiveTriplePointwiseBound_iff_tripleConvPointwiseBound
+    (J : ZMod m → ℂ) (q : ℕ) {C : ℝ} :
+    AdditiveTriplePointwiseBound J q C ↔ TripleConvPointwiseBound J q C := by
+  refine ⟨tripleConvPointwiseBound_of_additiveTriplePointwiseBound J q, fun h d => ?_⟩
+  rw [← tripleConv_eq_additiveTripleSum J d]
+  exact h d
+
+theorem additiveTripleHermitianPointwiseBound_iff_tripleConvPointwiseBound
+    (J : ZMod m → ℂ) (q : ℕ) {C : ℝ} :
+    AdditiveTripleHermitianPointwiseBound J q C ↔ TripleConvPointwiseBound J q C := by
+  rw [← additiveTriplePointwiseBound_iff_tripleConvPointwiseBound]
+  refine ⟨additiveTriplePointwiseBound_of_hermitianPointwiseBound J q, fun h d => ?_⟩
+  rw [additiveTripleHermitianExpansion_eq_norm_sq J d]
+  exact h d
+
+theorem jacobiAdditiveTripleHermitianPointwiseBound_iff_tripleConvPointwiseBound {C : ℝ} :
+    JacobiAdditiveTripleHermitianPointwiseBound χ lam C
+      ↔ TripleConvPointwiseBound
+        (fun i : ZMod m => R19JacobiFourierExpansion.jacobiCoeff χ lam i)
+        (Fintype.card F) C :=
+  additiveTripleHermitianPointwiseBound_iff_tripleConvPointwiseBound _ _
+
+theorem jacobiAdditiveTripleHermitianExpandedPointwiseBound_iff_tripleConvPointwiseBound
+    {C : ℝ} :
+    JacobiAdditiveTripleHermitianExpandedPointwiseBound χ lam C
+      ↔ TripleConvPointwiseBound
+        (fun i : ZMod m => R19JacobiFourierExpansion.jacobiCoeff χ lam i)
+        (Fintype.card F) C :=
+  jacobiHermitianSixInput_iff_tripleConvPointwiseBound
 
 /-- Monotonicity of the fully expanded Jacobi Hermitian target in its scalar budget. -/
 theorem jacobiAdditiveTripleHermitianExpandedPointwiseBound_mono

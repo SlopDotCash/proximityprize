@@ -17,7 +17,13 @@ For an RS code `RS[F, α, deg]` and a coordinate set `S` with `|S| ≤ deg`, the
 polynomials vanishing on the points `{α i : i ∈ S}` form a subspace of dimension `deg - |S|`.
 Equivalently the evaluation map `degreeLT F deg → (S → F)` is **surjective** (Lagrange
 interpolation, since `|S| ≤ deg` distinct nodes), so by rank–nullity its kernel — the vanishing
-polynomials — has dimension `deg - |S|`, hence `q^{deg - |S|}` codewords.
+polynomials — has dimension `deg - |S|`, hence there are `q^{deg - |S|}` such **polynomials**.
+
+These are counts of coefficient polynomials, not of distinct codewords: no hypothesis
+`deg ≤ n` is imposed, and when `deg` exceeds the number `n` of evaluation points distinct
+polynomials can evaluate to the same word (e.g. one point, `deg = 2`, `S = ∅`: `q^2`
+polynomials but only `q` evaluation words). Reading them as codeword counts requires the
+injectivity bridge `evalOnS_univ_injective` (`RSWeightEnumerator.lean`, for `deg ≤ n`).
 
 This is the MDS information-set fact: any `s ≤ deg` coordinates can be prescribed freely.  It is
 the combinatorial foundation of the **MDS weight enumerator** `A_d` (inclusion–exclusion over the

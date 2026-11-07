@@ -175,12 +175,21 @@ theorem proximityCondition_imp_relDist
   · exact (h_inner j hj).1.symm
   · exact hne ((h_inner j hj).1.symm)
 
-/-- **General MCA from symmetric proximity-gap soundness.** For any proximity generator and
-target `(BStar, errStar)`, the WHIR mutual-correlated-agreement predicate follows from the
-symmetric `Generator.proximityCondition` bound for the same generator, radius range, and error
-function. The only mathematical input is the pointwise implication
-`proximityCondition_imp_relDist`; probability
-monotonicity lifts it to the sampled generator. -/
+/-- **Conditional monotonicity: MCA from an all-stack symmetric proximity bound.** For any
+proximity generator and target `(BStar, errStar)`, the WHIR mutual-correlated-agreement
+predicate follows from the symmetric `Generator.proximityCondition` bound for the same
+generator, radius range, and error function. The only mathematical input is the pointwise
+implication `proximityCondition_imp_relDist`; probability monotonicity lifts it to the sampled
+generator.
+
+**Caveat (premise is useless below `1`).** `hPG` quantifies over *every* word stack `f` and
+bounds the plain symmetric event `δᵣ(∑ⱼ rⱼ·fⱼ, C) ≤ δ` with no "stack is far / not jointly
+correlated" restriction. At the all-zero stack that event holds for every `r` (the combination
+is the zero codeword of the linear code `C`), so `hPG` forces `1 ≤ errStar δ` at every admissible
+`δ` — see `one_le_errStar_of_allStack_proximityBound`. Hence `hPG` can never be supplied by a
+genuine (sub-unit) proximity-gap theorem, and this lemma is only a conditional monotonicity
+argument, **not** a CA→MCA derivation. A faithful bridge must use a proximity-gap law that
+excludes or conditions on stacks already jointly close to the code; that reduction is open. -/
 theorem hasMutualCorrAgreement_of_proximityGap
     (Gen : ProximityGenerator ι F) [Fintype Gen.parℓ]
     (BStar : ℝ) (errStar : ℝ → ENNReal)
@@ -196,14 +205,52 @@ theorem hasMutualCorrAgreement_of_proximityGap
   intro r hr
   exact proximityCondition_imp_relDist f δ (r : Gen.parℓ → F) Gen.C hr
 
-/-- **Lemma 4.10 (REPAIRED).** The original `mca_linearCode` is false as literally stated —
-its only hypothesis is `C = Gen.C` while `ProximityGenerator` carries `Gen`, `B`, `err` as
-free data with no proximity-gap law. The faithful repair threads the load-bearing missing
-premise `hPG`: the BCIKS20-style proximity-gap soundness of `Gen`, stated (per ABF26 §4 /
-WHIR Lemma 4.10) at the *mutual* radius `δ < 1 − BStar` with `BStar = min(1 − δ_C/2, B)`.
-Given it, `hasMutualCorrAgreement` follows from the per-row ⟹ symmetric reconciliation
-`proximityCondition_imp_relDist` (probability monotonicity). The conclusion's `BStar`/`errStar`
-are verbatim those of the original statement. -/
+omit [Nonempty parℓ] in
+/-- **Barrier for all-stack symmetric proximity premises.** If a generator satisfies the
+all-stack symmetric bound `Pr_r[δᵣ(∑ⱼ rⱼ·fⱼ, C) ≤ δ] ≤ errStar δ` for every word stack `f` on the
+range `0 < δ < 1 − BStar` (the premise `hPG` of `hasMutualCorrAgreement_of_proximityGap`), then
+`errStar δ ≥ 1` throughout that range: at the all-zero stack the combination is the zero codeword,
+so the event has probability one. Hence such premises are never supplied by a sub-unit
+proximity-gap bound. -/
+theorem one_le_errStar_of_allStack_proximityBound
+    (Gen : ProximityGenerator ι F) [Fintype Gen.parℓ]
+    (BStar : ℝ) (errStar : ℝ → ENNReal)
+    (hPG : haveI := Gen.Gen_nonempty
+      ∀ (f : Gen.parℓ → ι → F) (δ : ℝ≥0),
+        (0 < δ ∧ (δ : ℝ) < 1 - BStar) →
+        Pr_{
+          let r ← $ᵖ Gen.Gen}[Generator.proximityCondition f δ r Gen.C] ≤
+          errStar δ)
+    (δ : ℝ≥0) (hδ : 0 < δ ∧ (δ : ℝ) < 1 - BStar) :
+    1 ≤ errStar δ := by
+  classical
+  haveI := Gen.Gen_nonempty
+  refine le_trans (le_of_eq ?_) (hPG (fun _ _ => 0) δ hδ)
+  have hall : ∀ r : Gen.Gen,
+      Generator.proximityCondition (fun _ _ => (0 : F)) δ (r : Gen.parℓ → F) Gen.C := by
+    intro r
+    unfold Generator.proximityCondition
+    simp only [mul_zero, Finset.sum_const_zero]
+    have h0 : Δ₀((fun _ => (0 : F)), (Gen.C : Set (ι → F))) = 0 :=
+      Code.distFromCode_of_mem _ Gen.C.zero_mem
+    rw [Code.relDistFromCode_le_iff_distFromCode_le, h0]
+    exact bot_le
+  simp only [hall]
+  show (1 : ENNReal) = PMF.map (Function.const _ True) _ True
+  rw [PMF.map_const, PMF.pure_apply_self]
+
+/-- **Lemma 4.10 (conditional wrapper; not a faithful repair).** The original `mca_linearCode`
+is false as literally stated — its only hypothesis is `C = Gen.C` while `ProximityGenerator`
+carries `Gen`, `B`, `err` as free data with no proximity-gap law. This version threads a premise
+`hPG` bounding the plain symmetric event `δᵣ(∑ⱼ rⱼ·fⱼ, C) ≤ δ` for *every* stack `f` at the
+mutual radius `δ < 1 − BStar`, `BStar = min(1 − δ_C/2, B)`, and concludes by the per-row ⟹
+symmetric reconciliation `proximityCondition_imp_relDist` (probability monotonicity).
+
+**This is not WHIR Lemma 4.10.** Because `hPG` has no badness restriction on `f`, the zero
+stack forces `1 ≤ Gen.err C Gen.parℓ δ` on the whole admissible range
+(`one_le_errStar_of_allStack_proximityBound`), so `hPG` is unsatisfiable for any useful
+(sub-unit) error function and the conclusion is then trivial. The genuine CA → MCA implication
+(with a proximity-gap law restricted to stacks not jointly close to `C`) remains open. -/
 lemma mca_linearCode
     (Gen : ProximityGenerator ι F) [Fintype Gen.parℓ] [Nonempty Gen.parℓ]
     (C : LinearCode ι F) (hC : C = Gen.C)
@@ -223,11 +270,16 @@ lemma mca_linearCode
     (min (1 - (δᵣ (Gen.C : Set (ι → F)) : ℝ) / 2) (Gen.B Gen.C Gen.parℓ))
     (fun δ => Gen.err Gen.C Gen.parℓ δ) hPG
 
-/-- **Lemma 4.10 (REPAIRED, UDR-free strengthening that DERIVES the `min`).** When the
+/-- **Lemma 4.10 (conditional wrapper, UDR-free variant that derives the `min`).** When the
 generator's distance bound satisfies `B ≤ 1 − δ_C/2` (so the unique-decoding extension region
-beyond the CA radius `δ < 1 − B` is empty), the conclusion follows from the *literal Finding-25
-CA premise* stated at the CA radius `δ < 1 − B`, and `BStar = min(1 − δ_C/2, B)` is genuinely
-derived (it equals `B` here via `min_eq_right`). -/
+beyond the CA radius `δ < 1 − B` is empty), the conclusion follows from the all-stack symmetric
+premise `hCA` stated at the CA radius `δ < 1 − B`, and `BStar = min(1 − δ_C/2, B)` equals `B`
+via `min_eq_right`.
+
+Same caveat as `mca_linearCode`: `hCA` quantifies over every stack with no badness restriction,
+so the zero stack forces `1 ≤ Gen.err C Gen.parℓ δ` on the admissible range
+(`one_le_errStar_of_allStack_proximityBound`); `hCA` cannot be supplied by a useful proximity-gap
+bound, and this is a conditional monotonicity argument, not a CA → MCA derivation. -/
 lemma mca_linearCode_udrFree
     (Gen : ProximityGenerator ι F) [Fintype Gen.parℓ] [Nonempty Gen.parℓ]
     (C : LinearCode ι F) (hC : C = Gen.C)
@@ -286,11 +338,27 @@ lemma mca_linearCode_udrFree
   `MCAGenerator.lean`); this is a multi-step formalization, not a port of existing assets, so it is
   left as an open obligation rather than fake-proved. See
   `research/formal/arklib-proof-research-2026-06.md`.
+
+  ## Consecutive-exponent guard (audit L44, 2026-10)
+
+  `RSGenerator.genRSC` accepts an arbitrary injective `exp : parℓ ↪ ℕ`, but the bound here is
+  only the Corollary 4.11 bound for the consecutive power family `{0, …, parℓ − 1}`. For
+  arbitrary exponents the unguarded statement is **false**: over `F₇` with the two-point smooth
+  domain `{1, −1}`, `m = 0` (`ρ = 1/2`) and exponents `(0, 6)`, Fermat collapses the generator
+  set to `{(1,0), (1,1)}`; the stack `f₀ = (0,1)`, `f₁ = −f₀` at `δ = 1/10` has event probability
+  `1/2 > 2/7 = errStar`. The proposition is therefore guarded by
+  `∀ j, exp j < Fintype.card parℓ_type`, which (with injectivity of `exp`) says exactly that the
+  exponent set is `{0, …, parℓ − 1}`. Under the guard the image-uniform sampling of `Gen.Gen`
+  agrees with sampling a uniform scalar `r ←$ F` (the map `r ↦ (r^{exp j})ⱼ` is injective once
+  exponent `1` occurs; see `GenSeam.hasMutualCorrAgreement_genRSC_iff_uniform`), so the
+  distribution is the intended one.
 -/
 
 def mca_rsc
     (_α : F) (φ : ι ↪ F) (m : ℕ) [Smooth φ]
   (parℓ_type : Type) [Fintype parℓ_type] (exp : parℓ_type ↪ ℕ) : Prop :=
+  -- consecutive-exponent guard: `exp` is a bijection onto `{0, …, parℓ − 1}`
+  (∀ j, exp j < Fintype.card parℓ_type) →
   let Gen := RSGenerator.genRSC parℓ_type φ m exp
   haveI : Fintype Gen.parℓ := Gen.hℓ
   hasMutualCorrAgreement
@@ -315,10 +383,20 @@ def mca_rsc
   codes, which is not yet in mathlib (no Reed–Solomon, list-decoding, or Johnson-bound
   API exists upstream) — so this is a genuine ground-up formalization task, not a port.
   See `research/formal/arklib-proof-research-2026-06.md`.
+
+  CONSECUTIVE-EXPONENT GUARD (audit L44, 2026-10): the conjecture is about the power family
+  `{0, …, parℓ − 1}`, so the proposition is guarded by `∀ j, exp j < Fintype.card parℓ_type`
+  (with injectivity: `exp` is a bijection onto that range). Without the guard the statement is
+  false for large odd fields: exponents `(0, q − 1)` collapse the generator set to
+  `{(1,0), (1,1)}` and the two-point zero-sum stack keeps event probability `1/2`, while the
+  displayed error at `ρ = 1/2, m = 0, δ = 1/10` tends to `0` (≈ `0.008` at `|F| = 7^12`). This
+  does not touch the published consecutive-power conjecture.
 -/
 def mca_johnson_bound_CONJECTURE
     (_α : F) (φ : ι ↪ F) (m : ℕ) [Smooth φ]
   (parℓ_type : Type) [Fintype parℓ_type] (exp : parℓ_type ↪ ℕ) : Prop :=
+  -- consecutive-exponent guard: `exp` is a bijection onto `{0, …, parℓ − 1}`
+  (∀ j, exp j < Fintype.card parℓ_type) →
   let Gen := RSGenerator.genRSC parℓ_type φ m exp
   haveI : Fintype Gen.parℓ := Gen.hℓ
   hasMutualCorrAgreement Gen
@@ -411,3 +489,4 @@ end MutualCorrAgreement
 #print axioms MutualCorrAgreement.proximityCondition_imp_relDist
 #print axioms MutualCorrAgreement.hasMutualCorrAgreement_of_proximityGap
 #print axioms MutualCorrAgreement.mca_linearCode_udrFree
+#print axioms MutualCorrAgreement.one_le_errStar_of_allStack_proximityBound

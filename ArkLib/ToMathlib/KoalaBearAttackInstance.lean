@@ -36,8 +36,27 @@ Via `fenziSanso_upperBound_attack_residual_of_concrete`, this discharges TWO of 
 is strictly more permissive than the paper's fixed-encoding `R_C` (single-row constraint
 values are free at any nonzero close codeword under rank-one re-encoding, while zero
 constraints on an independent close pair are unsatisfiable under any common encode), and the
-leaderboard's 116-bit attack anchor is validated by that permissiveness — not by
-list-decoding.
+leaderboard's 116-bit attack anchor is discharged by that permissiveness — not by
+list-decoding.  The generic form of the permissiveness is
+`ToyProblem.mem_winningSet_iff_exists_agree`.
+
+**Consequences for the leaderboard (audit 2026-10-28, finding L33).**  The same instance has
+winning fraction `1`, so the existential-encoding leaderboard scalar is exactly `1` at the
+anchor (`koalaIRS_soundnessError_eq_one`). Hence:
+
+* every `SecurityLowerBound koalaIRS` has `bits ≤ 0` (`koalaIRS_securityLowerBound_bits_nonpos`;
+  `zeroBitUpperBound` is a `0`-bit attack ceiling), and the explicit 64-bit lower residual
+  `arklib_lowerBound_irs_t128_residual` is **false** (`not_arklib_lowerBound_irs_t128_residual`);
+* the `|Ω| ≤ 4` cap assumed by `ToyProblem.not_fenziSanso_concrete_residual_of_ncard_le_four`
+  (`KoalaBearWinningSetProof.lean`) is false (`not_forall_winningSet_ncard_le_four`);
+* under the code's own encoder `rsEncoder` the same instance wins **no** challenge
+  (`attackInstance_winningSetFor_eq_empty`): the degeneracy is an artifact of the existential
+  encoding, not an attack on the fixed-encoding protocol. In particular the positive bridge
+  `relaxedRelationFor_imp` is strict even though `rsEncoder` parametrizes the code exactly
+  (`relaxedRelation_and_not_relaxedRelationFor`).
+
+This is model-level evidence about the in-tree relations; it refutes nothing in the paper or
+the prize.
 -/
 
 namespace ArkLib
@@ -45,6 +64,7 @@ namespace ArkLib
 namespace KoalaBearAttack
 
 open KoalaBear ToyProblem
+open scoped NNReal
 
 /-- The constant-`1` codeword: message `(1, 0)`. -/
 noncomputable def c₁ : Fin 4 → Sextic := rsEncoder ![1, 0]
@@ -277,7 +297,8 @@ theorem instance_violates :
 /-! ## The instance, the full-field winning set, and the residual theorems -/
 
 /-- The violating attack instance. -/
-noncomputable def attackInstance : ExistentialEncoding.ViolatingInstance KoalaBear.rsCodeSet (3 / 10) 2 where
+noncomputable def attackInstance :
+    ExistentialEncoding.ViolatingInstance KoalaBear.rsCodeSet (3 / 10) 2 where
   v := v
   μ₁ := 0
   μ₂ := 0
@@ -292,7 +313,8 @@ theorem attackInstance_winningSet_eq_univ :
   Set.eq_univ_of_forall all_challenges_win
 
 /-- **`fenziSanso_upperBound_attack_concrete_residual` is TRUE**: the winning set has the
-full field's cardinality `p^6 ≥ 2^116 ≥ 2^70`. -/
+full field's cardinality `p^6 ≥ 2^116 ≥ 2^70`. The proof uses the existential-encoding
+constraint degeneracy, not a list-decoding construction. -/
 theorem fenziSanso_upperBound_attack_concrete_residual_holds :
     ToyProblem.fenziSanso_upperBound_attack_concrete_residual := by
   refine ⟨attackInstance, ?_⟩
@@ -302,17 +324,136 @@ theorem fenziSanso_upperBound_attack_concrete_residual_holds :
 
 /-- **`fenziSanso_upperBound_attack_residual` is TRUE** — the original 116-bit leaderboard
 attack residual, via the in-tree bridge from the concrete winning-set proof (issue #339
-closeout: residuals 2 and 3 of the filed list are both theorems). -/
+closeout: residuals 2 and 3 of the filed list are both theorems). Like that proof, it rests on
+the existential-encoding degeneracy: in fact the scalar is `1`
+(`koalaIRS_soundnessError_eq_one`), so the residual holds at every bit level `≥ 0`. -/
 theorem fenziSanso_upperBound_attack_residual_holds :
     ToyProblem.fenziSanso_upperBound_attack_residual :=
   ToyProblem.fenziSanso_upperBound_attack_residual_of_concrete
     fenziSanso_upperBound_attack_concrete_residual_holds
 
 /-- The unconditional 116-bit attack anchor at the genuine KoalaBear-sextic carrier
-(`SecurityUpperBound koalaIRSConcrete`), no residual hypothesis. -/
+(`SecurityUpperBound koalaIRSConcrete`), no residual hypothesis. It bounds the
+existential-encoding scalar and comes from the constraint degeneracy; `zeroBitUpperBound`
+below is the sharper `0`-bit ceiling for the same scalar. -/
 noncomputable def attackUpperBound : ToyProblem.SecurityUpperBound ToyProblem.koalaIRSConcrete :=
   ToyProblem.fenziSanso_upperBound_attack_concrete
     fenziSanso_upperBound_attack_concrete_residual_holds
+
+/-! ## Consequences for the leaderboard (audit 2026-10-28, L33)
+
+The full-field winning set has ratio `|F| / |F| = 1`, so the existential-encoding leaderboard
+scalar `koalaIRS.soundnessError = winningSetSoundness (k := 2) rsCodeSet (3/10)` is exactly
+`1`. -/
+
+/-- The attack instance's winning-challenge fraction is `1`. -/
+theorem attackInstance_winningSetRatio_eq_one :
+    ExistentialEncoding.winningSetRatio attackInstance = 1 := by
+  rw [ExistentialEncoding.winningSetRatio, attackInstance_winningSet_eq_univ, Set.ncard_univ,
+    Nat.card_eq_fintype_card]
+  exact div_self (by exact_mod_cast Fintype.card_ne_zero)
+
+/-- **The existential-encoding leaderboard scalar is exactly `1` at `koalaIRS`.** The bounded
+supremum `winningSetSoundness (k := 2) rsCodeSet (3/10)` is attained by `attackInstance`. -/
+theorem koalaIRS_soundnessError_eq_one : koalaIRS.soundnessError = 1 := by
+  refine le_antisymm koalaIRS.soundnessError_le_one ?_
+  have h := winningSetRatio_le_winningSetSoundness attackInstance
+  rw [attackInstance_winningSetRatio_eq_one] at h
+  exact h
+
+/-- The `0`-bit attack ceiling at `koalaIRS`: since the bundled scalar is `1`, `bits := 0` is
+a `SecurityUpperBound`. -/
+noncomputable def zeroBitUpperBound : SecurityUpperBound koalaIRS where
+  bits := 0
+  proof := by
+    show (2 : ℝ≥0) ^ (-(0 : ℝ)) ≤ koalaIRS.soundnessError
+    rw [koalaIRS_soundnessError_eq_one, neg_zero, NNReal.rpow_zero]
+
+/-- **No positive-bit provable lower bound exists at `koalaIRS`**: every
+`SecurityLowerBound koalaIRS` certifies at most `0` bits. -/
+theorem koalaIRS_securityLowerBound_bits_nonpos (lo : SecurityLowerBound koalaIRS) :
+    lo.bits ≤ 0 :=
+  lo.bits_le_of zeroBitUpperBound
+
+/-- **The explicit 64-bit lower-bound residual is false.** `arklib_lowerBound_irs_t128_residual`
+would yield the 64-bit `SecurityLowerBound koalaIRS` `arklib_lowerBound_irs_t128`, but every
+such bound has `bits ≤ 0`. -/
+theorem not_arklib_lowerBound_irs_t128_residual : ¬ arklib_lowerBound_irs_t128_residual := by
+  intro h
+  have h64 : (64 : ℝ) ≤ 0 :=
+    koalaIRS_securityLowerBound_bits_nonpos (arklib_lowerBound_irs_t128 h)
+  norm_num at h64
+
+/-- The bundled existential-encoding scalar at `koalaIRS` has `0` bits of security. -/
+theorem koalaIRS_bitsOfSecurity_eq_zero : bitsOfSecurity koalaIRS.soundnessError = 0 := by
+  rw [koalaIRS_soundnessError_eq_one, bitsOfSecurity, NNReal.coe_one, Real.logb_one, neg_zero]
+
+/-- **The `|Ω| ≤ 4` cap is false for the existential-encoding winning set.** The hypothesis
+`hcap` of `ToyProblem.not_fenziSanso_concrete_residual_of_ncard_le_four`
+(`KoalaBearWinningSetProof.lean`) fails at `attackInstance`, whose winning set is all of `F`. -/
+theorem not_forall_winningSet_ncard_le_four :
+    ¬ ∀ x : ExistentialEncoding.ViolatingInstance KoalaBear.rsCodeSet (3 / 10) 2,
+        (winningSet KoalaBear.rsCodeSet (3 / 10) x.v x.μ₁ x.μ₂ x.f₁ x.f₂).ncard ≤ 4 := by
+  intro hcap
+  have h := hcap attackInstance
+  rw [attackInstance_winningSet_eq_univ, Set.ncard_univ, Nat.card_eq_fintype_card] at h
+  have h116 : (2 : ℕ) ^ 116 ≤ 4 := le_trans KoalaBear.card_sextic_ge h
+  norm_num at h116
+
+/-! ## Contrast: the fixed encoding sees no attack
+
+Under the code's own encoder `rsEncoder` the constraint is not free: a winning challenge needs a
+message `m` with `rsEncoder m` agreeing with the fold on `≥ 3` coordinates, which pins
+`m = (1, γ)` by interpolation, and then `⟨m, v⟩ = 1 ≠ 0`. So the fixed-encoding winning set of
+`attackInstance` is empty, while its existential winning set is all of `F`. -/
+
+/-- At `δ = 3/10` over `Fin 4`, a relaxed-relation agreement set has at least `3` elements
+(`(1 - 3/10) · 4 = 2.8`). -/
+theorem three_le_card_of_agreement {S : Finset (Fin 4)}
+    (hS : (1 - ((3 / 10 : ℝ≥0) : ℝ)) * Fintype.card (Fin 4) ≤ S.card) : 3 ≤ S.card := by
+  by_contra h
+  rw [not_le] at h
+  interval_cases hc : S.card <;> simp_all <;> nlinarith [hS]
+
+/-- **Under the code's own encoder the attack instance wins no challenge.** -/
+theorem attackInstance_winningSetFor_eq_empty :
+    winningSetFor KoalaBear.rsEncoder (3 / 10) v 0 0 f₁ f₂ = ∅ := by
+  ext γ
+  simp only [Set.mem_empty_iff_false, iff_false]
+  rintro ⟨Wstar, ⟨M, hWeq, hconstr⟩, S, hScard, hagree⟩
+  have hS3 : 3 ≤ S.card := three_le_card_of_agreement hScard
+  -- two distinct unbumped points in `S`
+  have herase : 2 ≤ (S.erase 3).card := by
+    have := Finset.pred_card_le_card_erase (s := S) (a := 3)
+    omega
+  obtain ⟨j₁, hj₁, j₂, hj₂, hjne⟩ := Finset.one_lt_card.mp (by omega : 1 < (S.erase 3).card)
+  -- on unbumped points the fold is `wγ γ = rsEncoder ![1, γ]`
+  have hag : ∀ j ∈ S, j ≠ 3 → rsEncoder (M 0) j = rsEncoder ![1, γ] j := by
+    intro j hjS hj3
+    have h : f₁ j + γ * f₂ j = Wstar 0 j := hagree 0 j hjS
+    rw [hWeq 0, f₁_apply_ne hj3, f₂_apply_ne hj3, ← wγ_apply γ j] at h
+    exact h.symm
+  have hM : M 0 = ![1, γ] :=
+    message_eq_of_agree_two hjne
+      (hag j₁ (Finset.mem_of_mem_erase hj₁) (Finset.ne_of_mem_erase hj₁))
+      (hag j₂ (Finset.mem_of_mem_erase hj₂) (Finset.ne_of_mem_erase hj₂))
+  -- the constraint `⟨M 0, v⟩ = 0 + γ * 0` fails: `⟨(1, γ), (1, 0)⟩ = 1`
+  have h := hconstr 0
+  rw [hM] at h
+  simp [Fin.sum_univ_two, v] at h
+
+/-- **The positive bridge `relaxedRelationFor_imp` is not an equivalence**, even though
+`rsEncoder` parametrizes `rsCodeSet` exactly: for every `γ`, the folded one-row instance of
+`attackInstance` satisfies the existential relaxed relation but not the fixed-encoding one. -/
+theorem relaxedRelation_and_not_relaxedRelationFor (γ : Sextic) :
+    relaxedRelation (ℓ := 1) KoalaBear.rsCodeSet (3 / 10) v (fun _ ↦ 0 + γ * 0)
+        (fun _ j ↦ f₁ j + γ * f₂ j) ∧
+      ¬ relaxedRelationFor (ℓ := 1) KoalaBear.rsEncoder (3 / 10) v (fun _ ↦ 0 + γ * 0)
+        (fun _ j ↦ f₁ j + γ * f₂ j) := by
+  refine ⟨all_challenges_win γ, fun h ↦ ?_⟩
+  have hmem : γ ∈ winningSetFor KoalaBear.rsEncoder (3 / 10) v 0 0 f₁ f₂ := h
+  rw [attackInstance_winningSetFor_eq_empty] at hmem
+  exact hmem
 
 end KoalaBearAttack
 
@@ -326,3 +467,11 @@ end ArkLib
 #print axioms ArkLib.KoalaBearAttack.fenziSanso_upperBound_attack_concrete_residual_holds
 #print axioms ArkLib.KoalaBearAttack.fenziSanso_upperBound_attack_residual_holds
 #print axioms ArkLib.KoalaBearAttack.attackUpperBound
+#print axioms ArkLib.KoalaBearAttack.koalaIRS_soundnessError_eq_one
+#print axioms ArkLib.KoalaBearAttack.zeroBitUpperBound
+#print axioms ArkLib.KoalaBearAttack.koalaIRS_securityLowerBound_bits_nonpos
+#print axioms ArkLib.KoalaBearAttack.not_arklib_lowerBound_irs_t128_residual
+#print axioms ArkLib.KoalaBearAttack.koalaIRS_bitsOfSecurity_eq_zero
+#print axioms ArkLib.KoalaBearAttack.not_forall_winningSet_ncard_le_four
+#print axioms ArkLib.KoalaBearAttack.attackInstance_winningSetFor_eq_empty
+#print axioms ArkLib.KoalaBearAttack.relaxedRelation_and_not_relaxedRelationFor

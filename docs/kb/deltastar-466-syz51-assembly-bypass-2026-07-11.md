@@ -1,7 +1,11 @@
 # δ* #466 — SYZ51 assembly-bypass audit (2026-07-11)
 
-**Verdict: the spread branch does NOT discharge from landed lemmas. `uniformSylvester` is NOT
-removable.** The conjectured bypass fails on two independent, in-tree obstructions.
+**Verdict: the spread branch does NOT discharge from landed lemmas by this route; `uniformSylvester`
+is not shown removable.** Two in-tree obstructions block the proof route, but neither is a
+counterexample at the bypass's spread parameters (audit CW-B13-11): the SYZ25 cover at `n = 6`
+has cores `4 = 2n/3` (not `> 2n/3`) and intersections `2 = n/3` (not `> n/3`); the window
+`(n/3, k) = (2, 3)` is empty (`SYZ51.syz25_cover_outside_bypass_premise`). Whether the bypass is
+false at spread parameters is open.
 
 ## The audit question
 
@@ -25,9 +29,9 @@ SYZ47's proven unbalanced region `max ≥ ⌊(a+b+c)/2⌋−1` where `ι ≤ 1` 
 SYZ23's sum lower bound (`finrank_iSup_ge_sum_sub_overlaps`) needs every **incremental** overlap
 `finrank(A_i ⊓ ⨆_{j<i}A_j)` to vanish — pairwise-zero does **not** imply this for `≥ 3` subspaces.
 
-Decisive in-tree counterexample: the SYZ25 cover `[[0,1,4,5],[0,2,3,5],[1,2,3,4]]` at `k=3` has
+In-tree obstruction (not at spread parameters): the SYZ25 cover `[[0,1,4,5],[0,2,3,5],[1,2,3,4]]` at `k=3` has
 **every pairwise intersection exactly `2 = k−1 < k`** (`SYZ51.syz25_pairwise_below_k`) — so all
-three pairs are anchored-dual direct, the *exact* bypass premise — **yet the three minimum-weight
+three pairs are anchored-dual direct (the pairwise step of the bypass, though the cover fails its size premise) — **yet the three minimum-weight
 dual lines are coplanar and the family fails to generate** (SYZ25 `overbudget_not_imp_generation`,
 re-exported `SYZ51.pairwise_direct_but_not_generating`; over-budget `∑(|Cᵢ|−k)=3=|U|−k` but
 `d=1`). The coplanar relation is a nonzero constant syzygy = an `ι=2` witness. Not a
@@ -54,8 +58,9 @@ proven strip.
   instance.**
 - `realizabilityCore` — SYZ42 syndrome-configuration existence.
 
-No BGK-free strip; no unconditional δ*. CORE remains OPEN / ON-BGK. The bypass is closed with a
-concrete in-tree counterexample at the exact configuration it proposed.
+No BGK-free strip; no unconditional δ*. CORE remains OPEN / ON-BGK. The bypass is *not* refuted:
+no counterexample at its spread parameters is formalized; only the landed proof route is shown
+insufficient.
 
 ## Lean deliverables (`Frontier/_SYZ51AssemblyBypass.lean`, axiom-clean)
 

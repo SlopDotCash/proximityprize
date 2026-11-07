@@ -7,28 +7,32 @@ import Mathlib.Data.Nat.Sqrt
 import Mathlib.Tactic
 
 /-!
-# Issue #232 — the GS threshold converges to Johnson FROM ABOVE (the "reaches" direction)
+# Issue #232 — the GS threshold reaches Johnson up to an additive slack (the "reaches" direction)
 
 The in-tree walls (`GSJohnsonWall`, `GSExactCountWall`) prove the GS certificate system can never
 certify agreement below the Johnson radius `√(c·n)` (`c = k−1`), at any multiplicity.  This file
-proves the matching **"reaches" direction**: for *every* multiplicity `m`, the system IS feasible at
-an explicitly constructed agreement threshold `t` with
+proves the matching **"reaches" direction up to an additive slack of `2`**: for *every*
+multiplicity `m`, the system IS feasible at an explicitly constructed agreement threshold `t` with
 
   `(t − 2)² · m ≤ c · n · (m + 1)`,
 
-i.e. `t ≤ √(c·n·(1 + 1/m)) + 2` — converging to the Johnson radius `√(c·n)` from above as
-`m → ∞`.  Construction: `D = ⌊√(c·n·m·(m+1))⌋ + 1` and `t = ⌊D/m⌋ + 1`; feasibility is
-`c·n·m·(m+1) < D² ≤ D·(D+c)` (the defining property of `Nat.sqrt`) and `D < t·m` (division with
-remainder).
+i.e. `t ≤ √(c·n·(1 + 1/m)) + 2`.  Construction: `D = ⌊√(c·n·m·(m+1))⌋ + 1` and
+`t = ⌊D/m⌋ + 1`; feasibility is `c·n·m·(m+1) < D² ≤ D·(D+c)` (the defining property of
+`Nat.sqrt`) and `D < t·m` (division with remainder).
 
-**Consequence (the two-sided characterization, now complete):** the GS-certifiable agreement
-threshold at multiplicity `m` is sandwiched
+**Consequence (a two-sided sandwich, not an exact limit):** combining with the walls, the
+GS-certifiable agreement threshold at multiplicity `m` satisfies
 
-  `√(c·n)  <  t_GS(m)  ≤  √(c·n·(1+1/m)) + 2`,
+  `√(c·n)  <  t_GS(m)  ≤  √(c·n·(1+1/m)) + 2`.
 
-so it equals the Johnson radius exactly in the `m → ∞` limit — neither more (the walls) nor less
-(this file).  The machine the literature uses is thereby *characterized*, not merely bounded: any
-certificate past Johnson for the prize must be a genuinely different system.
+At fixed `n`, letting `m → ∞` only gives `√(c·n) < t_GS(m) ≤ √(c·n) + 2 + o(1)`: the additive `2`
+(integer rounding of `t`) does not vanish with the multiplicity, and an integer threshold cannot
+converge to the non-integer real `√(c·n)` anyway.  For example at `c = 1`, `n = 2` the constructed
+`tgs 1 2 m` equals `2` for every `m ≥ 3`, so its limit is `2`, not `√2`.  What does tend to the
+Johnson value is the *normalized* threshold: dividing by `n`, the slack `2/n → 0` as `n → ∞`
+(with `c/n → ρ` fixed and `m → ∞`), so `t_GS/n → √ρ`.  This file proves the per-`(c, n, m)` upper
+bound only; it does not formalize that normalized asymptotic, and it does not prove an exact
+`m → ∞` limit characterization.
 
 All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 -/
@@ -62,7 +66,8 @@ theorem feasible_root_order (c n m : ℕ) (hm : 0 < m) :
     _ < m * (Dgs c n m / m) + m := by omega
     _ = Dgs c n m / m * m + m := by ring
 
-/-- **The convergence bound:** `(t − 2)² · m ≤ c·n·(m+1)`, i.e. `t ≤ √(c·n·(1+1/m)) + 2`.
+/-- **The upper bound with additive slack:** `(t − 2)² · m ≤ c·n·(m+1)`, i.e.
+`t ≤ √(c·n·(1+1/m)) + 2` (the `+2` persists as `m → ∞`).
 Chain: `t − 2 ≤ ⌊√(cnm(m+1))⌋/m`, so `(t−2)²·m² ≤ (⌊√·⌋)² ≤ c·n·m·(m+1)`, and cancel one `m`. -/
 theorem t_close_to_johnson (c n m : ℕ) (hm : 0 < m) :
     (tgs c n m - 2) ^ 2 * m ≤ c * n * (m + 1) := by
@@ -102,11 +107,13 @@ theorem t_close_to_johnson (c n m : ℕ) (hm : 0 < m) :
 
 /-- **The "reaches" theorem (bundled):** for every `c, n` and every multiplicity `m ≥ 1`, the GS
 parameter system is feasible (`c·n·m·(m+1) < D·(D+c)` and `D < t·m`) at the constructed `(t, D)`,
-with `t` converging to the Johnson radius: `(t−2)²·m ≤ c·n·(m+1)`.
+with `t` within an additive slack of the Johnson radius: `(t−2)²·m ≤ c·n·(m+1)`.
 
 Paired with the walls (`GSJohnsonWall.gs_johnson_wall`, `GSExactCountWall.exact_wall`), this
-**characterizes** the GS threshold:  `√(c·n) < t_GS(m) ≤ √(c·n·(1+1/m)) + 2` — exactly Johnson in
-the limit.  Any certificate past Johnson must be a genuinely different system. -/
+**sandwiches** the GS threshold:  `√(c·n) < t_GS(m) ≤ √(c·n·(1+1/m)) + 2`.  At fixed `n` this
+leaves a persistent additive slack (up to `2`) as `m → ∞` — e.g. `tgs 1 2 m = 2` for all `m ≥ 3`
+while `√2 ∉ ℕ` — so it is not an exact limit characterization; only the normalized threshold
+`t/n` approaches the Johnson value as `n → ∞` (not formalized here). -/
 theorem gs_reaches_johnson (c n m : ℕ) (hm : 0 < m) :
     ∃ t D : ℕ,
       c * n * m * (m + 1) < D * (D + c) ∧
@@ -118,7 +125,9 @@ theorem gs_reaches_johnson (c n m : ℕ) (hm : 0 < m) :
 /-- **Non-vacuity at prize scale** (`n = 2²⁰, c = 2¹⁹ − 1, m = 64`): the construction certifies
 `t = tgs ≤ 747260` — within `0.8%` of the Johnson agreement `√(c·n) ≈ 741454.5` — confirming the
 convergence is genuine at the prize's own parameters (`(t−2)²·64 ≤ c·n·65` by the theorem, and the
-explicit bound `741454² < c·n` places Johnson just below). -/
+explicit bound `741454² < c·n` places Johnson just below).  The relative gap comes almost entirely
+from the `√(1 + 1/64)` factor; the additive slack `2` is negligible against `√(c·n)` at this
+scale, although it does not vanish as `m → ∞` at fixed `n`. -/
 theorem nonvacuous_prize_scale :
     (tgs (2 ^ 19 - 1) (2 ^ 20) 64 - 2) ^ 2 * 64 ≤ (2 ^ 19 - 1) * 2 ^ 20 * 65 ∧
     741454 ^ 2 < (2 ^ 19 - 1) * 2 ^ 20 :=

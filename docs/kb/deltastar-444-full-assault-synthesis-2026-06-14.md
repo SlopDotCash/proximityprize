@@ -5,7 +5,7 @@ Ran an exhaustive 4-phase multi-agent assault (recon → 18-target attack → ad
 ### Landed bricks (verified)
 | brick | file | commit | what it proves |
 |---|---|---|---|
-| L1 | `BadPrimeGaloisDivisibility.lean` | `9a45c4de9` | **discharges the Galois-divisibility hypothesis** of the bad-prime bound: `p^r ∣ N(f(ζ))`, `N≠0`, `|N|≤(Σ\|coeff\|)^{[K:ℚ]}` for abstract Galois `K` — the norm core is now **unconditional** (cyclotomic instantiation = remaining plumbing) |
+| L1 | `BadPrimeGaloisDivisibility.lean` | `9a45c4de9` | **discharges the Galois-divisibility hypothesis** of the bad-prime bound: `p^r ∣ N(f(ζ))`, `N≠0`, `|N|≤(Σ\|coeff\|)^{[K:ℚ]}` for abstract Galois `K` — the norm core is proved **given** that each of the `r` conjugates is divisible by the principal ideal `p·𝓞_K`; vanishing modulo one prime `P ∣ p` (the finite-field input) does not imply that (e.g. `ℚ(i)`, `p=5`, `f=X−2`), so the finite-field input still needs a prime-ideal/valuation argument (audit 2026-10-28, PG-250) |
 | L2 | `Q1ClaimBDegH.lean` | `8dd2727d3` | `deg H = k−1` exactly (char-0 dyadic), completing Q1 Claim A+B |
 | L3 | `OrbitCountConsumerBridge.lean` | `13407165a` | wires the orbit-count identity into the `BridgeLoop43/44` consumers |
 | L4 | `CharPDeepMomentTail.lean` | `a07b9f98b` | unconditional deep-moment tail (honestly scoped off-prize: reaches floor only `r≳1.36n`) |

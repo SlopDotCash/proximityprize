@@ -16,46 +16,33 @@ import ProximityPrize.Extensions.OracleReduction.LiftContext.OracleReduction
   `hPerRound : ∀ i, (SingleRound.oracleReduction R n deg D oSpec i).toReduction =
                     SingleRound.reduction R n deg D oSpec i`.                              (★)
 
-This file isolates exactly what is needed to discharge `(★)` per round and shows that **all the
-structural `liftContext`-commutation plumbing is already provable**, leaving precisely **one** named,
-genuinely-deep residual.
+## Current status: `(★)` holds
 
-## What is structural (proven here, unconditionally)
+Canonical ArkLib (`Sumcheck/Spec/SingleRound.lean`) defines both round verifiers to read the prover
+message: `Simple.oracleVerifier` queries the message oracle at every point of `D` and at the
+challenge, and `Simple.verifier` guards the message's `D`-sum and takes the new target from the
+message. Canonical ArkLib proves the simple bridge `Simple.oracleReduction_eq_reduction` and the
+lifted verifier bridge `oracleVerifier_eq_verifier i`; the lifted `SingleRound.oracleReduction i`
+is built with the executable lens `oCtxExecutableLens i`. So `(★)` holds for every round:
+`SingleRound.oracleReduction_toReduction_eq_reduction`
+(`Logup/Security/BridgeAndAppendResiduals.lean`).
 
-Each side of `(★)` is a *lifted* object built by `OracleReduction.liftContextLegacy`:
+The theorems `singleRound_toReduction_eq_reduction_of` and `perRound_of` keep their historical
+signatures with two hypotheses, `coh` (routing coherence for the downstream lens
+`sumcheckOracleLens i`) and `hSimpleBridge` (`(Simple.oracleReduction).toReduction =
+Simple.reduction`). Both hypotheses are now unused by the proofs: the conclusion comes directly
+from `oracleVerifier_eq_verifier`. `hSimpleBridge` is canonical ArkLib's
+`Simple.oracleReduction_eq_reduction`, and `coh` is `SingleRoundCohWired.coh_proven_inst`.
 
-* `SingleRound.oracleReduction i =
-    (Simple.oracleReduction).liftContext (oCtxLens i) (sumcheckOracleLens i)`;
-* `SingleRound.reduction i = (Simple.reduction).liftContext (oCtxLens i).toContext`.
+## History
 
-The framework lemma `OracleReduction.liftContextLegacy_toReduction_comm` rewrites the LHS of `(★)` to
-`(Simple.oracleReduction).toReduction.liftContext (oCtxLens i).toContext` **given** two side
-conditions:
+An earlier downstream version lifted the simple reduction through `sumcheckOracleLens` with
+`OracleReduction.liftContextLegacy`, and its `Simple.oracleVerifier` ignored the prover message,
+checking the `D`-sum of the input oracle directly. For that verifier `hSimpleBridge` was false
+whenever `(m : R) ≠ 0`, and so was `(★)`. Canonical ArkLib replaced that verifier with the
+message-reading one above, which retired the counterexample.
 
-1. `hStmt : (sumcheckOracleLens i).toLens = (oCtxLens i).stmt` — discharged here by `rfl`
-   (`sumcheckOracleLens.toLens` and `oCtxLens.stmt` are *both definitionally* `oStmtLens i`); and
-2. `[coh : OracleVerifier.LiftContextCoherent (sumcheckOracleLens i) (Simple.oracleReduction).verifier]`
-   — the per-round oracle-routing coherence (design note #433).
-
-Modulo those, `(★)` becomes the *lifted* image of the **simple-level base bridge**
-`(Simple.oracleReduction).toReduction = Simple.reduction`, i.e.
-`(Simple.oracleVerifier).toVerifier = Simple.verifier`.
-
-## The one genuinely-deep residual (named hypotheses)
-
-The simple-level base bridge is *not* an identity: `Simple.verifier` checks the `D`-sum of the
-**prover-message** round polynomial (`transcript 0`), while `(Simple.oracleVerifier).toVerifier`
-checks the `D`-sum of the **oracle-statement** polynomial (`oStmt ()`); these are different objects
-(this is the "false `oracleReduction_eq_reduction`" repeatedly flagged in `SingleRound.lean`). It —
-together with the per-round routing coherence — is therefore carried as the explicit named
-hypotheses
-
-* `coh i` — `OracleVerifier.LiftContextCoherent (sumcheckOracleLens i) (Simple.oracleVerifier)`;
-* `hSimpleBridge` — `(Simple.oracleReduction).toReduction = Simple.reduction`.
-
-No `sorry`/`admit`. The main theorem `singleRound_toReduction_eq_reduction_of` is the per-round
-bridge **conditional on exactly those two named residuals**, and `perRound_of` packages the
-`∀ i`-form consumed by `oracleReductionToReduction_of_perRound`.
+No `sorry`/`admit`.
 -/
 
 open ProtocolSpec OracleComp OracleSpec
@@ -77,19 +64,18 @@ theorem sumcheckOracleLens_toLens_eq_oCtxLens_stmt (i : Fin n) :
     (sumcheckOracleLens R n deg D oSpec i).toLens = (oCtxLens R n deg D i).stmt :=
   rfl
 
-/-- **The per-round `toReduction = reduction` bridge — modulo its two named residuals.**
+/-- **The per-round `toReduction = reduction` bridge, with two historical hypotheses.**
 
-The structural `liftContext`-commutation is discharged in full (the `hStmt` side condition is `rfl`
-and the framework lemma `OracleReduction.liftContextLegacy_toReduction_comm` does the rest given the
-routing coherence `coh`). What remains is exactly the *lifted image* of the simple-level base bridge
-`(Simple.oracleReduction).toReduction = Simple.reduction` (`hSimpleBridge`), which is genuinely deep
-(the simple oracle verifier reads the oracle statement, the plain verifier reads the prover message).
+The hypotheses are unused: the prover sides agree definitionally and the verifier half is canonical
+ArkLib's `oracleVerifier_eq_verifier`. They are kept so existing callers still elaborate.
 
-* `coh` — the per-round oracle-routing coherence `LiftContextCoherent` for this round's lens applied
-  to the simple oracle verifier;
-* `hSimpleBridge` — the simple-level base bridge.
+* `coh` — the routing coherence for the downstream lens `sumcheckOracleLens i`, proved as
+  `SingleRoundCohWired.coh_proven_inst`;
+* `hSimpleBridge` — the simple-level bridge, proved canonically as
+  `Simple.oracleReduction_eq_reduction`.
 
-Both are carried as explicit named hypotheses (no `sorry`). -/
+The unconditional statement is `SingleRound.oracleReduction_toReduction_eq_reduction`
+(`Logup/Security/BridgeAndAppendResiduals.lean`). -/
 theorem singleRound_toReduction_eq_reduction_of (i : Fin n)
     (coh : OracleVerifier.LiftContextCoherent (sumcheckOracleLens R n deg D oSpec i)
       (Simple.oracleReduction R deg D oSpec).verifier)
@@ -101,12 +87,12 @@ theorem singleRound_toReduction_eq_reduction_of (i : Fin n)
   · exact oracleVerifier_eq_verifier (R := R) (n := n) (deg := deg)
       (D := D) (oSpec := oSpec) i
 
-/-- **The `∀ i`-form `hPerRound`, modulo the two named residuals.**
+/-- **The `∀ i`-form `hPerRound`, with two historical hypotheses.**
 
 This is the shape consumed by `Sumcheck.Spec.oracleReductionToReduction_of_perRound`
-(`OracleCompletenessUncond.lean`). The structural plumbing is fully discharged; the inputs are
-exactly the per-round routing coherence instances `coh` and the simple-level base bridge
-`hSimpleBridge`. -/
+(`OracleCompletenessUncond.lean`). Both hypotheses are unused; the unconditional form is
+`SingleRound.oracleReduction_toReduction_eq_reduction`
+(`Logup/Security/BridgeAndAppendResiduals.lean`). -/
 theorem perRound_of
     (coh : ∀ i, OracleVerifier.LiftContextCoherent (sumcheckOracleLens R n deg D oSpec i)
       (Simple.oracleReduction R deg D oSpec).verifier)

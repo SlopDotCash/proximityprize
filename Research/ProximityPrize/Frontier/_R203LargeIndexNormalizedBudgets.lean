@@ -16,6 +16,13 @@ the relevant branch is the large-index branch only.
 This file exposes that interface without a small-case fallback.  If the
 cardinality/index lower bound is known and the normalized R193 budgets hold in
 that large range, then the quarter-MGF residual follows.
+
+**Scope (audit R-002/R-053 extension, 2026-10-28).**  The cardinality lower
+bound `N ≤ s.card` is carried but **unused** by the proofs: these theorems are
+interface aliases of the existing R193 consumer with specialized constants and
+threshold.  No large-index analytic law is proved here; the large-index
+restriction only records the intended scope of the (open) normalized budget
+hypotheses.  They must not be counted as independent analytic progress.
 -/
 
 set_option linter.unusedDecidableInType false

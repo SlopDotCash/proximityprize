@@ -28,16 +28,30 @@ settles that probe **negatively, by kernel-checked computation on the
 3. **`witness_trivariate_grade`** — the witness even satisfies the *strongest* pointwise
    trivariate grading `deg_X ((R.coeff j).coeff i) ≤ D − j − i` (lift variable `Z` graded with
    full weight), and `R` is `Z`-linear — the exact `u₀ + Z·u₁` shape of a genuine GS line
-   interpolant.  No degree bookkeeping on `R` separates the witness from GS-produced data.
+   interpolant.  So none of the *tested* degree/grading conditions on `R` separates the
+   witness from GS-shaped data.
 4. **`witness_budget_refuted`** — yet the X-degree budget **fails** at `t = 1`: the unique
    integral preimage of `αGenuine 1` is `mk (monomial 1 (−X))` (`alphaOne_preimage_forced`,
    computed through the monic lift identity + `ξ`-inversion), whose `Y¹`-coefficient has
    `X`-degree `1`, so `(D+1−d_H) + 1 = 2 > 1`.
 5. **`graded_rescue_dead`** — the packaged conjunction: ALL graded side conditions hold at the
-   unique admissible `D = 2` AND the budget fails.  Hence the budget is **not** implied by any
-   in-tree (or paper-shaped) grading of `R`; its provenance must be the GS *geometry* (the
-   agreement/vanishing structure tying the `Z`-direction coefficients to codewords), not degree
-   bookkeeping.  The budget stays open as a genuinely geometric named core.
+   unique admissible `D = 2` AND the budget fails.  Hence the budget is **not** implied by the
+   exact grading/degree/monicity conditions tested here (those consumed by
+   `weight_βHensel_le_graded` / `GSGradedBundle.GradedBundle`, plus the pointwise trivariate
+   grade).  This does not rule out stronger or different algebraic restrictions on `R`; it only
+   shows that the tested ones are insufficient.  A sound route to the budget needs additional,
+   justified assumptions on genuine GS data (e.g. the agreement/vanishing structure tying the
+   `Z`-direction coefficients to codewords is one candidate source); the budget stays open as a
+   named core.
+
+**Scope.**  This is a kernel-checked refutation of the *unrestricted* in-tree interface
+`AlphaWeight.AlphaGenuineRegularWeightLe` (and the equivalent X-degree budget) on one explicit
+instance satisfying the displayed hypotheses.  It is **not** a refutation of the published
+BCIKS20 argument, and it is the same witness already tracked by `P1MonicWeightRefutation`
+(#138/P1).  Consumers that take `AlphaGenuineRegularWeightLe` (or the budget) as a hypothesis
+(e.g. the `AlphaWeight*` / `P1Conditional*` / `P1Monic*` modules under
+`ProximityGap/BCIKS20/`) remain conditional: under only the tested hypotheses that premise is
+not satisfiable in general, so they need the extra GS-data guard noted above.
 
 The file also lands the **weight → X-degree extraction** (task (iii)):
 
@@ -259,8 +273,9 @@ theorem witness_hRgrade : ∀ j : ℕ, Bivariate.degreeX (myR.coeff j) ≤ 2 - j
 /-- **The witness even satisfies the STRONGEST pointwise trivariate grading**
 `deg_X ((R.coeff j).coeff i) ≤ D − j − i` at `D = 2` (lift variable `Z` graded at full
 weight).  Together with `Z`-linearity of the witness (`R = u₀ + Z·u₁`, the genuine GS line
-shape), no grading of `(ground-X, Z, Y)`-degrees of `R` separates the witness from GS-produced
-data: the budget's provenance must be the agreement geometry, not degree bookkeeping. -/
+shape), this pointwise grading of `(ground-X, Z, Y)`-degrees of `R` does not separate the
+witness from GS-shaped data.  (Other, stronger restrictions are not ruled out by this one
+witness.) -/
 theorem witness_trivariate_grade : ∀ j i : ℕ, ((myR.coeff j).coeff i).natDegree ≤ 2 - j - i := by
   intro j i
   by_cases h0 : j = 0
@@ -363,8 +378,9 @@ theorem witness_budget_refuted (hH : 0 < myH.natDegree) :
 unique admissible `D = 2` (`witness_D_pinned`): monicity, `totalDegree H ≤ D`,
 `natDegree H ≤ D`, `2 ≤ natDegreeY R`, `totalDegree (evalX (C x₀) R) ≤ D` and the paper grading
 `hRgrade` ALL hold — every graded hypothesis of `weight_βHensel_le_graded` /
-`GSGradedBundle.GradedBundle` — and the X-degree budget still FAILS.  The budget is therefore
-genuinely GS-geometric: it cannot be recovered from any in-tree graded structure on `R`. -/
+`GSGradedBundle.GradedBundle` — and the X-degree budget still FAILS.  So the budget cannot be
+derived from exactly these graded hypotheses; deriving it needs further justified assumptions
+on genuine GS data.  This refutes the unrestricted interface, not published BCIKS20. -/
 theorem graded_rescue_dead (hH : 0 < myH.natDegree) :
     (myH.Monic
       ∧ Bivariate.totalDegree myH ≤ 2

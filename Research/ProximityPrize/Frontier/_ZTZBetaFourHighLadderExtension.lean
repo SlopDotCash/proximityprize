@@ -19,7 +19,7 @@ octaves and, being self-contained over built substrate, wires each new rung stra
 > **`tzPrimeSupply_{2048,4096}_four`** — `TZPrimeSupply n (4 : ℝ) 12`: the window `[n⁴, 2·n⁴]`
 > (`[2⁴⁴, 2⁴⁵]` and `[2⁴⁸, 2⁴⁹]`) contains twelve explicit Lucas-certified primes `≡ 1 (mod n)`.
 >
-> **`kkh26_mcaDeltaStar_le_concrete_n{2048,4096}_beta4`** — **unconditional** δ* ceilings: a
+> **`kkh26_mcaDeltaStar_le_concrete_n{2048,4096}_beta4`** — **unconditional degree-0** δ* ceilings: a
 > prime `p ≡ 1 (mod n)` with `n⁴ ≤ p ≤ 2·n⁴` and a smooth order-`n` domain `⟨g⟩ ⊆ F_p^×` pin
 > `mcaDeltaStar(evalCode g n 0, ε*) ≤ 1/2` for every `ε* < 4/p`.
 
@@ -36,6 +36,14 @@ from `Frontier/_ZTZBetaFourLadderExtension.lean`.  The ceiling wiring (parameter
 **Honest scope.**  Concrete discharges of the raw window-cardinality Prop and its ceiling
 consumer at β = 4; the asymptotic [TZ24] form remains the named open analytic input.  No
 axioms; no contact with the BGK/Paley prize wall.
+
+**Degree-0 caveat.**  These ceilings are for the degree-0 (constant, `k = 1`) evaluation
+code `evalCode g n 0` (`μ = 2`, `r = 2`), not a prize-rate code.  The ceiling itself does not need
+the Thorner–Zaman window: `KKH26WitnessSpread.kkh26_mcaDeltaStar_le` gives the same bound for any
+prime `p > (2^2)^(2^1) = 16` with an element of order `n` (packaged as
+`KKH26.kkh26_mcaDeltaStar_le_degreeZero` in `_ZTZBetaFourPrizeScaleLadder.lean`).  The window
+supply adds only the placement `n^β ≤ p ≤ 2·n^β`.  The per-instance proofs here are near-copies of
+one another and of the siblings; they are kept as concrete instances.
 
 ## References
 * [KKH26] ePrint 2026/782, Lemma 2 / Theorem 1.  Issues #334 / #466.
@@ -413,7 +421,7 @@ namespace ArkLib.ProximityGap.KKH26
 
 /-! ## The δ* ceilings (mirrors `Frontier/_ZTZBetaFourCeilingWiring.lean`) -/
 
-/-- **Unconditional [KKH26] δ* ceiling at order 2048, β = 4.**  End-to-end via
+/-- **Unconditional degree-0 [KKH26] δ* ceiling at order 2048, β = 4** (constant code, `μ = r = 2`).  End-to-end via
 `tzPrimeSupply_2048_four` + `kkh26_mcaDeltaStar_le_of_TZ`. -/
 theorem kkh26_mcaDeltaStar_le_concrete_n2048_beta4 :
     ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD 2048] ∧
@@ -445,7 +453,7 @@ theorem kkh26_mcaDeltaStar_le_concrete_n2048_beta4 :
   rw [hc, h16, hden, mul_div_mul_right _ _ hlog2]
   norm_num
 
-/-- **Unconditional [KKH26] δ* ceiling at order 4096, β = 4.**  End-to-end via
+/-- **Unconditional degree-0 [KKH26] δ* ceiling at order 4096, β = 4** (constant code, `μ = r = 2`).  End-to-end via
 `tzPrimeSupply_4096_four` + `kkh26_mcaDeltaStar_le_of_TZ`. -/
 theorem kkh26_mcaDeltaStar_le_concrete_n4096_beta4 :
     ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD 4096] ∧

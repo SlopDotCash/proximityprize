@@ -1,5 +1,19 @@
 # Derive δ*'s value, propose a brand-new theorem, shoot it down until defensible (#444)
 
+> **Correction (2026-10-28 audit, T48; see also `deltastar-444-residual-audit-2026-06-17.md`).** The
+> single-depth consumer `moment_saddle_value` is a useful sufficient implication, but the following
+> need repair.
+> - **The raw input is impossible at production depth.** The raw-energy input
+>   `E_r ≤ (2r−1)‼·n^r` at `r = ⌈log p⌉` fails at production parameters by the DC pigeonhole floor
+>   `E_r ≥ n^(2r)/p`. For `n = 2^30`, `p ≈ 2^158`, `r = 110`, the floor is `≥ 2^6442`, while the Wick
+>   value is `≤ 2^4156`. A usable single-depth input must be DC-subtracted
+>   (`p·E_r − n^(2r) ≤ …`), so the raw input is not an open residual.
+> - **Keep the integer ceiling.** With `r = ⌈log p⌉` the bound is `M ≤ √(2e·n·⌈log p⌉)`, not the
+>   same expression with `log p` in place of `⌈log p⌉`.
+> - **An envelope is not a value.** A conditional upper envelope is not an equality value. "The
+>   derived value of the floor" and "δ* leading-order `= 1−ρ−Θ(1/log n)`" are not established, and no
+>   exact `δ*` asymptotic follows.
+
 The exercise: from the campaign's laws/facts, DERIVE the value, propose a never-tried ANT theorem to pin
 it, then adversarially shoot down candidates until one survives (is TRUE and axiom-clean defensible).
 

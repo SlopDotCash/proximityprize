@@ -28,7 +28,9 @@ antipodal pairings (the only vanishing sums of `2^a`-th roots are `{x, −x}` pa
 counts, and `≤ (2r−1)‼·n^r` (Wick) is proven for them in char 0.
 
 `W_r` is the count of the **EXTRA** relations that appear only mod `p`:
-multisets whose integer value `V = Σ_i x̂_i − Σ_j ŷ_j` (a specific algebraic integer / its norm)
+multisets whose integer **relation value** `V` (schematically, the norm of the cyclotomic integer
+`Σ_i ζ^{x_i} − Σ_j ζ^{y_j}`; NOT the naive signed sum `Σ_i x̂_i − Σ_j ŷ_j` of representatives, which
+vanishes off the diagonal, e.g. `x = (0,3)`, `y = (1,2)` for `n ≥ 4`)
 is `≢ 0` over `ℤ` but `≡ 0 (mod p)` — a short `±1` relation of `≤ 2r` terms that *wraps*.
 `W_r = 0` iff no such non-diagonal `≤2r`-term relation is killed by `p`. THIS is the whole open
 gap (memory `issue444-Wr-excess-onset-threshold-not-birthday`: `W_r=0` for generic non-Fermat
@@ -38,8 +40,10 @@ push `r_0(n) > r* = ln p` at `n = 2^30`).
 ## 1. The novel invariant (genuinely new — a RANK, not a moment/energy/cumulant)
 
 Let `R_r ⊆ (ℤ/n)^{2r}` be the set of depth-`r` carrier tuples, and to each tuple `t` attach its
-**integer carrier value** `V(t) ∈ ℤ` (the signed sum of carrier representatives; `= 0` exactly on
-the diagonal/antipodal locus). Consider the two `ℤ`-modules of relations:
+**integer relation value** `V(t) ∈ ℤ`, *assumed* to vanish exactly on the diagonal/antipodal locus
+(e.g. a cyclotomic norm as in §0). This is a modeling hypothesis on the caller-supplied `V`, not a
+property proved here: in Lean `V : ι → ℤ` is an arbitrary function, and the naive signed sum of
+carrier representatives does NOT have this property. Consider the two `ℤ`-modules of relations:
 
   * `L_ℤ := ⟨ t ∈ R_r : V(t) = 0 ⟩`        — the **char-0 (antipodal) relation lattice**,
   * `L_p := ⟨ t ∈ R_r : p ∣ V(t) ⟩`        — the **mod-`p` relation lattice** (`L_ℤ ⊆ L_p`).
@@ -49,16 +53,17 @@ the diagonal/antipodal locus). Consider the two `ℤ`-modules of relations:
 > `           := Σ_{t : p ∣ V(t), V(t) ≠ 0}  2^{- v_2(V(t))}`              (a rational ≥ 0),
 
 i.e. each *non-diagonal* wrapping relation contributes `2^{-v_2(V(t))}` — its weight in the
-`2`-adic odometer that the doubling tower acts on. `S_r = 0` ⟺ `L_p = L_ℤ` ⟺ no non-diagonal
-`≤2r`-term relation wraps ⟺ `W_r = 0`. The weighting by `2^{-v_2}` is the *new* ingredient: it
+`2`-adic odometer that the doubling tower acts on. `S_r = 0` ⟺ no tuple with `p ∣ V(t)`,
+`V(t) ≠ 0` (proved: `shaw_eq_zero_iff_no_nondiagonal_wrap`); identifying this with `L_p = L_ℤ` and
+with `W_r = 0` requires the modeling hypothesis on `V` above and is not proved here. The weighting by `2^{-v_2}` is the *new* ingredient: it
 makes `S_r` a function on the **`2`-adic boundary** of the relation module, on which the
 Galois group `(ℤ/n)^× ≅ ℤ/2 × ℤ/2^{a-2}` and the doubling endomorphism act, so `S_r` carries a
 group action that a plain count does not.
 
 (In Lean below `S_r` is `shawInvariant`, defined `computably` as a `Finset.sum` of `2^{-v_2}`
-weights over the wrapping-but-nondiagonal tuples; `W_r ≤ (count of such tuples) ≤ 2 · S_r`
-because each weight is in `(0, 1]` and `≥ 2^{-(2r)·a}`... see `W_le_shaw` for the exact
-inequality we actually prove.)
+weights over the wrapping-but-nondiagonal tuples. The only quantitative comparison proved is
+`card_wrapLocus_le_shaw_of_floor`: given a caller-supplied weight floor `w₀ > 0`,
+`card(wrapLocus) · w₀ ≤ S_r`. No explicit floor such as `2^{-2ra}` is proved.)
 
 ### Why it is genuinely NEW (not energy / Λ(q) / cumulant in disguise)
 
@@ -75,7 +80,7 @@ inequality we actually prove.)
 * It is **computable** (a `Finset.sum` of dyadic weights over an explicit predicate) and
   **falsifiable** (one can exhibit a wrapping non-diagonal tuple to make `S_r > 0`).
 
-## 2. HOW it escapes the MOMENT-METHOD NECESSITY OBSTRUCTION (mandatory)
+## 2. HOW it escapes the MOMENT-METHOD NECESSITY OBSTRUCTION (heuristic motivation, not proved)
 
 `MomentLadderExceedsPrize.moment_ladder_exceeds_prize`: for ANY depth-`r` additive-moment count
 `c` of total mass `n^r`, `(q·Σc²)^{1/2r} ≥ n > target`. That floor is a property of **counts with
@@ -116,21 +121,24 @@ cannot detect — so `S_r` is strictly finer / different, not a repackaging.
 
 ## 4. What is PROVEN here (axiom-clean) vs. the ONE named open claim
 
-PROVEN (no `sorry`/`native_decide`/`[CharZero]`/vacuous hyp):
-* `shawInvariant` — the computable definition (dyadic-weighted sum over wrapping non-diagonal
-  tuples), with each weight in `(0,1]`.
-* `shaw_nonneg`, `shaw_weight_pos`, `shaw_weight_le_one` — basic positivity/normalization.
-* `shaw_eq_zero_iff_no_nondiagonal_wrap` — `S_r = 0` ⟺ the wrapping locus is purely diagonal
-  (`L_p = L_ℤ`): the structural meaning.
-* `wrap_locus_eq_diagonal_of_shaw_zero` — extracts `L_p = L_ℤ` from `S_r = 0`.
-* `W_le_shaw_count` — the **transfer**: `W_r ≤ (number of wrapping non-diagonal tuples) ≤ 2^{2ra}·S_r`
-  (each weight `≥ 2^{-2ra}`), so `S_r = 0 ⟹ W_r = 0`; bounding `S_r` bounds `W_r`.
-* `prize_of_shaw_zero` — **the conditional closure shape**: `S_r* = 0 ⟹ W_r* = 0 ⟹` the char-`p`
-  energy equals the char-0 energy `⟹` the proven char-0 Wick bound transfers — `M ≤ √(2 n log m)`.
-* `galois_orbit_partitions_wrap_locus` — the wrapping locus is a union of `G`-orbits (the
-  equivariance that drives the norm cancellation), stated as a closure property under the orbit map.
-* `shaw_galois_invariant_under_orbit` — `S_r` is `G`-invariant (the weight `2^{-v_2(V)}` is
-  preserved under the orbit action when `V`'s `2`-valuation is), the property a moment lacks.
+PROVEN, for an arbitrary abstract `V : ι → ℤ` (no `sorry`/`native_decide`/`[CharZero]`):
+* `shawInvariant` — the definition (dyadic-weighted sum over the wrapping non-diagonal tuples).
+* `dyadicWeight_pos`, `dyadicWeight_le_one`, `shaw_nonneg` — each weight lies in `(0,1]`, `S_r ≥ 0`.
+* `shaw_eq_zero_iff_no_nondiagonal_wrap` — `S_r = 0` ⟺ `wrapLocus V p = ∅`.
+* `no_nondiagonal_wrap_of_shaw_zero`, `wrap_implies_diagonal_of_shaw_zero` — from `S_r = 0`,
+  every `t` with `p ∣ V t` has `V t = 0`.
+* `card_wrapLocus_le_shaw_of_floor` — given a caller-supplied weight floor `w₀ > 0`,
+  `card(wrapLocus) · w₀ ≤ S_r`; `wrapCount_eq_zero_of_shaw_zero` — `S_r = 0 ⟹ card(wrapLocus) = 0`.
+* `nonDiagWrap_stable`, `wrapLocus_map_eq` — under a `GaloisSymmetry`, the wrapping locus is mapped
+  onto itself; `dyadicWeight_galois_invariant`, `shaw_galois_invariant` — the weights and `S_r` are
+  invariant.
+* `prize_energy_transfer_of_shaw_zero`, `prize_of_shawVanishing` — **conditional** transfers: they
+  ASSUME the decomposition `hdecomp : rEnergyFp = charZeroEnergy + card(wrapLocus)` and the char-0
+  bound `hchar0`, and conclude `rEnergyFp ≤ wickBound`. The decomposition `hdecomp` is a modeling
+  hypothesis, not proved here, and no sup-norm bound such as `M ≤ √(2 n log m)` is derived.
+
+Not proved here: any explicit weight floor (e.g. `2^{-2ra}`), any bound `W_r ≤ 2^{2ra}·S_r`, the
+identification of `wrapLocus` with the char-`p` excess `W_r`, and the Stickelberger heuristics of §2.
 
 OPEN (named, NOT discharged — SKELETON, refutable, no smuggling):
 * `ShawVanishingAtPrizeScale` — the genuinely-open ANT input: at prize scale (`n=2^a`,
@@ -140,7 +148,8 @@ OPEN (named, NOT discharged — SKELETON, refutable, no smuggling):
   is a real condition on the prize prime.
 
 **Honest label: SKELETON.** The rank/descent/Galois scaffolding and the `S_r=0 ⟹ prize`
-transfer are axiom-clean; the one Stickelberger-norm vanishing is named and left open.
+transfer (conditional on `hdecomp`) are axiom-clean; the one Stickelberger-norm vanishing is named
+and left open.
 
 ## References
 Conway–Jones (vanishing sums of roots of unity); Mann's theorem (relations among roots of unity);
@@ -160,8 +169,9 @@ open Finset
 /-! ## 1. Carrier tuples, their integer value `V`, and the wrapping/diagonal predicates
 
 We model a depth-`r` carrier tuple abstractly as an index `t : ι` (ranging over a finite set of
-tuples) equipped with its **integer carrier value** `V t : ℤ` — the signed sum of carrier
-representatives. Two predicates carve out the relation modules:
+tuples) equipped with an abstract **integer relation value** `V t : ℤ`. Nothing below assumes any
+property of `V`; the intended reading (`V t = 0` exactly on the diagonal) is a modeling hypothesis on
+the caller's choice of `V`. Two predicates carve out the relation modules:
 
   * **diagonal** : `V t = 0`           (the char-0 / antipodal locus, the `n^r` Wick mass),
   * **wrapping** : `p ∣ V t`           (the mod-`p` relation locus; contains the diagonal).
@@ -171,8 +181,8 @@ weight `2^{-v_2(V t)}` over exactly these. -/
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
--- The integer **carrier value** `V` of a tuple: the signed sum of carrier representatives.
--- `V t = 0` ⟺ the tuple is diagonal (antipodal, char-0). `p` is the prize prime.
+-- The abstract integer **relation value** `V` of a tuple. Intended reading (a modeling hypothesis,
+-- not used by any proof): `V t = 0` ⟺ the tuple is diagonal (antipodal, char-0). `p` is the prime.
 variable (V : ι → ℤ) (p : ℕ)
 
 /-- **Non-diagonal wrap predicate.** `t` is a relation that vanishes mod `p` but not over `ℤ`. -/
@@ -337,10 +347,20 @@ theorem dyadicWeight_galois_invariant (G : GaloisSymmetry V p) (t : ι) :
   unfold dyadicWeight
   rw [G.valuation_preserved t]
 
-/-- **`S_r` is `G`-invariant.** The Shaw invariant is unchanged under the Galois action: the
-permutation `σ` maps the wrapping locus bijectively to itself (it is `G`-stable both ways) and
-preserves each dyadic weight. Hence `S_r` is a genuine invariant of the `G`-orbit data — the
-input to the Stickelberger norm-orbit cancellation. -/
+/-- **`σ` maps the wrapping locus onto itself.** By `nonDiagWrap_stable` the image of the wrapping
+locus under the injective map `σ` lies in the wrapping locus; equal cardinalities make it equal. -/
+theorem wrapLocus_map_eq (G : GaloisSymmetry V p) :
+    (wrapLocus V p).map G.σ.toEmbedding = wrapLocus V p := by
+  apply Finset.eq_of_subset_of_card_le
+  · intro s hs
+    obtain ⟨t, ht, rfl⟩ := Finset.mem_map.mp hs
+    have htw : NonDiagWrap V p t := (Finset.mem_filter.mp ht).2
+    exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, nonDiagWrap_stable V p G t htw⟩
+  · rw [Finset.card_map]
+
+/-- **`S_r` is `G`-invariant.** Summing the weights of `σ t` over the wrapping locus gives `S_r`.
+The proof is pointwise (`dyadicWeight_galois_invariant`); that `σ` also maps the wrapping locus onto
+itself is the separate statement `wrapLocus_map_eq`. -/
 theorem shaw_galois_invariant (G : GaloisSymmetry V p) :
     ∑ t ∈ wrapLocus V p, dyadicWeight V (G.σ t) = shawInvariant V p := by
   unfold shawInvariant
@@ -354,12 +374,12 @@ Modeling `rEnergy(F_p)` as `charZeroEnergy + W_r` with `W_r := (wrapLocus).card`
 defect count), the proven char-0 Wick bound `charZeroEnergy ≤ wickBound` transfers verbatim once
 `W_r = 0`. We state the clean implication chain. -/
 
-/-- **THE PRIZE TRANSFER (skeleton consumer).** GIVEN `S_r = 0` and the proven char-0 Wick bound
+/-- **THE PRIZE TRANSFER (skeleton consumer, conditional on `hdecomp`).** GIVEN `S_r = 0` and the char-0 Wick bound
 `charZeroEnergy ≤ wickBound`, with the char-`p` energy decomposed as
 `rEnergyFp = charZeroEnergy + (wrapLocus).card`, the char-`p` energy obeys the Wick bound:
-`rEnergyFp ≤ wickBound`. The whole prize is `S_r* = 0` at depth `r* = ln p`. PROVEN here
-(the transfer is a clean algebraic consequence of `S_r = 0`); the open content is `S_r* = 0`
-itself (`ShawVanishingAtPrizeScale`, §8). -/
+`rEnergyFp ≤ wickBound`. The decomposition `hdecomp` is an assumed modeling hypothesis (it is not
+derived from any energy definition here), so this is a conditional algebraic step; besides
+`hdecomp`, the open content is `S_r* = 0` itself (`ShawVanishingAtPrizeScale`, §8). -/
 theorem prize_energy_transfer_of_shaw_zero
     (charZeroEnergy wickBound rEnergyFp : ℤ)
     (hdecomp : rEnergyFp = charZeroEnergy + ((wrapLocus V p).card : ℤ))
@@ -430,6 +450,7 @@ end ArkLib.ProximityGap.NovelShawInvariant
 #print axioms ArkLib.ProximityGap.NovelShawInvariant.wrapCount_eq_zero_of_shaw_zero
 #print axioms ArkLib.ProximityGap.NovelShawInvariant.nonDiagWrap_stable
 #print axioms ArkLib.ProximityGap.NovelShawInvariant.dyadicWeight_galois_invariant
+#print axioms ArkLib.ProximityGap.NovelShawInvariant.wrapLocus_map_eq
 #print axioms ArkLib.ProximityGap.NovelShawInvariant.shaw_galois_invariant
 #print axioms ArkLib.ProximityGap.NovelShawInvariant.prize_energy_transfer_of_shaw_zero
 #print axioms ArkLib.ProximityGap.NovelShawInvariant.shaw_ne_zero_of_witness

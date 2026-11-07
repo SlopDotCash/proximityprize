@@ -2166,7 +2166,15 @@ variable {F : Type} [Field F]
          [H_natDegree_pos : Fact (0 < H.natDegree)]
 
 /-- The algebraic hypotheses for Claim A.2 from Appendix A.4 of [BCIKS20], after specializing
-`R` at `X = x₀`. -/
+`R` at `X = x₀`.
+
+`separable_evalX` is **ring-level** separability over `F[Z]` (Mathlib's `Separable`, a Bézout
+identity `a·P + b·P′ = 1` in `F[Z][T]`).  This is strictly stronger than separability over
+`F(Z)` or a nonzero discriminant: along any section root `s` of `P` it forces `P′(s)` to be a
+unit of `F[Z]` (`SectionXiUnit.derivative_isUnit_at_section`), so e.g. `P = T·(T − Z)` (nonzero
+discriminant `Z²`, but `P′(0) = −Z`) does not satisfy it, and in general it forces any two
+sections to have unit difference (`SliceSeparabilityBoundary`).  Results conditional on this
+structure inherit that strong regime. -/
 structure Hypotheses (x₀ : F) (R : F[X][X][Y]) (H : F[X][Y]) : Prop where
   dvd_evalX : H ∣ Bivariate.evalX (Polynomial.C x₀) R
   separable_evalX : (Bivariate.evalX (Polynomial.C x₀) R).Separable

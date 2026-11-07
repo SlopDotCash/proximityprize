@@ -21,9 +21,18 @@ D >= second-smallest of {a,b,c}? No... The rigorous lower bound: a nonzero syzyg
 degree D has >=2 nonzero terms at degree D, so D >= (a + b + c) - max - ...
 
 We measure the EXTREME: over structured/adversarial roots (subfield-confined, geometric,
-resultant-tuned), the MINIMUM d1 observed, and the MINIMUM margin. If min margin >= 1 across a
-large adversarial sweep, SylvesterInjective at rate 1/2 is robustly TRUE with a provable slack;
-report the exact worst-case imbalance.
+resultant-tuned), the MINIMUM d1 observed, and the MINIMUM margin, over a finite seeded sample
+of ambient covers (union = [n]) and four primes. A positive minimum margin on this sample is a
+finite witness / candidate only: it does NOT prove universal (all-roots, all-fields)
+SylvesterInjective or a provable slack, which requires a symbolic argument.
+
+NOTE (audit 2026-10): ``d1 <= budget`` is a PROXY (minimal unconstrained syzygy degree vs the
+single budget k-1-t); it is not the per-pair cofactor window tested directly by
+probe_466_g172_sylvester_ratehalf_rank.py, so a margin-0 triple is NOT by itself a
+SylvesterInjective failure. With the corrected ambient-cover builder this sweep DOES find
+margin-0 triples (e.g. n=28,s=19,t=4,(a,b,c)=(6,6,9), odd a+b+c, imbalance 1), so the earlier
+recorded "min margin 1 / imbalance 1 only at even a+b+c" (5542 triples) was an artifact of
+non-cover samples.
 """
 import random
 def poly_mul(a,b,p):
@@ -70,20 +79,26 @@ def d1_of(WAB,WAC,WBC,p,dmax):
         if kdim(WAB,WAC,WBC,p,D)>=1: return D
     return -1
 def construct_cover(n,s,seed):
+    """Three s-subsets of [n] with genuine private pairwise overlaps whose union is EXACTLY
+    [n] (an ambient cover). Union size is 3s-2t-abp-acp-bcp, so bcp is solved for; an earlier
+    version only required union <= n and could return non-covers."""
     rng=random.Random(seed); pts=list(range(n))
     for _ in range(40):
         t=rng.randint(1,max(1,s//3)); abp=rng.randint(1,max(1,s//3))
-        acp=rng.randint(1,max(1,s//3)); bcp=rng.randint(1,max(1,s//3))
+        acp=rng.randint(1,max(1,s//3)); bcp=3*s-n-2*t-abp-acp
+        if bcp<1: continue
         pa=s-t-abp-acp; pb=s-t-abp-bcp; pc=s-t-acp-bcp
         if pa<0 or pb<0 or pc<0: continue
         need=t+abp+acp+bcp+pa+pb+pc
-        if need>n: continue
+        if need!=n: continue
         pool=rng.sample(pts,need); it=iter(pool)
         T=[next(it) for _ in range(t)];AB=[next(it) for _ in range(abp)]
         AC=[next(it) for _ in range(acp)];BC=[next(it) for _ in range(bcp)]
         PA=[next(it) for _ in range(pa)];PB=[next(it) for _ in range(pb)];PC=[next(it) for _ in range(pc)]
         A=set(T+AB+AC+PA);B=set(T+AB+BC+PB);C=set(T+AC+BC+PC)
-        if len(A)==s and len(B)==s and len(C)==s: return A,B,C
+        if len(A)==s and len(B)==s and len(C)==s:
+            assert A|B|C==set(pts)
+            return A,B,C
     return None
 def adversarial_labels(n,p,seed,mode):
     rng=random.Random(seed)
@@ -139,8 +154,8 @@ def main():
                         elif margin==1 and imb>=1:
                             if len(worst)<10: worst.append(('tight',n,k,s,t,a,b,c,d1,budget,bal,p,mode))
     print(f"triples evaluated: {tot}")
-    print(f"  MIN margin (d1-budget): {min_margin}   (>=1 => SylvesterInjective robustly true)")
+    print(f"  MIN margin (d1-budget): {min_margin}   (>=1 => SylvesterInjective holds on every SAMPLED triple; not a universal proof)")
     print(f"  MAX imbalance (floor((a+b+c)/2)-d1): {max_imb}")
-    print(f"  in-budget (SylvesterInjective FALSE) count: {inbud}")
+    print(f"  d1 <= budget (margin proxy <= 0; not a direct SylvesterInjective test) count: {inbud}")
     for w in worst[:20]: print("   ",w)
 if __name__=="__main__": main()

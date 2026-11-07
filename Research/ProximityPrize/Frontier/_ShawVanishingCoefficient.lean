@@ -15,16 +15,18 @@ import Mathlib.Data.Nat.Choose.Basic
 Write the char-`0` additive energy of the `2`-power subgroup `μ_n` (`n = 2^μ`) in the
 **falling-factorial basis** `(n)_j = n(n-1)⋯(n-j+1)`:
 
-> `E_r(ℂ) = Σ_{j} c_{r,j} · (n)_j`,   `c_{r,r} = (2r-1)‼` (leading), `c_{r,r-1} = 0` (machine-verified
-> all `r`).
+> `E_r(ℂ) = Σ_{j} c_{r,j} · (n)_j`,   `c_{r,r} = (2r-1)‼` (leading), `c_{r,r-1} = 0` (checked numerically
+> offline for further `r`; formalized here only for `r ≤ 6`).
 
 The leading coefficient `c_{r,r} = (2r-1)‼` is the classical Wick / Lam–Leung matching count
 (`_D3FiniteFreeFallingFactorial.leadingCoeff_eq_doubleFactorial`). The **second-leading coefficient
-`c_{r,r-1}` vanishes EXACTLY at every order** — this is the new exact structural identity. In tree it
-appears only as the per-`r` instances `E3_ffBasis`/`E4_ffBasis`/`E5_ffBasis` (no `(n)_{r-1}` summand);
-this file PROVES it from the underlying matching/partition structure and extracts the consequence.
+`c_{r,r-1}` is conjectured (and numerically observed) to vanish at every order**. In tree it appears
+only as the per-`r` instances `E3_ffBasis`/`E4_ffBasis`/`E5_ffBasis` (no `(n)_{r-1}` summand). This
+file does NOT formalize the matching/partition expansion of `E_r`: it proves the vanishing on the
+in-tree closed forms for `r = 2,…,6`, and proves for all `r` the scalar double-factorial identity that
+the (informal, unformalized) two-stratum argument below reduces the vanishing to.
 
-## Why it vanishes (the two-stratum cancellation, derived and proved)
+## Why it vanishes (the two-stratum cancellation; informal derivation, scalar identity proved)
 
 The classical moment formula for a sum of `m = n/2` i.i.d. waves `Y_k = 2cos(U_k)` (the antipodal
 arcsine model of `_D3FiniteFreeFallingFactorial`, with `E[Y^{2b}] = C(2b,b)`, `E[Y^{odd}] = 0`) is the
@@ -65,22 +67,25 @@ by the Mathlib double-factorial recursion — axiom-clean, no per-`r` enumeratio
 * `c_{r,r-1} = 0` as the concrete falling-factorial decompositions for `r = 2,3,4,5,6` (the energy has
   no `(n)_{r-1}` term), on the in-tree closed forms (`vanishCoeff_two`..`vanishCoeff_six`).
 * `dbl_fact_peel_two` — the general peeling `(2r-1)‼ = (2r-1)(2r-3)(2r-5)‼` for `r ≥ 2`, ALL `r`.
-* `cancellation_identity` — the general two-stratum cancellation `C(2r,4)·6·(2r-5)‼ = r(r-1)(2r-1)‼`
-  for ALL `r ≥ 2` (this IS the structural reason `c_{r,r-1} = 0`; proven, not enumerated).
-* `stratumTop_eq` / `stratumDouble_eq` + `strata_cancel` — the closed forms of the two feeding strata
-  `D_{r,r} = (2r-1)‼·2^r` and `D_{r,r-1} = C(2r,4)·6·(2r-5)‼·2^{r-2}`, and the cancellation
-  `2·D_{r,r-1} = r(r-1)·2^{r-1}·(2r-1)‼` (all `r ≥ 2`).
+* `cancellation_identity` — the general scalar identity `C(2r,4)·6·(2r-5)‼ = r(r-1)(2r-1)‼`
+  for ALL `r ≥ 2`. It is the identity the informal two-stratum argument reduces `c_{r,r-1} = 0` to;
+  the reduction itself (the partition expansion of `E_r`) is NOT formalized.
+* `stratumTop` / `stratumDouble` are DEFINED as the claimed closed forms of the two feeding strata
+  (`stratumTop_eq` / `stratumDouble_eq` are `rfl`), with no formal link to `E_r` or to a partition
+  count; `strata_cancel` is the scalar cancellation `2·stratumDouble r = r(r-1)·2^{r-1}·(2r-1)‼`.
 * `deficit_leading_two/three/four` — the **tightening** the vanishing buys: with `c_{r,r-1} = 0`, the
   leading coefficient of the char-`0` deficit `Wick − E_r` is EXACTLY `C(r,2)·(2r-1)‼` with no
   `(n)_{r-1}` contamination (reproducing `_CharZeroEnergyClosedForm.deficit_*` leading terms
   structurally), with `pow_sub_ff_leading_*` exhibiting the `C(r,2)` source.
-* `c_below_three/four/five` — the next coefficient `c_{r,r-2} = (2/3)·C(r,3)·(2r-1)‼` (the bonus
-  closed form; `3·c_{r,r-2} = 2·C(r,3)·(2r-1)‼`), verified on the closed forms `r = 3,4,5`.
+* `c_below_three/four/five` — numeral checks `3·c = 2·C(r,3)·(2r-1)‼` for the values
+  `c = 10, 280, 6300` read off `vanishCoeff_*` by hand (the numerals are not formally tied to `E_r`),
+  consistent with the conjectured closed form `c_{r,r-2} = (2/3)·C(r,3)·(2r-1)‼` for `r = 3,4,5`.
 
 ## Honest scope
 
-This is a NEW exact char-`0` structural identity (the second-leading falling-factorial coefficient of
-the energy vanishes) with its combinatorial reason proven for all `r`. It SHARPENS the char-`0` deficit
+This formalizes the vanishing of the second-leading falling-factorial coefficient for `r ≤ 6` on the
+closed forms, plus the all-`r` scalar identity behind the informal combinatorial reason; the
+general-`r` vanishing for the energy itself remains unformalized. It SHARPENS the char-`0` deficit
 (pins its leading term with no contamination) but does NOT move the open char-`p` transfer at depth
 `r ≈ ln p`: the vanishing is a char-`0` (cyclotomic) fact, and the deficit it sharpens is exactly the
 slack the spurious char-`p` term must fit inside (`_CharZeroLamLeungSlackLower`). It gives a structural
@@ -249,7 +254,9 @@ theorem cancellation_identity (r : ℕ) (hr : 2 ≤ r) :
 
 `D_{r,t} = Σ_{even partitions of [2r] into t blocks} ∏_B C(|B|, |B|/2)` is the coefficient of the
 falling factorial `(m)_t` (`m = n/2`) in the moment expansion of the energy. The two strata that feed
-the `n^{r-1}` coefficient have the explicit closed forms below; they are pure block-counting facts. -/
+the `n^{r-1}` coefficient have the closed forms below by an informal block-counting argument. In Lean
+they are simply DEFINED as those closed forms; neither the partition count nor the link to `E_r` is
+formalized. -/
 
 /-- **The all-pairs stratum `D_{r,r} = (2r-1)‼ · 2^r`.** A partition of `[2r]` into `r` even blocks
 forces every block to have size `2` (a perfect matching: `(2r-1)‼` of them), and each size-`2` block

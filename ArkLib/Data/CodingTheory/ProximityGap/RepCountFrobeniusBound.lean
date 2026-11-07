@@ -24,9 +24,12 @@ fixed degree-2 polynomial `X² − cX + 1`.  At most two such `y`.
 
 This is an **unconditional char-`p` Garcia–Voloch bound** — no Stepanov needed — for the
 entire `n ∣ p+1` family, pinning the GV object (and hence the additive energy `≤ 3n²` and the
-MCA supply) on those finite fields.  It is the complement of the deployed NTT prize regime
+MCA supply) on those finite fields.  It is disjoint from the deployed NTT prize regime
 `n ∣ p−1` (Frobenius trivial on `μ_n ⊂ F_p`), where the surplus is the genuine Stepanov wall.
-So the GV difficulty is now pinned to *exactly* the `n ∣ p−1` (split) case.  Issue #389.
+It is **not** the full complement of that regime: `RepCountFrobeniusGeneral` extends the bound to
+every `n ∣ p^k+1`, and even together these two branches do not exhaust all `(n, p)` — for
+`n = 8`, `p = 3`, `μ_8 ⊂ F_9` satisfies neither `8 ∣ 3^k+1` nor `8 ∣ 3−1`
+(`eight_not_dvd_three_pow_add_one`, audit PG-074).  Issue #389.
 -/
 
 open Finset Polynomial

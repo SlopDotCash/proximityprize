@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-G298 exact probe: the depth-1 CORE covariance is a subgroup additive-energy threshold, and its
-sign is NOT fixed by thinness.
+G298 exact probe: the depth-1 CORE covariance is a subgroup additive-energy threshold; its sign
+takes both values over the THICK range p < n^2, and is POSITIVE under the thin guard p > n^2.
 
 Reproduces, with pure integer arithmetic (no floats in the load-bearing checks):
 
@@ -16,6 +16,13 @@ Reproduces, with pure integer arithmetic (no floats in the load-bearing checks):
      witnesses are the identical-T3 pair:
         n=8, p=17:  T3=24, A_1 = 17*24 - 512 = -104 (< 0)
         n=8, p=41:  T3=24, A_1 = 41*24 - 512 = +472 (> 0)
+     Both witnesses have p < n^2 = 64 (thick regime).
+
+  3. Guard-dependent positivity (audit 2026-10-28, L103). The n diagonal triples y = z = w give
+     T3 >= n, so for p > n^2 (the standard thin guard)
+        A_1 = p*T3 - n^3 >= n*p - n^3 = n*(p - n^2) > 0.
+     So thinness DOES fix the depth-1 sign; the sign-indeterminacy above is a thick-regime
+     phenomenon only. Checked exactly on every sponsor cell with p > n^2 below.
 
 Hard SystemExit(1) on any violation.
 """
@@ -88,6 +95,7 @@ def main():
         primes = [p for p in range(n + 1, 500)
                   if all(p % d for d in range(2, int(p ** 0.5) + 1)) and (p - 1) % n == 0]
         signs = set()
+        thin_cells = 0
         for p in primes:
             G = subgroup(p, n)
             T = T3(G, p)
@@ -101,11 +109,20 @@ def main():
             if T != sum(W[x] for x in G):
                 print(f"FAIL T3 identity n={n} p={p}")
                 fails += 1
+            if T < n:
+                print(f"FAIL diagonal bound T3>=n at n={n} p={p}: T3={T}")
+                fails += 1
+            if p > n * n:
+                thin_cells += 1
+                if not a1 >= n * (p - n * n) > 0:
+                    print(f"FAIL thin-guard positivity n={n} p={p}: A1={a1}")
+                    fails += 1
             signs.add(sgn(a1))
+        print(f"n={n}: thin-guard cells p>n^2 checked: {thin_cells} (A1 >= n(p-n^2) > 0)")
         both = {1, -1} <= signs
         print(f"n={n}: {len(primes)} sponsor primes, signs={sorted(signs)}, both_signs={both}")
         if not both:
-            print(f"FAIL sign-indeterminacy at n={n}: only saw {signs}")
+            print(f"FAIL sign-indeterminacy (thick range) at n={n}: only saw {signs}")
             fails += 1
 
     # 2. the exact Lean witness pair (identical T3, opposite sign)
@@ -130,8 +147,9 @@ def main():
     if fails:
         print(f"\nG298 PROBE FAILED with {fails} violation(s)")
         sys.exit(1)
-    print("\nG298 PROBE PASS: A_1 = p*T3 - n^3 exact on all cells; sign takes both values; "
-          "witnesses (17,8) and (41,8) share T3=24 with opposite sign.")
+    print("\nG298 PROBE PASS: A_1 = p*T3 - n^3 exact on all cells; sign takes both values on "
+          "thick cells (witnesses (17,8) and (41,8), both p < n^2, share T3=24 with opposite "
+          "sign); A_1 >= n(p-n^2) > 0 on every thin cell p > n^2.")
 
 
 if __name__ == "__main__":

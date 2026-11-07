@@ -31,21 +31,17 @@ sum-check oracle reduction's verifier. Since (`General.lean`)
       (Sumcheck.Spec.SingleRound.oracleVerifier R n deg D oSpec)
 ```
 
-(all definitional `rfl`s), this file assembles that multi-round RBR soundness from the per-round
-single-round RBR soundness via `OracleVerifier.seqCompose_rbrSoundness`
-(`Composition/Sequential/General.lean`).
+(all definitional `rfl`s), this file fixes the statement shape of that multi-round RBR soundness
+in terms of the per-round single-round RBR soundness.
 
 ## What is proven vs. taken as a named hypothesis
 
-`OracleVerifier.seqCompose_rbrSoundness` is the sequential-composition keystone. As currently stated
-in the framework it consumes *two* inputs and returns the second:
-
-* `h` — the **per-round** RBR soundness of each single-round oracle verifier
-  `Sumcheck.Spec.SingleRound.oracleVerifier R n deg D oSpec i` (over a chosen per-round language
-  family `lang`); and
-* `hSeqComposeRbrSoundness` — the **assembled** multi-round RBR soundness of the composition, i.e.
-  the genuine round-by-round–across–rounds combinatorial keystone (the per-round–to–composed
-  marginal accounting), still being assembled in the framework layer.
+The framework theorem `OracleVerifier.seqCompose_rbrSoundness`
+(`Composition/Sequential/General.lean`) derives the composed RBR soundness from the per-round
+facts alone, but its proof goes through the binary `append_rbrSoundness`
+(`Composition/Sequential/Append/Security.lean`), which still contains `sorry`. This file does not
+invoke it, so that its own declarations stay free of `sorryAx`; the composed statement is instead
+taken as a named hypothesis.
 
 Accordingly:
 
@@ -56,9 +52,9 @@ Accordingly:
   the *context-lifted* round-`i` verifier without further framework transport. We therefore keep
   `hRound` explicit, matching the `hInner` convention of the completeness brick.)
 
-* The **composed** RBR soundness is supplied here as the named hypothesis `hSeqCompose` (the genuine
-  sequential-composition keystone — exactly the argument `OracleVerifier.seqCompose_rbrSoundness`
-  itself takes and returns).
+* The **composed** RBR soundness is supplied here as the named hypothesis `hSeqCompose` (the
+  conclusion `OracleVerifier.seqCompose_rbrSoundness` would provide once `append_rbrSoundness` is
+  proved).
 
 The main theorem `oracleVerifier_rbrSoundness` then produces the multi-round RBR soundness in the
 shape required by `hInnerRbr`, with `innerLangIn := lang 0`, output language `lang (Fin.last n)`, and
@@ -66,9 +62,12 @@ the sequential-composition–indexed error. The LogUp consumer instantiates
 `lang (Fin.last n) := Set.univ` (the chosen inner output language of the lift) and the error to the
 matching indexed family.
 
-No `sorry`/`admit`; the two genuine upstream gaps are the named hypotheses `hRound` and
-`hSeqCompose`, and everything connecting them to the desired oracle-level RBR soundness is proven
-and axiom-clean.
+No `sorry`/`admit`.  **Scope:** the conclusion of `oracleVerifier_rbrSoundness` is exactly its
+hypothesis `hSeqCompose` (the front door returns it unchanged), and `hRound` contributes no proof
+content.  This file therefore fixes the statement shape required by `hInnerRbr`; it is not
+composition progress.  The genuine open input is `hSeqCompose` itself (equivalently, the binary
+`append_rbrSoundness` gap behind `OracleVerifier.seqCompose_rbrSoundness`), with `hRound` recording
+its intended per-round premise.
 -/
 
 open OracleComp ProtocolSpec
@@ -88,8 +87,9 @@ verifier.**
 
 `Sumcheck.Spec.oracleVerifier R deg D n oSpec` is, definitionally, the `OracleVerifier.seqCompose`
 of the per-round single-round oracle verifiers `SingleRound.oracleVerifier R n deg D oSpec`. This
-theorem transfers their per-round RBR soundness (`hRound`) through the sequential-composition
-keystone `OracleVerifier.seqCompose_rbrSoundness`.
+theorem returns `hSeqCompose` unchanged: the conclusion is `hSeqCompose` and the per-round facts
+`hRound` are not used to derive it (exact-goal projector). Deriving it from `hRound` via
+`OracleVerifier.seqCompose_rbrSoundness` would currently depend on `sorryAx`.
 
 * `lang` — the chosen per-round language family (`lang 0` is the input language, `lang (Fin.last n)`
   the output language).
@@ -97,8 +97,8 @@ keystone `OracleVerifier.seqCompose_rbrSoundness`.
 * `hRound` — the per-round RBR soundness of each single-round oracle verifier (named residual:
   per-round plain RBR soundness of the context-lifted round verifier).
 * `hSeqCompose` — the assembled composed RBR soundness (named residual: the sequential-composition
-  round-by-round keystone; this is exactly the argument the framework theorem
-  `OracleVerifier.seqCompose_rbrSoundness` itself consumes).
+  round-by-round statement; it is the conclusion of the framework theorem
+  `OracleVerifier.seqCompose_rbrSoundness`, whose proof currently depends on `sorryAx`).
 
 The conclusion is the multi-round RBR soundness with the sequential-composition–indexed error, which
 is precisely the shape of `hInnerRbr` once `lang 0`/`lang (Fin.last n)`/the indexed error are read
@@ -137,7 +137,8 @@ variable (n M : ℕ) (params : ProtocolParams M)
 variable {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
 
 omit  [Fintype F] in
-/-- **The `RD-innerRbr` residual, discharged from the sequential-composition keystone.**
+/-- **The `RD-innerRbr` residual, restated from the sequential-composition residual (not
+discharged).** The conclusion is the supplied `hSeqCompose`; `hRound` is not used.
 
 The oracle-level multi-round round-by-round (plain) soundness of the inner concrete sum-check oracle
 reduction's verifier — exactly the named hypothesis `hInnerRbr` consumed by
@@ -155,7 +156,7 @@ this is `Sumcheck.Spec.oracleVerifier_rbrSoundness` specialized to LogUp's degre
 
 The LogUp soundness-lift consumer (`sumcheckVerifier_rbrSoundness`) instantiates `hInnerRbr` by
 choosing `lang (Fin.last n) := Set.univ` (its inner output language) and the matching indexed error;
-this corollary supplies it from the two named keystones above. -/
+this corollary restates it from the residual `hSeqCompose`, which remains open. -/
 theorem logupConcreteSumcheckOracleReduction_rbrSoundness [Fact ((-1 : F) ≠ 1)]
     (lang : (i : Fin (n + 1)) →
       Set (Sumcheck.Spec.StatementRound F n i ×

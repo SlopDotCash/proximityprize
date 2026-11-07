@@ -20,19 +20,29 @@ That prefix-incremental lemma is the missing lemma 2, and it's a CLEAN combinato
 
 SELF-SUBSTANTIATION (per codex review 2026-07-11): for every cover that admits NO
 incremental-prefix ordering, this probe ALSO computes the exact RS-dual generation deficiency
-d (nullspace of the overlap-agreement system, field-independent) so the conclusion
-'generation resolves (d=0 on some, d=1 field-independently on the near-dup sibling) even where
-the prefix criterion fails' is established by the script itself, not asserted externally.
+d (nullspace of the overlap-agreement system) at four sampled primes, so the finite-sample
+observation 'generation resolves (d=0 on some, d=1 at every sampled prime on the near-dup
+sibling) even where the prefix criterion fails' is computed by the script itself.
+SCOPE: agreement of d at four selected primes is evidence, not a proof of field-independence;
+a symbolic argument (e.g. integer minors / characteristic hypotheses) is required before the
+d-values are used as field-independent facts. For D > 7 the ordering search is a heuristic and
+its failures are reported as UNKNOWN, never as "no ordering exists".
 """
 import random
 
 
-def _matnullity(M, p):
+def _matnullity(M, p, cols):
+    """Nullity of the ``len(M) x cols`` matrix ``M`` over F_p.
+
+    ``cols`` (the number of unknowns) is passed explicitly so that an empty
+    system (no equations, e.g. pairwise-disjoint cores) correctly has nullity
+    ``cols`` rather than 0.
+    """
     if not M:
-        return 0
+        return cols
     M = [r[:] for r in M]
     rows = len(M)
-    cols = len(M[0])
+    assert all(len(r) == cols for r in M)
     r = 0
     for c in range(cols):
         piv = None
@@ -72,7 +82,7 @@ def rs_dual_deficiency(cores, k, p):
                     row[i * k + d] = (row[i * k + d] + xd) % p
                     row[j * k + d] = (row[j * k + d] - xd) % p
                 rows.append(row)
-    return _matnullity(rows, p) - k
+    return _matnullity(rows, p, ncols) - k
 
 def prefix_overlaps(cores):
     D=len(cores)
@@ -87,8 +97,17 @@ def prefix_overlaps(cores):
     return mins
 
 def can_order_incremental_prefix(cores,k):
-    """Is there an ordering s.t. each core (after 1st) meets prefix-union in >= k? Greedy+perm check.
-       Return (True, order) if yes. Try greedy: start anywhere, always add core maximizing prefix overlap."""
+    """Is there an ordering s.t. each core (after 1st) meets prefix-union in >= k?
+
+    Returns a three-valued answer:
+      * ``(True, order)``  -- a valid ordering was found (certificate);
+      * ``(False, None)``  -- NO valid ordering exists (only returned by the complete
+        permutation search, used for D <= 7);
+      * ``(None, None)``   -- UNKNOWN: for D > 7 only a greedy heuristic is run (from every
+        starting core); its failure does NOT prove that no ordering exists. Example:
+        A={1,2,3}, B={1,4,5}, C={2,4,5}, cores [A,B,C,B,B,B,B,B], k=2: greedy from core 0
+        fails, yet the order [1,2,0,3,...,7] is valid.
+    """
     D=len(cores)
     from itertools import permutations
     if D<=7:
@@ -98,18 +117,25 @@ def can_order_incremental_prefix(cores,k):
             if all((m is None) or m>=k for m in ms):
                 return True,perm
         return False,None
-    # greedy for larger
-    used=[0]; pref=set(cores[0])
-    order=[0]
-    while len(used)<D:
-        best=None
-        for j in range(D):
-            if j in used: continue
-            ov=len(set(cores[j])&pref)
-            if best is None or ov>best[0]: best=(ov,j)
-        if best[0]<k: return False,None
-        order.append(best[1]); used.append(best[1]); pref|=set(cores[best[1]])
-    return True,tuple(order)
+    # greedy heuristic for larger D (incomplete): try every starting core.
+    for start in range(D):
+        used=[start]; pref=set(cores[start])
+        order=[start]
+        stuck=False
+        while len(used)<D:
+            best=None
+            for j in range(D):
+                if j in used: continue
+                ov=len(set(cores[j])&pref)
+                if best is None or ov>best[0]: best=(ov,j)
+            if best[0]<k:
+                stuck=True
+                break
+            order.append(best[1]); used.append(best[1]); pref|=set(cores[best[1]])
+        if not stuck:
+            return True,tuple(order)
+    # heuristic failure is not a proof of non-existence
+    return None,None
 
 def build_covers(n,s,D,rng,tries=800):
     points=list(range(1,n+1))
@@ -135,11 +161,14 @@ def main():
             for D in [3,4,5]:
                 covers=build_covers(n,s,D,rng)
                 if not covers: continue
-                fails=0; checked=0
+                fails=0; checked=0; unknown=0
                 minmargin=None
                 for cores in covers:
                     checked+=1
                     ok,order=can_order_incremental_prefix(cores,k)
+                    if ok is None:
+                        unknown+=1
+                        continue
                     if not ok:
                         fails+=1
                         worst_examples.append((n,k,s,D,cores))
@@ -149,29 +178,30 @@ def main():
                         if minmargin is None or mg<minmargin: minmargin=mg
                 flag="  *** SOME COVERS HAVE NO INCREMENTAL-PREFIX ORDERING ***" if fails else ""
                 if fails: allok=False
-                print(f"n={n:2d} k={k:2d} s={s:2d} D={D} checked={checked} fails={fails} minPrefixMargin(overlap-k)={minmargin}{flag}")
+                print(f"n={n:2d} k={k:2d} s={s:2d} D={D} checked={checked} fails={fails} unknown={unknown} minPrefixMargin(overlap-k)={minmargin}{flag}")
     print()
-    print("UNIVERSAL incremental-prefix criterion holds:", allok)
+    print("incremental-prefix criterion holds on every sampled cover (finite sample, not universal):", allok)
     if worst_examples:
         print()
         print("=== SELF-SUBSTANTIATION: RS-dual deficiency d on covers with NO prefix ordering ===")
-        print("    (field-independence checked across p in {101,1009,65537,10^6+3})")
+        print("    (d recomputed at the four sampled primes p in {101,1009,65537,10^6+3}; agreement at")
+        print("     these primes is finite evidence only, NOT a proof of field-independence)")
         primes = [101, 1009, 65537, 1000003]
         any_gen = False
         any_fieldindep_defect = False
         for (n, k, s, D, cores) in worst_examples[:6]:
             ds = [rs_dual_deficiency(cores, k, p) for p in primes]
-            field_indep = len(set(ds)) == 1
+            field_indep = len(set(ds)) == 1  # agreement at the sampled primes only
             d0 = ds[0]
             if d0 == 0:
                 any_gen = True
             if field_indep and d0 > 0:
                 any_fieldindep_defect = True
-            print(f"n={n:2d} k={k:2d} s={s:2d} D={D} d(p={primes})={ds} field_indep={field_indep} prefix_ordering=None cores={cores}")
+            print(f"n={n:2d} k={k:2d} s={s:2d} D={D} d(p={primes})={ds} same_d_at_sampled_primes={field_indep} prefix_ordering=None cores={cores}")
         print()
         print("generation (d=0) occurs on a prefix-failing cover:", any_gen)
-        print("field-independent d>0 (near-dup-pair defect) occurs on a prefix-failing cover:", any_fieldindep_defect)
-        print("=> the SYZ26 prefix-overlap route CANNOT decide generation in the interior:")
+        print("d>0 at all sampled primes (near-dup-pair defect) occurs on a prefix-failing cover:", any_fieldindep_defect)
+        print("=> on these sampled covers the SYZ26 prefix-overlap criterion does not decide generation:")
         print("   d is resolved by RS-dual arithmetic, not by the covering/prefix combinatorics.")
 
 if __name__=="__main__":

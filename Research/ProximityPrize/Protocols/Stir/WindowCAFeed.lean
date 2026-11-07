@@ -95,9 +95,7 @@ theorem stir_main_of_checkingIOP_window
     {k proofLen qNumtoInput qNumtoProofstr : ℕ}
     (hk : ∃ p, k = 2 ^ p) (hkGe : k ≥ 4)
     (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
-    (hF : Fintype.card F ≤
-          secpar * 2 ^ secpar * degree ^ 2 * (Fintype.card ι) ^ (7 / 2) /
-            Real.log (1 / rate (code φ degree)))
+    (hF : FieldSizeCondition secpar φ degree)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (ProxGapBound : Fin (M + 1) → ℝ≥0)
     (hBridge : stirCheckingCABridge M φ degree δ ε_rbr ProxGapBound ProxGapBound)
@@ -131,9 +129,7 @@ theorem stir_main_of_checkingIOP_window_corner
     {k proofLen qNumtoInput qNumtoProofstr : ℕ}
     (hk : ∃ p, k = 2 ^ p) (hkGe : k ≥ 4)
     (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
-    (hF : Fintype.card F ≤
-          secpar * 2 ^ secpar * degree ^ 2 * (Fintype.card ι) ^ (7 / 2) /
-            Real.log (1 / rate (code φ degree)))
+    (hF : FieldSizeCondition secpar φ degree)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (ProxGapBound : Fin (M + 1) → ℝ≥0)
     (hBridge : stirCheckingCABridge M φ degree δ ε_rbr ProxGapBound ProxGapBound)

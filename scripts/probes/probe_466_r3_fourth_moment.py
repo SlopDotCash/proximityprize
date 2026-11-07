@@ -11,10 +11,15 @@ Objects (m = 3u', p == 1 mod m, lambda order m, chi = lambda^k):
 TESTS:
  (F1) EXACT IDENTITY (the Lean-formalized core): M4 = m * sum_c |W(c)|^2 —
       the 4th moment IS the r=2 additive-quadruple energy.
- (F2) SCALE CHECK (refutes the m^2 q^2 target): the exact diagonal
-      D = 2*(sum_{j!=0}|J_j|^2)^2 - sum_{j!=0}|J_j|^4 satisfies m*D ~ 2 m^3 q^2,
-      so M4 >= ~2 m^3 q^2 is forced; correct flat scale is K4 * m^3 * q^2.
-      Also power-mean floor M4 >= (sum_a |S|^2)^2 / m.
+ (F2) SCALE CHECK (refutes the m^2 q^2 target): the valid power-mean floor
+      M4 >= (sum_a |S|^2)^2 / m (Cauchy-Schwarz over the m values of a) gives
+      M4 >~ m^3 q^2, so the flat scale is K4 * m^3 * q^2 with K4 bounded below.
+      The diagonal D = 2*(sum_{j!=0}|J_j|^2)^2 - sum_{j!=0}|J_j|^4 of the quadruple
+      sum (m*D ~ m^3 q^2) is reported for comparison ONLY: it is NOT a lower
+      bound, because the complex off-diagonal terms can have negative real total.
+      Exact counterexample (exact integer arithmetic in Z[z]/(z^4-z^2+1), p=13,
+      m=12, k=1, primitive root 2): M4 = 227196 < 391572 = m*D. The column
+      offdiag/diag = (M4/m - D)/D is accordingly often NEGATIVE.
  (F3) MOBIUS AT 4TH MOMENT: diagonal weight sum_{d|m} d*mu(m/d) = phi(m) != 0
       (arithmetic check) — the main term is NOT killed, unlike the sextic.
  (F4) MEASURE K4 = M4/(m^3 q^2) per character and Galois-max, m = 9,12,15,18;
@@ -141,7 +146,8 @@ def main():
                   f"{C_interp:>9.1f} {C_meas:>9.4f}")
         print(f"  m={m}: (F1) identity {'VERIFIED' if ok_all else 'FAILED'}; "
               f"sup K4 over primes/characters = {K4max_m:.3f} "
-              f"(diagonal forces K4 >~ 2; m^2 q^2 target IMPOSSIBLE, m^3 q^2 is the flat scale)")
+              f"(power-mean floor forces K4 >= pm-floor > 0; m^2 q^2 target IMPOSSIBLE, "
+              f"m^3 q^2 is the flat scale; the diagonal m*D is NOT a lower bound)")
 
 if __name__ == "__main__":
     main()

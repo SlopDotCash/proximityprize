@@ -21,12 +21,20 @@ pure group-action symmetry.
 **Consequence for the wall.** `r` is constant on each multiplicative coset `c·G`, of which
 there are `(|F| − 1)/n`.  So the Garcia–Voloch obligation `∀ c ≠ 0, r(c) ≤ M` need only be
 checked on **one representative per coset** (an `n`-fold reduction), and the additive energy
-decomposes as `E(G) = Σ_{c≠0} r(c)² + r(0)² = n·Σ_{cosets} r(coset)² + |G|²` — concentrating
-all of `E(G)`'s `c ≠ 0` content on `(|F|−1)/n` coset values.  This is the natural reduction
-for any Stepanov/HBK attack on the bound, and it is field-uniform.
+decomposes (informally; the energy identity is not formalized in this file) as
+`E(G) = Σ_{c≠0} r(c)² + r(0)² = |G|·Σ_{cosets} r(coset)² + r(0)²` — concentrating
+all of `E(G)`'s `c ≠ 0` content on `(|F|−1)/|G|` coset values.  The zero-shift term `r(0)` is
+**not** always `|G|`: `r(0) = #{y ∈ G : −y ∈ G}` equals `|G|` exactly when `G` is closed under
+negation (e.g. `n` even, so `−1 ∈ μ_n`; or characteristic `2`), and equals `0` when `−1 ∉ G`
+(e.g. odd `n` in odd characteristic).  For instance `G = μ_1 = {1} ⊆ F_5` has `E(G) = 1`, coming
+entirely from the nonzero coset sum, with `r(0) = 0`; replacing `r(0)²` by `|G|²` would give `2`.
+So `r(0)²` may be replaced by `|G|²` only under the negation-closure hypothesis.  This is the
+natural reduction for any Stepanov/HBK attack on the bound, and it is field-uniform.
 
-Verified: `scripts/probes/probe_repcount_coset.py` (0 violations + the energy identity at
-6 instances `p = 13 … 257`).  Issue #389.
+Probe record: `scripts/probes/probe_repcount_coset.py` (not present in the tree; reported 0
+violations and the energy identity at 6 instances `p = 13 … 257`).  The formal content of this
+file is the coset invariance `repCount_mul_mem_eq`, valid for every root order `n ≥ 1`.
+Issue #389.
 -/
 
 open Finset

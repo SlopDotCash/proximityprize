@@ -1,5 +1,15 @@
 # Attacking the char-`p` transfer from every angle — the full reduction chain (#444)
 
+> **Later status (linked 2026-10-28, audit T48).** The positive-gap observations below
+> ("`G_p > 0` throughout", "`|L| ≤ G_0` (growing margin)", "margin GROWING") have been retracted.
+> They rested on an incorrect char-0 energy, a naive integer lift that is wrong at `r ≥ 4`.
+> `Research/ProximityPrize/Frontier/_CharPStepRatioMonotoneFails.lean` exhibits negative char-`p`
+> gaps for exact energy triples at `n = 32, p = 786433, r = 3` and `n = 64, p = 2752513, r = 2`.
+> The Lean file kernel-checks the gap arithmetic, and the audit re-computed the supplied energies.
+> So the dominance hypothesis `G_0 + L ≥ 0` fails at concrete cells, and the char-`p` step-ratio
+> monotonicity is not an open input. The decomposition `G_p = G_0 + L + Q` and the conditional
+> transfer lemmas remain valid as implications.
+
 The last open wall: the **char-`p` transfer** of the step-ratio monotonicity (`G_p(r) ≥ 0`, equivalently
 `E_r(F_p) ≤ (2r−1)‼·n^r` at deep `r ≈ log p`). Every angle attacked directly + machine-tested (no
 sub-agents — weekly-capped).

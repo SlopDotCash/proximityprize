@@ -13,16 +13,26 @@ import Mathlib.Tactic
 
 The coset construction (`Round8CosetConcentration.lean`) produces a list of RS codewords as unions of
 `r` cosets of an order-`N` subgroup of the smooth evaluation domain (`|domain| = n`, rate `ρ = k/n`).
-Killing the top `t` power sums — required for a degree drop at agreement `a = k + t`, i.e. radius
-`δ = 1 − a/n` — needs the coset size to satisfy `N ≥ t + 1` (a coset of `N`-th roots of unity kills
-`p₁, …, p_{N−1}`). A union of `r` cosets has size `a = r·N`, and the number of such unions is
-`C(M, r)` with `M = n / N` the number of cosets.
+Killing the top `t` power sums is required for a degree drop at agreement `a = k + t`, i.e. radius
+`δ = 1 − a/n`. A coset of `N`-th roots of unity kills `p₁, …, p_{N−1}` **on its own**, so the
+construction considered here imposes the guard `N ≥ t + 1` (each coset individually kills all `t`
+power sums). A union of `r` cosets has size `a = r·N`, and the number of such unions is `C(M, r)`
+with `M = n / N` the number of cosets.
 
-This file formalizes, as clean self-contained `Nat` inequalities, **why `C(M, r)` is super-polynomial
-only very close to capacity** (`t` small, so `r` large) **and merely polynomial deeper in the
-interior** (`t` a constant fraction of `k`, so `r = O(1)`). This is honest "wall" cartography: it
-proves the algebraic route provably cannot pin `δ*` at constant-fraction interior depth — matching the
-[ABF26] assessment that the deep interior has "no known technique".
+**The guard is sufficient, not necessary.** Several smaller cosets can cancel each other's
+remaining power sums. On `μ₈ ⊂ F₁₇` take `S = μ₄ = {1, 4, 13, 16}` (`a = 4`, `k = 1`, `t = 3`):
+`S` is the union of the two size-2 cosets `{1, 16}` and `{4, 13}`, and its first three power sums
+vanish (the nodal polynomial `X⁴ − 1` shows the expected degree drop), yet `N = 2 < t + 1 = 4` and
+`r = 2` although `t ≥ k`. (This is not a large-list or prize counterexample.)
+
+This file formalizes, as clean self-contained `Nat` inequalities, **why `C(M, r)` is
+super-polynomial only very close to capacity** (`t` small, so `r` large) **and merely polynomial
+deeper in the interior** (`t` a constant fraction of `k`, so `r = O(1)`) — **for the guarded
+family** in which every coset alone kills all `t` power sums. This is "wall" cartography for that
+construction only: it shows that the per-coset-cancellation coset route cannot pin `δ*` at
+constant-fraction interior depth, consistent with the [ABF26] assessment that the deep interior has
+"no known technique". It says nothing about general coset unions or other algebraic constructions
+in which cancellation happens across cosets.
 
 * `count_poly_and_budget` — the cap `C(M,r) ≤ Mʳ` together with the budget `r·(t+1) ≤ a`. As `t` grows
   the exponent `r ≤ a/(t+1)` shrinks: at `t ≥ k` the count is essentially linear (`budget_forces_r_le_one`
@@ -47,8 +57,9 @@ polynomial in `M` for fixed `r`. -/
 theorem choose_le_pow_count (M r : ℕ) : M.choose r ≤ M ^ r :=
   Nat.choose_le_pow M r
 
-/-- **Lemma B (budget forces small `r` at deep interior).** If the coset is big enough to kill `t`
-power sums (`N ≥ t + 1`), the union size equals the agreement (`r·N = a`), the agreement is
+/-- **Lemma B (budget forces small `r` at deep interior).** If each coset is big enough to kill `t`
+power sums on its own (`N ≥ t + 1`; a construction guard, not a necessary condition — see the module
+docstring), the union size equals the agreement (`r·N = a`), the agreement is
 `a = k + t`, and we are at constant-fraction-or-deeper interior (`t ≥ k`), then the number of cosets
 in the union is `r ≤ 1`.
 

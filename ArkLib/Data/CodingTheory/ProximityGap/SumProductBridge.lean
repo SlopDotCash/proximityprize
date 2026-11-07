@@ -11,15 +11,20 @@ import Mathlib.Algebra.Order.Chebyshev
 
 The open core of the `μ_n` wall is the additive-energy excess (`EnergyExcessCore`).  This
 file proves the classical **Cauchy–Schwarz sum–product inequality** linking the energy to
-the sumset size, which recasts that open core as a sum–product dichotomy:
+the sumset size — a **one-way** implication from small energy to large sumset:
 
 > **`card_pow_four_le_card_sumset_mul_energy`** — `|G|⁴ ≤ |G+G| · E(G)`.
 
 Equivalently `|G+G| ≥ |G|⁴ / E(G)`.  Since `E(G) = (3n²−3n) + energyExcess`, a *small*
-excess forces a *large* sumset `|G+G| ≈ n²/3` (near-maximal), and vice versa — the
-sum–product dichotomy.  So "is `energyExcess = O(n²)`?" is equivalently "is the sumset of
-`μ_n` near-maximal `|G+G| = Ω(n²)`?", the standard sum–product formulation of the open
-Stepanov input.
+excess forces a *large* sumset (`energyExcess = O(n²)` gives `|G+G| = Ω(n²)`, roughly
+`|G+G| ≳ n²/3` when the excess is negligible).  The converse does **not** follow from this
+inequality: a product lower bound gives no upper bound on `E(G)` from a lower bound on
+`|G+G|`.  For general sets it is false — the disjoint union of an arithmetic progression of size
+`m` with `m` well-separated powers of `3` (in a prime field large enough to avoid wraparound) has
+`|G| = 2m`, `|G+G| = Ω(m²)` and `E(G) ≥ E(AP) = Θ(m³)`.  So "small energy excess" and
+"near-maximal sumset" are **not** shown equivalent here; for multiplicative subgroups `μ_n` any
+such converse would need a separate structural (inverse) theorem, and the energy bound remains a
+separate open input (the Stepanov-type input).
 
 Proof: `Σ_{t ∈ G+G} r(t) = |G|²` (every pair sums into `G+G`), and Cauchy–Schwarz
 `(Σ r)² ≤ |G+G| · Σ r²` with `Σ r² = E(G)`.

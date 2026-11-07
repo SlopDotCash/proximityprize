@@ -71,9 +71,12 @@ theorem step_slack_seven_lead :
 
 /-! ## The char-0 step-law `(STEP)` at the deep rungs: `E_{r+1} ≤ (2r+1)·n·E_r`
 
-Both step-slack sextics/septics have one real factor-root just above `n = 2` (so the slack dips then
-recovers); positive at integer `n ≥ 2`. Proved by the `n = 2` (`norm_num`) / `n ≥ 3` (shift `n = m+3`,
-all shifted coefficients nonnegative) split, matching `step_law_five`. -/
+The `r = 6` slack is positive at integer `n ≥ 2` (its quintic factor has a single real root
+`≈ 1.9996`); `step_law_six` splits `n = 2`, `n = 3`, `n ≥ 4`. The `r = 7` slack is **negative at
+`n = 3`** (real roots `≈ 2.00` and `≈ 3.786`), so `step_law_seven` is stated and proved only for
+`n ≥ 4` (shift `n = m + 4`). (An earlier version of this section claimed positivity at all integer
+`n ≥ 2` for both, with a common `n ≥ 3` proof; that was stale relative to the documented `n = 3`
+failure; audit 2026-10-28, R-220.) -/
 
 theorem step_law_six (n : ℤ) (hn : 2 ≤ n) : E7 n ≤ 13 * n * E6 n := by
   have h : stepSlackHigh 6 n =

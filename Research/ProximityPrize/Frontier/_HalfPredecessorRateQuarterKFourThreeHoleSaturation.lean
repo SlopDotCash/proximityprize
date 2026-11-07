@@ -101,54 +101,21 @@ theorem residualPetalCoordinateFiber_card_eq_three_of_population_five
     (residualPetalCoordinateFiber family residual i).card = 3 := by
   let O := regularOffResidualSecant family residual
   let P := secantPetal family residual.source residual.gamma residual.beta
-  let A : F → Finset I := fun theta =>
-    residualSecantPetalAgreement family residual theta
   let Fib : I → Finset F := fun j =>
     residualPetalCoordinateFiber family residual j
   have hPcard : P.card = 5 := by
     simpa only [P] using residualSecantPetal_card residual
   have hOcard : O.card = 5 := by simpa only [O] using hfive
   have hiP : i ∈ P := by simpa only [P] using hi
-  have hAdata : ∀ theta ∈ O, A theta ⊆ P ∧ (A theta).card = 3 := by
-    intro theta htheta
-    have hdata := offResidualSecant_two_triple_data
-      family hn residual (by simpa only [O] using htheta)
-    exact ⟨by simpa only [A, P] using hdata.2.2.1,
-      by simpa only [A] using hdata.2.2.2⟩
   have hFibCap : ∀ j, (Fib j).card ≤ 3 := by
     intro j
     simpa only [Fib] using
       residualPetalCoordinateFiber_card_le_three_of_six_le_secant_core
         family hn hthreshold residual hsix j
-  have hswap : (∑ theta ∈ O, (A theta).card) =
-      ∑ j ∈ P, (Fib j).card := by
-    calc
-      (∑ theta ∈ O, (A theta).card) =
-          ∑ theta ∈ O, ∑ j ∈ P, if j ∈ A theta then 1 else 0 := by
-        apply Finset.sum_congr rfl
-        intro theta htheta
-        have heq : P.filter (fun j => j ∈ A theta) = A theta := by
-          ext j
-          constructor
-          · intro hj
-            exact (Finset.mem_filter.mp hj).2
-          · intro hj
-            exact Finset.mem_filter.mpr ⟨(hAdata theta htheta).1 hj, hj⟩
-        rw [← Finset.card_filter, heq]
-      _ = ∑ j ∈ P, ∑ theta ∈ O, if j ∈ A theta then 1 else 0 :=
-        Finset.sum_comm
-      _ = ∑ j ∈ P, (Fib j).card := by
-        apply Finset.sum_congr rfl
-        intro j _hj
-        rw [show Fib j = O.filter (fun theta => j ∈ A theta) by rfl,
-          Finset.card_filter]
-  have hleft : (∑ theta ∈ O, (A theta).card) = O.card * 3 := by
-    calc
-      (∑ theta ∈ O, (A theta).card) = ∑ _theta ∈ O, 3 := by
-        exact Finset.sum_congr rfl fun theta htheta => (hAdata theta htheta).2
-      _ = O.card * 3 := by simp
   have htotal : (∑ j ∈ P, (Fib j).card) = 15 := by
-    rw [← hswap, hleft, hOcard]
+    have hcount : (∑ j ∈ P, (Fib j).card) = O.card * 3 :=
+      sum_residualPetalCoordinateFiber_card_eq family hn residual
+    rw [hcount, hOcard]
   have heraseCard : (P.erase i).card = 4 := by
     rw [Finset.card_erase_of_mem hiP, hPcard]
   have hrest : (∑ j ∈ P.erase i, (Fib j).card) ≤ 12 := by

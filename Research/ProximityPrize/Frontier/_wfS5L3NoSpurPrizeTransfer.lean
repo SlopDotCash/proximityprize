@@ -7,15 +7,15 @@ import Research.ProximityPrize.Frontier._wfL3_char0_prize_moment
 import Research.ProximityPrize.Frontier._wfS5_theta_count_wick
 
 /-!
-# wf-S5↔L3 weld: the UNCONDITIONAL below-girth char-`p` prize transfer (#444, lane wf-S5/L3)
+# wf-S5↔L3 weld: the below-girth char-`p` transfer, conditional on no-spur and moment hypotheses (#444, lane wf-S5/L3)
 
 ## What this file welds (and why it is not redundant)
 
 The energy route to the per-frequency prize has TWO proven halves that, on the **unconditional**
 (no spurious mass) corner, were never theorem-connected:
 
-* **wf-L3** (`_wfL3_char0_prize_moment.lean`) proves the char-`0` prize moment bound
-  `char0_prize_moment_bound_sq`: from the formal-period moment identity `M^{2r} ≤ Q · E(2r)` and the
+* **wf-L3** (`_wfL3_char0_prize_moment.lean`) proves the char-`0` scalar saddle lemma
+  `char0_prize_moment_bound_sq` (conditional on its moment hypothesis): from the formal-period moment identity `M^{2r} ≤ Q · E(2r)` and the
   Lam–Leung char-`0` energy bound `E(2r) = zeroSumCount G (2r) ≤ (2r−1)‼·n^r`, the saddle yields
   `M² ≤ 2e·|G|·r`. Its docstring names the **char-`p` transfer** as "the sole gap": the char-`0`
   energy bound transfers to `F_p` only while no short cyclotomic `±1`-relation vanishes mod `p`.
@@ -64,7 +64,7 @@ namespace ArkLib.ProximityGap.Frontier.WFS5L3NoSpur
 
 variable {L : Type*} [Field L] [CharZero L] [DecidableEq L]
 
-/-- **THE UNCONDITIONAL BELOW-GIRTH PRIZE TRANSFER (squared form).**
+/-- **Below-girth scalar transfer (squared form), conditional on `hnospur` and `hmoment`.**
 
 Let `G ⊆ μ_{2^k}` (`k ≥ 1`) in a characteristic-zero field, and let `Echarp : ℕ → ℕ` be the char-`p`
 additive `2r`-energy of the corresponding thin subgroup. Suppose:
@@ -75,8 +75,9 @@ additive `2r`-energy of the corresponding thin subgroup. Suppose:
   `subgroup_gaussSum_moment` ∘ `single_le_sum`; field-independent counting).
 
 Then at the optimal depth `r ≥ max(1, log Q)` the **char-`p`** per-frequency sup obeys the prize
-square-root shape `M² ≤ 2e·|G|·r`, with NO conjectural input. The whole open content is folded into
-`hnospur` (which FAILS at the prize depth — see the file docstring / probe). -/
+square-root shape `M² ≤ 2e·|G|·r`.  `M`, `Q` and `Echarp` are free; `hmoment` and `hnospur` are
+entered hypotheses (not derived from a Gauss-period object here), and `hnospur` FAILS at the prize
+depth — see the file docstring / probe.  (Audit 2026-10-28, CW-B18-10: "UNCONDITIONAL" removed.) -/
 theorem prize_sq_of_no_spur {k r : ℕ} (hk : 1 ≤ k) (G : Finset L)
     (hG : ∀ z ∈ G, z ^ (2 ^ k) = 1)
     (Echarp : ℕ → ℕ) {M Q : ℝ} (hM : 0 ≤ M) (hQ : 0 < Q) (hr : 1 ≤ r) (hrQ : Real.log Q ≤ r)
@@ -88,7 +89,7 @@ theorem prize_sq_of_no_spur {k r : ℕ} (hk : 1 ≤ k) (G : Finset L)
     rw [hnospur] at hmoment; exact hmoment
   exact WFL3.char0_prize_moment_bound_sq hk G hG hM hQ hr hrQ hmoment0
 
-/-- **THE UNCONDITIONAL BELOW-GIRTH PRIZE TRANSFER (norm form).** Square-root of `prize_sq_of_no_spur`:
+/-- **Below-girth scalar transfer (norm form), conditional on `hnospur` and `hmoment`.** Square-root of `prize_sq_of_no_spur`:
 in the no-spur regime the char-`p` formal-period sup obeys `M ≤ √(2e·|G|·r)`, explicit constant
 `√(2e)`. At `r = ⌈log Q⌉` this is `M ≤ √(2e)·√(|G|·log Q)` — the Gaussian/Ramanujan per-frequency
 target — but ONLY on the spur-free corner (the prize depth violates `hnospur`). -/

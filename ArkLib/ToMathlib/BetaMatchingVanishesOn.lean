@@ -9,9 +9,12 @@ import ArkLib.ToMathlib.BetaMatchingVanishes
 #304 brick: restricted-root (membership-dependent) consumer chain for ingredient C.
 
 Satisfiability finding #3 on issue #304: every §5 bundle carries a TOTAL family
-`root : (z : F) → rationalRoot (H_tilde' H) z`, which is unsatisfiable for typical GS
-factors (the fibre type is empty at non-split `z`). Every USE of `root` is at matching-set
-members only, so the honest shape is `rootOn : ∀ z ∈ matchingSet, rationalRoot …`.
+`root : (z : F) → rationalRoot (H_tilde' H) z`, which cannot exist as soon as one fibre
+`rationalRoot (H_tilde' H) z₀` is **empty** (no rational root at `z₀`, even at a `z₀` outside the
+matching set). Failure of complete splitting is not enough for this: a fibre that is only partially
+split may still contain a rational root (e.g. over `F₅`, `y³ - 1` has a linear factor and an
+irreducible quadratic factor). Every USE of `root` is at matching-set members only, so the honest
+shape is `rootOn : ∀ z ∈ matchingSet, rationalRoot …`.
 
 This file transports the ingredient-C consumer chain to the restricted form:
 * `MatchingVanishesOn` — the restricted-root isolated property `P β`;
@@ -22,7 +25,7 @@ This file transports the ingredient-C consumer chain to the restricted form:
   `↑matchingSet ⊆ S_β β` (so the restricted form is the faithful one);
 * `not_exists_total_matchingVanishes_of_isEmpty` /
   `exists_rootOn_not_exists_root_of_isEmpty` — formalized finding #3: one empty fibre
-  (a non-split point of `H`) kills every total family, while the restricted family still
+  (a place with no rational root) kills every total family, while the restricted family still
   exists whenever `↑matchingSet ⊆ S_β β`;
 * `betaRec_matchingVanishesOn`, `betaRec_embedding_eq_zero_of_matchingSet_largeOn` —
   the `betaRec` keystone chain (Claim 5.8 hypothesis) in restricted-root form.
@@ -41,7 +44,8 @@ variable {F : Type} [Field F]
 
 /-- **Restricted-root isolated property `P(β)`.**  The membership-dependent form of
 `MatchingVanishes`: the rational-root section is only demanded at matching-set members,
-so the datum is satisfiable for GS factors that are not fibrewise totally split. -/
+so the datum does not require rational roots at places outside the matching set (where a
+fibre may be empty). -/
 def MatchingVanishesOn {H : F[X][Y]} (matchingSet : Finset F)
     (rootOn : ∀ z ∈ matchingSet, rationalRoot (H_tilde' H) z) (β : 𝒪 H) : Prop :=
   ∀ z (hz : z ∈ matchingSet), (π_z z (rootOn z hz)) β = 0
@@ -93,8 +97,8 @@ theorem exists_rootOn_matchingVanishesOn_iff_subset_S_β {H : F[X][Y]}
     exact ⟨rootOn, hrootOn⟩
 
 /-- **Finding #3, formalized (negative half).**  One empty rational-root fibre — a single
-non-split point `z₀` of `H`, which exists for every GS factor that is not fibrewise totally
-split — makes EVERY total-root family `root : (z : F) → rationalRoot (H_tilde' H) z`
+point `z₀` at which `H_tilde' H` has **no** rational root (a merely partially split fibre does not
+qualify; it may still have a root) — makes EVERY total-root family `root : (z : F) → rationalRoot (H_tilde' H) z`
 non-existent, hence every total-form `MatchingVanishes` datum unsatisfiable, regardless of
 `matchingSet` and `β`. -/
 lemma not_exists_total_matchingVanishes_of_isEmpty {H : F[X][Y]} {matchingSet : Finset F}

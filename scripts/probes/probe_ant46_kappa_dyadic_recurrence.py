@@ -117,18 +117,31 @@ def poly_eval(poly: list[int], value: int, modulus: int | None = None) -> int:
 
 
 def poly_div_exact(dividend: list[int], divisor: list[int]) -> list[int]:
-    dividend = dividend[:]
-    quotient: list[int] = []
-    while len(dividend) >= len(divisor):
-        assert dividend[0] % divisor[0] == 0
-        leading = dividend[0] // divisor[0]
-        quotient.append(leading)
-        for index, coefficient in enumerate(divisor):
-            dividend[index] -= leading * coefficient
-        dividend = trim(dividend)
-        if dividend == [0]:
-            break
-    assert dividend == [0]
+    """Exact quotient of descending integer coefficient lists (asserts zero remainder).
+
+    Long division keeps one quotient slot per degree, so a step that cancels several leading
+    coefficients at once still records the zero quotient coefficients in between (an earlier
+    version trimmed the running remainder and dropped those degrees, e.g. it returned `X - 1`
+    for `(X^2 - 1) / 1`).  Unused by the checks in `main`; kept as a general helper.
+    """
+    remainder = trim(dividend[:])
+    divisor = trim(divisor[:])
+    assert divisor != [0], "division by the zero polynomial"
+    if remainder == [0]:
+        return [0]
+    quotient_length = len(remainder) - len(divisor) + 1
+    assert quotient_length >= 1, "divisor degree exceeds dividend degree"
+    quotient = [0] * quotient_length
+    for index in range(quotient_length):
+        coefficient = remainder[index]
+        if coefficient == 0:
+            continue
+        assert coefficient % divisor[0] == 0
+        leading = coefficient // divisor[0]
+        quotient[index] = leading
+        for offset, divisor_coefficient in enumerate(divisor):
+            remainder[index + offset] -= leading * divisor_coefficient
+    assert all(value == 0 for value in remainder), "division is not exact"
     return trim(quotient)
 
 
@@ -215,15 +228,26 @@ def descended_pair_coefficient(n: int) -> list[int]:
 
 
 def bareiss_determinant(matrix: list[list[int]]) -> int:
+    """Fraction-free (Bareiss) determinant of a square integer matrix.
+
+    A zero pivot with no nonzero entry below it means the column is zero from the pivot down, so
+    the matrix is singular and the determinant is `0` (an earlier version raised
+    `StopIteration` here, e.g. on `[[0, 0], [0, 1]]`).
+    """
     matrix = [row[:] for row in matrix]
     size = len(matrix)
+    if size == 0:
+        return 1
     previous = 1
     sign = 1
     for pivot_index in range(size - 1):
         if matrix[pivot_index][pivot_index] == 0:
             swap = next(
-                row for row in range(pivot_index + 1, size) if matrix[row][pivot_index]
+                (row for row in range(pivot_index + 1, size) if matrix[row][pivot_index]),
+                None,
             )
+            if swap is None:
+                return 0
             matrix[pivot_index], matrix[swap] = matrix[swap], matrix[pivot_index]
             sign = -sign
         pivot = matrix[pivot_index][pivot_index]
@@ -254,9 +278,16 @@ def resultant(left: list[int], right: list[int]) -> int:
 
 
 def discriminant(poly: list[int]) -> int:
+    """Disc(P) = (-1)^(d(d-1)/2) * Res(P, P') / lc(P) for a descending coefficient list.
+
+    The division by the leading coefficient is exact; for the monic inputs used in `main` it is
+    division by `1`, so the results there are unchanged.
+    """
     degree = len(poly) - 1
     derivative = [coefficient * (degree - index) for index, coefficient in enumerate(poly[:-1])]
-    return (-1) ** (degree * (degree - 1) // 2) * resultant(poly, derivative)
+    signed = (-1) ** (degree * (degree - 1) // 2) * resultant(poly, derivative)
+    assert signed % poly[0] == 0
+    return signed // poly[0]
 
 
 def resultant_formula_value(n: int, value: int) -> int:

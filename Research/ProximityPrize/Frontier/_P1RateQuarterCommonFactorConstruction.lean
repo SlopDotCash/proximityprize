@@ -164,18 +164,6 @@ structure CommonLocatorData where
 `commonLocatorResidual` below discharges it unconditionally. -/
 def CommonLocatorResidual : Prop := Nonempty CommonLocatorData
 
-theorem eval_domainRootProduct_eq_zero_iff_mem
-    {I : Type} [Fintype I] [DecidableEq I]
-    (dom : I ↪ F) (S : Finset I) (i : I) :
-    (domainRootProduct dom S).eval (dom i) = 0 ↔ i ∈ S := by
-  rw [domainRootProduct, eval_prod, Finset.prod_eq_zero_iff]
-  constructor
-  · rintro ⟨j, hj, hzero⟩
-    simp only [eval_sub, eval_X, eval_C] at hzero
-    exact dom.injective (sub_eq_zero.mp hzero) ▸ hj
-  · intro hi
-    exact ⟨i, hi, by simp⟩
-
 noncomputable def concreteCommonLocatorPolynomial : F[X] :=
   domainRootProduct domain commonRoots
 

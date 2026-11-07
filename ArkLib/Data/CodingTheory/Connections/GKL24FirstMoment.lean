@@ -62,8 +62,37 @@ The gap `support u₁ ⤳ δ·n` is exactly the GKL24 first-moment agree-domain-
 each bad point to fresh disagreement coordinates of the line family), not derivable from a single
 fixed codeword `w` in isolation. We surface it as the single named hypothesis
 `GKL24FirstMomentResidual` and record the conditional strengthening
-`epsMCA_le_ofReal_of_gkl24_residual`, which recovers the exact `L²·δ·n` first-moment shape from
-it. Everything *else* on the path is now in-tree.
+`epsMCA_le_ofReal_of_gkl24_residual`, which recovers the `B_T·b` first-moment shape from it.
+
+## Honest status of the sharp instantiations
+
+The conditional implications in this file are valid, but two advertised sharp instantiations are
+**false in general**, so they are not viable production targets:
+
+* `GKL24FirstMomentResidual` requires its carrier to contain *every* codeword, so `B_T` is at
+  least the number of codewords (`GKL24FirstMomentResidual_false_of_lt_card`); the T5.1 choice
+  `B_T = L²` is impossible as soon as the code has more than `L²` codewords (e.g. the length-`2`
+  repetition code over `𝔽₃` at list radius `p = 1/4`: `L = 1`, three codewords).  The witness-cover
+  form `GKL24FirstMomentWitnessCoverResidual` fixes this particular over-strengthening.
+* `GKL24FirstMomentWitnessCoverResidual` still covers **all** of `mcaBad` with per-codeword counts.
+  Every carried witness of a bad scalar has `|mcaBadWitness w| ≥ 1`, so any `b < 1` is refuted by
+  a single bad scalar (`GKL24FirstMomentWitnessCoverResidual_false_of_lt_one`).  Concretely, for
+  the same repetition code with `p = 1/4`, `η = 1/8` (Johnson-lifted MCA radius
+  `J = 1 − √(7/8)`, `2J < 1`) and `u₀ = (0,0)`, `u₁ = (1,0)`, the scalar `γ = 0` is bad, so the
+  instantiation `b = p·n = 1/2` is false although `Λ(C, p) = 1`.  GCXK25's bound
+  `|mcaBad| ≤ L²·p·n + 1/η` is not refuted: its first-moment estimate applies to the sub-family
+  `Bad¹` only, with the separate `1/η` summand charging the rest.  A sharp first-moment target must
+  partition `Bad¹` from the other bad scalars instead of applying `b = p·n` to all of `mcaBad`.
+  The in-tree relaxed counts `max 1 (2·δ·n)` and `δ·n + 1` are genuine and accommodate the
+  singleton.
+* The maximal-domain hypotheses `GKL24MaxCorrWitnessCoverHypothesis` and
+  `GKL24MaxCorrStrictWitnessCoverFalseAsStated` imply the witness-cover residual at `b = p·n`
+  (`GKL24FirstMomentWitnessCoverResidual_of_maxCorr_cover`), so they inherit the obstruction; in
+  the example the required domain has size `≥ (1 − p)·2 = 3/2`, hence is the full domain, where
+  `u₁` is not a codeword.  The pairwise-intersection clause cannot repair an unsatisfiable
+  maximal-domain clause.  These adapters are retained as conditional (quarantined) interfaces.
+
+Everything *else* on the path is in-tree.
 
 ## References
 
@@ -1037,8 +1066,14 @@ such that every stack `u` admits a carrier `T u` of codewords of size `≤ B_T`,
 
 The count `b` is left abstract precisely because GCXK25's first-moment value is `b = p·n` with `p`
 the **list-decoding** radius of `Λ(C, p) ≤ L` — *not* the (Johnson-lifted) MCA radius `δ` at which
-`mcaBadWitness` is taken. Decoupling `b` from `δ` keeps the statement faithful: the caller
-instantiates `b := δ_list · n` and `B_T := L²` to obtain T5.1's `L²·δ·n` first-moment summand.
+`mcaBadWitness` is taken. Decoupling `b` from `δ` keeps the statement faithful.
+
+**Over-strong carrier clause.** The carrier must contain *every* codeword of `MC`, so the residual
+forces `B_T ≥ #MC` (`GKL24FirstMomentResidual_false_of_lt_card`). The T5.1 instantiation
+`B_T := L²` is therefore false whenever the code has more than `L²` codewords; only the
+full-code relaxations (`B_T = |F|^n`) below are realizable. The corrected carrier interface is
+`GKL24FirstMomentWitnessCoverResidual` (which has its own obstruction at `b < 1`; see the module
+docstring).
 
 This isolates exactly [GKL24]'s maximal-correlated-agree-domain intersection content (GCXK25's
 `|Bad¹| ≤ p·n`): a *global* charging argument over the line family `{u₀ + γ·u₁}` that a single
@@ -1103,7 +1138,14 @@ set of codewords whose witness sets cover the actually bad combining points:
 
 That distinction matters for the intended `B_T = L²` application: `T u` is the close-codeword /
 witness carrier furnished by list decoding and maximal correlated-agreement domains, not the full
-code. The per-witness count `b` is still the genuine GKL24/GCXK25 content. -/
+code. The per-witness count `b` is still the genuine GKL24/GCXK25 content.
+
+**Not viable at the sharp count.** The cover is of *all* of `mcaBad`, and each carried witness of a
+bad scalar witnesses at least one scalar, so the residual is false for every `b < 1` as soon as
+one stack has a bad scalar (`GKL24FirstMomentWitnessCoverResidual_false_of_lt_one`). In particular
+the instantiation `b = p·n` fails when `p·n < 1` (length-`2` repetition code over `𝔽₃`, `p = 1/4`;
+see the module docstring). GCXK25 applies the first-moment count only to `Bad¹`, with the `1/η`
+summand charging the remaining bad scalars; a sharp target must make that partition. -/
 def GKL24FirstMomentWitnessCoverResidual
     (MC : Submodule F (ι → F)) (δ : ℝ≥0) (B_T b : ℝ) : Prop :=
   ∀ u : WordStack F (Fin 2) ι,
@@ -1141,6 +1183,45 @@ theorem GKL24FirstMomentWitnessCoverResidual_inTree_two_delta_card
   · exact_mod_cast Finset.card_filter_le Finset.univ (fun w : ι → F => w ∈ (MC : Set (ι → F)))
   · intro w hw
     exact mcaBadWitness_card_le_two_delta_mul_card MC δ (u 0) (u 1) w (by simpa [T] using hw)
+
+/-- **The all-codeword carrier forces `B_T ≥ #MC`.** `GKL24FirstMomentResidual` asks for a carrier
+containing every codeword, so it is false whenever `B_T` is below the number of codewords. In
+particular the T5.1 instantiation `B_T = L²` is impossible for codes with more than `L²`
+codewords (e.g. three codewords of the length-`2` repetition code over `𝔽₃` versus `L = 1`). -/
+theorem GKL24FirstMomentResidual_false_of_lt_card
+    (MC : Submodule F (ι → F)) (δ : ℝ≥0) {B_T b : ℝ}
+    (hlt : B_T < (Nat.card MC : ℝ)) :
+    ¬ GKL24FirstMomentResidual MC δ B_T b := by
+  classical
+  intro hres
+  obtain ⟨T, hT, hcard, _⟩ := hres (fun _ => 0)
+  have hle : Nat.card MC ≤ T.card := by
+    have h := Nat.card_le_card_of_injective
+      (fun x : MC => (⟨x.1, hT x.1 x.2⟩ : T))
+      (fun a b hab => Subtype.ext (by simpa using congrArg Subtype.val hab))
+    simpa [Nat.card_eq_fintype_card, Fintype.card_coe] using h
+  have hle' : (Nat.card MC : ℝ) ≤ (T.card : ℝ) := by exact_mod_cast hle
+  linarith
+
+/-- **The witness-cover residual is false below per-codeword count `1`.** If some stack has a bad
+scalar, the cover places it in the witness set of some carried codeword, whose count is then at
+least `1`. Hence `GKL24FirstMomentWitnessCoverResidual MC δ B_T b` fails for every `b < 1`; this
+refutes the sharp instantiation `b = p·n` whenever `p·n < 1` and a bad scalar exists, because the
+residual applies the first-moment count to *all* of `mcaBad` rather than to GCXK25's `Bad¹`. -/
+theorem GKL24FirstMomentWitnessCoverResidual_false_of_lt_one
+    (MC : Submodule F (ι → F)) (δ : ℝ≥0) {B_T b : ℝ} (hb : b < 1)
+    (u : WordStack F (Fin 2) ι)
+    (hbad : (mcaBad (F := F) (MC : Set (ι → F)) δ (u 0) (u 1)).Nonempty) :
+    ¬ GKL24FirstMomentWitnessCoverResidual MC δ B_T b := by
+  classical
+  intro hres
+  obtain ⟨T, _hTsub, hcover, _hcard, hper⟩ := hres u
+  obtain ⟨γ, hγ⟩ := hbad
+  obtain ⟨w, hwT, hγw⟩ := Finset.mem_biUnion.mp (hcover hγ)
+  have hpos : (1 : ℝ) ≤
+      ((mcaBadWitness (F := F) (MC : Set (ι → F)) δ (u 0) (u 1) w).card : ℝ) := by
+    exact_mod_cast Finset.card_pos.mpr ⟨γ, hγw⟩
+  linarith [hper w hwT]
 
 /-! ### Maximal-domain petal accounting
 
@@ -1305,10 +1386,12 @@ carried codeword, a maximal correlated-agreement domain that is strictly expande
 line-agreement domain.
 
 The quantified `∀ u` form is too strong: stacks with an isolated bad scalar and no large
-joint-agreement domain make the per-`w` maximal-domain clause unsatisfiable. The live open
-interface is therefore the bounded carrier/list-size residual
-`GKL24FirstMomentWitnessCoverResidual`; this declaration is retained only so older conditional
-front doors keep naming exactly which over-strong certificate they consume.
+joint-agreement domain make the per-`w` maximal-domain clause unsatisfiable. The bounded
+carrier/list-size residual `GKL24FirstMomentWitnessCoverResidual` removes that clause, but is itself
+false at the sharp count `b = p·n` when `p·n < 1` (it covers all of `mcaBad`; see
+`GKL24FirstMomentWitnessCoverResidual_false_of_lt_one`), so it is not by itself a viable sharp
+target either. This declaration is retained only so older conditional front doors keep naming
+exactly which over-strong certificate they consume.
 
 The pairwise large-intersection clause is derived by
 `GKL24MaxCorrWitnessCoverHypothesis_of_strict_cover` from the witness-size lower bounds when the
@@ -1333,7 +1416,15 @@ def GKL24MaxCorrStrictWitnessCoverFalseAsStated
 carrier-level version of `mcaBadWitness_card_le_radius_mul_card_of_maxCorrAgreeDomain`: every
 stack has a close-codeword carrier, and each carried codeword has a maximal
 correlated-agreement domain whose bad line-agreement domains strictly expand it while pairwise
-intersections remain large. -/
+intersections remain large.
+
+**False in general (conditional interface only).** It implies
+`GKL24FirstMomentWitnessCoverResidual MC δ B_T (p·n)`, so it fails whenever `p·n < 1` and some
+stack has a bad scalar. It also inherits the maximal-domain obstruction of
+`GKL24MaxCorrStrictWitnessCoverFalseAsStated`: for the length-`2` repetition code over `𝔽₃`,
+`p = 1/4`, `u₀ = (0,0)`, `u₁ = (1,0)`, the domain must have size `≥ 3/2`, i.e. be the full
+domain, where `u₁` is not a codeword. The added pairwise-intersection clause cannot repair this;
+it is not a viable future producer target as stated. -/
 def GKL24MaxCorrWitnessCoverHypothesis
     (MC : Submodule F (ι → F)) (δ p : ℝ≥0) (B_T : ℝ) : Prop :=
   ∀ u : WordStack F (Fin 2) ι,
@@ -1581,8 +1672,9 @@ theorem mcaEvent_prob_le_ofReal_of_gkl24_residual
 is the same theorem as `mcaBad_card_le_of_gkl24_residual`, but with the target bound written as
 `L² · δ_list · n` by the caller through `B_T` and `b`.
 
-The theorem is intentionally conditional: supplying the residual at
-`B_T := L^2`, `b := δ_list · n` is exactly the still-open GKL24/GCXK25 first-moment theorem. -/
+The theorem is intentionally conditional. Supplying the residual at `B_T := L^2`,
+`b := δ_list · n` is **not** an open theorem but false in general: the all-codeword carrier clause
+forces `B_T ≥ #MC` (`GKL24FirstMomentResidual_false_of_lt_card`). -/
 theorem mcaBad_card_le_t51_firstMoment_of_gkl24_residual
     (MC : Submodule F (ι → F)) (δ : ℝ≥0) {Lsq δn : ℝ} (hδn0 : 0 ≤ δn)
     (hres : GKL24FirstMomentResidual MC δ Lsq δn)
@@ -1593,8 +1685,10 @@ theorem mcaBad_card_le_t51_firstMoment_of_gkl24_residual
 /-- **Per-stack bad-`γ` count from the witness-cover residual.**
 This is the corrected carrier interface for the first-moment side of GCXK25/GKL24: the finite
 carrier only has to cover the bad scalars for the current stack, rather than contain all codewords
-of `MC`. Supplying this residual at `B_T = L²`, `b = δ_list · n` is the sharp first-moment theorem
-still left open by #67. -/
+of `MC`. Supplying this residual at `B_T = L²`, `b = δ_list · n` is **false in general** (it covers
+all of `mcaBad`, so `b < 1` is refuted by any bad scalar,
+`GKL24FirstMomentWitnessCoverResidual_false_of_lt_one`); GCXK25's sharp first-moment theorem
+charges only `Bad¹`, and the remaining bad scalars go to the separate `1/η` summand. -/
 theorem mcaBad_card_le_of_gkl24_witnessCover_residual
     (MC : Submodule F (ι → F)) (δ : ℝ≥0) {B_T b : ℝ} (hb0 : 0 ≤ b)
     (hres : GKL24FirstMomentWitnessCoverResidual MC δ B_T b)
@@ -1659,8 +1753,9 @@ theorem mcaEvent_prob_le_ofReal_of_gkl24_strict_witnessCover_falseAsStated
     (GKL24MaxCorrWitnessCoverHypothesis_of_strict_cover MC δ p hp_le_one hδp hres) u
 
 /-- **Alias for the witness-cover residual in the canonical ABF26 T5.1 parameter shape.**
-This is the future plug-in point for the GCXK25/GKL24 maximal-domain charging theorem at
-`B_T := L²`, `b := δ_list · n`. -/
+This is a conditional plug-in shape only: at `B_T := L²`, `b := δ_list · n` the residual is false in
+general (`GKL24FirstMomentWitnessCoverResidual_false_of_lt_one`), because the sharp GCXK25/GKL24
+charging bounds `Bad¹`, not all of `mcaBad`. -/
 theorem mcaBad_card_le_t51_firstMoment_of_gkl24_witnessCover_residual
     (MC : Submodule F (ι → F)) (δ : ℝ≥0) {Lsq δn : ℝ} (hδn0 : 0 ≤ δn)
     (hres : GKL24FirstMomentWitnessCoverResidual MC δ Lsq δn)
@@ -1673,11 +1768,11 @@ Given the single named residual `GKL24FirstMomentResidual MC δ B_T b` with `b �
 
   `ε_mca(MC, δ) ≤ ENNReal.ofReal ((B_T · b) / |F|)`.
 
-Instantiating `B_T = L²` and `b = δ_list · n` (GCXK25's `|Bad¹| ≤ p·n` first-moment count, `p` the
-list-decoding radius) gives the `L²·δ·n` summand of ABF26 T5.1; adding the in-tree second-moment
-`1/η` summand (`GCXK25SecondMoment.card_lt_one_div_of_second_moment_rs`) recovers the full
-`(L²·δ·n + 1/η)/|F|` bound. The proof is the in-tree union-bound + supremum-to-count glue; the
-*only* unproven input is the named residual. -/
+The proof is the in-tree union-bound + supremum-to-count glue; the *only* unproven input is the
+named residual. Note this bounds all of `mcaBad`, so it does not *add* a `1/η` summand: the T5.1
+instantiation `B_T = L²`, `b = δ_list · n` is false in general
+(`GKL24FirstMomentResidual_false_of_lt_card`); GCXK25's `(L²·p·n + 1/η)/|F|` bound requires
+partitioning `Bad¹` (first moment) from the remaining bad scalars (second moment). -/
 theorem epsMCA_le_ofReal_of_gkl24_residual
     (MC : Submodule F (ι → F)) (δ : ℝ≥0) {B_T b : ℝ} (hb0 : 0 ≤ b)
     (hres : GKL24FirstMomentResidual MC δ B_T b) :
@@ -1689,7 +1784,8 @@ theorem epsMCA_le_ofReal_of_gkl24_residual
 
 /-- **Conditional strengthening from the witness-cover residual.**
 This is the `ε_mca` version of `mcaBad_card_le_of_gkl24_witnessCover_residual`, retaining the
-correct close-codeword carrier interface for the future sharp first-moment proof. -/
+close-codeword carrier interface. It is a conditional implication: the sharp `b = δ_list · n`
+instantiation is false in general (see `GKL24FirstMomentWitnessCoverResidual_false_of_lt_one`). -/
 theorem epsMCA_le_ofReal_of_gkl24_witnessCover_residual
     (MC : Submodule F (ι → F)) (δ : ℝ≥0) {B_T b : ℝ} (hb0 : 0 ≤ b)
     (hres : GKL24FirstMomentWitnessCoverResidual MC δ B_T b) :
@@ -1760,6 +1856,8 @@ kernel-clean apart from the standard Lean foundations (`propext`, `Classical.cho
 #print axioms ProximityGap.GKL24FirstMomentResidual_inTree_card
 #print axioms ProximityGap.GKL24FirstMomentResidual_inTree_two_delta_card
 #print axioms ProximityGap.GKL24FirstMomentWitnessCoverResidual_inTree_two_delta_card
+#print axioms ProximityGap.GKL24FirstMomentResidual_false_of_lt_card
+#print axioms ProximityGap.GKL24FirstMomentWitnessCoverResidual_false_of_lt_one
 #print axioms ProximityGap.lineAgreeSet_card_ge_of_mem_mcaBadWitness
 #print axioms ProximityGap.linePetal_nonempty_of_ssubset_lineAgreeSet
 #print axioms ProximityGap.linePetal_subset_compl

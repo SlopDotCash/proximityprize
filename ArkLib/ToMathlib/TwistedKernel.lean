@@ -7,18 +7,22 @@ import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Tactic.LinearCombination
 
 /-!
-# The twisted-kernel lemma for smooth (2-adic) domains (issue #232)
+# The twisted-kernel lemma (motivated by smooth 2-adic domains, issue #232)
 
-The σ-twisted kernel systems arising from the even/odd (FRI-fold) descent on 2-power smooth
-domains are **unconditionally trivial**: if `e, f` have degree `< κ` and
-`e(d²) + d·f(d²) = 0` at `2κ` distinct points `d`, then `e = f = 0` — because
-`P(d) := e(d²) + d·f(d²)` is a polynomial of degree `≤ 2κ−1` with `2κ` roots, and the
-even/odd parts of `P = 0` recover `e` and `f` (composition with `−X` plus `char ≠ 2`).
+The σ-twisted kernel systems arising from the even/odd (FRI-fold) descent are
+**unconditionally trivial**: if `e, f` have degree `< κ` and `e(d²) + d·f(d²) = 0` at `2κ`
+distinct points `d`, then `e = f = 0` — because `P(d) := e(d²) + d·f(d²)` is a polynomial of
+degree `≤ 2κ−1` with `2κ` roots, and the even/odd parts of `P = 0` recover `e` and `f`
+(composition with `−X` plus `char ≠ 2`).
 
-This is the mechanism-level fact "what smoothness supplies": the parametrization `z = d²`
-gives rigidity that random evaluation domains only get generically. Consequences (see the
-DISPROOF_LOG O14): in the descent's overdetermined pattern systems, solutions are unique per
-pattern, so beyond-Johnson list bounds reduce to inhomogeneous consistency counting.
+**Scope.** `twisted_kernel_trivial` holds for **any** finite set `D` of at least `2κ` distinct
+field points (with `(2 : F) ≠ 0`); it has no smoothness, subgroup or 2-adic hypothesis, and the
+root-count proof works for arbitrary such domains. It therefore does not establish an advantage
+of smooth domains over arbitrary evaluation domains. The motivation is the FRI-fold descent on
+2-power smooth domains, where these systems arise. Consequences (see the DISPROOF_LOG O14): in
+the descent's overdetermined pattern systems, solutions are unique per pattern, so
+beyond-Johnson list bounds reduce to inhomogeneous consistency counting; that downstream
+incidence-counting problem is separate and is not proved here.
 -/
 
 open Polynomial

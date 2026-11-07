@@ -190,8 +190,10 @@ theorem valueMultiset_erase_notMem {ι : Type*} (a : ι) (s : Finset ι) (h : a 
   rw [Finsupp.erase_ne (ne_of_mem_of_not_mem hi h)]
 
 /-- `countPerms m` as a `Nat.multinomial` over the support `m.toFinset` of `m`'s
-count function. -/
-theorem countPerms_eq_multinomial (m : Multiset ℕ) :
+count function.  The `countPerms` lemmas below are stated for a multiset over an arbitrary
+alphabet `A` with decidable equality (they are used here at `A = ℕ` and downstream at other
+alphabets, e.g. signed-walk steps in the research cone). -/
+theorem countPerms_eq_multinomial {A : Type*} [DecidableEq A] (m : Multiset A) :
     m.countPerms = Nat.multinomial m.toFinset (fun v => m.count v) := by
   rw [Multiset.countPerms,
     ← Finsupp.multinomial_of_support_subset (s := m.toFinset) (d := m.toFinsupp)
@@ -200,7 +202,7 @@ theorem countPerms_eq_multinomial (m : Multiset ℕ) :
 
 /-- `countPerms (m.erase v)` as a `Nat.multinomial` over the **larger** finset `m.toFinset`
 (any index dropped by the erasure contributes a `0! = 1` factor). -/
-theorem countPerms_erase_eq_multinomial (m : Multiset ℕ) (v : ℕ) :
+theorem countPerms_erase_eq_multinomial {A : Type*} [DecidableEq A] (m : Multiset A) (v : A) :
     (m.erase v).countPerms = Nat.multinomial m.toFinset (fun w => (m.erase v).count w) := by
   rw [countPerms_eq_multinomial]
   apply Nat.multinomial_congr_of_sdiff (s := (m.erase v).toFinset) (t := m.toFinset)
@@ -211,12 +213,12 @@ theorem countPerms_erase_eq_multinomial (m : Multiset ℕ) (v : ℕ) :
   · intro w _; rfl
 
 /-- `∑_{w ∈ m.toFinset} count w m = card m`. -/
-theorem sum_count_self (m : Multiset ℕ) :
+theorem sum_count_self {A : Type*} [DecidableEq A] (m : Multiset A) :
     ∑ w ∈ m.toFinset, m.count w = m.card := Multiset.toFinset_sum_count_eq m
 
 /-- `∑_{w ∈ m.toFinset} count w (m.erase v) = card (m.erase v)` (summed over the *larger*
 finset `m.toFinset`; the extra index contributes count `0`). -/
-theorem sum_count_erase (m : Multiset ℕ) (v : ℕ) :
+theorem sum_count_erase {A : Type*} [DecidableEq A] (m : Multiset A) (v : A) :
     ∑ w ∈ m.toFinset, (m.erase v).count w = (m.erase v).card := by
   rw [← Multiset.toFinset_sum_count_eq (m.erase v)]
   refine (Finset.sum_subset (Multiset.toFinset_subset.mpr (Multiset.erase_subset _ _)) ?_).symm
@@ -227,7 +229,8 @@ theorem sum_count_erase (m : Multiset ℕ) (v : ℕ) :
 /-- **Per-value cancellation:** `count v m * countPerms m = card m * countPerms (m.erase v)`
 for `v ∈ m`.  Proved by clearing both `Nat.multinomial_spec` denominators over the common
 finset `m.toFinset` (the products differ only at `v`, by one factorial step). -/
-theorem count_mul_countPerms (m : Multiset ℕ) (v : ℕ) (hv : v ∈ m) :
+theorem count_mul_countPerms {A : Type*} [DecidableEq A] (m : Multiset A) (v : A)
+    (hv : v ∈ m) :
     m.count v * m.countPerms = m.card * (m.erase v).countPerms := by
   have hvf : v ∈ m.toFinset := Multiset.mem_toFinset.mpr hv
   set P : ℕ := ∏ w ∈ (m.toFinset).erase v, (m.count w)! with hP
@@ -264,7 +267,8 @@ theorem count_mul_countPerms (m : Multiset ℕ) (v : ℕ) (hv : v ∈ m) :
 `countPerms m = ∑_{v ∈ m.toFinset} countPerms (m.erase v)`.  This mirrors the position-peeling
 recursion of the fiber count.  Obtained by summing `count_mul_countPerms` over `m.toFinset` and
 cancelling `card m > 0`. -/
-theorem countPerms_eq_sum_erase (m : Multiset ℕ) (hm : m ≠ 0) :
+theorem countPerms_eq_sum_erase {A : Type*} [DecidableEq A] (m : Multiset A)
+    (hm : m ≠ 0) :
     m.countPerms = ∑ v ∈ m.toFinset, (m.erase v).countPerms := by
   have hcard : 0 < m.card := Multiset.card_pos.mpr hm
   apply Nat.eq_of_mul_eq_mul_left hcard

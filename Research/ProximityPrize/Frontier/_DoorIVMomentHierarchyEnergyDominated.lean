@@ -7,10 +7,11 @@ import Research.ProximityPrize.Frontier._DoorIVMixedConjugateMomentCollapse
 import Research.ProximityPrize.Frontier._DoorIVOddSignedMomentCauchy
 
 /-!
-# Door-(iv) Lane-1 CAPSTONE: the WHOLE mixed-conjugate moment hierarchy is energy-dominated (#444)
+# Door-(iv) Lane-1 CAPSTONE: even split-collapse and odd Cauchy bound for real moments (#444)
 
-This module CONSOLIDATES the three proven Lane-1 phase-vacuity facts into a single citable
-"no-fifth-door in the moment hierarchy" statement. For the negation-closed thin subgroup `μ_n`, every
+This module CONSOLIDATES the three proven Lane-1 facts about conjugate splits into a single citable
+statement (even-degree split-collapse plus an odd-degree magnitude inequality; see the scope note
+below). For the negation-closed thin subgroup `μ_n`, every
 `η_b` is REAL, and the campaign proved:
 
 * `_DoorIVEvenMomentPhaseVacuity` / `_DoorIVMixedConjugateMomentCollapse`: every mixed-conjugate
@@ -21,10 +22,18 @@ This module CONSOLIDATES the three proven Lane-1 phase-vacuity facts into a sing
   `A_D = Σ_c (η_c)^D`, whose magnitude is Cauchy-dominated by the energy face,
   `|A_D|² ≤ card · Σ_c (η_c)^{2D}`.
 
-So EVERY functional in the entire `Σ η^a · conj(η)^b` correlator lattice — at every total degree, every
-conjugate split, BOTH parities — is controlled by an even/energy moment, i.e. the dead modulus object.
-There is no phase-carrying correlator anywhere in the moment hierarchy. This is the kernel-checked
-backbone of "the phase the modulus discards is identically zero on the real axis".
+So on the real axis the conjugate split never matters: every correlator `Σ η^a · conj(η)^b`
+equals the signed moment `Σ η^{a+b}`; at EVEN total degree this is exactly the modulus/energy
+moment, and at ODD total degree its *magnitude* is bounded above by an even/energy moment.
+
+Scope (audit correction R-101): this is a one-sided magnitude bound, not an equivalence or a
+recovery theorem, and it does NOT say that odd signed moments carry no information. A nonzero
+real value has phase `0` **or** `π`, and that sign survives in odd moments: the real vectors
+`(1, 1)` and `(1, −1)` have identical moduli and identical even power sums, but every odd power
+sum is `2` versus `0`. An earlier version of this header claimed "no phase-carrying correlator
+anywhere in the moment hierarchy" and "phase identically zero on the real axis"; both are false
+and are withdrawn. Excluding the use of the signed odd correlators of the actual periods would need
+a separate theorem about the actual fixed-period constraints, which is not proved here.
 
 This is a STRUCTURAL consolidation capstone (composition of proven facts), NOT a CORE / cancellation /
 completion / anti-concentration / capacity claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` remains OPEN.
@@ -68,9 +77,12 @@ For a finite real-valued field `η : β → ℝ` (the real period field of the n
 * ODD (or any) total degree `D`: the real signed correlator `Σ_c (η_c)^D` has its square bounded by
   `card · Σ_c (η_c)^{2D}` (Cauchy-Schwarz energy domination).
 
-Hence every functional in the `Σ η^a conj(η)^b` lattice is controlled by an even/energy moment: there
-is no phase-carrying correlator anywhere in the moment hierarchy. Constraint capstone — NO CORE /
-cancellation / completion / anti-concentration / capacity claim. CORE remains OPEN. -/
+Hence even-degree correlators collapse onto energy moments, and odd-degree signed correlators are
+*bounded in magnitude* by an even moment. The odd signed moments themselves still carry sign
+information that the even moments do not determine (e.g. `(1, 1)` vs `(1, −1)`), so this is not a
+statement that the hierarchy is phase-free or that signed odd correlators are useless. Constraint
+capstone — NO CORE / cancellation / completion / anti-concentration / capacity claim. CORE remains
+OPEN. -/
 theorem momentHierarchy_energy_dominated
     {β : Type*} (s : Finset β) (η : β → ℝ) :
     (∀ a b r : ℕ, a + b = 2 * r →

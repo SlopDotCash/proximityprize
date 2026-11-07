@@ -28,9 +28,12 @@ owned subsets do) gives, for witness threshold `w₀ < (1−δ)n`:
 the landed `2`.  At the ladder slice (`m = 1`, `w₀ = r`, `d = r−2`) the good-side count
 drops from `C(n,r)/2` to `C(n,r)·r/C(r+1,2) = 2·C(n,r)/(r+1)` — a factor-`(r+1)/4` gain.
 
-**The exact minimum, and why the landed worst case was unattainable** (`deviation_unfit_iff`,
-`deviation_ownership_card`): the true per-witness minimum ownership is exactly
-`C(w−1, d+1)`, attained by the *single-deviation* configurations — `u₁` equal to a
+**The single-deviation count, and why the landed worst case was unattainable**
+(`deviation_unfit_iff`, `deviation_ownership_card`): the per-witness minimum ownership is
+*at most* `C(w−1, d+1)` — this value is attained by the *single-deviation* configurations
+(machine-checked), while the matching lower bound "every witness owns `≥ C(w−1, d+1)`
+subsets" is only probe evidence, not a theorem in this file (the proved universal lower bound
+is the weaker pair bound `C(w, d+1)/(d+2)`).  Single deviation: `u₁` equal to a
 degree-`≤ d` polynomial on `S` minus one point `j` and deviating at `j`; then a
 `(d+2)`-subset of `S` is unfit **iff it contains `j`**, so exactly `C(w−1, d+1)` subsets
 are owned.  At the minimal witness `w = r+1` this is `C(r, r−1) = r`, not `2`: the landed
@@ -618,7 +621,7 @@ theorem sharpened_crit_beyond_johnson {μ r : ℕ} (hr2 : 2 ≤ r)
   _ = 1 * 2 ^ μ := (one_mul _).symm
   _ ≤ (r - 1) * 2 ^ μ := Nat.mul_le_mul_right _ (by omega)
 
-/-! ## The ceiling: the exact minimum ownership is `C(w−1, d+1)` (cannot sharpen further) -/
+/-! ## The ceiling: minimum ownership is at most `C(w−1, d+1)` (cannot sharpen further) -/
 
 /-- **The deviation dichotomy.**  If `u₁` agrees with a degree-`≤ d` polynomial on `S`
 everywhere except the single point `j` (where it deviates), then a `(d+2)`-subset
@@ -653,15 +656,22 @@ theorem deviation_unfit_iff {p : ℕ} [Fact p.Prime] {g : ZMod p} {n : ℕ}
     exact hq' j hjT
 
 open Classical in
-/-- **The exact minimum ownership (the cannot-sharpen theorem).**  For a single-deviation
-direction, the owned (unfit) `(d+2)`-subsets of the witness `S` are *exactly* those
-containing the deviation point, and they number **exactly `C(|S|−1, d+1)`**.  Since the
+/-- **The single-deviation ownership count (the cannot-sharpen theorem).**  For a
+single-deviation direction, the owned (unfit) `(d+2)`-subsets of the witness `S` are *exactly*
+those containing the deviation point, and they number **exactly `C(|S|−1, d+1)`**.  Since the
 deviation configurations are realizable as bad scalars at every witness size (probe:
 `probe_ownership_census.py`, 90/90 constructions), no per-witness subset-ownership bound
-can exceed `C(w−1, d+1)`: the sharpened census (`C(w,d+1)/(d+2)`, within factor
-`(d+2)(w−d−1)/w ≤ 2` of this) is final for the scheme, and the subset-counting war stalls
-at `r = Θ(√(n log n))` — the production regime `r = Θ(n)` is unreachable by any further
-refinement of per-witness subset counting. -/
+can exceed `C(w−1, d+1)`.  This is an upper bound on the true minimum; that the minimum
+*equals* `C(w−1, d+1)` would need a separate lower-bound theorem, which is not proved here.
+
+The proved sharpened census `C(w,d+1)/(d+2)` is within the factor `(d+2)(w−d−1)/w` of
+`C(w−1, d+1)`.  At the minimal ladder witness `w = d+3` this factor is `2(d+2)/(d+3) ≤ 2`, so
+there the sharpened census is final up to a factor `2`; for larger witnesses the factor grows
+towards `d+2` (e.g. `d = 2`, `w = 10`: counts `30` versus `84`, ratio `14/5 > 2`, realized by
+the degree-`≤ 2` code on ten points of `F₁₁` with a one-point direction; 2026-10-28 audit,
+PG-321).  At the ladder slice the subset-counting war stalls at `r = Θ(√(n log n))` — the
+production regime `r = Θ(n)` is unreachable by any further refinement of per-witness subset
+counting. -/
 theorem deviation_ownership_card {p : ℕ} [Fact p.Prime] {g : ZMod p} {n : ℕ}
     (hginj : ∀ i j : Fin n, g ^ (i : ℕ) = g ^ (j : ℕ) → i = j)
     {d : ℕ} {S : Finset (Fin n)} {j : Fin n} (hj : j ∈ S)

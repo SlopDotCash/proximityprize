@@ -38,6 +38,12 @@ uniqueness layer (SK3 audit on the issue).  Composed with
 `exists_curve_cell_production_total` + pigeonhole, this brick yields the Prop-5.5-faithful
 subset form (SK2).
 
+**Linear-factor scope (audit CW-B19-12).**  The hypotheses `Irreducible R` and
+`(Y − C w) ∣ R` force the cofactor to be a unit, so `R` is an associate of `Y − C w` and has
+`Y`-degree exactly `1`.  Every result here therefore applies only to **`Y`-linear cell
+factors** — the case `Hab25LinearFactorCapture` already treats as free.  Components with
+`deg_Y R ≥ 2`, which that file names as the open core of C5.8, are not reached.
+
 Axiom-clean: `[propext, Classical.choice, Quot.sound]` (audited at end of file).
 -/
 
@@ -55,6 +61,20 @@ variable {F₀ : Type} [Field F₀]
 
 /-! ## The decode is the surface's specialization -/
 
+/-- **The cofactor of the surface factor is a unit.**  If `R` is irreducible and
+`R = (Y − C w) * c`, then `c` is a unit (the linear factor `Y − C w` is not).  In particular
+`R` is an associate of `Y − C w` and has `Y`-degree `1`: this is the shared first step of
+`decode_eq_surface_map` and `CellSelectionFree.evalX_eq_unit_mul_sectionBranch`. -/
+theorem isUnit_cofactor_of_irreducible {R : (F₀[X])[X][Y]}
+    (hRirr : Irreducible R) {w : F₀[X][Y]} {c : (F₀[X])[X][Y]}
+    (hc : R = (Polynomial.X - Polynomial.C w) * c) : IsUnit c := by
+  have hXw_nu : ¬ IsUnit (Polynomial.X - Polynomial.C w) := by
+    intro hu
+    have h1 := Polynomial.natDegree_eq_zero_of_isUnit hu
+    rw [Polynomial.natDegree_X_sub_C] at h1
+    exact one_ne_zero h1
+  exact (hRirr.isUnit_or_isUnit hc).resolve_left hXw_nu
+
 /-- **The decode IS the surface's specialization** (the map form of the section link,
 arity-generic): cell irreducibility + the surface divisibility pin every cell decode to
 `w.map (evalRingHom γ)`. -/
@@ -66,13 +86,8 @@ theorem decode_eq_surface_map {R : (F₀[X])[X][Y]}
       R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ))) :
     P = w.map (Polynomial.evalRingHom γ) := by
   classical
-  have hXw_nu : ¬ IsUnit (Polynomial.X - Polynomial.C w) := by
-    intro hu
-    have h1 := Polynomial.natDegree_eq_zero_of_isUnit hu
-    rw [Polynomial.natDegree_X_sub_C] at h1
-    exact one_ne_zero h1
   obtain ⟨c, hc⟩ := hwdvd
-  have hcu : IsUnit c := (hRirr.isUnit_or_isUnit hc).resolve_left hXw_nu
+  have hcu : IsUnit c := isUnit_cofactor_of_irreducible hRirr hc
   set φ : (F₀[X])[X] →+* F₀[X] := Polynomial.mapRingHom (Polynomial.evalRingHom γ) with hφ
   set wγ : F₀[X] := w.map (Polynomial.evalRingHom γ) with hwγ
   have hfiber : R.map φ = (Polynomial.X - Polynomial.C wγ) * c.map φ := by
@@ -478,6 +493,7 @@ theorem strict_coeffPolys_of_heavy_cell_of_global_branches {n L k : ℕ}
 end BCIKS20.CurveCellStrictExtraction
 
 /-! ## Axiom audit — all kernel-clean. -/
+#print axioms BCIKS20.CurveCellStrictExtraction.isUnit_cofactor_of_irreducible
 #print axioms BCIKS20.CurveCellStrictExtraction.decode_eq_surface_map
 #print axioms BCIKS20.CurveCellStrictExtraction.foldSection_eq_of_heavy
 #print axioms BCIKS20.CurveCellStrictExtraction.surface_coeff_natDegree_le

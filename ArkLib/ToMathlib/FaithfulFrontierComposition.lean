@@ -180,8 +180,13 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 exactly the named honest residuals of the round-1 harvest (see the file docstring table).
 Everything provable between these fields and the §5 keystone is composed by
 `curveFamilyData_of_faithfulFrontier`; nothing in this structure is the keystone goal in
-disguise (each field is a recognized BCIKS20 §5/§6 ingredient with its own production lane,
-and the per-`z` fields quantify only over the good set / the matching set). -/
+disguise (each field is a recognized BCIKS20 §5/§6 ingredient with its own production lane).
+The per-`z` proof fields quantify only over the good set / the matching set, **except** the root
+section `root`, which is total (`∀ z : F`) although it is only read on those loci.  A total section
+cannot exist if any fibre `rationalRoot (H_tilde' gb.H) z₀` is empty, even at a `z₀` outside both
+loci (`IngredientC.not_exists_total_matchingVanishes_of_isEmpty`); threading the membership-dependent
+`rootOn` form (`ArkLib.IngredientC.MatchingVanishesOn`) through this bundle is open #304 interface
+debt (audit L58). -/
 structure FaithfulFrontierData {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     (u : WordStack F (Fin (k + 1)) ι) (P : F → Polynomial F) : Type where
   /-- the expansion centre. -/
@@ -213,8 +218,9 @@ structure FaithfulFrontierData {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
   hbig : gradedCardBudget (Bivariate.natDegreeY gb.R) gb.D gb.H.natDegree T
       + ∑ i, (Match304.conditionDiscs fB x₀ gb.R gb.H gb.hH gb.hHyp i).natDegree
       < Fintype.card F
-  /-- the per-place rational-root supply (cf. `Match304.RootSupplyOn`: provably NOT a
-  discriminant condition; supplied by the §5 decoded geometry). -/
+  /-- the rational-root section (cf. `Match304.RootSupplyOn`: provably NOT a discriminant
+  condition).  Stated as a **total** family although only matching/good places are read; it is
+  stronger than the §5 geometry supplies (see the structure docstring, audit L58). -/
   root : (z : F) → rationalRoot (H_tilde' gb.H) z
   /-- ingredient C: the per-point matching data on the counting window `[n, T]`, on the
   canonical condition-disc matching set, at the signed canonical family. -/

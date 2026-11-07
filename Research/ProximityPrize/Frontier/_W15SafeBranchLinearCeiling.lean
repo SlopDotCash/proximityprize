@@ -19,14 +19,22 @@ of the UPPER side, guided by the probe
 * the candidate ceiling `count ≤ Λ · |supp|` (`Λ` = line-appearing-codeword count at
   threshold `a`) held on EVERY designed and random safe large-zero line probed
   (8 shapes, 60 random lines each, plus single- and multi-base ladders);
-* at the campaign's above-Johnson rate-quarter shape (`q=17, n=16, k=4, a=9`) the truth is
-  EXACTLY the W15 floor: `count = 7 = n − a`, with `Λ = 1` — floor and ceiling meet;
+* at the campaign's above-Johnson rate-quarter shape (`q=17, n=16, k=4, a=9`) the probed
+  lines gave `count = 7 = n − a` with `Λ = 1`; **however** the in-tree refuter
+  `_W15WindowTwoReference.campaign_rateQuarter_L_one_refuted` proves
+  `¬ LargeZeroSafeLineListBudgeted dom 4 9 1` over every field and domain (a two-block safe
+  large-zero line with `Λ = 2`), and `_W15MultiBlockRefuter` reports an empirical ceiling of
+  `2` there — so `L_near ≥ 2` at `(16,4,9)` and the probe's `Λ = 1` was a sampling artefact
+  (audit CW-B15-03);
 * at deep sub-Johnson shapes (`(13,12,2,3)`, `(13,12,3,5)`, `(29,24,2,3)`, `(29,24,3,5)`,
   ...) the count SATURATES TO `q` on every line probed, driven by `Λ` exploding (up to
   `769` at `(29,24,3,5)`): per-scalar lists are nonempty and generic witnesses are
   unexplainable.  Hence **no unconditional `B_near ≤ C·n` theorem exists at those shapes**;
   any linear ceiling must be conditional on a near-code list budget.  Constant multi-base
-  ladders (`M ≤ (a−1)/(k−1)` forced by safety) never beat this and stay `O(n)`.
+  ladders (`M ≤ (a−1)/(k−1)` forced by safety) stay `O(n)` only under an explicit fixed
+  bound on `a/k`: with `k = 2`, `a = M+1`, `n = 2M²`, `q > M³+M` the multi-base ladder is
+  safe and large-zero with `≥ M³ = (n/2)^(3/2)` bad scalars (probe section Q2b; outside the
+  fixed-rate prize regime).
 
 ## What this file proves (axiom-clean, fully general)
 
@@ -44,22 +52,24 @@ of the UPPER side, guided by the probe
 4. `LargeZeroSafeLineListBudgeted` — the NEW honest named residual: a line-list budget on
    the zero-direction-safe, non-support-eligible (near-code) lines.  This is a genuinely
    different class from the far-branch obligation (`hfarL`): these directions are NEAR the
-   code.  The probe says its truth value is shape-dependent: `Λ = 1` above Johnson,
-   `Λ = Ω(q)`-large deep sub-Johnson.
+   code.  Its truth value is shape-dependent: `L = 1` is PROVED at `2n + k ≤ 3a`
+   (`_W15NearCodeJohnsonBudget`) but REFUTED at the campaign shape `(16,4,9)`
+   (`campaign_rateQuarter_L_one_refuted`), and `Λ = Ω(q)`-large deep sub-Johnson.
 5. `mcaDeltaStar_ge_of_farLineList_and_nearCodeList` — **the upgraded weld consumer**: the
    safe large-zero branch budget `B_safe` is REPLACED by `L_near · (n − a)` where `L_near`
    is the near-code list budget; combined with W15 part 1 the safe branch is now bracketed
-   two-sidedly: `n − a ≤ B_near^{true} ≤ L_near · (n − a)` — EXACT (up to the floor) iff
-   `L_near = 1`.
+   two-sidedly: `n − a ≤ B_near^{true} ≤ L_near · (n − a)`, with a gap factor `L_near`
+   (`≥ 2` at the campaign shape `(16,4,9)`).
 
 ## Honesty
 
 * The ceiling is unconditional but in terms of `Λ`; bounding `Λ` on near-code lines is the
   new open production obligation (`LargeZeroSafeLineListBudgeted`), NOT discharged here.
   The probe certifies it is FALSE at every useful `L` in the deep sub-Johnson regime
-  (counts saturate to `q`), and TRUE at `L = 1` at the campaign rate-quarter shape — so the
-  residual is exactly as strong as the shape demands, and consumers must stay above
-  Johnson for the safe branch to close.
+  (counts saturate to `q`).  At the campaign rate-quarter shape `L = 1` is REFUTED
+  (`_W15WindowTwoReference.campaign_rateQuarter_L_one_refuted`; empirical ceiling `2` in
+  `_W15MultiBlockRefuter`), so consumers there need `L_near ≥ 2`; `L = 1` holds only in the
+  `2n + k ≤ 3a` regime (`_W15NearCodeJohnsonBudget`).
 * The unsafe large-zero branch (`hunsafe`) is untouched, as in the weld.
 
 NO `sorry`, NO `axiom`, NO `native_decide`; axiom audit must show
@@ -234,10 +244,13 @@ large-zero branch: every zero-direction-safe line whose direction has `≥ a` ze
 coordinates (hence is NEAR the code — a class disjoint from the far-branch obligation)
 has at most `L` appearing codewords.
 
-Probe status (`probe_466_w15_multibase_ladder.py`): satisfiable with `L = 1` at the
-campaign's above-Johnson rate-quarter shape (`q=17, n=16, k=4, a=9`); FALSE at every
-useful `L` in the deep sub-Johnson regime (`Λ` up to `769` at `(29,24,3,5)`, counts
-saturating to `q`). -/
+Status: `L = 1` is FALSE at the campaign's above-Johnson rate-quarter shape
+(`q=17, n=16, k=4, a=9`) over every field —
+`_W15WindowTwoReference.campaign_rateQuarter_L_one_refuted`
+(the earlier probe `probe_466_w15_multibase_ladder.py` only sampled `Λ = 1` lines there;
+`_W15MultiBlockRefuter` reports an empirical ceiling of `2`); `L = 1` is PROVED when
+`2n + k ≤ 3a` (`_W15NearCodeJohnsonBudget`); FALSE at every useful `L` in the deep
+sub-Johnson regime (`Λ` up to `769` at `(29,24,3,5)`, counts saturating to `q`). -/
 def LargeZeroSafeLineListBudgeted (dom : Fin n ↪ F) (k a L : ℕ) : Prop :=
   ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
     ZeroDirectionSafeLine dom k a u₀ u₁ →
@@ -301,19 +314,18 @@ theorem mcaDeltaStar_ge_of_farLineList_and_nearCodeList
       (le_max_left _ _)
   · exact le_trans (hunsafe u₀ e₁ hs) (le_max_right _ _)
 
-/-! ### Two-sided bracket and honesty gates -/
+/-! ### Two-sided bracket and honesty gates
 
-/-- **The two-sided bracket, packaged.**  Under the near-code list budget, the TRUE
-worst-case safe-branch `mcaEvent` count `B*` (any budget valid for the whole class)
-satisfies `n − a ≤ B*` (W15 part 1 floor, re-exported shape) while this file's ceiling
-caps the class at `L_near · (n − a)`: the safe branch is EXACT at `L_near = 1`.  Stated
-as: the ceiling at `L_near = 1` matches the floor. -/
-theorem bracket_exact_at_L_one (n a : ℕ) : 1 * (n - a) = n - a := one_mul _
+The two-sided bracket for the safe branch is `n − a ≤ B* ≤ L_near · (n − a)` (W15 part 1
+floor; this file's ceiling).  It is exact only when `L_near = 1`, which is refuted at the
+campaign shape `(16,4,9)` (`_W15WindowTwoReference.campaign_rateQuarter_L_one_refuted`).
+(A former theorem `bracket_exact_at_L_one : 1 * (n - a) = n - a` was literally `one_mul`
+and has been removed, audit CW-B15-03.) -/
 
-/-- Honesty gate: the probe certifies `Λ = 1` (hence `L_near = 1`, bracket EXACT) at the
-above-Johnson campaign shape `q=17, n=16, k=4, a=9` where `a² = 81 > 64 = n·k`; and
-certifies saturation-to-`q` at deep sub-Johnson shapes, e.g. `(29,24,3,5)` where
-`a² = 25 < 72 = n·k`.  The Johnson sign is the shape gate for the residual. -/
+/-- Shape arithmetic only: the campaign shape `q=17, n=16, k=4, a=9` is above Johnson
+(`a² = 81 > 64 = n·k`) and `(29,24,3,5)` is below (`a² = 25 < 72 = n·k`).  Above Johnson
+does NOT give `L_near = 1`: at `(16,4,9)` the `L = 1` budget is refuted
+(`campaign_rateQuarter_L_one_refuted`); deep sub-Johnson shapes saturate to `q`. -/
 theorem johnson_sign_gate : (9 : ℕ) * 9 > 16 * 4 ∧ (5 : ℕ) * 5 < 24 * 3 := by norm_num
 
 end ProximityGap.Frontier.W15SafeBranchLinearCeiling

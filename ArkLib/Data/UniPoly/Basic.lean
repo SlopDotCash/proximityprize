@@ -62,11 +62,31 @@ def trim (p : UniPoly R) : UniPoly R :=
   | none => #[]
   | some i => p.extract 0 (i.val + 1)
 
-/-- Return the degree of a `UniPoly`. -/
-def degree (p : UniPoly R) : Nat :=
+/-- The number of coefficients of a `UniPoly` after trimming leading zeroes, i.e. the size of
+`p.trim` (see `Trim.size_eq_trimmedSize`).
+
+This is **not** the degree: it is `natDegree + 1` for a nonzero polynomial and `0` for the zero
+polynomial. For example `trimmedSize #[1] = 1` and `trimmedSize #[0, 1] = 2`. Use `degree` /
+`natDegree` for the mathematical degree. -/
+def trimmedSize (p : UniPoly R) : Nat :=
   match p.last_nonzero with
   | none => 0
   | some i => i.val + 1
+
+/-- The degree of a `UniPoly`: the index of its last nonzero coefficient, and `⊥` for the zero
+polynomial (matching the `Polynomial.degree` convention). For example `degree #[1] = 0` and
+`degree #[0, 1] = 1`. -/
+def degree (p : UniPoly R) : WithBot Nat :=
+  match p.last_nonzero with
+  | none => ⊥
+  | some i => i.val
+
+/-- The natural-number degree of a `UniPoly`: the index of its last nonzero coefficient, and `0`
+for the zero polynomial (matching the `Polynomial.natDegree` convention). -/
+def natDegree (p : UniPoly R) : Nat :=
+  match p.last_nonzero with
+  | none => 0
+  | some i => i.val
 
 /-- Return the leading coefficient of a `UniPoly` as the last coefficient of the trimmed array,
 or `0` if the trimmed array is empty. -/
@@ -182,11 +202,34 @@ theorem elim [LawfulBEq R] (p : UniPoly R) :
   | case1 p h_empty h_all_zero => left; exact ⟨h_empty, h_all_zero⟩
   | case2 p k h_extract h_nonzero h_max => right; exact ⟨k, h_extract, h_nonzero, h_max⟩
 
-theorem size_eq_degree (p : UniPoly R) : p.trim.size = p.degree := by
-  unfold trim degree
+theorem size_eq_trimmedSize (p : UniPoly R) : p.trim.size = p.trimmedSize := by
+  unfold trim trimmedSize
   match h : p.last_nonzero with
   | none => simp
   | some i => simp [Fin.is_lt]
+
+theorem trimmedSize_eq_zero_iff_degree_eq_bot (p : UniPoly R) :
+    p.trimmedSize = 0 ↔ p.degree = ⊥ := by
+  unfold trimmedSize degree
+  match p.last_nonzero with
+  | none => simp
+  | some i => simp
+
+theorem trimmedSize_eq_natDegree_add_one {p : UniPoly R} (hp : p.degree ≠ ⊥) :
+    p.trimmedSize = p.natDegree + 1 := by
+  unfold trimmedSize natDegree
+  unfold degree at hp
+  match h : p.last_nonzero with
+  | none => simp [h] at hp
+  | some i => rfl
+
+theorem degree_eq_natDegree {p : UniPoly R} (hp : p.degree ≠ ⊥) :
+    p.degree = (p.natDegree : WithBot Nat) := by
+  unfold degree natDegree
+  unfold degree at hp
+  match h : p.last_nonzero with
+  | none => simp [h] at hp
+  | some i => rfl
 
 theorem size_le_size (p : UniPoly R) : p.trim.size ≤ p.size := by
   unfold trim
@@ -238,8 +281,9 @@ lemma coeff_eq_zero {p : UniPoly Q} :
   · cases Nat.lt_or_ge i p.size <;> simp [*]
   · intro hi; specialize h i; simp [hi] at h; assumption
 
-lemma eq_degree_of_equiv [LawfulBEq R] {p q : UniPoly R} : equiv p q → p.degree = q.degree := by
-  unfold equiv degree
+lemma eq_trimmedSize_of_equiv [LawfulBEq R] {p q : UniPoly R} :
+    equiv p q → p.trimmedSize = q.trimmedSize := by
+  unfold equiv trimmedSize
   intro h_equiv
   induction p using last_nonzero_induct with
   | case1 p h_none_p h_all_zero =>
@@ -272,8 +316,8 @@ theorem eq_of_equiv [LawfulBEq R] {p q : UniPoly R} : equiv p q → p.trim = q.t
   unfold equiv
   intro h
   ext
-  · rw [size_eq_degree, size_eq_degree]
-    apply eq_degree_of_equiv h
+  · rw [size_eq_trimmedSize, size_eq_trimmedSize]
+    apply eq_trimmedSize_of_equiv h
   rw [← coeff_eq_getElem, ← coeff_eq_getElem]
   rw [coeff_eq_coeff, coeff_eq_coeff, h _]
 
@@ -479,8 +523,9 @@ instance : Pow (UniPoly R) Nat := ⟨UniPoly.pow⟩
 instance : NatCast (UniPoly R) := ⟨fun n => UniPoly.C (n : R)⟩
 instance : IntCast (UniPoly R) := ⟨fun n => UniPoly.C (n : R)⟩
 
-/-- Return a bound on the degree of a `UniPoly` as the size of the underlying array
-(and `⊥` if the array is empty). -/
+/-- Return a bound on the degree of a `UniPoly`: the last index of the underlying (untrimmed)
+array, i.e. `size - 1`, and `⊥` if the array is empty. This is an upper bound on `degree`, with
+equality exactly when the array has no trailing zeroes. -/
 def degreeBound (p : UniPoly R) : WithBot Nat :=
   match p.size with
   | 0 => ⊥
@@ -493,43 +538,74 @@ def natDegreeBound (p : UniPoly R) : Nat :=
 /-- Check if a `UniPoly` is monic, i.e. its leading coefficient is 1. -/
 def monic (p : UniPoly R) : Bool := p.leadingCoeff == 1
 
-/-- Division and modulus of `p : UniPoly R` by a monic `q : UniPoly R`. -/
-def divModByMonicAux [Field R] (p : UniPoly R) (q : UniPoly R) :
-    UniPoly R × UniPoly R :=
-  go (p.size - q.size) p q
+section Division
+
+/-! ### Division with remainder
+
+These are executable algorithms only: no correctness theorem (quotient/remainder reconstruction
+`p = q * (p / q) + p % q` or the remainder-degree bound) is proved for them in this file. The
+behaviour is checked on small examples by the `#guard`s in the `Examples` section at the end of
+this file. -/
+
+variable {F : Type*} [Field F] [BEq F]
+
+/-- Division and modulus of `p : UniPoly F` by a monic `q : UniPoly F`, returning
+`(quotient, remainder)`.
+
+Both inputs are trimmed first. While the current remainder has at least as many (trimmed)
+coefficients as `q`, its leading term is cancelled by subtracting
+`leadingCoeff * X ^ k * q`; the loop stops as soon as the remainder is shorter than `q`.
+The fuel `p.trim.size + 1 - q.trim.size` is the number of cancellation steps needed when `q` is
+monic (in particular, equal-size inputs perform one step). If `q` is zero the result is `(0, p)`,
+matching `Polynomial.divByMonic`/`Polynomial.modByMonic` on a non-monic divisor. For non-monic
+nonzero `q` the result is unspecified. -/
+def divModByMonicAux (p : UniPoly F) (q : UniPoly F) :
+    UniPoly F × UniPoly F :=
+  let p₀ := p.trim
+  let q₀ := q.trim
+  if q₀.size == 0 then ⟨0, p₀⟩ else go (p₀.size + 1 - q₀.size) p₀ q₀
 where
-  go : Nat → UniPoly R → UniPoly R → UniPoly R × UniPoly R
+  go : Nat → UniPoly F → UniPoly F → UniPoly F × UniPoly F
   | 0, p, _ => ⟨0, p⟩
   | n+1, p, q =>
-      let k := p.size - q.size -- k should equal n, this is technically unneeded
-      let q' := C p.leadingCoeff * (q * X.pow k)
-      let p' := (p - q').trim
-      let (e, f) := go n p' q
-      -- p' = q * e + f
-      -- Thus p = p' + q' = q * e + f + p.leadingCoeff * q * X^n
-      -- = q * (e + p.leadingCoeff * X^n) + f
-      ⟨e + C p.leadingCoeff * X^k, f⟩
+      if p.size < q.size then ⟨0, p⟩ else
+        let k := p.size - q.size
+        let q' := C p.leadingCoeff * (q * X.pow k)
+        let p' := (p - q').trim
+        let (e, f) := go n p' q
+        -- p' = q * e + f
+        -- Thus p = p' + q' = q * e + f + p.leadingCoeff * q * X^k
+        -- = q * (e + p.leadingCoeff * X^k) + f
+        ⟨(e + C p.leadingCoeff * X^k).trim, f⟩
 
-/-- Division of `p : UniPoly R` by a monic `q : UniPoly R`. -/
-def divByMonic [Field R] (p : UniPoly R) (q : UniPoly R) :
-    UniPoly R :=
+/-- Division of `p : UniPoly F` by a monic `q : UniPoly F`. -/
+def divByMonic (p : UniPoly F) (q : UniPoly F) :
+    UniPoly F :=
   (divModByMonicAux p q).1
 
-/-- Modulus of `p : UniPoly R` by a monic `q : UniPoly R`. -/
-def modByMonic [Field R] (p : UniPoly R) (q : UniPoly R) :
-    UniPoly R :=
+/-- Modulus of `p : UniPoly F` by a monic `q : UniPoly F`. -/
+def modByMonic (p : UniPoly F) (q : UniPoly F) :
+    UniPoly F :=
   (divModByMonicAux p q).2
 
-/-- Division of two `UniPoly`s. -/
-def div [Field R] (p q : UniPoly R) : UniPoly R :=
-  (C (q.leadingCoeff)⁻¹ • p).divByMonic (C (q.leadingCoeff)⁻¹ * q)
+/-- Division of two `UniPoly`s. With `c = q.leadingCoeff⁻¹`, if `p = q * Q + R` then
+`c • p = (c • q) * Q + c • R`, so the quotient of the normalized (monic) problem is `Q`.
+Division by zero returns `0`. -/
+def div (p q : UniPoly F) : UniPoly F :=
+  if q.trim.size == 0 then 0 else
+    (q.leadingCoeff⁻¹ • p).divByMonic (q.leadingCoeff⁻¹ • q)
 
-/-- Modulus of two `UniPoly`s. -/
-def mod [Field R] (p q : UniPoly R) : UniPoly R :=
-  (C (q.leadingCoeff)⁻¹ • p).modByMonic (C (q.leadingCoeff)⁻¹ * q)
+/-- Modulus of two `UniPoly`s. The remainder of the normalized (monic) problem is
+`q.leadingCoeff⁻¹ • R`, so it is scaled back by `q.leadingCoeff`. The remainder modulo zero is
+`p` (trimmed). -/
+def mod (p q : UniPoly F) : UniPoly F :=
+  if q.trim.size == 0 then p.trim else
+    (q.leadingCoeff • (q.leadingCoeff⁻¹ • p).modByMonic (q.leadingCoeff⁻¹ • q)).trim
 
-instance [Field R] : Div (UniPoly R) := ⟨UniPoly.div⟩
-instance [Field R] : Mod (UniPoly R) := ⟨UniPoly.mod⟩
+instance : Div (UniPoly F) := ⟨UniPoly.div⟩
+instance : Mod (UniPoly F) := ⟨UniPoly.mod⟩
+
+end Division
 
 /-- Pseudo-division of a `UniPoly` by `X`, which shifts all non-constant coefficients
 to the left by one. -/
@@ -1113,14 +1189,65 @@ noncomputable def nodal {R : Type*} [Ring R] (n : ℕ) (ω : R) : UniPoly R :=
   ((List.range n).foldl
     (fun acc i => acc * ((Polynomial.X : R[X]) - Polynomial.C (ω ^ i))) 1).toImpl
 
+/-- The `i`-th Lagrange basis polynomial for the nodes `ω ^ 0, …, ω ^ (n - 1)`:
+`∏_{j ≠ i} (X - ω ^ j) / (ω ^ i - ω ^ j)`. It takes the value `1` at `ω ^ i` and `0` at the other
+nodes, provided the nodes are pairwise distinct. -/
+def basis {F : Type*} [Field F] [BEq F] (n : ℕ) (ω : F) (i : Fin n) : UniPoly F :=
+  (List.finRange n).foldl
+    (fun acc j =>
+      if j == i then acc
+      else ((ω ^ (i : ℕ) - ω ^ (j : ℕ))⁻¹ • (acc * (X - C (ω ^ (j : ℕ))))).trim)
+    (C 1)
+
 /--
-This function produces the polynomial which is of degree n and is equal to r i at ω^i for i = 0, 1,
-..., n-1.
+Lagrange interpolation on the nodes `ω ^ 0, ω ^ 1, …, ω ^ (n - 1)`: returns the (trimmed)
+polynomial `∑ i, r i • basis n ω i`, which has degree `< n` (at most `n - 1`).
+
+**Hypothesis (not checked):** the nodes must be pairwise distinct, i.e. `ω ^ i ≠ ω ^ j` for
+`i ≠ j < n` (for `ω ≠ 0` this says the multiplicative order of `ω` is at least `n`). Under this
+hypothesis the result evaluates to `r i` at `ω ^ i` for every `i < n`; if it fails, a zero
+denominator is inverted (`0⁻¹ = 0`) and the output is meaningless. No evaluation theorem is proved
+in this file; the behaviour is checked on small examples in the `Examples` section below.
 -/
-def interpolate {R : Type*} [Ring R] (n : ℕ) (_ω : R) (r : Vector R n) : UniPoly R :=
-  Array.ofFn (fun i : Fin n => r[i])
+def interpolate {F : Type*} [Field F] [BEq F] (n : ℕ) (ω : F) (r : Vector F n) : UniPoly F :=
+  ((List.finRange n).foldl (fun acc i => acc + r[i] • basis n ω i) 0).trim
 
 end Lagrange
+
+section Examples
+
+/-! Executable sanity checks for the division and interpolation algorithms over `ℚ`. -/
+
+-- `#[1] /ₘ #[1] = (1, 0)`: equal-degree inputs need one cancellation step.
+#guard UniPoly.divModByMonicAux (F := ℚ) #[1] #[1] = (#[1], #[])
+-- `(X^2 + 3X + 2) /ₘ (X + 1) = (X + 2, 0)`.
+#guard UniPoly.divModByMonicAux (F := ℚ) #[2, 3, 1] #[1, 1] = (#[2, 1], #[])
+-- `(X^2 + 1) /ₘ (X + 1) = (X - 1, 2)`, with padded (untrimmed) inputs.
+#guard UniPoly.divModByMonicAux (F := ℚ) #[1, 0, 1, 0, 0] #[1, 1, 0] = (#[-1, 1], #[2])
+-- Dividing by a lower-degree polynomial returns quotient `0`.
+#guard UniPoly.divModByMonicAux (F := ℚ) #[5] #[0, 1] = (#[], #[5])
+-- Constant divisor: `(2X + 4) / 2 = X + 2`, remainder `0`.
+#guard UniPoly.div (F := ℚ) #[4, 2] #[2] = #[2, 1]
+#guard UniPoly.mod (F := ℚ) #[4, 2] #[2] = #[]
+-- Non-monic divisor: `1 mod 2X = 1` (the normalized remainder is scaled back).
+#guard UniPoly.mod (F := ℚ) #[1] #[0, 2] = #[1]
+#guard UniPoly.div (F := ℚ) #[1] #[0, 2] = #[]
+-- `(X^2 + 1) = (2X + 2) * (X/2 - 1/2) + 2`.
+#guard UniPoly.div (F := ℚ) #[1, 0, 1] #[2, 2] = #[-1/2, 1/2]
+#guard UniPoly.mod (F := ℚ) #[1, 0, 1] #[2, 2] = #[2]
+-- Division by zero.
+#guard UniPoly.div (F := ℚ) #[1, 2] #[0] = #[]
+#guard UniPoly.mod (F := ℚ) #[1, 2] #[0] = #[1, 2]
+
+-- Interpolating the constant values `[1, 1]` on nodes `1, 2` gives the constant `1`.
+#guard UniPoly.Lagrange.interpolate (F := ℚ) 2 2 #v[1, 1] = #[1]
+-- Values `[1, 3, 9]` on nodes `1, 3, 9` (i.e. the identity function) give `X`.
+#guard UniPoly.Lagrange.interpolate (F := ℚ) 3 3 #v[1, 3, 9] = #[0, 1]
+-- Interpolation reproduces the values at every node.
+#guard (let p := UniPoly.Lagrange.interpolate (F := ℚ) 4 2 #v[5, -1, 7, 0]
+  [0, 1, 2, 3].map (fun i => p.eval ((2 : ℚ) ^ i))) = [5, -1, 7, 0]
+
+end Examples
 
 end UniPoly
 

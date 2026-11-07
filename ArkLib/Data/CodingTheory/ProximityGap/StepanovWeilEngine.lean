@@ -21,15 +21,25 @@ The weld `weil_form_card_lt` is the Stepanov point-count for the Weil-relevant a
 **with the non-vanishing discharged for free**: a concrete application now only has to (i) build
 the auxiliary `(A₀, A₁)` by a dimension count (so that it is not identically zero and its combined
 square-blocks fit base-`q`), (ii) check it vanishes to Hasse-order `M` at `V`, and (iii) bound its
-degree by `D`; the bound `|V|·M < D` is then automatic. The remaining mathematical content of the
-full Weil bound — the explicit auxiliary construction with the `√q`-strength degree accounting — is
-the only piece left, and it is elementary linear algebra plus degree bookkeeping, not a
-Mathlib-lacking obstruction.
+degree by `D`; the bound `|V|·M < D` is then automatic.
+
+**What the assembled count does not give.** The dimension-count construction
+(`exists_stepanov_auxiliary_pair`, `weil_stepanov_card_lt`) pays one linear condition per
+`(point, Hasse order)` pair, i.e. `|V|·M` conditions, against `2ℓ(A+1)` unknowns. Under the block
+guard `2A + deg g < q` (with `deg g ≥ 1`) one has `2(A+1) ≤ q`, so the dimension premise already
+gives `|V|·M < 2ℓ(A+1) ≤ qℓ`, which is at most the assembled right-hand side: the conclusion of
+`weil_stepanov_card_lt` follows from its premises by arithmetic alone
+(`weil_stepanov_bound_of_dim_arith`). It is a correct but weaker-than-input count, and no choice of
+parameters in this construction yields a nontrivial Weil-type improvement. A genuine Stepanov
+argument needs structured auxiliary identities (e.g. good-point equations whose number of
+constraints is independent of the unknown `|V|`) or a demonstrably stronger dimension/degree
+balance; that construction is **not** provided here and is more than parameter tuning.
 
 ## Honest scope
-Even the full Weil bound recovers only the **Johnson** radius `√ρ`, never the past-Johnson `δ*`
-prize (`CensusDomination`, the sub-Johnson supply wall, stays the open core of #389). This file is
-infrastructure: it carries no `√q`-strength claim by itself.
+This file is infrastructure (non-vanishing, block maps, Hasse counting): it carries no
+`√q`-strength claim by itself. It also does not establish how a full Weil bound would relate to
+the Johnson radius or to the past-Johnson `δ*` prize (`CensusDomination`, the sub-Johnson supply
+wall, stays the open core of #389); no such universal comparison is proved here.
 
 All results `sorry`-free, axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 -/
@@ -286,9 +296,15 @@ field (`q = |F|` odd) with `2A + deg g < q`: whenever `|V|·M < 2·ℓ·(A+1)`, 
 non-vanishing auxiliary forces `|V|·M < D₀ + 1`, where
 `D₀ = max(q(ℓ−1)+(q−1), ((q−1)/2)·deg g + q(ℓ−1)+(q−1))`. This chains construction
 (`exists_stepanov_auxiliary_pair`) → non-vanishing (`obstruction_forces_trivial`, via
-`weil_form_card_lt`) → counting → degree (`natDegree_weil_form_le`), unconditionally. Only the
-character-set identification (`V = {a : g(a) a nonzero square}`) and the `√q` parameter choice
-(`A ≈ q/2−d`, `M ≈ √q`) remain to turn this into the explicit Weil character-sum bound. -/
+`weil_form_card_lt`) → counting → degree (`natDegree_weil_form_le`), unconditionally.
+
+Caveat: the conclusion already follows from `hdim` and `hAq` by arithmetic
+(`weil_stepanov_bound_of_dim_arith`): `2A + deg g < q` with `deg g ≥ 1` gives `2(A+1) ≤ q`, so
+`|V|·M < 2ℓ(A+1) ≤ qℓ ≤` the right-hand side. So this theorem is weaker than its dimension
+premise, and character-set identification plus a parameter choice alone cannot turn it into the
+Weil character-sum bound; that needs a different auxiliary construction (structured identities
+whose constraint count does not grow with the unknown `|V|`), not provided here. The reusable
+non-vanishing, block-map and Hasse lemmas are unaffected. -/
 theorem weil_stepanov_card_lt (g : F[X]) (hg : Squarefree g) (hdeg : 0 < g.natDegree)
     (hq_odd : Odd (Fintype.card F)) (ℓ A : ℕ)
     (hAq : 2 * A + g.natDegree < Fintype.card F)
@@ -311,6 +327,29 @@ theorem weil_stepanov_card_lt (g : F[X]) (hg : Squarefree g) (hdeg : 0 < g.natDe
     (Nat.add_le_add_right (Nat.mul_le_mul_left _ hd0) _)
     (Nat.add_le_add_left (Nat.add_le_add_right (Nat.mul_le_mul_left _ hd1) _) _)
 
+/-- **The assembled Stepanov bound is implied by its own premises (pure arithmetic).** With
+`q = |F|`, `d = deg g ≥ 1`, the block guard `2A + d < q` and the dimension premise
+`N < 2ℓ(A+1)` (where `N = |V|·M`), the right-hand side of `weil_stepanov_card_lt` already
+exceeds `N`: `2(A+1) ≤ q` gives `N < qℓ = q(ℓ-1) + (q-1) + 1`. No polynomial construction,
+non-vanishing or root counting is needed for that conclusion. -/
+theorem weil_stepanov_bound_of_dim_arith (q d ℓ A N : ℕ) (hd : 0 < d)
+    (hAq : 2 * A + d < q) (hdim : N < 2 * (ℓ * (A + 1))) :
+    N < (q * (ℓ - 1) + (q - 1)) ⊔ (((q - 1) / 2) * d + (q * (ℓ - 1) + (q - 1))) + 1 := by
+  obtain ⟨m, rfl⟩ : ∃ m, ℓ = m + 1 := by
+    rcases ℓ with _ | m
+    · simp at hdim
+    · exact ⟨m, rfl⟩
+  have hq : 2 * (A + 1) ≤ q := by omega
+  have h1 : 2 * ((m + 1) * (A + 1)) ≤ q * (m + 1) := by nlinarith
+  have hm : m + 1 - 1 = m := by omega
+  rw [hm] at ⊢
+  have h2 : q * m + (q - 1) + 1 = q * (m + 1) := by
+    have : 1 ≤ q := by omega
+    rw [mul_add, mul_one]
+    omega
+  have h3 := @le_sup_left ℕ _ (q * m + (q - 1)) (((q - 1) / 2) * d + (q * m + (q - 1)))
+  omega
+
 end Construction
 
 end ArkLib.ProximityGap.StepanovWeilEngine
@@ -321,3 +360,4 @@ end ArkLib.ProximityGap.StepanovWeilEngine
 #print axioms ArkLib.ProximityGap.StepanovWeilEngine.natDegree_weil_form_le
 #print axioms ArkLib.ProximityGap.StepanovWeilEngine.exists_stepanov_auxiliary_pair
 #print axioms ArkLib.ProximityGap.StepanovWeilEngine.weil_stepanov_card_lt
+#print axioms ArkLib.ProximityGap.StepanovWeilEngine.weil_stepanov_bound_of_dim_arith

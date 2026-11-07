@@ -23,6 +23,13 @@ No analytic estimate is claimed here.  The point is to make the consumer exact:
 * sample bounds + coverage of all future indices imply a uniform bound;
 * sample bounds + an off-sample tail/envelope imply a uniform bound;
 * without such a tail/envelope, a one-octave spike countermodel preserves the sampled data.
+
+**Scope caveat (audit CW-B14-18).**  Every theorem below is an instance of the generic,
+content-free fact that a function bounded on a finite set need not be bounded off it
+(`pointSpikeAbove` / `withFutureSpike`).  Nothing here involves `M(mu_n,p)`, `mu_n`, or any
+arithmetic of the dyadic problem: `observedC100_not_decisive` would hold verbatim for *any*
+finite table, so it carries no information about #464 beyond the logical remark above.  The
+declarations are kept only as a named, reusable statement of that remark.
 -/
 
 set_option autoImplicit false
@@ -152,7 +159,9 @@ theorem finite_sample_data_not_force_uniform
 We encode the visible normalized constants as integer hundredths.  The maximum sampled budget
 `149` represents `1.49`.  This theorem does not question the data; it proves only that preserving
 that finite table exactly still does not imply a uniform all-octave `1.49` bound without a tail
-theorem.
+theorem.  The table values play no role in the proof: the same statement holds for every finite
+table bounded by `149` (it is `finite_sample_data_not_force_uniform` specialised), so it is not
+evidence for or against the #464 wall.
 -/
 
 /-- The measured octave set `n = 8,16,...,1024`. -/

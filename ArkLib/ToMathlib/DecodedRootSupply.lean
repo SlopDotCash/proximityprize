@@ -44,6 +44,18 @@ After this file the truncation lane's per-place inputs are exactly: branch separ
 (the `ConditionDiscProduct` discriminant lane), closing the loop with the §6 counting that the
 same discriminant feeds.
 
+**Scope caveat (F7, `BranchSeparationUnsat`).**  The root-construction implications here are
+correct, but the per-place branch separation they consume is **unavailable for
+`2 ≤ H.natDegree`**: the centre fold `(Y′ − C (w.eval (C x₀)))` of a *global rational* surface
+factor is prime and divides `H · G`, and it cannot divide the irreducible `H` of degree `≥ 2`,
+so it divides `G` and `G(z, w(x₀,z)) = 0` at every `z`
+(`BranchSeparationUnsat.branchSep_eq_zero`).  Hence every matching set satisfying `hbranch` is
+empty (`matchingSet_eq_empty_of_hbranch`) and the capstones below are instantiable only
+vacuously in the higher-degree regime; they can be non-vacuous only for linear `H`.  Higher-degree
+consumers must supply the branch roots and base-point agreement pointwise, through
+`DecodedProximateRoot.mpFin_of_decoded` (or the per-place `PerZProximateRoot` route), not via a
+global rational section.
+
 ## References
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon
   Codes*, §5 (the matching surface and branch assignment), Appendix A.3/A.5.2.
@@ -188,7 +200,12 @@ theorem hvanish_of_decoded_roots {x₀ : F} {R : F[X][X][Y]}
 surface factor `(Y′ − C w) ∣ R` with `w.natDegree < k`, per-place branch separation and
 `ξ`-nonvanishing, `R.Separable`, the genuine representative, the §6 discriminant counting,
 and the graded side conditions.  No root section and no base-point hypothesis remain — both
-are constructed. -/
+are constructed.
+
+F7 caveat: for `2 ≤ H.natDegree` the `hbranch` family forces `matchingSet = ∅`
+(`BranchSeparationUnsat.matchingSet_eq_empty_of_hbranch`), contradicting `hcover`/`hbig`; the
+theorem can be non-vacuous only for linear `H`.  (It also retains the legacy `hrepG`, which the F6
+finding refutes for `d_H ≥ 2`.) -/
 theorem gammaGenuine_eq_trunc_of_decoded_roots {x₀ : F} {R : F[X][X][Y]}
     (hHyp : Hypotheses x₀ R H)
     (hξ : ξ x₀ R H hHyp ≠ 0)

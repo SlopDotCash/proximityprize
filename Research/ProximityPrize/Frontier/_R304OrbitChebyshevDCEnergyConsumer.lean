@@ -28,7 +28,7 @@ open ArkLib.ProximityGap.Frontier.R303GeneralROrbitChebyshev
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
-local notation "devR" => ArkLib.ProximityGap.Frontier.R303GeneralROrbitChebyshev.deviationR
+local notation "devR" => ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.deviationR
 
 /-- A constant-`K` DC-energy bound at depth `r` gives a quantitative bound on
 the number of `G`-orbits with depth-`r` deviation at least `T`. -/

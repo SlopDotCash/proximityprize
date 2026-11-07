@@ -45,6 +45,16 @@ graph point is a root of `H(z, ·)`:
   `rationalRoot_of_matching_branch` — the resulting rational-root constructors, with value
   lemmas (`lc_H(z)·P(z)`, collapsing to `P(z)` for monic `H`).
 
+**Scope caveat (F7).**  The pointwise constructors `rationalRoot_of_factor_branch` /
+`evalEval_eq_zero_of_factor_branch` take branch separation at a single point and are fine.
+The *global-graph* producers (`rationalRoot_of_matching_branch`,
+`hvanish_of_matching_branch[_monic]`), however, pair a global linear factor `(Y − C P) ∣ H * G`
+(`P : F[X]`) with per-place `G(z, P(z)) ≠ 0`.  For irreducible `H` with `2 ≤ H.natDegree` the
+prime `(Y − C P)` cannot divide `H`, so it divides `G` and `G(z, P(z)) = 0` at every `z` —
+the same obstruction as `BranchSeparationUnsat.branchSep_eq_zero`.  Those producers therefore
+admit only an empty matching set unless `H` is linear; higher-degree consumers must supply the
+roots pointwise (e.g. via `hvanish_of_root_supply` or the per-place `PerZProximateRoot` route).
+
 ## The `S_β` / `hvanish` glue (Part 3)
 
 * `pi_z_eq_zero_of_rep` / `exists_root_pi_z_eq_zero_of_rep` / `mem_S_β_of_rep` — from a root

@@ -18,16 +18,22 @@ explanations on the overlap of their witnesses yields
 
   * `u₁` agrees with the codeword `(γ−γ′)⁻¹ • (w_γ − w_γ′)` on `≥ (1−2δ)·n` positions
     (`u1_close_of_two_bad`);
-  * `u₀ = line_γ − γ·u₁` then agrees with `w_γ − γ·d` on `≥ (1−3δ)·n` positions
-    (`u0_close_of_two_bad`);
-  * both at once: `rows_close_of_two_bad`.
+  * `u₀ = line_γ − γ·u₁` agrees with `w_γ − γ·d` on the **same** overlap, hence on
+    `≥ (1−2δ)·n` positions (`u0_close_of_two_bad_sharp`); both rows simultaneously on one
+    common set of size `≥ (1−2δ)·n`: `rows_close_common_of_two_bad`;
+  * the older, weaker forms intersect with `T` a second time through the generic
+    cardinality lemma and only give `(1−3δ)·n` for `u₀` (`u0_close_of_two_bad`,
+    `rows_close_of_two_bad`); they are true and kept because `DeviationSupSplit` consumes
+    them, but they are vacuous for `u₀` once `δ ≥ 1/3`, whereas the sharp forms are
+    nonvacuous for all `δ < 1/2` (audit finding PG-146).
 
-Hence every stack with at least two bad scalars is a `(3δ, 2δ)`-deviation stack, and
-since single-bad-scalar stacks contribute at most `1/q` to `ε_mca`, the supremum
-defining `ε_mca` — and with it the lower bracket of the δ* sandwich — is governed by
-the `O(δ)`-neighborhood of codeword pairs.  This is the formal statement that the
-threshold problem's search space is the sparse-deviation family: the N1 audit's
-template, now a theorem about *all* contributing stacks, not just toy extremizers.
+Hence every stack with **at least two** bad scalars is a `(2δ, 2δ)`-deviation stack (both
+rows close on a common `(1−2δ)·n` set).  A stack with only one bad scalar need **not**
+belong to this restricted family; such a stack contributes at most `1/q` to the
+probability defining `ε_mca`, so the reduction to the `O(δ)`-neighborhood of codeword pairs
+only governs `ε_mca` at levels above `1/q` (precisely: `DeviationSupSplit`'s
+`max(1/q, deviation sup)` split).  This is the formal statement that, above the `1/q` floor,
+the threshold problem's search space is the sparse-deviation family.
 
 (The remaining half of promotion 1 — computing the extremal bad-mass *within* the
 deviation family and locating its `ε*·q` crossing — is where the exact census
@@ -102,8 +108,10 @@ theorem u1_close_of_two_bad (C : Submodule F (ι → A)) {δ : ℝ≥0} {u₀ u�
       _ = (γ - γ')⁻¹ • ((γ - γ') • u₁ i) := by rw [hdiff]
       _ = u₁ i := by rw [smul_smul, inv_mul_cancel₀ hγγ', one_smul]
 
-/-- **Two bad scalars force the first row close** (on the triple overlap,
-`≥ (1−δ−δ−δ)·n` positions): `u₀ = line_γ − γ·u₁` agrees with `w_γ − γ·d`. -/
+/-- **Two bad scalars force the first row close** (weak form, on the triple overlap,
+`≥ (1−δ−δ−δ)·n` positions): `u₀ = line_γ − γ·u₁` agrees with `w_γ − γ·d`.  This loses a
+`δ` unnecessarily (vacuous once `δ ≥ 1/3`); see `u0_close_of_two_bad_sharp` for the
+`(1−2δ)·n` form. -/
 theorem u0_close_of_two_bad (C : Submodule F (ι → A)) {δ : ℝ≥0} {u₀ u₁ : ι → A}
     {γ γ' : F} (hne : γ ≠ γ')
     (h : mcaEvent (C : Set (ι → A)) δ u₀ u₁ γ)
@@ -124,9 +132,11 @@ theorem u0_close_of_two_bad (C : Submodule F (ι → A)) {δ : ℝ≥0} {u₀ u�
 
 /-- **Sparse-deviation extremality (promotion 1, provable core).**  Every stack with
 two distinct bad scalars at radius `δ` is a `(3δ, 2δ)`-deviation stack: both rows
-agree with codewords outside `O(δ)·n` positions.  Single-bad-scalar stacks contribute
-`≤ 1/q` to `ε_mca`, so the threshold problem's contributing stacks all live in the
-`O(δ)`-neighborhood of codeword pairs — the N1 template, for every linear code. -/
+agree with codewords outside `O(δ)·n` positions (weak form; `rows_close_common_of_two_bad`
+gives `(2δ, 2δ)` on a common overlap).  The hypothesis of **two** bad scalars is essential:
+a single-bad-scalar stack need not be close to codeword pairs; it contributes `≤ 1/q` to
+`ε_mca`, so only above that floor do the contributing stacks live in the
+`O(δ)`-neighborhood of codeword pairs. -/
 theorem rows_close_of_two_bad (C : Submodule F (ι → A)) {δ : ℝ≥0} {u₀ u₁ : ι → A}
     {γ γ' : F} (hne : γ ≠ γ')
     (h : mcaEvent (C : Set (ι → A)) δ u₀ u₁ γ)
@@ -137,9 +147,59 @@ theorem rows_close_of_two_bad (C : Submodule F (ι → A)) {δ : ℝ≥0} {u₀ 
       (V.card : ℝ≥0) ≥ (1 - (δ + δ) - δ) * Fintype.card ι ∧ ∀ i ∈ V, e i = u₀ i) :=
   ⟨u1_close_of_two_bad C hne h h', u0_close_of_two_bad C hne h h'⟩
 
+/-- **Two bad scalars force both rows close on one common overlap** (sharp form).  If
+`γ ≠ γ′` are both bad for `(u₀, u₁)` at radius `δ` over a linear code, then on the witness
+overlap `W = T ∩ T′` (of size `≥ (1−2δ)·n`) the codewords `d = (γ−γ′)⁻¹ • (w_γ − w_γ′)` and
+`e = w_γ − γ • d` agree with `u₁` and `u₀` **simultaneously**.  Unlike `u0_close_of_two_bad`,
+no second intersection with `T` is taken (the overlap `W` already lies in `T`), so the first
+row is close at the same `(1−2δ)·n` threshold as the second. -/
+theorem rows_close_common_of_two_bad (C : Submodule F (ι → A)) {δ : ℝ≥0} {u₀ u₁ : ι → A}
+    {γ γ' : F} (hne : γ ≠ γ')
+    (h : mcaEvent (C : Set (ι → A)) δ u₀ u₁ γ)
+    (h' : mcaEvent (C : Set (ι → A)) δ u₀ u₁ γ') :
+    ∃ d ∈ (C : Set (ι → A)), ∃ e ∈ (C : Set (ι → A)), ∃ W : Finset ι,
+      (W.card : ℝ≥0) ≥ (1 - δ - δ) * Fintype.card ι ∧
+        ∀ i ∈ W, d i = u₁ i ∧ e i = u₀ i := by
+  obtain ⟨T, hTcard, ⟨w, hw, hwag⟩, -⟩ := h
+  obtain ⟨T', hT'card, ⟨w', hw', hw'ag⟩, -⟩ := h'
+  have hd : (γ - γ')⁻¹ • (w - w') ∈ (C : Set (ι → A)) :=
+    Submodule.smul_mem _ _ (Submodule.sub_mem _ hw hw')
+  have hdag : ∀ i ∈ T ∩ T', ((γ - γ')⁻¹ • (w - w')) i = u₁ i := by
+    intro i hi
+    obtain ⟨hiT, hiT'⟩ := Finset.mem_inter.mp hi
+    have hγγ' : γ - γ' ≠ 0 := sub_ne_zero.mpr hne
+    have hdiff : w i - w' i = (γ - γ') • u₁ i := by
+      rw [hwag i hiT, hw'ag i hiT', sub_smul]
+      abel
+    calc ((γ - γ')⁻¹ • (w - w')) i = (γ - γ')⁻¹ • (w i - w' i) := rfl
+      _ = (γ - γ')⁻¹ • ((γ - γ') • u₁ i) := by rw [hdiff]
+      _ = u₁ i := by rw [smul_smul, inv_mul_cancel₀ hγγ', one_smul]
+  refine ⟨_, hd, w - γ • ((γ - γ')⁻¹ • (w - w')),
+    Submodule.sub_mem _ hw (Submodule.smul_mem _ _ hd), T ∩ T',
+    card_inter_witnesses hTcard hT'card, fun i hi => ⟨hdag i hi, ?_⟩⟩
+  have hiT : i ∈ T := (Finset.mem_inter.mp hi).1
+  calc (w - γ • ((γ - γ')⁻¹ • (w - w'))) i
+      = w i - γ • ((γ - γ')⁻¹ • (w - w')) i := rfl
+    _ = (u₀ i + γ • u₁ i) - γ • u₁ i := by rw [hwag i hiT, hdag i hi]
+    _ = u₀ i := by abel
+
+/-- **Two bad scalars force the first row close at the sharp `(1−2δ)` threshold.**  The
+first-row projection of `rows_close_common_of_two_bad`; it strengthens `u0_close_of_two_bad`
+(`(1−3δ)·n`), which is retained for downstream compatibility. -/
+theorem u0_close_of_two_bad_sharp (C : Submodule F (ι → A)) {δ : ℝ≥0} {u₀ u₁ : ι → A}
+    {γ γ' : F} (hne : γ ≠ γ')
+    (h : mcaEvent (C : Set (ι → A)) δ u₀ u₁ γ)
+    (h' : mcaEvent (C : Set (ι → A)) δ u₀ u₁ γ') :
+    ∃ e ∈ (C : Set (ι → A)), ∃ V : Finset ι,
+      (V.card : ℝ≥0) ≥ (1 - δ - δ) * Fintype.card ι ∧ ∀ i ∈ V, e i = u₀ i := by
+  obtain ⟨_d, _hd, e, he, W, hW, hag⟩ := rows_close_common_of_two_bad C hne h h'
+  exact ⟨e, he, W, hW, fun i hi => (hag i hi).2⟩
+
 end ProximityGap.SparseDeviation
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only)
 #print axioms ProximityGap.SparseDeviation.card_inter_witnesses
 #print axioms ProximityGap.SparseDeviation.u1_close_of_two_bad
 #print axioms ProximityGap.SparseDeviation.rows_close_of_two_bad
+#print axioms ProximityGap.SparseDeviation.rows_close_common_of_two_bad
+#print axioms ProximityGap.SparseDeviation.u0_close_of_two_bad_sharp

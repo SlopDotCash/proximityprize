@@ -19,14 +19,22 @@ the `3 ∤ n` hypothesis sharp: when `3 ∣ n`, the cube roots of unity lie in `
 > `3`-cores: the cube-root triple `{1,2,4}` (`1+2+4 = 0`) and `{3,5,6}` (`3+5+6 = 0`).  Via
 > the cubic orchard identity, the zero-sum-triple count is `2`.
 
-Together with `cubicSupply_mu8_F73_eq_zero` this is the exact deep-band dichotomy:
+Together with `cubicSupply_mu8_F73_eq_zero` this gives two concrete instances on either side of
+the char-`0` picture:
 
-  `3 ∤ n  ⟹  cubic supply 0` (Mann rigidity, e.g. `μ_8`);
-  `3 ∣ n  ⟹  cubic supply ≥ 1` (cube-root triple, e.g. `μ_6`).
+  `3 ∣ n  ⟹  cubic supply ≥ 1` — valid in any field containing `μ_n` with `n` distinct elements
+  and characteristic `≠ 3` (the cube roots `1, ω, ω²` are distinct and sum to `0`), e.g. `μ_6 ⊂ F₇`;
+  `3 ∤ n  ⟹  cubic supply 0` — valid in characteristic `0` (Mann rigidity), and at a finite prime
+  **only** under an additional transfer condition (e.g. a quantitative large-prime/height bound);
+  checked here for `μ_8 ⊂ F₇₃`.
 
-So the deepest pre-capacity (sub-Johnson) supply of the tower-shaped word `x³` is governed
-by a single arithmetic condition on `n` — the precise boundary of the char-`0` rigidity that
-makes `μ_{2^k}` (`3 ∤ 2^k`) a good deep-band word and `3 ∣ n` domains bad.  Issue #389.
+The second direction is **not** a theorem for finite fields in general: in `F₉₇` the proper subgroup
+`μ₃₂` contains the distinct triple `{1, 18, 78}` (each has `32`nd power `1`, and
+`1 + 18 + 78 = 97 ≡ 0`), so its cubic supply is nonzero although `3 ∤ 32`.  So the deep-band cubic
+supply of `x³` is **not** determined by `3 ∣ n` alone over `F_p`; the formal content of this file is
+the concrete `μ_6 ⊂ F₇` count, and `3 ∤ n ⟹ 0` must be checked or transferred per prime.  (Counts
+here are of distinct `3`-subsets, which is what the cubic-orchard supply counts — not ordered
+triples, nor triples with repetition.)  Issue #389.
 -/
 
 open Finset
@@ -53,8 +61,9 @@ theorem mu6_F7_zeroSum_triples_eq_two :
 
 open Classical in
 /-- **The complementary deep-band supply, NONZERO**: `x³` on `μ_6 ⊂ F₇` has exactly `2`
-explainable `3`-cores (vs `0` for `μ_8 ⊂ F₇₃`).  When `3 ∣ n`, the cube-root triple
-`1 + ω + ω² = 0` makes the deep-band supply nonzero — the sharp boundary of the rigidity. -/
+explainable `3`-cores (vs `0` for `μ_8 ⊂ F₇₃`).  When `3 ∣ n` (and the characteristic is not
+`3`), the cube-root triple `1 + ω + ω² = 0` makes the deep-band supply nonzero.  The converse
+`3 ∤ n ⟹ 0` is not a finite-field theorem (e.g. `{1, 18, 78} ⊆ μ₃₂ ⊂ F₉₇`). -/
 theorem cubicSupply_mu6_F7_eq_two :
     ((Finset.univ : Finset (Fin 6 → ZMod 7)).filter (fun c =>
         c ∈ (rsCode dom6 2 : Submodule (ZMod 7) (Fin 6 → ZMod 7))

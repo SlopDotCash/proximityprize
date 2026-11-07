@@ -131,6 +131,21 @@ class NegationTargetTests(unittest.TestCase):
             "  ⟨id, fun x => x.elim⟩\n")
         self.assertEqual(got, {"FooResidual": "open", "BarResidual": "refuted"})
 
+    def test_vacuous_pointwise_negation_does_not_refute_a_family(self):
+        for domain, eliminate in (
+            ("Empty", "cases x"), ("PEmpty", "cases x"), ("Fin (0)", "exact Fin.elim0 x")
+        ):
+            for signature, proof in (
+                (f"t (x : {domain}) : ¬ FooResidual x", f"by {eliminate}"),
+                (f"t : ∀ x : {domain}, ¬ FooResidual x", f"by intro x; {eliminate}"),
+            ):
+                with self.subTest(signature=signature):
+                    got = self.statuses(
+                        f"def FooResidual (_ : {domain}) : Prop := True\n"
+                        f"theorem {signature} := {proof}\n"
+                    )
+                    self.assertEqual(got["FooResidual"], "open")
+
     def test_relation_and_binder_shapes(self):
         for negated, want in [
             ("(R == Q)", []),
@@ -148,7 +163,13 @@ class NegationTargetTests(unittest.TestCase):
             ("R (f := fun x => x = x)", ["R"]),
         ]:
             with self.subTest(negated=negated):
-                self.assertEqual(self.census.negation_targets(negated), want)
+                targets = [
+                    self.census.atom_head(target)
+                    for atom in self.census.conclusion_atoms("¬ " + negated)
+                    if atom["kind"] == "negation"
+                    for target, _ in self.census.negated_atoms(atom["text"][1:])
+                ]
+                self.assertEqual(targets, want)
 
     def test_prize_list_bound_stays_open(self):
         row = self.census_rows(

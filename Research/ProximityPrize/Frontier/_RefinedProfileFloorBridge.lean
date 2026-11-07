@@ -457,7 +457,15 @@ theorem worstCaseIncidenceBounded_of_no_bad_fineProfile_budgetScanner
     (by intro u; rfl)
     hnoMaxBad hnoBudgetBad
 
-/-- Delta-star consumer for a fully local refined-profile scanner certificate. -/
+/-- Delta-star consumer for a fully local refined-profile scanner certificate.
+
+This is the single scanner-budget delta-star socket: earlier Linnik/TZ "refined budget scanner
+contract" variants took the same scanner hypotheses plus unused floor-localization inputs, and were
+removed as dominated by this theorem.  Note that the scanner interface carries no content beyond
+the target for the trivial profile: with `Q = Unit` and `rep ()` a bad-count maximizer, the two
+scanner conditions are equivalent to `WorstCaseIncidenceBounded`
+(`trivialProfile_scanner_iff_worstCaseIncidenceBounded`), so any progress must come from a
+nontrivial fine profile. -/
 theorem deltaStar_pin_of_refinedScannerBudget
     (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
     (hδ : δ ≤ 1)
@@ -481,6 +489,37 @@ theorem deltaStar_pin_of_refinedScannerBudget
     (rep := rep)
     (by intro u; rfl)
     hnoMaxBad hnoBudgetBad hbudget
+
+/-- **The scanner interface is the target for the trivial profile.**  With the one-point profile
+`Q = Unit` and representative `rep () = u₀` a maximizer of the bad-scalar count, the two scanner
+conditions consumed by `worstCaseIncidenceBounded_of_no_bad_fineProfile_budgetScanner` hold iff
+`WorstCaseIncidenceBounded C δ B`.  So the scanner route only adds information through a
+nontrivial fine profile. -/
+theorem trivialProfile_scanner_iff_worstCaseIncidenceBounded
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ} (u₀ : WordStack A (Fin 2) ι)
+    (hu₀ : ∀ u : WordStack A (Fin 2) ι,
+      StackProfileRefinement.StackBadCount F C δ u ≤
+        StackProfileRefinement.StackBadCount F C δ u₀) :
+    ((¬ ∃ q : Unit, StackProfileRefinement.UsedProfile (fun _ : WordStack A (Fin 2) ι => ()) q ∧
+        ((fun _ : WordStack A (Fin 2) ι => ()) ((fun _ : Unit => u₀) q) ≠ q ∨
+          ∃ u : WordStack A (Fin 2) ι, (fun _ : WordStack A (Fin 2) ι => ()) u = q ∧
+            StackProfileRefinement.StackBadCount F C δ ((fun _ : Unit => u₀) q) <
+              StackProfileRefinement.StackBadCount F C δ u)) ∧
+      (¬ ∃ q : Unit, StackProfileRefinement.UsedProfile (fun _ : WordStack A (Fin 2) ι => ()) q ∧
+        B < StackProfileRefinement.StackBadCount F C δ ((fun _ : Unit => u₀) q))) ↔
+      ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded (F := F) (A := A) C δ B := by
+  constructor
+  · rintro ⟨hnoMaxBad, hnoBudgetBad⟩
+    exact worstCaseIncidenceBounded_of_no_bad_fineProfile_budgetScanner C δ hnoMaxBad hnoBudgetBad
+  · intro hI
+    refine ⟨?_, ?_⟩
+    · rintro ⟨q, -, hq | ⟨u, -, hlt⟩⟩
+      · exact hq rfl
+      · exact absurd (hu₀ u) (not_le.mpr hlt)
+    · rintro ⟨q, -, hlt⟩
+      have h := hI u₀
+      simp only [StackProfileRefinement.StackBadCount] at hlt
+      exact absurd (by convert h) (not_le.mpr hlt)
 
 /-- Linnik-form floor closure with refined-profile representatives as the max-containment
 certificate. -/
@@ -535,69 +574,6 @@ theorem deltaStar_pin_of_linnik_candidateListExactSmallest_refinedScannerContrac
     hcardPrime hcardMod hcardPrize C εstar hδ hfloorBudget
     (floorFamilyContainsGlobalMax_of_no_bad_fineProfile_usedFineProfileFamily C δ hno) hbudget
 
-/-- Linnik-form floor closure with only local refined-profile scanner certificates for
-max-containment and the family budget.  The direct budget scanner discharges
-`FloorGoodFamilyBudget`; the Linnik inputs remain the floor-localization side of the contract. -/
-theorem deltaStar_pin_of_linnik_candidateListExactSmallest_refinedBudgetScannerContract
-    (FloorBad : ℕ -> ℕ -> Prop)
-    (hexact : FloorClosureContract.CandidateListExactSmallestFamily FloorBad)
-    (hLeast : LinnikLeastPrimeBelowPrize)
-    (a : ℕ) (ha : 4 ≤ a)
-    (hcardPrime : (Fintype.card F).Prime)
-    (hcardMod : Fintype.card F % (2 ^ a) = 1)
-    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
-    (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
-    (hδ : δ ≤ 1)
-    {Q : Type} [Finite Q]
-    {fine : WordStack A (Fin 2) ι -> Q}
-    {rep : Q -> WordStack A (Fin 2) ι}
-    (hnoMaxBad : ¬ ∃ q : Q, StackProfileRefinement.UsedProfile fine q ∧
-      (fine (rep q) ≠ q ∨
-        ∃ u : WordStack A (Fin 2) ι, fine u = q ∧
-          StackProfileRefinement.StackBadCount F C δ (rep q) <
-            StackProfileRefinement.StackBadCount F C δ u))
-    (hnoBudgetBad : ¬ ∃ q : Q, StackProfileRefinement.UsedProfile fine q ∧
-      B < StackProfileRefinement.StackBadCount F C δ (rep q))
-    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
-    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar := by
-  classical
-  letI : Fintype Q := Fintype.ofFinite Q
-  exact
-    deltaStar_pin_of_linnik_candidateListExactSmallest_refinedScannerContract
-      (F := F) (A := A) FloorBad hexact hLeast a ha
-      hcardPrime hcardMod hcardPrize C εstar hδ
-      (floorGoodFamilyBudget_of_no_usedFineProfile_budget_lt
-        (F := F) (A := A) FloorBad a C δ hnoBudgetBad)
-      hnoMaxBad hbudget
-
-/-- No-laundering form of the Linnik refined-budget scanner contract.  Once the scanner already
-proves no used fine-profile representative exceeds `B`, the delta-star pin follows directly from
-the local scanner theorem; the Linnik/floor-localization inputs are not used for the counting
-budget. -/
-theorem deltaStar_pin_of_refinedBudgetScanner_of_linnikInputs
-    (FloorBad : ℕ -> ℕ -> Prop)
-    (_hexact : FloorClosureContract.CandidateListExactSmallestFamily FloorBad)
-    (_hLeast : LinnikLeastPrimeBelowPrize)
-    (a : ℕ) (_ha : 4 ≤ a)
-    (_hcardPrime : (Fintype.card F).Prime)
-    (_hcardMod : Fintype.card F % (2 ^ a) = 1)
-    (_hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
-    (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
-    (hδ : δ ≤ 1)
-    {Q : Type}
-    {fine : WordStack A (Fin 2) ι -> Q}
-    {rep : Q -> WordStack A (Fin 2) ι}
-    (hnoMaxBad : ¬ ∃ q : Q, StackProfileRefinement.UsedProfile fine q ∧
-      (fine (rep q) ≠ q ∨
-        ∃ u : WordStack A (Fin 2) ι, fine u = q ∧
-          StackProfileRefinement.StackBadCount F C δ (rep q) <
-            StackProfileRefinement.StackBadCount F C δ u))
-    (hnoBudgetBad : ¬ ∃ q : Q, StackProfileRefinement.UsedProfile fine q ∧
-      B < StackProfileRefinement.StackBadCount F C δ (rep q))
-    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
-    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
-  deltaStar_pin_of_refinedScannerBudget C εstar hδ hnoMaxBad hnoBudgetBad hbudget
-
 /-- TZ-form floor closure with refined-profile representatives as the max-containment certificate. -/
 theorem deltaStar_pin_of_tz_candidateListExactSmallest_refinedProfileContract
     (FloorBad : ℕ -> ℕ -> Prop)
@@ -651,69 +627,6 @@ theorem deltaStar_pin_of_tz_candidateListExactSmallest_refinedScannerContract
     (F := F) (A := A) FloorBad hexact hβ hTZfam a ha
     hcardPrime hcardMod hcardPrize C εstar hδ hfloorBudget
     (floorFamilyContainsGlobalMax_of_no_bad_fineProfile_usedFineProfileFamily C δ hno) hbudget
-
-/-- TZ-form floor closure with only local refined-profile scanner certificates for max-containment
-and the family budget. -/
-theorem deltaStar_pin_of_tz_candidateListExactSmallest_refinedBudgetScannerContract
-    (FloorBad : ℕ -> ℕ -> Prop)
-    (hexact : FloorClosureContract.CandidateListExactSmallestFamily FloorBad)
-    {β : ℝ} (hβ : β ≤ 3)
-    (hTZfam : ∀ a : ℕ, 4 ≤ a -> TZPrimeSupply (2 ^ a) β 1)
-    (a : ℕ) (ha : 4 ≤ a)
-    (hcardPrime : (Fintype.card F).Prime)
-    (hcardMod : Fintype.card F % (2 ^ a) = 1)
-    (hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
-    (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
-    (hδ : δ ≤ 1)
-    {Q : Type} [Finite Q]
-    {fine : WordStack A (Fin 2) ι -> Q}
-    {rep : Q -> WordStack A (Fin 2) ι}
-    (hnoMaxBad : ¬ ∃ q : Q, StackProfileRefinement.UsedProfile fine q ∧
-      (fine (rep q) ≠ q ∨
-        ∃ u : WordStack A (Fin 2) ι, fine u = q ∧
-          StackProfileRefinement.StackBadCount F C δ (rep q) <
-            StackProfileRefinement.StackBadCount F C δ u))
-    (hnoBudgetBad : ¬ ∃ q : Q, StackProfileRefinement.UsedProfile fine q ∧
-      B < StackProfileRefinement.StackBadCount F C δ (rep q))
-    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
-    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar := by
-  classical
-  letI : Fintype Q := Fintype.ofFinite Q
-  exact
-    deltaStar_pin_of_tz_candidateListExactSmallest_refinedScannerContract
-      (F := F) (A := A) FloorBad hexact hβ hTZfam a ha
-      hcardPrime hcardMod hcardPrize C εstar hδ
-      (floorGoodFamilyBudget_of_no_usedFineProfile_budget_lt
-        (F := F) (A := A) FloorBad a C δ hnoBudgetBad)
-      hnoMaxBad hbudget
-
-/-- No-laundering form of the TZ refined-budget scanner contract.  A local refined-profile scanner
-that proves both max-containment and the budget already gives the delta-star lower pin; TZ prime
-supply is not the source of that counting bound. -/
-theorem deltaStar_pin_of_refinedBudgetScanner_of_tzInputs
-    (FloorBad : ℕ -> ℕ -> Prop)
-    (_hexact : FloorClosureContract.CandidateListExactSmallestFamily FloorBad)
-    {β : ℝ} (_hβ : β ≤ 3)
-    (_hTZfam : ∀ a : ℕ, 4 ≤ a -> TZPrimeSupply (2 ^ a) β 1)
-    (a : ℕ) (_ha : 4 ≤ a)
-    (_hcardPrime : (Fintype.card F).Prime)
-    (_hcardMod : Fintype.card F % (2 ^ a) = 1)
-    (_hcardPrize : (2 ^ a) ^ 4 ≤ Fintype.card F)
-    (C : Set (ι -> A)) (εstar : ℝ≥0∞) {δ : ℝ≥0} {B : ℕ}
-    (hδ : δ ≤ 1)
-    {Q : Type}
-    {fine : WordStack A (Fin 2) ι -> Q}
-    {rep : Q -> WordStack A (Fin 2) ι}
-    (hnoMaxBad : ¬ ∃ q : Q, StackProfileRefinement.UsedProfile fine q ∧
-      (fine (rep q) ≠ q ∨
-        ∃ u : WordStack A (Fin 2) ι, fine u = q ∧
-          StackProfileRefinement.StackBadCount F C δ (rep q) <
-            StackProfileRefinement.StackBadCount F C δ u))
-    (hnoBudgetBad : ¬ ∃ q : Q, StackProfileRefinement.UsedProfile fine q ∧
-      B < StackProfileRefinement.StackBadCount F C δ (rep q))
-    (hbudget : (B : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ εstar) :
-    δ ≤ ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := F) (A := A) C εstar :=
-  deltaStar_pin_of_refinedScannerBudget C εstar hδ hnoMaxBad hnoBudgetBad hbudget
 
 /-- Linnik field-certificate failure specialized to the used fine-profile family, in the sharp
 budgeted-global-max form.  The arithmetic floor-bad branch is already contradicted by the Linnik
@@ -950,14 +863,11 @@ end ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge
 #print axioms ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge.worstCaseIncidenceBounded_of_no_bad_fineProfile_floorFamilyBounded
 #print axioms ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge.worstCaseIncidenceBounded_of_no_bad_fineProfile_budgetScanner
 #print axioms ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge.deltaStar_pin_of_refinedScannerBudget
+#print axioms ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge.trivialProfile_scanner_iff_worstCaseIncidenceBounded
 #print axioms ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge.deltaStar_pin_of_linnik_candidateListExactSmallest_refinedProfileContract
 #print axioms ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge.deltaStar_pin_of_linnik_candidateListExactSmallest_refinedScannerContract
-#print axioms ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge.deltaStar_pin_of_linnik_candidateListExactSmallest_refinedBudgetScannerContract
-#print axioms ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge.deltaStar_pin_of_refinedBudgetScanner_of_linnikInputs
 #print axioms ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge.deltaStar_pin_of_tz_candidateListExactSmallest_refinedProfileContract
 #print axioms ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge.deltaStar_pin_of_tz_candidateListExactSmallest_refinedScannerContract
-#print axioms ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge.deltaStar_pin_of_tz_candidateListExactSmallest_refinedBudgetScannerContract
-#print axioms ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge.deltaStar_pin_of_refinedBudgetScanner_of_tzInputs
 namespace ArkLib.ProximityGap.Frontier.RefinedProfileFloorBridge
 #print axioms not_linnikUsedFineBudgetedMaxField_iff_each_used_above_or_beaten
 #print axioms not_linnikUsedFineClosureField_iff_used_above_or_each_beaten

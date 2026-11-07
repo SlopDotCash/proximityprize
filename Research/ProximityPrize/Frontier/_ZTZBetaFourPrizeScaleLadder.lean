@@ -9,21 +9,31 @@ import Mathlib.NumberTheory.LucasPrimality
 import Mathlib.Tactic.NormNum.Prime
 
 /-!
-# Z-lane — the β = 4 Thorner–Zaman rung AT THE PRIZE MODULUS `n = 2^30` + its δ* ceiling (#466)
+# Z-lane — the β = 4 Thorner–Zaman rung AT THE PRIZE MODULUS `n = 2^30` + a degree-0 δ* ceiling instance (#466)
 
 **Target.**  `Frontier/_W16TZPrizeScaleP30.lean` landed the prize-modulus rung at `β = 2`
-(`[2^60, 2^61]`) and recorded, honestly, that **no** β = 2 ladder can feed the δ* ceiling
-consumer — that consumer needs `β ≥ 3`.  This file lands the **quartic** rung at the literal
+(`[2^60, 2^61]`) and recorded that no β = 2 ladder can feed the δ* ceiling consumer **at
+`μ = 7` (`s = 128`)** — the consumer itself has no β hypothesis, and at small `μ` (e.g. `μ = 2`,
+`r = 2`: budget `0.8 < 20`) the β = 2 rung suffices.  This file lands the **quartic** rung at the literal
 prize modulus, and cashes it:
 
 > **`tzPrimeSupply_two_pow_30_four`** — `TZPrimeSupply 1073741824 (4 : ℝ) 12`: the window
 > `[(2^30)^4, 2·(2^30)^4] = [2^120, 2^121]` contains twelve explicit Lucas-certified
 > **121-bit** primes `≡ 1 (mod 2^30)`.
 >
-> **`kkh26_mcaDeltaStar_le_concrete_prizeModulus_beta4`** — the **first unconditional [KKH26]
-> δ* ceiling at the prize domain scale**: a prime `p ≡ 1 (mod 2^30)` with `2^120 ≤ p ≤ 2^121`
-> and a smooth domain `⟨g⟩ ⊆ F_p^×` of order `2^30 = |μ_{2^30}|` pin
+> **`kkh26_mcaDeltaStar_le_concrete_prizeModulus_beta4`** — a **degree-0 (`k = 1`, constant
+> code)** [KKH26] δ* ceiling instance placed in the β = 4 window: a prime `p ≡ 1 (mod 2^30)` with
+> `2^120 ≤ p ≤ 2^121` and a smooth domain `⟨g⟩ ⊆ F_p^×` of order `2^30` pin
 > `mcaDeltaStar(evalCode g 2^30 0, ε*) ≤ 1/2` for every `ε* < 4/p`.
+
+**What the ladder actually adds.**  The ceiling itself does *not* need the Thorner–Zaman window:
+at `μ = 2`, `r = 2` the in-tree `KKH26WitnessSpread.kkh26_mcaDeltaStar_le` needs only a prime
+`p > (2^2)^(2^1) = 16` with an element of order `n` (`kkh26_mcaDeltaStar_le_degreeZero` below
+packages this).  E.g. `p = 3·2^30 + 1 = 3221225473` (prime) already gives the same degree-0
+ceiling for `n = 2^30`.  The 121-bit ladder contributes only the *window placement*
+`2^120 ≤ p ≤ 2^121`.  The same remark applies to the sibling degree-0 ceilings in
+`_ZTZBetaFourCeilingWiring.lean`, `_ZTZBetaFourHighLadderExtension.lean`, and
+`_ZTZBetaThreeFivePrizeScaleLadder.lean`.
 
 **Certificate technology.**  Two-factor Lucas at 121 bits: the kernel-cheap
 square-and-multiply pattern was proven viable at **158 bits** by the landed
@@ -284,11 +294,27 @@ namespace ArkLib.ProximityGap.KKH26
 
 /-! ## The prize-modulus δ* ceiling (mirrors `Frontier/_ZTZBetaFourCeilingWiring.lean`) -/
 
-/-- **The first unconditional [KKH26] δ* ceiling at the prize domain scale.**  A prime
+/-- **Degree-0 [KKH26] ceiling from the plain field-size route (`μ = 2`, `r = 2`).**  For any
+prime `p > 16` and any `g ∈ F_p^×` of order `4m`, the constant (degree-0) evaluation code on
+`⟨g⟩` has `mcaDeltaStar ≤ 1/2` for every `ε* < 4/p`.  Direct instance of
+`kkh26_mcaDeltaStar_le`; no Thorner–Zaman input or window placement is needed. -/
+theorem kkh26_mcaDeltaStar_le_degreeZero {p m : ℕ} [Fact p.Prime] [NeZero (2 ^ 2 * m)]
+    (hm : 1 ≤ m) {g : ZMod p} (hg : orderOf g = 2 ^ 2 * m) (hp : 16 < p)
+    (εstar : ℝ≥0∞)
+    (hεstar : εstar < ((2 ^ 2 * (2 ^ 1).choose 2 : ℕ) : ℝ≥0∞) / (p : ℝ≥0∞)) :
+    ProximityGap.MCAThresholdLedger.mcaDeltaStar (F := ZMod p)
+        (evalCode g (2 ^ 2 * m) ((2 - 2) * m)) εstar
+      ≤ 1 - (2 : ℝ≥0) / ((2 : ℝ≥0) ^ 2) :=
+  kkh26_mcaDeltaStar_le (μ := 2) (r := 2) (by norm_num) hm rfl hg (by norm_num; exact hp)
+    le_rfl (by norm_num) εstar hεstar
+
+/-- **A degree-0 [KKH26] δ* ceiling instance placed in the β = 4 window at `n = 2^30`.**  A prime
 `p ≡ 1 (mod 2^30)` with `2^120 ≤ p ≤ 2^121` and a smooth domain `⟨g⟩ ⊆ F_p^×` of order
 `2^30 = |μ_{2^30}|` pin `mcaDeltaStar(evalCode g 2^30 0, ε*) ≤ 1/2` for every `ε* < 4/p`.
-End-to-end via `tzPrimeSupply_two_pow_30_four` + `kkh26_mcaDeltaStar_le_of_TZ`.  (Honest
-scope: degree-0 code, `r = 2` — the prize-domain SHAPE, not the prize's rate-1/4 code.) -/
+End-to-end via `tzPrimeSupply_two_pow_30_four` + `kkh26_mcaDeltaStar_le_of_TZ`.  Scope: the code
+is the degree-0 (constant) code with `r = 2`, not the prize's rate-1/4 code; the same ceiling for
+`n = 2^30` already follows from `kkh26_mcaDeltaStar_le_degreeZero` with any prime `p > 16`,
+`p ≡ 1 (mod 2^30)` (e.g. `3221225473`).  The window bounds are the only extra content. -/
 theorem kkh26_mcaDeltaStar_le_concrete_prizeModulus_beta4 :
     ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD 1073741824] ∧
       ((1073741824 : ℕ) : ℝ) ^ (4 : ℝ) ≤ p ∧
@@ -325,3 +351,4 @@ end ArkLib.ProximityGap.KKH26
 /-! ## Axiom audit (expected: propext, Classical.choice, Quot.sound only) -/
 #print axioms ArkLib.ProximityGap.Frontier.ZTZBetaFourPrizeScale.tzPrimeSupply_two_pow_30_four
 #print axioms ArkLib.ProximityGap.KKH26.kkh26_mcaDeltaStar_le_concrete_prizeModulus_beta4
+#print axioms ArkLib.ProximityGap.KKH26.kkh26_mcaDeltaStar_le_degreeZero

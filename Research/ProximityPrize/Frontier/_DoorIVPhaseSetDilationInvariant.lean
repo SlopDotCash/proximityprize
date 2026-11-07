@@ -8,9 +8,8 @@ import Mathlib.Data.Finset.Card
 import Mathlib.Tactic
 
 /-!
-# Door IV (Lane 1, the brief's verbatim small-ball target): the worst-b phase set `{b·x : x∈μ_n}` has
-# DILATION-INVARIANT additive structure — the worst `b` cannot tune it, so any small-ball / Halász
-# lever is b-independent and reproduces the (dead) EVT/Plancherel ceiling, never beats the wall
+# Door IV (Lane 1, small-ball target): the phase set `{b·x : x∈μ_n}` has DILATION-INVARIANT
+# additive statistics — every additive-linear count of `b·μ_n` is independent of `b ≠ 0`
 
 This file records the axiom-clean kernel behind the probe
 `scripts/probes/probe_dooriv_phaseset_additive_smallball.py`.
@@ -32,11 +31,17 @@ b-side worst-set `ae2bc7e0b` and the complex-alignment participation `78d1df596`
   * the arc small-ball `ρ*` DECAYS (0.75 → 0.25 → 0.078): the residues spread, no concentration.
   * the worst-b sum sits at the EVT/Plancherel ceiling `M/√(n·log(p/n)) ≈ 1.2–1.36`.
 
-So the Halász/small-ball bound derived from `E⁺` reproduces `|η_b| ≲ √(n·log)` = the SAME EVT ceiling
-— it does NOT beat the wall and does NOT avoid the moment route. And crucially: `E⁺(b·μ_n)` does NOT
-depend on `b` (dilation-invariance), so the WORST `b` cannot tune the additive structure to do better.
-The additive energy of a multiplicative subgroup IS a multiplicative-energy object. Mapped wall, not
-a non-moment lever.
+**Probe evidence (not formalized).** For the specific `E⁺`-based Halász/small-ball bounds tried in
+the probe, the resulting estimate was `|η_b| ≲ √(n·log)`, i.e. the EVT ceiling; those particular
+bounds did not beat the wall. This is a numerical observation about the bounds tried, not a theorem.
+
+**What is formal.** `E⁺(b·μ_n)` (and every additive-linear count below) does not depend on `b ≠ 0`.
+This b-blindness is **neutral**, not an obstruction: a bound on `max_b |η_b|` built from
+`b`-independent subgroup data holds uniformly in `b`, including the worst `b` (this is exactly how
+Weil-type bounds work). The invariance theorems therefore do NOT show that small-ball levers are
+"dead" or stuck at the EVT ceiling; they show only that such levers cannot *select* or *tune to* a
+particular `b`, so any bound they give is a uniform bound whose strength must come from the
+subgroup statistics themselves.
 
 ## The formalizable kernel (this file): dilation-invariance of additive energy
 
@@ -44,8 +49,13 @@ The exact structural fact making the small-ball lever b-blind: for a unit `λ` (
 multiplication-by-`λ` is a bijection of `𝔽_p` that preserves the additive-quadruple relation
 `a + b = c + d ⟺ λ·a + λ·b = λ·c + λ·d`. Hence `E⁺(λ • S) = E⁺(S)`. We model `E⁺` as the cardinality
 of the quadruple solution set inside `S⁴` and prove the dilate has the SAME count via the
-mul-by-`λ⁻¹` bijection on the index `Finset`. Consequence: any bound on `|η_b|` factoring through
-`E⁺(S_b)` is `b`-independent — the worst `b` inherits the typical (EVT) ceiling.
+dilation bijection on the index `Finset`. Consequence: any bound on `|η_b|` factoring through
+`E⁺(S_b)` is `b`-independent (hence uniform over `b`); how strong such a bound is depends only on
+`E⁺(μ_n)` and is not settled here.
+
+All the `*_smul_eq` count lemmas are instances of one generic transport lemma,
+`card_filter_image_smul` / `card_univ_filter_smul` (dilation by `λ ≠ 0` on an `F`-module), so each
+specialization is a one-line predicate rewrite rather than a separate bijection proof.
 -/
 
 set_option linter.style.longLine false
@@ -54,6 +64,54 @@ set_option linter.style.longLine false
 namespace ProximityGap.Frontier.DoorIVPhaseSetDilationInvariant
 
 open Finset
+
+/-- **Generic dilation transport (the single bijection behind every count below).**  For a nonzero
+scalar `λ` acting on an `F`-module `α`, filtering the dilate `λ • A` by `P` has the same cardinality
+as filtering `A` by `Q`, provided `P (λ • x) ↔ Q x` on `A`.  Every `*_smul_eq` count lemma in this
+file is an instance (pairs, triples, quadruples, tuples `ι → F`, vector targets). -/
+theorem card_filter_image_smul {F : Type*} [Field F] {α : Type*} [AddCommGroup α] [Module F α]
+    [DecidableEq α]
+    (A : Finset α) (P Q : α → Prop) [DecidablePred P] [DecidablePred Q] {lam : F}
+    (hlam : lam ≠ 0) (hPQ : ∀ x ∈ A, P (lam • x) ↔ Q x) :
+    ((A.image (fun x => lam • x)).filter P).card = (A.filter Q).card := by
+  rw [Finset.filter_image, Finset.card_image_of_injective _ (smul_right_injective α hlam)]
+  exact congrArg Finset.card (Finset.filter_congr hPQ)
+
+/-- `card_filter_image_smul` on `univ` of a finite `F`-module (dilation permutes `univ`). -/
+theorem card_univ_filter_smul {F : Type*} [Field F] {α : Type*} [AddCommGroup α] [Module F α]
+    [DecidableEq α]
+    [Fintype α] (P Q : α → Prop) [DecidablePred P] [DecidablePred Q] {lam : F}
+    (hlam : lam ≠ 0) (hPQ : ∀ x, P (lam • x) ↔ Q x) :
+    ((Finset.univ : Finset α).filter P).card = ((Finset.univ : Finset α).filter Q).card := by
+  have huniv : (Finset.univ : Finset α).image (fun x => lam • x) = Finset.univ := by
+    apply Finset.image_univ_of_surjective
+    intro y
+    exact ⟨lam⁻¹ • y, by simp [smul_smul, hlam]⟩
+  calc ((Finset.univ : Finset α).filter P).card
+      = (((Finset.univ : Finset α).image (fun x => lam • x)).filter P).card := by rw [huniv]
+    _ = ((Finset.univ : Finset α).filter Q).card :=
+      card_filter_image_smul _ P Q hlam (fun x _ => hPQ x)
+
+/-- Left multiplication written as the scalar action. -/
+theorem image_mul_eq_image_smul {F : Type*} [Field F] [DecidableEq F] (S : Finset F) (lam : F) :
+    S.image (fun x => lam * x) = S.image (fun x => lam • x) := by
+  simp only [smul_eq_mul]
+
+/-- Dilation commutes with Cartesian products of finsets. -/
+theorem image_smul_prod_image_smul {F : Type*} [Field F] {α β : Type*} [AddCommGroup α]
+    [Module F α] [AddCommGroup β]
+    [Module F β] [DecidableEq α] [DecidableEq β] (A : Finset α) (B : Finset β) (lam : F) :
+    (A.image (fun x => lam • x)) ×ˢ (B.image (fun x => lam • x)) =
+      (A ×ˢ B).image (fun x => lam • x) := by
+  ext ⟨a, b⟩
+  simp only [mem_product, mem_image, Prod.exists, Prod.smul_mk, Prod.mk.injEq]
+  aesop
+
+/-- Membership in a nonzero dilate. -/
+theorem mem_image_mul_iff {F : Type*} [Field F] [DecidableEq F] (S : Finset F) {lam : F}
+    (hlam : lam ≠ 0) (x : F) :
+    lam * x ∈ S.image (fun y => lam * y) ↔ x ∈ S :=
+  (mul_right_injective₀ hlam).mem_finset_image
 
 variable {F : Type*} [Field F] [DecidableEq F] [Fintype F]
 
@@ -140,35 +198,11 @@ multiplicity-level version of sumset-cardinality invariance: not only the suppor
 representation count is transported by `t ↦ λt`. -/
 theorem addPairSumCount_smul_eq (S : Finset F) {lam t : F} (hlam : lam ≠ 0) :
     addPairSumCount (S.image (fun x => lam * x)) (lam * t) = addPairSumCount S t := by
-  classical
   unfold addPairSumCount
-  have hcdiv : ∀ z : F, lam⁻¹ * (lam * z) = z := fun z => by
-    rw [← mul_assoc, inv_mul_cancel₀ hlam, one_mul]
-  have hcmul : ∀ z : F, lam * (lam⁻¹ * z) = z := fun z => by
-    rw [← mul_assoc, mul_inv_cancel₀ hlam, one_mul]
-  refine Finset.card_nbij'
-    (fun p => (lam⁻¹ * p.1, lam⁻¹ * p.2))
-    (fun p => (lam * p.1, lam * p.2))
-    ?_ ?_ ?_ ?_
-  · intro p hp
-    simp only [coe_filter, Set.mem_setOf_eq, mem_product, mem_image] at hp ⊢
-    obtain ⟨⟨hp₁, hp₂⟩, hsum⟩ := hp
-    obtain ⟨a, ha, hpa⟩ := hp₁
-    obtain ⟨b, hb, hpb⟩ := hp₂
-    refine ⟨⟨?_, ?_⟩, ?_⟩
-    · simpa [← hpa, hcdiv] using ha
-    · simpa [← hpb, hcdiv] using hb
-    · apply mul_left_cancel₀ hlam
-      simpa [mul_add, ← hpa, ← hpb, hcmul] using hsum
-  · intro p hp
-    simp only [coe_filter, Set.mem_setOf_eq, mem_product, mem_image] at hp ⊢
-    obtain ⟨⟨hp₁, hp₂⟩, hsum⟩ := hp
-    refine ⟨⟨⟨p.1, hp₁, rfl⟩, ⟨p.2, hp₂, rfl⟩⟩, ?_⟩
-    rw [← mul_add, hsum]
-  · intro p _
-    simp [hcmul]
-  · intro p _
-    simp [hcdiv]
+  simp only [image_mul_eq_image_smul, image_smul_prod_image_smul]
+  refine card_filter_image_smul _ _ _ hlam (fun p _ => ?_)
+  simp only [Prod.smul_fst, Prod.smul_snd, smul_eq_mul, ← mul_add]
+  exact mul_right_inj' hlam
 
 /-- The pair-sum multiplicity profile of two nonzero frequency dilates is identical after the obvious
 rescaling of targets.  Pure pair-count/Halasz inputs therefore cannot distinguish the worst `b`. -/
@@ -189,35 +223,11 @@ def addPairDiffCount (S : Finset F) (t : F) : ℕ :=
 the support `S-S`, but every pair-spacing multiplicity is transported by `t ↦ λt`. -/
 theorem addPairDiffCount_smul_eq (S : Finset F) {lam t : F} (hlam : lam ≠ 0) :
     addPairDiffCount (S.image (fun x => lam * x)) (lam * t) = addPairDiffCount S t := by
-  classical
   unfold addPairDiffCount
-  have hcdiv : ∀ z : F, lam⁻¹ * (lam * z) = z := fun z => by
-    rw [← mul_assoc, inv_mul_cancel₀ hlam, one_mul]
-  have hcmul : ∀ z : F, lam * (lam⁻¹ * z) = z := fun z => by
-    rw [← mul_assoc, mul_inv_cancel₀ hlam, one_mul]
-  refine Finset.card_nbij'
-    (fun p => (lam⁻¹ * p.1, lam⁻¹ * p.2))
-    (fun p => (lam * p.1, lam * p.2))
-    ?_ ?_ ?_ ?_
-  · intro p hp
-    simp only [coe_filter, Set.mem_setOf_eq, mem_product, mem_image] at hp ⊢
-    obtain ⟨⟨hp₁, hp₂⟩, hdiff⟩ := hp
-    obtain ⟨a, ha, hpa⟩ := hp₁
-    obtain ⟨b, hb, hpb⟩ := hp₂
-    refine ⟨⟨?_, ?_⟩, ?_⟩
-    · simpa [← hpa, hcdiv] using ha
-    · simpa [← hpb, hcdiv] using hb
-    · apply mul_left_cancel₀ hlam
-      simpa [mul_sub, ← hpa, ← hpb, hcmul] using hdiff
-  · intro p hp
-    simp only [coe_filter, Set.mem_setOf_eq, mem_product, mem_image] at hp ⊢
-    obtain ⟨⟨hp₁, hp₂⟩, hdiff⟩ := hp
-    refine ⟨⟨⟨p.1, hp₁, rfl⟩, ⟨p.2, hp₂, rfl⟩⟩, ?_⟩
-    rw [← mul_sub, hdiff]
-  · intro p _
-    simp [hcmul]
-  · intro p _
-    simp [hcdiv]
+  simp only [image_mul_eq_image_smul, image_smul_prod_image_smul]
+  refine card_filter_image_smul _ _ _ hlam (fun p _ => ?_)
+  simp only [Prod.smul_fst, Prod.smul_snd, smul_eq_mul, ← mul_sub]
+  exact mul_right_inj' hlam
 
 /-- The pair-difference multiplicity profile of two nonzero frequency dilates is identical after the
 obvious target rescaling.  Pure spacing-multiplicity / autocorrelation inputs therefore cannot select
@@ -241,42 +251,11 @@ small-ball multiplicity profile of `{b*x^m}` is transported by `t ↦ b*t`; it i
 worst `b`. -/
 theorem addTripleSumCount_smul_eq (S : Finset F) {lam t : F} (hlam : lam ≠ 0) :
     addTripleSumCount (S.image (fun x => lam * x)) (lam * t) = addTripleSumCount S t := by
-  classical
   unfold addTripleSumCount
-  have hcdiv : ∀ z : F, lam⁻¹ * (lam * z) = z := fun z => by
-    rw [← mul_assoc, inv_mul_cancel₀ hlam, one_mul]
-  have hcmul : ∀ z : F, lam * (lam⁻¹ * z) = z := fun z => by
-    rw [← mul_assoc, mul_inv_cancel₀ hlam, one_mul]
-  refine Finset.card_nbij'
-    (fun p => (lam⁻¹ * p.1, lam⁻¹ * p.2.1, lam⁻¹ * p.2.2))
-    (fun p => (lam * p.1, lam * p.2.1, lam * p.2.2))
-    ?_ ?_ ?_ ?_
-  · rintro ⟨a, b, c⟩ hp
-    simp only [coe_filter, Set.mem_setOf_eq, mem_product, mem_image] at hp ⊢
-    obtain ⟨⟨ha, hb, hc⟩, hsum⟩ := hp
-    obtain ⟨a', ha', rfl⟩ := ha
-    obtain ⟨b', hb', rfl⟩ := hb
-    obtain ⟨c', hc', rfl⟩ := hc
-    refine ⟨⟨?_, ?_, ?_⟩, ?_⟩
-    · simpa [hcdiv] using ha'
-    · simpa [hcdiv] using hb'
-    · simpa [hcdiv] using hc'
-    · have hbase : a' + b' + c' = t := by
-        apply mul_left_cancel₀ hlam
-        calc
-          lam * (a' + b' + c') = lam * a' + lam * b' + lam * c' := by ring
-          _ = lam * t := hsum
-      simpa [hcdiv] using hbase
-  · rintro ⟨a, b, c⟩ hp
-    simp only [coe_filter, Set.mem_setOf_eq, mem_product, mem_image] at hp ⊢
-    obtain ⟨⟨ha, hb, hc⟩, hsum⟩ := hp
-    refine ⟨⟨⟨a, ha, rfl⟩, ⟨b, hb, rfl⟩, ⟨c, hc, rfl⟩⟩, ?_⟩
-    rw [← hsum]
-    ring
-  · rintro ⟨a, b, c⟩ _
-    simp [hcmul]
-  · rintro ⟨a, b, c⟩ _
-    simp [hcdiv]
+  simp only [image_mul_eq_image_smul, image_smul_prod_image_smul]
+  refine card_filter_image_smul _ _ _ hlam (fun p _ => ?_)
+  simp only [Prod.smul_fst, Prod.smul_snd, smul_eq_mul, ← mul_add]
+  exact mul_right_inj' hlam
 
 /-- The three-sum multiplicity profile of two nonzero frequency dilates is identical after the
 obvious target rescaling.  Pure 3-fold small-ball/Halász inputs therefore cannot distinguish or
@@ -298,43 +277,11 @@ def addThreeAPCount (S : Finset F) : ℕ :=
 of the phase set are therefore frequency-blind: `bS` has exactly as many 3APs as `S`. -/
 theorem addThreeAPCount_smul_eq (S : Finset F) {lam : F} (hlam : lam ≠ 0) :
     addThreeAPCount (S.image (fun x => lam * x)) = addThreeAPCount S := by
-  classical
   unfold addThreeAPCount
-  have hcdiv : ∀ z : F, lam⁻¹ * (lam * z) = z := fun z => by
-    rw [← mul_assoc, inv_mul_cancel₀ hlam, one_mul]
-  have hcmul : ∀ z : F, lam * (lam⁻¹ * z) = z := fun z => by
-    rw [← mul_assoc, mul_inv_cancel₀ hlam, one_mul]
-  refine Finset.card_nbij'
-    (fun p => (lam⁻¹ * p.1, lam⁻¹ * p.2.1, lam⁻¹ * p.2.2))
-    (fun p => (lam * p.1, lam * p.2.1, lam * p.2.2))
-    ?_ ?_ ?_ ?_
-  · rintro ⟨a, b, c⟩ hp
-    simp only [coe_filter, Set.mem_setOf_eq, mem_product, mem_image] at hp ⊢
-    obtain ⟨⟨ha, hb, hc⟩, hap⟩ := hp
-    obtain ⟨a', ha', rfl⟩ := ha
-    obtain ⟨b', hb', rfl⟩ := hb
-    obtain ⟨c', hc', rfl⟩ := hc
-    refine ⟨⟨?_, ?_, ?_⟩, ?_⟩
-    · simpa [hcdiv] using ha'
-    · simpa [hcdiv] using hb'
-    · simpa [hcdiv] using hc'
-    · have hbase : a' + c' = (2 : F) * b' := by
-        apply mul_left_cancel₀ hlam
-        calc
-          lam * (a' + c') = lam * a' + lam * c' := by rw [mul_add]
-          _ = (2 : F) * (lam * b') := hap
-          _ = lam * ((2 : F) * b') := by ring
-      simpa [hcdiv] using hbase
-  · rintro ⟨a, b, c⟩ hp
-    simp only [coe_filter, Set.mem_setOf_eq, mem_product, mem_image] at hp ⊢
-    obtain ⟨⟨ha, hb, hc⟩, hap⟩ := hp
-    refine ⟨⟨⟨a, ha, rfl⟩, ⟨b, hb, rfl⟩, ⟨c, hc, rfl⟩⟩, ?_⟩
-    rw [← mul_add, hap]
-    ring
-  · rintro ⟨a, b, c⟩ _
-    simp [hcmul]
-  · rintro ⟨a, b, c⟩ _
-    simp [hcdiv]
+  simp only [image_mul_eq_image_smul, image_smul_prod_image_smul]
+  refine card_filter_image_smul _ _ _ hlam (fun p _ => ?_)
+  simp only [Prod.smul_fst, Prod.smul_snd, smul_eq_mul, ← mul_add, mul_left_comm (2 : F) lam]
+  exact mul_right_inj' hlam
 
 /-- Two nonzero frequency dilates have the same three-term AP count.  A door-(iv) anti-concentration
 argument cannot select the worst frequency using this homogeneous additive-pattern statistic. -/
@@ -363,53 +310,10 @@ theorem addLinearPatternCount_smul_eq {k : ℕ} (S : Finset F) (coeff : Fin k �
     {lam t : F} (hlam : lam ≠ 0) :
     addLinearPatternCount (S.image (fun x => lam * x)) coeff (lam * t) =
       addLinearPatternCount S coeff t := by
-  classical
   unfold addLinearPatternCount
-  have hcdiv : ∀ z : F, lam⁻¹ * (lam * z) = z := fun z => by
-    rw [← mul_assoc, inv_mul_cancel₀ hlam, one_mul]
-  have hcmul : ∀ z : F, lam * (lam⁻¹ * z) = z := fun z => by
-    rw [← mul_assoc, mul_inv_cancel₀ hlam, one_mul]
-  refine Finset.card_nbij'
-    (fun v i => lam⁻¹ * v i)
-    (fun v i => lam * v i)
-    ?_ ?_ ?_ ?_
-  · intro v hv
-    simp only [coe_filter, mem_univ, true_and] at hv ⊢
-    obtain ⟨hmem, hlin⟩ := hv
-    refine ⟨?_, ?_⟩
-    · intro i
-      obtain ⟨x, hx, hvx⟩ := Finset.mem_image.mp (hmem i)
-      simpa [← hvx, hcdiv] using hx
-    · have hscaled : lam * (∑ i : Fin k, coeff i * (lam⁻¹ * v i)) = lam * t := by
-        calc
-          lam * (∑ i : Fin k, coeff i * (lam⁻¹ * v i))
-              = ∑ i : Fin k, coeff i * v i := by
-                rw [Finset.mul_sum]
-                apply Finset.sum_congr rfl
-                intro i _
-                field_simp [hlam]
-          _ = lam * t := hlin
-      exact mul_left_cancel₀ hlam hscaled
-  · intro v hv
-    simp only [coe_filter, mem_univ, true_and] at hv ⊢
-    obtain ⟨hmem, hlin⟩ := hv
-    refine ⟨?_, ?_⟩
-    · intro i
-      exact Finset.mem_image.mpr ⟨v i, hmem i, rfl⟩
-    · calc
-        ∑ i : Fin k, coeff i * (lam * v i)
-            = lam * (∑ i : Fin k, coeff i * v i) := by
-              rw [Finset.mul_sum]
-              apply Finset.sum_congr rfl
-              intro i _
-              ring
-        _ = lam * t := by rw [hlin]
-  · intro v _
-    ext i
-    simp [hcmul]
-  · intro v _
-    ext i
-    simp [hcdiv]
+  refine card_univ_filter_smul _ _ hlam (fun v => ?_)
+  simp only [Pi.smul_apply, smul_eq_mul, mem_image_mul_iff S hlam, mul_left_comm _ lam,
+    ← Finset.mul_sum, mul_right_inj' hlam]
 
 /-- Two nonzero frequency dilates have identical fixed additive-linear pattern profiles after the
 obvious target rescaling.  This is the broad b-blindness constraint behind the finite
@@ -524,32 +428,9 @@ theorem addLinearPatternFiberMultiplicity_smul_eq {k : ℕ} (S : Finset F) (coef
     (N : ℕ) {lam : F} (hlam : lam ≠ 0) :
     addLinearPatternFiberMultiplicity (S.image (fun x => lam * x)) coeff N =
       addLinearPatternFiberMultiplicity S coeff N := by
-  classical
   unfold addLinearPatternFiberMultiplicity
-  have hcdiv : ∀ z : F, lam⁻¹ * (lam * z) = z := fun z => by
-    rw [← mul_assoc, inv_mul_cancel₀ hlam, one_mul]
-  have hcmul : ∀ z : F, lam * (lam⁻¹ * z) = z := fun z => by
-    rw [← mul_assoc, mul_inv_cancel₀ hlam, one_mul]
-  refine Finset.card_nbij'
-    (fun t => lam⁻¹ * t)
-    (fun t => lam * t)
-    ?_ ?_ ?_ ?_
-  · intro t ht
-    have htN : addLinearPatternCount (S.image (fun x => lam * x)) coeff t = N := by
-      simpa using ht
-    have hcount := (addLinearPatternCount_smul_eq S coeff (t := lam⁻¹ * t) hlam).symm
-    have htN' : addLinearPatternCount (S.image (fun x => lam * x)) coeff (lam * (lam⁻¹ * t)) = N := by
-      simpa [hcmul] using htN
-    simpa using hcount.trans htN'
-  · intro t ht
-    have htN : addLinearPatternCount S coeff t = N := by
-      simpa using ht
-    have hcount := addLinearPatternCount_smul_eq S coeff (t := t) hlam
-    simpa using hcount.trans htN
-  · intro t _
-    exact hcmul t
-  · intro t _
-    exact hcdiv t
+  refine card_univ_filter_smul _ _ hlam (fun t => ?_)
+  rw [smul_eq_mul, addLinearPatternCount_smul_eq S coeff hlam]
 
 /-- Two nonzero frequency dilates have the same full linear-pattern fiber histogram.  Therefore a
 Littlewood-Offord/Halász lever using the distribution of fixed linear-form fiber sizes, rather than
@@ -581,50 +462,16 @@ solution set: `(a,b,c,d) ↦ (λa,λb,λc,λd)` maps `addQuadruples S` bijective
 dilation-invariant. -/
 theorem addEnergy_smul_eq (S : Finset F) {lam : F} (hlam : lam ≠ 0) :
     addEnergy (S.image (fun x => lam * x)) = addEnergy S := by
-  classical
   unfold addEnergy addQuadruples
-  -- s = quadruples of (λ•S); t = quadruples of S. i divides by λ, j multiplies by λ.
-  have hcdiv : ∀ z : F, lam⁻¹ * (lam * z) = z := fun z => by
-    rw [← mul_assoc, inv_mul_cancel₀ hlam, one_mul]
-  have hcmul : ∀ z : F, lam * (lam⁻¹ * z) = z := fun z => by
-    rw [← mul_assoc, mul_inv_cancel₀ hlam, one_mul]
-  refine Finset.card_nbij'
-    (fun q => (lam⁻¹ * q.1, lam⁻¹ * q.2.1, lam⁻¹ * q.2.2.1, lam⁻¹ * q.2.2.2))
-    (fun q => (lam * q.1, lam * q.2.1, lam * q.2.2.1, lam * q.2.2.2))
-    ?_ ?_ ?_ ?_
-  · -- i : (λ•S)-quads → S-quads
-    rintro ⟨a, b, c, d⟩ hq
-    simp only [coe_filter, Set.mem_setOf_eq, mem_product, mem_image] at hq ⊢
-    obtain ⟨⟨⟨a', ha', rfl⟩, ⟨b', hb', rfl⟩, ⟨c', hc', rfl⟩, ⟨d', hd', rfl⟩⟩, heq⟩ := hq
-    refine ⟨⟨?_, ?_, ?_, ?_⟩, ?_⟩
-    · simpa [hcdiv] using ha'
-    · simpa [hcdiv] using hb'
-    · simpa [hcdiv] using hc'
-    · simpa [hcdiv] using hd'
-    · rw [hcdiv, hcdiv, hcdiv, hcdiv]
-      have h2 := mul_left_cancel₀ hlam (by linear_combination heq :
-        lam * (a' + b') = lam * (c' + d'))
-      linear_combination h2
-  · -- j : S-quads → (λ•S)-quads
-    rintro ⟨a, b, c, d⟩ hq
-    simp only [coe_filter, Set.mem_setOf_eq, mem_product, mem_image] at hq ⊢
-    obtain ⟨⟨ha, hb, hc, hd⟩, heq⟩ := hq
-    refine ⟨⟨⟨a, ha, rfl⟩, ⟨b, hb, rfl⟩, ⟨c, hc, rfl⟩, ⟨d, hd, rfl⟩⟩, ?_⟩
-    linear_combination lam * heq
-  · -- left inverse on s
-    rintro ⟨a, b, c, d⟩ _
-    simp only [Prod.mk.injEq]
-    exact ⟨hcmul a, hcmul b, hcmul c, hcmul d⟩
-  · -- right inverse on t
-    rintro ⟨a, b, c, d⟩ _
-    simp only [Prod.mk.injEq]
-    exact ⟨hcdiv a, hcdiv b, hcdiv c, hcdiv d⟩
+  simp only [image_mul_eq_image_smul, image_smul_prod_image_smul]
+  refine card_filter_image_smul _ _ _ hlam (fun q _ => ?_)
+  simp only [Prod.smul_fst, Prod.smul_snd, smul_eq_mul, ← mul_add]
+  exact mul_right_inj' hlam
 
 /-- Consequence for the small-ball lever: since `E⁺(b • S) = E⁺(S)` for every nonzero `b`, any
 `|η_b|`-bound that factors through the additive energy of the phase set `S_b = b • μ_n` takes the
-SAME value at the worst `b` as at a typical `b`. The worst `b` cannot tune the additive structure;
-the small-ball / Halász lever is b-independent and reproduces the typical (EVT/Plancherel) ceiling.
-We state it as: a uniform additive-energy `E⁺(S_b) = K` certificate is the SAME for all nonzero
+SAME value at the worst `b` as at a typical `b` — such a bound is uniform in `b` (neutral, not an
+obstruction; its strength is a property of `E⁺(μ_n)`). We state it as: a uniform additive-energy `E⁺(S_b) = K` certificate is the SAME for all nonzero
 dilates, so a bound `f (E⁺ (b • S))` is constant in `b`. -/
 theorem addEnergy_phaseSet_indep_of_scalar
     (S : Finset F) {b₁ b₂ : F} (hb₁ : b₁ ≠ 0) (hb₂ : b₂ ≠ 0) :
@@ -663,49 +510,14 @@ def addEnergyK {k : ℕ} (S : Finset F) : ℕ := (addEnergyKTuples (k := k) S).c
 /-- **Higher-order additive energy is dilation-invariant.**  For nonzero `λ`, the coordinatewise
 multiply-by-`λ` map is a bijection of the `E_k` solution set: it preserves membership in `S` (after
 dilating `S`) and the balanced-sum relation `∑ a_i = ∑ c_i ⟺ ∑ λa_i = ∑ λc_i`.  Hence
-`E_k(λ • S) = E_k(S)` for every order `k`.  This closes the "go higher-order" escape b-blindly: no
-finite-order additive-energy lever can depend on the adversarial frequency. -/
+`E_k(λ • S) = E_k(S)` for every order `k`: no finite-order additive-energy statistic depends on the
+frequency (any bound built from it is uniform in `b`). -/
 theorem addEnergyK_smul_eq {k : ℕ} (S : Finset F) {lam : F} (hlam : lam ≠ 0) :
     addEnergyK (k := k) (S.image (fun x => lam * x)) = addEnergyK (k := k) S := by
-  classical
   unfold addEnergyK addEnergyKTuples
-  have hcdiv : ∀ z : F, lam⁻¹ * (lam * z) = z := fun z => by
-    rw [← mul_assoc, inv_mul_cancel₀ hlam, one_mul]
-  have hcmul : ∀ z : F, lam * (lam⁻¹ * z) = z := fun z => by
-    rw [← mul_assoc, mul_inv_cancel₀ hlam, one_mul]
-  refine Finset.card_nbij'
-    (fun q => (fun i => lam⁻¹ * q.1 i, fun i => lam⁻¹ * q.2 i))
-    (fun q => (fun i => lam * q.1 i, fun i => lam * q.2 i))
-    ?_ ?_ ?_ ?_
-  · rintro ⟨a, c⟩ hq
-    simp only [coe_filter, Set.mem_setOf_eq, mem_univ, true_and] at hq ⊢
-    obtain ⟨ha, hc, hsum⟩ := hq
-    refine ⟨?_, ?_, ?_⟩
-    · intro i
-      obtain ⟨x, hx, hax⟩ := Finset.mem_image.mp (ha i)
-      simpa [← hax, hcdiv] using hx
-    · intro i
-      obtain ⟨x, hx, hcx⟩ := Finset.mem_image.mp (hc i)
-      simpa [← hcx, hcdiv] using hx
-    · apply mul_left_cancel₀ hlam
-      have hL : lam * (∑ i, lam⁻¹ * a i) = ∑ i, a i := by
-        rw [Finset.mul_sum]; exact Finset.sum_congr rfl (fun i _ => hcmul (a i))
-      have hR : lam * (∑ i, lam⁻¹ * c i) = ∑ i, c i := by
-        rw [Finset.mul_sum]; exact Finset.sum_congr rfl (fun i _ => hcmul (c i))
-      rw [hL, hR, hsum]
-  · rintro ⟨a, c⟩ hq
-    simp only [coe_filter, Set.mem_setOf_eq, mem_univ, true_and] at hq ⊢
-    obtain ⟨ha, hc, hsum⟩ := hq
-    refine ⟨?_, ?_, ?_⟩
-    · intro i; exact Finset.mem_image.mpr ⟨a i, ha i, rfl⟩
-    · intro i; exact Finset.mem_image.mpr ⟨c i, hc i, rfl⟩
-    · rw [← Finset.mul_sum, ← Finset.mul_sum, hsum]
-  · rintro ⟨a, c⟩ _
-    simp only [Prod.mk.injEq]
-    constructor <;> · funext i; simp [hcmul]
-  · rintro ⟨a, c⟩ _
-    simp only [Prod.mk.injEq]
-    constructor <;> · funext i; simp [hcdiv]
+  refine card_univ_filter_smul _ _ hlam (fun q => ?_)
+  simp only [Prod.smul_fst, Prod.smul_snd, Pi.smul_apply, smul_eq_mul, mem_image_mul_iff S hlam,
+    ← Finset.mul_sum, mul_right_inj' hlam]
 
 /-- Two nonzero frequency dilates have the same `k`-th additive energy.  Thus a higher-order
 additive-energy / Gowers small-ball lever on `{b·x^m}` is exactly `b`-blind at every order, just like
@@ -743,35 +555,10 @@ analogue of `addLinearPatternCount_smul_eq` for the homogeneous all-ones linear 
 coordinates. -/
 theorem addKSumCount_smul_eq {k : ℕ} (S : Finset F) {lam t : F} (hlam : lam ≠ 0) :
     addKSumCount (k := k) (S.image (fun x => lam * x)) (lam * t) = addKSumCount (k := k) S t := by
-  classical
   unfold addKSumCount
-  have hcdiv : ∀ z : F, lam⁻¹ * (lam * z) = z := fun z => by
-    rw [← mul_assoc, inv_mul_cancel₀ hlam, one_mul]
-  have hcmul : ∀ z : F, lam * (lam⁻¹ * z) = z := fun z => by
-    rw [← mul_assoc, mul_inv_cancel₀ hlam, one_mul]
-  refine Finset.card_nbij'
-    (fun v i => lam⁻¹ * v i)
-    (fun v i => lam * v i)
-    ?_ ?_ ?_ ?_
-  · intro v hv
-    simp only [coe_filter, mem_univ, true_and] at hv ⊢
-    obtain ⟨hmem, hsum⟩ := hv
-    refine ⟨?_, ?_⟩
-    · intro i
-      obtain ⟨x, hx, hvx⟩ := Finset.mem_image.mp (hmem i)
-      simpa [← hvx, hcdiv] using hx
-    · apply mul_left_cancel₀ hlam
-      have hL : lam * (∑ i, lam⁻¹ * v i) = ∑ i, v i := by
-        rw [Finset.mul_sum]; exact Finset.sum_congr rfl (fun i _ => hcmul (v i))
-      rw [hL, hsum]
-  · intro v hv
-    simp only [coe_filter, mem_univ, true_and] at hv ⊢
-    obtain ⟨hmem, hsum⟩ := hv
-    refine ⟨?_, ?_⟩
-    · intro i; exact Finset.mem_image.mpr ⟨v i, hmem i, rfl⟩
-    · rw [← Finset.mul_sum, hsum]
-  · intro v _; funext i; simp [hcmul]
-  · intro v _; funext i; simp [hcdiv]
+  refine card_univ_filter_smul _ _ hlam (fun v => ?_)
+  simp only [Pi.smul_apply, smul_eq_mul, mem_image_mul_iff S hlam, ← Finset.mul_sum,
+    mul_right_inj' hlam]
 
 /-- The set of higher-order sum-fiber sizes (forgetting target labels).  Its maximum is the
 `L^{2k}` higher-order small-ball multiplicity. -/
@@ -841,9 +628,8 @@ theorem not_addKSumMaxFiber_scalar_improvement {k : ℕ}
 A genuine Halász / Littlewood–Offord anti-concentration lever for the phase set is `m`-dimensional:
 it measures the JOINT fiber `{v ∈ S^k : A·v = t}` of a SYSTEM of `m` additive-linear forms
 (`A : Fin m → Fin k → F`, vector target `t : Fin m → F`), not a single scalar form. The single-form
-`addLinearPatternCount` does NOT subsume this multi-dimensional case. We close the entire
-multi-dimensional additive small-ball class in one statement: every such joint count is dilation
-invariant (after rescaling the vector target), hence b-blind on the worst-frequency phase set.
+`addLinearPatternCount` is its `m = 1` case. We prove in one statement that every such joint count
+is dilation invariant (after rescaling the vector target), hence b-blind (uniform in `b`).
 This matches the probe `scripts/probes/probe_dooriv_multiform_smallball_blind.py` (PROPER 2-power
 `μ_n`, p≫n³, structured primes, `m=2,k=3`, multiple nonzero dilates × targets, never n=q−1), which
 found the joint system count invariant under every nonzero dilation. -/
@@ -864,55 +650,10 @@ theorem addSystemPatternCount_smul_eq {m k : ℕ} (S : Finset F) (A : Fin m → 
     {lam : F} (t : Fin m → F) (hlam : lam ≠ 0) :
     addSystemPatternCount (S.image (fun x => lam * x)) A (fun r => lam * t r) =
       addSystemPatternCount S A t := by
-  classical
   unfold addSystemPatternCount
-  have hcdiv : ∀ z : F, lam⁻¹ * (lam * z) = z := fun z => by
-    rw [← mul_assoc, inv_mul_cancel₀ hlam, one_mul]
-  have hcmul : ∀ z : F, lam * (lam⁻¹ * z) = z := fun z => by
-    rw [← mul_assoc, mul_inv_cancel₀ hlam, one_mul]
-  refine Finset.card_nbij'
-    (fun v i => lam⁻¹ * v i)
-    (fun v i => lam * v i)
-    ?_ ?_ ?_ ?_
-  · intro v hv
-    simp only [coe_filter, mem_univ, true_and] at hv ⊢
-    obtain ⟨hmem, hlin⟩ := hv
-    refine ⟨?_, ?_⟩
-    · intro i
-      obtain ⟨x, hx, hvx⟩ := Finset.mem_image.mp (hmem i)
-      simpa [← hvx, hcdiv] using hx
-    · intro r
-      have hscaled : lam * (∑ j : Fin k, A r j * (lam⁻¹ * v j)) = lam * t r := by
-        calc
-          lam * (∑ j : Fin k, A r j * (lam⁻¹ * v j))
-              = ∑ j : Fin k, A r j * v j := by
-                rw [Finset.mul_sum]
-                apply Finset.sum_congr rfl
-                intro j _
-                field_simp [hlam]
-          _ = lam * t r := hlin r
-      exact mul_left_cancel₀ hlam hscaled
-  · intro v hv
-    simp only [coe_filter, mem_univ, true_and] at hv ⊢
-    obtain ⟨hmem, hlin⟩ := hv
-    refine ⟨?_, ?_⟩
-    · intro i
-      exact Finset.mem_image.mpr ⟨v i, hmem i, rfl⟩
-    · intro r
-      calc
-        ∑ j : Fin k, A r j * (lam * v j)
-            = lam * (∑ j : Fin k, A r j * v j) := by
-              rw [Finset.mul_sum]
-              apply Finset.sum_congr rfl
-              intro j _
-              ring
-        _ = lam * t r := by rw [hlin r]
-  · intro v _
-    ext i
-    simp [hcmul]
-  · intro v _
-    ext i
-    simp [hcdiv]
+  refine card_univ_filter_smul _ _ hlam (fun v => ?_)
+  simp only [Pi.smul_apply, smul_eq_mul, mem_image_mul_iff S hlam, mul_left_comm _ lam,
+    ← Finset.mul_sum, mul_right_inj' hlam]
 
 /-- **Two nonzero frequency dilates have identical joint system small-ball profiles** (after the
 vector-target rescaling). The entire multi-dimensional additive small-ball / Halász family lives on
@@ -1008,34 +749,10 @@ theorem addSystemPatternFiberMultiplicity_smul_eq {m k : ℕ}
     (S : Finset F) (A : Fin m → Fin k → F) (N : ℕ) {lam : F} (hlam : lam ≠ 0) :
     addSystemPatternFiberMultiplicity (S.image (fun x => lam * x)) A N =
       addSystemPatternFiberMultiplicity S A N := by
-  classical
   unfold addSystemPatternFiberMultiplicity
-  refine Finset.card_nbij'
-    (fun t r => lam⁻¹ * t r)
-    (fun t r => lam * t r)
-    ?_ ?_ ?_ ?_
-  · intro t ht
-    have htN : addSystemPatternCount (S.image (fun x => lam * x)) A t = N := by
-      simpa using ht
-    have hcount := (addSystemPatternCount_smul_eq S A (fun r => lam⁻¹ * t r) hlam).symm
-    have htarget : (fun r => lam * (lam⁻¹ * t r)) = t := by
-      ext r
-      rw [← mul_assoc, mul_inv_cancel₀ hlam, one_mul]
-    have hcount' : addSystemPatternCount (S.image (fun x => lam * x)) A t =
-        addSystemPatternCount S A (fun r => lam⁻¹ * t r) := by
-      simpa [htarget] using hcount.symm
-    simpa using hcount'.symm.trans htN
-  · intro t ht
-    have htN : addSystemPatternCount S A t = N := by
-      simpa using ht
-    have hcount := addSystemPatternCount_smul_eq S A t hlam
-    simpa using hcount.trans htN
-  · intro t _
-    ext r
-    simp [hlam]
-  · intro t _
-    ext r
-    simp [hlam]
+  refine card_univ_filter_smul _ _ hlam (fun t => ?_)
+  rw [show lam • t = (fun r => lam * t r) from funext fun r => by simp,
+    addSystemPatternCount_smul_eq S A t hlam]
 
 /-- Two nonzero frequency dilates have the same full joint-system fiber histogram.  Thus even
 histogram-sensitive multi-dimensional small-ball inputs are scalar-blind. -/
@@ -1050,9 +767,9 @@ theorem addSystemPatternFiberMultiplicity_phaseSet_indep_of_scalar {m k : ℕ}
 /-- **No strict scalar improvement for the multi-dimensional small-ball count.** If one nonzero
 frequency dilate makes the joint system fiber exceed a proposed threshold `C`, no other nonzero
 dilate can satisfy `≤ C` at the rescaled target. The adversarial worst `b` cannot tune the
-multi-dimensional Halász small-ball lever to beat the typical value: it is genuinely frequency-blind.
-This is the multi-form analogue of `not_addLinearPatternMaxFiber_scalar_improvement`, and locks the
-full `m`-dimensional additive small-ball class as a dead door-(iv) lever. -/
+multi-dimensional small-ball count: it is frequency-blind. This is the multi-form analogue of
+`not_addLinearPatternMaxFiber_scalar_improvement`. It says nothing about how small the count is,
+and does not show that the small-ball class is a dead lever. -/
 theorem not_addSystemPatternCount_scalar_improvement {m k : ℕ}
     (S : Finset F) (A : Fin m → Fin k → F) (t : Fin m → F) {b₁ b₂ : F}
     (hb₁ : b₁ ≠ 0) (hb₂ : b₂ ≠ 0) {C : ℕ}
@@ -1153,3 +870,5 @@ end ProximityGap.Frontier.DoorIVPhaseSetDilationInvariant
   ProximityGap.Frontier.DoorIVPhaseSetDilationInvariant.not_addSystemPatternMaxFiber_scalar_improvement
 #print axioms
   ProximityGap.Frontier.DoorIVPhaseSetDilationInvariant.not_addSystemPatternFiberMultiplicity_scalar_improvement
+#print axioms ProximityGap.Frontier.DoorIVPhaseSetDilationInvariant.card_filter_image_smul
+#print axioms ProximityGap.Frontier.DoorIVPhaseSetDilationInvariant.card_univ_filter_smul

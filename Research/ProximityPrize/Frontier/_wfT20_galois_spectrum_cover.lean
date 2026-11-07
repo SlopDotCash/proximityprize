@@ -72,8 +72,10 @@ is the identity). So the parity principle does not lift to a spectrum covering r
 
 ## What is proven here (axiom-clean)
 
-Four small, honest, machine-checked facts that pin the refutation:
-* `twoPart_frobenius_eq_one` — `p ≡ 1 (mod n) ⟹ v₂(ord(p mod n)) = 0`, so `2^{ν(p)} = 1`.
+Small machine-checked facts that pin the refutation (several are elementary; the content is mostly
+in the prose above):
+* `ord_p_mod_n_eq_one` — `p % n = 1 ⟹ orderOf (p : ZMod n) = 1`.
+* `twoPart_frobenius_eq_one` — `ord = 1 ⟹ 2^{v₂(ord)} = 1` (fed by `ord_p_mod_n_eq_one`).
 * `prize_primes_meeting_threshold_is_empty` — under the prize hypothesis, `ν(p) ≥ T` with `T ≥ 1`
   is impossible (the threshold set is empty).
 * `covering_no_better_than_I031` — with `2^{ν(p)} = 1`, the claimed bound `(p/n)/2^{ν(p)}` equals
@@ -95,15 +97,20 @@ namespace ArkLib.ProximityGap.WfT20GaloisSpectrumCover
 
 /-- **The prize regime forces the order of `p mod n` to be `1`.** The prize hypothesis is that
 `μ_n ⊆ 𝔽_p^*` is a subgroup of order `n = 2^μ`; by Lagrange this is `n ∣ p − 1`, i.e.
-`p ≡ 1 (mod n)`. Then `p % n = 1` (for `n ≥ 2`), so the multiplicative order of `p` modulo `n` is
-`1`. We model this directly: from `p % n = 1` the order is `1`. -/
-theorem ord_p_mod_n_eq_one {p n : ℕ} (hn : 2 ≤ n) (hp : p % n = 1) :
-    (p % n) = 1 := hp
+`p ≡ 1 (mod n)`. Then `p % n = 1`, so the multiplicative order of `p` in `ZMod n` is `1`.
+(Audit 2026-10-28, CW-B18-19: a former version concluded `p % n = 1` from `p % n = 1`; it now
+computes the order.) -/
+theorem ord_p_mod_n_eq_one {p n : ℕ} (_hn : 2 ≤ n) (hp : p % n = 1) :
+    orderOf (p : ZMod n) = 1 := by
+  have h : (p : ZMod n) = 1 := by
+    rw [← ZMod.natCast_mod p n, hp, Nat.cast_one]
+  rw [h, orderOf_one]
 
 /-- **The 2-part of the Frobenius order vanishes: `ν(p) = 0`, so `2^{ν(p)} = 1`.** Since
 `ord(p mod n) = 1` (the prime splits completely; the decomposition group is trivial), its 2-adic
-valuation is `v₂(1) = 0`. Modelling `ν(p) = padicValNat 2 (ord(p mod n))` with the established
-`ord = 1`, the floor `2^{ν(p)} = 2^0 = 1`. -/
+valuation is `v₂(1) = 0`. Modelling `ν(p) = padicValNat 2 (ord(p mod n))`, the floor
+`2^{ν(p)} = 2^0 = 1`.  The hypothesis `ordp = 1` is supplied by `ord_p_mod_n_eq_one` (with
+`ordp := orderOf (p : ZMod n)`); on its own this lemma is just `2^{v₂(1)} = 1`. -/
 theorem twoPart_frobenius_eq_one (ordp : ℕ) (hord : ordp = 1) :
     2 ^ (padicValNat 2 ordp) = 1 := by
   subst hord
@@ -139,15 +146,10 @@ theorem covering_no_better_than_I031 (poverN : ℕ) (twoNu : ℕ) (hnu : twoNu =
   subst hnu
   exact Nat.div_one poverN
 
-/-- **The Parseval-over-orbits step collapses to the second moment (F1/F0).** With the Frobenius
-factor `= 1`, the representative count is the I031 dilation count `R = (p−1)/n`, and the orbits have
-size exactly `n` (`I031DilationOrbitReduction.coset_card_eq_n`). The orbit count and orbit size
-multiply back to the total `p − 1`: `R · n = p − 1`. This is the F0/F1 conservation identity
-`(orbit count)·(orbit size) = (total frequencies)`: the covering partitions `𝔽_p^*` without any
-gain, so the Parseval-over-orbits step is just the plain second moment, which caps at `√n` (Johnson)
-and cannot produce the `√log` excess. -/
-theorem covering_size_count_conservation (R n pm1 : ℕ) (hR : R * n = pm1) :
-    R * n = pm1 := hR
+/- Remark (prose only): with the Frobenius factor `= 1` the representative count is the I031
+dilation count `R = (p−1)/n` with orbits of size `n`, so `R·n = p−1` and the covering partitions
+`𝔽_p^*` without gain.  The former `covering_size_count_conservation` (`hR ⊢ hR`) was removed
+(CW-B18-19). -/
 
 /-! ## Part 4 — the surviving spectrum symmetry is `p-INDEPENDENT` (fence F0 signature) -/
 
@@ -164,14 +166,10 @@ theorem pIndependent_symmetry_F0 (φn : ℕ) (symOrd : ℕ → ℕ)
     symOrd p₁ = symOrd p₂ := by
   rw [hfactor p₁, hfactor p₂]
 
-/-- **Contrast with the genuine `p-sensitive` channel (Class A).** The ONLY `p-sensitive` invariant
-controlling the prize is `M = max_{b≠0}‖η_b‖` itself (the magnitude), which IS the BGK wall (fence
-F0/F11 per `deltastar-444-p-sensitive-classification`). The candidate's `2^{ν(p)}` was advertised as
-a `p-sensitive` non-magnitude lever, but it is constant (`= 1`) — hence NOT `p-sensitive` at all in
-the prize regime. We record the disjunction: the candidate's lever is either constant (`= 1`, Part 1,
-not p-sensitive) or it is `M` (the wall). There is no third option. -/
-theorem candidate_lever_is_constant_or_wall
-    (twoNu : ℕ) (h1 : twoNu = 1) : twoNu = 1 ∨ twoNu ≠ 1 := Or.inl h1
+/- Remark (prose only): the only `p`-sensitive invariant controlling the prize is
+`M = max_{b≠0}‖η_b‖` itself (the BGK wall); the candidate's `2^{ν(p)}` is constant `= 1` in the
+prize regime (Part 1), hence not `p`-sensitive.  The former `candidate_lever_is_constant_or_wall`
+(`Or.inl h1`) was removed (CW-B18-19). -/
 
 end ArkLib.ProximityGap.WfT20GaloisSpectrumCover
 
@@ -181,6 +179,4 @@ end ArkLib.ProximityGap.WfT20GaloisSpectrumCover
 #print axioms ArkLib.ProximityGap.WfT20GaloisSpectrumCover.prize_primes_meeting_threshold_is_empty
 #print axioms ArkLib.ProximityGap.WfT20GaloisSpectrumCover.prize_threshold_n30_unmet
 #print axioms ArkLib.ProximityGap.WfT20GaloisSpectrumCover.covering_no_better_than_I031
-#print axioms ArkLib.ProximityGap.WfT20GaloisSpectrumCover.covering_size_count_conservation
 #print axioms ArkLib.ProximityGap.WfT20GaloisSpectrumCover.pIndependent_symmetry_F0
-#print axioms ArkLib.ProximityGap.WfT20GaloisSpectrumCover.candidate_lever_is_constant_or_wall

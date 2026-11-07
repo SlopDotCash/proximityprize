@@ -13,7 +13,13 @@ The value-level core of dyadic `μ₂`-coset-saturation: an even monic generatin
 root multiset to be `±`-pair-closed. With the `m=2` gap (`e₁=e₃=0`, size 4) the configuration polynomial
 `X⁴+e₂X²+e₄` is even, so the agreement set is a union of `μ₂`-cosets — the rigorous, char-`p`-free
 minimal case of the proximity-prize optimality (`#bad ≤ |Σ_r|` at `r=2`, any field). Complements
-`FactorizationRigidity.lean` (the `m`-sparse ⟺ `μ_m`-coset-union statement) at the multiset-value level.
+`FactorizationRigidity.lean` at the multiset-value level. That file proves the coefficient-support
+iff for `range (expand m)`, the one-way root-*set* invariance of `m`-sparse polynomials, and a
+converse only under explicit hypotheses (a primitive `m`-th root of unity and a multiset-union of
+full `μ_m`-cosets); it does **not** prove an unqualified "`m`-sparse ⟺ `μ_m`-coset union"
+equivalence, which is false in general (over `𝔽₂`, `m = 2`: `S = {1}` is a `μ₂ = {1}`-coset
+union but `X − 1 ∉ 𝔽₂[X²]`). The present file's result is the multiplicity-aware `m = 2`
+direction "even ⟹ negation-closed multiset" over an integral domain.
 -/
 
 namespace ArkLib.ProximityGap.NegClosure

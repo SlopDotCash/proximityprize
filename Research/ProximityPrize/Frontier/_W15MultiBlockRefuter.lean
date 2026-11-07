@@ -9,7 +9,7 @@ import Research.ProximityPrize.Frontier._W15SafeBranchLinearCeiling
 /-!
 # LANE W15 part 5 (#466, thread ll:low-profile-fiber): THE MULTI-BLOCK LADDER —
 # `L_near = 2` is NOT a universal ceiling (three-block refuter), and the constant-block
-# ladder is shape-dependent with the campaign shape capped at `M = 2`
+# ladder is shape-dependent (the campaign shape fails the sufficient `M = 3` safety gate)
 
 ## Position in the lane
 
@@ -20,8 +20,10 @@ the question is SHAPE-DEPENDENT:
 
 * at `(q, n, k, a) = (11, 10, 2, 6)` the THREE-constant-block line is safe, large-zero,
   and carries `Λ = 3` — `L_near = 2` is FALSE there (formalized below);
-* at the campaign rate-quarter shape `(17, 16, 4, 9)` the constant-block ladder is capped
-  at `M = 2` by the safety gate `M(k−1) < a` (`3·3 = 9 ≥ 9 = a`), the structured
+* at the campaign rate-quarter shape `(17, 16, 4, 9)` the constant-block ladder's
+  *sufficient* safety gate `M(k−1) < a` fails at `M = 3` (`3·3 = 9 ≥ 9 = a`), so this
+  construction cannot certify an `M = 3` rung there (it does not prove such lines are
+  unsafe); the structured
   non-constant three-piece search found `0` feasible triples in `4000` samples (the
   required `≥ 7` pairwise Z-overlap is essentially unreachable for degree-`< 4`
   codewords), and randomized hill-climbs at `z ∈ {9, 14}` topped out at `Λ = 2`:
@@ -36,9 +38,11 @@ the question is SHAPE-DEPENDENT:
    on the three-block line.
 2. `elevenShape_L_two_refuted` — the `(n, k, a) = (10, 2, 6)` instantiation (`b = 2`),
    for every field with `≥ 3` elements: `L_near^{true} ≥ 3` at that shape.
-3. `campaign_constant_cap` — the campaign shape FAILS the `M = 3` safety gate
-   (`¬ 3(k−1) + 1 ≤ a` at `k = 4, a = 9`): the constant-block ladder cannot pass `M = 2`
-   there, matching the probe's empirical ceiling.
+3. `campaign_constant_cap` — the campaign shape FAILS the *sufficient* `M = 3` safety gate
+   (`¬ 3(k−1) + 1 ≤ a` at `k = 4, a = 9`) used by `threeBlock_zeroDirectionSafeLine`.  This
+   is only the arithmetic failure of the gate: it does NOT prove that three-constant-block
+   lines are unsafe there (that would need a codeword reaching `9` zero-agreements), so
+   it does not cap the ladder; it is merely consistent with the probe's empirical ceiling.
 
 ## The corrected lower ladder (shape-dependent)
 
@@ -46,7 +50,9 @@ The constant-block family with `M` blocks of size `b` refutes `L = M − 1` when
 `M·b ≥ a`, `n − (M−1)·b ≥ a`, `b ≤ a − 1`, `M(k−1) < a`, `M ≤ q` — so
 
   `L_near^{true} ≥ M_max(shape)`,  `M_max ≥ 2` throughout `3a ≤ 2n` (part 4),
-  `M_max = 3` at `(10, 2, 6)`-like shapes, `M_max = 2` at the campaign shape.
+  `M_max ≥ 3` at `(10, 2, 6)`-like shapes; at the campaign shape the sufficient gate
+  certifies only `M = 2` (whether some `M = 3` constant-block line is nonetheless safe
+  there is not decided here).
 
 This file formalizes the `M = 3` rung; the general-`M` rung is a mechanical extension
 (indexed block families) not needed until a consumer asks for it.
@@ -56,7 +62,7 @@ This file formalizes the `M = 3` rung; the general-`M` rung is a mechanical exte
 * NO upper bound `Λ ≤ 2` is proved at the campaign shape — the probe evidence
   (structured search + hill-climbs) is measurement, not proof.  The open content of
   `LargeZeroSafeLineListBudgeted` in the deep window is now: prove `Λ ≤ 2` at shapes
-  with `3(k−1) ≥ a` (where constant blocks cap at 2 and, per the part-4 secant
+  with `3(k−1) ≥ a` (where the sufficient constant-block gate certifies only 2 and, per the part-4 secant
   dichotomy, any third codeword must be non-constant with `≥ 7`-point coordinated
   Z-overlaps), or find a non-constant refuter.  Both directions resist the current
   in-tree machinery; the residual stays open with its boundary machine-pinned one rung
@@ -387,10 +393,12 @@ theorem elevenShape_L_two_refuted (dom : Fin 10 ↪ F) (hcard : 3 ≤ Fintype.ca
   exact not_largeZeroSafeLineListBudgeted_two dom (b := 2) (by norm_num) (by norm_num)
     (by norm_num) (by norm_num) (by norm_num) hμ0 hμ1
 
-/-- The campaign rate-quarter shape FAILS the `M = 3` constant-block safety gate:
-`3(k−1) + 1 = 10 > 9 = a` at `k = 4` — the constant ladder caps at `M = 2` there,
-matching the probe's empirical ceiling `Λ = 2` (hill-climbs at `z ∈ {9, 14}` and a
-`4000`-sample structured non-constant search all top out at `2`). -/
+/-- The campaign rate-quarter shape FAILS the *sufficient* `M = 3` constant-block safety
+gate of `threeBlock_zeroDirectionSafeLine`: `3(k−1) + 1 = 10 > 9 = a` at `k = 4`.  This is
+pure arithmetic about the gate; it does NOT show three-constant-block lines are unsafe at
+this shape (no codeword reaching `9` zero-agreements is exhibited), so it does not cap the
+constant ladder.  It is merely consistent with the probe's empirical ceiling `Λ = 2`
+(hill-climbs at `z ∈ {9, 14}` and a `4000`-sample structured non-constant search). -/
 theorem campaign_constant_cap : ¬ (3 * (4 - 1) + 1 ≤ 9) := by norm_num
 
 end ProximityGap.Frontier.W15MultiBlockRefuter

@@ -25,8 +25,14 @@ list bound*.  At `s = 2`:
    obstruction (`obstructionBound_of_rowCloseSpans_cover`): **`ObstructionBound`
    follows from `#(close direction spans of one row) ≤ q − 1`** — for any row.
 
-The corollary `epsMCAG_interleaved_eq_of_rowCloseSpans_card` chains this through the
-landed exactness theorem.  The remaining open input — the direction count — is exactly
+The reduction in step 3 is per stack.  Chaining it through the landed exactness theorem
+needs the count for the stacks that matter.  The uniform corollary
+`epsMCAG_interleaved_eq_of_rowCloseSpans_card` asks for it at *every* stack, and that
+hypothesis is unsatisfiable (`not_forall_rowCloseSpans_card`: at the zero stack every
+direction of every row is close, giving `q + 1` spans; at `l = 0` there is no row).  The
+usable corollary is `epsMCAG_interleaved_eq_of_badStack_rowCloseSpans_card`, which asks for
+the count only on stacks with a bad seed (stacks without one satisfy `ObstructionBound`
+trivially).  The remaining open input — the direction count on bad stacks — is exactly
 a proximity-gap/list statement about ONE affine line of words (`λ₀·U_{j,0} + λ₁·U_{j,1}`,
 projectively), which is where the Johnson radius genuinely enters: below Johnson the
 close-point count of a non-fully-close line is `ε_pg·q ≪ q`, while at Johnson lines can
@@ -213,11 +219,15 @@ theorem obstructionBound_of_rowCloseSpans_cover
       · exact span_singleton_ne_top lam
 
 open Classical in
-/-- **S2(b′) chained to exactness:** if every 2-column stack admits a row whose
-δ-close direction spans number at most `q − 1`, generator-MCA interleaving is exact
-for every generator.  The open input is now a 1-dimensional direction count — a
-proximity-gap statement about a single line of words, which is precisely where the
-Johnson radius enters (and where the probe defeater at `δ = 1−√ρ` lives). -/
+/-- **S2(b′) chained to exactness (uniform form — its hypothesis is unsatisfiable).**
+If every 2-column stack admits a row whose δ-close direction spans number at most
+`q − 1`, generator-MCA interleaving is exact for every generator.  The implication is
+valid, but the hypothesis quantifies over *all* stacks, including the zero stack, and
+`not_forall_rowCloseSpans_card` proves it never holds: every direction of every row of the
+zero stack is δ-close to the zero codeword, giving `q + 1` distinct spans (and at `l = 0`
+there is no row at all).  So this theorem never fires; the usable form is
+`epsMCAG_interleaved_eq_of_badStack_rowCloseSpans_card`, which asks for the count only on
+stacks that have a bad seed. -/
 theorem epsMCAG_interleaved_eq_of_rowCloseSpans_card
     (C : Submodule F (ι → A)) (δ : ℝ≥0) {l : ℕ}
     {Ω : Type} [Fintype Ω] [Nonempty Ω] (G : Ω → Fin l → F)
@@ -231,9 +241,224 @@ theorem epsMCAG_interleaved_eq_of_rowCloseSpans_card
   obtain ⟨j, Ds, hcover, hcard⟩ := h U
   exact obstructionBound_of_rowCloseSpans_cover C δ G U j Ds hcover hcard
 
+open Classical in
+/-- **The uniform one-row direction-count hypothesis is unsatisfiable.**  For every
+submodule code `C`, radius `δ` and number of rows `l`, it is false that every 2-column stack
+admits a row whose δ-close direction spans fit in some `Ds` with `#Ds + 1 ≤ q`.  Witness:
+the zero stack.  Each direction `λ` of each row is δ-close (agreement set `univ`, codeword
+`0`), and the `q + 1` lines `span{(1, β)}` (`β ∈ F`) and `span{(0, 1)}` are pairwise
+distinct, so `#Ds ≥ q + 1`.  (At `l = 0` there is no row to choose.)  The zero stack has no
+bad seed, so this is a defect of the uniform quantifier, not an obstruction to exactness. -/
+theorem not_forall_rowCloseSpans_card (C : Submodule F (ι → A)) (δ : ℝ≥0) {l : ℕ} :
+    ¬ ∀ U : Fin l → ι → Fin 2 → A, ∃ (j : Fin l)
+      (Ds : Finset (Submodule F (Fin 2 → F))),
+      (∀ lam : Fin 2 → F, lam ≠ 0 → RowClose C δ U j lam →
+        Submodule.span F {lam} ∈ Ds) ∧ Ds.card + 1 ≤ Fintype.card F := by
+  intro h
+  obtain ⟨j, Ds, hcover, hcard⟩ := h 0
+  -- every direction of row `j` of the zero stack is δ-close: agreement set `univ`, codeword `0`
+  have hclose : ∀ lam : Fin 2 → F, RowClose C δ (0 : Fin l → ι → Fin 2 → A) j lam := by
+    intro lam
+    refine ⟨Finset.univ, ?_, 0, C.zero_mem, fun i _ => by simp⟩
+    rw [Finset.card_univ]
+    exact mul_le_of_le_one_left zero_le tsub_le_self
+  -- the `q + 1` lines of `F²`, indexed by `Option F`
+  let v : Option F → Fin 2 → F := fun o => o.elim ![0, 1] (fun β => ![1, β])
+  have hv0 : ∀ o, v o ≠ 0 := by
+    intro o hvo
+    cases o with
+    | none => simpa [v] using congrFun hvo 1
+    | some β => simpa [v] using congrFun hvo 0
+  have hinj : Function.Injective (fun o => Submodule.span F {v o}) := by
+    intro o o' heq
+    have hmem : v o' ∈ Submodule.span F {v o} := by
+      have heq' : Submodule.span F {v o} = Submodule.span F {v o'} := heq
+      rw [heq']
+      exact Submodule.mem_span_singleton_self _
+    obtain ⟨c, hc⟩ := Submodule.mem_span_singleton.mp hmem
+    have h0 := congrFun hc 0
+    have h1 := congrFun hc 1
+    cases o with
+    | none =>
+      cases o' with
+      | none => rfl
+      | some β' => simp [v] at h0
+    | some β =>
+      cases o' with
+      | none =>
+        simp [v] at h0 h1
+        simp [h0] at h1
+      | some β' =>
+        simp [v] at h0 h1
+        rw [h0, one_mul] at h1
+        rw [h1]
+  have hsub : (Finset.univ : Finset (Option F)).image (fun o => Submodule.span F {v o})
+      ⊆ Ds := by
+    intro K hK
+    obtain ⟨o, _, rfl⟩ := Finset.mem_image.mp hK
+    exact hcover (v o) (hv0 o) (hclose (v o))
+  have hle := Finset.card_le_card hsub
+  rw [Finset.card_image_of_injective _ hinj, Finset.card_univ, Fintype.card_option] at hle
+  omega
+
+omit [Nonempty ι] [DecidableEq ι] [DecidableEq F] [DecidableEq A] in
+/-- A stack with no `G`-MCA-bad seed satisfies `ObstructionBound` with the empty family. -/
+theorem obstructionBound_of_no_bad_seed
+    (C : Submodule F (ι → A)) (δ : ℝ≥0) {l s : ℕ}
+    {Ω : Type} [Fintype Ω] [Nonempty Ω] (G : Ω → Fin l → F)
+    (U : Fin l → ι → Fin s → A)
+    (hno : ∀ ω : Ω, ¬ mcaEventG ((C : Set (ι → A))^⋈ (Fin s)) δ U (G ω)) :
+    ObstructionBound C δ G U :=
+  ⟨∅, by simp, by simp, fun ω hω => absurd hω (hno ω)⟩
+
+open Classical in
+/-- **S2(b′) chained to exactness (bad-stack form).**  If every 2-column stack *that has a
+`G`-MCA-bad seed* admits a row whose δ-close direction spans fit in some `Ds` with
+`#Ds + 1 ≤ q`, generator-MCA interleaving is exact for every generator.  Stacks without bad
+seeds (the zero stack among them) satisfy `ObstructionBound` trivially
+(`obstructionBound_of_no_bad_seed`), so they are not asked to meet the count.  This removes
+the zero-stack obstruction of `not_forall_rowCloseSpans_card`; whether the restricted count
+holds for a given code and radius is the open input and is not established here.  The
+count still ranges over *all* close directions of the chosen row, which can be more than the
+directions in realized obstructions. -/
+theorem epsMCAG_interleaved_eq_of_badStack_rowCloseSpans_card
+    (C : Submodule F (ι → A)) (δ : ℝ≥0) {l : ℕ}
+    {Ω : Type} [Fintype Ω] [Nonempty Ω] (G : Ω → Fin l → F)
+    (h : ∀ U : Fin l → ι → Fin 2 → A,
+      (∃ ω : Ω, mcaEventG ((C : Set (ι → A))^⋈ (Fin 2)) δ U (G ω)) →
+      ∃ (j : Fin l) (Ds : Finset (Submodule F (Fin 2 → F))),
+        (∀ lam : Fin 2 → F, lam ≠ 0 → RowClose C δ U j lam →
+          Submodule.span F {lam} ∈ Ds) ∧ Ds.card + 1 ≤ Fintype.card F) :
+    epsMCAG (A := Fin 2 → A) ((C : Set (ι → A))^⋈ (Fin 2)) δ G
+      = epsMCAG (A := A) (C : Set (ι → A)) δ G := by
+  refine epsMCAG_interleaved_eq_of_obstructionBound C 2 δ G (fun U => ?_)
+  by_cases hbad : ∃ ω : Ω, mcaEventG ((C : Set (ι → A))^⋈ (Fin 2)) δ U (G ω)
+  · obtain ⟨j, Ds, hcover, hcard⟩ := h U hbad
+    exact obstructionBound_of_rowCloseSpans_cover C δ G U j Ds hcover hcard
+  · push_neg at hbad
+    exact obstructionBound_of_no_bad_seed C δ G U hbad
+
+/-! ### Genuine line exclusion gives the containment cover
+
+`Jo26ObstructionCount.LineExclusion` says some line `L₀` of `F²` is never a realized
+bad-seed obstruction. Every proper obstruction is `⊥` or a line. A line other than `L₀`
+is one of the remaining `q` lines, and `⊥` lies below any of them. So the `q` lines
+other than `L₀` dominate every obstruction *by containment* (`ObstructionCover`). -/
+
+/-- The `q + 1` lines of `F²`, indexed by `Option F`: `none ↦ span{(0,1)}` and
+`some a ↦ span{(1,a)}`. -/
+noncomputable def lineOf : Option F → Submodule F (Fin 2 → F)
+  | none => Submodule.span F {![0, 1]}
+  | some a => Submodule.span F {![1, a]}
+
+/-- The index of the line spanned by a vector `v`: `none` if `v 0 = 0`, else
+`some (v 1 / v 0)`. -/
+def lineIndex (v : Fin 2 → F) : Option F :=
+  if v 0 = 0 then none else some (v 1 / v 0)
+
+omit [Fintype F] in
+/-- Every line `span{v}` (`v ≠ 0`) is `lineOf (lineIndex v)`. -/
+theorem span_eq_lineOf_lineIndex {v : Fin 2 → F} (hv : v ≠ 0) :
+    Submodule.span F {v} = lineOf (lineIndex v) := by
+  unfold lineIndex
+  by_cases h0 : v 0 = 0
+  · have h1 : v 1 ≠ 0 := by
+      intro h1
+      apply hv
+      funext k
+      fin_cases k
+      · exact h0
+      · exact h1
+    have hveq : v = v 1 • ![(0 : F), 1] := by
+      funext k
+      fin_cases k <;> simp [h0]
+    rw [if_pos h0]
+    show Submodule.span F {v} = Submodule.span F {![0, 1]}
+    conv_lhs => rw [hveq]
+    exact Submodule.span_singleton_smul_eq (IsUnit.mk0 _ h1) _
+  · have hveq : v = v 0 • ![(1 : F), v 1 / v 0] := by
+      funext k
+      fin_cases k
+      · simp
+      · simp only [Fin.mk_one, Pi.smul_apply, Matrix.cons_val_one, Matrix.cons_val_zero,
+          smul_eq_mul]
+        field_simp
+    rw [if_neg h0]
+    show Submodule.span F {v} = Submodule.span F {![1, v 1 / v 0]}
+    conv_lhs => rw [hveq]
+    exact Submodule.span_singleton_smul_eq (IsUnit.mk0 _ h0) _
+
+omit [Fintype F] [DecidableEq F] in
+/-- Every indexed line is a proper subspace. -/
+theorem lineOf_ne_top (o : Option F) : lineOf o ≠ ⊤ := by
+  cases o with
+  | none => exact span_singleton_ne_top _
+  | some a => exact span_singleton_ne_top _
+
+open Classical in
+/-- **Line exclusion implies the containment cover (S2(b) avoidance, `s = 2`).**  If some
+line `L₀ = span{v}` is never a realized bad-seed obstruction of `U`, then the `q` lines other
+than `L₀` form a family of at most `q` proper subspaces containing every realized obstruction.
+The membership form `ObstructionBound` does not follow in general (over `F₂`, obstructions
+`{⊥, L₁, L₂}`). -/
+theorem obstructionCover_of_lineExclusion
+    (C : Submodule F (ι → A)) (δ : ℝ≥0) {l : ℕ}
+    {Ω : Type} [Fintype Ω] [Nonempty Ω] (G : Ω → Fin l → F)
+    (U : Fin l → ι → Fin 2 → A) (h : LineExclusion C δ G U) :
+    ObstructionCover C δ G U := by
+  obtain ⟨v, hv0, hex⟩ := h
+  refine ⟨((Finset.univ : Finset (Option F)).erase (lineIndex v)).image lineOf, ?_, ?_, ?_⟩
+  · calc (((Finset.univ : Finset (Option F)).erase (lineIndex v)).image lineOf).card
+        ≤ ((Finset.univ : Finset (Option F)).erase (lineIndex v)).card :=
+          Finset.card_image_le
+      _ = Fintype.card F := by
+          rw [Finset.card_erase_of_mem (Finset.mem_univ _), Finset.card_univ,
+            Fintype.card_option, Nat.add_sub_cancel]
+  · intro K hK
+    obtain ⟨o, _, rfl⟩ := Finset.mem_image.mp hK
+    exact lineOf_ne_top o
+  · intro ω hω
+    obtain ⟨T, hW, hne⟩ := hex ω hω
+    refine ⟨T, hW, ?_⟩
+    have hproper : jointStackSubmodule C T U ≠ ⊤ :=
+      jointStackSubmodule_ne_top C U hW.2.2
+    rcases proper_eq_bot_or_span _ hproper with hbot | ⟨lam, hlam0, _, hspan⟩
+    · refine ⟨lineOf (if lineIndex v = none then some 0 else none),
+        Finset.mem_image.mpr ⟨_, Finset.mem_erase.mpr ⟨?_, Finset.mem_univ _⟩, rfl⟩, ?_⟩
+      · by_cases hn : lineIndex v = none
+        · rw [if_pos hn, hn]
+          exact Option.some_ne_none 0
+        · rw [if_neg hn]
+          exact fun e => hn e.symm
+      · rw [hbot]
+        exact bot_le
+    · refine ⟨lineOf (lineIndex lam),
+        Finset.mem_image.mpr ⟨_, Finset.mem_erase.mpr ⟨?_, Finset.mem_univ _⟩, rfl⟩, ?_⟩
+      · intro heq
+        apply hne
+        rw [hspan, span_eq_lineOf_lineIndex hlam0, heq, ← span_eq_lineOf_lineIndex hv0]
+      · rw [hspan, span_eq_lineOf_lineIndex hlam0]
+
+open Classical in
+/-- **Exactness from genuine line exclusion (`s = 2`).**  If every 2-column stack has a line
+that is never a realized bad-seed obstruction (`LineExclusion`, hypothesis S2(b), open in
+general), generator-MCA interleaving is exact for every generator. -/
+theorem epsMCAG_interleaved_eq_of_lineExclusion
+    (C : Submodule F (ι → A)) (δ : ℝ≥0) {l : ℕ}
+    {Ω : Type} [Fintype Ω] [Nonempty Ω] (G : Ω → Fin l → F)
+    (hLE : ∀ U : Fin l → ι → Fin 2 → A, LineExclusion C δ G U) :
+    epsMCAG (A := Fin 2 → A) ((C : Set (ι → A))^⋈ (Fin 2)) δ G
+      = epsMCAG (A := A) (C : Set (ι → A)) δ G :=
+  epsMCAG_interleaved_eq_of_obstructionCover C 2 δ G
+    (fun U => obstructionCover_of_lineExclusion C δ G U (hLE U))
+
 end ProximityGap.Jo26Obstruction
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only)
 #print axioms ProximityGap.Jo26Obstruction.proper_eq_bot_or_span
 #print axioms ProximityGap.Jo26Obstruction.obstructionBound_of_rowCloseSpans_cover
 #print axioms ProximityGap.Jo26Obstruction.epsMCAG_interleaved_eq_of_rowCloseSpans_card
+#print axioms ProximityGap.Jo26Obstruction.not_forall_rowCloseSpans_card
+#print axioms ProximityGap.Jo26Obstruction.epsMCAG_interleaved_eq_of_badStack_rowCloseSpans_card
+#print axioms ProximityGap.Jo26Obstruction.obstructionCover_of_lineExclusion
+#print axioms ProximityGap.Jo26Obstruction.epsMCAG_interleaved_eq_of_lineExclusion

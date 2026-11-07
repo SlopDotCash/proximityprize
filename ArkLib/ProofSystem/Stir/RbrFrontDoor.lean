@@ -12,7 +12,14 @@ import ArkLib.ProofSystem.Stir.MultiRoundSpec
 The front-door wiring — `stir_rbr_soundness` reduces to supplying a
 `VectorIOP` over the landed `stirVSpec` together with its `IsSecureWithGap` proof and the
 per-round error bounds (the STIR analogue of WHIR's
-`whir_rbr_soundness_of_whirVectorSpec_secure_gap`). -/
+`whir_rbr_soundness_of_whirVectorSpec_secure_gap`).
+
+The wiring accepts any `VectorIOP` over `stirVSpec`; it does not identify the STIR verifier.
+Its budget hypotheses follow the 2026-10-28 repair of `stir_rbr_soundness` (audit L36): the
+shift term takes `repeatParam_j + s` as the fourth argument of `proximityError` (it used to add
+`s` after the error term), the fold term and the last shift term take the folding parameter
+`kᵢ` as their fourth argument (they used to take the repetition parameter `tᵢ`), and the
+final-round bound `h_fin` is separate from the tail quantifier, so it also binds at `M = 0`. -/
 
 open BigOperators Finset ListDecodable NNReal ReedSolomon VectorIOP OracleComp LinearCode STIR
 
@@ -48,7 +55,7 @@ theorem stir_rbr_soundness_of_stirVSpec_secure_gap
         (fun _ => ({ε_fold} ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max' (by simp))
         π)
     (h_fold : ε_fold ≤ proximityError F (P.deg / P.foldingParam 0)
-        (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.repeatParam 0))
+        (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.foldingParam 0))
     (h_tail : ∀ j : Fin M,
         ε_out j ≤ ((Dist.l j.succ : ℝ) ^ 2 / 2) *
           ((degree ι P j.succ : ℝ) / (Fintype.card F - Fintype.card (ι j.succ))) ^ s
@@ -56,17 +63,16 @@ theorem stir_rbr_soundness_of_stirVSpec_secure_gap
         ε_shift j ≤
           (1 - Dist.δ j.castSucc) ^ (P.repeatParam j.castSucc)  +
            proximityError F (degree ι P j.succ) (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.castSucc) + s +
+            (Dist.δ j.succ) (P.repeatParam j.castSucc + s) +
            proximityError F ((degree ι P j.succ) / P.foldingParam j.succ)
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.succ)
-        ∧
-        ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
+            (Dist.δ j.succ) (P.foldingParam j.succ))
+    (h_fin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
     stir_rbr_soundness (F := F) ι (s := s) (P := P)
       (hParams := hParams) (Dist := Dist) (Codes := Codes)
       hδ₀ @hδᵢ ε_fold ε_out ε_shift ε_fin :=
   ⟨3 * M + 3, stirVSpec M msgLen chalLen, stirVSpec_card_challengeIdx,
-    π, hSecure, h_fold, h_tail⟩
+    π, hSecure, h_fold, h_tail, h_fin⟩
 
 end StirIOP
 

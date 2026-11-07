@@ -16,6 +16,12 @@ SYZ44 collapsed the rate-`1/2` `SylvesterInjective` residual to a single open ge
 *product-degrees* (`δ₁ + δ₂ = a + b + c`).  SYZ45 **refuted** the pure-algebra hope: balanced
 degrees `(4,4,4)` admit `ι = 2` via a constant syzygy — but *only* for triples that are **not
 band-realizable**.  So `ι ≤ 1` is geometric, and the question is which band structure forces it.
+**Correction (2026-10-28 audit, L127):** the "only non-band-realizable" reading is false.  SYZ45
+`test_D` gives an exact band-realizable `ι = 2` triple over `𝔽₄₁` on the proper subgroup `μ₂₀`
+(`n = 20`, `k = 10`, cores `14`, pair overlaps `9 = k − 1`, full cover, locators
+`X⁴ − 1, X⁴ − 16, X⁴ − 10`).  It lies in the balanced interior, so the floor below and its strip
+corollary stand, but `ι ≤ 1` in the interior does not follow from band geometry alone (exact
+finite-field geometry, not a prize bad-scalar counterexample).
 
 This file extracts the sharpest **unconditional** partial provable from the band's *triangle*
 structure, and pins exactly which band sub-region it covers.

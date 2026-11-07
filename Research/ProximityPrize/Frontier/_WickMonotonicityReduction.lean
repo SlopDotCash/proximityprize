@@ -205,7 +205,9 @@ proven base case `wickRatio_one_le` together give the full floor `FloorViaWick`
 
 Mechanism: `antitone_le_one_of_base` lifts `[f 1 ≤ 1] + [f (r+1) ≤ f r]` to `f r ≤ 1 ∀ r ≥ 1`;
 then `f r = A_r/Wick_r ≤ 1` with `Wick_r > 0` unfolds to `A_r ≤ Wick_r`. The floor is therefore
-**exactly** the single named open inequality `WickMonotonicity` — this is the c.318 reframing. -/
+**implied by** the single named open inequality `WickMonotonicity` — this is the c.318 reframing.
+Only this direction is proved: monotonicity is sufficient, not necessary (a ratio can stay `≤ 1`
+without being antitone), so `FloorViaWick` does not imply `WickMonotonicity`. -/
 theorem floorViaWick_of_monotonicity {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {G : Finset F}
     (hG : G.Nonempty) (hmono : WickMonotonicity ψ G) :
     FloorViaWick ψ G := by

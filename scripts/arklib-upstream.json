@@ -1116,12 +1116,12 @@
     {
       "path": "ArkLib/ProofSystem/Spartan/Basic.lean",
       "upstream_blob": "80f6933b25a79045b3ecb22f757a8581d142a8ae",
-      "sha256": "97ec492e48f459e52955d23e27b0104c7286330f59942830a327bc6ef0e8fbc3",
+      "sha256": "30979abf346fa8f8eed43b535f9e027d2e31c6e147f235235bdb63d0d2078114",
       "declarations": [
         "Spartan.Spec.secondSumCheckVirtualPolynomial"
       ],
       "source_revision": "883e99d61e51264327b5fee859732d047f7d7038",
-      "reason": "Preserve the upstream public interface and fill its inherited admission with the downstream multilinear second-sumcheck construction, compiled and checked with only standard Lean axioms."
+      "reason": "Preserve the upstream public interface and fill its inherited admission with the downstream multilinear second-sumcheck construction, compiled and checked with only standard Lean axioms. Docstring-only follow-up: the `Unfolds to` prose of the phase statement types now matches their declared `Fin ℓ_m → R` challenge components and tuple order."
     },
     {
       "path": "ArkLib/Data/Polynomial/SplitFold.lean",
@@ -1155,6 +1155,97 @@
       ],
       "source_revision": "883e99d61e51264327b5fee859732d047f7d7038",
       "reason": "Generalize only the coefficient universe while retaining the upstream weighted-degree proof, so the arbitrary-universe downstream bound reuses the canonical declaration without a duplicate implementation; canonical source and downstream consumers directly checked."
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/FunctionBinding/DegreeConflict.lean",
+      "upstream_blob": "064b0015a46ab38ecacdd8218d670fd719972c6d",
+      "sha256": "072335829d180b2ec5fe522942536d6200e0d0a5527b2374294571bffd596f0d",
+      "declarations": [
+        "KZG.CommitmentScheme.findA",
+        "KZG.CommitmentScheme.findABase",
+        "KZG.CommitmentScheme.findACandidates",
+        "KZG.CommitmentScheme.findACandidates_length_le",
+        "KZG.CommitmentScheme.find_a_successful"
+      ],
+      "source_revision": "39c07bdd7f38e9d66912c72cd6ea340bd4c91c50",
+      "reason": "Audit L26: replace full (n+1)-subset enumeration in findA by a fixed n-point base plus one-point extensions (at most |U| interpolations), preserving the subset/card/degree specs."
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/FunctionBinding/EvaluationBindingConflict.lean",
+      "upstream_blob": "866bd9f273db46e40526ecb347310ef87d0a2a9e",
+      "sha256": "dcf2a8228c2e33d0075aafb97929631af1636b1e51ed5c1926eb3057b33b9755",
+      "declarations": [
+        "KZG.CommitmentScheme.chooseSConflict",
+        "KZG.CommitmentScheme.filter_map_conflict_length",
+        "KZG.CommitmentScheme.chooseSConflict_scan_size"
+      ],
+      "source_revision": "39c07bdd7f38e9d66912c72cd6ea340bd4c91c50",
+      "reason": "Audit L26: bounded (n+2)-prefix scan instead of full-field Array.range p scan."
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/FunctionBinding/Basic.lean",
+      "upstream_blob": "112bbd0df6a8477caaa9f490de1107265adbe27f",
+      "sha256": "11330c9c18c81225c4f127d7561a07b54f48105a44559599890cde6d6c6e9ff1",
+      "declarations": [
+        "KZG.CommitmentScheme.function_binding"
+      ],
+      "source_revision": "39c07bdd7f38e9d66912c72cd6ea340bd4c91c50",
+      "reason": "Docstring-only (audit L25): state that function_binding covers the cached-coin randomOracle experiment on unifSpec, not fresh private coins."
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/Basic/Distance.lean",
+      "upstream_blob": "6d42f4c498926acf532448106486cd570b6c0948",
+      "sha256": "1eae6b8b9b242ea2737e8719096dae65a8e9b8a9d762545cc8e2eff0d969b2cf",
+      "declarations": [
+        "Code.possibleDistsToCode",
+        "Code.distToCode",
+        "Code.distToCode_singleton_self",
+        "Code.possibleDistsToCodeIncl",
+        "Code.possibleDistsToCode_subset_incl",
+        "Code.distToCodeIncl",
+        "Code.distToCodeIncl_eq_zero_of_mem"
+      ],
+      "source_revision": "39c07bdd7f38e9d66912c72cd6ea340bd4c91c50",
+      "reason": "Audit L90: document that possibleDistsToCode/distToCode exclude the queried word (distance to C \\ {w}, top at C = {w}) instead of calling distToCode a generalisation of distFromCode; add the genuine inclusive generic distance distToCodeIncl with singleton/in-code boundary lemmas; correct stale header numeric-type claims for Code.dist / dist'. Upstream declarations unchanged in content; standard axioms only."
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/Binding.lean",
+      "upstream_blob": "e75d066fd73f564300faa014c02efd48254d3e00",
+      "sha256": "373382209aaf2611a95fcc49d54a07adad75d5a02216704c877075251c871d5c",
+      "declarations": [
+        "KZG.CommitmentScheme.binding",
+        "KZG.CommitmentScheme.binding_order_of_eq_prime_of_ne_one",
+        "KZG.CommitmentScheme.binding_exists_zmod_power_of_generator"
+      ],
+      "source_revision": "39c07bdd7f38e9d66912c72cd6ea340bd4c91c50",
+      "reason": "Docstring (audit L25): state that binding covers the cached-coin randomOracle experiment on unifSpec, not fresh private coins (unifFwdImpl). Also carries the earlier dedup that turns the two prime-order group helpers into compatibility aliases of the shared Groups lemmas in KZG/Algebra.lean (statements unchanged)."
+    },
+    {
+      "path": "ArkLib/OracleReduction/Execution.lean",
+      "upstream_blob": "1160163811477a9ba4b934be93fa80a993a260ed",
+      "sha256": "79f2f6d9c42c03e774d9451d8d372bbb15e7c442dda450898e150fa6ecf65cf7",
+      "declarations": [
+        "OracleReduction.runWithLog_eq_runWithLog_reduction",
+        "OracleVerifier.run",
+        "OracleReduction.run",
+        "OracleReduction.runWithLog"
+      ],
+      "source_revision": "39c07bdd7f38e9d66912c72cd6ea340bd4c91c50",
+      "reason": "Mathematical correction: upstream runWithLog_eq_runWithLog_reduction restated run_eq_run_reduction (about run, not runWithLog); it now relates OracleReduction.runWithLog to toReduction.runWithLog up to tuple reassociation. Docstrings of OracleVerifier.run / OracleReduction.run / runWithLog corrected (no query log from run; verifier log records shared-oracle oSpec queries only). Directly checked under Lean 4.35; no callers of the corrected theorem."
+    },
+    {
+      "path": "ArkLib/OracleReduction/OracleInterface.lean",
+      "upstream_blob": "ec81e0a83fe4ae007d4aaf79579bf8dc66f71d25",
+      "sha256": "b5f3d4d18c9774d9525ebd94ddb22888d5b596c336ee7f3e07eceda2b6b00838",
+      "declarations": [
+        "distanceLE_polynomial_degreeLE",
+        "distanceLE_polynomial_degreeLT_le",
+        "OracleInterface.distanceLE",
+        "OracleInterface.instTensorForall",
+        "OracleInterface.instProdForall"
+      ],
+      "source_revision": "39c07bdd7f38e9d66912c72cd6ea340bd4c91c50",
+      "reason": "Mathematical correction: upstream distanceLE_polynomial_degreeLE was stated for the degree-less-than interface; that statement is kept as distanceLE_polynomial_degreeLT_le and distanceLE_polynomial_degreeLE now proves the bound for instPolynomialDegreeLE (at most d agreements via root counting). Docstrings of distanceLE (agreement-count bound) and instTensorForall/instProdForall (sum-indexed queries; tensor instance identical to product) corrected. Directly checked under Lean 4.35, standard axioms; no in-repo callers of the renamed lemma."
     }
   ]
 }

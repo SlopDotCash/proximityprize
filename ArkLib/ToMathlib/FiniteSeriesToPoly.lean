@@ -206,20 +206,25 @@ end DegreeBound
 
 /-! ## Part 3: combined brick — finite series ⟹ degree-≤1 polynomial representative
 
-The exact assembly Claim 5.9 needs.  Here the power-series variable is the
-*top* (`X`) variable of the bivariate ring: with coefficient ring `F[X]` (the
-`Z`-line), `truncPoly` lands in `(F[X])[X] = F[X][Y]`, so its `degreeX` (the
-`X`-degree, indexing along the `Z`-line) is exactly the quantity Claim 5.9
-controls via `R = Y − P, deg_Z P ≤ 1`.  The univariate `Part 1` and the bivariate
-`Part 2` then compose with no ArkLib-specific glue. -/
+The assembly Claim 5.9 needs.  Here the power-series variable becomes the
+*outer* (`Y`) variable of the bivariate ring: with coefficient ring `F[X]`,
+`truncPoly` lands in `(F[X])[Y] = F[X][Y]`.  Its `degreeX` is the maximum
+degree of the `F[X]`-coefficients, i.e. the degree in the **coefficient-ring**
+variable `X`, not in the power-series variable.  The univariate `Part 1` and the
+bivariate `Part 2` then compose with no ArkLib-specific glue.
+
+Finite support alone does not give the degree-one bound: the combined theorem
+below takes `hlin : degreeX (truncPoly φ N) ≤ 1` as an explicit hypothesis. -/
 
 section Combined
 
 variable {F : Type*} [CommRing F]
 
 /-- Combined end-to-end representation theorem.
-If a power series $\varphi$ over $F[X]$ has finite support and its truncation is linear in $X$,
-then it corresponds to a bivariate polynomial $P$ of degree less than $N$ which is linear in $X$. -/
+If a power series $\varphi$ over $F[X]$ has finite support and (as the separate hypothesis
+`hlin`) its truncation has coefficient-ring degree `degreeX ≤ 1`, then it corresponds to a
+bivariate polynomial $P$ of `Y`-degree less than $N$ which is linear in the coefficient-ring
+variable $X$. -/
 theorem exists_linear_polynomial_coe_of_finite_and_degreeX_le_one
     (φ : PowerSeries F[X]) {N : ℕ} (hN : 0 < N)
     (hfin : ∀ n, N ≤ n → PowerSeries.coeff n φ = 0)

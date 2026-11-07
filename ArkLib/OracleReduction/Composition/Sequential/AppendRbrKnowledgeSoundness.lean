@@ -800,7 +800,15 @@ explicit typed hypothesis (exactly as the proven soundness keystone isolates its
 
 The mild `Nonempty Stmt₂` / `Nonempty Wit₂` side conditions (mirroring the `hNE` of
 `append_rbrSoundness_keystone`) supply the dummy output of the phase-1 `fstCastK` recast.  This
-keystone is fully axiom-clean (no `sorry`). -/
+keystone is fully axiom-clean (no `sorry`).
+
+**Name vs. scope.** Despite the `_unconditional` suffix (kept for API stability; several STIR
+consumers use this name), this theorem is **conditional**: it takes the universally quantified
+phase-2 residual `hPhase2` as a hypothesis, plus a deterministic `V₁`, a reachable initial state
+and nonemptiness facts. What is genuinely proved is the phase-1 bound, the composite knowledge
+state function and extractor, and the log/body factoring. It does **not** prove rbr knowledge
+soundness of the append for arbitrary oracle-state implementations; consumers must supply
+`hPhase2`. -/
 theorem append_rbrKnowledgeSoundness_keystone_unconditional
     (V₁ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁) (V₂ : Verifier oSpec Stmt₂ Stmt₃ pSpec₂)
     {rel₁ : Set (Stmt₁ × Wit₁)} {rel₂ : Set (Stmt₂ × Wit₂)} {rel₃ : Set (Stmt₃ × Wit₃)}
@@ -845,7 +853,14 @@ The only remaining content is the per-realization inner *seam reconciliation*
 correspondence: right challenge-oracle-seam transfer + gt-event collapse under the `appendRight`
 prefix), isolated as the explicit typed residual `hReconcile` (quantified over the inner extractors /
 knowledge state functions destructured from `h₁` / `h₂`).  Everything else — the Subsingleton bind
-split, the amnesiac `hBound₂` application, and the seam factoring — is proven axiom-clean. -/
+split, the amnesiac `hBound₂` application, and the seam factoring — is proven axiom-clean.
+
+**Scope.** As stated here the theorem retains the universal `hReconcile` hypothesis. That
+reconciliation is separately discharged, in this same restricted regime (`Subsingleton σ`,
+prover-message seam), by `appendRbrKnowledgePhase2SeamReconcile_proof`
+(`AppendRbrKnowledgePhase2ReconcileProof.lean`), which assembles the hypothesis-free
+`append_rbrKnowledgeSoundness_keystone_subsingleton_unconditional`. Neither result covers
+non-subsingleton (stateful) oracle implementations. -/
 theorem append_rbrKnowledgeSoundness_keystone_subsingleton [Subsingleton σ]
     (V₁ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁) (V₂ : Verifier oSpec Stmt₂ Stmt₃ pSpec₂)
     {rel₁ : Set (Stmt₁ × Wit₁)} {rel₂ : Set (Stmt₂ × Wit₂)} {rel₃ : Set (Stmt₃ × Wit₃)}

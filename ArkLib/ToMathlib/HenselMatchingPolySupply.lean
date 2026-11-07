@@ -54,11 +54,14 @@ and both root fields are transported from the `F[X][Y]`-level divisibilities.
   datum directly from GS primitives.
 * `hPz_of_interpolantInput` — the end-to-end landing: `hPz` from per-representative
   `InterpolantInput` + degree bounds (through `HPzBridge.hPz_of_henselDatum`).
+* `interpolantInput_of_eval_identity` / `nonempty_interpolantInput_iff_eval_identity` — the
+  converse construction (`Q z := Y − C (P z)`) and the resulting equivalence of the bundle with
+  the per-good-place identity.
 
 ## Honest residuals
 
 Nothing here fabricates the §5 content.  The residual hypotheses of the assembled producers
-are exactly the recognized BCIKS20 §5 ingredients, each with its own production lane:
+are the recognized BCIKS20 §5 ingredients, each with its own production lane:
 
 * the per-`z` GS divisibilities (resp. the order-`m` vanishing + Johnson counts) for the two
   competitors — `MatchingExtractor`/`GSSpecializedConditions`;
@@ -67,8 +70,16 @@ are exactly the recognized BCIKS20 §5 ingredients, each with its own production
   common-approximation fact (`HenselApproxSupply`'s residual);
 * for the `hPz` landing, the degree bounds for the consistent representative.
 
-None of these is `≡` the goal: the per-`z` polynomial identity `P z = lift.eval (C z)` is
-*derived* downstream by Hensel uniqueness (`HPzBridge.hPz_of_henselDatum`).
+None of these is literally the goal: the per-`z` polynomial identity `P z = lift.eval (C z)` is
+*derived* downstream by Hensel uniqueness (`HPzBridge.hPz_of_henselDatum`).  But that does not make
+their existential bundle strictly weaker than the identity.  The interpolant family `Q` of
+`InterpolantInput` is otherwise unrestricted, so an `InterpolantInput` exists iff the identity holds
+on the good set (`nonempty_interpolantInput_iff_eval_identity`): forward through the Hensel
+uniqueness consumer, backward with `Q z := Y − C (P z)` (derivative `1`, both divisibilities and the
+order-0 agreement immediate once the identity is known).  The generic transport and orderM-count
+constructors here remain valid conditional results; genuine production of a *constrained*
+interpolant (the actual GS interpolant, not one chosen after the fact) together with its
+separability must remain an explicit input.
 
 ## References
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon
@@ -178,7 +189,11 @@ theorem henselRootFields_of_lift_dvd {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ
 `HenselDatumProducer.MatchingDvdInput`, one coefficient ring *below* it: the per-`z` GS
 interpolants live over `F[X]` and both matching-factor divisibilities are stated in
 `F[X][Y]`, the exact output ring of `MatchingExtractor.matchingFactor_dvd_of_orderM_and_count`.
-The matching polynomial of the datum is *constructed* (`f z := fSeries (Q z)`), not given. -/
+The matching polynomial of the datum is *constructed* (`f z := fSeries (Q z)`), not given.
+
+The interpolant `Q` itself is unconstrained (it is not required to be the GS interpolant of the
+word), so the bundle is equivalent to the per-good-place identity
+(`nonempty_interpolantInput_iff_eval_identity`). -/
 structure InterpolantInput {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     (u : WordStack F (Fin (k + 1)) ι) (P : F → Polynomial F) (v₀ v₁ : F[X]) : Type where
   /-- per-`z` specialized GS interpolant over the polynomial coefficient ring. -/
@@ -276,6 +291,42 @@ noncomputable def henselDatum_of_orderM_and_count {k deg : ℕ} {domain : ι ↪
       ωs (Q z) _ m (AQ z) (hordQ z hz) (hcountQ z hz))
     h0 hsep
 
+/-! ## The bundle is equivalent to the identity it is used to derive -/
+
+/-- **Converse construction: an `InterpolantInput` from the per-good-place identity.**  The
+interpolant family of `InterpolantInput` is otherwise unrestricted, so once
+`P z = lift.eval (C z)` holds on the good set, `Q z := Y − C (P z)` satisfies both matching-factor
+divisibilities, the order-0 agreement and separability (its derivative is `1`). -/
+noncomputable def interpolantInput_of_eval_identity {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
+    {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F} {v₀ v₁ : F[X]}
+    (hEval : ∀ z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ,
+      P z = ((Polynomial.map Polynomial.C v₀)
+          + (Polynomial.C Polynomial.X) * (Polynomial.map Polynomial.C v₁)).eval
+          (Polynomial.C z)) :
+    InterpolantInput (k := k) (deg := deg) (domain := domain) (δ := δ) u P v₀ v₁ where
+  Q z := Polynomial.X - Polynomial.C (P z)
+  hPdvd z _ := dvd_rfl
+  hQdvd z hz := by
+    show Polynomial.X - Polynomial.C _ ∣ Polynomial.X - Polynomial.C (P z)
+    rw [← hEval z hz]
+  h0 z hz := by rw [← hEval z hz]
+  hsep z _ := Polynomial.separable_X_sub_C
+
+/-- **Interface equivalence.**  For a fixed representative, an `InterpolantInput` exists iff the
+per-good-place identity `P z = lift.eval (C z)` holds: forward through
+`henselDatum_of_interpolantInput` and Hensel uniqueness (`HPzBridge.eval_identity_of_henselDatum`),
+backward by `interpolantInput_of_eval_identity`.  So the existential bundle is not strictly weaker
+than the identity it is used to derive. -/
+theorem nonempty_interpolantInput_iff_eval_identity {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
+    {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F} {v₀ v₁ : F[X]} :
+    Nonempty (InterpolantInput (k := k) (deg := deg) (domain := domain) (δ := δ) u P v₀ v₁) ↔
+      ∀ z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ,
+        P z = ((Polynomial.map Polynomial.C v₀)
+            + (Polynomial.C Polynomial.X) * (Polynomial.map Polynomial.C v₁)).eval
+            (Polynomial.C z) :=
+  ⟨fun ⟨d⟩ => HPzBridge.eval_identity_of_henselDatum (henselDatum_of_interpolantInput d),
+    fun h => ⟨interpolantInput_of_eval_identity h⟩⟩
+
 end Family
 
 end HenselMatchingPolySupply
@@ -289,9 +340,11 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
 /-- **`hPz` from per-representative `F[X][Y]`-level interpolant data.**  The residual
 hypothesis is an `InterpolantInput` producer for every linear representative consistent with
-`γ` (the §5 GS cargo: interpolant + two matching divisibilities + order-0 agreement +
-separability), plus the usual degree bounds.  The per-`z` identity is DERIVED by Hensel
-uniqueness through `HPzBridge.hPz_of_henselDatum`. -/
+`γ` (the shape of the §5 GS cargo: interpolant + two matching divisibilities + order-0 agreement
++ separability), plus the usual degree bounds.  The per-`z` identity is derived by Hensel
+uniqueness through `HPzBridge.hPz_of_henselDatum`; note that with the interpolant unconstrained,
+the `InterpolantInput` producer is equivalent to that identity part of the conclusion
+(`HenselMatchingPolySupply.nonempty_interpolantInput_iff_eval_identity`). -/
 theorem hPz_of_interpolantInput {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     {x₀ : F} {R : F[X][X][Y]} {H : F[X][Y]} [Fact (Irreducible H)] [Fact (0 < H.natDegree)]
     {hHyp : BCIKS20AppendixA.ClaimA2.Hypotheses x₀ R H}
@@ -336,4 +389,6 @@ end ArkLib
 #print axioms ArkLib.HenselMatchingPolySupply.henselDatum_of_interpolant_dvd
 #print axioms ArkLib.HenselMatchingPolySupply.henselDatum_of_interpolantInput
 #print axioms ArkLib.HenselMatchingPolySupply.henselDatum_of_orderM_and_count
+#print axioms ArkLib.HenselMatchingPolySupply.interpolantInput_of_eval_identity
+#print axioms ArkLib.HenselMatchingPolySupply.nonempty_interpolantInput_iff_eval_identity
 #print axioms ArkLib.hPz_of_interpolantInput

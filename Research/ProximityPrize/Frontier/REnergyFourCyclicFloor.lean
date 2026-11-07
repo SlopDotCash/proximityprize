@@ -22,6 +22,15 @@ depth.
 
 This is pure finite permutation bookkeeping over an arbitrary finite field.  It does **not** give
 an upper energy bound, a characteristic transfer, or a CORE closure.
+
+**Comparison with the permutation floor.** "Stronger" above is relative to the depth-three and
+adjacent-swap cyclic floors only. The in-tree permutation floor
+`_LowerBoundPermMatchingFloor.rEnergy_ge_perm` (`|G|.descFactorial r * r! ≤ rEnergy G r`, same
+`rEnergy`) dominates this one for `|G| ≥ 5`: at depth four, `|G| = 4` gives `988` vs `576`, but
+`|G| = 5` gives `2445` vs `2880` and `|G| = 8` gives `16248` vs `40320`. The lifted all-depth
+versions lose by factorial factors once `|G|` is not tiny relative to the depth. So this cyclic
+floor is only of independent use for very small supports (`|G| ≤ 4` at depth four); for general
+lower bounds prefer `rEnergy_ge_perm`.
 -/
 
 open Finset

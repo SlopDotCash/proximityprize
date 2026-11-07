@@ -46,7 +46,12 @@ open ListDecodable
 /-- **Reed–Solomon unique-decoding list cap `Λ(RS, δ) ≤ 1`.** If `2⌊δn⌋ < n − k + 1` (the
 unique-decoding radius `δ < δ_min/2`), every point list `Λ(RS[k], δ, f)` is a subsingleton — by
 `ReedSolomon.unique_decode`, two codewords within `⌊δn⌋` Hamming errors of a common word `f`
-coincide — so the maximised list size is at most `1`. -/
+coincide — so the maximised list size is at most `1`.
+
+The same unique-decode ⇒ subsingleton ⇒ `ncard ≤ 1` argument appears in
+`WhirIOP.smoothCode_listDecodable_one` (`Protocols/Whir/GenMutualCorrParamsUDR.lean`), but for a
+different predicate (`listDecodable` on a smooth code rather than `Λ` on a general RS code), so
+the two are parallel proofs, not interchangeable copies. -/
 theorem reedSolomon_Lambda_le_one {F : Type*} [Field F] [Fintype F] [DecidableEq F]
     {ι : Type*} [Fintype ι] [Nonempty ι] [DecidableEq ι]
     {k : ℕ} [NeZero k] {α : ι ↪ F} (hk : k ≤ Fintype.card ι)

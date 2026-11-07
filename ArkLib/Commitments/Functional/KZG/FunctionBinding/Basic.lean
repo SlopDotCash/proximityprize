@@ -22,6 +22,20 @@ binding and interpolation branches used in the paper proof.
 * `functionBindingGameExt` records extra sampled and transcript data used by the reduction.
 * `mapFunctionBindingToArsdh` maps extended outputs to ARSDH instances.
 
+## Interpretation of the adversary's coins (cached-coin experiment)
+
+`function_binding` is stated for the game interpreted by `randomOracle =
+uniformSampleImpl.withCaching` on `unifSpec`, the only oracle available to the adversary
+(`oSpec = unifSpec`). Because `unifSpec` has a single unit-input query per sample size, this
+interpreter caches the adversary's *private* coins by draw size: every later draw from the same
+`Fin (k + 1)` returns the value of the first one (e.g. two `Fin 2` draws always agree, whereas
+fresh private coins disagree with probability `1/2`). The theorem is therefore an ARSDH bound
+for this cached-coin experiment, not for ordinary randomized-adversary execution with fresh
+private coins (`unifFwdImpl`) plus a separately indexed public hash oracle. The setup trapdoor
+is sampled outside the cache, and its single-draw equality lemma does not extend to multi-draw
+adversaries. Restating and transporting the reduction to the fresh-coin interpretation is
+open work in this formalization.
+
 ## References
 
 * [Chiesa, A., Guan, Z., Knabenhans, C., and Yu, Z.,
@@ -631,7 +645,10 @@ lemma arsdh_error_bound {n L : ℕ} {AuxState : Type} [SampleableType G₁]
   simp_all [Groups.arsdhAssumption]
 
 omit [DecidableEq G₁] in
-/-- The KZG scheme satisfies function binding provided ARSDH holds. -/
+/-- The KZG scheme satisfies function binding provided ARSDH holds, in the cached-coin
+experiment `impl := randomOracle` on `unifSpec` (the adversary's private uniform draws of equal
+size are cached, see the module docstring); the fresh-coin (`unifFwdImpl`) game is not covered.
+-/
 theorem function_binding {g₁ : G₁} {g₂ : G₂}
     (L : ℕ) (hn : 1 ≤ n) (hp : p ≥ n + 2) (hg₁ : g₁ ≠ 1)
     (hpair : pairing g₁ g₂ ≠ 0)

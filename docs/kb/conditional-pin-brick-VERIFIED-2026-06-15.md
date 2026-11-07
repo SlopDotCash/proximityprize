@@ -1,6 +1,21 @@
 # Conditional-pin brick: BUILT + VERIFIED axiom-clean (2026-06-15)
 
-The prize sup-norm bound is now reduced, in verified Lean, to a SINGLE inequality.
+> **Status correction (2026-10-28 audit, T48; see PG-006, PG-144, R-079).** The Lean implications
+> below are valid conditional statements. The hypothesis they consume, however, is **not** "TRUE" and
+> is not the genuine open core. `CrossBoundedByWick` yields the raw bound
+> `E_r ≤ (2r−1)‼·n^r` at every depth `r`. The principal (`b = 0`) Fourier mode alone forces
+> `q·E_r ≥ n^(2r)`, i.e. `E_r ≥ n^(2r)/q`. That exceeds `(2r−1)‼·n^r` whenever
+> `n^r > q·(2r−1)‼`, which holds at the intended growing-depth prize parameters (depth `r ≈ log m`
+> with `n ≫ log m`). So the all-depth raw premise, and even its `r ≤ log m` truncation, fails there.
+> The open analytic content is a DC-subtracted nonzero-frequency moment bound
+> (`∑_{b≠0} ‖η_b‖^(2r) = q·E_r − n^(2r)`), which this brick does not state. Calling an even moment a
+> "signed" energy does not remove the DC term, since `G = −G` makes every period real (PG-144).
+> This is not a claim that every fixed finite `(n, q)` violates an all-orders Gaussian envelope
+> (`n = 1` is an immediate exception). The `β = 4` "0 violations" data below are finite measurements,
+> not a proof. The dated text is kept as history.
+
+The prize sup-norm bound is now reduced, in verified Lean, to a SINGLE inequality *(superseded: see
+the correction above; the inequality is false at production depth)*.
 
 ## The brick (in-tree, axiom-clean — confirmed by lake-locked build, 3324 jobs, only [propext,Classical.choice,Quot.sound])
 `CharPWickConditionalPin.lean` (+ `CharPMomentRecursion.lean`, `Frontier/CrossStepRung{One,Two,Three}.lean`):

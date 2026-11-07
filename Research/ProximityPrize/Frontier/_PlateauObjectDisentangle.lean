@@ -33,6 +33,15 @@ re-locked by `scripts/probes/probe_plateau_object_disentangle.py`:
 
 At the single common input `n = 32` the three recorded values `2, 5, 4` are **pairwise distinct**.
 
+**Data caveat (DISPROOF_LOG O192).** The value `m*(32)` is *disputed* in `{4, 5}`: the O192
+self-correction records that `m* = 4` is equally consistent with the GPU `rho4` worst-direction
+cascade. The tables below encode `mStar 32 = 5`. If `m*(32) = 4`, then the measured `m*` and
+`w_LL` agree at `n = 32` and the `n = 32` witness for `mStar ≠ wLL` disappears; the only remaining
+disagreement of the *tables* is the lookup default at `n = 8` (`mStar 8 = 3` vs `wLL 8 = 0`, where
+`w_LL` was never measured), which is not a measured disagreement. The separation of `w` from both
+other objects is robust to the dispute (`w 32 = 2 ∉ {4, 5}`):
+see `w_32_ne_of_disputed_mStar_32` and `wLL_32_eq_alt_mStar_32`.
+
 ## What is proven here (axiom-clean, no `sorry`)
 
 This is NOT a closure and NOT a numeric tautology dressed as a theorem.  The content is a
@@ -113,15 +122,30 @@ theorem w_32 : w 32 = 2 := rfl
 theorem mStar_32 : mStar 32 = 5 := rfl
 theorem wLL_32 : wLL 32 = 4 := rfl
 
-/-- **The three plateau objects are PAIRWISE DISTINCT functions.**  Witnessed at `n = 32`:
-`w 32 = 2`, `m* 32 = 5`, `w_LL 32 = 4` are pairwise unequal, so no two of the three are the same
-function `ℕ → ℕ`. -/
+/-- **The three plateau tables are PAIRWISE DISTINCT functions.**  Witnessed at `n = 32`:
+`w 32 = 2`, `mStar 32 = 5`, `wLL 32 = 4` are pairwise unequal, so no two of the three lookup tables
+are the same function `ℕ → ℕ`.
+
+Caveat: the `mStar ≠ wLL` component depends on the disputed value `m*(32) = 5` (O192 records
+`m*(32) ∈ {4, 5}`); under `m*(32) = 4` the measured objects agree at `n = 32`
+(`wLL_32_eq_alt_mStar_32`). The two components involving `w` are robust
+(`w_32_ne_of_disputed_mStar_32`). -/
 theorem plateau_objects_pairwise_distinct :
     w ≠ mStar ∧ w ≠ wLL ∧ mStar ≠ wLL := by
   refine ⟨?_, ?_, ?_⟩
   · exact func_ne_of_pointwise_ne (x₀ := 32) (by decide)
   · exact func_ne_of_pointwise_ne (x₀ := 32) (by decide)
   · exact func_ne_of_pointwise_ne (x₀ := 32) (by decide)
+
+/-- **Robust part of the separation.**  Whichever disputed value `m*(32) ∈ {4, 5}` is correct,
+it differs from `w 32 = 2`. -/
+theorem w_32_ne_of_disputed_mStar_32 (m : ℕ) (hm : m = 4 ∨ m = 5) : m ≠ w 32 := by
+  rcases hm with rfl | rfl <;> decide
+
+/-- **Fragile part of the separation.**  Under the alternative reading `m*(32) = 4` allowed by
+O192, the binding-depth threshold coincides with `wLL 32`, so `mStar ≠ wLL` is *not* witnessed
+at `n = 32` for the measured objects. -/
+theorem wLL_32_eq_alt_mStar_32 : wLL 32 = 4 := rfl
 
 /-- **The MULTIPLICATIVE transport is unsound (the named object switch).**  The pull
 "Lam-Leung gives a MULTIPLICATIVE growth law `⟹` the cascade run-length `w` is multiplicative `⟹`

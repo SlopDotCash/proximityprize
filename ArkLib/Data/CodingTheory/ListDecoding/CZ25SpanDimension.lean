@@ -11,7 +11,7 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Algebra.Order.Floor.Extended
 
 /-!
-# CZ25 dimension count: the design half + the strictly-smaller agreement residual
+# CZ25 dimension count: the design half + the agreement residual (equivalent, guarded form)
 
 This file dissects the last kernel of the FRS capacity chain,
 `CodingTheory.CZ25DimensionCount` (the per-received-word real bound
@@ -40,17 +40,20 @@ The argument has two halves:
   (`finrank_inf_ker_ge_card_vanishing`); the second is the `IsSubspaceDesign` hypothesis. We
   prove the bundled statement as `sum_card_vanishing_le_design`.
 
-* **The agreement half (the irreducible residual).** Translating the *fresh* agreement
-  `(τ(r₀)+η)·n` that each new list element contributes — through the iterative span
-  construction — into the affine-dimension inequality
+* **The agreement half (the irreducible residual).** The remaining content is the
+  arithmetic list bound itself, phrased through a natural-number witness `m` with
 
-    `m · η ≤ 1 - τ(r₀) - η`,
+    `ℓ ≤ m + 1` and `m · η ≤ 1 - τ(r₀) - η`.
 
-  together with the list↔span link `ℓ ≤ m + 1`, is the genuinely-deep Guruswami–Wang
-  iterative charge. A single base point plus a per-coordinate mass bound is provably
-  **insufficient** for the *linear*-in-`ℓ` bound (it only yields the `r₀`-independent
-  τ-constraint `τ(r₀) ≥ 1 - 2η`), so this half has no shortcut over the design budget and is
-  isolated as the strictly-smaller residual `CZ25SpanBound` below.
+  **Caution:** `m` is *not* the affine dimension of the recentred list span. A span of
+  dimension `m` can carry up to `q^m` list elements, so `m = dim A` fails `ℓ ≤ m + 1` in
+  general (see the sanity example below); the smallest admissible witness is `m = ℓ - 1`,
+  which turns the second inequality into the full list bound. A single base point plus a
+  per-coordinate mass bound is provably **insufficient** for the *linear*-in-`ℓ` bound (it
+  only yields the `r₀`-independent τ-constraint `τ(r₀) ≥ 1 - 2η`), so this half has no
+  shortcut over the design budget. It is isolated as the residual `CZ25SpanBound'` below,
+  which is **equivalent** (not strictly smaller) to `CZ25DimensionCount`; the unguarded
+  original `CZ25SpanBound` is refuted in the `δ < 0` regime.
 
 ## What is proven here vs. the residual
 
@@ -58,10 +61,9 @@ The argument has two halves:
   (reusable; `sorry`-free, axiom-clean).
 * `sum_card_vanishing_le_design` — the **design half**: `∑_i |S i| ≤ m · τ(r₀) · n`
   (reusable; consumes only `IsSubspaceDesign`; `sorry`-free, axiom-clean).
-* `CZ25SpanBound` — the strictly-smaller residual: per `f`, an affine-span witness giving
-  `ℓ ≤ m + 1` and `m · η ≤ 1 - τ(r₀) - η`. It carries **none** of the `ℝ`-cast / `ncard`
-  edge-case / `Lambda` packaging that `CZ25DimensionCount` bundles, and exposes the affine
-  dimension `m` explicitly.
+* `CZ25SpanBound` — the original (unguarded) residual: per `f`, a natural witness `m` giving
+  `ℓ ≤ m + 1` and `m · η ≤ 1 - τ(r₀) - η`. It is **false** whenever `δ < 0` (see below), and
+  its witness `m` is an arithmetic list-size witness, not an affine dimension.
 * `cz25DimensionCount_of_spanBound` — `CZ25SpanBound ⟹ CZ25DimensionCount` (the arithmetic
   collapse `ℓ ≤ m+1 ≤ (1-τ(r₀))/η`; `sorry`-free, axiom-clean).
 * `subspaceDesign_list_decoding_cz25_of_spanBound` — composing with the existing reduction
@@ -79,22 +81,23 @@ the same witness clause **guarded** by `0 ≤ δ` (mirroring the consumer's own 
 * `cz25SpanBound_false_of_neg_radius` — the kernel refutation (the witness clause is
   unsatisfiable when `δ < 0`).
 * `CZ25SpanBound'` — the corrected, guarded residual.
-* `cz25SpanBound'_of_dimensionCount` — `CZ25DimensionCount ⟹ CZ25SpanBound'` via the only
-  valid witness `m = |L| - 1`, establishing that the corrected residual carries exactly the
+* `cz25SpanBound'_of_dimensionCount` — `CZ25DimensionCount ⟹ CZ25SpanBound'` via the smallest
+  admissible witness `m = |L| - 1`, establishing that the corrected residual carries exactly the
   genuine CZ25 content (it is equivalent to `CZ25DimensionCount` on `δ ≥ 0`).
 * `subspaceDesign_list_decoding_cz25_of_spanBound'` — the in-tree T3.4 `Λ`-bound from the
   corrected residual, routing `δ < 0` through the empty list where it belongs.
 
-## Sanity check (tiny example, `q = 5`, `n = 4`, `k = 1`, `δ = 1/4`)
+## Sanity check (tiny example, `q = 5`, `n = 4`, `k = 1`)
 
-Take `s = 1` (alphabet `F = 𝔽₅`), `n = 4`, a dimension-`1` code (`k = 1`), `η = 1/4` so
-`r₀ = ⌊1/η⌋ = 4` and `δ = 1 - τ(4) - 1/4`. A `1`-dimensional code is spanned by one nonzero
-`c`, so the only nonzero codewords are its `4` scalar multiples; any two distinct codewords
-differ in *every* coordinate (minimum distance `n`), so `τ(r) ≥ (n - d)/n = 0` from
-`subspaceDesign_tau_lower`, giving `δ ≤ 3/4`. The list `L` around any `f` then has at most
-one codeword within relative radius `δ < 1`, i.e. `ℓ ≤ 1`. The span witness is `m = 0`
-(`A = ⊥`): `ℓ ≤ m + 1 = 1` ✓ and `m · η = 0 ≤ 1 - τ(4) - 1/4` ✓ (as `τ(4) ≤ 3/4`), and the
-collapse gives `ℓ ≤ (1 - τ(4))/η`, consistent.
+Take `s = 1` (alphabet `F = 𝔽₅`), `n = 4`, and `C` the dimension-`1` code of constant words.
+Every coordinate evaluation is injective on `C`, so `A ⊓ ker eval_i = ⊥` for every `A ≤ C` and
+`τ ≡ 0` is a valid subspace-design profile. With `η = 1/4` we get `r₀ = ⌊1/η⌋ = 4` and
+`δ = 1 - τ(4) - 1/4 = 3/4`. Dimension one does **not** force list size at most one: the
+received word `f = (0,1,2,3)` agrees with each of the constant words `0,1,2,3` in exactly one
+coordinate, so all four lie at relative distance `3/4 ≤ δ` and `ℓ = 4`. The recentred span has
+affine dimension `1`, yet `ℓ = 4 > 1 + 1`, so `m = dim A` is not a witness. The arithmetic
+witness is `m = 3` (`ℓ ≤ 4 ✓`, `3 · 1/4 = 3/4 ≤ δ ✓`), and the collapse gives the tight bound
+`ℓ ≤ (1 - τ(4))/η = 4`.
 
 ## References
 
@@ -204,22 +207,21 @@ section AgreementResidual
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
-/-- **Residual (CZ25 agreement half — strictly smaller than `CZ25DimensionCount`).** For a
+/-- **Residual (CZ25 agreement half, original unguarded form — refuted for `δ < 0`).** For a
 τ-subspace-design code `C` and `η > 0`, with `r₀ := ⌊1/η⌋` and radius `δ := 1 - τ(r₀) - η`,
-every received word `f` admits an **affine-span witness** for its candidate list
-`L := closeCodewordsRel C f δ`: a natural number `m` (the affine dimension of the recentred
-list span) with
+every received word `f` admits a natural-number witness `m` for its candidate list
+`L := closeCodewordsRel C f δ` with
 
-  `|L| ≤ m + 1`        (the list↔span+1 link) and
-  `m · η ≤ 1 - τ(r₀) - η`   (the affine-dimension agreement bound).
+  `|L| ≤ m + 1` and `m · η ≤ 1 - τ(r₀) - η`.
 
-This is the genuinely-deep Guruswami–Wang iterative charge (each new list element contributes
-a *fresh* `η·n` slice of agreement to a budget capped at `(1 - τ(r₀))·n`). It carries **none**
-of the `ℝ`-cast / `ncard` edge-case / `Lambda`-packaging of `CZ25DimensionCount`, and exposes
-the affine dimension `m` explicitly — so it is strictly smaller than that residual, which it
-implies via `cz25DimensionCount_of_spanBound`. The design half of the count
-(`sum_card_vanishing_le_design`) is supplied as proven, reusable infrastructure; only this
-agreement half remains admitted. -/
+The witness `m` is unconstrained arithmetic data, **not** the affine dimension of the recentred
+list span (a span of dimension `m` can carry up to `q^m` list elements; see the module-level
+sanity example). This predicate implies `CZ25DimensionCount` via
+`cz25DimensionCount_of_spanBound`, but it is **unsatisfiable** whenever `δ < 0`
+(`cz25SpanBound_false_of_neg_radius`), a regime reachable by genuine FRS designs. Use the
+guarded `CZ25SpanBound'` instead, which is equivalent to `CZ25DimensionCount`. The design half
+(`sum_card_vanishing_le_design`) is proven, reusable infrastructure; the agreement half is not
+proven here. -/
 def CZ25SpanBound
     (s : ℕ) (τ : ℕ → ℝ) (C : Submodule F (ι → Fin s → F))
     (_h : IsSubspaceDesign s τ C) (η : ℝ) (_hη : 0 < η) : Prop :=
@@ -254,8 +256,10 @@ hypothesis `0 ≤ 1 - τ(⌊1/η⌋) - η`. This guard is exactly the one the co
 imposes (`δ < 0 ⟹ L = ∅`, handled by `closeCodewordsRel_eq_empty_of_neg`), and it removes
 the spurious — provably unsatisfiable — obligation that `CZ25SpanBound` carried in the
 `δ < 0` regime (see `cz25SpanBound_false_of_neg_radius`). On the non-degenerate regime this
-is equivalent to `CZ25DimensionCount` (`cz25SpanBound'_of_dimensionCount`), so it isolates
-exactly the genuine Guruswami–Wang iterative charge. -/
+is equivalent to `CZ25DimensionCount` (`cz25SpanBound'_of_dimensionCount` and
+`cz25DimensionCount_of_spanBound'`), so it is a re-phrasing of that residual with an arithmetic
+natural witness `m` (smallest admissible value `|L| - 1`), not a strictly smaller goal and not an
+affine-dimension statement. -/
 def CZ25SpanBound'
     (s : ℕ) (τ : ℕ → ℝ) (C : Submodule F (ι → Fin s → F))
     (_h : IsSubspaceDesign s τ C) (η : ℝ) (_hη : 0 < η) : Prop :=
@@ -281,7 +285,8 @@ theorem cz25DimensionCount_of_spanBound'
   nlinarith [hm]
 /-- **In-tree T3.4 [CZ25 Thm B.5] from the agreement residual.** Composing the arithmetic
 collapse with the existing reduction `subspaceDesign_list_decoding_cz25_of_dimensionCount`,
-the exact in-tree `Λ`-bound follows from `CZ25SpanBound` (the agreement half) alone — the
+the exact in-tree `Λ`-bound follows from `CZ25SpanBound` (the agreement half; refuted for
+`δ < 0`, so prefer the guarded `subspaceDesign_list_decoding_cz25_of_spanBound'`) alone — the
 design half being discharged by `sum_card_vanishing_le_design`. No `sorry`, no new axioms. -/
 theorem subspaceDesign_list_decoding_cz25_of_spanBound
     (s : ℕ) (τ : ℕ → ℝ) (C : Submodule F (ι → Fin s → F))
@@ -311,15 +316,15 @@ vacuously (the list is empty by `closeCodewordsRel_eq_empty_of_neg`, so
 does **not** follow from the genuine CZ25 content; it was over-stated by reverse-engineering
 the witness clause without the consumer's `δ ≥ 0` guard.
 
-**Correction.** The faithful residual is `CZ25SpanBound'`: the affine-span witness clause
+**Correction.** The faithful residual is `CZ25SpanBound'`: the natural-witness clause
 guarded by the non-degenerate hypothesis `0 ≤ δ`, exactly mirroring the `δ`-sign split that
 the *consumer* `subspaceDesign_list_decoding_cz25_of_dimensionCount` already performs (it
 routes `δ < 0` through `closeCodewordsRel_eq_empty_of_neg`, never through the residual). With
 the guard, the witness clause is satisfiable and the reduction to T3.4 goes through directly
 (`subspaceDesign_list_decoding_cz25_of_spanBound'`). The corrected residual is moreover
 **equivalent** to `CZ25DimensionCount` on the non-degenerate regime
-(`cz25SpanBound'_of_dimensionCount`, via the only valid witness `m = |L| - 1`), so it carries
-exactly the genuine Guruswami–Wang content — no more, no less — without the spurious
+(`cz25SpanBound'_of_dimensionCount`, via the smallest admissible witness `m = |L| - 1`), so it
+carries exactly the genuine Guruswami–Wang content — no more, no less — without the spurious
 unprovable `δ < 0` obligation.
 
 **On the missing proof.** Neither residual is *discharged* here: the genuine
@@ -330,9 +335,9 @@ that would bridge `sum_card_vanishing_le_design` to the list bound is **false**:
 list elements fill an affine flat of direction `A ⊓ ker eval_i`, so their count is `q^{dim}`
 (exponential), not `dim + 1` (linear), past the Johnson radius. The `m = dim(span{c - c₀})`
 witness likewise fails `|L| ≤ m + 1` (a span of dimension `m` carries up to `q^m` list
-elements). The only valid witness is the tautological `m = |L| - 1`, which makes the second
-inequality the full capacity theorem — confirming the residual has no shortcut over the
-design budget. -/
+elements). The smallest admissible witness is the tautological `m = |L| - 1` (larger values also
+work when the bound has slack), which makes the second inequality the full capacity theorem —
+confirming the residual has no shortcut over the design budget. -/
 theorem cz25SpanBound_false_of_neg_radius
     (_s : ℕ) (τ : ℕ → ℝ) (η : ℝ) (hη : 0 < η)
     (hδ : 1 - τ (Nat.floor (1 / η)) - η < 0)
@@ -343,7 +348,7 @@ theorem cz25SpanBound_false_of_neg_radius
 
 
 /-- **The corrected residual is faithful: `CZ25DimensionCount ⟹ CZ25SpanBound'`.** On the
-non-degenerate regime `δ ≥ 0`, the only valid affine-span witness is the tautological
+non-degenerate regime `δ ≥ 0`, the smallest admissible witness is the tautological
 `m := |L| - 1` (a recentred *span* of dimension `m` may carry up to `q^m` list elements, so
 `m = dim(span)` does **not** give `|L| ≤ m + 1`). With `m = |L| - 1`, the link `|L| ≤ m + 1`
 is definitional and the agreement bound `m · η ≤ δ` unfolds to exactly `CZ25DimensionCount`'s

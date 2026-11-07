@@ -46,15 +46,23 @@ The arithmetic glue (the explicit residual projection, the definitional rewrite
 `logupSoundnessError = outerSoundnessError + sumcheckSoundnessError`, which holds by `rfl`) is
 discharged **fully and unconditionally** here.
 
-The genuinely deep upstream facts are taken as explicit, clearly-named `Prop` hypotheses (never
-`sorry`):
+The upstream facts are taken as explicit, clearly-named `Prop` hypotheses (never `sorry`):
 
 * `hOuter` — the *corrected* outer soundness (brick D): `outerVerifier` is sound from the input
-  language into `midSoundnessProtocolLanguage` with error `outerSoundnessError`. The corrected
-  language is the genuine, non-degenerate one (`midSoundnessLanguage`-pullback); the
-  Schwartz–Zippel mathematics behind the bound is proven in `OuterSoundnessReal.lean`, only the
-  `Reduction.run`-unfolding bridge (`OuterRunSamplesChallenge`) remains, which is folded into this
-  named hypothesis at the protocol level.
+  language into `midSoundnessProtocolLanguage` with error `outerSoundnessError`. **This premise is
+  refuted in the typical (small-support, large-field) regime** by
+  `prob_midSoundnessLanguage_ge_compl_support` (`OuterSoundnessSharp.lean`; see the note at the
+  end of this file), so `logup_soundness_full` is only vacuously conditional there; it is not an
+  ordinary remaining deep bridge. When this file was written the Schwartz–Zippel bound of
+  `OuterSoundnessReal.lean` and the `Reduction.run`-unfolding bridge (`OuterRunSamplesChallenge`)
+  were expected to supply it. The surviving outer-phase results use other intermediate languages:
+  `outerVerifier_soundness_mid` (`OuterMaliciousSoundness.lean`, outer phase at `midLanguage`,
+  under `2 ^ n < |F|`, `n ≤ params.numGroups` and the honest-implementation side conditions) and
+  the sharp-language `outerVerifier_soundness_sharp` (`OuterRbrSoundness.lean`). The former
+  end-to-end route `logup_soundness_end_to_end` was **retired** in the canonical sum-check
+  message-semantics migration (its embedded sum-check half relied on the obsolete input-query
+  rejection law; see `scripts/integration/sumcheck-message-semantics-retirements.json`), so no
+  unconditional end-to-end LogUp soundness theorem is currently in tree.
 * `hSumcheck` — the embedded sumcheck soundness (brick E): `sumcheckVerifier` is sound from
   `midSoundnessProtocolLanguage` into the output language. This is the `liftContext` of the generic
   `Sumcheck.Spec` soundness, which is not available in-tree at this shape.
@@ -164,9 +172,13 @@ theorem logup_soundness_full (sumcheckSoundnessError : ℝ≥0)
 2026-06-10 audit showed its `hOuter` conjunct (typed at `midSoundnessProtocolLanguage` with the
 paper error `outerSoundnessError`) is refuted in the typical (small-support, large-field)
 regime by `prob_midSoundnessLanguage_ge_compl_support` (`OuterSoundnessSharp.lean`), making the
-bundle uninstantiable there and every consumer vacuously conditional.  Live routes:
-`logup_soundness_end_to_end` (`OuterMaliciousSoundness.lean`, hOuter@`midLanguage` discharged)
-and the sharp-language route `outerVerifier_soundness_sharp` (`OuterRbrSoundness.lean`).
+bundle uninstantiable there and every consumer vacuously conditional.  The routes named as live
+at that time were `logup_soundness_end_to_end` (`OuterMaliciousSoundness.lean`) and the
+sharp-language `outerVerifier_soundness_sharp` (`OuterRbrSoundness.lean`); the former has since
+been retired (canonical sum-check message semantics,
+`scripts/integration/sumcheck-message-semantics-retirements.json`), leaving the outer-phase
+`outerVerifier_soundness_mid` and the sharp route, with the embedded sum-check soundness half
+open again.
 Consumers holding the three obligations individually can still apply `logup_soundness_full`
 directly. -/
 

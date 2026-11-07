@@ -61,15 +61,18 @@ def GMMDSResidual (k : ℕ) : Prop :=
 
 /-- **THE CAMPAIGN CAPSTONE**: Frank's orientation theorem and GM-MDS jointly discharge
 the symbolic Theorem 2.11 interface — and with it every layer of the tower above, up to
-the front door. Every other step is a proven theorem of this campaign. -/
+the front door. Every other step is a proven theorem of this campaign.
+
+(Empty edges need no extra premise: `symbolicFullRank_of_pinning` reduces to nonempty-edge
+families via `symbolicFullRankResidual_of_nonempty_edges`. An earlier version required the false
+global premise that every WPC family has nonempty edges.) Note that the GM-MDS inputs
+`GMMDSResidual` built from the unpinned `GMMDSDualZeroPatternTheorem` are vacuous for
+`k < card ι`; use `symbolicFullRank_of_classical_imports_pinned`. -/
 theorem symbolicFullRank_of_classical_imports {k : ℕ}
     (hfrank : FrankOrientationResidual ι k)
-    (hgmmds : GMMDSResidual ι F k)
-    (hnonempty : ∀ {t : ℕ}, ∀ e : ι → Finset (Fin (t + 1)),
-      WeaklyPartitionConnected k (Finset.univ : Finset (Fin (t + 1))) e →
-      ∀ i, (e i).Nonempty) :
+    (hgmmds : GMMDSResidual ι F k) :
     SymbolicFullRankResidual (ι := ι) F k := by
-  refine symbolicFullRank_of_pinning ?_ hnonempty
+  refine symbolicFullRank_of_pinning ?_
   intro t ht e hne hwpc
   -- Frank: the orientation with root and crossing supply.
   obtain ⟨O, r, hroot, hcross⟩ := hfrank ht e hne hwpc

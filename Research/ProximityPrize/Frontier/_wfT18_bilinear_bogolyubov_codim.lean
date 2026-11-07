@@ -50,10 +50,11 @@ So for every prize-relevant `n` the guaranteed surviving-frequency set has mass 
 **empty**, hence carries no information about the worst frequency `M`. This is *exactly* the
 A12/F6 phenomenon — a structured-set guarantee whose density floor drops below `1/p` (here below
 `1`) at `β = 4` — recorded in `_wfA12_lp_croot_sisask_threshold.lean` (`cs_guarantee_empty`,
-`cs_sup_unreachable`). The bilinear theorem's codim `c(α) = log^{O(1)}(1/α)` with
-`1/α = p/n = n^{β-1} = n^3` is in fact `c ≥ 3·ln n` (the architect's `O(μ)` refinement is the
-UNPROVEN new step; the published theorem gives `≥ 3 ln n`), making the vacuity even sharper:
-`ln(mass) ≤ 4 ln n − 3(ln n)^2 < 0` for all `n ≥ 4`.
+`cs_sup_unreachable`). The bilinear theorem's codim bound `c(α) ≤ log^{O(1)}(1/α)` with
+`1/α = p/n = n^{β-1} = n^3` is an UPPER bound (a structured set of codimension *at most* `c` exists);
+it does **not** give `c ≥ 3·ln n` (audit CW-B18-22). The computation `ln(mass) ≤ 4 ln n − 3(ln n)^2 < 0`
+for `n ≥ 4` is therefore only the *conditional* instance "if the guaranteed codimension were at least
+`3 ln n`"; it is not a consequence of the published theorem.
 
 ### Why this is F0 (conservation law), not a new floor.
 The object `B = {(x,y): x−y ∈ μ_n}` is built *only* from the domain `μ_n` and the ambient additive
@@ -78,9 +79,10 @@ and collapses back to a scalar 2nd-moment of `η`, landing on F1 as well.
 * `t18_mass_empty_architect`        : with the architect's refined `c = ln n` and `ln p = 4 ln n`
                                       (`β = 4`), the mass is `< 1` for `ln n > 4` (i.e. `n > e^4`);
                                       the cover is EMPTY at prize scale.
-* `t18_mass_empty_theorem`          : with the published codim `c = 3 ln n` (`= log(1/α)`,
-                                      `1/α = n^3`), the mass is `< 1` for all `ln n > 4/3`; even
-                                      sharper vacuity, independent of the unproven `O(μ)` step.
+* `t18_mass_empty_theorem`          : conditional arithmetic: IF the codim is `c = 3 ln n`
+                                      (`= log(1/α)`, `1/α = n^3`), the mass is `< 1` for all
+                                      `ln n > 4/3`. The published theorem only bounds the codim
+                                      from ABOVE, so this is not a consequence of it.
 * `t18_reduces_to_F6_floor`         : the unified F6/A12-shaped statement — for the prize density
                                       exponent `β = 4` and any codim `c ≥ 2`, the guaranteed mass
                                       `p · exp(−c · ln n)` is `< 1` once `ln n > ln p / c`; this is
@@ -127,12 +129,12 @@ theorem t18_mass_empty_architect {lnn : ℝ} (h : 4 < lnn) :
   calc Real.exp (lnn * (4 - lnn)) < Real.exp 0 := Real.exp_lt_exp.mpr hneg
     _ = 1 := Real.exp_zero
 
-/-- **Obstruction 2 (published theorem, sharper).** The bilinear Bogolyubov codimension is
-`c(α) = log^{O(1)}(1/α) ≥ log(1/α)`, and at prize density `1/α = p/n = n^{β-1} = n^3` this is
-`c ≥ 3 · ln n` (the architect's `O(μ)` refinement is the unproven step; without it the codim is
-`3 ln n`). With `ln p = 4 ln n`, the mass `p · exp(−c · ln n) = exp(4 ln n − 3 (ln n)^2)` is `< 1`
-for all `ln n > 4/3`, i.e. for every `n ≥ 4`. This vacuity does NOT depend on the unproven
-dilation-eigen refinement. -/
+/-- **Obstruction 2 (conditional arithmetic instance).** The published bilinear Bogolyubov theorem
+gives an UPPER bound `c(α) ≤ log^{O(1)}(1/α)` on the codimension, not the lower bound `c ≥ log(1/α)`
+an earlier version of this docstring claimed (audit CW-B18-22). This lemma is pure real arithmetic:
+*if* the codimension is `c = 3 · ln n` (the value `log(1/α)` at prize density `1/α = n^3`) and
+`ln p = 4 ln n`, then the mass `p · exp(−c · ln n) = exp(4 ln n − 3 (ln n)^2)` is `< 1` for all
+`ln n > 4/3`, i.e. for every `n ≥ 4`. It does not follow from the published theorem. -/
 theorem t18_mass_empty_theorem {lnn : ℝ} (h : 4 / 3 < lnn) :
     Real.exp (4 * lnn) * Real.exp (-(3 * (lnn * lnn))) < 1 := by
   rw [← Real.exp_add]
@@ -146,8 +148,9 @@ theorem t18_mass_empty_theorem {lnn : ℝ} (h : 4 / 3 < lnn) :
 `cs_guarantee_empty` (A12, F6): a structured-set guarantee of size `p · exp(−c · L)` with `L > 0`
 the relevant log-density, which falls below one element once `c · L > ln p`. Here `L = ln n` (the
 covering granularity) and `ln p = β · ln n` with `β = 4`; so any codim `c > β = 4` forces the cover
-empty. The architect's `c = O(μ) = log n → ∞` and the published `c ≥ 3 ln n → ∞` both exceed `4`
-for all large `n`, hence the cover is empty at prize scale — REDUCES to the A12/F6 mass-vacuity
+empty. IF the codimension grows (e.g. the architect's unproven `c = O(μ) = log n → ∞`), it exceeds `4`
+for all large `n` and the cover is empty at prize scale; note the published theorem gives only an
+upper bound on `c`, not a growing lower bound — REDUCES to the A12/F6 mass-vacuity
 wall (F0). We state the generic floor: `c · L > ln p ⟹ p · exp(−c · L) < 1`. -/
 theorem t18_reduces_to_F6_floor {p c L : ℝ} (hp : 1 < p) (hL : 0 < L)
     (hc : Real.log p < c * L) :

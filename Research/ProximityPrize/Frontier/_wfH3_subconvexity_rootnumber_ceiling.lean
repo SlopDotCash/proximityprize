@@ -27,12 +27,16 @@ the **size** `|L(1/2,χ)|` — never touches.
 The characters trivial on `μ_n` form a group `X_m` of order `m = (p-1)/n = q/n`. Fourier inversion
 of the coset indicator (`1_{μ_n}(y) = (1/m) Σ_{χ∈X_m} χ(y)`) gives, exactly,
 
-  `η_b = (1/m) Σ_{χ ∈ X_m} χ̄(b) τ(χ)`,   `τ(χ) = Σ_t χ(t) e_p(t)`,   `|τ(χ)| = √q` EXACT.
+  `η_b = (1/m) Σ_{χ ∈ X_m} χ̄(b) τ(χ)`,   `τ(χ) = Σ_t χ(t) e_p(t)`,   `|τ(χ)| = √q` EXACT for `χ ≠ χ₀`.
+
+(For the principal character `τ(χ₀) = Σ_{t≠0} e_p(t) = −1`, so the flat-modulus statement holds on
+`X_m \ {χ₀}` only; the `χ₀` term contributes `−χ̄₀(b)/m = −1/m` separately — audit CW-B18-22.)
 
 (Verified to `< 10⁻¹³` over `(n,p) ∈ {(4,13),(4,29),(8,17),(8,41),(8,73),(16,97),…}` in
-`scripts/probes/probe_wfH3_rootnumber_ceiling.py`.) Writing `τ(χ) = √q · ε(χ)` with `|ε(χ)| = 1`,
+`scripts/probes/probe_wfH3_rootnumber_ceiling.py`.) Writing `τ(χ) = √q · ε(χ)` with `|ε(χ)| = 1`
+for `χ ≠ χ₀`,
 
-  `η_b = (√q / m) · Σ_{χ ∈ X_m} χ̄(b) ε(χ)`.
+  `η_b = −1/m + (√q / m) · Σ_{χ ∈ X_m, χ≠χ₀} χ̄(b) ε(χ)`.
 
 The prize floor `M(n) ≤ C√(n·log m)` is, in this language: the worst-`b` **root-number phase sum**
 `Σ_χ χ̄(b) ε(χ)` enjoys square-root cancellation (`~√m`) up to a `√(log m)` defect. That is the
@@ -41,13 +45,14 @@ BGK/Paley coset-phase-coherence wall — *not* an `L`-value-size statement.
 ## Why subconvexity is the wrong tool (the structural no-go)
 
 A subconvex bound bounds `|L(1/2,χ)|`. By the functional equation `τ(χ) = ε(χ)·√q` with
-`|ε(χ)| = 1` **exactly** (`Mathlib.NumberTheory.GaussSum`: `gaussSum_mul_gaussSum_eq_card`), the
+`|ε(χ)| = 1` **exactly** for nontrivial `χ` (`Mathlib.NumberTheory.GaussSum`:
+`gaussSum_mul_gaussSum_eq_card`, which requires `χ` nontrivial), the
 Gauss-sum modulus is already pinned and carries **zero** `L`-value information: the whole prize
 content is in the unit-modulus phase `ε(χ)`. So the only `L`-side input available is the *flat
 modulus* `|τ(χ)| = √q`, and the best one can do with modulus-only information is the **triangle
 inequality** on the root-number sum:
 
-  `|η_b| = (√q/m) |Σ_χ χ̄(b) ε(χ)| ≤ (√q/m) · Σ_χ |ε(χ)| = (√q/m)·m·1 = √q`.
+  `|η_b| ≤ 1/m + (√q/m) · Σ_{χ≠χ₀} |ε(χ)| = 1/m + (√q/m)·(m−1) ≤ √q`.
 
 That is precisely the **completion / Weil bound** `M ≤ √q`, which is **vacuous at the prize regime**
 because `n < √q` (fence F2). No amount of subconvexity reshuffles this: subconvexity improves
@@ -153,7 +158,10 @@ theorem modulus_ceiling_attained
 We record the operational statement that the modulus-only ceiling for the prize root-number sum is
 exactly the total coefficient mass, with NO dependence on any analytic `L`-value bound: the bound
 `‖rootNumberSum S w ε‖ ≤ Σ‖w χ‖` holds for the *flat* spectrum `‖ε χ‖ = 1` (the only thing a
-subconvex / amplified `L`-input certifies about the Gauss sums), and it is the completion value. The
+subconvex / amplified `L`-input certifies about the Gauss sums), and it is the completion value.
+The flatness hypothesis `hflat` is satisfiable only on index sets of *nontrivial* characters
+(`|τ(χ₀)| = 1 ≠ √q`), so for the prize family apply it with `S = X_m \ {χ₀}` and add the `χ₀`
+term (`−1/m`) separately. The
 prize lies above it; this is the F2/F0 reduction. -/
 theorem subconvexity_route_caps_at_completion
     (S : Finset ι) (w ε : ι → 𝕜) (hflat : ∀ χ ∈ S, ‖ε χ‖ = 1) :

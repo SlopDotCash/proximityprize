@@ -39,8 +39,10 @@ the correlated agreement list-decoding results.
   that automatically discharges the substitution relation given numerator equivalence.
 
 ## References
-* [BCIKS20] Binswood, Crites, Iyer, Kamara, Stewart. *Solving Algebraic Equations over
-  Power Series*, 2020.
+
+* [Ben-Sasson, E., Carmon, D., Ishai, Y., Kopparty, S., and Saraf, S., *Proximity Gaps
+    for Reed-Solomon Codes*][BCIKS20] (ePrint 2020/654; entry `BCIKS20` in
+    `blueprint/src/references.bib`)
 -/
 
 open Polynomial Polynomial.Bivariate BCIKS20AppendixA BCIKS20AppendixA.ClaimA2 ToRatFunc Ideal

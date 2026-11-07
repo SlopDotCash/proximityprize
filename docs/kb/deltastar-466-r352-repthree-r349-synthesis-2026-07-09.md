@@ -24,3 +24,10 @@ R349 then removes the corresponding high-weight depth-four strata. The finite-
 field transfer of `RepThree` is already documented in the existing file as the
 open order-six core. This synthesis prevents the false B3/Sidon shortcut and
 connects the new R324 shell analysis to the project’s canonical residual.
+
+*Later status (linked 2026-10-28, audit T48):* `RepThree(μ₆₄)` is **false** at the
+prize-scale bad prime `p = 16,778,497`. A zero-sum six-tuple with no antipodal pair exists
+there (`deltastar-466-r354-repthree-refuted-at-bad-endpoint-2026-07-09.md`,
+`_R353RepThreeCounterexample.lean`). The finite-field transfer is therefore not uniform over
+prize primes. Any use of `RepThree` must state its characteristic-transfer hypothesis; finite
+experiments at selected primes do not establish it.

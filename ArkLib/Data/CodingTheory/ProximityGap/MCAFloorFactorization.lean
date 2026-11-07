@@ -15,18 +15,35 @@ the *self-agreement of the direction word* `u₁`, and discharges one of them un
   the **decoupled-Johnson** packing bound (`DecoupledJohnsonBound.mca_badScalars_card_le_div`)
   gives `#bad ≤ n²/(a²−n·A₁*)` — **PROVEN, axiom-clean**;
 * **structured regime** (`u₁` near the code: some codeword agrees with `u₁` on `> A₁*` points):
-  this is the genuine beyond-Johnson residual — the **structured / KKH26-bad-line adversary** that
-  defeats every domain-agnostic counting method (per-witness ownership, second moment, this
-  packing). It is carried as an explicit **named obligation** `StructuredFloorBound`, NOT proven.
+  carried as an explicit **named obligation** `StructuredFloorBound`, NOT proven. For RS beyond
+  Johnson this regime contains **every** direction (see the PG-106 correction below), so it is the
+  full bad-count problem there, not a sub-case of it.
 
-The factorization theorem `badScalars_le_max_of_structuredFloor` shows: **the entire δ\* floor
-reduces to the structured regime alone.** This is the project's modularity convention applied to
-this session's localization result — it isolates exactly what is open (the `u₁`-near-code list
-count) from what is closed (everything else), with the far regime genuinely discharged.
+The factorization theorem `badScalars_le_max_of_structuredFloor` is a correct, exhaustive case
+split: every stack is either far (handled by the packing bound) or near (handled by the named
+obligation `StructuredFloorBound`).
 
-**Honest scope.** `StructuredFloorBound` is the open core (≡ explicit-RS list-decoding past
-Johnson over the structured directions); it is NOT discharged here. The contribution is the clean
-two-regime split with the far half proven, making the open obligation as small as possible.
+## Correction (audit 2026-10-28, PG-106): beyond Johnson the far regime is empty for RS
+
+An earlier version of this header described the far half as discharging part of the beyond-Johnson
+problem and `StructuredFloorBound` as a strictly smaller, independently localized residual. For
+Reed–Solomon codes in the beyond-Johnson range this is false — the split is **degenerate** there:
+
+* For RS of dimension `k`, every received direction `u₁` agrees with some codeword on at least `k`
+  points (interpolate `u₁` on any `k` evaluation points by a polynomial of degree `< k`).
+* The strict gap `n·A₁* < a²` together with `a² ≤ n·k` (in particular the beyond-Johnson range
+  `a² ≤ n·(k−1)`) forces `A₁* < k`, so **every** direction is near / structured and the far case
+  is empty.
+* Concrete instance: `n = 16`, `k = 4`, `a = 6`, `A₁* = 2` has `n·A₁* = 32 < 36 = a² ≤ 48 = n(k−1)`,
+  while each direction has a 4-point polynomial explanation (agreement `≥ 4 > 2`).
+
+So in that range `StructuredFloorBound C δ A₁* B` is exactly the all-stack bad-count target
+`∀ u₀ u₁, badCount C δ u₀ u₁ ≤ B`; the factorization gives **no narrowing** of the open problem
+there. The far-regime packing bound only has content when `A₁* ≥ k`, i.e. `a² > n·k`
+(at or above the Johnson-type agreement `√(n·k)`).
+
+**Honest scope.** `StructuredFloorBound` is a named open obligation; it is NOT discharged here, and
+for RS beyond Johnson it is not smaller than the original bad-count bound.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.
 -/
@@ -50,9 +67,13 @@ noncomputable def badCount (C : Submodule F (ι → A)) (δ : ℝ≥0) (u₀ u�
 
 /-- **The named open obligation: the structured-regime floor.**  For every stack whose direction
 word `u₁` is *near the code* — some codeword agrees with `u₁` on more than `A₁*` of the `n`
-coordinates — the bad-scalar count is bounded by `B`.  This is the genuine beyond-Johnson residual
-(the `u₁`-near-code / KKH26-bad-line adversary); it is the *only* regime not handled by the
-decoupled-Johnson packing.  Left as an explicit `Prop`, never proven here. -/
+coordinates — the bad-scalar count is bounded by `B`.  It is the *only* regime not handled by the
+decoupled-Johnson packing.  Left as an explicit `Prop`, never proven here.
+
+Caveat (PG-106): for an RS code of dimension `k`, every `u₁` agrees with some codeword on `≥ k`
+points, so whenever `A₁star < k` the hypothesis of this `Prop` holds for every `u₁` and the `Prop`
+is literally the all-stack bound `∀ u₀ u₁, badCount C δ u₀ u₁ ≤ B`. Under the gap `n·A₁star < a²`
+this is the case throughout the beyond-Johnson range `a² ≤ n·k`. -/
 def StructuredFloorBound
     (C : Submodule F (ι → A)) (δ : ℝ≥0) (A₁star B : ℕ) : Prop :=
   ∀ u₀ u₁ : ι → A,
@@ -68,7 +89,9 @@ floor `a` (`(a:ℝ≥0) ≤ (1−δ)·n`), a direction-proximity threshold `A₁
 
 The far half (`u₁` agrees with every codeword on `≤ A₁*` points) is discharged unconditionally by
 the decoupled-Johnson packing; the near half is exactly `StructuredFloorBound`.  No other regime
-exists, so this is a *complete* case split — the open core is isolated to `StructuredFloorBound`. -/
+exists, so this is a *complete* case split. It does not by itself narrow the open problem: for RS of
+dimension `k` with `a² ≤ n·k` the gap forces `A₁star < k`, the far case is empty, and the bound is
+just `hstruct` (PG-106). -/
 theorem badScalars_le_max_of_structuredFloor
     (C : Submodule F (ι → A)) (δ : ℝ≥0) (u₀ u₁ : ι → A) (a A₁star B : ℕ)
     (ha : (a : ℝ≥0) ≤ (1 - δ) * Fintype.card ι)

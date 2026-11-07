@@ -73,13 +73,21 @@ theorem directionSupportSet_translatedDirectionWord
     apply h
     exact (sub_eq_zero.mp hzero).symm
 
-theorem directionSupportSet_translatedDirectionWord_card_eq_three
-    (dom : Fin 16 ↪ F) (u1 : Fin 16 → F) (r : F[X])
-    (hcore : (directionAgreement dom u1 r).card = 13) :
-    (directionSupportSet (translatedDirectionWord dom u1 r)).card = 3 := by
+/-- Core-size-generic form: a direction core of size `c` leaves a translated direction
+supported on `16 - c` coordinates. -/
+theorem directionSupportSet_translatedDirectionWord_card_eq_sub
+    (dom : Fin 16 ↪ F) (u1 : Fin 16 → F) (r : F[X]) {c : ℕ}
+    (hcore : (directionAgreement dom u1 r).card = c) :
+    (directionSupportSet (translatedDirectionWord dom u1 r)).card = 16 - c := by
   rw [directionSupportSet_translatedDirectionWord,
     Finset.card_sdiff_of_subset (Finset.subset_univ _),
     Finset.card_univ, Fintype.card_fin, hcore]
+
+theorem directionSupportSet_translatedDirectionWord_card_eq_three
+    (dom : Fin 16 ↪ F) (u1 : Fin 16 → F) (r : F[X])
+    (hcore : (directionAgreement dom u1 r).card = 13) :
+    (directionSupportSet (translatedDirectionWord dom u1 r)).card = 3 :=
+  directionSupportSet_translatedDirectionWord_card_eq_sub dom u1 r hcore
 
 /-- Translation turns the exceptional-core trace into the ordinary zero
 agreement trace of the translated affine line. -/
@@ -236,15 +244,17 @@ theorem directionFreshTraceSubtype_disjoint_of_word_eq_of_ne
   exact hne (gamma_eq_of_translatedInterceptWord_eq_of_common_fresh
     family r hword hgamma' hbeta' i.2)
 
-theorem two_le_directionFreshTraceSubtype_of_trace_le_seven
+/-- Core-size-generic fresh count: a trace of size at most `t` leaves at least `9 - t`
+fresh coordinates. -/
+theorem sub_le_directionFreshTraceSubtype_of_trace_le
     {dom : Fin 16 ↪ F} {delta : NNReal}
     {u : WordStack F (Fin 2) (Fin 16)}
     (family : BadScalarRichPointFamily dom 4 delta u)
     (hthreshold :
       ⌈(1 - delta) * (Fintype.card (Fin 16) : NNReal)⌉₊ = 9)
-    (r : F[X]) {gamma : F} (hgamma : gamma ∈ family.G)
-    (htrace : (directionCoreTrace family r gamma).card ≤ 7) :
-    2 ≤ (directionFreshTraceSubtype family r gamma).card := by
+    (r : F[X]) {gamma : F} (hgamma : gamma ∈ family.G) {t : ℕ}
+    (htrace : (directionCoreTrace family r gamma).card ≤ t) :
+    9 - t ≤ (directionFreshTraceSubtype family r gamma).card := by
   let A := fullAgreement dom (u 0) (u 1) gamma (family.q gamma)
   let D := directionAgreement dom (u 1) r
   have hA : 9 ≤ A.card := by
@@ -253,8 +263,61 @@ theorem two_le_directionFreshTraceSubtype_of_trace_le_seven
   have hsplit := Finset.card_sdiff_add_card_inter A D
   have hfresh := directionFreshTraceSubtype_card family r gamma
   change (directionFreshTraceSubtype family r gamma).card = (A \ D).card at hfresh
-  change (A ∩ D).card ≤ 7 at htrace
+  change (A ∩ D).card ≤ t at htrace
   rw [hfresh]
+  omega
+
+theorem two_le_directionFreshTraceSubtype_of_trace_le_seven
+    {dom : Fin 16 ↪ F} {delta : NNReal}
+    {u : WordStack F (Fin 2) (Fin 16)}
+    (family : BadScalarRichPointFamily dom 4 delta u)
+    (hthreshold :
+      ⌈(1 - delta) * (Fintype.card (Fin 16) : NNReal)⌉₊ = 9)
+    (r : F[X]) {gamma : F} (hgamma : gamma ∈ family.G)
+    (htrace : (directionCoreTrace family r gamma).card ≤ 7) :
+    2 ≤ (directionFreshTraceSubtype family r gamma).card :=
+  sub_le_directionFreshTraceSubtype_of_trace_le family hthreshold r hgamma htrace
+
+/-- Core-size-generic injectivity: at core size `c`, translated intercept words are
+injective on selected scalars whose traces have size at most `t`, provided the two
+disjoint fresh sets (each of size `≥ 9 - t`) cannot fit in the `16 - c` moving
+coordinates. -/
+theorem translatedInterceptWord_injective_of_trace_le
+    {dom : Fin 16 ↪ F} {delta : NNReal}
+    {u : WordStack F (Fin 2) (Fin 16)}
+    (family : BadScalarRichPointFamily dom 4 delta u)
+    (hthreshold :
+      ⌈(1 - delta) * (Fintype.card (Fin 16) : NNReal)⌉₊ = 9)
+    (r : F[X]) {c t : ℕ} (hcore : (directionAgreement dom (u 1) r).card = c)
+    (hroom : 16 - c < 2 * (9 - t))
+    {gamma beta : F} (hgamma : gamma ∈ family.G)
+    (hbeta : beta ∈ family.G)
+    (hgammaTrace : (directionCoreTrace family r gamma).card ≤ t)
+    (hbetaTrace : (directionCoreTrace family r beta).card ≤ t)
+    (hword : translatedInterceptWord family r gamma =
+      translatedInterceptWord family r beta) :
+    gamma = beta := by
+  by_contra hne
+  let A := directionFreshTraceSubtype family r gamma
+  let B := directionFreshTraceSubtype family r beta
+  have hdisj : Disjoint A B := by
+    simpa only [A, B] using
+      directionFreshTraceSubtype_disjoint_of_word_eq_of_ne
+        family r hne hword
+  have hA : 9 - t ≤ A.card := by
+    simpa only [A] using sub_le_directionFreshTraceSubtype_of_trace_le
+      family hthreshold r hgamma hgammaTrace
+  have hB : 9 - t ≤ B.card := by
+    simpa only [B] using sub_le_directionFreshTraceSubtype_of_trace_le
+      family hthreshold r hbeta hbetaTrace
+  have hU : Fintype.card
+      {i : Fin 16 // i ∉ directionAgreement dom (u 1) r} = 16 - c := by
+    rw [Fintype.card_subtype_compl]
+    simp only [Fintype.card_coe, Fintype.card_fin, hcore]
+  have hunion : (A ∪ B).card ≤ 16 - c := by
+    have hle := Finset.card_le_univ (A ∪ B)
+    simpa only [Finset.card_univ, hU] using hle
+  rw [Finset.card_union_of_disjoint hdisj] at hunion
   omega
 
 theorem translatedInterceptWord_injective_of_trace_le_seven
@@ -270,28 +333,24 @@ theorem translatedInterceptWord_injective_of_trace_le_seven
     (hbetaTrace : (directionCoreTrace family r beta).card ≤ 7)
     (hword : translatedInterceptWord family r gamma =
       translatedInterceptWord family r beta) :
-    gamma = beta := by
-  by_contra hne
-  let A := directionFreshTraceSubtype family r gamma
-  let B := directionFreshTraceSubtype family r beta
-  have hdisj : Disjoint A B := by
-    simpa only [A, B] using
-      directionFreshTraceSubtype_disjoint_of_word_eq_of_ne
-        family r hne hword
-  have hA : 2 ≤ A.card := by
-    simpa only [A] using two_le_directionFreshTraceSubtype_of_trace_le_seven
-      family hthreshold r hgamma hgammaTrace
-  have hB : 2 ≤ B.card := by
-    simpa only [B] using two_le_directionFreshTraceSubtype_of_trace_le_seven
-      family hthreshold r hbeta hbetaTrace
-  have hU : Fintype.card
-      {i : Fin 16 // i ∉ directionAgreement dom (u 1) r} = 3 := by
-    rw [Fintype.card_subtype_compl]
-    simp only [Fintype.card_coe, Fintype.card_fin, hcore]
-  have hunion : (A ∪ B).card ≤ 3 := by
-    have hle := Finset.card_le_univ (A ∪ B)
-    simpa only [Finset.card_univ, hU] using hle
-  rw [Finset.card_union_of_disjoint hdisj] at hunion
+    gamma = beta :=
+  translatedInterceptWord_injective_of_trace_le family hthreshold r hcore (by norm_num)
+    hgamma hbeta hgammaTrace hbetaTrace hword
+
+/-- Core-size-generic trace floor: at core size `c`, every selected translated intercept
+has a trace of size at least `c - 7`. -/
+theorem sub_le_directionCoreTrace_of_core
+    {dom : Fin 16 ↪ F} {delta : NNReal}
+    {u : WordStack F (Fin 2) (Fin 16)}
+    (family : BadScalarRichPointFamily dom 4 delta u)
+    (hthreshold :
+      ⌈(1 - delta) * (Fintype.card (Fin 16) : NNReal)⌉₊ = 9)
+    (r : F[X]) {c : ℕ} (hcore : (directionAgreement dom (u 1) r).card = c)
+    {gamma : F} (hgamma : gamma ∈ family.G) :
+    c - 7 ≤ (directionCoreTrace family r gamma).card := by
+  have hbudget := nine_add_direction_core_card_le_sixteen_add_trace_card
+    family (by norm_num) (by rw [hthreshold]) r hgamma
+  rw [hcore] at hbudget
   omega
 
 /-- At core size thirteen, every selected translated intercept has a trace of
@@ -304,25 +363,30 @@ theorem six_le_directionCoreTrace_of_core_thirteen
       ⌈(1 - delta) * (Fintype.card (Fin 16) : NNReal)⌉₊ = 9)
     (r : F[X]) (hcore : (directionAgreement dom (u 1) r).card = 13)
     {gamma : F} (hgamma : gamma ∈ family.G) :
-    6 ≤ (directionCoreTrace family r gamma).card := by
-  have hbudget := nine_add_direction_core_card_le_sixteen_add_trace_card
-    family (by norm_num) (by rw [hthreshold]) r hgamma
-  rw [hcore] at hbudget
-  omega
+    6 ≤ (directionCoreTrace family r gamma).card :=
+  sub_le_directionCoreTrace_of_core family hthreshold r hcore hgamma
+
+/-- Scalars whose translated intercept has a `k`-coordinate fixed trace (the trace
+strata, shared by the core-twelve and core-thirteen branches). -/
+noncomputable def traceScalars
+    {dom : Fin 16 ↪ F} {delta : NNReal}
+    {u : WordStack F (Fin 2) (Fin 16)}
+    (family : BadScalarRichPointFamily dom 4 delta u) (r : F[X]) (k : ℕ) : Finset F :=
+  family.G.filter fun gamma ↦ (directionCoreTrace family r gamma).card = k
 
 /-- Scalars whose translated intercept has a six-coordinate fixed trace. -/
-noncomputable def traceSixScalars
+noncomputable abbrev traceSixScalars
     {dom : Fin 16 ↪ F} {delta : NNReal}
     {u : WordStack F (Fin 2) (Fin 16)}
     (family : BadScalarRichPointFamily dom 4 delta u) (r : F[X]) : Finset F :=
-  family.G.filter fun gamma ↦ (directionCoreTrace family r gamma).card = 6
+  traceScalars family r 6
 
 /-- Scalars whose translated intercept has a seven-coordinate fixed trace. -/
-noncomputable def traceSevenScalars
+noncomputable abbrev traceSevenScalars
     {dom : Fin 16 ↪ F} {delta : NNReal}
     {u : WordStack F (Fin 2) (Fin 16)}
     (family : BadScalarRichPointFamily dom 4 delta u) (r : F[X]) : Finset F :=
-  family.G.filter fun gamma ↦ (directionCoreTrace family r gamma).card = 7
+  traceScalars family r 7
 
 /-- Scalars sharing one fixed translated evaluation word. -/
 noncomputable def translatedWordFiber
@@ -371,16 +435,16 @@ theorem traceSixScalars_card_le_eight
         (directionSupportSet_translatedDirectionWord_card_eq_three
           dom (u 1) r hcore)
 
-/-- A fixed translated word can carry at most three selected scalars, one per
-moving coordinate. -/
-theorem translatedWordFiber_card_le_three
+/-- Core-size-generic fiber bound: at core size `c`, a fixed translated word carries at
+most `16 - c` selected scalars, one per moving coordinate. -/
+theorem translatedWordFiber_card_le_sub
     {dom : Fin 16 ↪ F} {delta : NNReal}
     {u : WordStack F (Fin 2) (Fin 16)}
     (family : BadScalarRichPointFamily dom 4 delta u)
     (r : F[X]) (hr : r.natDegree < 4)
-    (hcore : (directionAgreement dom (u 1) r).card = 13)
+    {k : ℕ} (hcore : (directionAgreement dom (u 1) r).card = k)
     (c : Fin 16 → F) :
-    (translatedWordFiber family r c).card ≤ 3 := by
+    (translatedWordFiber family r c).card ≤ 16 - k := by
   let Gc := translatedWordFiber family r c
   let H := {i : Fin 16 // i ∉ directionAgreement dom (u 1) r}
   let pick : {gamma : F // gamma ∈ Gc} → H := fun gamma ↦
@@ -413,10 +477,22 @@ theorem translatedWordFiber_card_le_three
       family r (hgammaWord.trans hbetaWord.symm)
         hgammaFull hbetaFull (pick gamma).2
   have hcard := Fintype.card_le_of_injective pick hinj
-  have hH : Fintype.card H = 3 := by
+  have hH : Fintype.card H = 16 - k := by
     rw [Fintype.card_subtype_compl]
     simp only [Fintype.card_coe, Fintype.card_fin, hcore]
   simpa only [Gc, H, Fintype.card_coe, hH] using hcard
+
+/-- A fixed translated word can carry at most three selected scalars, one per
+moving coordinate. -/
+theorem translatedWordFiber_card_le_three
+    {dom : Fin 16 ↪ F} {delta : NNReal}
+    {u : WordStack F (Fin 2) (Fin 16)}
+    (family : BadScalarRichPointFamily dom 4 delta u)
+    (r : F[X]) (hr : r.natDegree < 4)
+    (hcore : (directionAgreement dom (u 1) r).card = 13)
+    (c : Fin 16 → F) :
+    (translatedWordFiber family r c).card ≤ 3 :=
+  translatedWordFiber_card_le_sub family r hr hcore c
 
 /-- In a thirteen-point universe, a seven-set meeting a set of size at least
 nine in at most three points contains the whole complement of the large set. -/
