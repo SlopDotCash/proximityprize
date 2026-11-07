@@ -10639,6 +10639,15 @@ constraint the refutation proved is required. NOT a full closure: it bounds the 
 not the per-scalar worst case; the per-scalar gap remains the open wall, but it is now precisely
 localized to "is the worst-case-γ core count `≪` the line average `C(n,a)/q`?"
 
+**Formal scope update.** `explainableCoreSupply_iff` proves the exact uniform
+budget `C(n,k+m+1)` on every evaluation domain by taking the zero codeword as
+the received word. The [#312](https://github.com/SlopDotCash/proximityprize/pull/312)
+consumer lemmas in `SubJohnsonListSupply.lean` give `n ≤ A` when
+`k+m+1 ≤ n` and `C(n,k+m+1) ≤ L·C(A,k+m+1)`. The first-band count
+in `production_badSet_gated_on_open_core` at `m = 0` can force at most one bad scalar.
+This is a limit of the all-word budget. The list-size and production proximity
+problems remain open.
+
 ## 2026-06-13 — smooth-domain δ* tracks subgroup ARITHMETIC, not smoothness (QR-bad / 2-power-good)
 
 A structural finding from the exact m=0 (cubic) supply on two smooth domains, both
