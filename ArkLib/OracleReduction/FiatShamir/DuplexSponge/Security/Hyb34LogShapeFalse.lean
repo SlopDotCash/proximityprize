@@ -31,7 +31,7 @@ produces a `some`-output whose verifier log contains a challenge entry.
 - **R1** `hyb3Strict_vLog_challenge_free`: every `some`-output of the `Hyb3Strict` game body
   has a challenge-entry-free verifier log (`projectRightQueryLog out.2.2.2.2 = []`), via a
   generic logging brick `queryLog_entries_not_p_of_isQueryBoundP_zero` (zero query budget ⟹
-  no log entries at the targeted indices) and `support_simulateQ_subset`.
+  no log entries at the targeted indices) and `OracleComp.support_simulateQ_subset`.
 - **R2** `probOutput_true_le_tvDist_of_flag_false_left`: generic SPMF/TV brick — if a Boolean
   observable is identically `false` on the support of the left game, the probability it fires
   on the right game lower-bounds the TV distance (chains the VCVio bricks `tvDist_map_le` and
@@ -522,7 +522,7 @@ theorem hyb3Strict_vLog_challenge_free [SampleableType U]
               ((V.duplexSpongeFiatShamir.run
                 stmtIn (fun i => match i with | ⟨0, _⟩ => messages)).run)
               memo).run)).run) :=
-        support_simulateQ_subset _ _ hv
+        OracleComp.support_simulateQ_subset _ _ hv
       have hfree : ∀ e ∈ vLogRaw, ¬ (isChallengeEntryIdx e.1 = true) :=
         queryLog_entries_not_p_of_isQueryBoundP_zero
           (d2fRaw_hitOnly_challenge_budget _ memo) hv'

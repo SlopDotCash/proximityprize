@@ -217,7 +217,7 @@ theorem gateCheckVerifier_rbrSoundness :
       simp only [Verifier.run, gateCheckVerifier_verify_eq] at hrun
       rw [hrun] at hout
       simp at hout
-  · intro _ hNotIn _ _ _ _ ⟨⟨0, _⟩, hdir⟩
+  · intro _ _ ⟨⟨0, _⟩, hdir⟩
     exact absurd hdir (by simp)
 
 /-- The gate-check verifier has ordinary zero-error soundness. A successful malicious execution
@@ -324,7 +324,7 @@ theorem gateCheckVerifier_rbrKnowledgeSoundness :
         rw [hrun] at hx
         simp at hx
   }, ?_⟩
-  intro _stmtIn _witIn _prover ⟨⟨0, _⟩, hdir⟩
+  intro _ ⟨⟨0, _⟩, hdir⟩
   exact absurd hdir (by simp)
 
 #print axioms Plonk.gateCheckVerifier_verify_eq

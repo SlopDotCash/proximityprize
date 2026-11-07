@@ -339,10 +339,8 @@ We now specialize the generic `seqCompose_rbrSoundness_of_append` keystone to th
 oracle verifier `Sumcheck.Spec.oracleVerifier`, producing *exactly* the `hSeqCompose` hypothesis
 consumed by `Sumcheck.Spec.oracleVerifier_rbrSoundness` (in `OracleRbrSoundness.lean`).
 
-The verifier-fusion `(OracleVerifier.seqCompose …).toVerifier = Verifier.seqCompose …` is supplied by
-the proven `OracleVerifier.seqCompose_toVerifier_of_binary` together with the proven binary
-verifier-fusion `Sumcheck.Spec.binaryVerifierFusion_proof` (ultimately
-`OracleReduction.oracleVerifier_append_toVerifier`). -/
+Canonical `oracleVerifier_toVerifier_eq_seqCompose` exposes the sequential materialization, and
+`OracleVerifier.seqCompose_toVerifier` supplies its equality with the sequential plain verifier. -/
 
 namespace Sumcheck.Spec
 
@@ -369,9 +367,8 @@ The composed RBR soundness of `Sumcheck.Spec.oracleVerifier` — in the exact
   `Verifier.append_rbrSoundness`, itself a pass-through residual). Feeding it closes the n-ary
   assembly.
 
-The verifier-fusion uses the now-proven `oracleVerifier_append_toVerifier` (via
-`binaryVerifierFusion_proof` + `seqCompose_toVerifier_of_binary`), so no `toVerifier`-equation
-hypothesis remains. -/
+The canonical materialization and verifier-fusion equalities transport the generic sequential
+bound to the concrete Sumcheck verifier. -/
 theorem oracleVerifier_seqCompose_rbrSoundness
     (lang : (i : Fin (n + 1)) → Set (StatementRound R n i × (∀ j, OracleStatement R n deg j)))
     (rbrSoundnessError : ∀ _ : Fin n, (SingleRound.pSpec R deg).ChallengeIdx → ℝ≥0)
@@ -392,20 +389,9 @@ theorem oracleVerifier_seqCompose_rbrSoundness
         letI ij := ProtocolSpec.seqComposeChallengeIdxToSigma combinedIdx
         rbrSoundnessError ij.1 ij.2) := by
   -- Unfold the oracle-level RBR soundness to the underlying `toVerifier` RBR soundness.
-  show (oracleVerifier R deg D n oSpec).toVerifier.rbrSoundnessAveraged init impl
+  change (oracleVerifier R deg D n oSpec).toVerifier.rbrSoundnessAveraged init impl
     (lang 0) (lang (Fin.last n)) _
-  -- Verifier fusion: `(OracleVerifier.seqCompose …).toVerifier = Verifier.seqCompose …`.
-  have hfusion :
-      (oracleVerifier R deg D n oSpec).toVerifier =
-        Verifier.seqCompose (fun i => StatementRound R n i × (∀ j, OracleStatement R n deg j))
-          (fun i => (SingleRound.oracleVerifier R n deg D oSpec i).toVerifier) :=
-    OracleVerifier.seqCompose_toVerifier_of_binary_for_rbr
-      (OracleVerifier.binaryVerifierFusionForRbr_holds oSpec)
-      (Stmt := StatementRound R n) (OStmt := fun _ => OracleStatement R n deg)
-      (Oₛ := fun _ _ => inferInstance)
-      (Oₘ := fun _ _ => inferInstance)
-      (SingleRound.oracleVerifier R n deg D oSpec)
-  rw [hfusion]
+  rw [oracleVerifier_toVerifier_eq_seqCompose, OracleVerifier.seqCompose_toVerifier]
   -- Apply the generic n-ary→binary RBR-soundness keystone.
   exact seqCompose_rbrSoundness_of_append
     (fun i => StatementRound R n i × (∀ j, OracleStatement R n deg j))

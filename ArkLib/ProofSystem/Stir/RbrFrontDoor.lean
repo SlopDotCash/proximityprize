@@ -68,7 +68,7 @@ theorem stir_rbr_soundness_of_stirVSpec_secure_gap
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
             (Dist.δ j.succ) (P.foldingParam j.succ))
     (h_fin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
-    stir_rbr_soundness (F := F) ι (s := s) (P := P)
+    stir_rbr_soundnessFixedPrefix (F := F) ι (s := s) (P := P)
       (hParams := hParams) (Dist := Dist) (Codes := Codes)
       hδ₀ @hδᵢ ε_fold ε_out ε_shift ε_fin :=
   ⟨3 * M + 3, stirVSpec M msgLen chalLen, stirVSpec_card_challengeIdx,

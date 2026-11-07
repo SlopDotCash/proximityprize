@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.KeyLemmaHybrids
+import VCVio.OracleComp.SimSemantics.StateT.Basic
 
 /-!
 # CO25 Claim 5.24 — verifier replay for `Hyb₃ → Hyb₄`: the deterministic layer
@@ -95,22 +96,12 @@ section SupportBricks
 
 universe u
 
-/-- Simulating an oracle computation through *any* oracle-valued implementation can only
-shrink the support: every output reachable after `simulateQ` was already reachable in the
-source computation (where each query may return any value). Oracle-monad analogue of VCVio's
-`support_simulateQ_run'_subset` (which covers the `StateT` case). -/
+/-- The oracle-valued specialization of VCVio's simulation support bound. -/
 theorem support_simulateQ_subset {ι₁ ι₂ : Type u} {spec : OracleSpec ι₁}
     {spec' : OracleSpec ι₂} {α : Type u}
     (impl : QueryImpl spec (OracleComp spec')) (oa : OracleComp spec α) :
-    support (simulateQ impl oa) ⊆ support oa := by
-  induction oa using OracleComp.inductionOn with
-  | pure x => simp
-  | query_bind t mx ih =>
-      intro x hx
-      rw [simulateQ_query_bind] at hx
-      rw [mem_support_bind_iff] at hx
-      obtain ⟨u, _, hx⟩ := hx
-      exact (mem_support_bind_iff _ _ _).mpr ⟨u, mem_support_query t u, ih u hx⟩
+    support (simulateQ impl oa) ⊆ support oa :=
+  OracleComp.support_simulateQ_subset impl oa
 
 end SupportBricks
 

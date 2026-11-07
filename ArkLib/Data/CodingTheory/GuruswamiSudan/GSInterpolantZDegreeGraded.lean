@@ -205,7 +205,7 @@ theorem gs_existence_zDegree_graded {n : ℕ} (k m : ℕ) (ωs : Fin n ↪ F)
   set DW := DZ + DY with hDW
   -- 1. the graded dimension count
   have hcount : numConstraints n m < numVars k D :=
-    gs_numVars_gt_numConstraints_of_gt_one hn hk hm
+    gs_numVars_gt_numConstraints_of_gt_one (n := n) (m := m) hk
   have hcard : n * (constraintIndices m).card * (DW + 1) <
       (weigthBoundIndices k D).card * (DZ + 1) := by
     rw [hDW, hDZ]

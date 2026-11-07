@@ -46,7 +46,7 @@ This file instantiates the bounded-flip threshold shell
    * `whirChecked_rbrKnowledgeSoundness_smallField` /
      `whirCheckedVectorIOP_isSecureWithGap_smallField` — the UNCONDITIONAL discharge in the
      small-field regime `|F| ≤ maxLen` (where the budget is ≥ 1), giving the full
-     `IsSecureWithGap` package for the checked WHIR `VectorIOP` at the task's budget shape.
+     `IsSecureWithGapAveraged` package for the checked WHIR `VectorIOP` at the task's budget.
 
 ## HONESTY: why the unconditional `hFlip` at `maxLen/|F| < 1` is NOT provable here
 

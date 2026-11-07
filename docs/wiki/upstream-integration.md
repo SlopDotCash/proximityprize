@@ -60,9 +60,13 @@ compatibility modules. The [security migration](../../scripts/integration/nov07-
 records the original contracts and caller changes. The canonical fixed-prefix results can feed
 the historical averaged results through the proved implications in that layer.
 The downstream `VectorIOP.IsSecureWithGapAveraged` package pairs completeness with an averaged
-bound. WHIR's placeholder and small-field packages and STIR's repetition result use that package.
-The checked WHIR assembly and STIR wrappers that conclude the canonical security contract take
-fixed-prefix evidence at their respective budgets.
+bound. `StirIOP.stir_main` and `StirIOP.stir_rbr_soundness` keep the historical averaged game.
+Their `FixedPrefix` siblings share the corrected field-size and error formulas, including the
+final error bound when there are no transitions. STIR's proved averaged witnesses remain
+available, and the fixed-prefix assembly takes evidence for that game at the same budget.
+WHIR's `whir_rbr_soundness` keeps the historical averaged game, as do its placeholder and
+small-field packages. `whir_rbr_soundness_fixedPrefix` uses the same corrected error budget and
+challenge count. Its checked-verifier front door takes a fixed-prefix bound.
 
 The full oracle sum-check completeness theorem now belongs to `Sumcheck.Spec.General`.
 Existing downstream calls with initialization and support arguments delegate to it. The
@@ -175,6 +179,15 @@ modules port the corresponding sources from [PR #216 at `e36fe8a90`](https://git
 The restoration proofs use VCVio's logged random-oracle execution to account for interleaved
 private sampling and fresh queries. The Sumcheck client uses a Unit witness to certify ordinary
 soundness for the native verifier, with both expected and bounded query formulations.
+
+The historical [verifier context-lifting bound](../../ProximityPrize/Extensions/OracleReduction/LiftContext/Reduction.lean)
+applies to every input under explicit output preservation for all compatible statements.
+`Verifier.liftContext_probEvent_le_of_not_mem` uses the canonical lens law for invalid inputs.
+
+The [historical STIR specifications](../../ArkLib/ProofSystem/Stir/PaperStatements.lean)
+from the same PR retain the strict soundness relation, uniform constants, and a protocol chosen
+before the distance and list-size bounds. These proposition definitions carry no verifier-query
+count or proof of the paper's concrete protocol.
 
 | Development | Canonical API | Retained downstream surface |
 | --- | --- | --- |
@@ -484,3 +497,29 @@ set, and whole codeword membership for an arbitrary number of factors before ins
 production finite set. The full-scale incidence construction keeps all fifty-five public
 contracts and its original kernel certificate while using these private symbolic proofs; see
 [the locator migration audit](../../scripts/integration/incidence-full-scale-symbolic-migration.json).
+
+## Historical benchmark replay
+
+The October transfer review records a separate benchmark checkout pinned to
+`ed2b68c4a330d76dc4ab6693eec81b685b493270` and Lean 4.32.2. Its recorded fresh kernel
+replays cover 38,274 declarations for the upper submission and 108,676 for the lower submission.
+These counts describe the archived benchmark dependency closures. [October transfer review](https://github.com/SlopDotCash/proximityprize/blob/e36fe8a90889ddbc1eea94b76370911b0195c92c/docs/wiki/upstream-proof-transfer.md#L1067-L1085)
+
+Use the historical integration's detached worktree to reproduce the reference checks. The
+wrapper selects the reference's own toolchain and uses the shared build lock for candidate
+builds. Keep its Lake artifacts in that worktree.
+
+```sh
+git fetch https://github.com/SlopDotCash/proximityprize e36fe8a90889ddbc1eea94b76370911b0195c92c
+git worktree add --detach ../proximity-prize-reference-216 e36fe8a90889ddbc1eea94b76370911b0195c92c
+cd ../proximity-prize-reference-216
+git submodule update --init external/proximity-prize
+./scripts/proximity-prize-reference.sh cache
+./scripts/proximity-prize-reference.sh upper
+./scripts/proximity-prize-reference.sh replay-upper
+./scripts/proximity-prize-reference.sh lower
+./scripts/proximity-prize-reference.sh replay-lower
+```
+
+The same archived tree contains the immutable upstream PR manifests and their read-only
+fetch helper. [October upstream inventories](https://github.com/SlopDotCash/proximityprize/tree/e36fe8a90889ddbc1eea94b76370911b0195c92c/docs/upstream) · [Reference helper](https://github.com/SlopDotCash/proximityprize/blob/e36fe8a90889ddbc1eea94b76370911b0195c92c/scripts/arklib-reference.py)

@@ -21,8 +21,8 @@ It should help with:
 If you only need the practical workflow:
 
 1. If a Lean file cites `[KEY]`, start at `docs/kb/papers/KEY.md`.
-2. If that page does not exist yet, add the BibTeX entry first if needed. Main-branch automation
-   will open a follow-up PR for missing cited paper pages and source metadata after merge.
+2. If that page does not exist yet, add the BibTeX entry if needed and regenerate the KB.
+   Commit the scaffolded page, source metadata, and tracked indexes with the citation.
 3. If your PR changes how ArkLib uses or interprets a paper, update the corresponding KB page in
    the same PR.
 4. Before sending a paper-driven PR for review, attach the relevant KB paper pages or use
@@ -97,9 +97,8 @@ If you are unsure where to start, use [`index.md`](index.md) first.
 - Prefer stable, reviewable markdown over ad hoc scratch notes. Review verdicts, fix logs, and
   other commit-specific snapshots do not belong in the knowledge base: fold whatever outlives the
   session into the relevant paper page, audit page, or wiki page, and let the rest go.
-- If a PR introduces a new paper citation key that matters to active work, add or scaffold the
-  corresponding paper page in the same PR only when you are adding ArkLib-specific content.
-  Stub-only pages are proposed by generated-files PRs after merge.
+- If a PR introduces a new paper citation key, regenerate the indexes and commit any scaffolded
+  paper page and source metadata in the same PR. Add ArkLib-specific context where available.
 - If a PR substantially changes ArkLib's interpretation, coverage, or formalization status for a
   paper, update the corresponding KB page or audit page in the same PR.
 
@@ -126,8 +125,8 @@ If you are unsure where to start, use [`index.md`](index.md) first.
 
 1. Add the BibTeX entry in `blueprint/src/references.bib`.
 2. If you already know the ArkLib-specific summary, add or update `docs/kb/papers/KEY.md`.
-3. If you only need the stub, leave it out of the PR; the generated-files workflow will propose
-   it after merge.
+3. Run `uv run --no-project --python 3.12 python ./scripts/kb/regenerate.py` and commit
+   the tracked indexes and any scaffolded paper or source pages in the same PR.
 4. Run `uv run --no-project --python 3.12 python ./scripts/kb/lint.py`.
 
 ### I am updating a paper-backed development
@@ -145,9 +144,9 @@ If you are unsure where to start, use [`index.md`](index.md) first.
 ### Add a new paper
 
 1. Add or update the BibTeX entry in `blueprint/src/references.bib`.
-2. Add or update `docs/kb/papers/KEY.md` only if the PR carries real ArkLib-specific context.
-3. Leave stub-only paper pages, source metadata, and `_generated` index changes to the
-   main-branch KB workflow's generated-files PR.
+2. Run `uv run --no-project --python 3.12 python ./scripts/kb/regenerate.py` and commit the
+   refreshed indexes and any scaffolded paper page or source metadata.
+3. Add ArkLib-specific context to `docs/kb/papers/KEY.md` where available.
 4. Update [`index.md`](index.md) when the KB content itself changes.
 
 ### Minimal update checklist
@@ -155,6 +154,7 @@ If you are unsure where to start, use [`index.md`](index.md) first.
 For a new cited paper, the minimum acceptable KB update is:
 
 - BibTeX entry in `blueprint/src/references.bib`
+- Regenerated indexes and any scaffolded paper page or source metadata
 
 Better, when practical:
 
@@ -185,8 +185,8 @@ uv run --no-project --python 3.12 python ./scripts/kb/lint.py
 uv run --no-project --python 3.12 python ./scripts/check-docs-integrity.py
 ```
 
-If the page would only be a stub, omit those files. The `Refresh KB Generated Files` workflow
-will run `uv run --no-project --python 3.12 python ./scripts/kb/regenerate.py` after merge and open a generated-files PR.
+Run `uv run --no-project --python 3.12 python ./scripts/kb/regenerate.py` and commit the
+refreshed indexes and any scaffolded files. The `Refresh KB Generated Files` workflow checks them.
 
 ### Example: use the KB during review
 

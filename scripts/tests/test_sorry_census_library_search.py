@@ -235,6 +235,23 @@ theorem incomplete : NeedsFalse := by
                     [("theorem incomplete", "apply?")],
                 )
 
+    def test_apply_in_tactic_quotation_is_a_hole(self) -> None:
+        # On Lean 4.35, this macro elaborates incomplete with sorryAx.
+        for quote in ("`(tactic| apply?)", "`(tactic|\n    apply?)"):
+            with self.subTest(quote=quote):
+                source = f"""\
+import Lean
+
+macro "searchProof" : tactic => {quote}
+
+inductive NeedsFalse : Prop where
+  | intro : False → NeedsFalse
+
+theorem incomplete : NeedsFalse := by
+  searchProof
+"""
+                self.assertEqual([row["token"] for row in self.census(source)], ["apply?"])
+
     def test_apply_in_tactic_sequences_is_rejected(self) -> None:
         for body in (
             "by apply?",

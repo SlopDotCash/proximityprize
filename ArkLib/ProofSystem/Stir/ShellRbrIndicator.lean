@@ -69,15 +69,23 @@ theorem stirMultiRoundRbrSoundness_indicator (M : ℕ) (φ : ι ↪ F) (deg : �
   OracleProof.rbrKnowledgeSoundness_implies_rbrKnowledgeSoundnessAveraged
     (stirMultiRoundRbrSoundnessFixedPrefix_indicator M φ deg δ)
 
-/-- The secure-with-gap package for the assembled shell IOPP at the indicator budget,
-through the existing general wiring. -/
-theorem stirMultiRoundIOP_isSecureWithGap_indicator (M : ℕ) (φ : ι ↪ F) (deg : ℕ)
+/-- Fixed-prefix security for the assembled shell IOPP at the indicator budget. -/
+theorem stirMultiRoundIOP_isSecureWithGap_indicatorFixedPrefix (M : ℕ) (φ : ι ↪ F) (deg : ℕ)
     (δ : ℝ≥0) :
     IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ)
       (fun i => if i = foldChalIdx (F := F) (ι := ι) M then 1 else 0)
       (stirMultiRoundIOP M φ deg) :=
   stirMultiRoundIOP_isSecureWithGap M φ deg δ _
     (stirMultiRoundRbrSoundnessFixedPrefix_indicator M φ deg δ)
+
+/-- The historical averaged security package at the shell's indicator budget. -/
+theorem stirMultiRoundIOP_isSecureWithGap_indicator (M : ℕ) (φ : ι ↪ F) (deg : ℕ)
+    (δ : ℝ≥0) :
+    IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ)
+      (fun i => if i = foldChalIdx (F := F) (ι := ι) M then 1 else 0)
+      (stirMultiRoundIOP M φ deg) :=
+  ⟨(stirMultiRoundIOP_isSecureWithGap_indicatorFixedPrefix M φ deg δ).is_complete,
+    stirMultiRoundRbrSoundness_indicator M φ deg δ⟩
 
 end MultiRound
 
@@ -86,3 +94,4 @@ end StirIOP
 /-! ## Axiom audit — all kernel-clean. -/
 #print axioms StirIOP.MultiRound.stirMultiRoundRbrSoundness_indicator
 #print axioms StirIOP.MultiRound.stirMultiRoundIOP_isSecureWithGap_indicator
+#print axioms StirIOP.MultiRound.stirMultiRoundIOP_isSecureWithGap_indicatorFixedPrefix

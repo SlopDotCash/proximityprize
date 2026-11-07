@@ -1394,7 +1394,7 @@ theorem stir_rbr_soundness_of_checkingIOP_CA
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
             (Dist.δ j.succ) (P.foldingParam j.succ)))
     (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
-    stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
+    stir_rbr_soundnessFixedPrefix (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   stir_rbr_soundness_of_secure_vectorIOP (hParams := hParams) (Codes := Codes)
     ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin
@@ -1440,7 +1440,7 @@ theorem stir_rbr_soundness_of_checkingIOP_card_le
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
             (Dist.δ j.succ) (P.foldingParam j.succ)))
     (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
-    stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
+    stir_rbr_soundnessFixedPrefix (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   stir_rbr_soundness_of_checkingIOP_CA (hParams := hParams) (Codes := Codes)
     ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin
@@ -1484,7 +1484,7 @@ theorem stir_rbr_soundness_of_checkingIOP_card_le_e7
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
             (Dist.δ j.succ) (P.foldingParam j.succ)))
     (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
-    stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
+    stir_rbr_soundnessFixedPrefix (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   stir_rbr_soundness_of_checkingIOP_CA (hParams := hParams) (Codes := Codes)
     ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin
@@ -1530,7 +1530,7 @@ theorem stir_rbr_soundness_of_checkingIOP_large
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
             (Dist.δ j.succ) (P.foldingParam j.succ)))
     (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
-    stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
+    stir_rbr_soundnessFixedPrefix (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   stir_rbr_soundness_of_checkingIOP_CA (hParams := hParams) (Codes := Codes)
     ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin
@@ -1579,7 +1579,7 @@ theorem stir_rbr_soundness_of_checkingIOP_small_field
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
             (Dist.δ j.succ) (P.foldingParam j.succ)))
     (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
-    stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
+    stir_rbr_soundnessFixedPrefix (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   stir_rbr_soundness_of_secure_vectorIOP (hParams := hParams) (Codes := Codes)
     ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin
@@ -1617,7 +1617,7 @@ theorem stir_main_of_checkingIOP_CA
     (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
       (cₖ k) * ((Real.log degree) +
         secpar * (Real.log ((Real.log degree) / Real.log (1 / rate (code φ degree)))))) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   stir_main_of_secure_vectorIOP secpar hk hkGe δ hδub hF ε_rbr
     (stirCheckingIOP M φ degree)
@@ -1648,7 +1648,7 @@ theorem stir_main_of_checkingIOP_card_le
     (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
       (cₖ k) * ((Real.log degree) +
         secpar * (Real.log ((Real.log degree) / Real.log (1 / rate (code φ degree)))))) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   stir_main_of_checkingIOP_CA secpar hk hkGe δ hδub hF ε_rbr
     ProxGapBound ProxGapBound hBridge
@@ -1677,7 +1677,7 @@ theorem stir_main_of_checkingIOP_card_le_e7
     (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
       (cₖ k) * ((Real.log degree) +
         secpar * (Real.log ((Real.log degree) / Real.log (1 / rate (code φ degree)))))) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   stir_main_of_checkingIOP_CA secpar hk hkGe δ hδub hF ε_rbr
     ProxGapBound ProxGapBound hBridge
@@ -1709,7 +1709,7 @@ theorem stir_main_of_checkingIOP_large
     (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
       (cₖ k) * ((Real.log degree) +
         secpar * (Real.log ((Real.log degree) / Real.log (1 / rate (code φ degree)))))) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   stir_main_of_checkingIOP_CA secpar hk hkGe δ hδub hF ε_rbr
     ProxGapBound ProxGapBound hBridge
@@ -1749,7 +1749,7 @@ theorem stir_main_of_checkingIOP_small_field
     (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
       (cₖ k) * ((Real.log degree) +
         secpar * (Real.log ((Real.log degree) / Real.log (1 / rate (code φ degree)))))) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   stir_main_of_secure_vectorIOP secpar hk hkGe δ hδub hF ε_rbr
     (stirCheckingIOP M φ degree)

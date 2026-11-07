@@ -10,6 +10,7 @@ import ProximityPrize.Extensions.OracleReduction.VectorIOR
 import ArkLib.ProofSystem.Whir.BlockRelDistance
 import ArkLib.ProofSystem.Whir.MutualCorrAgreement
 import ArkLib.ProofSystem.Whir.ProximityGen
+import ArkLib.ProofSystem.Whir.RbrBudgetAccounting
 
 /-!
 # Round by round soundness theorem
@@ -173,11 +174,70 @@ def whirRelation
     : Set ((Unit × ∀ i, (OracleStatement ι F i)) × Unit) :=
   { ⟨⟨_, oracle⟩, _⟩ | δᵣ(oracle (), smoothCode φ varCount) ≤ err }
 
+/-- Shared WHIR statement with the same challenge pin and numerical bounds for both RBR games. -/
+def whirRbrSoundnessWith (fixedPrefix : Bool)
+    [SampleableType F] {d dstar : ℕ}
+  -- P : set of M + 1 parameters including foldingParamᵢ, varCountᵢ, φᵢ, repeatParamᵢ,
+  -- where foldingParamᵢ > 0
+    {P : Params ι F} {S : ∀ i : Fin (M + 1), Finset (ι i)}
+  -- hParams : a set of conditions that parameters in P must satisfy
+  -- h : a set of smooth ReedSolomon codes C_ij bundled with its proximity generators
+  -- and condition for list decodeability
+    {hParams : ParamConditions ι P} {h : GenMutualCorrParams ι P S}
+    {m_0 : ℕ} (hm_0 : m_0 = P.varCount 0) {σ₀ : F}
+    {wPoly₀ : MvPolynomial (Fin (m_0 + 1)) F} {δ : ℝ≥0}
+    [Smooth (P.φ 0)] [Nonempty (ι 0)]
+    [∀ i : Fin (M + 1), Fact (0 < P.foldingParam i)]
+    (ε_fold : (i : Fin (M + 1)) → Fin (P.foldingParam i) → ℝ≥0) (ε_out : Fin (M + 1) → ℝ≥0)
+    (ε_shift : Fin M → ℝ≥0) (ε_fin : ℝ≥0)
+    (h_fold_0 :
+        let maxDeg := (Finset.univ : Finset (Fin m_0)).sup (fun i => wPoly₀.degreeOf (Fin.succ i))
+        let dstar := 1 + (wPoly₀.degreeOf 0) + maxDeg
+        let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
+          Fintype (indexPowT (S 0) (P.φ 0) j) := h.inst1 0
+        let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
+          Nonempty (indexPowT (S 0) (P.φ 0) j) := h.inst2 0
+        let errStar_0 j := h.errStar 0 j (h.C 0 j) (h.Gen_α 0 j).parℓ (h.δ 0)
+        ∀ j : Fin (P.foldingParam 0),
+          ((dstar * (h.dist 0 j.castSucc)) / Fintype.card F) + (errStar_0 j.succ) ≤ ε_fold 0 j)
+    (h_out :
+        ∀ i : Fin M,
+          2^(P.varCount i.succ) * (h.dist i.succ 0)^2 / (2 * Fintype.card F) ≤ ε_out i.succ)
+    (h_shift :
+        ∀ i : Fin M,
+          (1 - (h.δ i.castSucc))^(P.repeatParam i.castSucc)
+            + (h.dist i.succ 0) * (P.repeatParam i.castSucc + 1) / Fintype.card F ≤ ε_shift i)
+    (h_fold_i :
+        let maxDeg := (Finset.univ : Finset (Fin m_0)).sup (fun i => wPoly₀.degreeOf (Fin.succ i))
+        let dstar := 1 + (wPoly₀.degreeOf 0) + maxDeg
+        let d := max dstar 3
+        let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
+          Fintype (indexPowT (S i) (P.φ i) j) := h.inst1
+        let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
+          Nonempty (indexPowT (S i) (P.φ i) j) := h.inst2
+        let errStar i j := h.errStar i j (h.C i j) (h.Gen_α i j).parℓ (h.δ i)
+        ∀ i : Fin M, ∀ j : Fin (P.foldingParam i.succ),
+          d * (h.dist i.succ j.castSucc) / Fintype.card F + errStar i.succ j.succ
+            ≤ ε_fold i.succ j)
+    (h_fin :
+        (1 - h.δ (Fin.last M))^(P.repeatParam (Fin.last M)) ≤ ε_fin)
+    {n : ℕ} (vPSpec : ProtocolSpec.VectorSpec n)
+    (π : VectorIOP Unit (OracleStatement (ι 0) F) Unit vPSpec F) : Prop :=
+    Fintype.card (vPSpec.ChallengeIdx) = 2 * M + 2 ∧
+      (let ε_rbr : vPSpec.ChallengeIdx → ℝ≥0 := fun _ =>
+          Issue113WHIR.epsRbr (fp := P.foldingParam) ε_fold ε_out ε_shift ε_fin
+        let completeRelation := whirRelation m_0 (P.φ 0) 0
+        let soundRelation := whirRelation m_0 (P.φ 0) (h.δ 0)
+        if fixedPrefix then
+          VectorIOP.IsSecureWithGap completeRelation soundRelation ε_rbr π
+        else
+          VectorIOP.IsSecureWithGapAveraged completeRelation soundRelation ε_rbr π)
+
 /-- Theorem 5.2: **round-by-round soundness of the WHIR Vector IOPP**, stated for an explicitly
   supplied protocol `π`. This is a `Prop`-valued statement, not a proved theorem.
 
   `whir_rbr_soundness … h_fold_0 h_out h_shift h_fold_i h_fin vPSpec π` says that `vPSpec` has
-  `2 * M + 2` challenge slots and that `π` is `IsSecureWithGap` (perfectly complete for exact
+  `2 * M + 2` challenge slots and that `π` is `IsSecureWithGapAveraged` (perfectly complete for exact
   codewords, round-by-round knowledge sound for `whirRelation m_0 (P.φ 0) (h.δ 0)`) at the
   constant per-challenge budget `max (ε_fold, ε_out, ε_shift, ε_fin)`.
 
@@ -228,63 +288,12 @@ def whirRelation
   the folding list-decoding lemmas (`Whir/Folding.lean`, L4.20–4.23) and the MCA `errStar` bounds
   (Corollary 4.11, open in the `√ρ` regime). In ABF26 terms, `errStar` corresponds to `epsMCA`
   (Def 4.3) and the folding lemmas to ABF26 T3.4 specialized to FRS. -/
-def whir_rbr_soundness
-    [SampleableType F] {d dstar : ℕ}
-  -- P : set of M + 1 parameters including foldingParamᵢ, varCountᵢ, φᵢ, repeatParamᵢ,
-  -- where foldingParamᵢ > 0
-    {P : Params ι F} {S : ∀ i : Fin (M + 1), Finset (ι i)}
-  -- hParams : a set of conditions that parameters in P must satisfy
-  -- h : a set of smooth ReedSolomon codes C_ij bundled with its proximity generators
-  -- and condition for list decodeability
-    {hParams : ParamConditions ι P} {h : GenMutualCorrParams ι P S}
-    {m_0 : ℕ} (hm_0 : m_0 = P.varCount 0) {σ₀ : F}
-    {wPoly₀ : MvPolynomial (Fin (m_0 + 1)) F} {δ : ℝ≥0}
-    [Smooth (P.φ 0)] [Nonempty (ι 0)]
-    [∀ i : Fin (M + 1), Fact (0 < P.foldingParam i)]
-    (ε_fold : (i : Fin (M + 1)) → Fin (P.foldingParam i) → ℝ≥0) (ε_out : Fin (M + 1) → ℝ≥0)
-    (ε_shift : Fin M → ℝ≥0) (ε_fin : ℝ≥0)
-    (h_fold_0 :
-        let maxDeg := (Finset.univ : Finset (Fin m_0)).sup (fun i => wPoly₀.degreeOf (Fin.succ i))
-        let dstar := 1 + (wPoly₀.degreeOf 0) + maxDeg
-        let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
-          Fintype (indexPowT (S 0) (P.φ 0) j) := h.inst1 0
-        let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
-          Nonempty (indexPowT (S 0) (P.φ 0) j) := h.inst2 0
-        let errStar_0 j := h.errStar 0 j (h.C 0 j) (h.Gen_α 0 j).parℓ (h.δ 0)
-        ∀ j : Fin (P.foldingParam 0),
-          ((dstar * (h.dist 0 j.castSucc)) / Fintype.card F) + (errStar_0 j.succ) ≤ ε_fold 0 j)
-    (h_out :
-        ∀ i : Fin M,
-          2^(P.varCount i.succ) * (h.dist i.succ 0)^2 / (2 * Fintype.card F) ≤ ε_out i.succ)
-    (h_shift :
-        ∀ i : Fin M,
-          (1 - (h.δ i.castSucc))^(P.repeatParam i.castSucc)
-            + (h.dist i.succ 0) * (P.repeatParam i.castSucc + 1) / Fintype.card F ≤ ε_shift i)
-    (h_fold_i :
-        let maxDeg := (Finset.univ : Finset (Fin m_0)).sup (fun i => wPoly₀.degreeOf (Fin.succ i))
-        let dstar := 1 + (wPoly₀.degreeOf 0) + maxDeg
-        let d := max dstar 3
-        let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
-          Fintype (indexPowT (S i) (P.φ i) j) := h.inst1
-        let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
-          Nonempty (indexPowT (S i) (P.φ i) j) := h.inst2
-        let errStar i j := h.errStar i j (h.C i j) (h.Gen_α i j).parℓ (h.δ i)
-        ∀ i : Fin M, ∀ j : Fin (P.foldingParam i.succ),
-          d * (h.dist i.succ j.castSucc) / Fintype.card F + errStar i.succ j.succ
-            ≤ ε_fold i.succ j)
-    (h_fin :
-        (1 - h.δ (Fin.last M))^(P.repeatParam (Fin.last M)) ≤ ε_fin)
-    {n : ℕ} (vPSpec : ProtocolSpec.VectorSpec n)
-    (π : VectorIOP Unit (OracleStatement (ι 0) F) Unit vPSpec F) : Prop :=
-    Fintype.card (vPSpec.ChallengeIdx) = 2 * M + 2 ∧
-      (let max_ε_folds : (i : Fin (M + 1)) → ℝ≥0 :=
-          fun i => (univ : Finset (Fin (P.foldingParam i))).sup (ε_fold i)
-        let ε_rbr : vPSpec.ChallengeIdx → ℝ≥0 :=
-          fun _ => (univ.image max_ε_folds ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max'
-            (by simp)
-        VectorIOP.IsSecureWithGap (whirRelation m_0 (P.φ 0) 0)
-                         (whirRelation m_0 (P.φ 0) (h.δ 0))
-                          ε_rbr π)
+def whir_rbr_soundness :=
+  @whirRbrSoundnessWith F _ _ _ M ι _ false
+
+/-- The same WHIR challenge pin and numerical bounds, with a fixed-prefix security package. -/
+def whir_rbr_soundness_fixedPrefix :=
+  @whirRbrSoundnessWith F _ _ _ M ι _ true
 
 
 end RBR

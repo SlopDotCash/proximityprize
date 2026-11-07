@@ -480,7 +480,7 @@
    "name": "RIMFullRankFailureProbResidual",
    "fq_name": "AGL24.RIMFullRankFailureProbResidual",
    "file": "ArkLib/Data/CodingTheory/AGL24UnionBound.lean",
-   "line": 88,
+   "line": 100,
    "providers": [
     {
      "name": "AGL24.rimFailureProb_of_rootedOutCut_and_dualZeroPattern",
@@ -2609,7 +2609,7 @@
      "name": "DuplexSpongeFS.VerifierReplay.hyb34Step_of_strictSplit",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/VerifierReplay.lean",
-     "line": 948,
+     "line": 939,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hA",

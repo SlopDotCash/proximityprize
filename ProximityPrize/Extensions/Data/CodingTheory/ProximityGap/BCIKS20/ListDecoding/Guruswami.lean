@@ -1138,7 +1138,7 @@ theorem gsBox_hYZ_budget_unsatisfiable {m n k : ℕ} (hm : 1 ≤ m) (hk : 1 ≤ 
   have hD0 : (0 : ℝ) ≤ D := Nat.cast_nonneg D
   -- the floor lower bound for the (offset-rate) cap
   have hsq : ((D : ℝ) + 1) ^ 2 > (m + 1 / 2) ^ 2 * ((k : ℝ) + 2) * n := by
-    have h := proximity_gap_degree_bound_sq_gt (k := k + 1) (m := m) hn0
+    have h := proximity_gap_degree_bound_sq_gt (k := k + 1) (n := n) (m := m)
     rw [hDdef, gsDpg]
     push_cast at h ⊢
     linarith

@@ -233,7 +233,7 @@ theorem permCheckVerifier_rbrSoundness :
       simp only [Verifier.run, permCheckVerifier_verify_eq] at hrun
       rw [hrun] at hout
       simp at hout
-  · intro _ hNotIn _ _ _ _ ⟨⟨0, _⟩, hdir⟩
+  · intro _ _ ⟨⟨0, _⟩, hdir⟩
     exact absurd hdir (by simp)
 
 omit [CommRing 𝓡] in
@@ -342,7 +342,7 @@ lemma permCheckVerifier_rbrKnowledgeSoundness :
         rw [hrun] at hx
         simp at hx
   }, ?_⟩
-  intro _stmtIn _witIn _prover ⟨⟨0, _⟩, hdir⟩
+  intro _ ⟨⟨0, _⟩, hdir⟩
   exact absurd hdir (by simp)
 
 #print axioms Plonk.permCheckVerifier_verify_eq
