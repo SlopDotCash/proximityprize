@@ -311,7 +311,7 @@
      "name": "ArkLib.GMMDS.symbolicFullRank_lovett_free",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/GMMDS/SymbolicFullRankLovettFree.lean",
-     "line": 86,
+     "line": 93,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hdual",
