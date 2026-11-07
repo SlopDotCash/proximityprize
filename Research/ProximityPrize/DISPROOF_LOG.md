@@ -18243,9 +18243,9 @@ Liu–Zhou Thm 115). So `{η_b:b∈F_p^*}` (over the `p−1=kn` indices) takes o
 each repeated `n` times. EXACT probe confirms: `p=73,n=8` → 9 distinct, all mult 8; `p=257,n=16` →
 16 distinct, all mult 16; `p=3457,n=27` → 128 distinct, all mult 27.
 
-* **Obstruction 1 (REFUTED, `exceedance_count_dvd_fiberSize` + `degenerate_not_simple`).** Since
-  every fiber has exactly `n` indices, `N(t)` is ALWAYS a multiple of `n` (= `n·#{cosets above t}`),
-  so it is *never 1*: the configuration is `n`-fold atomic = maximally NON-simple. A determinantal
+* **Obstruction 1 (REFUTED, `exceedanceCount_eq_fiberSize_mul_card` + `degenerate_not_simple`).**
+  Since every fiber has exactly `n` indices, `N(t)` ALWAYS equals `n·#{cosets above t}`, so it is
+  *never 1*: the configuration is `n`-fold atomic = maximally NON-simple. A determinantal
   point process with a Christoffel–Darboux *projection* kernel is a.s. SIMPLE (HKPV), its kernel
   vanishing on the diagonal — that vanishing IS the repulsion. An `n`-fold-degenerate atom has
   `ρ_2`-on-diagonal `~n²` (opposite sign to a DPP's 0). The DPP/log-rigidity hypothesis is false by
@@ -43511,9 +43511,9 @@ Liu–Zhou Thm 115). So `{η_b:b∈F_p^*}` (over the `p−1=kn` indices) takes o
 each repeated `n` times. EXACT probe confirms: `p=73,n=8` → 9 distinct, all mult 8; `p=257,n=16` →
 16 distinct, all mult 16; `p=3457,n=27` → 128 distinct, all mult 27.
 
-* **Obstruction 1 (REFUTED, `exceedance_count_dvd_fiberSize` + `degenerate_not_simple`).** Since
-  every fiber has exactly `n` indices, `N(t)` is ALWAYS a multiple of `n` (= `n·#{cosets above t}`),
-  so it is *never 1*: the configuration is `n`-fold atomic = maximally NON-simple. A determinantal
+* **Obstruction 1 (REFUTED, `exceedanceCount_eq_fiberSize_mul_card` + `degenerate_not_simple`).**
+  Since every fiber has exactly `n` indices, `N(t)` ALWAYS equals `n·#{cosets above t}`, so it is
+  *never 1*: the configuration is `n`-fold atomic = maximally NON-simple. A determinantal
   point process with a Christoffel–Darboux *projection* kernel is a.s. SIMPLE (HKPV), its kernel
   vanishing on the diagonal — that vanishing IS the repulsion. An `n`-fold-degenerate atom has
   `ρ_2`-on-diagonal `~n²` (opposite sign to a DPP's 0). The DPP/log-rigidity hypothesis is false by

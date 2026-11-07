@@ -494,7 +494,7 @@
      "name": "CodingTheory.randomLinearLambdaLowerFirstMomentResidual_of_exists_event",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ListDecoding/Bounds/RandomAndReedSolomon.lean",
-     "line": 200,
+     "line": 245,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hG"
@@ -508,7 +508,7 @@
      "name": "CodingTheory.randomLinearLambdaLowerFirstMomentResidual_of_combinatorialWitness",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ListDecoding/Bounds/RandomAndReedSolomon.lean",
-     "line": 431,
+     "line": 476,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "h"

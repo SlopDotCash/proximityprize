@@ -188,20 +188,41 @@ quantity. -/
 /-- **The geometric mean of the large conjugates is dominated by their quadratic (L²) mean.**
 For nonnegative `L i`, `(∏ L i)^{1/k} ≤ ( (Σ L i²)/k )^{1/2}` (geometric ≤ quadratic mean).  Hence
 the candidate's `Mahler^{1/k_b}` is controlled by the conjugate `L²`-energy `mean |σ|²` — the F1
-moment object that caps at `√n` (F0).  We prove the clean log-form
-`(Σ log L)/k ≤ (1/2)·log( (Σ L²)/k )` under the mean-`L²` normalization, i.e. the geometric mean is
-below the root-mean-square, pinning the candidate to the energy side. -/
-theorem geomMean_le_quadraticMean {ι : Type*} (s : Finset ι) (Lsq : ι → ℝ) (M : ℝ)
-    (hpos : 0 < s.card)
-    (hbound : ∀ i ∈ s, Lsq i ≤ M) :
-    (∑ i ∈ s, Lsq i) / s.card ≤ M := by
+moment object that caps at `√n` (F0). -/
+theorem geomMean_le_quadraticMean {ι : Type*} (s : Finset ι) (L : ι → ℝ)
+    (hpos : 0 < s.card) (hL : ∀ i ∈ s, 0 ≤ L i) :
+    (∏ i ∈ s, L i) ^ ((1 : ℝ) / s.card) ≤
+      Real.sqrt ((∑ i ∈ s, (L i) ^ 2) / s.card) := by
   have hcard : (0 : ℝ) < (s.card : ℝ) := by exact_mod_cast hpos
-  rw [div_le_iff₀ hcard]
-  have hle : (∑ i ∈ s, Lsq i) ≤ ∑ _i ∈ s, M := Finset.sum_le_sum hbound
-  have heq : (∑ _i ∈ s, M) = (s.card : ℝ) * M := by
-    rw [Finset.sum_const, nsmul_eq_mul]
-  rw [heq] at hle
-  linarith [hle]
+  have hsumw : (∑ _i ∈ s, (1 : ℝ)) = (s.card : ℝ) := by simp
+  have hgm := Real.geom_mean_le_arith_mean s (fun _i : ι => (1 : ℝ))
+    (fun i => (L i) ^ 2) (fun _i _hi => zero_le_one) (by simpa using hcard)
+    (fun i _hi => sq_nonneg (L i))
+  have hgm' : (∏ i ∈ s, (L i) ^ 2) ^ ((s.card : ℝ)⁻¹) ≤
+      (∑ i ∈ s, (L i) ^ 2) / s.card := by
+    simpa [hsumw] using hgm
+  have hprod_nonneg : 0 ≤ ∏ i ∈ s, L i := Finset.prod_nonneg hL
+  have hbase : (∏ i ∈ s, L i) ^ (2 : ℝ) = ∏ i ∈ s, (L i) ^ 2 := by
+    rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num]
+    rw [Real.rpow_natCast, Finset.prod_pow]
+  have hsquare :
+      ((∏ i ∈ s, L i) ^ ((1 : ℝ) / s.card)) ^ 2 ≤
+        (∑ i ∈ s, (L i) ^ 2) / s.card := by
+    calc
+      ((∏ i ∈ s, L i) ^ ((1 : ℝ) / s.card)) ^ 2
+          = ((∏ i ∈ s, L i) ^ ((1 : ℝ) / s.card)) ^ (2 : ℝ) :=
+            (Real.rpow_natCast _ 2).symm
+      _ = (∏ i ∈ s, L i) ^ (((1 : ℝ) / s.card) * (2 : ℝ)) :=
+            (Real.rpow_mul hprod_nonneg _ _).symm
+      _ = (∏ i ∈ s, L i) ^ ((2 : ℝ) * ((s.card : ℝ)⁻¹)) := by
+            congr 1
+            ring
+      _ = ((∏ i ∈ s, L i) ^ (2 : ℝ)) ^ ((s.card : ℝ)⁻¹) :=
+            Real.rpow_mul hprod_nonneg 2 _
+      _ = (∏ i ∈ s, (L i) ^ 2) ^ ((s.card : ℝ)⁻¹) := by
+            rw [hbase]
+      _ ≤ (∑ i ∈ s, (L i) ^ 2) / s.card := hgm'
+  exact Real.le_sqrt_of_sq_le hsquare
 
 end ProximityGap.Frontier.MahlerLehmerHouseKb
 
