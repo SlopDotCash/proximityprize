@@ -13,6 +13,10 @@ provided, scans only those Lean files/directories. Fails if live
   - a metaprogram that adds kernel declarations (`run_cmd` / `run_elab` /
     `run_meta`, `addDecl`, `addAndCompile`, `axiomDecl`), which can declare an
     axiom without the `axiom` keyword, or
+  - a `#exit` command. Lean stops elaborating the file there, so nothing after
+    it is checked or even declared, while text-based gates still read it: the
+    residual census counts an unelaborated `theorem foo_holds : FooResidual`
+    after `#exit` as a discharge, or
   - a custom `axiom` declaration whose name is not an allowlisted, documented
     residual (see scripts/residual_axioms.txt), with any modifiers (including
     `public`/`meta` in `module` files) and with the name on a later line or
@@ -74,6 +78,12 @@ META_DECL_RE = re.compile(
     r"(?<![\w.'])(run_cmd|run_elab|run_meta)\b"
     r"|\b(add(?:Decl\w*|AndCompile)|axiomDecl)\b"
 )
+# `#exit` ends elaboration of the file: later text is never checked or declared,
+# but text-based gates (residual_census.py, sorry_census.py) still read it. `#` is
+# not an identifier character and Lean's tokenizer takes the longest token with
+# no boundary check, so `rfl#exit` and `#exit_foo` also start a real `#exit`;
+# match the bare text.
+EXIT_RE = re.compile(r"#exit")
 # `native_decide` is a synonym for `decide +native`; both forms, the config form
 # `decide (native := true)` / `(config := { native := true })` and `bv_check`
 # prove the goal by native evaluation and add a compiler-trust axiom. Matched
@@ -423,12 +433,18 @@ def axiom_hits(code: str, res: LexResult) -> list[tuple[int, str]]:
             if outside_quoted(m.start(), res.quoted)]
 
 
+def exit_hits(code: str, res: LexResult) -> list[int]:
+    """Offsets of live `#exit` commands."""
+    return [m.start() for m in EXIT_RE.finditer(code) if outside_quoted(m.start(), res.quoted)]
+
+
 def command_view(text: str, res: LexResult) -> tuple:
-    """What the checks see under one lexing: axiom, declaration and placebo hits."""
+    """What the checks see under one lexing: axiom, declaration, placebo and `#exit` hits."""
     code = code_text(text, res)
     return (axiom_hits(code, res),
             [(m.start(), m.group(1), m.group(2)) for m in declaration_heads(code, res)],
-            find_true_placebos(text, res))
+            find_true_placebos(text, res),
+            exit_hits(code, res))
 
 
 def comment_mask(text: str) -> list[bool]:
@@ -806,6 +822,13 @@ def main() -> int:
                     f"(adds a kernel declaration, e.g. an axiom, without an `axiom` "
                     f"keyword; state residuals as `def ...Residual : Prop`)"
                 )
+        for off in exit_hits(live_text, lexed):
+            line = text.count("\n", 0, off) + 1
+            failures.append(
+                f"{path}:{line}: forbidden `#exit` (Lean stops checking the file here, "
+                f"but text-based gates such as the residual census still read what "
+                f"follows; delete the unchecked tail or move it to a scratch file)"
+            )
         scopes = TrueScopes(live_text, lexed.quoted)
         for m in UNSAFE_DECL_RE.finditer(live_text):
             if not outside_quoted(m.start(), lexed.quoted):
