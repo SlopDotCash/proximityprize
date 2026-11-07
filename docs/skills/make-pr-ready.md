@@ -32,16 +32,11 @@ merge-ready.
   repository even after `git fetch origin main`. Inspect the PR with
   `gh pr view <number> -R <canonical-owner>/<repo> --json baseRefName,headRefName`, compare the
   configured remote URL, and fetch the canonical base into a separate tracking ref when needed
-  (for example `canonical/main`). Use that canonical ref for all scope and `_generated/`
-  comparisons below.
+  (for example `canonical/main`). Use that canonical ref for the scope comparisons below.
 - Fetch the selected canonical base first (`git fetch origin main` when `origin` is canonical),
-  then compute scope and `_generated/` drift against its remote-tracking ref, not local `main`.
-  The local `main` ref can be many commits stale (e.g. you branched, then the canonical `main`
-  advanced via merges you never pulled). Diffing `main...HEAD` against a stale local `main`
-  inflates the file list and can report phantom `_generated/` drift that actually matches the
-  remote. With a canonical `origin`, use `git diff --stat origin/main...HEAD` for scope and
-  `git diff --quiet origin/main...HEAD -- docs/kb/_generated/` for the CI guard's real view;
-  otherwise substitute the canonical tracking ref selected above.
+  then compute scope against its remote-tracking ref. The local `main` ref may lag behind merges
+  already on the canonical base. With a canonical `origin`, use `git diff --stat origin/main...HEAD`
+  for scope. Otherwise substitute the canonical tracking ref selected above.
 - **Also account for uncommitted work.** `origin/main...HEAD` (three-dot) only shows *committed*
   changes; a make-pr-ready pass often runs with staged/working-tree edits still in flight (e.g. a
   half-finished file). Those appear only in `git diff HEAD` (or `git diff origin/main`, two-dot).
@@ -77,25 +72,6 @@ merge-ready.
   **not** audit or "fix" those files here: it is redundant with the sibling PR and any edit invites
   a merge conflict. Scope the audit/lint/warning-fix work to files this branch actually authored or
   extended (differs from both `origin/main` and the sibling branch).
-- **Test for committed `_generated/` drift explicitly — a clean `git status` does not rule it out.**
-  If the branch committed regenerated outputs, the working tree is clean and nothing in the default
-  `validate.sh` complains, yet CI's first job fails. CI compares the branch tip with the merge
-  base, not with the current `main` tip, so use the three-dot form. One line settles it, and it
-  belongs in step 0:
-
-  ```bash
-  git diff --stat origin/main...HEAD -- docs/kb/_generated/   # any output = the guard will fail
-  ```
-
-- **If `_generated/` drift is already committed** (the branch committed regenerated outputs, not
-  just dirtied the working tree),
-  `git checkout "$(git merge-base HEAD origin/main)" -- docs/kb/_generated/` stages a *revert*, and
-  you must **commit it** for the guard to pass — the guard compares the committed branch tip to
-  the merge base, so an uncommitted revert leaves HEAD still drifted. After staging the revert,
-  `git diff --cached --stat` shows huge index-vs-HEAD numbers for `_generated/` — that is the size
-  of the revert, **not** new drift; do not panic. Confirm the post-commit guard view with
-  `git diff --cached --quiet "$(git merge-base HEAD origin/main)" -- docs/kb/_generated/` (must be
-  clean).
 - **Report stray planning/scratch `.md` files — do not stage them, and do not delete them.** A
   Markdown plan, design note, or working-notes file (`PLAN.md`, `NOTES.md`, `scratch/*.md`, an
   agent handoff/TODO dump) is a working artifact, not repo documentation, and should not land in
@@ -248,41 +224,14 @@ merge-ready.
   `blueprint/src/references.bib` (see the citation policy in
   [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) and the workflow in
   [`../wiki/blueprint-and-citations.md`](../wiki/blueprint-and-citations.md)).
-- **Do not commit `docs/kb/_generated/` changes in a feature PR.** An early step of the CI job,
-  "Reject generated KB updates in PRs" ([`ci.yml`](../../.github/workflows/ci.yml)), fails the
-  build if the PR's diff (`base...head`) touches `docs/kb/_generated/` in **any** way, and a
-  **deletion counts as a diff** just like a modification or addition. These files are refreshed by
-  [`kb-generated.yml`](../../.github/workflows/kb-generated.yml), which runs nightly and after
-  bibliography or KB-source changes on `main` and maintains one rolling PR from the
-  `automation/kb-generated` branch (see [generated files](../wiki/generated-files.md)). The guard
-  runs before the Lean build, so a stray `_generated/` diff blocks CI before the build even starts
-  (and removing the files does **not** help: the directory must match the merge base exactly).
-- You may regenerate the derived metadata **locally to check consistency** — do not hand-edit it —
-  but **revert the `_generated/` outputs before committing** so the directory matches the merge
-  base:
+- Regenerate the derived metadata when its inputs change and commit the tracked indexes and any
+  scaffolded paper or source pages. The read-only
+  [KB workflow](../../.github/workflows/kb-generated.yml) verifies the committed outputs.
 
   ```bash
-  uv run --no-project --python 3.12 python ./scripts/kb/sync_from_bib.py          # writes docs/kb/_generated/references.json
-  uv run --no-project --python 3.12 python ./scripts/kb/extract_lean_citations.py # writes docs/kb/_generated/lean-citations.json
-  # ... inspect for consistency, then:
-  git checkout "$(git merge-base HEAD origin/main)" -- docs/kb/_generated/
-  # restores index and worktree; inspect the staged diff
+  uv run --no-project --python 3.12 python ./scripts/kb/regenerate.py
   ```
 
-  If your branch has already diverged in `docs/kb/_generated/` (drift, an accidental delete, or a
-  regenerate that got committed), restore it the same way: `git fetch origin main` then
-  `git checkout "$(git merge-base HEAD origin/main)" -- docs/kb/_generated/`, and commit so the
-  guard passes.
-
-  **Expect the local regenerate to surface drift that is not yours.** `main`'s `_generated/` is
-  refreshed only after merge, so it routinely lags `main`'s own sources: the regenerated diff will
-  mix your new citations with citation edges from recently-merged PRs whose refresh has not landed.
-  Read the diff to confirm *your* keys resolve, attribute the rest, and revert the whole directory
-  regardless — a bigger-than-expected diff is not evidence your revert failed.
-- Confirm the regenerated files are consistent (no dangling keys, no missing entries), but stage
-  **only** your source changes plus any scaffolded `docs/kb/papers/` / `docs/kb/sources/` pages
-  (those are *not* under `_generated/` and are allowed in feature PRs) — never the `_generated/`
-  outputs.
 - `kb/lint.py` does **not** verify that every cited key has a BibTeX entry. Check for dangling
   keys yourself: grep each `[KEY]` used in docstrings against `blueprint/src/references.bib` and
   add any missing entry (then regenerate). A key can be "present-looking" but actually a different
@@ -292,9 +241,8 @@ merge-ready.
   For active papers introduced or substantially extended by this contribution, add substantive
   ArkLib context: the used statements, touchpoint modules, version, generalizations and remaining
   gaps. `uv run --no-project --python 3.12 python scripts/kb/scaffold_paper.py <KEY>` can supply the initial page and metadata;
-  replace its TODOs before staging. Leave stub-only pages and generated registries to the KB
-  workflow, and attribute unrelated existing coverage warnings without expanding the PR to fill
-  the whole backlog. See [`../kb/README.md`](../kb/README.md).
+  replace its TODOs before staging. Commit the scaffolds and generated registries with the
+  change, and attribute unrelated coverage warnings. See [`../kb/README.md`](../kb/README.md).
 - A validate/kb failure is not necessarily yours: it can be **pre-existing on `main`** (e.g. a kb
   paper page merged before its BibTeX entry). Attribute it (`git show origin/main:<file>`), but
   fix it in your PR anyway if cheap — it blocks *your* CI regardless of who introduced it.
@@ -546,10 +494,8 @@ fundamental composition obligation`). Filter out the ordinary senses first — "
 **Re-derive any number or span a subagent reports.** Counts and row ranges are exactly where
 parallel reviewers disagree with each other and with the source. Settle each from the declaration, not from the report.
 
-**Do not "fix" `docs/kb/_generated/`.** `declarations.json` and `lean-citations.json` still index
-the deleted path; that is expected. Regenerating and committing them trips the CI guard described in
-step 3. Leave them at `main`'s state;
-[`kb-generated.yml`](../../.github/workflows/kb-generated.yml) refreshes them after merge.
+Regenerate the KB after removing cited modules so the tracked citation index reflects the
+deletions. Review the derived diff and commit it with the source changes.
 
 Finish by re-running `./scripts/update-lib.sh` (then `git add ArkLib.lean`) and
 `./scripts/validate.sh`, and re-run the sweep itself — repointing one reference can introduce
@@ -568,8 +514,8 @@ Only consider the PR merge-ready when:
 
 1. `./scripts/validate.sh` (with `--docs` when appropriate) succeeds.
 2. Every changed `.lean` file builds and meets the production/test warning budgets.
-3. Citation metadata is consistent, and `docs/kb/_generated/` matches the PR base exactly (step 3
-   — it is checked locally, never committed).
+3. Citation metadata is consistent, and the committed KB indexes match regeneration on the
+   PR head (step 3).
 4. The deleted-file sweep in step 4 comes back clean — no reference anywhere in the tree points at
    a path this branch removed. A green `validate.sh` does **not** imply this.
 5. The manual API, docstring and proof-quality checks in step 1 are complete; any performance

@@ -60,20 +60,12 @@ Edit the source of truth, not the output.
   keep their separate Lake target and source format.
   Keep compile-time canaries in the mirrored `ArkLibTest/` path, where `lake test` checks them
   without exporting test helpers through the production umbrella.
-- Regenerate and commit tracked bibliography/citation exports when their inputs change.
-  Declaration and dedup catalogs remain ignored local outputs. The single rolling
-  generated-files PR maintained by `.github/workflows/kb-generated.yml` batches other refreshes.
-- The KB refresh runs nightly, on manual dispatch, and immediately after bibliography or KB source
-  changes. Ordinary Lean merges are batched into the nightly refresh. The workflow updates the
-  stable `automation/kb-generated` branch and explicitly dispatches the fixed CI, import, and docs
-  workflows so bot-authored checks start automatically. The canonical CI validation path includes
-  the Lean-native source-policy gate. The generated-path allowlist and repository human-review gate
-  remain intact.
-- Do not use GitHub's **Update branch** action on the rolling KB PR: a plain base merge does not
-  regenerate its indexes. Dispatch the KB workflow or wait for the next nightly refresh instead.
-- Missing cited-paper stubs under `docs/kb/papers/` and `docs/kb/sources/` are also scaffolded by
-  that workflow. Commit paper pages in feature PRs only when they contain real ArkLib-specific
-  content.
+- Run `uv run --no-project --python 3.12 python ./scripts/kb/regenerate.py` when bibliography or
+  Lean citations change. Commit the tracked indexes and any new cited-paper pages or source
+  metadata it scaffolds. Declaration and dedup catalogs remain ignored local outputs.
+- The read-only KB workflow checks regeneration on relevant pull requests and pushes to `main`
+  and supports manual dispatch. When an index or scaffold is stale, regenerate it in the branch
+  that changes its inputs.
 - Generated site and blueprint output are for review and deployment, not authoring.
 - If a path looks derived, confirm its source of truth before editing it.
 

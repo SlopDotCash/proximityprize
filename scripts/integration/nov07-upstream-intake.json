@@ -99,5 +99,17 @@
     "declaration": "ArkLib.Lattices.CyclotomicModulus.no_selfReciprocal_factor",
     "canonical_source": "ArkLib/Data/Lattices/CyclotomicRing/Subfield/Field.lean",
     "disposition": "Canonical ArkLib already proves the factor swap for every exponent. The downstream proof and its private helpers remain in Git history; the live source uses the canonical theorem."
-  }
+  },
+  "additional_duplicate_implementations": [
+    {
+      "source": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "canonical_source": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "disposition": "The historical candidate set and distance theorems delegate to the canonical candidate specification and its distance theorem. Public signatures, including the historical radius parameters, are preserved."
+    },
+    {
+      "source": "ProximityPrize/Extensions/ProofSystem/Sumcheck/Spec/SingleRound.lean",
+      "canonical_source": "ArkLib/ProofSystem/Sumcheck/Spec/SingleRound.lean",
+      "disposition": "The classic module imports the canonical single-round instance for pSpec and retains its additional theorems."
+    }
+  ]
 }

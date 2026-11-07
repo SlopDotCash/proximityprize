@@ -123,14 +123,6 @@ variable (R : Type) [CommSemiring R] (n : ℕ) (deg : ℕ) {m : ℕ} (D : Fin m 
 
 namespace SingleRound
 
-instance : IsSingleRound (pSpec R deg) where
-  prover_first' := by aesop
-  verifier_last' := by aesop
-
--- Don't know why instance synthesis requires restating these instances
--- Doesn't seem like instance synthesis can infer the instances for the appends
--- Note: may need to tweak synthesis?
-
 /-- `simulateQ` of a query lifted from the middle summand of `spec₀ + (spec₁ + spec₂)`
 is the implementation applied at the routed index. -/
 private lemma simulateQ_double_lift_query {ι₀ ι₁ ι₂ : Type} {spec₀ : OracleSpec ι₀}
