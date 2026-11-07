@@ -18308,11 +18308,14 @@ mean) object. Reduction map: T23 -> separation floor on orbit -> per-window coun
 covolume reversal).
 
 **Lean (axiom-clean `[propext, Classical.choice, Quot.sound]`, no sorryAx):**
-`Frontier/_wfT23_beilinson_regulator_spacing.lean` — `uniform_separation_impossible` (pigeonhole
-engine, any ordered field), `sep_impossible_prize`/`no_such_config_prize` (EXACT `QQ` certification:
-`(2^40-1)/32768 > 92682`, so even `2^40` periods << the `2^89` forced in-window cannot be
-`1/sqrt n`-separated), `secondMoment_bounds_average_not_max`+`covolume_lower_does_not_upper_bound_max`
-(the F0 / reversed-covolume captures). Probe: `scripts/probes/rust/probe_wfT23_regulator_spacing_pigeonhole.rs`.
+`Frontier/_wfT23_beilinson_regulator_spacing.lean` — `separation_forces_width` and
+`uniform_separation_impossible` (telescoping pigeonhole width bound and configuration impossibility
+over any linearly ordered field), `sep_impossible_prize`/`no_such_config_prize` (EXACT `QQ`
+certification: `(2^40-1)/32768 > 92682`, so no `2^40`-point configuration in width `92682` can be
+`1/sqrt n`-separated), `parseval_meanSquare` (exact distinct-period mean-square `(p-n)/m = n-(n-1)/m <= n`),
+and `secondMoment_bounds_average_not_max`+`covolume_lower_does_not_upper_bound_max` (single-spike
+second-moment tightness and reversed-covolume `logReg/card <= maxLogSpacing` lower bound). Probe:
+`scripts/probes/rust/probe_wfT23_regulator_spacing_pigeonhole.rs`.
 Verdict: REDUCES-TO-WALL F0 (separation step also REFUTED at scale). No prize gain. Confidence high.
 
 ---
@@ -43576,11 +43579,14 @@ mean) object. Reduction map: T23 -> separation floor on orbit -> per-window coun
 covolume reversal).
 
 **Lean (axiom-clean `[propext, Classical.choice, Quot.sound]`, no sorryAx):**
-`Frontier/_wfT23_beilinson_regulator_spacing.lean` — `uniform_separation_impossible` (pigeonhole
-engine, any ordered field), `sep_impossible_prize`/`no_such_config_prize` (EXACT `QQ` certification:
-`(2^40-1)/32768 > 92682`, so even `2^40` periods << the `2^89` forced in-window cannot be
-`1/sqrt n`-separated), `secondMoment_bounds_average_not_max`+`covolume_lower_does_not_upper_bound_max`
-(the F0 / reversed-covolume captures). Probe: `scripts/probes/rust/probe_wfT23_regulator_spacing_pigeonhole.rs`.
+`Frontier/_wfT23_beilinson_regulator_spacing.lean` — `separation_forces_width` and
+`uniform_separation_impossible` (telescoping pigeonhole width bound and configuration impossibility
+over any linearly ordered field), `sep_impossible_prize`/`no_such_config_prize` (EXACT `QQ`
+certification: `(2^40-1)/32768 > 92682`, so no `2^40`-point configuration in width `92682` can be
+`1/sqrt n`-separated), `parseval_meanSquare` (exact distinct-period mean-square `(p-n)/m = n-(n-1)/m <= n`),
+and `secondMoment_bounds_average_not_max`+`covolume_lower_does_not_upper_bound_max` (single-spike
+second-moment tightness and reversed-covolume `logReg/card <= maxLogSpacing` lower bound). Probe:
+`scripts/probes/rust/probe_wfT23_regulator_spacing_pigeonhole.rs`.
 Verdict: REDUCES-TO-WALL F0 (separation step also REFUTED at scale). No prize gain. Confidence high.
 
 ---
