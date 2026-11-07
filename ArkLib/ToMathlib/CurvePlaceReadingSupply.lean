@@ -53,11 +53,71 @@ variable {H : F[X][Y]} [Fact (Irreducible H)] [Fact (0 < H.natDegree)]
 
 /-! ## Part 1 — the universal Hensel pin -/
 
-/-- **The universal Hensel pin.**  At every good place the decoded polynomial equals the
+/-- **The universal Hensel pin, restricted-root form (#304 / audit L58).**  As
+`Pz_eq_trunc_of_hensel`, but the rational roots are demanded only at good places
+(`rootOn : ∀ z ∈ good, rationalRoot …`); no root is required at places where the fibre may be
+empty.  The total-root `Pz_eq_trunc_of_hensel` is the special case `rootOn := fun z _ => root z`.
+At every good place the decoded polynomial equals the
 truncated local series: both are roots of the `π̂_z`-specialized matching polynomial, both
 congruent at order 0 to `C (π_z (βHensel 0))`, and the specialization is separable — Hensel
 uniqueness (`decoded_eq_specialization_of_hensel`) pins them equal.  No hypothesis is made
 about what the truncation equals: this is the `htrunc`-free core of the analytic producers. -/
+theorem Pz_eq_trunc_of_hensel_on {k deg : ℕ} {domain : ι ↪ F}
+    {δ : ℝ≥0} {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}
+    {x₀ : F} {R : F[X][X][Y]} (hHyp : Hypotheses x₀ R H)
+    (hξ : ξ x₀ R H hHyp ≠ 0) (hlc : H.leadingCoeff = 1) (hR : R.Separable)
+    {n : ℕ}
+    (rootOn : ∀ z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ,
+      rationalRoot (H_tilde' H) z)
+    (hx : ∀ z (hz : z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ),
+      (π_z z (rootOn z hz)) (ξ x₀ R H hHyp) ≠ 0)
+    (hvanish : ∀ t, n ≤ t →
+      BetaToCurveCoeffPolys.αFromBeta x₀ R H hHyp
+        (BetaRecGenuineBridge.BcoeffSigned H x₀ R) t = 0)
+    (hdvd : ∀ z (hz : z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ),
+      (Polynomial.X - Polynomial.C ((P z : F[X]) : PowerSeries F)) ∣
+        ((R.map (coeffHom_loc x₀ hHyp)).map
+          (PowerSeries.map (π_hat_z hHyp z (rootOn z hz) (hx z hz)))))
+    (hcong : ∀ z (hz : z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ),
+      ((P z : F[X]) : PowerSeries F) - PowerSeries.C ((π_z z (rootOn z hz))
+          (BCIKS20.HenselNumerator.βHensel H x₀ R hHyp 0))
+        ∈ Ideal.span {(PowerSeries.X : PowerSeries F)}) :
+    ∀ z (hz : z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ),
+      P z = (PowerSeries.trunc n (localSeries hHyp z (rootOn z hz) (hx z hz)) : Polynomial F) := by
+  intro z hz
+  have htailz : ∀ t, n ≤ t →
+      PowerSeries.coeff t (localSeries hHyp z (rootOn z hz) (hx z hz)) = 0 := fun t ht =>
+    coeff_localSeries_eq_zero_of_alphaFromBeta_eq_zero hHyp hξ z (rootOn z hz) (hx z hz) t
+      (hvanish t ht)
+  refine HPzBridge.decoded_eq_specialization_of_hensel
+    (f := (R.map (coeffHom_loc x₀ hHyp)).map
+      (PowerSeries.map (π_hat_z hHyp z (rootOn z hz) (hx z hz))))
+    (a₀ := PowerSeries.C ((π_z z (rootOn z hz)) (BCIKS20.HenselNumerator.βHensel H x₀ R hHyp 0)))
+    ?_ ?_ ?_ ?_ ?_
+  · -- ↑(P z) is a root (from the matching-factor divisibility)
+    rw [← Polynomial.dvd_iff_isRoot]
+    exact hdvd z hz
+  · -- the coerced truncation is a root (it IS the local series, a root)
+    rw [← powerSeries_eq_coe_trunc_of_tail_zero htailz]
+    exact localSeries_isRoot_of_monic hHyp hξ hlc z (rootOn z hz) (hx z hz)
+  · -- order-0 congruence of ↑(P z)
+    exact hcong z hz
+  · -- order-0 congruence of the truncation (derived)
+    rw [← powerSeries_eq_coe_trunc_of_tail_zero htailz,
+      Ideal.mem_span_singleton, PowerSeries.X_dvd_iff, map_sub,
+      constantCoeff_localSeries hHyp z (rootOn z hz) (hx z hz), PowerSeries.constantCoeff_C,
+      sub_self]
+  · -- unit derivative at the approximation, from separability + the decoded root/congruence
+    refine HenselDatumProducer.isUnit_derivative_of_separable_of_isRoot_of_congr _
+      (specialized_separable_of_R_separable hHyp z (rootOn z hz) (hx z hz) hR) ?_ (hcong z hz)
+    rw [← Polynomial.dvd_iff_isRoot]
+    exact hdvd z hz
+
+/-- **The universal Hensel pin.**  At every good place the decoded polynomial equals the
+truncated local series.  This total-root form demands a rational root at **every** `z : F`, which is
+impossible as soon as one fibre is empty (`IngredientC.not_exists_total_matchingVanishes_of_isEmpty`);
+the proof uses roots only at good places, and is the special case of the restricted-root
+`Pz_eq_trunc_of_hensel_on`. -/
 theorem Pz_eq_trunc_of_hensel {k deg : ℕ} {domain : ι ↪ F}
     {δ : ℝ≥0} {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}
     {x₀ : F} {R : F[X][X][Y]} (hHyp : Hypotheses x₀ R H)
@@ -78,39 +138,14 @@ theorem Pz_eq_trunc_of_hensel {k deg : ℕ} {domain : ι ↪ F}
           (BCIKS20.HenselNumerator.βHensel H x₀ R hHyp 0))
         ∈ Ideal.span {(PowerSeries.X : PowerSeries F)}) :
     ∀ z (hz : z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ),
-      P z = (PowerSeries.trunc n (localSeries hHyp z (root z) (hx z hz)) : Polynomial F) := by
-  intro z hz
-  have htailz : ∀ t, n ≤ t →
-      PowerSeries.coeff t (localSeries hHyp z (root z) (hx z hz)) = 0 := fun t ht =>
-    coeff_localSeries_eq_zero_of_alphaFromBeta_eq_zero hHyp hξ z (root z) (hx z hz) t
-      (hvanish t ht)
-  refine HPzBridge.decoded_eq_specialization_of_hensel
-    (f := (R.map (coeffHom_loc x₀ hHyp)).map
-      (PowerSeries.map (π_hat_z hHyp z (root z) (hx z hz))))
-    (a₀ := PowerSeries.C ((π_z z (root z)) (BCIKS20.HenselNumerator.βHensel H x₀ R hHyp 0)))
-    ?_ ?_ ?_ ?_ ?_
-  · -- ↑(P z) is a root (from the matching-factor divisibility)
-    rw [← Polynomial.dvd_iff_isRoot]
-    exact hdvd z hz
-  · -- the coerced truncation is a root (it IS the local series, a root)
-    rw [← powerSeries_eq_coe_trunc_of_tail_zero htailz]
-    exact localSeries_isRoot_of_monic hHyp hξ hlc z (root z) (hx z hz)
-  · -- order-0 congruence of ↑(P z)
-    exact hcong z hz
-  · -- order-0 congruence of the truncation (derived)
-    rw [← powerSeries_eq_coe_trunc_of_tail_zero htailz,
-      Ideal.mem_span_singleton, PowerSeries.X_dvd_iff, map_sub,
-      constantCoeff_localSeries hHyp z (root z) (hx z hz), PowerSeries.constantCoeff_C,
-      sub_self]
-  · -- unit derivative at the approximation, from separability + the decoded root/congruence
-    refine HenselDatumProducer.isUnit_derivative_of_separable_of_isRoot_of_congr _
-      (specialized_separable_of_R_separable hHyp z (root z) (hx z hz) hR) ?_ (hcong z hz)
-    rw [← Polynomial.dvd_iff_isRoot]
-    exact hdvd z hz
+      P z = (PowerSeries.trunc n (localSeries hHyp z (root z) (hx z hz)) : Polynomial F) :=
+  Pz_eq_trunc_of_hensel_on hHyp hξ hlc hR (n := n) (fun z _ => root z) hx hvanish hdvd hcong
 
 /-! ## Part 2 — the `CurvePlaceReading` production at `T`-affine orders -/
 
-/-- **The `CurvePlaceReading` production (monic, `T`-affine window).**  From the Claim-5.9
+/-- **The `CurvePlaceReading` production (monic, `T`-affine window).**  (Total-root form: it
+demands a rational root at every `z : F` although only good places are read; prefer
+`curvePlaceReading_of_zLinear_on` when some fibre off the good set may be empty.)  From the Claim-5.9
 `T`-affine window `αGenuine t = lift c₀ᵗ + T·lift c₁ᵗ` (`t < n`), the genuine tail, and the
 per-place GS cargo, the decoded family carries the per-place two-series reading with the
 **branch values** as the readings of `T` and the **transposed** coefficient families:
@@ -154,6 +189,53 @@ noncomputable def curvePlaceReading_of_zLinear {k deg : ℕ} {domain : ι ↪ F}
       sum_C_eval_eq_transposed_curve_sum x₀ c₀ hdeg₀,
       sum_C_eval_eq_transposed_curve_sum x₀ c₁ hdeg₁]
 
+/-- **The `CurvePlaceReading` production, restricted-root form (#304 / audit L58).**  As
+`curvePlaceReading_of_zLinear`, but with rational roots only at good places; the branch value is
+the root's reading at good places and `0` elsewhere (the reading is only consumed on the good
+set). -/
+noncomputable def curvePlaceReading_of_zLinear_on {k deg : ℕ} {domain : ι ↪ F}
+    {δ : ℝ≥0} {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}
+    {x₀ : F} {R : F[X][X][Y]} (hHyp : Hypotheses x₀ R H)
+    (hξ : ξ x₀ R H hHyp ≠ 0) (hlc : H.leadingCoeff = 1) (hR : R.Separable)
+    {n N : ℕ} {c₀ c₁ : ℕ → F[X]}
+    (rootOn : ∀ z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ,
+      rationalRoot (H_tilde' H) z)
+    (hx : ∀ z (hz : z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ),
+      (π_z z (rootOn z hz)) (ξ x₀ R H hHyp) ≠ 0)
+    (hzl : ∀ t < n, αGenuine H x₀ R hHyp t
+      = liftToFunctionField (H := H) (c₀ t)
+        + liftToFunctionField (H := H) (c₁ t) * functionFieldT (H := H))
+    (htail : ∀ t, n ≤ t → αGenuine H x₀ R hHyp t = 0)
+    (hdeg₀ : ∀ t < n, (c₀ t).natDegree < N)
+    (hdeg₁ : ∀ t < n, (c₁ t).natDegree < N)
+    (hdvd : ∀ z (hz : z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ),
+      (Polynomial.X - Polynomial.C ((P z : F[X]) : PowerSeries F)) ∣
+        ((R.map (coeffHom_loc x₀ hHyp)).map
+          (PowerSeries.map (π_hat_z hHyp z (rootOn z hz) (hx z hz)))))
+    (hcong : ∀ z (hz : z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ),
+      ((P z : F[X]) : PowerSeries F) - PowerSeries.C ((π_z z (rootOn z hz))
+          (BCIKS20.HenselNumerator.βHensel H x₀ R hHyp 0))
+        ∈ Ideal.span {(PowerSeries.X : PowerSeries F)}) :
+    CurvePlaceReading (k := k) (deg := deg) (domain := domain) (δ := δ) u P x₀ N
+      (transposedCurveCoeffs x₀ n c₀)
+      (transposedCurveCoeffs x₀ n c₁) where
+  r := fun z =>
+    if hz : z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ then
+      (rootOn z hz).1 else 0
+  hread := by
+    intro z hz
+    have hvanish : ∀ t, n ≤ t →
+        BetaToCurveCoeffPolys.αFromBeta x₀ R H hHyp
+          (BetaRecGenuineBridge.BcoeffSigned H x₀ R) t = 0 := fun t ht => by
+      rw [BetaRecGenuineBridge.alphaFromBeta_BcoeffSigned_eq_αGenuine_of_monic x₀ R hHyp hlc t]
+      exact htail t ht
+    simp only [dite_eq_left hz]
+    rw [Pz_eq_trunc_of_hensel_on hHyp hξ hlc hR (n := n) rootOn hx hvanish hdvd hcong z hz,
+      TAffineReading.trunc_localSeries_of_zLinear hHyp hlc z (rootOn z hz) (hx z hz)
+        (le_refl n) hzl htail,
+      sum_C_eval_eq_transposed_curve_sum x₀ c₀ hdeg₀,
+      sum_C_eval_eq_transposed_curve_sum x₀ c₁ hdeg₁]
+
 end FaithfulCurveExtraction
 
 end ArkLib
@@ -162,3 +244,5 @@ end ArkLib
 `[propext, Classical.choice, Quot.sound]`, with no `sorry`/`admit`/`axiom`/`native_decide`. -/
 #print axioms ArkLib.FaithfulCurveExtraction.Pz_eq_trunc_of_hensel
 #print axioms ArkLib.FaithfulCurveExtraction.curvePlaceReading_of_zLinear
+#print axioms ArkLib.FaithfulCurveExtraction.Pz_eq_trunc_of_hensel_on
+#print axioms ArkLib.FaithfulCurveExtraction.curvePlaceReading_of_zLinear_on

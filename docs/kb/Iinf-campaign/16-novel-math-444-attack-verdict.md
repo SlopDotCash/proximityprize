@@ -1,5 +1,17 @@
 # Highly-novel-math attack on the prize / M(n) — all 7 reduce, with a proof of WHY (wf_5576da1e, 2026-06-16)
 
+> **Scope correction (2026-10-28 audit, T48; cross T87/T104).** This verdict upgrades a finite search
+> and an endpoint identity into impossibility claims that are not established.
+> - **No subject is ruled out.** A modulus/valuation calculation does not prove that entire subjects
+>   (algebraic, cohomological, SOS or Gowers methods) cannot use phases. The "two-column
+>   orthogonality theorem" is a heuristic description, not a theorem excluding those methods.
+> - **These are different objects.** Spur counts, total moments `E_r`, Fourier maxima `M(n)` and MCA
+>   codeword geometry remain distinct, linked only by conditional bridges. For example
+>   "`Spur_r(p)` literally equals `E_r`" is a finite numerical match, and "the two-sided prize ⟺ M(n)
+>   equivalence" is not established.
+> - **N6 stays open.** Curve-decodability (N6) is, as the note itself says, a genuinely distinct
+>   object. It should remain distinct, not be ruled out by an endpoint-only identity.
+
 Attacked the prize core with 7 frameworks NEVER tried in-tree (p-adic/Dwork, Pila-Wilkie, Deligne-Lusztig,
 Gowers, SOS, two-sided-gap-hunt, motivic/Hecke), each required to be NON-reducing or admit reduction, 3-lens
 adversarially verified. **Verdict: all 7 reduce to M(n)/second-order; no non-reducing route, no surviving

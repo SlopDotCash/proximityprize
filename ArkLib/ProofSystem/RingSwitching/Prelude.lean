@@ -268,8 +268,15 @@ The key facts are:
 
 Coordinate convention: upstream's canonical columns recover the packed right factor;
 canonical rows recover the left evaluation-point factor. The historical helper identifiers
-below retain their names, while their types use these authoritative coordinate operations.
-The verifier's canonical column check therefore agrees with polynomial evaluation.
+below retain their names, while their types use these authoritative coordinate operations, so
+docstrings of those helpers may keep the historical word *row* or *column* for a coordinate; the
+`P.decomposeRows`/`P.decomposeColumns` named in a statement are what it means.
+The verifier's canonical column check therefore agrees with polynomial evaluation: the live
+`performCheckOriginalEvaluation` reads `P.decomposeColumns` (the right `φ₁`/`t'` factor), and
+the identity is proved as `performCheckOriginalEvaluation_packMLE_iff` (via
+`check_rows_sum_eq_aeval'`). The batching target `compute_s0` and the final value
+`compute_final_eq_value` instead read the canonical rows `P.decomposeRows` (the left `φ₀`/`eq`
+factor); see their docstrings.
 -/
 section RingSwitchingAlgebra
 open Module
@@ -699,12 +706,13 @@ round polynomial `H = A_MLE · t'` evaluated at all `ℓ'` challenges, i.e. `A_M
 t'(challenges)`. Completeness therefore hinges on the algebraic identity
 `A_MLE(challenges) = compute_final_eq_value`, i.e. the multilinear extension `A_MLE` of
 `compute_A_func` evaluated at the (arbitrary, non-Boolean) challenge point equals the
-row-decomposition value of the final eq-tensor `e := eq̃(φ₀(r_suffix), φ₁(challenges))`.
+canonical row-decomposition value (`P.decomposeRows`, the left `φ₀` factor, exactly as in the live
+`compute_final_eq_value`) of the final eq-tensor `e := eq̃(φ₀(r_suffix), φ₁(challenges))`.
 
 The two helper lemmas below (MLE evaluation as an `eq̃`-weighted sum over the Boolean hypercube, and
-the `φ₀/φ₁`-tensor expansion of `e`) reduce the identity to the row-extraction laws
-`P.decomposeColumns_φ₀_mul_φ₁` / `P.decomposeColumns_sum`, exactly as in
-`decompose_rows_packMLE'`. -/
+the `φ₀/φ₁`-tensor expansion of `e`) reduce the identity to the canonical row-extraction laws
+`P.decomposeRows_φ₀_mul_φ₁` / `P.decomposeRows_sum`; the identity itself is
+`A_MLE_eval_eq_compute_final_eq_value`. -/
 
 omit [IsDomain L₀] [CharP L₀ 2] [IsDomain K₀] [Fintype K₀] [DecidableEq K₀] in
 /-- **MLE evaluation as an `eq̃`-weighted hypercube sum.** Evaluating the multilinear extension
@@ -784,21 +792,22 @@ lemma eqTilde_comm {ℓ_ : ℕ} (r r' : Fin ℓ_ → L₀) : eqTilde r r' = eqTi
   exact eqPolynomial_symm r r'
 
 omit [CharP L₀ 2] [Fintype K₀] [DecidableEq K₀] in
-/-- **DP24 §2.5 `A_MLE` final-evaluation identity (defect #10, column form).** The multilinear
+/-- **DP24 §2.5 `A_MLE` final-evaluation identity (defect #10, left-factor form).** The multilinear
 extension `A_MLE` of `compute_A_func` — the sumcheck multiplier `(RingSwitching_SumcheckMultParam
 …).multpoly` — evaluated at the (arbitrary, non-Boolean) sumcheck challenges equals the verifier's
-`compute_final_eq_value`, which reads the **column** components of the final eq-tensor
+`compute_final_eq_value`, which reads the canonical **row** components (`P.decomposeRows`, the left
+`φ₀` factor) of the final eq-tensor
 `e := eq̃(φ₀ ∘ r_suffix, φ₁ ∘ challenges)`.
 
 Term-by-term derivation: the LHS expands by `MLE_eval_eq_sum_eqTilde` into a sum over the Boolean
 hypercube of `eq̃(x, challenges) · A_func(x)`, with `A_func(x) = ∑_u β.repr(eq̃(suffix, x))_u •
 eq̃(u, r'')`. The RHS expands by `eqTilde_tensor_expand` (e = ∑_w φ₀(eq̃(w, suffix))·φ₁(eq̃(w,
-challenges))) followed by column additivity (`decomposeColumns_sum`) and the column atomic
-extraction law (`decomposeColumns_φ₀_mul_φ₁`: columns of `φ₀ a · φ₁ b` are `β.repr a • b`), giving
+challenges))) followed by canonical row additivity (`P.decomposeRows_sum`) and the row atomic
+extraction law (`P.decomposeRows_φ₀_mul_φ₁`: rows of `φ₀ a · φ₁ b` are `β.repr a • b`), giving
 `∑_u eq̃(u, r'') · ∑_w β.repr(eq̃(w, suffix))_u • eq̃(w, challenges)`. After `eqTilde` symmetry
 (`eq̃(suffix, x) = eq̃(x, suffix)`) the two double sums agree summand-wise (`Finset.sum_comm` +
-`smul`/`mul` commutation), so the column orientation is the one that makes the identity TRUE — the
-row orientation yields the transposed pairing and is false. -/
+`smul`/`mul` commutation), so the left-factor (canonical row) orientation is the one that makes the
+identity TRUE — the right-factor orientation yields the transposed pairing and is false. -/
 lemma A_MLE_eval_eq_compute_final_eq_value (ℓ ℓ' : ℕ) [NeZero ℓ] [NeZero ℓ']
     (h_l : ℓ = ℓ' + κ₀) (r_eval : Fin ℓ → L₀) (challenges : Fin ℓ' → L₀)
     (r''_batching : Fin κ₀ → L₀) :
@@ -883,10 +892,11 @@ lemma embedded_MLP_eval_eq_sum (β : Module.Basis (Fin κ₀ → Fin 2) K₀ L�
 `ŝ = embedded_MLP_eval (packMLE β t) r` carry the suffix-`eq`-weighted evaluations of `t`:
 `(decompose_rows ŝ)_u = Σ_{w ∈ {0,1}^ℓ'} t(u, w) · eq̃(w, r_suffix)`.
 
-This is the load-bearing identity for reconstructing `t(r)` from `ŝ`. It uses the *row*
-decomposition (which represents the `t'`/`φ₁` factor); the verifier's
-`performCheckOriginalEvaluation` instead uses the *column* decomposition — see the module
-note above. -/
+This is the load-bearing identity for reconstructing `t(r)` from `ŝ`. It extracts the `t'`/`φ₁`
+factor (historically called the *row* decomposition; the statement uses the canonical column
+coordinates `decompose_tensor_algebra_columns`), which is the same factor the live verifier step
+`performCheckOriginalEvaluation` reads via `P.decomposeColumns` — see the coordinate convention
+above. -/
 lemma decompose_rows_packMLE (ℓ ℓ' : ℕ) [NeZero ℓ] [NeZero ℓ'] (h_l : ℓ = ℓ' + κ₀)
     (β : Basis (Fin κ₀ → Fin 2) K₀ L₀) (t : MultilinearPoly K₀ ℓ) (r : Fin ℓ → L₀)
     (u : Fin κ₀ → Fin 2) :
@@ -988,19 +998,21 @@ consistency** identity (`sumcheckConsistencyProp`)
 
 with `H = projectToMidSumcheckPoly t' (A_MLE …) 0 Fin.elim0` (so `H = A_MLE · t'` at round 0).
 
-The left-hand side `compute_s0` is a sum over `{0,1}^κ` of `eqTilde`-weighted **row components**
-and is **independent of the evaluation domain `𝓑 : Fin 2 ↪ L`**. The right-hand side is the
-sumcheck sum over the 2-element domain `{𝓑 0, 𝓑 1}^{ℓ'}` and is genuinely **`𝓑`-dependent**
-(the variable `𝓑` is declared free in `BatchingPhase`/`SumcheckPhase`, with no constraint pinning
-it to the Boolean embedding `𝓑 0 = 0, 𝓑 1 = 1`).
+**Historical gap analysis (since resolved by pinning the domain).** The left-hand side
+`compute_s0` is a sum over `{0,1}^κ` of `eqTilde`-weighted left-factor components (its live
+definition uses the canonical rows `P.decomposeRows`) and
+is **independent of the evaluation domain `𝓑 : Fin 2 ↪ L`**. The right-hand side is the sumcheck
+sum over the 2-element domain `{𝓑 0, 𝓑 1}^{ℓ'}` and is genuinely **`𝓑`-dependent**. When this
+analysis was written, `𝓑` was declared free in `BatchingPhase`/`SumcheckPhase`.
 
 The two lemmas below make this concrete: the consistency sum of the linear polynomial `X 0`
 equals `𝓑 0 + 𝓑 1`, so no single `𝓑`-free target can satisfy consistency simultaneously for two
-domains with different element sums. Consequently the round-2
-`batchingKStateProp`/`batchingReduction_perfectCompleteness` sumcheck-consistency obligation is
-**not satisfiable for a free `𝓑`**; honestly closing it requires either pinning `𝓑` to the
-Boolean embedding or reorienting `compute_s0`/`sumcheckConsistencyProp` — both of which would
-alter the existing free declarations. See the module report. -/
+domains with different element sums; the consistency obligation is therefore **not satisfiable
+for a free `𝓑`**. **Current status:** the actual phase code pins the Boolean domain — the
+relations use `sumcheckConsistencyProp (boolDomain L _) …` (see the relation definitions above and
+`BatchingPhase.lean`), and the sum-check phase is built over `boolDomain L ℓ'`
+(`SumcheckPhase.lean`) — so this obstruction does not apply to the live protocol. The lemmas
+remain as the record of why pinning is necessary. -/
 section SumcheckOrientation
 open Module Finset
 

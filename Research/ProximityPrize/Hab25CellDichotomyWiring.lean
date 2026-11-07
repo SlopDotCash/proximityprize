@@ -19,7 +19,15 @@ stack's bad scalars into a degenerate cell (explicitly bounded) plus per-irreduc
 cells with uniform decode families.  This file converts that cell structure into a
 `Hab25JohnsonDichotomyData` bundle — the residual shape of the dichotomy funnel — given
 exactly one per-cell input: **each factor cell is small or admits an improving affine
-pair** ([Hab25] Claim 1, the K4/Hensel dichotomy).
+pair** (modelled on [Hab25] Claim 1, the K4/Hensel dichotomy).
+
+**Honesty note (audit CW-B19-04).** In this interface the improving pair `d₀ d₁` is
+existentially free, not bound to the stack or to an affine-captured degree-`<k` pair, so the
+disjunct is equivalent to `E.card ≤ n` (`exists_improvingPair_iff_card_le`) and the per-cell
+input `himpr` is equivalent to the plain cardinality bound `E.card ≤ max T n`
+(`small_or_improvingPair_iff_card_le`). The Claim 1 / Hensel content is *not* present in this
+input; it is supplied only where `himpr` is actually proved (e.g. `cell_improvement_of_window`,
+via the pencil and affine capture).
 
 The degenerate cell takes the small branch outright (its explicit bound is below the
 threshold `T` by hypothesis); factor cells take whichever branch the per-cell input
@@ -44,9 +52,45 @@ open scoped NNReal ENNReal
 
 variable {F₀ : Type} [Field F₀] [Fintype F₀] [DecidableEq F₀]
 
+omit [Fintype F₀] in
+/-- **The "improving pair" disjunct is a pure cardinality condition (audit CW-B19-04).**
+With `d₀ d₁` existentially free (not tied to the stack or to any affine-captured degree-`<k`
+pair), `∃ d₀ d₁, ∀ z ∈ E, ∃ x ∈ disagreeSet d₀ d₁, affineGap d₀ d₁ z x = 0` holds iff
+`E.card ≤ |ι|`. The forward direction is `factorImprove_card_le_n`; for the converse inject
+`E` into the coordinates and set `d₁ ≡ 1`, `d₀ (x_z) = -z`. Consequently every `himpr`
+hypothesis in this file (small branch `E.card ≤ T` *or* improving pair) is equivalent to
+`E.card ≤ max T n`: it carries no [Hab25] Claim 1 / Hensel content of its own. -/
+theorem exists_improvingPair_iff_card_le {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (E : Finset F₀) :
+    (∃ d₀ d₁ : ι → F₀, ∀ z ∈ E, ∃ x ∈ disagreeSet d₀ d₁, affineGap d₀ d₁ z x = 0) ↔
+      E.card ≤ Fintype.card ι := by
+  classical
+  constructor
+  · rintro ⟨d₀, d₁, h⟩
+    exact factorImprove_card_le_n d₀ d₁ E h
+  · intro hcard
+    have hcard' : Fintype.card E ≤ Fintype.card ι := by
+      simpa using hcard
+    obtain ⟨f⟩ := Function.Embedding.nonempty_of_card_le hcard'
+    refine ⟨fun x => -(Function.extend f (fun w : E => (w : F₀)) 0 x),
+      fun _ => 1, fun z hz => ⟨f ⟨z, hz⟩, ?_, ?_⟩⟩
+    · simp [disagreeSet]
+    · simp only [affineGap, f.injective.extend_apply, mul_one, neg_add_cancel]
+
+omit [Fintype F₀] in
+/-- The small-or-improving disjunct used as `himpr` below is equivalent to the plain
+cardinality bound `E.card ≤ max T |ι|`. -/
+theorem small_or_improvingPair_iff_card_le {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (E : Finset F₀) (T : ℕ) :
+    (E.card ≤ T ∨ ∃ d₀ d₁ : ι → F₀, ∀ z ∈ E,
+        ∃ x ∈ disagreeSet d₀ d₁, affineGap d₀ d₁ z x = 0) ↔
+      E.card ≤ max T (Fintype.card ι) := by
+  rw [exists_improvingPair_iff_card_le, le_max_iff]
+
 open Classical in
 /-- **Cells to dichotomy bundle.**  The in-tree cell production, together with the
-per-factor-cell dichotomy (small or improving pair — [Hab25] Claim 1), yields a
+per-factor-cell dichotomy (small or improving pair, equivalent to `E.card ≤ max T n` by
+`small_or_improvingPair_iff_card_le`), yields a
 `Hab25JohnsonDichotomyData` bundle whose disagreement set is exactly the stack's bad
 scalars and whose threshold is `T`. -/
 theorem exists_dichotomyData_of_cell_improvement
@@ -382,78 +426,22 @@ theorem badCount_le_numeric_tight_of_window
       exact_mod_cast h
     have h1 := GuruswamiSudan.natDegree_le_of_natWeightedDegree (by omega) hnat
     rwa [Polynomial.natDegree_map_eq_of_injective hφinj] at h1
-  -- the live index: degenerate cell plus nonempty factor cells
-  set Index' : Finset (Option ((F₀[X])[X][Y])) :=
-    Index.filter (fun ij => ij = none ∨ (Ecell ij).Nonempty) with hI'
-  have hcover' : (Finset.univ.filter (fun γ : F₀ =>
-      mcaEvent ((ReedSolomon.code domain k : Set (Fin n → F₀)))
-        δ (u 0) (u 1) γ)) ⊆ Index'.biUnion Ecell := by
-    intro γ hγ
-    obtain ⟨ij, hij, hγcell⟩ := Finset.mem_biUnion.mp (hcover hγ)
-    exact Finset.mem_biUnion.mpr
-      ⟨ij, Finset.mem_filter.mpr ⟨hij, Or.inr ⟨γ, hγcell⟩⟩, hγcell⟩
-  have hI'card : Index'.card ≤ gs_degree_bound k n m / (k - 1) + 1 := by
-    have hsub : Index' ⊆ insert none
-        (((UniqueFactorizationMonoid.factors Q₀).toFinset.filter
-          (fun q => 1 ≤ q.natDegree)).image some) := by
-      intro ij hij
-      obtain ⟨hijIdx, hcase⟩ := Finset.mem_filter.mp hij
-      match ij with
-      | none => exact Finset.mem_insert_self _ _
-      | some R =>
-        rcases hcase with h | hne
-        · exact absurd h (by simp)
-        · refine Finset.mem_insert_of_mem (Finset.mem_image.mpr ⟨R, ?_, rfl⟩)
-          obtain ⟨hRfac, hRdata⟩ := hfactor R hijIdx
-          refine Finset.mem_filter.mpr ⟨hRfac, ?_⟩
-          obtain ⟨γ, hγ⟩ := hne
-          obtain ⟨hQγ, hdvdγ⟩ := hRdata γ hγ
-          have hRdvd : R ∣ Q₀ :=
-            UniqueFactorizationMonoid.dvd_of_mem_factors (Multiset.mem_toFinset.mp hRfac)
-          have hRγ0 : R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ)) ≠ 0 := by
-            intro habs
-            obtain ⟨S, hS⟩ := hRdvd
-            apply hQγ
-            rw [hS, Polynomial.map_mul, habs, zero_mul]
-          have h1 := Polynomial.natDegree_le_of_dvd hdvdγ hRγ0
-          rw [Polynomial.natDegree_X_sub_C] at h1
-          exact le_trans h1 (Polynomial.natDegree_map_le)
-    calc Index'.card
-        ≤ (insert none
-            (((UniqueFactorizationMonoid.factors Q₀).toFinset.filter
-              (fun q => 1 ≤ q.natDegree)).image some)).card :=
-          Finset.card_le_card hsub
-      _ ≤ (((UniqueFactorizationMonoid.factors Q₀).toFinset.filter
-              (fun q => 1 ≤ q.natDegree)).image some).card + 1 :=
-          Finset.card_insert_le _ _
-      _ ≤ ((UniqueFactorizationMonoid.factors Q₀).toFinset.filter
-              (fun q => 1 ≤ q.natDegree)).card + 1 :=
-          Nat.add_le_add_right Finset.card_image_le 1
-      _ ≤ Q₀.natDegree + 1 := Nat.add_le_add_right (card_posDegree_factors_le h0) 1
-      _ ≤ gs_degree_bound k n m / (k - 1) + 1 := Nat.add_le_add_right hydeg 1
-  -- every live cell is small
-  have hcell : ∀ ij ∈ Index', (Ecell ij).card ≤ T := by
-    intro ij hij
-    have hijIdx := (Finset.mem_filter.mp hij).1
-    match ij with
-    | none => exact le_trans hnonecard hT
-    | some R =>
-        obtain ⟨hRfac, hRdata⟩ := hfactor R hijIdx
-        have hRirr : Irreducible R :=
-          UniqueFactorizationMonoid.irreducible_of_factor R
-            (Multiset.mem_toFinset.mp hRfac)
-        exact hK4_of_window (lt_trans Nat.zero_lt_one hk1) hwin hTn
-          (Ecell (some R)) P R hRirr
-          (fun γ hγ => hdec (some R) hijIdx γ hγ)
-          (fun γ hγ => (hRdata γ hγ).2)
-  calc (Finset.univ.filter (fun γ : F₀ =>
-        mcaEvent ((ReedSolomon.code domain k : Set (Fin n → F₀)))
-          δ (u 0) (u 1) γ)).card
-      ≤ (Index'.biUnion Ecell).card := Finset.card_le_card hcover'
-    _ ≤ ∑ ij ∈ Index', (Ecell ij).card := Finset.card_biUnion_le
-    _ ≤ ∑ _ij ∈ Index', T := Finset.sum_le_sum hcell
-    _ = Index'.card * T := by rw [Finset.sum_const, smul_eq_mul]
-    _ ≤ (gs_degree_bound k n m / (k - 1) + 1) * T := Nat.mul_le_mul_right T hI'card
+  -- count the live cells (`card_le_of_live_factor_cells`), each bounded by `T`
+  refine card_le_of_live_factor_cells h0 hydeg Index Ecell _ hcover
+    (fun R hR => ⟨(hfactor R hR).1, fun γ hγ =>
+      ⟨((hfactor R hR).2 γ hγ).1, P γ, ((hfactor R hR).2 γ hγ).2⟩⟩) ?_
+  intro ij hijIdx
+  match ij with
+  | none => exact le_trans hnonecard hT
+  | some R =>
+      obtain ⟨hRfac, hRdata⟩ := hfactor R hijIdx
+      have hRirr : Irreducible R :=
+        UniqueFactorizationMonoid.irreducible_of_factor R
+          (Multiset.mem_toFinset.mp hRfac)
+      exact hK4_of_window (lt_trans Nat.zero_lt_one hk1) hwin hTn
+        (Ecell (some R)) P R hRirr
+        (fun γ hγ => hdec (some R) hijIdx γ hγ)
+        (fun γ hγ => (hRdata γ hγ).2)
 
 open Classical in
 /-- **The tight window numeric edge.**  `JohnsonNumericBound` through the complete GS
@@ -510,8 +498,9 @@ theorem johnsonNumericBound_of_window_closed
 
 open Classical in
 /-- **The tight numeric count from the per-cell disjunct** — day-22's dichotomy route
-merged with day-28's live-index bound: under `himpr` (small-or-improving, the
-[Hab25] Claim 1 shape), every stack's bad scalars number at most
+merged with day-28's live-index bound: under `himpr` (small-or-improving, modelled on the
+[Hab25] Claim 1 shape, but equivalent to the per-cell bound `E.card ≤ max T n` by
+`small_or_improvingPair_iff_card_le`), every stack's bad scalars number at most
 `(D/(k-1)+1) · max T n`. -/
 theorem badCount_le_numeric_tight_of_himpr
     {n k m : ℕ} [NeZero n] (domain : Fin n ↪ F₀)
@@ -555,86 +544,30 @@ theorem badCount_le_numeric_tight_of_himpr
       exact_mod_cast h
     have h1 := GuruswamiSudan.natDegree_le_of_natWeightedDegree (by omega) hnat
     rwa [Polynomial.natDegree_map_eq_of_injective hφinj] at h1
-  set Index' : Finset (Option ((F₀[X])[X][Y])) :=
-    Index.filter (fun ij => ij = none ∨ (Ecell ij).Nonempty) with hI'
-  have hcover' : (Finset.univ.filter (fun γ : F₀ =>
-      mcaEvent ((ReedSolomon.code domain k : Set (Fin n → F₀)))
-        δ (u 0) (u 1) γ)) ⊆ Index'.biUnion Ecell := by
-    intro γ hγ
-    obtain ⟨ij, hij, hγcell⟩ := Finset.mem_biUnion.mp (hcover hγ)
-    exact Finset.mem_biUnion.mpr
-      ⟨ij, Finset.mem_filter.mpr ⟨hij, Or.inr ⟨γ, hγcell⟩⟩, hγcell⟩
-  have hI'card : Index'.card ≤ gs_degree_bound k n m / (k - 1) + 1 := by
-    have hsub : Index' ⊆ insert none
-        (((UniqueFactorizationMonoid.factors Q₀).toFinset.filter
-          (fun q => 1 ≤ q.natDegree)).image some) := by
-      intro ij hij
-      obtain ⟨hijIdx, hcase⟩ := Finset.mem_filter.mp hij
-      match ij with
-      | none => exact Finset.mem_insert_self _ _
-      | some R =>
-        rcases hcase with h | hne
-        · exact absurd h (by simp)
-        · refine Finset.mem_insert_of_mem (Finset.mem_image.mpr ⟨R, ?_, rfl⟩)
-          obtain ⟨hRfac, hRdata⟩ := hfactor R hijIdx
-          refine Finset.mem_filter.mpr ⟨hRfac, ?_⟩
-          obtain ⟨γ, hγ⟩ := hne
-          obtain ⟨hQγ, hdvdγ⟩ := hRdata γ hγ
-          have hRdvd : R ∣ Q₀ :=
-            UniqueFactorizationMonoid.dvd_of_mem_factors (Multiset.mem_toFinset.mp hRfac)
-          have hRγ0 : R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ)) ≠ 0 := by
-            intro habs
-            obtain ⟨S, hS⟩ := hRdvd
-            apply hQγ
-            rw [hS, Polynomial.map_mul, habs, zero_mul]
-          have h1 := Polynomial.natDegree_le_of_dvd hdvdγ hRγ0
-          rw [Polynomial.natDegree_X_sub_C] at h1
-          exact le_trans h1 (Polynomial.natDegree_map_le)
-    calc Index'.card
-        ≤ (insert none
-            (((UniqueFactorizationMonoid.factors Q₀).toFinset.filter
-              (fun q => 1 ≤ q.natDegree)).image some)).card :=
-          Finset.card_le_card hsub
-      _ ≤ (((UniqueFactorizationMonoid.factors Q₀).toFinset.filter
-              (fun q => 1 ≤ q.natDegree)).image some).card + 1 :=
-          Finset.card_insert_le _ _
-      _ ≤ ((UniqueFactorizationMonoid.factors Q₀).toFinset.filter
-              (fun q => 1 ≤ q.natDegree)).card + 1 :=
-          Nat.add_le_add_right Finset.card_image_le 1
-      _ ≤ Q₀.natDegree + 1 := Nat.add_le_add_right (card_posDegree_factors_le h0) 1
-      _ ≤ gs_degree_bound k n m / (k - 1) + 1 := Nat.add_le_add_right hydeg 1
-  have hcell : ∀ ij ∈ Index', (Ecell ij).card ≤ max T (Fintype.card (Fin n)) := by
-    intro ij hij
-    have hijIdx := (Finset.mem_filter.mp hij).1
-    match ij with
-    | none => exact le_trans (le_trans hnonecard hT0) (le_max_left _ _)
-    | some R =>
-        obtain ⟨hRfac, hRdata⟩ := hfactor R hijIdx
-        have hRirr : Irreducible R :=
-          UniqueFactorizationMonoid.irreducible_of_factor R
-            (Multiset.mem_toFinset.mp hRfac)
-        rcases himpr R (Ecell (some R)) P hRirr
-          (fun γ hγ => hdec (some R) hijIdx γ hγ)
-          (fun γ hγ => (hRdata γ hγ).2) with hsmall | ⟨d₀, d₁, himp⟩
-        · exact le_trans hsmall (le_max_left _ _)
-        · exact le_trans (factorImprove_card_le_n d₀ d₁ (Ecell (some R)) himp)
-            (le_max_right _ _)
-  calc (Finset.univ.filter (fun γ : F₀ =>
-        mcaEvent ((ReedSolomon.code domain k : Set (Fin n → F₀)))
-          δ (u 0) (u 1) γ)).card
-      ≤ (Index'.biUnion Ecell).card := Finset.card_le_card hcover'
-    _ ≤ ∑ ij ∈ Index', (Ecell ij).card := Finset.card_biUnion_le
-    _ ≤ ∑ _ij ∈ Index', max T (Fintype.card (Fin n)) := Finset.sum_le_sum hcell
-    _ = Index'.card * max T (Fintype.card (Fin n)) := by
-        rw [Finset.sum_const, smul_eq_mul]
-    _ ≤ (gs_degree_bound k n m / (k - 1) + 1) * max T (Fintype.card (Fin n)) :=
-        Nat.mul_le_mul_right _ hI'card
+  -- count the live cells (`card_le_of_live_factor_cells`), each bounded by `max T n`
+  refine card_le_of_live_factor_cells h0 hydeg Index Ecell _ hcover
+    (fun R hR => ⟨(hfactor R hR).1, fun γ hγ =>
+      ⟨((hfactor R hR).2 γ hγ).1, P γ, ((hfactor R hR).2 γ hγ).2⟩⟩) ?_
+  intro ij hijIdx
+  match ij with
+  | none => exact le_trans (le_trans hnonecard hT0) (le_max_left _ _)
+  | some R =>
+      obtain ⟨hRfac, hRdata⟩ := hfactor R hijIdx
+      have hRirr : Irreducible R :=
+        UniqueFactorizationMonoid.irreducible_of_factor R
+          (Multiset.mem_toFinset.mp hRfac)
+      rcases himpr R (Ecell (some R)) P hRirr
+        (fun γ hγ => hdec (some R) hijIdx γ hγ)
+        (fun γ hγ => (hRdata γ hγ).2) with hsmall | ⟨d₀, d₁, himp⟩
+      · exact le_trans hsmall (le_max_left _ _)
+      · exact le_trans (factorImprove_card_le_n d₀ d₁ (Ecell (some R)) himp)
+          (le_max_right _ _)
 
 open Classical in
 /-- **Per-pair factor data from the GS cells.**  The in-tree GS cell production already
 provides the factor index family, cover, decode family, degenerate cell, and per-factor
 divisibility surface.  Given the single remaining per-cell small-or-improving disjunct
-(`himpr`), this packages those cells into the current `PerPairFactorData` consumer shape
+(`himpr`, equivalent to the per-cell bound `E.card ≤ max T n`), this packages those cells into the current `PerPairFactorData` consumer shape
 with the tight live-index bound `D/(k-1)+1`. -/
 theorem exists_perPairFactorData_of_cell_improvement
     {n k m : ℕ} [NeZero n] (domain : Fin n ↪ F₀)
@@ -741,7 +674,8 @@ theorem exists_perPairFactorData_of_cell_improvement
 
 open Classical in
 /-- **The gate-shaped conditional.**  Modulo the single per-cell disjunct production
-(the [BCIKS20] Claim 5.7 assembly), the numeric edge holds at the canonical tight
+(the [BCIKS20] Claim 5.7 assembly; note the disjunct is equivalent to the per-cell bound
+`E.card ≤ max T n`, see `small_or_improvingPair_iff_card_le`), the numeric edge holds at the canonical tight
 parameters with the arithmetic fully discharged — the unconditional
 `johnsonNumericBound_holds` is this theorem with `himpr` replaced by the assembly. -/
 theorem johnsonNumericBound_holds_of_himpr
@@ -784,6 +718,8 @@ theorem johnsonNumericBound_holds_of_himpr
 end CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame
 
 /-! ## Axiom audit -/
+#print axioms CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame.exists_improvingPair_iff_card_le
+#print axioms CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame.small_or_improvingPair_iff_card_le
 #print axioms CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame.exists_dichotomyData_of_cell_improvement
 #print axioms CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame.badCount_le_of_cell_improvement
 #print axioms CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame.cell_improvement_of_window

@@ -52,6 +52,17 @@ Prop 5.5 content), the tail vanishing `hvanish` (supplied on `[k, T]` by Part 2 
 collapse, beyond `T` by the algebraic-degree lane), the decoded-side GS cargo `hdvd`/`hcong`
 (matching-factor divisibility), per-`z` unit conditions `hx`, and one global `R.Separable`.
 
+**Known defect of the `htrunc` shape (2026-10-28 audit, PG-319).**  `htrunc` truncates the
+local series in the *domain* variable `X` at the same length `n < k + 2` that indexes the
+*seed-curve* coefficients.  Combined with the Hensel identification this forces
+`(P z).coeff j = 0` for all `j ≥ n` at every good seed, so `LocalSeriesDatumOn` is
+unsatisfiable whenever a good seed carries a decoded polynomial with a nonzero coefficient of
+index `≥ k + 1` (checked: `LocalSeriesDatumOn.coeff_succ_eq_zero`,
+`not_nonempty_localSeriesDatumOn_of_coeff_succ_ne_zero`).  "Satisfiable" below refers only to
+the restricted-root repair of finding #3; it does not make the datum satisfiable for such
+decoded families.  The front doors remain valid implications; separating the `X`-truncation
+length from the `z`-curve length is open.
+
 ## References
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon
   Codes*, §5 (Prop. 5.5, Claim 5.8/5.9), §6.2, Appendix A.
@@ -359,7 +370,13 @@ members ONLY (finding #3 repaired); every field is an honest BCIKS20 §5/§6.2 o
   algebraic-degree lane);
 * `htrunc` — the per-`z` base-rational reading (§5 Claim-5.9 / Prop-5.5 content);
 * `hdvd`/`hcong` — the decoded-side GS matching-factor cargo (§6.2);
-* `hx` — per-`z` unit condition; `hR` — GS interpolant separability. -/
+* `hx` — per-`z` unit condition; `hR` — GS interpolant separability.
+
+**Caveat (PG-319).**  Because `htrunc` truncates in the domain variable `X` at the seed-curve
+length `n < k + 2`, any datum forces `(P z).coeff j = 0` for `j ≥ n` at every good seed
+(`LocalSeriesDatumOn.coeff_eq_zero_of_n_le`); the datum does not exist for decoded families
+with a nonzero `X^(k+1)` coefficient at a good seed
+(`not_nonempty_localSeriesDatumOn_of_coeff_succ_ne_zero`). -/
 structure LocalSeriesDatumOn {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     (u : WordStack F (Fin (k + 1)) ι) (P : F → Polynomial F) : Type where
   /-- the expansion centre. -/
@@ -416,6 +433,66 @@ noncomputable def curveFamilyData_of_localSeriesDatumOn {k deg : ℕ} {domain : 
     (curveHenselDatum_of_truncatedLocalRoot_genuine_on d.hHyp d.hξ d.hlc d.hR
       d.rootOn d.hx d.hvanish d.htrunc d.hdvd d.hcong)
 
+/-! ### Degree obstruction: `LocalSeriesDatumOn` conflates the two variables
+
+The field `htrunc` equates the truncation `PowerSeries.trunc n` **in the domain variable `X`**
+with the seed-curve polynomial `∑_{t < n} (z − x₀)^t • c_t`, while `hn : n < k + 2` ties the
+same `n` to the **seed-curve degree** `k`.  Together with the Hensel identification
+`P z = ∑_{t < n} (z − x₀)^t • c_t` this forces `P z = trunc_n (localSeries …)`, hence
+`(P z).coeff j = 0` for every `j ≥ n`, in particular `(P z).coeff (k + 1) = 0`, at every good
+seed — regardless of the decoded code dimension `deg`.  So the datum cannot exist as soon as
+some good seed carries a decoded polynomial with a nonzero `X`-coefficient of index `≥ k + 1`
+(possible whenever `deg > k + 1`).  A concrete strict-regime instance (2026-10-28 audit,
+PG-319; source-level derivation, not a Lean-elaborated finite-field instance): prime
+`p = 1000000000039`, domain `0, …, 11`, `deg = 3`, `k = 1`, `u₀ = eval (X²)`, `u₁ = 0`,
+`P z = X²` for every `z`; at `δ = 2/5` the strict and large-good-set triggers of
+`strictCoeffPolysLargeResidual_of_localSeriesDatumOn` hold, yet `(P z).coeff 2 = 1`.  The
+intended seed extraction itself (`c₀ = X²`, `c₁ = 0`) is fine; what is wrong is the variable
+in which `htrunc` truncates.  The repair — separating the `X`-truncation length (controlled by
+`deg`) from the `z`-curve length (controlled by `k`) and restating the rational reading in the
+correct variables — is **not** done here.  Every front door below that consumes a producer of
+`LocalSeriesDatumOn` is therefore a valid implication whose hypothesis is unsatisfiable on such
+inputs; the theorems below record the obstruction. -/
+
+omit [Nonempty ι] [DecidableEq ι] in
+/-- **`LocalSeriesDatumOn` forces the decoded polynomials to have `X`-degree `< n`.**  At every
+good seed `z`, every coefficient of `P z` of index `j ≥ d.n` vanishes (see the section note:
+`htrunc` truncates in the domain variable while `n` is bounded by the seed-curve degree). -/
+theorem LocalSeriesDatumOn.coeff_eq_zero_of_n_le {k deg : ℕ} {domain : ι ↪ F}
+    {δ : ℝ≥0} {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}
+    (d : LocalSeriesDatumOn (k := k) (deg := deg) (domain := domain) (δ := δ) u P)
+    {z : F} (hz : z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ)
+    {j : ℕ} (hj : d.n ≤ j) :
+    (P z).coeff j = 0 := by
+  have hp := (curveFamilyData_of_localSeriesDatumOn d).hPz z hz
+  change P z = ∑ t ∈ Finset.range d.n, (z - d.x₀) ^ t • d.c t at hp
+  rw [← d.htrunc z hz] at hp
+  rw [hp, PowerSeries.coeff_trunc]
+  simp [not_lt.mpr hj]
+
+omit [Nonempty ι] [DecidableEq ι] in
+/-- **`LocalSeriesDatumOn` forces `(P z).coeff (k + 1) = 0` at every good seed**, independently
+of the decoded degree bound `deg` (2026-10-28 audit, PG-319). -/
+theorem LocalSeriesDatumOn.coeff_succ_eq_zero {k deg : ℕ} {domain : ι ↪ F}
+    {δ : ℝ≥0} {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}
+    (d : LocalSeriesDatumOn (k := k) (deg := deg) (domain := domain) (δ := δ) u P)
+    {z : F} (hz : z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ) :
+    (P z).coeff (k + 1) = 0 :=
+  d.coeff_eq_zero_of_n_le hz (by have := d.hn; omega)
+
+omit [Nonempty ι] [DecidableEq ι] in
+/-- **No `LocalSeriesDatumOn` exists when some good seed has a nonzero `X^(k+1)` coefficient.**
+This is the checked form of the PG-319 obstruction: e.g. a decoded family with `P z = X²` at
+a good seed of a line (`k = 1`) admits no datum, although the seed-curve extraction
+`c₀ = X²`, `c₁ = 0` is perfectly valid. -/
+theorem not_nonempty_localSeriesDatumOn_of_coeff_succ_ne_zero {k deg : ℕ} {domain : ι ↪ F}
+    {δ : ℝ≥0} {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}
+    {z : F} (hz : z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ)
+    (hne : (P z).coeff (k + 1) ≠ 0) :
+    ¬ Nonempty (LocalSeriesDatumOn (k := k) (deg := deg) (domain := domain) (δ := δ) u P) := by
+  rintro ⟨d⟩
+  exact hne (d.coeff_succ_eq_zero hz)
+
 omit [Nonempty ι] [DecidableEq ι] in
 /-- **`StrictCoeffPolysResidual` from a per-`(u, P)` restricted-root analytic producer.**
 The issue-#304 strict Johnson extraction core (`ProximityGap.StrictCoeffPolysResidual`,
@@ -469,8 +546,11 @@ theorem strictCoeffPolysLargeResidual_of_localSeriesDatumOn
 omit [DecidableEq ι] in
 /-- **Strict square-root-radius keystone front door from the restricted-root analytic
 producer.**  The §5 keystone goal `δ_ε_correlatedAgreementCurves` in the strict Johnson
-regime, from per-`(u, P)` restricted-root analytic data — every hypothesis an honest,
-*satisfiable* BCIKS20 §5/§6.2 obligation. -/
+regime, from per-`(u, P)` restricted-root analytic data.  The root demands are satisfiable
+(finding #3), but the `htrunc` field of `LocalSeriesDatumOn` is not satisfiable for decoded
+families with a nonzero `X^(k+1)` coefficient at a good seed (PG-319,
+`not_nonempty_localSeriesDatumOn_of_coeff_succ_ne_zero`), so `hInput` cannot be produced in
+general; this is a valid implication, not a discharge. -/
 theorem correlatedAgreement_affine_curves_johnson_of_localSeriesDatumOn_strict
     {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
@@ -620,6 +700,9 @@ end ArkLib
 #print axioms ArkLib.FaithfulCurveExtraction.curveFamilyData_of_truncatedLocalRoot_on
 #print axioms ArkLib.FaithfulCurveExtraction.LocalSeriesDatumOn
 #print axioms ArkLib.FaithfulCurveExtraction.curveFamilyData_of_localSeriesDatumOn
+#print axioms ArkLib.FaithfulCurveExtraction.LocalSeriesDatumOn.coeff_eq_zero_of_n_le
+#print axioms ArkLib.FaithfulCurveExtraction.LocalSeriesDatumOn.coeff_succ_eq_zero
+#print axioms ArkLib.FaithfulCurveExtraction.not_nonempty_localSeriesDatumOn_of_coeff_succ_ne_zero
 #print axioms ArkLib.FaithfulCurveExtraction.strictCoeffPolysResidual_of_localSeriesDatumOn
 #print axioms ArkLib.FaithfulCurveExtraction.strictCoeffPolysLargeResidual_of_localSeriesDatumOn
 #print axioms ArkLib.FaithfulCurveExtraction.correlatedAgreement_affine_curves_johnson_of_localSeriesDatumOn_strict

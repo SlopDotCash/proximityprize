@@ -7,6 +7,7 @@ Authors: ArkLib Contributors
 import Research.ProximityPrize.LDThresholdElias
 import Research.ProximityPrize.LDThresholdHalfDist
 import Research.ProximityPrize.Lattice2
+import Research.ProximityPrize.PrizeRateBounds
 
 /-!
 # Four-rate Johnson/Elias bracket certificates for the faithful list-decoding threshold
@@ -17,9 +18,10 @@ list-decoding lattice threshold to a single index *when* the squared-Johnson cer
 the Elias-volume certificate land on **adjacent** lattice indices `τ` and `τ + 1`.
 
 At the actual ABF26 prize parameters the Johnson floor (`≈ 1 − √ρ`) and the
-Elias/capacity ceiling (`≈ 1 − H_q(ρ) < 1 − ρ`) are separated by a constant fraction of
-`n`, so the certified indices are *not* adjacent and the exact resolver does not apply.  The
-honest, generally-applicable deliverable — requested as the fallback in issue #56 — is the
+Elias/capacity ceiling (the list-decoding capacity radius `≈ H_q^{-1}(1 − ρ) ≤ 1 − ρ`) are
+separated by a constant fraction of `n`, so the certified indices are *not* adjacent and the
+exact resolver does not apply.  The honest, generally-applicable deliverable — requested as the
+fallback in issue #56 — is the
 **bracket** form: from a squared-Johnson lower certificate at `τ_lo r` and an Elias-volume
 upper certificate at `τ_hi r` (no adjacency required), conclude per rate
 
@@ -157,7 +159,7 @@ theorem listPrizeLattice_bracketed_of_johnson_sq_and_elias
 
 The Johnson/Elias bracket above is the sharpest current route but still needs
 per-rate numeric certificates.  The half-distance floor and capacity ceiling from
-`GrandChallengeLDThresholdHalfDist.lean` are weaker but unconditional once the
+`LDThresholdHalfDist.lean` are weaker but unconditional once the
 degree side conditions and the prize budget are in force.  The next theorem exposes
 that completely discharged sandwich directly on the four ABF26 prize rates.
 -/
@@ -203,41 +205,6 @@ lemma one_sixteenth_le_prizeRates (r : Fin 4) : (1 / 16 : ℝ≥0) ≤ prizeRate
   have hpow : (2 : ℝ≥0) ^ (r.val + 1) ≤ 2 ^ (4 : ℕ) :=
     pow_le_pow_right₀ one_le_two (by omega)
   exact div_le_div_of_nonneg_left (by norm_num) (by positivity) hpow
-
-/-- Every ABF26 prize rate is at most `1/2`. -/
-lemma prizeRates_le_half (r : Fin 4) : prizeRates r ≤ 1 / 2 := by
-  unfold prizeRates
-  have hpow : (2 : ℝ≥0) ^ (1 : ℕ) ≤ 2 ^ (r.val + 1) :=
-    pow_le_pow_right₀ one_le_two (by omega)
-  rw [pow_one] at hpow
-  exact div_le_div_of_nonneg_left (by norm_num) (by norm_num) hpow
-
-omit [Nonempty ι] [DecidableEq ι] in
-/-- If the evaluation domain has at least two points, each prize degree is strictly
-below the block length in the form `k_r + 1 ≤ n`. -/
-lemma prizeRate_floor_add_one_le (r : Fin 4) (hn : 2 ≤ Fintype.card ι) :
-    ⌊prizeRates r * (Fintype.card ι : ℝ≥0)⌋₊ + 1 ≤ Fintype.card ι := by
-  set k := ⌊prizeRates r * (Fintype.card ι : ℝ≥0)⌋₊ with hk_def
-  have hkr : (k : ℝ≥0) ≤ (1 / 2) * (Fintype.card ι : ℝ≥0) := by
-    rw [hk_def]
-    refine le_trans (Nat.floor_le (by positivity)) ?_
-    gcongr
-    exact prizeRates_le_half r
-  have hcast : ((k + 1 : ℕ) : ℝ≥0) ≤ (Fintype.card ι : ℝ≥0) := by
-    push_cast
-    calc (k : ℝ≥0) + 1
-        ≤ (1 / 2) * (Fintype.card ι : ℝ≥0) + 1 := by gcongr
-      _ ≤ (1 / 2) * (Fintype.card ι : ℝ≥0) +
-            (1 / 2) * (Fintype.card ι : ℝ≥0) := by
-          gcongr
-          calc (1 : ℝ≥0) = (1 / 2) * 2 := by norm_num
-            _ ≤ (1 / 2) * (Fintype.card ι : ℝ≥0) := by
-                gcongr
-                exact_mod_cast hn
-      _ = (Fintype.card ι : ℝ≥0) := by
-          rw [← add_mul]
-          norm_num
-  exact_mod_cast hcast
 
 omit [Nonempty ι] [DecidableEq ι] in
 /-- If the evaluation domain has at least sixteen points, every ABF26 prize degree is
@@ -507,24 +474,28 @@ theorem listPrizeLattice_bracketed_of_postRIM_frontier
     frontier.hhi_pos frontier.hhi_lt frontier.hq1 frontier.hP frontier.hsq
     frontier.hpow frontier.hvol frontier.hne
 
-/-! ## Non-vacuity: the certificate inequalities are concretely dischargeable
+/-! ## Arithmetic sanity checks for the numeric certificate cores
 
-The per-rate hypotheses above are not vacuous: for a `[4, 2, 3]` code over `𝔽₃`
-(`n = 4`, `q = 3`, `minDist = 3`, hence `n − minDist = k − 1 = 1`, `finrank = 2`), the
-squared-Johnson inequality holds at lattice index `1` and the Elias-volume inequality holds
-at index `2` (with `ℓ = 2`, `m = 1`, budget `ε* = 2/3`, so `ε*·q = 2 = ℓ^m`).  These are
-*adjacent*, so on this instance the exact resolver
-`listLatticeThreshold_eq_of_johnson_sq_and_elias_next` would pin the threshold to `1`.
-The two witnesses below discharge the numeric cores by `norm_num` — including evaluating
-the genuine `hammingBallVolume` definition — confirming the machinery fires.
+**Scope (audit CW-B20-10).**  The two `demo_*` lemmas below are *arithmetic-only* checks:
+they verify the bare real-number inequalities `25/3 > 16/3` and `33/9 > 2` (the latter by
+evaluating the genuine `hammingBallVolume` definition, `Vol₃(2, 4) = 1 + 8 + 24 = 33`) with the
+parameters one would plug in for a `[4, 2, 3]` code over `𝔽₃` (`n = 4`, `q = 3`, `minDist = 3`,
+`ℓ = 2`, `m = 1`, budget `ε* = 2/3`, so `ε*·q = 2 = ℓ^m`).  They do **not** instantiate any
+theorem of this file: no code `C`, no `hne`, no `hpow` is supplied, and the four-rate theorems
+fix `ε* = GrandChallenges.epsStar = 2^-128`, not `2/3`.  Such a `[4, 2, 3]₃` code (e.g. the
+tetracode) exists but is not one of the prize-rate Reed–Solomon instances the four-rate
+theorems are about (and `Fin 4 ↪ ZMod 3` does not exist, so it is not an RS code over `𝔽₃`).
+On those parameters the two certified indices `1` and `2` would be adjacent, so the exact
+resolver `listLatticeThreshold_eq_of_johnson_sq_and_elias_next` would be the applicable form.
 
 At the *prize* rates `ρ ∈ {1/2, 1/4, 1/8, 1/16}` with `ε* = 2^{-128}` the Johnson floor
-(`≈ 1 − √ρ`) and the Elias ceiling (`≈ 1 − H_q(ρ) < 1 − ρ`) are a constant fraction of `n`
+(`≈ 1 − √ρ`) and the Elias ceiling (`≈ H_q^{-1}(1 − ρ) ≤ 1 − ρ`) are a constant fraction of `n`
 apart, so the certified indices are *not* adjacent — there the bracket above is the
 applicable form, and it is non-empty because `1 − √ρ < 1 − ρ` strictly for `ρ ∈ (0,1)`. -/
 
-/-- **Squared-Johnson core is dischargeable.**  The optimal-β Johnson inequality at lattice
-index `1` for a `[4,2,3]₃` code (`n=4`, `q=3`, `n−minDist = 1`, `ℓ=2`) holds — `25/3 > 16/3`. -/
+/-- **Squared-Johnson arithmetic check (no code instantiated).**  The optimal-β Johnson
+inequality's numeric core at lattice index `1` with `[4,2,3]₃` parameters (`n=4`, `q=3`,
+`n−minDist = 1`, `ℓ=2`) — the bare inequality `25/3 > 16/3`. -/
 theorem demo_johnson_sq_n4_q3 :
     ((2 : ℝ) + 1)
         * ((((4 - 1 : ℕ) : ℝ)) - (4 : ℝ) / 3) ^ 2
@@ -532,8 +503,8 @@ theorem demo_johnson_sq_n4_q3 :
         * ((4 : ℝ) * (1 - 1 / 3) + (2 : ℝ) * (((4 - 3 : ℕ) : ℝ) - (4 : ℝ) / 3)) := by
   norm_num
 
-/-- **Elias-volume core is dischargeable**, evaluating the genuine `hammingBallVolume`
-definition: at index `2` the Elias volume `Vol₃(2/4, 4) = 33` over `q^{n−k} = 3² = 9` gives
+/-- **Elias-volume arithmetic check (no code instantiated)**, evaluating the genuine
+`hammingBallVolume` definition: at index `2` the Elias volume `Vol₃(2/4, 4) = 33` over `q^{n−k} = 3² = 9` gives
 `11/3`, strictly above the budget `ε*·q = 2`. -/
 theorem demo_elias_volume_n4_q3 :
     (2 : ℝ) <

@@ -8,7 +8,7 @@ import Research.ProximityPrize.Frontier._SYZ26LiftingTest
 import Research.ProximityPrize.Frontier._SYZ22StripBridge
 
 /-!
-# SYZ33: the final two strip lemmas — lemma 1 CLOSED, lemma 2 isolated, strip assembled (#466 / #507)
+# SYZ33: the final two strip lemmas — lemma 1 reduced (no stronger than counting), lemma 2 isolated, strip assembled (#466 / #507)
 
 The SYZ29–32 chain reduced the unconditional rate-`1/2` interior-band strip theorem to **two**
 named residuals (lemma 3 was closed as a case split in SYZ32 by the cluster-merge routing):
@@ -21,11 +21,11 @@ named residuals (lemma 3 was closed as a case split in SYZ32 by the cluster-merg
      polynomial rigidity, *strictly stronger* than the over-budget count (the counting corollary
      is REFUTED), with the clean overlap route covering only `δ ≤ 1/4`.
 
-This file **closes lemma 1** to a crisp, honest support hypothesis and proves the linear-algebra
-that discharges it in full, then **assembles the strip case split** at abstract `(n,k)`, `n`-uniform,
+This file **reduces lemma 1** to a crisp, honest support hypothesis (the resulting bound is no
+stronger than direct counting; see the caveat below) and proves the linear algebra of that reduction, then **assembles the strip case split** at abstract `(n,k)`, `n`-uniform,
 and instantiates it at `n ∈ {32,64}`.
 
-## Lemma 1 — CLOSED (modulo two crisp, named inputs)
+## Lemma 1 — reduced to two crisp, named inputs (no stronger than a counting bound)
 
 The exact statement `indep_mod_of_private_coord` (SYZ31) needs, per fresh functional `f i`
 (anchored on its witness support `S i`), a coordinate `c i` with `c i ∈ S i`, `c i ∉ U'` (the core
@@ -36,7 +36,7 @@ functional vanishes there — the `priv` clause, which for anchored functionals 
 * `exists_private_positions` — **the combinatorial supply.**  If the *residual supports*
   `S i ∖ U'` are pairwise **disjoint** and nonempty, a private system exists: pick `c i ∈ S i ∖ U'`;
   disjointness gives `c i ∉ S j` for `j ≠ i` (any `c i ∈ S j` would sit in `S j ∖ U' ∩ S i ∖ U'`).
-* `exists_fresh_indep_family` — **lemma 1, closed.**  Given per-fresh *blocks* `Blk i` (the
+* `exists_fresh_indep_family` — **lemma 1, reduced.**  Given per-fresh *blocks* `Blk i` (the
   `S i`-anchored dual annihilator, `dim = t − k ≥ 1`) that are anchored (`hanch`) and
   **non-degenerate** at each escaping coordinate (`hMDS`: `∀ x ∈ S i ∖ U', ∃ g ∈ Blk i, g x ≠ 0` —
   the MDS/RS-dual property, the same genericity as lemma 2, here isolated as one hypothesis), plus
@@ -44,13 +44,20 @@ functional vanishes there — the `priv` clause, which for anchored functionals 
   whose images `E.mkQ (f i)` are linearly independent.  Composed with SYZ30's codimension count
   (`fresh_card_le_codim`) this gives `#fresh ≤ finrank W − finrank E` (`fresh_card_le_codim_of_disjoint`).
 
+**Caveat — this bound is not stronger than counting.**  Under `hconf` every `e ∈ E` vanishes off
+`U'`, so `finrank E ≤ |U'|`; and pairwise-disjoint nonempty residuals `S i ∖ U' ⊆ κ ∖ U'` already
+give `p ≤ |κ| − |U'|` by direct counting.  Hence `p ≤ |κ| − finrank E` is *implied by* (indeed
+weaker than) the elementary count `p ≤ |κ| − |U'|`; the linear algebra adds no counting strength
+under these hypotheses.  The real lemma-1 content remains the support input (a).
 So lemma 1's residual is reduced from "bound `#fresh`" to the two crisp inputs: **(a)** the fresh
 residual supports are pairwise disjoint off the core (the SYZ18 distinct-support + `γ`-twist content
 — `disjoint_residual_supports` records the honest sufficient shape), and **(b)** each block is
-MDS-non-degenerate (RS duals are, the same genericity lemma 2 needs).  The `γ`-twist half is proved
-outright: `twist_pair_indep` — two shared-support scalars with **distinct** `γ` are already
-independent in the syndrome *pair* space, so support-sharing costs at most the field-`F²` factor,
-never collapses independence.
+MDS-non-degenerate (RS duals are, the same genericity lemma 2 needs).  The `γ`-twist covers only
+**two** scalars: `twist_pair_indep` — two shared-support scalars with **distinct** `γ` are
+independent in the syndrome *pair* space.  It does not extend: three or more same-support scalars
+give pair-functionals `φ∘fst + γ·φ∘snd`, all in `span{φ∘fst, φ∘snd}` (dimension `≤ 2`), so they are
+linearly **dependent** — support-sharing does collapse independence beyond two scalars per
+support.
 
 ## Lemma 2 — isolated (the one open analytic residual, unchanged)
 
@@ -79,7 +86,7 @@ SYZ22 `SuperadditiveUnion` realizability filled; and (iv) the `MCAThresholdLedge
 count bound `#bad ≤ n − 1` to the `δ*` floor.  None of (i)–(iv) is a *cheap* wire — the ledger
 consumes a **lower** bound on `mcaDeltaStar` (the BGK/incidence floor, `_PrizeFloorOfBGK`), whereas
 the strip supplies the **union/count** ceiling; joining them is the SYZ22 realizability step, still
-open.  So SYZ33 does **not** deliver a new unconditional `δ*` statement; it closes lemma 1 and
+open.  So SYZ33 does **not** deliver a new unconditional `δ*` statement; it reduces lemma 1 and
 assembles the merged branch, leaving lemma 2 as the lone open analytic residual.
 
 All results axiom-clean (`propext`/`Classical.choice`/`Quot.sound`); no `sorry`, no
@@ -132,13 +139,13 @@ def DisjointResidualSupports {p : ℕ} (S : Fin p → Finset κ) (U' : Finset κ
 
 end PrivateSupply
 
-/-! ## Lemma 1 — the closed independence family (linear algebra discharged in full) -/
+/-! ## Lemma 1 — the independence family (linear algebra discharged; no stronger than counting) -/
 
 section FreshIndep
 
 variable {F κ : Type*} [Field F] [DecidableEq κ]
 
-/-- **Lemma 1, closed.**  Given, per fresh index `i`, a *block* `Blk i ≤ (κ → F)` (the `S i`-anchored
+/-- **Lemma 1, reduced.**  Given, per fresh index `i`, a *block* `Blk i ≤ (κ → F)` (the `S i`-anchored
 dual annihilator, `dim = t − k ≥ 1`) such that:
 * `hconf` — the core envelope `E` is confined to `U'` (every `e ∈ E` vanishes off `U'`);
 * `hanch` — each block is anchored on `S i` (every `g ∈ Blk i` vanishes off `S i`);
@@ -169,10 +176,11 @@ theorem exists_fresh_indep_family {p : ℕ}
   · intro i e he; exact hconf e he (c i) (hcU i)
   · intro i j hij; exact hanch j (f j) (hfBlk j) (c i) (hcpriv i j hij)
 
-/-- **Fresh count from the closed family.**  Composing `exists_fresh_indep_family` with SYZ30's
+/-- **Fresh count from the independence family.**  Composing `exists_fresh_indep_family` with SYZ30's
 codimension count: the number `p` of fresh functionals is bounded by `finrank (κ → F) − finrank E`.
-This is the honest lemma-1 bound, now resting only on the disjoint-residual support shape and MDS
-non-degeneracy. -/
+It rests on the disjoint-residual support shape and MDS non-degeneracy.  Caveat: under these
+hypotheses the bound is already implied by counting — `hconf` gives `finrank E ≤ |U'|`, and the
+pairwise-disjoint nonempty residuals `S i ∖ U'` give `p ≤ |κ| − |U'|` directly. -/
 theorem fresh_card_le_codim_of_disjoint [Fintype κ] {p : ℕ}
     (E : Submodule F (κ → F)) (Blk : Fin p → Submodule F (κ → F))
     (S : Fin p → Finset κ) (U' : Finset κ)
@@ -188,7 +196,7 @@ theorem fresh_card_le_codim_of_disjoint [Fintype κ] {p : ℕ}
 
 end FreshIndep
 
-/-! ## Lemma 1 — the `γ`-twist: shared support never collapses independence -/
+/-! ## Lemma 1 — the `γ`-twist: two shared-support scalars stay independent -/
 
 section GammaTwist
 
@@ -199,9 +207,10 @@ witness support (so the *same* base functional `φ` explains both, `φ v ≠ 0` 
 but have **distinct** twists `γ₀ ≠ γ₁` give **independent** pair-functionals
 `w ↦ φ(w.1) + γ·φ(w.2)` on `V × V`: any relation `a·L(γ₀) + b·L(γ₁) = 0` forces `a = b = 0`.
 
-This is the honest reason support-sharing does not collapse the fresh independence: in the doubled
-syndrome space the `(1, γ)` twist separates same-support scalars.  (Evaluate at `(v,0)`: `a+b = 0`;
-at `(0,v)`: `a·γ₀ + b·γ₁ = 0`; distinct `γ` ⟹ `a = b = 0`.) -/
+This separates **two** same-support scalars in the doubled syndrome space.  It does not scale:
+for three or more same-support scalars the pair-functionals all lie in `span{φ∘fst, φ∘snd}`
+(dimension `≤ 2`), hence are dependent.  (Evaluate at `(v,0)`: `a+b = 0`; at `(0,v)`:
+`a·γ₀ + b·γ₁ = 0`; distinct `γ` ⟹ `a = b = 0`.) -/
 theorem twist_pair_indep (φ : V →ₗ[F] F) (v : V) (hv : φ v ≠ 0)
     {γ₀ γ₁ : F} (hγ : γ₀ ≠ γ₁) {a b : F}
     (h : ∀ w : V × V, a * (φ w.1 + γ₀ * φ w.2) + b * (φ w.1 + γ₁ * φ w.2) = 0) :

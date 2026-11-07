@@ -8,27 +8,35 @@ import ArkLib.Data.CodingTheory.HigherOrderMDSReedSolomon
 import ArkLib.Data.CodingTheory.HigherOrderMDSOrderTwo
 
 /-!
-# The sharp order-3 higher-MDS law for the Reed–Solomon frame: `(sum, product)` non-collinearity
-(#389)
+# An order-3 higher-MDS criterion for the Reed–Solomon frame: `(sum, product)` non-collinearity
+(sufficient direction; #389)
 
 `HigherOrderMDSOrderTwo.lean` shows order 2 is automatic for every MDS frame, and
 `HigherOrderMDSOrderThreeFail.lean` shows order 3 can fail — exhibiting the failure mechanism for
 three disjoint pairs sharing a common **sum** (the additive-collision / `SidonModNeg`-antipodal
 mechanism).  Those failure certificates leave open the *positive* direction — the **large-`k`,
 unequal-sum frontier**: for which three-pair configurations does order 3 actually *hold*?  This
-file closes that gap for the order-3 slice with an **exact iff** and uses it to exhibit a strictly
-new failure mode.
+file proves a **sufficient** determinant condition for the order-3 slice (non-collinear
+`(sum, product)` points ⟹ order 3 holds), together with its contrapositive, and exhibits a
+strictly new failure mode. It does **not** prove the reverse implication, so it does not
+establish an exact iff (see below).
 
-## The sharp law
+## The order-3 law (one direction proved)
 
 For three pairwise-disjoint pairs `{aᵢ,bᵢ}` of the explicit Reed–Solomon frame `(1, D, D²)` in
 dimension `3`, the pair-span of `{aᵢ,bᵢ}` is the plane orthogonal to the **interpolation normal**
 `nᵢ = (Daᵢ·Dbᵢ, −(Daᵢ+Dbᵢ), 1)` (the coefficient vector of `(X−Daᵢ)(X−Dbᵢ)`).  Writing
 `sᵢ = Daᵢ+Dbᵢ`, `pᵢ = Daᵢ·Dbᵢ`, the determinant of the three normals equals the **collinearity
-determinant** of the three plane points `(sᵢ, pᵢ)` (`normalDet_eq_sumProdDet`).  Hence:
+determinant** of the three plane points `(sᵢ, pᵢ)` (`normalDet_eq_sumProdDet`).  Hence the
+**proved** direction:
 
-`order-3 generic position  ⟺  the three points (sᵢ, pᵢ) = (sum, product) are affinely
-non-collinear.`
+`the three points (sᵢ, pᵢ) = (sum, product) are affinely non-collinear  ⟹  order-3 generic
+position.`
+
+The converse (collinear `(sum, product)` points ⟹ order-3 failure), which would make this an
+exact characterization, is mathematically plausible under the stated two-distinct-points/frame
+assumptions but is **not proved in this file**; only the single collinear witness
+`distinctSum_not_isHigherMDS_three` below is checked.
 
 * `isGenericInter_three_of_normalDet` — order-3 generic position from `det(normals) ≠ 0` (Cramer:
   three independent normals force the pair-spans to meet only at `0`).
@@ -38,15 +46,18 @@ non-collinear.`
   are the special *vertical-line* collinear case, so this strictly extends the equal-sum failure
   analysis — any non-collinear triple (in particular generic unequal-sum triples over `μ_n`) is in
   order-3 generic position.
-* `sumProdDet_eq_zero_of_not_isGenericInter` — the contrapositive, completing the iff.
+* `sumProdDet_eq_zero_of_not_isGenericInter` — the contrapositive of the same implication
+  (order-3 failure ⟹ collinear). It is logically equivalent to the positive certificate and does
+  **not** supply the reverse implication; the iff is not established here.
 
 ## A strictly new failure mode
 
 `distinctSum_not_isHigherMDS_three` exhibits an explicit order-3 failure with **three pairwise
 distinct pair-sums** (`-13, -3, 5`), whose `(sum, product)` points are nonetheless collinear (on
 the line `p = −4·s − 30`).  The equal-sum lemma
-`reedSolomonFrame_not_isHigherMDS_three_of_commonPairSum` does *not* apply to it: the sharp law's
-collinearity obstruction is strictly more general than the equal-sum one.
+`reedSolomonFrame_not_isHigherMDS_three_of_commonPairSum` does *not* apply to it: the
+collinearity condition (necessary for failure, by the contrapositive above) is strictly more
+general than the equal-sum one.
 Axiom-clean.
 -/
 
@@ -142,13 +153,14 @@ theorem normalDet_eq_sumProdDet (D : ι → K) (a b : Fin 3 → ι) :
     Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.tail_cons]
   ring
 
-/-- **The unequal-sum order-3 certificate (the positive direction of the sharp law).**
+/-- **The unequal-sum order-3 certificate (the proved direction of the order-3 law).**
 Three disjoint pairs `{aᵢ,bᵢ}` whose `(sum, product)` points `(Daᵢ+Dbᵢ, Daᵢ·Dbᵢ)` are *affinely
 non-collinear* (the collinearity determinant `≠ 0`) are in order-3 generic position for the RS
 frame.  Equal pair-sums are the special collinear case (a vertical line), so this strictly extends
-the equal-sum failure analysis: the genuine obstruction is collinearity in `(sum, product)` space,
-and any non-collinear triple — in particular generic unequal-sum triples over `μ_n` — is fine.  This
-is the missing positive piece of the large-`k` unequal-sum frontier at order 3. -/
+the equal-sum failure analysis: any obstruction must come from collinearity in `(sum, product)`
+space, and any non-collinear triple — in particular generic unequal-sum triples over `μ_n` — is
+fine.  This is a sufficient condition (the positive piece of the large-`k` unequal-sum frontier at
+order 3); that every collinear triple fails is not proved here. -/
 theorem isGenericInter_three_of_sumProd_noncollinear (D : ι → K) (hD : Function.Injective D)
     (J : Fin 3 → Finset ι) (a b : Fin 3 → ι)
     (hJ : ∀ i, J i = {a i, b i}) (hab : ∀ i, a i ≠ b i)
@@ -157,10 +169,11 @@ theorem isGenericInter_three_of_sumProd_noncollinear (D : ι → K) (hD : Functi
   isGenericInter_three_of_normalDet D hD J a b hJ hab
     (by rw [normalDet_eq_sumProdDet]; exact hnc)
 
-/-- **Sharp law, contrapositive form.**  If the RS frame *fails* order-3 generic position on three
-disjoint pairs, then the `(sum, product)` points must be collinear.  Together with
-`isGenericInter_three_of_sumProd_noncollinear` this is the exact iff: order-3 generic ⟺ the three
-`(sum, product)` points are non-collinear. -/
+/-- **Contrapositive form of the positive certificate.**  If the RS frame *fails* order-3 generic
+position on three disjoint pairs, then the `(sum, product)` points must be collinear.  This is the
+contrapositive of `isGenericInter_three_of_sumProd_noncollinear` (proved from it), so it adds no
+new direction: the reverse implication "collinear ⟹ order-3 failure", needed for an exact iff,
+is not proved here. -/
 theorem sumProdDet_eq_zero_of_not_isGenericInter (D : ι → K) (hD : Function.Injective D)
     (J : Fin 3 → Finset ι) (a b : Fin 3 → ι)
     (hJ : ∀ i, J i = {a i, b i}) (hab : ∀ i, a i ≠ b i)
@@ -172,8 +185,9 @@ theorem sumProdDet_eq_zero_of_not_isGenericInter (D : ι → K) (hD : Function.I
 /-! ### A new, distinct-sum failure mode
 
 The classic order-3 failure (`reedSolomonFrame_not_isHigherMDS_three`) needs *equal pair sums*.
-The sharp law above shows the true obstruction is `(sum, product)`-collinearity, which is strictly
-weaker.  The following concrete witness has **three pairwise-distinct pair-sums** (`-13, -3, 5`),
+The certificate above shows that any order-3 failure has collinear `(sum, product)` points, a
+condition strictly weaker than equal sums (whether every collinear triple fails is the unproved
+converse).  The following concrete witness has **three pairwise-distinct pair-sums** (`-13, -3, 5`),
 yet its `(sum, product)` points are collinear (on the line `p = −4·s − 30`), so it still fails
 order-3 — a failure mode *not* covered by the equal-sum lemma. -/
 
@@ -195,10 +209,11 @@ theorem wcol_ne : wcol ≠ 0 := by
   intro h; have := congrFun h 2; simp [wcol] at this
 
 /-- **Order-3 fails on three pairs with all-distinct sums.**  The pairs `{-2,-11},{3,-6},{10,-5}`
-have pairwise-distinct sums `-13, -3, 5`, yet the RS frame fails order-3 higher MDS, because their
-`(sum, product)` points are collinear — the strictly more general obstruction the sharp law
-predicts.  The equal-sum lemma `reedSolomonFrame_not_isHigherMDS_three_of_commonPairSum` does
-**not** apply, so this is a genuinely new family of higher-order-MDS failures. -/
+have pairwise-distinct sums `-13, -3, 5`, yet the RS frame fails order-3 higher MDS; their
+`(sum, product)` points are collinear (as any failure's must be, by the contrapositive above),
+and the failure itself is verified directly via the common vector `wcol`.  The equal-sum lemma
+`reedSolomonFrame_not_isHigherMDS_three_of_commonPairSum` does **not** apply, so this is a
+genuinely new instance of higher-order-MDS failure. -/
 theorem distinctSum_not_isHigherMDS_three :
     ¬ IsHigherMDS ℚ 3 (reedSolomonFrame Dcol 3) := by
   set v := reedSolomonFrame Dcol 3 with hv

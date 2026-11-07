@@ -1000,7 +1000,7 @@ a *genuine* obligation, not the falsehood it was for the pure-`true` shell). -/
 theorem whirCheckedVectorIOP_isSecureWithGap_of_rbr (P : Params ιs F) (d : ℕ) {m0 : ℕ}
     [ReedSolomon.Smooth (P.φ 0)] [Nonempty (ιs 0)] (δ : ℝ≥0)
     (εRbr : (whirPaperTranscriptVectorSpec P d).ChallengeIdx → ℝ≥0)
-    (hSound : OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim
+    (hSound : OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
       (whirRelation m0 (P.φ 0) δ)
       (paperTranscriptOracleVerifier P d (whirVerifyChecked P d)) εRbr) :
     VectorIOP.IsSecureWithGap (whirRelation m0 (P.φ 0) 0) (whirRelation m0 (P.φ 0) δ)

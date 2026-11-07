@@ -45,22 +45,28 @@ content of the verified probes (`/tmp/circle/probe_collision_circle.py`,
 * In the usual circle method one *bounds minor arcs from above* (Weil/Vinogradov/BGK
   square-root cancellation).  Here R1 needs the **opposite**: minor arcs must carry
   ANOMALOUSLY LARGE energy `Q_minor ≥ C²/n`.
-* But in the THIN prize regime (`q ≈ n·2^128 ≫ 4^{|E|}`, the birthday threshold for
-  `|E| = 2/η = Θ(log n)`), the `ℓ`-subset sums of a free set are **collision-free**: `Q → C(|E|,ℓ)`
-  (diagonal only), so `Q_minor → C(|E|,ℓ) − C²/q ≈ C(|E|,ℓ) ≪ C²/n`.  The minor-arc energy is
-  *minimal*, not anomalous.  Numerically (probe): `Q_minor ≈ C` versus the needed `C²/n`, a gap of
-  factor `C/n = C(|E|,ℓ)/n` that **WIDENS** as `q → ∞` (deeper into the thin regime).
-* The collision-free statement is **char-0** for thin `E` (Mann/vanishing-sums-of-roots-of-unity:
-  zero relations once `|E| ≪ n`, verified `n ≥ 32`); spurious mod-`p` collisions are the height
-  gate and are *thinness-essential* (they don't occur for thin subgroups).  So **no BGK/Gauss-sum
-  cancellation enters** — the direct circle method REMOVES the analytic number theory.
+* IF the `ℓ`-subset sums of `E` are **collision-free** (the explicit hypothesis `CollisionFree`
+  below), then `Q = C(|E|,ℓ)` (diagonal only), so `Q_minor = C(|E|,ℓ) − C²/q ≈ C(|E|,ℓ) ≪ C²/n`:
+  the minor-arc energy is *minimal*, not anomalous.  Numerically (probe, on sampled sets):
+  `Q_minor ≈ C` versus the needed `C²/n`, a gap of factor `C/n`.
+* **Collision-freeness is NOT automatic.**  A birthday estimate (`q ≫ C(|E|,ℓ)² ≈ 4^{|E|}`) is a
+  statement about *random* sets; a large ambient field does not remove deterministic algebraic
+  collisions of a structured `E`.  For any order `n` divisible by `4`, the set
+  `E = {1, −1, i, −i} ⊆ μ_n` has two distinct `2`-subsets `{1,−1}` and `{i,−i}` with sum `0`, in
+  characteristic `0` and in every compatible prime field however large, although `|E| = 4` is tiny
+  relative to `n` (`not_collisionFree_of_antipodal_pairs`).  A characteristic-`0` statement would
+  need an explicit structural restriction on `E` (e.g. antipodal-free / suitably independent), which
+  the arbitrary-`E` premise here does not impose, and no deterministic producer of `CollisionFree`
+  for thin `E` is proved in this file (PG010/113/127).  What the direct circle method does show is
+  that, *granted* `CollisionFree`, no BGK/Gauss-sum cancellation enters.
 
 ## The conclusion the direct circle method delivers (HONEST verdict)
 
-In the thin prize regime the major arc is the *whole* count: `a = C(|E|,ℓ)` (no cancellation,
-verified exactly).  Hence **R1 reduces to a pure binomial inequality**, NOT a character-sum bound:
+Under `CollisionFree E ℓ` the major arc is the *whole* count: `a = C(|E|,ℓ)` (no cancellation).
+Hence, **conditional on `CollisionFree`**, R1 reduces to a pure binomial inequality, NOT a
+character-sum bound:
 
-> **R1 in the thin regime ⟺ `max_ℓ C(|E|,ℓ) ≤ q·ε*`**,  i.e. `2^{|E|}/√(π|E|/2) ≲ n`,
+> **R1 under `CollisionFree` ⟺ `max_ℓ C(|E|,ℓ) ≤ q·ε*`**,  i.e. `2^{|E|}/√(π|E|/2) ≲ n`,
 > i.e. `|E| ≤ log₂ n + ½ log₂log₂ n + O(1)`,  i.e. (with `|E| = 2/η`)
 > **the floor's gap-constant must satisfy `η ≥ (2 ln 2)/ln n · (1 + o(1))`** — equivalently the
 > floor sits at or above `δ* = 1 − ρ − (2 ln 2 + o(1))/ln n`.
@@ -68,8 +74,10 @@ verified exactly).  Hence **R1 reduces to a pure binomial inequality**, NOT a ch
 This is a **sharp threshold on the floor's `η`-constant** (an extremal list-size / binomial
 question), genuinely DIFFERENT from BGK: BGK is a per-frequency `√q` bound over the `q` characters
 of the subgroup `μ_n`; the direct minor-arc bound here is over a **poly-size family of `C(|E|,ℓ)`
-`ℓ`-subsets** and reduces to whether `E` is a *Sidon-type (`B_ℓ⁺`) set*, which is FREE in the thin
-regime (birthday) and char-0 for thin `E`.  The character sum never needs to be estimated.
+`ℓ`-subsets** and reduces to whether `E` is a *Sidon-type (`B_ℓ⁺`) set*.  That property is an
+explicit hypothesis here: it is typical for random sets (birthday heuristic) but fails for
+structured sets such as `{±1, ±i}` at every field size, and no deterministic thin-`E` producer is
+proved.  Granted it, the character sum never needs to be estimated.
 
 ## What this file proves (axiom target `[propext, Classical.choice, Quot.sound]`)
 
@@ -77,7 +85,8 @@ The circle-method *combinatorial backbone* — the exact major-arc value, the Ca
 bound, the tight collision-free identity, and the resulting binomial threshold for R1.  The analytic
 input (the no-collision claim in char `p`) is named as one explicit hypothesis `CollisionFree`,
 matching the project's modularity convention.  The point is that this hypothesis is **NOT a
-character-sum bound** — it is the `B_ℓ⁺`/Sidon property, free in the thin regime.
+character-sum bound** — it is the `B_ℓ⁺`/Sidon property.  It is not automatic (see
+`not_collisionFree_of_antipodal_pairs`), so the binomial reduction is conditional on it.
 
 ## References
 - [BCHKS25] ECCC TR25-169 / ePrint 2025/2055, Theorem 7.1, Conjecture 1.12.
@@ -142,7 +151,8 @@ theorem sum_mult_eq_choose (E : Finset G) (ℓ : ℕ) :
 /-- **Support ≤ singular series.**  The number of distinct `ℓ`-subset-sums is at most the number of
 `ℓ`-subsets: `a = |E^{(+ℓ)}| ≤ C(|E|,ℓ)`.  This is the SHARPENING of `AttackLoop46`'s trivial bound
 `a ≤ 2^{|E|}`: the major-arc value `C(|E|,ℓ)` already beats `2^{|E|}` by the central-binomial factor
-`√(π|E|/2)`, and (key point) in the thin regime it is ATTAINED with equality (no collisions). -/
+`√(π|E|/2)`, and it is ATTAINED with equality exactly when there are no collisions
+(`CollisionFree`, which is a hypothesis, not automatic). -/
 theorem subsetSumSupport_card_le_choose (E : Finset G) (ℓ : ℕ) :
     (subsetSumSupport E ℓ).card ≤ E.card.choose ℓ := by
   classical
@@ -159,25 +169,68 @@ theorem subsetSumSupport_card_le_two_pow (E : Finset G) (ℓ : ℕ) :
     (subsetSumSupport E ℓ).card ≤ 2 ^ E.card :=
   le_trans (subsetSumSupport_card_le_choose E ℓ) (Nat.choose_le_two_pow E.card ℓ)
 
-/-! ## 4. The COLLISION-FREE identity: in the thin regime the support EQUALS the singular series. -/
+/-! ## 4. The COLLISION-FREE identity: under `CollisionFree` the support EQUALS the singular
+series. -/
 
 /-- **The collision-free (`B_ℓ⁺` / Sidon) hypothesis — the genuine analytic input, NOT a character
 sum.**  `CollisionFree E ℓ`: distinct `ℓ`-subsets of `E` have distinct sums.  This is the
-`B_ℓ⁺`-set property of `E`.  It is FREE in the thin prize regime: a free set of size `|E| = 2/η`
-is collision-free as soon as `q ≫ C(|E|,ℓ)² ≈ 4^{|E|}`, the birthday threshold, which the prize
-`q ≈ n·2^128 = 2^158` clears for all `|E| = Θ(log n)` (probe `probe_bgk_vs_direct.py`); and it holds
-in **char 0** for thin `E ⊆ μ_n` (no vanishing-sum-of-roots-of-unity relations once `|E| ≪ n`,
-probe `probe_subgroup_constraint.py`, exact `n ≥ 32`).  Spurious mod-`p` collisions are the height
-gate (thinness-essential, absent for thin subgroups).  **Crucially this is the Sidon property of a
-poly-size set, NOT the BGK `√q` per-frequency cancellation over `μ_n`.** -/
+`B_ℓ⁺`-set property of `E`.  It is **not automatic**.  The birthday heuristic says a *random* set of
+size `|E|` is collision-free with high probability once `q ≫ C(|E|,ℓ)² ≈ 4^{|E|}` (a threshold the
+prize `q ≈ 2^158` clears for `|E| = Θ(log n)`; probe `probe_bgk_vs_direct.py`), but that is a
+probabilistic statement and does not apply to a given structured `E`: deterministic algebraic
+collisions persist at every field size.  For example, if `4 ∣ n` then `E = {1, −1, i, −i} ⊆ μ_n`
+has `∑{1,−1} = ∑{i,−i} = 0`, in characteristic `0` and in arbitrarily large compatible prime fields
+(`not_collisionFree_of_antipodal_pairs`).  A characteristic-`0` statement for thin `E ⊆ μ_n` would
+need an explicit restriction (antipodal-free / independence conditions), which this arbitrary-`E`
+predicate does not impose; probe `probe_subgroup_constraint.py` only samples.  No deterministic
+producer of `CollisionFree` is proved here.  **This is the Sidon property of a poly-size set, NOT
+the BGK `√q` per-frequency cancellation over `μ_n`.** -/
 def CollisionFree (E : Finset G) (ℓ : ℕ) : Prop :=
   ∀ S ∈ E.powersetCard ℓ, ∀ T ∈ E.powersetCard ℓ,
     (∑ x ∈ S, x) = (∑ x ∈ T, x) → S = T
 
-/-- **The collision-free support identity (the thin-regime exact value).**  Under `CollisionFree`
-the support attains the major-arc value: `a = |E^{(+ℓ)}| = C(|E|,ℓ)` exactly — NO cancellation.
-This is the rigorous form of the verified observation that in the thin regime the count saturates to
-`C(|E|,ℓ)` and the minor arcs carry no anomalous energy. -/
+/-- **`CollisionFree` is not automatic: two antipodal pairs collide.**  If `E` contains
+`a, −a, b, −b` with `a ≠ −a`, `b ≠ −b` and `b ∉ {a, −a}`, then the distinct `2`-subsets `{a, −a}`
+and `{b, −b}` both sum to `0`, so `E` is not `2`-collision-free.  Instance: `E = {1, −1, i, −i}`
+inside `μ_n` for any `4 ∣ n`, in characteristic `0` or in any compatible prime field of odd
+characteristic, however large the field — a deterministic collision that no birthday estimate
+removes. -/
+theorem not_collisionFree_of_antipodal_pairs {E : Finset G} {a b : G}
+    (ha : a ∈ E) (ha' : -a ∈ E) (hb : b ∈ E) (hb' : -b ∈ E)
+    (hane : a ≠ -a) (hbne : b ≠ -b) (hba : b ≠ a) (hba' : b ≠ -a) :
+    ¬ CollisionFree E 2 := by
+  intro hcf
+  have hS : ({a, -a} : Finset G) ∈ E.powersetCard 2 := by
+    rw [Finset.mem_powersetCard, Finset.card_pair hane]
+    refine ⟨?_, rfl⟩
+    intro x hx
+    rw [Finset.mem_insert, Finset.mem_singleton] at hx
+    rcases hx with rfl | rfl
+    · exact ha
+    · exact ha'
+  have hT : ({b, -b} : Finset G) ∈ E.powersetCard 2 := by
+    rw [Finset.mem_powersetCard, Finset.card_pair hbne]
+    refine ⟨?_, rfl⟩
+    intro x hx
+    rw [Finset.mem_insert, Finset.mem_singleton] at hx
+    rcases hx with rfl | rfl
+    · exact hb
+    · exact hb'
+  have hsum : (∑ x ∈ ({a, -a} : Finset G), x) = (∑ x ∈ ({b, -b} : Finset G), x) := by
+    rw [Finset.sum_pair hane, Finset.sum_pair hbne, add_neg_cancel, add_neg_cancel]
+  have hST := hcf _ hS _ hT hsum
+  have hamem : a ∈ ({b, -b} : Finset G) := by
+    rw [← hST]
+    exact Finset.mem_insert_self a _
+  rw [Finset.mem_insert, Finset.mem_singleton] at hamem
+  rcases hamem with h | h
+  · exact hba h.symm
+  · exact hba' (by rw [h, neg_neg])
+
+/-- **The collision-free support identity.**  Under `CollisionFree` the support attains the
+major-arc value: `a = |E^{(+ℓ)}| = C(|E|,ℓ)` exactly — NO cancellation.  This is the rigorous form
+of the observation that, for collision-free `E`, the count saturates to `C(|E|,ℓ)` and the minor
+arcs carry no anomalous energy; it says nothing about which `E` are collision-free. -/
 theorem subsetSumSupport_card_eq_choose_of_collisionFree
     {E : Finset G} {ℓ : ℕ} (hcf : CollisionFree E ℓ) :
     (subsetSumSupport E ℓ).card = E.card.choose ℓ := by
@@ -187,10 +240,11 @@ theorem subsetSumSupport_card_eq_choose_of_collisionFree
   intro S hS T hT h
   exact hcf S (Finset.mem_coe.mp hS) T (Finset.mem_coe.mp hT) h
 
-/-! ## 5. The headline: R1 in the thin regime is the binomial inequality `max_ℓ C(|E|,ℓ) ≤ q·ε*`. -/
+/-! ## 5. The headline: under `CollisionFree`, R1 is the binomial inequality
+`max_ℓ C(|E|,ℓ) ≤ q·ε*`. -/
 
-/-- **R1 ⟺ a binomial inequality (the direct-circle-method reduction).**  In the thin regime
-(`CollisionFree`), the §7 bad-scalar count is *exactly* `C(|E|,ℓ)`, so the floor's covering
+/-- **R1 ⟺ a binomial inequality (the direct-circle-method reduction).**  Under the explicit
+hypothesis `CollisionFree`, the §7 bad-scalar count is *exactly* `C(|E|,ℓ)`, so the floor's covering
 requirement `a ≤ budget` (`budget = q·ε* ≈ n`) holds **iff** `C(|E|,ℓ) ≤ budget`.  R1 is therefore a
 PURE COMBINATORIAL threshold on `(|E|, ℓ, budget)`, with no character-sum input. -/
 theorem R1_iff_choose_le_of_collisionFree
@@ -243,9 +297,10 @@ theorem support_card_mul_energy_ge_choose_sq (E : Finset G) (ℓ : ℕ) :
 
 /-- **Minor-arc energy lower bound forced by R1.**  If the support is small (`a ≤ budget`), then the
 energy is correspondingly large: `Q ≥ C(|E|,ℓ)² / budget`.  Specializing `budget = n = q·ε*` gives
-the verified numerical requirement `Q ≥ C²/n` — which the thin-regime collision-free value `Q = C`
-VIOLATES by the factor `C/n`.  Hence R1 cannot hold via *any* upper minor-arc estimate; it requires
-the collision-free combinatorics to fail, i.e. `C(|E|,ℓ) ≤ budget` outright (§5). -/
+the numerical requirement `Q ≥ C²/n` — which the collision-free value `Q = C` (valid only when
+`CollisionFree E ℓ` holds) violates by the factor `C/n` whenever `C > budget`.  So for a
+collision-free `E`, R1 cannot hold via an upper minor-arc estimate and needs `C(|E|,ℓ) ≤ budget`
+outright (§5); for an `E` with collisions this conclusion does not apply. -/
 theorem energy_ge_of_support_le (E : Finset G) (ℓ budget : ℕ)
     (hbud : 0 < budget) (hsupp : (subsetSumSupport E ℓ).card ≤ budget) :
     (E.card.choose ℓ) ^ 2 ≤ budget * collisionEnergy E ℓ := by
@@ -265,3 +320,4 @@ end ArkLib.ProximityGap.CircleMethodFreeSetSupport
 #print axioms ArkLib.ProximityGap.CircleMethodFreeSetSupport.worst_ell_is_central
 #print axioms ArkLib.ProximityGap.CircleMethodFreeSetSupport.support_card_mul_energy_ge_choose_sq
 #print axioms ArkLib.ProximityGap.CircleMethodFreeSetSupport.energy_ge_of_support_le
+#print axioms ArkLib.ProximityGap.CircleMethodFreeSetSupport.not_collisionFree_of_antipodal_pairs

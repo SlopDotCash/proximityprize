@@ -35,6 +35,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 240
     steps:
+      # The action builds the PR head on the same runner that later receives the API key.
+      # Restrict this pilot to branches that only repository collaborators can update.
+      - name: Require a same-repository pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          head_repo=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER" --jq '.head.repo.full_name')
+          if [[ "$head_repo" != "$GITHUB_REPOSITORY" ]]; then
+            echo "::error::The privileged review pilot requires a same-repository branch."
+            exit 1
+          fi
+
       - name: Set up uv
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:

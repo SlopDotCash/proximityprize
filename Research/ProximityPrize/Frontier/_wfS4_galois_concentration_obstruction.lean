@@ -54,6 +54,15 @@ transitive, `home`-equivariant), giving `perPrime a = 1` for every `a` (perfectl
 weight `wt` is `0` everywhere except a single element where it is `T` (the total). The fibre over
 that element carries ALL the weight. Uniform spread of *configs*, total concentration of *weight*.
 
+**Caveat (audit 2026-10-28, CW-B18-19).**  The Lean "countermodel" is logically trivial: `perPrimeReg`
+never mentions `wt`, so the conjuncts of `uniform_spread_allows_concentration` are independent facts
+(a counting identity `perPrimeReg a = 1` and the existence of a weight concentrated at one point), and
+`perPrime_to_M_ratio_unbounded` uses the one-element group (`k = 0`).  The `home`-equivariant free
+transitive action described above is not used by any theorem (`regular_home_equivariant` is `rfl`).
+So the file records the obstruction as PROSE; the theorems only illustrate that a uniform count
+places no constraint on an unrelated weight function.  No model of the actual Galois/frequency
+structure is formalized.
+
 ## Honest scope (rules 1, 3, 6)
 
 NOT a CORE closure. This is a precise **OBSTRUCTION**: it shows the proven Galois orbit-partition
@@ -117,8 +126,8 @@ size `k + 1 ≥ 1`, there is:
   (`wt` concentrates all weight on one config) — so the per-frequency sup is `T`, unbounded by the
   (uniform, `= 1`) per-prime count.
 
-This is the exact logical content of the Fermat measurement: spread on the *primes* is uniform,
-yet the energy `M` on the *frequencies* concentrates. The two `G`-structures are orthogonal. -/
+Caveat (CW-B18-19): `perPrimeReg` does not depend on `wt`, so the conjuncts are independent and the
+statement is a trivial illustration, not a model of the Fermat measurement or of the Galois action. -/
 theorem uniform_spread_allows_concentration (k : ℕ) (T : ℕ) :
     ∃ (wt : Fin (k + 1) → ℕ),
       -- the per-prime spread is perfectly uniform (orbit-partition law, sharpest case)
@@ -139,8 +148,9 @@ theorem uniform_spread_allows_concentration (k : ℕ) (T : ℕ) :
 /-- **Quantitative form of the obstruction: the uniform per-prime bound is `1`, the per-frequency
 sup is the full total `T`.** Their ratio (`per-frequency-sup / per-prime-count = T`) is *unbounded*
 in `T` while the Galois spread stays fixed at `1`. So no inequality of the form
-`M ≤ f(per-prime spread)` can hold — the Galois orbit-partition law carries no information about the
-frequency-side concentration `M`. -/
+`M ≤ f(per-prime spread)` can hold in this toy setting.  Caveat (CW-B18-19): the witness uses the
+one-element group (`k = 0`) and a weight unrelated to `perPrimeReg`, so this is an illustration, not a
+statement about the actual Galois orbit-partition law or `M`. -/
 theorem perPrime_to_M_ratio_unbounded :
     ∀ N : ℕ, ∃ (k : ℕ) (wt : Fin (k + 1) → ℕ),
       (∀ a : Fin (k + 1), perPrimeReg (Fin (k + 1)) a = 1) ∧

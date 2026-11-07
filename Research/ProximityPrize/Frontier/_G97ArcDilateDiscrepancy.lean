@@ -52,7 +52,12 @@ deviation of the one specific 0/1 vector `1_{mu_n}`.
    consumer's contrapositive — if all `K+1` scaled prefix counts of `S ⊆ ZMod p` are within
    `eps` of uniform, then `‖∑_{y∈S} e(val y/p)‖ ≤ #S·(2π/K) + 2·eps·K`. The missing
    non-Fourier certificate is thereby reduced from all arcs to `K+1` PREFIX counts of the
-   dilated subgroup.
+   dilated subgroup. Quantitatively this reduction is LOSSY: optimizing over `K` (AM-GM)
+   the bound is never better than `4·sqrt(π·#S·eps)`. At `#S = n` and the square-root
+   prefix deviation `eps ≍ sqrt(n log p)` measured above this is only
+   `≍ n^{3/4} (log p)^{1/4}` — an `n^{1/4}` loss against the `sqrt(n log q)` target — and a
+   `sqrt(n log q)` output would need prefix deviation `eps = O(log q)`, far below the
+   observed (random-like) square-root scale.
 4. `per_dilate_arc_coloring`: for each FIXED dilate/scale, some ±1 coloring balances all
    arcs to `≤ 1` — the k-permutation identification: per-row-block the system is an
    interval system in a permuted order; only simultaneity across dilates costs anything.
@@ -66,8 +71,9 @@ deviation of the one specific 0/1 vector `1_{mu_n}`.
 
 Nothing here bounds the prefix deviation of `b·mu_n` itself; the prize input remains the
 open non-Fourier anti-concentration certificate (BGK/Cilleruelo–Garaev face). What this
-lane adds: (a) the certificate's test family shrinks from arcs to prefixes with zero loss
-beyond a factor 2 (machine-checked against the G80Z consumer), and (b) the entire
+lane adds: (a) the certificate's test family shrinks from arcs to prefixes, with a factor-2
+loss per arc (machine-checked against the G80Z consumer) but an `n^{1/4}` loss in the final
+character-sum bound at square-root prefix deviation (see item 3), and (b) the entire
 hereditary-discrepancy/transference toolbox is now a mapped no-go, with the toy-scale
 gamma_2/detlb/coloring numerics recorded above. CORE remains OPEN / ON-BGK.
 
@@ -320,8 +326,12 @@ If every scaled prefix count of `S ⊆ ZMod p` at the arc boundaries `j·p`, `j 
 within `ε` of the uniform reference `#S·j/K`, then the standard character sum obeys
 `‖∑_{y∈S} e(val y/p)‖ ≤ #S·(2π/K) + 2·ε·K`. (Contrapositive composition of
 `exists_arc_deviation_of_charSum_bias` with the arc = prefix-difference bridge.)
-At `S = b·μ_n`, `K ≍ n/√(n log q)`, `ε ≍ √(n log q)`, this is the square-root-scale
-Fourier bound `‖η_b‖ ≲ √(n log q)` from a purely order-theoretic prefix input. -/
+
+Quantitative caveat. The right-hand side `#S·2π/K + 2εK` is at least `4·√(π·#S·ε)` for every
+`K` (AM-GM, equality at `K = √(π·#S/ε)`). At `S = b·μ_n` with `K ≍ √(n/log q)` and
+`ε ≍ √(n log q)` the second term alone is `2εK ≍ 2n`, i.e. only the TRIVIAL bound; the best
+choice of `K` gives `≍ n^{3/4}(log q)^{1/4}` at that `ε`. The square-root-scale Fourier
+bound `‖η_b‖ ≲ √(n log q)` would follow only from a prefix input with `ε = O(log q)`. -/
 theorem charSum_norm_le_of_scaledPrefix_equidistribution
     (S : Finset (ZMod p)) {K : ℕ} (hK : 2 ≤ K) {ε : ℝ}
     (hpre : ∀ j ≤ K,

@@ -11,7 +11,7 @@ import ProximityPrize.Extensions.Data.CodingTheory.JohnsonBound.Family
 /-!
 # Squared-form Johnson floor for the genuine list-decoding threshold
 
-The Johnson floor of `GrandChallengeLDThreshold.lean` carries the radical-free Johnson
+The Johnson floor of `LDThreshold.lean` carries the radical-free Johnson
 side condition with its free shift parameter `β`.  This file gives the definitive form:
 the **optimal-β squared Johnson condition** (ABF26 Theorem 3.2, radical-free, via
 `closeCodewordsRelFinset_card_le_of_floor_minDist_johnson_sq_dist`), where the only

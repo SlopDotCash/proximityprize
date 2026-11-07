@@ -18,8 +18,9 @@ open Polynomial
 open ArkLib.ProximityGap.AdditiveEnergySidonModNeg
 
 /-- **The small-subgroup δ\* input, stated literally.** For a primitive `n`-th root `ζ ∈ ZMod p`
-(`p` prime, `p > 2`) with `p > 4^{φ(n)} = 2^n`, the `n`-th roots of unity `μ_n ⊆ F_p` are
-`SidonModNeg`: no nontrivial additive parallelogram. -/
+(`p` prime, `p > 2`) with `p > 4^{φ(n)}`, the `n`-th roots of unity `μ_n ⊆ F_p` are
+`SidonModNeg`: no nontrivial additive parallelogram. (When `n ≥ 2` is a power of two,
+`φ(n) = n/2` and `4^{φ(n)} = 2^n`; for general `n` the threshold is `4^{φ(n)}`, as stated.) -/
 theorem smallSubgroup_sidonModNeg {n : ℕ} (hn : 0 < n) {p : ℕ} [Fact p.Prime] (hp2 : 2 < p)
     {ζ : ZMod p} (hζ : IsPrimitiveRoot ζ n) (hbig : 4 ^ n.totient < p) :
     SidonModNeg (Finset.univ.filter (fun x : ZMod p => x ^ n = 1)) := by

@@ -10,21 +10,27 @@ and picks a Lucas witness g (g = 3 first) with
 
     g^(p−1) = 1 (mod p),  g^((p−1)/2) ≠ 1 (mod p),  g^((p−1)/c) ≠ 1 (mod p).
 
-Everything is exact: deterministic Miller–Rabin (a set of bases that is proven
-correct below 3.3·10^24, far above the ~2^41 ceiling here) plus exact integer
-arithmetic. Output is paste-ready Lean certificate data.
+Everything is exact: deterministic Miller–Rabin with the first twelve prime bases, proven
+correct below 318665857834031151167461 ≈ 3.19·10^23 (Sorenson–Webster 2015, Thm 1.1; the
+larger 3.317·10^24 bound needs the thirteenth base 41), far above the ~2^41 ceiling here and
+enforced by `is_prime`, plus exact integer arithmetic. Output is paste-ready Lean certificate
+data.
 
 Provenance: mirrors scripts/probes/probe_ztz_beta3_ladder.py; independent of it.
 """
 
-# Deterministic Miller–Rabin: this base set certifies primality for all
-# n < 3,317,044,064,679,887,385,961,981 (>> 2^41). Exact, no probabilism.
+# Deterministic Miller–Rabin: this twelve-base set certifies primality for all
+# n < 318,665,857,834,031,151,167,461 (>> 2^41); 3,317,044,064,679,887,385,961,981 is the
+# thirteen-base (…, 37, 41) bound.  Exact, no probabilism, inside the guarded range.
 _MR_BASES = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37)
+_MR12_DET_LIMIT = 318665857834031151167461
 
 
 def is_prime(n: int) -> bool:
     if n < 2:
         return False
+    if n >= _MR12_DET_LIMIT:
+        raise ValueError(f"12-base Miller-Rabin is only proven exact below {_MR12_DET_LIMIT}")
     for p in (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37):
         if n % p == 0:
             return n == p

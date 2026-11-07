@@ -20,23 +20,27 @@ open ArkLib.ProximityGap.E2DilationDirectCount
 
 namespace ArkLib.ProximityGap.E2W4CyclotomicNonCollision
 
+/-- Generic primitive-`2`-power-root witness used by every concrete section below: an element
+whose `2^k`-th power is not `1` but whose `2^(k+1)`-th power is `1` has order exactly
+`n = 2^(k+1)`.  Each concrete witness instantiates this with two decided power checks. -/
+theorem orderOf_eq_of_two_pow_checks {M : Type*} [Monoid M] {x : M} {n : ℕ} (k : ℕ)
+    (hn : 2 ^ (k + 1) = n) (hk : ¬ x ^ (2 : ℕ) ^ k = 1)
+    (hk1 : x ^ (2 : ℕ) ^ (k + 1) = 1) : orderOf x = n := by
+  subst hn
+  exact orderOf_eq_prime_pow hk hk1
+
 section Concrete1217Ratio
 
 local instance fact_prime_1217_ratio : Fact (Nat.Prime 1217) := ⟨by norm_num⟩
 
 /-- A concrete primitive 32-th root in `F_1217`. -/
-theorem orderOf_21_ratio_zmod1217 : orderOf (21 : ZMod 1217) = 32 := by
-  have h16 : ¬ (21 : ZMod 1217) ^ (2 : ℕ) ^ 4 = 1 := by decide
-  have h32 : (21 : ZMod 1217) ^ (2 : ℕ) ^ 5 = 1 := by decide
-  have h := orderOf_eq_prime_pow (x := (21 : ZMod 1217)) h16 h32
-  norm_num at h
-  exact h
+theorem orderOf_21_ratio_zmod1217 : orderOf (21 : ZMod 1217) = 32 :=
+  orderOf_eq_of_two_pow_checks 4 (by norm_num) (by decide) (by decide)
 
 /-- `21` is a primitive 32-th root in `F_1217`. -/
 theorem isPrimitiveRoot_21_32_ratio_zmod1217 :
-    IsPrimitiveRoot (21 : ZMod 1217) 32 := by
-  rw [IsPrimitiveRoot.iff_orderOf]
-  exact orderOf_21_ratio_zmod1217
+    IsPrimitiveRoot (21 : ZMod 1217) 32 :=
+  IsPrimitiveRoot.iff_orderOf.mpr orderOf_21_ratio_zmod1217
 
 /-- Concrete `n = 32` width-4 refuter in the small `β = 2` Thorner-Zaman row: the prime
 `1217 ∈ [32², 2 * 32²]` is already larger than the reduced Bezout threshold. -/
@@ -54,18 +58,13 @@ section Concrete4289Ratio
 local instance fact_prime_4289_ratio : Fact (Nat.Prime 4289) := ⟨by norm_num⟩
 
 /-- A concrete primitive 64-th root in `F_4289`. -/
-theorem orderOf_56_ratio_zmod4289 : orderOf (56 : ZMod 4289) = 64 := by
-  have h32 : ¬ (56 : ZMod 4289) ^ (2 : ℕ) ^ 5 = 1 := by decide
-  have h64 : (56 : ZMod 4289) ^ (2 : ℕ) ^ 6 = 1 := by decide
-  have h := orderOf_eq_prime_pow (x := (56 : ZMod 4289)) h32 h64
-  norm_num at h
-  exact h
+theorem orderOf_56_ratio_zmod4289 : orderOf (56 : ZMod 4289) = 64 :=
+  orderOf_eq_of_two_pow_checks 5 (by norm_num) (by decide) (by decide)
 
 /-- `56` is a primitive 64-th root in `F_4289`. -/
 theorem isPrimitiveRoot_56_64_ratio_zmod4289 :
-    IsPrimitiveRoot (56 : ZMod 4289) 64 := by
-  rw [IsPrimitiveRoot.iff_orderOf]
-  exact orderOf_56_ratio_zmod4289
+    IsPrimitiveRoot (56 : ZMod 4289) 64 :=
+  IsPrimitiveRoot.iff_orderOf.mpr orderOf_56_ratio_zmod4289
 
 /-- The denominator-free canonical width-four obstruction is nonzero for the concrete
 `n = 64` Thorner-Zaman β=2 witness. -/
@@ -92,18 +91,13 @@ section Concrete17921Ratio
 local instance fact_prime_17921_ratio : Fact (Nat.Prime 17921) := ⟨by norm_num⟩
 
 /-- A concrete primitive 128-th root in `F_17921`. -/
-theorem orderOf_244_ratio_zmod17921 : orderOf (244 : ZMod 17921) = 128 := by
-  have h64 : ¬ (244 : ZMod 17921) ^ (2 : ℕ) ^ 6 = 1 := by decide
-  have h128 : (244 : ZMod 17921) ^ (2 : ℕ) ^ 7 = 1 := by decide
-  have h := orderOf_eq_prime_pow (x := (244 : ZMod 17921)) h64 h128
-  norm_num at h
-  exact h
+theorem orderOf_244_ratio_zmod17921 : orderOf (244 : ZMod 17921) = 128 :=
+  orderOf_eq_of_two_pow_checks 6 (by norm_num) (by decide) (by decide)
 
 /-- `244` is a primitive 128-th root in `F_17921`. -/
 theorem isPrimitiveRoot_244_128_ratio_zmod17921 :
-    IsPrimitiveRoot (244 : ZMod 17921) 128 := by
-  rw [IsPrimitiveRoot.iff_orderOf]
-  exact orderOf_244_ratio_zmod17921
+    IsPrimitiveRoot (244 : ZMod 17921) 128 :=
+  IsPrimitiveRoot.iff_orderOf.mpr orderOf_244_ratio_zmod17921
 
 set_option maxRecDepth 4096
 
@@ -136,18 +130,13 @@ section Concrete65537Ratio
 local instance fact_prime_65537_ratio : Fact (Nat.Prime 65537) := ⟨by norm_num⟩
 
 /-- A concrete primitive 256-th root in `F_65537`. -/
-theorem orderOf_141_ratio_zmod65537 : orderOf (141 : ZMod 65537) = 256 := by
-  have h128 : ¬ (141 : ZMod 65537) ^ (2 : ℕ) ^ 7 = 1 := by decide
-  have h256 : (141 : ZMod 65537) ^ (2 : ℕ) ^ 8 = 1 := by decide
-  have h := orderOf_eq_prime_pow (x := (141 : ZMod 65537)) h128 h256
-  norm_num at h
-  exact h
+theorem orderOf_141_ratio_zmod65537 : orderOf (141 : ZMod 65537) = 256 :=
+  orderOf_eq_of_two_pow_checks 7 (by norm_num) (by decide) (by decide)
 
 /-- `141` is a primitive 256-th root in `F_65537`. -/
 theorem isPrimitiveRoot_141_256_ratio_zmod65537 :
-    IsPrimitiveRoot (141 : ZMod 65537) 256 := by
-  rw [IsPrimitiveRoot.iff_orderOf]
-  exact orderOf_141_ratio_zmod65537
+    IsPrimitiveRoot (141 : ZMod 65537) 256 :=
+  IsPrimitiveRoot.iff_orderOf.mpr orderOf_141_ratio_zmod65537
 
 /-- The denominator-free canonical width-four obstruction is nonzero for the concrete
 `n = 256` Thorner-Zaman β=2 witness. -/
@@ -169,25 +158,18 @@ theorem exists_mu256_width4_refuter_zmod65537 :
 
 end Concrete65537Ratio
 
-set_option maxRecDepth 8192
-
 section Concrete262657Ratio
 
 local instance fact_prime_262657_ratio : Fact (Nat.Prime 262657) := ⟨by norm_num⟩
 
 /-- A concrete primitive 512-th root in `F_262657`. -/
-theorem orderOf_1055_ratio_zmod262657 : orderOf (1055 : ZMod 262657) = 512 := by
-  have h256 : ¬ (1055 : ZMod 262657) ^ (2 : ℕ) ^ 8 = 1 := by decide
-  have h512 : (1055 : ZMod 262657) ^ (2 : ℕ) ^ 9 = 1 := by decide
-  have h := orderOf_eq_prime_pow (x := (1055 : ZMod 262657)) h256 h512
-  norm_num at h
-  exact h
+theorem orderOf_1055_ratio_zmod262657 : orderOf (1055 : ZMod 262657) = 512 :=
+  orderOf_eq_of_two_pow_checks 8 (by norm_num) (by decide) (by decide)
 
 /-- `1055` is a primitive 512-th root in `F_262657`. -/
 theorem isPrimitiveRoot_1055_512_ratio_zmod262657 :
-    IsPrimitiveRoot (1055 : ZMod 262657) 512 := by
-  rw [IsPrimitiveRoot.iff_orderOf]
-  exact orderOf_1055_ratio_zmod262657
+    IsPrimitiveRoot (1055 : ZMod 262657) 512 :=
+  IsPrimitiveRoot.iff_orderOf.mpr orderOf_1055_ratio_zmod262657
 
 /-- The denominator-free canonical width-four obstruction is nonzero for the concrete
 `n = 512` Thorner-Zaman β=2 witness. -/
@@ -214,18 +196,13 @@ section Concrete1053697Ratio
 local instance fact_prime_1053697_ratio : Fact (Nat.Prime 1053697) := ⟨by norm_num⟩
 
 /-- A concrete primitive 1024-th root in `F_1053697`. -/
-theorem orderOf_80_ratio_zmod1053697 : orderOf (80 : ZMod 1053697) = 1024 := by
-  have h512 : ¬ (80 : ZMod 1053697) ^ (2 : ℕ) ^ 9 = 1 := by decide
-  have h1024 : (80 : ZMod 1053697) ^ (2 : ℕ) ^ 10 = 1 := by decide
-  have h := orderOf_eq_prime_pow (x := (80 : ZMod 1053697)) h512 h1024
-  norm_num at h
-  exact h
+theorem orderOf_80_ratio_zmod1053697 : orderOf (80 : ZMod 1053697) = 1024 :=
+  orderOf_eq_of_two_pow_checks 9 (by norm_num) (by decide) (by decide)
 
 /-- `80` is a primitive 1024-th root in `F_1053697`. -/
 theorem isPrimitiveRoot_80_1024_ratio_zmod1053697 :
-    IsPrimitiveRoot (80 : ZMod 1053697) 1024 := by
-  rw [IsPrimitiveRoot.iff_orderOf]
-  exact orderOf_80_ratio_zmod1053697
+    IsPrimitiveRoot (80 : ZMod 1053697) 1024 :=
+  IsPrimitiveRoot.iff_orderOf.mpr orderOf_80_ratio_zmod1053697
 
 /-- The denominator-free canonical width-four obstruction is nonzero for the concrete
 `n = 1024` Thorner-Zaman β=2 witness. -/
@@ -254,18 +231,13 @@ section Concrete4206593Ratio
 local instance fact_prime_4206593_ratio : Fact (Nat.Prime 4206593) := ⟨by norm_num⟩
 
 /-- A concrete primitive 2048-th root in `F_4206593`. -/
-theorem orderOf_207446_ratio_zmod4206593 : orderOf (207446 : ZMod 4206593) = 2048 := by
-  have h1024 : ¬ (207446 : ZMod 4206593) ^ (2 : ℕ) ^ 10 = 1 := by decide
-  have h2048 : (207446 : ZMod 4206593) ^ (2 : ℕ) ^ 11 = 1 := by decide
-  have h := orderOf_eq_prime_pow (x := (207446 : ZMod 4206593)) h1024 h2048
-  norm_num at h
-  exact h
+theorem orderOf_207446_ratio_zmod4206593 : orderOf (207446 : ZMod 4206593) = 2048 :=
+  orderOf_eq_of_two_pow_checks 10 (by norm_num) (by decide) (by decide)
 
 /-- `207446` is a primitive 2048-th root in `F_4206593`. -/
 theorem isPrimitiveRoot_207446_2048_ratio_zmod4206593 :
-    IsPrimitiveRoot (207446 : ZMod 4206593) 2048 := by
-  rw [IsPrimitiveRoot.iff_orderOf]
-  exact orderOf_207446_ratio_zmod4206593
+    IsPrimitiveRoot (207446 : ZMod 4206593) 2048 :=
+  IsPrimitiveRoot.iff_orderOf.mpr orderOf_207446_ratio_zmod4206593
 
 /-- The denominator-free canonical width-four obstruction is nonzero for the concrete
 `n = 2048` Thorner-Zaman β=2 witness. -/
@@ -292,18 +264,13 @@ section Concrete16957441Ratio
 local instance fact_prime_16957441_ratio : Fact (Nat.Prime 16957441) := ⟨by norm_num⟩
 
 /-- A concrete primitive 4096-th root in `F_16957441`. -/
-theorem orderOf_233_ratio_zmod16957441 : orderOf (233 : ZMod 16957441) = 4096 := by
-  have h2048 : ¬ (233 : ZMod 16957441) ^ (2 : ℕ) ^ 11 = 1 := by decide
-  have h4096 : (233 : ZMod 16957441) ^ (2 : ℕ) ^ 12 = 1 := by decide
-  have h := orderOf_eq_prime_pow (x := (233 : ZMod 16957441)) h2048 h4096
-  norm_num at h
-  exact h
+theorem orderOf_233_ratio_zmod16957441 : orderOf (233 : ZMod 16957441) = 4096 :=
+  orderOf_eq_of_two_pow_checks 11 (by norm_num) (by decide) (by decide)
 
 /-- `233` is a primitive 4096-th root in `F_16957441`. -/
 theorem isPrimitiveRoot_233_4096_ratio_zmod16957441 :
-    IsPrimitiveRoot (233 : ZMod 16957441) 4096 := by
-  rw [IsPrimitiveRoot.iff_orderOf]
-  exact orderOf_233_ratio_zmod16957441
+    IsPrimitiveRoot (233 : ZMod 16957441) 4096 :=
+  IsPrimitiveRoot.iff_orderOf.mpr orderOf_233_ratio_zmod16957441
 
 /-- The denominator-free canonical width-four obstruction is nonzero for the concrete
 `n = 4096` Thorner-Zaman β=2 witness. -/
@@ -330,18 +297,13 @@ section Concrete67731457Ratio
 local instance fact_prime_67731457_ratio : Fact (Nat.Prime 67731457) := ⟨by norm_num⟩
 
 /-- A concrete primitive 8192-th root in `F_67731457`. -/
-theorem orderOf_4859_ratio_zmod67731457 : orderOf (4859 : ZMod 67731457) = 8192 := by
-  have h4096 : ¬ (4859 : ZMod 67731457) ^ (2 : ℕ) ^ 12 = 1 := by decide
-  have h8192 : (4859 : ZMod 67731457) ^ (2 : ℕ) ^ 13 = 1 := by decide
-  have h := orderOf_eq_prime_pow (x := (4859 : ZMod 67731457)) h4096 h8192
-  norm_num at h
-  exact h
+theorem orderOf_4859_ratio_zmod67731457 : orderOf (4859 : ZMod 67731457) = 8192 :=
+  orderOf_eq_of_two_pow_checks 12 (by norm_num) (by decide) (by decide)
 
 /-- `4859` is a primitive 8192-th root in `F_67731457`. -/
 theorem isPrimitiveRoot_4859_8192_ratio_zmod67731457 :
-    IsPrimitiveRoot (4859 : ZMod 67731457) 8192 := by
-  rw [IsPrimitiveRoot.iff_orderOf]
-  exact orderOf_4859_ratio_zmod67731457
+    IsPrimitiveRoot (4859 : ZMod 67731457) 8192 :=
+  IsPrimitiveRoot.iff_orderOf.mpr orderOf_4859_ratio_zmod67731457
 
 /-- The denominator-free canonical width-four obstruction is nonzero for the concrete
 `n = 8192` Thorner-Zaman β=2 witness. -/
@@ -368,18 +330,13 @@ section Concrete268730369Ratio
 local instance fact_prime_268730369_ratio : Fact (Nat.Prime 268730369) := ⟨by norm_num⟩
 
 /-- A concrete primitive 16384-th root in `F_268730369`. -/
-theorem orderOf_1678_ratio_zmod268730369 : orderOf (1678 : ZMod 268730369) = 16384 := by
-  have h8192 : ¬ (1678 : ZMod 268730369) ^ (2 : ℕ) ^ 13 = 1 := by decide
-  have h16384 : (1678 : ZMod 268730369) ^ (2 : ℕ) ^ 14 = 1 := by decide
-  have h := orderOf_eq_prime_pow (x := (1678 : ZMod 268730369)) h8192 h16384
-  norm_num at h
-  exact h
+theorem orderOf_1678_ratio_zmod268730369 : orderOf (1678 : ZMod 268730369) = 16384 :=
+  orderOf_eq_of_two_pow_checks 13 (by norm_num) (by decide) (by decide)
 
 /-- `1678` is a primitive 16384-th root in `F_268730369`. -/
 theorem isPrimitiveRoot_1678_16384_ratio_zmod268730369 :
-    IsPrimitiveRoot (1678 : ZMod 268730369) 16384 := by
-  rw [IsPrimitiveRoot.iff_orderOf]
-  exact orderOf_1678_ratio_zmod268730369
+    IsPrimitiveRoot (1678 : ZMod 268730369) 16384 :=
+  IsPrimitiveRoot.iff_orderOf.mpr orderOf_1678_ratio_zmod268730369
 
 /-- The denominator-free canonical width-four obstruction is nonzero for the concrete
 `n = 16384` Thorner-Zaman β=2 witness. -/
@@ -410,18 +367,13 @@ local instance fact_prime_1073872897_ratio : Fact (Nat.Prime 1073872897) := ⟨b
 
 /-- A concrete primitive 32768-th root in `F_1073872897`. -/
 theorem orderOf_2521228_ratio_zmod1073872897 :
-    orderOf (2521228 : ZMod 1073872897) = 32768 := by
-  have h16384 : ¬ (2521228 : ZMod 1073872897) ^ (2 : ℕ) ^ 14 = 1 := by decide
-  have h32768 : (2521228 : ZMod 1073872897) ^ (2 : ℕ) ^ 15 = 1 := by decide
-  have h := orderOf_eq_prime_pow (x := (2521228 : ZMod 1073872897)) h16384 h32768
-  norm_num at h
-  exact h
+    orderOf (2521228 : ZMod 1073872897) = 32768 :=
+  orderOf_eq_of_two_pow_checks 14 (by norm_num) (by decide) (by decide)
 
 /-- `2521228` is a primitive 32768-th root in `F_1073872897`. -/
 theorem isPrimitiveRoot_2521228_32768_ratio_zmod1073872897 :
-    IsPrimitiveRoot (2521228 : ZMod 1073872897) 32768 := by
-  rw [IsPrimitiveRoot.iff_orderOf]
-  exact orderOf_2521228_ratio_zmod1073872897
+    IsPrimitiveRoot (2521228 : ZMod 1073872897) 32768 :=
+  IsPrimitiveRoot.iff_orderOf.mpr orderOf_2521228_ratio_zmod1073872897
 
 /-- The denominator-free canonical width-four obstruction is nonzero for the concrete
 `n = 32768` Thorner-Zaman β=2 witness. -/
@@ -451,18 +403,13 @@ section Concrete1048609Ratio
 local instance fact_prime_1048609_ratio : Fact (Nat.Prime 1048609) := ⟨by norm_num⟩
 
 /-- A concrete primitive 32-th root in `F_1048609`. -/
-theorem orderOf_57211_ratio_zmod1048609 : orderOf (57211 : ZMod 1048609) = 32 := by
-  have h16 : ¬ (57211 : ZMod 1048609) ^ (2 : ℕ) ^ 4 = 1 := by decide
-  have h32 : (57211 : ZMod 1048609) ^ (2 : ℕ) ^ 5 = 1 := by decide
-  have h := orderOf_eq_prime_pow (x := (57211 : ZMod 1048609)) h16 h32
-  norm_num at h
-  exact h
+theorem orderOf_57211_ratio_zmod1048609 : orderOf (57211 : ZMod 1048609) = 32 :=
+  orderOf_eq_of_two_pow_checks 4 (by norm_num) (by decide) (by decide)
 
 /-- `57211` is a primitive 32-th root in `F_1048609`. -/
 theorem isPrimitiveRoot_57211_32_ratio_zmod1048609 :
-    IsPrimitiveRoot (57211 : ZMod 1048609) 32 := by
-  rw [IsPrimitiveRoot.iff_orderOf]
-  exact orderOf_57211_ratio_zmod1048609
+    IsPrimitiveRoot (57211 : ZMod 1048609) 32 :=
+  IsPrimitiveRoot.iff_orderOf.mpr orderOf_57211_ratio_zmod1048609
 
 /-- Concrete large-prime `n = 32` width-4 refuter: the first prime from the concrete
 Thorner-Zaman `β = 4` row already lies past the finite-exception threshold. -/
@@ -487,17 +434,12 @@ local instance fact_prime_1153_bad_ratio : Fact (Nat.Prime 1153) := ⟨by norm_n
 /-- A primitive 32-th root in `F_97` at which the canonical denominator-free obstruction
 vanishes. This complements the non-collision witness `19`: the bad-prime behavior depends on the
 primitive-root embedding. -/
-theorem orderOf_28_bad_ratio_zmod97 : orderOf (28 : ZMod 97) = 32 := by
-  have h16 : ¬ (28 : ZMod 97) ^ (2 : ℕ) ^ 4 = 1 := by decide
-  have h32 : (28 : ZMod 97) ^ (2 : ℕ) ^ 5 = 1 := by decide
-  have h := orderOf_eq_prime_pow (x := (28 : ZMod 97)) h16 h32
-  norm_num at h
-  exact h
+theorem orderOf_28_bad_ratio_zmod97 : orderOf (28 : ZMod 97) = 32 :=
+  orderOf_eq_of_two_pow_checks 4 (by norm_num) (by decide) (by decide)
 
 /-- `28` is a primitive 32-th root in `F_97`. -/
-theorem isPrimitiveRoot_28_32_bad_ratio_zmod97 : IsPrimitiveRoot (28 : ZMod 97) 32 := by
-  rw [IsPrimitiveRoot.iff_orderOf]
-  exact orderOf_28_bad_ratio_zmod97
+theorem isPrimitiveRoot_28_32_bad_ratio_zmod97 : IsPrimitiveRoot (28 : ZMod 97) 32 :=
+  IsPrimitiveRoot.iff_orderOf.mpr orderOf_28_bad_ratio_zmod97
 
 /-- At the finite-exception prime `97`, the canonical denominator-free obstruction vanishes for
 the primitive root `28`. -/
@@ -513,17 +455,12 @@ theorem invariantRatio_28_sq_pow32_eq_one_zmod97 :
 
 /-- A primitive 32-th root in `F_641` at which the canonical denominator-free obstruction
 vanishes. -/
-theorem orderOf_25_bad_ratio_zmod641 : orderOf (25 : ZMod 641) = 32 := by
-  have h16 : ¬ (25 : ZMod 641) ^ (2 : ℕ) ^ 4 = 1 := by decide
-  have h32 : (25 : ZMod 641) ^ (2 : ℕ) ^ 5 = 1 := by decide
-  have h := orderOf_eq_prime_pow (x := (25 : ZMod 641)) h16 h32
-  norm_num at h
-  exact h
+theorem orderOf_25_bad_ratio_zmod641 : orderOf (25 : ZMod 641) = 32 :=
+  orderOf_eq_of_two_pow_checks 4 (by norm_num) (by decide) (by decide)
 
 /-- `25` is a primitive 32-th root in `F_641`. -/
-theorem isPrimitiveRoot_25_32_bad_ratio_zmod641 : IsPrimitiveRoot (25 : ZMod 641) 32 := by
-  rw [IsPrimitiveRoot.iff_orderOf]
-  exact orderOf_25_bad_ratio_zmod641
+theorem isPrimitiveRoot_25_32_bad_ratio_zmod641 : IsPrimitiveRoot (25 : ZMod 641) 32 :=
+  IsPrimitiveRoot.iff_orderOf.mpr orderOf_25_bad_ratio_zmod641
 
 /-- At the finite-exception prime `641`, the canonical denominator-free obstruction vanishes for
 the primitive root `25`. -/
@@ -539,17 +476,12 @@ theorem invariantRatio_25_sq_pow32_eq_one_zmod641 :
 
 /-- A primitive 32-th root in `F_673` at which the canonical denominator-free obstruction
 vanishes. -/
-theorem orderOf_149_bad_ratio_zmod673 : orderOf (149 : ZMod 673) = 32 := by
-  have h16 : ¬ (149 : ZMod 673) ^ (2 : ℕ) ^ 4 = 1 := by decide
-  have h32 : (149 : ZMod 673) ^ (2 : ℕ) ^ 5 = 1 := by decide
-  have h := orderOf_eq_prime_pow (x := (149 : ZMod 673)) h16 h32
-  norm_num at h
-  exact h
+theorem orderOf_149_bad_ratio_zmod673 : orderOf (149 : ZMod 673) = 32 :=
+  orderOf_eq_of_two_pow_checks 4 (by norm_num) (by decide) (by decide)
 
 /-- `149` is a primitive 32-th root in `F_673`. -/
-theorem isPrimitiveRoot_149_32_bad_ratio_zmod673 : IsPrimitiveRoot (149 : ZMod 673) 32 := by
-  rw [IsPrimitiveRoot.iff_orderOf]
-  exact orderOf_149_bad_ratio_zmod673
+theorem isPrimitiveRoot_149_32_bad_ratio_zmod673 : IsPrimitiveRoot (149 : ZMod 673) 32 :=
+  IsPrimitiveRoot.iff_orderOf.mpr orderOf_149_bad_ratio_zmod673
 
 /-- At the finite-exception prime `673`, the canonical denominator-free obstruction vanishes for
 the primitive root `149`. -/
@@ -565,18 +497,13 @@ theorem invariantRatio_149_sq_pow32_eq_one_zmod673 :
 
 /-- A primitive 32-th root in `F_1153` at which the canonical denominator-free obstruction
 vanishes. -/
-theorem orderOf_439_bad_ratio_zmod1153 : orderOf (439 : ZMod 1153) = 32 := by
-  have h16 : ¬ (439 : ZMod 1153) ^ (2 : ℕ) ^ 4 = 1 := by decide
-  have h32 : (439 : ZMod 1153) ^ (2 : ℕ) ^ 5 = 1 := by decide
-  have h := orderOf_eq_prime_pow (x := (439 : ZMod 1153)) h16 h32
-  norm_num at h
-  exact h
+theorem orderOf_439_bad_ratio_zmod1153 : orderOf (439 : ZMod 1153) = 32 :=
+  orderOf_eq_of_two_pow_checks 4 (by norm_num) (by decide) (by decide)
 
 /-- `439` is a primitive 32-th root in `F_1153`. -/
 theorem isPrimitiveRoot_439_32_bad_ratio_zmod1153 :
-    IsPrimitiveRoot (439 : ZMod 1153) 32 := by
-  rw [IsPrimitiveRoot.iff_orderOf]
-  exact orderOf_439_bad_ratio_zmod1153
+    IsPrimitiveRoot (439 : ZMod 1153) 32 :=
+  IsPrimitiveRoot.iff_orderOf.mpr orderOf_439_bad_ratio_zmod1153
 
 /-- At the finite-exception prime `1153`, the canonical denominator-free obstruction vanishes for
 the primitive root `439`. -/

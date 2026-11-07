@@ -367,6 +367,19 @@ theorem run_eq_runToRound_last
 
 end Prover
 
+/-- The logged oracle reduction agrees with the logged plain reduction after reassociating
+the output tuple. The map preserves both recorded query logs. -/
+@[simp]
+theorem OracleReduction.runWithLog_eq_map_toReduction_runWithLog
+    [∀ i, OracleInterface (OStmtOut i)] [∀ i, OracleInterface (pSpec.Message i)]
+    {stmt : StmtIn} {oStmt : ∀ i, OStmtIn i} {wit : WitIn}
+    {oracleReduction : OracleReduction oSpec StmtIn OStmtIn WitIn StmtOut OStmtOut WitOut pSpec} :
+      oracleReduction.runWithLog stmt oStmt wit =
+        (fun r => (r.1.1, r.1.2, r.2.1, r.2.2)) <$>
+          oracleReduction.toReduction.runWithLog ⟨stmt, oStmt⟩ wit := by
+  simp only [OracleReduction.runWithLog, Reduction.runWithLog, Prover.runWithLog,
+    OracleVerifier.run_eq_run_verifier, OracleReduction.toReduction, map_bind, map_pure]
+
 end Execution
 
 variable {ι : Type} {oSpec : OracleSpec ι}

@@ -309,19 +309,6 @@ theorem sixResidual_factorization
   rw [domainRootProduct_natDegree, hsupport]
   exact sixResidual_natDegree_le_three dom u0 u1 hsupport c
 
-theorem eval_domainRootProduct_eq_zero_iff_mem
-    {I : Type} [Fintype I] [DecidableEq I]
-    (dom : I ↪ F) (S : Finset I) (i : I) :
-    (domainRootProduct dom S).eval (dom i) = 0 ↔ i ∈ S := by
-  rw [domainRootProduct, eval_prod, Finset.prod_eq_zero_iff]
-  constructor
-  · rintro ⟨j, hj, hzero⟩
-    simp only [eval_sub, eval_X, eval_C] at hzero
-    have hij : i = j := dom.injective (sub_eq_zero.mp hzero)
-    exact hij ▸ hj
-  · intro hi
-    exact ⟨i, hi, by simp⟩
-
 theorem domainRootProduct_eval_ne_zero_of_mem_directionZeroSet
     (dom : Fin 16 ↪ F) (u1 : Fin 16 → F)
     (i : {i : Fin 16 // i ∈ directionZeroSet u1}) :

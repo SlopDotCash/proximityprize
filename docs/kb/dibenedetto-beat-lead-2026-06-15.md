@@ -1,5 +1,17 @@
 # Beating di Benedetto via the 2-power Sidon-floor energies — VERIFIED linchpin, exponent 0.989→0.958 (#444)
 
+> **Correction (2026-10-28 audit, T48).** This note correctly flags its modular substitution as
+> unverified (Phase 2). That gate stands, and so does its later Phase-1 threshold refinement: the
+> general expression's nontriviality point is `p^{40/191}`, not `p^{1/4}`. Note, though, that this
+> point, like `p^{1/7}`, lies below the published theorem's window `p^{1/4} < H`. The claimed
+> **all-prime** energy invariance does not hold.
+> "E_3 is p-INVARIANT" and "T_2, T_3 EXACT ... incl extreme structured primes" describe the primes
+> sampled. At the recorded thin cell `n = 64`, `p = 17318209` (`p > n⁴`; T91), the exact pair count
+> gives `E_2 = 13632`, not `3n² − 3n = 12096`, so the claimed universal `T_2` identity already fails
+> there. The selected finite measurements may well be correct as measurements. The published
+> Theorem 3.1 also assumes `p^{1/4} < H < p^{1/2}`, so the `p^{1/7}` "nontriviality" lies outside
+> its proven range (see `dibenedetto-beat-CONFIRMED-2026-06-15.md` and R-260).
+
 GOAL: beat di Benedetto et al (arXiv:2003.06165, char-sum exponent 1-31/2880~0.9892, vanishes at |H|=p^{1/4})
 for CLOSENESS to the prize, by any margin. Phase-1 deep-read+slack-audit (4 verified agents) + linchpin
 computation. **A genuine improvement is identified, with its linchpin machine-verified; one validity check

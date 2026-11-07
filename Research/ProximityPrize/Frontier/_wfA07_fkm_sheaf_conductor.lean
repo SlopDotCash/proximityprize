@@ -6,12 +6,13 @@ Authors: ArkLib Contributors
 import Mathlib
 
 /-!
-# A07 (FKM sheaf / parameter-space cancellation) no-go: the weighted-conductor trade-off (#444)
+# A07 (FKM sheaf / parameter-space cancellation): a Cauchy–Schwarz weight inequality (#444)
 
-**NEGATIVE / guardrail brick (an honest OBSTRUCTION, NOT a closure).** This file pins, axiom-clean,
-*why* the FKM (Fouvry–Kowalski–Michel) "relocate the cancellation to the parameter family where
-Deligne is sharp" route — applied to the **Krawtchouk-weighted** far-line incidence — does not
-escape the same conductor wall that already kills the unweighted `b`-line route (`C2WeilDeligneParamFamilyNoGo`).
+**Scope (audit-corrected).** This file was intended as a guardrail explaining why the FKM
+(Fouvry–Kowalski–Michel) "relocate the cancellation to the parameter family" route, applied to the
+**Krawtchouk-weighted** far-line incidence, does not escape the conductor wall of the unweighted
+`b`-line route (`C2WeilDeligneParamFamilyNoGo`).  Its formal content is only the Cauchy–Schwarz
+inequality (★) below; the sheaf-theoretic reading is NOT established (see the correction section).
 
 ## The route
 
@@ -29,40 +30,34 @@ a Hamming shell, `ShellFourierKrawtchouk.shell_fourier`). The relocated trace fu
 The hope: a clever weight `w` makes `cond(F) = O(√(n log p))`, so FKM lands the prize where plain Weil
 was vacuous.
 
-## The wall (the conductor floor = ‖w‖₂², and the Cauchy–Schwarz trade-off)
+## What is actually proven: plain Cauchy–Schwarz (audit correction, 2026-10-28)
 
-For ANY weight `w`, the L²-second-moment of the trace `T_w` over the full parameter family is, by
-orthogonality (the exact Parseval computation, verified numerically in
-`scripts/probes/rust/probe_wfA07_fkm_conductor.rs` to 3 decimals: `M2 = ‖w‖₂²` for every weight):
+An earlier version of this note identified `condFloor(w) := ∑_j w_j²` with the generic rank of a
+sheaf realizing `T_w`, and hence with a lower bound for its conductor.  **That identification is
+wrong** and has been withdrawn:
 
-  `(1/(p−1)) ∑_{b≠0} |T_w(b)|² = (p·‖w‖₂² − (∑_j w_j)²)/(p−1) ⟶ ‖w‖₂²`  as `p → ∞`.
+* rank and conductor are invariant under scaling `w ↦ ε·w`, while `∑_j w_j²` scales by `ε²`
+  (for `w ≡ ε`, `condFloor = n·ε²` is arbitrarily small, yet the natural realizing sheaf
+  `⊕_j L_ψ(x_j ·)` still has rank `n`);
+* the FKM certificate shape `condFloor·√p` scales like `ε²` while `T_w` scales like `ε`, so any
+  "trade-off" comparing them is a dimensional artefact;
+* `⊕_j L_ψ(x_j ·)` is not geometrically irreducible, so the FKM theorem does not apply to it as stated.
 
-The generic rank of any middle-extension sheaf realizing `T_w` equals this second moment, and
-`cond(F) ≥ rank(F)`. So the **conductor floor is `‖w‖₂²`** — exactly the (squared) L²-norm of the
-chosen weight. (Unweighted `w ≡ 1` gives `‖w‖₂² = n` = the C2 wall: `cond = n`, FKM trivial.)
+The L²-mean of `T_w` over the parameter family is a genuine Parseval fact
+(`(1/(p−1)) ∑_{b≠0} |T_w(b)|² = (p·‖w‖₂² − (∑_j w_j)²)/(p−1)`, not formalized here), but it is a
+second moment, not a rank or conductor.
 
-The decisive trade-off is plain Cauchy–Schwarz on the `n` subgroup positions:
+The only Lean content is the Cauchy–Schwarz inequality on the `n` positions,
 
-  `signal(w)² := (∑_j |w_j|)² ≤ n · ∑_j w_j² = n · condFloor(w)`.            (★)
+  `signal(w)² := (∑_j |w_j|)² ≤ n · ∑_j w_j² = n · condFloor(w)`,            (★)
 
-`signal(w) = ∑_j |w_j|` is the most the period sup-norm can be (triangle ineq.) — it is the "amount of
-unweighted mass" the weight carries. (★) says: **to push the conductor below `n` (the only way FKM
-beats the trivial `ℓ¹` ceiling) you must shrink the signal below `n` by the SAME factor** —
-`condFloor < n/k ⟹ signal < n/√k`. You cannot have both a small conductor and a full-mass period; the
-weight that flattens the conductor is exactly the weight that suppresses the period it was meant to bound.
-
-`signal² ≤ n·cond` and FKM `sup ≤ cond·√p` chain to `sup ≤ cond·√p` with `cond ≥ signal²/n`, so for a
-weight carrying the prize-scale signal `signal = Θ(n)` (needed to see `η_b ~ √(n log p)` at all) the
-conductor is forced back to `Θ(n)` and FKM gives `Θ(n)·√p ≫ √(n log p)` at `β = 4` — vacuous.
-
-This is the SAME `rank = conductor = n` wall as C2, now shown stable under arbitrary (Krawtchouk or
-other) weighting: the weight only trades conductor for signal at a fixed `n`-position exchange rate.
+together with trivial corollaries and its equality case `w ≡ 1`.  No FKM/conductor no-go is proven;
+whether a weighted FKM relocation can help is NOT settled by this file.
 
 ## What this is NOT
 
-It is not a refutation of the prize bound (the period IS `√`-controlled empirically); it is a precise
-no-go for the FKM-relocation *method*: the relevant sheaf cannot have bounded conductor while carrying
-a non-trivial signal, so Deligne never bites below the trivial ceiling. The genuine cancellation is the
+It is not a refutation of the prize bound, and (after the correction above) it is NOT a proven no-go
+for the FKM-relocation method either. Heuristically the genuine cancellation is the
 archimedean equidistribution of the `n` Artin–Schreier phases on the parameter family — the open BGK
 core — not a Deligne output. (Cf. DISPROOF_LOG C14/C29: `η_b`'s sheaf-home is the `GL(1)^f` Gauss-sum
 family, conductor `~ n^{2r−1}`, never a bounded-conductor Kloosterman object.)
@@ -82,10 +77,9 @@ namespace ArkLib.ProximityGap.Frontier.A07FKMSheafConductor
 open scoped BigOperators
 open Finset
 
-/-- The **conductor floor** of the parameter-family sheaf realizing the weighted period
-`T_w(b) = ∑_j w_j · ψ(b x_j)`: the L²-second-moment of the trace over the parameter family,
-which equals the generic rank, hence lower-bounds the conductor of any middle-extension realization.
-By the Parseval computation it is `∑_j w_j²` (the squared weight L²-norm). -/
+/-- The squared weight L²-norm `∑_j w_j²` (named `condFloor` for historical reasons).  It is the
+asymptotic L²-mean of `T_w(b) = ∑_j w_j · ψ(b x_j)` over the parameter family, but it is NOT a
+rank or conductor bound: rank/conductor are scale-invariant in `w`, while `∑_j w_j²` is not. -/
 def condFloor (n : ℕ) (w : Fin n → ℝ) : ℝ := ∑ j, (w j) ^ 2
 
 /-- The **signal** of a weight: the L¹-mass `∑_j |w_j|`. This is the largest value the period
@@ -101,9 +95,9 @@ theorem condFloor_nonneg (n : ℕ) (w : Fin n → ℝ) : 0 ≤ condFloor n w := 
 theorem signal_nonneg (n : ℕ) (w : Fin n → ℝ) : 0 ≤ signal n w := by
   unfold signal; positivity
 
-/-- **The FKM conductor–signal trade-off (★).** For any weight `w` on the `n` subgroup positions,
-`signal(w)² ≤ n · condFloor(w)`. This is Cauchy–Schwarz on the `n` positions applied to `|w_j|`.
-It is the entire obstruction: a small conductor forces a small signal at the fixed exchange rate `n`. -/
+/-- **Cauchy–Schwarz (★).** For any weight `w` on the `n` subgroup positions,
+`signal(w)² ≤ n · ∑_j w_j²`.  This is Cauchy–Schwarz on the `n` positions applied to `|w_j|`; it
+carries no sheaf/conductor content. -/
 theorem signal_sq_le_card_mul_condFloor (n : ℕ) (w : Fin n → ℝ) :
     (signal n w) ^ 2 ≤ (n : ℝ) * condFloor n w := by
   unfold signal condFloor
@@ -115,10 +109,8 @@ theorem signal_sq_le_card_mul_condFloor (n : ℕ) (w : Fin n → ℝ) :
   simp_rw [hsq] at h
   exact h
 
-/-- **The no-go, contrapositive form: a bounded conductor caps the signal.** If a sheaf realizing the
-weighted period has conductor floor `≤ c`, then its carried signal is `≤ √(n·c)`. In particular, to
-beat the trivial ceiling FKM needs `c < n`, which forces `signal < n`: the weight cannot both flatten
-the conductor and carry the full unweighted-scale period mass. -/
+/-- **Cauchy–Schwarz, square-root form.** If `∑_j w_j² ≤ c` then `∑_j |w_j| ≤ √(n·c)`.  (No
+conductor interpretation: `∑_j w_j²` is not a conductor, see the module note.) -/
 theorem signal_le_of_condFloor_le (n : ℕ) (w : Fin n → ℝ) (c : ℝ)
     (hc : condFloor n w ≤ c) :
     signal n w ≤ Real.sqrt ((n : ℝ) * c) := by
@@ -131,12 +123,8 @@ theorem signal_le_of_condFloor_le (n : ℕ) (w : Fin n → ℝ) (c : ℝ)
             rw [Real.sqrt_sq hs]
     _ ≤ Real.sqrt ((n : ℝ) * c) := Real.sqrt_le_sqrt hkey
 
-/-- **The FKM-relocation is vacuous below the trivial ceiling.** The FKM completed-sum certificate is
-`sup_b |T_w(b)| ≤ condFloor · √p`. The prize wants `sup ≤ Cp` for a target `Cp` (the role of
-`C√(n log p)`). If the weight carries any signal at all that we wish to certify (`Cp < signal`), then
-since `signal² ≤ n·condFloor` we get `condFloor·√p ≥ (signal²/n)·√p`. Concretely we record the clean
-implication: whenever the FKM bound `condFloor·√p` is to beat the target `Cp` while the period is at
-least `signal`, the conductor is pinned by `condFloor ≥ signal²/n`. -/
+/-- **Cauchy–Schwarz, divided form:** `(∑_j |w_j|)²/n ≤ ∑_j w_j²` for `n > 0`.  (Historically named
+for an FKM reading; it is NOT an FKM statement, since `∑_j w_j²` is not a conductor.) -/
 theorem fkm_bound_pinned_by_signal (n : ℕ) (w : Fin n → ℝ) (hn : 0 < n) :
     (signal n w) ^ 2 / (n : ℝ) ≤ condFloor n w := by
   have hnpos : (0 : ℝ) < n := by exact_mod_cast hn
@@ -144,19 +132,15 @@ theorem fkm_bound_pinned_by_signal (n : ℕ) (w : Fin n → ℝ) (hn : 0 < n) :
   have := signal_sq_le_card_mul_condFloor n w
   linarith [this]
 
-/-- **Unweighted base case = the C2 wall.** With `w ≡ 1` (no weighting), `condFloor = n` exactly:
-the FKM relocation of the *plain* period has conductor `= n`, reproducing
-`C2WeilDeligneParamFamilyNoGo.parseval_mass_le_rank`. So weighting is the only lever, and (★) shows it
-cannot help. -/
+/-- **Unweighted base case.** With `w ≡ 1`, `∑_j w_j² = n` exactly (numerically matching the
+rank-`n` count of `C2WeilDeligneParamFamilyNoGo`; for other weights no such match holds). -/
 theorem condFloor_unweighted (n : ℕ) : condFloor n (fun _ => (1 : ℝ)) = (n : ℝ) := by
   unfold condFloor
   simp
 
-/-- **The exchange-rate sharpness.** (★) is tight: the unweighted weight `w ≡ 1` attains equality
-`signal² = n·condFloor` (both sides `= n²`). So the `n`-position exchange rate between conductor and
-signal cannot be improved by any inequality argument — it is a structural identity at the constant
-weight, which is exactly the weight carrying the full period. Hence no weight does strictly better than
-the unweighted `cond = n` on the prize-relevant (full-signal) periods. -/
+/-- **Equality case of (★).** The constant weight `w ≡ 1` attains `signal² = n·∑_j w_j²` (both
+sides `= n²`), so the Cauchy–Schwarz constant `n` is sharp.  No statement about conductors or FKM
+is made. -/
 theorem tradeoff_tight_at_unweighted (n : ℕ) :
     (signal n (fun _ => (1 : ℝ))) ^ 2 = (n : ℝ) * condFloor n (fun _ => (1 : ℝ)) := by
   rw [condFloor_unweighted]

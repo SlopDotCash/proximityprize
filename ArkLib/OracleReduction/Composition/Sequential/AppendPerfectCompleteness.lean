@@ -7,16 +7,32 @@ import ArkLib.OracleReduction.Composition.Sequential.AppendRun
 import ArkLib.OracleReduction.Completeness
 
 /-!
-# Perfect completeness of sequential composition (`Reduction.append`)
+# Perfect completeness of sequential composition (`Reduction.append`): proof-plan notes
+
+**Status: this module contains no declarations.** It is kept (it is imported by
+`AppendPerfectCompletenessProof.lean`) as the record of the support-decomposition proof plan.
 
 The append-completeness theorem in `Append.lean` (`reduction_append_perfectCompleteness`) is
 residual-gated: it takes its own conclusion as the hypothesis
-`reductionAppendPerfectCompletenessResidual`. This file discharges that residual for the
-message-seam case, i.e. it proves
+`reductionAppendPerfectCompletenessResidual`. For the message-seam case that residual is
+**discharged by proved companion theorems** (not by this file), which derive
 
 `(R₁.append R₂).perfectCompleteness` from `R₁.perfectCompleteness` and `R₂.perfectCompleteness`
 
-*without* assuming the conclusion.
+*without* assuming the conclusion:
+
+* `Reduction.append_perfectCompleteness_message` (`AppendPerfectCompletenessMsg.lean`) and
+  `Reduction.append_perfectCompleteness_msg_proof` (`AppendPerfectCompletenessProof.lean`), under
+  the message-seam hypotheses `hn`/`hDir`/`hDir₂`, `NeverFail init`, and the oracle-support
+  restriction `hImplSupp` (every stateful response support equals the full query support,
+  independently of the state); `reductionAppendPerfectCompletenessResidual_of_message` packages
+  the former as the residual;
+* `OracleReduction.append_perfectCompleteness_msg_proof` (`AppendPerfectCompletenessOracle.lean`)
+  transfers this to oracle reductions, additionally assuming the verifier-fusion bridge
+  `appendToReductionResidual`;
+* `BCS/CompletenessPreservation.lean` consumes `Reduction.append_perfectCompleteness_msg_proof`.
+
+These theorems do not cover other seams or implementations violating `hImplSupp`.
 
 ## Proof outline (support-decomposition — no distributional reordering needed)
 
@@ -40,9 +56,15 @@ The `hImplSupp` hypothesis (the appended verifier's stateful oracle queries have
 *support*) is what makes the support decomposition go through despite a stateful `impl`; it is exactly
 why the support route works where a naive distributional route would also have to track `σ`-state.
 
-## Status (verified scaffold + precise remaining gap)
+## Historical status (superseded; kept for the record)
 
-The following steps are machine-checked (`lake env lean`, against built deps):
+The text in this section predates the companion proofs listed above. The "remaining gap" it
+describes was later closed there (via the support-faithfulness gate
+`Prover.addLift_challenge_support_faithful` of `ChallengeSeamBridge.lean` and the `OptionT`
+support-decomposition lemmas), and the named residual it mentions is no longer stated in this
+file. Read "unproven" below as the state at the time of writing, not the current state.
+
+The following steps were machine-checked at the time (`lake env lean`, against built deps):
 * `rw [perfectCompleteness_eq_prob_one]` reduces `h₁`, `h₂`, and the goal to `Pr[·] = 1`.
 * `rw [probEvent_eq_one_iff]; refine ⟨?_, ?_⟩` splits the goal into **no-failure** (`Pr[⊥ | ·] = 0`)
   and **support containment** (`∀ x ∈ support …, good₃ x`).
@@ -61,8 +83,9 @@ layers and then the *challenge-oracle seam split* — relating the combined
 `simulateQ_liftM_eq_of_query`). With the run decomposed under `simulateQ`, `h₁` pins
 `V₁`'s output to `P₁`'s output statement `s₂ ∈ rel₂` and `h₂` lands the result in `rel₃`.
 
-Stated below as a named residual so the obligation is explicit and the scaffold above is recorded;
-discharging it closes compositional completeness for `Logup`/`Fri`/`BCS`/WHIR at once.
+At the time, this obligation was stated below as a named residual. That statement has since been
+removed from this file (see the note at the end), because the companion modules above prove the
+message-seam keystone outright under the hypotheses listed there.
 -/
 
 open OracleComp OracleSpec ProtocolSpec
@@ -73,7 +96,10 @@ namespace Reduction
 -- (which merely restated the goal as a `Prop`-valued def, ignoring its own hypotheses) was removed.
 -- The genuine, axiom-clean append perfect-completeness keystone is the *theorem*
 -- `Reduction.append_perfectCompleteness_message` (in `AppendPerfectCompletenessMsg.lean`), with the
--- oracle-level wrapper `Reduction.append_perfectCompleteness_msg_proof`
--- (in `AppendPerfectCompletenessProof.lean`). Use those.
+-- reduction-level companion `Reduction.append_perfectCompleteness_msg_proof`
+-- (in `AppendPerfectCompletenessProof.lean`) and the oracle-level wrapper
+-- `OracleReduction.append_perfectCompleteness_msg_proof`
+-- (in `AppendPerfectCompletenessOracle.lean`, which also assumes `appendToReductionResidual`).
+-- Use those.
 
 end Reduction

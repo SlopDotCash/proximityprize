@@ -30,12 +30,16 @@ be positive, and the per-coordinate double-coverage route that would prove it is
 about the abstract `epsCA`; it is a consequence of the explicit good-`γ`-set existence
 `L46GS.GSWitnessLowerBound C δ ⌊δ·n⌋` ([BCIKS20, Prop 1.1] / [ACFY25, Lemma 4.10]).
 
-For Reed–Solomon codes that witness **exists**: a `δ`-close non-codeword (deep hole) lies in a
-list-decoding ball, and each close codeword in the line `u 0 + γ·u 1`'s decoding list contributes a
-distinct good combiner `γ`, the Guruswami–Sudan degree structure both producing and capping the
-count at `⌊δ·n⌋`. The honest residual surface for the RS results below is therefore the single named
-hypothesis `L46GS.GSWitnessLowerBound (ReedSolomon.code domain deg) δ ⌊δ·n⌋` — exactly the BCIKS20
-witness construction, no abstract dominance smuggled in.
+For Reed–Solomon codes in the parameter regime of [BCIKS20, Prop 1.1], such a witness is the
+classical construction: a `δ`-close non-codeword (deep hole) lies in a list-decoding ball, and each
+close codeword in the line `u 0 + γ·u 1`'s decoding list contributes a distinct good combiner `γ`,
+the Guruswami–Sudan degree structure both producing and capping the count at `⌊δ·n⌋`. Its
+existence is **not** proved in this file and is **not** universal over RS parameters: for a full
+RS code (e.g. `n = deg = 1`, so every word is a codeword) at `δ = 0` every stack is jointly close
+and no witness exists, although (★) is then the trivial `0 ≤ ε_ca`. The witness is a sufficient,
+sometimes needlessly strong, route to (★). The residual surface for the RS results below is
+therefore the single named hypothesis `L46GS.GSWitnessLowerBound (ReedSolomon.code domain deg) δ
+⌊δ·n⌋` — the BCIKS20 witness construction, kept explicit, no abstract dominance smuggled in.
 
 ## Deliverables
 

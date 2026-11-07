@@ -21,16 +21,27 @@ the minimal genuine Stepanov auxiliary) — and divides through by the Hasse mul
 > `2A + d < q`, `0 < M`, and `|V|·M < 2(A+1)` (the `ℓ = 1` construction-dimension condition),
 > the root/Hasse set satisfies  `|V| ≤ (((q−1)/2)·d + (q−1)) / M`.
 
-At the Stepanov-optimal `M ~ √q` (and `A ~ q/2 − d` so the construction dimension `2(A+1) ~ q`
-clears `|V|·M`), the right-hand side `((q−1)/2·d + (q−1))/M ~ (d/2)·√q` is the classical
-`O_d(√q)` Weil count. The `√q` *value* still requires plugging the explicit `M`; this brick removes
-the free `ℓ` and puts the engine in the standard divided `|V| ≤ D₀/M` Stepanov normal form, with
-`D₀` now an explicit closed form in `q, d` (no `ℓ`).
+## The dimension premise already implies the conclusion (audit PG-059)
+
+This is a **conditional numeric consequence**, not an independent Weil-type count. `V` is an
+arbitrary finite set (nothing ties it to roots, squares or curve points), and the premises alone
+force the conclusion by integer arithmetic: `|V|·M < 2(A+1)` gives `|V|·M ≤ 2A + 1`, and
+`2A + d < q` with `d ≥ 1` gives `2A + 1 ≤ q − 1 ≤ ((q−1)/2)·d + (q−1) = D₀`. So
+`|V| ≤ D₀/M` follows without squarefreeness, odd `q`, the auxiliary engine, or `g` itself; this is
+recorded as the checked theorem `card_le_one_threshold_of_dim` below.
+
+In particular, choosing `M ≈ √q` makes the *premise* already demand `|V| = O(√q)`
+(`|V|·√q < 2(A+1) < q + 1`), so the premise cannot be met by an intended quadratic-residue or
+curve-point set of size comparable to `q`. Turning this into the classical `O_d(√q)` Weil count
+is **not** a matter of "plugging an optimal `M`": it needs an independent auxiliary
+dimension/rank construction whose dimension condition does not presuppose the bound, together with
+the correct main-term-adjusted Weil statement for the actual set. Neither is supplied here.
 
 ## Honest scope (rules 1, 3, 6)
 
 A divided/specialized **corollary** of the proven `weil_stepanov_card_lt` (`ℓ := 1`), NOT a CORE
-closure. The classical `√q` Weil bound it points at is the *trivial completion ceiling* for the
+closure, and (by the paragraph above) not a Weil bound for any concrete set.
+The classical `√q` Weil bound it points at is the *trivial completion ceiling* for the
 thin subgroup `μ_n` (`M(μ_n) ≤ √q`), the upper end of the proven bracket `[√n, √q]`; the prize
 `√(n·log(q/n))` lives strictly below it and is NOT reached by Weil/Stepanov on the full character
 (thinness-blind). This is plumbing on the proven analytic-NT engine, sharpening its usable normal
@@ -52,7 +63,12 @@ single auxiliary block (`ℓ = 1`) collapses the threshold to the explicit close
 `D₀ = ((q−1)/2)·deg g + (q−1)` (the `q(ℓ−1)` term vanishes), and dividing by the positive Hasse
 multiplicity `M` puts the engine in standard Stepanov normal form:
 `|V| ≤ (((q−1)/2)·deg g + (q−1)) / M`, under the `ℓ = 1` construction-dimension condition
-`|V|·M < 2·(A+1)`. -/
+`|V|·M < 2·(A+1)`.
+
+Caveat (audit PG-059): `V` is arbitrary and the dimension premise is already stronger than the
+conclusion — `card_le_one_threshold_of_dim` derives the same inequality from `2A + d < q`,
+`0 < d`, `0 < M` and `|V|·M < 2(A+1)` alone. This is a conditional numeric consequence, not an
+independent `O_d(√q)` Weil count for a root or curve-point set. -/
 theorem weil_stepanov_card_le_one
     (g : F[X]) (hg : Squarefree g) (hdeg : 0 < g.natDegree)
     (hq_odd : Odd (Fintype.card F)) (A : ℕ)
@@ -80,7 +96,22 @@ theorem weil_stepanov_card_le_one
   have hle : V.card * M ≤ ((q - 1) / 2) * d + (q - 1) := by omega
   exact (Nat.le_div_iff_mul_le hMpos).mpr hle
 
+/-- **The `ℓ = 1` conclusion is forced by the numeric premises alone (audit PG-059).** For any
+natural numbers `q, d, A, c, M` with `0 < d`, `2A + d < q`, `0 < M` and the dimension premise
+`c·M < 2(A+1)`, already `c ≤ (((q−1)/2)·d + (q−1)) / M`: indeed `c·M ≤ 2A + 1 ≤ q − 1 ≤ D₀`.
+No polynomial, squarefreeness, parity of `q` or Stepanov auxiliary is used, so
+`weil_stepanov_card_le_one` (with `c = |V|`) carries no information beyond its dimension
+premise. -/
+theorem card_le_one_threshold_of_dim (q d A c M : ℕ) (hd : 0 < d) (hAq : 2 * A + d < q)
+    (hMpos : 0 < M) (hdim : c * M < 2 * (A + 1)) :
+    c ≤ (((q - 1) / 2) * d + (q - 1)) / M := by
+  have hle : c * M ≤ ((q - 1) / 2) * d + (q - 1) :=
+    calc c * M ≤ q - 1 := by omega
+      _ ≤ ((q - 1) / 2) * d + (q - 1) := Nat.le_add_left _ _
+  exact (Nat.le_div_iff_mul_le hMpos).mpr hle
+
 end ArkLib.ProximityGap.StepanovWeilEngine
 
 /-! ## Axiom audit -/
 #print axioms ArkLib.ProximityGap.StepanovWeilEngine.weil_stepanov_card_le_one
+#print axioms ArkLib.ProximityGap.StepanovWeilEngine.card_le_one_threshold_of_dim

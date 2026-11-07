@@ -1,5 +1,16 @@
 # CRITICAL meta-finding: far-line δ* numerics CANNOT distinguish Johnson from the floor at any feasible n — #407
 
+> **Scope note (2026-10-28 audit, T48).** The retraction of universal asymptotic claims from tiny
+> data is correct. The note's own impossibility claim is too strong, though.
+> - "Cannot distinguish … at any computationally feasible n" is an estimate of the cost of
+>   brute-force enumeration. It does not prove that no feasible computation, using other methods
+>   or certificates, can ever separate the models.
+> - The table compares `√(kn)` with a single arbitrary coefficient choice `k + n/ln n`, whereas the
+>   floor is a `Θ(n/log n)` family with unspecified constants. The crossover near `n = 64` is
+>   therefore specific to that coefficient.
+>
+> Treat the table as a useful finite comparison, not a computational impossibility theorem.
+
 The honest, definitive correction to all the far-line δ* conclusions this session ("it's Johnson", "→½",
 "tracks the floor"). They were **over-readings of fundamentally underdetermined data**.
 

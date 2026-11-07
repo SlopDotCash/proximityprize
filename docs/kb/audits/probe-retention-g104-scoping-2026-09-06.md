@@ -19,6 +19,15 @@ and the full countercertificate output. This audit does not recompile the
 Lean consumer or independently certify the fixed modulus's primality.
 The Lean reference edit changes a comment only.
 
+Addendum (2026-10-28 audit, T117): the archive itself now carries a
+retirement header and inline corrections (the uniform cap also fails at
+arity 8 by an averaging argument, and its envelope used `C(110,s)^2` rather
+than the formal `descFactorial(110,s)^2`). The `archive_sha256` in the
+companion JSON is the pre-annotation hash; below the header the original
+proposal text is kept, with its overclaiming phrases (the "sharp G86
+envelope" label, "closes the ENTIRE lane", "2^20 headroom at production")
+replaced by marked `[CORRECTION]` wording.
+
 The archive advances the original unreferenced cohort to 51 of 92 reviewed,
 leaving 41. The removed producer had direct references and does not increment
 that cohort. Of the original 421 inventoried artifacts, 420 remain and one

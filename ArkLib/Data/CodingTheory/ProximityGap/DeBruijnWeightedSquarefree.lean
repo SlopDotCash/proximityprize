@@ -47,9 +47,26 @@ recipe verified on every vanishing `W`, bump/unit controls live.
 
 Squarefree `p·q` on the grid surface.  Remaining for the full weighted de Bruijn
 at `p^a·q^b`: the exponent-surface transport (weighted `gridSet`/`gridMap`) and
-the weighted digit descent (`ThreadSplit` restated for weights) — assembly-shaped;
-beyond two primes the ℕ-span theorem is genuinely open (de Bruijn's conjecture is
-false in general; Lam–Leung territory).
+the weighted digit descent (`ThreadSplit` restated for weights) — assembly-shaped.
+
+Beyond two primes, three different statements must be kept apart:
+* **The weight (ℕ-span) law is an established theorem, not open.**  Lam–Leung
+  (*On vanishing sums of roots of unity*, J. Algebra 224 (2000), arXiv:math/9511209)
+  prove for every positive `m = p₁^{a₁}⋯p_r^{a_r}` that the possible total weights of
+  vanishing sums of `m`-th roots of unity with ℕ-multiplicities are exactly
+  `ℕ·p₁ + ⋯ + ℕ·p_r`.
+* **Its in-tree formalization is missing** beyond the two-prime grid corollary proved
+  here; that is the actual gap for this file's lane.
+* **The stronger decomposition statement is false in general:** decomposing every
+  nonnegative vanishing relation itself into a nonnegative sum of rotated prime-cycle
+  (regular `p`-gon) relations — de Bruijn's two-prime picture — fails once `m` has
+  three or more distinct prime factors: at `m = 30`,
+  `ζ₅ + ζ₅² + ζ₅³ + ζ₅⁴ + (−ζ₃) + (−ζ₃²) = 0` is a vanishing sum of six distinct
+  30th roots of unity with no antipodal pair and no rotated triangle among them, so
+  it is not a sum of rotated regular polygons (its weight `6` still lies in the span,
+  as the Lam–Leung law requires).  So the
+  multi-prime extension of the *weight* corollary is true (but unformalized here),
+  while the multi-prime extension of the *grid decomposition* is not.
 -/
 
 namespace DeBruijnWeightedSquarefree

@@ -47,16 +47,23 @@ This file states and *proves* the corrected, non-degenerate outer soundness stat
   most `natDegree (grandSumCheckPoly oStmt) / |F| ≤ (|F| - 1) / |F|`. This is the **true** outer
   soundness bound the degenerate residual should have asked for.
 
-## The one genuine residual (a named hypothesis, not a `sorry`)
+## The run bridge (originally the one named residual; now proved for the honest reduction)
 
 Connecting this challenge-level SZ bound to the *protocol-level* `OuterSoundnessResidual`
 (`(outerVerifier …).soundness …`) requires unfolding `Reduction.run` of the outer phase to show that
 the after-outer statement's `xChallenge` field *is* the uniformly sampled outer challenge and that
 the verifier's acceptance event coincides with the check-vanishing event. That `simulateQ`/`run`
-unfolding (the prover-run composition side) is the deep monad-plumbing wall flagged throughout
-`Security/**`; it is taken here as the explicit, clearly-named hypothesis
-`OuterRunSamplesChallenge` of `Logup.outerSoundnessResidual_real_of_runUnfolding`. Everything *else*
-— the Schwartz–Zippel mathematics that makes the bound true — is closed unconditionally above.
+unfolding was originally taken as the explicit, clearly-named hypothesis
+`OuterRunSamplesChallenge` of `Logup.outerSoundnessResidual_real_of_runUnfolding`; the
+Schwartz–Zippel mathematics that makes the bound true is closed unconditionally above.
+
+**Current status:** the run bridge is proved later in this file for the honest outer reduction:
+`OuterRunSamplesChallenge_holds` (and `OuterRunSamplesChallenge_holds_of_getChallenge_run`)
+supply `OuterRunSamplesChallenge` with the real run's bad-accept probability for the fixed honest
+prover `(outerOracleReduction …).toReduction`. This is **not** soundness of the outer verifier
+against an arbitrary malicious prover; that statement is not provided here (and its version at
+`midSoundnessProtocolLanguage` with the paper error is refuted in the typical regime, see
+`OuterSoundnessSharp.lean`).
 -/
 
 open scoped NNReal ENNReal

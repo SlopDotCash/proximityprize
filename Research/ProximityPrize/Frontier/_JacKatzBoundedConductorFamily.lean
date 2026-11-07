@@ -26,16 +26,19 @@ completely OUT of the sum, leaving
   A(s) = g(χ^{-s}) · ∑_{j<m} χ^{j+s}(-1) · J(χ^j, (χ^{j+s})⁻¹) = g(χ^{-s}) · T(s),     (★)
 
 where `T(s) = ∑_{j<m} χ^{j+s}(-1)·J(χ^j, χ^{-(j+s)})` is a sum over the **horizontal family**
-`j ↦ J(χ^j, χ^{-(j+s)})` of Jacobi sums (fixed `s`, varying `j`). Each summand has modulus EXACTLY
-`√q` (`norm_jacobiSum_eq_sqrt`), and `χ^{j+s}(-1) = ±1` is a sign.
+`j ↦ J(χ^j, χ^{-(j+s)})` of Jacobi sums (fixed `s`, varying `j`). At a nonprincipal shift, each
+summand has modulus `√q` (`norm_jacobiSum_eq_sqrt`) **except** the two exceptional classes
+`χ^j = 1` (e.g. `j = 0`) and `χ^{j+s} = 1`, where the Jacobi sum is `−1` (modulus `1`;
+`jacobi_phase_term_zero_norm`, `jacobi_phase_term_norm_le`); `χ^{j+s}(-1) = ±1` is a sign.
 
-This is the SHARP form the previous Katz file (`_JacobiKatzEquidist`) lacked: it analysed the WRONG
-family — the dim-`(r-1)` Fermat-hypersurface family of the iterated `r`-fold Jacobi sum, whose
-conductor `n^r` blows up. The family in (★) is a **one-parameter (horizontal) family of ordinary
-2-variable Jacobi sums**, living on a curve, whose conductor is BOUNDED (independent of `j` and of the
-working order). It is exactly the family to which Katz/Deligne equidistribution applies with a
-`√(#family) = √m`-type discrepancy at the working order. So the angle's promise is real: the
-conductor blow-up is an artifact of the iterated family, not of the autocorrelation family.
+*Scope (audit 2026-10-28, R-215).* The previous Katz file (`_JacobiKatzEquidist`) analysed a
+different family — the iterated `r`-fold Jacobi sum on a Fermat hypersurface, with conductor proxy
+`n^r`. The family in (★) is a **one-parameter (horizontal) family of ordinary 2-variable Jacobi
+sums**. That its conductor is bounded, and that a Katz/Deligne equidistribution theorem with a
+usable discrepancy applies to it at the working order, are *heuristic expectations*: no sheaf,
+conductor or published equidistribution theorem is instantiated in Lean here, and when the
+character order varies with `m` the family itself changes. The Lean content is the algebraic
+factorisation, the interchange, the geometric-series identities and conditional norm transfers.
 
 ## What is PROVEN here (axiom-clean target [propext, Classical.choice, Quot.sound])
 
@@ -44,22 +47,32 @@ conductor blow-up is an artifact of the iterated family, not of the autocorrelat
    with `χ^j·(χ^{j+s})⁻¹` rewritten to `χ^{-s}` — pure group algebra in the exponents.)
 2. `autocorr_factor_out` — the FULL (★): `A(s) = g(χ^{-s}) · T(s)`, the Gauss sum pulled out of the sum.
 3. `autocorr_norm_eq` — taking norms: `‖A(s)‖ = √q · ‖T(s)‖` (for `s` with `χ^s ≠ 1`, so `‖g(χ^{-s})‖=√q`).
-4. `jacobi_phase_term_norm` — each summand of `T(s)` has modulus EXACTLY `√q`.
-5. `Tval_triangle` — the trivial triangle bound `‖T(s)‖ ≤ m·√q`, hence `‖A(s)‖ ≤ m·q` (the no-cancellation
-   value; the prize needs `‖T(s)‖ ≤ C·√q·√(m log m)`, i.e. `√(m log m)`-cancellation in the horizontal family).
+4. `jacobi_phase_term_norm` — a summand of `T(s)` has modulus EXACTLY `√q` under its three
+   nontriviality guards; `jacobi_phase_term_norm_le` gives `≤ √q` at every nonprincipal shift, and
+   `jacobi_phase_term_zero_norm` shows the `j = 0` summand has modulus `1`.
+5. `Tval_triangle` / `Tval_triangle_of_nonprincipal` — the trivial triangle bound `‖T(s)‖ ≤ m·√q`,
+   hence `‖A(s)‖ ≤ m·q` (the no-cancellation value; the per-shift target is
+   `‖T(s)‖ ≤ C·√q·√(m log m)`, i.e. `√(m log m)`-cancellation in the horizontal family).
 6. `EffectiveEquidistResidual` — the NAMED residual: the effective equidistribution discrepancy of the
    horizontal Jacobi family, `‖T(s)‖ ≤ C·√q·√(m log m)`, equivalently `‖∑_j u_j‖ ≤ C·√(m log m)` for the
    `m` UNIT phases `u_j = χ^{j+s}(-1)·J(χ^j,χ^{-(j+s)})/√q`.
-7. `autocorr_le_of_residual` — the residual SUFFICES: `EffectiveEquidistResidual ⟹ ‖A(s)‖ ≤ C·q·√(m log m)`,
-   the per-shift sub-Gaussian bound that (summed over `s` and frequency-twisted) is the
-   `OffDiagResonanceBounded` of `_ProveOffDiagResonanceCapstone`.
+7. `autocorr_le_of_residual` — the residual SUFFICES for the per-shift bound:
+   `EffectiveEquidistResidual ⟹ ‖A(s)‖ ≤ C·q·√(m log m)`. Summing `m` such per-shift bounds by the
+   triangle inequality gives `C·q·m·√(m log m)`, which exceeds the `q·m·log m` budget of
+   `OffDiagResonanceBounded` (`_ProveOffDiagResonanceCapstone`) by a factor `√(m / log m)`; no
+   twist-cancellation bridge absorbing that factor is proved, so this file does not weld to that
+   capstone.
+8. `Tval_eq_resonance_of_pow_eq_one` — at exact order (`χ^m = 1`), `T(s) = m·∑_{x∈R} p_s(x)`
+   exactly (no off-resonance error); `resonance_sum_principal_shift` shows `∑_{x∈R} p_0(x) = |R|`,
+   which is why the sharpened residual `ResonanceSetCancellation` carries a nonprincipal guard.
 
 ## EXACT RESIDUAL (honest)
 
 The residual is the EFFECTIVE equidistribution discrepancy `Disc_s(m)` of the **horizontal Jacobi
-family** `j ↦ J(χ^j, χ^{-(j+s)})/√q ∈ S¹` (`m` unit phases). Katz–Deligne gives that THIS family
-equidistributes in its monodromy group with discrepancy controlled by a BOUNDED conductor (no `n^r`
-blow-up — that was the iterated-family artifact), but the quantitative (Erdős–Turán) form delivers
+family** `j ↦ J(χ^j, χ^{-(j+s)})/√q` (`m` phases, unit-modulus except the two exceptional terms).
+Heuristically (not formalized, and with the published theorems' scope not checked against this
+family) Katz–Deligne would give equidistribution with discrepancy controlled by a bounded
+conductor (no `n^r` blow-up), but the quantitative (Erdős–Turán) form delivers
 `Disc_s(m) ≤ C(conductor)·m^{-1/2}` only as `m → ∞`, i.e. against the FULL family size `m = (p-1)/n`.
 
 WHERE IT RECURSES: square-root cancellation of `m` unit phases requires controlling the discrepancy
@@ -202,21 +215,65 @@ theorem jacobi_phase_term_norm {χ : MulChar F ℂ} {ψ : AddChar F ℂ} (hψ : 
     nlinarith [norm_nonneg ((χ ^ (j + s)) (-1)), this]
   rw [hsign, one_mul, norm_jacobiSum_eq_sqrt hj hjs hprod hψ]
 
-/-- **Sub-step 5 (trivial triangle bound on `T(s)`, hence on `A(s)`).** With every summand of `T(s)`
-of modulus `√q`, `‖T(s)‖ ≤ m·√q` (triangle), so `‖A(s)‖ = √q·‖T(s)‖ ≤ m·q` — the NO-cancellation
-value. The prize needs `‖T(s)‖ ≤ C·√q·√(m log m)` (square-root cancellation in the horizontal
-family); the gap from `m·√q` to `√(m log m)·√q` is exactly the effective-equidistribution residual. -/
-theorem Tval_triangle {χ : MulChar F ℂ} {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (m s : ℕ)
+/-- `‖χ(-1)‖ = 1` for any multiplicative character (local helper). -/
+private lemma norm_mulChar_neg_one (χ : MulChar F ℂ) : ‖χ (-1)‖ = 1 := by
+  have h1 : χ (-1) * χ (-1) = 1 := by rw [← map_mul]; norm_num
+  have : ‖χ (-1)‖ * ‖χ (-1)‖ = 1 := by rw [← norm_mul, h1, norm_one]
+  nlinarith [norm_nonneg (χ (-1)), this]
+
+/-- **The exceptional `j = 0` term (R-215).** At a nonprincipal shift (`(χ^s)⁻¹ ≠ 1`) the `j = 0`
+summand of `T(s)` is `χ^s(-1)·J(1, (χ^s)⁻¹) = −χ^s(-1)`, of modulus `1`, **not** `√q`. (The other
+exceptional index is `j + s ≡ 0` modulo the order of `χ`, where `J(χ^j, 1) = −1`.) So the `m`
+summands of `T(s)` are not all of modulus `√q`. -/
+theorem jacobi_phase_term_zero_norm {χ : MulChar F ℂ} {s : ℕ} (hs : (χ ^ s)⁻¹ ≠ 1) :
+    ‖(χ ^ (0 + s)) (-1) * jacobiSum (χ ^ 0) (χ ^ (0 + s))⁻¹‖ = 1 := by
+  rw [zero_add, pow_zero, jacobiSum_one_nontrivial hs, norm_mul, norm_neg, norm_one, mul_one,
+    norm_mulChar_neg_one]
+
+/-- **Guarded term bound (R-215).** At a nonprincipal shift (`(χ^s)⁻¹ ≠ 1`) every summand of
+`T(s)` has modulus `≤ √q`: it is exactly `√q` off the two exceptional classes (`χ^j = 1` and
+`χ^{j+s} = 1`), where the Jacobi sum is `−1`. -/
+theorem jacobi_phase_term_norm_le {χ : MulChar F ℂ} {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    {j s : ℕ} (hs : (χ ^ s)⁻¹ ≠ 1) :
+    ‖(χ ^ (j + s)) (-1) * jacobiSum (χ ^ j) (χ ^ (j + s))⁻¹‖ ≤ Real.sqrt (Fintype.card F) := by
+  have hone : (1 : ℝ) ≤ Real.sqrt (Fintype.card F) := by
+    rw [Real.one_le_sqrt]; exact_mod_cast Fintype.card_pos
+  have hprod : (χ ^ j) * (χ ^ (j + s))⁻¹ = (χ ^ s)⁻¹ := by
+    rw [pow_add, mul_inv, ← mul_assoc, mul_comm (χ ^ j) ((χ ^ j)⁻¹), inv_mul_cancel, one_mul]
+  by_cases hj : χ ^ j = 1
+  · have hjs : (χ ^ (j + s))⁻¹ = (χ ^ s)⁻¹ := by rw [← hprod, hj, one_mul]
+    rw [hj, hjs, jacobiSum_one_nontrivial hs, norm_mul, norm_neg, norm_one, mul_one,
+      norm_mulChar_neg_one]
+    exact hone
+  by_cases hjs : (χ ^ (j + s))⁻¹ = 1
+  · rw [hjs, jacobiSum_comm, jacobiSum_one_nontrivial hj, norm_mul, norm_neg, norm_one,
+      mul_one, norm_mulChar_neg_one]
+    exact hone
+  exact le_of_eq (jacobi_phase_term_norm hψ hj hjs (by rw [hprod]; exact hs))
+
+/-- **Sub-step 5 (trivial triangle bound on `T(s)`, hence on `A(s)`).** If every summand of `T(s)`
+has modulus at most `√q`, then `‖T(s)‖ ≤ m·√q` (triangle), so `‖A(s)‖ = √q·‖T(s)‖ ≤ m·q` — the
+NO-cancellation value. (An earlier version assumed every summand has modulus *exactly* `√q`; that
+hypothesis is unsatisfiable for `m ≥ 1` at a nonprincipal shift because of the `j = 0` term,
+`jacobi_phase_term_zero_norm`. The guarded form is `Tval_triangle_of_nonprincipal`.) -/
+theorem Tval_triangle {χ : MulChar F ℂ} (m s : ℕ)
     (hterm : ∀ j ∈ Finset.range m,
-      ‖(χ ^ (j + s)) (-1) * jacobiSum (χ ^ j) (χ ^ (j + s))⁻¹‖ = Real.sqrt (Fintype.card F)) :
+      ‖(χ ^ (j + s)) (-1) * jacobiSum (χ ^ j) (χ ^ (j + s))⁻¹‖ ≤ Real.sqrt (Fintype.card F)) :
     ‖Tval χ m s‖ ≤ (m : ℝ) * Real.sqrt (Fintype.card F) := by
   unfold Tval
   calc ‖∑ j ∈ Finset.range m, (χ ^ (j + s)) (-1) * jacobiSum (χ ^ j) (χ ^ (j + s))⁻¹‖
       ≤ ∑ j ∈ Finset.range m, ‖(χ ^ (j + s)) (-1) * jacobiSum (χ ^ j) (χ ^ (j + s))⁻¹‖ :=
         norm_sum_le _ _
-    _ = ∑ _j ∈ Finset.range m, Real.sqrt (Fintype.card F) := Finset.sum_congr rfl hterm
+    _ ≤ ∑ _j ∈ Finset.range m, Real.sqrt (Fintype.card F) := Finset.sum_le_sum hterm
     _ = (m : ℝ) * Real.sqrt (Fintype.card F) := by
         rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+
+/-- **Guarded triangle bound.** At every nonprincipal shift, `‖T(s)‖ ≤ m·√q`, with the two
+exceptional Jacobi terms handled by `jacobi_phase_term_norm_le`. -/
+theorem Tval_triangle_of_nonprincipal {χ : MulChar F ℂ} {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (m s : ℕ) (hs : (χ ^ s)⁻¹ ≠ 1) :
+    ‖Tval χ m s‖ ≤ (m : ℝ) * Real.sqrt (Fintype.card F) :=
+  Tval_triangle m s (fun _ _ => jacobi_phase_term_norm_le hψ hs)
 
 /-! ## The named residual and the sufficiency bridge. -/
 
@@ -225,12 +282,11 @@ The horizontal Jacobi family `j ↦ J(χ^j, (χ^{j+s})⁻¹)` exhibits square-ro
 constant `C` such that for every shift `s` (with `χ^s ≠ 1`), `‖T(s)‖ ≤ C·√q·√(m·log m)`. Equivalently,
 the `m` unit phases `u_j = χ^{j+s}(-1)·J(χ^j,(χ^{j+s})⁻¹)/√q` cancel down to `√(m log m)`.
 
-This is EXACTLY the effective (quantitative) equidistribution of the **bounded-conductor, one-parameter
-(curve) Jacobi family** — Katz/Deligne supply equidistribution-with-rate for this family (no `n^r`
-conductor blow-up: that was the iterated/Fermat-hypersurface artifact of `_JacobiKatzEquidist`), but the
-quantitative discrepancy delivered is `m^{-1/2+o(1)}` against the FULL density-1 family, NOT the extra
-`√(log m)` reach on the FIXED-prime thin slice the prize requires. It is OPEN; this file proves it
-SUFFICES and isolates it. -/
+This is an effective (quantitative) equidistribution statement for the one-parameter Jacobi
+family. That this family has bounded conductor and that Katz/Deligne supply a usable rate for it
+are heuristic expectations, not instantiated here. Note the `m` phases are unit-modulus only off
+the two exceptional terms (`jacobi_phase_term_zero_norm`). It is OPEN; this file proves it
+suffices for the per-shift bound `autocorr_le_of_residual` and isolates it. -/
 def EffectiveEquidistResidual (C : ℝ) (χ : MulChar F ℂ) (m : ℕ) : Prop :=
   ∀ s : ℕ, (χ ^ s)⁻¹ ≠ 1 →
     ‖Tval χ m s‖ ≤ C * Real.sqrt (Fintype.card F) * Real.sqrt ((m : ℝ) * Real.log m)
@@ -241,11 +297,11 @@ Assuming `EffectiveEquidistResidual C` and `ψ` primitive, the autocorrelation a
 
 > `‖A(s)‖ ≤ C·q·√(m log m)`.
 
-Summed over the `≤ m` shifts and frequency-twisted, this is the `OffDiagResonanceBounded` hypothesis
-of `_ProveOffDiagResonanceCapstone` (each shift contributes `q·√(m log m)`, the `m` shifts give
-`q·m·√(m log m)`; the `√(log m)` extra over the target `q·m·log m` is the slack to absorb the twist
-sum — the per-shift bound is the binding content). Proven by `‖A(s)‖ = √q·‖T(s)‖ ≤ √q·C√q√(m log m)
-= C·q·√(m log m)`. -/
+Proven by `‖A(s)‖ = √q·‖T(s)‖ ≤ √q·C√q√(m log m) = C·q·√(m log m)`. Caveat (R-215): summing
+`m` such bounds by the triangle inequality gives `C·q·m·√(m log m)`, which exceeds the
+`q·m·log m` budget of `OffDiagResonanceBounded` (`_ProveOffDiagResonanceCapstone`) by the factor
+`√(m / log m)`. An earlier docstring called that excess "slack"; it is a deficit, and no
+frequency-twist cancellation bridge absorbing it is proved. -/
 theorem autocorr_le_of_residual {C : ℝ} (hC : 0 ≤ C) {χ : MulChar F ℂ} {ψ : AddChar F ℂ}
     (hψ : ψ.IsPrimitive) (m : ℕ) (hRes : EffectiveEquidistResidual C χ m)
     (s : ℕ) (hs : (χ ^ s)⁻¹ ≠ 1) :
@@ -273,9 +329,10 @@ ONE ORDER DOWN (the phases are Jacobi/Gauss-period objects of the same `μ_n`). 
 noncomputable def uPhase (χ : MulChar F ℂ) (s j : ℕ) : ℂ :=
   ((χ ^ (j + s)) (-1) * jacobiSum (χ ^ j) (χ ^ (j + s))⁻¹) / Real.sqrt (Fintype.card F)
 
-/-- **The horizontal family is unit-modulus (when the term norm is `√q`).** `‖u_j‖ = 1`. So
-`Tval = √q·∑_j u_j` and the residual `‖Tval‖ ≤ C√q√(m log m)` is LITERALLY `‖∑_j u_j‖ ≤ C√(m log m)`:
-square-root cancellation of `m` unit phases, the BGK/Paley wall one order down. -/
+/-- **The horizontal family is unit-modulus (under the term guards).** `‖u_j‖ = 1` when the three
+nontriviality guards hold. So `Tval = √q·∑_j u_j` and the residual `‖Tval‖ ≤ C√q√(m log m)` is
+`‖∑_j u_j‖ ≤ C√(m log m)`: square-root cancellation of `m` phases, all unit-modulus except the
+two exceptional terms (`χ^j = 1`, `χ^{j+s} = 1`), where `‖u_j‖ = 1/√q`. -/
 theorem uPhase_norm {χ : MulChar F ℂ} {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {j s : ℕ}
     (hj : χ ^ j ≠ 1) (hjs : (χ ^ (j + s))⁻¹ ≠ 1)
     (hprod : (χ ^ j) * (χ ^ (j + s))⁻¹ ≠ 1) :
@@ -415,9 +472,10 @@ theorem pFactor_norm {χ : MulChar F ℂ} {s : ℕ} {x : F} (hx0 : x ≠ 0) (hx1
   norm_num
 
 /-- **The resonance set** `R = {x ∈ F\{0,1} : w(x) = 1}` — equivalently `χ(-1)·χ(x) = χ(1-x)`,
-i.e. `χ(-x) = χ(1-x)`, i.e. `-x/(1-x) ∈ ker χ`. The Möbius map `x ↦ -x/(1-x)` is a bijection of
-`F\{0,1}` onto `F\{0,-1}`, so `|R| = |ker χ ∩ (F\{0,-1})| = n - O(1)` where `n = |ker χ| = (q-1)/m`.
-THIS set carries all the growth. -/
+i.e. `χ(-x) = χ(1-x)`, i.e. `-x/(1-x) ∈ ker χ`. The Möbius map `x ↦ -x/(1-x) = x/(x-1)` is a
+bijection of `F\{0,1}` onto `F\{0,1}` (inverse `y ↦ y/(y-1)`; an earlier docstring said onto
+`F\{0,-1}`, which is wrong, R-215), so `|R| = |ker χ \ {1}| = n − 1` where `n = |ker χ|`
+(`= (q-1)/m` when `χ` has exact order `m`). (This count is prose, not proved here.) -/
 noncomputable def resonanceSet (χ : MulChar F ℂ) : Finset F :=
   (univ \ {0, 1} : Finset F).filter (fun x => wBase χ x = 1)
 
@@ -454,11 +512,12 @@ theorem resonance_block_eq {χ : MulChar F ℂ} (m s : ℕ) :
       = (m : ℂ) * ∑ x ∈ resonanceSet χ, pFactor χ s x := by
   rw [Finset.mul_sum]; exact Finset.sum_congr rfl (fun x _ => by ring)
 
-/-- **★★★★ The off-resonance block is bounded INDEPENDENTLY of `m`.** Each term has unit-modulus
-prefactor and a geometric weight `≤ 2/‖1-w(x)‖` (no `m`). So
-`‖off-res block‖ ≤ ∑_{x off-res} 2/‖1-w(x)‖`, an `m`-FREE quantity. (The RHS is itself a complete sum
-over `F\{0,1}` minus `R`; bounding it is a separate `m`-independent character-sum question, but
-crucially it does NOT scale with `m`.) -/
+/-- **★★★★ The off-resonance block bound.** Each term has unit-modulus prefactor and a geometric
+weight `≤ 2/‖1-w(x)‖`. So `‖off-res block‖ ≤ ∑_{x off-res} 2/‖1-w(x)‖`. For a *fixed* character
+this right side does not involve the summation length `m`; but when the character order changes
+with `m`, the values `w(x)` (hence the denominators `‖1 − w(x)‖`) change with it, so this is not a
+uniformly `m`-free or lower-order quantity. At the intended exact order (`χ^m = 1`) the block is
+exactly `0` (`Tval_eq_resonance_of_pow_eq_one`), so this bound is unnecessary there. -/
 theorem offResonance_block_bound {χ : MulChar F ℂ} (m s : ℕ) :
     ‖∑ x ∈ (univ \ {0, 1} : Finset F) \ resonanceSet χ,
         pFactor χ s x * (∑ j ∈ Finset.range m, wBase χ x ^ j)‖
@@ -484,16 +543,15 @@ block bounds:
 
 > `‖T(s)‖ ≤ m · ‖∑_{x∈R} p_s(x)‖  +  ∑_{x off-res} 2/‖1-w(x)‖`.
 
-The SECOND term is `m`-free. The FIRST term carries ALL `m`-dependence and is `m` times the norm of the
-character sum `S_R(s) = ∑_{x∈R} p_s(x)` over the resonance set `R` (size `|R| ≈ n = (q-1)/m`). Hence:
+The first term is `m` times the norm of the character sum `S_R(s) = ∑_{x∈R} p_s(x)` over the
+resonance set `R` (`|R| = n − 1`). The second term is not proved lower order in general (its
+denominators depend on the character); at exact order `χ^m = 1` it is replaced by the exact
+identity `T(s) = m·S_R(s)` (`Tval_eq_resonance_of_pow_eq_one`). With `q − 1 = nm`, the target
+`‖T(s)‖ ≤ C√q·√(m log m) ≈ C·m·√(n log m)` then asks for
 
-THE PRIZE-RELEVANT GROWTH OF `‖T(s)‖` IS GOVERNED ENTIRELY BY `‖S_R(s)‖`, A SINGLE CHARACTER SUM OVER
-A SET OF SIZE `≈ n`. The prize needs `‖T(s)‖ ≤ C√q·√(m log m) = C·m·√(n log m)`; the off-res term is
-lower order; so the binding requirement is `m·‖S_R(s)‖ ≤ C·m·√(n log m)`, i.e.
+> `‖S_R(s)‖ = ‖∑_{x∈R} p_s(x)‖ ≤ C·√(n log m)`  at every **nonprincipal** shift `s`
 
-> `‖S_R(s)‖ = ‖∑_{x∈R} p_s(x)‖ ≤ C·√(n log m)`     (THE SHARPENED RESIDUAL),
-
-square-root cancellation of `≈ n` unit phases over the resonance set. -/
+(at `s ≡ 0` modulo the order, `S_R(s) = |R|`: no cancellation is possible). -/
 theorem Tval_sharp_residual_bound {χ : MulChar F ℂ} (m s : ℕ) :
     ‖Tval χ m s‖
       ≤ (m : ℝ) * ‖∑ x ∈ resonanceSet χ, pFactor χ s x‖
@@ -506,33 +564,42 @@ theorem Tval_sharp_residual_bound {χ : MulChar F ℂ} (m s : ℕ) :
 
 /-! ## The named SHARPENED residual and the suffices-bridge to the prize. -/
 
+/-- **At the principal shift there is no cancellation (R-215 regression).** `p_0(x) = 1`, so
+`S_R(0) = |R|`. A cancellation bound `|R| ≤ C·√(|R|·log m)` at `s = 0` would force
+`|R| ≤ C²·log m`, false whenever `|R| = n − 1 ≫ log m`; hence the nonprincipal guard in
+`ResonanceSetCancellation`. -/
+theorem resonance_sum_principal_shift (χ : MulChar F ℂ) :
+    ∑ x ∈ resonanceSet χ, pFactor χ 0 x = ((resonanceSet χ).card : ℂ) := by
+  simp [pFactor]
+
 /-- **The sharpened named residual `ResonanceSetCancellation`.** The character sum over the resonance
 set `S_R(s) = ∑_{x∈R} p_s(x)` exhibits square-root cancellation:
-`‖∑_{x∈R} p_s(x)‖ ≤ C·√(n·log m)` for all `s`, where `n = card(resonanceSet χ)` is its size.
-This is STRICTLY SHARPER than `EffectiveEquidistResidual`: that asked for `√(m log m)`-cancellation
-over the FULL horizontal family of `m` Jacobi sums; this asks for `√(n log m)`-cancellation over the
-SINGLE complete character sum over `R` (size `n`), with the geometric/`m`-dependent structure
-DISCHARGED into the resonance dichotomy. -/
+`‖∑_{x∈R} p_s(x)‖ ≤ C·√(n·log m)` at every **nonprincipal** shift `s` (`(χ^s)⁻¹ ≠ 1`), where
+`n = card(resonanceSet χ)`. The guard is essential: at the principal shift `S_R(0) = |R|`
+(`resonance_sum_principal_shift`); an earlier version quantified every `s` and was therefore
+false whenever `|R| > C²·log m` (R-215). It replaces the `√(m log m)`-cancellation over the `m`
+horizontal Jacobi sums by `√(n log m)`-cancellation over one character sum over `R`. -/
 def ResonanceSetCancellation (C : ℝ) (χ : MulChar F ℂ) (m : ℕ) : Prop :=
-  ∀ s : ℕ, ‖∑ x ∈ resonanceSet χ, pFactor χ s x‖
+  ∀ s : ℕ, (χ ^ s)⁻¹ ≠ 1 → ‖∑ x ∈ resonanceSet χ, pFactor χ s x‖
     ≤ C * Real.sqrt ((resonanceSet χ).card * Real.log m)
 
-/-- An `m`-free name for the off-resonance block constant (the lower-order term). -/
+/-- A name for the off-resonance block constant. It is free of the summation length `m` for a
+fixed character, but its denominators depend on the character, so it is not uniformly
+lower-order when the character order varies with `m`. -/
 noncomputable def offResConst (χ : MulChar F ℂ) (s : ℕ) : ℝ :=
   ∑ x ∈ (univ \ {0, 1} : Finset F) \ resonanceSet χ, 2 / ‖1 - wBase χ x‖
 
-/-- **★ The sharpened residual SUFFICES for the binding `m·‖S_R‖` term.** Given
-`ResonanceSetCancellation C`, the `m`-growing part of `‖T(s)‖` is bounded by `C·m·√(n log m)` plus the
-`m`-free off-resonance constant:
+/-- **★ The sharpened residual bounds the resonance term.** Given `ResonanceSetCancellation C`, at
+every nonprincipal shift
 
 > `‖T(s)‖ ≤ C·m·√(n log m) + offResConst(s)`.
 
-Since `√q = √(nm)`, `m·√(n log m) = √q·√(m log m)`, this is exactly the `EffectiveEquidistResidual`
-form `‖T(s)‖ ≤ C'·√q·√(m log m)` once the `m`-free `offResConst` is absorbed (lower order in the prize
-regime `m ≫ 1`). So the sharpened residual implies the prize-relevant bound; the open content is
-square-root cancellation of the SINGLE resonance-set character sum. -/
+With `q − 1 = nm`, `m·√(n log m) ≈ √q·√(m log m)`. Absorbing `offResConst` into the
+`EffectiveEquidistResidual` form is **not** proved here (it is not uniformly lower order); at exact
+order `χ^m = 1` use `Tval_eq_resonance_of_pow_eq_one` instead, where the off-resonance block is
+exactly `0`. -/
 theorem Tval_le_of_resonance_cancellation {C : ℝ} {χ : MulChar F ℂ} {m : ℕ}
-    (hRes : ResonanceSetCancellation C χ m) (s : ℕ) :
+    (hRes : ResonanceSetCancellation C χ m) (s : ℕ) (hs : (χ ^ s)⁻¹ ≠ 1) :
     ‖Tval χ m s‖
       ≤ C * (m : ℝ) * Real.sqrt ((resonanceSet χ).card * Real.log m) + offResConst χ s := by
   refine (Tval_sharp_residual_bound m s).trans ?_
@@ -540,7 +607,7 @@ theorem Tval_le_of_resonance_cancellation {C : ℝ} {χ : MulChar F ℂ} {m : �
   rw [offResConst]
   have : (m : ℝ) * ‖∑ x ∈ resonanceSet χ, pFactor χ s x‖
       ≤ (m : ℝ) * (C * Real.sqrt ((resonanceSet χ).card * Real.log m)) :=
-    mul_le_mul_of_nonneg_left (hRes s) hm
+    mul_le_mul_of_nonneg_left (hRes s hs) hm
   calc (m : ℝ) * ‖∑ x ∈ resonanceSet χ, pFactor χ s x‖
         + ∑ x ∈ (univ \ {0, 1} : Finset F) \ resonanceSet χ, 2 / ‖1 - wBase χ x‖
       ≤ (m : ℝ) * (C * Real.sqrt ((resonanceSet χ).card * Real.log m))
@@ -548,6 +615,48 @@ theorem Tval_le_of_resonance_cancellation {C : ℝ} {χ : MulChar F ℂ} {m : �
         gcongr
     _ = C * (m : ℝ) * Real.sqrt ((resonanceSet χ).card * Real.log m)
         + ∑ x ∈ (univ \ {0, 1} : Finset F) \ resonanceSet χ, 2 / ‖1 - wBase χ x‖ := by ring
+
+/-! ## Exact-order specialization: no off-resonance error (R-215). -/
+
+/-- If `χ^m = 1`, every `w(x)` (`x ∈ F\{0,1}`) is an `m`-th root of unity. -/
+theorem wBase_pow_eq_one {χ : MulChar F ℂ} {m : ℕ} (hχm : χ ^ m = 1) {x : F}
+    (hx0 : x ≠ 0) (hx1 : x ≠ 1) : wBase χ x ^ m = 1 := by
+  have hxu : IsUnit x := isUnit_iff_ne_zero.mpr hx0
+  have h1xu : IsUnit (1 - x) :=
+    isUnit_iff_ne_zero.mpr (by intro h; apply hx1; linear_combination -h)
+  have hneg : IsUnit (-1 : F) := isUnit_one.neg
+  have key : ∀ {a : F}, IsUnit a → χ a ^ m = 1 := by
+    intro a ha
+    have h := MulChar.pow_apply_coe χ m ha.unit
+    rw [IsUnit.unit_spec, hχm, MulChar.one_apply ha] at h
+    exact h.symm
+  unfold wBase
+  rw [mul_pow, mul_pow, inv_pow, key hneg, key hxu, key h1xu]
+  simp
+
+/-- **Exact-order identity.** If `χ^m = 1` (e.g. `χ` of exact order `m`), every off-resonance
+geometric sum `∑_{j<m} w(x)^j = (w(x)^m − 1)/(w(x) − 1)` vanishes, so
+
+> `T(s) = m · ∑_{x∈R} p_s(x)`
+
+exactly, with no off-resonance error and no `offResConst`. -/
+theorem Tval_eq_resonance_of_pow_eq_one {χ : MulChar F ℂ} {m : ℕ} (hχm : χ ^ m = 1) (s : ℕ) :
+    Tval χ m s = (m : ℂ) * ∑ x ∈ resonanceSet χ, pFactor χ s x := by
+  rw [Tval_dichotomy m s, resonance_block_eq m s]
+  have hzero : ∑ x ∈ (univ \ {0, 1} : Finset F) \ resonanceSet χ,
+      pFactor χ s x * (∑ j ∈ Finset.range m, wBase χ x ^ j) = 0 := by
+    refine Finset.sum_eq_zero (fun x hx => ?_)
+    rw [Finset.mem_sdiff] at hx
+    obtain ⟨hxin, hxnot⟩ := hx
+    have hxin' := hxin
+    rw [Finset.mem_sdiff, Finset.mem_insert, Finset.mem_singleton] at hxin'
+    obtain ⟨_, hx01⟩ := hxin'
+    push_neg at hx01
+    obtain ⟨hx0, hx1⟩ := hx01
+    have hw1 : wBase χ x ≠ 1 := by
+      intro h; apply hxnot; rw [resonanceSet, Finset.mem_filter]; exact ⟨hxin, h⟩
+    rw [geom_sum_eq hw1, wBase_pow_eq_one hχm hx0 hx1, sub_self, zero_div, mul_zero]
+  rw [hzero, add_zero]
 
 end ArkLib.ProximityGap.Frontier.JacKatz
 
@@ -573,3 +682,9 @@ end ArkLib.ProximityGap.Frontier.JacKatz
 #print axioms ArkLib.ProximityGap.Frontier.JacKatz.offResonance_block_bound
 #print axioms ArkLib.ProximityGap.Frontier.JacKatz.Tval_sharp_residual_bound
 #print axioms ArkLib.ProximityGap.Frontier.JacKatz.Tval_le_of_resonance_cancellation
+#print axioms ArkLib.ProximityGap.Frontier.JacKatz.jacobi_phase_term_zero_norm
+#print axioms ArkLib.ProximityGap.Frontier.JacKatz.jacobi_phase_term_norm_le
+#print axioms ArkLib.ProximityGap.Frontier.JacKatz.Tval_triangle_of_nonprincipal
+#print axioms ArkLib.ProximityGap.Frontier.JacKatz.resonance_sum_principal_shift
+#print axioms ArkLib.ProximityGap.Frontier.JacKatz.wBase_pow_eq_one
+#print axioms ArkLib.ProximityGap.Frontier.JacKatz.Tval_eq_resonance_of_pow_eq_one

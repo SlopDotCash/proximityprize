@@ -41,9 +41,16 @@ This file composes them:
    `≤ |L|`. (Direct from `gsList_bad_gamma_bound`.)
 
 3. **`epsMCA_le_card_div_of_uniform_active_list`** — if a *single* uniform list `L` and a
-   per-stack active coordinate work for every stack, then `epsMCA C δ ≤ |L| / |F|` — the prize
-   `poly/q` shape, with `|L|` the clustering parameter. This is the formal statement that *the
-   entire MCA prize over the scalar code reduces to a uniform bound on the witness count* `|L|`.
+   per-stack coordinate `x` work for every stack (with `u₁ x ≠ 0` required only when the stack
+   actually has a bad scalar), then `epsMCA C δ ≤ |L| / |F|` — the prize `poly/q` shape, with
+   `|L|` the clustering parameter. This is the formal statement that *the entire MCA prize over
+   the scalar code reduces to a uniform bound on the witness count* `|L|`.
+
+**Zero-direction convention.** Every clustering hypothesis in this file asks for the active
+coordinate (`u₁ x ≠ 0`) *only at bad scalars*. An earlier version demanded `u₁ x ≠ 0` for every
+stack, which is false at `u₁ = 0` and made every such predicate unsatisfiable for every code. With
+the corrected shape, a stack with no bad scalars (e.g. `u₁ = 0` for a code containing `0`, where the
+joint pair `(w, 0)` kills `mcaEvent`) is handled by the empty bad set.
 
 ## The isolated residual (the genuine novel-math core)
 
@@ -56,7 +63,8 @@ bivariate Guruswami–Sudan list-decoder of `f₀ + Z·f₁` over `F(Z)` — a g
 **bivariate-in-`γ`** statement, not provided by the univariate brick.
 
 We reify precisely this missing input as `LineWitnessClustering` (a `Prop`-valued predicate,
-fully explicit, *not* a `sorry`-carrying theorem), and prove:
+fully explicit, *not* a `sorry`-carrying theorem; no instance for a proper code at a nontrivial
+radius is proved in-tree), and prove:
 
 * **`epsMCA_le_of_lineWitnessClustering`** — `LineWitnessClustering C δ ℓ` ⟹ `epsMCA C δ ≤ ℓ/|F|`.
 
@@ -138,10 +146,33 @@ theorem mca_badCount_le_list_of_active_coord
   exact hwitness γ hγ.2
 
 open Classical in
+/-- **Per-line bound with the active coordinate required only at bad scalars.**
+
+Same conclusion as `mca_badCount_le_list_of_active_coord`, but `u₁ x ≠ 0` is only demanded when a
+bad scalar actually exists. If the bad set is empty the count is `0`; otherwise any bad scalar
+supplies `u₁ x ≠ 0` and the affine-pin count applies. This is the shape that stays satisfiable on
+the zero direction `u₁ = 0`. -/
+theorem mca_badCount_le_list_of_bad_active_coord
+    (C : Set (ι → F)) (δ : ℝ≥0) (u₀ u₁ : ι → F) (x : ι)
+    (L : Finset (ι → F))
+    (hwitness : ∀ γ : F, mcaEvent (A := F) C δ u₀ u₁ γ →
+      u₁ x ≠ 0 ∧ ∃ w ∈ L, w x = u₀ x + γ * u₁ x) :
+    (univ.filter (fun γ : F => mcaEvent (A := F) C δ u₀ u₁ γ)).card ≤ L.card := by
+  by_cases hbad : ∃ γ : F, mcaEvent (A := F) C δ u₀ u₁ γ
+  · obtain ⟨γ₀, hγ₀⟩ := hbad
+    exact mca_badCount_le_list_of_active_coord C δ u₀ u₁ x (hwitness γ₀ hγ₀).1 L
+      (fun γ hγ => (hwitness γ hγ).2)
+  · simp only [not_exists] at hbad
+    have hempty : univ.filter (fun γ : F => mcaEvent (A := F) C δ u₀ u₁ γ) = ∅ :=
+      Finset.filter_false_of_mem (fun γ _ => hbad γ)
+    rw [hempty, Finset.card_empty]
+    exact Nat.zero_le _
+
+open Classical in
 /-- **Uniform-list prize bound (assembly): `epsMCA C δ ≤ |L|/|F|`.**
 
 If a *single* finite codeword list `L` works for **every** word stack — i.e. for each stack `u`
-there is an active coordinate `x` (`u₁ x ≠ 0`) such that every `mcaEvent`-bad `γ` has a list witness
+there is a coordinate `x` such that every `mcaEvent`-bad `γ` has `u₁ x ≠ 0` and a list witness
 `w ∈ L` matching the line at `x` — then the MCA error is bounded by `|L|/|F|`, the prize `poly/q`
 shape with `ℓ = |L|`.
 
@@ -150,13 +181,13 @@ uniform bound on the witness-codeword count* `|L|`. It composes the per-line bou
 `mca_badCount_le_list_of_active_coord` with `epsMCA_le_of_badCount_le`. -/
 theorem epsMCA_le_card_div_of_uniform_active_list
     (C : Set (ι → F)) (δ : ℝ≥0) (L : Finset (ι → F))
-    (huniform : ∀ u : WordStack F (Fin 2) ι, ∃ x : ι, u 1 x ≠ 0 ∧
+    (huniform : ∀ u : WordStack F (Fin 2) ι, ∃ x : ι,
       ∀ γ : F, mcaEvent (A := F) C δ (u 0) (u 1) γ →
-        ∃ w ∈ L, w x = (u 0) x + γ * (u 1) x) :
+        u 1 x ≠ 0 ∧ ∃ w ∈ L, w x = (u 0) x + γ * (u 1) x) :
     epsMCA (F := F) (A := F) C δ ≤ (L.card : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) := by
   refine epsMCA_le_of_badCount_le (F := F) (A := F) C δ L.card (fun u => ?_)
-  obtain ⟨x, hx, hwit⟩ := huniform u
-  exact mca_badCount_le_list_of_active_coord C δ (u 0) (u 1) x hx L hwit
+  obtain ⟨x, hwit⟩ := huniform u
+  exact mca_badCount_le_list_of_bad_active_coord C δ (u 0) (u 1) x L hwit
 
 /-! ## Part 2 — the isolated bivariate residual (the genuine open core)
 
@@ -174,19 +205,22 @@ isolated residual; `LineWitnessClustering` is its exact interface. -/
 /-- **The isolated bivariate residual (the open core), as an explicit predicate.**
 
 `LineWitnessClustering C δ ℓ` asserts: for every word stack `u`, there is a finite codeword list
-`L` of size `≤ ℓ` and an active coordinate `x` (`u 1 x ≠ 0`) such that every `mcaEvent`-bad scalar
-`γ` has a list witness `w ∈ L` matching the line at `x`. Equivalently — *all line-witnesses across
-all bad scalars cluster into one size-`≤ ℓ` list, witnessed at a common active coordinate.*
+`L` of size `≤ ℓ` and a coordinate `x` such that every `mcaEvent`-bad scalar `γ` has `u 1 x ≠ 0`
+and a list witness `w ∈ L` matching the line at `x`. Equivalently — *all line-witnesses across all
+bad scalars cluster into one size-`≤ ℓ` list, witnessed at a common active coordinate.*
 
-This is **not** a `sorry`-carrying theorem and **not** a vacuous placeholder: it is the precise
-interface a bivariate Guruswami–Sudan list-decoding lemma for `f₀ + Z·f₁` would discharge. For
-Reed–Solomon below the Johnson radius, `ℓ` is the bivariate GS list size. Carrying it as an
-explicit hypothesis is the honest boundary between the proven assembly and the open prize core. -/
+The active-coordinate requirement sits *inside* the bad-scalar clause on purpose: requiring
+`u 1 x ≠ 0` for every stack would fail at `u 1 = 0` and make the predicate false for every code,
+radius and list size. In the present form a stack with no bad scalar imposes nothing.
+
+This is an explicit, unproven hypothesis (no `sorry`): the interface a bivariate
+Guruswami–Sudan list-decoding lemma for `f₀ + Z·f₁` would be expected to discharge. No instance for
+a proper code at a nontrivial radius is proved in-tree. -/
 def LineWitnessClustering (C : Set (ι → F)) (δ : ℝ≥0) (ℓ : ℕ) : Prop :=
   ∀ u : WordStack F (Fin 2) ι, ∃ (L : Finset (ι → F)) (x : ι),
-    L.card ≤ ℓ ∧ u 1 x ≠ 0 ∧
+    L.card ≤ ℓ ∧
     ∀ γ : F, mcaEvent (A := F) C δ (u 0) (u 1) γ →
-      ∃ w ∈ L, w x = (u 0) x + γ * (u 1) x
+      u 1 x ≠ 0 ∧ ∃ w ∈ L, w x = (u 0) x + γ * (u 1) x
 
 open Classical in
 /-- **The prize bound from the isolated residual.**
@@ -201,8 +235,8 @@ theorem epsMCA_le_of_lineWitnessClustering
     (hcluster : LineWitnessClustering (F := F) C δ ℓ) :
     epsMCA (F := F) (A := F) C δ ≤ (ℓ : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) := by
   refine epsMCA_le_of_badCount_le (F := F) (A := F) C δ ℓ (fun u => ?_)
-  obtain ⟨L, x, hLcard, hx, hwit⟩ := hcluster u
-  exact le_trans (mca_badCount_le_list_of_active_coord C δ (u 0) (u 1) x hx L hwit) hLcard
+  obtain ⟨L, x, hLcard, hwit⟩ := hcluster u
+  exact le_trans (mca_badCount_le_list_of_bad_active_coord C δ (u 0) (u 1) x L hwit) hLcard
 
 end Scalar
 
@@ -220,8 +254,9 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
 /-- **Clustering from a per-stack list assignment.**
 
-If for every stack `u` we are *handed* a list `L u` (size `≤ ℓ`), an active coordinate `x u`, and a
-per-bad-scalar witness in `L u` at `x u`, then `LineWitnessClustering C δ ℓ` holds. This is the
+If for every stack `u` we are *handed* a list `L u` (size `≤ ℓ`), a coordinate `x u` that is active
+(`u 1 (x u) ≠ 0`) whenever `u` has a bad scalar, and a per-bad-scalar witness in `L u` at `x u`,
+then `LineWitnessClustering C δ ℓ` holds. This is the
 trivial repackaging direction; it makes explicit that the only content a bivariate GS lemma must
 supply is the family `(L u, x u)` with the size cap and the witness property — the bookkeeping is
 free. -/
@@ -230,12 +265,13 @@ theorem lineWitnessClustering_of_assignment
     (Lf : WordStack F (Fin 2) ι → Finset (ι → F))
     (xf : WordStack F (Fin 2) ι → ι)
     (hcard : ∀ u : WordStack F (Fin 2) ι, (Lf u).card ≤ ℓ)
-    (hactive : ∀ u : WordStack F (Fin 2) ι, u 1 (xf u) ≠ 0)
+    (hactive : ∀ u : WordStack F (Fin 2) ι, ∀ γ : F,
+      mcaEvent (A := F) C δ (u 0) (u 1) γ → u 1 (xf u) ≠ 0)
     (hwit : ∀ u : WordStack F (Fin 2) ι, ∀ γ : F, mcaEvent (A := F) C δ (u 0) (u 1) γ →
       ∃ w ∈ Lf u, w (xf u) = (u 0) (xf u) + γ * (u 1) (xf u)) :
     LineWitnessClustering (F := F) C δ ℓ := by
   intro u
-  exact ⟨Lf u, xf u, hcard u, hactive u, hwit u⟩
+  exact ⟨Lf u, xf u, hcard u, fun γ hγ => ⟨hactive u γ hγ, hwit u γ hγ⟩⟩
 
 /-- **End-to-end prize bound from the per-stack assignment.** Composes
 `lineWitnessClustering_of_assignment` with `epsMCA_le_of_lineWitnessClustering`: a per-stack list
@@ -246,7 +282,8 @@ theorem epsMCA_le_of_assignment
     (Lf : WordStack F (Fin 2) ι → Finset (ι → F))
     (xf : WordStack F (Fin 2) ι → ι)
     (hcard : ∀ u : WordStack F (Fin 2) ι, (Lf u).card ≤ ℓ)
-    (hactive : ∀ u : WordStack F (Fin 2) ι, u 1 (xf u) ≠ 0)
+    (hactive : ∀ u : WordStack F (Fin 2) ι, ∀ γ : F,
+      mcaEvent (A := F) C δ (u 0) (u 1) γ → u 1 (xf u) ≠ 0)
     (hwit : ∀ u : WordStack F (Fin 2) ι, ∀ γ : F, mcaEvent (A := F) C δ (u 0) (u 1) γ →
       ∃ w ∈ Lf u, w (xf u) = (u 0) (xf u) + γ * (u 1) (xf u)) :
     epsMCA (F := F) (A := F) C δ ≤ (ℓ : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) :=
@@ -261,6 +298,7 @@ end ProximityGap
 
 #print axioms ProximityGap.MCAJohnson.mcaEvent_witness_at_active_coord
 #print axioms ProximityGap.MCAJohnson.mca_badCount_le_list_of_active_coord
+#print axioms ProximityGap.MCAJohnson.mca_badCount_le_list_of_bad_active_coord
 #print axioms ProximityGap.MCAJohnson.epsMCA_le_card_div_of_uniform_active_list
 #print axioms ProximityGap.MCAJohnson.epsMCA_le_of_lineWitnessClustering
 #print axioms ProximityGap.MCAJohnson.lineWitnessClustering_of_assignment

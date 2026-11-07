@@ -61,6 +61,21 @@ theorem domainRootProduct_natDegree (dom : I ↪ F) (S : Finset I) :
     natDegree_prod_of_monic _ _ fun i _ => monic_X_sub_C (dom i)]
   simp
 
+/-- The locator of `S` vanishes at a domain point exactly when the point's
+coordinate lies in `S` (injectivity of `dom`).  Canonical copy; downstream
+files use this one. -/
+theorem eval_domainRootProduct_eq_zero_iff_mem
+    {J K : Type} [Field K] (dom : J ↪ K) (S : Finset J) (i : J) :
+    (domainRootProduct dom S).eval (dom i) = 0 ↔ i ∈ S := by
+  rw [domainRootProduct, eval_prod, Finset.prod_eq_zero_iff]
+  constructor
+  · rintro ⟨j, hj, hzero⟩
+    simp only [eval_sub, eval_X, eval_C] at hzero
+    have hij : i = j := dom.injective (sub_eq_zero.mp hzero)
+    exact hij ▸ hj
+  · intro hi
+    exact ⟨i, hi, by simp⟩
+
 /-- A polynomial vanishing at every coordinate in `S` is divisible by the
 monic locator of `S`.  Injectivity of `dom` makes the linear factors pairwise
 coprime. -/

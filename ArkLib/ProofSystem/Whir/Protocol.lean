@@ -1,11 +1,29 @@
 import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ToMathlib.WhirBricksConstruction
 
+/-!
+# Placeholder WHIR `VectorIOP`
+
+`whirVectorIOP` packages `whirMakeTranscript` and `whirVerify` through the paper-slot adapter
+`paperTranscriptVectorIOP`.  Both are placeholders: the transcript generator ignores its input and
+emits the all-zero transcript, and the verifier ignores its challenges, the input oracle and the
+prover messages and accepts every transcript (`pure true`).  So `whirVectorIOP` does not implement
+the WHIR checks of Construction 5.1, and no theorem establishes sub-unit soundness for it: the
+declarations below only name its security propositions and package supplied proofs.  Perfect
+completeness is proved in `ProtocolCompleteness.lean`; the only proved RBR statement is the
+indicator budget with total error one (`WhirIOP.whirVectorIOP_rbrKnowledgeSoundness_indicator`,
+`ProtocolSoundness.lean`).  The checking verifier `Whir302Checked.whirVerifyChecked`
+(`CheckedVerifier.lean`) makes real checks but never queries the input oracle
+(`CheckedObliviousness.lean`).
+-/
+
 open MvPolynomial
 open WhirIOP
 open WhirIOP.Construction
 open scoped NNReal
 
+/-- Placeholder transcript generator: ignores its input and returns the all-zero
+`PaperTranscriptData`. -/
 noncomputable def whirMakeTranscript {F : Type} [Field F] [Fintype F] [DecidableEq F]
     [SampleableType F] {M : ℕ} {ιs : Fin (M + 1) → Type}
     [∀ i : Fin (M + 1), Fintype (ιs i)] (P : Params ιs F) (d : ℕ) :
@@ -23,6 +41,8 @@ noncomputable def whirMakeTranscript {F : Type} [Field F] [Fintype F] [Decidable
     finalRandomness := Vector.replicate (P.repeatParam (Fin.last M)) 0
   }
 
+/-- Placeholder verifier logic: ignores the statement, every challenge, the input oracle and the
+prover messages, and accepts (`pure true`). -/
 noncomputable def whirVerify {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
     {M : ℕ} {ιs : Fin (M + 1) → Type}
     [∀ i : Fin (M + 1), Fintype (ιs i)] (P : Params ιs F) (d : ℕ) :
@@ -35,6 +55,8 @@ noncomputable def whirVerify {F : Type} [Field F] [Fintype F] [DecidableEq F] [S
           Bool :=
   fun _ _ => pure true
 
+/-- The placeholder WHIR-shaped `VectorIOP` built from `whirMakeTranscript` and `whirVerify`.  It
+does not implement the WHIR checks of Construction 5.1. -/
 noncomputable def whirVectorIOP {F : Type} [Field F] [Fintype F] [DecidableEq F]
     [SampleableType F] {M : ℕ}
     {ιs : Fin (M + 1) → Type} [∀ i : Fin (M + 1), Fintype (ιs i)]
@@ -42,7 +64,9 @@ noncomputable def whirVectorIOP {F : Type} [Field F] [Fintype F] [DecidableEq F]
     VectorIOP Unit (OracleStatement (ιs 0) F) Unit (whirPaperTranscriptVectorSpec P d) F :=
   paperTranscriptVectorIOP P d (whirMakeTranscript P d) (whirVerify P d)
 
-/-- Residual: prove perfect completeness for the concrete WHIR `VectorIOP`. -/
+/-- Perfect completeness of the placeholder `whirVectorIOP` (immediate for an always-accepting
+verifier; proved as `Whir302.whirVectorIOP_perfectCompleteness_holds` in
+`ProtocolCompleteness.lean`). -/
 def whirVectorIOP_perfectCompleteness {F : Type} [Field F] [Fintype F] [DecidableEq F]
     [SampleableType F] {M : ℕ}
     {ιs : Fin (M + 1) → Type} [∀ i : Fin (M + 1), Fintype (ιs i)]
@@ -52,7 +76,11 @@ def whirVectorIOP_perfectCompleteness {F : Type} [Field F] [Fintype F] [Decidabl
   (whirVectorIOP P d).perfectCompleteness (pure ()) isEmptyElim
     (whirRelation m0 (P.φ 0) 0)
 
-/-- Residual: prove round-by-round knowledge soundness for the concrete WHIR `VectorIOP`. -/
+/-- Round-by-round knowledge soundness of the placeholder `whirVectorIOP` at budget `εRbr`.  This
+is not a WHIR soundness obligation: `whirVerify` accepts every transcript, so this can hold only
+at budgets whose per-challenge errors sum to at least one when a δ-far input exists.  The proved
+instance is the indicator budget with value `1` at the final randomness challenge
+(`whirVectorIOP_rbrKnowledgeSoundness_indicator`, `ProtocolSoundness.lean`). -/
 def whirVectorIOP_rbrKnowledgeSoundness {F : Type} [Field F] [Fintype F] [DecidableEq F]
     [SampleableType F] {M : ℕ}
     {ιs : Fin (M + 1) → Type} [∀ i : Fin (M + 1), Fintype (ιs i)]
@@ -64,7 +92,8 @@ def whirVectorIOP_rbrKnowledgeSoundness {F : Type} [Field F] [Fintype F] [Decida
     (whirRelation m0 (P.φ 0) δ)
       (OracleProof.toOracleVerifier (whirVectorIOP P d)) εRbr
 
-/-- Residual: package the two security legs for the concrete WHIR `VectorIOP`. -/
+/-- The completeness and prover-averaged security legs of the placeholder `whirVectorIOP` at budget
+`εRbr`, with the same caveat as `whirVectorIOP_rbrKnowledgeSoundness`. -/
 def whirVectorIOP_isSecureWithGap {F : Type} [Field F] [Fintype F] [DecidableEq F]
     [SampleableType F] {M : ℕ}
     {ιs : Fin (M + 1) → Type} [∀ i : Fin (M + 1), Fintype (ιs i)]
@@ -72,10 +101,11 @@ def whirVectorIOP_isSecureWithGap {F : Type} [Field F] [Fintype F] [DecidableEq 
     [Nonempty (ιs 0)] (δ : ℝ≥0)
     (εRbr : (whirPaperTranscriptVectorSpec P d).ChallengeIdx → ℝ≥0) :
     Prop :=
-  VectorIOP.IsSecureWithGap (whirRelation m0 (P.φ 0) 0) (whirRelation m0 (P.φ 0) δ)
+  VectorIOP.IsSecureWithGapAveraged (whirRelation m0 (P.φ 0) 0) (whirRelation m0 (P.φ 0) δ)
     εRbr (whirVectorIOP P d)
 
-/-- The WHIR `VectorIOP` is secure with gap if its completeness and RBR soundness residuals hold. -/
+/-- The placeholder `whirVectorIOP` is secure with gap whenever its completeness and RBR soundness
+propositions hold (pure packaging). -/
 theorem whirVectorIOP_isSecureWithGap_holds {F : Type} [Field F] [Fintype F] [DecidableEq F]
     [SampleableType F] {M : ℕ}
     {ιs : Fin (M + 1) → Type} [∀ i : Fin (M + 1), Fintype (ιs i)]

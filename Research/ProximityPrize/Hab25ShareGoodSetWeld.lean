@@ -13,9 +13,9 @@ codeword stack jointly agrees on the witness set) cannot come from closeness alo
 file proves it comes from the global `¬ jointAgreement` escape — the exact branch the
 disjunctive residual (`StrictCoeffPolysResidualShareOr`) exposes:
 
-* `not_stackJointAgreesOn_of_not_jointAgreement` — a large witness set cannot support a
-  joint codeword stack when `jointAgreement` fails (a stack on `S` with
-  `|S| ≥ (1−δ)·n` would witness it);
+* `ProximityGap.not_stackJointAgreesOn_of_not_jointAgreement` (canonical, in
+  `StackJointAgreement.lean`) — a large witness set cannot support a joint codeword stack when
+  `jointAgreement` fails (a stack on `S` with `|S| ≥ (1−δ)·n` would witness it);
 * `exists_mcaDecodeCurve_of_close_of_not_jointAgreement` — the per-`γ` decode witness
   from the share residual's own decoded data (`natDegree < k` + `δᵣ ≤ δ`): the witness
   set is the agreement set of the given polynomial, its size bound is the closeness
@@ -26,9 +26,14 @@ disjunctive residual (`StrictCoeffPolysResidualShareOr`) exposes:
   factor of the GS interpolant carries a `1/#factors` share of `G` with the family's
   divisibility on all of it.
 
-With this, leg 4 of the share-producer frontier is CLOSED: the remaining open inputs of
-the strict-Johnson lane are exactly the per-rich-cell surface supply, the
-heavy-coordinate matching sets, and the `L`-ary Z-degree-bounded interpolant budget.
+This discharges the decode-witness input (leg 4) of the heavy-cell attribution only.  The
+coordinate-upgrade capstones below remain **conditional**: they take the `CoordinateUpgrade`
+supplier, the coefficient budget `BR`, and the branch/cell size inputs as hypotheses.  (An
+earlier version stated those size inputs over every `E ⊆ G`, including `E = ∅`, which made them
+jointly unsatisfiable; they are now required only on subcells carrying the SK4 heavy share
+`G.card ≤ T + #factors(Q₀)·E.card`, see `lt_card_of_share_floor`.)  The per-rich-cell surface
+supply, the heavy-coordinate matching sets / coordinate upgrade, and the interpolant budget remain
+open inputs of the strict-Johnson lane.
 
 Axiom-clean: `[propext, Classical.choice, Quot.sound]` (audited at end of file).
 -/
@@ -44,23 +49,13 @@ open scoped NNReal ENNReal
 
 variable {F₀ : Type} [DecidableEq F₀]
 
-/-- **A large witness set cannot support a joint codeword stack when `jointAgreement`
-fails**: a stack agreeing on `S` with `|S| ≥ (1−δ)·n` is a `jointAgreement` witness. -/
-theorem not_stackJointAgreesOn_of_not_jointAgreement {n : ℕ} {κ : Type}
-    (C : Set (Fin n → F₀)) (δ : ℝ≥0) (u : κ → Fin n → F₀) (S : Finset (Fin n))
-    (hcard : ((S.card : ℝ≥0)) ≥ (1 - δ) * Fintype.card (Fin n))
-    (hnja : ¬ jointAgreement (C := C) (δ := δ) (W := u)) :
-    ¬ _root_.ProximityGap.stackJointAgreesOn C S u := by
-  exact _root_.ProximityGap.not_stackJointAgreesOn_of_not_jointAgreement
-    C δ u S hcard hnja
-
 variable [Field F₀] [Fintype F₀]
 
 /-- **The per-`γ` decode witness from the share residual's own decoded data.**  Given a
 polynomial of RS degree that is `δ`-close to the curve at `γ`, and `¬ jointAgreement`,
 the `McaDecodeCurve` structure is constructible with that polynomial: the witness set is
 its agreement set, the size bound is the closeness bound, and the `hnjp` clause is the
-previous lemma. -/
+canonical `ProximityGap.not_stackJointAgreesOn_of_not_jointAgreement`. -/
 theorem exists_mcaDecodeCurve_of_close_of_not_jointAgreement {n L k : ℕ} [NeZero n]
     (domain : Fin n ↪ F₀) (u : WordStack F₀ (Fin L) (Fin n)) (δ : ℝ≥0) (γ : F₀)
     (P : F₀[X]) (hdeg : P.natDegree < k)
@@ -86,7 +81,7 @@ theorem exists_mcaDecodeCurve_of_close_of_not_jointAgreement {n L k : ℕ} [NeZe
     simp only [Finset.sum_apply, Pi.smul_apply, Function.comp_apply] at h
     exact h.symm
   · -- no joint stack on the witness set
-    exact not_stackJointAgreesOn_of_not_jointAgreement _ δ u S hcard hnja
+    exact _root_.ProximityGap.not_stackJointAgreesOn_of_not_jointAgreement _ δ u S hcard hnja
 
 attribute [local instance] Classical.propDecidable
 
@@ -136,7 +131,9 @@ theorem exists_heavy_factor_cell_on_decoded_set {n k m L : ℕ} [NeZero n]
 `strict_coeffPolys_of_given_family_coordinate_upgrade`, but with the decode witnesses
 constructed from the residual-facing data: degree/closeness of `P γ` on `G` plus the
 global `¬ jointAgreement` escape.  Thus a `CoordinateUpgrade` supplier on the selected
-heavy factor cell directly returns the Prop-5.5/share coefficient-polynomial witness. -/
+heavy factor cell directly returns the Prop-5.5/share coefficient-polynomial witness.
+The size inputs `hbranchBig`/`hEbig` are guarded by the heavy-share floor
+`G.card ≤ T + #factors(Q₀)·E.card` (they are unsatisfiable without it, via `E = ∅`). -/
 theorem strict_coeffPolys_of_decoded_set_coordinate_upgrade {n k m L : ℕ} [NeZero n]
     (domain : Fin n ↪ F₀)
     (u : WordStack F₀ (Fin L) (Fin n)) (δ : ℝ≥0) (T : ℕ)
@@ -170,6 +167,7 @@ theorem strict_coeffPolys_of_decoded_set_coordinate_upgrade {n k m L : ℕ} [NeZ
           Q₀.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ)) ≠ 0 ∧
             (Polynomial.X - Polynomial.C (P γ)) ∣
               R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ))) →
+        G.card ≤ T + (UniqueFactorizationMonoid.factors Q₀).toFinset.card * E.card →
         BR R + R.natDegree * (L - 1) < E.card)
     (hEbig : ∀ R ∈ (UniqueFactorizationMonoid.factors Q₀).toFinset,
       ∀ E : Finset F₀, E ⊆ G →
@@ -177,6 +175,7 @@ theorem strict_coeffPolys_of_decoded_set_coordinate_upgrade {n k m L : ℕ} [NeZ
           Q₀.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ)) ≠ 0 ∧
             (Polynomial.X - Polynomial.C (P γ)) ∣
               R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ))) →
+        G.card ≤ T + (UniqueFactorizationMonoid.factors Q₀).toFinset.card * E.card →
         max (L - 1) k < E.card)
     (hUpgrade : ∀ R ∈ (UniqueFactorizationMonoid.factors Q₀).toFinset,
       ∀ E : Finset F₀, E ⊆ G →
@@ -202,7 +201,9 @@ theorem strict_coeffPolys_of_decoded_set_coordinate_upgrade {n k m L : ℕ} [NeZ
 This is the residual-facing version of
 `strict_coeffPolys_of_given_family_coordinate_upgrade_degree_lt_L`: decoded data plus
 `¬ jointAgreement` build the `McaDecodeCurve` witnesses, while the selected-cell
-`CoordinateUpgrade` supplier yields coefficient polynomials of degree `< L`. -/
+`CoordinateUpgrade` supplier yields coefficient polynomials of degree `< L`.
+The size inputs `hbranchBig`/`hEbig` are guarded by the heavy-share floor
+`G.card ≤ T + #factors(Q₀)·E.card` (they are unsatisfiable without it, via `E = ∅`). -/
 theorem strict_coeffPolys_of_decoded_set_coordinate_upgrade_degree_lt_L {n k m L : ℕ}
     [NeZero n]
     (domain : Fin n ↪ F₀)
@@ -237,6 +238,7 @@ theorem strict_coeffPolys_of_decoded_set_coordinate_upgrade_degree_lt_L {n k m L
           Q₀.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ)) ≠ 0 ∧
             (Polynomial.X - Polynomial.C (P γ)) ∣
               R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ))) →
+        G.card ≤ T + (UniqueFactorizationMonoid.factors Q₀).toFinset.card * E.card →
         BR R + R.natDegree * (L - 1) < E.card)
     (hEbig : ∀ R ∈ (UniqueFactorizationMonoid.factors Q₀).toFinset,
       ∀ E : Finset F₀, E ⊆ G →
@@ -244,6 +246,7 @@ theorem strict_coeffPolys_of_decoded_set_coordinate_upgrade_degree_lt_L {n k m L
           Q₀.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ)) ≠ 0 ∧
             (Polynomial.X - Polynomial.C (P γ)) ∣
               R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ))) →
+        G.card ≤ T + (UniqueFactorizationMonoid.factors Q₀).toFinset.card * E.card →
         max (L - 1) k < E.card)
     (hUpgrade : ∀ R ∈ (UniqueFactorizationMonoid.factors Q₀).toFinset,
       ∀ E : Finset F₀, E ⊆ G →
@@ -268,8 +271,6 @@ theorem strict_coeffPolys_of_decoded_set_coordinate_upgrade_degree_lt_L {n k m L
 end CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame
 
 /-! ## Axiom audit — all kernel-clean. -/
-open CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame in
-#print axioms not_stackJointAgreesOn_of_not_jointAgreement
 open CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame in
 #print axioms exists_mcaDecodeCurve_of_close_of_not_jointAgreement
 open CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame in

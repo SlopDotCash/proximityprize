@@ -45,10 +45,13 @@ Plugging the EXACT period moments `m_r = (q·W_r − n^r)/(q−1)` (`W_r` = the 
 * **`κ₄ ≈ 0.8·n²` — does NOT vanish** (defect `κ₄/n² ≈ 0.25` at `n = 4`, `≈ 0.8` at `n = 16,32`).
 * `κ_{2r}` GROW super-geometrically: `κ₆/n³ ≈ 2.4`, `κ₈/n⁴ ≈ 10–68`, increasing with both `r` and `n`.
 
-So **the measure `ν` is NOT semicircle** and the free edge is **strictly above `2√n`** (measured
-truncated free edge already `1.4–1.6 × 2√n`, tracking `M(n)`).  The semicircle limit gives the WRONG
+So **the measure `ν` is NOT semicircle** (numerically; `κ₄ ≠ 0`).  Separately, the *measured*
+truncated free edge is `1.4–1.6 × 2√n`, tracking `M(n)` — this is a numerical observation, not a
+consequence of `κ₄ > 0`: a positive fourth free cumulant does **not** by itself force the spectral
+edge above `2√m₂` (e.g. mass `1/5` at `±1`, `3/5` at `0` has `κ₄ = 2/25 > 0` but edge
+`1 < 2√(2/5)`).  Numerically the semicircle limit gives the WRONG
 (too small) number `2√n`, whereas `M(n) ≈ C√(n log(q/n)) > 2√n`.  Hence the manifesto-E24 form of the
-route is **REFUTED**: free cumulants do not vanish past 2.  The genuine reduction is therefore NOT
+route is **numerically refuted**: free cumulants do not vanish past 2.  The genuine reduction is therefore NOT
 "semicircle" but a **controlled-growth law for the even free cumulants** `κ_{2r}` whose R-transform
 edge equals `C√(n log(q/n))` — and that growth is exactly the char-`p` deep-moment anomaly (the open
 crux), re-expressed in non-crossing-partition language.  This file pins that boundary precisely.
@@ -59,8 +62,8 @@ crux), re-expressed in non-crossing-partition language.  This file pins that bou
   cumulant inversion; `semicircle_iff_freeCumulant4_zero_of_centered` (for a centered measure
   `m₁ = 0`, semicircle-to-order-4 ⟺ `κ₄ = 0` ⟺ `m₄ = 2 m₂²`, the free Wick/Catalan relation).
 * **NOT proved (the open crux, now in NC language):** that the period measure's even free cumulants
-  `κ_{2r}` satisfy the controlled-growth law giving edge `C√(n log(q/n))`.  Equivalently `κ₄ ≠ 0` and
-  `κ_{2r}` grows — the deterministic non-semicircle anomaly = the char-`p` deep-moment crux of #444.
+  `κ_{2r}` satisfy the controlled-growth law giving edge `C√(n log(q/n))`.  (Numerically `κ₄ ≠ 0` and
+  `κ_{2r}` grows — the deterministic non-semicircle anomaly = the char-`p` deep-moment crux of #444.)
 
 Issue #444 (lane wf-A4).
 -/
@@ -124,8 +127,9 @@ theorem moment4_of_cumulant (m1 m2 m3 m4 : R) :
 /-- **Semicircle ⟺ `κ₄ = 0`, for a centered measure.**  For `m₁ = 0` the semicircle relations to
 order 4 are `m₃ = 0` (`κ₃ = 0`) and `m₄ = 2 m₂²` (the free Catalan number `Cat 2 = 2`).  Hence the
 order-4 semicircle defect is exactly `κ₄`, and `κ₄ = 0 ⟺ m₄ = 2 m₂²`.  This makes the probe verdict
-precise: the period measure has `κ₄ ≈ 0.8 n² ≠ 0`, so it is **not** semicircle, so its edge is not
-`2√n`, so the manifesto-E24 free-CLT route gives the wrong number. -/
+precise at order 4: the period measure has `κ₄ ≈ 0.8 n² ≠ 0` (numerically), so it is **not**
+semicircle.  (Non-semicircularity alone says nothing about the edge value; the claim that the edge
+exceeds `2√n` rests on the separate numerical edge measurement.) -/
 theorem semicircle_iff_freeCumulant4_zero_of_centered (m2 m3 m4 : R) :
     freeCumulant4 0 m2 m3 m4 = 0 ↔ m4 = 2 * m2 ^ 2 := by
   unfold freeCumulant4
@@ -146,14 +150,14 @@ theorem centered_freeCumulants (m2 m3 m4 : R) :
   · unfold freeCumulant3; ring
   · unfold freeCumulant4; ring
 
-/-- **Edge-lower-bound consequence (the new crack, ordered field).**  For a centered compactly
-supported measure, a POSITIVE order-4 free defect `κ₄ > 0` forces `m₄ > 2 m₂²`, i.e. the fourth
-moment STRICTLY exceeds the semicircle value `2 m₂²`.  Since for any measure supported in
-`[−E, E]` one has `m₄ ≤ E² · m₂`, a strict super-semicircle fourth moment forces the edge up:
-`E² ≥ m₄ / m₂ > 2 m₂` (when `m₂ > 0`), i.e. `E > √(2 m₂) = (1/√2)·(2√m₂)` is the floor and the
-super-semicircle excess `κ₄ > 0` pushes `m₄/m₂` — hence the edge — strictly above the semicircle
-`2√(m₂)`-radius prediction.  This is the deterministic statement the route reduces to:
-`κ₄ > 0 ⟹ edge > 2√(m₂) underestimate is invalid`. -/
+/-- **Super-semicircle fourth moment (ordered ring).**  For centered moments (`m₁ = m₃ = 0`), a
+POSITIVE order-4 free defect `κ₄ > 0` is equivalent to `m₄ > 2 m₂²`: the fourth moment strictly
+exceeds the semicircle value `2 m₂²`.  That is all this theorem proves.
+
+Edge caveat: for a measure supported in `[−E, E]`, `m₄ ≤ E² m₂` gives only `E > √(2 m₂)`, which is
+*below* the semicircle radius `2√m₂`.  So `κ₄ > 0` does **not** imply the edge exceeds `2√m₂`
+(counterexample: mass `1/5` at `±1`, `3/5` at `0`: `m₂ = m₄ = 2/5`, `κ₄ = 2/25 > 0`, edge
+`1 < 2√(2/5)`). -/
 theorem fourthMoment_gt_semicircle_of_pos_defect
     {S : Type*} [CommRing S] [LinearOrder S] [IsStrictOrderedRing S] (m2 m4 : S)
     (h : freeCumulant4 0 m2 0 m4 > 0) : m4 > 2 * m2 ^ 2 := by

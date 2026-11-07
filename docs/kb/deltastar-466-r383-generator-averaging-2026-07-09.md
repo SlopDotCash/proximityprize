@@ -50,3 +50,7 @@ base-2 logarithm `5311`, while the Wick fluctuation `(2r-1)!! * n^r` has base-2 
 Therefore generator averaging is not a standalone closure even under root uniqueness. To become
 useful it must be composed with a genuinely centered cross-generator cancellation mechanism; a
 better incidence cap alone cannot supply the missing `q/n` factor.
+
+*(Scope note, 2026-10-28 audit T48; cross R-063: the multiplicity/centering input remains a real
+open input, and the computation above is a chosen **upper envelope**. A large upper envelope does
+not by itself prove that every compatible centered method is impossible.)*

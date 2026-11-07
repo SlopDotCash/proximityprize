@@ -47,13 +47,17 @@ minimal `m`-fold intersection is `m·t − (m−1)·n = n − m(n − t)`, which
 (`mfold_intersection_antitone`): the largest guaranteed forced region is the *pairwise* one at
 `m = 2`.  In the rate-`1/2` strip (`k = n/2`, `t < 3n/4`, i.e. `2t < n + k`) that pairwise region is
 already `< k` (`pairwise_region_lt_k`), and every deeper merge only shrinks it
-(`chain_region_lt_k`).  So no chain of cross-witness merges ever certifies a single-codeword
-agreement region of size `≥ k`: **`u₁` is never forced near a codeword by cross-witness chaining**,
-and `hrank` does **not** discharge on this route.  The band shape that blocks the strip at scale `t`
-reappears verbatim at the witness-overlap scale.
+(`chain_region_lt_k`).  So the **inclusion–exclusion lower bound alone** never certifies a
+single-codeword agreement region of size `≥ k`: the *guaranteed* (worst-case) `m`-fold overlap is
+`< k`, so this counting argument cannot force `u₁` near a codeword, and `hrank` does **not**
+discharge on this route.  (Audit CW-B13-20: this is a worst-case statement.  A particular witness
+family may overlap far more than the minimum, and then rigidity can fire; nothing here shows that
+`u₁` is never forced near a codeword for actual families.)  The band shape that blocks the strip at
+scale `t` reappears verbatim at the witness-overlap scale.
 
-This is an honest **NO-GO**: the cross-witness lemma is genuine algebra, but the chaining that would
-turn it into a `hrank` discharge is arithmetically obstructed inside the strip.  `hrank` remains an
+This is an honest **NO-GO for the counting route**: the cross-witness lemma is genuine algebra, but
+a chaining argument that relies only on the guaranteed overlap sizes is arithmetically obstructed
+inside the strip (`2t < n + k`).  `hrank` remains an
 open, independent realizability residual (separate from `uniformSylvester`), exactly as SYZ42/SYZ43
 recorded.  No `δ*` gain.
 
@@ -150,9 +154,12 @@ theorem pairwise_region_lt_k {n t k : ℕ} (hstrip : 2 * t < n + k) :
 
 /-- **(b)/(c) NO-GO: no cross-witness merge reaches the rigidity threshold `k`.**  Combining the two
 facts: for supports of size `t ≤ n` in the strip (`2t < n + k`), the minimal `m`-fold intersection is
-`< k` for **every** `m ≥ 2`.  Hence no chain of cross-witness codeword-agreement merges can certify a
-single-codeword agreement region of size `≥ k`, so MDS rigidity never fires and `u₁` is never forced
-near a codeword.  The `hrank` union-rank lower bound is *not* discharged by cross-witness chaining. -/
+`< k` for **every** `m ≥ 2`.  Hence the inclusion–exclusion lower bound alone cannot certify a
+single-codeword agreement region of size `≥ k`, so it cannot by itself trigger MDS rigidity.  This
+is
+a worst-case bound: specific witness families may overlap more than `mfoldMin`, and nothing here
+rules out rigidity firing for them.  The `hrank` union-rank lower bound is *not* discharged by
+counting-only cross-witness chaining. -/
 theorem chain_region_lt_k {n t k m : ℕ} (htn : t ≤ n) (hm : 2 ≤ m) (hstrip : 2 * t < n + k) :
     mfoldMin n t m < (k : ℤ) :=
   lt_of_le_of_lt (mfoldMin_antitone htn hm) (pairwise_region_lt_k hstrip)
@@ -170,15 +177,19 @@ section Verdict
 
 /-- **The chaining hypothesis is combinatorially blocked in the strip.**  There is no `m ≥ 2` for
 which the guaranteed `m`-fold witness overlap reaches the MDS rigidity threshold `k`, when the
-supports live in the strip (`t ≤ n`, `2t < n + k`).  Equivalently: the cross-witness algebra of
-Section 1 pins `u₁` only on regions of size `< k`, never enough to force a near-codeword. -/
+supports live in the strip (`t ≤ n`, `2t < n + k`).  Equivalently: the region sizes that counting
+*guarantees* for the cross-witness algebra of Section 1 are `< k`, so counting alone never forces a
+near-codeword (actual overlaps may be larger). -/
 theorem no_rigidity_certificate_in_strip {n t k : ℕ} (htn : t ≤ n) (hstrip : 2 * t < n + k) :
     ∀ m, 2 ≤ m → mfoldMin n t m < (k : ℤ) :=
   fun _ hm => chain_region_lt_k htn hm hstrip
 
 /-- **Sanity: the strip hypothesis is exactly `t < 3n/4` at rate `1/2`.**  With `k = n/2` (n even,
-`n = 2k`), the strip bound `2t < n + k` is `2t < 3k`, i.e. `t < 3k/2 = 3n/4`, matching the decisive
-strip window `(Johnson, 1/3)` where G87 places the witness threshold. -/
+`n = 2k`), the strip bound `2t < n + k` is `2t < 3k`, i.e. `t < 3k/2 = 3n/4`, equivalently radius
+`δ = 1 − t/n > 1/4`.  This hypothesis is *weaker* than (contains) the decisive strip window
+`(Johnson, 1/3)`: the threshold `t = ⌈(1−δ)n⌉` for `δ` in that window satisfies it, but so do radii
+in `(1/4, Johnson]` (audit CW-B13-20
+corrected the earlier claim that the two coincide). -/
 theorem strip_hypothesis_iff_three_quarter {n k t : ℕ} (hn : n = 2 * k) :
     (2 * t < n + k) ↔ (2 * t < 3 * k) := by
   subst hn; constructor <;> intro h <;> omega

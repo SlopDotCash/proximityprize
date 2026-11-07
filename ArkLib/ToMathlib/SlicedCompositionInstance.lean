@@ -48,7 +48,11 @@ What remains is parameterized as named hypotheses, each with an honest docstring
 the centre supply `hHyp` for `Q₀` (open `IntegerRepCentreSupply` content — the graph
 bundle's `hHyp` cannot carry the surface by F8), the global root supply `root` with its
 base-point readings (per-place producible via `DecodedRootSupply.rootDecoded` /
-`BranchValuePigeonhole.incidenceRootFn`, but a *total* section has no in-tree producer),
+`BranchValuePigeonhole.incidenceRootFn`, but a *total* section has no in-tree producer, and
+none exists at all once a single fibre `rationalRoot (H_tilde' H) z₀` is empty, even at a `z₀`
+outside the truncation/agreement loci — the readings `hbaseT`/… use `root` only on those loci,
+so the membership-dependent `rootOn` form of `ArkLib.IngredientC.MatchingVanishesOn` is the honest
+target; threading it through this capstone is open #304 interface debt, audit L58),
 the assembled-series polynomial representative, the discriminant cover, the fold readings,
 and the finite numerics.
 

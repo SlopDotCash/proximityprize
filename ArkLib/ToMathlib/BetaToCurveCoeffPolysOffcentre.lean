@@ -42,6 +42,15 @@ matching-set/weight inputs `mp`/`hcard` flow through
 `betaRec_embedding_eq_zero_of_matchingSet_large` into the conclusion.  No `hcoeffPoly`-equivalent
 hypothesis is assumed (the F4 trap).
 
+**Total root family (audit L58).**  Every theorem here takes a total section
+`root : (z : F) → rationalRoot (H_tilde' H) z`, although `mp`/`mpFin` read it only at
+matching-set members.  Such a section cannot exist once one fibre is empty, even at a place
+outside the matching set (`IngredientC.not_exists_total_matchingVanishes_of_isEmpty`); the
+finite-range variants repair the counting range (F5), not this.  The results are valid under the
+stronger premise; producers that only have roots at matching places should go through the
+restricted-root chain (`BetaMatchingVanishes.betaRec_embedding_eq_zero_of_matchingSet_largeOn`).
+Threading that form through the tail-vanishing lemmas consumed here is open #304 interface debt.
+
 At the centre this specialises consistently: `shiftSeries 0 H = PowerSeries.X` and
 `taylor 0 = id`, so the centred bridge (the `x₀ = 0` subst↔mk identity, tracked separately on
 issue #61) recovers `curveCoeffPolys_of_betaRec` from this statement.

@@ -155,8 +155,16 @@ The fresh-uniform model: every query (of arbitrary, adaptively chosen input `a :
 answered by an independent uniform draw from the finite answer space `X`, and the answers
 are accumulated in a list. The collision event is `¬ Nodup` on the answer list — *any* two
 answers equal, with no input-distinctness side condition (unlike VCVio's
-`LogHasCollision`); in the eager-table model repeated inputs return equal answers, so this
-fresh-draw event is the conservative upper estimate used by CO25 Lemma 5.8. -/
+`LogHasCollision`).
+
+Caution on the comparison with the eager-table model: this fresh-draw event is **not** a
+pointwise conservative upper estimate for raw answer collisions there. In the eager-table model a
+repeated (cached) input returns the *same* answer with probability one, whereas two independent
+fresh uniform answers over `q > 1` values collide only with probability `1/q`; so for raw
+repeated-input collisions the comparison goes the other way. The bounds below are proved for the
+fresh i.i.d. game; transferring them to the eager-table / permutation game requires the carrier
+coupling and the deduplicated trace (`removeRedundantEntryDS`) described in the "Exact gap"
+note later in this file. -/
 
 section FreshUniform
 

@@ -28,11 +28,12 @@ For a finite nonempty index `s : Finset ι`, a nonnegative spectrum `t : ι → 
 increasing weight `g(v) = exp(c v)` (`c > 0`), the MGF sum reorganizes EXACTLY over the survival
 counts. The clean, fully-formal, sign-definite statement we carry is the **monotone domination**:
 
-* `mgf_le_of_survival_dominated` : if a comparison spectrum `t'` survival-DOMINATES `t`
-  (every super-level set of `t'` is at least as large as that of `t`, equivalently `t` is pointwise
-  `≤` a nondecreasing rearrangement of `t'`), then `Σ_b exp(c t_b) ≤ Σ_b exp(c t'_b)`. We carry the
-  cleanest SUFFICIENT form: a **pointwise** ceiling `t_b ≤ u_b` with `exp`-monotonicity gives the
-  termwise MGF domination, hence `MGFBound`. (Probe-confirmed exact-Abel reorganization in
+* *(Not formalized.)* Super-level-set (survival) domination — if every super-level set of `t'` is
+  at least as large as that of `t`, then `Σ_b exp(c t_b) ≤ Σ_b exp(c t'_b)` — is the natural
+  statement, but **no theorem of that form (an earlier draft named it
+  `mgf_le_of_survival_dominated`) exists in this file or the repository** (audit CW-B18-23). We
+  carry only the SUFFICIENT **pointwise** form: a ceiling `t_b ≤ u_b` with `exp`-monotonicity gives
+  the termwise MGF domination, hence `MGFBound`. (Probe-confirmed exact-Abel reorganization in
   `scripts/probes/probe_s11_survival_to_mgf.py`; the monotone upper bound in
   `scripts/probes/probe_s11_survival_mgf_bound.py`.)
 

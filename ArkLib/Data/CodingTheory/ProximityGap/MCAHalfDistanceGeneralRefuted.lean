@@ -30,11 +30,17 @@ fails, and `¬ HalfDistanceStaircaseConjecture` (`halfDistanceStaircaseConjectur
   `GeneralStaircaseConjecture` (`d ≥ 2b + 1`), stated below — never asserted.
 * Reed–Solomon/MDS codes: the directed search found *no* admissible configuration at
   `d = 2b` (the syndrome system's kernel always zeroes a puncture) — the MDS form
-  `d ≥ 2b` survives as `MDSStaircaseConjecture`, also stated below.
-* The separation at `d = 2b` is therefore **real**: the staircase's collapse boundary is a
-  property of the code's *minor structure*, not its distance alone — doubled-column codes
-  witness the gap. This is, to our knowledge, the first separation between MDS and general
-  linear codes for an MCA-staircase quantity.
+  `d ≥ 2b` was posed as `MDSStaircaseConjecture`, also stated below (guard
+  `k + 2b ≤ n + 1`, i.e. `d = n − k + 1 ≥ 2b`).
+* At the time this suggested a separation at `d = 2b` between MDS and general linear codes.
+
+**Historical status (later rounds).** Both surfaces stated below were subsequently
+**refuted**: `GeneralStaircaseConjecture` by
+`MCAGeneralStaircaseRefuted.generalStaircaseConjecture_refuted` (tripled-column code, `b = 4`),
+and `MDSStaircaseConjecture` by `MCAMDSStaircaseRefuted.mdsStaircaseConjecture_refuted`
+(degenerate-pencil explosion, `RS[F₁₉, F₁₉ˣ, 10]`, `b = 4`, `d = 9`).  So the claimed MDS/general
+separation at the staircase-threshold level does **not** survive; only the doubled-column
+refutation of `HalfDistanceStaircaseConjecture` proved in this file stands as stated.
 
 All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 
@@ -210,13 +216,16 @@ def GeneralStaircaseConjecture : Prop :=
     (∀ w ∈ C, (∃ T : Finset ι, T.card ≤ 2 * b ∧ ∀ i ∉ T, w i = 0) → w = 0) →
     LinearStaircaseUpper C b
 
-/-- **The MDS surface:** for Reed–Solomon codes the original boundary `d ≥ 2b` survives
-(the directed-search record: the syndrome system has no admissible kernel at RS instances).
-Stated for the RS family. -/
+/-- **The MDS surface (historical; REFUTED):** for Reed–Solomon codes the original boundary
+`d ≥ 2b` was conjectured to survive (the directed-search record: the syndrome system has no
+admissible kernel at RS instances). Stated for the RS family. For `RS[n, k]` with `1 ≤ k ≤ n` the
+distance is `d = n − k + 1`, so `d ≥ 2b` is exactly the guard `k + 2b ≤ n + 1` used here (the
+equality case `d = 2b` is included). Refuted by
+`MCAMDSStaircaseRefuted.mdsStaircaseConjecture_refuted`. -/
 def MDSStaircaseConjecture : Prop :=
   ∀ (ι : Type) (inst1 : Fintype ι) (inst2 : Nonempty ι) (inst3 : DecidableEq ι)
     (F : Type) (inst4 : Field F) (inst5 : Fintype F) (inst6 : DecidableEq F)
-    (domain : ι ↪ F) (k b : ℕ), 3 ≤ b → k + 2 * b ≤ Fintype.card ι →
+    (domain : ι ↪ F) (k b : ℕ), 3 ≤ b → k + 2 * b ≤ Fintype.card ι + 1 →
     LinearStaircaseUpper (ReedSolomon.code domain k) b
 
 /-! ## Source audit -/

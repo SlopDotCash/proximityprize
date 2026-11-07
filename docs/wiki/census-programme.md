@@ -5,6 +5,12 @@
 > pruning, refactoring, or extending anything named below** — the #353 cleanup deleted a
 > load-bearing file (`KKH26ParsevalThreshold.lean`) as "superseded" because this map did not
 > exist (DISPROOF_LOG O151); it has been restored.
+>
+> **Correction (2026-10-28 audit, T48).** Two statements in this snapshot are corrected in place
+> below. (1) The capacity-gap comparison in the conditional production answer was reversed: a
+> constant gap `capacity − c(ρ)` is eventually a *smaller* radius than `capacity − Θ(1/log n)`, not
+> a sharper one. (2) The empirical multi-prime counts are finite evidence, not a universal
+> characteristic-transfer certificate; the open surfaces listed below remain open.
 
 ## The one-paragraph summary
 
@@ -15,8 +21,9 @@ agreement are **exactly** the pivot coefficients of band-constrained subsets of 
 above an explicit threshold (the finite tower — proven, Parseval-sharpened). The census is
 an unconditional `ε_mca` lower bound (proven), and `δ* = 1 − a_c/n` at the census crossing,
 conditional on the named extremality surface (the crossing pin — proven conditional). The
-two-family profile law (`ε_mca·q = min(q, max(staircase, census))`) matches **every exact
-data point ever computed** (9 instances, 14+ field-combos, 3 red-team cycles).
+two-family profile law (`ε_mca·q = min(q, max(staircase, census))`) matched every exact
+data point computed by this snapshot (9 instances, 14+ field-combos, 3 red-team cycles). That
+is finite evidence for a conjectured law, not a proof of it.
 
 ## The theorem stack (all axiom-clean `[propext, Classical.choice, Quot.sound]`, on main)
 
@@ -46,14 +53,17 @@ data point ever computed** (9 instances, 14+ field-combos, 3 red-team cycles).
 ## The empirical layer (DISPROOF_LOG O135–O152; probes in `scripts/probes/`)
 
 - **O137/O138**: KKH26-extremality at exact rungs; the (12,6) flat numerator solved (the
-  m=1 adjacent pair is the extremal stack; numerator = constrained census, field-indep).
+  m=1 adjacent pair is the extremal stack among the stacks tested; numerator = constrained
+  census, equal across the fields tested).
 - **O139/O140/O141**: first window-interior census data; family death radii; the
   fake-point reformulation (`e₂..e_c = 0 ⟺ p_j = t^j` — masquerade as a point); MITM
   counting; c*(n) growth (the family pushes INTO the window as n grows).
 - **O142/O145/O150**: the classification verified exactly at four instances (multi-prime
-  intersections = fiber unions); the **one-orbit halo law** (each prime carries exactly one
-  rotation orbit of halo); the 2-prime-intersection trap (norms share divisors — use ≥ 3
-  primes + char-0 anchor).
+  intersections = fiber unions); the **one-orbit halo law** (each tested prime carries exactly
+  one rotation orbit of halo); the 2-prime-intersection trap (norms share divisors — use ≥ 3
+  primes + char-0 anchor). These are finite checks. Agreement at a few primes is evidence, not
+  a characteristic-transfer theorem. The proven transfer is the finite tower above its explicit
+  threshold (`CensusTowerFinite`, `HaloFreeThresholdParseval`).
 - **O146/O147/O152 (red-team cycles)**: `CensusUpperExtremal` refuted-as-stated (double
   spike at a = n−1) and **corrected to the two-family max**; the corrected law matches all
   exact data including prime-order domains (census = prime Lam–Leung predictions).
@@ -78,8 +88,13 @@ crossing. Machine-checked end-to-end except for:
    the 25-year wall; every other obstruction has been reduced to it or to 1.).
 
 If the char-0 census forecasts hold at s* ≈ 256, the answer reads
-**δ* = capacity − c(ρ)** with `c(ρ) ≈ 2/s*` a *constant* — sharper than the published
-`capacity − Θ(1/log n)` (whose log came from prime-threshold coupling, not the census).
+**δ* = capacity − c(ρ)** with `c(ρ) ≈ 2/s*` a *constant*. This is a forecast conditional on the
+three surfaces above, not a theorem. It is **not** sharper than `capacity − Θ(1/log n)`. For any
+fixed `c(ρ) > 0` the `Θ(1/log n)` gap eventually becomes smaller than `c(ρ)`, so
+`capacity − Θ(1/log n)` is eventually the *larger* radius. A constant-gap answer would place `δ*`
+strictly below that expression for large `n`: a smaller threshold, not an improved radius. (The
+original snapshot said "sharper than", which reversed the comparison; corrected 2026-10-28,
+audit T48.)
 
 ## Working rules learned (cost real debugging time)
 
@@ -92,5 +107,8 @@ If the char-0 census forecasts hold at s* ≈ 256, the answer reads
 - The resultant pillars live in `ArkLib.ProximityGap.ResultantLiftLoop52`.
 - Landing flow under sibling races: keep `/tmp` copies; `git reset fork/main` + re-apply +
   manual sorted import insert when `update-lib.sh` hits others' untracked files; always
-  `git diff --cached` before commit; ≥ 3 primes + char-0 numeric anchor before declaring
-  anything "field-independent".
+  `git diff --cached` before commit; ≥ 3 primes + char-0 numeric anchor before even
+  conjecturing that a count is field-independent. Finite agreement never certifies field
+  independence: thin-field exceptions exist above `n³` (for example `μ₃₂ ⊆ F₃₂₉₉₃` has additive
+  energy `3744`, not the char-0 `2976`), so a transfer claim needs a proved threshold or norm
+  argument.

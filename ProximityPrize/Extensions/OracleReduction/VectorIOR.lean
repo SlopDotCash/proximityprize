@@ -14,6 +14,7 @@ Authors: Quang Dao
 -/
 
 import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 
 /-!
 # Vector Interactive Oracle Reductions
@@ -64,6 +65,17 @@ namespace VectorIOP
 
 variable {Statement Witness : Type} {ιₛ : Type} {OStatement : ιₛ → Type}
   [∀ i, OracleInterface (OStatement i)]
+
+/-- Perfect completeness paired with the historical prover-averaged RBR knowledge bound. -/
+class IsSecureWithGapAveraged
+    (completeRelation soundRelation : Set ((Statement × ∀ i, OStatement i) × Witness))
+    (ε_rbr : vPSpec.ChallengeIdx → ℝ≥0)
+    (vectorIOP : VectorIOP Statement OStatement Witness vPSpec A) : Prop where
+  /-- Perfect completeness for `completeRelation`. -/
+  is_complete : vectorIOP.perfectCompleteness (pure ()) isEmptyElim completeRelation
+  /-- Prover-averaged knowledge soundness for `soundRelation`. -/
+  is_rbr_knowledge_sound : OracleProof.rbrKnowledgeSoundnessAveraged
+    (pure ()) isEmptyElim soundRelation vectorIOP.toOracleVerifier ε_rbr
 
 -- `VectorIOP.IsSecure` (gap-free completeness + rbr knowledge soundness bundle) was deleted in
 -- the 2026-06-10 proof-debt audit: zero instances and zero consumers anywhere in the tree.

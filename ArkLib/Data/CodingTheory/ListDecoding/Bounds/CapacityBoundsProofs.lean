@@ -72,9 +72,15 @@ lemma natDegree_aeval_le (Q : MvPolynomial (Fin 2) F) (deg_X deg_Y : ℕ)
     _ ≤ deg_X + deg_Y * f.natDegree := by gcongr
 
 
-/-- The final list-decoding capacity bound combining GKL24 interpolation and BCHKS25 vanishing.
-Any codeword with agreement strictly greater than the list decoding radius will correspond
-to a Y-root of the interpolating polynomial Q(X,Y). -/
+/-- The list-decoding capacity step combining GKL24 interpolation and BCHKS25 vanishing: a
+nonzero GKL24 interpolant `Q(X, Y)` of the received word — `X`-degree `≤ deg_X`, `Y`-degree
+`≤ deg_Y`, and multiplicity `≥ multiplicities (x, received x)` at every received point — has
+`f` as a `Y`-root whenever `f` agrees with `received` on more than `deg_X + deg_Y · deg f`
+(multiplicity-weighted) points.
+
+The degree and multiplicity constraints are part of the conclusion on purpose: without them the
+statement `Q ≠ 0 ∧ Q(x, f x) = 0` would be trivially witnessed by `Q = Y − f(X)`, independently of
+`h_dim`/`h_agree`. For the bound on the number of such `f` see `gs_list_decoding_bound`. -/
 theorem capacity_bound_implies_y_root [DecidableEq F]
     (points : Finset F)
     (f : Polynomial F)
@@ -84,6 +90,9 @@ theorem capacity_bound_implies_y_root [DecidableEq F]
     (h_dim : (points.sum (fun x => (multiplicities (x, received x) + 1) * multiplicities (x, received x) / 2)) < (deg_X + 1) * (deg_Y + 1))
     (h_agree : (points.filter (fun x => f.eval x = received x)).sum (fun x => multiplicities (x, received x)) > deg_X + deg_Y * f.natDegree) :
     ∃ Q : MvPolynomial (Fin 2) F, Q ≠ 0 ∧
+      MvPolynomial.degreeOf 0 Q ≤ deg_X ∧ MvPolynomial.degreeOf 1 Q ≤ deg_Y ∧
+      (∀ x ∈ points,
+        ArkLib.MvPolynomial.mult_ge ![x, received x] (multiplicities (x, received x)) Q) ∧
       (∀ x, MvPolynomial.eval (fun i => if i = 0 then x else f.eval x) Q = 0) := by
   classical
   have h_dim' : ((points.image (fun x => (x, received x))).sum
@@ -93,7 +102,8 @@ theorem capacity_bound_implies_y_root [DecidableEq F]
   obtain ⟨Q, hQ_neq, hQ_degX, hQ_degY, hQ_mult⟩ :=
     GKL24.gkl24_interpolation_existence (points.image (fun x => (x, received x)))
       multiplicities deg_X deg_Y h_dim'
-  refine ⟨Q, hQ_neq, ?_⟩
+  refine ⟨Q, hQ_neq, hQ_degX, hQ_degY,
+    fun x hx => hQ_mult (x, received x) (Finset.mem_image_of_mem _ hx), ?_⟩
   set P : Polynomial F :=
     MvPolynomial.aeval (fun i => if i = 0 then (Polynomial.X : Polynomial F) else f) Q with hPdef
   -- The substituted polynomial `P = Q(T, f(T))` is identically zero.

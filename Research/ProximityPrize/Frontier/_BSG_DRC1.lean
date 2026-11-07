@@ -33,16 +33,25 @@ Combinatorics*, Thm 2.29; Gowers 1998 §6) has three pieces:
 
 3. **(DRC-extract)** the *bad-pair refinement*: choosing a good `b` weighted by the cherry count,
    the number of pairs `(a,a') ∈ N(b)²` with *few* common neighbours is small; set
-   `A' = N(b) \ bad` and bound `|A' - A'|` via the common-neighbour density (Plünnecke). This is the
-   **only** remaining content; it is the named residual `BareDRCExtract`, and `BareDRC` is reduced
-   to it (`bareDRC_of_extract`).
+   `A' = N(b) \ bad` and bound `|A' - A'|` via the common-neighbour density (Plünnecke). In the
+   standard proof this step also uses the additive structure behind the graph (the popular-sum /
+   additive-energy origin of `G`); this file packages it as the graph-only interface
+   `BareDRCExtract`, and `BareDRC` is reduced to it (`bareDRC_of_extract`).
 
 ## Status
 
-`PARTIAL` — pieces 1 and 2 (DRC-count, DRC-average) are **proven axiom-clean**. Piece 3
-(DRC-extract) is a named residual `BareDRCExtract` strictly smaller than `BareDRC` (it is handed a
-single good vertex, removing the averaging/pigeonhole layer), and
-`bareDRC_of_extract : BareDRCExtract C₁ C₂ c → BareDRC C₁ C₂ c` is **proven axiom-clean**.
+`PARTIAL` (counting lemmas) / **REFUTED** (residual). Pieces 1 and 2 (DRC-count, DRC-average) and
+the bad-pair counting lemmas are **proven axiom-clean** and remain reusable.
+`bareDRC_of_extract : BareDRCExtract C₁ C₂ c → BareDRC C₁ C₂ c` is proven axiom-clean, but it is
+**vacuous**: `BareDRCExtract` is **false for every choice of constants** `C₁, C₂, c`
+(`bareDRCExtract_false` in `_BSG_EX_BareDRCExtractFalse.lean`). Reason: at `K = 1` with the
+complete graph `G = A ×ˢ A`, all three graph hypotheses hold for *every* nonempty finite `A`
+(edge count `#A²`, cherry sum `#A³`, every right degree `#A`), whereas a large Sidon set has no
+constant-fraction subset with linear doubling. The interface drops the additive-energy
+information that the genuine DRC/BSG argument needs, so it is not a remaining deep fact and no
+Plünnecke argument can discharge it. (The two-sided equivalence `BareDRCExtract ↔ BareDRC` also
+holds, so `BareDRC` is refuted too: `bareDRC_false`.) The energy-coupled replacement interface is
+`DRCKernelEnergy` in `_BSGC_attempt4.lean`, which remains open.
 
 ## References
 
@@ -190,24 +199,29 @@ theorem sum_commonNeighbors_goodPairs_ge (A : Finset α) (G : Finset (α × α))
   have := sum_commonNeighbors_badPairs_le A G t
   omega
 
-/-! ## Piece 3 — the remaining residual `BareDRCExtract`
+/-! ## Piece 3 — the (refuted) graph-only residual `BareDRCExtract`
 
 After DRC-average supplies a good vertex `b` and DRC-count quantifies the cherry density, the
-*remaining* content of `BareDRC` is the extraction of a small-doubling subset from a single
-neighbourhood with a quantified bad-pair bound. We state this as the strictly smaller residual
-`BareDRCExtract`: it is handed the chosen vertex `b₀` together with its neighbourhood-quality data,
-and need only output `A'`. The averaging/pigeonhole layer (piece 2) is gone from its hypotheses.
+intended remaining content of `BareDRC` was the extraction of a small-doubling subset from a single
+neighbourhood. We state it as `BareDRCExtract`: it is handed the chosen vertex `b₀` together with
+its neighbourhood-quality data, and need only output `A'`.
 
-`BareDRC` reduces to `BareDRCExtract` (`bareDRC_of_extract`). -/
+`BareDRC` reduces to `BareDRCExtract` (`bareDRC_of_extract`), but `BareDRCExtract` is **false for
+every choice of constants** (`bareDRCExtract_false`, `_BSG_EX_BareDRCExtractFalse.lean`), so this
+reduction is vacuous. It is retained only as a record of the obsolete energy-stripped surface. -/
 
-/-- **The post-averaging extraction residual `BareDRCExtract`.**
+/-- **The post-averaging extraction interface `BareDRCExtract` (REFUTED for all constants).**
 
 It receives the same `A, K, G` as `BareDRC`, the same density data, **plus** a distinguished good
 right-vertex `b₀ ∈ A` whose left-neighbourhood `N = leftNbhd A G b₀` is large
 (`#A ≤ 4 * K ^ 2 * #N`, the exact bound the averaging step delivers), and must output the BSG
-subset `A'`. The averaging step that produces `b₀` is discharged by `exists_rDeg_ge_avg`; what
-remains (the genuinely deep part) is turning the large neighbourhood `N` into a small-doubling
-`A'`. -/
+subset `A'`.
+
+**This proposition is false for every `C₁ C₂ c`** (`bareDRCExtract_false`): at `K = 1` the
+complete graph on any nonempty `A` meets every hypothesis, and a large Sidon set `A` has no
+subset `A'` with `C₁ * #A' ≥ #A` and `#(A' - A') ≤ C₂ * #A'`. It discards the additive-energy
+information that a correct DRC/BSG extraction needs; see `DRCKernelEnergy` (`_BSGC_attempt4`) for
+the energy-coupled interface. -/
 def BareDRCExtract (C₁ C₂ c : ℕ) : Prop :=
   ∀ {α : Type} [inst : AddCommGroup α] [inst2 : DecidableEq α],
     ∀ (A : Finset α) (K : ℕ) (G : Finset (α × α)) (b₀ : α),
@@ -222,7 +236,10 @@ def BareDRCExtract (C₁ C₂ c : ℕ) : Prop :=
 supplies a good vertex `b₀` with `#A ≤ 4K²·deg(b₀)` from the edge-density `#A² ≤ 4K²·#G`:
 
 `#G ≤ #A · deg(b₀)` (pigeonhole) and `#A² ≤ 4K²·#G ≤ 4K²·#A·deg(b₀)`, so cancelling one `#A`
-gives `#A ≤ 4K²·deg(b₀)` — exactly the neighbourhood-quality datum `BareDRCExtract` consumes. -/
+gives `#A ≤ 4K²·deg(b₀)` — exactly the neighbourhood-quality datum `BareDRCExtract` consumes.
+
+The implication is valid but vacuous: its antecedent is false for all constants
+(`bareDRCExtract_false`). -/
 theorem bareDRC_of_extract {C₁ C₂ c : ℕ} (hExt : BareDRCExtract C₁ C₂ c) :
     BareDRC C₁ C₂ c := by
   intro α _ _ A K G hK hA hGsub hdense hcherry

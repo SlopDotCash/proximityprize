@@ -36,7 +36,8 @@ either method to act on** — they default to the trivial point count `|L(T)|` (
 governed by `dim` of the Zariski closure, which is `0` here, so the bound is the trivial `|X|`).
 `coset_union_card_dvd` formalizes the coset-union structure (`n ∣ |L(T)|`).
 
-**(O2) The only available count of `L(T)` is the second-moment (Parseval) Markov count.**
+**(O2) The second-moment (Parseval) Markov count of `L(T)`.** (Not the only count: higher-moment
+Markov on `|η|^{2r}` is sharper and is the energy route F1.)
 `Σ_{b≠0} |η_b|² = q·n − n²` **exactly** (an integer Parseval identity; the in-tree
 `GaussPeriodParsevalFloor` is the `q·n` form, verified here numerically by
 `probe_wfH_J2_levelset_determinant.py`). Markov on this nonnegative total gives, for every `T > 0`,
@@ -52,8 +53,9 @@ count for an arbitrary nonnegative weight.
 ## Verdict
 
 `M(μ_n)` is **not** reachable by Pila–Wilkie / André–Oort / Bombieri–Pila / Heath-Brown
-determinant counting: the level set is `0`-dimensional (no variety, **O1**) and its only count is
-the Parseval/Markov second moment (**O2**). The route **REDUCES-TO-FENCE F0** (the conservation
+determinant counting: the level set is `0`-dimensional (no variety, **O1**), and the counts it
+admits are moment/Markov counts (**O2**: second moment here; higher moments are the energy route
+F1). The route **REDUCES-TO-FENCE F0** (the conservation
 law: domain `2`nd-order arithmetic caps at Johnson; the `√log` excess is a rare-event tail
 invisible to the second moment) and **F2** (Weil/Deligne — which the definable-sets framework of
 Kowalski *generalizes* — is vacuous in dimension `0` / for `n < √q`). The `√log` excess remains
@@ -65,8 +67,10 @@ the open BGK/Paley wall, untouched.
    under a finite group `H` acting freely has every level set a union of full `H`-orbits, so
    `|H| ∣ |L(T)|`. (Apply with `H = μ_n` acting by multiplication on `F_p^*`; the action is free.)
 2. `levelSet_card_le_sum_div` — **(O2)**: the Markov / second-moment count: for a nonnegative
-   weight `w` on a finite set and any `T > 0`, `|{b : w b ≥ T}| ≤ (Σ_b w b) / T`. This is the
-   *only* bound the level set admits, and it is the Parseval second moment — Johnson scale.
+   weight `w` on a finite set and any `T > 0`, `|{b : w b ≥ T}| ≤ (Σ_b w b) / T`. Applied to
+   `w = |η|²` this is the Parseval second-moment count (Johnson scale). It is *not* the only
+   available count: Markov on higher moments `|η|^{2r}` gives strictly better level-set counts
+   (the energy route, fence F1); see audit CW-B18-23.
 
 Issue #444, lane J2 (Pila–Wilkie / determinant method).
 -/
@@ -75,7 +79,7 @@ namespace ProximityGap.Frontier.J2LevelSetDeterminant
 
 open Finset
 
-/-! ## (O2) The Markov / second-moment count — the only count the level set admits. -/
+/-! ## (O2) The Markov / second-moment count (higher-moment Markov counts are sharper). -/
 
 /--
 **Markov count on the period level set (the Parseval second-moment count).**
@@ -85,10 +89,11 @@ of indices with `w b ≥ T` is at most the total weight divided by `T`:
   `|{b : w b ≥ T}| ≤ (Σ_b w b) / T`.
 
 Applied to `w b = |η_b|²` and the exact Parseval total `Σ_b |η_b|² = q·n − n²`, this is the
-**only** count of the worst-`b` level set `L(T)` available to any method — a pure second-order
-(Parseval) statement. The determinant method / Pila–Wilkie would have to *beat* this to help the
-sup bound; (O1) shows they cannot even act (no variety). So the level-set route caps at the
-Johnson / RMS scale (fence F0). -/
+second-moment count of the worst-`b` level set `L(T)` — a pure second-order (Parseval) statement.
+It is not the only count: applying the same lemma to `w b = |η_b|^{2r}` (higher-moment Markov)
+gives strictly better counts, which is the energy route (fence F1). The determinant method /
+Pila–Wilkie would have to beat these to help the sup bound; (O1) shows they cannot even act (no
+variety). -/
 theorem levelSet_card_le_sum_div {ι : Type*} (s : Finset ι) (w : ι → ℝ)
     (hw : ∀ b ∈ s, 0 ≤ w b) {T : ℝ} (hT : 0 < T) :
     ((s.filter (fun b => T ≤ w b)).card : ℝ) ≤ (∑ b ∈ s, w b) / T := by

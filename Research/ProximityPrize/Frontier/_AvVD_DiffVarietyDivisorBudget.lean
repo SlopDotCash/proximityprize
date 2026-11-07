@@ -7,6 +7,7 @@ import Mathlib.Data.Nat.Factorization.Basic
 import Mathlib.Data.Nat.Log
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Tactic
+import Research.ProximityPrize.Frontier._AlmostAllPrimesWick
 
 /-!
 # AvVD — the **difference-variety divisor budget**: an UNCONDITIONAL bound on the cumulative
@@ -97,28 +98,20 @@ namespace ArkLib.ProximityGap.Frontier.DiffVarietyDivisorBudget
 
 open Finset
 
-/-! ## §0 The divisor-count ceiling helper (inlined, axiom-clean)
+/-! ## §0 The divisor-count ceiling helper
 
-A positive integer has at most `Nat.log 2`-many distinct prime factors: the product of its
-distinct prime factors (each `≥ 2`) dominates `2 ^ #primeFactors` and divides `n`. -/
+Thin wrappers over the canonical copies in `_AlmostAllPrimesWick` (previously inlined verbatim):
+a positive integer has at most `Nat.log 2`-many distinct prime factors. -/
 
 /-- `2 ^ (#primeFactors n) ≤ n` for `1 ≤ n` (product of distinct factors, each `≥ 2`, divides `n`). -/
 theorem two_pow_card_primeFactors_le {n : ℕ} (hn : 1 ≤ n) :
-    2 ^ n.primeFactors.card ≤ n := by
-  classical
-  have hprod_dvd : (∏ p ∈ n.primeFactors, p) ∣ n := Nat.prod_primeFactors_dvd n
-  have hprod_le : (∏ p ∈ n.primeFactors, p) ≤ n := Nat.le_of_dvd hn hprod_dvd
-  have hconst : (∏ _p ∈ n.primeFactors, (2 : ℕ)) ≤ ∏ p ∈ n.primeFactors, p :=
-    Finset.prod_le_prod' (fun p hp => (Nat.prime_of_mem_primeFactors hp).two_le)
-  calc 2 ^ n.primeFactors.card
-      = ∏ _p ∈ n.primeFactors, (2 : ℕ) := by simp [Finset.prod_const]
-    _ ≤ ∏ p ∈ n.primeFactors, p := hconst
-    _ ≤ n := hprod_le
+    2 ^ n.primeFactors.card ≤ n :=
+  ArkLib.ProximityGap.Frontier.AlmostAllPrimesWick.two_pow_card_primeFactors_le hn
 
 /-- **The divisor-count ceiling.** `#primeFactors n ≤ log₂ n` for `1 ≤ n`. -/
 theorem card_primeFactors_le_natLog {n : ℕ} (hn : 1 ≤ n) :
     n.primeFactors.card ≤ Nat.log 2 n :=
-  Nat.le_log_of_pow_le Nat.one_lt_two (two_pow_card_primeFactors_le hn)
+  ArkLib.ProximityGap.Frontier.AlmostAllPrimesWick.card_primeFactors_le_natLog hn
 
 /-! ## §1 The per-prime wraparound first moment over the difference variety -/
 

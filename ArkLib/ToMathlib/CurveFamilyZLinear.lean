@@ -45,6 +45,15 @@ This file supplies the missing bridge bricks on both edges of that core:
   branch-rationality the §5 geometry supplies), the readings convolve into a genuine
   `CurveFamilyData` with `n + m` curve coefficients (`curve_reading_convolution`, pure algebra),
   hence into the keystone front doors of `FaithfulCurveExtraction`.
+* **Scope of the reading package** (`placeReading_of_curveFamilyData`,
+  `nonempty_curveFamilyData_iff_exists_placeReading`): `CurvePlaceReading` itself carries no
+  `H`/series/branch identification — `r` is an arbitrary function and `c₀`, `c₁` are arbitrary.
+  Any `CurveFamilyData` repackages as a reading with `c₁ := 0`, `r := 0` and a zero-length branch
+  (`m = 0`), after which the consumer returns curve data again.  So a reading plus `hbranch` is
+  exactly as hard to produce as `CurveFamilyData`: the convolution consumer is valid and useful,
+  but it is not a separate solved geometry step.  The actual curve-reading problem — a reading
+  whose `c₀`, `c₁` come from the two-series form and whose `r` is the branch value of `T` —
+  remains a producer obligation (retained as a hypothesis by `FaithfulFrontierComposition`).
 
 ## Honest residuals after this file (this lane)
 
@@ -55,7 +64,9 @@ This file supplies the missing bridge bricks on both edges of that core:
    `z` (series var ↦ `z − x₀`, `T` ↦ branch value, ground layer ↦ codeword polynomials) — there
    is no in-tree evaluation homomorphism `𝕃 H → F[X]`-readings; the per-`z` machinery
    (`IngredientC.MatchingVanishes`, `π_z`, Claims 5.10/5.11) operates on `𝒪 H` and produces
-   vanishing, not readings.
+   vanishing, not readings.  Only a reading tied to the two-series form and the branch counts
+   here: an abstract `CurvePlaceReading` with `hbranch` is interchangeable with
+   `CurveFamilyData` (`nonempty_curveFamilyData_iff_exists_placeReading`).
 3. the **branch rationality** (`hbranch`): the branch values form a centred polynomial of
    bounded degree on the good set (the §5 "the root section is rational" content; for affine
    families it is the linear `Z ↦ z` substitution).
@@ -343,11 +354,18 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 `T` at the branch value `r z`:
 `P z = (∑_{t<n} (z−x₀)^t • c₀ᵗ) + r z • (∑_{t<n} (z−x₀)^t • c₁ᵗ)`.
 
-Producing this datum is the genuine per-place-evaluation step (BCIKS20 §6.2 readings of the §5.2.7
-`Z`-linear form): there is no in-tree evaluation homomorphism from `𝕃 H` to per-`z` codeword
-polynomials — the per-`z` machinery (`IngredientC.MatchingVanishes`, Claims 5.10/5.11) produces
-*vanishing* at places, not *readings*.  We therefore isolate the reading as a named structure with
-its consumers proven below. -/
+Producing this datum *for the actual two-series coefficients and branch* is the genuine
+per-place-evaluation step (BCIKS20 §6.2 readings of the §5.2.7 `Z`-linear form): there is no in-tree
+evaluation homomorphism from `𝕃 H` to per-`z` codeword polynomials — the per-`z` machinery
+(`IngredientC.MatchingVanishes`, Claims 5.10/5.11) produces *vanishing* at places, not *readings*.
+We therefore isolate the reading as a named structure with its consumers proven below.
+
+The structure does not enforce that identification: `c₀`, `c₁` are parameters and `r` is an
+arbitrary function, with no link to `H`, the series or a branch of `T`.  Any `CurveFamilyData` is
+such a reading with `c₁ := 0` and `r := 0` (`placeReading_of_curveFamilyData`), so an abstract
+reading with `hbranch` is equivalent to `CurveFamilyData`
+(`nonempty_curveFamilyData_iff_exists_placeReading`) and is not by itself a solved geometry
+step. -/
 structure CurvePlaceReading {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     (u : WordStack F (Fin (k + 1)) ι) (P : F → Polynomial F)
     (x₀ : F) (n : ℕ) (c₀ c₁ : ℕ → F[X]) : Type where
@@ -399,6 +417,41 @@ theorem hcoeffPoly_witness_of_placeReading {k deg : ℕ} {domain : ι ↪ F} {δ
           ∀ j < deg, (P z).coeff j = (B j).eval z :=
   hcoeffPoly_witness_of_curveFamilyData (curveFamilyData_of_placeReading hnm d hbranch)
 
+omit [Nonempty ι] [DecidableEq ι] in
+/-- **Converse repackaging: any `CurveFamilyData` is a place reading with a trivial branch.**
+`CurvePlaceReading` does not tie `c₀`, `c₁` or `r` to `H`, the two-series form or a branch of `T`,
+so a curve family `d` is the reading with `c₀ := d.c`, `c₁ := 0` and `r := 0`; with the
+zero-length branch (`m = 0`) the consumer `curveFamilyData_of_placeReading` returns curve data
+again. -/
+def placeReading_of_curveFamilyData {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
+    {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}
+    (d : CurveFamilyData (k := k) (deg := deg) (domain := domain) (δ := δ) u P) :
+    CurvePlaceReading (k := k) (deg := deg) (domain := domain) (δ := δ) u P d.x₀ d.n d.c 0 where
+  r _ := 0
+  hread z hz := by rw [d.hPz z hz]; simp
+
+omit [Nonempty ι] [DecidableEq ι] in
+/-- **Interface equivalence.**  A `CurveFamilyData` exists iff some place reading together with a
+centred polynomial branch (`hbranch`) and the budget `n + m < k + 2` exists: backward by the
+proven consumer `curveFamilyData_of_placeReading`, forward by `placeReading_of_curveFamilyData`
+with the zero-length branch (`m = 0`).  So the reading-plus-branch input is not weaker than the
+curve data it produces; only a reading pinned to the actual two-series form and branch would be
+independent progress. -/
+theorem nonempty_curveFamilyData_iff_exists_placeReading {k deg : ℕ} {domain : ι ↪ F}
+    {δ : ℝ≥0} {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F} :
+    Nonempty (CurveFamilyData (k := k) (deg := deg) (domain := domain) (δ := δ) u P) ↔
+      ∃ (x₀ : F) (n : ℕ) (c₀ c₁ : ℕ → F[X]) (m : ℕ) (b : ℕ → F), n + m < k + 2 ∧
+        ∃ d : CurvePlaceReading (k := k) (deg := deg) (domain := domain) (δ := δ)
+            u P x₀ n c₀ c₁,
+          ∀ z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ,
+            d.r z = ∑ s ∈ Finset.range m, b s * (z - x₀) ^ s := by
+  constructor
+  · rintro ⟨d⟩
+    exact ⟨d.x₀, d.n, d.c, 0, 0, 0, d.hn, placeReading_of_curveFamilyData d,
+      fun z _ => by simp [placeReading_of_curveFamilyData]⟩
+  · rintro ⟨x₀, n, c₀, c₁, m, b, hnm, d, hbranch⟩
+    exact ⟨curveFamilyData_of_placeReading hnm d hbranch⟩
+
 end PlaceReadingBundle
 
 end FaithfulCurveExtraction
@@ -419,3 +472,5 @@ end ArkLib
 #print axioms ArkLib.FaithfulCurveExtraction.CurvePlaceReading
 #print axioms ArkLib.FaithfulCurveExtraction.curveFamilyData_of_placeReading
 #print axioms ArkLib.FaithfulCurveExtraction.hcoeffPoly_witness_of_placeReading
+#print axioms ArkLib.FaithfulCurveExtraction.placeReading_of_curveFamilyData
+#print axioms ArkLib.FaithfulCurveExtraction.nonempty_curveFamilyData_iff_exists_placeReading

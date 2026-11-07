@@ -19,13 +19,20 @@ the sub-threshold collision census through one mechanism, proven here:
   `b`-syndrome is nonzero). Equivalently: **no stack can realize a 2–1 split of scalars
   on a circuit** — the scalar pattern of every circuit is all-equal or all-distinct.
 
-This is the exact census-limiting law: the maximum number of distinct interpolation
-scalars a stack can realize (= the bad-scalar census at sub-threshold `q`, by the
-syndrome representation of `γ_S`) is the maximum size of a "rainbow-or-monochrome"
-labelling of the witness layer constrained by the circuit list — a purely combinatorial
-optimization over the (now fully stratified) circuit hypergraph. With the horizontal and
-vertical strata closed and the parabola negative law, the production-scale census
-question is this optimization over the classified circuits.
+This is a census-limiting **necessary** condition: every scalar assignment actually
+realized by a stack (the bad-scalar census at sub-threshold `q`, by the syndrome
+representation of `γ_S`) is a "rainbow-or-monochrome" labelling of the witness layer
+constrained by the circuit list. Hence the maximum such labelling is an **upper-bound
+relaxation** of the maximum realized census — a purely combinatorial optimization over the
+(now fully stratified) circuit hypergraph. No converse is proved: not every admissible
+labelling is realized by a syndrome pair. Example over `F₅`: take dual vectors
+`e₁, e₂, e₁+e₂, e₁+2e₂`; every triple is a circuit, and the four distinct labels `0, 1, 2, 4`
+satisfy every no-2–1 constraint. But if `γ_l = −⟨l,u₀⟩/⟨l,u₁⟩` with nonzero denominators,
+writing `u₀ = (0,a)`, `u₁ = (b,c)`, the first three labels force `a = −c`, `b = −c/2`, and
+then the fourth ratio is `2c/(b+2c) = 4/3 = 3 ≠ 4` in `F₅`. (This alone does not show that the
+two maximum *values* differ.) Identifying the production-scale census with this optimization
+over the classified circuits therefore still needs a realization / extremality theorem; until
+then the optimization only bounds the census from above.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 

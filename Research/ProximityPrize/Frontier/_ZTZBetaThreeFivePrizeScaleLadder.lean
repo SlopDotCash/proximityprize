@@ -22,12 +22,12 @@ This file lands the prize-modulus rung at the two remaining ceiling-feeding expo
 > **`tzPrimeSupply_two_pow_30_five`** — `TZPrimeSupply 1073741824 (5 : ℝ) 12`: the window
 > `[2^150, 2^151]` contains twelve explicit Lucas-certified **151-bit** such primes.
 >
-> **`kkh26_mcaDeltaStar_le_concrete_prizeModulus_beta{3,5}`** — unconditional δ* ceilings at
-> the prize domain scale, field sizes `p ≈ 2^90` and `p ≈ 2^150`.
+> **`kkh26_mcaDeltaStar_le_concrete_prizeModulus_beta{3,5}`** — unconditional **degree-0** δ*
+> ceilings on the order-`2^30` domain, placed in the windows `p ≈ 2^90` and `p ≈ 2^150`.
 
-Together with the β = 4 sibling: **the prize-modulus smooth domain `μ_{2^30}` carries an
-unconditional sub-capacity [KKH26] δ* ceiling at every polynomial field size
-β ∈ {3, 4, 5}** (`p ≈ 2^90, 2^120, 2^150`).
+Together with the β = 4 sibling: the order-`2^30` smooth domain carries a degree-0 (constant-code)
+[KKH26] δ* ceiling with the field placed in each window β ∈ {3, 4, 5}.  (For the degree-0 code the
+ceiling holds for any prime `p > 16`, `p ≡ 1 (mod 2^30)`; see the caveat below.)
 
 **Certificate technology** as in the siblings (shared `binaryPow` and the same `lucasTwoFactor` proof; probe `scripts/probes/probe_ztz_beta35_prize_scale.py`; cofactors `c ≤ 7537`;
 witness `g = 3` uniform; the 151-bit certificates sit below the 158-bit precedent of
@@ -36,6 +36,14 @@ witness `g = 3` uniform; the 151-bit certificates sit below the 158-bit preceden
 **Honest scope** as in the β = 4 sibling: degree-0 code, `r = 2` — the prize-domain SHAPE,
 not the prize's rate-1/4 code; the asymptotic [TZ24] form remains the named open analytic
 input; no contact with the BGK/Paley prize wall.
+
+**Degree-0 caveat.**  These ceilings are for the degree-0 (constant, `k = 1`) evaluation
+code `evalCode g n 0` (`μ = 2`, `r = 2`), not a prize-rate code.  The ceiling itself does not need
+the Thorner–Zaman window: `KKH26WitnessSpread.kkh26_mcaDeltaStar_le` gives the same bound for any
+prime `p > (2^2)^(2^1) = 16` with an element of order `n` (packaged as
+`KKH26.kkh26_mcaDeltaStar_le_degreeZero` in `_ZTZBetaFourPrizeScaleLadder.lean`).  The window
+supply adds only the placement `n^β ≤ p ≤ 2·n^β`.  The per-instance proofs here are near-copies of
+one another and of the siblings; they are kept as concrete instances.
 
 ## References
 * [KKH26] ePrint 2026/782, Lemma 2 / Theorem 1.  Issues #334 / #466.
@@ -399,7 +407,8 @@ namespace ArkLib.ProximityGap.KKH26
 
 /-! ## The prize-modulus δ* ceilings at β = 3 and β = 5 -/
 
-/-- **Unconditional [KKH26] δ* ceiling at the prize domain scale, β = 3** (field `p ≈ 2^90`). -/
+/-- **Unconditional degree-0 [KKH26] δ* ceiling on the order-`2^30` domain, β = 3** (field `p ≈ 2^90`;
+constant code, `μ = r = 2`). -/
 theorem kkh26_mcaDeltaStar_le_concrete_prizeModulus_beta3 :
     ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD 1073741824] ∧
       ((1073741824 : ℕ) : ℝ) ^ (3 : ℝ) ≤ p ∧
@@ -431,7 +440,8 @@ theorem kkh26_mcaDeltaStar_le_concrete_prizeModulus_beta3 :
   rw [hc, h16, hden, mul_div_mul_right _ _ hlog2]
   norm_num
 
-/-- **Unconditional [KKH26] δ* ceiling at the prize domain scale, β = 5** (field `p ≈ 2^150`). -/
+/-- **Unconditional degree-0 [KKH26] δ* ceiling on the order-`2^30` domain, β = 5** (field `p ≈ 2^150`;
+constant code, `μ = r = 2`). -/
 theorem kkh26_mcaDeltaStar_le_concrete_prizeModulus_beta5 :
     ∃ p : ℕ, p.Prime ∧ p ≡ 1 [MOD 1073741824] ∧
       ((1073741824 : ℕ) : ℝ) ^ (5 : ℝ) ≤ p ∧

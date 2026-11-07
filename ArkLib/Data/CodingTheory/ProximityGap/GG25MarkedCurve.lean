@@ -16,32 +16,22 @@ explaining curve to hit `b` points of `A₀`. This is the form the interleaving 
 theorems (5.7/5.8) manipulate. This brick:
 
 * `MarkedCurveDecodable` — the faithful Definition 5.1;
-* `markedCurveDecodable_iff` — **Theorem 5.5** (marked/original equivalence) for `b ≤ a ≤ q`:
-  - (→, "immediate" direction) the marked property applied at any `a`-subset of the close set
-    gives the original (the close set has ≥ a points, choose `a` of them; the explaining
-    curve's `b` points lie in the chosen subset ⊆ close set);
-  - (←) the original property gives the marked one: a specified `A₀` is contained in the full
-    close set, and the original curve explains `b` points of the close set — **not**
-    necessarily of `A₀`; the paper's argument re-runs the original property on the
-    *sub-instance* whose close set is exactly `A₀` — which requires restricting the original
-    property to that instance. Following the paper: the marked instance's data *is* an
-    original instance whose close set contains `A₀`, and applying the original property to it
-    yields `b` explained points in the close set... [Jo26] proves this direction via a
-    monotone restriction; here the two directions are stated and proven faithfully below.
+* `curveDecodable_of_marked` — **Theorem 5.5, marked → original** (the "immediate" direction):
+  the marked property applied at any `a`-subset of the close set gives the original (the close
+  set has ≥ a points, choose `a` of them; the explaining curve's `b` points lie in the chosen
+  subset ⊆ close set);
+* `marked_on_exact_closeSet_of_curveDecodable` — the original property applied to an instance
+  whose close set is *exactly* the specified `A₀` explains `b` points of `A₀` (the restricted
+  form of the converse).
 
-**Honest scope note.** Theorem 5.5's (←) direction in the paper uses that the close set of the
-marked instance's data contains `A₀` and |close| ≥ |A₀| = a, then needs the explained points
-inside `A₀` — the paper achieves this because its original definition lets the adversary
-specify any subset; clause-checking against the extracted PDF text, the (→) direction is the
-one labeled "immediate", and the (←) direction is where the selection argument lives. The
-faithful two-way statement proven here is the version where the original property is applied
-with the *marked* data and the explained-point count is taken inside `A₀` via the paper's
-sub-instance restriction — see `markedCurveDecodable_of_curveDecodable`'s docstring for the
-precise mechanism (restriction of `f` off `A₀` to a far word is NOT needed: the count is
-obtained directly because the close set of the restricted instance equals `A₀`).
-
-* `markedCurveDecodable_of_interpolation` — **Lemma 5.2** (the small-witness regime) is left
-  as the next brick (it needs Lagrange interpolation over codeword values); not claimed here.
+**Where the full equivalence lives.** This file proves only the two results above. The complete
+converse (original → marked) and the two-way statement for an `F`-additive code
+(`C : Submodule F (ι → A)`) with `b ≤ a ≤ q` are proved in `GG25MarkedEquivalence.lean`:
+`markedCurveDecodable_of_curveDecodable` and `curveDecodable_iff_marked`. That proof splits off
+the small-witness regime `b ≤ ℓ + 1` (Lemma 5.2, `markedCurveDecodable_of_small_witness` in
+`GG25SmallWitness.lean`) and the zero code, and otherwise uses non-covering (Lemma 5.4,
+`exists_far_codeword_of_curveDecodable`) to redefine `f` off `A₀` by far codewords, so that the
+close set is exactly `A₀` and `marked_on_exact_closeSet_of_curveDecodable` applies.
 -/
 
 open Finset
@@ -84,24 +74,15 @@ theorem curveDecodable_of_marked {C : Set (ι → A)} {ℓ : ℕ} {δ : ℝ≥0}
   rw [Finset.mem_filter] at hα ⊢
   exact ⟨hsub hα.1, hα.2⟩
 
-/-- **Theorem 5.5, (original → marked).** A specified `A₀` (size `a`, all points close) is
-contained in the close set, so the close set has at least `a` points and the original property
-fires — but its `b` explained points live in the *close set*, not necessarily in `A₀`. The
-paper's mechanism: restrict the instance so that the close set IS `A₀`. Here the restriction
-replaces `f` off `A₀` by a curve value forced to be explained — the original property applied
-to the restricted `f'` puts every explained point either in `A₀` or at a position where
-`f' = curve` by construction. The clean fully-faithful route (as in the paper): note the
-*marked* witness count over `A₀` for the ORIGINAL property's curve equals the original count
-minus the explained points outside `A₀`, which the paper controls by choosing
-`a ≤ q` and re-specifying. Faithful formal version: we require the original property at the
-**stronger** parameter pair `(a, b + (close \ A₀).card)`-shape... — the unconditional
-statement matching the paper's claim is the subset-restriction one below, proven by applying
-the original property to the instance whose `f` agrees with the given `f` on `A₀` and is set
-to the curve-explained value off it. Since that needs a curve BEFORE choosing `f'`, the paper
-instead works with the marked form throughout §5; the formal equivalence at `b ≤ a ≤ q` is
-recovered through `Lemma 5.2` (interpolation) in the `b ≤ ℓ+1` regime and through the
-restriction in general — **this direction is therefore stated here in the restricted form the
-transfer theorems actually consume** (close set exactly `A₀`): -/
+/-- **Theorem 5.5, original → marked, restricted form (close set exactly `A₀`).** If the close
+set of the instance `(u, f)` is exactly the specified `A₀` of size `a`, the original property
+fires and its `b` explained points of the close set are `b` explained points of `A₀`.
+
+For a general specified `A₀` (only contained in the close set) the explained points of the
+original property need not lie in `A₀`; the full converse for an `F`-additive code with
+`b ≤ a ≤ q` is `markedCurveDecodable_of_curveDecodable` in `GG25MarkedEquivalence.lean`, which
+reduces to this lemma by redefining `f` off `A₀` with far codewords (non-covering, Lemma 5.4) and
+handles `b ≤ ℓ + 1` by interpolation (Lemma 5.2) and the zero code separately. -/
 theorem marked_on_exact_closeSet_of_curveDecodable {C : Set (ι → A)} {ℓ : ℕ} {δ : ℝ≥0}
     {a b : ℕ} (h : CurveDecodable (F := F) C ℓ δ a b)
     (u : Fin (ℓ + 1) → ι → A) (f : F → ι → A) (hf : ∀ α, f α ∈ C)

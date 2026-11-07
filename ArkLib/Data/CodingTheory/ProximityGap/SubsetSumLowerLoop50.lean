@@ -10,8 +10,8 @@ import Mathlib.FieldTheory.Minpoly.IsIntegrallyClosed
 import Mathlib.Tactic
 
 /-!
-# Loop 50 (O11, DISPROOF CORE) — a *proven* super-exponential lower bound on the subset-sumset of a
-# power-independent family; the disproof direction of §7, settled in the linearly-independent regime.
+# Loop 50 (O11, DISPROOF CORE) — a *proven* `2^{n/2}` lower bound on the subset-sumset of a
+# power-independent family; the char-0 disproof direction of §7, in the linearly-independent regime.
 
 Loop49 reduced the §7 disproof route (O11) to the *distinctness* of subset sums of the `2^m`-th roots
 of unity, and conjectured it leans toward disproof. This loop **proves** the decisive half, and
@@ -28,10 +28,22 @@ For a primitive `2^m`-th root of unity `ζ`, the cyclotomic polynomial is `Φ_{2
 of degree `φ(2^m) = 2^{m-1}`. So the **power basis** `{1, ζ, …, ζ^{2^{m-1}-1}}` is `ℤ`-linearly
 independent: it admits no nonzero relation of degree `< 2^{m-1}`. Taking `N = 2^{m-1}`, the subset
 sums over the *half-domain* are all distinct, giving `|G^{(+)}| ≥ 2^{2^{m-1}}` and
-`|G^{(+ℓ)}| ≥ C(2^{m-1}, ℓ)` — **super-exponential in the domain `2^m`**. Combined with
-`thm71_no_fixed_exponent` (Loop46) this **disproves the minimal-domain prize over any field where the
-power basis stays independent** (characteristic 0, or `F_q` in which `Φ_{2^m}` stays irreducible of
-full degree, i.e. `ord_{2^m}(q) = 2^{m-1}`).
+`|G^{(+ℓ)}| ≥ C(2^{m-1}, ℓ)`.  With domain size `n = 2^m` this is exactly `2^{n/2}`:
+**exponential in the domain size `n`** (super-exponential only in the level `m`).  Combined with
+`thm71_no_fixed_exponent` (Loop46) this is a disproof of the minimal-domain statement **in
+characteristic 0** only.
+
+**No finite-field full-degree case.**  An earlier version also claimed the case "`F_q` in which
+`Φ_{2^m}` stays irreducible of full degree, i.e. `ord_{2^m}(q) = 2^{m-1}`".  That case **never
+occurs for `m ≥ 3`**: every odd `q` satisfies `q^{2^{m-2}} ≡ 1 (mod 2^m)`
+(`two_pow_dvd_odd_pow_sub_one`; odd squares are `1 mod 8`, then induct by squaring), so
+`ord_{2^m}(q) ≤ 2^{m-2}`; and for even `q` the characteristic divides `2^m`, so there is no
+primitive `2^m`-th root at all.  Moreover the unbounded integer no-relation interface
+(`subsetSum_injective_of_noRelation`'s `hrel`) can never hold in positive characteristic
+(`not_noRelation_of_charP`: the constant coefficient equal to the characteristic is a nonzero
+integer relation).  A finite-field application needs bounded coefficients or base-field linear
+independence with a valid degree, or a separately guarded reduction modulo a sufficiently large
+split prime.
 
 ## The honest residual (and the Loop49 correction)
 This is *not* yet a finite-field disproof in the STARK regime `q ≡ 1 (mod 2^m)`: there `ζ ∈ F_q`,
@@ -122,8 +134,9 @@ deg(minpoly ℤ ζ)` (`IsPrimitiveRoot.totient_le_degree_minpoly`); since `ℤ` 
 `ζ` is integral, `minpoly ℤ ζ ∣ p`, forcing `p = 0` and all `g j = 0`.
 
 For `n = 2^m` (`m ≥ 1`), `φ(2^m) = 2^{m-1}`, so taking `N = 2^{m-1}` gives `|G^{(+ℓ)}| ≥ C(2^{m-1}, ℓ)`
-and `≥ 2^{2^{m-1}}` total — the **proven super-exponential** lower bound, with NO remaining hypothesis,
-over any characteristic-0 field. -/
+and `≥ 2^{2^{m-1}} = 2^{n/2}` total — the **proven exponential-in-`n`** lower bound
+(super-exponential in the level `m`), with NO remaining hypothesis, over any characteristic-0
+field. -/
 theorem subsetSum_injective_of_isPrimitiveRoot [CharZero K]
     {n : ℕ} (hn : 0 < n) {ζ : K} (hζ : IsPrimitiveRoot ζ n)
     {N : ℕ} (hN : N ≤ Nat.totient n) :
@@ -185,11 +198,12 @@ theorem totient_two_pow {m : ℕ} (hm : 1 ≤ m) : Nat.totient (2 ^ m) = 2 ^ (m 
   rw [Nat.zero_add, Nat.totient_prime_pow_succ Nat.prime_two]
   simp
 
-/-- **Fully concrete super-exponential bound (Loop50 capstone).** For an actual primitive `2^m`-th
+/-- **Fully concrete `2^{n/2}` bound (Loop50 capstone).** For an actual primitive `2^m`-th
 root of unity `ζ` (`m ≥ 1`) in a characteristic-0 field, the subset-sumset over the half-domain
-`Fin (2^{m-1})` has at least `2^{2^{m-1}}` elements — **super-exponential in the domain `2^m`**, with
-no remaining hypothesis. Combined with `thm71_no_fixed_exponent` (Loop46) this disproves the
-minimal-domain prize over any characteristic-0 (or full-degree) field. -/
+`Fin (2^{m-1})` has at least `2^{2^{m-1}}` elements, with no remaining hypothesis. Combined with
+`thm71_no_fixed_exponent` (Loop46) this disproves the minimal-domain statement over characteristic-0 fields.  The count is `2^{n/2}` for domain size
+`n = 2^m` — exponential in `n`, super-exponential only in the level `m`.  There is no finite-field
+"full-degree" analogue for `m ≥ 3` (`two_pow_dvd_odd_pow_sub_one`). -/
 theorem card_subsetSumset_isPrimitiveRoot_two_pow_ge [CharZero K] [DecidableEq K]
     {m : ℕ} (hm : 1 ≤ m) {ζ : K} (hζ : IsPrimitiveRoot ζ (2 ^ m)) :
     2 ^ (2 ^ (m - 1)) ≤
@@ -199,6 +213,42 @@ theorem card_subsetSumset_isPrimitiveRoot_two_pow_ge [CharZero K] [DecidableEq K
     (by positivity) hζ (N := 2 ^ (m - 1)) (le_of_eq (totient_two_pow hm).symm)
   rw [Finset.card_image_of_injective _ hinj, Finset.card_univ, Fintype.card_finset,
     Fintype.card_fin]
+
+/-! ## Why there is no finite-field full-degree case -/
+
+/-- **Odd numbers have order at most `2^{m-2}` modulo `2^m` (`m ≥ 3`).**  For odd `q`,
+`2^m ∣ q^{2^{m-2}} − 1`.  Hence `ord_{2^m}(q) ≤ 2^{m-2} < 2^{m-1} = φ(2^m)`, so `Φ_{2^m}` is never
+irreducible of full degree over `F_q` for `m ≥ 3`: the finite-field "full-degree" alternative to the
+char-0 count does not occur. -/
+theorem two_pow_dvd_odd_pow_sub_one {q : ℤ} (hq : Odd q) {m : ℕ} (hm : 3 ≤ m) :
+    (2 : ℤ) ^ m ∣ q ^ (2 ^ (m - 2)) - 1 := by
+  induction m, hm using Nat.le_induction with
+  | base =>
+    obtain ⟨k, rfl⟩ := hq
+    obtain ⟨j, hj⟩ := Int.even_mul_succ_self k
+    refine ⟨j, ?_⟩
+    norm_num
+    linear_combination 4 * hj
+  | succ m hm ih =>
+    have he : m + 1 - 2 = (m - 2) + 1 := by omega
+    rw [he, show (2 : ℕ) ^ (m - 2 + 1) = 2 ^ (m - 2) * 2 from pow_succ 2 (m - 2), pow_mul,
+      show (2 : ℤ) ^ (m + 1) = 2 ^ m * 2 from pow_succ 2 m]
+    have hx : Odd (q ^ (2 ^ (m - 2))) := hq.pow
+    rw [show (q ^ (2 ^ (m - 2))) ^ 2 - 1 = (q ^ (2 ^ (m - 2)) - 1) * (q ^ (2 ^ (m - 2)) + 1) by
+      ring]
+    exact mul_dvd_mul ih (even_iff_two_dvd.mp hx.add_one)
+
+/-- **The unbounded integer no-relation hypothesis fails in every positive characteristic.**  If
+`K` has characteristic `p ≠ 0` and `N > 0`, the constant coefficient vector `g ≡ p` is a nonzero
+integer relation (`(p : K) = 0`).  So `subsetSum_injective_of_noRelation` / `card_subsetSumset_ge`
+can only be instantiated in characteristic `0`; finite-field applications need bounded
+coefficients or base-field linear independence instead. -/
+theorem not_noRelation_of_charP {N : ℕ} (hN : 0 < N) (p : ℕ) [CharP K p] (hp : p ≠ 0)
+    (v : Fin N → K) :
+    ¬ (∀ g : Fin N → ℤ, (∑ j, (g j : K) * v j) = 0 → ∀ j, g j = 0) := by
+  intro h
+  have h0 := h (fun _ => (p : ℤ)) (by simp [CharP.cast_eq_zero]) ⟨0, hN⟩
+  exact hp (by exact_mod_cast h0)
 
 end ArkLib.ProximityGap.SubsetSumLowerLoop50
 
@@ -210,3 +260,5 @@ end ArkLib.ProximityGap.SubsetSumLowerLoop50
 #print axioms ArkLib.ProximityGap.SubsetSumLowerLoop50.card_subsetSumset_isPrimitiveRoot_two_pow_ge
 #print axioms ArkLib.ProximityGap.SubsetSumLowerLoop50.card_subsetSumset_ge
 #print axioms ArkLib.ProximityGap.SubsetSumLowerLoop50.card_subsetSumset_len_eq
+#print axioms ArkLib.ProximityGap.SubsetSumLowerLoop50.two_pow_dvd_odd_pow_sub_one
+#print axioms ArkLib.ProximityGap.SubsetSumLowerLoop50.not_noRelation_of_charP

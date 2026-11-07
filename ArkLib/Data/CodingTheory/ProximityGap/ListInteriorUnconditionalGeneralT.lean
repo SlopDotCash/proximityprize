@@ -71,8 +71,12 @@ supplied** — all of `g`, the fiber family, and the count bound are constructed
   first unconditional brick to reach the deep interior at all.
 * The **denominator is `q^t`** (`q = |F|`), the `t`-fold worst-case pigeonhole loss. The bound exceeds
   the trivial `1` only once `C(n, k+t) > q^t`. This is **strongly `q`-dependent** — strictly worse on
-  the `q`-axis than `t = 1`'s `/q` and `t = 2`'s `/q²`. It is NOT a `q`-independent statement, and the
-  threshold `C(n,k+t) > q^t` is demanding: it needs `n` super-polynomially large relative to `q^t`.
+  the `q`-axis than `t = 1`'s `/q` and `t = 2`'s `/q²`. It is NOT a `q`-independent statement. The
+  threshold `C(n,k+t) > q^t` does **not** require `n` to exceed `q^t` (an injective domain already
+  forces `n ≤ q ≤ q^t` for `t ≥ 1`): at a fixed rate the binomial grows exponentially in `n`, so the
+  threshold is a condition on that exponential mass versus `q^t`. Example: proper `μ₁₆ ⊆ 𝔽₉₇`
+  with `k = 8`, `t = 1` has strict interior guard `81 < 128` and `C(16, 9) = 11440 > 97`, while
+  `16 < 97`.
 * It is a **lower** bound on a worst-case received word; it is NOT a counterexample to the prize and
   does NOT pin `δ*`. The prize-deciding question — whether the count *concentrates* on `O(1)` target
   vectors (so the `/q^t` collapses to `/O(1)`, the `q`-independent regime) — is untouched: this is the

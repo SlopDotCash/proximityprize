@@ -208,7 +208,15 @@ private def outerMultiplicityMessageIdx : (outerPSpec F n params).MessageIdx :=
 private def outerHelpersMessageIdx : (outerPSpec F n params).MessageIdx :=
   ⟨2, rfl⟩
 
-/-- The verifier for the outer LogUp phase. -/
+/-- The verifier for the outer LogUp phase.
+
+It samples `x` uniformly from all of `F` and then scans the hypercube, querying the table oracle at
+each point and rejecting as soon as `x = -t(u)`. An accepting run therefore makes `2 ^ n`
+input-oracle queries, so this verifier is not succinct. The rejection-based model also carries the
+completeness error
+`logupCompletenessError F n = 2 ^ n / |F|` (`Security/Completeness.lean`). Protocol 2 instead
+samples `x` from the complement of the poles; the inline note below records the planned sampler
+refinement. -/
 noncomputable def outerVerifier :
     OracleVerifier oSpec (StmtIn F n M) (OStmtIn F n M)
       (StmtAfterOuter F n M params) (OStmtAfterOuter F n M params)

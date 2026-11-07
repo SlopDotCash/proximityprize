@@ -55,9 +55,10 @@ bound at the true budget) legs — the pieces a chain-level analysis composes wi
 
 ## Build note
 
-`ArkLib.ProofSystem.Stir.SpotCheckBound` has no `.olean` in the current build, so its content
-(`agreementSet`, `agreementSet_card_le`, `probEvent_spotCheck_le`) is inlined verbatim below
-(same namespace, same names; the orchestrator dedups on landing).
+The spot-check helpers (`agreementSet`, `agreementSet_card_le`, `probEvent_spotCheck_le`) come
+from the import `ArkLib.ProofSystem.Stir.SpotCheckBound`.  An earlier version inlined a copy of
+them here because that module had no `.olean` in one local build; the copy has been removed and
+nothing from `SpotCheckBound` is duplicated in this file.
 -/
 
 namespace StirIOP
@@ -70,7 +71,7 @@ open scoped ENNReal
 set_option linter.unusedSectionVars false
 set_option linter.unusedSimpArgs false
 
-/-! ## Part 0 — inlined `SpotCheckBound` (no olean; verbatim) -/
+/-! ## Part 0 — (empty) the spot-check helpers are imported from `SpotCheckBound` -/
 
 
 /-! ## Part 1 — the composed marginal: fiber counting for `stirFinalQueryIndex`

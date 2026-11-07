@@ -20,18 +20,25 @@ the sub-Gaussian / Wick bound delivered DIRECTLY at every `r`, never by tensorin
 
 The two prior bricks (`_AvNonTensorAutocorrAverage`, `_NT_5_scratch`) localize the gap to a single
 open inequality but carry the char-`0` `r`-linear step `cross^{c0}_r ≤ 2r·n·E^{c0}_r` as a *named
-input* pointing at `_AvW0_BesselWickDomination`. THIS file **proves the engine behind that step from
-scratch**, axiom-clean, in its sharpest and most transparent form: the **cumulant-additivity
-convolution lemma**, which is exactly the statement that the "log-derivative index" is ADDITIVE under
-convolution (= cumulant additivity = independence). It is the genuine non-tensor mechanism distilled
-to a pure inequality on coefficient sequences, with NO Bessel function and NO analysis.
+input* pointing at `_AvW0_BesselWickDomination`. THIS file proves, axiom-clean, the sequence-level
+engine behind that step: the **convolution lemma** saying that the "log-derivative index" upper
+bound is ADDITIVE under convolution (heuristically: cumulant additivity / independence; the module
+proves the coefficient inequality, not an equality theorem for cumulants). It is a pure inequality
+on coefficient sequences, with NO Bessel function and NO analysis; its link to the actual char-`0`
+energies is the unimported identification discussed below.
 
 ## The mechanism, exactly
 
 For a nonnegative coefficient sequence `u : ℕ → ℚ`, say `u` has **log-derivative index `≤ a`** if
 `(k+1)·u_{k+1} ≤ a·u_k` for every `k` (`LogDerivIndex u a`). For the generating function
-`U(t) = Σ u_k t^k` this reads `t·U'(t) ⪯ a·U(t)` coefficientwise — a uniform bound on the
-log-derivative `U'/U ⪯ a/t`. Two facts:
+`U(t) = Σ u_k t^k` the coefficient of `t^k` in `U'(t)` is `(k+1)·u_{k+1}`, so this reads
+**`U'(t) ⪯ a·U(t)` coefficientwise** (correction, 2026-10-28 audit R-112: earlier text said
+`t·U'(t) ⪯ a·U(t)`, which is a different and false reading — for the exp atom `u_k = 1/k!` it
+already fails at `t²`, since `2·u_2 = 1 > 1/2 = u_2`). The predicate is NOT a coefficientwise
+bound on the quotient `U'/U`: coefficientwise inequalities cannot be divided by `U`, whose formal
+inverse generally has signed coefficients (for the Bessel atom `U = 1 + t + t²/4 + t³/36 + …`,
+which satisfies the predicate with `a = 1`, `U'/U = 1 − t/2 + t²/3 + …` is not coefficientwise
+`⪯ 1`). The name "log-derivative index" is a heuristic label only. Two facts:
 
 * **Base atom** (`besselCoeff_logDerivIndex_one`): the single Bessel coefficient `b_k = 1/(k!)²`
   has index `≤ 1`: `(k+1)·b_{k+1} = 1/(k!·(k+1)!) ≤ 1/(k!)² = b_k`. (The `exp` coefficient
@@ -44,9 +51,12 @@ Iterating the engine `m` times on the base atom (index `1`) gives the `m`-fold c
 
 > **`(r+1)·c^{(m)}_{r+1} ≤ m·c^{(m)}_r`,   i.e.   `c^{(m)}_{r+1}/c^{(m)}_r ≤ m/(r+1)`.**
 
-Multiplying by the `(2r)!`-normalization (`besselPow_energyStep`) this is EXACTLY the char-`0`
-`r`-linear Wick energy step `E^{c0}_{r+1} ≤ (2r+1)·n·E^{c0}_r` (with `m = n/2`, `n = 2m`), the step
-the prize ladder consumes — now **PROVEN**, not assumed. The index growing LINEARLY in `m = n/2` is
+Multiplying by the `(2r)!`-normalization (`besselPow_energyStep`) this is the normalized sequence
+inequality `(2r+2)!·c^{(m)}_{r+1} ≤ (2r+1)·(2m)·(2r)!·c^{(m)}_r`. It becomes the char-`0` Wick
+energy step `E^{c0}_{r+1} ≤ (2r+1)·n·E^{c0}_r` (with `n = 2m`) only through the identification
+`E^{c0}_r = (2r)!·c^{(m)}_r`, which this module does NOT import or prove (it is claimed in
+`_AvW0_BesselWickDomination`); what is proved here is arithmetic on the newly defined rational
+sequences, not an instantiated energy theorem. The index growing LINEARLY in `m = n/2` is
 the `r`-linear saving; a tensor lift would instead double the index every step (super-linear), which
 is the fixed-saving stall in disguise.
 
@@ -57,8 +67,9 @@ The tensor lift `E_{r+1} ≤ n²·E_r` corresponds to index `≤ 2·(r+1)·(some
 `m = n/2` accumulated once over `m` independent directions, giving the per-step factor
 `m/(r+1)` — which at depth `r ≈ ln p` is `≪ n` (the `r`-linear saving). `besselPow_le_tensor_step`
 makes the strict separation precise: for `2r+1 < n` the engine's step `(2r+1)·n·E_r` is strictly
-below the tensor ceiling `n²·E_r`, and the engine's step is **fully proven here** (no open input) in
-char-`0`. This is a real, unconditional advance over the tensor lift — IN CHAR-`0`.
+below the tensor ceiling `n²·E_r`. The sequence step is fully proven here; as a char-`0` energy
+step it additionally needs the Bessel identification, which is proved/claimed elsewhere and not
+imported here.
 
 ## The exact char-`p` break (the honest verdict)
 
@@ -69,12 +80,16 @@ has no log-derivative index, and **numerically violates BOTH the `r`-linear step
 in the very regime where it first turns on** (probe `/tmp/nt_wrap2.py`, `n = 8`: at every prime with
 `W_r > 0`, `W_{r+1} > n²·W_r` near onset — the wraparound energy grows FASTER than even the tensor
 ceiling per step, because `W_r` is tiny right when it switches on). So the per-step `W`-only residual
-`WrapCrossBounded` of `_NT_5_scratch` is FALSE near onset — the correct prize-relevant residual is
-the STATIC `W_{r*} = 0` on a good prime at the saddle depth `r* ≈ log p` (the `NoWraparound` core of
-`_NoExcessOnsetThreshold`), NOT a per-step bound on `W`. We record this honestly as
-`wrapStep_no_logDerivIndex_doc` (a documentation marker) and as the static transfer
-`charP_energyStep_of_noWraparound` (the engine's step transfers to char-`p` EXACTLY on the
-no-wraparound part).
+`WrapCrossBounded` of `_NT_5_scratch` is FALSE near onset (probe evidence, not a theorem here).
+An earlier version of this paragraph named the STATIC `W_{r*} = 0` at the saddle depth
+(`NoWraparound` / `OnsetExceedsSaddle` of `_NoExcessOnsetThreshold`) as the correct prize-relevant
+residual. That is withdrawn (2026-10-28 audit R-113): with a field-valued collision source that
+predicate is automatic, and for the actual production residue map the DC floor
+`n^{2r} ≤ p·E_r` forces `W_r > 0` already at `r = 6` (`n = 2^30`, `p < 2^159`), hence at the
+saddle; the correct target allows the DC contribution and asks for a quantitative DC-subtracted
+excess budget (see `_NoExcessOnsetThreshold`). The declarations `wrapStep_no_logDerivIndex_doc`
+and `charP_energyStep_of_noWraparound` named here in earlier versions do NOT exist in this file;
+nothing about char-`p` is proved in this module.
 
 ## What this file PROVES (axiom-clean `{propext, Classical.choice, Quot.sound}`, NO `sorry`/`native_decide`)
 
@@ -87,21 +102,25 @@ no-wraparound part).
   index `≤ a` (and `c ≥ 0`).
 * `besselPow_logDerivIndex`        : the Bessel power `cpow besselCoeff m` has index `≤ m` (the
   prize step engine, base atom index `1`).
-* `besselPow_energyStep`          : the normalized char-`0` `r`-linear Wick energy step
-  `(2r+2)!·c^{(m)}_{r+1} ≤ (2r+1)·(2m)·(2r)!·c^{(m)}_r` (with `n = 2m`), PROVEN from the index.
+* `besselPow_energyStep`          : the normalized sequence step
+  `(2r+2)!·c^{(m)}_{r+1} ≤ (2r+1)·(2m)·(2r)!·c^{(m)}_r` (with `n = 2m`), PROVEN from the index;
+  it reads as the char-`0` energy step only via the unimported identification above.
+* `expPow_logDerivIndex`          : the exp power `cpow expCoeff m` has index `≤ m`.
 * `besselPow_le_tensor_step`      : the strict dilution separation `(2r+1)·n < n²` for `2r+1 < n`
   (the engine step is strictly below the tensor ceiling — non-tensor, re-proved here).
 
 ## Honest scope (`closesPrize = false`)
 
-PROVEN unconditionally: the cumulant-additivity engine and the full char-`0` `r`-linear Wick energy
-step (the non-tensor saving the dilution theorem demands) — this is a genuine advance over the tensor
-lift, and it is the engine the prior bricks only named. NOT proven (and now shown to be the WRONG
-per-step object): a per-step bound on the char-`p` wraparound `W_r`. The engine is a char-`0`
-theorem; its char-`p` transfer is the static `NoWraparound` core (`_NoExcessOnsetThreshold`,
-`OnsetExceedsSaddle`) at the saddle `r* ≈ log p`, which is the open BGK/Lam–Leung wall. This file
-closes none of #444; it PROVES the non-tensor engine the route needs and pins the char-`p` residual
-in its correct (static) form.
+PROVEN unconditionally: the index-addition upper bound under convolution and the normalized
+step inequality for the rational sequences `cpow besselCoeff m` / `cpow expCoeff m`. The index
+addition is an upper bound, not an encoded equality theorem for cumulants or independence; the
+"cumulant additivity" reading is an interpretation. The identification of `cpow besselCoeff m`
+with the actual char-`0` energies is not imported or proved here, so this module is not by
+itself a wired energy/provider theorem. NOT proven (and probe-indicated to be the wrong
+per-step object): a per-step bound on the char-`p` wraparound `W_r`. The char-`p` residual is
+NOT the static no-wraparound predicate of `_NoExcessOnsetThreshold` (vacuous for a field source,
+false at production by the DC floor — audit R-113); it is a quantitative DC-subtracted excess
+budget, which remains open. This file closes none of #444.
 
 Issue #444.
 -/
@@ -119,10 +138,11 @@ open Finset
 
 /-- **The log-derivative index.** A nonnegative coefficient sequence `u : ℕ → ℚ` has
 *log-derivative index `≤ a`* (`LogDerivIndex u a`) iff `(k+1)·u_{k+1} ≤ a·u_k` for every `k`. For the
-generating function `U(t) = Σ u_k t^k` this is `t·U'(t) ⪯ a·U(t)` (coefficientwise) — i.e.
-`U'/U ⪯ a/t`. The index is the "cumulant rate": for `e^{a·t}` it is exactly `a`; the cumulant-
-additivity engine (`logDerivIndex_conv`) shows it ADDS under convolution, the defining property of
-independence/cumulant additivity that makes the saving `r`-linear, NOT tensor. -/
+generating function `U(t) = Σ u_k t^k` this is `U'(t) ⪯ a·U(t)` (coefficientwise; NOT
+`t·U'(t) ⪯ a·U(t)`, and NOT a coefficientwise bound on `U'/U`, since the formal inverse of `U` has
+signed coefficients in general). For `e^{a·t}` the inequality holds with equality; the engine
+(`logDerivIndex_conv`) shows the bound ADDS under convolution. Reading this as "cumulant
+additivity / independence" is a heuristic interpretation, not a theorem proved here. -/
 def LogDerivIndex (u : ℕ → ℚ) (a : ℚ) : Prop := ∀ k : ℕ, ((k : ℚ) + 1) * u (k + 1) ≤ a * u k
 
 /-- The convolution (Cauchy product) of two coefficient sequences: `(u ⋆ v) r = Σ_{i≤r} u_i·v_{r−i}`.
@@ -275,8 +295,9 @@ theorem expCoeff_logDerivIndex_one : LogDerivIndex expCoeff 1 := by
 /-! ## The `m`-fold convolution power and its index `≤ m·a` -/
 
 /-- `m`-fold convolution power of a coefficient sequence `c` (in `t = x²`):
-`cpow c m r = [t^r] (Σ c_k t^k)^m`. The Bessel power `cpow besselCoeff m` is the char-`0` energy
-generating coefficient (`E_r^{c0} = (2r)!·cpow besselCoeff (n/2) r`, `_AvW0_BesselWickDomination`). -/
+`cpow c m r = [t^r] (Σ c_k t^k)^m`. The Bessel power `cpow besselCoeff m` is claimed elsewhere to be
+the char-`0` energy generating coefficient (`E_r^{c0} = (2r)!·cpow besselCoeff (n/2) r`,
+`_AvW0_BesselWickDomination`); that identification is not imported or proved in this module. -/
 noncomputable def cpow (c : ℕ → ℚ) : ℕ → ℕ → ℚ
   | 0, r => if r = 0 then 1 else 0
   | m + 1, r => conv (cpow c m) c r
@@ -325,12 +346,12 @@ theorem besselPow_logDerivIndex (m : ℕ) : LogDerivIndex (cpow besselCoeff m) (
 
 /-! ## The char-`0` `r`-linear Wick ENERGY step (the dilution-theorem target), PROVEN -/
 
-/-- **The char-`0` `r`-linear Wick energy step, PROVEN from the index.** With the Bessel identity
-`E_r^{c0}(μ_{2m}) = (2r)!·cpow besselCoeff m r` (`_AvW0_BesselWickDomination`, STEP 1), the index
-bound `(r+1)·c^{(m)}_{r+1} ≤ m·c^{(m)}_r` becomes the normalized energy step
-`(2r+2)!·c^{(m)}_{r+1} ≤ (2r+1)·(2m)·(2r)!·c^{(m)}_r`, i.e. `E^{c0}_{r+1} ≤ (2r+1)·n·E^{c0}_r` with
-`n = 2m`. This is the non-tensor `r`-linear saving the dilution theorem demands — here a THEOREM, not
-a named input. (The `(2r+2)!/(2r)! = (2r+2)(2r+1)` normalization cancels the `(r+1)` to leave the
+/-- **The normalized sequence step, PROVEN from the index.** The index bound
+`(r+1)·c^{(m)}_{r+1} ≤ m·c^{(m)}_r` gives `(2r+2)!·c^{(m)}_{r+1} ≤ (2r+1)·(2m)·(2r)!·c^{(m)}_r`.
+Under the Bessel identity `E_r^{c0}(μ_{2m}) = (2r)!·cpow besselCoeff m r` (claimed in
+`_AvW0_BesselWickDomination`, STEP 1; NOT imported or proved here) this would read
+`E^{c0}_{r+1} ≤ (2r+1)·n·E^{c0}_r` with `n = 2m`; the theorem below is the sequence inequality only.
+(The `(2r+2)!/(2r)! = (2r+2)(2r+1)` normalization cancels the `(r+1)` to leave the
 `(2r+1)·2m = (2r+1)·n` factor.) -/
 theorem besselPow_energyStep (m r : ℕ) :
     ((2 * r + 2).factorial : ℚ) * cpow besselCoeff m (r + 1)
@@ -386,9 +407,9 @@ theorem besselPow_le_tensor_step (n r : ℕ) (hr : 1 ≤ r) (hrn : 2 * r + 1 < n
 /-! ### The exp boundary: the engine is tight (index exactly `m` for `e^{m x²}`) -/
 
 /-- **The exp power has index EXACTLY `m`** (the engine is tight at the exponential). `cpow expCoeff m`
-satisfies `(r+1)·a_{r+1} ≤ m·a_r` (with equality, since `cpow expCoeff m r = m^r/r!`). This certifies
-the engine's index bound is best-possible — the Bessel power sits at-or-below this exp boundary, and
-the energy step `(2r+1)·n` is the exact Wick step. -/
+satisfies `(r+1)·a_{r+1} ≤ m·a_r` (mathematically with equality, since `cpow expCoeff m r = m^r/r!`;
+only the inequality is proved here). This indicates the index bound is attained at the exp
+boundary; the comparison of the Bessel power with this boundary is not proved in this module. -/
 theorem expPow_logDerivIndex (m : ℕ) : LogDerivIndex (cpow expCoeff m) (m : ℚ) := by
   have h := cpow_logDerivIndex expCoeff_nonneg expCoeff_logDerivIndex_one m
   simpa using h

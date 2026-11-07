@@ -41,7 +41,7 @@ joint proximate is *exact* (the genuine degree-one unique-decoding floor of the 
   `pairJointAgreesOn C S u₀ u₁` holds. This is the exact condition under which the degree-one curve
   discharges the bad event's no-joint-pair clause.
 
-### Tier C — the exact-curve collapse (the unconditional win)
+### Tier C — the exact-curve collapse (per stack)
 
 When the joint proximate is **exact** (zero joint disagreement, `e = h = 0`, the true unique-decoding
 floor), it agrees with the stack everywhere, so it agrees on *every* witness set, and the bad event
@@ -49,6 +49,8 @@ is impossible at every scalar:
 
 * **`mcaEvent_false_of_exact_pair`** — an exact codeword pair makes `mcaEvent` false for all `γ`.
 * **`epsMCA_eq_zero_of_exact_pairs`** — a uniform exact pair per stack gives `epsMCA C δ = 0`.
+  (Caveat: a uniform exact pair for *every* stack forces every word into `C`, i.e. `C = univ`, so
+  this uniform form is vacuous for proper codes; only the per-stack form has content there.)
 * **`epsMCA_RS_eq_zero_of_exact_jointProximate`** — the Reed–Solomon end-to-end statement: if every
   stack admits an *exact* Reed–Solomon decoding curve, `epsMCA (RS) δ = 0` (the `ℓ = 0` prize floor).
 
@@ -103,7 +105,7 @@ theorem pairJointAgreesOn_of_agree_on
 
 end Bridge
 
-/-! ## Tier C — the exact-curve collapse (unconditional) -/
+/-! ## Tier C — the exact-curve collapse (per stack) -/
 
 section Exact
 
@@ -127,17 +129,18 @@ theorem mcaEvent_false_of_exact_pair
     (fun _ _ _ => fun i _ => hexact i)
 
 /-- **`LineWitnessClustering C δ 0` from a uniform exact decoding curve.** If every stack `u` admits
-an *exact* codeword pair `(g₀ u, g₁ u) ∈ C` agreeing with `(u 0, u 1)` everywhere, and the second
-row is nonzero somewhere (so an active coordinate exists), then `LineWitnessClustering C δ 0` holds:
-the bad set is genuinely empty by `mcaEvent_false_of_exact_pair`. -/
+an *exact* codeword pair `(g₀ u, g₁ u) ∈ C` agreeing with `(u 0, u 1)` everywhere, then
+`LineWitnessClustering C δ 0` holds: the bad set is empty by `mcaEvent_false_of_exact_pair`.
+
+Caveat: `hexact` for every stack makes every word `u 0` a codeword (`u 0 = g₀ u ∈ C`), so the
+hypothesis can only hold when `C = univ`; for proper codes this is vacuous conditional wiring. -/
 theorem lineWitnessClustering_of_exact_pairs
     (C : Set (ι → F)) (δ : ℝ≥0)
     (g₀ g₁ : WordStack F (Fin 2) ι → ι → F)
     (hg₀ : ∀ u, g₀ u ∈ C) (hg₁ : ∀ u, g₁ u ∈ C)
-    (hactive : ∀ u : WordStack F (Fin 2) ι, ∃ x : ι, u 1 x ≠ 0)
     (hexact : ∀ u : WordStack F (Fin 2) ι, ∀ i, g₀ u i = (u 0) i ∧ g₁ u i = (u 1) i) :
     MCAJohnson.LineWitnessClustering (F := F) C δ 0 := by
-  refine MCAJohnsonClustering.lineWitnessClustering_of_degreeOne_curve C δ g₀ g₁ hg₀ hg₁ hactive ?_
+  refine MCAJohnsonClustering.lineWitnessClustering_of_degreeOne_curve C δ g₀ g₁ hg₀ hg₁ ?_
   intro u γ S _ _ i _
   exact hexact u i
 
@@ -145,16 +148,16 @@ theorem lineWitnessClustering_of_exact_pairs
 `lineWitnessClustering_of_exact_pairs` (`ℓ = 0`) with
 `MCAJohnson.epsMCA_le_of_lineWitnessClustering`: a uniform *exact* decoding curve gives
 `epsMCA C δ = 0`. This is the `ℓ = 0` floor of the prize: an exact degree-1 decoding curve gives zero
-MCA error. -/
+MCA error. Same caveat as `lineWitnessClustering_of_exact_pairs`: the uniform hypothesis forces
+`C = univ`. -/
 theorem epsMCA_eq_zero_of_exact_pairs
     (C : Set (ι → F)) (δ : ℝ≥0)
     (g₀ g₁ : WordStack F (Fin 2) ι → ι → F)
     (hg₀ : ∀ u, g₀ u ∈ C) (hg₁ : ∀ u, g₁ u ∈ C)
-    (hactive : ∀ u : WordStack F (Fin 2) ι, ∃ x : ι, u 1 x ≠ 0)
     (hexact : ∀ u : WordStack F (Fin 2) ι, ∀ i, g₀ u i = (u 0) i ∧ g₁ u i = (u 1) i) :
     epsMCA (F := F) (A := F) C δ = 0 := by
   have h := MCAJohnson.epsMCA_le_of_lineWitnessClustering (F := F) C δ 0
-    (lineWitnessClustering_of_exact_pairs C δ g₀ g₁ hg₀ hg₁ hactive hexact)
+    (lineWitnessClustering_of_exact_pairs C δ g₀ g₁ hg₀ hg₁ hexact)
   simpa using h
 
 end Exact

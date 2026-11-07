@@ -21,20 +21,24 @@ by the RS-uniqueness merge, `routed_bad_le_budget`):
 
 ## What SYZ33 proves (10 theorems, all axiom-clean: propext/Classical.choice/Quot.sound; no sorry, no native_decide)
 
-### Lemma 1 — CLOSED to two crisp inputs
+### Lemma 1 — reduced to two crisp inputs (no stronger than counting)
 - `exists_private_positions` — the combinatorial supply: if the **residual supports** `S i \ U'`
   are pairwise **disjoint** and nonempty, a private system `c : Fin p → κ` exists with `c i ∈ S i`,
   `c i ∉ U'`, `c i ∉ S j` (j≠i). Disjointness is the load-bearing content.
-- `exists_fresh_indep_family` — **lemma 1 closed.** Given blocks `Blk i` (the `S i`-anchored dual
+- `exists_fresh_indep_family` — **lemma 1 reduced.** Given blocks `Blk i` (the `S i`-anchored dual
   annihilator) that are anchored (`hanch`), MDS-non-degenerate at each escaping coordinate
   (`hMDS : ∀ x ∈ S i \ U', ∃ g ∈ Blk i, g x ≠ 0`), plus disjoint nonempty residuals, there is a
   choice `f i ∈ Blk i` with `LinearIndependent F (fun i => E.mkQ (f i))`. Built from SYZ31 +
   `exists_private_positions`.
 - `fresh_card_le_codim_of_disjoint` — composes with SYZ30 `fresh_card_le_codim`:
-  `p ≤ finrank (κ→F) − finrank E`.
+  `p ≤ finrank (κ→F) − finrank E`. Caveat (audit CW-B13-09): `hconf` gives `finrank E ≤ |U'|`
+  and the disjoint nonempty residuals give `p ≤ |κ| − |U'|` by direct counting, so this linear
+  algebra bound is no stronger than (indeed implied by) the elementary count.
 - `twist_pair_indep` — the **γ-twist**, proved outright: two shared-support scalars with distinct
   `γ₀ ≠ γ₁` are already independent in the syndrome **pair** space (`a·L(γ₀)+b·L(γ₁)=0 ⟹ a=b=0`).
-  So support-sharing costs at most the `F²` factor, never collapses independence.
+  This covers only **two** scalars: three or more same-support scalars give pair-functionals in
+  `span{φ∘fst, φ∘snd}` (dim ≤ 2), so they are dependent — support-sharing does collapse
+  independence beyond two scalars per support.
 
 Net: lemma 1's residual is now the two **crisp** inputs — (a) fresh residual supports pairwise
 disjoint off the core (SYZ18 distinct supports + γ-twist are the intended source; `twist_pair_indep`
@@ -58,8 +62,9 @@ lemma 2 needs). `DisjointResidualSupports` names input (a).
 
 ## Honest status
 
-- **Lemma 1: CLOSED** modulo (a) disjoint-residual supports + (b) MDS non-degeneracy — both crisp,
-  both instantiable for RS; the γ-twist half proved.
+- **Lemma 1: reduced** to (a) disjoint-residual supports + (b) MDS non-degeneracy — but under
+  these inputs the resulting bound is already implied by counting; the γ-twist covers only two
+  same-support scalars.
 - **Lemma 2: OPEN** in the strip interior (unchanged; the single substantive analytic residual).
 - **Strip theorem: assembled as a case split.** Merged branch (`m≤3`) proven unconditionally in the
   linear algebra; spread branch (`m≥4`) rests on lemma 2. So the strip is closed **iff** lemma 2 is.

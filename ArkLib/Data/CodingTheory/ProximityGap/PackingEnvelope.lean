@@ -738,8 +738,19 @@ def fullCatalogueCount (p μ d t : ℕ) : ℕ :=
 sufficiently large primes, `ε_mca` at radius `1 − t/n` is bounded by the catalogue
 envelope `fullCatalogueCount / p` at every threshold `t` — i.e. the catalogue
 (explosion / staircase / packing `2(n−t)+2` / pencil rungs / simplex ladder) is the
-COMPLETE list of char-0 bad families, so `δ*(ε*)` equals the maximal radius at which
-the envelope count exceeds `ε*·p`.
+COMPLETE list of char-0 bad families.
+
+What this would give for the threshold (corrected 2026-10-28, audit PG-322): `δ*(ε*)` is the
+supremum of radii whose worst MCA error is **at most** `ε*`, so the conjecture would make
+every radius `1 − t/n` with `fullCatalogueCount ≤ ε*·p` a *good* radius, i.e. a lower bound
+`1 − t/n ≤ δ*(ε*)`.  A radius at which a count **exceeds** `ε*·p` is a *bad* radius and only
+delimits `δ*` from above — and only when that count is a proved lower bound on `ε_mca` (e.g.
+the 20 bad scalars of `overlap20_epsMCA_F12289_d2` at radius `9/16` give `δ* ≤ 9/16` for
+`ε* < 20/p`; they never make `9/16` a maximizing good radius).  Since this Prop is only an
+upper bound on `ε_mca`, it does not by itself give an exact inversion `δ*(ε*) = …` at every
+threshold: that would additionally need matching proved lower bounds for every catalogue term
+on its whole window (e.g. `packingLawCount` is the conjecture-side packing law, while this
+file's proved bad side is `provedPackingCount`).
 
 Status: TRUE at every exhaustively censused cell (`(17,8)` for `d ∈ {1,2,3}`, all
 thresholds; `(97,8)` at the `d = 3` shoulder cell), with the proven bad sides

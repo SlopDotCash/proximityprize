@@ -339,15 +339,6 @@ theorem mixedWedgeEnergyAtLeast_of_one_le (S : Finset ι) (A B : ι → ℝ) {κ
     MixedWedgeEnergyAtLeast S A B κ :=
   mixedWedgeEnergyAtLeast_mono S A B (by norm_num) hκ (mixedWedgeEnergyAtLeast_one S A B)
 
-/-- A concrete wedge lower bound at the exact coefficient `2(1-κ²)` supplies the
-wedge certificate.  This is mostly a readability bridge for analytic lanes, where the
-target is naturally stated as a lower bound on the pairwise wedge energy itself. -/
-theorem mixedWedgeEnergyAtLeast_of_lower_bound (S : Finset ι) (A B : ι → ℝ) {κ : ℝ}
-    (h :
-      2 * (1 - κ ^ 2) * (quarticMass S A * quarticMass S B) ≤ mixedWedgeEnergy S A B) :
-    MixedWedgeEnergyAtLeast S A B κ :=
-  h
-
 /-- A raw lower bound at the coefficient `2(1-κ²)` is equivalent to the squared
 mixed-mass certificate. -/
 theorem wedge_lower_bound_iff_mixedSquareMassSqBound (S : Finset ι) (A B : ι → ℝ)
@@ -367,7 +358,7 @@ theorem wedge_lower_bound_of_mixedSquareMassSqBound (S : Finset ι) (A B : ι �
 theorem mixedWedgeEnergyAtLeast_half_of_three_halves (S : Finset ι) (A B : ι → ℝ)
     (h : (3 / 2 : ℝ) * (quarticMass S A * quarticMass S B) ≤ mixedWedgeEnergy S A B) :
     MixedWedgeEnergyAtLeast S A B (1 / 2) := by
-  refine mixedWedgeEnergyAtLeast_of_lower_bound S A B ?_
+  unfold MixedWedgeEnergyAtLeast
   norm_num
   exact h
 
@@ -531,30 +522,8 @@ theorem sum_quartic_le_of_wedge_lower_bound_calibrated (S : Finset ι) (A B : ι
   sum_quartic_le_of_sq_bound_calibrated S A B hκ0_nonneg hκ₀_nonneg hκκ₀ hΘΘ₀ hA hB
     ((wedge_lower_bound_iff_mixedSquareMassSqBound S A B).1 hwedge) hO hfit
 
-/-- Half-target real consumer from a sharper squared estimate. -/
-theorem sum_quartic_le_of_sq_bound_half_target_of_le (S : Finset ι) (A B : ι → ℝ)
-    {Ea Eb Θ Θ₀ κ Budget : ℝ}
-    (hκ0 : 0 ≤ κ) (hκ : κ ≤ (1 / 2 : ℝ)) (hΘΘ₀ : Θ ≤ Θ₀)
-    (hA : ∑ s ∈ S, (A s) ^ 4 ≤ Ea) (hB : ∑ s ∈ S, (B s) ^ 4 ≤ Eb)
-    (hsq : MixedSquareMassSqBound S A B κ) (hO : OddMainResBound S A B Θ)
-    (hfit : Ea + Eb + 3 * Real.sqrt (Ea * Eb) + 4 * Θ₀ ≤ Budget) :
-    ∑ s ∈ S, (A s + B s) ^ 4 ≤ Budget :=
-  sum_quartic_le_of_sq_bound_calibrated S A B hκ0 (by norm_num) hκ hΘΘ₀ hA hB hsq hO
-    (by nlinarith [hfit])
-
-/-- Half-target real consumer from a sharper wedge-energy estimate. -/
-theorem sum_quartic_le_of_wedge_half_target_of_le (S : Finset ι) (A B : ι → ℝ)
-    {Ea Eb Θ Θ₀ κ Budget : ℝ}
-    (hκ0 : 0 ≤ κ) (hκ : κ ≤ (1 / 2 : ℝ)) (hΘΘ₀ : Θ ≤ Θ₀)
-    (hA : ∑ s ∈ S, (A s) ^ 4 ≤ Ea) (hB : ∑ s ∈ S, (B s) ^ 4 ≤ Eb)
-    (hwedge : MixedWedgeEnergyAtLeast S A B κ) (hO : OddMainResBound S A B Θ)
-    (hfit : Ea + Eb + 3 * Real.sqrt (Ea * Eb) + 4 * Θ₀ ≤ Budget) :
-    ∑ s ∈ S, (A s + B s) ^ 4 ≤ Budget :=
-  sum_quartic_le_of_wedge_calibrated S A B hκ0 (by norm_num) hκ hΘΘ₀ hA hB hwedge hO
-    (by nlinarith [hfit])
-
 /-- Half-target real consumer from a raw wedge-energy lower bound at any `κ ≤ 1/2`. -/
-theorem sum_quartic_le_of_wedge_lower_bound_half_target_of_le
+theorem sum_quartic_le_of_wedge_lower_bound_half_target
     (S : Finset ι) (A B : ι → ℝ) {Ea Eb Θ Θ₀ κ Budget : ℝ}
     (hκ0 : 0 ≤ κ) (hκ : κ ≤ (1 / 2 : ℝ)) (hΘΘ₀ : Θ ≤ Θ₀)
     (hA : ∑ s ∈ S, (A s) ^ 4 ≤ Ea) (hB : ∑ s ∈ S, (B s) ^ 4 ≤ Eb)
@@ -743,37 +712,9 @@ theorem sum_norm_quartic_le_of_wedge_lower_bound_calibrated
     ((wedge_lower_bound_iff_mixedSquareMassSqBound S
       (fun s => (Mp s).re) (fun s => (Rv s).re)).1 hwedge) hO hfit
 
-/-- Half-target complex consumer from a sharper squared real-profile estimate. -/
-theorem sum_norm_quartic_le_of_sq_bound_half_target_of_le
-    (S : Finset F) (Mp Rv : F → ℂ)
-    (hMim : ∀ s ∈ S, (Mp s).im = 0) (hRim : ∀ s ∈ S, (Rv s).im = 0)
-    {Ea Eb Θ Θ₀ κ Budget : ℝ}
-    (hκ0 : 0 ≤ κ) (hκ : κ ≤ (1 / 2 : ℝ)) (hΘΘ₀ : Θ ≤ Θ₀)
-    (hA : ∑ s ∈ S, ‖Mp s‖ ^ 4 ≤ Ea) (hB : ∑ s ∈ S, ‖Rv s‖ ^ 4 ≤ Eb)
-    (hsq : MixedSquareMassSqBound S (fun s => (Mp s).re) (fun s => (Rv s).re) κ)
-    (hO : OddMainResBound S (fun s => (Mp s).re) (fun s => (Rv s).re) Θ)
-    (hfit : Ea + Eb + 3 * Real.sqrt (Ea * Eb) + 4 * Θ₀ ≤ Budget) :
-    ∑ s ∈ S, ‖Mp s + Rv s‖ ^ 4 ≤ Budget :=
-  sum_norm_quartic_le_of_sq_bound_calibrated S Mp Rv hMim hRim hκ0 (by norm_num) hκ hΘΘ₀
-    hA hB hsq hO (by nlinarith [hfit])
-
-/-- Half-target complex consumer from a sharper wedge-energy estimate. -/
-theorem sum_norm_quartic_le_of_wedge_half_target_of_le
-    (S : Finset F) (Mp Rv : F → ℂ)
-    (hMim : ∀ s ∈ S, (Mp s).im = 0) (hRim : ∀ s ∈ S, (Rv s).im = 0)
-    {Ea Eb Θ Θ₀ κ Budget : ℝ}
-    (hκ0 : 0 ≤ κ) (hκ : κ ≤ (1 / 2 : ℝ)) (hΘΘ₀ : Θ ≤ Θ₀)
-    (hA : ∑ s ∈ S, ‖Mp s‖ ^ 4 ≤ Ea) (hB : ∑ s ∈ S, ‖Rv s‖ ^ 4 ≤ Eb)
-    (hwedge : MixedWedgeEnergyAtLeast S (fun s => (Mp s).re) (fun s => (Rv s).re) κ)
-    (hO : OddMainResBound S (fun s => (Mp s).re) (fun s => (Rv s).re) Θ)
-    (hfit : Ea + Eb + 3 * Real.sqrt (Ea * Eb) + 4 * Θ₀ ≤ Budget) :
-    ∑ s ∈ S, ‖Mp s + Rv s‖ ^ 4 ≤ Budget :=
-  sum_norm_quartic_le_of_wedge_calibrated S Mp Rv hMim hRim hκ0 (by norm_num) hκ hΘΘ₀
-    hA hB hwedge hO (by nlinarith [hfit])
-
 /-- Half-target complex consumer from a raw real-profile wedge lower bound at any
 `κ ≤ 1/2`. -/
-theorem sum_norm_quartic_le_of_wedge_lower_bound_half_target_of_le
+theorem sum_norm_quartic_le_of_wedge_lower_bound_half_target
     (S : Finset F) (Mp Rv : F → ℂ)
     (hMim : ∀ s ∈ S, (Mp s).im = 0) (hRim : ∀ s ∈ S, (Rv s).im = 0)
     {Ea Eb Θ Θ₀ κ Budget : ℝ}
@@ -808,7 +749,6 @@ end ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit
 #print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.mixedSquareMassSqBound_of_one_le
 #print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.mixedWedgeEnergyAtLeast_one
 #print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.mixedWedgeEnergyAtLeast_of_one_le
-#print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.mixedWedgeEnergyAtLeast_of_lower_bound
 #print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.wedge_lower_bound_iff_mixedSquareMassSqBound
 #print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.wedge_lower_bound_of_mixedSquareMassSqBound
 #print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.mixedWedgeEnergyAtLeast_half_of_three_halves
@@ -829,9 +769,7 @@ end ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit
 #print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.sum_quartic_le_of_sq_bound_calibrated
 #print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.sum_quartic_le_of_wedge_calibrated
 #print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.sum_quartic_le_of_wedge_lower_bound_calibrated
-#print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.sum_quartic_le_of_sq_bound_half_target_of_le
-#print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.sum_quartic_le_of_wedge_half_target_of_le
-#print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.sum_quartic_le_of_wedge_lower_bound_half_target_of_le
+#print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.sum_quartic_le_of_wedge_lower_bound_half_target
 #print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.sum_norm_quartic_le_of_deficit_and_signed_odd_nonpos
 #print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.sum_norm_quartic_le_of_sq_bound_and_signed_odd_nonpos
 #print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.sum_norm_quartic_le_of_wedge_and_signed_odd_nonpos
@@ -842,6 +780,4 @@ end ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit
 #print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.sum_norm_quartic_le_of_sq_bound_calibrated
 #print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.sum_norm_quartic_le_of_wedge_calibrated
 #print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.sum_norm_quartic_le_of_wedge_lower_bound_calibrated
-#print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.sum_norm_quartic_le_of_sq_bound_half_target_of_le
-#print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.sum_norm_quartic_le_of_wedge_half_target_of_le
-#print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.sum_norm_quartic_le_of_wedge_lower_bound_half_target_of_le
+#print axioms ArkLib.ProximityGap.Frontier.R30FMixedMomentDeficit.sum_norm_quartic_le_of_wedge_lower_bound_half_target

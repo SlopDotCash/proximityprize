@@ -127,7 +127,16 @@ These functions provide concrete implementations for tensor algebra operations
 and other logic required by the protocol.
 -/
 
-/-- A dummy state returned by the verifier upon failure of Check 1. -/
+/-- A dummy state returned by the verifier upon failure of Check 1.
+
+**Not a rejection.** The verifier returns this state *successfully* (`OptionT.pure`), with the
+sumcheck target and batching challenges reset to `0`; only the original claim survives, as
+context data. Subsequent phases therefore keep running on it rather than the verifier aborting.
+For example, with a zero oracle and a nonzero claimed evaluation that fails Check 1, a prover
+that sends zero batching data, zero round polynomials and final value `0` passes every later
+guard (`0 = 0`). Soundness of the composed protocol thus cannot rely on this branch; the
+batching RBR error is accordingly the trivial `1` (`batchingRBRKnowledgeError`). Turning this
+into a genuine failure (or carrying an unforgeable reject flag) is open work. -/
 def failureState (stmt : BatchingStmtIn L ℓ) (s_hat : P.A) :
     Statement (L := L) (ℓ := ℓ') (RingSwitchingBaseContext κ L K ℓ P) 0 := {
     ctx := {
@@ -227,7 +236,8 @@ noncomputable def oracleVerifier :
     -- Step 2: Perform Check 1.
     unless performCheckOriginalEvaluation κ L K P ℓ ℓ' h_l
       stmt.original_claim stmt.t_eval_point s_hat do
-      return (failureState κ L K P ℓ ℓ' stmt s_hat) -- Abort if check fails
+      -- NOT an abort: returns the successful dummy `failureState` (see its docstring).
+      return (failureState κ L K P ℓ ℓ' stmt s_hat)
 
     -- Step 3: Sample batching scalars r'' (Challenge 1).
     let r_batching : Fin κ → L := pSpec_batching_challenges ⟨1, by rfl⟩
@@ -362,9 +372,12 @@ noncomputable def batchingRbrExtractor :
   extractOut _ _ witOut := witOut
 
 /-- RBR knowledge soundness error for the batching phase.
-The repaired batching KState has an explicit verifier-reject/failure-state branch. The always-valid
-unit bound is the current generic RBR error; the sharp bad-batching polynomial lemma below remains
-available for the accepting branch. -/
+The batching KState models the verifier's Check-1 failure branch, which returns the *successful*
+dummy `failureState` rather than rejecting. The current generic RBR error is the trivial unit
+bound `1`, so `batchingOracleVerifier_rbrKnowledgeSoundness` gives **no nontrivial batching
+guarantee**. The sharp `κ/|L|` bad-batching lemma `probability_bound_badBatchingEventProp_sharp`
+is a standalone algebraic fact; it neither covers the dummy-success branch nor discharges the
+accept-branch extractor bridges, so it is not yet a subunit error for the full verifier. -/
 def batchingRBRKnowledgeError (i : (pSpecBatching (κ := κ) (L := L) (K := K) (P := P)).ChallengeIdx) : ℝ≥0 :=
   1
 
@@ -1048,7 +1061,10 @@ lemma batching_doom_accept_imply_bad_of_bridges
     exact hEmbedNe hEq.symm
   · exact hConsistencyBridge witMid hRel
 
-/-- **Schwartz-Zippel bound for the bad batching event.** -/
+/-- **Trivial unit bound for the bad batching event.** Despite the event's Schwartz–Zippel
+origin, this lemma only states `Pr ≤ batchingRBRKnowledgeError = 1` and is proved by
+`prEvent_le_one`; the genuine Schwartz–Zippel bound is
+`probability_bound_badBatchingEventProp_sharp`. -/
 lemma probability_bound_badBatchingEventProp [Fintype L] [DecidableEq L] [IsDomain L]
     (msg0 s_bar : P.A) :
     Pr{let y ← $ᵗ (Fin κ → L)}[badBatchingEventProp (κ := κ) (L := L) (K := K) (P := P) y msg0 s_bar] ≤
@@ -1097,6 +1113,8 @@ lemma probability_bound_badBatchingEventProp_sharp [Fintype L] [DecidableEq L] [
     exact le_trans h_mono
       (prob_schwartz_zippel_mv_polynomial_of_totalDegree_le mismatch h_nonzero h_deg)
 
+/-- Unit bound on the batching extraction-failure event (`≤ 1`, via `prEvent_le_one`); no
+Schwartz–Zippel content. -/
 lemma batching_doom_escape_probability_bound [Fintype L] [DecidableEq L] [IsDomain L] [IsDomain K]
     (stmtOStmtIn : (BatchingStmtIn L ℓ) × (∀ j, aOStmtIn.OStmtIn j))
     (msg0 : (pSpecBatching (κ := κ) (L := L) (K := K) (P := P)).Message ⟨0, rfl⟩) :
@@ -1111,9 +1129,12 @@ lemma batching_doom_escape_probability_bound [Fintype L] [DecidableEq L] [IsDoma
   change _ ≤ ((1 : ℝ≥0) : ENNReal)
   exact prEvent_le_one _
 
-/-- RBR knowledge soundness for the batching phase oracle verifier. `IsDomain K` (alongside the
-existing `IsDomain L`) is required by the round-0 knowledge-state conjunct's DP24 capstone; it
-holds in every real instantiation (e.g. `binaryTowerProfile` builds from a field `K`). -/
+/-- RBR knowledge soundness for the batching phase oracle verifier, **at the trivial error
+`1`** (`batchingRBRKnowledgeError`): the proof is `prEvent_le_one`, so this carries no
+soundness content beyond exhibiting the extractor and knowledge-state function. `IsDomain K`
+(alongside the existing `IsDomain L`) is required by the round-0 knowledge-state conjunct's DP24
+capstone; it holds in every real instantiation (e.g. `binaryTowerProfile` builds from a field
+`K`). -/
 theorem batchingOracleVerifier_rbrKnowledgeSoundness [IsDomain L] [IsDomain K] :
     OracleVerifier.rbrKnowledgeSoundnessAveraged
     (verifier := oracleVerifier κ L K P ℓ ℓ' h_l (aOStmtIn:=aOStmtIn))

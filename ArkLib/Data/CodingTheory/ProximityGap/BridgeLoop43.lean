@@ -6,15 +6,24 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.BridgeLoop41
 
 /-!
-# Loop 43 (BRIDGE) — the orbit-count route that would close the LITERAL `ε_mca` prize
+# Loop 43 (BRIDGE) — a sufficient orbit-count arithmetic reduction toward the `ε_mca` prize
 
 Loop 42 (threshold halving, 2026/858) bounds the FRI soundness `ε_FRI` by *avoiding* the
 mutual-correlated-agreement term `ε_mca`. That settles FRI soundness but **sidesteps** the literal
-#232 prize, which asks for a bound on `ε_mca` itself at radius `δ ≤ 1−ρ−η`. This file records the
-*only* route that closes the literal prize — the orbit-counting bound of 2026/861 — and makes
-precise exactly what is still missing.
+#232 prize, which asks for a bound on `ε_mca` itself at radius `δ ≤ 1−ρ−η`. This file records
+*one* candidate route toward the literal prize — the orbit-counting bound of 2026/861 — as a
+purely arithmetic, **sufficient** reduction.  It is not claimed to be the only route.
 
-The MCA term is a normalized bad-set count: `ε_ca(f) = |V_δ(f)| / q²` (2026/861, Conjecture 1.1),
+**Scope (audit correction, 2026-10-28, PG-053).** Every statement below is about arbitrary real
+numbers `q, Vcard, N, S`.  Nothing in this file identifies `Vcard / q²` with the repository's
+actual one-scalar MCA event/error (`ProximityGap.epsMCA`), proves `Vcard ≤ N·S` for an actual
+bad-challenge set, or fixes the uniform parameter quantifiers (how `K`, `m`, `q` depend on `ρ, η`
+and the domain).  That protocol/event bridge is a separate obligation (see
+`OrbitCountConsumerBridge` / `OrbitCountFreeActionMCA` for the partial discharges of the
+`Vcard ≤ N·S` hypothesis).
+
+The MCA term is modelled as a normalized bad-set count: `ε_ca(f) = |V_δ(f)| / q²` (2026/861,
+Conjecture 1.1),
 where `V_δ(f)` is the set of bad two-round challenges. Theorem 2.1 (sound in Loop 41) forces
 `V_δ` to be a **union of `⟨ω^{b−a}⟩`-orbits, each of explicit size `S = n₁/gcd(b−a, n₁) ≤ 2^m`**.
 Hence, writing `N` for the number of distinct bad orbits,
@@ -25,20 +34,25 @@ If the orbit count is bounded, `N ≤ K`, then (using `2^m ≤ q`, always true a
 
     ε_mca ≤ K · 2^m / q² ≤ K / q ,
 
-which is **exactly the Conjecture-1.1 prize shape `ε_ca ≤ K_ρ/q`** — a bound on `ε_mca` itself, the
-literal prize, not a sidestep. This file proves that arithmetic reduction, axiom-clean.
+which has the **Conjecture-1.1 prize shape `ε_ca ≤ K_ρ/q`**, once `Vcard/q²` is identified with
+`ε_mca` (not done here). This file proves that arithmetic reduction, axiom-clean.
 
-So the literal prize closes **iff the bad-orbit count `N` is bounded by a constant `K_ρ`**. Per
-2026/861 this is:
+A bounded orbit count `N ≤ K_ρ` is therefore **sufficient** (in this arithmetic model) for the
+prize shape; it is **not necessary**.  `BridgeLoop44` shows a polynomial count already suffices,
+and `bounded_orbit_count_not_necessary` below gives an arithmetic counterexample to necessity:
+with `q = n²`, `N = S = n`, `Vcard = n²` one has `Vcard/q² = 1/q` (so `K = 1` works) while `N`
+exceeds every constant.  (This is a counterexample in the abstract arithmetic model only, not a
+claimed realization by an actual smooth-domain MCA adversary.)  Per 2026/861 a constant orbit
+count is:
 
 * **unconditional for sparse (3-position) inputs** (their Layer 1, the twin of our Loops 33/34);
 * **conjectural for general inputs** — this is precisely conjecture **Q2** (sparse-worst-case
   dominance): the worst-case orbit count is dominated by the sparse case. Empirically verified at
   scale `(32,8)`, unproven in general.
 
-This brick therefore pins the entire remaining open content of the literal prize to a single,
-sharply stated quantity: an `n`-uniform bound on the number of bad challenge-orbits. See
-`Research/ProximityPrize/DISPROOF_LOG.md` (Loop43).
+This brick isolates one sufficient quantity (an `n`-uniform bound on the number of bad
+challenge-orbits); it does not show that the remaining open content of the prize is equivalent to
+it. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop43).
 -/
 
 namespace ArkLib.ProximityGap.BridgeLoop43
@@ -50,11 +64,13 @@ theorem mca_orbit_count_bound {q Vcard N S : ℝ} (hq : 0 < q) (hcard : Vcard �
     Vcard / q ^ 2 ≤ N * S / q ^ 2 := by
   gcongr
 
-/-- **Bounded orbit count ⟹ the literal `ε_mca` prize.** If the bad set is at most `N · S` with the
-orbit count `N ≤ K` and the orbit size `S ≤ 2^m` (Theorem 2.1's `n₁/gcd ≤ 2^m`), then at any field
-with `2^m ≤ q` the MCA term obeys `|V_δ|/q² ≤ K/q` — the Conjecture-1.1 prize shape, a bound on
-`ε_mca` itself. This is the route that closes the *literal* prize; the only missing input is the
-constant orbit-count bound `N ≤ K` (unconditional for sparse inputs; `= Q2` in general). -/
+/-- **Bounded orbit count ⟹ the prize shape (arithmetic).** For real numbers with `Vcard ≤ N · S`,
+orbit count `N ≤ K` and orbit size `S ≤ 2^m` (Theorem 2.1's `n₁/gcd ≤ 2^m`), and `2^m ≤ q`, one
+has `Vcard/q² ≤ K/q` — the Conjecture-1.1 prize shape.  This is a sufficient arithmetic step only:
+it becomes a bound on `ε_mca` once `Vcard/q²` is identified with the actual MCA error and
+`Vcard ≤ N·S` is proved for the actual bad set, neither of which is done here.  The constant
+bound `N ≤ K` is unconditional for sparse inputs and `= Q2` in general; it is not necessary (see
+`bounded_orbit_count_not_necessary`). -/
 theorem mca_prize_of_bounded_orbit_count
     {q K N S Vcard : ℝ} {m : ℕ}
     (hq : 0 < q) (hKnn : 0 ≤ K) (hSnn : 0 ≤ S)
@@ -68,9 +84,26 @@ theorem mca_prize_of_bounded_orbit_count
     Vcard / q ^ 2 ≤ (K * q) / q ^ 2 := by gcongr
     _ = K / q := by field_simp
 
-/-- **Non-vacuity / sanity.** With a genuine positive constant orbit-count budget `K > 0` and
-`q > 0`, the resulting prize bound `K/q` is positive — the reduction is not the trivial `0`. -/
+/-- **Positivity of the right-hand side (sanity only).** With `K > 0` and `q > 0`, the prize bound
+`K/q` is positive.  This only says the conclusion is not the trivial `0`; it is **not** a
+non-vacuity witness that the hypotheses of `mca_prize_of_bounded_orbit_count` hold for an actual
+MCA bad set. -/
 theorem mca_prize_bound_pos {q K : ℝ} (hq : 0 < q) (hK : 0 < K) : 0 < K / q := by positivity
+
+/-- **A constant orbit count is not necessary for the prize shape (arithmetic model).** For every
+constant `K`, there are reals with `Vcard ≤ N·S` and `Vcard/q² ≤ 1/q` (prize shape with constant
+`1`) but `K < N`: take `q = n²`, `N = S = n`, `Vcard = n²` for a natural `n > K`.  This refutes
+reading `mca_prize_of_bounded_orbit_count` as an "iff"; it is a counterexample in the abstract
+real-number model only, not a realization by an actual smooth-domain MCA adversary. -/
+theorem bounded_orbit_count_not_necessary (K : ℝ) :
+    ∃ q N S Vcard : ℝ, 0 < q ∧ Vcard ≤ N * S ∧ Vcard / q ^ 2 ≤ 1 / q ∧ K < N := by
+  obtain ⟨n, hn⟩ := exists_nat_gt (max K 0)
+  have hn0 : (0 : ℝ) < n := lt_of_le_of_lt (le_max_right K 0) hn
+  refine ⟨(n : ℝ) ^ 2, n, n, (n : ℝ) ^ 2, by positivity, by nlinarith, ?_,
+    lt_of_le_of_lt (le_max_left K 0) hn⟩
+  have hq0 : (0 : ℝ) < (n : ℝ) ^ 2 := by positivity
+  rw [div_le_div_iff₀ (by positivity) hq0]
+  nlinarith
 
 end ArkLib.ProximityGap.BridgeLoop43
 
@@ -78,3 +111,4 @@ end ArkLib.ProximityGap.BridgeLoop43
 #print axioms ArkLib.ProximityGap.BridgeLoop43.mca_orbit_count_bound
 #print axioms ArkLib.ProximityGap.BridgeLoop43.mca_prize_of_bounded_orbit_count
 #print axioms ArkLib.ProximityGap.BridgeLoop43.mca_prize_bound_pos
+#print axioms ArkLib.ProximityGap.BridgeLoop43.bounded_orbit_count_not_necessary

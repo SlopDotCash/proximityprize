@@ -27,14 +27,21 @@ no comparison or plumbing hypotheses left:
 * `mca_johnson_bound_CONJECTURE_pair_of_johnsonNumericBound` — the per-`δ`
   `JohnsonNumericBound` at `η := μ(δ)` implies the literal pair-case conjecture;
 * `mca_johnson_bound_CONJECTURE_pair_of_claim1_cells` — the literal pair-case conjecture
-  from per-`δ`, per-stack Claim-1 cell data alone (the BCIKS20 Steps 5–7 capture output,
-  the single remaining deep input), with the cell count in the per-`δ` GS list shape.
+  from per-`δ`, per-stack Claim-1 cell data (shaped like the BCIKS20 Steps 5–7 capture
+  output), with the cell count in the per-`δ` GS list shape. **Caveat (audit CW-B22-06):**
+  this cell data is *equivalent* to the bare per-stack count bound `#bad ≤ L·n`: `claim1_dichotomy`
+  turns it into that count, and conversely any bad set of size `≤ L·n` splits into `L` cells
+  of size `≤ n`, making the capture clause vacuous. The residual is that count, not a
+  separate structural input; the pinning, fixed-factor and coefficient-polynomial variants
+  below route through this theorem and inherit the same caveat.
 * `mca_johnson_bound_CONJECTURE_pair_of_decode_family_pinning` — the same literal
   conjecture from the producer-facing §5 data: per-cell decoded-polynomial families plus
   affine pinning above the `|ι|` threshold.
 * `mca_johnson_bound_CONJECTURE_pair_of_decode_family_window` — the same result on the
   unique-decoding window proved in `Hab25CaptureKernelUD`: per-cell decoded-polynomial
-  families alone imply the capture data.
+  families alone imply the capture data. **Caveat (audit CW-B22-05):** its `hwin`
+  hypothesis is quantified over the whole Johnson range and is satisfiable for `2^m < n`
+  only at `(n, 2^m) ∈ {(2,1), (4,1)}`; see the theorem docstring.
 * `mca_johnson_bound_CONJECTURE_pair_of_fixed_linear_factor_cells` — the same result
   from cell data where each large cell is claimed by one fixed linear `K = F(Z)` factor,
   using the proved factor-weld pinning theorem.
@@ -130,15 +137,23 @@ theorem mca_johnson_bound_CONJECTURE_pair_of_johnsonNumericBound
     exact ENNReal.ofReal_le_ofReal
       (johnsonBoundReal_le_errStar_real φ m hk δ hδB)
   unfold mca_johnson_bound_CONJECTURE
+  intro _
   exact hmca
 
 omit [DecidableEq ι] in
 /-- **The literal pair-case Johnson conjecture from per-stack Claim-1 cell data alone.**
 For every admissible `δ` and word stack, suppose the bad scalars decompose into `≤ L`
-cells satisfying the capture-above-`n` dichotomy (the BCIKS20 Steps 5–7 output — the
-single remaining deep input of the #302 chain), with `L` within the per-`δ` GS list-size
-shape. Then `mca_johnson_bound_CONJECTURE` holds verbatim at `parℓ = Fin 2`: nothing
-between the capture data and the literal conjecture statement remains unproven. -/
+cells satisfying the capture-above-`n` dichotomy (shaped like the BCIKS20 Steps 5–7
+output), with `L` within the per-`δ` GS list-size shape. Then
+`mca_johnson_bound_CONJECTURE` holds verbatim at `parℓ = Fin 2`: the wiring from this
+cell data to the literal conjecture statement is fully proved.
+
+**Honesty note (audit CW-B22-06).** The cell hypothesis `hdata` is equivalent to the bare
+per-stack count `#bad ≤ L·n` (with `n = |ι|`): `claim1_dichotomy` (with `T = n`) turns the
+cell data into that count, and conversely a bad set of size `≤ L·n` chunks into `L` cells
+(`Idx = Fin L`) of size `≤ n`, for which the capture clause is vacuous. So `hdata` is not an
+additional deep structural input; the remaining obligation is exactly the per-stack count
+bound `#bad ≤ L·n` at every admissible `δ`. -/
 theorem mca_johnson_bound_CONJECTURE_pair_of_claim1_cells
     (α : F) (φ : ι ↪ F) (m : ℕ) [Smooth φ] (exp : Fin 2 ↪ ℕ)
     (hexp0 : exp 0 = 0) (hexp1 : exp 1 = 1)
@@ -222,7 +237,15 @@ This is the O88/K4 depth-0 front door: if every admissible radius lies in the wi
 `2·|ι| + 2^m ≤ 3·⌈(1−δ)|ι|⌉₊`, then the affine-pinning leg of the Claim-1 cells is no
 longer a producer hypothesis. The proved kernel theorem `hsteps57_of_window` constructs
 the pencil from any per-cell decoded-polynomial family, and the existing Claim-1/Hab25
-numeric wiring finishes the literal pair-case Johnson MCA conjecture. -/
+numeric wiring finishes the literal pair-case Johnson MCA conjecture.
+
+**Near-vacuity caveat (audit CW-B22-05).** `hwin` is required for *every* `δ` in the
+Johnson range `(0, 1 - √ρ)`, not only on the unique-decoding window. The infimum of
+`⌈(1-δ)n⌉` over that range is `⌊√(2^m·n)⌋ + 1`, and as `δ → 1 - √ρ` the condition needs
+`3√ρ ≥ 2 + ρ`, i.e. `ρ ≥ 1`. An exhaustive check over power-of-two `n ≤ 2^30` with
+`2^m < n` finds only `(n, 2^m) ∈ {(2,1), (4,1)}`; for `2^m = n` the δ-range is empty and
+`hwin` holds vacuously. So this theorem does not give a general Johnson-range result; a
+useful version would quantify `δ` only over the window. -/
 theorem mca_johnson_bound_CONJECTURE_pair_of_decode_family_window
     (α : F) (φ : ι ↪ F) (m : ℕ) [Smooth φ] (exp : Fin 2 ↪ ℕ)
     (hexp0 : exp 0 = 0) (hexp1 : exp 1 = 1)

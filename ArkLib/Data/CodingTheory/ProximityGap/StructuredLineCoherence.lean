@@ -24,11 +24,17 @@ The mechanism is a single degree count: `Pc − Q − C γ·Xᵏ` has degree `�
 > `Q.coeff j = 0` for `k < j ≤ k+m` (the **coherence** condition), and
 > **`structured_line_forces_scalar`** — the scalar is pinned: `γ = −Q.coeff k`.
 
-So in the generated case the affine-line list `Λ` is exactly the set of coherent cores with
-their pinned scalars — the same object the failure-side second-moment machine
-(`DeepBandSecondMoment.lean`) counts. The positive (line-list) and failure (second-moment)
-routes are therefore two views of one object, and the open residual is confined to the
-*unstructured* `u₀` regime. This is the machine-checked converse of `coherent_explains_line`.
+So in the **low-degree** structured case `deg Q ≤ k+m`, the affine-line list `Λ` is exactly
+the set of coherent cores with their pinned scalars — the same kind of object the failure-side
+second-moment machine (`DeepBandSecondMoment.lean`) counts. This is the machine-checked converse
+of `coherent_explains_line` in that degree range.
+
+**Scope caveat.** Every theorem here assumes `deg Q ≤ k+m`. The deep-band generator
+(`DeepBandCoherence.deep_band_witness_mass`) builds `Q₀ = ∑_{j < 2k+m+2} c_j Xʲ`, whose degree
+can reach `2k+m+1`, and imposes no `deg Q₀ ≤ k+m` restriction. So this file does **not** close
+the full generated case, and the open residual is **not** confined to the unstructured `u₀`
+regime: generated rows of degree in `(k+m, 2k+m+1]` are also outside its scope (audit finding
+PG-140; compare the scope caveat in `StructuredWordCores.lean`).
 
 ## References
 

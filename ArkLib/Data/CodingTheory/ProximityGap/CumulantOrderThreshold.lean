@@ -6,13 +6,14 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.CumulantGaussPeriodBound
 
 /-!
-# The cumulant-order threshold: the moment method needs `r > log q / (2 log n)` (#407)
+# The cumulant-order threshold: the moment method needs `r > log q / log n` (#407)
 
-This file lands the **quantitative form** of the BGK-ceiling obstruction discovered in the
+This file lands the **quantitative form** of the low-order obstruction found in the
 2026-06-14 "BGK ceiling fresh angle" pass.  It makes precise *why* the moment / cumulant route
-(`CumulantGaussPeriodBound.lean`) cannot, by itself, produce a sub-trivial per-frequency bound at
-the prize point unless it is run at a high order — and that the high order is exactly where its
-analytic input `CumulantEnergyBound` is provably false (the Fermat refutation).
+(`CumulantGaussPeriodBound.lean`) cannot produce a sub-trivial per-frequency bound unless it is
+run at order `r > log_n q`.  It does **not** show that the analytic input `CumulantEnergyBound`
+fails at those higher orders: whether that DC-subtracted input holds at a given useful order is a
+separate, characteristic/subgroup-specific question (see the correction below).
 
 ## The extracted bound and its `q`-prefactor floor
 
@@ -32,10 +33,20 @@ over `‖η_b‖ ≤ |G| = n`) whenever `q^{1/r} ≥ n`, i.e. whenever
 
 Equivalently: **the moment method can beat the trivial bound only at order `r > log_n q`.**  At
 the prize point (`q = 2¹⁵⁸`, `n = 2³⁰`) this threshold is `log_n q ≈ 5.27`; the optimum order for
-the *target* `√(n log(q/n))` is `r ≈ log(q/n) ≈ 64–128`.  Both lie strictly **above** the order
-`r₀ ≈ log_n q` where the Wick input `CumulantEnergyBound` still has signal (`q·E_r − n^{2r} ≤
-q·(2r-1)‼·n^r` forces `n^{2r}/q ≤ (2r-1)‼·n^r`, i.e. `r ≲ log_n q`).  The *useful* regime and the
-*valid* regime of the moment method are therefore disjoint — the precise, theorem-level obstruction.
+the *target* `√(n log(q/n))` is `r ≈ log(q/n) ≈ 64–128`.
+
+**Correction (no "disjoint regimes" theorem).**  An earlier version of this docstring argued that
+`CumulantEnergyBound` (`q·E_r − n^{2r} ≤ q·(2r-1)‼·n^r`) forces `n^{2r}/q ≤ (2r-1)‼·n^r`, hence
+`r ≲ log_n q`, so that the *useful* and *valid* orders would be disjoint.  That implication is
+false: the subtraction of `n^{2r}` removes exactly that DC mass, so the cumulant input carries no
+such guard.  (The guard does apply to the raw, un-subtracted `GaussianEnergyBound`.)  Concrete
+proper-subgroup counterexample: `F_17`, `G = μ_8 = {1,2,4,8,9,13,15,16}`, `r = 2`.  Exact
+enumeration gives `E_2 = 264`, so `q·E_2 − n⁴ = 17·264 − 4096 = 392 ≤ 17·3·64 = 3264`, i.e.
+`CumulantEnergyBound G 2` holds, although `n² = 64 > 17·3 = 51` (the raw Wick bound fails the DC
+guard).  Its extracted square is `√3264 < 64 = n²`, a genuine gain at the useful order
+`r = 2 > log_8 17`.  So useful orders with a valid DC-subtracted input do exist; any failure of
+`CumulantEnergyBound` at useful orders must be established separately for the relevant
+characteristic and subgroup (e.g. the measured excess fed to `not_cumulantBound_of_excess`).
 
 ## What is proven here (axiom-clean)
 
@@ -46,13 +57,16 @@ q·(2r-1)‼·n^r` forces `n^{2r}/q ≤ (2r-1)‼·n^r`, i.e. `r ≲ log_n q`). 
   statement that the moment method must be run at order `r > log_n q` to gain anything.
 
 These are *unconditional* facts about the extraction formula (no hypothesis on `E_r` at all): they
-hold whether or not `CumulantEnergyBound` is true.  Combined with the Fermat refutation
-(`not_cumulantBound_of_excess`, which kills `CumulantEnergyBound` at `r > log_n p` for 2-power
-primes) they pin the obstruction: the order where the method *could* help is exactly the order
-where its input *fails*.
+hold whether or not `CumulantEnergyBound` is true.  They say nothing about whether
+`CumulantEnergyBound` holds at orders `r > log_n q`.  `not_cumulantBound_of_excess` is only a
+falsification hook: it refutes `CumulantEnergyBound` at an order `r` *given* a measured excess at
+that `r` (the probe reports such excesses at the Fermat prime `p = 65537`, `n = 64`, `r = 2..5`);
+it is not a theorem that the input fails at every order above `log_n p`, and the `F_17`, `μ_8`
+example above shows the input can hold at a useful order.
 
-**Honest scope.**  This does NOT bound `M`.  It is a *no-go* for the moment route at low order,
-turning the numeric "disjoint-regime" observation into an axiom-clean theorem.  The open core is
+**Honest scope.**  This does NOT bound `M`.  It is a *no-go* for the moment route at low order
+(`r ≤ log_n q`) only; it does not prove that the useful and valid orders are disjoint.  The open
+core is
 unchanged: an unconditional `M ≤ C√(n log(q/n))` at the prize point (BGK / Paley, the `n^{1-c} →
 n^{1/2+o(1)}` gap for thin multiplicative subgroups).  Axiom target `[propext, Classical.choice,
 Quot.sound]`.  Issue #407.
@@ -104,8 +118,9 @@ theorem cumulant_extract_ge {r : ℕ} (hr : 1 ≤ r)
 /-- **No gain at low order.** If `n^r ≤ q` (equivalently `r ≤ log_n q`), then the cumulant-extracted
 bound parameter `M_r²` is `≥ n²`, i.e. `M_r ≥ n`: the moment method gives **no** improvement over the
 trivial `‖η_b‖ ≤ |G| = n` at any order `r ≤ log_n q`.  To beat the trivial bound the method must be
-run at order `r > log_n q` — which at the prize (`q = 2¹⁵⁸`, `n = 2³⁰`) is `> 5.27`, strictly above
-the order where the Wick input `CumulantEnergyBound` retains signal.  Unconditional in `E_r`. -/
+run at order `r > log_n q` — which at the prize (`q = 2¹⁵⁸`, `n = 2³⁰`) is `> 5.27`.  Unconditional
+in `E_r`; whether `CumulantEnergyBound` holds at a given order `r > log_n q` is not addressed here
+(it can, e.g. `F_17`, `G = μ_8`, `r = 2`; see the module docstring). -/
 theorem cumulant_no_gain_of_small_order {r : ℕ} (hr : 1 ≤ r)
     {G : Finset F} (hq : (0 : ℝ) ≤ Fintype.card F)
     (hsmall : (G.card : ℝ) ^ r ≤ (Fintype.card F : ℝ)) :

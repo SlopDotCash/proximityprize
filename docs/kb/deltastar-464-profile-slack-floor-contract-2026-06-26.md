@@ -54,6 +54,11 @@ stackBadCountImage_card_le_budget_add_one_of_profileSlackClosureAtField
 not_profileSlackClosureAtField_of_budget_add_one_lt_stackBadCountImage
 ```
 
+`ProfileSlackClosureAtField C delta profile rep slack B` is slack domination plus the slack budget.
+It used to carry `not FloorBad (2^a) |F|` as a first conjunct, but no consumer used it (audit
+CW-B09-08), so floor-goodness now enters only through the constructor
+`profileSlackClosureAtField_of_floorGoodProfileSlackBudget`.
+
 The Linnik/TZ-facing consumers are:
 
 ```lean
@@ -73,16 +78,18 @@ inputs could feed a slack-profile budget if the missing floor-to-count theorem i
 The new exact failure form is:
 
 ```lean
-not_profileSlackClosureAtField_iff_bad_or_stack_exceeds_slack_or_usedProfile_budget_lt
+not_profileSlackClosureAtField_iff_stack_exceeds_slack_or_usedProfile_budget_lt
 ```
 
-So a proposed slack-floor closure fails in exactly one of three ways:
+So a proposed field-level slack certificate fails in exactly one of two ways:
 
 ```text
-1. the modeled floor predicate is still bad at |F|;
-2. some stack exceeds rep(profile u) + slack(profile u);
-3. some used profile has rep p + slack p above B.
+1. some stack exceeds rep(profile u) + slack(profile u);
+2. some used profile has rep p + slack p above B.
 ```
+
+(A floor predicate that is still bad at |F| blocks only the floor-good constructor, not the
+certificate itself.)
 
 The floor-good-to-slack-budget theorem itself has its own scanner form:
 

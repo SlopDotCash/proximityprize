@@ -33,9 +33,18 @@
 #   H_random : theta_r(chi) is NOT half-plane concentrated; aligned/anti-aligned magnitude
 #              masses are near-balanced (the signed sum is a small residual of massive
 #              cancellation), the balance is conductor-uniform (no shell is coherent), and
-#              it does NOT improve as m grows  => the coherent-phase route is dead; A_r is
-#              an unavoidable cancellation residual = the BGK phase-correlation wall, in the
-#              STRONGEST possible sense (no coordinate, no shell, no phase gate thins it).
+#              it does NOT improve as m grows  => evidence, at the sampled cells, that the
+#              coherent-phase route does not apply and A_r behaves as a cancellation residual.
+#
+# SCOPE (audit 2026-10-28, L103). The integer histograms W_G, R_r, the exact A_r and the
+# Mellin identity are exact; the per-mode phases, coherence ratios and shell statistics are
+# FLOATING-POINT diagnostics on the finite cells listed in main(). The reconstruction error is
+# printed, not certified, and no error/sign margins are proved. A finding of H_random on these
+# cells is therefore a finite numerical diagnostic: it cannot establish that NO coordinate,
+# shell, or phase gate thins the cancellation for all transformations or asymptotic regimes.
+# The float-free replay of the specific recorded sign flips and the concordant control is
+# g217_proxy_witness_exact.py (the constants of Frontier/_G217PhaseCoherenceNoGo.lean); that
+# replay proves those particular witnesses only.
 #
 # METHOD. Exact integer W_G, exact integer R_r (subset-sum DP over the difference conv),
 # exact integer A_r. Mellin modes via exact discrete-log indexing + complex accumulation,
@@ -152,7 +161,8 @@ def analyze(p, n, r, verbose=True):
 
     if verbose:
         print(f"=== p={p} n={n} r={r} m={m} #modes={len(modes)} ===")
-        print(f"  A_exact={A_exact}  recon={recon:.3f}  err={err:.3e}  (recon must match A_exact)")
+        print(f"  A_exact={A_exact}  recon={recon:.3f}  err={err:.3e}  "
+              f"(floating-point reconstruction; diagnostic, no certified tolerance)")
         print(f"  zero_term={zero_term:.2f}  full_signed={full_signed:.2f}")
         print(f"  aligned_mass(pos)={sum(pos):.3e}  anti_mass(neg)={sum(neg):.3e}  L1={L1:.3e}")
         print(f"  R_coh=|signed|/L1={R_coh:.4f}   f+ (#modes s>0)={f_plus:.4f}   w+ (mass s>0)={w_plus:.4f}")

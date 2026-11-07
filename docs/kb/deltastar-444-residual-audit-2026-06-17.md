@@ -1,5 +1,20 @@
 # Residual audit — all open threads consolidate to ONE minimal input (#444)
 
+> **Correction (2026-10-28 audit, T48).** The single-depth consumer
+> `prize_floor_of_single_depth` is a useful sufficient implication. The "minimal residual" it
+> consumes, however, is not a still-open equivalent of the prize.
+> - **Infeasible as stated.** In its raw-energy form, `E_{r*} ≤ (2r*−1)‼·n^{r*}` at
+>   `r* = ⌈log p⌉`, it is **false** at the production prime by the DC pigeonhole floor
+>   `E_r ≥ n^(2r)/p`. At `n = 2^30`, `p ≈ 2^158`, `r* = 110` the floor is `≥ 2^6442`, against a Wick
+>   value `≤ 2^4156`. The same applies to the all-depth raw Wick line in the lattice below. Only the
+>   DC-subtracted (nonprincipal) forms, such as the `A_r` decay law, can be live inputs, and the
+>   nonprincipal correction should be kept.
+> - **Keep the integer ceiling.** The floor is `M ≤ √(2e·n·⌈log p⌉)`.
+> - **Not equivalent to the prize.** The lattice records one-way sufficient conditions, not an
+>   equivalence. A conditional upper envelope does not give an exact `δ*` value or asymptotic, and
+>   "the chain from this single input to δ* interior is now fully formalized" is conditional on
+>   inputs that this audit did not discharge.
+
 Attacking all open residuals by AUDITING them: this session landed ~8 named residuals across the chain.
 This audit proves they form a LATTICE that consolidates to a single minimal open input, now LANDED.
 

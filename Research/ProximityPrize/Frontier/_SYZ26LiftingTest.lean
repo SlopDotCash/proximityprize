@@ -15,13 +15,21 @@ exhibited a rigidity-deficient (`d>0`) over-budget cover — the `n=6, k=3`
 cores).  SYZ24's "`d=0` for every over-budget family" verdict was likewise measured on
 minimal (size-`k+1`) star/nested covers.
 
-**The decisive question this file answers.**  A bad scalar's witness/core `S` in the
-proximity problem is an *agreement set*: for a radius `δ` in the decisive strip
-`(Johnson ≈ 0.293, 1/3)` at rate `1/2`, the threshold obeys `|S| = t ≥ (1−δ)·n`, so a
-**strip core has size `s ≥ ⌈2n/3⌉`** (`δ < 1/3`), *not* `k+1 = n/2+1`.  Does SYZ25's
-deficient shape survive at these much larger, strip-sized cores?  If yes, a deficiency `d`
-would loosen the SYZ22 budget to `|U| ≤ n−1+d` and threaten the strip; if no, generation is
-forced and the strip is safe.
+**The question this file addresses.**  A bad scalar's *witness* `S` in the proximity
+problem is a scalar agreement set: for a radius `δ` in the decisive strip
+`(Johnson ≈ 0.293, 1/3)` at rate `1/2`, `|S| ≥ t ≥ (1−δ)·n`.  **This does not make the joint
+codeword-pair core large** (audit 2026-10-28, L121): a scalar codeword explains one linear
+combination `u₀ + γ•u₁` on `S`, while a joint core must explain both rows separately.  Exact
+counterexample in the strict strip: `F₁₇`, domain `μ₁₆`, `k = 8`, `δ = 5/16` (`t = 11`),
+`u₁ = X⁸`, `u₀ = −u₁`; `γ = 1` is bad (zero line, nonjoint full set), yet every pencil pair
+through its witnesses has joint core `≤ 8 < t − 1` (replayed in
+`scripts/tests/test_syz26_scalar_witness_vs_joint_core.py`; one exceptional bad scalar only, no
+over-budget or prize counterexample).  So this file studies only the **large-joint-core
+sub-case**: *if* the cores have size `s ≥ ⌈2n/3⌉` (`δ < 1/3`), *not* `k+1 = n/2+1`, does SYZ25's
+deficient shape survive?  If yes, a deficiency `d` would loosen the SYZ22 budget to
+`|U| ≤ n−1+d` for such families; if no, generation is forced for such families.  Extending
+either answer to all strip events needs a separate, proved reduction from arbitrary strip
+events to large joint cores, which is not supplied here.
 
 ## The probe verdict (`scripts/probes/probe_syz26_lifting_test.py`): STRIP TRUE-mechanism
 
@@ -34,7 +42,8 @@ Sweeping the core-size floor `s` at `k = n/2` (rate `1/2`), over `n ∈ {12,16,1
   min-core-size found was `s* ∈ {8,9,12,14}` at `n ∈ {12,16,20,24}`, always `≤ ⌈2n/3⌉`, with
   `δ@s* ≥ 1/3` in every case.
 * **The open strip interior (`Johnson < δ < 1/3`, core size `s ≥ ⌈2n/3⌉+1`) is
-  DEFICIENCY-FREE**: `d = 0` for every family tested, over every prime.  Generation is forced,
+  DEFICIENCY-FREE**: `d = 0` for every family tested, over every prime.  Generation holds in every
+  tested family,
   so the SYZ22/SYZ24 realizability lower bound `finrank(⨆ Aᵢ) = |U|−k` holds and the budget
   `|U| ≤ n−1` is safe.
 
@@ -54,12 +63,15 @@ Two cores of size `≥ s` inside a ground set of size `n` meet in `≥ 2s − n`
 If every core meets a fixed base core `C₀` in `≥ k` points, then every core (index `≥ 1`) meets
 the union of its predecessors in `≥ k` points (the SYZ25 sufficient condition S1, with the
 identity order): the incremental overlap dominates the base overlap.  Combined with (1): cores of
-size `s ≥ (n+k)/2` are always incremental-`≥k`-orderable, hence generate (SYZ25 S1), hence `d=0`.
+size `s ≥ (n+k)/2` are always incremental-`≥k`-orderable.  The further step S1 ⟹ generation
+(`d = 0`) is SYZ25's **probe-validated** gluing claim; it is **not formalized** anywhere in this
+file or SYZ25, so only the overlap condition is proved here (audit CW-B13-19).
 
 ### (3) THE STRIP GAP IS SHARP — `strip_boundary_overlap_floor_insufficient`
 At the strip boundary `s = ⌈2n/3⌉`, `k = n/2`, the guaranteed floor `2s − n ≈ n/3 < n/2 = k`,
-so (1)/(2) do **not** force generation there — and indeed a field-independent `d=1` cover
-survives (§4).  The clean gluing covers only `δ ≤ 1/4` (`s ≥ 3n/4`); the strip interior
+so (1)/(2) do **not** even give the overlap condition there — and indeed a field-independent
+`d=1` cover survives (§4, probe).  The overlap condition is proved only for `δ ≤ 1/4`
+(`s ≥ 3n/4`), and generation there still rests on the unformalized S1 gluing; the strip interior
 `1/4 < δ < 1/3` is the probe-established deficiency-free zone whose polynomial-gluing proof
 remains the honest named residual (as in SYZ24/SYZ25 realizability).
 
@@ -69,14 +81,18 @@ probe: three cores of size `8 = ⌈2·12/3⌉` (`δ = 1/3` exactly, the strip's 
 full cover of `{0,…,11}`, over-budget `∑(|Cᵢ|−k) = 6 = |U|−k`, with pairwise-overlap floor
 `2s−n = 4 < k = 6` (so §1/§2 fail — hypothesis is tight).  The probe supplies the
 **field-independent** `d = 1` (identical over `p ∈ {17,31,101,1009,65537,10⁶+3}`).  Recorded
-combinatorially; the rank drop is realized abstractly by SYZ25 §3 `overbudget_not_imp_generation`.
+combinatorially; the deficiency `d = 1` is probe output.  The re-export
+`overbudget_not_imp_generation_abstract` is SYZ25's abstract `ℚ³` example, not this strip cover.
 
 ## Honest δ\* verdict
 
 **Decisive answer: the deficiency does NOT lift into the open strip.**  Field-independent
-rigidity-deficient over-budget covers require `δ ≥ 1/3` (core size `≤ ⌈2n/3⌉`); the open
-strip `(Johnson, 1/3)` forces core size `> 2n/3`, which the probe finds always generates
-(`d = 0`).  The rigorous end (§1/§2) proves generation for `δ ≤ 1/4` from pure overlap counting;
+rigidity-deficient over-budget covers (in the probe's random search) require `δ ≥ 1/3` (core
+size `≤ ⌈2n/3⌉`); covers whose cores have size `> 2n/3` are found to generate (`d = 0`).  This
+is a statement about large-joint-core families only: a strip event does not force a large
+joint core (L121 counterexample above), so it is not an all-stack strip result.  The rigorous end
+(§1/§2) proves only the **overlap condition** S1 for `δ ≤ 1/4` from pure overlap counting (the
+S1 ⟹ generation gluing is probe-validated, not formalized);
 the strip interior `1/4 < δ < 1/3` is deficiency-free by exhaustive-random probe but its
 polynomial-gluing proof is the unchanged honest residual.  The strip is **not** falsified — the
 SYZ25 shape sits precisely on the boundary the strip excludes.  Unconditional δ\* status untouched.
@@ -150,8 +166,9 @@ theorem incremental_overlap_of_base (C : ℕ → Finset α) (k : ℕ)
 
 /-- **The clean sufficient condition, assembled.**  Cores of size `≥ s` in a ground set of size
 `≥` `G.card` with `G.card + k ≤ 2s` are incremental-`≥k`-orderable (identity order): every core
-`≥ 1` meets its predecessors in `≥ k`.  Feeding SYZ25's polynomial gluing (S1 ⟹ generation, probe-
-validated) this yields `d = 0`.  The hypothesis `G.card + k ≤ 2s` is `δ ≤ 1/4` at rate `1/2` —
+`≥ 1` meets its predecessors in `≥ k`.  Feeding SYZ25's polynomial gluing (S1 ⟹ generation,
+probe-validated, **not formalized**) would yield `d = 0`; this theorem proves only the overlap.
+The hypothesis `G.card + k ≤ 2s` is `δ ≤ 1/4` at rate `1/2` —
 below the strip; the strip boundary violates it (§3). -/
 theorem incremental_of_large_cores (G : Finset α) (C : ℕ → Finset α) (s k : ℕ)
     (hsub : ∀ i, C i ⊆ G) (hsize : ∀ i, s ≤ (C i).card)
@@ -224,24 +241,22 @@ variable {F V : Type*} [Field F] [AddCommGroup V] [Module F V] [FiniteDimensiona
 
 open ArkLib.ProximityGap.Frontier
 
-/-- **Generation ⟹ the strip budget is realized.**  Restatement of the SYZ25/SYZ24 pipeline in the
-SYZ26 conclusion: whenever the strip-interior cores generate (`⨆ Aᵢ = W`, the probe-established
-`d = 0` regime for `δ < 1/3`), the joint syndrome span attains its ceiling `finrank W`, which is
-exactly the SYZ22 realizability lower bound that closes the budget `|U| ≤ n − 1`.  The content is
-`SYZ24.span_eq_ceiling_iff_generates`; SYZ26's contribution is that the hypothesis `d = 0` is
-**forced in the open strip** (probe), so this is not vacuous. -/
+/-- **Generation ⟹ the span attains its ceiling (trivial rewrite).**  If `⨆ Aᵢ = W` then
+`finrank (⨆ Aᵢ) = finrank W`; the proof is `rw [hgen]`.  The hypothesis `d = 0` for strip-interior
+cores is only probe-supported (no formal generation theorem exists for them), so this lemma adds no
+strip content by itself. -/
 theorem generation_realizes_budget (A : ℕ → Submodule F V) (W : Submodule F V) (D : ℕ)
     (_hAW : ∀ i ∈ Finset.range D, A i ≤ W)
     (hgen : SYZ23.partialSup A D = W) :
     Module.finrank F (SYZ23.partialSup A D) = Module.finrank F W := by
   rw [hgen]
 
-/-- **The lift falls short: deficiency does not lift into the open strip (abstract avatar).**  The
-over-budget count never forces generation (SYZ25 §3): there are subspaces `A i ≤ W` with
-`∑ finrank(A i) ≥ finrank W` yet `⨆ Aᵢ ≠ W`.  SYZ26 pins *where* this happens for RS strip cores —
-only at `δ ≥ 1/3` (core size `≤ ⌈2n/3⌉`), never in the open strip.  We re-export the abstract
-witness as the SYZ26 non-lift certificate. -/
-theorem overbudget_not_imp_generation_strip :
+/-- **Over-budget does not force generation (abstract re-export of SYZ25 §3).**  There are subspaces
+`A i ≤ W` of `ℚ³` with `∑ finrank(A i) ≥ finrank W` yet `⨆ Aᵢ ≠ W`.  This is SYZ25's abstract
+linear-algebra example; it is **not** built from RS strip cores or from the §4 boundary cover
+(renamed from `overbudget_not_imp_generation_strip`, audit CW-B13-19).  The probe claim that
+deficiency for RS cores occurs only at `δ ≥ 1/3` is not formalized. -/
+theorem overbudget_not_imp_generation_abstract :
     ∃ (A : ℕ → Submodule ℚ SYZ25.CE) (W : Submodule ℚ SYZ25.CE) (D : ℕ),
       (∀ i ∈ Finset.range D, A i ≤ W)
       ∧ Module.finrank ℚ W ≤ ∑ i ∈ Finset.range D, Module.finrank ℚ (A i)
@@ -262,4 +277,4 @@ end ArkLib.ProximityGap.Frontier.SYZ26
 #print axioms ArkLib.ProximityGap.Frontier.SYZ26.boundary_full_cover
 #print axioms ArkLib.ProximityGap.Frontier.SYZ26.strip_boundary_overlap_floor_insufficient
 #print axioms ArkLib.ProximityGap.Frontier.SYZ26.generation_realizes_budget
-#print axioms ArkLib.ProximityGap.Frontier.SYZ26.overbudget_not_imp_generation_strip
+#print axioms ArkLib.ProximityGap.Frontier.SYZ26.overbudget_not_imp_generation_abstract

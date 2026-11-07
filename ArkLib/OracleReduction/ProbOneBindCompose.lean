@@ -6,6 +6,7 @@ Authors: ArkLib Contributors
 
 import ProximityPrize.Compatibility.DiscreteProbability
 import ProximityPrize.Extensions.OracleReduction.Security.Basic
+import ArkLib.ToMathlib.ProbEventBindOne
 
 /-!
 # Probability-one bind composition (issue #114 — completeness-composition keystone helper)
@@ -21,10 +22,10 @@ union bound that `reduction_append_perfectCompleteness` reduces to once the run 
 threading through `Pr[ · | mx >>= f]` cleanly, so the framework proof can apply it directly rather
 than re-deriving the `tsum`/support bookkeeping.
 
-Proof: `probEvent_bind_eq_tsum` expands `Pr[good | mx >>= f] = ∑' a, Pr[=a|mx] · Pr[good | f a]`;
-`probEvent_eq_one_iff` extracts from `Pr[p|mx] = 1` both `Pr[⊥|mx] = 0` (so `∑' a, Pr[=a|mx] = 1`,
-via `tsum_probOutput_eq_sub`) and `support mx ⊆ {p}` (so every in-support `a` has `Pr[good|f a] = 1`
-by hypothesis); the out-of-support terms vanish.
+The generic statement is proved once, as the root-namespace `probEvent_bind_eq_one` in
+`ArkLib.ToMathlib.ProbEventBindOne` (explicit predicates); `OracleComp.probEvent_bind_eq_one`
+below is a compatibility wrapper with implicit predicates, kept so both argument shapes remain
+available without a second proof.
 -/
 
 open scoped ENNReal
@@ -37,14 +38,12 @@ variable {α β : Type} {m : Type → Type v} [Monad m] [LawfulMonad m]
   [EvalDistSemantics m] [LawfulEvalDistSemantics m]
 
 /-- **Probability-one bind composition.** If `mx` satisfies `p` with probability `1`, and `f a`
-satisfies `good` with probability `1` for every `a` in the support of `mx` (in particular whenever
-`p a` holds), then `mx >>= f` satisfies `good` with probability `1`. -/
+satisfies `good` with probability `1` whenever `p a` holds, then `mx >>= f` satisfies `good` with
+probability `1`. Compatibility wrapper (implicit predicates) around the root-namespace
+`probEvent_bind_eq_one`. -/
 lemma probEvent_bind_eq_one (mx : m α) (f : α → m β) {p : α → Prop} {good : β → Prop}
     (hmx : probEvent (p) (mx) = 1) (hf : ∀ a, p a → probEvent (good) (f a) = 1) :
-    probEvent (good) (mx >>= f) = 1 := by
-  apply le_antisymm (prEvent_le_one _)
-  have h := mul_le_prEvent_bind_of_forall mx f p good (r := 1) (r' := 1)
-    hmx.ge (fun a ha => (hf a ha).ge)
-  simpa only [one_mul] using h
+    probEvent (good) (mx >>= f) = 1 :=
+  _root_.probEvent_bind_eq_one mx f p good hmx hf
 
 end OracleComp

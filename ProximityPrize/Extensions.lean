@@ -3,6 +3,8 @@ import ProximityPrize.Extensions.Commitments.Functional.Basic
 import ProximityPrize.Extensions.Commitments.Functional.Hachi.InnerOuter.Arithmetic
 import ProximityPrize.Extensions.Commitments.Functional.Hachi.InnerOuter.Correctness
 import ProximityPrize.Extensions.Commitments.Functional.Hachi.InnerOuter.Security
+import ProximityPrize.Extensions.Commitments.Functional.KZG.ConcreteTrapdoor
+import ProximityPrize.Extensions.Commitments.Functional.KZG.ConcreteVacuity
 import ProximityPrize.Extensions.Data.Classes.FunEquiv
 import ProximityPrize.Extensions.Data.Classes.Slice
 import ProximityPrize.Extensions.Data.CodingTheory.Basic.Distance
@@ -56,6 +58,7 @@ import ProximityPrize.Extensions.Data.Lattices.CyclotomicRing.Rq
 import ProximityPrize.Extensions.Data.Lattices.Vectors
 import ProximityPrize.Extensions.Data.Matrix.Basic
 import ProximityPrize.Extensions.Data.MvPolynomial.Interpolation
+import ProximityPrize.Extensions.Data.MvPolynomial.LineRestriction
 import ProximityPrize.Extensions.Data.MvPolynomial.LinearMvExtension
 import ProximityPrize.Extensions.Data.MvPolynomial.Multilinear
 import ProximityPrize.Extensions.Data.MvPolynomial.SchwartzZippelCounting
@@ -66,6 +69,8 @@ import ProximityPrize.Extensions.Data.Polynomial.SplitFold
 import ProximityPrize.Extensions.Data.Polynomial.Trivariate
 import ProximityPrize.Extensions.Data.Probability.Combinatorial
 import ProximityPrize.Extensions.Data.Probability.Instances
+import ProximityPrize.Extensions.Interaction.Oracle.Security.StateRestorationRandomized
+import ProximityPrize.Extensions.Interaction.Oracle.Security.StateRestorationRandomizedKnowledge
 import ProximityPrize.Extensions.OracleReduction.BCS.Basic
 import ProximityPrize.Extensions.OracleReduction.Basic
 import ProximityPrize.Extensions.OracleReduction.Cast
@@ -125,6 +130,7 @@ import ProximityPrize.Extensions.ProofSystem.Fri.Spec.Completeness
 import ProximityPrize.Extensions.ProofSystem.Fri.Spec.General
 import ProximityPrize.Extensions.ProofSystem.Fri.Spec.SingleRound
 import ProximityPrize.Extensions.ProofSystem.Fri.Spec.Soundness
+import ProximityPrize.Extensions.ProofSystem.GKR.Circuit
 import ProximityPrize.Extensions.ProofSystem.Plonk.Basic
 import ProximityPrize.Extensions.ProofSystem.Spartan.Basic
 import ProximityPrize.Extensions.ProofSystem.Stir.Combine
@@ -132,6 +138,9 @@ import ProximityPrize.Extensions.ProofSystem.Stir.MainThm
 import ProximityPrize.Extensions.ProofSystem.Stir.ProximityGap
 import ProximityPrize.Extensions.ProofSystem.Stir.Quotienting
 import ProximityPrize.Extensions.ProofSystem.Sumcheck.Domain
+import ProximityPrize.Extensions.ProofSystem.Sumcheck.Interaction.StateRestorationCertificate
+import ProximityPrize.Extensions.ProofSystem.Sumcheck.Interaction.StateRestorationEvaluation
+import ProximityPrize.Extensions.ProofSystem.Sumcheck.Interaction.StateRestorationSoundness
 import ProximityPrize.Extensions.ProofSystem.Sumcheck.Spec.SingleRound
 import ProximityPrize.Extensions.ProofSystem.Sumcheck.Structured
 import ProximityPrize.Extensions.ProofSystem.Sumcheck.Structured.SingleRound
@@ -141,3 +150,4 @@ import ProximityPrize.Extensions.ProofSystem.ToyProblem.SoundnessBounds
 import ProximityPrize.Extensions.ProofSystem.ToyProblem.Spec.General
 import ProximityPrize.Extensions.ProofSystem.ToyProblem.Spec.SimplifiedIOR
 import ProximityPrize.Extensions.ToCompPoly.Univariate.Basic
+import ProximityPrize.Extensions.ToMathlib.KernelEval

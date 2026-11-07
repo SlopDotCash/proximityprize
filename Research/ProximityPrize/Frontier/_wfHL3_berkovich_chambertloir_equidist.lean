@@ -95,21 +95,23 @@ formula is the SOURCE of F11, and Berkovich/CL is built ON the product formula.
 
 ## What is PROVED here (axiom-clean ℝ-arithmetic; the L3-specific obstructions)
 
-* `smallpoint_hypothesis_unmet` — the CL/Bilu hypothesis `height → 0` is contradicted: with the
-  EXACT second moment `T = (p−1)n − (n²−n) > 0`, the per-coset average modulus² is `≈ n`, so the
-  conjugate cloud has `√n`-scale archimedean support (positive height), not a clustering small
-  point. (The theorem's premise is FALSE at the prize.)
-* `T_secondmoment_exact` — the load-bearing exact integer identity `Σ_{b≠0}|η_b|² = (p−1)n−n²+n`,
-  cross-checked by the probe; the per-coset average `→ n` (Johnson floor).
+* `avg2_exceeds_one` — for `n ≥ 2`, `p > n²`, the per-coset average `n − n(n−1)/(p−1)` of the second
+  moment exceeds `1`, so the conjugate cloud has `√n`-scale archimedean support (positive height),
+  not a clustering small point.  The second-moment identity `Σ_{b≠0}|η_b|² = (p−1)n − (n²−n)` it is
+  derived from is NOT proved in this file (only the derivation sketch below); a former
+  `T_secondmoment_exact` was the reflexivity `X = X` and has been removed (audit 2026-10-28,
+  CW-B18-19).
+* `smallpoint_hypothesis_unmet` — notation only: the order fact `1 < avg2 ⟹ ¬ avg2 ≤ 1`.
 * `coupled_energy_is_lower_bound` — the CL energy-minimization + product formula gives a LOWER
   bound on the height-spread (F11 sign-reversal SURVIVES the arch+non-arch coupling): adding
   non-archimedean `log⁺` energies (each `≥ 0`) cannot flip a lower bound into an upper bound.
 * `house_unbounded_under_weakstar_rate` — F0 in metric form: ANY weak-* / `W_2` equidistribution
   rate `ε` admits configurations of arbitrarily large House (one outlier conjugate at radius `R`,
   `W_2`-cost `(R−R₀)·m^{-1/2} ≤ ε`), so the CL rate places NO upper bound on the House.
-* `berkovich_maxmod_is_nonarch` / `Req_assertion_is_circular` — the Berkovich max-modulus controls
-  the `p`-adic norm (F3), and the asserted equilibrium radius `R_eq` equals `House − error`,
-  i.e. the prize conclusion restated (F0 circular).
+* `Req_assertion_is_circular` — notation only: `House = R_eq + error ⟹ R_eq = House − error` (the
+  F0-circularity remark is prose, not a theorem).  The F3 archimedean-blindness remark (Berkovich
+  max-modulus controls only the `p`-adic norm) is prose only; a former `berkovich_maxmod_is_nonarch`
+  returned its hypothesis `∧ True` and has been removed (CW-B18-19).
 
 We do **NOT** prove `M(n) ≤ C√(n log(p/n))`. The CORE stays OPEN. HL3 reduces to F0 (+ F3, F11):
 the Berkovich/Chambert-Loir coupled equidistribution is a weak-* statement whose small-point
@@ -150,13 +152,9 @@ namespace ProximityGap.Frontier.HL3
 
 /-! ## 1. Obstruction B — the small-point hypothesis is unmet (exact second moment). -/
 
-/-- **`T_secondmoment_exact`.** The EXACT integer second moment of the period over all nonzero
-frequencies: `Σ_{b≠0} |η_b|² = (p−1)·n − (n² − n)`. (Derivation: `Σ_{b≠0}|η_b|²
-= Σ_{x,y∈μ_n} Σ_{b≠0} e_p(b(x−y)) = Σ_{x,y}((p−1)·[x=y] − [x≠y]) = (p−1)n − (n²−n)`.) This is the
-probe's exact-int quantity; it is `> 0`, and the per-coset average `T/(p−1) = n − n(n−1)/(p−1) → n`
-is the Johnson floor — the equilibrium-measure BULK scale. -/
-theorem T_secondmoment_exact (p n : ℤ) :
-    ((p - 1) * n - (n ^ 2 - n)) = (p - 1) * n - (n ^ 2 - n) := rfl
+/- The second-moment identity `Σ_{b≠0} |η_b|² = (p−1)·n − (n² − n)` (derivation:
+`Σ_{x,y∈μ_n} Σ_{b≠0} e_p(b(x−y)) = Σ_{x,y}((p−1)·[x=y] − [x≠y])`) is NOT formalized here; the former
+`T_secondmoment_exact` was `X = X` by `rfl` and was removed (CW-B18-19). -/
 
 /-- **`smallpoint_hypothesis_unmet`.** The Baker–Rumely / Chambert-Loir / Bilu equidistribution
 theorem requires the sequence to be a *small point* — height `→ 0`, i.e. the conjugate cloud
@@ -165,7 +163,8 @@ clusters (vanishing spread). For the period, the per-coset average squared modul
 does NOT cluster. We certify the contradiction with the small-point premise: if the average
 squared modulus is `avg2 ≥ 1` (here `avg2 ≈ n ≫ 1`) then the cloud cannot be a height-`0` point
 (whose conjugates would all have modulus `≤ 1`, giving `avg2 ≤ 1`). Concretely, `avg2 > 1` is
-INCOMPATIBLE with the small-point conclusion `avg2 ≤ 1`. -/
+INCOMPATIBLE with the small-point conclusion `avg2 ≤ 1`.  (As a theorem this is only the order fact
+`1 < avg2 ⟹ ¬ avg2 ≤ 1`; all content is in the prose above and `avg2_exceeds_one` — CW-B18-19.) -/
 theorem smallpoint_hypothesis_unmet (avg2 : ℝ) (hbig : 1 < avg2) :
     ¬ (avg2 ≤ 1) := by
   exact not_le.mpr hbig
@@ -245,20 +244,15 @@ theorem coupled_energy_is_lower_bound (arch nonarch archLower : ℝ)
     archLower ≤ arch + nonarch := by
   linarith
 
-/-- **`berkovich_maxmod_is_nonarch` (F3).** The only sup-control the Berkovich machinery provides
-is the non-archimedean maximum-modulus principle: the Berkovich sup-norm equals the Shilov-boundary
-value of the `p`-adic absolute value. Symbolically, the controlled quantity is `normP` (a
-`p`-adic / `2`-adic norm), DISJOINT from the archimedean `houseInfty` (the complex `max|η_c|`) that
-IS the wall. We record that knowing `normP = shilov` gives no relation to `houseInfty`: the two
-are independent reals (F3 archimedean-blindness). -/
-theorem berkovich_maxmod_is_nonarch (normP shilov houseInfty : ℝ)
-    (hmaxmod : normP = shilov) :
-    normP = shilov ∧ True := ⟨hmaxmod, trivial⟩
+/- F3 remark (prose only): the Berkovich maximum-modulus principle controls the `p`-adic norm
+(Shilov-boundary value), which is independent of the archimedean `max|η_c|`.  The former
+`berkovich_maxmod_is_nonarch` returned its hypothesis `∧ True` and was removed (CW-B18-19). -/
 
 /-- **`Req_assertion_is_circular` (F0).** The candidate's own archimedean inequality reads
 `House = R_eq + error` (the equilibrium-support radius plus weak-* error). Solving,
 `R_eq = House − error`; since `House = M(n)/√n` is the wall, asserting `R_eq = √(log(p/n))` is the
-PRIZE CONCLUSION restated, not an independent input — circular. -/
+PRIZE CONCLUSION restated, not an independent input — circular.  (As a theorem this is only the
+rearrangement `House = R_eq + error ⟹ R_eq = House − error`; CW-B18-19.) -/
 theorem Req_assertion_is_circular (House R_eq error : ℝ)
     (hcandidate : House = R_eq + error) :
     R_eq = House - error := by linarith
@@ -266,11 +260,9 @@ theorem Req_assertion_is_circular (House R_eq error : ℝ)
 end ProximityGap.Frontier.HL3
 
 /-! ## Axiom audit (expected: propext, Classical.choice, Quot.sound only — no sorryAx) -/
-#print axioms ProximityGap.Frontier.HL3.T_secondmoment_exact
 #print axioms ProximityGap.Frontier.HL3.smallpoint_hypothesis_unmet
 #print axioms ProximityGap.Frontier.HL3.avg2_exceeds_one
 #print axioms ProximityGap.Frontier.HL3.W2_outlier_cost
 #print axioms ProximityGap.Frontier.HL3.house_unbounded_under_weakstar_rate
 #print axioms ProximityGap.Frontier.HL3.coupled_energy_is_lower_bound
-#print axioms ProximityGap.Frontier.HL3.berkovich_maxmod_is_nonarch
 #print axioms ProximityGap.Frontier.HL3.Req_assertion_is_circular

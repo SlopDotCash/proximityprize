@@ -6,29 +6,53 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.EnergyExcessCore
 
 /-!
-# The wall CLOSES in the deployed regime `n² ≤ p` (#389)
+# Conditional representation bound from a Weil-form energy-excess input (#389)
 
-Empirically (probes `probe_excess_growth/even/ratio/weil_form`), the energy excess of a
-root-of-unity subgroup obeys the **Weil form**
+The historical title of this file was "the wall CLOSES in the deployed regime `n² ≤ p`".
+That overclaims: what is proved is a **conditional** Garcia–Voloch representation bound
+`GVRepBound G M`, from an energy-excess hypothesis that is *not* proved anywhere in-tree.
 
-  `energyExcess(μ_n) = Θ(n⁴ / p)`,  with `p · energyExcess ≤ C · n⁴`, `C ≈ 4.4` bounded,
+## The research input (a hypothesis, not a known theorem)
 
-and `energyExcess/n² → 0` as `n²/p → 0` (μ_n is *exactly* Sidon for small subgroups).
-This is the standard additive-energy-of-a-multiplicative-subgroup bound (a 4th-moment /
-equidistribution estimate — the regime where Weil *works*, unlike the worst-case
-representation count of `SubgroupCharacterSumNoGo`).
+Finite probes (`probe_excess_growth/even/ratio/weil_form`) motivated the **Weil-form**
+estimate
 
-Taking that bound as the named input, this file proves — by pure arithmetic on the
-already-machine-checked `gvRepBound_of_excess_le` — that the **entire supply wall closes
-in the deployed regime `n² ≤ p`** (`n ≤ √p`, exactly the production setting `n ≪ √q`):
+  `p · energyExcess(μ_n) ≤ C · n⁴`   (`C ≈ 4.4` in the probed range),
 
-> **`wall_closes_in_weil_regime`** — if `p · energyExcess(μ_n) ≤ C·n⁴` and `n² ≤ p`,
-> then `GVRepBound G M` for any `M` with `(3+C)·n ≤ M²` and `M³ ≤ 64n²` (`M = O(√n)`).
+which in the regime `n² ≤ p` is equivalent to `energyExcess(μ_n) = O(n²)`, i.e. additive
+energy `E(μ_n) = O(n²)`. This file takes it as the explicit hypothesis `hWeil`; it is a
+**probe-motivated conditional research input**. We cite no theorem in the literature that
+proves it in this regime, and it should not be called "standard" or "known true": general
+proven bounds on the additive energy of multiplicative subgroups (Heath-Brown–Konyagin type
+`E(H) ≪ |H|^{5/2}` for `|H| ≤ p^{2/3}`, and later refinements) are much weaker than
+`E = O(n²)`.
 
-So in the deployed regime the energy excess is `O(n²)`, the representation count is
-`O(√n)`, and `δ*` reaches the optimal (capacity-side) value — `μ_n` beats Johnson.  The
-only remaining input is the **standard Weil energy bound** `p·excess ≤ C·n⁴`, a known
-true estimate (not the worst-case no-go), now isolated as the sole hypothesis.
+The finite data are also **not** a uniform `Θ(n⁴/p)` law: in the strong Sidon regime
+(`p > 2^n`, see `SmallSubgroupSidon`) `μ_n` is exactly Sidon-modulo-negation and
+`energyExcess(μ_n) = 0` (`SidonEnergyIff.energyExcess_eq_zero_iff_sidonModNeg`), so no
+matching `Ω(n⁴/p)` lower bound holds there. Only the upper-bound form is used here.
+
+## What is formalized (axiom-clean, no `sorry`)
+
+Pure arithmetic on the machine-checked `gvRepBound_of_excess_le`:
+
+* `gvRepBound_of_energyExcess_quadratic` — if `energyExcess G ≤ C·n²`, then `GVRepBound G M`
+  for every `M` with `(3+C)·n ≤ M²` and `M³ ≤ 64n²`.
+* `wall_closes_in_weil_regime` (historical name) — if `p · energyExcess(μ_n) ≤ C·n⁴` and
+  `n² ≤ p`, then the same conclusion `GVRepBound G M` under the same two extra `M`
+  hypotheses (`(3+C)·n ≤ M²`, `M³ ≤ 64n²`, so `M = Θ(√n)` and `n` large enough relative to
+  `C`). These `M` hypotheses are part of the statement and are not discharged here.
+
+## What is NOT proved here
+
+* the input estimate `p · energyExcess ≤ C·n⁴` itself;
+* any received-word **list-size** bound, any universal incidence/supply census, or any
+  bound on `ε_mca` — `GVRepBound` bounds additive representation counts `r(t)` of `μ_n`,
+  and no bridge from it to the MCA/list objects is supplied in this file;
+* any statement about `δ*`, capacity, or beating Johnson. The earlier claims that "the
+  entire supply wall closes" and "`δ*` reaches the optimal (capacity-side) value" relied on
+  such further bridges, which are absent (see `Research/ProximityPrize/LegacyWorkbench.lean`:
+  supply is not incidence).
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.
 -/
@@ -43,8 +67,8 @@ variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
 /-- **Quadratic excess closes the representation wall.** If the additive-energy excess above the
 minimal SidonModNeg value is `≤ C·n²`, then the Garcia–Voloch representation bound holds at
-`M = O(√n)`. This is the direct consumer of the now-isolated open core
-`E_{F_p}(μ_n) ≤ C·n²`. -/
+`M = O(√n)`, subject to the two explicit `M` hypotheses. This is the direct consumer of the open
+(unproved) quadratic-excess input `energyExcess(μ_n) ≤ C·n²`, i.e. `E_{F_p}(μ_n) = O(n²)`. -/
 theorem gvRepBound_of_energyExcess_quadratic {G : Finset F} {n C M : ℕ}
     (hn : 1 ≤ n) (hGmem : ∀ z, z ∈ G ↔ z ^ n = 1) (hcard : G.card = n)
     (h2 : (2 : F) ≠ 0) (h0 : (0 : F) ∉ G) (hneg : ∀ x ∈ G, -x ∈ G)
@@ -63,9 +87,12 @@ theorem gvRepBound_of_energyExcess_quadratic {G : Finset F} {n C M : ℕ}
     exact hM3
   · omega
 
-/-- **The wall closes in the deployed regime.**  Given the standard Weil energy bound
-`p · energyExcess ≤ C·n⁴` and `n² ≤ p`, the Garcia–Voloch representation bound holds at
-`M = O(√n)`: every `c ≠ 0` has `r(c) ≤ M`, so the entire supply wall closes. -/
+/-- **Conditional representation bound in the regime `n² ≤ p`** (historical name
+`wall_closes_in_weil_regime`).  Given the probe-motivated, *unproved* Weil-form input
+`p · energyExcess ≤ C·n⁴` (hypothesis `hWeil`), `n² ≤ p`, and the explicit `M` hypotheses
+`(3+C)·n ≤ M²`, `M³ ≤ 64n²`, the Garcia–Voloch representation bound holds at `M`: every
+`c ≠ 0` has `r(c) ≤ M`. This is only a representation-count bound; it does not by itself give
+a list-size, census, `ε_mca`, `δ*` or capacity statement. -/
 theorem wall_closes_in_weil_regime {G : Finset F} {n C M : ℕ}
     (hn : 1 ≤ n) (hGmem : ∀ z, z ∈ G ↔ z ^ n = 1) (hcard : G.card = n)
     (h2 : (2 : F) ≠ 0) (h0 : (0 : F) ∉ G) (hneg : ∀ x ∈ G, -x ∈ G)

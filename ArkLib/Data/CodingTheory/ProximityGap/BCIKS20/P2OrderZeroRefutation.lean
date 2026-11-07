@@ -32,8 +32,11 @@ with `p = evalX (C x₀) (Δ_X¹ R)` the order-1 `X`-Taylor coefficient and
 The recursion-side normalization clears by the **full** `W ^ R.natDegree`, but the order-1 numerator
 `p` has actual `Y`-degree `natDegreeY p`, which may be strictly smaller. When `p` is a nonzero
 `Y`-**constant** (`natDegreeY p = 0`) the target collapses to `lift c = lift c / W ^ R.natDegree`,
-i.e. `W ^ R.natDegree = 1` — **false** for non-monic `H` (`W` is not a root of unity, so
-`W ^ R.natDegree ≠ 1` for `R.natDegree ≥ 1`).
+i.e. `W ^ R.natDegree = 1` — **false** whenever `W ^ R.natDegree ≠ 1`: in particular when
+`H.leadingCoeff` is a nonunit (`W` is then not a root of unity, `WPow.W_pow_eq_iff`), or when the
+leading coefficient is a unit constant `c` with `c ^ R.natDegree ≠ 1` (e.g. `c = 2` over `ℚ`, the
+witness `P2OrderZeroRefutationWitness`). Non-monic alone does not suffice: a unit leading
+coefficient `-1` gives `W = -1`, and `W ^ R.natDegree = 1` for even `R.natDegree`.
 
 ## Why this regime is reachable (non-vacuity)
 
@@ -161,8 +164,9 @@ theorem restrictedMatchAt_zero_false_of_constant_of_leadingCoeff_pow_ne_one
   rw [restrictedMatchAt_zero_iff_eval₂WDivTarget H x₀ R hHyp hd]
   exact eval₂WDivTarget_false_of_constant_of_leadingCoeff_pow_ne_one H x₀ R c hp hc hpow
 
-/-- Non-monic corollary of the order-zero obstruction: `W_pow_eq_iff` turns
-`W ^ R.natDegree = 1 = W ^ 0` into `R.natDegree = 0`, contradicting `2 ≤ R.natDegree`. -/
+/-- Nonunit-leading-coefficient corollary of the order-zero obstruction (the `nonmonic` in the
+name means the hypothesis `¬ IsUnit H.leadingCoeff`, stronger than non-monic): `W_pow_eq_iff`
+turns `W ^ R.natDegree = 1 = W ^ 0` into `R.natDegree = 0`, contradicting `2 ≤ R.natDegree`. -/
 theorem restrictedMatchAt_zero_false_of_constant_of_nonmonic
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hd : 2 ≤ R.natDegree) (hlc : ¬ IsUnit H.leadingCoeff) (c : F[X])

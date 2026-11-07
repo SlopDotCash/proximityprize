@@ -168,11 +168,13 @@ class ResidualCensusTests(unittest.TestCase):
         self.assertEqual(got["SubJohnsonListResidual"], "open")
 
     def test_numeral_specialisation_is_not_a_provider(self):
+        # A `k := 0` provider proves one (here vacuous) instance, so the row is
+        # reported `instance_only` with that regime listed, never `discharged`.
         got = self.statuses(
             "def FooResidual {k : Nat} : Prop := 0 < k → False\n\n"
             "theorem fooResidual_zero : FooResidual (k := 0) := by\n"
             "  intro h; omega\n")
-        self.assertEqual(got["FooResidual"], "open")
+        self.assertEqual(got["FooResidual"], "instance_only")
 
     def test_refutation_outranks_specialised_provider(self):
         got = self.statuses(

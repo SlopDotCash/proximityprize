@@ -328,7 +328,17 @@ theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_T218
 
 /-- **ABF26 Corollary 3.5 [CZ25 Cor 2.21] — coordinate-fiber cap plus injective GK16 FRS.**
 Composes the coordinate-fiber-cap reduction with the checked C3.5-compatible FRS profile
-bridge from the injective GK16 FRS side conditions. -/
+bridge from the injective GK16 FRS side conditions.
+
+**Legacy, vacuous interface.** The hypotheses of this front door are unsatisfiable, so it
+establishes nothing about any concrete code; it is retained only for source compatibility.
+`hEinj` asks for injectivity of the folded evaluation map on the *whole* of `F[X]`, which
+always fails (`ReedSolomon.Folded.frsEvalOnPoints_not_injective`: the vanishing polynomial of
+the finitely many fold points is a nonzero kernel element). Independently, `hω_sep` quantifies
+over families of arbitrary degree and is false over every finite field (degrees `0` and
+`orderOf ω`, or `1` and `2` when `ω = 0`, collide). Use the admissible/order front doors
+(`frs_list_decoding_capacity_cz25_of_coordFiberCap_admissible` and its variants), whose
+guards are the degree-bounded forms of these conditions. -/
 theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_injective
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
     {F : Type} [Field F] [Fintype F] [DecidableEq F]
@@ -458,7 +468,17 @@ theorem frs_list_decoding_capacity_cz25_of_T218_le_one_eta_eq_one_div_nat
     (one_div_eta_eq_natFloor_of_eta_eq_one_div_nat hm rfl)
 
 /-- Injective-GK16 route with the documented reciprocal-natural slack convention
-`η = 1 / m`.  This discharges the floor side condition `hηnat` at the call site. -/
+`η = 1 / m`.  This discharges the floor side condition `hηnat` at the call site
+
+**Legacy, vacuous interface.** The hypotheses of this front door are unsatisfiable, so it
+establishes nothing about any concrete code; it is retained only for source compatibility.
+`hEinj` asks for injectivity of the folded evaluation map on the *whole* of `F[X]`, which
+always fails (`ReedSolomon.Folded.frsEvalOnPoints_not_injective`: the vanishing polynomial of
+the finitely many fold points is a nonzero kernel element). Independently, `hω_sep` quantifies
+over families of arbitrary degree and is false over every finite field (degrees `0` and
+`orderOf ω`, or `1` and `2` when `ω = 0`, collide). Use the admissible/order front doors
+(`frs_list_decoding_capacity_cz25_of_coordFiberCap_admissible` and its variants), whose
+guards are the degree-bounded forms of these conditions. -/
 theorem frs_list_decoding_capacity_cz25_of_coordFiberCap_injective_eta_eq_one_div_nat
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
     {F : Type} [Field F] [Fintype F] [DecidableEq F]

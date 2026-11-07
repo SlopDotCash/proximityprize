@@ -2,14 +2,25 @@
 """OC G224 witness generator of record. Recomputes float-free every constant the
 Lean file G224 asserts, and prints them for hard-coding + asserts self-consistency.
 
-Witnesses:
- W1 (POSITIVE exact per-mode in a NEGATIVE packet): (n=16,r=5,p=257)
-     chi2-mode integrand k2 = +12734300160 > 0, while PAR-(n=16,r=5,p=257) < 0.
- W2 (NEGATIVE chi2-mode, negative packet): (n=16,r=5,p=97) k2 = -2477260800.
- W3 (A sign flips while PAR- stays negative): exact PAR-/A at p=97 vs p=257, n=16 r=5.
-The pair (W1 positive mode, W2 negative mode) proves the integrand is NOT
-sign-definite; W3 records PAR- < 0 across an A sign flip (structural regularity,
-computation of record). Also emits the full exact PAR-<0 census counts.
+CORRECTION (audit finding L106).  The original revision of this probe set
+    k2 = W^(chi2) * (E_r^(chi2) O_{r-1}^(chi2) + O_r^(chi2) E_{r-1}^(chi2))
+with ^(chi2) the Legendre (MULTIPLICATIVE quadratic-character) transform, and called
+it "the chi2-mode integrand of the PAR- packet".  That is wrong: multiplicative
+transforms do not diagonalise the ADDITIVE circular correlation E_r * O_{r-1}, so
+this product of separate transforms ("sepProd") is not a mode of PAR-.  The genuine
+quadratic-character mode of the pairing p*<W, X>, X = E_r*O_{r-1} + O_r*E_{r-1}, is
+(p/(p-1)) * W^(chi2) * X^(chi2) by multiplicative Parseval on F_p^*; its sign is the
+sign of chi2Pair = W^(chi2) * X^(chi2), computed below from the actual correlation X.
+
+Witnesses (n=16, r=5):
+ W1 p=257: sepProd = +12734300160, chi2Pair = +15408783360 > 0, PAR- < 0, A < 0.
+ W2 p=97 : sepProd =  -2477260800, chi2Pair =  +1278443520 > 0, PAR- < 0, A < 0.
+ W3 p=113: A > 0 while PAR- < 0 (packet sign co-exists with an A sign flip).
+So under the genuine chi2 pairing BOTH W1 and W2 have a strictly POSITIVE quadratic
+mode inside a strictly negative packet (the multiplicative Parseval decomposition of
+PAR- is not termwise sign-definite).  The sign DISAGREEMENT between W1 and W2 exists
+only for sepProd and carries no packet meaning.  Nothing here certifies the sign of
+any ADDITIVE-character mode; that census is the float probe oc_g224_mode_signs.py.
 """
 import math,json,os,tempfile
 from collections import Counter
@@ -80,7 +91,29 @@ def cell(p,n,r):
     Er,Or_=halves_int(p,grp,r,eta,Lr);Em,Om=halves_int(p,grp,r-1,eta,Lm)
     Wc=chi2_transform(W,p);Erc=chi2_transform(Er,p);Orc=chi2_transform(Or_,p)
     Emc=chi2_transform(Em,p);Omc=chi2_transform(Om,p)
+    # sepProd: product of SEPARATE Legendre transforms.  Audit finding L106: the
+    # Legendre symbol is a MULTIPLICATIVE character, and multiplicative transforms do
+    # not turn the additive circular correlation E_r * O_{r-1} into a product of
+    # transforms.  So sepProd is NOT a mode of the PAR- packet; it is recorded only
+    # for provenance (it is the quantity the original G224 called "k2").
     k2=Wc*(Erc*Omc+Orc*Emc)
+    # The genuine object: X(t) = sum_s E_r(s) O_{r-1}(s-t) + O_r(s) E_{r-1}(s-t), so
+    # that sum_t W(t) X(t) = <W, E_r * O_{r-1} + O_r * E_{r-1}> (the PAR- pairing).
+    # Multiplicative Parseval on F_p^*:
+    #   sum_{t != 0} W(t) X(t) = (1/(p-1)) sum_psi conj(W^(psi)) X^(psi),
+    # so the quadratic-character (psi = chi2, real) mode of p*<W,X> is
+    #   (p/(p-1)) * W^(chi2) * X^(chi2),  whose sign is that of chi2Pair below.
+    def xcorr(A,B):
+        X=[0]*p
+        for s in range(p):
+            if A[s]:
+                for u in range(p):
+                    if B[u]:X[(s-u)%p]+=A[s]*B[u]
+        return X
+    X1=xcorr(Er,Om);X2=xcorr(Or_,Em)
+    X=[X1[t]+X2[t] for t in range(p)]
+    Xc=chi2_transform(X,p)
+    chi2Pair=Wc*Xc
     # exact PAR- via physical parity split (L-scaled). correlation Corr(A,B)(t)=sum_s A(s)B(s-t)
     def corr_W(A,B):
         # sum_t W(t) * (A corr B)(t) = sum_s A(s) sum_t W(t) B(s-t)
@@ -101,27 +134,33 @@ def cell(p,n,r):
     Rr=[Er[t]+Or_[t] for t in range(p)];Rm=[Em[t]+Om[t] for t in range(p)]
     A=p*corr_W(Rr,Rm)-n*n*mass*Lr*Lm
     assert PARp+PARm==A,(p,n,r)
-    return {"p":p,"n":n,"r":r,"k2":k2,"Wc":Wc,"PARm":PARm,"A":A,"Lr":Lr,"Lm":Lm}
+    # X is the right pairing object: <W,X> = eo + oe.
+    assert sum(W[t]*X[t] for t in range(p))==eo+oe,(p,n,r)
+    return {"p":p,"n":n,"r":r,"k2":k2,"Wc":Wc,"Xc":Xc,"chi2Pair":chi2Pair,
+            "PARm":PARm,"A":A,"Lr":Lr,"Lm":Lm}
 
-W1=cell(257,16,5)   # positive exact mode, negative packet
-W2=cell(97,16,5)    # negative exact mode, negative packet
+W1=cell(257,16,5)
+W2=cell(97,16,5)
 W3=cell(113,16,5)   # A POSITIVE, PAR- still negative (regularity across A-flip)
 print("=== EXACT WITNESSES ===")
 for w in (W1,W2,W3):
-    print(f" n={w['n']} r={w['r']} p={w['p']}: k2={w['k2']} sign={'+' if w['k2']>0 else '-'} "
-          f"| PAR-={'+' if w['PARm']>0 else '-'} (={w['PARm']}) | A={'+' if w['A']>0 else '-'}")
-assert W1["k2"]>0, "W1 must be positive mode"
-assert W2["k2"]<0, "W2 must be negative mode"
+    print(f" n={w['n']} r={w['r']} p={w['p']}: sepProd={w['k2']} chi2Pair={w['chi2Pair']} "
+          f"(Wc={w['Wc']} Xc={w['Xc']}) | PAR-={w['PARm']} | A={w['A']}")
+# provenance: the separate-transform products (NOT packet modes) keep their old values
+assert W1["k2"]==12734300160 and W2["k2"]==-2477260800
+# genuine quadratic-character pairing: positive at both W1 and W2
+assert W1["chi2Pair"]>0 and W2["chi2Pair"]>0, "genuine chi2 pairing positive at W1, W2"
 assert W1["PARm"]<0 and W2["PARm"]<0 and W3["PARm"]<0, "all packets negative"
 assert (W2["A"]<0) and (W3["A"]>0), "A must flip sign between W2 and W3 while PAR- stays negative"
-print("\nSELF-CHECK PASS: PAR- integrand has BOTH signs (W1>0, W2<0) => not sign-definite;")
+print("\nSELF-CHECK PASS: genuine chi2 pairing > 0 inside a PAR- < 0 packet at W1 and W2;")
 print("all three packets PAR- < 0; A flips sign (W2 A<0, W3 A>0) with PAR- unchanged negative.")
+print("(sepProd changes sign between W1 and W2 but is NOT a mode of PAR-; audit L106.)")
 print(f"\nLEAN CONSTANTS:")
-print(f"  w1K2 := {W1['k2']}  (n=16,r=5,p=257, POSITIVE mode)")
-print(f"  w2K2 := {W2['k2']}  (n=16,r=5,p=97, NEGATIVE mode)")
+print(f"  w1SepProd := {W1['k2']}  w1Chi2Pair := {W1['chi2Pair']}  (n=16,r=5,p=257)")
+print(f"  w2SepProd := {W2['k2']}  w2Chi2Pair := {W2['chi2Pair']}  (n=16,r=5,p=97)")
 print(f"  w1PARm := {W1['PARm']}  w1A := {W1['A']}")
 print(f"  w2PARm := {W2['PARm']}  w2A := {W2['A']}")
-print(f"  w3PARm := {W3['PARm']}  w3A := {W3['A']}  (n=16,r=5,p=113, A>0)")
+print(f"  w3PARm := {W3['PARm']}  w3A := {W3['A']}  w3Chi2Pair := {W3['chi2Pair']}  (n=16,r=5,p=113, A>0)")
 outdir="/tmp/arklib-reports" if os.path.isdir("/tmp/arklib-reports") else os.path.join(tempfile.gettempdir(),"arklib-reports")
 os.makedirs(outdir,exist_ok=True)
 json.dump({"W1":W1,"W2":W2,"W3":W3},open(os.path.join(outdir,"oc_g224_witnesses.json"),"w"),indent=1)

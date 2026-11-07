@@ -79,8 +79,13 @@ structure Hab25JohnsonDichotomyData
   Efactor : Idx → Finset F₀
   /-- S4: the cover `E ⊆ ⋃ E_{i,j}` -/
   hcover : Edis ⊆ Index.biUnion Efactor
-  /-- **The dichotomy** ([Hab25] Claim 1): each factor is small, or it admits an affine
-  pair such that every exceptional scalar improves agreement at a disagreement point. -/
+  /-- **The dichotomy** (modelled on [Hab25] Claim 1): each factor is small, or it admits an
+  affine pair such that every exceptional scalar improves agreement at a disagreement point.
+  Honesty note (audit CW-B19-04): `d₀ d₁` are existentially free here (not tied to the stack or
+  to an affine-captured degree-`<k` pair), so the second disjunct is equivalent to
+  `(Efactor ij).card ≤ n` and the field is just the cardinality bound
+  `(Efactor ij).card ≤ max T n` (see `small_or_improvingPair_iff_card_le` in
+  `Hab25CellDichotomyWiring`). The Claim 1 / Hensel content is not encoded by this field. -/
   hdichotomy : ∀ ij ∈ Index,
     (Efactor ij).card ≤ T ∨
     ∃ d₀ d₁ : ι₀ → F₀, ∀ z ∈ Efactor ij,

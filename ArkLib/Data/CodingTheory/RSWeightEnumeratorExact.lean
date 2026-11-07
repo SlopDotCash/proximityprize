@@ -19,11 +19,18 @@ lands the **exact** enumerator by inclusion–exclusion
 * `card_evalSupport_eq` — **exact support count**: for any `T`,
   `#{p : evalSupport p = T} = Σ_{t ⊆ T} (−1)^{|t|}·q^{deg − (n − |T| + |t|)}`
   (ℤ-valued alternating sum);
-* `card_evalWeight_eq` — **the exact MDS weight enumerator**:
-  `A_d = C(n,d) · Σ_{j ≤ d} (−1)^j C(d,j) q^{deg − (n − d + j)}` — the
-  classical closed form, now a theorem.  This is the O120/O122 lane's M2
-  prerequisite: the distance distribution `B_d = q^deg·A_d` of the code,
-  in-tree and exact.
+* `card_evalWeight_eq` — **the exact polynomial weight count**:
+  `#{p ∈ degreeLT F deg : wt(eval p) = d}
+    = C(n,d) · Σ_{j ≤ d} (−1)^j C(d,j) q^{deg − (n − d + j)}`.
+
+**Scope: polynomials, not codewords, for unrestricted `deg`.**  All counts here are over
+coefficient polynomials in `degreeLT F deg`, with no hypothesis `deg ≤ n`.  When `deg ≤ n`
+the evaluation map is injective (`evalOnS_univ_injective`), so these are exactly the counts of
+distinct RS codewords and `card_evalWeight_eq` is the classical MDS weight enumerator `A_d`;
+then the (ordered-pair) distance distribution of the code is `q^deg · A_d` (by linearity), which
+is the O120/O122 lane's M2 prerequisite.  When `deg > n` every codeword is hit by `q^{deg − n}`
+polynomials, so the codeword enumerator is the polynomial count divided by `q^{deg − n}`; the
+identities below remain true as polynomial counts but must not be read as codeword counts there.
 
 Verified numerically (O109 census `probe_locus_incidence_census.py`: the MDS
 closed form matches exhaustive enumeration at every tested `(q, n, k, w)`).
@@ -148,10 +155,12 @@ theorem card_evalSupport_eq (α : ι ↪ F) (deg : ℕ)
   push_cast
   ring
 
-/-- **THE EXACT MDS WEIGHT ENUMERATOR**: the number of degree-`< deg`
-polynomials of evaluation weight exactly `d` is
-`C(n,d) · Σ_{j ≤ d} (−1)^j C(d,j) q^{deg − (n − d + j)}` — the classical
-closed form as a theorem. -/
+/-- **Exact polynomial weight count (MDS weight enumerator for `deg ≤ n`)**: the number of
+degree-`< deg` polynomials of evaluation weight exactly `d` is
+`C(n,d) · Σ_{j ≤ d} (−1)^j C(d,j) q^{deg − (n − d + j)}`.  For `deg ≤ n` this is the classical
+closed form of the codeword weight enumerator `A_d` (polynomials and codewords correspond
+bijectively by `evalOnS_univ_injective`); for `deg > n` it counts each codeword `q^{deg − n}`
+times. -/
 theorem card_evalWeight_eq (α : ι ↪ F) (deg : ℕ)
     [Fintype (Polynomial.degreeLT F deg)] (d : ℕ) :
     ((Finset.univ.filter

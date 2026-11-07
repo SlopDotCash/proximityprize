@@ -25,7 +25,8 @@ This file proves that strawman **FALSE**, fencing the weld against laundering:
   is exactly what excludes `Y² − Z` (its fiber roots `±√γ` are not the values of any single
   polynomial section), so it cannot be weakened away.
 
-This is the formal counterpart of the prose honesty note in `Hab25CandidateProduction`
+This is the formal counterpart of the prose honesty note formerly in the since-removed module
+`Hab25CandidateProduction`
 ("algebra-only production is FALSE").
 
 Axiom-clean: `[propext, Classical.choice, Quot.sound]` (audited at end of file).

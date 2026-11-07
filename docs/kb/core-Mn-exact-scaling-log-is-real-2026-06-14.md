@@ -1,5 +1,15 @@
 # Direct exact-max test on the open core M(n) at beta=4: the LOG factor is REAL (no-log RS escape eliminated), 2026-06-14
 
+> **Scope correction (2026-10-28 audit, T48).** Three increasing finite ratios
+> `M/√n = 2.67, 3.46, 4.06` (`n = 8, 16, 32`) exclude the particular constants `C < 4.06` in
+> `M ≤ C√n` at those points. They do not show that `M/√n` is unbounded, so "M(n) is NOT ≤ C√n" for
+> every constant, "the log factor is REAL" and "REFUTED" are not established. Equally,
+> `M/√(n ln m) = 1.07, 1.20, 1.26` does not prove convergence to a constant or confirm the BGK
+> form. The search is exact in its coverage, since every nonzero frequency was scanned, but the
+> displayed complex and trigonometric values are floating-point approximations. Arithmetic
+> exactness of those values would need a certified error analysis. The Gauss-sum expansion with
+> the `1/m` normalization below is correct.
+
 ## What was tested (direct attack on the open core, per the prize directive)
 The whole campaign reduces to ONE open inequality (#444 §2/§7.1): M(n)=max_{b!=0}|Sum_{x in mu_n} e_p(bx)|
 <= C*sqrt(n*log m), n=2^mu, p~n^4 (beta=4 = the Burgess barrier = the prize point), m=(p-1)/n. Rather

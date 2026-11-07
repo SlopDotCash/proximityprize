@@ -15,17 +15,25 @@ with bad scalars `λ = ξ_1+…+ξ_r` ranging over the **r-element DISTINCT-sum 
 (`|H|=s`); the bad-scalar count is the subset-sum cardinality `≤ C(s,r) = Nat.choose s r`.
 
 The worst dyadic MONOMIAL direction instead reads out the **complete-homogeneous** (with-REPETITION)
-symmetric function, whose count is the multiset cardinality `multichoose s r = C(s+r−1, r)`. This file
-records the clean combinatorial core of the self-refutation of "δ* = Kambiré formula (exact)":
+symmetric function, whose *input* count is the multiset cardinality
+`multichoose s r = C(s+r−1, r)`. What this file proves is only a comparison of these two **input
+counts** (finite binomial arithmetic):
 
-> **`choose_le_multichoose`** — `C(s,r) ≤ multichoose s r`, with **strict** inequality once `r ≥ 1`
-> and `s ≥ 2`: the with-repetition (complete-homogeneous) count strictly exceeds the distinct-sum
-> (subset) count.
+> **`choose_le_multichoose`** — `C(s,r) ≤ multichoose s r` for all `s, r`;
+> **`choose_lt_multichoose`** — strict inequality for `2 ≤ r ≤ s`.
+> (At `r = 1` both counts equal `s`, so strictness genuinely needs `r ≥ 2`.)
 
-So the complete-homogeneous monomial direction realizes MORE bad scalars than Kambiré's subset-sum
-construction ⟹ failure at a SMALLER `δ` ⟹ the Kambiré formula is an upper bracket, NOT the exact `δ*`.
-(Numerically the gap is at the EXPONENT level: `log(C(s+r−1,r)/C(s,r))/s → ~0.26` for `r=s/2`, i.e.
-`multichoose ≈ subset · 2^{0.26 s}` — a strictly larger leading exponent, not a constant.)
+**Scope (audit correction, PG-037).** These inequalities count *parameter tuples* (subsets versus
+multisets), not *distinct bad scalars*. Nothing here constructs the competing monomial direction,
+identifies its bad scalars, or shows that distinct multisets give distinct scalar values:
+symmetric-function images can collide extensively, and every image set is bounded by the field size.
+So this file does **not** show that the complete-homogeneous direction has more bad scalars, does
+not show failure at a smaller `δ`, and does **not** refute an exact Kambiré `δ*` formula. Such a
+conclusion would additionally need an actual bad-scalar map, a collision/image-size bound, and a
+threshold comparison. (Arithmetic of the input-count gap: for `r = s/2`,
+`ln(C(s+r−1,r)/C(s,r))/s → (3/2)·ln 3 − 2·ln 2 ≈ 0.2616` nats, i.e.
+`multichoose ≈ subset · e^{0.26 s} ≈ subset · 2^{0.377 s}` — an exponential gap between input
+counts, not between distinct-scalar counts.)
 
 Issue #407.
 -/
@@ -49,10 +57,11 @@ theorem choose_lt_choose_succ {s r : ℕ} (hr : 1 ≤ r) (hrs : r ≤ s) :
   rw [Nat.choose_succ_succ s k]
   exact lt_add_of_pos_left _ (Nat.choose_pos (by omega))
 
-/-- **Strict domination in the prize-relevant range.** For `2 ≤ r ≤ s`, the complete-homogeneous count
-STRICTLY exceeds the subset-sum count: `C(s,r) < multichoose s r`. This is the formal content of "the
-worst monomial direction beats Kambiré's subset-sum construction", refuting `δ* =` Kambiré formula as
-exact (the gap is at the leading exponent, not a constant). -/
+/-- **Strict domination of input counts.** For `2 ≤ r ≤ s`, the multiset (with-repetition) count
+STRICTLY exceeds the subset (distinct) count: `C(s,r) < multichoose s r`. This compares numbers of
+parameter tuples only; it does not bound distinct bad scalars (images may collide and are capped by
+the field size), so by itself it neither shows that a monomial direction beats Kambiré's
+construction nor refutes an exact Kambiré `δ*` formula. -/
 theorem choose_lt_multichoose (s r : ℕ) (hr : 2 ≤ r) (hrs : r ≤ s) :
     Nat.choose s r < Nat.multichoose s r := by
   rw [Nat.multichoose_eq]

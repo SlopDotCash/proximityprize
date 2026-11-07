@@ -45,9 +45,15 @@ import ArkLib.OracleReduction.FiatShamir.DuplexSponge.State
 /-!
 # Duplex sponge Fiat–Shamir (umbrella)
 
-This module imports every leaf under `ArkLib/OracleReduction/FiatShamir/DuplexSponge/` so that
-`lake build ArkLib.OracleReduction.FiatShamir.DuplexSponge` compiles the full subtree.
+This module imports a curated subset of the leaves under
+`ArkLib/OracleReduction/FiatShamir/DuplexSponge/` (the core definitions and the main security
+modules listed above, together with whatever those import transitively). It does **not** import
+every leaf: many `Security/Lemma*`, lazy-carrier, salted and correspondence modules are not
+imported directly (and need not be reachable transitively), so
+`lake build ArkLib.OracleReduction.FiatShamir.DuplexSponge` is not guaranteed to compile the
+full subtree; build `ArkLib` for that.
 
-Downstream code should usually import specific leaf modules (or `ArkLib`) rather than relying on
-this file for names, since `import` does not re-export child modules.
+Names from the imported modules (and their transitive imports) are available to any file that
+imports this umbrella, but this umbrella is not a maintained or stable public API: downstream
+code should usually import the specific leaf modules it depends on (or `ArkLib`).
 -/

@@ -1,0 +1,892 @@
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index 83200d5..a10dbaf 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -10,24 +10,11 @@ jobs:
+     runs-on: ubuntu-latest
+     steps:
+       - uses: actions/checkout@v4
+-      - name: No sorry anywhere
+-        run: |
+-          if grep -rn --include='*.lean' -w 'sorry' Zkpc.lean Zkpc/; then
+-            echo '::error::sorry found — zero tolerance at every milestone boundary'
+-            exit 1
+-          fi
+-      - name: Axioms only in Zkpc/Assumptions.lean
+-        run: |
+-          if grep -rn --include='*.lean' -w 'axiom' Zkpc.lean Zkpc/ | grep -v '^Zkpc/Assumptions.lean:'; then
+-            echo '::error::axiom found outside Zkpc/Assumptions.lean'
+-            exit 1
+-          fi
+-      - name: No proof escape hatches
+-        run: |
+-          if grep -rnE --include='*.lean' -w 'admit|native_decide' Zkpc.lean Zkpc/; then
+-            echo '::error::admit/native_decide found — not allowed'
+-            exit 1
+-          fi
++      - name: Lexical scan (code only; comments and strings ignored)
++        # Pre-check: no sorry/admit/native_decide in code, and no `axiom`
++        # declaration outside Zkpc/Assumptions.lean. The authoritative
++        # dependency check is the "Axiom dependency gate" step of `build`.
++        run: python3 scripts/lean_token_scan.py
+ 
+   build:
+     runs-on: ubuntu-latest
+@@ -47,3 +34,17 @@ jobs:
+         run: lake exe cache get
+       - name: Build
+         run: lake build
++      - name: Axiom dependency gate
++        # Fails if any declaration in a Zkpc.* module reaches a kernel axiom
++        # other than propext / Classical.choice / Quot.sound (sorryAx included).
++        # The output is kept as reproducible evidence of the check.
++        run: |
++          set -o pipefail
++          lean --version | tee axiom-gate.log
++          lake env lean scripts/check-axioms.lean 2>&1 | tee -a axiom-gate.log
++      - name: Upload axiom-gate evidence
++        if: always()
++        uses: actions/upload-artifact@v4
++        with:
++          name: axiom-gate-log
++          path: axiom-gate.log
+diff --git a/DELIVERY.md b/DELIVERY.md
+index 8521f2c..33aaf84 100644
+--- a/DELIVERY.md
++++ b/DELIVERY.md
+@@ -10,24 +10,35 @@ send.
+ 
+ This repo defines the *zk payment channel* as a distinct cryptographic
+ object — a tuple of algorithms (Setup, Open, Spend, Redeem, Close,
+-Dispute) plus security games — and machine-checks its security in Lean 4
+-over an idealized ledger with cryptography axiomatized in one file. The
++Dispute) plus security games — and machine-checks security statements
++about an idealized model of it in Lean 4: an idealized ledger, with each
++cryptographic assumption built into the model's guards or ideal sampling
++and recorded in a data-only registry (`Zkpc/Assumptions.lean`, which
++declares no Lean `axiom`). The
+ headline: **spend unlinkability is proved with advantage exactly 0**
+-(`T4_flat_unlinkability`), the first machine-checked spend-unlinkability
+-result for any payment-channel or credit construction, against a
++(`T4_flat_unlinkability`, for the proof-free ideal flat instance), to our
++knowledge the first machine-checked spend-unlinkability result for any
++payment-channel or credit construction, against a
+ session-form game (a member's whole epoch session, not one spend) that an
+ adversarial payee plays with abort/evict power. Alongside it: no-overspend
+ (T1), balance security both sides (T2/T3), closure liveness (T5), the
+-fleet's priced-divergence bound (T6), an exculpability bound (T7, under a
+-stated good-event hypothesis), and the refund variant with a **built-in
++fleet's priced-divergence bound (T6), an exculpability bound (T7, under the
++stated evidence-independence hypothesis `hobliv`, not yet the full
++query-accounting bound), and the refund variant with a **built-in
+ definitional test** — the same game gives advantage 1/2 against the known-
+ broken static-encrypted-refund design and 0 against the re-randomized fix,
+-which is the evidence the game captures something real rather than a
++which is evidence the game captures something real rather than a
+ triviality. Every theorem depends on only the three standard Lean axioms
+-(K2 audit); nothing is `sorry`'d.
++(K2 audit, now re-checked on every build by `scripts/check-axioms.lean`);
++nothing is `sorry`'d. An axiom-clean build establishes that each Lean
++statement holds of the model; it does not by itself establish that the
++typed algorithm tuple implements the proved transition system, that T5 is
++a deadline theorem over all fair executions, or that the ideal views are
++reductions from the real wire protocol. Those gaps are listed in
++`OPEN-PROOFS.md` ("Known gaps between the statements and the claims").
+ 
+-The trust surface is one page — `Spec.md` — because the kernel checked the
+-rest. That page was hardened by eleven rounds of adversarial definition
++The trust surface is `Spec.md` plus the Lean model definitions, because
++the kernel checked the proofs against them. That page was hardened by eleven rounds of adversarial definition
+ review (record in `research_knowledge/gates.md`), an independent statement
+ audit (K1), a simulated external-cryptographer review that *strengthened*
+ the unlinkability game rather than narrowing it (K4), and a TLA+
+@@ -35,7 +46,8 @@ model-checker that independently found the deepest definitional hole and
+ verified the same repair the review adopted. What is deliberately not
+ claimed is enumerated in the paper's honest-limits section and
+ `experiment-outcome.md`: the T7 query-term accounting is deferred behind a
+-stated hypothesis, the refund layer is single-channel, circuit
++stated hypothesis, the refund layer is single-channel settlement
++arithmetic (its forfeit action has no response-window guard), circuit
+ verification is out of scope, and the privacy is contingent (a slash that
+ runs the line algebra publishes the secret; multi-recipient is the named
+ open problem).
+@@ -49,7 +61,7 @@ open problem).
+ | Executor contract | `BRIEF.md` |
+ | Lean formalization (root builds green) | `Zkpc/`, `lakefile.lean`, `lean-toolchain` |
+ | Theorem-to-file map + reproducibility | paper §7 / `paper/` |
+-| The paper (SoK + definition), 12pp | `paper/paper.pdf`, `paper/paper.md`, `paper/paper.tex` |
++| The paper (SoK + definition), 14pp | `paper/paper.pdf`, `paper/paper.md`, `paper/paper.tex` |
+ | ethresear.ch post form | `paper/post.md` |
+ | Claims ledger (no orphan claims) | `paper/claims-ledger.md` |
+ | Gate record (11 B1 + 3 B3 rounds) | `research_knowledge/gates.md` |
+@@ -67,15 +79,18 @@ open problem).
+ git clone <repo> && cd zk-payments-confetti
+ lake exe cache get          # mathlib oleans
+ LEAN_NUM_THREADS=4 lake build   # kernel-checks every theorem
+-# axiom audit:
++# axiom audit (every Zkpc.* declaration; fails on any non-standard axiom):
++LEAN_NUM_THREADS=4 lake env lean scripts/check-axioms.lean
++# single theorem:
+ LEAN_NUM_THREADS=4 lake env lean <(printf 'import Zkpc\n#print axioms Zkpc.Games.T4_flat_unlinkability\n')
+ ```
+ 
+ Toolchain pinned: `leanprover/lean4:v4.30.0`, mathlib v4.30.0, VCV-io
+ `8f5dc4f`. CI (`.github/workflows/ci.yml`) runs the build plus the
+-zero-escape-hatch guardrail on every push.
++comment-aware lexical guardrail and the kernel axiom-dependency gate
++(`scripts/check-axioms.lean`) on every push.
+ 
+-## K5 clean-room rebuild — PASS
++## K5 clean-room rebuild — PASS (historical, at the K5 revision)
+ 
+ A fresh `git clone` of `main` from origin into a clean directory,
+ `lake exe cache get`, then `lake build` (capped, `LEAN_NUM_THREADS=4`):
+@@ -90,5 +105,8 @@ clean machine.
+ - Decide repo visibility (currently private) and whether to invite / post.
+   (README + `OPEN-PROOFS.md` are already written for an external proof
+   swarm; the Shaw handoff summary was sent to the Hermes agent.)
+-- The paper PDF (`paper/paper.pdf`, 14pp) is final; rebuild only if you
+-  edit `paper/paper.tex`.
++- The paper PDF (`paper/paper.pdf`, 14pp) predates the 2026-10 correction
++  of the `privatex402` author in `paper/refs.bib` (Artem Grigor, not
++  "Grigore Grigor") and the audit corrections to `Spec.md`; rebuild it from
++  `paper/paper.tex` + `paper/refs.bib` and check the rendered bibliography
++  before treating it as final.
+diff --git a/OPEN-PROOFS.md b/OPEN-PROOFS.md
+index a292ef1..92eff1e 100644
+--- a/OPEN-PROOFS.md
++++ b/OPEN-PROOFS.md
+@@ -19,9 +19,10 @@ statement.
+   5.0.0 and has no `-j` flag; cap parallelism with `LEAN_NUM_THREADS=N`.
+ - Zero `sorry`, zero `admit`, zero `native_decide`, and no `axiom` outside
+   `Zkpc/Assumptions.lean` (which itself declares none: the crypto
+-  assumptions are discharged by the shape of the idealized model). CI greps
+-  for all four on every push, including inside comments, so do not write
+-  the bare token words in docstrings.
++  assumptions are discharged by the shape of the idealized model). CI runs a
++  lexical scan of the code with comments and strings removed
++  (`scripts/lean_token_scan.py`) and, after the build, the kernel-dependency
++  gate `scripts/check-axioms.lean` over every `Zkpc.*` declaration.
+ - Every theorem carries an English docstring restating it and citing its
+   `Spec.md` clause. The statement is the contract; make it a faithful
+   transcription.
+@@ -30,7 +31,11 @@ statement.
+ 
+ ## What is already proved
+ 
+-All kernel-checked, axiom-clean (`research_knowledge/k2-axiom-audit.md`).
++All kernel-checked, axiom-clean (`research_knowledge/k2-axiom-audit.md`;
++re-checked on every build by `scripts/check-axioms.lean`). Kernel-checked
++means the Lean statement holds of the idealized model; what each statement
++does *not* yet say is listed under "Known gaps between the statements and
++the claims" below.
+ 
+ | Theorem | Lean name | File |
+ |---|---|---|
+@@ -41,6 +46,7 @@ All kernel-checked, axiom-clean (`research_knowledge/k2-axiom-audit.md`).
+ | T5 closure liveness | `Core.T5_payer_close_liveness` | `Zkpc/Core/T5.lean` |
+ | T6 priced divergence (both clauses) | `Fleet.T6_priced_divergence`, `T6_slash_within_L`, `epochs_in_window` | `Zkpc/Fleet/{T6,Basic}.lean` |
+ | T4 spend unlinkability (advantage = 0, session form) | `Games.T4_flat_unlinkability` | `Zkpc/Games/T4.lean` |
++| T4 challenge-firing witness (K3 flag 1: the challenge returns a real batch, never `⊥`, on a satisfying init config) | `Games.challengeResp_flat_fires`, `challengeResp_flat_never_bot` | `Zkpc/Games/T4Fires.lean` |
+ | T7 exculpability bound (conditional, see below) | `Games.T7_frame_bound` | `Zkpc/Games/T7.lean` |
+ | Calibration pair (B-static loses 1/2, B-rerand passes 0) | `Games.unlinkAdvantage_staticDistinguisher_eq_half`, `unlinkAdvantage_bRerand_eq_zero` | `Zkpc/Games/Calibration.lean` |
+ | Battery + FRAME must-win breaks | `Games.unlinkAdvantage_{aIndexLeak,nfeReuse,multTagDistinguisher_eq_half}`, `frameWinProb_{YK,aReuse}_eq_one` | `Zkpc/Games/{Calibration,T7}.lean` |
+@@ -124,14 +130,15 @@ closes (`O4`). Both are stated obligations in the games register
+ (`Zkpc/Games/README-games.md`); each is a concrete-instance proof against
+ the frozen game.
+ 
+-### 4. The challenge-fires lemma (Class B, small, good first task)
++### 4. (Done) The challenge-fires lemma
+ 
+-K3 (`research_knowledge/k3-vacuity-review.md`) recommends adding an in-tree
+-lemma `challengeResp (flatInstance …) = pure (some …)` for a satisfying
+-configuration, so the headline's non-vacuity (the challenge actually
+-produces a real ticket batch) is kernel-checked rather than traced by
+-review. Small, self-contained, and it hardens the headline; a good way to
+-learn the game plumbing.
++Formerly listed here as K3's recommendation
++(`research_knowledge/k3-vacuity-review.md`). Discharged by
++`Zkpc/Games/T4Fires.lean`: `challengeResp_flat_fires` exhibits the real
++batch `some [⟨m, m, m, m⟩]` in the support of the flat challenge on the
++satisfying init configuration, and `challengeResp_flat_never_bot` shows `⊥`
++is not in that support. Kept in the list only so the numbering below stays
++stable.
+ 
+ ### 5. Refund cascade and fleet-side settlement (Class A, medium)
+ 
+@@ -149,6 +156,53 @@ What a multi-recipient generalisation requires is stated in the paper's
+ open-problems section and `RESEARCH.md`. This is a definition-design task
+ first, then a proof task, and it would re-open the gate.
+ 
++## Known gaps between the statements and the claims
++
++A 2026-10 source review of this pin (recorded in the parent integration
++repository, findings SM01–SM09 and SMT01–SMT07) found the following
++statement/claim gaps. They are open work, not proved results, and nothing
++above should be read as closing them:
++
++- The typed `flatScheme` in `Zkpc/Core/Flat.lean` is a typing exercise; no
++  refinement proof connects its algorithm bodies to `Core.Step`, and its
++  `spend`/`redeem` do not update the ledger records `sweep`/`dispute` read
++  (SM01).
++- `T5_payer_close_liveness` proves that *some* reachable settled state
++  exists, not that every fair execution settles by the deadline (SM02).
++- Refund `Step.forceClose` is enabled from every open state and forfeits
++  the whole deposit with no response window or proven-cheater guard, so the
++  refund layer is settlement arithmetic, not a proof of honest-payer
++  protection (SM03).
++- `flatInstance` resamples the epoch pseudonym on every emission (a real
++  epoch oracle repeats it within an epoch) and does not exclude digest `0`,
++  so it is not a checked ROM marginal of the stated ticket distribution;
++  the concrete-to-ideal view reduction is open (SM04).
++- T7 is the conditional blind-guess bound under `hobliv`, not the proposed
++  full bound, and the proposed full bound omits the zero-digest event (SM05,
++  item 1 above).
++- The real-wire bridges (O1–O4, ZK, rerandomization) remain definitions and
++  worklist items (SM06, items 2–3 above).
++- The FRAME `aReuse` calibration places a signal at digest `0`, which reveals
++  `k` whatever the slope, so it does not isolate slope reuse; and the
++  `multTag` one-ticket-safety claim fails for adversarial genesis state
++  (SM07).
++- Fleet `Conflict` (equal index, distinct messages) is not digest
++  inequality; a wire-level bridge must condition on or charge digest
++  collisions (SM09).
++- The K1–K4 review records in `research_knowledge/` are historical, each
++  at its own revision and with its own method limits. Three K3 claims go
++  beyond the current source: that T5's settlement event "provably occurs"
++  at the deadline (the theorem is existential, SM02), that the `multTag`
++  leak needs two challenge tickets (one suffices with adversarial genesis
++  state, SM07), and its suggested full T7 query budget (it omits the
++  zero-digest event, SM05). K4 was a simulated outside review, not an
++  independent human cryptographer's endorsement.
++- `Spec.md` T3's and T7's anti-vacuity notes were narrowed (SMT05): T3's
++  emission-based floor does not detect fresh-index retries, and slope reuse
++  needs two observations at distinct nonzero digests to leak `k`. A Lean
++  calibration of that two-observation experiment (against fresh slopes) is
++  still to be written.
++
+ ## Where the definitions and their rationale live
+ 
+ - `Spec.md`: the object, the games, the seven theorems, and the modeling
+diff --git a/PROVING.md b/PROVING.md
+index fb4531f..30b1d5a 100644
+--- a/PROVING.md
++++ b/PROVING.md
+@@ -7,7 +7,7 @@ One page. If you are an executor (human or agent) starting from zero, this is en
+ We formalize the **protocol layer** of a zk payment channel over an **idealized ledger** and **idealized cryptography**. Concretely:
+ 
+ - The ledger is a Lean value (a state the transition function updates), not a blockchain. Its guarantees (transactions land, timeouts fire) are part of the model, stated in `Spec.md` §threat-model.
+-- Cryptographic primitives never appear as real algorithms. Each one is an **axiom** in `Zkpc/Assumptions.lean` — one per primitive, with a docstring naming the standard property it encodes (proof-system knowledge soundness, zk simulation, PRF/hash collision resistance, EUF-CMA signatures, blind-signature unforgeability + blindness).
++- Cryptographic primitives never appear as real algorithms. `Zkpc/Assumptions.lean` is a **data-only registry** (`Named`, `Discharge`, `dischargedBy`) that names each Spec.md §5 assumption and records how the idealized model absorbs it (a transition guard, an ideal random-oracle/functionality sample, a proved lemma, or declared-unused). It declares **no Lean `axiom`**: the assumptions are built into the model's shape, so no kernel axiom stands in for a primitive, and correspondingly no theorem here says anything about a concrete SNARK, signature, hash or encryption scheme.
+ - We do **not** verify circuits, the SNARK, or any implementation. Anyone claiming otherwise about this repo is misreading it.
+ 
+ ## The trust surface
+@@ -17,13 +17,24 @@ The statements, not the proofs. If `lake build` is green with zero `sorry`, the
+ - Every theorem carries a docstring restating it in English. Keep them faithful; the human gates review docstrings + `Spec.md`, nothing else.
+ - Changes to `Zkpc/Spec/` (algorithm signatures, security games) re-open the corresponding human gate. Do not "adjust the definition slightly" to make a proof go through without flagging it — definition drift toward provability is this experiment's named failure mode.
+ 
+-## Rules (CI enforces the first three)
++## Rules (CI checks the first three; see the limits below)
+ 
+ 1. **Zero `sorry`**, everywhere, at every commit that lands on main.
+-2. **`axiom` only in `Zkpc/Assumptions.lean`.** If a proof needs a new assumption, add it there with a docstring naming the standard property, and note it in the PR — the axiom audit (K2) enumerates these.
++2. **`axiom` only in `Zkpc/Assumptions.lean`** (which currently declares none). If a proof genuinely needs a new assumption, add it there with a docstring naming the standard property, and note it in the PR — the axiom audit (K2) enumerates these, and `OPEN-PROOFS.md`/`README.md` must then stop saying the development is free of custom axioms.
+ 3. **No `admit`, no `native_decide`.**
+ 4. Game framework additions on top of VCV-io stay under ~1000 lines total. Resist generality; this repo proves seven theorems, it does not build a library.
+ 
++What CI actually enforces: rules 1–3 are pre-checked by a lexical scan of
++the Lean code with comments and string literals removed
++(`scripts/lean_token_scan.py`), so docstrings may mention the words. After
++`lake build`, the authoritative gate `lake env lean scripts/check-axioms.lean`
++walks the kernel dependencies of **every** declaration in a `Zkpc.*` module
++and fails if any reaches an axiom other than `propext`, `Classical.choice`
++and `Quot.sound` (so `sorryAx`, or a custom axiom added to
++`Zkpc/Assumptions.lean` and then used, fails the build). Its log, with the
++`lean --version` line, is uploaded as the `axiom-gate-log` CI artifact.
++Neither check can detect definition drift in the model.
++
+ ## How to add a theorem
+ 
+ 1. Find its statement in `Spec.md` (T1–T7). The Lean statement must be a faithful transcription; when in doubt, transcribe more literally.
+@@ -36,13 +47,17 @@ The statements, not the proofs. If `lake build` is green with zero `sorry`, the
+ | Path | Content |
+ |---|---|
+ | `Spec.md` | English spec: the object, T1–T7, threat model. The trust surface. |
+-| `Zkpc/Assumptions.lean` | All axioms. Nothing else may declare one. |
+-| `Zkpc/Spec/` | Algorithm signatures and security games (gate-reviewed). |
+-| `Zkpc/Core/` | State model, transition function, flat-ticket instantiation. |
+-| `Zkpc/Games/` | Game framework over VCV-io (adversaries, oracles, advantage). |
+-| `Zkpc/Theorems/` | T1–T7, one module per theorem group. |
++| `Zkpc/Assumptions.lean` | Data-only registry of the named Spec.md §5 assumptions and how the model discharges each. Declares no `axiom`; nothing else may declare one. |
++| `Zkpc/Spec/` | Algorithm signatures (`Object.lean`, gate-reviewed). |
++| `Zkpc/Core/` | State model and transition relation, flat-ticket typing wrapper (`Flat.lean`, not yet proved to refine `Core.Step`), and T1/T2/T3/T5 (`T1.lean` … `T5.lean`). |
++| `Zkpc/Fleet/` | Multi-gateway fleet machine and T6 (`Basic.lean`, `T6.lean`). |
++| `Zkpc/Games/` | Game framework over VCV-io, the unlinkability/FRAME games, T4 (`T4.lean`, challenge-firing witness `T4Fires.lean`), T7 (`T7.lean`), RLN algebra, calibration battery. |
++| `Zkpc/Refund/` | Single-channel refund-variant safety layer. |
+ | `tla/` | TLA+ model (M0.5) and its TLC configs. |
+ 
++There is no `Zkpc/Theorems/` directory: theorems live next to the model they
++are about, as listed above and in the `OPEN-PROOFS.md` table.
++
+ ## What the human gates check
+ 
+ - **Gate B1**: `Spec.md` theorem statements — do they say what the protocol needs?
+diff --git a/README.md b/README.md
+index 3f79d0b..6c21452 100644
+--- a/README.md
++++ b/README.md
+@@ -19,7 +19,10 @@ instance. This repo builds both halves of what is missing:
+    `paper/` (the systematization at paper altitude).
+ 
+ 2. **The verification.** A Lean 4 formalization of that definition over an
+-   idealized ledger, with cryptography axiomatized in one file. The
++   idealized ledger, with cryptography idealized into the model (each
++   assumption is a transition guard or ideal sample, named in the
++   data-only registry `Zkpc/Assumptions.lean`, which declares no Lean
++   `axiom`). The
+    headline is spend unlinkability proved with advantage exactly zero, to
+    our knowledge the first machine-checked spend-unlinkability result for
+    any payment-channel or credit construction. Alongside it: no-overspend,
+@@ -107,8 +110,13 @@ theorems, the unlinkability headline, the fleet and exculpability bounds,
+ the calibration pair, and the refund safety layer are proved and
+ kernel-checked; the axiom audit shows only the three standard Lean axioms
+ (`research_knowledge/k2-axiom-audit.md`). The open obligations in
+-`OPEN-PROOFS.md` are the remaining work. Nothing in this repo is verified
+-until the kernel says so, and this README does not claim otherwise.
++`OPEN-PROOFS.md` are the remaining work, and its "Known gaps between the
++statements and the claims" section lists where the proved statements are
++weaker than the prose around them (the typed scheme is not yet proved to
++refine the transition system; T5 is existential, not a deadline theorem;
++T4 is about the ideal proof-free view; T7 is conditional). Nothing in this
++repo is verified until the kernel says so, and this README does not claim
++otherwise.
+ 
+ ## Layout
+ 
+diff --git a/RESEARCH.md b/RESEARCH.md
+index e4e719a..1d6f353 100644
+--- a/RESEARCH.md
++++ b/RESEARCH.md
+@@ -9,7 +9,7 @@ Application context: a reputation-gated Tor onion-service egress fleet. Members
+ - The claim that ZK API Usage Credits (Crapis & Buterin, ethresear.ch, Feb 2026) is "fundamentally a zk payment channel bound to one recipient" is confirmed by the primary sources: it is structurally BOLT's (Green & Miers, CCS 2017) unidirectional/bidirectional channel with RLN detect-and-slash substituted for revocation-token punishment, and a thread commenter (sergei-tikhomirov, ex-Lightning) makes the channel mapping almost verbatim (https://ethresear.ch/t/zk-api-usage-credits-llms-and-beyond/24104, https://acmccs.github.io/papers/p473-greenA.pdf).
+ - Both candidate shapes already exist in mature form: shape (a) "distributed spent set" is deployed as Fedimint (BFT-replicated spent list, https://github.com/fedimint/fedimint) and Nym zk-nym (quorum-maintained global Bloom filter, https://nym.com/docs/network/cryptography/zk-nym/zk-nym-overview); shape (b) is specified as IETF draft-schlesinger-cfrg-act (Anonymous Credit Tokens) and as the zkChannels protocol spec (https://datatracker.ietf.org/doc/draft-schlesinger-cfrg-act/, https://boltlabs.tech/userfiles/media/boltlabs.tech/zkchannels-protocol-spec-v0.3.2.pdf).
+ - For this fleet's profile (near-uniform request cost, roaming members, N mutually distrusting gateways whose threat model is the gateways themselves), the literature weighs heavily toward shape (a): RLN slashing makes an eventually-consistent spent set economically safe (double-spend is detected at reconciliation and priced by the deposit D), while shape (b) fragments capital N ways, fragments the anonymity set per gateway, and hands each gateway BOLT's documented abort-attack lever (https://acmccs.github.io/papers/p473-greenA.pdf §1.4).
+-- Anonymity sets are always smaller than the clientele: in every hub/channel system verified (TumbleBit, A2L, BOLT, zkChannels) the set is "concurrent, protocol-compatible payments in an epoch," shrinks under aborts, and erodes across epochs via intersection attacks (https://www.ndss-symposium.org/wp-content/uploads/2017/09/ndss201701-3HeilmanPaper.pdf).
++- Anonymity sets are at most the clientele, and in practice usually smaller — but the systems define them in different units, and none of the definitions forces a strict inequality. TumbleBit/A2L count *payments*: "if k payments successfully completed during an epoch, the anonymity set is of size k" (concurrent, protocol-compatible payments, same denomination); BOLT/zkChannels count *customers*: "all customers with whom the given merchant has a channel open." The customer set is a subset of the clientele and can equal it (every client has an open compatible channel); a payment count can even exceed the number of distinct clients when one client pays several times, so the payment-unit set is bounded by the clientele only after counting distinct payers. What the sources do establish is conditional shrinkage: aborts reduce the set (TumbleBit k → k−1 per abort; BOLT §1.4 induced-abort eviction) and cross-epoch intersection erodes it (https://www.ndss-symposium.org/wp-content/uploads/2017/09/ndss201701-3HeilmanPaper.pdf). So the full clientele is reachable only in the best case — everyone has a compatible open channel and completes a payment in the same epoch with no aborts — and should not be assumed.
+ - Nothing in the anonymous-channel line ever reached production (BOLT never shipped on Zcash, libzkchannels archived Feb 2023 as proof-of-concept, https://github.com/boltlabs-inc/libzkchannels), and no machine-checked proof of payment unlinkability exists for any channel construction — every privacy proof in this literature is pen-and-paper, and one flagship result (A2L, S&P 2021) had a definitional gap found a year later (https://dl.acm.org/doi/10.1145/3548606.3560637).
+ 
+ ## What "zk payment channel" actually means
+diff --git a/Spec.md b/Spec.md
+index 8279bbe..b641894 100644
+--- a/Spec.md
++++ b/Spec.md
+@@ -609,8 +609,16 @@ assumption below names the Lean declaration that carries it):
+    Used by: T1, T2, T3 in instantiation B (rev-2 NEW-7: forged receipts
+    would inflate $R$ at the settlement, so T2-B uses it too).
+ 5. **Re-randomizable additively homomorphic encryption**: IND-CPA, correct
+-   homomorphic addition, re-randomization producing ciphertexts
+-   distributed independently of the input ciphertext, and
++   homomorphic addition, **re-randomization for a fixed plaintext** — for
++   every plaintext $m$ and every ciphertext $ct$ that decrypts to $m$
++   (honestly generated or homomorphically derived), $Rerand(pk, ct)$ is
++   distributed as a fresh encryption $Enc(pk, m)$, i.e. independently of
++   the randomness of $ct$ *given* $m$ (perfectly or up to statistical
++   distance $negl(\lambda)$; this is not, and by correctness cannot be,
++   independence from the plaintext: re-randomizations of encryptions of
++   different plaintexts decrypt differently, so they have disjoint supports
++   — hiding the plaintext itself is the separate, computational IND-CPA
++   clause), and
+    **opening-homomorphism** — openings of summands combine to an opening
+    of the $\boxplus$-sum (rev-8 F8-m1: implicitly load-bearing since the
+    rev-2 receipt-randomness fix, and load-bearing twice over for the
+@@ -833,10 +841,20 @@ conclusion carries over.
+ 
+ **Anti-vacuity.** Against a BOLT-style scheme where closing on a stale state
+ forfeits the whole balance, a payee that induces one confusion about state
+-wins everything; against a variant where honest abort-recovery re-emits at a
+-*fresh* index with the same message, the payer silently burns budget under
+-abort griefing, violating the floor. The stated retry rule (MC2) is
+-load-bearing, and the game detects its absence.
++wins everything; the floor's violation clause detects that break.
++*What this floor does not detect* (audit correction; the earlier text
++claimed otherwise): a variant whose honest abort-recovery re-emits at a
++*fresh* index with the same message does burn budget under abort griefing,
++but each fresh re-emission is another *emitted* ticket, so it raises $j$
++and lowers the stated floor $D - j\cdot C$ by the same $C$. Example: $D =
++100$, $C = 10$, one logical request emitted three times and no service
++accepted; a refund of $70 = D - 3C$ meets the floor exactly while wasting
++the $2C$ the retry rule is meant to save. The emission-based floor is
++therefore not a discriminating test of MC2. MC2's value is the separate
++property that an honest payer re-sends the bit-identical ticket, so abort
++griefing costs at most one ticket price per *logical* request; stating and
++proving that would need a payer property indexed by logical
++authorizations rather than by emissions, which T3 as stated is not.
+ 
+ ### T4 — Spend unlinkability (the headline)
+ 
+@@ -905,7 +923,12 @@ $$\mathsf{Adv}^{\mathsf{UNLINK}}_{\mathcal{A}} = \left| \Pr[b' = b] - \tfrac12 \
+ **Statement.** For every PPT $\mathcal{A}$:
+ $\mathsf{Adv}^{\mathsf{UNLINK}}_{\mathcal{A}} \le negl(\lambda)$, under NIZK
+ zero-knowledge and `single_signal_hiding`/ROM (instantiation A), plus
+-IND-CPA and re-randomizability (instantiation B-rerand).
++IND-CPA and fixed-plaintext re-randomizability, §5 assumption 5
++(instantiation B-rerand). The Lean B-rerand instance proves the perfect
++bound only in an ideal fresh-handle model (a fresh uniform opaque handle
++per spend, standing for both clauses at once); deriving the computational
++statement from the two clauses for a concrete scheme is the open full-wire
++bridge.
+ 
+ **Why challenge-terminated (MC15, [repair of the game, not the protocol]).**
+ Rev-1's game answered oracles after the challenge, and that game is
+@@ -1156,9 +1179,18 @@ oracle and a close trigger on the victim.
+ 
+ **Violation.** The ledger slashes a member that never double-signed.
+ 
+-**Anti-vacuity.** Against a degenerate RLN with $y = k$ (no line masking) or
+-$a$ reused across indices, one observed spend hands $\mathcal{A}$ the secret
+-and the frame succeeds with probability 1; the game detects both breaks. The
++**Anti-vacuity.** Against a degenerate RLN with $y = k$ (no line masking),
++one observed spend hands $\mathcal{A}$ the secret and the frame succeeds
++with probability 1. With the slope $a$ reused across indices, one
++observation $y = k + a x$ at a nonzero digest $x$ still leaves every $k$
++possible (each with a unique $a$); the secret falls out of **two**
++observations at **distinct nonzero** digests $x \ne x'$ under the same
++slope, $a = (y - y')/(x - x')$ and $k = y - a x$. A calibration that
++isolates slope reuse must use exactly that experiment, compared against
++fresh slopes; one that places a signal at digest $x = 0$ reveals
++$y = k$ whatever the slope, so it does not test slope reuse (the current
++Lean `frameGameAReuse` witness has this confounder — see
++`OPEN-PROOFS.md`, "Known gaps"). The
+ adversary class is the protocol's actual threat model — the fleet's own
+ operators — not a strawman.
+ 
+diff --git a/Zkpc/Assumptions.lean b/Zkpc/Assumptions.lean
+index 02f0b8b..cefb50c 100644
+--- a/Zkpc/Assumptions.lean
++++ b/Zkpc/Assumptions.lean
+@@ -21,7 +21,7 @@ How each named assumption of Spec.md §5 enters the model instead:
+ | 3 | PRF/ROM idealization + domain separation (MC9) | The game layer samples `H_a(k,·)`, `H_e(k,·)`, `H_nf` as random oracles (VCVio `randomOracle`); the symbolic layer identifies nullifiers with their preimage pairs (collision-freeness by construction). |
+ | 3′ | `single_signal_hiding` | Stated and *proved* in the ROM game layer (`Zkpc.Games`): one point `(x, k + a·x)` with fresh-uniform `a` leaves `k` uniform. Named separately because standard PRF security does not imply it (the key is used additively — KDM-flavored; rev-1 gate finding). |
+ | 4 | EUF-CMA signatures (B) | Symbolic layer: the refund-receipt chain admits only payee-issued links; forged receipts do not exist in the model. The chain-binding tag (MC7) is what excludes *honestly issued but spliced* receipts — that one is a theorem obligation (T1-B), not an assumption. |
+-| 5 | Re-randomizable AH encryption (B) | Game layer: B-rerand's presented ciphertext is modeled as a fresh sample independent of the receipt chain (the re-randomization guarantee, taken as the ideal functionality); B-static's is the literal chain value — the difference is the entire content of the T4 calibration pair. |
++| 5 | Re-randomizable AH encryption (B) | Game layer: B-rerand's presented ciphertext is modeled as a fresh uniform opaque handle independent of the receipt chain — an ideal functionality standing for fixed-plaintext re-randomization (output distributed as a fresh encryption of the *same* plaintext) together with IND-CPA hiding of that plaintext; B-static's is the literal chain value — the difference is the entire content of the T4 calibration pair. No concrete scheme is reduced to this ideal handle here. |
+ | 6 | Blind-signature unforgeability + blindness | **Declared and unused** (Spec.md §5.6): exercised by no instantiation in scope. Present in the registry so its non-use is auditable rather than silent. |
+ 
+ If a future proof genuinely needs a Lean `axiom`, it goes here, documented,
+@@ -51,8 +51,10 @@ inductive Named
+   /-- Unforgeability of the payee's refund-receipt signatures (B only).
+   Used by: T1-B, T3-B. -/
+   | eufCmaSignatures
+-  /-- IND-CPA + correct homomorphic addition + re-randomization independence
+-  (B only). Used by: T4 on B-rerand; its absence of use breaks B-static. -/
++  /-- IND-CPA + correct homomorphic addition + fixed-plaintext
++  re-randomization (for each plaintext, `Rerand` output is distributed as a
++  fresh encryption of that same plaintext) + opening-homomorphism (B only).
++  Used by: T4 on B-rerand; its absence of use breaks B-static. -/
+   | rerandomizableEncryption
+   /-- Blind-signature unforgeability and blindness. Declared per the
+   executor contract; used by NO instantiation in scope (Spec.md §5.6). -/
+diff --git a/Zkpc/Games/BInstances.lean b/Zkpc/Games/BInstances.lean
+index 0d6b7fb..434c2bc 100644
+--- a/Zkpc/Games/BInstances.lean
++++ b/Zkpc/Games/BInstances.lean
+@@ -16,10 +16,15 @@ representations of instantiation B (Spec.md §4, MC7):
+   calibration requirement makes `staticDistinguisher`
+   (`Zkpc.Games.Calibration`) win against it.
+ * **B-rerand** (`bRerand`): the payer re-randomizes, presenting
+-  `ct* = Rerand(ct; r*)`. Ideal form of assumption 5 (re-randomization
+-  produces ciphertexts distributed independently of the input): the
+-  presented component is a **fresh uniform handle per spend**, sampled
+-  from `H`. T4 must pass: `unlinkAdvantage_bRerand_eq_zero`
++  `ct* = Rerand(ct; r*)`. Ideal form of assumption 5: the presented
++  component is a **fresh uniform handle per spend**, sampled from `H`.
++  This idealizes two separate properties at once — fixed-plaintext
++  re-randomization (for a fixed plaintext, `Rerand` output is distributed
++  as a fresh encryption of it, independently of the input's randomness)
++  and IND-CPA hiding of the plaintext itself. Re-randomization alone cannot
++  make the output independent of the plaintext (correctness forbids it);
++  reducing a concrete scheme to this ideal handle is the open full-wire
++  bridge, not something proved here. T4 must pass: `unlinkAdvantage_bRerand_eq_zero`
+   (`Zkpc.Games.Calibration`) proves advantage exactly `0` for **all**
+   adversaries, via the coupling technique of `Zkpc.Games.Coupling` — the
+   same OTP/HeapBasic per-query coupling the flat instance uses.
+diff --git a/paper/refs.bib b/paper/refs.bib
+index 815d7d5..4eb2da1 100644
+--- a/paper/refs.bib
++++ b/paper/refs.bib
+@@ -37,7 +37,7 @@
+ }
+ 
+ @misc{privatex402,
+-  author = {Conor McMenamin and Grigore Grigor},
++  author = {Conor McMenamin and Artem Grigor},
+   title  = {{PrivateX402}: Privacy-Preserving Payment Channels for Multi-Agent {AI} Systems},
+   year   = {2026},
+   howpublished = {ethresear.ch},
+diff --git a/research_knowledge/experiment-outcome.md b/research_knowledge/experiment-outcome.md
+index dda52dc..a6a4772 100644
+--- a/research_knowledge/experiment-outcome.md
++++ b/research_knowledge/experiment-outcome.md
+@@ -42,7 +42,8 @@ documented fallback).
+   conservation), and the calibration pair — all kernel-checked, all
+   axiom-clean.
+ - **The one deferral, logged:** T7's bound is proved as "≤ 1/|F| under the
+-  RO-oblivious good event `hobliv`." The remaining half — bounding the
++  hypothesis `hobliv`" (global independence of the evidence distribution
++  from the secret — an assumption, not a formal good-event conditioning). The remaining half — bounding the
+   `q/|F|` random-oracle-hit terms that discharge `hobliv` for an unbounded
+   interactive adversary — is the "estimated-hard 20%" the VCV-io survey
+   (`vcvio-gap.md`) flagged, and it is scoped behind a stated hypothesis
+@@ -54,7 +55,13 @@ documented fallback).
+ This is A2L's failure and the one the experiment most feared. It did not
+ occur, and the reason is instructive: **the human gate (simulated by
+ independent adversarial reviewers, per the operator's instruction) caught
+-every attempt at drift before it reached a proof.** The load-bearing
++every drift episode it recorded before it reached a proof.** (It did not
++catch every statement/model discrepancy: a later 2026-10 source review
++found several that remain open, listed in `OPEN-PROOFS.md` under "Known
++gaps between the statements and the claims" — e.g. the typed scheme is
++not proved to refine the transition system, T5 is existential rather than
++a deadline theorem, and the T7 and FRAME calibrations do not isolate what
++they claim.) The load-bearing
+ episodes:
+ 
+ - **The gap-index understatement (round 5).** The close mechanism as first
+@@ -144,7 +151,8 @@ effort concentrated on a page of definitions (which the gate rounds show
+ was where all the danger lived — every blocking finding was a definitional
+ one), and the kernel absorbed the proof-checking (K2: nothing but the
+ three standard axioms). The definitions got harder and truer under attack
+-rather than drifting soft, the headline theorem is real and first, and the
+-one hard remainder is labelled as such. The failure modes the field has
+-actually suffered were the ones the process was built to catch, and it
+-caught them.
++rather than drifting soft, the headline theorem is real (for the ideal
++proof-free flat view) and, to our knowledge, first, and the T7 remainder is
++labelled as such. The process caught the failure modes it was built to
++catch in the recorded episodes; it did not by itself close the
++model-to-wire bridges and statement gaps later listed in `OPEN-PROOFS.md`.
+diff --git a/research_knowledge/hub-multihop-report.md b/research_knowledge/hub-multihop-report.md
+index 4e2ed71..b417b9f 100644
+--- a/research_knowledge/hub-multihop-report.md
++++ b/research_knowledge/hub-multihop-report.md
+@@ -1,4 +1,4 @@
+-<!-- raw agent output from the 2026-07-06 research sweep (angle: hub-multihop, report); unedited; the verified synthesis is ../RESEARCH.md and supersedes this file where they disagree -->
++<!-- raw agent output from the 2026-07-06 research sweep (angle: hub-multihop, report); unedited except for one marked 2026-10 audit correction (anonymity-set bound); the verified synthesis is ../RESEARCH.md and supersedes this file where they disagree -->
+ 
+ # Privacy in hub-based payment channels: TumbleBit, A2L, AMHL, and successors
+ 
+@@ -58,7 +58,7 @@ Bolt (Green-Miers, CCS 2017) is the closest academic ancestor of "a zk payment c
+ | BlindHub | Untrusted tumbler | Relationship anonymity vs tumbler, WITH variable amounts (amount can't be used as linking tag) | Concurrent payments regardless of amount (bigger effective set than fixed-denomination designs) | Blind adaptor signatures over channel transactions + on-chain enforcement | Channel collateral per payee; tumbler signs blind so cannot police amounts per-payment | Yes, variable amounts |
+ | Accio | Untrusted tumbler | Unlinkability vs tumbler ("optimized"), variable amounts, payer-side channel deliberately plaintext | Concurrent payments; payee side hidden from tumbler | Channel-state updates; tumbler never pre-locks, so no promise inventory to double-claim | Lowest of the line: no advance lock per payment (griefing structurally gone) | Yes, variable amounts |
+ 
+-Direct answer to the framing question: in none of these systems is the anonymity set "the hub's whole clientele." It is always the set of *concurrent, protocol-compatible* payments (same epoch, and for TumbleBit/A2L same denomination), degraded by aborts and by cross-epoch intersection ([TumbleBit Sec. IV-A and Remark on intersection attacks](https://www.ndss-symposium.org/wp-content/uploads/2017/09/ndss201701-3HeilmanPaper.pdf)). Clientele size is an upper bound you will not reach.
++Direct answer to the framing question: in none of these systems is the anonymity set *defined as* "the hub's whole clientele." It is defined as the set of *concurrent, protocol-compatible* payments (same epoch, and for TumbleBit/A2L same denomination), degraded by aborts and by cross-epoch intersection ([TumbleBit Sec. IV-A and Remark on intersection attacks](https://www.ndss-symposium.org/wp-content/uploads/2017/09/ndss201701-3HeilmanPaper.pdf)). Clientele size is an upper bound (on the distinct-payer count); it is attained only in the best case where every client has a compatible open channel and completes a payment in the same epoch with no aborts, so it should not be assumed — but nothing in these definitions makes it strictly unreachable. (Audit correction, 2026-10: the earlier text said "you will not reach" it.)
+ 
+ ## Relevance to our egress fleet
+ 
+diff --git a/research_knowledge/tla-findings.md b/research_knowledge/tla-findings.md
+index 318c346..6120243 100644
+--- a/research_knowledge/tla-findings.md
++++ b/research_knowledge/tla-findings.md
+@@ -2,8 +2,16 @@
+ 
+ Models: `tla/ZkpcFlat.tla` (instantiation A, N=1, escrow/close/dispute
+ mechanics; C1–C3) and `tla/ZkpcFleet.tla` (N=2..3 gateways, gossip lag,
+-merge-time evidence, T6 shape; C4). Configs in `tla/*.cfg`, full TLC logs in
+-`tla/runs/*.log`. TLC 2.20 (tla2tools.jar), `-deadlock`, 4–8 workers.
++merge-time evidence, T6 shape; C4). Configs in `tla/*.cfg`. TLC 2.20
++(tla2tools.jar), `-deadlock`, 4–8 workers.
++
++**Evidence status.** The state counts, depths, times and traces below are
++*historical* reports from the original runs. Their transcripts were written
++to `tla/runs/*.log`, a local directory that is not tracked in git, so the
++`runs/...log` names cited below do not exist in a checkout and the numbers
++cannot be reconciled against an in-tree transcript. They are not a fresh
++replay at this revision; see "Reproducing these runs" at the end for the
++exact commands, the current file hashes, and what a replay must confirm.
+ 
+ **Revision history of this file:** first pass modeled Spec.md **rev 2** and
+ found the close-mechanics hole below; the model was then aligned to
+@@ -81,7 +89,9 @@ post-window remainder stays in the pool, rev-8 F8-m4); recorded-U forward
+ sweep bar; eviction from the tree at settlement; payout
+ C·|U| + (D − cap·C).
+ 
+-Liveness (C3), `ZkpcFlatLive.cfg` (mc20, D=2C, B=2, MAXEPOCH=1), weak
++Liveness (C3), `ZkpcFlatLiveHonest.cfg` (honest member `a`) and
++`ZkpcFlatLiveByz.cfg` (Byzantine member `z`), both mc20, D=2C, B=2,
++MAXEPOCH=1 (there is no `ZkpcFlatLive.cfg`), weak
+ fairness on the progress-action disjunction: **green** —
+ `HonestCloseSettles` (an honest closer settles exactly
+ C·|U| + (D − cap·C) = D − j·C) and `SweepSettles`, stated rev-9-faithfully
+@@ -208,3 +218,56 @@ consistent with T6's statement.
+ - The accepted-value invariant (T1), no-double-accept, and the T6 bound
+   shape survived adversarial model checking unchanged — safe to formalize
+   as stated.
++
++---
++
++## Reproducing these runs
++
++No TLC transcript is committed, and no fresh TLC run was made when this
++section was written; the results above remain historical claims until
++replayed. To replay, with `tla2tools.jar` (TLC 2.20 was used originally;
++record `java -cp tla2tools.jar tlc2.TLC -h | head -1` and `java -version`
++with the output):
++
++```
++cd tla && mkdir -p runs
++for cfg in ZkpcFlat ZkpcFlatLiteralRev2 ZkpcFlatLiteralRev2RootOnly \
++           ZkpcFlatLiteralRev2Safe ZkpcFlatLiveHonest ZkpcFlatLiveByz; do
++  java -cp tla2tools.jar tlc2.TLC -deadlock -workers 4 \
++    -config $cfg.cfg ZkpcFlat.tla | tee runs/$cfg.log
++done
++for cfg in ZkpcFleet ZkpcFleetS2 ZkpcFleetS3 ZkpcFleetN3 \
++           ZkpcFleetNoBind ZkpcFleetNoMergeEv; do
++  java -cp tla2tools.jar tlc2.TLC -deadlock -workers 4 \
++    -config $cfg.cfg ZkpcFleet.tla | tee runs/$cfg.log
++done
++```
++
++A replay must confirm in particular that the two intentional ablations
++still fail as documented: `ZkpcFleetNoBind.cfg` must report an
++`ExcessBound` violation and `ZkpcFleetNoMergeEv.cfg` a `ConflictSlashed`
++violation (if either passes, the green fleet runs lose their
++non-vacuity evidence), and that `ZkpcFlatLiteralRev2.cfg` /
++`ZkpcFlatLiteralRev2RootOnly.cfg` still violate `PoolSolvency`. Record the
++replayed logs together with these content hashes (SHA-256) of the inputs
++they were run on:
++
++```
++    5dbd644d468531cd573602ac6b3cef114b153d6ce557cc760e11672312ad8418  tla/ZkpcFlat.tla
++    eb8c593bc12a0089f4b48f0f6c0843e9ea0b986fa6cb7c561618753983bf6752  tla/ZkpcFleet.tla
++    406f408b98911f5dc29ae9e0b5dd67d14cfc1e002985a5e171192b15594c7670  tla/ZkpcFlat.cfg
++    3cecbdc3bf2126f40e1733f93079925f4854080e945e1e0c77c5ec80d3ca8d83  tla/ZkpcFlatLiteralRev2.cfg
++    be322cc7c7182012f2955fb6dd618b740b3503157e56b176cdd328a5ce76ee36  tla/ZkpcFlatLiteralRev2RootOnly.cfg
++    35cdf0dc9df112cf969a1d2b7e1348f8c873fa7737ff774049183c9d22684b5c  tla/ZkpcFlatLiteralRev2Safe.cfg
++    ac575920e2be12bca6b57b9345860879cb02ce8ca3d3f2df9c9b45df5837e9fa  tla/ZkpcFlatLiveByz.cfg
++    d2b9e15f6af131403c8492a020f7e22ec65f806f1a063ee17572a0fa9acc0b08  tla/ZkpcFlatLiveHonest.cfg
++    a067bca7fe088527f26c1e8ed13b887f1a1118f40f1fa50e28c4ad26979f6ed1  tla/ZkpcFleet.cfg
++    b10e5655a9fe354c04b71504c5558537e53f8c7cff9dadc6fb2b5d23a2bc695f  tla/ZkpcFleetN3.cfg
++    1d8f24e7bc2f7eb941541c2668be410a8afa62ad40abd83ba31424d2727520cb  tla/ZkpcFleetNoBind.cfg
++    68dbadfafb29129e868b28070de2634495c49067e428cf2974427ff48afac0b0  tla/ZkpcFleetNoMergeEv.cfg
++    08617dbdfb77c2b74a8c6e00969ea1d96e459f1d5f32049aef293a220db85ab1  tla/ZkpcFleetS2.cfg
++    13f144753d972e89872e2185e6a49d3849cbe12ce42dcf368031f54e336af00d  tla/ZkpcFleetS3.cfg
++```
++
++The finite scopes above are bounded model checks of the TLA+ models, not
++proofs for all parameters.
+diff --git a/tla/ZkpcFleetS2.cfg b/tla/ZkpcFleetS2.cfg
+index d1f9b42..b9af379 100644
+--- a/tla/ZkpcFleetS2.cfg
++++ b/tla/ZkpcFleetS2.cfg
+@@ -1,4 +1,4 @@
+-\* C4 main run: MC14 + MC17 both ON.  N=2, D=5C, B=1, L=1, TE=1.
++\* C4 scope run S2: MC14 + MC17 both ON.  N=2, D=3C, B=2, L=2, TE=2, T<=8.
+ \* Expect: ExcessBound and ConflictSlashed both hold.
+ CONSTANTS
+   GW = {g1, g2}
+diff --git a/tla/ZkpcFleetS3.cfg b/tla/ZkpcFleetS3.cfg
+index b2843b7..2d64462 100644
+--- a/tla/ZkpcFleetS3.cfg
++++ b/tla/ZkpcFleetS3.cfg
+@@ -1,4 +1,4 @@
+-\* C4 main run: MC14 + MC17 both ON.  N=2, D=5C, B=1, L=1, TE=1.
++\* C4 scope run S3: MC14 + MC17 both ON.  N=2, D=2C, B=1, L=0, TE=1, T<=4.
+ \* Expect: ExcessBound and ConflictSlashed both hold.
+ CONSTANTS
+   GW = {g1, g2}
+diff --git a/scripts/check-axioms.lean b/scripts/check-axioms.lean
+new file mode 100644
+index 0000000..5f2202d
+--- /dev/null
++++ b/scripts/check-axioms.lean
+@@ -0,0 +1,81 @@
++import Zkpc
++
++/-!
++# Axiom-dependency gate (CI)
++
++Run from the repository root after `lake build`:
++
++```
++lake env lean scripts/check-axioms.lean
++```
++
++For **every** declaration whose defining module is `Zkpc` or `Zkpc.*`, this
++walks the declaration's type and value (and, for inductives, constructors)
++transitively through the whole environment, collects the kernel axioms it
++reaches, and fails (an elaboration error, hence a nonzero exit) if any reached
++axiom is outside the allowlist `propext`, `Classical.choice`, `Quot.sound`.
++The proof-hole axiom `sorryAx` is outside the allowlist, so a hole is caught
++here even if it is spelled in a way the token scan misses.
++
++This is the executable form of the claim in `README.md`/`OPEN-PROOFS.md` that
++every result depends only on Lean's three standard axioms. It checks actual
++kernel dependencies, not source tokens, so comments and strings cannot trigger
++it and a custom axiom declared in `Zkpc/Assumptions.lean` cannot slip through
++by being used. It cannot detect definition drift in the model.
++-/
++
++open Lean Elab Command
++
++namespace Zkpc.AxiomGate
++
++/-- Lean's three standard axioms: the only ones a Zkpc declaration may reach. -/
++def allowed : List Name := [``propext, ``Classical.choice, ``Quot.sound]
++
++/-- Depth-first traversal with one visited set shared across all roots; returns
++the axioms newly reached from `n`. -/
++partial def visit (env : Environment) (n : Name) : StateM NameSet (Array Name) := do
++  if (← get).contains n then return #[]
++  modify (·.insert n)
++  match env.find? n with
++  | none => return #[]
++  | some ci =>
++    let mut acc : Array Name := if ci matches .axiomInfo _ then #[n] else #[]
++    for m in ci.type.getUsedConstants do
++      acc := acc ++ (← visit env m)
++    if let some v := ci.value? (allowOpaque := true) then
++      for m in v.getUsedConstants do
++        acc := acc ++ (← visit env m)
++    if let .inductInfo ii := ci then
++      for c in ii.ctors do
++        acc := acc ++ (← visit env c)
++    return acc
++
++/-- `#check_zkpc_axioms` fails if any `Zkpc.*`-module declaration reaches a
++kernel axiom outside `allowed`, naming the first declaration that reached it. -/
++elab "#check_zkpc_axioms" : command => do
++  let env ← getEnv
++  let mut roots : Array Name := #[]
++  for (n, _) in env.constants.map₁.toList do
++    let some idx := env.getModuleIdxFor? n | continue
++    let some mod := env.header.moduleNames[idx.toNat]? | continue
++    if (`Zkpc).isPrefixOf mod then roots := roots.push n
++  if roots.isEmpty then
++    throwError "no declarations found in Zkpc.* modules; is `import Zkpc` broken?"
++  let sorted := roots.qsort Name.lt
++  let mut seen : NameSet := {}
++  let mut reached : Array (Name × Name) := #[]
++  for r in sorted do
++    let (axs, seen') := (visit env r).run seen
++    seen := seen'
++    for a in axs do reached := reached.push (a, r)
++  let bad := reached.filter fun (a, _) => a ∉ allowed
++  let summary := reached.map (·.1)
++  if bad.isEmpty then
++    logInfo m!"axiom gate OK: {roots.size} Zkpc declarations reach only {summary}"
++  else
++    throwError m!"axiom gate FAILED: non-standard axioms reached (axiom, first \
++      declaration reaching it): {bad}"
++
++end Zkpc.AxiomGate
++
++#check_zkpc_axioms
+diff --git a/scripts/lean_token_scan.py b/scripts/lean_token_scan.py
+new file mode 100644
+index 0000000..8f1e27b
+--- /dev/null
++++ b/scripts/lean_token_scan.py
+@@ -0,0 +1,102 @@
++#!/usr/bin/env python3
++"""Lexical guardrail for the Zkpc Lean sources (CI job `guardrails`).
++
++Strips Lean comments (``--`` line comments and nested ``/- ... -/`` block and
++doc comments) and string/char literals, then scans the remaining *code* for:
++
++* ``sorry``, ``admit``, ``native_decide`` anywhere;
++* ``axiom`` declarations outside ``Zkpc/Assumptions.lean``.
++
++Because documentary tokens are removed first, docstrings may mention these
++words.  This is only a fast lexical pre-check: the authoritative dependency
++gate is ``scripts/check-axioms.lean``, which checks the kernel axioms every
++``Zkpc.*`` declaration actually reaches.
++
++Usage: ``python3 scripts/lean_token_scan.py [ROOT]`` (default: repo root).
++Exit status 1 if anything is found.
++"""
++from __future__ import annotations
++
++import re
++import sys
++from pathlib import Path
++
++FORBIDDEN = re.compile(r"(?<![\w.'])(sorry|admit|native_decide)(?![\w'])")
++AXIOM_DECL = re.compile(r"(?<![\w.'])axiom(?![\w'])")
++ALLOWED_AXIOM_FILE = Path("Zkpc/Assumptions.lean")
++
++
++def strip_lean(src: str) -> str:
++    """Replace comments and string/char literals by spaces, keeping newlines."""
++    out = []
++    i, n, depth = 0, len(src), 0
++    while i < n:
++        c = src[i]
++        two = src[i:i + 2]
++        if depth:
++            if two == "/-":
++                depth += 1
++                out.append("  ")
++                i += 2
++            elif two == "-/":
++                depth -= 1
++                out.append("  ")
++                i += 2
++            else:
++                out.append("\n" if c == "\n" else " ")
++                i += 1
++        elif two == "/-":
++            depth = 1
++            out.append("  ")
++            i += 2
++        elif two == "--":
++            j = src.find("\n", i)
++            j = n if j == -1 else j
++            out.append(" " * (j - i))
++            i = j
++        elif c == '"':
++            j = i + 1
++            while j < n and src[j] != '"':
++                j += 2 if src[j] == "\\" else 1
++            j = min(j + 1, n)
++            out.append("".join("\n" if ch == "\n" else " " for ch in src[i:j]))
++            i = j
++        elif c == "'" and re.match(r"'(\\.|[^\\'\n])'", src[i:i + 4]):
++            m = re.match(r"'(\\.|[^\\'\n])'", src[i:i + 4])
++            out.append(" " * m.end())
++            i += m.end()
++        else:
++            out.append(c)
++            i += 1
++    return "".join(out)
++
++
++def scan(root: Path) -> list[str]:
++    files = [root / "Zkpc.lean", *sorted((root / "Zkpc").rglob("*.lean"))]
++    problems = []
++    for f in files:
++        if not f.exists():
++            continue
++        rel = f.relative_to(root)
++        code = strip_lean(f.read_text(encoding="utf-8"))
++        for lineno, line in enumerate(code.splitlines(), 1):
++            for m in FORBIDDEN.finditer(line):
++                problems.append(f"{rel}:{lineno}: forbidden `{m.group(1)}`")
++            if rel != ALLOWED_AXIOM_FILE and AXIOM_DECL.search(line):
++                problems.append(f"{rel}:{lineno}: `axiom` outside {ALLOWED_AXIOM_FILE}")
++    return problems
++
++
++def main(argv: list[str]) -> int:
++    root = Path(argv[1]) if len(argv) > 1 else Path(__file__).resolve().parent.parent
++    problems = scan(root)
++    for p in problems:
++        print(f"::error::{p}")
++    if problems:
++        return 1
++    print("lean token scan OK")
++    return 0
++
++
++if __name__ == "__main__":
++    sys.exit(main(sys.argv))

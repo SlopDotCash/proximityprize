@@ -10,8 +10,10 @@ import Mathlib.Tactic
 /-!
 # Round 18 (Issue #232) — the PRIZE-SCALE TWO-SIDED BRACKET in one self-contained file
 
-Composes the two sides into explicit statements at genuine prize scale (`n = 2^20`, rate `1/2`,
-`q ≤ 2^256`, prize threshold `Lstar = 2^128 ≥ ε*·|F|`):
+Conjoins two explicit arithmetic/combinatorial facts at prize scale (`n = 2^20`, rate `1/2`,
+`q ≤ 2^256`, allowed budget `ε*·|F| ≤ 2^128`).  **It proves no threshold bracket for `δ*`**: the
+formal content is only the Johnson set-family cap and the binomial crossover inequality below (see
+"Scope" for what a bracket would additionally need):
 
 * **Johnson side** (`johnson_list_cap`, the classical second-moment list cap re-proved via the
   truncated double count): a family of `L` codewords, each agreeing with a received word on a
@@ -21,16 +23,28 @@ Composes the two sides into explicit statements at genuine prize scale (`n = 2^2
     `L · (a² − n·J) ≤ n · a`.
 
   At `n = 2^20`, `k = 2^19`, `J = k−1`, `a = 750000` (relative radius `δ ≈ 0.2848`, just below
-  Johnson `1−√ρ ≈ 0.2929`): the cap gives `L ≤ 61` (`johnson_side_instance`) — microscopic against
-  the prize threshold `2^128`.
+  Johnson `1−√ρ ≈ 0.2929`): the cap gives `L ≤ 61` (`johnson_side_instance`).
 
 * **Capacity side** (`capacity_crossover`, the round-14 crossover): at `a = 2^19 + 4063`
-  (`δ ≈ 0.49613`), `2^128 · q^4063 < C(2^20, 2^19 + 4063)` for every `q ≤ 2^256` — composed with
-  the averaging pigeonhole the list at that radius EXCEEDS the prize threshold.
+  (`δ ≈ 0.49613`), `2^128 · q^4063 < C(2^20, 2^19 + 4063)` for every `q ≤ 2^256`.  Composed with a
+  genuine averaging-to-list bridge (not formalized here; cf. `AveragingListLowerBoundRS` and
+  `ListInteriorUnconditionalT1`) a list count above `2^128` exceeds every allowed budget
+  `ε*·q ≤ 2^128`.
 
-* **`two_sided_bracket_n2_20`** packages both: for `RS[F, 2^20, 2^19]`-shaped families, the
-  prize-threshold agreement `a*` is trapped: lists are `≤ 61 ≪ 2^128` at `a = 750000` and
-  `> 2^128` (given the pigeonhole) at `a = 528351` — i.e. **`δ* ∈ [0.2848, 0.49613)`**.
+* **`two_sided_bracket_n2_20`** only conjoins these two facts.
+
+## Scope: why this is not a bracket on `δ*`
+
+The **good (Johnson) side does not follow** from `count ≤ 61` and `ε*·q ≤ 2^128`: certifying
+`count ≤ ε*·q` needs a **lower** budget guard such as `ε*·q ≥ 61`, plus a faithful bridge from the
+set-family count to the actual MCA/list quantity in the prize.  The missing guard matters on
+compatible smooth domains: `p = 7340033 = 7·2^20 + 1` is prime, supports `μ_{2^20}`, and
+`p < 2^128`; a proper degree-`< 2^19` RS code over `F_p` already has worst-case MCA probability
+`1/p > 2^{-128}` at radius `0`, so it has no good radii at `ε* = 2^{-128}` and its operational
+threshold is `0`, outside `[0.2848, …]`.  The capacity side, given the averaging bridge, does
+show the bad side at `δ ≈ 0.49613`, but only as a non-strict upper delimiter `δ* ≤ 0.49613` unless
+an additional gap justifies strictness.  So the correct reading is: *if* the budget satisfies
+`ε*·q ≥ 61` and the bridges hold, then `δ* ∈ [0.2848, 0.49613]`.
 
 The Johnson-side argument (exact, no `Real.sqrt`): let `m x := #{c : x ∈ A c}`. Then
 `∑_x m x = L·a` (double count), `∑_x (m x)² = ∑_{(c,c')} |A c ∩ A c'| ≤ L·a + L²·J` (diagonal +
@@ -172,8 +186,9 @@ theorem johnson_list_cap (A : κ → Finset ι) (a J : ℕ) (hA : ∀ c, (A c).c
 /-! ## 2. The Johnson-side prize-scale instance -/
 
 /-- **Johnson side at `n = 2^20`, rate 1/2:** at agreement `a = 750000` (relative radius
-`δ ≈ 0.2848`), any family of pairwise-`(k−1)`-intersecting `a`-sets has `L ≤ 61` members —
-microscopic against the prize threshold `2^128`. (`a² − n(k−1) = 12 745 234 688 > 0` and
+`δ ≈ 0.2848`), any family of pairwise-`(k−1)`-intersecting `a`-sets has `L ≤ 61` members.  (This
+is below an allowed budget `ε*·q` only when `ε*·q ≥ 61`; an upper bound `ε*·q ≤ 2^128` does not
+suffice.) (`a² − n(k−1) = 12 745 234 688 > 0` and
 `62 · 12 745 234 688 > 2^20 · 750000`.) -/
 theorem johnson_side_instance (A : κ → Finset ι) (hι : Fintype.card ι = 2 ^ 20)
     (hA : ∀ c, (A c).card = 750000)
@@ -251,18 +266,21 @@ theorem capacity_crossover {m t q Lstar : ℕ}
       _ ≤ 2 * (m - t) * (2 * m).choose (m + t) := Nat.mul_le_mul_left _ hshift
   exact Nat.lt_of_mul_lt_mul_left h4
 
-/-! ## 4. The two-sided prize-scale bracket -/
+/-! ## 4. The two prize-scale ingredients, conjoined -/
 
-/-- **THE TWO-SIDED BRACKET at `n = 2^20`, rate 1/2, prize fields.** Both sides in one statement:
+/-- **The two prize-scale ingredients at `n = 2^20`, rate 1/2** (not a proved bracket on `δ*`):
 
 * **(Johnson side, `δ ≈ 0.2848`):** any `RS`-shaped family (pairwise joint agreement `≤ k−1`) of
-  codewords agreeing with a word on `750000`-subsets has `≤ 61 ≪ 2^128` members.
-* **(capacity side, `δ ≈ 0.49613`):** `2^128 · q^4063 < C(2^20, 2^19+4063)` for every prize field
-  `q ≤ 2^256` — via the averaging pigeonhole, some word's list at agreement `524288 + 4063`
-  exceeds the prize threshold.
+  sets of size `750000` has `≤ 61` members.
+* **(capacity side, `δ ≈ 0.49613`):** `2^128 · q^4063 < C(2^20, 2^19+4063)` for every
+  `q ≤ 2^256`.
 
-Hence the prize-threshold agreement `a*` is trapped in `(528351, 750000]`:
-**`δ* ∈ [0.2848, 0.49613)`** for `RS[F, 2^20, 2^19]` at `ε*·|F| ≤ 2^128`. -/
+Turning these into `δ* ∈ [0.2848, 0.49613]` additionally needs (i) a **lower** budget guard
+`ε*·q ≥ 61` (an upper bound `ε*·|F| ≤ 2^128` cannot certify the good side: over the prime
+`p = 7340033 = 7·2^20 + 1 < 2^128` the RS code already has MCA probability `1/p > 2^{-128}` at
+radius `0`), (ii) a faithful bridge from set-family counts to the actual MCA/list quantity, and
+(iii) a genuine averaging-to-list bridge for the capacity side.  The upper delimiter is non-strict
+unless an extra gap justifies strictness.  None of (i)–(iii) is proved here. -/
 theorem two_sided_bracket_n2_20 :
     (∀ {κ : Type} [Fintype κ] [DecidableEq κ] {ι : Type} [Fintype ι] [DecidableEq ι]
         (A : κ → Finset ι), Fintype.card ι = 2 ^ 20 →

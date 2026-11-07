@@ -8,32 +8,41 @@ import Mathlib.Analysis.SpecialFunctions.Sqrt
 import Mathlib.Tactic
 
 /-!
-# Issue #232 — windowed folding is BELOW Johnson at every window size (route 4, fully closed)
+# Issue #232 — the worst-case windowed-folding guarantee is below Johnson at every window size
 
 `FoldingTransferNoGo.lean` certified the *naive* folded-RS transfer dead (one corruption per orbit
 kills every orbit).  The apparent loophole is the **sliding-window** transfer — the mechanism by
 which Guruswami–Rudra folded decoding actually processes plain words: windows
 `{i, i+1, …, i+s−1}` (cyclically) instead of disjoint orbits, so each plain agreement point feeds
-`s` windows.  This file closes that loophole with two theorems:
+`s` windows.  This file limits the **worst-case** version of that loophole with two theorems:
 
-* `agreeing_windows_ge` (the quantitative transfer — the POSITIVE direction, sharp):
-  on a cyclic domain of size `n` with window length `s`, if two words disagree on `e` positions,
-  the number of fully-agreeing windows is `≥ n − s·e` (each disagreement kills at most `s`
-  windows).  This is the best the windowed transfer gives: plain relative radius `δ = e/n` becomes
-  folded relative radius `≤ s·δ`.
+* `agreeing_windows_ge` (the quantitative transfer — the POSITIVE direction, sharp in the worst
+  case): on a cyclic domain of size `n` with window length `s`, if two words disagree on `e`
+  positions, the number of fully-agreeing windows is `≥ n − s·e` (each disagreement kills at most
+  `s` windows).  This is a *lower bound*: plain relative radius `δ = e/n` is guaranteed to become
+  folded relative radius `≤ s·δ`, and for spread-out error patterns it is attained.
 
-* `windowed_folding_below_johnson` (the NO-GO): the folded-RS capacity results need folded
-  agreement fraction `≥ ρ + ε`, i.e. `1 − s·δ ≥ ρ`, i.e. `δ ≤ (1−ρ)/s`.  For EVERY window size
-  `s ≥ 2` and EVERY rate `ρ ∈ (0,1)`:
+* `windowed_folding_below_johnson` (a NO-GO for that guarantee only): if one uses *only* the
+  worst-case count `n − s·e` as the folded agreement and needs it `≥ ρ·n`, one is forced to
+  `1 − s·δ ≥ ρ`, i.e. `δ ≤ (1−ρ)/s`.  For EVERY window size `s ≥ 2` and EVERY rate `ρ ∈ (0,1)`:
 
   `(1−ρ)/s ≤ (1−ρ)/2 < 1 − √ρ`,
 
-  because `(1−ρ)/2 < 1−√ρ ⟺ 0 < (√ρ − 1)²`.  **The windowed transfer lands strictly below the
-  Johnson radius at every rate** — worse than what plain GS already certifies.  Route 4 of the
-  issue's §6 is therefore closed in BOTH variants: the naive orbit transfer is maximally lossy
-  (`FoldingTransferNoGo`), and the windowed transfer, though lossless in the count, pays the
-  factor-`s` radius shrinkage that puts it under Johnson everywhere.  Any folding route to the
-  prize must therefore beat the factor-`s` window penalty itself — that is the (open) content.
+  because `(1−ρ)/2 < 1−√ρ ⟺ 0 < (√ρ − 1)²`.  So **a decoding guarantee derived exclusively from
+  the worst-case window count lands strictly below the Johnson radius at every rate**.
+
+**Scope.** This is a limit on the uniform worst-case conversion, *not* a necessary condition for
+every error pattern or every folding route: `1 − s·δ ≥ ρ` is sufficient for the windowed
+agreement to reach `ρ`, not necessary.  Example: `n = 100`, `s = 2`, words differing on 30
+*consecutive* positions — only 31 cyclic windows fail, so 69% of windows agree (above
+`ρ = 1/2`), although the plain radius `0.3` exceeds both Johnson `≈ 0.2929` and the `0.25`
+worst-case ceiling.  This does not give a uniform new decoder, but it shows that structured
+(e.g. burst) error patterns and code-specific overlap information escape the bound. Together with
+the naive orbit transfer being maximally lossy (`FoldingTransferNoGo`), route 4 of the issue's §6
+is closed only for transfers that rely on the worst-case window count; a folding route to the
+prize must beat the factor-`s` worst-case penalty with nonuniform or code-specific information —
+that is the (open) content.  (The positive transfer interface also does not carry code
+membership of the folded words; that is recorded separately.)
 
 All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 -/
@@ -111,14 +120,17 @@ theorem agreeing_windows_ge (w v : Fin n → F) (hs : s ≤ n)
   rw [Finset.card_univ, Fintype.card_fin] at hsplit
   omega
 
-/-- **Windowed folding is below Johnson at every rate and every window size (the NO-GO).**
-The windowed transfer converts plain radius `δ` to folded radius `≤ s·δ`; the folded capacity
-results need folded agreement `≥ ρ`, forcing `δ ≤ (1−ρ)/s`.  For every `ρ ∈ (0,1)` and `s ≥ 2`:
+/-- **The worst-case windowed guarantee is below Johnson at every rate and window size.**
+The worst-case windowed transfer (`agreeing_windows_ge`) guarantees folded radius `≤ s·δ`; if the
+folded capacity results (folded agreement `≥ ρ`) are fed *only* this guarantee, one needs
+`δ ≤ (1−ρ)/s`.  For every `ρ ∈ (0,1)` and `s ≥ 2`:
 
   `(1−ρ)/s ≤ (1−ρ)/2 < 1 − √ρ`
 
 — strictly below the Johnson radius.  (Strictness from `0 < (√ρ − 1)²`.)  So no choice of window
-size makes the windowed-folding route reach even Johnson, let alone pass it. -/
+size makes a route based exclusively on the worst-case window count reach even Johnson.  The
+statement itself is pure real arithmetic; it is not a necessary condition for a particular error
+pattern (burst errors can leave far more windows agreeing; see the module docstring). -/
 theorem windowed_folding_below_johnson {ρ : ℝ} (hρ0 : 0 < ρ) (hρ1 : ρ < 1)
     {s : ℕ} (hs : 2 ≤ s) :
     (1 - ρ) / s ≤ (1 - ρ) / 2 ∧ (1 - ρ) / 2 < 1 - Real.sqrt ρ := by
@@ -131,8 +143,8 @@ theorem windowed_folding_below_johnson {ρ : ℝ} (hρ0 : 0 < ρ) (hρ1 : ρ < 1
       exact Real.sqrt_lt_sqrt hρ0.le hρ1
     nlinarith [sq_nonneg (Real.sqrt ρ - 1), Real.sqrt_nonneg ρ]
 
-/-- Concrete check at the prize rate `ρ = 1/2`, window `s = 2`: the windowed-folding ceiling is
-`(1−ρ)/2 = 1/4 = 0.25 < 0.29289 < 1 − √(1/2)` — a full `4+` points below Johnson. -/
+/-- Concrete check at the prize rate `ρ = 1/2`, window `s = 2`: the worst-case windowed-folding
+ceiling is `(1−ρ)/2 = 1/4 = 0.25 < 0.29289 ≈ 1 − √(1/2)` — a full `4+` points below Johnson. -/
 theorem windowed_ceiling_rate_half :
     ((1 : ℝ) - 1/2) / 2 = 1/4 ∧ ((1 : ℝ) - 1/2) / 2 < 1 - Real.sqrt (1/2) :=
   ⟨by norm_num, (windowed_folding_below_johnson (by norm_num) (by norm_num) (le_refl 2)).2⟩

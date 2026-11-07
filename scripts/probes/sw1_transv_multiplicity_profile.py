@@ -19,12 +19,18 @@ Checks (exit 1 on any FAIL):
   C3 max mult <= M_tri := floor(d * ln(2r) / ln p)   (triangle-inequality height ceiling).
   C4 on a deterministic sample of spurious tuples:
        mult <= floor(d * ln(sum c^2) / (2 ln p))   (AM-GM / Parseval ceiling, per beta),
-       v_p(N(beta)) = sum_u v_{P_u}(beta) >= mult   (Hensel lift, exact),
-       |N(beta)| (exact integer, product of conjugates) <= (sum c^2)^{d/2}.
+       v_p(N(beta)) = sum_u v_{P_u}(beta) >= mult   (Hensel lift to precision p^HENSEL_K: a
+         local valuation equal to HENSEL_K is only a lower bound, and the equality is compared
+         only when the truncated sum stays below HENSEL_K),
+       N(beta) (exact integer: determinant of multiplication by beta on Z[x]/(x^d+1))
+         satisfies N(beta)^2 <= (sum c^2)^d.
   C5 gate consistency: if M_tri = 0 then W_1 = 0.
-Everything is exact integer arithmetic except |N(beta)| (mpmath 60 digits, rounded, residual
-checked).  No probabilistic heuristic enters any check; the 'indep' column is the
-independent-embedding heuristic T*C(d,j)/p^j printed for comparison ONLY.
+Everything is exact integer arithmetic: the floor-of-logarithm ceilings are computed as the
+largest m with p^m <= (2r)^d (resp. p^(2m) <= X^d), so they are boundary-safe, and the norm is
+an exact integer determinant (no floating-point conjugates).  No probabilistic heuristic enters
+any check; the 'indep' column is the independent-embedding heuristic T*C(d,j)/p^j printed for
+comparison ONLY.  The uint16 place masks and int64 coefficient keys restrict cells to n <= 32
+(guarded in `profile_cell`).  Only the finite listed cells are tested.
 
 Reported per cell (n, r, p): T, W_1, T/p (the DC requirement), W_1/(T/p), max mult,
 share of sum(mult) carried by mult >= 2, M_tri, M_amgm := floor(d ln(2r)/(2 ln p)),
@@ -33,15 +39,9 @@ cap/req := 2 p M_tri / n  (the height-model cap on W divided by the requirement 
 """
 import sys
 import math
-from math import comb, log, floor
+from math import comb
 
 import numpy as np
-
-try:
-    import mpmath
-    mpmath.mp.dps = 60
-except ImportError:  # pragma: no cover
-    mpmath = None
 
 SAMPLE_CAP = 300     # spurious tuples per cell sent through Hensel + exact norm
 HENSEL_K = 4         # p-adic precision for v_{P_u}(beta)
@@ -126,6 +126,8 @@ def hensel_root(w0, n, p, K):
 
 
 def val_at(w, a, b, p, K):
+    """min(v_{P_u}(beta), K): computed modulo p^K, so a returned value equal to K is only a
+    LOWER bound on the true local valuation (truncated precision)."""
     mod = p ** K
     v = (sum(pow(w, int(x), mod) for x in a) - sum(pow(w, int(y), mod) for y in b)) % mod
     k = 0
@@ -134,17 +136,47 @@ def val_at(w, a, b, p, K):
     return k
 
 
-def exact_norm(a, b, n):
-    """|N(beta)| = prod_{u odd} |sigma_u(beta)| as an exact integer (mpmath, residual-checked)."""
-    zeta = mpmath.exp(2j * mpmath.pi / n)
-    N = mpmath.mpf(1)
-    for u in range(1, n // 2, 2):          # conjugate pairs (u, n-u): |sigma_u|^2 each
-        z = zeta ** u
-        s = sum(z ** int(x) for x in a) - sum(z ** int(y) for y in b)
-        N *= abs(s) ** 2
-    Nint = int(mpmath.nint(N))
-    resid = abs(N - Nint)
-    return Nint, float(resid)
+def bareiss_det(M):
+    """Exact determinant of a square integer matrix (fraction-free Bareiss elimination)."""
+    M = [list(map(int, row)) for row in M]
+    m = len(M)
+    sign, prev = 1, 1
+    for k in range(m - 1):
+        if M[k][k] == 0:
+            sw = next((i for i in range(k + 1, m) if M[i][k] != 0), None)
+            if sw is None:
+                return 0
+            M[k], M[sw] = M[sw], M[k]
+            sign = -sign
+        for i in range(k + 1, m):
+            for j in range(k + 1, m):
+                M[i][j] = (M[i][j] * M[k][k] - M[i][k] * M[k][j]) // prev
+        prev = M[k][k]
+    return sign * M[m - 1][m - 1]
+
+
+def exact_norm(c):
+    """N(beta) for beta = sum_j c_j zeta^j (power basis, 0 <= j < d = n/2, zeta^d = -1), as an
+    exact integer: the determinant of multiplication by beta on Z[zeta_n] = Z[x]/(x^d + 1),
+    i.e. the negacyclic matrix of c.  No floating point (an earlier version multiplied 60-digit
+    approximate conjugates and rounded, which is not an exact-norm certificate).  For the CM
+    field Q(zeta_n) the norm is prod over conjugate pairs of |sigma_u(beta)|^2 >= 0."""
+    d = len(c)
+    M = [[0] * d for _ in range(d)]
+    for j in range(d):                      # column j = coefficients of x^j * beta
+        for i in range(d):
+            t = i + j
+            M[t % d][j] += int(c[i]) if t < d else -int(c[i])
+    return bareiss_det(M)
+
+
+def floor_log_pow(X, p):
+    """Largest m >= 0 with p^m <= X (X >= 1 an integer, p >= 2): exact, boundary-safe."""
+    m, q = 0, p
+    while q <= X:
+        m += 1
+        q *= p
+    return m
 
 
 def vp(N, p):
@@ -158,8 +190,15 @@ def vp(N, p):
 
 
 # ----------------------------------------------------------------------------- one cell
-def profile_cell(n, r, p, log):
+def profile_cell(n, r, p, emit):
+    """Profile one cell; `emit` is the line-printing callback (it must not be called `log`,
+    which is the natural logarithm used below)."""
     d = n // 2
+    # the place masks are uint16 and the char-0 coefficient keys are int64 base-(2r+1) words
+    if d > 16:
+        raise ValueError(f"n={n}: place masks are 16-bit, need n <= 32")
+    if (2 * r + 1) ** d >= 1 << 63:
+        raise ValueError(f"n={n}, r={r}: coefficient-vector encoding overflows int64")
     g = primitive_nth_root(n, p)
     U = list(range(1, n, 2))                         # the d embeddings / degree-one primes
     pw = np.array([[pow(g, (u * e) % n, p) for e in range(n)] for u in U], dtype=np.int64)
@@ -213,8 +252,9 @@ def profile_cell(n, r, p, log):
     if summult != d * W1:
         fails.append(f"C2 sum mult {summult} != d*W_1 {d * W1}")
     maxmult = max([j for j in range(d + 1) if hist[j] > 0] + [0])
-    M_tri = floor(d * log(2 * r) / log(p))
-    M_amgm = floor(d * log(2 * r) / (2 * log(p)))
+    # exact integer forms of floor(d ln(2r) / ln p) and floor(d ln(2r) / (2 ln p))
+    M_tri = floor_log_pow((2 * r) ** d, p)
+    M_amgm = floor_log_pow((2 * r) ** d, p * p)
     if maxmult > M_tri:
         fails.append(f"C3 max mult {maxmult} > M_tri {M_tri}")
     if M_tri == 0 and W1 != 0:
@@ -228,7 +268,7 @@ def profile_cell(n, r, p, log):
         c = coeff_vectors(A[ia:ia + 1], n)[0] - coeff_vectors(B[ib:ib + 1], n)[0]
         s2 = int(np.dot(c, c))
         mult = bin(msk).count("1")
-        cap_b = floor(d * log(s2) / (2 * log(p)))
+        cap_b = floor_log_pow(s2 ** d, p * p)     # exact floor(d ln(s2) / (2 ln p))
         if mult > cap_b:
             fails.append(f"C4 mult {mult} > per-beta AM-GM cap {cap_b} (s2={s2}) at {a.tolist()}|{b.tolist()}")
         vsum = 0
@@ -237,38 +277,37 @@ def profile_cell(n, r, p, log):
                 if u not in lifted:
                     lifted[u] = hensel_root(pow(g, u, p), n, p, HENSEL_K)
                 vsum += val_at(lifted[u], a, b, p, HENSEL_K)
-        if mpmath is not None:
-            Nint, resid = exact_norm(a, b, n)
-            if resid > 1e-12:
-                fails.append(f"C4 norm not integral (resid {resid}) at {a.tolist()}|{b.tolist()}")
-            if Nint == 0:
-                fails.append(f"C4 zero norm for a char-0 nonzero beta at {a.tolist()}|{b.tolist()}")
-                continue
-            v = vp(Nint, p)
-            if v < mult:
-                fails.append(f"C4 v_p(N)={v} < mult={mult} at {a.tolist()}|{b.tolist()}")
-            if v != vsum and vsum < HENSEL_K:
-                fails.append(f"C4 v_p(N)={v} != sum of local valuations {vsum}")
-            if Nint > s2 ** (d // 2) * (s2 ** 0.5 if d % 2 else 1) + 1e-9:
-                fails.append(f"C4 |N|={Nint} > (sum c^2)^(d/2) with s2={s2}")
-            max_norm = max(max_norm, Nint)
-            max_vp_minus_mult = max(max_vp_minus_mult, v - mult)
-            if v > mult:
-                n_sq += 1
+        Nint = exact_norm(c)
+        if Nint <= 0:
+            fails.append(f"C4 nonpositive norm {Nint} for a char-0 nonzero beta at "
+                         f"{a.tolist()}|{b.tolist()}")
+            continue
+        v = vp(Nint, p)
+        if v < mult:
+            fails.append(f"C4 v_p(N)={v} < mult={mult} at {a.tolist()}|{b.tolist()}")
+        # vsum is truncated at HENSEL_K per place; compare only when no place hit the cap
+        if v != vsum and vsum < HENSEL_K:
+            fails.append(f"C4 v_p(N)={v} != sum of local valuations {vsum}")
+        if Nint * Nint > s2 ** d:                 # exact form of |N| <= (sum c^2)^(d/2)
+            fails.append(f"C4 |N|={Nint} > (sum c^2)^(d/2) with s2={s2}")
+        max_norm = max(max_norm, Nint)
+        max_vp_minus_mult = max(max_vp_minus_mult, v - mult)
+        if v > mult:
+            n_sq += 1
         n_checked += 1
 
     req = T / p
     share2 = (summult - hist[1]) / summult if summult else 0.0
     layers = [int(hist[j:].sum()) for j in range(1, maxmult + 1)]
     indep = [T * comb(d, j) / p ** j for j in range(1, maxmult + 1)]
-    log(f"n={n:2d} r={r} p={p:8d} T={T:11d} W1={W1:8d} T/p={req:10.1f} W1/(T/p)={W1 / req:6.3f} "
+    emit(f"n={n:2d} r={r} p={p:8d} T={T:11d} W1={W1:8d} T/p={req:10.1f} W1/(T/p)={W1 / req:6.3f} "
         f"maxmult={maxmult} share>=2={share2:.4f} M_tri={M_tri:2d} M_amgm={M_amgm:2d} "
         f"cap/req={2 * p * M_tri / n:10.1f} 2p/n={2 * p / n:8.1f}")
-    log(f"      layers A_j (j>=1) = {layers}   indep-heuristic = {[round(x, 2) for x in indep]}   "
+    emit(f"      layers A_j (j>=1) = {layers}   indep-heuristic = {[round(x, 2) for x in indep]}   "
         f"sample: checked={n_checked} square-factor(v_p>mult)={n_sq} max(v_p-mult)={max_vp_minus_mult} "
         f"max|N|/p^2={max_norm / p ** 2 if p else 0:.3e}")
     for f in fails:
-        log("      FAIL " + f)
+        emit("      FAIL " + f)
     return {
         "n": n, "r": r, "p": p, "T": T, "W1": W1, "req": req, "maxmult": maxmult, "M_tri": M_tri,
         "M_amgm": M_amgm, "share2": share2, "cap_over_req": 2 * p * M_tri / n, "layers": layers,

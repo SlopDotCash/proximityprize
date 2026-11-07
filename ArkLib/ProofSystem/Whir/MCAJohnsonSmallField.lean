@@ -36,7 +36,7 @@ theorem mca_johnson_bound_CONJECTURE_smallField
     mca_johnson_bound_CONJECTURE α φ m parℓ_type exp := by
   classical
   unfold mca_johnson_bound_CONJECTURE
-  rintro Gen f δ ⟨hδ0, hδ1⟩
+  rintro _ Gen f δ ⟨hδ0, hδ1⟩
   refine le_trans (PMF.coe_le_one _ _) ?_
   rw [← ENNReal.ofReal_one]
   apply ENNReal.ofReal_le_ofReal

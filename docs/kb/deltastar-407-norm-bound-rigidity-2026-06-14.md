@@ -1,5 +1,18 @@
 # PROVEN norm bound: simultaneous-system bad primes ≤ (2k)^{2k/r} (2026-06-14, wakesync)
 
+> **Guard (2026-10-28 audit, T48; cross T101).** The norm-divisibility argument is valid **for
+> dyadic `k`** (`k` a power of two). In that case `r` distinct split conjugate primes give
+> `p^r ∣ N(f(ζ))` for the nonzero norm, so `p ≤ (2k)^{2k/r}`. Keep the power-of-two guard, because
+> two steps use it. First, `f(ζ^j) = σ_j(f(ζ))` needs every odd `j` to be a unit mod `4k`, i.e. a
+> Galois automorphism. Second, `deg f = 2k − 1 < φ(4k) = 2k` needs `φ(4k) = 2k`. Both fail for
+> non-dyadic `k`. At `k = 6` (order 24, `φ = 8`) the `±1` polynomial
+> `(1+x+x²+x³)(x⁸−x⁴+1)` of degree 11 vanishes at a primitive 24th root of unity in characteristic
+> zero (and at `43 ∈ F₉₇`), so the "f ≠ 0 ⟹ f(ζ) ≠ 0" step fails. The `k = 6, 10` scans below are
+> therefore outside the proved regime. That example refutes only the single char-0 step at
+> non-dyadic order, not the complete simultaneous odd system. As the note itself says, no prize
+> closure follows without the missing map from actual window-bad configurations to the complete
+> odd system.
+
 ## The clean proven mechanism (advances NOVEL-A with a proof, not just empirics)
 char-p bad config = sign vector ε∈{±1}^{2k}, f(x)=Σεᵢxⁱ (deg<2k, ±1 coeffs), with f(ζ^{j})≡0 mod p for
 the r conditions (ζ a primitive 4k-th root, p≡1 mod 4k; j the odd indices via Newton e_odd=0⟺p_odd=0).

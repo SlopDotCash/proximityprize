@@ -17,7 +17,7 @@ interior band triple `(W_AB, W_AC, W_BC)` over `μ_n`:
 - **floor** (SYZ47): `δ₁ ≥ max(a,b,c)`;
 - **parity** (SYZ68): `g ≡ S (mod 2)` — zero field content, forced by the degree-sum;
 - **empty-middle census** (SYZ55 cofactor / SYZ59 product convention): every *realizable* witness
-  sits outside `middleBand := max(a,b,c) < δ₁ ≤ ⌊S/2⌋ − 2`.
+  sits outside `middleBand := max(a,b,c) < δ₁ ≤ ⌊S/2⌋ − 2`.  (A hypothesis, not a fact: SYZ71's `μ₂₀ ⊂ 𝔽₄₁` probe witness occupies `middleBand 6 6 6 7`.)
 
 SYZ69 assembles them into a single **two-class law** and restates the one open obligation minimally.
 
@@ -39,7 +39,10 @@ Lean objects:
 - `floor_attained_gap`, `balanced_floor_attained_gap` — the constant-syzygy class gap `= S−2·max`, `= d`.
 - `near_balance_gap_le_two_of_even`, `near_balance_gap_odd_admits_three` — the parity-split boundary.
 - `classification_of_hilbert` — packaged end-to-end from SYZ44 `RankNullity ∧ TwoRamp`.
-- `census_two_class` — finite `decide`: SYZ59 `productCensus` (`d ∈ {3,4,5}`) all floor-attained.
+- `constSyzygyExamples_two_class` (formerly `census_two_class`) — finite `decide` on SYZ59's
+  hand-entered `constSyzygyExamples` (`d ∈ {3,4,5}`, typed with `δ₁ = max`): true by construction,
+  not a census.  SYZ71's `n = 20` probe witness occupies `middleBand 6 6 6 7`, so the realizable
+  balanced interior is not entirely floor-attained.
 
 **The two-class law itself is a theorem** given the census input. The uniform class invariant is
 `ι ≤ 1`; the crisp *gap* statement is parity-dependent (even-`S` `g ≤ 2` is the sharp correction).

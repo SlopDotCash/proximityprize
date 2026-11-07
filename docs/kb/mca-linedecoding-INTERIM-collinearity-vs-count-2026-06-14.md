@@ -1,5 +1,13 @@
 # MCA line-decoding attack — INTERIM (4/6 legs; the decisive 2 failed on session limit), 2026-06-14
 
+> **Scope note (2026-10-28 audit, T48; cross T74).** This note rightly distinguishes codeword count
+> from affine structure, but its working definition of badness is not the MCA definition. It
+> counts "close codewords NOT lying on the affine line". Actual MCA badness (ABF26 Def 4.3, as in
+> `Errors.lean`) quantifies over a **common witness set** of size at least `(1−δ)n` and requires a
+> joint codeword explanation of both rows on that set. Ordinary list collinearity alone does not
+> implement that definition. The two failed legs, and any task labelled unverified here, remain
+> unverified; they are not support for the proposed exact reduction.
+
 ## What returned (4 legs) + the tension
 Attack fleet wf_d769b9c5 on the CORRECTED object (line-decoding / ε_mca bad-point count). Completed:
 - **capacity-pin (beyond_johnson=yes, partial):** closed-form CEILING δ*_MCA ≤ (1−ρ) − H₂(ρ)/log₂(q)

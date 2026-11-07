@@ -24,10 +24,15 @@ rate `ρ ∈ (0,1)` the Johnson radius is **strictly below** capacity:
 
 Hence the gap `(1 - √ρ, 1 - ρ)` in which the prize lives is **non-empty**, so no Johnson-level
 argument can close it: the irreducible open content is genuinely the *beyond-Johnson* list-size
-bound (Reed–Solomon list-decoding up to capacity — resolved in the literature only recently, e.g.
-Brakensiek–Gopi–Makam 2023 / Guo–Zhang, via higher-order-MDS / GM-MDS machinery absent from
-mathlib).  This file does not claim to close that gap; it certifies, with a build-checked proof,
-that the gap is real.
+bound.  The literature achieves list-decoding capacity only for **random or generic** evaluation
+domains: Brakensiek–Gopi–Makam 2023 prove it for *generic* RS codes (and random RS codes over
+exponentially large fields, with high probability), and Guo–Zhang 2023 for *randomly punctured*
+RS codes over polynomial-size fields, with high probability, via higher-order-MDS / GM-MDS
+machinery absent from mathlib.  These are existential / high-probability statements; they do
+**not** give capacity list decoding for an arbitrary prescribed evaluation domain such as the
+fixed smooth multiplicative subgroups this repository targets, which remains open.  This file
+does not claim to close that gap; it only proves, with a build-checked proof, that
+`1 - √ρ < 1 - ρ` for rate `ρ ∈ (0,1)`, i.e. that the gap is non-empty.
 -/
 
 namespace ProximityGap

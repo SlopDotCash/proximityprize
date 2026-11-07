@@ -12,6 +12,10 @@ dimension φ(n) = n/2. The r305/r308/r310 chain gives, exactly:
   and `M_r(z)` its pair mass;
 - the moment tower / wall (WallHolds) ⟺ `S_r(p)` stays sub-Wick to r ≈ ln q — i.e. the
   prime-ideal lattice contains no heavy-mass SPARSE-AND-SHORT vectors up to sparsity 2 ln q.
+  *(Scope note, 2026-10-28 audit T48: this sparse / low-mass formulation is the live one. The
+  companion R393 note's unrestricted `ℓ∞`-SVP threshold is impossible at production size by
+  Boolean-cube pigeonhole; see its correction. Any sub-Wick statement about raw collision mass
+  must keep the DC allowance, cross T103.)*
 
 ## Why this is a real reframing (not relabeling)
 

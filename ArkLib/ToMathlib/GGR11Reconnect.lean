@@ -18,12 +18,15 @@ then carries the *refined* development:
 
 * the closed-form leaf-counting recursion `ggr11_tree_count_le` (GGR11 Theorem 3.6),
   proved fully (`sorry`/`axiom`-free);
-* the refined residual `GGR11TreeStructure` (the Erase-Decode tree existence,
-  GGR11 Algorithm 1 / Lemmas 3.3–3.5) and the chain
-  `GGR11TreeStructure → GGR11PerWordBound → (bound)` for *arbitrary* budgets `b r`;
+* the numerical leaf-count frontier `GGR11TreeStructure` (logically equivalent to
+  `GGR11PerWordBound`, see `treeStructure_iff_perWordBound` in `GGR11Divergence`; it carries no tree data)
+  and the chain `GGR11TreeStructure → GGR11PerWordBound → (bound)` for *arbitrary*
+  budgets `b r`;
 * unconditional discharges in the elementary `m ≤ r` regime
-  (`ggr11_treeStructure_of_le_exp`) and the infinite-list regime
-  (`ggr11_perWordBound_of_Lambda_top`).
+  (`ggr11_treeStructure_of_le_exp`) and the `Λ(C, δ) = ⊤` regime
+  (`ggr11_perWordBound_of_Lambda_top`).  Since the legacy `ListDecodable.Lambda` is
+  `ncard`-based, `Λ = ⊤` means unbounded finite point-list sizes; an actual infinite
+  point list contributes `0`, so this is not a treatment of infinite close lists.
 
 Those two files were never wired together at the *specific* GGR11 budgets used by
 `lambda_le_ggr11`.  This file closes that gap (ABF26 issue #50, acceptance item 2):
@@ -37,10 +40,12 @@ section at the end.
 
 The genuine Erase-Decode tree *construction* in the complementary `m > r` regime —
 GGR11 Algorithm 1 with the Blue/Red erasure-decoding budgets of Lemmas 3.3–3.5 —
-has no in-tree analogue and is **not** closed here.  It remains the precisely-named
-external residual `InterleavedCode.GGR11.GGR11TreeStructure`.  Every theorem below
-either consumes that residual explicitly or lives in a regime where it is already
-discharged; none silently weakens it.
+is **not** closed in this file.  Every theorem below either consumes
+`InterleavedCode.GGR11.GGR11TreeStructure` explicitly or lives in a regime where it is
+already discharged; none silently weakens it.  The construction itself is proved for
+finite point lists (in particular over any finite field) in
+`ArkLib.ToMathlib.GGR11TreeConstruction` (`lambda_le_ggr11_holds`,
+`lambda_le_ggr11_holds_of_finite`).
 
 ## References
 
@@ -127,10 +132,14 @@ theorem lambda_le_ggr11_of_le_exp [Fintype F] [Nonempty ι]
   lambda_le_ggr11_of_treeStructure C δ m hm hδ_lb hδ_ub
     (GGR11.ggr11_treeStructure_of_le_exp hmr hL)
 
-/-- **Infinite-list regime, reconnected.** When the base list size is infinite and
+/-- **`Λ = ⊤` regime, reconnected.** When `ListDecodable.Lambda C δ = ⊤` and
 the GGR11 Red budget is positive, the right-hand side of the bound is `⊤`, so the
 bare `lambda_le_ggr11` holds *unconditionally*
-(`ggr11_perWordBound_of_Lambda_top`). No external residual is consumed. -/
+(`ggr11_perWordBound_of_Lambda_top`). No external residual is consumed.
+
+Caveat: the legacy `Lambda` is `ncard`-based, so `Lambda C δ = ⊤` means the finite
+point-list sizes are unbounded; an actual infinite point list contributes `0` and is not
+what this branch covers. -/
 theorem lambda_le_ggr11_of_Lambda_top
     (C : Set (ι → F)) (δ : ℝ) (m : ℕ) (hm : 1 ≤ m)
     (hδ_lb : 0 ≤ δ) (hδ_ub : δ < (Code.minDist C : ℝ) / Fintype.card ι)

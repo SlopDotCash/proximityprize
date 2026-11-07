@@ -22,9 +22,21 @@ The answer is **NO, and we say exactly where √p re-enters.**
 
 ## The object and the count
 
-The off-diagonal sum is over additive relations `Σ x_i = Σ y_j` on `μ_n` of two `r`-tuples; the
-number of such off-diagonal pairs is `Θ(n^{2r-1})` (the relation `Σx = Σy` is one linear constraint
-on `2r` free coordinates over an `n`-element set; minus the `O((2r−1)‼·n^r)` diagonal/Wick pairs).
+*Status and corrections (audit 2026-10-28, R-214).* Nothing about the actual Jacobi family, its
+sheaf, conductor, Betti numbers or discrepancy is instantiated in Lean here: the theorems below
+are scalar inequalities about the explicitly *defined* exponent proxies `t(r) = r − 1/2`,
+`κ(r) = r − β/2` and `r`. The later `_JacKatzBoundedConductorFamily.lean` states that this file
+analysed the wrong family; read the discussion below as a historical heuristic for that model.
+Since `t(r) − κ(r) = (β − 1)/2` independently of `r`, for `β > 1` the proxy `κ` lies strictly
+**below** `t` at every `r`; there is no `r`-dependent crossing (`katz_sqrtCount_gap`). And
+`n^{κ(r)}` is a proxy for an *upper* error estimate: a positive exponent only means that estimate
+does not certify vanishing; it is not a lower bound on the actual discrepancy.
+
+The off-diagonal sum is over additive relations `Σ x_i = Σ y_j` on `μ_n` of two `r`-tuples. The
+number of such pairs is at most `n^{2r-1}` (the first `2r − 1` coordinates determine the last);
+this is an upper bound, not a `Θ` estimate: one linear equation on coordinates in an arbitrary
+`n`-element subset does not force `≍ n^{2r-1}` solutions (for thin `μ_n` the char-0 count is
+`≈ (2r−1)‼·n^r`, plus wraparound relations).
 Each summand is a **unit** normalized iterated Jacobi phase `j_r = J_r/p^{(r-1)/2}`, `|j_r| = 1`,
 where `J_r` is a Frobenius eigenvalue of the degree-`n`, dimension-`(r−1)` **Fermat hypersurface**
 `x_1^n + … + x_r^n = 0` (Weil: `|J_r| = p^{(r-1)/2}`, the Jacobi sums ARE the nontrivial Frobenius
@@ -34,8 +46,9 @@ Square-root cancellation of the off-diagonal sum means
 ```
 |Off| ≤ slack ≈ diagonal mass ≈ (2r−1)‼ · n^r        (the Wick value).
 ```
-A "trivial" bound is `|Off| ≤ count = Θ(n^{2r-1})`. The gap to close is the **full `√(count)`** —
-i.e. one needs cancellation down to `n^{(2r-1)/2}` (or better, to `n^r`).
+A "trivial" bound is `|Off| ≤ count ≤ n^{2r-1}`. If the count were `≍ n^{2r-1}`, square-root
+cancellation would mean `|Off| ≲ n^{(2r-1)/2}`; the Wick target `n^r` is *weaker* than that
+(`n^r > n^{r−1/2}`), not stronger.
 
 ## What Katz's theorem actually delivers (the EXACT rate)
 
@@ -93,20 +106,20 @@ Define the two competing exponents (base-`n` logarithms, the natural scale of `�
 * the Katz-effective exponent the rate can DELIVER on the thin slice,
   `κ(r) = r − (1/2)·log_n p`  (the conductor exponent `r` minus the `p^{-1/2}` saving in base-`n`).
 
-`closesCancellation` would require `κ(r) ≤ t(r)` (or even `κ(r) ≤ r`, beating the trivial count) at
-`r = log m`. We prove the OPPOSITE inequality holds in the prize regime:
+What is proved (scalar facts about the proxies only):
 
-> **`katz_error_exp_pos` (axiom-clean).** When the field is only polynomially larger than
-> the subgroup, `log_n p = β` bounded (prize: `β ≈ 4–5`), and the order grows `r ≥ β`, the
-> Katz-effective exponent `κ(r) = r − β/2` already EXCEEDS the entire diagonal/Wick exponent `r`
-> minus a constant — i.e. the conductor growth `n^r` dwarfs the `p^{1/2} = n^{β/2}` saving for every
-> `r > β/2`. The equidistribution error is `≥ n^{r − β/2} ≥ n^{r/2}` for `r ≥ β`, which is LARGER
-> than the off-diagonal mass `n^r`'s square-root only by failing to be `o(n^r)`: concretely
-> `r − β/2 > 0` so the error is super-polynomial in `n`, not `o(1)`.
+> * **`katz_sqrtCount_gap`.** `κ(r) ≤ t(r)` whenever `β ≥ 1`, with `t(r) − κ(r) = (β−1)/2` for
+>   every `r`. So the proxy `κ` is always *below* the `√(count)` exponent and below `r`; it never
+>   exceeds them.
+> * **`katz_error_exp_pos`.** `κ(r) > 0` when `r > β/2`: the proxy *upper* estimate
+>   `C(sheaf)·p^{-1/2} ≈ n^{κ(r)}` for the **normalized** discrepancy is not `< 1`, so that
+>   estimate does not certify vanishing normalized discrepancy. It is not a lower bound on the
+>   actual discrepancy, and it is not a comparison of an actual error with the off-diagonal mass.
 
-This is the EXACT statement that "the growing-order quantitative version does not exist / is the open
-gap": Katz gives `p^{-1/2}`× a conductor that is `n^r`; at `r = log p` the product blows up. The
-**named open residual** is therefore:
+Heuristically, Katz's fixed-order rate multiplied by a conductor proxy `≈ n^r` does not give a
+useful normalized discrepancy bound at `r ≈ log p`. This is a statement about this particular
+upper estimate, not a theorem excluding every effective Katz route. The **named open residual**
+is:
 
 `JacobiEquidistributionRateResidual`: an equidistribution-of-Jacobi-sums theorem with discrepancy
 `o(1)` (or even `o(n^{r}/count)`) that is UNIFORM in the order `r` up to `r ≈ log p` AND restricted
@@ -114,12 +127,11 @@ to the thin `μ_n`-subfamily. No such theorem exists; Katz's is fixed-order (`r 
 field-scale. This residual is the genuine open gap; it is NOT discharged.
 
 ## Honest status
-`sqrtPReenters = true`: √p re-enters as the `p^{-1/2}` error term of the Katz/Deligne equidistribution
-measured against the density-`(n/p)^{O(r)}` thin subgroup slice (Fact 1), and is then OVERWHELMED by
-the Fermat-variety conductor `n^r` (the dim-`(r−1)` degree-`n` Fermat hypersurface Betti number) at
-growing order (Fact 2). `closesCancellation = false`. The off-diagonal cancellation is NOT proved.
-This file PROVES the exponent-race inequality that makes the gap precise, and NAMES the residual.
-Issue #444.
+Heuristic (not formalized): √p re-enters as the `p^{-1/2}` error term of the Katz/Deligne
+equidistribution measured against the thin subgroup slice (Fact 1), and the conductor proxy `n^r`
+makes that upper estimate useless at growing order (Fact 2). The off-diagonal cancellation is NOT
+proved, and NOT refuted: this file proves only scalar inequalities about the defined exponent
+proxies, for an uninstantiated family/conductor model, and names the residual. Issue #444.
 -/
 
 set_option autoImplicit false
@@ -130,58 +142,48 @@ open Real
 
 /-! ## The competing exponents (base-`n` scale) -/
 
-/-- The **off-diagonal `√(count)` target exponent**: the off-diagonal sum has `Θ(n^{2r-1})` unit-phase
-terms, so square-root cancellation must reach `n^{(2r-1)/2}`. Cancellation to the diagonal/Wick mass
-`n^r` is even stronger. -/
+/-- The **off-diagonal `√(count)` exponent proxy** `(2r−1)/2`: the off-diagonal sum has at most
+`n^{2r-1}` unit-phase terms, and `n^{(2r-1)/2}` is the square root of that upper count.
+Cancellation to the diagonal/Wick mass `n^r` is *weaker* (`r > (2r−1)/2`). -/
 noncomputable def sqrtCountExp (r : ℝ) : ℝ := (2 * r - 1) / 2
 
 /-- The **diagonal / Wick exponent** `r` (the mass `(2r−1)‼·n^r ≈ n^r` that the off-diagonal must not
 exceed). -/
 def wickExp (r : ℝ) : ℝ := r
 
-/-- The **Katz-effective exponent on the thin slice** in base-`n`: the equidistribution sheaf for the
-`r`-fold Jacobi sum lives on the degree-`n`, dimension-`(r−1)` Fermat hypersurface, whose total Betti
-number / conductor is `≈ n^r` (`C(sheaf)`); Katz's rate multiplies it by `p^{-1/2} = n^{-β/2}`. So the
-delivered error exponent is `κ(r) = r − β/2`, where `β = log_n p` is the field-to-subgroup ratio. -/
+/-- The **Katz-effective exponent proxy** in base-`n`: modelling the conductor `C(sheaf)` of the
+(uninstantiated) `r`-fold Jacobi family by `≈ n^r` and Katz's rate factor by `p^{-1/2} = n^{-β/2}`,
+the upper estimate for the *normalized* discrepancy has exponent `κ(r) = r − β/2`, where
+`β = log_n p`. This is a definition of a proxy, not a computed conductor or discrepancy. -/
 noncomputable def katzEffectiveExp (β r : ℝ) : ℝ := r - β / 2
 
 /-! ## The exponent-race theorems (axiom-clean) -/
 
-/-- **The conductor beats the `√p` saving: Katz error exponent is positive for every order past
-`β/2`.** With `β = log_n p` (prize: `β ≈ 4–5`, so `β/2 ≈ 2–2.5`), and order `r > β/2`, the
-Katz-effective exponent `κ(r) = r − β/2` is strictly positive: the equidistribution error
-`n^{κ(r)} = n^{r − β/2}` is super-polynomial in `n`, NOT `o(1)`. The `p^{-1/2} = n^{-β/2}` saving is a
-fixed constant subtraction; the conductor exponent `r` grows; the saving is consumed at `r = β/2` and
-the error blows up for all larger `r`. This is precisely why the off-diagonal cancellation is NOT
-delivered at growing order `r ≈ log m`. -/
+/-- **The proxy Katz exponent is positive for every order past `β/2`.** With `β = log_n p` and
+`r > β/2`, `κ(r) = r − β/2 > 0`, so the proxy upper estimate `n^{κ(r)}` for the normalized
+discrepancy is `≥ 1` (for `n ≥ 1`) and does not certify vanishing. This says the particular upper
+estimate is useless there; it is not a lower bound on the actual discrepancy and does not show the
+off-diagonal cancellation fails. -/
 theorem katz_error_exp_pos {β r : ℝ} (hr : β / 2 < r) : 0 < katzEffectiveExp β r := by
   unfold katzEffectiveExp; linarith
 
-/-- **The Katz-effective error EXCEEDS even the square-root-of-count target for `r ≥ β`.** At growing
-order the delivered exponent `κ(r) = r − β/2` is `≥ (2r−1)/2 = t(r)` exactly when `r ≥ β − 1`, i.e.
-for all but a constant initial band of orders the Katz bound does not even beat the trivial
-`√(count)` threshold. Combined with `katz_error_exp_pos`, at `r ≈ log m ≫ β` the equidistribution
-error `n^{κ(r)}` is super-polynomially larger than the entire off-diagonal mass `n^r` it was supposed
-to bound (`κ(r) − r = −β/2 < 0` says it is below `n^r`, but `κ(r) > 0` says it is NOT `o(1)`; the
-relevant failure is `κ(r) > 0`, the error is not negligible). Concretely we record the exact gap:
-the Katz-effective exponent `κ(r) = r − β/2` falls SHORT of the `√(count)` target `t(r) = (2r−1)/2`
-by exactly `t(r) − κ(r) = β/2 − 1/2 = (β−1)/2`, which is `≥ 0` for `β ≥ 1` (`p ≥ n`): Katz's
-delivered exponent is at or below the `√(count)` target, i.e. were the rate the only obstruction Katz
-would suffice — but `κ(r) > 0` (`katz_error_exp_pos`) shows the delivered error is NOT vanishing, so
-the "below `√(count)`" comparison is moot. The real obstruction is `κ(r) > 0`, NOT the `√(count)`
-margin. -/
+/-- **The proxy Katz exponent lies below the `√(count)` exponent at every order.** The exact gap is
+`t(r) − κ(r) = (2r−1)/2 − (r − β/2) = (β−1)/2`, independent of `r`, which is `≥ 0` for `β ≥ 1`
+(`p ≥ n`) and `> 0` for `β > 1`. There is no `r`-dependent crossing: `κ(r)` never exceeds `t(r)`
+(nor `r`). (An earlier docstring claimed `κ ≥ t` exactly when `r ≥ β − 1`; that was false, R-214.)
+The two exponents measure different things — `κ` a normalized-discrepancy upper estimate, `t` an
+absolute off-diagonal size — so this comparison is between proxies only. -/
 theorem katz_sqrtCount_gap {β r : ℝ} (hβ : 1 ≤ β) :
     katzEffectiveExp β r ≤ sqrtCountExp r := by
   unfold sqrtCountExp katzEffectiveExp
   -- (2r-1)/2 - (r - β/2) = (β-1)/2 ≥ 0
   nlinarith [hβ]
 
-/-- **The clean impossibility at the prize order.** Specialize to the prize regime `β ≤ 5` (field
-`p ≈ n·2^{128}`, subgroup `n = 2^{30}` ⟹ `log_n p ≈ 4.27`) and growing order `r = log m ≥ 3`: the
-Katz-effective error exponent is at least `r − 5/2 ≥ 1/2 > 0`. The equidistribution error is at least
-`n^{1/2} = √n`, hence NOT a vanishing discrepancy — at `r = log m ≈ 128` it is `n^{≈ 125.5}`,
-astronomically beyond the off-diagonal mass. The growing-order quantitative equidistribution the prize
-needs does NOT follow from Katz; this is the open gap. -/
+/-- **The proxy exponent at the prize order.** In the regime `β ≤ 5` (field `p ≈ n·2^{128}`,
+subgroup `n = 2^{30}` ⟹ `log_n p ≈ 4.27`) and order `r ≥ 3`, `κ(r) ≥ r − 5/2 ≥ 1/2 > 0`. So the
+proxy upper estimate `n^{κ(r)}` for the normalized discrepancy is at least `√n`: this estimate
+certifies nothing. It is not a lower bound on the actual discrepancy, and this scalar fact does not
+show that every effective Katz-type argument fails. -/
 theorem prize_order_katz_error_not_negligible {β r : ℝ} (hβ : β ≤ 5) (hr : 3 ≤ r) :
     Real.sqrt 1 / 2 ≤ katzEffectiveExp β r := by
   unfold katzEffectiveExp
@@ -196,17 +198,18 @@ the order `r` up to `r ≈ log p`, AND restricted to the thin density-`(n/p)^{O(
 Katz/Deligne deliver `D(r) = C(sheaf)·p^{-1/2}` with `C(sheaf) ≈ n^r` (the Fermat-hypersurface
 conductor) — FIXED order `r = O(1)`, FULL family, FIELD scale — for which `D(log p) ≫ 1` (vacuous).
 The growing-order, thin-slice quantitative version does NOT exist in the literature; it is the precise
-open gap. We state it as an explicit predicate so the dependency is named, never silently assumed:
-the discrepancy must beat the off-diagonal-to-Wick ratio `n^{r-1}` (i.e. be `< 1` after the
-normalization), which by `prize_order_katz_error_not_negligible` Katz's `n^{r-β/2}` violates. -/
+open gap. We state it as an explicit predicate (`D r < 1` on the order window) so the dependency
+is named, never silently assumed; the proxy `n^{r-β/2}` violates it
+(`katz_discrepancy_fails_residual`). -/
 def JacobiEquidistributionRateResidual (D : ℝ → ℝ) (rmax : ℝ) : Prop :=
   ∀ r, 3 ≤ r → r ≤ rmax → D r < 1
 
-/-- **Consolidation: Katz's deliverable discrepancy FAILS the residual at growing order.** If one
-plugs the actual Katz/Deligne discrepancy `D(r) = n^{κ(r)}` (the Fermat-conductor `n^r` times the
-`p^{-1/2}=n^{-β/2}` saving, in absolute `n`-scale via `n ≥ 1`), then in the prize regime it is `≥ √n
-≥ 1` for every order `r ≥ 3` — so it does NOT satisfy `JacobiEquidistributionRateResidual` for any
-`rmax ≥ 3`. The residual is therefore genuinely OPEN: Katz does not close it. -/
+/-- **The proxy majorant fails the residual predicate.** For the explicitly defined majorant
+`D(r) = n^{κ(r)}` (the conductor proxy `n^r` times `p^{-1/2} = n^{-β/2}`, with `n ≥ 1`), in the
+regime `β ≤ 5` one has `D(3) ≥ 1`, so `D` does not satisfy `JacobiEquidistributionRateResidual`
+for any `rmax ≥ 3`. This refutes the predicate for that majorant only; it does not identify the
+majorant with the actual discrepancy of any Jacobi family, and does not show the residual is
+unattainable by other means. -/
 theorem katz_discrepancy_fails_residual {β rmax : ℝ} (hβ : β ≤ 5) (hrmax : 3 ≤ rmax)
     (n : ℝ) (hn : 1 ≤ n) :
     ¬ JacobiEquidistributionRateResidual (fun r => n ^ (katzEffectiveExp β r)) rmax := by

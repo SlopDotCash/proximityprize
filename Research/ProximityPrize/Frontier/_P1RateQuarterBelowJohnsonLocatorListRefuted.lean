@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.AllWitnessFloorGeneric
+import Research.ProximityPrize.Frontier._P1RateQuarterCommonBaseDeterminantCollapse
 
 /-!
 # A field-sized locator list below the Johnson radius
@@ -32,39 +33,36 @@ variable {n k : ℕ} [NeZero n]
 /-- The literal P1 two-rider agreement floor is strictly below the code dimension. -/
 theorem twoRiderAlignment_lt_k : 111848108 < 268435456 := by norm_num
 
-/-- Locator polynomial of a coordinate set. -/
+/-- Locator polynomial of a coordinate set.  Definitionally the canonical
+`P1RateQuarterCommonBaseDeterminantCollapse.domainLocator` (`locator_eq_domainLocator`);
+its API below delegates to that file. -/
 noncomputable def locator (dom : Fin n ↪ F) (A : Finset (Fin n)) : F[X] :=
   ∏ x ∈ A, (X - C (dom x))
+
+theorem locator_eq_domainLocator (dom : Fin n ↪ F) (A : Finset (Fin n)) :
+    locator dom A = P1RateQuarterCommonBaseDeterminantCollapse.domainLocator dom A := rfl
 
 /-- The scalar-multiple evaluation word belonging to a locator. -/
 noncomputable def locatorWord (dom : Fin n ↪ F) (A : Finset (Fin n)) (c : F) : Fin n → F :=
   fun x => (c • locator dom A).eval (dom x)
 
 theorem locator_monic (dom : Fin n ↪ F) (A : Finset (Fin n)) :
-    (locator dom A).Monic := by
-  rw [locator]
-  exact monic_prod_of_monic _ _ fun x _ => monic_X_sub_C (dom x)
+    (locator dom A).Monic :=
+  P1RateQuarterCommonBaseDeterminantCollapse.domainLocator_monic dom A
 
 theorem locator_natDegree (dom : Fin n ↪ F) (A : Finset (Fin n)) :
-    (locator dom A).natDegree = A.card := by
-  rw [locator, natDegree_prod_of_monic _ _ fun x _ => monic_X_sub_C (dom x)]
-  simp
+    (locator dom A).natDegree = A.card :=
+  P1RateQuarterCommonBaseDeterminantCollapse.domainLocator_natDegree dom A
 
 theorem locator_eval_eq_zero_of_mem (dom : Fin n ↪ F) (A : Finset (Fin n))
     {x : Fin n} (hx : x ∈ A) :
-    (locator dom A).eval (dom x) = 0 := by
-  rw [locator, eval_prod]
-  apply Finset.prod_eq_zero hx
-  simp
+    (locator dom A).eval (dom x) = 0 :=
+  P1RateQuarterCommonBaseDeterminantCollapse.domainLocator_eval_eq_zero_of_mem dom A hx
 
 theorem locator_eval_ne_zero_of_not_mem (dom : Fin n ↪ F) (A : Finset (Fin n))
     {x : Fin n} (hx : x ∉ A) :
-    (locator dom A).eval (dom x) ≠ 0 := by
-  rw [locator, eval_prod]
-  rw [Finset.prod_ne_zero_iff]
-  intro y hy
-  simp only [eval_sub, eval_X, eval_C]
-  exact sub_ne_zero.mpr fun h => hx (dom.injective h.symm ▸ hy)
+    (locator dom A).eval (dom x) ≠ 0 :=
+  P1RateQuarterCommonBaseDeterminantCollapse.domainLocator_eval_ne_zero_of_not_mem dom A hx
 
 /-- Every locator multiple agrees with the zero received word throughout `A`. -/
 theorem locatorWord_eq_zero_of_mem (dom : Fin n ↪ F) (A : Finset (Fin n)) (c : F)

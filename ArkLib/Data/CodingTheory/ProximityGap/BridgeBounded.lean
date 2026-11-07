@@ -20,8 +20,11 @@ chain:
 > for equal signed-point sums.
 
 This is what makes `BoundedHalfBasisIndep` (which CAN hold in char-`p`, unlike `HalfBasisIndepZ`) the
-single char-`p` input for **every** rung `RepK` at once — the unification anchoring the definitive
-open-core characterization (the prize = `BoundedHalfBasisIndep ω (2^{m-1}) 4` mod the prize prime).
+single char-`p` input for **every** rung `RepK` at once, as a valid conditional reduction. It is
+**not** an open characterization of the prize: `BoundedHalfBasisIndep ω (2^{m-1}) C` requires
+`(C+1)^{2^{m-1}} ≤ p` (`not_boundedHalfBasisIndep_of_card_lt`, already violated at `C = 1` for
+large `n` with `p ~ n⁴`), and it is refuted in Lean at `n = 16`, `p = 65537`, `C = 4`
+(`not_boundedHalfBasisIndep_zmod65537`; see `DISPROOF_LOG.md`).
 
 Issue #407.
 -/
@@ -104,8 +107,10 @@ theorem bridgeZ_bounded {C : ℕ} (hC : 4 ≤ C) (hindep : BoundedHalfBasisIndep
 /-- **The bounded bridge at `C ≥ 2` (tight).** Since each `contribZ ∈ {-1,0,1}`
 (`contribZ_natAbs_le_one`), the difference coefficient vector is `{-2,…,2}`-bounded, so
 `BoundedHalfBasisIndep ζ N C` with `C ≥ 2` already forces equal contributions — improving
-`bridgeZ_bounded`'s `C ≥ 4` (which double-counted the loose `≤ 2` per side). The prize hypothesis
-thus sharpens from `BoundedHalfBasisIndep ω (2^{m-1}) 4` to support `2`. -/
+`bridgeZ_bounded`'s `C ≥ 4` (which double-counted the loose `≤ 2` per side). The required premise
+thus weakens from coefficient bound `4` to coefficient bound `2` (a per-coefficient bound, not a
+support bound); it is still false once `3^{2^{m-1}} > p`
+(`not_boundedHalfBasisIndep_of_card_lt`). -/
 theorem bridgeZ_bounded_two {C : ℕ} (hC : 2 ≤ C) (hindep : BoundedHalfBasisIndep ζ N C)
     {A B : Finset (Fin N × Bool)}
     (hsum : (∑ p ∈ A, sval ζ p) = ∑ p ∈ B, sval ζ p) :

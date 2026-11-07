@@ -5,6 +5,8 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumRawMoment
 import ArkLib.Data.CodingTheory.ProximityGap.DeBruijnIndicatorDisjointness
+import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumOrbitReduction
+import ArkLib.Data.CodingTheory.ProximityGap.DCSubtractedMoment
 
 /-!
 # G95 — the irreducible-cyclic-code weight-distribution dictionary at the prize shape (#466)
@@ -16,7 +18,8 @@ of 2-power order; the Schmidt–White 2002 few-weight classification; Ding–Yan
 dictionary: **the weights of the irreducible cyclic code `C(q, N)` are affine functions of the
 Gauss periods** of the subgroup `H = μ_{(q^s-1)/N} · F_q^×` of the *extension field* `F_{q^s}`.
 The campaign's CORE object is the Gauss-period family `η_b = ∑_{x∈μ_n} ψ(bx)` over the *prime*
-field `F_p` (`n = 2^30`, `p ≈ n^4`, index `m = (p-1)/n = 2^128`).
+field `F_p` (`n = 2^30`; the certified production prime of `_PrizeShapePrimeP30` has
+`p ≈ 2^158 ≈ n^{5.27}`, index `m = (p-1)/n ≈ 2^128`).
 
 **The orientation finding (this file makes it a theorem).** The literature dictionary requires
 the period subgroup to contain `F_q^×` (equivalently: to be Galois/Frobenius-stable), which
@@ -29,11 +32,11 @@ the **opposite extreme**:
 * `eta_eq_iff_mem_coset` — **the exact dictionary**: `η_b = η_c ⟺ c ∈ b·μ_n`. The value
   multiset `{η_b : b ∈ F_p^×}` is *exactly* the multiplicity-`n` repetition of `m = (p-1)/n`
   **pairwise distinct** values (`value_fiber_card`, `card_values_mul`, `card_values`). At the
-  prize point: `2^128` distinct real values. This is the unconditional prime-field form of
+  prize point: `≈ 2^128` distinct real values. This is the unconditional prime-field form of
   Katz's "generic irreducible cyclic codes are many-valued" — with *exact* count, no
   genericity.
 * `few_weight_no_go` — the semiprimitive/two-valued regime `#values ≤ 2` forces
-  `p - 1 ≤ 2n`; at the prize shape (`p - 1 = 2^128·n`) it misses by 127 binary orders of
+  `p - 1 ≤ 2n`; at the prize shape (`p - 1 ≈ 2^128·n`) it misses by about 127 binary orders of
   magnitude. **No exact evaluation from the few-weight literature can apply to the prize
   object** — now a theorem, not a heuristic (this explains the campaign log's `McEliece: 0
   hits`).
@@ -195,16 +198,13 @@ variable {G : Finset (ZMod p)}
 theorem ne_zero_of_mem (h0 : (0 : ZMod p) ∉ G) {x : ZMod p} (hx : x ∈ G) : x ≠ 0 :=
   fun h => h0 (h ▸ hx)
 
-/-- Multiplicative closure absorbs dilation by members: `u·G = G` for `u ∈ G`. -/
+/-- Multiplicative closure absorbs dilation by members: `u·G = G` for `u ∈ G` (the canonical
+`SubgroupGaussSumOrbitReduction.dilate_eq_self_of_mem`, unfolded to `Finset.image`). -/
 theorem image_mul_mem (h0 : (0 : ZMod p) ∉ G)
     (hmul : ∀ x ∈ G, ∀ y ∈ G, x * y ∈ G) {u : ZMod p} (hu : u ∈ G) :
-    G.image (fun x => u * x) = G := by
-  apply Finset.eq_of_subset_of_card_le
-  · intro y hy
-    obtain ⟨x, hx, rfl⟩ := Finset.mem_image.mp hy
-    exact hmul u hu x hx
-  · exact (Finset.card_image_of_injective G
-      (mul_right_injective₀ (ne_zero_of_mem h0 hu))).ge
+    G.image (fun x => u * x) = G :=
+  ArkLib.ProximityGap.SubgroupGaussSumOrbitReduction.dilate_eq_self_of_mem
+    (fun a ha b hb => hmul a ha b hb) (ne_zero_of_mem h0 hu) hu
 
 /-- Dilate equality is coset membership: `b·G = c·G ⟺ c ∈ b·G`. -/
 theorem coset_eq_iff_mem (h1 : (1 : ZMod p) ∈ G) (h0 : (0 : ZMod p) ∉ G)
@@ -286,7 +286,7 @@ theorem card_values_mul (hψ : ψ.IsPrimitive) (h1 : (1 : ZMod p) ∈ G)
   exact hbase.symm
 
 open scoped Classical in
-/-- The distinct-value count is exactly the index `(p-1)/n`. At the prize point: `2^128`
+/-- The distinct-value count is exactly the index `(p-1)/n`. At the prize point: `≈ 2^128`
 distinct real values — the maximally-many-valued extreme of the weight-distribution
 dictionary. -/
 theorem card_values (hψ : ψ.IsPrimitive) (h1 : (1 : ZMod p) ∈ G)
@@ -298,9 +298,9 @@ theorem card_values (hψ : ψ.IsPrimitive) (h1 : (1 : ZMod p) ∈ G)
 
 open scoped Classical in
 /-- **The few-weight no-go (anti-Schmidt–White orientation pin).** A two-valued (semiprimitive-
-style) distribution forces `p - 1 ≤ 2n`. At the prize shape `p - 1 = 2^128 · n`, the entire
+style) distribution forces `p - 1 ≤ 2n`. At the prize shape `p - 1 ≈ 2^128 · n`, the entire
 few-weight literature (Baumert–McEliece exact evaluations, Aoki's semiprimitive case, every
-Schmidt–White entry) is excluded by 127 binary orders of magnitude. -/
+Schmidt–White entry) is excluded by about 127 binary orders of magnitude. -/
 theorem few_weight_no_go (hψ : ψ.IsPrimitive) (h1 : (1 : ZMod p) ∈ G)
     (h0 : (0 : ZMod p) ∉ G) (hmul : ∀ x ∈ G, ∀ y ∈ G, x * y ∈ G)
     (hshape : 2 * G.card < p - 1) :
@@ -377,11 +377,11 @@ theorem eta_not_rational (hψ : ψ.IsPrimitive) (h1 : (1 : ZMod p) ∈ G)
 /-! ## 6. The transferred integrality: power sums of the distinct-value set are integers,
 welded to the in-tree relation count `N₀`. -/
 
-/-- `η_0 = n` (the DC frequency sees the bare cardinality). -/
+/-- `η_0 = n` (the DC frequency sees the bare cardinality; the canonical
+`DCSubtractedMoment.eta_zero`). -/
 theorem eta_zero_eq (ψ : AddChar (ZMod p) ℂ) (G : Finset (ZMod p)) :
-    eta ψ G (0 : ZMod p) = (G.card : ℂ) := by
-  show ∑ y ∈ G, ψ (0 * y) = (G.card : ℂ)
-  simp [AddChar.map_zero_eq_one]
+    eta ψ G (0 : ZMod p) = (G.card : ℂ) :=
+  ArkLib.ProximityGap.DCSubtractedMoment.eta_zero ψ G
 
 /-- The raw `r`-th moment over the `p - 1` nonzero frequencies:
 `∑_{b≠0} η_b^r = p·N₀(G,r) - n^r`. -/

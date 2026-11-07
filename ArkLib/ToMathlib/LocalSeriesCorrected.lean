@@ -17,8 +17,10 @@ re-plumbed or kernel-proved legacy
   `hrepG : polyToPowerSeries𝕃 H Ppoly = gammaGenuine x₀ R H hHyp`
 
 is **unsatisfiable for every `d_H ≥ 2`** (the ground-line order-0 coefficient cannot reach
-`α₀ = T/W`), and built the satisfiable corrected (T-affine pair) representative
-`hrepT : polyToPowerSeries𝕃T H P₀ P₁ = gammaGenuine …`.  This file is the authoritative
+`α₀ = T/W`), and built the corrected (T-affine pair) representative shape
+`hrepT : polyToPowerSeries𝕃T H P₀ P₁ = gammaGenuine …`, which F6 does not refute.  (`hrepT` is
+not produced unconditionally: the in-tree converter builds it from per-coefficient T-form plus
+an already-known truncation identity; see "Honest residuals" below.)  This file is the authoritative
 disposition map for **all** in-tree consumers of the refuted shape, and the mechanical
 re-plumbing of those that survive on `hrepT`.
 
@@ -42,6 +44,18 @@ re-plumbing of those that survive on `hrepT`.
 5. `BetaRecGenuineBridge.hrep_BcoeffSigned_of_genuine_monic` — a *transport* of `hrepG` into
    the `gammaLocal`-shape; both its input and its output are empty at `d_H ≥ 2` (Part 2), so
    it is a legacy transport needing no repair (it is vacuously sound).
+6. `InterpolatedRepresentative.hrep_of_cleared_counting` / `interpolatedRep_hrep_hdegX` /
+   `exists_representative_pair` and `InterpolatedRepresentativeWiring.hrep_line_of_perz_data` /
+   `exists_representative_pair_line_of_perz_data` — their conclusion is the `gammaLocal`-shaped
+   `hrep`, so by F6-Ω (Part 2) their hypotheses are **jointly unsatisfiable** at `d_H ≥ 2`
+   (they are valid implications, meaningful only on the `d_H = 1` lane).  Changing the
+   construction technique (interpolation instead of the sharp Claim-5.9 budget) does not remove
+   the order-0 obstruction.
+7. `LocalSeriesBaseRationalReading` (`trunc_localSeries_of_base_rational`,
+   `htrunc_of_base_rational`, `curveHenselDatum_of_baseRational`,
+   `curveFamilyData_of_baseRational`) — the inputs `hbase` + `hvanish` are **jointly empty** at
+   `d_H ≥ 2` (Part 4, `baseRational_inputs_false_of_two_le_natDegree`); the transposition and
+   per-place algebra there is correct conditional algebra only.
 
 ## FINDING F6-Ω (Part 2): the bundle field itself is empty at `d_H ≥ 2`, for EVERY `Bcoeff`
 
@@ -81,8 +95,9 @@ extracts the per-coefficient interpolants from a **single ground-line representa
 `Z`-degree ≤ 1**.  A T-affine pair `(P₀, P₁)` changes the field types and the extraction
 interface — a structural change to both bundles and their consumer chain.  Therefore the two
 off-centre bundles are marked **LEGACY at `d_H ≥ 2`** (now a kernel-checked emptiness, not a
-judgement call): they remain sound, satisfiable vehicles exactly on the `d_H = 1` lane (where
-`T` is on the ground line and `hrep` can hold).  The `d_H ≥ 2` surface is served by:
+judgement call): they remain sound vehicles, not refuted only on the `d_H = 1` lane (where
+`T` is on the ground line and `hrep` is not obstructed; no `d_H = 1` inhabitant is constructed
+here).  The `d_H ≥ 2` surface is served (conditionally) by:
 
 * the corrected truncation chain on `polyToPowerSeries𝕃T`
   (`GenuinePpolyConverter` Part 5, `DecodedCapstonesCorrected`, and Part 1 here), and
@@ -94,9 +109,10 @@ judgement call): they remain sound, satisfiable vehicles exactly on the `d_H = 1
 
 * Producing `hrepT` *ab initio* at `d_H = 2` is the open converter loop documented in
   `GenuinePpolyConverter` (the converter consumes the truncation identity that the corrected
-  capstones produce); the Part-1 capstones here inherit that residual unchanged — they are
-  satisfiable in the shape `hrepT` (unlike `hrepG`), but the in-tree producer of `hrepT`
-  currently routes through the truncation identity itself.
+  capstones produce); the Part-1 capstones here inherit that residual unchanged — their
+  `hrepT` input is not refuted (unlike `hrepG`), but the in-tree producer of `hrepT`
+  currently routes through the truncation identity itself, so these capstones are not an
+  independent derivation of truncation.
 * No corrected `hdegX` companion (the ground `Z`-degree budget on `P₀`/`P₁`) exists — the open
   #138 X-degree residual, untouched here.
 * The `d_H = 1` lane of both off-centre bundles is genuinely NOT refuted (excluded from every
@@ -124,7 +140,8 @@ namespace LocalSeriesCorrected
 /-! ## Part 1 — the `HvanishSupply` capstones re-plumbed onto the corrected representative
 
 The three `HvanishSupply` truncation capstones consumed the F6-unsatisfiable `hrepG`.  Each is
-restated on the satisfiable corrected representative `hrepT` (T-affine pair `(P₀, P₁)`), with
+restated on the corrected representative `hrepT` (T-affine pair `(P₀, P₁)`, not refuted by F6
+but not produced ab initio in-tree), with
 the finite counting range `[k, deg Ppoly]` replaced by `[k, max (deg P₀) (deg P₁)]` and the
 counting budget re-indexed accordingly, routed through
 `GenuinePpolyConverter.gammaGenuine_eq_trunc_of_graded_disc_corrected`.  The `hvanish`
@@ -421,6 +438,42 @@ theorem hrep_gradedBundle_unsat_of_two_le_natDegree
 
 end BundleDisposition
 
+/-! ## Part 4 — the base-rational analytic lane: `hbase` + `hvanish` are jointly empty at `d_H ≥ 2`
+
+`LocalSeriesBaseRationalReading.curveHenselDatum_of_baseRational` /
+`curveFamilyData_of_baseRational` (and `trunc_localSeries_of_base_rational` /
+`htrunc_of_base_rational`) consume base-rationality of the genuine coefficients below `n`
+(`hbase : ∀ t < n, αGenuine t = lift (c t)`) together with tail vanishing from `n` on
+(`hvanish : ∀ t, n ≤ t → αGenuine t = 0`).  Both readings meet order `0`: for `n > 0`, `hbase 0`
+puts `αGenuine 0 = α₀ = T/W` on the ground line; for `n = 0`, `hvanish 0` forces `α₀ = 0 = lift 0`.
+Either way this is the F6 obstruction (`ZLinearClosureAudit.α₀_ne_lift`), so the pair of inputs
+is unsatisfiable for every `d_H ≥ 2`.  The transposition and per-place cancellation algebra of
+that file is correct conditional algebra; it does not supply the missing base-rational input. -/
+
+section BaseRational
+
+variable {F : Type} [Field F]
+variable (H : F[X][Y]) [Fact (Irreducible H)] [Fact (0 < H.natDegree)]
+
+/-- **F6 for the base-rational analytic lane.**  For `d_H ≥ 2`, no `n` and no coefficient
+family `c : ℕ → F[X]` satisfy both the base-rationality input `hbase` (below `n`) and the tail
+vanishing input `hvanish` (from `n` on) of
+`FaithfulCurveExtraction.curveHenselDatum_of_baseRational`: the order-`0` coefficient
+`αGenuine 0 = α₀ = T/W` is neither a ground-line lift nor `0`. -/
+theorem baseRational_inputs_false_of_two_le_natDegree (hdeg : 2 ≤ H.natDegree)
+    {x₀ : F} {R : F[X][X][Y]} (hHyp : Hypotheses x₀ R H) {n : ℕ} {c : ℕ → F[X]}
+    (hbase : ∀ t < n, αGenuine H x₀ R hHyp t = liftToFunctionField (H := H) (c t))
+    (hvanish : ∀ t, n ≤ t → αGenuine H x₀ R hHyp t = 0) : False := by
+  rcases Nat.eq_zero_or_pos n with hn | hn
+  · have h := hvanish 0 (by omega)
+    rw [αGenuine_zero] at h
+    exact BCIKS20.ZLinearClosureAudit.α₀_ne_lift H hdeg 0 (by rw [h, map_zero])
+  · have h := hbase 0 hn
+    rw [αGenuine_zero] at h
+    exact BCIKS20.ZLinearClosureAudit.α₀_ne_lift H hdeg (c 0) h
+
+end BaseRational
+
 end LocalSeriesCorrected
 
 end ArkLib
@@ -441,3 +494,4 @@ end ArkLib
 #print axioms ArkLib.LocalSeriesCorrected.hrep_producers_unsat_of_two_le_natDegree
 #print axioms ArkLib.LocalSeriesCorrected.hrep_genuineMonic_unsat_of_two_le_natDegree
 #print axioms ArkLib.LocalSeriesCorrected.hrep_gradedBundle_unsat_of_two_le_natDegree
+#print axioms ArkLib.LocalSeriesCorrected.baseRational_inputs_false_of_two_le_natDegree

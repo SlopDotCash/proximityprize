@@ -38,8 +38,11 @@ is the total mass, attained at the all-aligned point.
 By Parseval/orthogonality the spatial `L^{2r}` norm of `∑_{f∈μ_n} e(x·f)` equals the `r`-fold
 additive energy `E_r(μ_n) = #{(x,y)∈μ_n^{2r} : ∑x=∑y}` (exact-integer probe: `E_2 = 3n(n−1)`,
 `E_3 = 15n³−45n²+40n`, matching the closed forms). Hence the restriction route is **identical to
-the moment ladder**, which `_MomentMethodNoGo` already walls: `(q·E_r)^{1/2r} ≥ n` for every `r`
-and every count. This is fence **F1/F12** (moment/energy = conjugate to the wall; the bounded-`K`
+the moment ladder**.  `_MomentMethodNoGo` shows the *uncentered* total `(q·E_r)^{1/2r} ≥ n` for every
+`r` — trivially, since `q·E_r` includes the principal (`b = 0`) term `n^{2r}`.  The centered
+(nonprincipal) bound `M^{2r} ≤ q·E_r − n^{2r}` is not bounded below by `n` (see
+`_wfHL1_circle_method_supform.sup_le_minor_total_pow`); whether it reaches the floor is the open
+moment question of fence **F1/F12** (moment/energy = conjugate to the wall; the bounded-`K`
 Wick transfer `E_r ≤ K^r·(2r−1)‼·n^r` is itself DEAD at β=4 by exact arithmetic). We re-export
 the no-go specialized to "the restriction input" (`restriction_energy_bound_ge_card`).
 
@@ -136,13 +139,14 @@ offers exactly two handles on the prize trig polynomial, and BOTH are blind to t
 
 * the **spatial** handle (its native form) is bounded below by the all-aligned value `= total
   mass = n` (`spatial_value_le_total_mass` + `spatial_value_at_aligned`), the trivial bound; and
-* the **`L^{2r}`-energy** handle is bounded below by `n` for every order `r`
-  (`restriction_energy_bound_ge_card`), fence F1/F12.
+* the *uncentered* **`L^{2r}`-energy** total `(q·E_r)^{1/2r}` is bounded below by `n` for every
+  order `r` (`restriction_energy_bound_ge_card`) — trivially, because it includes the principal
+  term `n^{2r}`.
 
-Contrapositive: certifying `M(n) < n` (let alone `≲ √(n·log)`) is reachable through neither —
-the prize sup is over the *multiplier* `b` (a dilation), and needs genuine `L^∞`/phase
-cancellation that a spatial-average restriction estimate over a *curvature-free* frequency set
-cannot manufacture. -/
+The theorem is the contrapositive for the uncentered total only.  It does NOT show the centered
+(nonprincipal) moment bound `M^{2r} ≤ q·E_r − n^{2r}` cannot beat `n`; that form is the open
+fence-F1/F12 moment question.  The informal reading (the prize sup is over the multiplier `b` and
+needs `L^∞`/phase cancellation a spatial-average estimate cannot supply) is not proven here. -/
 theorem restriction_route_dead {σ : Type*} [Fintype σ] (c : σ → ℝ) (n r : ℕ) (hr : 0 < r)
     (hcount : ∑ s, c s = (n : ℝ) ^ r)
     (hbound : ((Fintype.card σ : ℝ) * ∑ s, (c s) ^ 2) ^ ((((2 * r : ℕ) : ℝ))⁻¹) < (n : ℝ)) :

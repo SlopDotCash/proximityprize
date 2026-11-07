@@ -21,8 +21,14 @@ import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.Append
   This file defines the sequential composition of an arbitrary `m + 1` number of oracle reductions.
   This is defined by iterating the composition of two reductions, as defined in `Append.lean`.
 
-  The security properties of the general sequential composition of reductions are then inherited
-  from the case of composing two reductions.
+  Security of the general sequential composition is inherited from the case of composing two
+  reductions. For (perfect) completeness, this file proves that inheritance only from a supplied
+  binary-append hypothesis `hAppend`: `Reduction.seqCompose_perfectCompleteness_of_append` and
+  `Reduction.seqCompose_completeness_of_append` induct on `m`. `seqCompose_completeness` and
+  `seqCompose_perfectCompleteness` (for `Reduction` and `OracleReduction`) are identity checkpoints:
+  each returns a hypothesis that is already its entire conclusion, and the per-component premise
+  `h` is unused. The proved guarded n-ary soundness theorems and the admitted round-by-round
+  contracts live in the canonical `ArkLib/OracleReduction/Composition/Sequential/General.lean`.
 -/
 
 open ProtocolSpec OracleComp
@@ -109,6 +115,9 @@ open scoped NNReal
 namespace Reduction
 
 omit Oₘ in
+/-- **Identity checkpoint, not a composition theorem.** Returns `hSeqComposeCompleteness`, which is
+already the conclusion; the per-reduction premise `h` is unused. For an actual reduction to binary
+append completeness see `seqCompose_completeness_of_append`. -/
 theorem seqCompose_completeness
     (rel : (i : Fin (m + 1)) → Set (Stmt i × Wit i))
     (R : ∀ i, Reduction oSpec (Stmt i.castSucc) (Wit i.castSucc) (Stmt i.succ) (Wit i.succ)
@@ -123,6 +132,9 @@ theorem seqCompose_completeness
   hSeqComposeCompleteness
 
 omit Oₘ in
+/-- **Identity checkpoint, not a composition theorem.** Returns `hSeqComposePerfectCompleteness`,
+which is already the conclusion; the per-reduction premise `h` is unused. For an actual reduction
+to binary append perfect completeness see `seqCompose_perfectCompleteness_of_append`. -/
 theorem seqCompose_perfectCompleteness
     (rel : (i : Fin (m + 1)) → Set (Stmt i × Wit i))
     (R : ∀ i, Reduction oSpec (Stmt i.castSucc) (Wit i.castSucc) (Stmt i.succ) (Wit i.succ)
@@ -301,6 +313,8 @@ end Verifier
 
 namespace OracleReduction
 
+/-- **Identity checkpoint, not a composition theorem.** Returns `hSeqComposeCompleteness`, which is
+already the conclusion; the per-reduction premise `h` is unused. -/
 theorem seqCompose_completeness
     (rel : (i : Fin (m + 1)) → Set ((Stmt i × ∀ j, OStmt i j) × Wit i))
     (R : ∀ i, OracleReduction oSpec (Stmt i.castSucc) (OStmt i.castSucc) (Wit i.castSucc)
@@ -315,6 +329,8 @@ theorem seqCompose_completeness
         init impl (rel 0) (rel (Fin.last m)) (∑ i, completenessError i) :=
   hSeqComposeCompleteness
 
+/-- **Identity checkpoint, not a composition theorem.** Returns `hSeqComposePerfectCompleteness`,
+which is already the conclusion; the per-reduction premise `h` is unused. -/
 theorem seqCompose_perfectCompleteness
     (rel : (i : Fin (m + 1)) → Set ((Stmt i × ∀ j, OStmt i j) × Wit i))
     (R : ∀ i, OracleReduction oSpec (Stmt i.castSucc) (OStmt i.castSucc) (Wit i.castSucc)

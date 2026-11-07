@@ -11,17 +11,19 @@ import ArkLib.Data.CodingTheory.ProximityGap.SmoothCubicCapstone
 /-!
 # G105: the G104 zero-triple hypothesis is exact accident-freeness
 
-G104 consumes `zeroTripleCount S ≤ 2^22` at the production cardinality `|S|=2^30`.
-For a root-of-unity subgroup, the ordered zero-sum triple count is quantized in packets of
-`|S|`: scaling a solution by the subgroup gives the exact identity
+G104 originally consumed `zeroTripleCount S ≤ 2^22` at the production cardinality
+`|S|=2^30`.  For a root-of-unity subgroup, the ordered zero-sum triple count is quantized in
+packets of `|S|`: scaling a solution by the subgroup gives the exact identity
 
 `zeroTripleCount S = |S| * repCount S 1`.
 
-Consequently the G104 numerical hypothesis is equivalent to `zeroTripleCount S = 0`; it is
+Consequently that original `2^22` hypothesis is equivalent to `zeroTripleCount S = 0`; it is
 not a soft Stepanov-scale concentration estimate.  Any single characteristic-p wraparound
 triple already contributes at least `2^30` ordered triples and violates the `2^22` budget by
-8 bits.  Thus the remaining depth-six input is the prime-specific accident-freeness statement
-`repCount S 1 = 0`, alongside primitive-quad concentration.
+8 bits.  (Audit CW-B05-01: G104's kernel was far from binding in `Z₃`, and its headline now
+consumes `zeroTripleCount S ≤ 2^53`, i.e. at most `2^23` packets `repCount S 1 ≤ 2^23`; the
+`2^22`-level theorems below are kept as the exact fence for the original level, and
+`production_zeroTriple_bound_G104_of_coprime` supplies the current input.)
 
 For the literal root set `μ_n`, this file also identifies the count with the existing BGK
 intersection kernel and discharges G104's zero-triple input from polynomial coprimality of
@@ -104,6 +106,14 @@ theorem production_zeroTriple_bound_of_coprime {n : ℕ} (hn : 0 < n) (hne : Eve
   rw [zeroTripleCount_nthRoots_eq_zero_of_coprime hn hne hcop]
   norm_num
 
+/-- The exact resultant certificate also supplies G104's current headline input
+`zeroTripleCount ≤ 2^53`. -/
+theorem production_zeroTriple_bound_G104_of_coprime {n : ℕ} (hn : 0 < n) (hne : Even n)
+    (hcop : IsCoprime (Polynomial.X ^ n - 1 : Polynomial F)
+      ((Polynomial.X + 1) ^ n - 1)) :
+    zeroTripleCount (nthRootsFinset n (1 : F)) ≤ 2 ^ 53 :=
+  le_trans (production_zeroTriple_bound_of_coprime hn hne hcop) (by norm_num)
+
 #print axioms zeroTripleCount_eq_zeroSumTriples
 #print axioms zeroTripleCount_eq_card_mul_repCount_one
 #print axioms production_zeroTriple_eq_zero
@@ -111,5 +121,6 @@ theorem production_zeroTriple_bound_of_coprime {n : ℕ} (hn : 0 < n) (hne : Eve
 #print axioms zeroTripleCount_nthRoots_eq_card_mul_bgk
 #print axioms zeroTripleCount_nthRoots_eq_zero_of_coprime
 #print axioms production_zeroTriple_bound_of_coprime
+#print axioms production_zeroTriple_bound_G104_of_coprime
 
 end ArkLib.ProximityGap.Frontier.G105ZeroTripleQuantizationFence

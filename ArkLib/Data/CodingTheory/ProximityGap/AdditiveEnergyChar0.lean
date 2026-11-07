@@ -10,8 +10,11 @@ import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyResultant
 # Characteristic-0 vanishing of the BGK prize kernel (#232)
 
 The complement to `AdditiveEnergyFermat` (which enumerates the *positive*-characteristic
-obstructions). Here we prove that over `ℂ` the open additive-energy intersection count
-`M = bgkCount (2^k)` is identically `0`: there is no `u ∈ μ_{2^k}` with `-(1+u) ∈ μ_{2^k}`.
+obstructions). Here we prove that over `ℂ` the shifted-root intersection count
+`M = bgkCount (2^k) = |μ_{2^k} ∩ -(1 + μ_{2^k})|` is identically `0`: there is no
+`u ∈ μ_{2^k}` with `-(1+u) ∈ μ_{2^k}`.  (This intersection statistic is not the additive energy
+of `μ_{2^k}`, which is positive for every nonempty set; see the PG-064 note in
+`AdditiveEnergyResultant`.)
 
 * `no_common_root_complex` — the algebraic core: if `u^(2^k) = 1` and `(u+1)^(2^k) = 1` over `ℂ`,
   then `False`. Proof: both `u` and `u+1` lie on the unit circle (`‖u‖ = ‖u+1‖ = 1`), so
@@ -21,12 +24,17 @@ obstructions). Here we prove that over `ℂ` the open additive-energy intersecti
   i.e. `u = 1` — contradicting `u² + u + 1 = 0` (which would give `3 = 0`).
 * `bgkCount_complex_eq_zero` — consequently `bgkCount (F := ℂ) (2^k) = 0` for all `k ≥ 1`.
 
-**Interpretation.** Together with [`AdditiveEnergyFermat`] this frames the prize kernel as a *purely
-positive-characteristic* phenomenon: in characteristic 0 the additive energy of the smooth subgroup
-vanishes and the prize cell survives unconditionally, while in characteristic `p` it can break only
-when `p` divides the resultant `Res(X^{2^k}-1, (X+1)^{2^k}-1)` (the `u=1` factor of which is the
-Fermat product `∏_{j<k} F_j`). The obstruction is exactly the arithmetic of the smooth subgroup over
-`𝔽_p`, i.e. the Bourgain–Glibichuk–Konyagin additive-energy problem. Axiom-clean.
+**Interpretation.** Together with [`AdditiveEnergyFermat`] this shows that a nonempty shifted
+intersection `μ_{2^k} ∩ -(1 + μ_{2^k})` is a *positive-characteristic* phenomenon: in
+characteristic 0 this intersection is empty (the additive energy of `μ_{2^k}` does NOT vanish — it
+is at least the diagonal count), while in characteristic `p` a nonempty intersection requires `p`
+to divide the resultant `Res(X^{2^k}-1, (X+1)^{2^k}-1)` (a necessary condition, not a sufficient
+one).  The `u = 1` factor `2^{2^k} - 1` of that resultant (the Fermat product `∏_{j<k} F_j`)
+accounts only for the candidate point `u = 1`; other common roots `u ≠ 1` can occur in other
+characteristics (e.g. `𝔽₉₇`, `k = 5`: `bgkCount_zmod97_32_pos` in `AdditiveEnergyResultant`). So
+Mersenne/Fermat divisibility is one sufficient obstruction, not an exact classification. This file
+proves only the characteristic-0 emptiness; it does not by itself settle the
+Bourgain–Glibichuk–Konyagin additive-energy problem over `𝔽_p`. Axiom-clean.
 
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026.
@@ -68,10 +76,11 @@ theorem no_common_root_complex (k : ℕ) (u : ℂ)
   have hord1 : orderOf u = 1 := Nat.dvd_one.mp (hco ▸ Nat.dvd_gcd ho3 hon)
   exact hne1 (orderOf_eq_one_iff.mp hord1)
 
-/-- **Characteristic-0 vanishing of the BGK kernel.** Over `ℂ` the additive-energy intersection
-count `M = bgkCount (2^k)` is `0` for every `k ≥ 1`: there is no `u ∈ μ_{2^k}` with
-`-(1+u) ∈ μ_{2^k}`. So the BGK obstruction to the proximity prize is a *purely
-positive-characteristic* phenomenon — in characteristic 0 the prize cell survives unconditionally. -/
+/-- **Characteristic-0 vanishing of the BGK shifted intersection.** Over `ℂ` the shifted-root
+intersection count `M = bgkCount (2^k)` is `0` for every `k ≥ 1`: there is no `u ∈ μ_{2^k}` with
+`-(1+u) ∈ μ_{2^k}`.  A nonempty intersection is therefore a positive-characteristic phenomenon.
+This is the vanishing of this one intersection statistic, not of the additive energy of
+`μ_{2^k}` (which is positive). -/
 theorem bgkCount_complex_eq_zero (k : ℕ) (hk : 0 < k) :
     bgkCount (F := ℂ) (2 ^ k) = 0 := by
   have hpos : 0 < 2 ^ k := Nat.two_pow_pos k

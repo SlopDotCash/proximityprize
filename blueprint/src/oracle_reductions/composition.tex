@@ -118,11 +118,11 @@ oracle state. Fix one stateful oracle implementation on a state space $\Sigma$ a
 state distribution $\mu$. The second component receives the state left by the first component.
 A guarantee for the second component initialized separately from $\mu$ does not cover this state.
 
-The composition theorems below are proved under their stated hypotheses. Soundness and
-knowledge soundness require guarded verifiers (Definition~\ref{def:guarded_verifier}): the first
-verifier for binary composition, and every verifier for finite chains. Bounds for later components
-must hold from every deterministic shared oracle state, and knowledge soundness composes extractors
-that are pure functions of the input statement, the output witness and the transcript.
+The ordinary soundness and straightline knowledge soundness theorems below assume a guarded
+first verifier in the binary case and guarded verifiers throughout a finite chain
+(Definition~\ref{def:guarded_verifier}). Bounds for later components hold from every deterministic
+shared oracle state. The straightline extractors are pure functions of the input statement, output
+witness, and transcript.
 
 \begin{theorem}[Completeness Preservation under Append]
     \label{thm:completeness_append}
@@ -182,7 +182,19 @@ that are pure functions of the input statement, the output witness and the trans
     \uses{def:guarded_verifier, def:knowledge_soundness, def:verifier_append}
 \end{theorem}
 
-Round-by-round guarantees and a guarded first verifier give the following composition theorem.
+The fixed-prefix formulation gives round-by-round bounds with the error at each challenge
+inherited from its component.
+
+\begin{theorem}[Round-by-Round Soundness under a Pure First Verifier]
+    \label{thm:rbr_soundness_append_pure_first}
+    Suppose $V_1$ is pure and total, and both verifiers satisfy round-by-round soundness for every
+    fixed transcript prefix under the same initial distribution and oracle implementation.
+    With a common intermediate language, $V_1.\append\ V_2$ satisfies the same kind of bound.
+    Each challenge keeps its component's error.
+    \lean{Verifier.append_rbrSoundness_of_pure_first}
+    \leanok
+    \uses{def:round_by_round_soundness, def:verifier_append}
+\end{theorem}
 
 \begin{theorem}[Round-by-Round Knowledge Soundness under a Guarded First Verifier]
     \label{thm:rbr_knowledge_soundness_append_guarded}
@@ -200,6 +212,14 @@ Round-by-round guarantees and a guarded first verifier give the following compos
     \leanok
     \uses{def:guarded_verifier, def:round_by_round_knowledge_soundness, def:verifier_append}
 \end{theorem}
+
+\begin{remark}[Averaged round-by-round compatibility]
+    The averaged soundness result in \texttt{AppendRbrSoundnessPhase2Proof.lean} has its own
+    hypotheses. It assumes a pure first verifier, subsingleton oracle state, a non-failing
+    initial distribution with nonempty support, a nonempty intermediate statement type, and
+    a second protocol starting with a prover message. The averaged residual interfaces in
+    the downstream extension state the composite guarantee as a hypothesis.
+\end{remark}
 
 Finite-chain completeness likewise requires guarantees from every shared state.
 Finite-chain soundness and knowledge soundness hold for guarded chains, and so does

@@ -7,12 +7,12 @@ Authors: ArkLib Contributors
 import Research.ProximityPrize.InteriorJ1
 
 /-!
-# The general wide-regime interior law `P[j] ≤ j+1`: the `(j+1)`-minor route
+# Interior caps: an abstract affine-minor root count and the J2 spike lower bound
 
-This file ports the *minor / determinant* form of the general wide-regime interior law
+This file ports the *minor / determinant* shape of the general wide-regime interior law
 (research note `JGENERAL-WIDE-LAW-2026-06-06.md`, §5 Lemma ELIMj) to Lean, lifting the
-resultant/quadratic route of the J1 file (`GrandChallengeInteriorJ1.lean`) one degree up
-to the `(j+1)×(j+1)`-minor *determinant* route.
+resultant/quadratic route of the J1 file (`InteriorJ1.lean`) one degree up to the
+`(j+1)×(j+1)`-minor *determinant* shape.
 
 The informal law states: for a Reed–Solomon code `C = RS[F, domain, k]` over `n` distinct
 evaluation points at an *interior* radius `j/n`, in the **wide regime** `n − k ≥ 2j+1`
@@ -20,24 +20,22 @@ evaluation points at an *interior* radius `j/n`, in the **wide regime** `n − k
 
   `P[j] = q · ε_mca(C, j/n) = j + 1`.
 
-The **upper bound** `P[j] ≤ j+1` is the content here.  Its proof (ELIMj) reduces, via the
-omit-`j` window high-coefficient decomposition (HIGHj) and the degree-drop reformulation
-(LINEj), to the linear-algebraic fact that every bad scalar is a *common root of all
-`(j+1)×(j+1)` minors* of an `R×(j+1)` matrix whose entries are **affine in the line scalar
-`γ`** (γ-degree ≤ 1).  Each such minor is a determinant of `j+1` affine entries, hence a
-polynomial of **degree ≤ j+1** in `γ`; when it is *not the zero polynomial* a nonzero
-degree-`≤(j+1)` polynomial over a field has `≤ j+1` roots.
+The informal proof of the upper bound `P[j] ≤ j+1` (ELIMj) reduces, via the omit-`j` window
+high-coefficient decomposition (HIGHj) and the degree-drop reformulation (LINEj), to the
+linear-algebraic fact that every bad scalar is a common root of a `(j+1)×(j+1)` minor of an
+`R×(j+1)` matrix whose entries are affine in the line scalar `γ`.
 
-## Honest scope (the named nondegeneracy caveat)
+## Honest scope
 
-Exactly as in the informal proof, the cap is unconditional *off* the thin locus where **all**
-`(j+1)`-minors vanish identically.  We carry this as an explicit **named nondegeneracy
-hypothesis** `hQ : minor ≠ 0` — never weakened or hidden.  The reduction from the analytic
-`mcaEvent` at radius `j/n` to the affine constraint system (HIGHj/LINEj) is the deep input;
-it is *built end-to-end only at `j = 1`* in `GrandChallengeInteriorJ1.lean` (the QUAD route).
-Here we formalize the *general minor-degree engine* and the *containment-to-roots cap* under
-the named hypotheses, and instantiate the engine cleanly at `j = 1` (re-deriving the J1
-degree-`≤2` cap) and `j = 2` (the J2 degree-`≤3` cap).
+**This file does not prove the upper bound `P[j] ≤ j+1` for any `j`.**  The upper-bound results
+here are *abstract root-counting lemmas* about matrices of affine polynomials: no statement
+mentions `mcaEvent`, `epsMCA` or a Reed–Solomon code.  The reduction from `mcaEvent` at radius
+`j/n` to the affine containment `bad ⊆ (minor).roots` (HIGHj/LINEj) is **not** formalized here;
+it is supplied abstractly as the hypothesis `hsub`.  (At `j = 1` the J1 cap `≤ 2` is proved
+end-to-end by other means in `J1Cap.lean`.)  The root count needs no separate nondegeneracy
+hypothesis: if the minor is the zero polynomial its root multiset is empty, so `hsub` forces
+`bad = ∅`.  The degenerate "all minors vanish" locus is therefore exactly the regime in which
+`hsub` cannot be supplied for a nontrivial bad set.
 
 The **lower bound** half at `j = 2` — `3/q ≤ ε_mca(C, 2/n)` via the explicit `3`-spike plant
 — is unconditional and kernel-verified (`epsMCA_interiorJ2_ge`), reusing the in-tree
@@ -46,19 +44,15 @@ The **lower bound** half at `j = 2` — `3/q ≤ ε_mca(C, 2/n)` via the explici
 
 ## Main results
 
-* `affineMatrix_det_natDegree_le` — **the general engine.**  The determinant of any
-  `(m)×(m)` matrix of polynomials whose every entry has `natDegree ≤ 1` has
-  `natDegree ≤ m`.  This is the `(j+1)`-minor degree bound (with `m = j+1`), fully general,
-  unconditional.
-* `affineSystemBadScalars_card_le_of_subset_minor_roots` — **the SILVER cap.**  Given any
-  finset of bad scalars all lying in the root multiset of a square minor with affine entries,
-  under the named nondegeneracy hypothesis `minor ≠ 0` the bad set has card `≤ m`.
-* `affineSystemBadScalars_card_le_three_via_3x3` — **BRONZE (j=2):** the `3×3`-minor
-  determinant route caps the J2 affine bad set at `3`.
-* `affineSystemBadScalars_card_le_two_via_2x2` — **(j=1) sanity:** the `2×2` instance
-  re-derives the J1 cap `≤ 2`, matching the QUAD route.
+* `affineMatrix_det_natDegree_le` — the determinant of any `m×m` matrix of polynomials whose
+  every entry has `natDegree ≤ 1` has `natDegree ≤ m`.
+* `affineSystemBadScalars_card_le_of_subset_minor_roots` — an abstract root count: any finset
+  contained in the roots of such a determinant has card `≤ m`.
+* `affineSystemBadScalars_card_le_two_via_2x2`, `affineSystemBadScalars_card_le_three_via_3x3`,
+  `affineSystemBadScalars_card_le_jp1_via_minor` — the `m = 2`, `m = 3` and `m = j + 1`
+  specializations of that root count.
 * `epsMCA_interiorJ2_ge` — **the J2 lower bound** `3/q ≤ ε_mca(C, 2/n)` (the `3`-spike plant).
-* `mcaThreshold consequences` of the J2 lower bound in the adjacent band.
+* `mcaThreshold` consequences of the J2 lower bound in the adjacent band.
 -/
 
 set_option linter.unusedSectionVars false
@@ -102,97 +96,57 @@ theorem affineMatrix_det_natDegree_le {m : ℕ} (M : Matrix (Fin m) (Fin m) F[X]
         exact hM (σ i) i
     _ = m := by simp
 
-/-! ## The affine bad-set cap under the named nondegeneracy hypothesis
+/-! ## The abstract affine-minor root count
 
-We now package the ELIMj containment abstractly.  A "bad scalar" is, in the informal proof, a
+We package the ELIMj containment abstractly.  A "bad scalar" is, in the informal proof, a
 `γ` for which the affine vector `(1, e₁, …, e_j)` is in the right kernel of the `R×(j+1)`
-matrix; every such `γ` is then a *common root of every `(j+1)×(j+1)` minor*.  We carry the
-containment as a hypothesis (`hsub`) on a chosen minor and conclude the cap from the engine
-above, under the explicit nondegeneracy hypothesis `hQ : minor ≠ 0`. -/
+matrix; every such `γ` is then a common root of every `(j+1)×(j+1)` minor.  We carry the
+containment as a hypothesis (`hsub`) on a chosen minor; the conclusion is pure root counting. -/
 
-/-- **The general SILVER cap.**  Let `Q := M.det` be any `m×m` minor (determinant of an affine
-matrix `M`) of the elimination system, and `bad` a finset of scalars each of which is a root
-of `Q` (the ELIMj common-root containment `hsub`).  Then the bad set has cardinality `≤ m`.
+/-- **Abstract affine-minor root count.**  Let `M` be an `m×m` matrix over `F[X]` with every
+entry of `natDegree ≤ 1`, and `bad` a finset of scalars contained in the roots of `M.det`.
+Then `bad.card ≤ m`.
 
-The **named nondegeneracy caveat lives in the hypothesis `hsub`**, not as a free `Q ≠ 0`
-flag: the containment `bad ⊆ Q.roots` is exactly the ELIMj conclusion, and it is *only
-derivable when `Q` is a nonzero minor* — on the degenerate "all minors vanish" locus the
-common-root set is `F` itself and no nonzero minor exists, so `hsub` is unavailable.  This is
-the honest caveat of research note §5, faithfully located: the engine caps `bad` off the
-degenerate locus precisely because that is the locus where `hsub` can be supplied.  (When
-`Q = 0`, `Q.roots = ∅` and `hsub` would force `bad = ∅`, vacuously `≤ m` — so the bound is
-unconditional *given `hsub`*, and the degenerate locus is the regime where `hsub` fails to
-hold of any single minor.)
-
-For `m = j + 1` this is exactly `P[j] ≤ j+1` restricted to the affine system. -/
+No nondegeneracy hypothesis is needed: if `M.det = 0` then `M.det.roots = 0` and `hsub` forces
+`bad = ∅`.  This lemma does not connect `bad` to `mcaEvent`; that reduction (HIGHj/LINEj) is
+not formalized here. -/
 theorem affineSystemBadScalars_card_le_of_subset_minor_roots {m : ℕ}
     (M : Matrix (Fin m) (Fin m) F[X]) (hM : ∀ i j, (M i j).natDegree ≤ 1)
     (bad : Finset F) (hsub : bad.val ⊆ M.det.roots) :
     bad.card ≤ m :=
   le_trans (card_le_degree_of_subset_roots hsub) (affineMatrix_det_natDegree_le M hM)
 
-/-- **The general SILVER cap, with the nondegeneracy hypothesis named explicitly.**  This is
-the `hQ`-gated form the research note states: `bad ⊆ Q.roots` *for a nonzero minor* `Q ≠ 0`
-caps the bad set at `m`.  Here `hQ` is the literal "the minor does not vanish identically"
-caveat — the thin degenerate locus is exactly `{Q = 0}`, excluded by `hQ`.  The bound is
-delivered by the engine through the containment `hsub`; `hQ` certifies the containment is the
-*genuine* nonzero-minor common-root statement rather than the vacuous `bad ⊆ ∅`. -/
-theorem affineSystemBadScalars_card_le_of_nondegenerate_minor {m : ℕ}
-    (M : Matrix (Fin m) (Fin m) F[X]) (hM : ∀ i j, (M i j).natDegree ≤ 1)
-    (bad : Finset F) (hQ : M.det ≠ 0) (hsub : bad.val ⊆ M.det.roots) :
-    bad.card ≤ m := by
-  -- `hQ` is the named nondegeneracy hypothesis: for the *nonzero* determinant `M.det`, the root
-  -- multiset has `card ≤ degree = natDegree ≤ m` (`Polynomial.card_roots`, which needs `hQ`),
-  -- and the bad set injects into it via the ELIMj containment `hsub`.
-  have hbadle : bad.card ≤ (Multiset.card M.det.roots : ℕ) :=
-    Multiset.card_le_card (Finset.val_le_iff_val_subset.2 hsub)
-  have hcard : (Multiset.card M.det.roots : WithBot ℕ) ≤ M.det.degree :=
-    Polynomial.card_roots hQ
-  have hroots : (Multiset.card M.det.roots : ℕ) ≤ M.det.natDegree := by
-    have hle : (Multiset.card M.det.roots : WithBot ℕ) ≤ (M.det.natDegree : WithBot ℕ) :=
-      le_trans hcard (Polynomial.degree_le_natDegree)
-    exact_mod_cast hle
-  exact le_trans hbadle (le_trans hroots (affineMatrix_det_natDegree_le M hM))
-
-/-- **The (j=1) instance — the `2×2` minor route re-derives the J1 cap `≤ 2`.**  This is the
-QUAD route of `GrandChallengeInteriorJ1.lean` recast as the `m = 2` case of the general
-minor engine: a bad set inside the roots of a nonzero determinant of `2×2` affine entries has
-card `≤ 2`.  Matches `j1RatioConstraintBadScalars_card_le_two_via_quadratic`. -/
+/-- The `m = 2` specialization of `affineSystemBadScalars_card_le_of_subset_minor_roots`
+(the abstract shape of the J1 QUAD route). -/
 theorem affineSystemBadScalars_card_le_two_via_2x2
     (M : Matrix (Fin 2) (Fin 2) F[X]) (hM : ∀ i j, (M i j).natDegree ≤ 1)
-    (bad : Finset F) (hQ : M.det ≠ 0) (hsub : bad.val ⊆ M.det.roots) :
+    (bad : Finset F) (hsub : bad.val ⊆ M.det.roots) :
     bad.card ≤ 2 :=
-  affineSystemBadScalars_card_le_of_nondegenerate_minor M hM bad hQ hsub
+  affineSystemBadScalars_card_le_of_subset_minor_roots M hM bad hsub
 
-/-- **BRONZE (j=2) — the `3×3` minor route caps the J2 affine bad set at `3`.**  Lifting the
-J1 QUAD (`2×2`) route one degree up: the three top-coefficient constraints of the omit-`2`
-window system form a `3×3` matrix with affine-in-`γ` entries; its determinant (the J2
-eliminant) has degree `≤ 3`, and *under the named nondegeneracy hypothesis* `Q ≠ 0` every bad
-scalar is one of its `≤ 3` roots.  This is the second exact interior row's upper-bound shape,
-mirroring `j1RatioConstraintBadScalars_card_le_two_via_quadratic` at `j = 2`. -/
+/-- The `m = 3` specialization of `affineSystemBadScalars_card_le_of_subset_minor_roots`
+(the abstract shape of the informal J2 `3×3`-eliminant route; the J2 containment itself is
+not formalized). -/
 theorem affineSystemBadScalars_card_le_three_via_3x3
     (M : Matrix (Fin 3) (Fin 3) F[X]) (hM : ∀ i j, (M i j).natDegree ≤ 1)
-    (bad : Finset F) (hQ : M.det ≠ 0) (hsub : bad.val ⊆ M.det.roots) :
+    (bad : Finset F) (hsub : bad.val ⊆ M.det.roots) :
     bad.card ≤ 3 :=
-  affineSystemBadScalars_card_le_of_nondegenerate_minor M hM bad hQ hsub
+  affineSystemBadScalars_card_le_of_subset_minor_roots M hM bad hsub
 
-/-- **The general-`j` skeleton, indexed by `j`.**  The wide-regime `(j+1)×(j+1)`-minor cap:
-a bad set inside the roots of a nonzero `(j+1)`-minor of an affine elimination matrix has
-card `≤ j+1` — under the named nondegeneracy hypothesis `Q ≠ 0`.  This is the `m = j + 1`
-specialization, stated in the `j`-indexing of the law, to make the instantiation at
-`j = 1, 2` literal. -/
+/-- The `m = j + 1` specialization of `affineSystemBadScalars_card_le_of_subset_minor_roots`,
+stated in the `j`-indexing of the interior law. -/
 theorem affineSystemBadScalars_card_le_jp1_via_minor (j : ℕ)
     (M : Matrix (Fin (j + 1)) (Fin (j + 1)) F[X]) (hM : ∀ i k, (M i k).natDegree ≤ 1)
-    (bad : Finset F) (hQ : M.det ≠ 0) (hsub : bad.val ⊆ M.det.roots) :
+    (bad : Finset F) (hsub : bad.val ⊆ M.det.roots) :
     bad.card ≤ j + 1 :=
-  affineSystemBadScalars_card_le_of_nondegenerate_minor M hM bad hQ hsub
+  affineSystemBadScalars_card_le_of_subset_minor_roots M hM bad hsub
 
 /-! ## The J2 lower bound — the `3`-spike plant at radius `2/n`
 
 The wide-regime lower bound half is unconditional and kernel-verified: the explicit
 two-window `3`-spike plant realizes three distinct bad scalars at the interior radius `2/n`.
 This reuses the in-tree general `t`-spike floor `epsMCA_ge_spike` with `t = 3` and the size
-lemma `spike_three_size_at_interiorJ2` (already proved in `GrandChallengeInteriorJ1.lean`).
+lemma `spike_three_size_at_interiorJ2` (already proved in `InteriorJ1.lean`).
 The spike plant only needs `k + 3 ≤ n` (room for the three spike windows), and `3 ≤ q`. -/
 
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
@@ -202,9 +156,9 @@ open ReedSolomon Code
 
 /-- **The J2 lower bound: `3/q ≤ ε_mca(C, 2/n)`.**  The explicit `3`-spike plant
 (`epsMCA_ge_spike` with `t = 3`) realizes three bad scalars at the interior radius `2/n`.
-This is the research note's two-window plant at `j = 2`; `3 ≤ q` and `k + 4 ≤ n` suffice.
-Together with the `3×3`-minor upper-bound shape this is the lower half of the second exact
-interior row `P[2] = 3`. -/
+This is the research note's two-window plant at `j = 2`; `3 ≤ q` and `k + 3 ≤ n` suffice.
+This is the lower half of the informal second interior row `P[2] = 3`; the matching upper
+bound is not formalized. -/
 theorem epsMCA_interiorJ2_ge
     (domain : ι ↪ F) {k : ℕ} (hk : k + 3 ≤ Fintype.card ι) (hq : 3 ≤ Fintype.card F) :
     (3 : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤
@@ -387,7 +341,6 @@ section AxiomAudit
 open ProximityGap.GrandChallengesLattice
 #print axioms affineMatrix_det_natDegree_le
 #print axioms affineSystemBadScalars_card_le_of_subset_minor_roots
-#print axioms affineSystemBadScalars_card_le_of_nondegenerate_minor
 #print axioms affineSystemBadScalars_card_le_two_via_2x2
 #print axioms affineSystemBadScalars_card_le_three_via_3x3
 #print axioms affineSystemBadScalars_card_le_jp1_via_minor

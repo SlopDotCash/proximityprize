@@ -43,13 +43,36 @@ impose `s₀ + γ·s₁ ∈ S(E_γ)` (each = `dim`-`(r−e)` linear rows `L·s�
 
 ## Results — data
 
-### Strip cells, exhaustive over F, direct construction (400 trials)
+### Strip cells, γ-scan exhaustive over F, sampled direct construction (400 trials)
 
-| cell | n,k,e | δ | p | budget | max true-bad | over-budget cfgs | zero-rescue viol |
-|------|-------|---|---|--------|--------------|------------------|-------------------|
-| S1 | 10,5,3 | 0.300 | 11  | 4 | **9**  | 7 | **6** |
-| S2 | 10,5,3 | 0.300 | 101 | 4 | 8      | 1 | 0 (rescued) |
-| S3 | 12,6,4 | 0.333 | 13  | 5 | **13** | 6 | **6** |
+**Metric correction (audit 2026-10-28, L119).** The probe's `bad` list already excludes every
+pairJoint-rescued scalar, so **every over-budget configuration (true-bad > budget) is a
+violation of the budget claim**. The original write-up counted a "violation" only when, in
+addition, no scalar anywhere in `F` was rescued; that narrower "zero-rescue" column is kept
+below for comparison only. A rescued scalar outside the bad set, or a rescued planted label,
+does not remove any member of the bad set and does not repair the excess. The probe now
+reports violations = over-budget configurations, with planted-label rescue as a separate
+statistic.
+
+| cell | n,k,e | δ | p | budget | max true-bad | over-budget cfgs = **violations** | planted-label rescued | zero-rescue (legacy) |
+|------|-------|---|---|--------|--------------|------------------|----|-------------------|
+| S1 | 10,5,3 | 0.300 | 11  | 4 | **9**  | **7** | 1 | 6 |
+| S2 | 10,5,3 | 0.300 | 101 | 4 | **8**  | **1** | 1 | 0 |
+| S3 | 12,6,4 | 0.333 | 13  | 5 | **13** | **6** | — | 6 |
+
+S1/S2 columns were re-run with the corrected probe on 2026-10-28 (S3 values are from the
+original run; its planted-rescue split was not recomputed). The S2 entry was previously shown
+as "0 (rescued)": it is in fact an over-budget stack at `p = 101` with 8 truly-bad scalars
+(`γ ∈ {1,21,29,38,43,50,51,88}`) against budget 4 — rescues of 93 *other* scalars do not
+change that. (It is a syndrome-classifier result; the classifier is cross-validated at word
+level on small cells, but this particular `p = 101` stack was not replayed at word level.)
+
+**Coverage.** Each trial plants random labels and random size-`e` supports, solves the
+syzygy system, and tests only the first three vectors of the computed nullspace basis (no
+linear combinations of basis vectors). Linear combinations can have different badness
+patterns, so a cell with zero violations would be a finite sampled search, not an
+exhaustive classification of the syzygy kernel. This probe is a diagnostic test oracle (T62
+scope): its counts are finite-search evidence, not theorems.
 
 S1 headline: stack `u₀=[8,8,5,6,4,0,0,0,0,0]`, `u₁=[6,3,0,5,3,0,0,0,0,0]` over `F₁₁`,
 RS[10,5] (δ=0.30) has **9 of 11 scalars `mcaEvent`-bad** (`γ ∈ {0,1,2,3,6,7,8,9,10}`),
@@ -68,8 +91,11 @@ reproducible counterexample.
 | 99991 | 16665 | 3 | 0 |
 | 1000003 | 166667 | 3 | 0 |
 
-The over-budget-zero-rescue phenomenon **disappears** once `|F|/n ≳ 16`; above the
-transition every explainable-beyond-budget scalar is pairJoint-rescued (rescue rate → 1).
+(The "zero-rescue viol" column uses the legacy narrower metric; the actual violation
+criterion is max true-bad > budget, which already holds at `p = 7` and `p = 37`.) In this
+sampled sweep no over-budget configuration at all was found once `|F|/n ≳ 16` (max true-bad
+`≤ 3 <` budget 5); above the transition the sampled explainable scalars were pairJoint-rescued
+(rescue rate → 1). This is finite sampled evidence, not an exhaustive kernel search.
 At `n=10` the transition is slower: a **non-degenerate** violation persists at `p=101`
 (`|F|/n≈10`, `s₁≠0`, neither syndrome δ-close to `C`, 10 bad scalars, budget 4).
 

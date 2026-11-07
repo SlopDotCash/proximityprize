@@ -180,7 +180,7 @@ theorem accidents_card_eq_zero_of_phiWindowInjective
     (hPhi : PhiWindowInjective g (2 ^ 30)) :
     (accidents (rootsFinset g (2 ^ 30))).card = 0 :=
   accidents_card_eq_zero_rootsFinset_of_exactOrder_phiWindowInjective
-    (one_mem_rootsFinset (by norm_num) isPrimitiveRoot_g) g_pow_30_eq_one
+    g_pow_30_eq_one
     (by norm_num) (by norm_num) (hasExactOrder_of_isPrimitiveRoot isPrimitiveRoot_g) hPhi
 
 #print axioms prime_P

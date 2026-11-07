@@ -13,7 +13,17 @@ pairwise overlaps in [2s-n, k-1], and for EACH:
     budgets b_XY = k-1-m_XY;
   * compute the MINIMAL nonzero syzygy degree mu1 of the *coprime* triple
     (W_AB, W_AC, W_BC) ignoring budgets (mu-basis first generator degree), and
-    mu2, and the "balance" mu1 vs (mu1+mu2)/2.  We test whether the roots-of-unity
+    mu2, and the "balance" mu1 vs (mu1+mu2)/2.  mu1, mu2 are degrees of minimal
+    F[X]-MODULE generators (uniform cofactor-degree grading), recovered from the
+    second differences of the bounded syzygy dimensions; polynomial multiples
+    X^j*h of the first generator are NOT counted as new generators.  (Before the
+    L125 audit fix the extractor counted them, which forced mu2 <= mu1+1 and made
+    the "unbalanced" count below identically zero.  Exact counterexample: over F17
+    with dom = powers of 3, the triple (P_A, P_C, P_B) for A={0,1,8}, C={3,5,7},
+    B={2,9,10} has bounded dimensions 1,2,3,5 at D=0..3, hence generators (0,3);
+    it fits the mu16, k=8 band with T={4,6,11,12} and union-generation deficiency
+    1.  This is a geometric mu-basis fact only: no bad-scalar or prize refutation
+    follows from it alone; cf. audit T62.)  We test whether the roots-of-unity
     domain mu_n can UNBALANCE the mu-basis vs a generic domain (potential
     strip counterexample), and lift-test any such instance for actual generation
     failure.
@@ -112,16 +122,30 @@ def inbudget_syzygy_dim(WAB, WAC, WBC, bAB, bAC, bBC, p):
     return nvar - rank_mod(rows, nvar, p)
 
 def min_syzygy_degree(WAB, WAC, WBC, p, dmax):
-    """mu1 = smallest D >= 0 s.t. a NONZERO syzygy with all deg r_XY <= D exists,
-    ignoring per-pair budgets (uniform degree bound D). Returns (mu1, mu2) where
-    mu2 is the next generator degree (dim jumps 0->1 at mu1, and to 2 at mu2)."""
-    dAB, dAC, dBC = pdeg(WAB), pdeg(WAC), pdeg(WBC)
+    """Degrees (mu1, mu2) of the two minimal F[X]-MODULE generators of the syzygy
+    module of (W_AB, -W_AC, W_BC), graded by the uniform cofactor degree
+    max(deg r_AB, deg r_AC, deg r_BC) and ignoring per-pair budgets.
+
+    The bounded syzygy space V_D = {syzygies with all deg r_XY <= D} is an F-vector
+    space, not a module: if h is a generator of degree mu1 then X*h, X^2*h, ... lie in
+    V_{mu1+1}, V_{mu1+2}, ... without being new generators.  For a free module with a
+    (column-)reduced basis of degrees mu_1 <= mu_2 <= ... the predictable-degree
+    property gives dim V_D = sum_i max(0, D - mu_i + 1).  Hence the first difference
+    g(D) = dim V_D - dim V_{D-1} counts generators of degree <= D, and the second
+    difference g(D) - g(D-1) counts generators of degree exactly D.  (An earlier
+    version appended a degree at every increase of dim V_D, which counted X*h as a
+    second generator and forced mu2 <= mu1 + 1; see audit finding L125.)
+
+    Returns (None, None) / (mu1, None) when fewer generators appear up to dmax."""
     mu = []
-    prev = 0
+    prev_dim = 0   # dim V_{D-1}
+    prev_gen = 0   # g(D-1) = number of generators of degree <= D-1
     for D in range(dmax+1):
         dim = inbudget_syzygy_dim(WAB, WAC, WBC, D, D, D, p)
-        while dim > prev:
-            mu.append(D); prev += 1
+        gen = dim - prev_dim
+        for _ in range(gen - prev_gen):
+            mu.append(D)
+        prev_dim, prev_gen = dim, gen
         if len(mu) >= 2: break
     if len(mu) == 0: mu = [None, None]
     elif len(mu) == 1: mu = [mu[0], None]

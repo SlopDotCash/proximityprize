@@ -218,6 +218,18 @@ theorem preTensorCombine_is_interleavedCodeword_of_codeword (i : Fin ℓ) (steps
     iterated_fold_of_BBF_Code_mem 𝔽q β i steps h_destIdx h_destIdx_le f
       (bitsOfIndex (L := L) rowIdx)
 
+/-! ### Packed-row lift helpers (scope)
+
+The definitions from `inputRowCodeword` to `getRowPoly` pack the polynomial representatives of
+the rows of an input interleaved codeword `V_codeword` into one source-level polynomial
+(`getLiftPoly`) and its codeword (`lift_interleavedCodeword`). Despite the names, no inverse-lift
+statement is proved here: there is **no** theorem that folding `lift_interleavedCodeword` with
+the binary row challenges `bitsOfIndex j` gives back row `j` of `V_codeword`.
+`getRowPoly` extracts a fresh polynomial representative of the folded row of the lift, and
+`folded_lifted_IC_eq_IC_row_polyToOracleFunc` only states that this folded row equals the
+evaluation of its own representative. No tracked module outside this file uses these helpers;
+the reconstruction identity would have to be proved before they can serve as an inverse lift. -/
+
 /-- The `rowIdx`-th row of an input interleaved BBF codeword, as a BBF codeword. -/
 def inputRowCodeword (i : Fin ℓ) (steps : ℕ) {destIdx : Fin r}
     (h_destIdx : destIdx.val = i.val + steps) (h_destIdx_le : destIdx ≤ ℓ)
@@ -306,7 +318,8 @@ def foldedLiftRowCodeword (i : Fin ℓ) (steps : ℕ) {destIdx : Fin r}
         i steps h_destIdx h_destIdx_le V_codeword)
       (bitsOfIndex (L := L) j)⟩
 
-/-- Polynomial representative of a folded row of the lifted codeword. -/
+/-- Polynomial representative of a folded row of the lifted codeword. This is a representative
+of `foldedLiftRowCodeword … j` itself; it is not shown to agree with `getInputRowPoly … j`. -/
 def getRowPoly (i : Fin ℓ) (steps : ℕ) {destIdx : Fin r}
     (h_destIdx : destIdx.val = i.val + steps) (h_destIdx_le : destIdx ≤ ℓ)
     (V_codeword : ((BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) destIdx)
@@ -315,6 +328,11 @@ def getRowPoly (i : Fin ℓ) (steps : ℕ) {destIdx : Fin r}
   getBBF_Codeword_poly 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) destIdx
     (foldedLiftRowCodeword 𝔽q β i steps h_destIdx h_destIdx_le V_codeword rowIdx)
 
+/-- **Representative identity for a folded lift row (not an inverse-lift theorem).** Folding the
+lift with `bitsOfIndex j` equals `polyToOracleFunc` of `getRowPoly … j`, which is by definition a
+representative of that same folded row, so this is `getBBF_Codeword_poly_spec` applied to
+`foldedLiftRowCodeword`. It does not prove that the folded row is row `j` of `V_codeword`
+(equivalently that `getRowPoly … j` and `getInputRowPoly … j` agree). -/
 theorem folded_lifted_IC_eq_IC_row_polyToOracleFunc (i : Fin ℓ) (steps : ℕ)
     {destIdx : Fin r}
     (h_destIdx : destIdx.val = i.val + steps) (h_destIdx_le : destIdx ≤ ℓ)

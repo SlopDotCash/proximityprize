@@ -20,7 +20,7 @@ nontrivial analytic input is the fourth-moment twist bound plus the explicit con
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
-set_option linter.style.longFile 2500
+set_option linter.style.longFile 2700
 
 open Finset
 open ArkLib.ProximityGap.ConstantIndexGaussSum
@@ -79,6 +79,249 @@ theorem not_fifteen_chiFamily_card_sq_le_order_real (χ : MulChar F ℂ)
   rw [hsub] at h
   have hmreal : (2 : ℝ) ≤ (orderOf χ : ℝ) := by exact_mod_cast hm
   nlinarith [sq_nonneg ((orderOf χ : ℝ) - 2)]
+
+/-! ### Audit obstructions: unsatisfiable hypothesis combinations (CW-B10-01/02/03)
+
+The following lemmas record, axiom-clean, that several hypothesis combinations used by exact-rung
+consumers cannot be met.  Consumers whose hypotheses are jointly unsatisfiable have been removed
+from this file and replaced by these obstruction lemmas. -/
+
+/-- **Depth-two vs. the R18 regime.**  The depth tie `2 = ⌈log q⌉₊` forces `q ≤ e² < 8`, while the
+regime `16·m²·n² ≤ q` with `m ≥ 2`, `n ≥ 1` forces `q ≥ 64`; the two cannot hold together.  Every
+`r = 2` consumer that assumed both (`incidence_le_of_*`/`approxB_away_of_*` with
+`hdepth : 2 = ⌈log q⌉₊` and `hreg`) was vacuous and has been removed. -/
+theorem not_depth_two_of_regime (χ : MulChar F ℂ) (G : Finset F)
+    (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ¬ 2 = ⌈Real.log (Fintype.card F : ℝ)⌉₊ := by
+  intro hdepth
+  have hm' : (2 : ℝ) ≤ (orderOf χ : ℝ) := by exact_mod_cast hm
+  have hn' : (1 : ℝ) ≤ (G.card : ℝ) := by exact_mod_cast hn
+  have hm2 : (4 : ℝ) ≤ (orderOf χ : ℝ) ^ 2 := by nlinarith
+  have hn2 : (1 : ℝ) ≤ (G.card : ℝ) ^ 2 := by nlinarith
+  have hmn : (4 : ℝ) ≤ (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 := by nlinarith
+  have hq64 : (64 : ℝ) ≤ (Fintype.card F : ℝ) := by nlinarith
+  have hlog : Real.log (Fintype.card F : ℝ) ≤ 2 := by
+    have h := Nat.le_ceil (Real.log (Fintype.card F : ℝ))
+    rw [← hdepth] at h
+    exact_mod_cast h
+  have hqpos : (0 : ℝ) < (Fintype.card F : ℝ) := by linarith
+  have hle : (Fintype.card F : ℝ) ≤ Real.exp 2 := (Real.log_le_iff_le_exp hqpos).mp hlog
+  have he : Real.exp 2 < 64 := by
+    have h1 : (1 / 2 : ℝ) ≤ Real.exp (-(1 / 2)) := by
+      have := Real.add_one_le_exp (-(1 / 2) : ℝ)
+      linarith
+    have h2 : Real.exp (1 / 2) * Real.exp (-(1 / 2)) = 1 := by
+      rw [← Real.exp_add]; norm_num
+    have h3 : Real.exp (1 / 2) ≤ 2 := by nlinarith [Real.exp_pos (1 / 2)]
+    have h4 : Real.exp 2 = Real.exp (1 / 2) ^ 4 := by
+      rw [← Real.exp_nat_mul]; norm_num
+    have h5 : Real.exp (1 / 2) ^ 4 ≤ 2 ^ 4 := pow_le_pow_left₀ (Real.exp_pos _).le h3 4
+    rw [h4]
+    linarith
+  linarith
+
+/-- Real second moment of a nontrivial thin twisted sum over the full offset line:
+`∑_t ‖T_χ(t)‖² = |G|·q − |G|²` (from `R17TchiMomentIdentities.sum_shiftedCharSum_mul_conj`). -/
+theorem sum_norm_sq_twistedThinSum {χ' : MulChar F ℂ} (hne : χ' ≠ 1) (G : Finset F) :
+    ∑ t : F, ‖twistedThinSum χ' G t‖ ^ 2
+      = (G.card : ℝ) * (Fintype.card F : ℝ) - (G.card : ℝ) ^ 2 := by
+  have h := ArkLib.ProximityGap.Frontier.R17TchiMomentIdentities.sum_shiftedCharSum_mul_conj
+    hne G
+  have hpt : ∀ t : F,
+      ArkLib.ProximityGap.Frontier.R16LegendreCosetFace.shiftedCharSum χ' G t
+        * (starRingEnd ℂ)
+          (ArkLib.ProximityGap.Frontier.R16LegendreCosetFace.shiftedCharSum χ' G t)
+        = ((‖twistedThinSum χ' G t‖ ^ 2 : ℝ) : ℂ) := by
+    intro t
+    rw [Complex.mul_conj, Complex.normSq_eq_norm_sq, norm_twistedThinSum_eq_shiftedCharSum]
+  simp only [hpt] at h
+  exact_mod_cast h
+
+/-- Trivial pointwise bound `‖T_χ(t)‖ ≤ |G|`. -/
+theorem norm_twistedThinSum_le_card (χ' : MulChar F ℂ) (G : Finset F) (t : F) :
+    ‖twistedThinSum χ' G t‖ ≤ (G.card : ℝ) := by
+  unfold twistedThinSum
+  calc ‖∑ x ∈ G, (starRingEnd ℂ) (χ' (t - x))‖
+      ≤ ∑ x ∈ G, ‖(starRingEnd ℂ) (χ' (t - x))‖ := norm_sum_le _ _
+    _ ≤ ∑ _x ∈ G, (1 : ℝ) := Finset.sum_le_sum fun x _ => by
+        simpa using
+          ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.norm_mulChar_le_one χ' (t - x)
+    _ = (G.card : ℝ) := by simp
+
+/-- **Averaging lower bound.**  If a nontrivial thin twisted sum is bounded by `T` at every offset
+outside `D`, then `|G|·q − |G|² ≤ |D|·|G|² + q·T²`.  (The RMS scale of `‖T_χ‖` is `√|G|`; in
+particular a uniform off-`D` bound with `|D|` small forces `T² ≳ |G|`.) -/
+theorem card_mul_card_sub_sq_le_of_offset_bound {χ' : MulChar F ℂ} (hne : χ' ≠ 1)
+    (G D : Finset F) {T : ℝ}
+    (hT : ∀ s₀ : F, s₀ ∉ D → ‖twistedThinSum χ' G s₀‖ ≤ T) :
+    (G.card : ℝ) * (Fintype.card F : ℝ) - (G.card : ℝ) ^ 2
+      ≤ (D.card : ℝ) * (G.card : ℝ) ^ 2 + (Fintype.card F : ℝ) * T ^ 2 := by
+  classical
+  rw [← sum_norm_sq_twistedThinSum hne G,
+    ← Finset.sum_filter_add_sum_filter_not Finset.univ (fun t => t ∈ D)]
+  have h1 : ∑ t ∈ Finset.univ.filter (fun t => t ∈ D), ‖twistedThinSum χ' G t‖ ^ 2
+      ≤ (D.card : ℝ) * (G.card : ℝ) ^ 2 := by
+    calc ∑ t ∈ Finset.univ.filter (fun t => t ∈ D), ‖twistedThinSum χ' G t‖ ^ 2
+        ≤ ∑ _t ∈ Finset.univ.filter (fun t => t ∈ D), (G.card : ℝ) ^ 2 :=
+          Finset.sum_le_sum fun t _ =>
+            pow_le_pow_left₀ (norm_nonneg _) (norm_twistedThinSum_le_card χ' G t) 2
+      _ = ((Finset.univ.filter (fun t => t ∈ D)).card : ℝ) * (G.card : ℝ) ^ 2 := by
+          rw [Finset.sum_const, nsmul_eq_mul]
+      _ ≤ (D.card : ℝ) * (G.card : ℝ) ^ 2 := by
+          apply mul_le_mul_of_nonneg_right _ (by positivity)
+          exact_mod_cast Finset.card_le_card (fun x hx => (Finset.mem_filter.mp hx).2)
+  have h2 : ∑ t ∈ Finset.univ.filter (fun t => ¬ t ∈ D), ‖twistedThinSum χ' G t‖ ^ 2
+      ≤ (Fintype.card F : ℝ) * T ^ 2 := by
+    calc ∑ t ∈ Finset.univ.filter (fun t => ¬ t ∈ D), ‖twistedThinSum χ' G t‖ ^ 2
+        ≤ ∑ _t ∈ Finset.univ.filter (fun t => ¬ t ∈ D), T ^ 2 :=
+          Finset.sum_le_sum fun t ht =>
+            pow_le_pow_left₀ (norm_nonneg _) (hT t (Finset.mem_filter.mp ht).2) 2
+      _ = ((Finset.univ.filter (fun t => ¬ t ∈ D)).card : ℝ) * T ^ 2 := by
+          rw [Finset.sum_const, nsmul_eq_mul]
+      _ ≤ (Fintype.card F : ℝ) * T ^ 2 := by
+          apply mul_le_mul_of_nonneg_right _ (by positivity)
+          exact_mod_cast Finset.card_le_univ _
+  linarith
+
+/-- **Fourth-moment constant lower bound.**  Cauchy–Schwarz on the exact second moment: if
+`FourthMomentTwistBound G X Cw` and `X` contains a nontrivial character, then
+`(|G|q − |G|²)² ≤ Cw·|G|²·q²`, i.e. `Cw ≥ (1 − |G|/q)²`. -/
+theorem sq_sub_le_const_of_fourthMomentTwistBound {G : Finset F} {X : Finset (MulChar F ℂ)}
+    {Cw : ℝ} (h4 : FourthMomentTwistBound G X Cw) {χ' : MulChar F ℂ} (hχ' : χ' ∈ X)
+    (hne : χ' ≠ 1) :
+    ((G.card : ℝ) * (Fintype.card F : ℝ) - (G.card : ℝ) ^ 2) ^ 2
+      ≤ Cw * (G.card : ℝ) ^ 2 * (Fintype.card F : ℝ) ^ 2 := by
+  have hCS := sq_sum_le_card_mul_sum_sq (s := (Finset.univ : Finset F))
+    (f := fun t => ‖twistedThinSum χ' G t‖ ^ 2)
+  rw [sum_norm_sq_twistedThinSum hne G, Finset.card_univ] at hCS
+  have hpow : ∀ t : F, (‖twistedThinSum χ' G t‖ ^ 2) ^ 2 = ‖twistedThinSum χ' G t‖ ^ 4 :=
+    fun t => by ring
+  simp only [hpow] at hCS
+  have h4' := h4 χ' hχ'
+  have hq0 : (0 : ℝ) ≤ (Fintype.card F : ℝ) := by positivity
+  have hmul := mul_le_mul_of_nonneg_left h4' hq0
+  nlinarith [hmul, hCS]
+
+/-- The normalized full-family gate `32(Cw·|chiFamily χ|⁴+1)/m²/3 ≤ 1` is impossible once
+`Cw ≥ 1/2` (in particular for the quartic-Weil constant `Cw = 6`). -/
+theorem not_chiFamily_constant_gate_of_half_le (χ : MulChar F ℂ) (hm : 2 ≤ orderOf χ)
+    {Cw : ℝ} (hCw : 1 / 2 ≤ Cw) :
+    ¬ 32 * (Cw * ((chiFamily χ).card : ℝ) ^ 4 + 1) / ((orderOf χ : ℝ)) ^ 2 / 3 ≤ 1 := by
+  intro h
+  rw [chiFamily_card] at h
+  have hcast : ((orderOf χ - 1 : ℕ) : ℝ) = (orderOf χ : ℝ) - 1 := by
+    rw [Nat.cast_sub (by omega : 1 ≤ orderOf χ), Nat.cast_one]
+  rw [hcast, div_div] at h
+  set x : ℝ := (orderOf χ : ℝ) with hxdef
+  have hx : (2 : ℝ) ≤ x := by rw [hxdef]; exact_mod_cast hm
+  have h' : 32 * (Cw * (x - 1) ^ 4 + 1) ≤ x ^ 2 * 3 := by
+    have := (div_le_one (by positivity : (0 : ℝ) < x ^ 2 * 3)).mp h
+    linarith
+  have hy : (1 : ℝ) ≤ x - 1 := by linarith
+  have ht2 : (1 : ℝ) ≤ (x - 1) ^ 2 := by nlinarith
+  have ht4 : (x - 1) ^ 2 ≤ (x - 1) ^ 4 := by nlinarith [sq_nonneg ((x - 1) ^ 2 - 1)]
+  have hx2 : x ^ 2 ≤ 4 * (x - 1) ^ 2 := by nlinarith
+  have hcw4 : (1 / 2) * (x - 1) ^ 4 ≤ Cw * (x - 1) ^ 4 :=
+    mul_le_mul_of_nonneg_right hCw (by positivity)
+  nlinarith
+
+/-- **The full-family constant gate is unsatisfiable for every admissible `Cw`.**  In the R18
+regime, `FourthMomentTwistBound G (chiFamily χ) Cw` forces `Cw ≥ (63/64)² > 1/2` (via
+`sq_sub_le_const_of_fourthMomentTwistBound`), and then the gate fails by
+`not_chiFamily_constant_gate_of_half_le`.  Hence every full-family `*_of_constant_le_one`
+consumer (generic `Cw`, or quartic-Weil `Cw = 6`) was vacuous; those consumers have been removed. -/
+theorem not_chiFamily_constant_gate_of_fourthMomentTwistBound (χ : MulChar F ℂ) (G : Finset F)
+    (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card) {Cw : ℝ}
+    (h4 : FourthMomentTwistBound G (chiFamily χ) Cw)
+    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
+    ¬ 32 * (Cw * ((chiFamily χ).card : ℝ) ^ 4 + 1) / ((orderOf χ : ℝ)) ^ 2 / 3 ≤ 1 := by
+  obtain ⟨χ', hχ'⟩ := chiFamily_nonempty_of_two_le_order χ hm
+  have hlow := sq_sub_le_const_of_fourthMomentTwistBound h4 hχ' (chiFamily_ne_one χ hχ')
+  apply not_chiFamily_constant_gate_of_half_le χ hm
+  set n : ℝ := (G.card : ℝ) with hndef
+  set q : ℝ := (Fintype.card F : ℝ) with hqdef
+  have hm' : (2 : ℝ) ≤ (orderOf χ : ℝ) := by exact_mod_cast hm
+  have hn1 : (1 : ℝ) ≤ n := by rw [hndef]; exact_mod_cast hn
+  have hm2 : (4 : ℝ) ≤ (orderOf χ : ℝ) ^ 2 := by nlinarith
+  have hq : 64 * n ≤ q := by nlinarith
+  have hA : (63 / 64) * (n * q) ≤ n * q - n ^ 2 := by nlinarith
+  have hB : ((63 / 64) * (n * q)) ^ 2 ≤ (n * q - n ^ 2) ^ 2 :=
+    pow_le_pow_left₀ (by positivity) hA 2
+  by_contra hlt'
+  have hlt : Cw < 1 / 2 := lt_of_not_ge hlt'
+  have hpos : 0 < n ^ 2 * q ^ 2 := by positivity
+  have hmul := mul_lt_mul_of_pos_right hlt hpos
+  nlinarith [hB, hlow, hmul]
+
+/-- Numeric helper: `(k − 1)⁴ ≤ 3k²` forces `k ≤ 3`. -/
+theorem le_three_of_sub_one_pow_four_le {k : ℕ}
+    (h : ((k : ℝ) - 1) ^ 4 ≤ 3 * (k : ℝ) ^ 2) : k ≤ 3 := by
+  by_contra hgt
+  have hk : 4 ≤ k := by omega
+  have hx4 : (4 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk
+  have hy9 : (9 : ℝ) ≤ ((k : ℝ) - 1) ^ 2 := by nlinarith
+  have hxy : 3 * (k : ℝ) ^ 2 < 9 * ((k : ℝ) - 1) ^ 2 := by nlinarith
+  have hy4 : 9 * ((k : ℝ) - 1) ^ 2 ≤ ((k : ℝ) - 1) ^ 4 := by nlinarith
+  linarith
+
+/-- **All-omitted `K`-scale endpoints are limited to order `m ≤ 3`.**  Suppose every member of
+`chiFamily χ` is bounded by `T` at every offset outside `D`, where `2|G|(|D|+1) ≤ q`, and the
+all-omitted budget `|G| + (m−1)√q·T ≤ K` meets the constant-`≤ 1` fourth-scale gate
+`4K⁴ ≤ 3C·m²|G|²q²`.  Then the averaging bound forces `T² ≥ |G|/2`, hence `(m−1)⁴ ≤ 3m²`, i.e.
+`orderOf χ ≤ 3`. -/
+theorem orderOf_le_three_of_all_omitted_K_scale (χ : MulChar F ℂ) (G D : Finset F)
+    (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card) {T K C : ℝ} (hT0 : 0 ≤ T) (hC : C ≤ 1)
+    (hT : ∀ s₀ : F, s₀ ∉ D → ∀ χ' ∈ chiFamily χ, ‖twistedThinSum χ' G s₀‖ ≤ T)
+    (hD : 2 * (G.card : ℝ) * ((D.card : ℝ) + 1) ≤ (Fintype.card F : ℝ))
+    (hKbound :
+      (G.card : ℝ) + ((orderOf χ - 1 : ℕ) : ℝ) * Real.sqrt (Fintype.card F : ℝ) * T ≤ K)
+    (hK :
+      4 * K ^ 4
+        ≤ 3 * C * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 * (Fintype.card F : ℝ) ^ 2) :
+    orderOf χ ≤ 3 := by
+  obtain ⟨χ', hχ'⟩ := chiFamily_nonempty_of_two_le_order χ hm
+  have havg := card_mul_card_sub_sq_le_of_offset_bound (chiFamily_ne_one χ hχ') G D
+    (fun s₀ hs₀ => hT s₀ hs₀ χ' hχ')
+  have hcast : ((orderOf χ - 1 : ℕ) : ℝ) = (orderOf χ : ℝ) - 1 := by
+    rw [Nat.cast_sub (by omega : 1 ≤ orderOf χ), Nat.cast_one]
+  rw [hcast] at hKbound
+  set n : ℝ := (G.card : ℝ) with hndef
+  set q : ℝ := (Fintype.card F : ℝ) with hqdef
+  set d : ℝ := (D.card : ℝ) with hddef
+  set x : ℝ := (orderOf χ : ℝ) with hxdef
+  have hx : (2 : ℝ) ≤ x := by rw [hxdef]; exact_mod_cast hm
+  have hn1 : (1 : ℝ) ≤ n := by rw [hndef]; exact_mod_cast hn
+  have hd0 : (0 : ℝ) ≤ d := by rw [hddef]; positivity
+  have hq0 : (0 : ℝ) < q := by nlinarith
+  -- `T² ≥ n/2`
+  have hT2 : n / 2 ≤ T ^ 2 := by
+    have h1 : n * q / 2 ≤ q * T ^ 2 := by nlinarith
+    have h2 : q * (n / 2) ≤ q * T ^ 2 := by linarith
+    exact le_of_mul_le_mul_left h2 hq0
+  set s : ℝ := Real.sqrt q with hsdef
+  have hs0 : 0 ≤ s := Real.sqrt_nonneg q
+  have hs2 : s ^ 2 = q := Real.sq_sqrt hq0.le
+  have hbase0 : 0 ≤ (x - 1) * s * T := by
+    have : (0 : ℝ) ≤ x - 1 := by linarith
+    positivity
+  have hbaseK : (x - 1) * s * T ≤ K := by linarith
+  have hpow : ((x - 1) * s * T) ^ 4 ≤ K ^ 4 := pow_le_pow_left₀ hbase0 hbaseK 4
+  have hexp : ((x - 1) * s * T) ^ 4 = (x - 1) ^ 4 * q ^ 2 * (T ^ 2) ^ 2 := by
+    rw [← hs2]; ring
+  have hT4 : (n / 2) ^ 2 ≤ (T ^ 2) ^ 2 := pow_le_pow_left₀ (by positivity) hT2 2
+  have hy0 : (0 : ℝ) ≤ (x - 1) ^ 4 * q ^ 2 := by positivity
+  have hlow : (x - 1) ^ 4 * q ^ 2 * (n / 2) ^ 2 ≤ K ^ 4 := by
+    have := mul_le_mul_of_nonneg_left hT4 hy0
+    nlinarith [hpow, hexp, this]
+  have hC' : 3 * C * x ^ 2 * n ^ 2 * q ^ 2 ≤ 3 * x ^ 2 * n ^ 2 * q ^ 2 := by
+    have : 0 ≤ 3 * x ^ 2 * n ^ 2 * q ^ 2 := by positivity
+    nlinarith
+  have hkey : (x - 1) ^ 4 * (n ^ 2 * q ^ 2) ≤ 3 * x ^ 2 * (n ^ 2 * q ^ 2) := by
+    nlinarith [hlow, hK, hC']
+  have hnq : 0 < n ^ 2 * q ^ 2 := by positivity
+  have hfin : (x - 1) ^ 4 ≤ 3 * x ^ 2 := le_of_mul_le_mul_right hkey hnq
+  exact le_three_of_sub_one_pow_four_le hfin
 
 /-! ### Thin subfamilies: what survives restriction -/
 
@@ -717,6 +960,24 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_pointwise_bounds_gate
     (wickAwayAtWithConstant_two_of_chiSubfamily_pointwise_bounds χ hψ G D hGD hY
       hm hTin hTout hgate)
 
+/-! ### Applicability limits of the pointwise-residual endpoints (audit CW-B10-03)
+
+The endpoints below are correct implications, but their hypotheses are very restrictive:
+
+* **Averaging.**  `sum_norm_sq_twistedThinSum` gives `∑_s ‖T_χ'(s)‖² = |G|q − |G|²` and
+  `‖T_χ'‖ ≤ |G|`, so a uniform off-`D` bound `T` with `|D|` small forces `T² ≳ |G|`
+  (`card_mul_card_sub_sq_le_of_offset_bound`).  Consequently the `K`/fourth-scale/`A`-scale gates
+  `4K⁴ ≤ 3C·m²|G|²q²` with `C ≤ 1` can only be met for order `m ≤ 3` when
+  `2|G|(|D|+1) ≤ q`; this is proved for the all-omitted budget in
+  `orderOf_le_three_of_all_omitted_K_scale`.
+* **`A ≤ 1` endpoints.**  For `s ∉ D` (so `s ∉ G`) and `|G| < m`, some coset of `ker χ` misses
+  `G − s`, and orthogonality gives `∑_{χ' ∈ chiFamily χ} ‖T_χ'(s)‖ ≥ |G|`; then every budget
+  `K ≥ |G| + √q·∑ T` exceeds `|G|√q ≥ A|G|√q`.  So the `A ≤ 1` endpoints (with `4|G|² ≤ 3m²`) are
+  unsatisfiable whenever `D ≠ univ`.  This argument is recorded here as documentation; it is not
+  yet a Lean theorem.
+
+No positive instance of these endpoints at order `m ≥ 4` is known. -/
+
 /-- Regime-form raw fourth-moment endpoint for direct kept/omitted pointwise bounds.  This is
 the non-shifted companion to
 `rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_omitted_rate_scale_gate`. -/
@@ -1165,7 +1426,7 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_shifted_rates_A_le_one
     hwickOut hrateOut hreg hKbound hKdim hsize
 
 /-- Necessary-condition obstruction for the two-sided shifted-rate thinned route.  If the kept
-subfamily is nonempty, the normalized `A ≤ 1` budget cannot coexist with the natural `r = 1`
+subfamily is nonempty, the normalized `A ≤ 1` budget cannot coexist with the assumed `r = 1`
 shifted-rate lower scale for the kept side in the R18 size regime, regardless of how the omitted
 side is handled. -/
 theorem not_chiSubfamily_shifted_rates_budget_A_le_one_of_nonempty_kept_r_one_regime
@@ -1917,7 +2178,8 @@ theorem not_exists_shifted_all_omitted_rate_one_budget_regime
   exact not_shifted_all_omitted_budget_of_rate_one_regime χ G hm hn hT0 hrate hreg hbudget
 
 /-- Existential `A ≤ 1` form of the regime-level `r = 1` no-go.  In the R18 regime no
-nonnegative `T` can satisfy the natural `r = 1` lower scale and any normalized all-omitted
+nonnegative `T` can satisfy the assumed `r = 1` lower scale `q|G| ≤ T²` and any normalized
+all-omitted
 budget with right side `A·|G|√q`, `A ≤ 1`. -/
 theorem not_exists_shifted_all_omitted_rate_one_budget_A_le_one_regime
     (χ : MulChar F ℂ) (G : Finset F)
@@ -2021,9 +2283,12 @@ theorem not_rawFourthMoment_shifted_all_omitted_normalized_one_inputs_r_one_regi
         ≤ (G.card : ℝ) * Real.sqrt (Fintype.card F : ℝ) :=
   not_shifted_all_omitted_normalized_budget_one_inputs_r_one_regime χ G D hm hn hreg
 
-/-- Predicate-free numeric no-go for the direct pointwise all-omitted route at the natural
+/-- Predicate-free numeric no-go for the direct pointwise all-omitted route at the assumed
 `sqrt(q * |G|)` scale.  In the R18 regime, no `A ≤ 1` normalized budget can coexist with the
-natural lower scale `q|G| ≤ T²`. -/
+lower scale `q|G| ≤ T²`.  (Caveat: `sqrt(q|G|)` is NOT the natural second-moment scale — it exceeds
+the trivial bound `‖T_χ‖ ≤ |G|` once `q > |G|`; the RMS scale is `√|G|`, see
+`sum_norm_sq_twistedThinSum`.  So this no-go is about a hypothesis that can only hold when
+`q ≤ |G|`.) -/
 theorem not_exists_pointwise_all_omitted_sqrt_scale_budget_A_le_one_regime
     (χ : MulChar F ℂ) (G : Finset F)
     (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card)
@@ -2037,7 +2302,8 @@ theorem not_exists_pointwise_all_omitted_sqrt_scale_budget_A_le_one_regime
 
 /-- Interface-level `A ≤ 1` no-go for the direct pointwise all-omitted route at the natural
 `sqrt(q * |G|)` scale.  The pointwise upper-bound hypothesis does not enter the contradiction:
-once `T` is at least the natural second-moment scale, the same normalized-budget obstruction as in
+once `T` is at least the `sqrt(q|G|)` scale (which is above the trivial bound `|G|`, not the RMS
+scale `√|G|`), the same normalized-budget obstruction as in
 the shifted `r = 1` route applies in the R18 regime. -/
 theorem not_pointwise_all_omitted_normalized_budget_A_inputs_sqrt_scale_regime
     (χ : MulChar F ℂ) (G D : Finset F)
@@ -2054,7 +2320,8 @@ theorem not_pointwise_all_omitted_normalized_budget_A_inputs_sqrt_scale_regime
     ⟨A, T, hA0, hA1, hT0, hrate, hbudgetA⟩
 
 /-- Raw-endpoint-shaped no-go for the direct pointwise all-omitted normalized route at the
-natural `sqrt(q * |G|)` scale.  The additive character data is included to mirror attempts to feed
+assumed `sqrt(q * |G|)` scale (not the RMS scale `√|G|`).  The additive character data is included
+to mirror attempts to feed
 the hypotheses into the raw fourth-moment endpoint; the contradiction is purely numeric. -/
 theorem not_rawFourthMoment_pointwise_all_omitted_normalized_A_inputs_sqrt_scale_regime
     (χ : MulChar F ℂ) {ψ : AddChar F ℂ} (_hψ : ψ.IsPrimitive)
@@ -2131,229 +2398,31 @@ theorem rawFourthMomentWithDiagonal_of_chiSubfamily_quarticWeil_of_nonempty_fift
     (gaussSumSizeBound_chiSubfamily χ hψ hY)
     (quarticWeilInput_mono hY hW) hq1 hnq hn4q hreg
 
-/-- Direct off-diagonal incidence consumer for the thinned explicit-character quartic-Weil
-exact rung. -/
-theorem incidence_le_of_chiSubfamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
-    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
-    (G D : Finset F) {Y : Finset (MulChar F ℂ)}
-    (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card) (hY : Y ⊆ chiFamily χ)
-    (hX : Y.Nonempty) (horder : 15 * Y.card ^ 2 ≤ orderOf χ)
-    (hdec : ChiDecompositionOff ψ G (Gchi χ) D Y (fun χ' => gaussSum χ' ψ) (orderOf χ))
-    (hW :
-      ∀ χ' ∈ chiFamily χ,
-        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
-    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
-    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
-    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
-    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
-    (hdepth : 2 = ⌈Real.log (Fintype.card F : ℝ)⌉₊)
-    {s₀ : F} (hs : s₀ ∉ D) :
-    ‖incidenceSum ψ G (Gchi χ) s₀‖
-      ≤ Real.sqrt (2 * Real.exp 1
-        * (∑ b ∈ (Gchi χ), ‖eta ψ G b‖ ^ 2) * (2 : ℕ)) :=
-  incidence_le_of_wickAwayAt (ψ := ψ) G (Gchi χ) D 2 hdepth (by norm_num) hq1
-    (wickForIncidenceAwayAt_two_of_chiSubfamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
-      ψ hψ χ G D hm hn hY hX horder hdec hW hq1 hnq hn4q hreg)
-    hs
 
-/-- Sup-norm approximate-`B` consumer for the thinned explicit-character quartic-Weil exact
-rung. -/
-theorem approxB_away_of_chiSubfamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
-    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
-    (G D : Finset F) {Y : Finset (MulChar F ℂ)}
-    (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card) (hY : Y ⊆ chiFamily χ)
-    (hX : Y.Nonempty) (horder : 15 * Y.card ^ 2 ≤ orderOf χ)
-    (hdec : ChiDecompositionOff ψ G (Gchi χ) D Y (fun χ' => gaussSum χ' ψ) (orderOf χ))
-    (hW :
-      ∀ χ' ∈ chiFamily χ,
-        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
-    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
-    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
-    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
-    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
-    (hdepth : 2 = ⌈Real.log (Fintype.card F : ℝ)⌉₊)
-    {M : ℝ} (hM0 : 0 ≤ M) (hM : ∀ b ∈ (Gchi χ), ‖eta ψ G b‖ ≤ M)
-    {s₀ : F} (hs : s₀ ∉ D) :
-    ‖incidenceSum ψ G (Gchi χ) s₀‖
-      ≤ Real.sqrt (2 * Real.exp 1 * (((Gchi χ).card : ℝ) * M ^ 2) * (2 : ℕ)) :=
-  approxB_away_of_wickAwayAt (ψ := ψ) G (Gchi χ) D 2 hdepth (by norm_num) hq1
-    (wickForIncidenceAwayAt_two_of_chiSubfamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
-      ψ hψ χ G D hm hn hY hX horder hdec hW hq1 hnq hn4q hreg)
-    hM0 hM hs
 
-/-- **Explicit-character R18 exact away-Wick consumer.**  For `H = Gχ` and the explicit
-nontrivial family `chiFamily χ`, the decomposition, Gauss-sum size bound, and Σ lower bound are
-proved internally.  The remaining hypotheses are exactly the fourth-moment twist bound, the
-constant gate, and the size regime. -/
-theorem wickForIncidenceAwayAt_two_of_chiFamily_of_constant_le_one
-    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
-    (G D : Finset F) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card) (hGD : G ⊆ D)
-    {Cw : ℝ} (hCw : 0 ≤ Cw)
-    (hC :
-      32 * (Cw * ((chiFamily χ).card : ℝ) ^ 4 + 1) / ((orderOf χ : ℝ)) ^ 2 / 3 ≤ 1)
-    (h4 : FourthMomentTwistBound G (chiFamily χ) Cw)
-    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
-    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
-    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
-    WickForIncidenceAwayAt ψ G (Gchi χ) D 2 := by
-  exact wickForIncidenceAwayAt_two_of_gchi_of_constant_le_one
-    ψ hψ G D (chiFamily χ) (fun χ' => gaussSum χ' ψ) χ hm hn hCw hC
-    (chiDecompositionOff_holds χ hψ hGD)
-    (gaussSumSizeBound_holds χ hψ)
-    h4 hq1 hnq hreg
 
-/-- Raw fourth-moment companion to
-`wickForIncidenceAwayAt_two_of_chiFamily_of_constant_le_one`. -/
-theorem rawFourthMomentWithDiagonal_of_chiFamily_of_constant_le_one
-    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
-    (G D : Finset F) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card) (hGD : G ⊆ D)
-    {Cw : ℝ} (hCw : 0 ≤ Cw)
-    (hC :
-      32 * (Cw * ((chiFamily χ).card : ℝ) ^ 4 + 1) / ((orderOf χ : ℝ)) ^ 2 / 3 ≤ 1)
-    (h4 : FourthMomentTwistBound G (chiFamily χ) Cw)
-    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
-    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
-    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
-    RawFourthMomentWithDiagonal ψ G (Gchi χ) D := by
-  exact rawFourthMomentWithDiagonal_of_gchi_of_constant_le_one
-    ψ hψ G D (chiFamily χ) (fun χ' => gaussSum χ' ψ) χ hm hn hCw hC
-    (chiDecompositionOff_holds χ hψ hGD)
-    (gaussSumSizeBound_holds χ hψ)
-    h4 hq1 hnq hreg
 
-/-- Fully quartic-Weil version of
-`wickForIncidenceAwayAt_two_of_chiFamily_of_constant_le_one`: the fourth-moment twist bound is
-itself discharged from the per-character quartic-Weil input on the explicit `chiFamily`. -/
-theorem wickForIncidenceAwayAt_two_of_chiFamily_quarticWeil_of_constant_le_one
-    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
-    (G D : Finset F) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card) (hGD : G ⊆ D)
-    (hC :
-      32 * (6 * ((chiFamily χ).card : ℝ) ^ 4 + 1) / ((orderOf χ : ℝ)) ^ 2 / 3 ≤ 1)
-    (hW :
-      ∀ χ' ∈ chiFamily χ,
-        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
-    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
-    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
-    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
-    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
-    WickForIncidenceAwayAt ψ G (Gchi χ) D 2 := by
-  exact wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_constant_le_one
-    ψ hψ G D (chiFamily χ) (fun χ' => gaussSum χ' ψ) χ hm hn hC
-    (chiDecompositionOff_holds χ hψ hGD)
-    (gaussSumSizeBound_holds χ hψ)
-    hW hq1 hnq hn4q hreg
 
-/-- Raw fourth-moment companion to
-`wickForIncidenceAwayAt_two_of_chiFamily_quarticWeil_of_constant_le_one`. -/
-theorem rawFourthMomentWithDiagonal_of_chiFamily_quarticWeil_of_constant_le_one
-    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
-    (G D : Finset F) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card) (hGD : G ⊆ D)
-    (hC :
-      32 * (6 * ((chiFamily χ).card : ℝ) ^ 4 + 1) / ((orderOf χ : ℝ)) ^ 2 / 3 ≤ 1)
-    (hW :
-      ∀ χ' ∈ chiFamily χ,
-        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
-    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
-    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
-    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
-    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
-    RawFourthMomentWithDiagonal ψ G (Gchi χ) D := by
-  exact rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_constant_le_one
-    ψ hψ G D (chiFamily χ) (fun χ' => gaussSum χ' ψ) χ hm hn hC
-    (chiDecompositionOff_holds χ hψ hGD)
-    (gaussSumSizeBound_holds χ hψ)
-    hW hq1 hnq hn4q hreg
 
-/-- Nat-order quartic-Weil exact-rung consumer for the explicit `chiFamily`.  This is the
-same size gate as the generic R18 quartic-Weil route, with the decomposition and Gauss-sum
-inputs discharged by `_R19ChiDecomposition`. -/
-theorem wickForIncidenceAwayAt_two_of_chiFamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
-    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
-    (G D : Finset F) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card) (hGD : G ⊆ D)
-    (hX : (chiFamily χ).Nonempty)
-    (horder : 15 * (chiFamily χ).card ^ 2 ≤ orderOf χ)
-    (hW :
-      ∀ χ' ∈ chiFamily χ,
-        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
-    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
-    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
-    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
-    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
-    WickForIncidenceAwayAt ψ G (Gchi χ) D 2 := by
-  exact wickForIncidenceAwayAt_two_of_gchi_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
-    ψ hψ G D (chiFamily χ) (fun χ' => gaussSum χ' ψ) χ hm hn hX horder
-    (chiDecompositionOff_holds χ hψ hGD)
-    (gaussSumSizeBound_holds χ hψ)
-    hW hq1 hnq hn4q hreg
 
-/-- Raw fourth-moment companion to
-`wickForIncidenceAwayAt_two_of_chiFamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat`. -/
-theorem rawFourthMomentWithDiagonal_of_chiFamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
-    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
-    (G D : Finset F) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card) (hGD : G ⊆ D)
-    (hX : (chiFamily χ).Nonempty)
-    (horder : 15 * (chiFamily χ).card ^ 2 ≤ orderOf χ)
-    (hW :
-      ∀ χ' ∈ chiFamily χ,
-        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
-    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
-    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
-    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
-    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ)) :
-    RawFourthMomentWithDiagonal ψ G (Gchi χ) D := by
-  exact rawFourthMomentWithDiagonal_of_gchi_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
-    ψ hψ G D (chiFamily χ) (fun χ' => gaussSum χ' ψ) χ hm hn hX horder
-    (chiDecompositionOff_holds χ hψ hGD)
-    (gaussSumSizeBound_holds χ hψ)
-    hW hq1 hnq hn4q hreg
 
-/-- Direct off-diagonal incidence consumer for the full explicit-character quartic-Weil
-exact rung. -/
-theorem incidence_le_of_chiFamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
-    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
-    (G D : Finset F) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card) (hGD : G ⊆ D)
-    (hX : (chiFamily χ).Nonempty)
-    (horder : 15 * (chiFamily χ).card ^ 2 ≤ orderOf χ)
-    (hW :
-      ∀ χ' ∈ chiFamily χ,
-        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
-    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
-    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
-    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
-    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
-    (hdepth : 2 = ⌈Real.log (Fintype.card F : ℝ)⌉₊)
-    {s₀ : F} (hs : s₀ ∉ D) :
-    ‖incidenceSum ψ G (Gchi χ) s₀‖
-      ≤ Real.sqrt (2 * Real.exp 1
-        * (∑ b ∈ (Gchi χ), ‖eta ψ G b‖ ^ 2) * (2 : ℕ)) :=
-  incidence_le_of_wickAwayAt (ψ := ψ) G (Gchi χ) D 2 hdepth (by norm_num) hq1
-    (wickForIncidenceAwayAt_two_of_chiFamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
-      ψ hψ χ G D hm hn hGD hX horder hW hq1 hnq hn4q hreg)
-    hs
 
-/-- Sup-norm approximate-`B` consumer for the full explicit-character quartic-Weil exact
-rung. -/
-theorem approxB_away_of_chiFamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
-    (ψ : AddChar F ℂ) (hψ : ψ.IsPrimitive) (χ : MulChar F ℂ)
-    (G D : Finset F) (hm : 2 ≤ orderOf χ) (hn : 1 ≤ G.card) (hGD : G ⊆ D)
-    (hX : (chiFamily χ).Nonempty)
-    (horder : 15 * (chiFamily χ).card ^ 2 ≤ orderOf χ)
-    (hW :
-      ∀ χ' ∈ chiFamily χ,
-        ArkLib.ProximityGap.Frontier.R18FourthMomentTwist.QuarticWeilInput χ' G)
-    (hq1 : (1 : ℝ) ≤ (Fintype.card F : ℝ))
-    (hnq : ((G.card : ℝ)) ^ 2 ≤ (Fintype.card F : ℝ))
-    (hn4q : ((G.card : ℝ)) ^ 4 ≤ (Fintype.card F : ℝ))
-    (hreg : 16 * (orderOf χ : ℝ) ^ 2 * (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))
-    (hdepth : 2 = ⌈Real.log (Fintype.card F : ℝ)⌉₊)
-    {M : ℝ} (hM0 : 0 ≤ M) (hM : ∀ b ∈ (Gchi χ), ‖eta ψ G b‖ ≤ M)
-    {s₀ : F} (hs : s₀ ∉ D) :
-    ‖incidenceSum ψ G (Gchi χ) s₀‖
-      ≤ Real.sqrt (2 * Real.exp 1 * (((Gchi χ).card : ℝ) * M ^ 2) * (2 : ℕ)) :=
-  approxB_away_of_wickAwayAt (ψ := ψ) G (Gchi χ) D 2 hdepth (by norm_num) hq1
-    (wickForIncidenceAwayAt_two_of_chiFamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
-      ψ hψ χ G D hm hn hGD hX horder hW hq1 hnq hn4q hreg)
-    hM0 hM hs
+
+/-! ### Removed vacuous consumers (audit CW-B10-01/02)
+
+* The four `r = 2` depth consumers
+  `incidence_le_of_chi{Subfamily,Family}_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat` and
+  `approxB_away_of_chi{Subfamily,Family}_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat`
+  assumed both `hdepth : 2 = ⌈log q⌉₊` and `hreg`; `not_depth_two_of_regime` proves these are
+  contradictory, so the consumers were removed.
+* The six full-family exact-rung consumers `*_of_chiFamily_of_constant_le_one`,
+  `*_of_chiFamily_quarticWeil_of_constant_le_one`, and
+  `*_of_chiFamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat` could never fire: the gate
+  fails for every admissible `Cw` (`not_chiFamily_constant_gate_of_fourthMomentTwistBound`,
+  `not_chiFamily_constant_gate_of_half_le`) and the nat-order gate is refuted by
+  `not_fifteen_chiFamily_card_sq_le_order`.  The thinned-subfamily `WickForIncidenceAwayAt` /
+  raw-moment consumers (`*_of_chiSubfamily_*`) and the `WickAwayAtWithConstant` forms are kept.
+-/
 
 /-- **Explicit-character R19 linear-`K` depleted rung.**  For `H = Gχ`, the decomposition,
 Gauss-sum size bound, `|X| ≤ m`, and Σ lower bound are discharged for `chiFamily χ`; only the
@@ -2472,22 +2541,15 @@ theorem r19_linearK_incidenceMomentAway_of_chiFamily
   wickForIncidenceAwayAt_two_of_chiSubfamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
 #print axioms
   rawFourthMomentWithDiagonal_of_chiSubfamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
-#print axioms
-  incidence_le_of_chiSubfamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
-#print axioms
-  approxB_away_of_chiSubfamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
-#print axioms wickForIncidenceAwayAt_two_of_chiFamily_of_constant_le_one
-#print axioms rawFourthMomentWithDiagonal_of_chiFamily_of_constant_le_one
-#print axioms wickForIncidenceAwayAt_two_of_chiFamily_quarticWeil_of_constant_le_one
-#print axioms rawFourthMomentWithDiagonal_of_chiFamily_quarticWeil_of_constant_le_one
-#print axioms
-  wickForIncidenceAwayAt_two_of_chiFamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
-#print axioms
-  rawFourthMomentWithDiagonal_of_chiFamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
-#print axioms
-  incidence_le_of_chiFamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
-#print axioms
-  approxB_away_of_chiFamily_quarticWeil_of_nonempty_fifteen_card_sq_le_order_nat
 #print axioms r19_linearK_incidenceMomentAway_of_chiFamily
+#print axioms not_depth_two_of_regime
+#print axioms sum_norm_sq_twistedThinSum
+#print axioms norm_twistedThinSum_le_card
+#print axioms card_mul_card_sub_sq_le_of_offset_bound
+#print axioms sq_sub_le_const_of_fourthMomentTwistBound
+#print axioms not_chiFamily_constant_gate_of_half_le
+#print axioms not_chiFamily_constant_gate_of_fourthMomentTwistBound
+#print axioms le_three_of_sub_one_pow_four_le
+#print axioms orderOf_le_three_of_all_omitted_K_scale
 
 end ArkLib.ProximityGap.Frontier.R19ExplicitCharacterRung

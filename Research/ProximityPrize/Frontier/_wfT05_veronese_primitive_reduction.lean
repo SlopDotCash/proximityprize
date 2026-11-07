@@ -50,9 +50,10 @@ Adolphson–Sperber toric Newton-polytope envelope, F2/S6). We prove
 i.e. there are STRICTLY MORE Wick matchings than total Betti classes for every `r ≥ 4`. The prize
 needs depth `r ≈ ln q ≈ 83 ≫ 4`. So over `ℕ` the proposed "primitive dimension"
 `C(2r,r) − (2r−1)‼` truncates to `0` (`dimPrimNat_eq_zero`), making the T05 bound read
-`W_r ≤ 0` — which is FALSE for any prime at which the char-`p` energy exceeds char-0
-(`spur_r > 0`). The "primitive deficit" cohomology that T05 wants to bound the excess is empty
-at the relevant depths. **The ratio `(2r−1)‼ / C(2r,r) = r!/2^r → ∞`** (`wick_over_betti_ratio`),
+`W_r ≤ 0`. Since `W_r = spur_r − deficit_r` with a positive char-0 deficit, this is false only at
+primes whose spurious energy exceeds that deficit (`spur_r > deficit_r`); `spur_r > 0` alone does
+not contradict it (audit CW-B18-22). The "primitive deficit" cohomology that T05 wants to bound the excess is empty
+at the relevant depths. **The ratio `(2r−1)‼ / C(2r,r) = r!/2^r → ∞`** (`betti_factorial_eq_wick_twopow`),
 so the gap is not a small-`r` artifact; it diverges super-exponentially at prize depth.
 
 ### (II) The Veronese moment curve folds up over `μ_n` — no transversality gain exists.
@@ -73,7 +74,9 @@ dichotomy T05 reduces to F2/A04.
 `probe_wfT05_veronese_primitive_excess.rs` (EXACT `r`-fold additive convolution over `ℤ_p`,
 `β = 4`, `p = n^4`, `p ≡ 1 mod n`, `μ_n = ⟨2^μ⟩`): at the prize prime the excess is in fact
 NEGATIVE (`E_r < (2r−1)‼·n^r`, matching S6 `spur ≡ 0`), and its MAGNITUDE scales as
-`|W_r| / n^{r−1} → const` (`-3, -44, -560` for `r = 2,3,4`) — i.e. `Θ(n^{r−1})`, polynomial in
+`W_r / n^{r−1} → const` (limits `−3, −45, −630` for `r = 2,3,4`; the probe's `−44, −560` were
+finite-`n` readings, and the exact char-0 count gives `≈ −619` at `n = 128`, `r = 4`) — i.e.
+`Θ(n^{r−1})`, polynomial in
 `n`, NOT the `n`-free `dim_prim = O_r(1)` T05 predicts. So even the SIGN and SCALING of the
 quantity T05 bounds contradict the claimed `O_r(1)`.
 
@@ -115,7 +118,10 @@ theorem factorial_gt_two_pow (r : ℕ) (hr : 4 ≤ r) : 2 ^ r < r ! := by
             omega
         _ = (k + 1)! := (Nat.factorial_succ k).symm
 
-/-- **The exact ratio identity** `(2r−1)‼ · 2^r = (2r)! / r!`, equivalently
+/-- **The exact ratio identity** `(2r−1)‼ · 2^r = (2r)! / r!` (the same fact as
+`_wf8B8_kstability_char0_closure.two_mul_factorial_eq`, `(2r)! = (2r−1)‼·2^r·r!`, in
+`C(2r,r)` form; it also shows the crossover `(2r−1)‼ / C(2r,r) = r!/2^r → ∞` is
+super-exponential, not a small-`r` artifact), equivalently
 `(2r−1)‼ = (2r)! / (2^r · r!)`. Combined with `C(2r,r) = (2r)! / (r!·r!)`, this gives
 `(2r−1)‼ / C(2r,r) = r! / 2^r`. We use the product form: `C(2r,r) · r! = (2r−1)‼ · 2^r`,
 proven from `Nat.choose_two_mul_self_eq_doubleFactorial`-style identities via the factorial
@@ -180,15 +186,6 @@ cohomology" T05 wants to bound the energy excess is EMPTY at `r ≥ 4`. -/
 theorem dimPrimNat_eq_zero (r : ℕ) (hr : 4 ≤ r) :
     Nat.choose (2 * r) r - Nat.doubleFactorial (2 * r - 1) = 0 :=
   Nat.sub_eq_zero_of_le (le_of_lt (wick_gt_betti r hr))
-
-/-- **The crossover is super-exponential, not a small-`r` artifact.** The exact ratio
-`(2r−1)‼ · 2^r = C(2r,r) · r!` shows `(2r−1)‼ / C(2r,r) = r! / 2^r`, which diverges. We record
-the multiplicative gap directly: for `r ≥ 4`, `(2r−1)‼ · 2^r = C(2r,r) · r!` with `r! / 2^r → ∞`,
-so the proposed `dim_prim` deficit is not merely negative but grows in magnitude with `r`. (Stated
-as the exact identity `C(2r,r) · r! = (2r−1)‼ · 2^r`, the engine of the divergence.) -/
-theorem wick_over_betti_ratio (r : ℕ) :
-    Nat.choose (2 * r) r * r ! = Nat.doubleFactorial (2 * r - 1) * 2 ^ r :=
-  betti_factorial_eq_wick_twopow r
 
 /-! ## Part II — the Veronese moment curve folds up over `μ_n`: no transversality gain -/
 
@@ -263,7 +260,7 @@ hypothesis `htrans : excess ≤ dimPrim` with `dimPrim := C(2r,r) − (2r−1)�
 deficit). For `r ≥ 4` this forces `excess ≤ 0` (Part I, `dimPrimNat_eq_zero`). So the ONLY way
 T05's bound is non-vacuous (`excess` could be a genuine positive `O_r(1)`) is at depths `r < 4`,
 which are far below the prize depth `r ≈ ln q ≈ 83`. At the prize depth the claimed bound is
-`excess ≤ 0`, contradicting any prime with positive spurious energy. Hence T05 supplies NO usable
+`excess ≤ 0`, contradicting any prime whose spurious energy exceeds the char-0 deficit. Hence T05 supplies NO usable
 energy-excess control at prize regime, and the residual stays on F2. -/
 theorem t05_bound_is_vacuous_at_prize_depth (r excess : ℕ) (hr : 4 ≤ r)
     (htrans : excess ≤ Nat.choose (2 * r) r - Nat.doubleFactorial (2 * r - 1)) :
@@ -278,7 +275,6 @@ end ArkLib.ProximityGap.Frontier.wfT05VeronesePrimitiveReduction
 #print axioms ArkLib.ProximityGap.Frontier.wfT05VeronesePrimitiveReduction.betti_factorial_eq_wick_twopow
 #print axioms ArkLib.ProximityGap.Frontier.wfT05VeronesePrimitiveReduction.wick_gt_betti
 #print axioms ArkLib.ProximityGap.Frontier.wfT05VeronesePrimitiveReduction.dimPrimNat_eq_zero
-#print axioms ArkLib.ProximityGap.Frontier.wfT05VeronesePrimitiveReduction.wick_over_betti_ratio
 #print axioms ArkLib.ProximityGap.Frontier.wfT05VeronesePrimitiveReduction.power_map_image_card_dvd
 #print axioms ArkLib.ProximityGap.Frontier.wfT05VeronesePrimitiveReduction.power_map_image_proper_of_common_factor
 #print axioms ArkLib.ProximityGap.Frontier.wfT05VeronesePrimitiveReduction.squaring_folds_two_power

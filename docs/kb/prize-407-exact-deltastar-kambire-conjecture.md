@@ -1,5 +1,53 @@
 # #407 — The exact δ* conjecture (Kambiré-derived) + the closeable optimality core
 
+> **Current scoped status (2026-10-28 audit, finding L136) — read this first.** This file is a dated
+> research log. Its many "FINAL" / "DEFINITIVE" / "RESOLVED" / "Net" verdicts contradict one another
+> and are superseded in order; none of them is the current statement. The current scoped statement is:
+>
+> - **Proved (as recorded in-tree):** the Kambiré upper-bracket construction; factorization rigidity
+>   (`∏_S(X−z)` is `m`-sparse ⟺ `S` is a `μ_m`-coset union); the characteristic-zero (ℂ)
+>   coset-saturation / root-count arguments; the `F_p` transfer of the count bound for primes `p ∤ D`,
+>   where `D` is the clearing denominator of a *chosen* Nullstellensatz certificate (a sufficient
+>   condition only); the elementary moment-to-sup-norm optimization (`GaussPeriodOptimizedBound.lean`),
+>   which is conditional on its energy hypothesis.
+> - **Refuted:** R1 monomial extremality (§ "REFUTATION 2026-06-14 — R1"); the existence-semantics
+>   "floor closure" (§ "CORRECTION 2026-06-14 (decisive paper read)" and § "RETRACTION 2026-06-14"); the
+>   D-height route as retracted in its own sections; and the strong no-primitive-config / two-frequency
+>   suppression conjecture for `n ≥ 128` (finding L137, see the correction under the crystallized
+>   CONJECTURE). The weaker Half-Sum value containment (`e₂ ∈ Σ`) is a different statement and is open.
+> - **Open, not established:** the exact `δ*` formula below. It is a conjectured leading-order
+>   expression; this file never derives it as an exact finite-`n`, lattice-exact threshold, and its lower
+>   bracket (`#bad ≤ |H^{(+r)}|` over `F_q` at the prize prime) is unproved. After the R1 refutation the
+>   later sections only support leading-order / severity statements, not the exact formula.
+>
+> **Reading rules for every section below** (corrections are also marked inline where they recur):
+>
+> 1. Finite scans, LPs, sampled maxima and FFT measurements (`n ≤ 64`, the listed primes, finite depths
+>    `r`) are finite data. They do not certify all-prime, all-`n` or all-depth conclusions.
+> 2. Several one-way implications are written as "⟺", "iff" or "equivalent". `q ∤ D` (good reduction
+>    for a chosen clearing denominator) and `p ∤ c` (eliminant content) are **sufficient, not
+>    necessary**, for the `F_p` value containment / count bound: changing the certificate changes `D`
+>    without changing the mathematical instance, and `p | D` gives no information either way. Likewise
+>    suppression of spurious configurations is sufficient, not necessary, for value containment.
+> 3. Statements that a specified method (moments, Weil, tower recursion, budget arithmetic, the
+>    q-independent families) stops at the BGK / sup-norm wall are **method-scope no-go statements**. They
+>    do not show that every proof of the prize must solve the BGK / supremum problem; that would need a
+>    reverse reduction from the prize bound to the sup-norm bound, which this file does not give.
+> 4. `Anom_r ≤ n^{2r}/p` is **not equivalent** to `A_r ≤ Wick := (2r−1)‼·n^r`. Exactly
+>    `A_r = R_r + Anom_r − n^{2r}/p` (with `R_r` the char-0 matching count), so
+>    `A_r ≤ Wick ⟺ Anom_r ≤ n^{2r}/p + (Wick − R_r)`, and `R_r < Wick` at finite `n` (`n = 16`, `r = 2`:
+>    `720 < 768`). The char-0 side is not "exactly Gaussian" with vanishing higher cumulants at finite
+>    `n`. Also, a sup-norm bound `M ≤ C√(n log p)` gives only `A_r ≤ n·M^{2r−2}`; it does not by itself
+>    give the Wick moment bounds with the same constants (a maximum estimate allows very different
+>    distributions).
+> 5. The fixed-index triangle bound keeps the trivial-character term: `M ≤ (1 + (m−1)√q)/m`, as in
+>    `ConstantIndexGaussSumBound.lean` (`eta_constIndex_norm_le`). The final section's
+>    `(m−1)√q/m` is false (e.g. `p = 17`, `n = 8`, index `m = 2`: the periods are `(−1 ± √17)/2`, so
+>    `M = (1 + √17)/2 > √17/2`).
+>
+> The same issues recur across other notes; see the audit's method-scope (L103 / T62), finite-scan,
+> FFT and field-universal-surface groups rather than treating each occurrence here as a new proof hole.
+
 ## Reading list (directed research on the reduced forms)
 1. Kambiré, "Proximity Gaps Conjecture Fails Near Capacity over Prime Fields" (arXiv:2604.09724) — upper bracket, native μ_{2^t}. ON DISK.
 2. Krachun & Kazanin, "Failure of the proximity gap conjecture for RS near capacity" (personal comm 2026, Kambiré ref [4]) — original sketch. NOT PUBLIC — request.
@@ -376,7 +424,10 @@ explicitly-stated Diophantine problem over `F_p` — NOT the black-box BGK incid
     but not a proof.
 
 **This is the sharpest form of the open residual:** suppression of `{−1,0,1}`-coefficient two-frequency
-vanishing sums of dyadic roots of unity at `p=n^β` (equivalently `G(e_m)∈I_ℤ`). It is more structured
+vanishing sums of dyadic roots of unity at `p=n^β` (equivalently `G(e_m)∈I_ℤ`). [2026-10-28 correction
+(L137): full suppression is FALSE for `n ≥ 128` — a pigeonhole argument gives such sums whenever
+`2^{n/2} > 2p²`; see the correction under the crystallized CONJECTURE below. Only the weaker
+value-containment question (where the resulting `e₂` lands) remains open on this route.] It is more structured
 and more likely tractable than generic BGK, but I have NOT proved it. The prize remains open at exactly
 this point; I will not claim otherwise. (The full integrality `G(e_m)∈I_ℤ`, if provable via the rigidity
 of the dyadic relation lattice, would close the optimality unconditionally for all odd p — that is the
@@ -460,20 +511,48 @@ Let `n = 2^μ`, `p` an odd prime, `p ≡ 1 (mod n)`, `p ≥ n^β` with `β ≥ 4
 [Level-`m`: `∑ y^ρ ≡ 0` for all `ρ ∈ {1,…,2m−1}\{m}`.] This contains ALL remaining open math — no further
 lemma, no deferred variable.
 
+> **⛔ CORRECTION (2026-10-28 audit, finding L137) — this CONJECTURE is FALSE as stated (REFUTED, not
+> open).** It fails in its own large-prime regime by an elementary pigeonhole argument, independent of
+> any search or norm estimate. Let `d = n/2` and let `ζ ∈ F_p` have exact order `n`. Send each of the
+> `2^d` subsets `A ⊆ {0,…,d−1}` to `(∑_{j∈A} ζ^j, ∑_{j∈A} ζ^{3j}, |A| mod 2) ∈ F_p² × F_2`, a set of
+> `2p²` elements. If `2^d > 2p²`, two distinct subsets `A ≠ B` have the same image. Put
+> `c_j = 1_A(j) − 1_B(j) ∈ {−1,0,1}` and let `Y` contain `ζ^j` when `c_j = 1` and `−ζ^j = ζ^{j+d}` when
+> `c_j = −1`. The indices `j < d` lie in distinct antipodal pairs, so `Y` is nonempty, has no ±-pairs,
+> has `|Y| = |A △ B| ≤ n/2` (and even size), and — since cubing is odd, `(−x)³ = −x³` —
+> `∑_Y y = ∑_j c_j ζ^j = 0` and `∑_Y y³ = ∑_j c_j ζ^{3j} = 0`. So (i)–(iii) hold whenever
+> `2^{n/2} > 2p²`, i.e. `p < 2^{(n−2)/4}`; with `p ≥ n^4` this window is nonempty for every `n ≥ 128`.
+> Concrete instances (checked by complete trial division to `isqrt(p)`): `n = 128`, `p = 268437889`
+> (`p ≡ 1 mod 128`, `p ≥ 128^4`, `2^64 > 2p²`), and `n = 256`, `p = 4294968833` (`p ≡ 1 mod 256`,
+> `p ≥ 256^4`, `2^128 = 340282366920938463463374607431768211456 > 2p² = 36893514552882763778`). At the
+> advertised prize scale (`n = 2^30`, `p` polynomial in `n`) the obstruction is overwhelming. Taking
+> `|A| = |B| = w` instead shows that even weight-`≤ 2w` variants fail once `C(n/2, w) > p²`.
+> This is a source-derived counting proof, not a Lean kernel fixture. **Scope:** it refutes only the
+> *no-`Y` (no-primitive-config) predicate* and its level-2 form; it does not cover level-`m` variants
+> whose exponent set contains even `ρ` (odd-sign argument fails there). It does **not** exhibit an
+> explicit recovered `Y`, a Half-Sum value `e₂ ∉ Σ`, a bad-scalar excess over `|H^{(+r)}|`, or a prize
+> counterexample — existence of such `Y` is insufficient for those stronger conclusions. Consequently the
+> "F_p optimality, conditional" theorem above is conditional on a false hypothesis and supplies no
+> `F_p` information; `F_p` optimality / exact `δ*` is unsupported by this route (not refuted). What this
+> argument leaves untouched is the weaker **value-containment** form (char-`p` primitive `Y` may exist,
+> but the resulting `e₂` must land in the allowed sumset — the Half-Sum Lemma of the later sections);
+> that, not suppression, is the form any further work on this route must target.
+
 Scores: novelty 8 (the `{−1,0,1}` two-frequency dyadic form is not in the literature), insight 9
 (unifies MCA + LD into one vanishing-sum statement), proximity 10 (`p=n^β`, dyadic, worst case),
 feasibility 3 (small-weight gap `[p^{2/n},(p−1)/n]` of the BGK regime — below Lam–Leung existence, above
 the norm bound — where no known technique proves suppression).
 
-**Refutation status:** survives — no counterexample for n=16,32 up to p=30000 (two conditions kill
-weight 3 identically; none at weight 4–8). **Cross-lane confirmation:** independent fleet lanes reached
+**Refutation status:** [historical; superseded — REFUTED for `n ≥ 128` by the pigeonhole correction
+above] survived the small search — no counterexample for n=16,32 up to p=30000 (two conditions kill
+weight 3 identically; none at weight 4–8); small-`n` searches cannot see the `2^{n/2} > 2p²` regime. **Cross-lane confirmation:** independent fleet lanes reached
 the SAME wall (`P_max` exponential ⟹ prize `p≪2^n` ⟹ bad primes exist ⟹ core open; "mod-p transfer =
 the open brick"). This is the fleet-wide frontier, not an artifact of one route.
 
-**Honest verdict:** δ* is pinned EXACTLY *conditional on* one precise, novel, refutation-survived,
-literature-grounded additive-combinatorics conjecture that no current technique proves. That conjecture
-IS the prize's irreducible core. Not claimed proven; it is the complete and minimal open statement, with
-everything else reduced to proven math.
+**Honest verdict:** [historical; superseded by the L137 correction above] δ* was claimed pinned EXACTLY
+*conditional on* one precise additive-combinatorics conjecture, presented as refutation-survived and as
+the prize's irreducible core. That conjecture is FALSE (pigeonhole, `n ≥ 128`), so this conditional pin
+carries no `F_p` content; the open question left on this route is the weaker Half-Sum value
+containment, not suppression of primitive `Y`.
 
 ## UPDATE 2026-06-13 (late) — SHARPENING the "bad primes exist" wall: the δ*-relevant quantity is D=2^k
 
@@ -815,6 +894,17 @@ The prize regime is `q ≈ ε*·q·2^128 = |H^{(+r)}|·2^128 ≫ N₀` — MASSI
 regime there are NO spurious configs**: every gap-valid config is a genuine `μ_2`-coset-union, exactly as
 over ℂ, hence `#bad = |H^{(+r)}|` and `δ* =` window-edge, worst case included.
 
+> **⛔ CORRECTION (2026-10-28 audit, L137).** The extrapolation "in the prize regime there are NO spurious
+> configs" is FALSE. The pigeonhole argument under the crystallized CONJECTURE above produces a nonempty
+> antipodal-free `U ⊆ μ_n` with `∑u = ∑u³ = 0`, `|U| ≤ n/2`, at every prime `p ≡ 1 (mod n)` with
+> `2^{n/2} > 2p²`; with equal-size subsets it even gives weight `≤ 2w` once `C(n/2, w) > p²`. At the
+> prize scale (`n = 2^30`, `q ≈ 2^158`) this holds with enormous margin (already `w = 12` suffices), so
+> spurious (non-coset) gap-valid configs DO exist there. Spurious-config existence is therefore not a
+> saturation-only phenomenon, and "coset-saturation for `q ≫ N₀`" below is false for large `n`. The finite
+> measurements listed here (n ≤ 64, small weights, the stated prime ranges) stand as finite data; they do
+> not extend to the prize regime. Existence of spurious `U` does not by itself give `e₂ ∉ Σ` or a
+> bad-scalar excess, so the Half-Sum value-containment question is NOT moot — it is the form that remains.
+
 **This REFRAMES the open core** (and corrects the prior "Half-Sum Lemma about e₂-values" framing): the
 e₂-value question is MOOT in the prize regime because there are no spurious configs whose e₂ to worry
 about. The actual remaining statement is **coset-saturation over `F_q` for `q ≫ N₀`** — a CONFIG-EXISTENCE
@@ -871,6 +961,10 @@ non-saturated regime). Evidence: bad primes empirically all `< N₀` (n=16,32,64
 so a proof needs the second-moment / structural cancellation that makes spurious vanish sharply at `~N₀`.
 This is a config-existence / good-reduction statement (bad-reduction primes of the gap variety all `≲ N₀`),
 strictly cleaner than the e₂-value "Half-Sum Lemma". PROVEN n=8,16; reduces the prize to this single bound.
+[2026-10-28 correction (L137): this "cleanest open form" is FALSE for large `n`, not open — by the pigeonhole
+argument under the crystallized CONJECTURE, spurious configs exist at every `p ≡ 1 (mod n)` with
+`2^{n/2} > 2p²`, including primes far above `N₀` and the prize prime itself. The n=8,16 proofs and the
+listed finite bad-prime sets are unaffected; the open form on this route is Half-Sum value containment.]
 
 ## UPDATE 2026-06-13 (ultracode session) — count-lane open core = "sharpen the resultant threshold from n^{n/2} to poly(n)"; multi-lane workflow + robustness
 
@@ -878,7 +972,12 @@ A multi-lane attack workflow (count/Half-Sum, e₂-rigidity, constant-index ener
 Action-Orbit, odd-order, split-ideal-SVP — each adversarially verified) was launched but DIED on
 API rate/session limits (re-runnable after reset). Main-loop findings this session:
 
-**Robustness of the count-lane reduction (★) "no spurious config for p>N₀":**
+**Robustness of the count-lane reduction (★) "no spurious config for p>N₀":** [2026-10-28 (L137): (★)
+is refuted for large `n` by the pigeonhole correction above — spurious configs exist at every
+`p ≡ 1 (mod n)` with `p < 2^{(n−2)/4}` (at `n = 128`: every such `p < 2^{31.5}`, via some config of
+weight `≤ 64`), a window that for large `n` reaches far above `N₀` and, at `n = 2^30`, past the prize
+prime; the size-4
+scan below is consistent with this because it only examines weight 4.]
   · **n=16**: ALL bad primes scanned to **50000** (sizes 4,6,8) = **{17}** only (N₀∈[25,41]). No large bad
     prime exists → δ* exact for n=16 at every prize prime q>17. (`probe_407_badprime_robustness.py`)
   · **n=128**: size-4 spurious = NONE across the first 10 primes ≡1 mod 128 (indices 2–39).

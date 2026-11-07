@@ -20,6 +20,10 @@ This module connects the Mathlib-only probability-space query-round theorem from
 The remaining hard Claim 8.2/8.3 pieces stay explicit: the correlated-agreement bridge,
 virtual-oracle soundness preservation, sequential composition, and total-error consumption are not
 proved here.
+
+All Reed–Solomon codes, rates and radii here are taken at the batched FRI input degree
+`friDegree s d = 2 ^ (∑ i, s i) * d` (audit finding L70: they used to use degree `2 ^ n` on the
+`2 ^ n`-point domain, i.e. the full word space).
 -/
 
 namespace Fri
@@ -114,7 +118,7 @@ def FriQuerySoundnessParts.of_queryRoundProbabilityBound
     (h_agreement :
       correlated_agreement_density
         (Fₛ f)
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤ α)
     {m : ℕ}
     (m_ge_3 : m ≥ 3)
@@ -143,7 +147,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBound
     (h_agreement :
       correlated_agreement_density
         (Fₛ f)
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤ α)
     {m : ℕ}
     (m_ge_3 : m ≥ 3)
@@ -176,7 +180,7 @@ def FriQuerySoundnessParts.of_queryRoundProbabilityBoundAndCanonicalBatchingSeam
     (h_agreement :
       correlated_agreement_density
         (Fₛ f)
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤ α)
     {m : ℕ}
     (m_ge_3 : m ≥ 3)
@@ -211,7 +215,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSea
     (h_agreement :
       correlated_agreement_density
         (Fₛ f)
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤ α)
     {m : ℕ}
     (m_ge_3 : m ≥ 3)
@@ -248,7 +252,16 @@ FRI oracle lens, and a concrete `Code.jointProximity` witness.
 
 This removes the arbitrary `agreementBridge : Prop` from this front door: the remaining
 coding-theoretic obligation is exactly the proximity predicate equivalent to the
-`Code.jointAgreement` conclusion of `fri_query_soundness`. -/
+`Code.jointAgreement` conclusion of `fri_query_soundness`.
+
+**Scope.** The supplied implication ignores both the probability premise and the canonical
+batching-seam premise (`fun _h_query _h_lens h_joint => …`): the conclusion follows from `h_proximity` alone via
+`fri_query_soundness_of_jointProximity`. The parameters `G`, `δ`, `queries`, `l` and the auxiliary
+index type `ι` are not connected to the actual query-round verifier's acceptance event by any
+theorem here, so this front door does not close the protocol bridge from query-round acceptance
+probability to proximity; that semantic coupling remains open. The product-probability result
+`probabilityAcceptanceBound_holds` is genuine; it is supplied by the delegated theorem but
+discarded by that implication. -/
 theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndJointProximity
     {t : ℕ}
     {α : ℝ≥0}
@@ -256,7 +269,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSea
     (h_agreement :
       correlated_agreement_density
         (Fₛ f)
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤ α)
     {m : ℕ}
     (m_ge_3 : m ≥ 3)
@@ -266,7 +279,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSea
     (h_proximity :
       Code.jointProximity
         (C := (ReedSolomon.code
-          (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n)).carrier)
+          (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d)).carrier)
         (u := f) (δ := 1 - α)) :
     fri_query_soundness (n := n) (ω := ω) (f := f)
       (h_agreement := h_agreement) (m_ge_3 := m_ge_3) := by
@@ -277,7 +290,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSea
       (agreementBridge :=
         Code.jointProximity
           (C := (ReedSolomon.code
-            (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n)).carrier)
+            (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d)).carrier)
           (u := f) (δ := 1 - α))
       (fun _h_query _h_lens h_joint =>
         fri_query_soundness_of_jointProximity
@@ -293,7 +306,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSea
     (h_agreement :
       correlated_agreement_density
         (Fₛ f)
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤ α)
     {m : ℕ}
     (m_ge_3 : m ≥ 3)
@@ -304,13 +317,13 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSea
     (h_ca :
       ProximityGap.δ_ε_correlatedAgreementAffineLines
         (F := 𝔽) (A := 𝔽) (ι := ω.subdomain 0)
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n)).carrier
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d)).carrier
         (1 - α) ε)
     (h_prob :
       Pr_{let z ← $ᵖ 𝔽}[
         δᵣ(f 0 + z • f 1,
           (ReedSolomon.code
-            (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n)).carrier)
+            (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d)).carrier)
           ≤ 1 - α] > ε) :
     fri_query_soundness (n := n) (ω := ω) (f := f)
       (h_agreement := h_agreement) (m_ge_3 := m_ge_3) := by
@@ -322,7 +335,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSea
         (F := 𝔽) (A := 𝔽) (ι := ω.subdomain 0)
         (C :=
           (ReedSolomon.code
-            (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n)).carrier)
+            (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d)).carrier)
         (δ := 1 - α) (ε := ε) (u := f) h_ca h_prob)
 
 /-- Probability-route Claim 8.2 affine-line front door specialized to the BCIKS20
@@ -339,7 +352,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSea
     (h_agreement :
       correlated_agreement_density
         (Fₛ f)
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤ α)
     {m : ℕ}
     (m_ge_3 : m ≥ 3)
@@ -348,56 +361,56 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSea
     (domain_size_cond : (2 ^ (∑ i, (s i : ℕ))) * d ≤ 2 ^ n)
     (hStrictCoeff :
       ProximityGap.StrictCoeffPolysResidual
-        (F := 𝔽) (ι := ω.subdomain 0) (k := 1) (deg := 2 ^ n)
+        (F := 𝔽) (ι := ω.subdomain 0) (k := 1) (deg := friDegree s d)
         (domain := (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽)) (δ := 1 - α))
     (hBoundaryCard :
       ProximityGap.BoundaryCardResidual
-        (F := 𝔽) (ι := ω.subdomain 0) (k := 1) (deg := 2 ^ n)
+        (F := 𝔽) (ι := ω.subdomain 0) (k := 1) (deg := friDegree s d)
         (domain := (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽)) (δ := 1 - α))
     (hδ :
       1 - α ≤
         1 - ReedSolomon.sqrtRate
-          (2 ^ n) (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽))
+          (friDegree s d) (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽))
     (h_prob :
       Pr_{let z ← $ᵖ 𝔽}[
         δᵣ(f 0 + z • f 1,
           (ReedSolomon.code
-            (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n)).carrier)
+            (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d)).carrier)
           ≤ 1 - α] >
         ProximityGap.errorBound
-          (1 - α) (2 ^ n) (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽)) :
+          (1 - α) (friDegree s d) (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽)) :
     fri_query_soundness (n := n) (ω := ω) (f := f)
       (h_agreement := h_agreement) (m_ge_3 := m_ge_3) := by
   classical
   let rsDomain : ω.subdomain 0 ↪ 𝔽 := ⟨fun x => x, by simp⟩
-  haveI : NeZero (2 ^ n) := ⟨pow_ne_zero n (by norm_num)⟩
+  haveI : NeZero (friDegree s d) := inferInstance
   have hStrictCoeff' :
       ProximityGap.StrictCoeffPolysResidual
-        (F := 𝔽) (ι := ω.subdomain 0) (k := 1) (deg := 2 ^ n)
+        (F := 𝔽) (ι := ω.subdomain 0) (k := 1) (deg := friDegree s d)
         (domain := rsDomain) (δ := 1 - α) := by
     simpa [rsDomain] using hStrictCoeff
   have hBoundaryCard' :
       ProximityGap.BoundaryCardResidual
-        (F := 𝔽) (ι := ω.subdomain 0) (k := 1) (deg := 2 ^ n)
+        (F := 𝔽) (ι := ω.subdomain 0) (k := 1) (deg := friDegree s d)
         (domain := rsDomain) (δ := 1 - α) := by
     simpa [rsDomain] using hBoundaryCard
   have hδ' :
-      1 - α ≤ 1 - ReedSolomon.sqrtRate (2 ^ n) rsDomain := by
+      1 - α ≤ 1 - ReedSolomon.sqrtRate (friDegree s d) rsDomain := by
     simpa [rsDomain] using hδ
   have hprob' :
       Pr_{let z ← $ᵖ 𝔽}[
         δᵣ(f 0 + z • f 1,
-          (ReedSolomon.code rsDomain (2 ^ n)).carrier)
+          (ReedSolomon.code rsDomain (friDegree s d)).carrier)
           ≤ 1 - α] >
-        ProximityGap.errorBound (1 - α) (2 ^ n) rsDomain := by
+        ProximityGap.errorBound (1 - α) (friDegree s d) rsDomain := by
     simpa [rsDomain] using h_prob
   exact
     fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndAffineLineCA
       (n := n) (s := s) (d := d) (ω := ω)
       (f := f) h_agreement m_ge_3 G δ queries l domain_size_cond
-      (ε := ProximityGap.errorBound (1 - α) (2 ^ n) rsDomain)
+      (ε := ProximityGap.errorBound (1 - α) (friDegree s d) rsDomain)
       (ProximityGap.Compatibility.RS_correlatedAgreement_affineLines_closed
-        (ι := ω.subdomain 0) (F := 𝔽) (deg := 2 ^ n)
+        (ι := ω.subdomain 0) (F := 𝔽) (deg := friDegree s d)
         (domain := rsDomain) (δ := 1 - α)
         hStrictCoeff' hBoundaryCard' hδ')
       hprob'
@@ -414,7 +427,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSea
     (h_agreement :
       correlated_agreement_density
         (Fₛ f)
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤ α)
     {m : ℕ}
     (m_ge_3 : m ≥ 3)
@@ -425,13 +438,13 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSea
     (h_ca :
       ProximityGap.δ_ε_correlatedAgreementAffineSpaces
         (F := 𝔽) (A := 𝔽) (ι := ω.subdomain 0) (k := t)
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n)).carrier
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d)).carrier
         (1 - α) ε)
     (h_prob :
       Pr_{let y ← $ᵖ ↥(Affine.affineSubspaceAtOrigin (F := 𝔽) (f 0) (Fin.tail f))}[
         δᵣ(y.1,
           (ReedSolomon.code
-            (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n)).carrier)
+            (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d)).carrier)
           ≤ 1 - α] > ε) :
     fri_query_soundness (n := n) (ω := ω) (f := f)
       (h_agreement := h_agreement) (m_ge_3 := m_ge_3) := by
@@ -443,7 +456,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSea
         (F := 𝔽) (A := 𝔽) (ι := ω.subdomain 0) (k := t)
         (C :=
           (ReedSolomon.code
-            (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n)).carrier)
+            (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d)).carrier)
         (δ := 1 - α) (ε := ε) (u := f) h_ca h_prob)
 
 /-- Probability-route Claim 8.2 front door from the polynomial-curve correlated-agreement
@@ -455,7 +468,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSea
     (h_agreement :
       correlated_agreement_density
         (Fₛ f)
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤ α)
     {m : ℕ}
     (m_ge_3 : m ≥ 3)
@@ -466,13 +479,13 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSea
     (h_ca :
       ProximityGap.δ_ε_correlatedAgreementCurves
         (F := 𝔽) (A := 𝔽) (ι := ω.subdomain 0) (k := t)
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n)).carrier
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d)).carrier
         (1 - α) ε)
     (h_prob :
       Pr_{let r ← $ᵖ 𝔽}[
         δᵣ(∑ i : Fin (t + 1), (r ^ (i : ℕ)) • f i,
           (ReedSolomon.code
-            (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n)).carrier)
+            (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d)).carrier)
           ≤ 1 - α] > t * ε) :
     fri_query_soundness (n := n) (ω := ω) (f := f)
       (h_agreement := h_agreement) (m_ge_3 := m_ge_3) := by
@@ -484,7 +497,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSea
         (F := 𝔽) (A := 𝔽) (ι := ω.subdomain 0) (k := t)
         (C :=
           (ReedSolomon.code
-            (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n)).carrier)
+            (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d)).carrier)
         (δ := 1 - α) (ε := ε) (u := f) h_ca h_prob)
 
 /-- Probability-route Claim 8.2 polynomial-curve front door specialized to the BCIKS20
@@ -499,7 +512,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSea
     (h_agreement :
       correlated_agreement_density
         (Fₛ f)
-        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n))
+        (ReedSolomon.code (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d))
       ≤ α)
     {m : ℕ}
     (m_ge_3 : m ≥ 3)
@@ -508,57 +521,57 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSea
     (domain_size_cond : (2 ^ (∑ i, (s i : ℕ))) * d ≤ 2 ^ n)
     (hStrictCoeff :
       ProximityGap.StrictCoeffPolysResidual
-        (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := 2 ^ n)
+        (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := friDegree s d)
         (domain := (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽)) (δ := 1 - α))
     (hBoundary :
       ProximityGap.BoundaryProbabilityResidual
-        (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := 2 ^ n)
+        (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := friDegree s d)
         (domain := (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽)) (δ := 1 - α))
     (hδ :
       1 - α ≤
         1 - ReedSolomon.sqrtRate
-          (2 ^ n) (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽))
+          (friDegree s d) (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽))
     (h_prob :
       Pr_{let r ← $ᵖ 𝔽}[
         δᵣ(∑ i : Fin (t + 1), (r ^ (i : ℕ)) • f i,
           (ReedSolomon.code
-            (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (2 ^ n)).carrier)
+            (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽) (friDegree s d)).carrier)
           ≤ 1 - α] >
         t *
           ProximityGap.errorBound
-            (1 - α) (2 ^ n) (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽)) :
+            (1 - α) (friDegree s d) (⟨fun x => x, by simp⟩ : ω.subdomain 0 ↪ 𝔽)) :
     fri_query_soundness (n := n) (ω := ω) (f := f)
       (h_agreement := h_agreement) (m_ge_3 := m_ge_3) := by
   classical
   let rsDomain : ω.subdomain 0 ↪ 𝔽 := ⟨fun x => x, by simp⟩
-  haveI : NeZero (2 ^ n) := ⟨pow_ne_zero n (by norm_num)⟩
+  haveI : NeZero (friDegree s d) := inferInstance
   have hStrictCoeff' :
       ProximityGap.StrictCoeffPolysResidual
-        (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := 2 ^ n)
+        (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := friDegree s d)
         (domain := rsDomain) (δ := 1 - α) := by
     simpa [rsDomain] using hStrictCoeff
   have hBoundary' :
       ProximityGap.BoundaryProbabilityResidual
-        (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := 2 ^ n)
+        (F := 𝔽) (ι := ω.subdomain 0) (k := t) (deg := friDegree s d)
         (domain := rsDomain) (δ := 1 - α) := by
     simpa [rsDomain] using hBoundary
   have hδ' :
-      1 - α ≤ 1 - ReedSolomon.sqrtRate (2 ^ n) rsDomain := by
+      1 - α ≤ 1 - ReedSolomon.sqrtRate (friDegree s d) rsDomain := by
     simpa [rsDomain] using hδ
   have hprob' :
       Pr_{let r ← $ᵖ 𝔽}[
         δᵣ(∑ i : Fin (t + 1), (r ^ (i : ℕ)) • f i,
-          (ReedSolomon.code rsDomain (2 ^ n)).carrier)
+          (ReedSolomon.code rsDomain (friDegree s d)).carrier)
           ≤ 1 - α] >
-        t * ProximityGap.errorBound (1 - α) (2 ^ n) rsDomain := by
+        t * ProximityGap.errorBound (1 - α) (friDegree s d) rsDomain := by
     simpa [rsDomain] using h_prob
   exact
     fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndCurveCA
       (n := n) (s := s) (d := d) (ω := ω)
       (f := f) h_agreement m_ge_3 G δ queries l domain_size_cond
-      (ε := ProximityGap.errorBound (1 - α) (2 ^ n) rsDomain)
+      (ε := ProximityGap.errorBound (1 - α) (friDegree s d) rsDomain)
       (ProximityGap.correlatedAgreement_affine_curves_of_strict_coeff_polys_and_boundary
-        (ι := ω.subdomain 0) (F := 𝔽) (k := t) (deg := 2 ^ n)
+        (ι := ω.subdomain 0) (F := 𝔽) (k := t) (deg := friDegree s d)
         (domain := rsDomain) (δ := 1 - α)
         hδ' hStrictCoeff' hBoundary')
       hprob'

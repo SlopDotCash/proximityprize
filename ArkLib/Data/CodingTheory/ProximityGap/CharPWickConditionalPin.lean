@@ -47,18 +47,40 @@ The PROBE (`scripts/probes/probe_normalized_wick_recursion.py`, exact integer `E
   (the single inequality `c_r ≤ 1`), then `E_r ≤ Wick_r = (2r−1)‼·n^r` for all `r ≥ 1`.
 * `eta_pow2r_le_wick_of_crossBound` : the consumer — `‖η_b‖^{2r} ≤ q·(2r−1)‼·n^r` for every `b`.
 * `eta_le_wick_rpow_of_crossBound`  : the `2r`-th-root sup-norm form `‖η_b‖ ≤ (q·(2r−1)‼)^{1/(2r)}·√n`.
+* `card_pow_le_card_mul_rEnergy`    : the principal-coefficient lower bound `n^{2r} ≤ q·E_r`
+  (unconditional; `η_0 = n`).
+* `card_pow_le_card_mul_wick_of_crossBound` / `not_crossBoundedByWick_of_lt` : the necessary
+  condition `n^{2r} ≤ q·(2r−1)‼·n^r` (i.e. `n^r ≤ q·(2r−1)‼`) for EVERY `r ≥ 1` under
+  `CrossBoundedByWick`, and its contrapositive.
+* `not_crossBoundedByWick_production` : at `|G| = 2^30`, `q < 2^159` the hypothesis is FALSE
+  (witnessed at depth `r = 6`).
 
 ## Honest scope — this is a CONDITIONAL pin; it does NOT close the prize
 
-The single hypothesis `CrossBoundedByWick` (`cross_r ≤ 2r·n·Wick_r ∀ r ≥ 1`, i.e. `c_r ≤ 1`) IS the
-recognized-open char-`p` deep-moment Wick / BGK–Lam–Leung wall (CLAUDE.md face #3): it is FALSE in the
-thick `β ≲ 3` window (any thickness-monotone method is wrong) and only conjectured at `β ≥ 4`.  It is
-STATED, not proved.  The implication `CrossBoundedByWick ⟹ ‖η_b‖ ≤ (q·(2r−1)‼)^{1/(2r)}·√n` is proved
-here, axiom-clean.  This is the honest closed *conditional* pin via the MOMENT/Wick face — distinct from
-and sharper than `OpenCoreConditionalPin.WorstCaseIncidenceBounded` (the INCIDENCE face): it reduces the
-prize to ONE scalar inequality `c_r ≤ 1` on the off-diagonal autocorrelation mass, with everything else
-(the recursion identity, the base case, the moment-to-sup consumer) proven around it.  Nothing here
-certifies `c_r ≤ 1`.
+The single hypothesis `CrossBoundedByWick` (`cross_r ≤ 2r·n·Wick_r ∀ r ≥ 1`, i.e. `c_r ≤ 1`) is the
+raw, ALL-ORDERS form of the char-`p` deep-moment Wick input (CLAUDE.md face #3).  It is STATED, not
+proved, and as an all-orders statement it is **not** an open analytic statement at the intended
+production scale — it is FALSE there.  Through the (correct) induction it implies
+`E_r ≤ (2r−1)‼·n^r` for every `r ≥ 1`, while the principal (`b = 0`) term of the moment identity
+gives `E_r ≥ n^{2r}/q` unconditionally; so it forces `n^r ≤ q·(2r−1)‼` at every depth.  At the
+sponsor parameters `n = 2^30`, `q < 2^159`, depth `r = 6` violates this with a wide margin
+(`n^6 = 2^180` but `q·11‼ < 2^159·2^14 = 2^173`, since `11‼ = 10395 < 16384`); this refutation is
+the checked theorem `not_crossBoundedByWick_production` (not a Lean kernel inconsistency — it only
+shows this `Prop` fails for such `G`).  Caveat: the obstruction is exactly the displayed
+quantitative condition, not a statement about every finite `n, q` (e.g. singleton `G` satisfies the
+raw Wick bounds).  It is also FALSE in the thick `β ≲ 3` window.
+
+A usable version of the input must therefore be restricted to finite depths obeying the
+DC/wraparound guard `n^r ≤ q·(2r−1)‼` (in particular `r` well below the depth where `n^r` exceeds
+`q`), or reformulated as a principal-subtracted moment/cross inequality (removing the `b = 0`
+contribution `n^{2r}/q`), with the recursion re-derived for that object; neither is done here.
+
+What IS proved here, axiom-clean, is the implication `CrossBoundedByWick ⟹ E_r ≤ Wick_r` and
+`⟹ ‖η_b‖ ≤ (q·(2r−1)‼)^{1/(2r)}·√n` (the conditional induction and the norm extraction are valid).
+This is a *conditional* pin via the MOMENT/Wick face — distinct from
+`OpenCoreConditionalPin.WorstCaseIncidenceBounded` (the INCIDENCE face) — whose hypothesis, in the raw
+all-orders form stated, is refuted at production by the theorem above.  Nothing here certifies
+`c_r ≤ 1` at any depth.
 
 ## References
 - Shaw, `docs/kb/direct-charp-supnorm-assault-2026-06-15.md` (#444). The six-route convergence.
@@ -116,10 +138,14 @@ theorem wick_succ (n r : ℕ) (hr : 1 ≤ r) :
 
 /-! ### The single open hypothesis `c_r ≤ 1` (`cross_r ≤ 2r·n·Wick_r`) -/
 
-/-- **THE SINGLE OPEN HYPOTHESIS, as one `Prop`:** `c_r ≤ 1` for all `r ≥ 1`, i.e. the off-diagonal
-autocorrelation mass `cross_r` is at most `2r·n·Wick_r`.  This IS the recognized-open char-`p`
-deep-moment Wick / BGK–Lam–Leung wall: it is FALSE in the thick window (`β ≲ 3`) and only conjectured
-at `β ≥ 4`.  Stated, NOT proved. -/
+/-- **The raw all-orders Wick hypothesis, as one `Prop`:** `c_r ≤ 1` for all `r ≥ 1`, i.e. the
+off-diagonal autocorrelation mass `cross_r` is at most `2r·n·Wick_r`.  Stated, NOT proved.
+
+Caution: because it quantifies over ALL depths `r ≥ 1`, it forces `n^r ≤ q·(2r−1)‼` at every depth
+(`card_pow_le_card_mul_wick_of_crossBound`), and is therefore FALSE at the production scale
+`n = 2^30`, `q < 2^159` (`not_crossBoundedByWick_production`, depth `r = 6`); it is also false in the
+thick window (`β ≲ 3`).  The char-`p` Wick input that could still be open must be restricted to
+finite depths obeying that guard or stated in principal-subtracted form. -/
 def CrossBoundedByWick (G : Finset F) : Prop :=
   ∀ r : ℕ, 1 ≤ r → cross G r ≤ 2 * r * (G.card * wick G.card r)
 
@@ -169,7 +195,10 @@ theorem eta_pow2r_le_wick_of_crossBound {ψ : AddChar F ℂ} (hψ : ψ.IsPrimiti
 
 Note the prize-shape: the `√n = n^{1/2}` floor with the slowly-growing factor `(q·(2r−1)‼)^{1/(2r)}`.
 At the prize depth `r ≍ log m` with `(2r−1)‼ ≈ (2r/e)^r` and `q^{1/(2r)} = √(n log m)`-scale, this is
-the BGK / `√(n log(q/n))` prize floor — conditional on the single open inequality `c_r ≤ 1`. -/
+the BGK / `√(n log(q/n))` prize floor — conditional on `CrossBoundedByWick` (`c_r ≤ 1` at ALL
+depths), whose raw all-orders form is refuted at production scale by
+`not_crossBoundedByWick_production`; the theorem is a valid implication, not a usable unconditional
+bound there. -/
 theorem eta_le_wick_rpow_of_crossBound {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
     (hC : CrossBoundedByWick G) (r : ℕ) (hr : 1 ≤ r) (b : F) :
     ‖eta ψ G b‖
@@ -203,6 +232,56 @@ theorem eta_le_wick_rpow_of_crossBound {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitiv
     field_simp
   rwa [hrhs] at hmono
 
+/-! ### A necessary condition, and the production-scale refutation of the all-orders hypothesis -/
+
+/-- **The principal-coefficient lower bound `n^{2r} ≤ q·E_r`** (unconditional).  The `b = 0`
+coefficient is `η_0 = ∑_{y∈G} ψ(0) = |G|`, and one term of the exact `2r`-th moment identity is at
+most the whole moment sum (`eta_pow2r_le_card_mul_energy` at `b = 0`). -/
+theorem card_pow_le_card_mul_rEnergy {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    (r : ℕ) :
+    (G.card : ℝ) ^ (2 * r) ≤ (Fintype.card F : ℝ) * rEnergy G r := by
+  have h := eta_pow2r_le_card_mul_energy hψ G r 0
+  have h0 : eta ψ G 0 = (G.card : ℂ) := by
+    simp [ArkLib.ProximityGap.SubgroupGaussSumSecondMoment.eta]
+  rwa [h0, Complex.norm_natCast] at h
+
+/-- **`CrossBoundedByWick` forces `n^{2r} ≤ q·Wick_r` at every depth `r ≥ 1`** (equivalently
+`n^r ≤ q·(2r−1)‼`): combine the inductive pin `E_r ≤ Wick_r` with the principal lower bound
+`n^{2r} ≤ q·E_r`. -/
+theorem card_pow_le_card_mul_wick_of_crossBound {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G : Finset F) (hC : CrossBoundedByWick G) (r : ℕ) (hr : 1 ≤ r) :
+    G.card ^ (2 * r) ≤ Fintype.card F * wick G.card r := by
+  have h1 := card_pow_le_card_mul_rEnergy hψ G r
+  have h2 : (rEnergy G r : ℝ) ≤ (wick G.card r : ℝ) := by
+    exact_mod_cast rEnergy_le_wick_of_crossBound G hC r hr
+  have h3 : (G.card : ℝ) ^ (2 * r) ≤ (Fintype.card F : ℝ) * (wick G.card r : ℝ) :=
+    h1.trans (by gcongr)
+  exact_mod_cast h3
+
+/-- **Contrapositive:** a single depth `r ≥ 1` with `q·Wick_r < n^{2r}` refutes the all-orders
+hypothesis `CrossBoundedByWick`. -/
+theorem not_crossBoundedByWick_of_lt {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    {r : ℕ} (hr : 1 ≤ r) (hlt : Fintype.card F * wick G.card r < G.card ^ (2 * r)) :
+    ¬ CrossBoundedByWick G := fun hC =>
+  absurd (card_pow_le_card_mul_wick_of_crossBound hψ G hC r hr) (not_le.mpr hlt)
+
+/-- **The raw all-orders Wick hypothesis is FALSE at production scale.**  For `|G| = 2^30` and
+`q < 2^159`, depth `r = 6` gives `q·11‼·n^6 < 2^159·10395·2^180 < 2^360 = n^{12}`, contradicting the
+necessary condition `card_pow_le_card_mul_wick_of_crossBound`.  (A refutation of this `Prop` for such
+`G`, not a Lean kernel inconsistency.) -/
+theorem not_crossBoundedByWick_production {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    (hn : G.card = 2 ^ 30) (hq : Fintype.card F < 2 ^ 159) :
+    ¬ CrossBoundedByWick G := by
+  refine not_crossBoundedByWick_of_lt hψ G (r := 6) (by norm_num) ?_
+  rw [hn]
+  have hw : wick (2 ^ 30) 6 = 10395 * (2 ^ 30) ^ 6 := by
+    unfold wick
+    norm_num [Nat.doubleFactorial]
+  rw [hw]
+  calc Fintype.card F * (10395 * (2 ^ 30) ^ 6)
+      < 2 ^ 159 * (10395 * (2 ^ 30) ^ 6) := (Nat.mul_lt_mul_right (by positivity)).mpr hq
+    _ ≤ (2 ^ 30) ^ (2 * 6) := by norm_num
+
 end ArkLib.ProximityGap.CharPWickConditionalPin
 
 /-! ## Axiom audit (expected: propext, Classical.choice, Quot.sound only) -/
@@ -211,3 +290,5 @@ end ArkLib.ProximityGap.CharPWickConditionalPin
 #print axioms ArkLib.ProximityGap.CharPWickConditionalPin.rEnergy_le_wick_of_crossBound
 #print axioms ArkLib.ProximityGap.CharPWickConditionalPin.eta_pow2r_le_wick_of_crossBound
 #print axioms ArkLib.ProximityGap.CharPWickConditionalPin.eta_le_wick_rpow_of_crossBound
+#print axioms ArkLib.ProximityGap.CharPWickConditionalPin.card_pow_le_card_mul_wick_of_crossBound
+#print axioms ArkLib.ProximityGap.CharPWickConditionalPin.not_crossBoundedByWick_production

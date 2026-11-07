@@ -98,8 +98,12 @@ single meet block spans *all* degree-`<k` multiples of `pVanish v_I`, as in
 `linearIndependent_of_span_eq_card` (over `F(a)` via `linearIndependent_fractionField_iff`)
 transfers independence from `V'` to `V`.
 
-This residual is stated as the transfer arrow.  It is TRUE (it is Lovett's argument), and
-non-vacuous: its hypothesis is discharged by `lovettHolds_replaceMeetFin`. -/
+This residual is stated as the transfer arrow.  It is TRUE: its conclusion `LovettHolds F V k`
+already follows from `hk` and `hV` alone by the unconditional master theorem
+`lovettThm17_unconditional` (`LovettMergeIndepProof.lean`), ignoring the replacement premise.
+Its *local* proof by the span-transfer argument, however, needs the additional `I`-block
+independence input (see the corrected residual below).  The replacement premise is discharged by
+`lovettHolds_replaceMeetFin`. -/
 def Lemma24SpanTransfer (F : Type*) [Field F] : Prop :=
   ∀ {n m : ℕ} (V : Fin m → (Fin n → ℕ)) (k : ℕ) (I : Finset (Fin m)) (hI : I.Nonempty),
     1 ≤ k → IsVStar V k → tightConstraint V k I hI → 1 < I.card → I.card < m →
@@ -121,10 +125,13 @@ theorem lovettHolds_of_tight_of_spanTransfer {m : ℕ} {V : Fin m → (Fin n →
 
 /-! ## The corrected (dischargeable) span-transfer residual
 
-The bare `Lemma24SpanTransfer` above is **not provable as stated**: from `P(k,V')` independent
-alone one cannot recover `P(k,V)` independent, because the equal-span step needs the *reverse*
-inclusion `span (meet block) ⊆ span (I-block)`, which is a dimension-count requiring the
-**`I`-block itself to be independent** (`span_eq_of_le_of_card_of_indep` in [[LovettCounting]]).
+The bare `Lemma24SpanTransfer` above is **not provable by the local span-transfer argument**:
+from `P(k,V')` independent alone that argument cannot recover `P(k,V)` independent, because the
+equal-span step needs the *reverse* inclusion `span (meet block) ⊆ span (I-block)`, which is a
+dimension-count requiring the **`I`-block itself to be independent**
+(`span_eq_of_le_of_card_of_indep` in [[LovettCounting]]).  This is an obstruction to that proof
+organization only: the bare predicate is still true, since `lovettThm17_unconditional` proves its
+conclusion directly from `hk` and `hV`.
 The forward inclusion `span (I-block) ⊆ span (meet block)` is unconditional
 (`pFamUnion_I_mem_span_meetBlock` in [[LovettBlockDim]]), and the meet block is independent
 (`pFam_single_linearIndependent`), but the `I`-block independence is genuine extra input.
@@ -135,10 +142,12 @@ which is `< lovettD V k` (since `|I| < m` leaves at least one surviving block of
 `d`-induction hypothesis `IHd` of the master frame applies and gives the `I`-block independent.
 
 `Lemma24SpanTransferWithIBlock` records this corrected residual (threading the `I`-block
-independence as an explicit hypothesis).  It is TRUE and dischargeable from the span bricks; the
-only remaining plumbing is the range-decomposition of `pFamUnion V` / `pFamUnion V'` into the
-shared non-`I` blocks plus the `I`-block / meet-block, matching the `Fin m` and `Fin 1 ⊕ {i∉I}`
-index structures. -/
+independence as an explicit hypothesis).  It is TRUE and is **discharged**:
+`LovettBlockDecomp.lemma24SpanTransferWithIBlock_holds` carries out the remaining plumbing (the
+range-decomposition of `pFamUnion V` / `pFamUnion V'` into the shared non-`I` blocks plus the
+`I`-block / meet-block, matching the `Fin m` and `Fin 1 ⊕ {i∉I}` index structures).  Lovett's
+Theorem 1.7 itself is proved unconditionally in `LovettMergeIndepProof.lean`
+(`lovettThm17_unconditional`). -/
 def Lemma24SpanTransferWithIBlock (F : Type*) [Field F] : Prop :=
   ∀ {n m : ℕ} (V : Fin m → (Fin n → ℕ)) (k : ℕ) (I : Finset (Fin m)) (hI : I.Nonempty),
     1 ≤ k → IsVStar V k → tightConstraint V k I hI → 1 < I.card → I.card < m →

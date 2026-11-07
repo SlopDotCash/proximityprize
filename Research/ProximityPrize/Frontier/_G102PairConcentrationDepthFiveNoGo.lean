@@ -21,8 +21,10 @@ whether a smarter `(n, M)`-chain or better concentration constants could close d
 
 has cardinality `b·M`, pair-sum concentration `≤ 2M`, and — by Cauchy–Schwarz against its
 `O(M b²)`-sized sum support — depth-5 equal-sum mass `J_5 ≥ (bM)^{10}/(50Mb² + 5M + 1)`.
-At `(b, M) = (509, 2^21)` (so `n ≈ 2^30` and `2M = 2^22 = 4·n^{2/3}` = exactly the Stepanov
-level) the witness exceeds the production depth-5 budget by more than `2^16`:
+At `(b, M) = (509, 2^21)` (so `|S| = 509·2^21 ≈ 2^29.99`, slightly below `n = 2^30`, and the
+proved concentration bound is `2M = 2^22 = 4·(2^30)^{2/3}`, i.e. concentration AT MOST the
+Stepanov level at `n = 2^30`) the witness exceeds the production depth-5 budget by more than
+`2^16` (the recomputed kernel margin is about `2^19.47`):
 
   `219‼ · (2^30)^5  <  J_5(S) · C(110,5)² · 105!`.
 
@@ -424,8 +426,9 @@ theorem production_depth5_kernel :
   rw [choose_110_5]
   decide
 
-/-- **Headline no-go.**  There is a set of near-production cardinality whose pair-sum
-concentration is exactly the Stepanov level `4·n^{2/3} = 2^22`, yet whose depth-5 equal-sum
+/-- **Headline no-go.**  There is a set of near-production cardinality (`509·2^21`, slightly
+below `2^30`) whose pair-sum concentration is at most the Stepanov level
+`4·(2^30)^{2/3} = 2^22`, yet whose depth-5 equal-sum
 mass strictly exceeds the production depth-5 Wick budget.  Hence no envelope of the shape
 `(cardinality, pair-sum concentration) ↦ bound`, sound for all sets, can absorb the depth-5
 sector: the G87 depth-four mechanism is not extendable, and any depth-≥5 certificate must use

@@ -58,9 +58,10 @@ embedding `liftRatFunc : RatFunc F →+* 𝕃 H`) instead of `F[X]`. PROVEN:
 
 `functionFieldT_sq_no_ratfunc_T_repr`: for `d_H ≥ 3`, `T²` escapes the RatFunc affine-in-`T`
 line (`eq_of_mk_eq_of_natDegree_lt`, the RatFunc-level injectivity-below-the-modulus engine).
-So enlarging the readings to `RatFunc F` does NOT create a recursion-local route at `d_H ≥ 3`:
-the genuine Claim-5.9 content there is the global geometric `Z`-degree input, for the RatFunc
-target just as for the in-tree one. The successor residual
+So enlarging the readings to `RatFunc F` does NOT create a span-closure route at `d_H ≥ 3`:
+the affine-in-`T` line is not closed under products there, for the RatFunc target just as for the
+in-tree one.  (This does not by itself rule out a proof exploiting the specific Hensel recurrence;
+it only shows such a proof cannot rest on closure of the line.) The successor residual
 (`S5GenuineZLinearMonic.gammaGenuine_Z_linear_target_of_succ_of_monic`) remains the honest core.
 
 ## Honest residuals

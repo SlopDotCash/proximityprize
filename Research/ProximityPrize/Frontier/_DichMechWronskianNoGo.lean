@@ -32,33 +32,42 @@ The natural Wronskian object is `W = A'·O − A·O'` (the numerator of `R' = (A
 
 ## What is PROVEN here (char-free, exact)
 
-* `isoF_derivative_eq` / `isolated_multiple_root_iff` — the transversality identity.
-  Differentiating `R² = u` for `R = A/O` gives `2 R R' = 1`, so `R'(u) = 1/(2R(u)) ≠ 0` at any
-  isolated root, whence `W(u) = R'(u)·O(u)² ≠ 0`.  Equivalently, `u` being a *multiple* root of
-  `F = A² − X·O²` (`F'(u) = 0`) forces the exact tangency relation
-  `2 A(u) A'(u) = O(u)² + 2 u O(u) O'(u)` (`isolated_multiple_root_iff`).  The *generic* isolated
-  root is **simple** (`F'(u) ≠ 0`), so it is **not** a root of the Wronskian — **route (2)
-  requirement (i) is vacuous**.  A Wronskian bounds *tangencies* (multiple intersections); there are
-  essentially none here.  (Numerics: `W` vanishes at `15 / 43298 ≈ 0.03%` of isolated roots —
-  coincidental, not structural.)
+* `isoF_derivative_eq` / `isolated_multiple_root_iff` — the exact derivative formula
+  `F'(u) = 2 A(u) A'(u) − O(u)² − 2 u O(u) O'(u)` for `F = A² − X·O²`, and the iff: `u` is a
+  root of `F'` (i.e. a *multiple* root of `F` when also `F(u) = 0`) exactly when the tangency
+  relation `2 A(u) A'(u) = O(u)² + 2 u O(u) O'(u)` holds.
 
-* `natDegree_wronskian_le` / `wronskian_eq_derivative_of_O_one` — when `deg O < deg A` (the prize
-  direction, `deg A ≈ a ≈ n`, `deg O < k/2`), the Wronskian is governed by the **full degree of
-  `A`**: `deg W ≤ deg A + deg O` with `deg A` at coefficient `1`, and taking `O = 1` gives
-  `W = A'` (a degree-`≈ a` object with `deg O = 0`).  So **route (2) requirement (ii) also fails**:
-  no choice of small `deg O` forces a small Wronskian; even if `W` vanished on the isolated set, it
-  carries the degree-`a` obstruction, giving no improvement over the trivial degree bound on
-  `F = A² − X·O²`.
+  **Audit correction (R-335).** An earlier version of this header "differentiated" the root
+  equality `R(u)² = u` to `2 R(u) R'(u) = 1` and concluded `W(u) ≠ 0` at every isolated root, and
+  that isolated roots are simple.  Both steps are invalid: an equality at ONE point is not a
+  rational-function identity and cannot be differentiated.  Checked counterexamples over `ℚ`
+  (with `u = 1 ∈ μ_{n/2}` and `A(u), O(u), u` all nonzero):
+  - `simple_root_with_zero_wronskian`: `A = O = 1` gives `F = 1 − X`, a SIMPLE root at `1`, yet
+    `W = A'O − AO' = 0` identically — so a simple isolated root can be a Wronskian root;
+  - `isolated_root_can_be_multiple`: `A = (X+1)/2`, `O = 1` gives `F = (X−1)²/4`, a MULTIPLE
+    isolated root at `1` — so isolation (in the displayed sense) does not imply simplicity.
 
-## Conclusion (honest residual map)
+  Transversality at a root therefore needs an explicit hypothesis (e.g. `F'(u) ≠ 0`, or a
+  stated nonvanishing of `W(u)`), not a pointwise differentiation.  The numerical observation
+  that `W` vanished at `15 / 43298 ≈ 0.03%` of sampled isolated roots is probe data only.
 
-Route (2) is void on both counts: there is no low-degree polynomial (Wronskian or otherwise),
-constructible char-free from `A, O`, that vanishes on all isolated roots.  The only polynomial
-cutting the isolated locus is `F = A² − u·O²` itself (degree `≈ a`), intersected with `u^{n/2} − 1`,
-and the count is the **subgroup-root count** of a degree-`a`, `(k+2)`-sparse, general-position
-(`C = 1`) polynomial — the open **Kelley general-position conjecture** for `t = k + 2`
-(`_IsolatedCountKelley.KelleyGeneralPositionConjecture`).  The DICH-mechanism does **not** close
-`isolated ≤ poly(k)` char-free; it collapses to the same open count as the other routes.
+* `natDegree_wronskian_le` / `wronskian_eq_derivative_of_O_one` — the degree UPPER bound
+  `deg W ≤ deg A + deg O`, and the exact identity `W = A'` when `O = 1`.  This shows that an
+  arbitrary small `deg O` (even `O = 1`) can leave a Wronskian of degree up to `deg A − 1`, so
+  small `deg O` alone does not force a small Wronskian.  It is an upper bound / example, not a
+  lower bound on `deg W` in every characteristic or for every structured `(A, O)`.
+
+## Conclusion (scope of the negative result)
+
+What is proved: the derivative formula and its root iff, the Wronskian degree upper bound, and
+the `O = 1` example showing that low `deg O` does not by itself make the Wronskian low-degree.
+What is NOT proved: that no low-degree auxiliary polynomial vanishes on the isolated locus, nor
+that every Wronskian / Mason–Stothers / structured-subgroup argument fails under the intended
+ragged/subgroup conditions.  The naive version of route (2) (requirement (i) "isolated roots are
+Wronskian roots", requirement (ii) "`deg W = O(deg O)`") is not supported by these facts, and the
+isolated count remains tied to the open subgroup-root count of `F` (compare
+`_IsolatedCountKelley.KelleyGeneralPositionConjecture`), but this file is not a proof of a
+method-wide exclusion.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.  Issue #407.
 -/
@@ -73,21 +82,13 @@ variable {F : Type*} [Field F]
 noncomputable def wronskian (A O : F[X]) : F[X] :=
   derivative A * O - A * derivative O
 
-/-- **Route (2) requirement (i) is VACUOUS: the Wronskian does NOT vanish at an isolated root.**
+/-- **Exact derivative formula for `F = A² − X·O²`.**
 
-At an isolated root `u` we have `A(u)² = u·O(u)²` with `O(u) ≠ 0`, `u ≠ 0`, `A(u) ≠ 0`, in
-characteristic `≠ 2`.  Differentiating the identity `R² = u` for `R = A/O` gives `2 R R' = 1`, so
-`R'(u) ≠ 0` and therefore `W(u) = R'(u)·O(u)² ≠ 0`.
-
-We do not need to manipulate `R` symbolically: the conclusion is that **`W(u)` is governed by the
-transversality of the intersection, not by `deg O`**.  We record the clean structural fact that the
-isolated condition forces `2·u·O(u)·O'(u) + O(u)²` to be the controlling quantity — and that an
-isolated root is a *simple* root of `F = A² − u·O²` (so the derivative test `F'(u) ≠ 0` holds), the
-formal meaning of "transverse, hence no low-degree Wronskian vanishes on it".
-
-Formally: `F = A² − X·O²` has `F'(u) = 2 A(u) A'(u) − O(u)² − 2 u O(u) O'(u)`, and at an isolated
-root this is the transversality quantity.  We expose the derivative identity that drives the
-no-go. -/
+`F'(u) = 2 A(u) A'(u) − O(u)² − 2 u O(u) O'(u)` for every `u`.  This is the quantity whose
+nonvanishing expresses transversality (simplicity) of a root `u` of `F`.  Note that a root
+equality `A(u)² = u·O(u)²` at one point does NOT imply `F'(u) ≠ 0` or `W(u) ≠ 0`: see
+`simple_root_with_zero_wronskian` and `isolated_root_can_be_multiple` below; transversality must
+be assumed explicitly. -/
 theorem isoF_derivative_eq (A O : F[X]) (u : F) :
     (A ^ 2 - X * O ^ 2).derivative.eval u
       = 2 * A.eval u * (derivative A).eval u
@@ -97,14 +98,12 @@ theorem isoF_derivative_eq (A O : F[X]) (u : F) :
     Nat.reduceSub, pow_one]
   ring
 
-/-- **The isolated root is a simple root of `F` (transversality), in char `≠ 2`.**
+/-- **Multiple-root (tangency) characterization.**
 
-If `A(u)² = u·O(u)²`, `O(u) ≠ 0`, `u ≠ 0`, `A(u) ≠ 0`, and `F'(u) = 0` (i.e. `u` is a *multiple*
-root of `F = A² − u·O²`), then in particular `2 A(u) A'(u) = O(u)² + 2 u O(u) O'(u)`.  This is the
-boundary case route (2) would need (a tangency).  The content of the no-go is that the *generic*
-isolated root is **not** of this form — `F'(u) ≠ 0` — so the Wronskian-type vanishing is vacuous.
-We record the precise multiple-root characterization so the (rare) tangent case is named, not hidden.
--/
+`u` is a root of `F'` for `F = A² − X·O²` iff `2 A(u) A'(u) = O(u)² + 2 u O(u) O'(u)`.  When also
+`F(u) = 0` this is exactly the condition that `u` is a multiple root of `F`.  It holds for some
+isolated roots (`isolated_root_can_be_multiple`), so isolated roots need not be simple; whether
+it fails generically is not proved here. -/
 theorem isolated_multiple_root_iff (A O : F[X]) (u : F) :
     (A ^ 2 - X * O ^ 2).derivative.IsRoot u ↔
       2 * A.eval u * (derivative A).eval u
@@ -112,15 +111,13 @@ theorem isolated_multiple_root_iff (A O : F[X]) (u : F) :
   rw [IsRoot.def, isoF_derivative_eq]
   constructor <;> intro h <;> linear_combination h
 
-/-- **Route (2) requirement (ii) FAILS: `deg W = deg A + deg O − 1 ≈ a` (NOT `O(deg O)`).**
+/-- **Wronskian degree UPPER bound: `deg W ≤ deg A + deg O`.**
 
-When `deg O < deg A` (the prize direction, `deg A ≈ a ≈ n` while `deg O < k/2`), the Wronskian
-`W = A'·O − A·O'` has degree `deg A + deg O − 1 ≥ deg A − 1 ≈ a`: the Wronskian inherits the
-**full degree of `A`**, so it carries the degree-`a` obstruction and gives no improvement over the
-trivial degree bound on `F`.  We record the clean upper bound `deg W ≤ deg A + deg O`, the
-structural fact that `deg W` is governed by `deg A` (it appears with coefficient `1`), **not** by
-`deg O` alone — there is no degree collapse to `O(deg O)`.  (The `−1` refinement holds when
-`deg A ≥ 1`; it is not load-bearing for the no-go — the point is `deg A` is present.) -/
+This is an upper bound only.  It is not an equality or lower bound in an arbitrary
+characteristic (e.g. `W = 0` for `A = O = 1`), and by itself it does not exclude a lower-degree
+auxiliary polynomial or a structured subgroup argument.  Together with
+`wronskian_eq_derivative_of_O_one` it shows that small `deg O` alone does not force a small
+Wronskian bound. -/
 theorem natDegree_wronskian_le (A O : F[X]) :
     (wronskian A O).natDegree ≤ A.natDegree + O.natDegree := by
   unfold wronskian
@@ -134,28 +131,51 @@ theorem natDegree_wronskian_le (A O : F[X]) :
       _ ≤ A.natDegree + O.natDegree :=
           Nat.add_le_add_left ((natDegree_derivative_le O).trans (Nat.sub_le _ _)) _
 
-/-- **The Wronskian is `deg A`-governed, not `O(deg O)` (the no-go for route (2)(ii)).**
+/-- **`O = 1` gives `W = A'`.**
 
-The only available bound is `deg W ≤ deg A + deg O`, in which `deg A` appears with coefficient `1`.
-There is **no** bound of the form `deg W ≤ c·deg O` independent of `deg A`: taking `O = 1`
-(constant, the simplest `deg O = 0` case) gives `W = A'·O − A·O' = derivative A`.  So the Wronskian
-*is* `A'` — a degree-`(≈ deg A)` object (`deg A' = deg A − 1` away from characteristic obstructions,
-and at most `deg A − 1` always) — with `deg O = 0`.  Hence no choice of small `deg O` forces a small
-Wronskian; in the prize regime `deg A ≈ a ≈ n ≫ k`, the Wronskian carries the full degree-`a`
-content of `F = A² − u·O²` itself, providing no collapse to `O(deg O)`.  (We avoid the char-`p`-false
-equality `deg A' = deg A − 1` and record only the exact identity `W = A'` for `O = 1`, which already
-certifies that `W` is governed by `A`, not by `deg O`.) -/
+With `O = 1` (`deg O = 0`) the Wronskian is exactly `derivative A`, whose degree can be as large
+as `deg A − 1` (e.g. in characteristic `0` for `deg A ≥ 1`).  So no bound of the form
+`deg W ≤ c·deg O` independent of `A` holds in general.  This is an example for arbitrary `A`; it
+does not by itself exclude arguments using additional structure of the actual `(A, O)`. -/
 theorem wronskian_eq_derivative_of_O_one (A : F[X]) :
     wronskian A 1 = derivative A := by
   unfold wronskian
   simp [derivative_one]
 
-/-- Documentation anchor: the DICH-mechanism's Wronskian/transversality route (2) is void —
-(i) `W` does not vanish at isolated roots (they are transverse, simple roots of `F`), and
-(ii) `deg W ≈ deg A ≈ a`, not `O(deg O)`.  No low-degree object cuts the isolated locus; the count
-collapses to the open Kelley `C = 1` subgroup-root count for `t = k + 2`
-(`_IsolatedCountKelley.KelleyGeneralPositionConjecture`).  The mechanism does NOT close
-`isolated ≤ poly(k)` char-free. -/
+/-- **Counterexample: a simple isolated root that IS a Wronskian root.**  Over `ℚ`, `A = O = 1`,
+`u = 1`: the root equality `A(u)² = u·O(u)²` holds with all quantities nonzero, `F = 1 − X` has
+`u = 1` as a SIMPLE root (`F'(1) ≠ 0`), and yet `W = A'O − AO' = 0`.  So a root equality cannot be
+differentiated as an identity to conclude `W(u) ≠ 0`. -/
+theorem simple_root_with_zero_wronskian :
+    ((1 : ℚ[X]).eval 1) ^ 2 = (1 : ℚ) * ((1 : ℚ[X]).eval 1) ^ 2 ∧
+    ((1 : ℚ[X]) ^ 2 - X * (1 : ℚ[X]) ^ 2).IsRoot 1 ∧
+    ¬ ((1 : ℚ[X]) ^ 2 - X * (1 : ℚ[X]) ^ 2).derivative.IsRoot 1 ∧
+    wronskian (1 : ℚ[X]) 1 = 0 := by
+  refine ⟨by simp, by simp, ?_, by simp [wronskian]⟩
+  rw [isolated_multiple_root_iff]
+  simp
+
+/-- **Counterexample: an isolated root that is a MULTIPLE root.**  Over `ℚ`, `A = (X+1)/2`,
+`O = 1`, `u = 1`: `A(1) = 1`, so the root equality holds with all quantities nonzero, but
+`F = A² − X = (X−1)²/4` has `u = 1` as a double root (`F(1) = F'(1) = 0`).  So isolation in the
+displayed sense does not imply simplicity. -/
+theorem isolated_root_can_be_multiple :
+    ((C (1 / 2 : ℚ) * (X + 1)).eval 1) ^ 2 = (1 : ℚ) * ((1 : ℚ[X]).eval 1) ^ 2 ∧
+    (C (1 / 2 : ℚ) * (X + 1)).eval 1 ≠ 0 ∧
+    ((C (1 / 2 : ℚ) * (X + 1)) ^ 2 - X * (1 : ℚ[X]) ^ 2).IsRoot 1 ∧
+    ((C (1 / 2 : ℚ) * (X + 1)) ^ 2 - X * (1 : ℚ[X]) ^ 2).derivative.IsRoot 1 := by
+  refine ⟨by norm_num, by norm_num, by norm_num, ?_⟩
+  rw [isolated_multiple_root_iff]
+  simp only [eval_mul, eval_C, eval_add, eval_X, eval_one, derivative_mul, derivative_C,
+    derivative_add, derivative_X, derivative_one]
+  norm_num
+
+/-- Documentation anchor (scope of this file): the derivative formula, its root iff, the
+Wronskian degree upper bound and the `O = 1` example are proved; the naive route (2)
+requirements are not supported by them; and the two counterexamples above show that isolated
+roots may be Wronskian roots and may be multiple.  This marker is NOT a proof that every
+Wronskian / auxiliary-polynomial / structured-subgroup argument fails, nor that the isolated count
+reduces only to `_IsolatedCountKelley.KelleyGeneralPositionConjecture`. -/
 def dichWronskianNoGoNote : Unit := ()
 
 end ProximityGap.Frontier.DichMechWronskianNoGo
@@ -165,3 +185,5 @@ end ProximityGap.Frontier.DichMechWronskianNoGo
 #print axioms ProximityGap.Frontier.DichMechWronskianNoGo.isolated_multiple_root_iff
 #print axioms ProximityGap.Frontier.DichMechWronskianNoGo.natDegree_wronskian_le
 #print axioms ProximityGap.Frontier.DichMechWronskianNoGo.wronskian_eq_derivative_of_O_one
+#print axioms ProximityGap.Frontier.DichMechWronskianNoGo.simple_root_with_zero_wronskian
+#print axioms ProximityGap.Frontier.DichMechWronskianNoGo.isolated_root_can_be_multiple

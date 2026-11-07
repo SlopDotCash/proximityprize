@@ -279,11 +279,12 @@ The SendClaim reduction lets the prover send a claim computed from the input sta
     \uses{def:sendclaim_oracle_reduction}
 \end{theorem}
 
-\begin{theorem}[SendClaim Perfect Completeness]
-    If every input in $R_{\mathsf{in}}$ satisfies $P(\mathsf{stmt}, \mathsf{o}, f(\mathsf{stmt}, \mathsf{o}))$, the SendClaim oracle reduction is perfectly complete.
-    % \lean{SendClaim.oracleReduction_completeness} % TODO: not formalized
+\begin{remark}[SendClaim Completeness Status]
+    The canonical module formalizes the coordinate-wise special-soundness statement above.
+    Perfect completeness under the condition that every input in $R_{\mathsf{in}}$ satisfies
+    $P(\mathsf{stmt}, \mathsf{o}, f(\mathsf{stmt}, \mathsf{o}))$ remains unformalized there.
     \uses{def:sendclaim_oracle_reduction}
-\end{theorem}
+\end{remark}
 
 \subsection{Sending a Challenge}
 
@@ -385,7 +386,8 @@ Another essential building block is the ability to verify that a given predicate
 
 \begin{definition}[CheckClaim Oracle Reduction]
     \label{def:checkclaim_oracle_reduction}
-    The oracle version checks a predicate $P(\mathsf{stmt}, \mathsf{o})$ on the statement and the oracle statements. Its verifier is a pure pass-through: it returns the statement and oracle statements unchanged and runs no check. The check is carried by the output relation:
+    The oracle version carries the predicate $P(\mathsf{stmt}, \mathsf{o})$ in the output relation.
+    Its verifier passes the statement and oracle statements through unchanged.
     \begin{itemize}
         \item \textbf{Input relation}: any relation $R_{\mathsf{in}}$ on statements and oracle statements, with unit witness
         \item \textbf{Output relation}: $R_{\mathsf{out}} := R_{\mathsf{in}} \cap \{(\mathsf{stmt}, \mathsf{o}) \mid P(\mathsf{stmt}, \mathsf{o})\}$

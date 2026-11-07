@@ -15,6 +15,20 @@ R95 propagates Wick certificates over a window of successor depths under the exp
 For nonnegative `C`, that budget is monotone in `t`.  Thus the whole window is paid by the
 left endpoint `(m : ℝ) ≤ C * (r+1)`.  This file packages that elementary reduction and exposes
 the corresponding R95 consumers with a single left-end budget hypothesis.
+
+**Information content of the face-moment consumers (2026-10-29 audit CW-B12-01).**  The
+`sup_pureFace_*` consumers are NOT a nontrivial Wick propagation once `q = |F|` is moderately
+large.  Under `DualFamilyGroupLaw`, `‖λ_j x‖ = 1` for `x ≠ 0`, and `pureFace` sums over the
+`m - 1` nonzero indices, so `‖J j‖² ≤ q` already gives the trivial bound
+`‖pureFace J lam x‖^(2s) ≤ (m-1)^(2s)·q^s`.  The r = 3 head budget `m ≤ 4C` forces
+`C' ≥ C ≥ m/4` (`R96IterConvEndpointBudgetConsumers.le_const_of_three_endpoint_budget`), so
+the published right-hand side is at least `(q-1)·(s!/4^s)·m^(2s)·q^s`, and
+`min_{s ≥ 3} s!/4^s = 3/32`; hence for `q ≥ 12` every r = 3 face consumer is weaker than the
+trivial bound.  Likewise the r = 2 head budget `m ≤ 3C`
+gives `min_{s ≥ 2} s!/3^s = 2/9`, so the r = 2 face consumers are information-free for
+`q ≥ 6`.  The generic-`r` face consumers (budget `m ≤ C·(r+1)`) become information-free once
+`(q-1)·r!/(r+1)^r ≥ 1`.  These declarations are kept as (correct) plumbing; they must not be
+cited as evidence of Wick-level face control.
 -/
 
 set_option autoImplicit false

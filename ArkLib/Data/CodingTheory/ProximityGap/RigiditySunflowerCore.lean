@@ -25,15 +25,31 @@ to degree `d` — under which the reduction is three lines:
 
 * **`sunflower_core_reduction` (the assembled theorem):** if `Λ_A` and `Λ_B` agree in their top
   window, then the residual nodals `Λ_{A∖B}` and `Λ_{B∖A}` — of DISJOINT sets — agree in the
-  same-width window (shifted by the common core's degree). The residual sets then feed the
-  verified disjoint machinery: R25 (`t=1` ⟹ antipodally closed) + R26 (window halving) ⟹ the
-  `2^k`-lift structure on the residuals — the SUNFLOWER form: common core + lift-structured
-  petals, generalizing R24's `w=3` classification to all sizes and all windows.
+  same-width window (shifted by the common core's degree).
 
-With this, Step 2's reduction chain is complete over verified components: arbitrary equal-window
-pair → core division (this file) → disjoint residuals → antipodal closure (R25) → window halving
-(R26, iterated) → `2^k`-lift petals (R22 floor = ceiling). Remaining assembly: the level-iteration
-statement and the final Conjecture-41/δ* composition.
+**What this file does and does not give.**  Over an arbitrary field, the only content is the
+cofactor identity above: dividing out the common core preserves a degree-of-difference bound.
+Disjointness plus equal top windows does **not** by itself force antipodal closure or any lift
+structure on the residuals.  Example: in `F₁₇`, `μ₈ = {±1, ±2, ±4, ±8}`; the disjoint sets
+`A = {1, 2}` and `B = {4, 16}` both sum to `3`, so `Λ_A − Λ_B = 2 − 13` is a nonzero constant
+(degree `0 < 1`, equal `t = 1` windows), yet neither set is closed under negation.
+
+The intended downstream steps need extra hypotheses that this file neither assumes nor proves:
+R25 (`RigidityGeneralT1.lean`, `t = 1` ⟹ antipodally closed) and R26
+(`RigidityWindowHalving.lean`, window halving) are proved over `CharZero` with the half basis
+`{ζ^j : j < N}` linearly independent.  A transfer of those conclusions to `F_q` would need a
+separate, proved finite-characteristic condition.  The finite-field rigidity hypotheses tried
+so far have been refuted in-tree: the bounded half-basis independence premise
+(`BoundedCyclotomicIndep.lean`, refuted at `n = 16`, `p = 65537` in the
+`Research/ProximityPrize/DISPROOF_LOG.md` section "BoundedHalfBasisIndep (the named char-p prize
+core): FALSE at the prize prime"; audit finding PG-031), and the research lane's SW1
+master hypotheses (`DISPROOF_LOG.md` entry `1-SW1-strip-route-refuted`).
+
+So the chain "arbitrary equal-window pair → core division (this file) → disjoint residuals →
+antipodal closure (R25) → window halving (R26) → `2^k`-lift petals" is verified only in the
+characteristic-zero, half-basis-independent setting of R25/R26.  Over `F_q` it is **not**
+complete: the antipodal-closure step is false without an additional transfer hypothesis, and
+the level-iteration statement and the final Conjecture-41/δ* composition also remain open.
 -/
 
 open Polynomial Finset
@@ -89,9 +105,11 @@ agree in the core-shifted window:
 
   `degree Λ_{A∩B} + (Λ_{A∖B} − Λ_{B∖A}).degree < d`.
 
-The residual (disjoint) pair then feeds the verified disjoint-case machinery (R25 antipodal
-closure + R26 window halving), forcing the sunflower form: common core `A∩B` plus `2^k`-lift
-petals. Note `B ∩ A = A ∩ B` (`inter_comm`) aligns the two core factors. -/
+This holds over any field.  Turning the residual pair into the sunflower form (common core
+`A∩B` plus `2^k`-lift petals) additionally needs the hypotheses of R25/R26 (characteristic zero
+with an independent half basis, or a proved finite-characteristic transfer); see the module
+docstring for an `F₁₇` example where the residuals are not antipodally closed.  Note
+`B ∩ A = A ∩ B` (`inter_comm`) aligns the two core factors. -/
 theorem sunflower_core_reduction (A B : Finset F) {d : WithBot ℕ}
     (h : (nodal A - nodal B).degree < d) :
     Disjoint (A \ B) (B \ A) ∧

@@ -7,7 +7,7 @@ import Mathlib.Tactic
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 /-!
-# IDEA G5: char-p ↔ char-0 DIRECT SUP COUPLING — the exact anchor and the precise no-go (#444)
+# IDEA G5: char-p ↔ char-0 DIRECT SUP COUPLING — the exact mean anchor and its scalar bookkeeping (#444)
 
 μ_n ⊂ 𝔽_p^* order-n subgroup (n=2^μ, p≡1 mod n, prize p≈n^4). η_b := ∑_{x∈μ_n} e_p(b·x),
 M := max_{b≠0}|η_b|. Prize: M ≤ C·√(n·log(q/n)), C=O(1) (q=p, m=(p−1)/n).
@@ -26,14 +26,22 @@ C=M/√(n log m): 1.106(n=8), 1.214(n=16), 1.214(n=32), 1.213(n=64), spike 1.329
 Char-0 overshoot M²/(n·H_m): 1.17,1.43,1.77,1.39 — bounded ≈1.2–1.8×, NOT →1, prime-dependent.
 
 α≈0.5: coupling pins prize SCALE √(n log m), empirical C∈[1.10,1.33] (would suffice) but
-boundedness unprovable. BARRIER: correction = discrepancy of b-equidistribution of (n−1) Gauss
-phases arg g(χ) (|g(χ)|=√p exact, phase-only, HD-invariant, B2-dead) = n^{1−o(1)}→√n BGK wall.
-Deterministic transport (2nd moment) loses a full power of p. REDUCES TO WALL.
+boundedness is not proved. BARRIER (heuristic): the correction is governed by the
+b-equidistribution of the Gauss phases arg g(χ) (|g(χ)|=√p exact, phase-only) over the
+multiplicative completion, which has **m−1 nontrivial characters (m=(p−1)/n), not n−1** —
+the open structured comparison (the BGK wall). The loose second-moment transport envelope loses a
+full power of p; that does NOT prove every transport argument must lose that power.
+
+**Scope (audit R-043/R-051/R-063 extension, 2026-10-28).**  The Lean statements below are scalar
+mean/excess rearrangements and an elementary second-moment envelope.  No Gaussian model, no
+coupling construction, and no theorem relating char-0 and char-p periods is formalized; "prize ⟺
+bounding the excess" is the trivial identity `M² = mean + excess`, not a reduction theorem about
+any coupling.  The decomposition is kept; the actual structured comparison remains open.
 
 PROVES (axiom-clean): exactMean decomposition (mean_eq, mean_le_n, excess_def, coupling_identity);
-deterministic transport + its full-power loss (transport_bound, transport_loses_power); the no-go
-(coupling_reduces_to_excess, excess_split): prize ⟺ bounding char-p excess at √log m scale = wall.
-NOT a closure; a rigorous localization. Issue #444, IDEA G5.
+the loose deterministic second-moment envelope and its power loss (transport_bound,
+transport_loses_power); and the bookkeeping identities (coupling_reduces_to_excess, excess_split).
+NOT a closure. Issue #444, IDEA G5.
 -/
 
 set_option linter.style.longLine false

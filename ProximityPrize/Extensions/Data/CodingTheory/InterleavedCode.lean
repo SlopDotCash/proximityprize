@@ -336,7 +336,7 @@ is fixed, the list size of `C^{≡m}` grows as a *polynomial in*
 `|Λ(C, δ)|` of degree `r`, **independent of `m`**. Used in ABF26 §3
 list-decoding analyses and §6.3.
 
-## Disposition: REDUCED to the external GGR11 list-size recursion.
+## Disposition: PROVED for finite base point lists (see `GGR11TreeConstruction`).
 
 All *in-tree* infrastructure this statement rests on is proven sorry-free in this
 file and in `ListDecodability.lean`: the interleaved-code carrier
@@ -361,24 +361,26 @@ parts:
   `InterleavedCode.GGR11.ggr11_tree_count_le` (double induction on the Pascal
   recursion `t(b,r) ≤ t(b-1,r) + L·t(b,r-1)`).
 
-* **(Tree construction — the remaining named residual.)**  The Erase-Decode tree
-  (GGR11 Algorithm 1, Lemmas 3.3–3.5) with those Blue/Red budgets exists and
-  dominates the per-word close-codeword set.  This is the list-recovery /
-  erasure-decoding content that has **no in-tree analogue** (ArkLib has neither a
-  list-recovery primitive nor the column-pruning lemmas it needs).  It is named
-  `InterleavedCode.GGR11.GGR11TreeStructure`, with the named per-word frontier
-  `InterleavedCode.GGR11.GGR11TreeFrontier` exposing the witness data. The chain
-  `GGR11TreeFrontier ↔ GGR11TreeStructure → GGR11PerWordBound → (this bound)` is
-  fully proven there.
+* **(Tree construction.)**  The Erase-Decode tree (GGR11 Algorithm 1,
+  Lemmas 3.3–3.5) with those Blue/Red budgets exists and dominates the per-word
+  close-codeword set.  Its numerical interface is
+  `InterleavedCode.GGR11.GGR11TreeStructure` (with per-word frontier
+  `InterleavedCode.GGR11.GGR11TreeFrontier`); this interface carries no tree data and is
+  logically equivalent to `GGR11PerWordBound`
+  (`InterleavedCode.GGR11.treeStructure_iff_perWordBound`, in
+  `ArkLib.ToMathlib.GGR11Divergence`).  The chain
+  `GGR11TreeFrontier ↔ GGR11TreeStructure ↔ GGR11PerWordBound → (this bound)` is
+  fully proven there, and the construction itself is proved for finite point lists in
+  `ArkLib.ToMathlib.GGR11TreeConstruction`: `InterleavedCode.GGR11.lambda_le_ggr11_holds`
+  (finite base point lists) and `lambda_le_ggr11_holds_of_finite` (any finite field).
 
 This compatibility statement retains `ListDecodable.Lambda`, which uses `Set.ncard`:
 an infinite point list contributes zero. The canonical `Code.Lambda` uses `Set.encard`
 instead and assigns infinite lists the value `⊤`; replacing one by the other requires
 a finiteness bridge. The finite-alphabet GGR11 interpretation is unchanged. This
-`Prop`-valued definition states the external obligation `GGR11TreeStructure`.
-
-Residual external lemma: GGR11 Erase-Decode tree existence
-(`InterleavedCode.GGR11.GGR11TreeStructure`). -/
+`Prop`-valued definition only states the bound; it is proved (for finite base point lists)
+in `ArkLib.ToMathlib.GGR11TreeConstruction`. Over an infinite field with an infinite base
+point list the legacy right-hand side does not faithfully measure that list. -/
 def lambda_le_ggr11 {ι F : Type} [Fintype ι] [Field F] [DecidableEq F]
     (C : Set (ι → F)) (δ : ℝ) (m : ℕ) (_hm : 1 ≤ m)
     (_hδ_lb : 0 ≤ δ)

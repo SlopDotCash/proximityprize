@@ -47,7 +47,10 @@ i.e. `|L| ≤ C(n,k) / C(a,k)`. This is a real, `sorry`-free, axiom-clean polyno
 
 ## Honest assessment (the convergent wall, again)
 
-Is `C(n,k)/C(a,k)` better than Johnson `n²/(a²−nk)` in the open interior `a ∈ (√(nk), k)`?
+Is `C(n,k)/C(a,k)` better than Johnson `n²/(a²−n(k−1))` in the open interior of agreements
+`k < a < √(nk)` (relative agreement `ρ < a/n < √ρ`, i.e. radius strictly between the Johnson radius
+`1−√ρ` and capacity `1−ρ`; the Johnson denominator used here is the `b = k−1` convention
+`a² − n(k−1)`, which is positive on a sub-band of that interior)?
 **No — it collapses onto the same ceiling, and is in fact *weaker* once `a` is small.** The owned
 family `B_c` of `k`-subsets of `A_c` has size *exactly* `C(|A_c|, k)`, and the *only* structural input
 used is `agree(c,c') ≤ k−1` (no two codewords share a `k`-set) — which is the very `k−1` ceiling
@@ -65,15 +68,21 @@ Two honest sub-findings (both verified):
 2. **But it is field-blind and cannot close the prize.** The same double-count, with no polynomials,
    field, or smooth domain, holds for ANY family with the pairwise `k−1` ceiling
    (`abstract_incidence_bound`). So it cannot separate the multiplicative-subgroup (smooth) domain from
-   a generic one. And at any *fixed* interior relative agreement `α = a/n ∈ (ρ, √ρ)` the cap stays
-   **super-polynomial** in `n` (base-2 exponent per coordinate `H(ρ) − α·H(ρ/α) > 0`), hence
-   super-polynomial in `|F|`, so it never reaches `|L| ≤ ε*·|F|` (`incidence_superpoly_witness`).
+   a generic one. **Heuristic, not proved here:** at a *fixed* interior relative agreement
+   `α = a/n ∈ (ρ, √ρ)` the standard entropy estimate suggests the cap grows exponentially in `n`
+   (base-2 exponent per coordinate `H(ρ) − α·H(ρ/α)`). No such asymptotic statement is formalized
+   in this file: `incidence_superpoly_witness` only compares two finite values, and two finite
+   values prove no growth rate. Moreover, even a proved exponential-in-`n` lower bound on the *cap*
+   would not by itself make the cap super-polynomial in `|F|`: `n ≤ |F|` allows arbitrarily large
+   compatible fields, where `ε*·|F|` can dominate any fixed finite binomial ratio. Comparing the cap
+   with an `ε*·|F|` budget therefore needs an explicit field-growth / budget hypothesis
+   (e.g. `|F|` polynomially bounded in `n`), which is not assumed anywhere here.
 
-The slice-rank / CLP polynomial method therefore lands on the **same** convergent wall: it supplies a
-clean rank obstruction and a new finite subset-incidence bound, but that bound is field-blind and
-super-polynomial in the open interior. Any closure must replace the field-blind subset count by a
-*field-sensitive and domain-sensitive* count of how the `k`-subsets actually arrange in the
-multiplicative subgroup — precisely the open super-polynomial smooth-domain subset/incidence count.
+The slice-rank / CLP polynomial method therefore supplies a clean rank obstruction and a new finite
+subset-incidence bound, but that bound is field-blind (it uses only the pairwise `k − 1` ceiling).
+Whether it is too large in a given prize regime depends on how `|F|` scales with `n`; this file
+proves no asymptotic no-go. A field- and domain-sensitive count of how the `k`-subsets arrange in
+the multiplicative subgroup remains the open smooth-domain subset/incidence count.
 
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026.
@@ -179,55 +188,10 @@ theorem ownedKSets_pairwiseDisjoint (D : ι ↪ F) (k : ℕ) (w : ι → F)
   have hpq : p = q := rank_collapse_on_kset D k w T hTk hp hq hpw hqw
   rw [hpq]
 
-/-! ### The subset-incidence list-size bound (the polynomial-method output) -/
+/-! ### Honest collapse: the incidence bound uses ONLY the `k − 1` ceiling
 
-/-- **Polynomial-method subset-incidence list bound.**
-
-Let `L` be a list of Reed–Solomon codewords of degree-`<k` polynomials on the injective domain `D`,
-each agreeing with the received word `w` on at least `a` of the `n = |ι|` coordinates. Then
-
-  `|L| · C(a, k)  ≤  C(n, k)`.
-
-Proof (double counting / `Finset.card_biUnion`): each codeword owns `C(agree(c,w), k) ≥ C(a, k)`
-many fully-matched `k`-subsets; by the rank obstruction these families are pairwise disjoint; and
-they all sit inside the `C(n, k)` `k`-subsets of the coordinate set. Summing,
-`|L| · C(a,k) ≤ Σ_c C(agree(c,w),k) = |⨆ owned| ≤ C(n,k)`. -/
-theorem poly_method_subset_incidence_bound (D : ι ↪ F) (k : ℕ) (w : ι → F)
-    (L : Finset (ι → F)) (a : ℕ)
-    (hpoly : ∀ c ∈ L, ∃ p : F[X], p.natDegree < k ∧ c = fun i => p.eval (D i))
-    (hclose : ∀ c ∈ L, a ≤ agree c w) :
-    L.card * Nat.choose a k ≤ Nat.choose (Fintype.card ι) k := by
-  classical
-  have hdisj := ownedKSets_pairwiseDisjoint D k w L hpoly
-  -- The disjoint union of the owned families lives in `powersetCard k univ`.
-  have hsub : (L.biUnion (fun c => ownedKSets c w k))
-      ⊆ powersetCard k (Finset.univ : Finset ι) := by
-    intro T hT
-    rw [mem_biUnion] at hT
-    obtain ⟨c, _, hTc⟩ := hT
-    rw [mem_ownedKSets] at hTc
-    rw [mem_powersetCard]
-    exact ⟨Finset.subset_univ T, hTc.2⟩
-  -- card of the disjoint union = sum of owned-family cards.
-  have hcardU : (L.biUnion (fun c => ownedKSets c w k)).card
-      = ∑ c ∈ L, Nat.choose (agree c w) k := by
-    rw [Finset.card_biUnion (fun c hc c' hc' hne => hdisj hc hc' hne)]
-    exact Finset.sum_congr rfl (fun c _ => card_owned c w k)
-  -- lower bound the sum by `|L| · C(a,k)` via monotonicity of `choose`.
-  have hlb : L.card * Nat.choose a k ≤ ∑ c ∈ L, Nat.choose (agree c w) k := by
-    calc L.card * Nat.choose a k = ∑ _c ∈ L, Nat.choose a k := by
-          rw [Finset.sum_const, smul_eq_mul]
-      _ ≤ ∑ c ∈ L, Nat.choose (agree c w) k :=
-          Finset.sum_le_sum (fun c hc => Nat.choose_le_choose k (hclose c hc))
-  -- upper bound via the ambient powerset.
-  have hub : ∑ c ∈ L, Nat.choose (agree c w) k ≤ Nat.choose (Fintype.card ι) k := by
-    rw [← hcardU]
-    calc (L.biUnion (fun c => ownedKSets c w k)).card
-        ≤ (powersetCard k (Finset.univ : Finset ι)).card := Finset.card_le_card hsub
-      _ = Nat.choose (Fintype.card ι) k := by rw [card_powersetCard, card_univ]
-  exact le_trans hlb hub
-
-/-! ### Honest collapse: the incidence bound uses ONLY the `k − 1` ceiling -/
+The abstract double count is stated first; the polynomial-method specialization
+`poly_method_subset_incidence_bound` below is derived from it. -/
 
 /-- **The incidence bound is field-blind and domain-blind: it is driven only by the pairwise `k − 1`
 agreement ceiling.** Here is the *abstract* version — no polynomials, no field, no smooth domain — for
@@ -271,6 +235,27 @@ theorem abstract_incidence_bound {ι' : Type*} [Fintype ι'] [DecidableEq ι']
       _ = Nat.choose (Fintype.card ι') k := by rw [card_powersetCard, card_univ]
   exact le_trans hlb hub
 
+/-! ### The subset-incidence list-size bound (the polynomial-method output) -/
+
+/-- **Polynomial-method subset-incidence list bound.**
+
+Let `L` be a list of Reed–Solomon codewords of degree-`<k` polynomials on the injective domain `D`,
+each agreeing with the received word `w` on at least `a` of the `n = |ι|` coordinates. Then
+
+  `|L| · C(a, k)  ≤  C(n, k)`.
+
+Proof (double counting): each codeword owns `C(agree(c,w), k) ≥ C(a, k)` many fully-matched
+`k`-subsets; by the rank obstruction (`ownedKSets_pairwiseDisjoint`) these families are pairwise
+disjoint; and they all sit inside the `C(n, k)` `k`-subsets of the coordinate set. The double count
+itself is `abstract_incidence_bound`; `agree c w` and `ownedKSets c w k` unfold to its agreement
+count and owned family. -/
+theorem poly_method_subset_incidence_bound (D : ι ↪ F) (k : ℕ) (w : ι → F)
+    (L : Finset (ι → F)) (a : ℕ)
+    (hpoly : ∀ c ∈ L, ∃ p : F[X], p.natDegree < k ∧ c = fun i => p.eval (D i))
+    (hclose : ∀ c ∈ L, a ≤ agree c w) :
+    L.card * Nat.choose a k ≤ Nat.choose (Fintype.card ι) k :=
+  abstract_incidence_bound k w L a hclose (ownedKSets_pairwiseDisjoint D k w L hpoly)
+
 /-- **The incidence bound at the interior point of `RS[F₇,F₇,2]` is FINITE and TIGHTER than Johnson.**
 
 At the interior radius `a = 3` of the tiny instance (`n = 7, k = 2`, the verified interior point of
@@ -289,16 +274,17 @@ theorem incidence_numeric_F7 :
     (6 : ℕ) * Nat.choose 3 2 ≤ Nat.choose 7 2 ∧ Nat.choose 7 2 / Nat.choose 3 2 < 24 := by
   decide
 
-/-- **Honest no-closure: the incidence cap stays super-polynomial in the interior.** Although the
-incidence bound is finite and beats Johnson just past the Johnson radius, it does **not** close the
-prize: at a fixed interior relative agreement `α = a/n ∈ (ρ, √ρ)` the cap `C(n,k)/C(a,k)` is
-super-polynomial in `n` (its base-2 exponent per coordinate is `H(ρ) − α·H(ρ/α) > 0`), hence
-super-polynomial in `|F|`, so it cannot give `|L| ≤ ε*·|F|`. We pin a concrete witness of growth:
-doubling the scale of the `RS[F₇,F₇,2]`-shaped ratio at the Johnson-radius-adjacent point keeps the
-cap strictly above any fixed polynomial target. Concretely, the incidence caps at the interior point
-`a = ⌈√(nk)⌉ + 1` grow: `C(16,4)/C(7,4) = 52`, `C(32,8)/C(13,8)` is far larger — the ratio is *not*
-bounded by a constant or low-degree polynomial as the instance scales, which is exactly why the
-field-blind subset count (`abstract_incidence_bound`) cannot reach `ε* = 2^{-128}` times `|F|`. -/
+/-- **Two finite incidence-cap values (a numerical sample, not a growth theorem).** At the interior
+agreements `(n,k,a) = (16,4,7)` (`4 < 7 < 8 = √(nk)`) and `(32,8,13)` (`8 < 13 < 16 = √(nk)`) the
+truncated incidence caps are `C(16,4)/C(7,4) = 52` and `C(32,8)/C(13,8) > 52`.
+
+Scope: this compares two finite numbers and proves **no** asymptotic statement — neither that the
+cap exceeds every fixed polynomial as the scale grows, nor any super-polynomial dependence on `|F|`.
+The entropy heuristic (exponent `H(ρ) − α·H(ρ/α)` per coordinate at fixed `α = a/n ∈ (ρ, √ρ)`) is
+not formalized here, and even an exponential-in-`n` bound would not be super-polynomial in `|F|`
+without an explicit hypothesis tying `|F|` to `n` (since `n ≤ |F|` permits arbitrarily large
+fields, where `ε*·|F|` can dominate the cap). So this lemma does not show that the field-blind
+subset count (`abstract_incidence_bound`) fails to reach an `ε*·|F|` budget. -/
 theorem incidence_superpoly_witness :
     Nat.choose 16 4 / Nat.choose 7 4 = 52 ∧ 52 < Nat.choose 32 8 / Nat.choose 13 8 := by
   decide

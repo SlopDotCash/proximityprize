@@ -13,8 +13,8 @@
     "test": "node --experimental-strip-types --test tests/*.test.mjs"
   },
   "dependencies": {
-    "katex": "^0.17.0",
-    "next": "^15.5.19",
+    "katex": "^0.18.10",
+    "next": "^15.5.28",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "rough-notation": "^0.5.1"

@@ -67,9 +67,10 @@ for every `n` tested once `β ≥ 4` (the prize has `β ≈ 4`), but that is *me
 
 PROVEN: the exact non-principal recursion identity `S_{r+1} = n·S_r + crossNP_r`
 (`nonprincipal_crossstep_recursion`), and the **propagation closure** — a per-step non-principal
-bound implies the non-principal energy ceiling at all depths
-(`nonprincipal_ceiling_of_crossStepNP`, by reduction to the proven M3
-`lamLeung_ceiling_of_crossStep`).
+bound implies the non-principal energy ceiling `S_r ≤ (2r−1)‼·n^r·q` (i.e. `A_r ≤ (2r−1)‼·n^r`) at
+all depths (`nonprincipal_ceiling_of_crossStepNP`, by direct induction on the non-principal
+recursion), and the full M3 bound implies `NonprincipalCrossStepBound`
+(`nonprincipalCrossStepBound_of_M3`, `nonprincipal_closure_of_M3`).
 
 OPEN (named `Prop`, not proven): `NonprincipalCrossStepBound` — the per-step bound on `crossNP_r`.
 Equivalent (by the pre-screen) to char-`0` fidelity of `A_r` in the band `r ∈ [β log n, 1.36n]`;
@@ -141,7 +142,8 @@ theorem nonprincipal_crossstep_recursion {ψ : AddChar F ℂ} (hψ : ψ.IsPrimit
 
 /-- **The per-step non-principal cross bound (the OPEN char-`p` crux in principal-clean form,
 lane wf-P3).** `crossNP_r ≤ 2r·(2r−1)‼·n^{r+1}·q`, the slack the *non-principal* recursion can absorb
-while preserving the ceiling `A_r ≤ (2r−1)‼·n^r` (equivalently `S_r ≤ (2r−1)‼·n^r·q − n^{2r}`).
+while preserving the ceiling `A_r ≤ (2r−1)‼·n^r` (i.e. `S_r ≤ (2r−1)‼·n^r·q`; this propagation is
+`nonprincipal_ceiling_of_crossStepNP`).
 Stated as a `Prop`, NOT proven. Pre-screen: EQUIVALENT to char-`0` fidelity of `A_r`; CLEAN for all
 `n` once `β ≥ 4`, but that is measured. NB: this is the principal-clean restatement — it does NOT
 suffer the full-`cross_r` `r=4` break. -/
@@ -210,6 +212,40 @@ theorem nonprincipal_closure_of_M3 (G : Finset F) (h : M3CrossStepBound G) :
     NonprincipalCrossStepBound G ∧ (∀ r : ℕ, LamLeungCeiling G r) :=
   ⟨nonprincipalCrossStepBound_of_M3 G h, lamLeung_ceiling_of_crossStep G h⟩
 
+/-- **The non-principal propagation closure (axiom-clean).** The per-step non-principal bound
+`NonprincipalCrossStepBound G` alone implies the non-principal energy ceiling at every depth:
+`S_r ≤ (2r−1)‼·n^r·q`, i.e. `A_r = S_r/q ≤ (2r−1)‼·n^r`.  Induction on `r` via the exact recursion
+`S_{r+1} = n·S_r + crossNP_r`: `n·(2r−1)‼·n^r·q + 2r·(2r−1)‼·n^{r+1}·q = (2r+1)‼·n^{r+1}·q`; base
+`S_0 = q − 1 ≤ q`. -/
+theorem nonprincipal_ceiling_of_crossStepNP {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G : Finset F) (h : NonprincipalCrossStepBound G) :
+    ∀ r : ℕ, nonprincipalMoment ψ G r
+      ≤ (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r * (Fintype.card F : ℝ) := by
+  intro r
+  induction r with
+  | zero =>
+    have hS : nonprincipalMoment ψ G 0 = ((univ.erase (0 : F)).card : ℝ) := by
+      simp [nonprincipalMoment]
+    rw [hS]
+    simp
+  | succ r ih =>
+    rw [nonprincipal_crossstep_recursion hψ G r]
+    have hn0 : (0 : ℝ) ≤ (G.card : ℝ) := by positivity
+    have h1 := mul_le_mul_of_nonneg_left ih hn0
+    have h2 := h r
+    have hdf : (Nat.doubleFactorial (2 * (r + 1) - 1) : ℝ)
+        = (2 * (r : ℝ) + 1) * (Nat.doubleFactorial (2 * r - 1) : ℝ) := by
+      rw [show 2 * (r + 1) - 1 = 2 * r + 1 by omega, Nat.doubleFactorial_add_one]
+      push_cast; ring
+    rw [hdf]
+    calc (G.card : ℝ) * nonprincipalMoment ψ G r + crossNP G r
+        ≤ (G.card : ℝ) * ((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
+              * (Fintype.card F : ℝ))
+          + 2 * (r : ℝ) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ (r + 1)
+              * (Fintype.card F : ℝ) := add_le_add h1 h2
+      _ = (2 * (r : ℝ) + 1) * (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ (r + 1)
+              * (Fintype.card F : ℝ) := by ring
+
 end ArkLib.ProximityGap.NonprincipalCrossStep
 
 /-! ## Axiom audit -/
@@ -217,3 +253,4 @@ end ArkLib.ProximityGap.NonprincipalCrossStep
 #print axioms ArkLib.ProximityGap.NonprincipalCrossStep.nonprincipal_crossstep_recursion
 #print axioms ArkLib.ProximityGap.NonprincipalCrossStep.nonprincipalCrossStepBound_of_M3
 #print axioms ArkLib.ProximityGap.NonprincipalCrossStep.nonprincipal_closure_of_M3
+#print axioms ArkLib.ProximityGap.NonprincipalCrossStep.nonprincipal_ceiling_of_crossStepNP

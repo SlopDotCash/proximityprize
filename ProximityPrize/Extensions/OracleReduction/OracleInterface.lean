@@ -106,5 +106,41 @@ private lemma totalDegree_le_card_mul_of_degreeOf_le {σ : Type*} [Fintype σ]
     _ = Fintype.card σ * d := by
       simp [Finset.sum_const, mul_comm]
 
--- Note: golf this theorem
+/-- The weaker bound of `d` agreements for distinct polynomials of degree less than `d`. -/
+theorem distanceLE_polynomial_degreeLT_le :
+    distanceLE (instPolynomialDegreeLT R d) d :=
+  distanceLE_polynomial_degreeLE
+
+/-- Two distinct univariate polynomials of degree at most `d` over a finite domain agree on at
+most `d` evaluation points: their nonzero difference has degree at most `d`, hence at most `d`
+roots. For `d = 0` this says distinct constants never agree. -/
+theorem distanceLE_instPolynomialDegreeLE :
+    distanceLE (instPolynomialDegreeLE R d) d := by
+  simp only [distanceLE, ne_eq, instPolynomialDegreeLE, Subtype.forall,
+    mem_degreeLE, Subtype.mk.injEq]
+  intro p hp p' hp' hNe
+  have hEvalRoot : ∀ q ∈ Finset.univ, p.eval q = p'.eval q ↔ q ∈ (p - p').roots := by
+    intro q _
+    simp only [mem_roots', ne_eq, IsRoot.def, Polynomial.eval_sub]
+    constructor <;> intro h
+    · constructor
+      · intro h'; contrapose! hNe; exact sub_eq_zero.mp h'
+      · simp [h]
+    · exact sub_eq_zero.mp h.2
+  conv =>
+    enter [1, 1]
+    apply Finset.filter_congr hEvalRoot
+  have hRoots : (p - p').roots.card ≤ d := by
+    have hSubNe : p - p' ≠ 0 := sub_ne_zero_of_ne hNe
+    have hSubDegLe : (p - p').degree ≤ d := le_trans (degree_sub_le p p') (max_le hp hp')
+    have hCard : ((p - p').roots.card : WithBot ℕ) ≤ d :=
+      le_trans (Polynomial.card_roots hSubNe) hSubDegLe
+    exact_mod_cast hCard
+  refine le_trans ?_ hRoots
+  apply Multiset.card_le_card
+  rw [Multiset.le_iff_subset]
+  · intro x hx
+    exact (Multiset.mem_filter.mp hx).2
+  · exact Finset.univ.nodup.filter _
+
 end PolynomialDistance

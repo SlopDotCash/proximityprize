@@ -263,17 +263,26 @@ theorem lovettHolds_of_witness {m : ℕ} {V : Fin m → (Fin n → ℕ)} {k : �
   · exact lovettHolds_nLtK hk hV hn hone hlt IHd
   · exact lovettHolds_of_witness_nEqK hk hV hn hone heq IHd
 
-/-- **The primitive step reduces to the witness residual** (Lemma 2.5 existence). -/
+/-- **The primitive step reduces to the witness residual** (Lemma 2.5 existence).
+
+Historical, vacuous reduction: its hypothesis `LovettWitnessExists F` is false
+(`not_lovettWitnessExists` in `LovettMergeIndepProof.lean`), so this implication cannot be used to
+obtain the primitive step.  The proved route is `lovettPrimitiveStep_of_mergeIndep` with
+`lovettMergeIndep`. -/
 theorem lovettPrimitiveStep_of_witnessExists (hw : LovettWitnessExists F) :
     LovettPrimitiveStep F := by
   intro n m V k hk hV hprim IHn IHd IHm
   exact lovettHolds_of_witness hk hV (hw V k hk hV hprim IHn IHd IHm) IHd
 
-/-- **`LovettPrimitiveCase` (and full Theorem 1.7) reduce to the witness residual.** -/
+/-- **`LovettPrimitiveCase` (and full Theorem 1.7) reduce to the witness residual.**  Vacuous:
+`LovettWitnessExists F` is false (`not_lovettWitnessExists`); see
+`lovettPrimitiveCase_unconditional` for the proved statement. -/
 theorem lovettPrimitiveCase_of_witnessExists (hw : LovettWitnessExists F) {n : ℕ} :
     LovettPrimitiveCase F n :=
   lovettPrimitiveCase_of_primitiveStep (lovettPrimitiveStep_of_witnessExists hw)
 
+/-- Vacuous historical reduction of Theorem 1.7 to the refuted `LovettWitnessExists`
+(`not_lovettWitnessExists`); the proved statement is `lovettThm17_unconditional`. -/
 theorem lovettThm17_of_witnessExists (hw : LovettWitnessExists F) {n : ℕ} : LovettThm17 F n :=
   lovettThm17_of_primitiveStep (lovettPrimitiveStep_of_witnessExists hw)
 

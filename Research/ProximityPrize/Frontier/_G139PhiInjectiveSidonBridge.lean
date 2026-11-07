@@ -7,9 +7,9 @@ import Research.ProximityPrize.Frontier._G139SidonModNegClean
 import Research.ProximityPrize.Frontier._G136ProductionInstantiation
 
 /-!
-# G139: the formal Phi-injectivity bridge contract
+# G139: the Phi-injectivity / SidonModNeg bridge
 
-This file isolates the upstream proof obligation for the `Phi_H` certificate route.
+This file closes the algebraic bridge for the `Phi_H` certificate route.
 
 The computational certificate checks injectivity of
 
@@ -17,10 +17,21 @@ The computational certificate checks injectivity of
 Phi(r) = (g^r - 1)^n,   1 <= r <= n/2.
 ```
 
-To turn that into `SidonModNeg H`, one still needs the algebraic extraction lemma:
-every non-lawful additive relation in `H` produces a nontrivial collision in this
-Phi window.  The theorem below packages that interface exactly.  It is not the
-extraction lemma itself; it is the Lean-checked contract showing what remains.
+The algebraic extraction lemma (every non-lawful additive relation in the root set
+produces a nontrivial collision in this Phi window) is PROVED here for a root of exact
+order `n` (`powerRelationProducesPhiCollision_of_exactOrder`, via
+`rawDifferenceFactorsHaveDistinctAntipodalResidues_of_exactOrder`), and the converse
+holds for a primitive root. Main results:
+
+* `sidonModNeg_rootsFinset_of_exactOrder_phiWindowInjective` and
+  `accidents_card_eq_zero_rootsFinset_of_exactOrder_phiWindowInjective`: exact order plus
+  finite `Phi` injectivity certifies `SidonModNeg` (zero normalized G139 accidents) for the
+  generated root set;
+* `phiWindowInjective_iff_sidonModNeg_rootsFinset`: for a primitive `n`-th root with `n`
+  even, `Phi` half-window injectivity is EQUIVALENT to `SidonModNeg (rootsFinset g n)`.
+
+So the `Phi_H` certificate route has no remaining algebraic obligation; what remains is
+only the finite injectivity computation itself.
 -/
 
 set_option autoImplicit false
@@ -140,29 +151,9 @@ theorem exists_halfWindow_antipodal_residue
     · omega
     · omega
 
-omit [Field F] [Fintype F] [DecidableEq F] in
-/-- Modulo form of the half-window representative lemma.  If an exponent has
-nonzero residue modulo an even order, it is congruent to a unique-side
-half-window representative up to antipode. -/
-theorem exists_halfWindow_antipodal_mod
-    {n m : ℕ} (hn0 : n ≠ 0) (heven : Even n) (hm0 : m % n ≠ 0) :
-    ∃ r k : ℕ, 1 ≤ r ∧ r ≤ n / 2 ∧
-      (m = r + n * k ∨ m = (n - r) + n * k) := by
-  have hmod_lt : m % n < n := Nat.mod_lt m (Nat.pos_of_ne_zero hn0)
-  rcases exists_halfWindow_antipodal_residue (n := n) (m := m % n) heven hm0
-    hmod_lt with ⟨r, hr1, hrh, hrResidue | hrResidue⟩
-  · refine ⟨r, m / n, hr1, hrh, Or.inl ?_⟩
-    calc
-      m = n * (m / n) + m % n := (Nat.div_add_mod m n).symm
-      _ = r + n * (m / n) := by omega
-  · refine ⟨r, m / n, hr1, hrh, Or.inr ?_⟩
-    calc
-      m = n * (m / n) + m % n := (Nat.div_add_mod m n).symm
-      _ = (n - r) + n * (m / n) := by omega
-
-/-- The remaining algebraic extraction obligation: any non-lawful additive relation
-among elements of `H` must yield a genuinely distinct `Phi` collision in the
-certified half-window. -/
+/-- The algebraic extraction property: any non-lawful additive relation among elements of
+`H` yields a genuinely distinct `Phi` collision in the certified half-window. (Proved for
+exact-order root sets below.) -/
 def AdditiveRelationProducesPhiCollision (H : Finset F) (g : F) (n : ℕ) : Prop :=
   ∀ a ∈ H, ∀ b ∈ H, ∀ c ∈ H, ∀ d ∈ H,
     a + b = c + d →
@@ -171,8 +162,7 @@ def AdditiveRelationProducesPhiCollision (H : Finset F) (g : F) (n : ℕ) : Prop
         1 ≤ r ∧ r ≤ n / 2 ∧ 1 ≤ s ∧ s ≤ n / 2 ∧ r ≠ s ∧
           (g ^ r - 1) ^ n = (g ^ s - 1) ^ n
 
-/-- Exponent-level version of the remaining extraction obligation for a root set
-`{g^k : k < n}`. -/
+/-- Exponent-level version of the extraction property for a root set `{g^k : k < n}`. -/
 def PowerRelationProducesPhiCollision (g : F) (n : ℕ) : Prop :=
   ∀ ia ib ic id : ℕ, ia < n → ib < n → ic < n → id < n →
     g ^ ia + g ^ ib = g ^ ic + g ^ id →
@@ -182,19 +172,13 @@ def PowerRelationProducesPhiCollision (g : F) (n : ℕ) : Prop :=
         1 ≤ r ∧ r ≤ n / 2 ∧ 1 ≤ s ∧ s ≤ n / 2 ∧ r ≠ s ∧
           (g ^ r - 1) ^ n = (g ^ s - 1) ^ n
 
-set_option linter.unusedVariables false in
-/-- Raw difference-factor witnesses before reducing to the certified half-window. -/
-def PowerRelationHasRawDifferenceFactors (g : F) (n : ℕ) : Prop :=
-  ∀ ia ib ic id : ℕ, ∃ r s : ℕ,
-    g ^ ia = g ^ ic * g ^ r ∧ g ^ id = g ^ ib * g ^ s
-
 omit [Fintype F] [DecidableEq F] in
-/-- If `g^n = 1`, raw difference factors always exist.  The hard part is not
-their existence, but folding them into distinct representatives in `1..n/2`. -/
-theorem powerRelationHasRawDifferenceFactors_of_pow_eq_one
-    {g : F} {n : ℕ} (hn0 : n ≠ 0) (hgn : g ^ n = 1) :
-    PowerRelationHasRawDifferenceFactors g n := by
-  intro ia ib ic id
+/-- If `g^n = 1`, raw difference factors always exist: `g^ia = g^ic·g^r` and
+`g^id = g^ib·g^s` for some `r, s`. The content is in folding them into distinct
+representatives in `1..n/2` (`powerRelationProducesPhiCollision_of_exactOrder`). -/
+theorem exists_rawDifferenceFactors
+    {g : F} {n : ℕ} (hn0 : n ≠ 0) (hgn : g ^ n = 1) (ia ib ic id : ℕ) :
+    ∃ r s : ℕ, g ^ ia = g ^ ic * g ^ r ∧ g ^ id = g ^ ib * g ^ s := by
   refine ⟨ia + n * (ic + 1) - ic, id + n * (ib + 1) - ib, ?_, ?_⟩
   · symm
     have hic_le : ic ≤ n * (ic + 1) := by
@@ -323,30 +307,14 @@ theorem zeroSum_of_antipodal_rawDifferenceFactor
     exact (mul_eq_zero.mp hzero_factor).resolve_right hfactor_ne
   simpa [hr₀] using hzero
 
-/- Folding raw difference factors into the certified half-window should preserve
-the `Phi` values, not the raw quotient identities.  Replacing a raw exponent by
-its antipodal representative generally changes `g^r`, but leaves `(g^r - 1)^n`
-unchanged under the even-order roots-of-unity hypotheses used by the certificate
-route. -/
-def RawDifferenceFactorsFoldToPhiWindow (g : F) (n : ℕ) : Prop :=
-  ∀ ia ib ic id r₀ s₀ : ℕ, ia < n → ib < n → ic < n → id < n →
-    g ^ ia + g ^ ib = g ^ ic + g ^ id →
-    ¬ ((g ^ ia = g ^ ic ∧ g ^ ib = g ^ id) ∨
-        (g ^ ia = g ^ id ∧ g ^ ib = g ^ ic) ∨ g ^ ia + g ^ ib = 0) →
-    g ^ ia = g ^ ic * g ^ r₀ → g ^ id = g ^ ib * g ^ s₀ →
-      ∃ r s : ℕ,
-        1 ≤ r ∧ r ≤ n / 2 ∧ 1 ≤ s ∧ s ≤ n / 2 ∧ r ≠ s ∧
-          (g ^ r - 1) ^ n = (g ^ r₀ - 1) ^ n ∧
-            (g ^ s - 1) ^ n = (g ^ s₀ - 1) ^ n
-
 /-- `r` represents the antipodal residue class of `m` modulo `n` in the
 certified half-window. -/
 def AntipodalResidueRep (n m r : ℕ) : Prop :=
   1 ≤ r ∧ r ≤ n / 2 ∧ (m % n = r ∨ m % n = n - r)
 
 set_option linter.unusedVariables false in
-/- The narrow remaining obligation: for a non-lawful raw-factor relation, the
-two raw difference exponents have distinct antipodal residue classes. -/
+/- For a non-lawful raw-factor relation, the two raw difference exponents have distinct
+antipodal residue classes (proved under exact order just below). -/
 def RawDifferenceFactorsHaveDistinctAntipodalResidues (g : F) (n : ℕ) : Prop :=
   ∀ ia ib ic id r₀ s₀ : ℕ, ia < n → ib < n → ic < n → id < n →
     g ^ ia + g ^ ib = g ^ ic + g ^ id →
@@ -356,7 +324,7 @@ def RawDifferenceFactorsHaveDistinctAntipodalResidues (g : F) (n : ℕ) : Prop :
       ∀ r s : ℕ, AntipodalResidueRep n r₀ r → AntipodalResidueRep n s₀ s → r ≠ s
 
 omit [Fintype F] [DecidableEq F] in
-/-- Exact order closes the remaining distinct-antipodal-residue obligation. -/
+/-- Exact order implies the distinct-antipodal-residue property. -/
 theorem rawDifferenceFactorsHaveDistinctAntipodalResidues_of_exactOrder
     {g : F} {n : ℕ} (hn0 : n ≠ 0) (hgn : g ^ n = 1)
     (hExact : HasExactOrder g n) :
@@ -401,183 +369,53 @@ theorem rawDifferenceFactorsHaveDistinctAntipodalResidues_of_exactOrder
       ⟨hiaid, hibic⟩
     exact hnonlawful (Or.inr (Or.inl ⟨hiaid, hibic⟩))
 
-set_option linter.unusedVariables false in
-/- The same folding obligation stated only in terms of residues modulo `n`. -/
-def RawDifferenceFactorsFoldToAntipodalResidues (g : F) (n : ℕ) : Prop :=
-  ∀ ia ib ic id r₀ s₀ : ℕ, ia < n → ib < n → ic < n → id < n →
-    g ^ ia + g ^ ib = g ^ ic + g ^ id →
-    ¬ ((g ^ ia = g ^ ic ∧ g ^ ib = g ^ id) ∨
-        (g ^ ia = g ^ id ∧ g ^ ib = g ^ ic) ∨ g ^ ia + g ^ ib = 0) →
-    g ^ ia = g ^ ic * g ^ r₀ → g ^ id = g ^ ib * g ^ s₀ →
-      ∃ r s : ℕ,
-        1 ≤ r ∧ r ≤ n / 2 ∧ 1 ≤ s ∧ s ≤ n / 2 ∧ r ≠ s ∧
-          (r₀ % n = r ∨ r₀ % n = n - r) ∧
-            (s₀ % n = s ∨ s₀ % n = n - s)
+omit [Fintype F] [DecidableEq F] in
+/-- An antipodal half-window representative of `m` has the same `Phi` value as `m`
+(periodicity plus the antipodal symmetry, for even `n` with `g^n = 1`). -/
+theorem phi_eq_of_antipodalResidueRep
+    {g : F} {n m r : ℕ} (hgn : g ^ n = 1) (heven : Even n)
+    (hrep : AntipodalResidueRep n m r) :
+    (g ^ r - 1) ^ n = (g ^ m - 1) ^ n := by
+  rcases hrep with ⟨_hr1, hrh, hrResidue⟩
+  have hr_le_n : r ≤ n := le_trans hrh (Nat.div_le_self n 2)
+  have hm : m = m % n + n * (m / n) := by
+    have := Nat.div_add_mod m n
+    omega
+  rcases hrResidue with hrResidue | hrResidue
+  · rw [hm, hrResidue, phi_periodic_add_order hgn]
+  · rw [hm, hrResidue, phi_periodic_add_order hgn,
+      phi_antipodal_eq_of_pow_eq_one hgn heven hr_le_n]
 
 omit [Fintype F] [DecidableEq F] in
-/-- Nonzero raw residues plus distinct antipodal classes supply concrete
-antipodal residue representatives. -/
-theorem rawDifferenceFactorsFoldToAntipodalResidues_of_distinct
+/-- **The extraction lemma under exact order.** For `g` of exact order `n` (`n` even,
+`n ≠ 0`), every non-lawful additive relation among `{g^k : k < n}` yields a nontrivial
+collision in the `Phi` half-window. -/
+theorem powerRelationProducesPhiCollision_of_exactOrder
     {g : F} {n : ℕ} (hn0 : n ≠ 0) (hgn : g ^ n = 1) (heven : Even n)
-    (hDistinct : RawDifferenceFactorsHaveDistinctAntipodalResidues g n) :
-    RawDifferenceFactorsFoldToAntipodalResidues g n := by
-  intro ia ib ic id r₀ s₀ hia hib hic hid hsum hnonlawful hr₀ hs₀
-  rcases rawDifferenceFactorResidues_ne_zero_of_nonlawful hgn hr₀ hs₀ hsum hnonlawful with
-    ⟨hrnz, hsnz⟩
-  have hrmod_lt : r₀ % n < n := Nat.mod_lt r₀ (Nat.pos_of_ne_zero hn0)
-  have hsmod_lt : s₀ % n < n := Nat.mod_lt s₀ (Nat.pos_of_ne_zero hn0)
-  rcases exists_halfWindow_antipodal_residue (n := n) (m := r₀ % n) heven hrnz
-    hrmod_lt with ⟨r, hr1, hrh, hrResidue⟩
-  rcases exists_halfWindow_antipodal_residue (n := n) (m := s₀ % n) heven hsnz
-    hsmod_lt with ⟨s, hs1, hsh, hsResidue⟩
-  have hrRep : AntipodalResidueRep n r₀ r := ⟨hr1, hrh, hrResidue⟩
-  have hsRep : AntipodalResidueRep n s₀ s := ⟨hs1, hsh, hsResidue⟩
-  exact ⟨r, s, hr1, hrh, hs1, hsh,
-    hDistinct ia ib ic id r₀ s₀ hia hib hic hid hsum hnonlawful hr₀ hs₀ r s hrRep
-      hsRep,
-    hrResidue, hsResidue⟩
-
-set_option linter.unusedVariables false in
-/- The more concrete remaining arithmetic obligation: the raw factors can be
-folded into distinct half-window representatives up to period and antipode. -/
-def RawDifferenceFactorsFoldToResidueWindow (g : F) (n : ℕ) : Prop :=
-  ∀ ia ib ic id r₀ s₀ : ℕ, ia < n → ib < n → ic < n → id < n →
-    g ^ ia + g ^ ib = g ^ ic + g ^ id →
-    ¬ ((g ^ ia = g ^ ic ∧ g ^ ib = g ^ id) ∨
-        (g ^ ia = g ^ id ∧ g ^ ib = g ^ ic) ∨ g ^ ia + g ^ ib = 0) →
-    g ^ ia = g ^ ic * g ^ r₀ → g ^ id = g ^ ib * g ^ s₀ →
-      ∃ r s kr ks : ℕ,
-        1 ≤ r ∧ r ≤ n / 2 ∧ 1 ≤ s ∧ s ≤ n / 2 ∧ r ≠ s ∧
-          (r₀ = r + n * kr ∨ r₀ = (n - r) + n * kr) ∧
-            (s₀ = s + n * ks ∨ s₀ = (n - s) + n * ks)
-
-omit [Fintype F] [DecidableEq F] in
-/-- Residue-level folding supplies the period/antipode representatives needed
-by the bridge. -/
-theorem rawDifferenceFactorsFoldToResidueWindow_of_antipodalResidues
-    {g : F} {n : ℕ}
-    (hResidues : RawDifferenceFactorsFoldToAntipodalResidues g n) :
-    RawDifferenceFactorsFoldToResidueWindow g n := by
-  intro ia ib ic id r₀ s₀ hia hib hic hid hsum hnonlawful hr₀ hs₀
-  rcases hResidues ia ib ic id r₀ s₀ hia hib hic hid hsum hnonlawful hr₀ hs₀ with
-    ⟨r, s, hr1, hrh, hs1, hsh, hrs, hrResidue, hsResidue⟩
-  refine ⟨r, s, r₀ / n, s₀ / n, hr1, hrh, hs1, hsh, hrs, ?_, ?_⟩
-  · rcases hrResidue with hrResidue | hrResidue
-    · refine Or.inl ?_
-      calc
-        r₀ = n * (r₀ / n) + r₀ % n := (Nat.div_add_mod r₀ n).symm
-        _ = r + n * (r₀ / n) := by omega
-    · refine Or.inr ?_
-      calc
-        r₀ = n * (r₀ / n) + r₀ % n := (Nat.div_add_mod r₀ n).symm
-        _ = (n - r) + n * (r₀ / n) := by omega
-  · rcases hsResidue with hsResidue | hsResidue
-    · refine Or.inl ?_
-      calc
-        s₀ = n * (s₀ / n) + s₀ % n := (Nat.div_add_mod s₀ n).symm
-        _ = s + n * (s₀ / n) := by omega
-    · refine Or.inr ?_
-      calc
-        s₀ = n * (s₀ / n) + s₀ % n := (Nat.div_add_mod s₀ n).symm
-        _ = (n - s) + n * (s₀ / n) := by omega
-
-omit [Fintype F] [DecidableEq F] in
-/-- Period/antipode residue-window folding implies the `Phi`-value folding
-contract. -/
-theorem rawDifferenceFactorsFoldToPhiWindow_of_residueWindow
-    {g : F} {n : ℕ} (hgn : g ^ n = 1) (heven : Even n)
-    (hResidue : RawDifferenceFactorsFoldToResidueWindow g n) :
-    RawDifferenceFactorsFoldToPhiWindow g n := by
-  intro ia ib ic id r₀ s₀ hia hib hic hid hsum hnonlawful hr₀ hs₀
-  rcases hResidue ia ib ic id r₀ s₀ hia hib hic hid hsum hnonlawful hr₀ hs₀ with
-    ⟨r, s, kr, ks, hr1, hrh, hs1, hsh, hrs, hrResidue, hsResidue⟩
-  refine ⟨r, s, hr1, hrh, hs1, hsh, hrs, ?_, ?_⟩
-  · have hr_le_n : r ≤ n := le_trans hrh (Nat.div_le_self n 2)
-    rcases hrResidue with hrResidue | hrResidue
-    · subst r₀
-      exact (phi_periodic_add_order (g := g) (n := n) (r := r) (k := kr) hgn).symm
-    · subst r₀
-      calc
-        (g ^ r - 1) ^ n = (g ^ (n - r) - 1) ^ n :=
-          (phi_antipodal_eq_of_pow_eq_one (g := g) (n := n) (r := r) hgn heven
-            hr_le_n).symm
-        _ = (g ^ (n - r + n * kr) - 1) ^ n :=
-          (phi_periodic_add_order (g := g) (n := n) (r := n - r) (k := kr) hgn).symm
-  · have hs_le_n : s ≤ n := le_trans hsh (Nat.div_le_self n 2)
-    rcases hsResidue with hsResidue | hsResidue
-    · subst s₀
-      exact (phi_periodic_add_order (g := g) (n := n) (r := s) (k := ks) hgn).symm
-    · subst s₀
-      calc
-        (g ^ s - 1) ^ n = (g ^ (n - s) - 1) ^ n :=
-          (phi_antipodal_eq_of_pow_eq_one (g := g) (n := n) (r := s) hgn heven
-            hs_le_n).symm
-        _ = (g ^ (n - s + n * ks) - 1) ^ n :=
-          (phi_periodic_add_order (g := g) (n := n) (r := n - s) (k := ks) hgn).symm
-
-omit [Fintype F] [DecidableEq F] in
-/-- Raw factors plus `Phi`-value half-window folding give the nontrivial `Phi`
-collision consumed by the downstream bridge. -/
-theorem powerRelationProducesPhiCollision_of_rawFactors_and_phiFold
-    {g : F} {n : ℕ} (hgn : g ^ n = 1)
-    (hRaw : PowerRelationHasRawDifferenceFactors g n)
-    (hFold : RawDifferenceFactorsFoldToPhiWindow g n) :
+    (hExact : HasExactOrder g n) :
     PowerRelationProducesPhiCollision g n := by
   intro ia ib ic id hia hib hic hid hsum hnonlawful
-  rcases hRaw ia ib ic id with ⟨r₀, s₀, hr₀, hs₀⟩
+  obtain ⟨r₀, s₀, hr₀, hs₀⟩ := exists_rawDifferenceFactors hn0 hgn ia ib ic id
   have hrawPhi : (g ^ r₀ - 1) ^ n = (g ^ s₀ - 1) ^ n :=
     phi_collision_of_power_relation hgn hr₀ hs₀ hsum
-  rcases hFold ia ib ic id r₀ s₀ hia hib hic hid hsum hnonlawful hr₀ hs₀ with
-    ⟨r, s, hr1, hrh, hs1, hsh, hrs, hrfold, hsfold⟩
-  refine ⟨r, s, hr1, hrh, hs1, hsh, hrs, ?_⟩
-  calc
-    (g ^ r - 1) ^ n = (g ^ r₀ - 1) ^ n := hrfold
-    _ = (g ^ s₀ - 1) ^ n := hrawPhi
-    _ = (g ^ s - 1) ^ n := hsfold.symm
-
-omit [Fintype F] [DecidableEq F] in
-/-- With `g^n = 1`, the only remaining upstream lemma is the half-window folding
-of raw difference factors at the `Phi`-value level. -/
-theorem powerRelationProducesPhiCollision_of_pow_eq_one_and_phiFold
-    {g : F} {n : ℕ} (hn0 : n ≠ 0) (hgn : g ^ n = 1)
-    (hFold : RawDifferenceFactorsFoldToPhiWindow g n) :
-    PowerRelationProducesPhiCollision g n :=
-  powerRelationProducesPhiCollision_of_rawFactors_and_phiFold hgn
-    (powerRelationHasRawDifferenceFactors_of_pow_eq_one hn0 hgn) hFold
-
-omit [Fintype F] [DecidableEq F] in
-/-- Concrete residue-window version of the exponent-level `Phi` collision
-bridge. -/
-theorem powerRelationProducesPhiCollision_of_pow_eq_one_and_residueWindow
-    {g : F} {n : ℕ} (hn0 : n ≠ 0) (hgn : g ^ n = 1) (heven : Even n)
-    (hResidue : RawDifferenceFactorsFoldToResidueWindow g n) :
-    PowerRelationProducesPhiCollision g n :=
-  powerRelationProducesPhiCollision_of_pow_eq_one_and_phiFold hn0 hgn
-    (rawDifferenceFactorsFoldToPhiWindow_of_residueWindow hgn heven hResidue)
-
-omit [Fintype F] [DecidableEq F] in
-/-- Antipodal residue representatives are enough for the exponent-level `Phi`
-collision bridge. -/
-theorem powerRelationProducesPhiCollision_of_pow_eq_one_and_antipodalResidues
-    {g : F} {n : ℕ} (hn0 : n ≠ 0) (hgn : g ^ n = 1) (heven : Even n)
-    (hResidues : RawDifferenceFactorsFoldToAntipodalResidues g n) :
-    PowerRelationProducesPhiCollision g n :=
-  powerRelationProducesPhiCollision_of_pow_eq_one_and_residueWindow hn0 hgn heven
-    (rawDifferenceFactorsFoldToResidueWindow_of_antipodalResidues hResidues)
-
-omit [Fintype F] [DecidableEq F] in
-/-- Distinct antipodal residue classes are the final exponent-level obstruction
-needed to force a `Phi` collision. -/
-theorem powerRelationProducesPhiCollision_of_pow_eq_one_and_distinctAntipodalResidues
-    {g : F} {n : ℕ} (hn0 : n ≠ 0) (hgn : g ^ n = 1) (heven : Even n)
-    (hDistinct : RawDifferenceFactorsHaveDistinctAntipodalResidues g n) :
-    PowerRelationProducesPhiCollision g n :=
-  powerRelationProducesPhiCollision_of_pow_eq_one_and_antipodalResidues hn0 hgn heven
-    (rawDifferenceFactorsFoldToAntipodalResidues_of_distinct hn0 hgn heven hDistinct)
+  rcases rawDifferenceFactorResidues_ne_zero_of_nonlawful hgn hr₀ hs₀ hsum hnonlawful with
+    ⟨hrnz, hsnz⟩
+  rcases exists_halfWindow_antipodal_residue (n := n) (m := r₀ % n) heven hrnz
+    (Nat.mod_lt r₀ (Nat.pos_of_ne_zero hn0)) with ⟨r, hr1, hrh, hrResidue⟩
+  rcases exists_halfWindow_antipodal_residue (n := n) (m := s₀ % n) heven hsnz
+    (Nat.mod_lt s₀ (Nat.pos_of_ne_zero hn0)) with ⟨s, hs1, hsh, hsResidue⟩
+  have hrRep : AntipodalResidueRep n r₀ r := ⟨hr1, hrh, hrResidue⟩
+  have hsRep : AntipodalResidueRep n s₀ s := ⟨hs1, hsh, hsResidue⟩
+  refine ⟨r, s, hr1, hrh, hs1, hsh,
+    rawDifferenceFactorsHaveDistinctAntipodalResidues_of_exactOrder hn0 hgn hExact
+      ia ib ic id r₀ s₀ hia hib hic hid hsum hnonlawful hr₀ hs₀ r s hrRep hsRep, ?_⟩
+  rw [phi_eq_of_antipodalResidueRep hgn heven hrRep,
+    phi_eq_of_antipodalResidueRep hgn heven hsRep]
+  exact hrawPhi
 
 set_option linter.unusedFintypeInType false in
 /-- For an actual roots-of-unity Finset, the element-level bridge follows from
-the exponent-level extraction obligation. -/
+the exponent-level extraction property. -/
 theorem additiveRelationProducesPhiCollision_rootsFinset
     {g : F} {n : ℕ} (hPower : PowerRelationProducesPhiCollision g n) :
     AdditiveRelationProducesPhiCollision (rootsFinset g n) g n := by
@@ -604,80 +442,6 @@ theorem sidonModNeg_of_phiWindowInjective
       ⟨r, s, hr1, hrh, hs1, hsh, hrs, hphi⟩
     exact False.elim (hrs (hPhi r s hr1 hrh hs1 hsh hphi))
 
-omit [Fintype F] in
-/-- Combined downstream form: the `Phi` window contract plus injectivity certifies
-zero normalized G139 accidents. -/
-theorem accidents_card_eq_zero_of_phiWindowInjective
-    {H : Finset F} {g : F} {n : ℕ} (h1 : (1 : F) ∈ H)
-    (hExtract : AdditiveRelationProducesPhiCollision H g n)
-    (hPhi : PhiWindowInjective g n) :
-    (accidents H).card = 0 :=
-  accidents_card_eq_zero_of_sidonModNeg h1
-    (sidonModNeg_of_phiWindowInjective hExtract hPhi)
-
-set_option linter.unusedFintypeInType false in
-/-- Roots-of-unity specialization: an exponent-level extraction lemma plus the
-finite `Phi` injectivity certificate is enough to certify zero normalized G139
-accidents. -/
-theorem accidents_card_eq_zero_rootsFinset_of_phiWindowInjective
-    {g : F} {n : ℕ} (h1 : (1 : F) ∈ rootsFinset g n)
-    (hPower : PowerRelationProducesPhiCollision g n)
-    (hPhi : PhiWindowInjective g n) :
-    (accidents (rootsFinset g n)).card = 0 :=
-  accidents_card_eq_zero_of_phiWindowInjective h1
-    (additiveRelationProducesPhiCollision_rootsFinset hPower) hPhi
-
-set_option linter.unusedFintypeInType false in
-/-- Fully factored bridge: root-set raw-factor folding plus finite `Phi`
-injectivity certifies zero normalized G139 accidents. -/
-theorem accidents_card_eq_zero_rootsFinset_of_phiFold
-    {g : F} {n : ℕ} (h1 : (1 : F) ∈ rootsFinset g n) (hgn : g ^ n = 1)
-    (hn0 : n ≠ 0) (hFold : RawDifferenceFactorsFoldToPhiWindow g n)
-    (hPhi : PhiWindowInjective g n) :
-    (accidents (rootsFinset g n)).card = 0 :=
-  accidents_card_eq_zero_rootsFinset_of_phiWindowInjective h1
-    (powerRelationProducesPhiCollision_of_pow_eq_one_and_phiFold hn0 hgn hFold) hPhi
-
-set_option linter.unusedFintypeInType false in
-/-- Fully factored bridge with the remaining obligation reduced to residue and
-antipode selection in the half-window. -/
-theorem accidents_card_eq_zero_rootsFinset_of_residueWindow
-    {g : F} {n : ℕ} (h1 : (1 : F) ∈ rootsFinset g n) (hgn : g ^ n = 1)
-    (hn0 : n ≠ 0) (heven : Even n)
-    (hResidue : RawDifferenceFactorsFoldToResidueWindow g n)
-    (hPhi : PhiWindowInjective g n) :
-    (accidents (rootsFinset g n)).card = 0 :=
-  accidents_card_eq_zero_rootsFinset_of_phiWindowInjective h1
-    (powerRelationProducesPhiCollision_of_pow_eq_one_and_residueWindow hn0 hgn heven
-      hResidue) hPhi
-
-set_option linter.unusedFintypeInType false in
-/-- Fully factored bridge with the remaining obligation reduced to distinct
-antipodal residue classes for the raw factors. -/
-theorem accidents_card_eq_zero_rootsFinset_of_antipodalResidues
-    {g : F} {n : ℕ} (h1 : (1 : F) ∈ rootsFinset g n) (hgn : g ^ n = 1)
-    (hn0 : n ≠ 0) (heven : Even n)
-    (hResidues : RawDifferenceFactorsFoldToAntipodalResidues g n)
-    (hPhi : PhiWindowInjective g n) :
-    (accidents (rootsFinset g n)).card = 0 :=
-  accidents_card_eq_zero_rootsFinset_of_phiWindowInjective h1
-    (powerRelationProducesPhiCollision_of_pow_eq_one_and_antipodalResidues hn0 hgn
-      heven hResidues) hPhi
-
-set_option linter.unusedFintypeInType false in
-/-- Final bridge contract: if non-lawful raw factors always have
-distinct antipodal residue classes, then the finite `Phi` certificate proves
-there are no normalized G139 accidents. -/
-theorem accidents_card_eq_zero_rootsFinset_of_distinctAntipodalResidues
-    {g : F} {n : ℕ} (h1 : (1 : F) ∈ rootsFinset g n) (hgn : g ^ n = 1)
-    (hn0 : n ≠ 0) (heven : Even n)
-    (hDistinct : RawDifferenceFactorsHaveDistinctAntipodalResidues g n)
-    (hPhi : PhiWindowInjective g n) :
-    (accidents (rootsFinset g n)).card = 0 :=
-  accidents_card_eq_zero_rootsFinset_of_phiWindowInjective h1
-    (powerRelationProducesPhiCollision_of_pow_eq_one_and_distinctAntipodalResidues
-      hn0 hgn heven hDistinct) hPhi
-
 set_option linter.unusedFintypeInType false in
 /-- Closed Sidon bridge for roots of unity: exact order plus finite `Phi`
 injectivity certifies `SidonModNeg` for the generated root set. -/
@@ -687,21 +451,20 @@ theorem sidonModNeg_rootsFinset_of_exactOrder_phiWindowInjective
     SidonModNeg (rootsFinset g n) :=
   sidonModNeg_of_phiWindowInjective
     (additiveRelationProducesPhiCollision_rootsFinset
-      (powerRelationProducesPhiCollision_of_pow_eq_one_and_distinctAntipodalResidues
-        hn0 hgn heven
-        (rawDifferenceFactorsHaveDistinctAntipodalResidues_of_exactOrder hn0 hgn
-          hExact)))
+      (powerRelationProducesPhiCollision_of_exactOrder hn0 hgn heven hExact))
     hPhi
 
 set_option linter.unusedFintypeInType false in
 /-- Closed upstream bridge: exact order plus finite `Phi` injectivity certifies
-zero normalized G139 accidents for the generated root set. -/
+zero normalized G139 accidents for the generated root set. (`1 = g^0` lies in the root set
+since `n ≠ 0`.) -/
 theorem accidents_card_eq_zero_rootsFinset_of_exactOrder_phiWindowInjective
-    {g : F} {n : ℕ} (h1 : (1 : F) ∈ rootsFinset g n) (hgn : g ^ n = 1)
+    {g : F} {n : ℕ} (hgn : g ^ n = 1)
     (hn0 : n ≠ 0) (heven : Even n) (hExact : HasExactOrder g n)
     (hPhi : PhiWindowInjective g n) :
     (accidents (rootsFinset g n)).card = 0 :=
-  accidents_card_eq_zero_of_sidonModNeg h1
+  accidents_card_eq_zero_of_sidonModNeg
+    (mem_rootsFinset_iff.mpr ⟨0, Nat.pos_of_ne_zero hn0, pow_zero g⟩)
     (sidonModNeg_rootsFinset_of_exactOrder_phiWindowInjective hgn hn0 heven hExact hPhi)
 
 set_option linter.unusedFintypeInType false in

@@ -100,6 +100,15 @@ def new (domainSeparator : DomainSeparator U H) : HashStateWithInstructions U H 
   letI tag := generateTag domainSeparator.asBytes
   { ds := Initialize.new tag, stack := stack }
 
+/-- The sponge of a freshly initialized hash state is initialized from the Keccak tag of the domain
+separator bytes (so the tag is not discarded by the wrapper). -/
+theorem new_ds (domainSeparator : DomainSeparator U H) :
+    (new domainSeparator).ds = Initialize.new (generateTag domainSeparator.asBytes) := rfl
+
+/-- A freshly initialized hash state expects exactly the finalized operation schedule. -/
+theorem new_stack (domainSeparator : DomainSeparator U H) :
+    (new domainSeparator).stack = domainSeparator.finalize := rfl
+
 /-- Perform secure absorption of elements into the sponge.
 
 Rust interface:
@@ -296,9 +305,11 @@ def fillNextUnits (state : FSVerifierState U H) (count : Nat) :
     -- Read the required bytes
     let readBytes := state.nargString.extract 0 bytesNeeded
     let remaining := state.nargString.extract bytesNeeded state.nargString.size
-    -- Deserialize units from bytes
+    -- Deserialize units from bytes: unit `i` occupies the half-open byte range
+    -- `[i * size, (i + 1) * size)` (`ByteArray.extract` takes a start and an *end* offset).
     let units := Array.range count |>.mapM (fun i =>
-      let unitBytes := readBytes.extract (i * HasSize.size U UInt8) (HasSize.size U UInt8)
+      let unitBytes :=
+        readBytes.extract (i * HasSize.size U UInt8) ((i + 1) * HasSize.size U UInt8)
       DeserializeOption.deserialize unitBytes)
     match units with
     | some unitsArray =>
@@ -430,8 +441,10 @@ def addUnits (state : FSProverState U H R) (input : Array U) :
     Except DomainSeparatorMismatch (FSProverState U H R) :=
   match state.hashState.absorb input with
   | .ok newHashState =>
-    -- Update the prover state and proof transcript with the absorbed units.
-    .ok { rng := state.rng, hashState := newHashState, nargString := state.nargString }
+    -- Update the prover state and append the serialized units to the proof transcript
+    -- (spongefish: `U::write(input, &mut self.narg_string)`).
+    .ok { rng := state.rng, hashState := newHashState,
+          nargString := input.foldl (fun acc u => acc ++ serialize u) state.nargString }
   | .error e => .error e
 
 /-- Add a hint to the protocol transcript.
@@ -441,12 +454,17 @@ Rust interface:
 pub fn hint_bytes(&mut self, hint: &[u8]) -> Result<(), DomainSeparatorMismatch>
 ```
 -/
-def hintBytes (state : FSProverState U H R) (_hint : ByteArray) :
+def hintBytes (state : FSProverState U H R) (hint : ByteArray) :
     Except DomainSeparatorMismatch (FSProverState U H R) :=
   match state.hashState.hint with
   | .ok newHashState =>
-    -- Update the prover state with the processed hint operation.
-    .ok { rng := state.rng, hashState := newHashState, nargString := state.nargString }
+    -- Update the prover state and append the hint to the proof transcript, prefixed by its length
+    -- as 4 little-endian bytes (the format read back by `FSVerifierState.hintBytes`).
+    let len := hint.size
+    let lenBytes := ByteArray.mk #[len.toUInt8, (len >>> 8).toUInt8, (len >>> 16).toUInt8,
+      (len >>> 24).toUInt8]
+    .ok { rng := state.rng, hashState := newHashState,
+          nargString := state.nargString ++ lenBytes ++ hint }
   | .error e => .error e
 
 /-- Ratchet the protocol state.
@@ -539,3 +557,141 @@ def toVerifierState (ds : DomainSeparator U H) (transcript : ByteArray) : FSVeri
   FSVerifierState.new ds transcript
 
 end DomainSeparator
+
+/-! ## Initialization and transcript-parsing regressions -/
+
+namespace HashStateWithInstructions
+
+open CanonicalSpongeState in
+/-- For the canonical byte-unit duplex sponge with capacity at least `32`, the hash state's sponge
+is a function of the domain separator's Keccak tag that does **not** discard it: two domain
+separators whose tags differ get different initial sponges, even if their operation schedules
+(`finalize`) coincide. -/
+theorem new_ds_ne_of_generateTag_ne [SpongeSize] [Permute (CanonicalSpongeState UInt8)]
+    (hC : 32 ≤ SpongeSize.C)
+    (d₁ d₂ : DomainSeparator UInt8 (CanonicalDuplexSponge UInt8))
+    (htag : generateTag d₁.asBytes ≠ generateTag d₂.asBytes) :
+    (new d₁).ds ≠ (new d₂).ds := by
+  intro h
+  apply htag
+  have hstate := congrArg DuplexSponge.state h
+  simp only [new_ds, DuplexSponge.new_state, new_eq_ivToState] at hstate
+  exact ivToState_injective_uint8 hC hstate
+
+end HashStateWithInstructions
+
+namespace FSStateRegression
+
+/-- A trivial sponge recording the absorbed units, used only to exercise transcript parsing. -/
+structure LogSponge (U : Type) where
+  log : Array U
+deriving Inhabited, DecidableEq, Repr
+
+instance {U : Type} [SpongeUnit U] : DuplexSpongeInterface U (LogSponge U) where
+  default := ⟨#[]⟩
+  zero := ⟨#[]⟩
+  new _ := ⟨#[]⟩
+  absorbUnchecked := fun (s, arr) => ⟨s.log ++ arr⟩
+  squeezeUnchecked := fun (s, arr) => (s, arr)
+  ratchetUnchecked := id
+
+/-- A two-byte sponge unit (little-endian pair of bytes), to exercise units wider than a byte. -/
+structure Unit16 where
+  lo : UInt8
+  hi : UInt8
+deriving DecidableEq, Repr
+
+instance : Zero Unit16 := ⟨⟨0, 0⟩⟩
+
+instance : Serialize Unit16 ByteArray where
+  serialize u := ByteArray.mk #[u.lo, u.hi]
+
+instance : DeserializeOption Unit16 ByteArray where
+  deserialize bytes := if h : bytes.size = 2 then some ⟨bytes[0], bytes[1]⟩ else none
+
+instance : Serde Unit16 ByteArray where
+
+instance : HasSize Unit16 UInt8 where
+  size := 2
+  toFun := ⟨fun u => #v[u.lo, u.hi], by
+    rintro ⟨a, b⟩ ⟨c, d⟩ h
+    have h0 := congrArg (·[0]) h
+    have h1 := congrArg (·[1]) h
+    simp only [Vector.getElem_mk, List.getElem_toArray, List.getElem_cons_zero,
+      List.getElem_cons_succ] at h0 h1
+    simp [h0, h1]⟩
+
+instance : SpongeUnit Unit16 where
+
+/-- A verifier state expecting one `Absorb count` operation and reading the given bytes. -/
+def verifierState (U : Type) [SpongeUnit U] (count : Nat) (bytes : ByteArray) :
+    FSVerifierState U (LogSponge U) :=
+  { hashState := { ds := default, stack := #[DomainSeparator.Op.Absorb count] },
+    nargString := bytes }
+
+/-- A prover state expecting one `Absorb count` operation, with an empty transcript. -/
+def proverState (U : Type) [SpongeUnit U] (count : Nat) : FSProverState U (LogSponge U) Unit :=
+  { hashState := { ds := default, stack := #[DomainSeparator.Op.Absorb count] },
+    nargString := ByteArray.empty, rng := { ds := (), csrng := () } }
+
+/-- The units read by `fillNextUnits`, or `none` on error. -/
+def readUnits {U : Type} [SpongeUnit U] (st : FSVerifierState U (LogSponge U)) (count : Nat) :
+    Option (Array U) :=
+  match st.fillNextUnits count with
+  | .ok (_, units) => some units
+  | .error _ => none
+
+/-- The transcript bytes produced by the prover after `addUnits`, or `none` on error. -/
+def written {U : Type} [SpongeUnit U] (st : FSProverState U (LogSponge U) Unit)
+    (input : Array U) : Option (List UInt8) :=
+  match st.addUnits input with
+  | .ok st' => some st'.nargString.toList
+  | .error _ => none
+
+/-- Prover/verifier round trip: the units the prover writes are the units the verifier reads. -/
+def roundTrip {U : Type} [SpongeUnit U] (input : Array U) : Option (Array U) :=
+  match (proverState U input.size).addUnits input with
+  | .ok st' => readUnits (verifierState U input.size st'.nargString) input.size
+  | .error _ => none
+
+/-- Two byte units are both read (previously the second unit was parsed from an empty slice). -/
+example : readUnits (verifierState UInt8 2 (ByteArray.mk #[10, 20])) 2 = some #[10, 20] := by
+  decide +kernel
+
+/-- Units wider than one byte are read from consecutive two-byte windows. -/
+example : readUnits (verifierState Unit16 2 (ByteArray.mk #[1, 2, 3, 4])) 2 =
+    some #[⟨1, 2⟩, ⟨3, 4⟩] := by
+  decide +kernel
+
+/-- A truncated transcript is rejected. -/
+example : readUnits (verifierState Unit16 2 (ByteArray.mk #[1, 2, 3])) 2 = none := by
+  decide +kernel
+
+/-- The prover writes the serialized units into the transcript. -/
+example : written (proverState Unit16 2) #[⟨1, 2⟩, ⟨3, 4⟩] = some [1, 2, 3, 4] := by
+  decide +kernel
+
+/-- Multi-unit prover/verifier round trips, for byte units and two-byte units. -/
+example : roundTrip (#[7, 8, 9] : Array UInt8) = some #[7, 8, 9] := by
+  decide +kernel
+
+example : roundTrip (#[⟨1, 2⟩, ⟨3, 4⟩, ⟨5, 6⟩] : Array Unit16) = some #[⟨1, 2⟩, ⟨3, 4⟩, ⟨5, 6⟩] := by
+  decide +kernel
+
+/-- Hint round trip: the verifier reads back exactly the hint bytes the prover wrote. -/
+def hintRoundTrip (hint : ByteArray) : Option (List UInt8) :=
+  let hs : HashStateWithInstructions UInt8 (LogSponge UInt8) :=
+    { ds := default, stack := #[DomainSeparator.Op.Hint] }
+  let st : FSProverState UInt8 (LogSponge UInt8) Unit :=
+    { hashState := hs, nargString := ByteArray.empty, rng := { ds := (), csrng := () } }
+  match st.hintBytes hint with
+  | .ok st' =>
+    match (FSVerifierState.hintBytes { hashState := hs, nargString := st'.nargString }) with
+    | .ok (_, h) => some h.toList
+    | .error _ => none
+  | .error _ => none
+
+example : hintRoundTrip (ByteArray.mk #[5, 6, 7]) = some [5, 6, 7] := by
+  decide +kernel
+
+end FSStateRegression

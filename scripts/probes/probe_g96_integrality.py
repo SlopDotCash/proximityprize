@@ -6,11 +6,17 @@ power sums from N0 counts), pin the head coefficients e_1..e_3 (= depth-3 data
 P1=-1, P2=p-n, P3), and search monic ZZ[X] of degree m with that head, all real roots,
 |roots| <= n, maximizing the house.  Compare: ZZ-max vs real-relaxation max vs true M.
 Also: discriminant + Mahler measure of true poly and of the ZZ-escape witness.
+
+Scope: the integer power sums / Newton coefficients are exact.  The real-relaxation value is
+a grid-scan numerical lower estimate (see relax_depth3), and the all-real-roots tests,
+houses, discriminants and Mahler measures come from floating NumPy root finding; they are
+diagnostics that need exact certification (e.g. Sturm sequences) before claiming
+all-real-rooted witnesses or rigorous extrema.
 """
 import numpy as np
 from itertools import product
 from fractions import Fraction
-from probe_g96_extremal import period_values, primitive_root
+from probe_g96_extremal import period_values, primitive_root, scan_max_feasible
 
 def exact_power_sums(p, n, Rmax):
     """P_r for the distinct-value set, exactly, via N0(r) counts (integer DP mod p)."""
@@ -114,9 +120,14 @@ def exhaustive_m5(p, n, e, M, relax3):
               f"ZZ-max/relax = {h/relax3:.4f}")
     return found
 
-def relax_depth3(Ps, m, n):
+def relax_depth3(Ps, m, n, known=()):
     """real relaxation with P1,P2,P3 pinned: spike H (either sign) + bulk measure mass m-1
-    on [-n,n]: odd-truncated Hankel feasibility, binary search."""
+    on [-n,n]: odd-truncated Hankel feasibility.
+
+    The feasible set of spike heights need not be an interval, so this uses the grid scan
+    ``scan_max_feasible`` from probe_g96_extremal (no monotone bisection).  The result is a
+    numerical lower estimate of the relaxation sup (floored at the ``known`` feasible heights,
+    e.g. the true period house M), not a certified upper bound."""
     P = [float(x) for x in Ps]
     def feas1(H):
         mu = [1.0]
@@ -130,13 +141,8 @@ def relax_depth3(Ps, m, n):
         return all(np.linalg.eigvalsh(A).min() >= -tol*max(1e-30, np.abs(A).max())
                    for A in (H1, L1, L2))
     def feas(H): return feas1(H) or feas1(-H)
-    lo, hi = 0.0, float(n)
-    if feas(hi-1e-12): return hi
-    for _ in range(60):
-        mid = 0.5*(lo+hi)
-        if feas(mid): lo = mid
-        else: hi = mid
-    return lo
+    best, _ = scan_max_feasible(feas, n, known=known)
+    return max([best if best is not None else 0.0] + [float(abs(h)) for h in known])
 
 def rounding_search(p, n, Dpin=3, tries=40000, seed=0):
     """larger m: sample near-escape root configurations, round tail coefficients to ZZ,
@@ -149,7 +155,7 @@ def rounding_search(p, n, Dpin=3, tries=40000, seed=0):
     e1, e2, e3 = int(e[1]), int(e[2]), int(e[3])
     vals = np.sort(period_values(p, n))
     M = np.abs(vals).max()
-    relax3 = relax_depth3(Ps + [0]*3, m, n)
+    relax3 = relax_depth3(Ps + [0]*3, m, n, known=(M,))
     best = (0.0, None)
     P1, P2, P3 = float(Ps[1]), float(Ps[2]), float(Ps[3])
     for t in range(tries):
@@ -199,7 +205,7 @@ def rounding_search(p, n, Dpin=3, tries=40000, seed=0):
 if __name__ == "__main__":
     # exact + exhaustive at m=5
     Ps, e, ct, vals, M = run_small(41, 8)
-    relax3 = relax_depth3([float(x) for x in Ps[:4]], 5, 8)
+    relax3 = relax_depth3([float(x) for x in Ps[:4]], 5, 8, known=(M,))
     print(f"real-relaxation max-house(depth 3) = {relax3:.4f}")
     exhaustive_m5(41, 8, e, M, relax3)
     # exact polys at m=9, 11 (integrality sanity + disc/Mahler) and rounding search

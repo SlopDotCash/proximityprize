@@ -6,26 +6,32 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSaturationSharp
 
 /-!
-# The MAJORITY saturation law — `ε_mca ≥ 1/2` under the same hypotheses (#389)
+# The half-field saturation law — `ε_mca ≥ ⌊q/2⌋/q` under the same hypotheses (#389)
 
 `DeepBandSaturationSharp.deep_band_saturation_sharp_*` discharges the sharp moment
 budget with the optimal mass `L = 2⌊P/q^(m+1)⌋` and the **conservative** witness weight
-`W = q/8`, yielding `ε_mca ≥ (q/8)/q = 1/8`.  That constant was needlessly small: the
-budget margin (`LHS ≤ ~1.9·P²` vs `RHS ≥ 3.5·P²`) leaves a factor-4 slack.  Spending it
-raises the weight to `W = q/2` — a **majority** of the field's scalars fail the MCA test —
-**under the exact same two binomial conditions** (`8·q^(m+1) ≤ C(n,t)` and
+`W = ⌊q/8⌋`, yielding `ε_mca ≥ ⌊q/8⌋/q` (about `1/8`).  That constant was needlessly
+small: the budget margin (`LHS ≤ ~1.9·P²` vs `RHS ≥ 3.5·P²`) leaves a factor-4 slack.
+Spending it raises the weight to `W = ⌊q/2⌋` (natural-number division) **under the exact
+same two binomial conditions** (`8·q^(m+1) ≤ C(n,t)` and
 `4·C(t,k+1)·C(n−k−1,m)·q^m ≤ C(n,t)`).
 
 > **`deep_band_saturation_majority_count`** — at every band-`m` radius, every domain,
-> under the same `H1`/`H2'` as the sharp law: some stack carries at least `q/2` bad
-> scalars — `ε_mca(RS[F,dom,k], δ) ≥ (q/2)/q = 1/2`.
+> under the same `H1`/`H2'` as the sharp law: some stack carries at least `⌊q/2⌋` bad
+> scalars — `ε_mca(RS[F,dom,k], δ) ≥ ⌊q/2⌋/q`.
+
+Precision on the constant: `⌊q/2⌋/q` equals `1/2` only for even `q` (and then exactly
+half the scalars is not a strict majority); for odd `q` it is `(q−1)/(2q) < 1/2`.  So the
+proved statement is "at least `⌊q/2⌋` bad scalars", not "`ε_mca ≥ 1/2`" and not a strict
+majority; the names `*_majority_*` are historical.  No ceiling-half / strict-majority
+improvement is proved here (nor refuted).
 
 The arithmetic core is `saturation_arith_majority`: `2·W·B ≤ A²` (the only fact about
-`W` used) plus `s ≥ 8` close the budget with `W = q/2`.  Honest scope: this strengthens
-the *constant-mass* failure statement to a *majority-mass* one on the already-covered band
-region; it does not move the band region itself (that is `deep_band_saturation_sharp`'s
-factor-`q` widening) and does not pin `δ*` — the window-interior core stays the open
-list-decoding problem.
+`W` used) plus `s ≥ 8` close the budget with `W = ⌊q/2⌋`.  Honest scope: this strengthens
+the *constant-mass* failure statement to a *half-field-mass* (`⌊q/2⌋`) one on the
+already-covered band region; it does not move the band region itself (that is
+`deep_band_saturation_sharp`'s factor-`q` widening) and does not pin `δ*` — the
+window-interior core stays the open list-decoding problem.
 
 Issue #389.
 -/
@@ -40,7 +46,8 @@ open ProximityGap.SpikeFloor ProximityGap ProximityGap.Ownership Code
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {n : ℕ} [NeZero n]
 
-/-- **The majority saturation arithmetic.**  With `q·B = A²`, `s = P/A`, `W = q/2`:
+/-- **The half-field saturation arithmetic.**  With `q·B = A²`, `s = P/A`, `W = q/2`
+(natural division, i.e. `⌊q/2⌋`):
 the budget `P² + Ddeep + P·A + (2s)²·W·B ≤ 2·(2s)·P·A` holds whenever `8A ≤ P` and
 `4·Ddeep ≤ P²`.  The only property of `W` used is `2·W ≤ q` (hence `2·W·B ≤ A²`); the
 factor-4 budget slack absorbs the four-fold-larger witness weight. -/
@@ -85,7 +92,8 @@ theorem saturation_arith_majority {P A B q Ddeep s W : ℕ}
 open Classical in
 /-- **THE MAJORITY SATURATION LAW (count form).**  At every band-`m` radius, every
 evaluation domain: under the **same** two binomial conditions as the sharp law, some
-stack carries at least `q/2` bad scalars — a *majority* of the field. -/
+stack carries at least `⌊q/2⌋` bad scalars (natural division: exactly half the field for
+even `q`, `(q−1)/2` for odd `q` — not a strict majority). -/
 theorem deep_band_saturation_majority_count (dom : Fin n ↪ F) {k m : ℕ}
     (hk : 1 ≤ k) {δ : ℝ≥0}
     (hhi : (1 - δ) * (Fintype.card (Fin n) : ℝ≥0) ≤ ((k + m + 1 : ℕ) : ℝ≥0))
@@ -173,7 +181,8 @@ theorem deep_band_saturation_majority_count (dom : Fin n ↪ F) {k m : ℕ}
     _ ≤ _ := hV
 
 open Classical in
-/-- **THE MAJORITY SATURATION LAW (`ε_mca` form):** `ε_mca ≥ (q/2)/q = 1/2`. -/
+/-- **THE HALF-FIELD SATURATION LAW (`ε_mca` form):** `ε_mca ≥ ⌊q/2⌋/q`, which is `1/2`
+for even `q` and `(q−1)/(2q) < 1/2` for odd `q`. -/
 theorem deep_band_saturation_majority_eps (dom : Fin n ↪ F) {k m : ℕ}
     (hk : 1 ≤ k) {δ : ℝ≥0}
     (hhi : (1 - δ) * (Fintype.card (Fin n) : ℝ≥0) ≤ ((k + m + 1 : ℕ) : ℝ≥0))
@@ -198,7 +207,8 @@ theorem deep_band_saturation_majority_eps (dom : Fin n ↪ F) {k m : ℕ}
     exact (Finset.mem_filter.mp hγ).2
 
 open Classical in
-/-- **THE MAJORITY SATURATION LAW (`δ*` ledger form).** -/
+/-- **THE HALF-FIELD SATURATION LAW (`δ*` ledger form):** `mcaDeltaStar ≤ δ` for every
+`ε* < ⌊q/2⌋/q`. -/
 theorem deep_band_saturation_majority_deltaStar (dom : Fin n ↪ F) {k m : ℕ}
     (hk : 1 ≤ k) {δ : ℝ≥0}
     (hhi : (1 - δ) * (Fintype.card (Fin n) : ℝ≥0) ≤ ((k + m + 1 : ℕ) : ℝ≥0))

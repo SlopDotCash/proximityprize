@@ -26,12 +26,17 @@ The composition (`epsMCA_le_max_sparse_badScalarCount`):
   `ε_mca(C, δ) ≤ max( 1/q , (max badScalarCount over sparseRows(s₀) × sparseRows(s₁)) / q )`
 
 where `sparseRows s` is the **explicit, decidable** `Finset` of rows vanishing on some set
-of size `≥ s`, at `s₀ = ⌈(1−3δ)n⌉₊`, `s₁ = ⌈(1−2δ)n⌉₊`. For interior radii the sparse sets
-are exponentially smaller than the `q^{n−k}` syndrome classes (rows of Hamming weight
-`≤ 3δn` resp. `≤ 2δn`), so the upper-bound side of an exact rung becomes a small finite
-sweep over almost-codeword deviations plus the `1/q` floor — the computational engine for
-exact `ε_mca` upper bounds at the rungs beyond `n = 4` (the registered
-monomial-orbit-extremality conjecture's falsifier (i)).
+of size `≥ s`, at `s₀ = ⌈(1−3δ)n⌉₊`, `s₁ = ⌈(1−2δ)n⌉₊` (rows of Hamming weight `≤ n − s₀`
+resp. `≤ n − s₁`). The sweep is always **finite and decidable**, but it is **not** in general
+smaller than the `q^{n−k}` syndrome classes: no size bound on `sparseRows` is proved here,
+and at interior radii the first threshold can collapse. Example: `n = 8`, `k = 4`, `δ = 3/8`
+gives `1 − 3δ = 0` (truncated), so `s₀ = 0` and the first pool is all `q⁸` words, larger
+than the `q⁴` syndromes. The first-row threshold `(1−3δ)` is inherited from the weak
+`u0_close_of_two_bad`; the sharp `SparseDeviationExtremality.rows_close_common_of_two_bad`
+gives `(1−2δ)` for both rows on a common set, but this file has not been rebased on it
+(audit finding PG-146). An efficient sweep for exact `ε_mca` upper bounds at the rungs
+beyond `n = 4` (the registered monomial-orbit-extremality conjecture's falsifier (i)) needs
+explicit pool-size/radius bounds, which remain to be supplied.
 
 Everything here is unconditional; the `max` with `1/q` is exactly the price of the
 sparse-deviation reduction (`rows_close_of_two_bad`: a stack with two bad scalars *must*

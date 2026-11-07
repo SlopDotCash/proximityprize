@@ -94,8 +94,12 @@ the *far-line-incidence* object, the monomial-pair already saturates a full dila
 the runs that completed (the full-field hill-climb at `(12,6)` is `O(p·C(n,k))` per move and timed
 out — a *throughput* limit, not a finding). This is consistent with: monomial directions are
 *extremal* for far-line incidence (dilation-fixed points maximize the orbit-union count), even
-though they are *not* extremal for the un-symmetrized max-list. The two objects coincide only up to
-the proven `⌊n/w⌋` factor (`LineCodewordIncidence.line_list_incidence_le`).
+though they are *not* extremal for the un-symmetrized max-list. The two objects are **not**
+equivalent: `LineCodewordIncidence.line_list_incidence_le` bounds far-line incidence by `⌊n/w⌋`
+times the *line-union* list (codewords close to some point of the line), not by a point-centred
+list around one received word, and no reduction between the two is proved (see that module's
+docstring for an `F₇` example where the union list is `3` while every point-centred list is
+at most `1`).
 
 ## Artifacts
 - `scripts/probes/wf407_T389-02-hill_v3.py` — exact list-decode engine + monomial-pair scan

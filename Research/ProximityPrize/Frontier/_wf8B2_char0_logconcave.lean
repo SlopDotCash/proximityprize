@@ -8,10 +8,14 @@ import ArkLib.Data.CodingTheory.ProximityGap.RungBesselEnergy
 /-!
 # Char-0 W3-anti: the Wick step-ratio `R(r)` is antitone (lane B2, #444)
 
-This lane closes the **characteristic-zero** half of the step-ratio monotonicity inequality
-[W3-anti] of the proximity-prize moment reduction, by reducing it *exactly* — pure rational
-arithmetic, axiom-clean — to a **named, classically proven** inequality on the Bessel power
-coefficients `besselCoeff d r = [x^r] I₀(2√x)^d` (`RungBesselEnergy.lean`).
+This lane gives a **conditional reduction** of the **characteristic-zero** half of the
+step-ratio monotonicity inequality [W3-anti] of the proximity-prize moment reduction: it reduces
+it *exactly* — pure rational arithmetic, axiom-clean — to the hypothesis `SharpNewtonBessel d`, a
+named inequality on the Bessel power coefficients `besselCoeff d r = [x^r] I₀(2√x)^d`
+(`RungBesselEnergy.lean`).  That inequality is a classical literature result but is **not proven
+in Lean** in general: in-tree it is discharged only for `d = 1` (`_wfL2_sharpnewton_discharge`)
+and at the low rungs `r = 1` (`CharZeroSharpNewtonBase`) and `r = 2` (`CharZeroSharpNewtonR2`).
+So this file does NOT close char-0 W3-anti; it is closed exactly where `SharpNewtonBessel d` is.
 
 ## The object
 
@@ -23,7 +27,7 @@ For `μ_n` (`n = 2d`) the exact char-0 additive energy is `E_r = (2r)!·besselCo
 
 The step ratio is `R d r := mNorm d (r+1) / mNorm d r`. The prize **F1 telescope** consumes
 `R(r) ≤ 1 ∀r ⇒ mNorm ≤ 1 ⇒ M(r) ≤ W_r ⇒ prize`. Antitonicity (`R(r+1) ≤ R(r)`) together with
-the unconditional base `R(0) < 1` delivers exactly `R(r) ≤ 1 ∀r`.
+the unconditional base `R(0) = 1` (`R_zero_eq_one`) delivers exactly `R(r) ≤ 1 ∀r`.
 
 ## What is PROVEN here (axiom-clean: `propext, Classical.choice, Quot.sound`)
 
@@ -34,9 +38,11 @@ the unconditional base `R(0) < 1` delivers exactly `R(r) ≤ 1 ∀r`.
   `R d (r+1) ≤ R d r  ⟺  (r+2)·c_{r+2}·c_r ≤ (r+1)·c_{r+1}²`.
   (Reindexed: `R` antitone at `r ⟺` the **sharp Newton inequality** `r·c_r² ≥ (r+1)·c_{r-1}c_{r+1}`.)
 * `R_le_one_of_antitone` — antitone + `R 0 ≤ 1 ⇒ R r ≤ 1 ∀r` (the telescope's monotone consumer).
-* `char0_W3anti_of_sharpNewton` — the headline: the sharp-Newton hypothesis ⇒ `R r ≤ 1 ∀r`.
+* `mNorm_logConcave_of_sharpNewton` — the sharp-Newton hypothesis ⇒ `R` antitone.
+* `char0_W3anti_of_sharpNewton` — the headline (conditional on `SharpNewtonBessel d`):
+  the sharp-Newton hypothesis ⇒ `R r ≤ 1 ∀r`.
 
-## The one named input (NOT open — classical)
+## The one named input (classical in the literature; a hypothesis here, not proven in Lean)
 
 `SharpNewtonBessel d := ∀ r ≥ 1, (r+1)·c_{r-1}·c_{r+1} ≤ r·c_r²`. This is the
 **Laguerre–Pólya class type-I second-quotient theorem** (the entire-function analogue of
@@ -69,7 +75,7 @@ Craven–Csordas, *complex-zero-decreasing sequences*; Nguyen–Vishnyakova, arX
 **Adversarial note (tightness):** the slack `q_{r+1}·r/(r+1)` → `1` as `d → ∞` (e.g. at `r=1`,
 `q_1/2 = 2d/(2d-1) → 1`), so the inequality is *asymptotically tight* at the prize scale and
 admits no crude positive-slack elementary proof — the sharp constant `(r+1)/r` is forced,
-confirming the LP-I content is genuinely required (and is what makes this the *char-0* closure;
+confirming the LP-I content is genuinely required (and is the missing input of this *char-0* reduction;
 the char-`p` transfer of this monotonicity is the separate lane B3).
 
 Verified exactly (rationals, `besselCoeff` recomputed): `min_r r·c_r²/((r+1)c_{r-1}c_{r+1}) > 1`
@@ -228,7 +234,8 @@ theorem R_zero_eq_one (hd : 1 ≤ d) : Rstep d 0 = 1 := by
   unfold Rstep
   rw [mNorm_one hd, mNorm_zero]; norm_num
 
-/-- **The named LP-I input** (classical, NOT open): the *sharp Newton inequality* for the Bessel
+/-- **The named LP-I input** (classical in the literature, but NOT proven in Lean in general — it
+is a hypothesis of this file's headline): the *sharp Newton inequality* for the Bessel
 power coefficients `c_r = besselCoeff d r`. Equivalent to the Laguerre–Pólya type-I second
 quotient bound `c_r²/(c_{r-1}c_{r+1}) ≥ (r+1)/r` for the LP-I function `I₀(2√x)^d`. -/
 def SharpNewtonBessel (d : ℕ) : Prop :=
@@ -270,12 +277,10 @@ theorem R_le_one_of_antitone (hanti : ∀ r, Rstep d (r + 1) ≤ Rstep d r)
   | zero => exact hbase
   | succ k ih => exact le_trans (hanti k) ih
 
-/-- **Headline (char-0 W3-anti).** The sharp-Newton LP-I hypothesis gives the full telescope
-input `R d r ≤ 1 ∀ r`, hence (via the in-tree F1 telescope) `mNorm d r ≤ 1 ∀ r`. -/
-theorem char0_W3anti_of_sharpNewton (hd : 1 ≤ d) (hSN : SharpNewtonBessel d) :
-    ∀ r, Rstep d r ≤ 1 := by
-  apply R_le_one_of_antitone _ (le_of_eq (R_zero_eq_one hd))
-  intro r
+/-- `mNorm` log-concavity ⇔ `R` antitone: from the sharp-Newton input, consecutive ratios
+decrease, i.e. `mNorm` is log-concave. -/
+theorem mNorm_logConcave_of_sharpNewton (hd : 1 ≤ d) (hSN : SharpNewtonBessel d) (r : ℕ) :
+    Rstep d (r + 1) ≤ Rstep d r := by
   rw [R_antitone_iff_sharpNewton hd r]
   -- `SharpNewtonBessel` at index `r+1` is exactly `(r+2)·c_r·c_{r+2} ≤ (r+1)·c_{r+1}²`.
   have h := hSN (r + 1) (by omega)
@@ -283,15 +288,12 @@ theorem char0_W3anti_of_sharpNewton (hd : 1 ≤ d) (hSN : SharpNewtonBessel d) :
   push_cast at h ⊢
   nlinarith [h]
 
-/-- `mNorm` log-concavity ⇔ `R` antitone, recorded as the named equivalence: from the
-sharp-Newton input, consecutive ratios decrease, i.e. `mNorm` is log-concave. -/
-theorem mNorm_logConcave_of_sharpNewton (hd : 1 ≤ d) (hSN : SharpNewtonBessel d) (r : ℕ) :
-    Rstep d (r + 1) ≤ Rstep d r := by
-  rw [R_antitone_iff_sharpNewton hd r]
-  have h := hSN (r + 1) (by omega)
-  simp only [Nat.add_sub_cancel] at h
-  push_cast at h ⊢
-  nlinarith [h]
+/-- **Headline (char-0 W3-anti, conditional).** The sharp-Newton LP-I hypothesis
+`SharpNewtonBessel d` (not proven in Lean in general) gives the full telescope input
+`R d r ≤ 1 ∀ r`, hence (via the in-tree F1 telescope) `mNorm d r ≤ 1 ∀ r`. -/
+theorem char0_W3anti_of_sharpNewton (hd : 1 ≤ d) (hSN : SharpNewtonBessel d) :
+    ∀ r, Rstep d r ≤ 1 :=
+  R_le_one_of_antitone (mNorm_logConcave_of_sharpNewton hd hSN) (le_of_eq (R_zero_eq_one hd))
 
 end ProximityGap.PrizeWorkbench
 

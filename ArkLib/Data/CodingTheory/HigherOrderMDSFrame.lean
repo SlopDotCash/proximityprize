@@ -21,8 +21,9 @@ sets force shared columns, so the abstract `min(k, Σ codim)` value only applies
 
 ## Results
 
-* `IsMDSFrame` — every `≤ k` columns are linearly independent (the ordinary MDS
-  condition on the frame; for RS this is the Vandermonde determinant).
+* `IsMDSFrame` — distinct columns, every `≤ k` of them linearly independent (the ordinary MDS
+  condition on the frame for `k ≥ 2`; for `k = 1` the injectivity convention is strictly
+  stronger and excludes the repetition code; for RS this is the Vandermonde determinant).
 * `finrank_frameSpan` — under `IsMDSFrame`, `finrank (frameSpan K v J) = |J|` for
   `|J| ≤ k`, so `codim (frameSpan K v J) = k − |J|`.
 * `IsHigherMDS` — higher-order MDS of order `ℓ`: all `ℓ`-families of **pairwise disjoint**
@@ -51,7 +52,14 @@ noncomputable def frameSpan (K : Type*) [Field K] [Module K V] (v : ι → V)
 
 /-- An **MDS frame**: the columns are distinct and every `≤ finrank V` of them are
 linearly independent.  (For a Reed–Solomon generator this is the Vandermonde
-nonvanishing; equivalently the code is ordinary MDS.) -/
+nonvanishing.)
+
+Convention: the injectivity requirement makes this slightly *stronger* than the ordinary
+MDS property of the generated code.  When `finrank K V ≥ 2`, independence of every pair of
+columns already forces distinct columns, so for message dimension `k ≥ 2` `IsMDSFrame` is
+equivalent to the code being ordinary MDS.  For `k = 1` it is not: the `[n,1,n]` repetition
+code (all columns equal to `1`) is MDS but its column family is not injective for `n ≥ 2`, so
+it is excluded.  All Reed–Solomon constructors here assume `2 ≤ k`. -/
 def IsMDSFrame (K : Type*) [Field K] [Module K V] (v : ι → V) : Prop :=
   Function.Injective v ∧
     ∀ J : Finset ι, J.card ≤ finrank K V →

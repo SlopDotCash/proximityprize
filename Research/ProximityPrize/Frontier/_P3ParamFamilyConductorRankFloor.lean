@@ -39,8 +39,10 @@ never the single-`b` sup. So P3 **reduces-to-BGK**: the pointwise `O(1)`-conduct
 here (this file), and the residual on-average content is the recognized open wall.
 
 **Numerics** (`scripts/probes/probe_p3_bparam_conductor_verdict.py`, proper `μ_n`, generic primes,
-`p ~ n^4 ≫ n^3`, `p−1 ≠ n`): `Var_b‖η_b‖² = n` to four decimals (rank-forcing), and the effective
-constant `c_eff = M/√(Var) = M/√n` is `2.78, 3.59, 4.25, 4.57` at `n = 8,16,32,64` — **NOT bounded**
+`p ~ n^4 ≫ n^3`, `p−1 ≠ n`): the Parseval mean `E_b‖η_b‖² = n` (equivalently the complex
+variance of `η_b`) to four decimals (rank-forcing) — *not* the variance of `‖η_b‖²`, which is
+`≈ 2n² − 3n` (audit 2026-10-28) — and the effective constant `c_eff = M/√(E_b‖η_b‖²) = M/√n` is
+`2.78, 3.59, 4.25, 4.57` at `n = 8,16,32,64` — **NOT bounded**
 (refuting `O(1)` conductor), tracking `√(log p)` (`c_eff/√(log p)` rises `0.85→1.00→1.10→1.11`,
 the prize-target slack), and the literal prize ratio `M/√(n·log m)` is bounded `≈1.0–1.3`.
 

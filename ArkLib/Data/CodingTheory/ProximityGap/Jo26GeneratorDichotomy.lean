@@ -32,9 +32,16 @@ factor *vanishes* for special generators. This file formalizes the boundary:
 set per bad seed (as Lemma 4.1 does); the factor-removal theorem needs it for every stack.
 The sharpness side — generators where uniform obstruction *fails* and `A(q,s)` is attained —
 is the codimension-1 content of `SubspaceAvoidance.card_linearForm_kernel_eq`: a single
-proper subspace can absorb at most `q^{s−1}` combiners, so `q` genuinely-distinct
-codimension-1 obstructions can exhaust the nonzero combiners; the formal matching *generator*
-construction is left open (recorded in the docstring, not fabricated).
+proper subspace can absorb at most `q^{s−1}` combiners. **`q` obstructions are never enough:**
+the covering lemma `exists_nonzero_notMem_of_proper_family` used above shows that *any*
+`F`-indexed (so `q`-member) family of proper subspaces misses some nonzero vector (already the
+crude union bound gives at most `1 + q·(q^{s−1} − 1) = q^s − q + 1 < q^s` vectors in `q`
+hyperplanes). Exhausting all nonzero combiners for `s ≥ 2` needs at least `q + 1`
+codimension-1 obstructions, and in dimension `s = 2` the `q + 1` lines through the origin
+(the points of `ℙ¹(F_q)`) attain this. Accordingly the in-tree A3 sharpness instance
+(`A3InstanceCore`, `A3InstanceBadness`) uses `q + 1` blocks indexed by `Option F`; see those
+modules for which legs of that construction are proved. The full matching *generator*
+construction is not completed in this file.
 -/
 
 open Finset NNReal Code

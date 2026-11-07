@@ -21,10 +21,17 @@ divisible by `p^r` whenever `r` distinct conjugates `f(ζ^j)` vanish modulo `p`.
 those facts as the bundled hypotheses `hN_ne, hN_dvd` (and `hN_prod` for the size half), noting
 they require the cyclotomic / `Algebra.norm` / `NumberField` machinery.
 
-**This file PROVES that input axiom-clean**, using Mathlib's number-field norm machinery, and is
-fully unconditional (no `sorry`, no custom axiom).  It works for an arbitrary Galois number field
-`K` (the cyclotomic field `ℚ(ζ_m)` is the intended instance).  The three pieces from the target
-spec are:
+**This file proves the norm-side part of that input axiom-clean** (no `sorry`, no custom axiom),
+using Mathlib's number-field norm machinery, for an arbitrary Galois number field `K` (the
+cyclotomic field `ℚ(ζ_m)` is the intended instance).  **Scope caveat:** "`f(σ ξ)` vanishes mod `p`"
+is formalized throughout as divisibility by the *principal ideal* `p · 𝓞 K`
+(`(p : 𝓞 K) ∣ f(σ ξ)`), **not** as vanishing after reduction to a residue field `𝓞 K / P` at one
+prime `P` above `p`.  The latter only gives `f(σ ξ) ∈ P`, which need not lie in `p · 𝓞 K`.  Example:
+`K = ℚ(i)`, `p = 5`, reduction `i ↦ 2` in `F_5`, `f = X − 2`: `f(i) = i − 2` reduces to `0` and has
+norm `5`, but `5 ∤ i − 2` in `ℤ[i]` (that would force `25 = N(5) ∣ N(i − 2) = 5`).  So the original
+finite-field conjugate-vanishing input is **not** discharged here; closing it needs a prime-ideal
+decomposition / valuation argument (splitting of `p` and the correspondence between distinct
+conjugates and distinct primes above `p`), which is not formalized.  The three pieces proved are:
 
 * **(i) `N` is a rational integer** — `Algebra.norm ℤ x : ℤ` for `x ∈ 𝓞 K`, and
   `Algebra.coe_norm_int : (Algebra.norm ℤ x : ℚ) = Algebra.norm ℚ (x : K)` (Mathlib).
@@ -33,18 +40,21 @@ spec are:
   `Algebra.norm_ne_zero_iff`.
 * **(iii) `p^r ∣ N`** — `prime_pow_dvd_norm_int_of_conjugates_vanish`: the norm is the product
   of the Galois conjugates `σ(x)` over `Gal(K/ℚ)` (`norm_eq_prod_automorphisms`, lifted to
-  `𝓞 K` by `norm_int_eq_prod_galRestrictO`); `r` conjugates each divisible by `p` contribute
+  `𝓞 K` by `norm_int_eq_prod_galRestrictO`); `r` conjugates each divisible by `p` in `𝓞 K`
+  (i.e. lying in `p · 𝓞 K`) contribute
   `p^r` to the product (`pow_card_dvd_prod_of_subset`); and the integer divisibility descends
   from `𝓞 K` to `ℤ` because `ℤ` is integrally closed in `ℚ`
   (`int_dvd_of_dvd_in_ringOfIntegers`).
 
 The packaged consumer `prime_pow_le_norm_aeval` produces, for a `±1` (or any integer) polynomial
-`f` and a primitive root `ξ : 𝓞 K`, the clean inequality `p^r ≤ |Algebra.norm ℤ (f(ξ))|` from
-`r` distinct conjugates vanishing mod `p` — exactly `BadPrimeBound`'s `bad_prime_pow_le` with the
-Galois divisibility input now *proven*.  The archimedean size half (`house_aeval_rootOfUnity_le`
-+ `abs_norm_le_house_pow`) gives the matching upper bound `|N| ≤ (Σ|coeff|)^{[K:ℚ]}`, so the
-fully assembled `bad_prime_galois_unconditional` is `p^r ≤ (Σ|coeff f|)^{[K:ℚ]}` with **no
-hypotheses about `N` at all** — the bad-prime soundness bound is now unconditional.
+`f` and a primitive root `ξ : 𝓞 K`, the inequality `p^r ≤ |Algebra.norm ℤ (f(ξ))|` from
+`r` distinct conjugates each divisible by `p` in `𝓞 K` — `BadPrimeBound`'s `bad_prime_pow_le`
+with `N ≠ 0` and `p^r ∣ N` derived from that principal-ideal divisibility.  The archimedean size
+half (`house_aeval_rootOfUnity_le` + `abs_norm_le_house_pow`) gives the matching upper bound
+`|N| ≤ (Σ|coeff|)^{[K:ℚ]}`, so the assembled `bad_prime_galois_unconditional` is
+`p^r ≤ (Σ|coeff f|)^{[K:ℚ]}` with no hypotheses about `N` itself.  Despite its name it is still
+**conditional** on the hypothesis `h : ∀ σ ∈ T, (p : 𝓞 K) ∣ f(σ ξ)`; it does not follow from
+vanishing modulo a single prime `P` above `p` (see the scope caveat above).
 -/
 
 set_option autoImplicit false
@@ -159,8 +169,10 @@ theorem prime_pow_dvd_norm_int_of_conjugates_vanish [IsGalois ℚ K]
 
 /-- **(ii)+(iii) packaged for the bad-prime gate.**  For an integer polynomial `f`, a primitive
 root `ξ : 𝓞 K` with `f(ξ) ≠ 0`, and `r := #T` distinct automorphisms each making
-`f(σ ξ) ≡ 0 mod p`, the rational integer `N := Algebra.norm ℤ (f(ξ))` satisfies `p^r ≤ |N|`.
-This is `BadPrimeBound.bad_prime_pow_le` with the Galois divisibility input now *proven*. -/
+`f(σ ξ) ≡ 0 mod p · 𝓞 K` (divisibility by the principal ideal, hypothesis `h`), the rational
+integer `N := Algebra.norm ℤ (f(ξ))` satisfies `p^r ≤ |N|`.  This is
+`BadPrimeBound.bad_prime_pow_le` with `N ≠ 0` and `p^r ∣ N` derived from `h`; vanishing modulo a
+single prime `P` above `p` does not imply `h` (module docstring). -/
 theorem prime_pow_le_norm_aeval [IsGalois ℚ K]
     {p : ℕ} (hp : (p : ℤ) ≠ 0) (ξ : 𝓞 K) (f : Polynomial ℤ)
     (hne : aeval ξ f ≠ 0) (T : Finset (K ≃ₐ[ℚ] K))
@@ -236,16 +248,18 @@ theorem abs_norm_le_house_pow (α : K) :
     _ = house α ^ finrank ℚ K := by
         rw [AlgHom.card_of_splits ℚ K ℂ (fun _ ↦ IsAlgClosed.splits _)]
 
-/-! ### The fully assembled UNCONDITIONAL bad-prime bound -/
+/-! ### The assembled bad-prime bound (conditional on principal-ideal divisibility) -/
 
-/-- **The bad-prime bound, fully unconditional.**  Let `K = ℚ(ζ)` be a Galois number field,
-`ξ : 𝓞 K` a root of unity of order `k ≠ 0`, and `f ∈ ℤ[X]` with `f(ξ) ≠ 0`.  If `r := #T`
-distinct automorphisms `σ ∈ T` each make `f(σ ξ) ≡ 0 mod p`, then
+/-- **The bad-prime bound, with the norm inputs discharged.**  Let `K = ℚ(ζ)` be a Galois number
+field, `ξ : 𝓞 K` a root of unity of order `k ≠ 0`, and `f ∈ ℤ[X]` with `f(ξ) ≠ 0`.  If `r := #T`
+distinct automorphisms `σ ∈ T` each make `f(σ ξ)` divisible by `p` in `𝓞 K` (hypothesis `h`), then
 `p^r ≤ (Σ_{i ≤ deg f}|coeff f i|)^{[K:ℚ]}`.
 
 For `f` a `±1` polynomial of degree `< 2k` this is `p^r ≤ (2k)^{φ(4k)}` — the
-`BadPrimeBound.bad_prime_pow_le_of_modulus_prod` conclusion with **every** Galois-norm input
-(`N ≠ 0`, `p^r ∣ N`, `|N| ≤ …`) now *proven*, not hypothesised. -/
+`BadPrimeBound.bad_prime_pow_le_of_modulus_prod` conclusion with the norm inputs
+(`N ≠ 0`, `p^r ∣ N`, `|N| ≤ …`) proven from `h`.  The name notwithstanding, the theorem is
+conditional on `h`, which is stronger than vanishing after reduction modulo one prime `P ∣ p`
+(e.g. `ℚ(i)`, `p = 5`, `f = X − 2`); the finite-field input is not closed here. -/
 theorem bad_prime_galois_unconditional [IsGalois ℚ K]
     {p k : ℕ} (hp : (p : ℤ) ≠ 0) (hk : k ≠ 0) {ξ : 𝓞 K} (hξ : (ξ : K) ^ k = 1)
     (f : Polynomial ℤ) (hne : aeval ξ f ≠ 0) (T : Finset (K ≃ₐ[ℚ] K))

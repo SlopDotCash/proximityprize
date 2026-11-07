@@ -60,6 +60,16 @@ noncomputable def sourceSevenMissedSet
     (line : LineParameter F) (gamma : F) : Finset I :=
   sourceComplement family line \ sourceFreshAgreement family line gamma
 
+/-- `sourceSevenMissedSet` is definitionally the canonical missed set
+`RegularSignatureRigidity.regularMissedEdge`; the local name is kept because downstream proofs
+rewrite with its unfolding. -/
+theorem sourceSevenMissedSet_eq_regularMissedEdge
+    {dom : I ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) I}
+    (family : BadScalarRichPointFamily dom 4 delta u)
+    (line : LineParameter F) (gamma : F) :
+    sourceSevenMissedSet family line gamma = regularMissedEdge family line gamma :=
+  rfl
+
 /-- For a size-seven source, the missed support is no larger than the
 residual root block inside the source core. -/
 theorem sourceSeven_missed_card_le_root_card

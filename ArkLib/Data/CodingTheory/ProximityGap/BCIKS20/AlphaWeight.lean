@@ -204,16 +204,14 @@ theorem DivWeightLe.of_cases (x₀ : F) (R : F[X][X][Y])
     DivWeightLe H x₀ R hHyp hH D :=
   DivWeightLe_of_cases H x₀ R hHyp hH D h0 hsucc
 
-/-- **Strong induction step for the DivWeightLe quotient witness (Issue 138)**
-The `(t+1) ∉ lam.parts` filter in the strict recursion isolates the sum to strictly positive previous
-orders `l ≥ 1`. This completely bypasses the order-0 non-monic obstruction. The algebraic witness
-`a_{t+1}` is constructively factored out of the `βHensel` recursion using `hasseCoeffRepr𝒪_cleared`
-and the ξ-telescope. -/
-theorem DivWeightLe_succ_holds (x₀ : F) (R : F[X][X][Y])
-    (hHyp : ClaimA2.Hypotheses x₀ R H) (hH : 0 < H.natDegree) (D : ℕ) (t : ℕ)
-    (h_prev : ∀ l, l ≤ t → DivWeightLe_succ H x₀ R hHyp hH D l) :
-    DivWeightLe_succ H x₀ R hHyp hH D t := by
-  exact h_prev t le_rfl
+/-! **No strong-induction step for `DivWeightLe_succ` is proved here (Issue 138).**
+An earlier declaration `DivWeightLe_succ_holds` was documented as constructing the successor
+witness `a_{t+1}` from strictly earlier orders via the `βHensel` recursion and the ξ-telescope,
+but its premise `∀ l, l ≤ t → DivWeightLe_succ … l` already contained the target case `l = t`
+and its proof was `h_prev t le_rfl` — a circular projection, not progress (audit PG-336).  It had
+no callers and was removed.  The successor cases `DivWeightLe_succ` remain an explicit
+divisibility/weight residual, consumed via `DivWeightLe.of_cases`; a genuine step would have to
+assume only `l < t` (or the base case) and prove the missing recursion. -/
 
 /-- Project the base divisibility-with-weight case from `DivWeightLe`. -/
 theorem DivWeightLe.zero (x₀ : F) (R : F[X][X][Y])

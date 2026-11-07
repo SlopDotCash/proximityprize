@@ -20,10 +20,22 @@ solution of `b + c = −a` by `a⁻¹` bijects it onto a solution of `b' + c' = 
   single character-sum quantity the whole list size reduces to).
 
 Combined with the diagonal correction and `÷6` (probe `probe_zerosum_triple_assembly.py`,
-verified at 30 instances): the unordered zero-sum triple count — `= cubic_list_eq_zeroSum`'s
-list size — is `(|G|·M − 3|G|·[−2∈G]) / 6`, an exact closed form on every smooth domain,
-reduced to the one quantity `M` (evaluated to `(q−5)/4` on QR domains by `qr_shift_count`).
-Issue #389.
+verified at 30 instances; this assembly step is **not** formalized here): when `char F ≠ 3`, the
+number of unordered zero-sum triples of distinct elements — `= cubic_list_eq_zeroSum`'s list
+size — is `(|G|·M − 3|G|·[−2∈G]) / 6`, reduced to the one quantity `M` (evaluated to `(q−5)/4`
+on QR domains by `qr_shift_count`).
+
+**Correction (audit 2026-10-28, PG-110): the formula needs `char F ≠ 3`.** An earlier version
+claimed it on *every* smooth domain. The subtraction `3|G|·[−2∈G]` treats the three
+repeated-coordinate families `{a=b}`, `{a=c}`, `{b=c}` as disjoint. Two of these equalities
+force `a=b=c`, i.e. `3a = 0`, which for `a ≠ 0` happens exactly when `char F = 3`; then
+`−2 = 1 ∈ G` and all three families coincide with the `|G|` all-equal triples. By
+inclusion–exclusion the general count of distinct unordered zero-sum triples is
+`(|G|·M − 3|G|·[−2∈G] + 2|G|·[char F = 3]) / 6`, i.e. `(|G|·M − |G|) / 6` in characteristic 3.
+Counterexample to the unqualified formula: `G = F₉ˣ` (order 8), `M = q − 2 = 7`, ordered count
+`8·7 = 56`, all 8 all-equal triples are zero-sum, so the true count is `(56 − 8)/6 = 8`, while
+the old formula gives `(56 − 24)/6 = 32/6`. The proved scaling and pair-count lemmas below are
+unaffected. Issue #389.
 -/
 
 open Finset

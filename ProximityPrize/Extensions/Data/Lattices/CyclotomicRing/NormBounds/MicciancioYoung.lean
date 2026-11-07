@@ -28,10 +28,13 @@ coefficient vector, which holds for the cyclic/negacyclic rings `X^n ∓ 1` of [
 *fails* for a general cyclotomic `Φ_m` (e.g. in `ℤ[X]/(X²+X+1)`, `‖X·X‖₂ = √2 > ‖X‖₁·‖X‖₂`).
 Phrasing this for an arbitrary `Φ` would therefore be unsound.
 
-This is one of the two unproven lemmas for the Greyhound [NS24] / Hachi [NOZ26]
-weak-binding argument. The paper proof is in [Mic07, Lemma 2]: discrete Cauchy–Schwarz over
-the negacyclic convolution, together with minimality of the centered representative, gives the
-product norm inequality `‖fg‖ ≤ ‖f‖₁·‖g‖`.
+This is one of the two norm lemmas used by the Greyhound [NS24] / Hachi [NOZ26] weak-binding
+argument (the other is `isUnit_of_l1Norm_le` in `NormBounds.LyubashevskySeiler`). **Status:
+proved in this file** (no `sorry`, no hypothesis wrapper): the main result
+`scalarVecMul_mul_l2NormSq_le` follows from the per-element bound `Rq.l2NormSq_mul_le`, whose
+proof formalizes [Mic07, Lemma 2] (discrete Cauchy–Schwarz over the negacyclic convolution,
+together with minimality of the centered representative, gives the product norm inequality
+`‖fg‖ ≤ ‖f‖₁·‖g‖`) via the convolution/index/coefficient helpers below.
 
 ## References
 

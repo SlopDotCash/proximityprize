@@ -4,6 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
+import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumOrbitReduction
+import ArkLib.Data.CodingTheory.ProximityGap.DCSubtractedMoment
 
 /-!
 # LANE G99 (#466, 2026-07-10): the Erdős–Turán / Esseen harmonic-ladder certificate with the
@@ -110,28 +112,20 @@ variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
 /-- **η is constant on μ-cosets of frequencies.** If `G` is closed under multiplication and
 avoids `0`, then multiplying the frequency by any `u ∈ G` leaves the period untouched:
-`η_{c·u} = η_c`. This is the exact `n`-fold spectral degeneracy of the period field. -/
+`η_{c·u} = η_c`. This is the exact `n`-fold spectral degeneracy of the period field.
+(Thin wrapper over the canonical `SubgroupGaussSumOrbitReduction.eta_orbit_invariant`, in the
+`c * u` orientation and with the `0 ∉ G` hypothesis this lane uses.) -/
 theorem eta_mul_mem (ψ : AddChar F ℂ) {G : Finset F} (hG0 : (0 : F) ∉ G)
     (hcl : ∀ u ∈ G, ∀ v ∈ G, u * v ∈ G) {u : F} (hu : u ∈ G) (c : F) :
     eta ψ G (c * u) = eta ψ G c := by
-  have hu0 : u ≠ 0 := fun h => hG0 (h ▸ hu)
-  have himg : G.image (fun y => u * y) = G := by
-    apply Finset.eq_of_subset_of_card_le
-    · intro z hz
-      obtain ⟨y, hy, rfl⟩ := Finset.mem_image.mp hz
-      exact hcl u hu y hy
-    · rw [Finset.card_image_of_injective _ (mul_right_injective₀ hu0)]
-  calc eta ψ G (c * u) = ∑ y ∈ G, ψ (c * (u * y)) := by
-        unfold eta
-        exact Finset.sum_congr rfl (fun y _ => by rw [mul_assoc])
-    _ = ∑ z ∈ G.image (fun y => u * y), ψ (c * z) := by
-        rw [Finset.sum_image (fun y _ y' _ h => mul_right_injective₀ hu0 h)]
-    _ = eta ψ G c := by rw [himg]; rfl
+  rw [mul_comm]
+  exact ArkLib.ProximityGap.SubgroupGaussSumOrbitReduction.eta_orbit_invariant
+    (fun a ha b hb => hcl a ha b hb) (fun h => hG0 (h ▸ hu)) hu c
 
-/-- The DC frequency carries the full mass: `η_0 = |G|`. -/
-theorem eta_zero (ψ : AddChar F ℂ) (G : Finset F) : eta ψ G 0 = (G.card : ℂ) := by
-  unfold eta
-  simp
+/-- The DC frequency carries the full mass: `η_0 = |G|` (the canonical
+`DCSubtractedMoment.eta_zero`, re-exported under this lane's name). -/
+theorem eta_zero (ψ : AddChar F ℂ) (G : Finset F) : eta ψ G 0 = (G.card : ℂ) :=
+  ArkLib.ProximityGap.DCSubtractedMoment.eta_zero ψ G
 
 /-- **The exact DC-subtracted second moment (Parseval at r = 1):**
 `Σ_{b≠0} ‖η_b‖² = q·|G| − |G|²`. This is the ONLY unconditional `l²` input available to the

@@ -12,8 +12,9 @@ import Mathlib.Analysis.SpecialFunctions.Log.Basic
 ## The candidate (architect ID G2-2, cluster: adelic / heights / Fekete–Szegő)
 
 Let `n = 2^μ`, `p ≈ n^4`.  Let `Ψ_b(T) = ∏_{σ∈Gal} (T − σ(θ_b)) ∈ ℤ[T]` be the period polynomial
-of degree `d` (`d = φ(n) = n/2` for the lifted period `θ_b ∈ 𝒪_K`, `K=ℚ(ζ_n)`; the argument is
-identical for the degree-`m` rational period polynomial `Ψ` of the subfield).  Let `E_b ⊂ ℂ` be the
+of the Gauss period `θ_b = Σ_{x∈μ_n} ζ_p^{bx}`. These periods lie in the unique degree-`m`
+subfield `K ⊂ ℚ(ζ_p)`, `m = (p−1)/n`, so `d = m`. (An earlier version placed `θ_b` in `ℚ(ζ_n)`
+with `d = n/2`; that is wrong for periods of `μ_n ⊂ 𝔽_p^*` — audit CW-B19-02.)  Let `E_b ⊂ ℂ` be the
 archimedean conjugate set and `cap(E_b)` its transfinite diameter (= logarithmic capacity).
 
 > **CANDIDATE (the asserted SHARP UPPER ceiling).**  Via Fekete–Szegő WITH a non-archimedean
@@ -27,11 +28,11 @@ The architect's non-reduction rationale: capacity is a discriminant/Vandermonde 
 quantity, claimed structurally distinct from the additive-energy moment ladder `E_r` (F1), and the
 `2`-adic & `p`-adic local capacities are claimed to be the coupling that escapes F3.
 
-## THE VERDICT: **REDUCES-TO-WALL** (F1, with F3/F11 confluence). The Fekete inequality points the
-## WRONG WAY (capacity ⇒ a LOWER bound on House), and the discriminant is class-field-FIXED hence
-## `p`-blind and vacuous at the prize — the EXACT in-tree disc-CFT finding.
+## THE VERDICT (revised after audit CW-B19-02): Obstruction 1 (direction) stands as a remark;
+## the earlier Obstruction 2 (prize-scale VACUITY, `log cap → 0`) is RETRACTED.
 
-There are two independent, decisive obstructions, both already established in-tree.
+Only the direction remark below survives. The Lean content of this file is elementary exponent /
+inequality algebra; it does not establish any statement about actual Gauss-period discriminants.
 
 ### Obstruction 1 — Fekete gives a LOWER bound on House, not an upper (sign reversal = F1/T06).
 
@@ -42,30 +43,29 @@ The product under the root is `√|disc(Ψ_b)|`.  For an algebraic *integer* `di
 NONZERO integer, so `|disc(Ψ_b)| ≥ 1`, and Fekete's lower bound on the max-modulus reads
 `House(θ_b) ≥ |disc(Ψ_b)|^{1/(d(d−1))} ≥ 1`.
 This is the SAME direction T06 found by the product formula: the discriminant / capacity bounds the
-House from BELOW.  An UPPER ceiling `House ≤ cap·exp(O(1))` is FALSE — capacity is a lower lever.
-The candidate's central inequality has its sign reversed (`capacity_gives_lower_bound`).
+House from BELOW.  Fekete therefore does not *supply* an upper ceiling `House ≤ cap·exp(O(1))`; this
+does not show such a ceiling is false (a lower bound cannot refute an upper bound), only that the
+candidate's central inequality is not delivered by Fekete (`capacity_gives_lower_bound`).
 
-### Obstruction 2 — the discriminant is class-field-FIXED (`p`-blind) ⟹ the lower bound is VACUOUS.
+### (Retracted) Obstruction 2 — "the discriminant is `≈ p^{m−1}`, so `log cap = (log p)/m → 0`".
 
 By the conductor–discriminant formula the period field `K` (degree `m=(p−1)/n` over ℚ) is tamely
-ramified only at `p`, so `disc(Ψ_b) = p^{m−1}·f²` with `f ∈ ℤ` the index `[𝒪_K:ℤ[θ]]`.  This is
-fixed by `(p,m)` ALONE — independent of the House.  In-tree this is verified EXACT across 14
-prize-type cases (`scripts/probes/_probe_444_periodpoly_disc_cft.py`, all `YES`), and recorded as a
-NO-GO line of the frontier synthesis (`deltastar-444-frontier-synthesis-NOLARP-2026-06-16.md`,
-table row "Period discriminant disc(Ψ) — house-blind (NEW)").  Plugging into Fekete's lower bound at
-the prize `m ≈ 2^128`:
-`House ≥ |disc|^{1/(m(m−1))} ≈ (p^{m−1})^{1/(m(m−1))} = p^{1/m} → 1`,
-a VACUOUS lower bound of `1` (the House is `≈ √n = 2^15`).  Even granting the (false) upper
-direction, the capacity datum carries `log cap = (m−1)/(m(m−1))·log p = (1/m)log p → 0`, so the
-candidate's "ceiling" `M² ≤ n(1+log cap) → n` collapses to the trivial Parseval floor `√n` — it
-contains ZERO of the missing `√(log m)` factor.
+ramified only at `p`, so `disc(Ψ_b) = p^{m−1}·f²` with `f ∈ ℤ` the index `[𝒪_K:ℤ[θ]]`. The earlier
+argument treated `f` as negligible. **It is not** (audit CW-B19-02, exact Gauss-period
+discriminants): `log|disc|/(m(m−1))` vs `(log p)/m` is `0.854` vs `0.381` at `p=97, n=8`
+(`log f² ≈ 62`), `1.448` vs `0.196` at `p=1153, n=32` (`log f² ≈ 1578`), and `1.109` vs `0.0186` at
+`p=7681, n=16, m=480` (`log f² ≈ 250610`). The capacity datum stays of order `(1/2)·log n`, not
+`→ 0`. So the claims "`disc ≈ p^{m−1}`", "`log cap = (log p)/m → 0`", "the Fekete lower bound is
+vacuous at the prize", and "the candidate's ceiling collapses to the Parseval floor" are all
+unsupported and are withdrawn. Whether the candidate ceiling has content is left open here.
 
 ### The reduction map to the fences.
 
 - **F1 (moment/energy is conjugate to the wall).**  `disc(Ψ_b) = ∏_{i<j}(η_i−η_j)²` is a symmetric
   function of the periods, hence a polynomial in the power sums `p_k = Σ η_i^k = E_{k/2}`-type
   moments.  Its leading content is exactly the second moment `p₂ = Σ η_i² = p − n` (the `G3`
-  identity, `_wf9G3_periodpoly_coeff_nogo.lean`), which forces `disc ≈ p^{m−1}`.  So the capacity
+  identity, `_wf9G3_periodpoly_coeff_nogo.lean`). (The earlier claim that this forces
+  `disc ≈ p^{m−1}` is false: the index `f` is large; see the retraction above.)  So the capacity
   IS a function of the additive-energy moment ladder — not a new lever.  The geometric-mean (Fekete)
   reading only changes it into a LOWER bound, which F1's S2-equidistribution (`A01`,
   `(κ/c)·E_r ≥ M^{2r}`) already shows is conjugate to, never milder than, the wall.
@@ -79,15 +79,16 @@ contains ZERO of the missing `√(log m)` factor.
 
 ## Honest scope
 
-Verdict: **REDUCES-TO-WALL (F1; F3/F11 confluence).**  Novel as a *framing* (the literature
-Fekete–Szegő/Rumely program is about existence/finiteness of conjugate sets when `cap ≷ 1`, never a
-sup-norm CEILING; absent from the cone), but its central inequality is sign-reversed (capacity is a
-LOWER bound on House) and the discriminant it rests on is class-field-fixed and `p`-blind, so the
-lower bound is vacuous (`→ 1`) at the prize and contains none of the open `√(log m)`.  No prize gain.
-This file proves, axiom-clean: (1) the Fekete capacity↔discriminant geometric-mean identity gives a
-LOWER bound; (2) the prize-regime collapse `(p^{m−1})^{1/(m(m−1))} = p^{1/m} → 1` (vacuity);
-(3) the candidate's ceiling collapses to the Parseval floor.  All hypotheses are stated at the prize
-regime `p ~ n^4`, `m = (p−1)/n ~ 2^{128}`.
+Verdict (revised, audit CW-B19-02): **direction remark only; no vacuity verdict.**  Novel as a
+*framing* (the literature Fekete–Szegő/Rumely program is about existence/finiteness of conjugate sets
+when `cap ≷ 1`, never a sup-norm CEILING; absent from the cone). Fekete supplies only a LOWER bound on
+House, so it does not deliver the candidate's ceiling; the earlier vacuity argument (`f ≈ 1`,
+`log cap → 0`) is false and withdrawn. This file proves, axiom-clean, only elementary algebra:
+(1) `capacity_gives_lower_bound` (a linear-inequality rearrangement under a hypothesised Fekete
+bound); (2) the exponent identity `(p^{m−1})^{1/(m(m−1))} = p^{1/m}` and `log(p^{1/m}) → 0` as
+`m → ∞` for fixed `p` — which says nothing about the true capacity, since `|disc| ≠ p^{m−1}`;
+(3) `ceiling_below_band`, conditional on `logCap ≤ 1`, a premise that the exact discriminants do NOT
+support (`logCap ≈ (1/2) log n`).
 
 ## References
 - Fekete (1923) / Fekete–Szegő (1955); Rumely, *Capacity Theory on Algebraic Curves* (LNM 1378).
@@ -131,15 +132,20 @@ theorem capacity_gives_lower_bound
   rw [hCap, div_le_iff₀ hdd]
   linarith
 
-/-! ## 2. Prize-regime vacuity: the discriminant is class-field-FIXED, so the lower bound `→ 1`.
+/-! ## 2. Exponent algebra for the `p^{m−1}` factor of the discriminant (vacuity reading RETRACTED).
 
 By the conductor–discriminant formula `|disc(Ψ)| = p^{m−1}·f²` with `m = (p−1)/n`, the period field
 is ramified only at `p`.  Fekete's lower bound on the House is then
 `House ≥ |disc|^{1/(d(d−1))} ≥ (p^{m−1})^{1/(m(m−1))} = p^{1/m}` (taking `f ≥ 1`, `d = m`).
-At the prize `m ≈ 2^{128}`, `p^{1/m} → 1`: a VACUOUS lower bound.  We prove the exact collapse
-`(p^{m−1})^{1/(m(m−1))} = p^{1/m}` and that `log(p^{1/m}) = (log p)/m → 0`. -/
+(This would make the bound `→ 1` only if `f ≈ 1`, which is false; see below.)  We prove the collapse
+`(p^{m−1})^{1/(m(m−1))} = p^{1/m}` and that `log(p^{1/m}) = (log p)/m → 0`.
 
-/-- **The class-field-fixed discriminant collapses to `p^{1/m}` under Fekete's `d(d−1)`-th root.**
+**Retracted interpretation (audit CW-B19-02).** The step `|disc| ≈ p^{m−1}` ignores the index `f`,
+which is huge (`log f² ≈ 62, 1578, 250610` in the exact cases quoted in the module docstring), so
+these exponent identities do not show that the Fekete bound or the capacity datum vanishes. -/
+
+/-- **Exponent identity: `(p^{m−1})^{1/(m(m−1))} = p^{1/m}`** (pure `rpow` algebra; it concerns only
+the `p^{m−1}` factor, not the full discriminant `p^{m−1}·f²`).
 `((p^{m−1}))^{1/(m(m−1))} = p^{(m−1)/(m(m−1))} = p^{1/m}` for `p ≥ 0`, `m ≥ 2`.  Here all powers are
 real `rpow`.  The exponent collapse is `(m−1)·(m(m−1))⁻¹ = m⁻¹`. -/
 theorem disc_root_eq_pInvM (p : ℝ) (hp : 0 ≤ p) (m : ℝ) (hm : 2 ≤ m) :
@@ -151,11 +157,11 @@ theorem disc_root_eq_pInvM (p : ℝ) (hp : 0 ≤ p) (m : ℝ) (hm : 2 ≤ m) :
   have hmne : m ≠ 0 := by intro h; nlinarith
   rw [mul_comm m (m - 1), mul_inv, ← mul_assoc, mul_inv_cancel₀ hm1, one_mul]
 
-/-- **The Fekete lower bound is VACUOUS at the prize: `log(p^{1/m}) = (log p)/m → 0`.**  The
-class-field-fixed capacity datum carries log-content `(log p)/m`, which at the prize `m ≈ 2^{128}`
-with `log p ≈ 4·30·log 2 ≈ 83` is `≈ 83/2^{128} ≈ 0`.  Concretely: for any target `ε > 0` there is an
-`m` past which `(log p)/m < ε` (for fixed `p > 1`).  So the capacity ceiling contributes NONE of the
-missing `√(log m)` — it collapses to the trivial Parseval floor. -/
+/-- **Exponent algebra: `log(p^{1/m}) = (log p)/m → 0` for fixed `p > 1`.**  For any target
+`ε > 0` there is an `m` past which `(log p)/m < ε`. This is only the `p^{m−1}` part of the
+discriminant; since the index `f` in `disc = p^{m−1}·f²` is large, it does NOT show that the true
+capacity datum vanishes (the earlier "Fekete bound is vacuous at the prize" reading is retracted,
+audit CW-B19-02). -/
 theorem capacity_logcontent_vanishes (p : ℝ) (hp : 1 < p) (ε : ℝ) (hε : 0 < ε) :
     ∃ M : ℝ, ∀ m : ℝ, M ≤ m → Real.log (p ^ (m⁻¹)) < ε := by
   -- log(p^{1/m}) = (log p)/m.  Choose M = (log p)/ε + 1 > 0; for m ≥ M, (log p)/m ≤ (log p)/M < ε.
@@ -176,17 +182,16 @@ theorem capacity_logcontent_vanishes (p : ℝ) (hp : 1 < p) (ε : ℝ) (hε : 0 
   have hcancel : m * m⁻¹ = 1 := mul_inv_cancel₀ (ne_of_gt hmpos)
   nlinarith [mul_lt_mul_of_pos_right hlt hminv, hcancel]
 
-/-- The `p`-adic / class-field content of the discriminant exponent.  `disc = p^{m−1}·f²`; the
-non-archimedean (ramification) part is the integer `m − 1` at `p` — this is exactly the
-conductor–discriminant valuation, fixed by `(p,m)` alone, carrying no archimedean (House) data. -/
+/-- The `p`-adic valuation of the discriminant: `disc = p^{m−1}·f²` with `p ∤ f`, so
+`v_p(disc) = m − 1`, fixed by `(p,m)` alone. (The archimedean size of `disc` is dominated by the
+index `f`, which this does not capture.) -/
 def discValuationAtP (m : ℝ) : ℝ := m - 1
 
-/-- **The candidate's ceiling collapses to the Parseval floor.**  The candidate asserts
-`M(n)² ≤ n·(1 + log cap_adelic)`.  With the proven `log cap = (log p)/m → 0` (vacuity), the ceiling
-collapses to `M² ≤ n·(1 + o(1))`, i.e. `M ≤ √n·(1+o(1))` — the trivial L² Parseval floor, containing
-ZERO of the open `√(log(p/n)) = √(log m)` factor that IS the prize.  We certify the load-bearing
-arithmetic: if `0 ≤ logCap ≤ 1` (i.e. capacity content already `o(1)·` of the band) then the ceiling
-`n·(1+logCap)` is at most `2n`, strictly below the band-target `n·log m` once `log m > 2`. -/
+/-- **Conditional arithmetic: a capacity term `≤ 1` keeps `n·(1+logCap)` below the band.**  If
+`logCap ≤ 1` then `n·(1+logCap) ≤ 2n < n·log m` once `log m > 2`. The premise `logCap ≤ 1` is
+**not established** for the Gauss-period capacity: the exact discriminants give
+`logCap ≈ (1/2) log n` (audit CW-B19-02), so this lemma does not show that the candidate's ceiling
+collapses to the Parseval floor. -/
 theorem ceiling_below_band (n m logCap : ℝ) (hn : 0 < n) (hcap : logCap ≤ 1)
     (hlogm : 2 < Real.log m) :
     n * (1 + logCap) < n * Real.log m := by

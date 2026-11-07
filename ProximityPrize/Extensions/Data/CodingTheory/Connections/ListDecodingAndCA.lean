@@ -1231,7 +1231,18 @@ side condition `0 < |F| − |ι|` as explicit hypotheses, together with the arit
 *unhypothesized* in-tree statement cannot manufacture: that needs the deep-hole construction
 `u⁽¹⁾ = 1/(x−a)`, pointwise scaling, the polynomial-remainder lift `RS[k] ⊂ RS[k+1]`, and the
 Schwartz–Zippel collision count over the list of degree-`k` polynomials, none of which is
-connected to `epsCA`/`Lambda` in-tree.  Admitted as an external result. -/
+connected to `epsCA`/`Lambda` in-tree.
+
+**Parameter regime (statement repair).** Earlier versions of this proposition had no
+proper-code guard and were false at full rate: for `n = 1`, `F = 𝔽₂`, `k = 1`, `δ = 1/2`,
+`η = 0`, both `RS[k]` and `RS[k+1]` are the whole word space, so `ε_ca = 0` and every
+premise holds, while the conclusion would force `Λ(RS[k+1], δ) ≤ 0` although every word is its
+own close codeword. The statement now carries the CS25 regime side conditions used by the
+discharged deep-hole chain: `k + 1 ≤ n` (`_hkn`), the extension-point count `0 < |F| - n`
+(`_hs_pos`), and the rate/radius condition `k < n - ⌊δ·n⌋` (`_hkS`, which excludes the
+full-rate case above). With these guards the proposition is inhabited, for every admissible
+parameter choice, by `CS25.DeepHole.rs_epsCA_implies_lambda_extended_cs25_complete_prop`
+(`ArkLib/ToMathlib/CS25JointFar.lean`). -/
 def rs_epsCA_implies_lambda_extended_cs25
     (domain : ι ↪ F) (k : ℕ) (δ : ℝ) (η : ℝ)
     (_hk_pos : 0 < k)
@@ -1240,6 +1251,9 @@ def rs_epsCA_implies_lambda_extended_cs25
         (δ : ℝ) < Code.minDist ((ReedSolomon.code domain k : Set (ι → F)))
                     / Fintype.card ι)
     (_hη_lo : 0 ≤ η) (_hη_lt : η < 1)
+    (_hkn : k + 1 ≤ Fintype.card ι)
+    (_hs_pos : (0 : ℝ) < Fintype.card F - Fintype.card ι)
+    (_hkS : k < Fintype.card ι - Nat.floor (δ.toNNReal * Fintype.card ι))
     (_hε_ca :
         (epsCA (F := F) (A := F)
             ((ReedSolomon.code domain k : Set (ι → F)))
@@ -1258,9 +1272,12 @@ def rs_epsCA_implies_lambda_extended_cs25
   -- controlled by the CA error of C; the ⌈|F|/(1-η)·ε_ca⌉ count is the number of degree-(k+1)
   -- extensions surviving the η-margin. Needs: the RS degree-filtration C ⊂ C⁺ list map and
   -- the CS25 multiplicity bound (not in-tree; ReedSolomon.lean has the code but not the
-  -- degree-lift list correspondence). Genuinely external.
+  -- degree-lift list correspondence). Discharged under the regime guards above by
+  -- `CS25.DeepHole.rs_epsCA_implies_lambda_extended_cs25_complete_prop`.
 
-/-- Prop-level wrapper for T5.3. -/
+/-- Prop-level wrapper for T5.3 from the explicit `hClaim3` residual. The regime guards
+`_hkn`/`_hkS` are not used by this reduction; they are only carried because the target
+proposition now requires them. -/
 theorem rs_epsCA_implies_lambda_extended_cs25_of_residuals_prop
     (domain : ι ↪ F) (k : ℕ) (δ : ℝ) (η : ℝ)
     (hk_pos : 0 < k)
@@ -1274,7 +1291,9 @@ theorem rs_epsCA_implies_lambda_extended_cs25_of_residuals_prop
             ((ReedSolomon.code domain k : Set (ι → F)))
             δ.toNNReal δ.toNNReal).toReal ≤
           η * (1 / k - Fintype.card ι / (k * Fintype.card F)))
+    (hkn : k + 1 ≤ Fintype.card ι)
     (hs_pos : (0 : ℝ) < Fintype.card F - Fintype.card ι)
+    (hkS : k < Fintype.card ι - Nat.floor (δ.toNNReal * Fintype.card ι))
     (hClaim3 :
         let ε := (epsCA (F := F) (A := F)
                     ((ReedSolomon.code domain k : Set (ι → F)))
@@ -1284,7 +1303,7 @@ theorem rs_epsCA_implies_lambda_extended_cs25_of_residuals_prop
         ¬ (ListDecodable.Lambda ((ReedSolomon.code domain (k + 1) : Set (ι → F))) δ ≤ (L0 : ℕ∞)) →
           (L0 : ℝ) * s / ((L0 : ℝ) * k + s) < ε * Fintype.card F) :
     rs_epsCA_implies_lambda_extended_cs25 domain k δ η
-      hk_pos hδ_pos hδ_min hη_lo hη_lt hε_ca :=
+      hk_pos hδ_pos hδ_min hη_lo hη_lt hkn hs_pos hkS hε_ca :=
   rs_epsCA_implies_lambda_extended_cs25_of_residuals
     domain k δ η hk_pos hη_lo hη_lt hs_pos hε_ca hClaim3
 

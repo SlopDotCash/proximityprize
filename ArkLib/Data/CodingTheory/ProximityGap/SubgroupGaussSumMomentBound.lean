@@ -15,10 +15,14 @@ moment `∑_b ‖η_b‖² = q·|G|` (`SubgroupGaussSumSecondMoment`):
 > `q·E_r(G) ≤ |G|^{2r} + M^{r-1}·(q|G| − |G|²)`.
 
 Splitting off the spike `b=0` (`‖η_0‖ = |G|`) and bounding `‖η_b‖^{2r} ≤ M^{r-1}·‖η_b‖²` off it.
-Consequence for δ\*: in the deployed regime `q ≥ |G|²`, this gives `E_r(G) = O(|G|^r)` (the sharp
-`r`-band supply bound, for *every* band `r`, not just the cubic `r=2`) **iff** the worst-case
-incomplete sum obeys `|η_b| ≤ C√|G|`. So the single open Bourgain bound `M = O(|G|)` controls *all*
-bands of the δ\* supply simultaneously. Axiom-clean. Issue #389.
+Consequence for δ\* (one direction only): if the worst-case incomplete sum obeys `|η_b| ≤ C√|G|`
+(`M = C²|G|`), dividing by `q` gives `E_r(G) ≤ |G|^{2r}/q + C^{2(r-1)}·|G|^r`.  The raw DC term
+`|G|^{2r}/q` is retained: it is `O(|G|^r)` only when `q ≥ |G|^r` (for `r = 2` the regime
+`q ≥ |G|²` suffices, but for `r > 2` the condition `q ≥ |G|²` does NOT give `E_r(G) = O(|G|^r)`).
+Otherwise one must work with the DC-subtracted energy `E_r(G) − |G|^{2r}/q` (compare the wall
+recorded in `PairingResidualFailsAtPrize`).  No converse (energy bound ⇒ character-sum bound) is
+proved here.  So a bound `M = O(|G|)` controls the DC-subtracted part of every band, and the full
+`E_r` only in the regime `q ≥ |G|^r`. Axiom-clean. Issue #389.
 -/
 
 open Finset AddChar

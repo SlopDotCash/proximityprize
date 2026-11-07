@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""G266: adjacent-rank CORE covariance realises all four quadrants — no cross-rank / thinness sign lock.
+"""G266: adjacent-rank CORE covariance realises all four quadrants — no cross-rank sign lock.
 
 Computation of record for `Frontier/_G266AdjacentRankQuadrantNoGo.lean`.
 
@@ -12,8 +12,11 @@ Object (the current frontier CORE surrogate, G228..G265):
 Certifies:
   * the exact integer witnesses hard-coded in the Lean file (recomputed float-free), and
   * the four-quadrant census: all of {++,+-,-+,--} occur over genuine cells n in {8,16,32},
-    INCLUDING the rare (-+); hence no cross-rank sign implication A6>0=>A5>0, no adjacent-rank forced
-    sign, and no thinness-forced sign. A (+,+) bias grows with thinness tau=(p-1)/n^2 but is not a bound.
+    INCLUDING the rare (-+); hence no cross-rank sign implication A6>0=>A5>0 and no adjacent-rank
+    forced sign on the tested cells. Thinness is NOT refuted as a sign source: a (+,+) bias grows
+    with thinness tau=(p-1)/n^2 and is recorded but left OPEN (it is not a proved bound either).
+    (Audit 2026-10-28, L103: an earlier header also claimed "no thinness-forced sign", which the
+    script's own verdict below does not support.)
 
 Everything is pure-Python int (no numpy, no floats).
 """

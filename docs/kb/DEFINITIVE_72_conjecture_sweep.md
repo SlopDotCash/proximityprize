@@ -1,5 +1,18 @@
 # Definitive result: 72 invented theorems for RS-list-decoding-past-Johnson over μ_{2^a} → 0 closures (#407/#444)
 
+> **Scope correction (2026-10-28 audit, T48).** This is a record of one generative search: 72
+> candidates, screened. It is not a theorem about mathematics.
+> - "No accessible route exists", "does NOT reduce to proven math by ANY route" and "beyond all
+>   current technique" do not follow from 72 failed candidates. They describe this search only.
+> - The six "equivalent open quantities" are distinct unproved estimates. Some are linked by one-way
+>   sufficient conditions; no equivalence among all six is established.
+> - The Ramanujan-scale target `B ≤ 2√n` is strictly **stronger** than the prize-scale bound
+>   `B ≲ √(n log q)`, and the two are not established to be equivalent. Proving the prize-scale
+>   bound would not prove the Ramanujan property, and the prize may not need it.
+>
+> The individual refutations (for example the `3504 ≫ 16` char-0 incidence) remain valid finite
+> results.
+
 **2026-06-15. The most thorough generative assault possible: 88 agents, 3.3M tokens, 12 angle-families
 (normal→insightful→crazy→cross-domain), adversarially screened + deep-dived + the one self-claimed closer
 computationally refuted.**

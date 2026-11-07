@@ -14,8 +14,10 @@ import ProximityPrize.Compatibility.UniformProbability
 
 The completeness core (the sum-of-reciprocals multiset-inclusion identity, honest-oracle and
 count forms + the honest-Q vanishing) and the soundness core (the SZ probability bound for the
-LogUp check polynomial via prob_eval_zero_le_div). The OracleVerifier.soundness Prop bridges
-remain sibling-owned run-unfolding plumbing.
+LogUp check polynomial via prob_eval_zero_le_div). This file proves algebraic lemmas, re-exports
+and conditional wrappers only; it proves no whole-protocol soundness or completeness theorem.
+The protocol-level statements are handled in `Logup/Security/` (see the status note in the
+scratch docstring below).
 -/
 
 /-!
@@ -61,13 +63,27 @@ source unavailable; it is the standard `MvPolynomial.totalDegree ≤ ∑ᵢ degr
 `SubPhaseSoundnessResidual` / `SubPhaseCompletenessResidual` are statements about
 `OracleVerifier.soundness` / `OracleReduction.completeness` of the outer and embedded-sumcheck
 sub-verifiers, threaded through the generic `OracleVerifier.append_soundness` /
-`OracleReduction.append_completeness`. Closing them requires (a) unfolding `Reduction.run` of the
-outer phase (the verifier-side `simulateQ_outerVerify_eq` exists; the prover-side run composition
-does not), (b) the external `Sumcheck.Spec` plain soundness/completeness theorem at the lifted shape
-(outside `Logup/**`), and (c) the generic `Prover.appendRunRightResidual` keystone in
-`Append.lean` (a ~200-line heterogeneous `Fin.induction`, shared with #25). Those are protocol
-plumbing, not extractable algebra, and are not addressed here. What IS extractable algebra — the
-grand-sum identity, the per-row vanishing, and the SZ degree/probability reduction — is below.
+`OracleReduction.append_completeness`. This file does not close them. When it was written (as a
+scratch session), closing them was described as needing (a) unfolding `Reduction.run` of the
+outer phase, (b) the `Sumcheck.Spec` plain soundness/completeness theorem at the lifted shape, and
+(c) the generic `Prover.appendRunRightResidual` keystone in `Append.lean`, none of which then
+existed. What IS extractable algebra — the grand-sum identity, the per-row vanishing, and the SZ
+degree/probability reduction — is below.
+
+**Status update (the scratch-era "missing plumbing" claims are partly stale).** Much of that
+plumbing now exists outside this file: `appendRunRightResidual_holds_msg` (`Append.lean`) /
+`appendRunRightResidual_holds_empty` (`EmptyAppend.lean`); the embedded-sumcheck completeness half
+`sumcheckCompletenessResidual_unconditional`; and the concrete LogUp completeness route
+`logup_completeness_final` (`LogupCompletenessFinal.lean`), under explicit non-degeneracy and
+honest-implementation side conditions. On the soundness side the outer phase is proved
+(`outerVerifier_soundness_mid`, `OuterMaliciousSoundness.lean`), but the former embedded
+sum-check soundness half `sumcheckSoundnessResidual_pointwise` and the end-to-end
+`logup_soundness_end_to_end` were retired in the canonical sum-check message-semantics migration
+(`scripts/integration/sumcheck-message-semantics-retirements.json`), so whole-protocol LogUp
+soundness is currently open. The SZ wrapper `logup_SZ_soundness`
+below still takes the `totalDegree` aggregation `hTotalDeg` as an input; `SZTotalDegree.lean`
+discharges it (`logup_SZ_soundness_unconditional`), leaving the grand-sum nonvanishing `hQ_ne`
+as an input. Nothing in this file is a whole-protocol soundness theorem.
 -/
 
 open scoped NNReal ENNReal BigOperators

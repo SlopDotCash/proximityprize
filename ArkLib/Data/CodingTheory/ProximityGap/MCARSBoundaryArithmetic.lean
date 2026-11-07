@@ -29,11 +29,15 @@ interpolant provably misses `u₁` at a fifth witness point.
 * `epsMCA_rs_boundary_ge` — quantitatively: `ε_mca ≥ 4/101` exceeds the staircase value
   `(⌊δn⌋+1)/q = 3/101` at the boundary row.
 
-**Significance.** Together with the `d ≥ 2b` collapse data this pins the MDS threshold
-exactly, and exhibits the first machine-checked instance of ε_mca depending on the
-*arithmetic* of the evaluation domain (the curve's rational points) rather than on
-`(n, k, q, δ)` alone — the finite-scale prototype of the prize window's conjectured
-root-of-unity barrier defining δ*.
+**Significance.** This is a genuine machine-checked refutation of a universal three-scalar
+boundary cap at `d = 2b − 1` (one RS code, one stack).  Together with the (finite, unformalized)
+`d ≥ 2b` cell-sweep collapse data it is evidence for the MDS threshold at `d = 2b`.  The bad
+scalars for *this stack* are rational points of a determinant curve, which suggests that ε_mca
+may depend on the arithmetic of the evaluation domain; **this file does not prove such domain
+dependence**.  Establishing it would need two domains with the same `(q, n, k, δ)` and different
+worst-case errors — e.g. a matching upper bound `ε_mca < 4/101` on a comparison domain — and no
+such comparison is formalized here.  (Prototype motivation only for the prize window's conjectured
+root-of-unity barrier defining δ*.)
 
 All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 -/
@@ -195,8 +199,9 @@ theorem rs_band3_fails_at_dist5 :
 
 open Classical in
 /-- **Quantitative form**: `ε_mca ≥ 4/101` at the boundary row — strictly above the
-staircase value `(⌊δn⌋+1)/q = 3/101`. The excess is governed by the rational points of the
-determinant curve: the first machine-checked arithmetic dependence of the MCA error. -/
+staircase value `(⌊δn⌋+1)/q = 3/101`. For this stack the four bad scalars are rational points of
+the determinant curve; this is a lower bound for one code and does not by itself show that the
+worst-case MCA error depends on the evaluation domain (no comparison domain is treated here). -/
 theorem epsMCA_rs_boundary_ge :
     (4 : ℝ≥0∞) / 101 ≤ epsMCA (F := F101) (A := F101) (rsC : Set (Fin 8 → F101)) (1/4) := by
   refine le_trans ?_ (mcaEvent_prob_le_epsMCA (F := F101) (A := F101)

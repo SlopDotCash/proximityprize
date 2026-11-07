@@ -9,9 +9,17 @@ a "PROVEN" issue comment, or a grant-completion claim.
 `./scripts/validate.sh` catches: `sorry`/`admit` holes (`sorry_census.py`), forbidden tokens
 (`native_decide`, `bv_decide`, `unsafe` declarations, `unsafeCast`, `implemented_by`,
 the kernel native-reduction primitives `Lean.ofReduceBool` / `Lean.ofReduceNat` /
-`Lean.reduceBool` / `Lean.reduceNat`,
-undocumented `axiom` — `forbidden_tokens.py`), flagship-theorem axiom drift
+`Lean.reduceBool` / `Lean.reduceNat`, undocumented `axiom`, and the proof-as-sorry
+and kernel-skip debug options in Lean source or `lakefile.toml`
+— `forbidden_tokens.py`), flagship-theorem axiom drift
 (`axiom_audit.py`). An auditor's job is everything those *cannot* see.
+
+The build also rejects Lean's `stop` tactic, which admits open goals. The
+end-of-module syntax check runs in all four default Lake libraries and in
+`ArkLibTest`, including inside `#guard_msgs` and when `warn.sorry` is false.
+The text census continues to cover explicit admission tokens in unbuilt source.
+For a `stop` check in an optional module owned by one of these libraries, build
+that module explicitly with Lake.
 
 The optional post-build `python3 scripts/proximity_prize_cleanroom_audit.py` checks
 the apex declarations listed in `scripts/proximity_prize_cleanroom_targets.txt`.
@@ -31,10 +39,30 @@ so quoted arrows cannot split the result and literal brackets cannot hide a prem
 Run its regression and independent Lean-output fixture with
 `python3 -m unittest discover -s scripts/tests -p 'test_cleanroom_conclusion.py'`.
 
-`forbidden_tokens.py` also enforces one declaration per `scripts/residual_axioms.txt` entry: the
-allowlist stores simple names, so an entry would otherwise transfer to a second `axiom` declared
-under the same name in a fresh namespace. That check needs the full-tree scan (what CI and
-`validate.sh` run); a file-scoped run only sees duplicates inside the file it was given.
+Each `scripts/residual_axioms.txt` entry pins exactly one reviewed residual axiom: its fully
+qualified name, its defining file, and a digest of its signature together with the in-scope
+`variable`/`universe`/`open`/`export`/`include`/`omit` commands (which change the elaborated type
+without changing the declaration's text). `forbidden_tokens.py` rejects a copy of a pinned name
+under another namespace, a move to another file, and any change to the statement or that context,
+in a file-scoped run as well as the full-tree scan, until the entry is updated in a reviewed
+change (`python3 scripts/forbidden_tokens.py --print-residual-manifest` prints the current pins).
+Simple-name entries used to authorize any `axiom` with that name, for example
+`namespace Arbitrary … axiom no_selfReciprocal_factor : False` (repository audit 2026-10-28, T03).
+A pin records a documented assumption; it proves nothing.
+
+`forbidden_tokens.py`, `sorry_census.py` and `check-research-boundary.py` share one lexer,
+`scripts/lean_lexer.py`. It lexes comments (a doc comment's body starts after `/--`), string,
+raw-string and character literals, interpolation holes, quoted identifiers, identifiers and
+numbers together, and it checks every combination of plain/interpolated readings of ambiguous
+string literals. Before it, a literal such as `"/-"`, `1e5r#"""#` or `1'"'`, a doc comment
+`/--/ " -/`, or two misread `dbg_trace "{…}"` literals could hide a real `axiom` or `sorry`
+(audit T01). These gates are lexical: they cannot see a declaration that a macro or elaborator
+builds without the keyword in the source, so a clean precheck is not an elaborated axiom audit.
+The post-build `axiom_audit.py` adds an inventory from Lean's environment metadata: every axiom
+declared in an `ArkLib`, `ProximityPrize`, or `Research` module imported by the audit (the
+flagship modules, the pinned residuals' modules and their import closure) must be a pinned
+residual in its pinned module. That
+covers every name form and keyword-free axioms, but only inside that import closure.
 
 ## Current shortcut snapshot (2026-06-11)
 
@@ -130,5 +158,5 @@ front door without a proof of the predicate.
 - [ ] Non-vacuity: a satisfiable nontrivial parameter regime exists (or the vacuity is flagged).
 - [ ] Fresh focused rebuild + `#print axioms` shows exactly `[propext, Classical.choice, Quot.sound]`.
 - [ ] No new `axiom`, `native_decide`, `unsafe`, `unsafeCast`, `implemented_by` in the diff (CI gate 1 now rejects the last three in live source; still re-check the diff);
-      no second declaration of an allowlisted residual axiom name.
+      no new or changed `scripts/residual_axioms.txt` pin without a reviewed statement.
 - [ ] Issue comment matches what was actually proven (regime, budget, verifier variant).

@@ -13,9 +13,11 @@ through the **size** threshold `p > (2^{m−1})^{2^{m−1}} = (n/2)^{n/2}` (`n =
 threshold is **doubly exponential** and sits FAR ABOVE the deployed/prize regime `p ≈ n^4`
 (`β = log_n p ≈ 4`). Probe `probe_haloprime_vs_prizeregime.py` measures the actual halo locus:
 the largest prime `p ≡ 1 mod n` admitting a NON-antipodal vanishing subset sum has
-`β = log_n p* ≈ 2.45, 5.80, 11.28` at `n = 16, 32, 64` — genuinely super-polynomial, crossing
-the prize regime `β = 4` between `n = 16` and `n = 32`. So at prize primes the SIZE threshold
-gives no certificate, and the per-prime halo is in general present.
+`β = log_n p* ≈ 2.45, 5.80, 11.28` at `n = 16, 32, 64` — growing across these three sample
+sizes and crossing the prize regime `β = 4` between `n = 16` and `n = 32`.  Three finite
+measurements do not establish an asymptotic growth rate (super-polynomial or otherwise); they
+only show that, at these sizes, the SIZE threshold gives no certificate at prize-regime primes
+and halo primes occur there.
 
 What *does* survive at prize primes is the **divisibility** form: the engine
 `KKH26.not_isRoot_of_not_dvd_resultant` replaces the size hypothesis with the sharp condition
@@ -28,16 +30,17 @@ that engine onto the depth-1 antipodal census:
 > non-antipodal-closed `E ⊆ [0, 2^m)`, then `∑_{e∈E} g^e = 0 ↔ E` is antipodal-closed.
 
 The mild `‖R_E‖₁ < p` is provided by `l1On_antipodalDiff_le` (`‖R_E‖₁ ≤ 2^{m−1} < p`). This is
-the form usable at `p = Θ(n^β)` (`β` constant): the depth-1 halo is empty at exactly the primes
-that avoid the (super-polynomial, but *sparse*) antipodal-differential resultant divisor set —
+the form usable at `p = Θ(n^β)` (`β` constant): the depth-1 halo is empty at every prime that
+avoids the (finite, but possibly large) antipodal-differential resultant divisor set —
 NOT only above the `(n/2)^{n/2}` size wall. It localizes the residual obstruction to the divisor
 set, which is the form the [TZ24] good-prime supply (`KKH26ThornerZaman.lean`) is built to feed.
 
 ## Honest scope (rules 3, 6)
 This is a route-sharpening for the census→`F_p` transfer, NOT a CORE proof or refutation. CORE
-(`M(μ_n) ≤ C√(n·log(p/n))`) stays open. The probe verdict (halo locus is super-polynomial and
-crosses `n^4` at `n ≥ 32`) is a constraint on the size-threshold route; this theorem records the
-divisibility route that is NOT size-walled. It does not, by itself, prove the divisor set is
+(`M(μ_n) ≤ C√(n·log(p/n))`) stays open. The probe measurements (the largest halo prime exceeds
+`n^4` at the sampled `n = 32, 64`) are a constraint on the size-threshold route at those sizes,
+not a proved asymptotic law; this theorem records the divisibility route that is NOT
+size-walled. It does not, by itself, prove the divisor set is
 avoidable at prize primes — that is the residual.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.

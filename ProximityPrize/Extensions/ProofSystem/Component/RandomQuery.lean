@@ -21,6 +21,9 @@ The canonical reduction carries a public statement through the random query. His
 virtual-polynomial lenses project the statement to `Unit`, compare the two virtual input
 oracles, and expect just the query as the output statement. Specialize the canonical prover
 and verifier to those inputs and project away the carried `Unit`.
+
+The verifier samples and sends the query. The output relation requires the oracle
+answers to agree at that query. `RandomQueryAndReduceClaim` remains a commented sketch.
 -/
 
 open OracleSpec OracleComp OracleInterface ProtocolSpec

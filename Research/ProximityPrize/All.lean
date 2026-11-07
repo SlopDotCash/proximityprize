@@ -1506,6 +1506,7 @@ import Research.ProximityPrize.Frontier._G332SpectrumIntegerRootCollision
 import Research.ProximityPrize.Frontier._G333Order64SpectrumFieldCaveat
 import Research.ProximityPrize.Frontier._G334Order32SpectrumEngineCaveat
 import Research.ProximityPrize.Frontier._G335SpectrumGeneratorNegSymmetry
+import Research.ProximityPrize.Frontier._G336Order64SpectrumEngineCaveat
 import Research.ProximityPrize.Frontier._G56AllDepthPatternDecomposition
 import Research.ProximityPrize.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import Research.ProximityPrize.Frontier._G57AllDepthWraparoundDCConsumer
@@ -3303,6 +3304,7 @@ import Research.ProximityPrize.MDSMaxAgreement
 import Research.ProximityPrize.MonomialGammaFibration
 import Research.ProximityPrize.Overreach
 import Research.ProximityPrize.PermanentlyBlocked
+import Research.ProximityPrize.PrizeRateBounds
 import Research.ProximityPrize.ProductionJohnsonBudget
 import Research.ProximityPrize.ProductionRegimeBracket
 import Research.ProximityPrize.Protocols.Stir.WindowCAFeed

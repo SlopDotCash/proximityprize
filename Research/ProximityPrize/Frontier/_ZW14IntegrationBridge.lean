@@ -11,10 +11,10 @@ import Research.ProximityPrize.Frontier._ZW14MomentsDetermineWindowDischarge
 
 `Frontier/_W14JacobiWindowMomentEquivalence.lean` (lane file) named
 `W14WindowMoment.MomentsDetermineWindow` as its open classical input and consumed it
-explicitly (`hconv`).  `Frontier/_ZW14MomentsDetermineWindowDischarge.lean` proved the
-identical statement (definitions copied verbatim) by walk-counting induction.  This bridge
-machine-checks the definitional identity and **fires W14's own consumers with zero named
-input left**:
+explicitly (`hconv`).  `Frontier/_ZW14MomentsDetermineWindowDischarge.lean` imports W14 and proves that statement
+directly in W14's vocabulary by walk-counting induction (it also restates the two unconditional
+consumers).  This bridge is a thin re-export under `w14_`-prefixed names that **fires W14's own
+consumers with zero named input left**:
 
 > **`w14_momentsDetermineWindow_holds`** — `W14WindowMoment.MomentsDetermineWindow N K`
 > holds for every `N`, `K` (the lane's named open input, discharged in its own vocabulary).
@@ -35,8 +35,8 @@ namespace ArkLib.ProximityGap.Frontier.ZW14IntegrationBridge
 
 open ArkLib.ProximityGap.Frontier
 
-/-- **The W14 named open input, discharged in W14's own vocabulary.**  The two copies of the
-definition are syntactically identical, so the discharge transfers by definitional equality. -/
+/-- **The W14 named open input, discharged in W14's own vocabulary.**  Re-export of
+`ZW14MomentsDischarge.momentsDetermineWindow_holds`, which is stated in W14's vocabulary. -/
 theorem w14_momentsDetermineWindow_holds (N K : ℕ) :
     W14WindowMoment.MomentsDetermineWindow N K := by
   intro A A' htri htri' hsym hsym' hpos hpos' i0 h0 hmom

@@ -23,9 +23,17 @@ X-degree-bound conclusions hold with the residual hypothesis removed.
 Why monic is the right (and only correct) form: the residual is **provably false for non-monic `H`**
 — `P2OrderZeroRefutationWitness.βHenselAssembled_eq_gammaGenuine_false` exhibits a concrete
 `H = 2·Y` over `ℚ` for which the `(A.1)` numerator series is mis-normalized (off by `W^{t+1}`
-factors) and is NOT the genuine root. In the BCIKS20 setting `H` is an irreducible factor of the GS
-interpolant over `F(Z)`, which is taken monic WLOG, so `H.leadingCoeff = 1` is exactly the genuine
-hypothesis; making these claims unconditional under it is the faithful reading.
+factors) and is NOT the genuine root. (That witness has a unit leading coefficient `2`; the
+in-tree refutation is of the generic residual, not of every non-monic normalization.)
+
+**Scope: the monic subcase only.** In the BCIKS20 setting `H` is an irreducible factor of the GS
+interpolant over `F(Z)`. Taking it monic over `F(Z)[Y]` does **not** supply the hypothesis
+`H.leadingCoeff = 1` for `H : F[X][Y]` used here: e.g. `Z·Y + 1` is primitive and irreducible in
+`F[Z][Y]`, its monic associate `Y + 1/Z` lies outside `F[Z][Y]`, and no unit of `F[Z][Y]` turns the
+leading coefficient `Z` into `1`. Clearing denominators or changing the ground ring changes the
+degree/weight and integrality obligations used downstream. No normalization/transport theorem
+reducing the original non-monic factor setting to this monic case is proved in-tree, so the results
+below cover only the monic subcase `H.leadingCoeff = 1`.
 
 ## What remains open (HONESTY)
 

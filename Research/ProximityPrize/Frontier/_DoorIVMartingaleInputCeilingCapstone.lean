@@ -6,32 +6,44 @@ Authors: ArkLib Contributors
 import Research.ProximityPrize.Frontier._DoorIVQVCauchySchwarzCircular
 
 /-!
-# Door-(iv) Lane-3 capstone: NO martingale input cracks the tower drift (#444)
+# Door-(iv) Lane-3 capstone: three deterministic tower envelopes give only the trivial drift (#444)
 
-The §1.2 Azuma/Freedman lever feeds the bounded-increment log-ratio tower
-`S_a := log(Mtow a) − log(Mtow 0) = Σ_{i<a} Δ_i` (`Δ_i ∈ [0, log 2]`) through martingale
-concentration. Three distinct inputs have each been formalized:
+**Scope.** This file is entirely **deterministic**. It works with a positive real sequence `Mtow`
+satisfying `Mtow (i+1) ≤ 2·Mtow i` (and, for the quadratic route, the extra monotonicity
+hypothesis `Mtow i ≤ Mtow (i+1)`), and the log-ratio tower
+`S_a := log(Mtow a) − log(Mtow 0) = Σ_{i<a} Δ_i`. It defines no probability space, filtration,
+martingale differences or conditional expectations, so it proves no concentration (Azuma/Freedman)
+statement and no theorem about all martingale methods. The monotonicity hypothesis
+(`Δ_i ≥ 0`) is an entered assumption, not a property of the actual worst-period tower maxima
+(whose per-level ratios are reported to drop below `1` in the butterfly data); any use of it needs
+its own justification for the actual model.
+
+Three deterministic envelopes have been formalized:
 
 1. the **bounded-increment sum** `S_a ≤ a·log 2`  (`logTower_le_card_mul_log2`);
 2. the **centered-excess** linear ceiling `Σ_{i<a}(Δ_i − ½log 2) ≤ (a/2)·log 2`
    (`logTower_excess_le_half_card_mul_log2`), which is the same `S_a ≤ a·log 2`;
-3. the **predictable quadratic variation** `Σ Δ_i² ≤ (log 2)·S_a` (`logTower_sq_le_log2_mul`),
-   which through Cauchy–Schwarz returns `S_a ≤ a·log 2` (`qv_route_recovers_trivial_ceiling`).
+3. the **raw sum of squared increments** `Σ Δ_i² ≤ (log 2)·S_a` (`logTower_sq_le_log2_mul`), which
+   through Cauchy–Schwarz returns `S_a ≤ a·log 2` (`qv_route_recovers_trivial_ceiling`). This raw
+   deterministic sum is **not** the predictable quadratic variation of a martingale, which would
+   be built from conditional second moments of *centered* random differences; no such bridge is
+   formalized here.
 
-**This capstone records that all three converge on the IDENTICAL ceiling `S_a ≤ a·log 2`** — the
-TRIVIAL drift ceiling (`Mtow a ≤ 2^a·Mtow 0`, the trivial `n`-ceiling). The prize requires the
-strictly smaller `S_a ≤ ½·a·log 2 + O(log a)` (`logTower_excess_eq`). Hence:
+**This file records that these three envelopes all give the same ceiling `S_a ≤ a·log 2`** — the
+trivial drift ceiling (`Mtow a ≤ 2^a·Mtow 0`, the trivial `n`-ceiling). The prize shape is
+`S_a ≤ ½·a·log 2 + O(log a)` (`logTower_excess_eq`), i.e. linear drift with half the slope; the
+logarithmic remainder belongs to the **centered excess** `Σ_{i<a}(Δ_i − ½log 2) = O(log a)`. (The
+uncentered sum `Σ Δ_i` is required to be `≤ ½·a·log 2 + O(log a)`, not `O(log a)`.) Hence:
 
-> **No martingale concentration INPUT — bounded increments, their centered excess, or their
-> predictable quadratic variation — improves past `S_a ≤ a·log 2`.** Each is consistent with the
-> full trivial ceiling, so none can force the prize. This is the door-(iii)/Azuma-equivalent dead
-> end stated as a single citable convergence: the martingale lever is genuinely closed at the
-> trivial ceiling, and CORE requires an INDEPENDENT mean-drift control `Σ Δ_i = O(log a)` (the
-> binding-frequency phase law) that lives outside the increment+QV data.
+> **These three specific deterministic envelopes do not reach the prize drift.** Each is
+> consistent with the full trivial ceiling, so none of them, as entered, can force the prize. What
+> is missing is control of the centered excess `Σ(Δ_i − ½log 2) = O(log a)` (the binding-frequency
+> phase law), which these envelopes do not supply. This is a limitation of the entered envelopes,
+> not an impossibility result for martingale/concentration methods in general.
 
-Lane-3 (refuted-lever capstone). Axiom-clean: `propext`, `Classical.choice`, `Quot.sound`. No CORE /
-cancellation / completion / moment / anti-concentration / capacity claim. CORE
-`M(μ_n) ≤ C·√(n·log(p/n))` stays OPEN.
+Lane-3. Axiom-clean: `propext`, `Classical.choice`, `Quot.sound`. No CORE / cancellation /
+completion / moment / anti-concentration / capacity claim. CORE `M(μ_n) ≤ C·√(n·log(p/n))` stays
+OPEN.
 -/
 
 set_option linter.style.longLine false
@@ -44,7 +56,7 @@ open ProximityGap.Frontier.DoorIVQVCauchySchwarzCircular
 
 variable (Mtow : ℕ → ℝ)
 
-/-- **The bounded-increment-sum martingale input gives `S_a ≤ a·log 2`.** Restatement of
+/-- **The bounded-increment-sum envelope gives `S_a ≤ a·log 2`** (deterministic). Restatement of
 `logTower_le_card_mul_log2` at the capstone namespace. -/
 theorem boundedSum_ceiling (a : ℕ)
     (hpos : ∀ i, 0 < Mtow i)
@@ -52,8 +64,10 @@ theorem boundedSum_ceiling (a : ℕ)
     Real.log (Mtow a) - Real.log (Mtow 0) ≤ (a : ℝ) * Real.log 2 :=
   logTower_le_card_mul_log2 (Mtow := Mtow) a hpos hdouble
 
-/-- **The predictable-quadratic-variation martingale input gives `S_a ≤ a·log 2`** (via
-Cauchy–Schwarz). Restatement of `qv_route_recovers_trivial_ceiling`. -/
+/-- **The raw squared-increment envelope gives `S_a ≤ a·log 2`** (via Cauchy–Schwarz,
+deterministic, under the entered monotonicity hypothesis `hmono`). Restatement of
+`qv_route_recovers_trivial_ceiling`. The sum `Σ Δ_i²` used there is a deterministic sum of
+squared log increments, not a martingale predictable quadratic variation. -/
 theorem qv_ceiling (a : ℕ)
     (hpos : ∀ i, 0 < Mtow i)
     (hdouble : ∀ i, Mtow (i + 1) ≤ 2 * Mtow i)
@@ -61,13 +75,14 @@ theorem qv_ceiling (a : ℕ)
     Real.log (Mtow a) - Real.log (Mtow 0) ≤ (a : ℝ) * Real.log 2 :=
   qv_route_recovers_trivial_ceiling Mtow a hpos hdouble hmono
 
-/-- **Capstone: all martingale inputs converge on the IDENTICAL trivial ceiling.** The
-bounded-increment-sum input and the predictable-quadratic-variation input (the two distinct
-Freedman/Azuma data) BOTH bound the tower drift by the SAME value `a·log 2`, with the bounded-sum
-input being `≤` the QV-derived value trivially (they are equal as ceilings). Stated as: under the
-tower hypotheses, the QV-derived ceiling is no smaller than the bounded-sum ceiling — both are
-`a·log 2`, so neither distinguishes itself, and in particular the QV input supplies no improvement
-over the bounded-increment sum. -/
+/-- **Compatibility package: both deterministic envelopes give the same trivial ceiling.** The
+bounded-increment-sum envelope and the raw squared-increment envelope both bound the tower drift
+by `a·log 2`.
+
+Note: the two conjuncts are the **identical proposition** (one proved by each route), so this
+package carries no more information than `boundedSum_ceiling` alone; it is kept only for the
+existing consumer in `CampaignProvenIndex`. New code should cite `boundedSum_ceiling` (or
+`qv_ceiling`) directly. -/
 theorem martingale_inputs_same_ceiling (a : ℕ)
     (hpos : ∀ i, 0 < Mtow i)
     (hdouble : ∀ i, Mtow (i + 1) ≤ 2 * Mtow i)
@@ -77,22 +92,23 @@ theorem martingale_inputs_same_ceiling (a : ℕ)
   ⟨boundedSum_ceiling Mtow a hpos hdouble,
    qv_ceiling Mtow a hpos hdouble hmono⟩
 
-/-- **No martingale input forces a sublinear (prize) ceiling.** The prize requires the drift bound
-`S_a ≤ R` with `R = ½·a·log 2 + O(log a) < a·log 2` (for `a ≥ 1` and the `O(log a)` slack below the
-`½·a·log 2` gap). For any such strictly-smaller target `R < a·log 2`, the trivial ceiling `a·log 2`
-that every martingale input delivers is NOT `≤ R`. Hence no martingale concentration input —
-bounded-increment sum or predictable quadratic variation — can by itself certify the prize drift
-bound; an independent mean-drift control is necessary. -/
+/-- **The trivial ceiling does not certify a smaller target.** The prize requires the drift bound
+`S_a ≤ R` with `R = ½·a·log 2 + O(log a)` (half-slope linear, not sublinear), which is `< a·log 2`
+once the `O(log a)` slack is below the `½·a·log 2` gap. For any target `R < a·log 2`, the trivial
+ceiling `a·log 2` is NOT `≤ R`. This is the literal statement `¬ (a·log 2 ≤ R)` from `R < a·log 2`:
+it shows only that the two specific envelopes above, whose output is `a·log 2`, cannot by
+themselves certify the prize drift. It is not a theorem about all concentration methods; the
+missing input is control of the centered excess `Σ(Δ_i − ½log 2) = O(log a)`. -/
 theorem no_martingale_input_reaches_sublinear (a : ℕ) (R : ℝ)
     (hR : R < (a : ℝ) * Real.log 2) :
     ¬ ((a : ℝ) * Real.log 2 ≤ R) :=
   qv_route_no_sublinear_saving a R hR
 
-/-- **The irreducible √n gap (strict separation of the two ceilings).** The prize drift ceiling
-`½·a·log 2` is STRICTLY below the martingale ceiling `a·log 2` for every `a ≥ 1`, with gap exactly
-`½·a·log 2`. Exponentiated, this gap is the factor `2^{a/2} = √(2^a) = √n` the martingale lever must
-shave and cannot: every martingale input lands at `2^a` while the prize sits at `√(2^a)·log-slack`. This
-is the quantitative `√n`-separation between the martingale ceiling and the prize floor. -/
+/-- **The `√n` gap (strict separation of the two ceilings).** The prize drift slope `½·a·log 2` is
+STRICTLY below the trivial envelope ceiling `a·log 2` for every `a ≥ 1`, with gap exactly
+`½·a·log 2`. Exponentiated, this gap is the factor `2^{a/2} = √(2^a) = √n` that the entered
+deterministic envelopes do not remove: they land at `2^a` while the prize sits at
+`√(2^a)·log-slack`. This is pure scalar arithmetic about those two ceilings. -/
 theorem prize_ceiling_strictly_below_martingale_ceiling (a : ℕ) (ha : 1 ≤ a) :
     (a : ℝ) * (Real.log 2 / 2) < (a : ℝ) * Real.log 2 := by
   have hlog2 : (0 : ℝ) < Real.log 2 := Real.log_pos (by norm_num)
@@ -101,9 +117,9 @@ theorem prize_ceiling_strictly_below_martingale_ceiling (a : ℕ) (ha : 1 ≤ a)
   -- a·(log2/2) < a·log2  ⇺  log2/2 < log2  (a > 0)
   nlinarith [hlog2, hapos]
 
-/-- **The gap is exactly `½·a·log 2`.** The difference between the martingale ceiling and the prize
-ceiling is `a·log2 − a·(log2/2) = ½·a·log 2`, i.e. exactly the prize ceiling itself — the lever must
-halve the per-level drift budget, the `√n` the BGK wall is about. -/
+/-- **The gap is exactly `½·a·log 2`.** The difference between the trivial envelope ceiling and
+the prize drift slope is `a·log2 − a·(log2/2) = ½·a·log 2`, i.e. exactly the prize slope itself —
+an argument must halve the per-level average drift budget, the `√n` the BGK wall is about. -/
 theorem martingale_minus_prize_ceiling_eq (a : ℕ) :
     (a : ℝ) * Real.log 2 - (a : ℝ) * (Real.log 2 / 2) = (a : ℝ) * (Real.log 2 / 2) := by
   ring

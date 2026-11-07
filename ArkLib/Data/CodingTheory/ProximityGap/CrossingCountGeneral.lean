@@ -16,6 +16,15 @@ Generalizes the `k = 2` crossing/Bonferroni step to pairwise intersection `≤ s
 
 > **`degree_sum_le_general`** — `Σ_x d_x ≤ n + s·L(L−1)` — the general Bonferroni.
 
+> **`two_mul_degree_sum_le_general`** — the sharper `2·Σ_x d_x ≤ 2n + s·L(L−1)`, i.e.
+> `Σ_x d_x ≤ n + s·C(L,2)` under the same pairwise hypothesis: the pointwise step
+> `d ≤ 1 + d(d−1)/2` loses nothing over `d ≤ 1 + d(d−1)`, which discards a factor `2`.
+
+The crossing count here specializes (`s = 1`) to `CrossingCountBound.crossing_double_count`,
+whose proof is a separate copy of the same incidence argument
+(`MeanDegreeCauchySchwarz.crossing_double_count_general_local` is another copy); consolidating
+them onto this general statement is a pending simplification.
+
 With the `(k−1)`-subset pencil bound (sets through a common `s`-set meet exactly
 there, so their remainders are disjoint — the generalization of
 `pencil_family_card_le`, registered) these feed the general-`k` mean-degree branch
@@ -102,8 +111,35 @@ theorem degree_sum_le_general {S : Finset (Finset (Fin n))} {s : ℕ}
   _ ≤ n + s * (S.card * (S.card - 1)) :=
       Nat.add_le_add_left (crossing_double_count_general hpair) _
 
+open Classical in
+/-- **The sharp general Bonferroni step**: `2·Σ_x d_x ≤ 2n + s·L(L−1)`, i.e.
+`Σ_x d_x ≤ n + s·C(L,2)`, from the pointwise `2d ≤ 2 + d(d−1)`. -/
+theorem two_mul_degree_sum_le_general {S : Finset (Finset (Fin n))} {s : ℕ}
+    (hpair : ∀ A ∈ S, ∀ B ∈ S, A ≠ B → (A ∩ B).card ≤ s) :
+    2 * ∑ x : Fin n, (S.filter (fun A => x ∈ A)).card
+      ≤ 2 * n + s * (S.card * (S.card - 1)) := by
+  classical
+  have hpt : ∀ d : ℕ, 2 * d ≤ 2 + d * (d - 1) := by
+    intro d
+    rcases d with _ | m
+    · simp
+    · rw [Nat.add_sub_cancel]
+      nlinarith [Nat.le_mul_self m]
+  calc 2 * ∑ x : Fin n, (S.filter (fun A => x ∈ A)).card
+      = ∑ x : Fin n, 2 * (S.filter (fun A => x ∈ A)).card := by rw [Finset.mul_sum]
+  _ ≤ ∑ x : Fin n, (2 + (S.filter (fun A => x ∈ A)).card
+          * ((S.filter (fun A => x ∈ A)).card - 1)) :=
+        Finset.sum_le_sum fun x _ => hpt _
+  _ = 2 * n + ∑ x : Fin n, (S.filter (fun A => x ∈ A)).card
+        * ((S.filter (fun A => x ∈ A)).card - 1) := by
+      rw [Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ,
+        Fintype.card_fin, smul_eq_mul, mul_comm]
+  _ ≤ 2 * n + s * (S.card * (S.card - 1)) :=
+      Nat.add_le_add_left (crossing_double_count_general hpair) _
+
 end ProximityGap.PairRank
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only)
 #print axioms ProximityGap.PairRank.crossing_double_count_general
 #print axioms ProximityGap.PairRank.degree_sum_le_general
+#print axioms ProximityGap.PairRank.two_mul_degree_sum_le_general

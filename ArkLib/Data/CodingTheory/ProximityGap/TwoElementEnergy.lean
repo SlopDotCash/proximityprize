@@ -21,8 +21,11 @@ and hence the exact Gauss-sum moment spectrum
 
 > `twoElement_moment_spectrum` :  `∑_b ‖η_b‖^{2r} = q · C(2r,r)`.
 
-This is the `n=2` base case of the negation-closed walk bound: `C(2r,r) ≤ (2r−1)!!·2^r` with equality
-in leading order (`C(2r,r) ~ 4^r/√(πr)`, `(2r−1)!!·2^r = (2r)!/r!`). It is an exact, irrefutable
+This is the `n=2` base case of the negation-closed walk bound: `C(2r,r) ≤ (2r−1)!!·2^r`, an upper
+bound only — **not** equal in leading order.  Since `C(2r,r) = (2r)!/(r!)²` and
+`(2r−1)!!·2^r = (2r)!/r!`, the ratio is exactly `C(2r,r) / ((2r−1)!!·2^r) = 1/r!`, which tends to
+`0`: the gap grows factorially (`C(2r,r) ~ 4^r/√(πr)`), even in char `0` or under the no-wrap guard
+`char F > 2r`. It is an exact, irrefutable
 identity; the smallest case of the energy/AVERAGE side, NOT a δ\*/W4 advance. Axiom-clean.
 -/
 

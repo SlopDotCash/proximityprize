@@ -64,7 +64,9 @@ at order `0` (`corrected_rep_T_loaded`).
   corrected-rep version of `GenuineTruncationFin.htailDeg_genuine_of_representative`.
 * `gammaGenuine_eq_trunc_of_graded_disc_corrected` — the truncation capstone of
   `GenuineTruncationFin` re-assembled on the corrected representative: same finite geometric
-  inputs, `hrepG` replaced by the **satisfiable** `hrepT`.
+  inputs, `hrepG` replaced by `hrepT`, which F6 does not refute.  This is a conditional
+  surface, not an independent producer: for monic `d_H ≤ 2` the only in-tree producer of
+  `hrepT` (Part 3) itself consumes the truncation identity this capstone concludes.
 
 ## Honest residuals
 
@@ -276,8 +278,9 @@ variable [Fintype F] [DecidableEq F]
 
 /-- **The truncation capstone, repaired.**  `gammaGenuine = trunc k gammaGenuine` from the SAME
 finite geometric data as `GenuineTruncationFin.gammaGenuine_eq_trunc_of_graded_disc`, with the
-F6-unsatisfiable `hrepG` replaced by the corrected representative `hrepT` (satisfiable at
-`d_H = 2` by Part 3) and the tail index `Ppoly.natDegree` replaced by
+F6-unsatisfiable `hrepG` replaced by the corrected representative `hrepT` (not refuted by F6;
+at monic `d_H ≤ 2` Part 3 inhabits it only from an already-known truncation identity, so this
+capstone does not derive truncation ab initio) and the tail index `Ppoly.natDegree` replaced by
 `max (deg P₀) (deg P₁)`. -/
 theorem gammaGenuine_eq_trunc_of_graded_disc_corrected {x₀ : F} {R : F[X][X][Y]}
     (hHyp : ClaimA2.Hypotheses x₀ R H)

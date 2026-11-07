@@ -27,18 +27,32 @@ THIS PROBE REFUTES THAT HOPE and pins the honest content of the bound.  Findings
      in the roots (no factorization into root-differences); its zero locus is met by squarefree
      coprime configs (iota=1 is common).  No "squarefree => det != 0 => iota<=1" argument exists.
 
- [C] What forces iota <= 1 is the BAND REALIZABILITY GEOMETRY, not the algebra.  Enforcing the
-     FULL band constraints jointly -- each reduced degree <= budget = k-1-t AND interior slack
-     a+b+c >= 2*budget+3 (=> min(a,b,c) >= 3 near-balance) AND the overlap regions being PROPER
-     index-subsets of the evaluation domain (not the whole multiplicative group) -- gives iota<=1
-     over 62,000+ configs, 4 roots-of-unity domains + 2 random domains, 0 violations.
-     Drop the degree cap ((1,1,6) => iota>=2) OR the proper-subset restriction (full cyclic group
-     F_13^* partitioned into cosets => X^4-c linear dependence, iota=2) and the bound FAILS.
+ [C] SAMPLED evidence only.  Enforcing the band constraints jointly -- each reduced degree <=
+     budget = k-1-t AND interior slack a+b+c >= 2*budget+3 (=> min(a,b,c) >= 3 near-balance) AND
+     the overlap regions being PROPER index-subsets of the evaluation domain -- gave no iota>=2
+     instance in the random samples of test_C (domains mu_36, mu_40, mu_60, mu_72).  A finite
+     random sample is not a proof, and the conjectured implication is FALSE in general: see [D].
+     Dropping the degree cap ((1,1,6) => iota>=2) also breaks the bound.
 
-Verdict: iota <= 1 is a GEOMETRIC statement about band-realizable overlap triples (same status as
-SYZ39 bad-prime confinement / G172 no-go), NOT a determinant identity.  Lean file
-_SYZ45ImbalanceBound.lean formalizes the pure halves (imbalance reduction; linear-dependence =>
-iota>=2 driver; the refutation skeleton) axiom-clean.
+ [D] REFUTATION of "proper/full-cover band geometry forces iota <= 1" (audit finding L127).
+     Over F_41, mu_20 = <2> (a PROPER subgroup of F_41^*), n=20, k=10, s=14: take reduced pair
+     root exponent sets R0,R1,R2 = the classes 0,1,2 mod 5, with locators X^4-1, X^4-16, X^4-10
+     (pairwise coprime, split squarefree).  Common exponents T={3,8,13,18,4} and cores
+     T u R0 u R1 u {9}, T u R0 u R2 u {14}, T u R1 u R2 u {19} have size 14 strictly between 2n/3
+     and 3n/4, pairwise intersections 9 = k-1, common intersection 5, union 20 (full cover).
+     Reduced budget k-1-5 = 4, degrees (4,4,4) with 12 >= 2*4+3, and the reduced root union
+     (12 of 20 coordinates) is a proper subset.  The three quartics satisfy a nonzero CONSTANT
+     linear relation, so delta_1 = 4 and iota = 6 - 4 = 2.  The coset (X^4 - c) mechanism thus
+     survives inside a proper multiplicative subgroup.  test_D replays this exactly.  It is an
+     exact finite-field geometry refutation of the proposed bound -- not a Lean kernel fixture
+     and not a dyadic-domain / prize bad-scalar counterexample.
+
+Verdict: iota <= 1 is NOT a determinant identity, and it does NOT follow from properness plus
+full-cover band geometry alone ([D]).  What is proved is SYZ47's triangle bound
+delta_1 >= max(a,b,c), which gives iota <= 1 only on the covered subregion
+max(a,b,c) >= floor((a+b+c)/2) - 1; the balanced interior needs additional, justified
+hypotheses.  Lean file _SYZ45ImbalanceBound.lean formalizes the pure halves (imbalance
+reduction; linear-dependence => iota>=2 driver; the refutation skeleton) axiom-clean.
 """
 import random
 from itertools import combinations
@@ -139,7 +153,7 @@ def is_band_profile(a, b, c, budget):
     return max(a, b, c) <= budget and a + b + c >= 2 * budget + 3
 
 def test_C():
-    print("[C] FULL band constraints (rate 1/2, interior cores, deg<=budget) force iota<=1")
+    print("[C] SAMPLED band configs (rate 1/2, interior cores, deg<=budget): iota census")
     total_tested = 0; max_iota = -1; fails = 0
     for (p, n) in [(37, 36), (41, 40), (61, 60), (73, 72)]:
         dom = subgroup(p, n)
@@ -165,11 +179,54 @@ def test_C():
         print(f"    subgroup p={p} n={n}: tested={tested} max_iota={mi}")
         total_tested += tested; max_iota = max(max_iota, mi)
     print(f"    TOTAL: tested={total_tested} max_iota={max_iota} iota>=2_count={fails}")
-    assert fails == 0
-    print("    => iota<=1 holds for genuine band configs; the bound is GEOMETRIC.\n")
+    print("    => no iota>=2 in THIS random sample only; not a proof (see [D] for a band")
+    print("       counterexample outside the sampled domain sizes).\n")
+    return fails
+
+# ---------- [D] exact proper-subgroup full-cover band counterexample (iota = 2) ----------
+def l127_counterexample():
+    """The audit-L127 witness: (p, n, k, dom, cores, (f, g, h), (a, b, c), t)."""
+    p, n, k = 41, 20, 10
+    dom = [pow(2, i, p) for i in range(n)]          # mu_20 = <2> in F_41^*
+    R = [[i for i in range(n) if i % 5 == r] for r in range(3)]
+    f, g, h = (from_roots([dom[i] for i in Ri], p) for Ri in R)
+    T = {3, 8, 13, 18, 4}
+    cores = [T | set(R[0]) | set(R[1]) | {9},
+             T | set(R[0]) | set(R[2]) | {14},
+             T | set(R[1]) | set(R[2]) | {19}]
+    return p, n, k, dom, cores, (f, g, h), (4, 4, 4), len(T)
+
+def test_D():
+    print("[D] exact band counterexample on the PROPER subgroup mu_20 < F_41^* (audit L127)")
+    p, n, k, dom, cores, (f, g, h), (a, b, c), t = l127_counterexample()
+    assert len(set(dom)) == n and (p - 1) % n == 0 and n < p - 1        # proper subgroup
+    CA, CB, CC = cores
+    sizes = [len(C) for C in cores]
+    pairs = [len(CA & CB), len(CA & CC), len(CB & CC)]
+    assert all(3 * s > 2 * n and 4 * s < 3 * n for s in sizes)          # 2n/3 < s < 3n/4
+    assert pairs == [k - 1] * 3 and len(CA & CB & CC) == t == 5
+    assert len(CA | CB | CC) == n                                      # full cover
+    budget = k - 1 - t
+    assert is_band_profile(a, b, c, budget)
+    assert [f, g, h] == [[40, 0, 0, 0, 1], [25, 0, 0, 0, 1], [31, 0, 0, 0, 1]]  # X^4-1,-16,-10
+    dep = next(((c0, c1, c2) for c0 in range(p) for c1 in range(p) for c2 in range(p)
+                if (c0, c1, c2) != (0, 0, 0)
+                and all((c0 * f[i] + c1 * g[i] + c2 * h[i]) % p == 0 for i in range(5))), None)
+    d1 = delta1(f, g, h, a, b, c, p)
+    iota = (a + b + c) // 2 - d1
+    print(f"    cores={sizes} pair-overlaps={pairs} t={t} union={len(CA | CB | CC)} "
+          f"budget={budget} degrees=({a},{b},{c})")
+    print(f"    constant syzygy={dep}  delta_1={d1}  iota={iota}")
+    assert dep is not None and d1 == 4 and iota == 2
+    print("    => proper/full-cover band geometry does NOT force iota<=1 (exact F_41 refutation;")
+    print("       not a kernel fixture, not a prize bad-scalar counterexample).\n")
+    return iota
 
 if __name__ == "__main__":
     test_A()
     test_C()
-    print("SYZ45 verdict: iota<=1 needs band realizability geometry, NOT squarefreeness/coprimality.")
-    print("The symbolic-determinant factorization hope is REFUTED.")
+    test_D()
+    print("SYZ45 verdict: iota<=1 is not implied by squarefreeness/coprimality, and NOT by")
+    print("proper/full-cover band geometry either ([D]).  Proved: delta_1 >= max(a,b,c) on the band")
+    print("triangle (SYZ47), i.e. iota<=1 on the covered subregion only; the balanced interior needs")
+    print("additional justified hypotheses.  The symbolic-determinant factorization hope is REFUTED.")

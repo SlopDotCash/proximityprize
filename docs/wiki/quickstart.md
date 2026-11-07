@@ -19,10 +19,10 @@ On a cold checkout, fetch the cache before building. For repeated research proof
 iteration, use `scripts/pg-warm.sh` once and `scripts/pg-iterate.sh <file.lean>`.
 The warm-up script prints the full build log on failure and preserves the build exit status;
 successful runs show only the final two build lines. The iteration wrapper trusts the compiler
-exit status for errors, then checks actual admission warnings and `sorryAx` in printed axiom
-reports. Words such as `errors` or `sorry` in filenames or benign messages do not mean failure.
-It does not generate axiom reports automatically; the project build and kernel audit remain
-required for final verification.
+exit status for errors and checks actual admission warnings, printed axiom dependencies,
+and the repository's forbidden-token policy. Words such as `errors` or `sorry` in filenames
+or benign messages do not cause failure. The project build and kernel audit provide the
+declaration-level checks that single-file iteration cannot generate automatically.
 
 `scripts/validate.sh` combines the canonical upstream compile-time acceptance,
 runtime, style, warning, and probability-retirement checks with downstream Python
@@ -142,16 +142,27 @@ interaction implementation train, not the current package versions.
 
 ## Recommended Validation
 
+Install the Python regression dependencies in your active virtual environment first
+(Python 3.12, the version CI uses; older interpreters are not tested):
+
+```bash
+python3 -m pip install -r scripts/requirements-validation.txt
+```
+
+CI installs the same pinned dependencies on Python 3.12 before running the validation wrapper.
 For a convenient routine check, run:
 
 ```bash
 ./scripts/validate.sh
 ```
 
+CI runs the validation wrapper for pull requests targeting `main`. Deleting a gate input
+or moving it into a documentation path still runs the same checks.
+
 On a cold clone, fetch precompiled dependencies first:
 
 ```bash
-lake exe cache get
+./scripts/lake-locked.sh exe cache get
 ./scripts/validate.sh
 ```
 
@@ -206,6 +217,12 @@ project-specific mathematical Unicode notation, while rejecting invisible contro
 controls, and nonstandard space characters that can conceal source changes. It also rejects
 blanket package-root imports. The normal `lake build` loads ArkLib's Lean syntax-tree plugin, which
 rejects source-level linter suppressions in their actual parsed context.
+The four default libraries and `ArkLibTest` also load a separate syntax-tree
+plugin that rejects Lean's admitting `stop` tactic. It accepts ordinary
+`stop` names and catches tactics inside warning-suppression commands.
+`scripts/test-lint-plugin.sh` runs the syntax-policy fixtures.
+Build optional modules owned by those libraries explicitly to run the check.
+Direct `lake env lean` and `pg-iterate.sh` run without the build-time plugins.
 
 The header policy understands the Lean module system, so `module`, `public import`, `meta import`
 and `import all` all parse, and it pins the canonical header order every file under `ArkLib/`
@@ -371,6 +388,12 @@ lake exe toyproblem-runtime
 lake exe hachi-runtime
 lake exe sumcheck-runtime
 lake exe fri-extractor-runtime
+python3 ./scripts/forbidden_tokens.py
+python3 ./scripts/sorry_census.py --fail-on-holes
+# build the modules the audit imports (flagship modules, some outside the
+# ProximityGap umbrella, and the pinned residual-axiom modules) before auditing:
+python3 ./scripts/axiom_audit.py --print-modules | xargs ./scripts/lake-locked.sh build
+python3 ./scripts/axiom_audit.py
 ./scripts/check-imports.sh
 uv run --no-project --python 3.12 python ./scripts/check-docs-integrity.py
 uv run --no-project --python 3.12 python ./scripts/kb/lint.py
@@ -417,11 +440,50 @@ the default build.
   Pages/OIDC permission. It uploads timing artifacts consumed by the trusted
   [`../../.github/workflows/build-timing-report.yml`](../../.github/workflows/build-timing-report.yml)
   workflow, which renders the report and posts it on the PR.
+- The downstream source precheck rejects kernel-skip and proof-as-sorry debug options in
+  Lean source and in `lakefile.toml`. Python 3.11 or newer is required to parse the Lake
+  configuration. Pass explicit paths to `python3 scripts/forbidden_tokens.py` for focused
+  checks. Stale allowlist warnings are reported on the default full-tree scan.
 - [`../../.github/workflows/interaction.yml`](../../.github/workflows/interaction.yml)
   provides focused compilation and zero-warning checks for typed Interaction production and
   acceptance modules. It also runs on feature-base stacked PRs. Its read-only job restores,
   but never saves, the dependency and build caches and does not retain checkout credentials. Passing
   this check does not waive the full validation/axiom gate for the eventual `main` target.
+- The validation wrapper enforces the issue #47 verification gates: a fast precheck rejecting
+  `native_decide`/`bv_decide`/custom `axiom` declarations in live source
+  (`scripts/forbidden_tokens.py`, which main CI also runs as a separate early step), a
+  comment-stripped sorry census requiring zero live holes
+  (`scripts/sorry_census.py --fail-on-holes`), and a `#print axioms` sweep over the pinned
+  flagship list (`scripts/axiom_audit.py` reading `scripts/flagship_axioms.txt`) that must stay
+  within `propext`, `Classical.choice`, `Quot.sound`. Renaming or deleting a pinned flagship
+  theorem without updating the list is a hard failure. Because some pinned flagship modules live
+  outside the ProximityGap umbrella, the audit's modules
+  (`python3 ./scripts/axiom_audit.py --print-modules`: the flagship modules and the modules of
+  the residual axioms pinned in `scripts/residual_axioms.txt`) are built before it runs. The same
+  audit lists, from Lean's environment metadata, every axiom declared in an `ArkLib`/`Research`
+  module of that import closure and fails unless each is a pinned residual declared in its pinned
+  module; this covers every name form and axioms added without the `axiom` keyword, but only
+  inside that closure.
+- The declaration scanner restricts leading indentation to the current line, so
+  large masked block comments do not cause repeated scans of all following blank lines.
+- The forbidden-token precheck rejects every custom `axiom` *except* the
+  documented, tracked residuals pinned in
+  [`../../scripts/residual_axioms.txt`](../../scripts/residual_axioms.txt) (route (a)
+  of #111). Each entry pins one declaration by fully qualified name, defining file and
+  a digest of its signature plus in-scope `variable`/`universe`/`open`/`export`/`include`/
+  `omit` commands, and names the issue that owns its eventual discharge. An undocumented
+  `axiom`, a copy of a pinned name under another namespace, a moved declaration, or a
+  changed statement or context fails the gate until the entry is updated after review;
+  `python3 ./scripts/forbidden_tokens.py --print-residual-manifest` prints the current
+  pins. A stale entry (matching no live axiom) prints a warning to prompt cleanup. A pin is
+  a documented assumption, not a proof. `scripts/forbidden_tokens.py` also accepts
+  explicit Lean files or directories for focused checks; stale-entry warnings are only
+  meaningful on the default full-tree scan.
+- The forbidden-token precheck, the sorry census and `scripts/check-research-boundary.py`
+  share one lexer, [`../../scripts/lean_lexer.py`](../../scripts/lean_lexer.py), so a
+  construct cannot be code for one gate and a comment for another. It lexes every
+  combination of plain/interpolated readings of ambiguous string literals and fails closed
+  past its budget. It is lexical, not an elaborated declaration or axiom audit.
 - [`../../.github/workflows/check-imports.yml`](../../.github/workflows/check-imports.yml)
   checks pinned canonical-source provenance, the library/research boundary, and the generated
   `ArkLib.lean`, `ProximityPrize.lean`, `ProximityPrize/Extensions.lean`, and Research umbrellas,
@@ -553,8 +615,6 @@ certifies nothing. A file that prints no `#print axioms` line still receives
 only gate 1; nothing audits the transitive axioms it never reports.
 
 ## Retained probe dependencies
-
-Run the finite monomial-pencil census probes under `scripts/probes/` with standard Python and leave `PYTHONOPTIMIZE` unset. Their entry points reject optimized execution so the certificate checks remain active.
 
 Before deleting a Python probe helper, run `python3 -m unittest discover -s scripts/tests -p test_probe_local_dependencies.py`. This parses retained probe sources without executing experiments and checks statically named `probe_` and `_skeptic_` imports. It catches missing helper files; it does not cover dynamic imports, external packages, or mathematical correctness. Run the affected experiment separately when validating its results.
 

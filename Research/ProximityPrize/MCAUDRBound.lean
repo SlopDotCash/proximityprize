@@ -38,6 +38,40 @@ theorem pairJoint_iff_pairJointAgreesOn {ι F : Type} [Field F]
     UDR.pairJoint C S u₀ u₁ ↔ pairJointAgreesOn (C : Set (ι → F)) S u₀ u₁ :=
   Iff.rfl
 
+/-- **Root extraction from a curve witness.** If a codeword `w` agrees with the line
+`u₀ + γ • u₁` on `S`, equals the codeword curve point `c₀ + γ • c₁`, and the pair `(u₀, u₁)` does
+not jointly agree with `C` on `S`, then `γ` is a root of the affine error `e₀ + γ • e₁`
+(`eᵢ = uᵢ - cᵢ`) at some coordinate `i` with `e₁ i ≠ 0`. Shared by the bad-scalar counts here and
+in `MCAUDR2Bound`. -/
+theorem exists_root_of_curve_witness {ι F : Type} [Field F]
+    (C : Submodule F (ι → F)) (u₀ u₁ c₀ c₁ : ι → F) (hc₀C : c₀ ∈ C) (hc₁C : c₁ ∈ C)
+    (S : Finset ι) (γ : F) (w : ι → F)
+    (hwS : ∀ i ∈ S, w i = u₀ i + γ • u₁ i)
+    (hno : ¬ pairJointAgreesOn (C : Set (ι → F)) S u₀ u₁)
+    (hcollapse : w = c₀ + γ • c₁) :
+    ∃ i, (u₁ - c₁) i ≠ 0 ∧ (u₀ - c₀) i + γ * (u₁ - c₁) i = 0 := by
+  have hexi : ∃ i ∈ S, ¬ (c₀ i = u₀ i ∧ c₁ i = u₁ i) := by
+    by_contra hcon; push Not at hcon
+    exact hno ⟨c₀, hc₀C, c₁, hc₁C, fun i hi => hcon i hi⟩
+  obtain ⟨i, hiS, hidis⟩ := hexi
+  have hci := congrFun hcollapse i
+  simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul] at hci
+  have hsi := hwS i hiS
+  rw [smul_eq_mul] at hsi
+  have hc : u₀ i + γ * u₁ i = c₀ i + γ * c₁ i := by rw [← hsi, hci]
+  have haff : (u₀ - c₀) i + γ * (u₁ - c₁) i = 0 := by
+    simp only [Pi.sub_apply]; linear_combination hc
+  have he₁i : (u₁ - c₁) i ≠ 0 := by
+    intro h0
+    rw [h0, mul_zero, add_zero] at haff
+    apply hidis
+    refine ⟨?_, ?_⟩
+    · have hz : u₀ i - c₀ i = 0 := by simpa only [Pi.sub_apply] using haff
+      exact (sub_eq_zero.mp hz).symm
+    · have hz : u₁ i - c₁ i = 0 := by simpa only [Pi.sub_apply] using h0
+      exact (sub_eq_zero.mp hz).symm
+  exact ⟨i, he₁i, haff⟩
+
 variable {ι : Type} [Fintype ι] [DecidableEq ι] [Nonempty ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
@@ -220,28 +254,8 @@ theorem badCount_udr_le_jointAgreement (C : Submodule F (ι → F)) (u₀ u₁ :
         have hsg := hSt γ hγ
         omega
       exact hcardle
-    have hnpj := hno γ hγ
-    have hexi : ∃ i ∈ S γ, ¬ (c₀ i = u₀ i ∧ c₁ i = u₁ i) := by
-      by_contra hcon; push Not at hcon
-      exact hnpj ⟨c₀, hc₀C, c₁, hc₁C, fun i hi => hcon i hi⟩
-    obtain ⟨i, hiS, hidis⟩ := hexi
-    have hci := congrFun hcollapse i
-    simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul] at hci
-    have hsi := hwS γ hγ i hiS
-    rw [smul_eq_mul] at hsi
-    have hc : u₀ i + γ * u₁ i = c₀ i + γ * c₁ i := by rw [← hsi, hci]
-    have haff : e₀ i + γ * e₁ i = 0 := by
-      simp only [he₀def, he₁def, Pi.sub_apply]; linear_combination hc
-    have he₁i : e₁ i ≠ 0 := by
-      intro h0
-      rw [h0, mul_zero, add_zero] at haff
-      apply hidis
-      refine ⟨?_, ?_⟩
-      · have hz : u₀ i - c₀ i = 0 := by simpa only [he₀def, Pi.sub_apply] using haff
-        exact (sub_eq_zero.mp hz).symm
-      · have hz : u₁ i - c₁ i = 0 := by simpa only [he₁def, Pi.sub_apply] using h0
-        exact (sub_eq_zero.mp hz).symm
-    exact ⟨i, he₁i, haff⟩
+    exact exists_root_of_curve_witness C u₀ u₁ c₀ c₁ hc₀C hc₁C (S γ) γ (w γ)
+      (hwS γ hγ) (hno γ hγ) hcollapse
   calc G.card
       ≤ (G.filter (fun γ : F => ∃ i, e₁ i ≠ 0 ∧ e₀ i + γ * e₁ i = 0)).card :=
         card_le_card hGsub

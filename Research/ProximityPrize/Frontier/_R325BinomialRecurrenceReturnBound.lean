@@ -36,8 +36,13 @@ If every coordinate of the (nega)cyclic product `g·f` is `≤ H` in absolute va
   `∀ i, |g i| ≤ H` at scale `(|a| - b)`.
 * **`banded_preimage_card_le`** — the resulting short-vector count: the number of `g`
   whose banded image lies in the height-`H` box is at most `(2·(H/(|a|-b)) + 1)^m`
-  (integer division; matches the trivial-count baseline `(2H+1)^m / |Res|^{...}` up to
-  the `K^m`-type loss the dichotomy allows, since `|Res(x^m+1, a+bx^s)| ≥ (|a|-|b|)^m`).
+  (integer division).  This matches the trivial-count baseline `(2H+1)^m / |Res|` only up
+  to a factor `K^m` exponential in the dimension `m`, where
+  `|Res(x^m+1, a+bx^s)| ≥ (|a|-|b|)^m`.  For example, with `a = 3`, `b = 1`, odd `s`,
+  `t = 3` and `H = 2r`, the saturated cap `(16r+1)^m` exceeds `(4r+1)^m / (3^m+1)` by a
+  factor of order `12^m`.  That is NOT the `K^r` / `exp(O(r))` loss the R321 dichotomy
+  allows, since `m = n/2` while `r = Θ(log n)` (correction, 2026-10-28 audit T129;
+  see `docs/kb/deltastar-466-r325-binomial-return-bound-2026-07-09.md`).
 
 The wraparound sign of the negacyclic ring is absorbed into `c` (only `|c i| ≤ b` is
 used), so this applies verbatim to `ℤ[x]/(x^m+1)` multiplication by `a + b·x^s` for any
@@ -205,11 +210,21 @@ theorem negacyclicBinomialMul_preimage_card_le {m : ℕ} (hm : 0 < m)
 /-! ## R327 weld: the fixed-prime short-relation cap, conditional only on saturation
 
 R315 named the "genuinely hard fixed-prime counting statement": bound the number of
-bounded-height kernel relations at ONE specified prime.  Given the R321 dyadic
-saturation (`2^t·K ⊆ L_f`, census-verified with `t ≤ 3` in all 92 in-window `n=32`
-cells) for a binomial `f`, the cap follows with NO further arithmetic input.  Injectivity
-of the correspondence is free: `banded_max_bound` at `H = 0` forces the kernel of the
-negacyclic multiplication to vanish. -/
+bounded-height kernel relations at ONE specified prime.  Suppose the R321 dyadic
+saturation `2^t·K ⊆ L_f` holds for a binomial `f`.  Then the cap follows with NO further
+arithmetic input.  Injectivity of the correspondence is free: `banded_max_bound` at
+`H = 0` forces the kernel of the negacyclic multiplication to vanish.
+
+Scope (correction, 2026-10-28 audit T129).  The saturation hypothesis is not
+census-verified for binomials.  `Frontier/_W12BinomialBadPrimeRefuted.lean` shows that no
+realized dominant binomial has `|Res| ∣ 8p` at any prime of the `n = 32` or `n = 64` census
+windows.  The producer `|Res| ∣ 2^t·p` is also infeasible once `m > t + log₂ p`, because
+`|Res| ≥ 2^m` when `|a| - |b| ≥ 2`.  Even granted, the cap carries a `K^m` dimension loss
+(see the module docstring), so it does not close R315's fixed-prime counting statement at
+the `exp(O(r))` scale.  Moreover the cap improves on the trivial box count `(2H+1)^m` only
+when `2^t < |a| - |b|`; for the cited shape `3 + x^5` (`|a| - |b| = 2`) that means `t = 0`
+only, so for `t ∈ {1, 2, 3}` the R315 hard step is NOT answered for this shape even in
+the weak sense (audit CW-B12-03). -/
 
 /-- Multiplication by a dominant binomial is injective (max-bound at `H = 0`). -/
 theorem negacyclicBinomialMul_injective {m : ℕ} (hm : 0 < m)
@@ -235,7 +250,14 @@ theorem negacyclicBinomialMul_injective {m : ℕ} (hm : 0 < m)
 /-- **The fixed-prime short-relation cap (conditional only on dyadic saturation).**
 If every relation `d` in a set `K` of height-`≤ H` vectors has `2^t·d` in the recurrence
 lattice of a dominant binomial (`∃ g, g·(a+b·x^s) = 2^t·d` negacyclically), then
-`#K ≤ (2·(2^t·H/(|a|-|b|)).toNat + 1)^m`. -/
+`#K ≤ (2·(2^t·H/(|a|-|b|)).toNat + 1)^m`.
+
+**When the cap is informative (2026-10-29 audit CW-B12-03).**  The box hypothesis alone
+already gives the trivial count `#K ≤ (2H+1)^m`.  The cap `(2·⌊2^t·H/(|a|-|b|)⌋ + 1)^m`
+beats it only when `2^t < |a| - |b|` (roughly).  For the cited census shape `3 + x^5`
+(`|a| - |b| = 2`) at `H = 2r = 10` the cap is `11, 21, 41, 81` (per coordinate) for
+`t = 0, 1, 2, 3`, against the trivial `21`: it is strictly better only at `t = 0`.  With
+`|a| - |b| = 1` it is never better. -/
 theorem saturated_kernel_card_le {m : ℕ} (hm : 0 < m)
     (a b : ℤ) (s : Fin m) (H : ℤ) (hH : 0 ≤ H) (t : ℕ) (hab : |b| < |a|)
     (K : Finset (Fin m → ℤ))
@@ -291,7 +313,9 @@ open ArkLib.ProximityGap.Frontier.R312ShadowCollisionMassIdentity
 /-- **Collision-mass cap under binomial saturation.**  If every realized shadow-kernel
 relation at `(g, n, m, r)` is dyadically saturated by the recurrence lattice of a dominant
 binomial (`2^t·d ∈ L_{a+b·x^s}`), and each relation carries mass at most `M`, then the
-whole collision surplus is at most `(2·(2^{t+1}·r/(|a|-|b|)).toNat + 1)^m · M`. -/
+whole collision surplus is at most `(2·(2^{t+1}·r/(|a|-|b|)).toNat + 1)^m · M`.
+The count factor improves on the trivial `(4r+1)^m` only when `2^t < |a| - |b|` (see
+`saturated_kernel_card_le`). -/
 theorem shadowCollisionMass_le_of_binomial_saturation
     {F : Type} [Field F] [Fintype F] [DecidableEq F]
     (g : F) (n m r : ℕ) (hm : 0 < m)
@@ -511,7 +535,9 @@ theorem exists_negacyclic_preimage_of_mem_span {m : ℕ} [NeZero m] (hm : 0 < m)
 /-- **MASTER PIPE (r330).**  If every realized shadow-kernel relation, scaled by `2^t`,
 lies in the recurrence *ideal* of a dominant binomial (the exact conclusion R329 + R321
 produce from `|Res| ∣ 2^t·p`), then the entire char-zero collision surplus is capped by
-the closed-form short-vector count times the per-relation mass bound. -/
+the closed-form short-vector count times the per-relation mass bound.  As for
+`shadowCollisionMass_le_of_binomial_saturation`, the count factor beats the trivial
+`(4r+1)^m` only when `2^t < |a| - |b|`. -/
 theorem shadowCollisionMass_le_of_span_saturation
     {F : Type} [Field F] [Fintype F] [DecidableEq F]
     (g : F) (n m r : ℕ) [NeZero m] (hm : 0 < m)

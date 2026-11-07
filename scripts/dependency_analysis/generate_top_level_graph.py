@@ -11,7 +11,7 @@ from collections import defaultdict
 
 def generate_top_level_graph(json_file: str, output_file: str):
     """Generate a simplified top-level dependency graph."""
-    with open(json_file, 'r') as f:
+    with open(json_file, 'r', encoding='utf-8') as f:
         data = json.load(f)
 
     # Group modules by top-level category
@@ -38,7 +38,7 @@ def generate_top_level_graph(json_file: str, output_file: str):
                 top_level_graph[source_cat].add(target_cat)
 
     # Generate DOT file
-    with open(output_file, 'w') as f:
+    with open(output_file, 'w', encoding='utf-8') as f:
         f.write("digraph ArkLibTopLevel {\n")
         f.write("  rankdir=TB;\n")
         f.write("  node [shape=box, style=filled, fillcolor=lightblue, fontsize=12];\n")

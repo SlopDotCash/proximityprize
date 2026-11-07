@@ -27,7 +27,8 @@ coordinate (an abstract per-coordinate predicate `W` with defect bound
 ## Honest regime statement
 
 The witness data remains load-bearing — the algebra-only strawman is FALSE (`Y² − Z`; see
-the honesty note in `Hab25CandidateProduction`).  Moreover, BCIKS20 itself does **not** take
+the honesty note formerly in the since-removed `Hab25CandidateProduction`, formalized in
+`Hab25SlackWeldFence.slack_only_strawman_false`).  Moreover, BCIKS20 itself does **not** take
 this route: the paper never forms a witnessed-everywhere intersection and never pays an
 additive `k·M`; its Claim 5.10 concludes the identity `γ(x) = w(x,Z)` *in the extension
 field `L`* from per-coordinate agreement counts alone, pinning disagreeing scalars

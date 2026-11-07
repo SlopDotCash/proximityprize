@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.HalfThresholdCA
 import Research.ProximityPrize.Frontier._ThresholdHalvingSoundness
+import Research.ProximityPrize.Frontier._ThresholdHalvingSZ
 
 /-!
 # Threshold-Halving Per-Round FRI Error — the layer-cake split (#444, BRICK L1b)
@@ -125,9 +126,19 @@ def CAFailureBound (caErr bound : ℝ) : Prop := caErr ≤ bound
 /-- Named query-soundness (survival) bound: the per-round query-detection failure error `qErr` is
 bounded by `(1 − halfRadius)^q`. NOT proven here — it is the imported ePrint 2026/858 independent-
 query product: `q` independent FRI queries each catch a `halfRadius`-far word with probability
-`≥ halfRadius`, so the all-miss probability is `≤ (1 − halfRadius)^q`. -/
+`≥ halfRadius`, so the all-miss probability is `≤ (1 − halfRadius)^q`.
+
+This is the SAME inequality `x ≤ (1 − h)^q` on free reals as
+`ThresholdHalvingSZ.QueryAmpTail` (and as the second summand of `PerRoundFRIError`); it is now
+defined by delegation to that single carrier (audit CW-B15-06), with arguments reordered.  There is
+no probability space here: `qErr` is a free real. -/
 def QuerySoundnessBound (qErr : ℝ) (halfRadius : ℝ) (q : ℕ) : Prop :=
-  qErr ≤ (1 - halfRadius) ^ q
+  ProximityGap.ThresholdHalvingSZ.QueryAmpTail qErr q halfRadius
+
+/-- The two query-tail carriers coincide (definitionally). -/
+theorem querySoundnessBound_iff_queryAmpTail (qErr halfRadius : ℝ) (q : ℕ) :
+    QuerySoundnessBound qErr halfRadius q ↔
+      ProximityGap.ThresholdHalvingSZ.QueryAmpTail qErr q halfRadius := Iff.rfl
 
 /-- The proven CA measure realizes the named `CAFailureBound` at its `1/|F|` instance: the
 normalized CA-failure measure satisfies `CAFailureBound (caFailureMeasure …) (1/|F|)`. This is the
@@ -167,16 +178,19 @@ The headline of this brick. We thread the threshold-halving soundness package (b
 * the **proven** CA-failure measure bound `caFailureMeasure_le_inv_card` (its `1/|F|` instance), and
 * a single **named** `QuerySoundnessBound` hypothesis for the query product,
 
-plus an additive split, to obtain `PerRoundFRIError`. The crucial honesty point: `CAFailureBound`
-input is **not** assumed — it is *supplied* from Theorem 5, with `R := 1/(n·|F|)` so that
-`n·R = 1/|F|` matches the proven measure. The ONLY remaining open hypothesis is the query survival
-term `QuerySoundnessBound`. -/
+plus an additive split, to obtain `PerRoundFRIError`. Honesty point (audit CW-B15-06, cf. R-393):
+the CA term is "discharged" only because the caller FIXES `R` by `hR : n·R = 1/|F|`, i.e. the
+`n·R` envelope is set to the proven `1/|F|` measure bound rather than derived as an independent
+round-count scaling.  The threshold-halving soundness package (below-Johnson lock, `≤ 1` bad
+scalar) is not used by this proof, so its hypotheses (`ρ`-range, window, BCIKS regime) have been
+dropped from the signature.  The remaining open hypothesis is the query survival term
+`QuerySoundnessBound`. -/
 
 /-- **Per-round FRI error, CA term discharged (named-conditional only on the query product).**
 
-Fix a rate `ρ ∈ [0,1]`, code `C`, words `f₁ f₂`, a window radius `δ` (with `(δ:ℝ) < windowTop ρ`),
-the genuine joint-separation hypothesis, and the named BCIKS regime. Take the round-scaling rate so
-that `n·R = 1/|F|` (i.e. `R = 1/(n·|F|)`), matching the proven CA-failure floor. Then, given only:
+Fix a code `C`, words `f₁ f₂`, a radius `δ`, and the genuine joint-separation hypothesis. Take the
+round-scaling rate so that `n·R = 1/|F|` (i.e. `R = 1/(n·|F|)`), matching the proven CA-failure
+floor (a normalization choice, not a derived bound). Then, given only:
 
 * `hsplit`: the standard FRI additive decomposition `ε ≤ (CA-failure measure) + qErr`, and
 * `hQuery`: the named query-product survival bound `QuerySoundnessBound qErr (δ/2) q`,
@@ -184,19 +198,13 @@ that `n·R = 1/|F|` (i.e. `R = 1/(n·|F|)`), matching the proven CA-failure floo
 we conclude `PerRoundFRIError ε n R q (δ/2)`. The CA term is **proven** (via the package); the only
 unproven input is the single named `QuerySoundnessBound`. -/
 theorem thresholdHalving_perRound_caDischarged [Fintype F]
-    {ρ : ℝ} (hρ0 : 0 ≤ ρ) (hρ1 : ρ ≤ 1)
     (C : Submodule F (ι → F)) (f₁ f₂ : ι → F) {δ : ℝ≥0}
-    (hδwin : (δ : ℝ) < windowTop ρ)
     (hjoint : (δ : ENNReal) < jointRelDist f₁ f₂ C)
-    (hBCIKS : ∀ r : ℝ, r < johnsonRadius ρ → BelowJohnsonRegime ρ r)
     {ε qErr R : ℝ} {q : ℕ}
     (hR : (Fintype.card ι : ℝ) * R = 1 / (Fintype.card F : ℝ))
     (hsplit : ε ≤ caFailureMeasure C f₁ f₂ δ + qErr)
     (hQuery : QuerySoundnessBound qErr ((δ / 2 : ℝ≥0) : ℝ) q) :
     PerRoundFRIError ε (Fintype.card ι) R q ((δ / 2 : ℝ≥0) : ℝ) := by
-  -- Confirm the soundness package fires (below-Johnson lock + ≤ 1 bad scalar). This records the
-  -- soundness context under which the CA term is the proven `1/|F|` floor.
-  have _hpkg := thresholdHalving_soundness_package hρ0 hρ1 C f₁ f₂ hδwin hjoint hBCIKS
   -- The CA term: PROVEN ≤ 1/|F| = n·R.
   have hCA : CAFailureBound (caFailureMeasure C f₁ f₂ δ) ((Fintype.card ι : ℝ) * R) := by
     unfold CAFailureBound

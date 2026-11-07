@@ -10,26 +10,40 @@ import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 NOTE on imports: the corrected outer-soundness bricks (`outerSoundness_real`,
 `OuterRunMarginalToUniform`) live in `Security/OuterSoundnessReal.lean`, transitively imported via
 `LogupSoundnessClose`. The embedded-sumcheck lift `sumcheckSoundnessResidual_holds`
-(`Security/SumcheckSoundnessLift.lean`) is *referenced in prose only*: it cannot be co-imported with
-`LogupSoundnessClose` because both files declare an anonymous `local instance : Inhabited F`, whose
-auto-generated names collide on import (a pre-existing latent clash in files we may not edit). Since
-this keystone consumes the outer/sumcheck soundness halves as *named hypotheses* (not as concrete
-terms), the lift import is unnecessary; the residual surface is unaffected.
+(`Security/SumcheckSoundnessLift.lean`) is *referenced in prose only*. When this note was written it
+could not be co-imported with `LogupSoundnessClose` because both files declared an anonymous
+`local instance : Inhabited F` whose auto-generated names collided on import. That explanation is
+historical: both instances are now explicitly named (`instInhabitedFieldLogupSoundnessClose`,
+`instInhabitedFieldSumcheckSoundnessLift`). The lift import is still unnecessary, because this
+keystone consumes the outer/sumcheck soundness halves as *named hypotheses* (not as concrete
+terms); the residual surface is unaffected.
 -/
 
 /-!
 # LogUp Protocol 2 — most-unconditional soundness (issue #13, keystone K-soundFull)
 
-This file assembles the **most-unconditional** LogUp Protocol 2 soundness statement currently
-attainable, by discharging everything mechanical and reducing the genuinely-deep obstructions to the
-**smallest possible** named residual set. The decisive new ingredient is the now-proven binary
-verifier-fusion keystone `OracleReduction.oracleVerifier_append_toVerifier`
-(`Composition/Sequential/AppendToVerifierKeystone.lean`, sorry-free):
+This file assembles a conditional LogUp Protocol 2 soundness statement, `logup_soundness_uncond`,
+by discharging everything mechanical and keeping the deep obstructions as the explicit named
+hypotheses `hOuter`, `hSumcheck` and `hPlainAppend`. (Its original "most-unconditional" /
+"smallest possible residual set" headline should be read against those explicit hypotheses and
+against the final note of this file: the `hOuter` premise, typed at
+`midSoundnessProtocolLanguage` with the paper error, is refuted in the typical small-support,
+large-field regime, so this route is vacuously conditional there. The surviving outer-phase
+results are `outerVerifier_soundness_mid` (`OuterMaliciousSoundness.lean`, at `midLanguage`) and
+`outerVerifier_soundness_sharp` (`OuterRbrSoundness.lean`); the former end-to-end theorem
+`logup_soundness_end_to_end` was retired in the canonical sum-check message-semantics migration
+(`scripts/integration/sumcheck-message-semantics-retirements.json`), so no unconditional
+end-to-end LogUp soundness theorem is currently in tree. These conditional wrappers introduce no
+axiom.) The decisive new
+ingredient is the proven binary verifier-fusion keystone
+`OracleReduction.oracleVerifier_append_toVerifier`
+(`Composition/Sequential/AppendOracleAdapters.lean`, sorry-free):
 
   `(OracleVerifier.append V₁ V₂).toVerifier = Verifier.append V₁.toVerifier V₂.toVerifier`.
 
-We use it to push the **oracle-level** append-soundness residual down to the strictly-weaker
-**plain-verifier** append-soundness residual, and chain the corrected outer-soundness half
+We use it to restate the **oracle-level** append-soundness residual as the **plain-verifier**
+append-soundness residual (an equivalent statement, see the scope note below), and chain the
+corrected outer-soundness half
 (`midSoundnessLanguage` pullback, brick D) and the lifted embedded-sumcheck soundness half (brick E)
 into the headline `logup_soundness_full`.
 
@@ -43,8 +57,16 @@ into the headline `logup_soundness_full`.
    Verifier.append V₁.toVerifier V₂.toVerifier`, so the oracle-level residual *equals* the
    plain-verifier residual `(Verifier.append V₁.toVerifier V₂.toVerifier).soundness …`. The lemma
    `oracleAppendSoundnessResidual_of_plain` makes this rewrite, turning the deep oracle residual into
-   the (still deep but strictly smaller, oracle-routing-free) plain-verifier malicious-prover seam
-   union bound `hPlainAppend`.
+   the oracle-routing-free plain-verifier malicious-prover seam union bound `hPlainAppend`.
+   **Scope:** this is a change of presentation, not a smaller obligation. Since
+   `logupVerifier = OracleVerifier.append outerVerifier sumcheckVerifier` and
+   `OracleVerifier.soundness` is definitionally `toVerifier.soundness`, `hPlainAppend` is, up to the
+   fusion equality and the error unfolding, already the full verifier's soundness statement that
+   `logup_soundness_uncond` concludes. The theorem is therefore an adapter: it does not derive
+   append security from the two component bounds `hOuter`/`hSumcheck`. (For a nonempty trailing
+   protocol, `Verifier.appendSoundnessResidual_total_pos` in `AppendSoundnessTotal.lean` is an
+   available route to discharge the plain residual from component soundness under
+   honest-implementation side conditions; it is not wired here.)
 
 2. **Corrected outer soundness (brick D).** The challenge-level Schwartz–Zippel mathematics is proven
    unconditionally in `OuterSoundnessReal.lean` (`outerSoundness_real`), and the
@@ -79,6 +101,8 @@ The smallest honest residual set after this brick:
   `midLanguage` analogue);
 * `hPlainAppend` — the **plain-verifier** append-soundness residual: the malicious-prover seam
   decomposition + union bound, with the oracle-routing stripped off by the proven binary fusion.
+  It is equivalent to the conclusion itself (see the scope note in step 1), so the headline is
+  conditional on its own goal in plain-verifier form.
 
 No `sorry`/`sorryAx`/`admit`: every step is a real proof or an explicitly named hypothesis. The
 axiom audit at the bottom confirms axiom-cleanliness (`propext`, `Classical.choice`, `Quot.sound`).
@@ -112,8 +136,8 @@ which is *definitionally* `·.toVerifier.soundness`) to
 `(OracleVerifier.append V₁ V₂).toVerifier = Verifier.append V₁.toVerifier V₂.toVerifier`, so the
 oracle residual is *exactly* `(Verifier.append V₁.toVerifier V₂.toVerifier).soundness …` — the
 plain-verifier append residual `hPlainAppend`, with *no oracle routing left*. This strips the
-oracle-statement bookkeeping off the deep malicious-prover seam union bound, shrinking the residual
-to the smaller plain-verifier one. -/
+oracle-statement bookkeeping off the deep malicious-prover seam union bound; the plain residual is
+an equivalent restatement of the oracle one (via the fusion equality), not a weaker obligation. -/
 theorem oracleAppendSoundnessResidual_of_plain
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
 
@@ -157,8 +181,8 @@ local instance instInhabitedFieldLogupSoundUncond : Inhabited F := ⟨0⟩
 /-- **The LogUp oracle append-soundness residual reduces to the plain-verifier one.**
 
 Specializing `OracleVerifier.oracleAppendSoundnessResidual_of_plain` to the LogUp sub-verifiers
-`outerVerifier`/`sumcheckVerifier` (whose `AppendCoherent` instance is the in-tree
-`instOuterVerifierAppendCoherent`): given the plain-verifier append-soundness residual
+`outerVerifier`/`sumcheckVerifier` (an earlier API also required an `AppendCoherent` instance,
+`instOuterVerifierAppendCoherent`; neither exists in the current tree): given the plain-verifier append-soundness residual
 `hPlainAppend` over `logupVerifier.toVerifier = Verifier.append outerVerifier.toVerifier
 sumcheckVerifier.toVerifier`, the oracle-level `appendSoundnessResidual` that
 `logup_soundness_full` consumes holds. The deep oracle-routing of the append seam is discharged by
@@ -238,8 +262,10 @@ theorem logup_soundness_uncond (sumcheckSoundnessError : ℝ≥0)
 2026-06-10 audit showed its `hOuter` conjunct (typed at `midSoundnessProtocolLanguage` with the
 paper error `outerSoundnessError`) is refuted in the typical (small-support, large-field) regime
 by `prob_midSoundnessLanguage_ge_compl_support` (`OuterSoundnessSharp.lean`), making the bundle
-uninstantiable there and every consumer vacuously conditional.  Live routes:
-`logup_soundness_end_to_end` (`OuterMaliciousSoundness.lean`) and
+uninstantiable there and every consumer vacuously conditional.  The routes named as live at that
+time were `logup_soundness_end_to_end` (`OuterMaliciousSoundness.lean`, since retired in the
+canonical sum-check message-semantics migration,
+`scripts/integration/sumcheck-message-semantics-retirements.json`) and
 `outerVerifier_soundness_sharp` (`OuterRbrSoundness.lean`).  Consumers holding the three
 obligations individually can still apply `logup_soundness_uncond` directly. -/
 

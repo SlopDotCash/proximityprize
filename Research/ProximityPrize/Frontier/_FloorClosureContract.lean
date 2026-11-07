@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._FloorLinnikTZClosure
 import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConditionalPin
+import Research.ProximityPrize.Frontier._StackProfileDominationInterface
 
 /-!
 # The full off-BGK floor closure contract
@@ -34,7 +35,7 @@ content, not consequences of Linnik or Thorner--Zaman.
 
 set_option autoImplicit false
 set_option linter.style.longLine false
-set_option linter.style.longFile 1600
+set_option linter.style.longFile 1700
 
 
 open scoped NNReal ENNReal ProbabilityTheory
@@ -49,14 +50,10 @@ variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module F A]
 
-/-- The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`.  This local copy keeps the
-contract independently checkable without importing another scratch frontier file. -/
-noncomputable def StackBadCount (K : Type) [Field K] [Fintype K] [DecidableEq K]
-    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module K A]
-    (C : Set (ι -> A)) (δ : ℝ≥0) (u : WordStack A (Fin 2) ι) : ℕ := by
-  classical
-  exact (Finset.univ.filter (fun γ : K => mcaEvent (F := K) C δ (u 0) (u 1) γ)).card
+/-! `StackBadCount` (the actual bad-scalar count appearing in `WorstCaseIncidenceBounded`) is the
+canonical declaration of `_StackProfileDominationInterface.lean`, re-exported here (this file used
+to carry an identical local copy, giving distinct constants for the same object). -/
+export StackProfileDominationInterface (StackBadCount)
 
 /-- Every representative in a finite floor family satisfies the one-stack budget. -/
 def FamilyBounded (K : Type) [Field K] [Fintype K] [DecidableEq K]
@@ -207,6 +204,26 @@ theorem deltaStar_pin_of_containsBudgetedGlobalMax
     (F := F) (A := A) C εstar hδ
     (worstCaseIncidenceBounded_of_containsBudgetedGlobalMax C δ hmax)
     hbudget
+
+/-- A budgeted global maximizer bounds every listed member: each member's count is at most the
+maximizer's, which is within budget.  So the sharp certificate already implies `FamilyBounded`. -/
+theorem familyBounded_of_containsBudgetedGlobalMax
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hmax : FamilyContainsBudgetedGlobalMax F C δ R B) :
+    FamilyBounded F C δ R B := by
+  intro r' _hr'
+  rcases hmax with ⟨r, _hr, hrB, hdom⟩
+  exact le_trans (hdom r') hrB
+
+/-- A budgeted global maximizer makes the family dominating. -/
+theorem familyDominates_of_containsBudgetedGlobalMax
+    (C : Set (ι -> A)) (δ : ℝ≥0) {B : ℕ}
+    {R : Finset (WordStack A (Fin 2) ι)}
+    (hmax : FamilyContainsBudgetedGlobalMax F C δ R B) :
+    FamilyDominates F C δ R := by
+  rcases hmax with ⟨r, hr, _hrB, hdom⟩
+  exact familyDominates_of_containsGlobalMax C δ ⟨r, hr, hdom⟩
 
 /-- Exact scanner form for failure of the sharp one-representative certificate: every listed
 representative is either already above budget or can be beaten by another stack. -/
@@ -601,6 +618,19 @@ theorem floorClosureAtField_iff_floorClosureBudgetedMaxAtField_and_familyBounded
     rcases hsharp.2 with ⟨r, hr, _hbudget, hdom⟩
     exact familyDominates_of_containsGlobalMax C δ ⟨r, hr, hdom⟩
 
+/-- **The two field closure contracts are equivalent.**  The extra `FamilyBounded` conjunct of
+`floorClosureAtField_iff_floorClosureBudgetedMaxAtField_and_familyBounded` is redundant: a budgeted
+global maximizer bounds every listed member (`familyBounded_of_containsBudgetedGlobalMax`). -/
+theorem floorClosureAtField_iff_floorClosureBudgetedMaxAtField
+    (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
+    (C : Set (ι -> A)) (δ : ℝ≥0)
+    (R : Finset (WordStack A (Fin 2) ι)) (B : ℕ) :
+    FloorClosureAtField (F := F) (A := A) FloorBad a C δ R B ↔
+      FloorClosureBudgetedMaxAtField (F := F) (A := A) FloorBad a C δ R B := by
+  rw [floorClosureAtField_iff_floorClosureBudgetedMaxAtField_and_familyBounded]
+  exact ⟨And.left, fun hsharp =>
+    ⟨hsharp, familyBounded_of_containsBudgetedGlobalMax C δ hsharp.2⟩⟩
+
 /-- Scanner-facing contrapositive of the factorization: once the sharp budgeted-max certificate
 fails, the older field closure contract is impossible too. -/
 theorem not_floorClosureAtField_of_not_floorClosureBudgetedMaxAtField
@@ -613,9 +643,11 @@ theorem not_floorClosureAtField_of_not_floorClosureBudgetedMaxAtField
   exact hnot (floorClosureBudgetedMaxAtField_of_floorClosureAtField
     (F := F) (A := A) FloorBad a C δ hcert)
 
-/-- Exact failure form for the comparison: an old-style field closure failure is either a failure
-of the sharp budgeted-global-max certificate or a merely auxiliary failure to bound a non-maximal
-listed family member. -/
+/-- Failure form for the comparison: an old-style field closure failure is either a failure of the
+sharp budgeted-global-max certificate or a failure to bound some listed family member.  The second
+disjunct is never an independent failure mode: by `floorClosureAtField_iff_floorClosureBudgetedMaxAtField`,
+the old contract fails exactly when the sharp certificate fails, so the left disjunct alone
+already holds whenever the old contract fails. -/
 theorem not_floorClosureAtField_iff_not_floorClosureBudgetedMaxAtField_or_not_familyBounded
     (FloorBad : ℕ -> ℕ -> Prop) (a : ℕ)
     (C : Set (ι -> A)) (δ : ℝ≥0)
@@ -1081,7 +1113,12 @@ theorem floorClosureBudgetedMaxAtField_of_linnik_candidateListExactSmallestBudge
       hLeast a ha (Fintype.card F) hcardPrime hcardMod hcardPrize
   exact ⟨hgood, hmax⟩
 
-/-- Linnik candidate-list contract in the sharp budgeted-global-max form. -/
+/-- Linnik candidate-list contract in the sharp budgeted-global-max form.
+
+The arithmetic hypotheses (the exact-candidate-list, Linnik least-prime, field-size and congruence premises)
+only build the floor-good conjunct of the intermediate certificate, which is then discarded: the
+conclusion follows from `hmax` alone (`worstCaseIncidenceBounded_of_containsBudgetedGlobalMax`).  They are kept for
+interface compatibility with downstream consumers. -/
 theorem worstCaseIncidenceBounded_of_linnik_candidateListExactSmallestBudgetedMaxContract
     (FloorBad : ℕ -> ℕ -> Prop)
     (hexact : CandidateListExactSmallestFamily FloorBad)
@@ -1100,7 +1137,12 @@ theorem worstCaseIncidenceBounded_of_linnik_candidateListExactSmallestBudgetedMa
       (F := F) (A := A) FloorBad hexact hLeast a ha
       hcardPrime hcardMod hcardPrize C δ hmax)
 
-/-- Linnik candidate-list delta-star consumer in the sharp budgeted-global-max form. -/
+/-- Linnik candidate-list delta-star consumer in the sharp budgeted-global-max form.
+
+The arithmetic hypotheses (the exact-candidate-list, Linnik least-prime, field-size and congruence premises)
+only build the floor-good conjunct of the intermediate certificate, which is then discarded: the
+conclusion follows from `hmax` alone (`deltaStar_pin_of_containsBudgetedGlobalMax`).  They are kept for
+interface compatibility with downstream consumers. -/
 theorem deltaStar_pin_of_linnik_candidateListExactSmallestBudgetedMaxContract
     (FloorBad : ℕ -> ℕ -> Prop)
     (hexact : CandidateListExactSmallestFamily FloorBad)
@@ -1358,7 +1400,12 @@ theorem floorClosureBudgetedMaxAtField_of_tz_candidateListExactSmallestBudgetedM
       hβ hTZfam a ha (Fintype.card F) hcardPrime hcardMod hcardPrize
   exact ⟨hgood, hmax⟩
 
-/-- TZ candidate-list contract in the sharp budgeted-global-max form. -/
+/-- TZ candidate-list contract in the sharp budgeted-global-max form.
+
+The arithmetic hypotheses (the exact-candidate-list, TZ supply, field-size and congruence premises)
+only build the floor-good conjunct of the intermediate certificate, which is then discarded: the
+conclusion follows from `hmax` alone (`worstCaseIncidenceBounded_of_containsBudgetedGlobalMax`).  They are kept for
+interface compatibility with downstream consumers. -/
 theorem worstCaseIncidenceBounded_of_tz_candidateListExactSmallestBudgetedMaxContract
     (FloorBad : ℕ -> ℕ -> Prop)
     (hexact : CandidateListExactSmallestFamily FloorBad)
@@ -1378,7 +1425,12 @@ theorem worstCaseIncidenceBounded_of_tz_candidateListExactSmallestBudgetedMaxCon
       (F := F) (A := A) FloorBad hexact hβ hTZfam a ha
       hcardPrime hcardMod hcardPrize C δ hmax)
 
-/-- TZ candidate-list delta-star consumer in the sharp budgeted-global-max form. -/
+/-- TZ candidate-list delta-star consumer in the sharp budgeted-global-max form.
+
+The arithmetic hypotheses (the exact-candidate-list, TZ supply, field-size and congruence premises)
+only build the floor-good conjunct of the intermediate certificate, which is then discarded: the
+conclusion follows from `hmax` alone (`deltaStar_pin_of_containsBudgetedGlobalMax`).  They are kept for
+interface compatibility with downstream consumers. -/
 theorem deltaStar_pin_of_tz_candidateListExactSmallestBudgetedMaxContract
     (FloorBad : ℕ -> ℕ -> Prop)
     (hexact : CandidateListExactSmallestFamily FloorBad)

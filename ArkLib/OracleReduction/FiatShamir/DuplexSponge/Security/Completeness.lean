@@ -8,16 +8,28 @@ import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Defs
 import ProximityPrize.Extensions.OracleReduction.Security.Basic
 
 /-!
-# Completeness of Duplex-Sponge Fiat-Shamir
+# Completeness of Duplex-Sponge Fiat-Shamir (partial bridge)
 
-This module proves the completeness of the Duplex-Sponge Fiat-Shamir (DSFS) transformation.
-We establish that if the underlying interactive protocol possesses completeness (or perfect
-completeness), then its non-interactive counterpart obtained via the DSFS transformation
-inherits completeness, up to the same completeness error.
+**Scope.** The intended theorem — if the underlying interactive protocol is complete (or perfectly
+complete), then its Duplex-Sponge Fiat-Shamir (DSFS) transform is complete with the same error —
+is **not** proved in this module (and no such interactive-to-DSFS distributional preservation
+theorem is stated elsewhere in the DSFS tree). What this module provides is a partial bridge:
 
-The proofs proceed by unfolding the verifier's check to show it is equivalent to re-running the
-honest interactive execution, and then unrolling the probability distributions of the respective
-security games.
+* `duplexSpongeFiatShamir_verify_eq` / `duplexSpongeFiatShamirSalted_verify_eq` — the transformed
+  verifier's check unfolds to re-running the interactive verifier;
+* the honest runs/executions (`duplexSpongeFiatShamirHonestRun`,
+  `duplexSpongeFiatShamirHonestExecution`, and salted analogues);
+* the run-collapse residuals `duplexSpongeFiatShamir_runCollapseResidual` (and salted), and the
+  equivalence statements `duplexSpongeFiatShamir_completeness_unroll` (and salted): DSFS
+  completeness `↔` `completenessFromRun` over the honest execution;
+* `duplexSpongeFiatShamir_completeness_unroll_of_runCollapse` (and salted) — the unroll
+  equivalence from an explicit run-collapse hypothesis.
+
+The run-collapse residuals are discharged in `Security/RunCollapse.lean`
+(`duplexSpongeFiatShamir_completeness_unroll_discharged` and salted), so the unroll equivalence
+holds unconditionally. Relating `completenessFromRun` of the honest DSFS execution to the
+completeness of the original interactive reduction (the "same error" preservation) is the
+remaining step and is not formalized here.
 -/
 
 noncomputable section

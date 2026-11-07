@@ -66,9 +66,13 @@ statement: the max level set of `R` is the max coincidence set of the additive l
 4. `full_split_gives_constant_syzygy` — if `P = C c₀ · W_AB` (all `deg P` roots return to the domain
    as `W_AB`'s roots) then a constant syzygy exists: the on-domain assembly, unobstructed by
    domain-membership.
-5. `on_domain_admits_imbalance_ge_two` — **the corrective theorem**: the hypotheses "all three slots
-   divide `Xⁿ−1`" *and* "a constant syzygy exists" are jointly satisfiable (witness above), and they
-   force `ι ≥ 2` for `a=b=c=d≥4`. Domain-membership does **not** exclude `ι ≥ 2`.
+5. `collapse_forces_imbalance_ge_two` — **the corrective implication**: if the combination
+   collapses, `C α·W_AC + C β·W_BC = C c₀·W_AB` with `c₀ ≠ 0` and all three slots of degree `≤ d`,
+   then every `δ₁` that lower-bounds the product-degree of all nonzero syzygies of the triple (in
+   particular the minimal one) satisfies `δ₁ ≤ d`, hence `ι ≥ 2` for `d ≥ 4`.  The implication uses
+   no domain-membership hypothesis, so membership cannot block it; that the collapse is realizable
+   with all three slots dividing `Xⁿ−1` is the probe-verified `μ₁₂ ⊂ 𝔽₃₇` witness above (not
+   kernel-checked in this file).
 -/
 
 set_option autoImplicit false
@@ -136,23 +140,34 @@ theorem full_split_gives_constant_syzygy
     C c₀ * WAB + C (-α) * WAC + C (-β) * WBC = 0 :=
   SYZ48.dvd_scalar_gives_syzygy WAB WAC WBC c₀ α β hP
 
-/-! ## 4. The corrective theorem: domain-membership does NOT force `ι ≤ 1` -/
+/-! ## 4. The corrective implication: a collapse forces `ι ≥ 2`, with no membership hypothesis -/
 
-/-- **Domain-membership is compatible with `ι ≥ 2`.**  Suppose (the on-domain scenario) all three
-slots divide `Xⁿ − 1` — `W_AB, W_AC, W_BC ∣ Xⁿ − 1`, i.e. their roots all lie in `μ_n` — and the
-balanced combination collapses, `C α · W_AC + C β · W_BC = C c₀ · W_AB`.  Then a constant syzygy of
-product-degree `d = max(a,b,c)` exists, so for a balanced profile `a = b = c = d ≥ 4` the imbalance
-obeys `ι ≥ ⌊3d/2⌋ − d ≥ 2`.  **The hypotheses are satisfiable on the prize domain** (verified witness
-`S_AC={1,8,27,29}, S_BC={6,10,11,31}, S_AB={14,23,26,36} ⊂ μ₁₂ ⊂ 𝔽₃₇`, non-coset), so the conclusion
-is *not* vacuous: the cyclotomic domain-membership condition of SYZ48 does **not** by itself force
-`ι ≤ 1`.  The genuine gate is the finer band-realizability (SYZ42), not membership. -/
-theorem on_domain_admits_imbalance_ge_two
-    {K : Type*} [Field K] {n : ℕ} (WAB WAC WBC : K[X]) (c₀ α β : K) (d δ₁ : ℕ)
-    (hd : 4 ≤ d) (hδ : δ₁ ≤ d)
-    (_hAB : WAB ∣ (X ^ n - 1)) (_hAC : WAC ∣ (X ^ n - 1)) (_hBC : WBC ∣ (X ^ n - 1))
-    (_hP : C α * WAC + C β * WBC = C c₀ * WAB) :
-    2 ≤ SYZ45.imbalance d d d δ₁ :=
-  SYZ48.imbalance_ge_two_realizable d δ₁ hd hδ
+/-- **A collapse forces `ι ≥ 2` (the corrective implication).**  Suppose the balanced combination
+collapses onto the `AB` slot, `C α · W_AC + C β · W_BC = C c₀ · W_AB` with `c₀ ≠ 0`, and all three
+slots have degree `≤ d`.  Let `δ₁` be any lower bound for the product-degree
+`max(deg(u·W_AB), deg(v·W_AC), deg(w·W_BC))` of every nonzero syzygy `(u, v, w)` of the triple —
+in particular the minimal syzygy product-degree (`hmin`).  Then the constant syzygy
+`(C c₀, C (-α), C (-β))` from `full_split_gives_constant_syzygy` has product-degree `≤ d`, so
+`δ₁ ≤ d`, and for `d ≥ 4` the imbalance obeys `ι = ⌊3d/2⌋ − δ₁ ≥ 2`.
+
+No domain-membership hypothesis (`W_• ∣ Xⁿ − 1`) is used: membership places no obstruction on this
+implication.  That the collapse hypothesis is satisfiable with all three slots on the prize domain
+is the probe-verified witness `S_AC={1,8,27,29}, S_BC={6,10,11,31}, S_AB={14,23,26,36} ⊂ μ₁₂ ⊂ 𝔽₃₇`
+(non-coset) recorded in the module docstring; that witness is not kernel-checked here. -/
+theorem collapse_forces_imbalance_ge_two
+    {K : Type*} [Field K] (WAB WAC WBC : K[X]) (c₀ α β : K) (d δ₁ : ℕ)
+    (hd : 4 ≤ d) (hc₀ : c₀ ≠ 0)
+    (hdAB : WAB.natDegree ≤ d) (hdAC : WAC.natDegree ≤ d) (hdBC : WBC.natDegree ≤ d)
+    (hP : C α * WAC + C β * WBC = C c₀ * WAB)
+    (hmin : ∀ u v w : K[X], ¬ (u = 0 ∧ v = 0 ∧ w = 0) → u * WAB + v * WAC + w * WBC = 0 →
+      δ₁ ≤ max (u * WAB).natDegree (max (v * WAC).natDegree (w * WBC).natDegree)) :
+    2 ≤ SYZ45.imbalance d d d δ₁ := by
+  have hsyz := full_split_gives_constant_syzygy WAB WAC WBC c₀ α β hP
+  have hnz : ¬ (C c₀ = 0 ∧ C (-α) = 0 ∧ C (-β) = 0) := fun h => hc₀ (C_eq_zero.mp h.1)
+  have hδ : δ₁ ≤ d :=
+    (hmin _ _ _ hnz hsyz).trans <| max_le ((natDegree_C_mul_le _ _).trans hdAB) <|
+      max_le ((natDegree_C_mul_le _ _).trans hdAC) ((natDegree_C_mul_le _ _).trans hdBC)
+  exact SYZ48.imbalance_ge_two_realizable d δ₁ hd hδ
 
 /-! ## 5. The reformulation packaged: gcd-degree = level-set size (statement of record) -/
 
@@ -176,5 +191,5 @@ end ArkLib.ProximityGap.SYZ49
 #print axioms ArkLib.ProximityGap.SYZ49.gcd_root_pow_eq_one
 #print axioms ArkLib.ProximityGap.SYZ49.gcd_natDegree_le_max
 #print axioms ArkLib.ProximityGap.SYZ49.full_split_gives_constant_syzygy
-#print axioms ArkLib.ProximityGap.SYZ49.on_domain_admits_imbalance_ge_two
+#print axioms ArkLib.ProximityGap.SYZ49.collapse_forces_imbalance_ge_two
 #print axioms ArkLib.ProximityGap.SYZ49.mu_root_iff_level

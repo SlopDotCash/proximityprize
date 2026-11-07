@@ -55,7 +55,8 @@ theorem parity_sub_two {r : ℕ} (hr : 2 ≤ r) : (r - 2) % 2 = r % 2 := by
 theorem spectrumCount_rising (m r : ℕ) (hrm : r ≤ m) :
     spectrumCount m r =
       ∑ k ∈ (range (r + 1)).filter (fun k => k % 2 = r % 2), m.choose k * 2 ^ k := by
-  unfold spectrumCount
+  rw [spectrumCount_eq_raw (by omega)]
+  unfold spectrumCountRaw
   rw [min_eq_left_rising hrm]
 
 /-- **HEADLINE: the rising-half second-difference recurrence.** For `2 ≤ r ≤ m`,
@@ -103,11 +104,11 @@ theorem spectrumCount_rising_anchors :
     spectrumCount 8 2 = spectrumCount 8 0 + Nat.choose 8 2 * 2 ^ 2 ∧
     spectrumCount 16 2 = spectrumCount 16 0 + Nat.choose 16 2 * 2 ^ 2 ∧
     spectrumCount 16 4 = spectrumCount 16 2 + Nat.choose 16 4 * 2 ^ 4 := by
-  refine ⟨?_, ?_, ?_⟩ <;> (unfold spectrumCount; decide)
+  refine ⟨?_, ?_, ?_⟩ <;> (unfold spectrumCount spectrumCountRaw; decide)
 
 /-- Concrete anchor: `N_2 = N_0 + C(m,2)·4` at `m = 8`: `113 = 1 + 112`. -/
 theorem spectrumCount_rising_n8_r2 : spectrumCount 8 2 = 113 ∧ spectrumCount 8 0 = 1 := by
-  refine ⟨?_, ?_⟩ <;> (unfold spectrumCount; decide)
+  refine ⟨?_, ?_⟩ <;> (unfold spectrumCount spectrumCountRaw; decide)
 
 #print axioms spectrumCount_rising_step
 #print axioms spectrumCount_rising

@@ -57,18 +57,25 @@ precise residual.
 * `amgm_prod_le_mean_pow`: unweighted AM-GM `∏ aᵢ ≤ (mean aᵢ)^{#s}` for nonneg reals.
 * `abs_norm_sq_le_mean_pow`: `|N(α)|² ≤ (mean_σ ‖σα‖²)^{φ}` for any `α` in a number field
   (the Mahler-measure core; UNCONDITIONAL).
-* `abs_norm_sum_rootsOfUnity_L2_le`: the `(2·#S)^{φ/2}` bound, conditional on `ParsevalL2Mass`.
+* `abs_norm_sum_rootsOfUnity_L2_le`: the `(2·#S)^{φ/2}` bound for `S ⊆ {0,…,n-1}`, conditional
+  on `ParsevalL2Mass` (support-guarded since the 2026-10-28 audit, PG-236).
+* `not_unguarded_parsevalL2Mass_two_negOne`: the unguarded mass statement is false
+  (`K = ℚ`, `n = 2`, `ζ = −1`, `S = {0,2,4}`).
 * The numeric threshold theorems (`l2Gate_closes_to_64`, `houseGate_fails_at_64`,
   `l2Gate_lowExp_depth_128`, `houseGate_lowExp_depth_128`) and the honest obstruction
   `heightGate_mechanism_fails_at_128` — all `norm_num`, all axiom-clean.
 
 ## The one named analytic input (Mathlib gap, Parseval/orthogonality)
 
-`ParsevalL2Mass K ζ`: for `Σ_S = Σ_{i∈S} ζ^i` (`ζ` a primitive `n`-th root in number field `K`),
-`Σ_{σ:K→ℂ} ‖σ Σ_S‖² ≤ n·#S`.  PROOF (orthogonality, not formalized — Mathlib lacks the
+`ParsevalL2Mass n ζ`: for `Σ_S = Σ_{i∈S} ζ^i` with `S ⊆ {0,…,n-1}` (the support guard is part
+of the predicate; without it the statement is false, see `not_unguarded_parsevalL2Mass_two_negOne`),
+`Σ_{σ:K→ℂ} ‖σ Σ_S‖² ≤ n·#S`.  It is expected to hold for `ζ` a primitive `n`-th root and
+`K = ℚ(ζ)`; for `K ⊋ ℚ(ζ)` the embedding multiplicity `[K : ℚ(ζ)]` enters and the bound can fail.
+PROOF SKETCH for `K = ℚ(ζ)` (orthogonality, not formalized — Mathlib lacks the
 embedding-trace `L²` identity): `Σ_σ‖σΣ_S‖² = Σ_{i,j∈S} Σ_σ σ(ζ)^{i-j} ≤ Σ_{i,j∈S} [over ALL
-n-th roots z] z^{i-j} = Σ_{i,j∈S} n·[i≡j] = n·#S`, using that embeddings `σ` send `ζ` to the
-`φ(n)` PRIMITIVE `n`-th roots, a subset of all `n` roots, and the squared moduli are nonneg.
+n-th roots z] z^{i-j} = Σ_{i,j∈S} n·[i≡j] = n·#S`, using that embeddings `σ` send `ζ`
+bijectively to the `φ(n)` PRIMITIVE `n`-th roots, a subset of all `n` roots, the squared moduli
+are nonneg, and `i ≡ j (mod n)` forces `i = j` because `S ⊆ {0,…,n-1}`.
 This is the structure-aware refinement of `house_rootOfUnity_le_one` — the same Mathlib gap the
 height-gate file flags, now used as an `L²` mass bound rather than an `L∞` (house) bound.
 -/
@@ -144,30 +151,53 @@ theorem abs_norm_sq_le_mean_pow (α : K) :
 
 /-! ## The named Parseval / `L²`-mass input (orthogonality; Mathlib gap) -/
 
-/-- **The Parseval `L²` mass input** (named analytic obligation).  For a primitive `n`-th root of
-unity `ζ` in `K` and a subset `S ⊆ {0,…,n-1}`, the total `L²` mass of the conjugates of
-`Σ_{i∈S} ζ^i` is at most `n·#S`:
+/-- **The Parseval `L²` mass input** (named analytic obligation).  For every subset
+`S ⊆ {0,…,n-1}` (the support guard `∀ i ∈ S, i < n` is part of the predicate), the total `L²`
+mass of the conjugates of `Σ_{i∈S} ζ^i` is at most `n·#S`:
 `Σ_{σ:K→ℂ} ‖σ (Σ_{i∈S} ζ^i)‖² ≤ n·#S`.
 
-This is orthogonality: each embedding `σ` sends `ζ` to a primitive `n`-th root, so the sum over
-`σ` is a sub-sum (nonneg terms) of the sum over ALL `n`-th roots, which equals `n·#S` exactly by
-the geometric-series / character orthogonality `Σ_{z^n=1} z^m = n·[n ∣ m]` (distinct exponents
-in `S`).  Mathlib lacks the embedding-`L²` identity, so this is kept as a precise named Prop
-(project modularity convention; the same Mathlib gap flagged in `HeightGateNormBound.lean`). -/
+Intended instance: `ζ` a primitive `n`-th root of unity and `K = ℚ(ζ)`.  Then this is
+orthogonality: the embeddings `σ` send `ζ` bijectively to the primitive `n`-th roots, so the sum
+over `σ` is a sub-sum (nonneg terms) of the sum over ALL `n`-th roots, which equals `n·#S` exactly
+by `Σ_{z^n=1} z^m = n·[n ∣ m]`, because the exponents in `S` are distinct residues mod `n`.
+
+Two caveats (corrected 2026-10-28 audit, PG-236):
+* The support guard is essential.  Without it the statement is false for intended roots:
+  `not_unguarded_parsevalL2Mass_two_negOne` shows that for `K = ℚ`, `n = 2`, `ζ = −1` and
+  `S = {0, 2, 4}` (repeated residues mod `2`) the mass is `9 > 2·3`.
+* For a larger ambient field `K ⊋ ℚ(ζ)` each primitive root is hit `[K : ℚ(ζ)]` times, so the
+  bound `n·#S` can fail; the predicate is only expected to hold for `K = ℚ(ζ)` (which the
+  consumer `abs_norm_sum_rootsOfUnity_L2_le` effectively enforces via `finrank ℚ K = n/2` for
+  `2`-power `n`).  The predicate itself does not encode primitivity or `K = ℚ(ζ)`.
+
+Mathlib lacks the embedding-`L²` identity, so this is kept as a precise named Prop (project
+modularity convention; the same Mathlib gap flagged in `HeightGateNormBound.lean`). -/
 def ParsevalL2Mass (n : ℕ) (ζ : K) : Prop :=
-  ∀ S : Finset ℕ, (∑ σ : K →ₐ[ℚ] ℂ, ‖σ (∑ i ∈ S, ζ ^ i)‖ ^ 2) ≤ (n : ℝ) * S.card
+  ∀ S : Finset ℕ, (∀ i ∈ S, i < n) →
+    (∑ σ : K →ₐ[ℚ] ℂ, ‖σ (∑ i ∈ S, ζ ^ i)‖ ^ 2) ≤ (n : ℝ) * S.card
+
+/-- **The unguarded Parseval mass statement is false (PG-236).**  For `K = ℚ`, `n = 2`,
+`ζ = −1` (a primitive square root of unity) and `S = {0, 2, 4}`, the root sum is `3`, there is
+one embedding, and `3² = 9 > 2·3`.  This is why `ParsevalL2Mass` carries the support guard
+`∀ i ∈ S, i < n`. -/
+theorem not_unguarded_parsevalL2Mass_two_negOne :
+    ¬ ∀ S : Finset ℕ,
+      (∑ σ : ℚ →ₐ[ℚ] ℂ, ‖σ (∑ i ∈ S, (-1 : ℚ) ^ i)‖ ^ 2) ≤ ((2 : ℕ) : ℝ) * S.card := by
+  intro h
+  have hbad := h {0, 2, 4}
+  norm_num at hbad
 
 /-! ## The L² norm bound for sums of roots of unity (conditional on Parseval) -/
 
 /-- **The structure-aware L² norm bound.**  Given the Parseval mass input and `φ(n) = finrank`
 identified with `n/2` (the `2`-power cyclotomic case, supplied as `hfin : finrank ℚ K = n / 2`),
-the norm of `Σ_{i∈S} ζ^i` obeys
+the norm of `Σ_{i∈S} ζ^i`, for `S ⊆ {0,…,n-1}` (hypothesis `hS`), obeys
 `|N_{K/ℚ}(Σ_S)| ≤ (2·#S)^{n/4}` (here phrased with the squared form `|N|² ≤ (2·#S)^{n/2}`).
 
 This is **half the exponent** of the crude house bound `(#S)^{n/2}`. -/
 theorem abs_norm_sum_rootsOfUnity_L2_le {n : ℕ} (hn : 0 < n) {ζ : K}
     (hpar : ParsevalL2Mass n ζ) (hfin : finrank ℚ K = n / 2) (hn2 : 2 ∣ n)
-    (S : Finset ℕ) :
+    (S : Finset ℕ) (hS : ∀ i ∈ S, i < n) :
     (((|Algebra.norm ℚ (∑ i ∈ S, ζ ^ i)| : ℚ) : ℝ)) ^ 2 ≤
       ((2 : ℝ) * S.card) ^ finrank ℚ K := by
   classical
@@ -175,7 +205,7 @@ theorem abs_norm_sum_rootsOfUnity_L2_le {n : ℕ} (hn : 0 < n) {ζ : K}
   refine (abs_norm_sq_le_mean_pow α).trans ?_
   -- bound the mean of squared moduli by `2 * #S`.
   have hpos : 0 < finrank ℚ K := finrank_pos
-  have hmass : (∑ σ : K →ₐ[ℚ] ℂ, ‖σ α‖ ^ 2) ≤ (n : ℝ) * S.card := hpar S
+  have hmass : (∑ σ : K →ₐ[ℚ] ℂ, ‖σ α‖ ^ 2) ≤ (n : ℝ) * S.card := hpar S hS
   -- mean ≤ (n·#S)/φ = 2·#S  since φ = n/2.
   have hfinR : (finrank ℚ K : ℝ) = (n : ℝ) / 2 := by
     rw [hfin]
@@ -253,6 +283,7 @@ end ArkLib.ProximityGap.L2MahlerNorm
 #print axioms ArkLib.ProximityGap.L2MahlerNorm.amgm_prod_le_mean_pow
 #print axioms ArkLib.ProximityGap.L2MahlerNorm.abs_norm_sq_le_mean_pow
 #print axioms ArkLib.ProximityGap.L2MahlerNorm.abs_norm_sum_rootsOfUnity_L2_le
+#print axioms ArkLib.ProximityGap.L2MahlerNorm.not_unguarded_parsevalL2Mass_two_negOne
 #print axioms ArkLib.ProximityGap.L2MahlerNorm.l2Gate_closes_to_64
 #print axioms ArkLib.ProximityGap.L2MahlerNorm.houseGate_fails_at_64
 #print axioms ArkLib.ProximityGap.L2MahlerNorm.l2Gate_lowExp_depth_128

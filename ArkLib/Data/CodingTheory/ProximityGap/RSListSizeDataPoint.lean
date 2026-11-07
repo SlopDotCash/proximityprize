@@ -23,13 +23,25 @@ import Mathlib
 
         capacity agreement  a = 2   <   INTERIOR  a = 3   <   Johnson agreement  a = 4.
 
-  The exact GLOBAL-worst-case max list sizes (found by exhaustive/heavy search, witnessed below) are
+  What is formally proved here are LIST WITNESSES: exact list sizes for three fixed, named received
+  words (`wJ`, `wInt`, `wCap`). Each is therefore a kernel-checked LOWER BOUND on the global
+  worst-case list size over all `17^8` received words at that agreement:
 
-        a = 2 :  28        a = 3 :  7        a = 4 :  2        a = 5 :  1.
+        a = 2 :  >= 28     a = 3 :  >= 7      a = 4 :  >= 2.
 
-  The crossing sits in the OPEN gap: at the interior radius a = 3 the list size is a small constant
-  (7), i.e. the code is genuinely list-decodable strictly beyond the Johnson radius and toward
-  capacity for this concrete smooth-domain instance — a verified `delta*` data point.
+  The values `28, 7, 2, 1` (at `a = 2, 3, 4, 5`) were reported as the global maxima by an
+  unrecorded exhaustive/heavy search; no search certificate is in-tree and no declaration here
+  quantifies over all received words or proves a matching upper bound. (Elementary counting, done
+  by hand and NOT formalized here — two distinct lines agree with `w` on at most one common
+  point — gives the global upper bounds `C(8,2) = 28` at `a = 2`, `8` at `a = 3`, `4` at `a = 4`,
+  `1` at `a = 5`; so `28` and `1` match, while the claimed maxima `7` at `a = 3` and `2` at
+  `a = 4` remain EMPIRICAL, unverified in Lean.)
+
+  In particular this is NOT a verified `delta*` data point: the file defines no MCA error and
+  makes no connection from a list bound to an `epsilon*` threshold (that list-to-MCA dictionary
+  is a separate, missing step). Finite list sizes for one fixed finite code are also automatic;
+  the witnesses record the concrete numbers in the Johnson-to-capacity gap, not a uniform
+  list-decodability statement.
 
   Every theorem below is closed by kernel `decide`; the file imports only Mathlib and is axiom-clean
   (`#print axioms` lists only the standard `propext / Classical.choice / Quot.sound`).
@@ -72,34 +84,41 @@ theorem listAt_wJ_four : (listAt wJ 4).card = 2 := by decide
 /-- The two list members at `a = 4` are exactly the constant-`0` and identity-`x` codewords. -/
 theorem listAt_wJ_four_eq : listAt wJ 4 = {(0, 0), (0, 1)} := by decide
 
-/-- Just below the Johnson radius (`a = 3`) the list for `wJ` is still exactly `2`. -/
+/-- Just beyond the Johnson radius (agreement `a = 3`, below the Johnson agreement `4`) the list
+    for `wJ` is still exactly `2`. -/
 theorem listAt_wJ_three : (listAt wJ 3).card = 2 := by decide
 
-/-- Strictly above the Johnson radius (`a = 5`, unique-decoding regime) the list for `wJ` is empty:
-    `wJ` is genuinely a non-codeword, more than 3 errors from every codeword. -/
+/-- Strictly inside the Johnson radius (agreement `a = 5`, unique-decoding regime) the list for
+    `wJ` is empty: `wJ` is genuinely a non-codeword, more than 3 errors from every codeword. -/
 theorem listAt_wJ_five : (listAt wJ 5).card = 0 := by decide
 
-/-! ## Interior witness `a = 3`: a word attaining the GLOBAL max list size `7`
+/-! ## Interior witness `a = 3`: a word with list size `7`
 
-This locates the crossing strictly inside the open Johnson-to-capacity gap `(2, 4)`: the global
-worst-case list size at the interior agreement radius `a = 3` is the small constant `7`. -/
+A witness strictly inside the open Johnson-to-capacity gap `(2, 4)`: this word has list size `7`
+at the interior agreement `a = 3`, so the global worst case there is at least `7`. That `7` is
+also the global maximum is an empirical search claim, not proved here (the elementary bound is
+`8`). -/
 
 def wInt : Fin 8 → ZMod 17 := ![8, 10, 14, 16, 5, 4, 12, 3]
 
-/-- At the interior radius `a = 3` (strictly inside the open gap `(2,4)`) the list size is `7`,
-    the global worst case. The code is list-decodable beyond Johnson with a small list. -/
+/-- At the interior radius `a = 3` (strictly inside the open gap `(2,4)`) the list size of `wInt`
+    is `7`: a lower bound on the global worst case (global maximality is not proved here). -/
 theorem listAt_wInt_three : (listAt wInt 3).card = 7 := by decide
 
 /-- For the same word, at the Johnson radius `a = 4` the list is empty: the `7` members each agree
     with `wInt` on exactly `3` coordinates, so the list collapses as the radius tightens. -/
 theorem listAt_wInt_four : (listAt wInt 4).card = 0 := by decide
 
-/-! ## Capacity witness `a = 2`: a word attaining the GLOBAL max list size `28` -/
+/-! ## Capacity witness `a = 2`: a word with list size `28`
+
+`28 = C(8,2)` is also the (hand-proved, not formalized) global upper bound at `a = 2`, since a
+line agreeing with `w` on two points is determined by them. -/
 
 def wCap : Fin 8 → ZMod 17 := ![15, 13, 6, 7, 7, 14, 6, 14]
 
-/-- At the capacity agreement radius `a = 2` (`= rho·n`, lower edge of the gap) the list size is `28`,
-    the global worst case there. -/
+/-- At the capacity agreement radius `a = 2` (`= rho·n`, lower edge of the gap) the list size of
+    `wCap` is `28`, a lower bound on (and, by the hand count above, equal to) the global worst case
+    there. -/
 theorem listAt_wCap_two : (listAt wCap 2).card = 28 := by decide
 
 end ArkLib.ProximityGap.RSPrizeDataPoint

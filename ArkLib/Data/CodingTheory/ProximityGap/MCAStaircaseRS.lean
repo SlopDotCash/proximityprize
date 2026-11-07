@@ -20,9 +20,17 @@ most `k − 1` roots, so RS codes satisfy every support-budget hypothesis up to 
   whenever additionally `b ≤ |F|`).
 
 **In prize terms:** for every Reed–Solomon code of the prize statement, at every rate and
-scale, `ε_mca(δ) = (⌊δn⌋ + 1)/|F|` is an exact theorem for all
-`δ < (n − k + 3)/(3n) ≈ (1 − ρ)/3`. The first three strips of the δ*-landscape are now:
-exact theory (`[0, (1−ρ)/3)`, this file), the explosion strip (`[(1−ρ)/3, (1−ρ)/2)`, where
+scale, `ε_mca(δ) = (⌊δn⌋ + 1)/|F|` is an exact theorem whenever `b = ⌊δn⌋ + 1` meets the
+integer guards of `epsMCA_rs_eq_div_card`: `k ≥ 1`, `2 ≤ b ≤ |F|` and `k + 3(b − 1) ≤ n`,
+i.e. on the radius range `1 ≤ δ·n < ⌊(n − k)/3⌋ + 1` (with `b ≤ |F|`). For `δ·n < 1` only the
+upper bound `ε_mca ≤ 1/|F|` of `epsMCA_rs_le_div_card` is stated here. The continuous bound
+`δ < (n − k + 3)/(3n)` is **not** equivalent to the integer guard and is larger when
+`3 ∤ (n − k)`: for `n = 5`, `k = 4`, `δ = 1/4` one has `δ·n = 1.25 < 4/3` but
+`k + 3⌊δn⌋ = 7 > 5`, and there the advertised value `2/|F|` is wrong (every `≤ 4`-coordinate
+restriction is jointly explainable, so a bad witness must use all 5 coordinates and at most one
+scalar is bad). Asymptotically the guarded range is `δ ≲ (1 − ρ)/3`. The first three strips of
+the δ*-landscape are now: exact theory (`δ·n < ⌊(n−k)/3⌋ + 1`, roughly `[0, (1−ρ)/3)`, this
+file), the explosion strip (roughly `[(1−ρ)/3, (1−ρ)/2)`, where
 the `(b−1)`-tupled witnesses live and the RS-specific threshold is the open matroid
 question), and the UD→Johnson→window ascent above.
 

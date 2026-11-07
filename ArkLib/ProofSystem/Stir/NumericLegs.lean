@@ -34,6 +34,19 @@ Capstone welds with the numeric legs GONE:
 * `stir_main_of_checkingIOP_small_field_numeric` — the small-field unconditional route with
   NO numeric legs at all: hypotheses are the regime bounds, `secpar = 0` (forced by the
   regime anyway), a sub-unit rbr budget, `2 ≤ degree`, and the canonical query count.
+  It certifies security level `secpar = 0` only, i.e. no security.
+
+Field-size hypothesis (audit 2026-10-28, L36): until the 2026-10-28 repair, `stir_main`'s
+`hF` was the upper bound `|F| ≤ secpar * 2 ^ secpar * …`, which at `secpar = 0` reads
+`|F| ≤ 0` (also when the logarithm vanishes, since Lean's division by zero is `0`) and
+contradicts `0 < |F|`; the small-field numeric route therefore had no instances. `hF` is now
+the lower bound `FieldSizeCondition`, which holds automatically at `secpar = 0`
+(`fieldSizeCondition_zero`), so this route is no longer empty for that reason.
+
+The complexity legs discharged here are per-instance constraints on free parameters (the
+constants are chosen after the instance), so these lemmas are arithmetic facts, not uniform
+`O(·)` bounds for a STIR protocol (see `ComplexityLegs.lean` and the docstring of
+`stir_main`).
 
 Axiom-clean: `[propext, Classical.choice, Quot.sound]`.
 -/
@@ -146,12 +159,10 @@ theorem stir_main_of_checkingIOP_CA_numeric
     {k proofLen qNumtoInput qNumtoProofstr : ℕ}
     (hk : ∃ p, k = 2 ^ p) (hkGe : k ≥ 4)
     (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
-    (hF : Fintype.card F ≤
-          secpar * 2 ^ secpar * degree ^ 2 * (Fintype.card ι) ^ (7 / 2) /
-            Real.log (1 / rate (code φ degree)))
+    (hF : FieldSizeCondition secpar φ degree)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (e ProxGapBound : Fin (M + 1) → ℝ≥0)
-    (hBridge : stirCheckingCABridge M φ degree δ ε_rbr e ProxGapBound)
+    (hBridge : stirCheckingCAFixedPrefixBridge M φ degree δ ε_rbr e ProxGapBound)
     (hCA : ∀ k' : ℕ, 0 < k' →
       ProximityGap.StrictCoeffPolysResidual (ι := ι) (F := F)
         (k := k') (deg := degree) (domain := φ) (δ := δ))
@@ -175,7 +186,9 @@ small-field unconditional soundness discharge with all five of `stir_main`'s fre
 legs produced by elementary arithmetic. Inputs: the regime bounds (`hδudr`/`hq`/`hεlb`),
 `secpar = 0` (the level the regime honestly pins — cf. the HONESTY note on
 `stir_main_of_checkingIOP_small_field`), a sub-unit rbr budget, `2 ≤ degree`, and the
-canonical input-query count. -/
+canonical input-query count. At `secpar = 0` the field-size hypothesis `hF` is automatic
+(`fieldSizeCondition_zero`); before the 2026-10-28 repair it read `|F| ≤ 0` here and the
+theorem had no instances. It certifies no security (`secpar = 0`). -/
 theorem stir_main_of_checkingIOP_small_field_numeric
     {M : ℕ} (secpar : ℕ)
     {ι : Type} [Fintype ι] [Nonempty ι]
@@ -183,9 +196,7 @@ theorem stir_main_of_checkingIOP_small_field_numeric
     {k proofLen qNumtoInput qNumtoProofstr : ℕ}
     (hk : ∃ p, k = 2 ^ p) (hkGe : k ≥ 4)
     (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
-    (hF : Fintype.card F ≤
-          secpar * 2 ^ secpar * degree ^ 2 * (Fintype.card ι) ^ (7 / 2) /
-            Real.log (1 / rate (code φ degree)))
+    (hF : FieldSizeCondition secpar φ degree)
     {m : ℕ}
     (hδudr : δ ≤ (1 - (LinearCode.rate (code φ degree) : ℝ≥0)) / 2)
     (hq : (Fintype.card F : ℝ≥0) ≤ ((m : ℝ≥0) - 1) * (Fintype.card ι : ℝ≥0))

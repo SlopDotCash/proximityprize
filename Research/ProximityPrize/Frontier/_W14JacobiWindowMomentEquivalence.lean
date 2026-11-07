@@ -27,7 +27,8 @@ depth-`K` window and the moment vector to order `2K+1` are the SAME data in diff
 coordinates (the converse direction, moments → window, is the classical Lanczos /
 Hankel-double-ratio construction — `_AvJB_TodaStringHankelExact.bsq_eq_double_hankel_ratio` —
 kept here as the named input `MomentsDetermineWindow`, in the same hypothesis style as
-`_AvJB_HankelRoutesToMoments`).
+`_AvJB_HankelRoutesToMoments`; it is since discharged unconditionally in
+`_ZW14MomentsDetermineWindowDischarge.lean`).
 
 ## Why this closes the assigned seam (the W14 verdict)
 
@@ -40,7 +41,9 @@ every version of that hope at bounded window depth:
 1. **Every truncation-level invariant at depth `K` is a functional of the corner `J_{K+1}`**
    (definitionally), hence — by `MomentsDetermineWindow` — a functional of the moments
    `m_0..m_{2K+1}` alone (`truncation_invariant_is_lowMoment_functional`).  Conversely
-   (THIS file, unconditional) the corner is recoverable from those moments' data content:
+   (THIS file, unconditional, `window_determines_moments`) the low moments are functionals of
+   the corner (corner ⟹ moments); the converse moments ⟹ corner is the named input
+   `MomentsDetermineWindow` (discharged in `_ZW14MomentsDetermineWindowDischarge.lean`):
    no window invariant sees anything the low moments do not.
 2. Low-moment functionals are already dead three independent ways: they are
    **ensemble-deterministic** (read `(n, p)` only, not the instance —
@@ -71,7 +74,10 @@ NO core / cancellation / completion / moment-saving / anti-concentration / capac
 This is a structural equivalence + collapse verdict: the window IS the low moments; the sign
 structure at `k*` adds nothing a moment functional lacks.  The named open input
 `MomentsDetermineWindow` is the classical orthogonal-polynomial uniqueness direction
-(Gram–Schmidt / Hankel-ratio; NOT proven here) and is consumed visibly.  The BGK/Paley wall
+(Gram–Schmidt / Hankel-ratio; not proven in this file) and is consumed visibly; it is
+discharged by `ZW14MomentsDischarge.momentsDetermineWindow_holds`
+(`_ZW14MomentsDetermineWindowDischarge.lean`), with unconditional consumers there and in
+`_ZW14IntegrationBridge.lean`.  The BGK/Paley wall
 (`M ≤ C√(n log p)`, equivalently `k* = O(log p)`) remains OPEN.
 -/
 
@@ -196,12 +202,15 @@ theorem window_determines_moments {A A' : Matrix (Fin N) (Fin N) ℝ}
       pow_firstcol_eq_zero_of_lt htri' h0 s k (by omega)
     rw [e1, e1', hz, hz', zero_mul, zero_mul]
 
-/-- **NAMED OPEN INPUT (classical OP theory, converse direction).**  The moments to order
-`2K+1` determine the depth-`K` window: two Jacobi-normalized (symmetric tridiagonal,
-positive-subdiagonal) matrices with equal `(·^r)₀₀` for all `r ≤ 2K+1` agree on the
+/-- **NAMED INPUT (classical OP theory, converse direction; discharged downstream).**  The
+moments to order `2K+1` determine the depth-`K` window: two Jacobi-normalized (symmetric
+tridiagonal, positive-subdiagonal) matrices with equal `(·^r)₀₀` for all `r ≤ 2K+1` agree on the
 `(K+1) × (K+1)` corner.  This is the Lanczos / Gram–Schmidt uniqueness — equivalently the
 Hankel-double-ratio formulas `b_k² = D_{k−1}D_{k+1}/D_k²` (in-tree in hypothesis form as
-`_AvJB_TodaStringHankelExact`) — NOT proven here; consumed visibly below. -/
+`_AvJB_TodaStringHankelExact`) — not proven in this file (consumed visibly below as `hconv`);
+it is **discharged** unconditionally by
+`ZW14MomentsDischarge.momentsDetermineWindow_holds` in
+`_ZW14MomentsDetermineWindowDischarge.lean`. -/
 def MomentsDetermineWindow (N K : ℕ) : Prop :=
   ∀ A A' : Matrix (Fin N) (Fin N) ℝ,
     IsTridiagonal A → IsTridiagonal A' → A.IsSymm → A'.IsSymm →

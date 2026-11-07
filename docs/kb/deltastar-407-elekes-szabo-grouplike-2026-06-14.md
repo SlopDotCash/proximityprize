@@ -115,5 +115,6 @@ over μ_{2^μ}. **This is NOT proven here.** Status:
 Probes: `/tmp/es_dil.py` (equivariance), `/tmp/es_window.py` + `/tmp/es_winfaith.py` (n=16 window
 cliff + faithfulness), `/tmp/es_n32win.py` (n=32 cliff to 0), `/tmp/es_scaling.py` (saturation),
 `/tmp/es_badprime_scaling.py` (bad-prime exponent ~n^3.5 bounded). In-tree object:
-`ProximityGap/LineCodewordIncidence.lean` (per-codeword line-ball ≤⌊n/w⌋·L) and
+`ProximityGap/LineCodewordIncidence.lean` (per-codeword line-ball ≤⌊n/w⌋·L, where `L` is the
+line-union list, not a point-centred decoding list) and
 `ProximityGap/Frontier/Issue407SaturatedIncidence.lean` (the SIIP profile this refines).

@@ -10,17 +10,25 @@ import ArkLib.ToMathlib.WhirBricksConstruction
 # WHIR Vector IOP Resolution (Issue #113)
 
 This file records the residual checkpoint for the `whir_vector_iop_residual`
-mathematics.  The hard WHIR work is still the concrete Vector IOP construction,
-its `IsSecureWithGap` proof, and the fold/OOD/shift/final budget inequalities.
-This standalone surface only assembles those residuals through the existing
-`whir_rbr_soundness_of_whirVectorSpec_secure_gap` theorem.
+mathematics.  The hard WHIR work is still a Vector IOP that implements
+Construction 5.1 and its `IsSecureWithGap` proof; the fold/OOD/shift/final budget
+hypotheses only require the chosen errors to dominate the Theorem 5.2 bounds.
+This standalone surface only packages a supplied protocol over the message-free
+skeleton `whirVectorSpec M` and its supplied security proof through the existing
+`whir_rbr_soundness_of_whirVectorSpec_secure_gap` theorem.  Since `whirVectorSpec M`
+has no prover messages, no protocol over it implements Construction 5.1, so this
+checkpoint cannot certify WHIR whatever protocol is supplied.
 -/
 
 namespace WhirIOPP
 
 open scoped NNReal ProbabilityTheory
 
-/-- **Issue #113 checkpoint:** WHIR RBR soundness from the concrete residual witnesses. -/
+/-- **Issue #113 checkpoint (packaging only):** `WhirIOP.whir_rbr_soundness` for a supplied
+protocol `π` over the message-free skeleton `whirVectorSpec M`, from its supplied
+`IsSecureWithGap` proof.  Despite its name this is not a WHIR soundness result: no protocol over
+`whirVectorSpec M` implements Construction 5.1, and all security content is the hypothesis
+`hSecure`. -/
 theorem whir_vector_iop_breakthrough
     {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
     {M : ℕ} (ι : Fin (M + 1) → Type) [∀ i : Fin (M + 1), Fintype (ι i)]
@@ -40,19 +48,17 @@ theorem whir_vector_iop_breakthrough
         Fintype (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := h.inst1 0
       let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
         Nonempty (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := h.inst2 0
-      ∀ _ : Fin ((P.foldingParam 0) + 1),
-        let errStar_0 j := h.errStar 0 j (h.C 0 j) (h.Gen_α 0 j).parℓ (h.δ 0)
+      let errStar_0 j := h.errStar 0 j (h.C 0 j) (h.Gen_α 0 j).parℓ (h.δ 0)
       ∀ j : Fin (P.foldingParam 0),
-        ε_fold 0 j ≤
-          ((dstar * (h.dist 0 j.castSucc)) / Fintype.card F) + (errStar_0 j.succ))
+        ((dstar * (h.dist 0 j.castSucc)) / Fintype.card F) + (errStar_0 j.succ) ≤
+          ε_fold 0 j)
     (h_out :
-      ∀ i : Fin (M + 1),
-        ε_out i ≤
-          2^(P.varCount i) * (h.dist i 0)^2 / (2 * Fintype.card F))
+      ∀ i : Fin M,
+        2^(P.varCount i.succ) * (h.dist i.succ 0)^2 / (2 * Fintype.card F) ≤ ε_out i.succ)
     (h_shift :
       ∀ i : Fin M,
-        ε_shift i ≤ (1 - (h.δ i.castSucc))^(P.repeatParam i.castSucc)
-          + ((h.dist i.succ 0) * (P.repeatParam i.castSucc) + 1) / Fintype.card F)
+        (1 - (h.δ i.castSucc))^(P.repeatParam i.castSucc)
+          + (h.dist i.succ 0) * (P.repeatParam i.castSucc + 1) / Fintype.card F ≤ ε_shift i)
     (h_fold_i :
       let maxDeg := (Finset.univ : Finset (Fin m_0)).sup
         (fun i => wPoly₀.degreeOf (Fin.succ i))
@@ -62,12 +68,12 @@ theorem whir_vector_iop_breakthrough
         Fintype (BlockRelDistance.Generic.indexPowT (S i) (P.φ i) j) := h.inst1
       let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
         Nonempty (BlockRelDistance.Generic.indexPowT (S i) (P.φ i) j) := h.inst2
-      ∀ i : Fin (M + 1), ∀ _ : Fin ((P.foldingParam i) + 1),
-        let errStar i j := h.errStar i j (h.C i j) (h.Gen_α i j).parℓ (h.δ i)
-      ∀ i : Fin (M + 1), ∀ j : Fin (P.foldingParam i),
-        ε_fold i j ≤ d * (h.dist i j.castSucc) / Fintype.card F + errStar i j.succ)
+      let errStar i j := h.errStar i j (h.C i j) (h.Gen_α i j).parℓ (h.δ i)
+      ∀ i : Fin M, ∀ j : Fin (P.foldingParam i.succ),
+        d * (h.dist i.succ j.castSucc) / Fintype.card F + errStar i.succ j.succ
+          ≤ ε_fold i.succ j)
     (h_fin :
-      ε_fin ≤ (1 - h.δ (Fin.last M))^(P.repeatParam (Fin.last M)))
+      (1 - h.δ (Fin.last M))^(P.repeatParam (Fin.last M)) ≤ ε_fin)
     (π : VectorIOP Unit (WhirIOP.OracleStatement (ι 0) F) Unit
       (WhirIOP.Construction.whirVectorSpec M) F)
     (hSecure :
@@ -81,7 +87,7 @@ theorem whir_vector_iop_breakthrough
     WhirIOP.whir_rbr_soundness (F := F) (M := M) ι (d := d) (dstar := dstar)
       (P := P) (S := S) (hParams := hParams) (h := h) hm_0 (σ₀ := σ₀)
       (wPoly₀ := wPoly₀) (δ := δ) ε_fold ε_out ε_shift ε_fin
-      h_fold_0 h_out h_shift h_fold_i h_fin :=
+      h_fold_0 h_out h_shift h_fold_i h_fin (WhirIOP.Construction.whirVectorSpec M) π :=
   WhirIOP.Construction.whir_rbr_soundness_of_whirVectorSpec_secure_gap
     (F := F) (M := M) (ιs := ι) (d := d) (dstar := dstar)
     (P := P) (S := S) (hParams := hParams) (h := h) hm_0

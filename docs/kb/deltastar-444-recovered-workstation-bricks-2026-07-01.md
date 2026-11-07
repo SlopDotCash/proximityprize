@@ -1,5 +1,16 @@
 # #444 phantom-brick recovery — the unpushed workstation branch (2026-07-01)
 
+> **Scope note (2026-10-28 audit, T48).** This note correctly separates the recovered, landed files
+> from the archived work. Availability and axiom cleanliness do not, however, upgrade what the
+> recovered theorems state. For example, `prizeFloor_eq_value_iff_bindingCount_brackets` is a
+> threshold-bracketing equivalence for an **arbitrary** monotone `bindingCount` function. It is not
+> an unconditional equivalence with the production prize; that would additionally need a proof that
+> the actual MCA error equals `epsFromCount bindingCount q` for the intended count.
+> `no_second_order_route` is a statement about the specific numeric constants it names. Read the
+> "Verdict it records" column with each file's actual parameters and hypotheses, as documented by
+> the Research lane. The branch and push statements are historical receipts and have not been
+> refreshed into a current publication claim.
+
 **Verdict in one line:** the five "phantom bricks" flagged in dossier v2 §12 (`_DstarGrowthLaw`,
 `_OPSingleOrbit`, `_DyadicRecursionDstar`, `PrizeEquivalencePin`, `FloorResonanceEnergyBridge`)
 were never fabricated — they were written and verified on a workstation whose #444 session ended

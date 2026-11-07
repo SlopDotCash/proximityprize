@@ -41,16 +41,25 @@ prover message, so the seam *is* a message seam: the proven oracle-level keyston
 
 The **append theorem the LogUp completeness composition actually needs is the non-perfect one**: it
 must combine the outer error `logupCompletenessError F n` (≠ 0 over a finite field) with the
-sumcheck error `0`. The only *proven* in-tree append-completeness theorem is the perfect-completeness
-keystone (both component errors `0`); a general non-perfect Reduction-level append completeness is
-not available in-tree. So this brick:
+sumcheck error `0`. When this brick was written, the only *proven* in-tree append-completeness
+theorem was the perfect-completeness keystone (both component errors `0`). So this brick:
 
 * **proves** the outer half outright (no residual);
 * takes the **sumcheck** completeness and the **non-perfect append-composition** completeness as
-  explicit, clearly-named `Prop` hypotheses — the two genuine residual gaps, each closable by a later
-  brick;
+  explicit, clearly-named `Prop` hypotheses of `logup_completeness_full`;
 * additionally **sharpens** the append residual, reducing it through the proven verifier-fusion
   bridge `appendToReductionResidual` to a Reduction-level append-completeness statement.
+
+**Current status (both hypotheses are now supplied elsewhere, under explicit side conditions).**
+The non-perfect message-seam append is proved (`Reduction.append_completeness_msg_of_neverFail`,
+`AppendSeamBridges3.lean`; oracle level `OracleReduction.append_completeness_msg_proof` and the
+LogUp discharge `appendCompletenessResidual_wired` in `LogupCompletenessWired.lean`), and the
+embedded-sumcheck half is proved by `sumcheckCompletenessResidual_unconditional`
+(`SumcheckCompletenessUncond.lean`). The assembled end-to-end theorem is `logup_completeness_final`
+(`LogupCompletenessFinal.lean`), under `0 < n`, `NeverFail init`, `hImplSupp` and the
+honest-implementation side conditions (state preservation, never-failing, state-independent
+answer distribution). The hypotheses of `logup_completeness_full` below are therefore interface
+inputs of this file, not open gaps of LogUp completeness.
 
 **Removed (issue #13, dmvt audit defect 2):** the historical "perfect special case" lemmas
 (`appendCompletenessResidual_of_perfect` / `logup_completeness_full_perfect`) hypothesized
@@ -91,14 +100,18 @@ The full LogUp oracle reduction is complete with error `logupCompletenessError F
 |Hypercube n| / |F|` (the pole-rejection error; the sumcheck phase is perfectly complete, error `0`).
 
 The **outer** pole-rejection half is discharged in-tree by `outerCompletenessResidual_of_neverFail`
-under the standard `NeverFail init` completeness assumption — it is *not* a residual. The two genuine
-remaining obligations are taken as explicit named hypotheses:
+under the standard `NeverFail init` completeness assumption — it is *not* a residual. The other two
+obligations are taken as explicit named hypotheses of this theorem:
 
 * `hSumcheck : SumcheckCompletenessResidual` — perfect completeness of the embedded sumcheck phase
-  (`liftContext` of `Sumcheck.Spec`; blocked upstream by the missing generic `Sumcheck.Spec`
-  seq-compose completeness theorem + the lens `IsComplete` instance);
+  (`liftContext` of `Sumcheck.Spec`); now supplied by `sumcheckCompletenessResidual_unconditional`
+  (`SumcheckCompletenessUncond.lean`) under `NeverFail init` and `hImplSupp`;
 * `hAppend : AppendCompletenessResidual` — the non-perfect sequential-composition completeness brick
-  combining the outer error with the sumcheck error `0` along the message seam.
+  combining the outer error with the sumcheck error `0` along the message seam; now supplied by
+  `appendCompletenessResidual_wired` (`LogupCompletenessWired.lean`) under the honest-implementation
+  side conditions.
+
+See `logup_completeness_final` (`LogupCompletenessFinal.lean`) for the assembled statement.
 
 The conclusion is exactly the headline LogUp completeness statement, with no `sorry`. -/
 theorem logup_completeness_full (hInit : NeverFail init)

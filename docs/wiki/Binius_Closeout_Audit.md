@@ -6,9 +6,12 @@ This note resolves the remaining out-of-scope items for the Binius grant closeou
 The following assumptions are intentionally kept as external/residual hypotheses for now and are marked as grant-out-of-scope:
 - `FinalSumcheckStepLogicCompleteResidual`
 - `ExtractMLPCorrectnessResidual` (proven false as stated, handled by `revIndexMLP` and unique witness theorems, but the old residual class remains documented as an obstruction surface).
-- `FoldMatrixDetNeZeroResidual` / `foldMatrix_det_ne_zero` (the historical discharge used the
-  retired `foldMatrixNat` API; `FoldDetSplit.lean` and `FoldDetDischarge.lean` now record this as
-  a substrate-port boundary instead of exposing a stale theorem).
+- `FoldMatrixDetNeZeroResidual` / `foldMatrix_det_ne_zero`: no longer a residual. The
+  destination-indexed `foldMatrix_det_ne_zero` is proved in the canonical
+  `BinaryBasefold/Prelude/Folding.lean`. (An earlier version of this note said `FoldDetSplit.lean`
+  and `FoldDetDischarge.lean` only record a substrate-port boundary; that is stale: both retained
+  files contain real recursive `foldMatrixNat_det_ne_zero` theorem bodies, which overlap each
+  other. This note does not claim a fresh elaboration of those files.)
 - `Reconstruct/IncrementalHelpers.lean` (the historical helper lemmas used the retired
   `OracleFunction : Fin r` indexing and natural-number `iterated_fold` step API; the current
   substrate indexes oracle functions by protocol level `Fin (ell + 1)` and folds with
@@ -55,6 +58,13 @@ lemmas, theorems, and named instances passed. Each declaration uses only
 The source hash and declaration-by-declaration results are recorded in
 [`binius-core-interaction-2026-09-06.json`](../kb/audits/binius-core-interaction-2026-09-06.json).
 These axiom results do not remove explicit hypotheses from theorem statements.
+
+That receipt is dated provenance. It pins source hash `e529cae1…`, while the module's hash at
+the 2026-10-28 audit was `76902a6f…`, so its recorded exit codes certify the historical source,
+not the current file. This is a provenance limitation, not evidence of a failed build. The
+current implementation and its remaining conditions are reviewed separately; the receipt
+continues to record the retained completeness and security premises and the unfinished
+QueryPhase.
 
 ## Terminal audit repair (2026-10-06)
 

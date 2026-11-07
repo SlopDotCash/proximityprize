@@ -9,27 +9,32 @@ import Mathlib.Algebra.Order.BigOperators.Group.Finset
 /-!
 # Geometry-of-numbers short-vector reduction of the char-`p` transfer (#444, lane wf-W6)
 
-## The lattice picture (the geometric framing of the spurious excess)
+## The lattice picture (HEURISTIC framing — nothing in this section is formalised)
 
-A spurious config at depth `r` is `σ_T = Σ_{i∈T} ε_i ζ_n^i`, `|T| ≤ 2r`, `ε_i ∈ {±1}`, with
+None of the lattice objects below (`ℤ[ζ_n]`, `L_p`, `λ₁`, the trace form) appear in any Lean
+statement of this file; the theorems are ℕ arithmetic on an abstract `EnergySplit`.
+
+A spurious config at depth `r` gives `σ_T = Σ_{i∈T} ε_i ζ_n^i`, `|T| ≤ 2r`, with
 `σ_T ≠ 0` over `ℤ` but `σ_T ≡ 0 mod p` (i.e. `σ_T ∈ ker(ev_h : ℤ[ζ_n] ↠ 𝔽_p)`, where `h` is a
-primitive `n`-th root mod `p`).  In the power basis `ℤ[ζ_n] ≅ ℤ^{φ(n)}` with the **trace form**
-the 2-power identity (NT2) gives the exact length
+primitive `n`-th root mod `p`).  With the **trace form** on `ℤ[ζ_n]` (`n` a power of 2), for a
+**repetition-free, antipodal-free** index set `T` (no `i`, and not both `i` and `i+n/2`) with signs
+`ε_i ∈ {±1}`, one has the exact length
 
-  `‖σ_T‖² = Σ_{j} |σ_T^{(j)}|² = φ(n)·|T| ≤ φ(n)·2r`,
+  `‖σ_T‖² = φ(n)·|T|`.
 
-so a weight-`|T|` config is a **short vector** of trace-radius² `φ(n)·|T|`.  The kernel
-`L_p := ker(ev_h)` is an **index-`p` sublattice** of `ℤ[ζ_n]` (`ev_h` is surjective because `h`
-has order `n | p−1`).  Hence
+This identity FAILS without the antipodal-free condition: `ζ^{i+n/2} = −ζ^i`, so e.g.
+`ζ^0 + ζ^{n/2} = 0`; and `E_r` counts ordered tuples *with repetition*, whose coefficients need not
+be `±1`.  So configs correspond only loosely to short vectors of `L_p := ker(ev_h)` (an index-`p`
+sublattice of `ℤ[ζ_n]`, `ev_h` surjective since `h` has order `n | p−1`), and
 
-  `Spur_r(p) = #{ short vectors of L_p, ‖v‖² ≤ φ(n)·2r, v ≠ 0 over ℤ }`,
+  `Spur_r(p) ≈ #{ short vectors of L_p, ‖v‖² ≲ φ(n)·2r, v ≠ 0 over ℤ }`
 
-a **theta-series / lattice-point count** of the index-`p` sublattice.  The DC subtraction
-(`A_r = E_r − n^{2r}/p`) removes exactly the trivial (zero) vector contribution `n^{2r}/p`.
+is a heuristic correspondence (`Spur_r` counts tuples, not lattice vectors), not an identity.
 
 ## Sub-lemma this lane targets (G-W6 — the short-vector gap)
 
-The cleanest sufficient condition the lattice gives is the **first-minimum gap**:
+The cleanest sufficient condition the (heuristic) lattice picture suggests is the
+**first-minimum gap** (not formalised here):
 
   `(G-W6)   φ(n)·2r < λ₁(L_p)²   ⟹   Spur_r(p) = 0   ⟹   E_r(μ_n) = E_r^{(0)} ≤ (2r−1)‼·n^r`.
 
@@ -60,13 +65,12 @@ but `Spur_r/Wick` is NOT uniformly small — so the bound that must hold is the 
 
 ## What is PROVEN here (axiom-clean ℕ arithmetic — the structural reduction)
 
-This file states the spurious count as an abstract sublattice short-vector count and proves the
-two structural implications a geometry-of-numbers argument hangs on:
+This file treats the spurious count as an abstract natural number `Spur` with `E = E0 + Spur` and
+proves the trivial arithmetic implications a geometry-of-numbers argument would hang on:
 
-* `spur_zero_of_below_lambda1` — the **first-minimum gap (G-W6)**: if no nonzero spurious vector
-  has weight `≤ 2r` (the gap hypothesis), the spurious count is `0`.  *(trivial-but-load-bearing:
-  it is the exact place the lattice geometry would enter; the probe shows its hypothesis fails at
-  `r*`.)*
+* `spur_eq_zero_of_le_zero` (formerly `spur_zero_of_below_lambda1`) — just `Spur ≤ 0 ⟹ Spur = 0`
+  in `ℕ`.  No lattice or `λ₁` appears; it marks the place where a (G-W6)-type lattice argument
+  *would* enter.  The probe shows the (G-W6) hypothesis fails at `r*`.
 * `energy_transfer_of_spur_zero` — `Spur_r = 0 ⟹ E_r = E_r^{(0)}`, so the char-`0` Dyadic-K1 bound
   transfers verbatim (`K = 1`).
 * `energy_bound_of_spur_le` — the **relative-count assembly (the real route)**:
@@ -76,7 +80,7 @@ two structural implications a geometry-of-numbers argument hangs on:
 
 ## The precise remaining open step (the crux this lane pins, geometry-of-numbers form)
 
-`(S-W6)   #{ v ∈ L_p : v ≠ 0, ‖v‖² ≤ φ(n)·2r } ≤ ε·(2r−1)‼·n^r`,  uniform over prize primes
+`(S-W6)   Spur_r(p) ≤ ε·(2r−1)‼·n^r`  (heuristically: `#{ v ∈ L_p : v ≠ 0, ‖v‖² ≲ φ(n)·2r }`), uniform over prize primes
 `p ≍ n^β`, to depth `r ~ ln p`.  This is a **theta-series bound** on the index-`p` sublattice of
 the cyclotomic trace lattice at radius `φ(n)·2r` — equivalently (by `ev_h`-fibering) a Chebotarev
 / effective-splitting count of prize primes dividing a weight-`≤2r` antipodal-free cyclotomic norm.
@@ -107,21 +111,22 @@ structure EnergySplit where
   E : ℕ
   /-- the char-`0` antipodal count `E_r^{(0)}` (Lam–Leung, `≤ Wick`). -/
   E0 : ℕ
-  /-- the spurious short-vector count `Spur_r(p)` of the index-`p` sublattice. -/
+  /-- the spurious count `Spur_r(p)` (configs vanishing mod `p` but not over `ℤ`; only
+  heuristically a short-vector count of the index-`p` sublattice). -/
   Spur : ℕ
-  /-- the geometry-of-numbers decomposition `E_r = E_r^{(0)} + Spur_r`. -/
+  /-- the additive decomposition `E_r = E_r^{(0)} + Spur_r`. -/
   split : E = E0 + Spur
 
-/-- **The first-minimum gap (G-W6).** If the spurious count is `0` — the lattice condition
-`φ(n)·2r < λ₁(L_p)²`, no nonzero spurious short vector inside the config radius — then the
-char-`p` energy equals the char-`0` energy. -/
+/-- If the spurious count is `0` then the char-`p` energy equals the char-`0` energy.
+(Heuristically `Spur = 0` is what a first-minimum gap `φ(n)·2r < λ₁(L_p)²` would give; that lattice
+step is not formalised.) -/
 theorem energy_transfer_of_spur_zero (S : EnergySplit) (h : S.Spur = 0) : S.E = S.E0 := by
   rw [S.split, h, Nat.add_zero]
 
-/-- Restatement of the gap as a count-zero fact: an empty set of weight-`≤2r` nonzero spurious
-vectors gives `Spur_r = 0`.  (The honest content of `(G-W6)`; its hypothesis is what the pre-screen
-refutes at the optimal depth `r*`.) -/
-theorem spur_zero_of_below_lambda1 (S : EnergySplit)
+/-- `Spur ≤ 0 ⟹ Spur = 0` in `ℕ` (`Nat.le_zero.mp`).  No lattice or first minimum appears; this
+only marks where a (G-W6)-type argument would supply the hypothesis.  Formerly named
+`spur_zero_of_below_lambda1`, which overclaimed. -/
+theorem spur_eq_zero_of_le_zero (S : EnergySplit)
     (hgap : S.Spur ≤ 0) : S.Spur = 0 := Nat.le_zero.mp hgap
 
 /-- **Spurious = 0 ⟹ char-`0` bound transfers with `K = 1`.** Composing the gap with any char-`0`

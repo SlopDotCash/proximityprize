@@ -32,16 +32,21 @@ small-field hypothesis.  This file routes that front door into every in-tree per
   replacement for the vacuous `perRound_epsCA_le_roundError_of_card_le`, which needs
   `|F| ≤ κ · 2^(n−N)`).
 * **STIR fold-budget accounting** (`Stir/ErrorAccumulation.lean`):
-  `stir_perRound_foldBudget_of_curveFamilyData` — the genuine in-tree
-  `PerRoundProximityGap` hypothesis family is discharged with the keystone-supplied
-  `errorBound` values, the fold budget is bounded via `foldBudget_le_of_keystone`, AND each
+  `stir_perRound_foldBudget_of_curveFamilyData` — the `PerRoundProximityGap` budget
+  identification (`e i = errorBound …`, an equation between chosen numbers, not a soundness
+  fact) is supplied by `he`, the fold budget is bounded via `foldBudget_le_of_keystone`, AND each
   accounting error is certified non-vacuously by the faithful per-round CA bound.
 
 Honest residual: the per-`(u, P)` producer (`CurveFamilyProducer`) — i.e. the BCIKS20 §5
 statement that every good decoded family lies on a polynomial curve — remains the open core
-(issue #304); everything downstream of it is PROVEN here.  Unlike the small-field route, this
-hypothesis is *satisfiable* in the deployed large-field regime
-(`curveFamilyData_self` / `curveFamilyData_const` anti-vacuity witnesses).
+(issue #304); everything downstream of it is PROVEN here.  Anti-vacuity, with its exact
+quantifier scope: `curveFamilyData_self` / `curveFamilyData_const` (`CurveFamilyLines.lean`)
+construct `CurveFamilyData` for *particular* families (built from a given curve, resp. a constant
+family), so the data interface itself is inhabitable. They do **not** prove that the universal
+producer exists — a function supplying data for *every* qualifying decoded family in the
+large-field regime — so they are not a satisfiability proof of `CurveFamilyProducer`. That
+universal producer is the retained open hypothesis; it is not known to be false either (the
+refuted count-only producer is a different interface).
 
 ## References
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon
@@ -194,9 +199,9 @@ theorem perRound_epsPG_bound_of_curveFamilyData {deg : ℕ} {domain : ι ↪ F} 
 /-! ## §3. Brick 3b — the genuine STIR accounting hypothesis, faithful entrance -/
 
 /-- **STIR `PerRoundProximityGap` + fold budget + non-vacuity, from the faithful front door.**
-Discharges the genuine in-tree STIR accounting hypothesis family
-(`ArkLib.ProofSystem.Stir.ErrorAccumulation.PerRoundProximityGap`) with the keystone-supplied
-`errorBound` values, bounds the fold budget via the PROVEN `foldBudget_le_of_keystone`, and —
+Supplies the STIR budget identification
+(`ArkLib.ProofSystem.Stir.ErrorAccumulation.PerRoundProximityGap`, i.e. `e i = errorBound …`, by
+`he`), bounds the fold budget via the PROVEN `foldBudget_le_of_keystone`, and —
 the non-vacuous certificate — proves each accounting error genuinely dominates (up to `kᵢ`) the
 round's curve CA error via the faithful keystone. -/
 theorem stir_perRound_foldBudget_of_curveFamilyData {n : ℕ}

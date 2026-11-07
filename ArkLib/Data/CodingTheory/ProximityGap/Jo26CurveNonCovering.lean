@@ -11,9 +11,15 @@ import ArkLib.Data.CodingTheory.ProximityGap.Jo26CurveInterpolationRegime
 
 The hard half of the marked/original equivalence:
 
-* `exists_far_codeword_of_curveDecodable_jo26` — **[Jo26] Lemma 5.4 (non-covering)**: a nonzero
-  `F`-submodule code that is `(ℓ, δ, a, b)`-curve-decodable with `a ≤ |F|` and `b > ℓ + 1`
-  cannot `δ`-cover the space: every word `y` has a codeword at distance `> δ`.  Proof: if `y`
+* `exists_far_codeword_of_curveDecodable_jo26` — **[Jo26] Lemma 5.4 (far codeword)**: for a
+  nonzero `F`-submodule code that is `(ℓ, δ, a, b)`-curve-decodable with `a ≤ |F|` and
+  `b > ℓ + 1`, every word `y` has a codeword at distance `> δ`, i.e. no single radius-`δ` ball
+  contains the whole code (there is no universal `δ`-close center).  This is **not** the
+  statement that `C` fails to `δ`-cover the ambient space (`∀ y, ∃ c ∈ C, dist(y, c) ≤ δ`):
+  both can hold at once, e.g. the full code (all words over `F₃`) at `δ = 0`, `ℓ = 0`,
+  `a = b = 2` is curve-decodable (take the constant curve `u₀`) and covers the space at
+  radius `0`.  The file name's "non-covering" refers to this far-codeword property.  Proof:
+  if `y`
   were `δ`-close to all of `C`, the stack `u₀ = y, u₁ = ⋯ = u_ℓ = 0` with `f α = α^{ℓ+1} • v`
   (any `0 ≠ v ∈ C`) has full close set; decodability hands a curve agreeing with `f` on
   `> ℓ + 1` seeds; applying a dual functional `φ` with `φ v = 1` turns that agreement into
@@ -47,9 +53,11 @@ theorem curveComb_constStack (ℓ : ℕ) (y : ι → A) (α : F) (i : ι) :
     (fun j _ hj => by simp [hj]) (fun h => absurd (Finset.mem_univ _) h)]
   simp
 
-/-- **[Jo26] Lemma 5.4 (curve decodability gives a non-covering condition).**  A nonzero
-`F`-submodule code that is `(ℓ, δ, a, b)`-curve-decodable with `a ≤ |F|` and `ℓ + 1 < b`
-cannot `δ`-cover the space. -/
+/-- **[Jo26] Lemma 5.4 (curve decodability gives a far codeword).**  For a nonzero
+`F`-submodule code that is `(ℓ, δ, a, b)`-curve-decodable with `a ≤ |F|` and `ℓ + 1 < b`,
+every word `y` has a codeword at distance `> δ`: no word is `δ`-close to the entire code.
+This is different from (and does not contradict) the code covering the ambient space at
+radius `δ`, which asks for one close codeword per word. -/
 theorem exists_far_codeword_of_curveDecodable_jo26 {M : Submodule F (ι → A)} (hM : M ≠ ⊥)
     {ℓ : ℕ} {δ : ℝ≥0} {a b : ℕ}
     (h : CurveDecodable (F := F) (M : Set (ι → A)) ℓ δ a b)

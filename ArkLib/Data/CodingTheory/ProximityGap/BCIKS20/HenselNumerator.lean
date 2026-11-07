@@ -40,9 +40,9 @@ genuine `β` recursion of BCIKS20 (A.1) over the in-tree ring `𝒪 H`:
    layer (outermost), the genuine `Δ_X^{i1}` / `Δ_Y^{m}` of the paper (char-free).
 4. `hasseEvalAtRoot` — evaluate the iterated Hasse coefficient at `(X = x₀, Y = α₀ = T/W)`
    into `𝕃 H`, mirroring `ClaimA2.ζ`.
-5. `B_coeff : 𝒪 H` — the genuine rescaled coefficient `prefactor · A_{i1,λ} · W^{…}`,
-   landed in `𝒪 H` via the canonical regular representative (the `W`-clearing **weight**
-   lemma is the only deferred piece — `B_coeff` itself is the genuine object).
+5. `B_coeff : 𝒪 H` — `prefactor` times the plain `Y ↦ T` lift of the iterated Hasse
+   coefficient, landed in `𝒪 H`.  It carries NO per-coefficient `W`-clearing rescaling, so for
+   non-monic `H` it is not the paper's rescaled `B_{i1,λ}` (audit finding PG-338).
 6. `βHensel : ℕ → 𝒪 H` — **the keystone**: the genuine (A.1) well-founded recursion,
    base case `β₀ = T mod H̃` (genuine `mk X`, not `0`), recursive arm the literal (A.1)
    sum `− ∑_{i1} ∑_{λ ≠ indiscrete} W^{…}·ξ^{…}·B_{i1,λ}·∏_l β_l^{λ_l}`.
@@ -53,9 +53,10 @@ genuine `β` recursion of BCIKS20 (A.1) over the in-tree ring `𝒪 H`:
    regime hypothesis `2 ≤ natDegreeY R` (BCIKS20 `ξ = W^{d−2}·ζ`, `d ≥ 2`).
 9. `(P2) βHensel_lift_identity` — REPAIRED against the *genuine* root `gammaGenuine`
    (`GammaGenuine.lean`): `embedding (βHensel … t) = αGenuine t · W^{t+1} · ξ^{2t−1}` with
-   `αGenuine t = coeff t (gammaGenuine …)`, NOT the vacuous in-tree `ClaimA2.α` (the old statement
-   was provably FALSE at `t = 0`; see the §4f statement-repair note).  Now PROVEN modulo the SINGLE
-   per-successor-order residual `coeff_succ_eval_βHenselAssembled`
+   `αGenuine t = coeff t (gammaGenuine …)`, NOT the in-tree placeholder `ClaimA2.α`, which is
+   built from an unspecified `Classical.choose` numerator with only a weight bound and no root
+   specification (see the §4f statement-repair note).  Conditionally reduced to the
+   SINGLE per-successor-order residual `coeff_succ_eval_βHenselAssembled`
    (`coeff (t+1) (eval (βHenselAssembled) Q) = 0`).  PROVEN unconditionally:
    the base case `βHensel_lift_identity_zero` / `βHenselAssembled_constantCoeff` (`= α₀ = T/W`); the
    **order-`0` root vanishing** `coeff_zero_eval_βHenselAssembled` (`coeff 0 (eval … Q) = eval α₀ Q₀
@@ -65,8 +66,12 @@ genuine `β` recursion of BCIKS20 (A.1) over the in-tree ring `𝒪 H`:
    `βHenselAssembled_eq_gammaGenuine` / `βHensel_lift_identity_of_assembledSeries_isRoot` (via
    `gammaGenuine_unique`).  The residual is the order-`≥1` Faà-di-Bruno bridge
    `coeff_eval ↔ B_coeff·partitionProd` (equivalently the (A.1)-recursion ↔ Newton-correction
-   match), now narrowed to the named term-level residual `RestrictedFaaDiBrunoMatch` in
-   `P2Close.lean`/`P2Vanish.lean`.
+   match), narrowed to the term-level residual `RestrictedFaaDiBrunoMatch` in
+   `P2Close.lean`/`P2Vanish.lean`.  STATUS: this residual (`FaaDiBrunoSuccSumZeroResidual`) is
+   proved for monic `H` but REFUTED for non-monic `H`
+   (`Witness.faaDiBrunoSuccSumZeroResidual_false` in `P2OrderZeroRefutationWitness.lean`), so
+   the non-monic lift identity is not "proven modulo a true residual": the current (A.1)
+   normalization does not reproduce `gammaGenuine` there (audit finding PG-338).
 
 WAVE 3 SCOPE (§4c′ / 4d below).  The reusable **`Λ`-weight calculus over `𝒪 H`**, all PROVEN
 axiom-clean (`[propext, Classical.choice, Quot.sound]`, no `sorryAx`):
@@ -570,13 +575,15 @@ noncomputable def hasseEvalAtRoot (x₀ : F) (R : F[X][X][Y]) (i1 m : ℕ) : �
 /-- `δ_{i1,0} = if i1 = 0 then 1 else 0`, the BCIKS20 "save a `W`" indicator. -/
 def deltaSave (i1 : ℕ) : ℕ := if i1 = 0 then 1 else 0
 
-/-- The genuine `𝒪 H`-representative of the iterated Hasse coefficient of `R` at `(x₀, ·)`,
-**lifted by `Y ↦ T` (the `W`-cleared form)**.  Concretely: take `Δ_X^{i1} Δ_Y^{Σλ} R :
-F[X][X][Y]`, specialise the lift layer `X ↦ x₀` to a polynomial in `F[X][Y]`, and `mk` it
-into `𝒪 H = F[X][Y] ⧸ ⟨H̃'⟩`.  The `Y ↦ T` lift (= `mk`) is exactly the `W`-cleared form of
-the `Y ↦ T/W` evaluation `hasseEvalAtRoot` (clearing the `T/W` denominators multiplies by the
-appropriate `W`-power).  Genuine: built from the real iterated `Polynomial.hasseDeriv`,
-never `0`. -/
+/-- The `𝒪 H`-representative of the iterated Hasse coefficient of `R` at `(x₀, ·)`,
+**lifted by `Y ↦ T`**.  Concretely: take `Δ_X^{i1} Δ_Y^{Σλ} R : F[X][X][Y]`, specialise the
+lift layer `X ↦ x₀` to a polynomial in `F[X][Y]`, and `mk` it into `𝒪 H = F[X][Y] ⧸ ⟨H̃'⟩`.
+
+CAVEAT (audit finding PG-338).  This plain `Y ↦ T` lift is NOT in general the `W`-cleared form
+of the `Y ↦ T/W` evaluation `hasseEvalAtRoot`: clearing the `T/W` denominators rescales each
+`Y`-coefficient `i` by its own power `W^{d−i}`, which is what `hasseCoeffRepr𝒪_cleared` below
+does (see `embeddingOf𝒪Into𝕃_hasseCoeffRepr𝒪_cleared`).  The two agree when `W = 1` (monic
+`H`).  Built from the real iterated `Polynomial.hasseDeriv`. -/
 noncomputable def hasseCoeffRepr𝒪 (x₀ : F) (R : F[X][X][Y]) (i1 m : ℕ) : 𝒪 H :=
   Ideal.Quotient.mk (Ideal.span {H_tilde' H})
     (Bivariate.evalX (Polynomial.C x₀) (hasseDerivX i1 (hasseDerivY m R)))
@@ -591,11 +598,14 @@ noncomputable def hasseCoeffRepr𝒪_cleared (x₀ : F) (R : F[X][X][Y]) (i1 m k
   ∑ i ∈ Finset.range (k + 1),
     Polynomial.C (p.coeff i * H.leadingCoeff ^ (k - i)) * Polynomial.X ^ i
 
-/-- BCIKS20's rescaled coefficient `B_{i1,λ} ∈ 𝒪 H` (lines 4042–4080): the combinatorial
-`prefactor` (`C(d,i1)·multinomial(λ)`) times the `W`-cleared iterated-Hasse coefficient
-`hasseCoeffRepr𝒪`.  This is the **genuine** object — the real iterated Hasse coefficient of
-`R` at `(x₀, α₀)` carrying its genuine integer prefactor — not a placeholder and not secretly `0`
-(`prefactor_pos` shows the integer weight is positive).
+/-- The in-tree version of BCIKS20's coefficient `B_{i1,λ} ∈ 𝒪 H` (lines 4042–4080): the
+combinatorial `prefactor` times the plain `Y ↦ T` lift `hasseCoeffRepr𝒪` of the iterated-Hasse
+coefficient (`prefactor_pos` shows the integer weight is positive).
+
+CAVEAT (audit finding PG-338).  No per-coefficient `W`-clearing rescaling is applied here
+(`hasseCoeffRepr𝒪`, not `hasseCoeffRepr𝒪_cleared`), so for non-monic `H` this is not the
+paper's rescaled `B_{i1,λ}`, and the (A.1) recursion built from it does not reproduce the
+genuine Hensel root: see the refutation cited at `coeff_succ_eval_βHenselAssembled`.
 
 CLOSED (wave 6, P2-independent, axiom-clean): the *weight* lemma `B_coeff_weight_le`
 (`weight_Λ_over_𝒪 hH (B_coeff …) D ≤ (natDegreeY R − Σλ)·(D+1−natDegreeY H) + degreeX p`, the
@@ -603,7 +613,8 @@ genuine in-tree realisation of the paper's `(D−Σλ)+(d−δ−Σλ)·Λ(W)`) 
 embedding identity `embeddingOf𝒪Into𝕃_hasseCoeffRepr𝒪_cleared`
 (`embedding ⟦cleared⟧ = W^{natDegreeY p}·hasseEvalAtRoot`, mirroring `embeddingOf𝒪Into𝕃_mk_ξ_pre`).
 The only further sharpening (to the paper's exact `(D−Σλ)` constant) is the pure P2-independent
-degree-tracking lemma `degreeX p ≤ D − Σλ`.  The definition itself is complete and genuine. -/
+degree-tracking lemma `degreeX p ≤ D − Σλ`.  The clearing identity concerns
+`hasseCoeffRepr𝒪_cleared`, which `B_coeff` does not currently use (see the caveat above). -/
 noncomputable def B_coeff (x₀ : F) (R : F[X][X][Y]) (i1 : ℕ) {m : ℕ}
     (lam : Nat.Partition m) : 𝒪 H :=
   (prefactor R.natDegree i1 lam) • hasseCoeffRepr𝒪 H x₀ R i1 (sigmaLambda lam)
@@ -1826,9 +1837,13 @@ field `𝕃 H` this cancellation is exactly `div_mul_cancel₀`, gated on the de
 
 This lemma is **pure denominator clearing**; it carries no root content.  Its sole purpose is to
 make the genuine `(P2)` residual *mechanically explicit*: the right-hand side of `(P2)` is
-`embeddingOf𝒪Into𝕃 (ClaimA2.β R t)`, and `ClaimA2.β R t = (β_regular …).choose` is the
-*placeholder* numerator family (its existence witness in `RationalFunctions.lean:3005` is the
-**vacuous** `β = 0`), which is a *different object family* from the genuine recursive `βHensel`.
+`embeddingOf𝒪Into𝕃 (ClaimA2.β R t)`, and `ClaimA2.β R t = (β_regular …).choose` is a
+*placeholder* numerator family: an unspecified element chosen by `Classical.choose` subject only
+to a weight upper bound, with no root or coefficient specification.  (The existence proof
+`β_regular` happens to use the witness `0`, but `Classical.choose` is not determined by the
+witness used to prove the existential, and the weight predicate is not unique, so nothing
+licenses `ClaimA2.β R t = 0`.)  It is a *different object family* from the genuine recursive
+`βHensel`.
 So `(P2)` as stated equates `embeddingOf𝒪Into𝕃 (βHensel … t)` with
 `embeddingOf𝒪Into𝕃 (ClaimA2.β R t)` — see `βHensel_lift_identity_iff_β_eq` below. -/
 theorem ClaimA2_α_mul_Wξ_eq_embedding_β (x₀ : F) (R : F[X][X][Y])
@@ -1864,8 +1879,9 @@ equivalent** to the bare statement that the two numerator families agree under t
 
 This is the honest, machine-checkable localisation of the residual: `(P2)` is *not* a missing
 algebraic-cancellation fact (that part is `ClaimA2_α_mul_Wξ_eq_embedding_β`, proven above); it is
-the assertion that the *placeholder* coefficient family `ClaimA2.β` (built from the vacuous
-`β_regular = 0` witness) coincides with the *genuine* recursive Hensel numerator `βHensel`.  That
+the assertion that the *placeholder* coefficient family `ClaimA2.β` (an unspecified
+`Classical.choose` element satisfying only a weight bound) coincides with the *genuine*
+recursive Hensel numerator `βHensel`.  That
 identification is precisely the BCIKS20 Appendix A.4 root theory (`R(X, γ, Z) = 0`, the Hensel-lift
 existence/uniqueness of the power-series root `γ`), which is **not in tree** and cannot be
 manufactured from the connective/denominator-clearing layer.  See `pc-w2-P2-attack.md`. -/
@@ -1938,36 +1954,46 @@ theorem β_embedding_eq_of_βHensel_lift_identity (x₀ : F) (R : F[X][X][Y])
 
 /-! ### 4f. (P2) the lift identity, REPAIRED against the *genuine* root `gammaGenuine`
 
-#### Why the old statement was unprovable as stated (documented statement repair, house style)
+#### Why the old statement was not a faithful target (documented statement repair, house style)
 
 The previous `βHensel_lift_identity` equated `embeddingOf𝒪Into𝕃 (βHensel … t)` with
 `ClaimA2.α x₀ R H hHyp t · W^{t+1} · ξ^{2t−1}`, where `ClaimA2.α` is the in-tree placeholder.
-**That statement is false-as-written, not merely deep.**  By definition
-(`RationalFunctions.lean`, `ClaimA2.α t = embedding (ClaimA2.β R t) / (W^{t+1}·ξ^{2t−1})`) and
-`ClaimA2.β R t = (β_regular …).choose`, whose existence witness is the **vacuous `β = 0`
-placeholder** (`β_regular := fun _ => ⟨0, by simp⟩`, the weight bound is satisfied by `0`).  Hence
-`embedding (ClaimA2.β R t) = 0`, so `ClaimA2.α t = 0`, so the right-hand side is `0` for every
-`t`, while the left-hand side at `t = 0` is `embedding (βHensel … 0) = T ≠ 0`
-(`embeddingOf𝒪Into𝕃_βHensel_zero`).  The lemma `βHensel_lift_identity_iff_β_eq` above already
-records this: the old statement is *equivalent* to `embedding (βHensel … t) = embedding (β R t)`,
-i.e. the genuine numerator equals the vacuous placeholder — provably false at `t = 0`.
+By definition (`RationalFunctions.lean`,
+`ClaimA2.α t = embedding (ClaimA2.β R t) / (W^{t+1}·ξ^{2t−1})`) and
+`ClaimA2.β R t = (β_regular …).choose`, the right-hand side is built from an **unspecified**
+element: `Classical.choose` returns some `β` satisfying the weight upper bound
+`weight_Λ_over_𝒪 β D ≤ (2t+1)·d_R·D`, and nothing else.  The fact that the existence proof
+`β_regular` uses the witness `0` does NOT determine the chosen value, and the predicate is not
+unique (the audit's example: for `H = 2·Y`, `R` of `Y`-degree `2`, `D = totalDegree H = 1`,
+both `0` and `1` satisfy it), so one cannot infer `ClaimA2.β R t = 0` or
+`ClaimA2.α t = 0` (corrected per audit finding PG-339).  The semantic gap is that `ClaimA2.β` is a weight-bounded numerator with no root or
+coefficient specification at all, so the old statement has no connection to the Hensel root and
+is not derivable from the definitions.  The lemma `βHensel_lift_identity_iff_β_eq` above records
+that the old statement is *equivalent* to `embedding (βHensel … t) = embedding (β R t)`, i.e.
+the genuine numerator equals this unspecified placeholder.  (For orientation: the left-hand side
+at `t = 0` is `embedding (βHensel … 0) = T` (`embeddingOf𝒪Into𝕃_βHensel_zero`); `T` is nonzero
+only under an extra guard such as `H.natDegree ≥ 2` — for the irreducible degree-one `H = 2·Y`
+the function-field variable `T` is `0`.)
 
 #### The genuine target (this file's `gammaGenuine`, BCIKS20 A.4 normalization)
 
 The faithful Hensel coefficient is `αGenuine t := PowerSeries.coeff t (gammaGenuine …)`, the
 `t`-th coefficient of the **genuine** Hensel-lift root `gammaGenuine : (𝕃 H)⟦X⟧` of
 `GammaGenuine.lean` (`constantCoeff = α₀ = T/W`, `eval gammaGenuine Q = 0` — the real
-`R(X,γ,Z)=0`), NOT the degenerate `ClaimA2.γ` built on the `β = 0` placeholder.  The A.4
+`R(X,γ,Z)=0`), NOT the in-tree `ClaimA2.γ` built on the unspecified placeholder
+`ClaimA2.β`.  The A.4
 normalization
 (BCIKS20 Claim A.2, fulltext lines ~3950–3965) is `α_t = β_t / (W^{t+1}·ξ^{e_t})` with
 `e_t = max(0, 2t−1)` (`e_0 = 0`, `e_t = 2t−1` for `t ≥ 1`).  In `ℕ`-truncated subtraction
 `2*t − 1` already realises `e_t` exactly (`2*0−1 = 0`), so the clearing powers `W^{t+1}`,
 `ξ^{2t−1}` are unchanged from the old statement; only the *coefficient* is repaired from the
-vacuous `ClaimA2.α` to the genuine `αGenuine`.  The repaired identity is therefore
+unspecified placeholder `ClaimA2.α` to the genuine `αGenuine`.  The repaired identity is
+therefore
 `embedding (βHensel … t) = αGenuine t · W^{t+1} · ξ^{2t−1}`. -/
 
 /-- **The genuine Hensel coefficient `α_t`** (A.4): the `t`-th coefficient of the genuine
-Hensel-lift root `gammaGenuine`.  Replaces the vacuous in-tree `ClaimA2.α` (built on `β = 0`).
+Hensel-lift root `gammaGenuine`.  Replaces the in-tree placeholder `ClaimA2.α` (built on the
+unspecified, weight-bounded `Classical.choose` numerator `ClaimA2.β`).
 `αGenuine 0 = α₀ = T/W` (`αGenuine_zero`). -/
 noncomputable def αGenuine (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H) (t : ℕ) :
     𝕃 H :=
@@ -2504,9 +2530,15 @@ theorem coeff_eval_Q_faaDiBruno (x₀ : F) (R : F[X][X][Y])
 
 /-- **(P2) the single named combinatorial residual, as an explicit hypothesis.**
 
-This is the local form of the remaining Faà-di-Bruno / `(A.1)` combinatorial reconciliation. It is
+This is the local form of the Faà-di-Bruno / `(A.1)` combinatorial reconciliation. It is
 a `Prop`, not an asserted theorem: callers must supply the vanishing of the explicit full
-partition/`countPerms` sum. -/
+partition/`countPerms` sum.
+
+It is FALSE in general: refuted for the non-monic witness `H = 2·Y` by
+`BCIKS20.HenselNumerator.Witness.faaDiBrunoSuccSumZeroResidual_false`
+(`P2OrderZeroRefutationWitness.lean`).  It is proved for monic `H`
+(`faaDiBrunoSuccSumZeroResidual_of_monic`).  See the status note on
+`coeff_succ_eval_βHenselAssembled`. -/
 def FaaDiBrunoSuccSumZeroResidual (x₀ : F) (R : F[X][X][Y])
     (hHyp : ClaimA2.Hypotheses x₀ R H) : Prop :=
   ∀ t : ℕ,
@@ -2569,16 +2601,29 @@ agreement below order `t+1` — equivalent to the coefficient match
 exactly proving that the (A.1) recursion computes the same Newton correction as `gammaGenuine`'s
 partial-sum construction `HenselSeriesCoeff.S` at every order — the term-by-term recursion match.
 
-This residual carries NO false content: it is a true statement (the genuine `gammaGenuine` IS a
-root, `gammaGenuine_root`, and the A.1 recursion reproduces its coefficients), and the only
-missing piece is the formal Faà-di-Bruno bridge
-`coeff_eval ↔ partition sums ↔ B_coeff·partitionProd`
-for the *assembled* series, now isolated as `RestrictedFaaDiBrunoMatch` in `P2Close.lean`.
-The local zero-peel/Y-Hasse weight identity is already proven in `P2Vanish.lean`; the open work is
-the full term-by-term equality of sums, including the `ζ` sign and denominator clearing.
-Carved as small as possible: a single per-successor-order coefficient equality, with the order-`0`
-base case, the extensionality assembly, the denominator clearing, and the uniqueness reduction to
-`gammaGenuine` all PROVEN.  See `pc-w11-bridge.md`. -/
+STATUS OF THE RESIDUAL (corrected; audit finding PG-338).  `FaaDiBrunoSuccSumZeroResidual` is
+NOT true in general: it is REFUTED in-tree for non-monic `H`.
+`P2OrderZeroRefutationWitness.lean` builds `H = 2·Y` over `ℚ`, `x₀ = 0`,
+`R = X_mid²·Y² + 2·Y + X_mid` with genuine `ClaimA2.Hypotheses` and proves
+`Witness.faaDiBrunoSuccSumZeroResidual_false`, `Witness.eval_βHenselAssembled_eq_zero_false`
+and `Witness.βHenselAssembled_eq_gammaGenuine_false`.  Concretely (hand computation recorded
+in the audit; the kernel-checked statements are the ones just named), at order `1` the literal
+(A.1) recursion gives `β₁ = −1` (only `i1 = 1` and the empty partition survive, with
+`B_coeff = 1`), so the assembled coefficient is `−1/(2²·2) = −1/8`, whereas the genuine root of
+`X²γ² + 2γ + X = 0` has order-`1` coefficient `−1/2`.  The genuine root `gammaGenuine` exists and
+is unique (`gammaGenuine_root`, `gammaGenuine_unique`); what fails is the claim that the in-tree
+(A.1) numerator recursion, with the current `B_coeff` normalization (a multinomial times
+`mk (evalX (Δ_X Δ_Y R))`, with no per-coefficient `W`-clearing rescaling), reproduces its
+coefficients.  For MONIC `H` the residual is proved
+(`faaDiBrunoSuccSumZeroResidual_of_monic` in `MonicFaaDiBrunoMatchAlt.lean`,
+`faaDiBrunoSuccSumZeroResidual_of_leadingCoeff_one` in `P2MonicConsequences.lean`).
+A non-monic version would first need the coefficient-clearing/normalization of the (A.1)
+construction repaired; that repair is not done.
+
+This theorem, and every root/lift consumer below, take the residual as an explicit hypothesis
+and are valid conditional statements; the order-`0` base case, the extensionality assembly, the
+denominator nonvanishing, and the uniqueness reduction to `gammaGenuine` are PROVEN.  See
+`pc-w11-bridge.md` for the historical bridge plan. -/
 theorem coeff_succ_eval_βHenselAssembled (x₀ : F) (R : F[X][X][Y])
     (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hzero : FaaDiBrunoSuccSumZeroResidual H x₀ R hHyp) (t : ℕ) :
@@ -2598,7 +2643,11 @@ order-`0` vanishing `coeff_zero_eval_βHenselAssembled` (PROVEN) and the order-`
 `coeff_succ_eval_βHenselAssembled` (the single documented residual).  Everything else of (P2)
 (base case `βHenselAssembled_constantCoeff`, denominator nonvanishing `den_ne_zero`, the
 uniqueness reduction to `gammaGenuine` `βHenselAssembled_eq_gammaGenuine`, and the denominator
-clearing for all `t`) is PROVEN above. -/
+clearing for all `t`) is PROVEN above.
+
+The residual hypothesis `hzero` is proved for monic `H` and refuted for non-monic `H`
+(`Witness.eval_βHenselAssembled_eq_zero_false` refutes this very conclusion at `H = 2·Y`);
+see the status note on `coeff_succ_eval_βHenselAssembled`. -/
 theorem assembledSeries_isRoot (x₀ : F) (R : F[X][X][Y])
     (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hzero : FaaDiBrunoSuccSumZeroResidual H x₀ R hHyp) :
@@ -2609,8 +2658,8 @@ theorem assembledSeries_isRoot (x₀ : F) (R : F[X][X][Y])
 /-- **(P2) lift identity — REPAIRED against the genuine root, PROVEN modulo the single
 per-successor-order residual `coeff_succ_eval_βHenselAssembled`.**
 `embeddingOf𝒪Into𝕃 (βHensel … t) = αGenuine t · W^{t+1} · ξ^{2t−1}`, where
-`αGenuine t = coeff t (gammaGenuine …)` is the genuine Hensel coefficient of A.4 (NOT the vacuous
-in-tree `ClaimA2.α`; see the statement-repair note at §4f above).
+`αGenuine t = coeff t (gammaGenuine …)` is the genuine Hensel coefficient of A.4 (NOT the
+unspecified in-tree placeholder `ClaimA2.α`; see the statement-repair note at §4f above).
 
 PROOF STATUS.  Reduced to the single per-successor-order residual
 `coeff_succ_eval_βHenselAssembled` (`coeff (t+1) (eval (βHenselAssembled) Q) = 0`):
@@ -2619,7 +2668,9 @@ order-`0` vanishing (`coeff_zero_eval_βHenselAssembled`) and that residual (via
 and `βHensel_lift_identity_of_assembledSeries_isRoot` then derives this identity for all `t`, using
 the PROVEN base case (`βHenselAssembled_constantCoeff`) + uniqueness (`gammaGenuine_unique`) +
 denominator clearing (`den_ne_zero`).  The `t = 0` instance is unconditionally PROVEN
-(`βHensel_lift_identity_zero`). -/
+(`βHensel_lift_identity_zero`).  The residual hypothesis `hzero` is proved for monic `H` but
+refuted for non-monic `H` (`Witness.faaDiBrunoSuccSumZeroResidual_false`), so this is a valid
+conditional theorem whose hypothesis is unavailable in the general non-monic case. -/
 theorem βHensel_lift_identity (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hzero : FaaDiBrunoSuccSumZeroResidual H x₀ R hHyp) (t : ℕ) :
     embeddingOf𝒪Into𝕃 H (βHensel H x₀ R hHyp t)
@@ -2840,9 +2891,11 @@ end BCIKS20.HenselNumerator
 
 -- Axiom audit for the headline (P1)/(P2) deliverables of this file.  Each depends on exactly the
 -- three standard axioms `[propext, Classical.choice, Quot.sound]` (no `sorry`/`admit`/`axiom`/
--- `native_decide`/`bv_decide`).  The genuine remaining BCIKS20 A.4 content is carried as the
--- EXPLICIT hypothesis `FaaDiBrunoSuccSumZeroResidual` (a `Prop`, not a `sorry`), so the theorems
--- below that consume it are clean conditional reductions, not unfinished proofs.
+-- `native_decide`/`bv_decide`).  The P2 content is carried as the EXPLICIT hypothesis
+-- `FaaDiBrunoSuccSumZeroResidual` (a `Prop`, not a `sorry`), so the theorems below that consume
+-- it are clean conditional reductions.  That hypothesis is proved for monic `H` and REFUTED for
+-- non-monic `H` (`Witness.faaDiBrunoSuccSumZeroResidual_false`), so it cannot be supplied as a
+-- general non-monic input.
 #print axioms BCIKS20.HenselNumerator.βHensel_succ
 #print axioms BCIKS20.HenselNumerator.βHenselStructuredWeightInvariant
 #print axioms BCIKS20.HenselNumerator.βHenselSuccTermStructuredWeightResidual

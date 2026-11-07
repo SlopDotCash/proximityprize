@@ -37,9 +37,13 @@ FIELD `𝕃 H`, whereas `Λ_𝒪` is the weight of the canonical `F[X][Y]`-repre
 (`weight_Λ_over_𝒪 = weight_Λ ∘ canonicalRepOf𝒪`), an `𝒪`-intrinsic quantity, NOT an `𝕃`-invariant.
 
 The genuine bridge: `W^{t+1} = embedding (W𝒪)^{t+1}` and `ξ^{e_t} = embedding ξ^{e_t}` are *already*
-embeddings of `𝒪`-elements (`W𝒪`, `ClaimA2.ξ ∈ 𝒪 H`).  Hence the ENTIRE right-hand side is the
-embedding of an `𝒪`-element **iff** `αGenuine t` is — and the identity says it equals
-`embedding (βHensel t)`, so it is.  The one missing fact is precisely the genuine A.4 content:
+embeddings of `𝒪`-elements (`W𝒪`, `ClaimA2.ξ ∈ 𝒪 H`).  Hence IF `αGenuine t` is the embedding of
+an `𝒪`-element, so is the entire right-hand side.  The converse is **false** in general
+(corrected 2026-10-28, audit PG-326): `W` and `ξ` need not be units of `𝒪`, and multiplying a
+non-regular field element by an embedded non-unit can land in `𝒪` — already for `𝒪 = F[T]` inside
+`F(T)`, `α = 1/T` times `T` is `1 ∈ 𝒪` while `α ∉ 𝒪`.  So the lift identity alone does NOT show
+that `αGenuine t` is regular; regularity is an independent input, and it is the missing fact,
+together with the weight bound, of the genuine A.4 content:
 
   `αGenuine t = embedding a_t` for some `a_t ∈ 𝒪 H` with `Λ_𝒪(a_t) ≤ 1`
   (i.e. `Λ(α_t) = Λ(Y) = 1`).
@@ -52,8 +56,9 @@ of `embeddingOf𝒪Into𝕃` (`embeddingOf𝒪Into𝕃_injective`) — the `𝒪
 and then read off `Λ_𝒪(βHensel t) ≤ Λ_𝒪(a_t) + (t+1)Λ(W) + e_t·Λ(ξ)` by the PROVEN over-`𝒪` weight
 calculus (`weight_Λ_over_𝒪_mul_le`, `_pow_le`, `_W`, `nsmul_withBot_le`) — so `hlift` and
 injectivity are genuinely load-bearing, and the gap is reduced to the SHARP, minimal A.4 fact
-`Λ(α_t) ≤ 1` (plus
-`α_t` regular).  This is the precise, non-faked location of the residual.
+`Λ(α_t) ≤ 1` plus the independent regularity `α_t ∈ embedding 𝒪` (not derivable from `hlift`
+without unit/divisibility hypotheses on `W`, `ξ`).  This is the precise, non-faked location of the
+residual.
 
 ## What this file proves (the three tasks)
 
@@ -67,9 +72,13 @@ injectivity are genuinely load-bearing, and the gap is reduced to the SHARP, min
    (`= βHensel_weight_bound_of_structured_weight`).
 
 Given the final w16 vanishing residual `FaaDiBrunoSuccSumZeroResidual`, the P2 compatibility
-theorem `βHensel_lift_identity_of_faaDiBruno_succ_sum_eq_zero` supplies the repaired lift identity
+theorem `βHensel_lift_identity_of_faaDiBruno_succ_sum_eq_zero` supplies the lift identity
 and (P1) auto-unlocks (`βHensel_weight_bound_unlocked`): instantiate `hlift` with that direct P2
-capstone, supply the carved `α_t`-regularity, and the regime hypotheses.
+capstone, supply the carved `α_t`-regularity (an independent hypothesis, see above), and the
+regime hypotheses.  That residual is proved for monic `H` but REFUTED for non-monic `H`
+(`Witness.faaDiBrunoSuccSumZeroResidual_false`, see `HenselNumerator.lean`), so this legacy
+(A.1)-recursion P2 route is a valid conditional chain only in the monic case; it is distinct from
+the separately repaired W-cleared recursion (`ClearedRecursion`, `P1ConditionalCleared`).
 
 NO `axiom`/`admit`/`native_decide`/`bv_decide`/`sorry`.  Audited in-file via `#print axioms`.
 -/

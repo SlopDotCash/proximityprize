@@ -8,44 +8,33 @@ import Research.ProximityPrize.Frontier._AntipodalAgreementScope
 import Mathlib.Tactic.LinearCombination
 
 /-!
-# The `mu_2` base-rung list is a SMALL CONSTANT in the tower's scope (#444 / #407)
+# A parity observation at the `mu_2` base rung (#444 / #407)
 
 `_TowerResidualFloorMuTwo` pinned the off-BGK antipodal-tower residual to the base rung
 `mu_2 = {1, -1}` and proved the trivial `rootCount(Q, mu_2) <= 2`, leaving the *actual base-rung
-list upper bound* as the open content: "whether the off-BGK route's residual list is small".
+list upper bound* (the size of the agreement list) as the open content.
 
-This file lands that bound, POSITIVELY. The descent only applies to even/odd agreement polynomials
-(`_AntipodalAgreementScope`: `P.comp(-X) = P` or `= -P` is exactly the antipodally-closed-root-set
-condition the squaring recursion needs). Restricting to *that scope*, the `mu_2` root count is
-**quantized**:
+This file does **not** resolve that open content. It records a **parity observation**: the descent
+only applies to even/odd agreement polynomials (`_AntipodalAgreementScope`), and for those the
+`mu_2` root count is quantized:
 
 > for an even or odd polynomial `P` over a field of characteristic `!= 2`,
 > `rootCount(P, mu_2) in {0, 2}` -- it is NEVER `1`.
-
-This is the genuine, `p`-independent, `n`-independent finite structural fact at the base rung. Its
-consequence is the list bound:
 
 * `evenOrOdd_rootCount_mu2_ne_one` : an even/odd `P` has `rootCount(P, mu_2) != 1`.
 * `evenOrOdd_rootCount_mu2_zero_or_two` : an even/odd `P` has `rootCount(P, mu_2) = 0 OR = 2`
   (all-or-nothing on the antipodal pair).
 * `evenOrOdd_saturating_pattern_unique` : the only *saturating* (rootCount `= 2`) root pattern an
-  even/odd `P` can have on `mu_2` is the FULL pair `{1, -1}` -- so the base-rung saturating list
-  has size exactly `1`. (Unrestricted polynomials admit `4` patterns `{}, {1}, {-1}, {1,-1}`; the
-  tower scope cuts this to `2` achievable patterns, and exactly `1` saturating one.)
+  even/odd `P` can have on `mu_2` is the FULL pair `{1, -1}`.
 
-## Why this is the POSITIVE answer to the open residual
+## What this does and does not say
 
-`_TowerResidualFloorMuTwo` showed `mu_2` is the genuine residual FLOOR (the saving condition there is
-`Q`-dependent, not degree-forced). The open question it left was the SIZE of that residual list. The
-quantization above answers it: WITHIN THE TOWER'S SCOPE (the even/odd agreement polynomials the
-antipodal descent actually applies to) the base-rung agreement-pattern list is a constant `<= 2`,
-with a UNIQUE saturating pattern `{1, -1}`. So the off-BGK route's base-rung list is provably small
-and independent of both `n` and `p`. Combined with the saving dichotomy
-`towerDescent_saving_iff` and the telescope, this says: the antipodal tower, on its symmetric
-sub-family, bottoms out at a base rung whose list is a fixed constant -- the descent introduces no
-unbounded base list. (This does NOT touch the NON-symmetric worst case, which remains the open BGK
-core: the quantization is exactly what the even/odd hypothesis buys, and the non-symmetric word
-escapes it -- `_AntipodalAgreementScope`.)
+All of this is the elementary fact `P(1) = 0 <-> P(-1) = 0` for even/odd `P`. Since `mu_2` has
+only two elements, *any* polynomial has at most `4` root patterns on it regardless of parity, so
+"at most 2 patterns" is a trivial bound, and the observation says **nothing about the size of the
+agreement list** (how many codewords/polynomials agree with a word). It is NOT a positive answer to
+the base-rung list residual of `_TowerResidualFloorMuTwo`; that residual stays open. It also does
+not touch the NON-symmetric worst case (the open BGK core, `_AntipodalAgreementScope`).
 
 ## The mechanism (one line)
 
@@ -55,8 +44,8 @@ evaluation points are roots *together or not at all*. The forbidden middle value
 
 ## Honest scope (rules 1, 3, 4, 6)
 
-POSITIVE result inside a refutation-with-mechanism scope: it proves the off-BGK tower's base-rung
-residual list is a small constant ON THE EVEN/ODD SUB-FAMILY the descent applies to. Char-free
+A parity observation only: it proves the root-pattern quantization above on the even/odd
+sub-family; it does NOT bound the base-rung agreement list. Char-free
 (needs only `char != 2`, so `-1 != 1`), `n`-independent, `p`-independent finite combinatorics about
 the fixed `2`-element group `{1, -1}`. It does NOT close CORE and is NOT thinness-essential: the
 general non-symmetric agreement polynomial is outside the even/odd scope and is the open BGK core.
@@ -151,19 +140,18 @@ theorem evenOrOdd_rootCount_mu2_zero_or_two {p : ℕ} [CharP F p] (hp : p ≠ 2)
 open Classical in
 /-- **The forbidden middle value.** An even/odd polynomial NEVER has exactly one base point of
 `mu_2` as a root: `rootCount(P, mu_2) != 1`. This is the precise asymmetry the even/odd hypothesis
-rules out -- the source of the list bound. -/
+rules out (a parity observation, not an agreement-list bound). -/
 theorem evenOrOdd_rootCount_mu2_ne_one {p : ℕ} [CharP F p] (hp : p ≠ 2) {P : F[X]}
     (hP : P.comp (-X) = P ∨ P.comp (-X) = -P) :
     ((nthRootsFinset 2 (1 : F)).filter (fun β => P.IsRoot β)).card ≠ 1 := by
   rcases evenOrOdd_rootCount_mu2_zero_or_two hp hP with h | h <;> omega
 
 open Classical in
-/-- **The saturating pattern is unique (the list bound).** If an even/odd polynomial `P` saturates
-the trivial bound on `mu_2` (root count `= 2`), then BOTH base points are roots -- so the saturating
-root pattern is the single full pair `{1, -1}`. Equivalently: the base-rung *saturating* list within
-the tower's even/odd scope has size exactly `1`. (Contrast: unrestricted polynomials realize all `4`
-patterns of subsets of `{1,-1}`, and `mu_1` is informationless; the even/odd scope cuts the
-achievable patterns to `2` and the saturating ones to `1`, the genuine small-constant base list.) -/
+/-- **The saturating pattern is the full pair.** If an even/odd polynomial `P` saturates the
+trivial bound on `mu_2` (root count `= 2`), then BOTH base points are roots -- so the saturating
+root pattern is the full pair `{1, -1}`. (This holds for any polynomial, since `mu_2` has only two
+elements; the even/odd hypothesis is not what makes it true. It is a statement about root patterns,
+not about the size of any agreement list.) -/
 theorem evenOrOdd_saturating_pattern_unique {p : ℕ} [CharP F p] (hp : p ≠ 2) {P : F[X]}
     (hP : P.comp (-X) = P ∨ P.comp (-X) = -P)
     (hsat : ((nthRootsFinset 2 (1 : F)).filter (fun β => P.IsRoot β)).card = 2) :
@@ -182,14 +170,14 @@ theorem evenOrOdd_saturating_pattern_unique {p : ℕ} [CharP F p] (hp : p ≠ 2)
     rw [hnone, Finset.card_empty] at hsat
     exact absurd hsat (by norm_num)
 
-/-! ## The list-size consequence: at most two achievable patterns -/
+/-! ## Membership form of the quantization (at most two root-count classes) -/
 
 open Classical in
-/-- **The achievable-pattern list is `<= 2`.** Within the tower's even/odd scope, the root count on
-`mu_2` lands in the two-element set `{0, 2}` -- so there are at most two distinct *root-count
-classes* (equivalently the empty pattern `{}` and the full pattern `{1,-1}`), versus the four subset
-patterns an unrestricted polynomial can realize. This is the base-rung list upper bound: a small,
-`n`-independent, `p`-independent constant. -/
+/-- **Root-count quantization, membership form.** Within the tower's even/odd scope, the root count
+on `mu_2` lands in the two-element set `{0, 2}` (equivalently the empty pattern `{}` or the full
+pattern `{1,-1}`), versus the four subset patterns an unrestricted polynomial can realize. This is a
+parity observation about root patterns on a 2-element set; it is NOT a bound on the size of the
+base-rung agreement list. -/
 theorem evenOrOdd_rootCount_mu2_mem_pair {p : ℕ} [CharP F p] (hp : p ≠ 2) {P : F[X]}
     (hP : P.comp (-X) = P ∨ P.comp (-X) = -P) :
     ((nthRootsFinset 2 (1 : F)).filter (fun β => P.IsRoot β)).card ∈ ({0, 2} : Finset ℕ) := by

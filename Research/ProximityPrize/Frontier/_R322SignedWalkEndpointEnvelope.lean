@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._R321ShadowAutocorrelationDoubling
 import Mathlib.Data.Nat.Choose.Multinomial
+import ArkLib.Data.Polynomial.PowerSeriesComposition
 
 /-!
 # LANE B2 (#466 round 322): factorial envelope for signed-walk endpoints
@@ -31,91 +32,17 @@ open ArkLib.ProximityGap.Frontier.R308DepthUniformShadowFloor
 open ArkLib.ProximityGap.Frontier.R314KernelRelationMassDecomposition
 open ArkLib.ProximityGap.Frontier.R321ShadowAutocorrelationDoubling
 
-theorem countPerms_eq_multinomial {A : Type*} [DecidableEq A] (M : Multiset A) :
-    M.countPerms = Nat.multinomial M.toFinset (fun a => M.count a) := by
-  rw [Multiset.countPerms,
-    ← Finsupp.multinomial_of_support_subset (s := M.toFinset) (d := M.toFinsupp)
-      (by rw [Multiset.toFinsupp_support])]
-  rfl
+/-! The `countPerms` recursions (`countPerms_eq_multinomial`, `count_mul_countPerms`,
+`countPerms_eq_sum_erase`, ...) are the canonical alphabet-generic lemmas of
+`ArkLib.PowerSeriesComposition` (`ArkLib/Data/Polynomial/PowerSeriesComposition.lean`); this file
+uses them directly rather than re-proving them. -/
 
-theorem countPerms_erase_eq_multinomial {A : Type*} [DecidableEq A]
-    (M : Multiset A) (a : A) :
-    (M.erase a).countPerms =
-      Nat.multinomial M.toFinset (fun b => (M.erase a).count b) := by
-  rw [countPerms_eq_multinomial]
-  apply Nat.multinomial_congr_of_sdiff
-    (s := (M.erase a).toFinset) (t := M.toFinset)
-  · exact Multiset.toFinset_subset.mpr (Multiset.erase_subset _ _)
-  · intro b hb
-    rw [Finset.mem_sdiff, Multiset.mem_toFinset, Multiset.mem_toFinset] at hb
-    rw [Multiset.count_eq_zero]
-    exact hb.2
-  · intro b _
-    rfl
-
-theorem count_mul_countPerms {A : Type*} [DecidableEq A]
-    (M : Multiset A) (a : A) (ha : a ∈ M) :
-    M.count a * M.countPerms = M.card * (M.erase a).countPerms := by
-  have haf : a ∈ M.toFinset := Multiset.mem_toFinset.mpr ha
-  set P := ∏ b ∈ M.toFinset.erase a, (M.count b).factorial with hP
-  have hprodM : ∏ b ∈ M.toFinset, (M.count b).factorial =
-      (M.count a).factorial * P :=
-    (Finset.mul_prod_erase M.toFinset (fun b => (M.count b).factorial) haf).symm
-  have hprodE : ∏ b ∈ M.toFinset, ((M.erase a).count b).factorial =
-      ((M.count a) - 1).factorial * P := by
-    rw [← Finset.mul_prod_erase M.toFinset
-      (fun b => ((M.erase a).count b).factorial) haf, Multiset.count_erase_self]
-    congr 1
-    refine Finset.prod_congr rfl fun b hb => ?_
-    rw [Finset.mem_erase] at hb
-    rw [Multiset.count_erase_of_ne hb.1]
-  have specM := Nat.multinomial_spec M.toFinset (fun b => M.count b)
-  have specE := Nat.multinomial_spec M.toFinset (fun b => (M.erase a).count b)
-  rw [Multiset.toFinset_sum_count_eq, hprodM, ← countPerms_eq_multinomial] at specM
-  have hsumE : ∑ b ∈ M.toFinset, (M.erase a).count b = (M.erase a).card := by
-    rw [← Multiset.toFinset_sum_count_eq (M.erase a)]
-    refine (Finset.sum_subset
-      (Multiset.toFinset_subset.mpr (Multiset.erase_subset _ _)) ?_).symm
-    intro b _ hb
-    rw [Multiset.mem_toFinset] at hb
-    rw [Multiset.count_eq_zero]
-    exact hb
-  rw [hsumE, hprodE, ← countPerms_erase_eq_multinomial] at specE
-  have hca : 1 ≤ M.count a := Multiset.one_le_count_iff_mem.mpr ha
-  have hcard : (M.erase a).card + 1 = M.card := Multiset.card_erase_add_one ha
-  have hfa : (M.count a).factorial = M.count a * ((M.count a) - 1).factorial :=
-    (Nat.mul_factorial_pred (Nat.one_le_iff_ne_zero.mp hca)).symm
-  have hfcard : M.card.factorial = M.card * (M.erase a).card.factorial := by
-    rw [← hcard, Nat.factorial_succ]
-  have hpos : 0 < ((M.count a) - 1).factorial * P := by positivity
-  apply Nat.eq_of_mul_eq_mul_left hpos
-  calc
-    ((M.count a - 1).factorial * P) * (M.count a * M.countPerms)
-        = (M.count a * (M.count a - 1).factorial * P) * M.countPerms := by ring
-    _ = (M.count a).factorial * P * M.countPerms := by rw [hfa]
-    _ = M.card.factorial := specM
-    _ = M.card * (M.erase a).card.factorial := hfcard
-    _ = M.card * (((M.count a) - 1).factorial * P * (M.erase a).countPerms) := by
-      rw [specE]
-    _ = ((M.count a - 1).factorial * P) *
-        (M.card * (M.erase a).countPerms) := by ring
-
-/-- Value-erasure recursion for `countPerms`, generalized from natural-valued multisets to
-an arbitrary decidable alphabet. -/
-theorem countPerms_eq_sum_erase {A : Type*} [DecidableEq A]
-    (M : Multiset A) (hM : M ≠ 0) :
-    M.countPerms = ∑ a ∈ M.toFinset, (M.erase a).countPerms := by
-  have hcard : 0 < M.card := Multiset.card_pos.mpr hM
-  apply Nat.eq_of_mul_eq_mul_left hcard
-  rw [Finset.mul_sum]
-  calc
-    M.card * M.countPerms
-        = (∑ a ∈ M.toFinset, M.count a) * M.countPerms := by
-          rw [Multiset.toFinset_sum_count_eq]
-    _ = ∑ a ∈ M.toFinset, M.count a * M.countPerms := by rw [Finset.sum_mul]
-    _ = ∑ a ∈ M.toFinset, M.card * (M.erase a).countPerms :=
-      Finset.sum_congr rfl fun a ha =>
-        count_mul_countPerms M a (Multiset.mem_toFinset.mp ha)
+/-- Mass split used repeatedly below: `∑ⱼ (2cⱼ + aⱼ + bⱼ) = 2∑ⱼ cⱼ + ∑ⱼ (aⱼ + bⱼ)`. -/
+theorem sum_two_mul_add_add {m : ℕ} (c a b : Fin m → ℕ) :
+    (∑ j : Fin m, (2 * c j + a j + b j)) =
+      2 * (∑ j : Fin m, c j) + ∑ j : Fin m, (a j + b j) := by
+  rw [Finset.mul_sum, ← Finset.sum_add_distrib]
+  exact Finset.sum_congr rfl fun j _ => by omega
 
 /-- The unordered multiplicity multiset of a finite tuple. -/
 def tupleMultiset {A : Type*} {L : ℕ} (t : Fin L → A) : Multiset A :=
@@ -159,7 +86,7 @@ theorem tupleMultiset_fiber_card_eq_countPerms
       rw [show ((Fintype.piFinset (fun _ : Fin (L + 1) =>
         (Finset.univ : Finset A))).filter (fun t => tupleMultiset t = M)).card = Q.card from rfl]
       rw [Finset.card_eq_sum_card_fiberwise hmaps,
-        countPerms_eq_sum_erase M hMne]
+        ArkLib.PowerSeriesComposition.countPerms_eq_sum_erase M hMne]
       refine Finset.sum_congr rfl fun v hv => ?_
       rw [Multiset.mem_toFinset] at hv
       have hcard : (M.erase v).card = L := by
@@ -425,25 +352,11 @@ theorem tupleVec_encodeSignedTuple_of_profile {m L : ℕ}
     (ht : tupleMultiset t = multiplicityMultiset (signedProfile c a b)) :
     tupleVec (2 * m) m L (encodeSignedTuple t) =
       fun j => (a j : ℤ) - (b j : ℤ) := by
+  rw [tupleVec_encodeSignedTuple_eq_counts]
   funext k
-  unfold tupleVec encodeSignedTuple
   calc
-    (∑ i : Fin L, vecOf (2 * m) m (signedIndexEquiv m (t i)) k)
-        = ∑ i : Fin L,
-            ((if t i = (k, 0) then (1 : ℤ) else 0) -
-              (if t i = (k, 1) then (1 : ℤ) else 0)) := by
-          apply Finset.sum_congr rfl
-          intro i _
-          obtain ⟨j, e⟩ := t i
-          rw [vecOf_signedIndex]
-          fin_cases e <;> simp
-    _ = (∑ i : Fin L, if t i = (k, 0) then (1 : ℤ) else 0) -
-          ∑ i : Fin L, if t i = (k, 1) then (1 : ℤ) else 0 := by
-          rw [Finset.sum_sub_distrib]
-    _ = ((tupleMultiset t).count (k, 0) : ℤ) -
-          ((tupleMultiset t).count (k, 1) : ℤ) := by
-          rw [sum_tuple_indicator_int_eq_count, sum_tuple_indicator_int_eq_count]
-    _ = ((signedProfile c a b (k, 0) : ℕ) : ℤ) -
+    ((tupleMultiset t).count (k, 0) : ℤ) - ((tupleMultiset t).count (k, 1) : ℤ)
+        = ((signedProfile c a b (k, 0) : ℕ) : ℤ) -
           ((signedProfile c a b (k, 1) : ℕ) : ℤ) := by
           rw [ht, count_multiplicityMultiset, count_multiplicityMultiset]
     _ = (a k : ℤ) - (b k : ℤ) := by
@@ -479,24 +392,7 @@ theorem card_canonicalEndpointTuples_eq_sum_multinomial
     rw [card_tupleMultiset, card_multiplicityMultiset, sum_signedProfile] at hcard
     rw [Finset.mem_coe, Finset.mem_piAntidiag]
     constructor
-    · have hsum :
-          (∑ j : Fin m,
-              (2 * tupleCancellationProfile t j + a j + b j)) =
-            2 * (∑ j : Fin m, tupleCancellationProfile t j) +
-              ∑ j : Fin m, (a j + b j) := by
-          calc
-            (∑ j : Fin m,
-                (2 * tupleCancellationProfile t j + a j + b j)) =
-                ∑ j : Fin m,
-                  (2 * tupleCancellationProfile t j + (a j + b j)) := by
-                    apply Finset.sum_congr rfl
-                    intro j _
-                    omega
-            _ = (∑ j : Fin m, 2 * tupleCancellationProfile t j) +
-                ∑ j : Fin m, (a j + b j) := Finset.sum_add_distrib
-            _ = 2 * (∑ j : Fin m, tupleCancellationProfile t j) +
-                ∑ j : Fin m, (a j + b j) := by rw [Finset.mul_sum]
-      rw [hsum] at hcard
+    · rw [sum_two_mul_add_add] at hcard
       exact Nat.mul_left_cancel (by norm_num)
         (Nat.add_right_cancel (hcard.symm.trans hL))
     · intro j hj
@@ -507,20 +403,7 @@ theorem card_canonicalEndpointTuples_eq_sum_multinomial
   rw [Finset.mem_piAntidiag] at hc
   have hprofileSum :
       (∑ x : Fin m × Fin 2, signedProfile c a b x) = L := by
-    rw [sum_signedProfile]
-    have hsum : (∑ j : Fin m, (2 * c j + a j + b j)) =
-        2 * (∑ j : Fin m, c j) + ∑ j : Fin m, (a j + b j) := by
-      calc
-        (∑ j : Fin m, (2 * c j + a j + b j)) =
-            ∑ j : Fin m, (2 * c j + (a j + b j)) := by
-              apply Finset.sum_congr rfl
-              intro j _
-              omega
-        _ = (∑ j : Fin m, 2 * c j) + ∑ j : Fin m, (a j + b j) :=
-          Finset.sum_add_distrib
-        _ = 2 * (∑ j : Fin m, c j) + ∑ j : Fin m, (a j + b j) := by
-          rw [Finset.mul_sum]
-    rw [hsum, hc.1, hL]
+    rw [sum_signedProfile, sum_two_mul_add_add, hc.1, hL]
   have hset : Q.filter (fun t => tupleCancellationProfile t = c) =
       (Fintype.piFinset (fun _ : Fin L =>
         (Finset.univ : Finset (Fin m × Fin 2)))).filter
@@ -639,20 +522,7 @@ theorem card_canonicalEndpointTuples_factorial_envelope
           intro c hc
           rw [Finset.mem_piAntidiag] at hc
           have hsum : (∑ x : Fin m × Fin 2, signedProfile c a b x) = L := by
-            rw [sum_signedProfile]
-            have hsplit : (∑ j : Fin m, (2 * c j + a j + b j)) =
-                2 * (∑ j : Fin m, c j) + ∑ j : Fin m, (a j + b j) := by
-              calc
-                (∑ j : Fin m, (2 * c j + a j + b j)) =
-                    ∑ j : Fin m, (2 * c j + (a j + b j)) := by
-                      apply Finset.sum_congr rfl
-                      intro j _
-                      omega
-                _ = (∑ j : Fin m, 2 * c j) + ∑ j : Fin m, (a j + b j) :=
-                  Finset.sum_add_distrib
-                _ = 2 * (∑ j : Fin m, c j) + ∑ j : Fin m, (a j + b j) := by
-                  rw [Finset.mul_sum]
-            rw [hsplit, hc.1, ← hL]
+            rw [sum_signedProfile, sum_two_mul_add_add, hc.1, ← hL]
           simpa [hc.1, hsum] using multinomial_signedProfile_envelope c a b
     _ = L.factorial * ∑ c ∈ piAntidiag (Finset.univ : Finset (Fin m)) s,
           Nat.multinomial Finset.univ c := by rw [Finset.mul_sum]
@@ -757,14 +627,7 @@ theorem exists_length_eq_two_mul_add_endpointL1_of_tuple
       2 * (∑ j : Fin m, c j) + endpointL1 d := by
     calc
       (∑ j : Fin m, (2 * c j + a j + b j)) =
-          ∑ j : Fin m, (2 * c j + (a j + b j)) := by
-            apply Finset.sum_congr rfl
-            intro j _
-            omega
-      _ = (∑ j : Fin m, 2 * c j) + ∑ j : Fin m, (a j + b j) :=
-        Finset.sum_add_distrib
-      _ = 2 * (∑ j : Fin m, c j) + ∑ j : Fin m, (a j + b j) := by
-        rw [Finset.mul_sum]
+          2 * (∑ j : Fin m, c j) + ∑ j : Fin m, (a j + b j) := sum_two_mul_add_add c a b
       _ = 2 * (∑ j : Fin m, c j) + endpointL1 d := by
         congr 1
         unfold endpointL1
@@ -920,7 +783,7 @@ end ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope
 
 /-! ## Axiom audit -/
 #print axioms
-  ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope.countPerms_eq_sum_erase
+  ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope.sum_two_mul_add_add
 #print axioms
   ArkLib.ProximityGap.Frontier.R322SignedWalkEndpointEnvelope.tupleMultiset_fiber_card_eq_countPerms
 #print axioms

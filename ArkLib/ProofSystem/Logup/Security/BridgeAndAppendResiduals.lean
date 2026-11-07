@@ -54,12 +54,27 @@ brick. Downstream, the Sumcheck bridge `oracleReductionToReductionResidual` and 
 * `Sumcheck.Spec.oracleReductionToReductionResidual_of_binary` — **PROVEN**: the concrete Sumcheck
   `hBridge`, from `BinaryVerifierFusion` together with the per-round single-round bridge
   `(SingleRound.oracleReduction i).toReduction = SingleRound.reduction i`.
-* `OracleVerifier.BinaryVerifierFusion` — the single remaining **named hypothesis** `(★)`: the binary
-  verifier-fusion law. By `OracleReduction.appendToReductionResidual_iff_verifier` /
-  `verifier_append_eq_iff_verify`, it is exactly the per-input `simulateQ`-factoring — the verifier
-  analogue of `Prover.append_run`. This is the irreducible deep core; we keep it named.
-* `hPerRound` — the per-round single-round bridge, a `liftContext`-commutation fact orthogonal to the
-  seqCompose fusion; kept as a named hypothesis of the Sumcheck theorem.
+* `OracleVerifier.BinaryVerifierFusion` — the binary verifier-fusion law `(★)`, kept as a named
+  hypothesis of the theorems in this file. By
+  `OracleReduction.appendToReductionResidual_iff_verifier` / `verifier_append_eq_iff_verify`, it
+  is exactly the per-input `simulateQ`-factoring — the verifier analogue of `Prover.append_run`.
+  It is **no longer an open deep hypothesis**: it is supplied by the append keystone
+  `OracleReduction.oracleVerifier_append_toVerifier` (`AppendOracleAdapters.lean`), packaged as
+  `Logup.binaryVerifierFusion_holds` (`LogupCompletenessUncond.lean`) and
+  `binaryVerifierFusion_proof` (`Sumcheck/Spec/OracleCompletenessUncond.lean`).
+* `hPerRound` — the per-round single-round bridge
+  `(SingleRound.oracleReduction i).toReduction = SingleRound.reduction i`, orthogonal to the
+  seqCompose fusion and kept as a named hypothesis of
+  `oracleReductionToReductionResidual_of_binary`.
+  It is **not** a mere `liftContext`-commutation fact: it also asserts that the oracle round
+  verifier and the plain round verifier read the same data. Under the canonical ArkLib semantics
+  (`Sumcheck/Spec/SingleRound.lean`) both read the prover message: the oracle verifier queries the
+  message oracle at every point of `D` and at the challenge, and the plain verifier guards the
+  message's `D`-sum and takes the new target from the message. Canonical ArkLib proves the
+  verifier half (`SingleRound.oracleVerifier_eq_verifier`), and the prover half is definitional,
+  so `hPerRound` holds unconditionally: `SingleRound.oracleReduction_toReduction_eq_reduction`
+  below. (An earlier downstream oracle verifier ignored the message and re-checked the input
+  claim directly; for that verifier `hPerRound` was false. That verifier is retired.)
 -/
 
 open OracleComp OracleSpec ProtocolSpec
@@ -188,6 +203,16 @@ variable {R : Type} [CommSemiring R] [SampleableType R] [DecidableEq R] [Fintype
   {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
 
 omit [Fintype R] [Inhabited R] [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)] in
+/-- **The per-round single-round bridge `hPerRound` holds.** Both sides have the same prover, and
+the verifier half is canonical ArkLib's `SingleRound.oracleVerifier_eq_verifier`: the oracle round
+verifier and the plain round verifier both check the prover message's `D`-sum and take the new
+target from the message at the challenge. -/
+theorem SingleRound.oracleReduction_toReduction_eq_reduction (i : Fin n) :
+    (SingleRound.oracleReduction R n deg D oSpec i).toReduction =
+      SingleRound.reduction R n deg D oSpec i :=
+  Reduction.ext rfl (SingleRound.oracleVerifier_eq_verifier R n deg D oSpec i)
+
+omit [Fintype R] [Inhabited R] [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)] in
 /-- **The Sumcheck `hBridge` from the per-round binary verifier fusion + per-round bridge.**
 
 `oracleReductionToReductionResidual` is `(oracleReduction).toReduction = reduction`. Both are
@@ -198,9 +223,13 @@ omit [Fintype R] [Inhabited R] [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabite
    `OracleReduction.seqCompose_toReduction_of_verifier` ∘ `seqCompose_toVerifier_of_binary` from the
    binary fusion `hBinaryFusion` (this is the deep, unbounded-round verifier-fusion content); and
 2. the per-round bridge `(SingleRound.oracleReduction i).toReduction = SingleRound.reduction i`,
-   taken as `hPerRound` — this is the *single-round* `liftContext`-commutation fact (separate from
-   the seqCompose fusion: it relates the per-round oracle reduction's `toReduction` to the per-round
-   plain reduction `Simple.reduction.liftContext`). -/
+   taken as `hPerRound`, which is separate from the seqCompose fusion: it relates the per-round
+   oracle reduction's `toReduction` to the per-round plain reduction `Simple.reduction.liftContext`.
+
+`hPerRound` holds unconditionally under the canonical message-reading verifiers
+(`SingleRound.oracleReduction_toReduction_eq_reduction`), so together with any proof of the binary
+fusion this closes `oracleReductionToReductionResidual`
+(`oracleReductionToReductionResidual_holds` in `Sumcheck/Spec/OracleCompletenessUncond.lean`). -/
 theorem oracleReductionToReductionResidual_of_binary
     (hBinaryFusion : OracleVerifier.BinaryVerifierFusion oSpec)
     (hPerRound : ∀ i, (SingleRound.oracleReduction R n deg D oSpec i).toReduction =
@@ -238,3 +267,4 @@ end Sumcheck.Spec
 #print axioms OracleVerifier.seqCompose_toVerifier_of_binary
 #print axioms OracleReduction.seqCompose_toReduction_of_verifier
 #print axioms Sumcheck.Spec.oracleReductionToReductionResidual_of_binary
+#print axioms Sumcheck.Spec.SingleRound.oracleReduction_toReduction_eq_reduction

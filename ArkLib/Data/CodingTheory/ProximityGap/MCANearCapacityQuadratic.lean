@@ -14,8 +14,9 @@ near-capacity lower bound
 via the sunflower family of `(k+1)`-windows `{0,…,k-1, k+j}` (only one node varies, so the window
 sums are trivially distinct). Its docstring flags the next concrete step: on a *structured* node set
 the spread `|𝒮|` — the number of `(k+1)`-windows with **distinct** node-sums — can be pushed from
-linear to **quadratic** `Θ(k(n-k))`, because an arithmetic node set has that many distinct
-`(k+1)`-subset sums. This file realizes that quadratic spread explicitly and kernel-checks it.
+linear to order `k(n-k)` when the rate is bounded away from `1/2`, because an arithmetic node set
+has that many distinct `(k+1)`-subset sums. This file realizes the exact staircase count
+`(n-2k)·(k+1)` explicitly and kernel-checks it (see the regime caveat below).
 
 ## The construction (two-parameter staircase)
 
@@ -36,13 +37,21 @@ all `< n² ≤ p` they stay distinct in `ZMod p`. Feeding this family to
 
 `ε_mca(C, 1-(k+1)/n) ≥ (n-2k)·(k+1) / |F|`,
 
-a **quadratic** `Θ(k(n-k))` lower bound at `δ = capacity − 1/n`, strictly inside the Johnson→capacity
-gap — quadratically stronger than the sunflower's linear `n-k`.
+an exact lower bound at `δ = capacity − 1/n`, strictly inside the Johnson→capacity gap.
+
+**Regime caveat.** The count `(n-2k)·(k+1)` is of order `k(n-k)` (quadratic in `n`) only when the
+rate `ρ = k/n` stays in a fixed interval `[c, 1/2 - c]` with `c > 0`, because then `n-2k ≥ 2c·n`.
+It is not uniformly quadratic over the whole admissible range `n ≥ 2k+1`: at the endpoint
+`n = 2k+1` it equals `k+1 = n-k`, exactly the sunflower's linear count, while `k(n-k) = k(k+1)`.
+For a bound valid for every `1 ≤ k < n` use the sharp interval construction
+`MCANearCapacitySharpSpread.epsMCA_sharp_ge`, with count `(k+1)(n-k-1)+1`.
 
 ## What this does and does not do (candidate analysis for #232)
 
-* It is the docstring-flagged quadratic strengthening of the realized witness spread: a genuine
-  `Θ(k(n-k))/|F|` lower bound, kernel-checked, for every rate with `n ≥ 2k+1` (`ρ < 1/2`).
+* It is the docstring-flagged strengthening of the realized witness spread: the exact,
+  kernel-checked lower bound `(n-2k)(k+1)/|F|` for every `n ≥ 2k+1` (`ρ < 1/2`). This is of
+  order `k(n-k)/|F|` only for rates separated from `1/2` by a fixed margin; at `n = 2k+1` it
+  reduces to the linear sunflower value `(n-k)/|F|`.
 * It remains `poly(n)/|F|`, hence `< ε* = 2⁻¹²⁸` for the prize's large fields, so it does **not** pin
   the prize threshold `δ*` (that needs an *exponential* spread). It sharpens, but does not close, the
   open core delineated in `MCANearCapacityGeneralRate.lean`: a single algebraic monomial line still
@@ -205,9 +214,10 @@ field with `n² ≤ p`, with `n ≥ 2k+1` (`ρ < 1/2`) and `k ≥ 1`, at radius 
 minus `1/n`):
 `ε_mca(C, δ) ≥ (n-2k)·(k+1) / |F|`.
 The `(n-2k)·(k+1)` staircase windows `{q,…,q+k-1}∪{q+k+r}` have distinct node-sums
-`(k+1)·q + (G+k) + r` (injective by Euclidean division), realizing a **quadratic** `Θ(k(n-k))` witness
-spread — quadratically stronger than the sunflower family's linear `n-k`
-(`MCANearCapacityGK.epsMCA_ge_of_prefix_sunflower`). -/
+`(k+1)·q + (G+k) + r` (injective by Euclidean division). For rates in a fixed interval
+`[c, 1/2 - c]` this spread is of order `k(n-k)`, quadratically larger than the sunflower family's
+linear `n-k` (`MCANearCapacityGK.epsMCA_ge_of_prefix_sunflower`); at `n = 2k+1` the two counts
+coincide (`(n-2k)(k+1) = k+1 = n-k`). -/
 theorem epsMCA_quadratic_ge (hp : n * n ≤ p) (hk : 1 ≤ k) (hn : 2 * k + 1 ≤ n) :
     (((n - 2 * k) * (k + 1) : ℕ) : ℝ≥0∞) / (Fintype.card (ZMod p) : ℝ≥0∞)
       ≤ epsMCA (F := ZMod p) (A := ZMod p)

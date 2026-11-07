@@ -10,7 +10,7 @@ import ArkLib.Data.CodingTheory.EntropyVolumeBound
 /-!
 # Elias-volume upper certificates from q-entropy exponent inequalities (issue #102)
 
-`ListEliasVolumeUpperCore C j ε*` (in `GrandChallengeLDFourRate.lean`) is the upper-side
+`ListEliasVolumeUpperCore C j ε*` (in `LDFourRate.lean`) is the upper-side
 list-decoding certificate `ε*·|F| < Vol_q(j/n, n) / q^(n−k)` used by the four-rate
 faithful list-lattice frontier (`PostRIMListThresholdFrontier.hvol`). Discharging it
 directly forces evaluating the raw binomial `hammingBallVolume` sum, which is intractable at

@@ -14,7 +14,7 @@ The #407 No-Excess programme isolates all char-`p` bad-count excess into the **S
 The lane's hope was a **large-index flatness** of that Schur factor: `s_λ(ζ^T)` small/non-amplifying
 at index `(q−1)/n ≈ 2^128`.
 
-This file records the structural fact that **kills that hope at the binding radius** (the
+This file records a structural fact bearing on that hope at the binding radius (the
 lowest far exponent, `b = k+1`, i.e. degree pattern `d = b − k = 1`).  By the Schur/Lagrange
 bridge (`dividedDifferencePow_card_eq_sum`, already in the tree), the divided difference of
 `x^{#s}` over a node set `s` is exactly the **point sum** `Σ_{i ∈ s} v i` — i.e. the first Schur
@@ -25,20 +25,24 @@ value `h_1 = e_1`.  Specialising the nodes to powers of a primitive `n`-th root 
 
 a **sum of distinct `n`-th roots of unity** (distinct by separability, `pow_comp_injective`).
 So the No-Excess obstruction at the binding radius is literally the cyclotomic-integer
-`Σ_i ζ^{a i}`, whose prime-divisibility (a deployment prime `q` makes it vanish mod `q`) is the
-**vanishing-sums-of-roots-of-unity / additive-coincidence** object — *the same wall* as the
-character-sum (BGK) face, not an independent count-side escape.
+`Σ_i ζ^{a i}`, whose prime-divisibility (a deployment prime `q` makes it vanish mod `q`) is a
+**vanishing-sums-of-roots-of-unity / additive-coincidence** question — the same kind of object as
+the character-sum (BGK) face.  The identity relates the two problems; it is not by itself a
+no-go theorem against count-side methods.
 
-**Numerical corroboration** (`/tmp/probe_schur_exact_norm.py`, this session): the worst prime
-factor of `N(Σ_i ζ^{a i})` over 3-element `T ⊆ {0,…,n−1}` is `17, 449, 204353` for
-`n = 16, 32, 64` (`log_n = 1.02, 1.76, 2.94`, **accelerating** → `n^{Θ(log n)}`), reached at the
-maximally-clustered `T = (0,1,3)`.  This **exactly matches** the `d = 1` Schur-factor norm growth,
-confirming the binding No-Excess factor does *not* enjoy large-index flatness — its bad primes
-grow quasi-polynomially, reaching prize scale, identically to the additive-energy wall.
+**Finite numerical data (not a Lean theorem, not an asymptotic law)**
+(`/tmp/probe_schur_exact_norm.py`, an untracked session probe): the worst prime factor of
+`N(Σ_i ζ^{a i})` over 3-element `T ⊆ {0,…,n−1}` was observed to be `17, 449, 204353` for
+`n = 16, 32, 64` (so `log_n` of it is about `1.02, 1.76, 2.94`), attained at
+`T = (0,1,3)`.  Three data points do not determine a growth rate: they do **not** establish
+`n^{Θ(log n)}` or quasi-polynomial growth, nor that such bad primes reach any prize-scale field
+size.  A growth law of that shape is at most a **conjecture** (it would need to be stated with an
+explicit range of `n` and proved or checked over that range); the data merely fail to exhibit
+large-index flatness of the binding factor at these three sizes.
 
 Honest scope: this is the **reduction** (binding Schur factor `=` 3-term root sum), proven
-axiom-clean below; the *quantitative* growth is the numeric probe, not a Lean theorem.  It does
-not close the prize — it **localises** the No-Excess count lane onto the *known* sum-of-roots wall.
+axiom-clean below; the finite prime-factor values above are numeric observations only.  It does
+not close the prize; it rewrites the No-Excess binding factor as a sum-of-roots-of-unity object.
 
 All results are `sorry`-free; the axiom audit must show only `propext, Classical.choice, Quot.sound`.
 -/
@@ -81,8 +85,8 @@ theorem binding_dividedDifference_pow_root
 up the No-Excess bad direction at the binding radius — **iff** the sum of the distinct `n`-th roots
 `Σ_{i ∈ s} ζ ^ (a i)` is zero in `F`.  Over `ℂ` this is a (generic) nonzero cyclotomic integer; the
 question of which deployment primes `q` make it vanish mod `q` is exactly the
-vanishing-sums-of-roots-of-unity / additive-coincidence problem — the same wall as the
-character-sum face.  (No independent count-side escape at the binding radius.) -/
+vanishing-sums-of-roots-of-unity / additive-coincidence problem, the same kind of question as
+the character-sum face.  (This identity alone does not rule out count-side methods.) -/
 theorem binding_obstruction_iff_rootSum_zero
     {ι : Type*} [DecidableEq ι] {s : Finset ι} {n : ℕ} {ζ : F}
     (hζ : IsPrimitiveRoot ζ n) {a : ι → ℕ}

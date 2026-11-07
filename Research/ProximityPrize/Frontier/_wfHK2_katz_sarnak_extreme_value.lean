@@ -22,11 +22,12 @@ The research and the exact-arithmetic probe (`probe_wfHK2_logcorr_field.rs`, int
 accumulation, NOT float-FFT; multi-prime, prize-faithful `p ≡ 1 mod n`, `μ_n` proper, `β ≈ 4`)
 settle it through three established facts, two of which are *new measurements* for this lane:
 
-1. **The symmetry type is the COMPLEX GAUSSIAN with NO compact support edge** (already pinned by
-   `probe_c31_satotate_support_edge.py`, DISPROOF_LOG C31): the normalized period `η_b/√n`
-   equidistributes to the standard complex Gaussian as `p → ∞`. The probe confirms it: the excess
+1. **The limiting law is GAUSSIAN with NO compact support edge** (already pinned by
+   `probe_c31_satotate_support_edge.py`, DISPROOF_LOG C31): since `−1 ∈ μ_n`, `η_b` is *real*, so
+   the normalized period `η_b/√n` equidistributes to the standard *real* Gaussian as `p → ∞`
+   (an earlier "complex Gaussian" wording was wrong; audit CW-B18-22). The probe confirms it: the excess
    kurtosis of `Re η_b` tends to `0` (`-0.10` at n=32 → `-0.035` at n=128). A Gaussian Sato–Tate
-   law has **support all of `ℂ`** — there is no compact edge `[-2√n, 2√n]` to read a deterministic
+   law has **unbounded support (all of `ℝ`)** — there is no compact edge `[-2√n, 2√n]` to read a deterministic
    max off of, unlike a `USp`/`SO`/`SU(2)` semicircle. So "the symmetry-group edge bounds the max"
    is a *category error*: the law is unbounded; its "edge" is its **extreme value**, which is the
    open object, not a bound on it.

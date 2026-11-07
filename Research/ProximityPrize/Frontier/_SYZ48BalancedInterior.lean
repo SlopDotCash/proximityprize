@@ -14,8 +14,11 @@ SYZ47 proved the imbalance **floor** `δ₁ ≥ max(a,b,c)` on the band triangle
 on the *moderately unbalanced* strip (`max(a,b,c) ≥ ⌊S/2⌋ − 1`, `S = a+b+c`, ~37.7 % of band
 triples).  The remaining ~62.3 % **balanced interior** (`max(a,b,c) < ⌊S/2⌋ − 1`) is where the
 floor is too weak — it only yields `ι ≤ ⌊d/2⌋` — and where SYZ45's `(4,4,4) ⇒ ι = 2` witness lives.
-`ι ≤ 1` there is *empirically* true (probe `probe_syz48_balanced_interior.py`, 0 violations over
-6000 band-realizable `μ_n` triples) but **not** proved.
+`ι ≤ 1` there held in a random sample (probe `probe_syz48_balanced_interior.py`, 0 violations over
+random disjoint `μ_n` root triples, which are not band-realizable cores) but is **not** proved, and
+it is **false** as a general on-domain statement: SYZ49 exhibits an on-domain `ι = 2` witness over
+`μ₁₂ ⊂ 𝔽₃₇`, and audit finding L127 (repository review 2026-10-28) gives a full-cover proper-band
+`μ₂₀ ⊂ 𝔽₄₁` configuration with `ι = 2`.
 
 This file pins the *exact* characterization of the balanced-interior obstruction and settles the
 decisive question: **is `ι ≥ 2` band-realizable on the balanced interior, and what — if anything —
@@ -44,30 +47,36 @@ does the evaluation domain add beyond the degree profile?**
 
 5. **`ℚ̄`-realizability** (`imbalance_ge_two_realizable_of_dvd`).  Conversely, whenever
    `P = C c₀ * W_AB` (the combination is *exactly* a scalar multiple of `W_AB`, deg `a`) a constant
-   syzygy exists, so `δ₁ ≤ a` and — for a balanced profile `a=b=c=d≥4` — `ι ≥ ⌊d/2⌋ ≥ 2`.  Over a
-   large/algebraically-closed field this is *unobstructed*: pick disjoint `W_AC, W_BC`, form
-   `P = α·W_AC + β·W_BC`, and take `W_AB` a squarefree degree-`a` factor of `P`.  Probe [4]:
-   **400/400** balanced-interior `ι ≥ 2` configurations realized over `𝔽₁₀₀₀₀₀₃` etc. with
-   *arbitrary* root sets.  **So the balanced interior `ι ≥ 2` IS band-realizable over large fields —
-   the degree profile alone does NOT force `ι ≤ 1`.**
+   syzygy exists, so `δ₁ ≤ a` and — for a balanced profile `a=b=c=d≥4` — `ι ≥ ⌊d/2⌋ ≥ 2`.  Over an
+   *algebraically closed* field this is unobstructed: pick disjoint `W_AC, W_BC`, form
+   `P = α·W_AC + β·W_BC`, and take `W_AB = P` when it is squarefree and coprime to both; its roots
+   are algebraic points, which need a code domain containing them.  A finite prime field is not an
+   algebraic closure: over `𝔽_p` such a `W_AB` vanishes on `d` field points only when `P` splits
+   into distinct linear factors.  Probe [4] (corrected per audit finding L128): every sampled
+   balanced configuration over `𝔽₁₀₀₀₇, 𝔽₁₀₀₀₀₃, 𝔽₁₀₀₀₀₀₃` gives an *algebraic* `ι ≥ 2` syzygy, but
+   only a small minority (single digits out of 400) split into `d` distinct `𝔽_p` points.  **So the
+   degree profile alone does NOT force `ι ≤ 1`** (an algebraic statement); the split examples are
+   `𝔽_p`-point realizations with evaluation domain all of `𝔽_p`.
 
-6. **Domain-membership is the rescue** (`root_of_dvd_X_pow_sub_one_pow_eq_one`).  Over the prize
-   domain `μ_n` the roots of `W_AB` must be *evaluation-domain points* — every root `r` of any
-   divisor of `Xⁿ − 1` satisfies `rⁿ = 1`.  But the roots of `P = α·W_AC + β·W_BC` for `W_AC, W_BC`
-   vanishing on disjoint `μ_n`-subsets are **not** generally in `μ_n`.  Probe [2]: over `μ_n` the
-   degree-4 combination lands on average `< 1` of its 4 roots back in `μ_n`, and in ~40 % of trials
-   **all** roots leave `μ_n`; the domain-points that `W_AB` would need simply do not exist.  This is
-   why the large-field witness cannot be assembled on-domain — **the `μ_n` domain is load-bearing.**
+6. **Domain membership** (`root_of_dvd_X_pow_sub_one_pow_eq_one`).  Over the domain `μ_n` the roots
+   of `W_AB` must be *evaluation-domain points* — every root `r` of any divisor of `Xⁿ − 1`
+   satisfies `rⁿ = 1`.  For random `α, β` and random disjoint `μ_n`-subsets the roots of
+   `P = α·W_AC + β·W_BC` are typically not all in `μ_n`.  Probe [2] separates *why*: when
+   `μ_n = 𝔽_p^×` (the domains `μ_{p−1}` used there) the only `𝔽_p` point off the domain is `0`, so
+   the missing roots are **nonsplit** (not `𝔽_p` points at all), not an escape to other base-field
+   coordinates; on proper subgroups some roots do land on `𝔽_p` points off the domain.  These are
+   random-sample statistics, **not** a universal obstruction: on-domain `ι = 2` witnesses exist
+   (SYZ49 `μ₁₂ ⊂ 𝔽₃₇`; audit finding L127, `μ₂₀ ⊂ 𝔽₄₁`, full-cover proper band).
 
 ## Honest verdict
 
-The balanced-interior kernel is confirmed **irreducible at this altitude**.  `ι ≤ 1` is *not* a
-degree-profile fact (realizable over `𝔽̄` — item 5), and the root-count level-set bound gives no
-contradiction (item 4 — full circle back to the SYZ39 interpolation matrix).  What genuinely
-separates the on-domain band from the free algebra is exactly the *cyclotomic domain-membership*
-condition (item 6): the combination roots must return to `μ_n`.  That is the SYZ39 arithmetic in its
-final form — the exact place the open kernel lives.  **No new algebraic lever is exposed; the CORE
-remains OPEN / ON-BGK, now with the sharpest map of why.**
+`ι ≤ 1` is *not* a degree-profile fact (item 5, algebraic syzygies), and the root-count level-set
+bound gives no contradiction (item 4 — full circle back to the SYZ39 interpolation matrix).
+Domain membership (item 6) is a genuine *necessary* constraint, but the probe only shows it is
+typically unmet by random combinations; it does **not** show that on-domain `ι ≥ 2` witnesses are
+impossible, and they are not (SYZ49, L127).  The balanced-interior `ι ≤ 1` bound therefore needs
+additional justified hypotheses beyond band geometry and domain membership.  **The CORE remains
+OPEN / ON-BGK.**
 -/
 
 set_option autoImplicit false
@@ -175,11 +184,12 @@ theorem balanced_no_count_obstruction (d : ℕ) : d ≤ max d d := by simp
 /-- **Realizability from a scalar collapse.**  If the combination collapses onto the `AB` slot,
 `C α * WAC + C β * WBC = C c₀ * WAB` with `c₀ ≠ 0`, then a nonzero constant syzygy exists, so the
 minimal syzygy product-degree obeys `δ₁ ≤ max(a,b,c)`; for a balanced profile `a=b=c=d≥4` this drives
-`ι ≥ ⌊d/2⌋ ≥ 2` (via `SYZ45.equal_degree_dependence_forces_imbalance_ge_two`).  Over a
-large/algebraically-closed field such a collapse is unobstructed — pick disjoint `WAC, WBC`, form
-`P`, and let `WAB` be a squarefree degree-`d` factor — which is why probe [4] realizes
-`ι ≥ 2` on the balanced interior 400/400 with arbitrary root sets.  **The degree profile does not
-force `ι ≤ 1`.** -/
+`ι ≥ ⌊d/2⌋ ≥ 2` (via `SYZ45.equal_degree_dependence_forces_imbalance_ge_two`).  Over an
+algebraically closed field such a collapse is unobstructed — pick disjoint `WAC, WBC`, form
+`P`, and let `WAB = P` when squarefree and coprime — which is why probe [4] finds an algebraic
+`ι ≥ 2` syzygy in every sampled balanced configuration.  Over a prime field `𝔽_p` this is a
+field-point configuration only when `P` splits into distinct linear factors, which few samples
+do.  **The degree profile does not force `ι ≤ 1`.** -/
 theorem imbalance_ge_two_realizable
     (d δ₁ : ℕ) (hd : 4 ≤ d) (hδ : δ₁ ≤ d) :
     2 ≤ SYZ45.imbalance d d d δ₁ :=
@@ -191,9 +201,10 @@ theorem imbalance_ge_two_realizable
 evaluation-domain points.  Concretely: every root `r` of any divisor `p` of `Xⁿ − 1` satisfies
 `rⁿ = 1` — it lies in `μ_n`.  Applied to the combination `P = α·W_AC + β·W_BC`, if `P` (hence
 `W_AB`, its divisor) is to have all its roots on-domain then those roots must be `n`-th roots of
-unity.  Probe [2]: for `W_AC, W_BC` vanishing on disjoint `μ_n`-subsets the roots of `P` generically
-**leave** `μ_n`, so the on-domain `ι ≥ 2` witness cannot be assembled.  This is the load-bearing
-cyclotomic condition — the SYZ39 arithmetic in final form. -/
+unity.  Probe [2]: for random `W_AC, W_BC` vanishing on disjoint `μ_n`-subsets and random scalars
+the roots of `P` are typically not all in `μ_n` (on `μ_{p−1} = 𝔽_p^×` the missing roots are nonsplit,
+not other `𝔽_p` points).  This necessary condition is typically unmet but is **not** an
+obstruction: on-domain `ι = 2` witnesses exist (SYZ49; audit finding L127). -/
 theorem root_of_dvd_X_pow_sub_one_pow_eq_one
     {K : Type*} [Field K] {n : ℕ} {p : K[X]} (r : K)
     (hdvd : p ∣ (X ^ n - 1)) (hr : p.IsRoot r) :

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib
+import Research.ProximityPrize.Frontier._wfH1_AmplifiedSecondMomentProjection
 
 /-!
 # Lane K1 (#444): the QUE / Lindenstrauss–Soundararajan sup-norm route reduces to the
@@ -105,7 +106,8 @@ The L²-quantum-variance `V = ∑_b (μ_b)²` of the mass sequence only *lower*-
 max mass via a single term, `(max_b μ_b)² ≤ V` — it CANNOT *upper*-bound the max below the RMS scale.
 Concretely: for nonnegative masses, the maximum `μ_{b*}` satisfies `(μ_{b*})² ≤ V`, i.e. the
 variance gives only `max ≤ √V`. Since `V = ∑ |η_b|⁴ = q·E₂ = q·3n(n−1) ≈ q·n²`, this yields
-`max |η_b|² ≤ √(q)·n` — the trivial Weil/RMS scale — and NEVER the prize `max|η_b|² ≤ C·n·log(p/n)`.
+`max |η_b|² ≤ √(q)·n` — the `√(total energy)` scale, which at `β = 4` (`q = n⁴`) is `≈ n³`, even
+weaker than the trivial `|η_b|² ≤ n²` — and NEVER the prize `max|η_b|² ≤ C·n·log(p/n)`.
 The QUE variance sees the energy, not the rare-event sup excess: it bounds the max only from below
 by the average and from above by `√(total energy)`, a window far wider than Johnson→floor. -/
 theorem que_variance_blind_to_sup {ι : Type*} [Fintype ι]
@@ -128,36 +130,13 @@ the multiplicative `λ`. For the prize period the multiplicative Hecke direction
 `s(l) := #{(x,y) ∈ μ_n² : x = l·y}`. This is `|μ_n|` when `l ∈ μ_n` and `0` otherwise — a **flat
 indicator**, the *opposite* of a varying multiplicative spectrum. So the QUE shifted-convolution sum
 has **no off-diagonal multiplicative cancellation to consume**: it carries only the diagonal mass on
-`μ_n`. (Same combinatorial heart as H1 `subgroup_self_correlation`, here read in the QUE
-shifted-convolution language: the multiplicative sieve input is trivial.) -/
+`μ_n`. (This is H1 `subgroup_self_correlation` verbatim, here read in the QUE
+shifted-convolution language; the proof delegates to it.) -/
 theorem hecke_shifted_convolution_flat (H : Subgroup G) [DecidablePred (· ∈ H)] (l : G) :
     (Finset.univ.filter
       (fun yx : G × G => yx.1 ∈ H ∧ yx.2 ∈ H ∧ yx.1 = l * yx.2)).card
-      = if l ∈ H then (Finset.univ.filter (· ∈ H)).card else 0 := by
-  by_cases hl : l ∈ H
-  · simp only [hl, if_true]
-    apply Finset.card_bij (fun yx _ => yx.2)
-    · rintro ⟨x, y⟩ hmem
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hmem ⊢
-      exact hmem.2.1
-    · rintro ⟨x₁, y₁⟩ h₁ ⟨x₂, y₂⟩ h₂ hy
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at h₁ h₂
-      simp only at hy
-      subst hy
-      have : x₁ = x₂ := by rw [h₁.2.2, h₂.2.2]
-      simp [this]
-    · intro y hy
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hy
-      have hmem : (l * y, y) ∈ Finset.univ.filter
-          (fun yx : G × G => yx.1 ∈ H ∧ yx.2 ∈ H ∧ yx.1 = l * yx.2) :=
-        Finset.mem_filter.mpr ⟨Finset.mem_univ _, H.mul_mem hl hy, hy, rfl⟩
-      exact ⟨(l * y, y), hmem, rfl⟩
-  · simp only [hl, if_false]
-    rw [Finset.card_eq_zero, Finset.filter_eq_empty_iff]
-    rintro ⟨x, y⟩ _
-    simp only [not_and]
-    intro hx hy hxy
-    exact absurd (by rw [show l = x * y⁻¹ by rw [hxy]; group]; exact H.mul_mem hx (H.inv_mem hy)) hl
+      = if l ∈ H then (Finset.univ.filter (· ∈ H)).card else 0 :=
+  ProximityGap.Frontier.H1AmplifiedProjection.subgroup_self_correlation H l
 
 /--
 **The flat shifted convolution carries no off-diagonal saving (the QUE sieve has no fuel).**

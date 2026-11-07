@@ -1178,6 +1178,46 @@
       ],
       "source_revision": "883e99d61e51264327b5fee859732d047f7d7038",
       "reason": "Generalize the coefficient universe without duplicating the upstream split/fold implementation, retaining the upstream proofs and zero-arity folding cases."
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/FunctionBinding/DegreeConflict.lean",
+      "upstream_blob": "d5840fc8fd6b2db9c5b61cfcfec656a242262e0a",
+      "sha256": "084dfa8fbe992c36a90b6fa109092f19cbac97a969a59e6cd0994d8bb6280d20",
+      "declarations": [
+        "KZG.CommitmentScheme.findABase",
+        "KZG.CommitmentScheme.findACandidates",
+        "KZG.CommitmentScheme.findA",
+        "KZG.CommitmentScheme.findACandidates_length_le",
+        "KZG.CommitmentScheme.findABase_subset",
+        "KZG.CommitmentScheme.mem_findACandidates",
+        "KZG.CommitmentScheme.findABase_card",
+        "KZG.CommitmentScheme.findABase_card_of_le",
+        "KZG.CommitmentScheme.find_a_subset",
+        "KZG.CommitmentScheme.find_a_card",
+        "KZG.CommitmentScheme.find_a_deg",
+        "KZG.CommitmentScheme.find_a_successful"
+      ],
+      "source_revision": "a296ce4d03ef5f77f4a22881a3477b896a7b8ffc",
+      "reason": "Retain the audited linear candidate bound for distinct query points and the original exhaustive search for repeated query points. Preserve canonical success, subset, degree, and cardinality theorem signatures."
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/FunctionBinding/EvaluationBindingConflict.lean",
+      "upstream_blob": "62dc764951929f71174a2bad2b4c3ed7ab9b0387",
+      "sha256": "b257010bfeec82457271c08e8832b3dc4e09c238d950383059bd79d007d21822",
+      "declarations": [
+        "KZG.CommitmentScheme.filterConflictCandidates",
+        "KZG.CommitmentScheme.chooseSConflict",
+        "KZG.CommitmentScheme.chooseSConflict_eq_full",
+        "KZG.CommitmentScheme.chooseSConflict_eq_prefix",
+        "KZG.CommitmentScheme.filter_map_conflict_nodup",
+        "KZG.CommitmentScheme.filter_map_conflict_length",
+        "KZG.CommitmentScheme.choose_s_conflict_size",
+        "KZG.CommitmentScheme.choose_s_conflict_alpha",
+        "KZG.CommitmentScheme.choose_s_conflict_tau",
+        "KZG.CommitmentScheme.h1_ne_one"
+      ],
+      "source_revision": "a296ce4d03ef5f77f4a22881a3477b896a7b8ffc",
+      "reason": "Retain the audited bounded conflict scan under KZG security hypotheses and prove equality to the original full search for generic callers. Preserve the public helper theorem signatures."
     }
   ]
 }

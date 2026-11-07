@@ -83,7 +83,10 @@ def wick (r : ℕ) : ℕ := (2 * r - 1)‼
 
 /-- The **actual** additive-energy moment `E_r(μ_n)` of the spectral measure of
 `A = conv_{1_{μ_n}}` on `F_p`, in its exact closed form for `r = 2, 3` (char-0 = char-p past the
-DC depth; verified `python3` n=16,32,64). These are the genuine `2r`-th moments of `{η_b}`. -/
+DC depth; verified `python3` n=16,32,64). **Imported closed form, not derived in Lean**: `E` is a
+hard-coded case table (correct for 2-power `n`, re-verified by enumeration at `n = 8,16,32`); it is
+not linked here to any in-tree energy definition such as `rEnergy`, and it returns `0` for
+`r ∉ {2,3}` (audit CW-B15-07). -/
 def E (r n : ℕ) : ℤ :=
   match r with
   | 2 => 3 * n^2 - 3 * n
@@ -157,23 +160,28 @@ theorem catalan_lt_wick_r3 (n : ℕ) (hn : 1 ≤ n) :
 /-!
 ## The reduction statement (named `Prop`, the honest verdict)
 
-`CavityCapturesM` would be the claim that the spectral-edge of the cavity / Kesten–McKay
-self-consistency for `Cay(F_p, μ_n)` equals `M`. We do NOT prove it — it is FALSE: the
+The claim that the spectral edge of the cavity / Kesten–McKay self-consistency for
+`Cay(F_p, μ_n)` equals `M` is NOT formalized here (no spectral edge or `M` appears in this file).
+What is formalized is only the necessary moment-level ingredient
+`CatalanMomentMatchesEnergyTwo` (formerly `CavityCapturesM`, renamed in audit CW-B15-07 because it
+mentions neither `M` nor any spectral edge), and its refutation. Informally the cavity-captures-`M`
+hope fails: the
 closure-break theorems above show the cavity equation converges to the Catalan (tree) law while
 the actual bulk is Wick (Gaussian), and the verified numerics show `M ≈ 0.73√(2n log p)` lives in
 the extreme tail of that bulk, `1.8–2.4×` above the cavity tree edge `2√(n−1)`. The shape
 transform reduces through faces (b) [moment / phase-blind] and (c) [average vs max].
 -/
 
-/-- The (false) hope that the cavity fixed-point edge captures `M`. Recorded as a named `Prop` so
-the reduction is explicit; the closure-break theorems are the certificate that this fails: the
-cavity equation produces the Catalan-moment (tree) law, contradicted by `closure_break_r2/r3`. -/
-def CavityCapturesM : Prop :=
+/-- The Catalan (tree) second-moment match: `C_2 · n² = E_2(μ_n)` for all `n ≥ 4`, with `E` the
+imported closed-form table. This is a moment identity only — it mentions neither `M` nor any
+spectral edge — so refuting it refutes only the cavity law's second moment, not directly the claim
+that the cavity edge captures `M` (formerly named `CavityCapturesM`). -/
+def CatalanMomentMatchesEnergyTwo : Prop :=
   ∀ n : ℕ, 4 ≤ n → (catalan 2 : ℤ) * n^2 = E 2 n
 
-/-- The cavity hope is refuted: its defining moment-match is exactly what `closure_break_r2`
-denies (strict inequality, not equality). -/
-theorem not_cavityCapturesM : ¬ CavityCapturesM := by
+/-- The Catalan second-moment match is refuted: it is exactly what `closure_break_r2` denies
+(strict inequality, not equality). -/
+theorem not_catalanMomentMatchesEnergyTwo : ¬ CatalanMomentMatchesEnergyTwo := by
   intro h
   have h4 : (catalan 2 : ℤ) * (4:ℕ)^2 = E 2 4 := h 4 (le_refl 4)
   have hlt := closure_break_r2 4 (le_refl 4)
@@ -187,6 +195,6 @@ theorem not_cavityCapturesM : ¬ CavityCapturesM := by
 #print axioms actual_below_wick_r3
 #print axioms catalan_lt_wick_r2
 #print axioms catalan_lt_wick_r3
-#print axioms not_cavityCapturesM
+#print axioms not_catalanMomentMatchesEnergyTwo
 
 end ProximityGap.T1Cavity

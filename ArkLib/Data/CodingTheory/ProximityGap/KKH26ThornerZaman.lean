@@ -20,8 +20,12 @@ superpolynomial in the domain size `n = s·m`.  [KKH26] Lemma 2 removes this ble
 1. **(analytic input, [TZ24])** by Thorner–Zaman's refined prime number theorem in arithmetic
    progressions (Cor 3.1 of [TZ24], applied via partial summation to the short interval
    `[n^β, 2n^β]` with the smooth modulus `n = 2^μ·m`), the interval `[n^β, 2n^β]` contains
-   `≥ n^{β−1−o(1)}` primes `p ≡ 1 (mod n)`, valid unconditionally for every fixed `β > 12/5`
-   (and for every `β > 1` under Montgomery's conjecture); and
+   `≥ n^{β−1−o(1)}` primes `p ≡ 1 (mod n)` for every fixed `β > 12/5` (and for every `β > 1`
+   under Montgomery's conjecture).  **Scope:** [TZ24] Cor 3.1 and the discussion after it keep
+   a condition involving `rad(n)` (the `λ`/`θ` hypothesis); the clean `7/12`-type regime behind
+   `β > 12/5` is justified for sufficiently powerful moduli, e.g. fixed-radical towers such as
+   `n = 2^μ·m` with `m` **fixed** and `μ → ∞`.  For `m` growing without restriction an extra
+   quantitative input on `rad(n)` / exceptional zeros is needed, which is not supplied here; and
 2. **(counting, THIS FILE, unconditional)** each collision resultant
    `Res_ℤ(P − Q, Φ_s)` is a nonzero integer of absolute value `≤ s^{s/2}`
    (`natAbs_resultant_cyclotomic_le` in-tree), so it has at most
@@ -41,7 +45,8 @@ The counting step (2) is proven here unconditionally.
 * `tzWindow n β` — the `Finset` of primes `p ≡ 1 (mod n)` with `n^β ≤ p ≤ 2·n^β`.
 * `TZPrimeSupply n β supply` — the named [TZ24] hypothesis: `tzWindow n β` has
   `≥ supply` elements.  Instantiated (on paper) by [TZ24] Cor 3.1 with
-  `supply ~ n^{β−1−o(1)}` for `β > 12/5`.
+  `supply ~ n^{β−1−o(1)}` for `β > 12/5`, in the powerful-modulus regime (e.g. `m` fixed);
+  unrestricted growing `m` needs an additional `rad(n)` / exceptional-zero argument.
 * `card_bigPrimeFactors_le` — **unconditional**: a nonzero integer of absolute value
   `≤ M` has at most `log M / log x` distinct prime divisors of size `≥ x` (any `x ≥ 2`).
 * `card_biUnion_bigPrimeFactors_le` — **unconditional**: a family of `m` nonzero integers,
@@ -104,10 +109,13 @@ lemma mem_tzWindow {n : ℕ} {β : ℝ} {p : ℕ} :
 
 On paper this is instantiated by [TZ24] (Thorner–Zaman, *Refinements to the prime number
 theorem in arithmetic progressions*) Corollary 3.1, via partial summation over the short
-interval: for the smooth modulus `n = 2^μ·m` and any fixed `β > 12/5` it holds
-unconditionally with `supply ~ n^{β−1−o(1)}`; under Montgomery's conjecture it holds for
-every `β > 1`.  The counting theorems below consume exactly this cardinality bound and
-nothing else. -/
+interval: for the smooth modulus `n = 2^μ·m` and any fixed `β > 12/5` it follows on paper with
+`supply ~ n^{β−1−o(1)}` without unproved conjectures, **provided** the modulus is in the
+sufficiently-powerful regime that the corollary's `rad(n)` (`λ`/`θ`) condition requires — for
+example `m` fixed and `μ → ∞`.  For unrestricted growing `m` this needs an additional
+quantitative `rad(n)` / exceptional-zero argument.  Under Montgomery's conjecture the supply
+holds for every `β > 1`.  This file proves none of these analytic statements; the counting
+theorems below consume exactly this cardinality bound and nothing else. -/
 structure TZPrimeSupply (n : ℕ) (β : ℝ) (supply : ℕ) : Prop where
   /-- The window `[n^β, 2·n^β]` contains at least `supply` primes `≡ 1 (mod n)`. -/
   le_card : supply ≤ (tzWindow n β).card

@@ -201,4 +201,56 @@ end
 
 end Computable
 
+/-! ## Inclusive generic distance to a code
+
+The canonical `distToCode` minimizes over `C \ {w}`. The downstream API from audit L90
+also provides the minimum over all of `C`, including the queried word when it belongs to the code.
+-/
+
+/-- At the singleton boundary `C = {w}`, `distToCode` is `⊤`: the queried word is excluded. -/
+lemma distToCode_singleton_self {α : Type*} [LinearOrder α] [Zero α]
+    {ι F : Type*} (w : ι → F) (δf : (ι → F) → (ι → F) → α)
+    (h : (possibleDistsToCode w {w} δf).Finite) :
+    distToCode w {w} δf h = ⊤ := by
+  have hempty : possibleDistsToCode w {w} δf = ∅ := by
+    ext d
+    simp [possibleDistsToCode]
+  unfold distToCode
+  simp only [hempty, Set.toFinset_empty, Finset.min_empty]
+
+/-- The set of distances `δf w c` from `w` to **all** codewords `c ∈ C` (including `c = w`
+when `w ∈ C`). Compare `possibleDistsToCode`, which excludes `c = w`. -/
+def possibleDistsToCodeIncl {α : Type*} {ι F : Type*}
+    (w : ι → F) (C : Set (ι → F)) (δf : (ι → F) → (ι → F) → α) : Set α :=
+  δf w '' C
+
+lemma possibleDistsToCode_subset_incl {α : Type*} {ι F : Type*}
+    (w : ι → F) (C : Set (ι → F)) (δf : (ι → F) → (ι → F) → α) :
+    possibleDistsToCode w C δf ⊆ possibleDistsToCodeIncl w C δf := by
+  rintro d ⟨c, hc, -, rfl⟩
+  exact ⟨c, hc, rfl⟩
+
+/-- The genuine generic distance from `w` to a code `C` for a distance function `δf`: the
+minimum of `δf w c` over **all** `c ∈ C` (`⊤` if `C` is empty). Unlike `distToCode`, it
+includes `c = w`. -/
+noncomputable def distToCodeIncl {α : Type*} [LinearOrder α] {ι F : Type*}
+    (w : ι → F) (C : Set (ι → F)) (δf : (ι → F) → (ι → F) → α)
+    (h : (possibleDistsToCodeIncl w C δf).Finite) : WithTop α :=
+  haveI := @Fintype.ofFinite _ h
+  (possibleDistsToCodeIncl w C δf).toFinset.min
+
+/-- In-code boundary: if `w ∈ C`, `δf w w = 0` and `δf w` is nonnegative on `C`, the genuine
+distance `distToCodeIncl w C δf` is `0` (in contrast with `distToCode`). -/
+lemma distToCodeIncl_eq_zero_of_mem {α : Type*} [LinearOrder α] [Zero α] {ι F : Type*}
+    {w : ι → F} {C : Set (ι → F)} {δf : (ι → F) → (ι → F) → α}
+    (h : (possibleDistsToCodeIncl w C δf).Finite) (hw : w ∈ C) (hww : δf w w = 0)
+    (hnonneg : ∀ c ∈ C, 0 ≤ δf w c) :
+    distToCodeIncl w C δf h = ((0 : α) : WithTop α) := by
+  let := @Fintype.ofFinite _ h
+  unfold distToCodeIncl
+  refine le_antisymm (Finset.min_le ?_) (Finset.le_min fun d hd => ?_)
+  · exact Set.mem_toFinset.mpr ⟨w, hw, hww⟩
+  · obtain ⟨c, hc, rfl⟩ := Set.mem_toFinset.mp hd
+    exact WithTop.coe_le_coe.mpr (hnonneg c hc)
+
 end Code
