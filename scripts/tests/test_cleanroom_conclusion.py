@@ -171,6 +171,19 @@ class LeanReproductionTests(unittest.TestCase):
                 self.assertEqual(audit.main(), 1)
             self.assertIn("conclusion token", errors.getvalue())
 
+    def test_run_lean_passes_utf8_encoding_and_handles_unicode(self):
+        with patch("subprocess.run") as mock_run:
+            mock_run.return_value = unittest.mock.Mock(
+                returncode=0, stdout="'thm' depends on axioms: [Quot.sound]\n", stderr=""
+            )
+            code, out = audit.run_lean("theorem thm : ∀ x : ℝ, x = x := by trivial\n", timeout=10)
+            self.assertEqual(code, 0)
+            self.assertIn("Quot.sound", out)
+            mock_run.assert_called_once()
+            _, kwargs = mock_run.call_args
+            self.assertEqual(kwargs.get("encoding"), "utf-8")
+            self.assertTrue(kwargs.get("text"))
+
 
 class ManifestModuleTests(unittest.TestCase):
     def test_default_manifest_imports_exist(self):
