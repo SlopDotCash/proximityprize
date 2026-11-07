@@ -153,7 +153,7 @@ lemma messagesUpToAt_concat_of_lt {k : Fin n} (mb : pSpec.MessagesUpTo k.castSuc
       (motive := fun i : Fin (k.1 + 1) =>
         pSpec.dir (i.castLE (by omega)) = .P_to_V → pSpec.«Type» (i.castLE (by omega)))
       (fun i hi => mb ⟨i, hi⟩) _ (Fin.castSucc ⟨j.1.1, hlt⟩) j.2 = _
-  rw [Fin.dconcat_castSucc]
+  erw [Fin.dconcat_castSucc]
   rfl
 
 /-- `concat` writes the new message at the last position. -/
@@ -165,7 +165,7 @@ lemma messagesUpToAt_concat_self {k : Fin n} (mb : pSpec.MessagesUpTo k.castSucc
       (motive := fun i : Fin (k.1 + 1) =>
         pSpec.dir (i.castLE (by omega)) = .P_to_V → pSpec.«Type» (i.castLE (by omega)))
       (fun i hi => mb ⟨i, hi⟩) _ (Fin.last k.1) hdir = _
-  rw [Fin.dconcat_last]
+  erw [Fin.dconcat_last]
 
 /-- `extend` (challenge round) does not disturb message entries. -/
 lemma messagesUpToAt_extend {k : Fin n} (mb : pSpec.MessagesUpTo k.castSucc)
@@ -176,7 +176,7 @@ lemma messagesUpToAt_extend {k : Fin n} (mb : pSpec.MessagesUpTo k.castSucc)
       (motive := fun i : Fin (k.1 + 1) =>
         pSpec.dir (i.castLE (by omega)) = .P_to_V → pSpec.«Type» (i.castLE (by omega)))
       (fun i hi => mb ⟨i, hi⟩) _ (Fin.castSucc ⟨j.1.1, hlt⟩) j.2 = _
-  rw [Fin.dconcat_castSucc]
+  erw [Fin.dconcat_castSucc]
   rfl
 
 /-- A message index strictly before `k.succ` whose round is not the challenge round `k`

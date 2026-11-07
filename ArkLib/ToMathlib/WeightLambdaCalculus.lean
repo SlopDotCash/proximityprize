@@ -104,7 +104,7 @@ lemma weight_Λ_over_𝒪_neg {H : F[X][Y]} {D : ℕ} (hH : 0 < H.natDegree) (a 
     rw [Polynomial.degree_neg]; exact canonicalRepOf𝒪_degree_lt hH a
   have hmk : (Ideal.Quotient.mk (Ideal.span {H_tilde' H}) (-(canonicalRepOf𝒪 hH a)) : 𝒪 H)
       = -a := by
-    rw [RingHom.map_neg, mk_canonicalRepOf𝒪]
+    rw [map_neg, mk_canonicalRepOf𝒪]
   rw [weight_Λ_over_𝒪_eq_canonicalRep (a := -a)]
   rw [show canonicalRepOf𝒪 hH (-a) = -(canonicalRepOf𝒪 hH a) by
         rw [← hmk] at *

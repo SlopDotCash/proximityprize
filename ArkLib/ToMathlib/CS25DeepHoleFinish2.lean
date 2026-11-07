@@ -104,7 +104,7 @@ theorem deepHoleLine_relClose_of_mem_ball
     (hδ0 : 0 ≤ δ)
     (hp : p ∈ Polynomial.degreeLT F (k + 1))
     (hdom : ∀ i, domain i ≠ a)
-    (hmem : ReedSolomon.evalOnPoints domain p ∈ relHammingBall u δ) :
+    (hmem : ReedSolomon.evalOnPoints domain p ∈ ListDecodable.relHammingBall u δ) :
     δᵣ(deepHoleLine domain u a (-(p.eval a)),
         (ReedSolomon.code domain k : Set (ι → F))) ≤ δ.toNNReal := by
   -- The `RS[k]` codeword witness: `lineQuotient p a`.
@@ -118,7 +118,7 @@ theorem deepHoleLine_relClose_of_mem_ball
     relHammingDist_deepHoleLine_eq domain u a p hdom
   have hball : (Code.relHammingDist u (ReedSolomon.evalOnPoints domain p) : ℝ) ≤ δ := by
     have hmem' := hmem
-    rw [relHammingBall, Set.mem_setOf_eq] at hmem'
+    rw [ListDecodable.relHammingBall, Set.mem_setOf_eq] at hmem'
     convert hmem' using 3
   have hle_real :
       (Code.relHammingDist (deepHoleLine domain u a (-(p.eval a)))
@@ -147,7 +147,7 @@ theorem numDistinct_le_card_caGood
     (p : Fin L → F[X]) (hδ0 : 0 ≤ δ)
     (hdeg : ∀ j, p j ∈ Polynomial.degreeLT F (k + 1))
     (hdom : ∀ i, domain i ≠ a)
-    (hclose : ∀ j, ReedSolomon.evalOnPoints domain (p j) ∈ relHammingBall u δ) :
+    (hclose : ∀ j, ReedSolomon.evalOnPoints domain (p j) ∈ ListDecodable.relHammingBall u δ) :
     numDistinct p a ≤
       (Finset.univ.filter (fun γ : F => caCloseEvent domain u a k δ γ)).card := by
   classical
@@ -179,7 +179,7 @@ theorem numDistinct_div_card_le_pr
     (p : Fin L → F[X]) (hδ0 : 0 ≤ δ)
     (hdeg : ∀ j, p j ∈ Polynomial.degreeLT F (k + 1))
     (hdom : ∀ i, domain i ≠ a)
-    (hclose : ∀ j, ReedSolomon.evalOnPoints domain (p j) ∈ relHammingBall u δ) :
+    (hclose : ∀ j, ReedSolomon.evalOnPoints domain (p j) ∈ ListDecodable.relHammingBall u δ) :
     ((numDistinct p a : ℝ≥0) / (Fintype.card F : ℝ≥0) : ℝ≥0) ≤
       (Pr_{let γ ← $ᵖ F}[caCloseEvent domain u a k δ γ]).toNNReal := by
   classical
@@ -227,7 +227,7 @@ theorem numDistinct_le_eps_of_jointFar
     (p : Fin L → F[X]) (hδ0 : 0 ≤ δ)
     (hdeg : ∀ j, p j ∈ Polynomial.degreeLT F (k + 1))
     (hdom : ∀ i, domain i ≠ a)
-    (hclose : ∀ j, ReedSolomon.evalOnPoints domain (p j) ∈ relHammingBall u δ)
+    (hclose : ∀ j, ReedSolomon.evalOnPoints domain (p j) ∈ ListDecodable.relHammingBall u δ)
     (hjf : DeepHoleJointFar domain u a k δ) :
     (numDistinct p a : ℝ) ≤
       (epsCA (F := F) (A := F) ((ReedSolomon.code domain k : Set (ι → F)))
@@ -289,7 +289,7 @@ theorem rs_epsCA_implies_lambda_extended_cs25_jointFar
                   δ.toNNReal δ.toNNReal).toReal
       let L0 : ℕ := Nat.ceil ((Fintype.card F : ℝ) / (1 - η) * ε)
       ∀ (u : ι → F) (a : F), a ∈ sampleSet domain → DeepHoleJointFar domain u a k δ) :
-    Lambda ((ReedSolomon.code domain (k + 1) : Set (ι → F))) δ ≤
+    ListDecodable.Lambda ((ReedSolomon.code domain (k + 1) : Set (ι → F))) δ ≤
       (Nat.ceil
         ((Fintype.card F : ℝ) / (1 - η)
           * (epsCA (F := F) (A := F)

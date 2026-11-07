@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.OracleReduction.LiftContext.OracleReduction
+import ProximityPrize.Extensions.OracleReduction.LiftContext.OracleReduction
 
 /-!
 # Oracle-routing coherence core for `LiftContextCoherent` (design note #433)
@@ -186,30 +186,66 @@ theorem liftContext_toVerifier_comm_verify
             (Sum.inr (Sum.inl q)))
     (hlift : ∀ (so : InnerStmtOut),
       stmtLens.toLens.lift (os, oos)
-          (so, fun i => match h : V.embed i with
-            | Sum.inl j => V.hEq i ▸ h ▸ (stmtLens.toLens.proj (os, oos)).2 j
-            | Sum.inr j => V.hEq i ▸ h ▸ transcript.messages j)
+          (so, V.materializeOutput transcript.challenges
+            (stmtLens.toLens.proj (os, oos)).2 transcript.messages)
         = (stmtLens.liftStmt os so, fun i => match h : stmtLens.embedOStmt i with
             | Sum.inl j => stmtLens.hEqOStmt i ▸ h ▸ oos j
             | Sum.inr j => stmtLens.hEqOStmt i ▸ h ▸ transcript.messages j)) :
-    ((V.liftContext stmtLens).toVerifier).verify (os, oos) transcript
+    ((V.liftContextLegacy stmtLens).toVerifier).verify (os, oos) transcript
       = (V.toVerifier.liftContext stmtLens.toLens).verify (os, oos) transcript := by
-  simp only [OracleVerifier.toVerifier, OracleVerifier.liftContext, Verifier.liftContext,
-    OptionT.mk, simulateQ_bind, simulateQ_pure, bind_assoc]
+  apply OptionT.ext
+  simp only [OracleVerifier.toVerifier, OracleVerifier.liftContextLegacy, Verifier.liftContext,
+    OptionT.run_mk, OptionT.run_bind, OptionT.run_pure, simulateQ_bind, simulateQ_pure, bind_assoc]
   rw [fullRouter_simOracle2_agree stmtLens.simOStmt oos (stmtLens.toLens.proj (os, oos)).2
       transcript.messages os
       (combinedRouter_eq_simOracle2 _ _ _ _ _ hfaith), hproj]
-  refine OptionT.ext ?_
-  simp only [OptionT.run_bind, OptionT.run_pure, Option.elimM, pure_bind]
-  change (_ >>= _) >>= _ = _ >>= _
-  rw [bind_assoc]
+  simp only [Option.elimM, pure_bind]
+  simp only [map_eq_bind_pure_comp, bind_assoc, pure_bind]
   apply bind_congr
   intro mo
   cases mo with
   | none => simp
   | some so =>
-      simp only [pure_bind, Option.map_some, Option.elim_some]
-      exact congrArg (fun z => pure (some z)) (hlift so).symm
+      simp only [Function.comp_apply, pure_bind, Option.map_some, Option.elim_some]
+      apply congrArg (fun z : OuterStmtOut × (∀ i, OuterOStmtOut i) =>
+        (pure (some z) : OracleComp oSpec (Option (OuterStmtOut × (∀ i, OuterOStmtOut i)))))
+      calc
+        _ = (stmtLens.liftStmt os so, fun i => match h : stmtLens.embedOStmt i with
+            | Sum.inl j => stmtLens.hEqOStmt i ▸ h ▸ oos j
+            | Sum.inr j => stmtLens.hEqOStmt i ▸ h ▸ transcript.messages j) := by
+          apply Prod.ext
+          · rfl
+          funext i
+          simp only [OracleVerifier.materializeOutput, OracleVerifier.materializeOutputOracle,
+            OracleStatement.OracleLens.toOutputEmbedding]
+          split
+          · rename_i j hj
+            split
+            · rename_i k hk
+              have hjk : j = k := Sum.inl.inj (hj.symm.trans hk)
+              subst k
+              apply eq_of_heq
+              apply eqRec_heq_iff.mpr
+              apply eqRec_heq_iff.mpr
+              apply heq_eqRec_iff.mpr
+              apply heq_eqRec_iff.mpr
+              rfl
+            · rename_i k hk
+              cases hj.symm.trans hk
+          · rename_i j hj
+            split
+            · rename_i k hk
+              cases hj.symm.trans hk
+            · rename_i k hk
+              have hjk : j = k := Sum.inr.inj (hj.symm.trans hk)
+              subst k
+              apply eq_of_heq
+              apply eqRec_heq_iff.mpr
+              apply eqRec_heq_iff.mpr
+              apply heq_eqRec_iff.mpr
+              apply heq_eqRec_iff.mpr
+              rfl
+        _ = _ := (hlift so).symm
 
 /-- **`toVerifier_comm` builder.** The full verifier-level coherence equality, from the three
 per-input coherence conditions quantified over all inputs. -/
@@ -229,13 +265,12 @@ theorem liftContext_toVerifier_comm_of
     (hlift : ∀ (os : OuterStmtIn) (oos : ∀ i, OuterOStmtIn i) (transcript : FullTranscript pSpec)
         (so : InnerStmtOut),
       stmtLens.toLens.lift (os, oos)
-          (so, fun i => match h : V.embed i with
-            | Sum.inl j => V.hEq i ▸ h ▸ (stmtLens.toLens.proj (os, oos)).2 j
-            | Sum.inr j => V.hEq i ▸ h ▸ transcript.messages j)
+          (so, V.materializeOutput transcript.challenges
+            (stmtLens.toLens.proj (os, oos)).2 transcript.messages)
         = (stmtLens.liftStmt os so, fun i => match h : stmtLens.embedOStmt i with
             | Sum.inl j => stmtLens.hEqOStmt i ▸ h ▸ oos j
             | Sum.inr j => stmtLens.hEqOStmt i ▸ h ▸ transcript.messages j)) :
-    (V.liftContext stmtLens).toVerifier = V.toVerifier.liftContext stmtLens.toLens := by
+    (V.liftContextLegacy stmtLens).toVerifier = V.toVerifier.liftContext stmtLens.toLens := by
   ext1
   funext stmtIn transcript
   obtain ⟨os, oos⟩ := stmtIn
@@ -263,9 +298,8 @@ virtual lenses satisfy. -/
     (hlift : ∀ (os : OuterStmtIn) (oos : ∀ i, OuterOStmtIn i) (transcript : FullTranscript pSpec)
         (so : InnerStmtOut),
       stmtLens.toLens.lift (os, oos)
-          (so, fun i => match h : V.embed i with
-            | Sum.inl j => V.hEq i ▸ h ▸ (stmtLens.toLens.proj (os, oos)).2 j
-            | Sum.inr j => V.hEq i ▸ h ▸ transcript.messages j)
+          (so, V.materializeOutput transcript.challenges
+            (stmtLens.toLens.proj (os, oos)).2 transcript.messages)
         = (stmtLens.liftStmt os so, fun i => match h : stmtLens.embedOStmt i with
             | Sum.inl j => stmtLens.hEqOStmt i ▸ h ▸ oos j
             | Sum.inr j => stmtLens.hEqOStmt i ▸ h ▸ transcript.messages j)) :

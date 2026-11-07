@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.Stir.ProximityGapProof
+import ProximityPrize.Compatibility.UniformProbability
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.CorrelatedAgreementSmallField
 
 namespace STIR
@@ -11,7 +12,7 @@ namespace STIR
 open ReedSolomon ProximityGap Code NNReal ProbabilityTheory
 open scoped BigOperators ENNReal
 
-variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
+variable {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
          {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι] {φ : ι ↪ F}
 
 /-- **STIR proximity-gap theorem (Theorem 4.1), UNCONDITIONAL in the small-field regime
@@ -47,7 +48,7 @@ theorem proximity_gap_of_card_le
           = Pr_{ let r ← $ᵖ F}[δᵣ((fun x => ∑ j : Fin (k + 1), GenFun r j * f j x),
               code φ degree) ≤ δ] := by
       simp_rw [hword]
-    rw [hPr]
+    rw [← ProximityPrize.Compatibility.pmf_uniform_probability_eq_native, hPr]
     refine lt_of_le_of_lt ?_ hProb
     rw [ENNReal.ofReal_coe_nnreal]
     have hbridge := STIR.mul_errorBound_le_proximityError

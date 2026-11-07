@@ -48,20 +48,11 @@ machinery.
 - [`ArkLib/ProofSystem/Stir/ProximityGap.lean`](../../../ArkLib/ProofSystem/Stir/ProximityGap.lean)
   reuses this line of theory in protocol-level work.
 - [`ArkLib/ProofSystem/BatchedFri/Security.lean`](../../../ArkLib/ProofSystem/BatchedFri/Security.lean)
-  cites specific claims from the paper in a proof-system security context.
-- [`ArkLib/ProofSystem/BatchedFri/QueryRoundProbability.lean`](../../../ArkLib/ProofSystem/BatchedFri/QueryRoundProbability.lean)
-  and
-  [`ArkLib/ProofSystem/BatchedFri/QueryRoundAnalysis.lean`](../../../ArkLib/ProofSystem/BatchedFri/QueryRoundAnalysis.lean)
-  contain the proved query-round probability/density pieces feeding the Claim 8.2 frontier.
-- [`ArkLib/ProofSystem/BatchedFri/QueryRoundSoundness.lean`](../../../ArkLib/ProofSystem/BatchedFri/QueryRoundSoundness.lean),
-  [`ArkLib/ProofSystem/BatchedFri/QueryRoundRSAffineLineSoundness.lean`](../../../ArkLib/ProofSystem/BatchedFri/QueryRoundRSAffineLineSoundness.lean),
-  [`ArkLib/ProofSystem/BatchedFri/QueryRoundRSCurveSoundness.lean`](../../../ArkLib/ProofSystem/BatchedFri/QueryRoundRSCurveSoundness.lean),
-  and
-  [`ArkLib/ProofSystem/BatchedFri/QuerySoundnessSmallField.lean`](../../../ArkLib/ProofSystem/BatchedFri/QuerySoundnessSmallField.lean)
-  expose density/probability adapters, Reed-Solomon affine-line and curve routes, and
-  small-field/vacuous-regime consequences.
-- [`blueprint/src/proof_systems/fri.tex`](../../../blueprint/src/proof_systems/fri.tex)
-  now records the Claim 8.2/8.3 split frontiers and their coding-theory prerequisites.
+  proves batching-round perfect completeness and ordinary and round-by-round soundness
+  using correlated agreement at the actual initial FRI degree bound.
+- [`ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineCoefficients.lean`](../../../ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineCoefficients.lean)
+  transports uniform coefficient sampling to the affine image and exposes the coefficient-form
+  correlated-agreement theorem used by Batched FRI.
 
 ## Known Divergences From ArkLib
 
@@ -78,11 +69,6 @@ machinery.
   The Appendix A rational-function layer is tracked in
   [`../audits/bciks20-appendix-a-rational-functions.md`](../audits/bciks20-appendix-a-rational-functions.md).
 - Record when paper-level statements are only represented through more abstract ArkLib interfaces.
-- Batched-FRI Claim 8.2 has proved query-round and oracle-lens pieces, but the general
-  correlated-agreement-to-joint-agreement bridge remains an explicit proof obligation except for
-  specialized Reed-Solomon routes and small-field/vacuous regimes.
-- Batched-FRI Claim 8.3 has split query-lift, sequential-composition, and total-error-accounting
-  frontiers; unconditional closure still needs the relevant phase soundness/error-bound inputs.
 - Revisit once the existing paper audit is migrated or mirrored under `docs/kb/audits/`.
 
 ## Source Access

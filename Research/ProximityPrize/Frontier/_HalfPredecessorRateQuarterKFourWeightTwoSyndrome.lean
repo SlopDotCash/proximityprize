@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._HalfPredecessorRateQuarterKFourSyndromeChordBound
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 
 /-!
 # Rate-quarter `k = 4`: weight-two points on an MDS syndrome pencil
@@ -69,7 +69,7 @@ theorem quotientAffinePoint_ne_zero
     (hrows : QuotientRowsIndependent C u0 u1) (gamma : F) :
     quotientAffinePoint C u0 u1 gamma ≠ 0 := by
   intro hzero
-  have hcoeff := hrows 1 gamma (by simpa only [one_smul] using hzero)
+  have hcoeff := hrows 1 gamma (by simpa only [one_smul, quotientAffinePoint] using hzero)
   exact one_ne_zero hcoeff.1
 
 /-- Independent quotient rows give a projectively honest affine chart. -/
@@ -116,8 +116,14 @@ theorem rowPlane_finrank_le_two
       finrank F (span F
         ({C.mkQ u0, C.mkQ u1} : Set ((I -> F) ⧸ C))) ≤
         ({C.mkQ u0, C.mkQ u1} : Finset ((I -> F) ⧸ C)).card := by
-    simpa using finrank_span_finset_le_card (R := F)
+    have hbound := finrank_span_finset_le_card (R := F)
       ({C.mkQ u0, C.mkQ u1} : Finset ((I -> F) ⧸ C))
+    have hset : (({C.mkQ u0, C.mkQ u1} : Finset ((I -> F) ⧸ C)) : Set ((I -> F) ⧸ C)) =
+        ({C.mkQ u0, C.mkQ u1} : Set ((I -> F) ⧸ C)) := by
+      ext x
+      simp
+    rw [Set.finrank, hset] at hbound
+    exact hbound
   rcases Finset.card_pair_eq_one_or_two
       (a := C.mkQ u0) (b := C.mkQ u1) with hcard | hcard
   · omega

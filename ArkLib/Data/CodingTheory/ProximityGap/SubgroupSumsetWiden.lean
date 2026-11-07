@@ -308,7 +308,7 @@ theorem subsetSumImage_two_eq_univ [NeZero q] (hp : 1 ≤ p)
   -- v.val < q ≤ 2^p - 1 < 2^p
   have h2 : 2 ≤ 2 ^ p := by
     calc 2 = 2 ^ 1 := (pow_one 2).symm
-    _ ≤ 2 ^ p := by gcongr; omega
+    _ ≤ 2 ^ p := by gcongr
   have hqle : q ≤ 2 ^ p - 1 := Nat.le_of_dvd (by omega) hdvd
   have hvlt : v.val < 2 ^ p := by have := ZMod.val_lt v; omega
   obtain ⟨T, hT, hTsum⟩ := exists_subset_sum_eq p v.val hvlt

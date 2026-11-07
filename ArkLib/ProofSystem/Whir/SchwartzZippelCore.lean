@@ -100,7 +100,7 @@ universe v
 namespace Whir302SZ
 
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
-variable {β : Type} {m : Type → Type v} [Monad m] [HasEvalSPMF m]
+variable {β : Type} {m : Type → Type v} [Monad m] [LawfulMonad m] [EvalDistSemantics m] [LawfulEvalDistSemantics m]
 
 /-- **The per-round salvage probability bound** (the quantitative WHIR flip estimate): in any
 game that draws a challenge `r` whose marginal is dominated by uniform-on-`F` and then runs a
@@ -109,10 +109,10 @@ genuinely different chains, the success probability is at most `max(len cs, len 
 theorem probEvent_salvage_le (mx : m F) (k : F → m β) (q : β → Prop)
     (cs cs' : List F)
     (hne : listPoly cs ≠ listPoly cs') (hcs : cs ≠ []) (hcs' : cs' ≠ [])
-    (hunif : ∀ x : F, Pr[= x | mx] ≤ (Fintype.card F : ℝ≥0∞)⁻¹)
+    (hunif : ∀ x : F, probOutput (mx) (x) ≤ (Fintype.card F : ℝ≥0∞)⁻¹)
     (hsalvage : ∀ x : F, ¬ (Whir302Checked.listEval cs x = Whir302Checked.listEval cs' x) →
-      Pr[ q | k x] = 0) :
-    Pr[ q | mx >>= k]
+      probEvent (q) (k x) = 0) :
+    probEvent (q) (mx >>= k)
       ≤ ((max cs.length cs'.length : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) := by
   classical
   refine le_trans

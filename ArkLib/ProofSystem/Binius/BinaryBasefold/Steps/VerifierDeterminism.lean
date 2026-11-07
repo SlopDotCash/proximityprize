@@ -3,9 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Fold
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Relay
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Commit
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Steps.Fold
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Steps.Relay
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Steps.Commit
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeOracleLift
 import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
 /-!
@@ -54,141 +54,60 @@ variable {Context : Type} {mp : SumcheckMultiplierParam L ℓ Context}
 
 namespace CoreInteraction
 
-/-- The relay verifier's compiled `toVerifier` is literally pure: its verdict is the unchanged
-input statement (with the deterministic oracle routing riding along). -/
+/-- The native relay verifier preserves the statement and materializes its output oracles. -/
 theorem relayOracleVerifier_toVerifier_pure (i : Fin ℓ) (hNCR : ¬ isCommitmentRound ℓ ϑ i) :
-    (relayOracleVerifier (Context := Context) 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (i := i) hNCR).toVerifier
-      = ⟨fun p tr => pure (p.1,
-          fun j => match h : (relayOracleVerifier (Context := Context) 𝔽q β (ϑ := ϑ)
-              (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) hNCR).embed j with
-            | Sum.inl k =>
-                ((relayOracleVerifier (Context := Context) 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-                  (i := i) hNCR).hEq j ▸ h ▸ p.2 k : OracleStatement 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.succ j)
-            | Sum.inr k =>
-                ((relayOracleVerifier (Context := Context) 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-                  (i := i) hNCR).hEq j ▸ h ▸ tr.messages k : OracleStatement 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.succ j))⟩ :=
-  OracleVerifier.toVerifier_eq_pure_of_collapse
-    (relayOracleVerifier (Context := Context) 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) hNCR)
-    (fun p _ => p.1)
-    (fun stmt oStmt tr => by
-      simp only [relayOracleVerifier, simulateQ_pure]
-      rfl)
+    (relayOracleVerifier (Context := Context) 𝔽q β (ϑ := ϑ)
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hNCR).toVerifier =
+      ⟨fun p tr => pure (p.1,
+        (relayOracleVerifier (Context := Context) 𝔽q β (ϑ := ϑ)
+          (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hNCR).materializeOutput
+          tr.challenges p.2 tr.messages)⟩ := rfl
 
-/-- The commit verifier's compiled `toVerifier` is literally pure: its verdict is the unchanged
-input statement. -/
+/-- The native commit verifier preserves the statement and materializes its output oracles. -/
 theorem commitOracleVerifier_toVerifier_pure (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i) :
-    (commitOracleVerifier (mp := mp) 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (𝓑 := 𝓑) (i := i) hCR).toVerifier
-      = ⟨fun p tr => pure (p.1,
-          fun j => match h : (commitOracleVerifier (mp := mp) 𝔽q β (ϑ := ϑ)
-              (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) (i := i) hCR).embed j with
-            | Sum.inl k =>
-                ((commitOracleVerifier (mp := mp) 𝔽q β (ϑ := ϑ)
-                  (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) (i := i) hCR).hEq j ▸ h ▸ p.2 k : OracleStatement 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.succ j)
-            | Sum.inr k =>
-                ((commitOracleVerifier (mp := mp) 𝔽q β (ϑ := ϑ)
-                  (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) (i := i) hCR).hEq j ▸ h ▸
-                    tr.messages k : OracleStatement 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.succ j))⟩ :=
-  by
-    classical
-    convert OracleVerifier.toVerifier_eq_pure_of_collapse
-      (commitOracleVerifier (mp := mp) 𝔽q β (ϑ := ϑ)
-        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) (i := i) hCR)
-      (fun p _ => p.1)
-      (fun stmt oStmt tr => by
-        simp only [commitOracleVerifier, simulateQ_pure]
-        rfl) using 1
-    congr 1
-    funext p tr
-    congr 1
-    congr 1
-    funext j
-    split <;> rename_i k hk
-    all_goals split <;> rename_i k' hk'
-    all_goals
-      have hh := hk.symm.trans hk'
-      simp only [Sum.inl.injEq, Sum.inr.injEq, Sum.inl_ne_inr, Sum.inr_ne_inl] at hh <;> subst_vars <;> rfl
+    (commitOracleVerifier (Context := Context) 𝔽q β (ϑ := ϑ)
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hCR).toVerifier =
+      ⟨fun p tr => pure (p.1,
+        (commitOracleVerifier (Context := Context) 𝔽q β (ϑ := ϑ)
+          (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hCR).materializeOutput
+          tr.challenges p.2 tr.messages)⟩ := rfl
 
-/-- The fold verifier's deterministic option-valued verdict: read the round-polynomial message
-from the transcript, run the sumcheck `verifierCheck`, and emit `verifierOut` on success. -/
+/-- The fold verifier's actual guard and verdict, projected to the output statement. -/
 def foldVerifyFn (i : Fin ℓ)
     (p : Statement (L := L) Context i.castSucc ×
       ∀ j, OracleStatement 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.castSucc j)
     (tr : FullTranscript (pSpecFold (L := L))) :
-    Option (Statement (L := L) Context i.succ) := by
-  classical
-  let logic := foldStepLogic 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-    (𝓑 := 𝓑) (mp := mp) i
-  let t := FullTranscript.mk2 (tr.messages ⟨0, rfl⟩) (tr.challenges ⟨1, rfl⟩)
-  exact if logic.verifierCheck p.1 t then some (logic.verifierOut p.1 t) else none
+    Option (Statement (L := L) Context i.succ) :=
+  let G := foldOracleVerifierGuardedForm 𝔽q β (ϑ := ϑ)
+    (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) (multpoly := mp.multpoly) i
+  if G.check p tr then some (G.out p tr).1 else none
 
-/-- **Failing-determinism witness for the fold verifier.** Its compiled `toVerifier` is the
-failing-deterministic verifier on `foldVerifyFn`: the round-message query is answered from the
-transcript and the `guard` is the only failure source. -/
+/-- The fold verifier has exactly the optional native guard verdict; rejection remains failure. -/
 theorem foldOracleVerifier_toVerifier_failingDet (i : Fin ℓ) :
-    (foldOracleVerifier (mp := mp) 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (𝓑 := 𝓑) (i := i)).toVerifier
-      = ⟨fun p tr => OptionT.mk (pure
-          ((foldVerifyFn (mp := mp) 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-              (𝓑 := 𝓑) i p tr).map (fun s => (s,
-            fun j => match h : (foldOracleVerifier (mp := mp) 𝔽q β (ϑ := ϑ)
-                (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) (i := i)).embed j with
-              | Sum.inl k =>
-                  ((foldOracleVerifier (mp := mp) 𝔽q β (ϑ := ϑ)
-                    (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) (i := i)).hEq j ▸ h ▸ p.2 k : OracleStatement 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.castSucc j)
-              | Sum.inr k =>
-                  ((foldOracleVerifier (mp := mp) 𝔽q β (ϑ := ϑ)
-                    (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) (i := i)).hEq j ▸ h ▸
-                      tr.messages k : OracleStatement 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.castSucc j)))))⟩ :=
-  by
-    classical
-    convert OracleVerifier.toVerifier_eq_failingDet_of_collapse
-      (foldOracleVerifier (mp := mp) 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (𝓑 := 𝓑) (i := i))
-      (foldVerifyFn (mp := mp) 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) i)
-      (fun stmt oStmt tr => by
-        classical
-        simp only [foldOracleVerifier, foldVerifyFn]
-        erw [OptionT.simulateQ_bind]
-        erw [OptionT.simulateQ_simOracle2_liftM_query_T2]
-        have hanswer : OracleInterface.answer
-            (Message := (pSpecFold (L := L)).Message ⟨0, rfl⟩)
-            (O := (inferInstance : ∀ j : (pSpecFold (L := L)).MessageIdx,
-              OracleInterface ((pSpecFold (L := L)).Message j)) ⟨0, rfl⟩)
-            (tr.messages ⟨0, rfl⟩) () =
-            tr.messages ⟨0, rfl⟩ := rfl
-        erw [hanswer]
-        simp only [pure_bind]
-        simp only [OracleInterface.simOracle2, simulateQ_bind, simulateQ_pure, pure_bind,
-          FullTranscript.mk2]
-        by_cases hchk : (foldStepLogic 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-            (𝓑 := 𝓑) (mp := mp) i).verifierCheck stmt
-          (FullTranscript.mk2 (tr.messages ⟨0, rfl⟩) (tr.challenges ⟨1, rfl⟩))
-        · simp [hchk, guard, FullTranscript.mk2, OptionT.bind, OptionT.mk,
-            OptionT.pure, pure_bind, OracleInterface.answer, OracleInterface.instDefault]
-          <;> first | rfl | (erw [pure_bind]; simp_all [simulateQ_pure, OptionT.pure, ReaderT.run] <;> rfl)
-        · simp [hchk, guard, FullTranscript.mk2, OptionT.bind, OptionT.mk,
-            OptionT.pure, pure_bind, OracleInterface.answer, OracleInterface.instDefault]
-          <;> first | rfl | (erw [pure_bind]; simp_all [simulateQ_pure, OptionT.pure, ReaderT.run] <;> rfl)) using 1
-    congr 1
-    funext p tr
-    congr 2
-    congr 1
-    funext s
-    congr 1
-    funext j
-    split <;> rename_i k hk
-    all_goals split <;> rename_i k' hk'
-    all_goals
-      have hh := hk.symm.trans hk'
-      simp only [Sum.inl.injEq, Sum.inr.injEq, Sum.inl_ne_inr, Sum.inr_ne_inl] at hh
-        <;> subst_vars <;> rfl
+    (foldOracleVerifier (multpoly := mp.multpoly) 𝔽q β (ϑ := ϑ)
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) i).toVerifier =
+      ⟨fun p tr => OptionT.mk (pure
+        ((foldVerifyFn (mp := mp) 𝔽q β (ϑ := ϑ)
+          (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) i p tr).map fun s =>
+          (s, (foldOracleVerifier (multpoly := mp.multpoly) 𝔽q β (ϑ := ϑ)
+            (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) i).materializeOutput
+            tr.challenges p.2 tr.messages)))⟩ := by
+  classical
+  let G := foldOracleVerifierGuardedForm 𝔽q β (ϑ := ϑ)
+    (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) (multpoly := mp.multpoly) i
+  apply Verifier.ext
+  funext p tr
+  rw [G.verify_eq p tr]
+  by_cases hc : G.check p tr = true
+  · simp [foldVerifyFn, G, hc]
+    rw [foldOracleVerifierGuardedForm_out (multpoly := mp.multpoly) 𝔽q β
+      (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) i p tr]
+    rfl
+  · simp [foldVerifyFn, G, hc]
+    rfl
 
 end CoreInteraction
-
 end Binius.BinaryBasefold
-
 end
 
 #print axioms Binius.BinaryBasefold.CoreInteraction.relayOracleVerifier_toVerifier_pure

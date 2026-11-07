@@ -3,7 +3,7 @@ Copyright (c) 2024-2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tobias Rothmann
 -/
-import ArkLib.Commitments.Functional.Hachi.Gadget
+import ArkLib.Commitments.Functional.Hachi.Gadget.Norms
 import ArkLib.Data.Lattices.CyclotomicRing.NormBounds
 
 /-!
@@ -65,19 +65,6 @@ theorem zmodDigit_natAbs_le {b digits : ℕ} (hb : 1 < b) (hq : q ≤ b ^ digits
   simp only [Int.natAbs_natCast]
   omega
 
-omit [NeZero q] in
-/-- The `k`-th coefficient (`k < deg φ`) of a gadget-decomposition block is exactly the
-corresponding digit of the corresponding input coefficient. -/
-theorem gadgetDecompose_coeff {base : ZMod q} {rows digits : ℕ}
-    (dd : DigitDecomposition base digits) (h : 1 ≤ Φ.φ.natDegree)
-    (x : PolyVec (Rq Φ) rows) (j : Fin (rows * digits)) {k : ℕ} (hk : k < Φ.φ.natDegree) :
-    (gadgetDecompose Φ dd x j).1.coeff k =
-      dd.digit ((x (finProdFinEquiv.symm j).1).1.coeff k) (finProdFinEquiv.symm j).2 := by
-  rw [show gadgetDecompose Φ dd x j =
-      Rq.ofFinCoeff Φ Φ.φ.natDegree (fun k =>
-        dd.digit ((x (finProdFinEquiv.symm j).1).1.coeff k) (finProdFinEquiv.symm j).2) from rfl,
-    Rq.ofFinCoeff_coeff Φ _ (natDegree_le_degree_toPoly Φ h) k, if_pos hk]
-
 /-! ## `ℓ∞` bound -/
 
 /-- Each gadget-decomposition block is `ℓ∞`-short: its centered `ℓ∞` norm is `≤ b - 1`. -/
@@ -87,7 +74,7 @@ theorem gadgetDecompose_zmod_lInftyNorm_le {b digits rows : ℕ} (hb : 1 < b) (h
     Rq.lInftyNorm Φ (gadgetDecompose Φ (zmodDigitDecomposition b digits hb hq) x j) ≤ b - 1 := by
   unfold Rq.lInftyNorm
   refine Finset.sup_le (fun k hk => ?_)
-  rw [gadgetDecompose_coeff Φ _ h x j (Finset.mem_range.mp hk)]
+  rw [gadgetDecompose_coeff Φ _ x j (Finset.mem_range.mp hk)]
   exact zmodDigit_natAbs_le hb hq hbq _ _
 
 /-- **`ℓ∞` shortness of `G⁻¹`.** The full gadget decomposition has centered `ℓ∞` norm `≤ b - 1`. -/
@@ -112,7 +99,7 @@ theorem gadgetDecompose_zmod_l2NormSq_le {b digits rows : ℕ} (hb : 1 < b) (hq 
           ^ 2
       ≤ ∑ _k ∈ Finset.range Φ.φ.natDegree, (b - 1) ^ 2 := by
         refine Finset.sum_le_sum (fun k hk => ?_)
-        rw [gadgetDecompose_coeff Φ _ h x j (Finset.mem_range.mp hk)]
+        rw [gadgetDecompose_coeff Φ _ x j (Finset.mem_range.mp hk)]
         exact Nat.pow_le_pow_left (zmodDigit_natAbs_le hb hq hbq _ _) 2
     _ = Φ.φ.natDegree * (b - 1) ^ 2 := by
         rw [Finset.sum_const, Finset.card_range, smul_eq_mul]

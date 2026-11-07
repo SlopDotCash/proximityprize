@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ReedSolomon.AdmissibleDischarge
-import ArkLib.Data.CodingTheory.SubspaceDesign
+import ProximityPrize.Extensions.Data.CodingTheory.SubspaceDesign
 
 /-!
 # Unconditional FRS τ-subspace-design on the canonical geometric domain (ABF26 T2.18)

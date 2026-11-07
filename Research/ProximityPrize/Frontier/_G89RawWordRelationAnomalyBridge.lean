@@ -57,19 +57,20 @@ theorem card_rawShadowOffDiag_fiber
           ((Finset.univ : Finset (Fin r → Fin n)).filter
             (fun u => tupleVec n m r u = p.2)) := by
     ext q
-    simp only [rawShadowOffDiag, shadowPair, Finset.mem_filter, Finset.mem_product,
-      Finset.mem_univ, true_and]
     constructor
-    · rintro ⟨hne, hpq⟩
-      exact ⟨congrArg Prod.fst hpq, congrArg Prod.snd hpq⟩
-    · rintro ⟨hleft, hright⟩
-      refine ⟨?_, Prod.ext hleft hright⟩
-      intro heq
-      apply hpne
-      calc
-        p.1 = tupleVec n m r q.1 := hleft.symm
-        _ = tupleVec n m r q.2 := heq
-        _ = p.2 := hright
+    · intro hq
+      have hpq := (Finset.mem_filter.mp hq).2
+      exact Finset.mem_product.mpr
+        ⟨Finset.mem_filter.mpr ⟨Finset.mem_univ _, congrArg Prod.fst hpq⟩,
+          Finset.mem_filter.mpr ⟨Finset.mem_univ _, congrArg Prod.snd hpq⟩⟩
+    · intro hq
+      obtain ⟨hleft, hright⟩ := Finset.mem_product.mp hq
+      have hl := (Finset.mem_filter.mp hleft).2
+      have hr := (Finset.mem_filter.mp hright).2
+      apply Finset.mem_filter.mpr
+      refine ⟨Finset.mem_filter.mpr ⟨Finset.mem_product.mpr
+        ⟨Finset.mem_univ _, Finset.mem_univ _⟩, ?_⟩, Prod.ext hl hr⟩
+      exact fun heq => hpne (hl.symm.trans (heq.trans hr))
   rw [hset, Finset.card_product]
   rfl
 
@@ -86,7 +87,7 @@ theorem sum_rawShadowOffDiag_eq_sum_shadowOffDiag
   have hmaps : ∀ q ∈ Q, shadowPair n m r q ∈ P := by
     intro q hq
     simp only [Q, rawShadowOffDiag, Finset.mem_filter, Finset.mem_product,
-      Finset.mem_univ, true_and] at hq
+      Finset.mem_univ, true_and, Finset.mem_filter] at hq
     rw [Finset.mem_offDiag]
     exact ⟨Finset.mem_image_of_mem _ (Finset.mem_univ q.1),
       Finset.mem_image_of_mem _ (Finset.mem_univ q.2), hq⟩

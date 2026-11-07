@@ -1,0 +1,483 @@
+{
+  "description": "Consolidate the exact repeated half-pin proof into its existing Research owner and share symbolic positive-dimensional power-domain transport.",
+  "files": [
+    {
+      "path": "Research/ProximityPrize/Frontier/_PrizeShapeLowRateExactPins.lean",
+      "original_source_sha256": "d1637ae80c380c645157040d108c712cd7bf091686ea3d827704e4ff4cf03641",
+      "original_source": "/-\nCopyright (c) 2026 ArkLib Contributors. All rights reserved.\nReleased under Apache 2.0 license as described in the file LICENSE.\nAuthors: ArkLib Contributors\n-/\nimport Research.ProximityPrize.Frontier._PackingBudgetFirstJump\nimport Research.ProximityPrize.Frontier._HalfPredecessorRateEighthFullWiring\nimport Research.ProximityPrize.Frontier._HalfPredecessorRateSixteenthFullWiring\nimport Research.ProximityPrize.Frontier._SeventeenThirtyTwoFullWiring\nimport Research.ProximityPrize.Frontier._PrizeShapePrimeP30\nimport Research.ProximityPrize.Frontier._PrizeShapePrimeP30Second\nimport Research.ProximityPrize.KKH26RegimeSplit\nimport ArkLib.Data.CodingTheory.ProximityGap.MCALowerBound\n\n/-!\n# Literal bad-count connectors for the prize-shaped low-rate pins\n\nThis file contains no incidence hypothesis hidden behind a named predicate.  Its generic\nconnectors take the literal uniform `mcaEvent`-filter bound produced by the rich-point theorem,\nturn it into an `epsMCA` bound, and feed it to the operational `mcaDeltaStar` ledger.\n\nThere are two prize-shaped arithmetic branches.\n\n* For `P₁ / 2^128 = 2^30`, a predecessor count at most `n` combines with the overlap-packing\n  bad point at `1/2` and pins the threshold exactly at `1/2`.\n* For `P₂ / 2^128 = 2^31 = 2n`, a count at most `2n` at `17/32` proves the strict lower pin\n  `mcaDeltaStar >= 17/32 > 1/2`.\n\nThe generic connectors expose the corresponding literal count as a theorem hypothesis.  The\nrate-`1/8` and rate-`1/16` incidence capstones discharge it for the first certified field, and\nthe rate-`1/16` `17/32` capstone gives the separated lower pin for the second field.  All of\nthe resulting concrete conclusions are unconditional.\n-/\n\nset_option autoImplicit false\nset_option linter.unusedSectionVars false\nset_option maxRecDepth 100000\n\nopen Finset\nopen scoped NNReal ENNReal\nopen ProximityGap ProximityGap.MCAThresholdLedger Code\nopen ArkLib.ProximityGap.KKH26\nopen ArkLib.ProximityGap.PackingBudgetFirstJump\n\nnamespace ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins\n\nattribute [local instance] Classical.propDecidable\n\n/-- The last Hamming lattice radius below `1/2` at even length.  This local definition keeps\nthe literal-count connector independent of the heavier projective R382 stack. -/\nnoncomputable def halfPredecessorRadius (n : ℕ) : ℝ≥0 :=\n  ((n / 2 - 1 : ℕ) : ℝ≥0) / (n : ℝ≥0)\n\n/-- A good half predecessor fills the whole open interval below `1/2`, because `epsMCA`\ndepends only on `floor(delta*n)`. -/\ntheorem half_le_mcaDeltaStar_of_predecessor_good\n    {F : Type} [Field F] [Fintype F] [DecidableEq F]\n    {n : ℕ} [NeZero n] (hnEven : n % 2 = 0) (hn2 : 2 ≤ n)\n    (C : Set (Fin n → F)) (epsilonStar : ℝ≥0∞)\n    (hprev : epsMCA (F := F) (A := F) C (halfPredecessorRadius n) ≤ epsilonStar) :\n    (1 / 2 : ℝ≥0) ≤ mcaDeltaStar (F := F) (A := F) C epsilonStar := by\n  let w : ℕ := n / 2 - 1\n  let deltaPrev : ℝ≥0 := halfPredecessorRadius n\n  have hnpos : 0 < n := by omega\n  have hn0 : (n : ℝ≥0) ≠ 0 := by exact_mod_cast hnpos.ne'\n  have hnHalf : n = 2 * (n / 2) := by omega\n  have hprevMul : deltaPrev * (n : ℝ≥0) = (w : ℝ≥0) := by\n    dsimp only [deltaPrev, halfPredecessorRadius, w]\n    exact div_mul_cancel₀ _ hn0\n  have hhalfMul : (1 / 2 : ℝ≥0) * (n : ℝ≥0) = ((n / 2 : ℕ) : ℝ≥0) := by\n    have hncast : (n : ℝ≥0) = 2 * ((n / 2 : ℕ) : ℝ≥0) := by\n      exact_mod_cast hnHalf\n    rw [hncast]\n    field_simp\n  have hgood : ∀ delta : ℝ≥0, delta < (1 / 2 : ℝ≥0) →\n      epsMCA (F := F) (A := F) C delta ≤ epsilonStar := by\n    intro delta hdelta\n    by_cases hle : delta ≤ deltaPrev\n    · exact le_trans (epsMCA_mono C hle) hprev\n    · have hprevDelta : deltaPrev < delta := lt_of_not_ge hle\n      have hlowerFloor : (w : ℝ≥0) ≤ delta * (n : ℝ≥0) := by\n        have hm := mul_lt_mul_of_pos_right hprevDelta (by positivity)\n        rw [hprevMul] at hm\n        exact hm.le\n      have hupperFloor : delta * (n : ℝ≥0) < ((n / 2 : ℕ) : ℝ≥0) := by\n        have hm := mul_lt_mul_of_pos_right hdelta (by positivity)\n        rwa [hhalfMul] at hm\n      have hfloorDelta :\n          Nat.floor (delta * (Fintype.card (Fin n) : ℝ≥0)) = w := by\n        rw [Fintype.card_fin, Nat.floor_eq_iff (by positivity)]\n        constructor\n        · exact hlowerFloor\n        · dsimp only [w]\n          have hsucc : n / 2 - 1 + 1 = n / 2 := by omega\n          have hcast : (((n / 2 - 1 : ℕ) : ℝ≥0) + 1) =\n              ((n / 2 : ℕ) : ℝ≥0) := by\n            exact_mod_cast hsucc\n          rw [hcast]\n          exact hupperFloor\n      have hfloorPrev :\n          Nat.floor (deltaPrev * (Fintype.card (Fin n) : ℝ≥0)) = w := by\n        rw [Fintype.card_fin, hprevMul, Nat.floor_natCast]\n      rw [ProximityGap.epsMCA_eq_of_floor_eq (F := F) (A := F) C\n        (hfloorDelta.trans hfloorPrev.symm)]\n      exact hprev\n  by_contra hnot\n  rw [not_le] at hnot\n  obtain ⟨delta, hstarDelta, hdeltaHalf⟩ := exists_between hnot\n  have hdeltaLe := le_mcaDeltaStar_of_good (F := F) (A := F) C epsilonStar\n    (le_trans hdeltaHalf.le (by norm_num)) (hgood delta hdeltaHalf)\n  exact (not_lt_of_ge hdeltaLe) hstarDelta\n\n/-- A finite count budget `E * Q <= p` is exactly the normalized inequality\n`E/p <= Q⁻¹` used by the prize ledger. -/\ntheorem natCast_div_le_inv_of_mul_le {E Q p : ℕ}\n    (hQ : 0 < Q) (hp : 0 < p) (hbudget : E * Q ≤ p) :\n    (E : ℝ≥0∞) / (p : ℝ≥0∞) ≤ ((Q : ℝ≥0∞)⁻¹ : ℝ≥0∞) := by\n  have hp0 : (p : ℝ≥0∞) ≠ 0 := by\n    simp only [ne_eq, Nat.cast_eq_zero]\n    omega\n  have hpTop : (p : ℝ≥0∞) ≠ ⊤ := ENNReal.natCast_ne_top p\n  rw [ENNReal.div_le_iff hp0 hpTop]\n  have hQ0 : (Q : ℝ≥0∞) ≠ 0 := by\n    simp only [ne_eq, Nat.cast_eq_zero]\n    omega\n  have hQTop : (Q : ℝ≥0∞) ≠ ⊤ := ENNReal.natCast_ne_top Q\n  calc\n    (E : ℝ≥0∞) ≤ (E : ℝ≥0∞) * Q * (Q : ℝ≥0∞)⁻¹ := by\n      rw [mul_assoc, ENNReal.mul_inv_cancel hQ0 hQTop, mul_one]\n    _ ≤ (p : ℝ≥0∞) * (Q : ℝ≥0∞)⁻¹ := by\n      gcongr\n      exact_mod_cast hbudget\n    _ = (Q : ℝ≥0∞)⁻¹ * (p : ℝ≥0∞) := mul_comm _ _\n\n/-- A literal uniform bad-scalar count gives an operational lower bracket at any radius. -/\ntheorem radius_le_mcaDeltaStar_of_badCount_le\n    {ι F : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]\n    [Field F] [Fintype F] [DecidableEq F]\n    (C : Set (ι → F)) (delta : ℝ≥0) (E : ℕ) (epsilonStar : ℝ≥0∞)\n    (hdelta : delta ≤ 1)\n    (hcount : ∀ u : WordStack F (Fin 2) ι,\n      (Finset.univ.filter fun gamma : F =>\n        mcaEvent C delta (u 0) (u 1) gamma).card ≤ E)\n    (hbudget : (E : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ epsilonStar) :\n    delta ≤ mcaDeltaStar (F := F) (A := F) C epsilonStar := by\n  apply le_mcaDeltaStar_of_good (F := F) (A := F) C epsilonStar hdelta\n  exact le_trans (epsMCA_le_of_badCount_le C delta E hcount) hbudget\n\n/-- **Generic exact-half connector.**  At the tight quotient `p/Q=n`, a literal bound of\n`n` bad scalars at the half predecessor supplies the good side.  The existing overlap packing\nsupplies the bad point at `1/2`; lattice constancy closes the interval between them. -/\ntheorem evalCode_deltaStar_eq_half_of_predecessor_badCount_le\n    {p n k Q : ℕ} [Fact p.Prime] [NeZero n]\n    {g : ZMod p} (hg : orderOf g = n)\n    (hQ : 0 < Q) (hk : 2 ≤ k) (hnEven : n % 2 = 0)\n    (hfloor : p / Q = n) (hkquarter : k ≤ n / 4)\n    (hsupply : 4 ≤ p - n)\n    (hcount : ∀ u : WordStack (ZMod p) (Fin 2) (Fin n),\n      (Finset.univ.filter fun gamma : ZMod p =>\n        mcaEvent (evalCode g n (k - 1)) (halfPredecessorRadius n)\n          (u 0) (u 1) gamma).card ≤ n) :\n    mcaDeltaStar (F := ZMod p) (A := ZMod p) (evalCode g n (k - 1))\n        ((Q : ℝ≥0∞)⁻¹ : ℝ≥0∞) = (1 / 2 : ℝ≥0) := by\n  have hn2 : 2 ≤ n := by omega\n  have hp : 0 < p := (Fact.out (p := p.Prime)).pos\n  have hmul : n * Q ≤ p := by\n    have h := Nat.mul_div_le p Q\n    simpa [hfloor, Nat.mul_comm] using h\n  have hbudget : (n : ℝ≥0∞) / (Fintype.card (ZMod p) : ℝ≥0∞) ≤\n      ((Q : ℝ≥0∞)⁻¹ : ℝ≥0∞) := by\n    rw [ZMod.card]\n    exact natCast_div_le_inv_of_mul_le hQ hp hmul\n  have hprev : epsMCA (F := ZMod p) (A := ZMod p)\n      (evalCode g n (k - 1)) (halfPredecessorRadius n) ≤\n        ((Q : ℝ≥0∞)⁻¹ : ℝ≥0∞) :=\n    le_trans\n      (epsMCA_le_of_badCount_le (evalCode g n (k - 1))\n        (halfPredecessorRadius n) n hcount)\n      hbudget\n  have hlower : (1 / 2 : ℝ≥0) ≤\n      mcaDeltaStar (F := ZMod p) (A := ZMod p) (evalCode g n (k - 1))\n        ((Q : ℝ≥0∞)⁻¹ : ℝ≥0∞) :=\n    half_le_mcaDeltaStar_of_predecessor_good hnEven hn2\n      (evalCode g n (k - 1)) ((Q : ℝ≥0∞)⁻¹ : ℝ≥0∞) hprev\n  have hupper :\n      mcaDeltaStar (F := ZMod p) (A := ZMod p) (evalCode g n (k - 1))\n          ((Q : ℝ≥0∞)⁻¹ : ℝ≥0∞) ≤ (1 / 2 : ℝ≥0) :=\n    mcaDeltaStar_le_half_of_floor_eq_length hg hQ hk hnEven hfloor hkquarter hsupply\n  exact le_antisymm hupper hlower\n\n/-- Normalize the positive dimension before specializing the power-domain code. -/\nprivate theorem evalCode_pred_eq_reedSolomon {p n k : ℕ} [Fact p.Prime] [NeZero n]\n    (g : ZMod p) (hg : orderOf g = n) (hg0 : g ≠ 0) (hk : 0 < k) :\n    evalCode g n (k - 1) =\n      (ReedSolomon.code (ProximityGap.KKH26RegimeSplit.powDomain g hg hg0) k :\n        Set (Fin n → ZMod p)) := by\n  have hdim : k - 1 + 1 = k := Nat.sub_add_cancel hk\n  simpa only [hdim] using\n    ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon g hg hg0 (k - 1)\n\n/-! ## Concrete prize-shaped arithmetic specializations -/\n\nlocal instance firstPrimeFact :\n    Fact (Nat.Prime ArkLib.ProximityGap.PrizeShapePrimeP30.P) :=\n  ⟨ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P⟩\n\nlocal instance secondPrimeFact :\n    Fact (Nat.Prime ArkLib.ProximityGap.PrizeShapePrimeP30Second.P) :=\n  ⟨ArkLib.ProximityGap.PrizeShapePrimeP30Second.prime_P⟩\n\n/-- At the first certified prize-shaped prime, the literal rate-`1/16` predecessor count\nimmediately pins the operational threshold to `1/2`. -/\ntheorem firstPrime_rateSixteenth_deltaStar_eq_half_of_badCount\n    (hcount : ∀ u : WordStack\n      (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P) (Fin 2) (Fin (2 ^ 30)),\n      (Finset.univ.filter fun gamma : ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P =>\n        mcaEvent\n          (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 26 - 1))\n          (halfPredecessorRadius (2 ^ 30)) (u 0) (u 1) gamma).card ≤ 2 ^ 30) :\n    mcaDeltaStar\n      (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n      (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n      (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 26 - 1))\n      (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) = (1 / 2 : ℝ≥0) := by\n  letI : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩\n  exact evalCode_deltaStar_eq_half_of_predecessor_badCount_le\n    ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g\n    (by norm_num) (by norm_num) (by norm_num)\n    ArkLib.ProximityGap.PrizeShapePrimeP30.P_div_two_pow_128\n    (by norm_num) (by norm_num) hcount\n\nset_option backward.isDefEq.respectTransparency false in\n/-- **Unconditional first-prime rate-`1/16` pin.**  The fully assembled rich-point\nincidence theorem supplies the literal predecessor count, so the prize-shaped operational\nthreshold is exactly `1/2` with no named geometric residual. -/\ntheorem firstPrime_rateSixteenth_deltaStar_eq_half :\n    mcaDeltaStar\n      (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n      (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n      (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 26 - 1))\n      (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) = (1 / 2 : ℝ≥0) := by\n  apply firstPrime_rateSixteenth_deltaStar_eq_half_of_badCount\n  intro u\n  letI : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩\n  have hg0 : ArkLib.ProximityGap.PrizeShapePrimeP30.g ≠ 0 :=\n    ProximityGap.KKH26RegimeSplit.ne_zero_of_orderOf_eq\n      ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g\n  let dom : Fin (2 ^ 30) ↪ ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P :=\n    ProximityGap.KKH26RegimeSplit.powDomain\n      ArkLib.ProximityGap.PrizeShapePrimeP30.g\n      ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g hg0\n  have hcount :=\n    ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenthFullWiring.halfPredecessor_badScalar_filter_card_le_length\n        (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n        (n := 2 ^ 30) (h := 2 ^ 29) (k := 2 ^ 26)\n        dom (by norm_num) (by norm_num) (by norm_num) u\n  have hcode :\n      evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g\n          (2 ^ 30) (2 ^ 26 - 1) =\n        (ReedSolomon.code dom (2 ^ 26) :\n          Set (Fin (2 ^ 30) → ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)) := by\n    exact evalCode_pred_eq_reedSolomon (k := 2 ^ 26)\n      ArkLib.ProximityGap.PrizeShapePrimeP30.g\n      ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g hg0 (by norm_num)\n  rw [← hcode] at hcount\n  simpa only [halfPredecessorRadius,\n    ArkLib.ProximityGap.Frontier.R382HalfRadiusPinConnector.halfPredecessorRadius]\n    using hcount\n\nset_option backward.isDefEq.respectTransparency false in\n/-- **Unconditional first-prime rate-`1/8` pin.**  The complete exceptional-line\npruning and third-moment incidence theorem bounds the literal predecessor bad-scalar\nset by the code length, so the operational threshold is exactly `1/2`. -/\ntheorem firstPrime_rateEighth_deltaStar_eq_half :\n    mcaDeltaStar\n      (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n      (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n      (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 27 - 1))\n      (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) = (1 / 2 : ℝ≥0) := by\n  letI : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩\n  apply evalCode_deltaStar_eq_half_of_predecessor_badCount_le\n    ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g\n    (by norm_num) (by norm_num) (by norm_num)\n    ArkLib.ProximityGap.PrizeShapePrimeP30.P_div_two_pow_128\n    (by norm_num) (by norm_num)\n  intro u\n  have hg0 : ArkLib.ProximityGap.PrizeShapePrimeP30.g ≠ 0 :=\n    ProximityGap.KKH26RegimeSplit.ne_zero_of_orderOf_eq\n      ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g\n  let dom : Fin (2 ^ 30) ↪ ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P :=\n    ProximityGap.KKH26RegimeSplit.powDomain\n      ArkLib.ProximityGap.PrizeShapePrimeP30.g\n      ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g hg0\n  have hcount :=\n    ArkLib.ProximityGap.Frontier.HalfPredecessorRateEighthFullWiring.halfPredecessor_badScalar_filter_card_le_two_pow_thirty\n      (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n      (k := 2 ^ 27) dom (by norm_num) (by norm_num) u\n  have hcode :\n      evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g\n          (2 ^ 30) (2 ^ 27 - 1) =\n        (ReedSolomon.code dom (2 ^ 27) :\n          Set (Fin (2 ^ 30) → ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)) := by\n    exact evalCode_pred_eq_reedSolomon (k := 2 ^ 27)\n      ArkLib.ProximityGap.PrizeShapePrimeP30.g\n      ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g hg0 (by norm_num)\n  rw [← hcode] at hcount\n  simpa only [halfPredecessorRadius,\n    ArkLib.ProximityGap.Frontier.R382HalfRadiusPinConnector.halfPredecessorRadius]\n    using hcount\n\n/-- At the second certified prime, a literal `2n` bad-count bound at `17/32` gives a\nstrictly-beyond-half operational lower pin. -/\ntheorem secondPrime_rateSixteenth_seventeenThirtyTwo_le_deltaStar_of_badCount\n    (hcount : ∀ u : WordStack\n      (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P) (Fin 2) (Fin (2 ^ 30)),\n      (Finset.univ.filter fun gamma : ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P =>\n        mcaEvent\n          (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g\n            (2 ^ 30) (2 ^ 26 - 1))\n          (17 / 32 : ℝ≥0) (u 0) (u 1) gamma).card ≤ 2 ^ 31) :\n    (17 / 32 : ℝ≥0) ≤\n      mcaDeltaStar\n        (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n        (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n        (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g\n          (2 ^ 30) (2 ^ 26 - 1))\n        (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) := by\n  have hp : 0 < ArkLib.ProximityGap.PrizeShapePrimeP30Second.P :=\n    ArkLib.ProximityGap.PrizeShapePrimeP30Second.prime_P.pos\n  have hmul : (2 ^ 31 : ℕ) * 2 ^ 128 ≤\n      ArkLib.ProximityGap.PrizeShapePrimeP30Second.P := by norm_num\n  have hbudget : ((2 ^ 31 : ℕ) : ℝ≥0∞) /\n      (Fintype.card (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P) : ℝ≥0∞) ≤\n        (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) := by\n    rw [ZMod.card]\n    exact natCast_div_le_inv_of_mul_le (by norm_num) hp hmul\n  exact radius_le_mcaDeltaStar_of_badCount_le\n    (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g\n      (2 ^ 30) (2 ^ 26 - 1))\n    (17 / 32 : ℝ≥0) (2 ^ 31)\n    (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞)\n    (by\n      rw [div_le_iff₀ (by norm_num : (0 : ℝ≥0) < 32)]\n      norm_num) hcount hbudget\n\n/-- The second-prime conclusion is genuinely separated from the first-prime half pin. -/\ntheorem secondPrime_rateSixteenth_half_lt_deltaStar_of_badCount\n    (hcount : ∀ u : WordStack\n      (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P) (Fin 2) (Fin (2 ^ 30)),\n      (Finset.univ.filter fun gamma : ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P =>\n        mcaEvent\n          (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g\n            (2 ^ 30) (2 ^ 26 - 1))\n          (17 / 32 : ℝ≥0) (u 0) (u 1) gamma).card ≤ 2 ^ 31) :\n    (1 / 2 : ℝ≥0) <\n      mcaDeltaStar\n        (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n        (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n        (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g\n          (2 ^ 30) (2 ^ 26 - 1))\n        (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) := by\n  exact lt_of_lt_of_le (by norm_num)\n    (secondPrime_rateSixteenth_seventeenThirtyTwo_le_deltaStar_of_badCount hcount)\n\n/-- **Unconditional second-prime rate-`1/16` lower pin.**  The assembled\n`17/32` incidence theorem supplies the literal `2n` scalar budget. -/\ntheorem secondPrime_rateSixteenth_seventeenThirtyTwo_le_deltaStar :\n    (17 / 32 : ℝ≥0) ≤\n      mcaDeltaStar\n        (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n        (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n        (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g\n          (2 ^ 30) (2 ^ 26 - 1))\n        (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) := by\n  apply secondPrime_rateSixteenth_seventeenThirtyTwo_le_deltaStar_of_badCount\n  intro u\n  letI : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩\n  have hg0 : ArkLib.ProximityGap.PrizeShapePrimeP30Second.g ≠ 0 :=\n    ProximityGap.KKH26RegimeSplit.ne_zero_of_orderOf_eq\n      ArkLib.ProximityGap.PrizeShapePrimeP30Second.orderOf_g\n  let dom : Fin (2 ^ 30) ↪ ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P :=\n    ProximityGap.KKH26RegimeSplit.powDomain\n      ArkLib.ProximityGap.PrizeShapePrimeP30Second.g\n      ArkLib.ProximityGap.PrizeShapePrimeP30Second.orderOf_g hg0\n  have hcount :=\n    ArkLib.ProximityGap.Frontier.SeventeenThirtyTwoFullWiring.seventeenThirtyTwo_badScalar_filter_card_le_two_mul_length\n      (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n      (n := 2 ^ 30) (m := 2 ^ 25) (k := 2 ^ 26)\n      dom (by norm_num) (by norm_num) (by norm_num) u\n  have hcode :\n      evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g\n          (2 ^ 30) (2 ^ 26 - 1) =\n        (ReedSolomon.code dom (2 ^ 26) :\n          Set (Fin (2 ^ 30) → ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)) := by\n    exact evalCode_pred_eq_reedSolomon (k := 2 ^ 26)\n      ArkLib.ProximityGap.PrizeShapePrimeP30Second.g\n      ArkLib.ProximityGap.PrizeShapePrimeP30Second.orderOf_g hg0 (by norm_num)\n  rw [← hcode] at hcount\n  simpa only [show 2 * 2 ^ 30 = 2 ^ 31 by norm_num] using hcount\n\n/-- The two certified prize-shaped fields have genuinely different operational\nrate-`1/16` thresholds: the second lies strictly above the first field's exact half pin. -/\ntheorem secondPrime_rateSixteenth_half_lt_deltaStar :\n    (1 / 2 : ℝ≥0) <\n      mcaDeltaStar\n        (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n        (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n        (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g\n          (2 ^ 30) (2 ^ 26 - 1))\n        (((2 ^ 128 : ℕ) : ℝ≥0∞)⁻¹ : ℝ≥0∞) :=\n  lt_of_lt_of_le (by norm_num)\n    secondPrime_rateSixteenth_seventeenThirtyTwo_le_deltaStar\n\nend ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins\n\n/-! ## Axiom audit -/\n\n#print axioms\n  ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.evalCode_deltaStar_eq_half_of_predecessor_badCount_le\n#print axioms\n  ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.firstPrime_rateSixteenth_deltaStar_eq_half_of_badCount\n#print axioms\n  ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.firstPrime_rateSixteenth_deltaStar_eq_half\n#print axioms\n  ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.firstPrime_rateEighth_deltaStar_eq_half\n#print axioms\n  ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.secondPrime_rateSixteenth_half_lt_deltaStar_of_badCount\n#print axioms\n  ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.secondPrime_rateSixteenth_half_lt_deltaStar\n",
+      "reviewed_source_sha256": "043c73a17ef56e7fa6bc33bf9699a1da749f7eeb542b544ef17b4a8ab9f5bc1f",
+      "original_public_count": 12,
+      "reviewed_public_count": 13,
+      "existing_public_contracts": [
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.halfPredecessorRadius",
+          "header_unchanged": true,
+          "active_context_unchanged": true
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.half_le_mcaDeltaStar_of_predecessor_good",
+          "header_unchanged": true,
+          "active_context_unchanged": true
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.natCast_div_le_inv_of_mul_le",
+          "header_unchanged": true,
+          "active_context_unchanged": true
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.radius_le_mcaDeltaStar_of_badCount_le",
+          "header_unchanged": true,
+          "active_context_unchanged": true
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.evalCode_deltaStar_eq_half_of_predecessor_badCount_le",
+          "header_unchanged": true,
+          "active_context_unchanged": true
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.firstPrime_rateSixteenth_deltaStar_eq_half_of_badCount",
+          "header_unchanged": true,
+          "active_context_unchanged": true
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.firstPrime_rateSixteenth_deltaStar_eq_half",
+          "header_unchanged": true,
+          "active_context_unchanged": true
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.firstPrime_rateEighth_deltaStar_eq_half",
+          "header_unchanged": true,
+          "active_context_unchanged": true
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.secondPrime_rateSixteenth_seventeenThirtyTwo_le_deltaStar_of_badCount",
+          "header_unchanged": true,
+          "active_context_unchanged": true
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.secondPrime_rateSixteenth_half_lt_deltaStar_of_badCount",
+          "header_unchanged": true,
+          "active_context_unchanged": true
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.secondPrime_rateSixteenth_seventeenThirtyTwo_le_deltaStar",
+          "header_unchanged": true,
+          "active_context_unchanged": true
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.secondPrime_rateSixteenth_half_lt_deltaStar",
+          "header_unchanged": true,
+          "active_context_unchanged": true
+        }
+      ],
+      "new_public_declarations": [
+        "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.evalCode_pred_eq_reedSolomon"
+      ],
+      "removed_public_declarations": [],
+      "options_unchanged": true,
+      "original_axiom_anchor_count": 6,
+      "reviewed_axiom_anchor_count": 7,
+      "helper_promotion": {
+        "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.evalCode_pred_eq_reedSolomon",
+        "change": "Documented public Research helper; signature, body and context unchanged modulo visibility.",
+        "active_command_identical_modulo_private": true
+      }
+    },
+    {
+      "path": "Research/ProximityPrize/Frontier/_PrizeShapeGrandChallengeRefutation.lean",
+      "original_source_sha256": "131afcbceceff4337e5d0dee65cbd05d90352889d853419ef050856ad9473e67",
+      "original_source": "/-\nCopyright (c) 2026 ArkLib Contributors. All rights reserved.\nReleased under Apache 2.0 license as described in the file LICENSE.\nAuthors: ArkLib Contributors\n-/\nimport Research.ProximityPrize.Frontier._PrizeShapeLowRateExactPins\nimport Research.ProximityPrize.Frontier._PackingBudgetFirstJump\nimport Research.ProximityPrize.Frontier._HalfPredecessorRateSixteenthFullWiring\nimport Research.ProximityPrize.Frontier._KKH26InteriorCeilingLatticeBridge\nimport ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConverse\n\n/-!\n# The real-valued Grand MCA predicate fails at the first prize-shaped prime\n\nThe operational good-radius set at rates `1/8` and `1/16` has supremum `1/2`, but\nthe endpoint `1/2` is bad at budget `2^-128`.  Consequently it has no largest\nelement.  This refutes the real-valued `GrandMCAResolution` / `continuousMcaPrize` predicate\nfor the certified smooth domain.  The faithful lattice threshold is unaffected.\n-/\n\nset_option autoImplicit false\nset_option maxRecDepth 100000\n\nopen scoped NNReal ENNReal\nopen ProximityGap ProximityGap.MCAThresholdLedger\nopen ProximityGap.GrandChallenges\nopen ArkLib.ProximityGap.KKH26\nopen ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins\n\nnamespace ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation\n\nlocal instance firstPrimeFact : Fact (Nat.Prime PrizeShapePrimeP30.P) :=\n  ⟨PrizeShapePrimeP30.prime_P⟩\n\n/-- A bad operational supremum cannot be represented by the attained-maximum\nfield of `GrandMCAResolution`. -/\ntheorem not_nonempty_resolution_of_bad_at_deltaStar\n    {F : Type} [Field F] [Fintype F] [DecidableEq F]\n    {n : ℕ} [NeZero n] (C : Set (Fin n → F)) (epsilonStar : ℝ≥0)\n    (hbad : (epsilonStar : ENNReal) <\n      epsMCA (F := F) (A := F) C\n        (mcaDeltaStar (F := F) (A := F) C (epsilonStar : ENNReal))) :\n    ¬ Nonempty (GrandMCAResolution C epsilonStar) := by\n  rintro ⟨R⟩\n  rcases lt_or_ge R.δStar\n      (mcaDeltaStar (F := F) (A := F) C (epsilonStar : ENNReal)) with hlt | hge\n  · obtain ⟨delta, hRdelta, hdeltaStar⟩ := exists_between hlt\n    have hgood := ProximityGap.OpenCoreConverse.epsMCA_le_of_lt_mcaDeltaStar\n      (F := F) (A := F) C (epsilonStar : ENNReal) hdeltaStar\n    have hstarOne :\n        mcaDeltaStar (F := F) (A := F) C (epsilonStar : ENNReal) ≤ 1 := by\n      unfold mcaDeltaStar\n      exact csSup_le' (fun _ hdelta' => hdelta'.1)\n    have hdeltaOne : delta ≤ 1 := le_trans hdeltaStar.le hstarOne\n    exact (not_lt_of_ge hgood) (R.maximal delta hRdelta hdeltaOne)\n  · have hgood : epsMCA (F := F) (A := F) C\n        (mcaDeltaStar (F := F) (A := F) C (epsilonStar : ENNReal)) ≤\n        (epsilonStar : ENNReal) :=\n      le_trans (epsMCA_mono C hge) R.bound\n    exact (not_lt_of_ge hgood) hbad\n\n/-- The canonical smooth power domain at the first certified prime. -/\nnoncomputable def firstPrimeDomain :\n    Fin (2 ^ 30) ↪ ZMod PrizeShapePrimeP30.P :=\n  ProximityGap.KKH26RegimeSplit.powDomain\n    PrizeShapePrimeP30.g PrizeShapePrimeP30.orderOf_g\n    (ProximityGap.KKH26RegimeSplit.ne_zero_of_orderOf_eq\n      PrizeShapePrimeP30.orderOf_g)\n\n/-- The literal rate-`1/16` count theorem closes the conditional exact-pin connector. -/\ntheorem firstPrime_rateSixteenth_deltaStar_eq_half_local :\n    mcaDeltaStar\n      (F := ZMod PrizeShapePrimeP30.P) (A := ZMod PrizeShapePrimeP30.P)\n      (evalCode PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 26 - 1))\n      (((2 ^ 128 : ℕ) : ENNReal)⁻¹ : ENNReal) = (1 / 2 : ℝ≥0) := by\n  apply firstPrime_rateSixteenth_deltaStar_eq_half_of_badCount\n  intro u\n  letI : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩\n  have hcount :=\n    ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenthFullWiring.halfPredecessor_badScalar_filter_card_le_length\n      (F := ZMod PrizeShapePrimeP30.P) (n := 2 ^ 30) (h := 2 ^ 29) (k := 2 ^ 26)\n      firstPrimeDomain (by norm_num) (by norm_num) (by norm_num) u\n  have hcode :\n      evalCode PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 26 - 1) =\n        (ReedSolomon.code firstPrimeDomain (2 ^ 26) :\n          Set (Fin (2 ^ 30) → ZMod PrizeShapePrimeP30.P)) := by\n    simpa only [firstPrimeDomain, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 26)] using\n      (ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon\n        PrizeShapePrimeP30.g PrizeShapePrimeP30.orderOf_g\n        (ProximityGap.KKH26RegimeSplit.ne_zero_of_orderOf_eq\n          PrizeShapePrimeP30.orderOf_g) (2 ^ 26 - 1))\n  rw [← hcode] at hcount\n  simpa only [halfPredecessorRadius,\n    ArkLib.ProximityGap.Frontier.R382HalfRadiusPinConnector.halfPredecessorRadius] using hcount\n\n/-- At rate `1/16`, the same open-endpoint phenomenon forbids a witness. -/\ntheorem not_grandMCAChallengeRS_rateSixteenth :\n    ¬ grandMCAChallengeRS firstPrimeDomain (2 ^ 26) epsStar := by\n  intro h\n  rcases h with ⟨delta, hdelta, hbound, hmax⟩\n  apply not_nonempty_resolution_of_bad_at_deltaStar\n    (C := (ReedSolomon.code firstPrimeDomain (2 ^ 26) :\n      Set (Fin (2 ^ 30) → ZMod PrizeShapePrimeP30.P)))\n    (epsilonStar := epsStar)\n  · have hcode :\n        (ReedSolomon.code firstPrimeDomain (2 ^ 26) :\n            Set (Fin (2 ^ 30) → ZMod PrizeShapePrimeP30.P)) =\n          evalCode PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 26 - 1) := by\n      symm\n      simpa only [firstPrimeDomain, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 26)] using\n        (ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon\n          PrizeShapePrimeP30.g PrizeShapePrimeP30.orderOf_g\n          (ProximityGap.KKH26RegimeSplit.ne_zero_of_orderOf_eq\n            PrizeShapePrimeP30.orderOf_g) (2 ^ 26 - 1))\n    have heps : (epsStar : ENNReal) =\n        (((2 ^ 128 : ℕ) : ENNReal)⁻¹ : ENNReal) := by\n      norm_num [epsStar, div_eq_mul_inv]\n    rw [heps, hcode, firstPrime_rateSixteenth_deltaStar_eq_half_local]\n    exact\n      (ArkLib.ProximityGap.PackingBudgetFirstJump.inv_lt_epsMCA_half_of_floor_eq_length\n        PrizeShapePrimeP30.orderOf_g (by norm_num) (by norm_num) (by norm_num)\n        PrizeShapePrimeP30.P_div_two_pow_128 (by norm_num) (by norm_num))\n  · exact ⟨⟨delta, hdelta, hbound, hmax⟩⟩\n\n/-- The fourth advertised prize rate gives dimension exactly `2^26` at length `2^30`. -/\ntheorem prizeRateSixteenth_floor :\n    ⌊prizeRates (⟨3, by norm_num⟩ : Fin 4) *\n      (Fintype.card (Fin (2 ^ 30)) : ℝ≥0)⌋₊ = 2 ^ 26 := by\n  norm_num [prizeRates]\n\n/-- **Formal prize verdict.**  The real-valued ABF26 MCA prize predicate is false\non the first certified smooth domain because its rate-`1/8` good-radius set has no\nlargest element. -/\ntheorem not_mcaPrize_firstPrimeDomain : ¬ continuousMcaPrize firstPrimeDomain := by\n  intro hprize\n  have hrate := hprize (⟨3, by norm_num⟩ : Fin 4)\n  apply not_grandMCAChallengeRS_rateSixteenth\n  simpa only [grandMCAChallengeRSrate, prizeRateSixteenth_floor] using hrate\n\n#print axioms not_nonempty_resolution_of_bad_at_deltaStar\n#print axioms firstPrime_rateSixteenth_deltaStar_eq_half_local\n#print axioms not_grandMCAChallengeRS_rateSixteenth\n#print axioms prizeRateSixteenth_floor\n#print axioms not_mcaPrize_firstPrimeDomain\n\nend ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation\n",
+      "reviewed_source_sha256": "b645ea5ab218cd37fc7ff5b16020f7cf1fcc53b08c46555dcd0cd8bfff03e734",
+      "original_public_count": 6,
+      "reviewed_public_count": 6,
+      "existing_public_contracts": [
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation.not_nonempty_resolution_of_bad_at_deltaStar",
+          "header_unchanged": true,
+          "active_context_unchanged": true
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation.firstPrimeDomain",
+          "header_unchanged": true,
+          "active_context_unchanged": true
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation.firstPrime_rateSixteenth_deltaStar_eq_half_local",
+          "header_unchanged": true,
+          "active_context_unchanged": true
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation.not_grandMCAChallengeRS_rateSixteenth",
+          "header_unchanged": true,
+          "active_context_unchanged": true
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation.prizeRateSixteenth_floor",
+          "header_unchanged": true,
+          "active_context_unchanged": true
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation.not_mcaPrize_firstPrimeDomain",
+          "header_unchanged": true,
+          "active_context_unchanged": true
+        }
+      ],
+      "new_public_declarations": [],
+      "removed_public_declarations": [],
+      "options_unchanged": true,
+      "original_axiom_anchor_count": 5,
+      "reviewed_axiom_anchor_count": 5
+    }
+  ],
+  "package_validation_pending": false,
+  "source_revision_before_change": "1d95629b0e4037357f0e37be0697c47349bc29b8",
+  "scope": [
+    "Research/ProximityPrize/Frontier/_PrizeShapeLowRateExactPins.lean",
+    "Research/ProximityPrize/Frontier/_PrizeShapeGrandChallengeRefutation.lean"
+  ],
+  "implementation_dispositions": [
+    {
+      "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation.firstPrime_rateSixteenth_deltaStar_eq_half_local",
+      "disposition": "Public wrapper retains its exact statement and delegates the existing LowRate firstPrime_rateSixteenth_deltaStar_eq_half owner; its repeated count/code-transport proof is preserved in original_source."
+    },
+    {
+      "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation.not_grandMCAChallengeRS_rateSixteenth",
+      "disposition": "Public statement and endpoint refutation proof retained. Its code-set equality uses the shared symbolic positive-dimension helper instead of specializing predecessor arithmetic inside a large code representation."
+    }
+  ],
+  "semantic_boundary": "This refutes the real-valued attained-maximum GrandMCAResolution / continuousMcaPrize model at the first certified domain and rate 1/16. The faithful lattice threshold and production prize conjecture are not refuted.",
+  "documentation_correction": "Correct the final theorem docstring rate from 1/8 to the actual fourth advertised rate 1/16; theorem statement and proof target are unchanged.",
+  "honesty": {
+    "new_admissions": 0,
+    "new_axioms": 0,
+    "new_public_premises": 0,
+    "canonical_source_edits": 0,
+    "budget_increases": 0,
+    "all_18_existing_public_headers_and_active_contexts_unchanged": true
+  },
+  "validation": {
+    "low_rate_source": {
+      "file": "Research/ProximityPrize/Frontier/_PrizeShapeLowRateExactPins.lean",
+      "status": "temporary_overlay_source_check",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "elapsed_seconds": 7.348,
+      "source_before_sha256": "043c73a17ef56e7fa6bc33bf9699a1da749f7eeb542b544ef17b4a8ab9f5bc1f",
+      "source_after_sha256": "043c73a17ef56e7fa6bc33bf9699a1da749f7eeb542b544ef17b4a8ab9f5bc1f",
+      "import_artifacts": {
+        "Research.ProximityPrize.Frontier._PackingBudgetFirstJump": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_PackingBudgetFirstJump.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_PackingBudgetFirstJump.olean",
+          "sha256": "60b5545f0e1c4a2be83d449346a45fcfc1f7cb610ac373d2c50d07b1a748a91e",
+          "artifact_family": {
+            "_PackingBudgetFirstJump.olean": "60b5545f0e1c4a2be83d449346a45fcfc1f7cb610ac373d2c50d07b1a748a91e"
+          }
+        },
+        "Research.ProximityPrize.Frontier._HalfPredecessorRateEighthFullWiring": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_HalfPredecessorRateEighthFullWiring.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_HalfPredecessorRateEighthFullWiring.olean",
+          "sha256": "312b6dabd36e9055f9aa3c014da292903d4fbdbed230e536726aa8655f5b4e44",
+          "artifact_family": {
+            "_HalfPredecessorRateEighthFullWiring.olean": "312b6dabd36e9055f9aa3c014da292903d4fbdbed230e536726aa8655f5b4e44"
+          }
+        },
+        "Research.ProximityPrize.Frontier._HalfPredecessorRateSixteenthFullWiring": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_HalfPredecessorRateSixteenthFullWiring.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_HalfPredecessorRateSixteenthFullWiring.olean",
+          "sha256": "af32ff8f741a8e4436b41987daa3d8526973a002cc5ae2f5b33394be0b299150",
+          "artifact_family": {
+            "_HalfPredecessorRateSixteenthFullWiring.olean": "af32ff8f741a8e4436b41987daa3d8526973a002cc5ae2f5b33394be0b299150"
+          }
+        },
+        "Research.ProximityPrize.Frontier._SeventeenThirtyTwoFullWiring": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_SeventeenThirtyTwoFullWiring.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_SeventeenThirtyTwoFullWiring.olean",
+          "sha256": "9e6949ba5a402bef8ebe121c444cb19a4cbf97d25ccc856b41ab001b081a52b2",
+          "artifact_family": {
+            "_SeventeenThirtyTwoFullWiring.olean": "9e6949ba5a402bef8ebe121c444cb19a4cbf97d25ccc856b41ab001b081a52b2"
+          }
+        },
+        "Research.ProximityPrize.Frontier._PrizeShapePrimeP30": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_PrizeShapePrimeP30.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_PrizeShapePrimeP30.olean",
+          "sha256": "2fa60b860ad07dcb05fc496f1c5c941ae7b8f50a74e095755f59bdf3dacdaef9",
+          "artifact_family": {
+            "_PrizeShapePrimeP30.olean": "2fa60b860ad07dcb05fc496f1c5c941ae7b8f50a74e095755f59bdf3dacdaef9"
+          }
+        },
+        "Research.ProximityPrize.Frontier._PrizeShapePrimeP30Second": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_PrizeShapePrimeP30Second.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_PrizeShapePrimeP30Second.olean",
+          "sha256": "c8e24d6d86125712c7c4ac02936fa9144cbde0b1c175946e9fb4250881c31ce9",
+          "artifact_family": {
+            "_PrizeShapePrimeP30Second.olean": "c8e24d6d86125712c7c4ac02936fa9144cbde0b1c175946e9fb4250881c31ce9"
+          }
+        },
+        "Research.ProximityPrize.KKH26RegimeSplit": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/KKH26RegimeSplit.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/KKH26RegimeSplit.olean",
+          "sha256": "52a4d2f5ecee1e027a3e6d527936255d75fa30c899123a1643808125b1689f78",
+          "artifact_family": {
+            "KKH26RegimeSplit.olean": "52a4d2f5ecee1e027a3e6d527936255d75fa30c899123a1643808125b1689f78"
+          }
+        },
+        "ArkLib.Data.CodingTheory.ProximityGap.MCALowerBound": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/Data/CodingTheory/ProximityGap/MCALowerBound.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/Data/CodingTheory/ProximityGap/MCALowerBound.olean",
+          "sha256": "a0fafbbbd02bdac76ab2eaef09e0da64a548a87b1ba47e884eec872bd115e0c7",
+          "artifact_family": {
+            "MCALowerBound.olean": "a0fafbbbd02bdac76ab2eaef09e0da64a548a87b1ba47e884eec872bd115e0c7"
+          }
+        }
+      },
+      "imports_unchanged": true,
+      "log": "/tmp/arklib-native-overlay/logs/Research.ProximityPrize.Frontier._PrizeShapeLowRateExactPins.lean.1793257491320013000.check.log",
+      "not_a_lake_package_build": true,
+      "axiom_anchors": [
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.evalCode_pred_eq_reedSolomon",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.evalCode_deltaStar_eq_half_of_predecessor_badCount_le",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.firstPrime_rateSixteenth_deltaStar_eq_half_of_badCount",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.firstPrime_rateSixteenth_deltaStar_eq_half",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.firstPrime_rateEighth_deltaStar_eq_half",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.secondPrime_rateSixteenth_half_lt_deltaStar_of_badCount",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.secondPrime_rateSixteenth_half_lt_deltaStar",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        }
+      ]
+    },
+    "grand_refutation_source": {
+      "status": "actual_target_build_pass",
+      "receipt": "/tmp/arklib-full24-actual-grand-owners.receipt.json",
+      "compiler_exit_code": 0,
+      "source_stable": true,
+      "axiom_anchors": [
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation.not_nonempty_resolution_of_bad_at_deltaStar",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation.firstPrime_rateSixteenth_deltaStar_eq_half_local",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation.not_grandMCAChallengeRS_rateSixteenth",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation.prizeRateSixteenth_floor",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation.not_mcaPrize_firstPrimeDomain",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        }
+      ]
+    },
+    "temporary_overlay_owner_warm": {
+      "status": "canceled_no_target_result",
+      "receipt": "/tmp/arklib-LowRate-public-bridge-owner.jsonl",
+      "wrapper_exit_code": 143,
+      "reason": "Stopped only the owned overlay wrapper/descendants at root request; actual full24 had already built the unchanged ancestor sources. Partial overlay ancestors do not constitute a target or package pass."
+    },
+    "actual_owner_build": {
+      "command": [
+        "./scripts/lake-locked.sh",
+        "build",
+        "Research.ProximityPrize.Frontier._PrizeShapeLowRateExactPins",
+        "Research.ProximityPrize.Frontier._PrizeShapeGrandChallengeRefutation"
+      ],
+      "compiler_exit_code": 0,
+      "seconds": 12.59,
+      "before": {
+        "Research/ProximityPrize/Frontier/_PrizeShapeLowRateExactPins.lean": "043c73a17ef56e7fa6bc33bf9699a1da749f7eeb542b544ef17b4a8ab9f5bc1f",
+        "Research/ProximityPrize/Frontier/_PrizeShapeGrandChallengeRefutation.lean": "b645ea5ab218cd37fc7ff5b16020f7cf1fcc53b08c46555dcd0cd8bfff03e734"
+      },
+      "after": {
+        "Research/ProximityPrize/Frontier/_PrizeShapeLowRateExactPins.lean": "043c73a17ef56e7fa6bc33bf9699a1da749f7eeb542b544ef17b4a8ab9f5bc1f",
+        "Research/ProximityPrize/Frontier/_PrizeShapeGrandChallengeRefutation.lean": "b645ea5ab218cd37fc7ff5b16020f7cf1fcc53b08c46555dcd0cd8bfff03e734"
+      },
+      "source_stable": true,
+      "log": "/tmp/arklib-full24-actual-grand-owners.log",
+      "receipt": "/tmp/arklib-full24-actual-grand-owners.receipt.json",
+      "status": "passed_targeted_package_build",
+      "axiom_anchors": [
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.evalCode_pred_eq_reedSolomon",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.evalCode_deltaStar_eq_half_of_predecessor_badCount_le",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.firstPrime_rateSixteenth_deltaStar_eq_half_of_badCount",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.firstPrime_rateSixteenth_deltaStar_eq_half",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.firstPrime_rateEighth_deltaStar_eq_half",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.secondPrime_rateSixteenth_half_lt_deltaStar_of_badCount",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.secondPrime_rateSixteenth_half_lt_deltaStar",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation.not_nonempty_resolution_of_bad_at_deltaStar",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation.firstPrime_rateSixteenth_deltaStar_eq_half_local",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation.not_grandMCAChallengeRS_rateSixteenth",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation.prizeRateSixteenth_floor",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        },
+        {
+          "declaration": "ArkLib.ProximityGap.Frontier.PrizeShapeGrandChallengeRefutation.not_mcaPrize_firstPrimeDomain",
+          "axioms": [
+            "propext",
+            "Classical.choice",
+            "Quot.sound"
+          ]
+        }
+      ],
+      "whole_default_package_validation_pending": true
+    }
+  },
+  "current_validation": {
+    "status": "package_validation_passed",
+    "receipt": "scripts/integration/final-validation.json",
+    "check": "default_libraries",
+    "source_commit": "7483975d251b3549313243ea9d5ada700af121f9",
+    "source_snapshot_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+    "resolved_package_pending_paths": [
+      "/package_validation_pending"
+    ],
+    "superseded_historical_status_paths": [],
+    "scope": "Current checked-in sources passed the final four-library package build. Original status text and all earlier receipts remain historical snapshots, not current pending claims."
+  }
+}

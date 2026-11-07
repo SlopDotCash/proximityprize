@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.OracleReduction.Composition.Sequential.Append
+import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.Append
 
 /-!
 # Sequential composition with an empty trailing protocol
@@ -83,42 +83,9 @@ appended run then matches `P₁.run >>= P₂.run` with the empty trailing transc
 `Prover.appendRunRightResidual_holds_msg` for `n = 0`. -/
 theorem appendRunRightResidual_holds_empty (stmt : Stmt₁) (wit : Wit₁) :
     appendRunRightResidual (P₁ := P₁) (P₂ := P₂) stmt wit := by
-  unfold appendRunRightResidual
-  have hcollapse :
-      (Prover.runToRound (⟨m, by omega⟩ : Fin (m + 0 + 1)) stmt wit (P₁.append P₂) >>=
-        (P₁.append P₂).continueFromTo stmt wit (⟨m, by omega⟩ : Fin (m + 0 + 1)) (Fin.last (m + 0)))
-      = Prover.runToRound (⟨m, by omega⟩ : Fin (m + 0 + 1)) stmt wit (P₁.append P₂) := by
-    have hcont : (P₁.append P₂).continueFromTo stmt wit (⟨m, by omega⟩ : Fin (m + 0 + 1))
-        (Fin.last (m + 0)) = pure := by
-      funext rk; exact continueFromTo_self _ _ _ _ rk
-    rw [hcont]
-    exact bind_pure _
-  simp only [hcollapse, run_eq_runToRound_last (prover := P₁), run_empty, append_output_empty,
-    liftM_bind, bind_assoc, liftM_pure, pure_bind]
-  apply eq_of_heq
-  have hseam := append_runToRound_seam (P₁ := P₁) (P₂ := P₂) (stmt := stmt) (wit := wit)
-  refine bind_heq_congr
-    (by rw [append_Transcript_last_empty, append_PrvState_last_empty]) rfl hseam
-    (fun rSeam x hr => ?_)
-  obtain ⟨ht, hs⟩ := prod_heq_split (append_Transcript_last_empty (pSpec₂ := pSpec₂))
-    (append_PrvState_last_empty P₁ P₂) hr
-  have hc2 : cast (append_PrvState_last_empty P₁ P₂) rSeam.2 = x.2 :=
-    eq_of_heq ((cast_heq _ _).trans hs)
-  rw [hc2]
-  apply heq_of_eq
-  have htr : rSeam.1 = x.1 ++ₜ (default : pSpec₂.FullTranscript) := by
-    have hempty : (x.1 ++ₜ (default : pSpec₂.FullTranscript)) ≍ x.1 := by
-      rw [← Transcript.appendRight_full]
-      exact Transcript.appendRight_empty x.1
-    exact eq_of_heq (ht.trans hempty.symm)
-  rw [htr]
-  simp only [← OracleComp.liftComp_eq_liftM, Prod.mk.eta]
-  rw [liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₁.Challenge]ₒ)
-      (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl)]
-  refine bind_congr fun x_1 => ?_
-  rw [liftComp_liftComp (spec := oSpec) (midSpec := oSpec + [pSpec₂.Challenge]ₒ)
-      (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (fun t => rfl)]
-  rfl
+  exact appendRunRightResidual_of_append_run stmt wit
+    (Prover.append_run_of_seam (P₁ := P₁) (P₂ := P₂)
+      (fun hn => False.elim (Nat.lt_irrefl 0 hn)) stmt wit)
 
 /-- **Sequential-composition prover run for an empty trailing protocol (UNCONDITIONAL).** Running
 the appended prover `P₁.append P₂` when `pSpec₂` is empty is exactly running `P₁` then `P₂` and
@@ -126,9 +93,10 @@ concatenating transcripts (the second being the unique empty transcript) — no 
 required. The `n = 0` analogue of `Prover.append_run_msg`. -/
 theorem append_run_empty (stmt : Stmt₁) (wit : Wit₁) :
     (P₁.append P₂).run stmt wit = (do
-      let ⟨transcript₁, stmt₂, wit₂⟩ ← liftM (P₁.run stmt wit)
-      let ⟨transcript₂, stmt₃, wit₃⟩ ← liftM (P₂.run stmt₂ wit₂)
+      let ⟨transcript₁, stmt₂, wit₂⟩ ← liftAppendLeft pSpec₂ (P₁.run stmt wit)
+      let ⟨transcript₂, stmt₃, wit₃⟩ ← liftAppendRight pSpec₁ (P₂.run stmt₂ wit₂)
       return ⟨transcript₁ ++ₜ transcript₂, stmt₃, wit₃⟩) :=
-  append_run stmt wit (appendRunRightResidual_holds_empty P₁ P₂ stmt wit)
+  Prover.append_run_of_seam (P₁ := P₁) (P₂ := P₂)
+    (fun hn => False.elim (Nat.lt_irrefl 0 hn)) stmt wit
 
 end Prover

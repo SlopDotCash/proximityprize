@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.OracleReduction.Security.RoundByRound
+import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
 
 /-!
 # First-crossing for KNOWLEDGE state functions (the rbr union-bound pointwise core)
@@ -50,7 +50,7 @@ theorem toFun_zero_false_of_not_relIn
     (stmtIn : StmtIn) (hStmtIn : ∀ w : WitIn, (stmtIn, w) ∉ relIn)
     (witMid : WitMid 0) :
     ¬ kSF.toFun 0 stmtIn default witMid :=
-  fun h => hStmtIn _ ((kSF.toFun_empty stmtIn witMid).mpr h)
+  fun h => hStmtIn _ (kSF.toFun_empty stmtIn witMid h)
 
 /-- **First-crossing for knowledge state functions, in the rbr-game event shape.**
 If the input statement has no witness in the input relation, and the knowledge state

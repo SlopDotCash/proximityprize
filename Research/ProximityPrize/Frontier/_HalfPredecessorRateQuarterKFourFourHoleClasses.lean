@@ -215,7 +215,7 @@ theorem fourHoleInterpolant_natDegree_lt_four
   have hdeg := Lagrange.degree_interpolate_lt
     (s := crossResidualHoles family residual cross) (v := dom) (r := w)
       dom.injective.injOn
-  simpa only [cell.holes_card] using hdeg
+  simpa only [fourHoleInterpolant, cell.holes_card] using hdeg
 
 /-- The explicit polynomial line interpolating the received line on all four holes. -/
 noncomputable def fourHoleInterpolatedLine
@@ -345,8 +345,10 @@ theorem holes_subset_fourHoleInterpolatedLine_core
         (fourHoleInterpolatedLine family residual cross).1
         (fourHoleInterpolatedLine family residual cross).2 := by
   intro i hi
-  simp only [jointCore, Finset.mem_filter, Finset.mem_univ, true_and,
-    fourHoleInterpolatedLine]
+  change i ∈ Finset.univ.filter (fun j : I =>
+    (fourHoleInterpolant family residual cross (u 0)).eval (dom j) = u 0 j ∧
+    (fourHoleInterpolant family residual cross (u 1)).eval (dom j) = u 1 j)
+  apply (Finset.mem_filter_univ i).mpr
   exact ⟨fourHoleInterpolant_eval family residual cross (u 0) hi,
     fourHoleInterpolant_eval family residual cross (u 1) hi⟩
 
@@ -594,7 +596,7 @@ theorem omittedHoleInterpolant_natDegree_lt_three
       (v := dom) (r := w) dom.injective.injOn
   have hcard : ((crossResidualHoles family residual cross).erase i).card = 3 := by
     rw [Finset.card_erase_of_mem hi, cell.holes_card]
-  simpa only [hcard] using hdeg
+  simpa only [omittedHoleInterpolant, hcard] using hdeg
 
 /-- Canonical cubic-locator normal form for one omitted-hole class. -/
 theorem omittedHoleClass_cubic_locator_normal_form

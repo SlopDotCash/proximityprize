@@ -37,9 +37,9 @@ theorem whir_vector_iop_breakthrough
         (fun i => wPoly₀.degreeOf (Fin.succ i))
       let dstar := 1 + (wPoly₀.degreeOf 0) + maxDeg
       let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
-        Fintype (BlockRelDistance.indexPowT (S 0) (P.φ 0) j) := h.inst1 0
+        Fintype (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := h.inst1 0
       let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
-        Nonempty (BlockRelDistance.indexPowT (S 0) (P.φ 0) j) := h.inst2 0
+        Nonempty (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := h.inst2 0
       ∀ _ : Fin ((P.foldingParam 0) + 1),
         let errStar_0 j := h.errStar 0 j (h.C 0 j) (h.Gen_α 0 j).parℓ (h.δ 0)
       ∀ j : Fin (P.foldingParam 0),
@@ -59,9 +59,9 @@ theorem whir_vector_iop_breakthrough
       let dstar := 1 + (wPoly₀.degreeOf 0) + maxDeg
       let d := max dstar 3
       let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
-        Fintype (BlockRelDistance.indexPowT (S i) (P.φ i) j) := h.inst1
+        Fintype (BlockRelDistance.Generic.indexPowT (S i) (P.φ i) j) := h.inst1
       let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
-        Nonempty (BlockRelDistance.indexPowT (S i) (P.φ i) j) := h.inst2
+        Nonempty (BlockRelDistance.Generic.indexPowT (S i) (P.φ i) j) := h.inst2
       ∀ i : Fin (M + 1), ∀ _ : Fin ((P.foldingParam i) + 1),
         let errStar i j := h.errStar i j (h.C i j) (h.Gen_α i j).parℓ (h.δ i)
       ∀ i : Fin (M + 1), ∀ j : Fin (P.foldingParam i),

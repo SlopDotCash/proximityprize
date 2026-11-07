@@ -1,0 +1,319 @@
+{
+  "upstream_repository": "Verified-zkEVM/ArkLib",
+  "upstream_revision": "94fb4cdd70c2ea061037bf6337611300d71c4e88",
+  "downstream_revision": "883e99d61e51264327b5fee859732d047f7d7038",
+  "note": "Upstream-deleted modules retained for downstream consumers. Compatibility modules import canonical upstream implementations; remaining unique downstream proofs are retained for API porting. This inventory does not certify Lean compilation.",
+  "modules": [
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/Gadget.lean",
+      "disposition": "compatibility_and_unique_extensions",
+      "canonical_sources": [
+        "ArkLib/Commitments/Functional/Hachi/Gadget/Core.lean",
+        "ArkLib/Data/Lattices/CyclotomicRing/Rq.lean"
+      ]
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/GadgetNorms.lean",
+      "disposition": "compatibility_and_unique_extensions",
+      "canonical_sources": [
+        "ArkLib/Commitments/Functional/Hachi/Gadget/Norms.lean"
+      ]
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/InnerOuter.lean",
+      "disposition": "import_shim",
+      "canonical_sources": [
+        "ArkLib/Commitments/Functional/Hachi/InnerOuter/Correctness.lean",
+        "ArkLib/Commitments/Functional/Hachi/InnerOuter/Security.lean"
+      ]
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/Hachi/PolynomialEvalSplit.lean",
+      "disposition": "compatibility_and_unique_extensions",
+      "canonical_sources": [
+        "ArkLib/Commitments/Functional/Hachi/EvalSplit.lean"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/Classes/HasSize.lean",
+      "disposition": "import_shim",
+      "canonical_sources": [
+        "CompPoly/Data/Classes/HasSize.lean"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/Classes/Serde.lean",
+      "disposition": "compatibility_and_unique_extensions",
+      "canonical_sources": [
+        "CompPoly/Data/Classes/Serialize.lean",
+        "ArkLib/Data/Classes/CloseToUniform.lean"
+      ],
+      "compatibility_note": "The old PMF closeness class is retained as Deserialize.PMFCloseToUniform; canonical Deserialize.CloseToUniform is measure based."
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Agreement.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Extraction.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/MCAGenerator.lean",
+      "disposition": "import_shim",
+      "canonical_sources": [
+        "ArkLib/Data/CodingTheory/ProximityGenerator/MCAGenerator.lean"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/ProximityGenerators.lean",
+      "disposition": "import_shim",
+      "canonical_sources": [
+        "ArkLib/Data/CodingTheory/ProximityGenerator/Basic.lean"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/GroupTheory/Smooth.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/Data/Hash/DomainSep.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/Data/Hash/DuplexSponge.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/Data/Probability/Notation.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Defs.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/AbortAnalysis.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Backtrack.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/BadEvents.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Completeness.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemma.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lookahead.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/ProverTransform.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Soundness.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/TraceTransform.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/State.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/ProofSystem/Binius/FRIBinius/CoreInteractionPhase.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/ProofSystem/Binius/FRIBinius/General.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/BatchingPhase.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/General.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/Prelude.lean",
+      "disposition": "canonical_imports_and_unique_extensions",
+      "canonical_sources": [
+        "ArkLib/ProofSystem/RingSwitching/Packing/Algebra.lean",
+        "ArkLib/ProofSystem/RingSwitching/Packing/Prelude.lean",
+        "ArkLib/ProofSystem/RingSwitching/Packing/Profile.lean",
+        "ArkLib/ProofSystem/RingSwitching/Packing/ProfileCoordinates.lean"
+      ],
+      "removed_duplicate_declarations": [
+        "RingSwitching.TensorAlgebra",
+        "RingSwitching.\u03c6\u2080",
+        "RingSwitching.\u03c6\u2081",
+        "RingSwitching.decompose_tensor_algebra_rows",
+        "RingSwitching.decompose_tensor_algebra_columns",
+        "RingSwitching.packMLE",
+        "RingSwitching.unpackMLE",
+        "RingSwitching.componentWise_embed_MLE",
+        "RingSwitching.componentWise_\u03c6\u2081_embed_MLE",
+        "RingSwitching.MLPEvalStatement",
+        "RingSwitching.WitMLP",
+        "RingSwitching.AbstractOStmtIn",
+        "RingSwitching.AbstractOStmtIn.toRelInput",
+        "RingSwitching.AbstractOStmtIn.toStrictRelInput",
+        "RingSwitching.MLIOPCS",
+        "RingSwitching.instOstmtMLIOPCS",
+        "RingSwitching.embedded_MLP_eval",
+        "RingSwitching.performCheckOriginalEvaluation",
+        "RingSwitching.compute_A_func",
+        "RingSwitching.compute_A_MLE",
+        "RingSwitching.getEvaluationPointSuffix",
+        "RingSwitching.compute_s0",
+        "RingSwitching.compute_final_eq_tensor",
+        "RingSwitching.compute_final_eq_value",
+        "RingSwitching.RingSwitchingProfile.decomposeRows_zero",
+        "RingSwitching.RingSwitchingProfile.decomposeRows_sum",
+        "RingSwitching.RingSwitchingProfile.decomposeColumns_zero",
+        "RingSwitching.RingSwitchingProfile.decomposeColumns_sum"
+      ]
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/Profile.lean",
+      "disposition": "import_shim",
+      "canonical_sources": [
+        "ArkLib/ProofSystem/RingSwitching/Packing/Profile.lean"
+      ]
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/Spec.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/ProofSystem/RingSwitching/SumcheckPhase.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/ProofSystem/Sumcheck/Structured/Prismalinear.lean",
+      "disposition": "compatibility_aliases",
+      "canonical_sources": [
+        "ArkLib/ProofSystem/Sumcheck/Structured.lean"
+      ]
+    },
+    {
+      "path": "ArkLib/ProofSystem/Whir/BlockRelDistance.lean",
+      "disposition": "retained_generic_extension",
+      "canonical_sources": [
+        "ArkLib/Data/CodingTheory/Basic/BlockRelDistance.lean"
+      ],
+      "compatibility_note": "The embedding/power-fiber formulation is retained under BlockRelDistance.Generic; canonical smooth-domain BlockRelDistance keeps its upstream namespace.",
+      "renamed_namespace": "BlockRelDistance.Generic",
+      "migrated_callers": [
+        "ArkLib/ToMathlib/WhirBricksConstruction.lean",
+        "ArkLib/ProofSystem/Whir/FoldingListDecodingReduction.lean",
+        "ArkLib/ProofSystem/Whir/FoldRound.lean",
+        "ArkLib/ProofSystem/Whir/WhirVectorIOPProof.lean",
+        "ArkLib/ProofSystem/Whir/Folding.lean",
+        "ArkLib/ProofSystem/Whir/RBRSoundnessCheckedBridge.lean",
+        "ArkLib/ProofSystem/Whir/RBRSoundness.lean",
+        "ArkLib/ProofSystem/Whir/ChallengeCardPin.lean",
+        "ArkLib/ProofSystem/Whir/CheckedVerifier.lean",
+        "Research/ProximityPrize/Protocols/Whir/FoldingGenMutualCorrParamsUDR.lean",
+        "Research/ProximityPrize/Protocols/Whir/GenMutualCorrParamsUDR.lean"
+      ]
+    },
+    {
+      "path": "ArkLib/ProofSystem/Whir/Folding.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/ProofSystem/Whir/MutualCorrAgreement.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/ProofSystem/Whir/OutofDomainSmpl.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/ProofSystem/Whir/ProximityGen.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/ProofSystem/Whir/RBRSoundness.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/ToVCVio/EvalDist/Defs/Support.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/ToVCVio/EvalDist/Instances/OptionT.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/ToVCVio/OracleComp/Coercions/SubSpec.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/ToVCVio/OracleComp/EvalDist.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/ToVCVio/OracleComp/SimSemantics/SimulateQ.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/ToVCVio/ToMathlib/Control/StateT.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    },
+    {
+      "path": "ArkLib/ToVCVio/ToMathlib/Data/Vector/Basic.lean",
+      "disposition": "retained_downstream_extension",
+      "canonical_sources": []
+    }
+  ]
+}

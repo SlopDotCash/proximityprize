@@ -4,12 +4,13 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
 
-import ArkLib.ProofSystem.Binius.BinaryBasefold.CoreInteractionPhase
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.CoreInteractionPhase
 import ArkLib.ProofSystem.Binius.BinaryBasefold.ExtractMLPCorrectness
 import ArkLib.ProofSystem.Binius.BinaryBasefold.FinalRelation
-import ArkLib.ProofSystem.Binius.BinaryBasefold.ReductionLogic
-import ArkLib.ProofSystem.Binius.FRIBinius.Prelude
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.ReductionLogic
+import ProximityPrize.Extensions.ProofSystem.Binius.FRIBinius.Prelude
 import ArkLib.OracleReduction.LiftContext.Coherence
+import ArkLib.OracleReduction.LiftContext.OracleStatementPreserving
 
 /-!
 # Core Interaction Phase of FRI-Binius IOPCS
@@ -45,8 +46,6 @@ input shape. Concretely, it maps
 `f₀ := getMidCodewords t challenges`, and keeps the output witness unchanged (`toFunB` is
 identity on `innerWitOut`).
 -/
-
-set_option linter.style.longFile 1700
 
 set_option backward.isDefEq.respectTransparency false
 
@@ -148,8 +147,21 @@ def sumcheckFoldExtractorLens : Extractor.Lens
       exact outerWitIn
   }
 
-/-- Identity statement and query routing, preserving the inner output-oracle embedding. -/
-def sumcheckFoldOracleLens : OracleStatement.OracleLens []ₒ
+def sumcheckFoldExecutableLens (h_l : ℓ = ℓ' + κ) : OracleStatement.ExecutableLens
+    (OuterStmtIn := Statement (L := L) (ℓ := ℓ') (RingSwitchingBaseContext κ L K ℓ (ringSwitchingProfile κ L K β)) 0)
+    (OuterStmtOut := Statement (L := L) (ℓ := ℓ') (RingSwitchingBaseContext κ L K ℓ (ringSwitchingProfile κ L K β)) (Fin.last ℓ'))
+    (InnerStmtIn := Statement (L := L) (ℓ := ℓ') (RingSwitchingBaseContext κ L K ℓ (ringSwitchingProfile κ L K β)) 0)
+    (InnerStmtOut := Statement (L := L) (ℓ := ℓ') (RingSwitchingBaseContext κ L K ℓ (ringSwitchingProfile κ L K β)) (Fin.last ℓ'))
+    (OuterOStmtIn := BinaryBasefold.OracleStatement K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ 0)
+    (OuterOStmtOut := BinaryBasefold.OracleStatement K β
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ (Fin.last ℓ'))
+    (InnerOStmtIn := BinaryBasefold.OracleStatement K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ 0)
+    (InnerOStmtOut := BinaryBasefold.OracleStatement K β
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ (Fin.last ℓ')) :=
+  ProximityPrize.Compatibility.identityExecutableLens
+
+/-- The existing witness transport with the canonical identity statement/oracle lens. -/
+def sumcheckFoldExecutableCtxLens : OracleContext.ExecutableLens
     (OuterStmtIn := Statement (L := L) (ℓ := ℓ') (RingSwitchingBaseContext κ L K ℓ (ringSwitchingProfile κ L K β)) 0)
     (OuterStmtOut := Statement (L := L) (ℓ := ℓ') (RingSwitchingBaseContext κ L K ℓ (ringSwitchingProfile κ L K β)) (Fin.last ℓ'))
     (InnerStmtIn := Statement (L := L) (ℓ := ℓ') (RingSwitchingBaseContext κ L K ℓ (ringSwitchingProfile κ L K β)) 0)
@@ -160,92 +172,32 @@ def sumcheckFoldOracleLens : OracleStatement.OracleLens []ₒ
     (InnerOStmtIn := BinaryBasefold.OracleStatement K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ 0)
     (InnerOStmtOut := BinaryBasefold.OracleStatement K β
       (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ (Fin.last ℓ'))
-    (pSpec := BinaryBasefold.pSpecSumcheckFold K β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)) where
-  toLens := sumcheckFoldStmtLens κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate
-  projStmt := id
-  liftStmt := fun _ s => s
-  simOStmt := fun q => ReaderT.mk fun _ =>
-    OracleComp.lift (OracleSpec.query q)
-  embedOStmt := (BinaryBasefold.CoreInteraction.sumcheckFoldOracleVerifier K β (ϑ := ϑ)
-    (mp := RingSwitching_SumcheckMultParam κ L K (ringSwitchingProfile κ L K β) ℓ ℓ' h_l)
-    (𝓑 := 𝓑) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).embed
-  hEqOStmt := (BinaryBasefold.CoreInteraction.sumcheckFoldOracleVerifier K β (ϑ := ϑ)
-    (mp := RingSwitching_SumcheckMultParam κ L K (ringSwitchingProfile κ L K β) ℓ ℓ' h_l)
-    (𝓑 := 𝓑) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).hEq
+    (OuterWitIn := RingSwitching.SumcheckWitness L ℓ' 0)
+    (OuterWitOut := BinaryBasefold.Witness K β
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (ℓ:=ℓ') (Fin.last ℓ'))
+    (InnerWitIn := BinaryBasefold.Witness K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (ℓ:=ℓ') 0)
+    (InnerWitOut := BinaryBasefold.Witness K β
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (ℓ:=ℓ') (Fin.last ℓ')) where
+  stmt := sumcheckFoldExecutableLens κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
+  wit := (sumcheckFoldCtxLens κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l).wit
 
-/-- The identity router agrees with the value-level context lens. -/
-instance sumcheckFoldOracleLens_coherent :
-    OracleVerifier.LiftContextCoherent
-      (sumcheckFoldOracleLens κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
-      (BinaryBasefold.CoreInteraction.sumcheckFoldOracleVerifier K β (ϑ := ϑ)
-        (mp := RingSwitching_SumcheckMultParam κ L K
-          (ringSwitchingProfile κ L K β) ℓ ℓ' h_l)
-        (𝓑 := 𝓑) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)) := by
-  apply OracleVerifier.LiftContext.liftContextCoherent_of
-  · intros; rfl
-  · intro os oos tr q
-    change simulateQ _ (OracleComp.lift (OracleSpec.query (Sum.inr (Sum.inl q)))) = _
-    simp [sumcheckFoldOracleLens, sumcheckFoldStmtLens, OracleComp.lift,
-      OracleInterface.simOracle2, QueryImpl.addLift, QueryImpl.add]
-  · intros; rfl
-
-/-- The reduction carries its own output embedding through context lifting. -/
-def sumcheckFoldReductionOracleLens :=
-  { sumcheckFoldOracleLens κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑) with
-    embedOStmt := (BinaryBasefold.CoreInteraction.sumcheckFoldOracleReduction K β (ϑ := ϑ)
-      (mp := RingSwitching_SumcheckMultParam κ L K (ringSwitchingProfile κ L K β) ℓ ℓ' h_l)
-      (𝓑 := 𝓑) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).verifier.embed
-    hEqOStmt := (BinaryBasefold.CoreInteraction.sumcheckFoldOracleReduction K β (ϑ := ϑ)
-      (mp := RingSwitching_SumcheckMultParam κ L K (ringSwitchingProfile κ L K β) ℓ ℓ' h_l)
-      (𝓑 := 𝓑) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).verifier.hEq }
-
-instance sumcheckFoldReductionOracleLens_coherent :
-    OracleVerifier.LiftContextCoherent
-      (sumcheckFoldReductionOracleLens κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
-      (BinaryBasefold.CoreInteraction.sumcheckFoldOracleReduction K β (ϑ := ϑ)
-        (mp := RingSwitching_SumcheckMultParam κ L K
-          (ringSwitchingProfile κ L K β) ℓ ℓ' h_l)
-        (𝓑 := 𝓑) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).verifier := by
-  apply OracleVerifier.LiftContext.liftContextCoherent_of
-  · intros; rfl
-  · intro os oos tr q
-    change simulateQ _ (OracleComp.lift (OracleSpec.query (Sum.inr (Sum.inl q)))) = _
-    simp [sumcheckFoldReductionOracleLens, sumcheckFoldOracleLens, sumcheckFoldStmtLens,
-      OracleComp.lift, OracleInterface.simOracle2, QueryImpl.addLift, QueryImpl.add]
-  · intros; rfl
-
--- The lifted oracle verifier
+/-- Preserve the authoritative native verifier, including its virtual output oracles. -/
 def sumcheckFoldOracleVerifier :=
-  (BinaryBasefold.CoreInteraction.sumcheckFoldOracleVerifier K β (ϑ:=ϑ)
-    (mp := RingSwitching_SumcheckMultParam κ L K (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l)
-    (𝓑 := 𝓑) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).liftContext
-      (lens := sumcheckFoldOracleLens κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
+  let V := BinaryBasefold.CoreInteraction.sumcheckFoldOracleVerifier K β (ϑ := ϑ)
+    (multpoly := (RingSwitching_SumcheckMultParam κ L K (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly)
+    (𝓑 := 𝓑) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+  V.liftContext
+    (sumcheckFoldExecutableLens κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l)
+    (ProximityPrize.Compatibility.identityLiftContextOutput V)
 
--- The lifted oracle reduction
+/-- Transport the witness while preserving the native verifier's output representation. -/
 def sumcheckFoldOracleReduction :=
-  (BinaryBasefold.CoreInteraction.sumcheckFoldOracleReduction K β (ϑ:=ϑ)
-    (mp := RingSwitching_SumcheckMultParam κ L K (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l)
-    (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑)).liftContext
-      (lens := sumcheckFoldCtxLens κ L K β ℓ ℓ' 𝓡 ϑ (h_ℓ_add_R_rate := h_ℓ_add_R_rate) h_l)
-      (stmtLens := sumcheckFoldReductionOracleLens κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
-
-/-- Context lifting preserves the inner output-oracle interface coherence. -/
-instance sumcheckFoldVerifier_appendCoherent :
-    OracleVerifier.Append.AppendCoherent (sumcheckFoldOracleVerifier κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑)) := by
-  let base := BinaryBasefold.CoreInteraction.sumcheckFoldOracleVerifier K β (ϑ := ϑ)
-    (mp := RingSwitching_SumcheckMultParam κ L K (ringSwitchingProfile κ L K β) ℓ ℓ' h_l)
-    (𝓑 := 𝓑) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-  let coh : OracleVerifier.Append.AppendCoherent (base) := inferInstance
-  exact ⟨coh.hCohInl, coh.hCohInr⟩
-
-/-- Context lifting preserves the inner output-oracle interface coherence. -/
-instance sumcheckFoldReduction_appendCoherent :
-    OracleVerifier.Append.AppendCoherent ((sumcheckFoldOracleReduction κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑)).verifier) := by
-  let base := BinaryBasefold.CoreInteraction.sumcheckFoldOracleReduction K β (ϑ := ϑ)
-    (mp := RingSwitching_SumcheckMultParam κ L K (ringSwitchingProfile κ L K β) ℓ ℓ' h_l)
-    (𝓑 := 𝓑) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-  let coh : OracleVerifier.Append.AppendCoherent (base.verifier) := inferInstance
-  exact ⟨coh.hCohInl, coh.hCohInr⟩
+  let R := BinaryBasefold.CoreInteraction.sumcheckFoldOracleReduction K β (ϑ := ϑ)
+    (multpoly := (RingSwitching_SumcheckMultParam κ L K (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly)
+    (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑)
+  R.liftContext
+    (sumcheckFoldExecutableCtxLens κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l)
+    (ProximityPrize.Compatibility.identityLiftContextOutput R.verifier)
 
 /-- The completeness input relation requires exact initial oracle agreement, in addition to
 sumcheck consistency and the ring-switching witness invariant. -/
@@ -261,6 +213,20 @@ def strictSumcheckInputRelation :
       (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
       (t := x.2.t') (i := 0) (challenges := Fin.elim0) (oStmt := x.1.2) }
 
+/-- Strict input for the canonical chronological folding convention. The historical
+`strictSumcheckInputRelation` above uses the explicitly retained newest-first encoding. -/
+def nativeStrictSumcheckInputRelation :
+    Set ((Statement (L := L) (ℓ := ℓ')
+      (RingSwitchingBaseContext κ L K ℓ (ringSwitchingProfile κ L K β)) 0 ×
+      (∀ j, BinaryBasefold.OracleStatement K β
+        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ 0 j)) × RingSwitching.SumcheckWitness L ℓ' 0) :=
+  { x | BinaryBasefold.sumcheckConsistencyProp (𝓑 := 𝓑) x.1.1.sumcheck_target x.2.H ∧
+    RingSwitching.witnessStructuralInvariant κ L K (ringSwitchingProfile κ L K β)
+      ℓ ℓ' h_l x.1.1 x.2 ∧
+    BinaryBasefold.StrictOracleFoldingConsistent K β
+      (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      (t := x.2.t') (i := 0) (challenges := Fin.elim0) (oStmt := x.1.2) }
+
 -- Security properties for the lifted oracle reduction
 
 section Security
@@ -268,7 +234,7 @@ section Security
 variable {σ : Type} {init : ProbComp σ} {impl : QueryImpl []ₒ (StateT σ ProbComp)}
 
 -- Completeness instance for the context lens
-instance sumcheckFoldCtxLens_complete :
+instance nativeSumcheckFoldCtxLens_complete :
   (sumcheckFoldCtxLens κ L K β ℓ ℓ' 𝓡 ϑ (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
     h_l).toContext.IsComplete
     (OuterStmtIn := Statement (L := L) (ℓ := ℓ') (RingSwitchingBaseContext κ L K ℓ (ringSwitchingProfile κ L K β)) 0 ×
@@ -286,25 +252,25 @@ instance sumcheckFoldCtxLens_complete :
       (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (ℓ:=ℓ') (Fin.last ℓ'))
     (InnerWitIn := Witness K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (ℓ:=ℓ') 0)
     (InnerWitOut := Witness K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (ℓ:=ℓ') (Fin.last ℓ'))
-    (outerRelIn := strictSumcheckInputRelation κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
+    (outerRelIn := nativeStrictSumcheckInputRelation κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
     (outerRelOut :=
-      BinaryBasefold.strictRoundRelation (mp := RingSwitching_SumcheckMultParam κ L K
-        (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l) K β (ϑ:=ϑ)
+      BinaryBasefold.strictRoundRelation (multpoly := (RingSwitching_SumcheckMultParam κ L K
+        (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly) K β (ϑ:=ϑ)
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑:=𝓑) (Fin.last ℓ')
     )
     (innerRelIn :=
-      BinaryBasefold.strictRoundRelation (mp := RingSwitching_SumcheckMultParam κ L K
-        (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l) K β (ϑ:=ϑ)
+      BinaryBasefold.strictRoundRelation (multpoly := (RingSwitching_SumcheckMultParam κ L K
+        (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly) K β (ϑ:=ϑ)
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑:=𝓑) 0
     )
     (innerRelOut :=
-      BinaryBasefold.strictRoundRelation (mp := RingSwitching_SumcheckMultParam κ L K
-        (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l) K β (ϑ:=ϑ)
+      BinaryBasefold.strictRoundRelation (multpoly := (RingSwitching_SumcheckMultParam κ L K
+        (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly) K β (ϑ:=ϑ)
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑:=𝓑) (Fin.last ℓ')
     )
     (compat :=
       let originalReduction := (CoreInteraction.sumcheckFoldOracleReduction K β (ϑ:=ϑ)
-        (mp := RingSwitching_SumcheckMultParam κ L K (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l)
+        (multpoly := (RingSwitching_SumcheckMultParam κ L K (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly)
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑)).toReduction
       Reduction.compatContext (oSpec := []ₒ) (pSpec :=
         pSpecSumcheckFold K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate))
@@ -324,30 +290,28 @@ instance sumcheckFoldCtxLens_complete :
           exact h_struct
         · rfl
       · dsimp [sumcheckFoldCtxLens, sumcheckFoldStmtLens]
-        convert h_strict_compat using 1 <;> congr 1
-        funext i
-        exact Fin.elim0 i
+        simpa only [Fin.take_zero] using h_strict_compat
   lift_complete := fun outerStmtIn outerWitIn innerStmtOut innerWitOut compat => by
     intro _ hRelOut
     dsimp [sumcheckFoldStmtLens] at hRelOut ⊢
     exact hRelOut
 
 -- Perfect completeness for the lifted oracle reduction
-theorem sumcheckFoldOracleReduction_perfectCompleteness (hInit : NeverFail init)
+theorem sumcheckFoldOracleReduction_perfectCompleteness_native (hInit : NeverFail init)
     (hBinaryBasefoldSumcheckFoldPerfectCompleteness :
       OracleReduction.perfectCompleteness
         (pSpec := BinaryBasefold.pSpecSumcheckFold K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate))
         (relIn := BinaryBasefold.strictRoundRelation
-          (mp := RingSwitching_SumcheckMultParam κ L K
-            (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l) K β (ϑ:=ϑ)
+          (multpoly := (RingSwitching_SumcheckMultParam κ L K
+            (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly) K β (ϑ:=ϑ)
           (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑:=𝓑) 0)
         (relOut := BinaryBasefold.strictRoundRelation
-          (mp := RingSwitching_SumcheckMultParam κ L K
-            (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l) K β (ϑ:=ϑ)
+          (multpoly := (RingSwitching_SumcheckMultParam κ L K
+            (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly) K β (ϑ:=ϑ)
           (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑:=𝓑) (Fin.last ℓ'))
         (oracleReduction := BinaryBasefold.CoreInteraction.sumcheckFoldOracleReduction K β
-          (ϑ:=ϑ) (mp := RingSwitching_SumcheckMultParam κ L K
-            (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l)
+          (ϑ:=ϑ) (multpoly := (RingSwitching_SumcheckMultParam κ L K
+            (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly)
           (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑:=𝓑))
         (init := init)
         (impl := impl)) :
@@ -362,10 +326,10 @@ theorem sumcheckFoldOracleReduction_perfectCompleteness (hInit : NeverFail init)
     (WitOut := BinaryBasefold.Witness K β
       (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (ℓ:=ℓ') (Fin.last ℓ'))
     (pSpec := BinaryBasefold.pSpecSumcheckFold K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate))
-    (relIn := strictSumcheckInputRelation κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
+    (relIn := nativeStrictSumcheckInputRelation κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
     (relOut :=
-      BinaryBasefold.strictRoundRelation (mp := RingSwitching_SumcheckMultParam κ L K
-        (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l) K β (ϑ:=ϑ)
+      BinaryBasefold.strictRoundRelation (multpoly := (RingSwitching_SumcheckMultParam κ L K
+        (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly) K β (ϑ:=ϑ)
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑:=𝓑) (Fin.last ℓ')
     )
     (oracleReduction := sumcheckFoldOracleReduction κ L K β ℓ ℓ' 𝓡 ϑ
@@ -391,41 +355,36 @@ theorem sumcheckFoldOracleReduction_perfectCompleteness (hInit : NeverFail init)
     (InnerOStmtOut := BinaryBasefold.OracleStatement K β
       (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ (Fin.last ℓ'))
     (pSpec := BinaryBasefold.pSpecSumcheckFold K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate))
-    (outerRelIn := strictSumcheckInputRelation κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
-    (outerRelOut := BinaryBasefold.strictRoundRelation (mp := RingSwitching_SumcheckMultParam κ L K
-      (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l) K β (ϑ:=ϑ)
+    (outerRelIn := nativeStrictSumcheckInputRelation κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
+    (outerRelOut := BinaryBasefold.strictRoundRelation (multpoly := (RingSwitching_SumcheckMultParam κ L K
+      (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly) K β (ϑ:=ϑ)
       (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑:=𝓑) (Fin.last ℓ'))
-    (innerRelIn := BinaryBasefold.strictRoundRelation (mp := RingSwitching_SumcheckMultParam κ L K
-      (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l) K β (ϑ:=ϑ)
+    (innerRelIn := BinaryBasefold.strictRoundRelation (multpoly := (RingSwitching_SumcheckMultParam κ L K
+      (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly) K β (ϑ:=ϑ)
       (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑:=𝓑) 0)
-    (innerRelOut := BinaryBasefold.strictRoundRelation (mp := RingSwitching_SumcheckMultParam κ L K
-      (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l) K β (ϑ:=ϑ)
+    (innerRelOut := BinaryBasefold.strictRoundRelation (multpoly := (RingSwitching_SumcheckMultParam κ L K
+      (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly) K β (ϑ:=ϑ)
       (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑:=𝓑) (Fin.last ℓ'))
-    (lens := sumcheckFoldCtxLens κ L K β ℓ ℓ' 𝓡 ϑ (h_ℓ_add_R_rate := h_ℓ_add_R_rate) h_l)
-    (stmtLens := sumcheckFoldReductionOracleLens κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
-    (hStmt := rfl)
-    (lensComplete := sumcheckFoldCtxLens_complete κ L K β ℓ ℓ' 𝓡 ϑ
+    (lens := sumcheckFoldExecutableCtxLens κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l)
+    (output := ProximityPrize.Compatibility.identityLiftContextOutput _)
+    (lensComplete := nativeSumcheckFoldCtxLens_complete κ L K β ℓ ℓ' 𝓡 ϑ
       (h_ℓ_add_R_rate := h_ℓ_add_R_rate) h_l)
     (init := init)
     (impl := impl)
-    (h := BinaryBasefold.CoreInteraction.sumcheckFoldOracleReduction_perfectCompleteness
-      (hInit:=hInit) K β (ϑ := ϑ)
-      (mp := RingSwitching_SumcheckMultParam κ L K
-        (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l)
-      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑)
-      (hSumcheckFoldPerfectCompleteness := hBinaryBasefoldSumcheckFoldPerfectCompleteness))
+    (h := hBinaryBasefoldSumcheckFoldPerfectCompleteness)
 
-/-- The current BinaryBasefold input relation does not imply the ring-switching input
-relation: its unfinished-block bad-event branch is already true at round zero. In particular,
+/-- The retained historical BinaryBasefold input relation does not imply the ring-switching input
+relation: its old unfinished-block bad-event branch is already true at round zero. In particular,
 the zero witness with a claimed sum of one is admitted by the former and rejected by the latter.
-This refutes the previously attempted unconditional extractor-lens bridge. -/
-theorem sumcheckFold_input_bridge_counterexample :
+This refutes the old unconditional extractor-lens bridge. The canonical chronological
+`HasIncrementalBadEvent` is a different predicate; this theorem makes no claim about it. -/
+theorem sumcheckFold_legacy_input_bridge_counterexample :
     ∃ (stmt : Statement (L := L) (ℓ := ℓ')
         (RingSwitchingBaseContext κ L K ℓ (ringSwitchingProfile κ L K β)) 0)
       (oStmt : ∀ j, BinaryBasefold.OracleStatement K β
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ 0 j)
       (wit : BinaryBasefold.Witness K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (ℓ := ℓ') 0),
-      BinaryBasefold.roundRelation
+      BinaryBasefold.roundRelationProp
         (mp := RingSwitching_SumcheckMultParam κ L K (ringSwitchingProfile κ L K β) ℓ ℓ' h_l)
         K β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) 0 ((stmt, oStmt), wit) ∧
       ¬ RingSwitching.sumcheckRoundRelation κ L K (ringSwitchingProfile κ L K β) ℓ ℓ' h_l
@@ -490,7 +449,7 @@ def finalSumcheckVerifierStmtOut
       }
       sumcheck_target := stmtIn.sumcheck_target
       challenges := stmtIn.challenges
-      final_constant := c
+      finalConstant := c
     }
 
 /-- Pure prover message computation for FRI final sumcheck step. -/
@@ -508,7 +467,7 @@ def finalSumcheckProverWitOut : Unit := ()
 
 /-- The logic instance for the FRI final sumcheck step. -/
 def finalSumcheckStepLogic :
-    Binius.BinaryBasefold.CoreInteraction.ReductionLogicStep
+    OracleReduction.DeterministicLogicStep []ₒ
       (Statement (L := L) (ℓ := ℓ') (RingSwitchingBaseContext κ L K ℓ (ringSwitchingProfile κ L K β)) (Fin.last ℓ'))
       (BinaryBasefold.Witness K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (ℓ := ℓ') (Fin.last ℓ'))
       (BinaryBasefold.OracleStatement K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ (Fin.last ℓ'))
@@ -518,8 +477,8 @@ def finalSumcheckStepLogic :
       (BinaryBasefold.pSpecFinalSumcheckStep (L := L)) where
   completeness_relIn := fun ((stmt, oStmt), wit) =>
     ((stmt, oStmt), wit) ∈ BinaryBasefold.strictRoundRelation
-      (mp := RingSwitching_SumcheckMultParam κ L K
-      (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l) K β (ϑ := ϑ)
+      (multpoly := (RingSwitching_SumcheckMultParam κ L K
+      (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly) K β (ϑ := ϑ)
       (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) (Fin.last ℓ')
   completeness_relOut := fun ((stmtOut, oStmtOut), witOut) =>
     ((stmtOut, oStmtOut), witOut) ∈ BinaryBasefold.strictFinalSumcheckRelOut K β
@@ -528,8 +487,11 @@ def finalSumcheckStepLogic :
     finalSumcheckVerifierCheck κ L K β ℓ ℓ' h_l stmtIn (transcript.messages ⟨0, rfl⟩)
   verifierOut := fun stmtIn transcript =>
     finalSumcheckVerifierStmtOut κ L K β ℓ ℓ' h_l stmtIn (transcript.messages ⟨0, rfl⟩)
-  embed := ⟨fun j => Sum.inl j, fun a b h => by cases h; rfl⟩
-  hEq := fun _ => rfl
+  outputInterfaces := inferInstance
+  outputOracle := .inl {
+    embed := Function.Embedding.inl
+    hEq := fun _ => rfl
+    outputInterface_heq := fun _ => HEq.rfl }
   honestProverTranscript := fun _stmtIn witIn _oStmtIn _chal =>
     let c : L := finalSumcheckProverComputeMsg (κ := κ) (L := L) (K := K) (β := β)
       (ℓ' := ℓ') (𝓡 := 𝓡) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) witIn
@@ -592,24 +554,8 @@ noncomputable def finalSumcheckVerifier :
     have : Decidable (logic.verifierCheck stmtIn t) := Classical.propDecidable _
     guard (logic.verifierCheck stmtIn t)
     pure (logic.verifierOut stmtIn t)
-  embed := (finalSumcheckStepLogic κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
-    (𝓑 := 𝓑)).embed
-  hEq := (finalSumcheckStepLogic κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
-    (𝓑 := 𝓑)).hEq
-
-/-- The final step preserves every input oracle interface. -/
-instance finalSumcheckVerifier_appendCoherent :
-    OracleVerifier.Append.AppendCoherent
-      (finalSumcheckVerifier κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑)) where
-  hCohInl a k h := by
-    have hak : a = k := by
-      simpa only [finalSumcheckVerifier, finalSumcheckStepLogic,
-        Function.Embedding.coeFn_mk, Sum.inl.injEq] using h
-    subst k
-    rfl
-  hCohInr a k h := by
-    simp only [finalSumcheckVerifier, finalSumcheckStepLogic,
-      Function.Embedding.coeFn_mk, reduceCtorEq] at h
+  outputOracle := (finalSumcheckStepLogic κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
+    (𝓑 := 𝓑)).outputOracle
 
 /-- The oracle reduction for the final sumcheck step -/
 noncomputable def finalSumcheckOracleReduction :
@@ -627,12 +573,6 @@ noncomputable def finalSumcheckOracleReduction :
   prover := finalSumcheckProver κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑)
   verifier := finalSumcheckVerifier κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑)
 
-/-- The reduction inherits the final verifier's output-oracle coherence. -/
-instance finalSumcheckOracleReduction_appendCoherent :
-    OracleVerifier.Append.AppendCoherent
-      (finalSumcheckOracleReduction κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑)).verifier :=
-  finalSumcheckVerifier_appendCoherent κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
-
 omit [Fintype L] [DecidableEq L] [CharP L 2] [SampleableType L] [NeZero ℓ'] in
 /-- At `Fin.last ℓ'`, sumcheck consistency simplifies to a single evaluation. -/
 lemma sumcheckConsistency_at_last_simplifies
@@ -640,7 +580,7 @@ lemma sumcheckConsistency_at_last_simplifies
     (h_cons : BinaryBasefold.sumcheckConsistencyProp (𝓑 := 𝓑) target H) :
     target = H.val.eval (fun _ => (0 : L)) := by
   simp only [Fin.val_last] at H h_cons ⊢
-  simp only [BinaryBasefold.sumcheckConsistencyProp] at h_cons
+  simp only [_root_.Binius.BinaryBasefold.sumcheckConsistencyProp] at h_cons
   haveI : IsEmpty (Fin 0) := Fin.isEmpty
   rw [Finset.sum_eq_single (a := fun _ => 0)
     (h₀ := fun b _ hb_ne => by
@@ -682,8 +622,8 @@ lemma finalCodeword_zero_eq_t_eval
       (stmt := stmtIn) (wit := witIn)) :
     witIn.f ⟨0, by simp only [zero_mem]⟩ = witIn.t.val.eval stmtIn.challenges := by
   rw [h_wit_struct.2]
-  exact BinaryBasefold.getMidCodewords_last_zero_eq_eval K β
-    (h_ℓ_add_R_rate := h_ℓ_add_R_rate) witIn.t stmtIn.challenges
+  exact BinaryBasefold.Compatibility.newestFirstCodeword_last_apply_eq_eval K β
+    (h_ℓ_add_R_rate := h_ℓ_add_R_rate) witIn.t stmtIn.challenges ⟨0, by simp only [zero_mem]⟩
 
 omit [NeZero ℓ] in
 /-- Strict helper: folding the last oracle block in the final sumcheck step yields
@@ -859,243 +799,125 @@ lemma finalSumcheckStep_verifierCheck_passed
   dsimp [step, finalSumcheckStepLogic, finalSumcheckVerifierCheck, cmsg] at h_eq ⊢
   exact h_eq
 
-/-- Strong completeness of the FRI final sumcheck logic step. -/
-lemma finalSumcheckStep_is_logic_complete :
+/-- The current final verifier executes one deterministic message guard and forwards its oracles. -/
+def finalSumcheckVerifierGuardedForm :
+    (finalSumcheckVerifier κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
+      (𝓑 := 𝓑)).toVerifier.GuardedForm :=
+  Verifier.GuardedForm.ofQueryGuard _ ⟨⟨0, rfl⟩, ()⟩
+    (fun s a _ => (finalSumcheckStepLogic κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
+      (𝓑 := 𝓑)).verifierCheck s (FullTranscript.mk1 a))
+    (hcheck := fun _ _ _ => Classical.propDecidable _)
+    (fun s a _ => (finalSumcheckStepLogic κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
+      (𝓑 := 𝓑)).verifierOut s (FullTranscript.mk1 a))
+    (fun _ _ => rfl)
+
+open Classical in
+/-- The native guard checks exactly the RingSwitching final equation on the sent constant. -/
+@[simp] theorem finalSumcheckVerifierGuardedForm_check_native
+    (s : Statement (L := L) (ℓ := ℓ')
+      (RingSwitchingBaseContext κ L K ℓ (ringSwitchingProfile κ L K β)) (Fin.last ℓ') ×
+      ∀ j, BinaryBasefold.OracleStatement K β
+        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ (Fin.last ℓ') j)
+    (tr : (pSpecFinalSumcheckStep (L := L)).FullTranscript) :
+    (finalSumcheckVerifierGuardedForm κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
+      (𝓑 := 𝓑)).check s tr =
+      decide (s.1.sumcheck_target = compute_final_eq_value κ L K
+        (ringSwitchingProfile κ L K β) ℓ ℓ' h_l s.1.ctx.t_eval_point
+        s.1.challenges s.1.ctx.r_batching * (show L from tr.messages ⟨0, rfl⟩)) :=
+  decide_eq_decide.mpr Iff.rfl
+
+/-- Closing the canonical chronological relation is strongly complete. -/
+lemma finalSumcheckStep_is_logic_complete_native :
     (finalSumcheckStepLogic κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
       (𝓑 := 𝓑)).IsStronglyComplete := by
-  intro stmtIn witIn oStmtIn challenges h_relIn
+  intro stmtIn witIn oStmtIn challenges hIn
   let step := finalSumcheckStepLogic κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑)
-  let transcript := step.honestProverTranscript stmtIn witIn oStmtIn challenges
-  let verifierStmtOut := step.verifierOut stmtIn transcript
-  let verifierOStmtOut := OracleVerifier.mkVerifierOStmtOut step.embed step.hEq
-    oStmtIn transcript
-  let proverOutput := step.proverOut stmtIn witIn oStmtIn transcript
-  let proverStmtOut := proverOutput.1.1
-  let proverOStmtOut := proverOutput.1.2
-  let proverWitOut := proverOutput.2
-  simp only [finalSumcheckStepLogic, BinaryBasefold.strictRoundRelation,
-    BinaryBasefold.strictRoundRelationProp, Set.mem_setOf_eq] at h_relIn
-  obtain ⟨h_sumcheck_cons, h_strictOracleWitConsistency⟩ := h_relIn
-  have h_wit_struct := h_strictOracleWitConsistency.1
-  let h_VCheck_passed : step.verifierCheck stmtIn transcript :=
-    finalSumcheckStep_verifierCheck_passed (κ := κ) (L := L) (K := K) (β := β)
-      (ℓ := ℓ) (ℓ' := ℓ') (𝓡 := 𝓡) (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-      (h_l := h_l) (𝓑 := 𝓑) stmtIn witIn oStmtIn challenges h_sumcheck_cons h_wit_struct
-  have hStmtOut_eq : proverStmtOut = verifierStmtOut := by
-    change (step.proverOut stmtIn witIn oStmtIn transcript).1.1 = step.verifierOut stmtIn transcript
-    simp only [step, finalSumcheckStepLogic, finalSumcheckVerifierStmtOut]
-  have hOStmtOut_eq : proverOStmtOut = verifierOStmtOut := by rfl
-  have hRelOut : step.completeness_relOut ((verifierStmtOut, verifierOStmtOut), proverWitOut) := by
-    simp only [step, finalSumcheckStepLogic]
-    refine ⟨witIn.t, ?_⟩
-    unfold BinaryBasefold.strictfinalSumcheckStepFoldingStateProp
-    dsimp only [finalSumcheckVerifierStmtOut]
-    constructor
-    · simpa [strictOracleWitnessConsistency, olderStmtChallenges_self,
-        verifierStmtOut, verifierOStmtOut, transcript, step, finalSumcheckStepLogic,
-        finalSumcheckVerifierStmtOut] using h_strictOracleWitConsistency.2
-    · funext y
-      have h_const := iterated_fold_to_const_strict (κ := κ) (L := L) (K := K) (β := β)
-        (ℓ := ℓ) (ℓ' := ℓ') (𝓡 := 𝓡) (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (h_l := h_l) (stmtIn := stmtIn) (witIn := witIn) (oStmtIn := oStmtIn)
-        (h_strictOracleWitConsistency_In := h_strictOracleWitConsistency) y
-      have h_msg_eq : transcript.messages ⟨0, rfl⟩ = witIn.f ⟨0, by simp only [zero_mem]⟩ :=
-        finalSumcheck_honest_message_eq_f_zero (κ := κ) (L := L) (K := K) (β := β) (ℓ := ℓ)
-          (ℓ' := ℓ') (𝓡 := 𝓡) (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (h_l := h_l)
-          (𝓑 := 𝓑) stmtIn witIn oStmtIn challenges
-      dsimp [verifierStmtOut, verifierOStmtOut, transcript, step, finalSumcheckStepLogic,
-        finalSumcheckVerifierStmtOut] at h_const ⊢
-      dsimp [transcript, step, finalSumcheckStepLogic] at h_msg_eq
-      rw [h_msg_eq]
-      exact h_const
-  refine ⟨?_, ?_, ?_, ?_⟩
-  · exact h_VCheck_passed
-  · exact hRelOut
-  · exact hStmtOut_eq
-  · exact hOStmtOut_eq
+  let tr := step.honestProverTranscript stmtIn witIn oStmtIn challenges
+  change BinaryBasefold.StrictRoundRelated K β (multpoly :=
+    (RingSwitching_SumcheckMultParam κ L K (ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly)
+    (𝓑 := 𝓑) (Fin.last ℓ') ((stmtIn, oStmtIn), witIn) at hIn
+  obtain ⟨hSum, hWitness, hOracles⟩ := hIn
+  have hTarget : stmtIn.sumcheck_target = witIn.H.val.eval (fun _ => 0) := by
+    dsimp only [Sumcheck.Structured.sumcheckConsistencyProp] at hSum
+    simp only [Fin.val_last] at hSum
+    rw [Finset.sum_eq_single_of_mem (a := fun _ => 0)
+      (by simp only [SumcheckDomain.mem_cube]; intro i; have hi := i.isLt; omega)
+      (fun b _ hb => (hb (by funext i; have hi := i.isLt; omega)).elim)] at hSum
+    exact hSum
+  have hFinal : witIn.f ⟨0, by simp only [zero_mem]⟩ =
+      witIn.t.val.eval stmtIn.challenges := by
+    rw [hWitness.2]
+    exact BinaryBasefold.getMidCodewords_last_zero_eq_eval K β
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) witIn.t stmtIn.challenges
+  have hCheck : step.verifierCheck stmtIn tr := by
+    change stmtIn.sumcheck_target = compute_final_eq_value κ L K
+      (ringSwitchingProfile κ L K β) ℓ ℓ' h_l stmtIn.ctx.t_eval_point
+      stmtIn.challenges stmtIn.ctx.r_batching * witIn.f ⟨0, by simp only [zero_mem]⟩
+    rw [hTarget, hWitness.1, Sumcheck.Structured.eval_fixPrefix_initial_last, hFinal]
+    congr 1
+    exact RingSwitching.A_MLE_eval_eq_compute_final_eq_value
+      (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l
+      stmtIn.ctx.t_eval_point stmtIn.challenges stmtIn.ctx.r_batching
+  refine ⟨hCheck, ?_, rfl, rfl⟩
+  change ∃ t, BinaryBasefold.StrictFinalSumcheckFoldingState K β t
+    (finalSumcheckVerifierStmtOut κ L K β ℓ ℓ' h_l stmtIn
+      (witIn.f ⟨0, by simp only [zero_mem]⟩), oStmtIn)
+  refine ⟨witIn.t, ?_, ?_⟩
+  · simpa only [BinaryBasefold.StrictOracleWitnessConsistent, Fin.val_last,
+      OracleFrontierIndex.mkFromStmtIdx, finalSumcheckVerifierStmtOut, Fin.take_eq_self]
+      using hOracles
+  · funext y
+    have h := BinaryBasefold.iteratedFold_lastOracle_eq_finalConstant K β
+      (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (stmtIn := stmtIn)
+      (witIn := witIn) (oStmtIn := oStmtIn) (h_witness := hWitness.2)
+      (h_oracles := by simpa only [Fin.val_last, OracleFrontierIndex.mkFromStmtIdx,
+        Fin.take_eq_self] using hOracles)
+    dsimp only [BinaryBasefold.lastBlockStart,
+      BinaryBasefold.lastBlockEnd,
+      BinaryBasefold.lastBlockChallenges, getLastOracleDomainIndex] at h
+    exact h y
 
-/-- Perfect completeness for the final sumcheck step -/
-theorem finalSumcheckOracleReduction_perfectCompleteness {σ : Type}
+/-- Perfect completeness for the canonical chronological final sumcheck step. The legacy
+support-interpreter proof is archived; the native proof uses the shared deterministic engine. -/
+theorem finalSumcheckOracleReduction_perfectCompleteness_native {σ : Type}
     (init : ProbComp σ) (hInit : NeverFail init)
-  (impl : QueryImpl []ₒ (StateT σ ProbComp)) :
-  OracleReduction.perfectCompleteness
-    (pSpec := BinaryBasefold.pSpecFinalSumcheckStep (L:=L))
-    (relIn := BinaryBasefold.strictRoundRelation (mp := RingSwitching_SumcheckMultParam κ L K
-      (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l) K β (ϑ:=ϑ)
-      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑:=𝓑) (Fin.last ℓ'))
-    (relOut := BinaryBasefold.strictFinalSumcheckRelOut K β (ϑ:=ϑ)
-      (h_ℓ_add_R_rate := h_ℓ_add_R_rate))
-    (oracleReduction := finalSumcheckOracleReduction κ L K β ℓ ℓ' 𝓡 ϑ (𝓑 := 𝓑)
-      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) h_l)
-    (init := init) (impl := impl) := by
-  rw [OracleReduction.unroll_1_message_reduction_perfectCompleteness_P_to_V (hInit := hInit)
-    (hDir0 := by rfl)
-    (hImplSupp := by simp only [Set.fmap_eq_image, IsEmpty.forall_iff, implies_true])]
-  intro stmtIn oStmtIn witIn h_relIn
-  -- Step 2: Convert probability 1 to universal quantification over support
-  rw [probEvent_eq_one_iff]
-  -- Step 3: Unfold protocol definitions
-  dsimp only [finalSumcheckOracleReduction, finalSumcheckProver, finalSumcheckVerifier,
-    OracleVerifier.toVerifier, FullTranscript.mk1]
+    (impl : QueryImpl []ₒ (StateT σ ProbComp)) :
+    (finalSumcheckOracleReduction κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
+      (𝓑 := 𝓑)).perfectCompleteness init impl
+      (BinaryBasefold.strictRoundRelation K β (ϑ := ϑ)
+        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑)
+        (multpoly := (RingSwitching_SumcheckMultParam κ L K
+          (ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly) (Fin.last ℓ'))
+      (BinaryBasefold.strictFinalSumcheckRelOut K β (ϑ := ϑ)
+        (h_ℓ_add_R_rate := h_ℓ_add_R_rate)) := by
+  classical
   let step := finalSumcheckStepLogic κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑)
-  let strongly_complete : step.IsStronglyComplete := finalSumcheckStep_is_logic_complete
-    (κ := κ) (L := L) (K := K) (β := β) (ℓ := ℓ) (ℓ' := ℓ') (𝓡 := 𝓡) (ϑ := ϑ)
-    (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (h_l := h_l) (𝓑 := 𝓑)
-  -- Step 4: Split into safety and correctness goals
-  refine ⟨?_, ?_⟩
-  -- GOAL 1: SAFETY - Prove the verifier never crashes ([⊥|...] = 0)
-  · -- Peel off monadic layers to reach the core verifier logic
-    simp only [probFailure_bind_eq_zero_iff]
-    conv_lhs =>
-      simp only [liftComp_eq_liftM, liftM_pure, probFailure_eq_zero]
-    rw [true_and]
-    intro inputState hInputState_mem_support
-    simp only [Fin.isValue, Message, Matrix.cons_val_zero, Fin.succ_zero_eq_one, ChallengeIdx,
-      Challenge, liftComp_eq_liftM, liftM_pure, support_pure,
-      Set.mem_singleton_iff] at hInputState_mem_support
-    subst inputState
-    conv_lhs =>
-      simp only [liftM, monadLift, MonadLift.monadLift]
-      simp only [ChallengeIdx, Challenge, Fin.isValue, Matrix.cons_val_one, Matrix.cons_val_zero,
-        liftComp_eq_liftM, OptionT.probFailure_lift, HasEvalPMF.probFailure_eq_zero]
-    rw [true_and]
-    -- ⊢ ∀ x ∈ .. support, ... ∧ ... ∧ ...
-    intro h_prover_final_output h_prover_final_output_support
-    conv =>
-      simp only [guard_eq] -- simplify the `guard`
-      enter [2];
-      simp only [bind_pure_comp, NeverFail.probFailure_eq_zero, implies_true]
-    rw [and_true]
-    -- Pr[⊥ | (...) : OracleComp ... (Option ...)] = 0
-    rw [OptionT.probFailure_liftComp_of_OracleComp_Option] -- split into two summands
-    conv_lhs =>
-      enter [1]
-      simp only [MessageIdx, Fin.isValue, Message, Matrix.cons_val_zero, Fin.succ_zero_eq_one,
-        id_eq, bind_pure_comp, OptionT.run_map, HasEvalPMF.probFailure_eq_zero]
-    rw [zero_add]
-    simp only [probOutput_eq_zero_iff]
-    rw [OptionT.support_run_eq]
-    simp only [←probOutput_eq_zero_iff]
-    change Pr[= none | OptionT.run (m := (OracleComp []ₒ)) (x := (OptionT.bind _ _)) ] = 0
-    rw [OptionT.probOutput_none_bind_eq_zero_iff]
-    conv =>
-      enter [x]
-      rw [OptionT.support_run]
-    intro vStmtOut h_vStmtOut_mem_support
-    conv at h_vStmtOut_mem_support =>
-      erw [simulateQ_bind]
-      -- turn the simulated oracle query into OracleInterface.answer form
-      erw [OptionT.simulateQ_simOracle2_liftM_query_T2] -- V queries P's message
-      change vStmtOut ∈ _root_.support (Bind.bind (m := (OracleComp []ₒ)) _ _)
-      erw [_root_.bind_pure_simulateQ_comp]
-      simp only [Matrix.cons_val_zero, guard_eq]
-      -- simp  [bind_pure_comp,
-      -- OptionT.simulateQ_map, OptionT.simulateQ_ite, OptionT.simulateQ_pure,
-      -- OptionT.support_map_run, OptionT.support_ite_run, support_pure,
-      -- OptionT.support_failure_run, Set.mem_image, Set.mem_ite_empty_right,
-      -- Set.mem_singleton_iff, and_true, exists_const, Prod.mk.injEq, existsAndEq]
-      rw [bind_pure_comp]
-      dsimp only [Functor.map]
-      rw [OptionT.simulateQ_bind]
-      erw [support_bind]
-      rw [simulateQ_ite]
-      simp only [Fin.isValue, Message, Matrix.cons_val_zero, id_eq, MessageIdx, support_ite,
-        toPFunctor_emptySpec, Function.comp_apply, OptionT.simulateQ_pure, Set.mem_iUnion,
-        exists_prop]
-      simp only [OptionT.simulateQ_failure]
-      erw [_root_.simulateQ_pure]
-    set V_check := step.verifierCheck stmtIn
-      (FullTranscript.mk1 (msg0 := _)) with h_V_check_def
-    obtain ⟨h_V_check, h_rel, h_agree⟩ := strongly_complete (stmtIn := stmtIn)
-      (witIn := witIn) (h_relIn := h_relIn) (challenges :=
-      fun ⟨j, hj⟩ => by
-        match j with
-        | 0 =>
-          have hj_ne : (pSpecFinalSumcheckStep (L := L)).dir 0 ≠ Direction.V_to_P := by
-            dsimp only [pSpecFinalSumcheckStep, Fin.isValue, Matrix.cons_val_zero]
-            simp only [ne_eq, reduceCtorEq, not_false_eq_true]
-          exfalso
-          exact hj_ne hj
-      )
-    have h_V_check_is_true : V_check := h_V_check
-    simp only [h_V_check_is_true, ↓reduceIte, support_pure, Set.mem_singleton_iff, Fin.isValue,
-      Fin.val_last, exists_eq_left, OptionT.support_OptionT_pure_run] at h_vStmtOut_mem_support
-    rw [h_vStmtOut_mem_support]
-    simp only [Fin.isValue, Fin.val_last, OptionT.run_pure, probOutput_eq_zero_iff, support_pure,
-      Set.mem_singleton_iff, reduceCtorEq, not_false_eq_true]
-  · -- GOAL 2: CORRECTNESS - Prove all outputs in support satisfy the relation
-    intro x hx_mem_support
-    rcases x with ⟨⟨prvStmtOut, prvOStmtOut⟩, ⟨verStmtOut, verOStmtOut⟩, witOut⟩
-    simp only
-    -- Step 2a: Simplify the support membership to extract the challenge
-    simp only [
-      support_bind, support_pure,
-      Set.mem_iUnion, Set.mem_singleton_iff, exists_prop, Prod.exists
-    ] at hx_mem_support
-    conv at hx_mem_support =>
-      erw [OptionT.support_mk, support_pure]
-      simp only [
-        Set.mem_singleton_iff, Option.some.injEq, Set.setOf_eq_eq_singleton, Prod.mk.injEq,
-        OptionT.mem_support_iff,
-        OptionT.run_monadLift, support_map, Set.mem_image, exists_eq_right, Fin.succ_one_eq_two,
-        id_eq, guard_eq, bind_pure_comp,
-        toPFunctor_add, toPFunctor_emptySpec, OptionT.support_run, ↓existsAndEq, and_true, true_and,
-        exists_eq_right_right', liftM_pure, support_pure, exists_eq_left]
-      dsimp only [monadLift, MonadLift.monadLift]
-    simp only [Fin.isValue, Challenge, ChallengeIdx,
-      liftComp_eq_liftM, liftM_pure, liftComp_pure, support_pure, Set.mem_singleton_iff,
-      Fin.reduceLast, MessageIdx, Message] at hx_mem_support
-    -- Step 2b: Extract the challenge r1 and the trace equations
-    rcases hx_mem_support with ⟨prvWitOut, h_prvOut_mem_support, h_verOut_mem_support⟩
-    conv at h_prvOut_mem_support =>
-      dsimp only [finalSumcheckStepLogic]
-      simp only [Fin.val_last, Fin.isValue, Prod.mk.injEq, and_true]
-    -- Step 2c: Simplify the verifier computation
-    conv at h_verOut_mem_support =>
-      erw [simulateQ_bind]
-      simp only [Set.mem_singleton_iff]
-      change some (verStmtOut, verOStmtOut) ∈ _root_.support (liftComp _ _)
-      rw [_root_.support_liftComp]
-      dsimp only [Functor.map]
-      erw [support_bind]
-      erw [OptionT.simulateQ_simOracle2_liftM_query_T2]
-      simp only [Fin.isValue, Fin.val_last, pure_bind,
-        OptionT.simulateQ_bind, toPFunctor_emptySpec, Function.comp_apply, OptionT.simulateQ_pure,
-        Set.mem_iUnion, exists_prop]
-      rw [simulateQ_ite]; erw [simulateQ_pure]
-      simp only [OptionT.simulateQ_failure]
-    set V_check := step.verifierCheck stmtIn
-      (FullTranscript.mk1
-        (msg0 := _))with h_V_check_def
-    -- Step 2e: Apply the logic completeness lemma
-    obtain ⟨h_V_check, h_rel, h_agree⟩ := strongly_complete (stmtIn := stmtIn)
-      (witIn := witIn) (h_relIn := h_relIn) (challenges :=
-      fun ⟨j, hj⟩ => by
-        match j with
-        | 0 =>
-          have hj_ne : (pSpecFinalSumcheckStep (L := L)).dir 0 ≠ Direction.V_to_P := by
-            dsimp only [pSpecFinalSumcheckStep, Fin.isValue, Matrix.cons_val_zero]
-            simp only [ne_eq, reduceCtorEq, not_false_eq_true]
-          exfalso
-          exact hj_ne hj
-      )
-    have h_V_check_is_true : V_check := h_V_check
-    simp only [h_V_check_is_true, ↓reduceIte, Fin.isValue] at h_verOut_mem_support
-    erw [support_bind, support_pure] at h_verOut_mem_support
-    simp only [Set.mem_singleton_iff, Fin.isValue, Set.iUnion_iUnion_eq_left,
-      OptionT.support_OptionT_pure_run, exists_eq_left, Option.some.injEq,
-      Prod.mk.injEq] at h_verOut_mem_support
-    rcases h_verOut_mem_support with ⟨verStmtOut_eq, verOStmtOut_eq⟩
-    obtain ⟨prvStmtOut_eq, prvOStmtOut_eq⟩ := h_prvOut_mem_support
-    constructor
-    · rw [verStmtOut_eq, verOStmtOut_eq];
-      exact h_rel
-    · constructor
-      · rw [verStmtOut_eq, prvStmtOut_eq]; rfl
-      · rw [verOStmtOut_eq, prvOStmtOut_eq];
-        exact h_agree.2
+  apply step.perfectCompleteness_of_isStronglyComplete
+    (finalSumcheckOracleReduction κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
+    (finalSumcheckVerifierGuardedForm κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
+    (finalSumcheckStep_is_logic_complete_native κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l)
+  · intro stmt wit oracles q hq
+    let c : L := wit.f ⟨0, by simp only [zero_mem]⟩
+    have hp : (finalSumcheckProver κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
+        (𝓑 := 𝓑)).run (stmt, oracles) wit =
+        pure (((default : (pSpecFinalSumcheckStep (L := L)).Transcript 0).concat (m := 0) c),
+          step.proverOut stmt wit oracles (FullTranscript.mk1 c)) := rfl
+    dsimp only [finalSumcheckOracleReduction] at hq
+    rw [hp] at hq
+    replace hq := OracleComp.eq_of_mem_support_pure _ hq
+    refine ⟨isEmptyElim, hq.trans ?_⟩
+    apply Prod.ext
+    · exact (FullTranscript.mk1_eq_snoc (pSpec := pSpecFinalSumcheckStep (L := L)) c).symm
+    · rfl
+  · intro stmt oracles tr
+    exact decide_eq_decide.mpr Iff.rfl
+  · intro stmt oracles tr
+    rfl
 
-/-- RBR knowledge error for the final sumcheck step -/
+-- Native strong completeness and perfect completeness above use the canonical
+-- exact-encoding relation. Historical support-interpreter proofs are archived in
+-- scripts/integration/retired/fribinius-core-interaction-legacy.lean.txt.
+
 def finalSumcheckKnowledgeError (m : pSpecFinalSumcheckStep (L := L).ChallengeIdx) :
   ℝ≥0 :=
   match m with
@@ -1107,7 +929,7 @@ def FinalSumcheckWit := fun (m : Fin (1 + 1)) =>
  | ⟨1, _⟩ => Unit
 
 /-- The round-by-round extractor for the final sumcheck step -/
-noncomputable def finalSumcheckRbrExtractor :
+noncomputable def finalSumcheckRbrExtractor_native :
   Extractor.RoundByRound []ₒ
     (StmtIn := (Statement (L := L) (ℓ := ℓ') (RingSwitchingBaseContext κ L K ℓ (ringSwitchingProfile κ L K β))
       (Fin.last ℓ')) × (∀ j, BinaryBasefold.OracleStatement K β
@@ -1116,14 +938,14 @@ noncomputable def finalSumcheckRbrExtractor :
     (WitOut := Unit)
     (pSpec := BinaryBasefold.pSpecFinalSumcheckStep (L:=L))
     (WitMid := FinalSumcheckWit κ (L := L) K β ℓ' 𝓡 (h_ℓ_add_R_rate := h_ℓ_add_R_rate)) where
-  eqIn := rfl
+  extractIn := fun _ w => w
   extractMid := fun m ⟨stmtMid, oStmtMid⟩ trSucc witMidSucc => by
     have hm : m = 0 := by omega
     subst hm
     have _ : witMidSucc = () := by rfl
     -- Decode t from the first oracle f^(0)
     let f0 := getFirstOracle K β oStmtMid
-    let polyOpt := extractMLP K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+    let polyOpt := extractMlp K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
       (i := ⟨0, by exact Nat.pos_of_neZero ℓ'⟩) (f := f0)
     let H_constant : L⦃≤ 2⦄[X Fin (ℓ' - ↑(Fin.last ℓ'))] := ⟨MvPolynomial.C stmtMid.sumcheck_target,
       by
@@ -1139,67 +961,51 @@ noncomputable def finalSumcheckRbrExtractor :
       }
     | some tpoly =>
       exact {
-        t := revIndexMLP tpoly,
+        t := tpoly,
         H := H_constant,
         f := getMidCodewords K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-          (revIndexMLP tpoly) stmtMid.challenges
+          tpoly stmtMid.challenges
       }
   extractOut := fun ⟨stmtIn, oStmtIn⟩ tr witOut => ()
 
 
-def finalSumcheckKStateProp {m : Fin (1 + 1)} (tr : Transcript m (pSpecFinalSumcheckStep (L := L)))
+def finalSumcheckKStateProp_native {m : Fin (1 + 1)} (tr : Transcript m (pSpecFinalSumcheckStep (L := L)))
     (stmt : Statement (L := L) (ℓ := ℓ') (RingSwitchingBaseContext κ L K ℓ (ringSwitchingProfile κ L K β)) (Fin.last ℓ'))
     (witMid : FinalSumcheckWit κ (L := L) K β ℓ' 𝓡 (h_ℓ_add_R_rate := h_ℓ_add_R_rate) m)
     (oStmt : ∀ j, BinaryBasefold.OracleStatement K β
       (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ (Fin.last ℓ') j) : Prop :=
   match m with
-  | ⟨0, _⟩ => -- same as relIn
-    BinaryBasefold.roundRelationProp K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-      (mp := RingSwitching_SumcheckMultParam κ L K
-        (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l)
-      (𝓑 := 𝓑) (Fin.last ℓ') ((stmt, oStmt), witMid)
-  | ⟨1, _⟩ => -- implied by relOut + local checks via extractOut proofs
-    let tr_so_far := (pSpecFinalSumcheckStep (L := L)).take 1 (by omega)
-    let i_msg0 : tr_so_far.MessageIdx := ⟨⟨0, by omega⟩, rfl⟩
-    let s' : L := (ProtocolSpec.Transcript.equivMessagesChallenges (k := 1)
-      (pSpec := pSpecFinalSumcheckStep (L := L)) tr).1 i_msg0
-    let stmtOut : BinaryBasefold.FinalSumcheckStatementOut (L:=L) (ℓ:=ℓ') := {
-      -- **Dummy UNUSED values**
-      ctx := {
-        t_eval_point := 0,
-        original_claim := 0
-      },
-      sumcheck_target := 0,
-      -- **ONLY the last two fields are used in finalSumcheckStepFoldingStateProp**
-      challenges := stmt.challenges,
-      final_constant := s'
-    }
-    let sumcheckFinalCheck : Prop := stmt.sumcheck_target = compute_final_eq_value κ L K
-      (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l
-      stmt.ctx.t_eval_point stmt.challenges stmt.ctx.r_batching * s'
-    let finalFoldingProp := finalSumcheckStepFoldingStateProp K β (ϑ := ϑ)
-      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (h_le := by
-        apply Nat.le_of_dvd;
-        · exact Nat.pos_of_neZero ℓ'
-        · exact hdiv.out) (input := ⟨stmtOut, oStmt⟩)
-    sumcheckFinalCheck ∧ finalFoldingProp -- local checks ∧ (oracleConsitency ∨ badEventExists)
+  | ⟨0, _⟩ =>
+    BinaryBasefold.KnowledgeInvariant K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      (multpoly := (RingSwitching_SumcheckMultParam κ L K
+        (ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly)
+      (stmtIdx := Fin.last ℓ') (oracleIdx := OracleFrontierIndex.mkFromStmtIdx (Fin.last ℓ'))
+      stmt witMid oStmt
+      (localChecks := Sumcheck.Structured.sumcheckConsistencyProp
+        (SumcheckDomain.uniform 𝓑 _) stmt.sumcheck_target witMid.H)
+  | ⟨1, _⟩ =>
+    let c : L := tr.messages ⟨0, rfl⟩
+    let stmtOut := finalSumcheckVerifierStmtOut κ L K β ℓ ℓ' h_l stmt c
+    (stmt.sumcheck_target = compute_final_eq_value κ L K
+      (ringSwitchingProfile κ L K β) ℓ ℓ' h_l
+      stmt.ctx.t_eval_point stmt.challenges stmt.ctx.r_batching * c) ∧
+      BinaryBasefold.FinalSumcheckFoldingState K β (input := (stmtOut, oStmt))
 
 /-- The knowledge state function for the final sumcheck step -/
-noncomputable def finalSumcheckKnowledgeStateFunction {σ : Type} (init : ProbComp σ)
+noncomputable def finalSumcheckKnowledgeStateFunction_native {σ : Type} (init : ProbComp σ)
     (impl : QueryImpl []ₒ (StateT σ ProbComp)) :
     (finalSumcheckVerifier κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
       (𝓑 := 𝓑)).KnowledgeStateFunction init impl
     (relIn := roundRelation K β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-      (𝓑 := 𝓑) (mp := RingSwitching_SumcheckMultParam κ L K
-        (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l) (Fin.last ℓ'))
+      (𝓑 := 𝓑) (multpoly := (RingSwitching_SumcheckMultParam κ L K
+        (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly) (Fin.last ℓ'))
     (relOut := BinaryBasefold.finalSumcheckRelOut K β (ϑ:=ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate))
-    (extractor := finalSumcheckRbrExtractor κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate)
+    (extractor := finalSumcheckRbrExtractor_native κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate)
   where
-  toFun := fun m ⟨stmt, oStmt⟩ tr witMid =>
-    finalSumcheckKStateProp κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
-      (tr := tr) (stmt := stmt) (witMid := witMid) (oStmt := oStmt)
-  toFun_empty := fun stmt witMid => by
-    rfl
+  toFun := fun m ⟨stmtIn, oStmtIn⟩ tr witMid =>
+    finalSumcheckKStateProp_native κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑)
+      (tr := tr) (stmt := stmtIn) (witMid := witMid) (oStmt := oStmtIn)
+  toFun_empty := fun ⟨stmtIn, oStmtIn⟩ witMid h => h
   toFun_next := fun m hDir (stmtIn, oStmtIn) tr msg witMid => by
     have h_m_eq_0 : m = 0 := by
       cases m using Fin.cases with
@@ -1207,220 +1013,107 @@ noncomputable def finalSumcheckKnowledgeStateFunction {σ : Type} (init : ProbCo
       | succ m' => omega
     subst h_m_eq_0
     simp only [Fin.isValue, Fin.succ_zero_eq_one, Fin.castSucc_zero]
-    -- In the single-message final sumcheck step, the new message `msg` *is* the final constant.
-    -- We use it directly rather than reconstructing a truncated transcript.
-    let s' : L := msg
-    let stmtOut : BinaryBasefold.FinalSumcheckStatementOut (L:=L) (ℓ:=ℓ') := {
-      ctx := {
-        t_eval_point := 0,
-        original_claim := 0
-      },
-      sumcheck_target := 0,
-      challenges := stmtIn.challenges,
-      final_constant := s'
-    }
+    -- For the final sumcheck step, there is a single P→V message carrying the final constant,
+    -- so we can read it directly from `msg` without reconstructing a truncated transcript.
+    let c : L := msg
+    let stmtOut := finalSumcheckVerifierStmtOut κ L K β ℓ ℓ' h_l stmtIn c
+
     intro h_kState_round1
-    unfold finalSumcheckKStateProp BinaryBasefold.finalSumcheckStepFoldingStateProp
-      BinaryBasefold.roundRelationProp BinaryBasefold.masterKStateCore at h_kState_round1 ⊢
-    simp only [olderStmtChallenges_self]
-    simp only [Fin.isValue] at h_kState_round1
-    obtain ⟨h_sumcheckFinalCheck, h_core⟩ := h_kState_round1
-    -- The input relation uses the terminal block bad event or witness consistency.
+    unfold finalSumcheckKStateProp_native FinalSumcheckFoldingState
+      KnowledgeInvariant at h_kState_round1 ⊢
+    simp only [Fin.isValue, Nat.reduceAdd, Fin.mk_one,
+      Fin.coe_ofNat_eq_mod, Nat.reduceMod] at h_kState_round1
+    -- At m=1 we have local final-check and (oracle-consistency ∨ block-bad-event).
+    -- At m=0 the target is `KnowledgeInvariant`:
+    -- incremental-bad-event ∨ (local ∧ structural ∧ initial ∧ oracleFoldingConsistency).
+    obtain ⟨h_V_check, h_core⟩ := h_kState_round1
+    -- Case split on the m=1 final-folding state: consistency or block bad-event.
     cases h_core with
     | inl hConsistent =>
+      -- When we have FinalSumcheckOracleConsistent, extractMlp must succeed.
       have ⟨tpoly, h_extractMLP⟩ :=
-        BinaryBasefold.CoreInteraction.extractMLP_some_of_oracleFoldingConsistency K β
-          (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) stmtOut oStmtIn hConsistent
+          BinaryBasefold.CoreInteraction.exists_extractMlp_eq_some_of_finalSumcheckOracleConsistent K β
+        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (oStmt := oStmtIn) (h_oracle_consistency := hConsistent)
       refine Or.inr ?_
-      apply and_left_comm.mpr
       refine ⟨?_, ?_, ?_, ?_⟩
-      · -- local sumcheck consistency at m=0
-        unfold finalSumcheckRbrExtractor sumcheckConsistencyProp
-        simp only [Fin.val_last, Fin.mk_zero', Fin.coe_ofNat_eq_mod]
-        simp only [h_extractMLP]
-        change stmtIn.sumcheck_target =
-          ∑ x ∈ Fintype.piFinset (fun _ : Fin (ℓ' - ℓ') => Finset.map 𝓑 univ),
-            (MvPolynomial.eval x) (MvPolynomial.C stmtIn.sumcheck_target)
-        haveI : IsEmpty (Fin (ℓ' - ℓ')) := by simp only [Nat.sub_self]; infer_instance
-        simp only [Nat.sub_self, MvPolynomial.eval_C, sum_const, Fintype.card_piFinset,
-          Finset.univ_eq_empty, Finset.prod_empty, Fintype.prod_empty, one_smul]
-      · -- witnessStructuralInvariant for extracted witness
-        unfold finalSumcheckRbrExtractor BinaryBasefold.witnessStructuralInvariant
+      · -- local check at m=0
+        unfold finalSumcheckRbrExtractor_native Sumcheck.Structured.sumcheckConsistencyProp
+        simp only [Fin.val_last, Fin.mk_zero', h_extractMLP, Fin.coe_ofNat_eq_mod]
+        symm
+        calc ∑ x ∈ (univ.map 𝓑) ^ᶠ (ℓ' - ℓ'), (MvPolynomial.eval x)
+                (MvPolynomial.C stmtIn.sumcheck_target)
+            = ∑ _x ∈ (univ.map 𝓑) ^ᶠ (ℓ' - ℓ'), stmtIn.sumcheck_target :=
+              Finset.sum_congr rfl (fun x _ => MvPolynomial.eval_C (f := x) stmtIn.sumcheck_target)
+          _ = stmtIn.sumcheck_target := by
+              simp only [Finset.sum_const, Fintype.card_piFinset, Finset.card_map,
+                Finset.card_univ, Fintype.card_fin, Finset.prod_const, tsub_self, pow_zero,
+                one_smul]
+      · -- WitnessStructuralInvariant
+        unfold finalSumcheckRbrExtractor_native WitnessStructuralInvariant
         simp only [Fin.val_last, Fin.mk_zero', h_extractMLP, Fin.coe_ofNat_eq_mod, and_true]
         refine SetLike.coe_eq_coe.mp ?_
-        rw [projectToMidSumcheckPoly_at_last_eq]
-        have h_s'_eq : s' = (revIndexMLP tpoly).val.eval stmtIn.challenges := by
-          exact BinaryBasefold.CoreInteraction.extracted_t_poly_eval_eq_final_constant K β
-            (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (oStmtOut := oStmtIn) (stmtOut := stmtOut)
-            (tpoly := tpoly) (h_extractMLP := h_extractMLP)
-            (h_finalSumcheckStepOracleConsistency := hConsistent)
-        have h_mult_eq : (MvPolynomial.eval stmtIn.challenges
-          ((RingSwitching_SumcheckMultParam κ L K
-            (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly stmtIn.ctx).val) =
-          compute_final_eq_value κ L K (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l
-            stmtIn.ctx.t_eval_point stmtIn.challenges stmtIn.ctx.r_batching :=
-          RingSwitching.A_MLE_eval_eq_compute_final_eq_value (P := ringSwitchingProfile κ L K β)
-            ℓ ℓ' h_l stmtIn.ctx.t_eval_point stmtIn.challenges stmtIn.ctx.r_batching
+        rw [Sumcheck.Structured.coe_fixPrefix_initial_last ℓ' tpoly
+          ((RingSwitching_SumcheckMultParam κ L K (ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly stmtIn.ctx) stmtIn.challenges]
         have h_sumcheck_target_eq : stmtIn.sumcheck_target =
           (MvPolynomial.eval stmtIn.challenges
-            ((RingSwitching_SumcheckMultParam κ L K
-              (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly stmtIn.ctx).val) *
-            (MvPolynomial.eval stmtIn.challenges (revIndexMLP tpoly).val) := by
-          calc
-            stmtIn.sumcheck_target
-                = compute_final_eq_value κ L K (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l
-                    stmtIn.ctx.t_eval_point stmtIn.challenges stmtIn.ctx.r_batching * s' :=
-                  h_sumcheckFinalCheck
-            _ = compute_final_eq_value κ L K (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l
-                  stmtIn.ctx.t_eval_point stmtIn.challenges stmtIn.ctx.r_batching *
-                  (MvPolynomial.eval stmtIn.challenges (revIndexMLP tpoly).val) := by
-                    rw [h_s'_eq]
-            _ = (MvPolynomial.eval stmtIn.challenges
-                  ((RingSwitching_SumcheckMultParam κ L K
-                    (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly stmtIn.ctx).val) *
-                  (MvPolynomial.eval stmtIn.challenges (revIndexMLP tpoly).val) := by
-                    rw [h_mult_eq]
-        exact congrArg MvPolynomial.C h_sumcheck_target_eq
-      · -- initial compatibility via first-oracle consistency
-        dsimp only [finalSumcheckRbrExtractor, BinaryBasefold.firstOracleWitnessConsistencyProp]
+            ((RingSwitching_SumcheckMultParam κ L K (ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly stmtIn.ctx).val) *
+            (MvPolynomial.eval stmtIn.challenges tpoly.val) := by
+          rw [h_V_check]
+          rw [show (MvPolynomial.eval stmtIn.challenges) ((RingSwitching_SumcheckMultParam κ L K (ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly stmtIn.ctx).val =
+            compute_final_eq_value κ L K (ringSwitchingProfile κ L K β) ℓ ℓ' h_l
+              stmtIn.ctx.t_eval_point stmtIn.challenges stmtIn.ctx.r_batching from
+            RingSwitching.A_MLE_eval_eq_compute_final_eq_value
+              (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l
+              stmtIn.ctx.t_eval_point stmtIn.challenges stmtIn.ctx.r_batching]
+          congr 1
+          change c = tpoly.val.eval stmtIn.challenges
+          exact BinaryBasefold.CoreInteraction.eval_eq_final_constant_of_extractMlp_eq_some K β
+            (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (oStmtOut := oStmtIn) (stmtOut := stmtOut)
+            (tpoly := tpoly)
+            (h_extractMLP := h_extractMLP) (h_finalSumcheckStepOracleConsistency := hConsistent)
+        simp only
+          [h_sumcheck_target_eq, Fin.val_last, Fin.coe_ofNat_eq_mod, MvPolynomial.C_mul]
+      · -- FirstOracleWitnessConsistent
+        dsimp only [finalSumcheckRbrExtractor_native, FirstOracleWitnessConsistent]
         simp only [Fin.mk_zero', h_extractMLP, Fin.coe_ofNat_eq_mod, Fin.val_last,
           OracleFrontierIndex.val_mkFromStmtIdx]
-        have h_close_first :=
-          BinaryBasefold.CoreInteraction.firstOracle_UDRClose_of_finalSumcheckStepOracleConsistency K β
-            (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-            (stmtOut := stmtOut) (oStmt := oStmtIn) hConsistent
-        have hUDR : 2 * Code.distFromCode (u := getFirstOracle K β oStmtIn)
-            (C := BBF_Code K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (0 : Fin (2 ^ κ))) <
-          (BBF_CodeDistance K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-            (0 : Fin (2 ^ κ)) : ℕ∞) := by
-          simpa [UDRClose] using h_close_first
-        exact firstOracleWitnessConsistency_revIndexMLP_of_extractMLP_eq_some K β
+        exact (extractMlp_eq_some_iff_pairUniqueDecodingClose K β
           (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-          (f := getFirstOracle K β oStmtIn) (tpoly := tpoly) hUDR h_extractMLP
-      · simpa only [olderStmtChallenges_self] using hConsistent.1
+          (f := getFirstOracle K β oStmtIn) (tpoly := tpoly)).mp h_extractMLP
+      · exact hConsistent.1
     | inr hBad =>
-      exact Or.inl hBad
-  toFun_full := fun ⟨stmtIn, oStmtIn⟩ tr witOut probEvent_relOut_gt_0 => by
-  -- Same pattern as relay: verifier output (stmtOut, oStmtOut) + h_relOut ⇒ commitKStateProp 1
-    simp only [StateT.run'_eq, gt_iff_lt, probEvent_pos_iff, Prod.exists] at probEvent_relOut_gt_0
-    rcases probEvent_relOut_gt_0 with ⟨stmtOut, oStmtOut, h_output_mem_V_run_support, h_relOut⟩
-    have h_output_mem_V_run_support' :
-        some (stmtOut, oStmtOut) ∈
-          support (do
-            let s ← init
-            Prod.fst <$>
-              (simulateQ impl
-                (Verifier.run (stmtIn, oStmtIn) tr
-                  (finalSumcheckVerifier κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
-                    (𝓑 := 𝓑)).toVerifier)).run s) := by
-      exact (OptionT.mem_support_iff
-        (mx := OptionT.mk (do
-          let s ← init
-          Prod.fst <$>
-            (simulateQ impl
-              (Verifier.run (stmtIn, oStmtIn) tr
-                (finalSumcheckVerifier κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
-                  (𝓑 := 𝓑)).toVerifier)).run s))
-        (x := (stmtOut, oStmtOut))).1 h_output_mem_V_run_support
-    simp only [support_bind, Set.mem_iUnion, exists_prop] at h_output_mem_V_run_support'
-    rcases h_output_mem_V_run_support' with ⟨s, hs_init, h_output_mem_V_run_support⟩
-    conv at h_output_mem_V_run_support => -- same as fold step
-      simp only [Verifier.run, OracleVerifier.toVerifier]
-      -- Now unfold the foldOracleVerifier's `verify()` method
-      simp only [finalSumcheckVerifier]
-      -- dsimp only [StateT.run]
-      -- simp only [simulateQ_bind, simulateQ_query, simulateQ_pure]
-      -- oracle query unfolding
-      simp only [support_bind, Set.mem_iUnion]
-      dsimp only [StateT.run]
-      -- enter [1, i_1, 2, 1, x]
-      simp only [simulateQ_bind]
-      ---------------------------------------
-      -- Now simplify the `guard` and `ite` of StateT.map generated from it
-      simp only [MessageIdx, Fin.isValue, Matrix.cons_val_zero, simulateQ_pure, Message, guard_eq,
-        pure_bind, Function.comp_apply, simulateQ_map, simulateQ_ite,
-        OptionT.simulateQ_failure, bind_map_left]
-      simp only [MessageIdx, Message, Fin.isValue, Matrix.cons_val_zero, Matrix.cons_val_one,
-        bind_pure_comp, simulateQ_map, simulateQ_ite, simulateQ_pure, OptionT.simulateQ_failure,
-        bind_map_left, Function.comp_apply]
-      simp only [support_ite]
-      simp only [Fin.isValue, Set.mem_ite_empty_right, Set.mem_singleton_iff, Prod.mk.injEq,
-        exists_and_left, exists_eq', exists_eq_right, exists_and_right]
-      simp only [Fin.isValue, id_eq, FullTranscript.mk1_eq_snoc, support_map, Set.mem_image,
-        Prod.exists, exists_and_right, exists_eq_right]
-      erw [simulateQ_bind]
-      enter [1, x, 1, 1, 1, 2];
-      erw [simulateQ_bind]
-      erw [OptionT.simulateQ_simOracle2_liftM_query_T2]
-      simp only [Fin.isValue, FullTranscript.mk1_eq_snoc, pure_bind, OptionT.simulateQ_map]
-    conv at h_output_mem_V_run_support =>
-      simp only [Fin.isValue, FullTranscript.mk1_eq_snoc, Function.comp_apply]
-    erw [support_bind] at h_output_mem_V_run_support
-    let step := (finalSumcheckStepLogic κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
-    set V_check := step.verifierCheck stmtIn
-      (FullTranscript.mk1 (msg0 := _)) with h_V_check_def
-    by_cases h_V_check : V_check
-    · simp only [Fin.isValue, h_V_check, ↓reduceIte, OptionT.run_pure, simulateQ_pure,
-        Set.mem_iUnion, exists_prop, Prod.exists] at h_output_mem_V_run_support
-      erw [simulateQ_bind] at h_output_mem_V_run_support
-      erw [support_pure] at h_output_mem_V_run_support
-      simp only [Set.mem_singleton_iff, Prod.mk.injEq, ↓existsAndEq, and_true, exists_eq_left,
-        simulateQ_pure] at h_output_mem_V_run_support
-      erw [support_pure] at h_output_mem_V_run_support
-      simp only [Fin.isValue, Set.mem_singleton_iff, Prod.mk.injEq, Option.some.injEq,
-        exists_eq_right] at h_output_mem_V_run_support
-      rcases h_output_mem_V_run_support with ⟨h_stmtOut_eq, h_oStmtOut_eq⟩
-      simp only [Fin.reduceLast, Fin.isValue]
-      -- h_relOut : ((stmtOut, oStmtOut), witOut) ∈ roundRelation 𝔽q β i.succ
-      simp only [finalSumcheckRelOut, finalSumcheckRelOutProp, Set.mem_setOf_eq] at h_relOut
-      -- Goal: commitKStateProp 1 stmtIn oStmtIn tr witOut
-      unfold finalSumcheckKStateProp
-      -- Unfold the sendMessage, receiveChallenge, output logic of prover
-      dsimp only
-      -- stmtOut = stmtIn; need oStmtOut = snoc_oracle oStmtIn witOut.f so goal matches h_relOut
-      simp only [h_stmtOut_eq] at h_relOut ⊢
-      have h_oStmtOut_eq_oStmtIn : oStmtOut = oStmtIn := by rw [h_oStmtOut_eq]; rfl
-      -- c equals tr.messages ⟨0, rfl⟩
-      constructor
-      · -- First conjunct: sumcheck_target = eqTilde r challenges * c
-        exact h_V_check
-      · -- Second conjunct: finalSumcheckStepFoldingStateProp
-          -- ({ toStatement := stmtIn, final_constant := c }, oStmtIn)
-        rw [h_oStmtOut_eq_oStmtIn] at h_relOut
-        rw [finalNonDoomedFoldingProp_eq_finalSumcheckStepFoldingStateProp K β] at h_relOut
-        exact h_relOut
-    · simp only [Fin.isValue, h_V_check, ↓reduceIte, OptionT.run_failure,
-        OptionT.simulateQ_failure, _root_.simulateQ_pure,
-        Set.mem_iUnion, exists_prop, Prod.exists] at h_output_mem_V_run_support
-      erw [simulateQ_bind] at h_output_mem_V_run_support
-      erw [support_pure] at h_output_mem_V_run_support
-      simp only [Set.mem_singleton_iff, Prod.mk.injEq, ↓existsAndEq, and_true, exists_eq_left,
-        simulateQ_pure] at h_output_mem_V_run_support
-      erw [support_pure] at h_output_mem_V_run_support
-      simp only [Set.mem_singleton_iff, Prod.mk.injEq, reduceCtorEq, false_and,
-        exists_false] at h_output_mem_V_run_support -- False
+      -- A block bad event at the last round is an incremental bad event there.
+      exact Or.inl (
+        (blockBadEventExists_iff_incrementalBadEventExists_last K β
+          (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (ϑ := ϑ)
+          (oStmt := oStmtIn) (challenges := stmtIn.challenges)).1 hBad
+      )
+  toFun_full := fun s tr witOut h => by
+    change FullTranscript (pSpecFinalSumcheckStep (L := L)) at tr
+    obtain ⟨hcheck, hrel⟩ := (finalSumcheckVerifierGuardedForm κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
+      (𝓑 := 𝓑)).check_and_of_prEvent_pos h
+    rw [finalSumcheckVerifierGuardedForm_check_native κ L K β ℓ ℓ' 𝓡 ϑ
+      h_ℓ_add_R_rate h_l s tr] at hcheck
 
+    exact ⟨of_decide_eq_true hcheck, hrel⟩
 /-- Round-by-round knowledge soundness for the final sumcheck step -/
-theorem finalSumcheckOracleVerifier_rbrKnowledgeSoundness [Fintype L] {σ : Type}
+theorem finalSumcheckOracleVerifier_rbrKnowledgeSoundness_native {σ : Type}
     (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp)) :
     (finalSumcheckVerifier κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l
       (𝓑 := 𝓑)).rbrKnowledgeSoundness init impl
       (relIn := roundRelation K β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (𝓑 := 𝓑) (mp := RingSwitching_SumcheckMultParam κ L K
-          (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l) (Fin.last ℓ'))
+        (𝓑 := 𝓑) (multpoly := (RingSwitching_SumcheckMultParam κ L K
+          (P := ringSwitchingProfile κ L K β) ℓ ℓ' h_l).multpoly) (Fin.last ℓ'))
       (relOut := BinaryBasefold.finalSumcheckRelOut K β (ϑ:=ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate))
       (rbrKnowledgeError := finalSumcheckKnowledgeError L) := by
-  use FinalSumcheckWit κ (L := L) K β ℓ' 𝓡 (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-  use finalSumcheckRbrExtractor κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate
-  use finalSumcheckKnowledgeStateFunction κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l init impl
-  intro stmtIn witIn prover j
-  rcases j with ⟨j, hj⟩
-  cases j using Fin.cases with
-  | zero =>
-    simp only [pSpecFinalSumcheckStep, ne_eq, reduceCtorEq, not_false_eq_true, Fin.isValue,
-      Matrix.cons_val_fin_one, Direction.not_P_to_V_eq_V_to_P] at hj
-  | succ j' =>
-    exact Fin.elim0 j'
+  classical
+  have hWith := Verifier.rbrKnowledgeSoundnessWorstCaseWith_of_isEmpty_challengeIdx
+    (rbrKnowledgeError := finalSumcheckKnowledgeError L)
+    (finalSumcheckRbrExtractor_native κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate)
+    (finalSumcheckKnowledgeStateFunction_native κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑) init impl)
+  exact Verifier.rbrKnowledgeSoundnessWorstCase_implies_rbrKnowledgeSoundness init impl
+    ((Verifier.rbrKnowledgeSoundnessWorstCase_iff_exists_with init impl _ _ _ _).mpr
+      ⟨_, _, _, hWith⟩)
 
 end FinalSumcheckStep
 
@@ -1466,24 +1159,10 @@ def coreInteractionOracleReduction :=
       (h_ℓ_add_R_rate := h_ℓ_add_R_rate) h_l (𝓑 := 𝓑))
     (R₂ := finalSumcheckOracleReduction κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
 
-/-- Sequential composition preserves the core verifier's oracle interfaces. -/
-instance coreInteractionOracleVerifier_appendCoherent :
-    OracleVerifier.Append.AppendCoherent
-      (coreInteractionOracleVerifier κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑)) := by
-  unfold coreInteractionOracleVerifier
-  infer_instance
-
-/-- The core reduction inherits coherence from its component reductions. -/
-instance coreInteractionOracleReduction_appendCoherent :
-    OracleVerifier.Append.AppendCoherent
-      (coreInteractionOracleReduction κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑)).verifier := by
-  unfold coreInteractionOracleReduction
-  infer_instance
-
 variable {σ : Type} {init : ProbComp σ} {impl : QueryImpl []ₒ (StateT σ ProbComp)}
 
 /-- Perfect completeness for the core interaction oracle reduction -/
-theorem coreInteractionOracleReduction_perfectCompleteness (hInit : NeverFail init)
+theorem coreInteractionOracleReduction_perfectCompleteness_native (hInit : NeverFail init)
     (hAppendPerfectCompleteness :
       OracleReduction.perfectCompleteness
         (oSpec := []ₒ)
@@ -1491,7 +1170,7 @@ theorem coreInteractionOracleReduction_perfectCompleteness (hInit : NeverFail in
         (OStmtIn := BinaryBasefold.OracleStatement K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ 0)
         (OStmtOut := BinaryBasefold.OracleStatement K β
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ (Fin.last ℓ'))
-        (relIn := strictSumcheckInputRelation κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
+        (relIn := nativeStrictSumcheckInputRelation κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
         (relOut := BinaryBasefold.strictFinalSumcheckRelOut K β (ϑ:=ϑ)
           (h_ℓ_add_R_rate := h_ℓ_add_R_rate))
         (oracleReduction := coreInteractionOracleReduction κ L K β ℓ ℓ' 𝓡 ϑ
@@ -1504,7 +1183,7 @@ theorem coreInteractionOracleReduction_perfectCompleteness (hInit : NeverFail in
       (OStmtIn := BinaryBasefold.OracleStatement K β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ 0)
       (OStmtOut := BinaryBasefold.OracleStatement K β
       (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ (Fin.last ℓ'))
-      (relIn := strictSumcheckInputRelation κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
+      (relIn := nativeStrictSumcheckInputRelation κ L K β ℓ ℓ' 𝓡 ϑ h_ℓ_add_R_rate h_l (𝓑 := 𝓑))
       (relOut := BinaryBasefold.strictFinalSumcheckRelOut K β (ϑ:=ϑ)
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate))
       (oracleReduction := coreInteractionOracleReduction κ L K β ℓ ℓ' 𝓡 ϑ
@@ -1587,3 +1266,17 @@ theorem coreInteractionOracleRbrKnowledgeError_le :
 
 end
 end Binius.FRIBinius.CoreInteractionPhase
+
+-- Axiom audit: the native and separately retained historical results require no admissions.
+#print axioms Binius.FRIBinius.CoreInteractionPhase.sumcheckFoldOracleReduction_perfectCompleteness_native
+#print axioms Binius.FRIBinius.CoreInteractionPhase.sumcheckFold_legacy_input_bridge_counterexample
+#print axioms Binius.FRIBinius.CoreInteractionPhase.finalCodeword_zero_eq_t_eval
+#print axioms Binius.FRIBinius.CoreInteractionPhase.iterated_fold_to_const_strict
+#print axioms Binius.FRIBinius.CoreInteractionPhase.finalSumcheckStep_verifierCheck_passed
+#print axioms Binius.FRIBinius.CoreInteractionPhase.finalSumcheckStep_is_logic_complete_native
+#print axioms Binius.FRIBinius.CoreInteractionPhase.finalSumcheckOracleReduction_perfectCompleteness_native
+#print axioms Binius.FRIBinius.CoreInteractionPhase.finalSumcheckKnowledgeStateFunction_native
+#print axioms Binius.FRIBinius.CoreInteractionPhase.finalSumcheckOracleVerifier_rbrKnowledgeSoundness_native
+#print axioms Binius.FRIBinius.CoreInteractionPhase.coreInteractionOracleReduction_perfectCompleteness_native
+#print axioms Binius.FRIBinius.CoreInteractionPhase.coreInteractionOracleVerifier_rbrKnowledgeSoundness
+#print axioms Binius.FRIBinius.CoreInteractionPhase.coreInteractionOracleRbrKnowledgeError_le

@@ -285,7 +285,10 @@ theorem not_delta_epsilon_correlatedAgreementCurves_boundary :
       (δ := 1 - ReedSolomon.sqrtRate 1 domain)
       (ε := errorBound (1 - ReedSolomon.sqrtRate 1 domain) 1 domain) := by
   intro h
-  exact not_jointAgreement (h uBad (by simpa using boundary_probability_hypothesis))
+  apply not_jointAgreement
+  apply h uBad
+  rw [← ProximityPrize.Compatibility.pmf_uniform_probability_eq_native]
+  exact boundary_probability_hypothesis
 
 end BoundaryCardResidualRefutation
 

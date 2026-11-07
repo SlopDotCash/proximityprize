@@ -152,7 +152,7 @@ theorem packing_covers_log {N r : ℕ} (hrN : r < N)
   -- product of LHS ≤ product of the exp-bounds
   have hprod_le : (∏ i ∈ range r, ((2 * N - i : ℕ) : ℝ))
       ≤ ∏ i ∈ range r, (2 * ((N - i : ℕ) : ℝ) * Real.exp ((i : ℝ) / (2 * ((N - i : ℕ) : ℝ)))) := by
-    apply Finset.prod_le_prod
+    apply Finset.prod_le_prod₀
     · intro i _; positivity
     · exact hfac
   -- factor the RHS product

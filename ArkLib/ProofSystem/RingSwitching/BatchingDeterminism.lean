@@ -64,12 +64,8 @@ is the batching protocol. -/
 theorem batchingOracleVerifier_toVerifier_pure :
     (oracleVerifier κ L K P ℓ ℓ' h_l (aOStmtIn := aOStmtIn)).toVerifier
       = ⟨fun p tr => pure (batchingVerifyFn κ L K P ℓ ℓ' h_l aOStmtIn p tr,
-          fun i => match h : (oracleVerifier κ L K P ℓ ℓ' h_l (aOStmtIn := aOStmtIn)).embed i with
-            | Sum.inl j =>
-                ((oracleVerifier κ L K P ℓ ℓ' h_l (aOStmtIn := aOStmtIn)).hEq i ▸ h ▸ p.2 j)
-            | Sum.inr j =>
-                ((oracleVerifier κ L K P ℓ ℓ' h_l (aOStmtIn := aOStmtIn)).hEq i ▸ h ▸
-                  tr.messages j))⟩ :=
+          (oracleVerifier κ L K P ℓ ℓ' h_l (aOStmtIn := aOStmtIn)).materializeOutput
+            tr.challenges p.2 tr.messages)⟩ :=
   OracleVerifier.toVerifier_eq_pure_of_collapse _ _ (fun stmt oStmt tr => by
     rw [oracleVerifier_verify_collapse]
     unfold batchingVerifyFn

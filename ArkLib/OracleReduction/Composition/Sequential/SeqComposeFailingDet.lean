@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
-import ArkLib.OracleReduction.Composition.Sequential.General
+import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.General
 
 /-!
 # Failing-determinism is preserved by sequential composition (issue #29)
@@ -87,27 +87,23 @@ theorem seqCompose'_toVerifier_isFailingDet {m : ℕ}
     (V : (i : Fin m) →
       OracleVerifier oSpec (Stmt i.castSucc) (OStmt i.castSucc) (Stmt i.succ) (OStmt i.succ)
         (pSpec i))
-    (coh : ∀ i, OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ i.castSucc) (Oₛ₂ := Oₛ i.succ)
-      (Oₘ₁ := Oₘ i) (V i))
+
     (h : ∀ i, (V i).toVerifier.IsFailingDet) :
-    (OracleVerifier.seqCompose' Stmt OStmt Oₛ Oₘ V coh).toVerifier.IsFailingDet := by
+    (OracleVerifier.seqCompose' Stmt OStmt Oₛ Oₘ V).toVerifier.IsFailingDet := by
   induction m with
   | zero =>
-    rw [show (OracleVerifier.seqCompose' Stmt OStmt Oₛ Oₘ V coh).toVerifier
-          = (@OracleVerifier.id ι oSpec (Stmt 0) (ιₛ 0) (OStmt 0) (Oₛ 0)).toVerifier from rfl,
-      OracleVerifier.id_toVerifier]
+    change OracleVerifier.id.toVerifier.IsFailingDet
+    rw [OracleVerifier.id_toVerifier]
     exact Verifier.id_isFailingDet
   | succ m ih =>
-    letI : OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ 0) (Oₛ₂ := Oₛ 1) (Oₘ₁ := Oₘ 0) (V 0) :=
-      coh 0
     change (OracleVerifier.append (V 0)
-        (OracleVerifier.seqCompose' (Stmt ∘ Fin.succ) (fun i => OStmt (Fin.succ i))
-          (fun i => Oₛ (Fin.succ i)) (fun i => Oₘ (Fin.succ i)) (fun i => V (Fin.succ i))
-          (fun i => coh i.succ))).toVerifier.IsFailingDet
-    rw [OracleReduction.oracleVerifier_append_toVerifier]
+      (OracleVerifier.seqCompose' (Stmt ∘ Fin.succ) (fun i => OStmt (Fin.succ i))
+        (fun i => Oₛ (Fin.succ i)) (fun i => Oₘ (Fin.succ i))
+        (fun i => V (Fin.succ i)))).toVerifier.IsFailingDet
+    rw [OracleVerifier.append_toVerifier]
     exact (h 0).append (ih (Stmt ∘ Fin.succ) (fun i => OStmt (Fin.succ i))
-      (fun i => Oₛ (Fin.succ i)) (fun i => Oₘ (Fin.succ i)) (fun i => V (Fin.succ i))
-      (fun i => coh i.succ) (fun i => h i.succ))
+      (fun i => Oₛ (Fin.succ i)) (fun i => Oₘ (Fin.succ i))
+      (fun i => V (Fin.succ i)) (fun i => h i.succ))
 
 /-- **The n-ary failing-determinism witness.** A `seqCompose` of oracle verifiers whose every
 compiled `toVerifier` is failing-deterministic compiles to a failing-deterministic `toVerifier`.
@@ -122,11 +118,10 @@ theorem seqCompose_toVerifier_isFailingDet {m : ℕ}
     (V : (i : Fin m) →
       OracleVerifier oSpec (Stmt i.castSucc) (OStmt i.castSucc) (Stmt i.succ) (OStmt i.succ)
         (pSpec i))
-    [coh : ∀ i, OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ i.castSucc) (Oₛ₂ := Oₛ i.succ)
-      (Oₘ₁ := Oₘ i) (V i)]
+
     (h : ∀ i, (V i).toVerifier.IsFailingDet) :
     (OracleVerifier.seqCompose Stmt OStmt V).toVerifier.IsFailingDet :=
-  seqCompose'_toVerifier_isFailingDet Stmt OStmt Oₛ Oₘ V coh h
+  seqCompose'_toVerifier_isFailingDet Stmt OStmt Oₛ Oₘ V h
 
 end OracleVerifier
 

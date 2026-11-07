@@ -36,7 +36,7 @@ namespace ArkLib.ProximityGap.KKH26DimGeneralSharp
 
 section Concrete4294967377
 
-local instance fact_prime_4294967377' : Fact (Nat.Prime 4294967377) := ⟨by norm_num⟩
+local instance fact_prime_4294967377' : Fact (Nat.Prime 4294967377) := ⟨by prime_checkpoint⟩
 
 /-- **The interleaved sharp `δ*` pin at the dimension-four past-the-wall rung.** For every fold
 count `t ≥ 1`, the `t`-fold row interleaving of the degree-`3` Reed–Solomon code on the 16-point

@@ -180,7 +180,8 @@ theorem βHensel_succ_eq_neg_hasse_of_window (x₀ : F) (R : F[X][X][Y])
           simp only [dif_pos hlk]
           exact hwin l hl1 (by omega)⟩
       exact Multiset.prod_eq_zero (M₀ := 𝒪 H) hmem
-    rw [hprod, mul_zero]
+    rw [hprod]
+    exact mul_zero (_ : 𝒪 H)
   rw [hblock, zero_add]
   -- (2) the `i₁ = k+1` block: the unique (empty) partition contributes the Hasse term.
   refine congrArg Neg.neg ?_
@@ -212,7 +213,8 @@ theorem βHensel_succ_eq_neg_hasse_of_window (x₀ : F) (R : F[X][X][Y])
     have hB : B_coeff H x₀ R (k + 1) lam = hasseCoeffRepr𝒪 H x₀ R (k + 1) 0 := by
       unfold B_coeff prefactor
       rw [hσ, hp, Multiset.toFinset_zero, Nat.multinomial_empty, one_smul]
-    rw [he1, he2, hB, hprod, mul_one]
+    rw [he1, he2, hB, hprod]
+    exact mul_one (_ : 𝒪 H)
   rw [Finset.sum_congr rfl hconst, Finset.sum_const]
   have hfilter : (Finset.univ : Finset (Nat.Partition (k + 1 - (k + 1)))).filter
       (fun lam => (k + 1) ∉ lam.parts) = Finset.univ := by
@@ -235,7 +237,8 @@ theorem βHensel_succ_eq_zero_of_window_of_natDegree_le (x₀ : F) (R : F[X][X][
     (hwin : ∀ l, 1 ≤ l → l ≤ k → βHensel H x₀ R hHyp l = 0) :
     βHensel H x₀ R hHyp (k + 1) = 0 := by
   rw [βHensel_succ_eq_neg_hasse_of_window H x₀ R hHyp k hwin,
-    hasseCoeffRepr𝒪_eq_zero_of_natDegree_coeff_lt H x₀ R 0 hdX hdk, mul_zero, neg_zero]
+    hasseCoeffRepr𝒪_eq_zero_of_natDegree_coeff_lt H x₀ R 0 hdX hdk]
+  exact (congrArg (fun z : 𝒪 H => -z) (mul_zero _)).trans neg_zero
 
 /-- **The capstone — full tail propagation by strong induction.**  If `βHensel l = 0` on the
 full initial segment `[1, T₀]` and every `Y`-coefficient of `R` has lift-`X` degree `≤ T₀`,

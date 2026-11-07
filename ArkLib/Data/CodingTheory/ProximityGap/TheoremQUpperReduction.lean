@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
 import ArkLib.Data.CodingTheory.ProximityGap.MCALowerBound
 import ArkLib.Data.CodingTheory.ProximityGap.BadGammaAffineCount
 import ArkLib.Data.CodingTheory.ProximityGap.TheoremQAssembly
@@ -137,7 +137,7 @@ degree `0 < k`). -/
 theorem evalCode_zero_mem (H : Finset F) (k : ℕ) (hk : 1 ≤ k) :
     (0 : {x : F // x ∈ H} → F) ∈ TheoremQAssembly.evalCode H k := by
   refine ⟨0, ?_, fun i => by simp⟩
-  simpa using hk
+  simpa only [Polynomial.natDegree_zero] using (Nat.zero_lt_of_lt hk)
 
 omit [Fintype F] [DecidableEq F] in
 /-- **`evalCode`: a zero direction has no bad scalar** (`k ≥ 1`). The `u₁ = 0` instance of

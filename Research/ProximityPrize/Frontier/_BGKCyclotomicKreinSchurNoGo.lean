@@ -245,8 +245,7 @@ primitive coefficient saving is even considered. -/
 theorem production_valency_ceiling_gap :
     2 ^ 191 * productionFourteenthTarget < productionValencyFourteenthCeiling ∧
       productionValencyFourteenthCeiling < 2 ^ 192 * productionFourteenthTarget := by
-  norm_num [productionFourteenthTarget, productionValencyFourteenthCeiling,
-    productionQ, productionM, productionN]
+  decide +kernel
 
 /-- Exact primitive depth-seven coefficient deficit. -/
 theorem primitive_depthSeven_exact_gap : (135135 : Nat) - 126871 = 8264 := by

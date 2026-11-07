@@ -1,0 +1,400 @@
+{
+  "owner": "Research/ProximityPrize/Frontier/_G87McaEventSyndromeBridge.lean",
+  "original_source_archive": "scripts/integration/retired/G87-before-symbolic-code-bridges.lean.txt",
+  "original_source_sha256": "ea226a63ad07328f2224d9cfd3fba9cf430e3aa91d033c43d1a21e939caba588",
+  "current_source_sha256": "5986b975938775a6171b0dc028eaea6add11178f7eed93522ea8060dc5f399dd",
+  "public_contract_count": 19,
+  "public_contracts_unchanged_modulo_explicit_global_qualification": true,
+  "original_public_headers": [
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.Plantable",
+      "original_header": "/-- Restatement of `G86RankCollapseDichotomy.Plantable`: some **nonzero** syndrome\nvector is annihilated by every constraint functional. -/\ndef Plantable (φ : Fin r × Fin m → Module.Dual F V) : Prop ",
+      "current_header": "/-- Restatement of `G86RankCollapseDichotomy.Plantable`: some **nonzero** syndrome\nvector is annihilated by every constraint functional. -/\ndef Plantable (φ : Fin r × Fin m → Module.Dual F V) : Prop ",
+      "normalized_original_header_sha256": "b9e1b1ebc25c1c6d8b3170cdb0b64d42520c99945799e8288ec1dfb6926ea042",
+      "unchanged_modulo_free_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.plantable_linearIndependent_cap",
+      "original_header": "/-- Restatement of `G86RankCollapseDichotomy.plantable_linearIndependent_cap`. -/\ntheorem plantable_linearIndependent_cap {φ : Fin r × Fin m → Module.Dual F V}\n    (hp : Plantable φ) (h : LinearIndependent F φ) : r * m + 1 ≤ finrank F V ",
+      "current_header": "/-- Restatement of `G86RankCollapseDichotomy.plantable_linearIndependent_cap`. -/\ntheorem plantable_linearIndependent_cap {φ : Fin r × Fin m → Module.Dual F V}\n    (hp : Plantable φ) (h : LinearIndependent F φ) : r * m + 1 ≤ finrank F V ",
+      "normalized_original_header_sha256": "54e5dca8fa6bc229f19548489f3beec638dafafecad0e99201ea28c0acd3f56f",
+      "unchanged_modulo_free_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.plantable_dichotomy",
+      "original_header": "/-- Restatement of `G86RankCollapseDichotomy.plantable_dichotomy`: generic cap OR\nexplicit syzygy. -/\ntheorem plantable_dichotomy {φ : Fin r × Fin m → Module.Dual F V} (hp : Plantable φ) :\n    r * m + 1 ≤ finrank F V ∨\n      ∃ c : Fin r × Fin m → F,\n        (∑ p : Fin r × Fin m, c p • φ p = 0) ∧ ∃ p : Fin r × Fin m, c p ≠ 0 ",
+      "current_header": "/-- Restatement of `G86RankCollapseDichotomy.plantable_dichotomy`: generic cap OR\nexplicit syzygy. -/\ntheorem plantable_dichotomy {φ : Fin r × Fin m → Module.Dual F V} (hp : Plantable φ) :\n    r * m + 1 ≤ finrank F V ∨\n      ∃ c : Fin r × Fin m → F,\n        (∑ p : Fin r × Fin m, c p • φ p = 0) ∧ ∃ p : Fin r × Fin m, c p ≠ 0 ",
+      "normalized_original_header_sha256": "963c03d2fc84d8b492be276515409d902ef4e54aee80064e7660755ce262a0d2",
+      "unchanged_modulo_free_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.SyndromePair",
+      "original_header": "/-- The concrete syndrome pair space of a linear code `C ≤ F^ι`: the product of two\ncopies of the syndrome quotient `F^ι ⧸ C`.  Its dimension is exactly `2(n−k)`; its\n\"zero\" fiber is exactly the codeword-pair space, matching the probe's reduction. -/\nabbrev SyndromePair (C : Submodule F (ι → F)) : Type _ ",
+      "current_header": "/-- The concrete syndrome pair space of a linear code `C ≤ F^ι`: the product of two\ncopies of the syndrome quotient `F^ι ⧸ C`.  Its dimension is exactly `2(n−k)`; its\n\"zero\" fiber is exactly the codeword-pair space, matching the probe's reduction. -/\nabbrev SyndromePair (C : Submodule F (ι → F)) : Type _ ",
+      "normalized_original_header_sha256": "6dfd659d516c4357cbc5f41fb518a635e2f68082f6aa4a5231369997db4e8bee",
+      "unchanged_modulo_free_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.syndromePair",
+      "original_header": "/-- The syndrome pair of a stack `(u₀, u₁)`. -/\ndef syndromePair (C : Submodule F (ι → F)) (u₀ u₁ : ι → F) : SyndromePair C ",
+      "current_header": "/-- The syndrome pair of a stack `(u₀, u₁)`. -/\ndef syndromePair (C : Submodule F (ι → F)) (u₀ u₁ : ι → F) : SyndromePair C ",
+      "normalized_original_header_sha256": "9f430bbf2ec2fa0dec7f557197e7befcf14bb7a6f5740a7c3ff63b79c1ee07ac",
+      "unchanged_modulo_free_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.finrank_code_le",
+      "original_header": "/-- The code dimension is bounded by the block length. -/\ntheorem finrank_code_le (C : Submodule F (ι → F)) :\n    finrank F C ≤ Fintype.card ι ",
+      "current_header": "/-- The code dimension is bounded by the block length. -/\ntheorem finrank_code_le (C : Submodule F (ι → F)) :\n    finrank F C ≤ Fintype.card ι ",
+      "normalized_original_header_sha256": "43e47cc345cdd4e40caa54a3269bd1d255f2dd60a0ed3e2e09a969e455ba6371",
+      "unchanged_modulo_free_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.finrank_syndromePair",
+      "original_header": "/-- The syndrome pair space has dimension exactly `2(n − k)`. -/\ntheorem finrank_syndromePair (C : Submodule F (ι → F)) :\n    finrank F (SyndromePair C) = 2 * (Fintype.card ι - finrank F C) ",
+      "current_header": "/-- The syndrome pair space has dimension exactly `2(n − k)`. -/\ntheorem finrank_syndromePair (C : Submodule F (ι → F)) :\n    finrank F (SyndromePair C) = 2 * (Fintype.card ι - finrank F C) ",
+      "normalized_original_header_sha256": "c260a10fd621de5c659effe094a07cb05f6649944d91e7d4bde2a467fab8f248",
+      "unchanged_modulo_free_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.syndromePair_eq_zero_iff",
+      "original_header": "/-- The syndrome pair of a stack vanishes iff the stack is a codeword pair. -/\ntheorem syndromePair_eq_zero_iff (C : Submodule F (ι → F)) (u₀ u₁ : ι → F) :\n    syndromePair C u₀ u₁ = 0 ↔ u₀ ∈ C ∧ u₁ ∈ C ",
+      "current_header": "/-- The syndrome pair of a stack vanishes iff the stack is a codeword pair. -/\ntheorem syndromePair_eq_zero_iff (C : Submodule F (ι → F)) (u₀ u₁ : ι → F) :\n    syndromePair C u₀ u₁ = 0 ↔ u₀ ∈ C ∧ u₁ ∈ C ",
+      "normalized_original_header_sha256": "4a4a2de1687366565b2c0e8dfe91b08627493c7eee5bb7c434bbdbe68ebd1443",
+      "unchanged_modulo_free_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.exists_rowFunctionals",
+      "original_header": "/-- **Functional construction (one witness).**  If a codeword `c ∈ C` agrees with the\nline `u₀ + γ·u₁` on a `t`-set `S`, there are `t − k` linearly independent functionals\non `F^ι` that annihilate `C` and kill the line.  These are the abstract GRS parity rows\non `S`: duals of the quotient `(S → F) ⧸ res_S(C)`, which has dimension\n`t − dim res_S(C) ≥ t − k`. -/\ntheorem exists_rowFunctionals (C : Submodule F (ι → F)) {S : Finset ι} {t : ℕ}\n    (hS : S.card = t) {u₀ u₁ : ι → F} {γ : F}\n    (hagree : ∃ c ∈ C, ∀ x ∈ S, c x = u₀ x + γ * u₁ x) :\n    ∃ ℓ : Fin (t - finrank F C) → Module.Dual F (ι → F),\n      LinearIndependent F ℓ ∧\n      (∀ j, ∀ x ∈ C, ℓ j x = 0) ∧\n      (∀ j, ℓ j (u₀ + γ • u₁) = 0) ",
+      "current_header": "/-- **Functional construction (one witness).**  If a codeword `c ∈ C` agrees with the\nline `u₀ + γ·u₁` on a `t`-set `S`, there are `t − k` linearly independent functionals\non `F^ι` that annihilate `C` and kill the line.  These are the abstract GRS parity rows\non `S`: duals of the quotient `(S → F) ⧸ res_S(C)`, which has dimension\n`t − dim res_S(C) ≥ t − k`. -/\ntheorem exists_rowFunctionals (C : Submodule F (ι → F)) {S : Finset ι} {t : ℕ}\n    (hS : S.card = t) {u₀ u₁ : ι → F} {γ : F}\n    (hagree : ∃ c ∈ C, ∀ x ∈ S, c x = u₀ x + γ * u₁ x) :\n    ∃ ℓ : Fin (t - finrank F C) → Module.Dual F (ι → F),\n      LinearIndependent F ℓ ∧\n      (∀ j, ∀ x ∈ C, ℓ j x = 0) ∧\n      (∀ j, ℓ j (u₀ + γ • u₁) = 0) ",
+      "normalized_original_header_sha256": "b44ff4091a9f5b1bbfe60c0b0add8d007091b0e31b6c4ee95207ae6d8100e536",
+      "unchanged_modulo_free_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.exists_bridge_functionals",
+      "original_header": "/-- **Functional construction (all witnesses).**  `r` bad scalars, each with a\nthreshold-`t` witness, yield `r·(t−k)` functionals on the syndrome pair space that all\nvanish on the stack's syndrome pair, with each per-witness block linearly independent.\n`φ(i,j) = ℓ̄ᵢⱼ ∘ fst + γᵢ · (ℓ̄ᵢⱼ ∘ snd)` — the `γᵢ`-weighted parity rows of the probe. -/\ntheorem exists_bridge_functionals (C : Submodule F (ι → F)) {r t : ℕ}\n    {u₀ u₁ : ι → F} (γ : Fin r → F)\n    (hwit : ∀ i, ∃ S : Finset ι, S.card = t ∧\n      ∃ c ∈ C, ∀ x ∈ S, c x = u₀ x + γ i * u₁ x) :\n    ∃ φ : Fin r × Fin (t - finrank F C) → Module.Dual F (SyndromePair C),\n      (∀ p, φ p (syndromePair C u₀ u₁) = 0) ∧\n      (∀ i, LinearIndependent F fun j => φ (i, j)) ",
+      "current_header": "/-- **Functional construction (all witnesses).**  `r` bad scalars, each with a\nthreshold-`t` witness, yield `r·(t−k)` functionals on the syndrome pair space that all\nvanish on the stack's syndrome pair, with each per-witness block linearly independent.\n`φ(i,j) = ℓ̄ᵢⱼ ∘ fst + γᵢ · (ℓ̄ᵢⱼ ∘ snd)` — the `γᵢ`-weighted parity rows of the probe. -/\ntheorem exists_bridge_functionals (C : Submodule F (ι → F)) {r t : ℕ}\n    {u₀ u₁ : ι → F} (γ : Fin r → F)\n    (hwit : ∀ i, ∃ S : Finset ι, S.card = t ∧\n      ∃ c ∈ C, ∀ x ∈ S, c x = u₀ x + γ i * u₁ x) :\n    ∃ φ : Fin r × Fin (t - finrank F C) → Module.Dual F (SyndromePair C),\n      (∀ p, φ p (syndromePair C u₀ u₁) = 0) ∧\n      (∀ i, LinearIndependent F fun j => φ (i, j)) ",
+      "normalized_original_header_sha256": "a6826bd3d891d25de7929ba375ca8e43bd3e4c3a713d8f8c3c8ff303d5eca58c",
+      "unchanged_modulo_free_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.syndrome_dichotomy",
+      "original_header": "/-- **G87 bridge theorem.**  For any stack `(u₀, u₁)` that is not a codeword pair and\nany `r` scalars each bad-via-witness at agreement threshold `t`, the constructed\nwitness functionals are `Plantable` (the annihilated nonzero vector is the syndrome\npair itself), so the G86 rank-collapse dichotomy applies verbatim: EITHER the generic\nbudget `r·(t−k) + 1 ≤ 2(n−k)` holds, OR the witness functionals admit an explicit\nnontrivial syzygy. -/\ntheorem syndrome_dichotomy (C : Submodule F (ι → F)) {r t : ℕ}\n    {u₀ u₁ : ι → F} (γ : Fin r → F)\n    (hstack : u₀ ∉ C ∨ u₁ ∉ C)\n    (hwit : ∀ i, ∃ S : Finset ι, S.card = t ∧\n      ∃ c ∈ C, ∀ x ∈ S, c x = u₀ x + γ i * u₁ x) :\n    ∃ φ : Fin r × Fin (t - finrank F C) → Module.Dual F (SyndromePair C),\n      (∀ p, φ p (syndromePair C u₀ u₁) = 0) ∧\n      (∀ i, LinearIndependent F fun j => φ (i, j)) ∧\n      (r * (t - finrank F C) + 1 ≤ 2 * (Fintype.card ι - finrank F C) ∨\n        ∃ cc : Fin r × Fin (t - finrank F C) → F,\n          (∑ p, cc p • φ p = 0) ∧ ∃ p, cc p ≠ 0) ",
+      "current_header": "/-- **G87 bridge theorem.**  For any stack `(u₀, u₁)` that is not a codeword pair and\nany `r` scalars each bad-via-witness at agreement threshold `t`, the constructed\nwitness functionals are `Plantable` (the annihilated nonzero vector is the syndrome\npair itself), so the G86 rank-collapse dichotomy applies verbatim: EITHER the generic\nbudget `r·(t−k) + 1 ≤ 2(n−k)` holds, OR the witness functionals admit an explicit\nnontrivial syzygy. -/\ntheorem syndrome_dichotomy (C : Submodule F (ι → F)) {r t : ℕ}\n    {u₀ u₁ : ι → F} (γ : Fin r → F)\n    (hstack : u₀ ∉ C ∨ u₁ ∉ C)\n    (hwit : ∀ i, ∃ S : Finset ι, S.card = t ∧\n      ∃ c ∈ C, ∀ x ∈ S, c x = u₀ x + γ i * u₁ x) :\n    ∃ φ : Fin r × Fin (t - finrank F C) → Module.Dual F (SyndromePair C),\n      (∀ p, φ p (syndromePair C u₀ u₁) = 0) ∧\n      (∀ i, LinearIndependent F fun j => φ (i, j)) ∧\n      (r * (t - finrank F C) + 1 ≤ 2 * (Fintype.card ι - finrank F C) ∨\n        ∃ cc : Fin r × Fin (t - finrank F C) → F,\n          (∑ p, cc p • φ p = 0) ∧ ∃ p, cc p ≠ 0) ",
+      "normalized_original_header_sha256": "85676718183669fdd69ac072eaddad3f13492959cb202395d8cedbfb32e4d758",
+      "unchanged_modulo_free_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.mcaEvent_witness",
+      "original_header": "/-- **Witness extraction.**  The ABF26 `mcaEvent` at radius `δ` yields a bad-via-`(S,c)`\nwitness at any threshold `t ≤ (1−δ)·n`: take any `t`-subset of the event's witness set. -/\ntheorem mcaEvent_witness {Cset : Set (ι → F)} {δ : ℝ≥0} {u₀ u₁ : ι → F} {γ : F}\n    (h : mcaEvent Cset δ u₀ u₁ γ) {t : ℕ}\n    (ht : (t : ℝ≥0) ≤ (1 - δ) * (Fintype.card ι : ℝ≥0)) :\n    ∃ S : Finset ι, S.card = t ∧ ∃ c ∈ Cset, ∀ x ∈ S, c x = u₀ x + γ * u₁ x ",
+      "current_header": "/-- **Witness extraction.**  The ABF26 `mcaEvent` at radius `δ` yields a bad-via-`(S,c)`\nwitness at any threshold `t ≤ (1−δ)·n`: take any `t`-subset of the event's witness set. -/\ntheorem mcaEvent_witness {Cset : Set (ι → F)} {δ : ℝ≥0} {u₀ u₁ : ι → F} {γ : F}\n    (h : mcaEvent Cset δ u₀ u₁ γ) {t : ℕ}\n    (ht : (t : ℝ≥0) ≤ (1 - δ) * (Fintype.card ι : ℝ≥0)) :\n    ∃ S : Finset ι, S.card = t ∧ ∃ c ∈ Cset, ∀ x ∈ S, c x = u₀ x + γ * u₁ x ",
+      "normalized_original_header_sha256": "97defdc6114df8a2f9e204dc96ae593c6f559cf5cbd2d96d12f0b8ca56dd6de6",
+      "unchanged_modulo_free_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.mcaEvent_not_both_mem",
+      "original_header": "/-- **Degenerate case is impossible.**  A codeword-pair stack joint-agrees with itself\non every witness set, so it can never fire `mcaEvent`: any bad scalar certifies that\nthe stack is not a codeword pair (i.e. the syndrome pair is nonzero). -/\ntheorem mcaEvent_not_both_mem (C : Submodule F (ι → F)) {δ : ℝ≥0}\n    {u₀ u₁ : ι → F} {γ : F} (h : mcaEvent (C : Set (ι → F)) δ u₀ u₁ γ) :\n    u₀ ∉ C ∨ u₁ ∉ C ",
+      "current_header": "/-- **Degenerate case is impossible.**  A codeword-pair stack joint-agrees with itself\non every witness set, so it can never fire `mcaEvent`: any bad scalar certifies that\nthe stack is not a codeword pair (i.e. the syndrome pair is nonzero). -/\ntheorem mcaEvent_not_both_mem (C : Submodule F (ι → F)) {δ : ℝ≥0}\n    {u₀ u₁ : ι → F} {γ : F} (h : mcaEvent (C : Set (ι → F)) δ u₀ u₁ γ) :\n    u₀ ∉ C ∨ u₁ ∉ C ",
+      "normalized_original_header_sha256": "b2abe6e9931ec5f4b9675b36834330d488c015aa993a68559ae60b9703d492d9",
+      "unchanged_modulo_free_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.wallCode",
+      "original_header": "/-- The gate code, presented as a `Submodule`: evaluations of polynomials of degree\n`< 2^29` on the smooth domain `i ↦ g^i`, `n = 2^30`. -/\nnoncomputable def wallCode : Submodule (ZMod P) (Fin (2 ^ 30) → ZMod P) ",
+      "current_header": "/-- The gate code, presented as a `Submodule`: evaluations of polynomials of degree\n`< 2^29` on the smooth domain `i ↦ g^i`, `n = 2^30`. -/\nnoncomputable def wallCode : Submodule (ZMod P) (Fin (2 ^ 30) → ZMod P) ",
+      "normalized_original_header_sha256": "ab3524ab20f39c7f6de7bdaadc2ea42e4c37d0ff5d96b3660a8c79665a3b6f71",
+      "unchanged_modulo_free_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.wallCode_coe",
+      "original_header": "/-- The submodule presentation carries exactly the gate hypothesis' code\n(`KKH26.evalCode g (2^30) (2^29 − 1)`, the code of\n`firstPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count`). -/\ntheorem wallCode_coe :\n    (wallCode : Set (Fin (2 ^ 30) → ZMod P)) =\n      ArkLib.ProximityGap.KKH26.evalCode g (2 ^ 30) (2 ^ 29 - 1) ",
+      "current_header": "/-- The submodule presentation carries exactly the gate hypothesis' code\n(`KKH26.evalCode g (2^30) (2^29 − 1)`, the code of\n`firstPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count`). -/\ntheorem wallCode_coe :\n    (wallCode : Set (Fin (2 ^ 30) → ZMod P)) =\n      ArkLib.ProximityGap.KKH26.evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1) ",
+      "normalized_original_header_sha256": "b80886fae2f2a913949e3feef62a52e9e494d4170b4353cc3e69e7e16a365f7e",
+      "unchanged_modulo_free_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.finrank_wallCode_le",
+      "original_header": "/-- One-sided dimension bound: the wall code is parametrized by polynomials of degree\n`< 2^29`, so its dimension is at most `2^29`.  (The reverse Vandermonde inequality is\nnever needed: a smaller code only shrinks the generic planting budget further.) -/\ntheorem finrank_wallCode_le : Module.finrank (ZMod P) wallCode ≤ 2 ^ 29 ",
+      "current_header": "/-- One-sided dimension bound: the wall code is parametrized by polynomials of degree\n`< 2^29`, so its dimension is at most `2^29`.  (The reverse Vandermonde inequality is\nnever needed: a smaller code only shrinks the generic planting budget further.) -/\ntheorem finrank_wallCode_le : Module.finrank (ZMod P) wallCode ≤ 2 ^ 29 ",
+      "normalized_original_header_sha256": "0268cb7ea17605ef85996c176a4defb3960fcf9d609ba72a5d0eba7497c10cce",
+      "unchanged_modulo_free_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.wall_threshold",
+      "original_header": "/-- The wall threshold: at the gate radius (`predecessorRadius (2^30) (31·2^24)`), the\n`mcaEvent` witness set has at least `t = 2^30 − 31·2^24 + 1 = 553648129` points. -/\ntheorem wall_threshold :\n    ((553648129 : ℕ) : ℝ≥0) ≤\n      (1 - predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) *\n        (Fintype.card (Fin (2 ^ 30)) : ℝ≥0) ",
+      "current_header": "/-- The wall threshold: at the gate radius (`predecessorRadius (2^30) (31·2^24)`), the\n`mcaEvent` witness set has at least `t = 2^30 − 31·2^24 + 1 = 553648129` points. -/\ntheorem wall_threshold :\n    ((553648129 : ℕ) : ℝ≥0) ≤\n      (1 - predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) *\n        (Fintype.card (Fin (2 ^ 30)) : ℝ≥0) ",
+      "normalized_original_header_sha256": "ed18b9733b8ff9e4f4ed2cb0f320935eb8663603b3087114359180789a1ff66d",
+      "unchanged_modulo_free_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.wall_syzygy_of_sixtyFour_bad_scalars",
+      "original_header": "/-- **Consumer corollary at the production shape (the honest provable form).**\nFor the first certified prize field, the exact code, and the exact predecessor radius\nof the gate hypothesis\n`firstPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count`: any stack\nwith `r ≥ 64` bad scalars (each firing `mcaEvent`) yields witness functionals on the\n`≥ 2^30`-dimensional syndrome pair space that (a) all vanish on the stack's syndrome\npair, (b) are linearly independent within each witness block, and (c) globally admit an\n**explicit nontrivial syzygy** — because the generic disjunct of the G86 dichotomy is\nnumerically impossible: `64·(t−k) + 1 ≥ 64·(2^24+1) + 1 = 2^30 + 65 > 2(n−k)` for every\n`k ≤ 2^29`.  Equivalently, the wall hypothesis (budget `2^30`) can only fail through\nsyzygy configurations: independent-block planting is capped at `63` scalars. -/\ntheorem wall_syzygy_of_sixtyFour_bad_scalars\n    {r : ℕ} (hr : 64 ≤ r) (u₀ u₁ : Fin (2 ^ 30) → ZMod P) (γ : Fin r → ZMod P)\n    (hbad : ∀ i, mcaEvent\n      (ArkLib.ProximityGap.KKH26.evalCode g (2 ^ 30) (2 ^ 29 - 1))\n      (predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) u₀ u₁ (γ i)) :\n    ∃ φ : Fin r × Fin (553648129 - Module.finrank (ZMod P) wallCode) →\n        Module.Dual (ZMod P) (SyndromePair wallCode),\n      (∀ p, φ p (syndromePair wallCode u₀ u₁) = 0) ∧\n      (∀ i, LinearIndependent (ZMod P) fun j => φ (i, j)) ∧\n      ∃ cc : Fin r × Fin (553648129 - Module.finrank (ZMod P) wallCode) → ZMod P,\n        (∑ p, cc p • φ p = 0) ∧ ∃ p, cc p ≠ 0 ",
+      "current_header": "/-- **Consumer corollary at the production shape (the honest provable form).**\nFor the first certified prize field, the exact code, and the exact predecessor radius\nof the gate hypothesis\n`firstPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count`: any stack\nwith `r ≥ 64` bad scalars (each firing `mcaEvent`) yields witness functionals on the\n`≥ 2^30`-dimensional syndrome pair space that (a) all vanish on the stack's syndrome\npair, (b) are linearly independent within each witness block, and (c) globally admit an\n**explicit nontrivial syzygy** — because the generic disjunct of the G86 dichotomy is\nnumerically impossible: `64·(t−k) + 1 ≥ 64·(2^24+1) + 1 = 2^30 + 65 > 2(n−k)` for every\n`k ≤ 2^29`.  Equivalently, the wall hypothesis (budget `2^30`) can only fail through\nsyzygy configurations: independent-block planting is capped at `63` scalars. -/\ntheorem wall_syzygy_of_sixtyFour_bad_scalars\n    {r : ℕ} (hr : 64 ≤ r) (u₀ u₁ : Fin (2 ^ 30) → ZMod P) (γ : Fin r → ZMod P)\n    (hbad : ∀ i, mcaEvent\n      (ArkLib.ProximityGap.KKH26.evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1))\n      (predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) u₀ u₁ (γ i)) :\n    ∃ φ : Fin r × Fin (553648129 - Module.finrank (ZMod P) wallCode) →\n        Module.Dual (ZMod P) (SyndromePair wallCode),\n      (∀ p, φ p (syndromePair wallCode u₀ u₁) = 0) ∧\n      (∀ i, LinearIndependent (ZMod P) fun j => φ (i, j)) ∧\n      ∃ cc : Fin r × Fin (553648129 - Module.finrank (ZMod P) wallCode) → ZMod P,\n        (∑ p, cc p • φ p = 0) ∧ ∃ p, cc p ≠ 0 ",
+      "normalized_original_header_sha256": "94d85bfa65dfd563fbd47826f31499449d18157aebae7d9c3cefd905df6d0c51",
+      "unchanged_modulo_free_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.wall_not_linearIndependent_of_sixtyFour_bad_scalars",
+      "original_header": "/-- Equivalent impossibility form: the witness functionals of `64` bad scalars at the\ngate shape can **never** be linearly independent (their count over-spends the syndrome\nbudget: independent planting is capped at `63`). -/\ntheorem wall_not_linearIndependent_of_sixtyFour_bad_scalars\n    {r : ℕ} (hr : 64 ≤ r) (u₀ u₁ : Fin (2 ^ 30) → ZMod P) (γ : Fin r → ZMod P)\n    (hbad : ∀ i, mcaEvent\n      (ArkLib.ProximityGap.KKH26.evalCode g (2 ^ 30) (2 ^ 29 - 1))\n      (predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) u₀ u₁ (γ i)) :\n    ∃ φ : Fin r × Fin (553648129 - Module.finrank (ZMod P) wallCode) →\n        Module.Dual (ZMod P) (SyndromePair wallCode),\n      (∀ p, φ p (syndromePair wallCode u₀ u₁) = 0) ∧\n      (∀ i, LinearIndependent (ZMod P) fun j => φ (i, j)) ∧\n      ¬ LinearIndependent (ZMod P) φ ",
+      "current_header": "/-- Equivalent impossibility form: the witness functionals of `64` bad scalars at the\ngate shape can **never** be linearly independent (their count over-spends the syndrome\nbudget: independent planting is capped at `63`). -/\ntheorem wall_not_linearIndependent_of_sixtyFour_bad_scalars\n    {r : ℕ} (hr : 64 ≤ r) (u₀ u₁ : Fin (2 ^ 30) → ZMod P) (γ : Fin r → ZMod P)\n    (hbad : ∀ i, mcaEvent\n      (ArkLib.ProximityGap.KKH26.evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1))\n      (predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) u₀ u₁ (γ i)) :\n    ∃ φ : Fin r × Fin (553648129 - Module.finrank (ZMod P) wallCode) →\n        Module.Dual (ZMod P) (SyndromePair wallCode),\n      (∀ p, φ p (syndromePair wallCode u₀ u₁) = 0) ∧\n      (∀ i, LinearIndependent (ZMod P) fun j => φ (i, j)) ∧\n      ¬ LinearIndependent (ZMod P) φ ",
+      "normalized_original_header_sha256": "74fcbbbe11dcb474f1efe86cba16afe332add6829465e6bba482f61725fd6d4e",
+      "unchanged_modulo_free_generator_qualification": true
+    }
+  ],
+  "changed_original_commands": [
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.Plantable",
+      "command": "/-- Restatement of `G86RankCollapseDichotomy.Plantable`: some **nonzero** syndrome\nvector is annihilated by every constraint functional. -/\ndef Plantable (φ : Fin r × Fin m → Module.Dual F V) : Prop :=\n  ∃ v : V, v ≠ 0 ∧ ∀ p : Fin r × Fin m, φ p v = 0\n\n"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.plantable_linearIndependent_cap",
+      "command": "/-- Restatement of `G86RankCollapseDichotomy.plantable_linearIndependent_cap`. -/\ntheorem plantable_linearIndependent_cap {φ : Fin r × Fin m → Module.Dual F V}\n    (hp : Plantable φ) (h : LinearIndependent F φ) : r * m + 1 ≤ finrank F V := by\n  obtain ⟨v, hv, hann⟩ := hp\n  set W : Subspace F (Module.Dual F V) := (F ∙ v).dualAnnihilator with hW\n  have hmem : ∀ p : Fin r × Fin m, φ p ∈ W := by\n    intro p\n    rw [hW, Submodule.mem_dualAnnihilator]\n    intro w hw\n    obtain ⟨a, rfl⟩ := Submodule.mem_span_singleton.mp hw\n    simp [hann p]\n  set ψ : Fin r × Fin m → W := fun p => ⟨φ p, hmem p⟩ with hψ\n  have hψli : LinearIndependent F ψ := by\n    refine LinearIndependent.of_comp W.subtype ?_\n    have : (W.subtype ∘ ψ) = φ := by funext p; simp [hψ]\n    rwa [this]\n  have hcard : r * m ≤ finrank F W := by\n    have := hψli.fintype_card_le_finrank\n    simpa [Fintype.card_prod, Fintype.card_fin] using this\n  have hsplit : finrank F (F ∙ v) + finrank F W = finrank F V :=\n    Subspace.finrank_add_finrank_dualAnnihilator_eq (F ∙ v)\n  have hone : finrank F (F ∙ v) = 1 := finrank_span_singleton hv\n  omega\n\n"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.plantable_dichotomy",
+      "command": "/-- Restatement of `G86RankCollapseDichotomy.plantable_dichotomy`: generic cap OR\nexplicit syzygy. -/\ntheorem plantable_dichotomy {φ : Fin r × Fin m → Module.Dual F V} (hp : Plantable φ) :\n    r * m + 1 ≤ finrank F V ∨\n      ∃ c : Fin r × Fin m → F,\n        (∑ p : Fin r × Fin m, c p • φ p = 0) ∧ ∃ p : Fin r × Fin m, c p ≠ 0 := by\n  by_cases h : LinearIndependent F φ\n  · exact Or.inl (plantable_linearIndependent_cap hp h)\n  · exact Or.inr (Fintype.not_linearIndependent_iff.mp h)\n\n"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.exists_bridge_functionals",
+      "command": "/-- **Functional construction (all witnesses).**  `r` bad scalars, each with a\nthreshold-`t` witness, yield `r·(t−k)` functionals on the syndrome pair space that all\nvanish on the stack's syndrome pair, with each per-witness block linearly independent.\n`φ(i,j) = ℓ̄ᵢⱼ ∘ fst + γᵢ · (ℓ̄ᵢⱼ ∘ snd)` — the `γᵢ`-weighted parity rows of the probe. -/\ntheorem exists_bridge_functionals (C : Submodule F (ι → F)) {r t : ℕ}\n    {u₀ u₁ : ι → F} (γ : Fin r → F)\n    (hwit : ∀ i, ∃ S : Finset ι, S.card = t ∧\n      ∃ c ∈ C, ∀ x ∈ S, c x = u₀ x + γ i * u₁ x) :\n    ∃ φ : Fin r × Fin (t - finrank F C) → Module.Dual F (SyndromePair C),\n      (∀ p, φ p (syndromePair C u₀ u₁) = 0) ∧\n      (∀ i, LinearIndependent F fun j => φ (i, j)) := by\n  classical\n  -- extract the row functionals of each witness\n  have hrows : ∀ i, ∃ ℓ : Fin (t - finrank F C) → Module.Dual F (ι → F),\n      LinearIndependent F ℓ ∧ (∀ j, ∀ x ∈ C, ℓ j x = 0) ∧\n      (∀ j, ℓ j (u₀ + γ i • u₁) = 0) := by\n    intro i\n    obtain ⟨S, hS, hagree⟩ := hwit i\n    exact exists_rowFunctionals C hS hagree\n  choose ℓ hℓli hℓann hℓline using hrows\n  -- descend to the syndrome quotient\n  have hker : ∀ i j, C ≤ LinearMap.ker (ℓ i j) := fun i j x hx =>\n    LinearMap.mem_ker.mpr (hℓann i j x hx)\n  set lbar : Fin r → Fin (t - finrank F C) → Module.Dual F ((ι → F) ⧸ C) :=\n    fun i j => C.liftQ (ℓ i j) (hker i j) with hlbar\n  have hlbar_mk : ∀ i j (v : ι → F), lbar i j (C.mkQ v) = ℓ i j v := by\n    intro i j v\n    simp [hlbar, Submodule.mkQ_apply, Submodule.liftQ_apply]\n  -- fold in the γ-weights on the pair space\n  refine ⟨fun p =>\n    (lbar p.1 p.2).comp (LinearMap.fst F _ _) +\n      γ p.1 • (lbar p.1 p.2).comp (LinearMap.snd F _ _), ?_, ?_⟩\n  · -- annihilation of the syndrome pair\n    rintro ⟨i, j⟩\n    have h1 : lbar i j (C.mkQ u₀) + γ i * lbar i j (C.mkQ u₁) = 0 := by\n      rw [hlbar_mk, hlbar_mk]\n      have := hℓline i j\n      rw [map_add, map_smul] at this\n      simpa [smul_eq_mul] using this\n    simpa [syndromePair, LinearMap.add_apply, LinearMap.comp_apply,\n      LinearMap.smul_apply, smul_eq_mul] using h1\n  · -- per-witness independence, by evaluating at pairs `(mkQ v, 0)`\n    intro i\n    rw [Fintype.linearIndependent_iff]\n    intro a ha\n    have hzero : ∑ j, a j • ℓ i j = 0 := by\n      apply LinearMap.ext\n      intro v\n      have := congrArg (fun f => f ((C.mkQ v, 0) : SyndromePair C)) ha\n      simpa [LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.add_apply,\n        LinearMap.comp_apply, hlbar_mk] using this\n    exact Fintype.linearIndependent_iff.mp (hℓli i) a hzero\n\n/-! ## The bridge theorem: G86 applies verbatim -/\n\n"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.wallCode",
+      "command": "/-- The gate code, presented as a `Submodule`: evaluations of polynomials of degree\n`< 2^29` on the smooth domain `i ↦ g^i`, `n = 2^30`. -/\nnoncomputable def wallCode : Submodule (ZMod P) (Fin (2 ^ 30) → ZMod P) :=\n  ProximityGap.CensusLowerBound.evalCode (fun i : Fin (2 ^ 30) => g ^ (i : ℕ)) (2 ^ 29)\n\n"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.wallCode_coe",
+      "command": "/-- The submodule presentation carries exactly the gate hypothesis' code\n(`KKH26.evalCode g (2^30) (2^29 − 1)`, the code of\n`firstPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count`). -/\ntheorem wallCode_coe :\n    (wallCode : Set (Fin (2 ^ 30) → ZMod P)) =\n      ArkLib.ProximityGap.KKH26.evalCode g (2 ^ 30) (2 ^ 29 - 1) := rfl\n\n"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.finrank_wallCode_le",
+      "command": "/-- One-sided dimension bound: the wall code is parametrized by polynomials of degree\n`< 2^29`, so its dimension is at most `2^29`.  (The reverse Vandermonde inequality is\nnever needed: a smaller code only shrinks the generic planting budget further.) -/\ntheorem finrank_wallCode_le : Module.finrank (ZMod P) wallCode ≤ 2 ^ 29 := by\n  classical\n  set E : Polynomial (ZMod P) →ₗ[ZMod P] (Fin (2 ^ 30) → ZMod P) :=\n    LinearMap.pi (fun i : Fin (2 ^ 30) => Polynomial.leval (g ^ (i : ℕ))) with hE\n  have hsub : wallCode ≤ (Polynomial.degreeLT (ZMod P) (2 ^ 29)).map E := by\n    rintro f ⟨q, hq, hf⟩\n    have hqm : q ∈ Polynomial.degreeLT (ZMod P) (2 ^ 29) := by\n      rw [Polynomial.mem_degreeLT]\n      refine lt_of_le_of_lt (Polynomial.degree_le_natDegree) ?_\n      exact_mod_cast Nat.lt_of_le_of_lt hq (by norm_num)\n    refine Submodule.mem_map.mpr ⟨q, hqm, ?_⟩\n    funext i\n    simp [hE, LinearMap.pi_apply, Polynomial.leval_apply, hf i]\n  have h1 : Module.finrank (ZMod P) wallCode ≤\n      Module.finrank (ZMod P) ((Polynomial.degreeLT (ZMod P) (2 ^ 29)).map E) :=\n    Submodule.finrank_mono hsub\n  have h2 : Module.finrank (ZMod P) ((Polynomial.degreeLT (ZMod P) (2 ^ 29)).map E) ≤\n      Module.finrank (ZMod P) (Polynomial.degreeLT (ZMod P) (2 ^ 29)) :=\n    Submodule.finrank_map_le E _\n  have h3 : Module.finrank (ZMod P) (Polynomial.degreeLT (ZMod P) (2 ^ 29)) = 2 ^ 29 := by\n    rw [(Polynomial.degreeLTEquiv (ZMod P) (2 ^ 29)).finrank_eq]\n    simp\n  omega\n\n"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.wall_syzygy_of_sixtyFour_bad_scalars",
+      "command": "/-- **Consumer corollary at the production shape (the honest provable form).**\nFor the first certified prize field, the exact code, and the exact predecessor radius\nof the gate hypothesis\n`firstPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count`: any stack\nwith `r ≥ 64` bad scalars (each firing `mcaEvent`) yields witness functionals on the\n`≥ 2^30`-dimensional syndrome pair space that (a) all vanish on the stack's syndrome\npair, (b) are linearly independent within each witness block, and (c) globally admit an\n**explicit nontrivial syzygy** — because the generic disjunct of the G86 dichotomy is\nnumerically impossible: `64·(t−k) + 1 ≥ 64·(2^24+1) + 1 = 2^30 + 65 > 2(n−k)` for every\n`k ≤ 2^29`.  Equivalently, the wall hypothesis (budget `2^30`) can only fail through\nsyzygy configurations: independent-block planting is capped at `63` scalars. -/\ntheorem wall_syzygy_of_sixtyFour_bad_scalars\n    {r : ℕ} (hr : 64 ≤ r) (u₀ u₁ : Fin (2 ^ 30) → ZMod P) (γ : Fin r → ZMod P)\n    (hbad : ∀ i, mcaEvent\n      (ArkLib.ProximityGap.KKH26.evalCode g (2 ^ 30) (2 ^ 29 - 1))\n      (predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) u₀ u₁ (γ i)) :\n    ∃ φ : Fin r × Fin (553648129 - Module.finrank (ZMod P) wallCode) →\n        Module.Dual (ZMod P) (SyndromePair wallCode),\n      (∀ p, φ p (syndromePair wallCode u₀ u₁) = 0) ∧\n      (∀ i, LinearIndependent (ZMod P) fun j => φ (i, j)) ∧\n      ∃ cc : Fin r × Fin (553648129 - Module.finrank (ZMod P) wallCode) → ZMod P,\n        (∑ p, cc p • φ p = 0) ∧ ∃ p, cc p ≠ 0 := by\n  have hbad' : ∀ i, mcaEvent (wallCode : Set (Fin (2 ^ 30) → ZMod P))\n      (predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) u₀ u₁ (γ i) := by\n    intro i; rw [wallCode_coe]; exact hbad i\n  have hwit : ∀ i, ∃ S : Finset (Fin (2 ^ 30)), S.card = 553648129 ∧\n      ∃ c ∈ wallCode, ∀ x ∈ S, c x = u₀ x + γ i * u₁ x :=\n    fun i => mcaEvent_witness (hbad' i) wall_threshold\n  have hstack : u₀ ∉ wallCode ∨ u₁ ∉ wallCode :=\n    mcaEvent_not_both_mem wallCode (hbad' ⟨0, by omega⟩)\n  obtain ⟨φ, hann, hblock, hdich⟩ := syndrome_dichotomy wallCode γ hstack hwit\n  refine ⟨φ, hann, hblock, ?_⟩\n  rcases hdich with hcap | hsyz\n  · -- the generic cap is numerically impossible at the production shape\n    exfalso\n    have hkle : Module.finrank (ZMod P) wallCode ≤ 536870912 :=\n      le_trans finrank_wallCode_le (by norm_num)\n    have hcard : Fintype.card (Fin (2 ^ 30)) = 1073741824 := by\n      rw [Fintype.card_fin]; norm_num\n    generalize hK : Module.finrank (ZMod P) ↥wallCode = K at hcap hkle\n    generalize hN : Fintype.card (Fin (2 ^ 30)) = N at hcap hcard\n    have h64 : 64 * (553648129 - K) ≤ r * (553648129 - K) :=\n      Nat.mul_le_mul_right _ hr\n    have hcap' := le_trans (Nat.add_le_add_right h64 1) hcap\n    omega\n  · exact hsyz\n\n"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.wall_not_linearIndependent_of_sixtyFour_bad_scalars",
+      "command": "/-- Equivalent impossibility form: the witness functionals of `64` bad scalars at the\ngate shape can **never** be linearly independent (their count over-spends the syndrome\nbudget: independent planting is capped at `63`). -/\ntheorem wall_not_linearIndependent_of_sixtyFour_bad_scalars\n    {r : ℕ} (hr : 64 ≤ r) (u₀ u₁ : Fin (2 ^ 30) → ZMod P) (γ : Fin r → ZMod P)\n    (hbad : ∀ i, mcaEvent\n      (ArkLib.ProximityGap.KKH26.evalCode g (2 ^ 30) (2 ^ 29 - 1))\n      (predecessorRadius (2 ^ 30) (31 * 2 ^ 24)) u₀ u₁ (γ i)) :\n    ∃ φ : Fin r × Fin (553648129 - Module.finrank (ZMod P) wallCode) →\n        Module.Dual (ZMod P) (SyndromePair wallCode),\n      (∀ p, φ p (syndromePair wallCode u₀ u₁) = 0) ∧\n      (∀ i, LinearIndependent (ZMod P) fun j => φ (i, j)) ∧\n      ¬ LinearIndependent (ZMod P) φ := by\n  obtain ⟨φ, hann, hblock, cc, hcc, hne⟩ :=\n    wall_syzygy_of_sixtyFour_bad_scalars hr u₀ u₁ γ hbad\n  exact ⟨φ, hann, hblock, Fintype.not_linearIndependent_iff.mpr ⟨cc, hcc, hne⟩⟩\n\n"
+    }
+  ],
+  "global_name_resolution": {
+    "name": "ArkLib.ProximityGap.PrizeShapePrimeP30.g",
+    "scope": "Only free production generator references in section Wall are qualified. Bound generators and the field/domain/code are unchanged.",
+    "new_mathematical_hypotheses": []
+  },
+  "implementation_ownership": [
+    {
+      "local_names": [
+        "Plantable",
+        "plantable_linearIndependent_cap",
+        "plantable_dichotomy"
+      ],
+      "owner": "Research.ProximityPrize.Frontier._G86RankCollapseDichotomy",
+      "change": "Public wrappers delegate the existing generic owner rather than repeat its linear-algebra proofs."
+    },
+    {
+      "local_names": [
+        "wallCode_coe",
+        "finrank_wallCode_le"
+      ],
+      "private_helpers": [
+        "censusEvalCode_coe_symbolic",
+        "finrank_censusEvalCode_le"
+      ],
+      "change": "Code coercion and dimension proofs are checked with symbolic dimension and domain before production instantiation. The generic dimension bound requires positive k; no false k=0 bound is introduced."
+    },
+    {
+      "local_names": [
+        "wall_syzygy_of_sixtyFour_bad_scalars",
+        "wall_not_linearIndependent_of_sixtyFour_bad_scalars"
+      ],
+      "private_helpers": [
+        "mcaEvent_syzygy_of_overbudget",
+        "mcaEvent_not_independent_of_overbudget",
+        "fin_mcaEvent_syzygy_of_overbudget",
+        "fin_mcaEvent_not_independent_of_overbudget",
+        "production_syzygy_budget",
+        "wall_threshold_numeric"
+      ],
+      "change": "First prove the entire finite syndrome budget implication generically, then convert Fintype.card (Fin n) to n while n is symbolic. The concrete production proof only instantiates those results."
+    },
+    {
+      "local_names": [
+        "exists_bridge_functionals"
+      ],
+      "change": "Name the quotient representative evaluation equation explicitly so Lean4.35 rewrites the actual Quotient.mk term; no statement or premise changes."
+    }
+  ],
+  "mathematical_scope": "The same nineteen public declarations, exact field/domain/dimension/radius, sixty-four-scalar hypotheses, and syzygy/linear-dependence conclusions are preserved. The cap-versus-syzygy dichotomy remains conditional on actual bad scalars; this does not close the production conjecture.",
+  "validation": {
+    "strict_repository_source_check": {
+      "file": "Research/ProximityPrize/Frontier/_G87McaEventSyndromeBridge.lean",
+      "status": "temporary_overlay_source_check",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "elapsed_seconds": 8.291,
+      "source_before_sha256": "5986b975938775a6171b0dc028eaea6add11178f7eed93522ea8060dc5f399dd",
+      "source_after_sha256": "5986b975938775a6171b0dc028eaea6add11178f7eed93522ea8060dc5f399dd",
+      "import_artifacts": {
+        "ArkLib.Data.CodingTheory.ProximityGap.CensusLowerBound": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/Data/CodingTheory/ProximityGap/CensusLowerBound.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/Data/CodingTheory/ProximityGap/CensusLowerBound.olean",
+          "sha256": "ab7dee73c737c9f3cb175ba04257c5efa9d43473e7a25bc8511653112ac663cd",
+          "artifact_family": {
+            "CensusLowerBound.olean": "ab7dee73c737c9f3cb175ba04257c5efa9d43473e7a25bc8511653112ac663cd"
+          }
+        },
+        "Research.ProximityPrize.Frontier._G86RankCollapseDichotomy": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_G86RankCollapseDichotomy.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_G86RankCollapseDichotomy.olean",
+          "sha256": "5f293d07f40a5058b0b2a5abd973c9ee620927225fff5a34202f582904a775e4",
+          "artifact_family": {
+            "_G86RankCollapseDichotomy.olean": "5f293d07f40a5058b0b2a5abd973c9ee620927225fff5a34202f582904a775e4"
+          }
+        },
+        "Research.ProximityPrize.Frontier._PrizeShapeRateHalfBracket": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_PrizeShapeRateHalfBracket.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_PrizeShapeRateHalfBracket.olean",
+          "sha256": "34c9d67121d678200effa7a7690f18c80679880a0e7c7d3558a751091f119991",
+          "artifact_family": {
+            "_PrizeShapeRateHalfBracket.olean": "34c9d67121d678200effa7a7690f18c80679880a0e7c7d3558a751091f119991"
+          }
+        }
+      },
+      "imports_unchanged": true,
+      "log": "/tmp/arklib-native-overlay/logs/Research.ProximityPrize.Frontier._G87McaEventSyndromeBridge.lean.1793254747664686000.check.log",
+      "not_a_lake_package_build": true
+    },
+    "all_twelve_printed_anchors": [
+      {
+        "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.plantable_dichotomy",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.finrank_syndromePair",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.exists_rowFunctionals",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.exists_bridge_functionals",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.syndrome_dichotomy",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.mcaEvent_witness",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.mcaEvent_not_both_mem",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.wallCode_coe",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.finrank_wallCode_le",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.wall_threshold",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.wall_syzygy_of_sixtyFour_bad_scalars",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ArkLib.ProximityGap.Frontier.G87McaEventSyndromeBridge.wall_not_linearIndependent_of_sixtyFour_bad_scalars",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      }
+    ],
+    "direct_check_warning_count": 0,
+    "bounded_resource_observation": {
+      "prefix": "production-fin",
+      "exit": 0,
+      "bounded_stop": null,
+      "peak_group_kib": 6760816,
+      "elapsed": 13.953,
+      "receipt": "/tmp/arklib-G87-prefix-production-fin.receipt.json"
+    },
+    "actual_package_build": "Pending parent whole-package validation; the source receipt is not a Lake package-build claim."
+  },
+  "diagnostic_scope": {
+    "discarded_low_memory_probes": "Initial four-GiB probes were below the approximately6.67-GiB import baseline and provide no source-failure evidence.",
+    "confirmed_conversion_trap": "Bounded diagnostic with reduced maxRecDepth showed Nat.rec/Fin.foldr.loop during definitional comparison of Fintype.card (Fin (2^30)) against numeric n at the final budget argument. Symbolic Fin n specialization removes this closed enumeration. Production maxRecDepth was not raised.",
+    "whole_identical_copy_check": {
+      "elapsed_seconds": 18.366,
+      "source_sha256": "5986b975938775a6171b0dc028eaea6add11178f7eed93522ea8060dc5f399dd",
+      "status": "compiler0/checker0/stable, twelve standard-three-axiom reports"
+    },
+    "no_new_sorry_axiom_native_trust": true
+  },
+  "current_validation": {
+    "status": "package_validation_passed",
+    "receipt": "scripts/integration/final-validation.json",
+    "check": "default_libraries",
+    "source_commit": "7483975d251b3549313243ea9d5ada700af121f9",
+    "source_snapshot_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+    "resolved_package_pending_paths": [],
+    "superseded_historical_status_paths": [
+      "/validation/actual_package_build"
+    ],
+    "scope": "Current checked-in sources passed the final four-library package build. Original status text and all earlier receipts remain historical snapshots, not current pending claims."
+  }
+}

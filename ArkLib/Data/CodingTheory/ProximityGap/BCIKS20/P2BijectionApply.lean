@@ -43,7 +43,7 @@ theorem restrictedFaaDiBrunoSum_eq_partitionForm (x₀ : F) (R : F[X][X][Y])
     (hHyp : ClaimA2.Hypotheses x₀ R H) (t : ℕ) :
     restrictedFaaDiBrunoSum H x₀ R hHyp t
       = ∑ i ∈ Finset.range ((Q x₀ R H).natDegree + 1),
-          ∑ ab ∈ Finset.antidiagonal (t + 1),
+          ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (t + 1),
             (liftToFunctionField (H := H)
                 ((Bivariate.evalX (Polynomial.C x₀) (hasseDerivX ab.1 R)).coeff i))
             * ∑ lam ∈ (Finset.univ : Finset (Nat.Partition ab.2)).filter
@@ -145,7 +145,8 @@ theorem embed_βHensel_succ (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypothes
               * embeddingOf𝒪Into𝕃 H (ClaimA2.ξ x₀ R H hHyp) ^ (2 * i1 + sigmaLambda lam - 2)
               * embeddingOf𝒪Into𝕃 H (B_coeff H x₀ R i1 lam)
               * embeddingOf𝒪Into𝕃 H (partitionProd lam (βHensel H x₀ R hHyp)) := by
-  rw [βHensel_succ, RingHom.map_neg]
+  rw [βHensel_succ]
+  rw [map_neg]
   rw [show
     (embeddingOf𝒪Into𝕃 H)
         (∑ i1 ∈ Finset.range (t + 2),

@@ -151,9 +151,9 @@ noncomputable def scalarOverlapGraph
   Adj x y := x ≠ y ∧ x ∈ family.G ∧ y ∈ family.G ∧
     K ≤ (fullAgreement dom (u 0) (u 1) x (family.q x) ∩
       fullAgreement dom (u 0) (u 1) y (family.q y)).card
-  symm := by
+  symm := ⟨by
     rintro x y ⟨hxy, hx, hy, hcard⟩
-    exact ⟨hxy.symm, hy, hx, by simpa only [Finset.inter_comm] using hcard⟩
+    exact ⟨hxy.symm, hy, hx, by simpa only [Finset.inter_comm] using hcard⟩⟩
   loopless := ⟨fun x h => h.1 rfl⟩
 
 /-- Domain-uniform five-to-four clique rigidity.

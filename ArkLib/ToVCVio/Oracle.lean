@@ -36,5 +36,4 @@ def runWithOracle (f : spec.FunctionType) : OracleComp spec α → α :=
   fun mx => Id.run <| simulateQ f mx
 
 /-- The empty oracle spec is (vacuously) inhabited: it has no oracles, hence no domains. -/
-instance : OracleSpec.Inhabited []ₒ where
-  inhabited_B := fun t => PEmpty.elim t
+instance : ∀ q, Inhabited (([]ₒ : OracleSpec PEmpty) q) := fun q => PEmpty.elim q

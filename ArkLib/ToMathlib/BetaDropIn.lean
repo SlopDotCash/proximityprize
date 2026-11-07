@@ -107,7 +107,7 @@ theorem betaRegularSpec_mk_X (R : F[X][X][Y]) (H : F[X][Y]) (hH : 0 < H.natDegre
   -- `Λ(X) ≤ D + 1 − d_H` (the `k = 1` monomial weight).
   have hX : weight_Λ (Polynomial.X : F[X][Y]) H D
       ≤ ((D + 1 - Bivariate.natDegreeY H : ℕ) : WithBot ℕ) := by
-    simpa [pow_one, one_mul] using weight_Λ_X_pow_le H D 1
+    convert weight_Λ_X_pow_le H D 1 using 1 <;> simp only [pow_one, one_mul] <;> rfl
   refine hX.trans ?_
   -- `D + 1 − d_H ≤ D ≤ (2t+1)·d_R·D` since `d_H ≥ 1` and `(2t+1)·d_R ≥ 1`.
   have hYH : 1 ≤ Bivariate.natDegreeY H := by

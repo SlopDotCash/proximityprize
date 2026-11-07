@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.Basic.Entropy
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 import Mathlib.Algebra.Polynomial.BigOperators
 import Mathlib.Algebra.Polynomial.Degree.Lemmas
 import Mathlib.Analysis.SpecialFunctions.BinaryEntropy
@@ -146,21 +146,14 @@ theorem qEntropy_mul_log_eq_qaryEntropy {q : ℕ} (hq : 2 ≤ q) (x : ℝ) :
   have hq1 : (1 : ℝ) < (q : ℝ) := by exact_mod_cast hq
   have hlog : Real.log q ≠ 0 := Real.log_ne_zero_of_pos_of_ne_one (by linarith) (by
     intro h; rw [h] at hq1; exact lt_irrefl _ hq1)
-  -- Unfold both sides to a `Real.log`/`Real.logb` normal form.
-  unfold qEntropy Real.qaryEntropy Real.binEntropy
-  rw [Real.logb, Real.logb, Real.logb]
-  -- Reduce the integer cast `((q : ℤ) - 1 : ℝ)` to `((q : ℝ) - 1)`.
-  push_cast
-  rw [Real.log_inv, Real.log_inv]
-  -- Now both sides are rational expressions in `log (q-1)`, `log x`, `log (1-x)`, `log q`.
-  field_simp
-  ring
+  rw [qEntropy_eq_qaryEntropy_div_log]
+  exact div_mul_cancel₀ _ hlog
 
 end CodingTheory
 
 -- #print axioms CodingTheory.qEntropy_mul_log_eq_qaryEntropy
 -- ⟹ [propext, Classical.choice, Quot.sound]  (sorry-free, axiom-clean)
--- Compiled with `lake env lean` on leanprover/lean4:v4.29.0 in the ArkLib toolchain.
+-- Uses the canonical entropy normalization from CodingTheory.Basic.Entropy.
 
 /- ════ from linear-code cardinality |C| = q^dim ════ -/
 open Polynomial

@@ -44,6 +44,11 @@ bottom confirms axiom-cleanliness.
 open scoped NNReal ENNReal
 open OracleComp OracleSpec ProtocolSpec
 
+-- Preserve the original full-value implementation law in its local observation space.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ :=
+  ⟨fun _ => True.intro⟩
+
 namespace Logup
 
 section OuterRbr
@@ -72,11 +77,9 @@ noncomputable def outerSharpStateFunction :
   toFun := outerSharpState F n M params
   toFun_empty := fun stmt => by
     unfold outerSharpState
-    constructor
-    · exact fun h => Or.inl h
-    · rintro (h | ⟨h, -⟩)
-      · exact h
-      · exact absurd h (by omega)
+    rintro (h | ⟨h, -⟩)
+    · exact h
+    · exact absurd h (by omega)
   toFun_next := fun m hdir stmt tr hno msg => by
     fin_cases m
     · -- round 0 (message): no entry exists on either side
@@ -85,7 +88,7 @@ noncomputable def outerSharpStateFunction :
       · exact hno (Or.inl h)
       · exact absurd h (by norm_num)
     · -- round 1 is a challenge round: direction contradiction
-      exact absurd hdir (by simp [outerPSpec] at hdir ⊢; exact fun h => by cases hdir)
+      exact absurd hdir (by exact fun h => by cases h)
     · -- round 2 (message): entry 1 preserved by concat
       unfold outerSharpState at hno ⊢
       rintro (h | ⟨h, hmem⟩)
@@ -93,10 +96,10 @@ noncomputable def outerSharpStateFunction :
       · refine hno (Or.inr ⟨by norm_num, ?_⟩)
         exact hmem
     · -- round 3 is a challenge round: direction contradiction
-      exact absurd hdir (by simp [outerPSpec] at hdir ⊢; exact fun h => by cases hdir)
+      exact absurd hdir (by exact fun h => by cases h)
   toFun_full := fun stmt tr hno => by
     classical
-    refine probEvent_eq_zero ?_
+    refine prEvent_eq_zero_of_forall_mem_support _ _ ?_
     intro x hx hmem
     rw [OptionT.mem_support_iff] at hx
     simp only [OptionT.run_mk, mem_support_bind_iff] at hx
@@ -159,9 +162,9 @@ theorem outerVerifier_rbrSoundness_sharp :
     rw [ChallengeCoherence.probEvent_run'_simulateQ_addLift_getChallenge_bind impl s'
       ⟨⟨1, hiv⟩, hdir⟩ (fun c => pure (t, c)) _]
     -- bound the average by the uniform sharp-language mass, then Schwartz–Zippel
-    haveI hfinC : Fintype ((outerPSpec F n params).Challenge ⟨⟨1, hiv⟩, hdir⟩) :=
+    let hfinC : Fintype ((outerPSpec F n params).Challenge ⟨⟨1, hiv⟩, hdir⟩) :=
       (inferInstance : Fintype F)
-    haveI hsampC : SampleableType ((outerPSpec F n params).Challenge ⟨⟨1, hiv⟩, hdir⟩) :=
+    let hsampC : SampleableType ((outerPSpec F n params).Challenge ⟨⟨1, hiv⟩, hdir⟩) :=
       (inferInstance : SampleableType F)
     refine le_trans (tsum_uniform_challenge_mem_le_prob_uniform
       (midSoundnessLanguageSharp stmtIn.2)
@@ -173,7 +176,7 @@ theorem outerVerifier_rbrSoundness_sharp :
       rw [mul_eq_zero]
       right
       rw [simulateQ_pure]
-      refine probEvent_eq_zero ?_
+      refine prEvent_eq_zero_of_forall_mem_support _ _ ?_
       rintro x hx ⟨hno, hyes⟩
       simp only [StateT.run'_eq, StateT.run_pure, map_pure, support_pure,
         Set.mem_singleton_iff] at hx
@@ -185,10 +188,9 @@ theorem outerVerifier_rbrSoundness_sharp :
       · exact hc hmem
     case hgle =>
       intro c
-      refine le_trans (mul_le_mul' (le_of_eq ?_) probEvent_le_one) (by rw [mul_one])
-      rw [probOutput_uniformSample]
+      refine le_trans (mul_le_mul' (le_of_eq ?_) (prEvent_le_one _)) (by rw [mul_one])
+      rw [probOutput, SampleableType.prEvent_uniformSample_eq_singleton]
       congr 1
-      exact congrArg Nat.cast (Fintype.card_congr (Equiv.cast (rfl : _ = F)))
     · -- the uniform mass of the sharp language is the Schwartz–Zippel budget
       rw [ENNReal.coe_div (by exact_mod_cast Fintype.card_ne_zero)]
       exact outerSoundness_sharp stmtIn.1 stmtIn.2 hBad
@@ -198,7 +200,7 @@ theorem outerVerifier_rbrSoundness_sharp :
     have hzero : outerRbrError F n M params ⟨⟨3, hiv⟩, hdir⟩ = 0 := by
       unfold outerRbrError; norm_num
     rw [hzero]
-    refine le_of_eq (probEvent_eq_zero ?_)
+    refine le_of_eq (prEvent_eq_zero_of_forall_mem_support _ _ ?_)
     rintro ⟨tr, c⟩ - ⟨hno, hyes⟩
     refine hno ?_
     simp only [outerSharpStateFunction] at hyes ⊢
@@ -230,7 +232,7 @@ theorem sum_outerRbrError :
         (if i.val = 1 then ((M * 2 ^ n - 1 : ℕ) : ℝ≥0) / (Fintype.card F : ℝ≥0) else 0)
       = ∑ i : (outerPSpec F n params).ChallengeIdx, outerRbrError F n M params i := by
     refine Finset.sum_subtype _ (fun x => ?_) _
-    simp [ProtocolSpec.ChallengeIdx]
+    simp
   have hfilter : Finset.univ.filter
       (fun i : Fin 4 => (outerPSpec F n params).dir i = Direction.V_to_P)
       = ({⟨1, by norm_num⟩, ⟨3, by norm_num⟩} : Finset (Fin 4)) := by
@@ -252,7 +254,7 @@ state-preserving, non-failing, value-blind shared-oracle implementation. -/
 theorem outerVerifier_soundness_sharp (hcard : 2 ^ n < Fintype.card F)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     (outerVerifier oSpec F n M params).soundness init impl
@@ -290,7 +292,7 @@ local instance instInhabitedFieldOuterWired : Inhabited F := ⟨0⟩
 soundness front door with `hOuter` replaced by the proven `outerVerifier_soundness_sharp`:
 the remaining hypotheses are the embedded-sumcheck projection/RBR data, the append-RBR
 keystone, the error equation, and the honest-implementation side conditions. -/
-theorem issue13_soundness_sharp_outerDischarged [oSpec.Fintype]
+theorem issue13_soundness_sharp_outerDischarged [∀ q, Fintype (oSpec.Range q)]
     (sumcheckSoundnessError : ℝ≥0)
     (lang : (i : Fin (n + 1)) →
       Set (Sumcheck.Spec.StatementRound F n i ×
@@ -323,7 +325,7 @@ theorem issue13_soundness_sharp_outerDischarged [oSpec.Fintype]
           (Sum.elim e₁ e₂ ∘ ChallengeIdx.sumEquiv.symm))
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     (logupVerifier oSpec F n M params).soundness init impl

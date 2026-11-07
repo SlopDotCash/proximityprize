@@ -197,7 +197,7 @@ theorem qr_cubic_supply_lower (hneg1 : IsSquare (-1 : F)) :
       = (qrDistinctTriples (F := F)).card
         + ((qrZeroSumTriples (F := F)).filter
             (fun t => ¬ (t.1 ≠ t.2.1 ∧ t.1 ≠ t.2.2 ∧ t.2.1 ≠ t.2.2))).card := by
-    rw [qrDistinctTriples, Finset.filter_card_add_filter_neg_card_eq_card]
+    rw [qrDistinctTriples, Finset.card_filter_add_card_filter_not]
   rw [← qr_zeroSum_ordered_eq (F := F) hneg1, hpart]
   exact Nat.add_le_add qrDistinctTriples_card_le qrDegenerate_card_le
 

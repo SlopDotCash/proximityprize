@@ -124,7 +124,7 @@ def render_short_name_report(groups: dict[str, list[dict]], min_group: int) -> l
                      f"{len({d['file'] for d in ds})} files)")
         lines.append("")
         for d in sorted(ds, key=lambda x: (x["file"], x["line"])):
-            doc = d["doc"][:100].rstrip().replace("|", "\\|")
+            doc = d["doc"][:100].replace("|", "\\|").rstrip()
             lines.append(
                 f"- `{d['kind']} {d['name']}` "
                 f"[{d['file']}:{d['line']}](../../../{d['file']}#L{d['line']}) "
@@ -173,27 +173,14 @@ def render_doc_similarity_report(data: dict, threshold: float) -> list[str]:
                 # overloads, and cross-file dups are the point of the report.
                 if a["file"] == b["file"]:
                     continue
-                pair = tuple(sorted(
-                    [a, b],
-                    key=lambda d: (d["name"], d["file"], d["line"]),
-                ))
-                key = tuple((d["name"], d["file"], d["line"]) for d in pair)
+                key = tuple(sorted([a["name"], b["name"]]))
                 if key in seen_pairs:
                     continue
                 seen_pairs.add(key)
-                a_norm, b_norm = pair
-                s = _jaccard(a_norm["_words"], b_norm["_words"])
+                s = _jaccard(a["_words"], b["_words"])
                 if s >= threshold:
-                    hits.append((s, a_norm, b_norm))
-    hits.sort(key=lambda h: (
-        -h[0],
-        h[1]["name"],
-        h[1]["file"],
-        h[1]["line"],
-        h[2]["name"],
-        h[2]["file"],
-        h[2]["line"],
-    ))
+                    hits.append((s, a, b))
+    hits.sort(key=lambda h: (-h[0], h[1]["name"], h[2]["name"]))
 
     lines: list[str] = []
     lines.append(f"## Near-duplicate docstrings (Jaccard ≥ {threshold:.2f}, "
@@ -251,8 +238,6 @@ def build_report(
     lines.extend(render_stats(data))
     lines.extend(render_short_name_report(groups, min_group))
     lines.extend(render_doc_similarity_report(data, doc_threshold))
-    while lines and lines[-1] == "":
-        lines.pop()
     return "\n".join(lines)
 
 

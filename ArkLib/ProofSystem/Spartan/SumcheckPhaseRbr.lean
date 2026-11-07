@@ -4,8 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.OracleReduction.LiftContext.OracleReduction
+import ProximityPrize.Extensions.OracleReduction.LiftContext.OracleReduction
 import ArkLib.ProofSystem.Sumcheck.Spec.General
+import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.General
 
 /-!
 # Round-by-round soundness transport for lifted sum-check phases (issue #114)
@@ -37,7 +38,7 @@ Contents:
 * `OracleVerifier.liftContext_rbrSoundness_pullback` — the combination: a lifted oracle verifier
   inherits rbr soundness from the inner one, from the pullback input language to any output
   language contained in the transported one, via the proven
-  `OracleVerifier.liftContext_rbr_soundness` + the two pieces above.
+  `OracleVerifier.liftContextLegacy_rbr_soundness` + the two pieces above.
 
 * `OracleVerifier.seqCompose'_embed_inl` / `Sumcheck.Spec.oracleVerifier_embed` /
   `Sumcheck.Spec.mem_support_oracleVerifier_run_oStmt` — the **oracle pass-through facts** for the
@@ -80,7 +81,7 @@ theorem Verifier.rbrSoundness_mono_langOut
   refine ⟨⟨stF.toFun, stF.toFun_empty, stF.toFun_next, fun stmt tr hneg => ?_⟩, hbound⟩
   have h0 := stF.toFun_full stmt tr hneg
   exact le_antisymm
-    (le_trans (probEvent_mono fun x _ hx => hsub hx) (le_of_eq h0)) (zero_le _)
+    (le_trans (prEvent_mono _ _ _ fun _ hx => hsub hx) (le_of_eq h0)) zero_le
 
 end RbrSoundnessMono
 
@@ -111,7 +112,7 @@ instantiation of `Statement.Lens.IsSound` for `liftContext`ed phases whose claim
       (lens.transportedLangOut innerLangOut compat)
       innerLangIn innerLangOut compat where
   proj_sound := fun _ h => h
-  lift_sound := fun stmtIn innerOut hc hno hmem =>
+  lift_sound := fun stmtIn innerOut _ hc hno hmem =>
     hno (hmem stmtIn innerOut hc rfl)
 
 end PullbackIsSound
@@ -130,7 +131,7 @@ variable {ι : Type} {oSpec : OracleSpec ι}
   {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
   [Inhabited InnerStmtOut] [∀ i, Inhabited (InnerOStmtOut i)]
 
-/-- **Pullback rbr-soundness transport through `OracleVerifier.liftContext`.** A lifted oracle
+/-- **Pullback rbr-soundness transport through `OracleVerifier.liftContextLegacy`.** A lifted oracle
 verifier inherits the inner verifier's round-by-round soundness — from the pullback of the inner
 input language along the lens projection, to any outer output language contained in the
 transported one — with the same per-round errors.
@@ -150,9 +151,9 @@ theorem OracleVerifier.liftContext_rbrSoundness_pullback
     (hOut : outerLangOut ⊆
       lens.toLens.transportedLangOut innerLangOut (V.toVerifier.compatStatement lens.toLens))
     (h : V.rbrSoundness init impl innerLangIn innerLangOut rbrSoundnessError) :
-    (V.liftContext lens).rbrSoundness init impl
+    (V.liftContextLegacy lens).rbrSoundness init impl
       (lens.toLens.proj ⁻¹' innerLangIn) outerLangOut rbrSoundnessError := by
-  have h1 := V.liftContext_rbr_soundness (lens := lens)
+  have h1 := V.liftContextLegacy_rbr_soundness (lens := lens)
     (lensSound := lens.toLens.pullbackIsSound innerLangIn innerLangOut
       (V.toVerifier.compatStatement lens.toLens)) h
   unfold OracleVerifier.rbrSoundness at h1 ⊢
@@ -160,45 +161,9 @@ theorem OracleVerifier.liftContext_rbrSoundness_pullback
 
 end LiftContextPullback
 
-section SeqComposeEmbed
-
-variable {ι : Type} {oSpec : OracleSpec ι}
-
-/-- If every component oracle verifier routes its output oracles from its *input* oracles
-(`embed` lands in `Sum.inl`), then so does their sequential composition `seqCompose'`.
-Induction over the number of rounds via `append_embed_eq`. -/
-theorem OracleVerifier.seqCompose'_embed_inl {m : ℕ}
-    (Stmt : Fin (m + 1) → Type)
-    {ιₛ : Fin (m + 1) → Type} (OStmt : (i : Fin (m + 1)) → ιₛ i → Type)
-    (Oₛ : ∀ i, ∀ j, OracleInterface (OStmt i j))
-    {n : Fin m → ℕ} {pSpec : ∀ i, ProtocolSpec (n i)}
-    (Oₘ : ∀ i, ∀ j, OracleInterface ((pSpec i).Message j))
-    (V : (i : Fin m) →
-      OracleVerifier oSpec (Stmt i.castSucc) (OStmt i.castSucc) (Stmt i.succ) (OStmt i.succ)
-        (pSpec i))
-    (coh : ∀ i, OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ i.castSucc) (Oₛ₂ := Oₛ i.succ)
-      (Oₘ₁ := Oₘ i) (V i))
-    (hV : ∀ i (a : ιₛ i.succ), ∃ b : ιₛ i.castSucc, (V i).embed a = Sum.inl b)
-    (a : ιₛ (Fin.last m)) :
-    ∃ b : ιₛ 0, (OracleVerifier.seqCompose' Stmt OStmt Oₛ Oₘ V coh).embed a = Sum.inl b := by
-  induction m with
-  | zero => exact ⟨a, rfl⟩
-  | succ m ih =>
-    obtain ⟨b₁, hb₁⟩ := ih (Stmt ∘ Fin.succ) (fun i => OStmt (Fin.succ i))
-      (fun i => Oₛ (Fin.succ i)) (fun i => Oₘ (Fin.succ i)) (fun i => V (Fin.succ i))
-      (fun i => coh i.succ) (fun i a => hV i.succ a) a
-    obtain ⟨b₂, hb₂⟩ := hV 0 b₁
-    refine ⟨b₂, ?_⟩
-    show (OracleVerifier.append (V 0)
-      (OracleVerifier.seqCompose' (Stmt ∘ Fin.succ) (fun i => OStmt (Fin.succ i))
-        (fun i => Oₛ (Fin.succ i)) (fun i => Oₘ (Fin.succ i)) (fun i => V (Fin.succ i))
-        (fun i => coh i.succ))).embed a = Sum.inl b₂
-    rw [OracleVerifier.Append.append_embed_eq, hb₁]
-    show Sum.map id _ ((V 0).embed b₁) = Sum.inl b₂
-    rw [hb₂]
-    rfl
-
-end SeqComposeEmbed
+-- The old `seqCompose'_embed_inl` metadata lemma was specific to embedded outputs.
+-- Native composition preserves the actual oracle values through the stronger extensional
+-- `OracleVerifier.seqCompose_materializeOutput_eq_input` theorem imported above.
 
 namespace Sumcheck.Spec
 
@@ -208,20 +173,17 @@ variable {R : Type} [CommSemiring R] [DecidableEq R] [SampleableType R]
   {deg : ℕ} {m : ℕ} {D : Fin m ↪ R} {n : ℕ}
   {ι : Type} {oSpec : OracleSpec ι}
 
-omit [SampleableType R] in
-/-- **The composed sum-check oracle verifier passes its polynomial oracle through:** its single
-output oracle is routed from its single input oracle (`embed () = .inl ()`), for any number of
-rounds. Each single round is a `liftContext` whose `embedOStmt` is `Function.Embedding.inl`; the
-composition preserves this by `seqCompose'_embed_inl`. -/
-theorem oracleVerifier_embed (a : Unit) :
-    (oracleVerifier R deg D n oSpec).embed a = Sum.inl () := by
-  obtain ⟨b, hb⟩ := OracleVerifier.seqCompose'_embed_inl
-    (StatementRound R n) (fun _ => OracleStatement R n deg)
-    (fun _ _ => inferInstance) (fun _ _ => inferInstance)
+/-- The composed sum-check verifier preserves its input polynomial oracle values, including
+when the output representation is virtual. -/
+theorem oracleVerifier_materializeOutput_eq_input
+    (chals : (pSpec R deg n).Challenges)
+    (oStmt : ∀ i, OracleStatement R n deg i)
+    (messages : (pSpec R deg n).Messages) :
+    (oracleVerifier R deg D n oSpec).materializeOutput chals oStmt messages = oStmt := by
+  exact OracleVerifier.seqCompose_materializeOutput_eq_input
+    (StatementRound R n) (OracleStatement R n deg)
     (SingleRound.oracleVerifier R n deg D oSpec)
-    (fun i => inferInstance)
-    (fun _ a => ⟨a, rfl⟩) a
-  exact hb
+    (fun _ _ _ _ => rfl) chals oStmt messages
 
 /-- **Reachable outputs of the (plain-verifier view of the) sum-check oracle verifier carry the
 unchanged input polynomial oracle.** Any statement in the support of
@@ -235,36 +197,18 @@ theorem mem_support_oracleVerifier_run_oStmt
     (h : out ∈ support ((oracleVerifier R deg D n oSpec).toVerifier.run (stmt, oStmt) tr)) :
     out.2 = oStmt := by
   classical
-  -- Unfold the `toVerifier` run to a bind whose second component is the pure `embed`-routing.
-  rw [Verifier.run, OracleVerifier.toVerifier] at h
-  simp only [OptionT.mem_support_iff, OptionT.run_bind, Option.elimM] at h
-  rw [mem_support_bind_iff] at h
-  obtain ⟨a, _, ha⟩ := h
-  cases a with
-  | none => simp at ha
+  simp only [Verifier.run, OracleVerifier.toVerifier, OptionT.mem_support_iff,
+    OptionT.run_mk, support_map, Set.mem_image] at h
+  obtain ⟨result, _, hresult⟩ := h
+  cases result with
+  | none => simp at hresult
   | some stmtOut =>
-    simp only [Option.elim_some, OptionT.run_pure, support_pure, Set.mem_singleton_iff,
-      Option.some_inj] at ha
-    -- `out = (stmtOut, routing)`; collapse the routing to `oStmt` via the `embed` lemma.
-    subst ha
-    funext i
-    change OracleVerifier.mkVerifierOStmtOut
-        (oracleVerifier R deg D n oSpec).embed
-        (oracleVerifier R deg D n oSpec).hEq oStmt tr i = oStmt i
-    have he : (oracleVerifier R deg D n oSpec).embed i = Sum.inl () :=
-      oracleVerifier_embed (R := R) (deg := deg) (D := D) (n := n) (oSpec := oSpec) i
-    unfold OracleVerifier.mkVerifierOStmtOut
-    split
-    next j h' =>
-      cases i
-      have hj : j = () := by
-        have hsum : (Sum.inl () : Unit ⊕ (pSpec R deg n).MessageIdx) = Sum.inl j := by
-          simpa only [he] using h'
-        exact (Sum.inl.inj hsum).symm
-      cases hj
-      simp only [eqRec_eq_cast, cast_cast, cast_eq]
-    next j h' =>
-      rw [he] at h'
-      exact absurd h' (by simp)
+    simp only [Option.map_some, Option.some.injEq] at hresult
+    have hOracle := congrArg Prod.snd hresult
+    rw [oracleVerifier_materializeOutput_eq_input] at hOracle
+    exact hOracle.symm
+
+#print axioms oracleVerifier_materializeOutput_eq_input
+#print axioms mem_support_oracleVerifier_run_oStmt
 
 end Sumcheck.Spec

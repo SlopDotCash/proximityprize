@@ -3,10 +3,10 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
 import ArkLib.Data.CodingTheory.ProximityGap.MCADeltaStarExactPoint
-import ArkLib.Data.Probability.Instances
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.Probability.Instances
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 
 /-!
 # The MCA equivariance engine (#357 S3): `mcaEvent` symmetry, orbit-sup reduction

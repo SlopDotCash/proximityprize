@@ -105,6 +105,10 @@ open scoped BigOperators ENNReal ProbabilityTheory LinearCode
 
 attribute [local instance] Classical.propDecidable
 
+-- Preserve the historical finite-field surface with its uniform finite sampler.
+private noncomputable local instance {F : Type} [Field F] [Fintype F] :
+    SampleableType F := SampleableType.ofFintype F
+
 namespace GuruswamiSudan.OverRatFunc
 
 variable {F : Type} [Field F]

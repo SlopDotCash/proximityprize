@@ -251,7 +251,7 @@ theorem fibre_card {ζ : ℂ} (hζ : IsPrimitiveRoot ζ (2 ^ (h + 1)))
   have hZcard : Z.card = 2 ^ h - ∑ i : Fin (2 ^ h), (coreInt T₀ i).natAbs := by
     have hsplit : Z.card + (Finset.univ.filter (fun i => ¬ coreInt T₀ i = 0)).card
         = 2 ^ h := by
-      rw [hZ, Finset.filter_card_add_filter_neg_card_eq_card, Finset.card_univ,
+      rw [hZ, Finset.card_filter_add_card_filter_not, Finset.card_univ,
         Fintype.card_fin]
     have hsupp : (Finset.univ.filter (fun i => ¬ coreInt T₀ i = 0)).card
         = ∑ i : Fin (2 ^ h), (coreInt T₀ i).natAbs := by

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: OpenAI
 -/
 
-import ArkLib.Data.Polynomial.Bivariate
+import ProximityPrize.Extensions.Data.Polynomial.Bivariate
 import Mathlib.Algebra.Polynomial.BigOperators
 
 /-!

@@ -3,10 +3,10 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ArkLib.Data.Probability.Notation
 import ArkLib.ToVCVio.LazyPermBridge
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Defs
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.KeyLemmaFoundations
-import ArkLib.Data.Probability.ProductMarginalBound
 
 /-!
 # The combined lazy duplex-sponge oracle (brick 4C-1)
@@ -25,6 +25,7 @@ overlaying both caches on the sampled carrier), the eager side of the combined b
 The master product-state induction (brick 4C-2) relates the two.
 -/
 
+open MeasureTheory
 open OracleComp OracleSpec
 open scoped ENNReal NNReal
 
@@ -148,45 +149,15 @@ lemma tableExtending_cacheQuery_self
     OracleComp.tableExtending (ch.cacheQuery q u) g q = u := by
   simp [OracleComp.tableExtending, OracleSpec.QueryCache.cacheQuery]
 
-/-- Two uniform samples commute under any `ProbComp` continuation: both prefixes are
-lifted `PMF`s, so the `OptionT` layer collapses and `PMF.bind_comm` applies. -/
+/-- Two finite native uniform samples commute under any measurable-output continuation. -/
 lemma evalDist_uniformSample_swap {β γ : Type} [Fintype β] [Nonempty β] [SampleableType β]
-    [Fintype γ] [Nonempty γ] [SampleableType γ] {δ : Type}
+    [Fintype γ] [Nonempty γ] [SampleableType γ] {δ : Type} [MeasurableSpace δ]
     (f : β → γ → ProbComp δ) :
     evalDist (do let b ← $ᵗ β; let c ← $ᵗ γ; f b c)
       = evalDist (do let c ← $ᵗ γ; let b ← $ᵗ β; f b c) := by
-  classical
-  rw [← SPMF.toPMF_inj]
-  rw [evalDist_bind, SPMF.toPMF_bind, evalDist_bind, SPMF.toPMF_bind]
-  rw [evalDist_uniformSample, evalDist_uniformSample, SPMF.liftM_eq_map, SPMF.liftM_eq_map,
-    SPMF.toPMF_mk, SPMF.toPMF_mk]
-  rw [show Option.elimM ((PMF.uniformOfFintype β).map some) (PMF.pure none)
-      (fun b => (evalDist ($ᵗ γ >>= fun c => f b c)).toPMF)
-    = (PMF.uniformOfFintype β).bind
-        (fun b => (evalDist ($ᵗ γ >>= fun c => f b c)).toPMF) from by
-    rw [Option.elimM, PMF.monad_bind_eq_bind, PMF.bind_map]
-    rfl]
-  rw [show Option.elimM ((PMF.uniformOfFintype γ).map some) (PMF.pure none)
-      (fun c => (evalDist ($ᵗ β >>= fun b => f b c)).toPMF)
-    = (PMF.uniformOfFintype γ).bind
-        (fun c => (evalDist ($ᵗ β >>= fun b => f b c)).toPMF) from by
-    rw [Option.elimM, PMF.monad_bind_eq_bind, PMF.bind_map]
-    rfl]
-  have hin : ∀ b, (evalDist ($ᵗ γ >>= fun c => f b c)).toPMF
-      = (PMF.uniformOfFintype γ).bind (fun c => (evalDist (f b c)).toPMF) := by
-    intro b
-    rw [evalDist_bind, SPMF.toPMF_bind, evalDist_uniformSample, SPMF.liftM_eq_map,
-      SPMF.toPMF_mk, Option.elimM, PMF.monad_bind_eq_bind, PMF.bind_map]
-    rfl
-  have hin' : ∀ c, (evalDist ($ᵗ β >>= fun b => f b c)).toPMF
-      = (PMF.uniformOfFintype β).bind (fun b => (evalDist (f b c)).toPMF) := by
-    intro c
-    rw [evalDist_bind, SPMF.toPMF_bind, evalDist_uniformSample, SPMF.liftM_eq_map,
-      SPMF.toPMF_mk, Option.elimM, PMF.monad_bind_eq_bind, PMF.bind_map]
-    rfl
-  simp only [hin, hin']
-  exact PMF.bind_comm _ _ _
-
+  let : MeasurableSpace β := ⊤
+  let : MeasurableSpace γ := ⊤
+  exact evalDist_bind_bind_swap _ _ _
 
 /-! ## The overlay, factored through its permutation slot -/
 
@@ -213,31 +184,22 @@ section TwoSample
 variable {β γ : Type} [Fintype β] [Nonempty β] [SampleableType β]
   [Fintype γ] [Nonempty γ] [SampleableType γ]
 
-/-- `toPMF` of a two-sample-then-pure program, as nested PMF binds with the success tag
-outermost on the inner fibre. -/
-lemma toPMF_two_sample {α : Type} (F : β → γ → α) :
-    (evalDist (do
+/-- The native two-sample pushforward is the nested finite PMF model's measure. -/
+lemma evalDist_two_sample {α : Type} [MeasurableSpace α] (F : β → γ → α) :
+    evalDist (do
       let b ← $ᵗ β
       let c ← $ᵗ γ
-      pure (F b c) : ProbComp α)).toPMF
-      = (PMF.uniformOfFintype β).bind
-          (fun b => ((PMF.uniformOfFintype γ).map (F b)).map some) := by
-  classical
-  rw [evalDist_bind, SPMF.toPMF_bind, evalDist_uniformSample, SPMF.liftM_eq_map,
-    SPMF.toPMF_mk]
-  rw [show Option.elimM ((PMF.uniformOfFintype β).map some) (PMF.pure none)
-      (fun b => (evalDist ($ᵗ γ >>= fun c => pure (F b c) : ProbComp α)).toPMF)
-    = (PMF.uniformOfFintype β).bind
-        (fun b => (evalDist ($ᵗ γ >>= fun c => pure (F b c) : ProbComp α)).toPMF) from by
-    rw [Option.elimM, PMF.monad_bind_eq_bind, PMF.bind_map]
-    rfl]
-  refine congrArg _ (funext fun b => ?_)
+      pure (F b c) : ProbComp α)
+      = ((ProximityPrize.Compatibility.uniformOfFintype β).bind
+          (fun b => (ProximityPrize.Compatibility.uniformOfFintype γ).map (F b))).toMeasure := by
+  let : MeasurableSpace β := ⊤
+  apply ProximityPrize.Compatibility.evalDist_bind_finitePMF
+    _ _ _ _ ProximityPrize.Compatibility.evalDist_uniformSample_eq_toMeasure
+  intro b _
   have hprog : ($ᵗ γ >>= fun c => pure (F b c) : ProbComp α) = (F b) <$> ($ᵗ γ) := by
     rw [map_eq_bind_pure_comp]
     rfl
-  rw [hprog, evalDist_map, SPMF.toPMF_map, evalDist_uniformSample, SPMF.liftM_eq_map,
-    SPMF.toPMF_mk, PMF.monad_map_eq_map, PMF.map_comp, PMF.map_comp]
-  rfl
+  rw [hprog, ProximityPrize.Compatibility.evalDist_uniform_map_eq_toMeasure]
 
 end TwoSample
 
@@ -259,7 +221,8 @@ oracle (caching hash arm, memoizing bidirectional permutation arms) from duplica
 caches has the same distribution as sampling one hash table and one permutation and
 answering eagerly through the joint cache overlay. -/
 theorem evalDist_simulateQ_lazyDSImpl_run'
-    {α : Type} (oa : OracleComp (duplexSpongeChallengeOracle StmtIn U) α)
+    {α : Type} [MeasurableSpace α]
+    (oa : OracleComp (duplexSpongeChallengeOracle StmtIn U) α)
     (ch : (StmtIn →ₒ Vector U SpongeSize.C).QueryCache)
     (cp : List (CanonicalSpongeState U × CanonicalSpongeState U))
     (hkeys : (cp.map Prod.fst).Nodup) (hvals : (cp.map Prod.snd).Nodup) :
@@ -270,6 +233,9 @@ theorem evalDist_simulateQ_lazyDSImpl_run'
           pure (evalWithAnswerFn (QueryImpl.ofFn (dsOverlayFn ch cp g π)) oa)
           : ProbComp α) := by
   classical
+  let : MeasurableSpace (CanonicalSpongeState U) := ⊤
+  let : MeasurableSpace (Vector U SpongeSize.C) := ⊤
+  let : MeasurableSpace (Equiv.Perm (CanonicalSpongeState U)) := ⊤
   induction oa using OracleComp.inductionOn generalizing ch cp with
   | pure a =>
     have hlhs : (simulateQ lazyDSImpl (pure a : OracleComp _ α)).run' (ch, cp)
@@ -279,13 +245,7 @@ theorem evalDist_simulateQ_lazyDSImpl_run'
       rw [map_pure]
     rw [hlhs]
     simp only [evalWithAnswerFn_pure]
-    symm
-    refine evalDist_ext fun x => ?_
-    rw [probOutput_bind_eq_tsum, ENNReal.tsum_mul_right,
-      tsum_probOutput_eq_one' (mx := $ᵗ (StmtIn → Vector U SpongeSize.C)) (by simp),
-      one_mul, probOutput_bind_eq_tsum, ENNReal.tsum_mul_right,
-      tsum_probOutput_eq_one' (mx := $ᵗ (Equiv.Perm (CanonicalSpongeState U))) (by simp),
-      one_mul]
+    simp
   | query_bind t k ih =>
     have hred : (simulateQ lazyDSImpl
           (liftM ((duplexSpongeChallengeOracle StmtIn U).query t) >>= k)).run' (ch, cp)
@@ -341,8 +301,8 @@ theorem evalDist_simulateQ_lazyDSImpl_run'
                 (simulateQ lazyDSImpl (k a)).run' (ch.cacheQuery q a, cp)) :=
           bind_map_left _ _ _
         refine Eq.trans (congrArg evalDist hassoc) ?_
-        rw [evalDist_bind]
-        trans (evalDist ($ᵗ (Vector U SpongeSize.C)) >>= fun u =>
+        rw [evalDist_bind_of_discrete]
+        trans (Measure.bind (evalDist ($ᵗ (Vector U SpongeSize.C))) fun u =>
           evalDist (do
             let g ← $ᵗ (StmtIn → Vector U SpongeSize.C)
             let π ← $ᵗ (Equiv.Perm (CanonicalSpongeState U))
@@ -350,7 +310,7 @@ theorem evalDist_simulateQ_lazyDSImpl_run'
               (QueryImpl.ofFn (dsOverlayFn ch cp (Function.update g q u) π))
               (k (Function.update g q u q))) : ProbComp α))
         · exact congrArg _ (funext fun u => hfib u)
-        rw [← evalDist_bind]
+        rw [← evalDist_bind_of_discrete]
         rw [show (($ᵗ (Vector U SpongeSize.C)) >>= fun u => (do
               let g ← $ᵗ (StmtIn → Vector U SpongeSize.C)
               let π ← $ᵗ (Equiv.Perm (CanonicalSpongeState U))
@@ -365,7 +325,14 @@ theorem evalDist_simulateQ_lazyDSImpl_run'
                   pure (evalWithAnswerFn (QueryImpl.ofFn (dsOverlayFn ch cp g' π))
                     (k (g' q))) : ProbComp α)) from by
           simp only [bind_assoc, pure_bind]]
-        rw [evalDist_bind, evalDist_uniformSample_bind_update q, ← evalDist_bind]
+        have hupdate : evalDist (do
+            let u ← $ᵗ (Vector U SpongeSize.C)
+            let g ← $ᵗ (StmtIn → Vector U SpongeSize.C)
+            pure (Function.update g q u) : ProbComp (StmtIn → Vector U SpongeSize.C))
+            = evalDist ($ᵗ (StmtIn → Vector U SpongeSize.C)) := by
+          simpa using (OracleComp.evalDist_uniformSample_bind_update_map
+            SampleableType.evalDist_uniformSample SampleableType.evalDist_uniformSample q id)
+        rw [evalDist_bind_of_discrete, hupdate, ← evalDist_bind_of_discrete]
         refine congrArg evalDist
           (congrArg (fun F => ($ᵗ _) >>= F) (funext fun g => ?_))
         refine congrArg (fun F => ($ᵗ _) >>= F) (funext fun π => ?_)
@@ -410,31 +377,17 @@ theorem evalDist_simulateQ_lazyDSImpl_run'
                 (simulateQ lazyDSImpl (k b)).run' (ch, cp.concat (sIn, b))) :=
           bind_map_left _ _ _
         refine Eq.trans (congrArg evalDist hassoc) ?_
-        rw [← SPMF.toPMF_inj, evalDist_bind, SPMF.toPMF_bind,
-          LazyPermBridge.toPMF_sampleUnused cp sIn hkeys hvals hfresh]
-        rw [show Option.elimM ((PMF.uniformOfFinset (LazyPermMarginal.unusedFinset cp)
-              (LazyPermMarginal.unusedFinset_nonempty cp sIn hkeys hvals hfresh)).map some)
-            (PMF.pure none)
-            (fun b => (evalDist ((simulateQ lazyDSImpl (k b)).run'
-              (ch, cp.concat (sIn, b)))).toPMF)
-          = (PMF.uniformOfFinset (LazyPermMarginal.unusedFinset cp)
-              (LazyPermMarginal.unusedFinset_nonempty cp sIn hkeys hvals hfresh)).bind
-              (fun b => (evalDist ((simulateQ lazyDSImpl (k b)).run'
-                (ch, cp.concat (sIn, b)))).toPMF) from by
-          rw [Option.elimM, PMF.monad_bind_eq_bind, PMF.bind_map]
-          rfl]
-        have hfib : ∀ b ∈ (PMF.uniformOfFinset (LazyPermMarginal.unusedFinset cp)
+        have hfib : ∀ b ∈ (ProximityPrize.Compatibility.uniformOfFinset (LazyPermMarginal.unusedFinset cp)
             (LazyPermMarginal.unusedFinset_nonempty cp sIn hkeys hvals hfresh)).support,
-            (evalDist ((simulateQ lazyDSImpl (k b)).run' (ch, cp.concat (sIn, b)))).toPMF
-            = (PMF.uniformOfFintype (StmtIn → Vector U SpongeSize.C)).bind (fun g =>
-                ((PMF.uniformOfFintype (Equiv.Perm (CanonicalSpongeState U))).map
+            (evalDist ((simulateQ lazyDSImpl (k b)).run' (ch, cp.concat (sIn, b))))
+            = ((ProximityPrize.Compatibility.uniformOfFintype (StmtIn → Vector U SpongeSize.C)).bind (fun g =>
+                ((ProximityPrize.Compatibility.uniformOfFintype (Equiv.Perm (CanonicalSpongeState U))).map
                   (fun π => evalWithAnswerFn
                     (QueryImpl.ofFn (dsOverlayOf ch g
                       (LazyPermBridge.permExtending (cp.concat (sIn, b)) π)))
-                    (k (LazyPermBridge.permExtending (cp.concat (sIn, b)) π sIn)))).map
-                  some) := by
+                    (k (LazyPermBridge.permExtending (cp.concat (sIn, b)) π sIn)))))).toMeasure := by
           intro b hb
-          rw [PMF.mem_support_uniformOfFinset_iff, LazyPermMarginal.mem_unusedFinset] at hb
+          rw [ProximityPrize.Compatibility.mem_support_uniformOfFinset_iff, LazyPermMarginal.mem_unusedFinset] at hb
           have hk' : (((cp.concat (sIn, b)).map Prod.fst)).Nodup := by
             simp only [List.concat_eq_append, List.map_append, List.map_cons, List.map_nil]
             rw [List.nodup_append]
@@ -451,26 +404,26 @@ theorem evalDist_simulateQ_lazyDSImpl_run'
               simp only [List.mem_singleton] at hy
               subst hy
               exact fun h => hb (h ▸ hx)⟩
-          rw [ih b ch (cp.concat (sIn, b)) hk' hv', toPMF_two_sample]
+          rw [ih b ch (cp.concat (sIn, b)) hk' hv', evalDist_two_sample]
+          apply congrArg PMF.toMeasure
           refine congrArg _ (funext fun g => ?_)
-          refine congrArg (fun p => PMF.map some p) (congrArg _ (funext fun π => ?_))
+          refine congrArg _ (funext fun π => ?_)
           have hagree : LazyPermBridge.permExtending (cp.concat (sIn, b)) π sIn = b := by
             have := LazyPermBridge.extends_permExtending (cp.concat (sIn, b)) π hk' hv'
             exact this (sIn, b) (by simp [List.concat_eq_append])
           dsimp only [Function.comp_apply]
           rw [dsOverlayFn_eq_overlayOf, hagree]
-        rw [LazyPermMarginal.bind_congr_support _ _ _ hfib]
-        simp only [← PMF.map_bind]
-        rw [toPMF_two_sample]
-        simp only [dsOverlayFn_eq_overlayOf, dsOverlayFn_fwd]
-        simp only [← PMF.map_bind]
-        refine congrArg (fun p => PMF.map some p) ?_
         have hne : (LazyPermMarginal.extendsFinset cp).Nonempty := by
           have := LazyPermBridge.extendsFinset_append_nonempty [] cp
             (by simpa using hkeys) (by simpa using hvals) (by simp)
           simpa using this
-        exact LazyPermBridge.pmf_absorb_spectator cp sIn hkeys hvals hfresh hne
-          (PMF.uniformOfFintype (StmtIn → Vector U SpongeSize.C))
+        rw [evalDist_two_sample]
+        refine (ProximityPrize.Compatibility.evalDist_bind_finitePMF _ _ _ _
+          (LazyPermBridge.evalDist_sampleUnused_values cp sIn hkeys hvals hfresh) hfib).trans ?_
+        apply congrArg PMF.toMeasure
+        simpa only [dsOverlayFn_eq_overlayOf, dsOverlayFn_fwd, dsOverlayFn_inv]
+          using LazyPermBridge.pmf_absorb_spectator cp sIn hkeys hvals hfresh hne
+          (ProximityPrize.Compatibility.uniformOfFintype (StmtIn → Vector U SpongeSize.C))
           (fun g σ => evalWithAnswerFn (QueryImpl.ofFn (dsOverlayOf ch g σ)) (k (σ sIn)))
       · -- forward cache hit
         have hp1 : p.1 = sIn := by
@@ -515,42 +468,22 @@ theorem evalDist_simulateQ_lazyDSImpl_run'
                 (simulateQ lazyDSImpl (k a)).run' (ch, cp.concat (a, sOut))) :=
           bind_map_left _ _ _
         refine Eq.trans (congrArg evalDist hassoc) ?_
-        rw [← SPMF.toPMF_inj, evalDist_bind, SPMF.toPMF_bind,
-          LazyPermBridge.toPMF_sampleUnusedKeys cp sOut hkeys hvals hfresh]
-        rw [show Option.elimM ((PMF.uniformOfFinset
-              (LazyPermMarginal.unusedFinset (cp.map Prod.swap))
-              (LazyPermMarginal.unusedFinset_nonempty (cp.map Prod.swap) sOut
-                (by simpa [List.map_map, Function.comp_def] using hvals)
-                (by simpa [List.map_map, Function.comp_def] using hkeys)
-                (by simpa [List.map_map, Function.comp_def] using hfresh))).map some)
-            (PMF.pure none)
-            (fun a => (evalDist ((simulateQ lazyDSImpl (k a)).run'
-              (ch, cp.concat (a, sOut)))).toPMF)
-          = (PMF.uniformOfFinset (LazyPermMarginal.unusedFinset (cp.map Prod.swap))
-              (LazyPermMarginal.unusedFinset_nonempty (cp.map Prod.swap) sOut
-                (by simpa [List.map_map, Function.comp_def] using hvals)
-                (by simpa [List.map_map, Function.comp_def] using hkeys)
-                (by simpa [List.map_map, Function.comp_def] using hfresh))).bind
-              (fun a => (evalDist ((simulateQ lazyDSImpl (k a)).run'
-                (ch, cp.concat (a, sOut)))).toPMF) from by
-          rw [Option.elimM, PMF.monad_bind_eq_bind, PMF.bind_map]
-          rfl]
-        have hfib : ∀ a ∈ (PMF.uniformOfFinset
+        have hfib : ∀ a ∈ (ProximityPrize.Compatibility.uniformOfFinset
             (LazyPermMarginal.unusedFinset (cp.map Prod.swap))
             (LazyPermMarginal.unusedFinset_nonempty (cp.map Prod.swap) sOut
               (by simpa [List.map_map, Function.comp_def] using hvals)
               (by simpa [List.map_map, Function.comp_def] using hkeys)
               (by simpa [List.map_map, Function.comp_def] using hfresh))).support,
-            (evalDist ((simulateQ lazyDSImpl (k a)).run' (ch, cp.concat (a, sOut)))).toPMF
-            = (PMF.uniformOfFintype (StmtIn → Vector U SpongeSize.C)).bind (fun g =>
-                ((PMF.uniformOfFintype (Equiv.Perm (CanonicalSpongeState U))).map
+            (evalDist ((simulateQ lazyDSImpl (k a)).run' (ch, cp.concat (a, sOut))))
+            = ((ProximityPrize.Compatibility.uniformOfFintype (StmtIn → Vector U SpongeSize.C)).bind (fun g =>
+                ((ProximityPrize.Compatibility.uniformOfFintype (Equiv.Perm (CanonicalSpongeState U))).map
                   (fun π => evalWithAnswerFn
                     (QueryImpl.ofFn (dsOverlayOf ch g
                       (LazyPermBridge.permExtending (cp.concat (a, sOut)) π)))
                     (k ((LazyPermBridge.permExtending (cp.concat (a, sOut)) π).symm
-                      sOut)))).map some) := by
+                      sOut)))))).toMeasure := by
           intro a ha
-          rw [PMF.mem_support_uniformOfFinset_iff, LazyPermMarginal.mem_unusedFinset] at ha
+          rw [ProximityPrize.Compatibility.mem_support_uniformOfFinset_iff, LazyPermMarginal.mem_unusedFinset] at ha
           have haK : a ∉ cp.map Prod.fst := by
             simpa [List.map_map, Function.comp_def] using ha
           have hk' : (((cp.concat (a, sOut)).map Prod.fst)).Nodup := by
@@ -569,9 +502,10 @@ theorem evalDist_simulateQ_lazyDSImpl_run'
               simp only [List.mem_singleton] at hy
               subst hy
               exact fun h => hfresh (h ▸ hx)⟩
-          rw [ih a ch (cp.concat (a, sOut)) hk' hv', toPMF_two_sample]
+          rw [ih a ch (cp.concat (a, sOut)) hk' hv', evalDist_two_sample]
+          apply congrArg PMF.toMeasure
           refine congrArg _ (funext fun g => ?_)
-          refine congrArg (fun p => PMF.map some p) (congrArg _ (funext fun π => ?_))
+          refine congrArg _ (funext fun π => ?_)
           have hagree : LazyPermBridge.permExtending (cp.concat (a, sOut)) π a = sOut := by
             have := LazyPermBridge.extends_permExtending (cp.concat (a, sOut)) π hk' hv'
             exact this (a, sOut) (by simp [List.concat_eq_append])
@@ -579,18 +513,17 @@ theorem evalDist_simulateQ_lazyDSImpl_run'
               = a := (Equiv.symm_apply_eq _).mpr hagree.symm
           dsimp only [Function.comp_apply]
           rw [dsOverlayFn_eq_overlayOf, hsymm]
-        rw [LazyPermMarginal.bind_congr_support _ _ _ hfib]
-        simp only [← PMF.map_bind]
-        rw [toPMF_two_sample]
-        simp only [dsOverlayFn_eq_overlayOf, dsOverlayFn_inv]
-        simp only [← PMF.map_bind]
-        refine congrArg (fun p => PMF.map some p) ?_
         have hne : (LazyPermMarginal.extendsFinset cp).Nonempty := by
           have := LazyPermBridge.extendsFinset_append_nonempty [] cp
             (by simpa using hkeys) (by simpa using hvals) (by simp)
           simpa using this
-        exact LazyPermBridge.pmf_absorb_inv_spectator cp sOut hkeys hvals hfresh hne
-          (PMF.uniformOfFintype (StmtIn → Vector U SpongeSize.C))
+        rw [evalDist_two_sample]
+        refine (ProximityPrize.Compatibility.evalDist_bind_finitePMF _ _ _ _
+          (LazyPermBridge.evalDist_sampleUnused_keys cp sOut hkeys hvals hfresh) hfib).trans ?_
+        apply congrArg PMF.toMeasure
+        simpa only [dsOverlayFn_eq_overlayOf, dsOverlayFn_fwd, dsOverlayFn_inv]
+          using LazyPermBridge.pmf_absorb_inv_spectator cp sOut hkeys hvals hfresh hne
+          (ProximityPrize.Compatibility.uniformOfFintype (StmtIn → Vector U SpongeSize.C))
           (fun g σ => evalWithAnswerFn (QueryImpl.ofFn (dsOverlayOf ch g σ)) (k (σ.symm sOut)))
       · -- inverse cache hit
         have hp2 : p.2 = sOut := by
@@ -668,7 +601,7 @@ set_option maxHeartbeats 800000 in
 /-- **The `D_DS` eager game equals the combined lazy game (4C-3)**: sampling the duplex
 sponge carrier once and answering through it has the distribution of the lazy memoizing
 oracle from empty caches. The Lemma 5.8 analysis can therefore run against the lazy side. -/
-theorem evalDist_DDS_eq_lazyDSImpl {α : Type}
+theorem evalDist_DDS_eq_lazyDSImpl {α : Type} [MeasurableSpace α]
     (P : OracleComp (duplexSpongeChallengeOracle StmtIn U) α) :
     evalDist (do
       let c ← (DuplexSpongeFS.KeyLemmaFoundations.D_DS StmtIn U).sample
@@ -693,7 +626,7 @@ theorem evalDist_DDS_eq_lazyDSImpl {α : Type}
     refine congrArg (fun F => ($ᵗ _) >>= F) (funext fun g => ?_)
     rw [bind_assoc]
     refine congrArg (fun F => ($ᵗ _) >>= F) (funext fun π => ?_)
-    rw [pure_bind]
+    erw [pure_bind]
     have := simulateQ_pureFn_eq (dsOverlayFn ∅ [] g π) P
     rw [show ((DuplexSpongeFS.KeyLemmaFoundations.D_DS StmtIn U).toImpl (g, π)
         : QueryImpl _ ProbComp) = (fun t => pure (dsOverlayFn ∅ [] g π t)) from
@@ -706,12 +639,13 @@ theorem evalDist_DDS_eq_lazyDSImpl {α : Type}
 therefore be performed entirely on the lazy side. -/
 theorem probEvent_DDS_eq_lazyDSImpl {α : Type}
     (P : OracleComp (duplexSpongeChallengeOracle StmtIn U) α) (p : α → Prop) :
-    Pr[ p | do
+    probEvent p (do
       let c ← (DuplexSpongeFS.KeyLemmaFoundations.D_DS StmtIn U).sample
-      simulateQ ((DuplexSpongeFS.KeyLemmaFoundations.D_DS StmtIn U).toImpl c) P]
-      = Pr[ p | (simulateQ lazyDSImpl P).run' (∅, ([] :
-          List (CanonicalSpongeState U × CanonicalSpongeState U)))] := by
-  unfold probEvent
+      simulateQ ((DuplexSpongeFS.KeyLemmaFoundations.D_DS StmtIn U).toImpl c) P)
+      = probEvent p ((simulateQ lazyDSImpl P).run' (∅, ([] :
+          List (CanonicalSpongeState U × CanonicalSpongeState U)))) := by
+  let : MeasurableSpace α := ⊤
+  simp only [probEvent, prEvent_eq_evalDist_of_discrete]
   rw [evalDist_DDS_eq_lazyDSImpl]
 
 /-! ## Cache well-formedness along lazy runs (brick 4D-2a) -/
@@ -1035,7 +969,7 @@ theorem card_capacityFiber [Fintype U] [DecidableEq U] (c : Vector U SpongeSize.
       apply Vector.ext
       intro i hi
       show ((Vector.cast _ (v ++ c)).drop SpongeSize.R)[i] = c[i]
-      rw [Vector.getElem_drop, Vector.getElem_cast,
+      erw [Vector.getElem_drop, Vector.getElem_cast,
         Vector.getElem_append_right (by
           have hi' := hi
           simp only [SpongeSize.C] at hi' ⊢
@@ -1058,8 +992,6 @@ theorem card_capacityFiber [Fintype U] [DecidableEq U] (c : Vector U SpongeSize.
         have hdc : Vector.drop (x.1) SpongeSize.R = c := x.2
         simp only [← hdc]
         show ((↑x : Vector U SpongeSize.N).drop SpongeSize.R)[i - SpongeSize.R]'(by
-          have hi' := hi
-          simp only [SpongeSize.C] at hi' ⊢
           omega) = (↑x : Vector U SpongeSize.N)[i]
         rw [Vector.getElem_drop]
         congr 1
@@ -1070,7 +1002,9 @@ theorem card_capacityFiber [Fintype U] [DecidableEq U] (c : Vector U SpongeSize.
       simp only [Vector.getElem_cast, Vector.getElem_take]
       rw [Vector.getElem_append_left (by simpa using hi)]
   }
-  rw [Fintype.card_congr hsplit, card_vector_pow]
+  rw [Fintype.card_congr hsplit,
+    Fintype.card_congr (Equiv.rootVectorEquivFin (α := U) (n := SpongeSize.R)),
+    Fintype.card_fun, Fintype.card_fin]
 
 end Connectors
 
@@ -1189,7 +1123,7 @@ end DuplexSpongeFS.EagerLazyDS
 /-! ## Axiom audit — kernel-clean. -/
 #print axioms DuplexSpongeFS.EagerLazyDS.evalDist_uniformSample_swap
 #print axioms DuplexSpongeFS.EagerLazyDS.dsOverlayFn_cacheQuery_of_none
-#print axioms DuplexSpongeFS.EagerLazyDS.toPMF_two_sample
+#print axioms DuplexSpongeFS.EagerLazyDS.evalDist_two_sample
 #print axioms DuplexSpongeFS.EagerLazyDS.evalDist_simulateQ_lazyDSImpl_run'
 #print axioms DuplexSpongeFS.EagerLazyDS.evalDist_DDS_eq_lazyDSImpl
 #print axioms DuplexSpongeFS.EagerLazyDS.probEvent_DDS_eq_lazyDSImpl

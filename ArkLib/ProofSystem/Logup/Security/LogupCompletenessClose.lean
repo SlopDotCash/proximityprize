@@ -158,8 +158,7 @@ theorem appendCompletenessResidual_iff_toReduction
         (sumcheckOracleReduction oSpec F n M params)).toReduction
       = (outerOracleReduction oSpec F n M params).toReduction.append
           (sumcheckOracleReduction oSpec F n M params).toReduction from hBridge]
-  -- After the bridge rewrite both sides are the same `Reduction.completeness` statement.
-  exact Iff.rfl
+  -- The bridge rewrite closes the identical `Reduction.completeness` statements.
 
 /-! ### Note: no "perfect special case"
 

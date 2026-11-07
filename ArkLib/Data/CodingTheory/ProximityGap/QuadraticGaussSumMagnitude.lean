@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.NumberTheory.LegendreSymbol.QuadraticChar.GaussSum
 import Mathlib.NumberTheory.LegendreSymbol.AddCharacter
+import Mathlib.NumberTheory.LegendreSymbol.Complex
 import Mathlib.Analysis.Normed.Ring.Finite
 
 /-!

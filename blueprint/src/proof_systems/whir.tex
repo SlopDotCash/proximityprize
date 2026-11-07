@@ -2,227 +2,287 @@
 % Released under Apache 2.0 license as described in the file LICENSE.
 % Authors: Poulami Das (Least Authority)
 
-\section{WHIR}\label{sec:whir}
+\section{Whir}
 
-WHIR is the Reed--Solomon IOPP layer whose soundness depends on three families of
-formalized prerequisites: mutual correlated agreement for random linear combinations, WHIR
-folding and block-distance list decoding, and out-of-domain sampling.  ArkLib now exposes the
-paper theorem as named front doors and separates the remaining mathematical residuals from the
-protocol scaffold.  The genuine open kernel is the Johnson-regime MCA/capture argument; the
-protocol objects, completeness shells, budget accounting, and conditional RBR entry points are
-represented explicitly.  The live implementation tracker is
-\href{https://github.com/lalalune/ArkLib/issues/302}{WHIR issue \#302}; this blueprint records
-that reduced state without upgrading the conditional Lean front doors into unconditional theorem
-closure.
+\subsection{Tools for Reed Solomon codes}
 
-\subsection{Reed--Solomon proximity and MCA}\label{sec:whir_mca}
+\subsubsection{Mutual Correlated Agreement as a Proximity Generator}
 
-\begin{definition}[Proximity generator]\label{def:whir_proximity_generator}
-\lean{Generator.ProximityGenerator}
+\begin{definition}\label{def:proximity_generator}
+    % \lean{Generator.ProximityGenerator} % TODO: declaration is not currently formalized.
 \uses{def:linear_code,def:distance_from_code}
-    A generator $\mathsf{Gen}$ for a linear code $\code$ is a proximity generator with
-    bound $B$ and error $\epsilon$ when the following implication holds: if a random linear
-    combination of words is close to $\code$ with probability above $\epsilon$, then all input
-    words agree with codewords of $\code$ on one common large coordinate set.
+Let $\code\subseteq \field^{\evaldomain}$ be a linear code. We say that $\mathsf{Gen}$ is a proximity generator for $\code$ with proximity bounds ${\bound}$ and $\err$ if the following implication holds for $f_0,\ldots,f_{\parl-1} : \evaldomain \rightarrow \field$ and $\delta\in(0,1-{\bound}(\rate,\parl))$. If
+\begin{align*}
+    \Pr_{r_0,\ldots,r_{\parl-1}\leftarrow \gen}[\Delta(\sum_{i\in[0,(\parl-1)]} r_i \cdot f_i, \code) \le \delta] > err(\code,\parl,\delta),
+\end{align*}
+then there exists $S\subseteq \evaldomain$, $|S|>(1-\delta)\cdot|\evaldomain|$, and
+$\forall i \in [0, (\parl-1)]$, $\exists u \in \code, \forall x \in S$, $f_i(x)=u(x)$.
 \end{definition}
 
-\begin{theorem}[Reed--Solomon proximity generator]\label{thm:whir_proximity_gap}
-\lean{RSGenerator.genRSC}
-\uses{def:whir_proximity_generator,def:reed_solomon_code}
-    For a Reed--Solomon code $\code=\rscode[\field,\evaldomain,m]$, the generator
-    $(1,\alpha,\ldots,\alpha^{\parl-1})$ is the WHIR proximity generator with Johnson-radius
-    proximity bound and the corresponding finite-field error term.
+\begin{theorem}\label{thm:proximity_gap_whir}
+    % \lean{RSGenerator.genRSC} % TODO: declaration is not currently formalized.
+\uses{def:proximity_generator,def:reed_solomon_code}
+    Let $\code = \rscode[\field,\evaldomain,m]$ be a Reed Solomon code with rate $\rate = 2^m/|\evaldomain|$. $\gen(\alpha,\parl)=\{1,\alpha,\ldots,\alpha^{\parl-1}\}$ is a proximity generator for $\code$ with proximity bounds ${\bound}(\rate,\parl)=\sqrt{\rate}$ and $\err(C,\parl,\delta)$ defined below.
+    \begin{itemize}
+        \item if $\distance \in \left(0,\frac{1-\rate}{2}\right]$ then
+            \[
+                \err(\code,\parl,\delta)=\frac{(m-1)\cdot \degree}{\rate\cdot|\field|}
+            \]
+        \item if $\distance \in \Bigl(\frac{1-\rate}{2}, 1-\sqrt{\rate}\Bigr)$ then
+        \[
+            \err(\code,\parl,\delta)=\frac{(m-1)\cdot {\degree}^2}{|\field|\cdot{\Bigl(2\cdot\min\{1-\sqrt{\rate}-\distance,\frac{\sqrt{\rate}}{20}\}\Bigr)}^7}
+        \]
+    \end{itemize}
 \end{theorem}
 
-\begin{definition}[Mutual correlated agreement]\label{def:whir_mca}
-\lean{MutualCorrAgreement.hasMutualCorrAgreement}
-\uses{def:whir_proximity_generator}
-    Mutual correlated agreement strengthens the proximity-generator conclusion: except with
-    the stated error, a random linear combination cannot be close to $\code$ on a large set
-    while some input word fails to agree with any codeword on that same set.
-\end{definition}
-
-\begin{lemma}[MCA from proximity generation]\label{lem:whir_mca_from_proximity}
-\lean{MutualCorrAgreement.mca_linearCode,MutualCorrAgreement.mca_linearCode_udrFree}
-\uses{def:whir_proximity_generator,def:whir_mca}
-    A proximity generator for a linear code yields a mutual-correlated-agreement generator,
-    with the proximity radius capped by the unique-decoding radius of the code.  The UDR-free
-    variant packages the same implication in the form used by later WHIR bridges.
-\end{lemma}
-
-\begin{theorem}[WHIR MCA front doors]\label{thm:whir_mca_front_doors}
-\lean{MutualCorrAgreement.mca_rsc,MutualCorrAgreement.mca_johnson_bound_CONJECTURE,MutualCorrAgreement.mca_capacity_bound_CONJECTURE,MutualCorrAgreement.mca_johnson_bound_CONJECTURE_pair_of_johnsonNumericBound,MutualCorrAgreement.mca_johnson_bound_CONJECTURE_pair_of_claim1_cells,MutualCorrAgreement.mca_johnson_bound_CONJECTURE_pair_via_ellary,MutualCorrAgreement.mca_johnson_bound_CONJECTURE_smallField}
-\uses{def:whir_mca,def:smooth_rs_code,thm:whir_proximity_gap}
-    ArkLib records the WHIR MCA target for smooth Reed--Solomon codes up to the Johnson bound
-    and retains the capacity-shaped statement as a historical front door.  The current
-    formalization also exposes pair, curve, Ellary, and small-field routes that reduce the
-    Johnson theorem to explicit numeric or capture hypotheses instead of hiding those
-    assumptions inside the protocol theorem.
-\end{theorem}
-
-\begin{remark}[WHIR MCA status]\label{rem:whir_mca_status}
-\lean{MutualCorrAgreement.hasMutualCorrAgreement_genRSC_pair_of_epsMCA_le,MutualCorrAgreement.hasMutualCorrAgreement_genRSC_of_epsMCACurve_le,Whir302B.hasMutualCorrAgreement_genRSC_of_epsMCAP_le,Whir302B.hasMutualCorrAgreement_genRSC_vandermonde_of_epsMCAP_le,MutualCorrAgreement.hasMutualCorrAgreement_genRSC_pair_of_johnsonNumericBound,CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame.johnsonNumericBound_of_affine_capture}
-\uses{thm:whir_mca_front_doors}
-    The Johnson-radius statement is the live mathematical target.  The affine-line pair
-    generator seam, higher-arity curve/parameter-sampling seams, the Johnson-numeric bridge,
-    and small-field/vacuous exits are formalized.  What remains is the affine-capture or
-    generic-to-scalar decoding kernel: bad scalar-close Reed--Solomon codewords must be shown
-    to come from the bounded list of generic $\field(Z)$-linear factors rather than from
-    higher-degree factors after specialization.
-\end{remark}
-
-\begin{lemma}[MCA bridge for folded list decoding]\label{lem:whir_mca_list_decoding}
-\lean{Fold.folding_preserves_listdecoding_base_of_mca_bridge}
-\uses{def:whir_mca,def:interleaved_code,def:list_close_codewords}
-    The current production bridge threads a genuine \texttt{hasMutualCorrAgreement}
-    hypothesis into the one-step folded list-decoding bound.  Together with the deterministic
-    forward-inclusion half, it gives the reverse-inclusion probability estimate consumed by
-    WHIR's folding-preserves-list-decoding theorem.
-\end{lemma}
-
-\subsection{Folding and block distance}\label{sec:whir_folding}
-
-\begin{definition}[Square-root extraction]\label{def:whir_extract}
-\lean{Fold.extract_x}
-    The WHIR fold queries a word on paired points.  The extractor chooses a square root
-    representative of a point in the next folded domain so that both preimages can be queried.
-\end{definition}
-
-\begin{definition}[WHIR folding]\label{def:whir_folding}
-\lean{Fold.foldf,Fold.fold_k_core,Fold.fold_k,Fold.fold_k_set}
-\uses{def:whir_extract}
-    The one-step fold maps $f$ to
+\begin{definition}\label{def:gen_mutual_corr_agreement}
+    % \lean{MutualCorrAgreement.hasMutualCorrAgreement} % TODO: declaration is not currently formalized.
+    \uses{def:proximity_generator}
+    Let $\code$ be a linear code. We say that $\gen$ be a proximity generator with mutual correlated agreement with proximity bounds ${\bound}^\star$ and $\err^\star$, if for $f_0,\ldots,f_{\parl-1}:\evaldomain\rightarrow\field$ and $\delta\in(0,1-{\bound}^\star(\code,\parl))$ the following holds.
     \[
-        y \mapsto {f(x)+f(-x)\over 2}
-        + \alpha {f(x)-f(-x)\over 2x},
+    \Pr_{(r_0, \ldots, r_{\parl-1}) \leftarrow \gen(\parl)} \left[
+        \exists S \subseteq \evaldomain \;\; s.t.\;\;
+        \begin{array}{l}
+        |S| \geq (1 - \delta) \cdot |\evaldomain| \\
+        \land\; \exists u \in \code, u(S) = \sum_{j \in [0,(\parl-1)]} r_j \cdot f_j(S) \\
+        \land\; \exists i \in [0,(\parl-1)], \forall u' \in \code, u'(S) \neq f_i(S)
+        \end{array}\right]
+    \leq \err^\star(\code, \parl, \delta).
     \]
-    where $x$ is extracted from $y$.  Iterating this operation gives \texttt{fold\_k};
-    applying it pointwise to a set of words gives \texttt{fold\_k\_set}.
 \end{definition}
 
-\begin{lemma}[Polynomial semantics of folding]\label{lem:whir_folding_polynomial}
-\lean{Fold.foldPoly,Fold.foldf_eq_foldPoly_eval,Fold.foldf_step_mem_smoothCode,Fold.fold_f_g_core,Fold.fold_f_g,Fold.fold_f_g_poly}
-\uses{def:whir_folding,def:smooth_rs_code}
-    The functional fold agrees with the polynomial even/odd decomposition, preserves smooth
-    Reed--Solomon membership under the expected degree conditions, and specializes the folded
-    polynomial to the multilinear-extension view used in WHIR.
+\begin{lemma}\label{lemma:gen_mutual_corr_agreement}
+    % \lean{MutualCorrAgreement.mca_linearCode} % TODO: declaration is not currently formalized.
+\uses{def:proximity_generator, def:gen_mutual_corr_agreement}
+    Let $\code$ be a linear code with minimum distance $\delta_{\code}$ and let $\gen$ be a proximity generator for $\code$ with proximity bound ${\bound}$ and error $\err$. Then $\gen$ has mutual correlated agreement with proximity bound ${\bound}^\star(\code, \parl) = \min\{1 - \delta_{\code}/2, \bound(\code, \parl)\}$ and error $\err^\star(\code, \parl, \delta) := \err(\code, \parl, \delta)$.
 \end{lemma}
 
-\begin{definition}[Block relative distance]\label{def:whir_block_distance}
-\lean{BlockRelDistance.block,BlockRelDistance.blockRelDistance,BlockRelDistance.minBlockRelDistance,BlockRelDistance.listBlockRelDistance}
-\uses{def:smooth_rs_code}
-    Block distance measures disagreement after grouping coordinates into folding blocks.  The
-    associated block list contains codewords within a given block-relative radius from the
-    received word.
-\end{definition}
-
-\begin{lemma}[Block distance bounds Hamming distance]\label{lem:whir_block_distance_bounds}
-\lean{BlockRelDistance.blockRelDistance_eq_relHammingDist_of_k_eq_i,BlockRelDistance.relHammingDist_le_blockRelDistance,BlockRelDistance.listBlock_subset_listHamming}
-\uses{def:whir_block_distance,def:list_close_codewords}
-    At zero fold depth, block distance is ordinary relative Hamming distance.  In general,
-    Hamming distance is bounded by block distance, so block-close lists are subsets of ordinary
-    close-codeword lists.
+\begin{lemma}
+    % \lean{MutualCorrAgreement.mca_rsc} % TODO: declaration is not currently formalized.
+\uses{lemma:gen_mutual_corr_agreement, def:reed_solomon_code}
+    Let $\code := \rscode[\field, \evaldomain, m]$ be a Reed Solomon code with rate $\rate$. The function $\gen(\parl; \alpha) = (1, \alpha, \ldots, \alpha^{\parl - 1})$ is a proximity generator for $\code$ with mutual correlated agreement with proximity bound ${\bound}^\star(\code, \parl) := \frac{1 + \rate}{2}$ and error $\err^\star(\code, \parl, \delta) = \frac{(\parl - 1) \cdot 2^m}{\rate \cdot |\field|}$.
 \end{lemma}
 
-\begin{theorem}[Folding preserves list decoding]\label{thm:whir_folding_preserves_list_decoding}
-\lean{Fold.folding_listdecoding_if_genMutualCorrAgreement,Fold.folding_preserves_listdecoding_base,Fold.folding_preserves_listdecoding_base_of_mca_bridge,Fold.folding_preserves_listdecoding_bound,Fold.folding_preserves_listdecoding_base_ne_subset}
-\uses{def:whir_folding,def:whir_block_distance,lem:whir_mca_list_decoding,lem:whir_folding_polynomial}
-    Assuming MCA for the relevant Reed--Solomon codes, a random WHIR fold preserves the
-    intended list-decoding invariant: the fold of the block-close list agrees with the
-    close-codeword list of the folded word except with the accumulated MCA and degree-error
-    budget.
+\begin{theorem}\label{conjecture:whir}
+    % \lean{MutualCorrAgreement.mca_johnson_bound_CONJECTURE,MutualCorrAgreement.mca_capacity_bound_CONJECTURE} % TODO: declarations are not currently formalized.
+\uses{def:reed_solomon_code,lemma:gen_mutual_corr_agreement}
+    The function $\gen(\parl; \alpha) := (1, \alpha, \ldots, \alpha^{\parl - 1})$ is a proximity generator with mutual correlated agreement for every smooth Reed Solomon code $\code := \rscode[\field, \evaldomain, m]$ (with rate $\rate := 2^m / |\evaldomain|$). We give two conjectures, for the parameters of the proximity bound ${\bound}^\star$ and the error $\err^\star$:
+    \begin{enumerate}
+        \item \textit{Up to the Johnson bound:} ${\bound}^\star(\code, \parl) := \sqrt{\rate},$ \textit{and}
+        \[
+        \err(\code, \parl, \delta) := \frac{(\parl - 1) \cdot 2^m}{|\field| \cdot \left( 2 \cdot \min\left\{1 - \sqrt{\rate} - \delta, \frac{\sqrt{\rate}}{20} \right\} \right)^7}.
+        \]
+
+        \item \textit{Up to capacity:} ${\bound}^\star(\code, \parl) := \rate$, \textit{and there exist constants $c_1, c_2, c_3 \in \mathbb{N}$ such that for every $\eta > 0$ and $0 < \delta < 1 - \rate - \eta$:}
+        \[
+        \err^\star(\code, \parl, \delta) := \frac{(\parl - 1)^{c_2} \cdot \delta^{c_2}}{\eta^{c_1} \cdot \rate^{c_1 + c_2} \cdot |\field|}.
+        \]
+      \end{enumerate}
 \end{theorem}
 
-\subsection{Out-of-domain sampling}\label{sec:whir_ood}
+\subsubsection{Mutual correlated agreement preserves list decoding}
 
-\begin{lemma}[Constrained and unconstrained agreement equivalence]\label{lem:whir_ood_equiv}
+\begin{lemma}\label{lemma: mutual_corrAgr_listdecoding}
+    % \lean{MutualCorrAgreement.mca_list_decoding} % TODO: declaration is not currently formalized.
+\uses{def:reed_solomon_code,def:interleaved_code,def:list_close_codewords,lemma:gen_mutual_corr_agreement}
+    Let $\code \subseteq \field^{\evaldomain}$ be a linear code with minimum distance $\delta_{\code}$, and let $\gen$ be a proximity generator for $\code$ with mutual correlated agreement with proximity bound ${\bound}^\star$ and error $\err^\star$. Then, for every $f_0, \ldots, f_{\parl-1} : \evaldomain \to \field$ and $\delta \in (0, \min\{\delta_{\code}, 1 - {\bound}^\star(\code, \parl)\})$:
+    \[
+    \Pr_{\substack{\alpha \leftarrow \{0,1\}^{w^\star} \\ \boldsymbol{r} := \gen(\parl; \alpha)}} \left[
+    \Lambda\left(\code, \sum_{j \in [0,(\parl-1)]} r_j \cdot f_j, \delta \right) \neq
+    \left\{ \sum_{j \in [0,(\parl-1)]} r_j \cdot u_j : \boldsymbol{u} \in \Lambda\left(\mathcal{C}^\ell, (f_0, \ldots, f_{\parl-1}), \delta \right) \right\}
+    \right] \leq \err^\star(\code, \parl, \delta).
+    \]
+\end{lemma}
+
+\subsubsection{Folding univariate functions}
+
+\begin{definition}\label{def:extract}
+    % \lean{Fold.extract_x} % TODO: declaration is not currently formalized.
+    Let $\mathsf{extract}:\evaldomain^{2^{k+1}}\rightarrow \evaldomain^{2^k}$ be a function. There exists $x \in \evaldomain$, such that $y = x^{2^{k+1}}\in\evaldomain^{2^{k+1}}$. Then $\mathsf{extract}$ returns $z = \sqrt{y} = x^{2^k}\in\evaldomain^{2^k}$ such that $y = z^2$.
+\end{definition}
+
+\begin{definition}\label{def:foldf}
+    % \lean{Fold.foldf} % TODO: declaration is not currently formalized.
+\uses{def:extract}
+    Let $f : \evaldomain^{2^k} \to \field$ be a function, and $\alpha \in \field$. We define $\mathrm{Fold_f}(f, {\alpha}) : \evaldomain^{(2^{k+1})} \to \field$ as follows:
+    \[
+    \forall x \in \evaldomain^{2^k}, y \in \evaldomain^{2^{k+1}}, \quad \mathrm{Fold_f}(f, \alpha)(y) := \frac{f(x) + f(-x)}{2} + \alpha \cdot \frac{f(x) - f(-x)}{2 \cdot x}.
+    \]
+
+    In order to compute $\mathrm{Fold_f}(f, \alpha)(y)$ it suffices to query $f$ at $x$ and $-x$, by retrieving $x=\mathsf{extract}(y)$.
+\end{definition}
+
+\begin{definition}\label{def:fold_k}
+    % \lean{Fold.fold_k_core,Fold.fold_k} % TODO: declarations are not currently formalized.
+\uses{def:foldf}
+    For $k \leq m$ and $\vec{\alpha} = (\alpha_0, \ldots, \alpha_{k-1}) \in \field^k$ we define $\mathrm{Fold}(f, \vec{\alpha}) : \evaldomain^{2^k} \to \field$ to equal $\mathrm{Fold}(f, \vec{\alpha}) := f_k$ where $f_k$ is defined recursively as follows: $f_0 := f$, and $f_i := \mathrm{Fold_f}(f_{i-1}, \alpha_i)$.
+\end{definition}
+
+\begin{definition}\label{def:fold_k_set}
+    % \lean{Fold.fold_k_set} % TODO: declaration is not currently formalized.
+\uses{def:fold_k}
+    For a set $S \subseteq \field^{\evaldomain}$ we denote $\mathrm{Fold_{S}}(S, \vec{\alpha}) := \{\mathrm{Fold_{S}}(f, \vec{\alpha}) \mid f \in S\}$.
+\end{definition}
+
+\begin{lemma}\label{lemma:fold_fg}
+    % \lean{Fold.fold_f_g} % TODO: declaration is not currently formalized.
+\uses{def:fold_k,def:smooth_rs_code}
+    Let $f : \evaldomain \to \field$ be a function, $\vec{\alpha} \in \field^k$ folding randomness and let $g := \mathrm{Fold}(f, \vec{\alpha})$. If $f \in \rscode[\field, \evaldomain, m]$ and $k \leq m$, then $g \in \rscode[\field, \evaldomain^{2^k}, m - k]$, and further the multilinear extension of $g$ is given by $\hat{g}(X_k, \ldots, X_{m-1}) := \hat{f}(\vec{\alpha}, X_k, \ldots, X_{m-1})$ where $\hat{f}$ is the multilinear extension of $f$.
+\end{lemma}
+
+\subsubsection{Block relative distance}
+
+\begin{definition}\label{def:block}
+    % \lean{BlockRelDistance.block} % TODO: declaration is not currently formalized.
+    Let $\evaldomain \subseteq \field$ be a smooth evaluation domain and $k \in \mathbb{N}$ be a folding parameter. For $z \in \evaldomain^{2^k}$, define $\mathrm{Block}(\evaldomain, i, k, z) := \{ x \in \evaldomain, y \in \evaldomain^{2^i} : y^{2^{k-i}} = z \}$.
+\end{definition}
+
+\begin{definition}\label{def:block_rel_distance}
+\lean{BlockRelDistance.blockRelDistance}
+\uses{def:block}
+    Let $\code := \rscode[\field, \evaldomain, m]$ be a smooth Reed Solomon code and let $f, g : \evaldomain^{2^i} \to \field$. We define the $(i,k)$-wise block relative distance as
+    \[
+    \Delta_{r}(\code, i, k, f, g) = \frac{ \left| \left\{ z \in \evaldomain^{2^k} : \exists y \in \mathrm{Block}(\evaldomain, i, k, z), f(y) \neq g(y) \right\} \right| }{ |\evaldomain^{2^k}| }
+    \]
+\end{definition}
+
+\begin{definition}\label{def:min_block_rel_distance}
+    % \lean{BlockRelDistance.minBlockRelDistance} % TODO: declaration is not currently formalized.
+\uses{def:block_rel_distance}
+    For $S \subseteq \field^{\evaldomain}$, we let $\Delta_{r}(\code, i, k, f, S) := \min_{g \in S} \Delta_{r}(\code, i, k, f, g)$.
+\end{definition}
+
+{Note that $\Delta_{r}(\code, 0, 0, f, g) = \Delta(f, g)$ for any $\code$. We define the block list decoding of a codeword.}
+
+\begin{definition}\label{def:list_close_codewords_block}
+    % \lean{BlockRelDistance.listBlockRelDistance} % TODO: declaration is not currently formalized.
+\uses{def:block_rel_distance}
+    For a smooth Reed Solomon code $\rscode := \rscode[\field, \evaldomain, m]$, proximity parameter $\delta \in [0,1]$, and $f : \evaldomain^{2^i} \to \field$, we let
+    \[
+    \Lambda_{r}(\code, i, k, f, \delta) := \{ u \in \code \mid \Delta_{r}(\code, i, k, f, u) \leq \delta \},
+    \]
+    denote the list of codewords in $\code$ within relative block distance at most $\delta$ from $f$.
+\end{definition}
+
+\begin{lemma}\label{lemma:block_rel_distance}
+\lean{BlockRelDistance.relHammingDist_le_blockRelDistance}
+\uses{def:block_rel_distance,def:distance_from_code,def:list_close_codewords_block,def:list_close_codewords}
+    For any $\code := \rscode[\field, \evaldomain, m]$, $k \in \mathbb{N}$, and $f, g : \evaldomain^{2^i} \to \field$, we have that $\Delta(f, g) \leq \Delta_{r}(\code, i, k, f, g)$. Consequently, $\Lambda_{r}(\code, i, k, f, \delta) \subseteq \Lambda(\code, f, \delta)$ for $\delta\in[0,1]$.
+\end{lemma}
+
+\subsubsection{Folding preserves list decoding}
+
+\begin{theorem}\label{thm:folding_preserves_listdecoding}
+    % \lean{Fold.folding_listdecoding_if_genMutualCorrAgreement} % TODO: theorem is not currently formalized.
+\uses{lemma:folding_preserves_listdecoding_base, lemma:folding_preserves_listdecoding_bound, lemma:folding_preserves_listdecoding_base_ne_subset}
+    Let $\code = \rscode[\field, \evaldomain, m]$ be a smooth Reed Solomon code and $k \leq m$. For $0 \leq i \leq k$ let $\code^{(i)} := \rscode[\field, \evaldomain^{2^i}, m - i]$. Let $\gen(\parl; \alpha) = (1, \alpha, \ldots, \alpha^{\parl - 1})$ be a proximity generator with mutual correlated agreement for the codes $\code^{(0)}, \ldots, \mathcal{C}^{(k-1)}$ with proximity bound ${\bound}^\star$ and error $\err^\star$. Then for every $f : \evaldomain \to \field$ and $\delta \in \left(0, 1 - \max_{i \in [0,(k-1)]} \{ {\bound}^\star(\code^{(i)}, 2) \} \right)$,
+    \[
+    \Pr_{\alpha \leftarrow \field^k} \left[
+    \mathrm{Fold_S}(\Lambda_{r}(\code, 0, k, f, \delta), \alpha)
+    \neq \Lambda(\code^{(k)}, \mathrm{Fold}(f, \alpha), \delta)
+    \right] < \err^{(k)}(\code, \delta).
+    \]
+\end{theorem}
+
+\begin{lemma}\label{lemma:folding_preserves_listdecoding_base}
+    % \lean{Fold.folding_preserves_listdecoding_base} % TODO: lemma is not currently formalized.
+\uses{def:list_close_codewords_block,def:fold_k,def:fold_k_set}
+    Let $\code := \rscode[\field, \evaldomain, m]$ be a Reed Solomon code, and $k \leq m$ be a parameter. Denote $\code' := \rscode[\field, \evaldomain^{2}, m - 1]$. Then for every $f : \evaldomain \to \field$ and $\delta \in (0, 1 - {\bound}^\star(\code', 2))$,
+    \[
+    \Pr_{\alpha \leftarrow \field} \left[
+    \mathrm{Fold_S}(\Lambda_{r}(\code, 0, k, f, \delta), \alpha)
+    \neq \Lambda_{r}(\code', 1, k, \mathrm{Fold}(f, \alpha), \delta)
+    \right] < \err^\star(\code', 2, \delta).
+    \]
+\end{lemma}
+
+\begin{lemma}\label{lemma:folding_preserves_listdecoding_bound}
+    % \lean{Fold.folding_preserves_listdecoding_bound} % TODO: lemma is not currently formalized.
+\uses{def:list_close_codewords_block,def:fold_k}
+    For every $\alpha \in \field$, $\mathrm{Fold_S}(\Lambda_{r}(\code, 0, k, f, \delta), \alpha) \subseteq \Lambda_{r}(\code', 1, k, \mathrm{Fold}(f, \alpha), \delta)$.
+\end{lemma}
+
+\begin{lemma}\label{lemma:folding_preserves_listdecoding_base_ne_subset}
+    % \lean{Fold.folding_preserves_listdecoding_base_ne_subset} % TODO: lemma is not currently formalized.
+\uses{def:list_close_codewords_block,def:fold_k,def:fold_k_set}
+    \[
+    \Pr_{\alpha \leftarrow \field} \left[
+    \Lambda_{r}(\code', 1, k, \mathrm{Fold}(f, \alpha), \delta)
+    \not\subseteq \mathrm{Fold_S}(\Lambda_{r}(\code, 0, k, f, \delta), \alpha)
+    \right] < \err^\star(\code', 2, \delta).
+    \]
+\end{lemma}
+
+\begin{lemma}\label{lemma:crs_equiv_rs_randpompt_agreement}
 \lean{OutOfDomSmpl.out_of_dom_smpl_1}
-\uses{def:smooth_rs_code,def:list_close_codewords}
-    Agreement of two close Reed--Solomon codewords on sampled out-of-domain points is equivalent
-    to non-uniqueness in the corresponding constrained smooth Reed--Solomon list.
+\uses{def:smooth_rs_code,def:constrained_code,def:list_close_codewords}
+    Let $f : \evaldomain \rightarrow \field$ be a function, $m \in \mathbb{N}$ be a number of variables, $s \in \mathbb{N}$ be a repetition parameter, and let $\delta \in [0,1]$ be a distance parameter. For every $\vec{r_0}, \dots, \vec{r_{s-1}} \in \field^m$, the following are equivalent statements.
+\begin{itemize}
+    \item There exist distinct $u, u' \in \Lambda(\rscode[\field, \evaldomain, m], f, \delta)$ such that, for every $i \in [0,s-1]$, $\hat{u}(\vec{r_i}) = \hat{u}'(\vec{r_i})$.
+    \item There exists $\sigma_0, \dots, \sigma_{s-1} \in \field$ such that $$\left| \Lambda(\crscode[\field, \evaldomain, m, ((Z \cdot \mathrm{eq}(\vec{r_0}, \cdot), \sigma_0), \dots, (Z \cdot \mathrm{eq}(\vec{r_{s-1}}, \cdot), \sigma_{s-1}))], f, \delta) \right| > 1.$$
+\end{itemize}
 \end{lemma}
 
-\begin{lemma}[Out-of-domain sampling bound]\label{lem:whir_ood_bound}
+\begin{lemma}\label{lemma:out_of_domain_sampling_crs_eq_rs}
 \lean{OutOfDomSmpl.out_of_dom_smpl_2}
-\uses{lem:whir_ood_equiv,def:list_decodable}
-    If the base Reed--Solomon code is list decodable, repeated out-of-domain sampling bounds
-    the probability that a constrained list has more than one candidate by the usual
-    list-size-squared collision term.
+\uses{def:smooth_rs_code,def:constrained_code,def:list_close_codewords,def:list_decodable}
+    Let $f : \evaldomain \rightarrow \field$ be a function, $m \in \mathbb{N}$ be a number of variables, $s \in \mathbb{N}$ be a repetition parameter, and $\delta \in [0,1]$ be a distance parameter. If $\rscode[\field, \evaldomain, m]$ is $(\delta, \ell)$-list decodable then
+    \[
+    \Pr_{r_0, \dots, r_{s-1} \leftarrow \field} \left[
+    \begin{array}{c}
+    \exists \sigma_0, \dots, \sigma_{s-1} \in \field \text{ s.t.} \\
+    \left| \Lambda(\crscode[\field, \evaldomain, m, ((Z \cdot \mathrm{eq}(\mathrm{pow}(r_{i}, m), \cdot), \sigma_{i}))_{i \in [s]}], f, \delta) \right| > 1
+    \end{array}
+    \right]
+    \]
+
+    \[
+    = \Pr_{r_0, \dots, r_{s-1} \leftarrow \field} \left[
+    \begin{array}{c}
+    \exists \text{ distinct } u, u' \in \Lambda(\rscode[\field, \evaldomain, m], f, \delta) \\
+    \text{ s.t. } \forall i \in [s],\ \hat{u}(\mathrm{pow}(r_i, m)) = \hat{u}'(\mathrm{pow}(r_i, m))
+    \end{array}
+    \right]
+    \]
+
+    \[
+    \leq \frac{\ell^2}{2} \cdot \left( \frac{2^m}{|\field|} \right)^s.
+    \]
 \end{lemma}
 
-\subsection{Round-by-round WHIR soundness}\label{sec:whir_rbr}
+\begin{theorem}\label{thm: whir_rbr_soundness}
+    % \lean{WhirIOP.whir_rbr_soundness} % TODO: theorem is not currently formalized.
+\uses{thm:folding_preserves_listdecoding,lemma:out_of_domain_sampling_crs_eq_rs,lemma:gen_mutual_corr_agreement,def:constrained_code}
+    Consider $(\field, M, (k_i, m_i, \evaldomain_i, t_i)_{0 \leq i \leq M}, \widehat{w}_0, \sigma_0, m, d^\star, d)$ with the following ingrediants and conditions,
+    \begin{itemize}
+    \item a constrained Reed Solomon code $\crscode[\field, \evaldomain_0, m_0, \widehat{w}_0, \sigma_0]$;
+    \item an iteration count $M \in \mathbb{N}$;
+    \item folding parameters $k_0, \ldots, k_{M}$ such that $\sum_{i=0}^{M} k_i \leq m$;
+    \item evaluation domains $\evaldomain_0, \ldots, \evaldomain_{M} \subseteq \field$ where $\evaldomain_i$ is a smooth coset of $\field^*$ with order $|\evaldomain_i| \geq 2^{m_i}$;
+    \item repetition parameters $t_0, \ldots, t_M$ with $t_i \leq |\evaldomain_i|$;
+    \item define $m_0 := m$ and $m_i := m - \sum_{j < i} k_j$;
+    \item define $d^\star := 1 + \deg_{\mathbb{Z}}(\widehat{w}_0) + \max_{i \in [m_0]} \deg_{X_i}(\widehat{w}_0)$ and $d := \max\{d^\star, 3\}$.
+    \end{itemize}
+    For every $f \notin \crscode[\field, \evaldomain_0, m_0, \widehat{w}_0, \sigma_0]$ and every $\delta_0, \dots, \delta_{M}$ and $(\parl_{i,s})_{0 \leq i \leq M}^{0 \leq s \leq k_i}$ where
+    \begin{itemize}
+        \item $\delta_0 \in (0, \Delta(f, \crscode[\field, \evaldomain_0, m_0, \widehat{w}_0, \sigma_0]))$;
+        \item the function $\gen(\parl; \alpha) = (1, \alpha, \dots, \alpha^{\parl-1})$ is a proximity generator with mutual correlated agreement for the codes $(\mathcal{C}_{\mathrm{RS}}^{(i,s)})_{0 \leq i \leq M}^{0 \leq s \leq k_i}$ where $\mathcal{C}_{\mathrm{RS}}^{(i,s)} := \rscode[\field, \evaldomain_i^{(2^s)}, m_i - s]$ with bound ${\bound}^\star$ and error $\err^\star$;
+        \item for every $0 \leq i \le M$, $\delta_i \in (0, 1 - {\bound}^\star(\mathcal{C}_{\mathrm{RS}}^{(i,s)}, 2))$;
+        \item for every $0 \leq i \le M$, $\mathcal{C}_{\mathrm{RS}}^{(i,s)}$ is $(\ell_{i,s}, \delta_i)$-list decodable.
+    \end{itemize}
+   Then there exists an IOPP for $\crscode[\field, \evaldomain_0, m_0, \widehat{w}_0, \sigma_0]$ with above parameters, with round-by-round soundness error
 
-\begin{definition}[WHIR parameters and relation]\label{def:whir_params}
-\lean{WhirIOP.Params,WhirIOP.ParamConditions,Fold.GenMutualCorrParams,WhirIOP.OracleStatement,WhirIOP.whirRelation}
-\uses{def:smooth_rs_code,def:list_decodable}
-    The WHIR parameter structures store the round count, folding schedule, evaluation domains,
-    repetition parameters, distance targets, and MCA/list-decoding assumptions.  The relation
-    \texttt{whirRelation} is the initial constrained smooth Reed--Solomon proximity statement.
-\end{definition}
+    \[
+((\varepsilon_{0,s}^{\mathrm{fold}})_{s \leq k_0},\ (\varepsilon_i^{\mathrm{out}},\ \varepsilon_i^{\mathrm{shift}})_{i \leq M},\ (\varepsilon_{i,s}^{\mathrm{fold}})_{i \in [M], s \leq k_i},\ \varepsilon^{\mathrm{fin}}),
+\]
 
-\begin{theorem}[WHIR round-by-round soundness front door]\label{thm:whir_rbr_soundness}
-\lean{WhirIOP.whir_rbr_soundness}
-\uses{def:whir_params,thm:whir_folding_preserves_list_decoding,lem:whir_ood_bound,thm:whir_mca_front_doors}
-    The paper-level RBR theorem asserts existence of a vector IOPP for the WHIR relation with
-    the stated fold, out-of-domain, shift, and final-round error budgets.  In Lean this is the
-    front-door theorem consumed by protocol-level constructions once the real security gap and
-    MCA hypotheses are supplied.
+{where:}
+
+\begin{itemize}
+    \item $\varepsilon_{0,s}^{\mathrm{fold}} \leq \dfrac{d^* \cdot \ell_{0,s-1}}{|\mathbb{F}|} + \mathrm{err}^*(\mathcal{C}_{\mathrm{RS}}^{(0,s)}, 2, \delta_0)$;
+    \item $\varepsilon_i^{\mathrm{out}} \leq \dfrac{2^{m_i} \cdot \ell_{i,0}^2}{2 \cdot |\mathbb{F}|}$;
+    \item $\varepsilon_i^{\mathrm{shift}} \leq (1 - \delta_{i-1})^{t_i - 1} + \dfrac{\ell_{i,0} \cdot (t_i - 1 + 1)}{|\mathbb{F}|}$;
+    \item $\varepsilon_{i,s}^{\mathrm{fold}} \leq \dfrac{d \cdot \ell_{i,s-1}}{|\mathbb{F}|} + \mathrm{err}^*(\mathcal{C}_{\mathrm{RS}}^{(i,s)}, 2, \delta_i)$;
+    \item $\varepsilon^{\mathrm{fin}} \leq (1 - \delta_{M-1})^{t_M - 1}$.
+\end{itemize}
 \end{theorem}
-
-\begin{definition}[WHIR transcript vector IOP]\label{def:whir_transcript_iop}
-\lean{WhirIOP.Construction.whirPaperTranscriptVectorSpec,whirMakeTranscript,whirVerify,whirVectorIOP,whirVectorIOP_perfectCompleteness,whirVectorIOP_rbrKnowledgeSoundness,whirVectorIOP_isSecureWithGap}
-\uses{def:whir_params}
-    The protocol layer builds the paper transcript shape, prover transcript construction,
-    verifier, and vector IOP wrapper.  The current verifier shell has a pure-true placeholder
-    acceptance predicate, so its unconditional soundness surface is intentionally separated from
-    the intended small-error theorem.
-\end{definition}
-
-\begin{theorem}[WHIR protocol completeness]\label{thm:whir_protocol_completeness}
-\lean{Whir302.whirVectorIOP_perfectCompleteness_holds,Whir302.whirVectorIOP_isSecureWithGap_of_rbr,whirVectorIOP_isSecureWithGap_holds}
-\uses{def:whir_transcript_iop}
-    The assembled WHIR vector IOP is perfectly complete for the current protocol scaffold, and
-    a supplied RBR knowledge-soundness proof instantiates the secure-with-gap front door.
-\end{theorem}
-
-\begin{theorem}[WHIR dummy soundness surface]\label{thm:whir_dummy_soundness}
-\lean{WhirIOP.whirVectorIOP_rbrKnowledgeSoundness_dummy,WhirIOP.whirVectorIOP_isSecureWithGap_dummy_of_rbr}
-\uses{def:whir_transcript_iop}
-    The dummy verifier proves only the trivial $\varepsilon_{\mathrm{rbr}}=1$ soundness
-    surface.  This theorem is useful as plumbing, but it is not the WHIR paper soundness claim.
-\end{theorem}
-
-\begin{definition}[RBR budget accounting]\label{def:whir_rbr_budget}
-\lean{Issue113WHIR.maxFolds,Issue113WHIR.rbrBudgetSet,Issue113WHIR.epsRbr}
-\uses{def:whir_params}
-    The RBR accounting layer takes the per-round fold, out-of-domain, shift, and final errors
-    and packages their least upper bound as the WHIR paper budget.
-\end{definition}
-
-\begin{theorem}[RBR budget keystones]\label{thm:whir_rbr_budget_accounting}
-\lean{Issue113WHIR.rbrBudgetSet_nonempty,Issue113WHIR.epsRbr_le_of_forall_le,Issue113WHIR.epsRbr_isLUB,Issue113WHIR.epsRbr_dominates,Issue113WHIR.soundOk_epsRbr_of_keystone,Issue113WHIR.soundOk_of_keystone_of_forall_le}
-\uses{def:whir_rbr_budget}
-    The named accounting theorems prove nonemptiness of the budget set, least-upper-bound
-    properties for $\epsilon_{\mathrm{rbr}}$, dominance over the component errors, and the
-    monotone transport from the named keystone to any looser per-challenge error budget.
-\end{theorem}
-
-\begin{theorem}[Vector IOP breakthrough front doors]\label{thm:whir_vector_iop_breakthrough}
-\lean{WhirIOP.Construction.whirVectorSpec,WhirIOP.Construction.whirVectorSpec_card_challengeIdx,WhirIOP.Construction.whir_rbr_soundness_of_secure_gap,WhirIOP.Construction.whir_rbr_soundness_of_whirVectorSpec_secure_gap,WhirIOPP.whir_vector_iop_breakthrough}
-\uses{thm:whir_rbr_soundness,def:whir_transcript_iop,thm:whir_rbr_budget_accounting}
-    Given a real secure-with-gap proof for the WHIR vector spec and the paper budget
-    inequalities, the construction layer instantiates the paper RBR theorem and the
-    high-level vector IOP breakthrough statement.
-\end{theorem}
-
-\begin{remark}[Current WHIR status]\label{rem:whir_status}
-\lean{Issue113WHIR.WhirRbrKeystone,Issue113WHIR.whirRbrShape,Issue113WHIR.whirRbrShape_of_secure,WhirIOP.Construction.whir_rbr_soundness_of_secure_gap,WhirIOPP.whir_vector_iop_breakthrough}
-\uses{rem:whir_mca_status,thm:whir_vector_iop_breakthrough}
-    The blueprint is complete as a map of the current formalization.  WHIR has explicit Lean
-    surfaces for proximity/MCA prerequisites, folding/list-decoding preservation,
-    out-of-domain sampling, protocol assembly, completeness, and budget accounting.  The
-    unconditional paper soundness theorem is not closed: it still depends on the real WHIR
-    secure-with-gap proof, which in turn depends on the Johnson MCA capture kernel described
-    above.  The dummy all-one error theorem and the conditional vector-IOP breakthrough theorem
-    are audit scaffolding, not a proof of the intended sub-one RBR bound.
-\end{remark}

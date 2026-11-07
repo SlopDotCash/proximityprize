@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 # pg-iterate.sh — FAST single-file iteration for the Proximity Gap challenge (#334).
 #
-# WHY: `lake build <module>` traces the whole 3000+-job dependency graph (~2-3 min even
+# WHY: `./scripts/lake-locked.sh build <module>` traces the whole 3000+-job dependency graph (~2-3 min even
 # no-op) and takes the .lake build LOCK (serializes concurrent agents). `lake env lean
 # <file>` elaborates ONE file against the already-built oleans — ~30s, NO lock — so many
 # agents iterate in parallel on this 16-core box without clogging.
 #
 # USAGE:
-#   scripts/pg-iterate.sh path/to/Frontier.lean        # type-check + axiom audit
+#   scripts/pg-iterate.sh path/to/Frontier.lean        # type-check + emitted admission checks
 #   scripts/pg-iterate.sh -q path/to/Frontier.lean     # quiet (errors only)
 #
 # REQUIREMENT: the file's imports must already be BUILT (oleans present). Build the
-# substrate once with `lake build <SubstrateModule>` (or `lake exe cache get` for mathlib),
+# substrate once with `./scripts/lake-locked.sh build <SubstrateModule>` (or `./scripts/lake-locked.sh exe cache get` for mathlib),
 # then iterate with this script. Keep frontier imports MINIMAL — import only the specific
 # substrate modules you consume, never the whole ProximityGap cone (cuts olean-load time).
 #
@@ -27,29 +27,23 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 RESIDUAL_ALLOWLIST="$REPO_ROOT/scripts/residual_axioms.txt"
 START=$(date +%s)
-OUT="$(lake env lean "$F" 2>&1)" && RC=0 || RC=$?
+OUT="$(lake env lean -DautoImplicit=false "$F" 2>&1)" && RC=0 || RC=$?
 ELAPSED=$(( $(date +%s) - START ))
 if (( RC != 0 )); then
   printf '%s\n' "$OUT" >&2
   exit "$RC"
 fi
-ERRS="$(echo "$OUT" | grep -E 'error|sorry' | grep -viE 'depends on axioms' || true)"
-if [[ -n "$ERRS" ]]; then
-  echo "❌ FAIL (${ELAPSED}s):"; echo "$ERRS" | head -30; exit 1
+# Compiler status above owns compile errors. Inspect only actual admission warnings
+# and printed axiom reports here; paths and benign output may contain "errors" or
+# "sorry". This does not generate axiom reports for declarations automatically.
+DEBT="$(printf '%s\n' "$OUT" | python3 "$SCRIPT_DIR/check-iteration-output.py")" && DEBT_RC=0 || DEBT_RC=$?
+if (( DEBT_RC != 0 )); then
+  printf '❌ Admission check failed (%ss):\n%s\n' "$ELAPSED" "$DEBT" >&2
+  exit "$DEBT_RC"
 fi
 
-# CI gate 1 parity. `lake env lean` reports nothing for `axiom`, `native_decide`,
-# `bv_decide`, `unsafe`, `@[implemented_by]` or a metaprogram `addDecl`, so the type-check
-# above cannot see them; a green ✅ from this script is the narrow evidence `requiredTests`
-# asks for, so the whole gate runs here on the same file.
-PYTHON_BIN="$(command -v python3 || command -v python || true)"
-if [[ -z "$PYTHON_BIN" ]]; then
-  echo "❌ FAIL: python3 is required to run CI gate 1 (forbidden_tokens.py) on the file;" >&2
-  echo "   without it this narrow check cannot certify axiom cleanliness. Run" >&2
-  echo "   ./scripts/validate.sh, or install Python 3 with a CA trust store." >&2
-  exit 1
-fi
-if ! GATE1="$("$PYTHON_BIN" "$REPO_ROOT/scripts/forbidden_tokens.py" "$F" 2>&1)"; then
+# Run the same source policy as the repository validator.
+if ! GATE1="$(python3 "$REPO_ROOT/scripts/forbidden_tokens.py" "$F" 2>&1)"; then
   echo "❌ FAIL (${ELAPSED}s) — CI gate 1 (forbidden_tokens) rejects $F:"
   printf '%s\n' "$GATE1" | grep -v '^[[:space:]]*$' | head -20
   exit 1

@@ -120,7 +120,7 @@ With `hProj` now a theorem (`SumcheckLensProjComplete_unconditional`, by constru
 corrected claim-true `midRelation`), the embedded sum-check completeness residual needs only the
 inner multi-round oracle sum-check completeness `hInner` — no honest-support hypothesis. -/
 theorem sumcheckCompletenessResidual_of_inner
-    {ι : Type} (oSpec : OracleSpec ι) [oSpec.Fintype]
+    {ι : Type} (oSpec : OracleSpec ι) [∀ q, Fintype (oSpec.Range q)]
     [SampleableType F]
     {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
     (hInner :

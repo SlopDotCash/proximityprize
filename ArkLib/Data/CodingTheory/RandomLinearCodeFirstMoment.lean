@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ArkLib.Data.Probability.Notation
 import ArkLib.Data.CodingTheory.RandomLinearCodeEquidistribution
 
 /-!
@@ -40,11 +41,11 @@ variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 `|S| / qⁿ` from `vecMul_uniform_mem_prob`. -/
 theorem sum_vecMul_mem_prob_nonzero (S : Set (ι → F)) [Fintype S] :
     (∑ m ∈ Finset.univ.filter (fun m : Fin k → F => m ≠ 0),
-        ((PMF.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => m ᵥ* G)).toOuterMeasure S)
+        ((ProximityPrize.Compatibility.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => m ᵥ* G)).toOuterMeasure S)
       = (Finset.univ.filter (fun m : Fin k → F => m ≠ 0)).card
           • (Fintype.card S / Fintype.card (ι → F) : ℝ≥0∞) := by
   have hconst : ∀ m ∈ Finset.univ.filter (fun m : Fin k → F => m ≠ 0),
-      ((PMF.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => m ᵥ* G)).toOuterMeasure S
+      ((ProximityPrize.Compatibility.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => m ᵥ* G)).toOuterMeasure S
         = (Fintype.card S / Fintype.card (ι → F) : ℝ≥0∞) :=
     fun m hm => vecMul_uniform_mem_prob (Finset.mem_filter.1 hm).2 S
   rw [Finset.sum_congr rfl hconst, Finset.sum_const]
@@ -59,7 +60,7 @@ theorem card_filter_ne_zero :
 codeword lands in `S` is `(qᵏ − 1) · |S| / qⁿ`. -/
 theorem firstMoment_expected_count (S : Set (ι → F)) [Fintype S] :
     (∑ m ∈ Finset.univ.filter (fun m : Fin k → F => m ≠ 0),
-        ((PMF.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => m ᵥ* G)).toOuterMeasure S)
+        ((ProximityPrize.Compatibility.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => m ᵥ* G)).toOuterMeasure S)
       = (Fintype.card (Fin k → F) - 1)
           • (Fintype.card S / Fintype.card (ι → F) : ℝ≥0∞) := by
   rw [sum_vecMul_mem_prob_nonzero, card_filter_ne_zero]

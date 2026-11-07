@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.Basic.RelativeDistance
+import ProximityPrize.Extensions.Data.CodingTheory.Basic.RelativeDistance
 import ArkLib.Data.CodingTheory.ProximityGap.MCACurveEvent
 
 /-!
@@ -99,7 +99,8 @@ theorem curveDecodable_of_card_lt (C : Set (ι → A)) (ℓ : ℕ) (δ : ℝ≥0
   intro u f _hf hclose
   exfalso
   have hle : (curveCloseSet δ u f).card ≤ Fintype.card F := by
-    simpa using Finset.card_filter_le (univ : Finset F) _
+    simpa only [curveCloseSet, Finset.card_univ] using
+      Finset.card_filter_le (univ : Finset F) _
   omega
 
 /-- **The decodable-explains-the-close-set corollary at full strength** (`b = a`-shape

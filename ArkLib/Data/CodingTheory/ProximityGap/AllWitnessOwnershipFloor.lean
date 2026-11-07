@@ -220,7 +220,7 @@ private theorem fit_subsets_card_le_aux {p : ℕ} [Fact p.Prime] {g : ZMod p} {n
       -- split on membership of x₀
       have hsplit : (F.filter (fun T => x₀ ∈ T)).card
           + (F.filter (fun T => ¬ x₀ ∈ T)).card = F.card :=
-        Finset.filter_card_add_filter_neg_card_eq_card (s := F) (p := fun T => x₀ ∈ T)
+        Finset.card_filter_add_card_filter_not (s := F) (p := fun T => x₀ ∈ T)
       -- the avoiding side IS the fit family of the erasure
       have havoid : F.filter (fun T => ¬ x₀ ∈ T)
           = ((S.erase x₀).powersetCard (d + 2)).filter (fun T => polyFitOn g d T u) := by
@@ -380,7 +380,7 @@ theorem unfit_subsets_card_ge {p : ℕ} [Fact p.Prime] {g : ZMod p} {n : ℕ}
   have hsplit : ((S.powersetCard (d + 2)).filter (fun T => polyFitOn g d T u)).card
       + ((S.powersetCard (d + 2)).filter (fun T => ¬ polyFitOn g d T u)).card
       = (S.powersetCard (d + 2)).card :=
-    Finset.filter_card_add_filter_neg_card_eq_card
+    Finset.card_filter_add_card_filter_not
       (s := S.powersetCard (d + 2)) (p := fun T => polyFitOn g d T u)
   have htotal : (S.powersetCard (d + 2)).card = S.card.choose (d + 2) :=
     Finset.card_powersetCard _ _

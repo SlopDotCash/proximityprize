@@ -110,7 +110,7 @@ theorem boundaryCellRadius_le {n : ℕ} (hn : 0 < n) (δ : ℝ≥0) :
     boundaryCellRadius n δ ≤ δ := by
   have hnpos : (0 : ℝ≥0) < n := by exact_mod_cast hn
   rw [boundaryCellRadius, div_le_iff₀ hnpos]
-  exact Nat.floor_le (zero_le _)
+  exact Nat.floor_le (by positivity)
 
 /-- Off the `1/n` lattice (`⌊δ·n⌋ < δ·n`), the cell radius is *strictly* below `δ`: the
 canonical strict floor-matched sub-radius of the quantization split. -/
@@ -136,7 +136,7 @@ theorem boundaryCellRadius_le_of_floor_eq {n : ℕ} {δ δ' : ℝ≥0} (hn : 0 <
     boundaryCellRadius n δ ≤ δ' := by
   have hnpos : (0 : ℝ≥0) < n := by exact_mod_cast hn
   rw [boundaryCellRadius, div_le_iff₀ hnpos, ← hfloor]
-  exact Nat.floor_le (zero_le _)
+  exact Nat.floor_le (by positivity)
 
 /-! ## The strict-radius reduction: the boundary half lives only at lattice points `j/n` -/
 
@@ -149,7 +149,7 @@ lattice points** `δ = j/n` — all other radii, including every non-lattice Joh
 `1 − √ρ` with `deg·n` non-square, transport there and back. -/
 theorem correlatedAgreementCurves_iff_boundaryCellRadius
     {ι : Type} [Fintype ι] [Nonempty ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
     {k deg : ℕ} {domain : ι ↪ F} {δ ε : ℝ≥0} :
     δ_ε_correlatedAgreementCurves (k := k) (A := F) (F := F) (ι := ι)
       (C := (ReedSolomon.code domain deg : Set (ι → F)))
@@ -182,7 +182,7 @@ working radius is *proved* here (`boundaryCellRadius_le_of_floor_eq`,
 `floor_boundaryCellRadius_mul`) rather than left as caller-supplied side conditions. -/
 theorem correlatedAgreementCurves_boundary_of_largeResidual_cellMin
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
     {k deg : ℕ} [NeZero deg] {domain : ι ↪ F} {δ δ' : ℝ≥0}
     (hdeg : 0 < deg)
     (hδ' : δ' < 1 - ReedSolomon.sqrtRate deg domain)
@@ -231,7 +231,7 @@ nonemptiness surfaces (`BoundaryCardResidual`, `BoundaryCardLatticeResidual`,
 positive (`johnsonClosed_eps_pos`) — never the vacuous `errorBound (1 − √ρ) = 0`. -/
 theorem correlatedAgreementCurves_johnsonClosed_of_leaves
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
     {k deg : ℕ} [NeZero deg] {domain : ι ↪ F} {δ : ℝ≥0}
     (hk : 0 < k)
     (hδeq : δ = 1 - ReedSolomon.sqrtRate deg domain)
@@ -281,7 +281,7 @@ theorem johnsonClosed_eps_pos {ι : Type} [Fintype ι] {F : Type} [Field F] [Fin
 two genuine leaves produce the keystone statement at *some* strictly positive error. -/
 theorem exists_pos_eps_correlatedAgreementCurves_johnsonClosed
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
     {k deg : ℕ} [NeZero deg] {domain : ι ↪ F} {δ : ℝ≥0}
     (hk : 0 < k)
     (hδeq : δ = 1 - ReedSolomon.sqrtRate deg domain)
@@ -305,7 +305,7 @@ conjunct is used — the first conjunct (the large residual at the boundary radi
 not needed for the closed-boundary export. -/
 theorem correlatedAgreementCurves_johnsonClosed_of_remainingCore
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
     {k deg : ℕ} [NeZero deg] {domain : ι ↪ F} {δ : ℝ≥0}
     (hk : 0 < k)
     (hδeq : δ = 1 - ReedSolomon.sqrtRate deg domain)

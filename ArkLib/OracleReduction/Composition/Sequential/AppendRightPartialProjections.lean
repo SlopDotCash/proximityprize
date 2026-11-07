@@ -94,10 +94,6 @@ theorem appendRight_snd (T₁ : FullTranscript pSpec₁) {k : Fin (n + 1)}
     have hv : (i : ℕ) = (j : ℕ) := (Fin.heq_ext_iff (by dsimp only [Fin.val_mk]; omega)).mp hij
     have hjlt : (j : ℕ) < k.val := j.isLt
     simp only [Transcript.snd]
-    -- `.snd` lands in the `else` branch since the appended index `m + k.val > m` (as `k.val ≥ 1`
-    -- whenever there is any tail position `j`).
-    rw [dif_neg (show ¬ (⟨m + k.val, by omega⟩ : Fin (m + n + 1)) ≤ m from by
-      dsimp only []; omega)]
     simp only [appendRight]
     rw [dif_neg (show ¬ (⟨m + i.val, by omega⟩ : Fin (m + k.val)).val < m from by
       dsimp only [Fin.val_mk]; omega)]

@@ -1,11 +1,12 @@
 /-
-Copyright (c) 2024 ArkLib Contributors. All rights reserved.
+Copyright (c) 2024-2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ArkLib Contributors
+Authors: Quang Dao
 -/
+module
 
-import ArkLib.OracleReduction.Security.Basic
-import ArkLib.OracleReduction.LiftContext.OracleReduction
+public import ArkLib.OracleReduction.Security.Basic
+public import ArkLib.OracleReduction.LiftContext.OracleReduction
 
 /-!
   # Equivalence / Isomorphism of Oracle Reductions
@@ -49,6 +50,8 @@ import ArkLib.OracleReduction.LiftContext.OracleReduction
     highest coefficients).
 
 -/
+
+@[expose] public section
 
 -- section Relation
 
@@ -101,8 +104,8 @@ def symm (eqv : Equiv pSpec pSpec') : Equiv pSpec' pSpec where
   dir_eq := fun i => by simp [eqv.dir_eq]
   typeEquiv := fun i => (eqv.typeEquiv (Fin.cast (eqv.round_eq.symm) i)).symm
 
-/-- Compose protocol specification equivalences
-    (spelled `equivTrans` because `trans` is reserved). -/
+/-- Compose protocol specification equivalences (spelled `equivTrans` because `trans` is
+reserved). -/
 def equivTrans (eqv : Equiv pSpec pSpec') (eqv' : Equiv pSpec' pSpec'') : Equiv pSpec pSpec'' where
   round_eq := eqv.round_eq.trans eqv'.round_eq
   dir_eq := fun i => by simp [eqv.dir_eq, eqv'.dir_eq]
@@ -114,7 +117,7 @@ end Equiv
 
 end ProtocolSpec
 
-/- Note:
+/- Lots of TODOs here:
 
 1. Specify equivalence of transcripts, provers, verifiers, reductions
 2. Prove distributional equivalence of execution semantics

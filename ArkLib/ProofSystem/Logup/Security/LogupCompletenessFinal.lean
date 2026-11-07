@@ -7,6 +7,7 @@ import ArkLib.ProofSystem.Logup.Security.LogupCompletenessWired
 import ArkLib.ProofSystem.Logup.Security.SumcheckCompletenessUncond
 import ArkLib.ProofSystem.Logup.Security.LogupSoundnessMsgSeam
 import ArkLib.ProofSystem.Logup.Security.LogupInitImplFacts
+import Mathlib.Algebra.Field.ZMod
 
 /-!
 # LogUp Protocol 2 completeness — final end-to-end assembly (issue #13)
@@ -54,11 +55,16 @@ No `sorry`, no new axioms; the axiom audit at the bottom must print
 
 open OracleComp OracleSpec ProtocolSpec
 
+-- Preserve the original whole-value equality observation in its discrete measurable space.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ :=
+  ⟨fun _ => True.intro⟩
+
 namespace Logup
 
 noncomputable section
 
-variable {ι : Type} (oSpec : OracleSpec ι) [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} (oSpec : OracleSpec ι) [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
 variable (F : Type) [Field F] [Fintype F] [DecidableEq F] [Inhabited F] [SampleableType F]
   [Fact ((-1 : F) ≠ 1)]
 variable (n M : ℕ) (params : ProtocolParams M)
@@ -76,7 +82,7 @@ theorem logup_completeness_final
         = support (liftM q : OracleComp oSpec β))
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     (logupOracleReduction oSpec F n M params).completeness init impl
@@ -98,18 +104,14 @@ the deleted `hHonest`-based headline could never do. -/
 
 section Witness
 
-local instance : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+local instance : Fact (Nat.Prime 5) := ⟨by decide⟩
 
 /-- `-1 ≠ 1` in `ZMod 5` (characteristic `5 ≠ 2`). -/
 local instance : Fact ((-1 : ZMod 5) ≠ 1) := ⟨by decide⟩
 
-/-- The empty ambient oracle spec is (vacuously) finite. -/
-local instance instEmptySpecFintypeFinal : ([]ₒ : OracleSpec PEmpty).Fintype where
-  fintype_B := fun q => q.elim
-
-/-- The empty ambient oracle spec is (vacuously) inhabited. -/
-local instance instEmptySpecInhabitedFinal : ([]ₒ : OracleSpec PEmpty).Inhabited where
-  inhabited_B := fun q => q.elim
+/-- The empty ambient oracle has finite and inhabited answer families vacuously. -/
+local instance : ∀ q, Fintype (([]ₒ : OracleSpec PEmpty).Range q) := fun q => q.elim
+local instance : ∀ q, Inhabited (([]ₒ : OracleSpec PEmpty).Range q) := fun q => q.elim
 
 /-- Concrete protocol parameters for the witness: partial-sum size `ℓ = 1` at `M = 1`. -/
 noncomputable def witnessParams : ProtocolParams 1 := ⟨1, Nat.one_pos, by omega⟩

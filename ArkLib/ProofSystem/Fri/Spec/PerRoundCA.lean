@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.ProofSystem.Fri.Spec.Soundness
+import ProximityPrize.Extensions.ProofSystem.Fri.Spec.Soundness
 import ArkLib.ProofSystem.Whir.KeystoneSmallField
 
 namespace Fri.Spec

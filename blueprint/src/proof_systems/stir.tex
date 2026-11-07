@@ -2,304 +2,312 @@
 % Released under Apache 2.0 license as described in the file LICENSE.
 % Authors: Poulami Das (Least Authority)
 
-\section{STIR}\label{sec:stir}
+\section{Stir}
 
-STIR is a Reed--Solomon IOPP whose soundness combines quotienting, out-of-domain
-sampling, folding, and a random linear combination proximity generator.  The current ArkLib
-formalization has two layers.  The paper-level theorem statements
-\texttt{StirIOP.stir\_main} and \texttt{StirIOP.stir\_rbr\_soundness} are front doors.  The
-protocol layer builds single-round, multi-round, and checking-verifier objects and proves their
-completeness.  The remaining soundness work is isolated as named correlated-agreement and
-round-by-round bridge residuals.  The live implementation tracker is
-\href{https://github.com/lalalune/ArkLib/issues/301}{STIR issue \#301}; this blueprint records
-that tracker's current Lean state and should not be read as unconditional closure of the paper
-soundness theorem.
-
-\subsection{Tools for Reed--Solomon codes}\label{sec:stir_tools}
-
+\subsection{Tools for Reed Solomon codes}
 \subsubsection{Random linear combination as a proximity generator}\label{sec:proximity_gap}
 
-\begin{theorem}[STIR proximity gap front door]\label{thm:proximity_gap}
-\lean{STIR.proximity_gap,STIR.proximity_gap_iff_jointAgreement}
-\uses{def:distance_from_code,def:reed_solomon_code,def:list_close_codewords,def:correlated_agreement}
-    Let $\code := \rscode[\field,\evaldomain,\degree]$ and let
-    $B^*(\rate)=\sqrt{\rate}$.  For $\distance < 1-B^*(\rate)$, if the random
-    power-combination $\sum_j r^j f_j$ is close to $\code$ with probability above the
-    BCIKS/STIR error threshold, then the words $f_j$ have a common large agreement set with
-    Reed--Solomon codewords.  The Lean statement explicitly constrains the generator by
-    \texttt{hGen : GenFun r j = r \^{} j}; without this power-generator condition the older
-    arbitrary-generator statement is false.  The theorem is also bridged to the shared
-    \texttt{Code.jointAgreement} API.
+\begin{theorem}\label{thm:proximity_gap}
+\lean{STIR.proximity_gap}
+\leanok
+\uses{def:distance_from_code,def:reed_solomon_code,def:list_close_codewords}
+    Let $\code := \rscode[\field,\evaldomain,\degree]$ be a Reed Solomon code with $\degree\ge1$ and rate $\rate:=\frac{\degree}{|\evaldomain|}$ and let $B^*(\rate):=\sqrt{\rate}$. For every $\distance \in (0,1 - B^*(\rate))$ and functions $f_0,\ldots,f_{m-1} : \evaldomain \to \field$, if
+    \[
+    \Pr_{r\leftarrow\field}\!\Bigl[
+      \Delta\Bigl(\sum_{j=0}^{m-1} r^j\cdot {f_j},\rscode[\field,\evaldomain,\degree]\Bigr)
+      \le \delta
+    \Bigr]>\err^*(\degree,\rate,\distance,m),
+    \]
+    then there exists a subset $S \subseteq \evaldomain$ with $|S| \ge (1 - \delta)\cdot|\evaldomain|$,
+    and for every $i \in \{0,\ldots,m-1\}$, there exists $u \in \rscode[\field,\evaldomain,\degree]$ such that $f_i(S) = u(S)$.
+
+    \medskip
+
+    \noindent
+    Above, $\err^*(\degree,\rate,\distance,m)$ is defined as follows:
+    \begin{itemize}
+        \item if $\distance \in \left(0,\frac{1-\rate}{2}\right]$ then
+            \[
+                \err^*(\degree,\rate,\distance,m)=\frac{(m-1)\cdot \degree}{\rate\cdot|\field|}
+            \]
+        \item if $\distance \in \Bigl(\frac{1-\rate}{2}, 1-\sqrt{\rate}\Bigr)$ then
+        \[
+            \err^*(\degree,\rate,\distance,m)=\frac{(m-1)\cdot {\degree}^2}{|\field|\cdot{\Bigl(2\cdot\min\{1-\sqrt{\rate}-\distance,\frac{\sqrt{\rate}}{20}\}\Bigr)}^7}
+        \]
+    \end{itemize}
 \end{theorem}
 
-\begin{remark}[Proximity-gap status]\label{rem:stir_proximity_gap_status}
-    The STIR proximity-gap theorem is a front-door predicate.  The active proof route goes
-    through the BCIKS20 polynomial-curve correlated-agreement machinery, whose Johnson-regime
-    extraction is exposed through named residuals such as
-    \texttt{ProximityGap.StrictCoeffPolysResidual}.  Small-field and vacuous routes discharge
-    parts of this family in dedicated modules.
-\end{remark}
+\begin{proof}
+\leanok
+For an empty family, take the whole evaluation domain. Otherwise write $m=k+1$ and apply
+correlated agreement for affine curves from \cite{BCIKS20}. In the admissible distance range,
+the error above equals $k$ times the correlated-agreement error bound, in both the unique-decoding
+and Johnson regimes. The resulting joint agreement gives the common set $S$.
+\end{proof}
 
-\subsubsection{Univariate function quotienting}\label{sec:quotienting}
+\subsubsection{Univariate Function Quotienting}\label{sec:quotienting}
 
-\begin{definition}[Function quotient]\label{def:quotient}
+In the following, we start by defining the \emph{quotient} of a univariate function.
+\begin{definition}\label{def:quotient}
 \lean{Quotienting.funcQuotient}
-    For a word $f$, a finite answer set $S$, answer values $\mathsf{Ans}$, and fill values
-    $\mathsf{Fill}$, \texttt{funcQuotient} returns $\mathsf{Fill}(x)$ on $S$ and
-    $(f(x)-\widehat{\mathsf{Ans}}(x))/V_S(x)$ away from $S$, where $V_S$ is the vanishing
-    polynomial of $S$.
+    Let $f:\evaldomain\to\field$ be a function, $S\subseteq\field$ be a set, and $\mathsf{Ans},\mathsf{Fill}: S\rightarrow\field$ be functions. Let $\hat{\mathsf{Ans}}\in\field^{<|S|}[X]$ be the (unique) polynomial with $\hat{\mathsf{Ans}}(x)=\mathsf{Ans}(x)$ for every $x\in S$, and let $\hat{V}_S\in\field^{<|S|+1}[X]$ be the unique non-zero polynomial with $\hat{V}_S(x)=0$ for every $x\in S$.
+    The \emph{quotient function} $\mathsf{Quotient}\bigl(f,S,\mathsf{Ans},\mathsf{Fill}\bigr): \evaldomain\to\field$
+    is defined as follows:
+
+    \[
+    \forall x \in \evaldomain, \quad
+    \mathsf{Quotient}\bigl(f, S, \mathsf{Ans}, \mathsf{Fill} \bigr)(x)
+    :=
+    \left\{
+    \begin{array}{ll}
+        \mathsf{Fill}(x)
+        & \text{if } x \in S \\[6pt]
+        \dfrac{f(x) - \hat{\mathsf{Ans}}(x)}{\hat{V}_S(x)}
+        & \text{otherwise}
+    \end{array}
+    \right.
+    \]
+
 \end{definition}
 
-\begin{definition}[Polynomial quotient]\label{def:poly_quotient}
+Next we define the polynomial quotient operator, which quotients a polynomial relative to its output on evaluation points. The polynomial quotient is a polynomial of lower degree.
+
+\begin{definition}\label{def:poly_quotient}
 \lean{Quotienting.polyQuotient}
-\uses{def:quotient}
-    The polynomial quotient is $(\hat f-\widehat{\mathsf{Ans}})/V_S$, with
-    $\widehat{\mathsf{Ans}}$ interpolating $\hat f$ on $S$.
+    Let $\hat{f}\in\field^{<\degree}[X]$ be a polynomial and $S\subseteq\field$ be a set, let $\hat{V}_S\in\field^{<|S|+1}[X]$ be the unique non-zero polynomial with $\hat{V}_S(x)=0$ for every $x\in S$. The \emph{polynomial quotient} $\mathsf{PolyQuotient}(\hat{f},S)\in\field^{<d-|S|}[X]$ is defined as follows:
+    \[
+            \mathsf{PolyQuotient}(\hat{f},S)(X):=\frac{\hat{f}(X)-\hat{\mathsf{Ans}}(X)}{\hat{V}_S(X)}
+    \]
+where $\hat{Ans}\in\field^{<|S|}[X]$ is the unique non-zero polynomial with $\hat{Ans}(x)=\hat{f}(x)$ for every $x \in S$.
 \end{definition}
 
-\begin{lemma}[Quotienting lemma]\label{lemma:quotienting}
+The following lemma, implicit in prior works, shows that if the function is ``quotiented by the wrong value'', then its quotient is far from low-degree.
+
+\begin{lemma}\label{lemma:quotienting}
 \lean{Quotienting.quotienting}
-\uses{def:quotient,def:poly_quotient,def:reed_solomon_code,def:distance_from_code,def:list_close_codewords}
-    If every $\distance$-close Reed--Solomon codeword disagrees with the supplied answer on
-    some point of $S$, then the quotient function is far from the smaller-degree
-    Reed--Solomon code, up to the explicit disagreement-set correction.  The Lean theorem
-    includes the domain-identity and degree-fit hypotheses needed for interpolation
-    uniqueness.
+\uses{def:quotient,def:reed_solomon_code,def:distance_from_code,def:list_close_codewords}
+    Let $f:\evaldomain\rightarrow\field$ be a function, $\degree\in\N$ be the degree parameter, $\distance\in(0,1)$
+    be a distance parameter, $S\subseteq\field$ be a set with $|S|<\degree$, and $\mathsf{Ans},\mathsf{Fill}:S\rightarrow\field$ are functions. Suppose that for every $u\in\listcode(f,\degree,\distance)$ there exists $x\in S$ with $\hat{u}(x)\neq\mathsf{Ans}(x)$. Then
+
+    \[
+            \Delta(\mathsf{Quotient}(f,S,\mathsf{Ans},\mathsf{Fill}),\rscode[\field,\evaldomain,\degree-|S|])+\frac{|T|}{|\evaldomain|}>\distance,
+    \]
+    where $T:=\{x\in\evaldomain\cap S: \hat{\mathsf{Ans}}(x)\neq f(x)\}$.
 \end{lemma}
 
-\subsubsection{Out-of-domain sampling}\label{sec:out_of_domain_smpl}
-
-\begin{lemma}[Out-of-domain collision bound]\label{lemma:out_of_domain_smpl}
-\lean{OutOfDomSmpl.out_of_dom_smpl_1,OutOfDomSmpl.out_of_dom_smpl_2}
+\subsubsection{Out of domain sampling}\label{sec:out_of_domain_smpl}
+\begin{lemma}\label{lemma:out_of_domain_smpl}
+\lean{OutOfDomSmpl.out_of_dom_smpl_1, OutOfDomSmpl.out_of_dom_smpl_2}
 \uses{def:reed_solomon_code,def:list_decodable,def:list_close_codewords}
-    If a Reed--Solomon code is list decodable, then repeatedly sampling points outside the
-    evaluation domain bounds the probability that two distinct nearby codewords agree on all
-    sampled points.  The formal proof reduces the probability bound to finite counting over the
-    domain complement.
+    Let $f:\evaldomain\rightarrow\field$ be a function, $\degree\in\N$ be a degree parameter, $s\in\N$ be a repetition parameter, and $\distance\in[0,1]$ be a distance parameter. If $\rscode[\field,\evaldomain,\degree]$ be $(\degree,l)$-list decodable then
+        \[
+        \begin{array}{rcl}
+        \Pr_{\substack{r_0, \ldots, r_{s-1} \gets \field \setminus \evaldomain}}
+        \left[
+        \begin{array}{c}
+            \exists \text{ distinct } u, u' \in \listcode(f, \degree, \distance): \\
+            \forall i \in [s],\ \hat{u}(r_i) = \hat{u}'(r_i)
+        \end{array}
+        \right]
+        & \leq & \binom{l}{2} \cdot \left( \frac{\degree - 1}{|\field| - |\evaldomain|} \right)^s \\
+        & \leq & \left( \frac{l^2}{2} \right) \cdot \left( \frac{\degree}{|\field| - |\evaldomain|} \right)^s
+        \end{array}
+        \]
+
+
+
 \end{lemma}
 
 \subsubsection{Folding univariate functions}\label{sec:folding_uf}
+STIR relies on $k$-wise folding of functions and polynomials - this is similar to prior works, although presented in a slightly different form. As shown below, folding a function preserves proximity from the Reed-Solomon code with high probability. The folding operator is based on the following fact, decomposing univariate polynomials into bivariate ones.
 
-\begin{lemma}[Polynomial folding decomposition]\label{fact:poly_folding}
-\lean{Polynomial.FoldingPolynomial.folding_polynomial_is_unique,Polynomial.FoldingPolynomial.substitution_property_of_folding_polynomial,Polynomial.FoldingPolynomial.folding_polynomial_deg_y_bound,Polynomial.FoldingPolynomial.folding_polynomial_deg_x_bound}
-    A univariate polynomial can be uniquely represented as a bivariate polynomial in
-    $(q(Z),Z)$ with the expected degree bounds.  This is the algebraic basis for STIR folding.
+\begin{lemma}\label{fact:poly_folding}
+% \lean{Folding.exists_unique_bivariate,Folding.degree_bound_bivariate}  % TODO: not yet formalized in ArkLib; relink when the bivariate-decomposition facts land
+Given a polynomial $\hat{q}\in\field[X]$:
+\begin{itemize}
+        \item For every univariate polynomial $\hat{f}\in\field[X]$, there exists a unique bivariate polynomial $\hat{Q}\in\field[X,Y]$ with:
+        \[
+          \polydeg_X(\hat{Q}) := \left\lfloor \frac{\polydeg(\hat{f})}{\polydeg(\hat{q})} \right\rfloor,\quad \polydeg_Y(\hat{Q}) < \polydeg(\hat{q})
+        \]
+        such that $\hat{f}(Z)=\hat{Q}(\hat{q}(Z),Z)$. Moreover, $\hat{Q}$ can be computed efficiently given $\hat{f}$ and $\hat{q}$. Observe that if $\polydeg(\hat{f})<t\cdot\polydeg(\hat{q})$ then
+        $\polydeg(\hat{Q})<t$.
+
+        \item For every $\hat{Q}[X,Y]$ with $\polydeg_X(\hat{Q})<t$ and $\polydeg_Y(\hat{Q})<\polydeg(\hat{q})$, the polynomial $\hat{f}(Z)=\hat{Q}(\hat{q}(Z),Z)$ has degree $\polydeg(\hat{f})<t\cdot\polydeg(\hat{q})$.
+\end{itemize}
 \end{lemma}
 
-\begin{definition}[Polynomial folding]\label{def:poly_folding}
+Below, we define folding of a polynomial followed by folding of a function.
+\begin{definition}\label{def:poly_folding}
 \lean{Polynomial.FoldingPolynomial.polyFold}
 \uses{fact:poly_folding}
-    Given $\hat f$, a folding parameter $k$, and a challenge $r$, \texttt{polyFold} evaluates the
-    bivariate decomposition of $\hat f$ at $Y=r$.
+    Given a polynomial $\hat{f}\in\field^{<\degree}[X]$, a folding parameter $k\in\N$ and $r\in\field$, we define a polynomial $\mathsf{PolyFold}(\hat{f},k,r)\in\field^{\degree/k}[X]$ as follows. Let $\hat{Q}[X,Y]$ be the bivariate polynomial derived from $\hat{f}$ using Fact~\ref{fact:poly_folding} with $\hat{q}(X):=X^k$. Then $\mathsf{PolyFold}(\hat{f},k,r)(X):=\hat{Q}(X,r)$.
 \end{definition}
 
-\begin{definition}[Function folding]\label{def:fn_folding}
-\lean{ProximityGap.foldWord,ProximityGap.foldValue}
-\uses{def:poly_folding}
-    The function fold interpolates the values on a $k$-fiber and evaluates the resulting
-    degree-$<k$ polynomial at the verifier challenge.
+\begin{definition}\label{def:fn_folding}
+% \lean{Folding.fold}  % TODO: function-folding operator not yet formalized in ArkLib; relink when it lands
+Let $f:\evaldomain\rightarrow\field$ be a function, $k\in\N$ a folding parameter and $\alpha\in\field$. For every $x\in{\evaldomain}^k$, let $\hat{p}_x\in\field^{<k}[X]$ be the polynomial where $\hat{p}_x(y)=f(y)$ for every $y\in{\evaldomain}$ such that $y^k=x$. We define $\mathsf{Fold}(f,k,\alpha):\evaldomain\rightarrow\field$ as follows.
+\[
+    \mathsf{Fold}(f,k,\alpha):=\hat{p}_x(\alpha).
+\]
+In order to compute $\mathsf{Fold}(f,k,\alpha)(x)$ it suffices to interpolate the $k$ values $\{f(y):y\in\evaldomain\text{ s.t. }y^k=x\}$ into the polynomial $\hat{p}_x$ and evaluate this polynomial at $\alpha$.
 \end{definition}
 
-\begin{lemma}[Folding preserves distance]\label{lemma:folding}
-\lean{ProximityGap.folding_preserves_distance}
-\uses{def:reed_solomon_code,def:fn_folding,def:distance_from_code,thm:proximity_gap}
-    If a word is far from the Reed--Solomon code, then with probability controlled by the
-    STIR proximity-gap error its fold remains far from the folded Reed--Solomon code.
+The following lemma shows that the distance of a function is preserved under folding. If a functions $f$ has distance $\distance$ to a Reed-Solomon code then, with high probability over the choice of folding randomness, its folding also has a distance of $\distance$ to the ``$k$-wise folded'' Reed-Solomon code.
+
+\begin{lemma}\label{lemma:folding}
+% \lean{Folding.folding}  % TODO: folding distance-preservation lemma not yet formalized in ArkLib; relink when it lands
+\uses{def:reed_solomon_code,def:fn_folding,def:distance_from_code}
+    For every function $f:\evaldomain\rightarrow\field$, degree parameter $\degree\in\N$, folding parameter $k\in\N$, distance parameter $\distance\in(0,\min\{{\Delta(\mathsf{Fold}[f,k,r^{\mathsf{fold}}],\rscode[\field,{\evaldomain}^k, \degree/k]),1-{\mathsf{B}}^*(\rate)}\})$, letting $\rate:=\frac{\degree}{|\evaldomain|}$,
+    \[
+        \Pr_{r^{\mathsf{fold}}\gets\field}[\Delta(\mathsf{Fold}[f,k,r^{\mathsf{fold}}],\rscode[\field,{\evaldomain}^k, \degree/k])<\distance]>\err^*(\degree/k,\rate,\distance,k).
+    \]
+    Above, ${\mathsf{B}}^*$ and ${\err}^*$ are the proximity bound and error (respectively) described in Section~\ref{sec:proximity_gap}.
 \end{lemma}
 
-\subsubsection{Combining functions of varying degrees}\label{sec:combine}
+\subsubsection{Combine functions of varying degrees}\label{sec:combine}
+We show a new method for combining functions of varying degrees with minimal proximity require- ments using geometric sums. We begin by recalling a fact about geometric sums.
 
-\begin{lemma}[Geometric sum]\label{fact:geometric_sum}
+\begin{lemma}\label{fact:geometric_sum}
 \lean{Combine.geometric_sum_units}
-    The finite geometric sum is expressed in closed form when the ratio is not $1$, and as
-    $a+1$ when the ratio is $1$.
+    Let $\field$ be a field, $r\in\field$ be a field element, $a\in\N$ be a natural number. Then
+    \[
+    \sum_{i=0}^{a} r^i :=
+    \left\{
+    \begin{array}{ll}
+        \displaystyle\left(\frac{1 - r^{a+1}}{1 - r}\right)
+        & \text{if } r \neq 1 \\[6pt]
+        a + 1
+        & \text{if } r = 1
+    \end{array}
+    \right.
+    \]
+
 \end{lemma}
 
-\begin{definition}[Degree-correcting combination]\label{def:combine}
-\lean{Combine.combine,Combine.degCor}
-\uses{fact:geometric_sum}
-    \texttt{Combine.combine} forms the STIR random combination of functions with different
-    target degrees by multiplying each function by the appropriate geometric degree-correction
-    factor.  \texttt{degCor} is the one-function specialization.
+\begin{definition}\label{def:combine}
+\lean{Combine.combine}
+    Given target degree $\degree^*\in\N$, shifting parameter $r\in\field$, functions $f_0,\ldots,f_{m-1}:\evaldomain\rightarrow\field$, and degrees $0\leq \degree_0,\ldots,\degree_{m-1}\leq {\degree}^*$, we define $\combine(\degree^*,r,(f_0,\degree_0),\ldots,(f_{m-1},\degree_{m-1})):\evaldomain\rightarrow\field$ as follows:
+        \[
+        \begin{array}{rcl}
+        \combine(\degree^*, r, (f_0, \degree_0), \ldots, (f_{m-1}, \degree_{m-1}))(x)
+        & := & \displaystyle\sum_{i=0}^{m-1} r_i \cdot f_i(x) \cdot \left( \sum_{l=0}^{\degree^* - \degree_i} (r \cdot x)^l \right) \\[10pt]
+        & = & \left\{
+        \begin{array}{ll}
+            \displaystyle\sum_{i=0}^{m-1} r_i \cdot f_i(x) \cdot \left( \dfrac{1 - (x r)^{\degree^* - \degree_i + 1}}{1 - x r} \right)
+            & \text{if } x \cdot r \neq 1 \\[8pt]
+            \displaystyle\sum_{i=0}^{m-1} r_i \cdot f_i(x) \cdot (\degree^* - \degree_i + 1)
+            & \text{if } x \cdot r = 1
+        \end{array}
+        \right.
+        \end{array}
+        \]
+
+Above, $r_i:=r^{i-1+\sum_{j<i}(\degree^*-\degree_j)}$.
 \end{definition}
 
-\begin{lemma}[Combination proximity theorem]\label{lemma:combine}
-\lean{Combine.combine_theorem,Combine.combine_theorem_proximityError,Combine.combine_theorem_of_card_le,Combine.combine_theorem_of_card_le_e7,Combine.combine_theorem_proximityError_of_card_le}
-\uses{def:reed_solomon_code,def:combine,thm:proximity_gap}
-    If the degree-corrected random combination is close to the target Reed--Solomon code with
-    probability above the proximity-gap threshold, then all input functions agree with
-    codewords on a common large set.  The main theorem consumes the BCIKS strict-coefficient
-    residual explicitly; the \texttt{card\_le} and \texttt{card\_le\_e7} variants discharge it
-    in vacuous/small-field regimes.
+\begin{definition}\label{def:deg_corr}
+\lean{Combine.degCor}
+\uses{def:combine,def:reed_solomon_code,def:distance_from_code}
+    Given target degree $\degree^*\in\N$, shifting parameter $r\in\field$, function $f:\evaldomain\rightarrow\field$, and degree $0\leq\degree\leq\degree^*$, we define $\degcorr(\degree^*,r,f,\degree)$ as follows.
+    \[
+    \begin{array}{rcl}
+    \degcorr(\degree^*, r, f, \degree)(x)
+    & := & \displaystyle f(x) \cdot \left( \sum_{l=0}^{\degree^* - \degree} (r \cdot x)^l \right) \\[10pt]
+    & = & \left\{
+    \begin{array}{ll}
+        \displaystyle f(x) \cdot \left( \dfrac{1 - (x r)^{\degree^* - \degree_i + 1}}{1 - x r} \right)
+        & \text{if } x \cdot r \neq 1 \\[8pt]
+        \displaystyle f(x) \cdot (\degree^* - \degree_i + 1)
+        & \text{if } x \cdot r = 1
+    \end{array}
+    \right.
+    \end{array}
+    \]
+
+
+(Observe that $\degcorr(\degree^*,r,f,\degree)=\combine(\degree^*,r,(f,\degree))$.)
+\end{definition}
+
+Below it is shown that combining multiple polynomials of varying degrees can be done as long as the proximity error is bounded by $(\min{\{1-{\mathsf{B}}^*(\rate),1-\rate-1/|\evaldomain|\}})$.
+
+\begin{lemma}\label{lemma:combine}
+\lean{Combine.combine}
+\uses{def:reed_solomon_code,def:combine,def:deg_corr,thm:proximity_gap}
+    Let $\degree^*$ be a target degree, $f_0,\ldots,f_{m-1}:\evaldomain\rightarrow\field$ be functions, $0\leq \degree_0,\ldots,\degree_{m-1}\leq \degree^*$ be degrees, $\distance\in\min{\{1-{\mathsf{B}}^*(\rate),1-\rate-1/|\evaldomain|\}}$ be a distance parameter, where $\rate=\degree^*/|\evaldomain|$. If
+    \[
+        \Pr_{r\gets\field}[\Delta(\combine(\degree^*,r,(f_0,\degree_0),\ldots,(f_{m-1},\degree_{m-1})),\rscode[\field,\evaldomain,\degree^*])]>\err^*(\degree^*,\rate,\distance,m\cdot(\degree^*+1)-\sum_{i=0}^{m-1}\degree_i),
+    \]
+    then there exists $S\subseteq \evaldomain$ with $|S|\geq(1-\distance)\cdot|\evaldomain|$, and
+    \[
+        \forall i\in[m-1],\exists u\in\rscode[\field,\evaldomain,\degree_i], f_i(S)=u(S).
+    \]
+    Note that this implies $\Delta(f_i,\rscode[\field,\evaldomain,\degree_i])<\distance$ for every $i$. Above, ${\mathsf{B}}^*$ and ${\err}^*$ are the proximity bound and error (respectively) described in the proximity gap theorem.
 \end{lemma}
 
-\subsection{STIR front-door statements}\label{sec:stir_main_theorems}
+\subsection{STIR Section 5 targets}
 
-\begin{definition}[STIR parameters and relation]\label{def:stir_params}
-\lean{StirIOP.Params,StirIOP.ParamConditions,StirIOP.Distances,StirIOP.CodeParams,StirIOP.stirRelation}
-\uses{def:reed_solomon_code,def:list_decodable,def:distance_from_code}
-    The Lean parameter structures store the initial degree, per-round folding parameters,
-    evaluation embeddings, repetition parameters, distance targets, and list-decoding
-    assumptions.  The relation \texttt{stirRelation} states relative proximity to the
-    round-zero Reed--Solomon code.
-\end{definition}
+Construction 5.2, Lemma 5.4 and Theorem 5.1 of \cite{ACFY24stir} remain unformalized.
+The statements below record the paper's intended bounds. ArkLib formalizes the construction's
+parameter and domain conditions in \texttt{StirIOP.ParamConditions}, together with the codeword
+completeness relation and strict soundness relation, but has no concrete STIR prover and verifier.
+A protocol must be fixed by Construction 5.2 before its distances and list sizes are chosen.
 
-\begin{theorem}[STIR main theorem]\label{thm:stir}
-\lean{StirIOP.stir_main}
-\uses{def:stir_params,lemma:rnd_by_rnd_soundness}
-    The paper-level main theorem asserts existence of a vector IOPP with the stated
-    round-by-round soundness, round complexity, proof length, and query complexity bounds.
-    In Lean this is a \texttt{Prop} front door; downstream construction theorems instantiate
-    the existential under explicit security and complexity hypotheses.
+\begin{theorem}[STIR Main Theorem, unformalized target]\label{thm:stir}
+\uses{def:reed_solomon_code,lemma:rnd_by_rnd_soundness}
+    Consider the following ingredients:
+    \begin{itemize}
+        \item A security parameter $\lambda\in\N$.
+        \item A Reed-Solomon code $\rscode[\field,\evaldomain,\degree]$ with $\rate:=\frac{\degree}{|\evaldomain|}$ where $\degree$ is a power of $2$, and $\evaldomain$ is a smooth domain.
+        \item A proximity parameter $\distance\in(0,1-1.05\cdot\sqrt{\rate})$.
+        \item A folding parameter $k\in\N$ that is power of $2$ with $k\geq 4$.
+    \end{itemize}
+If $|\field|=\Omega(\frac{\lambda\cdot2^\lambda\cdot\degree^2\cdot{|\evaldomain|}^{3.5}}{\log(1/\rate)})$, there is a public-coin IOPP for $\rscode[\field,\evaldomain,\degree]$ with the following parameters:
+\begin{itemize}
+    \item Round-by-round soundness error $2^{-\lambda}$.
+    \item Round complexity: $M:=O(\log_k{\degree})$.
+    \item Proof length: $|\evaldomain|+O_k(\log{\degree})$.
+    \item Query complexity to the input: $\frac{\lambda}{-\log{(1-\distance)}}$.
+    \item Query complexity to the proof strings: $O_k(\log{\degree}+\lambda\cdot\log{\Big(\frac{\log{\degree}}{\log{1/\rate}}\Big)})$.
+\end{itemize}
 \end{theorem}
 
-\begin{lemma}[STIR round-by-round soundness]\label{lemma:rnd_by_rnd_soundness}
-\lean{StirIOP.stir_rbr_soundness}
-\uses{def:stir_params,lemma:folding,lemma:out_of_domain_smpl,lemma:quotienting,lemma:combine}
-    Lemma 5.4 packages the STIR per-round error family
-    $(\epsilon^{\mathsf{fold}},\epsilon^{\mathsf{out}}_i,
-    \epsilon^{\mathsf{shift}}_i,\epsilon^{\mathsf{fin}})$ and asserts existence of a secure
-    vector IOPP with challenge count $2M+2$.  The current formalization provides several
-    conditional front doors that instantiate the vector IOPP and leave only the honest
-    soundness bridge and numeric free-parameter inequalities as hypotheses.
+\begin{remark}[Formalization target]
+The exponent $3.5$ of the field size is the one of the January 2025 revision of ePrint 2024/390
+\cite{ACFY24stir} (Theorem 5.1 and Appendix C.1). The constants in the $\Omega$ and $O$ bounds must
+be uniform in the protocol parameters; $O_k$ constants may depend on $k$.
+A formalization must establish the concrete protocol's round, proof-length and both query bounds,
+counting $k$ grouped points as one symbol as in the paper. Numerical error and proof-length bounds
+for an arbitrary protocol permit an exhaustive exact-membership verifier and do not characterize
+this theorem. Appendix C.1 also includes a field-size dependence on
+$1/(-\log(1-\distance'))$, absent from the displayed Theorem 5.1; the parameter analysis must
+resolve this discrepancy.
+\end{remark}
+
+\begin{lemma}[Round-by-round soundness, unformalized target]\label{lemma:rnd_by_rnd_soundness}
+\uses{def:reed_solomon_code,def:list_decodable,lemma:folding,lemma:out_of_domain_smpl,lemma:quotienting,lemma:combine}
+    Consider $(\field,M,\degree,k_0,\ldots,k_M,\evaldomain_0,\ldots,\evaldomain_M,t_0,\ldots,t_M,s)$ and for every $i\in\{0,\ldots,M\}$, let $\degree_i:=\frac{\degree}{\prod_{j<i}k_j}$ and $\rate_i:=\degree_i/|\evaldomain_i|$, where, as in Construction~5.2 of \cite{ACFY24stir}, $\degree$ and $k_0,\ldots,k_M$ are powers of $2$ with $\degree\ge\prod_i k_i$, each $\evaldomain_i$ is a smooth domain with $|\evaldomain_i|>\degree_i$, and $t_i+1\le\degree_{i+1}$ for every $i<M$. For every $f\notin\rscode[\field,\evaldomain_0,\degree_0]$ and every $\distance_0,\ldots,\distance_M$ where
+    \begin{itemize}
+        \item $\distance_0\in(0,\Delta(f,\rscode[\field,\evaldomain_0,\degree_0])]\cap(0,1-{\mathsf{B}}^*(\rate_0))$
+        \item for every $0<i\leq M$: $\distance_i\in(0,\min{\{1-\rate_i-\frac{1}{|\evaldomain_i|},1-{\mathsf{B}^*(\rate_i)}\}})$, and
+        \item for every $0<i\leq M$: $\rscode[\field,\evaldomain_i,\degree_i]$ is $(\distance_i,l_i)$-list decodable,
+    \end{itemize}
+    The STIR IOPP of Construction~5.2 with these fixed parameters has round-by-round soundness error $(\epsilon^{\mathsf{fold}},\epsilon^{\mathsf{out}}_1,\epsilon^{\mathsf{shift}}_1,\ldots,\epsilon^{\mathsf{out}}_M,\epsilon^{\mathsf{shift}}_M,\epsilon^{\mathsf{fin}})$ where:
+    \begin{itemize}
+        \item $\epsilon^{\mathsf{fold}}\leq\err^*(\degree_0/k_0,\rate_0,\distance_0,k_0)$.
+        \item $\epsilon^{\mathsf{out}}_i\leq\frac{l^2_i}{2}\cdot{\big(\frac{\degree_i}{|\field|-|\evaldomain_i|}\big)}^s$
+        \item $\epsilon^{\mathsf{shift}}_i\leq {(1-\distance_{i-1})}^{t_{i-1}}+\err^*(\degree_i,\rate_i,\distance_i,t_{i-1}+s)+\err^*(\degree_i/k_i,\rate_i,\distance_i,k_i)$.
+        \item $\epsilon^{\mathsf{fin}}\leq{(1-\distance_M)}^{t_M}$.
+    \end{itemize}
+    Above, ${\mathsf{B}}^*$ and ${\err}^*$ are the proximity bound and error (respectively) described in Section~\ref{sec:proximity_gap}.
 \end{lemma}
 
-\subsection{Protocol assembly}\label{sec:stir_protocol_assembly}
-
-\begin{definition}[Single-round and block reductions]\label{def:stir_round_reductions}
-\lean{StirIOP.Round.stirRoundReduction,StirIOP.Round3.stirRound3Reduction,StirIOP.Round3.stirFullReduction}
-\uses{def:combine,def:stir_params}
-    The implementation starts from a single STIR round, groups the paper's round shape into
-    three-message blocks, and assembles block chains into a full reduction.
-\end{definition}
-
-\begin{theorem}[Round completeness]\label{thm:stir_round_completeness}
-\lean{StirIOP.Round.stirRoundReduction_perfectCompleteness,StirIOP.Round.stirRoundVectorReduction_perfectCompleteness}
-\uses{def:stir_round_reductions}
-    The single-round oracle reduction and its vectorized version are perfectly complete.
-\end{theorem}
-
-\begin{definition}[Multi-round vector IOP]\label{def:stir_multi_round_iop}
-\lean{StirIOP.MultiRound.stirMultiVSpec,StirIOP.MultiRound.stirMultiRoundProver,StirIOP.MultiRound.stirMultiRoundVerifier,StirIOP.MultiRound.stirMultiRoundIOP}
-\uses{def:stir_params}
-    The multi-round wire shape \texttt{stirMultiVSpec} has $3M+3$ protocol rounds and $2M+2$
-    verifier challenges.  The assembled shell IOP uses the honest folding prover and a
-    forwarding verifier.
-\end{definition}
-
-\begin{theorem}[Multi-round assembly front doors]\label{thm:stir_multi_round_front_doors}
-\lean{StirIOP.MultiRound.stirMultiRoundIOP_perfectCompleteness,StirIOP.stir_rbr_soundness_of_secure_vectorIOP,StirIOP.stir_rbr_soundness_of_residuals,StirIOP.stir_main_of_secure_vectorIOP,StirIOP.stir_main_of_residuals}
-\uses{def:stir_multi_round_iop,thm:stir,lemma:rnd_by_rnd_soundness}
-    The shell multi-round IOP is perfectly complete, and any secure-with-gap vector IOP over
-    the same wire shape instantiates the paper front doors.  The shell-specific residual is
-    intentionally kept as a hypothesis rather than treated as a genuine small-error soundness
-    proof.
-\end{theorem}
-
-\subsection{Checking verifier and residuals}\label{sec:stir_checking_verifier}
-
-\begin{definition}[Checking verifier]\label{def:stir_checking_verifier}
-\lean{StirIOP.MultiRound.checkingComp,StirIOP.MultiRound.checkingBool,StirIOP.MultiRound.stirCheckingVerifier,StirIOP.MultiRound.stirCheckingIOP}
-\uses{def:stir_multi_round_iop,def:reed_solomon_code}
-    The checking verifier performs a round-zero fold check, out/shift consistency checks between
-    consecutive folded oracles, and a final low-degree membership check.  This replaces the shell
-    verifier by a verifier whose acceptance predicate constrains the transcript.
-\end{definition}
-
-\begin{lemma}[Checking predicate decomposition]\label{lem:stir_checking_predicate}
-\lean{StirIOP.MultiRound.checkingBool_eq_true_iff,StirIOP.MultiRound.checkingVerifier_acceptance_iff_checkingBool,StirIOP.MultiRound.checkingVerifier_acceptance_implies_fold_check,StirIOP.MultiRound.checkingVerifier_acceptance_implies_round_consistency,StirIOP.MultiRound.checkingVerifier_acceptance_implies_final_in_code}
-\uses{def:stir_checking_verifier}
-    Acceptance of the checking verifier is equivalent to the fold check, every out/shift
-    adjacent-round consistency check, and final Reed--Solomon membership.  These facts are the
-    local verifier facts required by the future probabilistic soundness bridge.
-\end{lemma}
-
-\begin{theorem}[Checking IOP completeness]\label{thm:stir_checking_completeness}
-\lean{StirIOP.MultiRound.stirMultiRoundProver_runToRound_invariant,StirIOP.MultiRound.checkingBool_honest,StirIOP.MultiRound.stirCheckingIOP_perfectCompleteness}
-\uses{def:stir_checking_verifier,thm:stir_round_completeness}
-    The honest multi-round prover maintains the expected transcript invariant, the checking
-    predicate accepts honest codewords, and the checking IOP is perfectly complete.
-\end{theorem}
-
-\begin{definition}[Checking soundness residuals]\label{def:stir_checking_residuals}
-\lean{StirIOP.MultiRound.stirCheckingRbrSoundnessResidual,StirIOP.MultiRound.stirCheckingCABridge,ArkLib.ProofSystem.Stir.ErrorAccumulation.PerRoundProximityGap}
-\uses{def:stir_checking_verifier,thm:proximity_gap}
-    \texttt{stirCheckingRbrSoundnessResidual} is the genuine round-by-round knowledge-soundness
-    obligation for the checking verifier.  \texttt{stirCheckingCABridge} states that this
-    obligation follows from the BCIKS/STIR correlated-agreement residual family plus the
-    per-round proximity-gap accounting keystone.
-\end{definition}
-
-\begin{theorem}[Checking IOP front doors]\label{thm:stir_checking_front_doors}
-\lean{StirIOP.stir_rbr_soundness_of_checkingIOP_CA,StirIOP.stir_rbr_soundness_of_checkingIOP_card_le,StirIOP.stir_rbr_soundness_of_checkingIOP_card_le_e7,StirIOP.stir_rbr_soundness_of_checkingIOP_large,StirIOP.stir_main_of_checkingIOP_CA,StirIOP.stir_main_of_checkingIOP_card_le,StirIOP.stir_main_of_checkingIOP_card_le_e7,StirIOP.stir_main_of_checkingIOP_large}
-\uses{thm:stir,lemma:rnd_by_rnd_soundness,def:stir_checking_residuals,thm:stir_checking_completeness}
-    The headline STIR front doors are instantiated with the checking IOP.  The \texttt{CA}
-    versions consume the correlated-agreement and bridge residuals; the \texttt{card\_le},
-    \texttt{card\_le\_e7}, and \texttt{large} versions discharge the strict-coefficient
-    residual family in the corresponding BCIKS routes and leave only the protocol-level bridge.
-\end{theorem}
-
-
-\subsection{Genuine sub-unit soundness, tightness, and repetition}\label{sec:stir_subunit}
-
-\begin{theorem}[Multi-flip knowledge state functions]\label{thm:stir_multiflip_ksf}
-\lean{ThresholdKSF.predKSF,ThresholdKSF.rbrKnowledgeSoundness_of_flipBounds}
-\uses{def:stir_checking_residuals}
-    An un-truncated round-indexed predicate family that matches the input relation on the
-    empty transcript, never flips upward at prover rounds, and is forced at the final round
-    by acceptance, is a knowledge state function; round-by-round knowledge soundness follows
-    from per-challenge bounds on the genuine flip events
-    $\neg\mathrm{pred}(\text{before}) \wedge \mathrm{pred}(\text{after the fresh challenge})$.
-    This generalizes the single-threshold state functions used by the WHIR discharge and is
-    the upgrade required to consume challenge-dependent flip estimates at sub-unit budgets.
-\end{theorem}
-
-\begin{theorem}[Genuine budget discharge]\label{thm:stir_subunit_discharge}
-\lean{StirIOP.MultiRound.stirCheckingPred,StirIOP.MultiRound.stirEpsStar,StirIOP.MultiRound.stirCheckingRbrSoundness_genuine,StirIOP.MultiRound.stirCheckingCABridge_genuine,StirIOP.MultiRound.stirCheckingIOP_isSecureWithGap_genuine,StirIOP.MultiRound.stir_main_of_checkingIOP_genuine}
-\uses{thm:stir_multiflip_ksf,lem:stir_checking_predicate,thm:stir_checking_completeness}
-    The retired-prefix winnable state predicate (committed point-checks pass, the
-    fully-committed pair with pending binding challenge is locked, and the last committed
-    message is a codeword) yields round-by-round knowledge soundness of the checking
-    verifier \emph{outright} at the explicit budget $\varepsilon^\star$: zero at the fold and
-    shift challenges, $(|F|-(\lfloor\delta|\iota|\rfloor+1))/|F|$ at the round-two input-link
-    challenge, and $(|F|-1)/|F|$ at the later pair-binding challenges.  In the single-domain
-    identity-fold wire model no correlated-agreement input is needed, so the named bridge
-    residual holds a fortiori, the checking IOP is secure-with-gap with no residual
-    hypotheses, and Theorem~\ref{thm:stir} is instantiated with a proven soundness leg.
-\end{theorem}
-
-\begin{theorem}[Switch-prover tightness]\label{thm:stir_switch_attack}
-\lean{StirIOP.MultiRound.stirChecking_switch_decision,StirIOP.MultiRound.stirChecking_switch_attack}
-\uses{thm:stir_subunit_discharge}
-    Against the constant nearest-codeword strategy the checking decision reduces to the
-    single input-link check, and acceptance has probability at least
-    $|\{x \mid f(x)=u(x)\}|/|F|$ over the round-two challenge.  Hence no budget family
-    summing below $(|\iota|-\Delta(f,\mathrm{code}))/|F|$ is sound for this verifier:
-    $\varepsilon^\star$ is essentially tight, and $2^{-\lambda}$ budgets at large $\lambda$
-    are unachievable in the single-query wire model.
-\end{theorem}
-
-\begin{theorem}[The $t$-repetition wire model]\label{thm:stir_rep_wire}
-\lean{StirIOP.MultiRound.stirMultiVSpecRep,StirIOP.MultiRound.stirCheckingIOPRep_perfectCompleteness,StirIOP.MultiRound.stirEpsStarRep,StirIOP.MultiRound.stirCheckingRepRbrSoundness_genuine,StirIOP.MultiRound.stirCheckingIOPRep_isSecureWithGap_genuine,StirIOP.MultiRound.stir_main_of_checkingIOP_rep}
-\uses{thm:stir_subunit_discharge,thm:stir_switch_attack}
-    Repeating every binding check at all $t$ coordinates of one length-$t$ vector challenge
-    preserves perfect completeness and yields round-by-round knowledge soundness at the
-    $t$-fold power budgets $((|F|-(\lfloor\delta|\iota|\rfloor+1))/|F|)^t$ and
-    $((|F|-1)/|F|)^t$, via a product-marginal domination lemma for one uniformly drawn
-    vector challenge.  Every security-parameter target is met at sufficiently large $t$,
-    giving the first fully proven soundness leg for Theorem~\ref{thm:stir} at arbitrary
-    security parameters within the identity-fold model.
-\end{theorem}
-
-\begin{remark}[Current STIR status]\label{rem:stir_status}
-    Protocol objects, completeness, and the soundness layer are represented in Lean
-    end-to-end: the checking verifier's round-by-round knowledge soundness is proven
-    outright at its genuine budget (Theorem~\ref{thm:stir_subunit_discharge}), shown
-    essentially tight (Theorem~\ref{thm:stir_switch_attack}), and lifted to arbitrary
-    security parameters by $t$-fold repetition (Theorem~\ref{thm:stir_rep_wire}).  The
-    checker remains a single-domain model: its folds are identity folds, so paper-STIR's
-    degree-reduction behavior and the Johnson-regime correlated-agreement budgets are
-    represented by the conditional front doors of
-    Theorem~\ref{thm:stir_checking_front_doors}, whose remaining inputs are tracked by the
-    BCIKS correlated-agreement issues.
+\begin{remark}[Formalization target]
+The protocol must be determined by Construction~5.2 before the distances $\distance_i$ and list
+sizes $l_i$ are chosen. Its completeness relation consists of codewords, while its soundness
+language is the strict distance relation: the bad inputs include distance exactly $\distance_0$.
+Each component of the displayed error vector must bound its corresponding challenge, including
+final verification when $M=0$. Construction~5.2 uses $2M+1$ interactive rounds and a randomized
+final decision; a faithful representation must retain the prescribed uniform sampling from
+$\field\setminus\evaldomain_i$ and folded evaluation domains. The current fixed-length field-vector
+challenge representation does not in general realize these distributions.
 \end{remark}

@@ -354,7 +354,6 @@ theorem weightedTripleSum_rat_upper
         2 * (5 * (h : ℚ) / 8 - 5 / 2) * family.G.card *
           (family.G.card - 1) := by
     gcongr
-    linarith
   exact hcast.trans (by
     simpa only [upperSix] using add_le_add hfirst hsecond)
 

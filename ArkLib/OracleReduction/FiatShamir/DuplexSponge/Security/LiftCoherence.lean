@@ -73,94 +73,16 @@ theorem dsfs_lift_query_bridge_inr (t₂ : (duplexSpongeChallengeOracle StmtIn U
         (OptionT (OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U +
           [(⟨!v[Direction.P_to_V], !v[(i : pSpec.MessageIdx) → pSpec.Message i]⟩ :
             ProtocolSpec 1).Challenge]ₒ))))
-      _ ((liftM ((OracleSpec.query (Sum.inr t₂) :
+      _ ((liftM ((OracleSpec.query (spec := oSpec + duplexSpongeChallengeOracle StmtIn U) (Sum.inr t₂) :
         OracleQuery (oSpec + duplexSpongeChallengeOracle StmtIn U) _))) :
         OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U) _))
-    = (liftM (liftM ((OracleSpec.query (Sum.inr t₂) :
+    = (liftM (liftM ((OracleSpec.query (spec := oSpec + duplexSpongeChallengeOracle StmtIn U) (Sum.inr t₂) :
         OracleQuery (oSpec + duplexSpongeChallengeOracle StmtIn U) _)) :
         OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U) _) :
         OptionT (OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U +
           [(⟨!v[Direction.P_to_V], !v[(i : pSpec.MessageIdx) → pSpec.Message i]⟩ :
             ProtocolSpec 1).Challenge]ₒ)) _) := by
-  apply OptionT.ext
-  show (simulateQ (fun t => (liftM ((OracleSpec.query (Sum.inl t) :
-      OracleQuery (oSpec + duplexSpongeChallengeOracle StmtIn U +
-        [(⟨!v[Direction.P_to_V], !v[(i : pSpec.MessageIdx) → pSpec.Message i]⟩ :
-          ProtocolSpec 1).Challenge]ₒ) _)) :
-      OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U +
-        [(⟨!v[Direction.P_to_V], !v[(i : pSpec.MessageIdx) → pSpec.Message i]⟩ :
-          ProtocolSpec 1).Challenge]ₒ) _))
-      (some <$> (liftM (OracleSpec.query (Sum.inr t₂)) :
-        OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U) _)))
-    = _
-  simp only [simulateQ_bind, simulateQ_spec_query, simulateQ_pure, simulateQ_map, simulateQ_query, OracleQuery.input_query, OracleQuery.cont_query,
-    id_map, map_eq_bind_pure_comp, bind_assoc, pure_bind]
-  first
-  | simp only [simulateQ_spec_query]
-  | rw [show (simulateQ (fun t => (liftM ((OracleSpec.query (Sum.inl t) :
-        OracleQuery (oSpec + duplexSpongeChallengeOracle StmtIn U +
-          [(⟨!v[Direction.P_to_V], !v[(i : pSpec.MessageIdx) → pSpec.Message i]⟩ :
-            ProtocolSpec 1).Challenge]ₒ) _)) :
-        OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U +
-          [(⟨!v[Direction.P_to_V], !v[(i : pSpec.MessageIdx) → pSpec.Message i]⟩ :
-            ProtocolSpec 1).Challenge]ₒ) _))
-      (liftM ((OracleSpec.query (Sum.inr t₂) :
-        OracleQuery (oSpec + duplexSpongeChallengeOracle StmtIn U) _)) :
-        OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U) _))
-      = (liftM ((OracleSpec.query (Sum.inl (Sum.inr t₂)) :
-        OracleQuery (oSpec + duplexSpongeChallengeOracle StmtIn U +
-          [(⟨!v[Direction.P_to_V], !v[(i : pSpec.MessageIdx) → pSpec.Message i]⟩ :
-            ProtocolSpec 1).Challenge]ₒ) _)) :
-        OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U +
-          [(⟨!v[Direction.P_to_V], !v[(i : pSpec.MessageIdx) → pSpec.Message i]⟩ :
-            ProtocolSpec 1).Challenge]ₒ) _) from by with_unfolding_all rfl]
-  simp only [Function.comp, simulateQ_pure]
-  refine Eq.trans (b := simulateQ (fun t => ((liftM ((OracleSpec.query t :
-      OracleQuery (oSpec + (duplexSpongeChallengeOracle StmtIn U +
-        [(⟨!v[Direction.P_to_V], !v[(i : pSpec.MessageIdx) → pSpec.Message i]⟩ :
-          ProtocolSpec 1).Challenge]ₒ)) _)) :
-      OracleQuery (oSpec + duplexSpongeChallengeOracle StmtIn U +
-        [(⟨!v[Direction.P_to_V], !v[(i : pSpec.MessageIdx) → pSpec.Message i]⟩ :
-          ProtocolSpec 1).Challenge]ₒ) _) :
-      OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U +
-        [(⟨!v[Direction.P_to_V], !v[(i : pSpec.MessageIdx) → pSpec.Message i]⟩ :
-          ProtocolSpec 1).Challenge]ₒ) _))
-      (simulateQ (fun t => ((liftM ((OracleSpec.query t :
-          OracleQuery (oSpec + duplexSpongeChallengeOracle StmtIn U) _)) :
-          OracleQuery (oSpec + (duplexSpongeChallengeOracle StmtIn U +
-            [(⟨!v[Direction.P_to_V], !v[(i : pSpec.MessageIdx) → pSpec.Message i]⟩ :
-              ProtocolSpec 1).Challenge]ₒ)) _) :
-          OracleComp (oSpec + (duplexSpongeChallengeOracle StmtIn U +
-            [(⟨!v[Direction.P_to_V], !v[(i : pSpec.MessageIdx) → pSpec.Message i]⟩ :
-              ProtocolSpec 1).Challenge]ₒ)) _))
-        ((liftM ((OracleSpec.query (Sum.inr t₂) :
-          OracleQuery (oSpec + duplexSpongeChallengeOracle StmtIn U) _)) :
-          OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U) _) >>=
-          fun x => pure (some x)))) ?_ (by rfl)
-  rw [OracleComp.simulateQ_simulateQ]
-  simp only [simulateQ_bind, simulateQ_spec_query, simulateQ_pure, simulateQ_query,
-    OracleQuery.liftM_add_left_query, OracleQuery.liftM_add_right_query,
-    OracleQuery.input_query, OracleQuery.cont_query, id_map, id_eq,
-    map_eq_bind_pure_comp, bind_assoc, pure_bind, Function.comp]
-  have hroute : (liftM ((OracleSpec.query (Sum.inr t₂) :
-      OracleQuery (oSpec + duplexSpongeChallengeOracle StmtIn U) _)) :
-      OracleQuery (oSpec + (duplexSpongeChallengeOracle StmtIn U +
-        [(⟨!v[Direction.P_to_V], !v[(i : pSpec.MessageIdx) → pSpec.Message i]⟩ :
-          ProtocolSpec 1).Challenge]ₒ)) _)
-      = OracleSpec.query (Sum.inr (Sum.inl t₂)) := by
-    rcases t₂ with s | (c | c) <;>
-      first
-      | rfl
-      | with_unfolding_all rfl
-  rw [hroute]
-  simp only [OracleQuery.liftM_add_assoc_def, OracleQuery.liftM_add_assoc_query,
-    OracleQuery.input_query, OracleQuery.cont_query, id_eq, map_eq_bind_pure_comp,
-    bind_assoc, pure_bind, Function.comp]
-  first
-  | rfl
-  | with_unfolding_all rfl
-  | trace_state
-
+  rcases t₂ with _ | (_ | _) <;> with_unfolding_all rfl
 
 /-- Bridge: annotated vs direct lift of a single left-side query. -/
 theorem dsfs_lift_query_bridge_inl (t₁ : oSpec.Domain) :

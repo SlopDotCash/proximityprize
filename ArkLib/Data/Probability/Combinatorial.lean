@@ -3,18 +3,24 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alexander Hicks
 -/
+module
 
-import Mathlib.Probability.ProbabilityMassFunction.Basic
-import Mathlib.Algebra.Order.Chebyshev
-import Mathlib.Data.Set.PowersetCard
-import ArkLib.Data.Probability.Notation
+public import Mathlib.Algebra.Order.Chebyshev
+public import Mathlib.MeasureTheory.Integral.Lebesgue.Markov
+public import Mathlib.MeasureTheory.Measure.Typeclasses.Probability
+public import VCVio.OracleComp.Constructions.SampleableType.Measure
 
 /-!
 # Probabilistic combinatorics
 
-Stand-alone probabilistic-combinatorics statements used elsewhere in ArkLib.
-This includes the fixed-cardinality subset sample space needed for random Reed-Solomon domains and
-`exists_large_image_of_pairwise_collision_bound`, which is Claim B.1 of [ABF26].
+A random function whose pairs collide with small probability has, for some sample, a large
+image.
+
+## Main statements
+
+* `Probability.exists_large_image_of_pairwise_collision_bound` — if every pair of distinct
+  points of a finite `S` collides with probability at most `ε` under a probability measure on
+  functions, then some positive-mass function in its countable carrier has large image.
 
 ## References
 
@@ -22,187 +28,30 @@ This includes the fixed-cardinality subset sample space needed for random Reed-S
   Correlated Agreement*][ABF26]
 -/
 
+@[expose] public section
+
 namespace Probability
 
-open Finset NNReal ENNReal ProbabilityTheory
+open Finset NNReal ENNReal MeasureTheory
 
-/-! ## Uniform fixed-cardinality subsets
+/-! ## Colliding-pair helpers
 
-ABF26 T3.6 and T4.15 sample a Reed-Solomon evaluation domain uniformly from the size-`n`
-subsets of a finite field.  Mathlib already provides the exact sample space as
-`Set.powersetCard α n`; the definitions below expose the ArkLib-facing probability primitive and
-basic cardinality facts without asserting any of the random-RS bounds themselves. -/
-
-/-- The sample space of finite subsets of `α` with cardinality exactly `n`.
-
-This is a thin ArkLib-facing name for Mathlib's `Set.powersetCard α n`. -/
-abbrev SizeSubset (α : Type*) (n : ℕ) :=
-  Set.powersetCard α n
-
-namespace SizeSubset
-
-variable {α : Type*} {n : ℕ}
-
-/-- The number of size-`n` subsets of a finite type is `|α| choose n`. -/
-theorem card [Fintype α] :
-    Nat.card (SizeSubset α n) = (Fintype.card α).choose n := by
-  simpa [SizeSubset, Nat.card_eq_fintype_card] using
-    (Set.powersetCard.card (α := α) (n := n))
-
-/-- Fintype-cardinality form of `SizeSubset.card`. -/
-theorem fintype_card [Fintype α] :
-    Fintype.card (SizeSubset α n) = (Fintype.card α).choose n := by
-  rw [Fintype.card_eq_nat_card, card]
-
-/-- If `n ≤ |α|`, then the size-`n` subset sample space is nonempty. -/
-theorem nonempty_of_le [Fintype α] (h : n ≤ Fintype.card α) :
-    Nonempty (SizeSubset α n) := by
-  classical
-  have hNonempty :
-      (Finset.powersetCard n (Finset.univ : Finset α)).Nonempty :=
-    Finset.powersetCard_nonempty.mpr (by simpa using h)
-  rcases hNonempty with ⟨s, hs⟩
-  exact ⟨⟨s, (Finset.mem_powersetCard.mp hs).2⟩⟩
-
-/-- Every sample in `SizeSubset α n` has cardinality `n`. -/
-@[simp]
-theorem val_card (s : SizeSubset α n) :
-    (s : Finset α).card = n :=
-  Set.powersetCard.card_eq s
-
-/-- A positive-cardinality sample carries a nonempty subtype of its elements. -/
-theorem nonempty_coe (s : SizeSubset α n) (hn : 0 < n) :
-    Nonempty s := by
-  classical
-  obtain ⟨x, hx⟩ : (s : Finset α).Nonempty := by
-    rw [← Finset.card_pos, val_card]
-    exact hn
-  exact ⟨⟨x, hx⟩⟩
-
-/-- The canonical embedding from a size-`n` subset into its ambient type. -/
-noncomputable def toEmbedding (s : SizeSubset α n) : s ↪ α where
-  toFun x := x.1
-  inj' := by
-    intro x y h
-    exact Subtype.ext h
-
-variable {β : Type*}
-
-/-- Transport a size-`n` subset across an equivalence of ambient types. -/
-noncomputable def mapEquiv (e : α ≃ β) :
-    SizeSubset α n ≃ SizeSubset β n where
-  toFun := Set.powersetCard.map n e.toEmbedding
-  invFun := Set.powersetCard.map n e.symm.toEmbedding
-  left_inv s := by
-    apply Subtype.ext
-    ext x
-    simp [Set.powersetCard.map]
-  right_inv t := by
-    apply Subtype.ext
-    ext x
-    simp [Set.powersetCard.map]
-
-end SizeSubset
-
-/-- Uniform distribution on the size-`n` subsets of a finite type. -/
-noncomputable def uniformSizeSubset (α : Type*) [Fintype α] (n : ℕ)
-    [Nonempty (SizeSubset α n)] : PMF (SizeSubset α n) :=
-  PMF.uniformOfFintype (SizeSubset α n)
-
-/-- Uniform distribution on size-`n` subsets, using `n ≤ |α|` to provide nonemptiness. -/
-noncomputable def uniformSizeSubsetOfLe (α : Type*) [Fintype α] (n : ℕ)
-    (h : n ≤ Fintype.card α) : PMF (SizeSubset α n) := by
-  letI : Nonempty (SizeSubset α n) := SizeSubset.nonempty_of_le (α := α) (n := n) h
-  exact uniformSizeSubset α n
-
-/-- Point mass of the uniform size-`n` subset distribution. -/
-theorem uniformSizeSubset_apply {α : Type*} [Fintype α] {n : ℕ}
-    [Nonempty (SizeSubset α n)] (s : SizeSubset α n) :
-    uniformSizeSubset α n s = (Fintype.card (SizeSubset α n) : ENNReal)⁻¹ := by
-  simp [uniformSizeSubset, PMF.uniformOfFintype_apply]
-
-/-- The uniform size-`n` subset distribution has full support. -/
-@[simp]
-theorem support_uniformSizeSubset {α : Type*} [Fintype α] {n : ℕ}
-    [Nonempty (SizeSubset α n)] :
-    (uniformSizeSubset α n).support = ⊤ := by
-  simp [uniformSizeSubset]
-
-/-- Every size-`n` subset lies in the support of the uniform size-`n` subset distribution. -/
-theorem mem_support_uniformSizeSubset {α : Type*} [Fintype α] {n : ℕ}
-    [Nonempty (SizeSubset α n)] (s : SizeSubset α n) :
-    s ∈ (uniformSizeSubset α n).support := by
-  rw [support_uniformSizeSubset]
-  trivial
-
-/-- Point mass of the uniform size-`n` subset distribution, with the denominator rewritten as
-`|α| choose n`. -/
-theorem uniformSizeSubset_apply_choose {α : Type*} [Fintype α] {n : ℕ}
-    [Nonempty (SizeSubset α n)] (s : SizeSubset α n) :
-    uniformSizeSubset α n s = ((Fintype.card α).choose n : ENNReal)⁻¹ := by
-  rw [uniformSizeSubset_apply, SizeSubset.fintype_card]
-
-/-- Point mass of `uniformSizeSubsetOfLe`, with the denominator rewritten as `|α| choose n`. -/
-theorem uniformSizeSubsetOfLe_apply {α : Type*} [Fintype α] {n : ℕ}
-    (h : n ≤ Fintype.card α) (s : SizeSubset α n) :
-    uniformSizeSubsetOfLe α n h s = ((Fintype.card α).choose n : ENNReal)⁻¹ := by
-  classical
-  simp [uniformSizeSubsetOfLe, uniformSizeSubset_apply_choose]
-
-/-- The le-supplied uniform size-`n` subset distribution has full support. -/
-@[simp]
-theorem support_uniformSizeSubsetOfLe {α : Type*} [Fintype α] {n : ℕ}
-    (h : n ≤ Fintype.card α) :
-    (uniformSizeSubsetOfLe α n h).support = ⊤ := by
-  classical
-  simp [uniformSizeSubsetOfLe]
-
-/-- Every size-`n` subset lies in the support of the le-supplied uniform distribution. -/
-theorem mem_support_uniformSizeSubsetOfLe {α : Type*} [Fintype α] {n : ℕ}
-    (h : n ≤ Fintype.card α) (s : SizeSubset α n) :
-    s ∈ (uniformSizeSubsetOfLe α n h).support := by
-  rw [support_uniformSizeSubsetOfLe h]
-  trivial
-
-/-- Uniform fixed-size subset sampling is invariant under equivalence of ambient finite types. -/
-theorem uniformSizeSubset_apply_mapEquiv {α β : Type*} [Fintype α] [Fintype β] {n : ℕ}
-    [Nonempty (SizeSubset α n)] [Nonempty (SizeSubset β n)] (e : α ≃ β)
-    (s : SizeSubset α n) :
-    uniformSizeSubset β n (SizeSubset.mapEquiv e s) =
-      uniformSizeSubset α n s := by
-  simp [uniformSizeSubset_apply_choose, Fintype.card_congr e]
-
-/-- Le-supplied uniform fixed-size subset sampling is invariant under ambient equivalences. -/
-theorem uniformSizeSubsetOfLe_apply_mapEquiv {α β : Type*} [Fintype α] [Fintype β] {n : ℕ}
-    (e : α ≃ β) (hα : n ≤ Fintype.card α) (hβ : n ≤ Fintype.card β)
-    (s : SizeSubset α n) :
-    uniformSizeSubsetOfLe β n hβ (SizeSubset.mapEquiv e s) =
-      uniformSizeSubsetOfLe α n hα s := by
-  simp [uniformSizeSubsetOfLe_apply, Fintype.card_congr e]
-
-/-! ## Colliding-pair helpers (ABF26 Appendix B counting)
-
-Helper definitions and the central Cauchy-Schwarz-on-fibers lemma used
-by `exists_large_image_of_pairwise_collision_bound` (Claim B.1). -/
+Fiber counting and the Cauchy-Schwarz step feeding
+`exists_large_image_of_pairwise_collision_bound`. -/
 
 section CollidingPairs
 
-variable {S T : Type} [Fintype S] [DecidableEq S] [DecidableEq T]
+variable {S T : Type*} [Fintype S] [DecidableEq S] [DecidableEq T]
 
-/-- Number of *ordered* pairs `(x, y) : S × S` with `x ≠ y` and `φ x = φ y`.
-
-This equals twice the number of distinct (unordered) colliding pairs;
-working ordered avoids needing a `LinearOrder S` to canonicalise unordered
-pairs. Paper's `|C_φ|` is `numCollsOrdered φ / 2`. -/
-def numCollsOrdered (φ : S → T) : ℕ :=
+/-- The number of *ordered* pairs `(x, y)` with `x ≠ y` and `φ x = φ y`, twice the number of
+unordered colliding pairs. Counting ordered pairs avoids needing a `LinearOrder S`. -/
+private def numCollsOrdered (φ : S → T) : ℕ :=
   (Finset.univ.filter (fun p : S × S ↦ p.1 ≠ p.2 ∧ φ p.1 = φ p.2)).card
 
-/-- Sum of squared fiber-cardinalities = `|S| + numCollsOrdered`.
-
-Each ordered pair `(x, y)` with `φ x = φ y` is counted once on the LHS
-(via its common image μ); the `|S|` diagonal pairs `(x, x)` and the
-`numCollsOrdered` off-diagonal pairs partition them. -/
-lemma sum_fiber_sq_eq (φ : S → T) :
+/-- The squared fiber cardinalities of `φ` sum to `|S| + numCollsOrdered φ`: each ordered
+pair with `φ x = φ y` is counted once, and the `|S|` diagonal pairs together with the
+`numCollsOrdered φ` off-diagonal ones exhaust them. -/
+private lemma sum_fiber_sq_eq (φ : S → T) :
     ∑ μ ∈ Finset.univ.image φ,
         ((Finset.univ.filter (fun x : S ↦ φ x = μ)).card)^2 =
       Fintype.card S + numCollsOrdered φ := by
@@ -268,13 +117,13 @@ lemma sum_fiber_sq_eq (φ : S → T) :
   rw [Finset.card_image_of_injective _ (fun a b h ↦ (Prod.mk.injEq _ _ _ _).mp h |>.1)]
   rfl
 
-/-- Cauchy-Schwarz applied to fiber cardinalities.
+/-- Cauchy-Schwarz on the fiber cardinalities of `φ`:
+`|S| ^ 2 ≤ |image φ| * (|S| + numCollsOrdered φ)`.
 
-Equivalent to `Finset.sq_sum_le_card_mul_sum_sq` over the image of `φ`,
-combined with `sum_fiber_sq_eq` to rewrite the squared-sum side and
-with `Finset.card_eq_sum_card_image` to identify
-`Σ μ ∈ image, |fiber μ| = |S|`. -/
-lemma cauchy_schwarz_fiber (φ : S → T) :
+This is `sq_sum_le_card_mul_sum_sq` over the image of `φ`, with `sum_fiber_sq_eq` rewriting
+the sum of squares and `Finset.card_eq_sum_card_image` identifying
+`∑ μ ∈ image φ, |fiber μ| = |S|`. -/
+private lemma cauchy_schwarz_fiber (φ : S → T) :
     (Fintype.card S)^2 ≤
       (Finset.univ.image φ).card * (Fintype.card S + numCollsOrdered φ) := by
   classical
@@ -311,54 +160,37 @@ lemma cauchy_schwarz_fiber (φ : S → T) :
 
 end CollidingPairs
 
-/-- **Claim B.1 of [ABF26]** ("Omitted claim for Lemma 6.12").
+open Classical in
+/-- Let `μ` be a probability measure on functions `S → T`, concentrated on the countable set
+`A`. If every pair of distinct points of the finite type `S` collides with probability at most
+`ε`, then some positive-mass function in `A` has image of cardinality at least
+`|S| / (1 + (|S| - 1) * ε)`.
 
-Suppose `S, T` are finite sets and `Φ` is a distribution on functions `S → T`
-such that for any distinct `x, y ∈ S`, the probability that a sample
-`φ ← Φ` sends `x` and `y` to the same image is bounded by `ε`:
-```
-∀ x y ∈ S, x ≠ y → Pr_{φ ← Φ}[φ x = φ y] ≤ ε.
-```
-Then there exists some `φ` in the support of `Φ` whose image has cardinality
-at least `|S| / (1 + (|S| − 1) · ε)`.
+The explicit countable carrier is the measure-native analogue of the support of a probability mass
+function. It preserves the positive-atom conclusion while allowing `S` and `T` in arbitrary
+universes.
 
-## Proof sketch (contradiction-form, avoids Jensen)
+Writing `N = |S|`, the proof uses linearity of the Lebesgue integral and a strict averaging
+argument.
 
-Let `N := |S|`, `δ := 1 + (N − 1) · ε`, `K := N / δ`. The proof tracks three
-in-line steps; the inelegance-saving idea is to negate the goal and exploit
-linearity of expectation instead of integrating a convex function.
-
-**Step A (pointwise Cauchy–Schwarz; [`cauchy_schwarz_fiber`]).** For every
-`φ : S → T`, the fiber decomposition `Σ μ ∈ image φ, |φ⁻¹(μ)| = |S|` combined
-with `sq_sum_le_card_mul_sum_sq` (Chebyshev for `f = g`) and
-[`sum_fiber_sq_eq`] gives `N² ≤ |image φ| · (N + numCollsOrdered φ)`.
-
-**Step B (linearity of expectation).** Each `numCollsOrdered φ` is a sum of
-`(φ p.1 = φ p.2)`-indicators over ordered off-diagonal pairs `P`. Swapping
-the outer PMF `tsum` with the inner `Finset.sum` via
-`Summable.tsum_finsetSum` and using the hypothesis `Pr_{φ ← Φ}[φ x = φ y] ≤ ε`
-(unfolded via [`Pr_decide_eq_tsum_indicator`]) gives
-`∑' φ, Φ φ · (numCollsOrdered φ : ENNReal) ≤ N · (N − 1) · ε`.
-
-**Step C (contradiction by strict averaging).** Assume for contradiction
-`∀ φ ∈ Φ.support, |image φ| < K`. Step A then forces, for each such φ,
-`numCollsOrdered φ > N · (N − 1) · ε` (via `mul_lt_of_lt_div` and ENNReal
-cross-multiplication: `A · δ < N` combined with `N² ≤ A · (N + C)` together
-with the negation `C ≤ N(N−1)ε` produces `N² < N²`). Strict averaging via
-`ENNReal.tsum_lt_tsum` at any `φ₀ ∈ Φ.support` lifts the per-φ strict bound
-to `N · (N − 1) · ε < ∑' φ, Φ φ · numCollsOrdered φ`, contradicting Step B. -/
+* Pointwise, `cauchy_schwarz_fiber` gives `N ^ 2 ≤ |image φ| * (N + numCollsOrdered φ)`.
+* The expected number of ordered collisions is at most `N * (N - 1) * ε`.
+* If every positive-mass `φ` in `A` had smaller image, the first item would force its collision
+  count strictly above that expectation bound. Since `A` is countable and has full mass, this
+  strict inequality holds almost everywhere, a contradiction. -/
 theorem exists_large_image_of_pairwise_collision_bound
-    {S T : Type} [Fintype S] [DecidableEq T]
-    (Φ : PMF (S → T)) (ε : ENNReal)
-    (hΦ : ∀ x y : S, x ≠ y →
-        Pr_{ let φ ← Φ }[(decide (φ x = φ y) : Prop)] ≤ ε) :
-    ∃ φ ∈ Φ.support, ((Finset.univ.image φ).card : ENNReal) ≥
-      (Fintype.card S : ENNReal) / (1 + (Fintype.card S - 1) * ε) := by
+    {S T : Type*} [Fintype S]
+    [MeasurableSpace (S → T)] [DiscreteMeasurableSpace (S → T)]
+    (μ : Measure (S → T)) [IsProbabilityMeasure μ]
+    (A : Set (S → T)) (hA_countable : A.Countable) (hμA : μ A = 1)
+    (ε : ENNReal)
+    (hμ : ∀ x y : S, x ≠ y → μ {φ | φ x = φ y} ≤ ε) :
+    ∃ φ ∈ A, 0 < μ {φ} ∧
+      (Fintype.card S : ENNReal) / (1 + (Fintype.card S - 1) * ε) ≤
+        ((@Finset.image S T (Classical.decEq T) φ Finset.univ).card : ENNReal) := by
   classical
   set N : ℕ := Fintype.card S with hN_def
-  -- Pairs of distinct elements.
   set P : Finset (S × S) := Finset.univ.filter (fun p : S × S ↦ p.1 ≠ p.2) with hP_def
-  -- `|P| = N · (N - 1)` (Finset count of off-diagonal pairs).
   have hP_card : P.card = N * (N - 1) := by
     have h_eq : P = Finset.offDiag (Finset.univ : Finset S) := by
       rw [hP_def]
@@ -366,142 +198,153 @@ theorem exists_large_image_of_pairwise_collision_bound
       simp [Finset.mem_offDiag]
     rw [h_eq, Finset.offDiag_card]
     simp [hN_def, Nat.mul_sub_one]
-  -- ## Step A — Pointwise Cauchy-Schwarz, in ENNReal.
-  -- For every `φ : S → T`,  `N² ≤ |image φ| · (N + numCollsOrdered φ)` in ENNReal.
   have hCS_E : ∀ φ : S → T,
       (N : ENNReal)^2 ≤ ((Finset.univ.image φ).card : ENNReal) *
         ((N : ENNReal) + (numCollsOrdered φ : ENNReal)) := by
     intro φ
-    have h := cauchy_schwarz_fiber φ
-    -- h : N^2 ≤ #image · (N + numColls) in ℕ; cast to ENNReal.
-    exact_mod_cast h
-  -- ## Step B — Linearity of expectation.
-  -- `∑' φ, Φ φ * (numCollsOrdered φ : ENNReal) ≤ N · (N - 1) · ε`.
-  -- numCollsOrdered φ = #{(x, y) ∈ P : φ x = φ y}; unfold as a sum of indicators,
-  -- swap with the outer tsum, and apply hΦ pointwise.
-  have h_lin : ∑' φ : S → T, Φ φ * (numCollsOrdered φ : ENNReal) ≤
+    exact_mod_cast cauchy_schwarz_fiber φ
+  have h_numCard : ∀ φ : S → T,
+      (numCollsOrdered φ : ENNReal) =
+        ∑ p ∈ P, (if φ p.1 = φ p.2 then (1 : ENNReal) else 0) := by
+    intro φ
+    rw [show numCollsOrdered φ =
+        (P.filter (fun p : S × S ↦ φ p.1 = φ p.2)).card by
+      unfold numCollsOrdered
+      rw [hP_def]
+      congr 1
+      ext ⟨x, y⟩
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and]]
+    rw [Finset.card_filter]
+    push_cast
+    rfl
+  have h_lin : ∫⁻ φ, (numCollsOrdered φ : ENNReal) ∂μ ≤
       ((N * (N - 1) : ℕ) : ENNReal) * ε := by
-    -- Step B.1: numCollsOrdered φ = ∑ p ∈ P, (if φ p.1 = φ p.2 then 1 else 0).
-    have h_numCard : ∀ φ : S → T,
-        (numCollsOrdered φ : ENNReal) =
-          ∑ p ∈ P, (if φ p.1 = φ p.2 then (1 : ENNReal) else 0) := by
-      intro φ
-      rw [show numCollsOrdered φ =
-          (P.filter (fun p : S × S ↦ φ p.1 = φ p.2)).card by
-        unfold numCollsOrdered
-        rw [hP_def]
-        congr 1
-        ext ⟨x, y⟩
-        simp only [Finset.mem_filter, Finset.mem_univ, true_and]]
-      rw [Finset.card_filter]
-      push_cast
-      rfl
-    -- Step B.2: ∑' φ, Φ φ * (Σ p, indicator) = Σ p, ∑' φ, Φ φ * indicator.
-    simp_rw [h_numCard, Finset.mul_sum]
-    rw [Summable.tsum_finsetSum (fun _ _ ↦ ENNReal.summable)]
-    -- Goal: ∑ p ∈ P, ∑' φ, Φ φ * (if φ p.1 = φ p.2 then 1 else 0) ≤ N(N-1) · ε.
-    -- Step B.3: each inner sum is `Pr_{φ←Φ}[φ p.1 = φ p.2] ≤ ε`.
+    simp_rw [h_numCard]
+    rw [lintegral_finsetSum P (fun _ _ ↦ Measurable.of_discrete)]
     have h_inner : ∀ p ∈ P,
-        ∑' φ : S → T, Φ φ * (if φ p.1 = φ p.2 then (1 : ENNReal) else 0) ≤ ε := by
+        (∫⁻ φ, (if φ p.1 = φ p.2 then (1 : ENNReal) else 0) ∂μ) ≤ ε := by
       intro p hp
       simp only [hP_def, Finset.mem_filter, Finset.mem_univ, true_and] at hp
-      have h := hΦ p.1 p.2 hp
-      rwa [Pr_decide_eq_tsum_indicator] at h
-    -- Step B.4: bound termwise.
-    calc ∑ p ∈ P, ∑' φ : S → T, Φ φ * (if φ p.1 = φ p.2 then (1 : ENNReal) else 0)
-        ≤ ∑ _p ∈ P, ε := Finset.sum_le_sum h_inner
+      calc
+        (∫⁻ φ, (if φ p.1 = φ p.2 then (1 : ENNReal) else 0) ∂μ) =
+            μ {φ | φ p.1 = φ p.2} := by
+              rw [← lintegral_indicator_one MeasurableSet.of_discrete]
+              congr 1
+        _ ≤ ε := hμ p.1 p.2 hp
+    calc
+      ∑ p ∈ P, ∫⁻ φ, (if φ p.1 = φ p.2 then (1 : ENNReal) else 0) ∂μ
+          ≤ ∑ _p ∈ P, ε := Finset.sum_le_sum h_inner
       _ = (P.card : ENNReal) * ε := by rw [Finset.sum_const, nsmul_eq_mul]
       _ = ((N * (N - 1) : ℕ) : ENNReal) * ε := by rw [hP_card]
-  -- ## Step C — Contradiction route.
-  -- Assume `∀ φ ∈ supp Φ, |image φ| < K = N / (1 + (N-1) ε)`.
-  -- Then for each such φ:  numCollsOrdered φ > N(N-1) ε  (via Cauchy-Schwarz + algebra).
-  -- Averaging: `∑' φ, Φ φ * numColls φ > N(N-1) ε`, contradicting h_lin.
   by_contra h_neg
   push Not at h_neg
-  -- h_neg : ∀ φ ∈ Φ.support, ((|image φ|) : ENNReal) < K
-  -- Derive a strict per-φ lower bound on numCollsOrdered φ for φ ∈ supp.
-  have h_pointwise :
-      ∀ φ ∈ Φ.support,
-        ((N * (N - 1) : ℕ) : ENNReal) * ε <
-          (numCollsOrdered φ : ENNReal) := by
-    intro φ hφ
-    set A : ENNReal := ((Finset.univ.image φ).card : ENNReal) with hA_def
+  have h_pointwise : ∀ φ ∈ A, 0 < μ {φ} →
+      ((N * (N - 1) : ℕ) : ENNReal) * ε <
+        (numCollsOrdered φ : ENNReal) := by
+    intro φ hφA hφ_pos
+    set B : ENNReal := ((Finset.univ.image φ).card : ENNReal) with hB_def
     set C : ENNReal := (numCollsOrdered φ : ENNReal) with hC_def
     set δ : ENNReal := 1 + ((N : ENNReal) - 1) * ε with hδ_def
-    -- From `h_neg φ hφ`.
-    have hA_lt_K : A < (N : ENNReal) / δ := h_neg φ hφ
-    -- A < K = N/δ ⇒ K > 0 ⇒ N ≠ 0 ∧ δ ≠ ⊤.
+    have hB_lt_K : B < (N : ENNReal) / δ := h_neg φ hφA hφ_pos
     have hK_pos : (0 : ENNReal) < (N : ENNReal) / δ :=
-      lt_of_le_of_lt (zero_le _) hA_lt_K
+      lt_of_le_of_lt zero_le hB_lt_K
     obtain ⟨hN_ne, _hδ_ne_top⟩ := ENNReal.div_pos_iff.mp hK_pos
     have hN_ne_top : (N : ENNReal) ≠ ⊤ := ENNReal.natCast_ne_top _
-    -- A · δ < N (from A < N/δ).
-    have hAδ : A * δ < (N : ENNReal) := mul_lt_of_lt_div hA_lt_K
-    have hCS : (N : ENNReal) ^ 2 ≤ A * ((N : ENNReal) + C) := hCS_E φ
+    have hBδ : B * δ < (N : ENNReal) := mul_lt_of_lt_div hB_lt_K
+    have hCS : (N : ENNReal) ^ 2 ≤ B * ((N : ENNReal) + C) := hCS_E φ
     rw [sq] at hCS
-    -- Helper: ℕ-cast vs ENNReal arithmetic on `N(N-1)`.
     have hN_sub_cast : ((N - 1 : ℕ) : ENNReal) = (N : ENNReal) - 1 := by
-      rw [ENNReal.natCast_sub]; simp
+      rw [ENNReal.natCast_sub]
+      simp
     have h_NC_cast : ((N * (N - 1) : ℕ) : ENNReal) =
         (N : ENNReal) * ((N : ENNReal) - 1) := by
       rw [Nat.cast_mul, hN_sub_cast]
-    -- By contradiction: assume C ≤ N(N-1)·ε.
     by_contra h_not
     push Not at h_not
-    -- h_not : C ≤ ((N * (N - 1) : ℕ) : ENNReal) * ε
-    -- Show N + C ≤ N · δ.
     have h_NC_le : (N : ENNReal) + C ≤ (N : ENNReal) * δ := by
-      have h_arith : (N : ENNReal) + ((N * (N - 1) : ℕ) : ENNReal) * ε
-          = (N : ENNReal) * δ := by
-        rw [hδ_def, mul_add, mul_one, h_NC_cast]; ring
-      calc (N : ENNReal) + C
-          ≤ (N : ENNReal) + ((N * (N - 1) : ℕ) : ENNReal) * ε := by gcongr
+      have h_arith : (N : ENNReal) + ((N * (N - 1) : ℕ) : ENNReal) * ε =
+          (N : ENNReal) * δ := by
+        rw [hδ_def, mul_add, mul_one, h_NC_cast]
+        ring
+      calc
+        (N : ENNReal) + C
+            ≤ (N : ENNReal) + ((N * (N - 1) : ℕ) : ENNReal) * ε := by gcongr
         _ = (N : ENNReal) * δ := h_arith
-    -- A · (N + C) ≤ A · N · δ = (A · δ) · N.
-    have h_step : A * ((N : ENNReal) + C) ≤ A * δ * (N : ENNReal) := by
-      calc A * ((N : ENNReal) + C)
-          ≤ A * ((N : ENNReal) * δ) := by gcongr
-        _ = A * δ * (N : ENNReal) := by ring
-    -- (A · δ) · N < N · N = N² (since A · δ < N and N ≠ 0, N ≠ ⊤).
-    have h_strict_lt : A * δ * (N : ENNReal) < (N : ENNReal) * (N : ENNReal) :=
-      ENNReal.mul_lt_mul_left hN_ne hN_ne_top hAδ
-    -- Chain: N² ≤ A·(N+C) ≤ (A·δ)·N < N². Contradiction.
+    have h_step : B * ((N : ENNReal) + C) ≤ B * δ * (N : ENNReal) := by
+      calc
+        B * ((N : ENNReal) + C) ≤ B * ((N : ENNReal) * δ) := by gcongr
+        _ = B * δ * (N : ENNReal) := by ring
+    have h_strict_lt : B * δ * (N : ENNReal) < (N : ENNReal) * (N : ENNReal) :=
+      ENNReal.mul_lt_mul_left hN_ne hN_ne_top hBδ
     exact absurd (hCS.trans h_step) (not_le_of_gt h_strict_lt)
-  -- Sum to contradict h_lin.
-  have h_strict :
-      ((N * (N - 1) : ℕ) : ENNReal) * ε <
-        ∑' φ : S → T, Φ φ * (numCollsOrdered φ : ENNReal) := by
-    obtain ⟨φ₀, hφ₀⟩ := Φ.support_nonempty
-    -- We need ∑' g > c where c := N(N-1)ε. Reformulate c as ∑' (Φ * c).
-    -- This requires `tsum f ≠ ⊤`, which forces a case-split on `c = ⊤`.
-    set c : ENNReal := ((N * (N - 1) : ℕ) : ENNReal) * ε with hc_def
-    by_cases h_top : c = ⊤
-    · -- c = ⊤: h_pointwise gives ⊤ < numCollsOrdered φ₀, but numCollsOrdered is finite.
-      exfalso
-      have h_pt := h_pointwise φ₀ hφ₀
-      rw [h_top] at h_pt
-      exact absurd h_pt (not_lt.mpr le_top)
-    -- Express c as ∑' φ, Φ φ * c.
-    have h_eq : ∑' φ : S → T, Φ φ * c = c := by
-      rw [ENNReal.tsum_mul_right, Φ.tsum_coe, one_mul]
-    rw [show c = ∑' φ : S → T, Φ φ * c from h_eq.symm]
-    -- Apply tsum_lt_tsum.
-    apply ENNReal.tsum_lt_tsum (i := φ₀)
-    · rw [h_eq]; exact h_top
-    · -- Pointwise: Φ φ * c ≤ Φ φ * numCollsOrdered φ.
-      intro φ
-      by_cases hφ_supp : φ ∈ Φ.support
-      · gcongr
-        exact (h_pointwise φ hφ_supp).le
-      · -- Outside support, Φ φ = 0.
-        have : Φ φ = 0 := by
-          rwa [Φ.mem_support_iff, not_not] at hφ_supp
-        simp [this]
-    · -- Strict at φ₀: Φ φ₀ > 0 and (numCollsOrdered φ₀ > c).
-      have hΦ_pos : (0 : ENNReal) < Φ φ₀ := (Φ.apply_pos_iff _).mpr hφ₀
-      have hΦ_ne_top : Φ φ₀ ≠ ⊤ := PMF.apply_ne_top Φ φ₀
-      exact ENNReal.mul_lt_mul_right (ne_of_gt hΦ_pos) hΦ_ne_top
-        (h_pointwise φ₀ hφ₀)
-  exact absurd (h_strict.trans_le h_lin) (lt_irrefl _)
+  let Z : Set (S → T) := {φ | φ ∈ A ∧ μ {φ} = 0}
+  have hZ_countable : Z.Countable := hA_countable.mono fun _ hφ ↦ hφ.1
+  have hμZ : μ Z = 0 := by
+    rw [← Z.biUnion_of_singleton, measure_biUnion_null_iff hZ_countable]
+    intro φ hφ
+    exact hφ.2
+  have h_positive_atom : ∃ φ ∈ A, 0 < μ {φ} := by
+    by_contra h
+    push Not at h
+    have hAZ : A ⊆ Z := by
+      intro φ hφA
+      exact ⟨hφA, bot_unique (h φ hφA)⟩
+    have hA_zero : μ A = 0 := measure_mono_null hAZ hμZ
+    rw [hμA] at hA_zero
+    simp at hA_zero
+  have h_ae_strict : ∀ᵐ φ ∂μ,
+      ((N * (N - 1) : ℕ) : ENNReal) * ε < (numCollsOrdered φ : ENNReal) := by
+    have h_ae_A : ∀ᵐ φ ∂μ, φ ∈ A :=
+      (mem_ae_iff_prob_eq_one hA_countable.measurableSet).2 hμA
+    have h_ae_not_Z : ∀ᵐ φ ∂μ, φ ∉ Z := measure_eq_zero_iff_ae_notMem.mp hμZ
+    filter_upwards [h_ae_A, h_ae_not_Z] with φ hφA hφZ
+    apply h_pointwise φ hφA
+    exact pos_iff_ne_zero.mpr fun hzero ↦ hφZ ⟨hφA, hzero⟩
+  have h_strict : ((N * (N - 1) : ℕ) : ENNReal) * ε <
+      ∫⁻ φ, (numCollsOrdered φ : ENNReal) ∂μ := by
+    have h_const_ne_top :
+        (∫⁻ _φ : S → T, ((N * (N - 1) : ℕ) : ENNReal) * ε ∂μ) ≠ ⊤ := by
+      rw [lintegral_const, measure_univ, mul_one]
+      by_cases hε : ε = ⊤
+      · obtain ⟨φ, hφA, hφ_pos⟩ := h_positive_atom
+        have hzero : N * (N - 1) = 0 := by
+          by_contra hNprod
+          have hcast : ((N * (N - 1) : ℕ) : ENNReal) ≠ 0 := by exact_mod_cast hNprod
+          have htop : ((N * (N - 1) : ℕ) : ENNReal) * ε = ⊤ := by
+            rw [hε]
+            exact ENNReal.mul_top hcast
+          have hbad := h_pointwise φ hφA hφ_pos
+          rw [htop] at hbad
+          exact (not_lt_of_ge le_top) hbad
+        simp [hzero]
+      · exact ENNReal.mul_ne_top (ENNReal.natCast_ne_top _) hε
+    have hμ_ne_zero : μ ≠ 0 := IsProbabilityMeasure.ne_zero μ
+    have hlt := lintegral_strict_mono hμ_ne_zero Measurable.of_discrete.aemeasurable
+      h_const_ne_top h_ae_strict
+    simpa [lintegral_const, measure_univ] using hlt
+  exact (not_lt_of_ge h_lin) h_strict
+
+open Classical in
+/-- `exists_large_image_of_pairwise_collision_bound` for a probabilistic computation.  The
+positive singleton supplied by the measure theorem is exactly an operationally reachable output
+under the uniform oracle semantics of `ProbComp`. -/
+theorem exists_large_image_of_pairwise_collision_bound_of_probComp
+    {S T : Type} [Fintype S]
+    (Φ : ProbComp (S → T)) (ε : ENNReal)
+    (hΦ : ∀ x y : S, x ≠ y → Pr{let φ ← Φ}[φ x = φ y] ≤ ε) :
+    ∃ φ ∈ MonadAttach.support Φ,
+      (Fintype.card S : ENNReal) / (1 + (Fintype.card S - 1) * ε) ≤
+        ((@Finset.image S T (Classical.decEq T) φ Finset.univ).card : ENNReal) := by
+  let : MeasurableSpace (S → T) := ⊤
+  obtain ⟨φ, hφ, _, hcard⟩ := exists_large_image_of_pairwise_collision_bound
+    𝒟[Φ] (MonadAttach.support Φ)
+      (OracleComp.support_finite (spec := unifSpec) Φ).countable
+      (by
+        change 𝒟[Φ] {x | x ∈ MonadAttach.support Φ} = 1
+        rw [OracleComp.evalDist_apply_setOf_eq_one_iff_forall_mem_support]
+        simp)
+      ε fun x y hxy => by
+      simpa only [prEvent_eq_evalDist_of_discrete] using hΦ x y hxy
+  exact ⟨φ, hφ, hcard⟩
 
 end Probability

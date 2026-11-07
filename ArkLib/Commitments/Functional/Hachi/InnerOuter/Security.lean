@@ -3,18 +3,24 @@ Copyright (c) 2024-2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tobias Rothmann
 -/
-import ArkLib.Commitments.Functional.Hachi.InnerOuter.Correctness
-import ArkLib.Commitments.Functional.Hachi.InnerOuter.Arithmetic
+module
+
+public import ArkLib.Commitments.Functional.Hachi.InnerOuter.Correctness
+public import ArkLib.Commitments.Functional.Hachi.InnerOuter.Arithmetic
+public import VCVio.OracleComp.EvalDist.Measure
 
 /-!
 # Weak-Binding Security of the Inner-Outer Ajtai Commitment
 
 The Greyhound [NS24] / Hachi [NOZ26] weak-binding reduction over the cyclotomic ring `Rq Φ`
-(`R = ZMod q`).
+(`R = ZMod q`). *Binding* says no commitment can be opened to two different messages; the
+*weak* variant proved here relaxes the shortness check by a per-block challenge — exactly the
+guarantee special-soundness extraction provides (the `experiment` docstring discusses ordinary
+vs. weak binding in detail).
 A weak opening carries, per block `i`, a message `sᵢ`, an inner-decomposition `t̂ᵢ`, and a
-challenge `cᵢ`; the verifier `verify_weak` bounds each challenge (nonzero, `ℓ₁ ≤ κ`), bounds
-each scaled message (`‖cᵢ·sᵢ‖₂² ≤ β²`), checks the inner gadget relation, and bounds and
-checks the outer commitment.
+challenge `cᵢ`; the verifier `verify_weak` (defined with `Opening` in `InnerOuter.Scheme`)
+bounds each challenge (nonzero, `ℓ₁ ≤ κ`), bounds each scaled message (`‖cᵢ·sᵢ‖₂² ≤ β²`),
+checks the inner gadget relation, and bounds and checks the outer commitment.
 
 The *definitions* (opening, verifier, experiment, advantage, reductions) are polymorphic in
 the cyclotomic modulus `Φ`. The *security statements*, however, are pinned to the power-of-two
@@ -25,9 +31,28 @@ scaled messages stay short via the Micciancio/Young product bound
 (`scalarVecMul_mul_l2NormSq_le`). The reductions therefore carry the remaining [LS18]
 hypotheses: `q ≡ 5 (mod 8)` and `κ² < q`.
 
-`outputToModuleSIS_valid` is the cryptographic heart: a winning pair of distinct weak
-openings yields a valid inner *or* outer Module-SIS witness. `advantage_le_moduleSIS` wraps
-it probabilistically.
+## Main definitions
+
+* `outputToModuleSIS` — the extractor: two differing weak openings become an inner *or* outer
+  Module-SIS witness.
+* `VerifiedBlock` / `VerifiedOpening` — the per-block and per-opening facts a successful
+  `verify_weak` run yields, packaged for reuse by downstream soundness arguments.
+* `innerShort` / `outerShort` — the shortness predicates the extracted witnesses satisfy.
+* `experiment` / `advantage` — the weak-binding game and its winning probability.
+* `innerAdvToModuleSIS` / `outerAdvToModuleSIS` — the reductions attacking the inner and outer
+  Module-SIS matrices.
+
+## Main results
+
+* `outputToModuleSIS_valid_of_verified` — the cryptographic heart: two differing *verified*
+  weak openings yield a valid inner or outer Module-SIS witness. Stated on `VerifiedOpening`
+  facts, independent of how they were obtained, so the evaluation protocol's soundness
+  argument (Hachi [NOZ26, Lemma 8], `QuadEval/`) can reuse it on openings reconstructed from
+  special-soundness transcripts.
+* `outputToModuleSIS_valid` — its boolean-verification wrapper: a winning pair of openings
+  passing `verify_weak` yields such a witness.
+* `advantage_le_moduleSIS` — **weak binding reduces to Module-SIS**: the weak-binding advantage
+  is at most the sum of the extracted inner and outer Module-SIS advantages.
 
 ## References
 
@@ -37,6 +62,8 @@ it probabilistically.
 * [Nguyen, N. K., O'Rourke, G., and Zhang, J., *Hachi: Efficient Lattice-Based Multilinear
     Polynomial Commitments over Extension Fields*][NOZ26]
 -/
+
+@[expose] public section
 
 open OracleComp CommitmentScheme CompPoly ArkLib.Lattices ArkLib.Lattices.CyclotomicModulus
   ArkLib.Lattices.Ajtai
@@ -52,14 +79,6 @@ variable {innerRows messageRows messageDigits outerRows blocks innerDigits : Nat
 -- `InnerOuter.Arithmetic`, active here since this namespace is nested in `…InnerOuter`.
 
 /-! ## Generic helpers -/
-
-/-- Boolean monotonicity of `pure` outcome probability into a disjunction. -/
-theorem probOutput_pure_bool_le_or (win inner outer : Bool)
-    (h : win = true → inner = true ∨ outer = true) :
-    Pr[= true | ((pure win) : ProbComp Bool)] ≤
-      Pr[= true | ((pure inner) : ProbComp Bool)] +
-        Pr[= true | ((pure outer) : ProbComp Bool)] := by
-  cases win <;> cases inner <;> cases outer <;> simp_all
 
 /-- The first index where two function-vectors differ, if any. -/
 def firstDiff? {T : Type*} [DecidableEq T] {n : Nat} (x y : Fin n → T) : Option (Fin n) :=
@@ -80,8 +99,8 @@ theorem firstDiff?_eq_some_ne {T : Type*} [DecidableEq T] {n : Nat}
 The weak opening structure `Opening` and the weak verifier `verify_weak` are defined in
 `InnerOuter.Scheme` (where they back the bundled `commitmentScheme`); this file reuses them. -/
 
-/-- The zero fallback witness, used on the branch where the other matrix yields a witness. -/
-def zeroSolution (cols : Nat) : ModuleSIS.Solution Φ cols := fun _ => 0
+/-- The trivial fallback witness, used on the branch where the other matrix yields a witness. -/
+def dummySolution (cols : Nat) : ModuleSIS.Solution Φ cols := fun _ => 0
 
 /-- Weak openings differ when they contain different message tuples `(sᵢ)`. -/
 def openingsDiffer
@@ -327,9 +346,9 @@ theorem outputToModuleSIS_valid_of_verified {base : ZMod q} {βSq γ κ : Nat}
       PolyVec.flattenBlocks opening₂.innerDecomp
   · obtain ⟨i, hfind⟩ := firstDiff?_some_of_differs hdiff
     have hmsgNe : opening₁.message i ≠ opening₂.message i := firstDiff?_eq_some_ne hfind
-    simp only [hflat, if_true, hfind]
+    simp only [hflat, ite_true, hfind]
     exact inner_relation_of_verified α hv₁ hv₂ hflat hmsgNe
-  · simp only [hflat, if_false]
+  · simp only [hflat, ite_false]
     exact outer_relation_of_verified 𝓜(q, α) hv₁ hv₂ hflat
 
 /-- A successful pair of weak openings yields a valid inner or outer Module-SIS witness (over
@@ -408,7 +427,7 @@ def experiment (base : ZMod q) (βSq γ κ : Nat)
 /-- Weak-binding advantage. -/
 noncomputable def advantage (base : ZMod q) (βSq γ κ : Nat)
     (adv : Adversary Φ innerRows messageRows messageDigits outerRows blocks innerDigits) : ℝ≥0∞ :=
-  Pr[= true | experiment Φ base βSq γ κ adv]
+  𝒟[experiment Φ base βSq γ κ adv] {true}
 
 /-- Reduction attacking the inner Module-SIS matrix. -/
 def innerAdvToModuleSIS
@@ -420,7 +439,7 @@ def innerAdvToModuleSIS
     let (_u, opening₁, opening₂) ← adv { innerMatrix := A, outerMatrix := B }
     match outputToModuleSIS Φ opening₁ opening₂ with
     | Sum.inl z => pure z
-    | Sum.inr _ => pure (zeroSolution Φ (messageRows * messageDigits))
+    | Sum.inr _ => pure (dummySolution Φ (messageRows * messageDigits))
 
 /-- Reduction attacking the outer Module-SIS matrix. -/
 def outerAdvToModuleSIS
@@ -431,7 +450,7 @@ def outerAdvToModuleSIS
     let A ← $ᵗ (Simple.PublicParams Φ innerRows (messageRows * messageDigits))
     let (_u, opening₁, opening₂) ← adv { innerMatrix := A, outerMatrix := B }
     match outputToModuleSIS Φ opening₁ opening₂ with
-    | Sum.inl _ => pure (zeroSolution Φ (blocks * (innerRows * innerDigits)))
+    | Sum.inl _ => pure (dummySolution Φ (blocks * (innerRows * innerDigits)))
     | Sum.inr z => pure z
 
 /-- Pointwise weak-binding to Module-SIS bound for fixed samples (over `𝓜(q, α)`). -/
@@ -442,26 +461,26 @@ theorem sample_advantage_le_moduleSIS (base : ZMod q)
     (u : Commitment 𝓜(q, α) outerRows)
     (opening₁ opening₂ :
       Opening 𝓜(q, α) innerRows messageRows messageDigits blocks innerDigits) :
-    Pr[= true | ((pure (openingsDiffer 𝓜(q, α) opening₁ opening₂ &&
+    𝒟[((pure (openingsDiffer 𝓜(q, α) opening₁ opening₂ &&
         verify_weak 𝓜(q, α) base βSq γ κ
           { innerMatrix := A, outerMatrix := B } u opening₁ &&
         verify_weak 𝓜(q, α) base βSq γ κ
           { innerMatrix := A, outerMatrix := B } u opening₂)) :
-        ProbComp Bool)] ≤
-      Pr[= true | ((pure (ModuleSIS.relation 𝓜(q, α) (innerShort 𝓜(q, α) κ βSq)
+        ProbComp Bool)] {true} ≤
+      𝒟[((pure (ModuleSIS.relation 𝓜(q, α) (innerShort 𝓜(q, α) κ βSq)
           A (match outputToModuleSIS 𝓜(q, α) opening₁ opening₂ with
             | Sum.inl z => z
-            | Sum.inr _ => zeroSolution 𝓜(q, α) (messageRows * messageDigits)))) :
-          ProbComp Bool)] +
-      Pr[= true | ((pure (ModuleSIS.relation 𝓜(q, α) (outerShort 𝓜(q, α) γ)
+            | Sum.inr _ => dummySolution 𝓜(q, α) (messageRows * messageDigits)))) :
+          ProbComp Bool)] {true} +
+      𝒟[((pure (ModuleSIS.relation 𝓜(q, α) (outerShort 𝓜(q, α) γ)
           B (match outputToModuleSIS 𝓜(q, α) opening₁ opening₂ with
-            | Sum.inl _ => zeroSolution 𝓜(q, α) (blocks * (innerRows * innerDigits))
+            | Sum.inl _ => dummySolution 𝓜(q, α) (blocks * (innerRows * innerDigits))
             | Sum.inr z => z))) :
-          ProbComp Bool)] := by
+          ProbComp Bool)] {true} := by
   let pp : PublicParams 𝓜(q, α)
       innerRows messageRows messageDigits outerRows blocks innerDigits :=
     { innerMatrix := A, outerMatrix := B }
-  refine probOutput_pure_bool_le_or _ _ _ (fun hwin => ?_)
+  refine evalDist_pure_apply_le_add_of_imp _ _ _ (fun hwin => ?_)
   have hvalid := outputToModuleSIS_valid α base hq5 βSq γ κ hκ pp u
     opening₁ opening₂ hwin
   cases hsol : outputToModuleSIS 𝓜(q, α) opening₁ opening₂ with
@@ -488,18 +507,18 @@ theorem advantage_le_moduleSIS (base : ZMod q)
   unfold advantage experiment ModuleSIS.advantage SIS.advantage SIS.experiment
     ModuleSIS.problem innerAdvToModuleSIS outerAdvToModuleSIS
   simp only [monad_norm]
-  rw [← probOutput_bind_bind_swap
+  rw [← evalDist_bind_bind_swap
     ($ᵗ (Simple.PublicParams 𝓜(q, α) innerRows (messageRows * messageDigits)))
-    ($ᵗ (Simple.PublicParams 𝓜(q, α) outerRows (blocks * (innerRows * innerDigits)))) _ true]
-  refine probOutput_bind_congr_le_add
+    ($ᵗ (Simple.PublicParams 𝓜(q, α) outerRows (blocks * (innerRows * innerDigits)))) _]
+  refine evalDist_bind_apply_le_add_of_support
     (mx := $ᵗ (Simple.PublicParams 𝓜(q, α) innerRows (messageRows * messageDigits)))
-    (y := true) (z₁ := true) (z₂ := true) (fun A _ => ?_)
-  refine probOutput_bind_congr_le_add
+    _ _ _ (measurableSet_singleton true) (fun A _ => ?_)
+  refine evalDist_bind_apply_le_add_of_support
     (mx := $ᵗ (Simple.PublicParams 𝓜(q, α) outerRows (blocks * (innerRows * innerDigits))))
-    (y := true) (z₁ := true) (z₂ := true) (fun B _ => ?_)
-  refine probOutput_bind_congr_le_add
+    _ _ _ (measurableSet_singleton true) (fun B _ => ?_)
+  refine evalDist_bind_apply_le_add_of_support
     (mx := adv { innerMatrix := A, outerMatrix := B })
-    (y := true) (z₁ := true) (z₂ := true) (fun x _ => ?_)
+    _ _ _ (measurableSet_singleton true) (fun x _ => ?_)
   obtain ⟨u, opening₁, opening₂⟩ := x
   have hs := sample_advantage_le_moduleSIS α base hq5 βSq γ κ hκ A B u
     opening₁ opening₂

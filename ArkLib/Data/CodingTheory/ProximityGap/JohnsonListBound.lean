@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.CoveragePigeonhole
-import ArkLib.Data.CodingTheory.Basic.Distance
+import ProximityPrize.Extensions.Data.CodingTheory.Basic.Distance
 import Mathlib.InformationTheory.Hamming
 
 /-!

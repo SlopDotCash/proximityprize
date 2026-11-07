@@ -424,7 +424,6 @@ theorem a4Pairs_card (hm : 2 ≤ m) :
     have e4 := Finset.sum_range_id_mul_two M
     -- assemble
     rw [hfe]
-    simp only at e1 e2
     have ha : M * 2 ^ m = 2 * (M * M) := by
       rw [show (2 : ℕ) ^ m = M + M from hsplit.symm]
       ring

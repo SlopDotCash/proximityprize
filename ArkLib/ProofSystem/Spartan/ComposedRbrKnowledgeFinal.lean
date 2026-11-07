@@ -4,16 +4,23 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.SumcheckKnowledge
 import ArkLib.OracleReduction.Security.RbrKnowledgeTruncate
 import ArkLib.ProofSystem.Spartan.ShortPhaseRbrKnowledgeLeaves
 
 /-!
+
+Canonical-message integration: the degree-2/degree-3 round knowledge bounds remain explicit
+hypotheses of the `_of_sumcheck_rounds` constructions below. Former unconditional zero-flip
+completion claims are retired; exact names, commands and added obligations are recorded in
+`scripts/integration/sumcheck-message-semantics-retirements.json`.
+
 # Composed Spartan RBR knowledge soundness — the named residual, discharged (issue #114)
 
 This file discharges `Bricks.composedRbrKnowledgeSoundnessStatement` (the broad-terminal
 composed RBR-KS obligation, with output relation `finalCheckRelOut = Set.univ`) at the
-assembled `composedPIOP_Rc`, with the error vector of the unconditional relation-preserving
-apex `composedRbrKnowledgeSoundnessPreserving_unconditional`:
+assembled `composedPIOP_Rc`, with the error vector of the relation-preserving apex
+`composedRbrKnowledgeSoundnessPreserving_of_sumcheck_rounds`, whose round bounds remain explicit:
 
   `0 / ℓ_m·|R|⁻¹ / 3·|R|⁻¹ (per round) / 0 / 1 / 0 / 2·|R|⁻¹ (per round) / 0`.
 
@@ -29,7 +36,7 @@ extraction from the first message, Schwartz–Zippel at `firstChallenge`, the fu
 sum-check at `3/|R|` per round).
 
 The **stronger** headline fact remains the relation-preserving apex
-`composedRbrKnowledgeSoundnessPreserving_unconditional`, which keeps the nontrivial
+`composedRbrKnowledgeSoundnessPreserving_of_sumcheck_rounds`, which keeps the nontrivial
 second-sum-check terminal relation. The *tight* end-to-end statement (error `O(1/|R|)` at
 every round against a checking terminal) requires the target-carrying (`WithClaim`) protocol
 line — tracked as issue #329.
@@ -62,7 +69,7 @@ def linearCombinationChallengeIdx : (composedPSpec (R := R) pp).ChallengeIdx :=
             (⟨!v[.V_to_P], !v[LinearCombinationChallenge R]⟩ :
               ProtocolSpec 1).ChallengeIdx))))))
 
-/-- The composed error vector of the unconditional apex evaluates to `err₅ = 1` at the
+/-- The composed error vector of the conditional apex evaluates to `err₅ = 1` at the
 `linearCombination` challenge round. -/
 theorem composedRbrError_linearCombinationChallengeIdx
     (err₁ : (⟨!v[.P_to_V], !v[Witness R pp]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0)
@@ -80,18 +87,15 @@ theorem composedRbrError_linearCombinationChallengeIdx
   simp only [linearCombinationChallengeIdx, composedRbrError, Function.comp_apply,
     Equiv.symm_apply_apply, Sum.elim_inl, Sum.elim_inr]
 
-/-- **The named composed Spartan RBR knowledge-soundness residual, discharged (issue #114).**
-
-`composedRbrKnowledgeSoundnessStatement` at `Rc := composedPIOP_Rc`, with the apex error
-vector. Obtained from the unconditional relation-preserving apex by truncating the knowledge
-state function at the (error-`1`) `linearCombination` round — see the module docstring for
-what this does and does not claim. -/
-theorem composedRbrKnowledgeSoundnessStatement_proven [Subsingleton σ]
+/-- The completed Spartan composition construction, conditional on the actual canonical
+sumcheck degree-2, degree-3 per-round knowledge bounds. The former unconditional zero-flip
+completion is retired; exact source and the added obligations are recorded in the migration audit. -/
+theorem composedRbrKnowledgeSoundnessStatement_proven_of_sumcheck_rounds [Subsingleton σ]
     (hm : 0 < pp.ℓ_m) (hn : 0 < pp.ℓ_n)
     [Inhabited (FinalStatement R pp × ∀ i, FinalOracleStatement R pp i)]
     [Inhabited (Statement.AfterFirstSumcheck R pp ×
       ∀ i, OracleStatement.AfterFirstSumcheck R pp i)]
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×
       ∀ i, OracleStatement.AfterFirstMessage R pp i))
     (hNE_C : Nonempty (Statement.AfterFirstChallenge R pp ×
@@ -101,7 +105,10 @@ theorem composedRbrKnowledgeSoundnessStatement_proven [Subsingleton σ]
     (hNE_F : Nonempty (Statement.AfterLinearCombination R pp ×
       ∀ i, OracleStatement.AfterLinearCombination R pp i))
     (hNE_G : Nonempty ((R × Statement.AfterLinearCombination R pp) ×
-      ∀ i, OracleStatement.AfterLinearCombination R pp i)) :
+      ∀ i, OracleStatement.AfterLinearCombination R pp i))
+    (hRound2 : Sumcheck.Spec.RoundKnowledge R 2 (boolEmbedding R) pp.ℓ_n oSpec init impl)
+    (hRound3 : Sumcheck.Spec.RoundKnowledge R 3 (boolEmbedding R) pp.ℓ_m oSpec init impl)
+    :
     composedRbrKnowledgeSoundnessStatement R pp oSpec (composedPIOP_Rc (R := R) pp oSpec)
       init impl
       (composedRbrError pp
@@ -113,7 +120,8 @@ theorem composedRbrKnowledgeSoundnessStatement_proven [Subsingleton σ]
         (0 : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0)
         (fun _ => (2 : ℝ≥0) / (Fintype.card R))
         (0 : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0)) := by
-  have h := composedRbrKnowledgeSoundnessPreserving_unconditional (R := R) pp oSpec
+  have h := composedRbrKnowledgeSoundnessPreserving_of_sumcheck_rounds (hRound2 := hRound2)
+    (hRound3 := hRound3) (R := R) pp oSpec
     (init := init) (impl := impl) hm hn hInit hInitNF hNE_B hNE_C hNE_E hNE_F hNE_G
   unfold composedRbrKnowledgeSoundnessStatement
   refine OracleVerifier.rbrKnowledgeSoundness_relOut_any_of_one_le_error h
@@ -126,4 +134,4 @@ end Spartan.Spec.Bricks
 
 -- Axiom audit: must report only `[propext, Classical.choice, Quot.sound]` (no `sorryAx`).
 #print axioms Spartan.Spec.Bricks.composedRbrError_linearCombinationChallengeIdx
-#print axioms Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessStatement_proven
+#print axioms Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessStatement_proven_of_sumcheck_rounds

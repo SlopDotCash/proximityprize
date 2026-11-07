@@ -107,7 +107,11 @@ theorem badNeighborhoodCount_clusterSpike_clusterRelation [DecidableEq α]
     ext b
     by_cases hb : b ∈ cluster
     · simp [clusterRelation, scoreBad, ha, hb, hTS]
-    · simp [clusterRelation, scoreBad, hb, not_le.mpr hT]
+    · rw [Finset.mem_filter]
+      constructor
+      · rintro ⟨_, hab, _⟩
+        exact hab.2
+      · exact fun h => (hb h).elim
   unfold badNeighborhoodCount
   rw [hfilter]
 

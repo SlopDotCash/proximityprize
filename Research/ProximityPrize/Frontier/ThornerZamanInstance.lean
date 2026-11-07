@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26ThornerZaman
-import Mathlib.Tactic.NormNum.Prime
+import ArkLib.ToMathlib.NatPrimeCheckpoint
 
 /-!
 # B3 — a concrete discharge of `TZPrimeSupply` (#334)
@@ -35,7 +35,8 @@ theorem tzPrimeSupply_16_two : TZPrimeSupply 16 (2 : ℝ) 6 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   calc (6 : ℕ) = ({257, 337, 353, 401, 433, 449} : Finset ℕ).card := by decide
     _ ≤ (tzWindow 16 (2 : ℝ)).card := Finset.card_le_card hsub
 
@@ -49,7 +50,8 @@ theorem tzPrimeSupply_8_two : TZPrimeSupply 8 (2 : ℝ) 4 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   calc (4 : ℕ) = ({73, 89, 97, 113} : Finset ℕ).card := by decide
     _ ≤ (tzWindow 8 (2 : ℝ)).card := Finset.card_le_card hsub
 
@@ -64,7 +66,8 @@ theorem tzPrimeSupply_32_two : TZPrimeSupply 32 (2 : ℝ) 6 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   calc (6 : ℕ) = ({1153, 1217, 1249, 1409, 1601, 1697} : Finset ℕ).card := by decide
     _ ≤ (tzWindow 32 (2 : ℝ)).card := Finset.card_le_card hsub
 
@@ -79,7 +82,8 @@ theorem tzPrimeSupply_64_two : TZPrimeSupply 64 (2 : ℝ) 8 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   calc (8 : ℕ)
       = ({4289, 4481, 4673, 4801, 4993, 5441, 5569, 5953} : Finset ℕ).card := by decide
     _ ≤ (tzWindow 64 (2 : ℝ)).card := Finset.card_le_card hsub
@@ -95,7 +99,8 @@ theorem tzPrimeSupply_8_three : TZPrimeSupply 8 (3 : ℝ) 8 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   calc (8 : ℕ)
       = ({521, 569, 577, 593, 601, 617, 641, 673} : Finset ℕ).card := by decide
     _ ≤ (tzWindow 8 (3 : ℝ)).card := Finset.card_le_card hsub
@@ -114,7 +119,8 @@ theorem tzPrimeSupply_128_two : TZPrimeSupply 128 (2 : ℝ) 10 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   calc (10 : ℕ)
       = ({17921, 18049, 18433, 19073, 19457, 19841, 20353, 21121, 21377, 22273} :
         Finset ℕ).card := by decide
@@ -132,7 +138,8 @@ theorem tzPrimeSupply_256_two : TZPrimeSupply 256 (2 : ℝ) 10 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   calc (10 : ℕ)
       = ({65537, 67073, 70657, 70913, 75521, 76289, 76801, 77569, 78593, 79873} :
         Finset ℕ).card := by decide
@@ -153,7 +160,8 @@ theorem tzPrimeSupply_512_two : TZPrimeSupply 512 (2 : ℝ) 20 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   calc (20 : ℕ)
       = ({262657, 265729, 270337, 275969, 278017, 279553, 284161, 285697, 286721, 287233,
           288257, 295937, 299521, 301057, 302593, 303617, 306689, 307201, 310273, 319489} :
@@ -174,7 +182,8 @@ theorem tzPrimeSupply_1024_two : TZPrimeSupply 1024 (2 : ℝ) 20 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   calc (20 : ℕ)
       = ({1051649, 1053697, 1054721, 1062913, 1067009, 1070081, 1072129, 1073153, 1075201,
           1079297, 1082369, 1093633, 1094657, 1097729, 1103873, 1108993, 1113089, 1124353,
@@ -196,7 +205,8 @@ theorem tzPrimeSupply_2048_two : TZPrimeSupply 2048 (2 : ℝ) 20 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   calc (20 : ℕ)
       = ({4206593, 4208641, 4263937, 4270081, 4274177, 4294657, 4300801, 4304897, 4319233,
           4323329, 4360193, 4366337, 4384769, 4417537, 4421633, 4423681, 4427777, 4435969,
@@ -216,7 +226,8 @@ theorem tzPrimeSupply_4096_two : TZPrimeSupply 4096 (2 : ℝ) 20 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   calc (20 : ℕ)
       = ({16801793, 16863233, 16900097, 16957441, 16986113, 17006593, 17010689, 17059841,
           17129473, 17182721, 17231873, 17252353, 17264641, 17276929, 17367041, 17375233,
@@ -236,12 +247,134 @@ theorem tzPrimeSupply_8192_two : TZPrimeSupply 8192 (2 : ℝ) 20 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   calc (20 : ℕ)
       = ({67239937, 67280897, 67411969, 67452929, 67502081, 67510273, 67584001, 67649537,
           67657729, 67731457, 67903489, 68018177, 68190209, 68362241, 68485121, 68558849,
           68567041, 68640769, 68681729, 68853761} : Finset ℕ).card := by decide
     _ ≤ (tzWindow 8192 (2 : ℝ)).card := Finset.card_le_card hsub
+
+/- Separate certificates keep each large-prime proof within its own elaboration budget. -/
+private theorem tzPrime_268582913 : Nat.Prime 268582913 := by
+  prime_checkpoint
+
+private theorem tzPrime_268664833 : Nat.Prime 268664833 := by
+  prime_checkpoint
+
+private theorem tzPrime_268730369 : Nat.Prime 268730369 := by
+  prime_checkpoint
+
+private theorem tzPrime_268779521 : Nat.Prime 268779521 := by
+  prime_checkpoint
+
+private theorem tzPrime_268861441 : Nat.Prime 268861441 := by
+  prime_checkpoint
+
+private theorem tzPrime_269221889 : Nat.Prime 269221889 := by
+  prime_checkpoint
+
+private theorem tzPrime_269402113 : Nat.Prime 269402113 := by
+  prime_checkpoint
+
+private theorem tzPrime_269844481 : Nat.Prime 269844481 := by
+  prime_checkpoint
+
+private theorem tzPrime_269991937 : Nat.Prime 269991937 := by
+  prime_checkpoint
+
+private theorem tzPrime_270237697 : Nat.Prime 270237697 := by
+  prime_checkpoint
+
+private theorem tzPrime_270450689 : Nat.Prime 270450689 := by
+  prime_checkpoint
+
+private theorem tzPrime_270499841 : Nat.Prime 270499841 := by
+  prime_checkpoint
+
+private theorem tzPrime_270532609 : Nat.Prime 270532609 := by
+  prime_checkpoint
+
+private theorem tzPrime_270581761 : Nat.Prime 270581761 := by
+  prime_checkpoint
+
+private theorem tzPrime_270794753 : Nat.Prime 270794753 := by
+  prime_checkpoint
+
+private theorem tzPrime_271286273 : Nat.Prime 271286273 := by
+  prime_checkpoint
+
+private theorem tzPrime_271532033 : Nat.Prime 271532033 := by
+  prime_checkpoint
+
+private theorem tzPrime_271564801 : Nat.Prime 271564801 := by
+  prime_checkpoint
+
+private theorem tzPrime_271728641 : Nat.Prime 271728641 := by
+  prime_checkpoint
+
+private theorem tzPrime_271761409 : Nat.Prime 271761409 := by
+  prime_checkpoint
+
+private theorem tzPrime_1073872897 : Nat.Prime 1073872897 := by
+  prime_checkpoint
+
+private theorem tzPrime_1073971201 : Nat.Prime 1073971201 := by
+  prime_checkpoint
+
+private theorem tzPrime_1074266113 : Nat.Prime 1074266113 := by
+  prime_checkpoint
+
+private theorem tzPrime_1074429953 : Nat.Prime 1074429953 := by
+  prime_checkpoint
+
+private theorem tzPrime_1075937281 : Nat.Prime 1075937281 := by
+  prime_checkpoint
+
+private theorem tzPrime_1076002817 : Nat.Prime 1076002817 := by
+  prime_checkpoint
+
+private theorem tzPrime_1076789249 : Nat.Prime 1076789249 := by
+  prime_checkpoint
+
+private theorem tzPrime_1076920321 : Nat.Prime 1076920321 := by
+  prime_checkpoint
+
+private theorem tzPrime_1077477377 : Nat.Prime 1077477377 := by
+  prime_checkpoint
+
+private theorem tzPrime_1077706753 : Nat.Prime 1077706753 := by
+  prime_checkpoint
+
+private theorem tzPrime_1077903361 : Nat.Prime 1077903361 := by
+  prime_checkpoint
+
+private theorem tzPrime_1077968897 : Nat.Prime 1077968897 := by
+  prime_checkpoint
+
+private theorem tzPrime_1078296577 : Nat.Prime 1078296577 := by
+  prime_checkpoint
+
+private theorem tzPrime_1079443457 : Nat.Prime 1079443457 := by
+  prime_checkpoint
+
+private theorem tzPrime_1079672833 : Nat.Prime 1079672833 := by
+  prime_checkpoint
+
+private theorem tzPrime_1080360961 : Nat.Prime 1080360961 := by
+  prime_checkpoint
+
+private theorem tzPrime_1081212929 : Nat.Prime 1081212929 := by
+  prime_checkpoint
+
+private theorem tzPrime_1081507841 : Nat.Prime 1081507841 := by
+  prime_checkpoint
+
+private theorem tzPrime_1081638913 : Nat.Prime 1081638913 := by
+  prime_checkpoint
+
+private theorem tzPrime_1082982401 : Nat.Prime 1082982401 := by
+  prime_checkpoint
 
 /-- **Concrete discharge for `n = 16384, β = 2`.**  The window `[16384², 2·16384²] =
 `[268435456, 536870912]` contains the twenty primes listed below, all `≡ 1 (mod 16384)`. -/
@@ -257,7 +390,29 @@ theorem tzPrimeSupply_16384_two : TZPrimeSupply 16384 (2 : ℝ) 20 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      refine ⟨?_, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩ <;>
+      first
+      | exact tzPrime_268582913
+      | exact tzPrime_268664833
+      | exact tzPrime_268730369
+      | exact tzPrime_268779521
+      | exact tzPrime_268861441
+      | exact tzPrime_269221889
+      | exact tzPrime_269402113
+      | exact tzPrime_269844481
+      | exact tzPrime_269991937
+      | exact tzPrime_270237697
+      | exact tzPrime_270450689
+      | exact tzPrime_270499841
+      | exact tzPrime_270532609
+      | exact tzPrime_270581761
+      | exact tzPrime_270794753
+      | exact tzPrime_271286273
+      | exact tzPrime_271532033
+      | exact tzPrime_271564801
+      | exact tzPrime_271728641
+      | exact tzPrime_271761409
   calc (20 : ℕ)
       = ({268582913, 268664833, 268730369, 268779521, 268861441, 269221889, 269402113,
           269844481, 269991937, 270237697, 270450689, 270499841, 270532609, 270581761,
@@ -279,7 +434,29 @@ theorem tzPrimeSupply_32768_two : TZPrimeSupply 32768 (2 : ℝ) 20 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      refine ⟨?_, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩ <;>
+      first
+      | exact tzPrime_1073872897
+      | exact tzPrime_1073971201
+      | exact tzPrime_1074266113
+      | exact tzPrime_1074429953
+      | exact tzPrime_1075937281
+      | exact tzPrime_1076002817
+      | exact tzPrime_1076789249
+      | exact tzPrime_1076920321
+      | exact tzPrime_1077477377
+      | exact tzPrime_1077706753
+      | exact tzPrime_1077903361
+      | exact tzPrime_1077968897
+      | exact tzPrime_1078296577
+      | exact tzPrime_1079443457
+      | exact tzPrime_1079672833
+      | exact tzPrime_1080360961
+      | exact tzPrime_1081212929
+      | exact tzPrime_1081507841
+      | exact tzPrime_1081638913
+      | exact tzPrime_1082982401
   calc (20 : ℕ)
       = ({1073872897, 1073971201, 1074266113, 1074429953, 1075937281, 1076002817,
           1076789249, 1076920321, 1077477377, 1077706753, 1077903361, 1077968897,
@@ -299,7 +476,8 @@ theorem tzPrimeSupply_16_three : TZPrimeSupply 16 (3 : ℝ) 10 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   calc (10 : ℕ)
       = ({4129, 4177, 4241, 4273, 4289, 4337, 4481, 4513, 4561, 4657} :
         Finset ℕ).card := by decide
@@ -318,7 +496,8 @@ theorem tzPrimeSupply_32_three : TZPrimeSupply 32 (3 : ℝ) 12 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   calc (12 : ℕ)
       = ({32801, 32833, 32993, 33377, 33409, 33569, 33601, 33857, 33889, 34273, 34337, 34369} :
           Finset ℕ).card := by decide
@@ -339,7 +518,8 @@ theorem tzPrimeSupply_64_three : TZPrimeSupply 64 (3 : ℝ) 20 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   calc (20 : ℕ)
       = ({262337, 262657, 263489, 264577, 264769, 264961, 265729, 265921, 266177, 266369,
           266689, 267521, 267649, 267713, 268993, 269057, 269377, 269441, 269761, 269953} :
@@ -359,7 +539,8 @@ theorem tzPrimeSupply_8_four : TZPrimeSupply 8 (4 : ℝ) 8 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   calc (8 : ℕ)
       = ({4129, 4153, 4177, 4201, 4217, 4241, 4273, 4289} : Finset ℕ).card := by decide
     _ ≤ (tzWindow 8 (4 : ℝ)).card := Finset.card_le_card hsub
@@ -379,7 +560,8 @@ theorem tzPrimeSupply_16_four : TZPrimeSupply 16 (4 : ℝ) 10 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   calc (10 : ℕ)
       = ({65537, 65617, 65633, 65713, 65729, 65761, 65777, 65809, 65921, 66161} :
         Finset ℕ).card := by decide
@@ -402,7 +584,8 @@ theorem tzPrimeSupply_32_four : TZPrimeSupply 32 (4 : ℝ) 16 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   calc (16 : ℕ)
       = ({1048609, 1048897, 1049057, 1049089, 1049281, 1049473, 1049537, 1049569,
           1049857, 1049953, 1050241, 1050337, 1050593, 1050817, 1050913, 1050977} :
@@ -424,7 +607,8 @@ theorem tzPrimeSupply_64_four : TZPrimeSupply 64 (4 : ℝ) 16 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   calc (16 : ℕ)
       = ({16777601, 16777729, 16778497, 16778561, 16778689, 16779713, 16780289, 16780417,
           16780609, 16780801, 16781441, 16781953, 16782209, 16782401, 16783873, 16784513} :
@@ -443,7 +627,8 @@ theorem tzPrimeSupply_8_five : TZPrimeSupply 8 (5 : ℝ) 8 := by
     intro p hp
     rw [mem_tzWindow]
     fin_cases hp <;>
-      exact ⟨by norm_num, by decide, by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
+      exact ⟨by prime_checkpoint, by norm_num [Nat.ModEq],
+        by rw [hpow]; norm_num, by rw [hpow]; norm_num⟩
   calc (8 : ℕ)
       = ({32801, 32833, 32969, 32993, 33049, 33073, 33113, 33161} : Finset ℕ).card := by decide
     _ ≤ (tzWindow 8 (5 : ℝ)).card := Finset.card_le_card hsub

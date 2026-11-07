@@ -378,6 +378,7 @@ theorem exists_pg_factor_with_global_section_divisor
     rw [hAz] at hzA
     obtain ⟨z', hz', rfl⟩ := Finset.mem_image.mp hzA
     have h0 := hmemP z' hz'
+    unfold Trivariate.eval_on_Z at h0
     rw [Trivariate.eval_on_Z_eq] at h0
     rw [hfold _ z'.2,
       PzFamily_eq_Pz_of_mem (F := F) (n := n) (k := k) (δ := δ)
@@ -388,7 +389,7 @@ theorem exists_pg_factor_with_global_section_divisor
     have hmem' : R' ∈ UniqueFactorizationMonoid.normalizedFactors Q := by
       have h := hRmem
       unfold pg_Rset at h
-      simpa using h
+      simpa only [Multiset.mem_toFinset] using h
     exact UniqueFactorizationMonoid.dvd_of_mem_normalizedFactors hmem'
   have hRdeg : R'.natDegree ≤ Q.natDegree :=
     Polynomial.natDegree_le_of_dvd hdvdQ h_gs.Q_ne_0

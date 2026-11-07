@@ -96,6 +96,9 @@ section Bundle
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
+-- The historical finite-field surface uses its existing uniform finite sampler.
+private noncomputable local instance : SampleableType F := SampleableType.ofFintype F
+
 /-! ## Part 1 — the bundle: the off-centre machinery with the faithful curve-family `hPz` -/
 
 /-- **The off-centre per-`P` §5 extraction datum, faithful interface.**  Field-for-field

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import Mathlib.Algebra.Polynomial.Roots
+import ArkLib.ToMathlib.Polynomial.RootMultiplicity
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
 /-!
@@ -33,7 +33,7 @@ p. 9 of GK16). It is field-and-code agnostic: a pure statement about polynomials
 - `Polynomial.sum_rootMultiplicity_le_card_roots` — for distinct points `S`,
   `∑_{a∈S} rootMultiplicity a p ≤ p.roots.card`.
 - `Polynomial.sum_rootMultiplicity_le_natDegree` — for distinct points `S` and
-  `p ≠ 0`, `∑_{a∈S} rootMultiplicity a p ≤ p.natDegree`.
+  any `p`, `∑_{a∈S} rootMultiplicity a p ≤ p.natDegree` (canonical ArkLib).
 
 Compiles sorry-free; `#print axioms` gives exactly
 `[propext, Classical.choice, Quot.sound]` (no `sorryAx`).
@@ -76,16 +76,8 @@ theorem sum_rootMultiplicity_le_card_roots (p : F[X]) (S : Finset F) :
         Finset.sum_le_sum_of_subset_of_nonneg hsub (fun _ _ _ => Nat.zero_le _)
     _ = Multiset.card p.roots := Multiset.toFinset_sum_count_eq p.roots
 
-/-- **GK16 degree budget (degree form).** For a *nonzero* polynomial `p` and any
-finite set `S` of distinct points, the total root multiplicity over `S` is at
-most `natDegree p`.
-
-This is the exact inequality `∑_β mult(L, β) ≤ deg(L)` used at the end of the
-proofs of GK16 Theorems 13 and 14: combined with `mult(L, β) ≥ dim(W ∩ H_β)`
-and `deg(L) ≤ (k-1)·s` it yields the subspace-design bound. -/
-theorem sum_rootMultiplicity_le_natDegree (p : F[X]) (_hp : p ≠ 0) (S : Finset F) :
-    (∑ a ∈ S, rootMultiplicity a p) ≤ p.natDegree :=
-  (sum_rootMultiplicity_le_card_roots p S).trans (card_roots' p)
+-- The degree bound `Polynomial.sum_rootMultiplicity_le_natDegree` is supplied by
+-- canonical ArkLib, including the zero-polynomial case.
 
 end Polynomial
 

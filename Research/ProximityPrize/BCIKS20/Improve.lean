@@ -50,6 +50,8 @@ set_option linter.unusedSectionVars false
 set_option synthInstance.maxHeartbeats 800000
 set_option maxHeartbeats 1600000
 
+set_option backward.isDefEq.respectTransparency false
+
 namespace BCIKS20.Claim510Improve
 
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
@@ -140,7 +142,9 @@ theorem improve_disjunct_of_heavy
   have hcap : AffineCaptured domain k δ u z (affinePencil x₀ a n, affinePencil x₀ b n) :=
     affineCaptured_of_pencil_proximity hHyp hξ hlc hab hwn hdvd hR z root hx hbase
       domain k δ u S hScard hSagree hSnoJoint
-  exact affineCaptured_improve hdeg₀ hdeg₁ hcap
+  exact affineCaptured_improve (domain := domain) (k := k) (δ := δ)
+    (u := u) (γ := z) (ab := (affinePencil x₀ a n, affinePencil x₀ b n))
+    hdeg₀ hdeg₁ hcap
 
 /-- **The full per-factor dichotomy disjunct**: a factor is light (`card ≤ T` — counted, no
 production) or heavy (carrying the improve data) — the verbatim `hdichotomy` field shape of

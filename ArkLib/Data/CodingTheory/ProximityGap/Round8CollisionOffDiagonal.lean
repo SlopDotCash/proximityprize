@@ -136,9 +136,9 @@ theorem collision_offdiag {F : Type*} [Field F] [DecidableEq F] (h2 : (2 : F) �
   have key : ∀ g : F → F, ∑ x ∈ S, g x = ∑ x ∈ S', g x → ∑ x ∈ U, g x = ∑ x ∈ V, g x := by
     intro g hg
     have eS : ∑ x ∈ S, g x = ∑ x ∈ S ∩ S', g x + ∑ x ∈ U, g x := by
-      rw [hU, Finset.sum_inter_add_sum_diff S S' g]
+      rw [hU, Finset.sum_inter_add_sum_sdiff S S' g]
     have eS' : ∑ x ∈ S', g x = ∑ x ∈ S' ∩ S, g x + ∑ x ∈ V, g x := by
-      rw [hV, Finset.sum_inter_add_sum_diff S' S g]
+      rw [hV, Finset.sum_inter_add_sum_sdiff S' S g]
     rw [Finset.inter_comm S' S] at eS'
     rw [eS, eS'] at hg
     exact add_left_cancel hg

@@ -5,7 +5,7 @@ Authors: Shaw
 -/
 
 import ArkLib.ToMathlib.L46GSLowerBound
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 
 /-!
 # ABF26 Lemma 4.6 for Reed–Solomon codes (the difference-stack residual, discharged)

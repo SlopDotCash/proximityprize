@@ -99,15 +99,14 @@ def rbrGameFlipProb
     {WitIn WitOut : Type} (witIn : WitIn)
     (prover : Prover oSpec StmtIn WitIn StmtOut WitOut pSpec)
     (stmtIn : StmtIn) (i : pSpec.ChallengeIdx) : ℝ≥0∞ :=
-  Pr[fun ⟨transcript, challenge⟩ =>
+  probEvent (fun ⟨transcript, challenge⟩ =>
       ¬ sf i.1.castSucc stmtIn transcript ∧
-        sf i.1.succ stmtIn (transcript.concat challenge)
-    | do
+        sf i.1.succ stmtIn (transcript.concat challenge)) (do
       (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
         (do
           let ⟨transcript, _⟩ ← prover.runToRound i.1.castSucc stmtIn witIn
           let challenge ← liftComp (pSpec.getChallenge i) _
-          return (transcript, challenge))).run' (← init)]
+          return (transcript, challenge))).run' (← init))
 
 /-- **The full honest soundness-run accept probability.**
 
@@ -120,9 +119,9 @@ def fullRunAcceptProb
     {WitIn WitOut : Type} (witIn : WitIn)
     (prover : Prover oSpec StmtIn WitIn StmtOut WitOut pSpec)
     (stmtIn : StmtIn) : ℝ≥0∞ :=
-  Pr[fun ⟨_, stmtOut⟩ => stmtOut ∈ langOut | OptionT.mk do
+  probEvent (fun ⟨_, stmtOut⟩ => stmtOut ∈ langOut) (OptionT.mk do
     (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
-      ((Reduction.mk prover verifier).run stmtIn witIn).run).run' (← init)]
+      ((Reduction.mk prover verifier).run stmtIn witIn).run).run' (← init))
 
 /-- **The per-round marginal-domination hypothesis** (the single measure-theoretic residual of the
 `rbrSoundness → soundness` bridge).
@@ -195,7 +194,7 @@ theorem rbrSoundness_imp_soundness_of_marginal
   -- The full-run accept probability is dominated by the sum of per-round game probabilities …
   refine le_trans (hMarg WitIn WitOut witIn prover stmtIn hStmtIn) ?_
   -- … each of which is ≤ `rbrSoundnessError i`, so the sum is ≤ `∑ rbrSoundnessError i` (coerced).
-  rw [ENNReal.coe_finset_sum]
+  rw [ENNReal.ofNNReal_finsetSum]
   refine Finset.sum_le_sum (fun i _ => ?_)
   exact hPerRound' stmtIn hStmtIn WitIn WitOut witIn prover i
 
@@ -208,14 +207,14 @@ open scoped NNReal
 
 section SumcheckRbrToSound
 
-variable {ι : Type} (oSpec : OracleSpec ι) [oSpec.Fintype]
+variable {ι : Type} (oSpec : OracleSpec ι) [∀ q, Fintype (oSpec.Range q)]
 variable (F : Type) [Field F] [Fintype F] [DecidableEq F] [Fact ((-1 : F) ≠ 1)]
   [SampleableType F]
 variable (n M : ℕ)
 variable (params : ProtocolParams M)
 variable {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))
 
-omit [oSpec.Fintype] in
+omit [∀ q, Fintype (oSpec.Range q)] in
 /-- **`hRbrToSound` for the LogUp embedded sum-check verifier, discharged from the marginal bridge.**
 
 This is the *exact* shape of the `hRbrToSound` hypothesis consumed by

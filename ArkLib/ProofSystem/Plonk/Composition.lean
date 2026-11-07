@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Plonk.Basic
+import ProximityPrize.Extensions.ProofSystem.Plonk.Basic
 import ArkLib.ProofSystem.Plonk.PermutationCheck
-import ArkLib.OracleReduction.Composition.Sequential.Append
+import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.Append
 
 /-!
 # Plonk Check Composition
@@ -304,11 +304,11 @@ theorem permCheckAfterGateVerifier_rbrSoundness :
         (plonkCheckLangOut 𝓡 numWires numGates) 0 := by
   refine ⟨{
     toFun := fun _ stmt _ => stmt ∈ plonkCheckLangOut 𝓡 numWires numGates
-    toFun_empty := fun _ => Iff.rfl
+    toFun_empty := fun _ h => h
     toFun_next := fun _ _ _ _ h _ => h
     toFun_full := fun stmt tr hstmt => by
       rcases stmt with ⟨cs, w⟩
-      rw [probEvent_eq_zero_iff]
+      rw [ProximityPrize.Compatibility.DiscreteSupportSemantics.prEvent_eq_zero_iff]
       intro out hout houtLang
       rw [OptionT.mem_support_iff] at hout
       simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hout
@@ -373,17 +373,17 @@ theorem plonkCheckVerifier_rbrSoundness :
         (plonkCheckLangOut 𝓡 numWires numGates) 0 := by
   refine ⟨{
     toFun := fun _ cs _ => cs ∈ plonkCheckLangIn 𝓡 numWires numGates
-    toFun_empty := fun _ => Iff.rfl
+    toFun_empty := fun _ h => h
     toFun_next := fun _ _ _ _ h _ => h
     toFun_full := fun cs tr hcs => ?_
   }, ?_⟩
-  · rw [probEvent_eq_zero_iff]
+  · rw [ProximityPrize.Compatibility.DiscreteSupportSemantics.prEvent_eq_zero_iff]
     intro out hout houtLang
     rw [OptionT.mem_support_iff] at hout
     simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hout
     obtain ⟨s, _, hout⟩ := hout
-    let w : Fin numWires → 𝓡 := tr.fst ⟨0, by simp⟩
-    let f : Fin (3 * numGates) → 𝓡 := tr.snd ⟨0, by simp⟩
+    let w : Fin numWires → 𝓡 := FullTranscript.fst (pSpec₁ := gateCheckPSpec 𝓡 numWires) (pSpec₂ := permCheckPSpec 𝓡 numGates) tr 0
+    let f : Fin (3 * numGates) → 𝓡 := FullTranscript.snd (pSpec₁ := gateCheckPSpec 𝓡 numWires) (pSpec₂ := permCheckPSpec 𝓡 numGates) tr 0
     by_cases hAccept :
         cs.accepts w ∧ ExtendedWireAssignmentMatches 𝓡 numWires numGates cs w f ∧
           CopyConstraintsSatisfied f cs.perm
@@ -392,7 +392,9 @@ theorem plonkCheckVerifier_rbrSoundness :
             ((plonkCheckVerifier (𝓡 := 𝓡) (numWires := numWires)
               (numGates := numGates)).run cs tr)).run' s =
             pure (some (cs, w)) := by
-        simp only [Verifier.run, plonkCheckVerifier_verify_eq]
+        simp only [Verifier.run]
+        erw [plonkCheckVerifier_verify_eq]
+        dsimp only
         split_ifs with h
         · change (simulateQ impl (pure (some (cs, w)) : OracleComp []ₒ
               (Option (Plonk.ConstraintSystem 𝓡 numWires numGates ×
@@ -404,7 +406,7 @@ theorem plonkCheckVerifier_rbrSoundness :
             pure (some (cs, w))
           rw [StateT.run_pure]
           simp [map_pure]
-        · exact False.elim (h (by simpa using hAccept))
+        · exact False.elim (h (by simpa [w, f] using hAccept))
       rw [hrun] at hout
       simp only [support_pure, Set.mem_singleton_iff, Option.some.injEq] at hout
       subst out
@@ -414,9 +416,11 @@ theorem plonkCheckVerifier_rbrSoundness :
             ((plonkCheckVerifier (𝓡 := 𝓡) (numWires := numWires)
               (numGates := numGates)).run cs tr)).run' s =
             pure none := by
-        simp only [Verifier.run, plonkCheckVerifier_verify_eq]
+        simp only [Verifier.run]
+        erw [plonkCheckVerifier_verify_eq]
+        dsimp only
         split_ifs with h
-        · exact False.elim (hAccept (by simpa using h))
+        · exact False.elim (hAccept (by simpa [w, f] using h))
         · change (simulateQ impl (pure none : OracleComp []ₒ
               (Option (Plonk.ConstraintSystem 𝓡 numWires numGates ×
                 (Fin numWires → 𝓡))))).run' s =
@@ -442,7 +446,7 @@ theorem plonkCheckVerifier_soundness :
         (plonkCheckLangOut 𝓡 numWires numGates) 0 := by
   unfold Verifier.soundness
   intro WitIn WitOut witIn prover cs hcs
-  simp only [ENNReal.coe_zero, nonpos_iff_eq_zero, probEvent_eq_zero_iff]
+  simp only [ENNReal.coe_zero, nonpos_iff_eq_zero, ProximityPrize.Compatibility.DiscreteSupportSemantics.prEvent_eq_zero_iff]
   intro x hx _hxLang
   rcases x with ⟨⟨tr, _prvOut, _witOut⟩, out⟩
   apply hcs
@@ -516,12 +520,11 @@ theorem plonkCheckVerifier_knowledgeSoundness :
         (plonkCheckRelOut 𝓡 numWires numGates) 0 := by
   unfold Verifier.knowledgeSoundness
   refine ⟨fun _stmt _witOut tr _proveLog _verifyLog => pure (tr.fst ⟨0, by simp⟩),
-    fun stmtIn witIn prover => ?_⟩
-  simp only [ENNReal.coe_zero, nonpos_iff_eq_zero, probEvent_eq_zero_iff]
+    fun Aux stmtIn witIn prover => ?_⟩
+  simp only [ENNReal.coe_zero, nonpos_iff_eq_zero, ProximityPrize.Compatibility.DiscreteSupportSemantics.prEvent_eq_zero_iff]
   intro x hx hbad
   rcases x with ⟨cs, extracted, stmtOut, witOut⟩
   simp only at hbad
-  apply hbad.1
   rw [OptionT.mem_support_iff] at hx
   simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
   obtain ⟨s, _hs, hx⟩ := hx
@@ -545,8 +548,7 @@ theorem plonkCheckVerifier_knowledgeSoundness :
       rw [StateT.run_bind] at hx
       rw [mem_support_bind_iff] at hx
       obtain ⟨⟨extractOpt, s2⟩, hextract, hx⟩ := hx
-      rw [liftM_pure] at hextract
-      rw [OptionT.run_pure] at hextract
+      simp only [OptionT.run_pure, liftM_pure] at hextract
       rw [simulateQ_pure, StateT.run_pure] at hextract
       simp only [support_pure, Set.mem_singleton_iff, Prod.mk.injEq] at hextract
       rw [hextract.1, hextract.2] at hx
@@ -557,9 +559,10 @@ theorem plonkCheckVerifier_knowledgeSoundness :
       rw [hx.1] at hexecOpt
       simp only [Option.some.injEq] at hexecOpt
       have hstmt : stmtIn = cs := congrArg Prod.fst hexecOpt
-      have hextracted : runLog.1.1.1.fst ⟨0, by simp⟩ = extracted :=
+      have hextracted : some (runLog.1.1.1.fst ⟨0, by simp⟩) = extracted :=
         congrArg (fun y => y.2.1) hexecOpt
-      rw [← hstmt, ← hextracted]
+      apply hbad.1 _ (by rw [← hextracted]; rfl)
+      rw [← hstmt]
       have hrunSupport :
           (some runLog.1, s1) ∈ support
             ((simulateQ (impl.addLift challengeQueryImpl)
@@ -662,21 +665,20 @@ theorem plonkCheckVerifier_rbrKnowledgeSoundness :
         (plonkCheckRelIn 𝓡 numWires numGates)
         (plonkCheckRelOut 𝓡 numWires numGates) 0 := by
   refine ⟨fun _ => Fin numWires → 𝓡, {
-    eqIn := rfl
+    extractIn := fun _ wit => wit
     extractMid := fun _ _ _ witMid => witMid
-    extractOut := fun _stmt tr _ => tr.fst ⟨0, by simp⟩
+    extractOut := fun _stmt tr _ => FullTranscript.fst (pSpec₁ := gateCheckPSpec 𝓡 numWires) (pSpec₂ := permCheckPSpec 𝓡 numGates) tr 0
   }, {
     toFun := fun _ stmt _tr wit => (stmt, wit) ∈ plonkCheckRelIn 𝓡 numWires numGates
-    toFun_empty := fun _ _ => by simp
+    toFun_empty := fun _ _ h => h
     toFun_next := fun _ _ _ _ _ _ h => h
     toFun_full := fun cs tr _witOut hpr => by
-      rw [gt_iff_lt, probEvent_pos_iff] at hpr
+      rw [gt_iff_lt, OptionT.prEvent_mk_pos_iff] at hpr
       obtain ⟨_out, hout, _houtRel⟩ := hpr
-      rw [OptionT.mem_support_iff] at hout
       simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hout
       obtain ⟨s, _, hout⟩ := hout
-      let w : Fin numWires → 𝓡 := tr.fst ⟨0, by simp⟩
-      let f : Fin (3 * numGates) → 𝓡 := tr.snd ⟨0, by simp⟩
+      let w : Fin numWires → 𝓡 := FullTranscript.fst (pSpec₁ := gateCheckPSpec 𝓡 numWires) (pSpec₂ := permCheckPSpec 𝓡 numGates) tr 0
+      let f : Fin (3 * numGates) → 𝓡 := FullTranscript.snd (pSpec₁ := gateCheckPSpec 𝓡 numWires) (pSpec₂ := permCheckPSpec 𝓡 numGates) tr 0
       by_cases hAccept :
           cs.accepts w ∧ ExtendedWireAssignmentMatches 𝓡 numWires numGates cs w f ∧
             CopyConstraintsSatisfied f cs.perm
@@ -691,9 +693,11 @@ theorem plonkCheckVerifier_rbrKnowledgeSoundness :
               ((plonkCheckVerifier (𝓡 := 𝓡) (numWires := numWires)
                 (numGates := numGates)).run cs tr)).run' s =
               pure none := by
-          simp only [Verifier.run, plonkCheckVerifier_verify_eq]
+          simp only [Verifier.run]
+          erw [plonkCheckVerifier_verify_eq]
+          dsimp only
           split_ifs with h
-          · exact False.elim (hAccept (by simpa using h))
+          · exact False.elim (hAccept (by simpa [w, f] using h))
           · change (simulateQ impl (pure none : OracleComp []ₒ
                 (Option (Plonk.ConstraintSystem 𝓡 numWires numGates ×
                   (Fin numWires → 𝓡))))).run' s =

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._BSG_DRC1
+import Research.ProximityPrize.Frontier._BSG_EX_E0orient
 
 /-!
 # BSG — DRC-extract sub-lemma `E1` (good-vertex neighbourhood is nonempty)
@@ -45,11 +46,6 @@ theorem leftNbhd_b0_nonempty (A : Finset α) (K : ℕ) (G : Finset (α × α)) (
     have := hA.card_pos
     omega
   · exact h
-
-/-- The left-neighbourhood is always a subset of `A` (trivial; `leftNbhd` is a `filter` of `A`). -/
-lemma leftNbhd_subset (A : Finset α) (G : Finset (α × α)) (b : α) :
-    leftNbhd A G b ⊆ A :=
-  Finset.filter_subset _ _
 
 end Finset.BSG
 

@@ -3,8 +3,10 @@ Copyright (c) 2024-2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao
 -/
+module
 
-import ArkLib.ProofSystem.Sumcheck.Spec.SingleRound
+public import ArkLib.ProofSystem.Sumcheck.Spec.SingleRound
+public import ArkLib.OracleReduction.Composition.Sequential.GuardedNary
 
 /-!
 # The Sum-check Protocol
@@ -20,7 +22,7 @@ that those implementations derive security from that of the abstract protocol.
 ## Protocol Specification
 
 The sum-check protocol is parameterized by the following:
-- `R`: the underlying ring (for soundness, required to be finite and a domain)
+- `R`: the underlying commutative semiring (for soundness, finite with `IsDomain R`)
 - `n : ℕ+`: the number of variables (also number of rounds)
 - `deg : ℕ`: the individual degree bound for the polynomial
 - `D : Fin m ↪ R`: the set of `m` evaluation points for each variable (for some `m`), represented as
@@ -69,7 +71,7 @@ For `i = 0, ..., n - 1`, the `i`-th round of the sum-check protocol consists of 
    - `target` is updated to `pᵢ.eval rᵢ`
    - `challenges` is updated to the concatenation of the previous challenges and `rᵢ`
 
-## Notes
+## Notes & TODOs
 
 Note that to represent sum-check as a series of IORs, we will need to implicitly constrain the
 degree of the polynomials via using subtypes, such as `Polynomial.degreeLE` and
@@ -102,6 +104,8 @@ There are some generalizations that we could consider later:
 
 -/
 
+@[expose] public section
+
 namespace Sumcheck
 
 open Polynomial MvPolynomial OracleSpec OracleComp ProtocolSpec Finset
@@ -127,7 +131,7 @@ def pSpec : ProtocolSpec (Fin.vsum (fun _ : Fin n => 2)) :=
   -- n * 2
   -- fun i => if i % 2 = 0 then (.P_to_V, R⦃≤ d⦄[X]) else (.V_to_P, R)
 
--- Note: the input statement should not mention sum-check challenges at all (currently it does,
+-- TODO: the input statement should not mention sum-check challenges at all (currently it does,
 -- initial challenge vector is empty). We can compose with a `ReduceClaim` (oracle) reduction to get
 -- the correct input statement type
 
@@ -194,11 +198,36 @@ lemma reduction_verifier_eq_verifier :
     (reduction R deg D n oSpec).verifier = verifier R deg D n oSpec := by
   rfl
 
-omit [SampleableType R] in
 @[simp]
 lemma oracleReduction_verifier_eq_oracleVerifier :
     (oracleReduction R deg D n oSpec).verifier = oracleVerifier R deg D n oSpec := by
   rfl
+
+variable {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
+
+open NNReal
+
+/-- Perfect completeness for the (full) sum-check protocol -/
+theorem reduction_perfectCompleteness :
+    (reduction R deg D n oSpec).perfectCompleteness init impl
+      (relationRound R n deg D 0) (relationRound R n deg D (.last n)) :=
+  Reduction.seqCompose_perfectCompleteness_of_guarded_verifiers
+    (fun i => StatementRound R n i × ∀ j, OracleStatement R n deg j)
+    (fun _ => Unit) init impl (relationRound R n deg D)
+    (SingleRound.reduction R n deg D oSpec)
+    (fun _ => inferInstance) (SingleRound.verifierGuardedForm R n deg D oSpec)
+    (fun i s => SingleRound.reduction_perfectCompleteness (init := pure s) i)
+
+/-- Round-by-round knowledge soundness with error `deg / |R|` per challenge for the (full)
+  sum-check protocol -/
+theorem oracleVerifier_rbrKnowledgeSoundness [Fintype R] [IsDomain R] :
+    (oracleVerifier R deg D n oSpec).rbrKnowledgeSoundness init impl
+      (relationRound R n deg D 0) (relationRound R n deg D (.last n))
+      (fun _ => (deg : ℝ≥0) / (Fintype.card R)) :=
+  OracleVerifier.seqCompose_rbrKnowledgeSoundness
+    (rel := relationRound R n deg D)
+    (V := SingleRound.oracleVerifier R n deg D oSpec)
+    (h := fun i => SingleRound.oracleVerifier_rbrKnowledgeSoundness i)
 
 end Spec
 

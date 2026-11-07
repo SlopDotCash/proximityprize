@@ -109,7 +109,7 @@ cleared-vs-uncleared root-relation core (the `t = 0` obstruction, generalized). 
 theorem restrictedFaaDiBrunoSum_eq_hasseDoubleSum
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H) (t : ℕ) :
     restrictedFaaDiBrunoSum H x₀ R hHyp t
-      = ∑ ab ∈ Finset.antidiagonal (t + 1),
+      = ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (t + 1),
           ∑ lam ∈ (Finset.univ : Finset (Nat.Partition ab.2)).filter
                     (fun lam => (t + 1) ∉ lam.parts),
             lam.parts.countPerms

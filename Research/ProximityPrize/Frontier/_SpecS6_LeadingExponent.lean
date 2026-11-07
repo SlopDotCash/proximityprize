@@ -131,18 +131,18 @@ def CompleteHomogeneousSpectrumBound (spectrum poly s r : ℕ) : Prop :=
 
 /-- **The exact growth recursion of the complete-homogeneous count.**
 `C(s+r, r+1) · (r+1) = C(s+r−1, r) · (s+r)` — i.e. `chooseCH s (r+1) · (r+1) = chooseCH s r · (s+r)`.
-This is the Pascal-ratio identity `Nat.succ_mul_choose_eq` specialized to the shifted index
+This is the Pascal-ratio identity `Nat.add_one_mul_choose_eq` specialized to the shifted index
 `(s+r−1, r) ↦ (s+r, r+1)`; it drives the monotone step (ratio `(s+r)/(r+1) ≥ 1` for `s ≥ 1`). -/
 theorem chooseCH_succ_mul (s r : ℕ) (hs : 1 ≤ s) :
     chooseCH s (r + 1) * (r + 1) = chooseCH s r * (s + r) := by
   unfold chooseCH
   -- chooseCH s (r+1) = C((s+(r+1))-1, r+1) = C(s+r, r+1); chooseCH s r = C(s+r-1, r).
-  -- Use Nat.succ_mul_choose_eq: (n+1) * C(n,k) = C(n+1, k+1) * (k+1), with n = s+r-1, k = r.
+  -- Use Nat.add_one_mul_choose_eq: (n+1) * C(n,k) = C(n+1, k+1) * (k+1), with n = s+r-1, k = r.
   -- Then C(s+r-1+1, r+1) = C(s+(r+1)-1, r+1) and (s+r-1)+1 = s+r (since s ≥ 1).
   have hbase : s + r - 1 + 1 = s + r := by omega
   have hidx : s + (r + 1) - 1 = s + r := by omega
   have key : (s + r - 1).succ * Nat.choose (s + r - 1) r
-      = Nat.choose (s + r - 1).succ (r + 1) * (r + 1) := Nat.succ_mul_choose_eq (s + r - 1) r
+      = Nat.choose (s + r - 1).succ (r + 1) * (r + 1) := Nat.add_one_mul_choose_eq (s + r - 1) r
   rw [Nat.succ_eq_add_one, hbase] at key
   -- key : (s+r) * C(s+r-1, r) = C(s+r, r+1) * (r+1)
   rw [hidx]

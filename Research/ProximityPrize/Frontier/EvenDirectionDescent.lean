@@ -83,7 +83,8 @@ theorem code_pullback_sq_mem (domain : ι ↪ F) (domain' : ι' ↪ F) (k : ℕ)
   refine ⟨q.comp (Polynomial.X ^ 2), ?_, ?_⟩
   · -- degree: `deg (q(X²)) = 2 · deg q < 2k`
     rcases eq_or_ne q 0 with rfl | hq0
-    · simpa using (WithBot.bot_lt_coe (2 * k))
+    · rw [Polynomial.zero_comp, Polynomial.degree_zero]
+      exact WithBot.bot_lt_coe (2 * k)
     · -- work with `natDegree`: `natDegree (q.comp (X²)) = natDegree q * 2`
       have hq_nd : q.natDegree < k := (Polynomial.natDegree_lt_iff_degree_lt hq0).mpr hqdeg
       have hcomp0 : q.comp (Polynomial.X ^ 2) ≠ 0 := by

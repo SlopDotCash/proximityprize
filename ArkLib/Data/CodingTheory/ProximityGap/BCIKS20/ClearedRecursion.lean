@@ -480,8 +480,14 @@ theorem anchoredSuccTermBoundC (x₀ : F) (R : F[X][X][Y])
   classical
   by_cases hzero : Bivariate.natDegreeY R < sigmaLambda lam
   · -- zero cell
-    rw [B_coeffC_eq_zero_of_natDegreeY_lt x₀ R i1 lam hzero, mul_zero, zero_mul,
-      weight_Λ_over_𝒪_zero]
+    rw [B_coeffC_eq_zero_of_natDegreeY_lt x₀ R i1 lam hzero]
+    have hterm : W𝒪 H ^ (i1 + deltaSave i1 - 1) *
+        ClaimA2.ξ x₀ R H hHyp ^ (2 * i1 + sigmaLambda lam - 2) * 0 *
+        partitionProd lam (fun l => if _h : l < k + 1 then βHenselC (H := H) x₀ R hHyp l else 0) = 0 := by
+      exact (congrArg (fun z : 𝒪 H => z *
+        partitionProd lam (fun l => if _h : l < k + 1 then βHenselC (H := H) x₀ R hHyp l else 0))
+          (mul_zero _)).trans (zero_mul _)
+    rw [hterm, weight_Λ_over_𝒪_zero]
     exact bot_le
   push_neg at hzero
   -- shared facts
@@ -611,7 +617,7 @@ theorem βHenselC_weight_bound_anchored (x₀ : F) (R : F[X][X][Y])
         refine le_trans (weight_Λ_over_𝒪_le_of_mk_eq hDH hH rfl) ?_
         have hweq : weight_Λ (Polynomial.X : F[X][Y]) H D
             = WithBot.some (D + 1 - Bivariate.natDegreeY H) := by
-          rw [weight_Λ, Polynomial.support_X (by norm_num)]
+          rw [weight_Λ, Polynomial.support_X]
           simp
         rw [hweq]
         refine WithBot.coe_le_coe.mpr ?_
@@ -654,7 +660,7 @@ theorem βHenselC_weight_bound_anchored_loose (x₀ : F) (R : F[X][X][Y])
   unfold structuredBound
   exact_mod_cast structured_weight_collapse
     (Bivariate.natDegreeY R) (Bivariate.natDegreeY H) D t (H.leadingCoeff).natDegree
-    hdR2 (by simpa using hH) hdHdR hWdeg
+    hdR2 (by change 1 ≤ H.natDegree; omega) hdHdR hWdeg
 
 /-! ## Source audit -/
 

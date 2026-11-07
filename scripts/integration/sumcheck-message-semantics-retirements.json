@@ -1,0 +1,779 @@
+{
+  "canonical_owner": "ArkLib.ProofSystem.Sumcheck.Spec.SingleRound",
+  "canonical_behavior": "Simple.oracleVerifier verifies the prover MESSAGE polynomial at D and the challenge; it preserves the input oracle in the output.",
+  "new_admissions": false,
+  "retirements": [
+    {
+      "source": "ArkLib/ProofSystem/Logup/Security/SumcheckComposedRejection.lean",
+      "name": "Sumcheck.Spec.liftedRound_run_failure",
+      "original_command": "/-- **(C) The lifted round-`i` sum-check verifier rejects bad round claims outright.** -/\ntheorem liftedRound_run_failure {n : ℕ} (i : Fin n)\n    (stmt : StatementRound R n i.castSucc) (oStmt : ∀ j, OracleStatement R n deg j)\n    (hBad : ((stmt, oStmt), ()) ∉ relationRound R n deg D i.castSucc)\n    (tr : (SingleRound.pSpec R deg).FullTranscript) :\n    ((SingleRound.oracleVerifier R n deg D oSpec i).toVerifier).run (stmt, oStmt) tr =\n      (failure : OptionT (OracleComp oSpec) _) := by\n  -- The projected Simple statement is bad (right-to-left transport of the relation iff).\n  have hProjBad : ¬ (((SingleRound.oStmtLens R n deg D i).proj (stmt, oStmt)), ())\n      ∈ SingleRound.Simple.inputRelation R deg D := fun hMem =>\n    hBad ((SingleRound.simpleProj_mem_iff R deg D n i stmt oStmt).mp hMem)\n  -- Unfold the bad membership into the sum hypothesis of the rejection core.\n  have hSumBad : ¬ ((∑ x ∈ (univ.map D),\n      (((((SingleRound.oStmtLens R n deg D i).proj (stmt, oStmt)).2) ()).1.eval x))\n        = ((SingleRound.oStmtLens R n deg D i).proj (stmt, oStmt)).1) := fun hsum =>\n    hProjBad (by\n      simp only [SingleRound.Simple.inputRelation, Set.mem_setOf_eq]\n      exact hsum)\n  -- Simple rejects the projected statement.\n  have hSimpleFail := SingleRound.Simple.verifier_run_failure_of_badSum oSpec R deg D\n    ((SingleRound.oStmtLens R n deg D i).proj (stmt, oStmt)).1\n    ((SingleRound.oStmtLens R n deg D i).proj (stmt, oStmt)).2\n    hSumBad tr\n  -- Commute `toVerifier` through the lift (proven coherence), expose the projected Simple run.\n  have hcomm := OracleVerifier.liftContextLegacy_toVerifier_comm\n    (stmtLens := SingleRound.sumcheckOracleLens R n deg D oSpec i)\n    (V := (SingleRound.Simple.oracleReduction R deg D oSpec).verifier)\n    (coh := SingleRound.coh_proven_inst i)\n  show (((SingleRound.Simple.oracleReduction R deg D oSpec).verifier.liftContext\n      (SingleRound.sumcheckOracleLens R n deg D oSpec i)).toVerifier).run (stmt, oStmt) tr = _\n  rw [hcomm]\n  -- Unfold the lifted run: Simple's run on the projection, post-composed with the lift.\n  -- (`sumcheckOracleLens.toLens = oStmtLens` and `run = verify` definitionally; structure eta\n  -- identifies the projected pair with its component re-pairing.)\n  show (((SingleRound.Simple.oracleReduction R deg D oSpec).verifier.toVerifier).run\n      ((SingleRound.oStmtLens R n deg D i).proj (stmt, oStmt)) tr) >>= _ = _\n  have hSimpleFail' : (((SingleRound.Simple.oracleReduction R deg D oSpec).verifier.toVerifier).run\n      ((SingleRound.oStmtLens R n deg D i).proj (stmt, oStmt)) tr)\n      = (failure : OptionT (OracleComp oSpec) _) := hSimpleFail\n  rw [hSimpleFail']\n  exact optionT_failure_bind oSpec _\n\n",
+      "reason": "Canonical Simple.oracleVerifier queries the prover message polynomial; the former constant input-relation knowledge state and input-only rejection claim do not describe that verifier."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Logup/Security/SumcheckComposedRejection.lean",
+      "name": "Sumcheck.Spec.composedSumcheck_run_failure",
+      "original_command": "/-- **(D) The composed sum-check verifier rejects bad round-`0` claims outright.** -/\ntheorem composedSumcheck_run_failure {n' : ℕ}\n    (stmt : StatementRound R (n' + 1) 0) (oStmt : ∀ j, OracleStatement R (n' + 1) deg j)\n    (hBad : ((stmt, oStmt), ()) ∉ relationRound R (n' + 1) deg D (0 : Fin (n' + 2)))\n    (tr : (pSpec R deg (n' + 1)).FullTranscript) :\n    ((oracleVerifier R deg D (n' + 1) oSpec).toVerifier).run (stmt, oStmt) tr =\n      (failure : OptionT (OracleComp oSpec) _) := by\n  -- Fuse `toVerifier` through the oracle-level `seqCompose` (proven binary fusion).\n  rw [show (oracleVerifier R deg D (n' + 1) oSpec).toVerifier\n      = Verifier.seqCompose\n          (fun j => StatementRound R (n' + 1) j × (∀ k, OracleStatement R (n' + 1) deg k))\n          (fun j => (SingleRound.oracleVerifier R (n' + 1) deg D oSpec j).toVerifier) from\n    OracleVerifier.seqCompose_toVerifier_of_binary_for_rbr\n      (OracleVerifier.binaryVerifierFusionForRbr_holds oSpec) _ _ _ _ _ _]\n  -- Head unfold: the composed verify runs round `0` first; it fails; the bind short-circuits.\n  show ((SingleRound.oracleVerifier R (n' + 1) deg D oSpec 0).toVerifier.verify\n      (stmt, oStmt) _) >>= _ = _\n  have h0 : ((SingleRound.oracleVerifier R (n' + 1) deg D oSpec 0).toVerifier).run\n      (stmt, oStmt) (ProtocolSpec.FullTranscript.fst (show ((SingleRound.pSpec R deg) ++ₚ (ProtocolSpec.seqCompose (fun _ : Fin n' => SingleRound.pSpec R deg))).FullTranscript from tr)) = failure := by\n    exact liftedRound_run_failure oSpec R deg D 0 stmt oStmt hBad _\n  rw [show (SingleRound.oracleVerifier R (n' + 1) deg D oSpec 0).toVerifier.verify\n      (stmt, oStmt) (ProtocolSpec.FullTranscript.fst (show ((SingleRound.pSpec R deg) ++ₚ (ProtocolSpec.seqCompose (fun _ : Fin n' => SingleRound.pSpec R deg))).FullTranscript from tr))\n      = ((SingleRound.oracleVerifier R (n' + 1) deg D oSpec 0).toVerifier).run\n        (stmt, oStmt) (ProtocolSpec.FullTranscript.fst (show ((SingleRound.pSpec R deg) ++ₚ (ProtocolSpec.seqCompose (fun _ : Fin n' => SingleRound.pSpec R deg))).FullTranscript from tr)) from rfl]\n  rw [h0]\n  exact optionT_failure_bind oSpec _\n\n",
+      "reason": "Canonical Simple.oracleVerifier queries the prover message polynomial; the former constant input-relation knowledge state and input-only rejection claim do not describe that verifier."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Logup/Security/SumcheckRejectionCore.lean",
+      "name": "Sumcheck.Spec.SingleRound.Simple.verifier_run_failure_of_badSum",
+      "original_command": "/-- **The Simple sum-check round verifier rejects bad claims outright.** For a statement whose\n`D`-sum differs from the claimed target, the verifier's run is `failure` — independent of the\ntranscript (the prover's message is not consulted by the guard). Extraction of the rejection core\ninside `simpleKnowledgeStateFunction.toFun_full`. -/\ntheorem verifier_run_failure_of_badSum\n    (target : StmtIn R) (oStmt : ∀ i, OStmtIn R deg i)\n    (hBad : ¬ (∑ x ∈ (univ.map D), ((oStmt ()).1.eval x) = target))\n    (tr : (pSpec R deg).FullTranscript) :\n    ((oracleVerifier R deg D oSpec).toVerifier).run ⟨target, oStmt⟩ tr =\n      (failure : OptionT (OracleComp oSpec) (StmtOut R × (∀ i, OStmtOut R deg i))) := by\n  have hGuard :\n      ((Vector.finRange m).map (fun i => (oStmt ()).val.eval (D i))).sum ≠ target := by\n    intro hsum\n    apply hBad\n    rw [Finset.sum_map]\n    simpa [vector_finRange_map_sum_eq] using hsum\n  simp only [Verifier.run, OracleVerifier.toVerifier]\n  rw [simulateQ_oracleVerify_eq]\n  rw [if_neg hGuard]\n  rfl\n\n",
+      "reason": "Canonical Simple.oracleVerifier queries the prover message polynomial; the former constant input-relation knowledge state and input-only rejection claim do not describe that verifier."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Logup/Security/SingleRoundPlainSoundnessZero.lean",
+      "name": "Sumcheck.Spec.SingleRound.Simple.oracleVerifier_rbrSoundness_zero",
+      "original_command": "/-- **Round-by-round plain soundness of the Simple sum-check round with error `0`.** The plain\nstate function is the witness-quantified `simpleKnowledgeStateFunction` (transcript-independent:\nits `toFun` is `∃ _ : Unit, (stmtIn, ()) ∈ inputRelation`), so the per-round flip event\n`¬ toFun ∧ toFun` is identically `False` and every flip probability is `0`. -/\ntheorem oracleVerifier_rbrSoundness_zero :\n    ((oracleVerifier R deg D oSpec).toVerifier).rbrSoundness init impl\n      (inputRelation R deg D).language (outputRelation R deg).language (fun _ => 0) := by\n  refine ⟨(simpleKnowledgeStateFunction R deg D oSpec).toStateFunction, ?_⟩\n  intro stmtIn _ WitIn WitOut witIn prover i\n  refine le_of_eq (probEvent_eq_zero ?_)\n  rintro ⟨tr, chal⟩ - ⟨hneg, hpos⟩\n  -- The state function is transcript- and round-independent; a flip is impossible.\n  obtain ⟨w, hw⟩ := hpos\n  exact hneg ⟨w, hw⟩\n\n",
+      "reason": "Canonical Simple.oracleVerifier queries the prover message polynomial; the former constant input-relation knowledge state and input-only rejection claim do not describe that verifier."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Logup/Security/SingleRoundPlainSoundnessZero.lean",
+      "name": "Sumcheck.Spec.SingleRound.Simple.oracleVerifier_soundness_zero",
+      "original_command": "/-- **Plain soundness of the Simple sum-check round with error `0`** — the per-round input to the\nkeystone-free sequential-composition route. Assembled from `oracleVerifier_rbrSoundness_zero` and\nthe proven `Verifier.marginalBridge_holds` via `rbrSoundness_imp_soundness_of_marginal`; the\nsummed error is `∑ i, 0 = 0`. -/\ntheorem oracleVerifier_soundness_zero\n    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),\n      x ∈ support ((impl t).run s) → x.2 = s)\n    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)\n    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),\n      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :\n    ((oracleVerifier R deg D oSpec).toVerifier).soundness init impl\n      (inputRelation R deg D).language (outputRelation R deg).language 0 := by\n  have h := Verifier.rbrSoundness_imp_soundness_of_marginal init impl\n    (oracleVerifier_rbrSoundness_zero oSpec R deg D)\n    (Verifier.marginalBridge_holds himplSP himplNF himplVB)\n  simpa using h\n\n",
+      "reason": "Canonical Simple.oracleVerifier queries the prover message polynomial; the former constant input-relation knowledge state and input-only rejection claim do not describe that verifier."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Sumcheck/Spec/SingleRoundFlipImpClose.lean",
+      "name": "Sumcheck.Spec.SingleRound.Simple.simpleKnowledgeStateFunction_transcriptIndependent",
+      "original_command": "/-- **`hIndep`, discharged.** The single-round sum-check knowledge state function is\ntranscript-independent: its `toFun` returns only whether the statement lies in the input relation,\nignoring the message index, transcript, and intermediate witness. -/\ntheorem simpleKnowledgeStateFunction_transcriptIndependent {σ : Type} (init : ProbComp σ)\n    (impl : QueryImpl oSpec (StateT σ ProbComp)) :\n    KnowFlip.TranscriptIndependent\n      (simpleKnowledgeStateFunction (init := init) (impl := impl) R deg D oSpec) :=\n  ⟨fun stmtIn => (stmtIn, ()) ∈ inputRelation R deg D, fun _ _ _ _ => Iff.rfl⟩\n\n",
+      "reason": "Canonical Simple.oracleVerifier queries the prover message polynomial; the former constant input-relation knowledge state and input-only rejection claim do not describe that verifier."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Sumcheck/Spec/SingleRoundFlipImpClose.lean",
+      "name": "Sumcheck.Spec.SingleRound.Simple.oracleVerifier_rbrSoundness",
+      "original_command": "/-- **Per-round plain RBR soundness, discharged for the single-round sum-check oracle verifier.**\n\nThis closes the downstream `hRound` shape for one generic sum-check round: the plain state function\nis induced from `simpleKnowledgeStateFunction`, the all-prover-witness-type knowledge-flip bound is\nsupplied by transcript-independence, and the flip event is pointwise impossible.  The statement is\nvalid for any caller-chosen error family, since the actual flip probability is `0`. -/\ntheorem oracleVerifier_rbrSoundness {σ : Type} (init : ProbComp σ)\n    (impl : QueryImpl oSpec (StateT σ ProbComp))\n    [(oSpec + [(SingleRound.pSpec R deg).Challenge]ₒ'challengeOracleInterface).Fintype]\n    [(oSpec + [(SingleRound.pSpec R deg).Challenge]ₒ'challengeOracleInterface).Inhabited]\n    (rbrError : (SingleRound.pSpec R deg).ChallengeIdx → ℝ≥0) :\n    (oracleVerifier R deg D oSpec).rbrSoundness init impl\n      (inputRelation R deg D).language (outputRelation R deg).language rbrError :=\n  Verifier.RoundByRound.oracleVerifier_rbrSoundness_of_knowledgeFlip\n    (simpleKnowledgeStateFunction (init := init) (impl := impl) R deg D oSpec)\n    rbrError\n    (oracleVerifier_hKnowFlip_family_of_transcriptIndep\n      (simpleKnowledgeStateFunction (init := init) (impl := impl) R deg D oSpec)\n      (simpleKnowledgeStateFunction_transcriptIndependent init impl) rbrError)\n\n",
+      "reason": "Canonical Simple.oracleVerifier queries the prover message polynomial; the former constant input-relation knowledge state and input-only rejection claim do not describe that verifier."
+    },
+    {
+      "source": "ProximityPrize/Extensions/ProofSystem/Sumcheck/Spec/SingleRound.lean",
+      "name": "Sumcheck.Spec.SingleRound.Simple.simpleKnowledgeStateFunction",
+      "original_command": "/-- The transcript-independent knowledge state function for the oracle verifier: its guard\nchecks the ORACLE's `D`-sum, which is precisely the input relation.\n\nDe-privatized (#13) so the downstream plain round-by-round soundness weakening can read off its\ntranscript-independence by `Iff.rfl`: its `toFun` ignores the message index, transcript, and\nmid-witness, so the per-round knowledge-flip event is identically `False`. -/\ndef simpleKnowledgeStateFunction :\n    ((oracleVerifier R deg D oSpec).toVerifier).KnowledgeStateFunction init impl\n      (inputRelation R deg D) (outputRelation R deg)\n      (simpleRbrExtractor R deg oSpec) where\n  toFun := fun _ stmtIn _ _ => (stmtIn, ()) ∈ inputRelation R deg D\n  toFun_empty := fun _ _ h => h\n  toFun_next := fun _ _ _ _ _ _ h => h\n  toFun_full := fun ⟨target, oStmt⟩ tr witOut h => by\n    show (⟨target, oStmt⟩, ()) ∈ inputRelation R deg D\n    by_contra hInput\n    rw [gt_iff_lt, OracleComp.OptionT.prEvent_mk_pos_iff] at h\n    obtain ⟨x, hx, _hrel⟩ := h\n    simp only [OptionT.run_mk, support_bind, Set.mem_iUnion, exists_prop] at hx\n    obtain ⟨s, _, hx⟩ := hx\n    have hGuard :\n        ((Vector.finRange m).map (fun i => (oStmt ()).val.eval (D i))).sum ≠ target := by\n      intro hsum\n      apply hInput\n      simp only [inputRelation, Set.mem_ofPred_eq]\n      rw [Finset.sum_map]\n      simpa [vector_finRange_map_sum_eq] using hsum\n    have hrun :\n        ((oracleVerifier R deg D oSpec).toVerifier).run ⟨target, oStmt⟩ tr =\n          (failure : OptionT (OracleComp oSpec) (StmtOut R × (∀ i, OStmtOut R deg i))) := by\n      simp only [Verifier.run, OracleVerifier.toVerifier]\n      rw [simulateQ_oracleVerify_eq]\n      rw [if_neg hGuard]\n      rfl\n    have key :\n        (simulateQ impl (((oracleVerifier R deg D oSpec).toVerifier).run ⟨target, oStmt⟩ tr)).run'\n            s =\n          pure none := by\n      rw [hrun]\n      change (simulateQ impl (pure none : OracleComp oSpec\n        (Option (StmtOut R × (∀ i, OStmtOut R deg i))))).run' s = _\n      rw [simulateQ_pure]\n      change Prod.fst <$> (pure (none :\n        Option (StmtOut R × (∀ i, OStmtOut R deg i))) : StateT σ ProbComp _).run s = _\n      rw [StateT.run_pure]\n      simp [map_pure]\n    rw [key] at hx\n    simp only [support_pure, Set.mem_singleton_iff] at hx\n    exact absurd hx (by simp)\n\n",
+      "reason": "Canonical Simple.oracleVerifier queries the prover message polynomial; the former constant input-relation knowledge state and input-only rejection claim do not describe that verifier."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Sumcheck/Spec/SeqComposeRbrSoundness.lean",
+      "name": "Sumcheck.Spec.oracleVerifier_rbrSoundness_of_canonical_round_append",
+      "original_command": "omit [oSpec.Fintype] in\n/-- **Canonical multi-round sum-check RBR with per-round `hRound` closed.**\n\nThis is the canonical relation-chain specialization of\n`oracleVerifier_rbrSoundness_of_round_append`.  It discharges every per-round RBR hypothesis via\n`singleRound_oracleVerifier_rbrSoundness_canonical`, leaving only the binary plain-RBR append\nkeystone.  The final language is the final sum-check relation `relationRound (Fin.last n)`, not\n`Set.univ`; callers that require a different terminal language need a separate language transport\nargument. -/\ntheorem oracleVerifier_rbrSoundness_of_canonical_round_append\n    [(oSpec + [(SingleRound.pSpec R deg).Challenge]ₒ'challengeOracleInterface).Fintype]\n    [(oSpec + [(SingleRound.pSpec R deg).Challenge]ₒ'challengeOracleInterface).Inhabited]\n    (rbrSoundnessError : ∀ _ : Fin n, (SingleRound.pSpec R deg).ChallengeIdx → ℝ≥0)\n    (hAppend : ∀ {S₁ S₂ S₃ : Type} {k₁ k₂ : ℕ}\n        {p₁ : ProtocolSpec k₁} {p₂ : ProtocolSpec k₂}\n        [∀ j, SampleableType (p₁.Challenge j)] [∀ j, SampleableType (p₂.Challenge j)]\n        (V₁ : Verifier oSpec S₁ S₂ p₁) (V₂ : Verifier oSpec S₂ S₃ p₂)\n        {l₁ : Set S₁} {l₂ : Set S₂} {l₃ : Set S₃}\n        {e₁ : p₁.ChallengeIdx → ℝ≥0} {e₂ : p₂.ChallengeIdx → ℝ≥0},\n        V₁.rbrSoundness init impl l₁ l₂ e₁ → V₂.rbrSoundness init impl l₂ l₃ e₂ →\n        (V₁.append V₂).rbrSoundness init impl l₁ l₃\n          (Sum.elim e₁ e₂ ∘ ChallengeIdx.sumEquiv.symm)) :\n    (oracleVerifier R deg D n oSpec).rbrSoundness init impl\n      (relationRound R n deg D 0).language\n      (relationRound R n deg D (Fin.last n)).language\n      (fun combinedIdx =>\n        letI ij := ProtocolSpec.seqComposeChallengeIdxToSigma combinedIdx\n        rbrSoundnessError ij.1 ij.2) :=\n  oracleVerifier_rbrSoundness_of_round_append\n    (lang := fun i => (relationRound R n deg D i).language)\n    rbrSoundnessError\n    (fun i => singleRound_oracleVerifier_rbrSoundness_canonical (R := R) (n := n)\n      (deg := deg) (D := D) (oSpec := oSpec) (init := init) (impl := impl) i\n      (rbrSoundnessError i))\n    hAppend\n\n",
+      "reason": "The proof depended on the obsolete input-query constant-knowledge/pointwise-rejection law. Canonical message-polynomial semantics do not supply that law; no replacement completion or new residual is claimed."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Sumcheck/Spec/SeqComposeRbrSoundness.lean",
+      "name": "Sumcheck.Spec.singleRound_oracleVerifier_rbrSoundness_canonical",
+      "original_command": "omit [oSpec.Fintype] in\n/-- **Canonical lifted per-round plain RBR soundness for sum-check.**\n\nThis closes the `hRound` hypothesis for the canonical relation chain\n`relationRound i.castSucc → relationRound i.succ`: the simple single-round plain RBR theorem is\nlifted through the sum-check oracle lens, using the proven per-round `LiftContextCoherent` instance\nand the knowledge-sound-lens-to-plain-sound-lens bridge. -/\ntheorem singleRound_oracleVerifier_rbrSoundness_canonical\n    [(oSpec + [(SingleRound.pSpec R deg).Challenge]ₒ'challengeOracleInterface).Fintype]\n    [(oSpec + [(SingleRound.pSpec R deg).Challenge]ₒ'challengeOracleInterface).Inhabited]\n    (i : Fin n)\n    (rbrError : (SingleRound.pSpec R deg).ChallengeIdx → ℝ≥0) :\n    (SingleRound.oracleVerifier R n deg D oSpec i).rbrSoundness init impl\n      (relationRound R n deg D i.castSucc).language\n      (relationRound R n deg D i.succ).language rbrError := by\n  letI : Inhabited (SingleRound.Simple.StmtOut R) := ⟨(0, 0)⟩\n  letI : OracleVerifier.LiftContextCoherent (SingleRound.sumcheckOracleLens R n deg D oSpec i)\n      (SingleRound.Simple.oracleVerifier R deg D oSpec) := by\n    change OracleVerifier.LiftContextCoherent (SingleRound.sumcheckOracleLens R n deg D oSpec i)\n      (SingleRound.Simple.oracleReduction R deg D oSpec).verifier\n    exact SingleRound.coh_proven_inst (R := R) (n := n) (deg := deg) (D := D)\n      (oSpec := oSpec) i\n  letI : Extractor.Lens.IsKnowledgeSound\n      (relationRound R n deg D i.castSucc)\n      (SingleRound.Simple.inputRelation R deg D)\n      (relationRound R n deg D i.succ)\n      (SingleRound.Simple.outputRelation R deg)\n      ((SingleRound.Simple.oracleVerifier R deg D oSpec).toVerifier.compatStatement\n        (SingleRound.oStmtLens R n deg D i))\n      (fun _ _ => True)\n      (SingleRound.extractorLens R n deg D i) :=\n    SingleRound.extractorLens_rbr_knowledge_soundness (R := R) (n := n) (deg := deg)\n      (D := D) (oSpec := oSpec) i\n  have hLensSound :\n      OracleStatement.Lens.IsSound\n        (relationRound R n deg D i.castSucc).language\n        (relationRound R n deg D i.succ).language\n        (SingleRound.Simple.inputRelation R deg D).language\n        (SingleRound.Simple.outputRelation R deg).language\n        (Verifier.compatStatement (SingleRound.sumcheckOracleLens R n deg D oSpec i).toLens\n          (SingleRound.Simple.oracleVerifier R deg D oSpec).toVerifier)\n        (SingleRound.sumcheckOracleLens R n deg D oSpec i).toLens := by\n    change (SingleRound.extractorLens R n deg D i).stmt.IsSound\n      (relationRound R n deg D i.castSucc).language\n      (relationRound R n deg D i.succ).language\n      (SingleRound.Simple.inputRelation R deg D).language\n      (SingleRound.Simple.outputRelation R deg).language\n      (Verifier.compatStatement (SingleRound.oStmtLens R n deg D i)\n        (SingleRound.Simple.oracleVerifier R deg D oSpec).toVerifier)\n    infer_instance\n  exact OracleVerifier.liftContextLegacy_rbr_soundness\n    (V := SingleRound.Simple.oracleVerifier R deg D oSpec)\n    (lens := SingleRound.sumcheckOracleLens R n deg D oSpec i)\n    (lensSound := hLensSound)\n    (h := SingleRound.Simple.oracleVerifier_rbrSoundness (R := R) (deg := deg) (D := D)\n      (oSpec := oSpec) init impl rbrError)\n\n",
+      "reason": "The proof depended on the obsolete input-query constant-knowledge/pointwise-rejection law. Canonical message-polynomial semantics do not supply that law; no replacement completion or new residual is claimed."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Logup/Security/SumcheckSoundnessPointwise.lean",
+      "name": "Logup.sumcheckSoundnessResidual_pointwise",
+      "original_command": "/-- **(F-iii) `SumcheckSoundnessResidual` discharged pointwise** — the LogUp embedded sum-check\nphase is sound from `midLanguage` into `outputRelation.language` with any error\n`sumcheckSoundnessError`, via the error-`0` round-by-round soundness + the proven\n`marginalBridge_holds` (no rbr-append keystone, no per-round induction). -/\ntheorem sumcheckSoundnessResidual_pointwise (hn : 0 < n)\n    (sumcheckSoundnessError : ℝ≥0)\n    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),\n      x ∈ support ((impl t).run s) → x.2 = s)\n    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)\n    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),\n      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :\n    SumcheckSoundnessResidual oSpec F n M params init impl sumcheckSoundnessError := by\n  have h := Verifier.rbrSoundness_imp_soundness_of_marginal init impl\n    (sumcheckVerifier_rbrSoundness_zero oSpec F n M params hn)\n    (Verifier.marginalBridge_holds himplSP himplNF himplVB)\n  -- `soundness` with error `∑ 0 = 0` weakens to any error.\n  intro WitIn WitOut witIn prover stmtIn hStmtIn\n  refine le_trans (h WitIn WitOut witIn prover stmtIn hStmtIn) ?_\n  simp\n\n",
+      "reason": "The proof depended on the obsolete input-query constant-knowledge/pointwise-rejection law. Canonical message-polynomial semantics do not supply that law; no replacement completion or new residual is claimed."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Logup/Security/SumcheckSoundnessPointwise.lean",
+      "name": "Logup.sumcheckVerifier_rbrSoundness_zero",
+      "original_command": "/-- **(F-ii) Round-by-round soundness of the lifted sum-check verifier with error `0`.** -/\ntheorem sumcheckVerifier_rbrSoundness_zero (hn : 0 < n) :\n    ((sumcheckVerifier oSpec F n M params).toVerifier).rbrSoundness init impl\n      (midLanguage F n M params) outputRelation.language (fun _ => 0) := by\n  refine ⟨midStateFunction oSpec F n M params hn, ?_⟩\n  intro stmtIn _ WitIn WitOut witIn prover i\n  refine le_of_eq (probEvent_eq_zero ?_)\n  rintro ⟨tr, chal⟩ - ⟨hneg, hpos⟩\n  exact hneg hpos\n\n",
+      "reason": "The proof depended on the obsolete input-query constant-knowledge/pointwise-rejection law. Canonical message-polynomial semantics do not supply that law; no replacement completion or new residual is claimed."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Logup/Security/SumcheckSoundnessPointwise.lean",
+      "name": "Logup.midStateFunction",
+      "original_command": "/-- **(F-i) The transcript-independent mid-language state function for the lifted verifier.**\nIts `toFun_full` is exactly the pointwise rejection (E). -/\ndef midStateFunction (hn : 0 < n) :\n    ((sumcheckVerifier oSpec F n M params).toVerifier).StateFunction init impl\n      (midLanguage F n M params) outputRelation.language where\n  toFun := fun _ stmt _ => stmt ∈ midLanguage F n M params\n  toFun_empty := fun _ => Iff.rfl\n  toFun_next := fun _ _ _ _ h _ => h\n  toFun_full := fun stmt tr hNeg => by\n    have hrun := sumcheckVerifier_run_failure oSpec F n M params hn stmt hNeg tr\n    rw [probEvent_eq_zero_iff]\n    rintro x hx -\n    rw [OptionT.mem_support_iff] at hx\n    simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx\n    obtain ⟨s, _, hx⟩ := hx\n    have key : (simulateQ impl\n        (((sumcheckVerifier oSpec F n M params).toVerifier).run stmt tr)).run' s\n        = (pure none : ProbComp (Option _)) := by\n      rw [hrun]\n      change (simulateQ impl (pure none : OracleComp oSpec (Option _))).run' s = _\n      rw [simulateQ_pure]\n      change Prod.fst <$> (pure (none : Option _) : StateT σ ProbComp _).run s = _\n      rw [StateT.run_pure]\n      simp [map_pure]\n    rw [key] at hx\n    simp only [support_pure, Set.mem_singleton_iff] at hx\n    exact absurd hx (by simp)\n\n",
+      "reason": "The proof depended on the obsolete input-query constant-knowledge/pointwise-rejection law. Canonical message-polynomial semantics do not supply that law; no replacement completion or new residual is claimed."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Logup/Security/SumcheckSoundnessPointwise.lean",
+      "name": "Logup.sumcheckVerifier_run_failure",
+      "original_command": "/-- **(E) The LogUp-lifted sum-check verifier rejects bad mid-claims outright.** -/\ntheorem sumcheckVerifier_run_failure (hn : 0 < n)\n    (stmt : StmtAfterOuter F n M params × (∀ i, OStmtAfterOuter F n M params i))\n    (hBad : stmt ∉ midLanguage F n M params)\n    (tr : (logupSumcheckPSpec F n M params).FullTranscript) :\n    ((sumcheckVerifier oSpec F n M params).toVerifier).run stmt tr =\n      (failure : OptionT (OracleComp oSpec) _) := by\n  -- The lens projection is outside the inner round-`0` language (proven projection soundness),\n  -- hence outside the round-`0` relation (Unit witness).\n  have hProjLang := SumcheckLensProjSound_holds oSpec F n M params\n    (Fact.out : (-1 : F) ≠ 1) stmt hBad\n  have hProjRel : (((logupSumcheckOracleLens.{0} oSpec F n M params).toLens.proj stmt), ())\n      ∉ Sumcheck.Spec.relationRound F n (logupSumcheckDegree M params)\n        (signDomain F (Fact.out : (-1 : F) ≠ 1)) (0 : Fin (n + 1)) := fun hMem =>\n    hProjLang (by\n      rw [logupSumcheckInputLanguage, Set.mem_language_iff]\n      exact ⟨(), hMem⟩)\n  -- Commute `toVerifier` through the LogUp lift (proven coherence).\n  haveI := logupSumcheck_liftContextCoherent oSpec F n M params\n  have hcomm := OracleVerifier.liftContextLegacy_toVerifier_comm\n    (stmtLens := logupSumcheckOracleLens.{0} oSpec F n M params)\n    (V := (logupConcreteSumcheckOracleReduction oSpec F n M params\n      (Fact.out : (-1 : F) ≠ 1)).verifier)\n  show (((logupConcreteSumcheckOracleReduction oSpec F n M params\n      (Fact.out : (-1 : F) ≠ 1)).verifier.liftContext\n      (logupSumcheckOracleLens.{0} oSpec F n M params)).toVerifier).run stmt tr = _\n  rw [hcomm]\n  -- Expose `n = n' + 1` to apply the composed rejection.\n  obtain ⟨n', rfl⟩ : ∃ n', n = n' + 1 := ⟨n - 1, by omega⟩\n  -- The lifted run is the inner composed run on the projection, post-composed with the lift;\n  -- the inner run fails, and the `OptionT` bind short-circuits.\n  show (((logupConcreteSumcheckOracleReduction oSpec F (n' + 1) M params\n      (Fact.out : (-1 : F) ≠ 1)).verifier.toVerifier).run\n      ((logupSumcheckOracleLens.{0} oSpec F (n' + 1) M params).toLens.proj stmt) tr) >>= _ = _\n  have hInnerFail : (((logupConcreteSumcheckOracleReduction oSpec F (n' + 1) M params\n      (Fact.out : (-1 : F) ≠ 1)).verifier.toVerifier).run\n      ((logupSumcheckOracleLens.{0} oSpec F (n' + 1) M params).toLens.proj stmt) tr)\n      = (failure : OptionT (OracleComp oSpec) _) := by\n    exact Sumcheck.Spec.composedSumcheck_run_failure oSpec F (logupSumcheckDegree M params)\n      (signDomain F (Fact.out : (-1 : F) ≠ 1))\n      ((logupSumcheckOracleLens.{0} oSpec F (n' + 1) M params).toLens.proj stmt).1\n      ((logupSumcheckOracleLens.{0} oSpec F (n' + 1) M params).toLens.proj stmt).2\n      hProjRel tr\n  rw [hInnerFail]\n  apply OptionT.ext\n  simp [OptionT.run_bind]\n\n",
+      "reason": "The proof depended on the obsolete input-query constant-knowledge/pointwise-rejection law. Canonical message-polynomial semantics do not supply that law; no replacement completion or new residual is claimed."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Logup/Security/LogupSoundnessPointwise.lean",
+      "name": "Logup.logup_soundness_pointwiseSumcheck",
+      "original_command": "/-- **LogUp Protocol 2 soundness, modulo only the outer mid-claim soundness (issue #13).**\n\nFrom `hOuter` (the outer phase maps bad lookups to *zero* mid-claims with probability at most\n`outerSoundnessError` — the batching/zero-check argument) plus `0 < n` and the standard\nhonest-`impl` side conditions, the full LogUp verifier is sound with the paper-shaped error\n`logupSoundnessError = outerSoundnessError + sumcheckSoundnessError`. The embedded sum-check half\nis supplied by the discharged `sumcheckSoundnessResidual_pointwise`; the append composition by the\nproven message-seam keystone + oracle-routing fusion. -/\ntheorem logup_soundness_pointwiseSumcheck (sumcheckSoundnessError : ℝ≥0) (hn : 0 < n)\n    (hOuter :\n      (outerVerifier oSpec F n M params).soundness init impl\n        (inputRelation F n M).language (midLanguage F n M params)\n        (outerSoundnessError F n M params))\n    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),\n      x ∈ support ((impl t).run s) → x.2 = s)\n    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)\n    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),\n      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :\n    (logupVerifier oSpec F n M params).soundness init impl\n      (inputRelation F n M).language outputRelation.language\n      (logupSoundnessError F n M params sumcheckSoundnessError) := by\n  -- The discharged sum-check half (from `midLanguage`).\n  have hSumcheck : (sumcheckVerifier oSpec F n M params).soundness init impl\n      (midLanguage F n M params) outputRelation.language sumcheckSoundnessError :=\n    sumcheckSoundnessResidual_pointwise oSpec F n M params hn sumcheckSoundnessError\n      himplSP himplNF himplVB\n  -- The plain appended soundness (the proven message-seam keystone is mid-language generic).\n  have hPlainAppend :\n      (Verifier.append (outerVerifier oSpec F n M params).toVerifier\n          (sumcheckVerifier oSpec F n M params).toVerifier).soundness init impl\n        (inputRelation F n M).language outputRelation.language\n        (outerSoundnessError F n M params + sumcheckSoundnessError) :=\n    _root_.Verifier.append_soundness_msg\n      (outerVerifier oSpec F n M params).toVerifier\n      (sumcheckVerifier oSpec F n M params).toVerifier\n      hOuter hSumcheck\n      (logupSumcheck_length_pos n hn)\n      (logup_seam_dir F n M params hn)\n      (logupSumcheckPSpec_first_dir F n M params hn)\n      himplSP himplNF himplVB\n  -- The oracle-level append residual (proven oracle-routing fusion) and the final assembly.\n  have hOracle : OracleVerifier.appendSoundnessResidual (init := init) (impl := impl)\n      (outerVerifier oSpec F n M params) (sumcheckVerifier oSpec F n M params)\n      hOuter hSumcheck :=\n    OracleVerifier.oracleAppendSoundnessResidual_of_plain.{0, 0}\n      (outerVerifier oSpec F n M params) (sumcheckVerifier oSpec F n M params)\n      hOuter hSumcheck hPlainAppend\n  exact OracleVerifier.append_soundness.{0, 0}\n    (outerVerifier oSpec F n M params) (sumcheckVerifier oSpec F n M params)\n    hOuter hSumcheck hOracle\n\n",
+      "reason": "The proof depended on the obsolete input-query constant-knowledge/pointwise-rejection law. Canonical message-polynomial semantics do not supply that law; no replacement completion or new residual is claimed."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Logup/Security/OuterMaliciousSoundness.lean",
+      "name": "Logup.logup_soundness_end_to_end",
+      "original_command": "/-- **Issue #13 LogUp soundness — END-TO-END.** The full LogUp verifier is sound with the\npaper error, with every protocol obligation discharged; only standard runtime side\nconditions on the shared-oracle implementation remain as hypotheses. -/\ntheorem logup_soundness_end_to_end [oSpec.Fintype] [oSpec.Inhabited]\n    (sumcheckSoundnessError : ℝ≥0) (hn : 0 < n)\n    (hpole : 2 ^ n < Fintype.card F) (hnK : n ≤ params.numGroups)\n    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),\n      x ∈ support ((impl t).run s) → x.2 = s)\n    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)\n    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),\n      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :\n    (logupVerifier oSpec F n M params).soundness init impl\n      (inputRelation F n M).language outputRelation.language\n      (logupSoundnessError F n M params sumcheckSoundnessError) :=\n  logup_soundness_pointwiseSumcheck oSpec F n M params sumcheckSoundnessError hn\n    (outerVerifier_soundness_mid oSpec F n M params init impl hpole hnK\n      himplSP himplNF himplVB)\n    himplSP himplNF himplVB\n\n",
+      "reason": "The proof depended on the obsolete input-query constant-knowledge/pointwise-rejection law. Canonical message-polynomial semantics do not supply that law; no replacement completion or new residual is claimed."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Logup/Security/LogupResidualDischarge.lean",
+      "name": "Logup.logupSoundnessBrickResidual_holds",
+      "original_command": "/-- **`LogupSoundnessBrickResidual` is a theorem** (issue #13): the fully split soundness\nresidual surface — outer half, embedded-sumcheck half, and append-composition headline — holds\nunder the standard side conditions only. -/\ntheorem logupSoundnessBrickResidual_holds [oSpec.Fintype] [oSpec.Inhabited]\n    (sumcheckSoundnessError : ℝ≥0) (hn : 0 < n)\n    (hpole : 2 ^ n < Fintype.card F) (hnK : n ≤ params.numGroups)\n    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),\n      x ∈ support ((impl t).run s) → x.2 = s)\n    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)\n    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),\n      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :\n    LogupSoundnessBrickResidual oSpec F n M params init impl sumcheckSoundnessError :=\n  ⟨outerSoundnessResidual_holds oSpec F n M params init impl hpole hnK\n      himplSP himplNF himplVB,\n    sumcheckSoundnessResidual_holds_pointwise oSpec F n M params init impl\n      sumcheckSoundnessError hn himplSP himplNF himplVB,\n    appendSoundnessResidual_holds oSpec F n M params init impl sumcheckSoundnessError hn\n      hpole hnK himplSP himplNF himplVB⟩\n\n",
+      "reason": "The proof depended on the obsolete input-query constant-knowledge/pointwise-rejection law. Canonical message-polynomial semantics do not supply that law; no replacement completion or new residual is claimed."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Logup/Security/LogupResidualDischarge.lean",
+      "name": "Logup.appendSoundnessResidual_holds",
+      "original_command": "/-- **`AppendSoundnessResidual` is a theorem** (issue #13): the composed `logupVerifier` headline\nsoundness, from `logup_soundness_end_to_end` (the two discharged halves + the proven message-seam\nappend keystone + the proven oracle-routing fusion). -/\ntheorem appendSoundnessResidual_holds [oSpec.Fintype] [oSpec.Inhabited]\n    (sumcheckSoundnessError : ℝ≥0) (hn : 0 < n)\n    (hpole : 2 ^ n < Fintype.card F) (hnK : n ≤ params.numGroups)\n    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),\n      x ∈ support ((impl t).run s) → x.2 = s)\n    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)\n    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),\n      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :\n    AppendSoundnessResidual oSpec F n M params init impl sumcheckSoundnessError :=\n  logup_soundness_end_to_end oSpec F n M params init impl sumcheckSoundnessError hn\n    hpole hnK himplSP himplNF himplVB\n\n",
+      "reason": "The proof depended on the obsolete input-query constant-knowledge/pointwise-rejection law. Canonical message-polynomial semantics do not supply that law; no replacement completion or new residual is claimed."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Logup/Security/LogupResidualDischarge.lean",
+      "name": "Logup.subPhaseSoundnessResidual_holds",
+      "original_command": "/-- **`SubPhaseSoundnessResidual` is a theorem** (issue #13): both sub-phase soundness halves of\nthe LogUp composition hold — the outer half by the claim-based RBR route, the embedded-sumcheck\nhalf by the pointwise route. -/\ntheorem subPhaseSoundnessResidual_holds [oSpec.Fintype] [oSpec.Inhabited]\n    (sumcheckSoundnessError : ℝ≥0) (hn : 0 < n)\n    (hpole : 2 ^ n < Fintype.card F) (hnK : n ≤ params.numGroups)\n    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),\n      x ∈ support ((impl t).run s) → x.2 = s)\n    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)\n    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),\n      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :\n    SubPhaseSoundnessResidual oSpec F n M params init impl sumcheckSoundnessError :=\n  ⟨outerSoundnessResidual_holds oSpec F n M params init impl hpole hnK\n      himplSP himplNF himplVB,\n    sumcheckSoundnessResidual_holds_pointwise oSpec F n M params init impl\n      sumcheckSoundnessError hn himplSP himplNF himplVB⟩\n\n",
+      "reason": "The proof depended on the obsolete input-query constant-knowledge/pointwise-rejection law. Canonical message-polynomial semantics do not supply that law; no replacement completion or new residual is claimed."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Logup/Security/LogupResidualDischarge.lean",
+      "name": "Logup.sumcheckSoundnessResidual_holds_pointwise",
+      "original_command": "/-- **`SumcheckSoundnessResidual` is a theorem** (issue #13, embedded-sumcheck half): re-export\nof the discharged pointwise route at the `SubPhaseSplit` naming site. -/\ntheorem sumcheckSoundnessResidual_holds_pointwise [oSpec.Fintype] [oSpec.Inhabited]\n    (sumcheckSoundnessError : ℝ≥0) (hn : 0 < n)\n    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),\n      x ∈ support ((impl t).run s) → x.2 = s)\n    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)\n    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),\n      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :\n    SumcheckSoundnessResidual oSpec F n M params init impl sumcheckSoundnessError :=\n  sumcheckSoundnessResidual_pointwise oSpec F n M params hn sumcheckSoundnessError\n    himplSP himplNF himplVB\n\n",
+      "reason": "The proof depended on the obsolete input-query constant-knowledge/pointwise-rejection law. Canonical message-polynomial semantics do not supply that law; no replacement completion or new residual is claimed."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Logup/Security/LogupProtocol2Status.lean",
+      "name": "Logup.issue13_soundness_pointwiseSumcheck",
+      "original_command": "/-- **Issue #13 — pointwise sumcheck-and-append close over `midLanguage`.**\n\nThis route uses the proved pointwise rejection theorem for the LogUp-lifted sumcheck verifier:\noutside `midLanguage`, the verifier fails outright.  Consequently the embedded-sumcheck soundness\nhalf has error `0` and the message-seam append theorem discharges the composition.  The remaining\nprotocol soundness input is exactly the outer verifier's soundness into `midLanguage`; this is the\nhistorical zero-claim language, not the sharp support-cleared outer language. -/\ntheorem issue13_soundness_pointwiseSumcheck [oSpec.Fintype] [oSpec.Inhabited]\n    (sumcheckSoundnessError : ℝ≥0) (hn : 0 < n)\n    (hOuter :\n      (outerVerifier oSpec F n M params).soundness init impl\n        (inputRelation F n M).language (midLanguage F n M params)\n        (outerSoundnessError F n M params))\n    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),\n      x ∈ support ((impl t).run s) → x.2 = s)\n    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)\n    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),\n      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :\n    (logupVerifier oSpec F n M params).soundness init impl\n      (inputRelation F n M).language outputRelation.language\n      (logupSoundnessError F n M params sumcheckSoundnessError) :=\n  logup_soundness_pointwiseSumcheck oSpec F n M params\n    (init := init) (impl := impl) sumcheckSoundnessError hn hOuter\n    himplSP himplNF himplVB\n\n",
+      "reason": "The proof depended on the obsolete input-query constant-knowledge/pointwise-rejection law. Canonical message-polynomial semantics do not supply that law; no replacement completion or new residual is claimed."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Logup/Security/LogupProtocol2Status.lean",
+      "name": "Logup.issue13_soundness_end_to_end",
+      "original_command": "/-- **Issue #13 — LogUp Protocol 2 soundness, end-to-end.**\n\nThis is the strongest current soundness headline: the outer malicious-prover RBR theorem,\npointwise embedded-sumcheck rejection, and LogUp message-seam append composition are all wired.\nThere are no `SubPhaseSoundnessResidual` / `SumcheckSoundnessResidual` / append residual\nhypotheses left.  The remaining hypotheses are standard semantic side conditions:\n\n* `hn` — a nonempty Boolean cube;\n* `hpole` — a field large enough to make the pole denominator nonzero;\n* `hnK` — enough batching groups for the `(z, lambda)` Schwartz-Zippel budget; and\n* `himplSP` / `himplNF` / `himplVB` — state-preserving, never-failing, value-blind shared-oracle\n  implementation assumptions. -/\ntheorem issue13_soundness_end_to_end [oSpec.Fintype] [oSpec.Inhabited]\n    (sumcheckSoundnessError : ℝ≥0) (hn : 0 < n)\n    (hpole : 2 ^ n < Fintype.card F) (hnK : n ≤ params.numGroups)\n    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),\n      x ∈ support ((impl t).run s) → x.2 = s)\n    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)\n    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),\n      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :\n    (logupVerifier oSpec F n M params).soundness init impl\n      (inputRelation F n M).language outputRelation.language\n      (logupSoundnessError F n M params sumcheckSoundnessError) :=\n  logup_soundness_end_to_end oSpec F n M params init impl\n    sumcheckSoundnessError hn hpole hnK himplSP himplNF himplVB\n\n",
+      "reason": "The proof depended on the obsolete input-query constant-knowledge/pointwise-rejection law. Canonical message-polynomial semantics do not supply that law; no replacement completion or new residual is claimed."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Logup/Security/SumcheckComposedRejection.lean",
+      "name": "Sumcheck.Spec.optionT_failure_bind",
+      "original_command": "/-- `OptionT` over `OracleComp` short-circuits `failure` through `bind`. -/\nprivate theorem optionT_failure_bind {α β : Type}\n    (f : α → OptionT (OracleComp oSpec) β) :\n    (failure : OptionT (OracleComp oSpec) α) >>= f = failure := by\n  apply OptionT.ext\n  simp [OptionT.run_bind]\n\n",
+      "reason": "Unused private operational helper after retiring the invalid rejection chain; canonical monad laws already supply failure-bind normalization."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Sumcheck/Spec/RbrKnowledgeSoundnessOracle.lean",
+      "name": "Sumcheck.Spec.SingleRound.oracleVerifier_rbrKnowledgeSoundness_indexed",
+      "original_command": "/-- **Per-round rbr knowledge soundness of the `i`-th-round sum-check oracle verifier** on the\ncanonical relation chain `relationRound i.castSucc → relationRound i.succ`, error `deg/|R|`:\nthe proven `Simple.oracleVerifier_rbrKnowledgeSoundness` transported through\n`Verifier.liftContext_rbr_knowledgeSoundness` at the proven\n`extractorLens_rbr_knowledge_soundness`. -/\ntheorem oracleVerifier_rbrKnowledgeSoundness_indexed [Fintype R] [Inhabited R] (i : Fin n) :\n    (oracleVerifier R n deg D oSpec i).rbrKnowledgeSoundness init impl\n      (relationRound R n deg D i.castSucc) (relationRound R n deg D i.succ)\n      (fun _ => (deg : ℝ≥0) / (Fintype.card R)) := by\n  letI : Inhabited (Simple.StmtOut R) := ⟨(default, default)⟩\n  letI : Inhabited (Simple.StmtOut R × ∀ j, Simple.OStmtOut R deg j) :=\n    ⟨((default, default), fun _ => ⟨0, by\n      rw [Polynomial.mem_degreeLE]; exact le_trans (le_of_eq degree_zero) bot_le⟩)⟩\n  letI coh : OracleVerifier.LiftContextCoherent (sumcheckOracleLens R n deg D oSpec i)\n      (Simple.oracleVerifier R deg D oSpec) := by\n    change OracleVerifier.LiftContextCoherent (sumcheckOracleLens R n deg D oSpec i)\n      (Simple.oracleReduction R deg D oSpec).verifier\n    exact coh_proven_inst i\n  show ((oracleVerifier R n deg D oSpec i).toVerifier).rbrKnowledgeSoundness init impl _ _ _\n  show (((Simple.oracleVerifier R deg D oSpec).liftContextLegacy\n    (sumcheckOracleLens R n deg D oSpec i)).toVerifier).rbrKnowledgeSoundness init impl _ _ _\n  rw [OracleVerifier.liftContextLegacy_toVerifier_comm]\n  exact Verifier.liftContext_rbr_knowledgeSoundness\n    (stmtLens := oStmtLens R n deg D i) (witLens := Witness.InvLens.trivial)\n    ((Simple.oracleVerifier R deg D oSpec).toVerifier)\n    (lensKS := extractorLens_rbr_knowledge_soundness i)\n    (Simple.oracleVerifier_rbrKnowledgeSoundness R deg D oSpec)\n\n",
+      "reason": "The old unconditional base knowledge proof used the obsolete input-query constant knowledge function. The completed lens/n-ary assembly is retained under explicitly named simple/per-round knowledge premises; no admitted alias replaces a closed proof."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Sumcheck/Spec/RbrKnowledgeSoundnessOracle.lean",
+      "name": "Sumcheck.Spec.oracleVerifier_rbrKnowledgeSoundness_failingDet",
+      "original_command": "/-- **The full multi-round sum-check ORACLE verifier is round-by-round knowledge sound** on the\ncanonical relation chain `relationRound 0 → relationRound (Fin.last n)`, with per-round error\n`deg/|R|`, by the n-ary failing-deterministic `seqCompose` fold (issue #114). Fully unconditional:\nboth the per-round facts and the failing-determinism witnesses are proven above. -/\ntheorem oracleVerifier_rbrKnowledgeSoundness_failingDet [Fintype R] [Inhabited R] [Subsingleton σ]\n    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0) :\n    (oracleVerifier R deg D n oSpec).rbrKnowledgeSoundness init impl\n      (relationRound R n deg D 0) (relationRound R n deg D (Fin.last n))\n      (fun _ => (deg : ℝ≥0) / (Fintype.card R)) := by\n  letI : ∀ j : Fin (n + 1), Inhabited (StatementRound R n j × ∀ k, OracleStatement R n deg k) :=\n    fun j => ⟨(⟨default, fun _ => default⟩, fun _ => ⟨0, by\n      simp only [MvPolynomial.mem_restrictDegree]\n      intro s hs k\n      simp [MvPolynomial.support_zero] at hs⟩)⟩\n  have h := OracleVerifier.seqCompose_rbrKnowledgeSoundness_failingDet\n    (init := init) (impl := impl)\n    (StatementRound R n) (fun _ => OracleStatement R n deg) (fun _ => Unit)\n    (SingleRound.oracleVerifier R n deg D oSpec)\n    (fun j => relationRound R n deg D j)\n    (fun _ _ => (deg : ℝ≥0) / (Fintype.card R))\n    (fun i => ⟨_, SingleRound.oracleVerifier_toVerifier_failingDet i⟩)\n    (fun _ => ⟨by omega, rfl⟩)\n    (fun _ => ⟨()⟩)\n    hInit hInitNF\n    (fun i => SingleRound.oracleVerifier_rbrKnowledgeSoundness_indexed (impl := impl) i)\n  exact h\n\n",
+      "reason": "The old unconditional base knowledge proof used the obsolete input-query constant knowledge function. The completed lens/n-ary assembly is retained under explicitly named simple/per-round knowledge premises; no admitted alias replaces a closed proof."
+    }
+  ],
+  "historical_base_proof": {
+    "source_revision": "883e99d61e51264327b5fee859732d047f7d7038",
+    "module": "ArkLib/ProofSystem/Sumcheck/Spec/SingleRound.lean",
+    "lines": "1220-1229",
+    "proof": "The former Simple.oracleVerifier_rbrKnowledgeSoundness uses simpleKnowledgeStateFunction and discharges the flip by hn hy. This was a completed proof for the former input-query verifier, not a completed Schwartz–Zippel proof for canonical message checking.",
+    "current_debt": "Canonical message-checking degree/card RBR owners remain inherited admitted upstream declarations. No completed legacy proof is replaced by an admitted alias.",
+    "exact_original_commands": [
+      {
+        "name": "Sumcheck.Spec.SingleRound.Simple.simpleKnowledgeStateFunction",
+        "command": "/-- The transcript-independent knowledge state function for the oracle verifier: its guard\nchecks the ORACLE's `D`-sum, which is precisely the input relation.\n\nDe-privatized (#13) so the downstream plain round-by-round soundness weakening can read off its\ntranscript-independence by `Iff.rfl`: its `toFun` ignores the message index, transcript, and\nmid-witness, so the per-round knowledge-flip event is identically `False`. -/\ndef simpleKnowledgeStateFunction :\n    ((oracleVerifier R deg D oSpec).toVerifier).KnowledgeStateFunction init impl\n      (inputRelation R deg D) (outputRelation R deg)\n      (simpleRbrExtractor R deg oSpec) where\n  toFun := fun _ stmtIn _ _ => (stmtIn, ()) ∈ inputRelation R deg D\n  toFun_empty := fun stmtIn witMid => Iff.rfl\n  toFun_next := fun _ _ _ _ _ _ h => h\n  toFun_full := fun ⟨target, oStmt⟩ tr witOut h => by\n    show (⟨target, oStmt⟩, ()) ∈ inputRelation R deg D\n    by_contra hInput\n    rw [gt_iff_lt, probEvent_pos_iff] at h\n    obtain ⟨x, hx, _hrel⟩ := h\n    rw [OptionT.mem_support_iff] at hx\n    simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx\n    obtain ⟨s, _, hx⟩ := hx\n    have hGuard :\n        ((Vector.finRange m).map (fun i => (oStmt ()).val.eval (D i))).sum ≠ target := by\n      intro hsum\n      apply hInput\n      simp only [inputRelation, Set.mem_setOf_eq]\n      rw [Finset.sum_map]\n      simpa [vector_finRange_map_sum_eq] using hsum\n    have hrun :\n        ((oracleVerifier R deg D oSpec).toVerifier).run ⟨target, oStmt⟩ tr =\n          (failure : OptionT (OracleComp oSpec) (StmtOut R × (∀ i, OStmtOut R deg i))) := by\n      simp only [Verifier.run, OracleVerifier.toVerifier]\n      rw [simulateQ_oracleVerify_eq]\n      rw [if_neg hGuard]\n      rfl\n    have key :\n        (simulateQ impl (((oracleVerifier R deg D oSpec).toVerifier).run ⟨target, oStmt⟩ tr)).run'\n            s =\n          pure none := by\n      rw [hrun]\n      change (simulateQ impl (pure none : OracleComp oSpec\n        (Option (StmtOut R × (∀ i, OStmtOut R deg i))))).run' s = _\n      rw [simulateQ_pure]\n      change Prod.fst <$> (pure (none :\n        Option (StmtOut R × (∀ i, OStmtOut R deg i))) : StateT σ ProbComp _).run s = _\n      rw [StateT.run_pure]\n      simp [map_pure]\n    rw [key] at hx\n    simp only [support_pure, Set.mem_singleton_iff] at hx\n    exact absurd hx (by simp)\n\n"
+      },
+      {
+        "name": "Sumcheck.Spec.SingleRound.Simple.oracleVerifier_rbrKnowledgeSoundness",
+        "command": "/-- Round-by-round knowledge soundness for the oracle verifier -/\ntheorem oracleVerifier_rbrKnowledgeSoundness [Fintype R] :\n    (oracleVerifier R deg D oSpec).rbrKnowledgeSoundness init impl\n    (inputRelation R deg D) (outputRelation R deg) (fun _ => (deg : ℝ≥0) / (Fintype.card R)) := by\n  unfold OracleVerifier.rbrKnowledgeSoundness Verifier.rbrKnowledgeSoundness\n  refine ⟨fun _ => Unit, simpleRbrExtractor R deg oSpec,\n    simpleKnowledgeStateFunction R deg D oSpec, ?_⟩\n  intro stmtIn witIn rbrP i\n  refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)\n  rintro ⟨tr, chal, log⟩ - ⟨w, hn, hy⟩\n  exact hn hy\n\n-- Note: break down the oracle reduction into a series of oracle reductions as stated above\n\n"
+      }
+    ]
+  },
+  "canonical_message_extension_validation": "Actual-import strict16s. simulateQ_oracleVerify_eq, oCtxLens_complete' and Simpler.sendClaim.oracleVerifier standard3.",
+  "retained_math": "Honest prover carry-polynomial support proof, finite/vector bridges, degree lemmas, full round sum splitting, and completed oCtxLens completeness instance retain their genuine statements. A duplicate private vector sum bridge delegates the public owner.",
+  "removed_duplicate_vector_bridge": "/-- Bridge (early copy for the completeness proof below; see also\n`vector_finRange_map_sum_eq`): the vector `D`-evaluation sum equals the `Fin` sum. -/\nprivate lemma vector_finRange_map_sum_eq' (g : Fin m → R) :\n    ((Vector.finRange m).map g).sum = ∑ i : Fin m, g i := by\n  rw [← Vector.sum_toList, Vector.toList_map, Fin.sum_univ_def]\n  have h : (Vector.finRange m).toList = List.finRange m := by\n    simp only [Vector.finRange, Array.finRange, Vector.toList_ofFn]\n    exact List.ofFn_id m\n  rw [h]\n\n",
+  "regression": {
+    "source": "ArkLibTest/Compatibility/SumcheckMessageSemantics.lean",
+    "case": "R = ZMod 2; input polynomial X, D = {1}, target 0, prover message 0, challenge 0. Input relation fails, canonical verifier succeeds, and output relation holds.",
+    "validation": "Actual-import strict4s; all three anchors standard3. No native trust or new admission.",
+    "meaning": "Refutes unconditional input-only rejection; the accepting successful output demonstrates the former constant-input-knowledge full clause cannot describe the canonical message verifier."
+  },
+  "conditional_knowledge_assembly": {
+    "owner": "ArkLib/ProofSystem/Sumcheck/Spec/RbrKnowledgeSoundnessOracle.lean",
+    "new_names": [
+      "Sumcheck.Spec.SingleRound.oracleVerifier_rbrKnowledgeSoundness_indexed_of_simple",
+      "Sumcheck.Spec.oracleVerifier_rbrKnowledgeSoundness_failingDet_of_round"
+    ],
+    "premises": "Actual canonical simple/per-round rbrKnowledgeSoundness bounds. No false zero-flip assertion or full-conclusion residual.",
+    "status": "Source ports in progress; actual boundaries pending KnowledgeFailure/SeqCompose dependencies."
+  },
+  "spartan_conditional_replacements": [
+    {
+      "source": "ArkLib/ProofSystem/Spartan/SumcheckKnowledgeLeaves.lean",
+      "old_name": "Spartan.Spec.firstSumcheck_rbrKnowledgeSoundness_honest_full",
+      "new_name": "Spartan.Spec.firstSumcheck_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds",
+      "added_obligation": [
+        "Actual canonical per-round degree-3 knowledge bound for pp.ℓ_m"
+      ],
+      "original_command": "set_option linter.unusedFintypeInType false in\n/-- The first Spartan sum-check RBR-KS leaf over the honest transported relation contract, with\nthe generic multi-round sum-check oracle RBR-KS theorem plugged in. -/\ntheorem firstSumcheck_rbrKnowledgeSoundness_honest_full [Inhabited R]\n    {σ : Type} [Subsingleton σ] {init : ProbComp σ}\n    {impl : QueryImpl oSpec (StateT σ ProbComp)}\n    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0) :\n    (firstSumcheckReduction (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      (firstSumcheckRbrRelIn (R := R) pp oSpec)\n      (firstSumcheckRbrRelOut (R := R) pp oSpec)\n      (fun _ => (3 : ℝ≥0) / (Fintype.card R)) :=\n  firstSumcheck_rbrKnowledgeSoundness_honest (R := R) pp oSpec\n    (fun _ => (3 : ℝ≥0) / (Fintype.card R))\n    (Sumcheck.Spec.oracleVerifier_rbrKnowledgeSoundness_failingDet\n      (R := R) (deg := 3) (D := boolEmbedding R) (n := pp.ℓ_m)\n      (oSpec := oSpec) (init := init) (impl := impl) hInit hInitNF)\n\n",
+      "reason": "The former unconditional assembly reached an obsolete input-query zero-flip completion. Retains the completed construction under the actual per-round canonical message-checking knowledge premise; no admitted alias."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Spartan/SumcheckKnowledgeLeaves.lean",
+      "old_name": "Spartan.Spec.secondSumcheck_rbrKnowledgeSoundness_honest_full",
+      "new_name": "Spartan.Spec.secondSumcheck_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds",
+      "added_obligation": [
+        "Actual canonical per-round degree-2 knowledge bound for pp.ℓ_n"
+      ],
+      "original_command": "set_option linter.unusedSectionVars false in\nset_option linter.unusedFintypeInType false in\n/-- The second Spartan sum-check RBR-KS leaf over the honest transported relation contract, with\nthe generic multi-round sum-check oracle RBR-KS theorem plugged in. -/\ntheorem secondSumcheck_rbrKnowledgeSoundness_honest_full [Inhabited R]\n    {σ : Type} [Subsingleton σ] {init : ProbComp σ}\n    {impl : QueryImpl oSpec (StateT σ ProbComp)}\n    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0) :\n    (secondSumcheckReduction (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      (secondSumcheckRbrRelIn (R := R) pp oSpec)\n      (secondSumcheckRbrRelOut (R := R) pp oSpec)\n      (fun _ => (2 : ℝ≥0) / (Fintype.card R)) :=\n  secondSumcheck_rbrKnowledgeSoundness_honest (R := R) pp oSpec\n    (fun _ => (2 : ℝ≥0) / (Fintype.card R))\n    (Sumcheck.Spec.oracleVerifier_rbrKnowledgeSoundness_failingDet\n      (R := R) (deg := 2) (D := boolEmbedding R) (n := pp.ℓ_n)\n      (oSpec := oSpec) (init := init) (impl := impl) hInit hInitNF)\n\n",
+      "reason": "The former unconditional assembly reached an obsolete input-query zero-flip completion. Retains the completed construction under the actual per-round canonical message-checking knowledge premise; no admitted alias."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Spartan/ComposedRbrKnowledgeFinal.lean",
+      "old_name": "Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessStatement_proven",
+      "new_name": "Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessStatement_proven_of_sumcheck_rounds",
+      "added_obligation": [
+        "Actual canonical per-round degree-2 knowledge bound for pp.ℓ_n",
+        "Actual canonical per-round degree-3 knowledge bound for pp.ℓ_m"
+      ],
+      "original_command": "/-- **The named composed Spartan RBR knowledge-soundness residual, discharged (issue #114).**\n\n`composedRbrKnowledgeSoundnessStatement` at `Rc := composedPIOP_Rc`, with the apex error\nvector. Obtained from the unconditional relation-preserving apex by truncating the knowledge\nstate function at the (error-`1`) `linearCombination` round — see the module docstring for\nwhat this does and does not claim. -/\ntheorem composedRbrKnowledgeSoundnessStatement_proven [Subsingleton σ]\n    (hm : 0 < pp.ℓ_m) (hn : 0 < pp.ℓ_n)\n    [Inhabited (FinalStatement R pp × ∀ i, FinalOracleStatement R pp i)]\n    [Inhabited (Statement.AfterFirstSumcheck R pp ×\n      ∀ i, OracleStatement.AfterFirstSumcheck R pp i)]\n    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)\n    (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×\n      ∀ i, OracleStatement.AfterFirstMessage R pp i))\n    (hNE_C : Nonempty (Statement.AfterFirstChallenge R pp ×\n      ∀ i, OracleStatement.AfterFirstChallenge R pp i))\n    (hNE_E : Nonempty (Statement.AfterSendEvalClaim R pp ×\n      ∀ i, OracleStatement.AfterSendEvalClaim R pp i))\n    (hNE_F : Nonempty (Statement.AfterLinearCombination R pp ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i))\n    (hNE_G : Nonempty ((R × Statement.AfterLinearCombination R pp) ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i)) :\n    composedRbrKnowledgeSoundnessStatement R pp oSpec (composedPIOP_Rc (R := R) pp oSpec)\n      init impl\n      (composedRbrError pp\n        (0 : (⟨!v[.P_to_V], !v[Witness R pp]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0)\n        (fun _ => (pp.ℓ_m : ℝ≥0) / (Fintype.card R : ℝ≥0))\n        (fun _ => (3 : ℝ≥0) / (Fintype.card R))\n        (0 : (⟨!v[.P_to_V], !v[∀ i, EvalClaim R i]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0)\n        (fun _ => 1)\n        (0 : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0)\n        (fun _ => (2 : ℝ≥0) / (Fintype.card R))\n        (0 : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0)) := by\n  have h := composedRbrKnowledgeSoundnessPreserving_unconditional (R := R) pp oSpec\n    (init := init) (impl := impl) hm hn hInit hInitNF hNE_B hNE_C hNE_E hNE_F hNE_G\n  unfold composedRbrKnowledgeSoundnessStatement\n  refine OracleVerifier.rbrKnowledgeSoundness_relOut_any_of_one_le_error h\n    (linearCombinationChallengeIdx (R := R) pp) ?_ _\n  rw [composedRbrError_linearCombinationChallengeIdx]\n\n",
+      "reason": "The former unconditional assembly reached an obsolete input-query zero-flip completion. Retains the completed construction under the actual per-round canonical message-checking knowledge premise; no admitted alias."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Spartan/TightApexPure.lean",
+      "old_name": "Spartan.Spec.Bricks.composedTightPure_rbrKnowledgeSoundness",
+      "new_name": "Spartan.Spec.Bricks.composedTightPure_rbrKnowledgeSoundness_of_sumcheck_rounds",
+      "added_obligation": [
+        "Actual canonical per-round degree-2 knowledge bound for pp.ℓ_n",
+        "Actual canonical per-round degree-3 knowledge bound for pp.ℓ_m"
+      ],
+      "original_command": "set_option linter.unusedFintypeInType false in\nset_option maxHeartbeats 1000000 in\n/-- **THE TIGHT rbr KNOWLEDGE SOUNDNESS at the pure terminal check** (issue #329): identical\nrelations and error vector as `composedTightFull_rbrKnowledgeSoundness`, on the chain that also\ncarries the perfect completeness. -/\ntheorem composedTightPure_rbrKnowledgeSoundness [Subsingleton σ]\n    (hm : 0 < pp.ℓ_m) (hn : 0 < pp.ℓ_n)\n    [Inhabited (Statement.AfterSecondSumcheckWithTarget R pp ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i)]\n    [Inhabited (Statement.AfterFirstSumcheckWithTarget R pp ×\n      ∀ i, OracleStatement.AfterFirstSumcheck R pp i)]\n    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)\n    (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×\n      ∀ i, OracleStatement.AfterFirstMessage R pp i))\n    (hNE_C : Nonempty (Statement.AfterFirstChallenge R pp ×\n      ∀ i, OracleStatement.AfterFirstChallenge R pp i))\n    (hNE_E : Nonempty (Statement.AfterSendEvalClaimWithTarget R pp ×\n      ∀ i, OracleStatement.AfterSendEvalClaim R pp i))\n    (hNE_F : Nonempty (Statement.AfterLinearCombinationWithTarget R pp ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i))\n    (hNE_G : Nonempty ((R × Statement.AfterLinearCombinationWithTarget R pp) ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i)) :\n    (composedPIOPTightPure_Rc (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      (spartanRelIn R pp) (tightFinalRelOut (R := R) pp)\n      (composedRbrError pp\n        (0 : (⟨!v[.P_to_V], !v[Witness R pp]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0)\n        (fun _ => (pp.ℓ_m : ℝ≥0) / (Fintype.card R : ℝ≥0))\n        (fun _ => (3 : ℝ≥0) / (Fintype.card R))\n        (0 : (⟨!v[.P_to_V], !v[∀ i, EvalClaim R i]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0)\n        (fun _ => (1 : ℝ≥0) / (Fintype.card R : ℝ≥0))\n        (0 : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0)\n        (fun _ => (2 : ℝ≥0) / (Fintype.card R))\n        (0 : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0)) := by\n  obtain ⟨verify₁, hV₁⟩ := firstMessage_toVerifier_pure (R := R) pp oSpec\n  obtain ⟨verify₃?, hV₃⟩ := firstSumcheckWithTarget_toVerifier_isFailingDet (R := R) pp oSpec\n  obtain ⟨verify₇?, hV₇⟩ := secondSumcheckWithTarget_toVerifier_isFailingDet (R := R) pp oSpec\n  have h₂ : (oracleReduction.firstChallenge.{0} R pp oSpec).verifier.rbrKnowledgeSoundness\n      init impl\n      (firstMessageRbrRelB (R := R) pp)\n      (firstSumcheckWithTargetRbrRelIn (R := R) pp oSpec)\n      (fun _ => (pp.ℓ_m : ℝ≥0) / (Fintype.card R : ℝ≥0)) := by\n    rw [firstSumcheckWithTargetRbrRelIn_eq_relIn]\n    exact firstChallenge_rbrKnowledgeSoundness_schwartzZippel pp oSpec hm\n  exact composedPIOPTightFull_rbrKnowledgeSoundness_of_leaves.{0, 0, 0, 0} pp oSpec\n    (finalCheckPureKS pp oSpec) hm hn\n    verify₁ hV₁\n    (fun p tr => ((fun p (c : FirstChallenge R pp) => ((c, p.1), p.2)) p\n      (tr.challenges ⟨0, rfl⟩)))\n    (firstChallenge_toVerifier_closed pp oSpec)\n    verify₃? hV₃\n    (fun p tr => sendEvalClaimWithTargetRouteMap (R := R) pp p (tr.messages ⟨0, rfl⟩))\n    (sendEvalClaimWithTarget_toVerifier_closed pp oSpec)\n    (fun p tr => ((fun p (c : LinearCombinationChallenge R) => ((c, p.1), p.2)) p\n      (tr.challenges ⟨0, rfl⟩)))\n    (linearCombinationWithTarget_toVerifier_closed pp oSpec)\n    (fun p _tr => ((∑ idx, p.1.1 idx * p.2 (.inl 0) idx, p.1), p.2))\n    (prependRLCTargetWithTarget_toVerifier_pure pp oSpec)\n    verify₇? hV₇\n    (firstMessage_rbrKnowledgeSoundness_spartanRelIn pp oSpec)\n    h₂\n    (firstSumcheckWithTarget_rbrKnowledgeSoundness_honest_full pp oSpec hInit hInitNF)\n    (sendEvalClaimWithTarget_rbrKnowledgeSoundness_leaf pp oSpec)\n    (linearCombinationWithTarget_rbrKnowledgeSoundness_leaf.{0} pp oSpec)\n    (prependRLCTargetWithTarget_rbrKnowledgeSoundness_leaf' pp oSpec)\n    (secondSumcheckWithTarget_conjoined_rbrKnowledgeSoundness pp oSpec hInit hInitNF)\n    (finalCheckPure_rbrKnowledgeSoundness pp oSpec)\n    hInit hInitNF hNE_B hNE_C hNE_E hNE_F hNE_G\n\n",
+      "reason": "The former unconditional assembly reached an obsolete input-query zero-flip completion. Retains the completed construction under the actual per-round canonical message-checking knowledge premise; no admitted alias."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Spartan/SecondSumcheckWithTarget.lean",
+      "old_name": "Spartan.Spec.secondSumcheckWithTarget_rbrKnowledgeSoundness_honest_full",
+      "new_name": "Spartan.Spec.secondSumcheckWithTarget_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds",
+      "added_obligation": [
+        "Actual canonical per-round degree-2 knowledge bound for pp.ℓ_n"
+      ],
+      "original_command": "set_option linter.unusedFintypeInType false in\n/-- **The target-preserving second sum-check RBR-KS leaf** at per-round error `2/|R|`. -/\ntheorem secondSumcheckWithTarget_rbrKnowledgeSoundness_honest_full [Inhabited R]\n    {σ : Type} [Subsingleton σ] {init : ProbComp σ}\n    {impl : QueryImpl oSpec (StateT σ ProbComp)}\n    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0) :\n    (secondSumcheckReductionWithTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      (secondSumcheckWithTargetRbrRelIn (R := R) pp oSpec)\n      (secondSumcheckWithTargetRbrRelOut (R := R) pp oSpec)\n      (fun _ => (2 : ℝ≥0) / (Fintype.card R)) :=\n  secondSumcheckWithTarget_rbrKnowledgeSoundness_honest (R := R) pp oSpec\n    (fun _ => (2 : ℝ≥0) / (Fintype.card R))\n    (Sumcheck.Spec.oracleVerifier_rbrKnowledgeSoundness_failingDet\n      (R := R) (deg := 2) (D := boolEmbedding R) (n := pp.ℓ_n)\n      (oSpec := oSpec) (init := init) (impl := impl) hInit hInitNF)\n\n",
+      "reason": "The former unconditional assembly reached an obsolete input-query zero-flip completion. Retains the completed construction under the actual per-round canonical message-checking knowledge premise; no admitted alias."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Spartan/ComposedRbrKnowledgeWithClaimFinal.lean",
+      "old_name": "Spartan.Spec.Bricks.composedWithClaim_rbrKnowledgeSoundness_base",
+      "new_name": "Spartan.Spec.Bricks.composedWithClaim_rbrKnowledgeSoundness_base_of_sumcheck_rounds",
+      "added_obligation": [
+        "Actual canonical per-round degree-2 knowledge bound for pp.ℓ_n",
+        "Actual canonical per-round degree-3 knowledge bound for pp.ℓ_m"
+      ],
+      "original_command": "/-- **Base fact**: rbr knowledge soundness of the appended with-claim composition, from\n`spartanRelIn` to the carrier reading of the second-sum-check terminal relation, at the\nextended apex error vector. Empty-seam failing-det keystone over the unconditional apex and\nthe adapter leaf. -/\ntheorem composedWithClaim_rbrKnowledgeSoundness_base [Subsingleton σ]\n    (hm : 0 < pp.ℓ_m) (hn : 0 < pp.ℓ_n)\n    [Inhabited (FinalStatement R pp × ∀ i, FinalOracleStatement R pp i)]\n    [Inhabited (Statement.AfterFirstSumcheck R pp ×\n      ∀ i, OracleStatement.AfterFirstSumcheck R pp i)]\n    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)\n    (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×\n      ∀ i, OracleStatement.AfterFirstMessage R pp i))\n    (hNE_C : Nonempty (Statement.AfterFirstChallenge R pp ×\n      ∀ i, OracleStatement.AfterFirstChallenge R pp i))\n    (hNE_E : Nonempty (Statement.AfterSendEvalClaim R pp ×\n      ∀ i, OracleStatement.AfterSendEvalClaim R pp i))\n    (hNE_F : Nonempty (Statement.AfterLinearCombination R pp ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i))\n    (hNE_G : Nonempty ((R × Statement.AfterLinearCombination R pp) ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i)) :\n    ((composedPIOP_Rc (R := R) pp oSpec).append\n        (prependClaim (R := R) pp oSpec)).verifier.rbrKnowledgeSoundness init impl\n      (spartanRelIn R pp) (withClaimCarrierRelOut pp oSpec)\n      (composedWithClaimApexError (R := R) pp) := by\n  obtain ⟨verify?, hV⟩ := composedPIOP_Rc_toVerifier_isFailingDet (R := R) pp oSpec\n  have h₁ := composedRbrKnowledgeSoundnessPreserving_unconditional (R := R) pp oSpec\n    (init := init) (impl := impl) hm hn hInit hInitNF hNE_B hNE_C hNE_E hNE_F hNE_G\n  have h₂ := prependClaim_rbrKnowledgeSoundness_carrier (R := R) pp oSpec\n    (init := init) (impl := impl)\n  exact OracleVerifier.append_rbrKnowledgeSoundness_failingDet_empty\n    (composedPIOP_Rc (R := R) pp oSpec).verifier\n    (prependClaim (R := R) pp oSpec).verifier\n    verify? hV hInit ⟨()⟩ h₁ h₂\n\n/-! ### Step 4 — the three named residuals -/\n\n",
+      "reason": "The former unconditional assembly reached an obsolete input-query zero-flip completion. Retains the completed construction under the actual per-round canonical message-checking knowledge premise; no admitted alias."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Spartan/ComposedRbrKnowledgeWithClaimFinal.lean",
+      "old_name": "Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessWithClaimStatement_proven",
+      "new_name": "Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessWithClaimStatement_proven_of_sumcheck_rounds",
+      "added_obligation": [
+        "Actual canonical per-round degree-2 knowledge bound for pp.ℓ_n",
+        "Actual canonical per-round degree-3 knowledge bound for pp.ℓ_m"
+      ],
+      "original_command": "/-- **`composedRbrKnowledgeSoundnessWithClaimStatement`, discharged** at\n`Rc := (composedPIOP_Rc …).append (prependClaim …)` with the extended apex error vector\n(`err₅ = 1`; see the module docstring). -/\ntheorem composedRbrKnowledgeSoundnessWithClaimStatement_proven [Subsingleton σ]\n    (hm : 0 < pp.ℓ_m) (hn : 0 < pp.ℓ_n)\n    [Inhabited (FinalStatement R pp × ∀ i, FinalOracleStatement R pp i)]\n    [Inhabited (Statement.AfterFirstSumcheck R pp ×\n      ∀ i, OracleStatement.AfterFirstSumcheck R pp i)]\n    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)\n    (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×\n      ∀ i, OracleStatement.AfterFirstMessage R pp i))\n    (hNE_C : Nonempty (Statement.AfterFirstChallenge R pp ×\n      ∀ i, OracleStatement.AfterFirstChallenge R pp i))\n    (hNE_E : Nonempty (Statement.AfterSendEvalClaim R pp ×\n      ∀ i, OracleStatement.AfterSendEvalClaim R pp i))\n    (hNE_F : Nonempty (Statement.AfterLinearCombination R pp ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i))\n    (hNE_G : Nonempty ((R × Statement.AfterLinearCombination R pp) ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i)) :\n    composedRbrKnowledgeSoundnessWithClaimStatement R pp oSpec\n      ((composedPIOP_Rc (R := R) pp oSpec).append (prependClaim (R := R) pp oSpec))\n      init impl (composedWithClaimApexError (R := R) pp) := by\n  have h := composedWithClaim_rbrKnowledgeSoundness_base (R := R) pp oSpec\n    (init := init) (impl := impl) hm hn hInit hInitNF hNE_B hNE_C hNE_E hNE_F hNE_G\n  unfold composedRbrKnowledgeSoundnessWithClaimStatement\n  exact OracleVerifier.rbrKnowledgeSoundness_relOut_any_of_one_le_error h\n    (withClaimLinearCombinationChallengeIdx (R := R) pp)\n    (one_le_composedWithClaimApexError_lc (R := R) pp) _\n\n",
+      "reason": "The former unconditional assembly reached an obsolete input-query zero-flip completion. Retains the completed construction under the actual per-round canonical message-checking knowledge premise; no admitted alias."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Spartan/ComposedRbrKnowledgeWithClaimFinal.lean",
+      "old_name": "Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessWithClaimValueRelStatement_proven",
+      "new_name": "Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessWithClaimValueRelStatement_proven_of_sumcheck_rounds",
+      "added_obligation": [
+        "Actual canonical per-round degree-2 knowledge bound for pp.ℓ_n",
+        "Actual canonical per-round degree-3 knowledge bound for pp.ℓ_m"
+      ],
+      "original_command": "/-- **`composedRbrKnowledgeSoundnessWithClaimValueRelStatement`, discharged** at the same\ncomposition and error vector. -/\ntheorem composedRbrKnowledgeSoundnessWithClaimValueRelStatement_proven [Subsingleton σ]\n    (hm : 0 < pp.ℓ_m) (hn : 0 < pp.ℓ_n)\n    [Inhabited (FinalStatement R pp × ∀ i, FinalOracleStatement R pp i)]\n    [Inhabited (Statement.AfterFirstSumcheck R pp ×\n      ∀ i, OracleStatement.AfterFirstSumcheck R pp i)]\n    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)\n    (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×\n      ∀ i, OracleStatement.AfterFirstMessage R pp i))\n    (hNE_C : Nonempty (Statement.AfterFirstChallenge R pp ×\n      ∀ i, OracleStatement.AfterFirstChallenge R pp i))\n    (hNE_E : Nonempty (Statement.AfterSendEvalClaim R pp ×\n      ∀ i, OracleStatement.AfterSendEvalClaim R pp i))\n    (hNE_F : Nonempty (Statement.AfterLinearCombination R pp ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i))\n    (hNE_G : Nonempty ((R × Statement.AfterLinearCombination R pp) ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i)) :\n    composedRbrKnowledgeSoundnessWithClaimValueRelStatement R pp oSpec\n      ((composedPIOP_Rc (R := R) pp oSpec).append (prependClaim (R := R) pp oSpec))\n      init impl (composedWithClaimApexError (R := R) pp) := by\n  have h := composedWithClaim_rbrKnowledgeSoundness_base (R := R) pp oSpec\n    (init := init) (impl := impl) hm hn hInit hInitNF hNE_B hNE_C hNE_E hNE_F hNE_G\n  unfold composedRbrKnowledgeSoundnessWithClaimValueRelStatement\n  exact OracleVerifier.rbrKnowledgeSoundness_relOut_any_of_one_le_error h\n    (withClaimLinearCombinationChallengeIdx (R := R) pp)\n    (one_le_composedWithClaimApexError_lc (R := R) pp) _\n\n",
+      "reason": "The former unconditional assembly reached an obsolete input-query zero-flip completion. Retains the completed construction under the actual per-round canonical message-checking knowledge premise; no admitted alias."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Spartan/ComposedRbrKnowledgeWithClaimFinal.lean",
+      "old_name": "Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessWithClaimSecondSumcheckEvalStatement_proven",
+      "new_name": "Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessWithClaimSecondSumcheckEvalStatement_proven_of_sumcheck_rounds",
+      "added_obligation": [
+        "Actual canonical per-round degree-2 knowledge bound for pp.ℓ_n",
+        "Actual canonical per-round degree-3 knowledge bound for pp.ℓ_m"
+      ],
+      "original_command": "/-- **`composedRbrKnowledgeSoundnessWithClaimSecondSumcheckEvalStatement`, discharged** at the\nsame composition and error vector. -/\ntheorem composedRbrKnowledgeSoundnessWithClaimSecondSumcheckEvalStatement_proven [Subsingleton σ]\n    (hm : 0 < pp.ℓ_m) (hn : 0 < pp.ℓ_n)\n    [Inhabited (FinalStatement R pp × ∀ i, FinalOracleStatement R pp i)]\n    [Inhabited (Statement.AfterFirstSumcheck R pp ×\n      ∀ i, OracleStatement.AfterFirstSumcheck R pp i)]\n    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)\n    (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×\n      ∀ i, OracleStatement.AfterFirstMessage R pp i))\n    (hNE_C : Nonempty (Statement.AfterFirstChallenge R pp ×\n      ∀ i, OracleStatement.AfterFirstChallenge R pp i))\n    (hNE_E : Nonempty (Statement.AfterSendEvalClaim R pp ×\n      ∀ i, OracleStatement.AfterSendEvalClaim R pp i))\n    (hNE_F : Nonempty (Statement.AfterLinearCombination R pp ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i))\n    (hNE_G : Nonempty ((R × Statement.AfterLinearCombination R pp) ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i)) :\n    composedRbrKnowledgeSoundnessWithClaimSecondSumcheckEvalStatement R pp oSpec\n      ((composedPIOP_Rc (R := R) pp oSpec).append (prependClaim (R := R) pp oSpec))\n      init impl (composedWithClaimApexError (R := R) pp) := by\n  have h := composedWithClaim_rbrKnowledgeSoundness_base (R := R) pp oSpec\n    (init := init) (impl := impl) hm hn hInit hInitNF hNE_B hNE_C hNE_E hNE_F hNE_G\n  unfold composedRbrKnowledgeSoundnessWithClaimSecondSumcheckEvalStatement\n  exact OracleVerifier.rbrKnowledgeSoundness_relOut_any_of_one_le_error h\n    (withClaimLinearCombinationChallengeIdx (R := R) pp)\n    (one_le_composedWithClaimApexError_lc (R := R) pp) _\n\n",
+      "reason": "The former unconditional assembly reached an obsolete input-query zero-flip completion. Retains the completed construction under the actual per-round canonical message-checking knowledge premise; no admitted alias."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Spartan/TightComposedFull.lean",
+      "old_name": "Spartan.Spec.Bricks.composedTightFull_rbrKnowledgeSoundness",
+      "new_name": "Spartan.Spec.Bricks.composedTightFull_rbrKnowledgeSoundness_of_sumcheck_rounds",
+      "added_obligation": [
+        "Actual canonical per-round degree-2 knowledge bound for pp.ℓ_n",
+        "Actual canonical per-round degree-3 knowledge bound for pp.ℓ_m"
+      ],
+      "original_command": "set_option linter.unusedFintypeInType false in\n/-- **THE TIGHT COMPOSED SPARTAN rbr KNOWLEDGE SOUNDNESS (issue #329).** The full eight-phase\ntight composition is round-by-round knowledge sound from `spartanRelIn` to `tightFinalRelOut`\n(both terminal identities, quantifier-free) at the per-round error vector\n\n  `(0, ℓ_m/|R|, 3/|R|, 0, 1/|R|, 0, 2/|R|, 0)`\n\n— Spartan's Lemma A.1 decomposition with the Lemma 5.1 kernel bound at the RLC round, replacing\nthe proven-forced `err₅ = 1` of the target-dropping chain. Unconditional (no leaf hypotheses);\naxiom-clean. -/\ntheorem composedTightFull_rbrKnowledgeSoundness [Subsingleton σ]\n    (hm : 0 < pp.ℓ_m) (hn : 0 < pp.ℓ_n)\n    [Inhabited (Statement.AfterSecondSumcheckWithTarget R pp ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i)]\n    [Inhabited (Statement.AfterFirstSumcheckWithTarget R pp ×\n      ∀ i, OracleStatement.AfterFirstSumcheck R pp i)]\n    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)\n    (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×\n      ∀ i, OracleStatement.AfterFirstMessage R pp i))\n    (hNE_C : Nonempty (Statement.AfterFirstChallenge R pp ×\n      ∀ i, OracleStatement.AfterFirstChallenge R pp i))\n    (hNE_E : Nonempty (Statement.AfterSendEvalClaimWithTarget R pp ×\n      ∀ i, OracleStatement.AfterSendEvalClaim R pp i))\n    (hNE_F : Nonempty (Statement.AfterLinearCombinationWithTarget R pp ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i))\n    (hNE_G : Nonempty ((R × Statement.AfterLinearCombinationWithTarget R pp) ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i)) :\n    (composedPIOPTightFull_Rc (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      (spartanRelIn R pp) (tightFinalRelOut (R := R) pp)\n      (composedRbrError pp\n        (0 : (⟨!v[.P_to_V], !v[Witness R pp]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0)\n        (fun _ => (pp.ℓ_m : ℝ≥0) / (Fintype.card R : ℝ≥0))\n        (fun _ => (3 : ℝ≥0) / (Fintype.card R))\n        (0 : (⟨!v[.P_to_V], !v[∀ i, EvalClaim R i]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0)\n        (fun _ => (1 : ℝ≥0) / (Fintype.card R : ℝ≥0))\n        (0 : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0)\n        (fun _ => (2 : ℝ≥0) / (Fintype.card R))\n        (0 : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0)) := by\n  obtain ⟨verify₁, hV₁⟩ := firstMessage_toVerifier_pure (R := R) pp oSpec\n  obtain ⟨verify₃?, hV₃⟩ := firstSumcheckWithTarget_toVerifier_isFailingDet (R := R) pp oSpec\n  obtain ⟨verify₇?, hV₇⟩ := secondSumcheckWithTarget_toVerifier_isFailingDet (R := R) pp oSpec\n  have h₂ : (oracleReduction.firstChallenge.{0} R pp oSpec).verifier.rbrKnowledgeSoundness\n      init impl\n      (firstMessageRbrRelB (R := R) pp)\n      (firstSumcheckWithTargetRbrRelIn (R := R) pp oSpec)\n      (fun _ => (pp.ℓ_m : ℝ≥0) / (Fintype.card R : ℝ≥0)) := by\n    rw [firstSumcheckWithTargetRbrRelIn_eq_relIn]\n    exact firstChallenge_rbrKnowledgeSoundness_schwartzZippel pp oSpec hm\n  exact composedPIOPTightFull_rbrKnowledgeSoundness_of_leaves.{0, 0, 0, 0} pp oSpec\n    (finalCheckTightKS pp oSpec) hm hn\n    verify₁ hV₁\n    (fun p tr => ((fun p (c : FirstChallenge R pp) => ((c, p.1), p.2)) p\n      (tr.challenges ⟨0, rfl⟩)))\n    (firstChallenge_toVerifier_closed pp oSpec)\n    verify₃? hV₃\n    (fun p tr => sendEvalClaimWithTargetRouteMap (R := R) pp p (tr.messages ⟨0, rfl⟩))\n    (sendEvalClaimWithTarget_toVerifier_closed pp oSpec)\n    (fun p tr => ((fun p (c : LinearCombinationChallenge R) => ((c, p.1), p.2)) p\n      (tr.challenges ⟨0, rfl⟩)))\n    (linearCombinationWithTarget_toVerifier_closed pp oSpec)\n    (fun p _tr => ((∑ idx, p.1.1 idx * p.2 (.inl 0) idx, p.1), p.2))\n    (prependRLCTargetWithTarget_toVerifier_pure pp oSpec)\n    verify₇? hV₇\n    (firstMessage_rbrKnowledgeSoundness_spartanRelIn pp oSpec)\n    h₂\n    (firstSumcheckWithTarget_rbrKnowledgeSoundness_honest_full pp oSpec hInit hInitNF)\n    (sendEvalClaimWithTarget_rbrKnowledgeSoundness_leaf pp oSpec)\n    (linearCombinationWithTarget_rbrKnowledgeSoundness_leaf.{0} pp oSpec)\n    (prependRLCTargetWithTarget_rbrKnowledgeSoundness_leaf' pp oSpec)\n    (secondSumcheckWithTarget_conjoined_rbrKnowledgeSoundness pp oSpec hInit hInitNF)\n    (finalCheckTight_rbrKnowledgeSoundness pp oSpec)\n    hInit hInitNF hNE_B hNE_C hNE_E hNE_F hNE_G\n\n",
+      "reason": "The former unconditional assembly reached an obsolete input-query zero-flip completion. Retains the completed construction under the actual per-round canonical message-checking knowledge premise; no admitted alias."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Spartan/TightConjoinedSecondLeaf.lean",
+      "old_name": "Spartan.Spec.Bricks.secondSumcheckWithTarget_conjoined_rbrKnowledgeSoundness",
+      "new_name": "Spartan.Spec.Bricks.secondSumcheckWithTarget_conjoined_rbrKnowledgeSoundness_of_sumcheck_rounds",
+      "added_obligation": [
+        "Actual canonical per-round degree-2 knowledge bound for pp.ℓ_n"
+      ],
+      "original_command": "set_option linter.unusedFintypeInType false in\n/-- **Leaf `h₇` (tight chain): the conjoined carried second sum-check rbr-KS leaf** at unchanged\nper-round error `2/|R|` — the first application of `Verifier.rbrKnowledgeSoundness_conjoin`. -/\ntheorem secondSumcheckWithTarget_conjoined_rbrKnowledgeSoundness [Subsingleton σ]\n    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0) :\n    (secondSumcheckReductionWithTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      ((secondSumcheckWithTargetRbrRelIn (R := R) pp oSpec)\n        ∩ {x | x.1 ∈ bindingAtSecondIn (R := R) pp})\n      ((secondSumcheckWithTargetRbrRelOut (R := R) pp oSpec)\n        ∩ {y | y.1 ∈ bindingAtSecondOut (R := R) pp})\n      (fun _ => (2 : ℝ≥0) / (Fintype.card R)) := by\n  have hbase := secondSumcheckWithTarget_rbrKnowledgeSoundness_honest_full\n    (R := R) pp oSpec (init := init) (impl := impl) hInit hInitNF\n  unfold OracleVerifier.rbrKnowledgeSoundness at hbase ⊢\n  refine Verifier.rbrKnowledgeSoundness_conjoin hbase\n    (bindingAtSecondIn (R := R) pp) (bindingAtSecondOut (R := R) pp) ?_\n  -- `hPres`: a positively-probable output satisfying the output binding forces the input binding.\n  intro stmtIn tr hPr\n  -- The lifted verifier is failing-deterministic with an explicitly passenger-preserving verdict.\n  obtain ⟨v?, hv⟩ := sumcheckFull_toVerifier_isFailingDet\n    (R := R) (oSpec := oSpec) 2 (boolEmbedding R) pp.ℓ_n\n  have hcomm := (secondSumcheckCoherentWithTarget (R := R) pp oSpec).toVerifier_comm\n  have hVeq : (secondSumcheckReductionWithTarget (R := R) pp oSpec).verifier.toVerifier\n      = ⟨fun s tr => OptionT.mk (pure ((v?\n          ((secondSumcheckOracleLensWithTarget (R := R) pp oSpec).toLens.proj s) tr).map\n          ((secondSumcheckOracleLensWithTarget (R := R) pp oSpec).toLens.lift s)))⟩ := by\n    refine hcomm.trans ?_\n    exact Verifier.liftContext_failingDet\n      (secondSumcheckOracleLensWithTarget (R := R) pp oSpec).toLens _ v? hv\n  rw [gt_iff_lt, probEvent_pos_iff] at hPr\n  obtain ⟨x, hx, hPx⟩ := hPr\n  rw [OptionT.mem_support_iff] at hx\n  simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx\n  obtain ⟨s, _, hx⟩ := hx\n  rw [hVeq] at hx\n  have key : (simulateQ impl\n      ((⟨fun s tr => OptionT.mk (pure ((v?\n          ((secondSumcheckOracleLensWithTarget (R := R) pp oSpec).toLens.proj s) tr).map\n          ((secondSumcheckOracleLensWithTarget (R := R) pp oSpec).toLens.lift s)))⟩ :\n        Verifier oSpec _ _ _).run stmtIn tr)).run' s\n      = pure ((v?\n          ((secondSumcheckOracleLensWithTarget (R := R) pp oSpec).toLens.proj stmtIn) tr).map\n          ((secondSumcheckOracleLensWithTarget (R := R) pp oSpec).toLens.lift stmtIn)) := by\n    change (simulateQ impl (pure _ : OracleComp oSpec (Option _))).run' s = _\n    rw [simulateQ_pure]\n    change Prod.fst <$> (pure _ : StateT σ ProbComp _).run s = _\n    rw [StateT.run_pure]\n    simp [map_pure]\n  rw [key] at hx\n  simp only [support_pure, Set.mem_singleton_iff] at hx\n  -- `some x = verdict.map (lift stmtIn)`: extract the inner output and the lift shape.\n  rcases hverd : (v? ((secondSumcheckOracleLensWithTarget (R := R) pp oSpec).toLens.proj\n      stmtIn) tr) with _ | so\n  · rw [hverd] at hx\n    simp at hx\n  · rw [hverd] at hx\n    simp only [Option.map_some, Option.some.injEq] at hx\n    -- The lift forwards the passenger statement and the oracles: read the binding back.\n    obtain ⟨⟨T, stmt⟩, oStmt⟩ := stmtIn\n    obtain ⟨⟨t', r_y⟩, innerO⟩ := so\n    subst hx\n    exact hPx\n\n",
+      "reason": "The former unconditional assembly reached an obsolete input-query zero-flip completion. Retains the completed construction under the actual per-round canonical message-checking knowledge premise; no admitted alias."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Spartan/ComposedTightRbrKnowledge.lean",
+      "old_name": "Spartan.Spec.Bricks.composedTightRbrKnowledgeSoundness_unconditional",
+      "new_name": "Spartan.Spec.Bricks.composedTightRbrKnowledgeSoundness_of_sumcheck_rounds",
+      "added_obligation": [
+        "Actual canonical per-round degree-3 knowledge bound for pp.ℓ_m"
+      ],
+      "original_command": "/-- **Unconditional composed TIGHT rbr knowledge soundness for the Spartan chain (issue #329):\nthe `err₅ = 1` slot is eliminated.** From `spartanRelIn` to `tightRelG` (carried target = true\nRLC, claims bound to the first-terminal identity), with per-round errors `0`\n(message/adapter rounds), `ℓ_m/|R|` (`firstChallenge`, Schwartz–Zippel), `3/|R|` per\nfirst-sum-check round, and **`1/|R|`** at `linearCombination` (Spartan Lemma 5.1's bound) —\nwhere the old chain `composedRbrKnowledgeSoundnessPreserving_unconditional` was proven-forced\nto carry error `1`. -/\ntheorem composedTightRbrKnowledgeSoundness_unconditional [Subsingleton σ]\n    (hm : 0 < pp.ℓ_m)\n    [Inhabited (Statement.AfterFirstSumcheckWithTarget R pp ×\n      ∀ i, OracleStatement.AfterFirstSumcheck R pp i)]\n    [Inhabited (Statement.AfterLinearCombinationWithTarget R pp ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i)]\n    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)\n    (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×\n      ∀ i, OracleStatement.AfterFirstMessage R pp i))\n    (hNE_C : Nonempty (Statement.AfterFirstChallenge R pp ×\n      ∀ i, OracleStatement.AfterFirstChallenge R pp i))\n    (hNE_E : Nonempty (Statement.AfterSendEvalClaimWithTarget R pp ×\n      ∀ i, OracleStatement.AfterSendEvalClaim R pp i)) :\n    (composedTightPIOP (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      (spartanRelIn R pp) (tightRelG (R := R) pp)\n      (composedTightRbrError pp\n        (0 : (⟨!v[.P_to_V], !v[Witness R pp]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0)\n        (fun _ => (pp.ℓ_m : ℝ≥0) / (Fintype.card R : ℝ≥0))\n        (fun _ => (3 : ℝ≥0) / (Fintype.card R))\n        (0 : (⟨!v[.P_to_V], !v[∀ i, EvalClaim R i]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0)\n        (fun _ => (1 : ℝ≥0) / (Fintype.card R : ℝ≥0))\n        (0 : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0)) := by\n  have h₂ : (oracleReduction.firstChallenge.{0} R pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      (firstMessageRbrRelB (R := R) pp)\n      (firstSumcheckWithTargetRbrRelIn (R := R) pp oSpec)\n      (fun _ => (pp.ℓ_m : ℝ≥0) / (Fintype.card R : ℝ≥0)) := by\n    rw [firstSumcheckWithTargetRbrRelIn_eq_relIn]\n    exact firstChallenge_rbrKnowledgeSoundness_schwartzZippel pp oSpec hm\n  exact composedTightPIOP_rbrKnowledgeSoundness_of_leaves.{0} pp oSpec hm\n    (firstMessage_rbrKnowledgeSoundness_spartanRelIn pp oSpec)\n    h₂\n    (firstSumcheckWithTarget_rbrKnowledgeSoundness_honest_full pp oSpec hInit hInitNF)\n    (sendEvalClaimWithTarget_rbrKnowledgeSoundness_leaf pp oSpec)\n    (linearCombinationWithTarget_rbrKnowledgeSoundness_leaf.{0} pp oSpec)\n    (prependRLCTargetWithTarget_rbrKnowledgeSoundness_leaf pp oSpec)\n    hInit hInitNF hNE_B hNE_C hNE_E\n\n/-! ### The no-`1`-slot certificate -/\n\n",
+      "reason": "The former unconditional assembly reached an obsolete input-query zero-flip completion. Retains the completed construction under the actual per-round canonical message-checking knowledge premise; no admitted alias."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Spartan/ShortPhaseRbrKnowledgeLeaves.lean",
+      "old_name": "Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessPreserving_unconditional",
+      "new_name": "Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessPreserving_of_sumcheck_rounds",
+      "added_obligation": [
+        "Actual canonical per-round degree-2 knowledge bound for pp.ℓ_n",
+        "Actual canonical per-round degree-3 knowledge bound for pp.ℓ_m"
+      ],
+      "original_command": "/-- **Unconditional composed RBR knowledge soundness for the Spartan PIOP (#114).**\n\nAll five short-phase leaves are discharged, so the relation-preserving composed rbr-KS theorem\nholds with no leaf hypotheses: from `spartanRelIn` to `secondSumcheckRbrRelOut`, with per-round\nerrors `0` (message/adapter rounds), `ℓ_m/|R|` (`firstChallenge`, Schwartz–Zippel),\n`3/|R|` per first-sum-check round, `1` (`linearCombination` — see the module docstring for why\nthis is the honest bound on this relation chain), and `2/|R|` per second-sum-check round. -/\ntheorem composedRbrKnowledgeSoundnessPreserving_unconditional [Subsingleton σ]\n    (hm : 0 < pp.ℓ_m) (hn : 0 < pp.ℓ_n)\n    [Inhabited (FinalStatement R pp × ∀ i, FinalOracleStatement R pp i)]\n    [Inhabited (Statement.AfterFirstSumcheck R pp ×\n      ∀ i, OracleStatement.AfterFirstSumcheck R pp i)]\n    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)\n    (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×\n      ∀ i, OracleStatement.AfterFirstMessage R pp i))\n    (hNE_C : Nonempty (Statement.AfterFirstChallenge R pp ×\n      ∀ i, OracleStatement.AfterFirstChallenge R pp i))\n    (hNE_E : Nonempty (Statement.AfterSendEvalClaim R pp ×\n      ∀ i, OracleStatement.AfterSendEvalClaim R pp i))\n    (hNE_F : Nonempty (Statement.AfterLinearCombination R pp ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i))\n    (hNE_G : Nonempty ((R × Statement.AfterLinearCombination R pp) ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i)) :\n    (composedPIOP_Rc (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      (spartanRelIn R pp) (Spartan.Spec.secondSumcheckRbrRelOut (R := R) pp oSpec)\n      (composedRbrError pp\n        (0 : (⟨!v[.P_to_V], !v[Witness R pp]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0)\n        (fun _ => (pp.ℓ_m : ℝ≥0) / (Fintype.card R : ℝ≥0))\n        (fun _ => (3 : ℝ≥0) / (Fintype.card R))\n        (0 : (⟨!v[.P_to_V], !v[∀ i, EvalClaim R i]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0)\n        (fun _ => 1)\n        (0 : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0)\n        (fun _ => (2 : ℝ≥0) / (Fintype.card R))\n        (0 : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0)) :=\n  composedRbrKnowledgeSoundnessPreserving_of_nonsumcheck_leaves pp oSpec hm hn\n    (firstMessage_rbrKnowledgeSoundness_spartanRelIn pp oSpec)\n    (firstChallenge_rbrKnowledgeSoundness_schwartzZippel pp oSpec hm)\n    (sendEvalClaim_rbrKnowledgeSoundness_leaf pp oSpec)\n    (linearCombination_rbrKnowledgeSoundness_leaf pp oSpec)\n    (prependRLCTarget_rbrKnowledgeSoundness_pullbackLeaf pp oSpec)\n    hInit hInitNF hNE_B hNE_C hNE_E hNE_F hNE_G\n\n",
+      "reason": "The former unconditional assembly reached an obsolete input-query zero-flip completion. Retains the completed construction under the actual per-round canonical message-checking knowledge premise; no admitted alias."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Spartan/RbrKnowledgeWiring.lean",
+      "old_name": "Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessStatement_of_nonsumcheck_leaves",
+      "new_name": "Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessStatement_of_nonsumcheck_leaves_of_sumcheck_rounds",
+      "added_obligation": [
+        "Actual canonical per-round degree-2 knowledge bound for pp.ℓ_n",
+        "Actual canonical per-round degree-3 knowledge bound for pp.ℓ_m"
+      ],
+      "original_command": "/-- The composed Spartan RBR-KS residual after plugging in:\n\n* all verifier determinism witnesses (`hV₁`-`hV₇`);\n* the full first/second sum-check RBR-KS leaves, with errors `3 / |R|` and `2 / |R|`.\n\nThe remaining hypotheses are precisely the non-sum-check relation leaves, including the terminal\n`finalCheck` leaf against the chosen relation chain. -/\ntheorem composedRbrKnowledgeSoundnessStatement_of_nonsumcheck_leaves [Subsingleton σ]\n    (hm : 0 < pp.ℓ_m) (hn : 0 < pp.ℓ_n)\n    [Inhabited (FinalStatement R pp × ∀ i, FinalOracleStatement R pp i)]\n    [Inhabited (Statement.AfterFirstSumcheck R pp ×\n      ∀ i, OracleStatement.AfterFirstSumcheck R pp i)]\n    {err₁ : (⟨!v[.P_to_V], !v[Witness R pp]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0}\n    {err₂ : (⟨!v[.V_to_P], !v[FirstChallenge R pp]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0}\n    {err₄ : (⟨!v[.P_to_V], !v[∀ i, EvalClaim R i]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0}\n    {err₅ : (⟨!v[.V_to_P], !v[LinearCombinationChallenge R]⟩ :\n      ProtocolSpec 1).ChallengeIdx → ℝ≥0}\n    {err₆ : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0}\n    {err₈ : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0}\n    (h₁ : (oracleReduction.firstMessage R pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      (spartanRelIn R pp) relB err₁)\n    (h₂ : (oracleReduction.firstChallenge.{0} R pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      relB (firstSumcheckRbrRelIn (R := R) pp oSpec) err₂)\n    (h₄ : (oracleReduction.sendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      (firstSumcheckRbrRelOut (R := R) pp oSpec) relE err₄)\n    (h₅ : (oracleReduction.linearCombination.{0} R pp oSpec).verifier.rbrKnowledgeSoundness\n      init impl relE relF err₅)\n    (h₆ : (prependRLCTargetKSWiring (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      relF (secondSumcheckRbrRelIn (R := R) pp oSpec) err₆)\n    (h₈ : (finalCheck R pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      (secondSumcheckRbrRelOut (R := R) pp oSpec) (finalCheckRelOut R pp) err₈)\n    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)\n    (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×\n      ∀ i, OracleStatement.AfterFirstMessage R pp i))\n    (hNE_C : Nonempty (Statement.AfterFirstChallenge R pp ×\n      ∀ i, OracleStatement.AfterFirstChallenge R pp i))\n    (hNE_E : Nonempty (Statement.AfterSendEvalClaim R pp ×\n      ∀ i, OracleStatement.AfterSendEvalClaim R pp i))\n    (hNE_F : Nonempty (Statement.AfterLinearCombination R pp ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i))\n    (hNE_G : Nonempty ((R × Statement.AfterLinearCombination R pp) ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i)) :\n    composedRbrKnowledgeSoundnessStatement R pp oSpec (composedPIOP_Rc pp oSpec) init impl\n      (composedRbrError pp err₁ err₂ (fun _ => (3 : ℝ≥0) / (Fintype.card R))\n        err₄ err₅ err₆ (fun _ => (2 : ℝ≥0) / (Fintype.card R)) err₈) := by\n  obtain ⟨verify₁, hV₁⟩ := firstMessage_toVerifier_pure (R := R) pp oSpec\n  obtain ⟨verify₂, hV₂⟩ := firstChallenge_toVerifier_pure.{0} (R := R) pp oSpec\n  obtain ⟨verify₃?, hV₃⟩ :=\n    Spartan.Spec.firstSumcheck_toVerifier_isFailingDet (R := R) pp oSpec\n  obtain ⟨verify₄, hV₄⟩ := sendEvalClaim_toVerifier_pure (R := R) pp oSpec\n  obtain ⟨verify₅, hV₅⟩ := linearCombination_toVerifier_pure.{0} (R := R) pp oSpec\n  let verify₆ : (Statement.AfterLinearCombination R pp ×\n        ∀ i, OracleStatement.AfterLinearCombination R pp i) →\n      (!p[] : ProtocolSpec 0).FullTranscript →\n      ((R × Statement.AfterLinearCombination R pp) ×\n        ∀ i, OracleStatement.AfterLinearCombination R pp i) :=\n    fun p _tr => ((∑ idx, p.1.1 idx * p.2 (.inl 0) idx, p.1), p.2)\n  have hV₆ : (prependRLCTargetKSWiring (R := R) pp oSpec).verifier.toVerifier\n      = ⟨fun p tr => pure (verify₆ p tr)⟩ := by\n    simpa [prependRLCTargetKSWiring, verify₆]\n      using prependRLCTarget_toVerifier_pure (R := R) pp oSpec\n  obtain ⟨verify₇?, hV₇⟩ :=\n    Spartan.Spec.secondSumcheck_toVerifier_isFailingDet (R := R) pp oSpec\n  have h₃ := firstSumcheck_rbrKnowledgeSoundness_honest_full\n    (R := R) pp oSpec (init := init) (impl := impl) hInit hInitNF\n  have h₇ := secondSumcheck_rbrKnowledgeSoundness_honest_full\n    (R := R) pp oSpec (init := init) (impl := impl) hInit hInitNF\n  exact composedRbrKnowledgeSoundnessStatement_of_leaves pp oSpec hm hn\n    verify₁ hV₁ verify₂ hV₂ verify₃? hV₃ verify₄ hV₄ verify₅ hV₅ verify₆ hV₆\n    verify₇? hV₇ h₁ h₂ h₃ h₄ h₅ h₆ h₇ h₈ hInit hInitNF hNE_B hNE_C hNE_E\n    hNE_F hNE_G\n\n",
+      "reason": "The former unconditional assembly reached an obsolete input-query zero-flip completion. Retains the completed construction under the actual per-round canonical message-checking knowledge premise; no admitted alias."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Spartan/RbrKnowledgeWiring.lean",
+      "old_name": "Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessPreserving_of_nonsumcheck_leaves",
+      "new_name": "Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessPreserving_of_nonsumcheck_leaves_of_sumcheck_rounds",
+      "added_obligation": [
+        "Actual canonical per-round degree-2 knowledge bound for pp.ℓ_n",
+        "Actual canonical per-round degree-3 knowledge bound for pp.ℓ_m"
+      ],
+      "original_command": "/-- Relation-preserving composed Spartan RBR-KS progress after plugging in:\n\n* all verifier determinism witnesses;\n* both full sum-check RBR-KS leaves;\n* the zero-round identity-style `finalCheck` RBR-KS leaf.\n\nThis theorem intentionally ends at `secondSumcheckRbrRelOut`, not at the broad\n`finalCheckRelOut = Set.univ`, because the current `finalCheck` verifier forwards its input and\ndoes not enforce a nontrivial terminal predicate. -/\ntheorem composedRbrKnowledgeSoundnessPreserving_of_nonsumcheck_leaves [Subsingleton σ]\n    (hm : 0 < pp.ℓ_m) (hn : 0 < pp.ℓ_n)\n    [Inhabited (FinalStatement R pp × ∀ i, FinalOracleStatement R pp i)]\n    [Inhabited (Statement.AfterFirstSumcheck R pp ×\n      ∀ i, OracleStatement.AfterFirstSumcheck R pp i)]\n    {err₁ : (⟨!v[.P_to_V], !v[Witness R pp]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0}\n    {err₂ : (⟨!v[.V_to_P], !v[FirstChallenge R pp]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0}\n    {err₄ : (⟨!v[.P_to_V], !v[∀ i, EvalClaim R i]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0}\n    {err₅ : (⟨!v[.V_to_P], !v[LinearCombinationChallenge R]⟩ :\n      ProtocolSpec 1).ChallengeIdx → ℝ≥0}\n    {err₆ : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0}\n    (h₁ : (oracleReduction.firstMessage R pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      (spartanRelIn R pp) relB err₁)\n    (h₂ : (oracleReduction.firstChallenge.{0} R pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      relB (firstSumcheckRbrRelIn (R := R) pp oSpec) err₂)\n    (h₄ : (oracleReduction.sendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      (firstSumcheckRbrRelOut (R := R) pp oSpec) relE err₄)\n    (h₅ : (oracleReduction.linearCombination.{0} R pp oSpec).verifier.rbrKnowledgeSoundness\n      init impl relE relF err₅)\n    (h₆ : (prependRLCTargetKSWiring (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      relF (secondSumcheckRbrRelIn (R := R) pp oSpec) err₆)\n    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)\n    (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×\n      ∀ i, OracleStatement.AfterFirstMessage R pp i))\n    (hNE_C : Nonempty (Statement.AfterFirstChallenge R pp ×\n      ∀ i, OracleStatement.AfterFirstChallenge R pp i))\n    (hNE_E : Nonempty (Statement.AfterSendEvalClaim R pp ×\n      ∀ i, OracleStatement.AfterSendEvalClaim R pp i))\n    (hNE_F : Nonempty (Statement.AfterLinearCombination R pp ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i))\n    (hNE_G : Nonempty ((R × Statement.AfterLinearCombination R pp) ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i)) :\n    (composedPIOP_Rc (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      (spartanRelIn R pp) (secondSumcheckRbrRelOut (R := R) pp oSpec)\n      (composedRbrError pp err₁ err₂ (fun _ => (3 : ℝ≥0) / (Fintype.card R))\n        err₄ err₅ err₆ (fun _ => (2 : ℝ≥0) / (Fintype.card R))\n        (0 : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0)) := by\n  obtain ⟨verify₁, hV₁⟩ := firstMessage_toVerifier_pure (R := R) pp oSpec\n  obtain ⟨verify₂, hV₂⟩ := firstChallenge_toVerifier_pure.{0} (R := R) pp oSpec\n  obtain ⟨verify₃?, hV₃⟩ :=\n    Spartan.Spec.firstSumcheck_toVerifier_isFailingDet (R := R) pp oSpec\n  obtain ⟨verify₄, hV₄⟩ := sendEvalClaim_toVerifier_pure (R := R) pp oSpec\n  obtain ⟨verify₅, hV₅⟩ := linearCombination_toVerifier_pure.{0} (R := R) pp oSpec\n  let verify₆ : (Statement.AfterLinearCombination R pp ×\n        ∀ i, OracleStatement.AfterLinearCombination R pp i) →\n      (!p[] : ProtocolSpec 0).FullTranscript →\n      ((R × Statement.AfterLinearCombination R pp) ×\n        ∀ i, OracleStatement.AfterLinearCombination R pp i) :=\n    fun p _tr => ((∑ idx, p.1.1 idx * p.2 (.inl 0) idx, p.1), p.2)\n  have hV₆ : (prependRLCTargetKSWiring (R := R) pp oSpec).verifier.toVerifier\n      = ⟨fun p tr => pure (verify₆ p tr)⟩ := by\n    simpa [prependRLCTargetKSWiring, verify₆]\n      using prependRLCTarget_toVerifier_pure (R := R) pp oSpec\n  obtain ⟨verify₇?, hV₇⟩ :=\n    Spartan.Spec.secondSumcheck_toVerifier_isFailingDet (R := R) pp oSpec\n  have h₃ := firstSumcheck_rbrKnowledgeSoundness_honest_full\n    (R := R) pp oSpec (init := init) (impl := impl) hInit hInitNF\n  have h₇ := secondSumcheck_rbrKnowledgeSoundness_honest_full\n    (R := R) pp oSpec (init := init) (impl := impl) hInit hInitNF\n  have h₈ := finalCheck_rbrKnowledgeSoundness_secondSumcheckRbrRelOut.{0}\n    (R := R) pp oSpec (init := init) (impl := impl)\n  exact composedPIOP_Rc_rbrKnowledgeSoundness_of_leaves pp oSpec hm hn\n    verify₁ hV₁ verify₂ hV₂ verify₃? hV₃ verify₄ hV₄ verify₅ hV₅ verify₆ hV₆\n    verify₇? hV₇ h₁ h₂ h₃ h₄ h₅ h₆ h₇ h₈ hInit hInitNF hNE_B hNE_C hNE_E\n    hNE_F hNE_G\n\n",
+      "reason": "The former unconditional assembly reached an obsolete input-query zero-flip completion. Retains the completed construction under the actual per-round canonical message-checking knowledge premise; no admitted alias."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Spartan/FirstSumcheckComplete.lean",
+      "old_name": "Spartan.Spec.firstSumcheck_rbrKnowledgeSoundness_honest",
+      "new_name": "Spartan.Spec.firstSumcheck_rbrKnowledgeSoundness_honest_of_round",
+      "added_obligation": [
+        "Actual canonical per-round degree-3 knowledge bound for pp.ℓ_m"
+      ],
+      "original_command": "/-- **First sum-check phase round-by-round knowledge soundness (issue #114).** The Spartan lift of\nthe generic sum-check verifier is rbr knowledge sound on the honest pullback/transported claim\nrelations. This is the knowledge-sound analogue of `firstSumcheck_rbrSoundness`; it deliberately\nuses the sum-check claim relations rather than the R1CS-carrying relations, avoiding the false\nsingle-point implication described above. -/\ntheorem firstSumcheck_rbrKnowledgeSoundness_honest\n    {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}\n    [Inhabited R] [Subsingleton σ]\n    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0) :\n    (firstSumcheckReduction pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      (firstSumcheckHonestRelIn (R := R) pp oSpec)\n      (firstSumcheckHonestRelOut (R := R) pp oSpec)\n      (fun _ => (3 : ℝ≥0) / (Fintype.card R)) := by\n  haveI := firstSumcheckCoherent (R := R) pp oSpec\n  change (OracleVerifier.liftContextLegacy (firstSumcheckOracleLens pp oSpec)\n    (Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).verifier).rbrKnowledgeSoundness\n      init impl\n      (firstSumcheckHonestRelIn (R := R) pp oSpec)\n      (firstSumcheckHonestRelOut (R := R) pp oSpec)\n      (fun _ => (3 : ℝ≥0) / (Fintype.card R))\n  exact OracleVerifier.liftContextLegacy_rbr_knowledgeSoundness\n    (V := (Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).verifier)\n    (stmtLens := firstSumcheckOracleLens pp oSpec)\n    (witLens := Witness.InvLens.trivial)\n    (lensKS := Extractor.Lens.Honest.honestLensKS\n      (stmtLens := (firstSumcheckOracleLens pp oSpec).toLens)\n      (innerRelIn :=\n        Sumcheck.Spec.relationRound R pp.ℓ_m 3 (boolEmbedding R) (0 : Fin (pp.ℓ_m + 1)))\n      (innerRelOut :=\n        Sumcheck.Spec.relationRound R pp.ℓ_m 3 (boolEmbedding R) (Fin.last pp.ℓ_m))\n      (compatStmt :=\n        Verifier.compatStatement (firstSumcheckOracleLens pp oSpec).toLens\n          (Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).verifier.toVerifier))\n    (h := Sumcheck.Spec.oracleVerifier_rbrKnowledgeSoundness_failingDet\n      (R := R) (deg := 3) (D := boolEmbedding R) (n := pp.ℓ_m)\n      (oSpec := oSpec) (init := init) (impl := impl) hInit hInitNF)\n\n",
+      "reason": "The former unconditional assembly reached an obsolete input-query zero-flip completion. Retains the completed construction under the actual per-round canonical message-checking knowledge premise; no admitted alias."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Spartan/ShortPhaseKnowledgeLeaves.lean",
+      "old_name": "Spartan.Spec.Bricks.composedPIOP_Rc_rbrKnowledgeSoundness_of_rlcSeamBridge",
+      "new_name": "Spartan.Spec.Bricks.composedPIOP_Rc_rbrKnowledgeSoundness_of_rlcSeamBridge_of_sumcheck_rounds",
+      "added_obligation": [
+        "Actual canonical per-round degree-2 knowledge bound for pp.ℓ_n",
+        "Actual canonical per-round degree-3 knowledge bound for pp.ℓ_m"
+      ],
+      "original_command": "/-- **Composed Spartan PIOP rbr knowledge soundness, reduced to a single named seam bridge.**\n\nAll eight per-phase leaves of `composedPIOP_Rc_rbrKnowledgeSoundness_of_leaves` are discharged\nalong the relation chain\n\n`firstMessageKSRelIn → firstChallengeKSRelIn → firstSumcheckRbrRelIn → firstSumcheckRbrRelOut →\nsendEvalClaimKSRelOut → prependRLCKSRelIn → secondSumcheckRbrRelIn → secondSumcheckRbrRelOut →\nsecondSumcheckRbrRelOut`\n\nexcept the `linearCombination` leaf `h₅`, which is taken as the named hypothesis `hSeam`: rbr\nknowledge soundness from the carried first-sumcheck terminal relation (`sendEvalClaimKSRelOut`)\nto the preimage of the second-sumcheck honest input relation (`prependRLCKSRelIn`). This is the\ngenuine remaining mathematical content of the composed rbr-KS chain: the random-linear-\ncombination batching step binding the prover's eval claims across the two sum-checks. -/\ntheorem composedPIOP_Rc_rbrKnowledgeSoundness_of_rlcSeamBridge [Subsingleton σ]\n    (hm : 0 < pp.ℓ_m) (hn : 0 < pp.ℓ_n)\n    [Inhabited (FinalStatement R pp × ∀ i, FinalOracleStatement R pp i)]\n    [Inhabited (Statement.AfterFirstSumcheck R pp ×\n      ∀ i, OracleStatement.AfterFirstSumcheck R pp i)]\n    {err₅ : (⟨!v[.V_to_P], !v[LinearCombinationChallenge R]⟩ :\n      ProtocolSpec 1).ChallengeIdx → ℝ≥0}\n    (hSeam : (oracleReduction.linearCombination.{0} R pp oSpec).verifier.rbrKnowledgeSoundness\n      init impl (sendEvalClaimKSRelOut pp oSpec) (prependRLCKSRelIn pp oSpec) err₅)\n    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)\n    (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×\n      ∀ i, OracleStatement.AfterFirstMessage R pp i))\n    (hNE_C : Nonempty (Statement.AfterFirstChallenge R pp ×\n      ∀ i, OracleStatement.AfterFirstChallenge R pp i))\n    (hNE_E : Nonempty (Statement.AfterSendEvalClaim R pp ×\n      ∀ i, OracleStatement.AfterSendEvalClaim R pp i))\n    (hNE_F : Nonempty (Statement.AfterLinearCombination R pp ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i))\n    (hNE_G : Nonempty ((R × Statement.AfterLinearCombination R pp) ×\n      ∀ i, OracleStatement.AfterLinearCombination R pp i)) :\n    (composedPIOP_Rc (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      (firstMessageKSRelIn pp oSpec) (secondSumcheckRbrRelOut (R := R) pp oSpec)\n      (composedRbrError pp 0 0 (fun _ => (3 : ℝ≥0) / (Fintype.card R)) 0 err₅ 0\n        (fun _ => (2 : ℝ≥0) / (Fintype.card R)) 0) := by\n  obtain ⟨verify₁, hV₁⟩ := firstMessage_toVerifier_pure (R := R) pp oSpec\n  obtain ⟨verify₂, hV₂⟩ := firstChallenge_toVerifier_pure.{0} (R := R) pp oSpec\n  obtain ⟨verify₃?, hV₃⟩ :=\n    Spartan.Spec.firstSumcheck_toVerifier_isFailingDet (R := R) pp oSpec\n  obtain ⟨verify₄, hV₄⟩ := sendEvalClaim_toVerifier_pure (R := R) pp oSpec\n  obtain ⟨verify₅, hV₅⟩ := linearCombination_toVerifier_pure.{0} (R := R) pp oSpec\n  obtain ⟨verify₇?, hV₇⟩ :=\n    Spartan.Spec.secondSumcheck_toVerifier_isFailingDet (R := R) pp oSpec\n  have h₁ := firstMessage_rbrKnowledgeSoundness_leaf (R := R) pp oSpec init impl\n  have h₂ := firstChallenge_rbrKnowledgeSoundness_leaf (R := R) pp oSpec init impl\n  have h₃ := firstSumcheck_rbrKnowledgeSoundness_honest_full\n    (R := R) pp oSpec (init := init) (impl := impl) hInit hInitNF\n  have h₄ := sendEvalClaim_rbrKnowledgeSoundness_leaf_carry (R := R) pp oSpec init impl\n  have h₆ := prependRLCTarget_rbrKnowledgeSoundness_leaf (R := R) pp oSpec init impl\n  have h₇ := secondSumcheck_rbrKnowledgeSoundness_honest_full\n    (R := R) pp oSpec (init := init) (impl := impl) hInit hInitNF\n  have h₈ := finalCheck_rbrKnowledgeSoundness_secondSumcheckRbrRelOut.{0}\n    (R := R) pp oSpec (init := init) (impl := impl)\n  exact composedPIOP_Rc_rbrKnowledgeSoundness_of_leaves pp oSpec hm hn\n    verify₁ hV₁ verify₂ hV₂ verify₃? hV₃ verify₄ hV₄ verify₅ hV₅\n    (fun p _tr => prependRLCVerify pp p _tr)\n    (prependRLCVerify_spec (R := R) pp oSpec)\n    verify₇? hV₇ h₁ h₂ h₃ h₄ hSeam h₆ h₇ h₈ hInit hInitNF hNE_B hNE_C hNE_E\n    hNE_F hNE_G\n\n",
+      "reason": "The former unconditional assembly reached an obsolete input-query zero-flip completion. Retains the completed construction under the actual per-round canonical message-checking knowledge premise; no admitted alias."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Spartan/FirstSumcheckWithTarget.lean",
+      "old_name": "Spartan.Spec.firstSumcheckWithTarget_rbrKnowledgeSoundness_honest_full",
+      "new_name": "Spartan.Spec.firstSumcheckWithTarget_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds",
+      "added_obligation": [
+        "Actual canonical per-round degree-3 knowledge bound for pp.ℓ_m"
+      ],
+      "original_command": "set_option linter.unusedFintypeInType false in\n/-- **The target-preserving first sum-check RBR-KS leaf, with the generic multi-round sum-check\noracle RBR-KS theorem plugged in** (per-round error `3/|R|`). Mirrors\n`firstSumcheck_rbrKnowledgeSoundness_honest_full` at the target-preserving lens. -/\ntheorem firstSumcheckWithTarget_rbrKnowledgeSoundness_honest_full [Inhabited R]\n    {σ : Type} [Subsingleton σ] {init : ProbComp σ}\n    {impl : QueryImpl oSpec (StateT σ ProbComp)}\n    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0) :\n    (firstSumcheckReductionWithTarget (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl\n      (firstSumcheckWithTargetRbrRelIn (R := R) pp oSpec)\n      (firstSumcheckWithTargetRbrRelOut (R := R) pp oSpec)\n      (fun _ => (3 : ℝ≥0) / (Fintype.card R)) :=\n  firstSumcheckWithTarget_rbrKnowledgeSoundness_honest (R := R) pp oSpec\n    (fun _ => (3 : ℝ≥0) / (Fintype.card R))\n    (Sumcheck.Spec.oracleVerifier_rbrKnowledgeSoundness_failingDet\n      (R := R) (deg := 3) (D := boolEmbedding R) (n := pp.ℓ_m)\n      (oSpec := oSpec) (init := init) (impl := impl) hInit hInitNF)\n\n",
+      "reason": "The former unconditional assembly reached an obsolete input-query zero-flip completion. Retains the completed construction under the actual per-round canonical message-checking knowledge premise; no admitted alias."
+    }
+  ],
+  "spartan_conditional_replacements_status": "All18 theorem constructions in13 modules carry only the needed canonical degree2/degree3 round bounds under distinct conditional names. Exact original commands and added obligations are archived; all13 current module closures passed strict temporary compiled-import checks with standard-three printed anchors.",
+  "new_obligation_definition": "Sumcheck.Spec.RoundKnowledge is the actual per-round rbrKnowledgeSoundness proposition at fixed R/degree/domain/number of rounds/init/impl. It is not a class, has no instance or automatic proof, and cannot discharge the open mathematical bound.",
+  "retained_relation_correspondence_validation": "Actual-import SumcheckRejectionCore strict11s, simpleProj_mem_iff standard3. Reuses canonical projected polynomial finite-sum equivalence.",
+  "generic_conditional_validation": {
+    "SingleRoundBridge": "Actual-import strict4s; all3anchors standard3, native program equality reused.",
+    "SingleRoundKnowFlip": "Actual-import strict4s; all3anchors standard3; flip-impossibility remains explicit.",
+    "SingleRoundPlainRbr": "Actual-import strict4s; all4anchors standard3; arbitrary-prover-witness flip premise retained and native event monotonicity/bind law used.",
+    "OracleRbrSoundness": "Actual-import strict28s; both anchors standard3; pre-existing per-round/assembled-composition premises retained.",
+    "determinism_prefix": "Exact canonical-import source prefix strict4s; all3helpers standard3. Full source boundary remains pending lower knowledge-composition modules."
+  },
+  "flagship_manifest_audit": "No18affected Spartan replacement name or direct false Sumcheck/Logup retirement occurs in scripts/flagship_axioms.txt. Existing flagship anchors remain unchanged; native sequential flagship owners retain their explicit contracts.",
+  "conditional_indexed_validation": "Exact canonical-import prefix strict22s, all3deterministic helpers and indexed_of_simple standard3. The indexed lens transfer consumes the actual hSimple bound and supplies the existing zero inhabited output, with no IsDomain or new program assumption.",
+  "completed_conditional_sumcheck_assembly": {
+    "source": "ArkLib/ProofSystem/Sumcheck/Spec/RbrKnowledgeSoundnessOracle.lean",
+    "completed_transfer": "Sumcheck.Spec.SingleRound.oracleVerifier_rbrKnowledgeSoundness_indexed_of_simple",
+    "completed_fold": "Sumcheck.Spec.oracleVerifier_rbrKnowledgeSoundness_failingDet_of_round",
+    "obligations": "The supplied Simple/round knowledge bound must concern the canonical message-polynomial verifier. Neither wrapper automatically supplies the inherited admitted degree/cardinality theorem, and no retired input-query zero-flip theorem is reused.",
+    "retained_completion": "The actual failing-deterministic execution verdicts, completed executable-lens transfer and completed n-ary failing-deterministic knowledge composition are retained independently of the open round bound.",
+    "validation": "Strict exact-source thirteen-owner closure passed 57s with all printed axiom reports using at most the standard three logical axioms; /tmp/arklib-sumcheck-conditional-full.log. Actual module boundary pending parent build."
+  },
+  "generic_transcript_independence_check": {
+    "source": "ArkLib/ProofSystem/Sumcheck/Spec/SingleRoundFlipImp.lean",
+    "contract": "Only the supplied knowledge-state function plus TranscriptIndependent hypothesis imply impossible flips. The retired concrete input-only state supplies no such witness for the canonical message verifier; docstrings now state that distinction at each generic definition/wrapper.",
+    "validation": "Actual strict module passed 159s; all four printed anchors standard3; /tmp/arklib-flipimp-native-actual.log. Final edits only clarify those docstrings."
+  },
+  "generic_plain_sequential_assembly": {
+    "source": "ArkLib/ProofSystem/Sumcheck/Spec/SeqComposeRbrSoundness.lean",
+    "retained_contracts": [
+      "ArkLib.SeqComposeRbrSoundness.seqCompose_rbrSoundness_of_append retains the supplied binary hAppend bound",
+      "ArkLib.SeqComposeRbrSoundness.rbrKnowledgeSoundness_imp_rbrSoundness retains the explicit hMeasure comparison",
+      "Sumcheck.Spec.oracleVerifier_seqCompose_rbrSoundness and oracleVerifier_rbrSoundness_of_round_append retain actual canonical hRound and hAppend premises"
+    ],
+    "canonical_mapping": "Binary/n-ary verifier fusion uses completed canonical owners; obsolete coherence-instance arguments are removed. No retired constant-knowledge or zero-soundness theorem is supplied to the per-round premise. Duplicate axiom-print commands were removed.",
+    "validation": "Strict exact-source composition with the completed native adapters passed 62s; all printed anchors standard3; /tmp/arklib-seq-plain-soundness-composed2.log. Actual module boundary pending parent build."
+  },
+  "native_nary_verdict": {
+    "source": "ArkLib/ProofSystem/Sumcheck/Spec/RbrKnowledgeSoundnessNary.lean",
+    "retired_command": "/-- The failing-deterministic partial verdict of the `i`-th-round sum-check verifier (the\n`liftContext` of the `Simple` guard-form verifier): check the claimed sum at the projected inner\nstatement, emit the lifted next-round statement. -/\nnoncomputable def roundVerify? (i : Fin n) :\n    (StatementRound R n i.castSucc × (∀ j, OracleStatement R n deg j)) →\n    (SingleRound.pSpec R deg).FullTranscript →\n    Option (StatementRound R n i.succ × (∀ j, OracleStatement R n deg j)) :=\n  fun s tr =>\n    letI inner := (oStmtLens R n deg D i).proj s\n    letI p_i : R⦃≤ deg⦄[X] := tr 0\n    letI r_i : R := tr 1\n    if (∑ x, p_i.val.eval (D x)) = inner.1 then\n      some ((oStmtLens R n deg D i).lift s\n        ⟨⟨(inner.2 ()).val.eval r_i, r_i⟩, fun _ => inner.2 ()⟩)\n    else none\n\n",
+    "reason": "The former verdict guarded the prover message but emitted the input polynomial evaluation. The canonical verifier emits the prover message evaluation.",
+    "replacement": "Sumcheck.Spec.SingleRound.roundVerify? transparently specializes the checked message-based simpleOracleVerify? and the canonical output lens.",
+    "preserved_contract": "The generic n-ary verifier_rbrKnowledgeSoundness_of_perRound theorem retains every original per-round knowledge bound, reachability, zero-failure, and inhabited-state premise; it derives no unconditional per-round bound.",
+    "validation": {
+      "file": "ArkLib/ProofSystem/Sumcheck/Spec/RbrKnowledgeSoundnessNary.lean",
+      "status": "temporary_overlay_source_check",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "elapsed_seconds": 10.011,
+      "source_before_sha256": "8d6c34001b0135d3bac18fde5b28186e327b8ca277b430dbfaecab6b7af9c2ed",
+      "source_after_sha256": "8d6c34001b0135d3bac18fde5b28186e327b8ca277b430dbfaecab6b7af9c2ed",
+      "import_artifacts": {
+        "ArkLib.ProofSystem.Sumcheck.Spec.RbrKnowledgeSoundnessOracle": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Sumcheck/Spec/RbrKnowledgeSoundnessOracle.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Sumcheck/Spec/RbrKnowledgeSoundnessOracle.olean",
+          "sha256": "ff9a709fd6be41a9630a822d14664e6d2f2d5982c391b8e62b728e4245709a43",
+          "artifact_family": {
+            "RbrKnowledgeSoundnessOracle.olean": "ff9a709fd6be41a9630a822d14664e6d2f2d5982c391b8e62b728e4245709a43"
+          }
+        },
+        "ArkLib.ProofSystem.Sumcheck.Spec.General": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Sumcheck/Spec/General.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Sumcheck/Spec/General.olean",
+          "sha256": "eeb87dd0371228d007a295f1ed1b3e30c3befe4d074681fc432cac19e5dca0ac",
+          "artifact_family": {
+            "General.olean": "eeb87dd0371228d007a295f1ed1b3e30c3befe4d074681fc432cac19e5dca0ac",
+            "General.ir": "1de1cf5c86a2bcf837ab90645e9393c4773e5853c587b3731ce668f349b624f3",
+            "General.ir.sig": "c188af92966085816e8bdde335c96008a48821d45f94ff54f6f44b5c233bda75",
+            "General.olean.private": "4fafd74b352586bab592da09e9e72699a8befc8fa3072ad0d1390830375f949a",
+            "General.olean.server": "fdc8038a0d58974d9e762a0808df06a5cafe4cbc118c3e7e2272994a10ad5740"
+          }
+        }
+      },
+      "imports_unchanged": true,
+      "log": "/tmp/arklib-native-overlay/logs/RbrKnowledgeSoundnessNary.lean.check.log",
+      "not_a_lake_package_build": true
+    },
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ]
+  },
+  "pinned_oracle_materialization": {
+    "source": "ArkLib/ProofSystem/Sumcheck/Spec/PinnedCompleteness.lean",
+    "archived_commands": [
+      {
+        "name": "Sumcheck.Spec.SingleRound.oracleVerifier_embed_inl",
+        "exact_source": "omit [SampleableType R] in\n/-- The `i`-th-round sum-check oracle verifier passes its polynomial oracle through:\n`embed = Function.Embedding.inl` definitionally (`sumcheckOracleLens.embedOStmt`). -/\ntheorem oracleVerifier_embed_inl {i : Fin n} (a : Unit) :\n    (oracleVerifier R n deg D oSpec i).embed a = Sum.inl a := rfl\n\n"
+      },
+      {
+        "name": "Sumcheck.Spec.SingleRound.mem_support_oracleVerifier_run_oStmt",
+        "exact_source": "omit [SampleableType R] in\n/-- **Per-round oracle pass-through.** Any statement in the support of the (plain-verifier view\nof the) `i`-th-round sum-check oracle verifier's run carries the *unchanged* input polynomial\noracle.  Single-round analogue of the composed `mem_support_oracleVerifier_run_oStmt`\n(`SumcheckPhaseRbr.lean`); here the `embed`-routing is `Sum.inl` by `rfl`. -/\ntheorem mem_support_oracleVerifier_run_oStmt {i : Fin n}\n    {stmt : StatementRound R n i.castSucc} {oStmt : ∀ j, OracleStatement R n deg j}\n    {tr : FullTranscript (pSpec R deg)}\n    {out : StatementRound R n i.succ × ∀ j, OracleStatement R n deg j}\n    (h : out ∈ support ((oracleVerifier R n deg D oSpec i).toVerifier.run (stmt, oStmt) tr)) :\n    out.2 = oStmt := by\n  classical\n  rw [Verifier.run, OracleVerifier.toVerifier] at h\n  simp only [OptionT.mem_support_iff, OptionT.run_bind, Option.elimM] at h\n  rw [mem_support_bind_iff] at h\n  obtain ⟨a, _, ha⟩ := h\n  cases a with\n  | none => simp at ha\n  | some stmtOut =>\n    simp only [Option.elim_some, OptionT.run_pure, support_pure, Set.mem_singleton_iff,\n      Option.some_inj] at ha\n    subst ha\n    funext j\n    change OracleVerifier.mkVerifierOStmtOut\n        (oracleVerifier R n deg D oSpec i).embed\n        (oracleVerifier R n deg D oSpec i).hEq oStmt tr j = oStmt j\n    have he : (oracleVerifier R n deg D oSpec i).embed j = Sum.inl j :=\n      oracleVerifier_embed_inl j\n    unfold OracleVerifier.mkVerifierOStmtOut\n    split\n    next k h' =>\n      cases j\n      have hk : k = () := by\n        have hsum : (Sum.inl () : Unit ⊕ (pSpec R deg).MessageIdx) = Sum.inl k := by\n          simpa only [he] using h'\n        exact (Sum.inl.inj hsum).symm\n      cases hk\n      simp only [eqRec_eq_cast, cast_cast, cast_eq]\n    next k h' =>\n      rw [he] at h'\n      exact absurd h' (by simp)\n\n"
+      }
+    ],
+    "retired_metadata": "The historical embed=inl assertion does not describe canonical SingleRound.liftContextOutput, whose output representation is virtual.",
+    "replacement": "Sumcheck.Spec.SingleRound.oracleVerifier_materializeOutput_eq_input proves the unchanged input polynomial is functionally materialized; reachable successful verifier and reduction outputs inherit this equality.",
+    "preserved_guarantees": [
+      "Reduction.mem_support_verifier_run_of_mem_support_run",
+      "Reduction.perfectCompleteness_strengthen_support",
+      "Sumcheck.Spec.SingleRound.mem_support_oracleVerifier_run_oStmt",
+      "Sumcheck.Spec.SingleRound.mem_support_run_oStmt",
+      "Sumcheck.Spec.SingleRound.oracleReduction_perfectCompleteness_pinned",
+      "Sumcheck.Spec.oracleReduction_perfectCompleteness_pinned",
+      "Sumcheck.Spec.oracleReduction_perfectCompleteness_pinned_unconditional"
+    ],
+    "completeness_owner": "Canonical SingleRound.oracleReduction_perfectCompleteness is completed; historical lens-coherence compatibility wrappers delegate to it, and the completed explicit-instance n-ary assembly is retained.",
+    "validation": {
+      "kind": "exact_four_source_composition_with_private_section_boundaries",
+      "receipt": "/tmp/arklib-pinned-completeness-native-closure-receipt3.json",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "temporary_compiled_import_boundary": {
+        "log": "/tmp/arklib-pinned-compiled-boundaries2.log",
+        "modules": [
+          "ArkLib.ProofSystem.Sumcheck.Spec.Completeness",
+          "ArkLib.ProofSystem.Sumcheck.Spec.OracleCompletenessThreaded",
+          "ArkLib.ProofSystem.Sumcheck.Spec.OracleCompletenessUncondCorrect",
+          "ArkLib.ProofSystem.Sumcheck.Spec.PinnedCompleteness"
+        ],
+        "status": "All four compiled individually with stable source/import hashes; standard axioms only. This is not a package build."
+      }
+    }
+  },
+  "spartan_conditional_source_receipts": {
+    "status": "All13 conditional module closures have current-source strict checks and standard-three printed anchors. All18 affected constructions preserve exactly their documented canonical round-knowledge premises; no unconditional canonical round-knowledge claim is made. Package validation remains separate and authoritative.",
+    "checks": [
+      {
+        "file": "ArkLib/ProofSystem/Spartan/FirstSumcheckComplete.lean",
+        "compiler_exit_code": 0,
+        "admission_checker_exit_code": 0,
+        "source_before_sha256": "1003fb43e7ec29de048d5579d1f4fb328f81f76197c5b2598d8a4327be9f5d52",
+        "imports_unchanged": true,
+        "log": "/tmp/arklib-native-overlay/logs/FirstSumcheckComplete.lean.check.log",
+        "not_a_lake_package_build": true
+      },
+      {
+        "file": "ArkLib/ProofSystem/Spartan/FirstSumcheckWithTarget.lean",
+        "compiler_exit_code": 0,
+        "admission_checker_exit_code": 0,
+        "source_before_sha256": "ca4ebc7cd5d7830c9305935984735842a394fae883cd28441198000a62443791",
+        "imports_unchanged": true,
+        "log": "/tmp/arklib-native-overlay/logs/FirstSumcheckWithTarget.lean.check.log",
+        "not_a_lake_package_build": true,
+        "documentation_refresh_receipt": "/tmp/arklib-final-doc-FirstSumcheckWithTarget.json"
+      }
+    ],
+    "temporary_compiled_boundaries": "/tmp/arklib-spartan-first-conditional-build.log",
+    "completed_guarantees": "Both first-phase modules preserve their completed perfect-completeness and explicit h_inner transports. The full failing-deterministic knowledge variants require the explicit canonical RoundKnowledge premise.",
+    "SumcheckKnowledgeLeaves": {
+      "receipt": "/tmp/arklib-build11-first-phase-native-clean-checks.jsonl",
+      "compiled_overlay_log": "/tmp/arklib-new-spartan-native-boundaries.log",
+      "status": "Strict source check and compiled temporary owner pass; all four genuine conditional anchors use only standard three axioms.",
+      "contract": "Degree-three and degree-two round-knowledge obligations remain explicit; genuine provided-inner-knowledge transfers retained.",
+      "source_sha256": "f9eb9387d6e59bf035459d721d5381d2fd0142150d46f6c3c256dbe14404e800"
+    },
+    "SecondSumcheckWithTarget": {
+      "receipt": "/tmp/arklib-final-doc-SecondSumcheckWithTarget.json",
+      "source_sha256": "137f2004c89a98b2e2fc791b34b9e468771d435c56b827cc76b30f76c38b5671",
+      "elapsed_seconds": 3.439,
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "imports_stable": true,
+      "axioms": "Every printed anchor uses only propext, Classical.choice and Quot.sound.",
+      "contract": "Final documentation uses the current conditional replacement names. Semantic command tokens are unchanged from the previously checked implementation; canonical round-knowledge obligations remain explicit."
+    },
+    "RbrKnowledgeWiring": {
+      "receipt": "/tmp/arklib-spartan-wiring-native4.json",
+      "source_sha256": "5700cdc6e42f76044e722fd94e137a734d431685d2aaf957b89829a6da859ddc",
+      "elapsed_seconds": 4.242,
+      "raw_exit": 0,
+      "checker_exit": 0,
+      "imports_stable": true,
+      "axioms": "Every printed anchor uses only propext, Classical.choice and Quot.sound.",
+      "status": "Current whole-module temporary compiled-import source check passes with no warnings; package validation remains authoritative.",
+      "contract": "All original genuine inner-knowledge/target-pin statements retained. Conditional full bounds require exactly the documented canonical degree-two/degree-three round bounds."
+    },
+    "ShortPhaseKnowledgeLeaves": {
+      "receipt": "/tmp/arklib-final-doc-ShortPhaseKnowledgeLeaves.json",
+      "source_sha256": "06a598be5aaca3ebfdd0c02eb0f88e87dac4703a670dd227d5bf90734a02f386",
+      "elapsed_seconds": 3.307,
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "imports_stable": true,
+      "axioms": "Every printed anchor uses only propext, Classical.choice and Quot.sound.",
+      "contract": "Final documentation uses the current conditional replacement names. Semantic command tokens are unchanged from the previously checked implementation; canonical round-knowledge obligations remain explicit."
+    },
+    "ShortPhaseRbrKnowledgeLeaves": {
+      "receipt": "/tmp/arklib-spartan-short-rbr-doc-final.json",
+      "source_sha256": "cbd0a72d46e30361aa701c4c0d26431d2cff967020afb107923aff66f1f79d11",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "imports_stable": true,
+      "axioms": "All printed anchors standard three.",
+      "contract": "Actual canonical round-knowledge obligations remain explicit in the conditional theorem names. Genuine completed relation transports and finite/SZ bounds are retained. Module documentation describes the conditional scope."
+    },
+    "TightConjoinedSecondLeaf": {
+      "receipt": "/tmp/arklib-final-doc-TightConjoinedSecondLeaf.json",
+      "source_sha256": "88592a3295c36e6c3e0ddeaebb1f46d9ea10884acf6e9c2e900eb800dd9ff86f",
+      "elapsed_seconds": 3.211,
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "imports_stable": true,
+      "axioms": "Every printed anchor uses only propext, Classical.choice and Quot.sound.",
+      "contract": "Final documentation uses the current conditional replacement names. Semantic command tokens are unchanged from the previously checked implementation; canonical round-knowledge obligations remain explicit."
+    },
+    "ComposedRbrKnowledgeFinal": {
+      "receipt": "/tmp/arklib-spartan-composed-rbr-doc-final.json",
+      "source_sha256": "864fc39a727642c502b3a3b95f8879bc7624fe0d98fa26770a134d250cf1752c",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "imports_stable": true,
+      "axioms": "All printed anchors standard three.",
+      "contract": "Actual canonical round-knowledge obligations remain explicit in the conditional theorem names. Genuine completed relation transports and finite/SZ bounds are retained. Module documentation describes the conditional scope."
+    },
+    "ComposedTightRbrKnowledge": {
+      "receipt": "/tmp/arklib-final-doc-ComposedTightRbrKnowledge.json",
+      "source_sha256": "3250cf0e480970e655166f97a284a1c4c8e2dc546d64f74ed68e909f0ba665e4",
+      "elapsed_seconds": 12.499,
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "imports_stable": true,
+      "axioms": "Every printed anchor uses only propext, Classical.choice and Quot.sound.",
+      "contract": "Final documentation uses the current conditional replacement names. Semantic command tokens are unchanged from the previously checked implementation; canonical round-knowledge obligations remain explicit."
+    },
+    "ComposedRbrKnowledgeWithClaimFinal": {
+      "receipt": "/tmp/arklib-spartan-composed-rbr-claim-doc-final.json",
+      "source_sha256": "b02eb14f3173d9488d30ba37e61595e2b696290ec11c71cf774cb12aa35f3fff",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "imports_stable": true,
+      "axioms": "All printed anchors standard three.",
+      "contract": "Actual canonical round-knowledge obligations remain explicit in the conditional theorem names. Genuine completed relation transports and finite/SZ bounds are retained. Module documentation describes the conditional scope."
+    },
+    "TightComposedFull": {
+      "receipt": "/tmp/arklib-spartan-tight-composed-full-doc-final.json",
+      "source_sha256": "1207d673c7e5e842938d5586e509cd6de75befba53d0a9e53ef93d6f3730f38b",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "imports_stable": true,
+      "axioms": "All printed anchors standard three.",
+      "contract": "Actual canonical round-knowledge obligations remain explicit in the conditional theorem names. Genuine completed relation transports and finite/SZ bounds are retained. Module documentation describes the conditional scope."
+    },
+    "TightApexPure": {
+      "receipt": "/tmp/arklib-spartan-tight-apex-native2.json",
+      "source_sha256": "78b1dad4603047d361379d5092ddfac56e1740ec374fd9d2660159ec561dc520",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "imports_stable": true,
+      "axioms": "Both printed anchors standard three.",
+      "contract": "The pure-terminal tight eight-phase construction retains its actual canonical degree-two/degree-three round-knowledge premises under the explicit conditional theorem name."
+    },
+    "FirstSumcheckWithTarget": {
+      "receipt": "/tmp/arklib-final-doc-FirstSumcheckWithTarget.json",
+      "source_sha256": "e52acf6b60774ef2ebb3599c91ebd48cd43b190345354b72b35cdc5757860224",
+      "elapsed_seconds": 3.609,
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "imports_stable": true,
+      "axioms": "Every printed anchor uses only propext, Classical.choice and Quot.sound.",
+      "contract": "Final documentation uses the current conditional replacement names. Semantic command tokens are unchanged from the previously checked implementation; canonical round-knowledge obligations remain explicit."
+    }
+  },
+  "retained_affine_kernel_validation": {
+    "owners": [
+      {
+        "file": "ArkLib/ProofSystem/Spartan/RLCKernelBound.lean",
+        "source_after_sha256": "4bbc1b25cc273515432b0b990d65893c418ea09148a9103a9fcc6ca2a9811711",
+        "elapsed_seconds": 4.097,
+        "compiler_exit_code": 0,
+        "admission_checker_exit_code": 0,
+        "imports_unchanged": true,
+        "log": "/tmp/arklib-native-overlay/logs/ArkLib.ProofSystem.Spartan.RLCKernelBound.lean.1793251678876719000.check.log",
+        "not_a_lake_package_build": true
+      },
+      {
+        "file": "ArkLib/ProofSystem/Spartan/LinearCombinationTightLeaf.lean",
+        "source_after_sha256": "8e196bc0e1cf763a2113fe695bdd4b0ee8bde797ced01c0b60969caaafbd673e",
+        "elapsed_seconds": 3.24,
+        "compiler_exit_code": 0,
+        "admission_checker_exit_code": 0,
+        "imports_unchanged": true,
+        "log": "/tmp/arklib-native-overlay/logs/ArkLib.ProofSystem.Spartan.LinearCombinationTightLeaf.lean.1793251625867023000.check.log",
+        "not_a_lake_package_build": true
+      }
+    ],
+    "contract": "Scalar claim-oracle family is now read at .inl idx. Both exact1/card matching attacks and tight1/card knowledge bounds are retained using canonical native uniform-event probabilities."
+  },
+  "final_conditional_documentation_review": {
+    "changes": [
+      {
+        "file": "ArkLib/ProofSystem/Spartan/ComposedTightRbrKnowledge.lean",
+        "comment_reference_replacements": 3,
+        "semantic_tokens_unchanged": true
+      },
+      {
+        "file": "ArkLib/ProofSystem/Spartan/FirstSumcheckWithTarget.lean",
+        "comment_reference_replacements": 1,
+        "semantic_tokens_unchanged": true
+      },
+      {
+        "file": "ArkLib/ProofSystem/Spartan/SecondSumcheckWithTarget.lean",
+        "comment_reference_replacements": 1,
+        "semantic_tokens_unchanged": true
+      },
+      {
+        "file": "ArkLib/ProofSystem/Spartan/ShortPhaseKnowledgeLeaves.lean",
+        "comment_reference_replacements": 1,
+        "semantic_tokens_unchanged": true
+      },
+      {
+        "file": "ArkLib/ProofSystem/Spartan/TightConjoinedSecondLeaf.lean",
+        "comment_reference_replacements": 1,
+        "semantic_tokens_unchanged": true
+      }
+    ],
+    "scope": "Comment references name the current explicit conditional replacements; canonical degree-three bound is stated in the six-phase headline summary. No theorem types or proof command tokens changed.",
+    "validation": [
+      {
+        "file": "ArkLib/ProofSystem/Spartan/ComposedTightRbrKnowledge.lean",
+        "receipt": "/tmp/arklib-final-doc-ComposedTightRbrKnowledge.json",
+        "source_sha256": "3250cf0e480970e655166f97a284a1c4c8e2dc546d64f74ed68e909f0ba665e4",
+        "elapsed_seconds": 12.499,
+        "compiler_exit_code": 0,
+        "admission_checker_exit_code": 0,
+        "imports_stable": true,
+        "axioms": "Every printed anchor uses only propext, Classical.choice and Quot.sound.",
+        "contract": "Final documentation uses the current conditional replacement names. Semantic command tokens are unchanged from the previously checked implementation; canonical round-knowledge obligations remain explicit."
+      },
+      {
+        "file": "ArkLib/ProofSystem/Spartan/FirstSumcheckWithTarget.lean",
+        "receipt": "/tmp/arklib-final-doc-FirstSumcheckWithTarget.json",
+        "source_sha256": "e52acf6b60774ef2ebb3599c91ebd48cd43b190345354b72b35cdc5757860224",
+        "elapsed_seconds": 3.609,
+        "compiler_exit_code": 0,
+        "admission_checker_exit_code": 0,
+        "imports_stable": true,
+        "axioms": "Every printed anchor uses only propext, Classical.choice and Quot.sound.",
+        "contract": "Final documentation uses the current conditional replacement names. Semantic command tokens are unchanged from the previously checked implementation; canonical round-knowledge obligations remain explicit."
+      },
+      {
+        "file": "ArkLib/ProofSystem/Spartan/SecondSumcheckWithTarget.lean",
+        "receipt": "/tmp/arklib-final-doc-SecondSumcheckWithTarget.json",
+        "source_sha256": "137f2004c89a98b2e2fc791b34b9e468771d435c56b827cc76b30f76c38b5671",
+        "elapsed_seconds": 3.439,
+        "compiler_exit_code": 0,
+        "admission_checker_exit_code": 0,
+        "imports_stable": true,
+        "axioms": "Every printed anchor uses only propext, Classical.choice and Quot.sound.",
+        "contract": "Final documentation uses the current conditional replacement names. Semantic command tokens are unchanged from the previously checked implementation; canonical round-knowledge obligations remain explicit."
+      },
+      {
+        "file": "ArkLib/ProofSystem/Spartan/ShortPhaseKnowledgeLeaves.lean",
+        "receipt": "/tmp/arklib-final-doc-ShortPhaseKnowledgeLeaves.json",
+        "source_sha256": "06a598be5aaca3ebfdd0c02eb0f88e87dac4703a670dd227d5bf90734a02f386",
+        "elapsed_seconds": 3.307,
+        "compiler_exit_code": 0,
+        "admission_checker_exit_code": 0,
+        "imports_stable": true,
+        "axioms": "Every printed anchor uses only propext, Classical.choice and Quot.sound.",
+        "contract": "Final documentation uses the current conditional replacement names. Semantic command tokens are unchanged from the previously checked implementation; canonical round-knowledge obligations remain explicit."
+      },
+      {
+        "file": "ArkLib/ProofSystem/Spartan/TightConjoinedSecondLeaf.lean",
+        "receipt": "/tmp/arklib-final-doc-TightConjoinedSecondLeaf.json",
+        "source_sha256": "88592a3295c36e6c3e0ddeaebb1f46d9ea10884acf6e9c2e900eb800dd9ff86f",
+        "elapsed_seconds": 3.211,
+        "compiler_exit_code": 0,
+        "admission_checker_exit_code": 0,
+        "imports_stable": true,
+        "axioms": "Every printed anchor uses only propext, Classical.choice and Quot.sound.",
+        "contract": "Final documentation uses the current conditional replacement names. Semantic command tokens are unchanged from the previously checked implementation; canonical round-knowledge obligations remain explicit."
+      }
+    ],
+    "package_warning_scope": "Full17 package flags additionally report retained style/unused-data-hypothesis diagnostics in these historical modules. The temporary-runner receipts above are clean under its direct-check flags; no whole-project style-clean claim or new linter suppression is made."
+  },
+  "current_validation": {
+    "status": "package_validation_passed",
+    "receipt": "scripts/integration/final-validation.json",
+    "check": "default_libraries",
+    "source_commit": "7483975d251b3549313243ea9d5ada700af121f9",
+    "source_snapshot_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+    "resolved_package_pending_paths": [],
+    "superseded_historical_status_paths": [
+      "/conditional_knowledge_assembly/status",
+      "/generic_conditional_validation/determinism_prefix",
+      "/completed_conditional_sumcheck_assembly/validation",
+      "/generic_plain_sequential_assembly/validation"
+    ],
+    "scope": "Current checked-in sources passed the final four-library package build. Original status text and all earlier receipts remain historical snapshots, not current pending claims."
+  }
+}

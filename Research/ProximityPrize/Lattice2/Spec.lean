@@ -34,7 +34,7 @@ open ListDecodable
 
 /-! ## Faithful prize-resolution targets
 
-The collapse-broken `GrandChallenges.mcaPrize` / `GrandChallenges.listDecodingPrize` predicates
+The collapse-broken `GrandChallenges.continuousMcaPrize` / `GrandChallenges.continuousListDecodingPrize` predicates
 ask only for existence of real thresholds.  The lattice formulation exposes the actual finite
 quantities the paper asks to determine: one lattice index for each prize rate.  The predicates
 below let a downstream proof state "these are the four thresholds" and immediately unfold that
@@ -124,7 +124,7 @@ theorem mcaThresholdExists_topCode (ε_star : ℝ≥0) :
   refine ⟨top, ?_⟩
   unfold mcaSatisfies
   rw [epsMCA_top_eq_zero]
-  exact zero_le _
+  positivity
 
 /-- The faithful MCA lattice threshold of the full/top linear code is the top lattice index. -/
 theorem mcaThreshold_topCode_eq_top (ε_star : ℝ≥0) :
@@ -137,7 +137,7 @@ theorem mcaThreshold_topCode_eq_top (ε_star : ℝ≥0) :
   have hsat : mcaSatisfies (((⊤ : LinearCode ι F) : Set (ι → F))) ε_star top := by
     unfold mcaSatisfies
     rw [epsMCA_top_eq_zero]
-    exact zero_le _
+    positivity
   have hmax : ∀ i : Fin (Fintype.card ι + 1),
       mcaSatisfies (((⊤ : LinearCode ι F) : Set (ι → F))) ε_star i → i ≤ top := by
     intro i _hi
@@ -467,7 +467,7 @@ existentially for the chosen interleaving `m`. -/
 theorem exists_listPrizeLatticeResolved_of_lowerWitnesses
     (domain : ι ↪ F) (m : ℕ)
     (w : ∀ j : Fin 4,
-      GrandChallenges.ListLowerWitness
+      GrandChallenges.ContinuousListLowerWitness
         (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
         m epsStar) :
     ∃ τ : Fin 4 → Fin (Fintype.card ι + 1), listPrizeLatticeResolved domain m τ :=
@@ -481,11 +481,11 @@ thresholds for the chosen interleaving `m`. -/
 theorem listPrizeLattice_bracketed_of_witnesses
     (domain : ι ↪ F) (m : ℕ)
     (wlo : ∀ j : Fin 4,
-      GrandChallenges.ListLowerWitness
+      GrandChallenges.ContinuousListLowerWitness
         (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
         m epsStar)
     (whi : ∀ j : Fin 4,
-      GrandChallenges.ListUpperWitness
+      GrandChallenges.ContinuousListUpperWitness
         (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
         m epsStar)
     (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1) :
@@ -506,11 +506,11 @@ lower witness indices as the four exact thresholds. -/
 theorem listPrizeLatticeResolved_of_adjacent_witnesses
     (domain : ι ↪ F) (m : ℕ)
     (wlo : ∀ j : Fin 4,
-      GrandChallenges.ListLowerWitness
+      GrandChallenges.ContinuousListLowerWitness
         (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
         m epsStar)
     (whi : ∀ j : Fin 4,
-      GrandChallenges.ListUpperWitness
+      GrandChallenges.ContinuousListUpperWitness
         (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
         m epsStar)
     (hδhi : ∀ j : Fin 4, (whi j).δ ≤ 1)
@@ -564,14 +564,14 @@ This is the exact base-code list-size theorem needed by the faithful list-decodi
 for each prize rate, the ordinary smooth-domain Reed-Solomon code has maximised list size
 at most `ℓ r` at the proposed predecessor lattice radius `(τ r).val / n`.
 
-The rest of the Lambda/Elias machinery below is fully formalized; proving this predicate is
+The rest of the ListDecodable.Lambda/Elias machinery below is fully formalized; proving this predicate is
 the remaining ordinary-RS capacity-side mathematical payload. -/
 def OrdinaryRSCapacityAtPrizeRates
     (domain : ι ↪ F)
     (τ : Fin 4 → Fin (Fintype.card ι + 1))
     (ℓ : Fin 4 → ℕ) : Prop :=
   ∀ r : Fin 4,
-    Lambda
+    ListDecodable.Lambda
       (ReedSolomon.code domain
         ⌊prizeRates r * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
       (((((τ r).val : ℕ) : ℝ≥0) / (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ) ≤
@@ -621,10 +621,10 @@ theorem ordinaryRSCapacityPointwiseAtPrizeRates_of_capacity
   let δ : ℝ := (((((τ r).val : ℕ) : ℝ≥0) /
     (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ)
   have hpoint_le_lambda :
-      ((closeCodewordsRel C f δ).ncard : ℕ∞) ≤ Lambda C δ := by
-    unfold Lambda
+      ((ListDecodable.closeCodewordsRel C f δ).ncard : ℕ∞) ≤ ListDecodable.Lambda C δ := by
+    unfold ListDecodable.Lambda
     exact le_iSup
-      (fun y : ι → F => ((closeCodewordsRel C y δ).ncard : ℕ∞)) f
+      (fun y : ι → F => ((ListDecodable.closeCodewordsRel C y δ).ncard : ℕ∞)) f
   have hcard_enat :
       ((closeCodewordsRelFinset C f δ).card : ℕ∞) ≤ (ℓ r : ℕ∞) := by
     rw [card_closeCodewordsRelFinset_eq_ncard]
@@ -656,7 +656,7 @@ theorem not_ordinaryRSCapacityAtPrizeRates_of_Lambda_gt
     (ℓ : Fin 4 → ℕ) (r : Fin 4)
     (hgt :
       (ℓ r : ℕ∞) <
-        Lambda
+        ListDecodable.Lambda
           (ReedSolomon.code domain
             ⌊prizeRates r * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
           (((((τ r).val : ℕ) : ℝ≥0) /
@@ -673,7 +673,7 @@ theorem not_ordinaryRSCapacityPointwiseAtPrizeRates_of_Lambda_gt
     (ℓ : Fin 4 → ℕ) (r : Fin 4)
     (hgt :
       (ℓ r : ℕ∞) <
-        Lambda
+        ListDecodable.Lambda
           (ReedSolomon.code domain
             ⌊prizeRates r * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
           (((((τ r).val : ℕ) : ℝ≥0) /
@@ -694,7 +694,7 @@ theorem not_ordinaryRSCapacityAtPrizeRates_of_Lambda_toENNReal_gt
     (ℓ : Fin 4 → ℕ) (r : Fin 4)
     (hgt :
       (ℓ r : ENNReal) <
-        (Lambda
+        (ListDecodable.Lambda
           (ReedSolomon.code domain
             ⌊prizeRates r * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
           (((((τ r).val : ℕ) : ℝ≥0) /
@@ -746,7 +746,7 @@ theorem not_ordinaryRSCapacityAtPrizeRates_of_elias_volume_gt
   have helias := CodingTheory.linear_lambda_ge_elias_volume_eli57 C δ hδpos hδlt
   have hgt_lambda :
       (ℓ r : ENNReal) <
-        (Lambda
+        (ListDecodable.Lambda
           (ReedSolomon.code domain
             ⌊prizeRates r * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
           (((((τ r).val : ℕ) : ℝ≥0) /
@@ -763,9 +763,9 @@ theorem not_ordinaryRSCapacityAtPrizeRates_of_elias_volume_gt
                       (ReedSolomon.code domain
                         ⌊prizeRates r * (Fintype.card ι : ℝ≥0)⌋₊ :
                           Submodule F (ι → F)))) := hvol
-      _ ≤ (Lambda (C : Set (ι → F)) δ : ENNReal) := helias
+      _ ≤ (ListDecodable.Lambda (C : Set (ι → F)) δ : ENNReal) := helias
       _ =
-          (Lambda
+          (ListDecodable.Lambda
             (ReedSolomon.code domain
               ⌊prizeRates r * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
             (((((τ r).val : ℕ) : ℝ≥0) /
@@ -787,7 +787,7 @@ theorem listPrizeLatticeResolved_of_Lambda_le_and_elias_next
     (hm : m ≠ 0)
     (hnext : ∀ r : Fin 4, (τ r).val + 1 < Fintype.card ι)
     (hLambda : ∀ r : Fin 4,
-      Lambda
+      ListDecodable.Lambda
         (ReedSolomon.code domain
           ⌊prizeRates r * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
         (((((τ r).val : ℕ) : ℝ≥0) / (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ) ≤
@@ -836,7 +836,7 @@ theorem Lambda_reedSolomon_prizeRate_capacity_residual
     (hpred_le : ∀ r : Fin 4, (τ r).val ≤ Fintype.card ι)
     (hCapacity : OrdinaryRSCapacityAtPrizeRates domain τ ℓ) :
     ∀ r : Fin 4,
-      Lambda
+      ListDecodable.Lambda
         (ReedSolomon.code domain
           ⌊prizeRates r * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
         (((((τ r).val : ℝ≥0) /
@@ -878,7 +878,7 @@ theorem listPrizeLatticeResolved_of_ordinaryRSCapacityAtPrizeRates_and_elias_nex
   listPrizeLatticeResolved_of_Lambda_le_and_elias_next
     domain m τ ℓ hm hnext hCapacity hpow hvol_next hne
 
-/-- **Packaged four-rate Lambda/Elias exact frontier for the faithful LD prize.**
+/-- **Packaged four-rate ListDecodable.Lambda/Elias exact frontier for the faithful LD prize.**
 
 For every prize rate, this stores the current post-RIM exact closing surface from
 `ListLatticeThresholdLambdaEliasFrontier`: a base-code list-size cap at the proposed
@@ -898,7 +898,7 @@ structure ListPrizeLambdaEliasFrontier (domain : ι ↪ F) (m : ℕ) where
         ⌊prizeRates r * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
       m epsStar).Nonempty
 
-/-- A packaged four-rate Lambda/Elias frontier resolves the faithful list-decoding lattice
+/-- A packaged four-rate ListDecodable.Lambda/Elias frontier resolves the faithful list-decoding lattice
 prize at its proposed threshold indices. -/
 theorem listPrizeLatticeResolved_of_lambda_elias_frontier
     (domain : ι ↪ F) (m : ℕ)

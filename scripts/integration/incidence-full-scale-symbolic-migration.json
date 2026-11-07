@@ -1,0 +1,1656 @@
+{
+  "owner": "Research/ProximityPrize/Frontier/_IncidenceFullScaleCores.lean",
+  "original_source_archive": "scripts/integration/retired/IncidenceFullScaleCores-before-symbolic-locator.lean.txt",
+  "original_source_sha256": "bb1ba2ae96eba117ef1556ec189652faad36e7363d3f1ad3ad37e2844bc02341",
+  "current_source_sha256": "4fb855ea7e8cdcd4b09dbd1acda0ca6db3adc41ff3db6f769ecf20d633afd6ca",
+  "public_contract_count": 55,
+  "all_public_names_and_contracts_preserved_modulo_explicit_free_generator_qualification": true,
+  "public_contracts": [
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.n",
+      "original_header": "abbrev n : ℕ ",
+      "current_header": "abbrev n : ℕ ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.k",
+      "original_header": "abbrev k : ℕ ",
+      "current_header": "abbrev k : ℕ ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.commonSize",
+      "original_header": "abbrev commonSize : ℕ ",
+      "current_header": "abbrev commonSize : ℕ ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.groupSize",
+      "original_header": "abbrev groupSize : ℕ ",
+      "current_header": "abbrev groupSize : ℕ ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.Coord",
+      "original_header": "abbrev Coord ",
+      "current_header": "abbrev Coord ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.commonEmb",
+      "original_header": "/-- Coordinate embedding of the common root set. -/\ndef commonEmb : Fin commonSize ↪ Coord where\n  toFun a ",
+      "current_header": "/-- Coordinate embedding of the common root set. -/\ndef commonEmb : Fin commonSize ↪ Coord where\n  toFun a ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.groupEmb",
+      "original_header": "/-- Three disjoint coordinate groups, leaving one unused coordinate. -/\ndef groupEmb (j : Fin 3) : Fin groupSize ↪ Coord where\n  toFun a ",
+      "current_header": "/-- Three disjoint coordinate groups, leaving one unused coordinate. -/\ndef groupEmb (j : Fin 3) : Fin groupSize ↪ Coord where\n  toFun a ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.common",
+      "original_header": "def common : Finset Coord ",
+      "current_header": "def common : Finset Coord ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.group",
+      "original_header": "def group (j : Fin 3) : Finset Coord ",
+      "current_header": "def group (j : Fin 3) : Finset Coord ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.core",
+      "original_header": "def core (j : Fin 3) : Finset Coord ",
+      "current_header": "def core (j : Fin 3) : Finset Coord ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.mem_common",
+      "original_header": "theorem mem_common (i : Coord) : i ∈ common ↔ i.val < commonSize ",
+      "current_header": "theorem mem_common (i : Coord) : i ∈ common ↔ i.val < commonSize ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.mem_group",
+      "original_header": "theorem mem_group (j : Fin 3) (i : Coord) : i ∈ group j ↔\n    commonSize + j.val * groupSize ≤ i.val ∧\n      i.val < commonSize + (j.val + 1) * groupSize ",
+      "current_header": "theorem mem_group (j : Fin 3) (i : Coord) : i ∈ group j ↔\n    commonSize + j.val * groupSize ≤ i.val ∧\n      i.val < commonSize + (j.val + 1) * groupSize ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.core_card",
+      "original_header": "theorem core_card (j : Fin 3) : (core j).card = 715827881 ",
+      "current_header": "theorem core_card (j : Fin 3) : (core j).card = 715827881 ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.height",
+      "original_header": "/-- Heights of the three groups and the one unused coordinate. -/\ndef height (i : Coord) : ℕ ",
+      "current_header": "/-- Heights of the three groups and the one unused coordinate. -/\ndef height (i : Coord) : ℕ ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.height_le",
+      "original_header": "theorem height_le (i : Coord) : height i ≤ 3 ",
+      "current_header": "theorem height_le (i : Coord) : height i ≤ 3 ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.height_eq_iff",
+      "original_header": "theorem height_eq_iff (j : Fin 3) (i : Coord) : height i = j.val ↔ i ∈ group j ",
+      "current_header": "theorem height_eq_iff (j : Fin 3) (i : Coord) : height i = j.val ↔ i ∈ group j ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.locator",
+      "original_header": "/-- Locator of the common coordinates, without enumerating the production domain. -/\nnoncomputable def locator : Polynomial (ZMod sponsorP) ",
+      "current_header": "/-- Locator of the common coordinates, without enumerating the production domain. -/\nnoncomputable def locator : Polynomial (ZMod sponsorP) ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.z",
+      "original_header": "noncomputable def z (i : Coord) : ZMod sponsorP ",
+      "current_header": "noncomputable def z (i : Coord) : ZMod sponsorP ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.locator_natDegree_le",
+      "original_header": "theorem locator_natDegree_le : locator.natDegree ≤ commonSize ",
+      "current_header": "theorem locator_natDegree_le : locator.natDegree ≤ commonSize ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.z_eq_zero_iff",
+      "original_header": "theorem z_eq_zero_iff (i : Coord) : z i = 0 ↔ i ∈ common ",
+      "current_header": "theorem z_eq_zero_iff (i : Coord) : z i = 0 ↔ i ∈ common ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.prodCode",
+      "original_header": "noncomputable def prodCode : Submodule (ZMod sponsorP) (Coord → ZMod sponsorP) ",
+      "current_header": "noncomputable def prodCode : Submodule (ZMod sponsorP) (Coord → ZMod sponsorP) ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.xz",
+      "original_header": "noncomputable def xz (i : Coord) : ZMod sponsorP ",
+      "current_header": "noncomputable def xz (i : Coord) : ZMod sponsorP ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.u1",
+      "original_header": "noncomputable def u1 (i : Coord) : ZMod sponsorP ",
+      "current_header": "noncomputable def u1 (i : Coord) : ZMod sponsorP ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.u0",
+      "original_header": "noncomputable def u0 (i : Coord) : ZMod sponsorP ",
+      "current_header": "noncomputable def u0 (i : Coord) : ZMod sponsorP ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.v1",
+      "original_header": "noncomputable def v1 (j : Fin 3) : Coord → ZMod sponsorP ",
+      "current_header": "noncomputable def v1 (j : Fin 3) : Coord → ZMod sponsorP ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.v0",
+      "original_header": "noncomputable def v0 (j : Fin 3) : Coord → ZMod sponsorP ",
+      "current_header": "noncomputable def v0 (j : Fin 3) : Coord → ZMod sponsorP ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.z_mem",
+      "original_header": "theorem z_mem : z ∈ prodCode ",
+      "current_header": "theorem z_mem : z ∈ prodCode ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.xz_mem",
+      "original_header": "theorem xz_mem : xz ∈ prodCode ",
+      "current_header": "theorem xz_mem : xz ∈ prodCode ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.v1_mem",
+      "original_header": "theorem v1_mem (j : Fin 3) : v1 j ∈ prodCode ",
+      "current_header": "theorem v1_mem (j : Fin 3) : v1 j ∈ prodCode ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.v0_mem",
+      "original_header": "theorem v0_mem (j : Fin 3) : v0 j ∈ prodCode ",
+      "current_header": "theorem v0_mem (j : Fin 3) : v0 j ∈ prodCode ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.agree_v1",
+      "original_header": "theorem agree_v1 (j : Fin 3) : ∀ i ∈ core j, v1 j i = u1 i ",
+      "current_header": "theorem agree_v1 (j : Fin 3) : ∀ i ∈ core j, v1 j i = u1 i ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.agree_v0",
+      "original_header": "theorem agree_v0 (j : Fin 3) : ∀ i ∈ core j, v0 j i = u0 i ",
+      "current_header": "theorem agree_v0 (j : Fin 3) : ∀ i ∈ core j, v0 j i = u0 i ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.pencilScalar",
+      "original_header": "/-- The pencil scalar attached to an off-`S` point `x` of a degenerate subset\n(SYZ2 `pencilScalar`). -/\nnoncomputable def pencilScalar (u₀ u₁ v₀ v₁ : ι → F) (x : ι) : F ",
+      "current_header": "/-- The pencil scalar attached to an off-`S` point `x` of a degenerate subset\n(SYZ2 `pencilScalar`). -/\nnoncomputable def pencilScalar (u₀ u₁ v₀ v₁ : ι → F) (x : ι) : F ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket",
+        "variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]",
+        "variable {F : Type} [Field F] [Fintype F] [DecidableEq F]"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket",
+        "variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]",
+        "variable {F : Type} [Field F] [Fintype F] [DecidableEq F]"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.pencil_line_agrees",
+      "original_header": "/-- SYZ2 channel theorem (a): the codeword pencil agrees with the line on `S ∪ {x}`. -/\ntheorem pencil_line_agrees {S : Finset ι} {u₀ u₁ v₀ v₁ : ι → F}\n    (h₀ : ∀ i ∈ S, v₀ i = u₀ i) (h₁ : ∀ i ∈ S, v₁ i = u₁ i)\n    {x : ι} (hd₁ : u₁ x ≠ v₁ x) :\n    ∀ i ∈ insert x S,\n      (v₀ + pencilScalar u₀ u₁ v₀ v₁ x • v₁) i\n        = u₀ i + pencilScalar u₀ u₁ v₀ v₁ x • u₁ i ",
+      "current_header": "/-- SYZ2 channel theorem (a): the codeword pencil agrees with the line on `S ∪ {x}`. -/\ntheorem pencil_line_agrees {S : Finset ι} {u₀ u₁ v₀ v₁ : ι → F}\n    (h₀ : ∀ i ∈ S, v₀ i = u₀ i) (h₁ : ∀ i ∈ S, v₁ i = u₁ i)\n    {x : ι} (hd₁ : u₁ x ≠ v₁ x) :\n    ∀ i ∈ insert x S,\n      (v₀ + pencilScalar u₀ u₁ v₀ v₁ x • v₁) i\n        = u₀ i + pencilScalar u₀ u₁ v₀ v₁ x • u₁ i ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket",
+        "variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]",
+        "variable {F : Type} [Field F] [Fintype F] [DecidableEq F]"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket",
+        "variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]",
+        "variable {F : Type} [Field F] [Fintype F] [DecidableEq F]"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.not_pairJointAgreesOn_insert",
+      "original_header": "/-- SYZ2 channel theorem (b): the pair-joint clause fails on the enlarged witness set. -/\ntheorem not_pairJointAgreesOn_insert (C : Submodule F (ι → F))\n    {S : Finset ι} {u₀ u₁ v₁ : ι → F}\n    (huniq₁ : ∀ w ∈ (C : Set (ι → F)), (∀ i ∈ S, w i = u₁ i) → w = v₁)\n    {x : ι} (hd₁ : u₁ x ≠ v₁ x) :\n    ¬ pairJointAgreesOn (C : Set (ι → F)) (insert x S) u₀ u₁ ",
+      "current_header": "/-- SYZ2 channel theorem (b): the pair-joint clause fails on the enlarged witness set. -/\ntheorem not_pairJointAgreesOn_insert (C : Submodule F (ι → F))\n    {S : Finset ι} {u₀ u₁ v₁ : ι → F}\n    (huniq₁ : ∀ w ∈ (C : Set (ι → F)), (∀ i ∈ S, w i = u₁ i) → w = v₁)\n    {x : ι} (hd₁ : u₁ x ≠ v₁ x) :\n    ¬ pairJointAgreesOn (C : Set (ι → F)) (insert x S) u₀ u₁ ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket",
+        "variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]",
+        "variable {F : Type} [Field F] [Fintype F] [DecidableEq F]"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket",
+        "variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]",
+        "variable {F : Type} [Field F] [Fintype F] [DecidableEq F]"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.mcaEvent_pencil",
+      "original_header": "/-- SYZ2 per-point channel: every eligible off-`S` point produces a literal\n`mcaEvent`-bad scalar. -/\ntheorem mcaEvent_pencil (C : Submodule F (ι → F)) {δ : ℝ≥0}\n    {S : Finset ι} {u₀ u₁ v₀ v₁ : ι → F}\n    (hv₀ : v₀ ∈ C) (hv₁ : v₁ ∈ C)\n    (h₀ : ∀ i ∈ S, v₀ i = u₀ i) (h₁ : ∀ i ∈ S, v₁ i = u₁ i)\n    (huniq₁ : ∀ w ∈ (C : Set (ι → F)), (∀ i ∈ S, w i = u₁ i) → w = v₁)\n    {x : ι} (hd₁ : u₁ x ≠ v₁ x)\n    (hcard : (((insert x S).card : ℝ≥0)) ≥ (1 - δ) * Fintype.card ι) :\n    mcaEvent (C : Set (ι → F)) δ u₀ u₁ (pencilScalar u₀ u₁ v₀ v₁ x) ",
+      "current_header": "/-- SYZ2 per-point channel: every eligible off-`S` point produces a literal\n`mcaEvent`-bad scalar. -/\ntheorem mcaEvent_pencil (C : Submodule F (ι → F)) {δ : ℝ≥0}\n    {S : Finset ι} {u₀ u₁ v₀ v₁ : ι → F}\n    (hv₀ : v₀ ∈ C) (hv₁ : v₁ ∈ C)\n    (h₀ : ∀ i ∈ S, v₀ i = u₀ i) (h₁ : ∀ i ∈ S, v₁ i = u₁ i)\n    (huniq₁ : ∀ w ∈ (C : Set (ι → F)), (∀ i ∈ S, w i = u₁ i) → w = v₁)\n    {x : ι} (hd₁ : u₁ x ≠ v₁ x)\n    (hcard : (((insert x S).card : ℝ≥0)) ≥ (1 - δ) * Fintype.card ι) :\n    mcaEvent (C : Set (ι → F)) δ u₀ u₁ (pencilScalar u₀ u₁ v₀ v₁ x) ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket",
+        "variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]",
+        "variable {F : Type} [Field F] [Fintype F] [DecidableEq F]"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket",
+        "variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]",
+        "variable {F : Type} [Field F] [Fintype F] [DecidableEq F]"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.rsCode_eq_of_agree_on_card_le",
+      "original_header": "/-- SYZ2 Reed–Solomon interpolation uniqueness on any subset of at least `k` points. -/\ntheorem rsCode_eq_of_agree_on_card_le {n : ℕ} [NeZero n]\n    (dom : Fin n ↪ F) {k : ℕ} {S : Finset (Fin n)} (hk : k ≤ S.card)\n    {w w' : Fin n → F} (hw : w ∈ ProximityGap.SpikeFloor.rsCode dom k) (hw' : w' ∈ ProximityGap.SpikeFloor.rsCode dom k)\n    (hagree : ∀ i ∈ S, w i = w' i) : w = w' ",
+      "current_header": "/-- SYZ2 Reed–Solomon interpolation uniqueness on any subset of at least `k` points. -/\ntheorem rsCode_eq_of_agree_on_card_le {n : ℕ} [NeZero n]\n    (dom : Fin n ↪ F) {k : ℕ} {S : Finset (Fin n)} (hk : k ≤ S.card)\n    {w w' : Fin n → F} (hw : w ∈ ProximityGap.SpikeFloor.rsCode dom k) (hw' : w' ∈ ProximityGap.SpikeFloor.rsCode dom k)\n    (hagree : ∀ i ∈ S, w i = w' i) : w = w' ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket",
+        "variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]",
+        "variable {F : Type} [Field F] [Fintype F] [DecidableEq F]"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket",
+        "variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]",
+        "variable {F : Type} [Field F] [Fintype F] [DecidableEq F]"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.row1_ne",
+      "original_header": "theorem row1_ne (j : Fin 3) (i : Coord) (hi : i ∉ core j) : u1 i ≠ v1 j i ",
+      "current_header": "theorem row1_ne (j : Fin 3) (i : Coord) (hi : i ∉ core j) : u1 i ≠ v1 j i ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.uniq_v1",
+      "original_header": "theorem uniq_v1 (j : Fin 3) : ∀ w ∈ (prodCode : Set (Coord → ZMod sponsorP)),\n    (∀ i ∈ core j, w i = u1 i) → w = v1 j ",
+      "current_header": "theorem uniq_v1 (j : Fin 3) : ∀ w ∈ (prodCode : Set (Coord → ZMod sponsorP)),\n    (∀ i ∈ core j, w i = u1 i) → w = v1 j ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.support_card",
+      "original_header": "theorem support_card (j : Fin 3) (i : Coord) (hi : i ∉ core j) :\n    (insert i (core j)).card = 715827882 ",
+      "current_header": "theorem support_card (j : Fin 3) (i : Coord) (hi : i ∉ core j) :\n    (insert i (core j)).card = 715827882 ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.support_threshold",
+      "original_header": "theorem support_threshold (j : Fin 3) (i : Coord) (hi : i ∉ core j) :\n    (1 - (178956971 : ℝ≥0) / 536870912) * Fintype.card Coord ≤\n      ((insert i (core j)).card : ℝ≥0) ",
+      "current_header": "theorem support_threshold (j : Fin 3) (i : Coord) (hi : i ∉ core j) :\n    (1 - (178956971 : ℝ≥0) / 536870912) * Fintype.card Coord ≤\n      ((insert i (core j)).card : ℝ≥0) ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.scalar",
+      "original_header": "noncomputable def scalar (j : Fin 3) (i : Coord) : ZMod sponsorP ",
+      "current_header": "noncomputable def scalar (j : Fin 3) (i : Coord) : ZMod sponsorP ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.scalar_eq_pencil",
+      "original_header": "theorem scalar_eq_pencil (j : Fin 3) (i : Coord) (hi : i ∉ core j) :\n    scalar j i = pencilScalar u0 u1 (v0 j) (v1 j) i ",
+      "current_header": "theorem scalar_eq_pencil (j : Fin 3) (i : Coord) (hi : i ∉ core j) :\n    scalar j i = pencilScalar u0 u1 (v0 j) (v1 j) i ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.scalar_bad",
+      "original_header": "theorem scalar_bad (j : Fin 3) (i : Coord) (hi : i ∉ core j) :\n    mcaEvent (prodCode : Set (Coord → ZMod sponsorP))\n      ((178956971 : ℝ≥0) / 536870912) u0 u1 (scalar j i) ",
+      "current_header": "theorem scalar_bad (j : Fin 3) (i : Coord) (hi : i ∉ core j) :\n    mcaEvent (prodCode : Set (Coord → ZMod sponsorP))\n      ((178956971 : ℝ≥0) / 536870912) u0 u1 (scalar j i) ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.coefficient_powers_injective",
+      "original_header": "theorem coefficient_powers_injective {a b : ℕ}\n    (ha : 1 ≤ a ∧ a ≤ 5) (hb : 1 ≤ b ∧ b ≤ 5)\n    (h : (a : ZMod sponsorP) ^ n = (b : ZMod sponsorP) ^ n) : a = b ",
+      "current_header": "theorem coefficient_powers_injective {a b : ℕ}\n    (ha : 1 ≤ a ∧ a ≤ 5) (hb : 1 ≤ b ∧ b ≤ 5)\n    (h : (a : ZMod sponsorP) ^ n = (b : ZMod sponsorP) ^ n) : a = b ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.coefficient_bounds",
+      "original_header": "theorem coefficient_bounds (j : Fin 3) (i : Coord) (hi : i ∉ core j) :\n    1 ≤ height i + j.val ∧ height i + j.val ≤ 5 ",
+      "current_header": "theorem coefficient_bounds (j : Fin 3) (i : Coord) (hi : i ∉ core j) :\n    1 ≤ height i + j.val ∧ height i + j.val ≤ 5 ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.scalar_injective",
+      "original_header": "theorem scalar_injective {j j' : Fin 3} {i i' : Coord}\n    (hi : i ∉ core j) (hi' : i' ∉ core j')\n    (he : scalar j i = scalar j' i') : j = j' ∧ i = i' ",
+      "current_header": "theorem scalar_injective {j j' : Fin 3} {i i' : Coord}\n    (hi : i ∉ core j) (hi' : i' ∉ core j')\n    (he : scalar j i = scalar j' i') : j = j' ∧ i = i' ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.exact_agreement_support",
+      "original_header": "/-- The designated decoded head has no agreement coordinates beyond its witness. -/\ntheorem exact_agreement_support (j : Fin 3) (i : Coord) (hi : i ∉ core j) (y : Coord) :\n    (v0 j + scalar j i • v1 j) y = u0 y + scalar j i * u1 y ↔\n      y ∈ insert i (core j) ",
+      "current_header": "/-- The designated decoded head has no agreement coordinates beyond its witness. -/\ntheorem exact_agreement_support (j : Fin 3) (i : Coord) (hi : i ∉ core j) (y : Coord) :\n    (v0 j + scalar j i • v1 j) y = u0 y + scalar j i * u1 y ↔\n      y ∈ insert i (core j) ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.image",
+      "original_header": "noncomputable def image (j : Fin 3) : Finset (ZMod sponsorP) ",
+      "current_header": "noncomputable def image (j : Fin 3) : Finset (ZMod sponsorP) ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.image_card",
+      "original_header": "theorem image_card (j : Fin 3) : (image j).card = 357913943 ",
+      "current_header": "theorem image_card (j : Fin 3) : (image j).card = 357913943 ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.images_disjoint",
+      "original_header": "theorem images_disjoint {j j' : Fin 3} (hj : j ≠ j') : Disjoint (image j) (image j') ",
+      "current_header": "theorem images_disjoint {j j' : Fin 3} (hj : j ≠ j') : Disjoint (image j) (image j') ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.allScalars",
+      "original_header": "noncomputable def allScalars : Finset (ZMod sponsorP) ",
+      "current_header": "noncomputable def allScalars : Finset (ZMod sponsorP) ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.allScalars_card",
+      "original_header": "theorem allScalars_card : allScalars.card = 1073741829 ",
+      "current_header": "theorem allScalars_card : allScalars.card = 1073741829 ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.allScalars_bad",
+      "original_header": "theorem allScalars_bad : ∀ a ∈ allScalars,\n    mcaEvent (prodCode : Set (Coord → ZMod sponsorP))\n      ((178956971 : ℝ≥0) / 536870912) u0 u1 a ",
+      "current_header": "theorem allScalars_bad : ∀ a ∈ allScalars,\n    mcaEvent (prodCode : Set (Coord → ZMod sponsorP))\n      ((178956971 : ℝ≥0) / 536870912) u0 u1 a ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.firstPrime_fullScale_upper",
+      "original_header": "theorem firstPrime_fullScale_upper :\n    ProximityGap.MCAThresholdLedger.mcaDeltaStar\n      (F ",
+      "current_header": "theorem firstPrime_fullScale_upper :\n    ProximityGap.MCAThresholdLedger.mcaDeltaStar\n      (F ",
+      "original_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "current_active_context": [
+        "set_option autoImplicit false",
+        "set_option maxRecDepth 4096",
+        "open Finset Polynomial ProximityGap.Ownership",
+        "open ProximityGap Code",
+        "open ArkLib.ProximityGap.PrizeShapePrimeP30",
+        "open ArkLib.ProximityGap.KKH26",
+        "open ProximityGap Code",
+        "open scoped NNReal ENNReal",
+        "open ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket"
+      ],
+      "unchanged_modulo_explicit_free_generator_qualification": true
+    }
+  ],
+  "changed_original_commands": [
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.commonEmb",
+      "original_command": "/-- Coordinate embedding of the common root set. -/\ndef commonEmb : Fin commonSize ↪ Coord where\n  toFun a := ⟨a.val, by\n    have ha := a.isLt\n    simp only [n,commonSize,groupSize] at *\n    omega⟩\n  inj' := by\n    intro a b h\n    apply Fin.ext\n    exact congrArg (fun x : Coord => x.val) h\n\n"
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.mem_common",
+      "original_command": "theorem mem_common (i : Coord) : i ∈ common ↔ i.val < commonSize := by\n  constructor\n  · intro hi\n    obtain ⟨a,_,ha⟩ := Finset.mem_map.mp hi\n    have he := congrArg Fin.val ha\n    have hb := a.isLt\n    dsimp [commonEmb] at he\n    omega\n  · intro hi\n    exact Finset.mem_map.mpr ⟨⟨i.val,hi⟩,Finset.mem_univ _,Fin.ext rfl⟩\n\n"
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.mem_group",
+      "original_command": "theorem mem_group (j : Fin 3) (i : Coord) : i ∈ group j ↔\n    commonSize + j.val * groupSize ≤ i.val ∧\n      i.val < commonSize + (j.val + 1) * groupSize := by\n  constructor\n  · intro hi\n    obtain ⟨a,_,ha⟩ := Finset.mem_map.mp hi\n    have he := congrArg Fin.val ha\n    have hb := a.isLt\n    dsimp [groupEmb] at he\n    simp only [n,commonSize,groupSize] at *\n    omega\n  · rintro ⟨hlo,hhi⟩\n    refine Finset.mem_map.mpr ⟨⟨i.val - (commonSize + j.val * groupSize),by\n      simp only [commonSize,groupSize] at *\n      omega⟩,\n      Finset.mem_univ _,?_⟩\n    apply Fin.ext\n    dsimp [groupEmb]\n    omega\n\n"
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.locator",
+      "original_command": "/-- Locator of the common coordinates, without enumerating the production domain. -/\nnoncomputable def locator : Polynomial (ZMod sponsorP) :=\n  ∏ a : Fin commonSize, (Polynomial.X - Polynomial.C (g ^ a.val))\n\n"
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.z",
+      "original_command": "noncomputable def z (i : Coord) : ZMod sponsorP := locator.eval (g ^ i.val)\n\n"
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.locator_natDegree_le",
+      "original_command": "theorem locator_natDegree_le : locator.natDegree ≤ commonSize := by\n  unfold locator\n  refine (Polynomial.natDegree_prod_le _ _).trans ?_\n  calc\n    _ ≤ ∑ _a : Fin commonSize, (1 : ℕ) := by\n      apply Finset.sum_le_sum\n      intro a _\n      exact (Polynomial.natDegree_sub_le _ _).trans (by simp)\n    _ = commonSize := by simp\n\n"
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.z_eq_zero_iff",
+      "original_command": "theorem z_eq_zero_iff (i : Coord) : z i = 0 ↔ i ∈ common := by\n  rw [z,locator,Polynomial.eval_prod,Finset.prod_eq_zero_iff]\n  simp only [Polynomial.eval_sub,Polynomial.eval_X,Polynomial.eval_C,sub_eq_zero]\n  constructor\n  · rintro ⟨a,_,ha⟩\n    have he : i = commonEmb a :=\n      (smoothDom g n orderOf_g).injective ha\n    rw [he,mem_common]\n    exact a.isLt\n  · intro hi\n    have hc := (mem_common i).mp hi\n    exact ⟨⟨i.val,hc⟩,Finset.mem_univ _,rfl⟩\n\n"
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.prodCode",
+      "original_command": "noncomputable def prodCode : Submodule (ZMod sponsorP) (Coord → ZMod sponsorP) :=\n  ProximityGap.SpikeFloor.rsCode (smoothDom g n orderOf_g) k\n\n"
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.xz",
+      "original_command": "noncomputable def xz (i : Coord) : ZMod sponsorP := z i * g ^ i.val\n"
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.z_mem",
+      "original_command": "theorem z_mem : z ∈ prodCode := by\n  change ∃ q : Polynomial (ZMod sponsorP), q.degree < k ∧ z = fun i => q.eval (g ^ i.val)\n  refine ⟨locator,?_,rfl⟩\n  exact lt_of_le_of_lt Polynomial.degree_le_natDegree\n    (by exact_mod_cast (locator_natDegree_le.trans_lt (by norm_num : commonSize < k)))\n\n"
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.xz_mem",
+      "original_command": "theorem xz_mem : xz ∈ prodCode := by\n  change ∃ q : Polynomial (ZMod sponsorP), q.degree < k ∧ xz = fun i => q.eval (g ^ i.val)\n  refine ⟨locator * Polynomial.X,?_,?_⟩\n  · apply lt_of_le_of_lt (Polynomial.degree_mul_le _ _)\n    have hz : locator.degree ≤ (commonSize : ℕ) :=\n      Polynomial.degree_le_natDegree.trans (by exact_mod_cast locator_natDegree_le)\n    have hx : (Polynomial.X : Polynomial (ZMod sponsorP)).degree ≤ (1 : ℕ) :=\n      Polynomial.degree_X_le\n    exact (add_le_add hz hx).trans_lt (by norm_num)\n  · funext i\n    simp only [Polynomial.eval_mul,Polynomial.eval_X]\n    rfl\n\n"
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.uniq_v1",
+      "original_command": "theorem uniq_v1 (j : Fin 3) : ∀ w ∈ (prodCode : Set (Coord → ZMod sponsorP)),\n    (∀ i ∈ core j, w i = u1 i) → w = v1 j := by\n  intro w hw ha\n  exact rsCode_eq_of_agree_on_card_le (smoothDom g n orderOf_g)\n    (by\n      rw [core_card]\n      norm_num : k ≤ (core j).card) hw (v1_mem j)\n    (fun i hi => (ha i hi).trans (agree_v1 j i hi).symm)\n\n"
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.scalar",
+      "original_command": "noncomputable def scalar (j : Fin 3) (i : Coord) : ZMod sponsorP :=\n  -((height i + j.val : ℕ) : ZMod sponsorP) * g ^ i.val\n\n"
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.scalar_injective",
+      "original_command": "theorem scalar_injective {j j' : Fin 3} {i i' : Coord}\n    (hi : i ∉ core j) (hi' : i' ∉ core j')\n    (he : scalar j i = scalar j' i') : j = j' ∧ i = i' := by\n  have hh : ((height i + j.val : ℕ) : ZMod sponsorP) * g ^ i.val =\n      ((height i' + j'.val : ℕ) : ZMod sponsorP) * g ^ i'.val := by\n    simpa only [scalar,neg_mul,neg_inj] using he\n  have hg : ∀ m : ℕ, (g ^ m) ^ n = 1 := by\n    intro m\n    rw [← pow_mul,Nat.mul_comm,pow_mul]\n    have hfull : g ^ n = 1 := by\n      simpa only [orderOf_g] using pow_orderOf_eq_one g\n    rw [hfull,one_pow]\n  have hp := congrArg (fun a : ZMod sponsorP => a ^ n) hh\n  simp only [mul_pow,hg,mul_one] at hp\n  have hab := coefficient_powers_injective (coefficient_bounds j i hi)\n    (coefficient_bounds j' i' hi') hp\n  have hn : ((height i + j.val : ℕ) : ZMod sponsorP) ≠ 0 := by\n    have hb := coefficient_bounds j i hi\n    have hl : 5 < sponsorP := by norm_num [sponsorP,ArkLib.ProximityGap.PrizeShapePrimeP30.P]\n    have hv := ZMod.val_natCast_of_lt (by omega : height i + j.val < sponsorP)\n    intro h\n    have hz := congrArg ZMod.val h\n    rw [hv,ZMod.val_zero] at hz\n    omega\n  rw [← hab] at hh\n  have hii : i = i' := (smoothDom g n orderOf_g).injective (mul_left_cancel₀ hn hh)\n  subst i'\n  have hjj : j = j' := Fin.ext (by omega)\n  exact ⟨hjj,rfl⟩\n\n"
+    },
+    {
+      "name": "ProximityGap.IncidenceFullScaleCores.firstPrime_fullScale_upper",
+      "original_command": "theorem firstPrime_fullScale_upper :\n    ProximityGap.MCAThresholdLedger.mcaDeltaStar\n      (F := ZMod sponsorP) (A := ZMod sponsorP)\n      (evalCode g (2 ^ 30) (2 ^ 29 - 1))\n      (ProximityGap.epsStar : ℝ≥0∞)\n      ≤ ((178956971 : ℝ≥0) / 536870912) := by\n  have hbridge : evalCode g (2 ^ 30) (2 ^ 29 - 1)\n      = ((prodCode : Submodule (ZMod sponsorP) (Fin (2 ^ 30) → ZMod sponsorP)) :\n          Set (Fin (2 ^ 30) → ZMod sponsorP)) := by\n    simpa only [prodCode, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 29)] using\n      (evalCode_eq_rsCode orderOf_g (2 ^ 29 - 1))\n  rw [hbridge]\n  let u : WordStack (ZMod sponsorP) (Fin 2) (Fin (2 ^ 30)) :=\n    fun r => if r = 0 then u0 else u1\n  let G : Finset (ZMod sponsorP) := allScalars\n  have hu0 : u 0 = u0 := by simp [u]\n  have hu1 : u 1 = u1 := by simp [u]\n  have hcount : 2 ^ 30 + 1 ≤ G.card := by\n    rw [allScalars_card]\n    norm_num\n  have hG : ∀ γ ∈ G,\n      mcaEvent (prodCode : Set (Coord → ZMod sponsorP))\n        ((178956971 : ℝ≥0) / 536870912) (u 0) (u 1) γ := by\n    rw [hu0,hu1]\n    exact allScalars_bad\n  have hengine := ProximityGap.MCAWitnessSpread.epsMCA_ge_card_div_of_mcaEvent_set\n    (F := ZMod sponsorP) (A := ZMod sponsorP)\n    (prodCode : Set (Fin (2 ^ 30) → ZMod sponsorP))\n    (((178956971 : ℝ≥0) / 536870912)) u G hG\n  rw [ZMod.card] at hengine\n  have hPnat : (sponsorP : ℕ) < G.card * 2 ^ 128 := by\n    have hbase : (sponsorP : ℕ) < (2 ^ 30 + 1) * 2 ^ 128 := by\n      show (365375409332725729550921208179070755120141565953 : ℕ) <\n        (2 ^ 30 + 1) * 2 ^ 128\n      norm_num\n    exact lt_of_lt_of_le hbase (Nat.mul_le_mul_right _ hcount)\n  have hP0 : ((sponsorP : ℕ) : ℝ≥0∞) ≠ 0 := by\n    simp only [ne_eq, Nat.cast_eq_zero]\n    exact prime_P.pos.ne'\n  have hPtop : ((sponsorP : ℕ) : ℝ≥0∞) ≠ ⊤ := ENNReal.natCast_ne_top sponsorP\n  have h2t0 : ((2 ^ 128 : ℕ) : ℝ≥0∞) ≠ 0 := by\n    simp only [ne_eq, Nat.cast_eq_zero]\n    norm_num\n  have h2ttop : ((2 ^ 128 : ℕ) : ℝ≥0∞) ≠ ⊤ := ENNReal.natCast_ne_top _\n  have hkey : ((sponsorP : ℕ) : ℝ≥0∞) <\n      ((G.card : ℕ) : ℝ≥0∞) * ((2 ^ 128 : ℕ) : ℝ≥0∞) := by\n    rw [← Nat.cast_mul]\n    exact_mod_cast hPnat\n  have hmass : (ProximityGap.epsStar : ℝ≥0∞) <\n      ((G.card : ℕ) : ℝ≥0∞) / ((sponsorP : ℕ) : ℝ≥0∞) := by\n    rw [epsStar_coe_eq_natCast_inv,\n      ENNReal.lt_div_iff_mul_lt (Or.inl hP0) (Or.inl hPtop),\n      ← ENNReal.div_eq_inv_mul,\n      ENNReal.div_lt_iff (Or.inl h2t0) (Or.inl h2ttop)]\n    exact hkey\n  have hlt : (ProximityGap.epsStar : ℝ≥0∞) <\n      epsMCA (F := ZMod sponsorP) (A := ZMod sponsorP)\n        (prodCode : Set (Fin (2 ^ 30) → ZMod sponsorP))\n        (((178956971 : ℝ≥0) / 536870912)) :=\n    lt_of_lt_of_le hmass hengine\n  have hbad := ProximityGap.MCAThresholdLedger.mcaDeltaStar_le_of_bad\n    (F := ZMod sponsorP) (A := ZMod sponsorP)\n    (prodCode : Set (Fin (2 ^ 30) → ZMod sponsorP))\n    (ProximityGap.epsStar : ℝ≥0∞) hlt\n  exact hbad\n\n\n"
+    }
+  ],
+  "symbolic_owners": [
+    {
+      "private_helper": "locator_degree_bound",
+      "contract": "For an arbitrary field, symbolic m, and arbitrary root function Fin m→F, the degree of the product of m monic linear root factors is at most m."
+    },
+    {
+      "private_helper": "locator_zero_iff",
+      "contract": "For arbitrary finite lengths and injective domain/coordinate embeddings, the locator vanishes exactly on the embedded common coordinates."
+    },
+    {
+      "private_helper": "eval_locator_mem",
+      "contract": "The arbitrary-root locator evaluation belongs to the dimension-k code when m<k; the whole membership proof is symbolic before concrete instantiation."
+    },
+    {
+      "private_helper": "eval_locator_mul_mem",
+      "contract": "The locator-times-X evaluation belongs to the same code when m+1<k; WithBot degree transport is explicit in the generic proof."
+    }
+  ],
+  "api_and_proof_mapping": [
+    {
+      "public_names": [
+        "locator_natDegree_le",
+        "z_eq_zero_iff",
+        "z_mem",
+        "xz_mem"
+      ],
+      "change": "Delegate to fully symbolic locator degree/root/membership owners before instantiating the 536870910-factor production locator. No finite product is evaluated during theorem conversion."
+    },
+    {
+      "public_names": [
+        "mem_common",
+        "mem_group"
+      ],
+      "change": "State the actual Fin.val embedding equations explicitly before omega; coordinate bounds and embeddings are unchanged."
+    },
+    {
+      "public_names": [
+        "scalar_injective"
+      ],
+      "change": "Normalize n=1073741824 and the equivalent exponent2^30 explicitly in the generator order equation."
+    },
+    {
+      "public_names": [
+        "firstPrime_fullScale_upper"
+      ],
+      "owner": "ProximityPrize.Compatibility.EvaluationCodeDimension / ProximityGap.Ownership.evalCode_pred_eq_rsCode",
+      "change": "Reuse the positive-dimensional generic degree-to-dimension bridge at the existing dimension2^29 rather than normalize a closed code conversion."
+    },
+    {
+      "public_names": [
+        "locator",
+        "z",
+        "prodCode",
+        "xz",
+        "scalar",
+        "firstPrime_fullScale_upper"
+      ],
+      "change": "Qualify only free production generator references to ArkLib.ProximityGap.PrizeShapePrimeP30.g, resolving the newly imported global name ambiguity."
+    }
+  ],
+  "mathematical_scope": "All55 original public declarations, constants, finite coordinate groups, code dimension, radius, arithmetic certificate, explicit assumptions, and final upper bound178956971/536870912 are retained. No theorem was retired or weakened. The source retains the original kernel-checked coefficient certificate. This is not a claim that the production conjecture is closed.",
+  "validation": {
+    "strict_repository_source_check": {
+      "file": "Research/ProximityPrize/Frontier/_IncidenceFullScaleCores.lean",
+      "status": "temporary_overlay_source_check",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "elapsed_seconds": 6.4,
+      "source_before_sha256": "4fb855ea7e8cdcd4b09dbd1acda0ca6db3adc41ff3db6f769ecf20d633afd6ca",
+      "source_after_sha256": "4fb855ea7e8cdcd4b09dbd1acda0ca6db3adc41ff3db6f769ecf20d633afd6ca",
+      "import_artifacts": {
+        "ProximityPrize.Compatibility.EvaluationCodeDimension": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Compatibility/EvaluationCodeDimension.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Compatibility/EvaluationCodeDimension.olean",
+          "sha256": "5110ea8b2aa5ab81d3e1acf1ae0af59dea7c612cd4eabad6d2f9658104cb06d3",
+          "artifact_family": {
+            "EvaluationCodeDimension.olean": "5110ea8b2aa5ab81d3e1acf1ae0af59dea7c612cd4eabad6d2f9658104cb06d3"
+          }
+        },
+        "Research.ProximityPrize.Frontier._IncidenceAverageAnchor": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_IncidenceAverageAnchor.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_IncidenceAverageAnchor.olean",
+          "sha256": "5a9b4d89e2ed44c4eb430a24f26d9c18bf9db618b5028ddf3d9972d167d29761",
+          "artifact_family": {
+            "_IncidenceAverageAnchor.olean": "5a9b4d89e2ed44c4eb430a24f26d9c18bf9db618b5028ddf3d9972d167d29761"
+          }
+        }
+      },
+      "imports_unchanged": true,
+      "log": "/tmp/arklib-native-overlay/logs/Research.ProximityPrize.Frontier._IncidenceFullScaleCores.lean.1793255184322194000.check.log",
+      "not_a_lake_package_build": true
+    },
+    "bounded_resource_observation": {
+      "prefix": "incidence-whole",
+      "exit": 0,
+      "bounded_stop": null,
+      "peak_group_kib": 6667280,
+      "elapsed": 9.099,
+      "receipt": "/tmp/arklib-G87-prefix-incidence-whole.receipt.json"
+    },
+    "printed_axiom_reports": [
+      {
+        "name": "ProximityGap.IncidenceFullScaleCores.core_card",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ProximityGap.IncidenceFullScaleCores.z_eq_zero_iff",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ProximityGap.IncidenceFullScaleCores.z_mem",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ProximityGap.IncidenceFullScaleCores.xz_mem",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ProximityGap.IncidenceFullScaleCores.agree_v1",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ProximityGap.IncidenceFullScaleCores.agree_v0",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ProximityGap.IncidenceFullScaleCores.scalar_bad",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ProximityGap.IncidenceFullScaleCores.coefficient_powers_injective",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ProximityGap.IncidenceFullScaleCores.scalar_injective",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ProximityGap.IncidenceFullScaleCores.exact_agreement_support",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ProximityGap.IncidenceFullScaleCores.allScalars_card",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ProximityGap.IncidenceFullScaleCores.allScalars_bad",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ProximityGap.IncidenceFullScaleCores.firstPrime_fullScale_upper",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      }
+    ],
+    "warning_count": 3,
+    "warning_scope": "Three inherited unusedSectionVars warnings in unchanged Channel theorem contracts (pencil_line_agrees, not_pairJointAgreesOn_insert, rsCode_eq_of_agree_on_card_le). Their original assumptions are preserved; no linter suppression added.",
+    "package_build_pending": true
+  },
+  "resource_and_honesty_scope": {
+    "prior_attempt": "Root bounded attempt stopped only its owned compile process group after31.66s at approximately12GiB without diagnostics; this is not an admission or proof validation.",
+    "final_attempt": "Final whole source completes normally under12GiB/90s active compiler bounds, approximately6.36GiB peak.",
+    "caps_unchanged": "Original maxRecDepth4096 and scoped maxRecDepth100000 for the historical kernel decide coefficient certificate are unchanged. No cap raises.",
+    "no_new_sorry_axioms_native_trust_or_mathematical_premises": true
+  }
+}

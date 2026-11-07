@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alexander Hicks
 -/
 
-import ArkLib.Data.CodingTheory.SubspaceDesign
-import ArkLib.Data.CodingTheory.ListDecodability
+import ProximityPrize.Extensions.Data.CodingTheory.SubspaceDesign
+import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Algebra.Order.Floor.Extended
 

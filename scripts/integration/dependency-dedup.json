@@ -1,0 +1,120 @@
+{
+  "files": [
+    {
+      "module": "ProximityPrize/Extensions/ToCompPoly/Univariate/Basic.lean",
+      "source_revision": "883e99d61e51264327b5fee859732d047f7d7038",
+      "canonical_dependency": "CompPoly 06686e4c70939af82203af21516f8ab8a21a8051",
+      "canonical_imports": [
+        "ArkLib.ToCompPoly.Univariate.Basic",
+        "CompPoly.Univariate.ToPoly"
+      ],
+      "reused_declarations": [
+        "CompPoly.CPolynomial.ofFn",
+        "CompPoly.CPolynomial.coeff_eq_zero_of_size_le",
+        "CompPoly.CPolynomial.coeffHom",
+        "CompPoly.CPolynomial.coeffHom_apply",
+        "CompPoly.CPolynomial.ofFinCoeff",
+        "CompPoly.CPolynomial.coeff_ofFinCoeff",
+        "CompPoly.CPolynomial.degree_toPoly_ofFinCoeff_lt",
+        "CompPoly.CPolynomial.monomial_eq_zero",
+        "CompPoly.CPolynomial.toPoly_divByMonic"
+      ],
+      "private_helpers": "Retired the unreachable private division-proof chain after its only public result was supplied by canonical ArkLib; no unique exported declaration remained."
+    },
+    {
+      "module": "ArkLib/ToVCVio/ToMathlib/Data/Vector/Basic.lean",
+      "source_revision": "883e99d61e51264327b5fee859732d047f7d7038",
+      "canonical_dependency": "VCVio 6214f907760776ceab8b1f828c9015f549e66e31",
+      "canonical_imports": [
+        "ToMathlib.Data.Vector",
+        "VCVio.EvalDist.List"
+      ],
+      "reused_declarations": [
+        "Vector.mapM_bind_map_eq",
+        "Vector.mapM_id_option_map_comm",
+        "Vector.mapM_id_some_index",
+        "Vector.mapM_map_postcomp",
+        "Vector.support_mapM_index"
+      ],
+      "retained_declarations": [],
+      "note": "All five historical helper names are now supplied by canonical VCVio, including its fully universe-polymorphic reachable-index theorem; the legacy path is an import shim."
+    },
+    {
+      "module": "ArkLib/ToVCVio/OracleComp/EvalDist.lean",
+      "source_revision": "883e99d61e51264327b5fee859732d047f7d7038",
+      "canonical_dependency": "VCVio 6214f907760776ceab8b1f828c9015f549e66e31",
+      "canonical_imports": [
+        "VCVio.OracleComp.Constructions.Replicate"
+      ],
+      "reused_declarations": [
+        "OracleComp.support_ofFn_mapM_index"
+      ],
+      "retained_declarations": [],
+      "note": "The old import path re-exports the canonical support-index theorem."
+    },
+    {
+      "module": "ArkLib/Data/CodingTheory/ProximityGap/GK16RootCounting.lean",
+      "source_revision": "883e99d61e51264327b5fee859732d047f7d7038",
+      "canonical_dependency": "ArkLib 94fb4cdd70c2ea061037bf6337611300d71c4e88",
+      "canonical_imports": [
+        "ArkLib.ToMathlib.Polynomial.RootMultiplicity"
+      ],
+      "reused_declarations": [
+        "Polynomial.sum_rootMultiplicity_le_natDegree"
+      ],
+      "retained_declarations": [
+        "Polynomial.sum_rootMultiplicity_le_card_roots"
+      ],
+      "note": "Canonical degree bound is stronger and also covers the zero polynomial; downstream callers retain their original conclusions."
+    },
+    {
+      "module": "ArkLib/ToMathlib/NumberTheory/GaussSumNorm.lean",
+      "source_revision": "883e99d61e51264327b5fee859732d047f7d7038",
+      "canonical_dependency": "mathlib 56a005855ea17e0b0958f73ec801ae140b0a1679",
+      "canonical_imports": [
+        "Mathlib.NumberTheory.GaussSum"
+      ],
+      "reused_declarations": [
+        "star_gaussSum_eq"
+      ],
+      "retained_declarations": [
+        "norm_gaussSum_sq_eq_card",
+        "norm_gaussSum_eq_sqrt_card"
+      ],
+      "note": "The private conjugation helper is now a public Mathlib theorem; norm consequences reuse it."
+    },
+    {
+      "module": "ArkLib/Data/CodingTheory/EntropyCapacityValue.lean",
+      "source_revision": "883e99d61e51264327b5fee859732d047f7d7038",
+      "canonical_dependency": "ArkLib 94fb4cdd70c2ea061037bf6337611300d71c4e88",
+      "canonical_imports": [
+        "ArkLib.Data.CodingTheory.Basic.Entropy"
+      ],
+      "reused_declarations": [
+        "CodingTheory.qEntropy_one",
+        "CodingTheory.qEntropy_one_sub_inv"
+      ],
+      "retained_declarations": [
+        "CodingTheory.qEntropy_capacity_eq_one"
+      ],
+      "note": "Canonical endpoint theorem has no lower-bound premise; capacity-value alias delegates to canonical normalization."
+    },
+    {
+      "module": "ProximityPrize/Extensions/Data/CodingTheory/ReedSolomon.lean",
+      "source_revision": "883e99d61e51264327b5fee859732d047f7d7038",
+      "canonical_dependency": "ArkLib 94fb4cdd70c2ea061037bf6337611300d71c4e88",
+      "canonical_imports": [
+        "ArkLib.Data.CodingTheory.ReedSolomon.Constrained"
+      ],
+      "reused_declarations": [
+        "ReedSolomon.weightConstraint",
+        "ReedSolomon.toPolynomialLT"
+      ],
+      "retained_declarations": [
+        "ReedSolomon.Compatibility.constrainedCode",
+        "ReedSolomon.Compatibility.multiConstrainedCode"
+      ],
+      "note": "Preserves arbitrary smooth embeddings and universes; canonical APIs require a smooth FFT coset. Equality theorems identify both interfaces on a canonical domain."
+    }
+  ]
+}

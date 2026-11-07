@@ -93,8 +93,8 @@ honest prover's challenge sample. -/
 theorem probEvent_outerVerify_reject_le [SampleableType F] (oStmt : ∀ i, OStmtIn F n M i)
     [DecidablePred
       (fun x : F => ∃ u : Hypercube n, x + evalOnHypercube (tableOracle oStmt) u = 0)] :
-    probEvent (uniformSample F)
-      (fun x : F => ¬ outerVerifyAccepts F n M oStmt x)
+    probEvent (fun x : F => ¬ outerVerifyAccepts F n M oStmt x)
+      (uniformSample F)
       ≤ (logupCompletenessError F n : ℝ≥0∞) := by
   have hcongr :
       (fun x : F => ¬ outerVerifyAccepts F n M oStmt x)

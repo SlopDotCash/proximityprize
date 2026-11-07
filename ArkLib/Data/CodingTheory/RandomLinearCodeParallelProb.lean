@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ArkLib.Data.Probability.Notation
 import ArkLib.Data.CodingTheory.RandomLinearCodeEquidistribution
 
 /-!
@@ -35,7 +36,7 @@ random codewords `m ᵥ* G` and `(c • m) ᵥ* G` land jointly in `S` with prob
 `|{v ∈ S : c • v ∈ S}| / qⁿ` — because the second codeword is `c • (m ᵥ* G)`, collapsing the joint
 event to a single-codeword membership in `{v | v ∈ S ∧ c • v ∈ S}`. -/
 theorem parallel_joint_mem_prob {m : Fin k → F} (hm : m ≠ 0) (c : F) (S : Finset (ι → F)) :
-    (PMF.uniformOfFintype (Matrix (Fin k) ι F)).toOuterMeasure
+    (ProximityPrize.Compatibility.uniformOfFintype (Matrix (Fin k) ι F)).toOuterMeasure
         {G : Matrix (Fin k) ι F | m ᵥ* G ∈ S ∧ (c • m) ᵥ* G ∈ S}
       = (Fintype.card {v : ι → F | v ∈ S ∧ c • v ∈ S} : ℝ≥0∞) / Fintype.card (ι → F) := by
   classical

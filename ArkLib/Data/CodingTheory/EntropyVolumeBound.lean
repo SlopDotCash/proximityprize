@@ -8,7 +8,7 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Base
 import ArkLib.Data.CodingTheory.BinomialEntropyBound
 import ArkLib.Data.CodingTheory.Basic.Entropy
-import ArkLib.Data.CodingTheory.HammingBallVolume
+import ProximityPrize.Extensions.Data.CodingTheory.HammingBallVolume
 
 /-!
 # The q-ary entropy / Hamming-ball volume lower bound (ABF26 Corollary 3.8)
@@ -82,8 +82,7 @@ theorem entropy_rpow_eq (hq : 2 ≤ q) (n k : ℕ) (hk0 : 0 < k) (hkn : k < n) :
       = (k : ℝ) * Real.logb (q : ℝ) ((q : ℝ) - 1)
         - (k : ℝ) * Real.logb (q : ℝ) ((k : ℝ) / (n : ℝ))
         - (m : ℝ) * Real.logb (q : ℝ) ((m : ℝ) / (n : ℝ)) := by
-    unfold qEntropy
-    rw [h1x]
+    rw [qEntropy_eq_logb_form, h1x]
     set A := Real.logb (q : ℝ) ((q : ℝ) - 1)
     set B := Real.logb (q : ℝ) ((k : ℝ) / (n : ℝ))
     set C := Real.logb (q : ℝ) ((m : ℝ) / (n : ℝ))

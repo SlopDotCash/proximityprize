@@ -3,8 +3,8 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.OracleReduction.Composition.Sequential.AppendPerfectCompletenessProof
 import ArkLib.OracleReduction.Composition.Sequential.SeamCompleteness
+import ArkLib.OracleReduction.Composition.Sequential.Append
 
 /-!
 # Non-perfect (error-bearing) message-seam append completeness — discharged
@@ -32,8 +32,8 @@ once the appended honest game is factored at the seam into `stage₁ ; stage₂ 
 `OracleReduction.completenessFromRun_of_bad_le` reduces the completeness *bound* to two run-level
 obligations on the simulated honest game `game₃ stmt wit`:
 
-* `hbad`: `Pr[bad₃ | game₃] ≤ e₁ + e₂`;
-* `htot`: `Pr[⊥ | game₃] = 0` (the simulated game never *samples* a failure — its only failure mode
+* `hbad`: `probEvent (bad₃) (game₃) ≤ e₁ + e₂`;
+* `htot`: `probFailure (game₃) = 0` (the simulated game never *samples* a failure — its only failure mode
   is the explicit `none` output, which is folded into `bad₃`).
 
 Both obligations are read off the seam-factored game via `probComp_seam_completeness`. The
@@ -50,14 +50,20 @@ open scoped ENNReal NNReal
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+-- The retained distribution bridges observe all subsets of the complete result type.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A B : Type) : MeasurableSpace (A × B) := ⊤
+private local instance (A : Type) : MeasurableSpace (Option A) := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ := ⟨fun _ => True.intro⟩
+
+variable {ι : Type} {oSpec : OracleSpec ι}
   {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
   {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
   {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
   {rel₁ : Set (Stmt₁ × Wit₁)} {rel₂ : Set (Stmt₂ × Wit₂)} {rel₃ : Set (Stmt₃ × Wit₃)}
 
-/-- **`Pr[good | OptionT.mk ma] ≥ 1 - e ⟹ Pr[bad | ma] ≤ e` (completeness convention).** The
+/-- **`probEvent (good) (OptionT.mk ma) ≥ 1 - e ⟹ probEvent (bad) (ma) ≤ e` (completeness convention).** The
 converse of `OracleReduction.probEvent_optionT_mk_ge_of_bad_le`: a completeness *lower bound*
 `Pr[good] ≥ 1 - e` on the `OptionT.mk` view yields a *bad-event upper bound* `Pr[bad] ≤ e` on the
 underlying `ProbComp`, where `bad o := ¬ Option.elim o False good` (failure `none` **or** `¬ good`).
@@ -66,21 +72,23 @@ direction. This is the bridge that turns the per-phase `completeness` hypotheses
 bad-event bounds the seam union bound `OracleReduction.probComp_seam_completeness` consumes. -/
 theorem bad_le_of_optionT_mk_ge {α : Type} (ma : ProbComp (Option α))
     (good : α → Prop) (e : ℝ≥0∞)
-    (hge : Pr[good | (OptionT.mk ma : OptionT ProbComp α)] ≥ 1 - e) :
-    Pr[fun o => ¬ Option.elim o False good | ma] ≤ e := by
+    (hge : probEvent (good) ((OptionT.mk ma : OptionT ProbComp α)) ≥ 1 - e) :
+    probEvent (fun o => ¬ Option.elim o False good) (ma) ≤ e := by
   classical
-  rw [Verifier.StateFunction.probEvent_optionT_mk_eq_elim] at hge
+  simp only [probEvent] at hge ⊢
+  rw [OptionT.prEvent_mk] at hge
   -- complement identity: `Pr[elim good] + Pr[¬ elim good] = 1 - Pr[⊥] ≤ 1`.
-  have hc := probEvent_compl ma (fun o => Option.elim o False good)
-  have hsum_le : Pr[fun o => Option.elim o False good | ma]
-      + Pr[fun o => ¬ Option.elim o False good | ma] ≤ 1 := hc.le.trans tsub_le_self
+  have hc := prEvent_add_prEvent_not ma (fun o => Option.elim o False good)
+  have hsum_le : probEvent (fun o => Option.elim o False good) (ma)
+      + probEvent (fun o => ¬ Option.elim o False good) (ma) ≤ 1 := hc.le.trans (evalDist_apply_univ_le_one _)
   -- `Pr[¬ elim good] ≤ 1 - Pr[elim good] ≤ 1 - (1 - e) ≤ e`.
   have hfin : (1 : ℝ≥0∞) - (1 - e) ≤ e := by
     rw [tsub_le_iff_right]; exact le_tsub_add.trans (by rw [add_comm])
-  calc Pr[fun o => ¬ Option.elim o False good | ma]
-      ≤ 1 - Pr[fun o => Option.elim o False good | ma] :=
+  calc probEvent (fun o => ¬ Option.elim o False good) (ma)
+      ≤ 1 - probEvent (fun o => Option.elim o False good) (ma) :=
         ENNReal.le_sub_of_add_le_left
-          (ne_top_of_le_ne_top ENNReal.one_ne_top probEvent_le_one) hsum_le
+          (ne_top_of_le_ne_top ENNReal.one_ne_top
+            (prEvent_le_one ((fun o => Option.elim o False good) <$> ma))) hsum_le
     _ ≤ 1 - (1 - e) := by gcongr
     _ ≤ e := hfin
 
@@ -104,7 +112,6 @@ def goodOf {StmtOut WitOut : Type} (N : ℕ) (pSpec : ProtocolSpec N)
     (FullTranscript pSpec × StmtOut × WitOut) × StmtOut → Prop :=
   fun r => (r.2, r.1.2.2) ∈ relOut ∧ r.1.2.1 = r.2
 
-omit [oSpec.Fintype] [oSpec.Inhabited] in
 /-- **NON-PERFECT (error-bearing) message-seam append completeness — discharged modulo the named
 two-stage seam factoring.**
 
@@ -164,41 +171,34 @@ theorem append_completeness_msg_proof
       ∀ a s', (some a, s') ∈ support
             (init >>= fun s => (simulateQ so (mx (stmt, wit)).run).run s) →
           goodOf m pSpec₁ rel₂ a →
-          Pr[fun o => ¬ Option.elim o False (goodOf (m + n) (pSpec₁ ++ₚ pSpec₂) rel₃ ·)
-              | (simulateQ so (my (stmt, wit) a).run).run' s']
-            ≤ Pr[fun o => ¬ Option.elim o False (goodOf n pSpec₂ rel₃ ·)
-              | gameOf init impl R₂ a.2 a.1.2.2])
+          probEvent (fun o => ¬ Option.elim o False (goodOf (m + n) (pSpec₁ ++ₚ pSpec₂) rel₃ ·)) ((simulateQ so (my (stmt, wit) a).run).run' s')
+            ≤ probEvent (fun o => ¬ Option.elim o False (goodOf n pSpec₂ rel₃ ·)) (gameOf init impl R₂ a.2 a.1.2.2))
     (hTot : ∀ stmt wit, (stmt, wit) ∈ rel₁ →
-      Pr[⊥ | gameOf init impl (R₁.append R₂) stmt wit] = 0) :
+      probFailure (gameOf init impl (R₁.append R₂) stmt wit) = 0) :
     (R₁.append R₂).completeness init impl rel₁ rel₃ (e₁ + e₂) := by
   classical
   -- Stage-1 bad bound from `h₁`, transported across the stage-1 bridge.
   have hStage1 : ∀ stmt wit, (stmt, wit) ∈ rel₁ →
-      Pr[fun r => ¬ Option.elim r.1 False (goodOf m pSpec₁ rel₂ ·)
-          | init >>= fun s => (simulateQ so (mx (stmt, wit)).run).run s] ≤ (e₁ : ℝ≥0∞) := by
+      probEvent (fun r => ¬ Option.elim r.1 False (goodOf m pSpec₁ rel₂ ·)) (init >>= fun s => (simulateQ so (mx (stmt, wit)).run).run s) ≤ (e₁ : ℝ≥0∞) := by
     intro stmt wit hRel
     -- bad event sees only the `.1` (option) projection, so it factors through `Prod.fst`.
-    have hmap : Pr[fun r : Option _ × σ => ¬ Option.elim r.1 False (goodOf m pSpec₁ rel₂ ·)
-          | init >>= fun s => (simulateQ so (mx (stmt, wit)).run).run s]
-        = Pr[fun o => ¬ Option.elim o False (goodOf m pSpec₁ rel₂ ·)
-          | Prod.fst <$> (init >>= fun s => (simulateQ so (mx (stmt, wit)).run).run s)] := by
-      rw [probEvent_map]; rfl
+    have hmap : probEvent (fun r : Option _ × σ => ¬ Option.elim r.1 False (goodOf m pSpec₁ rel₂ ·)) (init >>= fun s => (simulateQ so (mx (stmt, wit)).run).run s)
+        = probEvent (fun o => ¬ Option.elim o False (goodOf m pSpec₁ rel₂ ·)) (Prod.fst <$> (init >>= fun s => (simulateQ so (mx (stmt, wit)).run).run s)) := by
+      simp only [probEvent]
+      rw [prEvent_map]
     rw [hmap]
     have hbad₁ := bad_le_of_optionT_mk_ge (gameOf init impl R₁ stmt wit)
       (goodOf m pSpec₁ rel₂) (e₁ : ℝ≥0∞) (h₁ stmt wit hRel)
-    calc Pr[fun o => ¬ Option.elim o False (goodOf m pSpec₁ rel₂ ·)
-              | Prod.fst <$> (init >>= fun s => (simulateQ so (mx (stmt, wit)).run).run s)]
-        = Pr[fun o => ¬ Option.elim o False (goodOf m pSpec₁ rel₂ ·)
-              | gameOf init impl R₁ stmt wit] := by
-          simp only [probEvent, hStage1Bridge stmt wit hRel]
+    calc probEvent (fun o => ¬ Option.elim o False (goodOf m pSpec₁ rel₂ ·)) (Prod.fst <$> (init >>= fun s => (simulateQ so (mx (stmt, wit)).run).run s))
+        = probEvent (fun o => ¬ Option.elim o False (goodOf m pSpec₁ rel₂ ·)) (gameOf init impl R₁ stmt wit) := by
+          exact (EvalDistEq.of_evalDist_eq (hStage1Bridge stmt wit hRel)).prEvent_eq _
       _ ≤ (e₁ : ℝ≥0∞) := hbad₁
   -- Stage-2 bad bound from `h₂`, transported across the stage-2 bridge.
   have hStage2 : ∀ stmt wit, (stmt, wit) ∈ rel₁ →
       ∀ a s', (some a, s') ∈ support
             (init >>= fun s => (simulateQ so (mx (stmt, wit)).run).run s) →
           goodOf m pSpec₁ rel₂ a →
-          Pr[fun o => ¬ Option.elim o False (goodOf (m + n) (pSpec₁ ++ₚ pSpec₂) rel₃ ·)
-              | (simulateQ so (my (stmt, wit) a).run).run' s'] ≤ (e₂ : ℝ≥0∞) := by
+          probEvent (fun o => ¬ Option.elim o False (goodOf (m + n) (pSpec₁ ++ₚ pSpec₂) rel₃ ·)) ((simulateQ so (my (stmt, wit) a).run).run' s') ≤ (e₂ : ℝ≥0∞) := by
     intro stmt wit hRel a s' hsupp hgood₂
     -- `goodOf rel₂ a` gives the intermediate statement-witness pair in `rel₂`.
     have hmem₂ : (a.2, a.1.2.2) ∈ rel₂ := hgood₂.1
@@ -209,25 +209,21 @@ theorem append_completeness_msg_proof
   refine OracleReduction.completenessFromRun_of_bad_le init
     (impl.addLift challengeQueryImpl) rel₁ rel₃ (R₁.append R₂).run (e₁ + e₂) ?_ ?_
   · intro stmt wit hRel
-    have hpe : Pr[fun o => ¬ Option.elim o False (goodOf (m + n) (pSpec₁ ++ₚ pSpec₂) rel₃ ·)
-          | gameOf init impl (R₁.append R₂) stmt wit]
-        = Pr[fun o => ¬ Option.elim o False (goodOf (m + n) (pSpec₁ ++ₚ pSpec₂) rel₃ ·)
-          | init >>= fun s =>
-              (simulateQ so ((mx (stmt, wit)) >>= (my (stmt, wit))).run).run' s] := by
-      simp only [probEvent, hGameFactor stmt wit hRel]
+    have hpe : probEvent (fun o => ¬ Option.elim o False (goodOf (m + n) (pSpec₁ ++ₚ pSpec₂) rel₃ ·)) (gameOf init impl (R₁.append R₂) stmt wit)
+        = probEvent (fun o => ¬ Option.elim o False (goodOf (m + n) (pSpec₁ ++ₚ pSpec₂) rel₃ ·)) (init >>= fun s =>
+              (simulateQ so ((mx (stmt, wit)) >>= (my (stmt, wit))).run).run' s) := by
+      exact (EvalDistEq.of_evalDist_eq (hGameFactor stmt wit hRel)).prEvent_eq _
     have hunion := OracleReduction.probComp_seam_completeness init so
       (mx (stmt, wit)) (my (stmt, wit))
       (goodOf m pSpec₁ rel₂)
       (goodOf (m + n) (pSpec₁ ++ₚ pSpec₂) rel₃)
       (e₁ : ℝ≥0∞) (e₂ : ℝ≥0∞)
       (hStage1 stmt wit hRel) (hStage2 stmt wit hRel)
-    calc Pr[fun o => ¬ Option.elim o False
+    calc probEvent (fun o => ¬ Option.elim o False
               (fun (r : (FullTranscript (pSpec₁ ++ₚ pSpec₂) × Stmt₃ × Wit₃) × Stmt₃) =>
-                (r.2, r.1.2.2) ∈ rel₃ ∧ r.1.2.1 = r.2)
-            | gameOf init impl (R₁.append R₂) stmt wit]
-        = Pr[fun o => ¬ Option.elim o False
-              (goodOf (m + n) (pSpec₁ ++ₚ pSpec₂) rel₃ ·)
-            | gameOf init impl (R₁.append R₂) stmt wit] := rfl
+                (r.2, r.1.2.2) ∈ rel₃ ∧ r.1.2.1 = r.2)) (gameOf init impl (R₁.append R₂) stmt wit)
+        = probEvent (fun o => ¬ Option.elim o False
+              (goodOf (m + n) (pSpec₁ ++ₚ pSpec₂) rel₃ ·)) (gameOf init impl (R₁.append R₂) stmt wit) := rfl
       _ = _ := hpe
       _ ≤ (e₁ : ℝ≥0∞) + (e₂ : ℝ≥0∞) := hunion
       _ = ((e₁ + e₂ : ℝ≥0) : ℝ≥0∞) := by push_cast; ring

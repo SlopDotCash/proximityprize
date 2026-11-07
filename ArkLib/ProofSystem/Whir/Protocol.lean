@@ -60,7 +60,8 @@ def whirVectorIOP_rbrKnowledgeSoundness {F : Type} [Field F] [Fintype F] [Decida
     (εRbr : (whirPaperTranscriptVectorSpec P d).ChallengeIdx → ℝ≥0) :
     Prop :=
   OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
-    (whirRelation m0 (P.φ 0) δ) (whirVectorIOP P d).verifier εRbr
+    (whirRelation m0 (P.φ 0) δ)
+      (OracleProof.toOracleVerifier (whirVectorIOP P d)) εRbr
 
 /-- Residual: package the two security legs for the concrete WHIR `VectorIOP`. -/
 def whirVectorIOP_isSecureWithGap {F : Type} [Field F] [Fintype F] [DecidableEq F]

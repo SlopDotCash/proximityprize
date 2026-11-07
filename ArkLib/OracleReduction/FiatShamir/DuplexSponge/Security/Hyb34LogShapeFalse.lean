@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.VerifierReplay
+import VCVio.EvalDist.MeasureTVDist.Event
 
 /-!
 # Ground-truth refutation bricks for the unsalted `Hyb₃ → Hyb₄` step: the F1 log-shape gap
@@ -68,6 +69,11 @@ noncomputable section
 open OracleComp OracleSpec ProtocolSpec OracleReduction
 
 namespace DuplexSpongeFS.Hyb34LogShapeFalse
+
+-- Match the complete discrete observation of the optional transcript experiments.
+local instance {n : ℕ} (pSpec : ProtocolSpec n) {StmtIn StmtOut : Type}
+    {κ : Type} (spec : OracleSpec κ) :
+    MeasurableSpace (StmtIn × StmtOut × pSpec.Messages × QueryLog spec × QueryLog spec) := ⊤
 
 open DSTraceStorage TraceTransform ProverTransform KeyLemmaFoundations KeyLemmaHybrids
   VerifierReplay
@@ -335,7 +341,7 @@ private lemma d2sQueryImpl_challengeSilent_run_budget
           simp only [HasQuery.instOfMonadLift_query]
           exact (isQueryBoundP_query_bind_iff _ _ _ _).mpr
             ⟨Or.inl (by simp), fun u => isQueryBoundP_pure _ _ _⟩
-        simpa using h0
+        simpa [auxImplD2F, StateT.run_monadLift, OptionT.liftM_def] using h0
   · match pairOpt with
     | none => exact isQueryBoundP_run2_lift_failure' _ _
     | some p =>
@@ -551,21 +557,21 @@ section R2
 the probability it fires on the right game lower-bounds the TV distance (VCVio bricks
 `tvDist_map_le` + `abs_probOutput_toReal_sub_le_tvDist`). -/
 theorem probOutput_true_le_tvDist_of_flag_false_left
-    {α : Type} (game₁ game₂ : ProbComp α) (f : α → Bool)
+    {α : Type} [MeasurableSpace α] [DiscreteMeasurableSpace α]
+    (game₁ game₂ : ProbComp α) (f : α → Bool)
     (h₁ : ∀ x ∈ support game₁, f x = false) :
-    (Pr[= true | f <$> game₂]).toReal ≤ tvDist game₁ game₂ := by
-  have h0 : Pr[= true | f <$> game₁] = 0 := by
-    refine probOutput_eq_zero_of_not_mem_support ?_
-    rw [support_map]
-    rintro ⟨x, hx, hfx⟩
-    rw [h₁ x hx] at hfx
-    cases hfx
-  have habs := abs_probOutput_toReal_sub_le_tvDist (f <$> game₁) (f <$> game₂)
-  have hmap := tvDist_map_le f game₁ game₂
+    (Pr{let x ← f <$> game₂}[x = true]).toReal ≤ measureTVDist game₁ game₂ := by
+  rw [prEvent_map]
+  have h0 : Pr{let x ← game₁}[f x = true] = 0 := by
+    apply prEvent_eq_zero_of_forall_mem_support
+    intro x hx htrue
+    rw [h₁ x hx] at htrue
+    cases htrue
+  have habs := abs_prEvent_toReal_sub_le_measureTVDist
+    game₁ game₂ (fun x => f x = true) Measurable.of_discrete
   rw [h0] at habs
-  simp only [ENNReal.toReal_zero, zero_sub, abs_neg,
-    abs_of_nonneg ENNReal.toReal_nonneg] at habs
-  linarith
+  simpa only [ENNReal.toReal_zero, zero_sub, abs_neg,
+    abs_of_nonneg ENNReal.toReal_nonneg] using habs
 
 end R2
 
@@ -618,10 +624,10 @@ theorem probOutput_challengeEntry_le_tvDist_hyb3Strict_hyb4 [SampleableType U]
       (StmtIn × pSpec.Messages))
     (P' : OracleComp ((oSpec + fsChallengeOracle StmtIn pSpec) + unifSpec)
       (StmtIn × pSpec.Messages)) :
-    (Pr[= true | challengeEntryFlag (oSpec := oSpec) <$>
+    (Pr{let eventOutput ← (challengeEntryFlag (oSpec := oSpec) <$>
         basicFiatShamirGameEagerRand
-          (OracleDistribution.uniform (fsChallengeOracle StmtIn pSpec)) oImpl V P']).toReal
-      ≤ SPMF.tvDist (Hyb3Strict T_H T_P δ Salt oImpl V P) (Hyb4 oImpl V P') :=
+          (OracleDistribution.uniform (fsChallengeOracle StmtIn pSpec)) oImpl V P')}[eventOutput = (true)]).toReal
+      ≤ MeasureTheory.Measure.tvDist (Hyb3Strict T_H T_P δ Salt oImpl V P) (Hyb4 oImpl V P') :=
   probOutput_true_le_tvDist_of_flag_false_left _ _ _
     (challengeEntryFlag_false_on_hyb3Strict (T_H := T_H) (T_P := T_P) (δ := δ)
       (Salt := Salt) oImpl V P)
@@ -690,14 +696,14 @@ theorem hyb34StepResidual_logShape_false [SampleableType U]
     (hPerm : IsQueryBoundP P (fun j => dsQueryFlavor j = .perm) tₚ)
     (hPermInv : IsQueryBoundP P (fun j => dsQueryFlavor j = .permInv) tₚᵢ)
     (εA : ℝ)
-    (hA : SPMF.tvDist (Hyb3 T_H T_P δ Salt oImpl V P)
+    (hA : MeasureTheory.Measure.tvDist (Hyb3 T_H T_P δ Salt oImpl V P)
       (Hyb3Strict T_H T_P δ Salt oImpl V P) ≤ εA)
     (hgap : claim5_24Bound U tₕ tₚ tₚᵢ L + εA
-      < (Pr[= true | challengeEntryFlag (oSpec := oSpec) <$>
+      < (Pr{let eventOutput ← (challengeEntryFlag (oSpec := oSpec) <$>
           basicFiatShamirGameEagerRand
             (OracleDistribution.uniform (fsChallengeOracle StmtIn pSpec)) oImpl V
             (eagerSimulatedProver (T_H := T_H) (T_P := T_P) (δ' := δ) (Salt' := Salt)
-              P)]).toReal) :
+              P))}[eventOutput = (true)]).toReal) :
     ¬ Hyb34StepResidual (oSpec := oSpec) (StmtIn := StmtIn) (StmtOut := StmtOut)
       (pSpec := pSpec) (U := U) T_H T_P δ Salt oImpl := by
   intro hres
@@ -705,15 +711,28 @@ theorem hyb34StepResidual_logShape_false [SampleableType U]
   have hev := probOutput_challengeEntry_le_tvDist_hyb3Strict_hyb4
     (T_H := T_H) (T_P := T_P) (δ := δ) (Salt := Salt) oImpl V P
     (eagerSimulatedProver (T_H := T_H) (T_P := T_P) (δ' := δ) (Salt' := Salt) P)
-  have htri := SPMF.tvDist_triangle (Hyb3Strict T_H T_P δ Salt oImpl V P)
+  haveI : MeasureTheory.IsSubprobabilityMeasure (Hyb3Strict T_H T_P δ Salt oImpl V P) := by
+    unfold Hyb3Strict
+    infer_instance
+  haveI : MeasureTheory.IsSubprobabilityMeasure (Hyb3 T_H T_P δ Salt oImpl V P) := by
+    unfold Hyb3
+    infer_instance
+  haveI : MeasureTheory.IsSubprobabilityMeasure
+      (Hyb4 oImpl V
+        (eagerSimulatedProver (T_H := T_H) (T_P := T_P) (δ' := δ) (Salt' := Salt) P)) := by
+    unfold Hyb4
+    infer_instance
+  have htri := MeasureTheory.Measure.tvDist_triangle (Hyb3Strict T_H T_P δ Salt oImpl V P)
     (Hyb3 T_H T_P δ Salt oImpl V P)
     (Hyb4 oImpl V
       (eagerSimulatedProver (T_H := T_H) (T_P := T_P) (δ' := δ) (Salt' := Salt) P))
-  have hcomm : SPMF.tvDist (Hyb3Strict T_H T_P δ Salt oImpl V P)
+    (MeasureTheory.measure_univ_le _) (MeasureTheory.measure_univ_le _)
+    (MeasureTheory.measure_univ_le _)
+  have hcomm : MeasureTheory.Measure.tvDist (Hyb3Strict T_H T_P δ Salt oImpl V P)
       (Hyb3 T_H T_P δ Salt oImpl V P)
-      = SPMF.tvDist (Hyb3 T_H T_P δ Salt oImpl V P)
+      = MeasureTheory.Measure.tvDist (Hyb3 T_H T_P δ Salt oImpl V P)
         (Hyb3Strict T_H T_P δ Salt oImpl V P) :=
-    SPMF.tvDist_comm _ _
+    MeasureTheory.Measure.tvDist_comm _ _
   linarith
 
 end R4

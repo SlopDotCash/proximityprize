@@ -67,7 +67,7 @@ theorem hasseEvalAtRoot_eq_partitionShape (x₀ : F) (R : F[X][X][Y]) (i1 m : �
 def restrictedFaaDiBrunoPartitionForm (x₀ : F) (R : F[X][X][Y])
     (hHyp : ClaimA2.Hypotheses x₀ R H) (t : ℕ) : 𝕃 H :=
   ∑ i ∈ Finset.range ((Q x₀ R H).natDegree + 1),
-    ∑ ab ∈ Finset.antidiagonal (t + 1),
+    ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (t + 1),
       (liftToFunctionField (H := H)
           ((Bivariate.evalX (Polynomial.C x₀) (hasseDerivX ab.1 R)).coeff i))
       * ∑ lam ∈ (Finset.univ : Finset (Nat.Partition ab.2)).filter

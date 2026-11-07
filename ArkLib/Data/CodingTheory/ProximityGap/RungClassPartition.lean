@@ -130,11 +130,11 @@ theorem paired_scalars_share_class (hk : 1 ≤ k)
     exact ⟨h, hh⟩
   have hdP₁' : P₁.natDegree < k := by
     rcases eq_or_ne P₁ 0 with rfl | h0
-    · simpa using hk
+    · simpa using (show 0 < k by omega)
     · exact (natDegree_lt_iff_degree_lt h0).mpr (by exact_mod_cast hdP₁)
   have hdP₂' : P₂.natDegree < k := by
     rcases eq_or_ne P₂ 0 with rfl | h0
-    · simpa using hk
+    · simpa using (show 0 < k by omega)
     · exact (natDegree_lt_iff_degree_lt h0).mpr (by exact_mod_cast hdP₂)
   have hreq := cross_frame_poly_eq (dom := dom) hk hne hdP₁' hdP₂' hdq
     hqag hcard hid₁ hid₂

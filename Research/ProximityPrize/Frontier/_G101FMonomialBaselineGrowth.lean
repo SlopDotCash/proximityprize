@@ -358,9 +358,11 @@ theorem agreeSet_one_monoDir (ω : F) (hn : orderOf ω = n) (j : ℕ) :
     agreeSet (monoDir (powDom ω hn) 0) (monoDir (powDom ω hn) j)
       = Finset.univ.filter (fun l : Fin n => n ∣ (l : ℕ) * j) := by
   ext i
-  simp only [agreeSet, monoDir, powDom, Function.Embedding.coeFn_mk, Finset.mem_filter,
-    Finset.mem_univ, true_and, pow_zero, ← pow_mul]
-  rw [eq_comm, ← orderOf_dvd_iff_pow_eq_one, hn]
+  unfold agreeSet
+  erw [Finset.mem_filter]
+  simp only [Finset.mem_univ, true_and, Finset.mem_filter, monoDir, pow_zero]
+  change (1 : F) = (ω ^ (i : ℕ)) ^ j ↔ n ∣ (i : ℕ) * j
+  rw [← pow_mul, eq_comm, ← orderOf_dvd_iff_pow_eq_one, hn]
 
 /-! ## The G92 kill cell `n = 32, k = 4, a = 11`: the correction -/
 

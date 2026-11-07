@@ -97,7 +97,6 @@ theorem negation_kills_sine_sum (S : Finset ℤ) (θ : ℝ)
     -- nondegeneracy: if the term is nonzero then `-y ≠ y`
     intro y _ hne hself
     -- `hself : -y = y`  ⇒  `y = 0`  ⇒  `sin (θ·0) = 0`, contradicting `hne`
-    simp only [] at hself
     have hy0 : y = 0 := by omega
     apply hne
     rw [hy0]; push_cast; rw [mul_zero, Real.sin_zero]

@@ -1,0 +1,861 @@
+/-
+Downstream additions retained during the ArkLib integration.
+Initial source and revision: scripts/integration/downstream-extension-audit.json.
+Shared declarations come from the canonical ArkLib modules.
+Checked-in source owns later API ports. Generate separate review candidates with:
+scripts/integration/extract_downstream_extensions.py --output-dir <directory>.
+-/
+import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Fold
+
+/-
+Copyright (c) 2025 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Chung Thai Nguyen, Quang Dao
+-/
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.ReductionLogic
+import ArkLib.ProofSystem.Binius.BinaryBasefold.ExtractMLPCorrectness
+import ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToMidSucc
+import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
+import ArkLib.ToVCVio.Oracle
+import ArkLib.ToVCVio.Simulation
+import ArkLib.OracleReduction.Completeness
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness
+
+/-!
+# Binary Basefold Fold Step
+
+The folding round of the Binary Basefold core interaction as an oracle reduction. Defines the
+prover (`foldOracleProver`), verifier (`foldOracleVerifier`), and reduction
+(`foldOracleReduction`), proves its perfect completeness, and provides the round-by-round
+knowledge extractor (`foldRbrExtractor`) and knowledge-state function
+(`foldKnowledgeStateFunction`).
+-/
+
+
+namespace Binius.BinaryBasefold.CoreInteraction
+noncomputable section
+open OracleSpec OracleComp ProtocolSpec Finset AdditiveNTT Polynomial MvPolynomial
+open Binius.BinaryBasefold
+open scoped NNReal ProbabilityTheory
+
+variable {r : ℕ} [NeZero r]
+variable {L : Type} [Field L] [Fintype L] [DecidableEq L] [CharP L 2]
+  [SampleableType L]
+variable (𝔽q : Type) [Field 𝔽q] [Fintype 𝔽q] [DecidableEq 𝔽q]
+  [h_Fq_char_prime : Fact (Nat.Prime (ringChar 𝔽q))] [hF₂ : Fact (Fintype.card 𝔽q = 2)]
+variable [Algebra 𝔽q L]
+variable (β : Fin r → L) [hβ_lin_indep : Fact (LinearIndependent 𝔽q β)]
+  [h_β₀_eq_1 : Fact (β 0 = 1)]
+variable {ℓ 𝓡 ϑ : ℕ} (γ_repetitions : ℕ) [NeZero ℓ] [NeZero 𝓡] [NeZero ϑ] -- Should we allow ℓ = 0?
+variable {h_ℓ_add_R_rate : ℓ + 𝓡 < r} -- ℓ ∈ {1, ..., r-1}
+variable {𝓑 : Fin 2 ↪ L}
+variable [hdiv : Fact (ϑ ∣ ℓ)]
+
+namespace Historical
+
+section SingleIteratedSteps
+variable {Context : Type} {mp : SumcheckMultiplierParam L ℓ Context} -- Sumcheck context
+
+section FoldStep
+
+/-! The prover for the `i`-th round of Binary Foldfold. -/
+variable {R : Type} [CommSemiring R] [DecidableEq R] [SampleableType R]
+  {n : ℕ} {deg : ℕ} {m : ℕ} {D : Fin m ↪ R}
+variable {σ : Type} {init : ProbComp σ} {impl : QueryImpl []ₒ (StateT σ ProbComp)}
+
+/-! Simplifies membership in a conditional singleton set.
+  `x ∈ (if c then {a} else {b})` is equivalent to `x = (if c then a else b)`.
+-/
+lemma mem_ite_singleton {α : Type*} {c : Prop} [Decidable c] {a b x : α} :
+    (x ∈ (if c then {a} else {b} : Set α)) ↔ (x = if c then a else b) := by
+  split_ifs with h
+  · simp only [Set.mem_singleton_iff] -- Case c is True: x ∈ {a} ↔ x = a
+  · simp only [Set.mem_singleton_iff] -- Case c is False: x ∈ {b} ↔ x = b
+
+/-!
+Perfect completeness for the binary folding oracle reduction.
+
+This theorem proves that the honest prover-verifier interaction for one round of binary folding
+always succeeds (with probability 1) and produces valid outputs.
+
+**Proof Strategy:**
+1. Unroll the 2-message reduction to convert probabilistic statement to logical statement
+2. Split into safety (no failures) and correctness (valid outputs)
+3. For safety: prove the verifier never crashes on honest prover messages
+4. For correctness: extract the challenge from the support and apply the logic completeness lemma
+
+**Key Technique:**
+- Use `foldStep_is_logic_complete` to get the pure logic properties
+- Convert the challenge function by proving the only valid challenge index is 1
+- Rewrite all intermediate variables to their concrete values
+- Apply the logic properties to complete the proof
+-/
+instance instChallengeInhabitedPSpecFold :
+    ∀ i : (pSpecFold (L := L)).ChallengeIdx, Inhabited ((pSpecFold (L := L)).Challenge i)
+  | ⟨⟨1, _⟩, _⟩ => ⟨(0 : L)⟩
+
+instance instChallengeFintypePSpecFold :
+    ∀ i : (pSpecFold (L := L)).ChallengeIdx, Fintype ((pSpecFold (L := L)).Challenge i)
+  | ⟨⟨1, _⟩, _⟩ => inferInstanceAs (Fintype L)
+
+instance instChallengeOIPSpecFold :
+    ∀ i : (pSpecFold (L := L)).ChallengeIdx, OracleInterface ((pSpecFold (L := L)).Challenge i) :=
+  fun i => challengeOracleInterface i
+
+open scoped NNReal
+
+def foldWitMid (i : Fin ℓ) : Fin (2 + 1) → Type :=
+  fun m => match m with
+  | ⟨0, _⟩ => Witness (L := L) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.castSucc
+  | ⟨1, _⟩ => Witness (L := L) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.castSucc
+  | ⟨2, _⟩ => Witness (L := L) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.succ
+
+/-! The round-by-round extractor for a single round.
+Since f^(0) is always available, we can invoke the extractMLP function directly.
+
+Key design: WitMid at the final round (m=2) is Witness i.succ, matching WitOut.
+This allows extractOut to be identity and simplifies toFun_full proofs. -/
+def foldKStateOrOuter (stmtIdx : Fin (ℓ + 1)) (oracleIdx : OracleFrontierIndex stmtIdx)
+    (h_le : oracleIdx.val ≤ stmtIdx.val) (stmt : Statement (L := L) Context stmtIdx)
+    (wit : Witness (L := L) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) stmtIdx)
+    (oStmt : ∀ j, (OracleStatement 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ (i := oracleIdx.val) j))
+    (localChecks : Prop) : Prop :=
+  incrementalBadEventExistsProp 𝔽q β stmtIdx oracleIdx (oStmt := oStmt)
+      (challenges := stmt.challenges)
+    ∨ (localChecks ∧ oracleWitnessConsistency (mp := mp) (𝓑 := 𝓑) 𝔽q β
+        stmtIdx oracleIdx.val h_le stmt wit oStmt)
+
+/-! This follows the KState of sum-check -/
+def foldKStateProp {i : Fin ℓ} (m : Fin (2 + 1))
+    (tr : Transcript m (pSpecFold (L := L))) (stmtMid : Statement (L := L) Context i.castSucc)
+    (witMid : foldWitMid 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i m)
+    (oStmtMid : ∀ j, OracleStatement 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ i.castSucc j) :
+    Prop :=
+  -- Ground-truth polynomial from witness
+  match m with
+  | ⟨0, _⟩ => -- Same as relIn (roundRelation at i.castSucc)
+    roundRelationProp (mp := mp) (𝓑 := 𝓑) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      i.castSucc ((stmtMid, oStmtMid), witMid)
+  | ⟨1, _⟩ => -- After P sends hᵢ(X), before V sends r_i'
+    let h_star : ↥L⦃≤ 2⦄[X] := getSumcheckRoundPoly ℓ (SumcheckDomain.uniform 𝓑 ℓ) (i := i) (h := witMid.H)
+    let h_i : ↥L⦃≤ 2⦄[X] := tr.messages ⟨0, rfl⟩
+    foldKStateOrOuter (mp := mp) (𝓑 := 𝓑) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      (stmtIdx := i.castSucc) (oracleIdx := OracleFrontierIndex.mkFromStmtIdx i.castSucc) (h_le := OracleFrontierIndex.val_le_i i.castSucc (OracleFrontierIndex.mkFromStmtIdx i.castSucc))
+      (stmt := stmtMid) (wit := witMid) (oStmt := oStmtMid)
+      (localChecks :=
+        -- Verifier's explicit check: h_i(0) + h_i(1) = sumcheck_target
+        let explicitVCheck := h_i.val.eval (𝓑 0) + h_i.val.eval (𝓑 1) = stmtMid.sumcheck_target
+        -- Honest prover check: h_i matches ground truth
+        let localizedRoundPolyCheck := h_i = h_star
+        explicitVCheck ∧ localizedRoundPolyCheck
+      )
+  | ⟨2, _⟩ => -- After V sends r_i': use OUTPUT state (consistent with foldStepRelOut)
+    let h_i : ↥L⦃≤ 2⦄[X] := tr.messages ⟨0, rfl⟩
+    let r_i' : L := tr.challenges ⟨1, rfl⟩
+    -- Forward-compute the output statement using transcript-derived values
+    let newSumcheckTarget : L := h_i.val.eval r_i'
+    let stmtOut : Statement (L := L) Context i.succ := {
+        -- same  as in Verifier's output & getFoldProverFinalOutput
+      ctx := stmtMid.ctx,
+      sumcheck_target := newSumcheckTarget,
+      challenges := Fin.cons (α := fun _ => L) r_i' stmtMid.challenges
+    }
+    let oStmtOut := oStmtMid
+    let witOut := witMid
+    -- Use OUTPUT state: stmtIdx advances to i.succ, oracleIdx stays at i.castSucc (no new oracle)
+    foldKStateOrOuter (mp := mp) (𝓑 := 𝓑) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      (stmtIdx := i.succ) (oracleIdx := OracleFrontierIndex.mkFromStmtIdxCastSuccOfSucc i) (h_le := OracleFrontierIndex.val_le_i i.succ (OracleFrontierIndex.mkFromStmtIdxCastSuccOfSucc i))
+      (stmt := stmtOut) (wit := witOut) (oStmt := oStmtOut)
+      (localChecks :=
+        let explicitVCheck :=
+          h_i.val.eval (𝓑 0) + h_i.val.eval (𝓑 1) = stmtMid.sumcheck_target
+        explicitVCheck ∧
+          -- we also keep the output-state sumcheck consistency
+          sumcheckConsistencyProp (𝓑 := 𝓑) stmtOut.sumcheck_target witOut.H)
+
+-- Note: this fold step couldn't carry bad-event errors, because we don't have oracles yet.
+
+/-! Knowledge state function (KState) for single round -/
+def foldKStateProps {i : Fin ℓ} (m : Fin (2 + 1))
+    (tr : Transcript m (pSpecFold (L := L))) (stmtMid : Statement (L := L) Context i.castSucc)
+    (witMid : foldWitMid 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i m)
+    (oStmtMid : ∀ j, OracleStatement 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ i.castSucc j) :
+    Prop :=
+  -- Ground-truth polynomial from witness
+  match m with
+  | ⟨0, _⟩ => -- Same as relIn (roundRelation at i.castSucc)
+    roundRelationProp (mp := mp) (𝓑 := 𝓑) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      i.castSucc ((stmtMid, oStmtMid), witMid)
+  | ⟨1, _⟩ => -- After P sends hᵢ(X), before V sends r_i'
+    let h_star : ↥L⦃≤ 2⦄[X] := getSumcheckRoundPoly ℓ (SumcheckDomain.uniform 𝓑 ℓ) (i := i) (h := witMid.H)
+    let h_i : ↥L⦃≤ 2⦄[X] := tr.messages ⟨0, rfl⟩
+    masterKStateProp (mp := mp) (𝓑 := 𝓑) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      (stmtIdx := i.castSucc) (oracleIdx := (OracleFrontierIndex.mkFromStmtIdx i.castSucc).val) (h_le := OracleFrontierIndex.val_le_i i.castSucc (OracleFrontierIndex.mkFromStmtIdx i.castSucc))
+      (stmt := stmtMid) (wit := witMid) (oStmt := oStmtMid)
+      (localChecks :=
+        -- Verifier's explicit check: h_i(0) + h_i(1) = sumcheck_target
+        let explicitVCheck := h_i.val.eval (𝓑 0) + h_i.val.eval (𝓑 1) = stmtMid.sumcheck_target
+        -- Honest prover check: h_i matches ground truth
+        let localizedRoundPolyCheck := h_i = h_star
+        explicitVCheck ∧ localizedRoundPolyCheck
+      )
+  | ⟨2, _⟩ => -- After V sends r_i': use OUTPUT state (consistent with foldStepRelOut)
+    let h_i : ↥L⦃≤ 2⦄[X] := tr.messages ⟨0, rfl⟩
+    let r_i' : L := tr.challenges ⟨1, rfl⟩
+    -- Forward-compute the output statement using transcript-derived values
+    let newSumcheckTarget : L := h_i.val.eval r_i'
+    let stmtOut : Statement (L := L) Context i.succ := { -- same as in getFoldProverFinalOutput
+      ctx := stmtMid.ctx,
+      sumcheck_target := newSumcheckTarget,
+      challenges := Fin.cons (α := fun _ => L) r_i' stmtMid.challenges
+    }
+    let oStmtOut := oStmtMid
+    let witOut := witMid
+    -- Use OUTPUT state: stmtIdx advances to i.succ, oracleIdx stays at i.castSucc (no new oracle)
+    masterKStateProp (mp := mp) (𝓑 := 𝓑) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      (stmtIdx := i.succ) (oracleIdx := (OracleFrontierIndex.mkFromStmtIdxCastSuccOfSucc i).val) (h_le := OracleFrontierIndex.val_le_i i.succ (OracleFrontierIndex.mkFromStmtIdxCastSuccOfSucc i))
+      (stmt := stmtOut) (wit := witOut) (oStmt := oStmtOut)
+      (localChecks :=
+        -- we reduce the sumcheck consistency check here
+        sumcheckConsistencyProp (𝓑 := 𝓑) stmtOut.sumcheck_target witOut.H)
+
+/-
+The fold-step extraction failure event implies either:
+1. a sumcheck bad event at the sampled challenge, or
+2. an incremental folding bad event at the current oracle frontier.
+
+More precisely:
+- **Sumcheck bad**: `h_i ≠ h_star ∧ h_i.eval r_i' = h_star.eval r_i'`,
+  where `h_star = getSumcheckRoundPoly ℓ 𝓑 i witIn.H`.
+- **Folding bad**: an incremental bad-event witness exists at frontier `i.castSucc`
+  using challenges extended by `r_i'`.
+
+Proof plan for `foldStep_rbrExtractionFailureEvent_imply_sumcheck_or_badEvent`:
+
+Goal shape:
+  Doom-escape at challenge round `⟨1, rfl⟩` gives an existential `witMid` with
+  `¬kSF@castSucc` and `kSF@succ`; we must derive:
+  `badSumcheckEventProp r_i' h_i h_star(witIn) ∨ incrementalFoldingBadEvent`.
+
+Plan:
+1. Unfold the doom-escape witness:
+   Expand `rbrExtractionFailureEvent`, `foldKnowledgeStateFunction`, and `foldKStateProp`
+   at rounds `m=1` and `m=2`, obtaining the two KState facts carried by `witMid`.
+
+2. Isolate the KState core:
+   From `masterKStateProp`, separate local checks from the core disjunction
+   `incrementalBadEventExistsProp ∨ oracleWitnessConsistency`.
+
+3. Split by the incremental bad event:
+   Case A: `incrementalFoldingBadEvent` holds; finish by `Or.inr`.
+   Case B: `¬ incrementalFoldingBadEvent`; show this forces the KState-2 core to use
+   `oracleWitnessConsistency` (good branch).
+
+4. Overlap-cancellation for bad events:
+   In Case B, any bad event witnessed at round 2 must already be present at round 1.
+   Old events are preserved backward to round 1 (same oracle frontier / challenge prefix),
+   contradicting `¬kSF@round1`. Hence no bad-event branch remains.
+
+5. Fix the round polynomial on the good branch:
+   Use the good branch (`oracleWitnessConsistency`, plus local checks) to identify the
+   witness-derived round polynomial and compare it with `h_i`.
+   Then combine with `¬kSF@round1` to obtain:
+   `h_i ≠ h_star` and `h_i(r_i') = h_star(r_i')`.
+
+6. Conclude sumcheck bad:
+   Package Step 5 as `badSumcheckEventProp r_i' h_i h_star(witIn)` and finish by `Or.inl`.
+
+Expected helper lemmas:
+- backward preservation of incremental bad events from round-2 to round-1 view;
+- extraction of localized round-poly equalities from fold-step local checks.
+-/
+/-- Historical extracted round polynomial, using the old newest-first partial evaluation.
+The sent polynomial and sampled scalar are retained in the legacy helper interface. -/
+def foldStepHStarFromWitMid (i : Fin ℓ)
+    (stmtOStmtIn : (Statement (L := L) Context i.castSucc) × (∀ j,
+      OracleStatement 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.castSucc j))
+    (_h_i : (pSpecFold (L := L)).Message ⟨0, rfl⟩) (_r_i' : L)
+    (witMid : Witness (L := L) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.succ) :
+    L⦃≤ 2⦄[X] :=
+  getSumcheckRoundPoly ℓ (SumcheckDomain.uniform 𝓑 ℓ) (i := i)
+    (h := projectToMidSumcheckPoly (L := L) (ℓ := ℓ)
+      (t := witMid.t) (m := mp.multpoly stmtOStmtIn.1.ctx)
+      (i := i.castSucc) (challenges := stmtOStmtIn.1.challenges))
+
+omit [SampleableType L] in
+lemma foldStep_oracleWitnessConsistency_unique_witMid (i : Fin ℓ)
+    (stmtOut : Statement (L := L) Context i.succ)
+    (oStmt : ∀ j, OracleStatement 𝔽q β (ϑ := ϑ)
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.castSucc j)
+    {witMid₁ witMid₂ : Witness (L := L) 𝔽q β
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.succ}
+    (h_struct₁ : witnessStructuralInvariant 𝔽q β (mp := mp)
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) stmtOut witMid₁)
+    (h_struct₂ : witnessStructuralInvariant 𝔽q β (mp := mp)
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) stmtOut witMid₂)
+    (h_init₁ : firstOracleWitnessConsistencyProp 𝔽q β witMid₁.t
+      (getFirstOracle 𝔽q β oStmt))
+    (h_init₂ : firstOracleWitnessConsistencyProp 𝔽q β witMid₂.t
+      (getFirstOracle 𝔽q β oStmt)) :
+    witMid₁ = witMid₂ := by
+  classical
+  have h_t : witMid₁.t = witMid₂.t := by
+    exact firstOracleWitnessConsistencyProp_unique 𝔽q β witMid₁.t witMid₂.t
+      (getFirstOracle 𝔽q β oStmt) h_init₁ h_init₂
+  have h_H : witMid₁.H = witMid₂.H := by
+    calc
+      witMid₁.H = projectToMidSumcheckPoly (L := L) (ℓ := ℓ) (t := witMid₁.t)
+        (m := mp.multpoly stmtOut.ctx) (i := i.succ)
+        (challenges := stmtOut.challenges) := h_struct₁.1
+      _ = projectToMidSumcheckPoly (L := L) (ℓ := ℓ) (t := witMid₂.t)
+        (m := mp.multpoly stmtOut.ctx) (i := i.succ)
+        (challenges := stmtOut.challenges) := by simp only [Fin.val_succ, h_t]
+      _ = witMid₂.H := h_struct₂.1.symm
+  have h_f : witMid₁.f = witMid₂.f := by
+    calc
+      witMid₁.f = Compatibility.newestFirstCodeword 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+        (i := i.succ) (t := witMid₁.t) (challenges := stmtOut.challenges) := h_struct₁.2
+      _ = Compatibility.newestFirstCodeword 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i.succ) (t := witMid₂.t)
+        (challenges := stmtOut.challenges) := by simp only [Fin.val_succ, h_t]
+      _ = witMid₂.f := h_struct₂.2.symm
+  cases witMid₁
+  cases witMid₂
+  simp only [Fin.val_succ, Witness.mk.injEq] at h_t h_H h_f ⊢
+  exact ⟨h_t, h_H, h_f⟩
+
+omit [SampleableType L] in
+lemma foldStepHStarFromWitMid_eq_of_oracleWitnessConsistency (i : Fin ℓ)
+    (stmtOStmtIn : (Statement (L := L) Context i.castSucc) × (∀ j,
+      OracleStatement 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.castSucc j))
+    (h_i : (pSpecFold (L := L)).Message ⟨0, rfl⟩) (r_i' : L)
+    {witMid₁ witMid₂ : Witness (L := L) 𝔽q β
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.succ}
+    (h_struct₁ : witnessStructuralInvariant 𝔽q β (mp := mp)
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      {
+        sumcheck_target := h_i.val.eval r_i',
+        challenges := Fin.cons (α := fun _ => L) r_i' stmtOStmtIn.1.challenges,
+        ctx := stmtOStmtIn.1.ctx
+      } witMid₁)
+    (h_struct₂ : witnessStructuralInvariant 𝔽q β (mp := mp)
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      {
+        sumcheck_target := h_i.val.eval r_i',
+        challenges := Fin.cons (α := fun _ => L) r_i' stmtOStmtIn.1.challenges,
+        ctx := stmtOStmtIn.1.ctx
+      } witMid₂)
+    (h_init₁ : firstOracleWitnessConsistencyProp 𝔽q β witMid₁.t
+      (getFirstOracle 𝔽q β stmtOStmtIn.2))
+    (h_init₂ : firstOracleWitnessConsistencyProp 𝔽q β witMid₂.t
+      (getFirstOracle 𝔽q β stmtOStmtIn.2)) :
+    foldStepHStarFromWitMid (mp := mp) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      (𝓑 := 𝓑) i stmtOStmtIn h_i r_i' witMid₁ =
+    foldStepHStarFromWitMid (mp := mp) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      (𝓑 := 𝓑) i stmtOStmtIn h_i r_i' witMid₂ := by
+  have h_wit_eq :
+      witMid₁ = witMid₂ := foldStep_oracleWitnessConsistency_unique_witMid
+        𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (mp := mp) (ϑ := ϑ)
+        (i := i)
+        (stmtOut := {
+          sumcheck_target := h_i.val.eval r_i',
+          challenges := Fin.cons (α := fun _ => L) r_i' stmtOStmtIn.1.challenges,
+          ctx := stmtOStmtIn.1.ctx
+        })
+        (oStmt := stmtOStmtIn.2) h_struct₁ h_struct₂ h_init₁ h_init₂
+  subst h_wit_eq
+  rfl
+
+/-! Fresh incremental bad-event for the **latest oracle block** at the fold-step:
+`¬ E_before ∧ E_after`, where `E_*` is `incrementalFoldingBadEvent` evaluated
+before/after appending `r_i'`. -/
+@[reducible]
+def foldStepFreshDoomPreservationEvent (i : Fin ℓ)
+    (stmtOStmtIn : (Statement (L := L) Context i.castSucc) × (∀ j,
+      OracleStatement 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.castSucc j))
+    (r_i' : L) : Prop :=
+  let stmtIdxBefore : Fin (ℓ + 1) := i.castSucc
+  let challengesBefore : Fin stmtIdxBefore → L := stmtOStmtIn.1.challenges
+  let j := getLastOraclePositionIndex ℓ ϑ i.castSucc
+  let curOracleDomainIdx : Fin r := ⟨oraclePositionToDomainIndex (positionIdx := j), by omega⟩
+  let kBefore : ℕ := min ϑ (stmtIdxBefore.val - curOracleDomainIdx.val)
+  -- NOTE: actually `kBefore` is always less than `ϑ`, so `kBefore + 1 ≤ ϑ`
+  have h_j_val : j.val = i.val / ϑ := by
+    have h_i_lt_ℓ : i.val < ℓ := i.isLt
+    have h_i_cast_lt_ℓ : i.val < ℓ := by simp only [h_i_lt_ℓ]
+    dsimp only [j, getLastOraclePositionIndex]
+    unfold toOutCodewordsCount
+    simp only [Fin.val_castSucc, h_i_lt_ℓ, ↓reduceIte, add_tsub_cancel_right]
+  have h_cur_eq : curOracleDomainIdx.val = (i.val / ϑ) * ϑ := by
+    dsimp only [curOracleDomainIdx, oraclePositionToDomainIndex]
+    simp only [h_j_val]
+  have h_diff_lt : stmtIdxBefore.val - curOracleDomainIdx.val < ϑ := by
+    have h_div_mod : (i.val / ϑ) * ϑ + i.val % ϑ = i.val := by
+      rw [Nat.mul_comm]
+      exact Nat.div_add_mod i.val ϑ
+    have h_cur_le : curOracleDomainIdx.val ≤ stmtIdxBefore.val := by
+      dsimp only [stmtIdxBefore]
+      calc
+        curOracleDomainIdx.val = (i.val / ϑ) * ϑ := h_cur_eq
+        _ ≤ i.val := Nat.div_mul_le_self i.val ϑ
+    have h_sum : curOracleDomainIdx.val + i.val % ϑ = stmtIdxBefore.val := by
+      dsimp only [stmtIdxBefore]
+      calc
+        curOracleDomainIdx.val + i.val % ϑ = (i.val / ϑ) * ϑ + i.val % ϑ := by
+          simp only [h_cur_eq]
+        _ = i.val := h_div_mod
+    have h_diff_eq : stmtIdxBefore.val - curOracleDomainIdx.val = i.val % ϑ := by omega
+    rw [h_diff_eq]
+    exact Nat.mod_lt i.val (Nat.pos_of_neZero ϑ)
+  have h_kBefore_lt : kBefore < ϑ := by
+    exact lt_of_le_of_lt
+      (Nat.min_le_right ϑ (stmtIdxBefore.val - curOracleDomainIdx.val)) h_diff_lt
+  let destIdx : Fin r := ⟨curOracleDomainIdx.val + ϑ, by
+    have h1 := oracle_index_add_steps_le_ℓ ℓ ϑ (i := i.castSucc) (j := j)
+    have h2 : ℓ + 𝓡 < r := h_ℓ_add_R_rate
+    have _ : 𝓡 > 0 := Nat.pos_of_neZero 𝓡
+    dsimp only [oraclePositionToDomainIndex, curOracleDomainIdx]
+    omega
+  ⟩
+  let r_prefix : Fin kBefore → L := fun cId =>
+    foldOrderChallenges (ℓ := ℓ) (i := stmtIdxBefore) challengesBefore
+    ⟨curOracleDomainIdx.val + cId.val, by
+      have h_k_le_stmt : kBefore ≤ stmtIdxBefore.val - curOracleDomainIdx.val :=
+        Nat.min_le_right ϑ (stmtIdxBefore.val - curOracleDomainIdx.val)
+      have h_cId_lt_k : cId.val < kBefore := cId.isLt
+      omega
+    ⟩
+  let E_before :=
+    Binius.BinaryBasefold.incrementalFoldingBadEvent 𝔽q β
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      (block_start_idx := curOracleDomainIdx)
+      (midIdx := ⟨curOracleDomainIdx.val + kBefore, by
+        apply lt_r_of_le_ℓ (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+        have h_k_le : kBefore ≤ ϑ := Nat.min_le_left ϑ (stmtIdxBefore.val - curOracleDomainIdx.val)
+        have h_add_le : curOracleDomainIdx.val + ϑ ≤ ℓ :=
+          oracle_index_add_steps_le_ℓ ℓ ϑ (i := i.castSucc) (j := j)
+        omega
+      ⟩)
+      (destIdx := destIdx) (k := kBefore)
+      (h_k_le := Nat.min_le_left ϑ (stmtIdxBefore.val - curOracleDomainIdx.val))
+      (h_midIdx := by simp only)
+      (h_destIdx := rfl)
+      (h_destIdx_le := by
+        simp only [(oracle_index_add_steps_le_ℓ ℓ ϑ (i := i.castSucc) (j := j)), j, destIdx,
+          curOracleDomainIdx])
+      (f_block_start := stmtOStmtIn.2 j)
+      (r_challenges := r_prefix)
+  let E_after :=
+    Binius.BinaryBasefold.incrementalFoldingBadEvent 𝔽q β
+    (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+    (block_start_idx := curOracleDomainIdx)
+    (midIdx := ⟨curOracleDomainIdx.val + (kBefore + 1), by
+      apply lt_r_of_le_ℓ (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      have h_k_le : kBefore + 1 ≤ ϑ := Nat.succ_le_of_lt h_kBefore_lt
+      have h_add_le : curOracleDomainIdx.val + ϑ ≤ ℓ :=
+        oracle_index_add_steps_le_ℓ ℓ ϑ (i := i.castSucc) (j := j)
+      omega
+    ⟩)
+    (destIdx := destIdx) (k := kBefore + 1)
+    (h_k_le := Nat.succ_le_of_lt h_kBefore_lt)
+    (h_midIdx := by simp only)
+    (h_destIdx := rfl)
+    (h_destIdx_le := by
+      simp only [(oracle_index_add_steps_le_ℓ ℓ ϑ (i := i.castSucc) (j := j)), j, destIdx,
+        curOracleDomainIdx])
+    (f_block_start := stmtOStmtIn.2 j)
+    (r_challenges := Fin.snoc r_prefix r_i')
+  ¬ E_before ∧ E_after
+
+/-! Oracle-witness consistency for a candidate fold-step output witness. -/
+@[reducible]
+def foldStepWitMidOracleConsistency (i : Fin ℓ)
+    (stmtOStmtIn : (Statement (L := L) Context i.castSucc) × (∀ j,
+      OracleStatement 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.castSucc j))
+    (h_i : (pSpecFold (L := L)).Message ⟨0, rfl⟩) (r_i' : L)
+    (witMid : Witness (L := L) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.succ) : Prop :=
+  let stmt : Statement (L := L) Context i.succ := {
+      sumcheck_target := h_i.val.eval r_i',
+      challenges := Fin.cons (α := fun _ => L) r_i' stmtOStmtIn.1.challenges,
+      ctx := stmtOStmtIn.1.ctx
+  }
+  let structural := witnessStructuralInvariant 𝔽q β (mp := mp)
+    (h_ℓ_add_R_rate := h_ℓ_add_R_rate) stmt witMid
+  let initial := firstOracleWitnessConsistencyProp 𝔽q β witMid.t (getFirstOracle 𝔽q β stmtOStmtIn.2)
+  structural ∧ initial
+
+/-! Proof sketch:
+let `j` be the **oracle position index** of the last oracle at oracle frontier `i`.
+Note that `k = i - j * ϑ < ϑ`, since if `k = ϑ`,
+  then `i` must be an oracle domain, therefore `k = 0`, contradiction.
+We have:
+  h_bad_after =  `|__|__|...|__|__|j*ϑ|====i===(i+1)| ↔ exists_bad_until_j OR incBad(j -> i+1)`
+  h_not_fresh = `¬(¬incBad(j -> i) ∧ incBad(j -> i+1)) ↔ incBad(j -> i) ∨ (¬incBad(j -> i+1))`
+Goal: h_bad_before = `|__|__|...|__|__|j*ϑ|====i| = exists_bad_until_j OR incBad(j -> i)`
+--------
+We rcases on h_not_fresh:
+  If `incBad(j -> i)` holds, then h_bad_before = true, Q.E.D.
+  else we have `¬incBad(j -> i+1)`,
+    which implies `exists_bad_until_j` to be true from `h_bad_after`
+    => `h_bad_before = true` by definition
+-/
+omit [Field L] [Fintype L] [DecidableEq L] [CharP L 2] [SampleableType L] in
+private theorem fin_fun_heq_of_cast {m n : ℕ} (h : m = n)
+    (f : Fin m → L) (g : Fin n → L)
+    (hfg : ∀ i : Fin m, f i = g (Fin.cast h i)) :
+    HEq f g := by
+  subst h
+  apply heq_of_eq
+  funext i
+  simpa using hfg i
+
+set_option maxHeartbeats 200000 in
+-- This bad-event backward step expands several nested verifier definitions before omega closes.
+lemma incrementalBadEventExistsProp_fold_step_backward (i : Fin ℓ)
+    (stmtOStmtIn : (Statement (L := L) Context i.castSucc) × (∀ j,
+      OracleStatement 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.castSucc j))
+    (r_i' : L)
+    (h_bad_after : incrementalBadEventExistsProp 𝔽q β i.succ
+      (OracleFrontierIndex.mkFromStmtIdxCastSuccOfSucc i) stmtOStmtIn.2
+      (Fin.cons (α := fun _ => L) r_i' stmtOStmtIn.1.challenges))
+    (h_not_fresh : ¬ foldStepFreshDoomPreservationEvent 𝔽q β (ϑ := ϑ)
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (ℓ := ℓ) i stmtOStmtIn r_i') :
+  incrementalBadEventExistsProp 𝔽q β i.castSucc
+      (OracleFrontierIndex.mkFromStmtIdx i.castSucc) stmtOStmtIn.2
+      stmtOStmtIn.1.challenges := by
+  classical
+  unfold incrementalBadEventExistsProp at h_bad_after ⊢
+  rcases h_bad_after with ⟨j, hj⟩
+  by_cases h_old : j.val + 1 < toOutCodewordsCount ℓ ϑ i.castSucc
+  · refine ⟨j, ?_⟩
+    have hj_copy := hj
+    dsimp at hj_copy ⊢
+    have h_k_full : j.val * ϑ + ϑ ≤ i.val := by
+      exact oracle_block_k_next_le_i (ℓ := ℓ) (ϑ := ϑ) (i := i.castSucc) (j := j) (hj := h_old)
+    have hk_after : min ϑ (i.val + 1 - j.val * ϑ) = ϑ := by
+      omega
+    have hk_before : min ϑ (i.val - j.val * ϑ) = ϑ := by
+      omega
+    let afterSlice : Fin ϑ → L := fun cId =>
+      foldOrderChallenges (ℓ := ℓ) (i := i.succ)
+        (Fin.cons (α := fun _ => L) r_i' stmtOStmtIn.1.challenges)
+        ⟨j.val * ϑ + cId.val, by
+          have h_idx_lt : j.val * ϑ + cId.val < i.val := by
+            exact lt_of_lt_of_le (Nat.add_lt_add_left cId.isLt (j.val * ϑ)) h_k_full
+          exact lt_trans h_idx_lt (Nat.lt_succ_self i.val)⟩
+    let beforeSlice : Fin ϑ → L := fun cId =>
+      foldOrderChallenges (ℓ := ℓ) (i := i.castSucc) stmtOStmtIn.1.challenges
+        ⟨j.val * ϑ + cId.val, by
+          exact lt_of_lt_of_le (Nat.add_lt_add_left cId.isLt (j.val * ϑ)) h_k_full⟩
+    have h_challenges : afterSlice = beforeSlice := by
+      funext cId
+      have hlt : j.val * ϑ + cId.val < i.val :=
+        lt_of_lt_of_le (Nat.add_lt_add_left cId.isLt (j.val * ϑ)) h_k_full
+      exact foldOrderChallenges_cons_of_lt (ℓ := ℓ) i stmtOStmtIn.1.challenges r_i'
+        ⟨j.val * ϑ + cId.val, hlt⟩
+    let blockStart : Fin r := ⟨j.val * ϑ, by
+      exact lt_r_of_lt_ℓ (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+        (oraclePositionToDomainIndex (ℓ := ℓ) (ϑ := ϑ) j).isLt⟩
+    let blockDest : Fin r := ⟨j.val * ϑ + ϑ, by
+      exact lt_r_of_le_ℓ (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+        (oracle_index_add_steps_le_ℓ ℓ ϑ (i := i.castSucc) (j := j))⟩
+    have hj_after_full :
+        incrementalFoldingBadEvent 𝔽q β
+          (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+          (block_start_idx := blockStart)
+          (k := ϑ)
+          (h_k_le := le_rfl)
+          (midIdx := blockDest)
+          (destIdx := blockDest)
+          (h_midIdx := rfl)
+          (h_destIdx := rfl)
+          (h_destIdx_le := oracle_index_add_steps_le_ℓ ℓ ϑ (i := i.castSucc) (j := j))
+          (f_block_start := stmtOStmtIn.2 j)
+          (r_challenges := afterSlice) := by
+      convert hj_copy using 1
+      · apply Fin.eq_of_val_eq
+        dsimp [blockDest]
+        omega
+      · exact hk_after.symm
+      · have h_afterSlice_heq :
+            HEq
+              (fun cId : Fin (min ϑ (i.val + 1 - j.val * ϑ)) =>
+                foldOrderChallenges (ℓ := ℓ) (i := i.succ)
+                  (Fin.cons (α := fun _ => L) r_i' stmtOStmtIn.1.challenges)
+                  ⟨j.val * ϑ + cId.val, by
+                    have h_cId_lt :
+                        cId.val < i.val + 1 - j.val * ϑ := by
+                      exact lt_of_lt_of_le cId.isLt (Nat.min_le_right ϑ _)
+                    have h_block_le : j.val * ϑ ≤ i.val + 1 := by
+                      omega
+                    calc
+                      j.val * ϑ + cId.val < j.val * ϑ + (i.val + 1 - j.val * ϑ) :=
+                        Nat.add_lt_add_left h_cId_lt (j.val * ϑ)
+                      _ = i.val + 1 := Nat.add_sub_of_le h_block_le⟩)
+              afterSlice := by
+          apply fin_fun_heq_of_cast hk_after
+          intro cId
+          dsimp [afterSlice]
+        exact HEq.symm h_afterSlice_heq
+    have h_bad_after_full :
+        foldingBadEvent 𝔽q β
+          (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+          (i := blockStart)
+          (destIdx := blockDest)
+          (steps := ϑ)
+          (h_destIdx := rfl)
+          (h_destIdx_le := oracle_index_add_steps_le_ℓ ℓ ϑ (i := i.castSucc) (j := j))
+          (f_i := stmtOStmtIn.2 j)
+          (r_challenges := afterSlice) := by
+      exact
+        (incrementalFoldingBadEvent_eq_foldingBadEvent_of_k_eq_ϑ
+          (𝔽q := 𝔽q) (β := β) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+          (ϑ := ϑ)
+          (block_start_idx := blockStart)
+          (midIdx := blockDest)
+          (destIdx := blockDest)
+          (h_midIdx := by rfl)
+          (h_destIdx := rfl)
+          (h_destIdx_le := oracle_index_add_steps_le_ℓ ℓ ϑ (i := i.castSucc) (j := j))
+          (f_block_start := stmtOStmtIn.2 j)
+          (r_challenges := afterSlice)).1 hj_after_full
+    have h_bad_before_full := h_bad_after_full
+    rw [h_challenges] at h_bad_before_full
+    have hj_before_full :
+        incrementalFoldingBadEvent 𝔽q β
+          (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+          (block_start_idx := blockStart)
+          (k := ϑ)
+          (h_k_le := le_rfl)
+          (midIdx := blockDest)
+          (destIdx := blockDest)
+          (h_midIdx := rfl)
+          (h_destIdx := rfl)
+          (h_destIdx_le := oracle_index_add_steps_le_ℓ ℓ ϑ (i := i.castSucc) (j := j))
+          (f_block_start := stmtOStmtIn.2 j)
+          (r_challenges := beforeSlice) := by
+      exact
+        (incrementalFoldingBadEvent_eq_foldingBadEvent_of_k_eq_ϑ
+          (𝔽q := 𝔽q) (β := β) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+          (ϑ := ϑ)
+          (block_start_idx := blockStart)
+          (midIdx := blockDest)
+          (destIdx := blockDest)
+          (h_midIdx := by rfl)
+          (h_destIdx := rfl)
+          (h_destIdx_le := oracle_index_add_steps_le_ℓ ℓ ϑ (i := i.castSucc) (j := j))
+          (f_block_start := stmtOStmtIn.2 j)
+          (r_challenges := beforeSlice)).2 h_bad_before_full
+    convert hj_before_full using 1
+    · apply Fin.eq_of_val_eq
+      dsimp [blockDest]
+      omega
+    · have h_beforeSlice_heq :
+          HEq
+            (fun cId : Fin (min ϑ (i.val - j.val * ϑ)) =>
+              foldOrderChallenges (ℓ := ℓ) (i := i.castSucc) stmtOStmtIn.1.challenges
+                ⟨j.val * ϑ + cId.val, by
+                  have h_cId_lt :
+                      cId.val < i.val - j.val * ϑ := by
+                    exact lt_of_lt_of_le cId.isLt (Nat.min_le_right ϑ _)
+                  have h_block_le : j.val * ϑ ≤ i.val := by
+                    exact le_trans (by omega) h_k_full
+                  calc
+                    j.val * ϑ + cId.val < j.val * ϑ + (i.val - j.val * ϑ) :=
+                      Nat.add_lt_add_left h_cId_lt (j.val * ϑ)
+                    _ = i.val := Nat.add_sub_of_le h_block_le⟩)
+            beforeSlice := by
+        apply fin_fun_heq_of_cast hk_before
+        intro cId
+        dsimp [beforeSlice]
+      exact h_beforeSlice_heq
+  · refine ⟨j, ?_⟩
+    have hj_copy := hj
+    dsimp at hj_copy ⊢
+    have h_j_last : j = getLastOraclePositionIndex ℓ ϑ i.castSucc := by
+      apply Fin.eq_of_val_eq
+      have hj_lt : j.val < toOutCodewordsCount ℓ ϑ i.castSucc := by
+        have hj_lt' := j.isLt
+        simp only [OracleFrontierIndex.val_mkFromStmtIdxCastSuccOfSucc] at hj_lt'
+        exact hj_lt'
+      have h_val : j.val = toOutCodewordsCount ℓ ϑ i.castSucc - 1 := by
+        have h_ge : toOutCodewordsCount ℓ ϑ i.castSucc ≤ j.val + 1 := by
+          omega
+        omega
+      dsimp [getLastOraclePositionIndex]
+      exact h_val
+    subst j
+    dsimp [foldStepFreshDoomPreservationEvent] at h_not_fresh
+    have h_j_val : (getLastOraclePositionIndex ℓ ϑ i.castSucc).val = i.val / ϑ := by
+      dsimp only [getLastOraclePositionIndex]
+      unfold toOutCodewordsCount
+      simp only [Fin.val_castSucc, i.isLt, ↓reduceIte, add_tsub_cancel_right]
+    have h_diff_lt :
+        i.val - (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ < ϑ := by
+      rw [h_j_val, Nat.mul_comm, ← Nat.mod_eq_sub_mul_div]
+      exact Nat.mod_lt i.val (Nat.pos_of_neZero ϑ)
+    have h_diff_eq :
+        i.val - (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ = i.val % ϑ := by
+      rw [h_j_val, Nat.mul_comm, ← Nat.mod_eq_sub_mul_div]
+    have h_last_le :
+        (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ ≤ i.val := by
+      rw [h_j_val, Nat.mul_comm]
+      have h_div := Nat.div_mul_le_self i.val ϑ
+      rw [Nat.mul_comm] at h_div
+      exact h_div
+    have hk_after_last :
+        min ϑ (i.val + 1 - (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ) =
+          min ϑ (i.val - (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ) + 1 := by
+      rw [show i.val + 1 - (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ =
+          (i.val - (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ) + 1 by
+            omega]
+      rw [h_diff_eq]
+      have h_mod_lt : i.val % ϑ < ϑ := by
+        exact Nat.mod_lt i.val (Nat.pos_of_neZero ϑ)
+      omega
+    let kBefore : ℕ := min ϑ (i.val - (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ)
+    let prefixSlice : Fin kBefore → L := fun cId =>
+      foldOrderChallenges (ℓ := ℓ) (i := i.castSucc) stmtOStmtIn.1.challenges
+        ⟨(getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ + cId.val, by
+          have h_min_le :
+              kBefore ≤ i.val - (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ := by
+            dsimp [kBefore]
+            exact Nat.min_le_right ϑ _
+          have h_cId_lt :
+              cId.val < i.val - (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ := by
+            exact lt_of_lt_of_le cId.isLt h_min_le
+          have h_idx_lt :
+              (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ + cId.val < i.val := by
+            omega
+          exact h_idx_lt⟩
+    let afterSlice : Fin (kBefore + 1) → L := fun cId =>
+      foldOrderChallenges (ℓ := ℓ) (i := i.succ)
+        (Fin.cons (α := fun _ => L) r_i' stmtOStmtIn.1.challenges)
+        ⟨(getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ + cId.val, by
+          have h_cId_le : cId.val ≤ kBefore := by
+            exact Nat.lt_succ_iff.mp cId.isLt
+          have h_idx_le :
+              (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ + cId.val ≤ i.val := by
+            dsimp [kBefore] at h_cId_le
+            have h_min_le :
+                min ϑ (i.val - (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ) ≤
+                  i.val - (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ :=
+              Nat.min_le_right ϑ _
+            omega
+          exact lt_of_le_of_lt h_idx_le (Nat.lt_succ_self i.val)⟩
+    let freshSlice : Fin (kBefore + 1) → L := Fin.snoc (α := fun _ => L) prefixSlice r_i'
+    have h_after_challenges : afterSlice = freshSlice := by
+      funext cId
+      induction cId using Fin.lastCases with
+      | cast jc =>
+        have h_lt : jc.val < kBefore := jc.isLt
+        have h_min : kBefore ≤ i.val - (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ :=
+          Nat.min_le_right _ _
+        have h_idx_lt :
+            (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ + jc.val < i.val := by omega
+        simp only [afterSlice, freshSlice, prefixSlice, Fin.snoc_castSucc, Fin.val_castSucc]
+        exact foldOrderChallenges_cons_of_lt (ℓ := ℓ) i stmtOStmtIn.1.challenges r_i'
+          ⟨(getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ + jc.val, h_idx_lt⟩
+      | last =>
+        have h_idx_eq :
+            (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ + (Fin.last kBefore).val = i.val := by
+          dsimp [kBefore]
+          omega
+        have h1 : afterSlice (Fin.last kBefore) = r_i' := by
+          have hidx : afterSlice (Fin.last kBefore) =
+              foldOrderChallenges (ℓ := ℓ) (i := i.succ)
+                (Fin.cons (α := fun _ => L) r_i' stmtOStmtIn.1.challenges) (Fin.last i.val) := by
+            simp only [afterSlice]
+            congr 1
+            exact Fin.eq_of_val_eq h_idx_eq
+          rw [hidx]
+          exact foldOrderChallenges_cons_last (ℓ := ℓ) i stmtOStmtIn.1.challenges r_i'
+        have h2 : freshSlice (Fin.last kBefore) = r_i' :=
+          Fin.snoc_last (α := fun _ => L) (x := r_i') (p := prefixSlice)
+        rw [h1, h2]
+    let blockStart : Fin r := ⟨(getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ, by
+      exact lt_r_of_le_ℓ (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+        (Nat.le_of_lt (lt_of_le_of_lt h_last_le i.isLt))⟩
+    let blockMidAfter : Fin r :=
+      ⟨(getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ + (kBefore + 1), by
+        apply lt_r_of_le_ℓ (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+        dsimp [kBefore]
+        omega⟩
+    let blockDest : Fin r := ⟨(getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ + ϑ, by
+      exact lt_r_of_le_ℓ (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+        (oracle_index_add_steps_le_ℓ ℓ ϑ (i := i.castSucc)
+          (j := getLastOraclePositionIndex ℓ ϑ i.castSucc))⟩
+    have h_after_last_afterSlice :
+        incrementalFoldingBadEvent 𝔽q β
+          (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+          (block_start_idx := blockStart)
+          (k := kBefore + 1)
+          (h_k_le := by
+            dsimp [kBefore]
+            omega)
+          (midIdx := blockMidAfter)
+          (destIdx := blockDest)
+          (h_midIdx := rfl)
+          (h_destIdx := rfl)
+          (h_destIdx_le := oracle_index_add_steps_le_ℓ ℓ ϑ (i := i.castSucc)
+            (j := getLastOraclePositionIndex ℓ ϑ i.castSucc))
+          (f_block_start := stmtOStmtIn.2 (getLastOraclePositionIndex ℓ ϑ i.castSucc))
+          (r_challenges := afterSlice) := by
+      convert hj_copy using 1
+      · apply Fin.eq_of_val_eq
+        dsimp [blockStart, blockMidAfter, kBefore]
+        omega
+      · dsimp [kBefore]
+        omega
+      · have h_afterSlice_heq :
+            HEq
+              (fun cId : Fin
+                  (min ϑ (i.val + 1 - (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ)) =>
+                foldOrderChallenges (ℓ := ℓ) (i := i.succ)
+                  (Fin.cons (α := fun _ => L) r_i' stmtOStmtIn.1.challenges)
+                  ⟨(getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ + cId.val, by
+                    have h_cId_lt :
+                        cId.val <
+                          i.val + 1 -
+                            (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ := by
+                      exact lt_of_lt_of_le cId.isLt (Nat.min_le_right ϑ _)
+                    have h_block_le :
+                        (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ ≤ i.val + 1 := by
+                      omega
+                    calc
+                      (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ + cId.val <
+                          (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ +
+                            (i.val + 1 -
+                              (getLastOraclePositionIndex ℓ ϑ i.castSucc).val * ϑ) :=
+                        Nat.add_lt_add_left h_cId_lt _
+                      _ = i.val + 1 := Nat.add_sub_of_le h_block_le⟩)
+              afterSlice := by
+          apply fin_fun_heq_of_cast hk_after_last
+          intro cId
+          dsimp [afterSlice]
+        exact HEq.symm h_afterSlice_heq
+    have h_after_last' := h_after_last_afterSlice
+    rw [h_after_challenges] at h_after_last'
+    by_contra h_before_false
+    exact h_not_fresh ⟨h_before_false, h_after_last'⟩
+
+end FoldStep
+end SingleIteratedSteps
+end Historical
+
+/-- The canonical chronological fold's completed failure-event decomposition. The historical
+newest-first wrapper is retired rather than identified with this state. -/
+noncomputable abbrev foldStep_rbrExtractionFailureEvent_imply_sumcheck_or_badEvent_native :=
+  @foldStepFreshBadEvent_or_of_rbrExtractionFailureEvent
+
+/-- The canonical chronological fold's completed native probability bound. -/
+noncomputable abbrev foldStep_doom_escape_probability_bound_native :=
+  @prob_foldStep_rbrExtractionFailureEvent_le
+
+end
+end Binius.BinaryBasefold.CoreInteraction
+
+#print axioms Binius.BinaryBasefold.CoreInteraction.Historical.foldStep_oracleWitnessConsistency_unique_witMid
+#print axioms Binius.BinaryBasefold.CoreInteraction.Historical.foldStepHStarFromWitMid_eq_of_oracleWitnessConsistency
+#print axioms Binius.BinaryBasefold.CoreInteraction.Historical.incrementalBadEventExistsProp_fold_step_backward
+#print axioms Binius.BinaryBasefold.CoreInteraction.foldStep_rbrExtractionFailureEvent_imply_sumcheck_or_badEvent_native
+#print axioms Binius.BinaryBasefold.CoreInteraction.foldStep_doom_escape_probability_bound_native

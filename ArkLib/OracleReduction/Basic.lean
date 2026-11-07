@@ -3,203 +3,10 @@ Copyright (c) 2024-2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao
 -/
+module
 
-import ArkLib.OracleReduction.ProtocolSpec.SeqCompose
-
-/-!
-### OracleReduction.Basic — Conceptual Overview
-
-## What is an Oracle Reduction?
-
-An **Interactive Oracle Reduction (IOR)** — called `OracleReduction` here — is an
-interactive protocol between a **prover** and a **verifier** where:
-
-- The prover holds a private witness and sends messages round by round.
-- The verifier issues random challenges and, at the end, decides to accept or reject.
-- Crucially, the verifier does **not** read prover messages in the clear. Instead it
-  holds an *oracle* to each message and may query it at chosen points.
-
-This is the information-theoretic core of most modern SNARKs (FRI, PLONK, STARK, …).
-The `BCS transform` later replaces each oracle message with a Merkle commitment,
-turning an IOR into a non-interactive argument.
-
-### File Scope
-
-`OracleReduction/Basic.lean` defines the **primitive building blocks** from which
-all concrete protocol specifications in this library are assembled:
-
-| Concept              | Role in the model                                              |
-|----------------------|----------------------------------------------------------------|
-| `Prover`             | Stateful interactive machine; sends messages, receives challenges |
-| `Verifier`           | Checks the transcript; receives oracle handles, not raw messages |
-| `OracleVerifier`     | A verifier that issues typed oracle *queries* to message handles |
-| `OracleInterface`    | Specifies the query type and answer type for a message oracle  |
-| `embed`              | Lifts a reduction into a larger oracle context                 |
-| `Execution`          | The joint transcript produced by running Prover against Verifier |
-| `Soundness`          | Security predicate: no cheating prover convinces on false statements |
-| `Completeness`       | Honest prover always convinces on true statements              |
-
----
-
-## The Prover
-
-```
-Prover : Statement → Witness → ProverState → Message × ProverState
-```
-
-The prover is a **stateful function**. At each round it:
-1. Receives the current challenge (or the initial statement + witness at round 0).
-2. Computes the next outgoing message.
-3. Updates its internal state.
-
-The state threading is explicit so that the prover can accumulate partial results
-across rounds (e.g., storing intermediate polynomial evaluations in FRI folding).
-
-## The Verifier
-
-```
-Verifier : Statement → OracleHandle[] → Challenge[] → Decision
-```
-
-The verifier receives:
-- The **public statement** (shared with the prover from the start).
-- A list of **oracle handles** — one per prover message per round. It never sees the
-  raw message; it can only interact with it through the oracle interface.
-- The list of **challenges** it chose during the interaction.
-
-At the end it outputs `accept` or `reject`.
-
-## The Oracle Verifier
-
-`OracleVerifier` is a refinement of `Verifier` that makes the query structure
-explicit in the type. Rather than an opaque decision function, it is described as:
-
-```
-OracleVerifier : Statement → List (OracleQuery msg_i) → Challenge[] → Decision
-```
-
-Each `OracleQuery` is typed by the `OracleInterface` of the corresponding message.
-This makes the **query complexity** of the verifier visible at the type level,
-which is essential for proving efficiency bounds and for the BCS transform.
-
-### OracleInterface
-
-```lean
-structure OracleInterface (Message : Type) where
-  Query  : Type       -- what the verifier asks
-  Answer : Type       -- what the oracle returns
-  oracle : Message → Query → Answer
-```
-
-For example, a polynomial oracle might have `Query := 𝔽` (an evaluation point) and
-`Answer := 𝔽` (the polynomial's value there), with `oracle f x := f.eval x`.
-
-## The `embed` Mechanism
-
-`embed` is the key **composition primitive**. It lifts an `OracleReduction` defined
-over a small oracle context `𝒪_small` into a larger context `𝒪_large` by:
-
-1. Injecting the small oracle interfaces into the larger list via an index map.
-2. Translating queries from the larger verifier back to queries in the smaller world.
-3. Leaving all prover behavior unchanged.
-
-This lets complex protocols be **built from smaller sub-reductions** without having
-to re-prove security from scratch — the composition theorems propagate soundness and
-completeness automatically.
-
-## Interaction, Execution, and Security: The Three Layers
-
-This file deliberately separates three concerns:
-
-### 1. Interaction (syntax)
-The types `Prover`, `Verifier`, `OracleVerifier`, and `OracleInterface` describe
-*what* the parties compute at each step. No probability, no security claim yet.
-
-### 2. Execution (semantics)
-`Execution` runs a `Prover` against a `Verifier` on a given statement and witness,
-threading state and collecting the transcript. It is a *deterministic* function of
-the random challenges (which are sampled by the calling context). This separation
-means the security definitions are stated over transcripts, not over the code of
-the parties.
-
-### 3. Security (properties)
-- **Completeness**: `∀ (x, w) ∈ R, Execution prover verifier x w accepts`.
-- **Soundness / Knowledge Soundness**: For every cheating prover strategy, the
-  probability of acceptance on a false statement is below some bound ε. In the
-  round-by-round variant (used here), this is stated per-round using a *state
-  function* that tracks how far the cheater has "committed" to a false path.
-
-Keeping these layers separate makes it possible to state and reuse security theorems
-generically (in `OracleReduction/Composition.lean` and `OracleReduction/Lifting.lean`)
-without knowing the details of any particular protocol.
-
----
-
-## Relationship to the Rest of the Library
-
-```
-OracleReduction/Basic.lean          ← you are here
-        │
-        ├── OracleReduction/Composition.lean   sequential composition of reductions
-        ├── OracleReduction/Lifting.lean        context embedding / oracle lifting
-        │
-        └── Protocol/FRI/, Protocol/Sumcheck/  concrete protocol instances
-```
-
-Concrete protocols import `Basic.lean`, instantiate `Prover` and `OracleVerifier`
-with their specific types, and then invoke the generic completeness/soundness
-theorems from `Composition.lean`.
-
----
-
-## Quick Reference: Key Definitions
-
-Below is a summary of the main definitions exported from this file, with the
-intended reading for each type parameter.
-
-```lean
--- A single-round oracle interface for messages of type Msg
-structure OracleInterface (Msg : Type u) where
-  Query  : Type v
-  Answer : Type w
-  oracle : Msg → Query → Answer
-
--- An n-round prover with state type St, message types Msgs, challenge types Chals
-structure Prover (Stmt Wit : Type) (n : ℕ)
-    (Msgs Chals : Fin n → Type) (St : Type) where
-  load      : Stmt → Wit → St
-  -- At round i: given current state and challenge, produce message and new state
-  prove     : (i : Fin n) → St → Chals i → Msgs i × St
-
--- An n-round verifier with oracle access to messages
-structure OracleVerifier (Stmt : Type) (n : ℕ)
-    (Msgs Chals : Fin n → Type)
-    (OI : (i : Fin n) → OracleInterface (Msgs i))
-    (Decision : Type) where
-  -- At each round: produce a challenge (may query earlier oracles)
-  challenge : (i : Fin n) → Stmt → List (OI · |>.Answer) → Chals i
-  -- Final decision based on all oracle queries
-  decide    : Stmt → (∀ i, List (OI i).Query) → Decision
-
--- Lift a reduction into a larger oracle context
-def embed : OracleReduction 𝒪_small → IndexMap 𝒪_small 𝒪_large
-          → OracleReduction 𝒪_large
-```
-
-*Note: the actual signatures in the file may use universe-polymorphic variants and
-additional typeclass constraints (e.g., `DecidableEq`, `Fintype`). The above is
-simplified for readability.*
-
----
-
-## Contributing
-
-If you extend this file, please:
-- Keep the three-layer separation (interaction / execution / security) intact.
-- Add an `OracleInterface` instance in the relevant `Protocol/` subfolder, not here.
-- Reference this module docstring when writing protocol-specific documentation.
--/
-
+public import ArkLib.OracleReduction.ProtocolSpec.SeqCompose
+public import VCVio.OracleComp.SimSemantics.Append
 
 /-!
 # Interactive (Oracle) Reductions
@@ -210,7 +17,7 @@ format:
 
   - The protocol proceeds over a number of steps. In each step, either the prover or the verifier
     sends a message to the other. We assume that this sequence of interactions is fixed in advance,
-    and is described by a protocol specification (see `ProtocolSpec.lean`).
+    and is described by a protocol specification (see `ProtocolSpec/Basic.lean`).
 
     Note that we do _not_ require interleaving prover's messages with verifier's challenges, for
     maximum flexibility in defining reductions.
@@ -228,8 +35,9 @@ format:
     received as oracles. Which is which is specified by the protocol specification.
 
   - At the end of the interaction, the verifier performs a computation that outputs a new statement
-    `StmtOut`, and specify a _subset_ of the oracles it has received to be the output oracle
-    statements.
+    `StmtOut`. Each output oracle statement is represented either by a coherent embedding into an
+    input/message oracle or by a virtual oracle whose query implementation is proved to agree with
+    its extensional materialization.
 
 Our formulation of IORs can be seen in the literature as **F-IORs**, where `F` denotes an arbitrary
 class of oracles. See the blueprint for more details about our modeling choices.
@@ -269,6 +77,8 @@ earlier types (i.e. `WitIn`, `StmtOut`, or `pSpec` may depend on `StmtIn`; thoug
 say, `StmtOut` or `pSpec` to depend on the witness types, as that is not available to the (oracle)
 verifier).
 -/
+
+@[expose] public section
 
 open OracleComp OracleSpec SubSpec ProtocolSpec
 
@@ -449,19 +259,66 @@ def OracleProver {ι : Type} (oSpec : OracleSpec ι)
     {n : ℕ} (pSpec : ProtocolSpec n) :=
   Prover oSpec (StmtIn × (∀ i, OStmtIn i)) WitIn (StmtOut × (∀ i, OStmtOut i)) WitOut pSpec
 
+/-- A virtual output-oracle implementation for an `OracleVerifier`.
+
+`materializeOutput` gives the extensional oracle value used by the existing bundled
+`toVerifier` security interface. `simulateOutputQuery` gives the query-by-query VCV
+implementation used by downstream oracle computations. `simulateOutputQuery_eq` requires
+the two views to agree on every query. The output interface is a parameter of
+both this structure and `OracleVerifier`; consequently the interface used to
+produce virtual answers is definitionally the interface used by a downstream
+verifier. -/
+structure OracleOutputSimulation {ι : Type} (oSpec : OracleSpec ι)
+    {ιₛᵢ : Type} (OStmtIn : ιₛᵢ → Type)
+    {ιₛₒ : Type} (OStmtOut : ιₛₒ → Type)
+    {n : ℕ} (pSpec : ProtocolSpec n)
+    [Oₛᵢ : ∀ i, OracleInterface (OStmtIn i)]
+    [Oₘ : ∀ i, OracleInterface (pSpec.Message i)]
+    [Oₛₒ : ∀ i, OracleInterface (OStmtOut i)] where
+  /-- Extensional materialization used by relation-facing bundled semantics. -/
+  materializeOutput : pSpec.Challenges →
+    (∀ i, OStmtIn i) → pSpec.Messages → (∀ i, OStmtOut i)
+  /-- Query-by-query implementation of the virtual output family in terms of
+  input statement oracles and prover-message oracles. -/
+  simulateOutputQuery : pSpec.Challenges →
+      QueryImpl [OStmtOut]ₒ
+        (OracleComp (oSpec + ([OStmtIn]ₒ + [pSpec.Message]ₒ)))
+  /-- The VCV query implementation agrees with the extensional materialization. -/
+  simulateOutputQuery_eq : ∀ challenges oStmt messages q,
+      simulateQ (OracleInterface.simOracle2 oSpec oStmt messages)
+          (simulateOutputQuery challenges q) =
+        pure ((Oₛₒ q.1).answer
+          (materializeOutput challenges oStmt messages q.1) q.2)
+
+/-- Legacy output-oracle semantics: every output is an input oracle or prover
+message, with an explicit coherence proof for its public interface. -/
+structure OracleOutputEmbedding {ιₛᵢ ιₛₒ : Type}
+    (OStmtIn : ιₛᵢ → Type) {ιₘ : Type} (Message : ιₘ → Type)
+    (OStmtOut : ιₛₒ → Type)
+    [Oₛᵢ : ∀ i, OracleInterface (OStmtIn i)]
+    [Oₘ : ∀ i, OracleInterface (Message i)]
+    [Oₛₒ : ∀ i, OracleInterface (OStmtOut i)] where
+  embed : ιₛₒ ↪ ιₛᵢ ⊕ ιₘ
+  hEq : ∀ i, OStmtOut i = match embed i with
+    | Sum.inl j => OStmtIn j
+    | Sum.inr j => Message j
+  outputInterface_heq : ∀ i, match embed i with
+    | Sum.inl j => HEq (Oₛₒ i) (Oₛᵢ j)
+    | Sum.inr j => HEq (Oₛₒ i) (Oₘ j)
+
 /-- An **(oracle) verifier** of an interactive **oracle** reduction consists of:
 
   - an oracle computation `verify` that outputs the next statement. It may make queries to each of
     the prover's messages and each of the oracles present in the statement (according to a specified
     interface defined by `OracleInterface` instances).
 
-  - output oracle statements `OStmtOut : ιₛₒ → Type`, meant to be a **subset** of the input oracle
-    statements and the prover's oracle messages. Formally, this is specified by an embedding `ιₛₒ ↪
-    ιₛᵢ ⊕ pSpec.MessageIdx` and a proof that `OStmtOut` is compatible with `OStmtIn` and
-    `pSpec.Messages` via this embedding.
+  - output oracle statements `OStmtOut : ιₛₒ → Type`. A verifier may expose them as
+    virtual oracles implemented query-by-query from its input and message oracles. Legacy
+    verifiers instead select a subset of those source oracles through `embed` and `hEq`.
 
-Intuitively, the oracle verifier cannot do anything more in returning the output oracle statements,
-other than specifying a subset of the ones it has received (and dropping the rest). -/
+The virtual form supports derived output oracles without materializing them for downstream
+oracle computations. Its agreement law connects that query-by-query implementation to the
+extensional values used by the bundled security interface. -/
 @[ext]
 structure OracleVerifier {ι : Type} (oSpec : OracleSpec ι)
     (StmtIn : Type) {ιₛᵢ : Type} (OStmtIn : ιₛᵢ → Type)
@@ -469,9 +326,8 @@ structure OracleVerifier {ι : Type} (oSpec : OracleSpec ι)
     {n : ℕ} (pSpec : ProtocolSpec n)
     [Oₛᵢ : ∀ i, OracleInterface (OStmtIn i)]
     [Oₘ : ∀ i, OracleInterface (pSpec.Message i)]
+    [Oₛₒ : ∀ i, OracleInterface (OStmtOut i)]
     where
-    -- This will be needed after the switch to `simOStmt`
-    -- [Oₛₒ : ∀ i, OracleInterface (OStmtOut i)]
 
   /-- The core verification logic. Takes the input statement `stmtIn` and all verifier challenges
   `challenges` (which are determined outside this function, typically by sampling for
@@ -481,62 +337,17 @@ structure OracleVerifier {ι : Type} (oSpec : OracleSpec ι)
   verify : StmtIn → pSpec.Challenges →
     OptionT (OracleComp (oSpec + ([OStmtIn]ₒ + [pSpec.Message]ₒ))) StmtOut
 
-  -- TODO: this seems like the right way for compositionality
-  -- Makes it potentially more difficult for compilation with commitment schemes
-  -- Can recover the old version (with `embed` and `hEq`) via a constructor `QueryImpl.ofEmbed`
-
-  -- simOStmt : QueryImpl [OStmtOut]ₒ (OracleComp ([OStmtIn]ₒ + [pSpec.Message]ₒ))
-
-  /-- An embedding that specifies how each output oracle statement (indexed by `ιₛₒ`) is derived.
-  It maps an index `i : ιₛₒ` to either an index `j : ιₛᵢ` (meaning `OStmtOut i` comes from
-  `OStmtIn j`) or an index `k : pSpec.MessageIdx` (meaning `OStmtOut i` comes from the
-  prover's message `pSpec.Message k`). This enforces that output oracles are a subset of
-  input oracles or received prover messages. -/
-  embed : ιₛₒ ↪ ιₛᵢ ⊕ pSpec.MessageIdx
-
-  /-- A proof term ensuring that the type of each `OStmtOut i` matches the type of the
-    corresponding source oracle statement (`OStmtIn j` or `pSpec.Message k`) as determined
-    by the `embed` mapping. -/
-  hEq : ∀ i, OStmtOut i = match embed i with
-    | Sum.inl j => OStmtIn j
-    | Sum.inr j => pSpec.Message j
+  /-- The output family has exactly one semantic representation: either the
+  legacy embedded-source form or a virtual query implementation. -/
+  outputOracle :
+    OracleOutputEmbedding OStmtIn pSpec.Message OStmtOut ⊕
+      OracleOutputSimulation oSpec OStmtIn OStmtOut pSpec
 
 -- Cannot find synthesization order...
 -- instance {ιₛᵢ ιₘ ιₛₒ : Type} {OStmtIn : ιₛᵢ → Type} [Oₛᵢ : ∀ i, OracleInterface (OStmtIn i)]
 --     {Message : ιₘ → Type} [Oₘ : ∀ i, OracleInterface (Message i)]
 --     (OStmtOut : ιₛₒ → Type) (embed : ιₛₒ ↪ ιₛᵢ ⊕ ιₘ) :
 --     ∀ i, OStmtOut i := fun i => by sorry
-
-namespace OracleComp
-
-/-- Replay an oracle computation and return the accumulated query cost.
-
-The result remains an oracle computation over the same specification, so adaptive computations
-choose later queries using the same responses they would have seen in the original run. -/
-def queryCostTrace {ι : Type} {spec : OracleSpec ι} {α : Type}
-    (cost : spec.Domain → ℕ) (oa : OracleComp spec α) : OracleComp spec ℕ :=
-  match oa with
-  | .pure _ => pure 0
-  | .queryBind t k => do
-      let u ← liftM (OracleSpec.query (spec := spec) t)
-      let n ← queryCostTrace cost (k u)
-      pure (cost t + n)
-
-@[simp] theorem queryCostTrace_pure {ι : Type} {spec : OracleSpec ι} {α : Type}
-    (cost : spec.Domain → ℕ) (a : α) :
-    queryCostTrace cost (pure a : OracleComp spec α) = pure 0 :=
-  rfl
-
-@[simp] theorem queryCostTrace_queryBind {ι : Type} {spec : OracleSpec ι} {α : Type}
-    (cost : spec.Domain → ℕ) (t : spec.Domain) (k : spec.Range t → OracleComp spec α) :
-    queryCostTrace cost (OracleComp.queryBind t k) =
-      (do
-        let u ← liftM (OracleSpec.query (spec := spec) t)
-        let n ← queryCostTrace cost (k u)
-        pure (cost t + n)) :=
-  rfl
-
-end OracleComp
 
 namespace OracleVerifier
 
@@ -546,115 +357,173 @@ variable {ι : Type} {oSpec : OracleSpec ι}
     {n : ℕ} {pSpec : ProtocolSpec n}
     [Oₛᵢ : ∀ i, OracleInterface (OStmtIn i)]
     [Oₘ : ∀ i, OracleInterface (pSpec.Message i)]
+    [Oₛₒ : ∀ i, OracleInterface (OStmtOut i)]
     (verifier : OracleVerifier oSpec StmtIn OStmtIn StmtOut OStmtOut pSpec)
 
+/-- Materialize an output-oracle representation independently of the verifier
+that owns it. This is useful for adapters that construct and justify a new
+output representation explicitly. -/
+def materializeOutputOracle
+    (outputOracle :
+      OracleOutputEmbedding OStmtIn pSpec.Message OStmtOut ⊕
+        OracleOutputSimulation oSpec OStmtIn OStmtOut pSpec)
+    (challenges : pSpec.Challenges)
+    (oStmt : ∀ i, OStmtIn i) (messages : pSpec.Messages) : ∀ i, OStmtOut i :=
+  match outputOracle with
+    | Sum.inr simulation => simulation.materializeOutput challenges oStmt messages
+    | Sum.inl output => fun i => match h : output.embed i with
+      | Sum.inl j => (output.hEq i ▸ h ▸ oStmt j : OStmtOut i)
+      | Sum.inr j => (output.hEq i ▸ h ▸ messages j : OStmtOut i)
+
+/-- Transport a query across explicit heterogeneous interface coherence. -/
+def queryAlongHEq {A B : Type} (OA : OracleInterface A) (OB : OracleInterface B)
+    (hType : A = B) (h : HEq OA OB) {ι' : Type} {spec : OracleSpec ι'}
+    (impl : (q : OB.Query) → OracleComp spec (OB.Response q))
+    (q : OA.Query) : OracleComp spec (OA.Response q) := by
+  cases hType
+  cases eq_of_heq h
+  exact impl q
+
+/-- Materialize the semantic output family, using a virtual simulation when
+present and the legacy embedding otherwise. -/
+def materializeOutput (challenges : pSpec.Challenges)
+    (oStmt : ∀ i, OStmtIn i) (messages : pSpec.Messages) : ∀ i, OStmtOut i :=
+  materializeOutputOracle verifier.outputOracle challenges oStmt messages
+
+/-- Query any semantic output oracle in terms of the verifier's input and
+message oracles. This operation hides the virtual/legacy distinction from
+generic composition. -/
+def simulateOutputQuery (challenges : pSpec.Challenges) :
+    QueryImpl [OStmtOut]ₒ
+      (OracleComp (oSpec + ([OStmtIn]ₒ + [pSpec.Message]ₒ))) :=
+  match verifier.outputOracle with
+    | Sum.inr simulation => simulation.simulateOutputQuery challenges
+    | Sum.inl output => fun q => match h : output.embed q.1 with
+      | Sum.inl j => by
+          have hType : OStmtOut q.1 = OStmtIn j := by
+            simpa only [h] using output.hEq q.1
+          have hi : HEq (Oₛₒ q.1) (Oₛᵢ j) := by
+            simpa only [h] using output.outputInterface_heq q.1
+          exact queryAlongHEq (Oₛₒ q.1) (Oₛᵢ j) hType hi
+            (fun t : (Oₛᵢ j).Query =>
+              ((QueryImpl.id' [OStmtIn]ₒ).liftTarget
+                (OracleComp (oSpec + ([OStmtIn]ₒ + [pSpec.Message]ₒ)))) ⟨j, t⟩) q.2
+      | Sum.inr j => by
+          have hType : OStmtOut q.1 = pSpec.Message j := by
+            simpa only [h] using output.hEq q.1
+          have hi : HEq (Oₛₒ q.1) (Oₘ j) := by
+            simpa only [h] using output.outputInterface_heq q.1
+          exact queryAlongHEq (Oₛₒ q.1) (Oₘ j) hType hi
+            (fun t : (Oₘ j).Query =>
+              ((QueryImpl.id' [pSpec.Message]ₒ).liftTarget
+                (OracleComp (oSpec + ([OStmtIn]ₒ + [pSpec.Message]ₒ)))) ⟨j, t⟩) q.2
+
+private theorem simulateQueryAlongHEq {A B : Type}
+    (OA : OracleInterface A) (OB : OracleInterface B)
+    (hType : A = B) (hInterface : HEq OA OB)
+    {ι' : Type} {spec : OracleSpec ι'}
+    (impl : (q : OB.Query) → OracleComp spec (OB.Response q))
+    (q : OA.Query) {ι'' : Type} {targetSpec : OracleSpec ι''}
+    (sim : QueryImpl spec (OracleComp targetSpec))
+    (a : A) (b : B) (hab : HEq a b)
+    (hImpl : ∀ q, simulateQ sim (impl q) = pure (OB.answer b q)) :
+    simulateQ sim (queryAlongHEq OA OB hType hInterface impl q) =
+      pure (OA.answer a q) := by
+  cases hType
+  cases eq_of_heq hInterface
+  cases eq_of_heq hab
+  exact hImpl q
+
+/-- Querying the semantic output family agrees with materializing that family,
+for both embedded and virtual output representations. -/
+theorem simulateOutputQuery_eq
+    (challenges : pSpec.Challenges) (oStmt : ∀ i, OStmtIn i)
+    (messages : pSpec.Messages) (q : [OStmtOut]ₒ.Domain) :
+    simulateQ (OracleInterface.simOracle2 oSpec oStmt messages)
+        (verifier.simulateOutputQuery challenges q) =
+      pure ((Oₛₒ q.1).answer
+        (verifier.materializeOutput challenges oStmt messages q.1) q.2) := by
+  rcases q with ⟨i, q⟩
+  cases hOutput : verifier.outputOracle with
+  | inr simulation =>
+    simp only [simulateOutputQuery, materializeOutput, materializeOutputOracle,
+      hOutput, MessageIdx, Message]
+    exact simulation.simulateOutputQuery_eq challenges oStmt messages ⟨i, q⟩
+  | inl output =>
+    simp only [simulateOutputQuery, materializeOutput, materializeOutputOracle,
+      hOutput, MessageIdx, Message]
+    split
+    next j hEmbed =>
+      have hType : OStmtOut i = OStmtIn j := by
+        simpa only [hEmbed] using output.hEq i
+      have hInterface : HEq (Oₛₒ i) (Oₛᵢ j) := by
+        simpa only [hEmbed] using output.outputInterface_heq i
+      let a : OStmtOut i := output.hEq i ▸ hEmbed ▸ oStmt j
+      have hab : HEq a (oStmt j) := by
+        simp only [a, eqRec_heq_iff]
+        exact HEq.rfl
+      apply simulateQueryAlongHEq (Oₛₒ i) (Oₛᵢ j) hType hInterface
+        _ q _ a (oStmt j) hab
+      intro t
+      exact QueryImpl.simulateQ_addLift_add_liftM_left (QueryImpl.id oSpec)
+        (OracleInterface.simOracle0 OStmtIn oStmt)
+        (OracleInterface.simOracle0 pSpec.Message messages)
+        (([OStmtIn]ₒ).query ⟨j, t⟩)
+    next j hEmbed =>
+      have hType : OStmtOut i = pSpec.Message j := by
+        simpa only [hEmbed] using output.hEq i
+      have hInterface : HEq (Oₛₒ i) (Oₘ j) := by
+        simpa only [hEmbed] using output.outputInterface_heq i
+      let a : OStmtOut i := output.hEq i ▸ hEmbed ▸ messages j
+      have hab : HEq a (messages j) := by
+        simp only [a, eqRec_heq_iff]
+        exact HEq.rfl
+      apply simulateQueryAlongHEq (Oₛₒ i) (Oₘ j) hType hInterface
+        _ q _ a (messages j) hab
+      intro t
+      exact QueryImpl.simulateQ_addLift_add_liftM_right (QueryImpl.id oSpec)
+        (OracleInterface.simOracle0 OStmtIn oStmt)
+        (OracleInterface.simOracle0 pSpec.Message messages)
+        (([pSpec.Message]ₒ).query ⟨j, t⟩)
 /-- An oracle verifier can be seen as a (non-oracle) verifier by providing the oracle interface
   using its knowledge of the oracle statements and the transcript messages in the clear -/
 def toVerifier : Verifier oSpec (StmtIn × ∀ i, OStmtIn i) (StmtOut × (∀ i, OStmtOut i)) pSpec where
-  verify := fun ⟨stmt, oStmt⟩ transcript => do
-    let stmtOut ← simulateQ (OracleInterface.simOracle2 oSpec oStmt transcript.messages)
-      (verifier.verify stmt transcript.challenges)
-    letI oStmtOut := fun i => match h : verifier.embed i with
-      | Sum.inl j => (verifier.hEq i ▸ h ▸ oStmt j : OStmtOut i)
-      | Sum.inr j => (verifier.hEq i ▸ h ▸ transcript.messages j : OStmtOut i)
-    return (stmtOut, oStmtOut)
+  verify := fun ⟨stmt, oStmt⟩ transcript => OptionT.mk <|
+    Option.map (fun stmtOut =>
+      (stmtOut, verifier.materializeOutput
+        transcript.challenges oStmt transcript.messages)) <$>
+      simulateQ (OracleInterface.simOracle2 oSpec oStmt transcript.messages)
+        (verifier.verify stmt transcript.challenges).run
 
-/-- Construct output oracle statements from input oracle statements and transcript messages by
-  routing according to an embedding function. This is the standalone form of the routing inlined
-  in `toVerifier`; consumed by the Binius step logic (`BinaryBasefold.ReductionLogic`,
-  `RingSwitching.BatchingPhase`).
-
-  Restored after PR 537 (sequential-composition cherry-pick) dropped it while its Binius consumers
-  still reference it; it is exactly the `toVerifier` `oStmtOut` routing factored out, taking the
-  embedding/typing data as explicit arguments instead of reading them off a `verifier`. -/
-def mkVerifierOStmtOut
-    (embed : ιₛₒ ↪ ιₛᵢ ⊕ pSpec.MessageIdx)
-    (hEq : ∀ i, OStmtOut i = match embed i with
-      | Sum.inl j => OStmtIn j
-      | Sum.inr j => pSpec.Message j)
-    (oStmt : ∀ i, OStmtIn i) (transcript : FullTranscript pSpec) :
-    ∀ i, OStmtOut i :=
-  fun i => match h : embed i with
-    | Sum.inl j => (hEq i ▸ h ▸ oStmt j : OStmtOut i)
-    | Sum.inr j => (hEq i ▸ h ▸ transcript.messages j : OStmtOut i)
-
-omit Oₛᵢ Oₘ in
-@[simp]
-lemma mkVerifierOStmtOut_inl
-    (embed : ιₛₒ ↪ ιₛᵢ ⊕ pSpec.MessageIdx)
-    (hEq : ∀ i, OStmtOut i = match embed i with
-      | Sum.inl j => OStmtIn j
-      | Sum.inr j => pSpec.Message j)
-    (oStmt : ∀ i, OStmtIn i) (transcript : FullTranscript pSpec)
-    (i : ιₛₒ) (j : ιₛᵢ) (h : embed i = Sum.inl j) :
-    mkVerifierOStmtOut embed hEq oStmt transcript i = (hEq i ▸ h ▸ oStmt j : OStmtOut i) := by
-  simp only [mkVerifierOStmtOut, MessageIdx, Message]
-  split
-  · rename_i heq
-    rw [h] at heq
-    simp only [MessageIdx, Sum.inl.injEq] at heq
-    subst heq
-    rfl
-  · rename_i heq
-    rw [h] at heq
-    simp only [MessageIdx, reduceCtorEq] at heq
-
-omit Oₛᵢ Oₘ in
-@[simp]
-lemma mkVerifierOStmtOut_inr
-    (embed : ιₛₒ ↪ ιₛᵢ ⊕ pSpec.MessageIdx)
-    (hEq : ∀ i, OStmtOut i = match embed i with
-      | Sum.inl j => OStmtIn j
-      | Sum.inr j => pSpec.Message j)
-    (oStmt : ∀ i, OStmtIn i) (transcript : FullTranscript pSpec)
-    (i : ιₛₒ) (j : pSpec.MessageIdx) (h : embed i = Sum.inr j) :
-    mkVerifierOStmtOut embed hEq oStmt transcript i =
-      (hEq i ▸ h ▸ transcript.messages j : OStmtOut i) := by
-  simp only [mkVerifierOStmtOut, MessageIdx, Message]
-  split
-  · rename_i heq
-    rw [h] at heq
-    simp only [MessageIdx, reduceCtorEq] at heq
-  · rename_i heq
-    rw [h] at heq
-    simp only [MessageIdx, Sum.inr.injEq] at heq
-    subst heq
-    rfl
-
-/-- The number of queries made to the oracle statements and the prover's messages, for a given input
-    statement and challenges.
-
-  This is given as an oracle computation itself, since the oracle verifier may be adaptive and has
-  different number of queries depending on the prior responses. Shared `oSpec` queries are replayed
-  and charged zero; queries to input oracle statements and prover messages are charged one. -/
-def numQueries (stmt : StmtIn) (challenges : ∀ i, pSpec.Challenge i)
-    (verifier : OracleVerifier oSpec StmtIn OStmtIn StmtOut OStmtOut pSpec) :
-    OracleComp (oSpec + ([OStmtIn]ₒ + [pSpec.Message]ₒ)) ℕ :=
-  OracleComp.queryCostTrace
-    (spec := oSpec + ([OStmtIn]ₒ + [pSpec.Message]ₒ))
-    (fun
-      | Sum.inl _ => 0
-      | Sum.inr _ => 1)
-    ((verifier.verify stmt challenges).run)
-
-theorem numQueries_eq_queryCostTrace (stmt : StmtIn) (challenges : ∀ i, pSpec.Challenge i)
-    (verifier : OracleVerifier oSpec StmtIn OStmtIn StmtOut OStmtOut pSpec) :
-    verifier.numQueries stmt challenges =
-      OracleComp.queryCostTrace
-        (spec := oSpec + ([OStmtIn]ₒ + [pSpec.Message]ₒ))
-        (fun
-          | Sum.inl _ => 0
-          | Sum.inr _ => 1)
-        ((verifier.verify stmt challenges).run) :=
-  rfl
-
-theorem numQueries_of_verify_pure (stmt : StmtIn) (challenges : ∀ i, pSpec.Challenge i)
-    (verifier : OracleVerifier oSpec StmtIn OStmtIn StmtOut OStmtOut pSpec)
-    {stmtOut : StmtOut} (hverify : verifier.verify stmt challenges = pure stmtOut) :
-    verifier.numQueries stmt challenges =
-      (pure 0 : OracleComp (oSpec + ([OStmtIn]ₒ + [pSpec.Message]ₒ)) ℕ) := by
-  rw [numQueries_eq_queryCostTrace, hverify]
-  rfl
+/-- **Run equation of a query-guard-return oracle verifier.** If the verifier makes one query `q`
+to the prover's messages, guards on the answer and the challenges, and returns a statement built
+from the answer and the challenges, then the induced verifier returns that statement, with the
+materialized output oracles, when the guard holds on the transcript's answer and challenges, and
+aborts otherwise. A guard that ignores the challenges is the case `check := fun s a _ => …`. -/
+theorem toVerifier_verify_of_query_guard (q : [pSpec.Message]ₒ.Domain)
+    (check : StmtIn → [pSpec.Message]ₒ.Range q → pSpec.Challenges → Prop)
+    [hcheck : ∀ s a c, Decidable (check s a c)]
+    (accept : StmtIn → [pSpec.Message]ₒ.Range q → pSpec.Challenges → StmtOut)
+    (hV : ∀ stmt chals, verifier.verify stmt chals = do
+      let a ← query (spec := [pSpec.Message]ₒ) q
+      guard (check stmt a chals)
+      return accept stmt a chals)
+    (stmt : StmtIn) (oStmt : ∀ i, OStmtIn i) (tr : pSpec.FullTranscript) :
+    verifier.toVerifier.verify (stmt, oStmt) tr =
+      letI a : [pSpec.Message]ₒ.Range q := OracleInterface.answer (tr.messages q.1) q.2
+      if check stmt a tr.challenges then
+        pure (accept stmt a tr.challenges,
+          verifier.materializeOutput tr.challenges oStmt tr.messages)
+      else failure := by
+  simp only [toVerifier, hV, guard]
+  -- `erw`: `query` reaches `OptionT` through VCVio's `HasQuery`/`MonadLiftT` chain, and its
+  -- answer type `[pSpec.Message]ₒ.Range q` is the message interface's `Response` only through the
+  -- semireducible `OracleInterface.toOracleSpec`; both match only up to that unfolding.
+  erw [OptionT.run_bind, simulateQ_bind, OptionT.run_monadLift]
+  simp only [simulateQ_map]
+  erw [OracleInterface.simulateQ_simOracle2_liftM_query_snd, map_pure, pure_bind,
+    Option.elim_some]
+  split_ifs <;> rfl
 
 /-- A **non-adaptive** oracle verifier is an oracle verifier that makes a **fixed** list of queries
     to the input oracle statements and the prover's messages. These queries can depend on the input
@@ -679,6 +548,7 @@ structure NonAdaptive {ι : Type} (oSpec : OracleSpec ι)
     {n : ℕ} (pSpec : ProtocolSpec n)
     [Oₛᵢ : ∀ i, OracleInterface (OStmtIn i)]
     [Oₘ : ∀ i, OracleInterface (pSpec.Message i)]
+    [Oₛₒ : ∀ i, OracleInterface (OStmtOut i)]
     where
 
   /-- Makes a list of queries to each of the oracle statements, given the input statement and the
@@ -692,13 +562,18 @@ structure NonAdaptive {ι : Type} (oSpec : OracleSpec ι)
   /-- From the query-response pairs, returns a computation that outputs the new output statement -/
   verify : StmtIn → (∀ i, pSpec.Challenge i) →
     List ((i : ιₛᵢ) × ((q : (Oₛᵢ i).Query) × (Oₛᵢ i).Response q)) →
-    List ((i : pSpec.MessageIdx) × ((q : (Oₘ i).Query) × (Oₘ i).Response q)) → OracleComp oSpec StmtOut
+    List ((i : pSpec.MessageIdx) × ((q : (Oₘ i).Query) × (Oₘ i).Response q)) →
+      OracleComp oSpec StmtOut
 
   embed : ιₛₒ ↪ ιₛᵢ ⊕ pSpec.MessageIdx
 
   hEq : ∀ i, OStmtOut i = match embed i with
     | Sum.inl j => OStmtIn j
     | Sum.inr j => pSpec.Message j
+
+  outputInterface_heq : ∀ i, match embed i with
+    | Sum.inl j => HEq (Oₛₒ i) (Oₛᵢ j)
+    | Sum.inr j => HEq (Oₛₒ i) (Oₘ j)
 
 namespace NonAdaptive
 
@@ -708,27 +583,36 @@ This essentially performs the queries via `List.mapM`, then runs `verify` on the
 pairs. -/
 def toOracleVerifier
     (naVerifier : OracleVerifier.NonAdaptive oSpec StmtIn OStmtIn StmtOut OStmtOut pSpec) :
-    OracleVerifier oSpec StmtIn OStmtIn StmtOut OStmtOut pSpec where
+    OracleVerifier oSpec StmtIn OStmtIn StmtOut OStmtOut pSpec := by
+  rcases naVerifier with
+    ⟨queryOStmt, queryMsg, verify, embed, hEq, outputInterface_heq⟩
+  exact {
   verify := fun stmt challenges => do
     let oc := oSpec + ([OStmtIn]ₒ + [pSpec.Message]ₒ)
     let queryResponsesOStmt : List ((i : ιₛᵢ) × ((q : (Oₛᵢ i).Query) × (Oₛᵢ i).Response q)) ←
-      (naVerifier.queryOStmt stmt challenges).mapM
+      (queryOStmt stmt challenges).mapM
       (fun q => do
         let resp ← liftM <|
           query (spec := [OStmtIn]ₒ) (m := OracleComp oc) q
-        return ⟨q.1, ⟨q.2, by simpa only using resp⟩⟩)
-    let queryResponsesOMsg : List ((i : pSpec.MessageIdx) × ((q : (Oₘ i).Query) × (Oₘ i).Response q)) ←
-      (naVerifier.queryMsg stmt challenges).mapM
+        return ⟨q.1, ⟨q.2, resp⟩⟩)
+    let queryResponsesOMsg :
+        List ((i : pSpec.MessageIdx) × ((q : (Oₘ i).Query) × (Oₘ i).Response q)) ←
+      (queryMsg stmt challenges).mapM
       (fun q => do
         let resp ← liftM <|
           query (spec := [pSpec.Message]ₒ) (m := OracleComp oc) q
-        return ⟨q.1, ⟨q.2, by simpa only using resp⟩⟩)
-    let stmtOut ← liftM <| naVerifier.verify stmt challenges queryResponsesOStmt queryResponsesOMsg
+        return ⟨q.1, ⟨q.2, resp⟩⟩)
+    let stmtOut ← liftM <| verify stmt challenges queryResponsesOStmt queryResponsesOMsg
     return stmtOut
 
-  embed := naVerifier.embed
-
-  hEq := naVerifier.hEq
+  outputOracle := .inl {
+    embed := embed
+    hEq := fun i => by
+      have hi := hEq i
+      rcases h : embed i with j | j <;> simp only [h, Message] at hi ⊢ <;> exact hi
+    outputInterface_heq := fun i => by
+      have hi := outputInterface_heq i
+      rcases h : embed i with j | j <;> simp only [h, Message] at hi ⊢ <;> exact hi } }
 
 /-- The number of queries made to the `i`-th oracle statement, for a given input statement and
     challenges. -/
@@ -770,6 +654,7 @@ structure OracleReduction {ι : Type} (oSpec : OracleSpec ι)
     (StmtOut : Type) {ιₛₒ : Type} (OStmtOut : ιₛₒ → Type) (WitOut : Type)
     {n : ℕ} (pSpec : ProtocolSpec n)
     [Oₛᵢ : ∀ i, OracleInterface (OStmtIn i)] [Oₘ : ∀ i, OracleInterface (pSpec.Message i)]
+    [Oₛₒ : ∀ i, OracleInterface (OStmtOut i)]
     where
   prover : OracleProver oSpec StmtIn OStmtIn WitIn StmtOut OStmtOut WitOut pSpec
   verifier : OracleVerifier oSpec StmtIn OStmtIn StmtOut OStmtOut pSpec
@@ -781,6 +666,7 @@ def OracleReduction.toReduction {ι : Type} {oSpec : OracleSpec ι}
     {StmtOut : Type} {ιₛₒ : Type} {OStmtOut : ιₛₒ → Type} {WitOut : Type}
     {n : ℕ} {pSpec : ProtocolSpec n}
     [Oₛᵢ : ∀ i, OracleInterface (OStmtIn i)] [Oₘ : ∀ i, OracleInterface (pSpec.Message i)]
+    [Oₛₒ : ∀ i, OracleInterface (OStmtOut i)]
     (oracleReduction : OracleReduction oSpec StmtIn OStmtIn WitIn StmtOut OStmtOut WitOut pSpec) :
       Reduction oSpec (StmtIn × (∀ i, OStmtIn i)) WitIn
         (StmtOut × (∀ i, OStmtOut i)) WitOut pSpec :=
@@ -804,7 +690,58 @@ def OracleReduction.toReduction {ι : Type} {oSpec : OracleSpec ι}
     {n : ℕ} (pSpec : ProtocolSpec n)
     [Oₛᵢ : ∀ i, OracleInterface (OStatement i)]
     [Oₘ : ∀ i, OracleInterface (pSpec.Message i)] :=
-  OracleReduction oSpec Statement OStatement Witness Bool (fun _ : Empty => Unit) Unit pSpec
+  @OracleReduction ι oSpec Statement ιₛᵢ OStatement Witness Bool Empty
+    (fun _ : Empty => Unit) Unit n pSpec Oₛᵢ Oₘ (fun i => nomatch i)
+
+/-- The verifier type underlying an interactive oracle proof. Its output-oracle
+family is empty, so its interface is supplied by elimination rather than by a
+global `OracleInterface Unit` instance. -/
+@[reducible] def OracleProofVerifier {ι : Type} (oSpec : OracleSpec ι)
+    (Statement : Type) {ιₛ : Type} (OStatement : ιₛ → Type)
+    {n : ℕ} (pSpec : ProtocolSpec n)
+    [Oₛ : ∀ i, OracleInterface (OStatement i)]
+    [Oₘ : ∀ i, OracleInterface (pSpec.Message i)] :=
+  @OracleVerifier ι oSpec Statement ιₛ OStatement Bool Empty
+    (fun _ : Empty => Unit) n pSpec Oₛ Oₘ
+      (fun i => nomatch i)
+
+namespace OracleProofVerifier
+
+/-- Construct the verifier of an interactive oracle proof. The empty output
+family is discharged locally, without introducing a global interface instance
+for `Unit`. -/
+def ofVerify {ι : Type} {oSpec : OracleSpec ι}
+    {Statement : Type} {ιₛ : Type} {OStatement : ιₛ → Type}
+    {n : ℕ} {pSpec : ProtocolSpec n}
+    [Oₛ : ∀ i, OracleInterface (OStatement i)]
+    [Oₘ : ∀ i, OracleInterface (pSpec.Message i)]
+    (verify : Statement → pSpec.Challenges →
+      OptionT (OracleComp (oSpec + ([OStatement]ₒ + [pSpec.Message]ₒ))) Bool) :
+      OracleProofVerifier oSpec Statement OStatement pSpec :=
+  @OracleVerifier.mk ι oSpec Statement ιₛ OStatement Bool Empty
+    (fun _ : Empty => Unit) n pSpec Oₛ Oₘ
+    (fun i => nomatch i) verify
+    (.inl <| @OracleOutputEmbedding.mk ιₛ Empty OStatement
+      pSpec.MessageIdx pSpec.Message (fun _ : Empty => Unit)
+      Oₛ Oₘ (fun i => nomatch i)
+      ⟨Empty.elim, fun a _ => Empty.elim a⟩
+      (fun i => Empty.elim i) (fun i => Empty.elim i))
+
+end OracleProofVerifier
+
+/-- Obtain the verifier of an `OracleProof` without requiring a global
+interface for its uninhabited output-oracle family. -/
+@[reducible] def OracleProof.toOracleVerifier {ι : Type}
+    {oSpec : OracleSpec ι} {Statement : Type} {ιₛ : Type}
+    {OStatement : ιₛ → Type} {Witness : Type} {n : ℕ}
+    {pSpec : ProtocolSpec n}
+    [Oₛ : ∀ i, OracleInterface (OStatement i)]
+    [Oₘ : ∀ i, OracleInterface (pSpec.Message i)]
+    (oracleProof : OracleProof oSpec Statement OStatement Witness pSpec) :
+      OracleProofVerifier oSpec Statement OStatement pSpec :=
+  @OracleReduction.verifier ι oSpec Statement ιₛ OStatement Witness
+    Bool Empty (fun _ : Empty => Unit) Unit n pSpec Oₛ
+      Oₘ (fun i => nomatch i) oracleProof
 
 /-- A **non-interactive prover** is a prover that only sends a single message to the verifier. -/
 @[reducible] def NonInteractiveProver (Message : Type) {ι : Type} (oSpec : OracleSpec ι)
@@ -859,8 +796,12 @@ protected def OracleProver.id :
 protected def OracleVerifier.id :
     OracleVerifier oSpec Statement OStatement Statement OStatement !p[] where
   verify := fun stmt _ => pure stmt
-  embed := Function.Embedding.inl
-  hEq := fun _ => rfl
+  outputOracle := .inl {
+    embed := Function.Embedding.inl
+    hEq := fun _ => rfl
+    outputInterface_heq := fun i => by
+      change HEq (Oₛ i) (Oₛ i)
+      rfl }
 
 /-- The trivial / identity oracle reduction, which consists of the trivial oracle prover and
   verifier. -/
@@ -880,7 +821,13 @@ lemma OracleVerifier.id_toVerifier :
     (OracleVerifier.id : OracleVerifier oSpec Statement OStatement _ _ _).toVerifier =
       Verifier.id := by
   ext ⟨s, o⟩ t
-  simp only [OracleVerifier.id, OracleVerifier.toVerifier, Verifier.id, OptionT.run]
+  have hOutput :
+      (OracleVerifier.id : OracleVerifier oSpec Statement OStatement _ _ _).materializeOutput
+        t.challenges o t.messages = o := by
+    funext i
+    rfl
+  simp only [OracleVerifier.toVerifier, Verifier.id, OptionT.run]
+  rw [hOutput]
   rfl
 
 @[simp]
@@ -1031,6 +978,23 @@ instance [IsSingleRound pSpec] [h : VCVCompatible (pSpec.Challenge default)] :
 
 end IsSingleRound
 
+/-- The full transcript of a one-message protocol. -/
+@[inline, reducible]
+def FullTranscript.mk1 {pSpec : ProtocolSpec 1} (msg0 : pSpec.«Type» 0) :
+    FullTranscript pSpec := fun | ⟨0, _⟩ => msg0
+
+/-- A one-message transcript is the empty transcript extended by its message. -/
+@[simp]
+theorem FullTranscript.mk1_eq_snoc {pSpec : ProtocolSpec 1} (msg0 : pSpec.«Type» 0) :
+    FullTranscript.mk1 msg0 = (default : pSpec.Transcript 0).concat msg0 := by
+  unfold FullTranscript.mk1 Transcript.concat
+  simp only [default, Fin.isValue]
+  funext i
+  have hi : i = 0 := by omega
+  subst hi
+  simp only [Fin.isValue, Fin.coe_ofNat_eq_mod, Nat.zero_mod, Nat.reduceAdd,
+    Fin.succ_zero_eq_one, Nat.reduceMod, take_Type, Transcript.concat_zero]
+
 @[inline, reducible]
 def FullTranscript.mk2 {pSpec : ProtocolSpec 2} (msg0 : pSpec.«Type» 0) (msg1 : pSpec.«Type» 1) :
     FullTranscript pSpec := fun | ⟨0, _⟩ => msg0 | ⟨1, _⟩ => msg1
@@ -1038,13 +1002,14 @@ def FullTranscript.mk2 {pSpec : ProtocolSpec 2} (msg0 : pSpec.«Type» 0) (msg1 
 theorem FullTranscript.mk2_eq_snoc_snoc {pSpec : ProtocolSpec 2} (msg0 : pSpec.«Type» 0)
     (msg1 : pSpec.«Type» 1) :
       FullTranscript.mk2 msg0 msg1 = ((default : pSpec.Transcript 0).concat msg0).concat msg1 := by
-  unfold FullTranscript.mk2 Transcript.concat
-  simp only [default, Fin.isValue]
   funext i
-  by_cases hi : i = 0
-  · subst hi; simp [Fin.snoc]
-  · have : i = 1 := by omega
-    subst this; simp [Fin.snoc]
+  fin_cases i
+  · change msg0 = ((default : pSpec.Transcript 0).concat msg0).concat msg1
+      (Fin.castSucc (Fin.last 0))
+    rw [Transcript.concat_castSucc]
+    exact (Transcript.concat_last msg0 (default : pSpec.Transcript 0)).symm
+  · change msg1 = ((default : pSpec.Transcript 0).concat msg0).concat msg1 (Fin.last 1)
+    exact (Transcript.concat_last msg1 ((default : pSpec.Transcript 0).concat msg0)).symm
 
 end ProtocolSpec
 
@@ -1057,6 +1022,11 @@ class Prover.IsPure (P : Prover oSpec StmtIn WitIn StmtOut WitOut pSpec) where
     is_pure : ∃ sendMessage : ∀ _, _ → _, ∀ i st,
       P.sendMessage i st = pure (sendMessage i st)
 
+/-- The prover's output is a deterministic function of its final private state, with no
+oracle queries. This condition does not constrain the message-sending steps. -/
+class Prover.OutputIsPure (P : Prover oSpec StmtIn WitIn StmtOut WitOut pSpec) where
+    output_is_pure : ∃ output : _ → _, ∀ st, P.output st = pure (output st)
+
 class Verifier.IsPure (V : Verifier oSpec StmtIn StmtOut pSpec) where
     is_pure : ∃ verify : _ → _ → _, ∀ stmtIn transcript,
       V.verify stmtIn transcript = pure (verify stmtIn transcript)
@@ -1065,14 +1035,26 @@ class Reduction.IsPure (R : Reduction oSpec StmtIn WitIn StmtOut WitOut pSpec) w
     prover_is_pure : R.prover.IsPure
     verifier_is_pure : R.verifier.IsPure
 
+/-- A **purity witness carrying its verdict function as data**: the bundled form of
+  `Verifier.IsPure`, playing the role `Equiv` plays for `Function.Bijective`.
+
+  `IsPure` only asserts that *some* deterministic verdict function exists, so reading that
+  function off an `IsPure` instance costs `Classical.choice`. Consumers that need the verdict as
+  *data* — sequential composition, which must run the right factor at the statement the left
+  verifier outputs at the seam — carry a `PureForm` instead. Purity data
+  composes computably (`Verifier.PureForm.append`), and `Verifier.PureForm.isPure` forgets back to
+  the class, so the class and all of its instances stay untouched. -/
+structure Verifier.PureForm (V : Verifier oSpec StmtIn StmtOut pSpec) where
+  /-- The verdict: the statement the verifier outputs on `(stmtIn, transcript)`. -/
+  verify : StmtIn → pSpec.FullTranscript → StmtOut
+  /-- The verifier computes exactly that verdict. -/
+  verify_eq : ∀ stmtIn transcript, V.verify stmtIn transcript = pure (verify stmtIn transcript)
+
+/-- Forget the data: a `Verifier.PureForm` yields the `Verifier.IsPure` class. -/
+theorem Verifier.PureForm.isPure {V : Verifier oSpec StmtIn StmtOut pSpec} (P : V.PureForm) :
+    V.IsPure :=
+  ⟨P.verify, P.verify_eq⟩
+
 end IsPure
 
 end Classes
-
-/-! ## Axiom audit — adaptive oracle-verifier query counting. -/
-#print axioms OracleComp.queryCostTrace
-#print axioms OracleComp.queryCostTrace_pure
-#print axioms OracleComp.queryCostTrace_queryBind
-#print axioms OracleVerifier.numQueries
-#print axioms OracleVerifier.numQueries_eq_queryCostTrace
-#print axioms OracleVerifier.numQueries_of_verify_pure

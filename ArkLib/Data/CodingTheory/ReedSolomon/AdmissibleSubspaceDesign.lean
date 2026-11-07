@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.Data.CodingTheory.ReedSolomon.AdmissibleDischarge
-import ArkLib.Data.CodingTheory.SubspaceDesign
+import ProximityPrize.Extensions.Data.CodingTheory.SubspaceDesign
 
 /-!
 # FRS subspace-design front doors from order-bounded admissibility

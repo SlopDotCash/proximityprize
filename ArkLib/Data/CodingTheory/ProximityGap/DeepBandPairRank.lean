@@ -99,13 +99,6 @@ theorem card_kernel_eq_of_surjective {M : ℕ} {ι : Type} [Fintype ι]
         (t := (Finset.univ : Finset (ι → F))) (fun c _ => Finset.mem_univ _)]
     refine Finset.sum_congr rfl fun t _ => ?_
     congr 1
-    refine Finset.filter_congr fun c _ => ?_
-    constructor
-    · intro h j
-      exact congrFun h j
-    · intro h
-      funext j
-      exact h j
   rw [hpart]
   have hconst : ∀ t : ι → F,
       (Finset.univ.filter (fun c : Fin M → F => ∀ j, φ j c = t j)).card

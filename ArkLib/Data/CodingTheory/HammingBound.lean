@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.HammingBallVolume
+import ProximityPrize.Extensions.Data.CodingTheory.HammingBallVolume
 
 /-!
 # The Hamming (sphere-packing) bound
@@ -63,7 +63,8 @@ theorem card_mul_hammingBallVolume_le_of_minDist
     _ = ∑ c ∈ C, (ListDecodable.hammingBall c r).toFinset.card := by
         apply Finset.sum_congr rfl
         intro c _
-        rw [← Set.ncard_eq_toFinset_card', ← hammingBallVolume_eq_ncard_hammingBall δ c]
+        rw [← Set.ncard_eq_toFinset_card']
+        exact hammingBallVolume_eq_ncard_hammingBall δ c
     _ = (C.biUnion (fun c => (ListDecodable.hammingBall c r).toFinset)).card :=
         (Finset.card_biUnion hdisj).symm
     _ ≤ (Finset.univ : Finset (ι → F)).card := Finset.card_le_card (Finset.subset_univ _)

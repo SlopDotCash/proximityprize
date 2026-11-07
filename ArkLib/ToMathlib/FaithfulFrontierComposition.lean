@@ -87,6 +87,10 @@ open ProximityGap Code NNReal Finset Function ProbabilityTheory
 open ProximityPrize.BCIKS20.GammaGenuine BCIKS20.HenselNumerator
 open scoped BigOperators ENNReal ProbabilityTheory LinearCode
 
+-- Preserve the historical finite-field surface with its uniform finite sampler.
+private noncomputable local instance {F : Type} [Field F] [Fintype F] :
+    SampleableType F := SampleableType.ofFintype F
+
 namespace ArkLib
 
 namespace FaithfulFrontier

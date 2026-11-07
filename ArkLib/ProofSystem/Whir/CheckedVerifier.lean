@@ -42,6 +42,12 @@ set_option linter.unusedTactic false
 
 namespace Whir302Checked
 
+private noncomputable local instance (priority := low) whirCheckedUniformAnswers
+    {κ : Type} {spec : OracleSpec κ}
+    [∀ q, Fintype (spec.Range q)] [∀ q, Inhabited (spec.Range q)] :
+    OracleSpec.UniformAnswerMeasure spec :=
+  OracleSpec.UniformAnswerMeasure.ofFiniteNonempty spec
+
 open OracleSpec OracleComp ProtocolSpec NNReal WhirIOP WhirIOP.Construction OracleInterface
 
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
@@ -135,7 +141,7 @@ noncomputable def inputAns (oStmt : ∀ i, OracleStatement (ιs 0) F i) (x : ιs
 /-- Query the input oracle after transporting a source power-domain point back to `ιs 0`. -/
 noncomputable def askInputSource (P : Params ιs F) (d : ℕ)
     (S : ∀ i : Fin (M + 1), Finset (ιs i)) (bridge : PaperInputDomainBridge P S)
-    (x : BlockRelDistance.indexPowT (S 0) (P.φ 0) 0) :
+    (x : BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) 0) :
     OracleComp ([]ₒ + ([OracleStatement (ιs 0) F]ₒ +
       [((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Message]ₒ)) F :=
   askInput P d (bridge.sourceDomainEquiv.symm x)
@@ -145,7 +151,7 @@ noncomputable def inputSourceAns
     (oStmt : ∀ i, OracleStatement (ιs 0) F i)
     (P : Params ιs F) (S : ∀ i : Fin (M + 1), Finset (ιs i))
     (bridge : PaperInputDomainBridge P S)
-    (x : BlockRelDistance.indexPowT (S 0) (P.φ 0) 0) : F :=
+    (x : BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) 0) : F :=
   inputAns oStmt (bridge.sourceDomainEquiv.symm x)
 
 /-- The honest answer of a folded-oracle message at a named paper-domain point. -/
@@ -185,13 +191,13 @@ theorem listEval_map_zero {β : Type} (l : List β) (x : F) :
 section MonadicFold
 
 variable {ι : Type} [Pow ι ℕ] {Sdom : Finset ι} {φdom : ι ↪ F}
-variable [∀ j : ℕ, Neg (BlockRelDistance.indexPowT Sdom φdom j)]
+variable [∀ j : ℕ, Neg (BlockRelDistance.Generic.indexPowT Sdom φdom j)]
 
 /-- Monadic counterpart of `Fold.fold_k_core`: source evaluations are obtained by oracle queries,
 then combined with the same WHIR even/odd folding formula. -/
 noncomputable def foldCoreM {ιq : Type} {spec : OracleSpec ιq}
-    (ask : BlockRelDistance.indexPowT Sdom φdom 0 → OracleComp spec F) :
-    (i : ℕ) → (Fin i → F) → BlockRelDistance.indexPowT Sdom φdom i → OracleComp spec F
+    (ask : BlockRelDistance.Generic.indexPowT Sdom φdom 0 → OracleComp spec F) :
+    (i : ℕ) → (Fin i → F) → BlockRelDistance.Generic.indexPowT Sdom φdom i → OracleComp spec F
   | 0, _, x => ask x
   | k + 1, αs, y => do
       let α := αs 0
@@ -203,19 +209,19 @@ noncomputable def foldCoreM {ιq : Type} {spec : OracleSpec ιq}
 
 /-- Monadic counterpart of `Fold.fold_k`. -/
 noncomputable def foldM {ιq : Type} {spec : OracleSpec ιq}
-    (ask : BlockRelDistance.indexPowT Sdom φdom 0 → OracleComp spec F)
+    (ask : BlockRelDistance.Generic.indexPowT Sdom φdom 0 → OracleComp spec F)
     {k m : ℕ} (αs : Fin k → F) (_hk : k ≤ m) :
-    BlockRelDistance.indexPowT Sdom φdom k → OracleComp spec F :=
+    BlockRelDistance.Generic.indexPowT Sdom φdom k → OracleComp spec F :=
   foldCoreM ask k αs
 
 /-- Simulation collapse for `foldCoreM`: once every source query collapses to `ans`, the whole
 monadic fold collapses to the pure WHIR fold on `ans`. -/
 theorem simulateQ_foldCoreM {ιq ιq' : Type} {spec : OracleSpec ιq}
     {spec' : OracleSpec ιq'} (so : QueryImpl spec (OracleComp spec'))
-    (ask : BlockRelDistance.indexPowT Sdom φdom 0 → OracleComp spec F)
-    (ans : BlockRelDistance.indexPowT Sdom φdom 0 → F)
+    (ask : BlockRelDistance.Generic.indexPowT Sdom φdom 0 → OracleComp spec F)
+    (ans : BlockRelDistance.Generic.indexPowT Sdom φdom 0 → F)
     (hask : ∀ x, simulateQ so (ask x) = (pure (ans x) : OracleComp spec' F)) :
-    ∀ (i : ℕ) (αs : Fin i → F) (y : BlockRelDistance.indexPowT Sdom φdom i),
+    ∀ (i : ℕ) (αs : Fin i → F) (y : BlockRelDistance.Generic.indexPowT Sdom φdom i),
       simulateQ so (foldCoreM ask i αs y)
         = (pure (Fold.fold_k_core ans i αs y) : OracleComp spec' F) := by
   intro i
@@ -230,11 +236,11 @@ theorem simulateQ_foldCoreM {ιq ιq' : Type} {spec : OracleSpec ιq}
 /-- Simulation collapse for `foldM`, stated against `Fold.fold_k`. -/
 theorem simulateQ_foldM {ιq ιq' : Type} {spec : OracleSpec ιq}
     {spec' : OracleSpec ιq'} (so : QueryImpl spec (OracleComp spec'))
-    (ask : BlockRelDistance.indexPowT Sdom φdom 0 → OracleComp spec F)
-    (ans : BlockRelDistance.indexPowT Sdom φdom 0 → F)
+    (ask : BlockRelDistance.Generic.indexPowT Sdom φdom 0 → OracleComp spec F)
+    (ans : BlockRelDistance.Generic.indexPowT Sdom φdom 0 → F)
     (hask : ∀ x, simulateQ so (ask x) = (pure (ans x) : OracleComp spec' F))
     {k m : ℕ} (αs : Fin k → F) (hk : k ≤ m)
-    (y : BlockRelDistance.indexPowT Sdom φdom k) :
+    (y : BlockRelDistance.Generic.indexPowT Sdom φdom k) :
     simulateQ so (foldM ask αs hk y)
       = (pure (Fold.fold_k ans αs hk y) : OracleComp spec' F) := by
   simpa [foldM, Fold.fold_k] using simulateQ_foldCoreM so ask ans hask k αs y
@@ -251,12 +257,12 @@ folding formula. -/
 noncomputable def askInitialInputFoldValue (P : Params ιs F) (d : ℕ)
     (S : ∀ i : Fin (M + 1), Finset (ιs i))
     (inputBridge : PaperInputDomainBridge P S) (foldBridge : PaperFoldDomainBridge P S)
-    (hNeg0 : ∀ j : ℕ, Neg (BlockRelDistance.indexPowT (S 0) (P.φ 0) j))
+    (hNeg0 : ∀ j : ℕ, Neg (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j))
     (hFoldLe0 : P.foldingParam 0 ≤ P.varCount 0) [Pow (ιs 0) ℕ] [Fact (0 < M)]
     (αs : Fin (P.foldingParam 0) → F) (y : ιs (firstMainFoldIdx (M := M)).succ) :
     OracleComp ([]ₒ + ([OracleStatement (ιs 0) F]ₒ +
       [((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Message]ₒ)) F :=
-  letI : ∀ j : ℕ, Neg (BlockRelDistance.indexPowT (S 0) (P.φ 0) j) := hNeg0
+  letI : ∀ j : ℕ, Neg (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := hNeg0
   foldM (Sdom := S 0) (φdom := P.φ 0) (askInputSource P d S inputBridge)
     αs hFoldLe0 (foldBridge.nextDomainEquiv (firstMainFoldIdx (M := M)) y)
 
@@ -265,7 +271,7 @@ must equal the fold computed from input-oracle queries. -/
 noncomputable def initialInputBindingCheckAt (P : Params ιs F) (d : ℕ)
     (S : ∀ i : Fin (M + 1), Finset (ιs i))
     (inputBridge : PaperInputDomainBridge P S) (foldBridge : PaperFoldDomainBridge P S)
-    (hNeg0 : ∀ j : ℕ, Neg (BlockRelDistance.indexPowT (S 0) (P.φ 0) j))
+    (hNeg0 : ∀ j : ℕ, Neg (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j))
     (hFoldLe0 : P.foldingParam 0 ≤ P.varCount 0) [Pow (ιs 0) ℕ] [Fact (0 < M)]
     (αs : Fin (P.foldingParam 0) → F) (y : ιs (firstMainFoldIdx (M := M)).succ) :
     OracleComp ([]ₒ + ([OracleStatement (ιs 0) F]ₒ +
@@ -278,12 +284,12 @@ noncomputable def initialInputBindingCheckAt (P : Params ιs F) (d : ℕ)
 noncomputable def initialInputBindingCheckAtAns (P : Params ιs F) (d : ℕ)
     (S : ∀ i : Fin (M + 1), Finset (ιs i))
     (inputBridge : PaperInputDomainBridge P S) (foldBridge : PaperFoldDomainBridge P S)
-    (hNeg0 : ∀ j : ℕ, Neg (BlockRelDistance.indexPowT (S 0) (P.φ 0) j))
+    (hNeg0 : ∀ j : ℕ, Neg (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j))
     (hFoldLe0 : P.foldingParam 0 ≤ P.varCount 0) [Pow (ιs 0) ℕ] [Fact (0 < M)]
     (αs : Fin (P.foldingParam 0) → F) (y : ιs (firstMainFoldIdx (M := M)).succ)
     (oStmt : ∀ i, OracleStatement (ιs 0) F i)
     (msgs : ∀ j, ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Message j) : Bool :=
-  letI : ∀ j : ℕ, Neg (BlockRelDistance.indexPowT (S 0) (P.φ 0) j) := hNeg0
+  letI : ∀ j : ℕ, Neg (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := hNeg0
   decide (foldedOracleAns P d msgs (firstMainFoldIdx (M := M)) y =
     Fold.fold_k (paperInputSourceFromOracle P S inputBridge (oStmt ())) αs hFoldLe0
       (foldBridge.nextDomainEquiv (firstMainFoldIdx (M := M)) y))
@@ -407,7 +413,7 @@ than sampled by the current paper challenge schedule. -/
 noncomputable def whirCheckingCompWithInitialInputBindingAt (P : Params ιs F) (d : ℕ)
     (S : ∀ i : Fin (M + 1), Finset (ιs i))
     (inputBridge : PaperInputDomainBridge P S) (foldBridge : PaperFoldDomainBridge P S)
-    (hNeg0 : ∀ j : ℕ, Neg (BlockRelDistance.indexPowT (S 0) (P.φ 0) j))
+    (hNeg0 : ∀ j : ℕ, Neg (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j))
     (hFoldLe0 : P.foldingParam 0 ≤ P.varCount 0) [Pow (ιs 0) ℕ] [Fact (0 < M)]
     (y : ιs (firstMainFoldIdx (M := M)).succ)
     (chals : ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenges) :
@@ -422,7 +428,7 @@ noncomputable def whirCheckingCompWithInitialInputBindingAt (P : Params ιs F) (
 noncomputable def whirCheckingBoolWithInitialInputBindingAt (P : Params ιs F) (d : ℕ)
     (S : ∀ i : Fin (M + 1), Finset (ιs i))
     (inputBridge : PaperInputDomainBridge P S) (foldBridge : PaperFoldDomainBridge P S)
-    (hNeg0 : ∀ j : ℕ, Neg (BlockRelDistance.indexPowT (S 0) (P.φ 0) j))
+    (hNeg0 : ∀ j : ℕ, Neg (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j))
     (hFoldLe0 : P.foldingParam 0 ≤ P.varCount 0) [Pow (ιs 0) ℕ] [Fact (0 < M)]
     (y : ιs (firstMainFoldIdx (M := M)).succ)
     (oStmt : ∀ i, OracleStatement (ιs 0) F i)
@@ -456,7 +462,7 @@ theorem simulateQ_askInputSource (P : Params ιs F) (d : ℕ)
     (S : ∀ i : Fin (M + 1), Finset (ιs i)) (bridge : PaperInputDomainBridge P S)
     (oStmt : ∀ i, OracleStatement (ιs 0) F i)
     (msgs : ∀ j, ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Message j)
-    (x : BlockRelDistance.indexPowT (S 0) (P.φ 0) 0) :
+    (x : BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) 0) :
     simulateQ (OracleInterface.simOracle2 []ₒ oStmt msgs) (askInputSource P d S bridge x)
       = (pure (inputSourceAns oStmt P S bridge x) : OracleComp []ₒ F) :=
   simulateQ_askInput P d oStmt msgs (bridge.sourceDomainEquiv.symm x)
@@ -475,7 +481,7 @@ theorem simulateQ_askFoldedOracle (P : Params ιs F) (d : ℕ)
 theorem simulateQ_initialInputBindingCheckAt (P : Params ιs F) (d : ℕ)
     (S : ∀ i : Fin (M + 1), Finset (ιs i))
     (inputBridge : PaperInputDomainBridge P S) (foldBridge : PaperFoldDomainBridge P S)
-    (hNeg0 : ∀ j : ℕ, Neg (BlockRelDistance.indexPowT (S 0) (P.φ 0) j))
+    (hNeg0 : ∀ j : ℕ, Neg (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j))
     (hFoldLe0 : P.foldingParam 0 ≤ P.varCount 0) [Pow (ιs 0) ℕ] [Fact (0 < M)]
     (αs : Fin (P.foldingParam 0) → F) (y : ιs (firstMainFoldIdx (M := M)).succ)
     (oStmt : ∀ i, OracleStatement (ιs 0) F i)
@@ -485,8 +491,7 @@ theorem simulateQ_initialInputBindingCheckAt (P : Params ιs F) (d : ℕ)
       = (pure (initialInputBindingCheckAtAns P d S inputBridge foldBridge hNeg0 hFoldLe0
           αs y oStmt msgs) : OracleComp []ₒ Bool) := by
   -- `indexPowT` powers embedded field values, so this domain `Pow` witness is never inspected.
-  letI : Pow (ιs 0) ℕ := ⟨fun x _ => x⟩
-  letI : ∀ j : ℕ, Neg (BlockRelDistance.indexPowT (S 0) (P.φ 0) j) := hNeg0
+  letI : ∀ j : ℕ, Neg (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := hNeg0
   unfold initialInputBindingCheckAt initialInputBindingCheckAtAns askInitialInputFoldValue
   rw [simulateQ_bind]
   rw [simulateQ_foldM (Sdom := S 0) (φdom := P.φ 0)
@@ -495,8 +500,11 @@ theorem simulateQ_initialInputBindingCheckAt (P : Params ιs F) (d : ℕ)
     (ans := paperInputSourceFromOracle P S inputBridge (oStmt ()))
     (hask := by
       intro x
-      simpa [inputSourceAns, paperInputSourceFromOracle] using
-        simulateQ_askInputSource P d S inputBridge oStmt msgs x)
+      have h := simulateQ_askInputSource P d S inputBridge oStmt msgs x
+      have ha : inputSourceAns oStmt P S inputBridge x =
+          paperInputSourceFromOracle P S inputBridge (oStmt ()) x := by
+        rfl
+      exact h.trans (congrArg pure ha))
     (αs := αs) (hk := hFoldLe0)
     (y := foldBridge.nextDomainEquiv (firstMainFoldIdx (M := M)) y)]
   rw [pure_bind, simulateQ_bind,
@@ -578,7 +586,7 @@ theorem simulateQ_whirCheckingComp (P : Params ιs F) (d : ℕ)
 theorem simulateQ_whirCheckingCompWithInitialInputBindingAt (P : Params ιs F) (d : ℕ)
     (S : ∀ i : Fin (M + 1), Finset (ιs i))
     (inputBridge : PaperInputDomainBridge P S) (foldBridge : PaperFoldDomainBridge P S)
-    (hNeg0 : ∀ j : ℕ, Neg (BlockRelDistance.indexPowT (S 0) (P.φ 0) j))
+    (hNeg0 : ∀ j : ℕ, Neg (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j))
     (hFoldLe0 : P.foldingParam 0 ≤ P.varCount 0) [Pow (ιs 0) ℕ] [Fact (0 < M)]
     (y : ιs (firstMainFoldIdx (M := M)).succ)
     (oStmt : ∀ i, OracleStatement (ιs 0) F i)
@@ -617,7 +625,7 @@ requires a future bound honest prover. -/
 noncomputable def whirVerifyCheckedWithInitialInputBindingAt (P : Params ιs F) (d : ℕ)
     (S : ∀ i : Fin (M + 1), Finset (ιs i))
     (inputBridge : PaperInputDomainBridge P S) (foldBridge : PaperFoldDomainBridge P S)
-    (hNeg0 : ∀ j : ℕ, Neg (BlockRelDistance.indexPowT (S 0) (P.φ 0) j))
+    (hNeg0 : ∀ j : ℕ, Neg (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j))
     (hFoldLe0 : P.foldingParam 0 ≤ P.varCount 0) [Pow (ιs 0) ℕ] [Fact (0 < M)]
     (y : ιs (firstMainFoldIdx (M := M)).succ) :
     Unit → ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenges →
@@ -655,7 +663,7 @@ theorem simulateQ_lift_whirCheckingComp (P : Params ιs F) (d : ℕ)
 theorem simulateQ_lift_whirCheckingCompWithInitialInputBindingAt (P : Params ιs F) (d : ℕ)
     (S : ∀ i : Fin (M + 1), Finset (ιs i))
     (inputBridge : PaperInputDomainBridge P S) (foldBridge : PaperFoldDomainBridge P S)
-    (hNeg0 : ∀ j : ℕ, Neg (BlockRelDistance.indexPowT (S 0) (P.φ 0) j))
+    (hNeg0 : ∀ j : ℕ, Neg (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j))
     (hFoldLe0 : P.foldingParam 0 ≤ P.varCount 0) [Pow (ιs 0) ℕ] [Fact (0 < M)]
     (y : ιs (firstMainFoldIdx (M := M)).succ)
     (oStmt : ∀ i, OracleStatement (ιs 0) F i)
@@ -800,7 +808,8 @@ theorem exists_whirCheckingBool_eq_false (P : Params ιs F) (d : ℕ) :
       show (Vector.ofFn (fun k =>
           if finalPolynomialMessageIdx P d = finalPolynomialMessageIdx P d ∧ (k : ℕ) = 0
           then (1 : F) else 0))[(k : ℕ)]'(k.isLt) = _
-      simp
+      simp only [Vector.getElem_ofFn]
+      simp only [true_and, and_self, eq_self]
     unfold readAns
     rw [List.map_congr_left (fun k _ => hentry k)]
     rw [← Fin.sum_univ_def]
@@ -834,7 +843,7 @@ theorem paperProver_runToRound_invariant (P : Params ιs F) (d : ℕ)
     (mk : (Unit × (∀ u : Unit, OracleStatement (ιs 0) F u)) × Unit → PaperTranscriptData P d)
     (stmt : Unit × (∀ u : Unit, OracleStatement (ιs 0) F u)) (wit : Unit)
     (k : Fin (Fintype.card (PaperTranscriptSlot P) + 1)) :
-    ∀ ts ∈ _root_.support ((paperTranscriptOracleProver P d mk).runToRound k stmt wit),
+    ∀ ts ∈ MonadAttach.support ((paperTranscriptOracleProver P d mk).runToRound k stmt wit),
       ts.2 = mk (stmt, wit) ∧
       ∀ (iv : ℕ) (hik : iv < (k : ℕ)) (hcard : iv < Fintype.card (PaperTranscriptSlot P))
         (hdir : ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).dir ⟨iv, hcard⟩
@@ -864,17 +873,12 @@ theorem paperProver_runToRound_invariant (P : Params ιs F) (d : ℕ)
         obtain ⟨chal, -, fch, hfch, rfl⟩ := hout
         have hfch' : fch = fun _ => st := by
           dsimp only [paperTranscriptOracleProver] at hfch
-          simpa only [liftM_pure, liftComp_pure, support_pure, Set.mem_singleton_iff]
-            using hfch
+          exact OracleComp.eq_of_mem_support_pure _ hfch
         refine ⟨by rw [hfch']; exact ihSt, ?_⟩
         intro iv hik hcard hdir
         by_cases hlt : iv < (j : ℕ)
-        · show Fin.snoc (α := fun m : Fin ((j : ℕ) + 1) =>
-              ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).«Type»
-                (Fin.castLE j.isLt m))
-            tr chal (Fin.castSucc ⟨iv, hlt⟩) = _
-          rw [Fin.snoc_castSucc]
-          exact ihTr iv hlt hcard hdir
+        · exact eq_of_heq ((Transcript.concat_apply_lt tr chal iv hlt hik).trans
+            (heq_of_eq (ihTr iv hlt hcard hdir)))
         · -- the new entry is at the challenge round, whose direction contradicts `hdir`
           exfalso
           have hiv : iv = (j : ℕ) := by simp only [Fin.val_succ] at hik; omega
@@ -893,19 +897,12 @@ theorem paperProver_runToRound_invariant (P : Params ιs F) (d : ℕ)
         refine ⟨by rw [hst']; exact ihSt, ?_⟩
         intro iv hik hcard hdir
         by_cases hlt : iv < (j : ℕ)
-        · show Fin.snoc (α := fun m : Fin ((j : ℕ) + 1) =>
-              ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).«Type»
-                (Fin.castLE j.isLt m))
-            tr msg (Fin.castSucc ⟨iv, hlt⟩) = _
-          rw [Fin.snoc_castSucc]
-          exact ihTr iv hlt hcard hdir
+        · exact eq_of_heq ((Transcript.concat_apply_lt tr msg iv hlt hik).trans
+            (heq_of_eq (ihTr iv hlt hcard hdir)))
         · have hiv : iv = (j : ℕ) := by simp only [Fin.val_succ] at hik; omega
           subst hiv
-          show Fin.snoc (α := fun m : Fin ((j : ℕ) + 1) =>
-              ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).«Type»
-                (Fin.castLE j.isLt m))
-            tr msg (Fin.last (j : ℕ)) = _
-          rw [Fin.snoc_last, hmsg, ihSt]
+          exact eq_of_heq ((Transcript.concat_apply_last tr msg j.val rfl hik).trans
+            (heq_of_eq (by simpa only [ihSt] using hmsg)))
 
 /-! ### Perfect completeness of the checked WHIR `VectorIOP` -/
 
@@ -916,6 +913,7 @@ private lemma liftComp_optionT_pure {ι₁ ι₂ : Type} {spec₁ : OracleSpec �
     (OracleComp.liftComp (pure y : OptionT (OracleComp spec₁) α) spec₂ :
       OptionT (OracleComp spec₂) α) = pure y := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 set_option maxHeartbeats 1600000 in
 /-- **Perfect completeness of the checked WHIR `VectorIOP`** (for every input relation): on
 the honest run every transcript message is the honest `whirMakeTranscript` payload (the
@@ -925,18 +923,19 @@ theorem whirCheckedVectorIOP_perfectCompleteness (P : Params ιs F) (d : ℕ)
     (relation : Set ((Unit × ∀ u : Unit, OracleStatement (ιs 0) F u) × Unit)) :
     (whirCheckedVectorIOP P d).perfectCompleteness
       (pure ()) isEmptyElim relation := by
-  show OracleReduction.perfectCompleteness (pure ()) isEmptyElim relation acceptRejectOracleRel
+  show OracleReduction.perfectCompleteness (Oₛₒ := fun i : Empty => nomatch i) (pure ()) isEmptyElim relation acceptRejectOracleRel
     (paperTranscriptVectorIOP P d (whirMakeTranscript P d) (whirVerifyChecked P d))
-  rw [OracleReduction.unroll_n_message_reduction_perfectCompleteness
-    (reduction := paperTranscriptVectorIOP P d (whirMakeTranscript P d) (whirVerifyChecked P d))
+  rw [@OracleReduction.unroll_n_message_reduction_perfectCompleteness
+    _ _ _ _ _ _ _ _ _ _ _ _ _ (fun i : Empty => (nomatch i : OracleInterface Unit))
+    _ _ _ _ _ (paperTranscriptVectorIOP P d (whirMakeTranscript P d) (whirVerifyChecked P d))
     relation acceptRejectOracleRel (pure ()) isEmptyElim
-    (by simp)
+    (by exact OracleComp.prFail_eq_zero _)
     (by intro β q s; exact nomatch q.1)]
   intro stmtIn oStmtIn witIn _h_relIn
   -- The checked verifier's lifted verify computation is a `pure` of the decision bit.
   have hverify : ∀ transcript,
-      (paperTranscriptVectorIOP P d (whirMakeTranscript P d)
-          (whirVerifyChecked P d)).verifier.toVerifier.verify
+      ((OracleProof.toOracleVerifier (paperTranscriptVectorIOP P d (whirMakeTranscript P d)
+          (whirVerifyChecked P d))).toVerifier (Oₛₒ := fun i : Empty => nomatch i)).verify
         (stmtIn, oStmtIn) transcript
       = pure (whirCheckingBool P d
           (FullTranscript.messages transcript) (FullTranscript.challenges transcript),
@@ -945,50 +944,44 @@ theorem whirCheckedVectorIOP_perfectCompleteness (P : Params ιs F) (d : ℕ)
     dsimp only [paperTranscriptVectorIOP, paperTranscriptOracleVerifier,
       OracleVerifier.toVerifier, whirVerifyChecked]
     erw [simulateQ_lift_whirCheckingComp, pure_bind]
+    apply OptionT.ext
+    simp only [OptionT.run_mk, _root_.map_pure, Option.map_some, OptionT.run_pure]
   have houtput : ∀ state,
-      (paperTranscriptVectorIOP P d (whirMakeTranscript P d)
-          (whirVerifyChecked P d)).prover.output state
+      (OracleReduction.prover (Oₛₒ := fun i : Empty => nomatch i)
+        (paperTranscriptVectorIOP P d (whirMakeTranscript P d)
+          (whirVerifyChecked P d))).output state
       = pure ((true, fun e : Empty => nomatch e), ()) := fun _ => rfl
-  rw [probEvent_eq_one_iff]
-  constructor
-  · -- SAFETY: prover run is a plain `OracleComp` (never fails); output and verify are `pure`.
-    simp only [houtput, hverify, liftComp_optionT_pure, liftComp_pure, liftM_pure, pure_bind]
-    rw [probFailure_bind_eq_zero_iff]
-    refine ⟨?_, ?_⟩
-    · rw [OptionT.probFailure_liftM]
-      exact HasEvalPMF.probFailure_eq_zero _
-    · rintro ⟨transcript, state⟩ _
-      exact probFailure_pure _
-  · -- CORRECTNESS: the unique reachable output accepts, by the run-support invariant.
-    intro x hx
-    simp only [houtput, hverify, liftComp_optionT_pure, liftComp_pure, liftM_pure, pure_bind,
-      support_bind, OptionT.support_liftM, Set.mem_iUnion, exists_prop] at hx
-    obtain ⟨⟨transcript, state⟩, htr, hx⟩ := hx
-    obtain ⟨v, hv, hx⟩ := hx
-    simp only [support_pure, Set.mem_singleton_iff] at hx
-    subst hx
-    replace hv : v ∈ (some ⁻¹'
-        ({some (whirCheckingBool P d
-            (FullTranscript.messages transcript) (FullTranscript.challenges transcript),
-          fun _ : Empty => ())} : Set (Option (Bool × (Empty → Unit))))) := hv
-    simp only [Set.mem_preimage, Set.mem_singleton_iff, Option.some.injEq] at hv
-    subst hv
-    -- the run-support invariant: every transcript message is the honest payload
-    have hinv := paperProver_runToRound_invariant P d (whirMakeTranscript P d)
-      (stmtIn, oStmtIn) witIn (Fin.last (Fintype.card (PaperTranscriptSlot P)))
-      ⟨transcript, state⟩ htr
-    have hmsgs : ∀ j, FullTranscript.messages
-        (pSpec := (whirPaperTranscriptVectorSpec P d).toProtocolSpec F) transcript j
-        = paperTranscriptMessage P d
-            (whirMakeTranscript P d ((stmtIn, oStmtIn), witIn)) j :=
-      fun j => hinv.2 j.1.1 j.1.isLt j.1.isLt j.2
-    have hbool : whirCheckingBool P d
-        (FullTranscript.messages transcript) (FullTranscript.challenges transcript) = true :=
-      whirCheckingBool_honest P d ((stmtIn, oStmtIn), witIn) _ hmsgs _
-    refine ⟨?_, hbool.symm, Subsingleton.elim _ _⟩
-    show _ ∈ acceptRejectOracleRel
-    simp only [acceptRejectOracleRel, Set.mem_singleton_iff, Prod.mk.injEq, hbool,
-      eq_iff_true_of_subsingleton, and_self]
+  simp only [houtput, hverify, liftComp_optionT_pure, liftComp_pure, liftM_pure, pure_bind]
+  apply (OptionT.prEvent_mk_eq_one_iff _ _).2
+  intro value hvalue
+  have hopt {κ : Type} {spec : OracleSpec.{0, 0} κ} {β : Type} (mx : OracleComp spec β) :
+      (liftM mx : OptionT (OracleComp spec) β) = some <$> mx := by
+    change (mx >>= fun x => pure (some x)) = some <$> mx
+    rw [map_eq_bind_pure_comp]
+    rfl
+  simp only [hopt, OptionT.bind, OptionT.run, OptionT.mk, Option.elimM,
+    bind_map_left, pure_bind, _root_.map_pure] at hvalue
+  obtain ⟨ctx, hctx, hvalue⟩ := OracleComp.mem_support_bind_peel _ _ hvalue
+  obtain ⟨⟨transcript, state⟩, htr, hctxEq⟩ := OracleComp.mem_support_map_peel _ _ hctx
+  subst ctx
+  simp only [Option.elim_some] at hvalue
+  dsimp only [OracleProof.toOracleVerifier, ProtocolSpec.FullTranscript] at hverify
+  have hvalueEq := OracleComp.eq_of_mem_support_pure _ hvalue
+  subst value
+  have hinv := paperProver_runToRound_invariant P d (whirMakeTranscript P d)
+    (stmtIn, oStmtIn) witIn (Fin.last (Fintype.card (PaperTranscriptSlot P)))
+    ⟨transcript, state⟩ htr
+  have hmsgs : ∀ j, FullTranscript.messages
+      (pSpec := (whirPaperTranscriptVectorSpec P d).toProtocolSpec F) transcript j
+      = paperTranscriptMessage P d
+          (whirMakeTranscript P d ((stmtIn, oStmtIn), witIn)) j :=
+    fun j => hinv.2 j.1.1 j.1.isLt j.1.isLt j.2
+  have hbool : whirCheckingBool P d
+      (FullTranscript.messages transcript) (FullTranscript.challenges transcript) = true :=
+    whirCheckingBool_honest P d ((stmtIn, oStmtIn), witIn) _ hmsgs _
+  refine ⟨_, rfl, ?_, hbool.symm, Subsingleton.elim _ _⟩
+  simp only [acceptRejectOracleRel, Set.mem_singleton_iff, Prod.mk.injEq, hbool,
+    eq_iff_true_of_subsingleton, and_self]
 
 /-! ### Wiring: the concrete checked WHIR IOP satisfies Protocol.lean's residual shapes -/
 

@@ -230,7 +230,7 @@ theorem abs_norm_le_house_pow (α : K) :
     _ = ‖∏ σ : K →ₐ[ℚ] ℂ, σ α‖ := by rw [key]
     _ = ∏ σ : K →ₐ[ℚ] ℂ, ‖σ α‖ := by rw [norm_prod]
     _ ≤ ∏ _σ : K →ₐ[ℚ] ℂ, house α :=
-        Finset.prod_le_prod (fun σ _ => norm_nonneg _)
+        Finset.prod_le_prod₀ (fun σ _ => norm_nonneg _)
           (fun σ _ => norm_embedding_le_house α σ.toRingHom)
     _ = house α ^ (Fintype.card (K →ₐ[ℚ] ℂ)) := by rw [Finset.prod_const, Finset.card_univ]
     _ = house α ^ finrank ℚ K := by

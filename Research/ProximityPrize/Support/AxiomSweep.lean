@@ -1,12 +1,12 @@
 -- Flagship axiom sweep — every declaration must show only [propext, Classical.choice, Quot.sound]
 import Research.ProximityPrize.Lattice2
-import ArkLib.Data.CodingTheory.SubspaceDesign
+import ProximityPrize.Extensions.Data.CodingTheory.SubspaceDesign
 import ArkLib.ToMathlib.CS25JointFar
 import ArkLib.ToMathlib.L13Milestone
 import ArkLib.ToMathlib.L46DiffStackRS
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
 import ArkLib.ToMathlib.KoalaBearCode
-import ArkLib.ProofSystem.ToyProblem.SoundnessBounds
+import ProximityPrize.Extensions.ProofSystem.ToyProblem.SoundnessBounds
 import ArkLib.ToMathlib.ToyStep4
 import ArkLib.ToMathlib.SubspacePolyLinearized
 import Research.ProximityPrize.Hab25Core

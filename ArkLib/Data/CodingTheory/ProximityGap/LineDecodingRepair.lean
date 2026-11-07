@@ -3,7 +3,8 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.LineDecoding
+import ArkLib.Data.Probability.Notation
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.LineDecoding
 import ArkLib.Data.CodingTheory.ProximityGap.LineDecodingCoverage
 import ArkLib.Data.CodingTheory.ProximityGap.LineDecodingRefutation
 
@@ -109,7 +110,7 @@ theorem mcaProb_Czero_le_half (u : WordStack A (Fin 2) ι) :
   have hcardF : ((Fintype.card F : ℕ) : ENNReal) = (2 : ENNReal) := by
     rw [show (Fintype.card F : ℕ) = 2 from by decide]; rfl
   have hw : ∀ γ : F, ($ᵖ F) γ = (1 : ENNReal) / 2 := by
-    intro γ; rw [PMF.uniformOfFintype_apply, hcardF, one_div]
+    intro γ; rw [ProximityPrize.Compatibility.uniformOfFintype_apply, hcardF, one_div]
   have huniv : (Finset.univ : Finset F) = {0, 1} := by decide
   rw [huniv, Finset.sum_insert (by decide), Finset.sum_singleton]
   simp only [hw]
@@ -121,7 +122,7 @@ theorem mcaProb_Czero_le_half (u : WordStack A (Fin 2) ι) :
   · rw [if_neg hb0, mul_zero, zero_add]
     by_cases hb1 : mcaEvent (F := F) ((Czero : Set (ι → A))) (0 : ℝ≥0) (u 0) (u 1) (1 : F)
     · rw [if_pos hb1, mul_one]
-    · rw [if_neg hb1, mul_zero]; exact zero_le _
+    · rw [if_neg hb1, mul_zero]; exact zero_le
 
 /-- **Sharp lower bound `1/|F| ≤ ε_mca(Czero, 0)`** (sharper than the in-tree `0 < ε_mca`). -/
 theorem epsMCA_Czero_ge_half :
@@ -134,7 +135,7 @@ theorem epsMCA_Czero_ge_half :
           (ubad 0) (ubad 1) γ] := by
     rw [ProbabilityTheory.Pr_eq_tsum_indicator]
     refine le_trans ?_ (ENNReal.le_tsum (0 : F))
-    rw [if_pos mcaEvent_ubad_zero, mul_one, PMF.uniformOfFintype_apply, one_div]
+    rw [if_pos mcaEvent_ubad_zero, mul_one, ProximityPrize.Compatibility.uniformOfFintype_apply, one_div]
   refine le_trans hpoint ?_
   unfold epsMCA
   exact le_iSup (fun u : WordStack A (Fin 2) ι =>

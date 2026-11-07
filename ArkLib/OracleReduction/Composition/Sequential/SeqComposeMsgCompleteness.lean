@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.OracleReduction.Composition.Sequential.General
+import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.General
 import ArkLib.OracleReduction.Composition.Sequential.AppendPerfectCompletenessMsg
 import ArkLib.OracleReduction.Composition.Sequential.AppendPerfectCompletenessEmpty
 
@@ -65,20 +65,20 @@ challenge oracle spec `[pSpec.Challenge]ₒ` is finite. (Individual protocols pr
 by a manual per-round case split; this is the general form that lets the seqCompose/append
 completeness keystones synthesize their probability instances for an arbitrary growing protocol.) -/
 instance instChallengeOracleFintype {n : ℕ} {pSpec : ProtocolSpec n}
-    [∀ i, Fintype (pSpec.Challenge i)] : [pSpec.Challenge]ₒ.Fintype where
-  fintype_B := fun q => inferInstanceAs (Fintype (pSpec.Challenge q.1))
+    [∀ i, Fintype (pSpec.Challenge i)] : ∀ q, Fintype (([pSpec.Challenge]ₒ).Range q) :=
+  fun q => inferInstanceAs (Fintype (pSpec.Challenge q.1))
 
 /-- **General challenge-oracle inhabitedness.** The `Inhabited` analogue of
 `instChallengeOracleFintype`. -/
 instance instChallengeOracleInhabited {n : ℕ} {pSpec : ProtocolSpec n}
-    [∀ i, Inhabited (pSpec.Challenge i)] : [pSpec.Challenge]ₒ.Inhabited where
-  inhabited_B := fun q => inferInstanceAs (Inhabited (pSpec.Challenge q.1))
+    [∀ i, Inhabited (pSpec.Challenge i)] : ∀ q, Inhabited (([pSpec.Challenge]ₒ).Range q) :=
+  fun q => inferInstanceAs (Inhabited (pSpec.Challenge q.1))
 
 end ProtocolSpec
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
   {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
 
 set_option maxHeartbeats 1000000 in
@@ -110,8 +110,7 @@ theorem seqCompose_perfectCompleteness_of_append_msg {m : ℕ}
   induction m with
   | zero =>
     rw [seqCompose_zero]
-    simpa using
-      (Reduction.id_perfectCompleteness (init := init) (impl := impl) (rel := rel 0))
+    exact Reduction.id_perfectCompleteness (init := init) (impl := impl) (rel := rel 0)
   | succ m ih =>
     change ((R 0).append
         (seqCompose (Stmt ∘ Fin.succ) (Wit ∘ Fin.succ) (fun i => R (Fin.succ i))))
@@ -153,8 +152,7 @@ theorem seqCompose_pc_of_append_msg' {m : ℕ}
   induction m with
   | zero =>
     rw [seqCompose_zero]
-    simpa using
-      (Reduction.id_perfectCompleteness (init := init) (impl := impl) (rel := rel 0))
+    exact Reduction.id_perfectCompleteness (init := init) (impl := impl) (rel := rel 0)
   | succ m ih =>
     change ((R 0).append
         (seqCompose (Stmt ∘ Fin.succ) (Wit ∘ Fin.succ) (fun i => R (Fin.succ i))))

@@ -14,7 +14,7 @@ namespace Logup
 
 section SumcheckSoundness
 
-variable {ι : Type} (oSpec : OracleSpec ι) [oSpec.Fintype]
+variable {ι : Type} (oSpec : OracleSpec ι) [∀ q, Fintype (oSpec.Range q)]
 variable (F : Type) [Field F] [Fintype F] [DecidableEq F] [Fact ((-1 : F) ≠ 1)]
   [SampleableType F]
 variable (n M : ℕ)

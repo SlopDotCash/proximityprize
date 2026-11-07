@@ -83,7 +83,8 @@ theorem stirCheckingRepRbrSoundnessStatement_mono (t : ℕ)
   unfold stirCheckingRepRbrSoundnessStatement OracleProof.rbrKnowledgeSoundness
     OracleVerifier.rbrKnowledgeSoundness at h ⊢
   exact ThresholdKSF.rbrKnowledgeSoundness_mono (pure ()) isEmptyElim
-    ((stirCheckingIOPRep M φ deg t).verifier.toVerifier)
+    ((stirCheckingIOPRep M φ deg t).toOracleVerifier.toVerifier
+      (Oₛₒ := fun i : Empty => nomatch i))
     (stirRelation deg φ δ) acceptRejectOracleRel h hle
 
 /-- **The checking verifier is sound at every budget dominating `stirEpsStar`** (#301):

@@ -56,7 +56,14 @@ theorem eval₂Hom_symbolicVandermonde
     (coeff : F →+* E) (label : J → E) :
     MvPolynomial.eval₂Hom coeff label (symbolicVandermonde (F := F) (J := J)) =
       vandermondeProduct label := by
-  simp [symbolicVandermonde, vandermondeProduct]
+  unfold symbolicVandermonde vandermondeProduct
+  rw [map_prod]
+  apply Finset.prod_congr rfl
+  intro i _
+  rw [map_prod]
+  apply Finset.prod_congr rfl
+  intro j _
+  simp only [map_sub, MvPolynomial.eval₂Hom_X']
 
 /-- A Bézout identity for a power of `delta` forces at least one generator to remain nonzero
 under every specialization where `delta` remains nonzero. -/
@@ -112,7 +119,7 @@ theorem mulVec_injective_of_maximalMinor_certificate
       hcertificate hdelta
   apply mulVec_injective_of_submatrix_det_ne_zero (M.map phi) (select s)
   change ((M.submatrix (select s) id).map phi).det ≠ 0
-  simpa only [RingHom.map_det] using hs
+  simpa only [RingHom.map_det, RingHom.mapMatrix_apply] using hs
 
 /-- Distinct-label specialization form of the maximal-minor consumer.  Once the symbolic
 discriminant maps to the concrete Vandermonde product, injectivity of the labels discharges the

@@ -87,7 +87,7 @@ theorem sum_rootMultiplicity_foldedWronskian_le
     (hP : ∀ j, (P j).natDegree ≤ k - 1)
     (hL : foldedWronskian P ω ≠ 0) (S : Finset F) :
     (∑ a ∈ S, rootMultiplicity a (foldedWronskian P ω)) ≤ s * (k - 1) :=
-  (Polynomial.sum_rootMultiplicity_le_natDegree _ hL S).trans
+  (Polynomial.sum_rootMultiplicity_le_natDegree S).trans
     (natDegree_foldedWronskian_le P ω hP)
 
 end ArkLib.FRS.GK16

@@ -13,7 +13,7 @@ import ArkLib.OracleReduction.LiftContext.Coherence
 #433) for the LogUp embedded sumcheck** — `logupSumcheck_liftContextCoherent`, axiom-clean. This is
 the keystone that lets the proven generic `Sumcheck.Spec` completeness / round-by-round soundness
 transfer through `sumcheckOracleReduction = (logupConcreteSumcheckOracleReduction …).liftContext …`
-via `OracleReduction.liftContext_perfectCompleteness` / `liftContext_rbr_soundness`.
+via `OracleReduction.liftContextLegacy_perfectCompleteness` / `liftContext_rbr_soundness`.
 
 The instance assembles three obligations: `hproj` (`rfl`, the projection is the constant initial
 sumcheck statement), `hlift` (`rfl` up to the empty output-oracle family `OutputOracleIdx = Fin 0`),
@@ -55,7 +55,9 @@ namespace Logup
 
 section LiftCoherent
 
-variable {ι : Type} (oSpec : OracleSpec ι) [oSpec.Fintype]
+set_option backward.isDefEq.respectTransparency false
+
+variable {ι : Type} (oSpec : OracleSpec ι) [∀ t, Fintype (oSpec.Range t)]
 variable (F : Type) [Field F] [Fintype F] [DecidableEq F] [Fact ((-1 : F) ≠ 1)] [SampleableType F]
 variable (n M : ℕ) (params : ProtocolParams M)
 
@@ -108,19 +110,15 @@ theorem simulateQ_mapM_column
             (⟨.input (.column a), r⟩ : [OStmtAfterOuter F n M params]ₒ.Domain) :
             OracleComp (oSpec + [OStmtAfterOuter F n M params]ₒ) F)))
       = pure (l.map (fun a => OracleInterface.answer (oos (.input (.column a))) r)) := by
-  induction l with
-  | nil => simp
-  | cons a l ih =>
-    have he : simulateQ (simOracle oSpec oos)
-          (query (spec := [OStmtAfterOuter F n M params]ₒ)
-            (⟨.input (.column a), r⟩ : [OStmtAfterOuter F n M params]ₒ.Domain) :
-            OracleComp (oSpec + [OStmtAfterOuter F n M params]ₒ) F)
-        = pure (OracleInterface.answer (oos (.input (.column a))) r) :=
-      simulateQ_simOracle_subspec_query oSpec F n M params oos
-        (⟨.input (.column a), r⟩ : [OStmtAfterOuter F n M params]ₒ.Domain)
-    rw [List.mapM_cons]
-    simp only [simulateQ_bind, simulateQ_pure, ih, pure_bind, List.map_cons]
-    exact he ▸ pure_bind _ _
+  erw [simulateQ_list_mapM]
+  have hf : (fun a : Fin M => simulateQ (simOracle oSpec oos)
+      (query (spec := [OStmtAfterOuter F n M params]ₒ)
+        (⟨.input (.column a), r⟩ : [OStmtAfterOuter F n M params]ₒ.Domain) :
+          OracleComp (oSpec + [OStmtAfterOuter F n M params]ₒ) F)) =
+      (fun a => pure (OracleInterface.answer (oos (.input (.column a))) r)) := by
+    funext a
+    exact simulateQ_simOracle_subspec_query oSpec F n M params oos _
+  erw [hf, List.mapM_pure]
 
 /-- **`mapM` reconstruction (helper oracles).** As `simulateQ_mapM_column`, for the helper queries. -/
 theorem simulateQ_mapM_helper
@@ -135,21 +133,17 @@ theorem simulateQ_mapM_helper
           OracleInterface.answer
             (oos (⟨.helpers, ⟨a, r⟩⟩ : [OStmtAfterOuter F n M params]ₒ.Domain).1)
             (⟨.helpers, ⟨a, r⟩⟩ : [OStmtAfterOuter F n M params]ₒ.Domain).2)) := by
-  induction l with
-  | nil => simp
-  | cons a l ih =>
-    have he : simulateQ (simOracle oSpec oos)
-          (query (spec := [OStmtAfterOuter F n M params]ₒ)
-            (show [OStmtAfterOuter F n M params]ₒ.Domain from ⟨.helpers, ⟨a, r⟩⟩) :
-            OracleComp (oSpec + [OStmtAfterOuter F n M params]ₒ) F)
-        = pure (OracleInterface.answer
-            (oos (⟨.helpers, ⟨a, r⟩⟩ : [OStmtAfterOuter F n M params]ₒ.Domain).1)
-            (⟨.helpers, ⟨a, r⟩⟩ : [OStmtAfterOuter F n M params]ₒ.Domain).2) :=
-      simulateQ_simOracle_subspec_query oSpec F n M params oos
-        (show [OStmtAfterOuter F n M params]ₒ.Domain from ⟨.helpers, ⟨a, r⟩⟩)
-    rw [List.mapM_cons]
-    simp only [simulateQ_bind, simulateQ_pure, ih, pure_bind, List.map_cons]
-    exact he ▸ pure_bind _ _
+  erw [simulateQ_list_mapM]
+  have hf : (fun a : Fin params.numGroups => simulateQ (simOracle oSpec oos)
+      (query (spec := [OStmtAfterOuter F n M params]ₒ)
+        (show [OStmtAfterOuter F n M params]ₒ.Domain from ⟨.helpers, ⟨a, r⟩⟩) :
+          OracleComp (oSpec + [OStmtAfterOuter F n M params]ₒ) F)) =
+      (fun a => pure (OracleInterface.answer
+        (oos (⟨.helpers, ⟨a, r⟩⟩ : [OStmtAfterOuter F n M params]ₒ.Domain).1)
+          (⟨.helpers, ⟨a, r⟩⟩ : [OStmtAfterOuter F n M params]ₒ.Domain).2)) := by
+    funext a
+    exact simulateQ_simOracle_subspec_query oSpec F n M params oos _
+  erw [hf, List.mapM_pure]
 
 /-- **`simOStmt` faithfulness.** Under the honest outer oracles, the lens' virtual-oracle
 reconstruction simulates to the honest inner `Q`-oracle answer at `r`. -/
@@ -199,7 +193,7 @@ theorem logupSumcheck_simOStmt_faithful
 The virtual-oracle reconstruction `logupSumcheckOracleLens.simOStmt` is coherent with the inner
 generic-sumcheck verifier's honest oracle answers, so the proven generic `Sumcheck.Spec`
 completeness / RBR-soundness transfer through `sumcheckOracleReduction = (… ).liftContext` via
-`OracleReduction.liftContext_perfectCompleteness` / `liftContext_rbr_soundness`.
+`OracleReduction.liftContextLegacy_perfectCompleteness` / `liftContext_rbr_soundness`.
 
 * `hproj` — the non-oracle projection is the constant initial sumcheck statement, so `rfl`;
 * `hfaith` — the proven faithfulness `logupSumcheck_simOStmt_faithful` (all inner queries have the

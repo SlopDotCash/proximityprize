@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import Research.ProximityPrize.Hab25Core
 import Research.ProximityPrize.MCAUDRBound
 import Research.ProximityPrize.Hab25Johnson
-import ArkLib.Data.CodingTheory.GuruswamiSudan.Basic
+import ProximityPrize.Extensions.Data.CodingTheory.GuruswamiSudan.Basic
 
 /-!
 # The Johnson numeric bound dominates the unique-decoding error

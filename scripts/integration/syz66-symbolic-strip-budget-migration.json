@@ -1,0 +1,236 @@
+{
+  "owner": "Research/ProximityPrize/Frontier/_SYZ66BadCountBridge.lean",
+  "original_source_archive": "scripts/integration/retired/SYZ66-before-symbolic-strip-budget.lean.txt",
+  "original_source_sha256": "dd5983a91614726cad01db1b7ebd220da21cf42f4dffaa98853c5327ce9cddef",
+  "current_source_sha256": "d1b76ecafb972a624f658beda00828b457fda73f625cc2f3688747f17b3d1f31",
+  "public_declaration_count": 9,
+  "all_original_public_headers_and_active_contexts_preserved": true,
+  "public_contracts": [
+    {
+      "name": "ArkLib.ProximityGap.Frontier.SYZ66.strip_threshold",
+      "original_header": "/-- **The strip witness threshold.**  At the strip predecessor radius\n`predecessorRadius 2³⁰ stripNumerator = 357913940/2³⁰`, the `mcaEvent` witness set has at least\n`t = 715827884` points.  (`715827884 + (357913941 − 1) = 2³⁰` exactly — the strip radius sits at the\n`1/3` lattice predecessor, so the threshold is `2³⁰ − 357913940 = 715827884`.) -/\ntheorem strip_threshold :\n    ((715827884 : ℕ) : ℝ≥0) ≤\n      (1 - predecessorRadius (2 ^ 30) stripNumerator) *\n        (Fintype.card (Fin (2 ^ 30)) : ℝ≥0) ",
+      "current_header": "/-- **The strip witness threshold.**  At the strip predecessor radius\n`predecessorRadius 2³⁰ stripNumerator = 357913940/2³⁰`, the `mcaEvent` witness set has at least\n`t = 715827884` points.  (`715827884 + (357913941 − 1) = 2³⁰` exactly — the strip radius sits at the\n`1/3` lattice predecessor, so the threshold is `2³⁰ − 357913940 = 715827884`.) -/\ntheorem strip_threshold :\n    ((715827884 : ℕ) : ℝ≥0) ≤\n      (1 - predecessorRadius (2 ^ 30) stripNumerator) *\n        (Fintype.card (Fin (2 ^ 30)) : ℝ≥0) ",
+      "active_section_context_preserved": true,
+      "header_preserved_modulo_explicit_first_prize_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.SYZ66.strip_independent_cap",
+      "original_header": "/-- **The strip independent cap (proven).**  Given the G87 bridge functionals `φ` of an `r`-scalar\nfamily, all annihilating a **nonzero** syndrome pair (`hann`, `hne`), if they are **linearly\nindependent** (generic position, no syzygy) then `r ≤ 5`.\n\nThis instantiates G86/G87's `plantable_linearIndependent_cap` at the strip shape:\n`r·(715827884 − k) + 1 ≤ 2(2³⁰ − k)` with `k ≤ 2²⁹` forces `r ≤ 5`.  The bound is sharp\n(`r = 5` at `k = 2²⁹`).  So the entire generic-position regime is capped at a constant, far below the\n`2³⁰` budget. -/\ntheorem strip_independent_cap {r : ℕ}\n    {u₀ u₁ : Fin (2 ^ 30) → ZMod P}\n    {φ : Fin r × Fin (715827884 - Module.finrank (ZMod P) wallCode) →\n        Module.Dual (ZMod P) (SyndromePair wallCode)}\n    (hann : ∀ p, φ p (syndromePair wallCode u₀ u₁) = 0)\n    (hne : syndromePair wallCode u₀ u₁ ≠ 0)\n    (hli : LinearIndependent (ZMod P) φ) : r ≤ 5 ",
+      "current_header": "/-- **The strip independent cap (proven).**  Given the G87 bridge functionals `φ` of an `r`-scalar\nfamily, all annihilating a **nonzero** syndrome pair (`hann`, `hne`), if they are **linearly\nindependent** (generic position, no syzygy) then `r ≤ 5`.\n\nThis instantiates G86/G87's `plantable_linearIndependent_cap` at the strip shape:\n`r·(715827884 − k) + 1 ≤ 2(2³⁰ − k)` with `k ≤ 2²⁹` forces `r ≤ 5`.  The bound is sharp\n(`r = 5` at `k = 2²⁹`).  So the entire generic-position regime is capped at a constant, far below the\n`2³⁰` budget. -/\ntheorem strip_independent_cap {r : ℕ}\n    {u₀ u₁ : Fin (2 ^ 30) → ZMod P}\n    {φ : Fin r × Fin (715827884 - Module.finrank (ZMod P) wallCode) →\n        Module.Dual (ZMod P) (SyndromePair wallCode)}\n    (hann : ∀ p, φ p (syndromePair wallCode u₀ u₁) = 0)\n    (hne : syndromePair wallCode u₀ u₁ ≠ 0)\n    (hli : LinearIndependent (ZMod P) φ) : r ≤ 5 ",
+      "active_section_context_preserved": true,
+      "header_preserved_modulo_explicit_first_prize_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.SYZ66.strip_six_bad_scalars_force_syzygy",
+      "original_header": "/-- **Strip force-syzygy (family form).**  Any `r ≥ 6` scalars each firing `mcaEvent` at the strip\npredecessor radius yield witness functionals on the `2³⁰`-dimensional syndrome-pair space that\n(a) all vanish on the stack's (nonzero) syndrome pair, (b) are linearly independent within each\nwitness block, and (c) globally admit an **explicit nontrivial syzygy** — because the generic\ndisjunct of the G86 dichotomy is numerically impossible at the strip shape:\n`6·(715827884 − k) + 1 > 2(2³⁰ − k)` for every `k ≤ 2²⁹`.  The strip analogue of G87's `64`-scalar\nwall corollary. -/\ntheorem strip_six_bad_scalars_force_syzygy\n    {r : ℕ} (hr : 6 ≤ r) (u₀ u₁ : Fin (2 ^ 30) → ZMod P) (γ : Fin r → ZMod P)\n    (hbad : ∀ i, mcaEvent\n      (ArkLib.ProximityGap.KKH26.evalCode g (2 ^ 30) (2 ^ 29 - 1))\n      (predecessorRadius (2 ^ 30) stripNumerator) u₀ u₁ (γ i)) :\n    ∃ φ : Fin r × Fin (715827884 - Module.finrank (ZMod P) wallCode) →\n        Module.Dual (ZMod P) (SyndromePair wallCode),\n      (∀ p, φ p (syndromePair wallCode u₀ u₁) = 0) ∧\n      (∀ i, LinearIndependent (ZMod P) fun j => φ (i, j)) ∧\n      ∃ cc : Fin r × Fin (715827884 - Module.finrank (ZMod P) wallCode) → ZMod P,\n        (∑ p, cc p • φ p = 0) ∧ ∃ p, cc p ≠ 0 ",
+      "current_header": "/-- **Strip force-syzygy (family form).**  Any `r ≥ 6` scalars each firing `mcaEvent` at the strip\npredecessor radius yield witness functionals on the `2³⁰`-dimensional syndrome-pair space that\n(a) all vanish on the stack's (nonzero) syndrome pair, (b) are linearly independent within each\nwitness block, and (c) globally admit an **explicit nontrivial syzygy** — because the generic\ndisjunct of the G86 dichotomy is numerically impossible at the strip shape:\n`6·(715827884 − k) + 1 > 2(2³⁰ − k)` for every `k ≤ 2²⁹`.  The strip analogue of G87's `64`-scalar\nwall corollary. -/\ntheorem strip_six_bad_scalars_force_syzygy\n    {r : ℕ} (hr : 6 ≤ r) (u₀ u₁ : Fin (2 ^ 30) → ZMod P) (γ : Fin r → ZMod P)\n    (hbad : ∀ i, mcaEvent\n      (ArkLib.ProximityGap.KKH26.evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1))\n      (predecessorRadius (2 ^ 30) stripNumerator) u₀ u₁ (γ i)) :\n    ∃ φ : Fin r × Fin (715827884 - Module.finrank (ZMod P) wallCode) →\n        Module.Dual (ZMod P) (SyndromePair wallCode),\n      (∀ p, φ p (syndromePair wallCode u₀ u₁) = 0) ∧\n      (∀ i, LinearIndependent (ZMod P) fun j => φ (i, j)) ∧\n      ∃ cc : Fin r × Fin (715827884 - Module.finrank (ZMod P) wallCode) → ZMod P,\n        (∑ p, cc p • φ p = 0) ∧ ∃ p, cc p ≠ 0 ",
+      "active_section_context_preserved": true,
+      "header_preserved_modulo_explicit_first_prize_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.SYZ66.strip_six_bad_scalars_not_linearIndependent",
+      "original_header": "/-- **Impossibility form.**  The witness functionals of `6` bad scalars at the strip shape can\n**never** be linearly independent: independent-block planting is capped at `5`. -/\ntheorem strip_six_bad_scalars_not_linearIndependent\n    {r : ℕ} (hr : 6 ≤ r) (u₀ u₁ : Fin (2 ^ 30) → ZMod P) (γ : Fin r → ZMod P)\n    (hbad : ∀ i, mcaEvent\n      (ArkLib.ProximityGap.KKH26.evalCode g (2 ^ 30) (2 ^ 29 - 1))\n      (predecessorRadius (2 ^ 30) stripNumerator) u₀ u₁ (γ i)) :\n    ∃ φ : Fin r × Fin (715827884 - Module.finrank (ZMod P) wallCode) →\n        Module.Dual (ZMod P) (SyndromePair wallCode),\n      (∀ p, φ p (syndromePair wallCode u₀ u₁) = 0) ∧\n      (∀ i, LinearIndependent (ZMod P) fun j => φ (i, j)) ∧\n      ¬ LinearIndependent (ZMod P) φ ",
+      "current_header": "/-- **Impossibility form.**  The witness functionals of `6` bad scalars at the strip shape can\n**never** be linearly independent: independent-block planting is capped at `5`. -/\ntheorem strip_six_bad_scalars_not_linearIndependent\n    {r : ℕ} (hr : 6 ≤ r) (u₀ u₁ : Fin (2 ^ 30) → ZMod P) (γ : Fin r → ZMod P)\n    (hbad : ∀ i, mcaEvent\n      (ArkLib.ProximityGap.KKH26.evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1))\n      (predecessorRadius (2 ^ 30) stripNumerator) u₀ u₁ (γ i)) :\n    ∃ φ : Fin r × Fin (715827884 - Module.finrank (ZMod P) wallCode) →\n        Module.Dual (ZMod P) (SyndromePair wallCode),\n      (∀ p, φ p (syndromePair wallCode u₀ u₁) = 0) ∧\n      (∀ i, LinearIndependent (ZMod P) fun j => φ (i, j)) ∧\n      ¬ LinearIndependent (ZMod P) φ ",
+      "active_section_context_preserved": true,
+      "header_preserved_modulo_explicit_first_prize_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.SYZ66.six_bad_scalars_of_count_ge",
+      "original_header": "/-- **Six distinct bad scalars from a bad count `≥ 6`.**  If the concrete `mcaBadCount` is at least\n`6`, six *distinct* scalars each fire `mcaEvent` — extracted from the bad-scalar filter set. -/\ntheorem six_bad_scalars_of_count_ge\n    (C : Set (Fin (2 ^ 30) → ZMod P)) (δ : ℝ≥0) (u₀ u₁ : Fin (2 ^ 30) → ZMod P)\n    (h : 6 ≤ mcaBadCount (F ",
+      "current_header": "/-- **Six distinct bad scalars from a bad count `≥ 6`.**  If the concrete `mcaBadCount` is at least\n`6`, six *distinct* scalars each fire `mcaEvent` — extracted from the bad-scalar filter set. -/\ntheorem six_bad_scalars_of_count_ge\n    (C : Set (Fin (2 ^ 30) → ZMod P)) (δ : ℝ≥0) (u₀ u₁ : Fin (2 ^ 30) → ZMod P)\n    (h : 6 ≤ mcaBadCount (F ",
+      "active_section_context_preserved": true,
+      "header_preserved_modulo_explicit_first_prize_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.SYZ66.strip_count_ge_six_forces_syzygy",
+      "original_header": "/-- **Bad count `≥ 6` forces a syzygy (concrete form).**  For the gate code at the strip predecessor\nradius, any stack whose `mcaBadCount` is at least `6` carries an explicit nontrivial syzygy among the\nwitness functionals of six of its bad scalars.  Hence the `2³⁰` budget of `BadCountCeiling` lives\nentirely in the syzygy-carrying stacks; every stack with bad count `≤ 5` is discharged by the proven\nindependent cap. -/\ntheorem strip_count_ge_six_forces_syzygy\n    (u₀ u₁ : Fin (2 ^ 30) → ZMod P)\n    (h : 6 ≤ mcaBadCount (F ",
+      "current_header": "/-- **Bad count `≥ 6` forces a syzygy (concrete form).**  For the gate code at the strip predecessor\nradius, any stack whose `mcaBadCount` is at least `6` carries an explicit nontrivial syzygy among the\nwitness functionals of six of its bad scalars.  Hence the `2³⁰` budget of `BadCountCeiling` lives\nentirely in the syzygy-carrying stacks; every stack with bad count `≤ 5` is discharged by the proven\nindependent cap. -/\ntheorem strip_count_ge_six_forces_syzygy\n    (u₀ u₁ : Fin (2 ^ 30) → ZMod P)\n    (h : 6 ≤ mcaBadCount (F ",
+      "active_section_context_preserved": true,
+      "header_preserved_modulo_explicit_first_prize_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.SYZ66.StripSyzygyControlledCeiling",
+      "original_header": "/-- **The isolated residual `(d)`.**  Every stack with `≥ 6` bad scalars — necessarily\nsyzygy-carrying by `strip_count_ge_six_forces_syzygy` — has bad count `≤ 2³⁰`.  This is exactly the\ndependent/syzygy-block control that G86's raw dependence certificate does **not** supply and that\nSYZ56's cross-witness chaining is a NO-GO for: the scalar-level pencil attribution of the syzygy bulk\n(SYZ29's `#fresh = 0` residual). -/\ndef StripSyzygyControlledCeiling : Prop ",
+      "current_header": "/-- **The isolated residual `(d)`.**  Every stack with `≥ 6` bad scalars — necessarily\nsyzygy-carrying by `strip_count_ge_six_forces_syzygy` — has bad count `≤ 2³⁰`.  This is exactly the\ndependent/syzygy-block control that G86's raw dependence certificate does **not** supply and that\nSYZ56's cross-witness chaining is a NO-GO for: the scalar-level pencil attribution of the syzygy bulk\n(SYZ29's `#fresh = 0` residual). -/\ndef StripSyzygyControlledCeiling : Prop ",
+      "active_section_context_preserved": true,
+      "header_preserved_modulo_explicit_first_prize_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.SYZ66.badCountCeiling_of_syzygyControlled",
+      "original_header": "/-- **The honest composition.**  `BadCountCeiling` follows from `StripSyzygyControlledCeiling`: the\nlow-count regime (`≤ 5` bad scalars, exactly the independent/generic-position stacks the proven\n`strip_independent_cap` covers) satisfies `≤ 2³⁰` **unconditionally** (`5 ≤ 2³⁰`), and the residual\nhandles only the syzygy-carrying regime (`≥ 6`).  So the proven parts cap the entire non-syzygy\nbudget; the surviving content is precisely the dependent/syzygy bulk. -/\ntheorem badCountCeiling_of_syzygyControlled (h : StripSyzygyControlledCeiling) :\n    ArkLib.ProximityGap.Frontier.SYZ60Dictionary.BadCountCeiling ",
+      "current_header": "/-- **The honest composition.**  `BadCountCeiling` follows from `StripSyzygyControlledCeiling`: the\nlow-count regime (`≤ 5` bad scalars, exactly the independent/generic-position stacks the proven\n`strip_independent_cap` covers) satisfies `≤ 2³⁰` **unconditionally** (`5 ≤ 2³⁰`), and the residual\nhandles only the syzygy-carrying regime (`≥ 6`).  So the proven parts cap the entire non-syzygy\nbudget; the surviving content is precisely the dependent/syzygy bulk. -/\ntheorem badCountCeiling_of_syzygyControlled (h : StripSyzygyControlledCeiling) :\n    ArkLib.ProximityGap.Frontier.SYZ60Dictionary.BadCountCeiling ",
+      "active_section_context_preserved": true,
+      "header_preserved_modulo_explicit_first_prize_generator_qualification": true
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.SYZ66.countingDictionary_of_syzygyControlled",
+      "original_header": "/-- **The dictionary collapse, chained.**  Composing with SYZ60: syzygy control discharges the whole\ncounting dictionary. -/\ntheorem countingDictionary_of_syzygyControlled (h : StripSyzygyControlledCeiling) :\n    ArkLib.ProximityGap.Frontier.SYZ57Transport.CountingDictionary ",
+      "current_header": "/-- **The dictionary collapse, chained.**  Composing with SYZ60: syzygy control discharges the whole\ncounting dictionary. -/\ntheorem countingDictionary_of_syzygyControlled (h : StripSyzygyControlledCeiling) :\n    ArkLib.ProximityGap.Frontier.SYZ57Transport.CountingDictionary ",
+      "active_section_context_preserved": true,
+      "header_preserved_modulo_explicit_first_prize_generator_qualification": true
+    }
+  ],
+  "quantitative_residual_preserved": {
+    "name": "ArkLib.ProximityGap.Frontier.SYZ66.StripSyzygyControlledCeiling",
+    "definition_identical_modulo_explicit_generator_qualification": true,
+    "meaning": "Every stack already having at least6bad scalars must satisfy the2^30bad-count ceiling. This remains an unproved input to badCountCeiling_of_syzygyControlled and countingDictionary_of_syzygyControlled. No production conjecture or syzygy attribution is discharged by this port."
+  },
+  "proof_factoring": [
+    {
+      "private_owner": "strip_cap_from_budget",
+      "meaning": "Pure integer arithmetic proves r≤5 from n≤2^30, K≤2^29 and r*(715827884−K)+1≤2*(n−K). The production constants/radius are unchanged."
+    },
+    {
+      "private_owner": "strip_independent_cap_symbolic",
+      "meaning": "Instantiate the public G87 planting cap and syndrome dimension theorem with symbolic field/code/Fin n, rewriting card_fin before any production instantiation."
+    },
+    {
+      "private_owner": "strip_syzygy_symbolic",
+      "meaning": "Reuse public G87 mcaEvent witness and syndrome_dichotomy; the shared integer cap excludes the independent branch when r≥6, leaving the exact nontrivial syzygy conclusion. The threshold is passed as a numeric-n inequality, avoiding closed finite-cardinality conversion."
+    },
+    {
+      "private_owner": "strip_not_independent_symbolic",
+      "meaning": "Convert the same symbolic syzygy to failure of global linear independence before concrete field/index instantiation."
+    },
+    {
+      "private_owner": "strip_threshold_numeric",
+      "meaning": "Rewrite only Fintype.card_fin in the original checked strip_threshold. Final public proofs instantiate symbolic owners without generalizing or reducing the huge concrete code quotient."
+    }
+  ],
+  "minor_API_ports": [
+    "Qualify only free generator references to ArkLib.ProximityGap.PrizeShapePrimeP30.g.",
+    "Spell the historical final push_neg tactic as push Not; no logical change."
+  ],
+  "scope": "All9public declarations/8anchors, exact code/dimension/stripNumerator/predecessor radius, constant independent cap5, six-scalar assumptions, syzygy witnesses, bad-count threshold and conditional counting dictionary are preserved. No G87 or canonical upstream source was edited. No new mathematical assumptions, admissions, custom axioms, or native trust.",
+  "validation": {
+    "strict_whole_source": {
+      "file": "Research/ProximityPrize/Frontier/_SYZ66BadCountBridge.lean",
+      "status": "temporary_overlay_source_check",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "elapsed_seconds": 6.552,
+      "source_before_sha256": "d1b76ecafb972a624f658beda00828b457fda73f625cc2f3688747f17b3d1f31",
+      "source_after_sha256": "d1b76ecafb972a624f658beda00828b457fda73f625cc2f3688747f17b3d1f31",
+      "import_artifacts": {
+        "Research.ProximityPrize.Frontier._SYZ60Dictionary": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_SYZ60Dictionary.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_SYZ60Dictionary.olean",
+          "sha256": "a6e11e7c898985805d728f15ddca5a2c787634dae8a86e81bb2b6b7b08e63557",
+          "artifact_family": {
+            "_SYZ60Dictionary.olean": "a6e11e7c898985805d728f15ddca5a2c787634dae8a86e81bb2b6b7b08e63557"
+          }
+        },
+        "Research.ProximityPrize.Frontier._SYZ43AutoInstantiation": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_SYZ43AutoInstantiation.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_SYZ43AutoInstantiation.olean",
+          "sha256": "f3033e9907321c5aff7bc4b1d46862f6c6711fe89850f7597167e65b8912df9f",
+          "artifact_family": {
+            "_SYZ43AutoInstantiation.olean": "f3033e9907321c5aff7bc4b1d46862f6c6711fe89850f7597167e65b8912df9f"
+          }
+        }
+      },
+      "imports_unchanged": true,
+      "log": "/tmp/arklib-native-overlay/logs/Research.ProximityPrize.Frontier._SYZ66BadCountBridge.lean.1793257132077432000.check.log",
+      "not_a_lake_package_build": true
+    },
+    "eight_original_printed_anchors": [
+      {
+        "name": "ArkLib.ProximityGap.Frontier.SYZ66.strip_threshold",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ArkLib.ProximityGap.Frontier.SYZ66.strip_independent_cap",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ArkLib.ProximityGap.Frontier.SYZ66.strip_six_bad_scalars_force_syzygy",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ArkLib.ProximityGap.Frontier.SYZ66.strip_six_bad_scalars_not_linearIndependent",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ArkLib.ProximityGap.Frontier.SYZ66.six_bad_scalars_of_count_ge",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ArkLib.ProximityGap.Frontier.SYZ66.strip_count_ge_six_forces_syzygy",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ArkLib.ProximityGap.Frontier.SYZ66.badCountCeiling_of_syzygyControlled",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      },
+      {
+        "name": "ArkLib.ProximityGap.Frontier.SYZ66.countingDictionary_of_syzygyControlled",
+        "axioms": [
+          "Classical.choice",
+          "Quot.sound",
+          "propext"
+        ]
+      }
+    ],
+    "bounded_resource_observation": {
+      "prefix": "syz66-whole",
+      "exit": 0,
+      "bounded_stop": null,
+      "peak_group_kib": 6724480,
+      "elapsed": 9.074,
+      "receipt": "/tmp/arklib-G87-prefix-syz66-whole.receipt.json"
+    },
+    "warning_count": 0,
+    "package_validation_pending": false
+  },
+  "resource_diagnostic_honesty": {
+    "prior_parent_owned_stop": {
+      "pid": 67219,
+      "snapshot": "66658 04:30 9320480 /Users/nubs/.elan/toolchains/leanprover--lean4---v4.35.0/bin/lean /Users/nubs/.codex/worktrees/arklib-integration/proximityprize/Research/ProximityPrize/Frontier/_SYZ66BadCountBridge.lean -o /Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_SYZ66BadCountBridge.olean -i /Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_SYZ66BadCountBridge.ilean -c /Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/ir/Research/ProximityPrize/Frontier/_SYZ66BadCountBridge.c --setup /Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/ir/Research/ProximityPrize/Frontier/_SYZ66BadCountBridge.setup.json --json",
+      "stopped_at_utc": "2026-10-29T06:53:31.622774+00:00",
+      "reason": "Owned full-build child exceeded four minutes and oscillated above 10 GiB RSS on a giant finite-cardinality proof; stopped to diagnose symbolic proof specialization. No compilation result inferred."
+    },
+    "prior_result": "The stopped full23child provided no proof verdict; its termination is inconclusive.",
+    "final_check": "Final repository source completes normally below12GiB and90active-compiler seconds.",
+    "original_caps_unchanged": "maxRecDepth100000 and maxHeartbeats1000000 are retained exactly; no budget increase or new linter suppression."
+  },
+  "current_validation": {
+    "status": "package_validation_passed",
+    "receipt": "scripts/integration/final-validation.json",
+    "check": "default_libraries",
+    "source_commit": "7483975d251b3549313243ea9d5ada700af121f9",
+    "source_snapshot_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+    "resolved_package_pending_paths": [
+      "/validation/package_validation_pending"
+    ],
+    "superseded_historical_status_paths": [],
+    "scope": "Current checked-in sources passed the final four-library package build. Original status text and all earlier receipts remain historical snapshots, not current pending claims."
+  }
+}

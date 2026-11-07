@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.MCAUDRBound
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.JointAgreement
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.JointAgreement
 
 /-!
 # Factor-2 unique-decoding-radius MCA bound for Reed-Solomon (up to (1-ρ)/2)

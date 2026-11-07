@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ArkLib.OracleReduction.Composition.Sequential.AppendSeamBridges2
 import ArkLib.OracleReduction.Composition.Sequential.AppendChallengeSeam
 import ArkLib.OracleReduction.Composition.Sequential.AppendSoundnessMsgProof
 
@@ -48,10 +49,9 @@ open scoped ENNReal NNReal
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι}
   {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
   {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
-  [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
   {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
   {rel₁ : Set (Stmt₁ × Wit₁)} {rel₂ : Set (Stmt₂ × Wit₂)} {rel₃ : Set (Stmt₃ × Wit₃)}
 
@@ -149,6 +149,8 @@ theorem hcoh_right {α : Type} (oa : OptionT (OracleComp oSpec) α) :
     = liftM (liftM oa : OptionT (OracleComp (oSpec + [pSpec₂.Challenge]ₒ)) α) := by
   apply OptionT.ext
   simp only [liftM, MonadLiftT.monadLift, MonadLift.monadLift, OptionT.run_mk]
+  rw [← QueryImpl.simulateQ_compose]
+  congr 1
 
 /-- **Verifier-leg `OptionT`-lift coherence across the `pSpec₂` seam, at `.run`.** The `pSpec₂`
 analogue of `monadLift_run_eq_double_liftM_left`. -/
@@ -161,41 +163,12 @@ theorem monadLift_run_eq_double_liftM_right {α : Type} (V : OptionT (OracleComp
   rw [← QueryImpl.simulateQ_compose]
   congr 1
 
-/-- **The `OptionT.run` of the phase-1 stage body equals `liftM` of `R₁.run`'s `OptionT.run`.**
-`appendStage₁ R₁ R₂ stmt wit` (the `P₁ → V₁` leg, run under the *combined* challenge oracle), as a
-plain `OracleComp` via `OptionT.run`, is exactly the `liftM` of `(R₁.run stmt wit).run` (over
-`pSpec₁`'s own challenge oracle). Unfolds `appendStage₁` and `Reduction.run` (`Reduction_run_def`),
-reconciles the `OracleComp`-first prover lift (`appendStage₁`) with the `OptionT`-first lift of
-`liftM (R₁.run …)` via `lift_oc_optionT_coh_left`, then strips to `OracleComp` with
-`liftM_optionT_run_eq_seam_left`. -/
-theorem appendStage₁_run_eq_liftM
-    (R₁ : Reduction oSpec Stmt₁ Wit₁ Stmt₂ Wit₂ pSpec₁)
-    (R₂ : Reduction oSpec Stmt₂ Wit₂ Stmt₃ Wit₃ pSpec₂)
-    (stmt : Stmt₁) (wit : Wit₁) :
-    OptionT.run (appendStage₁ R₁ R₂ stmt wit)
-      = (liftM ((R₁.run stmt wit).run)
-          : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (Option _)) := by
-  -- Reduce the RHS to `(liftM (R₁.run stmt wit)).run` (both at plain-`OracleComp` level).
-  rw [← liftM_optionT_run_eq_seam_left (R₁.run stmt wit)]
-  -- Unfold both `OptionT.run`s and `Reduction.run`; the prover legs are reconciled by
-  -- `lift_oc_optionT_coh_left`, the verify legs are a bare lift, and the final `pure`/`getM` cancel.
-  rw [Reduction_run_def]
-  unfold appendStage₁
-  -- The prover legs match after `lift_oc_optionT_coh_left`; the verify legs differ only by a
-  -- redundant `liftM`-to-self on the RHS (`monadLift_eq_self`); the final `pure` differs by the
-  -- (defeq) destructured prover output. `simp` normalizes all three to a common chain.
-  simp only [liftM_bind, liftM_pure, OptionT.run_bind, OptionT.run_pure,
-    lift_oc_optionT_coh_left, Option.elimM, bind_assoc]
-  -- Prover legs are now identical; `bind_congr` reduces to the per-output `elim` branches.
-  refine bind_congr fun o₁ => ?_
-  cases o₁ with
-  | none => rfl
-  | some x =>
-    obtain ⟨tr, so, wo⟩ := x
-    simp only [Option.elim_some]
-    -- Reduce to the verify-leg `.run` equality (the continuation `k` is identical on both sides).
-    -- `verify : OptionT (OracleComp oSpec)`; the appendStage₁ leg lifts it `oSpec → combined`
-    -- directly, the `liftM (R₁.run)` leg lifts it `oSpec → pSpec₁ → combined`.
-    exact congrArg (· >>= _) (monadLift_run_eq_double_liftM_left (R₁.verifier.verify stmt tr))
-
 end Reduction
+
+#print axioms Reduction.liftM_optionT_run_eq_seam_left
+#print axioms Reduction.liftM_optionT_run_eq_seam_right
+#print axioms Reduction.lift_oc_optionT_coh_left
+#print axioms Reduction.lift_oc_optionT_coh_right
+#print axioms Reduction.monadLift_run_eq_double_liftM_left
+#print axioms Reduction.hcoh_right
+#print axioms Reduction.monadLift_run_eq_double_liftM_right

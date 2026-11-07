@@ -161,7 +161,7 @@ lemma Q_of_v_ne_zero {deg_X deg_Y : ℕ} (v : MonomialIndex deg_X deg_Y → F) (
   intro h_sum
   apply hv
   funext mono0
-  have h_coeff := congr_arg (MvPolynomial.coeff (d_of_pair (mono0.1.val, mono0.2.val))) h_sum
+  have h_coeff := congr_arg (fun Q : MvPolynomial (Fin 2) F => Q.coeff (d_of_pair (mono0.1.val, mono0.2.val))) h_sum
   simp only [colMonomial, MvPolynomial.coeff_zero, MvPolynomial.coeff_sum,
     MvPolynomial.coeff_smul, MvPolynomial.coeff_monomial, smul_eq_mul] at h_coeff
   rw [Finset.sum_eq_single mono0] at h_coeff

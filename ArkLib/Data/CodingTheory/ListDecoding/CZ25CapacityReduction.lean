@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.SubspaceDesign
+import ProximityPrize.Extensions.Data.CodingTheory.SubspaceDesign
 import ArkLib.Data.CodingTheory.ReedSolomon.AdmissibleSubspaceDesign
-import ArkLib.Data.CodingTheory.ListDecodability
+import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
 import ArkLib.Data.CodingTheory.ReedSolomon.Folded
 import ArkLib.Data.CodingTheory.ListDecoding.CZ25SpanBoundBridge
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
@@ -239,6 +239,9 @@ theorem frs_list_decoding_capacity_cz25_of_T34_T218
       rw [← ht_def]
       simp only [htmem, if_true]
       rfl
+    change (if Nat.floor (1 / η) ∈ Finset.Icc 1 s then
+      (s : ℝ) * (k : ℝ) / Fintype.card ι / ((s : ℝ) - Nat.floor (1 / η) + 1)
+      else 1) = τt at hτeval
     rw [hτeval] at hT34_inst
     rw [hδ_eq, hbound_eq]
     exact hT34_inst

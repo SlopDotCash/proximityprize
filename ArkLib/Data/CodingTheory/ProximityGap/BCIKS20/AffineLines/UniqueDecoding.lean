@@ -4,20 +4,19 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao, Katerina Hristova, František Silváši, Julian Sutherland,
          Ilia Vlasov, Chung Thai Nguyen
 -/
+module
 
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Prelude
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ErrorBound
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.JointAgreement
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Prelude
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ErrorBound
+public import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.JointAgreement
 
 /-!
-# BCIKS20 affine lines — the unique-decoding regime
+# ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.UniqueDecoding
 
-This file proves correlated agreement over affine lines in the unique-decoding regime:
-`RS_correlatedAgreement_affineLines_uniqueDecodingRegime` shows that when the proximity parameter
-`δ` is below the relative unique-decoding radius of the Reed-Solomon code, the
-`δ`/`errorBound`-correlated-agreement statement over affine lines holds. It is the base case fed
-into the main affine-lines assembly.
+Definitions and results for this component of ArkLib.
 -/
+
+@[expose] public section
 
 namespace ProximityGap
 
@@ -28,7 +27,7 @@ universe u v w k l
 
 section CoreResults
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-         {F : Type} [Field F] [Fintype F] [DecidableEq F]
+         {F : Type} [Field F] [Fintype F] [SampleableType F] [DecidableEq F]
 
 omit [DecidableEq ι] in
 theorem RS_correlatedAgreement_affineLines_uniqueDecodingRegime {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
@@ -39,7 +38,7 @@ theorem RS_correlatedAgreement_affineLines_uniqueDecodingRegime {deg : ℕ} {dom
   unfold δ_ε_correlatedAgreementAffineLines
   intro u hprob
   have hprob' :
-      Pr_{let z ← $ᵖ F}[δᵣ(u 0 + z • u 1, ReedSolomon.code domain deg) ≤ δ]
+      Pr{let z ← $ᵗ F}[δᵣ(u 0 + z • u 1, ReedSolomon.code domain deg) ≤ δ]
         > (Fintype.card ι : ℝ≥0) / (Fintype.card F : ℝ≥0) := by
     simpa [errorBound_eq_n_div_q_of_le_relUDR (deg := deg) (domain := domain) (δ := δ) hδ] using
       hprob

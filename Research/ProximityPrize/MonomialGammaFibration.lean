@@ -69,7 +69,7 @@ def monoWord {p : ℕ} (g : ZMod p) {n : ℕ} (a : ℕ) : Fin n → ZMod p :=
 theorem pow_finRotate {p : ℕ} {g : ZMod p} {m : ℕ} (hg : orderOf g = m + 1)
     (i : Fin (m + 1)) :
     g ^ ((finRotate (m + 1) i : Fin (m + 1)) : ℕ) = g * g ^ (i : ℕ) := by
-  rw [finRotate_succ_apply]
+  rw [finRotate_apply]
   by_cases hlast : i = Fin.last m
   · subst hlast
     have hval : ((Fin.last m + 1 : Fin (m + 1)) : ℕ) = 0 := by

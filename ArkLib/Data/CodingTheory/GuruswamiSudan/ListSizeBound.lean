@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Eliza
 -/
 import ArkLib.Data.CodingTheory.GuruswamiSudan.FactorExtraction
-import ArkLib.Data.CodingTheory.GuruswamiSudan.Basic
+import ProximityPrize.Extensions.Data.CodingTheory.GuruswamiSudan.Basic
 import ArkLib.Data.CodingTheory.GuruswamiSudan.MultiplicityInterpolation
 import Mathlib.Tactic.Positivity
 

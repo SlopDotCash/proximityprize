@@ -22,7 +22,7 @@ ArkLib.Data.CodingTheory.ProximityGap.BoundaryLatticeThresholdRefutation ArkLib.
 # ── Grand-challenge collapse (kernel-proven refutation + collapse) ─────
 Research.ProximityPrize.Collapse ProximityGap.not_listDecodingPrize
 Research.ProximityPrize.Collapse ProximityGap.grandMCAChallenge_iff_epsMCA_one
-Research.ProximityPrize.Lattice2 ProximityGap.GrandChallengesLattice.mcaThreshold_spec
+Research.ProximityPrize.Lattice2.Core ProximityGap.GrandChallengesLattice.mcaThreshold_spec
 
 # ── KZG commitment scheme ──────────────────────────────────────────────
 ArkLib.Commitments.Functional.KZG.Correctness KZG.CommitmentScheme.correctness
@@ -47,7 +47,7 @@ ArkLib.Data.CodingTheory.GuruswamiSudan.ListSizeBound GSListSizeBound.gs_list_si
 # ── BKR06 subspace polynomial + tight family ───────────────────────────
 ArkLib.Data.CodingTheory.ListDecoding.BKR06SubspacePoly BKR06.subspacePoly_natDegree
 ArkLib.ToMathlib.SubspacePolyLinearized BKR06.bkr06_tight_family_hfamily_unconditional
-ArkLib.Data.CodingTheory.ListDecoding.Bounds CodingTheory.large_alphabet_barrier_bdg24_agl23
+ArkLib.Data.CodingTheory.ListDecoding.Bounds.RandomAndReedSolomon CodingTheory.large_alphabet_barrier_bdg24_agl23
 
 # Sequential composition and Binius integration coverage.
 # These terminal modules cover the consolidated protocol graph outside the PG umbrella.
@@ -60,23 +60,25 @@ ArkLib.OracleReduction.Composition.Sequential.SeqComposeFailingDet OracleVerifie
 ArkLib.OracleReduction.Composition.Sequential.SeqComposeOracleCompleteness OracleReduction.seqCompose_perfectCompleteness_threaded
 ArkLib.OracleReduction.Composition.Sequential.SeqComposeRbrKnowledgeProof OracleVerifier.seqCompose_rbrKnowledgeSoundness_failingDet
 ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.KeyLemmaAssembly DuplexSpongeFS.KeyLemmaAssembly.keyLemmaEager_of_steps_strictSplit
-ArkLib.OracleReduction.Security.CoordinateWiseSpecialSoundness.Composition OracleVerifier.append_coordinateWiseSpecialSound
-ArkLib.ProofSystem.Binius.BinaryBasefold.General Binius.BinaryBasefold.FullBinaryBasefold.fullOracleReduction_perfectCompleteness_wired
-ArkLib.ProofSystem.Binius.BinaryBasefold.General Binius.BinaryBasefold.FullBinaryBasefold.fullOracleVerifier_rbrKnowledgeSoundness_wired
-ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.SoundnessCase2Discharge Binius.BinaryBasefold.prop_4_21_case_2_fiberwise_far
+ProximityPrize.Extensions.OracleReduction.Security.CoordinateWiseSpecialSoundness.Composition OracleVerifier.append_coordinateWiseSpecialSound
+ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.General Binius.BinaryBasefold.FullBinaryBasefold.fullOracleReduction_perfectCompleteness_wired
+ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.General Binius.BinaryBasefold.FullBinaryBasefold.fullOracleVerifier_rbrKnowledgeSoundness_wired
+ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.SoundnessCase2Probability Binius.BinaryBasefold.prop_4_21_case_2_fiberwise_far
 ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.VerifierDeterminism Binius.BinaryBasefold.CoreInteraction.foldOracleVerifier_toVerifier_failingDet
 ArkLib.ProofSystem.Binius.FRIBinius.General Binius.FRIBinius.FullFRIBinius.fullOracleVerifier_knowledgeSoundness_of_sum_bound
 ArkLib.ProofSystem.Binius.FRIBinius.General Binius.FRIBinius.FullFRIBinius.fullOracleVerifier_rbrKnowledgeSoundness_wired
 
 # Refuted legacy Binius input-relation conversion.
-ArkLib.ProofSystem.Binius.FRIBinius.CoreInteractionPhase Binius.FRIBinius.CoreInteractionPhase.sumcheckFold_input_bridge_counterexample
+ArkLib.ProofSystem.Binius.FRIBinius.CoreInteractionPhase Binius.FRIBinius.CoreInteractionPhase.sumcheckFold_legacy_input_bridge_counterexample
 
 # Decoded Binius folding chain reaches the extracted polynomial evaluation.
-ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.FinalSumcheck Binius.BinaryBasefold.CoreInteraction.extracted_t_poly_eval_eq_final_constant
+ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Steps.FinalSumcheck Binius.BinaryBasefold.CoreInteraction.extracted_t_poly_eval_eq_final_constant
 
-# Successful Binius query steps preserve the fold and reach the final constant.
-ArkLib.ProofSystem.Binius.BinaryBasefold.QueryPhase.Folding Binius.BinaryBasefold.QueryPhase.query_phase_step_preserves_fold
-ArkLib.ProofSystem.Binius.BinaryBasefold.QueryPhase.Folding Binius.BinaryBasefold.QueryPhase.query_phase_final_fold_eq_constant
+# Native query execution preserves its guard, and canonical logical folding reaches the next fold.
+# The historical final-constant theorem retains its explicitly different challenge/bit order.
+ArkLib.ProofSystem.Binius.BinaryBasefold.QueryPhase.Execution Binius.BinaryBasefold.QueryPhase.checkSingleFoldingStep_simulate
+ArkLib.ProofSystem.Binius.BinaryBasefold.QueryPhase.Folding Binius.BinaryBasefold.QueryPhase.logicalComputeFoldedValue_eq_totalFold_of_strictConsistency
+ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.QueryPhase.Folding Binius.BinaryBasefold.QueryPhase.Historical.query_phase_final_fold_eq_constant
 
 # Arithmetic target bound is distinct from the unresolved scalar-security premise.
 ArkLib.ProofSystem.Binius.FRIBinius.General Binius.FRIBinius.FullFRIBinius.fullRbrKnowledgeError_sum_le_concrete

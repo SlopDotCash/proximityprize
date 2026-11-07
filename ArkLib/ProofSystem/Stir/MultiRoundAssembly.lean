@@ -4,11 +4,12 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Stir.MainThm
+import ProximityPrize.Extensions.ProofSystem.Stir.MainThm
 import ArkLib.ProofSystem.Stir.MultiRoundSpec
 import ArkLib.ProofSystem.Stir.RoundVector
 import ArkLib.ProofSystem.Stir.RoundCompleteness
 import ArkLib.OracleReduction.Completeness
+import ProximityPrize.Compatibility.ConstantOutputCompleteness
 
 /-!
 # Issue #301 (STIR, mechanical track): the (M+1)-round STIR Vector IOPP assembly.
@@ -106,47 +107,16 @@ noncomputable def stirMultiRoundProver (M : ℕ) (φ : ι ↪ F) (deg : ℕ) :
 /-- **The multi-round STIR verifier shell**: forwards acceptance (no output oracles). The
 genuine per-round consistency checks are the open soundness side (see the residuals below). -/
 def stirMultiRoundVerifier (M : ℕ) :
-    OracleVerifier []ₒ Unit (OracleStatement ι F) Bool (fun _ : Empty => Unit)
-      ((stirMultiVSpec M ι).toProtocolSpec F) where
-  verify := fun _ _ => pure true
-  embed := ⟨fun i => i.elim, fun i => i.elim⟩
-  hEq := fun i => i.elim
+    OracleProofVerifier []ₒ Unit (OracleStatement ι F)
+      ((stirMultiVSpec M ι).toProtocolSpec F) :=
+  OracleProofVerifier.ofVerify (fun _ _ => pure true)
 
 /-- **The assembled (M+1)-round STIR Vector IOPP** — the protocol object that the `∃ π` of
 `stir_main` / `stir_rbr_soundness` quantifies over, with the `stirVSpec` wire shape. -/
 noncomputable def stirMultiRoundIOP (M : ℕ) (φ : ι ↪ F) (deg : ℕ) :
-    VectorIOP Unit (OracleStatement ι F) Unit (stirMultiVSpec M ι) F where
-  prover := stirMultiRoundProver M φ deg
-  verifier := stirMultiRoundVerifier M
-
-section Instances
-
-variable {M : ℕ}
-
-/-- Local `VCVCompatible` packaging of the ambient `Field`/`Fintype`/`DecidableEq` data
-(needed for `Fintype (Vector F n)` on the challenge ranges). -/
-instance : VCVCompatible F := { toFintype := inferInstance, toInhabited := ⟨0⟩ }
-
-/-- Finiteness of the multi-round challenge oracle spec (every challenge range is
-`Vector F len`), pinned to the canonical `challengeOracleInterface` (the interface that the
-completeness machinery elaborates `[pSpec.Challenge]ₒ` with). -/
-instance :
-    ([((stirMultiVSpec M ι).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).Fintype where
-  fintype_B := fun q => by
-    show Fintype (((stirMultiVSpec M ι).toProtocolSpec F).Challenge q.1)
-    dsimp
-    infer_instance
-
-/-- Inhabitedness of the multi-round challenge oracle spec (pinned as above). -/
-instance :
-    ([((stirMultiVSpec M ι).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).Inhabited
-    where
-  inhabited_B := fun q => by
-    show Inhabited (((stirMultiVSpec M ι).toProtocolSpec F).Challenge q.1)
-    dsimp
-    infer_instance
-
-end Instances
+    VectorIOP Unit (OracleStatement ι F) Unit (stirMultiVSpec M ι) F :=
+  OracleReduction.mk (Oₛₒ := fun e : Empty => nomatch e)
+    (stirMultiRoundProver M φ deg) (stirMultiRoundVerifier M)
 
 section Completeness
 
@@ -162,48 +132,18 @@ probability one. (The genuine fold messages are exercised but not inspected — 
 checks are the open soundness side.) -/
 theorem stirMultiRoundIOP_perfectCompleteness (M : ℕ) (φ : ι ↪ F) (deg : ℕ)
     (relIn : Set ((Unit × ∀ i, OracleStatement ι F i) × Unit)) :
-    OracleReduction.perfectCompleteness (pure ()) isEmptyElim relIn acceptRejectOracleRel
+    OracleReduction.perfectCompleteness (Oₛₒ := fun i : Empty => nomatch i) (pure ()) isEmptyElim relIn acceptRejectOracleRel
       (stirMultiRoundIOP M φ deg) := by
-  rw [OracleReduction.unroll_n_message_reduction_perfectCompleteness
-    (reduction := stirMultiRoundIOP M φ deg) relIn acceptRejectOracleRel (pure ()) isEmptyElim
-    inferInstance
-    (by simp only [Set.fmap_eq_image, IsEmpty.forall_iff, implies_true])]
-  intro stmtIn oStmtIn witIn h_relIn
-  dsimp only [stirMultiRoundIOP, stirMultiRoundProver, stirMultiRoundVerifier,
-    OracleVerifier.toVerifier]
-  simp only [Fin.isValue, bind_pure_comp, pure_bind, bind_map_left, liftM_bind, liftM_map,
-    Prod.mk.eta, bind_assoc, map_pure, liftComp_pure, liftM_pure, OptionT.simulateQ_pure]
-  rw [probEvent_eq_one_iff]
-  refine ⟨?_, ?_⟩
-  · -- SAFETY: the run never fails
-    rw [probFailure_bind_eq_zero_iff]
-    refine ⟨?_, fun α _hα => ?_⟩
-    · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
-    · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
-      simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-        Function.comp_apply, Option.map_some, probFailure_map, HasEvalPMF.probFailure_eq_zero,
-        probOutput_eq_zero_iff, support_map, support_liftM, Set.mem_image, reduceCtorEq,
-        Set.mem_setOf_eq, not_exists, not_and, exists_const, not_false_eq_true, add_zero,
-        zero_add]
-      intro y hy
-      erw [OptionT.simulateQ_pure, OptionT.run_pure] at hy
-      simp only [support_pure, Set.mem_singleton_iff] at hy
-      subst hy
-      simp only [Option.map_some, reduceCtorEq, not_false_eq_true]
-  · -- CORRECTNESS: every output in the support satisfies the relation + agreement
-    intro x hx
-    simp only [support_bind, Set.mem_iUnion, exists_prop] at hx
-    obtain ⟨α, _hα, hx⟩ := hx
-    rw [OptionT.mem_support_iff] at hx
-    erw [OptionT.simulateQ_pure, OptionT.run_pure] at hx
-    simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-      Function.comp_apply, Option.map_some, support_map, support_pure, Set.mem_image,
-      Set.mem_singleton_iff, Option.some.injEq, exists_eq_left, exists_eq_right] at hx
-    subst hx
-    have hfn : ∀ (f g : ∀ _ : Empty, Unit), f = g := fun _ _ => funext fun i => i.elim
-    refine ⟨?_, rfl, hfn _ _⟩
-    simp only [acceptRejectOracleRel, Set.mem_singleton_iff, Prod.mk.injEq]
+  unfold OracleReduction.perfectCompleteness
+  refine Reduction.perfectCompleteness_of_constant_output _ _ _ _ _
+    (true, isEmptyElim) () (fun _ => rfl) ?_ ?_
+  · intro stmt tr
+    apply OptionT.ext
+    simp only [Verifier.run, OracleReduction.toReduction, stirMultiRoundIOP,
+      stirMultiRoundVerifier, OracleProofVerifier.ofVerify, OracleVerifier.toVerifier, OptionT.run_pure,
+      simulateQ_pure, LawfulApplicative.map_pure]
+    congr 2
+  · rfl
 
 end Completeness
 
@@ -224,7 +164,7 @@ do not try to discharge it at a sub-1 budget.  Consumed as a hypothesis below; N
 def stirMultiRoundRbrSoundnessResidual (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0) : Prop :=
   OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
-    (stirRelation deg φ δ) (stirMultiRoundIOP M φ deg).verifier ε_rbr
+    (stirRelation deg φ δ) (OracleProof.toOracleVerifier (stirMultiRoundIOP M φ deg)) ε_rbr
 
 /-- The assembled multi-round STIR IOPP is `IsSecureWithGap`, given the (open) rbr-soundness
 residual: the completeness leg is the proven `stirMultiRoundIOP_perfectCompleteness`. -/

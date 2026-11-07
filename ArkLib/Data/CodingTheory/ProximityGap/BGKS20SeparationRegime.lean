@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.Connections.ListDecodingAndCA
+import ProximityPrize.Extensions.Data.CodingTheory.Connections.ListDecodingAndCA
 import Mathlib.FieldTheory.Finite.GaloisField
 
 /-!
@@ -133,35 +133,38 @@ theorem injective_of_not_jointProximity (domain : ι ↪ F) (hι : Fintype.card 
     (u : WordStack F (Fin 2) ι)
     (hjp : ¬ jointProximity (C := ((ReedSolomon.code domain 1 : Set (ι → F)))) (u := u) (3 / 4)) :
     ∀ i j, u 0 i = u 0 j → u 1 i = u 1 j → i = j := by
+  classical
   intro i j h0 h1
   by_contra hij
   apply hjp
   unfold jointProximity
-  rw [relCloseToCode_iff_relCloseToCodeword_of_minDist]
-  refine ⟨fun _ k => u k i, ?_, ?_⟩
-  · intro k
-    exact ReedSolomon.constantCode_mem_code (x := u k i) (α := domain) (n := 1)
-  · rw [pairRelDist_le_iff_pairDist_le, hι, floor_three_quarters_mul_eight]
-    have hsub : (Finset.univ.filter fun x => (⋈|u) x ≠ (fun (_ : ι) k => u k i) x) ⊆
-        (Finset.univ.erase i).erase j := by
-      intro x hx
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx
-      simp only [Finset.mem_erase, Finset.mem_univ, and_true]
-      refine ⟨?_, ?_⟩
-      · rintro rfl
-        apply hx
-        funext k
-        fin_cases k
-        · exact h0.symm
-        · exact h1.symm
-      · rintro rfl
-        apply hx
-        rfl
-    have := Finset.card_le_card hsub
-    rw [Finset.card_erase_of_mem (by simp [Ne.symm hij]), Finset.card_erase_of_mem (by simp),
-      Finset.card_univ, hι] at this
-    unfold hammingDist
-    omega
+  exact (relCloseToCode_iff_relCloseToCodeword_of_minDist
+    (u := fun i k => u k i) (C := interleavedCodeSet
+      ((ReedSolomon.code domain 1).carrier)) (3 / 4)).mpr (by
+    refine ⟨fun _ k => u k i, ?_, ?_⟩
+    · intro k
+      exact ReedSolomon.constantCode_mem_code (x := u k i) (α := domain) (n := 1)
+    · rw [pairRelDist_le_iff_pairDist_le, hι, floor_three_quarters_mul_eight]
+      have hsub : (Finset.univ.filter fun x => (fun i k => u k i) x ≠ (fun (_ : ι) k => u k i) x) ⊆
+          (Finset.univ.erase i).erase j := by
+        intro x hx
+        simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx
+        simp only [Finset.mem_erase, Finset.mem_univ, and_true]
+        refine ⟨?_, ?_⟩
+        · rintro rfl
+          apply hx
+          funext k
+          fin_cases k
+          · exact h0.symm
+          · exact h1.symm
+        · rintro rfl
+          apply hx
+          rfl
+      have := Finset.card_le_card hsub
+      rw [Finset.card_erase_of_mem (by simp [Ne.symm hij]), Finset.card_erase_of_mem (by simp),
+        Finset.card_univ, hι] at this
+      unfold hammingDist
+      omega)
 
 /-- A word `1/2`-close to `RS[F, L, 1]` with `|L| = 8` is constant on at least `4` positions. -/
 theorem agree_of_close (domain : ι ↪ F) (hι : Fintype.card ι = 8) (w : ι → F)
@@ -187,10 +190,10 @@ theorem epsCA_rs_one_le_two_div (domain : ι ↪ F) (hι : Fintype.card ι = 8) 
     epsCA (F := F) (A := F) ((ReedSolomon.code domain 1 : Set (ι → F))) (1 / 2) (3 / 4) ≤
       (2 : ENNReal) / (Fintype.card F : ENNReal) := by
   classical
-  unfold epsCA
+  rw [epsCA_eq_pmf]
   refine iSup_le fun u => ?_
   split_ifs with hjp
-  · exact zero_le _
+  · positivity
   · have hinj := injective_of_not_jointProximity domain hι u hjp
     rw [prob_uniform_eq_card_filter_div_card]
     have hcard : (Finset.univ.filter fun γ : F =>

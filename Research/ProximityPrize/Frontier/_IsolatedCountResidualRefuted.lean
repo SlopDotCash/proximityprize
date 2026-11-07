@@ -111,7 +111,7 @@ theorem not_isolatedCountResidual_rat (k : ℕ) (hk : 1 ≤ k) :
     obtain ⟨i, hi, rfl⟩ := hx
     refine ⟨?_, by simp⟩
     simp [IsRoot.def, Efam_eval k i hi]
-  have hc := (h (Efam k) (C 1) (by simpa using hk)).2 _ hsub
+  have hc := (h (Efam k) (C 1) (by simpa only [Polynomial.natDegree_C] using (Nat.zero_lt_of_lt hk))).2 _ hsub
   have hcard : ((Finset.range (k + 2)).image (fun i : ℕ => (i : ℚ) + 1)).card = k + 2 := by
     rw [Finset.card_image_of_injective _ (by
       intro a b hab

@@ -16,6 +16,11 @@ open scoped ENNReal NNReal
 
 universe u v
 
+-- These legacy transcript predicates observe every subset of the complete value space.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A B : Type) : MeasurableSpace (A × B) := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ := ⟨fun _ => True.intro⟩
+
 namespace Verifier
 
 variable {ι : Type} {oSpec : OracleSpec ι} {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
@@ -66,21 +71,20 @@ def appendRbrKnowledgeSoundnessPerRoundResidual {WitMid₁ : Fin (m+1)→Type} {
   ∀ stmtIn : Stmt₁, ∀ witIn : Wit₁,
   ∀ prover : Prover oSpec Stmt₁ Wit₁ Stmt₃ Wit₃ (pSpec₁ ++ₚ pSpec₂),
   ∀ i : (pSpec₁ ++ₚ pSpec₂).ChallengeIdx,
-    Pr[fun ⟨transcript, challenge, _proveQueryLog⟩ =>
+    probEvent (fun ⟨transcript, challenge, _proveQueryLog⟩ =>
       ∃ witMid,
         ¬ (KnowledgeStateFunction.append V₁ V₂ kSF₁ kSF₂ verify hVerify hInit).toFun
             i.1.castSucc stmtIn transcript
             ((Extractor.RoundByRound.append E₁ E₂ verify).extractMid i.1 stmtIn
               (transcript.concat challenge) witMid) ∧
           (KnowledgeStateFunction.append V₁ V₂ kSF₁ kSF₂ verify hVerify hInit).toFun
-            i.1.succ stmtIn (transcript.concat challenge) witMid
-    | do
+            i.1.succ stmtIn (transcript.concat challenge) witMid) (do
       (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
         (do
           let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
             prover.runWithLogToRound i.1.castSucc stmtIn witIn
           let challenge ← liftComp ((pSpec₁ ++ₚ pSpec₂).getChallenge i) _
-          return (transcript, challenge, proveQueryLog))).run' (← init)] ≤
+          return (transcript, challenge, proveQueryLog))).run' (← init)) ≤
       (Sum.elim rbrKnowledgeError₁ rbrKnowledgeError₂ ∘ ChallengeIdx.sumEquiv.symm) i
 
 /-- **Log-free reduction of the appended knowledge per-round experiment.** Since the per-round
@@ -102,40 +106,41 @@ theorem appendRbrKnowledgeSoundness_logfree_reduce {WitMid₁ : Fin (m+1)→Type
     (hVerify : V₁ = ⟨fun stmt tr => pure (verify stmt tr)⟩) (hInit : ∃ s, s ∈ support init)
     (prover : Prover oSpec Stmt₁ Wit₁ Stmt₃ Wit₃ (pSpec₁ ++ₚ pSpec₂))
     (stmtIn : Stmt₁) (witIn : Wit₁) (i : (pSpec₁ ++ₚ pSpec₂).ChallengeIdx) :
-    Pr[fun ⟨transcript, challenge, _proveQueryLog⟩ =>
+    probEvent (fun ⟨transcript, challenge, _proveQueryLog⟩ =>
         ∃ witMid,
           ¬ (KnowledgeStateFunction.append V₁ V₂ kSF₁ kSF₂ verify hVerify hInit).toFun
               i.1.castSucc stmtIn transcript
               ((Extractor.RoundByRound.append E₁ E₂ verify).extractMid i.1 stmtIn
                 (transcript.concat challenge) witMid) ∧
             (KnowledgeStateFunction.append V₁ V₂ kSF₁ kSF₂ verify hVerify hInit).toFun
-              i.1.succ stmtIn (transcript.concat challenge) witMid
-      | do
+              i.1.succ stmtIn (transcript.concat challenge) witMid) (do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
               prover.runWithLogToRound i.1.castSucc stmtIn witIn
             let challenge ← liftComp ((pSpec₁ ++ₚ pSpec₂).getChallenge i) _
-            return (transcript, challenge, proveQueryLog))).run' (← init)]
-      = Pr[fun ⟨transcript, challenge⟩ =>
+            return (transcript, challenge, proveQueryLog))).run' (← init))
+      = probEvent (fun ⟨transcript, challenge⟩ =>
           ∃ witMid,
             ¬ (KnowledgeStateFunction.append V₁ V₂ kSF₁ kSF₂ verify hVerify hInit).toFun
                 i.1.castSucc stmtIn transcript
                 ((Extractor.RoundByRound.append E₁ E₂ verify).extractMid i.1 stmtIn
                   (transcript.concat challenge) witMid) ∧
               (KnowledgeStateFunction.append V₁ V₂ kSF₁ kSF₂ verify hVerify hInit).toFun
-                i.1.succ stmtIn (transcript.concat challenge) witMid
-        | do
+                i.1.succ stmtIn (transcript.concat challenge) witMid) (do
           (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
             (do
               let ⟨transcript, _⟩ ← prover.runToRound i.1.castSucc stmtIn witIn
               let challenge ← liftComp ((pSpec₁ ++ₚ pSpec₂).getChallenge i) _
-              return (transcript, challenge))).run' (← init)] := by
-  rw [probEvent_bind_eq_tsum, probEvent_bind_eq_tsum]
-  refine tsum_congr fun s => ?_
-  congr 1
-  rw [← OracleReduction.map_runWithLog_body_eq_run_body impl prover i stmtIn witIn s, probEvent_map]
-  rfl
+              return (transcript, challenge))).run' (← init)) := by
+  exact OracleReduction.rbrKnowledge_logfree_reduce impl prover i stmtIn witIn init
+    (fun x => ∃ witMid,
+      ¬ (KnowledgeStateFunction.append V₁ V₂ kSF₁ kSF₂ verify hVerify hInit).toFun
+        i.1.castSucc stmtIn x.1
+        ((Extractor.RoundByRound.append E₁ E₂ verify).extractMid i.1 stmtIn
+          (x.1.concat x.2) witMid) ∧
+      (KnowledgeStateFunction.append V₁ V₂ kSF₁ kSF₂ verify hVerify hInit).toFun
+        i.1.succ stmtIn (x.1.concat x.2) witMid)
 
 /-- **Phase-1 leg of the per-round knowledge bound.** At a phase-1 challenge index `inl i₁`, the
 log-free appended knowledge game reduces (via the run-level seam factoring and the left challenge-seam
@@ -154,22 +159,21 @@ theorem appendRbrKnowledgeSoundnessPerRound_phase1 {WitMid₁ : Fin (m+1)→Type
     {rbrKnowledgeError₁ : pSpec₁.ChallengeIdx → ℝ≥0}
     (hBound₁ : ∀ stmtIn : Stmt₁, ∀ witIn : Wit₁,
       ∀ prover : Prover oSpec Stmt₁ Wit₁ Stmt₂ Wit₂ pSpec₁, ∀ i : pSpec₁.ChallengeIdx,
-        Pr[fun ⟨transcript, challenge, _proveQueryLog⟩ =>
+        probEvent (fun ⟨transcript, challenge, _proveQueryLog⟩ =>
           ∃ witMid,
             ¬ kSF₁.toFun i.1.castSucc stmtIn transcript
               (E₁.extractMid i.1 stmtIn (transcript.concat challenge) witMid) ∧
-              kSF₁.toFun i.1.succ stmtIn (transcript.concat challenge) witMid
-        | do
+              kSF₁.toFun i.1.succ stmtIn (transcript.concat challenge) witMid) (do
           (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
             (do
               let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
                 prover.runWithLogToRound i.1.castSucc stmtIn witIn
               let challenge ← liftComp (pSpec₁.getChallenge i) _
-              return (transcript, challenge, proveQueryLog))).run' (← init)] ≤
+              return (transcript, challenge, proveQueryLog))).run' (← init)) ≤
           rbrKnowledgeError₁ i)
     (stmtIn : Stmt₁) (witIn : Wit₁)
     (prover : Prover oSpec Stmt₁ Wit₁ Stmt₃ Wit₃ (pSpec₁ ++ₚ pSpec₂)) (i₁ : pSpec₁.ChallengeIdx) :
-    Pr[fun ⟨transcript, challenge⟩ =>
+    probEvent (fun ⟨transcript, challenge⟩ =>
         ∃ witMid,
           ¬ (KnowledgeStateFunction.append V₁ V₂ kSF₁ kSF₂ verify hVerify hInit).toFun
               (ChallengeIdx.inl (pSpec₂ := pSpec₂) i₁).1.castSucc stmtIn transcript
@@ -178,15 +182,14 @@ theorem appendRbrKnowledgeSoundnessPerRound_phase1 {WitMid₁ : Fin (m+1)→Type
                 (transcript.concat challenge) witMid) ∧
             (KnowledgeStateFunction.append V₁ V₂ kSF₁ kSF₂ verify hVerify hInit).toFun
               (ChallengeIdx.inl (pSpec₂ := pSpec₂) i₁).1.succ stmtIn
-              (transcript.concat challenge) witMid
-      | do
+              (transcript.concat challenge) witMid) (do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨transcript, _⟩ ←
               prover.runToRound (ChallengeIdx.inl (pSpec₂ := pSpec₂) i₁).1.castSucc stmtIn witIn
             let challenge ←
               liftComp ((pSpec₁ ++ₚ pSpec₂).getChallenge (ChallengeIdx.inl (pSpec₂ := pSpec₂) i₁)) _
-            return (transcript, challenge))).run' (← init)]
+            return (transcript, challenge))).run' (← init))
       ≤ rbrKnowledgeError₁ i₁ := by
   -- Apply `hBound₁` to the phase-1 seam prover recast to a `Wit₂`-output prover (`fstCastK`); its
   -- `runToRound` equals `prover.fst`'s, and the event reads only the transcript, so the dummy
@@ -346,7 +349,7 @@ def appendRbrKnowledgeSoundnessPhase2Residual {WitMid₁ : Fin (m+1)→Type}
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0} : Prop :=
   ∀ (stmtIn : Stmt₁) (witIn : Wit₁)
     (prover : Prover oSpec Stmt₁ Wit₁ Stmt₃ Wit₃ (pSpec₁ ++ₚ pSpec₂)) (i₂ : pSpec₂.ChallengeIdx),
-    Pr[fun ⟨transcript, challenge⟩ =>
+    probEvent (fun ⟨transcript, challenge⟩ =>
         ∃ witMid,
           ¬ (KnowledgeStateFunction.append V₁ V₂ kSF₁ kSF₂ verify hVerify hInit).toFun
               (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.castSucc stmtIn transcript
@@ -355,15 +358,14 @@ def appendRbrKnowledgeSoundnessPhase2Residual {WitMid₁ : Fin (m+1)→Type}
                 (transcript.concat challenge) witMid) ∧
             (KnowledgeStateFunction.append V₁ V₂ kSF₁ kSF₂ verify hVerify hInit).toFun
               (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.succ stmtIn
-              (transcript.concat challenge) witMid
-      | do
+              (transcript.concat challenge) witMid) (do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨transcript, _⟩ ←
               prover.runToRound (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.castSucc stmtIn witIn
             let challenge ←
               liftComp ((pSpec₁ ++ₚ pSpec₂).getChallenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂)) _
-            return (transcript, challenge))).run' (← init)]
+            return (transcript, challenge))).run' (← init))
       ≤ rbrKnowledgeError₂ i₂
 
 /-- **Discharge of the per-round knowledge bound residual.** The witness-threaded per-round seam
@@ -403,18 +405,17 @@ theorem appendRbrKnowledgeSoundnessPerRound {WitMid₁ : Fin (m+1)→Type} {WitM
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (hBound₁ : ∀ stmtIn : Stmt₁, ∀ witIn : Wit₁,
       ∀ prover : Prover oSpec Stmt₁ Wit₁ Stmt₂ Wit₂ pSpec₁, ∀ i : pSpec₁.ChallengeIdx,
-        Pr[fun ⟨transcript, challenge, _proveQueryLog⟩ =>
+        probEvent (fun ⟨transcript, challenge, _proveQueryLog⟩ =>
           ∃ witMid,
             ¬ kSF₁.toFun i.1.castSucc stmtIn transcript
               (E₁.extractMid i.1 stmtIn (transcript.concat challenge) witMid) ∧
-              kSF₁.toFun i.1.succ stmtIn (transcript.concat challenge) witMid
-        | do
+              kSF₁.toFun i.1.succ stmtIn (transcript.concat challenge) witMid) (do
           (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
             (do
               let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
                 prover.runWithLogToRound i.1.castSucc stmtIn witIn
               let challenge ← liftComp (pSpec₁.getChallenge i) _
-              return (transcript, challenge, proveQueryLog))).run' (← init)] ≤
+              return (transcript, challenge, proveQueryLog))).run' (← init)) ≤
           rbrKnowledgeError₁ i)
     (hPhase2 : appendRbrKnowledgeSoundnessPhase2Residual (init := init) (impl := impl) V₁ V₂
       kSF₁ kSF₂ verify hVerify hInit (rbrKnowledgeError₂ := rbrKnowledgeError₂)) :
@@ -576,15 +577,14 @@ def appendRbrKnowledgePhase2SeamReconcile {WitMid₁ : Fin (m+1)→Type} {WitMid
     (s : σ)
     (ctx : pSpec₁.FullTranscript ×
       prover.PrvState (Fin.castLE (show m + 1 ≤ m + n + 1 by omega) (Fin.last m)) × Unit),
-    Pr[fun x =>
+    probEvent (fun x =>
         ∃ witMid,
           ¬ (KnowledgeStateFunction.append V₁ V₂ kSF₁ kSF₂ verify hVerify hInit).toFun
               (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.castSucc stmtIn x.1
               ((Extractor.RoundByRound.append E₁ E₂ verify).extractMid
                 (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1 stmtIn (x.1.concat x.2) witMid) ∧
             (KnowledgeStateFunction.append V₁ V₂ kSF₁ kSF₂ verify hVerify hInit).toFun
-              (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.succ stmtIn (x.1.concat x.2) witMid
-      | ((do
+              (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.succ stmtIn (x.1.concat x.2) witMid) (((do
           let x ← (simulateQ (impl.addLift challengeQueryImpl
               : QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp))
               (liftM ((Prover.snd prover).runToRound i₂.1.castSucc ctx.2.1 ctx.2.2))).run' s
@@ -598,13 +598,12 @@ def appendRbrKnowledgePhase2SeamReconcile {WitMid₁ : Fin (m+1)→Type} {WitMid
               (pure (Transcript.appendRight ctx.1 x.1, x_1))).run' s) :
             ProbComp ((pSpec₁ ++ₚ pSpec₂).Transcript
               (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂).1.castSucc
-                × (pSpec₁ ++ₚ pSpec₂).Challenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂)))]
-    = Pr[fun x =>
+                × (pSpec₁ ++ₚ pSpec₂).Challenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂))))
+    = probEvent (fun x =>
           ∃ witMid,
             ¬ kSF₂.toFun i₂.1.castSucc (verify stmtIn ctx.1) x.1
               (E₂.extractMid i₂.1 (verify stmtIn ctx.1) (x.1.concat x.2) witMid) ∧
-              kSF₂.toFun i₂.1.succ (verify stmtIn ctx.1) (x.1.concat x.2) witMid
-        | (simulateQ (impl.addLift challengeQueryImpl
+              kSF₂.toFun i₂.1.succ (verify stmtIn ctx.1) (x.1.concat x.2) witMid) ((simulateQ (impl.addLift challengeQueryImpl
               : QueryImpl (oSpec + [pSpec₂.Challenge]ₒ) (StateT σ ProbComp))
             (do
               let ⟨transcript, _⟩ ← ((Prover.snd prover).runToRound i₂.1.castSucc ctx.2.1 ()
@@ -612,7 +611,7 @@ def appendRbrKnowledgePhase2SeamReconcile {WitMid₁ : Fin (m+1)→Type} {WitMid
                     (pSpec₂.Transcript i₂.1.castSucc × (Prover.snd prover).PrvState i₂.1.castSucc))
               let challenge ← liftComp (pSpec₂.getChallenge i₂)
                 (oSpec + [pSpec₂.Challenge]ₒ)
-              return (transcript, challenge))).run' s]
+              return (transcript, challenge))).run' s)
 
 /-- **Discharge of the phase-2 per-round knowledge residual under `Subsingleton σ` (stateless /
 transparent-oracle regime).** This proves `appendRbrKnowledgeSoundnessPhase2Residual` *unconditionally*
@@ -641,25 +640,24 @@ theorem appendRbrKnowledgeSoundnessPhase2_subsingleton [Subsingleton σ]
     (kSF₂ : V₂.KnowledgeStateFunction init impl rel₂ rel₃ E₂)
     (verify : Stmt₁ → pSpec₁.FullTranscript → Stmt₂)
     (hVerify : V₁ = ⟨fun stmt tr => pure (verify stmt tr)⟩) (hInit : ∃ s, s ∈ support init)
-    (hNEW₂ : Nonempty Wit₂) (hInitNF : Pr[⊥ | init] = 0)
+    (hNEW₂ : Nonempty Wit₂) (hInitNF : prFail (init) = 0)
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (hBound₂ : ∀ stmtIn : Stmt₂, ∀ witIn : Wit₂,
       ∀ prover : Prover oSpec Stmt₂ Wit₂ Stmt₃ Wit₃ pSpec₂, ∀ i : pSpec₂.ChallengeIdx,
-        Pr[fun ⟨transcript, challenge, _proveQueryLog⟩ =>
+        probEvent (fun ⟨transcript, challenge, _proveQueryLog⟩ =>
           ∃ witMid,
             ¬ kSF₂.toFun i.1.castSucc stmtIn transcript
               (E₂.extractMid i.1 stmtIn (transcript.concat challenge) witMid) ∧
-              kSF₂.toFun i.1.succ stmtIn (transcript.concat challenge) witMid
-        | do
+              kSF₂.toFun i.1.succ stmtIn (transcript.concat challenge) witMid) (do
           (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
             (do
               let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
                 prover.runWithLogToRound i.1.castSucc stmtIn witIn
               let challenge ← liftComp (pSpec₂.getChallenge i) _
-              return (transcript, challenge, proveQueryLog))).run' (← init)] ≤
+              return (transcript, challenge, proveQueryLog))).run' (← init)) ≤
           rbrKnowledgeError₂ i)
     (hReconcile : appendRbrKnowledgePhase2SeamReconcile (init := init) (impl := impl)
       V₁ V₂ kSF₁ kSF₂ verify hVerify hInit) :
@@ -732,15 +730,18 @@ theorem appendRbrKnowledgeSoundnessPhase2_subsingleton [Subsingleton σ]
     refine Prover.bind_heq_congr rfl hResTy HEq.rfl (fun s s' hs => ?_)
     cases eq_of_heq hs
     exact heq_simrun s hResTy _ _ hbody
-  rw [probEvent_congr_heq hResTy _ _ E (fun x => E (hResTy ▸ x)) hd (fun x => Iff.rfl)]
+  have hgame := probEvent_congr_heq hResTy _ _ E (fun x => E (hResTy ▸ x)) hd
+    (fun x => Iff.rfl)
+  change probEvent _ _ = probEvent _ _ at hgame
+  rw [hgame]
   -- STEP 2: bound the seam-factored game via the Subsingleton bind split.
   -- Under `Subsingleton σ`, `simulateQ_run'_bind_of_subsingleton` distributes the simulated
   -- experiment over the seam bind `liftM (fst.run) >>= REST`.
   simp only [simulateQ_run'_bind_of_subsingleton]
   -- Outer bind over `init`: bound uniformly over each sampled `s`.
-  refine probEvent_bind_le_of_forall_le (fun s _hs => ?_)
+  refine prEvent_bind_le_of_forall_le_of_support _ _ _ (fun s _hs => ?_)
   -- Inner bind over the (simulated) `fst.run` realization `ctx = (tr₁, seamState, ())`.
-  refine probEvent_bind_le_of_forall_le (fun ctx hctx => ?_)
+  refine prEvent_bind_le_of_forall_le_of_support _ _ _ (fun ctx hctx => ?_)
   -- The realized seam statement `s₂ := verify stmtIn tr₁` and the amnesiac re-injection prover that
   -- resumes `Prover.snd prover` from the realized seam state `ctx.2.1`.
   set s₂ : Stmt₂ := verify stmtIn ctx.1 with hs₂
@@ -755,19 +756,13 @@ theorem appendRbrKnowledgeSoundnessPhase2_subsingleton [Subsingleton σ]
   simp only [Prover.sndAmnesiac_runToRound] at hb
   -- Under `Subsingleton σ`, the inner `init`-averaged game equals its value at our fixed `s` (all
   -- states are forced equal); with `Pr[⊥|init]=0`, `hb` collapses to the fixed-`s` snd game.
-  rw [probEvent_bind_of_const init
-      (r := Pr[fun x => ∃ witMid, ¬ kSF₂.toFun i₂.1.castSucc s₂ x.1
-            (E₂.extractMid i₂.1 s₂ (x.1.concat x.2) witMid) ∧
-            kSF₂.toFun i₂.1.succ s₂ (x.1.concat x.2) witMid
-        | (simulateQ (impl.addLift challengeQueryImpl
-            : QueryImpl (oSpec + [pSpec₂.Challenge]ₒ) (StateT σ ProbComp))
-            (do
-              let ⟨transcript, _⟩ ← (Prover.snd prover).runToRound i₂.1.castSucc ctx.2.1 ()
-              let challenge ← liftComp (pSpec₂.getChallenge i₂) _
-              return (transcript, challenge))).run' s])
-      (fun s' _ => by rw [Subsingleton.elim s' s]; rfl),
-      hInitNF] at hb
-  simp only [tsub_zero, one_mul] at hb
+  conv_lhs at hb =>
+    arg 2
+    arg 2
+    intro s'
+    rw [Subsingleton.elim s' s]
+  simp only [probEvent, map_bind] at hb
+  rw [OracleComp.prEvent_bind_const] at hb
   -- FINAL SEAM RECONCILIATION (the smallest remaining typed residual): the appended phase-2 inner
   -- game (combined challenge oracle, transcript prefixed by the realized phase-1 transcript `ctx.1`,
   -- event read through the composite `KnowledgeStateFunction.append` / `Extractor.RoundByRound.append`)
@@ -858,7 +853,7 @@ theorem append_rbrKnowledgeSoundness_keystone_subsingleton [Subsingleton σ]
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (verify : Stmt₁ → pSpec₁.FullTranscript → Stmt₂)
     (hVerify : V₁ = ⟨fun stmt tr => pure (verify stmt tr)⟩)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE₂ : Nonempty Stmt₂) (hNEW₂ : Nonempty Wit₂)
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)

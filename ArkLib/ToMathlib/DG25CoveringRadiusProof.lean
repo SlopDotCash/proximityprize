@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
 
 /-!
 # DG25 covering-radius sampling — single-stack sup-dominance (issue #77)
@@ -57,7 +57,7 @@ theorem epsCA_ge_line_prob_of_not_jointProximity
     (u : WordStack A (Fin 2) ι) (hu : ¬ jointProximity (C := C) (u := u) δ_int) :
     Pr_{let γ ← $ᵖ F}[δᵣ(u 0 + γ • u 1, C) ≤ δ_fld]
       ≤ epsCA (F := F) C δ_fld δ_int := by
-  unfold epsCA
+  rw [epsCA_eq_pmf]
   refine le_trans ?_ (le_iSup _ u)
   rw [if_neg hu]
 

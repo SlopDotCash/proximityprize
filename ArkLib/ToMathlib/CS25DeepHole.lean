@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.Connections.ListDecodingAndCA
-import ArkLib.Data.CodingTheory.ReedSolomon
-import ArkLib.Data.CodingTheory.ListDecodability
+import ProximityPrize.Extensions.Data.CodingTheory.Connections.ListDecodingAndCA
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
 
 /-!
 # CS25 "Claim 3" deep-hole construction — the concrete polynomial-algebra bricks

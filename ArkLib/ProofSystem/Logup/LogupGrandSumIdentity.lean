@@ -6,7 +6,8 @@ Authors: ArkLib Contributors
 
 import ArkLib.ProofSystem.Logup.Common
 import ArkLib.ProofSystem.Logup.Sumcheck.SumcheckPolynomial
-import ArkLib.Data.MvPolynomial.SchwartzZippelCounting
+import ProximityPrize.Extensions.Data.MvPolynomial.SchwartzZippelCounting
+import ProximityPrize.Compatibility.UniformProbability
 
 /-!
 # LogUp grand-sum logarithmic-derivative identity + Schwartz-Zippel soundness (issue #13)
@@ -213,11 +214,14 @@ theorem logup_SZ_soundness
     (hQ_ne : logupQPolynomial F n M params stmt oStmt ≠ 0)
     (hTotalDeg : (logupQPolynomial F n M params stmt oStmt).totalDegree ≤ n * (M + 3))
     (S : Fin n → Set F) [∀ i, Fintype ↥(S i)] [∀ i, Nonempty ↥(S i)]
+
     (m : ℕ) (hm_pos : 0 < m) (hm : ∀ i, m ≤ (S i).toFinset.card) :
     Pr_{ let x ←$ᵖ (∀ i, ↥(S i)) }[
         MvPolynomial.eval (fun i => (↑(x i) : F)) (logupQPolynomial F n M params stmt oStmt) = 0 ]
-      ≤ ((n * (M + 3) : ℕ) : ℝ≥0∞) / m :=
-  prob_eval_zero_le_div
+      ≤ ((n * (M + 3) : ℕ) : ℝ≥0∞) / m := by
+  letI : SampleableType (∀ i, ↥(S i)) := SampleableType.piOfFintype _
+  rw [ProximityPrize.Compatibility.pmf_uniform_probability_eq_native]
+  exact prob_eval_zero_le_div
     (logupQPolynomial F n M params stmt oStmt) hQ_ne (n * (M + 3)) m hTotalDeg hm_pos hm
 
 /-- **The per-variable degree bound is fully in-tree** (recorded here so the only genuine residual in

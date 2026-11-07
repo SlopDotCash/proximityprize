@@ -118,7 +118,7 @@ theorem evens_card {n m : ℕ} (hm : n = 2 * m) :
 theorem odds_card {n m : ℕ} (hm : n = 2 * m) :
     (Finset.univ.filter (fun i : Fin n => (i : ℕ) % 2 = 1)).card = m := by
   classical
-  have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+  have hsplit := Finset.card_filter_add_card_filter_not
     (s := (Finset.univ : Finset (Fin n))) (p := fun i : Fin n => (i : ℕ) % 2 = 0)
   have hcompl : Finset.univ.filter (fun i : Fin n => ¬ (i : ℕ) % 2 = 0)
       = Finset.univ.filter (fun i : Fin n => (i : ℕ) % 2 = 1) := by

@@ -3,27 +3,27 @@ Copyright (c) 2024-2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Julian Sutherland, Ilia Vlasov, Aristotle (Harmonic)
 -/
+module
 
-import Mathlib.GroupTheory.SpecificGroups.Cyclic
-import Mathlib.Algebra.Group.Fin.Basic
-import Mathlib.Algebra.Group.TypeTags.Basic
-import Mathlib.Algebra.Group.Defs
-import Mathlib.Tactic.Cases
-import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.LinearCombination
-import Mathlib.Tactic.Field
+public import Mathlib.GroupTheory.SpecificGroups.Cyclic
+public import Mathlib.Algebra.Group.Fin.Basic
+public import Mathlib.Algebra.Group.TypeTags.Basic
+public import Mathlib.Algebra.Group.Defs
+public import Mathlib.Tactic.Cases
+public import Mathlib.Tactic.Linarith
+public import Mathlib.Tactic.LinearCombination
+public import Mathlib.Tactic.Field
 
-import ArkLib.Data.Domain.CosetFftDomain.Mem
-import ArkLib.Data.Domain.FftDomain.Mem
+public import ArkLib.Data.Domain.CosetFftDomain.Mem
+public import ArkLib.Data.Domain.FftDomain.Mem
 
 /-!
-# Listing the elements of a coset FFT domain
+# ArkLib.Data.Domain.CosetFftDomain.ToList
 
-We define `toList`, the list of (proof-carrying) elements of a coset FFT domain `ω`, obtained from
-`Finset.toListWithProof` on `toFinset ω`. The lemma `toList_eq_finset_toList` relates it to the
-underlying finset list, and concrete `toList` definitions are given for coset and FFT domains
-indexed by `Fin m`.
+Definitions and results for this component of ArkLib.
 -/
+
+@[expose] public section
 
 namespace Domain
 
@@ -37,9 +37,9 @@ variable {D : Type} [FunLike D ι F] [CosetFftDomainClass D ι F]
 noncomputable def toList (ω : D) : List (toFinset ω) :=
   Finset.toListWithProof <| toFinset ω
 
-set_option linter.unusedSimpArgs false in -- false alert
 lemma toList_eq_finset_toList {ω : D} :
-    (toList ω).map (fun x ↦ x.1) = (toFinset ω).toList := by simp [toList, mem_def]
+    (toList ω).map (fun x ↦ x.1) = (toFinset ω).toList := by
+  exact Finset.toListWithProof_eq_toList
 
 end CosetFftDomainClass
 

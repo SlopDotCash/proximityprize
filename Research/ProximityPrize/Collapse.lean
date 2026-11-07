@@ -9,15 +9,15 @@ import Research.ProximityPrize.GrandChallenges
 /-!
 # Collapse analysis of the §1 Grand-Challenge encodings (Finding F6)
 
-The `Prop`-valued encodings `grandMCAChallenge` / `grandListDecodingChallenge` in
+The `Prop`-valued encodings `grandMCAChallenge` / `continuousGrandListDecodingChallenge` in
 `GrandChallenges.lean` ask for a **maximal real threshold** `δ* ∈ [0,1]`: the bound holds
 at `δ*` and fails **strictly above** it. This file proves that, over a finite field and a
 finite index set, both encodings **collapse**:
 
-* `epsMCA C δ` and `Lambda (C^⋈ m) δ` are *right-continuous step functions* of `δ` — they
+* `epsMCA C δ` and `ListDecodable.Lambda (C^⋈ m) δ` are *right-continuous step functions* of `δ` — they
   depend on `δ` only through `⌊δ · |ι|⌋` (`epsMCA_eq_of_floor_eq`, `Lambda_eq_of_floor_eq`;
   the level-set structure of ABF26 Remark 4.2, here pushed through `mcaEvent` and
-  `closeCodewordsRel`).
+  `ListDecodable.closeCodewordsRel`).
 * Consequently no `δ* < 1` can satisfy the strict-failure clause: points immediately above
   `δ*` in the same `1/n`-level set have the *same* error value
   (`exists_gt_le_one_floor_eq`). Any witness is forced to `δ* = 1`, where the maximality
@@ -25,7 +25,7 @@ finite index set, both encodings **collapse**:
 * Therefore (`grandMCAChallenge_iff_epsMCA_one`, `grandListDecodingChallenge_iff_Lambda_one`):
 
   `grandMCAChallenge C ε* ↔ ε_mca(C, 1) ≤ ε*`
-  `grandListDecodingChallenge C m ε* ↔ Λ(C^⋈m, 1) ≤ ε* · |F|`
+  `continuousGrandListDecodingChallenge C m ε* ↔ Λ(C^⋈m, 1) ≤ ε* · |F|`
 
   — i.e. the encodings are equivalent to *radius-one* statements that do not mention any
   threshold structure at all.
@@ -33,7 +33,7 @@ finite index set, both encodings **collapse**:
   within relative distance `1` of everything), so the right-hand side fails whenever the
   code has at least `|F| > ε*·|F|` elements. The interleaving of any Reed-Solomon code with
   `0 < k` contains all constants, hence `grandListDecodingChallengeRS` is **provably
-  false** in the prize regime, and the formal `listDecodingPrize` predicate is **refuted**
+  false** in the prize regime, and the formal `continuousListDecodingPrize` predicate is **refuted**
   (`not_listDecodingPrize`) for every domain with at least two points.
 
 ## What this means (honest scope)
@@ -146,12 +146,12 @@ lemma exists_gt_le_one_floor_eq (n : ℕ) {δ : ℝ≥0} (hδ : δ < 1) :
         have hup' : ((δ + b) / 2) * (n : ℝ≥0) < ((j + 1 : ℕ) : ℝ≥0) := by
           push_cast
           exact hup
-        have := (Nat.floor_lt (zero_le _)).mpr hup'
+        have := (Nat.floor_lt (by positivity)).mpr hup'
         omega
       -- lower: floor is monotone.
       have hfloor_ge : j ≤ Nat.floor (((δ + b) / 2) * (n : ℝ≥0)) := by
         refine Nat.floor_le_floor ?_
-        exact mul_le_mul_of_nonneg_right hmid_gt.le (zero_le _)
+        exact mul_le_mul_of_nonneg_right hmid_gt.le (by positivity)
       omega
 
 /-- **Collapse of the Grand MCA Challenge encoding (Finding F6a).** Over a finite field
@@ -177,12 +177,12 @@ theorem grandMCAChallenge_iff_epsMCA_one (C : LinearCode ι F) (ε_star : ℝ≥
 threshold structure the paper asks about ("determine the largest `δ*`") is absent from
 the formal statement: only `ε_mca(·, 1)` matters. -/
 theorem mcaPrize_iff_forall_epsMCA_one (domain : ι ↪ F) :
-    GrandChallenges.mcaPrize domain ↔
+    GrandChallenges.continuousMcaPrize domain ↔
       ∀ j : Fin 4,
         epsMCA (F := F) (A := F)
           ((ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ :
             Set (ι → F))) 1 ≤ (epsStar : ENNReal) := by
-  unfold GrandChallenges.mcaPrize GrandChallenges.grandMCAChallengeRSrate
+  unfold GrandChallenges.continuousMcaPrize GrandChallenges.grandMCAChallengeRSrate
     GrandChallenges.grandMCAChallengeRS
   exact forall_congr' fun j => grandMCAChallenge_iff_epsMCA_one _ _
 
@@ -194,22 +194,22 @@ variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
 open ListDecodable in
-/-- **Level-set structure of `closeCodewordsRel`** for radii coming from `ℝ≥0`: membership
+/-- **Level-set structure of `ListDecodable.closeCodewordsRel`** for radii coming from `ℝ≥0`: membership
 depends on the radius only through `⌊δ · |ι|⌋`, because relative Hamming distance takes
 values in `{0, 1/n, …, 1}`. -/
 theorem closeCodewordsRel_eq_of_floor_eq {α : Type}
     (C : Set (ι → α)) (f : ι → α) {δ δ' : ℝ≥0}
     (h : Nat.floor (δ * Fintype.card ι) = Nat.floor (δ' * Fintype.card ι)) :
-    closeCodewordsRel C f (δ : ℝ) = closeCodewordsRel C f (δ' : ℝ) := by
+    ListDecodable.closeCodewordsRel C f (δ : ℝ) = ListDecodable.closeCodewordsRel C f (δ' : ℝ) := by
   classical
-  unfold closeCodewordsRel relHammingBall
+  unfold ListDecodable.closeCodewordsRel ListDecodable.relHammingBall
   ext c
   have key : ∀ ρ : ℝ≥0, ((relHammingDist f c : ℚ≥0) : ℝ) ≤ (ρ : ℝ) ↔
       hammingDist f c ≤ Nat.floor (ρ * Fintype.card ι) := by
     intro ρ
     have hcard : (0 : ℝ) < (Fintype.card ι : ℝ) := by
       exact_mod_cast Fintype.card_pos
-    rw [Nat.le_floor_iff (zero_le _)]
+    rw [Nat.le_floor_iff (by positivity)]
     unfold relHammingDist
     push_cast
     rw [div_le_iff₀ hcard]
@@ -230,20 +230,20 @@ open ListDecodable in
 theorem Lambda_eq_of_floor_eq {α : Type}
     (C : Set (ι → α)) {δ δ' : ℝ≥0}
     (h : Nat.floor (δ * Fintype.card ι) = Nat.floor (δ' * Fintype.card ι)) :
-    Lambda C (δ : ℝ) = Lambda C (δ' : ℝ) := by
-  unfold Lambda
+    ListDecodable.Lambda C (δ : ℝ) = ListDecodable.Lambda C (δ' : ℝ) := by
+  unfold ListDecodable.Lambda
   exact iSup_congr fun f => by rw [closeCodewordsRel_eq_of_floor_eq C f h]
 
 open ListDecodable in
 /-- At radius one every codeword is close: `Λ(C, 1)` is the full code size. -/
 theorem Lambda_one_eq_ncard {α : Type} [Nonempty α]
     (C : Set (ι → α)) :
-    Lambda C (1 : ℝ) = (C.ncard : ℕ∞) := by
+    ListDecodable.Lambda C (1 : ℝ) = (C.ncard : ℕ∞) := by
   classical
-  unfold Lambda
-  have hball : ∀ f : ι → α, closeCodewordsRel C f (1 : ℝ) = C := by
+  unfold ListDecodable.Lambda
+  have hball : ∀ f : ι → α, ListDecodable.closeCodewordsRel C f (1 : ℝ) = C := by
     intro f
-    unfold closeCodewordsRel relHammingBall
+    unfold ListDecodable.closeCodewordsRel ListDecodable.relHammingBall
     ext c
     simp only [Set.mem_setOf_eq]
     refine ⟨fun hc => hc.1, fun hc => ⟨hc, ?_⟩⟩
@@ -256,8 +256,8 @@ open ListDecodable in
 /-- **Collapse of the Grand List Decoding Challenge encoding (Finding F6b).** -/
 theorem grandListDecodingChallenge_iff_Lambda_one
     (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0) :
-    grandListDecodingChallenge C m ε_star ↔
-      (Lambda (C^⋈ (Fin m)) ((1 : ℝ≥0) : ℝ) : ENNReal) ≤
+    continuousGrandListDecodingChallenge C m ε_star ↔
+      (ListDecodable.Lambda (C^⋈ (Fin m)) ((1 : ℝ≥0) : ℝ) : ENNReal) ≤
         ((ε_star : ENNReal) * (Fintype.card F : ENNReal)) := by
   constructor
   · rintro ⟨δs, hle1, hbound, hmax⟩
@@ -266,8 +266,8 @@ theorem grandListDecodingChallenge_iff_Lambda_one
     · exfalso
       obtain ⟨δ', hgt, hle1', hfloor⟩ := exists_gt_le_one_floor_eq (Fintype.card ι) hlt
       have hfail := hmax δ' hgt hle1'
-      have hstep : Lambda (C^⋈ (Fin m)) ((δ' : ℝ≥0) : ℝ) =
-          Lambda (C^⋈ (Fin m)) ((δs : ℝ≥0) : ℝ) :=
+      have hstep : ListDecodable.Lambda (C^⋈ (Fin m)) ((δ' : ℝ≥0) : ℝ) =
+          ListDecodable.Lambda (C^⋈ (Fin m)) ((δs : ℝ≥0) : ℝ) :=
         Lambda_eq_of_floor_eq (C^⋈ (Fin m)) hfloor
       rw [hstep] at hfail
       exact absurd hbound (not_le.mpr hfail)
@@ -320,6 +320,7 @@ lemma card_le_ncard_interleavedCodeSet
   rw [Set.ncard_univ, Nat.card_eq_fintype_card] at h1
   exact_mod_cast h1
 
+set_option backward.isDefEq.respectTransparency false in
 open ListDecodable in
 /-- **The RS Grand List Decoding Challenge encoding is FALSE** whenever `0 < k`, `0 < m`,
 `ε* < 1`: the collapse forces the radius-one bound, where `Λ` is the whole interleaved
@@ -366,7 +367,7 @@ This refutes the *encoding*, not the prize: the paper's challenge asks to **dete
 lattice threshold, which the existence-form real-threshold statement cannot express. -/
 theorem not_listDecodingPrize (domain : ι ↪ F) {m : ℕ} (hm : 0 < m)
     (hι : 2 ≤ Fintype.card ι) :
-    ¬ GrandChallenges.listDecodingPrize domain m := by
+    ¬ GrandChallenges.continuousListDecodingPrize domain m := by
   intro hprize
   have h0 := hprize 0
   have hrate : prizeRates 0 = 1 / 2 := by

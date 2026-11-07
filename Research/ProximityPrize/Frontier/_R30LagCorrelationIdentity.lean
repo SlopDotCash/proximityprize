@@ -164,13 +164,10 @@ theorem lag_correlation_identity
       rw [mul_assoc, mul_inv_cancel₀ hy0, mul_one]
       exact hu
     · intro x _
-      dsimp only
       rw [mul_assoc, inv_mul_cancel₀ hy0, mul_one]
     · intro u _
-      dsimp only
       rw [mul_assoc, mul_inv_cancel₀ hy0, mul_one]
     · intro x hx
-      dsimp only
       have hmem : x * y⁻¹ ∈ G := (Finset.mem_filter.mp hx).2
       have hxy : x * y⁻¹ * y = x := by
         rw [mul_assoc, inv_mul_cancel₀ hy0, mul_one]

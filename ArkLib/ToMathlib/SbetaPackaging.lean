@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.Polynomial.RationalFunctions
+import ProximityPrize.Extensions.Data.Polynomial.RationalFunctions
 
 /-!
 # Packaging wrappers for `Lemma_A_1` (the `S_β` counting step of [BCIKS20] Appendix A)

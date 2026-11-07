@@ -65,7 +65,7 @@ Reed–Solomon code (degree-`<k` polynomials over a field, evaluated on an injec
 instance fact_prime_seven : Fact (Nat.Prime 7) := ⟨by norm_num⟩
 
 /-- The evaluation domain: all seven points of `F₇`, indexed by `Fin 7` via `D i = i`. -/
-def D : Fin 7 ↪ ZMod 7 := ⟨fun i => (i : ZMod 7), by decide⟩
+def D : Fin 7 ↪ ZMod 7 := ⟨fun i => (i : ZMod 7), fun _ _ h => h⟩
 
 /-- The explicit received word `w = (0,0,0,1,1,3,2)`. -/
 def w : Fin 7 → ZMod 7 := ![0, 0, 0, 1, 1, 3, 2]

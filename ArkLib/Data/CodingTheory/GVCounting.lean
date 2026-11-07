@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.HammingBallVolume
+import ProximityPrize.Extensions.Data.CodingTheory.HammingBallVolume
 
 /-!
 # Gilbert–Varshamov sphere-covering count
@@ -54,7 +54,8 @@ theorem card_le_card_mul_hammingBallVolume_of_covering
     _ = ∑ _c ∈ C, hammingBallVolume (Fintype.card F) δ (Fintype.card ι) := by
         apply Finset.sum_congr rfl
         intro c _
-        rw [← Set.ncard_eq_toFinset_card', ← hammingBallVolume_eq_ncard_hammingBall δ c]
+        rw [← Set.ncard_eq_toFinset_card']
+        exact (hammingBallVolume_eq_ncard_hammingBall δ c).symm
     _ = C.card * hammingBallVolume (Fintype.card F) δ (Fintype.card ι) := by
         rw [Finset.sum_const, smul_eq_mul]
 

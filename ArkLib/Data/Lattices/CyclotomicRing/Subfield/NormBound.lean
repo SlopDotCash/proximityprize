@@ -3,8 +3,12 @@ Copyright (c) 2024-2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tobias Rothmann
 -/
-import ArkLib.Data.Lattices.CyclotomicRing.Subfield.Cardinality
-import ArkLib.Data.Lattices.CyclotomicRing.Norms
+module
+
+public import ArkLib.Data.Lattices.CyclotomicRing.Subfield.Cardinality
+public import ArkLib.Data.Lattices.CyclotomicRing.Norms
+-- Coercions below reduce CompPoly definitions whose bodies are not exposed.
+import all CompPoly.Univariate.Basic
 
 /-!
 # The Norm Bound `‖ψ(a)‖∞ ≤ 2β` (Hachi §3, Lemma 6)
@@ -35,6 +39,8 @@ entrywise maximum `vecCInfNorm`, matching the vector norm of [NOZ26, §2.1].
 * [Nguyen, N. K., O'Rourke, G., and Zhang, J., *Hachi: Efficient Lattice-Based Multilinear
     Polynomial Commitments over Extension Fields*][NOZ26]
 -/
+
+@[expose] public section
 
 open CompPoly Finset
 
@@ -110,7 +116,8 @@ theorem coeff_psi_abs_le_two_vecCInfNorm (α κ : ℕ) (h2 : (2 : ZMod q) ≠ 0)
     by_cases hpos : pos < ((a i : Rq (powTwoCyclotomic (R := ZMod q) α)).1).size
     · exact le_trans (Finset.le_sup (f := (zmodCenteredView q).absCoeff
         (a i : Rq (powTwoCyclotomic (R := ZMod q) α)).1) (Finset.mem_range.mpr hpos)) hi
-    · rw [CompPoly.CPolynomial.coeff_eq_zero_of_size_le _ (by omega), ZMod.valMinAbs_zero]
+    · rw [CompPoly.CPolynomial.coeff_eq_zero_of_size_le _ (Nat.le_of_not_gt hpos),
+        ZMod.valMinAbs_zero]
       exact Nat.zero_le _
   have hr : p % 2 ^ (α - κ - 1) < 2 ^ (α - κ - 1) := Nat.mod_lt _ hM0
   set j₁ : Fin (2 ^ α / 2 ^ κ) := ⟨p % 2 ^ (α - κ - 1), by omega⟩ with hj1

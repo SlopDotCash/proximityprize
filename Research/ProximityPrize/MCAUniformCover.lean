@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.LineDecodingT421Faithful
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.Curves
 
 /-!
 # The clean uniform-weight MCA bound `ε_mca ≤ (n+1)/q` from a δ-close curve cover

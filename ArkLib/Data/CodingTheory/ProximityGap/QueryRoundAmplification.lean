@@ -82,7 +82,7 @@ theorem accept_density_pi_le {m : ℕ} (A dom : Fin m → Finset α) (p : Fin m 
   simp only [Nat.cast_prod]
   calc (∏ i, ((A i).card : ℝ))
       ≤ ∏ i, p i * (dom i).card := by
-        exact Finset.prod_le_prod (fun i _ => by positivity) (fun i _ => hp i)
+        exact Finset.prod_le_prod₀ (fun i _ => by positivity) (fun i _ => hp i)
     _ = (∏ i, p i) * ∏ i, ((dom i).card : ℝ) := by
         rw [Finset.prod_mul_distrib]
 

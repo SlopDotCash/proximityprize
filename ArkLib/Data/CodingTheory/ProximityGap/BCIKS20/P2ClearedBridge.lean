@@ -25,7 +25,7 @@ variable (H : F[X][Y]) [Fact (Irreducible H)] [Fact (0 < H.natDegree)]
 
 noncomputable def clearedRepresentativeFaaDiBrunoSum (x₀ : F) (R : F[X][X][Y])
     (hHyp : ClaimA2.Hypotheses x₀ R H) (t : ℕ) : 𝕃 H :=
-  ∑ ab ∈ Finset.antidiagonal (t + 1),
+  ∑ ab ∈ Finset.HasAntidiagonal.antidiagonal (t + 1),
     ∑ lam ∈ (Finset.univ : Finset (Nat.Partition ab.2)).filter
               (fun lam => (t + 1) ∉ lam.parts),
       lam.parts.countPerms

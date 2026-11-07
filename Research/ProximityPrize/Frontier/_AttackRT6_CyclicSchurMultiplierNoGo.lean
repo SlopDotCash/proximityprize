@@ -38,7 +38,7 @@ variable {R : Type*} [CommRing R]
 theorem twist_preserves_charpoly
     (U : (Matrix n n R)ˣ) (T : Matrix n n R) :
     (U.val * T * U⁻¹.val).charpoly = T.charpoly :=
-  charpoly_units_conj U T
+  by simpa only [Matrix.coe_units_inv] using charpoly_units_conj U T
 
 /-- ANY functional `Φ` of the char poly -- in particular the spectral radius
 `M = ρ(1)` -- is EQUAL on `T` and its Drinfeld twist `U * T * U⁻¹`. Hence
@@ -54,7 +54,7 @@ theorem twist_invariant_of_charpoly_functional'
     {β : Type*} (Φ : Polynomial R → β)
     (U : (Matrix n n R)ˣ) (T : Matrix n n R) :
     Φ (U⁻¹.val * T * U.val).charpoly = Φ T.charpoly := by
-  rw [charpoly_units_conj' U T]
+  exact congrArg Φ (twist_preserves_charpoly U⁻¹ T)
 
 #print axioms twist_preserves_charpoly
 #print axioms twist_invariant_of_charpoly_functional

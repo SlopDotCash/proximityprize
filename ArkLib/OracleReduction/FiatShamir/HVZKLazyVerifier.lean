@@ -24,6 +24,7 @@ the derived transcript value *pinned* to the messages `m` plus the cached challe
 -/
 
 open OracleComp OracleSpec ProtocolSpec
+set_option backward.isDefEq.respectTransparency false
 
 namespace Reduction
 
@@ -55,7 +56,8 @@ theorem simulateQ_lazyProd_query_run_hit
     simulateQ_query]
   show (_ <$> (ambientProd (StmtIn := StmtIn) pSpec impl + fsLazyProd (StmtIn := StmtIn) (σ := σ)
       pSpec) (Sum.inr q)).run (s, cache) = _
-  rw [QueryImpl.add_apply_inr, StateT.run_map]
+  rw [QueryImpl.add_apply_inr]
+  erw [StateT.run_map]
   show (fun p => ((id : (fsChallengeOracle StmtIn pSpec).Range q → _) p.1, p.2)) <$>
       (fsLazyProd (StmtIn := StmtIn) (σ := σ) pSpec q).run (s, cache) = _
   rw [show (fsLazyProd (StmtIn := StmtIn) (σ := σ) pSpec q).run (s, cache)
@@ -73,7 +75,7 @@ theorem concat_castSucc {k : Fin n} (messages : pSpec.MessagesUpTo k.castSucc)
     (h : pSpec.dir k = Direction.P_to_V) (msg : pSpec.Message ⟨k, h⟩)
     (i : Fin k.val) (hdir : pSpec.dir (i.castLE (by omega)) = Direction.P_to_V) :
     (messages.concat h msg) ⟨i.castSucc, by
-      simpa only [Fin.val_castSucc, Fin.castLE] using hdir⟩
+      exact hdir⟩
         = messages ⟨i, hdir⟩ := by
   obtain ⟨a, ha⟩ := i
   unfold MessagesUpTo.concat MessagesUpTo.concat'
@@ -84,7 +86,7 @@ theorem extend_castSucc {k : Fin n} (messages : pSpec.MessagesUpTo k.castSucc)
     (h : pSpec.dir k = Direction.V_to_P)
     (i : Fin k.val) (hdir : pSpec.dir (i.castLE (by omega)) = Direction.P_to_V) :
     (messages.extend h) ⟨i.castSucc, by
-      simpa only [Fin.val_castSucc, Fin.castLE] using hdir⟩
+      exact hdir⟩
         = messages ⟨i, hdir⟩ := by
   obtain ⟨a, ha⟩ := i
   unfold MessagesUpTo.extend MessagesUpTo.concat'
@@ -218,11 +220,11 @@ theorem deriveTranscriptSRAux_lazy_run
       have hne : cache ⟨⟨i.castLE (by omega), hDir⟩, (stmt, messages.take i.castSucc)⟩ ≠ none :=
         hcache i hDir (by simp only [Fin.val_succ, Fin.coe_castSucc]; omega)
       obtain ⟨u, hu⟩ := Option.ne_none_iff_exists'.mp hne
-      rw [simulateQ_bind, StateT.run_bind, simulateQ_lazyProd_query_run_hit impl _ s cache u hu,
+      erw [simulateQ_bind, StateT.run_bind, simulateQ_lazyProd_query_run_hit impl _ s cache u hu,
         pure_bind, simulateQ_pure, StateT.run_pure]
       simp only [hu, Option.getD_some]
     · next hDir =>
-      rw [reconstructAux_succ_ptov _ _ _ _ _ hDir, simulateQ_pure, StateT.run_pure]
+      erw [reconstructAux_succ_ptov _ _ _ _ _ hDir, simulateQ_pure, StateT.run_pure]
 
 /-- The full-transcript reconstruction (at `Fin.last`) from messages `m` and a cache. -/
 noncomputable def reconstruct (stmt : StmtIn) (messages : pSpec.Messages)
@@ -294,8 +296,8 @@ theorem processRoundFS_lazy_cached_step
     rintro ⟨i, ⟨x, _, rfl⟩, i_1, hi1, hzp⟩
     rw [simulateQ_lazyProd_query_run_miss impl ⟨⟨j, hDir⟩, (stmt, m)⟩ x.2 cache
         (hmiss hDir)] at hi1
-    simp only [support_map, Set.mem_image] at hi1
-    obtain ⟨c, _, rfl⟩ := hi1
+    obtain ⟨c, _, hc⟩ := OracleComp.mem_support_map_peel _ _ hi1
+    subst i_1
     simp only [support_pure, Set.mem_singleton_iff] at hzp
     subst hzp
     simp only []
@@ -303,7 +305,8 @@ theorem processRoundFS_lazy_cached_step
     · intro q hq
       by_cases hqk : q = ⟨⟨j, hDir⟩, (stmt, m)⟩
       · subst hqk; simp
-      · rw [QueryCache.cacheQuery_of_ne _ _ hqk]; exact hq
+      · simpa only [QueryCache.cacheQuery, QueryCache.toFn_ofFn, Function.update,
+          dif_neg hqk] using hq
     · intro hDir'
       have : hDir' = hDir := rfl
       subst this; simp

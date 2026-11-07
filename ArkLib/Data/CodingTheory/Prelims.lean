@@ -3,14 +3,18 @@ Copyright (c) 2024-2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Katerina Hristova, František Silváši, Julian Sutherland, Chung Thai Nguyen
 -/
+module
 
-import Mathlib.Algebra.Lie.OfAssociative
-import Mathlib.LinearAlgebra.Matrix.Rank
-import Mathlib.LinearAlgebra.AffineSpace.Pointwise
-import Mathlib.LinearAlgebra.AffineSpace.Combination
-import Mathlib.RingTheory.Henselian
+public import Mathlib.Algebra.Lie.OfAssociative
+public import Mathlib.LinearAlgebra.Matrix.Rank
+public import Mathlib.LinearAlgebra.AffineSpace.Pointwise
+public import Mathlib.LinearAlgebra.AffineSpace.Combination
+public import Mathlib.RingTheory.Henselian
+
 
 /-! # Coding-Theory Preliminaries -/
+
+@[expose] public section
 
 section TensorCombination
 variable {F : Type*} [CommRing F] [Fintype F] [DecidableEq F]
@@ -24,6 +28,45 @@ def multilinearWeight {ϑ : ℕ} (r : Fin ϑ → F) (i : Fin (2 ^ ϑ)) : F :=
   ∏ j : Fin ϑ,
     if i.val.testBit j.val then (r j) else (1 - r j)
 
+omit [Fintype F] [DecidableEq F] in
+/-- For an index `i < 2 ^ n` in the lower half, the weight of `r : Fin (n + 1) → F` is the weight
+of `i` at `Fin.init r` times `1 - r (Fin.last n)`, since bit `n` of `i` is `0`. -/
+lemma multilinearWeight_succ_lower_half {n : ℕ} (r : Fin (n + 1) → F) (i : Fin (2 ^ (n + 1)))
+    (h_lt : i.val < 2 ^ n) :
+    multilinearWeight r i =
+      multilinearWeight (Fin.init r) ⟨i.val, h_lt⟩ * (1 - r (Fin.last n)) := by
+  simp only [multilinearWeight, Fin.prod_univ_castSucc, Fin.val_castSucc, Fin.val_last,
+    Nat.testBit_lt_two_pow h_lt, Bool.false_eq_true, ↓reduceIte, Fin.init]
+
+omit [Fintype F] [DecidableEq F] in
+/-- For an index `i = j + 2 ^ n` in the upper half, the weight of `r : Fin (n + 1) → F` is the
+weight of `j` at `Fin.init r` times `r (Fin.last n)`, since bit `n` of `i` is `1`. -/
+lemma multilinearWeight_succ_upper_half {n : ℕ} (r : Fin (n + 1) → F) (i : Fin (2 ^ (n + 1)))
+    (j : Fin (2 ^ n)) (h_eq : i.val = j.val + 2 ^ n) :
+    multilinearWeight r i = multilinearWeight (Fin.init r) j * r (Fin.last n) := by
+  have h_top : i.val.testBit n = true := by
+    rw [h_eq, Nat.add_comm, Nat.testBit_two_pow_add_eq, Nat.testBit_lt_two_pow j.isLt,
+      Bool.not_false]
+  have h_low : ∀ k : Fin n, i.val.testBit k.val = j.val.testBit k.val := fun k => by
+    rw [h_eq, Nat.add_comm, Nat.testBit_two_pow_add_gt k.isLt]
+  simp only [multilinearWeight, Fin.prod_univ_castSucc, Fin.val_castSucc, Fin.val_last, h_top,
+    ↓reduceIte, h_low, Fin.init]
+
+omit [Fintype F] [DecidableEq F] in
+/-- An even index selects the zero branch of the first multilinear weight factor. -/
+lemma multilinearWeight_two_mul {n : ℕ} (r : Fin (n + 1) → F) (i : Fin (2 ^ n)) :
+    multilinearWeight r ⟨2 * i, by omega⟩ =
+      multilinearWeight (fun j => r j.succ) i * (1 - r 0) := by
+  simp [multilinearWeight, Fin.prod_univ_succ, Nat.testBit_add_one, Nat.testBit_zero, mul_comm]
+
+omit [Fintype F] [DecidableEq F] in
+/-- An odd index selects the one branch of the first multilinear weight factor. -/
+lemma multilinearWeight_two_mul_add_one {n : ℕ} (r : Fin (n + 1) → F) (i : Fin (2 ^ n)) :
+    multilinearWeight r ⟨2 * i + 1, by omega⟩ =
+      multilinearWeight (fun j => r j.succ) i * r 0 := by
+  simp [multilinearWeight, Fin.prod_univ_succ, Nat.testBit_add_one, Nat.testBit_zero,
+    Nat.add_div, mul_comm]
+
 /-- Linear combination of the rows of `u` according to the tensor product of `r`:
 `[tensor_product r i] ·|u₀|`
                       `|u₁|`
@@ -34,6 +77,7 @@ def multilinearCombine {ϑ : ℕ} {ι : Type*}
     (u : (Fin (2 ^ ϑ)) → ι → A) (r : Fin ϑ → F) : (ι → A) :=
   fun colIdx => ∑ rowIdx : Fin (2^ϑ), ((multilinearWeight r rowIdx) : F) • ((u rowIdx colIdx) : A)
 notation:20 r " |⨂| " u => multilinearCombine (u := u) (r := r)
+
 end TensorCombination
 noncomputable section
 
@@ -44,7 +88,12 @@ variable {F : Type*}
 
 namespace Matrix
 
-/-- The set of column indices where two matrices differ. -/
+/-- The set of column indices where two matrices differ.
+
+This is the matrix-shaped form of `Code.disagreementCols`: reading a matrix as a word over
+the alphabet of its columns, `neqCols U V = Code.disagreementCols Uᵀ Vᵀ`. The bridge is
+`Matrix.neqCols_eq_disagreementCols_transpose`, stated downstream in `Basic/Distance.lean`.
+Prefer `Code.disagreementCols` for plain pointwise disagreement. -/
 def neqCols [DecidableEq F] (U V : Matrix ι ι' F) : Finset ι' := {j | ∃ i : ι, V i j ≠ U i j}
 
 section
@@ -88,7 +137,7 @@ lemma rank_eq_if_subUpFull_eq (h : n ≤ m) :
    apply le_antisymm
    ·  exact Matrix.rank_le_width U
    ·  calc n = (subUpFull U (Fin.castLE h)).rank := by rw[h_sub_mat_rank]
-           _ ≤ U.rank := by exact Matrix.rank_submatrix_le U (Fin.castLE h) id
+           _ ≤ U.rank := by exact Matrix.rank_submatrix_le U (Fin.castLE h) (Equiv.refl (Fin n))
 
 /-- cRank and Rank agree for a finite matirx -/
 lemma cRank_rank_conversion :
@@ -119,6 +168,7 @@ lemma full_row_rank_via_rank_subLeftFull (h : m ≤ n) :
            _ ≤ U.cRank := by exact Matrix.cRank_submatrix_le U id (Fin.castLE h)
    simp [h_cRank]
 
+omit [Nontrivial F] in
 /-- A square matrix over an integral domain has full rank if its determinant is nonzero. -/
 lemma rank_eq_if_det_ne_zero {U : Matrix (Fin n) (Fin n) F} [IsDomain F] :
     Matrix.det U ≠ 0 → U.rank = n  := by
@@ -143,7 +193,7 @@ lemma rank_eq_iff_det_ne_zero {U : Matrix (Fin n) (Fin n) F} :
   rw[
     ← isUnit_iff_ne_zero,
     ← Matrix.isUnit_iff_isUnit_det,
-    ←  Matrix.linearIndependent_cols_iff_isUnit,
+    ←  Matrix.linearIndependent_col_iff_isUnit,
     Matrix.rank_eq_finrank_span_cols,
     linearIndependent_iff_card_eq_finrank_span,
     Set.finrank
@@ -268,11 +318,9 @@ omit [Fintype F] in
 /-- The affine span of a finite set of vectors is finite over a finite field. -/
 lemma AffSpanSet.instFinite [Finite F] [NeZero k] (u : Fin k → ι → F) :
     (AffSpanSet u).Finite := by
-  letI : Fintype F := Fintype.ofFinite F
+  let : Fintype F := Fintype.ofFinite F
   unfold AffSpanSet
   exact Set.toFinite _
-
-attribute [instance] AffSpanSet.instFinite
 
 /-- The affine span as a `Finset`, using `AffSpanFinite` to convert from the set. -/
 noncomputable def AffSpanFinset [NeZero k] (U : Fin k → ι → F) : Finset (ι → F) :=
@@ -297,6 +345,28 @@ noncomputable instance instFintypeAffineSubspace {V : Type*} [AddCommGroup V]
 instance instNonemptyAffineSubspace_mk' {V : Type*} [AddCommGroup V] [Module F V]
     (p : V) (direction : Submodule F V) : Nonempty (AffineSubspace.mk' p direction) :=
   nonempty_subtype.mpr ⟨p, AffineSubspace.self_mem_mk' p direction⟩
+
+/-- The affine-space combination of module-valued codewords `U` at seed `x`:
+`U 0 + ∑ i, x i • U (i+1)`. -/
+abbrev affineComb [AddCommMonoid A] [Module F A] {s : ℕ}
+    (U : Fin (s + 1) → (ι → A)) (x : Fin s → F) : ι → A :=
+  fun k => U 0 k + ∑ i, x i • U i.succ k
+
+/-- The linear combination `∑ i, l i • U (i+1)` of the module-valued direction codewords. -/
+abbrev linComb [AddCommMonoid A] [Module F A] {s : ℕ}
+    (U : Fin (s + 1) → (ι → A)) (l : Fin s → F) : ι → A :=
+  fun k => ∑ i, l i • U i.succ k
+
+omit [Fintype ι] [DecidableEq F] [Fintype F] in
+/-- The affine combination along the line `x ↦ v + t • lam` in seed space. -/
+lemma affineComb_line [AddCommMonoid A] [Module F A] {s : ℕ}
+    (U : Fin (s + 1) → (ι → A)) (v lam : Fin s → F) (t : F) :
+    affineComb U (v + t • lam) = affineComb U v + t • (linComb U lam) := by
+  ext k
+  simp only [affineComb, linComb, Pi.add_apply, Pi.smul_apply, smul_eq_mul, add_smul, mul_smul,
+    Finset.smul_sum]
+  rw [Finset.sum_add_distrib]
+  abel
 
 end
 end Affine
@@ -360,9 +430,10 @@ namespace sInf
 lemma sInf_UB_of_le_UB {S : Set ℕ} {i : ℕ} : (∀ s ∈ S, s ≤ i) → sInf S ≤ i := fun h ↦ by
   by_cases S_empty : S.Nonempty
   · classical
-    rw [Nat.sInf_def S_empty, Nat.find_le_iff]
-    choose s hs using S_empty
-    aesop
+    rcases S_empty with ⟨s, hs⟩
+    have hne : ∃ n, n ∈ S := ⟨s, hs⟩
+    rw [Nat.sInf_def hne]
+    exact (Nat.find_le_iff hne i).2 ⟨s, h s hs, hs⟩
   · aesop (add simp (show S = ∅ by aesop (add simp Set.Nonempty)))
 
 /-- If `i` is a lower bound for all elements in a nonempty set, then `i` is at most the infimum. -/
@@ -416,7 +487,7 @@ theorem card_univ_filter_eq {e : α} :
     #{x : α | x ≠ e} = #(Finset.univ (α := α)) - 1 := by
   rw [
     Finset.filter_congr (q := (· ∉ ({e} : Finset _))) (by simp),
-    ←Finset.sdiff_eq_filter, Finset.card_univ_diff
+    ←Finset.sdiff_eq_filter, Finset.card_univ_sdiff
   ]
   simp
 

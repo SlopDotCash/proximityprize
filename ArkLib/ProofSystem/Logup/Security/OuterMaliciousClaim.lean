@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.Logup.Security.SoundnessConverse
 import ArkLib.ProofSystem.Logup.Sumcheck.SumcheckBridge
-import ArkLib.Data.MvPolynomial.SchwartzZippelCounting
+import ProximityPrize.Extensions.Data.MvPolynomial.SchwartzZippelCounting
 
 /-!
 # The malicious-prover outer claim: per-`m` bad challenges + `(z, λ)` Schwartz–Zippel (issue #13)

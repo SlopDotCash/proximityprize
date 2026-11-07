@@ -3,8 +3,8 @@ Copyright (c) 2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.OracleReduction.Security.Basic
-import ArkLib.OracleReduction.Composition.Sequential.Append
+import ProximityPrize.Extensions.OracleReduction.Security.Basic
+import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.Append
 import ArkLib.ProofSystem.Logup.Protocol
 
 /-!
@@ -38,7 +38,7 @@ development is not permitted to modify:
   completeness theorem is available for this use.
 * Lifting the generic sumcheck reduction through `logupSumcheckContextLens` would additionally
   require the lens completeness instance demanded by
-  `OracleReduction.liftContext_completeness`.
+  `OracleReduction.liftContextLegacy_completeness`.
 
 Consequently `logup_completeness` is closed via the genuine composition skeleton, with a named
 residual `Prop` (`SubPhaseCompletenessResidual`) standing for the upstream-blocked
@@ -103,11 +103,12 @@ Fully proven (no `sorryAx`); this is the probabilistic statement of `card_poleSe
 theorem probEvent_pole_le [SampleableType F] (oStmt : ∀ i, OStmtIn F n M i)
     [DecidablePred
       (fun x : F => ∃ u : Hypercube n, x + evalOnHypercube (tableOracle oStmt) u = 0)] :
-    probEvent (uniformSample F)
+    probEvent
       (fun x : F => ∃ u : Hypercube n, x + evalOnHypercube (tableOracle oStmt) u = 0)
+      (uniformSample F)
       ≤ (Fintype.card (Hypercube n) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) := by
   classical
-  rw [probEvent_uniformSample]
+  rw [probEvent, SampleableType.prEvent_uniformSample]
   exact ENNReal.div_le_div_right (by exact_mod_cast card_poleSet_le F n M oStmt) _
 
 end PoleBound
@@ -170,8 +171,9 @@ the run-unfolding, sumcheck, or append-composition residuals. -/
 theorem probEvent_pole_le_logupCompletenessError (oStmt : ∀ i, OStmtIn F n M i)
     [DecidablePred
       (fun x : F => ∃ u : Hypercube n, x + evalOnHypercube (tableOracle oStmt) u = 0)] :
-    probEvent (uniformSample F)
+    probEvent
       (fun x : F => ∃ u : Hypercube n, x + evalOnHypercube (tableOracle oStmt) u = 0)
+      (uniformSample F)
       ≤ (logupCompletenessError F n : ℝ≥0∞) := by
   simpa [logupCompletenessError] using (probEvent_pole_le F n M oStmt)
 
@@ -255,20 +257,10 @@ theorem logup_completeness_of_residual
         (sumcheckOracleReduction oSpec F n M params) h.1 h.2) :
     (logupOracleReduction oSpec F n M params).completeness init impl
       (inputRelation F n M) outputRelation (logupCompletenessError F n) := by
-  obtain ⟨hOuter, hSum⟩ := h
-  -- `logupOracleReduction` is definitionally `append outerOracleReduction sumcheckOracleReduction`
-  -- (`logupOracleReduction_eq_append`), so the composed completeness fact unifies with the goal up
-  -- to `logupCompletenessError F n + 0 = logupCompletenessError F n`. `OracleReduction.append_completeness`
-  -- now carries the sequential-composition completeness fact as the explicit residual hypothesis
-  -- `hAppendCompleteness` (mirroring `append_soundness`'s `hAppendSoundness`), which we thread through
-  -- (bridging the `+ 0`); the body still contains no `sorry`.
-  have hc := OracleReduction.append_completeness.{0, 0}
-    (rel₂ := midRelation F n M params)
-    (outerOracleReduction oSpec F n M params)
-    (sumcheckOracleReduction oSpec F n M params)
-    hOuter hSum
-    hAppendCompleteness
-  simpa only [add_zero] using hc
+  -- The explicit append residual already carries the composed bound. Keep this conditional
+  -- interface; the subphase premises alone do not supply a stateful composition theorem.
+  rw [logupOracleReduction_eq_append]
+  simpa only [OracleReduction.appendCompletenessResidual, add_zero] using hAppendCompleteness
 
 end Completeness
 

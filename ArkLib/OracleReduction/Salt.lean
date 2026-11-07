@@ -3,9 +3,10 @@ Copyright (c) 2024 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao
 -/
+module
 
-import ArkLib.OracleReduction.Execution
-import ArkLib.OracleReduction.Cast
+public import ArkLib.OracleReduction.Execution
+public import ArkLib.OracleReduction.Cast
 
 /-!
   # Adding Salt to an (Oracle) Reduction
@@ -22,6 +23,8 @@ import ArkLib.OracleReduction.Cast
   state-restoration security for that same (oracle) reduction with any (finite, non-empty) salt type
   added.
 -/
+
+@[expose] public section
 
 open OracleComp OracleSpec
 
@@ -63,7 +66,7 @@ lemma addSalt_Challenge (i : pSpec.ChallengeIdx) :
 /-- Remove the salt from a (partial) transcript of a salted protocol -/
 def Transcript.removeSalt {k : Fin (n + 1)} (transcript : (pSpec.addSalt Salt).Transcript k) :
     pSpec.Transcript k :=
--- Note: would be nice not to need `by` block
+-- TODO: would be nice not to need `by` block
   fun i => by
   letI data := transcript i
   dsimp [addSalt, SliceLT.sliceLT, take] at data ⊢
@@ -73,7 +76,10 @@ def Transcript.removeSalt {k : Fin (n + 1)} (transcript : (pSpec.addSalt Salt).T
 
 /-- Extract the salt from a (partial) transcript of a salted protocol -/
 def Transcript.extractSalt {k : Fin (n + 1)} (transcript : (pSpec.addSalt Salt).Transcript k) :
-    (i : pSpec.MessageIdxUpTo k) → Salt ⟨i.val.castLE (by omega), by simpa using i.property⟩ :=
+    (i : pSpec.MessageIdxUpTo k) → Salt ⟨i.val.castLE (by omega), by
+      have hi := i.property
+      change (Fin.take k.val (by omega) pSpec.dir) i.val = Direction.P_to_V at hi
+      exact hi⟩ :=
   fun i => by
     letI data := transcript i
     dsimp [addSalt, SliceLT.sliceLT, take, Fin.castLE] at data ⊢
@@ -92,20 +98,37 @@ def FullTranscript.extractSalt (transcript : (pSpec.addSalt Salt).FullTranscript
     (i : pSpec.MessageIdx) → Salt i :=
   Transcript.extractSalt (pSpec := pSpec) (k := Fin.last n) transcript
 
+/-- Remove the salt from the family of prover messages. -/
+def Messages.removeSalt (messages : (pSpec.addSalt Salt).Messages) :
+    pSpec.Messages :=
+  fun i => ((addSalt_Message i) ▸ messages i).1
+
+/-- Transport the verifier challenges back to the unsalted protocol. -/
+def Challenges.removeSalt (challenges : (pSpec.addSalt Salt).Challenges) :
+    pSpec.Challenges :=
+  fun i => cast (addSalt_Challenge i) (challenges i)
+
 /-- The oracle interface for each of the prover's messages in a salted protocol is defined to be
   the same as the oracle interface for the original message (ignoring the salt). -/
-instance [Oₘ : ∀ i, OracleInterface (pSpec.Message i)] :
+instance (priority := 10000) instAddSaltMessage
+    [Oₘ : ∀ i, OracleInterface (pSpec.Message i)] :
     ∀ i, OracleInterface ((pSpec.addSalt Salt).Message i) :=
   fun i => {
     Query := (Oₘ i).Query
     toOC.spec := (Oₘ i).Response
-    toOC.impl q := by
-      refine ReaderT.mk fun msg => ((Oₘ i).toOC.impl q).run ?_
-      simp only [Message, addSalt, addSalt_dir, Subtype.coe_eta] at msg
-      split at msg
-      · refine msg.1
-      · refine msg
+    toOC.impl q := ReaderT.mk fun msg =>
+      ((Oₘ i).toOC.impl q).run
+        (((addSalt_Message (pSpec := pSpec) (Salt := Salt) i) ▸ msg).1)
   }
+
+@[simp]
+lemma addSalt_answer [Oₘ : ∀ i, OracleInterface (pSpec.Message i)]
+    (i : pSpec.MessageIdx) (msg : (pSpec.addSalt Salt).Message i)
+    (q : (Oₘ i).Query) :
+    (instAddSaltMessage (pSpec := pSpec) (Salt := Salt) i).answer msg q =
+      (Oₘ i).answer ((addSalt_Message i ▸ msg).1) q := by
+  obtain ⟨i, hDir⟩ := i
+  rfl
 
 --  (i : ChallengeIdx saltedPSpec) → SampleableType (Challenge saltedPSpec i)
 
@@ -164,44 +187,81 @@ def Verifier.addSalt (V : Verifier oSpec StmtIn StmtOut pSpec) :
     Verifier oSpec StmtIn StmtOut (pSpec.addSalt Salt) where
   verify := fun stmtIn transcript => V.verify stmtIn transcript.removeSalt
 
--- STATEMENT REPAIR (2026-06-04): the original `OracleVerifier.addSalt` carried an unfillable
--- `hEq := sorry` (present since the upstream commit that introduced the file).  The defect is
--- structural and provable-false, not a missing proof: an `OracleVerifier` records, for each output
--- oracle statement `i`, a *type equality* `hEq i : OStmtOut i = (embed-target type)`.  When
--- `embed i`
--- points at a prover message `j`, the target type in the *salted* protocol is
--- `(pSpec.addSalt Salt).Message j = pSpec.Message j × Salt j` (see `addSalt_Message`), whereas the
--- only available fact is `V.hEq i : OStmtOut i = pSpec.Message j`.  These force
--- `pSpec.Message j = pSpec.Message j × Salt j`, false for any inhabited `pSpec.Message j` and
--- non-trivial `Salt j`.  The structure has no facility to expose the *unsalted projection* of a
--- salted message as an oracle statement, so no sound `hEq` exists in full generality.
---
--- The honest, non-weakening repair (the construction is otherwise an identity transform) is to
--- restrict to oracle verifiers whose output oracle statements are all derived from *input* oracle
--- statements — i.e. `embed` never targets a prover message.  Under that hypothesis `hEq` is exactly
--- `V.hEq`, since the `.inl` branch type (`OStmtIn j`) is unchanged by salting.  This covers every
--- intended use (salting adds dummy slots to prover *messages*; the verifier's exposed oracle
--- statements come from its inputs), and crucially introduces no `sorry`/`axiom`.
-/-- Transform an oracle verifier for a protocol specification `pSpec` into an oracle verifier for
-  the salted protocol specification `pSpec.addSalt Salt`. The new oracle verifier is the same as the
-  old one, modulo casting of oracle interfaces.
+def addSaltQueryImpl :
+    QueryImpl (oSpec + ([OStmtIn]ₒ + [pSpec.Message]ₒ))
+      (OracleComp (oSpec + ([OStmtIn]ₒ + [(pSpec.addSalt Salt).Message]ₒ))) :=
+  fun q => liftM <| OracleSpec.query
+    (show (oSpec + ([OStmtIn]ₒ + [(pSpec.addSalt Salt).Message]ₒ)).Domain from q)
 
-  Requires `hEmbed`: every output oracle statement is derived from an *input* oracle statement
-  (`V.embed` never points at a prover message).  This is necessary because, once messages are
-  salted, an output oracle statement typed as an unsalted message can no longer be matched to the
-  salted message type; see the `STATEMENT REPAIR` note above. -/
-def OracleVerifier.addSalt (V : OracleVerifier oSpec StmtIn OStmtIn StmtOut OStmtOut pSpec)
-    (hEmbed : ∀ i, (V.embed i).isLeft) :
+private theorem simulateAddSaltQueryImpl
+    (oStmt : ∀ i, OStmtIn i) (messages : (pSpec.addSalt Salt).Messages)
+    (q : (oSpec + ([OStmtIn]ₒ + [pSpec.Message]ₒ)).Domain) :
+    simulateQ (OracleInterface.simOracle2 oSpec oStmt messages)
+        (addSaltQueryImpl (OStmtIn := OStmtIn) (Salt := Salt) q) =
+      OracleInterface.simOracle2 oSpec oStmt
+        (Messages.removeSalt (pSpec := pSpec) (Salt := Salt) messages) q := by
+  rcases q with q | q
+  · simp only [addSaltQueryImpl, simulateQ_query]
+    rfl
+  · rcases q with q | q
+    · rcases q with ⟨i, q⟩
+      simp only [addSaltQueryImpl, simulateQ_query]
+      rfl
+    · rcases q with ⟨i, q⟩
+      obtain ⟨i, hDir⟩ := i
+      simp only [addSaltQueryImpl]
+      simp only [OracleInterface.simOracle2, QueryImpl.addLift,
+        QueryImpl.add_apply_inr, QueryImpl.liftTarget_apply]
+      change id <$> (liftM (OracleInterface.simOracle0
+          (pSpec.addSalt Salt).Message messages ⟨⟨i, hDir⟩, q⟩) :
+            OracleComp _ _) =
+        (liftM (OracleInterface.simOracle0 pSpec.Message
+          (Messages.removeSalt (pSpec := pSpec) (Salt := Salt) messages)
+          ⟨⟨i, hDir⟩, q⟩) : OracleComp _ _)
+      unfold OracleInterface.simOracle0
+      simp only [addSalt_answer, Messages.removeSalt]
+      congr 1
+
+private theorem simulateAddSaltQueryImplComp
+    (oStmt : ∀ i, OStmtIn i) (messages : (pSpec.addSalt Salt).Messages)
+    {α : Type} (oa : OracleComp (oSpec + ([OStmtIn]ₒ + [pSpec.Message]ₒ)) α) :
+    simulateQ (OracleInterface.simOracle2 oSpec oStmt messages)
+        (simulateQ (addSaltQueryImpl (OStmtIn := OStmtIn) (Salt := Salt)) oa) =
+      simulateQ (OracleInterface.simOracle2 oSpec oStmt
+        (Messages.removeSalt (pSpec := pSpec) (Salt := Salt) messages)) oa := by
+  rw [← QueryImpl.simulateQ_compose]
+  apply congrArg (fun impl => simulateQ impl oa)
+  apply QueryImpl.ext
+  exact simulateAddSaltQueryImpl (Salt := Salt) oStmt messages
+
+def addSaltOutputSimulation
+    (V : OracleVerifier oSpec StmtIn OStmtIn StmtOut OStmtOut pSpec) :
+    OracleOutputSimulation oSpec OStmtIn OStmtOut (pSpec.addSalt Salt) where
+  materializeOutput := fun challenges oStmt messages =>
+    V.materializeOutput
+      (Challenges.removeSalt (pSpec := pSpec) (Salt := Salt) challenges) oStmt
+      (Messages.removeSalt (pSpec := pSpec) (Salt := Salt) messages)
+  simulateOutputQuery := fun challenges q =>
+    simulateQ (addSaltQueryImpl (OStmtIn := OStmtIn) (Salt := Salt))
+      (V.simulateOutputQuery
+        (Challenges.removeSalt (pSpec := pSpec) (Salt := Salt) challenges) q)
+  simulateOutputQuery_eq := by
+    intro challenges oStmt messages q
+    rw [simulateAddSaltQueryImplComp]
+    exact V.simulateOutputQuery_eq
+      (Challenges.removeSalt (pSpec := pSpec) (Salt := Salt) challenges) oStmt
+      (Messages.removeSalt (pSpec := pSpec) (Salt := Salt) messages) q
+
+/-- Transform an oracle verifier for a protocol specification `pSpec` into an oracle verifier for
+  the salted protocol specification `pSpec.addSalt Salt`. The new oracle verifier is the same as
+  the old one, modulo casting of oracle interfaces. -/
+def OracleVerifier.addSalt (V : OracleVerifier oSpec StmtIn OStmtIn StmtOut OStmtOut pSpec) :
     OracleVerifier oSpec StmtIn OStmtIn StmtOut OStmtOut (pSpec.addSalt Salt) where
   verify := fun stmtIn challenges =>
-    V.verify stmtIn (fun i => cast (addSalt_Challenge i) (challenges i))
-  embed := V.embed
-  hEq := fun i => by
-    have hv := V.hEq i
-    have hL := hEmbed i
-    rcases h : V.embed i with j | j
-    · simp only [h] at hv ⊢; exact hv
-    · rw [h] at hL; exact absurd hL (by simp)
+    simulateQ (addSaltQueryImpl (OStmtIn := OStmtIn) (Salt := Salt))
+      (V.verify stmtIn
+        (Challenges.removeSalt (pSpec := pSpec) (Salt := Salt) challenges))
+  outputOracle := .inr (addSaltOutputSimulation (Salt := Salt) V)
 
 /-- Transform a reduction for a protocol specification `pSpec` into a reduction for the salted
   protocol specification `pSpec.addSalt Salt`. Require additional computation of the salt for each
@@ -219,13 +279,14 @@ def Reduction.addSalt (R : Reduction oSpec StmtIn WitIn StmtOut WitOut pSpec)
 def OracleReduction.addSalt
     (R : OracleReduction oSpec StmtIn OStmtIn WitIn StmtOut OStmtOut WitOut pSpec)
     (saltComp : (i : pSpec.MessageIdx) → R.prover.PrvState i.1.castSucc →
-      OracleComp oSpec (Salt i))
-    -- STATEMENT REPAIR (2026-06-04): threaded through from `OracleVerifier.addSalt`; see its note.
-    (hEmbed : ∀ i, (R.verifier.embed i).isLeft) :
+      OracleComp oSpec (Salt i)) :
     OracleReduction oSpec StmtIn OStmtIn WitIn StmtOut OStmtOut WitOut (pSpec.addSalt Salt) where
   prover := R.prover.addSalt Salt saltComp
-  verifier := R.verifier.addSalt Salt hEmbed
+  verifier := R.verifier.addSalt Salt
 
+-- The virtual-output semantics of the transformed verifier are covered by `addSalt_toVerifier` and
+-- the ToyProblem runtime regression. Whole-reduction execution, completeness, and security remain
+-- separate obligations; in particular the comments below are not proved by the semantic bridge.
 -- Theorems to prove
 -- Execution returns the same transcript as the original reduction (modulo salt)
 -- Completeness is preserved (for any salt computation)

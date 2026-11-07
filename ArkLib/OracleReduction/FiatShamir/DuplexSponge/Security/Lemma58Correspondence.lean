@@ -638,9 +638,11 @@ theorem mem_slotList_of_mem_perm (c : DSCache StmtIn U)
     {p : CanonicalSpongeState U × CanonicalSpongeState U} (hp : p ∈ c.2) :
     p.1.capacitySegment ∈ slotList c ∧ p.2.capacitySegment ∈ slotList c := by
   classical
-  constructor <;>
+  constructor
   · refine List.mem_append_right _ (List.mem_flatMap.mpr ⟨p, hp, ?_⟩)
-    simp
+    with_unfolding_all exact List.mem_cons_self
+  · refine List.mem_append_right _ (List.mem_flatMap.mpr ⟨p, hp, ?_⟩)
+    with_unfolding_all exact List.mem_cons_of_mem _ (List.mem_singleton_self _)
 
 /-- A capacity cached early stays a slot of every later fold cache. -/
 theorem mem_slotList_foldl_of_mem_perm (c : DSCache StmtIn U)
@@ -1195,7 +1197,7 @@ theorem stepCache_hash_provenance (c : DSCache StmtIn U) (e : DSEntry StmtIn U)
       · subst hqq
         rw [OracleSpec.QueryCache.cacheQuery_self] at h
         exact Or.inr (by rw [Option.some_inj.mp h])
-      · rw [OracleSpec.QueryCache.cacheQuery, Function.update_of_ne hqq] at h
+      · rw [OracleSpec.QueryCache.cacheQuery, OracleSpec.QueryCache.toFn_ofFn, Function.update_of_ne hqq] at h
         exact Or.inl h
     · left; simpa [stepCache, hcq] using h
   · rcases hf : c.2.find? (fun w => w.1 = a) with _ | w <;> · left; simpa [stepCache, hf] using h
@@ -1382,7 +1384,7 @@ theorem fresh_hash_inserts (c : DSCache StmtIn U)
   rw [List.foldl_append, List.foldl_cons]
   set c1 := L₁.foldl stepCache c with hc1
   have hstep : (stepCache c1 (⟨.inl q, u⟩ : DSEntry StmtIn U)).1 q = some u := by
-    simp only [stepCache, hfresh, OracleSpec.QueryCache.cacheQuery, Function.update_self]
+    simp only [stepCache, hfresh, OracleSpec.QueryCache.cacheQuery, OracleSpec.QueryCache.toFn_ofFn, Function.update_self]
   exact foldl_stepCache_hash_mono (stepCache c1 (⟨.inl q, u⟩ : DSEntry StmtIn U)) L₂ hstep
 
 open DuplexSpongeFS.Paper in
@@ -1623,9 +1625,8 @@ theorem probEvent_EPaper_toReal_le_lemma5_8Bound_of_reduction
     (hred : EPaperReduction StmtIn U)
     {α : Type} (P : OracleComp (duplexSpongeChallengeOracle StmtIn U) α) (T : ℕ)
     (hT : IsTotalQueryBound P T) :
-    (Pr[ fun z : α × QueryLog (duplexSpongeChallengeOracle StmtIn U) => EPaper z.2 |
-        (simulateQ lazyDSImpl ((simulateQ loggingOracle P).run)).run'
-          ((∅, ([] : List (CanonicalSpongeState U × CanonicalSpongeState U))))]).toReal
+    (Pr{let z ← ((simulateQ lazyDSImpl ((simulateQ loggingOracle P).run)).run'
+          ((∅, ([] : List (CanonicalSpongeState U × CanonicalSpongeState U)))))}[EPaper z.2]).toReal
       ≤ DuplexSpongeFS.BirthdayBound.lemma5_8Bound U T := by
   classical
   set Q := (simulateQ loggingOracle P).run with hQ
@@ -1633,22 +1634,17 @@ theorem probEvent_EPaper_toReal_le_lemma5_8Bound_of_reduction
     (OracleComp.isTotalQueryBound_run_simulateQ_loggingOracle_iff P T).mpr hT
   -- Step 1: rewrite the EPaper probability as an EPaper-on-logged-value probability of the
   -- flagged run, via `run'` and the forgetting bridge.
-  have heq : Pr[ fun z : α × QueryLog (duplexSpongeChallengeOracle StmtIn U) =>
-        EPaper z.2 |
-        (simulateQ lazyDSImpl Q).run'
-          ((∅, ([] : List (CanonicalSpongeState U × CanonicalSpongeState U))))]
-      = Pr[ fun xs : (α × QueryLog (duplexSpongeChallengeOracle StmtIn U))
-              × (DSCache StmtIn U × Prop) => EPaper xs.1.2 |
-          (simulateQ lazyDSImplFlagged Q).run ((∅, []), False)] := by
-    rw [StateT.run'_eq, probEvent_map,
-      lazyDSImpl_run_map_flagged Q (∅, []) False, probEvent_map]
-    rfl
+  have heq : Pr{let z ← ((simulateQ lazyDSImpl Q).run'
+          ((∅, ([] : List (CanonicalSpongeState U × CanonicalSpongeState U)))))}[EPaper z.2]
+      = Pr{let xs ← ((simulateQ lazyDSImplFlagged Q).run ((∅, []), False))}[EPaper xs.1.2] := by
+    rw [StateT.run'_eq, prEvent_map,
+      lazyDSImpl_run_map_flagged Q (∅, []) False, prEvent_map]
   rw [heq]
   -- Step 2: monotone step `EPaper xs.1.2 → final flag`, then the engine output.
-  refine le_trans (ENNReal.toReal_mono ?_ (probEvent_mono fun xs hxs hEP => ?_))
+  refine le_trans (ENNReal.toReal_mono ?_ (prEvent_mono_of_support _ _ _ fun xs hxs hEP => ?_))
     (probEvent_flag_final_toReal_le_lemma5_8Bound Q T hQbound)
   · -- the flag probability is finite
-    exact ne_of_lt (lt_of_le_of_lt probEvent_le_one ENNReal.one_lt_top)
+    exact ne_of_lt (lt_of_le_of_lt (prEvent_le_one _) ENNReal.one_lt_top)
   · -- the support fact: a consistent EPaper log forces the final flag
     obtain ⟨_, hcons, hflag⟩ := support_flagged_logged P (∅, []) False xs hxs
     rw [hflag]
@@ -1662,9 +1658,8 @@ dedup reduction `EPaperReduction` now being a theorem (`ePaperReduction_holds`).
 theorem probEvent_EPaper_toReal_le_lemma5_8Bound
     {α : Type} (P : OracleComp (duplexSpongeChallengeOracle StmtIn U) α) (T : ℕ)
     (hT : IsTotalQueryBound P T) :
-    (Pr[ fun z : α × QueryLog (duplexSpongeChallengeOracle StmtIn U) => EPaper z.2 |
-        (simulateQ lazyDSImpl ((simulateQ loggingOracle P).run)).run'
-          ((∅, ([] : List (CanonicalSpongeState U × CanonicalSpongeState U))))]).toReal
+    (Pr{let z ← ((simulateQ lazyDSImpl ((simulateQ loggingOracle P).run)).run'
+          ((∅, ([] : List (CanonicalSpongeState U × CanonicalSpongeState U)))))}[EPaper z.2]).toReal
       ≤ DuplexSpongeFS.BirthdayBound.lemma5_8Bound U T :=
   probEvent_EPaper_toReal_le_lemma5_8Bound_of_reduction ePaperReduction_holds P T hT
 

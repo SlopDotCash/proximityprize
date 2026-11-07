@@ -61,7 +61,8 @@ theorem stirMultiRoundRbrSoundness_indicator (M : ℕ) (φ : ι ↪ F) (deg : �
   unfold stirMultiRoundRbrSoundnessResidual OracleProof.rbrKnowledgeSoundness
     OracleVerifier.rbrKnowledgeSoundness
   exact ThresholdKSF.rbrKnowledgeSoundness_indicator (pure ()) isEmptyElim
-    ((stirMultiRoundIOP M φ deg).verifier.toVerifier)
+    ((stirMultiRoundIOP M φ deg).toOracleVerifier.toVerifier
+      (Oₛₒ := fun i : Empty => nomatch i))
     (stirRelation deg φ δ) acceptRejectOracleRel
     (fun _ stmtIn _ => (stmtIn, ()) ∈ stirRelation deg φ δ)
     (foldChalIdx (F := F) (ι := ι) M)

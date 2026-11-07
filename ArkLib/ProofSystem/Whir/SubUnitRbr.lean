@@ -63,15 +63,14 @@ NON-threshold knowledge state function that keeps tracking the predicate past th
 (so that the flip event becomes the salvage event).  That state-function upgrade is the precise
 remaining work; no fabrication here.
 
-NOTE: `ArkLib.ProofSystem.Whir.SchwartzZippelCore` has no `.olean` in the current build
-(clobbered), so its content (`listPoly`, `card_listEval_eq_le`, `probEvent_salvage_le`) is
-inlined verbatim below (namespace `Whir302SZ`), plus the new comap variant
-`probEvent_salvage_le_comap`.
+The shared `SchwartzZippelCore` module owns the polynomial evaluation and uniform-marginal
+salvage lemmas. This module adds the comap variant and the checked-verifier clients.
 -/
 import ArkLib.ProofSystem.Whir.ThresholdKSF
 import ArkLib.ProofSystem.Whir.CheckedVerifier
+import ArkLib.ProofSystem.Whir.SchwartzZippelCore
 import ArkLib.Data.Probability.MarginalBound
-import ArkLib.ProofSystem.Logup.Security.OuterRunDecomposition
+import ArkLib.OracleReduction.RunUnroll
 
 set_option linter.unusedSimpArgs false
 set_option linter.unusedSectionVars false
@@ -85,81 +84,7 @@ open scoped ENNReal
 
 noncomputable section
 
-/-! ## Part 0 — inlined Schwartz–Zippel core (`SchwartzZippelCore.lean`, olean missing),
-plus the comap variant `probEvent_salvage_le_comap`. -/
-
-namespace Whir302SZ
-
-open Polynomial
-
-variable {F : Type} [Field F]
-
-/-- The polynomial whose Horner evaluation is `listEval`. -/
-noncomputable def listPoly (cs : List F) : F[X] :=
-  cs.foldr (fun c acc => Polynomial.C c + Polynomial.X * acc) 0
-
-theorem listPoly_eval (cs : List F) (x : F) :
-    (listPoly cs).eval x = Whir302Checked.listEval cs x := by
-  induction cs with
-  | nil => simp [listPoly, Whir302Checked.listEval]
-  | cons c cs ih =>
-      simp [listPoly, Whir302Checked.listEval, List.foldr_cons] at ih ⊢
-      rw [← ih]
-      simp [listPoly, Whir302Checked.listEval]
-
-theorem listPoly_cons (c : F) (cs : List F) :
-    listPoly (c :: cs) = Polynomial.C c + Polynomial.X * listPoly cs := rfl
-
-theorem listPoly_natDegree_lt (cs : List F) (h : cs ≠ []) :
-    (listPoly cs).natDegree < cs.length := by
-  induction cs with
-  | nil => exact absurd rfl h
-  | cons c cs ih =>
-      rw [listPoly_cons, List.length_cons]
-      refine lt_of_le_of_lt (Polynomial.natDegree_add_le _ _) ?_
-      rw [Polynomial.natDegree_C]
-      rcases eq_or_ne (listPoly cs) 0 with h0 | h0
-      · rw [h0, mul_zero, Polynomial.natDegree_zero]
-        omega
-      · have hcs : cs ≠ [] := by rintro rfl; exact h0 rfl
-        have hb := Polynomial.natDegree_mul (p := (Polynomial.X : F[X]))
-          (q := listPoly cs) Polynomial.X_ne_zero h0
-        have hlt := ih hcs
-        rw [hb, Polynomial.natDegree_X]
-        omega
-
-variable [Fintype F] [DecidableEq F]
-
-/-- **The Schwartz–Zippel salvage bound for `listEval`** (the WHIR sumcheck flip event): if two
-coefficient lists evaluate differently somewhere (the chains genuinely disagree), the set of
-challenges where they agree has at most `max(len cs, len cs') − 1 < max len` elements; counted
-against the full field. -/
-theorem card_listEval_eq_le (cs cs' : List F)
-    (hne : listPoly cs ≠ listPoly cs') (hcs : cs ≠ []) (hcs' : cs' ≠ []) :
-    (Finset.univ.filter
-        (fun r : F => Whir302Checked.listEval cs r = Whir302Checked.listEval cs' r)).card
-      ≤ max cs.length cs'.length := by
-  classical
-  have hsub : Finset.univ.filter
-      (fun r : F => Whir302Checked.listEval cs r = Whir302Checked.listEval cs' r)
-      ⊆ (listPoly cs - listPoly cs').roots.toFinset := by
-    intro r hr
-    rw [Finset.mem_filter] at hr
-    rw [Multiset.mem_toFinset, Polynomial.mem_roots (sub_ne_zero.mpr hne)]
-    rw [Polynomial.IsRoot, Polynomial.eval_sub, sub_eq_zero, listPoly_eval, listPoly_eval]
-    exact hr.2
-  calc (Finset.univ.filter _).card
-      ≤ (listPoly cs - listPoly cs').roots.toFinset.card := Finset.card_le_card hsub
-    _ ≤ Multiset.card (listPoly cs - listPoly cs').roots := Multiset.toFinset_card_le _
-    _ ≤ (listPoly cs - listPoly cs').natDegree := Polynomial.card_roots' _
-    _ ≤ max (listPoly cs).natDegree (listPoly cs').natDegree :=
-        Polynomial.natDegree_sub_le _ _
-    _ ≤ max cs.length cs'.length := by
-        have h1 := listPoly_natDegree_lt cs hcs
-        have h2 := listPoly_natDegree_lt cs' hcs'
-        omega
-
-end Whir302SZ
+/-! ## Probability accounting extending the shared Schwartz-Zippel core -/
 
 -- ## The probability-side accounting
 
@@ -171,36 +96,7 @@ open scoped ENNReal NNReal
 namespace Whir302SZ
 
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
-variable {β : Type} {m : Type → Type v} [Monad m] [HasEvalSPMF m]
-
-/-- **The per-round salvage probability bound** (the quantitative WHIR flip estimate): in any
-game that draws a challenge `r` whose marginal is dominated by uniform-on-`F` and then runs a
-continuation whose success forces the salvage equation `listEval cs r = listEval cs' r` for two
-genuinely different chains, the success probability is at most `max(len cs, len cs') / |F|`. -/
-theorem probEvent_salvage_le (mx : m F) (k : F → m β) (q : β → Prop)
-    (cs cs' : List F)
-    (hne : listPoly cs ≠ listPoly cs') (hcs : cs ≠ []) (hcs' : cs' ≠ [])
-    (hunif : ∀ x : F, Pr[= x | mx] ≤ (Fintype.card F : ℝ≥0∞)⁻¹)
-    (hsalvage : ∀ x : F, ¬ (Whir302Checked.listEval cs x = Whir302Checked.listEval cs' x) →
-      Pr[ q | k x] = 0) :
-    Pr[ q | mx >>= k]
-      ≤ ((max cs.length cs'.length : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) := by
-  classical
-  refine le_trans
-    (probEvent_bind_le_uniform_marginal mx k q
-      {x : F | Whir302Checked.listEval cs x = Whir302Checked.listEval cs' x}
-      hunif hsalvage) ?_
-  apply ENNReal.div_le_div_right
-  have hcard := card_listEval_eq_le cs cs' hne hcs hcs'
-  have hfilter : (Finset.univ.filter
-        (· ∈ {x : F | Whir302Checked.listEval cs x = Whir302Checked.listEval cs' x}))
-      = (Finset.univ.filter
-        (fun r : F => Whir302Checked.listEval cs r = Whir302Checked.listEval cs' r)) := by
-    apply Finset.filter_congr
-    intro x _
-    simp [Set.mem_setOf_eq]
-  rw [hfilter]
-  exact_mod_cast hcard
+variable {β : Type} {m : Type → Type v} [Monad m] [LawfulMonad m] [EvalDistSemantics m] [LawfulEvalDistSemantics m]
 
 /-- **Comap form of the salvage bound**: the drawn value is *carried inside* the first stage's
 output (here: the freshly drawn vector challenge carries its field-element read `f`).  If the
@@ -209,11 +105,11 @@ carried value, the success probability is at most `max(len cs, len cs') / |F|`. 
 theorem probEvent_salvage_le_comap {α : Type} (mx : m α) (f : α → F) (k : α → m β)
     (q : β → Prop) (cs cs' : List F)
     (hne : listPoly cs ≠ listPoly cs') (hcs : cs ≠ []) (hcs' : cs' ≠ [])
-    (hunif : ∀ x : F, Pr[fun a => f a = x | mx] ≤ (Fintype.card F : ℝ≥0∞)⁻¹)
+    (hunif : ∀ x : F, probEvent (fun a => f a = x) (mx) ≤ (Fintype.card F : ℝ≥0∞)⁻¹)
     (hsalvage : ∀ a : α,
       ¬ (Whir302Checked.listEval cs (f a) = Whir302Checked.listEval cs' (f a)) →
-      Pr[ q | k a] = 0) :
-    Pr[ q | mx >>= k]
+      probEvent (q) (k a) = 0) :
+    probEvent (q) (mx >>= k)
       ≤ ((max cs.length cs'.length : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) := by
   classical
   refine le_trans
@@ -433,7 +329,8 @@ theorem readAns_eq_toList
           (α := F) (n := (whirPaperTranscriptVectorSpec P d).length j.1) (msgs j)) := by
   unfold readAns
   apply List.ext_getElem
-  · simp
+  · simpa only [List.length_map, List.length_finRange] using
+      (Vector.length_toList (xs := msgs j)).symm
   · intro k h1 h2
     simp only [List.getElem_map, List.getElem_finRange]
     rfl
@@ -715,15 +612,14 @@ theorem whirChecked_rbrKnowledgeSoundness_of_flipBound (δ ε : ℝ≥0)
       (prover : Prover []ₒ (Unit × ∀ u : Unit, OracleStatement (ιs 0) F u) Unit
         (Bool × (∀ _ : Empty, Unit)) Unit
         ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F)),
-      Pr[fun x : ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Transcript
+      probEvent (fun x : ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Transcript
             (finalRandomnessChallengeIdx P d).1.castSucc ×
           ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenge
             (finalRandomnessChallengeIdx P d) ×
           ([]ₒ + [((whirPaperTranscriptVectorSpec P d).toProtocolSpec
               F).Challenge]ₒ'challengeOracleInterface).QueryLog =>
           ¬ whirChainClosePred P d (m0 := m0) δ
-            (finalRandomnessChallengeIdx P d).1.castSucc stmtIn x.1
-        | do
+            (finalRandomnessChallengeIdx P d).1.castSucc stmtIn x.1) (do
           (simulateQ (QueryImpl.addLift (isEmptyElim : QueryImpl []ₒ (StateT Unit ProbComp))
               challengeQueryImpl : QueryImpl _ (StateT Unit ProbComp))
             (do
@@ -734,14 +630,15 @@ theorem whirChecked_rbrKnowledgeSoundness_of_flipBound (δ ε : ℝ≥0)
                 (((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).getChallenge
                   (finalRandomnessChallengeIdx P d)) _
               return (transcript, challenge, proveQueryLog))).run'
-            (← (pure () : ProbComp Unit))] ≤ (ε : ℝ≥0∞)) :
+            (← (pure () : ProbComp Unit))) ≤ (ε : ℝ≥0∞)) :
     OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
       (whirRelation m0 (P.φ 0) δ)
       (paperTranscriptOracleVerifier P d (whirVerifyChecked P d))
       (fun i => if i = finalRandomnessChallengeIdx P d then ε else 0) := by
   unfold OracleProof.rbrKnowledgeSoundness OracleVerifier.rbrKnowledgeSoundness
   exact ThresholdKSF.rbrKnowledgeSoundness_of_flipBound (pure ()) isEmptyElim
-    ((paperTranscriptOracleVerifier P d (whirVerifyChecked P d)).toVerifier)
+    ((paperTranscriptOracleVerifier P d (whirVerifyChecked P d)).toVerifier
+      (Oₛₒ := fun i : Empty => nomatch i))
     (whirRelation m0 (P.φ 0) δ) acceptRejectOracleRel
     (whirChainClosePred P d (m0 := m0) δ)
     (finalRandomnessChallengeIdx P d) ε
@@ -755,7 +652,7 @@ theorem whirChecked_rbrKnowledgeSoundness_of_flipBound (δ ε : ℝ≥0)
 /-- **THE THEOREM (small-field regime, unconditional)**: at the task's budget shape
 `fun i => if i = c then maxLen/|F| else 0`, the checked WHIR `VectorIOP` satisfies RBR
 knowledge soundness UNCONDITIONALLY whenever `|F| ≤ maxLen` (the budget is then `≥ 1`, and the
-flip-probability hypothesis is discharged by `probEvent_le_one`).  Outside this regime the
+flip-probability hypothesis is discharged by `(_root_.prEvent_le_one _)`).  Outside this regime the
 budget at the threshold cannot drop below `1` through the threshold shell — see
 `ThresholdKSFFacts.predFalse_propagates` and `whirChainClosePred_false_of_far`. -/
 theorem whirChecked_rbrKnowledgeSoundness_smallField (δ : ℝ≥0) (L : ℕ)
@@ -771,7 +668,7 @@ theorem whirChecked_rbrKnowledgeSoundness_smallField (δ : ℝ≥0) (L : ℕ)
     rw [← ENNReal.coe_one, ENNReal.coe_le_coe, one_le_div hcard]
     exact_mod_cast hL
   exact whirChecked_rbrKnowledgeSoundness_of_flipBound P d (m0 := m0) δ _
-    (fun stmtIn witIn prover => le_trans probEvent_le_one hone)
+    (fun stmtIn witIn prover => le_trans (_root_.prEvent_le_one _) hone)
 
 /-- **The full security package (small-field regime)**: completeness (proven in
 `CheckedVerifier.lean`) + the small-field RBR discharge give `IsSecureWithGap` for the checked
@@ -801,7 +698,8 @@ theorem whirVectorIOP_rbrKnowledgeSoundness_smallField (δ : ℝ≥0) (L : ℕ)
   unfold whirVectorIOP_rbrKnowledgeSoundness OracleProof.rbrKnowledgeSoundness
     OracleVerifier.rbrKnowledgeSoundness
   exact ThresholdKSF.rbrKnowledgeSoundness_of_flipBound (pure ()) isEmptyElim
-    ((whirVectorIOP P d).verifier.toVerifier)
+    ((OracleProof.toOracleVerifier (whirVectorIOP P d)).toVerifier
+      (Oₛₒ := fun i : Empty => nomatch i))
     (whirRelation m0 (P.φ 0) δ) acceptRejectOracleRel
     (whirChainClosePred P d (m0 := m0) δ)
     (finalRandomnessChallengeIdx P d) _
@@ -810,7 +708,7 @@ theorem whirVectorIOP_rbrKnowledgeSoundness_smallField (δ : ℝ≥0) (L : ℕ)
         whirChainClosePred_zero P d (m0 := m0) δ stmtIn default])
     (fun m _ stmtIn tr msg h =>
       whirChainClosePred_concat P d (m0 := m0) δ m stmtIn tr msg h)
-    (fun stmtIn witIn prover => le_trans probEvent_le_one hone)
+    (fun stmtIn witIn prover => le_trans (_root_.prEvent_le_one _) hone)
 
 end Theorems
 
@@ -854,17 +752,11 @@ challenge slot, the field element read off a uniformly drawn challenge is EXACTL
 lemma probEvent_chalElemOf_eq_uniform {n : ℕ} (vspec : ProtocolSpec.VectorSpec n)
     [∀ i, SampleableType ((vspec.toProtocolSpec F).Challenge i)]
     (c : (vspec.toProtocolSpec F).ChallengeIdx) (hc : vspec.length c.1 = 1) (x : F) :
-    Pr[fun v => chalElemOf vspec c v = x | $ᵗ ((vspec.toProtocolSpec F).Challenge c)]
+    probEvent (fun v => chalElemOf vspec c v = x) ($ᵗ ((vspec.toProtocolSpec F).Challenge c))
       = (Fintype.card F : ℝ≥0∞)⁻¹ := by
-  haveI : Finite ((vspec.toProtocolSpec F).Challenge c) := by
-    show Finite (Vector F (vspec.length c.1))
-    infer_instance
-  show Pr[((· = x) ∘ chalElemOf vspec c) | $ᵗ ((vspec.toProtocolSpec F).Challenge c)]
-      = (Fintype.card F : ℝ≥0∞)⁻¹
-  rw [← probEvent_map, probEvent_eq_eq_probOutput,
-    probOutput_map_bijective_uniform_cross ((vspec.toProtocolSpec F).Challenge c)
-      (chalElemOf vspec c) (vecHead_bijective (F := F) hc) x,
-    probOutput_uniformSample]
+  exact (SampleableType.prEvent_uniformSample_comp_of_bijective
+    (f := chalElemOf vspec c) (vecHead_bijective (F := F) hc) (· = x)).trans
+      (SampleableType.prEvent_uniformSample_eq_singleton x)
 
 variable {ι : Type} {oSpec : OracleSpec ι} {n : ℕ} {vspec : ProtocolSpec.VectorSpec n}
   [∀ i, SampleableType ((vspec.toProtocolSpec F).Challenge i)]
@@ -889,19 +781,18 @@ theorem probEvent_salvage_game_le
     (hL : ∀ tr, max (cs tr).length (cs' tr).length ≤ L)
     (stmtIn : StmtIn) (witIn : WitIn)
     (prover : Prover oSpec StmtIn WitIn StmtOut WitOut (vspec.toProtocolSpec F)) :
-    Pr[fun x : (vspec.toProtocolSpec F).Transcript c.1.castSucc ×
+    probEvent (fun x : (vspec.toProtocolSpec F).Transcript c.1.castSucc ×
           (vspec.toProtocolSpec F).Challenge c ×
           (oSpec + [(vspec.toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).QueryLog =>
         listPoly (cs x.1) ≠ listPoly (cs' x.1) ∧
           listEval (cs x.1) (chalElemOf vspec c x.2.1)
-            = listEval (cs' x.1) (chalElemOf vspec c x.2.1)
-      | do
+            = listEval (cs' x.1) (chalElemOf vspec c x.2.1)) (do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
               prover.runWithLogToRound c.1.castSucc stmtIn witIn
             let challenge ← liftComp ((vspec.toProtocolSpec F).getChallenge c) _
-            return (transcript, challenge, proveQueryLog))).run' (← init)]
+            return (transcript, challenge, proveQueryLog))).run' (← init))
       ≤ (L : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) := by
   classical
   -- peel the init draw
@@ -914,11 +805,9 @@ theorem probEvent_salvage_game_le
   dsimp only
   -- the challenge draw in `liftM` form, then the uniform average over the drawn challenge
   rw [liftComp_eq_liftM]
-  rw [ChallengeCoherence.probEvent_run'_simulateQ_addLift_getChallenge_bind impl s' c
-    (fun ch => pure (tr, ch, log)) _]
-  -- collapse the pure trailing stage and recombine the average into a bind
+  rw [ChallengeCoherence.run'_simulateQ_addLift_getChallenge_bind impl s' c
+    (fun ch => pure (tr, ch, log))]
   simp only [simulateQ_pure, StateT.run'_pure_lib]
-  rw [← probEvent_bind_eq_tsum]
   -- the two chains at this fixed prefix
   by_cases hD : listPoly (cs tr) ≠ listPoly (cs' tr)
   · -- genuinely different chains: comap Schwartz–Zippel at the carried field element
@@ -928,14 +817,14 @@ theorem probEvent_salvage_game_le
       (fun x => le_of_eq (probEvent_chalElemOf_eq_uniform vspec c hc x)) ?_) ?_
     · -- the continuation forces the salvage equation at the carried value
       intro ch hch
-      refine probEvent_eq_zero ?_
+      apply (OracleComp.prEvent_eq_zero_iff _ _).2
       rintro x hx ⟨-, heq⟩
       simp only [support_pure, Set.mem_singleton_iff] at hx
       subst hx
       exact hch heq
     · exact ENNReal.div_le_div_right (by exact_mod_cast hL tr) _
   · -- the chains agree as polynomials: the event is empty at this prefix
-    refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+    refine le_trans (le_of_eq ((OracleComp.prEvent_eq_zero_iff _ _).2 ?_)) (by positivity)
     rintro x hx ⟨hne, -⟩
     simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
       exists_prop] at hx
@@ -978,7 +867,7 @@ theorem whir_salvage_initial_le {StmtIn StmtOut WitIn WitOut σ : Type}
     (stmtIn : StmtIn) (witIn : WitIn)
     (prover : Prover []ₒ StmtIn WitIn StmtOut WitOut
       ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F)) :
-    Pr[fun x : ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Transcript
+    probEvent (fun x : ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Transcript
           (initialSumcheckChallengeIdx P d s).1.castSucc ×
         ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenge
           (initialSumcheckChallengeIdx P d s) ×
@@ -990,8 +879,7 @@ theorem whir_salvage_initial_le {StmtIn StmtOut WitIn WitOut σ : Type}
                 (initialSumcheckChallengeIdx P d s) x.2.1)
             = listEval (cs' x.1)
               (chalElemOf (whirPaperTranscriptVectorSpec P d)
-                (initialSumcheckChallengeIdx P d s) x.2.1)
-      | do
+                (initialSumcheckChallengeIdx P d s) x.2.1)) (do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
@@ -1000,7 +888,7 @@ theorem whir_salvage_initial_le {StmtIn StmtOut WitIn WitOut σ : Type}
             let challenge ← liftComp
               (((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).getChallenge
                 (initialSumcheckChallengeIdx P d s)) _
-            return (transcript, challenge, proveQueryLog))).run' (← init)]
+            return (transcript, challenge, proveQueryLog))).run' (← init))
       ≤ (L : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) := by
   -- NOTE: a direct term-mode application busts the `whnf` heartbeat budget on the final
   -- defeq check at the concrete paper spec; congruence-guided matching is cheap.
@@ -1022,7 +910,7 @@ theorem whir_salvage_main_le {StmtIn StmtOut WitIn WitOut σ : Type}
     (stmtIn : StmtIn) (witIn : WitIn)
     (prover : Prover []ₒ StmtIn WitIn StmtOut WitOut
       ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F)) :
-    Pr[fun x : ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Transcript
+    probEvent (fun x : ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Transcript
           (mainSumcheckChallengeIdx P d i s).1.castSucc ×
         ((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenge
           (mainSumcheckChallengeIdx P d i s) ×
@@ -1034,8 +922,7 @@ theorem whir_salvage_main_le {StmtIn StmtOut WitIn WitOut σ : Type}
                 (mainSumcheckChallengeIdx P d i s) x.2.1)
             = listEval (cs' x.1)
               (chalElemOf (whirPaperTranscriptVectorSpec P d)
-                (mainSumcheckChallengeIdx P d i s) x.2.1)
-      | do
+                (mainSumcheckChallengeIdx P d i s) x.2.1)) (do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
@@ -1044,7 +931,7 @@ theorem whir_salvage_main_le {StmtIn StmtOut WitIn WitOut σ : Type}
             let challenge ← liftComp
               (((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).getChallenge
                 (mainSumcheckChallengeIdx P d i s)) _
-            return (transcript, challenge, proveQueryLog))).run' (← init)]
+            return (transcript, challenge, proveQueryLog))).run' (← init))
       ≤ (L : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) := by
   convert probEvent_salvage_game_le init impl (mainSumcheckChallengeIdx P d i s)
     (length_mainSumcheckChallengeIdx P d i s) cs cs' L hcs hcs' hL stmtIn witIn prover

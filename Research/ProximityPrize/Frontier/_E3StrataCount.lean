@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.LamLeungMultisetAntipodal
 import Mathlib.Tactic
+import Mathlib.Data.Fintype.CardEmbedding
 
 /-!
 # The field-free negation-symmetric strata count toward `E₃ = 15n³−45n²+40n` (#444, WIP)
@@ -71,9 +72,9 @@ theorem strata_sum_eq_closed (h : ℕ) :
   have h111 : (720 * Nat.choose h 3 : ℤ) = (120 * (h * (h - 1) * (h - 2)) : ℕ) := by
     exact_mod_cast congrArg (Nat.cast : ℕ → ℤ) (stratum111_card h)
   rcases h with _ | _ | _ | k
-  · simp
-  · simp
-  · simp [Nat.choose]
+  · norm_num [Nat.choose]
+  · norm_num [Nat.choose]
+  · norm_num [Nat.choose]
   · -- h = k+3: every ℕ subtraction is exact, push_cast then ring
     rw [h111]
     push_cast

@@ -459,12 +459,12 @@ theorem mcaPrizeLatticeResolved_of_chooseBounds_and_spike_adjacent
       (latticeIndexOf (ι := ι) (δ_hi j) (hδhi j)).val =
         (latticeIndexOf (ι := ι) (wlo j).δ (wlo j).le_one).val + 1 := by
     intro j
-    simpa [wlo] using hadj j
+    simpa [wlo, MCALowerWitness.ofChooseLe, GrandChallenges.MCALowerWitness.ofLe] using hadj j
   intro j
   let C : Set (ι → F) :=
     ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊
   refine ⟨mcaThresholdExists_of_MCALowerWitness C epsStar (wlo j), ?_⟩
-  simpa [wlo, C] using
+  simpa [wlo, C, MCALowerWitness.ofChooseLe, GrandChallenges.MCALowerWitness.ofLe] using
     (mcaThreshold_eq_of_lowerWitnesses_and_spike_adjacent
       domain wlo t δ_hi hδhi ht_n ht_q hspike_radius hspike_gt hadj' j)
 

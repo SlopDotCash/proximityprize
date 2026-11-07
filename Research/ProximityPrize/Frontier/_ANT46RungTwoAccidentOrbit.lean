@@ -842,7 +842,7 @@ theorem hasOppositeSigned_reRoot_iff (x : Triple F) (sigma : Equiv.Perm (Fin 4))
   · rintro ⟨i, j, hij, hop⟩
     refine ⟨sigma i, sigma j, fun h => hij (sigma.injective h), ?_⟩
     rw [signed_reRoot x sigma hden i, signed_reRoot x sigma hden j] at hop
-    field_simp [hden] at hop ⊢
+    field_simp [hden] at hop
     linear_combination -hop
   · rintro ⟨i, j, hij, hop⟩
     refine ⟨sigma.symm i, sigma.symm j, fun h => hij (sigma.symm.injective h), ?_⟩

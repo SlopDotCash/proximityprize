@@ -617,7 +617,7 @@ theorem pg_exists_common_candidate_pair_descended_full (x₀ : F)
     rw [Finset.mem_filter] at hz
     simpa [hcgood] using not_not.mp hz.2
   have hsplit : #S + #(𝒮.filter (fun z => ¬ cgood z)) = #𝒮 := by
-    rw [hSdef]; exact Finset.filter_card_add_filter_neg_card_eq_card _
+    rw [hSdef]; exact Finset.card_filter_add_card_filter_not _
   have hScard : #𝒮 - B ≤ #S := by omega
   have hS_ne : S.Nonempty := by rw [← Finset.card_pos]; omega
   obtain ⟨r, H, hr_mem, hlarge⟩ :=

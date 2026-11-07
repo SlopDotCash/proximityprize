@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
 
 /-!
 # Monotonicity of the correlated-agreement error in the fold-distance
@@ -31,10 +31,7 @@ probability branch the event `Δᵣ(line, C) ≤ δ_fld` is monotone in `δ_fld`
 (`Pr_le_Pr_of_implies`). -/
 theorem epsCA_mono_fld (C : Set (ι → A)) (δ_int : ℝ≥0) {δ₁ δ₂ : ℝ≥0} (h : δ₁ ≤ δ₂) :
     epsCA (F := F) C δ₁ δ_int ≤ epsCA (F := F) C δ₂ δ_int := by
-  unfold epsCA
-  refine iSup_mono (fun u => ?_)
-  split_ifs with hjp
-  · exact le_refl 0
-  · exact Pr_le_Pr_of_implies _ _ _ (fun γ hγ => le_trans hγ (by exact_mod_cast h))
+  let : SampleableType F := SampleableType.ofFintype F
+  exact epsCa_mono_left (F := F) C δ_int h
 
 end ProximityGap

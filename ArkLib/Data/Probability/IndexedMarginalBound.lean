@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.DiscreteProbability
 import ArkLib.Data.Probability.MarginalBound
 
 /-!
@@ -32,7 +33,8 @@ open scoped ENNReal NNReal
 
 section IndexedMarginal
 
-variable {γ β : Type} {m : Type → Type v} [Monad m] [HasEvalSPMF m]
+variable {γ β : Type} {m : Type → Type v} [Monad m] [LawfulMonad m]
+  [EvalDistSemantics m] [LawfulEvalDistSemantics m]
 
 /-- **Prefix-indexed uniform-marginal domination.** If, after a first stage `m₀`, the game draws
 from a uniformly-dominated distribution and the event is supported inside a prefix-dependent bad
@@ -40,11 +42,11 @@ set `L c` of size at most `d`, then the event probability is at most `d / |F|`. 
 lemma probEvent_bind_le_uniform_marginal_indexed {F : Type} [Fintype F]
     (m₀ : m γ) (mx : γ → m F) (k : γ → F → m β) (q : β → Prop)
     (L : γ → Set F) [∀ c, DecidablePred (· ∈ L c)] (d : ℕ)
-    (hunif : ∀ c, ∀ x : F, Pr[= x | mx c] ≤ (Fintype.card F : ℝ≥0∞)⁻¹)
+    (hunif : ∀ c, ∀ x : F, probOutput (mx c) (x) ≤ (Fintype.card F : ℝ≥0∞)⁻¹)
     (hcard : ∀ c, ((Finset.univ.filter (· ∈ L c)).card) ≤ d)
-    (hsupp : ∀ c, ∀ x : F, x ∉ L c → Pr[ q | k c x] = 0) :
-    Pr[ q | m₀ >>= fun c => mx c >>= k c] ≤ (d : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) := by
-  refine probEvent_bind_le_of_forall_support m₀ _ q _ (fun c _ => ?_)
+    (hsupp : ∀ c, ∀ x : F, x ∉ L c → probEvent (q) (k c x) = 0) :
+    probEvent (q) (m₀ >>= fun c => mx c >>= k c) ≤ (d : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) := by
+  refine prEvent_bind_le_of_forall_le m₀ _ q (fun c => ?_)
   refine le_trans
     (probEvent_bind_le_uniform_marginal (mx c) (k c) q (L c) (hunif c) (hsupp c)) ?_
   apply ENNReal.div_le_div_right

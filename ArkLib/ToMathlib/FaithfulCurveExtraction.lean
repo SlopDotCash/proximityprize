@@ -215,7 +215,7 @@ omit [DecidableEq ι] in
 `δ_ε_correlatedAgreementCurves` in the strict Johnson regime, from a per-`(u, P)` producer of
 the faithful curve-family datum.  This is the BCIKS20 Prop-5.5 shape: the producer must show the
 decoded family lies on a polynomial curve — nothing more. -/
-theorem correlatedAgreement_affine_curves_johnson_of_curveFamilyData_strict
+theorem correlatedAgreement_affine_curves_johnson_of_curveFamilyData_strict [SampleableType F]
     {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (hInput : ∀ (_hk : 0 < k) (u : WordStack F (Fin (k + 1)) ι),
@@ -239,7 +239,7 @@ theorem correlatedAgreement_affine_curves_johnson_of_curveFamilyData_strict
 
 /-- **Closed square-root-radius keystone front door, faithful interface** (boundary branch via
 the packaged `BoundaryCardResidual`). -/
-theorem correlatedAgreement_affine_curves_johnson_of_curveFamilyData
+theorem correlatedAgreement_affine_curves_johnson_of_curveFamilyData [SampleableType F]
     {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain)
     (hInput : ∀ (_hk : 0 < k) (u : WordStack F (Fin (k + 1)) ι),

@@ -43,29 +43,14 @@ namespace Sumcheck.Spec
 
 variable {R : Type} [CommSemiring R] [SampleableType R] [DecidableEq R] [Fintype R] [Inhabited R]
   {n : ℕ} {deg : ℕ} {m : ℕ} {D : Fin m ↪ R}
-  {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+  {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
   {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
 
-/-- **The single residual** isolating the verifier-side fusion for the full multi-round sum-check
-oracle reduction: the `Verifier` image of the `seqCompose`d oracle reduction equals the `Reduction`
-obtained from `seqCompose`ing the plain reductions. The provers are definitionally equal, so this is
-the *entire* remaining content of the oracle-level completeness — the verifier analogue of
-`Prover.append_run`, lifted along `seqCompose`.
-
-**SUPERSEDED + SUSPECTED FALSE AS STATED (audit 2026-06-10).**  The per-round reduction of this
-bridge (`SingleRoundBridge.lean`) bottoms out in the single-round equation
-`(Simple.oracleReduction).toReduction = Simple.reduction`, which is the documented suspected-false
-`oracleReduction_eq_reduction` (the two verifiers check different objects, so the syntactic
-equality is not expected to hold).  The live, bridge-FREE apex is
-`oracleReduction_perfectCompleteness_unconditional`
-(`OracleCompletenessUncondCorrect.lean`), proven via the CubeFiber coherence instance with no
-bridge anywhere; Spartan consumers are routed around this Prop by `FirstSumcheckBridgeFree` /
-`SecondSumcheckBridgeFree`.  Remaining consumers of this Prop form a legacy conditional chain
-(`OracleCompletenessUncond`, `SingleRoundBridge`, `SpartanSumcheckUnconditional`, Logup's
-`BridgeAndAppendResiduals`); do not build new work on it.
-
-Ledger status (#351): legacy surface, superseded; the live apex is bridge-free (#114).
-Kept only for the conditional chain above; build nothing new on it. -/
+/-- Historical compatibility proposition comparing the canonical composed oracle reduction's
+plain image with the composed plain reduction. This module retains conditional consumers of that
+exact equation and makes no unconditional bridge claim. The completed oracle completeness owner
+uses canonical message semantics and its separate n-ary verifier-fusion construction.
+-/
 abbrev oracleReductionToReductionResidual (R : Type) [CommSemiring R] [SampleableType R]
     [DecidableEq R] (deg : ℕ) {m : ℕ} (D : Fin m ↪ R) (n : ℕ) {ι : Type} (oSpec : OracleSpec ι) :
     Prop :=
@@ -93,7 +78,7 @@ theorem oracleReduction_perfectCompleteness_of_bridge
   -- Bridge the oracle reduction's `toReduction` to the plain `reduction`.
   rw [hBridge]
   -- Discharge with the already-proven reduction-level completeness.
-  exact reduction_perfectCompleteness hInit hImplSupp
+  exact reduction_perfectCompleteness_of_supportFaithful hInit hImplSupp
 
 /-- Restatement of `oracleReduction_perfectCompleteness_of_bridge` directly against the bare bridge
 equation `oracleReduction.toReduction = reduction`, so a consumer holding the seqCompose

@@ -28,8 +28,8 @@ Proof skeleton (replacing DP24's novel-coefficient interleaving with a fold-recu
 3. **Column transfer** (`fiberEvaluations_eq_of_rows_eq`): if all `2^steps` binary folds of `f`
    and `g` agree at a point `y`, then by the fold/tensor bridge (`hBridge`) the folds agree at
    *every* challenge vector; instantiating at the Boolean points `TensorSZ.cubePoint` turns the
-   single-point matrix form into the coordinates of `foldMatrix y *ᵥ fiberEvaluations`, and
-   nonsingularity (`foldMatrix_det_ne_zero`) forces the fiber evaluations to agree.
+   single-point matrix form into the coordinates of `Compatibility.lowRowBitFoldMatrix y *ᵥ fiberEvaluations`, and
+   nonsingularity (`Compatibility.lowRowBitFoldMatrix_det_ne_zero`) forces the fiber evaluations to agree.
 4. **Counting**: hence the per-fiber disagreement set of `(f, g)` embeds into the disagreeing
    columns, `pair_fiberwiseDistance f g ≤ Δ₀(⋈|stack_f, V) ≤ UDR`, and
    `2 · fiberwiseDistance < d_dest` follows.
@@ -40,6 +40,7 @@ The corollary `prop421Case2_probability_bound_of_bridge` combines this lift with
 -/
 
 set_option linter.unusedSectionVars false
+set_option backward.isDefEq.respectTransparency false
 
 namespace Binius.BinaryBasefold
 
@@ -100,7 +101,7 @@ private lemma bitsOfIndex_init {n : ℕ} (j : Fin (2 ^ (n + 1))) :
 private lemma bitsOfIndex_last {n : ℕ} (j : Fin (2 ^ (n + 1))) :
     bitsOfIndex (L := L) j (Fin.last n) =
       if Nat.getBit n j.val = 1 then (1 : L) else 0 := by
-  simp [bitsOfIndex]
+  simp [bitsOfIndex, Nat.getBit_eq_testBit]
 
 /-! ## The binary-row lift -/
 
@@ -251,15 +252,15 @@ lemma fiberEvaluations_eq_of_binary_rows_eq
     congr 1
     exact hrows j
   -- 2. At the Boolean points, the matrix form turns agreement into coordinatewise equality of
-  -- `foldMatrix y *ᵥ fiberEvaluations`.
+  -- `Compatibility.lowRowBitFoldMatrix y *ᵥ fiberEvaluations`.
   have hM : Matrix.mulVec
-        (foldMatrix 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := ⟨i, by omega⟩)
+        (Compatibility.lowRowBitFoldMatrix 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := ⟨i, by omega⟩)
           (steps := steps) h_destIdx h_destIdx_le y)
         (fiberEvaluations 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
           (i := ⟨i, by omega⟩) (steps := steps)
           (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le) (f := f) (y := y))
       = Matrix.mulVec
-        (foldMatrix 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := ⟨i, by omega⟩)
+        (Compatibility.lowRowBitFoldMatrix 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := ⟨i, by omega⟩)
           (steps := steps) h_destIdx h_destIdx_le y)
         (fiberEvaluations 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
           (i := ⟨i, by omega⟩) (steps := steps)
@@ -304,7 +305,7 @@ lemma fiberEvaluations_eq_of_binary_rows_eq
     rw [hdot, hdot] at hj
     exact hj
   -- 3. Nonsingularity.
-  have hdet := foldMatrix_det_ne_zero 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+  have hdet := Compatibility.lowRowBitFoldMatrix_det_ne_zero 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
     (i := (⟨i, by omega⟩ : Fin r)) (steps := steps) (h_destIdx := h_destIdx)
     (h_destIdx_le := h_destIdx_le) (y := y)
   have hsub := sub_eq_zero.mpr hM
@@ -325,145 +326,9 @@ lemma hammingDist_le_pair_fiberwiseDistance_mul_two_pow_steps_farLiftLocal
       (pair_fiberwiseDistance 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
         (i := ⟨i, by omega⟩) (destIdx := destIdx) (steps := steps)
         h_destIdx h_destIdx_le f g) * 2 ^ steps := by
-  classical
-  -- Hoist destIdx-free bound proofs so the `subst` below is not self-referential.
-  have hle : i.val + steps ≤ ℓ := by
-    rw [← h_destIdx]
-    exact h_destIdx_le
-  have hi_lt_r : i.val < r := by
-    exact lt_r_of_lt_ℓ (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.isLt
-  have hlt_r : i.val + steps < r := by
-    have hR := h_ℓ_add_R_rate
-    omega
-  have hdest : destIdx = (⟨i.val + steps, hlt_r⟩ : Fin r) := Fin.eq_of_val_eq h_destIdx
-  subst hdest
-  have h_i_add_steps : i.val + steps ≤ ℓ := hle
-  let d_fw := pair_fiberwiseDistance 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-    (i := (⟨i, by omega⟩ : Fin r))
-    (destIdx := (⟨i.val + steps, hlt_r⟩ : Fin r))
-    (steps := steps) h_destIdx h_destIdx_le f g
-  have hNat : hammingDist f g ≤ d_fw * 2 ^ steps := by
-    set ΔH := Finset.filter (fun x => f x ≠ g x) Finset.univ
-    have h_dist_eq_card : hammingDist f g = ΔH.card := by
-      simp only [hammingDist, ne_eq, ΔH]
-    rw [h_dist_eq_card]
-    set Y_bad := fiberwiseDisagreementSetPerFiber 𝔽q β
-      (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-      (i := (⟨i, by omega⟩ : Fin r))
-      (destIdx := (⟨i.val + steps, hlt_r⟩ : Fin r))
-      (steps := steps) h_destIdx h_destIdx_le f g
-    let fiberSet : (sDomain 𝔽q β h_ℓ_add_R_rate) (⟨i.val + steps, hlt_r⟩ : Fin r) →
-        Finset ((sDomain 𝔽q β h_ℓ_add_R_rate) (⟨i.val, hi_lt_r⟩ : Fin r)) := fun y =>
-      (Set.image
-        (qMap_total_fiber 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-          (i := (⟨i.val, hi_lt_r⟩ : Fin r)) (steps := steps)
-          (h_i_add_steps := by
-            simp only
-            exact fin_ℓ_steps_lt_ℓ_add_R i steps h_i_add_steps)
-          (y := y))
-        (Set.univ : Set (Fin (2 ^ steps)))).toFinset
-    have h_subset : ΔH ⊆ Finset.biUnion Y_bad (t := fiberSet) := by
-      intro x hx
-      simp only [ΔH, Finset.mem_filter, Finset.mem_univ, true_and] at hx
-      let y_of_x := AdditiveNTT.iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate
-        i steps h_i_add_steps x
-      apply Finset.mem_biUnion.mpr
-      refine ⟨y_of_x, ?_, ?_⟩
-      · rw [mem_fiberwiseDisagreementSetPerFiber]
-        let idx := pointToIterateQuotientIndex 𝔽q β
-          (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-          (i := (⟨i.val, Nat.lt_succ_of_lt i.isLt⟩ : Fin (ℓ + 1)))
-          (steps := steps) h_i_add_steps x
-        refine ⟨idx, ?_⟩
-        have hres :=
-          (is_fiber_iff_generates_quotient_point 𝔽q β
-            (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i steps h_i_add_steps
-            (x := x) (y := y_of_x)).mp rfl
-        have hf :
-            fiberEvaluations 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-              (i := (⟨i.val, hi_lt_r⟩ : Fin r))
-              (destIdx := (⟨i.val + steps, hlt_r⟩ : Fin r)) (steps := steps)
-              (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le)
-              (f := f) (y := y_of_x) idx = f x := by
-          rw [fiberEvaluations_apply_eq_qMap_total_fiber 𝔽q β
-            (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-            (i := (⟨i.val, hi_lt_r⟩ : Fin r)) (steps := steps)
-            (h_i_add_steps_le := h_i_add_steps) (h_i_add_steps_lt_r := hlt_r)
-            (f := f) (y := y_of_x) (idx := idx)]
-          simpa using congrArg f hres
-        have hg :
-            fiberEvaluations 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-              (i := (⟨i.val, hi_lt_r⟩ : Fin r))
-              (destIdx := (⟨i.val + steps, hlt_r⟩ : Fin r)) (steps := steps)
-              (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le)
-              (f := g) (y := y_of_x) idx = g x := by
-          rw [fiberEvaluations_apply_eq_qMap_total_fiber 𝔽q β
-            (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-            (i := (⟨i.val, hi_lt_r⟩ : Fin r)) (steps := steps)
-            (h_i_add_steps_le := h_i_add_steps) (h_i_add_steps_lt_r := hlt_r)
-            (f := g) (y := y_of_x) (idx := idx)]
-          simpa using congrArg g hres
-        intro hfg
-        exact hx (by simpa [hf, hg] using hfg)
-      · set idx := pointToIterateQuotientIndex 𝔽q β
-          (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-          (i := (⟨i.val, Nat.lt_succ_of_lt i.isLt⟩ : Fin (ℓ + 1)))
-          (steps := steps) h_i_add_steps x
-        have hres :=
-          (is_fiber_iff_generates_quotient_point 𝔽q β
-            (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i steps h_i_add_steps
-            (x := x) (y := y_of_x)).mp rfl
-        have hmem :
-            x ∈ Set.image
-              (qMap_total_fiber 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-                (i := (⟨i.val, hi_lt_r⟩ : Fin r)) (steps := steps)
-                (h_i_add_steps := by
-                  simp only
-                  exact fin_ℓ_steps_lt_ℓ_add_R i steps h_i_add_steps)
-                (y := y_of_x))
-              (Set.univ : Set (Fin (2 ^ steps))) := by
-          exact ⟨idx, Set.mem_univ idx, hres⟩
-        change x ∈ fiberSet y_of_x
-        dsimp only [fiberSet]
-        rw [Set.mem_toFinset]
-        exact hmem
-    refine (Finset.card_le_card h_subset).trans ?_
-    rw [Finset.card_biUnion]
-    · have h_each : ∀ y ∈ Y_bad, (fiberSet y).card = 2 ^ steps := by
-        intro y hy
-        have h := card_qMap_total_fiber 𝔽q β
-          (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i steps h_i_add_steps y
-        have h_card :
-            (fiberSet y).card =
-              Fintype.card
-                (Set.image
-                  (qMap_total_fiber 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-                    (i := (⟨i.val, hi_lt_r⟩ : Fin r)) (steps := steps)
-                    (h_i_add_steps := by
-                      simp only
-                      exact fin_ℓ_steps_lt_ℓ_add_R i steps h_i_add_steps)
-                    (y := y))
-                  (Set.univ : Set (Fin (2 ^ steps)))) := by
-          dsimp only [fiberSet]
-          exact Set.toFinset_card
-            (s := Set.image
-              (qMap_total_fiber 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-                (i := (⟨i.val, hi_lt_r⟩ : Fin r)) (steps := steps)
-                (h_i_add_steps := by
-                  simp only
-                  exact fin_ℓ_steps_lt_ℓ_add_R i steps h_i_add_steps)
-                (y := y))
-              (Set.univ : Set (Fin (2 ^ steps))))
-        exact h_card.trans h
-      rw [Finset.sum_congr rfl h_each]
-      simp [Y_bad, d_fw, pair_fiberwiseDistance]
-    · intro y₁ hy₁ y₂ hy₂ hy_ne
-      have h :=
-        qMap_total_fiber_disjoint 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-        (i := i) (steps := steps) (h_i_add_steps := h_i_add_steps)
-        (y₁ := y₁) (y₂ := y₂) hy_ne
-      simpa [fiberSet] using h
-  exact hNat
+  exact hammingDist_le_pairFiberwiseDistance_mul_pow_two 𝔽q β
+    (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ⟨i, by omega⟩ steps
+    h_destIdx h_destIdx_le f g
 
 lemma pairUDRClose_of_pairFiberwiseClose_farLift
     (i : Fin ℓ) (steps : ℕ) [NeZero steps] {destIdx : Fin r}
@@ -606,7 +471,7 @@ lemma fiberwiseClose_of_jointProximityNat_farLiftLocal
         ≤ (Finset.univ.filter (fun y => (⋈|u) y ≠ V y)).card :=
           Finset.card_le_card hsubset
       _ = Δ₀((⋈|u), V) := by
-          rw [hammingDist]
+          rfl
       _ ≤ e := hV_close
   -- 5. Conclude fiberwise closeness.
   have hfwd_le : fiberwiseDistance 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
@@ -695,3 +560,10 @@ lemma prop421Case2_probability_bound_of_bridge
 end
 
 end Binius.BinaryBasefold
+
+#print axioms Binius.BinaryBasefold.exists_lift_of_binary_rows
+#print axioms Binius.BinaryBasefold.fiberEvaluations_eq_of_binary_rows_eq
+#print axioms Binius.BinaryBasefold.hammingDist_le_pair_fiberwiseDistance_mul_two_pow_steps_farLiftLocal
+#print axioms Binius.BinaryBasefold.pairUDRClose_of_pairFiberwiseClose_farLift
+#print axioms Binius.BinaryBasefold.fiberwiseClose_of_jointProximityNat_farLiftLocal
+#print axioms Binius.BinaryBasefold.prop421Case2_probability_bound_of_bridge

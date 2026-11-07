@@ -72,25 +72,26 @@ column-index sets witnesses a list-size inequality in the *opposite* direction. 
 theorem Lambda_interleaved_reindex_le [Fintype F] [DecidableEq F] [Nonempty ι] {m n : ℕ}
     (C : Set (ι → F)) (δ : ℝ)
     (σ : Fin n → Fin m) (τ : Fin m → Fin n) (hστ : Function.LeftInverse σ τ) :
-    Lambda (interleavedCodeSet (κ := Fin m) C) δ
-      ≤ Lambda (interleavedCodeSet (κ := Fin n) C) δ := by
+    ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ
+      ≤ ListDecodable.Lambda (interleavedCodeSet (κ := Fin n) C) δ := by
   classical
   refine iSup_le fun G => ?_
   -- `pad`: precompose each row of a matrix by the column reindexing `σ`.
   set pad : Matrix ι (Fin m) F → Matrix ι (Fin n) F := fun V => fun i j => V i (σ j) with hpad
   set G' : Matrix ι (Fin n) F := pad G with hG'
-  have hmaps : Set.MapsTo pad (closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) G δ)
-      (closeCodewordsRel (interleavedCodeSet (κ := Fin n) C) G' δ) := by
+  have hmaps : Set.MapsTo pad (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) G δ)
+      (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin n) C) G' δ) := by
     intro V hV
     obtain ⟨hVC, hVball⟩ := hV
     refine ⟨?_, ?_⟩
     · -- every column of `pad V` is a column of `V`, hence a base codeword
       intro k
       have hcol : (pad V).transpose k = V.transpose (σ k) := by
-        funext i; simp [hpad, Matrix.transpose_apply]
+        funext i; rfl
       rw [hcol]; exact hVC (σ k)
     · -- column precomposition by a surjection preserves Hamming distance exactly
-      rw [relHammingBall, Set.mem_setOf_eq] at hVball ⊢
+      unfold ListDecodable.relHammingBall at hVball ⊢
+      change _ ≤ δ at hVball ⊢
       -- `(· ∘ σ)` is injective because `σ` is surjective (the right inverse `τ` reads off rows).
       have hfinj : ∀ _ : ι, Function.Injective
           (fun (row : Fin m → F) (j : Fin n) => row (σ j)) := by
@@ -108,24 +109,25 @@ theorem Lambda_interleaved_reindex_le [Fintype F] [DecidableEq F] [Nonempty ι] 
           simpa [hpad, hG'] using this
         rw [hHam]
       -- transport the (instance-uniform) inequality through the `DecidableEq` instance gap
-      have hVball' : (δᵣ(G, V) : ℝ) ≤ δ := by convert hVball using 3
+      have hVball' : (δᵣ(G, V) : ℝ) ≤ δ := by
+        convert hVball using 3 <;> congr 1
       have key : (δᵣ(G', pad V) : ℝ) ≤ δ := le_trans hdist hVball'
-      convert key using 3
-  have hinj : Set.InjOn pad (closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) G δ) := by
+      convert key using 3 <;> congr 1
+  have hinj : Set.InjOn pad (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) G δ) := by
     intro a _ b _ hab
     funext i k
     have := congrFun (congrFun hab i) (τ k)
     simpa [hpad, hστ k] using this
-  calc ((closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) G δ).ncard : ℕ∞)
-      = (closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) G δ).encard :=
+  calc ((ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) G δ).ncard : ℕ∞)
+      = (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin m) C) G δ).encard :=
         (Set.toFinite _).cast_ncard_eq
-    _ ≤ (closeCodewordsRel (interleavedCodeSet (κ := Fin n) C) G' δ).encard :=
+    _ ≤ (ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin n) C) G' δ).encard :=
         Set.encard_le_encard_of_injOn hmaps hinj
-    _ = ((closeCodewordsRel (interleavedCodeSet (κ := Fin n) C) G' δ).ncard : ℕ∞) :=
+    _ = ((ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin n) C) G' δ).ncard : ℕ∞) :=
         ((Set.toFinite _).cast_ncard_eq).symm
-    _ ≤ Lambda (interleavedCodeSet (κ := Fin n) C) δ :=
+    _ ≤ ListDecodable.Lambda (interleavedCodeSet (κ := Fin n) C) δ :=
         le_iSup
-          (fun f => ((closeCodewordsRel (interleavedCodeSet (κ := Fin n) C) f δ).ncard : ℕ∞)) G'
+          (fun f => ((ListDecodable.closeCodewordsRel (interleavedCodeSet (κ := Fin n) C) f δ).ncard : ℕ∞)) G'
 
 /-- **Interleaved list size is monotone in the arity.** For `1 ≤ m ≤ n`,
 
@@ -136,8 +138,8 @@ Adding interleaving columns never shrinks the list.  The surjection witnessing
 the canonical embedding `Fin.castLE : Fin m ↪ Fin n`. -/
 theorem Lambda_interleaved_arity_mono [Fintype F] [DecidableEq F] [Nonempty ι] {m n : ℕ}
     [NeZero m] (hmn : m ≤ n) (C : Set (ι → F)) (δ : ℝ) :
-    Lambda (interleavedCodeSet (κ := Fin m) C) δ
-      ≤ Lambda (interleavedCodeSet (κ := Fin n) C) δ := by
+    ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ
+      ≤ ListDecodable.Lambda (interleavedCodeSet (κ := Fin n) C) δ := by
   classical
   refine Lambda_interleaved_reindex_le C δ
     (fun j => if h : (j : ℕ) < m then (⟨j, h⟩ : Fin m)
@@ -145,7 +147,7 @@ theorem Lambda_interleaved_arity_mono [Fintype F] [DecidableEq F] [Nonempty ι] 
     (Fin.castLE hmn) ?_
   intro k
   have hk : ((Fin.castLE hmn k : Fin n) : ℕ) < m := by simp [k.is_lt]
-  simp only [hk, dif_pos]
+  simp only [hk, dite_eq_left]
   ext; simp
 
 /-- **The arity ladder is monotone from the base code.** For every arity `n ≥ 1`,
@@ -158,9 +160,9 @@ fully monotone ladder, so a base-code list-size lower bound propagates to all ar
 chain of inequalities rather than a single diagonal embedding. -/
 theorem Lambda_base_le_interleaved_arity_chain [Fintype F] [DecidableEq F] [Nonempty ι] {m n : ℕ}
     [NeZero m] (hmn : m ≤ n) (C : Set (ι → F)) (δ : ℝ) :
-    Lambda C δ ≤ Lambda (interleavedCodeSet (κ := Fin m) C) δ ∧
-      Lambda (interleavedCodeSet (κ := Fin m) C) δ
-        ≤ Lambda (interleavedCodeSet (κ := Fin n) C) δ :=
+    ListDecodable.Lambda C δ ≤ ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ ∧
+      ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ
+        ≤ ListDecodable.Lambda (interleavedCodeSet (κ := Fin n) C) δ :=
   ⟨Lambda_interleaved_ge C δ, Lambda_interleaved_arity_mono hmn C δ⟩
 
 /-- **A base list-size lower bound propagates to every arity, monotonically.** If `L ≤ Λ(C, δ)`,
@@ -169,10 +171,10 @@ arity `m` is itself dominated by the bound at arity `n`.  This is the arity-unif
 `gap_present_in_interleaved`: the interior wall is present at *all* arities, and increasing the
 arity can only enlarge the witnessed list. -/
 theorem interior_lower_bound_arity_mono [Fintype F] [DecidableEq F] [Nonempty ι] {m n : ℕ}
-    [NeZero m] (hmn : m ≤ n) (C : Set (ι → F)) (δ : ℝ) {L : ℕ∞} (hL : L ≤ Lambda C δ) :
-    L ≤ Lambda (interleavedCodeSet (κ := Fin m) C) δ ∧
-      Lambda (interleavedCodeSet (κ := Fin m) C) δ
-        ≤ Lambda (interleavedCodeSet (κ := Fin n) C) δ :=
+    [NeZero m] (hmn : m ≤ n) (C : Set (ι → F)) (δ : ℝ) {L : ℕ∞} (hL : L ≤ ListDecodable.Lambda C δ) :
+    L ≤ ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ ∧
+      ListDecodable.Lambda (interleavedCodeSet (κ := Fin m) C) δ
+        ≤ ListDecodable.Lambda (interleavedCodeSet (κ := Fin n) C) δ :=
   ⟨le_trans hL (Lambda_interleaved_ge C δ), Lambda_interleaved_arity_mono hmn C δ⟩
 
 /-! ## Axiom audit -/
