@@ -13,9 +13,9 @@ Generates a Lean file importing each flagship module and running
 
 Axiom inventory: the same Lean file also imports the module of every residual
 axiom pinned in scripts/residual_axioms.txt and lists, from Lean's environment
-metadata, every axiom constant declared in an `ArkLib`/`Research` module of its
-import closure. Each one must be a pinned residual with the same fully
-qualified name, declared in the pinned file's module. Unlike the lexical
+metadata, every axiom constant declared in an `ArkLib`, `ProximityPrize`, or
+`Research` module of its import closure. Each one must be a pinned residual with
+the same fully qualified name and defining module. Unlike the lexical
 precheck (scripts/forbidden_tokens.py) this sees every declaration-name form and
 axioms added without the `axiom` keyword (a macro, an elaborator, a native
 `decide` auxiliary), but only for modules in that import closure, not for every
@@ -44,7 +44,7 @@ ALLOWED = {"propext", "Classical.choice", "Quot.sound"}
 MANIFEST = Path(__file__).resolve().parent / "flagship_axioms.txt"
 RESIDUALS = Path(__file__).resolve().parent / "residual_axioms.txt"
 INVENTORY_TAG = "AXIOM-INVENTORY"
-AUDITED_ROOTS = ("ArkLib", "Research")
+AUDITED_ROOTS = ("ArkLib", "ProximityPrize", "Research")
 
 
 def inventory_command(roots: tuple[str, ...] = AUDITED_ROOTS) -> str:
@@ -178,7 +178,7 @@ def main() -> int:
         axs = sorted(reported[decl]) or ["<none>"]
         print(f"OK {decl}: {axs}")
     print(f"axiom audit: all {len(entries)} flagship declarations clean; every axiom of the "
-          f"audited ArkLib/Research modules is one of the {len(pins)} pinned residual(s)")
+          f"audited modules is one of the {len(pins)} pinned residual(s)")
     return 0
 
 

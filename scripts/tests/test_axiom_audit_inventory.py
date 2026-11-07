@@ -1,8 +1,8 @@
 """Post-build axiom inventory from Lean metadata (repository audit 2026-10-28, T02/T03).
 
 `scripts/axiom_audit.py` lists every axiom constant declared in an imported
-`ArkLib`/`Research` module from Lean's environment, so it sees every name form
-and axioms added without the `axiom` keyword, and it requires each one to be a
+`ArkLib`, `ProximityPrize`, or `Research` module from Lean's environment. It sees
+every name form and axioms added without the `axiom` keyword and requires each to be a
 residual pinned in `scripts/residual_axioms.txt` with the same fully qualified
 name and module. The Lean-gated test runs the generated command on the pinned
 toolchain (set LEAN_TEST_EXECUTABLE).
@@ -71,7 +71,8 @@ class Inventory(unittest.TestCase):
 
     def test_command_filters_the_audited_roots(self):
         command = axiom_audit.inventory_command()
-        self.assertIn("mod.getRoot == `ArkLib || mod.getRoot == `Research", command)
+        for root in ("ArkLib", "ProximityPrize", "Research"):
+            self.assertIn(f"mod.getRoot == `{root}", command)
         self.assertIn(".axiomInfo", command)
 
 
@@ -88,6 +89,46 @@ class LeanMetadata(unittest.TestCase):
         self.assertIn("AXIOM-INVENTORY\tpropext\tInit.Core", proc.stdout)
         self.assertIn("AXIOM-INVENTORY\tClassical.choice\tInit.Prelude", proc.stdout)
         self.assertIn("AXIOM-INVENTORY\tsorryAx\tInit.Prelude", proc.stdout)
+
+    def test_default_inventory_detects_unused_extension_axiom(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            extension = root / "ProximityPrize/Extensions/InventoryFixture.lean"
+            extension.parent.mkdir(parents=True)
+            audit = root / "Inventory.lean"
+            audit.write_text(
+                "import Lean\nimport ProximityPrize.Extensions.InventoryFixture\n"
+                "#print axioms fixtureClean\n" + axiom_audit.inventory_command(),
+                encoding="utf-8",
+            )
+            env = dict(os.environ, LEAN_PATH=directory)
+            for unexpected_axiom in (False, True):
+                with self.subTest(unexpected_axiom=unexpected_axiom):
+                    source = "theorem fixtureClean : True := trivial\n"
+                    if unexpected_axiom:
+                        source += "axiom fixtureUnused : False\n"
+                    extension.write_text(source, encoding="utf-8")
+                    build = subprocess.run(
+                        [LEAN, "-o", str(extension.with_suffix(".olean")), str(extension)],
+                        cwd=root, env=env, capture_output=True, text=True, timeout=30,
+                    )
+                    self.assertEqual(build.returncode, 0, build.stdout + build.stderr)
+                    run = subprocess.run(
+                        [LEAN, str(audit)], cwd=root, env=env,
+                        capture_output=True, text=True, timeout=30,
+                    )
+                    self.assertEqual(run.returncode, 0, run.stdout + run.stderr)
+                    self.assertIn("'fixtureClean' does not depend on any axioms", run.stdout)
+                    failures, warnings = axiom_audit.check_inventory(run.stdout, {})
+                    self.assertEqual(warnings, [])
+                    if unexpected_axiom:
+                        self.assertEqual(len(failures), 1)
+                        self.assertIn(
+                            "fixtureUnused: axiom declared in ProximityPrize.Extensions.InventoryFixture",
+                            failures[0],
+                        )
+                    else:
+                        self.assertEqual(failures, [])
 
 
 if __name__ == "__main__":

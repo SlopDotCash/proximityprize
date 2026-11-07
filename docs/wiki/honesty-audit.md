@@ -49,8 +49,9 @@ string literals. Before it, a literal such as `"/-"`, `1e5r#"""#` or `1'"'`, a d
 (audit T01). These gates are lexical: they cannot see a declaration that a macro or elaborator
 builds without the keyword in the source, so a clean precheck is not an elaborated axiom audit.
 The post-build `axiom_audit.py` adds an inventory from Lean's environment metadata: every axiom
-declared in an `ArkLib`/`Research` module imported by the audit (the flagship modules, the pinned
-residuals' modules and their import closure) must be a pinned residual in its pinned module. That
+declared in an `ArkLib`, `ProximityPrize`, or `Research` module imported by the audit (the
+flagship modules, the pinned residuals' modules and their import closure) must be a pinned
+residual in its pinned module. That
 covers every name form and keyword-free axioms, but only inside that import closure.
 
 ## Current shortcut snapshot (2026-06-11)

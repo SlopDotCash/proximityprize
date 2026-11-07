@@ -78,8 +78,8 @@ This directory contains various utility scripts for the ArkLib project.
   lexical only, not an elaborated declaration or axiom audit
 - **`axiom_audit.py`** - CI gate 3, post-build: `#print axioms` over the flagship declarations in
   `flagship_axioms.txt`, plus an inventory from Lean metadata requiring every axiom of the
-  imported `ArkLib`/`Research` modules to be a pinned residual (`--print-modules` lists the
-  modules to build first)
+  imported `ArkLib`, `ProximityPrize`, and `Research` modules to be a pinned residual
+  (`--print-modules` lists the modules to build first)
 
 ### Dependency Analysis
 - **`dependency_analysis/`** - Complete dependency analysis toolkit
