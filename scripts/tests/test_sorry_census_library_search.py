@@ -10,7 +10,7 @@ Checked in separate files, each ending in `#print axioms t`:
   `(config := { all := true })`, `+grind +all`, `(all := false) +all`,
   `(config := { grind := true }) +all`, a comment or newline before `+all`,
   and `{ cfg with all := true }` — exit 0, `'t' depends on axioms: [sorryAx]`.
-* bare `exact?` / `apply?`, `+all -all`, `(all := false)`,
+* On a goal the tactic can close, bare `exact?` / `apply?`, `+all -all`, `(all := .false)`,
   `(config := { grind := true })`, `+all (config := { grind := true })`,
   and `(config := { all := true }) -all` — exit 0, axioms `[propext]`.
 * `exact? + all` (space before the name) — exit 1, not a silent proof.
@@ -102,7 +102,7 @@ theorem exact_cancel : (1 : Nat) = 1 := by
   exact? +all -all
 
 theorem exact_field_false : (1 : Nat) = 1 := by
-  exact? (all := false)
+  exact? (all := .false)
 
 theorem exact_grind : (1 : Nat) = 1 := by
   exact? +grind
@@ -111,7 +111,7 @@ theorem exact_struct_grind : (1 : Nat) = 1 := by
   exact? (config := { grind := true })
 
 theorem exact_struct_false : (1 : Nat) = 1 := by
-  exact? (config := { all := false })
+  exact? (config := { all := .false })
 
 theorem exact_reset : (1 : Nat) = 1 := by
   exact? +all (config := { grind := true })
@@ -120,7 +120,7 @@ theorem exact_override : (1 : Nat) = 1 := by
   exact? (config := { all := true }) -all
 
 theorem exact_both_fields : (1 : Nat) = 1 := by
-  exact? (all := true) (all := false)
+  exact? (all := true) (all := .false)
 
 theorem exact_star : (1 : Nat) = 1 := by
   exact? -star
@@ -137,10 +137,10 @@ def «exact? +all» : Nat := 2
 def «apply? (all := true)» : Nat := 3
 
 theorem named_config : (1 : Nat) = 1 := by
-  exact? (config := cfg)
+  exact? (config := cfg) -all
 
 theorem with_other : (1 : Nat) = 1 := by
-  exact? (config := { cfg with grind := true })
+  exact? (config := { cfg with grind := true }) -all
 
 theorem term_percent : Nat := exact?% 0
 theorem qualified : Nat := Foo.exact? +all
@@ -199,6 +199,38 @@ class LibrarySearchAdmit(unittest.TestCase):
 
     def test_closing_search_and_lookalikes_are_not_holes(self) -> None:
         self.assertEqual(self.census(CLEAN), [])
+
+    def test_search_config_does_not_assume_opaque_or_shadowable_values(self) -> None:
+        for config in (
+            "(all := Bool.true)",
+            "(«all» := _root_.Bool.true)",
+            "+«all»",
+            "(«config» := named)",
+            "(config := named)",
+            "(config := { named with grind := true })",
+            "(config := { «all» := Bool.true })",
+            "(config := {\n    grind := false\n    all := Bool.true\n  })",
+            "(all := Bool.not false)",
+            "(all := false)",
+            "(all := Bool.false)",
+            "(config := { all := false })",
+            '(all := _root_.Bool.false "argument")',
+        ):
+            for tactic in ("exact?", "apply?"):
+                with self.subTest(tactic=tactic, config=config):
+                    source = f"theorem test : True := by\n  {tactic} {config}\n"
+                    self.assertEqual([row["token"] for row in self.census(source)], [tactic])
+
+    def test_safe_overrides_clear_potentially_admitting_options(self) -> None:
+        for config in (
+            "(config := named) -all",
+            "(config := named) (all := .false)",
+            "(all := Bool.not false) -«all»",
+            "+all (all := ((/- reason -/ _root_.Bool.false)))",
+            "+all (config := { grind := true, all := .false })",
+        ):
+            with self.subTest(config=config):
+                self.assertEqual(self.census(f"theorem test : True := by\n  exact? {config}\n"), [])
 
 
 if __name__ == "__main__":

@@ -25,7 +25,11 @@ A token is classified as:
          same after a later override) are holes too: on Lean v4.30.0-rc2
          `Lean.Elab.LibrarySearch.exact?` calls `admitGoal` on that path
          even when a complete proof was found, and the declaration still
-         elaborates. A bare `exact?` / `apply?` is not flagged.
+         elaborates. A computed or inherited value for `all` is treated
+         conservatively unless a later item turns it off. Use `-all` or
+         `(all := .false)` to explicitly select the non-collecting mode.
+         This source check does not classify a bare `apply?`, which can
+         still admit a goal when it only finds incomplete suggestions.
   doc  — inside a docstring `/-- ... -/`, block comment `/- ... -/`,
          line comment `-- ...`, raw-string literal, or the literal
          (non-splice) text of a string (includes prose words containing 'admit')
@@ -352,13 +356,37 @@ def strip_comments_map(text: str) -> list[bool]:
 
 
 def _skip_ws(text: str, mask: list[bool], i: int, end: int) -> int:
-    while i < end and (text[i].isspace() or mask[i]):
-        i += 1
+    # The mask includes strings, which are terms and cannot be skipped as trivia.
+    while i < end:
+        if text[i].isspace():
+            i += 1
+        elif mask[i] and text.startswith("--", i):
+            newline = text.find("\n", i + 2, end)
+            i = end if newline < 0 else newline
+        elif mask[i] and text.startswith("/-", i):
+            depth = 1
+            i += 2
+            while i < end and depth:
+                if text.startswith("/-", i):
+                    depth += 1
+                    i += 2
+                elif text.startswith("-/", i):
+                    depth -= 1
+                    i += 2
+                else:
+                    i += 1
+        else:
+            break
     return i
 
 
 def _read_ident(text: str, i: int, end: int) -> tuple[str | None, int]:
-    if i >= end or not _ID_FIRST_RE.fullmatch(text[i]):
+    if i >= end:
+        return None, i
+    if text[i] == "«":
+        close = text.find("»", i + 1, end)
+        return (text[i + 1:close], close + 1) if close >= 0 else (None, i)
+    if not _ID_FIRST_RE.fullmatch(text[i]):
         return None, i
     j = i + 1
     while j < end and _ID_REST_RE.fullmatch(text[j]):
@@ -440,147 +468,101 @@ def _term_end(text: str, mask: list[bool], i: int, end: int) -> int:
     return end
 
 
-def _as_bool_literal(text: str, mask: list[bool], start: int, end: int) -> bool | None:
+_BOOL_ATOMS = tuple(
+    prefix + name for prefix in ("", ".", "Bool.", "_root_.Bool.") for name in ("false", "true")
+)
+_EXPLICIT_FALSE = {".false", "_root_.Bool.false"}
+
+
+def _paren_contents(
+    text: str, mask: list[bool], start: int, end: int
+) -> tuple[int, int]:
     i = _skip_ws(text, mask, start, end)
-    if i < end and text[i] == "(":
+    while i < end and text[i] == "(":
         close = _match_bracket(text, mask, i, end)
-        if close is None:
-            return None
-        if _skip_ws(text, mask, close + 1, end) != end:
-            return None
-        return _as_bool_literal(text, mask, i + 1, close)
-    ident, j = _read_ident(text, i, end)
-    if _skip_ws(text, mask, j, end) != end:
-        return None
-    if ident == "true":
-        return True
-    if ident == "false":
-        return False
+        if close is None or _skip_ws(text, mask, close + 1, end) != end:
+            break
+        end = close
+        i = _skip_ws(text, mask, i + 1, end)
+    return i, end
+
+
+def _bool_atom(text: str, mask: list[bool], start: int, end: int) -> str | None:
+    i, end = _paren_contents(text, mask, start, end)
+    for atom in _BOOL_ATOMS:
+        if text.startswith(atom, i, end) and _skip_ws(text, mask, i + len(atom), end) == end:
+            return atom
     return None
 
 
-def _struct_all(text: str, mask: list[bool], start: int, end: int) -> bool | None:
-    """The `all` field of a structure literal, or None if a source hides it.
+def _config_has_all_off(text: str, mask: list[bool], start: int, end: int) -> bool:
+    """Recognize simple structure literals with a definitely disabled `all`.
 
-    `{ all := true }` and `{ cfg with all := true }` are determined. `{ grind := true }`
-    uses the default `false`. `{ cfg with grind := true }` and `{ ..cfg }` inherit `all`
-    from a value this scan cannot see.
+    Inherited/computed configurations need an explicit later override. Other
+    fields in a recognized literal must have simple values so a newline
+    introducing another field cannot be mistaken for part of their value.
     """
-    explicit: bool | None = None
-    saw_explicit = False
-    saw_inherit = False
-    i = start
-    depth = 0
-    while i < end:
-        if mask[i] or text[i].isspace():
-            i += 1
-            continue
-        if text[i] == "«":
-            j = text.find("»", i + 1, end)
-            i = end if j < 0 else j + 1
-            continue
-        ch = text[i]
-        if ch in _OPEN_BRACKETS:
-            depth += 1
-            i += 1
-            continue
-        if ch in _CLOSE_BRACKETS:
-            if depth:
-                depth -= 1
-            i += 1
-            continue
-        if depth:
-            i += 1
-            continue
-        if text.startswith("..", i):
-            saw_inherit = True
-            i += 2
-            continue
-        ident, j = _read_ident(text, i, end)
-        if ident is None:
-            i += 1
-            continue
-        if ident == "with":
-            saw_inherit = True
-            i = j
-            continue
-        j2 = _skip_ws(text, mask, j, end)
-        if text.startswith(":=", j2):
-            val_end = _term_end(text, mask, j2 + 2, end)
-            if ident == "all":
-                explicit = _as_bool_literal(text, mask, j2 + 2, val_end)
-                saw_explicit = True
-            i = val_end
-            continue
-        i = j
-    if saw_explicit:
-        return explicit
-    if saw_inherit:
-        return None
-    return False
+    i, end = _paren_contents(text, mask, start, end)
+    if i >= end or text[i] != "{":
+        return False
+    close = _match_bracket(text, mask, i, end)
+    if close is None or _skip_ws(text, mask, close + 1, end) != end:
+        return False
+    i = _skip_ws(text, mask, i + 1, close)
+    while i < close:
+        name, j = _read_ident(text, i, close)
+        j = _skip_ws(text, mask, j, close)
+        if name not in {"all", "grind", "star", "try?"} or not text.startswith(":=", j):
+            return False
+        value_end = _term_end(text, mask, j + 2, close)
+        atom = _bool_atom(text, mask, j + 2, value_end)
+        if atom is None or (name == "all" and atom not in _EXPLICIT_FALSE):
+            return False
+        i = _skip_ws(text, mask, value_end + 1, close)
+    return True
 
 
-def _config_term_all(text: str, mask: list[bool], start: int, end: int) -> bool | None:
-    """Whether a `(config := term)` or `(all := term)` value sets `all`."""
-    i = _skip_ws(text, mask, start, end)
-    if i < end and text[i] == "(":
-        close = _match_bracket(text, mask, i, end)
-        if close is None or _skip_ws(text, mask, close + 1, end) != end:
-            return None
-        return _config_term_all(text, mask, i + 1, close)
-    if i < end and text[i] == "{":
-        close = _match_bracket(text, mask, i, end)
-        if close is None or _skip_ws(text, mask, close + 1, end) != end:
-            return None
-        return _struct_all(text, mask, i + 1, close)
-    return _as_bool_literal(text, mask, start, end)
+def _config_may_enable_all(text: str, mask: list[bool], i: int) -> bool:
+    """Whether the optConfig may leave `LibrarySearchConfig.all` enabled.
 
-
-def _config_enables_all(text: str, mask: list[bool], i: int) -> bool:
-    """True when the optConfig at `i` leaves `LibrarySearchConfig.all` set.
-
-    Items apply left to right, matching `elabConfig`: `+all` / `-all` and
-    `(all := true/false)` update the field, and `(config := ...)` replaces it.
-    A later item wins. `+all -all` and `+all (config := { grind := true })`
-    finish with `all` false (pinned Lean v4.30.0-rc2).
+    Apply items left to right. A later `-all` clears a prior flag or unknown
+    configuration. Unqualified `false` and `Bool.false` can be shadowed, so
+    only an anonymous or root-qualified constructor certifies an off value.
     """
-    enabled = False
+    known_off = True
     end = len(text)
     while True:
         i = _skip_ws(text, mask, i, end)
         if i >= end:
-            return enabled
+            return not known_off
         if text[i] in "+-":
-            # `posConfigItem` / `negConfigItem` are `" +"` / `" -"` then `noWs ident`.
-            if i + 1 >= end or text[i + 1].isspace() or mask[i + 1]:
-                return enabled
+            # `posConfigItem` / `negConfigItem` require the adjacent identifier.
             ident, j = _read_ident(text, i + 1, end)
-            if ident is None:
-                return enabled
+            if ident is None or mask[i + 1]:
+                return not known_off
             if ident == "all":
-                enabled = text[i] == "+"
+                known_off = text[i] == "-"
             i = j
             continue
         if text[i] != "(":
-            return enabled
+            return not known_off
         name_at = _skip_ws(text, mask, i + 1, end)
         ident, j = _read_ident(text, name_at, end)
         j = _skip_ws(text, mask, j, end)
         if ident is None or not text.startswith(":=", j):
-            return enabled
+            return not known_off
         close = _match_bracket(text, mask, i, end)
         if close is None:
-            return enabled
-        if ident in {"all", "config"}:
-            value = _config_term_all(text, mask, j + 2, close)
-            # A named `(config := cfg)` is not inspected: an empty config clears
-            # `+all`, and guessing `true` would reject that proof.
-            enabled = bool(value)
+            return not known_off
+        if ident == "all":
+            known_off = _bool_atom(text, mask, j + 2, close) in _EXPLICIT_FALSE
+        elif ident == "config":
+            known_off = _config_has_all_off(text, mask, j + 2, close)
         i = close + 1
 
 
 def library_search_admit_tokens(text: str, mask: list[bool]) -> list[tuple[int, str]]:
-    """Live `exact?` / `apply?` whose config admits the goal via `sorryAx`."""
+    """Live `exact?` / `apply?` with an admitting or unknown `all` option."""
     quoted = _quoted_spans(text, mask)
     hits: list[tuple[int, str]] = []
     for match in _LIBSEARCH_RE.finditer(text):
@@ -596,7 +578,7 @@ def library_search_admit_tokens(text: str, mask: list[bool]) -> list[tuple[int, 
         # `exact?%` is a term elaborator. It logs an error instead of admitting silently.
         if match.group(0) == "exact?" and end < len(text) and text[end] == "%":
             continue
-        if _config_enables_all(text, mask, end):
+        if _config_may_enable_all(text, mask, end):
             hits.append((start, match.group(0)))
     return hits
 
