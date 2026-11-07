@@ -1,3 +1,7 @@
+# Copyright (c) 2026 ismailmoazami. All rights reserved.
+# Released under the MIT and Apache 2.0 licenses. See LICENSE-MIT and LICENSE.
+# Authors: ismailmoazami
+
 """G210's mathematical certificate checks must survive Python optimization."""
 import subprocess
 import sys
