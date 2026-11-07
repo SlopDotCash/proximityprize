@@ -558,11 +558,25 @@ only gate 1; nothing audits the transitive axioms it never reports.
 
 ## Retained probe dependencies
 
+The G210 depth-two flatness certificate uses explicit runtime checks, so `python3 -O
+scripts/probes/g210_tail_floor_flatness_certificate.py` still verifies the direct/primitive
+partition identity, floor equivalence, and collision relations. Run
+`python3 -m unittest discover -s scripts/tests -p test_g210_flatness_certificate.py` to replay
+the eight published cells and check rejection of corrupted certificates under normal, `-O`,
+and `-OO` execution. These finite computations support the G210 equality criterion;
+they do not establish a production threshold.
+
 Before deleting a Python probe helper, run `python3 -m unittest discover -s scripts/tests -p test_probe_local_dependencies.py`. This parses retained probe sources without executing experiments and checks statically named `probe_` and `_skeptic_` imports. It catches missing helper files; it does not cover dynamic imports, external packages, or mathematical correctness. Run the affected experiment separately when validating its results.
 
 The R387 Z3 probe uses exit 0 only for all searched branches returning unsat, exit 1 for a checked MCA counterexample, and exit 2 for unresolved results (including timeout). An unresolved exit is not a proof of either outcome.
 
 The R387 MILP probe uses the same unresolved exit 2. Exit 0 means the numerical solver reported every requested branch infeasible; it is not an independently verified infeasibility certificate, and a subset of pivots does not cover all directions. Exit 1 indicates a checked MCA witness.
+
+The source-seven signature probe's `--heuristic-restarts` path searches only
+all-regular signatures. It rejects a different `--regular-count` and all
+`--second-*-intersection` slices instead of silently ignoring them. Omit
+`--heuristic-restarts` to send those constraints to the exact Z3 backend. A
+heuristic miss is not an UNSAT certificate.
 
 G87V’s default census uses batches of at most 4,096 rows and retains one modular row basis per field instead of the full census matrix. It still enumerates every support/sign pattern. Run `python3 -m unittest discover -s scripts/tests -p test_g87v_streaming.py` to compare streamed summaries with materialized small cases. This storage change does not remove the combinatorial runtime cost.
 
