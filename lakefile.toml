@@ -183,6 +183,7 @@ globs = [
   "ArkLib.Data.CodingTheory.AGL24DeterministicChain",
   "ArkLib.Data.CodingTheory.AGL24DualSpan",
   "ArkLib.Data.CodingTheory.AGL24DualZeroPatternPinned",
+  "ArkLib.Data.CodingTheory.AGL24EmbeddingDischarge",
   "ArkLib.Data.CodingTheory.AGL24EvalToSymbolic",
   "ArkLib.Data.CodingTheory.AGL24ExtensionLift",
   "ArkLib.Data.CodingTheory.AGL24FailureProbGuard",

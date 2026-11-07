@@ -48992,3 +48992,31 @@ near the Johnson boundary the monomial baseline collapses to O(1) while the elev
 floor stays ≈ n−√(nk) — no constant C survives unless monomial baselines are proven to grow
 there. The dossier-§6 survivor (b) "bounded spread-excess law" is dead as stated; the
 surviving open question is the monomial-baseline growth law at boundary cells. CORE OPEN.
+## [164-nt2-two-power-cyclotomic-trace] The 2-power trace hypothesis is a theorem
+
+Date: 2026-11-06. Target: the trace input of
+`ProximityGap.Frontier.BadPrimeBound.badPrimeBound_core` and the power-basis Gram matrix cited by
+the short-vector / theta reading of wraparound (`_wf7W6_shortvector_spur`,
+`_ThetaPoissonNormMismatchNoGo`).
+
+`Frontier/_TwoPowerCyclotomicTrace.lean` proves, for `n = 2^μ` and a primitive `n`-th root `ζ`:
+
+- the odd-residue sum of `ζ^{a m}` is `φ(n)`, `-φ(n)`, or `0` according as `m = 0`, `m = n/2`, or
+  neither (`oddUnitPowerSum`);
+- the Hermitian Gram matrix of the power basis `1, ζ, …, ζ^{φ(n)-1}` is `φ(n) · I`
+  (`powerBasis_gram`);
+- `∑_a ‖∑_k c_k ζ^{a k}‖² = φ(n) · ∑_k c_k²` (`galois_normSq_sum`), and for
+  `c_k ∈ {-1,0,1}` this is `φ(n) · |B|` (`signedIndicator_galois_normSq_sum`);
+- at `μ ≥ 3`, `badPrime_le_sq_of_nt2` feeds that identity into `badPrimeBound_core`, so the
+  full-window bound `p ≤ |B|²` needs only the splitting lower bound on the norm (NT1).
+
+This does not prove prime splitting, does not close the `R ~ log p` gap of the depth-parametrised
+Stickelberger bound, and does not close `δ*` or issue #164.
+
+`#print axioms` on the five public theorems reports only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+```
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_TwoPowerCyclotomicTrace.lean
+./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._TwoPowerCyclotomicTrace
+```
