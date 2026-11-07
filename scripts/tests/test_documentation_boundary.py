@@ -34,7 +34,7 @@ class DocumentationBoundaryTests(unittest.TestCase):
         folder.mkdir(parents=True)
         (folder / "README.md").write_text("A misplaced document.\n")
         self.assertEqual(self.checker.check_lean_tree_markdown(),
-                         [f"Markdown belongs outside ArkLib: {Path('ArkLib/Data/README.md')}"])
+                         ["Markdown belongs outside ArkLib: ArkLib/Data/README.md"])
 
     def test_links_in_comments_and_fenced_examples_are_ignored(self):
         docs = self.root / "docs"
@@ -50,7 +50,7 @@ class DocumentationBoundaryTests(unittest.TestCase):
             "[real link](missing-real.md)\n"
         )
         self.assertEqual(self.checker.check_markdown_links(),
-                         [f"Broken link in {Path('docs/example.md')}: missing-real.md"])
+                         ["Broken link in docs/example.md: missing-real.md"])
 
     def test_research_documents_are_checked(self):
         folder = self.root / "Research" / "ProximityPrize"
@@ -100,6 +100,38 @@ class DocumentationBoundaryTests(unittest.TestCase):
         with patch.object(self.checker, "tracked_markdown_files", return_value=[doc]):
             self.assertEqual(self.checker.check_markdown_links(),
                              ["Broken link in example.md: missing.md"])
+
+    def test_claude_symlink_checks(self):
+        self.assertEqual(self.checker.check_claude_symlink(), ["Missing AGENTS.md"])
+        self.checker.AGENTS_PATH.write_text("# Agents\n", encoding="utf-8")
+        self.assertEqual(self.checker.check_claude_symlink(), ["Missing CLAUDE.md"])
+
+    def test_git_symlink_text_checkout_requires_index_mode_and_config(self):
+        def git(*args, input=None):
+            return subprocess.run(
+                ["git", "-C", str(self.root), *args], input=input,
+                capture_output=True, check=True,
+            ).stdout
+
+        self.checker.AGENTS_PATH.write_text("# Agents\n", encoding="utf-8")
+        self.checker.CLAUDE_PATH.write_bytes(b"AGENTS.md")
+        git("init", "-q")
+        git("config", "core.symlinks", "false")
+        blob = git("hash-object", "-w", "--stdin", input=b"AGENTS.md").strip().decode("ascii")
+        error = ["CLAUDE.md must be a symlink to AGENTS.md"]
+
+        git("update-index", "--add", "--cacheinfo", f"100644,{blob},CLAUDE.md")
+        self.assertEqual(self.checker.check_claude_symlink(), error)
+
+        git("update-index", "--add", "--cacheinfo", f"120000,{blob},CLAUDE.md")
+        self.assertEqual(self.checker.check_claude_symlink(), [])
+
+        git("config", "core.symlinks", "true")
+        self.assertEqual(self.checker.check_claude_symlink(), error)
+
+        git("config", "core.symlinks", "false")
+        self.checker.CLAUDE_PATH.write_bytes(b"AGENTS.md\n")
+        self.assertEqual(self.checker.check_claude_symlink(), error)
 
 
 class WebsiteDocumentationTargets(unittest.TestCase):

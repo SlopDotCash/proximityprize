@@ -36,18 +36,19 @@ proof-source gate and a locked package build of their leaf before direct, explic
 to classic downstream modules. `--axioms` runs the canonical kernel-level axiom
 regression sweep. Upstream-inherited proof debt is recorded explicitly; a successful
 integration check does not constitute closure of an open research theorem.
-The ten inherited `True` theorem stubs in `ArkLib/Data/Fin/Tuple/Lemmas.lean`
-are byte-pinned in [`scripts/upstream-source-policy.json`](../../scripts/upstream-source-policy.json),
-including the upstream Git revision and declaration names. They establish no tuple
-identities. A file hash change or a copied declaration invalidates the exception;
-native evaluation and custom axioms have no exception in this baseline.
+ArkLib proved the ten previously inherited tuple placeholder theorems. The pinned
+[`scripts/upstream-source-policy.json`](../../scripts/upstream-source-policy.json) records
+an empty placeholder exception list. The source precheck also rejects proof-as-sorry
+and kernel-skip debug options in live Lean source or `lakefile.toml`.
+Run `uv run --no-project --python 3.12 python scripts/forbidden_tokens.py` for the
+full source precheck. Pass files or directories to check a focused scope.
 
 Inherited sorry entries normally require the exact upstream file. A reviewed
 `downstream_adaptations` entry may fill another declaration in that file while retaining an
 unchanged admitted constructor. Such a retained hole additionally needs its original full name,
 exact stripped-command hash, reviewed current file hash, and pinned upstream Git blob. Each
 census token must remain inside that exact command; new or changed admitted commands,
-copied declarations, and tokens outside the unchanged command remain errors. This narrow rule does not relax the whole-file `True`-stub exceptions.
+copied declarations, and tokens outside the unchanged command remain errors.
 
 Stage new source paths, run `scripts/update-lib.sh` and
 `scripts/update-research-lib.py`, and commit the generated module surfaces.
@@ -555,6 +556,8 @@ only gate 1; nothing audits the transitive axioms it never reports.
 ## Retained probe dependencies
 
 Run the finite monomial-pencil census probes under `scripts/probes/` with standard Python and leave `PYTHONOPTIMIZE` unset. Their entry points reject optimized execution so the certificate checks remain active.
+
+The SYZ72 middle-band probe samples 20,000 support pairs at each of 15 selected primes and checks all 28 legal third supports per draw. Run `python3 scripts/probes/probe_syz72_middle_band_sweep.py` to reproduce the sample or pass `--trials` to choose a different positive draw count. Zero-hit rows apply to the sampled supports.
 
 Before deleting a Python probe helper, run `python3 -m unittest discover -s scripts/tests -p test_probe_local_dependencies.py`. This parses retained probe sources without executing experiments and checks statically named `probe_` and `_skeptic_` imports. It catches missing helper files; it does not cover dynamic imports, external packages, or mathematical correctness. Run the affected experiment separately when validating its results.
 

@@ -13,6 +13,13 @@ the evaluation matrix of (W_AC, X W_AC, W_BC, X W_BC) has rank < 4.  A hit is
 an on-domain linear-middle witness.  A miss is computational evidence, not a
 proof.
 
+Note (SYZ72).  Rank < 4 alone is necessary but not sufficient: constant
+cofactors are linear cofactors of degree 0, so a floor-attained triple also
+passes it while having minimal syzygy product degree d = 6 = max, not d + 1.
+`search_pair` therefore additionally requires the constant-cofactor system on
+S_AB to have no kernel.  The certified sweep, with the recovered cofactors and
+slot degrees, is `probe_syz72_middle_band_sweep.py`.
+
 Usage: python scripts/probes/probe_syz71_linear_middle_slot.py
 """
 from __future__ import annotations
@@ -104,13 +111,33 @@ def remaining_rows(pts: list[int], S_AC: list[int], S_BC: list[int], mod: int):
     return omegas, rows
 
 
+def constant_cofactor_trivial(block: list[list[int]], mod: int) -> bool:
+    """True iff no nonzero CONSTANT cofactor pair annihilates `S_AB`.
+
+    Soundness guard.  A constant cofactor is a linear cofactor of degree 0, so a
+    floor-attained triple (SYZ69's second class: a nontrivial relation
+    `λ_AB W_AB + λ_AC W_AC + λ_BC W_BC = 0` with all `λ` constant, minimal
+    syzygy product degree `d = 6 = max(a,b,c)`) also makes the 6 x 4 rank test
+    fail.  Such a triple is NOT a middle-band occupant: `SYZ59.middleBand`
+    requires `delta_1 > max(a,b,c)`.  Requiring the rank-2 system of constant
+    pairs `(a, b) ↦ a W_AC + b W_BC` on `S_AB` to have no kernel excludes them.
+    Together with `rank < 4` this is exactly `delta_1 = d + 1`: the kernel gives
+    a `W_AB`-multiple of product degree `<= d + 1`, and triviality rules out any
+    syzygy of product degree `<= d`.
+
+    Full certificate (including the recovered cofactors and the three slot
+    degrees): `probe_syz72_middle_band_sweep.py`.
+    """
+    return gf_rank([[r[0], r[2]] for r in block], mod) == 2
+
+
 def search_pair(pts: list[int], S_AC: list[int], S_BC: list[int], mod: int, d: int):
     omegas, rows = remaining_rows(pts, S_AC, S_BC, mod)
     if len(omegas) < d:
         return None
     for idxs in combinations(range(len(omegas)), d):
         block = [rows[i] for i in idxs]
-        if gf_rank(block, mod) < 4:
+        if gf_rank(block, mod) < 4 and constant_cofactor_trivial(block, mod):
             return [omegas[i] for i in idxs]
     return None
 
@@ -234,7 +261,7 @@ def main() -> None:
             print(f"    STRUCTURED WITNESS {rec2['witness'][:2]}")
 
     # sanity: recover a SYZ50-style CONSTANT level-set at (4,4,4) on mu_14 < F_29
-    print("\n=== sanity: constant (4,4,4) level-set on mu_14 ⊂ F_29 should exist ===")
+    print("\n=== sanity: constant (4,4,4) level-set on mu_14 in F_29 should exist ===")
     pts, _ = mu_domain(14, 29)
     assert pts is not None
     rng = random.Random(0)
