@@ -81,6 +81,11 @@ jobs:
           lean_relevant=true
           if [ "$EVENT_NAME" = "pull_request" ]; then
             lean_relevant=false
+            changed_paths="$(mktemp)"
+            trap 'rm -f -- "$changed_paths"' EXIT
+            # Keep deleted gate inputs when a rename moves them into docs, and
+            # propagate comparison failures instead of reading an empty stream.
+            git diff --no-renames --name-only -z "$PR_BASE_SHA"...HEAD > "$changed_paths"
             while IFS= read -r -d '' changed_path; do
               case "$changed_path" in
                 scripts/*.md)
@@ -97,7 +102,7 @@ jobs:
                   break
                   ;;
               esac
-            done < <(git diff --name-only -z "$PR_BASE_SHA"...HEAD)
+            done < "$changed_paths"
           fi
           echo "lean-relevant=$lean_relevant" >> "$GITHUB_OUTPUT"
 
