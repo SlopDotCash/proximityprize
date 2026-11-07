@@ -248,31 +248,13 @@ merge-ready.
   `blueprint/src/references.bib` (see the citation policy in
   [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) and the workflow in
   [`../wiki/blueprint-and-citations.md`](../wiki/blueprint-and-citations.md)).
-- **Do not commit `docs/kb/_generated/` changes in a feature PR.** An early step of the CI job,
-  "Reject generated KB updates in PRs" ([`ci.yml`](../../.github/workflows/ci.yml)), fails the
-  build if the PR's diff (`base...head`) touches `docs/kb/_generated/` in **any** way, and a
-  **deletion counts as a diff** just like a modification or addition. These files are refreshed by
-  [`kb-generated.yml`](../../.github/workflows/kb-generated.yml), which runs nightly and after
-  bibliography or KB-source changes on `main` and maintains one rolling PR from the
-  `automation/kb-generated` branch (see [generated files](../wiki/generated-files.md)). The guard
-  runs before the Lean build, so a stray `_generated/` diff blocks CI before the build even starts
-  (and removing the files does **not** help: the directory must match the merge base exactly).
-- You may regenerate the derived metadata **locally to check consistency** — do not hand-edit it —
-  but **revert the `_generated/` outputs before committing** so the directory matches the merge
-  base:
+- Regenerate the derived metadata when its inputs change and commit the tracked indexes and any
+  scaffolded paper or source pages. The read-only
+  [KB workflow](../../.github/workflows/kb-generated.yml) verifies the committed outputs.
 
   ```bash
-  uv run --no-project --python 3.12 python ./scripts/kb/sync_from_bib.py          # writes docs/kb/_generated/references.json
-  uv run --no-project --python 3.12 python ./scripts/kb/extract_lean_citations.py # writes docs/kb/_generated/lean-citations.json
-  # ... inspect for consistency, then:
-  git checkout "$(git merge-base HEAD origin/main)" -- docs/kb/_generated/
-  # restores index and worktree; inspect the staged diff
+  uv run --no-project --python 3.12 python ./scripts/kb/regenerate.py
   ```
-
-  If your branch has already diverged in `docs/kb/_generated/` (drift, an accidental delete, or a
-  regenerate that got committed), restore it the same way: `git fetch origin main` then
-  `git checkout "$(git merge-base HEAD origin/main)" -- docs/kb/_generated/`, and commit so the
-  guard passes.
 
   **Expect the local regenerate to surface drift that is not yours.** `main`'s `_generated/` is
   refreshed only after merge, so it routinely lags `main`'s own sources: the regenerated diff will
