@@ -24,58 +24,14 @@ Stdlib only, exact integer arithmetic, no floats.
 
 Usage:  python3 probe_order64_engine_caveats.py
 """
-from itertools import combinations
-
-
-def is_prime(n):
-    if n < 2:
-        return False
-    if n % 2 == 0:
-        return n == 2
-    d = 3
-    while d * d <= n:
-        if n % d == 0:
-            return False
-        d += 2
-    return True
-
-
-def has_order(g, p, m):
-    """True iff g has exact order m in F_p (assumes m | p-1)."""
-    if pow(g, m, p) != 1:
-        return False
-    # m = 64 = 2^6; proper 2-power divisors
-    d = m
-    while d > 1:
-        d //= 2
-        if pow(g, d, p) == 1:
-            return False
-    return True
-
-
-def spectrum_card(p, g, h, weights=(1, 3)):
-    """Exact cardinality of signed sums for weight set A over half-window."""
-    pows = [pow(g, i, p) for i in range(h)]
-    vals = set()
-    for a in weights:
-        for U in combinations(range(h), a):
-            for k in range(a + 1):
-                for T in combinations(U, k):
-                    Tset = set(T)
-                    s = 0
-                    for i in U:
-                        if i in Tset:
-                            s = (s + pows[i]) % p
-                        else:
-                            s = (s - pows[i]) % p
-                    vals.add(s)
-    return len(vals)
+from probe_order16_weight13_spectrum import is_prime, signed_data, spectrum_image
 
 
 def main():
     h = 32
     law = 2 * h + 8 * (h * (h - 1) * (h - 2) // 6)  # 39744
-    assert law == 39744
+    data = signed_data(h, (1, 3))
+    assert len(data) == law == 39744
 
     # (p, g, a, b, expected_distinct)
     deficient = [
@@ -89,10 +45,10 @@ def main():
     print("# p        g        ord64 distinct  def   witness")
     for p, g, a, b, expect in deficient:
         assert is_prime(p) and (p - 1) % 64 == 0
-        assert has_order(g, p, 64), (p, g)
         assert (pow(g, a, p) + pow(g, b, p)) % p == 2
+        # g^32 = -1 certifies exact order 64 in this prime field.
         assert pow(g, 32, p) == p - 1
-        dist = spectrum_card(p, g, h)
+        dist = len(spectrum_image(g, p, data))
         print(
             "  %-8d %-8d yes  %-9d %-5d g^%d + g^%d = 2"
             % (p, g, dist, law - dist, a, b)
@@ -108,4 +64,6 @@ def main():
 
 
 if __name__ == "__main__":
+    if not __debug__:
+        raise SystemExit("Run without Python optimization to enable the certificate checks.")
     raise SystemExit(main())
