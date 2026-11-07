@@ -211,7 +211,7 @@ theorem whirCheckedVectorIOP_isSecureWithGap_of_rbr
     (εRbr : (_root_.WhirIOP.Construction.whirPaperTranscriptVectorSpec P d).ChallengeIdx →
       ℝ≥0)
     (hSound : whirCheckedVectorIOP_rbrKnowledgeSoundness P d δ εRbr (m0 := m0)) :
-    VectorIOP.IsSecureWithGap (whirRelation m0 (P.φ 0) 0)
+    VectorIOP.IsSecureWithGapAveraged (whirRelation m0 (P.φ 0) 0)
       (whirRelation m0 (P.φ 0) δ) εRbr
       (Whir302Checked.whirCheckedVectorIOP P d) :=
   Whir302Checked.whirCheckedVectorIOP_isSecureWithGap_of_rbr P d δ εRbr hSound

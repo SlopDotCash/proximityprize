@@ -46,7 +46,7 @@ This file instantiates the bounded-flip threshold shell
    * `whirChecked_rbrKnowledgeSoundness_smallField` /
      `whirCheckedVectorIOP_isSecureWithGap_smallField` — the UNCONDITIONAL discharge in the
      small-field regime `|F| ≤ maxLen` (where the budget is ≥ 1), giving the full
-     `IsSecureWithGap` package for the checked WHIR `VectorIOP` at the task's budget shape.
+     `IsSecureWithGapAveraged` package for the checked WHIR `VectorIOP` at the task's budget shape.
 
 ## HONESTY: why the unconditional `hFlip` at `maxLen/|F| < 1` is NOT provable here
 
@@ -672,11 +672,11 @@ theorem whirChecked_rbrKnowledgeSoundness_smallField (δ : ℝ≥0) (L : ℕ)
     (fun stmtIn witIn prover => le_trans (_root_.prEvent_le_one _) hone)
 
 /-- **The full security package (small-field regime)**: completeness (proven in
-`CheckedVerifier.lean`) + the small-field RBR discharge give `IsSecureWithGap` for the checked
-WHIR `VectorIOP` at the task's budget shape. -/
+`CheckedVerifier.lean`) and the small-field RBR discharge give `IsSecureWithGapAveraged` for
+the checked WHIR `VectorIOP` at the task's budget shape. -/
 theorem whirCheckedVectorIOP_isSecureWithGap_smallField (δ : ℝ≥0) (L : ℕ)
     (hL : Fintype.card F ≤ L) :
-    VectorIOP.IsSecureWithGap (whirRelation m0 (P.φ 0) 0) (whirRelation m0 (P.φ 0) δ)
+    VectorIOP.IsSecureWithGapAveraged (whirRelation m0 (P.φ 0) 0) (whirRelation m0 (P.φ 0) δ)
       (fun i => if i = finalRandomnessChallengeIdx P d
         then (L : ℝ≥0) / (Fintype.card F : ℝ≥0) else 0)
       (whirCheckedVectorIOP P d) :=

@@ -994,7 +994,7 @@ theorem whirCheckedVectorIOP_perfectCompleteness_whirRelation (P : Params ιs F)
       (whirRelation m0 (P.φ 0) 0) :=
   whirCheckedVectorIOP_perfectCompleteness P d (whirRelation m0 (P.φ 0) 0)
 
-/-- With the completeness leg PROVEN for the checking verifier, `IsSecureWithGap` for the
+/-- With the completeness leg PROVEN for the checking verifier, `IsSecureWithGapAveraged` for the
 checked WHIR `VectorIOP` reduces to the single RBR knowledge-soundness residual (which is now
 a *genuine* obligation, not the falsehood it was for the pure-`true` shell). -/
 theorem whirCheckedVectorIOP_isSecureWithGap_of_rbr (P : Params ιs F) (d : ℕ) {m0 : ℕ}
@@ -1003,7 +1003,7 @@ theorem whirCheckedVectorIOP_isSecureWithGap_of_rbr (P : Params ιs F) (d : ℕ)
     (hSound : OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim
       (whirRelation m0 (P.φ 0) δ)
       (paperTranscriptOracleVerifier P d (whirVerifyChecked P d)) εRbr) :
-    VectorIOP.IsSecureWithGap (whirRelation m0 (P.φ 0) 0) (whirRelation m0 (P.φ 0) δ)
+    VectorIOP.IsSecureWithGapAveraged (whirRelation m0 (P.φ 0) 0) (whirRelation m0 (P.φ 0) δ)
       εRbr (whirCheckedVectorIOP P d) :=
   paperTranscriptVectorIOP_isSecureWithGap_of_complete_and_rbr P d
     (whirMakeTranscript P d) (whirVerifyChecked P d)

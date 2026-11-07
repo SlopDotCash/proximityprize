@@ -26,7 +26,7 @@ namespace Issue113WHIR
 
 /-! ## §0. The WHIR per-challenge budget model (mirror of `whir_rbr_soundness`'s `ε_rbr`)
 
-In `Whir/RBRSoundness.lean:207–214`, the RBR error supplied to `IsSecureWithGap` is the
+In `Whir/RBRSoundness.lean:207–214`, the RBR error supplied to `IsSecureWithGapAveraged` is the
 CONSTANT per-challenge function whose value is the maximum over the four per-round budget
 families. We abstract the four families and reproduce that `max'`/`sup` budget exactly,
 then prove the domination accounting that justifies it.
@@ -243,11 +243,11 @@ frontier. -/
     `GenMutualCorrParams.hasMutualCorrAgreement` (MCA Cor 4.11, gated on
     `mca_johnson_bound_CONJECTURE`) with the folding list-decoding lemmas L4.20–4.23 and
     the per-round shift/OOD analyses — i.e. it is precisely the `is_rbr_knowledge_sound`
-    field of `IsSecureWithGap` for the constructed `π`.
+    field of `IsSecureWithGapAveraged` for the constructed `π`.
 
     This is the SINGLE interface point through which the proven §1 accounting depends on
     the unproven MCA + folding frontier. It is parameterized by an opaque `SoundOk`
-    predicate (standing for `IsSecureWithGap …`'s soundness clause for the budget `ε_rbr`)
+    predicate (the soundness clause of `IsSecureWithGapAveraged …` for budget `ε_rbr`)
     so this scratch file states the reduction without re-deriving the OracleReduction
     security machinery. -/
 def WhirRbrKeystone
@@ -290,7 +290,8 @@ theorem soundOk_of_keystone_of_forall_le
 /-! ## §3. Reduction of the *existential* `whir_rbr_soundness` to its three obligations
 
 `whir_rbr_soundness` (`Whir/RBRSoundness.lean:185`) is
-    `∃ n, ∃ vPSpec, card (vPSpec.ChallengeIdx) = 2*M+2 ∧ ∃ π, (IsSecureWithGap …) ∧ hBudget`.
+    `∃ n, ∃ vPSpec, card (vPSpec.ChallengeIdx) = 2*M+2 ∧
+      ∃ π, (IsSecureWithGapAveraged …) ∧ hBudget`.
 The pure logical reduction — *given* the three pieces (challenge-card witness, a `π` with
 its security proof, and the budget proof), the existential closes — is exactly the landed
 `WhirIOP.whir_rbr_soundness_of_secure_gap` (`ToMathlib/WhirBricksConstruction.lean:434`,
@@ -301,7 +302,8 @@ We reproduce that reduction's *propositional skeleton* abstractly to confirm it 
 
 /-- Abstract skeleton of `whir_rbr_soundness`: a challenge-cardinality fact, a security
     payload, and a budget payload, packaged existentially. (`Sec`/`Bud` stand for the
-    `IsSecureWithGap …` and `hBudget` conjunctions; `Spec`/`witness` for `VectorSpec`/`π`.) -/
+    `IsSecureWithGapAveraged …` and `hBudget` conjunctions.
+    `Spec` and `witness` stand for `VectorSpec` and `π`.) -/
 def whirRbrShape {Spec : Type} (card : Spec → Prop) {Wit : Spec → Type}
     (Sec Bud : (s : Spec) → Wit s → Prop) : Prop :=
   ∃ s : Spec, card s ∧ ∃ w : Wit s, Sec s w ∧ Bud s w
@@ -310,7 +312,7 @@ def whirRbrShape {Spec : Type} (card : Spec → Prop) {Wit : Spec → Type}
     Given a spec `s` with the cardinality witness, a `π = w`, its security proof, and the
     budget proof, the `whir_rbr_soundness`-shaped existential follows. PROVEN by pure
     `⟨…⟩` introduction — confirming ask (3b) is plumbing once `π`, `Sec`, `Bud` exist.
-    The remaining content is entirely in producing `Sec s w` (= `IsSecureWithGap`, which
+    The remaining content is entirely in producing `Sec s w` (= `IsSecureWithGapAveraged`, which
     needs the §2 keystone + the constructed `π`) and `Bud s w` (= the four budget
     inequalities, whose accounting is §1). -/
 theorem whirRbrShape_of_secure
@@ -353,14 +355,14 @@ NOT extractable math. (No declarations; pure prose, mirroring #24 §5's
   (3) is reduced above: soundness = §1 accounting (proven) + §2 keystone (named residual:
       MCA Cor 4.11 / `mca_johnson_bound_CONJECTURE` + folding L4.20–4.23) + §3 existential
       assembly (proven, = landed `whir_rbr_soundness_of_secure_gap`), gated on (1)+(2)
-      because `IsSecureWithGap` and `perfectCompleteness` both mention `π`.
+      because `IsSecureWithGapAveraged` and `perfectCompleteness` both mention `π`.
 
   EXACT GAP (unchanged from the issue's own honest-stop, now with the math/plumbing split
   made explicit):
       whir_rbr_soundness
         = (WHIR VectorIOP construction `π`)            ← §4(1) PLUMBING, no extractable math
         + (perfectCompleteness of `π`)                 ← §4(2) construction-dependent
-        + (IsSecureWithGap soundness clause)
+        + (IsSecureWithGapAveraged soundness clause)
             = §1 per-challenge `max'` budget accounting  ← PROVEN here
             + §2 keystone {MCA Cor 4.11 + folding L4.20–4.23}  ← named residual, open upstream
         + (existential assembly)                       ← §3 PROVEN here (= landed wrapper)
@@ -397,7 +399,7 @@ NOT extractable math. (No declarations; pure prose, mirroring #24 §5's
     * `WhirRbrKeystone` — the MCA `errStar` correlated-agreement bound (Cor 4.11, gated on
       `mca_johnson_bound_CONJECTURE`, `Whir/MutualCorrAgreement.lean:296`) composed with
       the folding list-decoding lemmas L4.20–4.23 (`Whir/Folding.lean`). This is the
-      `is_rbr_knowledge_sound` content of `IsSecureWithGap` for the constructed `π`.
+      `is_rbr_knowledge_sound` content of `IsSecureWithGapAveraged` for the constructed `π`.
 
   FLAGGED CONSTRUCTION PLUMBING (correctly NOT attempted — no extractable math):
     * §4(1) the WHIR `VectorIOP π` (Construction 5.1 OracleReduction term) — sibling-owned

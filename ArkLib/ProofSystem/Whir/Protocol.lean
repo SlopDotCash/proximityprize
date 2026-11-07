@@ -72,7 +72,7 @@ def whirVectorIOP_isSecureWithGap {F : Type} [Field F] [Fintype F] [DecidableEq 
     [Nonempty (ιs 0)] (δ : ℝ≥0)
     (εRbr : (whirPaperTranscriptVectorSpec P d).ChallengeIdx → ℝ≥0) :
     Prop :=
-  VectorIOP.IsSecureWithGap (whirRelation m0 (P.φ 0) 0) (whirRelation m0 (P.φ 0) δ)
+  VectorIOP.IsSecureWithGapAveraged (whirRelation m0 (P.φ 0) 0) (whirRelation m0 (P.φ 0) δ)
     εRbr (whirVectorIOP P d)
 
 /-- The WHIR `VectorIOP` is secure with gap if its completeness and RBR soundness residuals hold. -/

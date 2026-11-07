@@ -11,7 +11,7 @@ import ArkLib.ToMathlib.WhirBricksConstruction
 
 This file records the residual checkpoint for the `whir_vector_iop_residual`
 mathematics.  The hard WHIR work is still the concrete Vector IOP construction,
-its `IsSecureWithGap` proof, and the fold/OOD/shift/final budget inequalities.
+its `IsSecureWithGapAveraged` proof, and the fold/OOD/shift/final budget inequalities.
 This standalone surface only assembles those residuals through the existing
 `whir_rbr_soundness_of_whirVectorSpec_secure_gap` theorem.
 -/
@@ -76,7 +76,7 @@ theorem whir_vector_iop_breakthrough
       let ε_rbr : (WhirIOP.Construction.whirVectorSpec M).ChallengeIdx → ℝ≥0 :=
         fun _ => (Finset.univ.image max_ε_folds ∪ {ε_fin} ∪ Finset.univ.image ε_out ∪
           Finset.univ.image ε_shift).max' (by simp)
-      VectorIOP.IsSecureWithGap (WhirIOP.whirRelation m_0 (P.φ 0) 0)
+      VectorIOP.IsSecureWithGapAveraged (WhirIOP.whirRelation m_0 (P.φ 0) 0)
         (WhirIOP.whirRelation m_0 (P.φ 0) (h.δ 0)) ε_rbr π) :
     WhirIOP.whir_rbr_soundness (F := F) (M := M) ι (d := d) (dstar := dstar)
       (P := P) (S := S) (hParams := hParams) (h := h) hm_0 (σ₀ := σ₀)

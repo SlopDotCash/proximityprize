@@ -11,15 +11,15 @@ import ArkLib.ProofSystem.Whir.CheckedVerifier
 
 `WhirIOP.whir_rbr_soundness` (`Whir/RBRSoundness.lean`, WHIR Theorem 5.2) is an
 existential front door: it demands *some* `VectorIOP` `π` with `2 * M + 2` challenge
-slots that `IsSecureWithGap` at the WHIR per-round budget. Until now its only
+slots that `IsSecureWithGapAveraged` at the WHIR per-round budget. Until now its only
 dischargers (`whir_rbr_soundness_of_secure_gap`, `whir_vector_iop_breakthrough`)
-consumed an **abstract** `π` together with its full `IsSecureWithGap` proof — both
+consumed an **abstract** `π` together with its full `IsSecureWithGapAveraged` proof — both
 completeness and soundness as hypotheses.
 
 This file instantiates the existential with the **concrete checked WHIR construction**
 `Whir302Checked.whirCheckedVectorIOP` (real over-the-wire sumcheck-consistency and
 final-zero-sum checks; perfect completeness PROVEN —
-`whirCheckedVectorIOP_perfectCompleteness`). The completeness leg of `IsSecureWithGap`
+`whirCheckedVectorIOP_perfectCompleteness`). The completeness leg of `IsSecureWithGapAveraged`
 is therefore discharged, and the front door reduces to exactly two named gates:
 
 * `hChallengeCard` — the challenge-cardinality pin

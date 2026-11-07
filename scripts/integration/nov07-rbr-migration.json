@@ -494,7 +494,9 @@
       "occurrences": 3,
       "historical_imports": [
         "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
-      ]
+      ],
+      "followup_after_sha256": "7cd544a0bcc1c815eac51771710f9db8427004e2ce120fb08024aadaa6747b1a",
+      "followup": "The canonical MLIOPCS field supplies fixed-prefix soundness, which implies the averaged bound used by the historical append seam."
     },
     "ArkLib/ProofSystem/RingSwitching/SumcheckPhase.lean": {
       "before_sha256": "84b6a01d396db5045b391a8daedf05b5ea120152663fe541be3c9f944536c299",
@@ -723,6 +725,7 @@
     "ArkLib/ProofSystem/Whir/CheckedVerifier.lean": {
       "before_sha256": "72ddd0ec0e220b0a83d79c99dd479bdcd54a737619ebfa764e10b795967975df",
       "after_sha256": "53f780cc65da7e862faf8fd36442ffa424d961117c61e62fa349c7ed21465af9",
+      "followup_after_sha256": "4c9e52fc1bb7e4bfb7eefb85acbfe3f5204aa6cf2a00c6b89621f0353ed4848d",
       "renames": {
         "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
       },
@@ -734,6 +737,7 @@
     "ArkLib/ProofSystem/Whir/Protocol.lean": {
       "before_sha256": "fb74921898bdb860e30811ae2181fd0b1243496e1a82f3318a4659486bf0bcea",
       "after_sha256": "6ffab674e880acadac54664199f03cf4de7eaa96483a7aceb70e7f54a3ae9078",
+      "followup_after_sha256": "1fa4e3d56f5a86cb28ebffeef22ee49723b5ce26b6454c7be2772f7d0c8f2d25",
       "renames": {
         "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
       },
@@ -745,6 +749,7 @@
     "ArkLib/ProofSystem/Whir/ProtocolSoundness.lean": {
       "before_sha256": "f51173ba054b393fe55a9c5e18208edfca6d603bcf5d6b8be8fcb5ee28f2a78f",
       "after_sha256": "0274a5d84ad9ae7cf6ed7b50eb87d8e188925e4e4adeaaa65c9fd5657b141b29",
+      "followup_after_sha256": "95fbdba13c8a351dbde0a4997774860ed868a4bed1615328e8f46d1d7e43456b",
       "renames": {
         "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
       },
@@ -756,6 +761,7 @@
     "ArkLib/ProofSystem/Whir/RBRSoundnessCheckedBridge.lean": {
       "before_sha256": "9d52de515a6797aad91939352e462d10ee56f3d121aa2db1ef24c1d88d3cb4d4",
       "after_sha256": "b06c9d13090df1472a8f0dc5efa1390ddd6669ef479819e57a2552e023cc0d2f",
+      "followup_after_sha256": "81722ec4d774769f35f50ad2e8554aad9112701ea391d896edc6dce95f9a7e41",
       "renames": {
         "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
       },
@@ -767,6 +773,7 @@
     "ArkLib/ProofSystem/Whir/SubUnitRbr.lean": {
       "before_sha256": "25f574fc281b7cadc5588a05b6da64a29c759a800626cd314da8f535202be7ff",
       "after_sha256": "e181384ef1f9f331178df4636195ef3621503b64bc728898ce0965a2005a93a8",
+      "followup_after_sha256": "f7264dde10b076dbc91011f7dcd69add4227dd69207ec43036e7e14731ecb712",
       "renames": {
         "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
       },
@@ -800,6 +807,7 @@
     "ArkLib/ToMathlib/WhirBricksConstruction.lean": {
       "before_sha256": "7462d9b1beb249a69abe8636113944fea812543fbc39509dcf3da6bdb8de90f6",
       "after_sha256": "17c683a679775f5efb395cd27971b563620f97cb0c0d1d4fe3748150204383c4",
+      "followup_after_sha256": "63ad44cbe1d43c7d858e3034131d4e45ce0cebae4c8ae73326a6eca3c5001f8f",
       "renames": {
         "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
       },
@@ -1000,6 +1008,26 @@
     "after_sha256": "a87244a41ef0b7f6ae48e2e6a0b2f1e9be375eb79e110dec09544fad85c127b4",
     "reason": "Upstream retired these four composition declarations. Their prior downstream variants assumed the complete conclusion, and the four audit commands were the only Lean command references."
   },
+  "whir_averaged_security": {
+    "historical_owner": "ArkLib/OracleReduction/VectorIOR.lean",
+    "historical_name": "VectorIOP.IsSecureWithGap",
+    "retained_name": "VectorIOP.IsSecureWithGapAveraged",
+    "scope": "Preserve the prover-averaged completeness and knowledge-soundness bundle for downstream WHIR. The native VectorIOR owner retains the fixed-prefix bundle.",
+    "source_sha256": {
+      "ArkLib/ProofSystem/Whir/CheckedVerifier.lean": "4c9e52fc1bb7e4bfb7eefb85acbfe3f5204aa6cf2a00c6b89621f0353ed4848d",
+      "ArkLib/ProofSystem/Whir/Protocol.lean": "1fa4e3d56f5a86cb28ebffeef22ee49723b5ce26b6454c7be2772f7d0c8f2d25",
+      "ArkLib/ProofSystem/Whir/ProtocolSoundness.lean": "95fbdba13c8a351dbde0a4997774860ed868a4bed1615328e8f46d1d7e43456b",
+      "ArkLib/ProofSystem/Whir/RBRSoundness.lean": "c6e286fa2934c5bfe1b825e888b1a93cbc0ef4bed65ef9e53ca4b4ae47dc059e",
+      "ArkLib/ProofSystem/Whir/RBRSoundnessCheckedBridge.lean": "81722ec4d774769f35f50ad2e8554aad9112701ea391d896edc6dce95f9a7e41",
+      "ArkLib/ProofSystem/Whir/RbrBudgetAccounting.lean": "9596b4a7247f7815d0fb04c8f1e98f3cc62d500af16ab833f0921f23bf191f82",
+      "ArkLib/ProofSystem/Whir/SubUnitRbr.lean": "f7264dde10b076dbc91011f7dcd69add4227dd69207ec43036e7e14731ecb712",
+      "ArkLib/ProofSystem/Whir/WhirVectorIOPProof.lean": "20f837f4c6e87486ce82fb19278061d7546d15640d5679910e28e63eea22c004",
+      "ArkLib/ToMathlib/WhirBricksConstruction.lean": "63ad44cbe1d43c7d858e3034131d4e45ce0cebae4c8ae73326a6eca3c5001f8f",
+      "ProximityPrize/Extensions/OracleReduction/VectorIOR.lean": "689e4945263ac867718619777b7802344a317c57549fc6335ee74de5fd8650d5"
+    },
+    "axiom_reports": 8,
+    "axiom_output_sha256": "4b10221d45185ee2d677afdaaf3248f990227d67cad8f06060d538f072a4b24f"
+  },
   "one_shot": "No theorem consumer in downstream sources. The only live reference was its orphan CoeFun instance. Neither its game nor its machinery is restored.",
   "canonical_delegations": [
     {
@@ -1016,8 +1044,15 @@
   "focused_validation": {
     "historical_axiom_reports": 17,
     "historical_axiom_output_sha256": "ee64109def07f9107f587a5b84bd103b8f632ede4f219d700c543b44c99bd6e5",
-    "historical_module_linters": ["linter.style.missingEnd", "linter.style.emptyLine"],
-    "standard_axioms": ["propext", "Classical.choice", "Quot.sound"],
+    "historical_module_linters": [
+      "linter.style.missingEnd",
+      "linter.style.emptyLine"
+    ],
+    "standard_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
     "sequential_composition_dependency_cone": {
       "modules_compiled": 63,
       "standard_axiom_reports": 200,
@@ -1051,5 +1086,14 @@
       "ProximityPrize/Compatibility/AveragedRbr/Security/Implications.lean"
     ],
     "canonical_basis": "VCVio loggingOracle.fst_map_run_simulateQ"
+  },
+  "challenge_free_plonk_native": {
+    "disposition": "The Plonk gate, permutation and composition proofs discharge the fixed-prefix challenge branch by eliminating its empty challenge index.",
+    "checked_sources": {
+      "ProximityPrize/Extensions/ProofSystem/Plonk/Basic.lean": "196acdc9656ecce677385b52029f157434ec9aedf5b8c3d88e83c1e9a83bb3a2",
+      "ArkLib/ProofSystem/Plonk/PermutationCheck.lean": "0c4377df130fe41a59cd245b713c194315dcf71c00c308cdfb593994c46f23bd",
+      "ArkLib/ProofSystem/Plonk/Composition.lean": "7797a3dd2b6fda8e497b2a838c6a5ece217bb31decb6874f358187b2d44fcc1c"
+    },
+    "focused_log_sha256": "2192bf69bbd1fef702b2a9bdb695aa2e5412a5c9415cd7cea50f417b8c715827"
   }
 }
