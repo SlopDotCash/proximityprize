@@ -54567,7 +54567,7 @@ The four public declarations print their complete axiom dependencies; only
 named residual is introduced. This is a degree-only classification, not a
 production counterexample or a closure of #164.
 
-### [SYZ72-middle-band-occupancy-is-small-p] Too weak a hit test, and the first middle-band occupant does not survive to large `p` (2026-10-30)
+### [SYZ72-middle-band-sampled-search] Strengthening the first middle-band witness test (2026-10-30)
 
 Date: 2026-10-30. Target: the `(6,6,6)` / product-degree-`7` middle-band slot of the F1 arc
 (`SYZ59.middleBand`) and the `F_41`, `mu_20` occupant recorded by SYZ70/SYZ71 (PR #5). Two
@@ -54589,48 +54589,52 @@ constant-cofactor rank `3` and leftover `T = {20, 32}`. Nothing in PR #5 is with
 test that produced it was too weak to serve as evidence, and it is now hardened (plus the console
 crash fixed).
 
-**(2) The occupied slot is a small-field artifact.** The new probe
+**(2) The probe samples the slot at 15 selected primes.** The new probe
 `scripts/probes/probe_syz72_middle_band_sweep.py` certifies `delta_1 = 7` exactly — rank `< 4` on
 `S_AB`; the combination divided by `W_AB` to recover `s_AB`; at least one slot product of degree
 exactly `7`; the `7 x 3` constant-cofactor matrix of full rank `3`; the combination nonzero on the
 leftover `T` — and then runs the prime sweep that
 [`AGENTS.md`](AGENTS.md) mandates before any small-`p` verdict is trusted in either direction.
-Sweep: `mu_20` over every prime `p = 1 (mod 20)` from `41` to `2147484041`, scanning all
-`C(8,6) = 28` legal `S_AB` sub-triples for each sampled `(S_AC, S_BC)` pair, `560000`
-configurations per prime and `15` primes:
+The sweep uses `mu_20` at 15 selected primes `p = 1 (mod 20)` from `41` through
+`2147484041`. At each prime it draws 20,000 `(S_AC, S_BC)` pairs with replacement and
+checks all `C(8,6) = 28` legal `S_AB` supports for each draw. The 560,000 checks per prime
+include possible repetitions and the 28 checks within a draw share a support pair.
 
 ```
-           p   configs  rank<=3 certified    density
+           p   configs  rank<=3 certified    hit fraction
           41    560000        8         8   1.43e-05
           61    560000        5         5   8.93e-06
          101    560000        2         2   3.57e-06
  181 … 2147484041 (12 primes, each)  560000   0   0   0
 ```
 
-Plus `20720` structured supports each (index progressions, i.e. union-of-coset shapes, the natural
-home of a prime-independent construction) at `p = 41, 101, 1048601`: **zero** certified occupants.
-The `rank<=3` column equals the `certified` column everywhere, so no floor-attained configuration
-was even counted as a sighting in this sample; `--demo-false-positive` also finds none among
-`60000` random draws at `p = 41`. The defect in (1) is a hole in the *criterion*, not an observed
-source of false witnesses.
+A separate scan checks all 20,720 configurations from the specified index progression pairs
+and legal third supports at each of `p = 41, 101, 1048601`. It finds zero certified occupants
+within that family.
+The `rank<=3` and `certified` columns agree on this random sample. The
+`--demo-false-positive` control separately replays an `F_41` triple that passes the original
+rank test and has constant-cofactor rank 2.
 
-Occupancy decays rather than being merely rare: at the `p = 41` density the twelve primes
-`p >= 181` would be expected to carry about eight certified occupants apiece (`~96` total), and at
-the `p = 101` density about `24` total. Observing `0` is decisive under any smooth decay
-(`exp(-24)`-scale at the conservative end).
+A separate exact search found a witness at `p = 181` despite the zero-hit sample for that prime.
+The probe replays these supports and verifies their cofactors:
 
-**Consequence.** The `F_41`/`mu_20` occupant is an analogue-regime artifact in exactly the sense of
-the small-field discipline (G84/SYZ53): it must not be cited as positive evidence that the middle
-band is occupied in the production regime, and no route may rest on it. The surviving content is
-negative — the middle band is *not* known to be occupied above `p = 101`, and the emptiness route
-is again undecided at production scale instead of being refuted by finite-field computation. The
-Lean interface of SYZ70/SYZ71 (`(6,6,6)` is the first arithmetically possible balanced middle slot,
-product degree `7`, band-realizable home `(n,k,t) = (20,10,2)`) is untouched.
+```
+S_AC = [1, 150, 56, 59, 46, 42]
+S_BC = [74, 146, 180, 107, 122, 35]
+S_AB = [162, 31, 125, 19, 135, 139]
+T    = [22, 159]
+s_AC = 37 + 134X
+s_BC = 55 + X
+s_AB = 87 + 135X
+```
 
-**Scope.** This refutes the inferential step from a single `F_41` witness to structural middle-band
-occupancy; it does not prove emptiness for `p > 101`, and it says nothing about
-`UniformSylvesterInjective`, `iota <= 1`, the over-budget genuine-stack lift, or production
-`delta*`, which all remain OPEN / ON-BGK. Sampling evidence, not a theorem.
+All three products have degree 7 and the constant-cofactor matrix has rank 3. This witness
+establishes occupancy at `p = 181` independently of the random sample.
+
+**Scope.** The positive witnesses establish occupancy at their respective primes.
+Zero-hit rows apply to the tested support configurations. The existence of occupants
+outside those samples and at other primes remains open. `UniformSylvesterInjective`,
+`iota <= 1`, the over-budget genuine-stack lift, and production `delta*` remain OPEN / ON-BGK.
 
 Reproduction at the PR commit:
 

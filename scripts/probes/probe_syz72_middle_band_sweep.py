@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""SYZ72 — certified middle-band occupancy at (6,6,6), and the missing prime sweep.
+"""SYZ72 — certifying (6,6,6) middle-band witnesses in a sample of prime fields.
 
 WHY THIS PROBE EXISTS
 ---------------------
@@ -12,24 +12,24 @@ i.e. `delta_1 = max`, which is exactly what `SYZ59.middleBand` EXCLUDES.
 
 So rank < 4 at six points is *necessary but not sufficient* for middle-band
 occupancy.  This probe replaces the hit test with a certificate that pins
-`delta_1 = 7 = max + 1` exactly, and then uses it for the sweep that
-`Research/ProximityPrize/AGENTS.md` ("small-field discipline") mandates before
-any small-`p` verdict is trusted in either direction.
+`delta_1 = 7 = max + 1` exactly, and applies it to sampled support configurations
+at selected primes, following the small-field discipline in
+`Research/ProximityPrize/AGENTS.md`.
 
 THE CERTIFICATE  (n = 20, d = 6, k = 10, t = 2; SYZ50.Realizable 6 6 6 2 10)
 ---------------------------------------------------------------------------
 Let `mu_20 = <w> subset F_p^*`, `S_AC, S_BC, S_AB` three disjoint 6-subsets and
 `T = mu_20 \\ (S_AC ∪ S_BC ∪ S_AB)` the leftover (necessarily `|T| = 2`).  Let
-`W_AC, W_BC, W_AB` be the corresponding monic vanishing polynomials.  A config
-is a **certified middle-band occupant** iff
+`W_AC, W_BC, W_AB` be the corresponding monic vanishing polynomials.  The probe accepts a configuration as a **certified middle-band occupant** when it finds
+cofactors satisfying these checks
 
   (C1) there are cofactors `s_AC, s_BC` with `deg <= 1`, not both zero, whose
        combination `s_AC·W_AC + s_BC·W_BC` vanishes on all of `S_AB`
        (rank of the 6 x 4 system < 4);
   (C2) after writing `s_AC·W_AC + s_BC·W_BC = s_AB·W_AB` (forced by (C1): the
        combination has degree <= 7 and six roots, so it is a degree-<=1
-       multiple of `W_AB`), all three cofactors are genuinely linear
-       (`natDegree = 1`), so all three slot products have degree exactly 7;
+       multiple of `W_AB`), the maximum of the three slot product degrees is 7.
+       This requires at least one genuinely linear cofactor;
   (C3) no nontrivial constant-cofactor relation exists among the three `W`'s
        (coefficient matrix 7 x 3 of full rank 3) — otherwise the minimal
        syzygy already has product degree `6 = max`, the triple is
@@ -39,8 +39,8 @@ is a **certified middle-band occupant** iff
 (C1)-(C4) give `delta_1 = 7` on a band-realizable `(6,6,6)` triple: the
 degree-sum law then gives `delta_2 = 11`, gap `g = 4`, imbalance `iota = 2`,
 so `SYZ59.middleBand 6 6 6 7` is occupied and SYZ69's empty-middle census is
-FALSE at `n = 20`.  Whether that occupancy is a small-`p` artifact or survives
-to production-scale primes is the question this probe answers.
+FALSE at `n = 20`. The sweep searches 15 selected primes for additional
+witnesses. Each non-detection describes the sampled supports at that prime.
 
 Usage:
   python scripts/probes/probe_syz72_middle_band_sweep.py
@@ -357,13 +357,10 @@ def certify(
 def sample_prime(
     p: int, n: int, d: int, trials: int, seed: int
 ) -> dict:
-    """Sample `(S_AC, S_BC)` pairs; scan EVERY legal `S_AB`, then certify.
+    """Sample support pairs with replacement and scan all 28 legal third supports.
 
-    Scanning all `C(8,6) = 28` sub-triples instead of sampling the third set is
-    what `probe_syz71_linear_middle_slot.py` did, and it is 28x more efficient at
-    finding occupants for the same number of pair draws.  Unlike that probe, a
-    `rank <= 3` sighting is only counted as an occupant after `certify` accepts
-    it; floor-attained sightings are counted separately as rejections.
+    A `rank <= 3` sighting counts as an occupant after `certify` accepts it.
+    Floor-attained sightings are counted separately.
     """
     from itertools import combinations
 
@@ -416,11 +413,7 @@ def sample_prime(
 
 
 def structured_supports(mu: list[int], d: int) -> list[tuple[list[int], list[int], list[int]]]:
-    """Supports built from index progressions / unions of cosets.
-
-    These are the configurations with multiplicative symmetry, so they are the
-    natural home of any *structural* (prime-independent) middle-band occupant.
-    """
+    """All disjoint pairs of listed index progressions with all legal third supports."""
     n = len(mu)
     out = []
     idx = list(range(n))
@@ -492,13 +485,21 @@ SYZ71_WITNESS = {
 }
 
 
-def check_syz71_witness() -> bool:
-    p = SYZ71_WITNESS["p"]
+SYZ72_F181_WITNESS = {
+    "p": 181,
+    "S_AC": [1, 150, 56, 59, 46, 42],
+    "S_BC": [74, 146, 180, 107, 122, 35],
+    "S_AB": [162, 31, 125, 19, 135, 139],
+}
+
+
+def check_witness(label: str, witness: dict) -> bool:
+    p = witness["p"]
     mu, _ = mu_domain(N_DEFAULT, p)
-    assert mu is not None
-    rec = certify(p, mu, SYZ71_WITNESS["S_AC"], SYZ71_WITNESS["S_BC"], SYZ71_WITNESS["S_AB"])
-    print("=== control: the recorded SYZ71 F_41 witness ===")
-    print(f"  mu_20 stays in F_{p}: {set(mu) <= set(range(p))}, |mu| = {len(mu)}")
+    if mu is None:
+        raise RuntimeError(f"F_{p} has no certified order-20 subgroup.")
+    rec = certify(p, mu, witness["S_AC"], witness["S_BC"], witness["S_AB"])
+    print(f"=== control: {label} F_{p} witness ===")
     print(f"  certified: {rec['ok']}  ({rec['reason']})")
     if rec["ok"]:
         print(f"  s_AC = {fmt_poly(rec['s_AC'], p)}")
@@ -510,32 +511,31 @@ def check_syz71_witness() -> bool:
     return bool(rec["ok"])
 
 
-def demo_false_positive(p: int = 41, trials: int = 60000, seed: int = 20261030) -> None:
-    """Exhibit a config the SYZ71 rank test calls a hit but which is floor-attained."""
+def demo_false_positive() -> None:
+    """Replay a floor-attained F_41 triple that the original rank test accepts."""
+    p = 41
     mu, _ = mu_domain(N_DEFAULT, p)
-    assert mu is not None
-    rng = random.Random(seed)
-    for _ in range(trials):
-        bag = mu[:]
-        rng.shuffle(bag)
-        S_AC, S_BC, S_AB = bag[:6], bag[6:12], bag[12:18]
-        rows = []
-        for x in S_AB:
-            wac = vanishing_value(x, S_AC, p)
-            wbc = vanishing_value(x, S_BC, p)
-            rows.append([wac, x * wac % p, wbc, x * wbc % p])
-        if gf_rank(rows, p) >= 4:
-            continue
-        rec = certify(p, mu, S_AC, S_BC, S_AB)
-        if not rec["ok"] and "constant syzygy" in rec["reason"]:
-            print("\n=== reproduced SYZ71-test false positive ===")
-            print(f"  p = {p}; the SYZ71 rank<4 test reports a hit on:")
-            print(f"    S_AC={S_AC}  S_BC={S_BC}  S_AB={S_AB}")
-            print(f"  the certificate rejects it: {rec['reason']}")
-            print(f"  constant-cofactor rank = {rec['const_rank']} < 3, so delta_1 = 6 = max:")
-            print("  a floor-attained (SYZ69 second-class) triple, NOT a middle-band occupant.")
-            return
-    print("\n(no floor-attained rank<4 config found in the sample)")
+    if mu is None:
+        raise RuntimeError(f"F_{p} has no certified order-20 subgroup.")
+
+    ac = [1, 39, 10, 21, 18, 5]
+    bc = [32, 4, 16, 31, 20, 8]
+    ab = [36, 25, 33, 40, 9, 37]
+    rows = []
+    for x in ab:
+        wac = vanishing_value(x, ac, p)
+        wbc = vanishing_value(x, bc, p)
+        rows.append([wac, x * wac % p, wbc, x * wbc % p])
+
+    rank = gf_rank(rows, p)
+    rec = certify(p, mu, ac, bc, ab)
+    if rank >= 4 or rec["ok"] or rec.get("const_rank") != 2:
+        raise RuntimeError("The floor-attained control did not reproduce.")
+
+    print(f"\n=== reproduced SYZ71-test false positive at F_{p} ===")
+    print(f"  S_AC={ac}  S_BC={bc}  S_AB={ab}")
+    print(f"  linear-cofactor rank = {rank} and constant-cofactor rank = 2")
+    print(f"  the strengthened certificate rejects it: {rec['reason']}")
 
 
 def fmt_poly(c: list[int], p: int) -> str:
@@ -563,36 +563,38 @@ def main() -> None:
     ap.add_argument("--no-structured", action="store_true")
     args = ap.parse_args()
 
-    check_syz71_witness()
+    if args.trials < 1:
+        ap.error("--trials must be positive")
+    for label, witness in (("recorded SYZ71", SYZ71_WITNESS), ("SYZ72", SYZ72_F181_WITNESS)):
+        if not check_witness(label, witness):
+            raise SystemExit(f"The F_{witness['p']} control did not certify.")
     if args.demo_false_positive:
         demo_false_positive()
 
-    # Every entry is 1 (mod 20), so mu_20 embeds in F_p^*.
-    primes = [
-        p
-        for p in (
-            41, 61, 101, 181, 241, 401, 601, 1021, 2081,
-            4481, 9011, 16421, 131101, 1048601, 8388761, 2147484041,
-        )
-        if is_prime(p) and p % N_DEFAULT == 1
-    ]
+    primes = (
+        41, 61, 101, 181, 241, 401, 601, 1021, 2081,
+        4481, 16421, 131101, 1048601, 8388761, 2147484041,
+    )
+    if any(not is_prime(p) or p % N_DEFAULT != 1 for p in primes):
+        raise RuntimeError("The sweep requires selected primes congruent to 1 modulo 20.")
 
-    print("\n=== SYZ72 sweep: certified (6,6,6) middle-band occupancy on mu_20 ===")
+    print("\n=== SYZ72 sweep: sampled (6,6,6) configurations on mu_20 ===")
+    print(f"{len(primes)} selected primes, {args.trials} sampled support pairs per prime "
+          "with replacement, and all 28 third supports per draw.")
     print(
         f"{'p':>12} {'configs':>9} {'rank<=3':>8} {'certified':>9} "
-        f"{'floor-attained':>14} {'density':>10}"
+        f"{'floor-attained':>14} {'hit fraction':>12}"
     )
     total_certified = 0
     for p in primes:
         rec = sample_prime(p, N_DEFAULT, D_DEFAULT, args.trials, seed=20261030 + p)
-        if not rec.get("ok"):
-            print(f"{p:>12}  skipped: {rec.get('reason')}")
-            continue
+        if not rec["ok"]:
+            raise RuntimeError(f"F_{p}: {rec['reason']}")
         total_certified += rec["certified"]
         dens = rec["certified"] / max(1, rec["configs"])
         print(
             f"{p:>12} {rec['configs']:>9} {rec['rank_le_3']:>8} "
-            f"{rec['certified']:>9} {rec['floor_attained']:>14} {dens:>10.2e}"
+            f"{rec['certified']:>9} {rec['floor_attained']:>14} {dens:>12.2e}"
         )
         if rec["witness"]:
             w = rec["witness"]
@@ -605,18 +607,18 @@ def main() -> None:
             )
 
     if not args.no_structured:
-        print("\n=== structured supports (index progressions, i.e. union-of-coset shapes) ===")
-        for p in (41, 101, 1009, next_prime_1_mod(N_DEFAULT, 2**20)):
+        print("\n=== structured supports (index progression pairs) ===")
+        for p in (41, 101, next_prime_1_mod(N_DEFAULT, 2**20)):
             rec = scan_structured(p, N_DEFAULT, D_DEFAULT)
-            if not rec.get("ok"):
-                continue
+            if not rec["ok"]:
+                raise RuntimeError(f"F_{p} has no certified order-20 subgroup.")
             print(
                 f"  F_{p}: configs={rec['configs']:>6} certified={rec['certified']:>4} "
                 f"floor-attained={rec['floor_attained']:>4}"
             )
 
-    print(f"\ntotal certified middle-band occupants over the sweep: {total_certified}")
-    print("Exact arithmetic; sampling evidence, not a theorem.")
+    print(f"\ncertified configurations in the random sample, counting repeats: {total_certified}")
+    print("Each zero-hit row describes the sampled configurations at that prime.")
 
 
 if __name__ == "__main__":
