@@ -328,11 +328,23 @@ def n16_search(p=97, random_samples=20_000, seed=20260711):
     return best[0] <= n
 
 
+def field_array(values, p, terms=1):
+    """Normalize before narrowing; use Python integers when products can overflow.
+
+    ``terms`` bounds the number of products accumulated before reduction.  This
+    keeps small-field searches on int64 without changing the field at large p.
+    """
+    import numpy as np
+
+    dtype = np.int64 if terms * (p - 1) ** 2 <= np.iinfo(np.int64).max else object
+    return (np.asarray(values, dtype=object) % p).astype(dtype)
+
+
 def np_rref(matrix, p):
     """Exact reduced row echelon form over F_p (NumPy storage, integer arithmetic)."""
     import numpy as np
 
-    a = np.asarray(matrix, dtype=np.int64).copy() % p
+    a = field_array(matrix, p)
     rows, cols = a.shape
     pivots = []
     rank = 0
@@ -361,20 +373,20 @@ def np_nullspace(matrix, p):
     free = [j for j in range(a.shape[1]) if j not in pivots]
     basis = []
     for f in free:
-        v = np.zeros(a.shape[1], dtype=np.int64)
+        v = np.zeros(a.shape[1], dtype=a.dtype)
         v[f] = 1
         for i, pivot in enumerate(pivots):
             v[pivot] = -a[i, f] % p
         basis.append(v)
-    return np.stack(basis) if basis else np.zeros((0, a.shape[1]), dtype=np.int64)
+    return np.stack(basis) if basis else np.zeros((0, a.shape[1]), dtype=a.dtype)
 
 
 def np_inverse(matrix, p):
     import numpy as np
 
-    a = np.asarray(matrix, dtype=np.int64)
+    a = field_array(matrix, p)
     n = len(a)
-    augmented = np.concatenate([a % p, np.eye(n, dtype=np.int64)], axis=1)
+    augmented = np.concatenate([a, np.eye(n, dtype=a.dtype)], axis=1)
     reduced, pivots = np_rref(augmented, p)
     assert pivots[:n] == list(range(n))
     return reduced[:, n:]
@@ -386,14 +398,13 @@ def agreement_parity(domain, k, subset, p):
 
     subset = tuple(subset)
     base, rest = subset[:k], subset[k:]
-    vand = np.asarray([[pow(domain[i], j, p) for j in range(k)] for i in base],
-                      dtype=np.int64)
-    inv = np_inverse(vand, p)
+    vand = [[pow(domain[i], j, p) for j in range(k)] for i in base]
+    inv = field_array(np_inverse(vand, p), p, terms=k)
     rows = []
     for x in rest:
-        vx = np.asarray([pow(domain[x], j, p) for j in range(k)], dtype=np.int64)
+        vx = field_array([pow(domain[x], j, p) for j in range(k)], p, terms=k)
         lagrange = vx @ inv % p
-        row = np.zeros(len(domain), dtype=np.int64)
+        row = np.zeros(len(domain), dtype=inv.dtype)
         row[x] = 1
         for coeff, i in zip(lagrange, base):
             row[i] = -coeff % p
