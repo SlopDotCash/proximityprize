@@ -191,7 +191,7 @@ theorem combine_theorem_of_card_le
           S ⊆ Finset.filter (fun j => v i j = fs i j) Finset.univ :=
 by
   let : SampleableType F := SampleableType.ofFintype F
-  apply combine_theorem fs degs hdegs (Nat.pos_of_ne_zero (NeZero.ne dstar)) δ hδPos hδLt
+  apply combine_theorem fs degs hdegs (Nat.pos_of_ne_zero (NeZero.ne dstar)) δ hδLt
   rwa [← ProximityPrize.Compatibility.pmf_uniform_probability_eq_native]
 
 
@@ -214,7 +214,7 @@ theorem combine_theorem_of_card_le_e7
           S ⊆ Finset.filter (fun j => v i j = fs i j) Finset.univ :=
 by
   let : SampleableType F := SampleableType.ofFintype F
-  apply combine_theorem fs degs hdegs (Nat.pos_of_ne_zero (NeZero.ne dstar)) δ hδPos hδLt
+  apply combine_theorem fs degs hdegs (Nat.pos_of_ne_zero (NeZero.ne dstar)) δ hδLt
   rwa [← ProximityPrize.Compatibility.pmf_uniform_probability_eq_native]
 
 
@@ -239,7 +239,7 @@ theorem combine_theorem_proximityError
           S ⊆ Finset.filter (fun j => v i j = fs i j) Finset.univ := by
   let : SampleableType F := SampleableType.ofFintype F
   rw [ProximityPrize.Compatibility.pmf_uniform_probability_eq_native] at hProb
-  refine combine_theorem fs degs hdegs (Nat.pos_of_ne_zero (NeZero.ne dstar)) δ hδPos
+  refine combine_theorem fs degs hdegs (Nat.pos_of_ne_zero (NeZero.ne dstar)) δ
     hδLt (lt_of_le_of_lt ?_ hProb)
   have hb := mul_errorBound_le_proximityError (ι := ι) (F := F)
     (deg := dstar) (m := m * (dstar + 1) - ∑ i, degs i) (domain := φ) (δ := δ)

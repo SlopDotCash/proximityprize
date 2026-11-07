@@ -54,8 +54,9 @@ Contents (all mirroring `Stir/SubUnitRbr.lean`, the landed `t = 1` template):
 4. **The discharge**: `stirEpsStarRep` (the `(·)^t` budget),
    `stirCheckingRepRbrSoundness_genuine` (T1-rep, outright — no CA residuals, no vacuity),
    `stirCheckingIOPRep_isSecureWithGap_genuine` (perfect completeness and the proved
-   averaged bound), and `stir_main_of_checkingIOP_rep` (Theorem 5.1 given fixed-prefix
-   soundness at the same budget). The `hε` leg is satisfiable for every `secpar` by
+   averaged bound), `stir_main_of_checkingIOP_rep` (the historical averaged statement),
+   and `stir_main_of_checkingIOP_repFixedPrefix` (given fixed-prefix soundness).
+   The `hε` leg is satisfiable for every `secpar` by
    choosing `t`, using the uniform bound `((|F|−1)/|F|)^t` from
    `stirEpsStarRep_le_pow_max`.
 
@@ -1524,7 +1525,7 @@ theorem stirEpsStarRep_le_pow_max (i : ((stirMultiVSpecRep M ι t).toProtocolSpe
 /-- **Theorem 5.1 through the t-repetition checking IOPP** (#335 A1), given
 fixed-prefix soundness at the `(·)^t` budget. The `hε` leg is satisfiable for every
 `secpar` by choosing `t` large enough since the bases are `< 1`. -/
-theorem stir_main_of_checkingIOP_rep
+theorem stir_main_of_checkingIOP_repFixedPrefix
     {M : ℕ} (secpar : ℕ) (t : ℕ)
     {φ : ι ↪ F} {degree : ℕ} [hsmooth : Smooth φ]
     {k proofLen qNumtoInput qNumtoProofstr : ℕ}
@@ -1542,11 +1543,34 @@ theorem stir_main_of_checkingIOP_rep
       (cₖ k) * ((Real.log degree) +
         secpar * (Real.log ((Real.log degree) /
           Real.log (1 / LinearCode.rate (code φ degree)))))) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   ⟨3 * M + 3, stirMultiVSpecRep M ι t, stirEpsStarRep (F := F) (ι := ι) M δ t,
     stirCheckingIOPRep M φ degree t,
     ⟨stirCheckingIOPRep_perfectCompleteness M φ degree t, hSound⟩,
+    hε, hM, hLen, hQin, hQpf⟩
+
+/-- The repetition witness for the historical prover-averaged STIR statement. -/
+theorem stir_main_of_checkingIOP_rep
+    {M : ℕ} (secpar : ℕ) (t : ℕ)
+    {φ : ι ↪ F} {degree : ℕ} [hsmooth : Smooth φ]
+    {k proofLen qNumtoInput qNumtoProofstr : ℕ}
+    (hk : ∃ p, k = 2 ^ p) (hkGe : k ≥ 4)
+    (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
+    (hF : FieldSizeCondition secpar φ degree)
+    (hε : ∀ i, stirEpsStarRep (F := F) (ι := ι) M δ t i ≤ (1 : ℚ≥0) / (2 ^ secpar))
+    (hM : ∃ c > 0, M ≤ c * (Real.log degree / Real.log k))
+    (hLen : ∃ cₖ : ℕ → ℝ, proofLen ≤ (Fintype.card ι) + (cₖ k) * (Real.log degree))
+    (hQin : (qNumtoInput : ℝ) ≥ secpar / (-Real.log (1 - δ)))
+    (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
+      (cₖ k) * ((Real.log degree) +
+        secpar * (Real.log ((Real.log degree) /
+          Real.log (1 / LinearCode.rate (code φ degree)))))) :
+    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+      (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
+  ⟨3 * M + 3, stirMultiVSpecRep M ι t, stirEpsStarRep (F := F) (ι := ι) M δ t,
+    stirCheckingIOPRep M φ degree t,
+    stirCheckingIOPRep_isSecureWithGap_genuine M φ degree δ t,
     hε, hM, hLen, hQin, hQpf⟩
 
 end WeldRep
@@ -1582,3 +1606,4 @@ end StirIOP
 #print axioms StirIOP.MultiRound.stirCheckingIOPRep_isSecureWithGap_genuine
 #print axioms StirIOP.MultiRound.stirEpsStarRep_le_pow_max
 #print axioms StirIOP.MultiRound.stir_main_of_checkingIOP_rep
+#print axioms StirIOP.MultiRound.stir_main_of_checkingIOP_repFixedPrefix

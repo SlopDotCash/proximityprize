@@ -11,10 +11,10 @@ import ArkLib.ProofSystem.Whir.CheckedVerifier
 
 `WhirIOP.whir_rbr_soundness` (`Whir/RBRSoundness.lean`, WHIR Theorem 5.2) is a
 statement about an explicitly supplied `VectorIOP` `π`: a `2 * M + 2` challenge-count
-pin and `IsSecureWithGap` at a per-round budget that dominates the Theorem 5.2 bounds.
+pin and `IsSecureWithGapAveraged` at a per-round budget that dominates the Theorem 5.2 bounds.
 Its packaging theorems (`whir_rbr_soundness_of_secure_gap`,
 `whir_vector_iop_breakthrough`) consume an **abstract** `π` together with its full
-`IsSecureWithGap` proof — both completeness and soundness as hypotheses.
+`IsSecureWithGapAveraged` proof — both completeness and soundness as hypotheses.
 
 This file instantiates the statement with the **checked construction**
 `Whir302Checked.whirCheckedVectorIOP` (real over-the-wire sumcheck-consistency and
@@ -23,8 +23,9 @@ final-zero-sum checks; perfect completeness PROVEN —
 Construction 5.1: its verifier never queries the input oracle, and
 `CheckedObliviousness.lean` proves that all-zero prover messages pass every one of its
 checks on every statement and challenge draw (`whirCheckingBool_allZero`). So the result
-below does not certify WHIR. The completeness leg of `IsSecureWithGap` is discharged,
-leaving two named gates:
+below does not certify WHIR. The completeness leg of `IsSecureWithGapAveraged` is discharged,
+leaving two named gates. The fixed-prefix sibling uses the same gates and takes its own
+fixed-prefix soundness hypothesis:
 
 * `hChallengeCard` — the challenge-cardinality pin
   `card ((whirPaperTranscriptVectorSpec P d').ChallengeIdx) = 2 * M + 2`.
@@ -72,7 +73,7 @@ the WHIR per-round budget. Perfect completeness of `π` is PROVEN. This does not
 WHIR: the checked verifier is input-oblivious, so (ii) cannot hold at a sub-unit total
 budget against δ-far inputs, and (i) forces `M = 0` and `foldingParam 0 = 1`
 (`ChallengeCardPin.lean`); see the module docstring. -/
-theorem whir_rbr_soundness_of_checkedVectorIOP_rbr
+private theorem whirRbrSoundnessOfCheckedWith (fixedPrefix : Bool)
     {d dstar : ℕ}
     {P : Params ιs F} {S : ∀ i : Fin (M + 1), Finset (ιs i)}
     {hParams : ParamConditions ιs P} {h : GenMutualCorrParams ιs P S}
@@ -117,26 +118,40 @@ theorem whir_rbr_soundness_of_checkedVectorIOP_rbr
     (d' : ℕ)
     (hChallengeCard :
       Fintype.card ((whirPaperTranscriptVectorSpec P d').ChallengeIdx) = 2 * M + 2)
-    (hSound : OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
-      (whirRelation m_0 (P.φ 0) (h.δ 0))
-      (paperTranscriptOracleVerifier P d' (whirVerifyChecked P d'))
-      (fun _ =>
-        (Finset.univ.image
-            (fun i => (Finset.univ : Finset (Fin (P.foldingParam i))).sup (ε_fold i))
-          ∪ {ε_fin} ∪ Finset.univ.image ε_out ∪ Finset.univ.image ε_shift).max'
-          (by simp))) :
-    whir_rbr_soundness (F := F) (M := M) ιs (d := d) (dstar := dstar)
+    (hSound :
+      let relation := whirRelation m_0 (P.φ 0) (h.δ 0)
+      let verifier := paperTranscriptOracleVerifier P d' (whirVerifyChecked P d')
+      let budget : (whirPaperTranscriptVectorSpec P d').ChallengeIdx → ℝ≥0 :=
+        fun _ => whirRbrBudgetValue P ε_fold ε_out ε_shift ε_fin
+      if fixedPrefix then
+        OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim relation verifier budget
+      else
+        OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim relation verifier budget) :
+    whirRbrSoundnessWith (F := F) (M := M) ιs fixedPrefix (d := d) (dstar := dstar)
       (P := P) (S := S) (hParams := hParams) (h := h)
       hm_0 (σ₀ := σ₀) (wPoly₀ := wPoly₀) (δ := δ)
       ε_fold ε_out ε_shift ε_fin h_fold_0 h_out h_shift h_fold_i h_fin
-      (whirPaperTranscriptVectorSpec P d') (whirCheckedVectorIOP P d') :=
-  whir_rbr_soundness_of_secure_gap
-    hm_0 (σ₀ := σ₀) (wPoly₀ := wPoly₀) (δ := δ)
-    ε_fold ε_out ε_shift ε_fin h_fold_0 h_out h_shift h_fold_i h_fin
-    hChallengeCard (whirCheckedVectorIOP P d')
-    (whirCheckedVectorIOP_isSecureWithGap_of_rbr P d' (m0 := m_0) (h.δ 0) _ hSound)
+      (whirPaperTranscriptVectorSpec P d') (whirCheckedVectorIOP P d') := by
+  refine ⟨hChallengeCard, ?_⟩
+  cases fixedPrefix
+  · exact whirCheckedVectorIOP_isSecureWithGap_of_rbr P d' (m0 := m_0) (h.δ 0) _ hSound
+  · exact whirCheckedVectorIOP_isSecureWithGap_fixedPrefix_of_rbr
+      P d' (m0 := m_0) (h.δ 0) _ hSound
+
+/-- The checked construction at the historical prover-averaged contract, given the challenge
+pin and its prover-averaged bound. The checked construction is input-oblivious. -/
+theorem whir_rbr_soundness_of_checkedVectorIOP_rbr :
+    type_of% (@whirRbrSoundnessOfCheckedWith F _ _ _ _ M ιs _ false) :=
+  @whirRbrSoundnessOfCheckedWith F _ _ _ _ M ιs _ false
+
+/-- The checked construction at the fixed-prefix contract, given the challenge pin and a
+fixed-prefix bound for this verifier. The checked construction is input-oblivious. -/
+theorem whir_rbr_soundness_fixedPrefix_of_checkedVectorIOP_rbr :
+    type_of% (@whirRbrSoundnessOfCheckedWith F _ _ _ _ M ιs _ true) :=
+  @whirRbrSoundnessOfCheckedWith F _ _ _ _ M ιs _ true
 
 end Whir302Checked
 
 /-! ## Axiom audit — kernel-clean. -/
 #print axioms Whir302Checked.whir_rbr_soundness_of_checkedVectorIOP_rbr
+#print axioms Whir302Checked.whir_rbr_soundness_fixedPrefix_of_checkedVectorIOP_rbr

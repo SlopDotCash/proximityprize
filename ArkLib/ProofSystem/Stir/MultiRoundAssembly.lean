@@ -272,7 +272,7 @@ theorem stir_rbr_soundness_of_secure_vectorIOP
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
             (Dist.δ j.succ) (P.foldingParam j.succ)))
     (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
-    stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
+    stir_rbr_soundnessFixedPrefix (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   ⟨3 * M + 3, stirMultiVSpec M (ι 0), stirVSpec_card_challengeIdx, π, hSecure,
     hfold, hrest, hfin⟩
@@ -314,7 +314,7 @@ theorem stir_rbr_soundness_of_residuals
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
             (Dist.δ j.succ) (P.foldingParam j.succ)))
     (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
-    stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
+    stir_rbr_soundnessFixedPrefix (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   stir_rbr_soundness_of_secure_vectorIOP (hParams := hParams) (Codes := Codes)
     ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin
@@ -344,7 +344,7 @@ theorem stir_main_of_secure_vectorIOP
     (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
       (cₖ k) * ((Real.log degree) +
         secpar * (Real.log ((Real.log degree) / Real.log (1 / rate (code φ degree)))))) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   ⟨3 * M + 3, stirMultiVSpec M ι, ε_rbr, π, hSecure, hε, hM, hLen, hQin, hQpf⟩
 
@@ -371,7 +371,7 @@ theorem stir_main_of_residuals
     (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
       (cₖ k) * ((Real.log degree) +
         secpar * (Real.log ((Real.log degree) / Real.log (1 / rate (code φ degree)))))) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   stir_main_of_secure_vectorIOP secpar hk hkGe δ hδub hF ε_rbr
     (stirMultiRoundIOP M φ degree)

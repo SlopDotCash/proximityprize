@@ -605,7 +605,7 @@ noncomputable def paperTranscriptVectorIOP {M : ℕ} {ιs : Fin (M + 1) → Type
 
 omit [Field F] [DecidableEq F] [Fintype ι] [DecidableEq ι] [Nonempty ι] in
 /-- Package the two semantic proof obligations for the paper-transcript adapter into the
-`VectorIOP.IsSecureWithGap` class consumed by the WHIR RBR assembly wrappers.
+`VectorIOP.IsSecureWithGapAveraged` class consumed by the WHIR RBR assembly wrappers.
 
 This is pure assembly around the concrete `paperTranscriptVectorIOP`: callers still have to prove
 perfect completeness for the supplied transcript generator and RBR knowledge soundness for the
@@ -630,9 +630,9 @@ theorem paperTranscriptVectorIOP_isSecureWithGap_of_complete_and_rbr {M : ℕ}
       (paperTranscriptVectorIOP P d makeTranscript verify).perfectCompleteness
         (pure ()) isEmptyElim completeRelation)
     (hRbr :
-      OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim soundRelation
+      OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim soundRelation
         (paperTranscriptOracleVerifier P d verify) ε_rbr) :
-    VectorIOP.IsSecureWithGap completeRelation soundRelation ε_rbr
+    VectorIOP.IsSecureWithGapAveraged completeRelation soundRelation ε_rbr
       (paperTranscriptVectorIOP P d makeTranscript verify) where
   is_complete := hComplete
   is_rbr_knowledge_sound := by
@@ -1571,7 +1571,7 @@ theorem whirRbrBudgetValue_isLUB {M : ℕ} {ιs : Fin (M + 1) → Type}
   Issue113WHIR.epsRbr_isLUB (fp := P.foldingParam) ε_fold ε_out ε_shift ε_fin
 
 omit [Fintype ι] [Nonempty ι] in
-/-- Using the named WHIR RBR budget in `IsSecureWithGap` is definitionally the same as using the
+/-- Using the named WHIR RBR budget in `IsSecureWithGapAveraged` is definitionally the same as using the
 inline `ε_rbr` expression from `whir_rbr_soundness`. -/
 theorem whirSecureWithGap_namedBudget_iff_inline {M : ℕ}
     {ιs : Fin (M + 1) → Type} [∀ i : Fin (M + 1), Fintype (ιs i)]
@@ -1580,7 +1580,7 @@ theorem whirSecureWithGap_namedBudget_iff_inline {M : ℕ}
     (π : VectorIOP Unit (OracleStatement (ιs 0) F) Unit vPSpec F)
     (ε_fold : (i : Fin (M + 1)) → Fin (P.foldingParam i) → ℝ≥0)
     (ε_out : Fin (M + 1) → ℝ≥0) (ε_shift : Fin M → ℝ≥0) (ε_fin : ℝ≥0) :
-    VectorIOP.IsSecureWithGap (whirRelation m_0 (P.φ 0) 0)
+    VectorIOP.IsSecureWithGapAveraged (whirRelation m_0 (P.φ 0) 0)
       (whirRelation m_0 (P.φ 0) δ)
       (fun _ : vPSpec.ChallengeIdx => whirRbrBudgetValue P ε_fold ε_out ε_shift ε_fin) π ↔
     (let max_ε_folds : (i : Fin (M + 1)) → ℝ≥0 :=
@@ -1589,7 +1589,7 @@ theorem whirSecureWithGap_namedBudget_iff_inline {M : ℕ}
         fun _ => ((Finset.univ : Finset (Fin (M + 1))).image max_ε_folds ∪ {ε_fin} ∪
           (Finset.univ : Finset (Fin (M + 1))).image ε_out ∪
           (Finset.univ : Finset (Fin M)).image ε_shift).max' (by simp)
-      VectorIOP.IsSecureWithGap (whirRelation m_0 (P.φ 0) 0)
+      VectorIOP.IsSecureWithGapAveraged (whirRelation m_0 (P.φ 0) 0)
         (whirRelation m_0 (P.φ 0) δ) ε_rbr π) := by
   rfl
 
@@ -1627,8 +1627,8 @@ instance (M : ℕ) :
 
 The WHIR soundness statement `whir_rbr_soundness` in `RBRSoundness.lean` is a `Prop` about an
 explicitly supplied `VectorIOP` `π`: a `2 * M + 2` challenge-count pin together with
-`IsSecureWithGap` at a per-round budget that dominates the Theorem 5.2 bounds.  The theorems below
-only package a supplied pin and a supplied `IsSecureWithGap` proof into that statement.
+`IsSecureWithGapAveraged` at a per-round budget that dominates the Theorem 5.2 bounds.  The theorems below
+only package a supplied pin and a supplied `IsSecureWithGapAveraged` proof into that statement.
 
 They do **not** construct a protocol, and they do not make the statement certify WHIR: that needs
 `π` to implement Construction 5.1, which no protocol in ArkLib does yet. -/
@@ -1639,7 +1639,7 @@ variable {ιs : Fin (M + 1) → Type} [∀ i : Fin (M + 1), Fintype (ιs i)]
 
 omit [SampleableType F] [Fintype ι] [Nonempty ι] in
 /-- Package `whir_rbr_soundness` for a supplied `VectorIOP` `π` from its challenge-count pin and
-its `IsSecureWithGap` proof at the per-round budget.
+its `IsSecureWithGapAveraged` proof at the per-round budget.
 
 This is pure packaging (`⟨hChallengeCard, hSecure⟩`).  The budget hypotheses only state that the
 chosen errors dominate the Theorem 5.2 bounds; the security content is entirely the supplied
@@ -1689,14 +1689,9 @@ theorem whir_rbr_soundness_of_secure_gap
     {n : ℕ} {vPSpec : ProtocolSpec.VectorSpec n}
     (hChallengeCard : Fintype.card (vPSpec.ChallengeIdx) = 2 * M + 2)
     (π : VectorIOP Unit (OracleStatement (ιs 0) F) Unit vPSpec F)
-    (hSecure :
-      let max_ε_folds : (i : Fin (M + 1)) → ℝ≥0 :=
-        fun i => (Finset.univ : Finset (Fin (P.foldingParam i))).sup (ε_fold i)
-      let ε_rbr : vPSpec.ChallengeIdx → ℝ≥0 :=
-        fun _ => (Finset.univ.image max_ε_folds ∪ {ε_fin} ∪ Finset.univ.image ε_out ∪
-          Finset.univ.image ε_shift).max' (by simp)
-      VectorIOP.IsSecureWithGap (whirRelation m_0 (P.φ 0) 0)
-        (whirRelation m_0 (P.φ 0) (h.δ 0)) ε_rbr π) :
+    (hSecure : VectorIOP.IsSecureWithGapAveraged (whirRelation m_0 (P.φ 0) 0)
+      (whirRelation m_0 (P.φ 0) (h.δ 0))
+      (fun _ => whirRbrBudgetValue P ε_fold ε_out ε_shift ε_fin) π) :
     whir_rbr_soundness (F := F) (M := M) ιs (d := d) (dstar := dstar)
       (P := P) (S := S) (hParams := hParams) (h := h)
       hm_0 (σ₀ := σ₀) (wPoly₀ := wPoly₀) (δ := δ)
@@ -1754,14 +1749,9 @@ theorem whir_rbr_soundness_of_whirVectorSpec_secure_gap
     (h_fin :
         (1 - h.δ (Fin.last M))^(P.repeatParam (Fin.last M)) ≤ ε_fin)
     (π : VectorIOP Unit (OracleStatement (ιs 0) F) Unit (whirVectorSpec M) F)
-    (hSecure :
-      let max_ε_folds : (i : Fin (M + 1)) → ℝ≥0 :=
-        fun i => (Finset.univ : Finset (Fin (P.foldingParam i))).sup (ε_fold i)
-      let ε_rbr : (whirVectorSpec M).ChallengeIdx → ℝ≥0 :=
-        fun _ => (Finset.univ.image max_ε_folds ∪ {ε_fin} ∪ Finset.univ.image ε_out ∪
-          Finset.univ.image ε_shift).max' (by simp)
-      VectorIOP.IsSecureWithGap (whirRelation m_0 (P.φ 0) 0)
-        (whirRelation m_0 (P.φ 0) (h.δ 0)) ε_rbr π) :
+    (hSecure : VectorIOP.IsSecureWithGapAveraged (whirRelation m_0 (P.φ 0) 0)
+      (whirRelation m_0 (P.φ 0) (h.δ 0))
+      (fun _ => whirRbrBudgetValue P ε_fold ε_out ε_shift ε_fin) π) :
     whir_rbr_soundness (F := F) (M := M) ιs (d := d) (dstar := dstar)
       (P := P) (S := S) (hParams := hParams) (h := h)
       hm_0 (σ₀ := σ₀) (wPoly₀ := wPoly₀) (δ := δ)

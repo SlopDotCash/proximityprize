@@ -176,8 +176,9 @@ theorem fullOracleVerifier_rbrKnowledgeSoundness_wired [Subsingleton σ]
     (hDir := append_dir_seam Nat.one_pos rfl)
     (hDir₂ := rfl)
     (h₁ := hCoreInteractionRbrKnowledgeSoundness)
-    (h₂ := queryOracleVerifier_rbrKnowledgeSoundness 𝔽q β γ_repetitions
-      (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) init impl)
+    (h₂ := Verifier.rbrKnowledgeSoundness_implies_rbrKnowledgeSoundnessAveraged init impl
+      (queryOracleVerifier_rbrKnowledgeSoundness 𝔽q β γ_repetitions
+        (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) init impl))
   have herr : fullRbrKnowledgeError 𝔽q β γ_repetitions (ϑ:=ϑ)
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
       = (Sum.elim

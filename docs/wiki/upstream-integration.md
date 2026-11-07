@@ -60,9 +60,13 @@ compatibility modules. The [security migration](../../scripts/integration/nov07-
 records the original contracts and caller changes. The canonical fixed-prefix results can feed
 the historical averaged results through the proved implications in that layer.
 The downstream `VectorIOP.IsSecureWithGapAveraged` package pairs completeness with an averaged
-bound. WHIR's placeholder and small-field packages and STIR's repetition result use that package.
-The checked WHIR assembly and STIR wrappers that conclude the canonical security contract take
-fixed-prefix evidence at their respective budgets.
+bound. `StirIOP.stir_main` and `StirIOP.stir_rbr_soundness` keep the historical averaged game.
+Their `FixedPrefix` siblings share the corrected field-size and error formulas, including the
+final error bound when there are no transitions. STIR's proved averaged witnesses remain
+available, and the fixed-prefix assembly takes evidence for that game at the same budget.
+WHIR's `whir_rbr_soundness` keeps the historical averaged game, as do its placeholder and
+small-field packages. `whir_rbr_soundness_fixedPrefix` uses the same corrected error budget and
+challenge count. Its checked-verifier front door takes a fixed-prefix bound.
 
 The full oracle sum-check completeness theorem now belongs to `Sumcheck.Spec.General`.
 Existing downstream calls with initialization and support arguments delegate to it. The

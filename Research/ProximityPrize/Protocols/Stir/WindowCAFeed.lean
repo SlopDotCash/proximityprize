@@ -109,7 +109,7 @@ theorem stir_main_of_checkingIOP_window
     (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
       (cₖ k) * ((Real.log degree) +
         secpar * (Real.log ((Real.log degree) / Real.log (1 / rate (code φ degree)))))) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   stir_main_of_checkingIOP_CA secpar hk hkGe δ hδub hF ε_rbr
     ProxGapBound ProxGapBound hBridge
@@ -142,7 +142,7 @@ theorem stir_main_of_checkingIOP_window_corner
     (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
       (cₖ k) * ((Real.log degree) +
         secpar * (Real.log ((Real.log degree) / Real.log (1 / rate (code φ degree)))))) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   stir_main_of_checkingIOP_CA secpar hk hkGe δ hδub hF ε_rbr
     ProxGapBound ProxGapBound hBridge
