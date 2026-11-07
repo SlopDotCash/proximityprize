@@ -2359,6 +2359,7 @@ globs = [
   "ArkLib.ProofSystem.Stir.MultiRoundSpecT",
   "ArkLib.ProofSystem.Stir.MultiRoundSpecTCompleteness",
   "ArkLib.ProofSystem.Stir.NumericLegs",
+  "ArkLib.ProofSystem.Stir.PaperStatements",
   "ArkLib.ProofSystem.Stir.ProximityGapProof",
   "ArkLib.ProofSystem.Stir.ProximityGapSmallField",
   "ArkLib.ProofSystem.Stir.RbrBudgetMono",
