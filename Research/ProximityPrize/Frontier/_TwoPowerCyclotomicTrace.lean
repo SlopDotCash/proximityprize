@@ -1,7 +1,7 @@
 /-
 Copyright (c) 2026 ArkLib Contributors. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ArkLib Contributors
+Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and LICENSE.
+Authors: toastedtokens-design, ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.BigOperators.Ring.Finset
