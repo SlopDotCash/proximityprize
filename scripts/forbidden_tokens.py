@@ -85,16 +85,14 @@ NATIVE_FORM_RE = re.compile(
     r"|\bbv_check\b"
 )
 # Lean declaration-modifier `unsafe` (not aesop's `(add unsafe …)` tactic hint).
-# Allow the same modifiers before or after `unsafe` (Lean accepts e.g.
-# `unsafe nonrec def`), then require a declaration keyword so
-# `aesop (add unsafe …)` and `attribute [aesop unsafe 50%]` stay allowed.
-UNSAFE_DECL_RE = re.compile(
-    r"(?m)^[ \t]*(?:@\[[^\]]*\]\s*)*"
-    r"(?:(?:public|protected|private|scoped|noncomputable|partial|nonrec|meta|local)\s+)*"
-    r"unsafe\s+"
-    r"(?:(?:public|protected|private|scoped|noncomputable|partial|nonrec|meta|local)\s+)*"
-    r"(?:theorem|lemma|def|abbrev|opaque|constant|axiom|instance|structure|inductive|class|example)\b"
-)
+# `unsafe` is matched as a keyword wherever it appears, like the `axiom`
+# check below: Lean's command parser does not care about line breaks, so a
+# line-anchored match missed `open Foo in unsafe def …`, `set_option … in
+# unsafe def …`, `omit […] in unsafe def …`, `mutual unsafe def …` and
+# mid-line `… unsafe def …` forms. Allow the same modifiers after `unsafe`
+# (Lean accepts e.g. `unsafe nonrec def`), then require a declaration
+# keyword so `aesop (add unsafe …)` and `attribute [aesop unsafe 50%]`
+# stay allowed.
 
 
 # --- Lean identifier characters ---------------------------------------------
@@ -124,6 +122,14 @@ _COMP = "(?:[" + ID_FIRST + "][" + ID_REST + "]*|«[^»]*»)"
 _ID_START = "(?<![" + ID_REST + ".«])"
 # Not followed by an identifier character: the preceding token ends here.
 _ID_END = "(?![" + ID_REST + "])"
+# Lean declaration-modifier `unsafe`, matched as a keyword (see the comment
+# where the old line-anchored form lived). Defined here because it needs
+# `_ID_START` / `_ID_END` above.
+UNSAFE_DECL_RE = re.compile(
+    _ID_START + r"unsafe" + _ID_END + r"\s+"
+    r"(?:(?:public|protected|private|scoped|noncomputable|partial|nonrec|meta|local)\s+)*"
+    r"(?:theorem|lemma|def|abbrev|opaque|constant|axiom|instance|structure|inductive|class|example)\b"
+)
 # Capture the declared axiom name so it can be checked against the residual
 # allowlist. The name may be namespaced/contain primes; we keep the simple
 # token as written at the declaration site.
