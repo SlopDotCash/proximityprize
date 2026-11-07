@@ -56,6 +56,7 @@ import ProximityPrize.Extensions.Data.Lattices.CyclotomicRing.Rq
 import ProximityPrize.Extensions.Data.Lattices.Vectors
 import ProximityPrize.Extensions.Data.Matrix.Basic
 import ProximityPrize.Extensions.Data.MvPolynomial.Interpolation
+import ProximityPrize.Extensions.Data.MvPolynomial.LineRestriction
 import ProximityPrize.Extensions.Data.MvPolynomial.LinearMvExtension
 import ProximityPrize.Extensions.Data.MvPolynomial.Multilinear
 import ProximityPrize.Extensions.Data.MvPolynomial.SchwartzZippelCounting
@@ -125,6 +126,7 @@ import ProximityPrize.Extensions.ProofSystem.Fri.Spec.Completeness
 import ProximityPrize.Extensions.ProofSystem.Fri.Spec.General
 import ProximityPrize.Extensions.ProofSystem.Fri.Spec.SingleRound
 import ProximityPrize.Extensions.ProofSystem.Fri.Spec.Soundness
+import ProximityPrize.Extensions.ProofSystem.GKR.Circuit
 import ProximityPrize.Extensions.ProofSystem.Plonk.Basic
 import ProximityPrize.Extensions.ProofSystem.Spartan.Basic
 import ProximityPrize.Extensions.ProofSystem.Stir.Combine
