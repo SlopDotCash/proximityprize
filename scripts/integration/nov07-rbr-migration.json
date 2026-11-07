@@ -1106,5 +1106,28 @@
       "ArkLib/ProofSystem/Plonk/Composition.lean": "7797a3dd2b6fda8e497b2a838c6a5ece217bb31decb6874f358187b2d44fcc1c"
     },
     "focused_log_sha256": "2192bf69bbd1fef702b2a9bdb695aa2e5412a5c9415cd7cea50f417b8c715827"
+  },
+  "stir_averaged_security": {
+    "tested_upstream_revision": "31ff7ddf9bc209ffaeab516359cd17f47d9bd6f1",
+    "bundle": "VectorIOP.IsSecureWithGapAveraged",
+    "scope": "Historical STIR statements and front doors package perfect completeness with prover-averaged round-by-round knowledge soundness.",
+    "canonical_calls": {
+      "Curves": "The weighted agreement wrapper supplies the common-denominator cardinality threshold, and the strict affine wrapper supplies the positive degree and strict Johnson radius.",
+      "Combine": "The historical wrappers supply the positive degree and strict radius to the canonical combination theorem."
+    },
+    "source_sha256": {
+      "ArkLib/ProofSystem/Stir/CheckingVerifier.lean": "b8c101a5abf0cb555bdea87bacc82ad549e3ed991cc56892baf9898bcb01c5e9",
+      "ArkLib/ProofSystem/Stir/MultiRoundAssembly.lean": "c1279ba4c2a97feb84b512e81ffe7b54a494a64552575a4f1767ab3cdbdecf4d",
+      "ArkLib/ProofSystem/Stir/RbrFrontDoor.lean": "0536036ba2db3fbb3fe4fdd89b27d68de83e165a95e0d2a574d077cfff499e36",
+      "ArkLib/ProofSystem/Stir/RepWire.lean": "0f0516d4c82668c0e01d28fc49287b97ea7a3e8fd55d9fbc5031a62864efe1ff",
+      "ArkLib/ProofSystem/Stir/ShellRbrIndicator.lean": "26c49e8f6417125c5ff2c58f67ec067987ec6d87e48883a57d797bf2459fd01d",
+      "ArkLib/ProofSystem/Stir/SubUnitRbr.lean": "76724f56a2259abb6f45ddb4710bfdd93bd49da3478d13a51a0e0c3301e76d2b",
+      "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean": "d8304bb0d89c33fbcab63d5b07df8ceb79b7ca1c39dcd0566565fe9db08f61af",
+      "ProximityPrize/Extensions/ProofSystem/Stir/Combine.lean": "e5419b05d0b91ce6ac1a7431e804a71815142e39a0eda6c0eb62ee6b2b1ba79f",
+      "ProximityPrize/Extensions/ProofSystem/Stir/MainThm.lean": "3e4a4d232d7950ffc2eacbe9e561090d47e119644edcfdcd2c5fdbeba2cb865a"
+    },
+    "validation": "Nine exact current source checks passed in a private overlay with rebuilt changed canonical prerequisites and reused transitive artifacts.",
+    "axiom_reports": 12,
+    "axiom_output_sha256": "f459a00ec143a70b8291b8647674b11861d5910e578f5d56dad7171fa32a620b"
   }
 }

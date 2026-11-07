@@ -59,7 +59,7 @@ proofs of the distinct prover-averaged games use the explicit `Averaged` contrac
 compatibility modules. The [security migration](../../scripts/integration/nov07-rbr-migration.json)
 records the original contracts and caller changes. The canonical fixed-prefix results can feed
 the historical averaged results through the proved implications in that layer.
-The downstream WHIR witnesses package the averaged game in `VectorIOP.IsSecureWithGapAveraged`.
+The downstream WHIR and STIR witnesses package the averaged game in `VectorIOP.IsSecureWithGapAveraged`.
 Canonical clients use the fixed-prefix `VectorIOP.IsSecureWithGap`.
 
 The full oracle sum-check completeness theorem now belongs to `Sumcheck.Spec.General`.
