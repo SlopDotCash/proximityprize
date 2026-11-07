@@ -507,7 +507,7 @@ theorem folding_preserves_distance
       correlatedAgreement_affine_curves
         (k := 2 ^ k - 1) (deg := d / (2 ^ k))
         (domain := (domain.subdomain k : Fin (2 ^ (n - k)) ↪ F))
-        (δ := δ) (Nat.div_pos h_k_d (by positivity)) δ_gt_0 bound_tighter
+        (δ := δ) (Nat.div_pos h_k_d (by positivity)) bound_tighter
     unfold foldWord δ_ε_correlatedAgreementCurves at *
     simp_rw [← ProximityPrize.Compatibility.pmf_uniform_probability_eq_native]
       at correlated_agreement
