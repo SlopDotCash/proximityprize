@@ -5,7 +5,7 @@ Shared declarations come from the canonical ArkLib modules.
 Checked-in source owns later API ports. Generate separate review candidates with:
 scripts/integration/extract_downstream_extensions.py --output-dir <directory>.
 -/
-import ArkLib.ProofSystem.Spartan.Basic
+import ArkLib.ProofSystem.Spartan.Algebra.Identities
 
 /-
 Copyright (c) 2024 ArkLib Contributors. All rights reserved.
@@ -20,20 +20,21 @@ import ArkLib.ProofSystem.Sumcheck.Spec.General
 import ProximityPrize.Extensions.OracleReduction.LiftContext.OracleReduction
 
 /-!
-# Spartan compatibility module
+# Historical padded Spartan contexts
 
-Retained completed Spartan constructors and evaluation lemmas use the canonical statement and
-oracle families. Evaluation claims are sent as one bundled message and exposed as three scalar
-native output oracles. The message and carried matrix/witness interfaces are checked explicitly.
+The downstream `Spartan.Spec` proofs use the tuple contexts of the padded protocol from ArkLib
+revision `78835bdb3`. They share the canonical R1CS layout and virtual polynomial algebra.
+The historical evaluation-claim stage sends one bundled message and exposes its three components
+as scalar output oracles. The canonical seven-stage protocol is defined in
+`ArkLib.ProofSystem.Spartan.Protocol`.
 -/
+
+open MvPolynomial Matrix
+open scoped BigOperators
 
 namespace Spartan
 
 noncomputable section
-
-namespace PublicParams
-
-end PublicParams
 
 namespace Spec
 
@@ -43,7 +44,80 @@ variable {ι : Type} (oSpec : OracleSpec ι)
 
 section Construction
 
-/- The input types and relation is just the R1CS relation for the given size -/
+/-! The padded proof interfaces retain their original tuple and oracle families. -/
+
+@[simp]
+abbrev Statement := R1CS.Statement R pp.toSizeR1CS
+
+@[simp]
+abbrev OracleStatement := R1CS.OracleStatement R pp.toSizeR1CS
+
+@[simp]
+abbrev Witness := R1CS.Witness R pp.toSizeR1CS
+
+@[simp]
+abbrev relation := R1CS.relation R pp.toSizeR1CS
+
+@[simp]
+abbrev Statement.AfterFirstMessage : Type := Statement R pp
+
+@[simp]
+abbrev OracleStatement.AfterFirstMessage : R1CS.MatrixIdx ⊕ Fin 1 → Type :=
+  Sum.rec (OracleStatement R pp) (fun _ => Witness R pp)
+
+@[simp]
+abbrev FirstChallenge : Type := Fin pp.ℓ_m → R
+
+@[simp]
+abbrev Statement.AfterFirstChallenge : Type :=
+  FirstChallenge R pp × Statement.AfterFirstMessage R pp
+
+@[simp]
+abbrev OracleStatement.AfterFirstChallenge : R1CS.MatrixIdx ⊕ Fin 1 → Type :=
+  OracleStatement.AfterFirstMessage R pp
+
+@[simp]
+abbrev FirstSumcheckChallenge : Type := Fin pp.ℓ_m → R
+
+@[simp]
+abbrev Statement.AfterFirstSumcheck : Type :=
+  FirstSumcheckChallenge R pp × Statement.AfterFirstChallenge R pp
+
+@[simp]
+abbrev OracleStatement.AfterFirstSumcheck : R1CS.MatrixIdx ⊕ Fin 1 → Type :=
+  OracleStatement.AfterFirstChallenge R pp
+
+@[simp]
+abbrev EvalClaim : R1CS.MatrixIdx → Type := fun _ => R
+
+@[simp]
+abbrev Statement.AfterSendEvalClaim : Type := Statement.AfterFirstSumcheck R pp
+
+@[simp]
+abbrev OracleStatement.AfterSendEvalClaim : R1CS.MatrixIdx ⊕ R1CS.MatrixIdx ⊕ Fin 1 → Type :=
+  Sum.elim (EvalClaim R) (OracleStatement.AfterFirstSumcheck R pp)
+
+@[simp]
+abbrev LinearCombinationChallenge : Type := R1CS.MatrixIdx → R
+
+@[simp]
+abbrev Statement.AfterLinearCombination : Type :=
+  LinearCombinationChallenge R × Statement.AfterSendEvalClaim R pp
+
+@[simp]
+abbrev OracleStatement.AfterLinearCombination : R1CS.MatrixIdx ⊕ R1CS.MatrixIdx ⊕ Fin 1 → Type :=
+  Sum.elim (EvalClaim R) (OracleStatement.AfterFirstSumcheck R pp)
+
+@[simp]
+abbrev SecondSumcheckChallenge : Type := Fin pp.ℓ_n → R
+
+@[simp]
+abbrev Statement.AfterSecondSumcheck : Type :=
+  SecondSumcheckChallenge R pp × Statement.AfterLinearCombination R pp
+
+@[simp]
+abbrev OracleStatement.AfterSecondSumcheck : R1CS.MatrixIdx ⊕ R1CS.MatrixIdx ⊕ Fin 1 → Type :=
+  OracleStatement.AfterLinearCombination R pp
 
 instance : ∀ i, OracleInterface (OracleStatement R pp i) :=
   fun i => {
@@ -64,12 +138,71 @@ instance : OracleInterface (Witness R pp) where
   toOC.impl := fun evalPoint => do
     return (MvPolynomial.MLE ((← read) ∘ finFunctionFinEquiv)) ⸨evalPoint⸩
 
-/-!
-  ## First message
-  We invoke the protocol `SendSingleWitness` to send the witness `𝕨` to the verifier.
--/
+instance : ∀ i, OracleInterface (EvalClaim R i) := fun _ => default
 
-#check RandomQuery.oracleReduction
+instance : ∀ i, OracleInterface (OracleStatement.AfterSendEvalClaim R pp i) :=
+  fun i => match i with
+  | .inl _ => by
+      change OracleInterface R
+      exact default
+  | .inr i => by
+      rcases i with i | i
+      · change OracleInterface (OracleStatement R pp i)
+        infer_instance
+      · change OracleInterface (Witness R pp)
+        infer_instance
+
+/-- Attach the witness of an already padded R1CS instance through the canonical one-message
+stage. -/
+def oracleReduction.firstMessage :
+    OracleReduction oSpec
+      (Statement R pp) (OracleStatement R pp) (Witness R pp)
+      (Statement.AfterFirstMessage R pp) (OracleStatement.AfterFirstMessage R pp) Unit
+      ⟨!v[.P_to_V], !v[Witness R pp]⟩ :=
+  SendSingleWitness.oracleReduction oSpec (Statement R pp) (OracleStatement R pp) (Witness R pp)
+
+/-- The canonical residual interpolant in the historical padded context. -/
+def zeroCheckVirtualPolynomial (x : Statement.AfterFirstMessage R pp)
+    (oracles : ∀ i, OracleStatement.AfterFirstMessage R pp i) :
+    MvPolynomial (Fin pp.ℓ_m) R :=
+  Algebra.residualMLE (fun i => oracles (.inl i)) (R1CS.𝕫 x (oracles (.inr 0)))
+
+/-- Expand the residual interpolant over the original integer row index. -/
+theorem zeroCheckVirtualPolynomial_eq_sum (x : Statement.AfterFirstMessage R pp)
+    (oracles : ∀ i, OracleStatement.AfterFirstMessage R pp i) :
+    zeroCheckVirtualPolynomial R pp x oracles =
+      let z := R1CS.𝕫 x (oracles (.inr 0))
+      ∑ row : Fin (2 ^ pp.ℓ_m),
+        eqPolynomial (finFunctionFinEquiv.symm row : Fin pp.ℓ_m → R) *
+          C ((oracles (.inl .A) *ᵥ z) row * (oracles (.inl .B) *ᵥ z) row -
+            (oracles (.inl .C) *ᵥ z) row) := by
+  unfold zeroCheckVirtualPolynomial Algebra.residualMLE MLE' MLE
+  refine Fintype.sum_equiv finFunctionFinEquiv _ _ ?_
+  intro row
+  simp only [Function.comp_apply, Equiv.symm_apply_apply, Algebra.residualTable]
+
+/-- The canonical second sumcheck polynomial in the historical scalar-claim context. -/
+def secondSumCheckVirtualPolynomial (stmt : Statement.AfterLinearCombination R pp)
+    (oracles : ∀ i, OracleStatement.AfterLinearCombination R pp i) :
+    MvPolynomial (Fin pp.ℓ_n) R :=
+  Algebra.secondVirtual (fun i => oracles (.inr (.inl i)))
+    (R1CS.𝕫 stmt.2.2.2 (oracles (.inr (.inr 0)))) stmt.2.1 stmt.1
+
+/-- Distribute the shared assignment factor as used by the historical sumcheck proofs. -/
+theorem secondSumCheckVirtualPolynomial_eq_terms (stmt : Statement.AfterLinearCombination R pp)
+    (oracles : ∀ i, OracleStatement.AfterLinearCombination R pp i) :
+    secondSumCheckVirtualPolynomial R pp stmt oracles =
+      let r := stmt.1
+      let r_x := stmt.2.1
+      let z := R1CS.𝕫 stmt.2.2.2 (oracles (.inr (.inr 0)))
+      let zMLE : MvPolynomial (Fin pp.ℓ_n) R := MLE (z ∘ finFunctionFinEquiv)
+      let matrixEval (idx : R1CS.MatrixIdx) : MvPolynomial (Fin pp.ℓ_n) R :=
+        (oracles (.inr (.inl idx))).toMLE
+          ⟨(C ∘ r_x : Fin pp.ℓ_m → MvPolynomial (Fin pp.ℓ_n) R)⟩
+      C (r .A) * matrixEval .A * zMLE +
+        C (r .B) * matrixEval .B * zMLE +
+        C (r .C) * matrixEval .C * zMLE := by
+  simp only [secondSumCheckVirtualPolynomial, Algebra.secondVirtual, MLE', add_mul]
 
 /-! ### `firstChallenge` via `RandomQuery` + `OracleLens`
 
@@ -406,31 +539,11 @@ theorem zeroCheckVirtualPolynomial_eval_boolPoint
     (w : Fin (2 ^ pp.ℓ_m)) :
     MvPolynomial.eval (boolPoint R w) (zeroCheckVirtualPolynomial R pp 𝕩 oStmt)
       = r1csResidualAt R pp 𝕩 oStmt w := by
-  unfold zeroCheckVirtualPolynomial r1csResidualAt boolPoint
-  rw [map_sum]
-  rw [Finset.sum_eq_single w]
-  · rw [eval_mul, eval_C]
-    have h1 : MvPolynomial.eval
-        (fun j => ((finFunctionFinEquiv.symm w j : Fin 2) : R))
-        (eqPolynomial (fun j => ((finFunctionFinEquiv.symm w j : Fin 2) : R))) = 1 := by
-      have := eqPolynomial_eval_zeroOne (R := R)
-        (finFunctionFinEquiv.symm w) (finFunctionFinEquiv.symm w)
-      simpa using this
-    rw [h1, one_mul]
-  · intro x _ hxw
-    rw [eval_mul, eval_C]
-    have hne : (finFunctionFinEquiv.symm w) ≠ (finFunctionFinEquiv.symm x) := by
-      intro h
-      exact hxw (finFunctionFinEquiv.symm.injective h.symm)
-    have h0 : MvPolynomial.eval
-        (fun j => ((finFunctionFinEquiv.symm w j : Fin 2) : R))
-        (eqPolynomial (fun j => ((finFunctionFinEquiv.symm x j : Fin 2) : R))) = 0 := by
-      have := eqPolynomial_eval_zeroOne (R := R)
-        (finFunctionFinEquiv.symm x) (finFunctionFinEquiv.symm w)
-      rw [if_neg hne] at this
-      simpa using this
-    rw [h0, zero_mul]
-  · intro hw; exact absurd (Finset.mem_univ w) hw
+  unfold zeroCheckVirtualPolynomial Algebra.residualMLE MLE'
+  change eval ((finFunctionFinEquiv.symm w : Fin pp.ℓ_m → Fin 2) : Fin pp.ℓ_m → R)
+    (MLE _) = _
+  rw [MLE_eval_zeroOne]
+  simp only [Function.comp_apply, Equiv.apply_symm_apply, Algebra.residualTable, r1csResidualAt]
 
 omit [Fintype R] in
 /-- **R1CS relation ⟺ zero-check polynomial vanishes on the boolean cube.** The R1CS relation for
@@ -467,3 +580,5 @@ end Spartan
 #print axioms Spartan.Spec.sendEvalClaimProver
 #print axioms Spartan.Spec.sendEvalClaimVerifier
 #print axioms Spartan.Spec.linearCombinationVerifier
+#print axioms Spartan.Spec.zeroCheckVirtualPolynomial_eq_sum
+#print axioms Spartan.Spec.secondSumCheckVirtualPolynomial_eq_terms

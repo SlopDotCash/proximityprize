@@ -30,9 +30,9 @@ Default checks:
   - ./scripts/test-retiredsweep.sh and ./scripts/lake-locked.sh exe retiredsweep --require-empty
   - ./scripts/check-imports.sh
   - ./scripts/test-build-timing-report.sh
-  - python3 ./scripts/check-docs-integrity.py
-  - python3 ./scripts/kb/check_generated.py
-  - python3 ./scripts/kb/lint.py --strict-cited-pages
+  - uv run --no-project --python 3.12 python ./scripts/check-docs-integrity.py
+  - uv run --no-project --python 3.12 python ./scripts/kb/check_generated.py
+  - uv run --no-project --python 3.12 python ./scripts/kb/lint.py --strict-cited-pages
 
 Optional checks:
   --lint    Also check the maintained style baseline for classic downstream modules
@@ -76,14 +76,14 @@ cleanup() {
 trap cleanup EXIT
 
 echo "# Checking Python regressions"
-python3 -m unittest discover -s scripts/tests
+uv run --no-project --python 3.12 --with-requirements scripts/requirements-validation.txt python -m unittest discover -s scripts/tests
 
 echo "# Checking canonical provenance and generated import surfaces"
 ./scripts/check-imports.sh
 
 echo "# Checking downstream source honesty"
-python3 scripts/forbidden_tokens.py
-python3 scripts/sorry_census.py --fail-on-holes
+uv run --no-project --python 3.12 python scripts/forbidden_tokens.py
+uv run --no-project --python 3.12 python scripts/sorry_census.py --fail-on-holes
 
 echo "# Building project"
 ./scripts/lake-locked.sh build 2>&1 | tee "$build_log"
@@ -100,13 +100,13 @@ echo "# Building compile-time acceptance clients"
 
 echo ""
 echo "# Checking ArkLibTest warning budget"
-python3 ./scripts/check-warning-log.py "$build_log" \
+uv run --no-project --python 3.12 python ./scripts/check-warning-log.py "$build_log" \
   --path-prefix ArkLibTest/ \
   --label "ArkLibTest warnings (including admissions)"
 
 echo ""
 echo "# Checking ArkLib warning budget"
-python3 ./scripts/check-warning-log.py "$build_log" \
+uv run --no-project --python 3.12 python ./scripts/check-warning-log.py "$build_log" \
   --source-inventory scripts/arklib-upstream.json \
   --exclude-substring 'declaration uses `sorry`' \
   --label 'ArkLib non-sorry warnings'
@@ -150,7 +150,7 @@ echo ""
 echo "# Checking downstream flagship axioms"
 awk '!/^([[:space:]]*(#|$))/ { print $1 }' scripts/flagship_axioms.txt \
   | LC_ALL=C sort -u | xargs ./scripts/lake-locked.sh build
-python3 scripts/axiom_audit.py
+uv run --no-project --python 3.12 python scripts/axiom_audit.py
 
 echo ""
 echo "# Testing build timing report fixtures"
@@ -158,12 +158,12 @@ echo "# Testing build timing report fixtures"
 
 echo ""
 echo "# Checking docs integrity"
-python3 ./scripts/check-docs-integrity.py
+uv run --no-project --python 3.12 python ./scripts/check-docs-integrity.py
 
 echo ""
 echo "# Checking knowledge base"
-python3 ./scripts/kb/check_generated.py
-python3 ./scripts/kb/lint.py --strict-cited-pages
+uv run --no-project --python 3.12 python ./scripts/kb/check_generated.py
+uv run --no-project --python 3.12 python ./scripts/kb/lint.py --strict-cited-pages
 
 if (( run_axioms )); then
   echo ""

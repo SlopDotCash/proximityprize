@@ -188,7 +188,7 @@ theorem zeroCheckVirtualPolynomial_degreeOf_le
     (oStmt : ∀ i, OracleStatement.AfterFirstMessage R pp i) (j : Fin pp.ℓ_m) :
     (zeroCheckVirtualPolynomial R pp 𝕩 oStmt).degreeOf j ≤ 1 := by
   classical
-  unfold zeroCheckVirtualPolynomial
+  rw [zeroCheckVirtualPolynomial_eq_sum]
   refine le_trans (MvPolynomial.degreeOf_sum_le _ _ _) ?_
   rw [Finset.sup_le_iff]
   intro x _

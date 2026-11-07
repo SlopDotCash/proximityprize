@@ -6,7 +6,6 @@ Checked-in source owns later API ports. Generate separate review candidates with
 scripts/integration/extract_downstream_extensions.py --output-dir <directory>.
 -/
 import ProximityPrize.Compatibility.DiscreteProbability
-import ArkLib.ProofSystem.Plonk.Basic
 
 /-
 Copyright (c) 2025 ArkLib Contributors. All rights reserved.

@@ -109,7 +109,7 @@ theorem firstSumCheckVirtualPolynomial_hypercubeSum_eq_zeroCheckEval
       = MvPolynomial.eval τ (zeroCheckVirtualPolynomial R pp 𝕩 oStmt) := by
   classical
   -- Expand the RHS `𝒢(τ)` into the row-hypercube sum.
-  rw [zeroCheckVirtualPolynomial, map_sum]
+  rw [zeroCheckVirtualPolynomial_eq_sum, map_sum]
   -- Reindex the LHS cube sum (over `X : Fin ℓ_m → Fin 2`) by `finFunctionFinEquiv` onto the row
   -- index `x : Fin (2 ^ ℓ_m)` used by `𝒢`.
   refine Fintype.sum_equiv finFunctionFinEquiv _ _ ?_

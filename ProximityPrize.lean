@@ -8,6 +8,7 @@ import ProximityPrize.Compatibility.CompletedPMFCoupling
 import ProximityPrize.Compatibility.ConstantOutputCompleteness
 import ProximityPrize.Compatibility.DiscreteProbability
 import ProximityPrize.Compatibility.EvaluationCodeDimension
+import ProximityPrize.Compatibility.LegacyStateRestoration
 import ProximityPrize.Compatibility.ListSize
 import ProximityPrize.Compatibility.PMFTotalVariation
 import ProximityPrize.Compatibility.PureKnowledge

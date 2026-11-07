@@ -1,0 +1,34 @@
+{
+  "upstream_revision": "db91471fcb5e1dd90fa638bf3b5d5eb45d0dd012",
+  "prior_integration_revision": "91519a5b257876d2668f012fb34100a8a22b04e6",
+  "canonical_owner": {
+    "path": "ArkLib/ProofSystem/Spartan/Basic.lean",
+    "blob": "b4567e12f3b644cf2a7a246c568a108e4b26b92e"
+  },
+  "historical_owner": "ProximityPrize/Extensions/ProofSystem/Spartan/Basic.lean",
+  "historical_scope": "Spartan.Spec retains the padded tuple and scalar-oracle proof contexts. Spartan.Protocol and Spartan.Security own the seven-stage protocol on original R1CS instances.",
+  "shared_layout": "Spartan.PublicParams and toSizeR1CS are the canonical layout definitions.",
+  "restored_context_aliases": 21,
+  "existing_public_headers_preserved": 17,
+  "delegation": {
+    "Spartan.Spec.oracleReduction.firstMessage": "SendSingleWitness.oracleReduction for an already padded instance",
+    "Spartan.Spec.zeroCheckVirtualPolynomial": "Spartan.Algebra.residualMLE, with zeroCheckVirtualPolynomial_eq_sum for historical integer-row proofs",
+    "Spartan.Spec.secondSumCheckVirtualPolynomial": "Spartan.Algebra.secondVirtual, with secondSumCheckVirtualPolynomial_eq_terms for historical distributed-term proofs"
+  },
+  "prior_second_polynomial_construction": {
+    "source_revision": "91519a5b257876d2668f012fb34100a8a22b04e6",
+    "path": "ArkLib/ProofSystem/Spartan/Basic.lean",
+    "sha256": "8975e6fd63f545edc6645ef428db0d968969237e05ea0140b7705fe0e9a7abfb",
+    "source": "def secondSumCheckVirtualPolynomial\n    (stmt : Statement.AfterLinearCombination R pp)\n    (oStmt : ∀ i, OracleStatement.AfterLinearCombination R pp i) :\n      MvPolynomial (Fin pp.ℓ_n) R :=\n  let r := stmt.1\n  let r_x := stmt.2.1\n  let x := stmt.2.2.2\n  let z := R1CS.𝕫 x (oStmt (.inr (.inr 0)))\n  let zMLE : MvPolynomial (Fin pp.ℓ_n) R := MvPolynomial.MLE (z ∘ finFunctionFinEquiv)\n  let matrixEval (idx : R1CS.MatrixIdx) : MvPolynomial (Fin pp.ℓ_n) R :=\n    (oStmt (.inr (.inl idx))).toMLE\n      ⸨(MvPolynomial.C ∘ r_x : Fin pp.ℓ_m → MvPolynomial (Fin pp.ℓ_n) R)⸩\n  let scalar (a : R) : MvPolynomial (Fin pp.ℓ_n) R := MvPolynomial.C a\n  scalar (r .A) * matrixEval .A * zMLE +\n  scalar (r .B) * matrixEval .B * zMLE +\n  scalar (r .C) * matrixEval .C * zMLE\n"
+  },
+  "retired_admitted_constructors": [
+    "Spartan.Spec.oracleReduction.firstChallenge",
+    "Spartan.Spec.oracleReduction.sendEvalClaim",
+    "Spartan.Spec.oracleReduction.linearCombination"
+  ],
+  "validation": {
+    "lexical_header_comparison": "passed",
+    "canonical_blob_comparison": "passed",
+    "lean_validation": "pending"
+  }
+}

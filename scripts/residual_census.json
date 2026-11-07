@@ -4993,7 +4993,7 @@
    "fq_name": "RationalFunctions.HenselNumerators.henselCoeffResidual",
    "kind": "def",
    "file": "ArkLib/Data/Polynomial/RationalFunctions/HenselNumerators/Hensel.lean",
-   "line": 636,
+   "line": 633,
    "reason": "result type is `𝕃 H`, not `Prop`"
   },
   {
@@ -5061,6 +5061,78 @@
    "reason": "name does not end in `Residual`"
   },
   {
+   "name": "boundaryResidual",
+   "fq_name": "Plonk.Computable.boundaryResidual",
+   "kind": "def",
+   "file": "ArkLib/ProofSystem/Plonk/Accumulator/Computable.lean",
+   "line": 73,
+   "reason": "result type is `CPolynomial F`, not `Prop`"
+  },
+  {
+   "name": "recurrenceResidual",
+   "fq_name": "Plonk.Computable.recurrenceResidual",
+   "kind": "def",
+   "file": "ArkLib/ProofSystem/Plonk/Accumulator/Computable.lean",
+   "line": 85,
+   "reason": "result type is `CPolynomial F`, not `Prop`"
+  },
+  {
+   "name": "boundaryResidual",
+   "fq_name": "Plonk.boundaryResidual",
+   "kind": "def",
+   "file": "ArkLib/ProofSystem/Plonk/Accumulator/Residual.lean",
+   "line": 30,
+   "reason": "result type is `F[X]`, not `Prop`"
+  },
+  {
+   "name": "recurrenceResidual",
+   "fq_name": "Plonk.recurrenceResidual",
+   "kind": "def",
+   "file": "ArkLib/ProofSystem/Plonk/Accumulator/Residual.lean",
+   "line": 34,
+   "reason": "result type is `F[X]`, not `Prop`"
+  },
+  {
+   "name": "residualFamily",
+   "fq_name": "Plonk.Batch.residualFamily",
+   "kind": "def",
+   "file": "ArkLib/ProofSystem/Plonk/Batch/Reduction.lean",
+   "line": 64,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "residualDegree",
+   "fq_name": "Plonk.GrandProduct.residualDegree",
+   "kind": "def",
+   "file": "ArkLib/ProofSystem/Plonk/GrandProduct/Data.lean",
+   "line": 38,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "residuals",
+   "fq_name": "Plonk.GrandProduct.residuals",
+   "kind": "def",
+   "file": "ArkLib/ProofSystem/Plonk/GrandProduct/Data.lean",
+   "line": 190,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "queryResidual",
+   "fq_name": "Plonk.GrandProduct.queryResidual",
+   "kind": "def",
+   "file": "ArkLib/ProofSystem/Plonk/GrandProduct/Reduction.lean",
+   "line": 113,
+   "reason": "result type is `OracleComp (oSpec + ([OStmtIn F n]ₒ + [(pSpec F n).Message]ₒ)) F`, not `Prop`"
+  },
+  {
+   "name": "rowResidual",
+   "fq_name": "Plonk.ConstraintSystem.rowResidual",
+   "kind": "def",
+   "file": "ArkLib/ProofSystem/Plonk/Relation/Basic.lean",
+   "line": 82,
+   "reason": "result type is `R`, not `Prop`"
+  },
+  {
    "name": "batchingReduction_perfectCompleteness_residual",
    "fq_name": "RingSwitching.BatchingPhase.batchingReduction_perfectCompleteness_residual",
    "kind": "def",
@@ -5074,6 +5146,30 @@
    "kind": "def",
    "file": "ArkLib/ProofSystem/RingSwitching/SumcheckPhase.lean",
    "line": 220,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "residual",
+   "fq_name": "Spartan.Algebra.residual",
+   "kind": "def",
+   "file": "ArkLib/ProofSystem/Spartan/Algebra/Identities.lean",
+   "line": 40,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "residualTable",
+   "fq_name": "Spartan.Algebra.residualTable",
+   "kind": "def",
+   "file": "ArkLib/ProofSystem/Spartan/Algebra/Identities.lean",
+   "line": 46,
+   "reason": "name does not end in `Residual`"
+  },
+  {
+   "name": "residualMLE",
+   "fq_name": "Spartan.Algebra.residualMLE",
+   "kind": "def",
+   "file": "ArkLib/ProofSystem/Spartan/Algebra/Identities.lean",
+   "line": 51,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5241,7 +5337,7 @@
    "fq_name": "Spartan.Spec.r1csResidualAt",
    "kind": "def",
    "file": "ProximityPrize/Extensions/ProofSystem/Spartan/Basic.lean",
-   "line": 389,
+   "line": 522,
    "reason": "name does not end in `Residual`"
   }
  ]

@@ -240,7 +240,7 @@ theorem zeroCheckVirtualPolynomial_eq_mle'_r1csResidual
     Spartan.Spec.zeroCheckVirtualPolynomial S pp stmt oStmt =
       MLE' (fun i : Fin (2 ^ pp.ℓ_m) =>
         r1csResidual stmt (fun idx => oStmt (.inl idx)) (oStmt (.inr 0)) i) := by
-  simp only [Spartan.Spec.zeroCheckVirtualPolynomial, MLE', MLE, r1csResidual,
+  simp only [Spartan.Spec.zeroCheckVirtualPolynomial_eq_sum, MLE', MLE, r1csResidual,
     Function.comp_apply]
   exact Fintype.sum_equiv finFunctionFinEquiv.symm _ _ (by
     intro x

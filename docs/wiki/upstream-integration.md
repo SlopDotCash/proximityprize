@@ -7,6 +7,13 @@ this project belong to `SlopDotCash/proximityprize`.
 
 ## Source ownership
 
+The November synchronization pins `db91471f`, including the completed upstream Spartan and
+Plonk protocols, measured extraction, and updated coding-theory APIs. It retains the
+coefficient-universe adaptation in `SplitFold`. Upstream now supplies the bivariate universe
+generalization and the Plonk wiring permutation. The intake ledger records the previous
+implementations and their dispositions in
+[`scripts/integration/nov07-upstream-intake.json`](../../scripts/integration/nov07-upstream-intake.json).
+
 The [canonical inventory](../../scripts/arklib-upstream.json) records the source revision and
 upstream modules re-exported by `ArkLib.lean`.
 Those source files, Lean's module-system conventions, and the upstream toolchain and dependency
@@ -20,6 +27,10 @@ implementation. Preserve existing behavior and record the affected declarations,
 downstream provenance, and reviewed content hash in the inventory's `downstream_adaptations`.
 The source checker accepts only those exact reviewed contents. Remove discharged debt from
 the admission baselines only after the kernel audit confirms the improvement.
+
+The upstream kernel baseline lists five solicited declarations. The source census pins the four
+written proof holes underlying them to the exact upstream blobs. Upstream also proved the tuple
+identities that previously had byte-pinned `True` stubs.
 
 The [higher-universe polynomial client](../../ArkLibTest/Compatibility/PolynomialUniverses.lean)
 instantiates the reviewed SplitFold APIs and `Bivariate.degreeX_le_natWeightedDegree` at

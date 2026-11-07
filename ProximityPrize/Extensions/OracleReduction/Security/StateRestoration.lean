@@ -5,7 +5,7 @@ Shared declarations come from the canonical ArkLib modules.
 Checked-in source owns later API ports. Generate separate review candidates with:
 scripts/integration/extract_downstream_extensions.py --output-dir <directory>.
 -/
-import ArkLib.OracleReduction.Security.StateRestoration
+import ProximityPrize.Compatibility.LegacyStateRestoration
 
 /-
 Copyright (c) 2024-2025 ArkLib Contributors. All rights reserved.

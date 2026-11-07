@@ -48,6 +48,7 @@ namespace ArkLib.Lattices.CyclotomicModulus
 
 variable (q : ℕ) [Fact (Nat.Prime q)] [NeZero q] [BEq (ZMod q)] [LawfulBEq (ZMod q)]
 
+omit [NeZero q] in
 /-- **Vanishing outside the matching residue classes.** If `j`'s index does not match `p`'s
 residue class mod `d/2k`, the `p`-th coefficient of the `j`-th packed summand `a_j · X^{packExp j}`
 is `0`. Combined with `packExp_mod_eq` and the support of fixed elements
@@ -63,13 +64,13 @@ theorem psi_summand_coeff_eq_zero_of_ne_mod (α κ : ℕ) (h2 : (2 : ZMod q) ≠
   rw [Xpow_mul_coeff α (packExp α (2 ^ κ) (j : ℕ)) (packExp_lt α κ hk j)
     (a j : Rq (powTwoCyclotomic (R := ZMod q) α)) hp]
   split_ifs with hle
-  · apply fixedSubring_coeff_eq_zero q α κ h2 hk (a j) (by omega)
+  · apply fixedSubring_coeff_eq_zero q α κ h2 hk (a j)
     intro hdvd
     apply hne
     have hmeq : packExp α (2 ^ κ) (j : ℕ) % 2 ^ (α - κ - 1) = p % 2 ^ (α - κ - 1) :=
       (Nat.modEq_iff_dvd' hle).mpr hdvd
     rw [packExp_mod_eq α κ hk j] at hmeq; omega
-  · rw [fixedSubring_coeff_eq_zero q α κ h2 hk (a j) (by omega) (by
+  · rw [fixedSubring_coeff_eq_zero q α κ h2 hk (a j) (by
       intro hdvd
       apply hne
       have hle2 : packExp α (2 ^ κ) (j : ℕ) ≤ p + 2 ^ α := by
@@ -131,7 +132,7 @@ theorem coeff_psi_abs_le_two_vecCInfNorm (α κ : ℕ) (h2 : (2 : ZMod q) ≠ 0)
   have hwit : ∀ j : Fin (2 ^ α / 2 ^ κ),
       p % 2 ^ (α - κ - 1) = (j : ℕ) % 2 ^ (α - κ - 1) → j = j₁ ∨ j = j₂ := by
     intro j heq
-    rcases eq_or_eq_of_mod_eq α κ hk j heq.symm with h | h
+    rcases eq_or_eq_of_mod_eq α κ j heq.symm with h | h
     · left; exact Fin.ext h
     · right; exact Fin.ext h
   have hzero : ∀ j : Fin (2 ^ α / 2 ^ κ), j ∉ ({j₁, j₂} : Finset _) → t j = 0 := by

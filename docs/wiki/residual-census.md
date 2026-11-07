@@ -54,7 +54,7 @@ always check this census before treating a `*Residual` name as open proof debt.
 - **Open:** 42
 - **Discharged:** 35
 - **Refuted:** 13
-- **Residual-like near misses:** 42 (listed below and in `scripts/residual_census.json`)
+- **Residual-like near misses:** 54 (listed below and in `scripts/residual_census.json`)
 
 | top-level directory | total | open | discharged | refuted |
 |---|---:|---:|---:|---:|
@@ -126,7 +126,7 @@ proof debt and naming drift.
 - `ProximityGap.Ownership.residual` — `ArkLib/Data/CodingTheory/ProximityGap/OwnershipBound.lean:48` — `def`; name does not end in `Residual`
 - `ProximityGap.WBPencil.w2Residual` — `ArkLib/Data/CodingTheory/ProximityGap/W2WindowHalfCount.lean:43` — `def`; result type is `F[X]`, not `Prop`
 - `PolynomialDifferential.universalTaylorResidual` — `ArkLib/Data/Polynomial/Differential/TaylorResidual.lean:122` — `def`; result type is `MvPolynomial (Option (Fin K)) F`, not `Prop`
-- `RationalFunctions.HenselNumerators.henselCoeffResidual` — `ArkLib/Data/Polynomial/RationalFunctions/HenselNumerators/Hensel.lean:636` — `def`; result type is `𝕃 H`, not `Prop`
+- `RationalFunctions.HenselNumerators.henselCoeffResidual` — `ArkLib/Data/Polynomial/RationalFunctions/HenselNumerators/Hensel.lean:633` — `def`; result type is `𝕃 H`, not `Prop`
 - `Polynomial.UniversalHenselNumerator.residualTerm` — `ArkLib/Data/Polynomial/UniversalHenselNumerator.lean:57` — `def`; name does not end in `Residual`
 - `DuplexSpongeFS.KeyLemmaSalted.Hyb01StepResidualS` — `ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaSalted.lean:596` — `def`; name does not end in `Residual`
 - `DuplexSpongeFS.KeyLemmaSalted.Hyb12StepResidualS` — `ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaSalted.lean:618` — `def`; name does not end in `Residual`
@@ -135,8 +135,20 @@ proof debt and naming drift.
 - `DuplexSpongeFS.Sponge316.Lemma5_12HonestResidualPaper` — `ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma512HonestPaper.lean:658` — `def`; name does not end in `Residual`
 - `DuplexSpongeFS.Sponge316.Lemma5_14HonestResidualPaper` — `ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma512HonestPaper.lean:666` — `def`; name does not end in `Residual`
 - `DuplexSpongeFS.Sponge316.Lemma5_16HonestResidualPaper` — `ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma512HonestPaper.lean:676` — `def`; name does not end in `Residual`
+- `Plonk.Computable.boundaryResidual` — `ArkLib/ProofSystem/Plonk/Accumulator/Computable.lean:73` — `def`; result type is `CPolynomial F`, not `Prop`
+- `Plonk.Computable.recurrenceResidual` — `ArkLib/ProofSystem/Plonk/Accumulator/Computable.lean:85` — `def`; result type is `CPolynomial F`, not `Prop`
+- `Plonk.boundaryResidual` — `ArkLib/ProofSystem/Plonk/Accumulator/Residual.lean:30` — `def`; result type is `F[X]`, not `Prop`
+- `Plonk.recurrenceResidual` — `ArkLib/ProofSystem/Plonk/Accumulator/Residual.lean:34` — `def`; result type is `F[X]`, not `Prop`
+- `Plonk.Batch.residualFamily` — `ArkLib/ProofSystem/Plonk/Batch/Reduction.lean:64` — `def`; name does not end in `Residual`
+- `Plonk.GrandProduct.residualDegree` — `ArkLib/ProofSystem/Plonk/GrandProduct/Data.lean:38` — `def`; name does not end in `Residual`
+- `Plonk.GrandProduct.residuals` — `ArkLib/ProofSystem/Plonk/GrandProduct/Data.lean:190` — `def`; name does not end in `Residual`
+- `Plonk.GrandProduct.queryResidual` — `ArkLib/ProofSystem/Plonk/GrandProduct/Reduction.lean:113` — `def`; result type is `OracleComp (oSpec + ([OStmtIn F n]ₒ + [(pSpec F n).Message]ₒ)) F`, not `Prop`
+- `Plonk.ConstraintSystem.rowResidual` — `ArkLib/ProofSystem/Plonk/Relation/Basic.lean:82` — `def`; result type is `R`, not `Prop`
 - `RingSwitching.BatchingPhase.batchingReduction_perfectCompleteness_residual` — `ArkLib/ProofSystem/RingSwitching/BatchingPhase.lean:511` — `def`; name does not end in `Residual`
 - `RingSwitching.SumcheckPhase.iteratedSumcheckOracleReduction_perfectCompleteness_residual` — `ArkLib/ProofSystem/RingSwitching/SumcheckPhase.lean:220` — `def`; name does not end in `Residual`
+- `Spartan.Algebra.residual` — `ArkLib/ProofSystem/Spartan/Algebra/Identities.lean:40` — `def`; name does not end in `Residual`
+- `Spartan.Algebra.residualTable` — `ArkLib/ProofSystem/Spartan/Algebra/Identities.lean:46` — `def`; name does not end in `Residual`
+- `Spartan.Algebra.residualMLE` — `ArkLib/ProofSystem/Spartan/Algebra/Identities.lean:51` — `def`; name does not end in `Residual`
 - `Spartan.Scratch114.r1csResidual` — `ArkLib/ProofSystem/Spartan/R1CSMleEquivalence.lean:201` — `def`; result type is `Fin sz.m → R`, not `Prop`
 - `Spartan.Spec.residualImplication` — `ArkLib/ProofSystem/Spartan/SumcheckRbrKSResidualAnalysis.lean:34` — `def`; name does not end in `Residual`
 - `StirIOP.MultiRound.stirCheckingRbrSoundnessResidualT` — `ArkLib/ProofSystem/Stir/MultiRoundSpecT.lean:358` — `def`; name does not end in `Residual`
@@ -157,7 +169,7 @@ proof debt and naming drift.
 - `ProximityToRS.ahiv17_affineLine_correlatedAgreement_residual` — `ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/AHIV22.lean:117` — `def`; name does not end in `Residual`
 - `ProximityToRS.ahiv17_rowSpan_to_affineLine_dOverQ_residual` — `ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/AHIV22.lean:167` — `def`; name does not end in `Residual`
 - `ProximityGap.diffStackMCAResidualBelowUDR` — `ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/Errors.lean:1678` — `def`; name does not end in `Residual`
-- `Spartan.Spec.r1csResidualAt` — `ProximityPrize/Extensions/ProofSystem/Spartan/Basic.lean:389` — `def`; name does not end in `Residual`
+- `Spartan.Spec.r1csResidualAt` — `ProximityPrize/Extensions/ProofSystem/Spartan/Basic.lean:522` — `def`; name does not end in `Residual`
 
 ## Refuted Residuals
 

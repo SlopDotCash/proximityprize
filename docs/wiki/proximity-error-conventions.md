@@ -121,8 +121,8 @@ This is `epsPg_le_epsCa_le_epsMca`; its two component inequalities are
 
 The unique-decoding comparison is:
 
-- `mcaError_le_epsCa_of_pos_of_two_mul_lt_dist` for the MCA-to-CA direction;
-- `mcaError_eq_epsCa_of_pos_of_two_mul_lt_dist` for the resulting equality.
+- `mcaError_le_epsCa_of_two_mul_lt_dist` for the MCA-to-CA direction;
+- `mcaError_eq_epsCa_of_two_mul_lt_dist` for the resulting equality.
 
 For any generator whose finite seed space has at most as many elements as the field,
 `CoreDefinitions.mcaError_moduleInterleavedCode_le_of_card_le` bounds the error of a finite
@@ -138,8 +138,9 @@ hypotheses:
 - `mcaError_interleaved_le` gives the interleaved-to-base inequality;
 - `mcaError_interleaved_eq` gives equality.
 
-Jo26's field-size-weighted bound for seed spaces larger than the field remains unformalized in
-ArkLib.
+For seed spaces larger than the field, `mcaError_moduleInterleavedCode_le_fieldWeighted` gives
+Jo26's field-size-weighted bound: over a finite field with `q` elements and `s` rows, interleaving
+multiplies the error by at most `(q ^ s - 1) / (q ^ (s - 1) * (q - 1))`.
 
 The numeric correlated-agreement values are connected to the predicate API by:
 

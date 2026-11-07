@@ -83,7 +83,7 @@ theorem secondSCVP_mem_restrictDegree
         (oStmt (.inr (.inl idx))).toMLE) ≤ 1 :=
     fun idx => (mem_restrictDegree_iff_degreeOf_le _ _).mp
       (toMLE_evalC_mem_restrictDegree _ stmt.2.1) j
-  simp only [secondSumCheckVirtualPolynomial, Function.comp_def, Fin.cast_eq_self]
+  simp only [secondSumCheckVirtualPolynomial_eq_terms, Function.comp_def, Fin.cast_eq_self]
   refine le_trans (degreeOf_add_le j _ _)
     (max_le (le_trans (degreeOf_add_le j _ _) (max_le ?_ ?_)) ?_)
   · refine le_trans (degreeOf_mul_le j _ _)

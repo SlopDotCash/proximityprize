@@ -66,7 +66,7 @@ theorem zeroCheckEval_simOracle
   · -- collapse the outer `foldl` to a `Finset.sum`, then match `eval pt 𝒢` term-by-term
     congr 1
     rw [foldl_add_eq_sum, zero_add, Finset.sum_map_toList]
-    unfold zeroCheckVirtualPolynomial
+    rw [zeroCheckVirtualPolynomial_eq_sum]
     rw [map_sum]
     refine Finset.sum_congr rfl (fun x _ => ?_)
     rw [map_mul, eval_C]

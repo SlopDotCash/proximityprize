@@ -56,12 +56,12 @@ theorem traceH_Xpow' (α k j : ℕ) :
 
 /-- **`Tr_H(1) = (d/k)·1`** (Hachi [NOZ26, §3], `Tr_H(X^0)`): each `σ_m` fixes `1`, so the trace
 is `|H| = d/k` copies of `1`. -/
-theorem traceH_one (α k : ℕ) (hk2pow : ∃ κ, k = 2 ^ κ) (hk : 2 * k ∣ 2 ^ α) :
+theorem traceH_one (α k : ℕ) (hk : 2 * k ∣ 2 ^ α) :
     traceH α k (1 : Rq (powTwoCyclotomic (R := R) α))
       = (2 ^ α / k) • (1 : Rq (powTwoCyclotomic (R := R) α)) := by
   unfold traceH traceOver
   rw [Finset.sum_congr rfl (fun m _ => galoisAut_map_one α m), Finset.sum_const,
-    Hexp_card α k hk2pow hk]
+    Hexp_card α k hk]
 
 /-! ## Geometric-sum vanishing (the algebraic core of Claim 2) -/
 
@@ -76,10 +76,15 @@ theorem geom_sum_eq_zero_of_isUnit {A : Type*} [CommRing A] {r : A} {n : ℕ}
 /-- The geometric sum `∑_{j<d/2k} (X^{4ki})^j = 0` when `d/2k ∤ i`. The ratio `r = X^{4ki}`
 satisfies `r^{d/2k} = X^{2di} = 1`, and `r - 1` is a unit (`Xpow_sub_one_isUnit`, since
 `X^{4ki·2^t} = -1` for a suitable `t` extracted from the `2`-adic valuation of `i`). -/
-theorem four_pow_i_geom_zero (α κ i : ℕ) (h2 : (2 : R) ≠ 0) (hκ : κ + 1 ≤ α)
+theorem four_pow_i_geom_zero (α κ i : ℕ) (h2 : (2 : R) ≠ 0)
     (hi0 : ¬ 2 ^ (α - κ - 1) ∣ i) :
     ∑ j ∈ Finset.range (2 ^ (α - κ - 1)),
       (Xpow (powTwoCyclotomic (R := R) α) (4 * 2 ^ κ * i)) ^ j = 0 := by
+  have hα2 : κ + 2 ≤ α := by
+    rcases Nat.lt_or_ge α (κ + 2) with h | h
+    · exact absurd (show 2 ^ (α - κ - 1) ∣ i from by
+        rw [show α - κ - 1 = 0 from by omega, pow_zero]; exact one_dvd i) hi0
+    · exact h
   apply geom_sum_eq_zero_of_isUnit
   · rw [← Xpow_mul]
     have he : 4 * 2 ^ κ * i * 2 ^ (α - κ - 1) = 2 ^ (α + 1) * i := by
@@ -89,11 +94,6 @@ theorem four_pow_i_geom_zero (α κ i : ℕ) (h2 : (2 : R) ≠ 0) (hκ : κ + 1 
         _ = 2 ^ (α + 1) * i := by rw [h4]
     rw [he, Xpow_mul, Xpow_conductor, one_pow]
   · have hine : i ≠ 0 := by rintro rfl; exact hi0 (dvd_zero _)
-    have hα2 : κ + 2 ≤ α := by
-      rcases Nat.lt_or_ge α (κ + 2) with h | h
-      · exact absurd (show 2 ^ (α - κ - 1) ∣ i from by
-          rw [show α - κ - 1 = 0 from by omega, pow_zero]; exact one_dvd i) hi0
-      · exact h
     obtain ⟨w, i', hi'odd, hieq⟩ := Nat.exists_eq_two_pow_mul_odd hine
     have hw : w ≤ α - κ - 2 := by
       by_contra hge
@@ -123,7 +123,7 @@ theorem four_pow_i_reindex (α κ i : ℕ) (hκ : κ + 1 ≤ α) :
   have hMn : 4 * 2 ^ κ * 2 ^ (α - κ - 1) = 2 ^ (α + 1) := by
     rw [show (4 : ℕ) = 2 ^ 2 from rfl, mul_assoc, ← pow_add, ← pow_add]; congr 1; omega
   have hφinj : Set.InjOn (fun a => (4 * 2 ^ κ + 1) ^ a % 2 ^ (α + 1))
-      ↑(Finset.range (2 ^ (α - κ - 1))) := four_pow_injOn κ α hκ
+      ↑(Finset.range (2 ^ (α - κ - 1))) := four_pow_injOn κ α
   have hψinj : Set.InjOn (fun j => 4 * 2 ^ κ * j + 1)
       ↑(Finset.range (2 ^ (α - κ - 1))) := by
     intro a _ b _ h
@@ -196,11 +196,11 @@ theorem traceH_Xpow_eq_zero (α k : ℕ) (h2 : (2 : R) ≠ 0) (hk2pow : ∃ κ, 
       = 2 ^ (α + 1) - (4 * 2 ^ κ + 1) ^ a % 2 ^ (α + 1) := fun a =>
     Nat.mod_eq_of_lt (by have := hplt a; have := hp4 a; omega)
   have hpinj : Set.InjOn (fun a => (4 * 2 ^ κ + 1) ^ a % 2 ^ (α + 1))
-      ↑(Finset.range (2 ^ (α - κ - 1))) := four_pow_injOn κ α hκ
+      ↑(Finset.range (2 ^ (α - κ - 1))) := four_pow_injOn κ α
   -- the orbit sum and conjugate sum both vanish
   have hTp : ∑ a ∈ Finset.range (2 ^ (α - κ - 1)),
       Xpow (powTwoCyclotomic (R := R) α) (i * ((4 * 2 ^ κ + 1) ^ a % 2 ^ (α + 1))) = 0 := by
-    rw [four_pow_i_reindex α κ i hκ, four_pow_i_geom_zero α κ i h2 hκ hi0', mul_zero]
+    rw [four_pow_i_reindex α κ i hκ, four_pow_i_geom_zero α κ i h2 hi0', mul_zero]
   have hTq : ∑ a ∈ Finset.range (2 ^ (α - κ - 1)),
       Xpow (powTwoCyclotomic (R := R) α)
         (i * ((2 ^ (α + 1) - (4 * 2 ^ κ + 1) ^ a % 2 ^ (α + 1)) % 2 ^ (α + 1))) = 0 := by
@@ -261,7 +261,7 @@ theorem traceH_Xpow_neg_one_sq (α k j : ℕ) (hk2pow : ∃ κ, k = 2 ^ κ) (hk 
     rcases hma with rfl | rfl <;> exact Nat.mod_lt _ (by positivity)
   have hmem : ∀ m, m ∈ Hexp α k → (conjExp α * m) % 2 ^ (α + 1) ∈ Hexp α k := by
     intro m hm
-    rw [← Hexp_generator_smul α k (conjExp α) hk2pow hk (Or.inl rfl)]
+    rw [← Hexp_generator_smul α k (conjExp α) hk (Or.inl rfl)]
     exact Finset.mem_image_of_mem _ hm
   rw [traceH_Xpow' α k j]
   refine Finset.sum_involution (fun m _ => (conjExp α * m) % 2 ^ (α + 1)) ?_ ?_ hmem ?_

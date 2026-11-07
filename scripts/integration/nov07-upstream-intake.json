@@ -1,0 +1,45 @@
+{
+  "old_upstream": "78835bdb3a4d24ea9dd2977db4c46029eb8de5db",
+  "new_upstream": "db91471fcb5e1dd90fa638bf3b5d5eb45d0dd012",
+  "downstream_base": "85be740aed919904456ebe6c1b8bce1cd2b133ac",
+  "superseded": [
+    {
+      "source": "ArkLib/ProofSystem/ConstraintSystem/Basic.lean",
+      "archive": "scripts/integration/retired/nov07-ProofSystem-ConstraintSystem-Basic.lean.txt",
+      "sha256": "8d957418d1ccadd84f7e57a1dc37332426d909867628a25779c0133094656dca",
+      "reason": "The upstream owner defines ConstraintSystem using the canonical claim-dependent relation API. The earlier classic bundle had no external importers."
+    },
+    {
+      "source": "ArkLib/ProofSystem/ConstraintSystem/Examples.lean",
+      "archive": "scripts/integration/retired/nov07-ProofSystem-ConstraintSystem-Examples.lean.txt",
+      "sha256": "176aa40df26394c97d2f1653c4a8edebac0a7a6fec2b7693f24931bdf58b2d99",
+      "reason": "The upstream examples exercise the canonical constraint-system API. The earlier examples had no downstream importers."
+    },
+    {
+      "source": "ArkLib/ProofSystem/ConstraintSystem/Plonk.lean",
+      "archive": "scripts/integration/retired/nov07-ProofSystem-ConstraintSystem-Plonk.lean.txt",
+      "sha256": "d6a677cd96308dc9b25014a0a68917561ebf7fa2f50a282a42c16d9c15e07081",
+      "reason": "The upstream wiring permutation now uses the proved fiber-cycle implementation."
+    },
+    {
+      "source": "ArkLib/Data/Polynomial/Bivariate.lean",
+      "archive": "scripts/integration/retired/nov07-Data-Polynomial-Bivariate.lean.txt",
+      "sha256": "313a46525771d5a7f26c8dcd2fe0f885bea2d67999bff3621883c22921a1ad87",
+      "reason": "Upstream generalized the coefficient universe, including degreeX_le_natWeightedDegree."
+    }
+  ],
+  "consolidations": [
+    {
+      "source": "ProximityPrize/Extensions/Commitments/Functional/Basic.lean",
+      "archive": "scripts/integration/retired/nov07-ProximityPrize-Extensions-Commitments-Functional-Basic.lean.txt",
+      "sha256": "13bd1d5fb82e3d008fa6ca50800393b02f6c6a1b42da2b39f539a7f8c19fd601",
+      "reason": "Canonical extractability logs the commitment phase and threads post-setup and post-commitment state. The old reset-state experiment had no external declaration callers."
+    },
+    {
+      "source": "ArkLib/ProofSystem/Sumcheck/Spec/OracleCompletenessThreaded.lean",
+      "archive": "scripts/integration/retired/nov07-ArkLib-ProofSystem-Sumcheck-Spec-OracleCompletenessThreaded.lean.txt",
+      "sha256": "ccff72f4a7c23fef3bac9a98087232da5af37bc643ed665d6e9ae0e5628c7964",
+      "reason": "Canonical Sumcheck.Spec.oracleReduction_perfectCompleteness proves the same conclusion without the old per-round coherence and support premises. The distinct single-round compatibility wrapper stays live."
+    }
+  ]
+}

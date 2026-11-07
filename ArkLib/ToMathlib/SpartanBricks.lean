@@ -469,7 +469,7 @@ theorem secondSumCheckVirtualPolynomial_eval_eq_finalExpectedClaimValue
     MvPolynomial.eval stmt.1 (secondSumCheckVirtualPolynomial R pp stmt.2 oStmt) =
       finalExpectedClaimValue R pp stmt oStmt := by
   classical
-  simp [secondSumCheckVirtualPolynomial, finalExpectedClaimValue, MvPolynomial.eval_add,
+  simp [secondSumCheckVirtualPolynomial_eq_terms, finalExpectedClaimValue, MvPolynomial.eval_add,
     MvPolynomial.eval_mul, MvPolynomial.eval_C]
   ring
 
@@ -949,7 +949,7 @@ theorem secondSumCheckVirtualPolynomial_hypercubeSum_eq_evalClaimValue
                 Mat idx (finFunctionFinEquiv xBits) yEnum))))
     ?_
   intro yBits
-  simp only [secondSumCheckVirtualPolynomial, MvPolynomial.eval_add, MvPolynomial.eval_mul,
+  simp only [secondSumCheckVirtualPolynomial_eq_terms, MvPolynomial.eval_add, MvPolynomial.eval_mul,
     MvPolynomial.eval_C]
   let matrixEval (idx : R1CS.MatrixIdx) :=
     MvPolynomial.eval (yBits : Fin pp.ℓ_n → R)

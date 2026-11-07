@@ -36,7 +36,7 @@ theorem zeroCheckVirtualPolynomial_eq_zero_of_relation
           * (oStmt (.inl .B) *ᵥ R1CS.𝕫 𝕩 (oStmt (.inr 0)))
         = (oStmt (.inl .C) *ᵥ R1CS.𝕫 𝕩 (oStmt (.inr 0)))) :
     zeroCheckVirtualPolynomial R pp 𝕩 oStmt = 0 := by
-  unfold zeroCheckVirtualPolynomial
+  rw [zeroCheckVirtualPolynomial_eq_sum]
   apply Finset.sum_eq_zero
   intro x _
   have hx := congrFun h x

@@ -12,9 +12,7 @@ on:
       - "docs/kb/sources/**"
       - "scripts/kb/**"
       - ".github/workflows/kb-generated.yml"
-  # Pull requests that touch only KB inputs (bibliography, paper pages,
-  # source metadata, generated JSON) are documentation-only for ci.yml, which
-  # then skips validate.sh and its KB checks. Run the KB gates here instead.
+  # Check generated KB state independently of the Lean build.
   pull_request:
     branches: ["main"]
     paths:
@@ -44,20 +42,22 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false
 
-      - uses: actions/setup-python@v7
+      - name: Set up uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
         with:
-          python-version: "3.12"
+          version: "0.13.6"
+          enable-cache: false
 
       - name: Regenerate KB files
-        run: python3 ./scripts/kb/regenerate.py
+        run: uv run --no-project --python 3.12 python ./scripts/kb/regenerate.py
 
       - name: Check generated files
-        run: python3 ./scripts/kb/check_generated.py
+        run: uv run --no-project --python 3.12 python ./scripts/kb/check_generated.py
 
       - name: Lint generated KB state
-        run: python3 ./scripts/kb/lint.py --strict-cited-pages
+        run: uv run --no-project --python 3.12 python ./scripts/kb/lint.py --strict-cited-pages --use-generated-indexes
 
       - name: Verify generated files are committed
         run: |
@@ -66,6 +66,6 @@ jobs:
             echo "KB generated files are current."
             exit 0
           fi
-          echo "KB generated files are stale. Run python3 ./scripts/kb/regenerate.py and commit the result."
+          echo "KB generated files are stale. Run uv run --no-project --python 3.12 python ./scripts/kb/regenerate.py and commit the result."
           printf '%s\n' "$changes"
           exit 1

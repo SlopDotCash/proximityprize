@@ -14,7 +14,7 @@ For reusable cross-cutting workflows that are not tied to one repo area, see
 - [`upstream-integration.md`](upstream-integration.md) - canonical ArkLib source ownership,
   downstream extensions, and the fetch-only upstream integration workflow.
 - [`module-system.md`](module-system.md) - Lean's module system: the canonical file shape, the
-  error-to-fix table, the measured payoff, and what tightening is still on the table.
+  error-to-fix table, what the boundary buys, and what tightening is still on the table.
 - [`blueprint-and-citations.md`](blueprint-and-citations.md) - blueprint workflow, paper
   references, and citation keys.
 - [`knowledge-base.md`](knowledge-base.md) - when to use `docs/kb/` and how it relates to the
@@ -80,5 +80,6 @@ For reusable cross-cutting workflows that are not tied to one repo area, see
 - [`../../README.md`](../../README.md) - project overview.
 - [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) - style, naming, docstrings, citations, and
   large contributions.
-- [`../../ROADMAP.md`](../../ROADMAP.md) - planned directions.
-- [`../../BACKGROUND.md`](../../BACKGROUND.md) - background references.
+- [`../../ROADMAP.md`](../../ROADMAP.md) - status: what is complete, in progress, and planned.
+- [`../../BACKGROUND.md`](../../BACKGROUND.md) - background theory and references, and how
+  ArkLib's oracle reductions compare with the literature.
