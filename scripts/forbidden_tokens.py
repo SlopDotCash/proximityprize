@@ -797,6 +797,45 @@ def top_level_colon(header: str) -> int | None:
     return last_colon
 
 
+_OPAQUE_HEADER_TOKEN_RE = re.compile(
+    r":=|[(){}\[\]⟨⟩⦃⦄]|#[A-Za-z_]\w*|"
+    + _ID_START
+    + r"(?:(?P<complex>let\s+rec|by)|"
+    + r"(?P<binding>let|letI|let_fun|let_λ|let_delayed|let_tmp|have|haveI)|"
+    + r"(?P<command>example|instance|structure|class|inductive|namespace|section|end))"
+    + _ID_END
+)
+_OPAQUE_BRACKETS = {**_BRACKET_OPEN, "⦃": "⦄"}
+_OPAQUE_CLOSERS = set(_OPAQUE_BRACKETS.values())
+
+
+def opaque_has_body(
+    live_text: str, start: int, limit: int, quoted: list[tuple[int, int]]
+) -> bool:
+    """Find a body assignment before the next command, excluding type bindings."""
+    brackets: list[str] = []
+    bindings = 0
+    for match in _OPAQUE_HEADER_TOKEN_RE.finditer(live_text, start, limit):
+        if not outside_quoted(match.start(), quoted):
+            continue
+        token = match.group()
+        if token in _OPAQUE_BRACKETS:
+            brackets.append(_OPAQUE_BRACKETS[token])
+        elif token in _OPAQUE_CLOSERS:
+            if not brackets or brackets.pop() != token:
+                return False
+        elif not brackets:
+            if token.startswith("#") or match.lastgroup in {"complex", "command"}:
+                return False
+            if match.lastgroup == "binding":
+                bindings += 1
+            elif token == ":=":
+                if not bindings:
+                    return True
+                bindings -= 1
+    return False
+
+
 def declaration_header_end(live_text: str, start: int, next_decl_start: int | None) -> int:
     """Best-effort end offset for a Lean declaration header."""
     limit = next_decl_start if next_decl_start is not None else len(live_text)
@@ -1093,12 +1132,13 @@ def main() -> int:
             next_decl_start = decls[decl_index + 1].start() if decl_index + 1 < len(decls) else None
             if kind in OPAQUE_KINDS:
                 limit = next_decl_start if next_decl_start is not None else len(live_text)
-                if live_text.find(":=", dm.end(), limit) == -1:
+                if not opaque_has_body(live_text, dm.end(), limit, lexed.quoted):
                     line = text.count("\n", 0, dm.start()) + 1
                     failures.append(
                         f"{path}:{line}: bodyless {kind} declaration {name} introduces an "
                         f"unproven inhabitant of its statement type (axiom-equivalent "
-                        f"laundering); provide a real ':=' proof/definition, or state the "
+                        f"laundering); provide a real ':=' proof/definition and parenthesize a "
+                        f"complex result type, or state the "
                         f"obligation as an explicit Prop or a tracked sorry"
                     )
                 continue
