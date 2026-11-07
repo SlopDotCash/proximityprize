@@ -12,13 +12,32 @@ gate reads is covered by at least one pull-request check.
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
+import sys
 import tempfile
 import textwrap
 import unittest
 
 REPO = Path(__file__).resolve().parents[2]
 WORKFLOWS = REPO / ".github" / "workflows"
+
+
+def find_bash() -> str:
+    """Find a POSIX-compatible bash executable.
+
+    On Windows hosts where WSL is present, C:\\Windows\\System32\\bash.exe is the WSL
+    launcher which does not inherit Win32 environment variables or temp directory paths.
+    Prefer Git's bash if available.
+    """
+    if sys.platform == "win32":
+        for candidate in [
+            r"C:\Program Files\Git\bin\bash.exe",
+            r"C:\Program Files (x86)\Git\bin\bash.exe",
+        ]:
+            if Path(candidate).is_file():
+                return candidate
+    return shutil.which("bash") or "bash"
 
 
 def scope_step_script() -> str:
@@ -44,22 +63,22 @@ def lean_relevant(changed: str) -> bool:
         root = Path(tmp)
         git = ["git", "-C", str(root), "-c", "user.name=t", "-c", "user.email=t@example.invalid"]
         subprocess.run(["git", "init", "-q", str(root)], check=True)
-        (root / "base.txt").write_text("base\n")
+        (root / "base.txt").write_text("base\n", encoding="utf-8")
         subprocess.run([*git, "add", "-A"], check=True)
         subprocess.run([*git, "commit", "-qm", "base"], check=True)
         base = subprocess.run([*git, "rev-parse", "HEAD"], check=True,
                               capture_output=True, text=True).stdout.strip()
         target = root / changed
         target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_text("changed\n")
+        target.write_text("changed\n", encoding="utf-8")
         subprocess.run([*git, "add", "-A"], check=True)
         subprocess.run([*git, "commit", "-qm", "head"], check=True)
         output = root / "github-output"
         env = dict(os.environ, EVENT_NAME="pull_request", PR_BASE_SHA=base,
-                   GITHUB_OUTPUT=str(output))
-        subprocess.run(["bash", "-c", scope_step_script()], cwd=root, env=env,
+                   GITHUB_OUTPUT=output.as_posix())
+        subprocess.run([find_bash(), "-c", scope_step_script()], cwd=root, env=env,
                        check=True, capture_output=True)
-        values = dict(line.split("=", 1) for line in output.read_text().splitlines())
+        values = dict(line.split("=", 1) for line in output.read_text(encoding="utf-8").splitlines())
         return values["lean-relevant"] == "true"
 
 
