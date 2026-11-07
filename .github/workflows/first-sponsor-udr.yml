@@ -39,7 +39,7 @@ jobs:
                  'distance_slack': int(n-k+1-2*(n-agreement)),
                  'field_budget_slack': p-n*2**128})
           PY
-      - uses: leanprover/lean-action@v1.6.0
+      - uses: leanprover/lean-action@v1.7.0
         with:
           auto-config: false
           build: false
