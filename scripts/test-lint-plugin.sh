@@ -45,4 +45,26 @@ for token in '$ᵖ' 'Pr_{' 'Pr[' '𝒮['; do
   grep -Fq "Retired probability notation \`$token\`" "$fixture_tmp/probability-rejected.log"
 done
 
+stop_plugin_path="$(./scripts/lake-locked.sh query StopTacticPlugin:shared)"
+stop_rejected="scripts/LintStyleFixtures/StopTacticRejected.lean"
+lake env lean --plugin="$stop_plugin_path" scripts/LintStyleFixtures/StopTacticAllowed.lean
+
+if ! lake env lean "$stop_rejected" >"$fixture_tmp/stop-compiler.log" 2>&1; then
+  cat "$fixture_tmp/stop-compiler.log" >&2
+  echo "ERROR: the stop fixture must compile without the source-policy plugin" >&2
+  exit 1
+fi
+
+if lake env lean --plugin="$stop_plugin_path" "$stop_rejected" \
+    >"$fixture_tmp/stop-rejected.log" 2>&1; then
+  echo "ERROR: source-policy plugin accepted the stop tactic" >&2
+  exit 1
+fi
+
+if [[ "$(grep -Fc 'error: The `stop` tactic admits open goals.' "$fixture_tmp/stop-rejected.log")" -ne 13 ]]; then
+  cat "$fixture_tmp/stop-rejected.log" >&2
+  echo "ERROR: source-policy plugin did not reject all 13 stop tactic occurrences" >&2
+  exit 1
+fi
+
 echo "ArkLib source-policy plugin fixtures passed"

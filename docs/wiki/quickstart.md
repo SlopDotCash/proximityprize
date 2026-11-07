@@ -177,6 +177,12 @@ project-specific mathematical Unicode notation, while rejecting invisible contro
 controls, and nonstandard space characters that can conceal source changes. It also rejects
 blanket package-root imports. The normal `lake build` loads ArkLib's Lean syntax-tree plugin, which
 rejects source-level linter suppressions in their actual parsed context.
+The four default libraries and `ArkLibTest` also load a separate syntax-tree
+plugin that rejects Lean's admitting `stop` tactic. It accepts ordinary
+`stop` names and catches tactics inside warning-suppression commands.
+`scripts/test-lint-plugin.sh` runs the syntax-policy fixtures.
+Build optional modules owned by those libraries explicitly to run the check.
+Direct `lake env lean` and `pg-iterate.sh` run without the build-time plugins.
 
 The header policy understands the Lean module system, so `module`, `public import`, `meta import`
 and `import all` all parse, and it pins the canonical header order every file under `ArkLib/`

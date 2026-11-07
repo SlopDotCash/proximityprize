@@ -65,6 +65,8 @@ This directory contains various utility scripts for the ArkLib project.
   nested in tactics, terms, extensible interpolated strings, and diagnostic-capturing commands.
   The plugin supplies precise syntax diagnostics; it is not presented as a sandbox against
   arbitrary hostile Lean metaprogramming, so the independent source pass remains mandatory
+- **`StopTacticPlugin.lean`** - end-of-module check for Lean's admitting `stop` tactic.
+  Runs in the four default library targets and `ArkLibTest`. Ordinary `stop` names are accepted.
 - **`forbidden_tokens.py`** - CI gate 1, a pre-build lexical precheck: rejects `native_decide`-style
   evaluation, `unsafe` declarations, metaprograms that add declarations, vacuous `: True`
   placebos (except byte-pinned inherited upstream stubs listed in
@@ -154,7 +156,7 @@ bash scripts/build_timing_report.sh --help
 # Run only the Lean-native source-policy gate
 lake exe lint-style
 
-# Test the build-time suppression plugin against accepted and rejected syntax fixtures
+# Test the build-time source-policy plugins against accepted and rejected syntax fixtures
 ./scripts/test-lint-plugin.sh
 
 ```
