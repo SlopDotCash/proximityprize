@@ -22,16 +22,22 @@ each as:
                NOT count as a discharge (a conditional reduction is not a
                proof).  A result that is an equivalence (`R ↔ Q`), whose loosest
                top-level connective after the head is `→`, `∨` or `=`, or that
-               fixes a named argument to a numeral (`R (k := 0)`) is likewise
+               fixes an argument to a numeral (`R 0` or `R (k := 0)`) is likewise
                recorded but does not discharge.  When several census residuals
                share a last name across namespaces, a provider is narrowed via its qualified result head
                or namespace affinity; if it stays ambiguous it is recorded but
                does not discharge.
   refuted    — a concrete declaration proves a negated instance of the residual
-               (for example `theorem ..._false : ¬ FooResidual ...`).  This is
-               not a discharge; it means the statement surface is known false
-               or too broad and should be repaired/retired rather than carried
-               as open proof debt.
+               (for example `theorem ..._false : ¬ FooResidual ...`).  The
+               negation must refute the residual outright: `¬ R ∧ Q` parses as
+               `(¬ R) ∧ Q` and refutes `R`, `¬ (Q ∨ R)` refutes both disjuncts
+               and `¬ (Q → R)` refutes `R`; `¬ R → Q`, `¬ (R ∧ Q)`,
+               `¬ (R ↔ Q)`, `¬ R = Q`, a residual under another head
+               (`¬ IsEmpty R`) and a negated existential (`¬ ∃ h : P, R`)
+               do not establish a refutation by source inspection.
+               This is not a discharge; it means the statement surface is
+               known false or too broad and should be repaired/retired rather
+               than carried as open proof debt.
   open       — everything else.
 
 A residual name appearing only in hypothesis position (`(h : <Name>Residual
@@ -86,7 +92,7 @@ PROVIDER_KINDS = {"theorem", "lemma", "def", "instance"}
 CAMPAIGN_ADDENDUM_PREFIX = "> **Campaign addendum"
 
 
-def strip_comments(text: str) -> str:
+def strip_comments(text: str, *, mask_literals: bool = False) -> str:
     """Blank out line comments, block comments, and docstrings (newlines kept).
 
     String literals in live code are not comments: a ``"/-"`` or ``"--"``
@@ -97,17 +103,45 @@ def strip_comments(text: str) -> str:
     """
     out = list(text)
     i, n, depth = 0, len(text), 0
+
+    def blank_literal(start: int, end: int) -> None:
+        if mask_literals:
+            for index in range(start, end):
+                if text[index] != "\n":
+                    out[index] = " "
+
     while i < n:
-        if depth == 0 and text[i] == "'":
-            # Char literal: 'x' or an escaped char such as '\n'. Skip it
-            # whole so a '"' char literal is not mistaken for a string.
+        if depth == 0 and text[i] == "«":
+            # Comment markers and quotes in escaped identifiers are name text.
+            end = text.find("»", i + 1)
+            i = n if end < 0 else end + 1
+            continue
+        if depth == 0 and text[i] == "r" and (
+            i == 0 or not is_ident_char(text[i - 1])
+        ):
+            quote = i + 1
+            while quote < n and text[quote] == "#":
+                quote += 1
+            if quote < n and text[quote] == '"':
+                delimiter = '"' + text[i + 1:quote]
+                end = text.find(delimiter, quote + 1)
+                end = n if end < 0 else end + len(delimiter)
+                blank_literal(i, end)
+                i = end
+                continue
+        if depth == 0 and text[i] == "'" and (i == 0 or not is_ident_char(text[i - 1])):
+            # An apostrophe inside a name such as A'B'Residual is not a quote.
+            # Skip char literals whole so a '"' character cannot start a string.
             if i + 2 < n and text[i + 2] == "'":
+                blank_literal(i, i + 3)
                 i += 3
                 continue
             if i + 3 < n and text[i + 1] == "\\" and text[i + 3] == "'":
+                blank_literal(i, i + 4)
                 i += 4
                 continue
         if depth == 0 and text[i] == '"':
+            start = i
             i += 1
             while i < n and text[i] != '"':
                 if text[i] == "\\" and i + 1 < n:
@@ -116,6 +150,7 @@ def strip_comments(text: str) -> str:
                     i += 1
             if i < n:
                 i += 1
+            blank_literal(start, i)
             continue
         if depth == 0 and text.startswith("--", i):
             j = text.find("\n", i)
@@ -172,6 +207,47 @@ def split_signature(window: str) -> tuple[str, str]:
     return window[:sig_colon], window[sig_colon + 1 : end]
 
 
+# Lean spells these connectives either way (`unicode(" ∧ ", " /\\ ")`,
+# `unicode(" ∨ ", " \\/ ")`, `" <-> "` and `unicodeSymbol " → " " -> "` in
+# Lean v4.30.0-rc2).  `<->` must be rewritten before `->`.
+ASCII_CONNECTIVES = (("<->", "↔"), ("->", "→"), ("/\\", "∧"), ("\\/", "∨"))
+
+
+def unicode_connectives(text: str) -> str:
+    """Spell Lean's ASCII connectives `<->`, `->`, `/\\`, `\\/` as `↔`, `→`, `∧`, `∨`.
+
+    Every connective check below matches the Unicode tokens, so without this a
+    result such as `R -> False` reads as a bare application of `R` and counts
+    as a discharge.  String literals and «quoted» names are copied unchanged.
+    """
+    out: list[str] = []
+    i = 0
+    while i < len(text):
+        c = text[i]
+        if c == '"':
+            j = i + 1
+            while j < len(text) and text[j] != '"':
+                j += 2 if text[j] == "\\" else 1
+            out.append(text[i : j + 1])
+            i = j + 1
+            continue
+        if c == "«":
+            j = text.find("»", i + 1)
+            j = len(text) - 1 if j == -1 else j
+            out.append(text[i : j + 1])
+            i = j + 1
+            continue
+        for ascii_form, symbol in ASCII_CONNECTIVES:
+            if text.startswith(ascii_form, i):
+                out.append(symbol)
+                i += len(ascii_form)
+                break
+        else:
+            out.append(c)
+            i += 1
+    return "".join(out)
+
+
 def split_forall_prefix(result: str) -> tuple[str, str]:
     """Retain leading universal binders separately from the result body."""
     binders: list[str] = []
@@ -223,7 +299,7 @@ def split_top_level_once(text: str, sep: str) -> tuple[str, str] | None:
 
 
 def is_ident_char(c: str) -> bool:
-    return c.isalnum() or c in "_'"
+    return c.isalnum() or c in "_'!?"
 
 
 def mentions_word(text: str, word: str) -> bool:
@@ -454,11 +530,121 @@ def top_level_connective(result: str) -> str | None:
     return min(found, key=CONNECTIVE_PRECEDENCE.__getitem__)
 
 
-NUMERAL_RE = re.compile(r"^(?:\d+|0x[0-9a-fA-F]+|∅|\[\])$")
+def _closes_at_end(s: str) -> bool:
+    """True when the bracket opened by `s[0]` closes at the last character."""
+    depth = 0
+    for i, c in enumerate(s):
+        if c in OPEN_BRACKETS:
+            depth += 1
+        elif c in CLOSE_BRACKETS:
+            depth -= 1
+            if depth == 0:
+                return i == len(s) - 1
+    return False
+
+
+def _top_level_tokens(s: str) -> list[tuple[int, str]]:
+    """Depth-0 connectives and relations of `s`, as (index, token).
+
+    Relations include `=` (also in `==`), `≠`, `∈`, `∉` and comparisons.
+    The `=` of `:=` and `=>` is ignored.  Scanning stops at a
+    depth-0 `∀`, `∃`, `λ` or `fun`, whose body runs to the end of `s`.
+    """
+    out: list[tuple[int, str]] = []
+    depth = 0
+    for i, c in enumerate(s):
+        if c in OPEN_BRACKETS:
+            depth += 1
+        elif c in CLOSE_BRACKETS:
+            depth = max(0, depth - 1)
+        elif depth == 0:
+            if c in "∀∃λ" or (
+                s.startswith("fun", i)
+                and (i == 0 or not is_ident_char(s[i - 1]))
+                and s[i + 3 : i + 4].isspace()
+            ):
+                break
+            if c in "↔→∨∧≠∈∉<>≤≥":
+                out.append((i, c))
+            elif c == "=" and s[i - 1 : i] != ":" and s[i + 1 : i + 2] != ">":
+                out.append((i, c))
+    return out
+
+
+def _refuted_by_not(p: str, fuel: int) -> list[str]:
+    """Heads that `¬ (p)` refutes outright, where `p` is the whole negated proposition."""
+    p = p.strip()
+    if fuel == 0:
+        return []
+    if p.startswith("(") and _closes_at_end(p):
+        return _refuted_by_not(p[1:-1], fuel - 1)
+    if p.startswith("∃"):
+        # A source scan cannot show that the quantified type has a witness.
+        # For example, `¬ ∃ p : False, R` holds even when R is true.
+        return []
+    if p.startswith("∀"):
+        split = split_top_level_once(p, ",")
+        return _refuted_by_not(split[1], fuel - 1) if split else []
+    tokens = _top_level_tokens(p)
+    kinds = {t for _, t in tokens}
+    if "↔" in kinds:
+        return []
+    if "→" in kinds:
+        # `→` is right-associative and `¬ (A → B)` proves `A ∧ ¬ B`.
+        cut = next(i for i, t in tokens if t == "→")
+        return _refuted_by_not(p[cut + 1 :], fuel - 1)
+    if "∨" in kinds:
+        # `¬ (A ∨ B)` proves `¬ A ∧ ¬ B`.
+        cuts = [i for i, t in tokens if t == "∨"]
+        parts = [p[a + 1 : b] for a, b in zip([-1] + cuts, cuts + [len(p)])]
+        return [h for part in parts for h in _refuted_by_not(part, fuel - 1)]
+    if kinds:
+        return []  # `¬ (A ∧ B)` and `¬ (a = b)`-style relations refute neither side.
+    m = HEAD_IDENT_RE.match(p)
+    return [m.group(0).lstrip("@")] if m else []
+
+
+def negation_targets(negated: str, fuel: int = 16) -> list[str]:
+    """Heads that a result `¬ <negated>` refutes outright.
+
+    `¬` takes its argument at precedence 40, so it binds tighter than `∧`, `∨`,
+    `→` and `↔` and looser than relations: `¬ R ∧ Q` is `(¬ R) ∧ Q` and refutes
+    `R` (a later conjunct `¬ Q` refutes `Q` too); `¬ R → Q`, `¬ R ∨ Q` and
+    `¬ R ↔ Q` refute nothing; `¬ R = Q` is `¬ (R = Q)`.  Within the negated
+    proposition, `¬ (Q ∨ R)` refutes both disjuncts, `¬ (Q → R)` refutes `R`,
+    and `¬ (R ∧ Q)`, `¬ (R ↔ Q)`, `¬ ∃! x, R x`, a residual under another head
+    (`¬ IsEmpty R`) and negated existentials do not establish a refutation
+    by source inspection.
+    """
+    s = negated.strip()
+    if fuel == 0:
+        return []
+    if s.startswith(("∀", "∃")):
+        return _refuted_by_not(s, fuel)  # a binder body runs to the end
+    tokens = _top_level_tokens(s)
+    if any(t in "→∨↔" for _, t in tokens):
+        return []
+    cuts = [i for i, t in tokens if t == "∧"]
+    first, *rest = [s[a + 1 : b] for a, b in zip([-1] + cuts, cuts + [len(s)])]
+    heads = _refuted_by_not(first, fuel)
+    for conjunct in rest:
+        c = conjunct.strip()
+        while c.startswith("(") and _closes_at_end(c):
+            c = c[1:-1].strip()
+        # A universal conjunct may be vacuous on an empty binder type.
+        if c.startswith("¬"):
+            heads += negation_targets(c[1:], fuel - 1)
+    return heads
+
+
+NUMERAL_RE = re.compile(
+    r"(?:-?\s*(?:[0-9](?:[0-9_]*[0-9])?|0[bB][01_]*[01]|0[oO][0-7_]*[0-7]|"
+    r"0[xX][0-9a-fA-F_]*[0-9a-fA-F])|∅|\[\])"
+)
 
 
 def specialised_arguments(result: str, rname: str) -> list[str]:
-    """Named arguments of the residual head fixed to a literal, e.g. `(k := 0)`.
+    """Residual-head arguments fixed to literals, named or positional.
 
     A provider that fixes a parameter of the residual to a numeral (or `∅`)
     proves one instance, not the residual: `Foo (k := 0)` is typically vacuous.
@@ -469,24 +655,47 @@ def specialised_arguments(result: str, rname: str) -> list[str]:
         return []
     rest = s[m.end():]
     out: list[str] = []
+    arguments: list[str] = []
     depth = 0
     start = None
     for i, c in enumerate(rest):
         if c in OPEN_BRACKETS:
             if depth == 0:
+                if start is not None:
+                    arguments.append(rest[start:i])
                 start = i
             depth += 1
         elif c in CLOSE_BRACKETS:
             depth = max(0, depth - 1)
             if depth == 0 and start is not None:
-                group = rest[start + 1 : i]
-                nm = re.match(r"\s*([^\s:()]+)\s*:=\s*(.+?)\s*$", group, re.S)
-                if nm and NUMERAL_RE.match(nm.group(2).strip()):
-                    out.append(f"{nm.group(1)} := {nm.group(2).strip()}")
+                arguments.append(rest[start:i + 1])
                 start = None
-        elif depth == 0 and not c.isspace() and c not in "@":
-            if not (c.isalnum() or c in "_'.⁻"):
-                break
+        elif depth == 0:
+            if c.isspace() or c in "∧∨→↔=":
+                if start is not None:
+                    arguments.append(rest[start:i])
+                    start = None
+                if not c.isspace():
+                    break
+            elif start is None:
+                start = i
+    else:
+        if start is not None and depth == 0:
+            arguments.append(rest[start:])
+
+    for argument in arguments:
+        label = "positional"
+        value = argument.strip()
+        if value.startswith("(") and value.endswith(")"):
+            named = re.fullmatch(r"\(\s*([^\s:()]+)\s*:=\s*(.+?)\s*\)", value, re.S)
+            if named:
+                label, value = named.group(1), named.group(2).strip()
+        while value.startswith("(") and value.endswith(")"):
+            # A nonliteral expression retains its operators/delimiters and
+            # still fails the full literal match after surrounding pairs peel.
+            value = value[1:-1].strip()
+        if NUMERAL_RE.fullmatch(value):
+            out.append(f"{label} := {value}")
     return out
 
 
@@ -497,7 +706,9 @@ def lower_first(name: str) -> str:
 def parse_file(path: Path, root: Path) -> list[dict]:
     """All top-level-ish declarations in one file, with parsed signatures."""
     text = path.read_text(encoding="utf-8", errors="replace")
-    code = strip_comments(text)
+    # Literal examples can contain entire declaration/namespace lines. Keep
+    # their newlines for locations but never inventory those lines as source.
+    code = strip_comments(text, mask_literals=True)
     lines = code.splitlines(keepends=True)
 
     line_starts: list[int] = []
@@ -540,6 +751,7 @@ def parse_file(path: Path, root: Path) -> list[dict]:
     for i, h in enumerate(headers):
         window_end = headers[i + 1]["start"] if i + 1 < len(headers) else len(code)
         binders, result = split_signature(code[h["sig_from"] : window_end])
+        binders, result = unicode_connectives(binders), unicode_connectives(result)
         name = h["name"]
         fq = f"{h['namespace']}.{name}" if h["namespace"] else name
         decls.append(
@@ -701,19 +913,13 @@ def find_providers(all_decls: list[dict], residuals: list[dict]) -> None:
                     }
                 )
 
-        refuted_targets: set[str] = set()
         if result_no_forall.startswith("¬"):
-            negated = result_no_forall[1:].strip()
-            neg_head_full = result_head(negated)
-            neg_head_last = neg_head_full.rsplit(".", 1)[-1]
-            if neg_head_last in by_name:
-                refuted_targets.add(neg_head_last)
-            for rname in census_names:
-                if mentions_word(negated, rname):
-                    refuted_targets.add(rname)
-            for rname in refuted_targets:
-                head_for_resolution = neg_head_full if neg_head_last == rname else ""
-                rows, ambiguous = _resolve(by_name[rname], head_for_resolution, provider_ns)
+            targets_full = negation_targets(result_no_forall[1:])
+            for neg_head_full in dict.fromkeys(targets_full):
+                neg_head_last = neg_head_full.rsplit(".", 1)[-1]
+                if neg_head_last not in by_name:
+                    continue
+                rows, ambiguous = _resolve(by_name[neg_head_last], neg_head_full, provider_ns)
                 for row in rows:
                     row["refutations"].append(
                         {
@@ -906,9 +1112,10 @@ def write_wiki_markdown(path: Path, summary: dict, residuals: list[dict], near_m
         "ambiguous namespace match. Conditional reductions are useful proof plumbing, but they",
         "remain **open** until their side conditions are proved. An equivalence (`R ↔ Q`), a",
         "result whose loosest top-level connective after the residual is `→`, `∨` or `=`, or an",
-        "instance with a parameter fixed to a numeral (`R (k := 0)`) is not a provider. A residual",
-        "is **refuted** when the tree contains a concrete theorem of a negated residual instance,",
-        "and a proved negation outranks any apparent provider.",
+        "instance with a parameter fixed to a numeral (`R 0` or `R (k := 0)`) is not a provider.",
+        "A residual is **refuted** when a concrete theorem entails a negated residual instance.",
+        "The census leaves negated existentials unclassified because it does not establish that",
+        "their binder types have witnesses. A proved refutation outranks any apparent provider.",
         "",
         "The named-residual convention is a modularity pattern, not an incompleteness marker:",
         "always check this census before treating a `*Residual` name as open proof debt.",
