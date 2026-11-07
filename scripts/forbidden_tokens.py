@@ -50,6 +50,21 @@ provided, scans only those Lean files/directories. Fails if live
     foo_holds : <security Prop>` asserts the obligation with no proof and slips
     past the `axiom` check above. (`opaque foo : T := v`, with a real body, is
     fine and is *not* flagged.)
+  - a Lean debug option that disables the kernel check or replaces proofs
+    with `sorryAx` without any `sorry` token in the source:
+    `debug.skipKernelTC` (`set_option debug.skipKernelTC true in theorem t :
+    1 = 2 := by <tactic assigning True.intro>` elaborates and `#print axioms t`
+    reports *no axioms at all*), `debug.byAsSorry`, `debug.proofAsSorry` and
+    `debug.terminalTacticsAsSorry` (the proof becomes `sorryAx` with only a
+    warning, so `sorry_census.py` sees no hole). The option names are matched
+    as bare identifier components in comment-stripped source, with string and
+    char literals kept live because a metaprogram can build the option name
+    from `"skipKernelTC"` and set it on the command scope. `«debug».«skipKernelTC»`
+    is the same option and is matched too. The full-tree scan also rejects the
+    names in `lakefile.toml` (`[leanOptions]` applies them to every `lake
+    build`, and the flagship axiom audit reads the resulting oleans). A name
+    assembled from string pieces (`"skipKernel" ++ "TC"`) or a `-D` flag passed directly to Lean
+    is outside this scan.
 
 Comment and docstring occurrences are ignored. Comments, string/raw-string/char
 literals and guillemet-quoted identifiers are lexed together (see `lex_lean`),
@@ -70,6 +85,7 @@ from __future__ import annotations
 
 import re
 import sys
+import tomllib
 from pathlib import Path
 
 # `Lean.ofReduceBool` / `Lean.ofReduceNat` applied directly as terms add the same
@@ -201,6 +217,26 @@ OPAQUE_KINDS = {"opaque", "constant"}
 
 ALLOWLIST_PATH = Path(__file__).resolve().parent / "residual_axioms.txt"
 
+# Lean debug options that defeat the proof gates without a `sorry`/`axiom` token
+# (Lean v4.30.0-rc2): `debug.skipKernelTC` (src/Lean/Environment.lean) adds the
+# declaration with `addDeclWithoutChecking`, so an elaborator-level assignment
+# such as `mvarId.assign (mkConst ``True.intro)` proves `1 = 2` and `#print
+# axioms` reports nothing; `debug.byAsSorry` (src/Lean/Elab/Term/TermElabM.lean),
+# `debug.proofAsSorry` (src/Lean/Elab/MutualDef.lean) and
+# `debug.terminalTacticsAsSorry` (src/Lean/Meta/Tactic/Util.lean) replace the
+# proof, the `by` block or the terminal tactic with `sorryAx`. The final name
+# component is distinctive, so it is matched on its own with Lean identifier
+# boundaries: that covers `set_option debug.skipKernelTC true [in]`, the
+# term-level `set_option … in`, the quoted `«debug».«skipKernelTC»`, a name
+# literal `` `debug.skipKernelTC `` and a string component `"skipKernelTC"`
+# passed to `Options.setBool`. No live source in this repository mentions any of
+# them.
+DEBUG_OPTION_NAMES = ("skipKernelTC", "byAsSorry", "proofAsSorry", "terminalTacticsAsSorry")
+DEBUG_OPTION_RE = re.compile(
+    "(?<![" + ID_REST + "])(" + "|".join(DEBUG_OPTION_NAMES) + ")(?![" + ID_REST + "])"
+)
+LAKEFILE_NAME = "lakefile.toml"
+
 # Heads of proof-carrying declarations whose statement type must never be the
 # vacuous `True`. The live `theorem`/`lemma` keyword starts a declaration
 # anywhere on a line; an in-proof `have … : True` has no such keyword.
@@ -244,7 +280,7 @@ def scan_plan(args: list[str]) -> tuple[list[Path], bool, list[str]]:
         if path.is_file():
             if path.suffix == ".lean":
                 files.add(path)
-            else:
+            elif path.name != LAKEFILE_NAME:  # a lakefile is scanned by `lakefile_paths`
                 errors.append(f"{path}: expected a .lean file")
             continue
 
@@ -259,6 +295,44 @@ def scan_plan(args: list[str]) -> tuple[list[Path], bool, list[str]]:
                 full_arklib_scan = True
 
     return sorted(files), full_arklib_scan, errors
+
+
+def lakefile_paths(args: list[str]) -> list[Path]:
+    """Lakefiles to scan for debug options: the checkout root's on a full scan,
+    the root of any directory argument that contains `ArkLib/`, and any
+    `lakefile.toml` named explicitly."""
+    roots = [Path(".")] if not args else []
+    for raw in args:
+        path = Path(raw)
+        if path.is_file() and path.name == LAKEFILE_NAME:
+            roots.append(path.parent)
+        elif path.is_dir() and (path / "ArkLib").is_dir():
+            roots.append(path)
+    found = {root / LAKEFILE_NAME for root in roots if (root / LAKEFILE_NAME).is_file()}
+    return sorted(found)
+
+
+def lakefile_debug_option_hits(text: str) -> list[tuple[str, str]]:
+    """Find debug option names in decoded TOML keys and string values."""
+    hits: list[tuple[str, str]] = []
+
+    def scan_string(value: str, location: str) -> None:
+        hits.extend((location, match.group(1)) for match in DEBUG_OPTION_RE.finditer(value))
+
+    def scan(value: object, location: str) -> None:
+        if isinstance(value, dict):
+            for key, child in value.items():
+                child_location = f"{location}.{key}" if location else key
+                scan_string(key, child_location)
+                scan(child, child_location)
+        elif isinstance(value, list):
+            for index, child in enumerate(value):
+                scan(child, f"{location}[{index}]")
+        elif isinstance(value, str):
+            scan_string(value, location)
+
+    scan(tomllib.loads(text), "")
+    return hits
 
 
 # --- Lean lexing ------------------------------------------------------------
@@ -846,6 +920,15 @@ def main() -> int:
                 f"but text-based gates such as the residual census still read what "
                 f"follows; delete the unchecked tail or move it to a scratch file)"
             )
+        for m in DEBUG_OPTION_RE.finditer(text):
+            if not mask[m.start()]:
+                line = text.count("\n", 0, m.start()) + 1
+                failures.append(
+                    f"{path}:{line}: forbidden Lean debug option `debug.{m.group(1)}` "
+                    f"(skips the kernel type checker or replaces the proof with `sorryAx` "
+                    f"without a `sorry` token, so neither the sorry census nor "
+                    f"`#print axioms` can see the hole)"
+                )
         scopes = TrueScopes(live_text, lexed.quoted)
         for m in UNSAFE_DECL_RE.finditer(live_text):
             if not outside_quoted(m.start(), lexed.quoted):
@@ -909,6 +992,18 @@ def main() -> int:
                 f"statement or track it by its GitHub issue, not a `True` theorem."
             )
 
+    for lakefile in lakefile_paths(sys.argv[1:]):
+        try:
+            hits = lakefile_debug_option_hits(lakefile.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, tomllib.TOMLDecodeError) as exc:
+            failures.append(f"{lakefile}: cannot read Lake configuration: {exc}")
+            continue
+        for location, option in hits:
+            failures.append(
+                f"{lakefile}: forbidden Lean debug option `debug.{option}` in the "
+                f"Lake configuration at {location}"
+            )
+
     for name, sites in sorted(allow_sites.items()):
         unique_sites = sorted(set(sites))
         if len(unique_sites) > 1:
@@ -939,7 +1034,8 @@ def main() -> int:
         "forbidden-token precheck: clean (no native_decide / bv_decide / "
         "ofReduceBool / ofReduceNat / trustCompiler / "
         "unsafe declaration / unsafeCast / implemented_by / "
-        "undocumented custom axiom / vacuous `: True` placebo; "
+        "undocumented custom axiom / vacuous `: True` placebo / "
+        "kernel-skip or proof-as-sorry debug option; "
         f"{len(allowed_hits)} allowlisted residual axiom(s))"
     )
     return 0

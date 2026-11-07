@@ -47,10 +47,10 @@ def parse_imports(file_path: str) -> List[str]:
 
 def normalize_module_name(file_path: str, root_dir: str) -> str:
     """Convert file path to normalized module name."""
-    # Remove root directory and .lean extension
-    rel_path = os.path.relpath(file_path, root_dir)
-    module_name = rel_path.replace('.lean', '').replace('/', '.')
-    return module_name
+    # Module identity follows the path Lean imports, including a symlink alias.
+    relative = os.path.relpath(str(file_path).replace("\\", "/"), str(root_dir).replace("\\", "/"))
+    return relative.replace("\\", "/").removesuffix(".lean").replace("/", ".")
+
 
 def build_dependency_graph(lean_files: List[str], root_dir: str) -> Dict[str, List[str]]:
     """Build dependency graph from Lean files."""
@@ -109,7 +109,7 @@ def find_cycles(graph: Dict[str, List[str]]) -> List[List[str]]:
 
 def generate_dot_graph(graph: Dict[str, List[str]], output_file: str):
     """Generate DOT format graph for Graphviz."""
-    with open(output_file, 'w') as f:
+    with open(output_file, 'w', encoding='utf-8') as f:
         f.write("digraph ArkLibDependencies {\n")
         f.write("  rankdir=TB;\n")
         f.write("  node [shape=box, style=filled, fillcolor=lightblue];\n")
@@ -163,12 +163,12 @@ def generate_json_graph(graph: Dict[str, List[str]], output_file: str):
             }
             graph_data["edges"].append(edge_data)
 
-    with open(output_file, 'w') as f:
+    with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(graph_data, f, indent=2)
 
 def generate_text_summary(graph: Dict[str, List[str]], output_file: str):
     """Generate human-readable text summary of dependencies."""
-    with open(output_file, 'w') as f:
+    with open(output_file, 'w', encoding='utf-8') as f:
         f.write("ArkLib Dependency Summary\n")
         f.write("=" * 50 + "\n\n")
 

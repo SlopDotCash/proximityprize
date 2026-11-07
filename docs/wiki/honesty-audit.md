@@ -8,7 +8,9 @@ a "PROVEN" issue comment, or a grant-completion claim.
 
 `./scripts/validate.sh` catches: `sorry`/`admit` holes (`sorry_census.py`), forbidden tokens
 (`native_decide`, `bv_decide`, `unsafe` declarations, `unsafeCast`, `implemented_by`,
-undocumented `axiom` — `forbidden_tokens.py`), flagship-theorem axiom drift
+undocumented `axiom`, the kernel-skip and proof-as-sorry debug options `debug.skipKernelTC`,
+`debug.byAsSorry`, `debug.proofAsSorry`, `debug.terminalTacticsAsSorry` in source or
+`lakefile.toml` — `forbidden_tokens.py`), flagship-theorem axiom drift
 (`axiom_audit.py`). An auditor's job is everything those *cannot* see.
 
 The optional post-build `python3 scripts/proximity_prize_cleanroom_audit.py` checks
