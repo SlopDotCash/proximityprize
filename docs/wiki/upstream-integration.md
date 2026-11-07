@@ -180,6 +180,10 @@ The restoration proofs use VCVio's logged random-oracle execution to account for
 private sampling and fresh queries. The Sumcheck client uses a Unit witness to certify ordinary
 soundness for the native verifier, with both expected and bounded query formulations.
 
+The historical [verifier context-lifting bound](../../ProximityPrize/Extensions/OracleReduction/LiftContext/Reduction.lean)
+applies to every input under explicit output preservation for all compatible statements.
+`Verifier.liftContext_probEvent_le_of_not_mem` uses the canonical lens law for invalid inputs.
+
 The [historical STIR specifications](../../ArkLib/ProofSystem/Stir/PaperStatements.lean)
 from the same PR retain the strict soundness relation, uniform constants, and a protocol chosen
 before the distance and list-size bounds. These proposition definitions carry no verifier-query
