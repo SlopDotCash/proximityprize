@@ -129,6 +129,13 @@ equal evaluation vectors and therefore equal folded values. The original UDR-clo
 from the stronger arbitrary-function result; global disagreement alone is insufficient
 ([proof audit](../../scripts/integration/binius-fold-locality-migration.json)).
 
+The [GKR circuit model](../../ProximityPrize/Extensions/ProofSystem/GKR/Circuit.lean) and
+[polynomial line restriction](../../ProximityPrize/Extensions/Data/MvPolynomial/LineRestriction.lean)
+preserve the foundations imported in [PR #216](https://github.com/SlopDotCash/proximityprize/pull/216)
+from the upstream GKR development. The degree bounds reuse the integrated polynomial APIs.
+These modules cover layered evaluation, ordered wiring predicates, and the restriction of a
+multilinear polynomial to a univariate line.
+
 ## Compatibility APIs
 
 The downstream [randomized state restoration](../../ProximityPrize/Extensions/Interaction/Oracle/Security/StateRestorationRandomized.lean)
