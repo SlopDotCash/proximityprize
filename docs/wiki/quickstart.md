@@ -275,8 +275,10 @@ python3 -m pip install leanblueprint
   CI logs active Lean workers and memory usage every 30 seconds so an
   interrupted build can be traced to its in-flight module.
   It also enforces the issue #47 verification gates: a fast precheck rejecting
-  `native_decide`/`bv_decide`/custom `axiom` declarations in live source
-  (`scripts/forbidden_tokens.py`), a comment-stripped sorry census requiring
+  `native_decide`/`bv_decide`/custom `axiom` declarations and the
+  `debug.skipKernelTC`/`debug.*AsSorry` options (in live source or `lakefile.toml`)
+  (`scripts/forbidden_tokens.py`, which requires Python 3.11+ for TOML parsing),
+  a comment-stripped sorry census requiring
   zero live holes (`scripts/sorry_census.py --fail-on-holes`), and a
   `#print axioms` sweep over the pinned flagship list
   (`scripts/axiom_audit.py` reading `scripts/flagship_axioms.txt`) that must
@@ -405,6 +407,8 @@ only gate 1; nothing audits the transitive axioms it never reports.
 ## Retained probe dependencies
 
 Run the finite monomial-pencil census probes under `scripts/probes/` with standard Python and leave `PYTHONOPTIMIZE` unset. Their entry points reject optimized execution so the certificate checks remain active.
+
+The SYZ72 middle-band probe samples 20,000 support pairs at each of 15 selected primes and checks all 28 legal third supports per draw. Run `python3 scripts/probes/probe_syz72_middle_band_sweep.py` to reproduce the sample or pass `--trials` to choose a different positive draw count. Zero-hit rows apply to the sampled supports.
 
 Before deleting a Python probe helper, run `python3 -m unittest discover -s scripts/tests -p test_probe_local_dependencies.py`. This parses retained probe sources without executing experiments and checks statically named `probe_` and `_skeptic_` imports. It catches missing helper files; it does not cover dynamic imports, external packages, or mathematical correctness. Run the affected experiment separately when validating its results.
 
