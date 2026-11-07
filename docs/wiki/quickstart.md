@@ -406,6 +406,10 @@ only gate 1; nothing audits the transitive axioms it never reports.
 
 ## Retained probe dependencies
 
+Run the finite monomial-pencil census probes under `scripts/probes/` with standard Python and leave `PYTHONOPTIMIZE` unset. Their entry points reject optimized execution so the certificate checks remain active.
+
+The SYZ72 middle-band probe samples 20,000 support pairs at each of 15 selected primes and checks all 28 legal third supports per draw. Run `python3 scripts/probes/probe_syz72_middle_band_sweep.py` to reproduce the sample or pass `--trials` to choose a different positive draw count. Zero-hit rows apply to the sampled supports.
+
 Before deleting a Python probe helper, run `python3 -m unittest discover -s scripts/tests -p test_probe_local_dependencies.py`. This parses retained probe sources without executing experiments and checks statically named `probe_` and `_skeptic_` imports. It catches missing helper files; it does not cover dynamic imports, external packages, or mathematical correctness. Run the affected experiment separately when validating its results.
 
 The R387 Z3 probe uses exit 0 only for all searched branches returning unsat, exit 1 for a checked MCA counterexample, and exit 2 for unresolved results (including timeout). An unresolved exit is not a proof of either outcome.
