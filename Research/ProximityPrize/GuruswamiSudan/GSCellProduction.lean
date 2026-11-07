@@ -105,12 +105,8 @@ lemma codewordToPoly_eval_vector {n k : ℕ} [NeZero n] (domain : Fin n ↪ F₀
     (hmem : (fun i => P.eval (domain i)) ∈ ReedSolomon.code domain k) :
     ReedSolomon.codewordToPoly
       (⟨fun i => P.eval (domain i), hmem⟩ : ReedSolomon.code domain k) = P := by
-  symm
-  refine Lagrange.eq_interpolate_of_eval_eq _
-    (fun i _ j _ h => domain.injective h) ?_ (fun i _ => rfl)
-  have hcard : (Finset.univ : Finset (Fin n)).card = n := by simp
-  rw [hcard]
-  exact lt_of_lt_of_le hdeg (by exact_mod_cast hk)
+  exact ReedSolomon.toPolynomial_evalWord_of_degree_lt hdeg
+    (by simpa only [Fintype.card_fin] using hk)
 
 /-- **Decode distance**: an `mcaEvent` decode's polynomial is within Hamming distance
 `δ·n` of the scalar fold — its disagreements avoid the witness set. -/

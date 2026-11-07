@@ -425,7 +425,7 @@ theorem gs_existence_sloped_curve_margin {n L : ℕ} (k m : ℕ) (ωs : Fin n �
         cappedZBudgetCurve L k (gs_degree_bound k n m) (numConstraints n m)
           - (L - 1) * b := by
   have hcard : numConstraints n m < numVars k (gs_degree_bound k n m) :=
-    gs_numVars_gt_numConstraints_of_gt_one hn hk hm
+    gs_numVars_gt_numConstraints_of_gt_one (n := n) (m := m) hk
   have hcard' : n * (constraintIndices m).card <
       (weigthBoundIndices k (gs_degree_bound k n m)).card := by
     simpa [numVars, numConstraints] using hcard

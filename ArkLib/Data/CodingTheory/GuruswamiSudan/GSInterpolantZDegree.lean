@@ -158,7 +158,7 @@ theorem gs_existence_over_ratfunc_zDegree {n : ℕ} (k m : ℕ) (ωs : Fin n ↪
   classical
   set D := gs_degree_bound k n m with hD
   -- 1. nonzero kernel vector over K from the in-tree dimension count
-  have hcount := gs_numVars_gt_numConstraints_of_gt_one hn hk hm
+  have hcount := gs_numVars_gt_numConstraints_of_gt_one (n := n) (m := m) hk
   obtain ⟨c, hc0, hck⟩ := exists_nonzero_solution_gen (F := K) k n m
     (liftedDomain ωs) (genericFold f₀ f₁) D hcount
   -- 2. it is a kernel vector of the mapped matrix

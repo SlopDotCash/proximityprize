@@ -104,7 +104,7 @@ lemma plotkin_avg_distance {n : ℕ} {F : Type*} [Fintype F] [DecidableEq F]
   have hM_pos : (0 : ℚ) < B.card := by
     exact_mod_cast lt_of_lt_of_le (by norm_num) h_B
   -- ∑_i ∑_α C₂(K) = C₂(|B|) · (n - d)
-  have h_eq := sum_sum_K_i_eq_n_sub_d (B := B) h_B
+  have h_eq := sum_sum_K_i_eq_n_sub_d (B := B)
   -- ∑_i ∑_α C₂(K) ≥ n · (|B|²/q - |B|)/2
   have h_lb := sum_sum_choose_K_ge_plotkin (B := B) (n := n) h_card
   -- combine: C₂(|B|)·(n - d) ≥ n·(|B|²/q - |B|)/2

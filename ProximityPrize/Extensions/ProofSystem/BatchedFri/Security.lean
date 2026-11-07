@@ -247,18 +247,8 @@ noncomputable def f_succ'
         rw [←sum_finRangeTo_add_one]
         rfl
     })] at hs₀'
-    have h := CosetFftDomainClass.root_exists (ω := ω)
-      (i := (∑ j' ∈ finRangeTo (k + 1) ↑i, ↑(s j')))
-      (j := (s i).1)
-      (by {
-        trans (∑ j' ∈ finRangeTo _ (i.1 + 1), (s j').1)
-        rw [sum_finRangeTo_add_one]
-        rfl
-        apply (swap le_trans) k_le_n
-        apply Finset.sum_le_sum_of_subset (by simp)
-      })
-      hs₀'
-    rcases h with ⟨y, ⟨h1, h2⟩⟩
+    obtain ⟨y, h1, h2⟩ := CosetFftDomainClass.root_exists (ω := ω)
+      (i := (∑ j' ∈ finRangeTo (k + 1) ↑i, ↑(s j'))) (j := (s i).1) hs₀'
     exists ⟨y, by {
       rw [CosetFftDomain.mem_toFinset_iff_mem]
       exact h1
