@@ -54553,3 +54553,47 @@ scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsolatedCountPosi
 
 Evidence class: Lean proof certificate; all declarations use only `propext`,
 `Classical.choice`, and `Quot.sound`.
+
+---
+
+### [agl24-rim-failure-prob-boundary-instances] Boundary-instance attacks on the Lemma 3.1 interface predicate are no-route: parameter-region where it fails is unreachable by consumers
+
+Date: 2026-11-01. Target: the [AGL24] §3 "Lemma 3.1 interface"
+`AGL24.RIMFullRankFailureProbResidual` in `ArkLib/Data/CodingTheory/AGL24UnionBound.lean`.
+This is a route-map note prompted by the review of PR #334; it is neither a closure nor a
+refutation claim, and the recorded census status of the residual remains
+open-with-conditional-providers.
+
+`ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean` kernel-checks two boundary
+instances of the interface predicate:
+
+- at the empty one-slot family the reduced intersection matrix has no rows, the deficit
+  set is everything, and its outer measure under the uniform tuple distribution is
+  `1` (`rimRankDeficitSet_empty_family`, `toOuterMeasure_deficit_empty_family_eq_one`);
+- at the complete two-slot family, which is genuinely 2-weakly-partition-connected
+  (`wpc_two_complete_family`), the all-zero evaluation is a deficit point with kernel
+  witness `(0, 1)` (`zero_eval_mem_rimRankDeficitSet_complete_family`), so a point-mass
+  distribution on it gives the deficit set measure `1`
+  (`toOuterMeasure_deficit_complete_family_pure_eq_one`).
+
+Route consequence, recorded per the review of PR #334: these are NO-ROUTE instances.
+Neither shape is reachable by a consumer — every provider and consumer requires a WPC
+family (`WpcIndex`, both providers carry `hwpc`). The all-zero tuple also has mass
+zero under every evaluation-embedding-mapped PMF, since embeddings `Fin 2 ↪ ZMod 2`
+take two distinct values. Neither example falls under the `hres` hypothesis of
+`conditional_failure_bound`. Consequently such boundary facts delimit the predicate without refuting the
+interface, and exact counterexample-style submissions at non-WPC families or
+non-injective masses are a dead end recorded here for anti-repeat. The real referencing
+gap — the bridge from the uniform-over-tuples bound to the embedding-mapped evaluation
+PMF that `conditional_failure_bound` consumes — is PR #338.
+
+Reproduction at the final PR commit:
+
+```
+scripts/pg-iterate.sh ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean
+scripts/lake-locked.sh build ArkLib.Data.CodingTheory.AGL24FailureProbGuard
+```
+
+Evidence class: Lean proof certificate; all declarations of the file use only `propext`,
+`Classical.choice` and `Quot.sound`. Full repository and hosted gates must be reported
+separately.
