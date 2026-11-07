@@ -193,9 +193,10 @@ theorem cumTheta_eq_zero_of_below_girth {d : ℕ} (p : ℕ) (g : Fin d → ℤ)
   · subst h0
     -- the weight-0 shell is empty: `c ≠ 0 ∧ l1Norm c = 0` is contradictory
     simp only [thetaShell, l1Norm]
-    rw [Finset.card_eq_zero, Finset.filter_eq_empty_iff]
-    intro c _
-    rintro ⟨-, hnorm, hne⟩
+    apply Finset.card_eq_zero.mpr
+    apply Finset.eq_empty_iff_forall_notMem.mpr
+    intro c hc
+    obtain ⟨_, _, hnorm, hne⟩ := Finset.mem_filter.mp hc
     apply hne
     funext k
     have : (c k).natAbs = 0 := by

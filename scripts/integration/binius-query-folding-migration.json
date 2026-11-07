@@ -1,0 +1,85 @@
+{
+  "canonical_owner": "ArkLib/ProofSystem/Binius/BinaryBasefold/QueryPhase/Folding.lean",
+  "extension_owner": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/QueryPhase/Folding.lean",
+  "source_sha256": "84e00712d05e8785d3d7d0b58c484480f332eb783703b1ecd61676a6d28c9a37",
+  "original_source_archive": "scripts/integration/retired/binius-query-folding-pre-native.lean.txt",
+  "original_source_sha256": "c3dde1409e753ce888abade6d0179858f2671fc72365432ce6303679d9a1fb2b",
+  "retired_executable_commands": [
+    "private query_step_value_of_support_pos",
+    "private query_step_value_of_support_zero",
+    "Binius.BinaryBasefold.QueryPhase.query_phase_step_preserves_fold"
+  ],
+  "retirement_reason": "The extracted wrappers use actual canonical checkSingleFoldingStep support but conclude historical low-row-bit localized-matrix folding under reversed challenges. That executable-to-historical matrix identity is not supplied and is not assumed. Canonical native query completeness/support/knowledge proofs remain authoritative.",
+  "preserved_historical_namespace": "Binius.BinaryBasefold.QueryPhase.Historical",
+  "historical_contracts": [
+    "query_phase_consistency_guard_safe",
+    "logical_fold_preserves_direct",
+    "firstOracle_fullFold_eq_eval",
+    "query_phase_final_fold_eq_constant"
+  ],
+  "historical_model": "The retained pure proofs use Compatibility.newestFirstFoldingChallenges, statementOrderBitsOfIndex and the explicit lower historical strictFinalSumcheckRelOutProp. They make no claim that this predicate equals the canonical strict final relation.",
+  "canonical_delegation": "The fiber-support helper reuses queryFiberPoints_simulate. Historical final evaluation reuses Compatibility.newestFirstCodeword_last_apply_eq_eval, preserving the actual old coefficient/challenge order.",
+  "native_failure_semantics": "The failure helper uses canonical OptionT/native measure laws for lifting plain oracle computations; successful values and none mass are not identified. The empty target oracle has its uniquely determined native finite-uniform answer measure, derived vacuously without a new public hypothesis.",
+  "pre_port_external_callers": "Only extracted QueryPhase.lean invokes the retired executable helper; its native caller migration is independently recorded in scripts/integration/binius-query-execution-consolidation.json.",
+  "regressions": [
+    "ArkLibTest/Compatibility/FRIBiniusEncoding.lean",
+    "ArkLibTest/Compatibility/BiniusChallengeOrder.lean"
+  ],
+  "validation": {
+    "status": "Current exact source compiled successfully as an isolated temporary-overlay import owner; source/import families stable. This is not a Lake package build.",
+    "source_check_receipt": "/tmp/arklib-historical-QueryFolding-native13.receipt.json",
+    "compiler_exit_code": 0,
+    "admission_checker_exit_code": 0,
+    "source_check_seconds": 16.652,
+    "printed_axiom_anchors": 7,
+    "printed_axiom_set": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "required_final_validation": "Final full Lake package build on stable source snapshot.",
+    "owner_receipt": "/tmp/arklib-historical-QueryFolding-owner-native1.receipt.json",
+    "owner_elapsed_seconds": 9.519,
+    "owner_printed_axiom_anchors": 7
+  },
+  "retired_command_archives": [
+    {
+      "name": "Binius.BinaryBasefold.QueryPhase.query_step_value_of_support_pos",
+      "private": true,
+      "archive_line": 377,
+      "command_sha256": "cbf3e656418d5c1be8cd48b049f72e013dbfdcaf3fface2d007cb99a833038a9"
+    },
+    {
+      "name": "Binius.BinaryBasefold.QueryPhase.query_step_value_of_support_zero",
+      "private": true,
+      "archive_line": 479,
+      "command_sha256": "e3545fa42cddb00dfbf03268eef7ee00cf7f61ee245c10538b61908a0be8dd7a"
+    },
+    {
+      "name": "Binius.BinaryBasefold.QueryPhase.query_phase_step_preserves_fold",
+      "private": false,
+      "archive_line": 727,
+      "command_sha256": "bffa4ea85dc64038a0cb123dceb4d04c67244bbcd5176f709c350dd802c76baa"
+    }
+  ],
+  "caller_inventory_after_port": {
+    "live_retired_command_references": 0,
+    "comment_only_references": [
+      "Steps/Fold.lean retained Historical proof-plan comment",
+      "ArkLib/ProofSystem/RingSwitching/SumcheckPhase.lean explanatory old strategy reference"
+    ],
+    "native_aliases_remain_in": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Steps/Fold.lean"
+  },
+  "current_validation": {
+    "status": "package_validation_passed",
+    "receipt": "scripts/integration/final-validation.json",
+    "check": "default_libraries",
+    "source_commit": "7483975d251b3549313243ea9d5ada700af121f9",
+    "source_snapshot_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+    "resolved_package_pending_paths": [],
+    "superseded_historical_status_paths": [
+      "/validation/required_final_validation"
+    ],
+    "scope": "Current checked-in sources passed the final four-library package build. Original status text and all earlier receipts remain historical snapshots, not current pending claims."
+  }
+}

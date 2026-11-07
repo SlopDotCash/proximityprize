@@ -108,7 +108,7 @@ theorem abs_norm_le {n : ℕ} (hn : 0 < n) (t : Multiset K)
     rw [key, norm_prod]
     calc ∏ σ : K →ₐ[ℚ] ℂ, ‖σ t.sum‖
         ≤ ∏ _σ : K →ₐ[ℚ] ℂ, (Multiset.card t : ℝ) :=
-          Finset.prod_le_prod (fun _ _ => norm_nonneg _)
+          Finset.prod_le_prod₀ (fun _ _ => norm_nonneg _)
             (fun σ _ => norm_embedding_sum_le (σ : K →+* ℂ) hn t ht)
       _ = (Multiset.card t : ℝ) ^ finrank ℚ K := by
           rw [Finset.prod_const, Finset.card_univ, AlgHom.card]

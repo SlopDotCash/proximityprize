@@ -485,7 +485,6 @@ theorem exists_nonzero_notMem_of_proper_family_of_card_le
   obtain ⟨lam, hlam0, hlam⟩ := ProximityGap.exists_nonzero_notMem_of_proper_family ht
     (fun γ => if h : ∃ ω, e ω = γ then K h.choose else K (Classical.arbitrary Ω))
     (fun γ => by
-      dsimp only
       split_ifs with h
       · exact hK _
       · exact hK _)
@@ -572,7 +571,6 @@ theorem epsMCAGen_interleaved_le_of_card_le (C : Submodule F (ι → A)) (s : �
     (fun ω => if h : genMCAEvent G ((C : Set (ι → A))^⋈ (Fin s)) δ U ω
       then tupleJointSubmodule C h.choose U else ⊥)
     (fun ω => by
-      dsimp only
       split_ifs with h
       · exact tupleJointSubmodule_ne_top C U h.choose_spec.2.2
       · exact bot_ne_top)
@@ -648,7 +646,7 @@ theorem epsMCAGen_pairGen_interleaved_eq_epsMCA (C : Submodule F (ι → A))
     epsMCAGen (F := F) (A := Fin s → A) (fun γ : F => ![1, γ])
         ((C : Set (ι → A))^⋈ (Fin s)) δ
       = ProximityGap.epsMCA (F := F) (A := A) (C : Set (ι → A)) δ := by
-  rw [epsMCAGen_pairGen_eq_epsMCA, ProximityGap.epsMCA_interleaved_eq]
+  erw [epsMCAGen_pairGen_eq_epsMCA, ProximityGap.epsMCA_interleaved_eq]
 
 /-- The generator-MCA bad event at the power generator `γ ↦ (γ^{exp j})_j` coincides
 with the general-`parℓ` event `ProximityGapP.mcaEventP`. Definitional: `genComb` at this
@@ -723,7 +721,7 @@ theorem epsMCACurve_interleaved_eq (C : Submodule F (ι → A)) (s : ℕ) [NeZer
     ProximityGap.epsMCACurve (F := F) (A := Fin s → A)
         ((C : Set (ι → A))^⋈ (Fin s)) L δ
       = ProximityGap.epsMCACurve (F := F) (A := A) (C : Set (ι → A)) L δ := by
-  rw [epsMCACurve_eq_epsMCAGen_val (F := F) (A := Fin s → A),
+  erw [epsMCACurve_eq_epsMCAGen_val (F := F) (A := Fin s → A),
     epsMCACurve_eq_epsMCAGen_val (F := F) (A := A)]
   exact epsMCAGen_interleaved_eq_of_card_le C s
     (fun γ : F => fun j : Fin L => γ ^ (j : ℕ)) δ le_rfl

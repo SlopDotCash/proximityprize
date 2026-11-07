@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.RSWeightEnumerator
 import ArkLib.Data.CodingTheory.RSNearCount
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 
 /-!
 # Reed–Solomon codeword weight ↔ polynomial eval-support

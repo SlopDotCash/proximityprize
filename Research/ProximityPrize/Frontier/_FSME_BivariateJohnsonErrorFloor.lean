@@ -84,7 +84,7 @@ variable (domain : Fin N ↪ Fq)
 theorem rate_eval :
     ((LinearCode.rate (ReedSolomon.code domain k) : ℚ≥0) : ℝ≥0) = 1 / 4 := by
   have h := congrArg (fun x : ℚ≥0 => (x : ℝ≥0))
-    (ReedSolomon.rateOfLinearCode_eq_div' (F := Fq) (α := domain) (n := k)
+    (ReedSolomon.rateOfLinearCode_eq_div (F := Fq) (α := domain) (n := k)
       (by simp [Fintype.card_fin]; norm_num))
   simp only [NNRat.cast_div, NNRat.cast_natCast, Fintype.card_fin] at h
   rw [h, ← NNReal.coe_inj]
@@ -152,6 +152,7 @@ theorem min_eval :
   push_cast
   norm_num
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **Exact evaluation of the in-tree BCIKS20 error bound at the P1 predecessor
 point.**  The Johnson branch fires and its value is `2^63·10^7 / q`. -/
 theorem errorBound_eval :

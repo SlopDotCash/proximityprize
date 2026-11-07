@@ -55,7 +55,7 @@ lemma domain_surjective (i : ℕ) : i ≤ n → Function.Surjective (domain D n 
       exists Int.toNat (k % (2 ^ (n - i)))
       have k_rel : ∃ m, k = k % (2 ^ (n - i)) + m * (2 ^ (n - i)) := by
         exists (k / (2 ^ (n - i)))
-        exact Eq.symm (Int.emod_add_ediv' k (2 ^ (n - i)))
+        exact Eq.symm (Int.emod_add_ediv_mul k (2 ^ (n - i)))
       rcases k_rel with ⟨m, k_rel⟩
       rw [k_rel] at b_def
       have cast_rw {a : Fˣ} {n : ℕ} : a ^ n = a ^ (n : ℤ) := by
@@ -461,8 +461,6 @@ def domain (n : ℕ) (i : ℕ) : Fin (2 ^ (n - i)) → evalDomain D x i :=
           rw [←mul_assoc]
           simp
         convert (mem_leftCoset_iff _).mpr h
-        expose_names
-        exact (@op_der_eq F inst).symm
     ⟩
 
 lemma domain_injective {i : ℕ} : i ≤ n → Function.Injective (domain D x n i) := by
@@ -470,8 +468,8 @@ lemma domain_injective {i : ℕ} : i ≤ n → Function.Injective (domain D x n 
   intros a b
   unfold domain
   intros h'
-  simp only [evalDomain, Domain.evalDomain, Subtype.mk.injEq, mul_right_inj] at h'
-  exact Domain.pow_inj D h h'
+  apply Domain.pow_inj D h
+  exact mul_left_cancel (congrArg Subtype.val h')
 
 /- Used to construct Reed-Solomon codes with respect to which we are testing proximity. -/
 def domainEnum (i : Fin (n + 1)) : Fin (2 ^ (n - i)) ↪ evalDomain D x i :=
@@ -506,14 +504,12 @@ lemma pow_2_pow_i_mem_Di_of_mem_D {F : Type} [NonBinaryField F] [Finite F] {D : 
     simp only [pow_zero, pow_one] at h
     apply (mem_leftCoset_iff _).mp
     convert h
-    exact op_der_eq
   rw [←Domain.D_def] at h
   have h := Domain.pow_2_pow_i_mem_Di_of_mem_D D i h
   have : (x⁻¹ * a) ^ 2 ^ i = (x ^ (2 ^ i))⁻¹ * (a ^ (2 ^ i)) := by
       simp [mul_pow, inv_pow]
   rw [this] at h
   convert (mem_leftCoset_iff _).mpr h
-  exact op_der_eq.symm
 
 omit [Finite F] in
 lemma sqr_mem_D_succ_i_of_mem_D_i : ∀ {a : Fˣ} {i : ℕ},
@@ -523,7 +519,6 @@ lemma sqr_mem_D_succ_i_of_mem_D_i : ∀ {a : Fˣ} {i : ℕ},
   have h : (x ^ 2 ^ i)⁻¹ * a ∈ Domain.evalDomain D i := by
     apply (mem_leftCoset_iff _).mp
     convert h
-    exact op_der_eq
   have h := Domain.sqr_mem_D_succ_i_of_mem_D_i D h
   have : ((x ^ 2 ^ i)⁻¹ * a) ^ 2 = (x ^ 2 ^ (i + 1))⁻¹ * (a ^ 2) := by
     have : ((x ^ 2 ^ i)⁻¹ * a) ^ 2 = ((x ^ 2 ^ i) ^ 2)⁻¹ * (a ^ 2) := by
@@ -536,7 +531,6 @@ lemma sqr_mem_D_succ_i_of_mem_D_i : ∀ {a : Fˣ} {i : ℕ},
     rw [this]
   rw [this] at h
   convert (mem_leftCoset_iff _).mpr h
-  exact op_der_eq.symm
 
 omit [Finite F] in
 lemma pow_lift : ∀ {a : Fˣ} {i : ℕ} (s : ℕ),
@@ -560,7 +554,6 @@ lemma neg_mem_dom_of_mem_dom : ∀ {a : Fˣ} (i : Fin n),
   have mem : (x ^ 2 ^ i)⁻¹ * a ∈ Domain.evalDomain D i := by
     apply (mem_leftCoset_iff _).mp
     convert h
-    exact op_der_eq
 
   have : (x ^ 2 ^ i)⁻¹ * -a ∈ ↑(Domain.evalDomain D i) := by
     have : (x ^ 2 ^ i)⁻¹ * -a = ((x ^ 2 ^ i)⁻¹ * a) * (- 1) := by
@@ -573,7 +566,6 @@ lemma neg_mem_dom_of_mem_dom : ∀ {a : Fˣ} (i : Fin n),
           (Domain.minus_one_in_doms D i_prop)
       ).mpr mem
   convert (mem_leftCoset_iff _).mpr this
-  exact op_der_eq.symm
 
 omit [Finite F] in
 lemma mul_root_of_unity {x : Fˣ} :
@@ -585,7 +577,6 @@ lemma mul_root_of_unity {x : Fˣ} :
   have : (x ^ 2 ^ i)⁻¹ * a ∈ (Subgroup.zpowers (DIsCyclicC.gen.1 ^ 2 ^ i)) := by
     apply (mem_leftCoset_iff _).mp
     convert a_in
-    exact op_der_eq
   have : (x ^ 2 ^ i)⁻¹ * (a * b) ∈ (Subgroup.zpowers (DIsCyclicC.gen.1 ^ 2 ^ i)) := by
     rw [Subgroup.mem_zpowers_iff] at b_in this
     rcases this with ⟨ka, a_in⟩
@@ -599,7 +590,6 @@ lemma mul_root_of_unity {x : Fˣ} :
     norm_cast
   have := (mem_leftCoset_iff (x ^ 2 ^ i)).mpr this
   convert this
-  exact op_der_eq.symm
 
 omit [Finite F] in
 lemma dom_n_eq_triv : evalDomain D x n = {x ^ (2 ^ n)} := by

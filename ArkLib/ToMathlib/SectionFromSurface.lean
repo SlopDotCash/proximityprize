@@ -64,7 +64,7 @@ theorem section_dvd_of_surface [DecidableEq F] {x₀ : F} {R : F[X][X][Y]}
     by_contra h
     push_neg at h
     have h00 : (Hf i).natDegree = 0 := by omega
-    have h1 : Hf i = 1 := (hfac i).1.natDegree_eq_zero_iff_eq_one.mp h00
+    have h1 : Hf i = 1 := Polynomial.eq_one_of_monic_natDegree_zero (hfac i).1 h00
     exact (hfac i).2.not_isUnit (h1 ▸ isUnit_one)
   have hm0 : 0 < m := by
     rcases Nat.eq_zero_or_pos m with rfl | h

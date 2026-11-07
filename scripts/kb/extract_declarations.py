@@ -55,9 +55,11 @@ DECL_RE = re.compile(
     r"""^
         (?P<indent>\s*)
         (?:@\[[^\]]*\]\s*)*
-        (?:private\s+|protected\s+|noncomputable\s+|partial\s+|mutual\s+)*
+        (?:private\s+|public\s+|protected\s+|noncomputable\s+|meta\s+
+         |partial\s+|mutual\s+)*
         (?P<kind>theorem|lemma|def|abbrev|alias|structure|inductive
                  |instance|class|opaque|axiom)
+        (?![A-Za-z0-9_'])
         (?:\s+(?P<name>[A-Za-z_][\w.'']*))?
         (?P<tail>.*)$
     """,
@@ -70,7 +72,12 @@ WRAPPED_NAME_KINDS = {
 }
 
 NAMESPACE_RE = re.compile(r"^\s*namespace\s+([A-Za-z_][\w.]*)\s*$")
-SECTION_RE = re.compile(r"^\s*section(?:\s+([A-Za-z_][\w.]*))?\s*$")
+# A section opener may carry attributes and module-system modifiers, as in
+# `@[expose] public section`.
+SECTION_RE = re.compile(
+    r"^\s*(?:@\[[^\]]*\]\s*)*(?:public\s+|meta\s+|noncomputable\s+)*"
+    r"section(?:\s+([A-Za-z_][\w.]*))?\s*$"
+)
 END_RE = re.compile(r"^\s*end(?:\s+([A-Za-z_][\w.]*))?\s*$")
 DOCSTRING_OPEN_RE = re.compile(r"^\s*/--")
 DOCSTRING_CLOSE_RE = re.compile(r"-/\s*$")
@@ -284,7 +291,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument(
         "--root", nargs="+", type=Path, default=DEFAULT_LEAN_ROOTS,
-        help="One or more directories to scan (default: the ArkLib and Research trees).",
+        help="One or more directories to scan (default: the ArkLib, Research, and ProximityPrize trees).",
     )
     parser.add_argument(
         "--out", type=Path, default=DEFAULT_DECLARATIONS_JSON,

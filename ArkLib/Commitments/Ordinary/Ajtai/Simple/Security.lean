@@ -3,8 +3,11 @@ Copyright (c) 2024-2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tobias Rothmann
 -/
-import ArkLib.Commitments.Ordinary.Ajtai.Simple.Correctness
-import ArkLib.Data.Lattices.CyclotomicRing.NormBounds
+module
+
+public import ArkLib.Commitments.Ordinary.Ajtai.Simple.Correctness
+public import ArkLib.Data.Lattices.CyclotomicRing.NormBounds
+public import VCVio.OracleComp.EvalDist.Measure
 
 /-!
 # Binding Security of the Simple Ajtai Commitment
@@ -25,17 +28,13 @@ an abstract shortness predicate with an explicit closure hypothesis is kept as
 * [Ajtai, M., *Generating Hard Instances of Lattice Problems*][Ajt96]
 -/
 
+@[expose] public section
+
 open OracleComp CommitmentScheme CompPoly ArkLib.Lattices ArkLib.Lattices.CyclotomicModulus
 
 namespace ArkLib.Lattices.Ajtai.Simple
 
-variable {R : Type} [Field R] [BEq R] [LawfulBEq R] [DecidableEq R]
-  (Φ : CyclotomicModulus R) [IsCyclotomic Φ]
-
-/-- Boolean monotonicity of `pure` outcome probability. -/
-private theorem probOutput_pure_bool_le (b₁ b₂ : Bool) (h : b₁ = true → b₂ = true) :
-    Pr[= true | (pure b₁ : ProbComp Bool)] ≤ Pr[= true | (pure b₂ : ProbComp Bool)] := by
-  cases b₁ <;> cases b₂ <;> simp_all
+variable {R : Type} [Field R] [BEq R] [LawfulBEq R] (Φ : CyclotomicModulus R) [IsCyclotomic Φ]
 
 /-- A binding adversary against the simple Ajtai commitment yields a Module-SIS
 adversary: the extracted witness is the difference of the two opened messages. -/
@@ -43,7 +42,8 @@ def bindingAdvToModuleSIS {rows cols : Nat}
     [SampleableType (PublicParams Φ rows cols)]
     [DecidableEq (PolyVec (Rq Φ) cols)] [DecidableEq (PolyVec (Rq Φ) rows)]
     (isShortSIS : ModuleSIS.Solution Φ cols → Bool)
-    (adv : BindingAdv (PublicParams Φ rows cols) (Message Φ cols) (Commitment Φ rows) Opening) :
+    (adv : BindingAdversary
+      (PublicParams Φ rows cols) (Message Φ cols) (Commitment Φ rows) Opening) :
     ModuleSIS.Adversary Φ rows cols isShortSIS :=
   fun A => do
     let (_c, s₁, _o₁, s₂, _o₂) ← adv A
@@ -57,16 +57,19 @@ theorem bindingAdvantage_le_moduleSIS_of_shortClosure {rows cols : Nat}
     (isShort : Message Φ cols → Bool) (isShortSIS : ModuleSIS.Solution Φ cols → Bool)
     (hsub : ∀ s₁ s₂ : Message Φ cols, isShort s₁ = true → isShort s₂ = true →
       isShortSIS (s₁ - s₂) = true)
-    (adv : BindingAdv (PublicParams Φ rows cols) (Message Φ cols) (Commitment Φ rows) Opening) :
+    (adv : BindingAdversary
+      (PublicParams Φ rows cols) (Message Φ cols) (Commitment Φ rows) Opening) :
     bindingAdvantage (commitmentScheme Φ rows cols isShort) adv ≤
       ModuleSIS.advantage Φ rows cols isShortSIS (bindingAdvToModuleSIS Φ isShortSIS adv) := by
-  unfold bindingAdvantage CommitmentScheme.bindingExp ModuleSIS.advantage
+  unfold bindingAdvantage CommitmentScheme.bindingExperiment ModuleSIS.advantage
     SIS.advantage SIS.experiment ModuleSIS.problem bindingAdvToModuleSIS
     commitmentScheme ModuleSIS.relation
-  simp only [bind_pure_comp, Functor.map_map]
-  refine probOutput_bind_mono fun A _ => ?_
-  refine probOutput_bind_mono fun ⟨c, s₁, o₁, s₂, o₂⟩ _ => ?_
-  refine probOutput_pure_bool_le _ _ (fun hwin => ?_)
+  simp only [bind_assoc, pure_bind]
+  refine evalDist_bind_apply_mono_of_support _ _ _ (measurableSet_singleton true) fun A _ ↦ ?_
+  refine evalDist_bind_apply_mono_of_support (adv A) _ _ (measurableSet_singleton true)
+    (fun (x : Commitment Φ rows × Message Φ cols × Opening × Message Φ cols × Opening) _ => ?_)
+  rcases x with ⟨c, s₁, o₁, s₂, o₂⟩
+  refine evalDist_pure_apply_le_of_imp _ _ (fun hwin => ?_)
   simp only [Bool.and_eq_true, decide_eq_true_eq] at hwin ⊢
   obtain ⟨⟨hne, hshort₁, hverify₁⟩, hshort₂, hverify₂⟩ := hwin
   have hc₁ : commit Φ A s₁ = c := (verify_eq_true_iff Φ A s₁ c o₁).1 hverify₁
@@ -93,7 +96,8 @@ subtraction closure is discharged by `sub_l2NormSq_le`. -/
 theorem bindingAdvantage_le_moduleSIS {rows cols : Nat}
     [SampleableType (PublicParams Φ rows cols)]
     [DecidableEq (Message Φ cols)] [DecidableEq (Commitment Φ rows)] (boundSq : ℕ)
-    (adv : BindingAdv (PublicParams Φ rows cols) (Message Φ cols) (Commitment Φ rows) Opening) :
+    (adv : BindingAdversary
+      (PublicParams Φ rows cols) (Message Φ cols) (Commitment Φ rows) Opening) :
     bindingAdvantage
         (commitmentScheme Φ rows cols (fun s => decide (‖s‖₂² ≤ boundSq))) adv ≤
       ModuleSIS.advantage Φ rows cols
@@ -102,11 +106,8 @@ theorem bindingAdvantage_le_moduleSIS {rows cols : Nat}
           (fun z => decide (‖z‖₂² ≤ subL2NormSqBound boundSq)) adv) :=
   bindingAdvantage_le_moduleSIS_of_shortClosure Φ _ _
     (fun s₁ s₂ h₁ h₂ => by
-      have h₁' : vecL2NormSq Φ s₁ ≤ boundSq := by
-        simpa only [decide_eq_true_eq] using h₁
-      have h₂' : vecL2NormSq Φ s₂ ≤ boundSq := by
-        simpa only [decide_eq_true_eq] using h₂
-      simpa only [decide_eq_true_eq] using sub_l2NormSq_le Φ s₁ s₂ h₁' h₂')
+      simp only [decide_eq_true_eq] at h₁ h₂ ⊢
+      exact sub_l2NormSq_le Φ s₁ s₂ h₁ h₂)
     adv
 
 end ArkLib.Lattices.Ajtai.Simple

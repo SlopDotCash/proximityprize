@@ -29,6 +29,11 @@ issue #13 is closed on the soundness side.
 open OracleComp OracleSpec ProtocolSpec
 open scoped ENNReal NNReal
 
+-- Old full value-law equality is observed discretely only in this module.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ :=
+  ⟨fun _ => True.intro⟩
+
 namespace Logup
 
 section MsgSeam
@@ -111,7 +116,7 @@ theorem logup_plainAppend_msg (sumcheckSoundnessError : ℝ≥0)
         sumcheckSoundnessError)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     (Verifier.append (outerVerifier oSpec F n M params).toVerifier
@@ -155,7 +160,7 @@ theorem logup_soundness_msgSeam (sumcheckSoundnessError : ℝ≥0)
         sumcheckSoundnessError)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     (logupVerifier oSpec F n M params).soundness init impl
@@ -256,16 +261,13 @@ theorem logup_soundness_msgSeam_anyMid
         langMid outputRelation.language e₂)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     (logupVerifier oSpec F n M params).soundness init impl
       (inputRelation F n M).language outputRelation.language
       (e₁ + e₂) :=
-  OracleVerifier.append_soundness.{0, 0}
-    (outerVerifier oSpec F n M params) (sumcheckVerifier oSpec F n M params)
-    hOuter hSumcheck
-    (OracleVerifier.oracleAppendSoundnessResidual_of_plain.{0, 0}
+  OracleVerifier.oracleAppendSoundnessResidual_of_plain
       (init := init) (impl := impl)
       (outerVerifier oSpec F n M params) (sumcheckVerifier oSpec F n M params)
       hOuter hSumcheck
@@ -276,7 +278,7 @@ theorem logup_soundness_msgSeam_anyMid
         (logupSumcheck_length_pos n hn)
         (logup_seam_dir F n M params hn)
         (logupSumcheckPSpec_first_dir F n M params hn)
-        himplSP himplNF himplVB))
+        himplSP himplNF himplVB)
 
 end AnyMid
 

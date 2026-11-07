@@ -14,7 +14,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConverse
 
 The operational good-radius set at rates `1/8` and `1/16` has supremum `1/2`, but
 the endpoint `1/2` is bad at budget `2^-128`.  Consequently it has no largest
-element.  This refutes the real-valued `GrandMCAResolution` / `mcaPrize` predicate
+element.  This refutes the real-valued `GrandMCAResolution` / `continuousMcaPrize` predicate
 for the certified smooth domain.  The faithful lattice threshold is unaffected.
 -/
 
@@ -72,26 +72,8 @@ theorem firstPrime_rateSixteenth_deltaStar_eq_half_local :
     mcaDeltaStar
       (F := ZMod PrizeShapePrimeP30.P) (A := ZMod PrizeShapePrimeP30.P)
       (evalCode PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 26 - 1))
-      (((2 ^ 128 : ℕ) : ENNReal)⁻¹ : ENNReal) = (1 / 2 : ℝ≥0) := by
-  apply firstPrime_rateSixteenth_deltaStar_eq_half_of_badCount
-  intro u
-  letI : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩
-  have hcount :=
-    ArkLib.ProximityGap.Frontier.HalfPredecessorRateSixteenthFullWiring.halfPredecessor_badScalar_filter_card_le_length
-      (F := ZMod PrizeShapePrimeP30.P) (n := 2 ^ 30) (h := 2 ^ 29) (k := 2 ^ 26)
-      firstPrimeDomain (by norm_num) (by norm_num) (by norm_num) u
-  have hcode :
-      evalCode PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 26 - 1) =
-        (ReedSolomon.code firstPrimeDomain (2 ^ 26) :
-          Set (Fin (2 ^ 30) → ZMod PrizeShapePrimeP30.P)) := by
-    simpa only [firstPrimeDomain, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 26)] using
-      (ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon
-        PrizeShapePrimeP30.g PrizeShapePrimeP30.orderOf_g
-        (ProximityGap.KKH26RegimeSplit.ne_zero_of_orderOf_eq
-          PrizeShapePrimeP30.orderOf_g) (2 ^ 26 - 1))
-  rw [← hcode] at hcount
-  simpa only [halfPredecessorRadius,
-    ArkLib.ProximityGap.Frontier.R382HalfRadiusPinConnector.halfPredecessorRadius] using hcount
+      (((2 ^ 128 : ℕ) : ENNReal)⁻¹ : ENNReal) = (1 / 2 : ℝ≥0) :=
+  ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.firstPrime_rateSixteenth_deltaStar_eq_half
 
 /-- At rate `1/16`, the same open-endpoint phenomenon forbids a witness. -/
 theorem not_grandMCAChallengeRS_rateSixteenth :
@@ -107,11 +89,11 @@ theorem not_grandMCAChallengeRS_rateSixteenth :
             Set (Fin (2 ^ 30) → ZMod PrizeShapePrimeP30.P)) =
           evalCode PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 26 - 1) := by
       symm
-      simpa only [firstPrimeDomain, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 26)] using
-        (ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon
-          PrizeShapePrimeP30.g PrizeShapePrimeP30.orderOf_g
-          (ProximityGap.KKH26RegimeSplit.ne_zero_of_orderOf_eq
-            PrizeShapePrimeP30.orderOf_g) (2 ^ 26 - 1))
+      exact ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.evalCode_pred_eq_reedSolomon
+        (k := 2 ^ 26)
+        PrizeShapePrimeP30.g PrizeShapePrimeP30.orderOf_g
+        (ProximityGap.KKH26RegimeSplit.ne_zero_of_orderOf_eq
+          PrizeShapePrimeP30.orderOf_g) (by norm_num)
     have heps : (epsStar : ENNReal) =
         (((2 ^ 128 : ℕ) : ENNReal)⁻¹ : ENNReal) := by
       norm_num [epsStar, div_eq_mul_inv]
@@ -129,9 +111,9 @@ theorem prizeRateSixteenth_floor :
   norm_num [prizeRates]
 
 /-- **Formal prize verdict.**  The real-valued ABF26 MCA prize predicate is false
-on the first certified smooth domain because its rate-`1/8` good-radius set has no
+on the first certified smooth domain because its rate-`1/16` good-radius set has no
 largest element. -/
-theorem not_mcaPrize_firstPrimeDomain : ¬ mcaPrize firstPrimeDomain := by
+theorem not_mcaPrize_firstPrimeDomain : ¬ continuousMcaPrize firstPrimeDomain := by
   intro hprize
   have hrate := hprize (⟨3, by norm_num⟩ : Fin 4)
   apply not_grandMCAChallengeRS_rateSixteenth

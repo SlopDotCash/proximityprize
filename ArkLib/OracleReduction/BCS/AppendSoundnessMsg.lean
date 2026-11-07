@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.OracleReduction.BCS.Basic
+import ProximityPrize.Extensions.OracleReduction.BCS.Basic
 import ArkLib.OracleReduction.Composition.Sequential.AppendSoundnessMsgProof
 
 /-!
@@ -49,6 +49,12 @@ the message seam.
 open OracleComp OracleSpec ProtocolSpec
 open scoped ENNReal NNReal
 
+-- The retained value-blindness premise observes every subset of each response type.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A B : Type) : MeasurableSpace (A × B) := ⊤
+private local instance (A : Type) : MeasurableSpace (Option A) := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ := ⟨fun _ => True.intro⟩
+
 namespace OracleReduction
 
 variable {n : ℕ} {pSpec : ProtocolSpec n} {ι : Type} {oSpec : OracleSpec ι}
@@ -93,7 +99,7 @@ theorem BCSCompiledPhases.toReduction_soundness_of_append_msg {StmtMid WitMid : 
         (⟨0, hOpeningPos⟩ : Fin (Fin.vsum (fun j => nCom (e.symm j)))) = .P_to_V)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), probFailure ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     @Verifier.soundness _ oSpec StmtIn StmtOut

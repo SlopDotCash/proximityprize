@@ -97,9 +97,13 @@ theorem gate_vacuous_at_prize_binding_depth :
 `256^{2^28} = (2^8)^{2^28} = 2^{8·2^28} = 2^{2^31}`, and `158 < 2^31`. -/
 theorem prize_prime_lt_realized_binding_norm :
     (2 : ℕ) ^ 158 < 256 ^ (2 ^ 28) := by
-  have h256 : (256 : ℕ) = 2 ^ 8 := by norm_num
-  rw [h256, ← pow_mul]
-  refine Nat.pow_lt_pow_right (by norm_num) ?_
+  -- Prove the power comparison before specializing: rewriting the closed target can ask the
+  -- kernel to normalize the billions-of-bits result instead of keeping its powers symbolic.
+  have compare_powers (a b m n k : ℕ) (ha : 1 < a) (hab : a ^ n = b)
+      (h : m < n * k) : a ^ m < b ^ k := by
+    rw [← hab, ← pow_mul]
+    exact Nat.pow_lt_pow_right ha h
+  refine compare_powers 2 256 158 8 (2 ^ 28) (by norm_num) (by norm_num) ?_
   -- 158 < 8 * 2^28.  Since 2^28 ≥ 2^5 = 32, we have 8 * 2^28 ≥ 8 * 32 = 256 > 158.
   have h32 : (32 : ℕ) ≤ 2 ^ 28 := by
     calc (32 : ℕ) = 2 ^ 5 := by norm_num

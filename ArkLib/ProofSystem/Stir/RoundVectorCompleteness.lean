@@ -27,7 +27,7 @@ set_option linter.unusedSectionVars false
 
 /-- A field is `VCVCompatible` (finite + inhabited via `0`); local since `Field` alone does not
 register an `Inhabited` instance. -/
-local instance : VCVCompatible F := { toFintype := inferInstance, toInhabited := ⟨0⟩ }
+private local instance : VCVCompatible F := { toFintype := inferInstance, toInhabited := ⟨0⟩ }
 
 /-- Challenge payloads of the vectorised fold-round spec are finite (they are `Vector F len`). -/
 instance instStirVecChalFintype :
@@ -39,24 +39,23 @@ instance instStirVecChalInhabited :
     ∀ i, Inhabited (((stirRoundVSpec ι F).toProtocolSpec F).Challenge i) :=
   fun _ => by dsimp [ProtocolSpec.Challenge]; infer_instance
 
-/-- Finiteness of the vectorised fold-round challenge oracle spec, stated for the *pinned*
-generic challenge interface (the family `unroll_2_message_VP` is elaborated with). -/
-instance instStirVecChalSpecFintype :
-    OracleSpec.Fintype
-      ([((stirRoundVSpec ι F).toProtocolSpec F).Challenge]ₒ'
-        (fun i => challengeOracleInterface i)) where
-  fintype_B := fun ⟨i, _⟩ => by
-    show Fintype (((stirRoundVSpec ι F).toProtocolSpec F).Challenge i)
-    infer_instance
+private noncomputable local instance stirVectorUniformAnswers
+    {κ : Type} {spec : OracleSpec κ}
+    [∀ q, Fintype (spec.Range q)] [∀ q, Inhabited (spec.Range q)] :
+    OracleSpec.UniformAnswerMeasure spec :=
+  OracleSpec.UniformAnswerMeasure.ofFiniteNonempty spec
 
-/-- Inhabitedness of the vectorised fold-round challenge oracle spec (pinned interface form). -/
-instance instStirVecChalSpecInhabited :
-    OracleSpec.Inhabited
-      ([((stirRoundVSpec ι F).toProtocolSpec F).Challenge]ₒ'
-        (fun i => challengeOracleInterface i)) where
-  inhabited_B := fun ⟨i, _⟩ => by
-    show Inhabited (((stirRoundVSpec ι F).toProtocolSpec F).Challenge i)
-    infer_instance
+instance instStirVecChalSpecFintype : ∀ t,
+    Fintype (([((stirRoundVSpec ι F).toProtocolSpec F).Challenge]ₒ'
+      ProtocolSpec.challengeOracleInterface).Range t) := fun ⟨i, _⟩ => by
+  change Fintype (((stirRoundVSpec ι F).toProtocolSpec F).Challenge i)
+  infer_instance
+
+instance instStirVecChalSpecInhabited : ∀ t,
+    Inhabited (([((stirRoundVSpec ι F).toProtocolSpec F).Challenge]ₒ'
+      ProtocolSpec.challengeOracleInterface).Range t) := fun ⟨i, _⟩ => by
+  change Inhabited (((stirRoundVSpec ι F).toProtocolSpec F).Challenge i)
+  infer_instance
 
 variable {σ : Type} (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp))
 
@@ -80,48 +79,36 @@ theorem stirRoundVectorReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ)
     OracleVerifier.toVerifier, OStmt, VOStmt, stirRoundInputRel, stirRoundVectorOutputRel]
   simp only [Fin.isValue, bind_pure_comp, pure_bind, bind_map_left, liftM_bind, liftM_map,
     Prod.mk.eta, bind_assoc, map_pure, liftComp_pure, liftM_pure]
-  rw [probEvent_eq_one_iff]
-  refine ⟨?_, ?_⟩
-  · -- SAFETY: the run never fails
-    rw [probFailure_bind_eq_zero_iff]
-    refine ⟨?_, fun α _hα => ?_⟩
-    · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
-    · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
-      simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-        Function.comp_apply, Option.map_some, probFailure_map, HasEvalPMF.probFailure_eq_zero,
-        probOutput_eq_zero_iff, support_map, support_liftM, Set.mem_image, reduceCtorEq,
-        Set.mem_setOf_eq, not_exists, not_and, exists_const, not_false_eq_true, add_zero,
-        zero_add]
-      intro x hx
-      erw [OptionT.simulateQ_pure, OptionT.run_pure] at hx
-      simp only [support_pure, Set.mem_singleton_iff] at hx
-      subst hx
-      simp only [Option.map_some, reduceCtorEq, not_false_eq_true]
-  · -- CORRECTNESS: every output in the support satisfies the relation + agreement
-    intro x hx
-    simp only [support_bind, Set.mem_iUnion, exists_prop] at hx
-    obtain ⟨α, _hα, hx⟩ := hx
-    rw [OptionT.mem_support_iff] at hx
-    erw [OptionT.simulateQ_pure, OptionT.run_pure] at hx
-    simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-      Function.comp_apply, Option.map_some, support_map, support_pure, Set.mem_image,
-      Set.mem_singleton_iff, Option.some.injEq, exists_eq_left, exists_eq_right] at hx
-    subst hx
-    refine ⟨?_, trivial, by funext u; rfl⟩
-    have hm : ∀ m : ((stirRoundVSpec ι F).toProtocolSpec F).«Type» 1,
-        (fun _ : Unit =>
-          (ProtocolSpec.FullTranscript.mk2 α m).messages ⟨1, stirRoundVSpec_dir_one⟩)
-          = fun _ : Unit => m := fun _ => rfl
-    rw [hm]
-    exact stirRoundVectorOutputRel_of_inputRel φ deg δ _ h_relIn
+  apply (OptionT.prEvent_mk_eq_one_iff _ _).2
+  intro value hvalue
+  have hopt {κ : Type} {spec : OracleSpec.{0, 0} κ} {β : Type} (mx : OracleComp spec β) :
+      (liftM mx : OptionT (OracleComp spec) β) = some <$> mx := by
+    change (mx >>= fun x => pure (some x)) = some <$> mx
+    rw [map_eq_bind_pure_comp]
+    rfl
+  obtain ⟨α, hα, hvalue⟩ := OracleComp.mem_support_bind_peel _ _ hvalue
+  erw [hopt] at hα
+  obtain ⟨a, _, ha⟩ := OracleComp.mem_support_map_peel _ _ hα
+  subst α
+  simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure,
+    simulateQ_pure, LawfulApplicative.map_pure, Option.map_some, liftComp_pure] at hvalue
+  have hv := OracleComp.eq_of_mem_support_pure _ hvalue
+  subst value
+  refine ⟨_, rfl, ?_, trivial, by funext u; rfl⟩
+  change Code.relDistFromCode (oStmtIn ()) (ReedSolomon.code φ deg) ≤ (δ : ENNReal) at h_relIn
+  change Code.relDistFromCode (unpackFiniteFunction ι _)
+    (ReedSolomon.code φ deg : Set (ι → F)) ≤ (δ : ENNReal)
+  simp only [OracleVerifier.materializeOutput, OracleVerifier.materializeOutputOracle,
+    FullTranscript.messages, FullTranscript.mk2, DFunLike.coe, id_eq]
+  rw [unpack_stirRoundVector_message]
+  exact h_relIn
 
 /-- **Vector-level completeness with any error** `ε`, by error monotonicity. -/
 theorem stirRoundVectorReduction_completeness_any_error (φ : ι ↪ F) (deg : ℕ) (δ ε : ℝ≥0)
     (hInit : NeverFail init) :
     (stirRoundVectorReduction φ deg).completeness init impl
       (stirRoundInputRel φ deg δ) (stirRoundVectorOutputRel φ deg δ) ε :=
-  Reduction.completenessFromRun_mono_error _ _ _ _ _ (zero_le ε)
+  Reduction.completenessFromRun_mono_error _ _ _ _ _ (by positivity)
     (stirRoundVectorReduction_perfectCompleteness init impl φ deg δ hInit)
 
 end

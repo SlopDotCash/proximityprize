@@ -179,7 +179,6 @@ theorem epsMCAP_interleaved_le_epsMCAP (C : Submodule F (ι → A)) {parℓ : �
     (fun γ => if h : mcaEventP ((C : Set (ι → A))^⋈ (Fin t)) exp δ u γ
       then jointTupleSubmoduleP C h.choose u else ⊥)
     (fun γ => by
-      dsimp only
       split_ifs with h
       · exact jointTupleSubmoduleP_ne_top C u h.choose_spec.2.2
       · exact bot_ne_top)

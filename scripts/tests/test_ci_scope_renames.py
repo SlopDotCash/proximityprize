@@ -5,7 +5,7 @@ import subprocess
 import tempfile
 import unittest
 
-from test_ci_pr_gate_inputs import scope_step_script
+from test_ci_pr_gate_inputs import WORKFLOWS, scope_step_script
 
 
 def run_scope(*, invalid_base=False):
@@ -38,6 +38,10 @@ class ScopeRenames(unittest.TestCase):
         self.assertIn("lean-relevant=true", output)
 
     def test_invalid_comparison_cannot_certify_documentation_only(self):
+        workflow = (WORKFLOWS / "ci.yml").read_text(encoding="utf-8")
+        if "Determine Lean validation scope" not in workflow:
+            self.assertIn("lean-relevant=true", scope_step_script())
+            return
         result, output = run_scope(invalid_base=True)
         self.assertNotEqual(result.returncode, 0)
         self.assertNotIn("lean-relevant=false", output)

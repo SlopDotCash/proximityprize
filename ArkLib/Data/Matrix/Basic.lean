@@ -3,14 +3,17 @@ Copyright (c) 2024-2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao, Katerina Hristova
 -/
+module
 
-import Mathlib.LinearAlgebra.Matrix.Hadamard
-import ArkLib.Data.Fin.Tuple.Defs
-import ArkLib.Data.MvPolynomial.Multilinear
+public import Mathlib.LinearAlgebra.Matrix.Hadamard
+public import ArkLib.Data.Fin.Tuple.Defs
+public import ArkLib.Data.MvPolynomial.Multilinear
 
 /-!
   # Auxiliary definitions and lemmas for matrices
 -/
+
+@[expose] public section
 
 namespace Matrix
 
@@ -66,25 +69,5 @@ variable {R : Type*} [CommRing R] {m n : ℕ}
   `R[X Fin n][X Fin m]`. Note the order of nesting (i.e. `m` is on the outside). -/
 noncomputable def toMLE (A : Matrix (Fin (2 ^ m)) (Fin (2 ^ n)) R) : R[X Fin n][X Fin m] :=
   MLE' (MLE' ∘ A)
-
-/-- Evaluating `toMLE` at Boolean row and column points recovers the corresponding matrix entry. -/
-theorem toMLE_eval_boolPoint
-    (M : Matrix (Fin (2 ^ m)) (Fin (2 ^ n)) R)
-    (xBits : Fin m → Fin 2) (yBits : Fin n → Fin 2) :
-    MvPolynomial.eval (yBits : Fin n → R)
-        (MvPolynomial.eval ((MvPolynomial.C ∘ (xBits : Fin m → R)) :
-          Fin m → MvPolynomial (Fin n) R) M.toMLE)
-      = M (finFunctionFinEquiv xBits) (finFunctionFinEquiv yBits) := by
-  rw [Matrix.toMLE]
-  have hx :
-      ((MvPolynomial.C ∘ (xBits : Fin m → R)) :
-          Fin m → MvPolynomial (Fin n) R) =
-        (xBits : Fin m → MvPolynomial (Fin n) R) := by
-    funext i
-    simp
-  rw [hx, MvPolynomial.MLE'_eval_zeroOne]
-  simp
-
-#print axioms Matrix.toMLE_eval_boolPoint
 
 end Matrix

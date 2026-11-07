@@ -104,9 +104,18 @@ class AxiomHeadForms(unittest.TestCase):
                     "forbidden custom axiom declaration hidden",
                 )
 
-    def test_allowlisted_residual_axiom_still_passes(self) -> None:
-        # A name from scripts/residual_axioms.txt must remain installable.
-        self.assert_clean("axiom no_selfReciprocal_factor : False\n")
+    def test_retired_fold_state_axiom_is_rejected(self) -> None:
+        # Its canonical knowledge-state proof replaces the retired residual.
+        self.assert_rejected(
+            "axiom foldKnowledgeStateFunction_toFun_full : False\n",
+            "forbidden custom axiom declaration foldKnowledgeStateFunction_toFun_full",
+        )
+
+    def test_retired_residual_names_do_not_authorize_new_axioms(self) -> None:
+        names = ['large_agreement_set_on_curve_implies_correlated_agreement', "large_agreement_set_on_curve_implies_correlated_agreement'", 'weighted_correlated_agreement_for_parameterized_curves', "weighted_correlated_agreement_for_parameterized_curves'", 'weighted_correlated_agreement_over_affine_spaces', "weighted_correlated_agreement_over_affine_spaces'", 'no_selfReciprocal_factor', 'foldOracleVerifier_rbrKnowledgeSoundness']
+        for name in names:
+            with self.subTest(name=name):
+                self.assert_rejected(f"namespace Copied\naxiom {name} : False\nend Copied\n", name)
 
     def test_commented_out_axiom_stays_invisible(self) -> None:
         self.assert_clean(

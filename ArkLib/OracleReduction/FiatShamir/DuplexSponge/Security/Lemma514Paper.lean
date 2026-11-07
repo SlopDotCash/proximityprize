@@ -111,10 +111,10 @@ theorem step_determinism
     rcases lt_or_gt_of_ne hslot with hlt | hgt
     · refine absurd (ePaper_of_answerCap_pair tr hlt hfocP hfocQ ((hfocQ _ hlt).1) ?_) hnE
       rw [hfwdP, hfwdQ]
-      simpa only [answerCap_fwd] using hcap
+      simpa only [answerCap] using hcap
     · refine absurd (ePaper_of_answerCap_pair tr hgt hfocQ hfocP ((hfocP _ hgt).1) ?_) hnE
       rw [hfwdP, hfwdQ]
-      simpa only [answerCap_fwd] using hcap.symm
+      simpa only [answerCap] using hcap.symm
 
 /-- **U3 (anchor separation, paper event)**: off `EPaper`, no chain-step output capacity
 equals a hash-anchor answer capacity (the `m₁ = m₂` ingredient of CO25 Claim 5.19,
@@ -142,14 +142,18 @@ theorem hash_step_separation
     have hget : tr[p.2.1] = tr[(⟨(q.2.2 ⟨b, hbI⟩).val, hkQ⟩ : Fin tr.length)] :=
       congrArg (fun k : Fin tr.length => tr[k]) hEq
     rw [hHashEq, hfwdQ] at hget
-    simp at hget
+    have hindex := congrArg (fun e : OracleSpec.duplexSpongeTraceEntry
+      (StartType := StmtIn) (U := U) => e.1) hget
+    cases hindex
   rcases lt_or_gt_of_ne hne with hlt | hgt
   · refine absurd (ePaper_of_answerCap_pair tr hlt hfocH hfocQ ((hfocQ _ hlt).1) ?_) hnE
     rw [hHashEq, hfwdQ]
-    simpa only [answerCap_hash, answerCap_fwd] using hcap
+    simpa only [answerCap, SpongeSize.C,
+      CanonicalSpongeState.capacitySegment] using hcap
   · refine absurd (ePaper_of_answerCap_pair tr hgt hfocQ hfocH ((hfocH _ hgt).1) ?_) hnE
     rw [hHashEq, hfwdQ]
-    simpa only [answerCap_hash, answerCap_fwd] using hcap.symm
+    simpa only [answerCap, SpongeSize.C,
+      CanonicalSpongeState.capacitySegment] using hcap.symm
 
 /-- **U2 (anchor uniqueness, paper event)**: off `EPaper`, two hash anchors with equal
 answer capacities carry the same statement (CO25 Claim 5.19, the Eq. 39/45 `𝕩` step). -/
@@ -180,10 +184,10 @@ theorem hash_anchor_unique
     rcases lt_or_gt_of_ne hslot with hlt | hgt
     · refine absurd (ePaper_of_answerCap_pair tr hlt hfocP hfocQ ((hfocQ _ hlt).1) ?_) hnE
       rw [hHashP, hHashQ]
-      simpa only [answerCap_hash] using hcap
+      simpa only [answerCap, SpongeSize.C, CanonicalSpongeState.capacitySegment] using hcap
     · refine absurd (ePaper_of_answerCap_pair tr hgt hfocQ hfocP ((hfocP _ hgt).1) ?_) hnE
       rw [hHashP, hHashQ]
-      simpa only [answerCap_hash] using hcap.symm
+      simpa only [answerCap, SpongeSize.C, CanonicalSpongeState.capacitySegment] using hcap.symm
 
 /-- **End-aligned input agreement** (CO25 Claim 5.19, Eq. 44 induction): off `EPaper`, the
 input states of two family sequences agree at end-aligned positions — both chains end at

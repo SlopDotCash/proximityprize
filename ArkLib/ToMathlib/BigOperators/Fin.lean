@@ -1,19 +1,18 @@
 /-
-Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Copyright (c) 2024-2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: ArkLib Contributors
+Authors: Quang Dao, Devon Tuma, Chung Thai Nguyen
 -/
-import Mathlib.Algebra.BigOperators.Fin
+module
+
+public import Mathlib.Algebra.BigOperators.Fin
+public import Mathlib.Logic.Equiv.Fin.Basic
 
 /-!
-# Algebraic properties of interval-restricted products over finite domains
-
-This module establishes additional algebraic properties of big operators (products and sums)
-evaluated over interval subsets of `Fin (n + 1)`. Specifically, we formalize the compatibility
-of products over intervals of the form `Iio i`, `Iic i`, `Ici i` with the algebraic operations
-of restriction, extension, and successor mappings. These lemmas serve as core arithmetic
-machinery for inductive arguments over finite index structures.
+# More lemmas about `Fin` and big operators
 -/
+
+@[expose] public section
 
 namespace Fin
 
@@ -22,6 +21,19 @@ section Interval
 open Finset
 
 variable {M : Type*} [CommMonoid M] {n : ℕ} {v : Fin (n + 1) → M}
+
+-- @[to_additive]
+-- theorem prod_Ioi_zero : ∏ i ∈ Ioi 0, v i = ∏ j : Fin n, v j.succ := by simp
+--   -- rw [Ioi_zero_eq_map, Finset.prod_map, val_succEmb]
+
+-- @[to_additive]
+-- theorem prod_Ioi_succ (i : Fin n) : ∏ j ∈ Ioi i.succ, v j = ∏ j ∈ Ioi i, v j.succ := by
+--   rw [Ioi_succ, Finset.prod_map, val_succEmb]
+
+-- @[to_additive]
+-- theorem prod_Ici_succ (i : Fin n) :
+--     ∏ j ∈ Ici i.succ, v j = ∏ j ∈ Ici i, v j.succ := by
+--   rw [Ici_succ, Finset.prod_map, val_succEmb]
 
 @[to_additive]
 theorem prod_Iio_succ (i : Fin n) :
@@ -43,7 +55,8 @@ theorem prod_Iio_eq_univ (i : Fin (n + 1)) :
   induction i using Fin.induction with
   | zero =>
     conv_lhs => rw [← bot_eq_zero]
-    simp only [Iio_bot, prod_empty, val_zero, univ_eq_empty]
+    rw [Iio_bot, prod_empty]
+    exact (Fin.prod_univ_zero fun j : Fin 0 => v (Fin.castLE (by omega) j)).symm
   | succ i hi =>
     rw [prod_Iio_succ, hi]
     change (∏ j : Fin ↑i, v (castLE _ j)) * v i.castSucc = ∏ j : Fin (↑i + 1), v (castLE _ j)
@@ -69,8 +82,12 @@ theorem prod_Iic_succ (i : Fin n) :
 theorem prod_Iic_eq_univ (i : Fin (n + 1)) :
     ∏ j ∈ Iic i, v j = ∏ j : Fin (i + 1), v (Fin.castLE i.isLt j) := by
   induction i using Fin.induction with
-  | zero => simp only [prod_Iic_zero, val_zero, Nat.reduceAdd, univ_unique, default_eq_zero,
-    prod_singleton]; exact congrArg v (Fin.ext rfl)
+  | zero =>
+    rw [prod_Iic_zero]
+    calc
+      v 0 = v (Fin.castLE (by omega) 0) := congrArg v (Fin.ext rfl)
+      _ = ∏ j : Fin 1, v (Fin.castLE (by omega) j) :=
+        (Fin.prod_univ_one fun j : Fin 1 => v (Fin.castLE (by omega) j)).symm
   | succ i hi =>
     rw [prod_Iic_succ, hi]
     change (∏ j : Fin (↑i + 1), v (castLE _ j)) * v i.succ =
@@ -97,5 +114,13 @@ theorem Ici_succ (i : Fin n) : Ici i.succ = (Ici i).map (Fin.succEmb _) := by
   simp only [Ioi_succ, cons_eq_insert, coe_succEmb]
 
 end Interval
+
+/-- The sums of `f` over the even and over the odd naturals below `2 * m` add up to its sum
+over `Fin (m * 2)`. This is the finite analogue of `tsum_even_add_odd`. -/
+theorem sum_even_add_odd {M : Type*} [AddCommMonoid M] (m : ℕ) (f : ℕ → M) :
+    ∑ x : Fin m, f (2 * x) + ∑ x : Fin m, f (2 * x + 1) = ∑ x : Fin (m * 2), f x := by
+  rw [← finProdFinEquiv.sum_comp, Fintype.sum_prod_type, ← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun x _ => ?_
+  simp [Fin.sum_univ_two, finProdFinEquiv, mul_comm, add_comm]
 
 end Fin

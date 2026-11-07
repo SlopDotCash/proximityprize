@@ -72,7 +72,7 @@ private lemma get_eraseIdx_before {α : Type _} (l : List α) (idx k : Fin l.len
       have hlen := List.length_eraseIdx_add_one idx.isLt
       omega)
   have hold : l[k.val]? = some l[k] := by
-    simpa only [List.get_eq_getElem] using List.getElem?_eq_getElem (l := l) k.isLt
+    simpa only [List.get_eq_getElem, Fin.getElem_fin] using List.getElem?_eq_getElem (l := l) k.isLt
   rw [hnew, hold] at hkeep
   exact Option.some.inj hkeep
 
@@ -94,7 +94,7 @@ private lemma get_eraseIdx_after {α : Type _} (l : List α) (idx k : Fin l.leng
   have hold : l[(k.val - 1) + 1]? = some l[k] := by
     have hk : k.val - 1 + 1 = k.val := by omega
     rw [hk]
-    simpa only [List.get_eq_getElem] using List.getElem?_eq_getElem (l := l) k.isLt
+    simpa only [List.get_eq_getElem, Fin.getElem_fin] using List.getElem?_eq_getElem (l := l) k.isLt
   rw [hnew, hold] at hkeep
   exact Option.some.inj hkeep
 
@@ -280,7 +280,7 @@ private lemma hasHashEntry_eraseIdx
     have hkeep : (tr.eraseIdx idx.val)[j'.val]? = tr[j'.val]? :=
       List.getElem?_eraseIdx_of_lt hj'idx
     have hhit : tr[j'.val]? = some tr[j'] := by
-      simpa only [List.get_eq_getElem] using List.getElem?_eq_getElem (l := tr) j'.isLt
+      simpa only [List.get_eq_getElem, Fin.getElem_fin] using List.getElem?_eq_getElem (l := tr) j'.isLt
     exact mem_of_getElem?' (by rw [hkeep, hhit, hentry])
   · rw [List.mem_iff_getElem] at hP
     obtain ⟨p, hp, hpe⟩ := hP
@@ -426,7 +426,7 @@ private lemma firstNat_eraseIdx
       redundantEntryDS_hashEntry_inversion tr idx stmt capSeg hidxVal hred
     have hprior? : tr[j'.val]? = some (hashEntry stmt capSeg) := by
       rw [List.getElem?_eq_getElem j'.isLt]
-      simpa only [List.get_eq_getElem] using congrArg some hjeq
+      simpa only [List.get_eq_getElem, Fin.getElem_fin] using congrArg some hjeq
     exact False.elim (hfirst j'.val (by omega) hprior?)
   · let iHash' := if idx.val < iHash then iHash - 1 else iHash
     have hhash' : (tr.eraseIdx idx.val)[iHash']? = some (hashEntry stmt capSeg) := by
@@ -473,7 +473,7 @@ private lemma firstNat_eraseIdx
       have hperm' : (tr.eraseIdx idx.val)[j'.val]? =
           some (forwardEntry stateIn' stateOut') := by
         rw [hkeep, List.getElem?_eq_getElem j'.isLt]
-        simpa [forwardEntry, List.get_eq_getElem] using congrArg some hentry
+        simpa [forwardEntry, List.get_eq_getElem, Fin.getElem_fin] using congrArg some hentry
       refine ⟨iHash', j'.val, stateIn', stateOut', ?_, hhash', hperm', hcap', hfirst'⟩
       by_cases hidxHash : idx.val < iHash
       · simp [iHash', hidxHash]; omega
@@ -617,10 +617,10 @@ private lemma firstForwardNat_of_first
     jPrev, hlt, prevIn, prevOut, hprev, hcap⟩ := h
   have hcur? : tr[jCur.val]? = some (forwardEntry curIn curOut) := by
     rw [List.getElem?_eq_getElem jCur.isLt]
-    simpa only [List.get_eq_getElem] using congrArg some hcur
+    simpa only [List.get_eq_getElem, Fin.getElem_fin] using congrArg some hcur
   have hprev? : tr[jPrev.val]? = some (forwardEntry prevIn prevOut) := by
     rw [List.getElem?_eq_getElem jPrev.isLt]
-    simpa only [List.get_eq_getElem] using congrArg some hprev
+    simpa only [List.get_eq_getElem, Fin.getElem_fin] using congrArg some hprev
   have hfirstNat : ∀ j, j < jCur.val →
       tr[j]? ≠ some (forwardEntry curIn curOut) ∧
         tr[j]? ≠ some (forwardEntry curOut curIn) := by
@@ -682,11 +682,11 @@ private lemma firstForwardNat_eraseIdx
     rcases hcase with hsame | hrev
     · have hsome : tr[j'.val]? = some (forwardEntry curIn curOut) := by
         rw [List.getElem?_eq_getElem j'.isLt]
-        simpa only [List.get_eq_getElem] using congrArg some hsame
+        simpa only [List.get_eq_getElem, Fin.getElem_fin] using congrArg some hsame
       exact False.elim ((hfirst j'.val hjCur).1 hsome)
     · have hsome : tr[j'.val]? = some (forwardEntry curOut curIn) := by
         rw [List.getElem?_eq_getElem j'.isLt]
-        simpa only [List.get_eq_getElem] using congrArg some hrev
+        simpa only [List.get_eq_getElem, Fin.getElem_fin] using congrArg some hrev
       exact False.elim ((hfirst j'.val hjCur).2 hsome)
   · let iCur' := if idx.val < iCur then iCur - 1 else iCur
     have hcur' : (tr.eraseIdx idx.val)[iCur']? = some (forwardEntry curIn curOut) := by
@@ -754,7 +754,7 @@ private lemma firstForwardNat_eraseIdx
       have hprev' : (tr.eraseIdx idx.val)[j'.val]? =
           some (forwardEntry stateIn' stateOut') := by
         rw [hkeep, List.getElem?_eq_getElem j'.isLt]
-        simpa [forwardEntry, List.get_eq_getElem] using congrArg some hentry
+        simpa [forwardEntry, List.get_eq_getElem, Fin.getElem_fin] using congrArg some hentry
       refine ⟨iCur', j'.val, curIn, curOut, stateIn', stateOut',
         ?_, hcur', hprev', hcap', hfirst'⟩
       by_cases hidxCur : idx.val < iCur
@@ -859,7 +859,7 @@ private lemma hasInvEntry_eraseIdx
     have hkeep : (tr.eraseIdx idx.val)[j'.val]? = tr[j'.val]? :=
       List.getElem?_eraseIdx_of_lt hj'idx
     have hhit : tr[j'.val]? = some tr[j'] := by
-      simpa only [List.get_eq_getElem] using List.getElem?_eq_getElem (l := tr) j'.isLt
+      simpa only [List.get_eq_getElem, Fin.getElem_fin] using List.getElem?_eq_getElem (l := tr) j'.isLt
     rcases hcase with hc | hc
     · exact ⟨sOut, sIn, mem_of_getElem?' (by rw [hkeep, hhit, hc])⟩
     · exact ⟨sIn, sOut, mem_of_getElem?' (by rw [hkeep, hhit, hc])⟩
@@ -1486,7 +1486,7 @@ theorem hasRedundantForwardAnchor_of_prior_reverse
   refine ⟨p, hp, pairIdx, hpair, hidx, ?_⟩
   unfold redundantEntryDS
   rw [hcur]
-  exact ⟨j, by simpa [idx] using hj, Or.inr hentry⟩
+  exact ⟨j, by simpa [idx, Fin.lt_iff_val_lt_val] using hj, Or.inr hentry⟩
 
 /-- Conversely, off `E`, every redundant `J_BT` forward anchor is redundant for the only reason
 not already ruled out by the `J_BT` first-occurrence lemma: a prior same-direction reversed-forward
@@ -1513,9 +1513,9 @@ theorem prior_reverse_of_hasRedundantForwardAnchor_of_not_E
   rcases hcase with hsame | hreverse
   · have hno := jbt_perm_no_prior_of_lt
       (tr := tr) (state := state) (S := S) (p := p) hp
-      (pairIdx := pairIdx) (hpair := hpair) j (by simpa [idx] using hj)
+      (pairIdx := pairIdx) (hpair := hpair) j (by simpa [idx, Fin.lt_iff_val_lt_val] using hj)
     exact False.elim ((hno.1) (by simpa [forwardEntry] using hsame))
-  · exact ⟨p, hp, pairIdx, hpair, j, by simpa [idx] using hj, hreverse⟩
+  · exact ⟨p, hp, pairIdx, hpair, j, by simpa [idx, Fin.lt_iff_val_lt_val] using hj, hreverse⟩
 
 /-- Off `E`, the prior-reversed-forward obstruction is exactly the statement that some
 nonterminal `J_BT` forward anchor is redundant under `redundantEntryDS`. -/

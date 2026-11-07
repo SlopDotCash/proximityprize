@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ArkLib.Data.Probability.Notation
 import ArkLib.Data.CodingTheory.RandomLinearCodeMatrixEquidist
 import Mathlib.LinearAlgebra.Matrix.Rank
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
@@ -55,8 +56,8 @@ on `Matrix (Fin r) ι F`. The `r = 2` case is the pairwise uniformity feeding th
 moment. -/
 theorem map_mul_uniform_of_linearIndependent_rows
     {M : Matrix (Fin r) (Fin k) F} (h : LinearIndependent F M.row) :
-    (PMF.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => M * G)
-      = PMF.uniformOfFintype (Matrix (Fin r) ι F) := by
+    (ProximityPrize.Compatibility.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => M * G)
+      = ProximityPrize.Compatibility.uniformOfFintype (Matrix (Fin r) ι F) := by
   obtain ⟨N, hN⟩ := exists_rightInverse_of_linearIndependent_rows h
   exact map_mul_uniformOfFintype hN
 

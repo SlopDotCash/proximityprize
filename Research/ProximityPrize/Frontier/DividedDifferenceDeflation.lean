@@ -166,7 +166,6 @@ theorem ddVal_recursion {R : Finset ι} {v : ι → F} (r : ι → F) (hvs : Set
     rw [hAcoeff, hBcoeff]
   -- take coeff (#R-1) of the polynomial recursion
   have hcoeff := congrArg (fun p : F[X] => p.coeff (#R - 1)) hpoly
-  simp only at hcoeff
   rw [hlhs, hrhs] at hcoeff
   rw [hcoeff]
   -- (v j - v i)⁻¹ = -(v i - v j)⁻¹

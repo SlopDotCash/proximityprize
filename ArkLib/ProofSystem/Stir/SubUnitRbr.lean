@@ -9,7 +9,7 @@ import ArkLib.ProofSystem.Whir.ThresholdKSF
 import ArkLib.OracleReduction.FullPredKSF
 import ArkLib.ProofSystem.Whir.SubUnitRbr
 import ArkLib.Data.Probability.MarginalBound
-import ArkLib.ProofSystem.Component.SendWitness
+import ProximityPrize.Extensions.ProofSystem.Component.SendWitness
 
 
 /-!
@@ -99,15 +99,11 @@ def predKSF (verifier : Verifier oSpec StmtIn StmtOut pSpec)
       ∀ stmtIn (tr : Transcript m.castSucc pSpec) (msg : pSpec.Type m),
         pred m.succ stmtIn (tr.concat msg) → pred m.castSucc stmtIn tr)
     (hFull : ∀ stmtIn tr (witOut : WitOut),
-      Pr[fun stmtOut => (stmtOut, witOut) ∈ relOut
-        | OptionT.mk do (simulateQ impl (verifier.run stmtIn tr)).run' (← init)] > 0 →
+      probEvent (fun stmtOut => (stmtOut, witOut) ∈ relOut) (OptionT.mk do (simulateQ impl (verifier.run stmtIn tr)).run' (← init)) > 0 →
       pred (.last n) stmtIn tr) :
     verifier.KnowledgeStateFunction init impl relIn relOut
-      (unitExtractor (WitOut := WitOut)) where
-  toFun := fun m stmtIn tr _ => pred m stmtIn tr
-  toFun_empty := fun stmtIn _w => hEmpty stmtIn _
-  toFun_next := fun m hdir stmtIn tr msg _ h => hConcat m hdir stmtIn tr msg h
-  toFun_full := fun stmtIn tr witOut h => hFull stmtIn tr witOut h
+      (unitExtractor (WitOut := WitOut)) :=
+  FullPredKSF.fullPredKSF init impl verifier relIn relOut pred hEmpty hConcat hFull
 
 /-- **Multi-flip RBR knowledge soundness**: if the round-indexed predicate family `pred`
 forms an (un-truncated) knowledge state function (hypotheses `hEmpty`, `hConcat`, `hFull`),
@@ -125,21 +121,19 @@ theorem rbrKnowledgeSoundness_of_flipBounds (verifier : Verifier oSpec StmtIn St
       ∀ stmtIn (tr : Transcript m.castSucc pSpec) (msg : pSpec.Type m),
         pred m.succ stmtIn (tr.concat msg) → pred m.castSucc stmtIn tr)
     (hFull : ∀ stmtIn tr (witOut : WitOut),
-      Pr[fun stmtOut => (stmtOut, witOut) ∈ relOut
-        | OptionT.mk do (simulateQ impl (verifier.run stmtIn tr)).run' (← init)] > 0 →
+      probEvent (fun stmtOut => (stmtOut, witOut) ∈ relOut) (OptionT.mk do (simulateQ impl (verifier.run stmtIn tr)).run' (← init)) > 0 →
       pred (.last n) stmtIn tr)
     (hFlip : ∀ (i : pSpec.ChallengeIdx) stmtIn witIn
       (prover : Prover oSpec StmtIn Unit StmtOut WitOut pSpec),
-      Pr[fun x : pSpec.Transcript i.1.castSucc × pSpec.Challenge i ×
+      probEvent (fun x : pSpec.Transcript i.1.castSucc × pSpec.Challenge i ×
           (oSpec + [pSpec.Challenge]ₒ).QueryLog =>
-          ¬ pred i.1.castSucc stmtIn x.1 ∧ pred i.1.succ stmtIn (x.1.concat x.2.1)
-        | do
+          ¬ pred i.1.castSucc stmtIn x.1 ∧ pred i.1.succ stmtIn (x.1.concat x.2.1)) (do
           (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
             (do
               let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
                 prover.runWithLogToRound i.1.castSucc stmtIn witIn
               let challenge ← liftComp (pSpec.getChallenge i) _
-              return (transcript, challenge, proveQueryLog))).run' (← init)] ≤ (ε i : ℝ≥0∞)) :
+              return (transcript, challenge, proveQueryLog))).run' (← init)) ≤ (ε i : ℝ≥0∞)) :
     verifier.rbrKnowledgeSoundness init impl relIn relOut ε :=
   -- consolidation (#301 dedup): this is `FullPredKSF.rbrKnowledgeSoundness_of_salvageBound`
   -- (the shared multi-flip home) with the flip-bound arguments reordered; the local
@@ -595,21 +589,20 @@ theorem stirFlip_le_zero
     (stmtIn : Unit × ∀ i, OracleStatement ι F i) (witIn : Unit)
     (prover : Prover oSpec (Unit × ∀ i, OracleStatement ι F i) Unit StmtOut WitOut
       ((stirMultiVSpec M ι).toProtocolSpec F)) :
-    Pr[fun x : ((stirMultiVSpec M ι).toProtocolSpec F).Transcript i.1.castSucc ×
+    probEvent (fun x : ((stirMultiVSpec M ι).toProtocolSpec F).Transcript i.1.castSucc ×
           ((stirMultiVSpec M ι).toProtocolSpec F).Challenge i ×
           (oSpec + [((stirMultiVSpec M ι).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).QueryLog =>
         ¬ stirCheckingPred M φ deg δ i.1.castSucc stmtIn x.1 ∧
-          stirCheckingPred M φ deg δ i.1.succ stmtIn (x.1.concat x.2.1)
-      | do
+          stirCheckingPred M φ deg δ i.1.succ stmtIn (x.1.concat x.2.1)) (do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
               prover.runWithLogToRound i.1.castSucc stmtIn witIn
             let challenge ← liftComp
               (((stirMultiVSpec M ι).toProtocolSpec F).getChallenge i) _
-            return (transcript, challenge, proveQueryLog))).run' (← init)]
+            return (transcript, challenge, proveQueryLog))).run' (← init))
       ≤ (0 : ℝ≥0∞) := by
-  refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+  refine le_trans (le_of_eq (prEvent_eq_zero_of_forall_mem_support _ _ ?_)) (zero_le)
   rintro ⟨tr, ch, lg⟩ _ ⟨hn, hy⟩
   exact hn (stirCheckingPred_concat_zero M φ deg δ stmtIn tr ch hi hy)
 
@@ -621,19 +614,18 @@ theorem stirFlip_le_round2
     (stmtIn : Unit × ∀ i, OracleStatement ι F i) (witIn : Unit)
     (prover : Prover oSpec (Unit × ∀ i, OracleStatement ι F i) Unit StmtOut WitOut
       ((stirMultiVSpec M ι).toProtocolSpec F)) :
-    Pr[fun x : ((stirMultiVSpec M ι).toProtocolSpec F).Transcript i.1.castSucc ×
+    probEvent (fun x : ((stirMultiVSpec M ι).toProtocolSpec F).Transcript i.1.castSucc ×
           ((stirMultiVSpec M ι).toProtocolSpec F).Challenge i ×
           (oSpec + [((stirMultiVSpec M ι).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).QueryLog =>
         ¬ stirCheckingPred M φ deg δ i.1.castSucc stmtIn x.1 ∧
-          stirCheckingPred M φ deg δ i.1.succ stmtIn (x.1.concat x.2.1)
-      | do
+          stirCheckingPred M φ deg δ i.1.succ stmtIn (x.1.concat x.2.1)) (do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
               prover.runWithLogToRound i.1.castSucc stmtIn witIn
             let challenge ← liftComp
               (((stirMultiVSpec M ι).toProtocolSpec F).getChallenge i) _
-            return (transcript, challenge, proveQueryLog))).run' (← init)]
+            return (transcript, challenge, proveQueryLog))).run' (← init))
       ≤ ((Fintype.card F - (⌊δ * (Fintype.card ι : ℝ≥0)⌋₊ + 1) : ℕ) : ℝ≥0∞)
           / (Fintype.card F : ℝ≥0∞) := by
   classical
@@ -648,14 +640,13 @@ theorem stirFlip_le_round2
   dsimp only
   -- the challenge draw in `liftM` form, then the uniform average over the drawn challenge
   rw [liftComp_eq_liftM]
-  rw [ChallengeCoherence.probEvent_run'_simulateQ_addLift_getChallenge_bind impl s' i
-    (fun ch => pure (tr, ch, log)) _]
+  rw [ChallengeCoherence.run'_simulateQ_addLift_getChallenge_bind impl s' i
+    (fun ch => pure (tr, ch, log))]
   simp only [simulateQ_pure, StateT.run'_pure_lib]
-  rw [← probEvent_bind_eq_tsum]
   -- case analysis at the fixed prefix
   by_cases hno : stirCheckingPred M φ deg δ i.1.castSucc stmtIn tr
   · -- the state is already good: no flip possible
-    refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+    refine le_trans (le_of_eq (prEvent_eq_zero_of_forall_mem_support _ _ ?_)) (zero_le)
     rintro x hx ⟨hn, -⟩
     simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
       exists_prop] at hx
@@ -694,7 +685,7 @@ theorem stirFlip_le_round2
                 mul_lt_mul_of_pos_right hδrel hn
             _ = (D.card : ℝ≥0) := div_mul_cancel₀ _ (ne_of_gt hn)
         have hfloor : ⌊δ * (Fintype.card ι : ℝ≥0)⌋₊ + 1 ≤ D.card := by
-          have := (Nat.floor_lt (zero_le _)).mpr hcard
+          have := (Nat.floor_lt (zero_le)).mpr hcard
           omega
         -- the agreement set of challenge values
         set L : Set F := {r : F | inputAns stmtIn.2 (queryPoint φ r)
@@ -707,7 +698,7 @@ theorem stirFlip_le_round2
             (stirMulti_length_chal (M := M) (ι := ι) i.1 hmod) x)) ?_) ?_
         · -- outside the agreement set the flip event is impossible
           intro ch hch
-          refine probEvent_eq_zero ?_
+          refine prEvent_eq_zero_of_forall_mem_support _ _ ?_
           rintro x hx ⟨hn, hy⟩
           simp only [support_pure, Set.mem_singleton_iff] at hx
           subst hx
@@ -743,7 +734,7 @@ theorem stirFlip_le_round2
             omega
           exact ENNReal.div_le_div_right (by exact_mod_cast hcardL) _
       · -- the first message is not a codeword: the flip event is impossible
-        refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+        refine le_trans (le_of_eq (prEvent_eq_zero_of_forall_mem_support _ _ ?_)) (zero_le)
         rintro x hx ⟨hn, hy⟩
         simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
           exists_prop] at hx
@@ -759,19 +750,18 @@ theorem stirFlip_le_out
     (stmtIn : Unit × ∀ i, OracleStatement ι F i) (witIn : Unit)
     (prover : Prover oSpec (Unit × ∀ i, OracleStatement ι F i) Unit StmtOut WitOut
       ((stirMultiVSpec M ι).toProtocolSpec F)) :
-    Pr[fun x : ((stirMultiVSpec M ι).toProtocolSpec F).Transcript i.1.castSucc ×
+    probEvent (fun x : ((stirMultiVSpec M ι).toProtocolSpec F).Transcript i.1.castSucc ×
           ((stirMultiVSpec M ι).toProtocolSpec F).Challenge i ×
           (oSpec + [((stirMultiVSpec M ι).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).QueryLog =>
         ¬ stirCheckingPred M φ deg δ i.1.castSucc stmtIn x.1 ∧
-          stirCheckingPred M φ deg δ i.1.succ stmtIn (x.1.concat x.2.1)
-      | do
+          stirCheckingPred M φ deg δ i.1.succ stmtIn (x.1.concat x.2.1)) (do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
               prover.runWithLogToRound i.1.castSucc stmtIn witIn
             let challenge ← liftComp
               (((stirMultiVSpec M ι).toProtocolSpec F).getChallenge i) _
-            return (transcript, challenge, proveQueryLog))).run' (← init)]
+            return (transcript, challenge, proveQueryLog))).run' (← init))
       ≤ ((Fintype.card F - 1 : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) := by
   classical
   have hmod : (i.1 : ℕ) % 3 ≠ 1 := by omega
@@ -781,12 +771,11 @@ theorem stirFlip_le_out
   obtain ⟨⟨⟨tr, pst⟩, log⟩, s'⟩ := rk
   dsimp only
   rw [liftComp_eq_liftM]
-  rw [ChallengeCoherence.probEvent_run'_simulateQ_addLift_getChallenge_bind impl s' i
-    (fun ch => pure (tr, ch, log)) _]
+  rw [ChallengeCoherence.run'_simulateQ_addLift_getChallenge_bind impl s' i
+    (fun ch => pure (tr, ch, log))]
   simp only [simulateQ_pure, StateT.run'_pure_lib]
-  rw [← probEvent_bind_eq_tsum]
   by_cases hno : stirCheckingPred M φ deg δ i.1.castSucc stmtIn tr
-  · refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+  · refine le_trans (le_of_eq (prEvent_eq_zero_of_forall_mem_support _ _ ?_)) (zero_le)
     rintro x hx ⟨hn, -⟩
     simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
       exists_prop] at hx
@@ -796,7 +785,7 @@ theorem stirFlip_le_out
     have hB : 3 * (j + 1) + 1 < (i.1.castSucc : ℕ) := by simp only [Fin.val_castSucc]; omega
     by_cases hAB : ∀ x : ι, trMsgF tr j hA x = trMsgF tr (j + 1) hB x
     · -- the pair is locked: no flip is possible (the source state would be winnable)
-      refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+      refine le_trans (le_of_eq (prEvent_eq_zero_of_forall_mem_support _ _ ?_)) (zero_le)
       rintro x hx ⟨hn, hy⟩
       simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
         exists_prop] at hx
@@ -814,7 +803,7 @@ theorem stirFlip_le_out
         (fun x => le_of_eq (probEvent_chalElemOf_eq_uniform (stirMultiVSpec M ι) i
           (stirMulti_length_chal (M := M) (ι := ι) i.1 hmod) x)) ?_) ?_
       · intro ch hch
-        refine probEvent_eq_zero ?_
+        refine prEvent_eq_zero_of_forall_mem_support _ _ ?_
         rintro x hx ⟨hn, hy⟩
         simp only [support_pure, Set.mem_singleton_iff] at hx
         subst hx
@@ -875,7 +864,8 @@ theorem stirCheckingRbrSoundness_genuine :
   have hcardF : (Fintype.card F : ℝ≥0) ≠ 0 := by
     exact_mod_cast Fintype.card_ne_zero (α := F)
   refine ThresholdKSF.rbrKnowledgeSoundness_of_flipBounds (pure ()) isEmptyElim
-    ((stirCheckingIOP M φ deg).verifier.toVerifier)
+    ((stirCheckingIOP M φ deg).toOracleVerifier.toVerifier
+      (Oₛₒ := fun i : Empty => nomatch i))
     (stirRelation deg φ δ) acceptRejectOracleRel
     (stirCheckingPred M φ deg δ) (stirEpsStar (F := F) (ι := ι) M δ)
     (fun stmtIn _ => stirCheckingPred_empty M φ deg δ stmtIn default)
@@ -884,19 +874,23 @@ theorem stirCheckingRbrSoundness_genuine :
         from rfl, stirVSpec_dir_eq_msg_iff] at hdir
       exact stirCheckingPred_concat_msg M φ deg δ stmtIn tr msg hdir h)
     (fun stmtIn tr witOut hpr => by
-      rw [gt_iff_lt, probEvent_pos_iff] at hpr
+      change FullTranscript ((stirMultiVSpec M ι).toProtocolSpec F) at tr
+      rw [gt_iff_lt, OracleComp.OptionT.prEvent_mk_pos_iff] at hpr
       obtain ⟨x, hx, hrel⟩ := hpr
-      rw [OptionT.mem_support_iff] at hx
       simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
       obtain ⟨s, _, hx⟩ := hx
-      have hrun : Verifier.run stmtIn tr (stirCheckingIOP M φ deg).verifier.toVerifier
+      have hrun : ((stirCheckingIOP M φ deg).toOracleVerifier.toVerifier
+          (Oₛₒ := fun i : Empty => nomatch i)).verify stmtIn tr
           = (pure (checkingBool M φ deg stmtIn.2 tr.messages tr.challenges,
               fun i : Empty => i.elim) : OptionT (OracleComp []ₒ) _) :=
         checkingVerifier_toVerifier_verify M φ deg stmtIn tr
+      simp only [Verifier.run] at hx
       erw [hrun, simulateQ_optionT_pure_run'] at hx
       cases (Option.some.inj hx)
       refine stirCheckingPred_full_of_accept M φ deg δ stmtIn tr ?_
-      simpa [acceptRejectOracleRel, Prod.ext_iff] using hrel)
+      have hb := congrArg (fun p : (Bool × (Empty → Unit)) × Unit => p.1.1)
+        (Set.mem_singleton_iff.mp hrel)
+      exact hb)
     (fun i stmtIn witIn prover => by
       by_cases h2 : (i.1 : ℕ) = 2
       · refine le_trans

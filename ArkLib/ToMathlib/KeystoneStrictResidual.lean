@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.Curves
 import ArkLib.ToMathlib.BetaToCurveCoeffPolys
 import ArkLib.ToMathlib.BetaToCurveCoeffPolysOffcentre
 import ArkLib.ToMathlib.HcardDischarge
@@ -483,10 +483,12 @@ theorem strictCoeffPolysResidual_zero
 
 /-! ### Keystone Assembly Theorems -/
 
+-- Native conclusions quantify the canonical sampler; all extraction data above remain PMF-based.
+
 /-- Proves the correlated agreement curves bound from the infinite-range input configuration
 and boundary conditions. -/
 theorem correlatedAgreement_affine_curves_johnson_of_betaRec
-    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain)
     (hInput : ∀ (_hk : 0 < k) (u : WordStack F (Fin (k + 1)) ι),
       Pr_{
@@ -506,7 +508,7 @@ theorem correlatedAgreement_affine_curves_johnson_of_betaRec
 /-- Proves the correlated agreement curves bound from the off-centre local-variable input
 configuration and boundary conditions. -/
 theorem correlatedAgreement_affine_curves_johnson_of_betaRec_offcentre
-    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain)
     (hInput : ∀ (_hk : 0 < k) (u : WordStack F (Fin (k + 1)) ι),
       Pr_{
@@ -526,7 +528,7 @@ theorem correlatedAgreement_affine_curves_johnson_of_betaRec_offcentre
 /-- Proves the correlated agreement curves bound from the finite off-centre local-variable input
 configuration and boundary conditions. -/
 theorem correlatedAgreement_affine_curves_johnson_of_betaRec_offcentreFin
-    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain)
     (hInput : ∀ (_hk : 0 < k) (u : WordStack F (Fin (k + 1)) ι),
       Pr_{
@@ -546,7 +548,7 @@ theorem correlatedAgreement_affine_curves_johnson_of_betaRec_offcentreFin
 omit [DecidableEq ι] in
 /-- Proves the correlated agreement curves bound under strict Johnson radius limits. -/
 theorem correlatedAgreement_affine_curves_johnson_of_betaRec_strict
-    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (hInput : ∀ (_hk : 0 < k) (u : WordStack F (Fin (k + 1)) ι),
       Pr_{
@@ -567,7 +569,7 @@ omit [DecidableEq ι] in
 /-- Proves the strict correlated agreement curves bound from the off-centre local-variable input
 configuration. -/
 theorem correlatedAgreement_affine_curves_johnson_of_betaRec_offcentre_strict
-    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (hInput : ∀ (_hk : 0 < k) (u : WordStack F (Fin (k + 1)) ι),
       Pr_{
@@ -588,7 +590,7 @@ omit [DecidableEq ι] in
 /-- Proves the strict correlated agreement curves bound from the finite off-centre local-variable
 input configuration. -/
 theorem correlatedAgreement_affine_curves_johnson_of_betaRec_offcentreFin_strict
-    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (hInput : ∀ (_hk : 0 < k) (u : WordStack F (Fin (k + 1)) ι),
       Pr_{
@@ -607,7 +609,7 @@ theorem correlatedAgreement_affine_curves_johnson_of_betaRec_offcentreFin_strict
 
 /-- Proves the correlated agreement curves bound using the finite-range input configuration. -/
 theorem correlatedAgreement_affine_curves_johnson_of_betaRecFin
-    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain)
     (hInput : ∀ (_hk : 0 < k) (u : WordStack F (Fin (k + 1)) ι),
       Pr_{
@@ -628,7 +630,7 @@ omit [DecidableEq ι] in
 /-- Proves the strict correlated agreement curves bound using the finite-range input
 configuration. -/
 theorem correlatedAgreement_affine_curves_johnson_of_betaRecFin_strict
-    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (hInput : ∀ (_hk : 0 < k) (u : WordStack F (Fin (k + 1)) ι),
       Pr_{
@@ -648,7 +650,7 @@ theorem correlatedAgreement_affine_curves_johnson_of_betaRecFin_strict
 omit [DecidableEq ι] in
 /-- Proves the strict correlated agreement curves bound from the finite-range data structure. -/
 theorem correlatedAgreement_affine_curves_johnson_of_section5DataFin_strict
-    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (hInput : ∀ (_hk : 0 < k) (u : WordStack F (Fin (k + 1)) ι),
       Pr_{

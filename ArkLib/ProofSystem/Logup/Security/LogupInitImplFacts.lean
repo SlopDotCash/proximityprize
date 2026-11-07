@@ -56,7 +56,8 @@ universe u
 
 section InitImplFacts
 
-variable {ι : Type} (oSpec : OracleSpec ι) [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} (oSpec : OracleSpec ι)
+  [∀ t, Fintype (oSpec.Range t)] [∀ t, Nonempty (oSpec.Range t)]
 variable (σ : Type)
 
 /-! ### `hInit`: a pure initialization never fails -/
@@ -65,7 +66,7 @@ variable (σ : Type)
 never produces failure mass. This is the data fact required as `hInit : NeverFail init` by every
 LogUp completeness statement, discharged for the canonical `init := pure x`. -/
 theorem neverFail_pure_init {σ : Type} (x : σ) : NeverFail (pure x : ProbComp σ) :=
-  NeverFail.instPure
+  by simp [NeverFail]
 
 /-! ### The canonical uniform query implementation -/
 

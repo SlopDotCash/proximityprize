@@ -38,7 +38,7 @@ from the base sub-Johnson bound and the elementary product bound for interleavin
 theorem rsCode_interleaved_Lambda_subJohnson_le (dom : Fin n ↪ F) {k a m : ℕ} {δ : ℝ}
     (hk : 1 ≤ k) (hka : k ≤ a) (hn : 0 < Fintype.card (Fin n))
     (ha : (a : ℝ) ≤ (1 - δ) * (Fintype.card (Fin n) : ℝ)) :
-    Lambda (Code.interleavedCodeSet (κ := Fin m)
+    ListDecodable.Lambda (Code.interleavedCodeSet (κ := Fin m)
         ((rsCode dom k : Submodule F (Fin n → F)) : Set (Fin n → F))) δ
       ≤ (n.choose k / a.choose k : ℕ∞) ^ m :=
   le_trans (InterleavedCode.ListSize.Lambda_interleaved_le_pow _ δ)

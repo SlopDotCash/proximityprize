@@ -148,7 +148,6 @@ def new (id : Char) (count : Option Nat) : Except DomainSeparatorMismatch Op :=
 @[simp] theorem new_absorb_of_pos {count : Nat} (hcount : 0 < count) :
     new 'A' (some count) = .ok (Absorb count) := by
   simp [new, hcount]
-  rfl
 
 @[simp] theorem new_absorb_zero :
     new 'A' (some 0) = .error ⟨"Invalid tag"⟩ := by
@@ -173,7 +172,6 @@ def new (id : Char) (count : Option Nat) : Except DomainSeparatorMismatch Op :=
 @[simp] theorem new_squeeze_of_pos {count : Nat} (hcount : 0 < count) :
     new 'S' (some count) = .ok (Squeeze count) := by
   simp [new, hcount]
-  rfl
 
 @[simp] theorem new_squeeze_zero :
     new 'S' (some 0) = .error ⟨"Invalid tag"⟩ := by

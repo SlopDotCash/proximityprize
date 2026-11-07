@@ -79,7 +79,7 @@ theorem abs_basisFun_det_le_prod_norm (f : Fin d → EuclideanSpace ℝ (Fin d))
     _ = |∏ i, ⟪b i, f i⟫_ℝ| := by rw [hdet]
     _ = ∏ i, |⟪b i, f i⟫_ℝ| := Finset.abs_prod _ _
     _ ≤ ∏ i, ‖f i‖ := by
-        refine Finset.prod_le_prod (fun i _ => abs_nonneg _) (fun i _ => ?_)
+        refine Finset.prod_le_prod₀ (fun i _ => abs_nonneg _) (fun i _ => ?_)
         have h1 := abs_real_inner_le_norm (b i) (f i)
         rwa [b.orthonormal.1 i, one_mul] at h1
 
@@ -128,7 +128,7 @@ theorem sq_det_le_pow_of_row_sq_sum_le (M : Matrix (Fin d) (Fin d) ℤ) (B : ℕ
             exact Real.sq_sqrt (Finset.sum_nonneg fun _ _ => sq_nonneg _)
     have h3 : ∏ i, (∑ j, N i j ^ 2) ≤ (B : ℝ) ^ d := by
       calc ∏ i, (∑ j, N i j ^ 2) ≤ ∏ _i : Fin d, (B : ℝ) := by
-            refine Finset.prod_le_prod
+            refine Finset.prod_le_prod₀
               (fun i _ => Finset.sum_nonneg fun _ _ => sq_nonneg _) (fun i _ => ?_)
             have hi := h i
             have hc : ((∑ j, M i j ^ 2 : ℤ) : ℝ) ≤ ((B : ℤ) : ℝ) := by exact_mod_cast hi

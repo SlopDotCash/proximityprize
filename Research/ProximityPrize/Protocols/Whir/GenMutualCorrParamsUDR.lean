@@ -40,7 +40,7 @@ Axiom-clean: `[propext, Classical.choice, Quot.sound]` (see `#print axioms` at E
 
 namespace WhirIOP
 
-open MutualCorrAgreement Generator ReedSolomon BlockRelDistance ListDecodable NNReal
+open MutualCorrAgreement Generator ReedSolomon BlockRelDistance.Generic ListDecodable NNReal
 open CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame
 
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]

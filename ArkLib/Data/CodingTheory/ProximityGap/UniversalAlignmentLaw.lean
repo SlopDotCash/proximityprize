@@ -85,7 +85,7 @@ theorem explainableOn_iff_forall_residual (dom : Fin n ↪ F) {k : ℕ} (hk : 1 
     have hPdeg' : P.natDegree < k := by
       by_cases hP0 : P = 0
       · subst hP0
-        simpa using hk
+        simpa using (show 0 < k by omega)
       · exact (Polynomial.natDegree_lt_iff_degree_lt hP0).mpr hPdeg
     exact residual_eq_zero_of_extends dom k t hPdeg' fun b =>
       (hag (t b) (htmem b)).symm

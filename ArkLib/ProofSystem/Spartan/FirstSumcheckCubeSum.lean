@@ -120,6 +120,7 @@ theorem firstSumCheckVirtualPolynomial_hypercubeSum_eq_zeroCheckEval
     Function.comp_apply, eval_C, Equiv.symm_apply_apply]
   -- The `eq` weights match via symmetry: `eval (X:→R) (eqPolynomial τ) = eval τ (eqPolynomial X)`.
   rw [eqPolynomial_symm]
+  rfl
 
 /-- **First sum-check completeness target.** On any R1CS-satisfying instance the first sum-check's
 Boolean-hypercube sum is `0`: the zero-check polynomial `𝒢` is identically zero, so `𝒢(τ) = 0`. This

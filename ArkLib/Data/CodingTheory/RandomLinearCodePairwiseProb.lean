@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ArkLib.Data.Probability.Notation
 import ArkLib.Data.CodingTheory.RandomLinearCodeRankEquidist
 import Mathlib.Data.Finset.Prod
 import Mathlib.Data.Fintype.Pi
@@ -35,16 +36,16 @@ variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 theorem mul_uniform_mem_prob_of_linearIndependent_rows
     {M : Matrix (Fin r) (Fin k) F} (h : LinearIndependent F M.row)
     (S : Set (Matrix (Fin r) ι F)) [Fintype S] :
-    ((PMF.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => M * G)).toOuterMeasure S
+    ((ProximityPrize.Compatibility.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => M * G)).toOuterMeasure S
       = Fintype.card S / Fintype.card (Matrix (Fin r) ι F) := by
-  rw [map_mul_uniform_of_linearIndependent_rows h, PMF.toOuterMeasure_uniformOfFintype_apply]
+  rw [map_mul_uniform_of_linearIndependent_rows h, ProximityPrize.Compatibility.toOuterMeasure_uniformOfFintype_apply]
 
 /-- **The second-moment summand.** For a rank-2 message block `M` (rows `M 0`, `M 1` linearly
 independent), the random codewords land jointly in a finite target set `S` with probability
 `(|S| / qⁿ)²` — the per-pair term the GLMRSW22 second moment sums over independent message pairs. -/
 theorem pairwise_joint_mem_prob {M : Matrix (Fin 2) (Fin k) F}
     (h : LinearIndependent F M.row) (S : Finset (ι → F)) :
-    ((PMF.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => M * G)).toOuterMeasure
+    ((ProximityPrize.Compatibility.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => M * G)).toOuterMeasure
         {D : Matrix (Fin 2) ι F | D 0 ∈ S ∧ D 1 ∈ S}
       = ((Fintype.card S : ℝ≥0∞) / Fintype.card (ι → F)) ^ 2 := by
   classical

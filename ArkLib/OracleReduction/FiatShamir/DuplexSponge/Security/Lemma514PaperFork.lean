@@ -4,6 +4,12 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.Lemma512PaperCascade
+import Batteries.Tactic.OpenPrivate
+
+open private DuplexSpongeFS.Sponge316.forwardEntryP DuplexSpongeFS.Sponge316.inverseEntryP
+  from ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.Lemma512HonestPaper
+open private DuplexSpongeFS.Sponge316.forwardEntryC
+  from ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.Lemma512PaperCascade
 
 /-!
 # CO25 Lemma 5.14 under paper semantics — DISCHARGED
@@ -106,13 +112,13 @@ private lemma SlotKind.not_redundant (sk : SlotKind StmtIn U)
           simpa [hashEntryD, List.get_eq_getElem] using congrArg some hbad))
   | fwd stateIn stateOut =>
       exact not_redundantEntryDSPaper_forward_of_no_prior tr idx
-        (by simpa [SlotKind.entry, forwardEntryD] using hval)
+        (by simpa [SlotKind.entry, forwardEntryD, DuplexSpongeFS.Sponge316.forwardEntryP, DuplexSpongeFS.Sponge316.forwardEntryC] using hval)
         (fun j hj => ⟨fun hbad => (hguard j.val hj).1 (by
             rw [List.getElem?_eq_getElem j.isLt]
-            simpa [forwardEntryD, List.get_eq_getElem] using congrArg some hbad),
+            simpa [forwardEntryD, DuplexSpongeFS.Sponge316.forwardEntryP, DuplexSpongeFS.Sponge316.forwardEntryC, List.get_eq_getElem] using congrArg some hbad),
           fun hbad => (hguard j.val hj).2 (by
             rw [List.getElem?_eq_getElem j.isLt]
-            simpa [inverseEntryD, List.get_eq_getElem] using congrArg some hbad)⟩)
+            simpa [inverseEntryD, DuplexSpongeFS.Sponge316.inverseEntryP, List.get_eq_getElem] using congrArg some hbad)⟩)
 
 /-- Shifting a "no prior occurrence below `i`" guard through `eraseIdx`. -/
 private lemma firstGuardD_eraseIdx
@@ -322,10 +328,10 @@ theorem step_determinism_paper
   have hfwdQ0 := index_entry_forward_of_not_E tr state seqQ hE b hbO
   have hfwdP : tr[idxP.val]? =
       some (forwardEntryD (seqP.inputState[a]'haI) (seqP.outputState[a]'haO)) := by
-    simpa [idxP, hidxP, forwardEntryD] using hfwdP0
+    simpa [idxP, hidxP, forwardEntryD, DuplexSpongeFS.Sponge316.forwardEntryP, DuplexSpongeFS.Sponge316.forwardEntryC] using hfwdP0
   have hfwdQ : tr[idxQ.val]? =
       some (forwardEntryD (seqQ.inputState[b]'hbI) (seqQ.outputState[b]'hbO)) := by
-    simpa [idxQ, hidxQ, forwardEntryD] using hfwdQ0
+    simpa [idxQ, hidxQ, forwardEntryD, DuplexSpongeFS.Sponge316.forwardEntryP, DuplexSpongeFS.Sponge316.forwardEntryC] using hfwdQ0
   have hfirstP : ∀ j : Fin tr.length, j.val < idxP.val →
       tr[j] ≠ forwardEntryD (seqP.inputState[a]'haI) (seqP.outputState[a]'haO) ∧
         tr[j] ≠ inverseEntryD (seqP.outputState[a]'haO) (seqP.inputState[a]'haI) := by
@@ -333,7 +339,7 @@ theorem step_determinism_paper
     have hnp :=
       Backtrack.BacktrackSequence.index_perm_no_prior_of_lt tr state seqP ⟨a, haI⟩ haO j
         (by simpa [idxP, hidxP] using hj)
-    exact ⟨by simpa [forwardEntryD] using hnp.1, by simpa [inverseEntryD] using hnp.2⟩
+    exact ⟨by simpa [forwardEntryD, DuplexSpongeFS.Sponge316.forwardEntryP, DuplexSpongeFS.Sponge316.forwardEntryC] using hnp.1, by simpa [inverseEntryD, DuplexSpongeFS.Sponge316.inverseEntryP] using hnp.2⟩
   have hfirstQ : ∀ j : Fin tr.length, j.val < idxQ.val →
       tr[j] ≠ forwardEntryD (seqQ.inputState[b]'hbI) (seqQ.outputState[b]'hbO) ∧
         tr[j] ≠ inverseEntryD (seqQ.outputState[b]'hbO) (seqQ.inputState[b]'hbI) := by
@@ -341,7 +347,7 @@ theorem step_determinism_paper
     have hnp :=
       Backtrack.BacktrackSequence.index_perm_no_prior_of_lt tr state seqQ ⟨b, hbI⟩ hbO j
         (by simpa [idxQ, hidxQ] using hj)
-    exact ⟨by simpa [forwardEntryD] using hnp.1, by simpa [inverseEntryD] using hnp.2⟩
+    exact ⟨by simpa [forwardEntryD, DuplexSpongeFS.Sponge316.forwardEntryP, DuplexSpongeFS.Sponge316.forwardEntryC] using hnp.1, by simpa [inverseEntryD, DuplexSpongeFS.Sponge316.inverseEntryP] using hnp.2⟩
   by_cases hslot : idxP = idxQ
   · have hEq? :
         (some (forwardEntryD (StmtIn := StmtIn) (U := U)
@@ -358,29 +364,29 @@ theorem step_determinism_paper
         _ = some (forwardEntryD (StmtIn := StmtIn) (U := U)
           (seqQ.inputState[b]'hbI) (seqQ.outputState[b]'hbO)) := hfwdQ
     have hEq := Option.some.inj hEq?
-    simpa [forwardEntryD] using hEq
+    simpa [forwardEntryD, DuplexSpongeFS.Sponge316.forwardEntryP, DuplexSpongeFS.Sponge316.forwardEntryC] using hEq
   · exfalso
     obtain ⟨hPLt, hPEq⟩ := List.getElem?_eq_some_iff.mp hfwdP
     obtain ⟨hQLt, hQEq⟩ := List.getElem?_eq_some_iff.mp hfwdQ
     rcases lt_or_gt_of_ne hslot with hlt | hgt
     · refine hE (e_of_hasFirstPermCapacityBeforeForwardOutputPaper tr ?_)
       refine ⟨⟨idxQ.val, hQLt⟩, seqQ.inputState[b]'hbI, seqQ.outputState[b]'hbO,
-        by simpa [forwardEntryD] using hQEq, ?_,
+        by simpa [forwardEntryD, DuplexSpongeFS.Sponge316.forwardEntryP, DuplexSpongeFS.Sponge316.forwardEntryC] using hQEq, ?_,
         ⟨idxP.val, hPLt⟩, Fin.mk_lt_mk.mpr (by simpa [idxP, idxQ, hidxP, hidxQ] using hlt),
         seqP.inputState[a]'haI, seqP.outputState[a]'haO, Or.inl ?_, Or.inl hcap⟩
       · intro j hj
         have hq := hfirstQ j (by simpa [idxQ, hidxQ] using hj)
-        exact ⟨by simpa [forwardEntryD] using hq.1, by simpa [inverseEntryD] using hq.2⟩
-      · simpa [forwardEntryD] using hPEq
+        exact ⟨by simpa [forwardEntryD, DuplexSpongeFS.Sponge316.forwardEntryP, DuplexSpongeFS.Sponge316.forwardEntryC] using hq.1, by simpa [inverseEntryD, DuplexSpongeFS.Sponge316.inverseEntryP] using hq.2⟩
+      · simpa [forwardEntryD, DuplexSpongeFS.Sponge316.forwardEntryP, DuplexSpongeFS.Sponge316.forwardEntryC] using hPEq
     · refine hE (e_of_hasFirstPermCapacityBeforeForwardOutputPaper tr ?_)
       refine ⟨⟨idxP.val, hPLt⟩, seqP.inputState[a]'haI, seqP.outputState[a]'haO,
-        by simpa [forwardEntryD] using hPEq, ?_,
+        by simpa [forwardEntryD, DuplexSpongeFS.Sponge316.forwardEntryP, DuplexSpongeFS.Sponge316.forwardEntryC] using hPEq, ?_,
         ⟨idxQ.val, hQLt⟩, Fin.mk_lt_mk.mpr (by simpa [idxP, idxQ, hidxP, hidxQ] using hgt),
         seqQ.inputState[b]'hbI, seqQ.outputState[b]'hbO, Or.inl ?_, Or.inl hcap.symm⟩
       · intro j hj
         have hp' := hfirstP j (by simpa [idxP, hidxP] using hj)
-        exact ⟨by simpa [forwardEntryD] using hp'.1, by simpa [inverseEntryD] using hp'.2⟩
-      · simpa [forwardEntryD] using hQEq
+        exact ⟨by simpa [forwardEntryD, DuplexSpongeFS.Sponge316.forwardEntryP, DuplexSpongeFS.Sponge316.forwardEntryC] using hp'.1, by simpa [inverseEntryD, DuplexSpongeFS.Sponge316.inverseEntryP] using hp'.2⟩
+      · simpa [forwardEntryD, DuplexSpongeFS.Sponge316.forwardEntryP, DuplexSpongeFS.Sponge316.forwardEntryC] using hQEq
 
 open DuplexSpongeFS.KeyLemmaFoundations in
 /-- Off `BadEventDSPaper.E`, a hash anchor capacity cannot occur as the answer capacity of a
@@ -421,7 +427,7 @@ theorem hash_step_separation_paper
   have hfwdQ0 := index_entry_forward_of_not_E tr state seqQ hE b hbO
   have hfwdQ : tr[idxQ.val]? =
       some (forwardEntryD (seqQ.inputState[b]'hbI) (seqQ.outputState[b]'hbO)) := by
-    simpa [idxQ, hidxQ, forwardEntryD] using hfwdQ0
+    simpa [idxQ, hidxQ, forwardEntryD, DuplexSpongeFS.Sponge316.forwardEntryP, DuplexSpongeFS.Sponge316.forwardEntryC] using hfwdQ0
   have hfirstQ : ∀ k,
       k < idxQ.val →
       tr[k]? ≠ some (forwardEntryD (seqQ.inputState[b]'hbI) (seqQ.outputState[b]'hbO)) ∧
@@ -434,10 +440,10 @@ theorem hash_step_separation_paper
     constructor
     · intro hsome
       rw [List.getElem?_eq_getElem hkLen] at hsome
-      exact hnp.1 (by simpa [forwardEntryD] using Option.some.inj hsome)
+      exact hnp.1 (by simpa [forwardEntryD, DuplexSpongeFS.Sponge316.forwardEntryP, DuplexSpongeFS.Sponge316.forwardEntryC] using Option.some.inj hsome)
     · intro hsome
       rw [List.getElem?_eq_getElem hkLen] at hsome
-      exact hnp.2 (by simpa [inverseEntryD] using Option.some.inj hsome)
+      exact hnp.2 (by simpa [inverseEntryD, DuplexSpongeFS.Sponge316.inverseEntryP] using Option.some.inj hsome)
   by_cases hslot : idxH.val = idxQ.val
   · have hEq? :
         (some (hashEntryD (StmtIn := StmtIn) (U := U) seqP.stmt
@@ -456,7 +462,9 @@ theorem hash_step_separation_paper
         _ = some (forwardEntryD (StmtIn := StmtIn) (U := U)
           (seqQ.inputState[b]'hbI) (seqQ.outputState[b]'hbO)) := hfwdQ
     have hEq := Option.some.inj hEq?
-    simp [hashEntryD, forwardEntryD] at hEq
+    have hIndex := congrArg (fun e : OracleSpec.duplexSpongeTraceEntry
+      (StartType := StmtIn) (U := U) => e.1) hEq
+    cases hIndex
   · rcases lt_or_gt_of_ne hslot with hlt | hgt
     · exact hE (Or.inl (Or.inr (Or.inl
         (e_p_of_twoSurvivors_hash_fwd tr hcap.symm
@@ -518,9 +526,9 @@ theorem hash_anchor_unique_paper
   · have hEq? : some (hashEntryD seqP.stmt capP) = some (hashEntryD seqQ.stmt capQ) := by
       rw [← hHashP, ← hHashQ]
       simp [hslot]
-    have hEq := Option.some.inj hEq?
-    simp only [hashEntryD, Sigma.mk.injEq, Sum.inl.injEq] at hEq
-    exact hEq.1
+    have hIndex := congrArg (fun e : OracleSpec.duplexSpongeTraceEntry
+      (StartType := StmtIn) (U := U) => e.1) (Option.some.inj hEq?)
+    exact Sum.inl.inj hIndex
   · exfalso
     have hcapPQ : capP = capQ := by
       simpa [capP, hcapP, capQ, hcapQ] using hcap

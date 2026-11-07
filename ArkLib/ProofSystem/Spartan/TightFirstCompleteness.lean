@@ -17,7 +17,7 @@ tight chain's binding relations consume — not just the R1CS pass-through of th
 `firstSumcheckWithTargetRelOut`.
 
 **The per-`P` instance trick.** The completeness lift transfer
-(`OracleReduction.liftContext_perfectCompleteness`) needs a *fixed* inner relation pair, while
+(`OracleReduction.liftContextLegacy_perfectCompleteness`) needs a *fixed* inner relation pair, while
 the pinned inner relations (`relationRoundPinned P`, `PinnedCompleteness.lean`) depend on the
 outer input through its virtual polynomial. The reconciliation: restrict the outer input
 relation to the fiber of each fixed `P`
@@ -81,7 +81,9 @@ enriched outer output relation. -/
   lift_complete := by
     rintro ⟨⟨τ, 𝕩⟩, oStmt⟩ ⟨⟩ ⟨⟨t_out, r_x⟩, innerO⟩ ⟨⟩ _hCompat ⟨hRelIn, hP⟩ ⟨hRel, hPin⟩
     refine ⟨?_, ?_⟩
-    · simpa only [firstSumcheckWithTargetRelOut, Set.mem_setOf_eq] using hRelIn
+    · simpa only [firstSumcheckWithTargetRelIn, firstSumcheckWithTargetRelOut, Set.mem_ofPred_eq,
+        firstSumcheckContextLensWithTarget, OracleContext.Lens.toContext,
+        firstSumcheckStmtLensWithTarget, Statement.Lens.lift] using hRelIn
     · -- The pinned terminal collapses to the direct identity at the fiber's polynomial.
       have hpoly : innerO = fun _ => P := hPin
       have hterm : MvPolynomial.eval r_x (innerO ()).val = t_out :=
@@ -104,7 +106,7 @@ output satisfies the R1CS pass-through *and* the direct terminal identity `e₁ 
 unconditional modulo the standard honest execution-model facts. Assembled per input through the
 fiber of its virtual polynomial. -/
 theorem firstSumcheckWithTarget_perfectCompleteness_enriched
-    [oSpec.Fintype] [oSpec.Inhabited]
+    [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
     (hInit : NeverFail init)
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
       Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s)
@@ -115,7 +117,7 @@ theorem firstSumcheckWithTarget_perfectCompleteness_enriched
   intro stmtIn witIn hmem
   -- Work on the fiber of this input's virtual polynomial.
   set P : R⦃≤ 3⦄[X Fin pp.ℓ_m] := firstSumcheckVirtualOracle pp stmtIn with hPdef
-  letI : (firstSumcheckContextLensWithTarget pp).toContext.IsComplete
+  let : (firstSumcheckContextLensWithTarget pp).toContext.IsComplete
       (firstSumcheckWithTargetRelInAt pp P)
       (Sumcheck.Spec.relationRoundPinned R pp.ℓ_m 3 (boolEmbedding R) P (0 : Fin (pp.ℓ_m + 1)))
       (firstSumcheckWithTargetRelOutEnriched pp)
@@ -124,8 +126,8 @@ theorem firstSumcheckWithTarget_perfectCompleteness_enriched
           pp.ℓ_m oSpec).toReduction.compatContext
         (firstSumcheckContextLensWithTarget pp).toContext) :=
     firstSumcheckWithTargetLensCompleteAt pp oSpec P
-  haveI := firstSumcheckCoherentWithTarget (R := R) pp oSpec
-  exact OracleReduction.liftContext_perfectCompleteness
+  have := firstSumcheckCoherentWithTarget (R := R) pp oSpec
+  exact OracleReduction.liftContextLegacy_perfectCompleteness
     (lens := firstSumcheckContextLensWithTarget pp)
     (stmtLens := firstSumcheckOracleLensWithTarget pp oSpec)
     (outerRelIn := firstSumcheckWithTargetRelInAt pp P)

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.RSLambdaSubJohnson
-import ArkLib.Data.CodingTheory.Connections.ListDecodingAndCA
+import ProximityPrize.Extensions.Data.CodingTheory.Connections.ListDecodingAndCA
 
 /-!
 # Sub-Johnson list decoding ⇒ MCA for explicit RS codes (#389, the LD⇒MCA chain)

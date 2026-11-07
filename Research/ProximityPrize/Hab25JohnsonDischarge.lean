@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Hab25JohnsonArith
 import Research.ProximityPrize.Hab25JohnsonCountWiring
-import ArkLib.Data.CodingTheory.GuruswamiSudan.Basic
+import ProximityPrize.Extensions.Data.CodingTheory.GuruswamiSudan.Basic
 import Research.ProximityPrize.BCIKS20.Arith
 
 /-!

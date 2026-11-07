@@ -65,9 +65,9 @@ theorem card_filter_mem_powersetCard_mul {s : Finset α} {x : α} (hx : x ∈ s)
       rw [← Finset.erase_insert hx₁, ← Finset.erase_insert hx₂, h]
     rw [hfilter, Finset.card_image_of_injOn hinj, Finset.card_powersetCard,
       Finset.card_powersetCard, Finset.card_erase_of_mem hx]
-    -- goal: (|s| - 1).choose m * |s| = (m + 1) * |s|.choose (m + 1), via succ_mul_choose_eq
+    -- goal: (|s| - 1).choose m * |s| = (m + 1) * |s|.choose (m + 1), via add_one_mul_choose_eq
     have hpos : 0 < s.card := Finset.card_pos.2 ⟨x, hx⟩
-    have key := Nat.succ_mul_choose_eq (s.card - 1) m
+    have key := Nat.add_one_mul_choose_eq (s.card - 1) m
     simp only [Nat.succ_eq_add_one, Nat.sub_add_cancel hpos] at key
     -- key : s.card * (s.card - 1).choose m = s.card.choose (m + 1) * (m + 1)
     rw [mul_comm ((s.card - 1).choose m) s.card, key, mul_comm]
@@ -121,7 +121,7 @@ theorem card_filter_mem_mem_powersetCard_mul {s : Finset α} {x y : α}
     rw [Finset.card_powersetCard, Finset.card_erase_of_mem hx] at hsingle
     rw [Finset.card_powersetCard]
     have hpos : 0 < s.card := Finset.card_pos.2 ⟨x, hx⟩
-    have hchoose := Nat.succ_mul_choose_eq (s.card - 1) m
+    have hchoose := Nat.add_one_mul_choose_eq (s.card - 1) m
     simp only [Nat.succ_eq_add_one, Nat.sub_add_cancel hpos] at hchoose
     set c := (((s.erase x).powersetCard m).filter (fun L => y ∈ L)).card with hc
     -- hsingle : c * (s.card - 1) = m * (s.card - 1).choose m ;  goal uses c

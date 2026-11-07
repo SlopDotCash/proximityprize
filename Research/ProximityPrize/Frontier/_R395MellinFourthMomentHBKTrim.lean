@@ -511,11 +511,11 @@ theorem dTerm_41_10 : dTerm (powerCoset 41 10) = 4 := by decide
 theorem negOne_mem_41_10 : (-1 : ZMod 41) ∈ powerCoset 41 10 := by decide
 
 -- (p, m) = (61, 12): n = 5 (odd), E = 45, T = 0, D = 0, −1 ∉ H
-theorem powerCoset_61_12 : powerCoset 61 12 = {1, 9, 20, 34, 58} := by decide
-theorem quadEnergy_61_12 : quadEnergy (powerCoset 61 12) = 45 := by decide
-theorem tripleCount_61_12 : tripleCount (powerCoset 61 12) = 0 := by decide
-theorem dTerm_61_12 : dTerm (powerCoset 61 12) = 0 := by decide
-theorem negOne_notMem_61_12 : (-1 : ZMod 61) ∉ powerCoset 61 12 := by decide
+theorem powerCoset_61_12 : powerCoset 61 12 = {1, 9, 20, 34, 58} := by decide +kernel
+theorem quadEnergy_61_12 : quadEnergy (powerCoset 61 12) = 45 := by decide +kernel
+theorem tripleCount_61_12 : tripleCount (powerCoset 61 12) = 0 := by decide +kernel
+theorem dTerm_61_12 : dTerm (powerCoset 61 12) = 0 := by decide +kernel
+theorem negOne_notMem_61_12 : (-1 : ZMod 61) ∉ powerCoset 61 12 := by decide +kernel
 
 end ArkLib.ProximityGap.R395MellinFourthMomentHBKTrim
 

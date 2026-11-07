@@ -96,8 +96,8 @@ theorem eta_mul_right (hG : IsMulSubgroup G) (ψ : AddChar F ℂ) {u : F} (hu : 
   refine Finset.sum_bij' (fun y _ => u * y) (fun y _ => u⁻¹ * y) ?_ ?_ ?_ ?_ ?_
   · intro y hy; exact hG.mul_mem u hu y hy
   · intro y hy; exact hG.mul_mem u⁻¹ (hG.inv_mem u hu) y hy
-  · intro y _; dsimp only; rw [← mul_assoc, inv_mul_cancel₀ hu0, one_mul]
-  · intro y _; dsimp only; rw [← mul_assoc, mul_inv_cancel₀ hu0, one_mul]
+  · intro y _; rw [← mul_assoc, inv_mul_cancel₀ hu0, one_mul]
+  · intro y _; rw [← mul_assoc, mul_inv_cancel₀ hu0, one_mul]
   · intro y _; rw [mul_assoc]
 
 /-- **Exact `G`-orbit invariance of the incidence field**: `I_H(u·s₀) = I_H(s₀)` for `u ∈ G`.
@@ -110,10 +110,10 @@ theorem incidenceSum_mul_offset (hG : IsMulSubgroup G) (hGH : Stabilizes G H)
   have hu0 : u ≠ 0 := ne_zero_of_mem hG hu
   have hui : u⁻¹ ∈ G := hG.inv_mem u hu
   refine Finset.sum_bij' (fun b _ => b * u) (fun b _ => b * u⁻¹) ?_ ?_ ?_ ?_ ?_
-  · intro b hb; dsimp only; rw [mul_comm]; exact hGH u hu b hb
-  · intro b hb; dsimp only; rw [mul_comm]; exact hGH u⁻¹ hui b hb
-  · intro b _; dsimp only; rw [mul_assoc, mul_inv_cancel₀ hu0, mul_one]
-  · intro b _; dsimp only; rw [mul_assoc, inv_mul_cancel₀ hu0, mul_one]
+  · intro b hb; rw [mul_comm]; exact hGH u hu b hb
+  · intro b hb; rw [mul_comm]; exact hGH u⁻¹ hui b hb
+  · intro b _; rw [mul_assoc, mul_inv_cancel₀ hu0, mul_one]
+  · intro b _; rw [mul_assoc, inv_mul_cancel₀ hu0, mul_one]
   · intro b _
     rw [eta_mul_right hG ψ hu b]
     congr 2

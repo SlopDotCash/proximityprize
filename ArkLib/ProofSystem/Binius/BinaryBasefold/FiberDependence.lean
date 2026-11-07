@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Prelude
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Prelude
 
 /-!
 # Issue #317/#313: fiber composition and fiber dependence of the iterated fold

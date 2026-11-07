@@ -1,0 +1,441 @@
+{
+  "file": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Code.lean",
+  "original_source_sha256": "1d82e6df2af2fa892e716fc60ff027a4b86d2beabd16dc8f829614d8d59c5ee3",
+  "reviewed_source_sha256": "bfd18c94315a1d8ca890c31625d5e098e783bebf2c142c1a5fcb769c08f2262d",
+  "canonical_sources_modified": false,
+  "original_commands": {
+    "Binius.BinaryBasefold.UDRCodeword": "/-- Unique closest codeword in the unique decoding radius of a function f -/\n@[reducible, simp]\ndef UDRCodeword (i : Fin r) (h_i : i ≤ ℓ)\n    (f : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i)\n  (h_within_radius : UDRClose 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i h_i f) :\n  OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i\n   := by\n  let h_ExistsUnique := (Code.UDR_close_iff_exists_unique_close_codeword\n    (C := BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i) f).mp (by\n    rw [UDRClose_iff_within_UDR_radius] at h_within_radius\n    exact h_within_radius\n  )\n  -- h_ExistsUnique : ∃! v, v ∈ ↑(BBF_Code 𝔽q β i)\n    -- ∧ Δ₀(f, v) ≤ Code.uniqueDecodingRadius ↑(BBF_Code 𝔽q β i)\n  exact (Classical.choose h_ExistsUnique)\n\n",
+    "Binius.BinaryBasefold.UDRCodeword_eq_of_close": "open Classical in\nlemma UDRCodeword_eq_of_close\n    (i : Fin r) (h_i : i ≤ ℓ)\n    (f : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i)\n    (h₁ h₂ : UDRClose 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i h_i f) :\n    UDRCodeword 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i h_i f h₁ =\n      UDRCodeword 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i h_i f h₂ := by\n  let C := BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i\n  let h₁' := (Code.UDR_close_iff_exists_unique_close_codeword (C := C) f).mp (by\n    rw [UDRClose_iff_within_UDR_radius] at h₁\n    exact h₁)\n  let h₂' := (Code.UDR_close_iff_exists_unique_close_codeword (C := C) f).mp (by\n    rw [UDRClose_iff_within_UDR_radius] at h₂\n    exact h₂)\n  exact (Classical.choose_spec h₁').2\n    (Classical.choose h₂') (Classical.choose_spec h₂').1\n\n",
+    "Binius.BinaryBasefold.UDRCodeword_constFunc_eq_self": "lemma UDRCodeword_constFunc_eq_self (i : Fin r) (h_i : i ≤ ℓ) (c : L) :\n    UDRCodeword 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) h_i (f := fun _ => c)\n    (h_within_radius := by apply constFunc_UDRClose) = fun _ => c := by\n  let hclose : UDRClose 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i h_i (fun _ => c) :=\n    constFunc_UDRClose 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) h_i c\n  let C := BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i\n  let huniq := (Code.UDR_close_iff_exists_unique_close_codeword (C := C) (fun _ => c)).mp (by\n    rw [UDRClose_iff_within_UDR_radius] at hclose\n    exact hclose)\n  exact ((Classical.choose_spec huniq).2 (fun _ => c)\n    ⟨constFunc_mem_BBFCode 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) h_i c,\n      by simp [hammingDist]⟩).symm\n\n",
+    "Binius.BinaryBasefold.UDRCodeword_mem_BBF_Code": "omit [CharP L 2] [DecidableEq 𝔽q] h_β₀_eq_1 in\nlemma UDRCodeword_mem_BBF_Code (i : Fin r) (h_i : i ≤ ℓ)\n    (f : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i)\n  (h_within_radius : UDRClose 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i h_i f) :\n  (UDRCodeword 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i h_i f h_within_radius) ∈\n    (BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i) := by\n  unfold UDRCodeword\n  simp only [Fin.eta, SetLike.mem_coe, and_imp]\n  let h_ExistsUnique := (Code.UDR_close_iff_exists_unique_close_codeword\n    (C := BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i) f).mp (by\n    rw [UDRClose_iff_within_UDR_radius] at h_within_radius\n    exact h_within_radius\n  )\n  let res := (Classical.choose_spec h_ExistsUnique).1.1\n  simp only [SetLike.mem_coe, and_imp] at res\n  exact res\n\n",
+    "Binius.BinaryBasefold.dist_to_UDRCodeword_le_uniqueDecodingRadius": "omit [CharP L 2] [DecidableEq 𝔽q] h_β₀_eq_1 in\nlemma dist_to_UDRCodeword_le_uniqueDecodingRadius (i : Fin r) (h_i : i ≤ ℓ)\n    (f : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i)\n  (h_within_radius : UDRClose 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i h_i f) :\n  Δ₀(f, UDRCodeword 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i h_i f h_within_radius) ≤\n    uniqueDecodingRadius (ι := (sDomain 𝔽q β h_ℓ_add_R_rate i))\n      (F := L) (C := BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i) := by\n  let h_ExistsUnique := (Code.UDR_close_iff_exists_unique_close_codeword\n    (C := BBF_Code 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i) f).mp (by\n    rw [UDRClose_iff_within_UDR_radius] at h_within_radius\n    exact h_within_radius\n  ) -- res : ∃! v, v ∈ ↑(BBF_Code 𝔽q β i) ∧ Δ₀(f, v) ≤ uniqueDecodingRadius ↑(BBF_Code 𝔽q β i)\n  let res := (Classical.choose_spec h_ExistsUnique).1\n  simp only [Fin.eta, SetLike.mem_coe, and_imp] at res\n  let h_close := res.2\n  unfold UDRCodeword\n  simp only [Fin.eta, SetLike.mem_coe, and_imp, ge_iff_le]\n  exact h_close\n\n"
+  },
+  "all_original_public_names_preserved": true,
+  "change": "UDRCodeword retains its full original positional signature, including explicit prime-characteristic and nonzero-round metadata parameters, while delegating the sole value implementation to canonical uniqueDecodingCodeword. Four existing uniqueness/constant/membership/distance proofs now delegate canonical results or proof irrelevance. Both APIs require the same in-radius proof and have no out-of-radius fallback.",
+  "original_value_equivalence_probe": {
+    "source": "import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Code\n\n#check @Binius.BinaryBasefold.UDRCodeword\n#check @Binius.BinaryBasefold.uniqueDecodingCodeword\n\nnamespace Binius.BinaryBasefold\nset_option backward.isDefEq.respectTransparency false\nvariable {r : ℕ} [NeZero r]\nvariable {L : Type} [Field L] [Fintype L] [DecidableEq L] [CharP L 2]\nvariable (𝔽q : Type) [Field 𝔽q] [Fintype 𝔽q] [DecidableEq 𝔽q]\n  [h_Fq_char_prime : Fact (Nat.Prime (ringChar 𝔽q))] [hF₂ : Fact (Fintype.card 𝔽q = 2)]\nvariable [Algebra 𝔽q L]\nvariable (β : Fin r → L) [hβ_lin_indep : Fact (LinearIndependent 𝔽q β)]\n  [h_β₀_eq_1 : Fact (β 0 = 1)]\nvariable {ℓ 𝓡 : ℕ} [NeZero ℓ] [NeZero 𝓡]\nvariable {h_ℓ_add_R_rate : ℓ + 𝓡 < r}\n\nlemma originalUDRCodeword_eq_canonical_probe (i : Fin r) (hi : i ≤ ℓ)\n    (f : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i)\n    (hclose : UDRClose 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hi f) :\n    UDRCodeword 𝔽q β i hi f hclose =\n      uniqueDecodingCodeword 𝔽q β i hi f (by exact hclose) := by\n  rfl\n\n#print axioms originalUDRCodeword_eq_canonical_probe\nend Binius.BinaryBasefold\n",
+    "validation": {
+      "file": "/tmp/arklib-UDR-decoder-equivalence-probe.lean",
+      "status": "temporary_overlay_source_check",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "elapsed_seconds": 8.68,
+      "source_before_sha256": "a8c707ea6708b495053643474c310213cd44d8c0b67af799e29bca7668e0884b",
+      "source_after_sha256": "a8c707ea6708b495053643474c310213cd44d8c0b67af799e29bca7668e0884b",
+      "import_artifacts": {
+        "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Code": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Code.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Code.olean",
+          "sha256": "8de894a49f2961fdaf319d857dcfd427521ee0c0586885b2f79533443a37a1c0",
+          "artifact_family": {
+            "Code.olean": "8de894a49f2961fdaf319d857dcfd427521ee0c0586885b2f79533443a37a1c0"
+          }
+        }
+      },
+      "imports_unchanged": true,
+      "log": "/tmp/arklib-native-overlay/logs/.tmp.arklib-UDR-decoder-equivalence-probe.lean.1793251050112517000.check.log",
+      "not_a_lake_package_build": true
+    }
+  },
+  "source_validation": {
+    "file": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Code.lean",
+    "status": "temporary_overlay_source_check",
+    "compiler_exit_code": 0,
+    "admission_checker_exit_code": 0,
+    "elapsed_seconds": 12.308,
+    "source_before_sha256": "bfd18c94315a1d8ca890c31625d5e098e783bebf2c142c1a5fcb769c08f2262d",
+    "source_after_sha256": "bfd18c94315a1d8ca890c31625d5e098e783bebf2c142c1a5fcb769c08f2262d",
+    "import_artifacts": {
+      "ArkLib.ProofSystem.Binius.BinaryBasefold.Code": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Code.olean",
+        "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Code.olean",
+        "sha256": "f5234329ad135622c4e237ac126e1fb8619d9446ec15edf3783f45ab084d4d5d",
+        "artifact_family": {
+          "Code.olean": "f5234329ad135622c4e237ac126e1fb8619d9446ec15edf3783f45ab084d4d5d",
+          "Code.ir": "19278c9dcc468e61b19f42ac514b54555f1d0ef236fac31f01fc792347a630fc",
+          "Code.ir.sig": "cd91ca059f875284991554d703affe785501595400ef4f600ed2b395d866c887",
+          "Code.olean.private": "329eaa160aa4fc727436e90994a902d7fa12513046ff03b0243f819dcf5cec9f",
+          "Code.olean.server": "89fcdbbe5ac0222b60ad680e38cffbf245e8120e082ad14fd56d97ec88361724"
+        }
+      },
+      "ArkLib.ProofSystem.Binius.BinaryBasefold.BaseFoldDetBrick": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/BaseFoldDetBrick.olean",
+        "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/BaseFoldDetBrick.olean",
+        "sha256": "b42be374a83eb4492685ed3350960e5c76baef0752d63887828de73eaa0da8e7",
+        "artifact_family": {
+          "BaseFoldDetBrick.olean": "b42be374a83eb4492685ed3350960e5c76baef0752d63887828de73eaa0da8e7"
+        }
+      },
+      "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Prelude": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Prelude.olean",
+        "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Prelude.olean",
+        "sha256": "b919656663a52079506be7906ccc4e37210166f808b01494bad1dbed8badc25c",
+        "artifact_family": {
+          "Prelude.olean": "b919656663a52079506be7906ccc4e37210166f808b01494bad1dbed8badc25c"
+        }
+      }
+    },
+    "imports_unchanged": true,
+    "log": "/tmp/arklib-native-overlay/logs/ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Code.lean.1793251402087236000.check.log",
+    "not_a_lake_package_build": true
+  },
+  "signature_regression": {
+    "file": "ArkLibTest/Compatibility/BiniusDecoder.lean",
+    "validation": {
+      "file": "ArkLibTest/Compatibility/BiniusDecoder.lean",
+      "status": "temporary_overlay_source_check",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "elapsed_seconds": 4.902,
+      "source_before_sha256": "1032c85602bf3323c29f1de5bc61b3af18cca5b2427ed45a87a5c1fb50ba55b4",
+      "source_after_sha256": "1032c85602bf3323c29f1de5bc61b3af18cca5b2427ed45a87a5c1fb50ba55b4",
+      "import_artifacts": {
+        "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Code": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Code.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Code.olean",
+          "sha256": "9f12bec15fb1f8a077012b680ebe516e19926e472c347b0ce3ed5f48e9b79900",
+          "artifact_family": {
+            "Code.olean": "9f12bec15fb1f8a077012b680ebe516e19926e472c347b0ce3ed5f48e9b79900"
+          }
+        }
+      },
+      "imports_unchanged": true,
+      "log": "/tmp/arklib-native-overlay/logs/ArkLibTest.Compatibility.BiniusDecoder.lean.1793251472346859000.check.log",
+      "not_a_lake_package_build": true
+    }
+  },
+  "direct_consumer_checks": {
+    "UDRCongruence": {
+      "file": "ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/UDRCongruence.lean",
+      "status": "temporary_overlay_source_check",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "elapsed_seconds": 6.246,
+      "source_before_sha256": "6a6f1fe977a3fe2cc29fc833a41b71f47cccf9d8c37ca36d82da01568a09eae8",
+      "source_after_sha256": "6a6f1fe977a3fe2cc29fc833a41b71f47cccf9d8c37ca36d82da01568a09eae8",
+      "import_artifacts": {
+        "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Code": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Code.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Code.olean",
+          "sha256": "9f12bec15fb1f8a077012b680ebe516e19926e472c347b0ce3ed5f48e9b79900",
+          "artifact_family": {
+            "Code.olean": "9f12bec15fb1f8a077012b680ebe516e19926e472c347b0ce3ed5f48e9b79900"
+          }
+        }
+      },
+      "imports_unchanged": true,
+      "log": "/tmp/arklib-native-overlay/logs/ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.UDRCongruence.lean.1793251479958500000.check.log",
+      "not_a_lake_package_build": true
+    },
+    "Compliance": {
+      "file": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Compliance.lean",
+      "status": "temporary_overlay_source_check",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "elapsed_seconds": 9.398,
+      "source_before_sha256": "4b6181c09a9a8ac55afb143f51810c15bf2016e132b67a095e80c79fc94ab980",
+      "source_after_sha256": "4b6181c09a9a8ac55afb143f51810c15bf2016e132b67a095e80c79fc94ab980",
+      "import_artifacts": {
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Compliance": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Compliance.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Compliance.olean",
+          "sha256": "7991f9af20f02fffaf5212bc744b800b7ab46c179a663b1d78def22331cbd0a5",
+          "artifact_family": {
+            "Compliance.olean": "7991f9af20f02fffaf5212bc744b800b7ab46c179a663b1d78def22331cbd0a5",
+            "Compliance.ir": "1a8d1a3f7fd07eea53077305ec891be0b0ba3f85db9c2700bbea6178ad5ba508",
+            "Compliance.ir.sig": "714f253b2c244d77407fea6775257c679fd89a5aa00df1f76e6968636275d16e",
+            "Compliance.olean.private": "300c021aa3ede695a36d92bb18cbb97b20619c6a93a9f977e3aea80cbbcb2b47",
+            "Compliance.olean.server": "1cd8a8132879f58a59096617386da60232c2833224d6d7a69c17c7471bf0d336"
+          }
+        },
+        "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Code": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Code.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Code.olean",
+          "sha256": "9f12bec15fb1f8a077012b680ebe516e19926e472c347b0ce3ed5f48e9b79900",
+          "artifact_family": {
+            "Code.olean": "9f12bec15fb1f8a077012b680ebe516e19926e472c347b0ce3ed5f48e9b79900"
+          }
+        },
+        "ProximityPrize.Compatibility.BiniusFolding": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Compatibility/BiniusFolding.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Compatibility/BiniusFolding.olean",
+          "sha256": "229412c4d767460ef2d38a8faefb38d28f732b9ba3b2f206ac77ef3e5765d7a4",
+          "artifact_family": {
+            "BiniusFolding.olean": "229412c4d767460ef2d38a8faefb38d28f732b9ba3b2f206ac77ef3e5765d7a4"
+          }
+        }
+      },
+      "imports_unchanged": true,
+      "log": "/tmp/arklib-native-overlay/logs/ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Compliance.lean.1793251489195447000.check.log",
+      "not_a_lake_package_build": true
+    },
+    "QueryPhaseSoundness": {
+      "file": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhaseSoundness.lean",
+      "status": "temporary_overlay_source_check",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "elapsed_seconds": 5.481,
+      "source_before_sha256": "fa4c27dba64a953d5b8158c71c1398bc1b431e1ee7ecbbfb9a25617d7a265fbb",
+      "source_after_sha256": "fa4c27dba64a953d5b8158c71c1398bc1b431e1ee7ecbbfb9a25617d7a265fbb",
+      "import_artifacts": {
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhaseSoundness": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhaseSoundness.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhaseSoundness.olean",
+          "sha256": "ef7e35257354cb98c8b5f9bab0b27da2031464ea5b30f484ed37b01221967e9a",
+          "artifact_family": {
+            "QueryPhaseSoundness.olean": "ef7e35257354cb98c8b5f9bab0b27da2031464ea5b30f484ed37b01221967e9a",
+            "QueryPhaseSoundness.ir": "d299b5b7663f67cd4c3ee7cce75e01e88817a68486d4ca5c8833cf0383f8693a",
+            "QueryPhaseSoundness.ir.sig": "3d63d762c654df6840e994017961a914d48ba73d3819a4256138320fcceb9223",
+            "QueryPhaseSoundness.olean.private": "8c0f9b51980b9651400c5d86eee2185fd4bfd0fe590e82ca25157793bfb26283",
+            "QueryPhaseSoundness.olean.server": "2c1e81d056e365b854387ac623dfb66fda5d266e6472da5ca2ccf3114d1faf4e"
+          }
+        },
+        "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.BadBlocks": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/BadBlocks.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/BadBlocks.olean",
+          "sha256": "2bbfe68e39f17cd4a38a9b337ae2db89e9ee5d23ae0a0062f35ce5d6c13c44ff",
+          "artifact_family": {
+            "BadBlocks.olean": "2bbfe68e39f17cd4a38a9b337ae2db89e9ee5d23ae0a0062f35ce5d6c13c44ff"
+          }
+        },
+        "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.FoldDistance": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/FoldDistance.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/FoldDistance.olean",
+          "sha256": "0ae45536f28930f3a78cf8eac2adfcd65db5ebd32dc004698320fa53f257ab7b",
+          "artifact_family": {
+            "FoldDistance.olean": "0ae45536f28930f3a78cf8eac2adfcd65db5ebd32dc004698320fa53f257ab7b"
+          }
+        },
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QuerySuffix": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/QuerySuffix.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/QuerySuffix.olean",
+          "sha256": "9ad6c453e5fff7f021a189764af8f46f903c70dc4128c8d1e160bf92d09e4c3e",
+          "artifact_family": {
+            "QuerySuffix.olean": "9ad6c453e5fff7f021a189764af8f46f903c70dc4128c8d1e160bf92d09e4c3e"
+          }
+        },
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhaseHelpers": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhaseHelpers.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhaseHelpers.olean",
+          "sha256": "91b50e37f768e7666b07c0a2f91a105d46705c4463786a9574ba44351b94f9ea",
+          "artifact_family": {
+            "QueryPhaseHelpers.olean": "91b50e37f768e7666b07c0a2f91a105d46705c4463786a9574ba44351b94f9ea"
+          }
+        }
+      },
+      "imports_unchanged": true,
+      "log": "/tmp/arklib-native-overlay/logs/ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhaseSoundness.lean.1793251626943392000.check.log",
+      "not_a_lake_package_build": true
+    }
+  },
+  "temporary_overlay_owner": {
+    "module": "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Code",
+    "path": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Code.lean",
+    "source_sha256": "bfd18c94315a1d8ca890c31625d5e098e783bebf2c142c1a5fcb769c08f2262d",
+    "imports": [
+      "ArkLib.ProofSystem.Binius.BinaryBasefold.Code",
+      "ArkLib.ProofSystem.Binius.BinaryBasefold.BaseFoldDetBrick",
+      "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Prelude"
+    ],
+    "canonical": false,
+    "status": "compiled",
+    "compiler_exit_code": 0,
+    "elapsed_seconds": 28.434,
+    "compiler_seconds": 10.951,
+    "slot_wait_seconds": 17.472,
+    "checked_at": "2026-10-29T05:24:28.367119+00:00",
+    "log": "/tmp/arklib-native-overlay/logs/ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Code.log",
+    "command_argv": [
+      "lake",
+      "env",
+      "env",
+      "LEAN_PATH=/tmp/arklib-native-overlay/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/cslib/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/batteries/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/Qq/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/aesop/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/proofwidgets/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/importGraph/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/plausible/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/PolyFun/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/MD4Lean/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/BibtexQuery/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/UnicodeBasic/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/Cli/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/leansqlite/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/mathlib/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/VCVio/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/doc-gen4/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/checkdecls/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/CompPoly/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean:/Users/nubs/.elan/toolchains/leanprover--lean4---v4.35.0/lib/lean",
+      "lean",
+      "-DautoImplicit=false",
+      "-o",
+      "/tmp/arklib-native-overlay/staging/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Code.olean",
+      "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Code.lean"
+    ],
+    "import_artifacts": {
+      "ArkLib.ProofSystem.Binius.BinaryBasefold.Code": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Code.olean",
+        "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Code.olean",
+        "sha256": "f5234329ad135622c4e237ac126e1fb8619d9446ec15edf3783f45ab084d4d5d",
+        "artifact_family": {
+          "Code.olean": "f5234329ad135622c4e237ac126e1fb8619d9446ec15edf3783f45ab084d4d5d",
+          "Code.ir": "19278c9dcc468e61b19f42ac514b54555f1d0ef236fac31f01fc792347a630fc",
+          "Code.ir.sig": "cd91ca059f875284991554d703affe785501595400ef4f600ed2b395d866c887",
+          "Code.olean.private": "329eaa160aa4fc727436e90994a902d7fa12513046ff03b0243f819dcf5cec9f",
+          "Code.olean.server": "89fcdbbe5ac0222b60ad680e38cffbf245e8120e082ad14fd56d97ec88361724"
+        }
+      },
+      "ArkLib.ProofSystem.Binius.BinaryBasefold.BaseFoldDetBrick": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/BaseFoldDetBrick.olean",
+        "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/BaseFoldDetBrick.olean",
+        "sha256": "b42be374a83eb4492685ed3350960e5c76baef0752d63887828de73eaa0da8e7",
+        "artifact_family": {
+          "BaseFoldDetBrick.olean": "b42be374a83eb4492685ed3350960e5c76baef0752d63887828de73eaa0da8e7"
+        }
+      },
+      "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Prelude": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Prelude.olean",
+        "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Prelude.olean",
+        "sha256": "b919656663a52079506be7906ccc4e37210166f808b01494bad1dbed8badc25c",
+        "artifact_family": {
+          "Prelude.olean": "b919656663a52079506be7906ccc4e37210166f808b01494bad1dbed8badc25c"
+        }
+      }
+    },
+    "imports_unchanged": true,
+    "source_before_sha256": "bfd18c94315a1d8ca890c31625d5e098e783bebf2c142c1a5fcb769c08f2262d",
+    "source_after_sha256": "bfd18c94315a1d8ca890c31625d5e098e783bebf2c142c1a5fcb769c08f2262d",
+    "environment": "LEAN_PATH=/tmp/arklib-native-overlay/lib/lean:<pinned lake env LEAN_PATH>",
+    "compiler_slot": 0,
+    "not_a_lake_package_build": true,
+    "git_index_blob": "2494aab2ef3eb52179f8fea5d5657cd716b96fa4",
+    "admission_checker_exit_code": 0,
+    "artifact": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Code.olean",
+    "artifact_sha256": "9f12bec15fb1f8a077012b680ebe516e19926e472c347b0ce3ed5f48e9b79900",
+    "artifact_family": {
+      "Code.olean": "9f12bec15fb1f8a077012b680ebe516e19926e472c347b0ce3ed5f48e9b79900"
+    }
+  },
+  "fresh_consumer_closure_pending": false,
+  "package_validation_pending": false,
+  "fresh_consumer_closure": {
+    "build_steps": [
+      {
+        "kind": "temporary_overlay_plan",
+        "targets": [
+          "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.UDRCongruence",
+          "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Compliance",
+          "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhaseSoundness"
+        ],
+        "compile_count": 6,
+        "blocked": [],
+        "plan": [
+          {
+            "module": "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.UDRCongruence",
+            "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/UDRCongruence.lean",
+            "source_sha256": "6a6f1fe977a3fe2cc29fc833a41b71f47cccf9d8c37ca36d82da01568a09eae8",
+            "imports": [
+              "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Code"
+            ],
+            "canonical": false
+          },
+          {
+            "module": "ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QuerySuffix",
+            "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/QuerySuffix.lean",
+            "source_sha256": "cd40a2315d6a69b100599cdfc5d55e708e442090c2ced24fb83a5caf1c217c8a",
+            "imports": [
+              "ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhasePrelims",
+              "ProximityPrize.Compatibility.BiniusFolding",
+              "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Prelude",
+              "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Spec",
+              "ArkLib.Data.Misc.Basic",
+              "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Relations",
+              "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.UDRCongruence"
+            ],
+            "canonical": false
+          },
+          {
+            "module": "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.BadBlocks",
+            "path": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/BadBlocks.lean",
+            "source_sha256": "953a2c08c08965a8e4251c6cc43739bbe36386e2a9cd61f0e79380a9f274ce72",
+            "imports": [
+              "ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.BadBlocks",
+              "ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QuerySuffix",
+              "ProximityPrize.Extensions.Data.Probability.Instances",
+              "ProximityPrize.Compatibility.UniformProbability"
+            ],
+            "canonical": false
+          },
+          {
+            "module": "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.FoldDistance",
+            "path": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/FoldDistance.lean",
+            "source_sha256": "7f7c63a057fab7c9addba6d17f1705c2a16ae927a0a03257efe182fc1643e2a6",
+            "imports": [
+              "ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.FoldDistance",
+              "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Compliance",
+              "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.Lift",
+              "ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.PreTensorMaps"
+            ],
+            "canonical": false
+          },
+          {
+            "module": "ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhaseHelpers",
+            "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhaseHelpers.lean",
+            "source_sha256": "3f81d8f4420f7edcf4b119e4b26a7c9785c933785427c76c49450e3b5beaec7e",
+            "imports": [
+              "ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhasePrelims",
+              "ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QuerySuffix"
+            ],
+            "canonical": false
+          },
+          {
+            "module": "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhaseSoundness",
+            "path": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhaseSoundness.lean",
+            "source_sha256": "fa4c27dba64a953d5b8158c71c1398bc1b431e1ee7ecbbfb9a25617d7a265fbb",
+            "imports": [
+              "ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhaseSoundness",
+              "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.BadBlocks",
+              "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.FoldDistance",
+              "ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QuerySuffix",
+              "ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhaseHelpers"
+            ],
+            "canonical": false
+          }
+        ]
+      },
+      {
+        "module": "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.UDRCongruence",
+        "status": "compiled",
+        "elapsed_seconds": 5.105,
+        "log": "/tmp/arklib-native-overlay/logs/ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.UDRCongruence.log"
+      },
+      {
+        "module": "ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QuerySuffix",
+        "status": "compiled",
+        "elapsed_seconds": 0,
+        "log": "/tmp/arklib-native-overlay/logs/ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QuerySuffix.log"
+      },
+      {
+        "module": "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.BadBlocks",
+        "status": "compiled",
+        "elapsed_seconds": 0,
+        "log": "/tmp/arklib-native-overlay/logs/ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.BadBlocks.log"
+      },
+      {
+        "module": "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.FoldDistance",
+        "status": "compiled",
+        "elapsed_seconds": 4.652,
+        "log": "/tmp/arklib-native-overlay/logs/ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.FoldDistance.log"
+      },
+      {
+        "module": "ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhaseHelpers",
+        "status": "compiled",
+        "elapsed_seconds": 4.801,
+        "log": "/tmp/arklib-native-overlay/logs/ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhaseHelpers.log"
+      },
+      {
+        "module": "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhaseSoundness",
+        "status": "compiled",
+        "elapsed_seconds": 4.785,
+        "log": "/tmp/arklib-native-overlay/logs/ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhaseSoundness.log"
+      }
+    ],
+    "not_a_lake_package_build": true
+  },
+  "current_validation": {
+    "status": "package_validation_passed",
+    "receipt": "scripts/integration/final-validation.json",
+    "check": "default_libraries",
+    "source_commit": "7483975d251b3549313243ea9d5ada700af121f9",
+    "source_snapshot_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+    "resolved_package_pending_paths": [
+      "/package_validation_pending"
+    ],
+    "superseded_historical_status_paths": [],
+    "scope": "Current checked-in sources passed the final four-library package build. Original status text and all earlier receipts remain historical snapshots, not current pending claims."
+  }
+}

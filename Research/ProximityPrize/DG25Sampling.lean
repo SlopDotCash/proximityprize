@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ArkLib.Data.Probability.Notation
 import Research.ProximityPrize.CapacityBounds
 import ArkLib.ToMathlib.UniformTranslationAverage
 import ArkLib.Data.CodingTheory.InterleavedRowDistance
@@ -58,10 +59,10 @@ theorem pr_relDist_le_epsCA_of_lt_covering
       Pr_{let u ← $ᵖ (ι → F)}[δᵣ(u, (C : Set (ι → F))) ≤ δ]
         = ∑ u₀ : ι → F, (Fintype.card (ι → F) : ℝ≥0∞)⁻¹ *
             Pr_{let γ ← $ᵖ F}[δᵣ(u₀ + γ • w, (C : Set (ι → F))) ≤ δ] := by
-    simp_rw [ProbabilityTheory.Pr_eq_tsum_indicator, tsum_fintype, PMF.uniformOfFintype_apply]
+    simp_rw [ProbabilityTheory.Pr_eq_tsum_indicator, tsum_fintype, ProximityPrize.Compatibility.uniformOfFintype_apply]
     exact (ArkLib.sum_uniform_line_indicator_eq
       (fun u => Code.relDistFromCode u (C : Set (ι → F)) ≤ (δ : ENNReal)) w).symm
-  rw [hPr_eq]
+  rw [hPr_eq, epsCA_eq_pmf]
   refine le_trans (ArkLib.sum_uniform_mul_le_iSup _) (iSup_le (fun u₀ => ?_))
   have e0 : (Code.finMapTwoWords u₀ w) (0 : Fin 2) = u₀ := rfl
   have e1 : (Code.finMapTwoWords u₀ w) (1 : Fin 2) = w := rfl

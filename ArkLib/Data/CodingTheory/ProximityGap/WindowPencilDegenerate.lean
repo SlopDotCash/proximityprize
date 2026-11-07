@@ -486,7 +486,7 @@ theorem window_degenerate_count (hk : 1 ≤ k)
   set Γ₀ : Finset F := Γ.filter (fun γ => detU.eval γ = 0) with hΓ₀
   set Γ₁ : Finset F := Γ.filter (fun γ => detU.eval γ ≠ 0) with hΓ₁
   have hsplit : Γ.card ≤ Γ₀.card + Γ₁.card := by
-    have h := Finset.filter_card_add_filter_neg_card_eq_card
+    have h := Finset.card_filter_add_card_filter_not
       (s := Γ) (p := fun γ => detU.eval γ = 0)
     rw [← hΓ₀] at h
     have h2 : (Γ.filter fun γ => ¬ detU.eval γ = 0) = Γ₁ := by

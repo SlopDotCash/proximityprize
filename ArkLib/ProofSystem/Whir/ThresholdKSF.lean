@@ -26,6 +26,7 @@ This file provides:
    randomness challenge round, and the corresponding `whirVectorIOP_isSecureWithGap` package.
 -/
 import ArkLib.ProofSystem.Whir.Protocol
+import ArkLib.ProofSystem.Whir.ProtocolCompleteness
 import ArkLib.OracleReduction.Completeness
 
 open OracleSpec OracleComp ProtocolSpec NNReal ReedSolomon
@@ -33,6 +34,13 @@ open WhirIOP WhirIOP.Construction
 open scoped ENNReal
 
 noncomputable section
+
+-- The retained finite-oracle API chooses uniform answer measures locally.
+private noncomputable local instance (priority := low) whirThresholdUniformAnswers
+    {κ : Type} {spec : OracleSpec κ}
+    [∀ q, Fintype (spec.Range q)] [∀ q, Inhabited (spec.Range q)] :
+    OracleSpec.UniformAnswerMeasure spec :=
+  OracleSpec.UniformAnswerMeasure.ofFiniteNonempty spec
 
 namespace ThresholdKSF
 
@@ -44,7 +52,7 @@ variable {ι : Type} {oSpec : OracleSpec ι}
 /-- The trivial round-by-round extractor with `Unit` middle witnesses (for `Unit`-witness
 relations such as the WHIR proximity relation, where the statement carries all the data). -/
 def unitExtractor : Extractor.RoundByRound oSpec StmtIn Unit WitOut pSpec (fun _ => Unit) where
-  eqIn := rfl
+  extractIn := fun _ _ => ()
   extractMid := fun _ _ _ _ => ()
   extractOut := fun _ _ _ => ()
 
@@ -69,7 +77,7 @@ def thresholdKSF (verifier : Verifier oSpec StmtIn StmtOut pSpec)
   toFun := fun m stmtIn tr _ => if m.val ≤ c.1.val then pred m stmtIn tr else True
   toFun_empty := fun stmtIn w => by
     rw [if_pos (by simp)]
-    exact hEmpty stmtIn _
+    exact (hEmpty stmtIn _).mpr
   toFun_next := fun m hdir stmtIn tr msg w h => by
     by_cases hc : m.val ≤ c.1.val
     · rw [if_pos (by simpa using hc)]
@@ -110,7 +118,7 @@ theorem rbrKnowledgeSoundness_indicator (verifier : Verifier oSpec StmtIn StmtOu
   · subst hic
     simp
   · simp only [if_neg hic, ENNReal.coe_zero, nonpos_iff_eq_zero]
-    rw [probEvent_eq_zero_iff]
+    rw [OracleComp.prEvent_eq_zero_iff]
     rintro ⟨tr, ch, log⟩ _ ⟨w, hne, hsucc⟩
     simp only [thresholdKSF] at hne hsucc
     rcases lt_trichotomy i.1.val c.1.val with hlt | heq | hgt
@@ -138,16 +146,15 @@ theorem rbrKnowledgeSoundness_of_flipBound (verifier : Verifier oSpec StmtIn Stm
         pred m.succ stmtIn (tr.concat msg) → pred m.castSucc stmtIn tr)
     (hFlip : ∀ stmtIn witIn
       (prover : Prover oSpec StmtIn Unit StmtOut WitOut pSpec),
-      Pr[fun x : pSpec.Transcript c.1.castSucc × pSpec.Challenge c ×
+      probEvent (fun x : pSpec.Transcript c.1.castSucc × pSpec.Challenge c ×
           (oSpec + [pSpec.Challenge]ₒ).QueryLog =>
-          ¬ pred c.1.castSucc stmtIn x.1
-        | do
+          ¬ pred c.1.castSucc stmtIn x.1) (do
           (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
             (do
               let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
                 prover.runWithLogToRound c.1.castSucc stmtIn witIn
               let challenge ← liftComp (pSpec.getChallenge c) _
-              return (transcript, challenge, proveQueryLog))).run' (← init)] ≤ (ε : ℝ≥0∞)) :
+              return (transcript, challenge, proveQueryLog))).run' (← init)) ≤ (ε : ℝ≥0∞)) :
     verifier.rbrKnowledgeSoundness init impl relIn relOut
       (fun i => if i = c then ε else 0) := by
   classical
@@ -157,13 +164,13 @@ theorem rbrKnowledgeSoundness_of_flipBound (verifier : Verifier oSpec StmtIn Stm
   by_cases hic : i = c
   · subst hic
     simp only [if_pos rfl]
-    refine le_trans (probEvent_mono ?_) (hFlip stmtIn witIn prover)
+    refine le_trans (prEvent_mono_of_support _ _ _ ?_) (hFlip stmtIn witIn prover)
     rintro ⟨tr, ch, log⟩ _ ⟨w, hne, _⟩
     simp only [thresholdKSF] at hne
     rw [if_pos (by simp)] at hne
     exact hne
   · simp only [if_neg hic, ENNReal.coe_zero, nonpos_iff_eq_zero]
-    rw [probEvent_eq_zero_iff]
+    rw [OracleComp.prEvent_eq_zero_iff]
     rintro ⟨tr, ch, log⟩ _ ⟨w, hne, hsucc⟩
     simp only [thresholdKSF] at hne hsucc
     rcases lt_trichotomy i.1.val c.1.val with hlt | heq | hgt
@@ -316,7 +323,8 @@ randomness challenge. This is the round-indexed state function object for the co
 def whirKnowledgeStateFunction
     (sm : ∀ i : Fin (M + 1), ReedSolomon.Smooth (P.φ i))
     (ne : ∀ i : Fin (M + 1), Nonempty (ιs i)) (δ : ℝ≥0) :
-    ((whirVectorIOP P d).verifier.toVerifier).KnowledgeStateFunction (pure ()) isEmptyElim
+    ((OracleProof.toOracleVerifier (whirVectorIOP P d)).toVerifier
+      (Oₛₒ := fun i : Empty => nomatch i)).KnowledgeStateFunction (pure ()) isEmptyElim
       (whirRelation m0 (P.φ 0) δ) acceptRejectOracleRel
       (unitExtractor (WitOut := Unit)) :=
   thresholdKSF (pure ()) isEmptyElim _ _ _
@@ -338,7 +346,8 @@ theorem whirVectorIOP_rbrKnowledgeSoundness_indicator (δ : ℝ≥0) :
   unfold whirVectorIOP_rbrKnowledgeSoundness OracleProof.rbrKnowledgeSoundness
     OracleVerifier.rbrKnowledgeSoundness
   exact ThresholdKSF.rbrKnowledgeSoundness_indicator (pure ()) isEmptyElim
-    ((whirVectorIOP P d).verifier.toVerifier)
+    ((OracleProof.toOracleVerifier (whirVectorIOP P d)).toVerifier
+      (Oₛₒ := fun i : Empty => nomatch i))
     (whirRelation m0 (P.φ 0) δ) acceptRejectOracleRel
     (fun _ stmtIn _ => δᵣ(stmtIn.2 (), smoothCode (P.φ 0) m0) ≤ (δ : ℝ≥0∞))
     (finalRandomnessChallengeIdx P d)
@@ -357,7 +366,8 @@ theorem whirVectorIOP_rbrKnowledgeSoundness_indicator_folded
   unfold whirVectorIOP_rbrKnowledgeSoundness OracleProof.rbrKnowledgeSoundness
     OracleVerifier.rbrKnowledgeSoundness
   exact ThresholdKSF.rbrKnowledgeSoundness_indicator (pure ()) isEmptyElim
-    ((whirVectorIOP P d).verifier.toVerifier)
+    ((OracleProof.toOracleVerifier (whirVectorIOP P d)).toVerifier
+      (Oₛₒ := fun i : Empty => nomatch i))
     (whirRelation m0 (P.φ 0) δ) acceptRejectOracleRel
     (whirFoldedClosePred P d (m0 := m0) sm ne δ)
     (finalRandomnessChallengeIdx P d)
@@ -369,108 +379,27 @@ theorem whirVectorIOP_rbrKnowledgeSoundness_indicator_folded
 
 end Wiring
 
-/-! ## Completeness leg (replicated from `Whir/ProtocolCompleteness.lean`; that file IS in the
-build graph — imported by `ArkLib.lean` — the replica here just keeps this file self-contained)
-and the `IsSecureWithGap` package with the indicator budget. -/
+/-! ## Completeness leg
+
+The paper transcript completeness proof is owned by `Whir.ProtocolCompleteness`.
+These compatibility names preserve the RBR-facing API without copying its proof.
+-/
 
 section Completeness
 
-instance : (([]ₒ : OracleSpec PEmpty)).Inhabited where
-  inhabited_B i := nomatch i
-
-instance : (([]ₒ : OracleSpec PEmpty)).Fintype where
-  fintype_B i := nomatch i
-
-noncomputable local instance : VCVCompatible F :=
-  { toFintype := inferInstance, toInhabited := ⟨0⟩ }
-
-/-- Challenge payloads of the paper-order WHIR spec are finite. -/
-noncomputable instance (P : Params ιs F) (d : ℕ) :
-    ∀ i, Fintype (((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenge i) :=
-  fun _ => by dsimp [ProtocolSpec.Challenge]; infer_instance
-
-noncomputable instance (P : Params ιs F) (d : ℕ) :
-    ∀ i, Inhabited (((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenge i) :=
-  fun _ => by dsimp [ProtocolSpec.Challenge]; infer_instance
-
-noncomputable instance instChalFintype (P : Params ιs F) (d : ℕ) :
-    OracleSpec.Fintype
-      ([((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenge]ₒ'
-        (fun i => challengeOracleInterface i)) where
-  fintype_B := fun ⟨i, _⟩ => by
-    show Fintype (((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenge i)
-    infer_instance
-
-noncomputable instance instChalInhabited (P : Params ιs F) (d : ℕ) :
-    OracleSpec.Inhabited
-      ([((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenge]ₒ'
-        (fun i => challengeOracleInterface i)) where
-  inhabited_B := fun ⟨i, _⟩ => by
-    show Inhabited (((whirPaperTranscriptVectorSpec P d).toProtocolSpec F).Challenge i)
-    infer_instance
-
-/-- Spec-lifting an `OptionT`-level `pure` is `pure` (definitional). -/
-private lemma liftComp_optionT_pure {ι₁ ι₂ : Type} {spec₁ : OracleSpec ι₁}
-    {spec₂ : OracleSpec ι₂} [MonadLiftT (OracleQuery spec₁) (OracleQuery spec₂)]
-    {α : Type} (y : α) :
-    (OracleComp.liftComp (pure y : OptionT (OracleComp spec₁) α) spec₂ :
-      OptionT (OracleComp spec₂) α) = pure y := rfl
-
+/-- The canonical paper-transcript perfect-completeness proof. -/
 theorem paperTranscriptVectorIOP_pureTrue_perfectCompleteness (P : Params ιs F) (d : ℕ)
     (mk : (Unit × (∀ u : Unit, OracleStatement (ιs 0) F u)) × Unit → PaperTranscriptData P d)
     (relation : Set ((Unit × ∀ u : Unit, OracleStatement (ιs 0) F u) × Unit)) :
     (paperTranscriptVectorIOP P d mk (fun _ _ => pure true)).perfectCompleteness
-      (pure ()) isEmptyElim relation := by
-  show OracleReduction.perfectCompleteness (pure ()) isEmptyElim relation acceptRejectOracleRel
-    (paperTranscriptVectorIOP P d mk (fun _ _ => pure true))
-  rw [OracleReduction.unroll_n_message_reduction_perfectCompleteness
-    (reduction := paperTranscriptVectorIOP P d mk (fun _ _ => pure true))
-    relation acceptRejectOracleRel (pure ()) isEmptyElim
-    (by simp)
-    (by intro β q s; exact nomatch q.1)]
-  intro stmtIn oStmtIn witIn _h_relIn
-  -- The pure-true verifier's lifted verify computation is a `pure`.
-  have hverify0 : ∀ transcript, ∃ g : ∀ _ : Empty, Unit,
-      (paperTranscriptVectorIOP P d mk (fun _ _ => pure true)).verifier.toVerifier.verify
-        (stmtIn, oStmtIn) transcript
-      = pure (true, g) := fun _ => ⟨_, rfl⟩
-  choose g hverify using hverify0
-  have houtput : ∀ state,
-      (paperTranscriptVectorIOP P d mk (fun _ _ => pure true)).prover.output state
-      = pure ((true, fun e : Empty => nomatch e), ()) := fun _ => rfl
-  rw [probEvent_eq_one_iff]
-  constructor
-  · -- SAFETY: prover run is a plain `OracleComp` (never fails); output and verify are `pure`.
-    simp only [houtput, hverify, liftComp_optionT_pure, liftComp_pure, liftM_pure, pure_bind]
-    rw [probFailure_bind_eq_zero_iff]
-    refine ⟨?_, ?_⟩
-    · rw [OptionT.probFailure_liftM]
-      exact HasEvalPMF.probFailure_eq_zero _
-    · rintro ⟨transcript, state⟩ _
-      exact probFailure_pure _
-  · -- CORRECTNESS: the unique reachable output accepts.
-    intro x hx
-    simp only [houtput, hverify, liftComp_optionT_pure, liftComp_pure, liftM_pure, pure_bind,
-      support_bind, OptionT.support_liftM, Set.mem_iUnion, exists_prop] at hx
-    obtain ⟨⟨transcript, state⟩, _, hx⟩ := hx
-    obtain ⟨v, hv, hx⟩ := hx
-    simp only [support_pure, Set.mem_singleton_iff] at hx
-    subst hx
-    replace hv : v ∈ (some ⁻¹'
-        ({some (true, g transcript)} : Set (Option (Bool × (Empty → Unit))))) := hv
-    simp only [Set.mem_preimage, Set.mem_singleton_iff, Option.some.injEq] at hv
-    subst hv
-    refine ⟨?_, rfl, Subsingleton.elim _ _⟩
-    show _ ∈ acceptRejectOracleRel
-    simp only [acceptRejectOracleRel, Set.mem_singleton_iff]
+      (pure ()) isEmptyElim relation :=
+  Whir302.paperTranscriptVectorIOP_pureTrue_perfectCompleteness P d mk relation
 
-/-- The perfect-completeness residual of the concrete WHIR `VectorIOP` (replica of
-`Whir302.whirVectorIOP_perfectCompleteness_holds`). -/
+/-- The perfect-completeness residual of the concrete WHIR `VectorIOP`. -/
 theorem whirVectorIOP_perfectCompleteness_holds (P : Params ιs F) (d : ℕ) {m0 : ℕ}
     [ReedSolomon.Smooth (P.φ 0)] [Nonempty (ιs 0)] :
     whirVectorIOP_perfectCompleteness P d (m0 := m0) :=
-  paperTranscriptVectorIOP_pureTrue_perfectCompleteness P d (whirMakeTranscript P d)
-    (whirRelation m0 (P.φ 0) 0)
+  Whir302.whirVectorIOP_perfectCompleteness_holds P d
 
 /-- **The full security package with the indicator budget:** the concrete WHIR `VectorIOP` is
 secure with gap for the relation pair `whirRelation m0 (P.φ 0) 0` vs `whirRelation m0 (P.φ 0) δ`

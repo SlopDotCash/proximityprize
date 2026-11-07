@@ -112,9 +112,9 @@ theorem sVal_antipodalReduce {g : F} {h : ℕ} (hh : g ^ h = -1)
   have hcancel : (∑ i ∈ L, g ^ i) - ∑ j ∈ H, g ^ j
       = (∑ i ∈ L \ H, g ^ i) - ∑ j ∈ H \ L, g ^ j := by
     have h1 : ∑ i ∈ L ∩ H, g ^ i + ∑ i ∈ L \ H, g ^ i = ∑ i ∈ L, g ^ i :=
-      Finset.sum_inter_add_sum_diff L H _
+      Finset.sum_inter_add_sum_sdiff L H _
     have h2 : ∑ i ∈ H ∩ L, g ^ i + ∑ i ∈ H \ L, g ^ i = ∑ i ∈ H, g ^ i :=
-      Finset.sum_inter_add_sum_diff H L _
+      Finset.sum_inter_add_sum_sdiff H L _
     rw [Finset.inter_comm] at h2
     linear_combination h2 - h1
   -- assemble: sVal of the reduced datum

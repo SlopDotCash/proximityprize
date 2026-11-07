@@ -152,7 +152,6 @@ theorem card_explainable_words (hg : orderOf g = n) {d : ℕ} {T : Finset (Fin n
     _ = lagrangeCompletion g i₀ T (ext w) := (hext_read w).symm
   · intro v hv
     funext i
-    dsimp only
     by_cases hii : i = i₀
     · rw [hii]
       have hv' := (Finset.mem_filter.mp hv).2
@@ -168,7 +167,6 @@ theorem card_explainable_words (hg : orderOf g = n) {d : ℕ} {T : Finset (Fin n
     · exact hext_off (fun j : {j : Fin n // j ≠ i₀} => v j.1) i hii
   · intro w _
     funext i
-    dsimp only
     rw [hext_off w i.1 i.2]
 
 open Classical in
@@ -293,7 +291,6 @@ theorem card_explainable_words_pair (hg : orderOf g = n) {d : ℕ}
     exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, hboth w⟩
   · intro v hv
     funext i
-    dsimp only
     obtain ⟨hvT, hvT'⟩ := (Finset.mem_filter.mp hv).2
     set vr : {j : Fin n // j ≠ i₀ ∧ j ≠ i₁} → ZMod p :=
       fun k => v k.1 with hvr
@@ -330,7 +327,6 @@ theorem card_explainable_words_pair (hg : orderOf g = n) {d : ℕ}
       · exact hext2_free vr i ⟨h₀, h₁⟩
   · intro w _
     funext k
-    dsimp only
     exact hext2_free w k.1 k.2
 
 end ArkLib.ProximityGap.PoissonCeilingFloor

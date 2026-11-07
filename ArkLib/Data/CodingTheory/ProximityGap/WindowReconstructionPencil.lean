@@ -250,13 +250,15 @@ noncomputable def recDetPoly (j w : ℕ)
       -(C ((((ℓ₁ * R₀) * X ^ (s : ℕ)) %ₘ (ℓ₀ * ℓ₁)).coeff (I a))
         + X * C ((((ℓ₀ * R₁) * X ^ (s : ℕ)) %ₘ (ℓ₀ * ℓ₁)).coeff (I a)))) b)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Evaluation: the determinant polynomial at `γ` is the determinant of the
 selected square of the instantiated matrix. -/
 theorem recDetPoly_eval (j w : ℕ) (hmonic : (ℓ₀ * ℓ₁).Monic)
     (I : Fin (j + 1) ⊕ Fin (w + 1) → Fin (2 * w)) (γ : F) :
     (recDetPoly dom ℓ₀ ℓ₁ R₀ R₁ j w I).eval γ
       = ((recMatrix dom ℓ₀ ℓ₁ R₀ R₁ j w γ).submatrix I id).det := by
-  rw [recDetPoly, ← Polynomial.coe_evalRingHom, RingHom.map_det]
+  rw [recDetPoly, ← Polynomial.coe_evalRingHom,
+    RingHom.map_det (n := Fin (j + 1) ⊕ Fin (w + 1)) (Polynomial.evalRingHom γ)]
   congr 1
   funext a b
   rcases b with t | s
@@ -282,6 +284,7 @@ theorem recDetPoly_eval (j w : ℕ) (hmonic : (ℓ₀ * ℓ₁).Monic)
       ring
     rw [hlin, coeff_add, coeff_smul, smul_eq_mul]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The determinant polynomial has degree at most `w + 1` (only the `Z`-block
 columns carry the scalar). -/
 theorem recDetPoly_natDegree_le (j w : ℕ)
@@ -305,7 +308,7 @@ theorem recDetPoly_natDegree_le (j w : ℕ)
         omega
       · refine le_trans natDegree_mul_le ?_
         rw [natDegree_X, natDegree_C]
-  rw [recDetPoly, Matrix.det_apply]
+  rw [recDetPoly, Matrix.det_apply (n := Fin (j + 1) ⊕ Fin (w + 1)) (R := F[X])]
   refine natDegree_sum_le_of_forall_le _ _ fun σ _ => ?_
   have hprod' : (∏ b : Fin (j + 1) ⊕ Fin (w + 1),
       (Sum.elim

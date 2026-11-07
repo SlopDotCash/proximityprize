@@ -61,7 +61,8 @@ theorem clearingProduct_dvd_βHensel_of_alpha (x₀ : F) (R : F[X][X][Y])
             * (embeddingOf𝒪Into𝕃 H (ClaimA2.ξ x₀ R H hHyp)) ^ (2 * t - 1)) :
     ((W𝒪 H) ^ (t + 1) * (ClaimA2.ξ x₀ R H hHyp) ^ (2 * t - 1)) ∣ βHensel H x₀ R hHyp t := by
   refine ⟨a, ?_⟩
-  rw [βHensel_eq_alpha_mul_of_lift H x₀ R hHyp hH t ha hlift_t, mul_assoc, mul_comm a]
+  rw [βHensel_eq_alpha_mul_of_lift H x₀ R hHyp hH t ha hlift_t]
+  exact (mul_assoc a _ _).trans (mul_comm a _)
 
 /-- From `AlphaGenuineRegularWeightLe` + the all-orders (P2) lift identity, at every order `t` the
 clearing product `W𝒪^{t+1}·ξ^{2t-1}` divides `βHensel t` — the general-`t` necessary divisibility

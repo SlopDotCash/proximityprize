@@ -3,6 +3,7 @@ Copyright (c) 2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ArkLib.Data.Probability.Notation
 import Mathlib
 
 /-!
@@ -44,23 +45,23 @@ variable {ι : Type} [Fintype ι] [DecidableEq ι]
 /-- The independent-uniform product distribution on length-`t` query tuples: each of the `t`
 coordinates is sampled uniformly and independently from the domain `ι`. -/
 noncomputable def uniformQueries (t : ℕ) [Nonempty ι] : PMF (Fin t → ι) :=
-  PMF.uniformOfFintype (Fin t → ι)
+  ProximityPrize.Compatibility.uniformOfFintype (Fin t → ι)
 
 /-- Complement identity for the uniform PMF outer measure on a `Fintype`: since the total mass is
 `1`, the probability of `sᶜ` is `1 - P(s)`. (All sets are measurable for the discrete σ-algebra on
 a finite type, so this follows from `measure_compl` on the associated probability measure.) -/
 theorem prob_compl_eq (β : Type) [Fintype β] [Nonempty β] (s : Set β) :
-    (PMF.uniformOfFintype β).toOuterMeasure sᶜ
-      = 1 - (PMF.uniformOfFintype β).toOuterMeasure s := by
+    (ProximityPrize.Compatibility.uniformOfFintype β).toOuterMeasure sᶜ
+      = 1 - (ProximityPrize.Compatibility.uniformOfFintype β).toOuterMeasure s := by
   classical
   letI : MeasurableSpace β := ⊤
   haveI : MeasurableSingletonClass β :=
     ⟨fun _ => MeasurableSpace.measurableSet_top⟩
-  haveI : MeasureTheory.IsProbabilityMeasure (PMF.uniformOfFintype β).toMeasure :=
+  haveI : MeasureTheory.IsProbabilityMeasure (ProximityPrize.Compatibility.uniformOfFintype β).toMeasure :=
     ⟨by simp⟩
   have hms : ∀ A : Set β, MeasurableSet A := fun _ => MeasurableSpace.measurableSet_top
-  have hcompl : ((PMF.uniformOfFintype β).toMeasure) sᶜ
-      = 1 - ((PMF.uniformOfFintype β).toMeasure) s :=
+  have hcompl : ((ProximityPrize.Compatibility.uniformOfFintype β).toMeasure) sᶜ
+      = 1 - ((ProximityPrize.Compatibility.uniformOfFintype β).toMeasure) s :=
     MeasureTheory.prob_compl_eq_one_sub (hms s)
   rwa [PMF.toMeasure_apply_eq_toOuterMeasure_apply _ (hms _),
     PMF.toMeasure_apply_eq_toOuterMeasure_apply _ (hms _)] at hcompl
@@ -68,11 +69,11 @@ theorem prob_compl_eq (β : Type) [Fintype β] [Nonempty β] (s : Set β) :
 omit [DecidableEq ι] in
 /-- A single uniform query lands in the good set `G` with probability `|G| / N`. -/
 theorem prob_singleQueryIn (G : Finset ι) [Nonempty ι] :
-    (PMF.uniformOfFintype ι).toOuterMeasure G = (G.card : ℝ≥0∞) / Fintype.card ι := by
+    (ProximityPrize.Compatibility.uniformOfFintype ι).toOuterMeasure G = (G.card : ℝ≥0∞) / Fintype.card ι := by
   classical
   rw [PMF.toOuterMeasure_apply_finset]
-  have hval : ∀ a ∈ G, (PMF.uniformOfFintype ι) a = (Fintype.card ι : ℝ≥0∞)⁻¹ := by
-    intro a _; exact PMF.uniformOfFintype_apply a
+  have hval : ∀ a ∈ G, (ProximityPrize.Compatibility.uniformOfFintype ι) a = (Fintype.card ι : ℝ≥0∞)⁻¹ := by
+    intro a _; exact ProximityPrize.Compatibility.uniformOfFintype_apply a
   rw [Finset.sum_congr rfl hval]
   rw [Finset.sum_const, nsmul_eq_mul, ENNReal.div_eq_inv_mul]
   ring
@@ -84,7 +85,7 @@ the probability that *every* query lands in the good set `G` equals `(|G| / N) ^
 This is the probability-measure incarnation of the proved counting identity
 `|{ q | ∀ j, q j ∈ G }| = |G| ^ t` from `BatchedFri/Security.lean`. -/
 theorem prob_allQueriesIn_eq (G : Finset ι) (t : ℕ) [Nonempty ι] :
-    (PMF.uniformOfFintype (Fin t → ι)).toOuterMeasure
+    (ProximityPrize.Compatibility.uniformOfFintype (Fin t → ι)).toOuterMeasure
         {q : Fin t → ι | ∀ j, q j ∈ G}
       = ((G.card : ℝ≥0∞) / Fintype.card ι) ^ t := by
   classical
@@ -95,9 +96,9 @@ theorem prob_allQueriesIn_eq (G : Finset ι) (t : ℕ) [Nonempty ι] :
   rw [hset, PMF.toOuterMeasure_apply_finset]
   -- Each tuple has probability `1 / |Fin t → ι| = (1/N)^t`; count = `|G|^t`.
   have hval : ∀ a ∈ Fintype.piFinset (fun _ : Fin t => G),
-      (PMF.uniformOfFintype (Fin t → ι)) a
+      (ProximityPrize.Compatibility.uniformOfFintype (Fin t → ι)) a
         = (Fintype.card (Fin t → ι) : ℝ≥0∞)⁻¹ := by
-    intro a _; exact PMF.uniformOfFintype_apply a
+    intro a _; exact ProximityPrize.Compatibility.uniformOfFintype_apply a
   rw [Finset.sum_congr rfl hval, Finset.sum_const, nsmul_eq_mul]
   rw [Fintype.card_piFinset]
   simp only [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
@@ -116,7 +117,7 @@ omit [DecidableEq ι] in
 This is the probability-space statement of the FRI/Batched-FRI Claim 8.2 query-round error. -/
 theorem prob_allQueriesIn_le (G : Finset ι) (δ : ℝ≥0∞) (t : ℕ) [Nonempty ι]
     (h_density : (G.card : ℝ≥0∞) / Fintype.card ι ≤ 1 - δ) :
-    (PMF.uniformOfFintype (Fin t → ι)).toOuterMeasure
+    (ProximityPrize.Compatibility.uniformOfFintype (Fin t → ι)).toOuterMeasure
         {q : Fin t → ι | ∀ j, q j ∈ G}
       ≤ (1 - δ) ^ t := by
   rw [prob_allQueriesIn_eq G t]
@@ -131,7 +132,7 @@ probability `(1 - δ) ^ t`. -/
 theorem prob_someQueryOut_ge (G : Finset ι) (δ : ℝ≥0∞) (t : ℕ) [Nonempty ι]
     (h_density : (G.card : ℝ≥0∞) / Fintype.card ι ≤ 1 - δ) :
     1 - (1 - δ) ^ t
-      ≤ (PMF.uniformOfFintype (Fin t → ι)).toOuterMeasure
+      ≤ (ProximityPrize.Compatibility.uniformOfFintype (Fin t → ι)).toOuterMeasure
           {q : Fin t → ι | ¬ (∀ j, q j ∈ G)} := by
   classical
   -- Complement: P(¬E) = 1 - P(E) for a PMF outer measure, then monotone in P(E) bound.
@@ -187,7 +188,7 @@ theorem prob_someQueryOut_ge_proximity
     (G : Finset ι) (δ ε : ℝ≥0∞) (t : ℕ) [Nonempty ι]
     (h_detection : ε ≤ (1 : ℝ≥0∞) - (1 - δ) ^ t)
     (h_density : (G.card : ℝ≥0∞) / Fintype.card ι ≤ 1 - δ) :
-    ε ≤ (PMF.uniformOfFintype (Fin t → ι)).toOuterMeasure
+    ε ≤ (ProximityPrize.Compatibility.uniformOfFintype (Fin t → ι)).toOuterMeasure
           {q : Fin t → ι | ¬ (∀ j, q j ∈ G)} :=
   le_trans h_detection (prob_someQueryOut_ge G δ t h_density)
 

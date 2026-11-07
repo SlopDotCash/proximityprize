@@ -102,7 +102,7 @@ If `δ_ε_correlatedAgreementCurves` holds at the smaller radius `δ''` with its
 with **its** `errorBound δ'`.  This strengthens the O76 same-`ε` transport
 (`correlatedAgreementCurves_boundary_of_floorEq_strict`): the corrected boundary route needs the
 §5 machinery at only one radius per cell. -/
-theorem correlatedAgreementCurves_floorCell_mono {k deg : ℕ} {domain : ι ↪ F} {δ'' δ' : ℝ≥0}
+theorem correlatedAgreementCurves_floorCell_mono [SampleableType F] {k deg : ℕ} {domain : ι ↪ F} {δ'' δ' : ℝ≥0}
     (hdeg : 0 < deg) (hle : δ'' ≤ δ')
     (hδ' : δ' < 1 - ReedSolomon.sqrtRate deg domain)
     (hfloor : Nat.floor (δ'' * Fintype.card ι) = Nat.floor (δ' * Fintype.card ι))
@@ -116,6 +116,7 @@ theorem correlatedAgreementCurves_floorCell_mono {k deg : ℕ} {domain : ι ↪ 
   intro u hprob
   refine (ArkLib.BoundaryCardResidual.jointAgreement_iff_of_floor_eq
     (deg := deg) (domain := domain) u hfloor).mp (hCA u ?_)
+  rw [← ProximityPrize.Compatibility.pmf_uniform_probability_eq_native] at hprob ⊢
   exact prob_threshold_floorCell_mono (deg := deg) (domain := domain)
     hdeg hle hδ' hfloor u hprob
 
@@ -125,7 +126,7 @@ yields the closed-boundary statement at `δ` with `ε = errorBound δ'` for *eve
 intermediate `δ'` — composing the monotone-ε cell transport with the O76 floor transport.
 Taking `δ = 1 − √ρ` non-lattice, this is the honest boundary export shape: never the refuted
 nonemptiness leaves, never the vacuous `errorBound (1 − √ρ) = 0`. -/
-theorem correlatedAgreementCurves_boundary_of_floorCell_mono {k deg : ℕ} {domain : ι ↪ F}
+theorem correlatedAgreementCurves_boundary_of_floorCell_mono [SampleableType F] {k deg : ℕ} {domain : ι ↪ F}
     {δ δ' δ'' : ℝ≥0}
     (hdeg : 0 < deg) (hle : δ'' ≤ δ')
     (hδ' : δ' < 1 - ReedSolomon.sqrtRate deg domain)
@@ -162,7 +163,7 @@ theorem sqrt_eight_lt_seventyTwoDivTwentyFive : NNReal.sqrt 8 < 72 / 25 := by
 
 theorem sqrtRate_lt_eighteenDivTwentyFive :
     ReedSolomon.sqrtRate 2 domain < 18 / 25 := by
-  refine lt_of_mul_lt_mul_right ?_ (zero_le (4 : ℝ≥0))
+  refine lt_of_mul_lt_mul_right ?_ (bot_le : (0 : ℝ≥0) ≤ 4)
   have hcard : ((Fintype.card I : ℕ) : ℝ≥0) = 4 := by norm_num [I]
   have h4 : ReedSolomon.sqrtRate 2 domain * (4 : ℝ≥0) = NNReal.sqrt 8 := by
     rw [← hcard]
@@ -185,7 +186,7 @@ theorem floor_sevenDivTwentyFive_eq_one :
     Nat.floor ((7 / 25 : ℝ≥0) * Fintype.card I) = 1 := by
   have h : (7 / 25 : ℝ≥0) * (Fintype.card I : ℝ≥0) = 28 / 25 := by
     norm_num [I]
-  rw [h, Nat.floor_eq_iff (zero_le _)]
+  rw [h, Nat.floor_eq_iff (bot_le : (0 : ℝ≥0) ≤ 28 / 25)]
   constructor
   · rw [Nat.cast_one, le_div_iff₀ (by norm_num : (0 : ℝ≥0) < 25)]
     norm_num
@@ -219,7 +220,7 @@ theorem boundary_export_witness
       (C := (ReedSolomon.code domain 2 : Set (I → F)))
       (δ := 1 - ReedSolomon.sqrtRate 2 domain)
       (ε := errorBound (7 / 25 : ℝ≥0) 2 domain) :=
-  correlatedAgreementCurves_boundary_of_floorCell_mono (by norm_num)
+  correlatedAgreementCurves_boundary_of_floorCell_mono (δ'' := (1 / 4 : ℝ≥0)) (δ' := (7 / 25 : ℝ≥0)) (by norm_num)
     (by
       rw [div_le_div_iff₀ (by norm_num : (0 : ℝ≥0) < 4)
         (by norm_num : (0 : ℝ≥0) < 25)]

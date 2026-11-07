@@ -53,7 +53,7 @@ theorem residual_two_zero_affine (dom : Fin n ↪ F) {i j c : Fin n} (u₁ : Fin
   have hdet : residual dom 2 ![i, j, c] u₁
       = (dom j - dom i) * u₁ c + (dom i - dom c) * u₁ j + (dom c - dom j) * u₁ i := by
     unfold residual borderedMatrix
-    rw [Matrix.det_fin_three]
+    erw [Matrix.det_fin_three]
     simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
       Matrix.cons_val_two, Matrix.tail_cons, Fin.isValue]
     norm_num [pow_zero, pow_one]

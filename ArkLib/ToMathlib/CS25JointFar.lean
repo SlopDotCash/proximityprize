@@ -81,6 +81,7 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
 /-! ### The minimum-distance "joint-far" argument -/
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **CS25 joint-far property (discharged).**
 
 The deep-hole stack `(u⁰, u¹)` at an off-domain hole `a` is *not* jointly `δ`-close to `RS[k]`,
@@ -101,10 +102,12 @@ theorem deepHoleJointFar_holds
   rw [DeepHoleJointFar, jointProximity]
   intro hclose
   -- Extract an interleaved codeword `V` within distance `δ` of the interleaved deep-hole word.
-  rw [relCloseToCode_iff_relCloseToCodeword_of_minDist] at hclose
+  set_option backward.isDefEq.respectTransparency false in
+    rw [relCloseToCode_iff_relCloseToCodeword_of_minDist] at hclose
   obtain ⟨V, hVmem, hVdist⟩ := hclose
   -- The agreement set `S`: columns of `⋈|(dhStack …)` and `V` agree on `S`, `|S| ≥ n − ⌊δ·n⌋`.
-  rw [relCloseToWord_iff_exists_agreementCols] at hVdist
+  set_option backward.isDefEq.respectTransparency false in
+    rw [relCloseToWord_iff_exists_agreementCols] at hVdist
   obtain ⟨S, hScard, hSagree⟩ := hVdist
   -- `k < |S|`.
   have hkS' : k < S.card := lt_of_lt_of_le hkS hScard
@@ -241,7 +244,7 @@ theorem rs_epsCA_implies_lambda_extended_cs25_complete
             ((ReedSolomon.code domain k : Set (ι → F)))
             δ.toNNReal δ.toNNReal).toReal ≤
           η * (1 / k - Fintype.card ι / (k * Fintype.card F))) :
-    Lambda ((ReedSolomon.code domain (k + 1) : Set (ι → F))) δ ≤
+    ListDecodable.Lambda ((ReedSolomon.code domain (k + 1) : Set (ι → F))) δ ≤
       (Nat.ceil
         ((Fintype.card F : ℝ) / (1 - η)
           * (epsCA (F := F) (A := F)

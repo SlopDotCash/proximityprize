@@ -30,12 +30,23 @@ namespace Reduction
 set_option linter.unusedSectionVars false
 set_option maxHeartbeats 1000000
 
+-- Preserve the original all-events observation without exporting anonymous instance names.
+private local instance (priority := 100) (α : Type) : MeasurableSpace α := ⊤
+private local instance (priority := 100) (α : Type) : DiscreteMeasurableSpace α :=
+  ⟨fun _ => MeasurableSpace.measurableSet_top⟩
+private local instance (priority := 100) (α : Type) : MeasurableSingletonClass α :=
+  ⟨fun _ => MeasurableSpace.measurableSet_top⟩
+
 variable {ι : Type} {oSpec : OracleSpec ι} {StmtIn WitIn StmtOut WitOut : Type}
   {n : ℕ} {pSpec : ProtocolSpec n} [∀ i, SampleableType (pSpec.Challenge i)]
   {σ : Type}
   [VCVCompatible StmtIn] [∀ i, VCVCompatible (pSpec.Challenge i)]
   [DecidableEq StmtIn] [∀ i, DecidableEq (pSpec.Message i)]
   [∀ i, DecidableEq (pSpec.Challenge i)] [∀ i, VCVCompatible (pSpec.Message i)]
+
+private local instance : MeasurableSpace (FullTranscript pSpec) := ⊤
+private local instance : MeasurableSpace (FiatShamirProofTranscript (pSpec := pSpec)) := ⊤
+private local instance : MeasurableSpace σ := ⊤
 
 /-- The table-derived partial transcript at the full length of the bundle. -/
 noncomputable def fsDerive
@@ -586,7 +597,7 @@ variable (impl : QueryImpl oSpec (StateT σ ProbComp))
 /-- **Per-round marginalization.** With the previous-round data fixed, the round-`i` table read
 (at the fresh round-`i` key) averaged over the uniform table is a fresh uniform challenge draw,
 and the receive-challenge step commutes across it. -/
-theorem vstep_core (i : Fin n) (hdir : pSpec.dir i = .V_to_P) {β : Type}
+theorem vstep_core (i : Fin n) (hdir : pSpec.dir i = .V_to_P) {β : Type} [MeasurableSpace β]
     (Φ : ((q : (fsChallengeOracle StmtIn pSpec).Domain) →
         (fsChallengeOracle StmtIn pSpec).Range q) →
       pSpec.Transcript i.succ → P.PrvState i.succ → σ → ProbComp β)
@@ -610,7 +621,7 @@ theorem vstep_core (i : Fin n) (hdir : pSpec.dir i = .V_to_P) {β : Type}
           (fsChallengeOracle StmtIn pSpec).Range q)
         Φ g (Transcript.concat ch T) (f.1 ch) f.2] := by
   classical
-  haveI : Nonempty ((q : (fsChallengeOracle StmtIn pSpec).Domain) →
+  have : Nonempty ((q : (fsChallengeOracle StmtIn pSpec).Domain) →
       (fsChallengeOracle StmtIn pSpec).Range q) := ⟨fun q => Classical.arbitrary _⟩
   -- step 1: swap the table sample past the receive-challenge step
   refine Eq.trans (OracleComp.evalDist_bind_comm _ _
@@ -624,8 +635,7 @@ theorem vstep_core (i : Fin n) (hdir : pSpec.dir i = .V_to_P) {β : Type}
       let g ← $ᵗ ((q : (fsChallengeOracle StmtIn pSpec).Domain) →
         (fsChallengeOracle StmtIn pSpec).Range q)
       Φ g (Transcript.concat ch T) (f.1 ch) f.2))).symm)
-  rw [evalDist_bind, evalDist_bind]
-  refine congrArg _ (funext fun f => ?_)
+  refine OracleComp.evalDist_bind_congr_of_support _ _ _ (fun f _ => ?_)
   refine Eq.trans (evalDist_uniformSample_bind_update_bind_dep
     (ι' := (fsChallengeOracle StmtIn pSpec).Domain)
     (R := (fsChallengeOracle StmtIn pSpec).Range)
@@ -649,7 +659,7 @@ set_option maxHeartbeats 4000000 in
 /-- **Per-round eager coupling invariant.** For any continuation `Φ` reading the table only at
 rounds `≥ j`, the table-averaged FS run (with its derived transcript) agrees with the
 interactive run (with the table sampled independently afterwards). -/
-theorem eager_coupling_invariant (a : σ) (j : Fin (n + 1)) {β : Type}
+theorem eager_coupling_invariant (a : σ) (j : Fin (n + 1)) {β : Type} [MeasurableSpace β]
     (Φ : ((q : (fsChallengeOracle StmtIn pSpec).Domain) →
         (fsChallengeOracle StmtIn pSpec).Range q) →
       pSpec.Transcript j → P.PrvState j → σ → ProbComp β)
@@ -717,8 +727,7 @@ theorem eager_coupling_invariant (a : σ) (j : Fin (n + 1)) {β : Type}
         rw [intRun_succ_PtoV impl P _ a i hdir]
         simp only [bind_assoc, pure_bind]
       rw [h2]
-      rw [evalDist_bind, evalDist_bind]
-      refine congrArg _ (funext fun r => ?_)
+      refine OracleComp.evalDist_bind_congr_of_support _ _ _ (fun r _ => ?_)
       exact OracleComp.evalDist_bind_comm _ _ (fun g
         (ms : (pSpec.Message ⟨i, hdir⟩ × P.PrvState i.succ) × σ) =>
           Φ g (Transcript.concat ms.1.1 r.1.1) ms.1.2 ms.2)
@@ -786,8 +795,7 @@ theorem eager_coupling_invariant (a : σ) (j : Fin (n + 1)) {β : Type}
         rw [intRun_succ_VtoP impl P _ a i hdir]
         simp only [bind_assoc, pure_bind]
       rw [h2]
-      rw [evalDist_bind, evalDist_bind]
-      refine congrArg _ (funext fun r => ?_)
+      refine OracleComp.evalDist_bind_congr_of_support _ _ _ (fun r _ => ?_)
       exact vstep_core impl P stmt i hdir Φ hΦ r.1.1 r.1.2 r.2
 
 end Invariant
@@ -849,10 +857,12 @@ theorem honestExecution_run_eq :
     bind_assoc, pure_bind, Option.elim_some, map_bind, bind_pure_comp, bind_map_left]
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **Interactive run, flattened.** -/
 theorem reduction_run_eq :
     (R.run stmt wit).run
-      = R.prover.runToRound (Fin.last n) stmt wit >>= fun x =>
+      = (R.prover.runToRound (Fin.last n) stmt wit :
+          OracleComp (oSpec + [pSpec.Challenge]ₒ) _) >>= fun x =>
         (liftM (R.prover.output x.2) : OracleComp (oSpec + [pSpec.Challenge]ₒ) _) >>= fun c =>
         ((R.verifier.verify stmt x.1).run.liftComp (oSpec + [pSpec.Challenge]ₒ)) >>= fun o =>
         pure (Option.map (fun s => ((x.1, c), s)) o) := by
@@ -861,10 +871,6 @@ theorem reduction_run_eq :
     optRun_liftM_inner, optRun_liftM_cross, optRun_map_getM,
     bind_assoc, pure_bind, Option.elim_some, map_bind, bind_pure_comp, bind_map_left,
     prover_run_eq]
-  erw [bind_assoc]
-  refine bind_congr fun x => ?_
-  erw [bind_map_left]
-  rfl
 
 end RunFlatten
 
@@ -909,7 +915,8 @@ theorem simulateQ_fsTable_honest_run (a : σ) :
   refine bind_congr fun r => ?_
   rw [simulateQ_bind, StateT.run_bind, QueryImpl.simulateQ_add_liftComp_left]
   refine bind_congr fun po => ?_
-  rw [simulateQ_bind, StateT.run_bind, simulateQ_add_fsTableImpl_deriveTranscriptFS_run]
+  rw [simulateQ_bind, StateT.run_bind]
+  erw [simulateQ_add_fsTableImpl_deriveTranscriptFS_run]
   erw [pure_bind]
   rw [simulateQ_bind, StateT.run_bind, QueryImpl.simulateQ_add_liftComp_left]
   refine bind_congr fun vo => ?_
@@ -954,15 +961,10 @@ theorem stateT_run'_map' {σ' α β : Type} (f : α → β) (M : StateT σ' Prob
   rw [StateT.run'_eq, StateT.run'_eq, StateT.run_map, Functor.map_map, Functor.map_map]
 
 /-- Binding a fresh uniform table and ignoring it is distribution-preserving. -/
-theorem evalDist_table_bind_const {β : Type} (k : ProbComp β) :
+theorem evalDist_table_bind_const {β : Type} [MeasurableSpace β] (k : ProbComp β) :
     𝒟[($ᵗ ((q : (fsChallengeOracle StmtIn pSpec).Domain) →
         (fsChallengeOracle StmtIn pSpec).Range q)) >>= fun _ => k] = 𝒟[k] := by
-  classical
-  haveI : Nonempty ((q : (fsChallengeOracle StmtIn pSpec).Domain) →
-      (fsChallengeOracle StmtIn pSpec).Range q) := ⟨fun q => Classical.arbitrary _⟩
-  refine evalDist_ext fun z => ?_
-  rw [probOutput_bind_eq_tsum, ENNReal.tsum_mul_right,
-    tsum_probOutput_eq_one' (by simp), one_mul]
+  exact OracleComp.evalDist_bind_const _ _
 
 /-- **hL.** The FS side of the eager coupling, in invariant shape. -/
 theorem fs_marginal_eq (a : σ) :
@@ -1049,8 +1051,7 @@ theorem canonicalFSPerStateEagerCoupling_proved
       pure (Option.map (Function.const StmtOut
         (mkFSProof (Transcript.toMessagesUpTo T))) vo.1))
     (fun _ _ _ _ _ _ _ => rfl)) ?_
-  rw [evalDist_bind, evalDist_bind]
-  refine congrArg _ (funext fun r => ?_)
+  refine OracleComp.evalDist_bind_congr_of_support _ _ _ (fun r _ => ?_)
   exact evalDist_table_bind_const _
 
 #print axioms canonicalFSPerStateEagerCoupling_proved

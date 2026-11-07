@@ -56,8 +56,12 @@ theorem not_divWeightLe_monic_witness (hH : 0 < myH.natDegree) :
   refine weight_refuted hH ⟨a, ?_, hwt⟩
   have hW : W𝒪 myH = 1 := by
     rw [W𝒪, myH_leadingCoeff, map_one, map_one]
-  rw [hEq, hW, one_pow, mul_one]
-  norm_num
+  rw [hEq, hW]
+  calc
+    _ = a * ClaimA2.ξ 0 myR myH myHyp ^ (2 * 1 - 1) :=
+      congrArg (fun z : 𝒪 myH => z * ClaimA2.ξ 0 myR myH myHyp ^ (2 * 1 - 1))
+        ((congrArg (fun z : 𝒪 myH => a * z) (one_pow (1 + 1))).trans (mul_one a))
+    _ = _ := congrArg (fun z : 𝒪 myH => a * z) (pow_one _)
 
 /-- **The isolated explicit core is false for the witness**: the all-orders weight bound on the
 explicit quotient `henselQuotient` (the form `succDivWeightLe_iff_henselQuotient_weight` isolates

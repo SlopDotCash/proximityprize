@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Poulami Das (Least Authority), Alexander Hicks
 -/
 
-import ArkLib.Data.CodingTheory.ReedSolomon
-import ArkLib.Data.CodingTheory.ListDecodability
-import ArkLib.OracleReduction.VectorIOR
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
+import ProximityPrize.Extensions.OracleReduction.VectorIOR
 import ArkLib.ProofSystem.Whir.BlockRelDistance
 import ArkLib.ProofSystem.Whir.MutualCorrAgreement
 import ArkLib.ProofSystem.Whir.ProximityGen
@@ -40,7 +40,7 @@ Open question: should we aim to add tags?
 -/
 namespace WhirIOP
 
-open BigOperators BlockRelDistance MutualCorrAgreement Generator Finset
+open BigOperators BlockRelDistance.Generic MutualCorrAgreement Generator Finset
      ListDecodable NNReal ReedSolomon
 
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]

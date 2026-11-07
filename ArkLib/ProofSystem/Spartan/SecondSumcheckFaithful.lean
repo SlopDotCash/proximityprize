@@ -13,7 +13,7 @@ import ArkLib.OracleReduction.LiftContext.Coherence
 
 The Spartan second sum-check oracle reduction is built by lifting the proven sum-check oracle
 reduction onto the virtual polynomial `ℳ(Y) = ∑ r_idx · M_idx(r_x, Y) · Z(Y)` via
-`OracleReduction.liftContext`. To transfer the sum-check's completeness through the lift one must
+`OracleReduction.liftContextLegacy`. To transfer the sum-check's completeness through the lift one must
 discharge the `OracleVerifier.LiftContextCoherent` coherence condition (design note #433), whose
 mathematical core is the **`simOStmt` faithfulness** of the lens used by the second sum-check:
 
@@ -87,6 +87,7 @@ lemma simulateQ_simOracle_foldlM (oos : ∀ i, OracleStatement.AfterLinearCombin
       simpa using ih (stepPure acc y)
 
 omit [IsDomain R] [Fintype R] [SampleableType R] in
+set_option backward.isDefEq.respectTransparency false in
 /-- **`simOStmt` faithfulness (Step B).** The honest simulation, under the single-family oracle
 `simOracle`, of the inlined oracle reconstruction `secondSumcheckEvalFromOracles` equals
 `eval point ℳ`. The three matrix queries answer the bivariate `toMLE` evaluations and the
@@ -98,6 +99,16 @@ theorem secondSumcheckEvalFromOracles_simOracle
         (secondSumcheckEvalFromOracles pp oSpec stmt point)
       = pure (eval point (secondSumCheckVirtualPolynomial R pp stmt oos)) := by
   classical
+  have hquery (q : [OracleStatement.AfterLinearCombination R pp]ₒ.Domain) :
+      simulateQ (OracleInterface.simOracle oSpec oos)
+        (OracleComp.lift (OracleSpec.query (spec := [OracleStatement.AfterLinearCombination R pp]ₒ) q) :
+          OracleComp (oSpec + [OracleStatement.AfterLinearCombination R pp]ₒ)
+            ([OracleStatement.AfterLinearCombination R pp]ₒ.Range q)) =
+        pure (OracleInterface.answer (oos q.1) q.2) := by
+    change simulateQ _
+      (liftM ((oSpec + [OracleStatement.AfterLinearCombination R pp]ₒ).query (.inr q))) = _
+    rw [simulateQ_spec_query]
+    rfl
   have hfold :
       simulateQ (OracleInterface.simOracle oSpec oos)
           ((Finset.univ : Finset (Fin (2 ^ pp.ℓ_n))).toList.foldlM
@@ -131,12 +142,14 @@ theorem secondSumcheckEvalFromOracles_simOracle
       unfold Bricks.zEvalPureFoldStep
       by_cases hy : (y : ℕ) < pp.toSizeR1CS.n_x
       · simp [hy]
-      · simp [hy, OracleInterface.simOracle, OracleInterface.simOracle0, OracleInterface.answer,
-          map_liftM_Id]
+      · simp [hy, hquery, simulateQ_bind, simulateQ_pure]
+        rfl
+
   unfold secondSumcheckEvalFromOracles
   simp only [simulateQ_bind]
   rw [hfold]
-  conv_lhs => simp [OracleInterface.simOracle, map_liftM_Id]
+  conv_lhs => simp only [hquery, pure_bind, LawfulApplicative.map_pure, simulateQ_pure]
+
   refine congrArg pure ?_
   show (stmt.1 .A * eval point (eval ((C : R →+* MvPolynomial (Fin pp.ℓ_n) R) ∘ stmt.2.1)
           (oos (.inr (.inl .A))).toMLE)
@@ -205,6 +218,8 @@ unblocking its completeness transfer through `liftContext_perfectCompleteness`. 
       intro os oos transcript so
       obtain ⟨t, stmt⟩ := os
       simp [secondSumcheckOracleLens, secondSumcheckStmtLens, OracleStatement.Lens.lift,
-        OracleStatement.Lens.proj])
+        OracleStatement.Lens.proj]
+      funext i
+      rfl)
 
 end Spartan.Spec

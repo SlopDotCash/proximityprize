@@ -40,13 +40,13 @@ def fullPredKSF (verifier : Verifier oSpec StmtIn StmtOut pSpec)
       ∀ stmtIn (tr : Transcript m.castSucc pSpec) (msg : pSpec.Type m),
         pred m.succ stmtIn (tr.concat msg) → pred m.castSucc stmtIn tr)
     (hFull : ∀ stmtIn tr (witOut : WitOut),
-      (Pr[fun stmtOut => (stmtOut, witOut) ∈ relOut
-        | OptionT.mk do (simulateQ impl (verifier.run stmtIn tr)).run' (← init)] > 0) →
+      (probEvent (fun stmtOut => (stmtOut, witOut) ∈ relOut)
+        (OptionT.mk do (simulateQ impl (verifier.run stmtIn tr)).run' (← init)) > 0) →
       pred (.last n) stmtIn tr) :
     verifier.KnowledgeStateFunction init impl relIn relOut
       (ThresholdKSF.unitExtractor (WitOut := WitOut)) where
   toFun := fun m stmtIn tr _ => pred m stmtIn tr
-  toFun_empty := fun stmtIn w => hEmpty stmtIn _
+  toFun_empty := fun stmtIn w => (hEmpty stmtIn _).mpr
   toFun_next := fun m hdir stmtIn tr msg w h => hConcatMsg m hdir stmtIn tr msg h
   toFun_full := fun stmtIn tr witOut hacc => hFull stmtIn tr witOut hacc
 
@@ -64,27 +64,27 @@ theorem rbrKnowledgeSoundness_of_salvageBound (verifier : Verifier oSpec StmtIn 
       ∀ stmtIn (tr : Transcript m.castSucc pSpec) (msg : pSpec.Type m),
         pred m.succ stmtIn (tr.concat msg) → pred m.castSucc stmtIn tr)
     (hFull : ∀ stmtIn tr (witOut : WitOut),
-      (Pr[fun stmtOut => (stmtOut, witOut) ∈ relOut
-        | OptionT.mk do (simulateQ impl (verifier.run stmtIn tr)).run' (← init)] > 0) →
+      (probEvent (fun stmtOut => (stmtOut, witOut) ∈ relOut)
+        (OptionT.mk do (simulateQ impl (verifier.run stmtIn tr)).run' (← init)) > 0) →
       pred (.last n) stmtIn tr)
     (hSalvage : ∀ stmtIn witIn
       (prover : Prover oSpec StmtIn Unit StmtOut WitOut pSpec) (i : pSpec.ChallengeIdx),
-      Pr[fun x : pSpec.Transcript i.1.castSucc × pSpec.Challenge i ×
+      probEvent (fun x : pSpec.Transcript i.1.castSucc × pSpec.Challenge i ×
           (oSpec + [pSpec.Challenge]ₒ).QueryLog =>
-          ¬ pred i.1.castSucc stmtIn x.1 ∧ pred i.1.succ stmtIn (x.1.concat x.2.1)
-        | do
+          ¬ pred i.1.castSucc stmtIn x.1 ∧ pred i.1.succ stmtIn (x.1.concat x.2.1))
+        (do
           (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
             (do
               let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
                 prover.runWithLogToRound i.1.castSucc stmtIn witIn
               let challenge ← liftComp (pSpec.getChallenge i) _
-              return (transcript, challenge, proveQueryLog))).run' (← init)] ≤ (ε i : ℝ≥0∞)) :
+              return (transcript, challenge, proveQueryLog))).run' (← init)) ≤ (ε i : ℝ≥0∞)) :
     verifier.rbrKnowledgeSoundness init impl relIn relOut ε := by
   classical
   refine ⟨fun _ => Unit, ThresholdKSF.unitExtractor,
     fullPredKSF init impl verifier relIn relOut pred hEmpty hConcatMsg hFull, ?_⟩
   intro stmtIn witIn prover i
-  refine le_trans (probEvent_mono ?_) (hSalvage stmtIn witIn prover i)
+  refine le_trans (prEvent_mono_of_support _ _ _ ?_) (hSalvage stmtIn witIn prover i)
   rintro ⟨tr, ch, log⟩ _ ⟨w, hne, hsucc⟩
   exact ⟨hne, hsucc⟩
 

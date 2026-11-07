@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
 
 /-!
 # Sparse-deviation extremality (#357 promotion 1: the N1 mechanism, provable core)
@@ -53,7 +53,7 @@ theorem card_inter_witnesses {α β : ℝ≥0} {T T' : Finset ι}
     ((T ∩ T').card : ℝ≥0) ≥ (1 - α - β) * Fintype.card ι := by
   by_cases hαβ : (1 : ℝ≥0) ≤ α + β
   · rw [tsub_tsub, tsub_eq_zero_of_le hαβ, zero_mul]
-    exact zero_le _
+    positivity
   · push Not at hαβ
     have hα1 : α ≤ 1 := le_of_lt (lt_of_le_of_lt (le_add_right le_rfl) hαβ)
     have hβ1 : β ≤ 1 := le_of_lt (lt_of_le_of_lt (le_add_left le_rfl) hαβ)

@@ -3,10 +3,11 @@ Copyright (c) 2024-2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tobias Rothmann
 -/
-import ArkLib.Commitments.Ordinary.Ajtai.Simple.Scheme
-import ArkLib.Commitments.Functional.Hachi.Gadget
-import ArkLib.Data.Lattices.CyclotomicRing.NormBounds
-import VCVio
+module
+
+public import ArkLib.Commitments.Ordinary.Ajtai.Simple.Scheme
+public import ArkLib.Commitments.Functional.Hachi.Gadget.Core
+public import ArkLib.Data.Lattices.CyclotomicRing.NormBounds
 
 /-!
 # Inner-Outer Ajtai Commitment Scheme
@@ -15,6 +16,10 @@ The Greyhound [NS24] / Hachi [NOZ26] inner-outer commitment composition over the
 ring `Rq Φ`:
 each message block is gadget-decomposed and inner-committed under `A`; the inner
 commitments are gadget-decomposed, flattened, and outer-committed under `B`.
+
+This file defines the scheme itself (public parameters, openings, commit, verify). Perfect
+correctness is proved in `InnerOuter/Correctness.lean`, and the weak-binding reduction to
+Module-SIS in `InnerOuter/Security.lean`.
 
 ## Weak openings
 
@@ -51,8 +56,21 @@ with the `ℓ₁` bound already pins down invertibility. The honest challenge `c
 A weak opening does not store the message: per Hachi [NOZ26, Eq. (13)] the message block is
 *derived* from `sᵢ` by applying the message gadget matrix, `mᵢ = G · sᵢ` (`derivedMessage`).
 The bundled `commitmentScheme` therefore verifies an opening against a claimed message `m` by
-checking `derivedMessage opening.toDecomp = m` (replacing the old explicit message-gadget check)
-together with `verify_weak`.
+checking `derivedMessage opening.toDecomp = m` together with `verify_weak`.
+
+## Main definitions
+
+* `PublicParams`: the two Ajtai matrices, inner `A` and outer `B`.
+* `Decomp` / `Opening`: the committer-produced decomposition data `(sᵢ, t̂ᵢ)`, and its extension
+  with per-block challenges `(cᵢ)` forming a weak opening.
+* `Decomposition` / `Decomposition.ofDigits`: the decomposition operations used by the honest
+  committer, instantiated with the base-`b` gadget inverse `G⁻¹` at both steps.
+* `derivedMessage`: recovers the message block `mᵢ = G · sᵢ` from the decomposition data.
+* `generateDecomps` / `commitWithDecomps`: honest decomposition generation and the outer
+  commitment computed from it.
+* `verify_weak`: the weak-opening verifier (challenge, shortness, and gadget-relation checks).
+* `commitmentScheme`: the scheme bundled as a `CommitmentScheme`, with honest challenge
+  `cᵢ = 1`.
 
 ## References
 
@@ -62,6 +80,8 @@ together with `verify_weak`.
 * [Nguyen, N. K., O'Rourke, G., and Zhang, J., *Hachi: Efficient Lattice-Based Multilinear
     Polynomial Commitments over Extension Fields*][NOZ26]
 -/
+
+@[expose] public section
 
 open OracleComp CommitmentScheme CompPoly ArkLib.Lattices ArkLib.Lattices.CyclotomicModulus
   ArkLib.Lattices.Ajtai
@@ -210,6 +230,7 @@ def commitmentScheme (base : ZMod q) (βSq γ κ : Nat)
   commit pp m :=
     let decomps := generateDecomps Φ decomp pp m
     pure (commitWithDecomps Φ pp decomps, { toDecomp := decomps, challenge := fun _ => 1 })
+    -- dummy challenge value c=1 here
   verify pp m c opening :=
     (List.finRange blocks).all (fun i =>
       decide (derivedMessage Φ base opening.toDecomp i = m i)) &&

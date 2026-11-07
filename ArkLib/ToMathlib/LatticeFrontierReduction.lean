@@ -49,6 +49,9 @@ producer hypothesis is `Type`-valued data, exactly like the in-tree `hCell` bran
 set_option linter.style.longLine false
 set_option linter.unusedSectionVars false
 
+private noncomputable local instance {F : Type} [Field F] [Fintype F] :
+    SampleableType F := SampleableType.ofFintype F
+
 namespace ArkLib
 
 namespace LatticeFrontierReduction

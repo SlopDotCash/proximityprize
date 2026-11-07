@@ -4,7 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.OracleReduction.Security.Basic
+import ProximityPrize.Compatibility.DiscreteProbability
+import ProximityPrize.Extensions.OracleReduction.Security.Basic
 
 /-!
 # Probability-one bind composition (issue #114 — completeness-composition keystone helper)
@@ -32,20 +33,18 @@ namespace OracleComp
 
 universe u v
 
-variable {α β : Type u} {m : Type u → Type v} [Monad m] [HasEvalSPMF m]
+variable {α β : Type} {m : Type → Type v} [Monad m] [LawfulMonad m]
+  [EvalDistSemantics m] [LawfulEvalDistSemantics m]
 
 /-- **Probability-one bind composition.** If `mx` satisfies `p` with probability `1`, and `f a`
 satisfies `good` with probability `1` for every `a` in the support of `mx` (in particular whenever
 `p a` holds), then `mx >>= f` satisfies `good` with probability `1`. -/
 lemma probEvent_bind_eq_one (mx : m α) (f : α → m β) {p : α → Prop} {good : β → Prop}
-    (hmx : Pr[ p | mx] = 1) (hf : ∀ a, p a → Pr[ good | f a] = 1) :
-    Pr[ good | mx >>= f] = 1 := by
-  obtain ⟨hfail, hsupp⟩ := probEvent_eq_one_iff.mp hmx
-  rw [probEvent_bind_eq_tsum]
-  rw [show (1 : ℝ≥0∞) = ∑' a, Pr[= a | mx] from by rw [tsum_probOutput_eq_sub, hfail, tsub_zero]]
-  refine tsum_congr fun a => ?_
-  by_cases h : a ∈ support mx
-  · rw [hf a (hsupp a h), mul_one]
-  · simp [probOutput_eq_zero_of_not_mem_support h]
+    (hmx : probEvent (p) (mx) = 1) (hf : ∀ a, p a → probEvent (good) (f a) = 1) :
+    probEvent (good) (mx >>= f) = 1 := by
+  apply le_antisymm (prEvent_le_one _)
+  have h := mul_le_prEvent_bind_of_forall mx f p good (r := 1) (r' := 1)
+    hmx.ge (fun a ha => (hf a ha).ge)
+  simpa only [one_mul] using h
 
 end OracleComp

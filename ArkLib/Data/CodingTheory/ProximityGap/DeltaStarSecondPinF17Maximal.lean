@@ -102,7 +102,7 @@ theorem w₁_far : FarFromCode (C84 : Set (Fin 8 → F17)) (1/4) w₁ := by
   classical
   set Z : Finset (Fin 8) := S.filter (fun i => w₁ i = 0) with hZ
   set P : Finset (Fin 8) := S.filter (fun i => ¬ w₁ i = 0) with hP
-  have hZP : Z.card + P.card = S.card := Finset.filter_card_add_filter_neg_card_eq_card _
+  have hZP : Z.card + P.card = S.card := Finset.card_filter_add_card_filter_not _
   have hPsub : P ⊆ ({4, 6, 7} : Finset (Fin 8)) := by
     intro i hi
     have hiw := (Finset.mem_filter.mp hi).2

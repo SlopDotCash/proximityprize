@@ -64,8 +64,10 @@ the wire format of the checked final block. -/
 def stirInitVerifierPacked :
     OracleVerifier []ₒ Unit (VOStmt ι F) F (VOStmt ι F) (pSpecInit F) where
   verify := fun _ chals => pure (chals ⟨0, pSpecInit_dir_zero⟩)
-  embed := ⟨fun _ => Sum.inl (), fun _ _ _ => rfl⟩
-  hEq := fun _ => rfl
+  outputOracle := .inl {
+    embed := ⟨fun _ => Sum.inl (), fun _ _ _ => rfl⟩
+    hEq := fun _ => rfl
+    outputInterface_heq := by intro u; cases u <;> rfl }
 
 /-- The deterministic statement map computed by the packed init relay: read the fold
 challenge off the transcript and forward the packed input oracle unchanged. -/
@@ -105,27 +107,27 @@ theorem stirInitVerifierPacked_rbrKnowledgeSoundness (δ : ℝ≥0) :
     (stirInitVerifierPacked (ι := ι) (F := F)).toVerifier.rbrKnowledgeSoundness init impl
       (stirSeamRelInit ι F δ) (stirSpotRelIn ι F δ) 0 := by
   refine ⟨fun _ => Unit, {
-    eqIn := rfl
+    extractIn := fun _ _ => ()
     extractMid := fun _ _ _ _ => ()
     extractOut := fun _ _ _ => ()
   }, {
     -- The knowledge state function: the δ-positivity gate (statement-independent, constant
     -- across rounds).
     toFun := fun _ stmtIn _ _ => (stmtIn, ()) ∈ stirSeamRelInit ι F δ
-    toFun_empty := fun _ _ => Iff.rfl
+    toFun_empty := fun _ _ h => h
     toFun_next := fun _ _ _ _ _ _ h => h
     toFun_full := fun stmtIn tr witOut hpr => by
       -- A positive-probability output in `stirSpotRelIn` IS the gate `0 < δ`, which is the
       -- (statement-independent) goal.
-      rw [gt_iff_lt, probEvent_pos_iff] at hpr
+      rw [gt_iff_lt, OptionT.prEvent_mk_pos_iff] at hpr
       obtain ⟨x, _hx, hrel⟩ := hpr
       exact hrel
   }, ?_⟩
   -- Per-challenge bound: the event "state false before the challenge, true after" is
   -- pointwise contradictory (the state ignores the transcript), so its probability is 0.
   intro stmtIn witIn prover i
-  refine le_trans (le_of_eq ?_) (zero_le _)
-  rw [probEvent_eq_zero_iff]
+  refine le_trans (le_of_eq ?_) (by positivity)
+  rw [OracleComp.prEvent_eq_zero_iff]
   rintro ⟨transcript, challenge, log⟩ _ ⟨witMid, hnot, hyes⟩
   exact hnot hyes
 

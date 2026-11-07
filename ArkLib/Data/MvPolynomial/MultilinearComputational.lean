@@ -5,10 +5,10 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.BigOperators.Fin
 import Mathlib.Algebra.BigOperators.Group.Finset.Defs
-import CompPoly.Multivariate.CMvPolynomial
+import CompPoly.Multivariate.Operations
 import CompPoly.Multivariate.MvPolyEquiv
 import CompPoly.Multivariate.Rename
-import ArkLib.Data.MvPolynomial.Multilinear
+import ProximityPrize.Extensions.Data.MvPolynomial.Multilinear
 
 /-!
 # Computable multilinear extension (`CMvPolynomial` carrier)

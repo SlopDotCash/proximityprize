@@ -31,7 +31,7 @@ Axiom-clean: `[propext, Classical.choice, Quot.sound]` (see `#print axioms` at E
 
 namespace Fold
 
-open MutualCorrAgreement Generator ReedSolomon BlockRelDistance NNReal
+open MutualCorrAgreement Generator ReedSolomon BlockRelDistance.Generic NNReal
 open CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame
 
 variable {F : Type} [Field F] [DecidableEq F] [Fintype F]

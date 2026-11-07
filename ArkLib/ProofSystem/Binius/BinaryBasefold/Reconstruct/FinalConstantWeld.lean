@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Relations
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Relations
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.FinalOracleBridge
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.IteratedFoldToLevel
 
@@ -196,6 +196,7 @@ variable {h_ℓ_add_R_rate : ℓ + 𝓡 < r}
 variable {𝓑 : Fin 2 ↪ L}
 variable [hdiv : Fact (ϑ ∣ ℓ)]
 
+set_option backward.isDefEq.respectTransparency false in
 set_option maxHeartbeats 4000000 in
 seal sDomain qMap_total_fiber normalizedW intermediateEvaluationPoly in
 /-- **The final-constant weld (Lemma A).** Under strict oracle-folding consistency at the
@@ -223,7 +224,7 @@ lemma getLastOracle_finalFold_eq_eval
           rw [getLastOracleDomainIndex_last (ℓ := ℓ) (ϑ := ϑ)])
         (oracleFrontierIdx := Fin.last ℓ)
         𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (oStmt := oStmt))
-      (r_challenges := getFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ϑ)
+      (r_challenges := Compatibility.newestFirstFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ϑ)
         (i := Fin.last ℓ) challenges (ℓ - ϑ) (h := by
           simp only [Fin.val_last]
           have : ϑ ≤ ℓ := Nat.le_of_dvd (Nat.pos_of_neZero ℓ) hdiv.out
@@ -248,7 +249,8 @@ lemma getLastOracle_finalFold_eq_eval
           (fun ω => t.val.eval (statementOrderBitsOfIndex (L := L) ω))).val.eval x.val) =
       (fun (x : sDomain 𝔽q β h_ℓ_add_R_rate 0) =>
         (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
-          ⟨(0 : Fin r).val, by have h0 : (0 : Fin r).val = 0 := rfl; omega⟩ coeffs₀).eval x.val) := by
+          ⟨(0 : Fin r).val, by have h0 : (0 : Fin r).val = 0 := rfl; omega⟩
+          (by simp) coeffs₀).eval x.val) := by
     funext x
     exact (congrArg (fun p => Polynomial.eval x.val p) h_base).symm
   rw [h_f₀]
@@ -259,7 +261,7 @@ lemma getLastOracle_finalFold_eq_eval
     (h_destIdx := by simp only [Fin.val_zero, Nat.zero_add])
     (h_destIdx_le := by simp only [Fin.mk_le_mk]; omega)
     (coeffs := coeffs₀)
-    (r_challenges := getFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ℓ - ϑ)
+    (r_challenges := Compatibility.newestFirstFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ℓ - ϑ)
       (i := Fin.last ℓ) challenges 0 (h := by
         simp only [zero_add, Fin.val_last]
         omega))
@@ -273,17 +275,17 @@ lemma getLastOracle_finalFold_eq_eval
     (coeffs := iteratedRefineCoeffs (𝓡 := 𝓡) (i := 0) (destIdx := ⟨ℓ - ϑ, by omega⟩)
       (ℓ - ϑ) (by simp only [Fin.val_zero, Nat.zero_add]) (by simp only [Fin.mk_le_mk]; omega)
       coeffs₀
-      (getFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ℓ - ϑ)
+      (Compatibility.newestFirstFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ℓ - ϑ)
         (i := Fin.last ℓ) challenges 0 (h := by
           simp only [zero_add, Fin.val_last]
           omega)))
-    (r_challenges := getFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ϑ)
+    (r_challenges := Compatibility.newestFirstFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ϑ)
       (i := Fin.last ℓ) challenges (ℓ - ϑ) (h := by
         simp only [Fin.val_last]
         omega))
   rw [h_adv2]
   -- Step 5: compose the two refinements.
-  rw [iteratedRefineCoeffs_comp
+  erw [iteratedRefineCoeffs_comp
     (i := 0) (mid := ⟨ℓ - ϑ, by omega⟩) (dest := ⟨ℓ, by omega⟩)
     (s₁ := ℓ - ϑ) (s₂ := ϑ)
     (h_mid := by simp only [Fin.val_zero, Nat.zero_add])
@@ -292,7 +294,7 @@ lemma getLastOracle_finalFold_eq_eval
     (h_dest_le := by simp only [Fin.mk_le_mk]; omega)
     (h_dest' := by simp only [Fin.val_zero, Nat.zero_add]; omega)]
   -- Step 6: convert the appended challenge vector to fold-order challenges.
-  rw [iteratedRefineCoeffs_congr_steps
+  erw [iteratedRefineCoeffs_congr_steps
     (i := 0) (dest := ⟨ℓ, by omega⟩)
     (s := (ℓ - ϑ) + ϑ) (s' := ℓ) (hs := by omega)
     (h_dest := by simp only [Fin.val_zero, Nat.zero_add]; omega)
@@ -356,7 +358,7 @@ lemma getLastOracle_finalFold_eq_eval'
       (getLastOracleDomainIndex ℓ ϑ (Fin.last ℓ)).val)
     (hpos : ℓ - ϑ + ϑ ≤ ℓ)
     (rchal : Fin ϑ → L)
-    (hrchal : rchal = getFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ϑ)
+    (hrchal : rchal = Compatibility.newestFirstFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ϑ)
       (i := Fin.last ℓ) challenges curIdx.val (h := by
         simp only [Fin.val_last]
         omega))

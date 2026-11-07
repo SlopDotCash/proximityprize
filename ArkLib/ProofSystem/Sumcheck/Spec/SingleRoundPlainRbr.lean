@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.ProofSystem.Sumcheck.Spec.SingleRound
+import ProximityPrize.Extensions.ProofSystem.Sumcheck.Spec.SingleRound
 
 /-!
 # Round-by-round *plain* soundness from round-by-round *knowledge* soundness (issue #13, residual
@@ -156,41 +156,39 @@ theorem plainFlipProb_le_knowledgeFlipProb
     (stmtIn : StmtIn) (witIn : PWitIn)
     (prover : Prover oSpec StmtIn PWitIn StmtOut PWitOut pSpec)
     (i : pSpec.ChallengeIdx) :
-    Pr[fun ⟨transcript, challenge⟩ =>
+    probEvent (fun ⟨transcript, challenge⟩ =>
         ¬ (KnowledgeStateFunction.toStateFunction init impl kSF)
             i.1.castSucc stmtIn transcript ∧
           (KnowledgeStateFunction.toStateFunction init impl kSF)
-            i.1.succ stmtIn (transcript.concat challenge)
-      | do
+            i.1.succ stmtIn (transcript.concat challenge)) (do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨transcript, _⟩ ← prover.runToRound i.1.castSucc stmtIn witIn
             let challenge ← liftComp (pSpec.getChallenge i) (oSpec + [pSpec.Challenge]ₒ)
-            return (transcript, challenge))).run' (← init)]
+            return (transcript, challenge))).run' (← init))
     ≤
-    Pr[fun ⟨transcript, challenge, _proveQueryLog⟩ =>
+    probEvent (fun ⟨transcript, challenge, _proveQueryLog⟩ =>
         ∃ witMid,
           ¬ kSF i.1.castSucc stmtIn transcript
             (extractor.extractMid i.1 stmtIn (transcript.concat challenge) witMid) ∧
-            kSF i.1.succ stmtIn (transcript.concat challenge) witMid
-      | do
+            kSF i.1.succ stmtIn (transcript.concat challenge) witMid) (do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
               prover.runWithLogToRound i.1.castSucc stmtIn witIn
             let challenge ← liftComp (pSpec.getChallenge i) (oSpec + [pSpec.Challenge]ₒ)
-            return (transcript, challenge, proveQueryLog))).run' (← init)] := by
+            return (transcript, challenge, proveQueryLog))).run' (← init)) := by
   -- Reduce to a per-initial-state bound, then transport the event onto the with-log distribution.
-  simp only [probEvent_bind_eq_tsum]
-  refine ENNReal.tsum_le_tsum fun s => ?_
-  refine mul_le_mul' le_rfl ?_
+  simp only [probEvent]
+  apply prEvent_bind_mono_of_forall_le init
+  intro s
   -- Rewrite the no-log block as `proj <$> with-log block`, hoist the map through simulateQ/run',
   -- then transport *both* events onto the common with-log distribution `(simulateQ … ).run s`,
   -- where the pointwise implication finishes via `probEvent_mono`.
   rw [noLogBlock_eq_proj_map_withLogBlock prover i stmtIn witIn,
     simulateQ_map, StateT.run'_eq, StateT.run'_eq, StateT.run_map, Functor.map_map,
-    probEvent_map, probEvent_map]
-  refine probEvent_mono fun x _ hx => ?_
+    _root_.prEvent_map, _root_.prEvent_map]
+  refine _root_.prEvent_mono _ _ _ fun x hx => ?_
   obtain ⟨⟨transcript, challenge, log⟩, st⟩ := x
   exact toStateFunctionFlip_imp_knowledgeFlip kSF i stmtIn transcript challenge hx
 
@@ -212,23 +210,21 @@ theorem rbrSoundness_of_knowledgeFlip
     {relIn : Set (StmtIn × WitIn)} {relOut : Set (StmtOut × WitOut)}
     {verifier : Verifier oSpec StmtIn StmtOut pSpec} {WitMid : Fin (n + 1) → Type}
     {extractor : Extractor.RoundByRound oSpec StmtIn WitIn WitOut pSpec WitMid}
-    [(oSpec + [pSpec.Challenge]ₒ).Fintype] [(oSpec + [pSpec.Challenge]ₒ).Inhabited]
     (kSF : verifier.KnowledgeStateFunction init impl relIn relOut extractor)
     (rbrError : pSpec.ChallengeIdx → ℝ≥0)
     (hKnowFlip : ∀ (WitIn' WitOut' : Type) (stmtIn : StmtIn) (witIn' : WitIn')
         (prover : Prover oSpec StmtIn WitIn' StmtOut WitOut' pSpec) (i : pSpec.ChallengeIdx),
-      Pr[fun ⟨transcript, challenge, _proveQueryLog⟩ =>
+      probEvent (fun ⟨transcript, challenge, _proveQueryLog⟩ =>
           ∃ witMid,
             ¬ kSF i.1.castSucc stmtIn transcript
               (extractor.extractMid i.1 stmtIn (transcript.concat challenge) witMid) ∧
-              kSF i.1.succ stmtIn (transcript.concat challenge) witMid
-        | do
+              kSF i.1.succ stmtIn (transcript.concat challenge) witMid) (do
           (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
             (do
               let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
                 prover.runWithLogToRound i.1.castSucc stmtIn witIn'
               let challenge ← liftComp (pSpec.getChallenge i) (oSpec + [pSpec.Challenge]ₒ)
-              return (transcript, challenge, proveQueryLog))).run' (← init)] ≤ rbrError i) :
+              return (transcript, challenge, proveQueryLog))).run' (← init)) ≤ rbrError i) :
     verifier.rbrSoundness init impl relIn.language relOut.language rbrError := by
   refine ⟨KnowledgeStateFunction.toStateFunction init impl kSF, ?_⟩
   intro stmtIn _ WitIn' WitOut' witIn' prover i
@@ -245,10 +241,10 @@ supplied for a chosen knowledge state function `kSF`. -/
 theorem oracleVerifier_rbrSoundness_of_knowledgeFlip
     {StmtOut : Type}
     {ιₛᵢ : Type} {OStmtIn : ιₛᵢ → Type} {ιₛₒ : Type} {OStmtOut : ιₛₒ → Type}
-    [(oSpec + [pSpec.Challenge]ₒ).Fintype] [(oSpec + [pSpec.Challenge]ₒ).Inhabited]
     {relIn : Set ((StmtIn × ∀ i, OStmtIn i) × WitIn)}
     {relOut : Set ((StmtOut × ∀ i, OStmtOut i) × WitOut)}
-    [∀ i, OracleInterface (OStmtIn i)] [∀ i, OracleInterface (pSpec.Message i)]
+    [∀ i, OracleInterface (OStmtIn i)] [∀ i, OracleInterface (OStmtOut i)]
+    [∀ i, OracleInterface (pSpec.Message i)]
     {V : OracleVerifier oSpec StmtIn OStmtIn StmtOut OStmtOut pSpec}
     {WitMid : Fin (n + 1) → Type}
     {extractor : Extractor.RoundByRound oSpec (StmtIn × ∀ i, OStmtIn i) WitIn WitOut pSpec WitMid}
@@ -257,18 +253,17 @@ theorem oracleVerifier_rbrSoundness_of_knowledgeFlip
     (hKnowFlip : ∀ (PWitIn PWitOut : Type) (stmtIn : StmtIn × ∀ i, OStmtIn i) (witIn' : PWitIn)
         (prover : Prover oSpec (StmtIn × ∀ i, OStmtIn i) PWitIn
           (StmtOut × ∀ i, OStmtOut i) PWitOut pSpec) (i : pSpec.ChallengeIdx),
-      Pr[fun ⟨transcript, challenge, _proveQueryLog⟩ =>
+      probEvent (fun ⟨transcript, challenge, _proveQueryLog⟩ =>
           ∃ witMid,
             ¬ kSF i.1.castSucc stmtIn transcript
               (extractor.extractMid i.1 stmtIn (transcript.concat challenge) witMid) ∧
-              kSF i.1.succ stmtIn (transcript.concat challenge) witMid
-        | do
+              kSF i.1.succ stmtIn (transcript.concat challenge) witMid) (do
           (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
             (do
               let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
                 prover.runWithLogToRound i.1.castSucc stmtIn witIn'
               let challenge ← liftComp (pSpec.getChallenge i) (oSpec + [pSpec.Challenge]ₒ)
-              return (transcript, challenge, proveQueryLog))).run' (← init)] ≤ rbrError i) :
+              return (transcript, challenge, proveQueryLog))).run' (← init)) ≤ rbrError i) :
     V.rbrSoundness init impl relIn.language relOut.language rbrError :=
   rbrSoundness_of_knowledgeFlip kSF rbrError hKnowFlip
 

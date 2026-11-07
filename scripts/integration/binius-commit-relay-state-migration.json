@@ -1,0 +1,144 @@
+{
+  "canonical_sources_modified": false,
+  "scope": "Native execution and knowledge states delegate canonical owners. Original newest-first pure predicates and strict relay preservation remain compiled under Historical; no equality to the canonical invariant is asserted.",
+  "caller_inventory": "Old commit/relay helper names occur only in these two owners and historical explanatory comments in extracted Basic. No external executable caller was found.",
+  "ports": {
+    "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Steps/Commit.lean": {
+      "original_archive": "scripts/integration/retired/binius-commit-pre-native.lean.txt",
+      "original_sha256": "5dfb400897488981fedfd442f27d0a85accb4bfdb1a3b6711a049781a5ee5632",
+      "current_sha256": "a0a66b6d7c014c0402ef0b9bdcb48bb94972109b4391f490af790142edbaeb24",
+      "original_public_names": [
+        "Binius.BinaryBasefold.CoreInteraction.commitPrvState",
+        "Binius.BinaryBasefold.CoreInteraction.commitKStateProp",
+        "Binius.BinaryBasefold.CoreInteraction.commitKState"
+      ],
+      "current_public_names": [
+        "Binius.BinaryBasefold.CoreInteraction.commitPrvState",
+        "Binius.BinaryBasefold.CoreInteraction.Historical.commitKStateProp",
+        "Binius.BinaryBasefold.CoreInteraction.commitKState_native"
+      ],
+      "validation": {
+        "file": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Steps/Commit.lean",
+        "status": "temporary_overlay_source_check",
+        "compiler_exit_code": 0,
+        "admission_checker_exit_code": 0,
+        "elapsed_seconds": 7.37,
+        "source_before_sha256": "a0a66b6d7c014c0402ef0b9bdcb48bb94972109b4391f490af790142edbaeb24",
+        "source_after_sha256": "a0a66b6d7c014c0402ef0b9bdcb48bb94972109b4391f490af790142edbaeb24",
+        "import_artifacts": {
+          "ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Commit": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Steps/Commit.olean",
+            "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Steps/Commit.olean",
+            "sha256": "a34f6cc289043a510ad17c5405628575b583200e8e83ed7510ba1e3691fc9cc1",
+            "artifact_family": {
+              "Commit.olean": "a34f6cc289043a510ad17c5405628575b583200e8e83ed7510ba1e3691fc9cc1",
+              "Commit.ir": "cb061e3ccc76d65a7282bdf7e7d59a1b3e07704b125d31fdbf62b1a4cae31f3b",
+              "Commit.ir.sig": "8b8f6803edb66efd86cf09a03d7d278fbe6e669b484960de8f94b4e89f80f15f",
+              "Commit.olean.private": "335d6006ba281fc4fa8fdec3c249fbe2622be9df68ad48b3c0335db8f7b57de0",
+              "Commit.olean.server": "2c5b48d4f7fa13ecf7a4cc1baf7a3e1da84175803d6114c8ff9e1572446e4b9f"
+            }
+          },
+          "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Steps.Fold": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Steps/Fold.olean",
+            "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Steps/Fold.olean",
+            "sha256": "804ade7cef7e50b036876171f3fdd62b0d01c102b5376713ebe30b10eaa96506",
+            "artifact_family": {
+              "Fold.olean": "804ade7cef7e50b036876171f3fdd62b0d01c102b5376713ebe30b10eaa96506"
+            }
+          },
+          "ArkLib.OracleReduction.Composition.Sequential.ChallengeOracleFintype": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/OracleReduction/Composition/Sequential/ChallengeOracleFintype.olean",
+            "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/OracleReduction/Composition/Sequential/ChallengeOracleFintype.olean",
+            "sha256": "3dd1151d953dbbe25487de4e04f6b883bd95853a8bafec0cfdbedb01ab61abee",
+            "artifact_family": {
+              "ChallengeOracleFintype.olean": "3dd1151d953dbbe25487de4e04f6b883bd95853a8bafec0cfdbedb01ab61abee"
+            }
+          }
+        },
+        "imports_unchanged": true,
+        "log": "/tmp/arklib-native-overlay/logs/ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Steps.Commit.lean.1793252782273398000.check.log",
+        "not_a_lake_package_build": true
+      }
+    },
+    "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Steps/Relay.lean": {
+      "original_archive": "scripts/integration/retired/binius-relay-pre-native.lean.txt",
+      "original_sha256": "aadf63127c475453cc33d64e849e9030a35758e64ea4aa6b140fe1344bc201a3",
+      "current_sha256": "26ef3885b36290762bad9907b5d4a124703d8903562292511a41defb2aa7c58a",
+      "original_public_names": [
+        "Binius.BinaryBasefold.CoreInteraction.relayPrvState",
+        "Binius.BinaryBasefold.CoreInteraction.h_oracle_size_eq_relay",
+        "Binius.BinaryBasefold.CoreInteraction.relayOracleVerifier_embed",
+        "Binius.BinaryBasefold.CoreInteraction.strictRoundRelation_relay_preserved",
+        "Binius.BinaryBasefold.CoreInteraction.relayKStateProp",
+        "Binius.BinaryBasefold.CoreInteraction.mapOStmtOut_eq_mkVerifierOStmtOut_relayStep",
+        "Binius.BinaryBasefold.CoreInteraction.getFirstOracle_mapOStmtOutRelayStep_eq"
+      ],
+      "current_public_names": [
+        "Binius.BinaryBasefold.CoreInteraction.relayPrvState",
+        "Binius.BinaryBasefold.CoreInteraction.h_oracle_size_eq_relay",
+        "Binius.BinaryBasefold.CoreInteraction.relayOracleVerifier_embed",
+        "Binius.BinaryBasefold.CoreInteraction.Historical.strictRoundRelation_relay_preserved",
+        "Binius.BinaryBasefold.CoreInteraction.Historical.relayKStateProp",
+        "Binius.BinaryBasefold.CoreInteraction.mapOStmtOut_eq_mkVerifierOStmtOut_relayStep",
+        "Binius.BinaryBasefold.CoreInteraction.getFirstOracle_mapOStmtOutRelayStep_eq",
+        "Binius.BinaryBasefold.CoreInteraction.relayKState_native"
+      ],
+      "validation": {
+        "file": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Steps/Relay.lean",
+        "status": "temporary_overlay_source_check",
+        "compiler_exit_code": 0,
+        "admission_checker_exit_code": 0,
+        "elapsed_seconds": 16.859,
+        "source_before_sha256": "26ef3885b36290762bad9907b5d4a124703d8903562292511a41defb2aa7c58a",
+        "source_after_sha256": "26ef3885b36290762bad9907b5d4a124703d8903562292511a41defb2aa7c58a",
+        "import_artifacts": {
+          "ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Relay": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Steps/Relay.olean",
+            "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Steps/Relay.olean",
+            "sha256": "e06a8799dfe4c4389e3587ef00683e0e8dbdaa3302dc99a4ea0c1e09b61e32a0",
+            "artifact_family": {
+              "Relay.olean": "e06a8799dfe4c4389e3587ef00683e0e8dbdaa3302dc99a4ea0c1e09b61e32a0",
+              "Relay.ir": "9909443f88b38ceec1d6d98e72df0f7ea70f03d15f19d239e7eb694afe20320f",
+              "Relay.ir.sig": "52ebbfc07586b68860ae57afe57cb57bc7b55d4a35ee6de896aaad4421f68bb7",
+              "Relay.olean.private": "43f6ed7b940c0c97593ec0f4e97b2bced03a5f5e0b255b8c970d2b379906423c",
+              "Relay.olean.server": "7305feb9ae5496ac9fe52bd55b8dbd92de393750ba329001283bc643bf4b6925"
+            }
+          },
+          "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Steps.Fold": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Steps/Fold.olean",
+            "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Steps/Fold.olean",
+            "sha256": "804ade7cef7e50b036876171f3fdd62b0d01c102b5376713ebe30b10eaa96506",
+            "artifact_family": {
+              "Fold.olean": "804ade7cef7e50b036876171f3fdd62b0d01c102b5376713ebe30b10eaa96506"
+            }
+          },
+          "ArkLib.OracleReduction.Composition.Sequential.ChallengeOracleFintype": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/OracleReduction/Composition/Sequential/ChallengeOracleFintype.olean",
+            "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/OracleReduction/Composition/Sequential/ChallengeOracleFintype.olean",
+            "sha256": "3dd1151d953dbbe25487de4e04f6b883bd95853a8bafec0cfdbedb01ab61abee",
+            "artifact_family": {
+              "ChallengeOracleFintype.olean": "3dd1151d953dbbe25487de4e04f6b883bd95853a8bafec0cfdbedb01ab61abee"
+            }
+          }
+        },
+        "imports_unchanged": true,
+        "log": "/tmp/arklib-native-overlay/logs/ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Steps.Relay.lean.1793252869263199000.check.log",
+        "not_a_lake_package_build": true
+      }
+    }
+  },
+  "commit_disposition": {
+    "commitPrvState": "Same canonical CommitProverState data, via an abbreviation.",
+    "commitKStateProp": "Historical.commitKStateProp retains the original pure formula, using the original numeric oracle indices.",
+    "commitKState": "Exact legacy wrapper archived. It mixes the old master bad-event predicate and newest-first state with canonical verifier/extractor names, and is not an equality to the completed canonical knowledge invariant.",
+    "commitKState_native": "Direct canonical commitKnowledgeStateFunction; standard3 axiom report."
+  },
+  "relay_disposition": {
+    "relayPrvState": "Same canonical RelayProverState data, via an abbreviation.",
+    "strictRoundRelation_relay_preserved": "Historical.strictRoundRelation_relay_preserved proves the original pure strict predicates directly, retaining the completed newest-first proof.",
+    "relayKStateProp": "Historical.relayKStateProp retains the original pure predicate with its numeric oracle index.",
+    "mapOStmtOut_eq_mkVerifierOStmtOut_relayStep": "Original materialized-oracle claim ported to native materializeOutput and delegates canonical mapOStmtOutRelayStep_eq_materializeOutput.",
+    "relayKState_native": "Direct canonical relayKnowledgeStateFunction, distinct from the historical predicate.",
+    "other_helpers": "Original index, oracle-count, and first-oracle equalities retained."
+  }
+}

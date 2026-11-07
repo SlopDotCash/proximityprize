@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.IncidenceDeviationCharSum
 import ArkLib.Data.CodingTheory.ProximityGap.MCAThresholdLedger
 import ArkLib.Data.CodingTheory.ProximityGap.FarCosetExplosion
-import ArkLib.Data.Probability.Instances
+import ProximityPrize.Extensions.Data.Probability.Instances
 
 /-!
 # A conditional `δ*` lower bound from a uniform Gauss-period bound (TRUE but VACUOUS at the

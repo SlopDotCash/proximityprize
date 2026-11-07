@@ -81,12 +81,12 @@ on the head verifier against the (re-typed) `seqCompose`d tail at each step. -/
 def BinaryVerifierFusion (oSpec : OracleSpec ι) : Prop :=
   ∀ {Stmt₁ : Type} {ιₛ₁ : Type} {OStmt₁ : ιₛ₁ → Type} [Oₛ₁ : ∀ i, OracleInterface.{0, 0} (OStmt₁ i)]
     {Stmt₂ : Type} {ιₛ₂ : Type} {OStmt₂ : ιₛ₂ → Type} [Oₛ₂ : ∀ i, OracleInterface.{0, 0} (OStmt₂ i)]
-    {Stmt₃ : Type} {ιₛ₃ : Type} {OStmt₃ : ιₛ₃ → Type} [Oₛ₃ : ∀ i, OracleInterface.{0, 0} (OStmt₃ i)]
+    {Stmt₃ : Type} {ιₛ₃ : Type} {OStmt₃ : ιₛ₃ → Type} [_Oₛ₃ : ∀ i, OracleInterface.{0, 0} (OStmt₃ i)]
     {p q : ℕ} {pSpec₁ : ProtocolSpec p} {pSpec₂ : ProtocolSpec q}
     [Oₘ₁ : ∀ i, OracleInterface.{0, 0} (pSpec₁.Message i)]
-    [Oₘ₂ : ∀ i, OracleInterface.{0, 0} (pSpec₂.Message i)]
+    [_Oₘ₂ : ∀ i, OracleInterface.{0, 0} (pSpec₂.Message i)]
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
-    [c₁ : OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
+
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂),
     (OracleVerifier.append (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁ V₂).toVerifier
       = Verifier.append V₁.toVerifier V₂.toVerifier
@@ -106,19 +106,19 @@ theorem binaryVerifierFusion_of_verify (oSpec : OracleSpec ι)
         {Stmt₂ : Type} {ιₛ₂ : Type} {OStmt₂ : ιₛ₂ → Type}
         [Oₛ₂ : ∀ i, OracleInterface.{0, 0} (OStmt₂ i)]
         {Stmt₃ : Type} {ιₛ₃ : Type} {OStmt₃ : ιₛ₃ → Type}
-        [Oₛ₃ : ∀ i, OracleInterface.{0, 0} (OStmt₃ i)]
+        [_Oₛ₃ : ∀ i, OracleInterface.{0, 0} (OStmt₃ i)]
         {p q : ℕ} {pSpec₁ : ProtocolSpec p} {pSpec₂ : ProtocolSpec q}
         [Oₘ₁ : ∀ i, OracleInterface.{0, 0} (pSpec₁.Message i)]
-        [Oₘ₂ : ∀ i, OracleInterface.{0, 0} (pSpec₂.Message i)]
+        [_Oₘ₂ : ∀ i, OracleInterface.{0, 0} (pSpec₂.Message i)]
         (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
-        [c₁ : OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
+
         (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂)
         (x : Stmt₁ × ∀ i, OStmt₁ i) (t : FullTranscript (pSpec₁ ++ₚ pSpec₂)),
         (OracleVerifier.append (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁ V₂).toVerifier.verify x t
           = (Verifier.append V₁.toVerifier V₂.toVerifier).verify x t) :
     BinaryVerifierFusion oSpec := by
   intro Stmt₁ ιₛ₁ OStmt₁ Oₛ₁ Stmt₂ ιₛ₂ OStmt₂ Oₛ₂ Stmt₃ ιₛ₃ OStmt₃ Oₛ₃
-    p q pSpec₁ pSpec₂ Oₘ₁ Oₘ₂ V₁ c₁ V₂
+    p q pSpec₁ pSpec₂ Oₘ₁ Oₘ₂ V₁ V₂
   exact (OracleReduction.verifier_append_eq_iff_verify (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁)
     V₁ V₂).mpr (fun x t => hVerify V₁ V₂ x t)
 
@@ -128,7 +128,7 @@ By induction over the round count `m`: at `m = 0` the `seqCompose` is `OracleVer
 `OracleVerifier.id_toVerifier`; at `m + 1` the `seqCompose` unfolds (`seqCompose_succ`) to a binary
 `append` of the head `V 0` with the tail's `seqCompose`, and we glue the head binary fusion (an
 instance of `hBinaryFusion`) with the induction hypothesis applied to the tail. -/
-theorem seqCompose_toVerifier_of_binary (hBinaryFusion : BinaryVerifierFusion oSpec) {m : ℕ}
+theorem seqCompose_toVerifier_of_binary (_hBinaryFusion : BinaryVerifierFusion oSpec) {m : ℕ}
     (Stmt : Fin (m + 1) → Type)
     {ιₛ : Fin (m + 1) → Type} (OStmt : (i : Fin (m + 1)) → ιₛ i → Type)
     (Oₛ : ∀ i, ∀ j, OracleInterface.{0, 0} (OStmt i j))
@@ -137,42 +137,10 @@ theorem seqCompose_toVerifier_of_binary (hBinaryFusion : BinaryVerifierFusion oS
     (V : (i : Fin m) →
       OracleVerifier oSpec (Stmt i.castSucc) (OStmt i.castSucc) (Stmt i.succ) (OStmt i.succ)
         (pSpec i))
-    (coh : ∀ i, OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ i.castSucc) (Oₛ₂ := Oₛ i.succ)
-      (Oₘ₁ := Oₘ i) (V i)) :
-    (OracleVerifier.seqCompose (Oₛ := Oₛ) (Oₘ := Oₘ) Stmt OStmt V (coh := coh)).toVerifier =
-      Verifier.seqCompose (fun i => Stmt i × (∀ j, OStmt i j)) (fun i => (V i).toVerifier) := by
-  induction m with
-  | zero =>
-    -- `seqCompose = OracleVerifier.id`, `Verifier.seqCompose = Verifier.id`.
-    show (OracleVerifier.seqCompose Stmt OStmt V).toVerifier = Verifier.id
-    rw [OracleVerifier.seqCompose_zero Stmt OStmt V]
-    exact OracleVerifier.id_toVerifier
-  | succ m ih =>
-    -- Tail coherence (re-indexed leaf coherences).
-    letI tailCoh :
-        ∀ i, OracleVerifier.Append.AppendCoherent (Oₛ₁ := (fun i => Oₛ (Fin.succ i)) i.castSucc)
-          (Oₛ₂ := (fun i => Oₛ (Fin.succ i)) i.succ) (Oₘ₁ := (fun i => Oₘ (Fin.succ i)) i)
-          (V (Fin.succ i)) := fun i => coh i.succ
-    -- Head coherence for the binary append of `V 0` onto the tail's `seqCompose`.
-    letI headCoh :
-        OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ 0) (Oₛ₂ := Oₛ 1) (Oₘ₁ := Oₘ 0) (V 0) :=
-      coh 0
-    -- Induction hypothesis on the tail.
-    have ihTail := ih (Stmt ∘ Fin.succ) (fun i => OStmt (Fin.succ i)) (fun i => Oₛ (Fin.succ i))
-      (fun i => Oₘ (Fin.succ i)) (fun i => V (Fin.succ i)) tailCoh
-    -- The head binary fusion against the tail's `seqCompose`.
-    have hHead := hBinaryFusion (Oₛ₁ := Oₛ 0) (Oₛ₂ := Oₛ 1) (Oₛ₃ := Oₛ (Fin.last (m + 1)))
-      (Oₘ₁ := Oₘ 0)
-      (V 0) (c₁ := headCoh)
-      (OracleVerifier.seqCompose (Stmt ∘ Fin.succ) (fun i => OStmt (Fin.succ i))
-        (Oₛ := fun i => Oₛ (Fin.succ i)) (Oₘ := fun i => Oₘ (Fin.succ i))
-        (fun i => V (Fin.succ i)) (coh := tailCoh))
-    -- Unfold both `seqCompose`s to their head/tail `append`s, then glue.
-    rw [OracleVerifier.seqCompose_succ Stmt OStmt (Oₛ := Oₛ) (Oₘ := Oₘ) V (coh := coh),
-        Verifier.seqCompose_succ (fun i => Stmt i × (∀ j, OStmt i j)) (fun i => (V i).toVerifier)]
-    -- LHS = `((V 0).append tail).toVerifier`; chain the head binary fusion (`hHead`, matched up to
-    -- the defeq `letI` coherence instances) with the tail IH (`ihTail`) under `(V 0).toVerifier ▸ ·`.
-    exact hHead.trans (congrArg (Verifier.append (V 0).toVerifier) ihTail)
+     :
+    (OracleVerifier.seqCompose (Oₛ := Oₛ) (Oₘ := Oₘ) Stmt OStmt V ).toVerifier =
+      Verifier.seqCompose (fun i => Stmt i × (∀ j, OStmt i j)) (fun i => (V i).toVerifier) :=
+  OracleVerifier.seqCompose_toVerifier Stmt OStmt V
 
 end OracleVerifier
 
@@ -195,8 +163,7 @@ theorem seqCompose_toReduction_of_verifier {m : ℕ}
     (R : (i : Fin m) →
       OracleReduction oSpec (Stmt i.castSucc) (OStmt i.castSucc) (Wit i.castSucc)
         (Stmt i.succ) (OStmt i.succ) (Wit i.succ) (pSpec i))
-    [coh : ∀ i, OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ i.castSucc) (Oₛ₂ := Oₛ i.succ)
-      (Oₘ₁ := Oₘ i) (R i).verifier]
+
     (hVerifier :
       (OracleVerifier.seqCompose Stmt OStmt (fun i => (R i).verifier)).toVerifier =
         Verifier.seqCompose (fun i => Stmt i × (∀ j, OStmt i j))
@@ -218,9 +185,9 @@ namespace Sumcheck.Spec
 
 variable {R : Type} [CommSemiring R] [SampleableType R] [DecidableEq R] [Fintype R] [Inhabited R]
   {n : ℕ} {deg : ℕ} {m : ℕ} {D : Fin m ↪ R}
-  {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+  {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
 
-omit [Fintype R] [Inhabited R] [oSpec.Fintype] [oSpec.Inhabited] in
+omit [Fintype R] [Inhabited R] [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)] in
 /-- **The Sumcheck `hBridge` from the per-round binary verifier fusion + per-round bridge.**
 
 `oracleReductionToReductionResidual` is `(oracleReduction).toReduction = reduction`. Both are
@@ -259,8 +226,7 @@ theorem oracleReductionToReductionResidual_of_binary
         (OracleVerifier.seqCompose_toVerifier_of_binary hBinaryFusion
           (Stmt := StatementRound R n) (OStmt := fun _ => OracleStatement R n deg)
           (Oₛ := fun _ _ => inferInstance) (Oₘ := fun _ _ => inferInstance)
-          (fun i => (SingleRound.oracleReduction R n deg D oSpec i).verifier)
-          (fun _ => inferInstance))]
+          (fun i => (SingleRound.oracleReduction R n deg D oSpec i).verifier))]
   -- (2) Rewrite each per-round `toReduction` to the per-round plain `reduction` via `hPerRound`.
   congr 1
   funext i

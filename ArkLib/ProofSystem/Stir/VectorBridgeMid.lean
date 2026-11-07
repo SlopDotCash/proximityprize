@@ -62,8 +62,10 @@ def stirRound3VectorVerifierMid (φ : ι ↪ F) (deg : ℕ) :
   verify := fun _ chals =>
     let rShift : Vector F 1 := chals ⟨2, stirRound3VSpec_dir_two⟩
     pure (rShift.get 0)
-  embed := ⟨fun _ => Sum.inr ⟨0, stirRound3VSpec_dir_zero⟩, fun _ _ _ => rfl⟩
-  hEq := fun _ => rfl
+  outputOracle := .inl {
+    embed := ⟨fun _ => Sum.inr ⟨0, stirRound3VSpec_dir_zero⟩, fun _ _ _ => rfl⟩
+    hEq := fun _ => rfl
+    outputInterface_heq := by intro u; cases u <;> rfl }
 
 /-- **The mid-chain vectorised 3-slot block** (`VOStmt → VOStmt`): chain-composable under
 `seqCompose` with the constant statement family `F`. -/
@@ -72,26 +74,6 @@ noncomputable def stirRound3VectorReductionMid (φ : ι ↪ F) (deg : ℕ) :
       ((stirRound3VSpec ι F).toProtocolSpec F) where
   prover := stirRound3VectorProverMid φ deg
   verifier := stirRound3VectorVerifierMid φ deg
-
-instance instStirRound3VectorVerifierMidAppendCoherent (φ : ι ↪ F) (deg : ℕ) :
-    OracleVerifier.Append.AppendCoherent (stirRound3VectorVerifierMid φ deg) where
-  hCohInl := fun i k h => by
-    exact absurd h (by simp [stirRound3VectorVerifierMid])
-  hCohInr := fun i k h => by
-    have hk : k = ⟨0, stirRound3VSpec_dir_zero⟩ := by
-      have := h.symm
-      simp only [stirRound3VectorVerifierMid, Function.Embedding.coeFn_mk] at this
-      exact (Sum.inr.inj this)
-    subst hk
-    apply eq_of_heq
-    refine HEq.trans ?_ (cast_heq _ _).symm
-    rfl
-
-instance instStirRound3VectorReductionMidAppendCoherent (φ : ι ↪ F) (deg : ℕ) :
-    OracleVerifier.Append.AppendCoherent (stirRound3VectorReductionMid φ deg).verifier :=
-  instStirRound3VectorVerifierMidAppendCoherent φ deg
-
-/-! ## The mid-chain final block: packed oracle in, packed final word out -/
 
 /-- The mid-chain vectorised final prover: the incoming oracle arrives packed; the final word
 is sent (already packed) in the clear. -/
@@ -122,8 +104,10 @@ def stirFinalVectorVerifierMid :
   verify := fun r chals =>
     let rFin : Vector F 1 := chals ⟨1, stirFinalVSpec_dir_one⟩
     pure (r, rFin.get 0)
-  embed := ⟨fun _ => Sum.inr ⟨0, stirFinalVSpec_dir_zero⟩, fun _ _ _ => rfl⟩
-  hEq := fun _ => rfl
+  outputOracle := .inl {
+    embed := ⟨fun _ => Sum.inr ⟨0, stirFinalVSpec_dir_zero⟩, fun _ _ _ => rfl⟩
+    hEq := fun _ => rfl
+    outputInterface_heq := by intro u; cases u <;> rfl }
 
 /-- **The mid-chain vectorised final block** (`VOStmt → VOStmt`). -/
 noncomputable def stirFinalVectorReductionMid :
@@ -131,27 +115,6 @@ noncomputable def stirFinalVectorReductionMid :
       ((stirFinalVSpec ι F).toProtocolSpec F) where
   prover := stirFinalVectorProverMid
   verifier := stirFinalVectorVerifierMid
-
-instance instStirFinalVectorVerifierMidAppendCoherent :
-    OracleVerifier.Append.AppendCoherent (stirFinalVectorVerifierMid (ι := ι) (F := F)) where
-  hCohInl := fun i k h => by
-    exact absurd h (by simp [stirFinalVectorVerifierMid])
-  hCohInr := fun i k h => by
-    have hk : k = ⟨0, stirFinalVSpec_dir_zero⟩ := by
-      have := h.symm
-      simp only [stirFinalVectorVerifierMid, Function.Embedding.coeFn_mk] at this
-      exact (Sum.inr.inj this)
-    subst hk
-    apply eq_of_heq
-    refine HEq.trans ?_ (cast_heq _ _).symm
-    rfl
-
-instance instStirFinalVectorReductionMidAppendCoherent :
-    OracleVerifier.Append.AppendCoherent
-      (stirFinalVectorReductionMid (ι := ι) (F := F)).verifier :=
-  instStirFinalVectorVerifierMidAppendCoherent
-
-/-! ## Round-trip honesty for the mid-chain blocks -/
 
 /-- The mid-chain fold of an honestly packed oracle unpacks to the original function (the
 `unpack ∘ pack ∘ combine ∘ unpack ∘ pack` round trip collapses). -/
@@ -169,7 +132,5 @@ end Round3
 end StirIOP
 
 #print axioms StirIOP.Round3.stirRound3VectorReductionMid
-#print axioms StirIOP.Round3.instStirRound3VectorReductionMidAppendCoherent
 #print axioms StirIOP.Round3.stirFinalVectorReductionMid
-#print axioms StirIOP.Round3.instStirFinalVectorReductionMidAppendCoherent
 #print axioms StirIOP.Round3.unpack_stirRound3VectorMid_message

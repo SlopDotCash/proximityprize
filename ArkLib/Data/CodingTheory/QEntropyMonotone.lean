@@ -4,22 +4,16 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.ProximityLeaves2
-import ArkLib.Data.CodingTheory.EntropyCapacityValue
+import ArkLib.Data.CodingTheory.Basic.Entropy
 
 /-!
 # Monotonicity of the q-ary entropy `qEntropy` below capacity
 
-ArkLib's base-`q` entropy `CodingTheory.qEntropy` (ABF26 Def 2.2) has nonnegativity / boundary /
-capacity lemmas, but lacked monotonicity. This file adds it, derived from Mathlib's
-`Real.qaryEntropy_strictMonoOn` through the existing base-change bridge
-`qEntropy_mul_log_eq_qaryEntropy` (`qEntropy q x · log q = Real.qaryEntropy q x`): dividing by the
-positive constant `log q` (for `q ≥ 2`) preserves strict monotonicity.
-
-`qEntropy q` is strictly increasing on `[0, 1 − 1/q]` (up to the capacity point `1 − 1/q`,
-`qEntropy_capacity_eq_one`). Useful for relating `H_q(δ')` and `H_q(δ)` when `δ' ≤ δ` in the
-sub-capacity regime, e.g. floor-vs-real radius comparisons in the entropy-volume / list-size
-bounds. `sorry`/`axiom`-free, axiom-clean.
+The canonical entropy module owns strict monotonicity, positivity and the bound by one.
+This downstream module derives non-strict comparisons and floor-radius estimates from those
+facts. In particular, replacing a radius by `⌊δ * n⌋ / n` cannot increase entropy below
+capacity. The canonical `qEntropy_le_one` applies on all of `[0, 1]`, so no separate
+below-capacity implementation is needed. Remaining statements are axiom-clean.
 -/
 
 namespace CodingTheory
@@ -27,18 +21,6 @@ namespace CodingTheory
 open Real
 
 variable {q : ℕ}
-
-/-- **`qEntropy q` is strictly monotone on `[0, 1 − 1/q]`.** Derived from Mathlib's
-`Real.qaryEntropy_strictMonoOn` via the base-change bridge `qEntropy q x · log q = qaryEntropy q x`
-(division by `log q > 0` preserves strict monotonicity). -/
-theorem qEntropy_strictMonoOn (hq : 2 ≤ q) :
-    StrictMonoOn (qEntropy q) (Set.Icc 0 (1 - 1 / (q : ℝ))) := by
-  intro x hx y hy hxy
-  have hlog : 0 < Real.log q :=
-    Real.log_pos (by exact_mod_cast (show 1 < q by omega))
-  have h := Real.qaryEntropy_strictMonoOn hq hx hy hxy
-  rw [← qEntropy_mul_log_eq_qaryEntropy hq x, ← qEntropy_mul_log_eq_qaryEntropy hq y] at h
-  exact lt_of_mul_lt_mul_right h hlog.le
 
 /-- **`qEntropy q` is monotone on `[0, 1 − 1/q]`** (non-strict corollary). -/
 theorem qEntropy_monotoneOn (hq : 2 ≤ q) :
@@ -91,24 +73,12 @@ theorem qEntropy_floor_mul_card_div_card_le (hq : 2 ≤ q) {ι : Type}
       qEntropy q δ :=
   qEntropy_floor_mul_div_le hq Fintype.card_pos hδ0 hδ
 
-/-- **`qEntropy q δ ≤ 1` below capacity.** On `[0, 1 − 1/q]` the q-ary entropy is bounded by its
-capacity value `H_q(1 − 1/q) = 1` (`qEntropy_capacity_eq_one`), by monotonicity. -/
-theorem qEntropy_le_one (hq : 2 ≤ q) {δ : ℝ} (hδ0 : 0 ≤ δ) (hδ : δ ≤ 1 - 1 / (q : ℝ)) :
-    qEntropy q δ ≤ 1 := by
-  have hq0 : (0 : ℝ) < (q : ℝ) := by exact_mod_cast (show 0 < q by omega)
-  have hcap : qEntropy q (1 - 1 / (q : ℝ)) = 1 := by
-    rw [show (1 : ℝ) - 1 / (q : ℝ) = ((q : ℝ) - 1) / (q : ℝ) by field_simp]
-    exact qEntropy_capacity_eq_one hq
-  calc qEntropy q δ ≤ qEntropy q (1 - 1 / (q : ℝ)) :=
-        qEntropy_le_qEntropy_of_le hq hδ0 hδ le_rfl
-    _ = 1 := hcap
-
 /-- **Floored-radius entropy is at most capacity.**  Below capacity, the lattice radius
 `⌊δ * n⌋ / n` has q-entropy at most `1`. -/
 theorem qEntropy_floor_mul_div_le_one (hq : 2 ≤ q) {n : ℕ} {δ : ℝ}
     (hn : 0 < n) (hδ0 : 0 ≤ δ) (hδ : δ ≤ 1 - 1 / (q : ℝ)) :
     qEntropy q ((Nat.floor (δ * n) : ℝ) / n) ≤ 1 :=
-  le_trans (qEntropy_floor_mul_div_le hq hn hδ0 hδ) (qEntropy_le_one hq hδ0 hδ)
+  le_trans (qEntropy_floor_mul_div_le hq hn hδ0 hδ) (qEntropy_le_one hδ0 (hδ.trans (sub_le_self _ (by positivity))))
 
 /-- Finite-domain specialization of `qEntropy_floor_mul_div_le_one`. -/
 theorem qEntropy_floor_mul_card_div_card_le_one (hq : 2 ≤ q) {ι : Type}
@@ -116,17 +86,6 @@ theorem qEntropy_floor_mul_card_div_card_le_one (hq : 2 ≤ q) {ι : Type}
     (hδ0 : 0 ≤ δ) (hδ : δ ≤ 1 - 1 / (q : ℝ)) :
     qEntropy q ((Nat.floor (δ * Fintype.card ι) : ℝ) / Fintype.card ι) ≤ 1 :=
   qEntropy_floor_mul_div_le_one hq Fintype.card_pos hδ0 hδ
-
-/-- **`qEntropy q δ > 0` strictly inside `(0, 1)`.**  From Mathlib's `Real.qaryEntropy_pos`
-through the base-change bridge (division by `log q > 0` preserves strict positivity). -/
-theorem qEntropy_pos (hq : 2 ≤ q) {δ : ℝ} (hδ0 : 0 < δ) (hδ1 : δ < 1) : 0 < qEntropy q δ := by
-  have hlog : 0 < Real.log q :=
-    Real.log_pos (by exact_mod_cast (show 1 < q by omega))
-  have hpos := Real.qaryEntropy_pos (q := q) hδ0 hδ1
-  have hbridge : qEntropy q δ = Real.qaryEntropy q δ / Real.log q := by
-    rw [← qEntropy_mul_log_eq_qaryEntropy hq δ, mul_div_assoc, div_self (ne_of_gt hlog), mul_one]
-  rw [hbridge]
-  exact div_pos hpos hlog
 
 end CodingTheory
 

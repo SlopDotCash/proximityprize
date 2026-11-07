@@ -45,13 +45,19 @@ No `sorry`, no new axioms.
 -/
 
 open OracleComp OracleSpec ProtocolSpec
+
+-- Historical PMF equality observes every response/state subset.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A B : Type) : MeasurableSpace (A × B) := ⊤
+private local instance (A : Type) : MeasurableSpace (Option A) := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ := ⟨fun _ => True.intro⟩
 open scoped NNReal ENNReal
 
 namespace Logup
 
 section CompletenessMsgSeam
 
-variable {ι : Type} (oSpec : OracleSpec ι) [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} (oSpec : OracleSpec ι) [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
 variable (F : Type) [Field F] [Fintype F] [DecidableEq F] [Fact ((-1 : F) ≠ 1)]
   [SampleableType F]
 variable (n M : ℕ)
@@ -115,13 +121,13 @@ theorem appendCompletenessResidual_msgSeam
     (hn : 0 < n)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s'))
     (hOuter : OuterCompletenessResidual oSpec F n M params init impl)
     (hSumcheck : SumcheckCompletenessResidual oSpec F n M params init impl) :
     AppendCompletenessResidual oSpec F n M params init impl hOuter hSumcheck :=
-  OracleReduction.appendCompletenessResidual_msg.{0, 0}
+  OracleReduction.appendCompletenessResidual_msg
     (outerOracleReduction oSpec F n M params)
     (sumcheckOracleReduction oSpec F n M params)
     hOuter hSumcheck
@@ -142,7 +148,7 @@ theorem logup_completeness_msgSeam
     (hn : 0 < n) (hInit : NeverFail init)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s'))
     (hSumcheck : SumcheckCompletenessResidual oSpec F n M params init impl) :

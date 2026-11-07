@@ -23,7 +23,7 @@ open OracleComp OracleSpec ProtocolSpec
 namespace Sumcheck.Spec
 noncomputable section
 variable {R : Type} [CommSemiring R] [DecidableEq R] [SampleableType R] [Fintype R] [Inhabited R]
-  {n : ℕ} {deg : ℕ} {m : ℕ} {D : Fin m ↪ R} {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+  {n : ℕ} {deg : ℕ} {m : ℕ} {D : Fin m ↪ R} {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
   {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
 
 /-- **Multi-round sum-check ORACLE perfect completeness, UNCONDITIONAL.** The per-round lens

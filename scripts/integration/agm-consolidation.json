@@ -1,0 +1,410 @@
+{
+  "downstream_revision": "883e99d61e51264327b5fee859732d047f7d7038",
+  "canonical_representation_owner": "ArkLib/AGM/Basic.lean",
+  "upstream_history": [
+    {
+      "revision": "e631c888aeb09d503553a38fa236202eb37cd5e2",
+      "change": "Prime-order assumptions and one coefficient per finite basis index replace truncating lists."
+    },
+    {
+      "revision": "2dc03e79635fa63a67407d3679b0078a7b377761",
+      "change": "Retire unfinished upstream handle-oracle model; retain canonical representations."
+    }
+  ],
+  "downstream_contributions": [
+    {
+      "revision": "6bdfcef5a1bb57e6e102e26e2c6fb18756e125c6",
+      "change": "Complete Option-returning adversary interpreter with explicit query and output-handle failure."
+    },
+    {
+      "revision": "5d2100eca56b01754cd3e242be0842ec93494968",
+      "change": "Prove table read-after-write and update-locality facts."
+    }
+  ],
+  "destination": "ProximityPrize/Compatibility/AGM.lean",
+  "destination_sha256": "ed7d3e886da14ec2c3b3ea4d6cdce18d1660297d53bbd9dc40e69c04e13a9847",
+  "method": "Preserve broader list/truncation declarations and completed simulator under explicit compatibility names; canonical finite-basis type remains authoritative. Re-export companion at its existing import path.",
+  "source_files": {
+    "ArkLib/AGM/Basic.lean": {
+      "source_sha256": "64b15ffd32e85efdbbac98373b8675847bcd060c492cafacc8e8783c99f0b11b",
+      "declarations": [
+        {
+          "kind": "structure",
+          "original": "AGM.GroupRepresentation",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.zipWith_pow_prod_mem_closure",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.zipWith_pow_prod_mem_closure",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.target_mem_closure",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.target_mem_closure",
+          "private": false
+        },
+        {
+          "kind": "def",
+          "original": "AGM.GroupRepresentation.one",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.one",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.target_eq_one_of_nil",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.target_eq_one_of_nil",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.zipWith_pow_map",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.zipWith_pow_map",
+          "private": false
+        },
+        {
+          "kind": "def",
+          "original": "AGM.GroupRepresentation.map",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.map",
+          "private": false
+        },
+        {
+          "kind": "def",
+          "original": "AGM.GroupRepresentation.singleton",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.singleton",
+          "private": false
+        },
+        {
+          "kind": "def",
+          "original": "AGM.GroupRepresentation.prependBasis",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.prependBasis",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.zipWith_replicate_zero_prod",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.zipWith_replicate_zero_prod",
+          "private": true
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.zipWith_take_length_prod",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.zipWith_take_length_prod",
+          "private": true
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.zipWith_append_replicate_zero_prod",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.zipWith_append_replicate_zero_prod",
+          "private": true
+        },
+        {
+          "kind": "def",
+          "original": "AGM.GroupRepresentation.trimExponents",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.trimExponents",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.trimExponents_length_le",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.trimExponents_length_le",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.trimExponents_eq_self_of_length_le",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.trimExponents_eq_self_of_length_le",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.trimExponents_idem",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.trimExponents_idem",
+          "private": false
+        },
+        {
+          "kind": "def",
+          "original": "AGM.GroupRepresentation.appendBasis",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.appendBasis",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.appendBasis_exponents_length_le",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.appendBasis_exponents_length_le",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.appendBasis_trimExponents_eq_self",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.appendBasis_trimExponents_eq_self",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.appendBasis_eq_trimExponents_appendBasis",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.appendBasis_eq_trimExponents_appendBasis",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.zipWith_append_prod",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.zipWith_append_prod",
+          "private": true
+        },
+        {
+          "kind": "def",
+          "original": "AGM.GroupRepresentation.mul",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.mul",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.mul_exponents",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.mul_exponents",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.map_inv_zipWith_pow",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.map_inv_zipWith_pow",
+          "private": true
+        },
+        {
+          "kind": "def",
+          "original": "AGM.GroupRepresentation.inv",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.inv",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.inv_exponents",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.inv_exponents",
+          "private": false
+        },
+        {
+          "kind": "def",
+          "original": "AGM.GroupValTable",
+          "destination": "ProximityPrize.Compatibility.AGM.GroupValTable",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupValTable.update_self",
+          "destination": "ProximityPrize.Compatibility.AGM.GroupValTable.update_self",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupValTable.update_ne",
+          "destination": "ProximityPrize.Compatibility.AGM.GroupValTable.update_ne",
+          "private": false
+        },
+        {
+          "kind": "def",
+          "original": "AGM.GroupOpOracle",
+          "destination": "ProximityPrize.Compatibility.AGM.GroupOpOracle",
+          "private": false
+        },
+        {
+          "kind": "def",
+          "original": "AGM.GroupExpOracle",
+          "destination": "ProximityPrize.Compatibility.AGM.GroupExpOracle",
+          "private": false
+        },
+        {
+          "kind": "def",
+          "original": "AGM.GroupEqOracle",
+          "destination": "ProximityPrize.Compatibility.AGM.GroupEqOracle",
+          "private": false
+        },
+        {
+          "kind": "def",
+          "original": "AGM.GroupEncodeOracle",
+          "destination": "ProximityPrize.Compatibility.AGM.GroupEncodeOracle",
+          "private": false
+        },
+        {
+          "kind": "def",
+          "original": "AGM.GroupDecodeOracle",
+          "destination": "ProximityPrize.Compatibility.AGM.GroupDecodeOracle",
+          "private": false
+        },
+        {
+          "kind": "def",
+          "original": "AGM.implGroupOpOracle",
+          "destination": "ProximityPrize.Compatibility.AGM.implGroupOpOracle",
+          "private": false
+        },
+        {
+          "kind": "def",
+          "original": "AGM.implGroupExpOracle",
+          "destination": "ProximityPrize.Compatibility.AGM.implGroupExpOracle",
+          "private": false
+        },
+        {
+          "kind": "def",
+          "original": "AGM.implGroupEqOracle",
+          "destination": "ProximityPrize.Compatibility.AGM.implGroupEqOracle",
+          "private": false
+        },
+        {
+          "kind": "def",
+          "original": "AGM.implGroupEncodeOracle",
+          "destination": "ProximityPrize.Compatibility.AGM.implGroupEncodeOracle",
+          "private": false
+        },
+        {
+          "kind": "def",
+          "original": "AGM.implGroupDecodeOracle",
+          "destination": "ProximityPrize.Compatibility.AGM.implGroupDecodeOracle",
+          "private": false
+        },
+        {
+          "kind": "def",
+          "original": "AGM.Adversary",
+          "destination": "ProximityPrize.Compatibility.AGM.Adversary",
+          "private": false
+        },
+        {
+          "kind": "def",
+          "original": "AGM.Adversary.run",
+          "destination": "ProximityPrize.Compatibility.AGM.Adversary.run",
+          "private": false
+        }
+      ]
+    },
+    "ArkLib/AGM/RepresentationLemmas.lean": {
+      "source_sha256": "b8d475ea6c9351774ca71c34665b3dc8ef2b85dea9c8a7192cbd0d628a410014",
+      "declarations": [
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.target_eq_of_exponents_eq",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.target_eq_of_exponents_eq",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.target_mem_of_forall_mem",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.target_mem_of_forall_mem",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.target_mem_closure_of_forall_mem",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.target_mem_closure_of_forall_mem",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.target_mem_closure_prepend",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.target_mem_closure_prepend",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.target_mem_closure_append",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.target_mem_closure_append",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.map_target_mem_of_forall_mem",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.map_target_mem_of_forall_mem",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.map_target_mem_closure",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.map_target_mem_closure",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.map_exponents",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.map_exponents",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.singleton_target_mem_zpowers",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.singleton_target_mem_zpowers",
+          "private": false
+        },
+        {
+          "kind": "def",
+          "original": "AGM.GroupRepresentation.ofExponents",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.ofExponents",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.target_eq_one_of_exponents_nil",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.target_eq_one_of_exponents_nil",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.zipWith_pow_prod_append",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.zipWith_pow_prod_append",
+          "private": false
+        },
+        {
+          "kind": "def",
+          "original": "AGM.GroupRepresentation.append",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.append",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.mul_target_mem_closure",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.mul_target_mem_closure",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.mul_target_mem_of_forall_mem",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.mul_target_mem_of_forall_mem",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.map_mul_target_mem_of_forall_mem",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.map_mul_target_mem_of_forall_mem",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.inv_target_mem_closure",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.inv_target_mem_closure",
+          "private": false
+        },
+        {
+          "kind": "theorem",
+          "original": "AGM.GroupRepresentation.inv_target_mem_of_forall_mem",
+          "destination": "ProximityPrize.Compatibility.AGM.ListRepresentation.inv_target_mem_of_forall_mem",
+          "private": false
+        }
+      ]
+    }
+  },
+  "preserved_explicit_named_declarations": 59,
+  "canonical_extensions": [
+    "AGM.GroupRepresentation.target_mem_closure",
+    "AGM.GroupRepresentation.target_mem_of_forall_mem",
+    "AGM.GroupRepresentation.target_eq_of_exponents_eq",
+    "AGM.GroupRepresentation.one",
+    "AGM.GroupRepresentation.singleton",
+    "AGM.GroupRepresentation.map",
+    "AGM.GroupRepresentation.mul",
+    "AGM.GroupRepresentation.inv"
+  ],
+  "bridges": [
+    "ProximityPrize.Compatibility.AGM.ListRepresentation.toCanonical",
+    "ProximityPrize.Compatibility.AGM.ListRepresentation.ofCanonical",
+    "ProximityPrize.Compatibility.AGM.ListRepresentation.ofCanonical_length"
+  ],
+  "honesty": "The experimental handle interpreter is preserved without asserting an AGM security model. The list-to-canonical bridge requires exact coefficient/basis length equality and the canonical prime-order assumptions."
+}

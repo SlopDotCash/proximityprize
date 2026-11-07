@@ -4,6 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.SpartanSendEvalClaim
+import ProximityPrize.Compatibility.SpartanLinearCombination
+import ProximityPrize.Compatibility.SpartanFirstChallenge
+import ProximityPrize.Compatibility.SumcheckKnowledge
 import ArkLib.ProofSystem.Spartan.ComposedRbrKnowledgeSoundness
 import ArkLib.ProofSystem.Spartan.FinalCheckRbrKnowledgeLeaf
 import ArkLib.ProofSystem.Spartan.PrependRLCDeterminism
@@ -11,6 +15,12 @@ import ArkLib.ProofSystem.Spartan.SumcheckDeterminismWitnesses
 import ArkLib.ProofSystem.Spartan.SumcheckKnowledgeLeaves
 
 /-!
+
+Canonical-message integration: the degree-2/degree-3 round knowledge bounds remain explicit
+hypotheses of the `_of_sumcheck_rounds` constructions below. Former unconditional zero-flip
+completion claims are retired; exact names, commands and added obligations are recorded in
+`scripts/integration/sumcheck-message-semantics-retirements.json`.
+
 # Spartan composed RBR-KS wiring progress (#114)
 
 This module plugs the proven generic sum-check RBR-KS leaves and the verifier determinism witnesses
@@ -41,20 +51,17 @@ variable {ι : Type} (oSpec : OracleSpec ι)
 
 /-- Local mirror of `ComposedRbrKnowledgeSoundness`'s private universe-pinned adapter. -/
 private abbrev prependRLCTargetKSWiring {ι : Type} (oSpec : OracleSpec ι) :
-    OracleReduction.{0, 0} oSpec
+    OracleReduction oSpec
       (Statement.AfterLinearCombination R pp) (OracleStatement.AfterLinearCombination R pp) Unit
       (R × Statement.AfterLinearCombination R pp)
       (OracleStatement.AfterLinearCombination R pp) Unit !p[] :=
   prependRLCTarget pp oSpec
 
-/-- The composed Spartan RBR-KS residual after plugging in:
-
-* all verifier determinism witnesses (`hV₁`-`hV₇`);
-* the full first/second sum-check RBR-KS leaves, with errors `3 / |R|` and `2 / |R|`.
-
-The remaining hypotheses are precisely the non-sum-check relation leaves, including the terminal
-`finalCheck` leaf against the chosen relation chain. -/
-theorem composedRbrKnowledgeSoundnessStatement_of_nonsumcheck_leaves [Subsingleton σ]
+/-- The completed Spartan composition construction, conditional on the actual canonical
+sumcheck degree-2, degree-3 per-round knowledge bounds. The former unconditional zero-flip
+completion is retired; exact source and the added obligations are recorded in the migration audit. -/
+theorem composedRbrKnowledgeSoundnessStatement_of_nonsumcheck_leaves_of_sumcheck_rounds
+  [Subsingleton σ]
     (hm : 0 < pp.ℓ_m) (hn : 0 < pp.ℓ_n)
     [Inhabited (FinalStatement R pp × ∀ i, FinalOracleStatement R pp i)]
     [Inhabited (Statement.AfterFirstSumcheck R pp ×
@@ -68,17 +75,17 @@ theorem composedRbrKnowledgeSoundnessStatement_of_nonsumcheck_leaves [Subsinglet
     {err₈ : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0}
     (h₁ : (oracleReduction.firstMessage R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (spartanRelIn R pp) relB err₁)
-    (h₂ : (oracleReduction.firstChallenge.{0} R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₂ : (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       relB (firstSumcheckRbrRelIn (R := R) pp oSpec) err₂)
-    (h₄ : (oracleReduction.sendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₄ : (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (firstSumcheckRbrRelOut (R := R) pp oSpec) relE err₄)
-    (h₅ : (oracleReduction.linearCombination.{0} R pp oSpec).verifier.rbrKnowledgeSoundness
+    (h₅ : (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness
       init impl relE relF err₅)
     (h₆ : (prependRLCTargetKSWiring (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
       relF (secondSumcheckRbrRelIn (R := R) pp oSpec) err₆)
     (h₈ : (finalCheck R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (secondSumcheckRbrRelOut (R := R) pp oSpec) (finalCheckRelOut R pp) err₈)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×
       ∀ i, OracleStatement.AfterFirstMessage R pp i))
     (hNE_C : Nonempty (Statement.AfterFirstChallenge R pp ×
@@ -88,49 +95,49 @@ theorem composedRbrKnowledgeSoundnessStatement_of_nonsumcheck_leaves [Subsinglet
     (hNE_F : Nonempty (Statement.AfterLinearCombination R pp ×
       ∀ i, OracleStatement.AfterLinearCombination R pp i))
     (hNE_G : Nonempty ((R × Statement.AfterLinearCombination R pp) ×
-      ∀ i, OracleStatement.AfterLinearCombination R pp i)) :
+      ∀ i, OracleStatement.AfterLinearCombination R pp i))
+    (hRound2 : Sumcheck.Spec.RoundKnowledge R 2 (boolEmbedding R) pp.ℓ_n oSpec init impl)
+    (hRound3 : Sumcheck.Spec.RoundKnowledge R 3 (boolEmbedding R) pp.ℓ_m oSpec init impl)
+    :
     composedRbrKnowledgeSoundnessStatement R pp oSpec (composedPIOP_Rc pp oSpec) init impl
       (composedRbrError pp err₁ err₂ (fun _ => (3 : ℝ≥0) / (Fintype.card R))
         err₄ err₅ err₆ (fun _ => (2 : ℝ≥0) / (Fintype.card R)) err₈) := by
   obtain ⟨verify₁, hV₁⟩ := firstMessage_toVerifier_pure (R := R) pp oSpec
-  obtain ⟨verify₂, hV₂⟩ := firstChallenge_toVerifier_pure.{0} (R := R) pp oSpec
+  obtain ⟨verify₂, hV₂⟩ := firstChallenge_toVerifier_pure (R := R) pp oSpec
   obtain ⟨verify₃?, hV₃⟩ :=
     Spartan.Spec.firstSumcheck_toVerifier_isFailingDet (R := R) pp oSpec
   obtain ⟨verify₄, hV₄⟩ := sendEvalClaim_toVerifier_pure (R := R) pp oSpec
-  obtain ⟨verify₅, hV₅⟩ := linearCombination_toVerifier_pure.{0} (R := R) pp oSpec
+  obtain ⟨verify₅, hV₅⟩ := linearCombination_toVerifier_pure (R := R) pp oSpec
   let verify₆ : (Statement.AfterLinearCombination R pp ×
         ∀ i, OracleStatement.AfterLinearCombination R pp i) →
       (!p[] : ProtocolSpec 0).FullTranscript →
       ((R × Statement.AfterLinearCombination R pp) ×
         ∀ i, OracleStatement.AfterLinearCombination R pp i) :=
-    fun p _tr => ((∑ idx, p.1.1 idx * p.2 (.inl 0) idx, p.1), p.2)
+    fun p _tr => ((∑ idx, p.1.1 idx * (show R from p.2 (.inl idx)), p.1), p.2)
   have hV₆ : (prependRLCTargetKSWiring (R := R) pp oSpec).verifier.toVerifier
       = ⟨fun p tr => pure (verify₆ p tr)⟩ := by
     simpa [prependRLCTargetKSWiring, verify₆]
       using prependRLCTarget_toVerifier_pure (R := R) pp oSpec
   obtain ⟨verify₇?, hV₇⟩ :=
     Spartan.Spec.secondSumcheck_toVerifier_isFailingDet (R := R) pp oSpec
-  have h₃ := firstSumcheck_rbrKnowledgeSoundness_honest_full
+  have h₃ := firstSumcheck_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds (hRound3 := hRound3)
     (R := R) pp oSpec (init := init) (impl := impl) hInit hInitNF
-  have h₇ := secondSumcheck_rbrKnowledgeSoundness_honest_full
+  have h₇ := secondSumcheck_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds (hRound2 :=
+    hRound2)
     (R := R) pp oSpec (init := init) (impl := impl) hInit hInitNF
   exact composedRbrKnowledgeSoundnessStatement_of_leaves pp oSpec hm hn
     verify₁ hV₁ verify₂ hV₂ verify₃? hV₃ verify₄ hV₄ verify₅ hV₅ verify₆ hV₆
     verify₇? hV₇ h₁ h₂ h₃ h₄ h₅ h₆ h₇ h₈ hInit hInitNF hNE_B hNE_C hNE_E
     hNE_F hNE_G
 
-#print axioms Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessStatement_of_nonsumcheck_leaves
+#print axioms
+  Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessStatement_of_nonsumcheck_leaves_of_sumcheck_rounds
 
-/-- Relation-preserving composed Spartan RBR-KS progress after plugging in:
-
-* all verifier determinism witnesses;
-* both full sum-check RBR-KS leaves;
-* the zero-round identity-style `finalCheck` RBR-KS leaf.
-
-This theorem intentionally ends at `secondSumcheckRbrRelOut`, not at the broad
-`finalCheckRelOut = Set.univ`, because the current `finalCheck` verifier forwards its input and
-does not enforce a nontrivial terminal predicate. -/
-theorem composedRbrKnowledgeSoundnessPreserving_of_nonsumcheck_leaves [Subsingleton σ]
+/-- The completed Spartan composition construction, conditional on the actual canonical
+sumcheck degree-2, degree-3 per-round knowledge bounds. The former unconditional zero-flip
+completion is retired; exact source and the added obligations are recorded in the migration audit. -/
+theorem composedRbrKnowledgeSoundnessPreserving_of_nonsumcheck_leaves_of_sumcheck_rounds
+  [Subsingleton σ]
     (hm : 0 < pp.ℓ_m) (hn : 0 < pp.ℓ_n)
     [Inhabited (FinalStatement R pp × ∀ i, FinalOracleStatement R pp i)]
     [Inhabited (Statement.AfterFirstSumcheck R pp ×
@@ -143,15 +150,15 @@ theorem composedRbrKnowledgeSoundnessPreserving_of_nonsumcheck_leaves [Subsingle
     {err₆ : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0}
     (h₁ : (oracleReduction.firstMessage R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (spartanRelIn R pp) relB err₁)
-    (h₂ : (oracleReduction.firstChallenge.{0} R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₂ : (oracleReduction.completedFirstChallenge R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       relB (firstSumcheckRbrRelIn (R := R) pp oSpec) err₂)
-    (h₄ : (oracleReduction.sendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (h₄ : (oracleReduction.completedSendEvalClaim R pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (firstSumcheckRbrRelOut (R := R) pp oSpec) relE err₄)
-    (h₅ : (oracleReduction.linearCombination.{0} R pp oSpec).verifier.rbrKnowledgeSoundness
+    (h₅ : (oracleReduction.completedLinearCombination R pp oSpec).verifier.rbrKnowledgeSoundness
       init impl relE relF err₅)
     (h₆ : (prependRLCTargetKSWiring (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
       relF (secondSumcheckRbrRelIn (R := R) pp oSpec) err₆)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE_B : Nonempty (Statement.AfterFirstMessage R pp ×
       ∀ i, OracleStatement.AfterFirstMessage R pp i))
     (hNE_C : Nonempty (Statement.AfterFirstChallenge R pp ×
@@ -161,42 +168,47 @@ theorem composedRbrKnowledgeSoundnessPreserving_of_nonsumcheck_leaves [Subsingle
     (hNE_F : Nonempty (Statement.AfterLinearCombination R pp ×
       ∀ i, OracleStatement.AfterLinearCombination R pp i))
     (hNE_G : Nonempty ((R × Statement.AfterLinearCombination R pp) ×
-      ∀ i, OracleStatement.AfterLinearCombination R pp i)) :
+      ∀ i, OracleStatement.AfterLinearCombination R pp i))
+    (hRound2 : Sumcheck.Spec.RoundKnowledge R 2 (boolEmbedding R) pp.ℓ_n oSpec init impl)
+    (hRound3 : Sumcheck.Spec.RoundKnowledge R 3 (boolEmbedding R) pp.ℓ_m oSpec init impl)
+    :
     (composedPIOP_Rc (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (spartanRelIn R pp) (secondSumcheckRbrRelOut (R := R) pp oSpec)
       (composedRbrError pp err₁ err₂ (fun _ => (3 : ℝ≥0) / (Fintype.card R))
         err₄ err₅ err₆ (fun _ => (2 : ℝ≥0) / (Fintype.card R))
         (0 : (!p[] : ProtocolSpec 0).ChallengeIdx → ℝ≥0)) := by
   obtain ⟨verify₁, hV₁⟩ := firstMessage_toVerifier_pure (R := R) pp oSpec
-  obtain ⟨verify₂, hV₂⟩ := firstChallenge_toVerifier_pure.{0} (R := R) pp oSpec
+  obtain ⟨verify₂, hV₂⟩ := firstChallenge_toVerifier_pure (R := R) pp oSpec
   obtain ⟨verify₃?, hV₃⟩ :=
     Spartan.Spec.firstSumcheck_toVerifier_isFailingDet (R := R) pp oSpec
   obtain ⟨verify₄, hV₄⟩ := sendEvalClaim_toVerifier_pure (R := R) pp oSpec
-  obtain ⟨verify₅, hV₅⟩ := linearCombination_toVerifier_pure.{0} (R := R) pp oSpec
+  obtain ⟨verify₅, hV₅⟩ := linearCombination_toVerifier_pure (R := R) pp oSpec
   let verify₆ : (Statement.AfterLinearCombination R pp ×
         ∀ i, OracleStatement.AfterLinearCombination R pp i) →
       (!p[] : ProtocolSpec 0).FullTranscript →
       ((R × Statement.AfterLinearCombination R pp) ×
         ∀ i, OracleStatement.AfterLinearCombination R pp i) :=
-    fun p _tr => ((∑ idx, p.1.1 idx * p.2 (.inl 0) idx, p.1), p.2)
+    fun p _tr => ((∑ idx, p.1.1 idx * (show R from p.2 (.inl idx)), p.1), p.2)
   have hV₆ : (prependRLCTargetKSWiring (R := R) pp oSpec).verifier.toVerifier
       = ⟨fun p tr => pure (verify₆ p tr)⟩ := by
     simpa [prependRLCTargetKSWiring, verify₆]
       using prependRLCTarget_toVerifier_pure (R := R) pp oSpec
   obtain ⟨verify₇?, hV₇⟩ :=
     Spartan.Spec.secondSumcheck_toVerifier_isFailingDet (R := R) pp oSpec
-  have h₃ := firstSumcheck_rbrKnowledgeSoundness_honest_full
+  have h₃ := firstSumcheck_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds (hRound3 := hRound3)
     (R := R) pp oSpec (init := init) (impl := impl) hInit hInitNF
-  have h₇ := secondSumcheck_rbrKnowledgeSoundness_honest_full
+  have h₇ := secondSumcheck_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds (hRound2 :=
+    hRound2)
     (R := R) pp oSpec (init := init) (impl := impl) hInit hInitNF
-  have h₈ := finalCheck_rbrKnowledgeSoundness_secondSumcheckRbrRelOut.{0}
+  have h₈ := finalCheck_rbrKnowledgeSoundness_secondSumcheckRbrRelOut
     (R := R) pp oSpec (init := init) (impl := impl)
   exact composedPIOP_Rc_rbrKnowledgeSoundness_of_leaves pp oSpec hm hn
     verify₁ hV₁ verify₂ hV₂ verify₃? hV₃ verify₄ hV₄ verify₅ hV₅ verify₆ hV₆
     verify₇? hV₇ h₁ h₂ h₃ h₄ h₅ h₆ h₇ h₈ hInit hInitNF hNE_B hNE_C hNE_E
     hNE_F hNE_G
 
-#print axioms Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessPreserving_of_nonsumcheck_leaves
+#print axioms
+  Spartan.Spec.Bricks.composedRbrKnowledgeSoundnessPreserving_of_nonsumcheck_leaves_of_sumcheck_rounds
 
 end
 

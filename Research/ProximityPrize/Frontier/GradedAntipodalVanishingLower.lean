@@ -156,11 +156,11 @@ example :
     (fun _ => ({1, 4} : Finset (ZMod 5)))
     ?_ ?_ ?_ (fun x => -x) ?_ ?_ ?_ (fun x => rfl) 1
   · intro i j hij; exact absurd (Subsingleton.elim i j) hij
-  · intro i; simp only; decide
-  · intro i; refine ⟨(1 : ZMod 5), ?_⟩; simp only; decide
-  · intro i x hx; simp only at hx ⊢; fin_cases hx <;> decide
-  · intro i x hx; simp only at hx ⊢; fin_cases hx <;> decide
-  · intro i x hx; simp only at hx ⊢; fin_cases hx <;> decide
+  · intro i; decide
+  · intro i; refine ⟨(1 : ZMod 5), ?_⟩; decide
+  · intro i x hx; fin_cases hx <;> decide
+  · intro i x hx; fin_cases hx <;> decide
+  · intro i x hx; fin_cases hx <;> decide
 
 end ArkLib.ProximityGap.GradedAntipodalVanishingLower
 

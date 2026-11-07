@@ -75,11 +75,16 @@ no `sorryAx`).
 open scoped NNReal ENNReal
 open OracleComp OracleSpec ProtocolSpec
 
+-- Old full value-law equality is observed discretely only in this module.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ :=
+  ⟨fun _ => True.intro⟩
+
 namespace OracleReduction
 
 section NonPerfectKeystone
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
     {m n : ℕ}
     {Stmt₁ : Type} {ιₛ₁ : Type} {OStmt₁ : ιₛ₁ → Type}
     [Oₛ₁ : ∀ i, OracleInterface (OStmt₁ i)]
@@ -116,7 +121,7 @@ R.toReduction e`, the bridge rewrites `(R₁.append R₂).toReduction` to
 into the proven `Reduction.append_completeness_msg`. -/
 theorem append_completeness_msg_proof
     (R₁ : OracleReduction oSpec Stmt₁ OStmt₁ Wit₁ Stmt₂ OStmt₂ Wit₂ pSpec₁)
-    [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) R₁.verifier]
+
     (R₂ : OracleReduction oSpec Stmt₂ OStmt₂ Wit₂ Stmt₃ OStmt₃ Wit₃ pSpec₂)
     {e₁ e₂ : ℝ≥0}
     (h₁ : R₁.completeness init impl rel₁ rel₂ e₁)
@@ -124,10 +129,10 @@ theorem append_completeness_msg_proof
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
-    (hInit : Pr[⊥ | init] = 0)
+    (hInit : prFail (init) = 0)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     (R₁.append R₂).completeness init impl rel₁ rel₃ (e₁ + e₂) := by
@@ -163,7 +168,7 @@ variable {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ Pro
 instances when naming the sub-phase obligations. -/
 local instance instInhabitedFieldLogupWired : Inhabited F := ⟨0⟩
 
-variable [oSpec.Fintype] [oSpec.Inhabited]
+variable [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
 
 /-- **LogUp `AppendCompletenessResidual` discharged for the general (non-zero) error.**
 
@@ -194,7 +199,7 @@ theorem appendCompletenessResidual_wired
         Fin (Fin.vsum (fun _ : Fin n => 2))) = .P_to_V)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     AppendCompletenessResidual oSpec F n M params init impl
@@ -213,10 +218,10 @@ theorem appendCompletenessResidual_wired
       (OracleReduction.append (outerOracleReduction oSpec F n M params)
           (sumcheckOracleReduction oSpec F n M params)).completeness init impl
         (inputRelation F n M) outputRelation (logupCompletenessError F n + 0) :=
-    OracleReduction.append_completeness_msg_proof.{0, 0}
+    OracleReduction.append_completeness_msg_proof
       (outerOracleReduction oSpec F n M params)
       (sumcheckOracleReduction oSpec F n M params)
-      hOuter hSum hn hDir hDir₂ (probFailure_eq_zero' hInit) himplSP himplNF himplVB
+      hOuter hSum hn hDir hDir₂ hInit himplSP himplNF himplVB
   -- `AppendCompletenessResidual … = (outer.append sumcheck).completeness … (logupErr + 0)`.
   unfold AppendCompletenessResidual OracleReduction.appendCompletenessResidual
   exact hApp
@@ -245,7 +250,7 @@ theorem logup_completeness_wired
         Fin (Fin.vsum (fun _ : Fin n => 2))) = .P_to_V)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     (logupOracleReduction oSpec F n M params).completeness init impl
@@ -262,14 +267,13 @@ the outer half is `outerCompletenessResidual_of_neverFail`, the sumcheck half is
 embedded sumcheck is message-leading: `Sumcheck.Spec.pSpec` is a `seqCompose` of
 `[P_to_V, V_to_P]` rounds). -/
 theorem logupCompletenessBrickResidual_holds
-    [oSpec.Fintype] [oSpec.Inhabited]
     (hn : 0 < n) (hInit : NeverFail init)
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
       Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s)
         = support (liftM q : OracleComp oSpec β))
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     LogupCompletenessBrickResidual oSpec F n M params init impl := by
@@ -331,7 +335,7 @@ theorem appendCompletenessResidual_unconditional
         = support (liftM q : OracleComp oSpec β))
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     AppendCompletenessResidual oSpec F n M params init impl
@@ -353,7 +357,7 @@ theorem appendCompletenessResidual_forall
         = support (liftM q : OracleComp oSpec β))
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s'))
     (hOuter : OuterCompletenessResidual oSpec F n M params init impl)

@@ -213,27 +213,16 @@ theorem card_agreeIdx (j : LineIdx K) : (agreeIdx K j).card = Fintype.card K := 
     have himg2 : (Finset.univ.filter (fun p : K × K => onLine K (Sum.inl (s, c)) p))
         = Finset.univ.image (fun a : K => (a, s * a + c)) := by
       ext ⟨a, b⟩
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_image, onLine]
-      constructor
-      · intro h
-        exact ⟨a, by rw [h]⟩
-      · rintro ⟨a', ha'⟩
-        injection ha' with h1 h2
-        subst h1
-        exact h2.symm
+      erw [Finset.mem_filter]
+      simp [onLine, eq_comm]
     rw [himg2, Finset.card_image_of_injective _ (fun x y hxy => congrArg Prod.fst hxy)]
     exact Finset.card_univ
   | inr a₀ =>
     have himg2 : (Finset.univ.filter (fun p : K × K => onLine K (Sum.inr a₀) p))
         = Finset.univ.image (fun b : K => (a₀, b)) := by
       ext ⟨a, b⟩
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_image, onLine]
-      constructor
-      · intro h
-        exact ⟨b, by rw [h]⟩
-      · rintro ⟨b', hb'⟩
-        injection hb' with h1 h2
-        exact h1.symm
+      erw [Finset.mem_filter]
+      simp [onLine, eq_comm]
     rw [himg2, Finset.card_image_of_injective _ (fun x y hxy => congrArg Prod.snd hxy)]
     exact Finset.card_univ
 

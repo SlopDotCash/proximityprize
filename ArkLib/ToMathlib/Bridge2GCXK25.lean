@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.Data.CodingTheory.Connections.EpsMCABadGlue
-import ArkLib.Data.CodingTheory.ListDecodability
+import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 /-!

@@ -29,6 +29,9 @@ open scoped ENNReal
 
 namespace OracleReduction
 
+-- Legacy output-distribution statements observe every subset of the output type.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+
 variable {ι : Type} {oSpec : OracleSpec ι} {σ : Type}
   {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
@@ -74,9 +77,14 @@ theorem hcoh {α : Type} (oa : OptionT (OracleComp oSpec) α) :
     (liftM oa : OptionT (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)) α)
     = liftM (liftM oa : OptionT (OracleComp (oSpec + [pSpec₁.Challenge]ₒ)) α) := by
   apply OptionT.ext
-  simp only [liftM, MonadLiftT.monadLift, MonadLift.monadLift, OptionT.run_mk]
-  rw [← QueryImpl.simulateQ_compose, ← QueryImpl.simulateQ_compose]
-  congr 1
+  change simulateQ (fun t => liftM (OracleSpec.query t) :
+      QueryImpl oSpec (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))) oa.run =
+    simulateQ (fun t => liftM (OracleSpec.query t) :
+      QueryImpl (oSpec + [pSpec₁.Challenge]ₒ)
+        (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)))
+      (simulateQ (fun t => liftM (OracleSpec.query t) :
+        QueryImpl oSpec (OracleComp (oSpec + [pSpec₁.Challenge]ₒ))) oa.run)
+  exact simulateQ_lift_trans oa.run
 
 /-- **Challenge-seam transfer (left half), at `run'`/`evalDist`.** Simulating a `pSpec₁`-side
 computation `oa`, lifted into the *combined* challenge oracle, and projecting the value (`run'`),
@@ -89,8 +97,8 @@ theorem evalDist_run'_challengeSeam_left {α : Type}
         (liftM oa : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) α)).run' s)
       = evalDist ((simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₁)) :
         QueryImpl _ (StateT σ ProbComp)) oa).run' s) := by
-  rw [StateT.run'_eq, StateT.run'_eq, evalDist_map, evalDist_map,
-    Prover.evalDist_challengeSeam_bridge_left (impl := impl) oa s]
+  simpa only [StateT.run'_eq] using
+    ((Prover.evalDistEq_challengeSeam_bridge_left (impl := impl) oa s).map Prod.fst).evalDist_eq
 
 /-- **Challenge-seam transfer (right half), at `run'`/`evalDist`.** The `pSpec₂` analogue, from
 `evalDist_challengeSeam_bridge_right`. Used for the phase-2 (`Prover.snd`) leg. -/
@@ -101,7 +109,7 @@ theorem evalDist_run'_challengeSeam_right {α : Type}
         (liftM oa : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) α)).run' s)
       = evalDist ((simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₂)) :
         QueryImpl _ (StateT σ ProbComp)) oa).run' s) := by
-  rw [StateT.run'_eq, StateT.run'_eq, evalDist_map, evalDist_map,
-    Prover.evalDist_challengeSeam_bridge_right (impl := impl) oa s]
+  simpa only [StateT.run'_eq] using
+    ((Prover.evalDistEq_challengeSeam_bridge_right (impl := impl) oa s).map Prod.fst).evalDist_eq
 
 end OracleReduction

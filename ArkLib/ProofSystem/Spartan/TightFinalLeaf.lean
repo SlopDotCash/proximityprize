@@ -62,8 +62,8 @@ def tightFinalRelOut :
         (secondSumCheckVirtualPolynomial R pp (dropFirstTarget pp x.1.1.2) x.1.2)
       ∧ (x.1.1.2.2, x.1.2) ∈ evalClaimBindingRel (R := R) pp }
 
-/-- The tight terminal predicate (documentation-level: the oracle `CheckClaim` discards the
-`Prop`; the semantic content lives in `tightFinalRelOut`). It mirrors `finalClaimPredicate`
+/-- The tight terminal predicate is a diagnostic specification. Canonical `CheckClaim` does
+not execute it; the semantic content lives in `tightFinalRelOut`. It mirrors `finalClaimPredicate`
 through the target-dropping projections. -/
 noncomputable def tightFinalPredicate :
     ReaderT (Statement.AfterSecondSumcheckWithTarget R pp)
@@ -83,7 +83,6 @@ noncomputable def finalCheckTight :
   CheckClaim.oracleReduction oSpec
     (Statement.AfterSecondSumcheckWithTarget R pp)
     (OracleStatement.AfterLinearCombination R pp)
-    (tightFinalPredicate pp)
 
 /-! ## The doom transport: direct ⟹ transported -/
 

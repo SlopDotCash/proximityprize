@@ -11,7 +11,7 @@ import ArkLib.ProofSystem.Whir.CheckedVerifier
 import ArkLib.ProofSystem.Whir.WhirVectorIOPProof
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.RemainingCore
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.LocalSeriesProducer
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
 
 /-!
 # WHIR Vector IOP Soundness and the Johnson MCA Bound (Issue #302)
@@ -48,10 +48,14 @@ theorem keystone_curves_bound_of_remainingCore {k deg : ℕ} [NeZero deg]
     (hCore : BCIKS20RemainingCore k deg domain δ δ') :
     epsCA_curves (F := F) (ReedSolomon.code domain deg : Set (ι → F)) k δ δ ≤
       ((k * max (errorBound δ deg domain) (errorBound δ' deg domain) : ℝ≥0) : ENNReal) :=
-  (δ_ε_correlatedAgreementCurves_iff_epsCA_curves_le (F := F) (k := k)
-    (C := (ReedSolomon.code domain deg : Set (ι → F))) δ
-    (max (errorBound δ deg domain) (errorBound δ' deg domain))).mp
-    (correlatedAgreement_of_remainingCore hδ' hfloor hCore)
+by
+  classical
+  letI : SampleableType F := SampleableType.ofFintype F
+  exact
+    (δ_ε_correlatedAgreementCurves_iff_epsCA_curves_le (F := F) (k := k)
+      (C := (ReedSolomon.code domain deg : Set (ι → F))) δ
+      (max (errorBound δ deg domain) (errorBound δ' deg domain))).mp
+      (correlatedAgreement_of_remainingCore hδ' hfloor hCore)
 
 /-- **Raw-GS producer export for the WHIR/STIR numeric keystone.**  Two large-sector raw cargo
 producers assemble `BCIKS20RemainingCore`, and hence yield the per-round curve-CA error bound
@@ -134,7 +138,7 @@ theorem whirVectorIOP_rbrKnowledgeSoundness_dummy_holds
     by_cases hi : i = _root_.WhirIOP.Construction.finalRandomnessChallengeIdx P d
     · rw [if_pos hi]
     · rw [if_neg hi]
-      exact zero_le _)
+      positivity)
 
 /-- The placeholder WHIR `VectorIOP` is secure with gap for the trivial all-one RBR budget.
 

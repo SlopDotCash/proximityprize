@@ -47,7 +47,7 @@ theorem gsMatrixZ_natDegree_le_div {k n m : ℕ} (hk : 1 < k) (ωs : Fin n ↪ F
     (gsMatrixZ k n m ωs f₀ f₁ D ist p).natDegree ≤ D / (k - 1) := by
   have hb : p.1.2 ≤ D / (k - 1) := by
     have hp := p.2
-    simp only [weigthBoundIndices, mem_filter] at hp
+    simp only [weigthBoundIndices, weightBoundIndices, mem_filter] at hp
     refine Nat.le_div_iff_mul_le (by omega) |>.mpr ?_
     have := hp.2
     nlinarith [p.1.1.zero_le]

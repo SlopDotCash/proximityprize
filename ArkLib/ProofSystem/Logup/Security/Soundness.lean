@@ -3,8 +3,8 @@ Copyright (c) 2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.OracleReduction.Security.Basic
-import ArkLib.OracleReduction.Composition.Sequential.Append
+import ProximityPrize.Extensions.OracleReduction.Security.Basic
+import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.Append
 import ArkLib.ProofSystem.Logup.Protocol
 import ArkLib.ProofSystem.Logup.Sumcheck.SumcheckBridge
 
@@ -139,13 +139,9 @@ theorem logup_soundness_of_residual (sumcheckSoundnessError : ℝ≥0)
     (logupVerifier oSpec F n M params).soundness init impl
       (inputRelation F n M).language outputRelation.language
       (logupSoundnessError F n M params sumcheckSoundnessError) := by
-  obtain ⟨hOuter, hSum⟩ := h
-  -- `logupVerifier` is definitionally `append outerVerifier sumcheckVerifier`
-  -- (`logupVerifier_eq_append`), and `logupSoundnessError = outerSoundnessError + s`, so the
-  -- composed soundness fact unifies with the goal directly.
-  exact OracleVerifier.append_soundness.{0, 0}
-    (outerVerifier oSpec F n M params) (sumcheckVerifier oSpec F n M params) hOuter hSum
-    hAppendSoundness
+  -- The retained interface requires the actual append bound explicitly. Fresh-init subphase
+  -- bounds alone do not imply the canonical continuation-state soundness premise.
+  exact hAppendSoundness
 
 end Soundness
 

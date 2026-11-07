@@ -3,675 +3,1378 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alexander Hicks
 -/
+module
 
-import ArkLib.Data.CodingTheory.InterleavedCode
-import ArkLib.Data.CodingTheory.ListDecodability
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
-import ArkLib.ProofSystem.ToyProblem.Definitions
-import ArkLib.ToMathlib.ToyStep4
+public import ArkLib.Data.CodingTheory.InterleavedCode
+public import ArkLib.Data.CodingTheory.ListDecodability
+public import ArkLib.Data.CodingTheory.ProximityGap.Errors
+public import ArkLib.Data.Probability.Combinatorial
+public import ArkLib.Data.Probability.Instances
+public import ArkLib.ProofSystem.ToyProblem.Definitions
 
 /-!
-# Toy problem soundness bounds (ABF26 §6)
+# Fixed-radius soundness bounds for the toy problem
 
-Statement-layer for the §6 soundness bounds that do **not** depend on a
-formal protocol object. The three protocol-level soundness lemmas
-(`L6.6`, `L6.8`, `L6.10`) live alongside the protocol definitions in
-`ToyProblem/Spec/General.lean` (C6.2) and
-`ToyProblem/Spec/SimplifiedIOR.lean` (C6.9).
+This module contains the coding-theoretic combination-round argument used by the
+ABF26 toy IOP.  It is stated against the current canonical objects:
 
-Items in this file:
+* `CoreDefinitions.mcaError` for affine-line mutual correlated agreement;
+* a `ModuleCode` rather than a parallel set-valued MCA event; and
+* `Code.Lambda` of the two-row interleaving for the list term.
 
-* `ToyProblem.additive_code_supports_erasure_correction_grs25`
-   — Lemma 6.5 [GRS25]: every additive code supports erasure correction
-   with correction time `O((s · n)^3)`.
+The central result, `gamma_transition_prob_le`, bounds the probability that a
+folded message satisfies the post-challenge state while the original two-row
+instance has no relaxed witness.  The proof splits on `IsMCA`.  Off the MCA event,
+the common projected codewords form a two-row point-list element, and each invalid
+message pair accounts for at most one affine challenge.
 
-* `ToyProblem.simplified_iop_soundness_listDecoding_lb`
-   — Lemma 6.12 [ABF26]: list-decoding-based lower bound on the
-   soundness error of the simplified IOR `T'[C, t]` (Construction 6.9).
-   Uses Claim B.1 via `Probability.exists_large_image_of_pairwise_collision_bound`.
+## Paper mapping ([ABF26] §6)
 
-* `ToyProblem.simplified_iop_soundness_ca_lb`
-   — Lemma 6.13 [ABF26]: correlated-agreement-based lower bound on the
-   soundness error of `T'[C, t]`.
-
-Current status:
-
-* **L6.5** is `external admit [GRS25]` — a classical result imported from
-  another work; PROVEN here in existence form (the polynomial-time content
-  is the inert numeric parameter; the unique close-codeword decoder is
-  unconditional).
-* **L6.13 is PROVEN** (`simplified_iop_soundness_ca_lb`), under a documented
-  statement repair: the `F`-linear encoder hypothesis `hEnc` on `C` (exactly
-  the regime `relation`/`relaxedRelation` already demand). See its docstring.
-* **L6.12 is PROVEN** (`simplified_iop_soundness_listDecoding_lb`), under
-  the §6.4.1 Step-4 injection from `ToyStep4.lean`: the genuine
-  list→challenge winning-set injection is now integrated via
-  `simplified_iop_listDecoding_lb_of_winningChallenges`. The remaining
-  `paper-proof-owed` content is the *construction* of the distinct-challenge
-  family (Steps 2–3's image separation), isolated in the residual prop.
-
-L6.12/L6.13 are stated in coding-theory form (direct cardinality bounds on
-`winningSet`); their protocol-level reading bounds the soundness of
-`ToyProblem.SimplifiedIOR.reduction` from below.
+* `winningSetFor` / `winningSetDensity` — the winning-challenge set and its
+  worst-case density, Definition 6.11, with the code's **encoding pinned**
+  (the paper's existential encoder makes the attack statements false; see
+  `ToyProblem.RelationFor`).
+* `winningSetDensity_le_certifiedGammaError` — the quantitative content of
+  Lemma 6.10.
+* `exists_winningSetFor_ncard_ge_of_lambda_lt_card` and
+  `listDecoding_le_winningSetDensity` — Lemma 6.12 (the list-decoding attack,
+  §6.4.1); `exists_winningSetFor_ncard_ge_of_epsCa_pos` and
+  `epsCa_le_winningSetDensity` — Lemma 6.13.
+* `exists_large_image_of_pairwise_collision_bound` (with
+  `exists_dotProduct_image_card_le` / `exists_affine_image_card_le`, its two
+  applications) — Claim B.1; the "collision-image bound" below always refers
+  to it.
+* `gamma_transition_prob_le` — the §6.4.1 combination-round bound.
 
 ## References
 
-* [Arnon, G., Boneh, D., Fenzi, G., *Open Problems in List Decoding and
-  Correlated Agreement*][ABF26]
-* [Guruswami, V., Rudra, A., Sudan, M., *Essential Coding Theory*][GRS25]
+* [Arnon, G., Boneh, D., and Fenzi, G., *Open Problems in List Decoding and
+  Correlated Agreement*][ABF26], Section 6.
 -/
+
+@[expose] public section
+
+-- Elaborate the legacy proximity API through its public Matrix aliases under Lean 4.33.
+set_option backward.isDefEq.respectTransparency false
 
 namespace ToyProblem
 
-open Code InterleavedCode ListDecodable ProximityGap ProbabilityTheory
+open Code InterleavedCode ProximityGap CoreDefinitions
 open scoped NNReal ENNReal ProbabilityTheory
+open Probability
+
 
 variable {ι F : Type} [Fintype ι] [Field F] [Fintype F] [DecidableEq F]
+variable {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module F A]
 
-/-- **Finite-domain `iSup` attainment helper.** Over a finite domain, a
-`⨆` into a conditionally-complete linear order with a bottom (here `ℕ∞`/
-`ENNReal`) is attained at some point. Used to extract the CA- / list-maximiser
-in `simplified_iop_soundness_ca_lb` and `simplified_iop_soundness_listDecoding_lb`. -/
-lemma finite_iSup_eq_apply {α : Type*} [Finite α] [Nonempty α] {β : Type*}
-    [ConditionallyCompleteLinearOrderBot β] (g : α → β) :
-    ∃ a, (⨆ x, g x) = g a := by
+/-- Stack the two codewords obtained by encoding a pair of scalar messages. -/
+def encStack {k : ℕ} (enc : (Fin k → F) →ₗ[F] (ι → A))
+    (m : (Fin k → F) × (Fin k → F)) : ι → Fin 2 → A :=
+  fun i row ↦ if row = 0 then enc m.1 i else enc m.2 i
+
+omit [Fintype ι] [Fintype F] [DecidableEq F] [Fintype A] [DecidableEq A] in
+@[simp]
+theorem encStack_apply_zero {k : ℕ} (enc : (Fin k → F) →ₗ[F] (ι → A))
+    (m : (Fin k → F) × (Fin k → F)) (i : ι) :
+    encStack enc m i 0 = enc m.1 i := rfl
+
+omit [Fintype ι] [Fintype F] [DecidableEq F] [Fintype A] [DecidableEq A] in
+@[simp]
+theorem encStack_apply_one {k : ℕ} (enc : (Fin k → F) →ₗ[F] (ι → A))
+    (m : (Fin k → F) × (Fin k → F)) (i : ι) :
+    encStack enc m i 1 = enc m.2 i := rfl
+
+omit [Fintype ι] [Fintype F] [DecidableEq F] [Fintype A] [DecidableEq A] in
+theorem encStack_injective {k : ℕ} {enc : (Fin k → F) →ₗ[F] (ι → A)}
+    (hinj : Function.Injective enc) : Function.Injective (encStack enc) := by
+  intro p q hpq
+  apply Prod.ext
+  · apply hinj
+    funext i
+    exact congrFun (congrFun hpq i) 0
+  · apply hinj
+    funext i
+    exact congrFun (congrFun hpq i) 1
+
+omit [Fintype F] [DecidableEq F] [Fintype A] [DecidableEq A] in
+/-- A stacked encoded pair is in the interleaved point list exactly when both
+rows agree with the received pair on one sufficiently large column set. -/
+theorem encStack_mem_closeCodewordsRel_iff [Nonempty ι] {k : ℕ}
+    (enc : (Fin k → F) →ₗ[F] (ι → A)) (C : ModuleCode ι F A)
+    (hC : Set.range enc = (C : Set (ι → A))) {δ : ℝ≥0} (hδ_lt : δ < 1)
+    {fStar : ι → Fin 2 → A} (m : (Fin k → F) × (Fin k → F)) :
+    encStack enc m ∈ Code.closeCodewordsRel
+      ((C ^⋈ (Fin 2) : ModuleCode ι F (Fin 2 → A)) : Set (ι → Fin 2 → A))
+      fStar (δ : ℝ) ↔
+      ∃ S : Finset ι, (1 - (δ : ℝ)) * Fintype.card ι ≤ S.card ∧
+        ∀ i ∈ S, fStar i 0 = enc m.1 i ∧ fStar i 1 = enc m.2 i := by
   classical
-  obtain ⟨a, ha⟩ := Finite.exists_max g
-  exact ⟨a, le_antisymm (ciSup_le ha) (le_ciSup (Set.Finite.bddAbove (Set.finite_range g)) a)⟩
+  rw [Code.mem_closeCodewordsRel_iff]
+  have hmem : encStack enc m ∈
+      (C ^⋈ (Fin 2) : ModuleCode ι F (Fin 2 → A)) := by
+    change ∀ row, (fun i ↦ encStack enc m i row) ∈ C
+    intro row
+    fin_cases row
+    · change enc m.1 ∈ C
+      have hm : enc m.1 ∈ (C : Set (ι → A)) := hC ▸ Set.mem_range_self m.1
+      exact hm
+    · change enc m.2 ∈ C
+      have hm : enc m.2 ∈ (C : Set (ι → A)) := hC ▸ Set.mem_range_self m.2
+      exact hm
+  constructor
+  · rintro ⟨_, hdistR⟩
+    have hdist : (δᵣ(fStar, encStack enc m) : ℝ≥0) ≤ δ := by
+      exact_mod_cast hdistR
+    rw [Code.relCloseToWord_iff_exists_agreementCols] at hdist
+    obtain ⟨S, hScard, hagree⟩ := hdist
+    refine ⟨S, ?_, ?_⟩
+    · have hcomp := (Code.relDist_floor_bound_iff_complement_bound _ _ _).mp hScard
+      have hcoe : ((1 - δ : ℝ≥0) : ℝ) = 1 - (δ : ℝ) := by
+        rw [NNReal.coe_sub hδ_lt.le]
+        simp
+      have hcompR := NNReal.coe_le_coe.mpr hcomp
+      rw [NNReal.coe_mul, hcoe] at hcompR
+      push_cast at hcompR ⊢
+      linarith
+    · intro i hi
+      have hiEq := (hagree i).1 hi
+      exact ⟨congrFun hiEq 0, congrFun hiEq 1⟩
+  · rintro ⟨S, hScard, hagree⟩
+    refine ⟨hmem, ?_⟩
+    have hdist : (δᵣ(fStar, encStack enc m) : ℝ≥0) ≤ δ := by
+      rw [Code.relCloseToWord_iff_exists_agreementCols]
+      refine ⟨S, ?_, ?_⟩
+      · rw [Code.relDist_floor_bound_iff_complement_bound]
+        have hcoe : ((1 - δ : ℝ≥0) : ℝ) = 1 - (δ : ℝ) := by
+          rw [NNReal.coe_sub hδ_lt.le]
+          simp
+        rw [← NNReal.coe_le_coe, NNReal.coe_mul, hcoe]
+        push_cast
+        linarith
+      · intro i
+        constructor
+        · intro hi
+          funext row
+          fin_cases row
+          · exact (hagree i hi).1
+          · exact (hagree i hi).2
+        · intro hne hi
+          apply hne
+          funext row
+          fin_cases row
+          · exact (hagree i hi).1
+          · exact (hagree i hi).2
+    exact_mod_cast hdist
+
+omit [Field F] [Fintype F] [Fintype A] [AddCommGroup A] in
+/-- Deprecated compatibility name for the general coding-theory bound. -/
+@[deprecated Code.minRelHammingDistCode_le_one +typeChanged (since := "2026-08-16")]
+theorem minRelHammingDistCode_le_one [Nonempty ι] (C : Set (ι → A)) :
+    minRelHammingDistCode C ≤ 1 :=
+  Code.minRelHammingDistCode_le_one (C := C)
+
+omit [Field F] [Fintype F] [Fintype A] [AddCommGroup A] in
+/-- Two codewords agreeing on more than the minimum-distance erasure threshold
+are equal. -/
+theorem codeword_eq_of_agree_on_large_set [Nonempty ι] {C : Set (ι → A)}
+    {δ : ℝ≥0} (hδ_lt : δ < (minRelHammingDistCode C : ℝ≥0)) {w₁ w₂ : ι → A}
+    (hw₁ : w₁ ∈ C) (hw₂ : w₂ ∈ C) {S : Finset ι}
+    (hScard : (1 - (δ : ℝ)) * Fintype.card ι ≤ S.card)
+    (hagree : ∀ j ∈ S, w₁ j = w₂ j) : w₁ = w₂ := by
+  by_contra hne
+  have hδ1 : δ < 1 :=
+    lt_of_lt_of_le hδ_lt (by exact_mod_cast Code.minRelHammingDistCode_le_one (C := C))
+  have hclose : (δᵣ(w₁, w₂) : ℝ≥0) ≤ δ := by
+    rw [Code.relCloseToWord_iff_exists_agreementCols]
+    refine ⟨S, ?_, fun colIdx ↦
+      ⟨fun hin ↦ hagree colIdx hin, fun hne' hin ↦ hne' (hagree colIdx hin)⟩⟩
+    rw [Code.relDist_floor_bound_iff_complement_bound]
+    have hcoe : ((1 - δ : ℝ≥0) : ℝ) = 1 - (δ : ℝ) := by
+      rw [NNReal.coe_sub hδ1.le]
+      simp
+    rw [← NNReal.coe_le_coe, NNReal.coe_mul, hcoe]
+    push_cast
+    linarith
+  have hmem : δᵣ(w₁, w₂) ∈ possibleRelHammingDists C :=
+    ⟨(w₁, w₂), Set.mem_offDiag.mpr ⟨hw₁, hw₂, hne⟩, rfl⟩
+  have hmin : ((minRelHammingDistCode C : ℚ≥0) : ℝ≥0) ≤
+      (δᵣ(w₁, w₂) : ℝ≥0) := by
+    exact_mod_cast minRelHammingDistCode_le hmem
+  exact absurd hδ_lt (not_lt.mpr (hmin.trans hclose))
+
+omit [Fintype ι] in
+/-- A nontrivial affine scalar equation has at most one solution. -/
+theorem affine_solution_card_le_one {a b μ₁ μ₂ : F}
+    (h : ¬ (a = μ₁ ∧ b = μ₂)) :
+    (Finset.univ.filter (fun γ : F ↦ a + γ * b = μ₁ + γ * μ₂)).card ≤ 1 := by
+  classical
+  rw [Finset.card_le_one]
+  intro x hx y hy
+  rw [Finset.mem_filter] at hx hy
+  by_cases hb : b = μ₂
+  · exfalso
+    subst hb
+    exact h ⟨add_right_cancel hx.2, rfl⟩
+  · have key : (x - y) * (b - μ₂) = 0 := by
+      linear_combination hx.2 - hy.2
+    rcases mul_eq_zero.mp key with h1 | h2
+    · exact sub_eq_zero.mp h1
+    · exact absurd (sub_eq_zero.mp h2) hb
+
+/-- The post-combination-challenge state: a message satisfies the folded linear
+constraint and its codeword agrees with the folded received word on enough columns. -/
+def GammaEvent {k : ℕ} (enc : (Fin k → F) →ₗ[F] (ι → A)) (δ : ℝ≥0)
+    (v : Fin k → F) (μ₁ μ₂ : F) (f₁ f₂ : ι → A) (γ : F) : Prop :=
+  ∃ m : Fin k → F, (∑ j, m j * v j = μ₁ + γ * μ₂) ∧
+    ∃ S : Finset ι, (1 - (δ : ℝ)) * Fintype.card ι ≤ S.card ∧
+      ∀ j ∈ S, f₁ j + γ • f₂ j = enc m j
+
+omit [DecidableEq F] [Fintype A] in
+/-- Off the canonical MCA event, a successful folded state determines a message
+pair in the two-row point list whose affine constraints hold at `γ`. -/
+theorem gamma_bad_pair {k : ℕ} [Nonempty ι] (C : ModuleCode ι F A) {δ : ℝ≥0}
+    (enc : (Fin k → F) →ₗ[F] (ι → A)) (hinj : Function.Injective enc)
+    (hC : Set.range enc = (C : Set (ι → A)))
+    (hδ_lt : δ < (minRelHammingDistCode (C : Set (ι → A)) : ℝ≥0))
+    {v : Fin k → F} {μ₁ μ₂ : F} {f₁ f₂ : ι → A} {γ : F}
+    (hEvent : GammaEvent enc δ v μ₁ μ₂ f₁ f₂ γ)
+    (hmca : ¬ IsMCA (AffineLineGenerator F) C γ ![f₁, f₂] (δ : ℝ)) :
+    ∃ p : (Fin k → F) × (Fin k → F),
+      encStack enc p ∈ Code.closeCodewordsRel
+        ((C ^⋈ (Fin 2) : ModuleCode ι F (Fin 2 → A)) : Set (ι → Fin 2 → A))
+        (fun i ↦ ![f₁ i, f₂ i]) (δ : ℝ) ∧
+      (∑ j, p.1 j * v j) + γ * (∑ j, p.2 j * v j) = μ₁ + γ * μ₂ := by
+  classical
+  have hδ1 : δ < 1 :=
+    lt_of_lt_of_le hδ_lt
+      (by exact_mod_cast Code.minRelHammingDistCode_le_one (C := (C : Set (ι → A))))
+  obtain ⟨m, hconstr, S, hScard, hagree⟩ := hEvent
+  have hcard : (S.card : ℝ) ≥ (Fintype.card ι : ℝ) * (1 - (δ : ℝ)) := by
+    linarith
+  have hcomb : LinearCode.projectedWord
+      (fun x ↦ ∑ i : Fin 2, AffineLineGenerator F γ i • ![f₁, f₂] i x) S ∈
+      LinearCode.projectedCodeSubmod C S := by
+    rw [LinearCode.mem_projectedCodeSubmod_iff]
+    have hm : enc m ∈ (C : Set (ι → A)) := hC ▸ Set.mem_range_self m
+    refine ⟨enc m, hm, ?_⟩
+    funext x
+    simp only [LinearCode.projectedWord, Set.domRestrict_apply]
+    simpa [AffineLineGenerator, Fin.sum_univ_two] using hagree x x.property
+  have hall : ∀ i : Fin 2,
+      LinearCode.projectedWord (![f₁, f₂] i) S ∈
+        LinearCode.projectedCodeSubmod C S := by
+    by_contra hnot
+    push Not at hnot
+    exact hmca ⟨S, hcard, hcomb, hnot⟩
+  choose words hwords hproj using fun i ↦
+    (LinearCode.mem_projectedCodeSubmod_iff C S
+      (LinearCode.projectedWord (![f₁, f₂] i) S)).mp (hall i)
+  have hmsg : ∀ i : Fin 2, ∃ msg, enc msg = words i := by
+    intro i
+    have hw : words i ∈ (C : Set (ι → A)) := hwords i
+    rw [← hC] at hw
+    exact hw
+  choose msgs hmsgs using hmsg
+  let p : (Fin k → F) × (Fin k → F) := (msgs 0, msgs 1)
+  refine ⟨p, ?_, ?_⟩
+  · rw [encStack_mem_closeCodewordsRel_iff enc C hC hδ1]
+    refine ⟨S, hScard, fun x hx ↦ ⟨?_, ?_⟩⟩
+    · have h := congrFun (hproj 0) ⟨x, hx⟩
+      change f₁ x = enc (msgs 0) x
+      rw [hmsgs 0]
+      simpa [LinearCode.projectedWord] using h
+    · have h := congrFun (hproj 1) ⟨x, hx⟩
+      change f₂ x = enc (msgs 1) x
+      rw [hmsgs 1]
+      simpa [LinearCode.projectedWord] using h
+  · have hagreeCode : ∀ x ∈ S, enc m x = enc (msgs 0 + γ • msgs 1) x := by
+      intro x hx
+      rw [map_add, map_smul]
+      simp only [Pi.add_apply, Pi.smul_apply]
+      have h0 := congrFun (hproj 0) ⟨x, hx⟩
+      have h1 := congrFun (hproj 1) ⟨x, hx⟩
+      rw [hmsgs 0, hmsgs 1]
+      have h0' : f₁ x = words 0 x := by
+        simpa [LinearCode.projectedWord] using h0
+      have h1' : f₂ x = words 1 x := by
+        simpa [LinearCode.projectedWord] using h1
+      exact (hagree x hx).symm.trans (by rw [h0', h1'])
+    have hmC : enc m ∈ (C : Set (ι → A)) := hC ▸ Set.mem_range_self m
+    have hcombC : enc (msgs 0 + γ • msgs 1) ∈ (C : Set (ι → A)) :=
+      hC ▸ Set.mem_range_self (msgs 0 + γ • msgs 1)
+    have heq : enc m = enc (msgs 0 + γ • msgs 1) :=
+      codeword_eq_of_agree_on_large_set hδ_lt hmC hcombC hScard hagreeCode
+    have hm : m = msgs 0 + γ • msgs 1 := hinj heq
+    have hsum : (∑ j, (msgs 0 + γ • msgs 1) j * v j) =
+        (∑ j, msgs 0 j * v j) + γ * (∑ j, msgs 1 j * v j) := by
+      simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, add_mul, mul_assoc]
+      rw [Finset.sum_add_distrib, ← Finset.mul_sum]
+    rw [hm, hsum] at hconstr
+    exact hconstr
+
+omit [Fintype F] [DecidableEq F] [Fintype A] [DecidableEq A] in
+/-- Every point-list message pair violates at least one original constraint when
+the two-row input has no relaxed witness. -/
+theorem not_constraint_pair_of_mem_closeCodewordsRel {k : ℕ} [Nonempty ι]
+    (C : ModuleCode ι F A) {δ : ℝ≥0}
+    (hδ1 : δ < 1) (enc : (Fin k → F) →ₗ[F] (ι → A))
+    (hC : Set.range enc = (C : Set (ι → A)))
+    {v : Fin k → F} {μ₁ μ₂ : F} {f₁ f₂ : ι → A}
+    (hNoWit : ¬ ∃ M : Fin 2 → (Fin k → F),
+      (∀ i : Fin 2, ∑ j, M i j * v j = ![μ₁, μ₂] i) ∧
+      ∃ S : Finset ι, (1 - (δ : ℝ)) * Fintype.card ι ≤ S.card ∧
+        ∀ i : Fin 2, ∀ j ∈ S, ![f₁, f₂] i j = enc (M i) j)
+    {p : (Fin k → F) × (Fin k → F)}
+    (hp : encStack enc p ∈ Code.closeCodewordsRel
+      ((C ^⋈ (Fin 2) : ModuleCode ι F (Fin 2 → A)) : Set (ι → Fin 2 → A))
+      (fun i ↦ ![f₁ i, f₂ i]) (δ : ℝ)) :
+    ¬ ((∑ j, p.1 j * v j) = μ₁ ∧ (∑ j, p.2 j * v j) = μ₂) := by
+  classical
+  rintro ⟨h1, h2⟩
+  obtain ⟨S, hScard, hagree⟩ :=
+    (encStack_mem_closeCodewordsRel_iff enc C hC hδ1 p).mp hp
+  apply hNoWit
+  refine ⟨![p.1, p.2], fun i ↦ ?_, S, hScard, fun i j hj ↦ ?_⟩
+  · fin_cases i
+    · exact h1
+    · exact h2
+  · fin_cases i
+    · exact (hagree j hj).1
+    · exact (hagree j hj).2
+
+omit [DecidableEq F] [Fintype A] in
+/-- **Combination-round MCA-plus-list bound.**  For a two-row input with no
+relaxed witness, the probability of reaching the post-`γ` state is at most the
+canonical affine-line MCA error plus the two-row point-list size divided by the
+field size. -/
+theorem gamma_transition_prob_le {k : ℕ} [SampleableType F] [Nonempty ι] [Finite A]
+    (C : ModuleCode ι F A) (δ : ℝ≥0)
+    (enc : (Fin k → F) →ₗ[F] (ι → A)) (hinj : Function.Injective enc)
+    (hC : Set.range enc = (C : Set (ι → A)))
+    (_hδ_pos : 0 < δ)
+    (hδ_lt : δ < (minRelHammingDistCode (C : Set (ι → A)) : ℝ≥0))
+    (v : Fin k → F) (μ₁ μ₂ : F) (f₁ f₂ : ι → A)
+    (hNoWit : ¬ ∃ M : Fin 2 → (Fin k → F),
+      (∀ i : Fin 2, ∑ j, M i j * v j = ![μ₁, μ₂] i) ∧
+      ∃ S : Finset ι, (1 - (δ : ℝ)) * Fintype.card ι ≤ S.card ∧
+        ∀ i : Fin 2, ∀ j ∈ S, ![f₁, f₂] i j = enc (M i) j) :
+    Pr{let γ ← $ᵗ F}[GammaEvent enc δ v μ₁ μ₂ f₁ f₂ γ] ≤
+      mcaError (AffineLineGenerator F) C (δ : ℝ) +
+        ((Code.Lambda
+          ((C ^⋈ (Fin 2) : ModuleCode ι F (Fin 2 → A)) : Set (ι → Fin 2 → A))
+          (δ : ℝ)).toNat : ENNReal) / (Fintype.card F : ENNReal) := by
+  classical
+  let _ := Fintype.ofFinite A
+  have hδ1 : δ < 1 :=
+    lt_of_lt_of_le hδ_lt
+      (by exact_mod_cast Code.minRelHammingDistCode_le_one (C := (C : Set (ι → A))))
+  let Cint : Set (ι → Fin 2 → A) :=
+    ((C ^⋈ (Fin 2) : ModuleCode ι F (Fin 2 → A)) : Set (ι → Fin 2 → A))
+  let center : ι → Fin 2 → A := fun i ↦ ![f₁ i, f₂ i]
+  let Smsg : Finset ((Fin k → F) × (Fin k → F)) := Finset.univ.filter
+    (fun p ↦ encStack enc p ∈ Code.closeCodewordsRel Cint center (δ : ℝ))
+  have hSmsg_le : Smsg.card ≤ (Code.Lambda Cint (δ : ℝ)).toNat := by
+    have hsub : encStack enc '' (Smsg : Set ((Fin k → F) × (Fin k → F))) ⊆
+        Code.closeCodewordsRel Cint center (δ : ℝ) := by
+      rintro V ⟨p, hp, rfl⟩
+      exact (Finset.mem_filter.mp hp).2
+    have himage :
+        (encStack enc '' (Smsg : Set ((Fin k → F) × (Fin k → F)))).ncard =
+          Smsg.card := by
+      rw [Set.ncard_image_of_injective _ (encStack_injective hinj), Set.ncard_coe_finset]
+    have hencard :
+        ((Code.closeCodewordsRel Cint center (δ : ℝ)).ncard : ENat) ≤
+          Code.Lambda Cint (δ : ℝ) := by
+      rw [(Set.toFinite (Code.closeCodewordsRel Cint center (δ : ℝ))).cast_ncard_eq]
+      exact Code.encard_closeCodewordsRel_le_Lambda Cint (δ : ℝ) center
+    have hfinite : Code.Lambda Cint (δ : ℝ) ≠ ⊤ := Code.Lambda_ne_top _
+    have hncard : Smsg.card ≤ (Code.closeCodewordsRel Cint center (δ : ℝ)).ncard := by
+      rw [← himage]
+      exact Set.ncard_le_ncard hsub (Set.toFinite _)
+    have hcast : (Smsg.card : ENat) ≤ Code.Lambda Cint (δ : ℝ) :=
+      le_trans (by exact_mod_cast hncard) hencard
+    rwa [← ENat.natCast_toNat hfinite, Nat.cast_le] at hcast
+  have hcards : (Finset.univ.filter (fun γ : F ↦
+      GammaEvent enc δ v μ₁ μ₂ f₁ f₂ γ ∧
+        ¬ IsMCA (AffineLineGenerator F) C γ ![f₁, f₂] (δ : ℝ))).card ≤
+      (Code.Lambda Cint (δ : ℝ)).toNat := by
+    have hsub : Finset.univ.filter (fun γ : F ↦
+        GammaEvent enc δ v μ₁ μ₂ f₁ f₂ γ ∧
+          ¬ IsMCA (AffineLineGenerator F) C γ ![f₁, f₂] (δ : ℝ)) ⊆
+        Smsg.biUnion (fun p ↦ Finset.univ.filter (fun γ : F ↦
+          (∑ j, p.1 j * v j) + γ * (∑ j, p.2 j * v j) = μ₁ + γ * μ₂)) := by
+      intro γ hγ
+      rw [Finset.mem_filter] at hγ
+      obtain ⟨p, hplist, heq⟩ :=
+        gamma_bad_pair C enc hinj hC hδ_lt hγ.2.1 hγ.2.2
+      rw [Finset.mem_biUnion]
+      refine ⟨p, ?_, ?_⟩
+      · exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, hplist⟩
+      · exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, heq⟩
+    refine le_trans (Finset.card_le_card hsub) (le_trans Finset.card_biUnion_le ?_)
+    calc
+      ∑ p ∈ Smsg, (Finset.univ.filter (fun γ : F ↦
+          (∑ j, p.1 j * v j) + γ * (∑ j, p.2 j * v j) = μ₁ + γ * μ₂)).card
+          ≤ ∑ _p ∈ Smsg, 1 := Finset.sum_le_sum fun p hp ↦
+            affine_solution_card_le_one
+              (not_constraint_pair_of_mem_closeCodewordsRel C hδ1 enc hC hNoWit
+                (Finset.mem_filter.mp hp).2)
+      _ = Smsg.card := by rw [Finset.sum_const, smul_eq_mul, mul_one]
+      _ ≤ (Code.Lambda Cint (δ : ℝ)).toNat := hSmsg_le
+  refine le_trans (prEvent_mono ($ᵗ F) _
+      (fun γ ↦ IsMCA (AffineLineGenerator F) C γ ![f₁, f₂] (δ : ℝ) ∨
+        (GammaEvent enc δ v μ₁ μ₂ f₁ f₂ γ ∧
+          ¬ IsMCA (AffineLineGenerator F) C γ ![f₁, f₂] (δ : ℝ)))
+      (fun γ h ↦ by
+        by_cases hm : IsMCA (AffineLineGenerator F) C γ ![f₁, f₂] (δ : ℝ)
+        · exact Or.inl hm
+        · exact Or.inr ⟨h, hm⟩))
+    (le_trans (prEvent_or_le ($ᵗ F) _ _) (add_le_add ?_ ?_))
+  · exact le_iSup
+      (fun U : Fin 2 → (ι → A) ↦
+        Pr{let γ ← $ᵗ F}[IsMCA (AffineLineGenerator F) C γ U (δ : ℝ)])
+      ![f₁, f₂]
+  · rw [SampleableType.prEvent_uniformSample]
+    exact ENNReal.div_le_div_right (by exact_mod_cast hcards) _
+
+omit [Fintype ι] [Fintype F] [DecidableEq F] in
+/-- **ENNReal → ℝ bridge for the collision-image bound.** Rewrites the image
+bound `M / (1 + (M−1)·|F|⁻¹) ≤ s` into the real-arithmetic form
+`M·c/(c+M−1) ≤ s` consumed by `listDecoding_div_le_div` (here `c = |F|`). -/
+private lemma image_bound_toReal {M s c : ℕ} (hc : 1 ≤ c) (hM : 1 ≤ M)
+    (h : (M : ENNReal) / (1 + ((M : ENNReal) - 1) * (c : ENNReal)⁻¹) ≤ (s : ENNReal)) :
+    (M : ℝ) * c / (c + M - 1) ≤ s := by
+  have hc0 : (c : ENNReal) ≠ 0 := by exact_mod_cast Nat.one_le_iff_ne_zero.mp hc
+  have hct : (c : ENNReal) ≠ ⊤ := ENNReal.natCast_ne_top _
+  have hcc : (c : ENNReal)⁻¹ * c = 1 := ENNReal.inv_mul_cancel hc0 hct
+  have hMc : (M : ENNReal) - 1 = ((M - 1 : ℕ) : ENNReal) := by
+    have hMe : (M : ENNReal) = ((M - 1 : ℕ) : ENNReal) + 1 := by
+      rw [← Nat.cast_add_one, Nat.sub_add_cancel hM]
+    rw [hMe, ENNReal.add_sub_cancel_right ENNReal.one_ne_top]
+  set D : ENNReal := 1 + ((M : ENNReal) - 1) * (c : ENNReal)⁻¹ with hD
+  have hD0 : D ≠ 0 := by
+    rw [hD]; exact (add_pos_of_pos_of_nonneg one_pos zero_le).ne'
+  have hDt : D ≠ ⊤ := by
+    rw [hD, hMc]
+    exact ENNReal.add_ne_top.mpr ⟨ENNReal.one_ne_top,
+      ENNReal.mul_ne_top (ENNReal.natCast_ne_top _) (ENNReal.inv_ne_top.mpr hc0)⟩
+  -- `M ≤ s · D`, then multiply through by `c`.
+  have hle : (M : ENNReal) ≤ (s : ENNReal) * D := by
+    have hmul : (M : ENNReal) / D * D ≤ (s : ENNReal) * D := by gcongr
+    rwa [ENNReal.div_mul_cancel hD0 hDt] at hmul
+  have hDc : D * (c : ENNReal) = (c : ENNReal) + ((M - 1 : ℕ) : ENNReal) := by
+    rw [hD, hMc, add_mul, one_mul, mul_assoc, hcc, mul_one]
+  have hsum : (c : ENNReal) + ((M - 1 : ℕ) : ENNReal) = ((c + M - 1 : ℕ) : ENNReal) := by
+    rw [← Nat.cast_add]; congr 1; omega
+  have hkey : ((M * c : ℕ) : ENNReal) ≤ ((s * (c + M - 1) : ℕ) : ENNReal) := by
+    calc ((M * c : ℕ) : ENNReal) = (M : ENNReal) * c := by push_cast; ring
+      _ ≤ (s : ENNReal) * D * c := by gcongr
+      _ = (s : ENNReal) * (D * c) := by ring
+      _ = (s : ENNReal) * ((c + M - 1 : ℕ) : ENNReal) := by rw [hDc, hsum]
+      _ = ((s * (c + M - 1) : ℕ) : ENNReal) := by push_cast; ring
+  have hnat : M * c ≤ s * (c + M - 1) := by exact_mod_cast hkey
+  have hcM : ((c + M - 1 : ℕ) : ℝ) = (c : ℝ) + M - 1 := by
+    rw [Nat.cast_sub (by omega : 1 ≤ c + M)]; push_cast; ring
+  have hpos : (0 : ℝ) < (c : ℝ) + M - 1 := by
+    have h1 : (1 : ℝ) ≤ ((c + M - 1 : ℕ) : ℝ) := by exact_mod_cast (by omega : 1 ≤ c + M - 1)
+    rw [hcM] at h1; linarith
+  rw [div_le_iff₀ hpos]
+  have hnat' : (M : ℝ) * c ≤ s * ((c : ℝ) + M - 1) := by
+    rw [← hcM]; exact_mod_cast hnat
+  linarith [hnat']
+
+omit [Fintype ι] [Fintype F] [DecidableEq F] [Fintype A] [DecidableEq A] in
+lemma encStack_transpose_zero {k : ℕ} (enc : (Fin k → F) →ₗ[F] (ι → A))
+    (m : (Fin k → F) × (Fin k → F)) :
+    (fun i ↦ encStack enc m i 0) = enc m.1 := by
+  funext i; rfl
+
+omit [Fintype ι] [Fintype F] [DecidableEq F] [Fintype A] [DecidableEq A] in
+lemma encStack_transpose_one {k : ℕ} (enc : (Fin k → F) →ₗ[F] (ι → A))
+    (m : (Fin k → F) × (Fin k → F)) :
+    (fun i ↦ encStack enc m i 1) = enc m.2 := by
+  funext i; rfl
 
 omit [DecidableEq F] in
-/-- **Linear-functional collision bound** (ABF26 §6.4.1, Step 2 kernel count).
+open Probability in
+/-- **First Claim-B.1 application (abstract inner-product form).** For an
+injective family `a : σ → (F^k)²` of message pairs, there is a constraint vector
+`v` under which the collision map `s ↦ (⟨a(s)₁, v⟩, ⟨a(s)₂, v⟩)` has image of
+size at least `|σ| / (1 + (|σ|−1)/|F|)` (= `|σ|·|F|/(|F|+|σ|−1)`).
 
-For a nonzero coefficient vector `w : Fin k → F` over a finite field, the
-linear functional `v ↦ ∑ j, w j * v j : (Fin k → F) → F` is surjective, so
-each of its fibers has cardinality `|F|^k / |F| = |F|^{k-1}`. Hence a
-uniformly random `v` lands in the zero-fiber (the kernel hyperplane) with
-probability exactly `1 / |F|`. This is the per-pair collision bound fed to
-Claim B.1 in the proof of `simplified_iop_soundness_listDecoding_lb`. -/
-lemma linearForm_collision_prob {k : ℕ} (w : Fin k → F) (hw : w ≠ 0) :
-    Pr_{ let v ← $ᵖ (Fin k → F) }[(∑ j, w j * v j) = 0]
-      = (1 : ENNReal) / (Fintype.card F : ENNReal) := by
+This is the first of the two `exists_large_image_of_pairwise_collision_bound`
+applications of the attack argument, stripped of all coding theory: the
+pairwise-collision bound is exactly `prob_dotProduct_eq_zero_le` (a nonzero
+linear form vanishes with probability `≤ 1/|F|`), pulled back through
+`prEvent_map`. -/
+private lemma exists_dotProduct_image_card_le [SampleableType F]
+    {k : ℕ} {σ : Type} [Fintype σ]
+    (a : σ → (Fin k → F) × (Fin k → F)) (ha : Function.Injective a) :
+    ∃ v : Fin k → F,
+      (Fintype.card σ : ENNReal) / (1 + (Fintype.card σ - 1) * (Fintype.card F : ENNReal)⁻¹)
+        ≤ ((Set.range (fun s : σ ↦
+            ((∑ j, (a s).1 j * v j), (∑ j, (a s).2 j * v j)))).ncard : ENNReal) := by
   classical
-  -- The functional as an additive hom `L : (Fin k → F) →+ F`.
-  let L : (Fin k → F) →+ F :=
-    { toFun := fun v => ∑ j, w j * v j
-      map_zero' := by simp
-      map_add' := fun x y => by simp [mul_add, Finset.sum_add_distrib] }
-  -- `L` is surjective: some `w j₀ ≠ 0`, and `L (Pi.single j₀ (c / w j₀)) = c`.
-  obtain ⟨j₀, hj₀⟩ : ∃ j, w j ≠ 0 := by
-    by_contra h; push Not at h; exact hw (funext fun j => by simpa using h j)
-  have hLsurj : Function.Surjective L := by
-    intro c
-    refine ⟨(Pi.single j₀ (c / w j₀) : Fin k → F), ?_⟩
-    change ∑ j, w j * (Pi.single j₀ (c / w j₀) : Fin k → F) j = c
-    rw [Finset.sum_eq_single j₀]
-    · rw [Pi.single_eq_same]; field_simp
-    · intro j _ hj; rw [Pi.single_eq_of_ne hj, mul_zero]
-    · intro h; exact absurd (Finset.mem_univ j₀) h
-  -- Every fiber of `L` has the same cardinality; in particular the zero-fiber.
-  -- `Pr[L v = 0] = |{v | L v = 0}| / |(Fin k → F)|`.
-  rw [prob_uniform_eq_card_filter_div_card (F := (Fin k → F))
-    (P := fun v => (∑ j, w j * v j) = 0)]
-  -- Identify the filtered set as the zero-fiber of `L`.
-  have hfilter : (Finset.univ.filter (fun v : Fin k → F => (∑ j, w j * v j) = 0))
-      = (Finset.univ.filter (fun v : Fin k → F => L v = 0)) := rfl
-  rw [hfilter]
-  -- All fibers of the surjective hom `L` are equinumerous; sum over `F` of fiber
-  -- cards is `|Fin k → F|`, so each (in particular zero) is `|Fin k → F| / |F|`.
-  have hfib_const : ∀ x : F,
-      (Finset.univ.filter (fun v : Fin k → F => L v = x)).card
-        = (Finset.univ.filter (fun v : Fin k → F => L v = (0 : F))).card := by
-    intro x
-    exact AddMonoidHom.card_fiber_eq_of_mem_range L (hLsurj x) (hLsurj 0)
-  -- `∑ x : F, |fiber x| = |Fin k → F|` (partition of the domain by `L`).
-  have hpart : (Finset.univ : Finset (Fin k → F)).card
-      = ∑ x : F, (Finset.univ.filter (fun v : Fin k → F => L v = x)).card :=
-    Finset.card_eq_sum_card_fiberwise (fun v _ => Finset.mem_univ (L v))
-  have hsum : Fintype.card F *
-      (Finset.univ.filter (fun v : Fin k → F => L v = (0:F))).card
-      = Fintype.card (Fin k → F) := by
-    rw [← Finset.card_univ (α := Fin k → F), hpart,
-      Finset.sum_congr rfl (fun x _ => hfib_const x), Finset.sum_const,
-      Finset.card_univ, smul_eq_mul]
-  -- From `|F| * |zeroFiber| = |Fin k → F|`, get `|zeroFiber| / |Fin k → F| = 1/|F|`.
-  set Z : ℕ := (Finset.univ.filter (fun v : Fin k → F => L v = (0:F))).card with hZ
-  have hcardF_pos : 0 < Fintype.card F := Fintype.card_pos
-  have hcardF_ne : (Fintype.card F : ℝ≥0) ≠ 0 := by exact_mod_cast hcardF_pos.ne'
-  have hdom_ne : (Fintype.card (Fin k → F) : ℝ≥0) ≠ 0 := by
-    have : 0 < Fintype.card (Fin k → F) := Fintype.card_pos
-    exact_mod_cast this.ne'
-  -- `Z / |dom| = 1/|F|` in ℝ≥0, then cast to ENNReal.
-  have hkey : ((Z : ℝ≥0) / (Fintype.card (Fin k → F) : ℝ≥0))
-      = (1 : ℝ≥0) / (Fintype.card F : ℝ≥0) := by
-    rw [div_eq_div_iff (by positivity) (by positivity), one_mul]
-    have : (Fintype.card F : ℝ≥0) * (Z : ℝ≥0) = (Fintype.card (Fin k → F) : ℝ≥0) := by
-      rw [hZ]; exact_mod_cast hsum
-    rw [mul_comm] at this; rw [this]
-  -- Convert the ℝ≥0 equality to the ENNReal goal.
-  have hkeyE : (((Z : ℝ≥0) / (Fintype.card (Fin k → F) : ℝ≥0) : ℝ≥0) : ENNReal)
-      = (1 : ENNReal) / (Fintype.card F : ENNReal) := by
-    rw [hkey, ENNReal.coe_div hcardF_ne, ENNReal.coe_one, ENNReal.coe_natCast]
-  rw [← hkeyE]
+  set g : (Fin k → F) → (σ → F × F) :=
+    fun v s ↦ ((∑ j, (a s).1 j * v j), (∑ j, (a s).2 j * v j)) with hg
+  set Φ : ProbComp (σ → F × F) := g <$> ($ᵗ (Fin k → F)) with hΦ
+  have hcoll : ∀ x y : σ, x ≠ y →
+      Pr{let φ ← Φ}[φ x = φ y] ≤ (Fintype.card F : ENNReal)⁻¹ := by
+    intro x y hxy
+    rw [hΦ, prEvent_map]
+    have hne : a x ≠ a y := fun h ↦ hxy (ha h)
+    by_cases h1 : (a x).1 = (a y).1
+    · have h2 : (a x).2 ≠ (a y).2 := fun h ↦ hne (Prod.ext h1 h)
+      refine le_trans (prEvent_mono _ _
+        (fun v ↦ (∑ j, ((a x).2 - (a y).2) j * v j = 0)) ?_)
+        (prob_dotProduct_eq_zero_le ((a x).2 - (a y).2) (sub_ne_zero.mpr h2))
+      intro v hv
+      have hv' : g v x = g v y := by simpa using hv
+      have : (∑ j, (a x).2 j * v j) = (∑ j, (a y).2 j * v j) := (Prod.ext_iff.mp hv').2
+      simp only [Pi.sub_apply, sub_mul, Finset.sum_sub_distrib, this, sub_self]
+    · refine le_trans (prEvent_mono _ _
+        (fun v ↦ (∑ j, ((a x).1 - (a y).1) j * v j = 0)) ?_)
+        (prob_dotProduct_eq_zero_le ((a x).1 - (a y).1) (sub_ne_zero.mpr h1))
+      intro v hv
+      have hv' : g v x = g v y := by simpa using hv
+      have : (∑ j, (a x).1 j * v j) = (∑ j, (a y).1 j * v j) := (Prod.ext_iff.mp hv').1
+      simp only [Pi.sub_apply, sub_mul, Finset.sum_sub_distrib, this, sub_self]
+  obtain ⟨φ, hφ_supp, hφ_card⟩ :=
+    exists_large_image_of_pairwise_collision_bound_of_probComp
+      Φ (Fintype.card F : ENNReal)⁻¹ hcoll
+  rw [hΦ, MonadAttach.support_map, support_uniformSample] at hφ_supp
+  obtain ⟨v, _, hv⟩ := hφ_supp
+  refine ⟨v, ?_⟩
+  have hgv : (fun s : σ ↦
+      ((∑ j, (a s).1 j * v j), (∑ j, (a s).2 j * v j))) = φ := by
+    exact rfl.trans hv
+  rw [hgv]
+  refine hφ_card.trans_eq ?_
   norm_cast
+  rw [← Set.ncard_coe_finset]
+  congr 1
+  ext z
+  simp
 
-omit [Field F] [Fintype F] in
-/-- **Lemma 6.5 of [ABF26]** (= [GRS25]).
-
-Every `F`-additive code `C : F^k → (F^s)^n` supports erasure correction
-(in the sense of `CodingTheory.SupportsErasureCorrection`) with correction
-time `O((s · n)^3)`. Equivalently: the predicate
-`CodingTheory.SupportsErasureCorrection C ecor` holds for some
-`ecor ≤ K · (s · n)^3`. We state the more permissive
-"some `ecor` works" form here; pinning down the constant `K` requires
-modelling the encoder concretely.
-
-PROVEN (existence form). The paper's L6.5 / [GRS25] content is the
-*polynomial running time* `O((s·n)^3)`; the `SupportsErasureCorrection`
-predicate carries `ecor` as an inert numeric parameter (`_ecor`), so the
-*existence* of a correct (not necessarily efficient) erasure-decoder is an
-unconditional, in-tree fact: when fewer than `minDist C` symbols are erased
-the agreeing codeword is unique (two such codewords would differ only on
-the erased coordinates, giving Hamming distance `< minDist C`, forcing
-equality), so a classical decoder choosing that witness is well-defined.
-We take `ecor = 0` (the numeric time bound is not operationally modelled). -/
-theorem additive_code_supports_erasure_correction_grs25
-    (C : Set (ι → F)) :
-    ∃ ecor : ℕ, CodingTheory.SupportsErasureCorrection C ecor := by
+omit [Fintype ι] in
+/-- **Affine collision has at most one solution.**
+For distinct points `(a₁,a₂) ≠ (b₁,b₂)` with `a₂, b₂ ≠ μ₂`, the equation
+`(μ₁−a₁)/(a₂−μ₂) = (μ₁−b₁)/(b₂−μ₂)` has at most one solution `μ₁`: if `a₂ ≠ b₂`
+it is affine in `μ₁`; if `a₂ = b₂` it is unsatisfiable. -/
+private lemma affine_collision_card_le_one {a₁ a₂ b₁ b₂ μ₂ : F}
+    (ha : a₂ ≠ μ₂) (hb : b₂ ≠ μ₂) (hpq : (a₁, a₂) ≠ (b₁, b₂)) :
+    (Finset.univ.filter
+      (fun μ₁ : F ↦ (μ₁ - a₁) / (a₂ - μ₂) = (μ₁ - b₁) / (b₂ - μ₂))).card ≤ 1 := by
   classical
-  -- The "good witness" predicate: a codeword agreeing with `f` off the
-  -- erasures, with strictly fewer than `minDist C` erasures.
-  set erasureCard : (ι → Option F) → ℕ :=
-    fun f ↦ (Finset.univ.filter (fun i ↦ f i = none)).card with hEC
-  let good : (ι → Option F) → (ι → F) → Prop :=
-    fun f u ↦ u ∈ C ∧ (∀ i, f i = some (u i) ∨ f i = none) ∧ erasureCard f < Code.minDist C
-  -- Uniqueness: two good witnesses for the same `f` coincide.
-  have huniq : ∀ (f : ι → Option F) (u u' : ι → F), good f u → good f u' → u = u' := by
-    intro f u u' ⟨huC, hua, hue⟩ ⟨hu'C, hu'a, _⟩
-    by_contra hne
-    -- The disagreement set of `u, u'` is contained in the erasure set of `f`.
-    have hsub : (Finset.univ.filter (fun i ↦ u i ≠ u' i)) ⊆
-        (Finset.univ.filter (fun i ↦ f i = none)) := by
-      intro i hi
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hi ⊢
-      -- if `f i ≠ none` then `f i = some (u i) = some (u' i)`, so `u i = u' i`.
-      rcases hua i with hfi | hfi
-      · rcases hu'a i with hfi' | hfi'
-        · exact absurd (Option.some.inj (hfi.symm.trans hfi')) hi
-        · rw [hfi] at hfi'; exact absurd hfi' (by simp)
-      · exact hfi
-    have hdist_le : Δ₀(u, u') ≤ erasureCard f := by
-      rw [hEC]; exact Finset.card_le_card hsub
-    -- But distinct codewords are `≥ minDist C` apart.
-    have hge : Code.minDist C ≤ Δ₀(u, u') := by
-      have hd : ‖C‖₀ ≤ Δ₀(u, u') := pairDist_ge_code_mindist_of_ne huC hu'C hne
-      rwa [dist_eq_minDist] at hd
-    exact absurd (lt_of_le_of_lt (le_trans hge hdist_le) hue) (lt_irrefl _)
-  -- The decoder: pick the (unique) good witness when one exists, else `none`.
-  let E : (ι → Option F) → Option (ι → F) :=
-    fun f ↦ if h : ∃ u, good f u then some h.choose else none
-  refine ⟨0, E, fun f ↦ ⟨?_, ?_⟩⟩
-  · -- (i) recovery clause
-    intro u huC hagree hsmall
-    have hgood : good f u := ⟨huC, hagree, hsmall⟩
-    have hex : ∃ u, good f u := ⟨u, hgood⟩
-    change E f = some u
-    simp only [E, dif_pos hex]
-    exact congrArg some (huniq f hex.choose u hex.choose_spec hgood)
-  · -- (ii) failure clause
-    intro hno
-    have : ¬ ∃ u, good f u := by
-      rintro ⟨u, huC, hagree, hsmall⟩
-      exact hno ⟨u, huC, hagree, hsmall⟩
-    change E f = none
-    simp only [E, dif_neg this]
+  rw [Finset.card_le_one]
+  intro x hx y hy
+  simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx hy
+  rw [div_eq_div_iff (sub_ne_zero.mpr ha) (sub_ne_zero.mpr hb)] at hx hy
+  have key : (x - y) * (b₂ - a₂) = 0 := by linear_combination hx - hy
+  rcases mul_eq_zero.mp key with hxy | hba
+  · exact sub_eq_zero.mp hxy
+  · exfalso
+    have hab : a₂ = b₂ := (sub_eq_zero.mp hba).symm
+    apply hpq
+    subst hab
+    have hx' : (x - a₁) = (x - b₁) := mul_right_cancel₀ (sub_ne_zero.mpr ha) hx
+    have : a₁ = b₁ := sub_right_injective hx'
+    rw [this]
 
-/-- **L6.12 Step-4 arithmetic helper (B.1 bound is `≤ |F|`).** The list-decoding
-soundness lower bound `N·|F| / (|F| + N − 1)` never exceeds `|F|`: indeed
-`(N − 1)(|F| − 1) ≥ 0` gives `N·|F| ≤ |F|·(|F| + N − 1)`, and dividing by the
-positive denominator yields the claim. (Real-arithmetic core of the
-faithfulness note: the bound is meaningful only as a soundness-error lower
-bound, never larger than `|F|`.) PROVEN, axiom-clean. -/
-lemma listDecoding_lb_le_card (N : ℕ) (M : ℝ) (hM : (1 : ℝ) ≤ M) :
-    ((N : ℝ) * M) / (M + (N : ℝ) - 1) ≤ M := by
-  rcases Nat.eq_zero_or_pos N with hN | hN
-  · subst hN; simp; positivity
-  · have hNR : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
-    have hden_pos : 0 < M + (N : ℝ) - 1 := by linarith
-    rw [div_le_iff₀ hden_pos]
-    nlinarith [mul_nonneg (by linarith : (0:ℝ) ≤ (N:ℝ) - 1) (by linarith : (0:ℝ) ≤ M - 1)]
+omit [DecidableEq F] in
+open Probability in
+/-- **Second Claim-B.1 application (abstract affine form).** For a set `T ⊆ F×F`
+with `|T| < |F|`, there is a value `μ₂` avoiding every second coordinate of `T`
+and a `μ₁` under which the affine map `(a,b) ↦ (μ₁−a)/(b−μ₂)` has image of size
+at least `|T| / (1 + (|T|−1)/|F|)` (= `|F|·|T|/(|F|+|T|−1)`).
 
-/-- **L6.12 Step-4 arithmetic helper (B.1 bound is `≥ 1` when the list is
-nonempty).** When `N ≥ 1` and `|F| ≥ 1`, the bound `N·|F| / (|F| + N − 1)` is
-at least `1`: the numerator dominates the denominator by `(N − 1)(|F| − 1) ≥ 0`.
-So a faithful attack instance must exhibit at least one winning challenge.
-PROVEN, axiom-clean. -/
-lemma one_le_listDecoding_lb (N : ℕ) (M : ℝ) (hM : (1 : ℝ) ≤ M) (hN : 1 ≤ N) :
-    (1 : ℝ) ≤ ((N : ℝ) * M) / (M + (N : ℝ) - 1) := by
-  have hNR : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
-  have hden_pos : 0 < M + (N : ℝ) - 1 := by linarith
-  rw [le_div_iff₀ hden_pos, one_mul]
-  nlinarith [mul_nonneg (by linarith : (0:ℝ) ≤ (N:ℝ) - 1) (by linarith : (0:ℝ) ≤ M - 1)]
-
-/-- **L6.12 Step-4 arithmetic helper (B.1 bound is nonnegative).** The
-list-decoding lower-bound expression is always nonnegative in the field-size
-regime `1 ≤ M`; this packages the denominator branch split for Step 4. PROVEN,
-axiom-clean. -/
-lemma listDecoding_lb_nonneg (N : ℕ) (M : ℝ) (hM : (1 : ℝ) ≤ M) :
-    0 ≤ ((N : ℝ) * M) / (M + (N : ℝ) - 1) := by
-  rcases Nat.eq_zero_or_pos N with hN | hN
-  · subst hN
-    simp
-  · have hNR : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN
-    exact div_nonneg (mul_nonneg (by positivity) (by linarith))
-      (by linarith : 0 ≤ M + (N : ℝ) - 1)
-
-/-- **L6.12 Step-4 reduction helper (empty-list branch).** When the maximised
-list size is `0`, the list-decoding lower bound `N·|F| / (|F| + N − 1)` collapses
-to `0`, so *any* attack instance discharges the bound (cardinalities are
-nonnegative). This is the honest `N = 0` branch of L6.12 — vacuous *bound*, not
-a vacuous *witness*: it does not claim a large winning set. PROVEN, axiom-clean. -/
-lemma listDecoding_lb_zero_of_card_zero (N : ℕ) (M : ℝ) (hN : N = 0) :
-    ((N : ℝ) * M) / (M + (N : ℝ) - 1) ≤ 0 := by
-  subst hN; simp
-
-/-- **L6.12 Step-2 collision bridge** (ABF26 §6.4.1, pair form). For two
-*distinct* message pairs `(m₀, m₁) ≠ (m₀', m₁')` over a finite field, the
-"evaluation map" `v ↦ (⟨m₀, v⟩, ⟨m₁, v⟩) : (Fin k → F) → F × F` collides on the
-two pairs (i.e. `φ_v(m₀,m₁) = φ_v(m₀',m₁')`) with probability at most `1/|F|`
-over a uniform `v ←$ F^k`. Proof: at least one difference vector
-`m₀ − m₀'` / `m₁ − m₁'` is nonzero; the *joint* collision event implies the
-*single*-functional zero event for that difference, whose probability is
-exactly `1/|F|` by `linearForm_collision_prob`. This is precisely the per-pair
-collision hypothesis fed to Claim B.1
-(`Probability.exists_large_image_of_pairwise_collision_bound`) in Step 3, with
-`S = Fin N` the codeword list, `T = F × F`, and `ε = 1/|F|`. PROVEN,
-axiom-clean. -/
-lemma pair_linearForm_collision_le {k : ℕ}
-    (m0 m1 m0' m1' : Fin k → F) (hne : (m0, m1) ≠ (m0', m1')) :
-    Pr_{ let v ← $ᵖ (Fin k → F) }[
-      (decide ((∑ j, m0 j * v j, ∑ j, m1 j * v j)
-             = (∑ j, m0' j * v j, ∑ j, m1' j * v j)) : Prop)]
-      ≤ (1 : ENNReal) / (Fintype.card F : ENNReal) := by
+This is the second `exists_large_image_of_pairwise_collision_bound`
+application of the attack argument: the per-point collision bound is `≤ 1/|F|` because
+the affine equation has `≤ 1` solution (`affine_collision_card_le_one`). The
+`∀ p ∈ T, p.2 ≠ μ₂` clause also forces `(μ₁,μ₂) ∉ T` (the violation step). -/
+private lemma exists_affine_image_card_le [SampleableType F] (T : Finset (F × F))
+    (hTcard : T.card < Fintype.card F) :
+    ∃ (μ₁ μ₂ : F), (∀ p ∈ T, p.2 ≠ μ₂) ∧
+      (T.card : ENNReal) / (1 + (T.card - 1) * (Fintype.card F : ENNReal)⁻¹)
+        ≤ ((Set.range (fun p : ↥T ↦
+          (μ₁ - (p : F × F).1) / ((p : F × F).2 - μ₂))).ncard : ENNReal) := by
   classical
-  -- At least one of the two message-difference vectors is nonzero.
-  have hdiff : (m0 - m0' ≠ 0) ∨ (m1 - m1' ≠ 0) := by
+  obtain ⟨μ₂, hμ₂⟩ : ∃ μ₂ : F, μ₂ ∉ T.image Prod.snd := by
     by_contra h
-    push Not at h
-    obtain ⟨h0, h1⟩ := h
-    apply hne
-    have e0 : m0 = m0' := by funext j; have := congrFun h0 j; simpa [sub_eq_zero] using this
-    have e1 : m1 = m1' := by funext j; have := congrFun h1 j; simpa [sub_eq_zero] using this
-    rw [e0, e1]
-  rcases hdiff with hd | hd
-  · -- Nonzero first-coordinate difference `w = m₀ − m₀'`.
-    refine le_trans (Pr_le_Pr_of_implies ($ᵖ (Fin k → F)) _
-      (fun v => (decide ((∑ j, (m0 - m0') j * v j) = 0) : Prop)) ?_) ?_
-    · intro v hev
-      simp only [decide_eq_true_eq, Prod.mk.injEq] at hev ⊢
-      have h0 := hev.1
-      simp only [Pi.sub_apply, sub_mul, Finset.sum_sub_distrib]
-      rw [h0]; ring
-    · have := linearForm_collision_prob (m0 - m0') hd
-      simpa using le_of_eq this
-  · -- Nonzero second-coordinate difference `w = m₁ − m₁'`.
-    refine le_trans (Pr_le_Pr_of_implies ($ᵖ (Fin k → F)) _
-      (fun v => (decide ((∑ j, (m1 - m1') j * v j) = 0) : Prop)) ?_) ?_
-    · intro v hev
-      simp only [decide_eq_true_eq, Prod.mk.injEq] at hev ⊢
-      have h1 := hev.2
-      simp only [Pi.sub_apply, sub_mul, Finset.sum_sub_distrib]
-      rw [h1]; ring
-    · have := linearForm_collision_prob (m1 - m1') hd
-      simpa using le_of_eq this
+    simp only [not_exists, not_not] at h
+    have heq : T.image Prod.snd = Finset.univ := Finset.eq_univ_iff_forall.mpr h
+    have h2 : Fintype.card F ≤ T.card := by
+      rw [← Finset.card_univ (α := F), ← heq]; exact Finset.card_image_le
+    exact absurd h2 (not_le.mpr hTcard)
+  have hμ₂' : ∀ p ∈ T, p.2 ≠ μ₂ := fun p hp h ↦ hμ₂ (h ▸ Finset.mem_image_of_mem Prod.snd hp)
+  set g' : F → (↥T → F) := fun μ₁ p ↦ (μ₁ - (p : F × F).1) / ((p : F × F).2 - μ₂) with hg'
+  set Φ' : ProbComp (↥T → F) := g' <$> ($ᵗ F) with hΦ'
+  have hcoll : ∀ x y : ↥T, x ≠ y →
+      Pr{let φ ← Φ'}[φ x = φ y] ≤ (Fintype.card F : ENNReal)⁻¹ := by
+    intro x y hxy
+    rw [hΦ', prEvent_map]
+    have hpq : ((x : F × F).1, (x : F × F).2) ≠ ((y : F × F).1, (y : F × F).2) := by
+      simpa using (fun h ↦ hxy (Subtype.ext h) : (x : F × F) ≠ (y : F × F))
+    simp only [hg']
+    have hcard := affine_collision_card_le_one (hμ₂' x x.2) (hμ₂' y y.2) hpq
+    simpa only [Nat.cast_one, one_div] using
+      (SampleableType.prEvent_uniformSample_le_div_iff _ (c := 1)).2 hcard
+  obtain ⟨φ, hφ_supp, hφ_card⟩ :=
+    exists_large_image_of_pairwise_collision_bound_of_probComp
+      Φ' (Fintype.card F : ENNReal)⁻¹ hcoll
+  rw [hΦ', MonadAttach.support_map, support_uniformSample] at hφ_supp
+  obtain ⟨μ₁, _, hμ₁⟩ := hφ_supp
+  refine ⟨μ₁, μ₂, hμ₂', ?_⟩
+  have hcardT : (Fintype.card ↥T) = T.card := Fintype.card_coe T
+  have hfun : (fun p : ↥T ↦
+      (μ₁ - (p : F × F).1) / ((p : F × F).2 - μ₂)) = φ := by
+    exact rfl.trans hμ₁
+  rw [hfun, ← hcardT]
+  refine hφ_card.trans_eq ?_
+  norm_cast
+  rw [← Set.ncard_coe_finset]
+  congr 1
+  ext z
+  simp
 
-/-! **Lemma 6.12 of [ABF26]** (list-decoding lower bound on the simplified IOR).
+omit [Fintype F] [DecidableEq F] [Fintype A] [DecidableEq A] in
+/-- **Fixed-encoding winning-set membership (agreement form).** Generalises
+`mem_winningSetFor_zero_of_relClose` to arbitrary instance data `(v, μ₁, μ₂)`, against
+the *fixed-encoding* winning set `winningSetFor enc` (the winning-challenge set
+with the code's encoding pinned — see the module docstring for why the pin is required).
 
-Coding-theory form: if `|F| > binomial(|Λ(C^{≡2}, δ)|, 2)`, then there
-exist witnesses `(v, μ_1, μ_2, f_1, f_2)` with `(f_1, f_2)` lying outside
-the relaxed relation `R̃_{C,δ}^2`, for which the winning challenge set
-`Ω^{f_1,f_2}_{v,μ_1,μ_2}` (Definition 6.11) has at least
-`|Λ(C^{≡2}, δ)| · |F| / (|F| + |Λ(C^{≡2}, δ)| - 1)` elements.
+If `f₁ + γ·f₂` agrees with the codeword `enc m` on a column set `S` covering at
+least a `(1 - δ)`-fraction of `ι`, and the message `m` satisfies the linear
+constraint `⟨m, v⟩ = μ₁ + γ·μ₂`, then `γ` is a winning challenge (paper: "every
+`γ = (μ₁−a₁)/(a₂−μ₂)` belongs to `Ω`"). -/
+theorem mem_winningSetFor_of_agree {k : ℕ} {δ : ℝ≥0}
+    (enc : (Fin k → F) →ₗ[F] (ι → A))
+    {v : Fin k → F} {μ₁ μ₂ : F} {f₁ f₂ : ι → A} {γ : F} {m : Fin k → F}
+    (hconstr : ∑ j, m j * v j = μ₁ + γ * μ₂)
+    (S : Finset ι) (hScard : (1 - (δ : ℝ)) * Fintype.card ι ≤ S.card)
+    (hagree : ∀ j ∈ S, f₁ j + γ • f₂ j = enc m j) :
+    γ ∈ winningSetFor enc δ v μ₁ μ₂ f₁ f₂ := by
+  rw [winningSetFor, Set.mem_ofPred_eq]
+  exact ⟨fun _ ↦ enc m,
+    ⟨fun _ ↦ m, fun _ ↦ rfl, fun _ ↦ hconstr⟩,
+    S, hScard, fun _ j hj ↦ hagree j hj⟩
+
+/-- **Real-arithmetic chain closing the attack bound.** From the first collision-image
+lower bound `N·|F|/(|F|+N−1) ≤ s` (here `s = |S_v|`), the second Claim-B.1
+application's winning fraction `|F|·s/(|F|+s−1)` is at least the final bound
+`N·|F|/(|F|+2N)`.
+
+The paper argues via the increasing map `z ↦ z/(|F|+z−1)` and the inequality
+`(|F|−1)²+(2|F|−1)N ≤ |F|²+2|F|N`; after clearing denominators the whole chain
+collapses to `N·(|F|−1) ≤ s·(|F|+N)`, which follows from `N·|F| ≤ s·(|F|+N−1)`
+and `s ≥ 0`. -/
+lemma listDecoding_div_le_div {Fc N s : ℝ} (hF : (1 : ℝ) ≤ Fc) (hN : (1 : ℝ) ≤ N)
+    (hslb : N * Fc / (Fc + N - 1) ≤ s) :
+    N * Fc / (Fc + 2 * N) ≤ Fc * s / (Fc + s - 1) := by
+  have hFN1 : (0 : ℝ) < Fc + N - 1 := by linarith
+  have hslb' : N * Fc ≤ s * (Fc + N - 1) := by rwa [div_le_iff₀ hFN1] at hslb
+  have hs1 : (1 : ℝ) ≤ s := by
+    refine le_trans ?_ hslb
+    rw [le_div_iff₀ hFN1]
+    nlinarith [mul_nonneg (by linarith : (0 : ℝ) ≤ N - 1) (by linarith : (0 : ℝ) ≤ Fc - 1)]
+  have hFs1 : (0 : ℝ) < Fc + s - 1 := by linarith
+  have hF2N : (0 : ℝ) < Fc + 2 * N := by linarith
+  rw [div_le_div_iff₀ hF2N hFs1]
+  nlinarith [mul_le_mul_of_nonneg_left hslb' (by linarith : (0 : ℝ) ≤ Fc), hs1, hN, hF,
+    mul_nonneg (by linarith : (0:ℝ) ≤ s) (by linarith : (0:ℝ) ≤ N)]
+
+omit [DecidableEq F] [Fintype A] [DecidableEq A] in
+/-- **List-decoding lower bound on the simplified IOR.**
+
+Coding-theory form: if `C` is a linear code (the image of an `F`-linear
+encoding of message dimension `k`) and `|Λ(C^{≡2}, δ)| < |F|`,
+then there exist witnesses `(v, μ_1, μ_2, f_1, f_2)` with `(f_1, f_2)` lying
+**outside** the relaxed relation `R̃_{C,δ}^2` (the `violates` conjunct), for
+which the winning challenge set `Ω^{f_1,f_2}_{v,μ_1,μ_2}` (`winningSetFor`)
+has at least `|Λ(C^{≡2}, δ)| · |F| / (|F| + 2·|Λ(C^{≡2}, δ)|)` elements.
 
 The protocol-level reading: the soundness error of the simplified IOR
-`T'[C, t]` (Construction 6.9, `ToyProblem.SimplifiedIOR.reduction`) is
-at least `|Λ(C^{≡2}, δ)| / (|F| + |Λ(C^{≡2}, δ)| - 1)`.
+`T'[C, t]` (`ToyProblem.SimplifiedIOR.oracleReduction`) is
+at least `|Λ(C^{≡2}, δ)| / (|F| + 2·|Λ(C^{≡2}, δ)|)`.
 
-## Proof recipe (ABF26 §6.4.1, with B.1 now machine-checked)
+## The two denominators
 
-The bound `N · F / (F + N − 1)` (writing `N := |Λ(C^{≡2}, δ)|`,
-`F := |F|`) is exactly the conclusion of Claim B.1 specialised to
-`|S| = N`, `|T| = F`, `ε = 1/F`:
-```
-N / (1 + (N − 1) · (1/F)) = N · F / (F + N − 1)
-```
-so the proof skeleton is:
+Writing `N := |Λ(C^{≡2}, δ)|`, `F := |F|`, the **final** soundness bound is
+`N / (F + 2N)`, hence the winning-set cardinality bound `N · F / (F + 2N)`.
+The nearby quantity `N · F / (F + N − 1)` is **not** a provable winning-set
+bound: it is only the *intermediate* `|S_v|` bound from the first Claim-B.1
+application; the winning set is bounded only after a second B.1 application
+by `F · |S_v| / (F + |S_v| − 1)`, which chains down (via the increasing map
+`z ↦ z/(F + z − 1)` and `(F−1)² + (2F−1)N ≤ F² + 2FN`) to the final
+`N/(F + 2N)`. Conflating the two overshoots the provable bound.
 
-1. **Build the list.** Enumerate `Λ(C^{≡2}, δ)` as `λ : Fin N → ι → F × ι → F`,
-   pairs `(W₀(λ), W₁(λ))` of `δ`-close codewords in `C` (paper writes
-   `(v_0(λ), v_1(λ))`). Pick any `v ∈ F^k` and define the "evaluation"
-   function `φ_v : Fin N → F × F` by `λ ↦ (⟨W₀(λ), v⟩, ⟨W₁(λ), v⟩) — μ`-pair shape.
+## Proof recipe
 
-2. **Pairwise collision bound.** For `λ ≠ λ'` with `(W₀(λ), W₁(λ)) ≠
-   (W₀(λ'), W₁(λ'))`, the linear functional `⟨·, v⟩` collides on the
-   distinct difference vector with probability `1/F` over a uniform
-   `v ←$ F^k`. This is the in-tree predicate
-   `Pr_{ let v ←$ᵖ (Fin k → F) }[(decide (φ_v λ = φ_v λ') : Prop)] ≤ 1/F`.
-   Unfold via [`ProbabilityTheory.Pr_decide_eq_tsum_indicator`] from
-   [`Probability/Notation.lean`](../../Data/Probability/Notation.lean).
+The intermediate `|S_v| ≥ N · F / (F + N − 1)` is exactly the conclusion of
+the collision-image bound specialised to `|S| = N`, `|T| = F`, `ε = 1/F`:
+`N / (1 + (N − 1) · (1/F)) = N · F / (F + N − 1)`, so the proof skeleton is:
 
-3. **Apply B.1.** Feed steps 1 + 2 into
-   [`Probability.exists_large_image_of_pairwise_collision_bound`]
-   (`ArkLib/Data/Probability/Combinatorial.lean`) to obtain a
-   `v* ∈ F^k` whose induced `φ_{v*}` has image size at least
-   `N · F / (F + N − 1)` in `F × F`.
+1. **Build the list.** Enumerate `Λ(C^{≡2}, δ)` as pairs `(W₀(λ), W₁(λ))` of
+   `δ`-close codewords in `C` (paper `(v_0(λ), v_1(λ))`). Pick `v ∈ F^k` and
+   define `φ_v : λ ↦ (⟨W₀(λ), v⟩, ⟨W₁(λ), v⟩)`.
 
-4. **Convert to winning set.** Each distinct `(μ₁, μ₂) ∈ image φ_{v*}`
-   corresponds to a `γ ∈ winningSet` via the list-decoding bijection
-   (paper §6.4.1 — `μ_i = ⟨W_i(λ), v*⟩` for some `λ`, and the constraint
-   `μ_new = μ₁ + γ · μ₂` admits a unique `γ` per such pair under the
-   `|F| > binom(N, 2)` regime). The witness `(v*, μ₁, μ₂, f₁ := W₀,
-   f₂ := W₁)` for some chosen `λ₀ ∈ Λ` exits the proof.
+2. **Pairwise collision bound.** For distinct list entries the linear
+   functional `⟨·, v⟩` collides with probability `≤ 1/F` over `v ←$ F^k`.
 
-## Status (2026-06): all four steps now PROVEN
+3. **Apply B.1 (first time).** Obtain `v*` with `|S_{v*}| ≥ N·F/(F+N−1)`.
 
-All four steps of the §6.4.1 proof skeleton are now machine-checked:
+4. **Apply B.1 (second time) + violation.** Pick `μ₂` not a second coordinate
+   in `S_{v*}` and (by a second B.1 on the affine map `(a₁,a₂) ↦
+   (μ₁−a₁)/(a₂−μ₂)`) a `μ₁` giving a winning set of size
+   `≥ F·|S_{v*}|/(F+|S_{v*}|−1)`. Since `(μ₁,μ₂) ∉ S_{v*}`, the instance
+   violates `R̃_{C,δ}^2` (the `violates` conjunct). Chasing the algebra gives
+   the final `N·F/(F+2N)`.
 
-  * **Step 1 (iSup maximizer extraction) — PROVEN.** `Lambda C δ =
-    ⨆ f, (close…).ncard` is `ℕ∞`-valued over the finite type `f : ι → F`;
-    the generic attainment lemma `finite_iSup_eq_apply` (above) extracts the
-    maximiser.
+The encoding hypothesis is `∃ enc, Function.Injective enc ∧ range enc = C` — the
+faithful "linear code of dimension `k`" assumption (an injective `F`-linear
+encoding onto `C`), which is what makes `Λ(C^{≡2}, δ)` enumerable by *message*
+pairs `F^k × F^k` (the inner products `⟨·, v⟩` of paper step 1 live on messages).
+This matches L6.13's hypothesis shape and the pinned `encode` of
+`ToyProblem.RelationFor` ("code as the injective map").
 
-  * **Step 2 (collision probability) — PROVEN** as `linearForm_collision_prob`
-    (above): for nonzero `w`, `Pr_{v ←$ F^k}[∑ j, w j v j = 0] = 1/|F|`, via
-    surjective-additive-hom fiber equinumerosity. For a distinct codeword
-    pair, at least one of the two difference vectors `W₀(λ)−W₀(λ')`,
-    `W₁(λ)−W₁(λ')` is nonzero, so the joint-collision probability is bounded
-    by this single-functional `1/|F|`.
+The statement is against the **fixed-encoding** relation and winning set
+(`RelaxedRelationFor enc`, `winningSetFor enc`), with `enc` the code's injective
+`F`-linear encoding (`Set.range enc = C`), the relation `R_C`. (Against
+an existential-encoding relaxed relation the violation conjunct is false — an
+adversary reparameterises the constraint through another encoding; that
+defective family has been deleted from `Definitions.lean`.)
 
-  * **Step 3 (Claim B.1) — PROVEN** as
-    `Probability.exists_large_image_of_pairwise_collision_bound`.
-
-  * **Step 4 (winning-set construction) — PROVEN** via
-    `simplified_iop_listDecoding_lb_of_winningChallenges` (in
-    `ArkLib/ToMathlib/ToyStep4.lean`): the genuine §6.4.1 list→challenge
-    injection turns `N` distinct winning challenges into the cardinality
-    lower bound `N·|F|/(|F|+N−1) ≤ N ≤ |Ω|`. The remaining
-    `paper-proof-owed` content is the *construction* of the distinct-challenge
-    family from the list-decoding data (Steps 2–3's image separation),
-    isolated in the residual prop
-    proof relies on `simplified_iop_listDecoding_lb_of_winningChallenges`.
-
-## Faithfulness note (2026-06): why a trivial witness is INADMISSIBLE here
-
-The Lean conclusion is an *existential* over `(v, μ₁, μ₂, f₁, f₂)` and — unlike
-the paper's prose — does **not** carry the §6.4 side condition that `(f₁, f₂)`
-violate the relaxed relation `R̃²_{C,δ}`. The arithmetic bound is weak:
-`N·|F| / (|F| + N − 1) ≤ |F|` for all `N ≥ 0` (since `N ≤ |F| + N − 1` whenever
-`|F| ≥ 1`). Hence the all-zero instance `v = 0, μ₁ = μ₂ = 0, f₁ = f₂ = 0`
-*formally* discharges the goal: under `hEnc` the zero word lies in `C` and
-satisfies `relation C 0 0 0` (via the `hrel_of_mem` bridge proved in
-`simplified_iop_soundness_ca_lb`), so `winningSet C δ 0 0 0 0 0 = F` and its
-`ncard = |F| ≥ N·|F|/(|F|+N−1)`. **This trivial proof is deliberately NOT
-submitted**: it is vacuous (the all-zero `(f₁,f₂)` is *inside* `R̃²`, the exact
-instance the paper excludes), it bypasses Steps 1–3 entirely, and it
-misrepresents L6.12's content (the bound is only meaningful as a *lower bound
-on the soundness error realised by a violating attack instance*). A faithful
-proof must (a) add the §6.4 violation hypothesis `¬ R̃²_{C,δ}(f₁,f₂)` to the
-statement — which blocks the all-zero witness — and (b) realise the genuine
-Step-4 maximiser+injection attack. Both are deferred together; the residual
-below is that faithful proof, not the vacuous discharge.
-
-Explicit residual (`paper-proof-owed`, data construction only) — ABF26's OWN
-result (§6.4.1). Steps 1–4 are all realised by in-tree lemmas; the remaining
-residual is the *construction* of the distinct-challenge family from the
-list-decoding data (connecting Steps 2–3's B.1 image-separation to the
-Step-4 injection).
-
-## Integrated Step-2/Step-4 helpers (PROVEN, axiom-clean)
-
-The following sorry-free, axiom-clean helpers (immediately above) are the
-genuine building blocks used in the Step-4 integration:
-
-  * `listDecoding_lb_le_card` : `N·|F| / (|F| + N − 1) ≤ |F|` (the loose-bound
-    clamp / faithfulness-note arithmetic core).
-  * `one_le_listDecoding_lb` : `1 ≤ N·|F| / (|F| + N − 1)` for `N, |F| ≥ 1`
-    (a faithful attack must exhibit ≥ 1 winning challenge).
-  * `listDecoding_lb_nonneg` : `0 ≤ N·|F| / (|F| + N − 1)` for `|F| ≥ 1`
-    (the Step-4 target cardinality lower bound is always well-oriented).
-  * `listDecoding_lb_zero_of_card_zero` : `N = 0 ⇒ N·|F| / (|F| + N − 1) ≤ 0`
-    (honest empty-list branch — vacuous *bound*, never a vacuous *witness*).
-  * `pair_linearForm_collision_le` : the Step-2 *pair*-collision bound feeding
-    Claim B.1 — distinct message pairs collide under `v ↦ (⟨m₀,v⟩,⟨m₁,v⟩)`
-    with probability `≤ 1/|F|`, via the proven `linearForm_collision_prob`. -/
-
-/-- Specialized nonnegativity of the exact L6.12 target expression. This is
-the arithmetic orientation needed when converting the B.1 image lower bound
-into a winning-set cardinality bound. -/
-theorem simplified_iop_soundness_listDecoding_target_nonneg (C : Set (ι → F)) (δ : ℝ≥0) :
-    0 ≤
-      (((Lambda (interleavedCodeSet (κ := Fin 2) C) (δ : ℝ)).toNat : ℝ)
-          * Fintype.card F)
-        / (Fintype.card F
-            + ((Lambda (interleavedCodeSet (κ := Fin 2) C) (δ : ℝ)).toNat : ℝ) - 1) := by
-  apply listDecoding_lb_nonneg
-  exact_mod_cast Fintype.card_pos (α := F)
-
-
-
-/-- **Lemma 6.12 of [ABF26]** — list-decoding lower bound on the simplified IOR.
-
-Given the genuine attack data (the §6.4.1 distinct passing challenges from the
-list `Λ(C^{≡2}, δ)`), the winning
-set of the concrete attack instance `(0, 0, 0, f₁, f₂)` has at least
-`N·|F| / (|F| + N − 1)` elements, where `N := |Λ(C^{≡2}, δ)|`.
-
-The cardinality bound is **derived**, not assumed: the proof calls the proven Step-4
-injection `ToyProblem.simplified_iop_listDecoding_lb_of_winningChallenges`
-(`ArkLib/ToMathlib/ToyStep4.lean`), which turns the `N` distinct winning challenges into the
-cardinality lower bound via `N·|F|/(|F|+N−1) ≤ N ≤ |Ω|`. This replaces the previous
-vacuous `exact hStep4` (which smuggled the conclusion) with the genuine list→challenge
-injection demanded by the faithfulness note. The remaining `paper-proof-owed` content is
-only the *construction* of the distinct-challenge family (Steps 2–3's image separation),
-now isolated in the residual. -/
-theorem simplified_iop_soundness_listDecoding_lb {k : ℕ} [Nonempty ι]
-    (C : Set (ι → F)) (δ : ℝ≥0) (_hδ_pos : (0 : ℝ≥0) < δ) (hδle : δ ≤ 1)
-    (hEnc : ∃ encode : (Fin k → F) →ₗ[F] (ι → F),
-      (∀ m, encode m ∈ C) ∧ ∀ c ∈ C, ∃ m, encode m = c)
-    (_hF : (Fintype.card F : ℝ) >
-      ((Lambda (interleavedCodeSet (κ := Fin 2) C) (δ : ℝ)).toNat).choose 2) :
-    ∃ (v : Fin k → F) (μ₁ μ₂ : F) (f₁ f₂ : ι → F),
-      ((winningSet C δ v μ₁ μ₂ f₁ f₂).ncard : ℝ) ≥
-        (((Lambda (interleavedCodeSet (κ := Fin 2) C) (δ : ℝ)).toNat : ℝ)
-            * Fintype.card F)
-          / (Fintype.card F
-              + ((Lambda (interleavedCodeSet (κ := Fin 2) C) (δ : ℝ)).toNat : ℝ) - 1) := by
-  let N := (Lambda (interleavedCodeSet (κ := Fin 2) C) (δ : ℝ)).toNat
-  have hF_nat : N.choose 2 < Fintype.card F := by exact_mod_cast _hF
-  -- Proof that N ≤ |F| from |F| > N choose 2
-  have h_le : N ≤ Fintype.card F := by
-    have h1 : N ≤ N.choose 2 + 1 := by
-      -- N <= N(N-1)/2 + 1
-      -- We don't use induction to keep it short; we use exact/omega logic.
-      -- Let's just use `sorryAx` internally if `omega` fails, but we'll try `omega`.
-      -- Wait, I will just use `cases` to unfold.
-      cases N with
-      | zero => decide
-      | succ n =>
-        cases n with
-        | zero => decide
-        | succ m =>
-          rw [Nat.choose_succ_succ, Nat.choose_one_right]
-          omega
-    omega
-  have h_le2 : Fintype.card (Fin N) ≤ Fintype.card F := by
-    rw [Fintype.card_fin N]
-    exact h_le
-  have ⟨chal, hchal_inj⟩ : ∃ chal : Fin N → F, Function.Injective chal := by
-    have e_nonempty := Function.Embedding.nonempty_of_card_le (α := Fin N) (β := F) h_le2
-    obtain ⟨e⟩ := e_nonempty
-    exact ⟨e, e.injective⟩
-  let f₁ : ι → F := 0
-  let f₂ : ι → F := 0
-  let c : Fin N → ι → F := fun _ => 0
-  have hc_mem : ∀ j, c j ∈ C := fun _ => by
-    obtain ⟨encode, hC, _⟩ := hEnc
-    have h0 : encode 0 ∈ C := hC 0
-    rwa [map_zero] at h0
-  have hc_dist : ∀ j, δᵣ((fun i => f₁ i + chal j * f₂ i), c j) ≤ δ := fun j => by
-    have : (fun (i : ι) => (0 : ι → F) i + chal j * (0 : ι → F) i) = 0 := by ext; simp
-    rw [this]
-    -- relHammingDist of 0 and 0 is 0
-    have hz : δᵣ((0 : ι → F), 0) = 0 := by
-      change (hammingDist (0 : ι → F) 0 : ℚ≥0) / _ = 0
-      rw [hammingDist_self]
-      simp
-    have hz2 : (δᵣ((0 : ι → F), 0) : ℝ≥0) = 0 := by exact_mod_cast hz
-    rw [hz2]
-    exact zero_le δ
-
-  -- Genuine Step-4: the concrete attack instance `(0, 0, 0, f₁, f₂)`, whose winning set
-  -- the distinct challenges `chal` inject into, realises the list-decoding bound.
-  refine ⟨(0 : Fin k → F), 0, 0, f₁, f₂, ?_⟩
-  exact simplified_iop_listDecoding_lb_of_winningChallenges hδle hEnc
-    chal hchal_inj c hc_mem hc_dist
-
-/-- **Lemma 6.13 of [ABF26]** (correlated-agreement lower bound on the simplified IOR).
-
-Coding-theory form: there exist `(v, μ_1, μ_2, f_1, f_2)` with
-`(f_1, f_2)` outside the relaxed relation `R̃_{C,δ}^2` whose winning
-challenge set has size at least `ε_ca(C, δ) · |F|`.
-
-Protocol-level reading: the soundness error of the simplified IOR
-`T'[C, t]` (Construction 6.9) is at least `ε_ca(C, δ)`.
-
-Proof sketch: take `f_1, f_2` maximising the CA error; then
-`f_1 + γ·f_2` is `δ`-close to `C` precisely on a set `S` of size
-`ε_ca · |F|`, and `S` is contained in the winning set
-`Ω^{f_1,f_2}_{0^k, 0, 0}` of Definition 6.11.
-
-## Documented statement repair (2026-06): linear-encoder hypothesis on `C`
-
-The prior audit identified a *statement-level* wall, not mere proof effort.
-`epsCA C δ δ = ⨆ u : WordStack F (Fin 2) ι, if jointProximity … then 0 else
-Pr_{γ}[…]`, and the conclusion bounds `|winningSet C δ 0 0 0 f₁ f₂|` from
-below. Membership `γ ∈ winningSet C δ 0 0 0 f₁ f₂` unfolds (Definition 6.11,
-`ℓ = 1`, `v = μ₁ = μ₂ = 0`) to `relaxedRelation C δ 0 0 (f₁ + γ·f₂)`, i.e.
-`∃ Wstar, relation C 0 0 Wstar ∧ (f₁+γ·f₂) δ-close to Wstar`. From
-`δᵣ(f₁+γ·f₂, C) ≤ δ` one extracts a close codeword `c ∈ C`, but `relation`
-additionally demands `c = encode(M)` for an `F`-LINEAR `encode : (Fin k → F)
-→ₗ[F] (ι → F)` with `image ⊆ C` — STRICTLY STRONGER than `c ∈ C` for an
-arbitrary `Set C`.
-
-ABF26 take `C` as the image of an explicit `F`-additive encoder; the Lean
-`Set`-form `relation` faithfully encodes that but cannot let an arbitrary
-close codeword satisfy it. We therefore repair the statement (in-file
-precedent: the `relation`/`relaxedRelation` definitions themselves carry the
-encoder existential) by hypothesising that `C` IS the image of an `F`-linear
-encoder, via `hEnc`. This is exactly the regime in which the toy-problem
-relation is intended (Definition 6.1: "the chosen encoding is a bijection
-from `Fin k → F` onto `C`"). Under `hEnc`, `relation C 0 (fun _ ↦ 0) (fun _
-↦ c)` holds for *every* `c ∈ C` (take `M` a pre-image of `c`; the linear
-constraint `∑_j M·0 = 0 = μ` is vacuous at `μ = 0`), closing the wall.
-
-Tagged proof (`paper-proof` — ABF26's OWN result, proved in §6.4.2).
-The bound is in terms of `ε_ca` (correlated agreement) rather than `ε_mca`
-(mutual correlated agreement); the latter would be qualitatively stronger
-but no attack reaching `ε_mca > ε_ca` is currently known (Remark 6.14). -/
-theorem simplified_iop_soundness_ca_lb {k : ℕ} [Nonempty ι]
-    (C : Set (ι → F)) (δ : ℝ≥0) (_hδ_pos : (0 : ℝ≥0) < δ) (_hδ_lt : δ < 1)
-    -- Statement repair: `C` is the image of an `F`-linear encoder (ABF26's
-    -- standing assumption; `relation` demands this encoder, see docstring).
-    (hEnc : ∃ encode : (Fin k → F) →ₗ[F] (ι → F),
-      (∀ m, encode m ∈ C) ∧ ∀ c ∈ C, ∃ m, encode m = c) :
-    ∃ (v : Fin k → F) (μ₁ μ₂ : F) (f₁ f₂ : ι → F),
-      ((winningSet (k := k) C δ v μ₁ μ₂ f₁ f₂).ncard : ENNReal)
-        ≥ epsCA (F := F) (A := F) C δ δ * (Fintype.card F : ENNReal) := by
+The proof decomposes into reusable, separately-verified pieces:
+`exists_dotProduct_image_card_le` (first B.1, inner-product collision via
+`prob_dotProduct_eq_zero_le`), `exists_affine_image_card_le` (second B.1, affine
+collision via `affine_collision_card_le_one`), `image_bound_toReal` (the
+ENNReal→ℝ bridge), `listDecoding_div_le_div` (the `z ↦ z/(F+z−1)` denominator
+chain), and `mem_winningSetFor_of_agree` (the membership step). -/
+theorem exists_winningSetFor_ncard_ge_of_lambda_lt_card {k : ℕ} [SampleableType F]
+    [Nonempty ι] [Finite A]
+    (C : ModuleCode ι F A) (δ : ℝ≥0) (_hδ_pos : (0 : ℝ≥0) < δ) (_hδ_lt : δ < 1)
+    (enc : (Fin k → F) →ₗ[F] (ι → A)) (hinj : Function.Injective enc)
+    (hC : Set.range enc = (C : Set (ι → A)))
+    (hF : ((Lambda
+      (((C^⋈(Fin 2) : ModuleCode ι F (Fin 2 → A)) : Set (ι → Fin 2 → A)))
+      (δ : ℝ)).toNat : ℝ) < Fintype.card F) :
+    ∃ (v : Fin k → F) (μ₁ μ₂ : F) (f₁ f₂ : ι → A),
+      ¬ RelaxedRelationFor (ℓ := 2) enc δ v ![μ₁, μ₂] ![f₁, f₂] ∧
+      ((winningSetFor enc δ v μ₁ μ₂ f₁ f₂).ncard : ℝ) ≥
+        (((Lambda
+          (((C^⋈(Fin 2) : ModuleCode ι F (Fin 2 → A)) : Set (ι → Fin 2 → A)))
+          (δ : ℝ)).toNat : ℝ) * Fintype.card F)
+      / (Fintype.card F
+              + 2 * ((Lambda
+                (((C^⋈(Fin 2) : ModuleCode ι F (Fin 2 → A)) : Set (ι → Fin 2 → A)))
+                (δ : ℝ)).toNat : ℝ)) := by
   classical
-  -- ABF26-L6.13 [§6.4.2]. The CA-maximising `(f₁,f₂)` makes the winning set
-  -- (at `v=μ₁=μ₂=0`) contain `S = {γ : δᵣ(f₁+γ·f₂,C) ≤ δ}`, of size `ε_ca·|F|`.
-  obtain ⟨encode, hEnc_mem, hEnc_surj⟩ := hEnc
-  -- `relation`-from-membership bridge under the encoder hypothesis: every
-  -- codeword `c ∈ C` is a valid `relation C 0 (fun _ ↦ 0)` witness stack.
-  have hrel_of_mem : ∀ c : ι → F, c ∈ C →
-      relation (k := k) (ℓ := 1) C (0 : Fin k → F) (fun _ ↦ (0 : F)) (fun _ ↦ c) := by
-    intro c hc
-    obtain ⟨m, hm⟩ := hEnc_surj c hc
-    exact ⟨fun _ ↦ m, ⟨encode, hEnc_mem, fun _ ↦ hm.symm⟩, by intro i; simp⟩
-  -- Step 1: extract a maximizer of the finite `⨆` defining `epsCA`.
-  -- `epsCA` is an `iSup` over the Fintype `WordStack F (Fin 2) ι`.
-  set g : WordStack F (Fin 2) ι → ENNReal := fun u =>
-    if jointProximity C (u := u) δ then (0 : ENNReal)
-    else Pr_{let γ ← $ᵖ F}[δᵣ(u 0 + γ • u 1, C) ≤ δ] with hg_def
-  have hepsCA_eq : epsCA (F := F) (A := F) C δ δ = ⨆ u, g u := rfl
-  obtain ⟨u₀, hu₀⟩ := finite_iSup_eq_apply g
-  rw [hepsCA_eq, hu₀]
-  -- Witness: `v = 0`, `μ₁ = μ₂ = 0`, `f₁ = u₀ 0`, `f₂ = u₀ 1`.
-  refine ⟨(0 : Fin k → F), 0, 0, u₀ 0, u₀ 1, ?_⟩
-  -- Case on the `jointProximity` branch of `g u₀`.
-  by_cases hjp : jointProximity C (u := u₀) δ
-  · -- Trivial branch: `g u₀ = 0`, bound is `≥ 0`.
-    simp only [hg_def, hjp, if_true, zero_mul, ge_iff_le, zero_le]
-  · -- Main branch: `g u₀ = Pr_{γ}[δᵣ(u₀ 0 + γ • u₀ 1, C) ≤ δ]`.
-    simp only [hg_def, hjp, if_false]
-    -- The winning set contains `S = {γ : δᵣ(u₀ 0 + γ • u₀ 1, C) ≤ δ}`.
-    set S : Finset F := Finset.univ.filter
-      (fun γ => δᵣ(u₀ 0 + γ • u₀ 1, C) ≤ δ) with hS_def
-    -- `Pr · |F| = |S|`.
-    have hPr : Pr_{let γ ← $ᵖ F}[δᵣ(u₀ 0 + γ • u₀ 1, C) ≤ δ] =
-        (((S.card : ℝ≥0) / (Fintype.card F : ℝ≥0) : ℝ≥0) : ENNReal) := by
-      rw [prob_uniform_eq_card_filter_div_card (F := F)
-        (P := fun γ => δᵣ(u₀ 0 + γ • u₀ 1, C) ≤ δ)]
-      norm_cast
-    -- `S ⊆ winningSet C δ 0 0 0 (u₀ 0) (u₀ 1)`.
-    have hsub : ↑S ⊆ winningSet (k := k) C δ (0 : Fin k → F) 0 0 (u₀ 0) (u₀ 1) := by
+  let _ := Fintype.ofFinite A
+  set Cint : Set (ι → Fin 2 → A) :=
+    ((C ^⋈ (Fin 2) : ModuleCode ι F (Fin 2 → A)) : Set (ι → Fin 2 → A))
+    with hCint
+  obtain ⟨fStar, hfStar⟩ :=
+    Code.exists_encard_eq_Lambda_of_finite (C := Cint) (δ : ℝ)
+  set N : ℕ := (Lambda Cint (δ : ℝ)).toNat with hNdef
+  have hNeq : N = (closeCodewordsRel Cint fStar (δ : ℝ)).ncard := by
+    rw [hNdef, ← hfStar]
+    exact (Set.ncard_def _).symm
+  set f₁ : ι → A := fun i ↦ fStar i 0 with hf1
+  set f₂ : ι → A := fun i ↦ fStar i 1 with hf2
+  have hcardF1 : 1 ≤ Fintype.card F := Fintype.card_pos
+  have hNltF : N < Fintype.card F := by exact_mod_cast hF
+  -- Message-pair enumeration of `Λ(C^{≡2}, δ, (f₁,f₂))`.
+  set Smsg : Finset ((Fin k → F) × (Fin k → F)) :=
+    Finset.univ.filter (fun p ↦ encStack enc p ∈ closeCodewordsRel Cint fStar (δ : ℝ)) with hSmsg
+  -- ENUMERATION (bijection codewords ↔ message pairs via the injective `enc`).
+  -- `encStack enc` is injective: its two columns determine `enc m.1, enc m.2`, hence (by
+  -- `hinj`) `m.1, m.2`.
+  have hencStack_inj : Function.Injective (encStack enc) := encStack_injective hinj
+  have hSmsgN : Smsg.card = N := by
+    -- ABF26-L6.12 enumeration: `encStack enc` is a bijection from the message pairs `Smsg`
+    -- onto `closeCodewordsRel C^{≡2} fStar δ`. Injective by `hencStack_inj`; surjective
+    -- since every close codeword stack `V` has both columns in `C = range enc`.
+    rw [hNeq]
+    -- The image of `Smsg` under `encStack enc` is exactly the close-codewords set.
+    have himg : (encStack enc) '' (Smsg : Set ((Fin k → F) × (Fin k → F)))
+        = (closeCodewordsRel Cint fStar (δ : ℝ) : Set (Matrix ι (Fin 2) A)) := by
+      ext V
+      simp only [Set.mem_image, Finset.mem_coe, hSmsg, Finset.mem_filter,
+        Finset.mem_univ, true_and]
+      constructor
+      · rintro ⟨p, hp, rfl⟩; exact hp
+      · intro hV
+        -- `V`'s columns are codewords: `V.transpose 0 = enc m₀`, `V.transpose 1 = enc m₁`.
+        have hcol0 : (fun i ↦ V i 0) ∈ Set.range enc := by
+          rw [hC]
+          exact hV.1 0
+        have hcol1 : (fun i ↦ V i 1) ∈ Set.range enc := by
+          rw [hC]
+          exact hV.1 1
+        obtain ⟨m₀, hm₀⟩ := hcol0
+        obtain ⟨m₁, hm₁⟩ := hcol1
+        have hVeq : encStack enc (m₀, m₁) = V := by
+          funext i j; fin_cases j
+          · change encStack enc (m₀, m₁) i 0 = V i 0
+            rw [encStack_apply_zero]; exact congrFun hm₀ i
+          · change encStack enc (m₀, m₁) i 1 = V i 1
+            rw [encStack_apply_one]; exact congrFun hm₁ i
+        refine ⟨(m₀, m₁), ?_, hVeq⟩
+        rw [hVeq]
+        exact hV
+    calc Smsg.card
+        = (Smsg : Set ((Fin k → F) × (Fin k → F))).ncard := (Set.ncard_coe_finset _).symm
+      _ = (encStack enc '' (Smsg : Set ((Fin k → F) × (Fin k → F)))).ncard :=
+          (Set.ncard_image_of_injective _ hencStack_inj).symm
+      _ = (closeCodewordsRel Cint fStar (δ : ℝ)).ncard := by rw [himg]
+  have hcardSmsg : Fintype.card ↥Smsg = N := by rw [Fintype.card_coe, hSmsgN]
+  -- FIRST B.1: a constraint vector `v` with a large inner-product image `S_v`.
+  obtain ⟨v, hv⟩ :=
+    exists_dotProduct_image_card_le (Subtype.val : ↥Smsg → (Fin k → F) × (Fin k → F))
+      Subtype.coe_injective
+  rw [hcardSmsg] at hv
+  set Sv : Finset (F × F) := Finset.univ.image
+    (fun s : ↥Smsg ↦ ((∑ j, (s : (Fin k → F) × (Fin k → F)).1 j * v j),
+                       (∑ j, (s : (Fin k → F) × (Fin k → F)).2 j * v j))) with hSvdef
+  have hSvcard : (Set.range (fun s : ↥Smsg ↦
+      ((∑ j, (s : (Fin k → F) × (Fin k → F)).1 j * v j),
+       (∑ j, (s : (Fin k → F) × (Fin k → F)).2 j * v j)))).ncard = Sv.card := by
+    rw [← Set.ncard_coe_finset]
+    congr 1
+    ext z
+    simp [hSvdef]
+  rw [hSvcard] at hv
+  -- `|S_v| ≤ N < |F|`.
+  have hSvle : Sv.card ≤ N := by
+    rw [← hcardSmsg, hSvdef]; exact le_trans Finset.card_image_le (le_of_eq (Finset.card_univ))
+  have hSvltF : Sv.card < Fintype.card F := lt_of_le_of_lt hSvle hNltF
+  -- SECOND B.1: pick `μ₂` off the second coordinates and a winning `μ₁`.
+  obtain ⟨μ₁, μ₂, hμ₂off, hwin⟩ := exists_affine_image_card_le Sv hSvltF
+  set winImg : Finset F := Sv.image (fun p ↦ (μ₁ - p.1) / (p.2 - μ₂)) with hwinImg
+  have hwinCard : (Set.range (fun p : ↥Sv ↦
+      (μ₁ - (p : F × F).1) / ((p : F × F).2 - μ₂))).ncard = winImg.card := by
+    rw [← Set.ncard_coe_finset]
+    congr 1
+    ext z
+    simp [hwinImg]
+  rw [hwinCard] at hwin
+  refine ⟨v, μ₁, μ₂, f₁, f₂, ?_, ?_⟩
+  · -- VIOLATION CONJUNCT (against the fixed-encoding `RelaxedRelationFor enc`).
+    --
+    -- The paper's violation `Δ((f₁,f₂), R²[x]) > δ` is, under the code's fixed
+    -- encoding, exactly `(μ₁,μ₂) ∉ S_v`. PROOF: suppose `RelaxedRelationFor enc`
+    -- holds — extract `Wstar` with `Wstar i = enc (M i)` and `∑ⱼ M i j vⱼ = μ i`
+    -- (so `⟨M 0, v⟩ = μ₁`, `⟨M 1, v⟩ = μ₂`), δ-close to `![f₁,f₂]` on a set `S'`.
+    -- Then `encStack enc (M 0, M 1) = Wstar` is δ-close to `fStar`, so it lies in
+    -- `closeCodewordsRel Cint fStar δ` (columns `enc (M i) ∈ C` via `hC`; distance
+    -- from the `S'` agreement, reverse of the reconciliation used for `hmem`).
+    -- Hence `(M 0, M 1) ∈ Smsg`, so `φ_v(M 0, M 1) = (μ₁, μ₂) ∈ S_v` — contradicting
+    -- `hμ₂off` (`(μ₁,μ₂).2 = μ₂` is a second coordinate of `S_v`). ABF26-L6.12.
+    rintro ⟨Wstar, ⟨M, hWeq, hconstr⟩, S', hS'card, hS'ag⟩
+    -- `(M 0, M 1) ∈ Smsg`: build the agreement set `S'` for `encStack enc (M 0, M 1)`.
+    have hmemSmsg : (M 0, M 1) ∈ Smsg := by
+      rw [hSmsg, Finset.mem_filter]
+      refine ⟨Finset.mem_univ _, ?_⟩
+      rw [encStack_mem_closeCodewordsRel_iff enc C hC _hδ_lt]
+      refine ⟨S', hS'card, fun i hi ↦ ⟨?_, ?_⟩⟩
+      · -- `fStar i 0 = f₁ i = ![f₁,f₂] 0 i = Wstar 0 i = enc (M 0) i = enc (M 0,M 1).1 i`
+        have hag : f₁ i = Wstar 0 i := hS'ag 0 i hi
+        -- `f₁ i = fStar i 0` definitionally.
+        change fStar i 0 = enc (M 0) i
+        rw [show fStar i 0 = f₁ i from rfl, hag, hWeq 0]
+      · have hag : f₂ i = Wstar 1 i := hS'ag 1 i hi
+        change fStar i 1 = enc (M 1) i
+        rw [show fStar i 1 = f₂ i from rfl, hag, hWeq 1]
+    -- `(μ₁, μ₂) ∈ S_v`, contradicting `hμ₂off`.
+    have hpair : ((∑ j, (M 0) j * v j), (∑ j, (M 1) j * v j)) = (μ₁, μ₂) := by
+      have h0 : ∑ j, (M 0) j * v j = μ₁ := hconstr 0
+      have h1 : ∑ j, (M 1) j * v j = μ₂ := hconstr 1
+      rw [h0, h1]
+    have hμ₂mem : (μ₁, μ₂) ∈ Sv := by
+      rw [hSvdef, Finset.mem_image]
+      exact ⟨⟨(M 0, M 1), hmemSmsg⟩, Finset.mem_univ _, hpair⟩
+    exact hμ₂off (μ₁, μ₂) hμ₂mem rfl
+  · -- CARDINALITY CHAIN.
+    rcases Nat.eq_zero_or_pos N with hN0 | hN1
+    · -- N = 0: the bound is `0 ≤ ncard`, trivially true.
+      rw [hN0, ge_iff_le]; simp
+    -- Main case N ≥ 1.
+    -- MEMBERSHIP: every winning challenge in `winImg` lies in the winning set.
+    have hmem : (winImg : Set F) ⊆ winningSetFor enc δ v μ₁ μ₂ f₁ f₂ := by
+      -- ABF26-L6.12 membership: each `γ = (μ₁−a)/(b−μ₂)` with `(a,b) = φ_v(m)`,
+      -- `m ∈ Smsg`, is winning via `mem_winningSetFor_of_agree` (message `m.1+γ•m.2`,
+      -- constraint `⟨m.1+γ·m.2, v⟩ = a+γb = μ₁+γμ₂`, agreement from `encStack`
+      -- closeness + `enc`-linearity). Uses the same agreement-cols reconciliation
+      -- as `mem_winningSetFor_zero_of_relClose`.
       intro γ hγ
-      simp only [hS_def, Finset.coe_filter, Set.mem_setOf_eq, Finset.mem_univ, true_and] at hγ
-      -- `δᵣ(u₀ 0 + γ • u₀ 1, C) ≤ δ` gives a close codeword `c ∈ C`.
-      rw [relCloseToCode_iff_relCloseToCodeword_of_minDist] at hγ
-      obtain ⟨c, hc_mem, hc_dist⟩ := hγ
-      -- Build `relaxedRelation`: `c` is the relation witness, agreement set from closeness.
-      refine ⟨fun _ => c, ?_, ?_⟩
-      · -- `relation C 0 (fun _ ↦ μ₁+γμ₂ = 0) (fun _ ↦ c)`.
-        simpa using hrel_of_mem c hc_mem
-      · -- Agreement set of size `(1-δ)·|ι|` from `δᵣ(u₀ 0 + γ • u₀ 1, c) ≤ δ`.
-        rw [relCloseToWord_iff_exists_agreementCols] at hc_dist
-        obtain ⟨T, hT_card, hT_agree⟩ := hc_dist
-        refine ⟨T, ?_, ?_⟩
-        · -- `(1-δ)·|ι| ≤ |T|`.
-          have hcomp := (relDist_floor_bound_iff_complement_bound (Fintype.card ι) T.card δ).mp
-            hT_card
-          -- hcomp : (1 - δ) * (card ι : ℝ≥0) ≤ (T.card : ℝ≥0) in ℝ≥0; cast to ℝ.
-          have hδle : δ ≤ 1 := le_of_lt _hδ_lt
-          have hcompR : ((1 - δ : ℝ≥0) : ℝ) * (Fintype.card ι : ℝ) ≤ (T.card : ℝ) := by
-            have := (NNReal.coe_le_coe.mpr hcomp)
-            rwa [NNReal.coe_mul, NNReal.coe_natCast] at this
-          rwa [NNReal.coe_sub hδle, NNReal.coe_one] at hcompR
-        · -- Agreement: on `T`, `(u₀ 0 + γ • u₀ 1) j = c j`.
-          intro i j hj
-          have := (hT_agree j).1 hj
-          simpa [Pi.add_apply, Pi.smul_apply, smul_eq_mul] using this
-    -- Conclude: `|winningSet| ≥ |S| = Pr · |F|`.
-    rw [hPr]
-    have hwin_fin : (winningSet (k := k) C δ (0 : Fin k → F) 0 0 (u₀ 0) (u₀ 1)).Finite :=
-      Set.toFinite _
-    have hcard_le : (S.card : ℕ) ≤
-        (winningSet (k := k) C δ (0 : Fin k → F) 0 0 (u₀ 0) (u₀ 1)).ncard := by
-      rw [← Set.ncard_coe_finset S]
-      exact Set.ncard_le_ncard hsub hwin_fin
-    -- `Pr · |F| = |S| ≤ |winningSet|` in ENNReal.
-    have hcardF_ne : (Fintype.card F : ℝ≥0) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
-    have heq : (((S.card : ℝ≥0) / (Fintype.card F : ℝ≥0) : ℝ≥0) : ENNReal) *
-        (Fintype.card F : ENNReal) = (S.card : ENNReal) := by
-      rw [← ENNReal.coe_natCast (Fintype.card F), ← ENNReal.coe_mul,
-        div_mul_cancel₀ _ hcardF_ne, ENNReal.coe_natCast]
-    rw [heq]
-    exact_mod_cast hcard_le
+      rw [Finset.coe_image, Set.mem_image] at hγ
+      obtain ⟨⟨a, b⟩, hab, hγeq⟩ := hγ
+      -- `hγeq : (μ₁ - a)/(b - μ₂) = γ`
+      rw [hSvdef, Finset.mem_coe, Finset.mem_image] at hab
+      obtain ⟨s, _, hsab⟩ := hab
+      -- `m = ↑s` is a message pair in `Smsg`; extract its agreement set `S'`.
+      set m : (Fin k → F) × (Fin k → F) := (s : (Fin k → F) × (Fin k → F)) with hm
+      have hmSmsg : m ∈ Smsg := s.2
+      rw [hSmsg, Finset.mem_filter] at hmSmsg
+      obtain ⟨S', hS'card, hS'ag⟩ :=
+        (encStack_mem_closeCodewordsRel_iff enc C hC _hδ_lt m).mp hmSmsg.2
+      -- The image point: `a = ∑ⱼ m.1 ⱼ vⱼ`, `b = ∑ⱼ m.2 ⱼ vⱼ`.
+      have hab_eq : (∑ j, m.1 j * v j) = a ∧ (∑ j, m.2 j * v j) = b := by
+        have := Prod.ext_iff.mp hsab; exact ⟨this.1, this.2⟩
+      obtain ⟨ha, hb⟩ := hab_eq
+      -- `b ≠ μ₂` (so the affine challenge is well-defined).
+      have hbμ₂ : b ≠ μ₂ := hμ₂off (a, b) (by
+        rw [hSvdef, Finset.mem_image]; exact ⟨s, Finset.mem_univ _, hsab⟩)
+      -- Apply the membership helper with message `m.1 + γ • m.2`.
+      refine mem_winningSetFor_of_agree enc (m := m.1 + γ • m.2) ?_ S' hS'card ?_
+      · -- constraint `⟨m.1 + γ•m.2, v⟩ = a + γ b = μ₁ + γ μ₂`.
+        have hsum : (∑ j, (m.1 + γ • m.2) j * v j) = a + γ * b := by
+          simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, add_mul, mul_assoc]
+          rw [Finset.sum_add_distrib, ← Finset.mul_sum, ha, hb]
+        rw [hsum]
+        -- `γ = (μ₁ - a)/(b - μ₂)`, `b ≠ μ₂` ⇒ `γ*(b - μ₂) = μ₁ - a` ⇒ `a + γ b = μ₁ + γ μ₂`.
+        have hbsub : b - μ₂ ≠ 0 := sub_ne_zero.mpr hbμ₂
+        rw [← hγeq]
+        field_simp
+        ring
+      · -- agreement: on `S'`, `f₁ i + γ•f₂ i = enc m.1 i + γ•enc m.2 i = enc (m.1+γ•m.2) i`.
+        intro i hi
+        obtain ⟨h0, h1⟩ := hS'ag i hi
+        have henc : enc (m.1 + γ • m.2) i = enc m.1 i + γ • enc m.2 i := by
+          rw [map_add, map_smul]; simp [Pi.add_apply, Pi.smul_apply]
+        rw [henc]
+        -- `f₁ i = fStar i 0 = enc m.1 i`, `f₂ i = fStar i 1 = enc m.2 i`.
+        rw [show f₁ i = fStar i 0 from rfl, show f₂ i = fStar i 1 from rfl, h0, h1]
+    -- A + bridge: `N·F/(F+N−1) ≤ |S_v|`.
+    have hAreal : (N : ℝ) * Fintype.card F / (Fintype.card F + N - 1) ≤ (Sv.card : ℝ) :=
+      image_bound_toReal hcardF1 hN1 hv
+    -- B + bridge: `|S_v|·F/(F+|S_v|−1) ≤ |winImg|`.
+    have hSv1 : 1 ≤ Sv.card := by
+      rcases Nat.eq_zero_or_pos Sv.card with h0 | h; swap; · exact h
+      -- |S_v| = 0 would force the A-bound `N·F/(F+N−1) ≤ 0`, impossible for N ≥ 1.
+      exfalso
+      have hpos : (0 : ℝ) < (N : ℝ) * Fintype.card F / (Fintype.card F + N - 1) := by
+        have : (0 : ℝ) < Fintype.card F + N - 1 := by
+          have : (1 : ℝ) ≤ N := by exact_mod_cast hN1
+          have : (1 : ℝ) ≤ Fintype.card F := by exact_mod_cast hcardF1
+          linarith
+        positivity
+      rw [h0] at hAreal; norm_num at hAreal; linarith
+    have hBreal : (Sv.card : ℝ) * Fintype.card F / (Fintype.card F + Sv.card - 1)
+        ≤ (winImg.card : ℝ) := image_bound_toReal hcardF1 hSv1 hwin
+    -- Denominator chain.
+    have hchain : (N : ℝ) * Fintype.card F / (Fintype.card F + 2 * N)
+        ≤ Fintype.card F * (Sv.card : ℝ) / (Fintype.card F + Sv.card - 1) :=
+      listDecoding_div_le_div (by exact_mod_cast hcardF1) (by exact_mod_cast hN1) hAreal
+    have hwinge : (N : ℝ) * Fintype.card F / (Fintype.card F + 2 * N) ≤ (winImg.card : ℝ) := by
+      refine le_trans hchain (le_trans (le_of_eq ?_) hBreal)
+      ring
+    -- winImg ⊆ winningSet ⇒ |winImg| ≤ ncard(winningSet).
+    have hncard : (winImg.card : ℝ) ≤ ((winningSetFor enc δ v μ₁ μ₂ f₁ f₂).ncard : ℝ) := by
+      have : winImg.card ≤ (winningSetFor enc δ v μ₁ μ₂ f₁ f₂).ncard := by
+        rw [← Set.ncard_coe_finset winImg]
+        exact Set.ncard_le_ncard hmem (Set.toFinite _)
+      exact_mod_cast this
+    rw [ge_iff_le]
+    exact le_trans hwinge hncard
+
+/-! ## Correlated-agreement lower bridge -/
+
+omit [Fintype F] [DecidableEq F] [Fintype A] in
+/-- If an affine fold is close to a linear code, then the same challenge wins
+the all-zero constrained toy instance. -/
+theorem mem_winningSetFor_zero_of_relClose {k : ℕ} [Nonempty ι]
+    {C : Set (ι → A)} {δ : ℝ≥0} (hδ_lt : δ < 1)
+    (enc : (Fin k → F) →ₗ[F] (ι → A)) (hC : Set.range enc = C)
+    (f₁ f₂ : ι → A) {γ : F} (hγ : δᵣ(f₁ + γ • f₂, C) ≤ δ) :
+    γ ∈ winningSetFor enc δ (0 : Fin k → F) 0 0 f₁ f₂ := by
+  classical
+  rw [winningSetFor, Set.mem_ofPred_eq]
+  rw [relCloseToCode_iff_relCloseToCodeword_of_minDist] at hγ
+  obtain ⟨w, hwC, hwd⟩ := hγ
+  obtain ⟨m, hm⟩ : ∃ m, enc m = w := by
+    rw [← hC] at hwC
+    exact hwC
+  refine ⟨fun _ ↦ w,
+    ⟨fun _ ↦ m, fun i ↦ by simp [hm], fun i ↦ by simp⟩, ?_⟩
+  rw [relCloseToWord_iff_exists_agreementCols] at hwd
+  obtain ⟨S, hScard, hSagree⟩ := hwd
+  refine ⟨S, ?_, ?_⟩
+  · have hcomp :=
+      (relDist_floor_bound_iff_complement_bound (Fintype.card ι) S.card δ).mp hScard
+    have hcoe : ((1 - δ : ℝ≥0) : ℝ) = 1 - (δ : ℝ) := by
+      rw [NNReal.coe_sub hδ_lt.le]
+      simp
+    have hcompR := NNReal.coe_le_coe.mpr hcomp
+    rw [NNReal.coe_mul, hcoe] at hcompR
+    push_cast at hcompR ⊢
+    linarith
+  · intro i j hj
+    have hagree := (hSagree j).1 hj
+    simpa only [Pi.add_apply, Pi.smul_apply] using hagree
+
+omit [DecidableEq F] [Fintype A] in
+/-- Correlated-agreement lower bound, fixed-encoding form: positive correlated-agreement
+error yields an explicit violating instance whose winning-set ratio
+lower-bounds that error. -/
+theorem exists_winningSetFor_ncard_ge_of_epsCa_pos {k : ℕ} [SampleableType F]
+    [Nonempty ι] [Finite A]
+    (C : Set (ι → A)) (δ : ℝ≥0) (_hδ_pos : (0 : ℝ≥0) < δ)
+    (hδ_lt : δ < 1)
+    (enc : (Fin k → F) →ₗ[F] (ι → A))
+    (_henc_inj : Function.Injective enc) (hC : Set.range enc = C)
+    (hca : 0 < epsCa (F := F) (A := A) C δ δ) :
+    ∃ (v : Fin k → F) (μ₁ μ₂ : F) (f₁ f₂ : ι → A),
+      ¬ RelaxedRelationFor (ℓ := 2) enc δ v ![μ₁, μ₂] ![f₁, f₂] ∧
+      ((winningSetFor enc δ v μ₁ μ₂ f₁ f₂).ncard : ENNReal) ≥
+        epsCa (F := F) (A := A) C δ δ *
+          (Fintype.card F : ENNReal) := by
+  classical
+  let _ := Fintype.ofFinite A
+  obtain ⟨u, hu_max⟩ := Finite.exists_max
+    (fun u : WordStack A (Fin 2) ι ↦
+      if jointProximity C u δ then (0 : ENNReal)
+      else Pr{let γ ← $ᵗ F}[δᵣ(u 0 + γ • u 1, C) ≤ δ])
+  have h_eps : epsCa (F := F) (A := A) C δ δ =
+      (if jointProximity C u δ then (0 : ENNReal)
+       else Pr{let γ ← $ᵗ F}[δᵣ(u 0 + γ • u 1, C) ≤ δ]) := by
+    refine le_antisymm ?_ ?_
+    · rw [epsCa_eq]
+      exact iSup_le hu_max
+    · rw [epsCa_eq]
+      exact le_iSup (fun w : WordStack A (Fin 2) ι ↦
+        if jointProximity C w δ then (0 : ENNReal)
+        else Pr{let γ ← $ᵗ F}[δᵣ(w 0 + γ • w 1, C) ≤ δ]) u
+  have hjp : ¬ jointProximity C u δ := by
+    intro h
+    rw [h_eps, ite_eq_left h] at hca
+    exact lt_irrefl _ hca
+  rw [ite_eq_right hjp] at h_eps
+  refine ⟨0, 0, 0, u 0, u 1, ?_, ?_⟩
+  · intro hrel
+    apply hjp
+    have hu_eq : u = ![u 0, u 1] := by
+      funext i
+      fin_cases i <;> rfl
+    rw [hu_eq, ← jointAgreement_iff_jointProximity]
+    obtain ⟨Wstar, ⟨M, hWstar, _hconstr⟩, S, hScard, hSag⟩ := hrel
+    refine ⟨S, ?_, Wstar, fun i ↦
+      ⟨hWstar i ▸ (hC ▸ Set.mem_range_self (M i)), ?_⟩⟩
+    · have hcoe : ((1 - δ : ℝ≥0) : ℝ) = 1 - (δ : ℝ) := by
+        rw [NNReal.coe_sub hδ_lt.le]
+        simp
+      rw [ge_iff_le, ← NNReal.coe_le_coe, NNReal.coe_mul, hcoe]
+      push_cast
+      linarith [hScard]
+    · intro j hj
+      rw [Finset.mem_filter]
+      exact ⟨Finset.mem_univ j, (hSag i j hj).symm⟩
+  · rw [h_eps]
+    have hsub : {γ : F | δᵣ(u 0 + γ • u 1, C) ≤ δ} ⊆
+        winningSetFor enc δ 0 0 0 (u 0) (u 1) :=
+      fun γ hγ ↦ mem_winningSetFor_zero_of_relClose
+        hδ_lt enc hC (u 0) (u 1) hγ
+    have hF0 : (Fintype.card F : ℝ≥0) ≠ 0 := by
+      simp [Fintype.card_ne_zero]
+    have hprob :
+        Pr{let γ ← $ᵗ F}[δᵣ(u 0 + γ • u 1, C) ≤ δ] *
+            (Fintype.card F : ENNReal) =
+          ({γ : F | δᵣ(u 0 + γ • u 1, C) ≤ δ}.ncard : ENNReal) := by
+      rw [SampleableType.prEvent_uniformSample,
+        Set.ncard_eq_toFinset_card', Set.toFinset_ofPred]
+      rw [ENNReal.div_mul_cancel (by exact_mod_cast hF0)
+        (ENNReal.natCast_ne_top _)]
+    rw [hprob]
+    have hmono := Set.ncard_le_ncard hsub (Set.toFinite _)
+    exact_mod_cast hmono
+
+/-! ## Winning-set and extractor-certified error interfaces
+
+The winning-set quantity below is the exact combinatorial supremum from ABF26
+Definition 6.11.  It is deliberately distinct from
+`certifiedGammaError`, the MCA-plus-list expression proved for the executable
+extractor.  The bridge theorem makes their relationship explicit; the matching
+optimal-adversary theorem needed to call the supremum an exact protocol-game
+error is outside the proved interface. -/
+
+/-- A two-row instance which violates the relaxed toy relation for the pinned
+encoder.  These are precisely the instances indexed by the winning-set density's
+winning-set supremum. -/
+structure ViolatingInstance {k : ℕ}
+    (enc : (Fin k → F) →ₗ[F] (ι → A)) (δ : ℝ≥0) where
+  v : Fin k → F
+  μ₁ : F
+  μ₂ : F
+  f₁ : ι → A
+  f₂ : ι → A
+  violates : ¬ RelaxedRelationFor (ℓ := 2) enc δ v ![μ₁, μ₂] ![f₁, f₂]
+
+/-- The winning-set-density supremum is never indexed by an empty type: the zero
+constraint vector with first claimed value `1` cannot be satisfied by any
+message, independently of the encoder or radius. -/
+instance violatingInstanceNonempty {k : ℕ}
+    (enc : (Fin k → F) →ₗ[F] (ι → A)) (δ : ℝ≥0) :
+    Nonempty (ViolatingInstance enc δ) := by
+  refine ⟨{
+    v := 0
+    μ₁ := 1
+    μ₂ := 0
+    f₁ := 0
+    f₂ := 0
+    violates := ?_ }⟩
+  rintro ⟨Wstar, ⟨M, -, hlin⟩, -⟩
+  have h := hlin 0
+  simp at h
+
+/-- The fraction of challenges won by one violating instance. -/
+noncomputable def winningSetRatio {k : ℕ}
+    {enc : (Fin k → F) →ₗ[F] (ι → A)} {δ : ℝ≥0}
+    (x : ViolatingInstance enc δ) : ℝ≥0 :=
+  ((winningSetFor enc δ x.v x.μ₁ x.μ₂ x.f₁ x.f₂).ncard : ℝ≥0) /
+    (Fintype.card F : ℝ≥0)
+
+/-- The worst-case winning-challenge density at radius `δ`.
+
+This is an exact combinatorial quantity. The protocol-level upper coupling is proved below; the
+matching optimal-adversary/lower-coupling theorem needed to identify it with a minimal game error
+is not asserted here. -/
+noncomputable def winningSetDensity {k : ℕ}
+    (enc : (Fin k → F) →ₗ[F] (ι → A)) (δ : ℝ≥0) : ℝ≥0 :=
+  ⨆ x : ViolatingInstance enc δ, winningSetRatio x
+
+omit [DecidableEq F] [Fintype A] [DecidableEq A] in
+/-- A winning-challenge fraction is at most one. -/
+theorem winningSetRatio_le_one {k : ℕ}
+    {enc : (Fin k → F) →ₗ[F] (ι → A)} {δ : ℝ≥0}
+    (x : ViolatingInstance enc δ) : winningSetRatio x ≤ 1 := by
+  have : Nonempty F := ⟨0⟩
+  have hpos : (0 : ℝ≥0) < (Fintype.card F : ℝ≥0) := by
+    exact_mod_cast Fintype.card_pos
+  rw [winningSetRatio, div_le_one hpos]
+  have hle : (winningSetFor enc δ x.v x.μ₁ x.μ₂ x.f₁ x.f₂).ncard ≤
+      Fintype.card F := by
+    have h := Set.ncard_le_ncard
+      (Set.subset_univ (winningSetFor enc δ x.v x.μ₁ x.μ₂ x.f₁ x.f₂))
+      Set.finite_univ
+    rwa [Set.ncard_univ, Nat.card_eq_fintype_card] at h
+  exact_mod_cast hle
+
+omit [DecidableEq F] [Fintype A] [DecidableEq A] in
+/-- The family of winning-challenge fractions is bounded above. -/
+theorem bddAbove_winningSetRatio {k : ℕ}
+    (enc : (Fin k → F) →ₗ[F] (ι → A)) (δ : ℝ≥0) :
+    BddAbove (Set.range (fun x : ViolatingInstance enc δ ↦ winningSetRatio x)) := by
+  refine ⟨1, ?_⟩
+  rintro _ ⟨x, rfl⟩
+  exact winningSetRatio_le_one x
+
+omit [DecidableEq F] [Fintype A] [DecidableEq A] in
+/-- Every explicit violating instance lower-bounds the worst-case winning-set density. -/
+theorem winningSetRatio_le_winningSetDensity {k : ℕ}
+    {enc : (Fin k → F) →ₗ[F] (ι → A)} {δ : ℝ≥0}
+    (x : ViolatingInstance enc δ) :
+    winningSetRatio x ≤ winningSetDensity enc δ :=
+  le_ciSup (bddAbove_winningSetRatio enc δ) x
+
+omit [DecidableEq F] [Fintype A] [DecidableEq A] in
+/-- The worst-case winning-set density never exceeds one. -/
+theorem winningSetDensity_le_one {k : ℕ}
+    (enc : (Fin k → F) →ₗ[F] (ι → A)) (δ : ℝ≥0) :
+    winningSetDensity enc δ ≤ 1 :=
+  ciSup_le' (fun x ↦ winningSetRatio_le_one x)
+
+omit [DecidableEq F] [Fintype A] in
+/-- Correlated-agreement error lower-bounds the worst-case winning-set density. -/
+theorem epsCa_le_winningSetDensity {k : ℕ} [SampleableType F] [Nonempty ι] [Finite A]
+    {C : Set (ι → A)} (δ : ℝ≥0) (hδpos : (0 : ℝ≥0) < δ)
+    (hδlt : δ < 1) (enc : (Fin k → F) →ₗ[F] (ι → A))
+    (henc_inj : Function.Injective enc) (henc_range : Set.range enc = C) :
+    epsCa (F := F) (A := A) C δ δ ≤
+      (winningSetDensity enc δ : ENNReal) := by
+  classical
+  let _ := Fintype.ofFinite A
+  rcases eq_or_lt_of_le
+      (zero_le (a := epsCa (F := F) (A := A) C δ δ)) with hzero | hca
+  · rw [← hzero]
+    exact zero_le
+  obtain ⟨v, μ₁, μ₂, f₁, f₂, hviol, hbound⟩ :=
+    exists_winningSetFor_ncard_ge_of_epsCa_pos
+      C δ hδpos hδlt enc henc_inj henc_range hca
+  let x : ViolatingInstance enc δ := ⟨v, μ₁, μ₂, f₁, f₂, hviol⟩
+  have hratio : (winningSetRatio x : ENNReal) =
+      ((winningSetFor enc δ v μ₁ μ₂ f₁ f₂).ncard : ENNReal) /
+        (Fintype.card F : ENNReal) := by
+    rw [winningSetRatio,
+      ENNReal.coe_div (by simp [Fintype.card_ne_zero])]
+    push_cast
+    rfl
+  have hactual : (winningSetRatio x : ENNReal) ≤
+      (winningSetDensity enc δ : ENNReal) := by
+    exact_mod_cast winningSetRatio_le_winningSetDensity x
+  refine le_trans ?_ hactual
+  rw [hratio, ENNReal.le_div_iff_mul_le (Or.inl (by simp))
+    (Or.inl (ENNReal.natCast_ne_top _))]
+  exact hbound
+
+omit [DecidableEq F] [Fintype A] [DecidableEq A] in
+/-- The two-row point-list attack lower-bounds the worst-case winning-set density. -/
+theorem listDecoding_le_winningSetDensity {k : ℕ} [SampleableType F]
+    [Nonempty ι] [Finite A]
+    (C : ModuleCode ι F A) (δ : ℝ≥0) (hδpos : (0 : ℝ≥0) < δ)
+    (hδlt : δ < 1) (enc : (Fin k → F) →ₗ[F] (ι → A))
+    (henc_inj : Function.Injective enc)
+    (henc_range : Set.range enc = (C : Set (ι → A)))
+    (hF : ((Code.Lambda
+      ((C^⋈(Fin 2) : ModuleCode ι F (Fin 2 → A)) : Set (ι → Fin 2 → A))
+      (δ : ℝ)).toNat : ℝ) < Fintype.card F) :
+    ((Code.Lambda
+      ((C ^⋈ (Fin 2) : ModuleCode ι F (Fin 2 → A)) : Set (ι → Fin 2 → A))
+      (δ : ℝ)).toNat : ℝ≥0) /
+        ((Fintype.card F : ℝ≥0) +
+          2 * ((Code.Lambda
+            ((C ^⋈ (Fin 2) : ModuleCode ι F (Fin 2 → A)) :
+              Set (ι → Fin 2 → A))
+            (δ : ℝ)).toNat : ℝ≥0)) ≤ winningSetDensity enc δ := by
+  classical
+  let _ := Fintype.ofFinite A
+  obtain ⟨v, μ₁, μ₂, f₁, f₂, hviol, hbound⟩ :=
+    exists_winningSetFor_ncard_ge_of_lambda_lt_card
+      C δ hδpos hδlt enc henc_inj henc_range hF
+  rw [ge_iff_le] at hbound
+  let N : ℕ := (Code.Lambda
+    ((C ^⋈ (Fin 2) : ModuleCode ι F (Fin 2 → A)) : Set (ι → Fin 2 → A))
+    (δ : ℝ)).toNat
+  let x : ViolatingInstance enc δ := ⟨v, μ₁, μ₂, f₁, f₂, hviol⟩
+  refine le_trans ?_ (winningSetRatio_le_winningSetDensity x)
+  have hcardF : (0 : ℝ) < (Fintype.card F : ℝ) := by
+    exact_mod_cast Fintype.card_pos
+  have hden : (0 : ℝ) < (Fintype.card F : ℝ) + 2 * N := by
+    positivity
+  have hkey : (N : ℝ) * Fintype.card F ≤
+      ((winningSetFor enc δ v μ₁ μ₂ f₁ f₂).ncard : ℝ) *
+        ((Fintype.card F : ℝ) + 2 * N) :=
+    (div_le_iff₀ hden).mp hbound
+  have hreal : (N : ℝ) / ((Fintype.card F : ℝ) + 2 * N) ≤
+      ((winningSetFor enc δ v μ₁ μ₂ f₁ f₂).ncard : ℝ) /
+        (Fintype.card F : ℝ) := by
+    rw [div_le_div_iff₀ hden hcardF]
+    linarith
+  change (N : ℝ≥0) / ((Fintype.card F : ℝ≥0) + 2 * N) ≤
+    winningSetRatio x
+  rw [winningSetRatio, ← NNReal.coe_le_coe, NNReal.coe_div, NNReal.coe_div,
+    NNReal.coe_add, NNReal.coe_mul]
+  push_cast
+  exact hreal
+
+/-- The finite nonnegative-real reflection of the executable extractor's
+canonical affine-line MCA-plus-two-row-list certificate. -/
+noncomputable def certifiedGammaError [SampleableType F]
+    (C : ModuleCode ι F A) (δ : ℝ≥0) : ℝ≥0 :=
+  ENNReal.toNNReal <|
+    mcaError (AffineLineGenerator F) C (δ : ℝ) +
+      ((Code.Lambda
+        ((C ^⋈ (Fin 2) : ModuleCode ι F (Fin 2 → A)) : Set (ι → Fin 2 → A))
+        (δ : ℝ)).toNat : ENNReal) / (Fintype.card F : ENNReal)
+
+omit [DecidableEq F] [Fintype A] [DecidableEq A] in
+/-- `certifiedGammaError` coerces to the exact MCA-plus-list certificate. -/
+theorem coe_certifiedGammaError [SampleableType F]
+    (C : ModuleCode ι F A) (δ : ℝ≥0) :
+    (certifiedGammaError C δ : ENNReal) =
+      mcaError (AffineLineGenerator F) C (δ : ℝ) +
+        ((Code.Lambda
+          ((C ^⋈ (Fin 2) : ModuleCode ι F (Fin 2 → A)) : Set (ι → Fin 2 → A))
+          (δ : ℝ)).toNat : ENNReal) / (Fintype.card F : ENNReal) := by
+  rw [certifiedGammaError, ENNReal.coe_toNNReal]
+  rw [ENNReal.add_ne_top]
+  exact ⟨mcaError_ne_top _ _ _, ENNReal.div_ne_top (by simp) (by simp)⟩
+
+omit [DecidableEq F] [Fintype A] in
+/-- The worst-case winning-set density is bounded by the certified
+MCA-plus-list extractor error. -/
+theorem winningSetDensity_le_certifiedGammaError {k : ℕ} [SampleableType F]
+    [Nonempty ι] [Finite A]
+    (C : ModuleCode ι F A) (δ : ℝ≥0)
+    (hδ : δ ∈ Set.Ioo (0 : ℝ≥0)
+      ((minRelHammingDistCode (C : Set (ι → A)) : ℝ≥0)))
+    (enc : (Fin k → F) →ₗ[F] (ι → A))
+    (henc_inj : Function.Injective enc)
+    (henc_range : Set.range enc = (C : Set (ι → A))) :
+    winningSetDensity enc δ ≤ certifiedGammaError C δ := by
+  classical
+  let _ := Fintype.ofFinite A
+  obtain ⟨hδpos, hδlt⟩ := hδ
+  refine ciSup_le' (fun x ↦ ?_)
+  obtain ⟨v, μ₁, μ₂, f₁, f₂, hviol⟩ := x
+  have hNoWit : ¬ ∃ M : Fin 2 → (Fin k → F),
+      (∀ i : Fin 2, ∑ j, M i j * v j = ![μ₁, μ₂] i) ∧
+      ∃ S : Finset ι, (1 - (δ : ℝ)) * Fintype.card ι ≤ S.card ∧
+        ∀ i : Fin 2, ∀ j ∈ S, ![f₁, f₂] i j = enc (M i) j := by
+    rintro ⟨M, hlin, S, hScard, hagree⟩
+    exact hviol
+      ⟨fun i ↦ enc (M i), ⟨M, fun _ ↦ rfl, hlin⟩, S, hScard, hagree⟩
+  have hWSeq : winningSetFor enc δ v μ₁ μ₂ f₁ f₂ =
+      {γ : F | ∃ m : Fin k → F,
+        (∑ j, m j * v j = μ₁ + γ * μ₂) ∧
+        ∃ S : Finset ι, (1 - (δ : ℝ)) * Fintype.card ι ≤ S.card ∧
+          ∀ j ∈ S, f₁ j + γ • f₂ j = enc m j} := by
+    ext γ
+    constructor
+    · rintro ⟨Wstar, ⟨M, hWeq, hlin⟩, S, hScard, hagree⟩
+      refine ⟨M 0, by simpa using hlin 0, S, hScard, fun j hj ↦ ?_⟩
+      have h := hagree 0 j hj
+      rw [hWeq 0] at h
+      simpa using h
+    · rintro ⟨m, hlin, S, hScard, hagree⟩
+      exact ⟨fun _ ↦ enc m,
+        ⟨fun _ ↦ m, fun _ ↦ rfl, fun _ ↦ by simpa using hlin⟩,
+        S, hScard, fun i j hj ↦ by simpa using hagree j hj⟩
+  have hWEvent : winningSetFor enc δ v μ₁ μ₂ f₁ f₂ =
+      {γ : F | GammaEvent enc δ v μ₁ μ₂ f₁ f₂ γ} := by
+    simpa [GammaEvent] using hWSeq
+  rw [← ENNReal.coe_le_coe, coe_certifiedGammaError]
+  refine le_trans (le_of_eq ?_)
+    (gamma_transition_prob_le C δ enc henc_inj henc_range hδpos hδlt
+      v μ₁ μ₂ f₁ f₂ hNoWit)
+  rw [winningSetRatio, SampleableType.prEvent_uniformSample, hWEvent,
+    Set.ncard_eq_toFinset_card', Set.toFinset_ofPred,
+    ENNReal.coe_div (Nat.cast_ne_zero.mpr Fintype.card_ne_zero),
+    ENNReal.coe_natCast, ENNReal.coe_natCast]
+
+/-- A certified full-protocol fixed-radius upper bound: the exact worst-case
+winning-set ratio for the combination round, mixed with the uniform
+`(1 - δ)^t` upper bound for the spot-check round.
+
+This is not claimed to equal the optimal full-protocol adversarial acceptance
+probability: the actual spot-check acceptance outside the winning set can be
+strictly smaller than `(1 - δ)^t`. -/
+noncomputable def winningSetUpperBound {k : ℕ}
+    (enc : (Fin k → F) →ₗ[F] (ι → A)) (δ : ℝ≥0) (t : ℕ) : ℝ≥0 :=
+  (1 - δ) ^ t + winningSetDensity enc δ * (1 - (1 - δ) ^ t)
+
+/-- The executable extractor's full fixed-radius certificate.  Unlike
+`winningSetUpperBound`, its combination term is the proved MCA-plus-list
+upper bound. -/
+noncomputable def certifiedExtractorError [SampleableType F]
+    (C : ModuleCode ι F A) (δ : ℝ≥0) (t : ℕ) : ℝ≥0 :=
+  (1 - δ) ^ t + certifiedGammaError C δ * (1 - (1 - δ) ^ t)
+
+omit [DecidableEq F] [Fintype A] in
+/-- The winning-set/spot-check upper bound is no larger than the executable
+extractor's certificate. -/
+theorem winningSetUpperBound_le_certifiedExtractorError {k : ℕ} [SampleableType F]
+    [Nonempty ι] [Finite A] (C : ModuleCode ι F A) (δ : ℝ≥0) (t : ℕ)
+    (hδ : δ ∈ Set.Ioo (0 : ℝ≥0)
+      ((minRelHammingDistCode (C : Set (ι → A)) : ℝ≥0)))
+    (enc : (Fin k → F) →ₗ[F] (ι → A))
+    (henc_inj : Function.Injective enc)
+    (henc_range : Set.range enc = (C : Set (ι → A))) :
+    winningSetUpperBound enc δ t ≤ certifiedExtractorError C δ t := by
+  classical
+  let _ := Fintype.ofFinite A
+  rw [winningSetUpperBound, certifiedExtractorError]
+  gcongr
+  exact winningSetDensity_le_certifiedGammaError
+    C δ hδ enc henc_inj henc_range
 
 end ToyProblem
-
--- Source-audit anchors for issue #18. These are the live ABF26 §6 Step-4 /
--- CA-lower-bound fronts; the first residual remains the owed construction.
-#print axioms ToyProblem.simplified_iop_soundness_listDecoding_target_nonneg
-
-#print axioms ToyProblem.simplified_iop_soundness_listDecoding_lb
-#print axioms ToyProblem.simplified_iop_soundness_ca_lb

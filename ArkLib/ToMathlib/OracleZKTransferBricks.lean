@@ -25,9 +25,12 @@ variable {ι : Type} {oSpec : OracleSpec ι}
   {StmtIn : Type} {ιₛᵢ : Type} {OStmtIn : ιₛᵢ → Type} {WitIn : Type}
   {StmtOut : Type} {ιₛₒ : Type} {OStmtOut : ιₛₒ → Type} {WitOut : Type}
   {n : ℕ} {pSpec : ProtocolSpec n}
-  [∀ i, OracleInterface (OStmtIn i)] [∀ i, OracleInterface (pSpec.Message i)]
+  [∀ i, OracleInterface (OStmtIn i)] [∀ i, OracleInterface (OStmtOut i)]
+  [∀ i, OracleInterface (pSpec.Message i)]
   [∀ i, SampleableType (pSpec.Challenge i)]
   {σ : Type}
+
+local instance : MeasurableSpace (FullTranscript pSpec) := ⊤
 
 /-- **OracleReduction perfect HVZK transfers along an equal honest distribution.** -/
 theorem perfectHVZK.congr_honestDist
@@ -203,10 +206,10 @@ theorem statisticalHVZK.simulator_triangle
     {sim₁ sim₂ : TranscriptSimulator oSpec StmtIn OStmtIn pSpec} {ε₁ ε₂ : ℝ≥0}
     (h₁ : statisticalHVZK init impl rel R sim₁ ε₁)
     (h₂ : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (Reduction.honestTranscriptDist init impl R.toReduction stmtIn witIn)
+      measureTVDist (Reduction.honestTranscriptDist init impl R.toReduction stmtIn witIn)
         (sim₂ stmtIn) ≤ (ε₂ : ℝ)) :
     ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (sim₁ stmtIn) (sim₂ stmtIn) ≤ ((ε₁ + ε₂ : ℝ≥0) : ℝ) :=
+      measureTVDist (sim₁ stmtIn) (sim₂ stmtIn) ≤ ((ε₁ + ε₂ : ℝ≥0) : ℝ) :=
   Reduction.statisticalHVZK.simulator_triangle h₁ h₂
 
 /-- **Approximate honest-distribution transfer at the OracleReduction API boundary.** -/
@@ -217,7 +220,7 @@ theorem statisticalHVZK.triangle_honestDist
     {sim : TranscriptSimulator oSpec StmtIn OStmtIn pSpec} {ε₁ ε₂ : ℝ≥0}
     (h : statisticalHVZK init impl rel R₁ sim ε₁)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (Reduction.honestTranscriptDist init impl R₁.toReduction stmtIn witIn)
+      measureTVDist (Reduction.honestTranscriptDist init impl R₁.toReduction stmtIn witIn)
         (Reduction.honestTranscriptDist init impl R₂.toReduction stmtIn witIn) ≤ (ε₂ : ℝ)) :
     statisticalHVZK init impl rel R₂ sim (ε₁ + ε₂) :=
   Reduction.statisticalHVZK.triangle_honestDist h hdist
@@ -231,7 +234,7 @@ theorem statisticalHVZK.triangle_honestDist_symm
     {sim : TranscriptSimulator oSpec StmtIn OStmtIn pSpec} {ε₁ ε₂ : ℝ≥0}
     (h : statisticalHVZK init impl rel R₁ sim ε₁)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (Reduction.honestTranscriptDist init impl R₂.toReduction stmtIn witIn)
+      measureTVDist (Reduction.honestTranscriptDist init impl R₂.toReduction stmtIn witIn)
         (Reduction.honestTranscriptDist init impl R₁.toReduction stmtIn witIn) ≤ (ε₂ : ℝ)) :
     statisticalHVZK init impl rel R₂ sim (ε₁ + ε₂) :=
   Reduction.statisticalHVZK.triangle_honestDist_symm h hdist
@@ -245,7 +248,7 @@ theorem statisticalHVZK.triangle_honestDist_zero
     {sim : TranscriptSimulator oSpec StmtIn OStmtIn pSpec} {ε : ℝ≥0}
     (h : statisticalHVZK init impl rel R₁ sim ε)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (Reduction.honestTranscriptDist init impl R₁.toReduction stmtIn witIn)
+      measureTVDist (Reduction.honestTranscriptDist init impl R₁.toReduction stmtIn witIn)
         (Reduction.honestTranscriptDist init impl R₂.toReduction stmtIn witIn) ≤ (0 : ℝ)) :
     statisticalHVZK init impl rel R₂ sim ε :=
   Reduction.statisticalHVZK.triangle_honestDist_zero h hdist
@@ -259,7 +262,7 @@ theorem statisticalHVZK.triangle_honestDist_symm_zero
     {sim : TranscriptSimulator oSpec StmtIn OStmtIn pSpec} {ε : ℝ≥0}
     (h : statisticalHVZK init impl rel R₁ sim ε)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (Reduction.honestTranscriptDist init impl R₂.toReduction stmtIn witIn)
+      measureTVDist (Reduction.honestTranscriptDist init impl R₂.toReduction stmtIn witIn)
         (Reduction.honestTranscriptDist init impl R₁.toReduction stmtIn witIn) ≤ (0 : ℝ)) :
     statisticalHVZK init impl rel R₂ sim ε :=
   Reduction.statisticalHVZK.triangle_honestDist_symm_zero h hdist
@@ -273,7 +276,7 @@ theorem perfectHVZK.triangle_honestDist_zero
     {sim : TranscriptSimulator oSpec StmtIn OStmtIn pSpec}
     (h : perfectHVZK init impl rel R₁ sim)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (Reduction.honestTranscriptDist init impl R₁.toReduction stmtIn witIn)
+      measureTVDist (Reduction.honestTranscriptDist init impl R₁.toReduction stmtIn witIn)
         (Reduction.honestTranscriptDist init impl R₂.toReduction stmtIn witIn) ≤ (0 : ℝ)) :
     perfectHVZK init impl rel R₂ sim :=
   Reduction.perfectHVZK.triangle_honestDist_zero h hdist
@@ -287,7 +290,7 @@ theorem perfectHVZK.triangle_honestDist_symm_zero
     {sim : TranscriptSimulator oSpec StmtIn OStmtIn pSpec}
     (h : perfectHVZK init impl rel R₁ sim)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (Reduction.honestTranscriptDist init impl R₂.toReduction stmtIn witIn)
+      measureTVDist (Reduction.honestTranscriptDist init impl R₂.toReduction stmtIn witIn)
         (Reduction.honestTranscriptDist init impl R₁.toReduction stmtIn witIn) ≤ (0 : ℝ)) :
     perfectHVZK init impl rel R₂ sim :=
   Reduction.perfectHVZK.triangle_honestDist_symm_zero h hdist
@@ -453,7 +456,7 @@ theorem isStatHVZK.triangle_honestDist
     {ε₁ ε₂ : ℝ≥0}
     (h : isStatHVZK init impl rel R₁ ε₁)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (Reduction.honestTranscriptDist init impl R₁.toReduction stmtIn witIn)
+      measureTVDist (Reduction.honestTranscriptDist init impl R₁.toReduction stmtIn witIn)
         (Reduction.honestTranscriptDist init impl R₂.toReduction stmtIn witIn) ≤ (ε₂ : ℝ)) :
     isStatHVZK init impl rel R₂ (ε₁ + ε₂) :=
   let ⟨sim, hsim⟩ := h
@@ -468,7 +471,7 @@ theorem isStatHVZK.triangle_honestDist_symm
     {ε₁ ε₂ : ℝ≥0}
     (h : isStatHVZK init impl rel R₁ ε₁)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (Reduction.honestTranscriptDist init impl R₂.toReduction stmtIn witIn)
+      measureTVDist (Reduction.honestTranscriptDist init impl R₂.toReduction stmtIn witIn)
         (Reduction.honestTranscriptDist init impl R₁.toReduction stmtIn witIn) ≤ (ε₂ : ℝ)) :
     isStatHVZK init impl rel R₂ (ε₁ + ε₂) :=
   let ⟨sim, hsim⟩ := h
@@ -483,7 +486,7 @@ theorem isStatHVZK.triangle_honestDist_zero
     {ε : ℝ≥0}
     (h : isStatHVZK init impl rel R₁ ε)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (Reduction.honestTranscriptDist init impl R₁.toReduction stmtIn witIn)
+      measureTVDist (Reduction.honestTranscriptDist init impl R₁.toReduction stmtIn witIn)
         (Reduction.honestTranscriptDist init impl R₂.toReduction stmtIn witIn) ≤ (0 : ℝ)) :
     isStatHVZK init impl rel R₂ ε :=
   let ⟨sim, hsim⟩ := h
@@ -498,7 +501,7 @@ theorem isStatHVZK.triangle_honestDist_symm_zero
     {ε : ℝ≥0}
     (h : isStatHVZK init impl rel R₁ ε)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (Reduction.honestTranscriptDist init impl R₂.toReduction stmtIn witIn)
+      measureTVDist (Reduction.honestTranscriptDist init impl R₂.toReduction stmtIn witIn)
         (Reduction.honestTranscriptDist init impl R₁.toReduction stmtIn witIn) ≤ (0 : ℝ)) :
     isStatHVZK init impl rel R₂ ε :=
   let ⟨sim, hsim⟩ := h
@@ -512,7 +515,7 @@ theorem isHVZK.triangle_honestDist_zero
     {R₁ R₂ : OracleReduction oSpec StmtIn OStmtIn WitIn StmtOut OStmtOut WitOut pSpec}
     (h : isHVZK init impl rel R₁)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (Reduction.honestTranscriptDist init impl R₁.toReduction stmtIn witIn)
+      measureTVDist (Reduction.honestTranscriptDist init impl R₁.toReduction stmtIn witIn)
         (Reduction.honestTranscriptDist init impl R₂.toReduction stmtIn witIn) ≤ (0 : ℝ)) :
     isHVZK init impl rel R₂ :=
   let ⟨sim, hsim⟩ := h
@@ -526,7 +529,7 @@ theorem isHVZK.triangle_honestDist_symm_zero
     {R₁ R₂ : OracleReduction oSpec StmtIn OStmtIn WitIn StmtOut OStmtOut WitOut pSpec}
     (h : isHVZK init impl rel R₁)
     (hdist : ∀ stmtIn witIn, (stmtIn, witIn) ∈ rel →
-      tvDist (Reduction.honestTranscriptDist init impl R₂.toReduction stmtIn witIn)
+      measureTVDist (Reduction.honestTranscriptDist init impl R₂.toReduction stmtIn witIn)
         (Reduction.honestTranscriptDist init impl R₁.toReduction stmtIn witIn) ≤ (0 : ℝ)) :
     isHVZK init impl rel R₂ :=
   let ⟨sim, hsim⟩ := h

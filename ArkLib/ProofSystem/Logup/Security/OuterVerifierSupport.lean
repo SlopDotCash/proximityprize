@@ -52,19 +52,25 @@ theorem outer_toVerifier_verify_support
     res.1.xChallenge = chalX F n M params (transcript.challenges) ∧
       ∀ i, res.2 (.input i) = oStmt i := by
   classical
-  simp only [OracleVerifier.toVerifier] at hres
-  rw [simulateQ_outerVerify_eq (oSpec := oSpec) (F := F) (n := n) (M := M) (params := params) (stmt := stmt) (oStmt := oStmt) (chal := transcript.challenges) (msgs := transcript.messages)] at hres
+  have hRun := congrArg OptionT.run (simulateQ_outerVerify_eq
+    (oSpec := oSpec) (F := F) (n := n) (M := M) (params := params)
+    (stmt := stmt) (oStmt := oStmt) (chal := transcript.challenges)
+    (msgs := transcript.messages))
+  change simulateQ (OracleInterface.simOracle2 oSpec oStmt transcript.messages)
+    ((outerVerifier oSpec F n M params).verify stmt transcript.challenges).run = _ at hRun
+  simp only [OracleVerifier.toVerifier, OptionT.run_mk] at hres
+  rw [hRun] at hres
   by_cases hacc : ∀ u : Hypercube n,
       chalX F n M params transcript.challenges + evalOnHypercube (tableOracle oStmt) u ≠ 0
-  · rw [if_pos hacc] at hres
-    simp only [OptionT.run_pure, pure_bind, support_pure,
+  · rw [ite_eq_left hacc] at hres
+    simp only [OptionT.run_pure, map_pure, Option.map_some, support_pure,
       Set.mem_singleton_iff, Option.some.injEq] at hres
-    subst hres
+    subst res
     refine ⟨rfl, fun i => ?_⟩
     rfl
-  · rw [if_neg hacc] at hres
-    simp only [OptionT.run_failure, failure_bind] at hres
-    simp at hres
+  · rw [ite_eq_right hacc] at hres
+    simp only [OptionT.run_failure, map_pure, Option.map_none, support_pure,
+      Set.mem_singleton_iff, reduceCtorEq] at hres
 
 /-- **Acceptance into the sharp protocol language pins the transcript challenge.**  The verifier
 half of the run-marginal `hsupp` side condition: any surviving output of the compiled outer

@@ -4,12 +4,19 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.SumcheckKnowledge
 import ArkLib.OracleReduction.LiftContext.HonestKnowledgeLens
 import ArkLib.ProofSystem.Spartan.FirstSumcheckReduction
 import ArkLib.ProofSystem.Spartan.SecondSumcheckFaithful
 import ArkLib.ProofSystem.Sumcheck.Spec.RbrKnowledgeSoundnessOracle
 
 /-!
+
+Canonical-message integration: the degree-2/degree-3 round knowledge bounds remain explicit
+hypotheses of the `_of_sumcheck_rounds` constructions below. Former unconditional zero-flip
+completion claims are retired; exact names, commands and added obligations are recorded in
+`scripts/integration/sumcheck-message-semantics-retirements.json`.
+
 # Spartan sum-check RBR-KS leaves over the honest transported relations (#114)
 
 The R1CS-carrying first/second sum-check relations used for perfect completeness are not honest
@@ -92,8 +99,8 @@ theorem firstSumcheck_rbrKnowledgeSoundness_honest
       (firstSumcheckRbrRelIn pp oSpec)
       (firstSumcheckRbrRelOut pp oSpec)
       rbrKnowledgeError := by
-  haveI := firstSumcheckCoherent (R := R) pp oSpec
-  letI : Extractor.Lens.IsKnowledgeSound
+  have := firstSumcheckCoherent (R := R) pp oSpec
+  let : Extractor.Lens.IsKnowledgeSound
       (firstSumcheckRbrRelIn pp oSpec)
       (Sumcheck.Spec.relationRound R pp.ℓ_m 3 (boolEmbedding R) (0 : Fin (pp.ℓ_m + 1)))
       (firstSumcheckRbrRelOut pp oSpec)
@@ -107,26 +114,29 @@ theorem firstSumcheck_rbrKnowledgeSoundness_honest
       (Sumcheck.Spec.relationRound R pp.ℓ_m 3 (boolEmbedding R) (Fin.last pp.ℓ_m))
       ((Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).verifier.toVerifier
         |>.compatStatement (firstSumcheckOracleLens pp oSpec).toLens)
-  exact OracleVerifier.liftContext_rbr_knowledgeSoundness
+  exact OracleVerifier.liftContextLegacy_rbr_knowledgeSoundness
     (V := (Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).verifier)
     (stmtLens := firstSumcheckOracleLens pp oSpec)
     (witLens := Witness.InvLens.trivial)
     h_inner
 
 set_option linter.unusedFintypeInType false in
-/-- The first Spartan sum-check RBR-KS leaf over the honest transported relation contract, with
-the generic multi-round sum-check oracle RBR-KS theorem plugged in. -/
-theorem firstSumcheck_rbrKnowledgeSoundness_honest_full [Inhabited R]
+/-- The completed Spartan composition construction, conditional on the actual canonical
+sumcheck degree-3 per-round knowledge bounds. The former unconditional zero-flip
+completion is retired; exact source and the added obligations are recorded in the migration audit. -/
+theorem firstSumcheck_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds [Inhabited R]
     {σ : Type} [Subsingleton σ] {init : ProbComp σ}
     {impl : QueryImpl oSpec (StateT σ ProbComp)}
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0) :
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
+    (hRound3 : Sumcheck.Spec.RoundKnowledge R 3 (boolEmbedding R) pp.ℓ_m oSpec init impl)
+    :
     (firstSumcheckReduction (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (firstSumcheckRbrRelIn (R := R) pp oSpec)
       (firstSumcheckRbrRelOut (R := R) pp oSpec)
       (fun _ => (3 : ℝ≥0) / (Fintype.card R)) :=
   firstSumcheck_rbrKnowledgeSoundness_honest (R := R) pp oSpec
     (fun _ => (3 : ℝ≥0) / (Fintype.card R))
-    (Sumcheck.Spec.oracleVerifier_rbrKnowledgeSoundness
+    (Sumcheck.Spec.oracleVerifier_rbrKnowledgeSoundness_failingDet_of_round (hRound := hRound3)
       (R := R) (deg := 3) (D := boolEmbedding R) (n := pp.ℓ_m)
       (oSpec := oSpec) (init := init) (impl := impl) hInit hInitNF)
 
@@ -147,8 +157,8 @@ theorem secondSumcheck_rbrKnowledgeSoundness_honest
       (secondSumcheckRbrRelIn pp oSpec)
       (secondSumcheckRbrRelOut pp oSpec)
       rbrKnowledgeError := by
-  haveI := secondSumcheckCoherent (R := R) pp oSpec
-  letI : Extractor.Lens.IsKnowledgeSound
+  have := secondSumcheckCoherent (R := R) pp oSpec
+  let : Extractor.Lens.IsKnowledgeSound
       (secondSumcheckRbrRelIn pp oSpec)
       (Sumcheck.Spec.relationRound R pp.ℓ_n 2 (boolEmbedding R) (0 : Fin (pp.ℓ_n + 1)))
       (secondSumcheckRbrRelOut pp oSpec)
@@ -162,7 +172,7 @@ theorem secondSumcheck_rbrKnowledgeSoundness_honest
       (Sumcheck.Spec.relationRound R pp.ℓ_n 2 (boolEmbedding R) (Fin.last pp.ℓ_n))
       ((Sumcheck.Spec.oracleReduction R 2 (boolEmbedding R) pp.ℓ_n oSpec).verifier.toVerifier
         |>.compatStatement (secondSumcheckOracleLens pp oSpec).toLens)
-  exact OracleVerifier.liftContext_rbr_knowledgeSoundness
+  exact OracleVerifier.liftContextLegacy_rbr_knowledgeSoundness
     (V := (Sumcheck.Spec.oracleReduction R 2 (boolEmbedding R) pp.ℓ_n oSpec).verifier)
     (stmtLens := secondSumcheckOracleLens pp oSpec)
     (witLens := Witness.InvLens.trivial)
@@ -170,26 +180,29 @@ theorem secondSumcheck_rbrKnowledgeSoundness_honest
 
 set_option linter.unusedSectionVars false in
 set_option linter.unusedFintypeInType false in
-/-- The second Spartan sum-check RBR-KS leaf over the honest transported relation contract, with
-the generic multi-round sum-check oracle RBR-KS theorem plugged in. -/
-theorem secondSumcheck_rbrKnowledgeSoundness_honest_full [Inhabited R]
+/-- The completed Spartan composition construction, conditional on the actual canonical
+sumcheck degree-2 per-round knowledge bounds. The former unconditional zero-flip
+completion is retired; exact source and the added obligations are recorded in the migration audit. -/
+theorem secondSumcheck_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds [Inhabited R]
     {σ : Type} [Subsingleton σ] {init : ProbComp σ}
     {impl : QueryImpl oSpec (StateT σ ProbComp)}
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0) :
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
+    (hRound2 : Sumcheck.Spec.RoundKnowledge R 2 (boolEmbedding R) pp.ℓ_n oSpec init impl)
+    :
     (secondSumcheckReduction (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
       (secondSumcheckRbrRelIn (R := R) pp oSpec)
       (secondSumcheckRbrRelOut (R := R) pp oSpec)
       (fun _ => (2 : ℝ≥0) / (Fintype.card R)) :=
   secondSumcheck_rbrKnowledgeSoundness_honest (R := R) pp oSpec
     (fun _ => (2 : ℝ≥0) / (Fintype.card R))
-    (Sumcheck.Spec.oracleVerifier_rbrKnowledgeSoundness
+    (Sumcheck.Spec.oracleVerifier_rbrKnowledgeSoundness_failingDet_of_round (hRound := hRound2)
       (R := R) (deg := 2) (D := boolEmbedding R) (n := pp.ℓ_n)
       (oSpec := oSpec) (init := init) (impl := impl) hInit hInitNF)
 
 #print axioms firstSumcheck_rbrKnowledgeSoundness_honest
-#print axioms firstSumcheck_rbrKnowledgeSoundness_honest_full
+#print axioms firstSumcheck_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds
 #print axioms secondSumcheck_rbrKnowledgeSoundness_honest
-#print axioms secondSumcheck_rbrKnowledgeSoundness_honest_full
+#print axioms secondSumcheck_rbrKnowledgeSoundness_honest_full_of_sumcheck_rounds
 
 end
 

@@ -35,22 +35,28 @@ open WhirIOP.Construction
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
 variable {ι : Type} [Fintype ι] [Nonempty ι]
 
+private local instance : VCVCompatible F :=
+  { toFintype := inferInstance, toInhabited := ⟨0⟩ }
+private noncomputable local instance stirMultiTUniformAnswers
+    {κ : Type} {spec : OracleSpec κ}
+    [∀ q, Fintype (spec.Range q)] [∀ q, Inhabited (spec.Range q)] :
+    OracleSpec.UniformAnswerMeasure spec :=
+  OracleSpec.UniformAnswerMeasure.ofFiniteNonempty spec
+
 /-! ## Instances (mirroring the `t = 1` `MultiRoundAssembly` packaging) -/
 
 /-- Finiteness of the t-repetition challenge oracle spec (every range is `Vector F t`). -/
-instance {M t : ℕ} :
-    ([((stirMultiVSpecT M ι t).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).Fintype
-    where
-  fintype_B := fun q => by
+instance instStirMultiTChallengeRangeFintype {M t : ℕ} :
+    ∀ q, Fintype (([((stirMultiVSpecT M ι t).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).Range q) :=
+  fun q => by
     show Fintype (((stirMultiVSpecT M ι t).toProtocolSpec F).Challenge q.1)
     dsimp
     infer_instance
 
 /-- Inhabitedness of the t-repetition challenge oracle spec. -/
-instance {M t : ℕ} :
-    ([((stirMultiVSpecT M ι t).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).Inhabited
-    where
-  inhabited_B := fun q => by
+instance instStirMultiTChallengeRangeInhabited {M t : ℕ} :
+    ∀ q, Inhabited (([((stirMultiVSpecT M ι t).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).Range q) :=
+  fun q => by
     show Inhabited (((stirMultiVSpecT M ι t).toProtocolSpec F).Challenge q.1)
     dsimp
     infer_instance
@@ -74,7 +80,7 @@ invariant; the prover's strategy is challenge-length-agnostic). -/
 theorem stirMultiRoundProverT_runToRound_invariant (M : ℕ) (φ : ι ↪ F) (deg t : ℕ)
     (stmtIn : Unit × ∀ i, OracleStatement ι F i) (witIn : Unit)
     (k : Fin (3 * M + 3 + 1)) :
-    ∀ ts ∈ _root_.support
+    ∀ ts ∈ support
       ((stirMultiRoundProverT M φ deg t).runToRound k stmtIn witIn),
       ts.2.1 = (stmtIn, witIn) ∧
       ∀ (iv : ℕ) (hik : iv < k.val) (hdir : iv % 3 = 1),
@@ -104,14 +110,16 @@ theorem stirMultiRoundProverT_runToRound_invariant (M : ℕ) (φ : ι ↪ F) (de
             if h : 0 < (stirMultiVSpecT M ι t).length ⟨(j : ℕ), j.isLt⟩
             then r.get ⟨0, h⟩ else 0) := by
           dsimp only [stirMultiRoundProverT] at hfch
-          simpa only [support_pure, Set.mem_singleton_iff] using hfch
+          set_option backward.isDefEq.respectTransparency false in
+            simpa only [liftM_pure, support_pure, Set.mem_singleton_iff] using hfch
         refine ⟨by rw [hfch']; exact ihSt, ?_⟩
         intro iv hik hdir
         by_cases hlt : iv < j.val
         · show Fin.snoc (α := fun m : Fin ((j : ℕ) + 1) =>
               ((stirMultiVSpecT M ι t).toProtocolSpec F).«Type» (Fin.castLE j.isLt m))
             tr chal (Fin.castSucc ⟨iv, hlt⟩) = _
-          rw [Fin.snoc_castSucc]
+          set_option backward.isDefEq.respectTransparency false in
+            rw [Fin.snoc_castSucc]
           exact ihTr iv hlt hdir
         · exfalso
           have hiv : iv = j.val := by simp only [Fin.val_succ] at hik; omega
@@ -138,7 +146,8 @@ theorem stirMultiRoundProverT_runToRound_invariant (M : ℕ) (φ : ι ↪ F) (de
         · show Fin.snoc (α := fun m : Fin ((j : ℕ) + 1) =>
               ((stirMultiVSpecT M ι t).toProtocolSpec F).«Type» (Fin.castLE j.isLt m))
             tr msg (Fin.castSucc ⟨iv, hlt⟩) = _
-          rw [Fin.snoc_castSucc]
+          set_option backward.isDefEq.respectTransparency false in
+            rw [Fin.snoc_castSucc]
           exact ihTr iv hlt hdir
         · have hiv : iv = j.val := by simp only [Fin.val_succ] at hik; omega
           subst hiv
@@ -146,7 +155,8 @@ theorem stirMultiRoundProverT_runToRound_invariant (M : ℕ) (φ : ι ↪ F) (de
           show Fin.snoc (α := fun m : Fin ((j : ℕ) + 1) =>
               ((stirMultiVSpecT M ι t).toProtocolSpec F).«Type» (Fin.castLE j.isLt m))
             tr msg (Fin.last (j : ℕ)) = _
-          rw [Fin.snoc_last, hmsg, ihSt]
+          set_option backward.isDefEq.respectTransparency false in
+            rw [Fin.snoc_last, hmsg, ihSt]
           show Vector.cast _ (packFiniteFunction ι
             (Combine.combine φ deg st.2 (fun _ : Fin 1 => stmtIn.2 ())
               (fun _ : Fin 1 => deg))) = _
@@ -250,79 +260,92 @@ open scoped Classical in
 theorem checkingVerifierT_toVerifier_verify
     (stmtIn : Unit × ∀ i, OracleStatement ι F i)
     (tr : FullTranscript ((stirMultiVSpecT M ι t).toProtocolSpec F)) :
-    (stirCheckingVerifierT M φ deg t).toVerifier.verify stmtIn tr
+    (OracleVerifier.toVerifier (Oₛₒ := fun i : Empty => nomatch i) (stirCheckingVerifierT M φ deg t)).verify stmtIn tr
       = pure (checkingBoolT M φ deg t stmtIn.2 tr.messages tr.challenges,
           fun i : Empty => i.elim) := by
   dsimp only [OracleVerifier.toVerifier, stirCheckingVerifierT]
   erw [simulateQ_lift_checkingCompT, pure_bind]
+  apply OptionT.ext
+  simp only [OptionT.run_mk, LawfulApplicative.map_pure, Option.map_some, OptionT.run_pure]
 
 /-! ## Perfect completeness -/
 
 open OracleReduction in
 open scoped Classical in
+set_option backward.isDefEq.respectTransparency false in
 /-- **Perfect completeness of the t-repetition checking STIR IOPP** (symbolic `M`, `t`). -/
 theorem stirCheckingIOPT_perfectCompleteness :
-    OracleReduction.perfectCompleteness (pure ()) isEmptyElim
+    OracleReduction.perfectCompleteness (Oₛₒ := fun i : Empty => nomatch i) (pure ()) isEmptyElim
       (stirRelation deg φ 0) acceptRejectOracleRel (stirCheckingIOPT M φ deg t) := by
-  rw [OracleReduction.unroll_n_message_reduction_perfectCompleteness
-    (reduction := stirCheckingIOPT M φ deg t) (stirRelation deg φ 0) acceptRejectOracleRel
-    (pure ()) isEmptyElim inferInstance
+  letI : Inhabited F := ⟨0⟩
+  letI : ∀ q, Fintype (([((stirMultiVSpecT M ι t).toProtocolSpec F).Challenge]ₒ' ProtocolSpec.challengeOracleInterface).Range q) :=
+    fun ⟨i, _⟩ => by
+      change Fintype (((stirMultiVSpecT M ι t).toProtocolSpec F).Challenge i)
+      dsimp [ProtocolSpec.Challenge]
+      infer_instance
+  letI : ∀ q, Inhabited (([((stirMultiVSpecT M ι t).toProtocolSpec F).Challenge]ₒ' ProtocolSpec.challengeOracleInterface).Range q) :=
+    fun ⟨i, _⟩ => by
+      change Inhabited (((stirMultiVSpecT M ι t).toProtocolSpec F).Challenge i)
+      dsimp [ProtocolSpec.Challenge]
+      infer_instance
+  -- Supply the vacuous output interface before elaborating the native unroll lemma.
+  rw [@OracleReduction.unroll_n_message_reduction_perfectCompleteness
+    _ _ _ _ _ _ _ _ _ Empty _ (fun _ : Empty => Unit) _ (fun i => nomatch i)
+    _ _ _ _ _ (stirCheckingIOPT M φ deg t) (stirRelation deg φ 0) acceptRejectOracleRel
+    (pure ()) isEmptyElim (OracleComp.prFail_eq_zero _)
     (by simp only [Set.fmap_eq_image, IsEmpty.forall_iff, implies_true])]
   intro stmtIn oStmtIn witIn h_relIn
+  -- the δ = 0 input relation is genuine code membership
   have hmem : oStmtIn () ∈ ReedSolomon.code φ deg := by
     have h0 : Code.relDistFromCode (oStmtIn ()) (ReedSolomon.code φ deg)
         ≤ ((0 : ℝ≥0) : ENNReal) := h_relIn
     exact mem_of_relDistFromCode_le_zero ⟨0, Submodule.zero_mem _⟩ (by simpa using h0)
+  have hverify (tr : Transcript (Fin.last (3 * M + 3))
+      ((stirMultiVSpecT M ι t).toProtocolSpec F)) :
+      (OracleVerifier.toVerifier (Oₛₒ := fun i : Empty => nomatch i)
+        (stirCheckingVerifierT M φ deg t)).verify (stmtIn, oStmtIn) tr =
+        pure (checkingBoolT M φ deg t oStmtIn (FullTranscript.messages tr)
+          (FullTranscript.challenges tr), fun i : Empty => i.elim) :=
+    checkingVerifierT_toVerifier_verify M φ deg t (stmtIn, oStmtIn) tr
   dsimp only [stirCheckingIOPT, stirMultiRoundProverT]
-  simp only [checkingVerifierT_toVerifier_verify]
+  simp only [hverify]
   simp only [Fin.isValue, bind_pure_comp, pure_bind, bind_map_left, liftM_bind, liftM_map,
     Prod.mk.eta, bind_assoc, _root_.map_pure, liftComp_pure, liftM_pure]
-  rw [probEvent_eq_one_iff]
-  refine ⟨?_, ?_⟩
-  · rw [probFailure_bind_eq_zero_iff]
-    refine ⟨?_, fun α _hα => ?_⟩
-    · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
-    · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
-      simp only [OptionT.run_pure, HasEvalPMF.probFailure_eq_zero, zero_add,
-        probOutput_eq_zero_iff, support_pure, Set.mem_singleton_iff, reduceCtorEq,
-        not_false_eq_true]
-  · intro x hx
-    simp only [support_bind, Set.mem_iUnion, exists_prop] at hx
-    obtain ⟨α, hα, hx⟩ := hx
-    have hα' : α ∈ _root_.support
-        ((stirMultiRoundProverT M φ deg t).runToRound (Fin.last (3 * M + 3))
-          (stmtIn, oStmtIn) witIn) := by
-      simpa only [OptionT.support_liftM] using hα
-    have hinv := stirMultiRoundProverT_runToRound_invariant M φ deg t (stmtIn, oStmtIn)
-      witIn (Fin.last (3 * M + 3)) α hα'
-    have hmsgs : ∀ j, FullTranscript.messages
-        (pSpec := (stirMultiVSpecT M ι t).toProtocolSpec F) α.1 j
-        = Vector.cast (stirMultiVSpecT_length_msg j) (packFiniteFunction ι (oStmtIn ())) := by
-      intro j
-      have hdir : ((j.1 : Fin (3 * M + 3)) : ℕ) % 3 = 1 := by
-        have h := j.2
-        rw [show ((stirMultiVSpecT M ι t).toProtocolSpec F).dir j.1
-          = (stirVSpec M (fun _ => Fintype.card ι) t).dir j.1 from rfl,
-          stirVSpec_dir_eq_msg_iff] at h
-        exact h
-      exact hinv.2 j.1.val j.1.isLt hdir
-    have hbool : checkingBoolT M φ deg t oStmtIn
-        (FullTranscript.messages (pSpec := (stirMultiVSpecT M ι t).toProtocolSpec F) α.1)
-        (FullTranscript.challenges (pSpec := (stirMultiVSpecT M ι t).toProtocolSpec F) α.1)
-        = true :=
-      checkingBoolT_honest M φ deg t (oStmtIn ()) hmem oStmtIn rfl _ hmsgs _
-    rw [OptionT.mem_support_iff] at hx
-    simp only [OptionT.run_map, support_map, Set.mem_image] at hx
-    erw [OptionT_run_liftComp_pure] at hx
-    simp only [support_pure, Set.mem_singleton_iff, exists_eq_left, Option.map_some,
-      Option.some.injEq] at hx
-    subst hx
-    have hfn : ∀ (f g : ∀ _ : Empty, Unit), f = g := fun _ _ => funext fun i => i.elim
-    refine ⟨?_, ?_, hfn _ _⟩
-    · simp only [acceptRejectOracleRel, Set.mem_singleton_iff, Prod.mk.injEq, hbool]
-    · show (true : Bool) = checkingBoolT M φ deg t oStmtIn _ _
-      rw [hbool]
+  apply (OptionT.prEvent_mk_eq_one_iff _ _).2
+  intro x hx
+  have hopt {κ : Type} {spec : OracleSpec.{0, 0} κ} {β : Type} (mx : OracleComp spec β) :
+      (liftM mx : OptionT (OracleComp spec) β) = some <$> mx := by
+    change (mx >>= fun x => pure (some x)) = some <$> mx
+    rw [map_eq_bind_pure_comp]
+    rfl
+  obtain ⟨a, ha, hx⟩ := OracleComp.mem_support_bind_peel _ _ hx
+  erw [hopt] at ha
+  obtain ⟨α, hα', heq⟩ := OracleComp.mem_support_map_peel _ _ ha
+  subst a
+  have hinv := stirMultiRoundProverT_runToRound_invariant M φ deg t (stmtIn, oStmtIn) witIn
+    (Fin.last (3 * M + 3)) α hα'
+  have hmsgs : ∀ j, FullTranscript.messages (pSpec := (stirMultiVSpecT M ι t).toProtocolSpec F)
+      α.1 j
+      = Vector.cast (stirMultiVSpecT_length_msg j) (packFiniteFunction ι (oStmtIn ())) := by
+    intro j
+    have hdir : ((j.1 : Fin (3 * M + 3)) : ℕ) % 3 = 1 :=
+      (stirVSpec_dir_eq_msg_iff (M := M) (msgLen := fun _ => Fintype.card ι)
+        (chalLen := t)).mp j.2
+    exact hinv.2 j.1.val j.1.isLt hdir
+  have hbool : checkingBoolT M φ deg t oStmtIn
+      (FullTranscript.messages (pSpec := (stirMultiVSpecT M ι t).toProtocolSpec F) α.1)
+      (FullTranscript.challenges (pSpec := (stirMultiVSpecT M ι t).toProtocolSpec F) α.1)
+      = true :=
+    checkingBoolT_honest M φ deg t (oStmtIn ()) hmem oStmtIn rfl _ hmsgs _
+  simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure,
+    simulateQ_pure, LawfulApplicative.map_pure, Option.map_some, liftComp_pure] at hx
+  have hv := OracleComp.eq_of_mem_support_pure _ hx
+  subst x
+  have hfn : ∀ (f g : ∀ _ : Empty, Unit), f = g := fun _ _ => funext fun i => i.elim
+  refine ⟨_, rfl, ?_, ?_, hfn _ _⟩
+  · simp only [acceptRejectOracleRel, Set.mem_singleton_iff, Prod.mk.injEq, hbool]
+  · show (true : Bool) = checkingBoolT M φ deg t oStmtIn _ _
+    rw [hbool]
 
 end MultiRound
 

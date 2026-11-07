@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Spartan.Basic
+import ProximityPrize.Extensions.ProofSystem.Spartan.Basic
 
 /-!
 # Zero-check completeness: `𝒢 = 0` on R1CS-satisfying instances (issue #114)
@@ -40,7 +40,9 @@ theorem zeroCheckVirtualPolynomial_eq_zero_of_relation
   apply Finset.sum_eq_zero
   intro x _
   have hx := congrFun h x
-  rw [Pi.mul_apply] at hx
+  change (oStmt (.inl .A) *ᵥ R1CS.𝕫 𝕩 (oStmt (.inr 0))) x *
+    (oStmt (.inl .B) *ᵥ R1CS.𝕫 𝕩 (oStmt (.inr 0))) x =
+      (oStmt (.inl .C) *ᵥ R1CS.𝕫 𝕩 (oStmt (.inr 0))) x at hx
   rw [hx, sub_self, map_zero, mul_zero]
 
 /-- **Zero-check completeness (R1CS relation form).** The zero-check polynomial vanishes on any

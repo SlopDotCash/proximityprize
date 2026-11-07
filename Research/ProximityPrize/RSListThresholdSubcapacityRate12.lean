@@ -147,7 +147,7 @@ theorem rs_lambda_gt_rate12_j127_n256_of_card_le_pow160
             ((((2 : ℝ) ^ 2048 * (q - 1) ^ 127) /
               ((127 : ℝ) ^ 127 * 129 ^ 129 * q ^ 128)))
       rw [hfloor, hsub]
-      unfold qEntropy
+      rw [CodingTheory.qEntropy_eq_logb_form]
       rw [h1sub, hqcard]
       have hqne : q ≠ 0 := ne_of_gt hqpos
       have hqm1ne : q - 1 ≠ 0 := ne_of_gt hqm1pos

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.Stir.CheckedFinalBlock
-import ArkLib.Data.CodingTheory.Basic.RelativeDistance
+import ProximityPrize.Extensions.Data.CodingTheory.Basic.RelativeDistance
 
 /-!
 # The spot-check salvage bound (#301)
@@ -15,6 +15,9 @@ on at least a `δ` fraction of indices, then a uniformly sampled index passes th
 check with probability at most `1 − δ` — the classic `(1−δ)^t` repetition bound at `t = 1`,
 in the exact index space (`Fin (Fintype.card ι)`) that `stirFinalVectorVerifierChecked`
 queries. -/
+
+private noncomputable local instance {α : Type} [Fintype α] [Nonempty α] :
+    SampleableType α := SampleableType.ofFintype α
 
 namespace StirIOP
 
@@ -41,7 +44,7 @@ theorem agreementSet_card_le {vWord vIn : Fin (Fintype.card ι) → F} {δ : ℝ
       + (Finset.univ.filter (fun k => vWord k ≠ vIn k)).card
       = Fintype.card ι := by
     rw [agreementSet]
-    rw [Finset.filter_card_add_filter_neg_card_eq_card
+    rw [Finset.card_filter_add_card_filter_not
       (p := fun k : Fin (Fintype.card ι) => vWord k = vIn k)]
     exact Fintype.card_fin _
   have h1 : ((agreementSet (ι := ι) vWord vIn).card : ℝ)
@@ -61,12 +64,12 @@ theorem probEvent_spotCheck_le {vWord vIn : Fin (Fintype.card ι) → F} {δ : �
     [Nonempty ι] (hδ1 : δ ≤ 1)
     (hfar : (δ : ℝ) * Fintype.card ι
       ≤ (Finset.univ.filter (fun k => vWord k ≠ vIn k)).card) :
-    Pr[fun k : Fin (Fintype.card ι) => vWord k = vIn k | $ᵗ (Fin (Fintype.card ι))]
+    Pr{let k ← $ᵗ (Fin (Fintype.card ι))}[vWord k = vIn k]
       ≤ ((1 - δ : ℝ≥0) : ℝ≥0∞) := by
   classical
   haveI : Nonempty (Fin (Fintype.card ι)) :=
     ⟨⟨0, Fintype.card_pos⟩⟩
-  rw [probEvent_uniformSample]
+  rw [SampleableType.prEvent_uniformSample]
   have hcard := agreementSet_card_le (ι := ι) (vWord := vWord) (vIn := vIn) hfar
   have hcoe : ((1 - δ : ℝ≥0) : ℝ) = 1 - (δ : ℝ) := by
     rw [NNReal.coe_sub hδ1, NNReal.coe_one]

@@ -1,0 +1,69 @@
+{
+  "path": "ArkLib/ProofSystem/Binius/BinaryBasefold/Steps/VerifierDeterminism.lean",
+  "canonical_sources_modified": false,
+  "original_source_archive": "scripts/integration/retired/binius-verifier-determinism-pre-native.lean.txt",
+  "original_sha256": "43998b8537506182fc1ccb5c97d53015a84315ff54067956a534a41130ed141e",
+  "current_sha256": "5f8fa22fd533e747f4647b7875eccdb19a3c2783bed262b4b26b63f6c6e677e2",
+  "preserved_original_public_names": [
+    "Binius.BinaryBasefold.CoreInteraction.commitOracleVerifier_toVerifier_pure",
+    "Binius.BinaryBasefold.CoreInteraction.foldOracleVerifier_toVerifier_failingDet",
+    "Binius.BinaryBasefold.CoreInteraction.foldVerifyFn",
+    "Binius.BinaryBasefold.CoreInteraction.relayOracleVerifier_toVerifier_pure"
+  ],
+  "scope": "Preserve total relay/commit determinism and optional fold determinism, using native output materialization. The fold option-valued verdict is projected from the actual canonical GuardedForm; reject remains None. Retire duplicated message-simulation and embedding-case proof scripts in favor of canonical check/out data. No new premise or budget increase.",
+  "semantic_boundary": "foldVerifyFn now follows the authoritative chronological native verifier, rather than an old separately resolved logic body. No identity to a differently ordered historical fold is asserted.",
+  "validation": {
+    "file": "ArkLib/ProofSystem/Binius/BinaryBasefold/Steps/VerifierDeterminism.lean",
+    "status": "temporary_overlay_source_check",
+    "compiler_exit_code": 0,
+    "admission_checker_exit_code": 0,
+    "elapsed_seconds": 22.121,
+    "source_before_sha256": "5f8fa22fd533e747f4647b7875eccdb19a3c2783bed262b4b26b63f6c6e677e2",
+    "source_after_sha256": "5f8fa22fd533e747f4647b7875eccdb19a3c2783bed262b4b26b63f6c6e677e2",
+    "import_artifacts": {
+      "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Steps.Fold": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Steps/Fold.olean",
+        "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Steps/Fold.olean",
+        "sha256": "804ade7cef7e50b036876171f3fdd62b0d01c102b5376713ebe30b10eaa96506",
+        "artifact_family": {
+          "Fold.olean": "804ade7cef7e50b036876171f3fdd62b0d01c102b5376713ebe30b10eaa96506"
+        }
+      },
+      "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Steps.Relay": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Steps/Relay.olean",
+        "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Steps/Relay.olean",
+        "sha256": "087bbbc10aeb65b209fd2a94e947466ee4972286315e8113369a28228dd844e9",
+        "artifact_family": {
+          "Relay.olean": "087bbbc10aeb65b209fd2a94e947466ee4972286315e8113369a28228dd844e9"
+        }
+      },
+      "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Steps.Commit": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Steps/Commit.olean",
+        "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Steps/Commit.olean",
+        "sha256": "cb662aef759a01f3888f02ec2476785b8448ee9fdd0a26dec9e620659b556b23",
+        "artifact_family": {
+          "Commit.olean": "cb662aef759a01f3888f02ec2476785b8448ee9fdd0a26dec9e620659b556b23"
+        }
+      },
+      "ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeOracleLift": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeOracleLift.olean",
+        "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeOracleLift.olean",
+        "sha256": "7b37993a7f5f6ccb01440a91fa249498dfd1ec33aabd49f3681154eeff503bff",
+        "artifact_family": {
+          "AppendRbrKnowledgeOracleLift.olean": "7b37993a7f5f6ccb01440a91fa249498dfd1ec33aabd49f3681154eeff503bff"
+        }
+      },
+      "ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/OracleReduction/Composition/Sequential/KnowledgeFailure.olean",
+        "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/OracleReduction/Composition/Sequential/KnowledgeFailure.olean",
+        "sha256": "6bd7b55a91b6f965145b009ede558d282960d6152f4b13e3569dacd5d0cce54f",
+        "artifact_family": {
+          "KnowledgeFailure.olean": "6bd7b55a91b6f965145b009ede558d282960d6152f4b13e3569dacd5d0cce54f"
+        }
+      }
+    },
+    "imports_unchanged": true,
+    "log": "/tmp/arklib-native-overlay/logs/ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.VerifierDeterminism.lean.1793253778092718000.check.log",
+    "not_a_lake_package_build": true
+  }
+}

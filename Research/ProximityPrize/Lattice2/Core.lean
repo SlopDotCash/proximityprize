@@ -7,7 +7,7 @@ Authors: ArkLib Contributors
 import Research.ProximityPrize.Collapse
 import Research.ProximityPrize.LDThresholdElias
 import Research.ProximityPrize.Lattice
-import ArkLib.Data.CodingTheory.InterleavedCode
+import ProximityPrize.Extensions.Data.CodingTheory.InterleavedCode
 import ArkLib.Data.CodingTheory.ProximityGap.MCABadCount
 import Research.ProximityPrize.MCABadCountRatio
 import Research.ProximityPrize.MCAEndpointLower

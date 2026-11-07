@@ -4,15 +4,16 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alexander Hicks
 -/
 
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
+import ArkLib.Data.Probability.Notation
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
 import ArkLib.Data.CodingTheory.ProximityGap.CS25CoveringExistence
 import ArkLib.Data.CodingTheory.ProximityGap.ProximityGenerators
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 import ArkLib.Data.CodingTheory.Basic.Entropy
-import ArkLib.Data.CodingTheory.HammingBallVolume
-import ArkLib.Data.CodingTheory.SubspaceDesign
-import ArkLib.Data.CodingTheory.InterleavedCode
-import ArkLib.Data.Probability.Combinatorial
+import ProximityPrize.Extensions.Data.CodingTheory.HammingBallVolume
+import ProximityPrize.Extensions.Data.CodingTheory.SubspaceDesign
+import ProximityPrize.Extensions.Data.CodingTheory.InterleavedCode
+import ProximityPrize.Extensions.Data.Probability.Combinatorial
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 /-!
@@ -428,7 +429,7 @@ lemma r4_10_floor_collapse_of_no_boundary_crossing
     -- (was a single-step `calc … := by …`, which the v4.30 calc-step parser swallows the
     -- following tactic lines into; stated directly instead)
     gcongr
-    exact le_add_of_nonneg_right (zero_le _)
+    exact le_add_of_nonneg_right (zero_le)
   have hfloor_le :
       Nat.floor (δ_fld * n) ≤ Nat.floor ((δ_fld + γ / n) * n) :=
     Nat.floor_le_floor hle_arg
@@ -436,7 +437,7 @@ lemma r4_10_floor_collapse_of_no_boundary_crossing
     rw [add_mul, div_mul_cancel₀ _ (ne_of_gt hnpos)]
   have hfloor_lt :
       Nat.floor ((δ_fld + γ / n) * n) < Nat.floor (δ_fld * n) + 1 := by
-    rw [Nat.floor_lt (zero_le _)]
+    rw [Nat.floor_lt (zero_le)]
     rw [hmul]
     exact_mod_cast hcross
   have hfloor_le' :
@@ -733,18 +734,18 @@ theorem rs_epsCA_breakdown_cs25_of_lower_bound
     rs_epsCA_breakdown_cs25 domain k δ hq_ge hδ_lo hδ_hi := by
   classical
   refine le_antisymm ?_ hlower
-  unfold epsCA
+  rw [epsCA_eq_pmf]
   refine iSup_le fun u => ?_
   by_cases hjp :
       Code.jointProximity (C := ((ReedSolomon.code domain k : Set (ι → F)))) (u := u) δ
   · rw [if_pos hjp]
-    exact zero_le _
+    exact zero_le
   · rw [if_neg hjp]
     rw [prob_tsum_form_singleton]
     exact le_trans (ENNReal.tsum_le_tsum fun γ => by
       by_cases hγ : δᵣ(u 0 + γ • u 1,
           (ReedSolomon.code domain k : Set (ι → F))) ≤ δ <;> simp [hγ])
-      (PMF.tsum_coe (PMF.uniformOfFintype F)).le
+      (PMF.tsum_coe (ProximityPrize.Compatibility.uniformOfFintype F)).le
 
 /-- CS25 breakdown from the named entropy/RS-ball-count lower-bound witness. -/
 theorem rs_epsCA_breakdown_cs25_of_entropyBallLowerWitness
@@ -1799,6 +1800,12 @@ noncomputable def random_rs_mca
   -- over `n`-element domains is now formalized; the line-stitching/list-decoding/probability
   -- argument that supplies the concrete `bound` and `failure` values remains external.
 
+private noncomputable def polynomialSeedUniform {F : Type} {seedDim : ℕ}
+    (S : Fin seedDim → Set F) [Nonempty (∀ i, S i)] [Fintype (∀ i, S i)] :
+    SampleableType (∀ i, S i) := SampleableType.ofFintype _
+
+attribute [local instance] polynomialSeedUniform
+
 /-- **BCGM25 polynomial-generator MCA — canonical generator-native statement surface.**
 
 This is the public API that supersedes the old `epsCA_curves` survey shadow below. It keeps
@@ -1820,7 +1827,7 @@ def polynomialGenerator_isMCAGenerator_bcgm25
     (ε_mca : I → I)
     (LC : LinearCode ι F)
     (_hPoly : CoreDefinitions.IsPolynomialGenerator S G) : Prop :=
-  CoreDefinitions.IsMCAGenerator G ε_mca LC
+  CoreDefinitions.IsMCAGenerator G (unitInterval.toNNReal ∘ ε_mca) LC
   -- Missing ingredient: BCGM25/BSGM25's theorem that the relevant polynomial-generator
   -- families satisfy MCA for the target linear code with the paper's explicit error profile.
   -- The framework declarations (`Generator`, `IsPolynomialGenerator`, `IsMCAGenerator`) are
@@ -1838,7 +1845,7 @@ theorem polynomialGenerator_isMCAGenerator_bcgm25_of_mca
     (ε_mca : I → I)
     (LC : LinearCode ι F)
     (hPoly : CoreDefinitions.IsPolynomialGenerator S G)
-    (hMCA : CoreDefinitions.IsMCAGenerator G ε_mca LC) :
+    (hMCA : CoreDefinitions.IsMCAGenerator G (unitInterval.toNNReal ∘ ε_mca) LC) :
     polynomialGenerator_isMCAGenerator_bcgm25 S G ε_mca LC hPoly := by
   simpa [polynomialGenerator_isMCAGenerator_bcgm25] using hMCA
 

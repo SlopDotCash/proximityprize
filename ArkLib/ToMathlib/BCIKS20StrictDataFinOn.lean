@@ -184,7 +184,7 @@ with `Section5StrictDataFinOn`-valued producers.  Conclusions are identical (roo
 omit [DecidableEq ι] in
 /-- Mirror of `KeystoneAssembly.correlatedAgreement_listDecoding_closed_fin` with the satisfiable
 restricted-root bundle as the per-decoding extraction datum. -/
-theorem correlatedAgreement_listDecoding_closed_finOn {k deg : ℕ}
+theorem correlatedAgreement_listDecoding_closed_finOn [SampleableType F] {k deg : ℕ}
     {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain)
     (hExtractFinOn : ∀ (u : WordStack F (Fin (k + 1)) ι),
@@ -217,7 +217,7 @@ theorem correlatedAgreement_listDecoding_closed_finOn {k deg : ℕ}
 omit [DecidableEq ι] in
 /-- Mirror of `KeystoneAssembly.correlatedAgreement_listDecoding_strict_fin` with the satisfiable
 restricted-root bundle. -/
-theorem correlatedAgreement_listDecoding_strict_finOn {k deg : ℕ}
+theorem correlatedAgreement_listDecoding_strict_finOn [SampleableType F] {k deg : ℕ}
     {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (hExtractFinOn : ∀ (u : WordStack F (Fin (k + 1)) ι),

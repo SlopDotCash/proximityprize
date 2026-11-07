@@ -77,12 +77,13 @@ theorem finSuccEquivNth_X_above {i : Fin n} (h : p < i.succ) :
 @[simp]
 theorem finSuccEquivNth_X_below {i : Fin n} (h : i.castSucc < p) :
     finSuccEquivNth R p (X i.castSucc) = Polynomial.C (X i) := by
-  simp [finSuccEquivNth_apply, Fin.insertNth_apply_below h _ _]
+  rw [← Fin.succAbove_of_castSucc_lt p i h]
+  simp [finSuccEquivNth_apply, Fin.insertNth_apply_succAbove]
 
 /-- The coefficient of `m` in the `i`-th coefficient of `finSuccEquivNth R p f` equals the
     coefficient of `m.insertNth p i` in `f`. -/
 theorem finSuccEquivNth_coeff_coeff (m : Fin n →₀ ℕ) (f : MvPolynomial (Fin (n + 1)) R) (i : ℕ) :
-    coeff m (Polynomial.coeff (finSuccEquivNth R p f) i) = coeff (m.insertNth p i) f := by
+    ((Polynomial.coeff (finSuccEquivNth R p f) i)).coeff m = (f).coeff (m.insertNth p i) := by
   induction f using MvPolynomial.induction_on' generalizing i m with
   | monomial u a =>
     simp only [finSuccEquivNth_apply, coe_eval₂Hom, eval₂_monomial, RingHom.coe_comp, comp_apply,
@@ -92,10 +93,10 @@ theorem finSuccEquivNth_coeff_coeff (m : Fin n →₀ ℕ) (f : MvPolynomial (Fi
     rw [← mul_boole, mul_comm (Polynomial.X ^ u p), Polynomial.coeff_C_mul_X_pow]; congr 1
     obtain rfl | hjmi := eq_or_ne u (m.insertNth p i)
     · simpa only [insertNth_apply_same, if_pos rfl, insertNth_apply_succAbove, monomial_eq, C_1,
-        one_mul, prod_pow] using coeff_monomial m m (1 : R)
+        one_mul, prod_pow, ↓reduceIte] using coeff_monomial m m (1 : R)
     · simp only [hjmi, if_false]
       obtain hij | rfl := ne_or_eq i (u p)
-      · simp only [hij, if_false, coeff_zero]
+      · simp only [hij, if_false, AddMonoidAlgebra.coeff_zero, Finsupp.zero_apply]
       simp only [if_true]
       have hmj : m ≠ u.removeNth p := by
         rintro rfl
@@ -104,7 +105,7 @@ theorem finSuccEquivNth_coeff_coeff (m : Fin n →₀ ℕ) (f : MvPolynomial (Fi
       simpa only [monomial_eq, C_1, one_mul, prod_pow, Finsupp.removeNth_apply, if_neg hmj.symm]
         using coeff_monomial m (u.removeNth p) (1 : R)
   | add q r hq hr =>
-    simp only [map_add, Polynomial.coeff_add, coeff_add, hq, hr]
+    simp only [map_add, Polynomial.coeff_add, AddMonoidAlgebra.coeff_add, Finsupp.add_apply, hq, hr]
 
 /-- The evaluation of `f` at `Fin.insertNth p y s` equals the evaluation at `y` of the polynomial
 obtained by partially evaluating `finSuccEquivNth R p f` at `s`.
@@ -118,12 +119,8 @@ theorem eval_eq_eval_mv_eval_finSuccEquivNth (s : Fin n → R) (y : R)
       ((Polynomial.mapAlgHom (aeval s)).comp (finSuccEquivNth R p).toAlgHom) f
   congr 2
   apply MvPolynomial.algHom_ext
-  simp only [Fin.forall_iff_succAbove p, aeval_X, Fin.insertNth_apply_same, Polynomial.mapAlgHom,
-    AlgHom.toRingHom_eq_coe, coe_aeval_eq_eval, AlgEquiv.toAlgHom_eq_coe, AlgHom.coe_comp,
-    Polynomial.coe_aeval_eq_eval, AlgHom.coe_mk, coe_mapRingHom, AlgHom.coe_coe, comp_apply,
-    finSuccEquivNth_apply, eval₂Hom_X', Polynomial.map_X, Polynomial.eval_X,
-    Fin.insertNth_apply_succAbove, Polynomial.map_C, eval_X, Polynomial.eval_C, implies_true,
-    and_self]
+  simp [finSuccEquivNth, optionEquivLeft, Fin.forall_iff_succAbove p]
+
 
 /-- A monomial index `m` is in the support of the `i`-th coefficient of `finSuccEquivNth R p f` if
 and only if `m.insertNth p i` is in the support of `f`. -/
@@ -160,12 +157,12 @@ theorem support_finSuccEquivNth (f : MvPolynomial (Fin (n + 1)) R) :
   rw [Polynomial.mem_support_iff, Finset.mem_image]
   constructor
   · intro hi
-    obtain ⟨m, hm⟩ := Finsupp.support_nonempty_iff.mpr hi
+    obtain ⟨m, hm⟩ := MvPolynomial.support_nonempty.mpr hi
     refine ⟨m.insertNth p i, ?_, insertNth_apply_same _ _ _⟩
     rw [← support_coeff_finSuccEquivNth]
     simpa using hm
   · rintro ⟨m, h, rfl⟩
-    apply Finsupp.support_nonempty_iff.mp
+    apply MvPolynomial.support_nonempty.mp
     refine ⟨m.removeNth p, ?_⟩
     exact (support_coeff_finSuccEquivNth (p := p) (i := m p) (m := m.removeNth p)).2
       (by rwa [insertNth_self_removeNth])

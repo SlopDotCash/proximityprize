@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.ProofSystem.Spartan.FirstSumcheckRowSum
-import ArkLib.Data.MvPolynomial.Multilinear
+import ProximityPrize.Extensions.Data.MvPolynomial.Multilinear
 
 /-!
 # First-phase inner fold reconstructs the matrix-vector product (issue #114)
@@ -26,6 +26,8 @@ This is the inner-fold step of the full `zeroCheckEvalFromOracles` faithfulness.
 -/
 
 open OracleComp OracleSpec OracleInterface MvPolynomial
+
+set_option backward.isDefEq.respectTransparency false
 
 namespace Spartan.Spec
 
@@ -72,7 +74,7 @@ theorem matVecRowSum_simOracle
     congr 1
     unfold R1CS.𝕫
     by_cases hy : (yEnum : ℕ) < 2 ^ pp.ℓ_n - 2 ^ pp.ℓ_w
-    · simp [hy, PublicParams.toSizeR1CS, R1CS.Size.n_x, Fin.append, Fin.addCases]
+    · simp [hy, PublicParams.toSizeR1CS, R1CS.Size.n_x, Fin.append, Fin.addCases, Fin.val_cast]
       congr 1
     · let e : Fin (2 ^ pp.ℓ_w) := ⟨(yEnum : ℕ) - pp.toSizeR1CS.n_x, by
         have hlt := yEnum.isLt
@@ -81,11 +83,12 @@ theorem matVecRowSum_simOracle
         omega⟩
       have hcollapse :
           eval (boolPoint R e) (MLE ((oos (.inr 0)) ∘ finFunctionFinEquiv)) = (oos (.inr 0)) e := by
-        simpa [boolPoint, Function.comp_apply] using
-          (MvPolynomial.MLE_eval_zeroOne (R := R) (σ := Fin pp.ℓ_w)
-            (x := finFunctionFinEquiv.symm e) (evals := (oos (.inr 0)) ∘ finFunctionFinEquiv))
+        rw [show boolPoint R e = fun i => ((finFunctionFinEquiv.symm e i : Fin 2) : R) from rfl,
+          MvPolynomial.MLE_eval_zeroOne]
+        change oos (.inr 0) (finFunctionFinEquiv (finFunctionFinEquiv.symm e)) = _
+        rw [Equiv.apply_symm_apply]
       rw [dif_neg (show ¬((yEnum : ℕ) < pp.toSizeR1CS.n_x) from hy), hcollapse]
-      simp [hy, PublicParams.toSizeR1CS, R1CS.Size.n_x, Fin.append, Fin.addCases, Fin.subNat, e]
+      simp [hy, PublicParams.toSizeR1CS, R1CS.Size.n_x, Fin.append, Fin.addCases, Fin.subNat, e, Fin.val_cast]
   simp only [hz]
   have hsum : (Matrix.mulVec (oos (.inl idx)) (R1CS.𝕫 𝕩 (oos (.inr 0)))) xEnum
       = ((Finset.univ : Finset (Fin (2 ^ pp.ℓ_n))).toList.map

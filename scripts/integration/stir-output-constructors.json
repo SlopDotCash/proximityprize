@@ -1,0 +1,37 @@
+{
+  "source_revision": "883e99d61e51264327b5fee859732d047f7d7038",
+  "scope": "Legacy output selection is represented by canonical OracleOutputEmbedding with proved interface HEq. Actual constructor and consumer boundaries remain part of the package build.",
+  "original_embed_fields": {
+    "ArkLib/ProofSystem/Stir/FullChain.lean": [
+      "  embed := ⟨fun _ => Sum.inr ⟨0, pSpec3_dir_zero⟩, fun _ _ _ => rfl⟩\n  hEq := by\n    intro i\n    show (ι → F) = (pSpec3 ι F).Message ⟨0, pSpec3_dir_zero⟩\n    unfold pSpec3 ProtocolSpec.Message\n    simp\n"
+    ],
+    "ArkLib/ProofSystem/Stir/Round3Compose.lean": [
+      "  embed := ⟨fun _ => Sum.inl (), fun _ _ _ => rfl⟩\n  hEq := fun _ => rfl\n",
+      "  embed := ⟨fun _ => Sum.inr ⟨0, pSpecFinal_dir_zero⟩, fun _ _ _ => rfl⟩\n  hEq := by\n    intro i\n    show (ι → F) = (pSpecFinal ι F).Message ⟨0, pSpecFinal_dir_zero⟩\n    unfold pSpecFinal ProtocolSpec.Message\n    simp\n"
+    ],
+    "ArkLib/ProofSystem/Stir/VectorBridge.lean": [
+      "  embed := ⟨fun _ => Sum.inr ⟨0, stirRound3VSpec_dir_zero⟩, fun _ _ _ => rfl⟩\n  hEq := fun _ => rfl\n",
+      "  embed := ⟨fun _ => Sum.inl (), fun _ _ _ => rfl⟩\n  hEq := fun _ => rfl\n",
+      "  embed := ⟨fun _ => Sum.inr ⟨0, stirFinalVSpec_dir_zero⟩, fun _ _ _ => rfl⟩\n  hEq := fun _ => rfl\n"
+    ],
+    "ArkLib/ProofSystem/Stir/VectorBridgeMid.lean": [
+      "  embed := ⟨fun _ => Sum.inr ⟨0, stirRound3VSpec_dir_zero⟩, fun _ _ _ => rfl⟩\n  hEq := fun _ => rfl\n",
+      "  embed := ⟨fun _ => Sum.inr ⟨0, stirFinalVSpec_dir_zero⟩, fun _ _ _ => rfl⟩\n  hEq := fun _ => rfl\n"
+    ],
+    "ArkLib/ProofSystem/Stir/SeamComposition.lean": [
+      "  embed := ⟨fun _ => Sum.inl (), fun _ _ _ => rfl⟩\n  hEq := fun _ => rfl\n"
+    ],
+    "ArkLib/ProofSystem/Stir/CheckingVerifier.lean": [
+      "  embed := ⟨fun i => i.elim, fun i => i.elim⟩\n  hEq := fun i => i.elim\n"
+    ],
+    "ArkLib/ProofSystem/Stir/RepWire.lean": [
+      "  embed := ⟨fun i => i.elim, fun i => i.elim⟩\n  hEq := fun i => i.elim\n"
+    ],
+    "ArkLib/ProofSystem/Stir/MultiRoundAssembly.lean": [
+      "  embed := ⟨fun i => i.elim, fun i => i.elim⟩\n  hEq := fun i => i.elim\n"
+    ],
+    "ArkLib/ProofSystem/Stir/MultiRoundSpecT.lean": [
+      "  embed := ⟨fun i => i.elim, fun i => i.elim⟩\n  hEq := fun i => i.elim\n"
+    ]
+  }
+}

@@ -93,8 +93,8 @@ theorem subspacePoly_eval_smul (W : Submodule F K) (c : F) (y : K) :
       refine (Finset.prod_nbij' (fun ℓ' => c • ℓ') (fun ℓ => c⁻¹ • ℓ) ?_ ?_ ?_ ?_ ?_).symm
       · intro ℓ' hℓ'; rw [mem_subFinset] at hℓ' ⊢; exact W.smul_mem _ hℓ'
       · intro ℓ hℓ; rw [mem_subFinset] at hℓ ⊢; exact W.smul_mem _ hℓ
-      · intro ℓ' _; simp only; rw [smul_smul, inv_mul_cancel₀ hc, one_smul]
-      · intro ℓ _; simp only; rw [smul_smul, mul_inv_cancel₀ hc, one_smul]
+      · intro ℓ' _; rw [smul_smul, inv_mul_cancel₀ hc, one_smul]
+      · intro ℓ _; rw [smul_smul, mul_inv_cancel₀ hc, one_smul]
       · intro ℓ' _; rfl
     rw [key]
     have hfac : ∀ ℓ' : K, c • y - c • ℓ' = algebraMap F K c * (y - ℓ') := by

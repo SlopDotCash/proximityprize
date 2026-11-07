@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib.Data.Real.Sqrt
 import Mathlib.Data.ZMod.Basic
 import ArkLib.Data.CodingTheory.JohnsonBound.Basic
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 import Mathlib.InformationTheory.Hamming
 import Research.ProximityPrize.MCAGS
 

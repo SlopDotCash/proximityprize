@@ -60,9 +60,8 @@ theorem embed_B_coeff_eq_countPerms_smul_hasseEvalAtRoot_of_leadingCoeff_one
           ≤ R.natDegree - deltaSave i1 - sigmaLambda lam) :
     embeddingOf𝒪Into𝕃 H (B_coeff H x₀ R i1 lam)
       = lam.parts.countPerms • hasseEvalAtRoot H x₀ R i1 (sigmaLambda lam) := by
-  rw [B_coeff_eq_countPerms_smul, nsmul_eq_mul, map_mul, map_natCast,
-    ← hasseEvalAtRoot_eq_embed_uncleared_of_leadingCoeff_one H x₀ R i1 (sigmaLambda lam) hlc,
-    nsmul_eq_mul]
+  rw [B_coeff_eq_countPerms_smul, map_nsmul,
+    ← hasseEvalAtRoot_eq_embed_uncleared_of_leadingCoeff_one H x₀ R i1 (sigmaLambda lam) hlc]
 
 /-- LHS per-term coefficient product, monic form. -/
 theorem partitionProd_coeff_assembled_of_leadingCoeff_one {m : ℕ}

@@ -117,6 +117,9 @@ lemma slots_pair_ASB (v : ℕ) (hv : v < trc.length)
   have hv4 : v < 4 := hv
   interval_cases v <;>
     simp_all [trc, eH, e1, e2, e3, sA, sB, sa, sb, mkSt]
+  all_goals
+    rcases h with h | h <;>
+      cases (congrArg (fun e : Entry => e.1) h)
 
 /-- Entry 1 is the unique trace slot holding either orientation of the pair `(sa, sb)`. -/
 lemma slots_pair_asb (v : ℕ) (hv : v < trc.length)
@@ -125,6 +128,9 @@ lemma slots_pair_asb (v : ℕ) (hv : v < trc.length)
   have hv4 : v < 4 := hv
   interval_cases v <;>
     simp_all [trc, eH, e1, e2, e3, sA, sB, sa, sb, mkSt]
+  all_goals
+    rcases h with h | h <;>
+      cases (congrArg (fun e : Entry => e.1) h)
 
 /-- The chain index of step 1 (pair `(sA, sB)`) is the raw slot `3`. -/
 lemma index_step1 (hpf : (1 : ℕ) < seqC.inputState.length) :
@@ -142,9 +148,9 @@ lemma index_step1 (hpf : (1 : ℕ) < seqC.inputState.length) :
   refine slots_pair_ASB v hvlt ?_
   rcases h with h | h
   · rw [List.getElem?_eq_getElem hvlt] at h
-    exact Or.inl (by simpa [seqC] using Option.some.inj h)
+    exact Or.inl (by convert Option.some.inj h using 1 <;> rfl)
   · rw [List.getElem?_eq_getElem hvlt] at h
-    exact Or.inr (by simpa [seqC] using Option.some.inj h)
+    exact Or.inr (by convert Option.some.inj h using 1 <;> rfl)
 
 /-- The chain index of step 2 (pair `(sa, sb)`) is the raw slot `1`. -/
 lemma index_step2 (hpf : (1 + 1 : ℕ) < seqC.inputState.length) :
@@ -162,9 +168,9 @@ lemma index_step2 (hpf : (1 + 1 : ℕ) < seqC.inputState.length) :
   refine slots_pair_asb v hvlt ?_
   rcases h with h | h
   · rw [List.getElem?_eq_getElem hvlt] at h
-    exact Or.inl (by simpa [seqC] using Option.some.inj h)
+    exact Or.inl (by convert Option.some.inj h using 1 <;> rfl)
   · rw [List.getElem?_eq_getElem hvlt] at h
-    exact Or.inr (by simpa [seqC] using Option.some.inj h)
+    exact Or.inr (by convert Option.some.inj h using 1 <;> rfl)
 
 /-- The out-of-order-permutation event fires on the countermodel. -/
 theorem e_time_p_holds :

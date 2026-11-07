@@ -1,0 +1,306 @@
+{
+  "description": "Reuse the positive-dimension evaluation-code owner before specializing the production 2^29 dimension. All existing public claims and numeric bounds are preserved.",
+  "files": [
+    {
+      "path": "Research/ProximityPrize/Frontier/_IncidenceCanonicalConstant.lean",
+      "original_source": "/-\nCopyright (c) 2026 Mikhail Izhutkin. All rights reserved.\nReleased under Apache 2.0 license as described in the file LICENSE.\nAuthors: Mikhail Izhutkin (mashingaan, @mashingaan)\n-/\nimport Research.ProximityPrize.Frontier._IncidenceTripleMass\nimport Research.ProximityPrize.Frontier._IncidenceConstantLineCap\nimport Research.ProximityPrize.Frontier._IncidenceAverageAnchor\n\nset_option autoImplicit false\nattribute [local instance] Classical.propDecidable\n\nnamespace ProximityGap.IncidenceCanonicalConstant\n\nopen ProximityGap.IncidenceTripleMass ProximityGap.IncidenceAffineLines\nopen ProximityGap.IncidenceConstantLineCap\n\n/-- Constant line occupancy and the exact cube moment exclude a bad family. -/\ntheorem no_bad_witness_family_of_constant_budget\n    {F I Coord A : Type} [Field F] [Fintype I] [DecidableEq I]\n    [Fintype Coord] [Nonempty Coord] [DecidableEq Coord] [AddCommGroup A] [Module F A]\n    (gamma : I → F) (w : I → (Coord → A)) (hinj : Function.Injective gamma)\n    (C : Submodule F (Coord → A)) (d t : ℕ) (ht : 7*t < 3*(d+1))\n    (htn : t ≤ Fintype.card Coord) (htI : t+1 < Fintype.card I)\n    (hC : ∀ z ∈ C, (∃ B : Finset Coord, B.card ≤ d ∧ ∀ x ∉ B, z x = 0) → z = 0)\n    (T : I → Finset Coord) (u0 u1 : Coord → A)\n    (hwC : ∀ i, w i ∈ C)\n    (hcompl : ∀ i, (T i)ᶜ.card ≤ t)\n    (hwag : ∀ i, ∀ x ∈ T i, w i x = u0 x + gamma i • u1 x)\n    (hno : ∀ i, ¬ ∃ f0 ∈ C, ∃ f1 ∈ C,\n      ∀ x ∈ T i, f0 x = u0 x ∧ f1 x = u1 x)\n    (hbig : Fintype.card Coord ^ 2 * (d+1) * Fintype.card I ^ 3 +\n        (Fintype.card I * (Fintype.card Coord-t)) ^ 3 >\n      Fintype.card Coord ^ 3 * Fintype.card I ^ 3 +\n        (4*t*Fintype.card I^2+(d+1)*Fintype.card I)*Fintype.card Coord^2) : False := by\n  classical\n  have hpad : ∀ i, ∃ E : Finset Coord, (T i)ᶜ ⊆ E ∧ E.card = t := by\n    intro i\n    obtain ⟨E,hTE,_,hcard⟩ := Finset.exists_subsuperset_card_eq\n      (Finset.subset_univ ((T i)ᶜ)) (hcompl i) (by simpa using htn)\n    exact ⟨E,hTE,hcard⟩\n  choose E hTE hEcard using hpad\n  have hcap : ∀ U D, (Finset.univ.filter (OnLine gamma w U D)).card ≤ 3 := by\n    intro U D\n    apply bad_witness_line_cap_three gamma w hinj Finset.univ C d t\n      (by simpa using htI) ht hC T u0 u1\n      (fun i _ => hwC i) (fun i _ => hcompl i)\n      (fun i _ => hwag i) (fun i _ => hno i) U D\n  have hcol := collinearTriples_card_le_square_of_line_cap_three\n    gamma w hinj Finset.univ hcap\n  have hpair : ∀ a ∈ (Finset.univ : Finset I), ∀ b ∈ Finset.univ,\n      a ≠ b → d+1 ≤ ((T a)ᶜ ∪ (T b)ᶜ).card+t := by\n    intro a ha b hb hab\n    apply bad_witness_pair_union_distance gamma w hinj Finset.univ C d t\n      (by simpa using htI) hC T u0 u1\n      (fun i _ => hwC i) (fun i _ => hcompl i)\n      (fun i _ => hwag i) (fun i _ => hno i) ha hb hab\n  have hlow := triple_mass_lower_of_pair_union gamma w Finset.univ\n    (fun i => (T i)ᶜ) (d+1) t hpair\n    (fun a _ b _ c _ hab _ _ hnc =>\n      Nat.succ_le_of_lt (error_union_gt_of_noncollinear gamma w hinj C d hC T u0 u1 hab\n        (hwC a) (hwC b) (hwC c) (hwag a) (hwag b) (hwag c) hnc))\n  simp only [Finset.card_univ] at hcol hlow\n  have hmono : (∑ a, ∑ b, ∑ c, (((T a)ᶜ ∪ (T b)ᶜ) ∪ (T c)ᶜ).card) ≤\n      ∑ a, ∑ b, ∑ c, (E a ∪ E b ∪ E c).card := by\n    apply Finset.sum_le_sum\n    intro a _\n    apply Finset.sum_le_sum\n    intro b _\n    apply Finset.sum_le_sum\n    intro c _\n    exact Finset.card_le_card\n      (Finset.union_subset_union (Finset.union_subset_union (hTE a) (hTE b)) (hTE c))\n  have hlowN := Nat.mul_le_mul_left (Fintype.card Coord^2) hlow\n  have hcolN := Nat.mul_le_mul_left (Fintype.card Coord^2*t) hcol\n  have hmonoN := Nat.mul_le_mul_left (Fintype.card Coord^2) hmono\n  have hupp := triple_union_mass_bound E t hEcard\n  nlinarith [hlowN,hcolN,hmonoN,hupp,hbig]\n\nopen ProximityGap ProximityGap.SpikeFloor Code\nopen scoped NNReal ENNReal\n\n/-- A constant-line cube budget bounds the canonical bad-scalar census. -/\ntheorem badScalars_card_le_of_constant_budget\n    {F Coord A : Type} [Field F] [Fintype F] [DecidableEq F]\n    [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]\n    [Fintype A] [DecidableEq A] [AddCommGroup A] [Module F A]\n    (C : Submodule F (Coord → A)) (j d t : ℕ) (ht : 7*t < 3*(d+1))\n    (htn : t ≤ Fintype.card Coord) (htj : t < j) (hC : NoWeightLE C d)\n    (hbig : Fintype.card Coord^2*(d+1)*(j+1)^3+\n        ((j+1)*(Fintype.card Coord-t))^3 >\n      Fintype.card Coord^3*(j+1)^3+(4*t*(j+1)^2+(d+1)*(j+1))*Fintype.card Coord^2)\n    {δ : ℝ≥0} (hδ : δ * (Fintype.card Coord : ℝ≥0) < t+1)\n    (u0 u1 : Coord → A) :\n    (Finset.univ.filter fun γ : F => mcaEvent (C : Set (Coord → A)) δ u0 u1 γ).card ≤ j := by\n  classical\n  by_contra hgt\n  push Not at hgt\n  obtain ⟨B,hBsub,hBcard⟩ := Finset.exists_subset_card_eq\n    (s := Finset.univ.filter (fun γ : F => mcaEvent (C : Set (Coord → A)) δ u0 u1 γ))\n    (n := j+1) (by omega)\n  let gamma : Fin (j+1) → F :=\n    fun i => (B.equivFin.symm (Fin.cast hBcard.symm i) : F)\n  have hinj : Function.Injective gamma := by\n    intro a b hab\n    have h1 := Subtype.val_injective hab\n    have h2 := B.equivFin.symm.injective h1\n    exact Fin.cast_injective _ h2\n  have hbad : ∀ i, mcaEvent (C : Set (Coord → A)) δ u0 u1 (gamma i) := fun i =>\n    (Finset.mem_filter.mp (hBsub (B.equivFin.symm (Fin.cast hBcard.symm i)).2)).2\n  choose T hTsz hwEx hno using hbad\n  choose w hwC hwag using hwEx\n  have hcompl : ∀ i, (T i)ᶜ.card ≤ t := by\n    intro i\n    simpa using (witness_compl_card_le (j := t+1) (by simpa using hδ) (hTsz i))\n  apply no_bad_witness_family_of_constant_budget gamma w hinj C d t ht htn\n    (by simpa only [Fintype.card_fin] using Nat.add_lt_add_right htj 1)\n    hC T u0 u1 hwC hcompl hwag hno\n  simpa only [Fintype.card_fin] using hbig\n\nopen ProximityGap.Ownership\nprivate abbrev sponsorP := ArkLib.ProximityGap.PrizeShapePrimeP30.P\nprivate abbrev sponsorG := ArkLib.ProximityGap.PrizeShapePrimeP30.g\nprivate instance sponsorPrime : Fact sponsorP.Prime :=\n  ⟨ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P⟩\n\nset_option maxRecDepth 4096 in\n/-- Constant-line incidence at the literal first-sponsor cube-moment boundary. -/\ntheorem firstPrime_constant_incidence :\n    ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded\n      (F := ZMod sponsorP) (A := ZMod sponsorP)\n      (ArkLib.ProximityGap.KKH26.evalCode sponsorG (2^30) (2^29-1))\n      ((221512373 : ℝ≥0)/(2^30 : ℝ≥0)) (2^30) := by\n  classical\n  letI : NeZero (2^30 : ℕ) := ⟨by norm_num⟩\n  let dom : Fin (2^30) ↪ ZMod sponsorP :=\n    smoothDom sponsorG (2^30) ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g\n  have hcode : ArkLib.ProximityGap.KKH26.evalCode sponsorG (2^30) (2^29-1) =\n      ((rsCode dom (2^29) : Submodule (ZMod sponsorP) (Fin (2^30) → ZMod sponsorP)) :\n        Set (Fin (2^30) → ZMod sponsorP)) := by\n    simpa only [dom,Nat.sub_add_cancel (by norm_num : 1 ≤ 2^29)] using\n      (evalCode_eq_rsCode ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g (2^29-1))\n  intro u\n  rw [hcode]\n  apply badScalars_card_le_of_constant_budget (j := 2^30) (d := 2^29) (t := 221512373)\n  · norm_num\n  · norm_num\n  · norm_num\n  · exact rsCode_noWeightLE dom (by norm_num)\n  · norm_num\n  · norm_num\n\nopen ProximityGap.MCAThresholdLedger\nopen ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket\n\n/-- The constant-line budget gives an unconditional canonical first-sponsor floor. -/\ntheorem firstPrime_constant_floor :\n    ((221512374 : ℝ≥0)/(2^30 : ℝ≥0)) ≤\n      mcaDeltaStar (F := ZMod sponsorP) (A := ZMod sponsorP)\n        (ArkLib.ProximityGap.KKH26.evalCode sponsorG (2^30) (2^29-1))\n        (ProximityGap.epsStar : ℝ≥0∞) := by\n  classical\n  letI : NeZero (2^30 : ℕ) := ⟨by norm_num⟩\n  have hbudget : ((2^30 : ℕ) : ℝ≥0∞)/(sponsorP : ℝ≥0∞) ≤\n      (ProximityGap.epsStar : ℝ≥0∞) := by\n    have hb := natCast_div_le_inv_of_mul_le (E := 2^30) (Q := 2^128) (p := sponsorP)\n      (by norm_num) ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P.pos\n      (by norm_num [sponsorP,ArkLib.ProximityGap.PrizeShapePrimeP30.P])\n    rwa [epsStar_coe_eq_natCast_inv]\n  have hgood : epsMCA (F := ZMod sponsorP) (A := ZMod sponsorP)\n      (ArkLib.ProximityGap.KKH26.evalCode sponsorG (2^30) (2^29-1))\n      (predecessorRadius (2^30) 221512374) ≤ (ProximityGap.epsStar : ℝ≥0∞) := by\n    have hc := ProximityGap.OpenCoreConditionalPin.epsMCA_le_of_worstCaseIncidence\n      (ArkLib.ProximityGap.KKH26.evalCode sponsorG (2^30) (2^29-1))\n      ((221512373 : ℝ≥0)/(2^30 : ℝ≥0)) firstPrime_constant_incidence\n    rw [ZMod.card] at hc\n    have hpred : predecessorRadius (2^30) 221512374 =\n        ((221512373 : ℝ≥0)/(2^30 : ℝ≥0)) := by norm_num [predecessorRadius]\n    rw [hpred]\n    exact hc.trans hbudget\n  have hfloor := latticeBoundary_le_mcaDeltaStar_of_predecessor_good\n    (F := ZMod sponsorP) (n := 2^30) (a := 221512374) (by norm_num) (by norm_num)\n    (ArkLib.ProximityGap.KKH26.evalCode sponsorG (2^30) (2^29-1))\n    (ProximityGap.epsStar : ℝ≥0∞) hgood\n  convert hfloor using 1\n  norm_num\n\nend ProximityGap.IncidenceCanonicalConstant\n\n#print axioms ProximityGap.IncidenceCanonicalConstant.no_bad_witness_family_of_constant_budget\n#print axioms ProximityGap.IncidenceCanonicalConstant.badScalars_card_le_of_constant_budget\n#print axioms ProximityGap.IncidenceCanonicalConstant.firstPrime_constant_incidence\n#print axioms ProximityGap.IncidenceCanonicalConstant.firstPrime_constant_floor\n",
+      "original_source_sha256": "807aa5675d4fb83ea5bd4d9226be4b35f1204c13bf5e9f2c95a658ecf75daee2",
+      "reviewed_source_sha256": "1eaa47ed4106589a40a9da8eed95fb0cfb797748af00ad1ad6687aa9b97bd93e",
+      "original_public_names": [
+        "ProximityGap.IncidenceCanonicalConstant.badScalars_card_le_of_constant_budget",
+        "ProximityGap.IncidenceCanonicalConstant.firstPrime_constant_floor",
+        "ProximityGap.IncidenceCanonicalConstant.firstPrime_constant_incidence",
+        "ProximityGap.IncidenceCanonicalConstant.no_bad_witness_family_of_constant_budget"
+      ],
+      "reviewed_public_names": [
+        "ProximityGap.IncidenceCanonicalConstant.badScalars_card_le_of_constant_budget",
+        "ProximityGap.IncidenceCanonicalConstant.firstPrime_constant_floor",
+        "ProximityGap.IncidenceCanonicalConstant.firstPrime_constant_incidence",
+        "ProximityGap.IncidenceCanonicalConstant.no_bad_witness_family_of_constant_budget"
+      ],
+      "validation": {
+        "file": "Research/ProximityPrize/Frontier/_IncidenceCanonicalConstant.lean",
+        "status": "temporary_overlay_source_check",
+        "compiler_exit_code": 0,
+        "admission_checker_exit_code": 0,
+        "elapsed_seconds": 25.164,
+        "source_before_sha256": "1eaa47ed4106589a40a9da8eed95fb0cfb797748af00ad1ad6687aa9b97bd93e",
+        "source_after_sha256": "1eaa47ed4106589a40a9da8eed95fb0cfb797748af00ad1ad6687aa9b97bd93e",
+        "import_artifacts": {
+          "ProximityPrize.Compatibility.EvaluationCodeDimension": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Compatibility/EvaluationCodeDimension.olean",
+            "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Compatibility/EvaluationCodeDimension.olean",
+            "sha256": "5110ea8b2aa5ab81d3e1acf1ae0af59dea7c612cd4eabad6d2f9658104cb06d3",
+            "artifact_family": {
+              "EvaluationCodeDimension.olean": "5110ea8b2aa5ab81d3e1acf1ae0af59dea7c612cd4eabad6d2f9658104cb06d3"
+            }
+          },
+          "Research.ProximityPrize.Frontier._IncidenceTripleMass": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_IncidenceTripleMass.olean",
+            "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_IncidenceTripleMass.olean",
+            "sha256": "d2c83a96b7b51122a4161e4426412aa7128b6252d0237a0e34607f12ab599a7e",
+            "artifact_family": {
+              "_IncidenceTripleMass.olean": "d2c83a96b7b51122a4161e4426412aa7128b6252d0237a0e34607f12ab599a7e"
+            }
+          },
+          "Research.ProximityPrize.Frontier._IncidenceConstantLineCap": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_IncidenceConstantLineCap.olean",
+            "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_IncidenceConstantLineCap.olean",
+            "sha256": "e63249938e9089e445868b33aa2bbdd14114deda2a1869356a7decbc32d159b5",
+            "artifact_family": {
+              "_IncidenceConstantLineCap.olean": "e63249938e9089e445868b33aa2bbdd14114deda2a1869356a7decbc32d159b5"
+            }
+          },
+          "Research.ProximityPrize.Frontier._IncidenceAverageAnchor": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_IncidenceAverageAnchor.olean",
+            "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_IncidenceAverageAnchor.olean",
+            "sha256": "5a9b4d89e2ed44c4eb430a24f26d9c18bf9db618b5028ddf3d9972d167d29761",
+            "artifact_family": {
+              "_IncidenceAverageAnchor.olean": "5a9b4d89e2ed44c4eb430a24f26d9c18bf9db618b5028ddf3d9972d167d29761"
+            }
+          }
+        },
+        "imports_unchanged": true,
+        "log": "/tmp/arklib-native-overlay/logs/Research.ProximityPrize.Frontier._IncidenceCanonicalConstant.lean.1793254935182490000.check.log",
+        "not_a_lake_package_build": true,
+        "standard_axiom_reports": 4
+      },
+      "change": "Import the shared positive-dimension evaluation-code bridge and apply evalCode_pred_eq_rsCode with k=2^29 and the existing smooth-domain order proof. The same local dom, code, incidence/floor claims and literal numeric bounds are preserved; the positivity premise is discharged internally by norm_num."
+    },
+    {
+      "path": "Research/ProximityPrize/Frontier/_IncidenceCanonicalTriples.lean",
+      "original_source": "/-\nCopyright (c) 2026 Mikhail Izhutkin. All rights reserved.\nReleased under Apache 2.0 license as described in the file LICENSE.\nAuthors: Mikhail Izhutkin (mashingaan, @mashingaan)\n-/\nimport Research.ProximityPrize.Frontier._IncidenceTripleMass\nimport Research.ProximityPrize.Frontier._IncidenceAffineLines\nimport Research.ProximityPrize.Frontier._IncidenceAverageAnchor\n\nset_option autoImplicit false\nattribute [local instance] Classical.propDecidable\n\nnamespace ProximityGap.IncidenceCanonicalTriples\n\nopen ProximityGap.IncidenceTripleMass ProximityGap.IncidenceAffineLines\n\n/-- Triple-incidence mass excludes an over-budget family of canonical bad witnesses.\nThe support predicate is the unfolded minimum-distance bound for the code. -/\ntheorem no_bad_witness_family_of_triple_budget\n    {F I Coord A : Type} [Field F] [Fintype I] [DecidableEq I]\n    [Fintype Coord] [Nonempty Coord] [DecidableEq Coord] [AddCommGroup A] [Module F A]\n    (gamma : I → F) (w : I → (Coord → A)) (hinj : Function.Injective gamma)\n    (C : Submodule F (Coord → A)) (d t s : ℕ) (hs : 2 ≤ s)\n    (htn : t ≤ Fintype.card Coord)\n    (hC : ∀ z ∈ C, (∃ B : Finset Coord, B.card ≤ d ∧ ∀ x ∉ B, z x = 0) → z = 0)\n    (T : I → Finset Coord) (u0 u1 : Coord → A)\n    (hwC : ∀ i, w i ∈ C)\n    (hcompl : ∀ i, (T i)ᶜ.card ≤ t)\n    (hwag : ∀ i, ∀ x ∈ T i, w i x = u0 x + gamma i • u1 x)\n    (hno : ∀ i, ¬ ∃ f0 ∈ C, ∃ f1 ∈ C,\n      ∀ x ∈ T i, f0 x = u0 x ∧ f1 x = u1 x)\n    (hbig : s * Fintype.card Coord ^ 2 * (d + 1) * Fintype.card I ^ 3 +\n        s * (Fintype.card I * (Fintype.card Coord - t)) ^ 3 >\n      s * Fintype.card Coord ^ 3 * Fintype.card I ^ 3 +\n        Fintype.card Coord ^ 2 * (d + 1) *\n          (s * Fintype.card I * (t + 1) ^ 2 + 3 * Fintype.card I ^ 3 +\n            s ^ 2 * Fintype.card I ^ 2 + 3 * s * Fintype.card I ^ 2)) : False := by\n  classical\n  have hpad : ∀ i, ∃ E : Finset Coord, (T i)ᶜ ⊆ E ∧ E.card = t := by\n    intro i\n    obtain ⟨E,hTE,_,hcard⟩ := Finset.exists_subsuperset_card_eq\n      (Finset.subset_univ ((T i)ᶜ)) (hcompl i) (by simpa using htn)\n    exact ⟨E,hTE,hcard⟩\n  choose E hTE hEcard using hpad\n  have hlow := bad_witness_triple_mass_lower gamma w hinj Finset.univ C d t s hs\n    hC T u0 u1 (fun i _ => hwC i) (fun i _ => hcompl i)\n    (fun i _ => hwag i) (fun i _ => hno i)\n  simp only [Finset.card_univ] at hlow\n  have hmono : (∑ a, ∑ b, ∑ c, (((T a)ᶜ ∪ (T b)ᶜ) ∪ (T c)ᶜ).card) ≤\n      ∑ a, ∑ b, ∑ c, (E a ∪ E b ∪ E c).card := by\n    apply Finset.sum_le_sum\n    intro a _\n    apply Finset.sum_le_sum\n    intro b _\n    apply Finset.sum_le_sum\n    intro c _\n    exact Finset.card_le_card\n      (Finset.union_subset_union (Finset.union_subset_union (hTE a) (hTE b)) (hTE c))\n  have hmonoS := Nat.mul_le_mul_left s hmono\n  have hlowN := Nat.mul_le_mul_left (Fintype.card Coord ^ 2) hlow\n  have hmonoN := Nat.mul_le_mul_left (Fintype.card Coord ^ 2) hmonoS\n  have hupp := triple_union_mass_bound E t hEcard\n  have huppS := Nat.mul_le_mul_left s hupp\n  nlinarith [hlowN,hmonoN,huppS,hbig]\n\nopen ProximityGap ProximityGap.SpikeFloor Code\nopen scoped NNReal ENNReal\n\n/-- Triple incidence bounds the number of canonical MCA-bad scalars. -/\ntheorem badScalars_card_le_of_triple_budget\n    {F Coord A : Type} [Field F] [Fintype F] [DecidableEq F]\n    [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]\n    [Fintype A] [DecidableEq A] [AddCommGroup A] [Module F A]\n    (C : Submodule F (Coord → A)) (j d t s : ℕ) (hs : 2 ≤ s)\n    (htn : t ≤ Fintype.card Coord) (hC : NoWeightLE C d)\n    (hbig : s * Fintype.card Coord ^ 2 * (d + 1) * (j + 1) ^ 3 +\n        s * ((j + 1) * (Fintype.card Coord - t)) ^ 3 >\n      s * Fintype.card Coord ^ 3 * (j + 1) ^ 3 +\n        Fintype.card Coord ^ 2 * (d + 1) *\n          (s * (j + 1) * (t + 1) ^ 2 + 3 * (j + 1) ^ 3 +\n            s ^ 2 * (j + 1) ^ 2 + 3 * s * (j + 1) ^ 2))\n    {δ : ℝ≥0} (hδ : δ * (Fintype.card Coord : ℝ≥0) < t + 1)\n    (u0 u1 : Coord → A) :\n    (Finset.univ.filter fun γ : F => mcaEvent (C : Set (Coord → A)) δ u0 u1 γ).card ≤ j := by\n  classical\n  by_contra hgt\n  push Not at hgt\n  obtain ⟨B,hBsub,hBcard⟩ := Finset.exists_subset_card_eq\n    (s := Finset.univ.filter (fun γ : F => mcaEvent (C : Set (Coord → A)) δ u0 u1 γ))\n    (n := j + 1) (by omega)\n  let gamma : Fin (j + 1) → F :=\n    fun i => (B.equivFin.symm (Fin.cast hBcard.symm i) : F)\n  have hinj : Function.Injective gamma := by\n    intro a b hab\n    have h1 := Subtype.val_injective hab\n    have h2 := B.equivFin.symm.injective h1\n    exact Fin.cast_injective _ h2\n  have hbad : ∀ i, mcaEvent (C : Set (Coord → A)) δ u0 u1 (gamma i) := fun i =>\n    (Finset.mem_filter.mp (hBsub (B.equivFin.symm (Fin.cast hBcard.symm i)).2)).2\n  choose T hTsz hwEx hno using hbad\n  choose w hwC hwag using hwEx\n  have hcompl : ∀ i, (T i)ᶜ.card ≤ t := by\n    intro i\n    simpa using (witness_compl_card_le (j := t + 1) (by simpa using hδ) (hTsz i))\n  apply no_bad_witness_family_of_triple_budget gamma w hinj C d t s hs htn\n    hC T u0 u1 hwC hcompl hwag hno\n  simpa only [Fintype.card_fin] using hbig\n\nopen ProximityGap.Ownership\nprivate abbrev sponsorP := ArkLib.ProximityGap.PrizeShapePrimeP30.P\nprivate abbrev sponsorG := ArkLib.ProximityGap.PrizeShapePrimeP30.g\nprivate instance sponsorPrime : Fact sponsorP.Prime :=\n  ⟨ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P⟩\n\nset_option maxRecDepth 4096 in\n/-- Canonical first-sponsor incidence at the integer triple-mass boundary. -/\ntheorem firstPrime_triple_incidence :\n    ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded\n      (F := ZMod sponsorP) (A := ZMod sponsorP)\n      (ArkLib.ProximityGap.KKH26.evalCode sponsorG (2 ^ 30) (2 ^ 29 - 1))\n      ((210683555 : ℝ≥0) / (2 ^ 30 : ℝ≥0)) (2 ^ 30) := by\n  classical\n  letI : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩\n  let dom : Fin (2 ^ 30) ↪ ZMod sponsorP :=\n    smoothDom sponsorG (2 ^ 30) ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g\n  have hcode : ArkLib.ProximityGap.KKH26.evalCode sponsorG (2 ^ 30) (2 ^ 29 - 1) =\n      ((rsCode dom (2 ^ 29) : Submodule (ZMod sponsorP) (Fin (2 ^ 30) → ZMod sponsorP)) :\n        Set (Fin (2 ^ 30) → ZMod sponsorP)) := by\n    simpa only [dom, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 29)] using\n      (evalCode_eq_rsCode ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g (2 ^ 29 - 1))\n  intro u\n  rw [hcode]\n  apply badScalars_card_le_of_triple_budget\n    (j := 2 ^ 30) (d := 2 ^ 29) (t := 210683555) (s := 56755)\n  · norm_num\n  · norm_num\n  · exact rsCode_noWeightLE dom (by norm_num)\n  · norm_num\n  · norm_num\n\nopen ProximityGap.MCAThresholdLedger\nopen ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket\n\n/-- The triple-incidence budget yields a canonical unconditional first-sponsor floor. -/\ntheorem firstPrime_triple_floor :\n    ((210683556 : ℝ≥0) / (2 ^ 30 : ℝ≥0)) ≤\n      mcaDeltaStar (F := ZMod sponsorP) (A := ZMod sponsorP)\n        (ArkLib.ProximityGap.KKH26.evalCode sponsorG (2 ^ 30) (2 ^ 29 - 1))\n        (ProximityGap.epsStar : ℝ≥0∞) := by\n  classical\n  letI : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩\n  have hbudget : ((2 ^ 30 : ℕ) : ℝ≥0∞) / (sponsorP : ℝ≥0∞) ≤\n      (ProximityGap.epsStar : ℝ≥0∞) := by\n    have hb := natCast_div_le_inv_of_mul_le\n      (E := 2 ^ 30) (Q := 2 ^ 128) (p := sponsorP)\n      (by norm_num) ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P.pos\n      (by norm_num [sponsorP, ArkLib.ProximityGap.PrizeShapePrimeP30.P])\n    rwa [epsStar_coe_eq_natCast_inv]\n  have hgood : epsMCA (F := ZMod sponsorP) (A := ZMod sponsorP)\n      (ArkLib.ProximityGap.KKH26.evalCode sponsorG (2 ^ 30) (2 ^ 29 - 1))\n      (predecessorRadius (2 ^ 30) 210683556) ≤\n      (ProximityGap.epsStar : ℝ≥0∞) := by\n    have hc := ProximityGap.OpenCoreConditionalPin.epsMCA_le_of_worstCaseIncidence\n      (ArkLib.ProximityGap.KKH26.evalCode sponsorG (2 ^ 30) (2 ^ 29 - 1))\n      ((210683555 : ℝ≥0) / (2 ^ 30 : ℝ≥0)) firstPrime_triple_incidence\n    rw [ZMod.card] at hc\n    have hpred : predecessorRadius (2 ^ 30) 210683556 =\n        ((210683555 : ℝ≥0) / (2 ^ 30 : ℝ≥0)) := by\n      norm_num [predecessorRadius]\n    rw [hpred]\n    exact hc.trans hbudget\n  have hfloor := latticeBoundary_le_mcaDeltaStar_of_predecessor_good\n    (F := ZMod sponsorP) (n := 2 ^ 30) (a := 210683556)\n    (by norm_num) (by norm_num)\n    (ArkLib.ProximityGap.KKH26.evalCode sponsorG (2 ^ 30) (2 ^ 29 - 1))\n    (ProximityGap.epsStar : ℝ≥0∞) hgood\n  convert hfloor using 1\n  norm_num\n\nend ProximityGap.IncidenceCanonicalTriples\n\n#print axioms ProximityGap.IncidenceCanonicalTriples.no_bad_witness_family_of_triple_budget\n#print axioms ProximityGap.IncidenceCanonicalTriples.badScalars_card_le_of_triple_budget\n#print axioms ProximityGap.IncidenceCanonicalTriples.firstPrime_triple_incidence\n#print axioms ProximityGap.IncidenceCanonicalTriples.firstPrime_triple_floor\n",
+      "original_source_sha256": "f93550b8fb7de9075c8469358768ca80d65cb27bf5551c09e007d7dd7e4f02e5",
+      "reviewed_source_sha256": "ff7664e7f6a5cd3e9c79d9b556dd8db665aebccc268365326528f5487db6e8ab",
+      "original_public_names": [
+        "ProximityGap.IncidenceCanonicalTriples.badScalars_card_le_of_triple_budget",
+        "ProximityGap.IncidenceCanonicalTriples.firstPrime_triple_floor",
+        "ProximityGap.IncidenceCanonicalTriples.firstPrime_triple_incidence",
+        "ProximityGap.IncidenceCanonicalTriples.no_bad_witness_family_of_triple_budget"
+      ],
+      "reviewed_public_names": [
+        "ProximityGap.IncidenceCanonicalTriples.badScalars_card_le_of_triple_budget",
+        "ProximityGap.IncidenceCanonicalTriples.firstPrime_triple_floor",
+        "ProximityGap.IncidenceCanonicalTriples.firstPrime_triple_incidence",
+        "ProximityGap.IncidenceCanonicalTriples.no_bad_witness_family_of_triple_budget"
+      ],
+      "validation": {
+        "file": "Research/ProximityPrize/Frontier/_IncidenceCanonicalTriples.lean",
+        "status": "temporary_overlay_source_check",
+        "compiler_exit_code": 0,
+        "admission_checker_exit_code": 0,
+        "elapsed_seconds": 7.332,
+        "source_before_sha256": "ff7664e7f6a5cd3e9c79d9b556dd8db665aebccc268365326528f5487db6e8ab",
+        "source_after_sha256": "ff7664e7f6a5cd3e9c79d9b556dd8db665aebccc268365326528f5487db6e8ab",
+        "import_artifacts": {
+          "ProximityPrize.Compatibility.EvaluationCodeDimension": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Compatibility/EvaluationCodeDimension.olean",
+            "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Compatibility/EvaluationCodeDimension.olean",
+            "sha256": "5110ea8b2aa5ab81d3e1acf1ae0af59dea7c612cd4eabad6d2f9658104cb06d3",
+            "artifact_family": {
+              "EvaluationCodeDimension.olean": "5110ea8b2aa5ab81d3e1acf1ae0af59dea7c612cd4eabad6d2f9658104cb06d3"
+            }
+          },
+          "Research.ProximityPrize.Frontier._IncidenceTripleMass": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_IncidenceTripleMass.olean",
+            "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_IncidenceTripleMass.olean",
+            "sha256": "d2c83a96b7b51122a4161e4426412aa7128b6252d0237a0e34607f12ab599a7e",
+            "artifact_family": {
+              "_IncidenceTripleMass.olean": "d2c83a96b7b51122a4161e4426412aa7128b6252d0237a0e34607f12ab599a7e"
+            }
+          },
+          "Research.ProximityPrize.Frontier._IncidenceAffineLines": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_IncidenceAffineLines.olean",
+            "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_IncidenceAffineLines.olean",
+            "sha256": "6be5e6954897b8a3b052409b1e3e31d0f97bc3b7afba071766ad1a3f4689a918",
+            "artifact_family": {
+              "_IncidenceAffineLines.olean": "6be5e6954897b8a3b052409b1e3e31d0f97bc3b7afba071766ad1a3f4689a918"
+            }
+          },
+          "Research.ProximityPrize.Frontier._IncidenceAverageAnchor": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_IncidenceAverageAnchor.olean",
+            "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_IncidenceAverageAnchor.olean",
+            "sha256": "5a9b4d89e2ed44c4eb430a24f26d9c18bf9db618b5028ddf3d9972d167d29761",
+            "artifact_family": {
+              "_IncidenceAverageAnchor.olean": "5a9b4d89e2ed44c4eb430a24f26d9c18bf9db618b5028ddf3d9972d167d29761"
+            }
+          }
+        },
+        "imports_unchanged": true,
+        "log": "/tmp/arklib-native-overlay/logs/Research.ProximityPrize.Frontier._IncidenceCanonicalTriples.lean.1793254985669153000.check.log",
+        "not_a_lake_package_build": true,
+        "standard_axiom_reports": 4
+      },
+      "change": "Import the shared positive-dimension evaluation-code bridge and apply evalCode_pred_eq_rsCode with k=2^29 and the existing smooth-domain order proof. The same local dom, code, incidence/floor claims and literal numeric bounds are preserved; the positivity premise is discharged internally by norm_num."
+    },
+    {
+      "path": "Research/ProximityPrize/Frontier/_IncidenceCanonicalWeighted.lean",
+      "original_source": "/-\nCopyright (c) 2026 Mikhail Izhutkin. All rights reserved.\nReleased under Apache 2.0 license as described in the file LICENSE.\nAuthors: Mikhail Izhutkin (mashingaan, @mashingaan)\n-/\nimport Research.ProximityPrize.Frontier._IncidenceTripleMass\nimport Research.ProximityPrize.Frontier._IncidenceWeightedTriples\nimport Research.ProximityPrize.Frontier._IncidenceAverageAnchor\n\nset_option autoImplicit false\nattribute [local instance] Classical.propDecidable\n\nnamespace ProximityGap.IncidenceCanonicalWeighted\n\nopen ProximityGap.IncidenceTripleMass ProximityGap.IncidenceAffineLines\nopen ProximityGap.IncidenceWeightedTriples\n\n/-- Weighted triple-incidence mass excludes an over-budget family of canonical bad witnesses.\nThe support predicate is the unfolded minimum-distance bound for the code. -/\ntheorem no_bad_witness_family_of_weighted_budget\n    {F I Coord A : Type} [Field F] [Fintype I] [DecidableEq I]\n    [Fintype Coord] [Nonempty Coord] [DecidableEq Coord] [AddCommGroup A] [Module F A]\n    (gamma : I → F) (w : I → (Coord → A)) (hinj : Function.Injective gamma)\n    (C : Submodule F (Coord → A)) (d t s : ℕ) (hs : 2 ≤ s) (ht : 3*(t+1) ≤ 2*(d+1))\n    (htn : t ≤ Fintype.card Coord)\n    (hC : ∀ z ∈ C, (∃ B : Finset Coord, B.card ≤ d ∧ ∀ x ∉ B, z x = 0) → z = 0)\n    (T : I → Finset Coord) (u0 u1 : Coord → A)\n    (hwC : ∀ i, w i ∈ C)\n    (hcompl : ∀ i, (T i)ᶜ.card ≤ t)\n    (hwag : ∀ i, ∀ x ∈ T i, w i x = u0 x + gamma i • u1 x)\n    (hno : ∀ i, ¬ ∃ f0 ∈ C, ∃ f1 ∈ C,\n      ∀ x ∈ T i, f0 x = u0 x ∧ f1 x = u1 x)\n    (hbig : s * Fintype.card Coord ^ 2 * (d + 1) * Fintype.card I ^ 3 +\n        s * (Fintype.card I * (Fintype.card Coord - t)) ^ 3 >\n      s * Fintype.card Coord ^ 3 * Fintype.card I ^ 3 +\n        Fintype.card Coord ^ 2 *\n          (s * Fintype.card I * (t + 1) ^ 2 * (d+1-(t+1)) +\n            (d+1)*(3 * Fintype.card I ^ 3 +\n              s ^ 2 * Fintype.card I ^ 2 + 3 * s * Fintype.card I ^ 2))) : False := by\n  classical\n  have hpad : ∀ i, ∃ E : Finset Coord, (T i)ᶜ ⊆ E ∧ E.card = t := by\n    intro i\n    obtain ⟨E,hTE,_,hcard⟩ := Finset.exists_subsuperset_card_eq\n      (Finset.subset_univ ((T i)ᶜ)) (hcompl i) (by simpa using htn)\n    exact ⟨E,hTE,hcard⟩\n  choose E hTE hEcard using hpad\n  have hlow := bad_witness_weighted_mass_lower gamma w hinj Finset.univ C d t s hs ht\n    hC T u0 u1 (fun i _ => hwC i) (fun i _ => hcompl i)\n    (fun i _ => hwag i) (fun i _ => hno i)\n  simp only [Finset.card_univ] at hlow\n  have hmono : (∑ a, ∑ b, ∑ c, (((T a)ᶜ ∪ (T b)ᶜ) ∪ (T c)ᶜ).card) ≤\n      ∑ a, ∑ b, ∑ c, (E a ∪ E b ∪ E c).card := by\n    apply Finset.sum_le_sum\n    intro a _\n    apply Finset.sum_le_sum\n    intro b _\n    apply Finset.sum_le_sum\n    intro c _\n    exact Finset.card_le_card\n      (Finset.union_subset_union (Finset.union_subset_union (hTE a) (hTE b)) (hTE c))\n  have hmonoS := Nat.mul_le_mul_left s hmono\n  have hlowN := Nat.mul_le_mul_left (Fintype.card Coord ^ 2) hlow\n  have hmonoN := Nat.mul_le_mul_left (Fintype.card Coord ^ 2) hmonoS\n  have hupp := triple_union_mass_bound E t hEcard\n  have huppS := Nat.mul_le_mul_left s hupp\n  nlinarith [hlowN,hmonoN,huppS,hbig]\n\nopen ProximityGap ProximityGap.SpikeFloor Code\nopen scoped NNReal ENNReal\n\n/-- Weighted triple incidence bounds the number of canonical MCA-bad scalars. -/\ntheorem badScalars_card_le_of_weighted_budget\n    {F Coord A : Type} [Field F] [Fintype F] [DecidableEq F]\n    [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]\n    [Fintype A] [DecidableEq A] [AddCommGroup A] [Module F A]\n    (C : Submodule F (Coord → A)) (j d t s : ℕ) (hs : 2 ≤ s) (ht : 3*(t+1) ≤ 2*(d+1))\n    (htn : t ≤ Fintype.card Coord) (hC : NoWeightLE C d)\n    (hbig : s * Fintype.card Coord ^ 2 * (d + 1) * (j + 1) ^ 3 +\n        s * ((j + 1) * (Fintype.card Coord - t)) ^ 3 >\n      s * Fintype.card Coord ^ 3 * (j + 1) ^ 3 +\n        Fintype.card Coord ^ 2 *\n          (s * (j+1) * (t+1)^2 * (d+1-(t+1)) +\n            (d+1)*(3*(j+1)^3+s^2*(j+1)^2+3*s*(j+1)^2)))\n    {δ : ℝ≥0} (hδ : δ * (Fintype.card Coord : ℝ≥0) < t + 1)\n    (u0 u1 : Coord → A) :\n    (Finset.univ.filter fun γ : F => mcaEvent (C : Set (Coord → A)) δ u0 u1 γ).card ≤ j := by\n  classical\n  by_contra hgt\n  push Not at hgt\n  obtain ⟨B,hBsub,hBcard⟩ := Finset.exists_subset_card_eq\n    (s := Finset.univ.filter (fun γ : F => mcaEvent (C : Set (Coord → A)) δ u0 u1 γ))\n    (n := j + 1) (by omega)\n  let gamma : Fin (j + 1) → F :=\n    fun i => (B.equivFin.symm (Fin.cast hBcard.symm i) : F)\n  have hinj : Function.Injective gamma := by\n    intro a b hab\n    have h1 := Subtype.val_injective hab\n    have h2 := B.equivFin.symm.injective h1\n    exact Fin.cast_injective _ h2\n  have hbad : ∀ i, mcaEvent (C : Set (Coord → A)) δ u0 u1 (gamma i) := fun i =>\n    (Finset.mem_filter.mp (hBsub (B.equivFin.symm (Fin.cast hBcard.symm i)).2)).2\n  choose T hTsz hwEx hno using hbad\n  choose w hwC hwag using hwEx\n  have hcompl : ∀ i, (T i)ᶜ.card ≤ t := by\n    intro i\n    simpa using (witness_compl_card_le (j := t + 1) (by simpa using hδ) (hTsz i))\n  apply no_bad_witness_family_of_weighted_budget gamma w hinj C d t s hs ht htn\n    hC T u0 u1 hwC hcompl hwag hno\n  simpa only [Fintype.card_fin] using hbig\n\nopen ProximityGap.Ownership\nprivate abbrev sponsorP := ArkLib.ProximityGap.PrizeShapePrimeP30.P\nprivate abbrev sponsorG := ArkLib.ProximityGap.PrizeShapePrimeP30.g\nprivate instance sponsorPrime : Fact sponsorP.Prime :=\n  ⟨ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P⟩\n\nset_option maxRecDepth 4096 in\n/-- Canonical first-sponsor incidence at the integer weighted triple-mass boundary. -/\ntheorem firstPrime_weighted_incidence :\n    ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded\n      (F := ZMod sponsorP) (A := ZMod sponsorP)\n      (ArkLib.ProximityGap.KKH26.evalCode sponsorG (2 ^ 30) (2 ^ 29 - 1))\n      ((214719987 : ℝ≥0) / (2 ^ 30 : ℝ≥0)) (2 ^ 30) := by\n  classical\n  letI : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩\n  let dom : Fin (2 ^ 30) ↪ ZMod sponsorP :=\n    smoothDom sponsorG (2 ^ 30) ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g\n  have hcode : ArkLib.ProximityGap.KKH26.evalCode sponsorG (2 ^ 30) (2 ^ 29 - 1) =\n      ((rsCode dom (2 ^ 29) : Submodule (ZMod sponsorP) (Fin (2 ^ 30) → ZMod sponsorP)) :\n        Set (Fin (2 ^ 30) → ZMod sponsorP)) := by\n    simpa only [dom, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 29)] using\n      (evalCode_eq_rsCode ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g (2 ^ 29 - 1))\n  intro u\n  rw [hcode]\n  apply badScalars_card_le_of_weighted_budget\n    (j := 2 ^ 30) (d := 2 ^ 29) (t := 214719987) (s := 56756)\n  · norm_num\n  · norm_num\n  · norm_num\n  · exact rsCode_noWeightLE dom (by norm_num)\n  · norm_num\n  · norm_num\n\nopen ProximityGap.MCAThresholdLedger\nopen ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket\n\n/-- The weighted triple-incidence budget yields a canonical unconditional first-sponsor floor. -/\ntheorem firstPrime_weighted_floor :\n    ((214719988 : ℝ≥0) / (2 ^ 30 : ℝ≥0)) ≤\n      mcaDeltaStar (F := ZMod sponsorP) (A := ZMod sponsorP)\n        (ArkLib.ProximityGap.KKH26.evalCode sponsorG (2 ^ 30) (2 ^ 29 - 1))\n        (ProximityGap.epsStar : ℝ≥0∞) := by\n  classical\n  letI : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩\n  have hbudget : ((2 ^ 30 : ℕ) : ℝ≥0∞) / (sponsorP : ℝ≥0∞) ≤\n      (ProximityGap.epsStar : ℝ≥0∞) := by\n    have hb := natCast_div_le_inv_of_mul_le\n      (E := 2 ^ 30) (Q := 2 ^ 128) (p := sponsorP)\n      (by norm_num) ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P.pos\n      (by norm_num [sponsorP, ArkLib.ProximityGap.PrizeShapePrimeP30.P])\n    rwa [epsStar_coe_eq_natCast_inv]\n  have hgood : epsMCA (F := ZMod sponsorP) (A := ZMod sponsorP)\n      (ArkLib.ProximityGap.KKH26.evalCode sponsorG (2 ^ 30) (2 ^ 29 - 1))\n      (predecessorRadius (2 ^ 30) 214719988) ≤\n      (ProximityGap.epsStar : ℝ≥0∞) := by\n    have hc := ProximityGap.OpenCoreConditionalPin.epsMCA_le_of_worstCaseIncidence\n      (ArkLib.ProximityGap.KKH26.evalCode sponsorG (2 ^ 30) (2 ^ 29 - 1))\n      ((214719987 : ℝ≥0) / (2 ^ 30 : ℝ≥0)) firstPrime_weighted_incidence\n    rw [ZMod.card] at hc\n    have hpred : predecessorRadius (2 ^ 30) 214719988 =\n        ((214719987 : ℝ≥0) / (2 ^ 30 : ℝ≥0)) := by\n      norm_num [predecessorRadius]\n    rw [hpred]\n    exact hc.trans hbudget\n  have hfloor := latticeBoundary_le_mcaDeltaStar_of_predecessor_good\n    (F := ZMod sponsorP) (n := 2 ^ 30) (a := 214719988)\n    (by norm_num) (by norm_num)\n    (ArkLib.ProximityGap.KKH26.evalCode sponsorG (2 ^ 30) (2 ^ 29 - 1))\n    (ProximityGap.epsStar : ℝ≥0∞) hgood\n  convert hfloor using 1\n  norm_num\n\nend ProximityGap.IncidenceCanonicalWeighted\n\n#print axioms ProximityGap.IncidenceCanonicalWeighted.no_bad_witness_family_of_weighted_budget\n#print axioms ProximityGap.IncidenceCanonicalWeighted.badScalars_card_le_of_weighted_budget\n#print axioms ProximityGap.IncidenceCanonicalWeighted.firstPrime_weighted_incidence\n#print axioms ProximityGap.IncidenceCanonicalWeighted.firstPrime_weighted_floor\n",
+      "original_source_sha256": "5d6287536996e4ad6e86861fb088bb89fe65dc1e0021ac8e905fb5c7e74191dc",
+      "reviewed_source_sha256": "a9a079ee8769565379d62a7d052c616a0657ec6d82fbc1d0441a4ec32bb21506",
+      "original_public_names": [
+        "ProximityGap.IncidenceCanonicalWeighted.badScalars_card_le_of_weighted_budget",
+        "ProximityGap.IncidenceCanonicalWeighted.firstPrime_weighted_floor",
+        "ProximityGap.IncidenceCanonicalWeighted.firstPrime_weighted_incidence",
+        "ProximityGap.IncidenceCanonicalWeighted.no_bad_witness_family_of_weighted_budget"
+      ],
+      "reviewed_public_names": [
+        "ProximityGap.IncidenceCanonicalWeighted.badScalars_card_le_of_weighted_budget",
+        "ProximityGap.IncidenceCanonicalWeighted.firstPrime_weighted_floor",
+        "ProximityGap.IncidenceCanonicalWeighted.firstPrime_weighted_incidence",
+        "ProximityGap.IncidenceCanonicalWeighted.no_bad_witness_family_of_weighted_budget"
+      ],
+      "validation": {
+        "file": "Research/ProximityPrize/Frontier/_IncidenceCanonicalWeighted.lean",
+        "status": "temporary_overlay_source_check",
+        "compiler_exit_code": 0,
+        "admission_checker_exit_code": 0,
+        "elapsed_seconds": 7.298,
+        "source_before_sha256": "a9a079ee8769565379d62a7d052c616a0657ec6d82fbc1d0441a4ec32bb21506",
+        "source_after_sha256": "a9a079ee8769565379d62a7d052c616a0657ec6d82fbc1d0441a4ec32bb21506",
+        "import_artifacts": {
+          "ProximityPrize.Compatibility.EvaluationCodeDimension": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Compatibility/EvaluationCodeDimension.olean",
+            "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Compatibility/EvaluationCodeDimension.olean",
+            "sha256": "5110ea8b2aa5ab81d3e1acf1ae0af59dea7c612cd4eabad6d2f9658104cb06d3",
+            "artifact_family": {
+              "EvaluationCodeDimension.olean": "5110ea8b2aa5ab81d3e1acf1ae0af59dea7c612cd4eabad6d2f9658104cb06d3"
+            }
+          },
+          "Research.ProximityPrize.Frontier._IncidenceTripleMass": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_IncidenceTripleMass.olean",
+            "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_IncidenceTripleMass.olean",
+            "sha256": "d2c83a96b7b51122a4161e4426412aa7128b6252d0237a0e34607f12ab599a7e",
+            "artifact_family": {
+              "_IncidenceTripleMass.olean": "d2c83a96b7b51122a4161e4426412aa7128b6252d0237a0e34607f12ab599a7e"
+            }
+          },
+          "Research.ProximityPrize.Frontier._IncidenceWeightedTriples": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_IncidenceWeightedTriples.olean",
+            "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_IncidenceWeightedTriples.olean",
+            "sha256": "f41cf0a3a54d92383bbde263075a957e7977e3752bc2c89d557c734a37e5f713",
+            "artifact_family": {
+              "_IncidenceWeightedTriples.olean": "f41cf0a3a54d92383bbde263075a957e7977e3752bc2c89d557c734a37e5f713"
+            }
+          },
+          "Research.ProximityPrize.Frontier._IncidenceAverageAnchor": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_IncidenceAverageAnchor.olean",
+            "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_IncidenceAverageAnchor.olean",
+            "sha256": "5a9b4d89e2ed44c4eb430a24f26d9c18bf9db618b5028ddf3d9972d167d29761",
+            "artifact_family": {
+              "_IncidenceAverageAnchor.olean": "5a9b4d89e2ed44c4eb430a24f26d9c18bf9db618b5028ddf3d9972d167d29761"
+            }
+          }
+        },
+        "imports_unchanged": true,
+        "log": "/tmp/arklib-native-overlay/logs/Research.ProximityPrize.Frontier._IncidenceCanonicalWeighted.lean.1793254995176892000.check.log",
+        "not_a_lake_package_build": true,
+        "standard_axiom_reports": 4
+      },
+      "change": "Import the shared positive-dimension evaluation-code bridge and apply evalCode_pred_eq_rsCode with k=2^29 and the existing smooth-domain order proof. The same local dom, code, incidence/floor claims and literal numeric bounds are preserved; the positivity premise is discharged internally by norm_num."
+    },
+    {
+      "path": "Research/ProximityPrize/Frontier/_IncidenceCanonicalExterior.lean",
+      "original_source": "/-\nCopyright (c) 2026 Mikhail Izhutkin. All rights reserved.\nReleased under Apache 2.0 license as described in the file LICENSE.\nAuthors: Mikhail Izhutkin (mashingaan, @mashingaan)\n-/\nimport Research.ProximityPrize.Frontier._IncidenceTripleMass\nimport Research.ProximityPrize.Frontier._IncidenceExteriorLineCap\nimport Research.ProximityPrize.Frontier._IncidenceAverageAnchor\n\nset_option autoImplicit false\nattribute [local instance] Classical.propDecidable\n\nnamespace ProximityGap.IncidenceCanonicalExterior\n\nopen ProximityGap.IncidenceTripleMass ProximityGap.IncidenceAffineLines\nopen ProximityGap.IncidenceWeightedTriples\nopen ProximityGap.IncidenceExteriorLineCap\n\n/-- Weighted triple-incidence mass excludes an over-budget family of canonical bad witnesses.\nThe support predicate is the unfolded minimum-distance bound for the code. -/\ntheorem no_bad_witness_family_of_exterior_budget\n    {F I Coord A : Type} [Field F] [Fintype I] [DecidableEq I]\n    [Fintype Coord] [Nonempty Coord] [DecidableEq Coord] [AddCommGroup A] [Module F A]\n    (gamma : I → F) (w : I → (Coord → A)) (hinj : Function.Injective gamma)\n    (C : Submodule F (Coord → A)) (d t s : ℕ) (hs : 2 ≤ s) (ht : 3*(3*t-d+1) ≤ 2*(d+1))\n    (htn : t ≤ Fintype.card Coord) (htI : t+1 < Fintype.card I)\n    (hC : ∀ z ∈ C, (∃ B : Finset Coord, B.card ≤ d ∧ ∀ x ∉ B, z x = 0) → z = 0)\n    (T : I → Finset Coord) (u0 u1 : Coord → A)\n    (hwC : ∀ i, w i ∈ C)\n    (hcompl : ∀ i, (T i)ᶜ.card ≤ t)\n    (hwag : ∀ i, ∀ x ∈ T i, w i x = u0 x + gamma i • u1 x)\n    (hno : ∀ i, ¬ ∃ f0 ∈ C, ∃ f1 ∈ C,\n      ∀ x ∈ T i, f0 x = u0 x ∧ f1 x = u1 x)\n    (hbig : s * Fintype.card Coord ^ 2 * (d + 1) * Fintype.card I ^ 3 +\n        s * (Fintype.card I * (Fintype.card Coord - t)) ^ 3 >\n      s * Fintype.card Coord ^ 3 * Fintype.card I ^ 3 +\n        Fintype.card Coord ^ 2 *\n          (s * Fintype.card I * (3*t-d+1)^2*(d+1-(3*t-d+1)) +\n            (d+1)*(3 * Fintype.card I ^ 3 +\n              s ^ 2 * Fintype.card I ^ 2 + 3 * s * Fintype.card I ^ 2))) : False := by\n  classical\n  have hpad : ∀ i, ∃ E : Finset Coord, (T i)ᶜ ⊆ E ∧ E.card = t := by\n    intro i\n    obtain ⟨E,hTE,_,hcard⟩ := Finset.exists_subsuperset_card_eq\n      (Finset.subset_univ ((T i)ᶜ)) (hcompl i) (by simpa using htn)\n    exact ⟨E,hTE,hcard⟩\n  choose E hTE hEcard using hpad\n  have hcap : ∀ U D, (Finset.univ.filter (OnLine gamma w U D)).card ≤ 3*t-d+1 := by\n    intro U D\n    apply bad_witness_exterior_line_cap gamma w hinj Finset.univ C d t\n      (by simpa using htI) hC T u0 u1\n      (fun i _ => hwC i) (fun i _ => hcompl i)\n      (fun i _ => hwag i) (fun i _ => hno i) U D\n  have hlow := bad_witness_weighted_mass_lower_of_cap gamma w hinj Finset.univ C\n    d s (3*t-d+1) hs ht hC T u0 u1\n    (fun i _ => hwC i) (fun i _ => hwag i) (fun i _ => hno i) hcap\n  simp only [Finset.card_univ] at hlow\n  have hmono : (∑ a, ∑ b, ∑ c, (((T a)ᶜ ∪ (T b)ᶜ) ∪ (T c)ᶜ).card) ≤\n      ∑ a, ∑ b, ∑ c, (E a ∪ E b ∪ E c).card := by\n    apply Finset.sum_le_sum\n    intro a _\n    apply Finset.sum_le_sum\n    intro b _\n    apply Finset.sum_le_sum\n    intro c _\n    exact Finset.card_le_card\n      (Finset.union_subset_union (Finset.union_subset_union (hTE a) (hTE b)) (hTE c))\n  have hmonoS := Nat.mul_le_mul_left s hmono\n  have hlowN := Nat.mul_le_mul_left (Fintype.card Coord ^ 2) hlow\n  have hmonoN := Nat.mul_le_mul_left (Fintype.card Coord ^ 2) hmonoS\n  have hupp := triple_union_mass_bound E t hEcard\n  have huppS := Nat.mul_le_mul_left s hupp\n  nlinarith [hlowN,hmonoN,huppS,hbig]\n\nopen ProximityGap ProximityGap.SpikeFloor Code\nopen scoped NNReal ENNReal\n\n/-- Weighted triple incidence bounds the number of canonical MCA-bad scalars. -/\ntheorem badScalars_card_le_of_exterior_budget\n    {F Coord A : Type} [Field F] [Fintype F] [DecidableEq F]\n    [Fintype Coord] [Nonempty Coord] [DecidableEq Coord]\n    [Fintype A] [DecidableEq A] [AddCommGroup A] [Module F A]\n    (C : Submodule F (Coord → A)) (j d t s : ℕ) (hs : 2 ≤ s) (ht : 3*(3*t-d+1) ≤ 2*(d+1))\n    (htn : t ≤ Fintype.card Coord) (htj : t < j) (hC : NoWeightLE C d)\n    (hbig : s * Fintype.card Coord ^ 2 * (d + 1) * (j + 1) ^ 3 +\n        s * ((j + 1) * (Fintype.card Coord - t)) ^ 3 >\n      s * Fintype.card Coord ^ 3 * (j + 1) ^ 3 +\n        Fintype.card Coord ^ 2 *\n          (s * (j+1) * (3*t-d+1)^2*(d+1-(3*t-d+1)) +\n            (d+1)*(3*(j+1)^3+s^2*(j+1)^2+3*s*(j+1)^2)))\n    {δ : ℝ≥0} (hδ : δ * (Fintype.card Coord : ℝ≥0) < t + 1)\n    (u0 u1 : Coord → A) :\n    (Finset.univ.filter fun γ : F => mcaEvent (C : Set (Coord → A)) δ u0 u1 γ).card ≤ j := by\n  classical\n  by_contra hgt\n  push Not at hgt\n  obtain ⟨B,hBsub,hBcard⟩ := Finset.exists_subset_card_eq\n    (s := Finset.univ.filter (fun γ : F => mcaEvent (C : Set (Coord → A)) δ u0 u1 γ))\n    (n := j + 1) (by omega)\n  let gamma : Fin (j + 1) → F :=\n    fun i => (B.equivFin.symm (Fin.cast hBcard.symm i) : F)\n  have hinj : Function.Injective gamma := by\n    intro a b hab\n    have h1 := Subtype.val_injective hab\n    have h2 := B.equivFin.symm.injective h1\n    exact Fin.cast_injective _ h2\n  have hbad : ∀ i, mcaEvent (C : Set (Coord → A)) δ u0 u1 (gamma i) := fun i =>\n    (Finset.mem_filter.mp (hBsub (B.equivFin.symm (Fin.cast hBcard.symm i)).2)).2\n  choose T hTsz hwEx hno using hbad\n  choose w hwC hwag using hwEx\n  have hcompl : ∀ i, (T i)ᶜ.card ≤ t := by\n    intro i\n    simpa using (witness_compl_card_le (j := t + 1) (by simpa using hδ) (hTsz i))\n  apply no_bad_witness_family_of_exterior_budget gamma w hinj C d t s hs ht htn\n    (by simpa only [Fintype.card_fin] using Nat.add_lt_add_right htj 1) hC T u0 u1 hwC hcompl hwag hno\n  simpa only [Fintype.card_fin] using hbig\n\nopen ProximityGap.Ownership\nprivate abbrev sponsorP := ArkLib.ProximityGap.PrizeShapePrimeP30.P\nprivate abbrev sponsorG := ArkLib.ProximityGap.PrizeShapePrimeP30.g\nprivate instance sponsorPrime : Fact sponsorP.Prime :=\n  ⟨ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P⟩\n\nset_option maxRecDepth 4096 in\n/-- Canonical first-sponsor incidence at the integer weighted triple-mass boundary. -/\ntheorem firstPrime_exterior_incidence :\n    ProximityGap.OpenCoreConditionalPin.WorstCaseIncidenceBounded\n      (F := ZMod sponsorP) (A := ZMod sponsorP)\n      (ArkLib.ProximityGap.KKH26.evalCode sponsorG (2 ^ 30) (2 ^ 29 - 1))\n      ((218759455 : ℝ≥0) / (2 ^ 30 : ℝ≥0)) (2 ^ 30) := by\n  classical\n  letI : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩\n  let dom : Fin (2 ^ 30) ↪ ZMod sponsorP :=\n    smoothDom sponsorG (2 ^ 30) ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g\n  have hcode : ArkLib.ProximityGap.KKH26.evalCode sponsorG (2 ^ 30) (2 ^ 29 - 1) =\n      ((rsCode dom (2 ^ 29) : Submodule (ZMod sponsorP) (Fin (2 ^ 30) → ZMod sponsorP)) :\n        Set (Fin (2 ^ 30) → ZMod sponsorP)) := by\n    simpa only [dom, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 29)] using\n      (evalCode_eq_rsCode ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g (2 ^ 29 - 1))\n  intro u\n  rw [hcode]\n  apply badScalars_card_le_of_exterior_budget\n    (j := 2 ^ 30) (d := 2 ^ 29) (t := 218759455) (s := 56756)\n  · norm_num\n  · norm_num\n  · norm_num\n  · norm_num\n  · exact rsCode_noWeightLE dom (by norm_num)\n  · norm_num\n  · norm_num\n\nopen ProximityGap.MCAThresholdLedger\nopen ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket\n\n/-- The weighted triple-incidence budget yields a canonical unconditional first-sponsor floor. -/\ntheorem firstPrime_exterior_floor :\n    ((218759456 : ℝ≥0) / (2 ^ 30 : ℝ≥0)) ≤\n      mcaDeltaStar (F := ZMod sponsorP) (A := ZMod sponsorP)\n        (ArkLib.ProximityGap.KKH26.evalCode sponsorG (2 ^ 30) (2 ^ 29 - 1))\n        (ProximityGap.epsStar : ℝ≥0∞) := by\n  classical\n  letI : NeZero (2 ^ 30 : ℕ) := ⟨by norm_num⟩\n  have hbudget : ((2 ^ 30 : ℕ) : ℝ≥0∞) / (sponsorP : ℝ≥0∞) ≤\n      (ProximityGap.epsStar : ℝ≥0∞) := by\n    have hb := natCast_div_le_inv_of_mul_le\n      (E := 2 ^ 30) (Q := 2 ^ 128) (p := sponsorP)\n      (by norm_num) ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P.pos\n      (by norm_num [sponsorP, ArkLib.ProximityGap.PrizeShapePrimeP30.P])\n    rwa [epsStar_coe_eq_natCast_inv]\n  have hgood : epsMCA (F := ZMod sponsorP) (A := ZMod sponsorP)\n      (ArkLib.ProximityGap.KKH26.evalCode sponsorG (2 ^ 30) (2 ^ 29 - 1))\n      (predecessorRadius (2 ^ 30) 218759456) ≤\n      (ProximityGap.epsStar : ℝ≥0∞) := by\n    have hc := ProximityGap.OpenCoreConditionalPin.epsMCA_le_of_worstCaseIncidence\n      (ArkLib.ProximityGap.KKH26.evalCode sponsorG (2 ^ 30) (2 ^ 29 - 1))\n      ((218759455 : ℝ≥0) / (2 ^ 30 : ℝ≥0)) firstPrime_exterior_incidence\n    rw [ZMod.card] at hc\n    have hpred : predecessorRadius (2 ^ 30) 218759456 =\n        ((218759455 : ℝ≥0) / (2 ^ 30 : ℝ≥0)) := by\n      norm_num [predecessorRadius]\n    rw [hpred]\n    exact hc.trans hbudget\n  have hfloor := latticeBoundary_le_mcaDeltaStar_of_predecessor_good\n    (F := ZMod sponsorP) (n := 2 ^ 30) (a := 218759456)\n    (by norm_num) (by norm_num)\n    (ArkLib.ProximityGap.KKH26.evalCode sponsorG (2 ^ 30) (2 ^ 29 - 1))\n    (ProximityGap.epsStar : ℝ≥0∞) hgood\n  convert hfloor using 1\n  norm_num\n\nend ProximityGap.IncidenceCanonicalExterior\n\n#print axioms ProximityGap.IncidenceCanonicalExterior.no_bad_witness_family_of_exterior_budget\n#print axioms ProximityGap.IncidenceCanonicalExterior.badScalars_card_le_of_exterior_budget\n#print axioms ProximityGap.IncidenceCanonicalExterior.firstPrime_exterior_incidence\n#print axioms ProximityGap.IncidenceCanonicalExterior.firstPrime_exterior_floor\n",
+      "original_source_sha256": "c7fb0514cbafebf984c17be96f5ba58c7db0e9eecd79843268530ba0e195b958",
+      "reviewed_source_sha256": "94c85f7f06985f867321db1acb70eafedb1e3cbf023c71be67d6e96fc8d50ea4",
+      "original_public_names": [
+        "ProximityGap.IncidenceCanonicalExterior.badScalars_card_le_of_exterior_budget",
+        "ProximityGap.IncidenceCanonicalExterior.firstPrime_exterior_floor",
+        "ProximityGap.IncidenceCanonicalExterior.firstPrime_exterior_incidence",
+        "ProximityGap.IncidenceCanonicalExterior.no_bad_witness_family_of_exterior_budget"
+      ],
+      "reviewed_public_names": [
+        "ProximityGap.IncidenceCanonicalExterior.badScalars_card_le_of_exterior_budget",
+        "ProximityGap.IncidenceCanonicalExterior.firstPrime_exterior_floor",
+        "ProximityGap.IncidenceCanonicalExterior.firstPrime_exterior_incidence",
+        "ProximityGap.IncidenceCanonicalExterior.no_bad_witness_family_of_exterior_budget"
+      ],
+      "validation": {
+        "file": "Research/ProximityPrize/Frontier/_IncidenceCanonicalExterior.lean",
+        "status": "temporary_overlay_source_check",
+        "compiler_exit_code": 0,
+        "admission_checker_exit_code": 0,
+        "elapsed_seconds": 7.291,
+        "source_before_sha256": "94c85f7f06985f867321db1acb70eafedb1e3cbf023c71be67d6e96fc8d50ea4",
+        "source_after_sha256": "94c85f7f06985f867321db1acb70eafedb1e3cbf023c71be67d6e96fc8d50ea4",
+        "import_artifacts": {
+          "ProximityPrize.Compatibility.EvaluationCodeDimension": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Compatibility/EvaluationCodeDimension.olean",
+            "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Compatibility/EvaluationCodeDimension.olean",
+            "sha256": "5110ea8b2aa5ab81d3e1acf1ae0af59dea7c612cd4eabad6d2f9658104cb06d3",
+            "artifact_family": {
+              "EvaluationCodeDimension.olean": "5110ea8b2aa5ab81d3e1acf1ae0af59dea7c612cd4eabad6d2f9658104cb06d3"
+            }
+          },
+          "Research.ProximityPrize.Frontier._IncidenceTripleMass": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_IncidenceTripleMass.olean",
+            "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_IncidenceTripleMass.olean",
+            "sha256": "d2c83a96b7b51122a4161e4426412aa7128b6252d0237a0e34607f12ab599a7e",
+            "artifact_family": {
+              "_IncidenceTripleMass.olean": "d2c83a96b7b51122a4161e4426412aa7128b6252d0237a0e34607f12ab599a7e"
+            }
+          },
+          "Research.ProximityPrize.Frontier._IncidenceExteriorLineCap": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_IncidenceExteriorLineCap.olean",
+            "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_IncidenceExteriorLineCap.olean",
+            "sha256": "8bc814a6ec4b0b8276d9d1ad649a0c7967c2ddf8a9624702a1df42454dfed12e",
+            "artifact_family": {
+              "_IncidenceExteriorLineCap.olean": "8bc814a6ec4b0b8276d9d1ad649a0c7967c2ddf8a9624702a1df42454dfed12e"
+            }
+          },
+          "Research.ProximityPrize.Frontier._IncidenceAverageAnchor": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_IncidenceAverageAnchor.olean",
+            "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_IncidenceAverageAnchor.olean",
+            "sha256": "5a9b4d89e2ed44c4eb430a24f26d9c18bf9db618b5028ddf3d9972d167d29761",
+            "artifact_family": {
+              "_IncidenceAverageAnchor.olean": "5a9b4d89e2ed44c4eb430a24f26d9c18bf9db618b5028ddf3d9972d167d29761"
+            }
+          }
+        },
+        "imports_unchanged": true,
+        "log": "/tmp/arklib-native-overlay/logs/Research.ProximityPrize.Frontier._IncidenceCanonicalExterior.lean.1793255004758381000.check.log",
+        "not_a_lake_package_build": true,
+        "standard_axiom_reports": 4
+      },
+      "change": "Import the shared positive-dimension evaluation-code bridge and apply evalCode_pred_eq_rsCode with k=2^29 and the existing smooth-domain order proof. The same local dom, code, incidence/floor claims and literal numeric bounds are preserved; the positivity premise is discharged internally by norm_num."
+    }
+  ],
+  "package_validation_pending": false,
+  "read_only_sweep": {
+    "literal_production_bridges": 5,
+    "owned_literal_bridges": [
+      "Research/ProximityPrize/Frontier/_IncidenceCanonicalConstant.lean",
+      "Research/ProximityPrize/Frontier/_IncidenceCanonicalTriples.lean",
+      "Research/ProximityPrize/Frontier/_IncidenceCanonicalWeighted.lean",
+      "Research/ProximityPrize/Frontier/_IncidenceCanonicalExterior.lean"
+    ],
+    "other_literal_bridge": "Research/ProximityPrize/Frontier/_IncidenceFullScaleCores.lean (root-owned)",
+    "symbolic_dimension_bridges": 3,
+    "symbolic_files": [
+      "Research/ProximityPrize/Frontier/_KKH26ExactRateCeiling.lean",
+      "Research/ProximityPrize/Frontier/_KKH26StratifiedExactRateHalf.lean",
+      "Research/ProximityPrize/Frontier/_GenericQuotientInterpolationSpread.lean"
+    ],
+    "symbolic_disposition": "Already normalize the predecessor cancellation with a symbolic dimension equality; no broad edits.",
+    "other_generic_rewrites": 2,
+    "generic_file": "Research/ProximityPrize/Frontier/_GenericQuotientInterpolationSpread.lean",
+    "generic_disposition": "Generic degree-based rewrites, not the closed production predecessor pattern; left unchanged."
+  },
+  "canonical_sources_changed": false,
+  "new_mathematical_hypotheses": false,
+  "new_admissions_or_axioms": false,
+  "lean_budgets_changed": false,
+  "current_validation": {
+    "status": "package_validation_passed",
+    "receipt": "scripts/integration/final-validation.json",
+    "check": "default_libraries",
+    "source_commit": "7483975d251b3549313243ea9d5ada700af121f9",
+    "source_snapshot_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+    "resolved_package_pending_paths": [
+      "/package_validation_pending"
+    ],
+    "superseded_historical_status_paths": [],
+    "scope": "Current checked-in sources passed the final four-library package build. Original status text and all earlier receipts remain historical snapshots, not current pending claims."
+  }
+}

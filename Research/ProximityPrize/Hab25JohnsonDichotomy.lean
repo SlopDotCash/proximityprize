@@ -147,7 +147,7 @@ theorem Hab25JohnsonAlgebraicData.toDichotomy_card
     (A : Hab25JohnsonAlgebraicData domain k η δ hη hδ) :
     A.Edis.card ≤ A.ℓ * Fintype.card ι₀ := by
   have h := A.toDichotomy.disagree_card_le
-  simpa using h
+  simpa [Hab25JohnsonAlgebraicData.toDichotomy] using h
 
 end CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame
 

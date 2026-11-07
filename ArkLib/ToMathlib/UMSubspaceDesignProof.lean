@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.Data.CodingTheory.ReedSolomon.Multiplicity
-import ArkLib.Data.CodingTheory.SubspaceDesign
+import ProximityPrize.Extensions.Data.CodingTheory.SubspaceDesign
 import ArkLib.Data.CodingTheory.ProximityGap.GK16RootCounting
 import Mathlib.Algebra.Polynomial.FieldDivision
 
@@ -135,7 +135,7 @@ lemma um_card_mult_ge_mul_le {domain : ι ↪ F} {k s : ℕ} {p : Polynomial F}
       = ∑ a ∈ S.image domain, Polynomial.rootMultiplicity a p := by
     rw [Finset.sum_image (fun i _ j _ h => domain.injective h)]
   have hbound : ∑ a ∈ S.image domain, Polynomial.rootMultiplicity a p ≤ p.natDegree :=
-    Polynomial.sum_rootMultiplicity_le_natDegree p hp (S.image domain)
+    Polynomial.sum_rootMultiplicity_le_natDegree (W := p) (S.image domain)
   calc s * S.card ≤ ∑ i ∈ S, p.rootMultiplicity (domain i) := hmul
     _ = ∑ a ∈ S.image domain, Polynomial.rootMultiplicity a p := hdistinct
     _ ≤ p.natDegree := hbound

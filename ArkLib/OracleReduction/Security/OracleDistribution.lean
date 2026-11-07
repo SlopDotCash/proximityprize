@@ -4,7 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen
 -/
 
-import ArkLib.OracleReduction.Execution
+import ProximityPrize.Extensions.OracleReduction.Execution
+import VCVio.OracleComp.Constructions.SampleableType.Measure
 
 /-!
   # Oracle Distributions: First-Class Sampled Oracles
@@ -188,87 +189,47 @@ private lemma mapRangeAt_apply_self {spec : OracleSpec ι} (q : spec.Domain)
 private theorem probOutput_uniform_marginal_eq
     [SampleableType (OracleFamily spec)] (q : spec.Domain)
     (y z : spec.Range q) :
-    Pr[= y | do let g ← (OracleDistribution.uniform spec).sample; pure (g q)] =
-      Pr[= z | do let g ← (OracleDistribution.uniform spec).sample; pure (g q)] := by
+    Pr{let g ← (OracleDistribution.uniform spec).sample}[g q = y] =
+      Pr{let g ← (OracleDistribution.uniform spec).sample}[g q = z] := by
   classical
-  let e : spec.Range q ≃ spec.Range q := Equiv.swap y z
-  let T : OracleFamily spec ≃ OracleFamily spec := mapRangeAt q e
-  rw [probOutput_bind_eq_tsum, probOutput_bind_eq_tsum]
-  change (∑' (x : OracleFamily spec),
-      Pr[= x | (OracleDistribution.uniform spec).sample] *
-        Pr[= y | (pure (x q) : ProbComp (spec.Range q))]) =
-    ∑' (x : OracleFamily spec),
-      Pr[= x | (OracleDistribution.uniform spec).sample] *
-        Pr[= z | (pure (x q) : ProbComp (spec.Range q))]
-  rw [← Equiv.tsum_eq T (fun g =>
-    Pr[= g | (OracleDistribution.uniform spec).sample] *
-      Pr[= y | (pure (g q) : ProbComp (spec.Range q))])]
-  apply tsum_congr
-  intro g
-  have hsample : Pr[= T g | (OracleDistribution.uniform spec).sample] =
-      Pr[= g | (OracleDistribution.uniform spec).sample] := by
-    exact SampleableType.probOutput_selectElem_eq (T g) g
-  have hpure : Pr[= y | (pure ((T g) q) : ProbComp (spec.Range q))] =
-      Pr[= z | (pure (g q) : ProbComp (spec.Range q))] := by
-    rw [probOutput_pure, probOutput_pure]
-    change (if y = (mapRangeAt q (Equiv.swap y z) g) q then 1 else 0) =
-      if z = g q then 1 else 0
-    rw [mapRangeAt_apply_self]
-    by_cases hz : z = g q
-    · have hy : y = (Equiv.swap y z) (g q) := by
-        calc
-          y = (Equiv.swap y z) z := (Equiv.swap_apply_right y z).symm
-          _ = (Equiv.swap y z) (g q) := congrArg (Equiv.swap y z) hz
-      rw [if_pos hy, if_pos hz]
-    · have hy : y ≠ (Equiv.swap y z) (g q) := by
-        intro hy
-        have hswap : (Equiv.swap y z) (g q) = y := hy.symm
-        rw [Equiv.swap_apply_eq_iff] at hswap
-        rw [Equiv.swap_apply_left] at hswap
-        exact hz hswap.symm
-      rw [if_neg hy, if_neg hz]
-  rw [hsample, hpure]
+  have h := SampleableType.prEvent_uniformSample_equiv (mapRangeAt q (Equiv.swap y z))
+    (fun g => g q = y)
+  simpa only [OracleDistribution.uniform, OracleDistribution.functionTable,
+    mapRangeAt_apply_self, Equiv.swap_apply_eq_iff, Equiv.swap_apply_left] using h.symm
 
-/-- **Level 2.** Marginal at a single query is uniform over the range. -/
+/-- The marginal at a single query of a uniform full table is uniform over its range.
+The table domain need not be finite; the existing uniform table sampler supplies finiteness
+of the table carrier. -/
 theorem probOutput_uniform_marginal
     [SampleableType (OracleFamily spec)] (q : spec.Domain)
     [Fintype (spec.Range q)] (y : spec.Range q) :
-    Pr[= y | do let g ← (OracleDistribution.uniform spec).sample; pure (g q)] =
+    Pr{let g ← (OracleDistribution.uniform spec).sample}[g q = y] =
       (Fintype.card (spec.Range q) : ℝ≥0∞)⁻¹ := by
   classical
-  let M : ProbComp (spec.Range q) := do
-    let g ← (OracleDistribution.uniform spec).sample
-    pure (g q)
-  change Pr[= y | M] = (Fintype.card (spec.Range q) : ℝ≥0∞)⁻¹
-  have hsum : ∑ z, Pr[= z | M] = 1 := by
-    exact sum_probOutput_eq_one (HasEvalPMF.probFailure_eq_zero M)
-  have hconst : ∑ _z : spec.Range q, Pr[= y | M] = 1 := by
+  letI : MeasurableSpace (spec.Range q) := ⊤
+  let M : ProbComp (spec.Range q) := (fun g => g q) <$> (OracleDistribution.uniform spec).sample
+  have hsum : ∑ z, Pr{let g ← (OracleDistribution.uniform spec).sample}[g q = z] = 1 := by
+    have hmass : ∑ z, Pr{let x ← M}[x = z] = 1 := by
+      simp only [prEvent_eq_evalDist_singleton]
+      rw [MeasureTheory.sum_measure_singleton, Finset.coe_univ,
+        OracleComp.evalDist_apply_univ_eq_one]
+    simpa only [M, prEvent_map, Function.comp_def] using hmass
+  have hconst : ∑ _z : spec.Range q,
+      Pr{let g ← (OracleDistribution.uniform spec).sample}[g q = y] = 1 := by
     rw [← hsum]
     apply Finset.sum_congr rfl
-    intro z _hz
-    change Pr[= y | do let g ← (OracleDistribution.uniform spec).sample; pure (g q)] =
-      Pr[= z | do let g ← (OracleDistribution.uniform spec).sample; pure (g q)]
+    intro z _
     exact probOutput_uniform_marginal_eq q y z
-  rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul] at hconst
-  rw [mul_comm] at hconst
+  rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_comm] at hconst
   exact ENNReal.eq_inv_of_mul_eq_one_left hconst
 
-/-- **Modular pointwise uniform query.** *"Given `g` sampled from `uniform spec`, the
-probability that `g q = y` is `1 / |Range q|`."* `g` is the predicate's bound variable,
-**not** a do-binding — the surrounding security experiment can keep
-`(uniform spec).sample` as an opaque step and apply this lemma at any point that reads
-its result via a query. -/
+/-- The same uniform-query law as a native event of the sampled table, for modular game proofs. -/
 lemma probEvent_uniform_query_eq
     [SampleableType (OracleFamily spec)] (q : spec.Domain)
     [Fintype (spec.Range q)] (y : spec.Range q) :
-    Pr[ fun g => g q = y | (OracleDistribution.uniform spec).sample ] =
-      (Fintype.card (spec.Range q) : ℝ≥0∞)⁻¹ := by
-  rw [← probOutput_uniform_marginal (spec := spec) q y, ← probEvent_eq_eq_probOutput]
-  change Pr[ (fun x => x = y) ∘ (fun g => g q) | (OracleDistribution.uniform spec).sample ] =
-    Pr[ (· = y) | (OracleDistribution.uniform spec).sample >>=
-      pure ∘ (fun g : OracleFamily spec => g q) ]
-  rw [probEvent_bind_pure_comp]
-  rfl
+    Pr{let g ← (OracleDistribution.uniform spec).sample}[g q = y] =
+      (Fintype.card (spec.Range q) : ℝ≥0∞)⁻¹ :=
+  probOutput_uniform_marginal q y
 
 end MarginalLaws
 

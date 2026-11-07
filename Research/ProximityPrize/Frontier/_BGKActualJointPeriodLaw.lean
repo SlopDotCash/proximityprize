@@ -9,6 +9,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumWorstCase
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumMoment
 import ArkLib.Data.CodingTheory.ProximityGap.AdditiveEnergyNegClosedLower
 import ArkLib.Data.CodingTheory.ProximityGap.REnergyTwoExact
+import Mathlib.NumberTheory.LegendreSymbol.Complex
 
 /-!
 # The actual seven-colour Gaussian-period joint law
@@ -86,7 +87,7 @@ theorem productionP1_colourPowers_injective :
       (colourMultiplier j : ZMod productionP1) ^ productionN) := by
   simpa [productionN, squareTower_eq_pow] using
     (show Function.Injective (fun j : Fin 7 =>
-      squareTower (colourMultiplier j : ZMod productionP1) 30) by decide)
+      squareTower (colourMultiplier j : ZMod productionP1) 30) by decide +kernel)
 
 /-- The same exact separation holds at the second certified production prime. -/
 theorem productionP2_colourPowers_injective :
@@ -94,15 +95,12 @@ theorem productionP2_colourPowers_injective :
       (colourMultiplier j : ZMod productionP2) ^ productionN) := by
   simpa [productionN, squareTower_eq_pow] using
     (show Function.Injective (fun j : Fin 7 =>
-      squareTower (colourMultiplier j : ZMod productionP2) 30) by decide)
+      squareTower (colourMultiplier j : ZMod productionP2) 30) by decide +kernel)
 
 /-- Both named moduli are prime. -/
 theorem production_prime_certificates : productionP1.Prime ∧ productionP2.Prime := by
-  constructor
-  · simpa [productionP1, productionN, ArkLib.ProximityGap.PrizeShapePrimeP30.P] using
-      ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P
-  · simpa [productionP2, productionN, ArkLib.ProximityGap.PrizeShapePrimeP30Second.P] using
-      ArkLib.ProximityGap.PrizeShapePrimeP30Second.prime_P
+  exact ⟨ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P,
+    ArkLib.ProximityGap.PrizeShapePrimeP30Second.prime_P⟩
 
 local instance productionP1Prime : Fact productionP1.Prime :=
   ⟨production_prime_certificates.1⟩
@@ -780,7 +778,7 @@ theorem production_firstStep_defect_forces_midpoint_gt_two_pow_59
   have ht := (firstStepOneUnitDefectLedger_iff_midpointThreshold
     (productionP1 : Int) productionN A M).mp hdefect
   have hq : (0 : Int) < productionP1 := by
-    norm_num [productionP1, productionN]
+    exact_mod_cast (show 0 < productionP1 by decide +kernel)
   have hmono :
       (productionP1 : Int) *
           ((3 * (productionN : Int) ^ 2 - 3 * productionN) + productionN) -
@@ -797,8 +795,16 @@ theorem production_firstStep_defect_forces_midpoint_gt_two_pow_59
               ((productionN : Int) ^ 2 + 2 * (productionP1 - productionN)) := by
         nlinarith
       _ ≤ 2 * productionP1 * M := ht
-  norm_num [productionP1, productionN] at hmono ⊢
-  omega
+  have hendpoint : 2 * (productionP1 : Int) * 2 ^ 59 <
+      (productionP1 : Int) *
+          ((3 * (productionN : Int) ^ 2 - 3 * productionN) + productionN) -
+        ((productionN : Int) - 1) ^ 2 *
+          ((productionN : Int) ^ 2 + 2 * (productionP1 - productionN)) := by
+    decide +kernel
+  by_contra hnot
+  have hupper : M ≤ (2 : Int) ^ 59 := le_of_not_gt hnot
+  have hmul := mul_le_mul_of_nonneg_left hupper (show (0 : Int) ≤ 2 * productionP1 by positivity)
+  exact (not_lt_of_ge (hmono.trans hmul)) hendpoint
 
 /-- The favorable classical shifted-intersection scale `2^22` would give at most
 `n*2^22=2^52` midpoint triples.  Hence, if that cap is available, the first transition is
@@ -810,8 +816,8 @@ theorem production_firstStep_no_oneUnitDefect_of_shiftedCap
     ¬ FirstStepOneUnitDefectLedger productionP1 productionN A M := by
   intro hdefect
   have hlarge := production_firstStep_defect_forces_midpoint_gt_two_pow_59 A M hA hdefect
-  norm_num [productionN] at hM
-  omega
+  have hendpoint : (productionN : Int) * 2 ^ 22 ≤ 2 ^ 59 := by decide +kernel
+  exact (not_lt_of_ge (hM.trans hendpoint)) hlarge
 
 end FirstTransition
 
@@ -824,8 +830,8 @@ theorem productionP1_torsion_card :
   · change productionN ∣ Fintype.card (ZMod productionP1) - 1
     simp only [ZMod.card]
     refine ⟨2 ^ 128 + 192, ?_⟩
-    simp [productionP1]
-  · norm_num [productionN]
+    decide +kernel
+  · decide +kernel
 
 /-- The second production torsion subgroup also has exactly `2^30` elements. -/
 theorem productionP2_torsion_card :
@@ -834,8 +840,8 @@ theorem productionP2_torsion_card :
   · change productionN ∣ Fintype.card (ZMod productionP2) - 1
     simp only [ZMod.card]
     refine ⟨2 ^ 129 + 13, ?_⟩
-    simp [productionP2]
-  · norm_num [productionN]
+    decide +kernel
+  · decide +kernel
 
 /-- The antipodal pairing floor used in the first-transition audit is unconditional for the
 actual first production torsion subgroup. -/
@@ -851,18 +857,18 @@ theorem productionP1_pairAdditiveCollision_floor :
     intro hzero
     have hdvd : productionP1 ∣ 2 :=
       (ZMod.natCast_eq_zero_iff 2 productionP1).mp hzero
-    norm_num [productionP1, productionN] at hdvd
+    exact (show ¬ productionP1 ∣ 2 by decide +kernel) hdvd
   have h0 : (0 : ZMod productionP1) ∉ G := by
     intro hzero
     exact ne_zero_of_mem_torsion (F := ZMod productionP1)
-      (by norm_num [productionN]) hzero rfl
+      (by decide +kernel) hzero rfl
   have hneg : ∀ x ∈ G, -x ∈ G := by
     intro x hx
     rw [mem_torsion] at hx ⊢
     rw [neg_pow]
     have heven : Even productionN := by
       refine ⟨2 ^ 29, ?_⟩
-      norm_num [productionN, pow_succ]
+      decide +kernel
     rw [Even.neg_one_pow heven, one_mul, hx]
   have hfloor :=
     ArkLib.ProximityGap.AdditiveEnergySidonModNeg.additiveEnergy_ge_of_negClosed
@@ -894,21 +900,17 @@ theorem productionP1_midpointResonance_le_of_nonzeroRepCap
       · intro hzero
         have hdvd : productionP1 ∣ 2 :=
           (ZMod.natCast_eq_zero_iff 2 productionP1).mp hzero
-        norm_num [productionP1, productionN] at hdvd
-      · exact ne_zero_of_mem_torsion (by norm_num [productionN]) hz
+        exact (show ¬ productionP1 ∣ 2 by decide +kernel) hdvd
+      · exact ne_zero_of_mem_torsion (by decide +kernel) hz
     _ = productionN * 2 ^ 22 := by rw [productionP1_torsion_card]
 
 theorem productionP1_colour_ne_zero (j : Fin 7) :
     (colourMultiplier j : ZMod productionP1) ≠ 0 := by
-  fin_cases j <;>
-    simp only [colourMultiplier, ne_eq, ZMod.natCast_eq_zero_iff] <;>
-    norm_num [productionP1, productionN]
+  fin_cases j <;> decide +kernel
 
 theorem productionP2_colour_ne_zero (j : Fin 7) :
     (colourMultiplier j : ZMod productionP2) ≠ 0 := by
-  fin_cases j <;>
-    simp only [colourMultiplier, ne_eq, ZMod.natCast_eq_zero_iff] <;>
-    norm_num [productionP2, productionN]
+  fin_cases j <;> decide +kernel
 
 /-- Exact seven-colour regular-simplex Gram law at the first production prime. -/
 theorem productionP1_actual_seven_colour_gram
@@ -953,19 +955,18 @@ def productionP1PairCorrelation : Rat := productionN / (productionP1 - productio
 def productionP2PairCorrelation : Rat := productionN / (productionP2 - productionN)
 
 theorem requiredLeakage_exact : requiredLeakage = 65663244 := by
-  norm_num [requiredLeakage, productionN]
+  decide +kernel
 
 /-- The needed correlated-placement saving is between `1/17` and `1/16` of all units. -/
 theorem requiredLeakageFraction_window :
     (1 : Rat) / 17 < requiredLeakageFraction ∧ requiredLeakageFraction < (1 : Rat) / 16 := by
-  norm_num [requiredLeakageFraction, requiredLeakage, productionN]
+  decide +kernel
 
 /-- Pairwise colour correlation is below `2^-128` at P1 and below `2^-129` at P2. -/
 theorem productionPairCorrelation_bit_windows :
     productionP1PairCorrelation < (1 : Rat) / 2 ^ 128 ∧
       productionP2PairCorrelation < (1 : Rat) / 2 ^ 129 := by
-  norm_num [productionP1PairCorrelation, productionP2PairCorrelation,
-    productionP1, productionP2, productionN]
+  decide +kernel
 
 /-- **Pairwise-moment scale boundary.**  The actual coefficient saving is more than `2^123`
 times the P1 pair-correlation ratio and more than `2^124` times the P2 ratio.  Thus the exact
@@ -975,8 +976,7 @@ from `sum_prod_dilated_eta_mul_conj_eq_collisionCount` must do the quantitative 
 theorem production_pairCorrelation_misses_leakage_by_123_124_bits :
     (2 ^ 123 : Rat) * productionP1PairCorrelation < requiredLeakageFraction ∧
       (2 ^ 124 : Rat) * productionP2PairCorrelation < requiredLeakageFraction := by
-  norm_num [productionP1PairCorrelation, productionP2PairCorrelation,
-    requiredLeakageFraction, requiredLeakage, productionP1, productionP2, productionN]
+  decide +kernel
 
 /-! ## Axiom audit -/
 

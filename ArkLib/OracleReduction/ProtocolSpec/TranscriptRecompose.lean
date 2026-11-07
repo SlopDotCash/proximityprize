@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.OracleReduction.ProtocolSpec.SeqCompose
+import ProximityPrize.Extensions.OracleReduction.ProtocolSpec.SeqCompose
 
 /-!
 # Transcript recomposition for sequentially-composed protocols
@@ -36,13 +36,6 @@ end ProtocolSpec.FullTranscript
 namespace ProtocolSpec
 
 variable {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
-
-/-- The appended protocol's round `Type` at a right interior round `natAdd m k` is exactly
-`pSpec₂`'s round `Type` at `k` (the `Type`-level analogue of `append_dir_natAdd`). -/
-theorem append_Type_natAdd (k : Fin n) :
-    (pSpec₁ ++ₚ pSpec₂).«Type» (Fin.natAdd m k) = pSpec₂.«Type» k := by
-  show Fin.vappend pSpec₁.«Type» pSpec₂.«Type» (Fin.natAdd m k) = pSpec₂.«Type» k
-  rw [Fin.vappend_eq_append, Fin.append_right]
 
 end ProtocolSpec
 

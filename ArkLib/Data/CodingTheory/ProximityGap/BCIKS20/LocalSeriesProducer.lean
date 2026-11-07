@@ -207,6 +207,7 @@ theorem recenterCoe_apply (x₀ : F) (a : F[X]) :
   simp only [AlgHom.toRingHom_eq_coe, RingHom.coe_coe, Polynomial.taylorAlgHom_apply,
     Polynomial.coeToPowerSeries.ringHom_apply]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **The coefficient-ring specialization bridge.**  On the interpolant's `Y`-coefficient
 ring, the localized place composite `π̂_z ∘ coeffHom_loc` equals the plain `Z := z`
 specialization followed by the recentering coercion.  Coefficientwise:
@@ -224,9 +225,12 @@ theorem map_πhat_coeffHom_loc {x₀ : F} {R : F[X][X][Y]} (hHyp : Hypotheses x�
       (locLift hHyp ((Polynomial.taylor (Polynomial.C x₀) p).coeff n))
       = ((Polynomial.taylor (Polynomial.C x₀) p).coeff n).eval z := by
     have h1 : locLift hHyp ((Polynomial.taylor (Polynomial.C x₀) p).coeff n)
-        = algebraMap (𝒪 H) (Localization.Away (ξ x₀ R H hHyp))
+        = (@algebraMap (𝒪 H) (Localization.Away (ξ x₀ R H hHyp))
+            inferInstance inferInstance inferInstance)
             (Ideal.Quotient.mk (Ideal.span {H_tilde' H})
-              (Polynomial.C ((Polynomial.taylor (Polynomial.C x₀) p).coeff n))) := rfl
+              (Polynomial.C ((Polynomial.taylor (Polynomial.C x₀) p).coeff n))) := by
+      set_option backward.isDefEq.respectTransparency false in
+        rfl
     rw [h1, π_hat_z_comp, π_z_mk, Polynomial.evalEval_C]
   rw [hloc]
   have htay : (Polynomial.taylor (Polynomial.C x₀) p).map (Polynomial.evalRingHom z)

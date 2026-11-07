@@ -1,4 +1,154 @@
 {
- "note": "Upstream-inherited sorry/admit holes baseline (see #470). Emptied 2026-07-09: every entry was proven or removed on main (census: 0 live holes). Add entries ONLY for holes imported by an upstream sync, with an issue reference.",
- "holes": []
+  "note": "Upstream-inherited sorry/admit holes imported by ArkLib integration; tracked by downstream issue #2. Exact upstream revision and file hashes bind ordinary entries. In reviewed downstream_adaptations, unchanged admitted commands additionally require their original full declaration name and exact stripped-command SHA256; each token must remain inside that command. New or changed admitted commands are never baselined.",
+  "repository": "https://github.com/Verified-zkEVM/ArkLib",
+  "revision": "78835bdb3a4d24ea9dd2977db4c46029eb8de5db",
+  "issue": "https://github.com/SlopDotCash/proximityprize/issues/2",
+  "holes": [
+    {
+      "file": "ArkLib/Commitments/Functional/Hachi/Commitment.lean",
+      "decl": "def hachi",
+      "sha256": "136d2fd6f99605bf22d81fcc6ed277c551e4a7302607af7b553e3eb4356e23a7"
+    },
+    {
+      "file": "ArkLib/Commitments/Functional/Hachi/Recursion/PartialEval.lean",
+      "decl": "def deriveFamily",
+      "sha256": "4dfa9c3ce1d5b6ba2619fc8e4e9a828e0f7335c4244a8a3c19056a925f1b442d"
+    },
+    {
+      "file": "ArkLib/Commitments/Functional/Hachi/Recursion/PartialEval.lean",
+      "decl": "def eqWeight",
+      "sha256": "4dfa9c3ce1d5b6ba2619fc8e4e9a828e0f7335c4244a8a3c19056a925f1b442d"
+    },
+    {
+      "file": "ArkLib/Commitments/Functional/Hachi/Recursion/PartialEval.lean",
+      "decl": "def partialEvalAt",
+      "sha256": "4dfa9c3ce1d5b6ba2619fc8e4e9a828e0f7335c4244a8a3c19056a925f1b442d"
+    },
+    {
+      "file": "ArkLib/Commitments/Functional/Hachi/Recursion/PartialEval.lean",
+      "decl": "def partialEvalExtractor",
+      "sha256": "4dfa9c3ce1d5b6ba2619fc8e4e9a828e0f7335c4244a8a3c19056a925f1b442d"
+    },
+    {
+      "file": "ArkLib/Commitments/Functional/Hachi/Recursion/PartialEval.lean",
+      "decl": "theorem partialEval_coordinateWiseSpecialSoundWith",
+      "sha256": "4dfa9c3ce1d5b6ba2619fc8e4e9a828e0f7335c4244a8a3c19056a925f1b442d"
+    },
+    {
+      "file": "ArkLib/Commitments/Functional/Hachi/Recursion/PartialEval.lean",
+      "decl": "theorem wTableMleEval_split",
+      "sha256": "4dfa9c3ce1d5b6ba2619fc8e4e9a828e0f7335c4244a8a3c19056a925f1b442d"
+    },
+    {
+      "file": "ArkLib/Commitments/Functional/Hachi/Recursion/TraceHandoff.lean",
+      "decl": "def handoffExtractor",
+      "sha256": "a4b716c0ee6313cecf5f79b7ed45fec1328088e8423cf2e575d03d9a9b34038e"
+    },
+    {
+      "file": "ArkLib/Commitments/Functional/Hachi/Recursion/TraceHandoff.lean",
+      "decl": "def toNextQuadEvalStatement",
+      "sha256": "a4b716c0ee6313cecf5f79b7ed45fec1328088e8423cf2e575d03d9a9b34038e"
+    },
+    {
+      "file": "ArkLib/Commitments/Functional/Hachi/Recursion/TraceHandoff.lean",
+      "decl": "def traceCheck",
+      "sha256": "a4b716c0ee6313cecf5f79b7ed45fec1328088e8423cf2e575d03d9a9b34038e"
+    },
+    {
+      "file": "ArkLib/Commitments/Functional/Hachi/Recursion/TraceHandoff.lean",
+      "decl": "theorem handoff_coordinateWiseSpecialSoundWith",
+      "sha256": "a4b716c0ee6313cecf5f79b7ed45fec1328088e8423cf2e575d03d9a9b34038e"
+    },
+    {
+      "file": "ArkLib/Commitments/Functional/Hachi/Recursion/ZBatchBridge.lean",
+      "decl": "def hatEval",
+      "sha256": "b760d449360b2be26ed7e87d4c3c41ce5a8b23b11ca8ad000ade826339e76073"
+    },
+    {
+      "file": "ArkLib/Commitments/Functional/Hachi/Recursion/ZBatchBridge.lean",
+      "decl": "theorem mem_relPartialEval_of_relHatEval",
+      "sha256": "b760d449360b2be26ed7e87d4c3c41ce5a8b23b11ca8ad000ade826339e76073"
+    },
+    {
+      "file": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/Linear.lean",
+      "decl": "theorem random_linear_lambda_lower",
+      "sha256": "08d21796f8251aa37c212f9f05134ed0f47e94397386f252b4e384b159901f98"
+    },
+    {
+      "file": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/ReedSolomon.lean",
+      "decl": "theorem rs_lambda_superpoly_extension",
+      "sha256": "18e8f1d3460533e5ec0882d4bb097e2de031faf44350962834b154343636405c"
+    },
+    {
+      "file": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/ReedSolomon.lean",
+      "decl": "theorem rs_random_domain_lambda_le",
+      "sha256": "18e8f1d3460533e5ec0882d4bb097e2de031faf44350962834b154343636405c"
+    },
+    {
+      "file": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean",
+      "decl": "theorem exists_rs_epsCa_large_near_capacity",
+      "sha256": "2f25b45705dd1b152519a953d1f2cfec94c14d48b46db97dad39a7464a9f728b"
+    },
+    {
+      "file": "ArkLib/OracleReduction/Composition/Sequential/Append/Security.lean",
+      "decl": "theorem append_rbrKnowledgeSoundness",
+      "sha256": "d20a532a3476f1703b500418f0796d40d78de8ed693e30b6f9d374a73d20cd71"
+    },
+    {
+      "file": "ArkLib/OracleReduction/Composition/Sequential/Append/Security.lean",
+      "decl": "theorem append_rbrSoundness",
+      "sha256": "d20a532a3476f1703b500418f0796d40d78de8ed693e30b6f9d374a73d20cd71"
+    },
+    {
+      "file": "ArkLib/OracleReduction/Security/Implications.lean",
+      "decl": "theorem srKnowledgeSoundness_addSalt_implies_srKnowledgeSoundness_original",
+      "sha256": "74fedb29a46b0c3752df4c98f177430fb5b869be34355b6e56d44d53ab41c1f5"
+    },
+    {
+      "file": "ArkLib/OracleReduction/Security/Implications.lean",
+      "decl": "theorem srKnowledgeSoundness_implies_knowledgeSoundness",
+      "sha256": "74fedb29a46b0c3752df4c98f177430fb5b869be34355b6e56d44d53ab41c1f5"
+    },
+    {
+      "file": "ArkLib/OracleReduction/Security/Implications.lean",
+      "decl": "theorem srSoundness_addSalt_implies_srSoundness_original",
+      "sha256": "74fedb29a46b0c3752df4c98f177430fb5b869be34355b6e56d44d53ab41c1f5"
+    },
+    {
+      "file": "ArkLib/OracleReduction/Security/Implications.lean",
+      "decl": "theorem srSoundness_implies_soundness",
+      "sha256": "74fedb29a46b0c3752df4c98f177430fb5b869be34355b6e56d44d53ab41c1f5"
+    },
+    {
+      "file": "ArkLib/ProofSystem/Spartan/Basic.lean",
+      "decl": "def oracleReduction.firstChallenge",
+      "sha256": "690fa846d88b68ec40fb19ebef74ec41bab4a62b0369c313a903ac35638af55d",
+      "declaration": "Spartan.Spec.oracleReduction.firstChallenge",
+      "command_sha256": "107a2b9b9d2bcb889b8d386011f53e8f25e97eb74c3bf58cd692598edd9a15a1"
+    },
+    {
+      "file": "ArkLib/ProofSystem/Spartan/Basic.lean",
+      "decl": "def oracleReduction.linearCombination",
+      "sha256": "690fa846d88b68ec40fb19ebef74ec41bab4a62b0369c313a903ac35638af55d",
+      "declaration": "Spartan.Spec.oracleReduction.linearCombination",
+      "command_sha256": "b78840e445460df76721cfba67feef79b561309e8cc928a2869bf32d1825251b"
+    },
+    {
+      "file": "ArkLib/ProofSystem/Spartan/Basic.lean",
+      "decl": "def oracleReduction.sendEvalClaim",
+      "sha256": "690fa846d88b68ec40fb19ebef74ec41bab4a62b0369c313a903ac35638af55d",
+      "declaration": "Spartan.Spec.oracleReduction.sendEvalClaim",
+      "command_sha256": "eb7474bf77f8ae3cde75f172e71e947286695a34dba775078619930e14fe0382"
+    },
+    {
+      "file": "ArkLib/ProofSystem/Sumcheck/Spec/SingleRound.lean",
+      "decl": "theorem oracleVerifier_rbrKnowledgeSoundness",
+      "sha256": "7359336fa7ee5cf889019e965e8d3fe6d16041984a3d96ab5041a4004910f3ad"
+    },
+    {
+      "file": "ArkLib/ProofSystem/Sumcheck/Spec/SingleRound.lean",
+      "decl": "theorem verifier_rbrKnowledgeSoundness",
+      "sha256": "7359336fa7ee5cf889019e965e8d3fe6d16041984a3d96ab5041a4004910f3ad"
+    }
+  ]
 }

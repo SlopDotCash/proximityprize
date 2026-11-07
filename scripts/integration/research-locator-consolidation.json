@@ -1,0 +1,32 @@
+{
+  "downstream_revision": "883e99d61e51264327b5fee859732d047f7d7038",
+  "implementation_owner": "Research/ProximityPrize/Frontier/_P1RateQuarterCommonFactorConstruction.lean",
+  "compatibility_module": "Research/ProximityPrize/Frontier/_P1RateQuarterCommonFactorConcreteLocatorAttempt.lean",
+  "pre_consolidation_owner_sha256": "2d88e5ed8b322a2a3918bed41435f8f70b0a9f552b2742595377411610c55c2d",
+  "pre_consolidation_compatibility_sha256": "ca953db5aa05589e7d96ae120ffc86d0ff2ed59b1d740e359969eef8b32de3df",
+  "shared_public_names": [
+    "ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorConstruction.concreteCommonLocator_eval_zero",
+    "ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorConstruction.concreteCommonLocator_eval_ne_zero",
+    "ArkLib.ProximityGap.Frontier.P1RateQuarterCommonFactorConstruction.commonLocatorResidual"
+  ],
+  "comparison": "The original direct product is definitionally the existing domainRootProduct domain commonRoots. The construction owner proves the same zero/nonzero evaluation propositions and the same residual using symbolic finite-product lemmas; the attempted copy supplied no stronger hypothesis or conclusion.",
+  "retained_compatibility_names": [
+    "concreteCommonLocator (reducible alias of concreteCommonLocatorPolynomial)",
+    "concreteCommonLocator_natDegree_le (corollary of the owner exact degree formula)"
+  ],
+  "private_cross_file_accesses_requiring_remap": [],
+  "external_named_consumers": "No other source references the two attempted-only compatibility names. Existing evaluation/residual consumers already import the construction owner.",
+  "validation": "Actual Construction.olean is not available yet. Direct import check is blocked at that import; root package build is required. No large missing-Research source composition is treated as a receipt.",
+  "current_validation": {
+    "status": "package_validation_passed",
+    "receipt": "scripts/integration/final-validation.json",
+    "check": "default_libraries",
+    "source_commit": "7483975d251b3549313243ea9d5ada700af121f9",
+    "source_snapshot_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+    "resolved_package_pending_paths": [],
+    "superseded_historical_status_paths": [
+      "/validation"
+    ],
+    "scope": "Current checked-in sources passed the final four-library package build. Original status text and all earlier receipts remain historical snapshots, not current pending claims."
+  }
+}

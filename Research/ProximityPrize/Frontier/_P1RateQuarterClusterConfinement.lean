@@ -246,7 +246,7 @@ theorem six_sets_impossible_param (θ : ℕ)
   have hCS : (∑ i, d i) ^ 2 ≤ N * ∑ i, d i ^ 2 := by
     have h := sq_sum_le_card_mul_sum_sq
       (s := (Finset.univ : Finset (Fin N))) (f := fun i => d i)
-    simpa [Finset.card_univ] using h
+    simpa [Finset.card_univ, N] using h
   have hS0 : 6 * θ ≤ ∑ i, d i := by
     rw [hswap]
     have h6 : ∑ _π : Fin 6, θ ≤ ∑ π, (A π).card :=

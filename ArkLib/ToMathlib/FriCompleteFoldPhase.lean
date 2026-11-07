@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.ToMathlib.FriCompleteFinalRound
-import ArkLib.ProofSystem.Fri.Spec.Completeness
+import ProximityPrize.Extensions.ProofSystem.Fri.Spec.Completeness
 import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 import ArkLib.OracleReduction.Composition.Sequential.SeqComposePerfectCompletenessChallengeThreaded
 
@@ -18,7 +18,7 @@ via the n-ary challenge-seam `seqCompose` keystone
 
 Assembly plan (see the campaign notes): (i) `perfectCompleteness` is monotone in the output
 relation (`perfectCompleteness_mono_relOut` below); (ii) the round relations chain through the
-`j`-indexed family `foldChainRel` (the proximity + witness-binding clauses of
+`j`-indexed family `foldChainRel` (the canonical witness-proximity clause of
 `FoldPhase.inputRelation`, generic in the round index); (iii) each round's output relation
 entails the next round's input relation (forgetting the folding-consistency clause);
 (iv–vi) the keystone application and the final binary challenge-seam append.
@@ -38,7 +38,7 @@ If every output in `relOut` is also in `relOut'`, perfect completeness w.r.t. `r
 implies perfect completeness w.r.t. `relOut'`. Candidate for upstreaming to
 `OracleReduction/Security/Basic.lean`. -/
 theorem _root_.Reduction.perfectCompleteness_mono_relOut
-    {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+    {ι : Type} {oSpec : OracleSpec ι}
     {σ' : Type} {init' : ProbComp σ'} {impl' : QueryImpl oSpec (StateT σ' ProbComp)}
     {StmtIn WitIn StmtOut WitOut : Type} {m : ℕ} {pSpec : ProtocolSpec m}
     [∀ j, SampleableType (pSpec.Challenge j)]
@@ -49,18 +49,18 @@ theorem _root_.Reduction.perfectCompleteness_mono_relOut
     R.perfectCompleteness init' impl' relIn relOut' := by
   intro stmtIn witIn hmem
   refine le_trans (h stmtIn witIn hmem) ?_
-  refine probEvent_mono ?_
-  rintro ⟨⟨_, prvOut, witOut⟩, stmtOut⟩ _ ⟨hrel, hagree⟩
+  refine prEvent_mono _ _ _ ?_
+  rintro ⟨⟨_, prvOut, witOut⟩, stmtOut⟩ ⟨hrel, hagree⟩
   exact ⟨hsub hrel, hagree⟩
 
 /-- **Oracle-level output-relation monotonicity for `perfectCompleteness`.** Definitionally the
 `toReduction` statement of `Reduction.perfectCompleteness_mono_relOut`. -/
 theorem _root_.OracleReduction.perfectCompleteness_mono_relOut
-    {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+    {ι : Type} {oSpec : OracleSpec ι}
     {σ' : Type} {init' : ProbComp σ'} {impl' : QueryImpl oSpec (StateT σ' ProbComp)}
     {StmtIn WitIn StmtOut WitOut : Type}
     {ιₛᵢ : Type} {OStmtIn : ιₛᵢ → Type} [∀ j, OracleInterface (OStmtIn j)]
-    {ιₛₒ : Type} {OStmtOut : ιₛₒ → Type}
+    {ιₛₒ : Type} {OStmtOut : ιₛₒ → Type} [∀ j, OracleInterface (OStmtOut j)]
     {m : ℕ} {pSpec : ProtocolSpec m}
     [∀ j, OracleInterface (pSpec.Message j)]
     [∀ j, SampleableType (pSpec.Challenge j)]
@@ -74,12 +74,18 @@ theorem _root_.OracleReduction.perfectCompleteness_mono_relOut
 
 /-! ### The j-indexed round-chaining relation -/
 
-/-- The **round-chaining relation** at index `j : Fin (k+1)`: the round-`j` codeword is δ-close
-to the round-`j` Reed–Solomon code AND is the evaluation of the witness polynomial. This is the
-body of `FoldPhase.inputRelation` made generic in the round index (the input relation at round
-`i` is exactly `foldChainRel i.castSucc`; each round's output relation entails
-`foldChainRel i.succ` by forgetting the folding-consistency clause). -/
+/-- The canonical round-chaining relation: the latest oracle is within relative Hamming distance
+`δ` of its witness polynomial. The older exact-witness/positive-radius definition is preserved in
+the migration audit; canonical FRI admits proximity inputs and does not require `0 < δ`. -/
 def foldChainRel (j : Fin (k + 1)) (_cond : ∑ i, (s i).1 ≤ n) (δ : ℝ≥0) :
+    Set
+      ((Statement F j × (∀ j', OracleStatement s ω j j')) × Witness F s d j.castSucc) :=
+  fun ⟨⟨_, ostmt⟩, w⟩ =>
+    Code.relHammingDist (ostmt (Fin.last j.val)) (fun x => w.1.eval x.1) ≤ δ
+
+/-- Historical exact-chain data, retained separately from the canonical proximity relation.
+It records a positive radius, Reed–Solomon proximity and exact witness evaluation. -/
+def Compatibility.exactFoldChainRel (j : Fin (k + 1)) (_cond : ∑ i, (s i).1 ≤ n) (δ : ℝ≥0) :
     Set
       ((Statement F j × (∀ j', OracleStatement s ω j j')) × Witness F s d j.castSucc) :=
   fun ⟨⟨_, ostmt⟩, w⟩ =>
@@ -93,6 +99,28 @@ def foldChainRel (j : Fin (k + 1)) (_cond : ∑ i, (s i).1 ≤ n) (δ : ℝ≥0)
         (2 ^ ((∑ j', (s j').1) - N) * d.1) : Set _)) ≤ ↑δ) ∧
     (∀ (idx : Fin (2 ^ (n - N))), f idx = w.1.eval (dom idx : F))
 
+
+/-- Exact-chain data imply the canonical witness-proximity relation. No converse is asserted. -/
+lemma Compatibility.exactFoldChainRel_subset_foldChainRel
+    (j : Fin (k + 1)) (cond : ∑ i, (s i).1 ≤ n) (δ : ℝ≥0) :
+    Compatibility.exactFoldChainRel (s := s) (d := d) (ω := ω) j cond δ ⊆
+      foldChainRel (s := s) (d := d) j cond δ := by
+  rintro ⟨⟨stmt, oracles⟩, wit⟩ h
+  have heval := h.2
+  have horacle : oracles (Fin.last j.val) = fun x => wit.1.eval x.1 := by
+    funext x
+    obtain ⟨idx, _, hidx⟩ := Finset.mem_image.mp x.property
+    have hx : x = ⟨(ω.subdomain
+        (∑ j' ∈ finRangeTo (k + 1) (Fin.last j.val).val, (s j').1)) idx,
+        Finset.mem_image.mpr ⟨idx, Finset.mem_univ _, rfl⟩⟩ := Subtype.ext hidx.symm
+    rw [hx]
+    exact heval idx
+  change Code.relHammingDist (oracles (Fin.last j.val)) (fun x => wit.1.eval x.1) ≤ δ
+  rw [horacle]
+  unfold Code.relHammingDist
+  erw [hammingDist_self]
+  simp
+
 /-- `FoldPhase.inputRelation` at round `i` is the chaining relation at `i.castSucc`. -/
 lemma inputRelation_eq_foldChainRel (i : Fin k) (cond : ∑ i, (s i).1 ≤ n) (δ : ℝ≥0) :
     FoldPhase.inputRelation s (ω := ω) d i cond δ
@@ -103,8 +131,7 @@ lemma inputRelation_eq_foldChainRel (i : Fin k) (cond : ∑ i, (s i).1 ≤ n) (�
 lemma outputRelation_subset_foldChainRel (i : Fin k) (cond : ∑ i, (s i).1 ≤ n) (δ : ℝ≥0) :
     FoldPhase.outputRelation s (ω := ω) d i cond δ
       ⊆ foldChainRel (s := s) (d := d) i.succ cond δ := by
-  rintro ⟨⟨stmt, ostmt⟩, w⟩ ⟨h1, _h2, h3⟩
-  exact ⟨h1, h3⟩
+  exact fun _ h => h
 
 /-! ### n-ary composition of the non-final folding rounds -/
 
@@ -179,22 +206,6 @@ theorem reductionFold_perfectCompleteness
   haveI : ∀ j, Inhabited
       (((pSpecFold k s (ω := ω)) ++ₚ (FinalFoldPhase.pSpec F)).Challenge j) :=
     appendChallenge_inhabited _ _
-  haveI : ([]ₒ + [(pSpecFold k s (ω := ω)).Challenge]ₒ).Fintype := by
-    haveI := challengeOracle_fintype (pSpecFold k s (ω := ω)); infer_instance
-  haveI : ([]ₒ + [(pSpecFold k s (ω := ω)).Challenge]ₒ).Inhabited := by
-    haveI := challengeOracle_inhabited (pSpecFold k s (ω := ω)); infer_instance
-  haveI : ([]ₒ + [(FinalFoldPhase.pSpec F).Challenge]ₒ).Fintype := by
-    haveI := challengeOracle_fintype (FinalFoldPhase.pSpec F); infer_instance
-  haveI : ([]ₒ + [(FinalFoldPhase.pSpec F).Challenge]ₒ).Inhabited := by
-    haveI := challengeOracle_inhabited (FinalFoldPhase.pSpec F); infer_instance
-  haveI : ([]ₒ +
-      [((pSpecFold k s (ω := ω)) ++ₚ (FinalFoldPhase.pSpec F)).Challenge]ₒ).Fintype := by
-    haveI := challengeOracle_fintype ((pSpecFold k s (ω := ω)) ++ₚ (FinalFoldPhase.pSpec F))
-    infer_instance
-  haveI : ([]ₒ +
-      [((pSpecFold k s (ω := ω)) ++ₚ (FinalFoldPhase.pSpec F)).Challenge]ₒ).Inhabited := by
-    haveI := challengeOracle_inhabited ((pSpecFold k s (ω := ω)) ++ₚ (FinalFoldPhase.pSpec F))
-    infer_instance
   have h2' : (FinalFoldPhase.finalFoldOracleReduction (k := k) s d
         (ω := ω)).perfectCompleteness init impl
       (foldChainRel (s := s) (d := d) (Fin.last k) (round_bound dom_size_cond) δ)
@@ -241,3 +252,5 @@ end Fri.Spec.Completeness
 #print axioms Fri.Spec.Completeness.seqComposeFoldRounds_perfectCompleteness
 #print axioms Fri.Spec.Completeness.reductionFold_perfectCompleteness
 #print axioms Fri.Spec.Completeness.foldPhasePerfectCompletenessStatement_holds
+
+#print axioms Fri.Spec.Completeness.Compatibility.exactFoldChainRel_subset_foldChainRel

@@ -58,7 +58,7 @@ namespace Sumcheck.Spec
 
 variable {R : Type} [CommSemiring R] [SampleableType R] [DecidableEq R] [Fintype R] [Inhabited R]
   {n : ℕ} {deg : ℕ} {m : ℕ} {D : Fin m ↪ R}
-  {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+  {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
   {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
 
 /-- **The binary verifier-fusion named residual is discharged for every oracle spec.**
@@ -71,7 +71,7 @@ introducing all the type / protocol / interface data and applying that keystone.
 theorem binaryVerifierFusion_proof (oSpec : OracleSpec ι) :
     OracleVerifier.BinaryVerifierFusion oSpec := by
   intro Stmt₁ ιₛ₁ OStmt₁ Oₛ₁ Stmt₂ ιₛ₂ OStmt₂ Oₛ₂ Stmt₃ ιₛ₃ OStmt₃ Oₛ₃
-    p q pSpec₁ pSpec₂ Oₘ₁ Oₘ₂ V₁ c₁ V₂
+    p q pSpec₁ pSpec₂ Oₘ₁ Oₘ₂ V₁ V₂
   exact OracleReduction.oracleVerifier_append_toVerifier
     (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁ V₂
 

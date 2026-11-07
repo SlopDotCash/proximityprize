@@ -72,7 +72,6 @@ theorem gauss_ratio (hfam : SubgroupDualFamily G m lam) (hχ : IsMulCharC χ)
         ⟨fun y₁ y₂ h => by
             exact add_left_cancel h,
           fun s => ⟨s - x, by ring⟩⟩ _ _ (fun y => ?_)
-      dsimp only
       rw [show x + y - x = y from by ring]
     rw [Finset.sum_congr rfl (fun x _ => hx x), Finset.sum_comm]
     refine Finset.sum_congr rfl (fun s _ => ?_)

@@ -68,17 +68,17 @@ theorem stirTailReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) (M : �
         = support (liftM q : OracleComp []ₒ β)) :
     (stirTailReduction φ deg M).perfectCompleteness init impl
       (stirOStmtRel F φ deg δ) (stirOStmtRel (F × F) φ deg δ) := by
-  haveI : (([]ₒ : OracleSpec PEmpty)).Inhabited := { inhabited_B := fun i => nomatch i }
-  haveI : (([]ₒ : OracleSpec PEmpty)).Fintype := { fintype_B := fun i => nomatch i }
+  haveI : ∀ q, Inhabited (([]ₒ : OracleSpec.{0, 0} PEmpty).Range q) := fun q => nomatch q
+  haveI : ∀ q, Fintype (([]ₒ : OracleSpec.{0, 0} PEmpty).Range q) := fun q => nomatch q
   haveI := ProtocolSpec.appendCombinedOracle_fintype []ₒ
     (ProtocolSpec.seqCompose (fun _ : Fin M => pSpec3 ι F)) (pSpecFinal ι F)
   haveI := ProtocolSpec.appendCombinedOracle_inhabited []ₒ
     (ProtocolSpec.seqCompose (fun _ : Fin M => pSpec3 ι F)) (pSpecFinal ι F)
   haveI := ProtocolSpec.seqComposeCombinedOracle_fintype []ₒ (fun _ : Fin M => pSpec3 ι F)
   haveI := ProtocolSpec.seqComposeCombinedOracle_inhabited []ₒ (fun _ : Fin M => pSpec3 ι F)
-  haveI : ([]ₒ + [(pSpecFinal ι F).Challenge]ₒ).Fintype := by
+  haveI : ∀ q, Fintype (([]ₒ + [(pSpecFinal ι F).Challenge]ₒ).Range q) := by
     haveI := challengeOracle_fintype (pSpecFinal ι F); infer_instance
-  haveI : ([]ₒ + [(pSpecFinal ι F).Challenge]ₒ).Inhabited := by
+  haveI : ∀ q, Inhabited (([]ₒ + [(pSpecFinal ι F).Challenge]ₒ).Range q) := by
     haveI := challengeOracle_inhabited (pSpecFinal ι F); infer_instance
   have hDirSeam : ((ProtocolSpec.seqCompose (fun _ : Fin M => pSpec3 ι F)) ++ₚ pSpecFinal ι F).dir
       (⟨Fin.vsum (fun _ : Fin M => 3), by omega⟩

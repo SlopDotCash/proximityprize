@@ -173,7 +173,6 @@ theorem card_exclusions (hm : 2 ≤ m) {d : ℕ} (hd : d % 2 = 1) (i : ZMod (2 ^
       -- h = d + h forces d = 0
       apply hd0
       have h2 := congrArg (· + ((2 ^ (m - 1) : ℕ) : ZMod (2 ^ m))) h'
-      simp only at h2
       rw [hhh, add_assoc, hhh, add_zero] at h2
       exact h2.symm
   · -- i ∉ {i + h, i + d, i + (d + h)}

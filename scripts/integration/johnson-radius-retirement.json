@@ -1,0 +1,32 @@
+{
+  "source": "ArkLib/Data/CodingTheory/JohnsonBound/FamilyRefutationComplete.lean",
+  "downstream_revision": "883e99d61e51264327b5fee859732d047f7d7038",
+  "canonical_owner": "ArkLib/Data/CodingTheory/JohnsonBound/Family.lean",
+  "canonical_revision": "94fb4cdd70c2ea061037bf6337611300d71c4e88",
+  "reason": "The old diagnostics used the obsolete reciprocal factor ell/(ell-1). Canonical Jqell uses (ell-1)/ell and the Johnson theorem is proved; those diagnostics are false with the authoritative definition.",
+  "retired_declarations": [
+    {
+      "name": "JohnsonBound.JqlRefutation.Jqℓ_eq_half",
+      "kind": "theorem",
+      "source_command": "/-- **The Johnson radius collapses to `1/2` at `q = ℓ = 2`, `δ = 1/2`.**\nThe radicand `1 - (2/1)·(2/1)·(1/2) = -1 < 0`, so `√(-1) = 0` and\n`Jqℓ 2 2 (1/2) = (1 - 1/2)·(1 - 0) = 1/2`. -/\ntheorem Jqℓ_eq_half : Jqℓ (2 : ℚ) (2 : ℚ) ((1 : ℚ) / 2) = (1 / 2 : ℝ) := by\n  norm_num [Jqℓ, Real.sqrt_eq_zero_of_nonpos]\n\n"
+    },
+    {
+      "name": "JohnsonBound.JqlRefutation.johnson_bound_lambda_le_ell_false",
+      "kind": "theorem",
+      "source_command": "/-- **ABF26 Theorem 3.2 (`johnson_bound_lambda_le_ell`) is FALSE as stated.**\n\nFor the concrete code `C = { ![0,0], ![0,1], ![1,0] } ⊆ (Fin 2 → Fin 2)` and `ℓ = 2`, the\nconclusion `Lambda C (Jqℓ q ℓ δ_min) ≤ ℓ` FAILS: the left side is `≥ 3` while the right side\nis `2`.  The failure is intrinsic to the unconditioned statement — `δ_min = 1/2` drives the\nsquare-root argument of `Jqℓ` negative, `Real.sqrt` clamps it to `0`, and the Johnson\n\"radius\" collapses to `1/2`, a ball that swallows the entire code.  The theorem needs a\nproximity hypothesis (`(q/(q-1))·(ℓ/(ℓ-1))·δ_min ≤ 1`) that the present statement lacks. -/\ntheorem johnson_bound_lambda_le_ell_false :\n    ¬ (let q : ℚ := Fintype.card α\n       let δ_min : ℚ := Code.minDist C / Fintype.card ι\n       Lambda C (Jqℓ q 2 δ_min) ≤ (2 : ℕ∞)) := by\n  -- the radius at this instance is exactly `1/2`: `q = 2`, `minDist C = 1`, `card ι = 2`.\n  have hradius :\n      Jqℓ (Fintype.card α : ℚ) 2 ((Code.minDist C : ℚ) / Fintype.card ι) = (1 / 2 : ℝ) := by\n    have hq : (Fintype.card α : ℚ) = 2 := by rw [show Fintype.card α = 2 from by decide]; rfl\n    have hmd : Code.minDist C = 1 := minDist_C\n    rw [hq, hmd]\n    -- goal: `Jqℓ 2 2 (↑1 / 2) = 1/2`; same radicand collapse as `Jqℓ_eq_half`.\n    norm_num [Jqℓ, Real.sqrt_eq_zero_of_nonpos]\n  simp only [hradius]\n  intro hle\n  exact absurd (le_trans three_le_Lambda hle) (by decide)\n\n"
+    },
+    {
+      "name": "JohnsonBound.JqlRefutation.upstream_theorem_is_inconsistent",
+      "kind": "theorem",
+      "source_command": "/-- **Direct contradiction with the named statement.**  If `johnson_bound_lambda_le_ell` (ABF26\nT3.2, the refuted `Prop`-valued predicate in `Family.lean`) were a theorem, instantiating it at\nthe witness `C`, `ℓ = 2`, `(le_refl 2 : 2 ≤ 2)` would prove exactly the proposition refuted by\n`johnson_bound_lambda_le_ell_false`.  This is packaged as an implication so the file does not\nitself assume the (false) upstream statement: any honest proof of the hypothesis yields `False`. -/\ntheorem upstream_theorem_is_inconsistent\n    (johnson_bound_lambda_le_ell :\n      ∀ {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]\n        {α : Type} [Fintype α] [DecidableEq α]\n        (C : Set (ι → α)) (ℓ : ℕ), 2 ≤ ℓ →\n        (let q : ℚ := Fintype.card α\n         let δ_min : ℚ := Code.minDist C / Fintype.card ι\n         Lambda C (Jqℓ q ℓ δ_min) ≤ (ℓ : ℕ∞))) :\n    False :=\n  johnson_bound_lambda_le_ell_false (johnson_bound_lambda_le_ell C 2 (le_refl 2))\n\n-- Axiom audit (must be exactly `[propext, Classical.choice, Quot.sound]`, no `sorryAx`).\n"
+    }
+  ],
+  "preserved": "All finite three-codeword, distance, point-list, and cardinality facts remain. New corrected-radius and canonical-Johnson-theorem regression facts replace the obsolete diagnostic.",
+  "live_lean_callers_of_retired_names": [],
+  "other_live_Jqell_sources_reviewed": [
+    "ArkLib/Data/CodingTheory/JohnsonBound/Family.lean",
+    "ProximityPrize/Extensions/Data/CodingTheory/JohnsonBound/Family.lean",
+    "ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges/ListDecoding.lean"
+  ],
+  "note": "Generated KB declaration and dedup indexes may mention the historical retired names until normal regeneration; they are not live Lean dependencies."
+}

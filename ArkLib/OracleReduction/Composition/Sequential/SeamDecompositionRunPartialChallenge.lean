@@ -112,7 +112,6 @@ theorem append_continueFromTo_right_challenge_partial (hn : 0 < n)
     rw [continueFromTo_self]
     apply heq_of_eq
     simp only [OracleComp.liftComp_pure, map_pure]
-    refine congrArg pure (Prod.ext rfl (eq_of_heq ((cast_heq _ _).trans (cast_heq _ _).symm)))
   · -- k ≥ 2 (so n ≥ 2): fold the `k-1` interior rounds via `append_continueFromTo_right_interior`.
     have eStart : ((⟨m, by omega⟩ : Fin (m + n)).succ : Fin (m + n + 1))
         = (Fin.natAdd m (⟨1, by omega⟩ : Fin n)).castSucc := by ext; simp

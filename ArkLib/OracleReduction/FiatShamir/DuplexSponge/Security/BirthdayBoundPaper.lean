@@ -58,11 +58,11 @@ theorem probEvent_honestBad_le_probEvent_EPaper
     {β : Type} (game : ProbComp β)
     (tr : β → QueryLog (duplexSpongeChallengeOracle StmtIn U))
     (st : β → CanonicalSpongeState U) :
-    Pr[ fun z => ∃ S : Backtrack.S_BT (tr z) (st z),
+    Pr{let z ← (game)}[∃ S : Backtrack.S_BT (tr z) (st z),
         E_inv_honest (tr z) (st z) S ∨ E_fork_honest (tr z) (st z) S
-          ∨ E_time_honest (tr z) (st z) S | game]
-      ≤ Pr[ fun z => EPaper (tr z) | game] := by
-  refine probEvent_mono'' fun z hz => ?_
+          ∨ E_time_honest (tr z) (st z) S]
+      ≤ Pr{let z ← (game)}[EPaper (tr z)] := by
+  refine prEvent_mono _ _ _ fun z hz => ?_
   obtain ⟨S, hS⟩ := hz
   by_contra hE
   rcases hS with h | h | h
@@ -92,11 +92,10 @@ the capacity-collision/landing families counted by the `7T²` numerator
 def Lemma5_8EagerPaperResidual : Prop :=
   ∀ {α : Type} (P : OracleComp (duplexSpongeChallengeOracle StmtIn U) α) (T : ℕ),
     IsTotalQueryBound P T →
-    (Pr[ fun z : α × QueryLog (duplexSpongeChallengeOracle StmtIn U) => EPaper z.2 |
-      do
+    (Pr{let z ← (do
         let c ← (D_DS StmtIn U).sample
         simulateQ ((D_DS StmtIn U).toImpl c)
-          ((simulateQ loggingOracle P).run)]).toReal
+          ((simulateQ loggingOracle P).run))}[EPaper z.2]).toReal
       ≤ lemma5_8Bound U T
 
 variable {StmtIn U}
@@ -110,16 +109,14 @@ theorem honestBad_birthday_of_paperResidual
     (h58 : Lemma5_8EagerPaperResidual StmtIn U)
     {α : Type} (P : OracleComp (duplexSpongeChallengeOracle StmtIn U) α) (T : ℕ)
     (hT : IsTotalQueryBound P T) (st₀ : CanonicalSpongeState U) :
-    (Pr[ fun z : α × QueryLog (duplexSpongeChallengeOracle StmtIn U) =>
-        ∃ S : Backtrack.S_BT z.2 st₀,
-          E_inv_honest z.2 st₀ S ∨ E_fork_honest z.2 st₀ S ∨ E_time_honest z.2 st₀ S |
-      do
+    (Pr{let z ← (do
         let c ← (D_DS StmtIn U).sample
         simulateQ ((D_DS StmtIn U).toImpl c)
-          ((simulateQ loggingOracle P).run)]).toReal
+          ((simulateQ loggingOracle P).run))}[∃ S : Backtrack.S_BT z.2 st₀,
+          E_inv_honest z.2 st₀ S ∨ E_fork_honest z.2 st₀ S ∨ E_time_honest z.2 st₀ S]).toReal
       ≤ lemma5_8Bound U T := by
   refine le_trans (ENNReal.toReal_mono
-    (ne_top_of_le_ne_top ENNReal.one_ne_top probEvent_le_one) ?_) (h58 P T hT)
+    (ne_top_of_le_ne_top ENNReal.one_ne_top (prEvent_le_one _)) ?_) (h58 P T hT)
   exact probEvent_honestBad_le_probEvent_EPaper _
     (fun z : α × QueryLog (duplexSpongeChallengeOracle StmtIn U) => z.2) (fun _ => st₀)
 
@@ -133,13 +130,11 @@ theorem honestBad_claim5_21Bound_of_paperResidual
     (tₕ tₚ tₚᵢ L : ℕ)
     (hT : IsTotalQueryBound P (tₕ + 1 + tₚ + L + tₚᵢ))
     (st₀ : CanonicalSpongeState U) :
-    (Pr[ fun z : α × QueryLog (duplexSpongeChallengeOracle StmtIn U) =>
-        ∃ S : Backtrack.S_BT z.2 st₀,
-          E_inv_honest z.2 st₀ S ∨ E_fork_honest z.2 st₀ S ∨ E_time_honest z.2 st₀ S |
-      do
+    (Pr{let z ← (do
         let c ← (D_DS StmtIn U).sample
         simulateQ ((D_DS StmtIn U).toImpl c)
-          ((simulateQ loggingOracle P).run)]).toReal
+          ((simulateQ loggingOracle P).run))}[∃ S : Backtrack.S_BT z.2 st₀,
+          E_inv_honest z.2 st₀ S ∨ E_fork_honest z.2 st₀ S ∨ E_time_honest z.2 st₀ S]).toReal
       ≤ claim5_21Bound U tₕ tₚ tₚᵢ L := by
   simpa [BirthdayBound.lemma5_8Bound_eq_claim5_21Bound] using
     honestBad_birthday_of_paperResidual (StmtIn := StmtIn) (U := U) h58 P
@@ -160,14 +155,16 @@ theorem lemma5_8EagerPaperResidual_of_lazy
     [Fintype (CanonicalSpongeState U)]
     (h : ∀ {α : Type} (P : OracleComp (duplexSpongeChallengeOracle StmtIn U) α) (T : ℕ),
       IsTotalQueryBound P T →
-      (Pr[ fun z : α × QueryLog (duplexSpongeChallengeOracle StmtIn U) => EPaper z.2 |
-        (simulateQ DuplexSpongeFS.EagerLazyDS.lazyDSImpl
+      (Pr{let z ← ((simulateQ DuplexSpongeFS.EagerLazyDS.lazyDSImpl
           ((simulateQ loggingOracle P).run)).run' (∅, ([] :
-            List (CanonicalSpongeState U × CanonicalSpongeState U)))]).toReal
+            List (CanonicalSpongeState U × CanonicalSpongeState U))))}[EPaper z.2]).toReal
         ≤ lemma5_8Bound U T) :
     Lemma5_8EagerPaperResidual StmtIn U := by
   intro α P T hT
-  rw [DuplexSpongeFS.EagerLazyDS.probEvent_DDS_eq_lazyDSImpl]
+  have hbridge := DuplexSpongeFS.EagerLazyDS.probEvent_DDS_eq_lazyDSImpl
+    ((simulateQ loggingOracle P).run) (fun z => EPaper z.2)
+  simp only [probEvent] at hbridge
+  rw [hbridge]
   exact h P T hT
 
 end EagerInstantiation

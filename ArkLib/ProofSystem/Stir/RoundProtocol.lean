@@ -4,13 +4,13 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Eliza
 -/
 
-import ArkLib.OracleReduction.Basic
-import ArkLib.OracleReduction.VectorIOR
-import ArkLib.OracleReduction.Security.Basic
-import ArkLib.Data.CodingTheory.Basic.RelativeDistance
-import ArkLib.Data.CodingTheory.ReedSolomon
-import ArkLib.ProofSystem.Stir.Combine
-import ArkLib.ProofSystem.Stir.MainThm
+import ProximityPrize.Extensions.OracleReduction.Basic
+import ProximityPrize.Extensions.OracleReduction.VectorIOR
+import ProximityPrize.Extensions.OracleReduction.Security.Basic
+import ProximityPrize.Extensions.Data.CodingTheory.Basic.RelativeDistance
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.ProofSystem.Stir.Combine
+import ProximityPrize.Extensions.ProofSystem.Stir.MainThm
 
 /-!
 # STIR fold-and-combine round: a real protocol object
@@ -121,13 +121,15 @@ def stirRoundProver (φ : ι ↪ F) (deg : ℕ) :
 def stirRoundVerifier (φ : ι ↪ F) (deg : ℕ) :
     OracleVerifier []ₒ Unit (OStmt ι F) Unit (OStmt ι F) (pSpec ι F) where
   verify := fun _ _ => pure ()
-  embed := ⟨fun _ => Sum.inr ⟨1, pSpec_dir_one⟩, fun _ _ _ => rfl⟩
-  hEq := by
-    intro i
-    -- OStmt ι F () = (pSpec ι F).Message ⟨1, _⟩ = (ι → F)
-    show (ι → F) = (pSpec ι F).Message ⟨1, pSpec_dir_one⟩
-    unfold pSpec ProtocolSpec.Message
-    simp
+  outputOracle := .inl {
+    embed := ⟨fun _ => Sum.inr ⟨1, pSpec_dir_one⟩, fun _ _ _ => rfl⟩
+    hEq := by
+      intro i
+      -- OStmt ι F () = (pSpec ι F).Message ⟨1, _⟩ = (ι → F)
+      show (ι → F) = (pSpec ι F).Message ⟨1, pSpec_dir_one⟩
+      unfold pSpec ProtocolSpec.Message
+      simp
+    outputInterface_heq := by intro u; cases u; rfl }
 
 /-- **The STIR fold-round oracle reduction** — a real, sorry-free STIR protocol object. -/
 def stirRoundReduction (φ : ι ↪ F) (deg : ℕ) :

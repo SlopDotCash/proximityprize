@@ -160,7 +160,6 @@ theorem deriveTranscriptSRAux_logged_right_entry
             simp at hDir
         have hpure : lb = [] := by
           revert hlb
-          simp only [simulateQ_pure]
           intro hlb
           simp only [WriterT.run, support_pure, Set.mem_singleton_iff] at hlb
           exact congrArg Prod.snd hlb

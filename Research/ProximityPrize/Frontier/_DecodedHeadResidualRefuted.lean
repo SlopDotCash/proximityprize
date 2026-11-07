@@ -3,7 +3,7 @@ Copyright (c) 2026 Mikhail Izhutkin. All rights reserved.
 Released under MIT and Apache 2.0 licenses.
 Authors: Mikhail (mashingaan)
 -/
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 import Research.ProximityPrize.Frontier._SecondDescentStuckResidualRefuted
 
 /-!

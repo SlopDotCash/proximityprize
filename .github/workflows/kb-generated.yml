@@ -6,6 +6,7 @@ on:
     paths:
       - "ArkLib/**/*.lean"
       - "Research/**/*.lean"
+      - "ProximityPrize/**/*.lean"
       - "blueprint/src/references.bib"
       - "docs/kb/papers/**"
       - "docs/kb/sources/**"
@@ -19,6 +20,7 @@ on:
     paths:
       - "ArkLib/**/*.lean"
       - "Research/**/*.lean"
+      - "ProximityPrize/**/*.lean"
       - "blueprint/src/references.bib"
       - "docs/kb/_generated/**"
       - "docs/kb/papers/**"

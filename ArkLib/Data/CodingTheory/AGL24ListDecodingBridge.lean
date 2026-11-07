@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import Mathlib
-import ArkLib.Data.CodingTheory.ListDecodability
+import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
 import ArkLib.Data.CodingTheory.AGL24AgreementHypergraph
 
 /-!

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Code
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Code
 
 /-!
 # Iterated fold advances the intermediate evaluation polynomial (BCIKS Lemma 4.13, iterated)
@@ -60,6 +60,7 @@ def iteratedRefineCoeffs {i destIdx : Fin r} (steps : ℕ)
         _ ≤ 2 ^ (ℓ - destIdx.val) * 2 ^ steps := by
             apply Nat.mul_le_mul_right; omega⟩
 
+set_option backward.isDefEq.respectTransparency false in
 omit [CharP L 2] [DecidableEq 𝔽q] [NeZero ℓ] in
 /-- Single-step new-API version of `fold_advances_evaluation_poly_legacy`: folding the raw-eval
 oracle function of `intermediateEvaluationPoly i coeffs` (via the `{destIdx}`-keyed `fold`)
@@ -83,9 +84,9 @@ theorem fold_advances_evaluation_poly_step
     fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (destIdx := destIdx)
         (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le)
         (f := fun x => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
-          ⟨i.val, by omega⟩ coeffs).eval x.val) (r_chal := r_chal) =
+          i (by omega) coeffs).eval x.val) (r_chal := r_chal) =
       fun y => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
-        ⟨destIdx.val, by omega⟩ new_coeffs).eval y.val := by
+        destIdx h_destIdx_le new_coeffs).eval y.val := by
   classical
   -- Reduce `destIdx` to its canonical `⟨i+1, _⟩` form. The index bound is derived from
   -- `h_i_lt`/`h_ℓ_add_R_rate` alone (independent of `h_destIdx`), so `subst` is unobstructed.
@@ -103,11 +104,11 @@ theorem fold_advances_evaluation_poly_step
     (h_i_succ_lt := by simpa using h_i_succ_lt) (coeffs := coeffs) (r_chal := r_chal)
   simp only at h_legacy
   funext y
-  -- Unfold `fold`: at the canonical destination index `⟨i+1, _⟩` the cast collapses.
-  unfold fold
-  simp only [cast_eq]
-  -- Apply the legacy advance at the point `y` (now at the canonical index).
-  rw [h_legacy ⟨y.val, y.property⟩]
+  have hpoint := h_legacy ⟨y.val, y.property⟩
+  -- The canonical and broader legacy one-step fibers coincide at this bounded destination.
+  simp only [fold, fold_legacy, quotientFiber, qMap_total_fiber, one_ne_zero, ↓reduceDIte]
+    at hpoint ⊢
+  rw [hpoint]
   -- Reconcile the legacy `new_coeffs` with our `new_coeffs` pointwise.
   congr 1
   unfold intermediateEvaluationPoly
@@ -290,9 +291,9 @@ theorem iterated_fold_advances_evaluation_poly_nat
     iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (steps := steps)
         (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le)
         (f := fun x => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
-          ⟨i.val, by omega⟩ coeffs).eval x.val) (r_challenges := r_challenges) =
+          i (by omega) coeffs).eval x.val) (r_challenges := r_challenges) =
       fun y => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
-        ⟨destIdx.val, by omega⟩
+        destIdx h_destIdx_le
         (iteratedRefineCoeffs (𝓡 := 𝓡) (i := i) (destIdx := destIdx) steps h_destIdx h_destIdx_le
           coeffs r_challenges)).eval y.val := by
   induction steps generalizing destIdx with
@@ -303,7 +304,7 @@ theorem iterated_fold_advances_evaluation_poly_nat
     funext y
     rw [iterated_fold_zero_steps 𝔽q β (i := i) (h_destIdx := by simp only)
       (h_destIdx_le := h_destIdx_le)
-      (f := fun x => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate ⟨i.val, by omega⟩ coeffs).eval
+      (f := fun x => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate i (by omega) coeffs).eval
         x.val) (r_challenges := r_challenges) y]
     simp only [eq_mp_eq_cast, cast_eq]
     -- `iteratedRefineCoeffs 0 … = coeffs`, so the two eval-polys agree.
@@ -335,7 +336,7 @@ theorem iterated_fold_advances_evaluation_poly_nat
       exact this
     rw [iterated_fold_last 𝔽q β (i := i) (midIdx := mid) (destIdx := destIdx) (steps := n)
       (h_midIdx := h_mid_val) (h_destIdx := by omega) (h_destIdx_le := h_destIdx_le)
-      (f := fun x => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate ⟨i.val, by omega⟩ coeffs).eval
+      (f := fun x => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate i (by omega) coeffs).eval
         x.val) (r_challenges := r_challenges)]
     -- Apply the induction hypothesis to the inner `n`-fold (over `Fin.init r_challenges`).
     rw [ih (destIdx := mid) (h_destIdx := h_mid_val) (h_destIdx_le := h_mid_le)
@@ -368,9 +369,9 @@ theorem iterated_fold_advances_evaluation_poly
     iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (steps := steps.val)
         (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le)
         (f := fun x => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
-          ⟨i.val, by omega⟩ coeffs).eval x.val) (r_challenges := r_challenges) =
+          i (by omega) coeffs).eval x.val) (r_challenges := r_challenges) =
       fun y => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
-        ⟨destIdx.val, by omega⟩
+        destIdx h_destIdx_le
         (iteratedRefineCoeffs (𝓡 := 𝓡) (i := i) (destIdx := destIdx) steps.val h_destIdx
           h_destIdx_le coeffs r_challenges)).eval y.val :=
   iterated_fold_advances_evaluation_poly_nat 𝔽q β (i := i) (steps := steps.val)

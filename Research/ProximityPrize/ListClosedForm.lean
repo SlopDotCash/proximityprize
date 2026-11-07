@@ -11,7 +11,7 @@ import ArkLib.Data.CodingTheory.ProximityLeaves
 # Closed form for the §1 Grand List Decoding Challenge (Finding F6, list side)
 
 This file completes the *list-decoding* half of the F6 program by giving the closed-form
-decision of the `grandListDecodingChallenge` predicate for Reed-Solomon codes — the exact
+decision of the `continuousGrandListDecodingChallenge` predicate for Reed-Solomon codes — the exact
 analogue of the MCA-side `grandMCAChallenge_iff_choose_le`
 (`GrandChallengeRadiusOneExact.lean`).
 
@@ -33,7 +33,7 @@ Combining these with the radius-one collapse yields:
 
 * `grandListDecodingChallenge_iff_pow_le` — for `RS[F, domain, k]` with `k ≤ n`:
 
-    `grandListDecodingChallenge (RS) m ε* ↔ (q^(k·m) : ENNReal) ≤ ε* · q`
+    `continuousGrandListDecodingChallenge (RS) m ε* ↔ (q^(k·m) : ENNReal) ≤ ε* · q`
 
   the complete list-side analogue of `grandMCAChallenge_iff_choose_le`. (`Λ(C^⋈m, 1)` is the
   whole interleaved code `= q^(k·m)`, so the challenge collapses to a single inequality.)
@@ -140,6 +140,7 @@ theorem ncard_interleavedReedSolomonCode (domain : ι ↪ F) {k : ℕ}
   rw [ncard_interleavedCodeSet_eq_pow _ (Set.toFinite _),
     ncard_reedSolomonCode domain hk, ← pow_mul]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The radius-one maximised list size of the `m`-fold interleaved Reed-Solomon code with
 `k ≤ n` equals `q^(k·m)`: at radius one the list is the whole interleaved code
 (`Lambda_one_eq_ncard`), of cardinality `q^(k·m)`
@@ -163,7 +164,7 @@ size `Λ(C^⋈m, 1)`, which is the **whole interleaved code** (`Lambda_one_eq_nc
 `q^(k·m)` (`ncard_interleavedReedSolomonCode`). -/
 theorem grandListDecodingChallenge_iff_pow_le (domain : ι ↪ F) {k : ℕ}
     (hk : k ≤ Fintype.card ι) (m : ℕ) (ε_star : ℝ≥0) :
-    grandListDecodingChallenge (ReedSolomon.code domain k : Set (ι → F)) m ε_star ↔
+    continuousGrandListDecodingChallenge (ReedSolomon.code domain k : Set (ι → F)) m ε_star ↔
       ((Fintype.card F : ENNReal) ^ (k * m)) ≤
         ((ε_star : ENNReal) * (Fintype.card F : ENNReal)) := by
   rw [grandListDecodingChallenge_iff_Lambda_one,
@@ -222,7 +223,7 @@ prize predicate is false for every domain with `2 ≤ |ι|` and every `0 < m`: a
 the closed form gives the sharp contradiction `q^(k·m) ≤ 2⁻¹²⁸·q < q ≤ q^(k·m)`). -/
 theorem not_listDecodingPrize_of_closedForm (domain : ι ↪ F) {m : ℕ} (hm : 0 < m)
     (hι : 2 ≤ Fintype.card ι) :
-    ¬ GrandChallenges.listDecodingPrize domain m := by
+    ¬ GrandChallenges.continuousListDecodingPrize domain m := by
   intro hprize
   have h0 := hprize 0
   have hrate : prizeRates 0 = 1 / 2 := by unfold prizeRates; norm_num

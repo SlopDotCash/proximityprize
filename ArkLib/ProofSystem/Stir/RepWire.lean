@@ -7,7 +7,7 @@ Authors: ArkLib Contributors
 import ArkLib.ProofSystem.Stir.SubUnitRbr
 import ArkLib.ProofSystem.Stir.SwitchAttack
 import ArkLib.Data.Probability.ProductMarginal
-import ArkLib.ProofSystem.Component.SendWitness
+import ProximityPrize.Extensions.ProofSystem.Component.SendWitness
 
 set_option linter.style.longFile 0
 set_option linter.unusedSimpArgs false
@@ -72,6 +72,12 @@ namespace MultiRound
 open OracleSpec OracleComp ProtocolSpec STIR ReedSolomon NNReal WhirIOP.Construction VectorIOP
 open scoped ENNReal
 open OracleInterface
+
+private noncomputable local instance stirCheckingUniformAnswers
+    {κ : Type} {spec : OracleSpec κ}
+    [∀ q, Fintype (spec.Range q)] [∀ q, Inhabited (spec.Range q)] :
+    OracleSpec.UniformAnswerMeasure spec :=
+  OracleSpec.UniformAnswerMeasure.ofFiniteNonempty spec
 
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
 variable {ι : Type} [Fintype ι]
@@ -363,18 +369,16 @@ theorem simulateQ_checkingCompRep (oStmt : ∀ i, OracleStatement ι F i)
 /-- **The t-repetition checking multi-round STIR verifier.** Forwards no oracles; its
 `verify` is the genuine t-repetition checking computation. -/
 noncomputable def stirCheckingVerifierRep :
-    OracleVerifier []ₒ Unit (OracleStatement ι F) Bool (fun _ : Empty => Unit)
-      ((stirMultiVSpecRep M ι t).toProtocolSpec F) where
-  verify := fun _ chals => OptionT.lift (checkingCompRep M φ deg t chals)
-  embed := ⟨fun i => i.elim, fun i => i.elim⟩
-  hEq := fun i => i.elim
+    OracleProofVerifier []ₒ Unit (OracleStatement ι F)
+      ((stirMultiVSpecRep M ι t).toProtocolSpec F) :=
+  OracleProofVerifier.ofVerify (fun _ chals => OptionT.lift (checkingCompRep M φ deg t chals))
 
 /-- **The t-repetition checking (M+1)-round STIR Vector IOPP**: the honest folding prover at
 the rep spec together with the t-repetition checking verifier. -/
 noncomputable def stirCheckingIOPRep :
-    VectorIOP Unit (OracleStatement ι F) Unit (stirMultiVSpecRep M ι t) F where
-  prover := stirMultiRoundProverRep M φ deg t
-  verifier := stirCheckingVerifierRep M φ deg t
+    VectorIOP Unit (OracleStatement ι F) Unit (stirMultiVSpecRep M ι t) F :=
+  OracleReduction.mk (Oₛₒ := fun i : Empty => nomatch i)
+    (stirMultiRoundProverRep M φ deg t) (stirCheckingVerifierRep M φ deg t)
 
 end CheckingVerifierRep
 
@@ -401,7 +405,7 @@ challenge length `t` enters only through the (ignored) stored fold challenge. -/
 theorem stirMultiRoundProverRep_runToRound_invariant (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (t : ℕ)
     (stmtIn : Unit × ∀ i, OracleStatement ι F i) (witIn : Unit)
     (k : Fin (3 * M + 3 + 1)) :
-    ∀ ts ∈ _root_.support
+    ∀ ts ∈ support
       ((stirMultiRoundProverRep M φ deg t).runToRound k stmtIn witIn),
       ts.2.1 = (stmtIn, witIn) ∧
       ∀ (iv : ℕ) (hik : iv < k.val) (hdir : iv % 3 = 1),
@@ -431,14 +435,16 @@ theorem stirMultiRoundProverRep_runToRound_invariant (M : ℕ) (φ : ι ↪ F) (
             if h : 0 < (stirMultiVSpecRep M ι t).length ⟨(j : ℕ), j.isLt⟩
             then r.get ⟨0, h⟩ else 0) := by
           dsimp only [stirMultiRoundProverRep] at hfch
-          simpa only [support_pure, Set.mem_singleton_iff] using hfch
+          set_option backward.isDefEq.respectTransparency false in
+            simpa only [liftM_pure, support_pure, Set.mem_singleton_iff] using hfch
         refine ⟨by rw [hfch']; exact ihSt, ?_⟩
         intro iv hik hdir
         by_cases hlt : iv < j.val
         · show Fin.snoc (α := fun m : Fin ((j : ℕ) + 1) =>
               ((stirMultiVSpecRep M ι t).toProtocolSpec F).«Type» (Fin.castLE j.isLt m))
             tr chal (Fin.castSucc ⟨iv, hlt⟩) = _
-          rw [Fin.snoc_castSucc]
+          set_option backward.isDefEq.respectTransparency false in
+            rw [Fin.snoc_castSucc]
           exact ihTr iv hlt hdir
         · -- the new entry is at the challenge round, whose direction contradicts `hdir`
           exfalso
@@ -465,7 +471,8 @@ theorem stirMultiRoundProverRep_runToRound_invariant (M : ℕ) (φ : ι ↪ F) (
         · show Fin.snoc (α := fun m : Fin ((j : ℕ) + 1) =>
               ((stirMultiVSpecRep M ι t).toProtocolSpec F).«Type» (Fin.castLE j.isLt m))
             tr msg (Fin.castSucc ⟨iv, hlt⟩) = _
-          rw [Fin.snoc_castSucc]
+          set_option backward.isDefEq.respectTransparency false in
+            rw [Fin.snoc_castSucc]
           exact ihTr iv hlt hdir
         · have hiv : iv = j.val := by simp only [Fin.val_succ] at hik; omega
           subst hiv
@@ -473,7 +480,8 @@ theorem stirMultiRoundProverRep_runToRound_invariant (M : ℕ) (φ : ι ↪ F) (
           show Fin.snoc (α := fun m : Fin ((j : ℕ) + 1) =>
               ((stirMultiVSpecRep M ι t).toProtocolSpec F).«Type» (Fin.castLE j.isLt m))
             tr msg (Fin.last (j : ℕ)) = _
-          rw [Fin.snoc_last, hmsg, ihSt]
+          set_option backward.isDefEq.respectTransparency false in
+            rw [Fin.snoc_last, hmsg, ihSt]
           show Vector.cast _ (packFiniteFunction ι
             (Combine.combine φ deg st.2 (fun _ : Fin 1 => stmtIn.2 ())
               (fun _ : Fin 1 => deg))) = _
@@ -623,19 +631,20 @@ variable [Nonempty ι]
 /-- Finiteness of the rep-spec challenge oracle spec (every challenge range is
 `Vector F t`), pinned to the canonical `challengeOracleInterface` (the interface that the
 completeness machinery elaborates `[pSpec.Challenge]ₒ` with). -/
-instance {M t : ℕ} :
-    ([((stirMultiVSpecRep M ι t).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).Fintype
-    where
-  fintype_B := fun q => by
+private instance instRepChallengeResponseFintype {M t : ℕ} :
+    ∀ q, Fintype
+      (([((stirMultiVSpecRep M ι t).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).Range q) :=
+  fun q => by
     show Fintype (((stirMultiVSpecRep M ι t).toProtocolSpec F).Challenge q.1)
     dsimp
     infer_instance
 
 /-- Inhabitedness of the rep-spec challenge oracle spec (pinned as above). -/
-instance {M t : ℕ} :
-    ([((stirMultiVSpecRep M ι t).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).Inhabited
-    where
-  inhabited_B := fun q => by
+private instance instRepChallengeResponseInhabited {M t : ℕ} :
+    ∀ q, Inhabited
+      (([((stirMultiVSpecRep M ι t).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).Range q) :=
+  fun q => by
+    letI : Inhabited F := ⟨0⟩
     show Inhabited (((stirMultiVSpecRep M ι t).toProtocolSpec F).Challenge q.1)
     dsimp
     infer_instance
@@ -661,13 +670,16 @@ is the `pure` of the decision bit, for every transcript. -/
 theorem checkingVerifierRep_toVerifier_verify (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (t : ℕ)
     (stmtIn : Unit × ∀ i, OracleStatement ι F i)
     (tr : FullTranscript ((stirMultiVSpecRep M ι t).toProtocolSpec F)) :
-    (stirCheckingVerifierRep M φ deg t).toVerifier.verify stmtIn tr
+    (OracleVerifier.toVerifier (Oₛₒ := fun i : Empty => nomatch i) (stirCheckingVerifierRep M φ deg t)).verify stmtIn tr
       = pure (checkingBoolRep M φ deg t stmtIn.2 tr.messages tr.challenges,
           fun i : Empty => i.elim) := by
   dsimp only [OracleVerifier.toVerifier, stirCheckingVerifierRep]
   erw [simulateQ_lift_checkingCompRep, pure_bind]
+  apply OptionT.ext
+  simp only [OptionT.run_mk, LawfulApplicative.map_pure, Option.map_some, OptionT.run_pure]
 
 set_option maxHeartbeats 1600000 in
+set_option backward.isDefEq.respectTransparency false in
 /-- **Perfect completeness of the t-repetition checking (M+1)-round STIR Vector IOPP**, for
 arbitrary symbolic depth `M` and repetition parameter `t`, against the genuine
 perfect-completeness relation `stirRelation deg φ 0`: by the run-support invariant every
@@ -675,11 +687,24 @@ consistency check compares equal values FOR EVERY repetition coordinate `s`, and
 full-read low-degree check sees exactly the input codeword, which the `δ = 0` input relation
 forces into the code. -/
 theorem stirCheckingIOPRep_perfectCompleteness (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (t : ℕ) :
-    OracleReduction.perfectCompleteness (pure ()) isEmptyElim
+    OracleReduction.perfectCompleteness (Oₛₒ := fun i : Empty => nomatch i) (pure ()) isEmptyElim
       (stirRelation deg φ 0) acceptRejectOracleRel (stirCheckingIOPRep M φ deg t) := by
-  rw [OracleReduction.unroll_n_message_reduction_perfectCompleteness
-    (reduction := stirCheckingIOPRep M φ deg t) (stirRelation deg φ 0) acceptRejectOracleRel
-    (pure ()) isEmptyElim inferInstance
+  letI : Inhabited F := ⟨0⟩
+  letI : ∀ q, Fintype (([((stirMultiVSpecRep M ι t).toProtocolSpec F).Challenge]ₒ' ProtocolSpec.challengeOracleInterface).Range q) :=
+    fun ⟨i, _⟩ => by
+      change Fintype (((stirMultiVSpecRep M ι t).toProtocolSpec F).Challenge i)
+      dsimp [ProtocolSpec.Challenge]
+      infer_instance
+  letI : ∀ q, Inhabited (([((stirMultiVSpecRep M ι t).toProtocolSpec F).Challenge]ₒ' ProtocolSpec.challengeOracleInterface).Range q) :=
+    fun ⟨i, _⟩ => by
+      change Inhabited (((stirMultiVSpecRep M ι t).toProtocolSpec F).Challenge i)
+      dsimp [ProtocolSpec.Challenge]
+      infer_instance
+  -- Supply the vacuous output interface before elaborating the native unroll lemma.
+  rw [@OracleReduction.unroll_n_message_reduction_perfectCompleteness
+    _ _ _ _ _ _ _ _ _ Empty _ (fun _ : Empty => Unit) _ (fun i => nomatch i)
+    _ _ _ _ _ (stirCheckingIOPRep M φ deg t) (stirRelation deg φ 0) acceptRejectOracleRel
+    (pure ()) isEmptyElim (OracleComp.prFail_eq_zero _)
     (by simp only [Set.fmap_eq_image, IsEmpty.forall_iff, implies_true])]
   intro stmtIn oStmtIn witIn h_relIn
   -- the δ = 0 input relation is genuine code membership
@@ -691,53 +716,42 @@ theorem stirCheckingIOPRep_perfectCompleteness (M : ℕ) (φ : ι ↪ F) (deg : 
   simp only [checkingVerifierRep_toVerifier_verify]
   simp only [Fin.isValue, bind_pure_comp, pure_bind, bind_map_left, liftM_bind, liftM_map,
     Prod.mk.eta, bind_assoc, _root_.map_pure, liftComp_pure, liftM_pure]
-  rw [probEvent_eq_one_iff]
-  refine ⟨?_, ?_⟩
-  · -- SAFETY: the run never fails (the prefix is plain `OracleComp`; the rest is pure)
-    rw [probFailure_bind_eq_zero_iff]
-    refine ⟨?_, fun α _hα => ?_⟩
-    · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
-    · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
-      simp only [OptionT.run_pure, HasEvalPMF.probFailure_eq_zero, zero_add,
-        probOutput_eq_zero_iff, support_pure, Set.mem_singleton_iff, reduceCtorEq,
-        not_false_eq_true]
-  · -- CORRECTNESS: every output in the support satisfies the relation + agreement
-    intro x hx
-    simp only [support_bind, Set.mem_iUnion, exists_prop] at hx
-    obtain ⟨α, hα, hx⟩ := hx
-    -- the run-support invariant: every transcript message is the honest packed codeword
-    have hα' : α ∈ _root_.support
-        ((stirMultiRoundProverRep M φ deg t).runToRound (Fin.last (3 * M + 3))
-          (stmtIn, oStmtIn) witIn) := by
-      simpa only [OptionT.support_liftM] using hα
-    have hinv := stirMultiRoundProverRep_runToRound_invariant M φ deg t (stmtIn, oStmtIn) witIn
-      (Fin.last (3 * M + 3)) α hα'
-    have hmsgs : ∀ j, FullTranscript.messages
-        (pSpec := (stirMultiVSpecRep M ι t).toProtocolSpec F) α.1 j
-        = Vector.cast (stirMultiVSpecRep_length_msg j)
-            (packFiniteFunction ι (oStmtIn ())) := by
-      intro j
-      have hdir : ((j.1 : Fin (3 * M + 3)) : ℕ) % 3 = 1 :=
-        (stirVSpec_dir_eq_msg_iff (M := M) (msgLen := fun _ => Fintype.card ι)
-          (chalLen := t)).mp j.2
-      exact hinv.2 j.1.val j.1.isLt hdir
-    have hbool : checkingBoolRep M φ deg t oStmtIn
-        (FullTranscript.messages (pSpec := (stirMultiVSpecRep M ι t).toProtocolSpec F) α.1)
-        (FullTranscript.challenges (pSpec := (stirMultiVSpecRep M ι t).toProtocolSpec F) α.1)
-        = true :=
-      checkingBoolRep_honest M φ deg t (oStmtIn ()) hmem oStmtIn rfl _ hmsgs _
-    rw [OptionT.mem_support_iff] at hx
-    simp only [OptionT.run_map, support_map, Set.mem_image] at hx
-    erw [OptionT_run_liftComp_pure] at hx
-    simp only [support_pure, Set.mem_singleton_iff, exists_eq_left, Option.map_some,
-      Option.some.injEq] at hx
-    subst hx
-    have hfn : ∀ (f g : ∀ _ : Empty, Unit), f = g := fun _ _ => funext fun i => i.elim
-    refine ⟨?_, ?_, hfn _ _⟩
-    · simp only [acceptRejectOracleRel, Set.mem_singleton_iff, Prod.mk.injEq, hbool]
-    · show (true : Bool) = checkingBoolRep M φ deg t oStmtIn _ _
-      rw [hbool]
+  apply (OptionT.prEvent_mk_eq_one_iff _ _).2
+  intro x hx
+  have hopt {κ : Type} {spec : OracleSpec.{0, 0} κ} {β : Type} (mx : OracleComp spec β) :
+      (liftM mx : OptionT (OracleComp spec) β) = some <$> mx := by
+    change (mx >>= fun x => pure (some x)) = some <$> mx
+    rw [map_eq_bind_pure_comp]
+    rfl
+  obtain ⟨a, ha, hx⟩ := OracleComp.mem_support_bind_peel _ _ hx
+  erw [hopt] at ha
+  obtain ⟨α, hα', heq⟩ := OracleComp.mem_support_map_peel _ _ ha
+  subst a
+  have hinv := stirMultiRoundProverRep_runToRound_invariant M φ deg t (stmtIn, oStmtIn) witIn
+    (Fin.last (3 * M + 3)) α hα'
+  have hmsgs : ∀ j, FullTranscript.messages
+      (pSpec := (stirMultiVSpecRep M ι t).toProtocolSpec F) α.1 j
+      = Vector.cast (stirMultiVSpecRep_length_msg j)
+          (packFiniteFunction ι (oStmtIn ())) := by
+    intro j
+    have hdir : ((j.1 : Fin (3 * M + 3)) : ℕ) % 3 = 1 :=
+      (stirVSpec_dir_eq_msg_iff (M := M) (msgLen := fun _ => Fintype.card ι)
+        (chalLen := t)).mp j.2
+    exact hinv.2 j.1.val j.1.isLt hdir
+  have hbool : checkingBoolRep M φ deg t oStmtIn
+      (FullTranscript.messages (pSpec := (stirMultiVSpecRep M ι t).toProtocolSpec F) α.1)
+      (FullTranscript.challenges (pSpec := (stirMultiVSpecRep M ι t).toProtocolSpec F) α.1)
+      = true :=
+    checkingBoolRep_honest M φ deg t (oStmtIn ()) hmem oStmtIn rfl _ hmsgs _
+  simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure,
+    simulateQ_pure, LawfulApplicative.map_pure, Option.map_some, liftComp_pure] at hx
+  have hv := OracleComp.eq_of_mem_support_pure _ hx
+  subst x
+  have hfn : ∀ (f g : ∀ _ : Empty, Unit), f = g := fun _ _ => funext fun i => i.elim
+  refine ⟨_, rfl, ?_, ?_, hfn _ _⟩
+  · simp only [acceptRejectOracleRel, Set.mem_singleton_iff, Prod.mk.injEq, hbool]
+  · show (true : Bool) = checkingBoolRep M φ deg t oStmtIn _ _
+    rw [hbool]
 
 end CompletenessRep
 
@@ -1134,21 +1148,20 @@ theorem stirFlipRep_le_zero
     (stmtIn : Unit × ∀ i, OracleStatement ι F i) (witIn : Unit)
     (prover : Prover oSpec (Unit × ∀ i, OracleStatement ι F i) Unit StmtOut WitOut
       ((stirMultiVSpecRep M ι t).toProtocolSpec F)) :
-    Pr[fun x : ((stirMultiVSpecRep M ι t).toProtocolSpec F).Transcript i.1.castSucc ×
+    probEvent (fun x : ((stirMultiVSpecRep M ι t).toProtocolSpec F).Transcript i.1.castSucc ×
           ((stirMultiVSpecRep M ι t).toProtocolSpec F).Challenge i ×
           (oSpec + [((stirMultiVSpecRep M ι t).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).QueryLog =>
         ¬ stirCheckingPredRep M φ deg δ t i.1.castSucc stmtIn x.1 ∧
-          stirCheckingPredRep M φ deg δ t i.1.succ stmtIn (x.1.concat x.2.1)
-      | do
+          stirCheckingPredRep M φ deg δ t i.1.succ stmtIn (x.1.concat x.2.1)) (do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
               prover.runWithLogToRound i.1.castSucc stmtIn witIn
             let challenge ← liftComp
               (((stirMultiVSpecRep M ι t).toProtocolSpec F).getChallenge i) _
-            return (transcript, challenge, proveQueryLog))).run' (← init)]
+            return (transcript, challenge, proveQueryLog))).run' (← init))
       ≤ (0 : ℝ≥0∞) := by
-  refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+  refine le_trans (le_of_eq ((OracleComp.prEvent_eq_zero_iff _ _).2 ?_)) (by positivity)
   rintro ⟨tr, ch, lg⟩ _ ⟨hn, hy⟩
   exact hn (stirCheckingPredRep_concat_zero M φ deg δ t stmtIn tr ch hi hy)
 
@@ -1162,19 +1175,18 @@ theorem stirFlipRep_le_round2
     (stmtIn : Unit × ∀ i, OracleStatement ι F i) (witIn : Unit)
     (prover : Prover oSpec (Unit × ∀ i, OracleStatement ι F i) Unit StmtOut WitOut
       ((stirMultiVSpecRep M ι t).toProtocolSpec F)) :
-    Pr[fun x : ((stirMultiVSpecRep M ι t).toProtocolSpec F).Transcript i.1.castSucc ×
+    probEvent (fun x : ((stirMultiVSpecRep M ι t).toProtocolSpec F).Transcript i.1.castSucc ×
           ((stirMultiVSpecRep M ι t).toProtocolSpec F).Challenge i ×
           (oSpec + [((stirMultiVSpecRep M ι t).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).QueryLog =>
         ¬ stirCheckingPredRep M φ deg δ t i.1.castSucc stmtIn x.1 ∧
-          stirCheckingPredRep M φ deg δ t i.1.succ stmtIn (x.1.concat x.2.1)
-      | do
+          stirCheckingPredRep M φ deg δ t i.1.succ stmtIn (x.1.concat x.2.1)) (do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
               prover.runWithLogToRound i.1.castSucc stmtIn witIn
             let challenge ← liftComp
               (((stirMultiVSpecRep M ι t).toProtocolSpec F).getChallenge i) _
-            return (transcript, challenge, proveQueryLog))).run' (← init)]
+            return (transcript, challenge, proveQueryLog))).run' (← init))
       ≤ (((Fintype.card F - (⌊δ * (Fintype.card ι : ℝ≥0)⌋₊ + 1) : ℕ) : ℝ≥0∞)
           / (Fintype.card F : ℝ≥0∞)) ^ t := by
   classical
@@ -1187,12 +1199,11 @@ theorem stirFlipRep_le_round2
   obtain ⟨⟨⟨tr, pst⟩, log⟩, s'⟩ := rk
   dsimp only
   rw [liftComp_eq_liftM]
-  rw [ChallengeCoherence.probEvent_run'_simulateQ_addLift_getChallenge_bind impl s' i
-    (fun ch => pure (tr, ch, log)) _]
+  rw [ChallengeCoherence.run'_simulateQ_addLift_getChallenge_bind impl s' i
+    (fun ch => pure (tr, ch, log))]
   simp only [simulateQ_pure, StateT.run'_pure_lib]
-  rw [← probEvent_bind_eq_tsum]
   by_cases hno : stirCheckingPredRep M φ deg δ t i.1.castSucc stmtIn tr
-  · refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+  · refine le_trans (le_of_eq ((OracleComp.prEvent_eq_zero_iff _ _).2 ?_)) (by positivity)
     rintro x hx ⟨hn, -⟩
     simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
       exists_prop] at hx
@@ -1229,7 +1240,7 @@ theorem stirFlipRep_le_round2
                 mul_lt_mul_of_pos_right hδrel hn
             _ = (D.card : ℝ≥0) := div_mul_cancel₀ _ (ne_of_gt hn)
         have hfloor : ⌊δ * (Fintype.card ι : ℝ≥0)⌋₊ + 1 ≤ D.card := by
-          have := (Nat.floor_lt (zero_le _)).mpr hcard
+          have := (Nat.floor_lt (by positivity)).mpr hcard
           omega
         -- the per-coordinate agreement set
         set L : Set F := {r : F | inputAns stmtIn.2 (queryPoint φ r)
@@ -1241,7 +1252,7 @@ theorem stirFlipRep_le_round2
           (fun v => le_of_eq (probOutput_uniform_vector v)) ?_) ?_
         · -- a coordinate outside the agreement set kills the flip event
           rintro v ⟨s, hs⟩
-          refine probEvent_eq_zero ?_
+          apply (OracleComp.prEvent_eq_zero_iff _ _).2
           rintro x hx ⟨hn, hy⟩
           simp only [support_pure, Set.mem_singleton_iff] at hx
           subst hx
@@ -1282,7 +1293,7 @@ theorem stirFlipRep_le_round2
                   / (Fintype.card F : ℝ≥0∞)) ^ t := by
                 refine pow_le_pow_left' ?_ t
                 exact ENNReal.div_le_div_right (by exact_mod_cast hcardL) _
-      · refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+      · refine le_trans (le_of_eq ((OracleComp.prEvent_eq_zero_iff _ _).2 ?_)) (by positivity)
         rintro x hx ⟨hn, hy⟩
         simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
           exists_prop] at hx
@@ -1298,19 +1309,18 @@ theorem stirFlipRep_le_out
     (stmtIn : Unit × ∀ i, OracleStatement ι F i) (witIn : Unit)
     (prover : Prover oSpec (Unit × ∀ i, OracleStatement ι F i) Unit StmtOut WitOut
       ((stirMultiVSpecRep M ι t).toProtocolSpec F)) :
-    Pr[fun x : ((stirMultiVSpecRep M ι t).toProtocolSpec F).Transcript i.1.castSucc ×
+    probEvent (fun x : ((stirMultiVSpecRep M ι t).toProtocolSpec F).Transcript i.1.castSucc ×
           ((stirMultiVSpecRep M ι t).toProtocolSpec F).Challenge i ×
           (oSpec + [((stirMultiVSpecRep M ι t).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).QueryLog =>
         ¬ stirCheckingPredRep M φ deg δ t i.1.castSucc stmtIn x.1 ∧
-          stirCheckingPredRep M φ deg δ t i.1.succ stmtIn (x.1.concat x.2.1)
-      | do
+          stirCheckingPredRep M φ deg δ t i.1.succ stmtIn (x.1.concat x.2.1)) (do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
               prover.runWithLogToRound i.1.castSucc stmtIn witIn
             let challenge ← liftComp
               (((stirMultiVSpecRep M ι t).toProtocolSpec F).getChallenge i) _
-            return (transcript, challenge, proveQueryLog))).run' (← init)]
+            return (transcript, challenge, proveQueryLog))).run' (← init))
       ≤ (((Fintype.card F - 1 : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) ^ t := by
   classical
   have hmod : (i.1 : ℕ) % 3 ≠ 1 := by omega
@@ -1322,12 +1332,11 @@ theorem stirFlipRep_le_out
   obtain ⟨⟨⟨tr, pst⟩, log⟩, s'⟩ := rk
   dsimp only
   rw [liftComp_eq_liftM]
-  rw [ChallengeCoherence.probEvent_run'_simulateQ_addLift_getChallenge_bind impl s' i
-    (fun ch => pure (tr, ch, log)) _]
+  rw [ChallengeCoherence.run'_simulateQ_addLift_getChallenge_bind impl s' i
+    (fun ch => pure (tr, ch, log))]
   simp only [simulateQ_pure, StateT.run'_pure_lib]
-  rw [← probEvent_bind_eq_tsum]
   by_cases hno : stirCheckingPredRep M φ deg δ t i.1.castSucc stmtIn tr
-  · refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+  · refine le_trans (le_of_eq ((OracleComp.prEvent_eq_zero_iff _ _).2 ?_)) (by positivity)
     rintro x hx ⟨hn, -⟩
     simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
       exists_prop] at hx
@@ -1336,7 +1345,7 @@ theorem stirFlipRep_le_out
   · have hA : 3 * j + 1 < (i.1.castSucc : ℕ) := by simp only [Fin.val_castSucc]; omega
     have hB : 3 * (j + 1) + 1 < (i.1.castSucc : ℕ) := by simp only [Fin.val_castSucc]; omega
     by_cases hAB : ∀ x : ι, trMsgFRep tr j hA x = trMsgFRep tr (j + 1) hB x
-    · refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+    · refine le_trans (le_of_eq ((OracleComp.prEvent_eq_zero_iff _ _).2 ?_)) (by positivity)
       rintro x hx ⟨hn, hy⟩
       simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
         exists_prop] at hx
@@ -1352,7 +1361,7 @@ theorem stirFlipRep_le_out
         (fun ch => pure (tr, ch, log)) _ (fun _ => L)
         (fun v => le_of_eq (probOutput_uniform_vector v)) ?_) ?_
       · rintro v ⟨s, hs⟩
-        refine probEvent_eq_zero ?_
+        apply (OracleComp.prEvent_eq_zero_iff _ _).2
         rintro x hx ⟨hn, hy⟩
         simp only [support_pure, Set.mem_singleton_iff] at hx
         subst hx
@@ -1418,7 +1427,7 @@ noncomputable def stirEpsStarRep (M : ℕ) (δ : ℝ≥0) (t : ℕ) :
 def stirCheckingRepRbrSoundnessStatement (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0) (t : ℕ)
     (ε_rbr : ((stirMultiVSpecRep M ι t).toProtocolSpec F).ChallengeIdx → ℝ≥0) : Prop :=
   OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
-    (stirRelation deg φ δ) (stirCheckingIOPRep M φ deg t).verifier ε_rbr
+    (stirRelation deg φ δ) (stirCheckingIOPRep M φ deg t).toOracleVerifier ε_rbr
 
 /-- **T1-rep — genuine rbr knowledge soundness of the t-repetition checking verifier at the
 `(·)^t` budget**: outright, with no correlated-agreement residuals and no vacuity. -/
@@ -1427,7 +1436,8 @@ theorem stirCheckingRepRbrSoundness_genuine :
   have hcardF : (Fintype.card F : ℝ≥0) ≠ 0 := by
     exact_mod_cast Fintype.card_ne_zero (α := F)
   refine ThresholdKSF.rbrKnowledgeSoundness_of_flipBounds (pure ()) isEmptyElim
-    ((stirCheckingIOPRep M φ deg t).verifier.toVerifier)
+    ((stirCheckingIOPRep M φ deg t).toOracleVerifier.toVerifier
+      (Oₛₒ := fun i : Empty => nomatch i))
     (stirRelation deg φ δ) acceptRejectOracleRel
     (stirCheckingPredRep M φ deg δ t) (stirEpsStarRep (F := F) (ι := ι) M δ t)
     (fun stmtIn _ => stirCheckingPredRep_empty M φ deg δ t stmtIn default)
@@ -1437,19 +1447,23 @@ theorem stirCheckingRepRbrSoundness_genuine :
         stirVSpec_dir_eq_msg_iff] at hdir
       exact stirCheckingPredRep_concat_msg M φ deg δ t stmtIn tr msg hdir h)
     (fun stmtIn tr witOut hpr => by
-      rw [gt_iff_lt, probEvent_pos_iff] at hpr
+      rw [gt_iff_lt, OracleComp.OptionT.prEvent_mk_pos_iff] at hpr
       obtain ⟨x, hx, hrel⟩ := hpr
-      rw [OptionT.mem_support_iff] at hx
-      simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
+      simp only [support_bind, Set.mem_iUnion, exists_prop] at hx
       obtain ⟨s, _, hx⟩ := hx
-      have hrun : Verifier.run stmtIn tr (stirCheckingIOPRep M φ deg t).verifier.toVerifier
+      have hrun : ((stirCheckingIOPRep M φ deg t).toOracleVerifier.toVerifier
+          (Oₛₒ := fun i : Empty => nomatch i)).verify stmtIn tr
           = (pure (checkingBoolRep M φ deg t stmtIn.2 tr.messages tr.challenges,
               fun i : Empty => i.elim) : OptionT (OracleComp []ₒ) _) :=
         checkingVerifierRep_toVerifier_verify M φ deg t stmtIn tr
+      simp only [Verifier.run] at hx
       erw [hrun, simulateQ_optionT_pure_run'] at hx
+      simp only [support_pure, Set.mem_singleton_iff] at hx
       cases (Option.some.inj hx)
       refine stirCheckingPredRep_full_of_accept M φ deg δ t stmtIn tr ?_
-      simpa [acceptRejectOracleRel, Prod.ext_iff] using hrel)
+      have hb := congrArg (fun p : (Bool × (Empty → Unit)) × Unit => p.1.1)
+        (Set.mem_singleton_iff.mp hrel)
+      exact hb)
     (fun i stmtIn witIn prover => by
       by_cases h2 : (i.1 : ℕ) = 2
       · refine le_trans
@@ -1503,7 +1517,7 @@ theorem stirEpsStarRep_le_pow_max (i : ((stirMultiVSpecRep M ι t).toProtocolSpe
     by_cases hm : (i.1 : ℕ) % 3 = 2
     · rw [if_pos hm]
     · rw [if_neg hm]
-      exact zero_le _
+      exact zero_le
 
 /-- **Theorem 5.1 through the t-repetition checking IOPP** (#335 A1): `stir_main` with the
 soundness leg PROVEN at the `(·)^t` budget; the `hε` leg is satisfiable for every `secpar`

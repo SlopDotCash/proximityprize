@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Mathlib.Algebra.Polynomial.Div
 import Mathlib.RingTheory.Coprime.Basic
-import Mathlib.Algebra.Polynomial.Degree.Definitions
+import Mathlib.Algebra.Polynomial.Degree.Defs
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Ring
 

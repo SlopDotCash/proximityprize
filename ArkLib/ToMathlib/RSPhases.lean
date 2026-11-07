@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Sumcheck.Domain
-import ArkLib.Data.MvPolynomial.Multilinear
+import ProximityPrize.Extensions.ProofSystem.Sumcheck.Domain
+import ProximityPrize.Extensions.Data.MvPolynomial.Multilinear
 
 /-!
 # Ring-Switching Phase Bricks
@@ -46,7 +46,7 @@ variable {R : Type*} [CommRing R] [Nontrivial R]
 `Fin 2 → R` coercion `j ↦ ((b j : Fin 2) : R)` used by `MvPolynomial.MLE_eval_zeroOne`. -/
 theorem boolEmbedding_apply_eq_coe (b : Fin 2) :
     (boolEmbedding R b : R) = ((b : Fin 2) : R) := by
-  fin_cases b <;> simp [boolEmbedding]
+  fin_cases b <;> norm_num [boolEmbedding] <;> rfl
 
 /-- The Boolean hypercube embedding `(Fin k → Fin 2) ↪ (Fin k → R)`,
 `b ↦ (j ↦ boolEmbedding R (b j))`, injective by `boolEmbedding`'s injectivity. -/

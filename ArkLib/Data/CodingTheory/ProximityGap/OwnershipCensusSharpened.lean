@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ArkLib.ToMathlib.NatPrimeCheckpoint
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26DimGeneralPin
 
 /-!
@@ -728,7 +729,7 @@ theorem sharpened_band_at_r5_mu4 :
 
 section Concrete4294967377
 
-local instance fact_prime_4294967377 : Fact (Nat.Prime 4294967377) := ⟨by norm_num⟩
+local instance fact_prime_4294967377 : Fact (Nat.Prime 4294967377) := ⟨by prime_checkpoint⟩
 
 /-- **THE FOURTH RUNG (new, unreachable by the landed bound):** `δ* = 11/16` exactly, for
 the dimension-four (`r = 5`, rate `1/4`) code on the 16-point smooth domain

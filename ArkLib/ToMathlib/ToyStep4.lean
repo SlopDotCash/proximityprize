@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alexander Hicks
 -/
 
-import ArkLib.ProofSystem.ToyProblem.Definitions
-import ArkLib.Data.CodingTheory.ListDecodability
-import ArkLib.Data.CodingTheory.InterleavedCode
-import ArkLib.Data.CodingTheory.Basic.RelativeDistance
+import ProximityPrize.Extensions.ProofSystem.ToyProblem.Definitions
+import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
+import ProximityPrize.Extensions.Data.CodingTheory.InterleavedCode
+import ProximityPrize.Extensions.Data.CodingTheory.Basic.RelativeDistance
 
 /-!
 # Toy IOR soundness — the §6.4.1 Step-4 winning-set injection (ABF26 L6.12)

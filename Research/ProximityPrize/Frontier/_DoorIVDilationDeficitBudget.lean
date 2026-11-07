@@ -102,7 +102,7 @@ theorem prod_one_sub_le_exp_neg_sum (δ : ℕ → ℝ) (hδ1 : ∀ k, δ k ≤ 1
     intro k _; have := hδ1 k; linarith
   calc (∏ k ∈ Finset.range a, (1 - δ k))
       ≤ ∏ k ∈ Finset.range a, Real.exp (-(δ k)) :=
-        Finset.prod_le_prod hnn hptwise
+        Finset.prod_le_prod₀ hnn hptwise
     _ = Real.exp (∑ k ∈ Finset.range a, -(δ k)) := (Real.exp_sum _ _).symm
     _ = Real.exp (-(∑ k ∈ Finset.range a, δ k)) := by rw [Finset.sum_neg_distrib]
 

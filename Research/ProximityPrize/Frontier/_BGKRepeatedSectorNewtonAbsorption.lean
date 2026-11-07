@@ -94,19 +94,19 @@ theorem injectiveSevenTransform_eq_distinctSevenPolynomial
   have h5 := multiset_newton w 5
   have h6 := multiset_newton w 6
   have h7 := multiset_newton w 7
-  have ha1 : (Finset.antidiagonal 1).filter (fun a => a.1 < 1) = {(0, 1)} := by
+  have ha1 : (HasAntidiagonal.antidiagonal (1 : ℕ)).filter (fun a => a.1 < 1) = {(0, 1)} := by
     decide
-  have ha2 : (Finset.antidiagonal 2).filter (fun a => a.1 < 2) =
+  have ha2 : (HasAntidiagonal.antidiagonal (2 : ℕ)).filter (fun a => a.1 < 2) =
       {(0, 2), (1, 1)} := by decide
-  have ha3 : (Finset.antidiagonal 3).filter (fun a => a.1 < 3) =
+  have ha3 : (HasAntidiagonal.antidiagonal (3 : ℕ)).filter (fun a => a.1 < 3) =
       {(0, 3), (1, 2), (2, 1)} := by decide
-  have ha4 : (Finset.antidiagonal 4).filter (fun a => a.1 < 4) =
+  have ha4 : (HasAntidiagonal.antidiagonal (4 : ℕ)).filter (fun a => a.1 < 4) =
       {(0, 4), (1, 3), (2, 2), (3, 1)} := by decide
-  have ha5 : (Finset.antidiagonal 5).filter (fun a => a.1 < 5) =
+  have ha5 : (HasAntidiagonal.antidiagonal (5 : ℕ)).filter (fun a => a.1 < 5) =
       {(0, 5), (1, 4), (2, 3), (3, 2), (4, 1)} := by decide
-  have ha6 : (Finset.antidiagonal 6).filter (fun a => a.1 < 6) =
+  have ha6 : (HasAntidiagonal.antidiagonal (6 : ℕ)).filter (fun a => a.1 < 6) =
       {(0, 6), (1, 5), (2, 4), (3, 3), (4, 2), (5, 1)} := by decide
-  have ha7 : (Finset.antidiagonal 7).filter (fun a => a.1 < 7) =
+  have ha7 : (HasAntidiagonal.antidiagonal (7 : ℕ)).filter (fun a => a.1 < 7) =
       {(0, 7), (1, 6), (2, 5), (3, 4), (4, 3), (5, 2), (6, 1)} := by decide
   rw [ha1] at h1
   rw [ha2] at h2
@@ -115,10 +115,7 @@ theorem injectiveSevenTransform_eq_distinctSevenPolynomial
   rw [ha5] at h5
   rw [ha6] at h6
   rw [ha7] at h7
-  have he0 : (Finset.univ.val.map w).esymm 0 = (1 : ℂ) := by
-    simp [Multiset.esymm]
   norm_num [Finset.sum_insert, psumMs, phasePowerSum] at h1 h2 h3 h4 h5 h6 h7
-  rw [he0] at h1 h2 h3 h4 h5 h6 h7
   norm_num at h1 h2 h3 h4 h5 h6 h7
   ring_nf at h1 h2 h3 h4 h5 h6 h7
   let E : ℕ → ℂ := fun k => (Finset.univ.val.map w).esymm k

@@ -3,10 +3,14 @@ set -e
 
 # Build the Lean Project Documentation
 echo "Fetching Cache..."
-lake exe cache get
+./scripts/lake-locked.sh exe cache get
+
+echo "Building Blueprint Declaration Environment..."
+./scripts/lake-locked.sh build ArkLibBlueprint
 
 echo "Building Project Documentation..."
-lake build ArkLib:docs
+./scripts/lake-locked.sh build ArkLib:docs ArkLibExtensions:docs \
+    ResearchProximityPrize:docs ProximityPrizeExtensions:docs ArkLibBlueprint:docs
 
 # Build the Blueprint
 if [ -d "blueprint" ]; then
@@ -20,6 +24,7 @@ if [ -d "blueprint" ]; then
         echo "To install: pip install leanblueprint"
     fi
     cd ..
+    ./scripts/lake-locked.sh exe checkdecls blueprint/lean_decls
 fi
 
 # Prepare the Website Directory

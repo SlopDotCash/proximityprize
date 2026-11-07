@@ -11,8 +11,8 @@ import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Fintype.Basic
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
-import ArkLib.OracleReduction.Composition.Sequential.Append
-import ArkLib.OracleReduction.Basic
+import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.Append
+import ProximityPrize.Extensions.OracleReduction.Basic
 
 /-!
 # LogUp Common Definitions

@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import ArkLib.ProofSystem.Stir.MultiRoundAssembly
 import ArkLib.ProofSystem.Stir.ErrorAccumulation
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.Curves
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.CoeffExtractionVacuous
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.StrictCoeffLargeReduction
 import ArkLib.ToVCVio.Simulation
@@ -94,6 +94,12 @@ namespace MultiRound
 
 open OracleSpec OracleComp ProtocolSpec STIR ReedSolomon NNReal WhirIOP.Construction
 open OracleInterface
+
+private noncomputable local instance stirCheckingUniformAnswers
+    {κ : Type} {spec : OracleSpec κ}
+    [∀ q, Fintype (spec.Range q)] [∀ q, Inhabited (spec.Range q)] :
+    OracleSpec.UniformAnswerMeasure spec :=
+  OracleSpec.UniformAnswerMeasure.ofFiniteNonempty spec
 
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
 variable {ι : Type} [Fintype ι]
@@ -300,18 +306,16 @@ theorem simulateQ_checkingComp (oStmt : ∀ i, OracleStatement ι F i)
 /-- **The checking multi-round STIR verifier.** Forwards no oracles (IOP shape); its `verify` is
 the genuine checking computation. -/
 noncomputable def stirCheckingVerifier :
-    OracleVerifier []ₒ Unit (OracleStatement ι F) Bool (fun _ : Empty => Unit)
-      ((stirMultiVSpec M ι).toProtocolSpec F) where
-  verify := fun _ chals => OptionT.lift (checkingComp M φ deg chals)
-  embed := ⟨fun i => i.elim, fun i => i.elim⟩
-  hEq := fun i => i.elim
+    OracleProofVerifier []ₒ Unit (OracleStatement ι F)
+      ((stirMultiVSpec M ι).toProtocolSpec F) :=
+  OracleProofVerifier.ofVerify (fun _ chals => OptionT.lift (checkingComp M φ deg chals))
 
 /-- **The checking (M+1)-round STIR Vector IOPP**: the landed honest folding prover together
 with the checking verifier. -/
 noncomputable def stirCheckingIOP :
-    VectorIOP Unit (OracleStatement ι F) Unit (stirMultiVSpec M ι) F where
-  prover := stirMultiRoundProver M φ deg
-  verifier := stirCheckingVerifier M φ deg
+    VectorIOP Unit (OracleStatement ι F) Unit (stirMultiVSpec M ι) F :=
+  OracleReduction.mk (Oₛₒ := fun i : Empty => nomatch i)
+    (stirMultiRoundProver M φ deg) (stirCheckingVerifier M φ deg)
 
 end CheckingVerifier
 
@@ -339,7 +343,7 @@ a single codeword at its own degree is the identity, is the packed input codewor
 theorem stirMultiRoundProver_runToRound_invariant (M : ℕ) (φ : ι ↪ F) (deg : ℕ)
     (stmtIn : Unit × ∀ i, OracleStatement ι F i) (witIn : Unit)
     (k : Fin (3 * M + 3 + 1)) :
-    ∀ ts ∈ _root_.support
+    ∀ ts ∈ support
       ((stirMultiRoundProver M φ deg).runToRound k stmtIn witIn),
       ts.2.1 = (stmtIn, witIn) ∧
       ∀ (iv : ℕ) (hik : iv < k.val) (hdir : iv % 3 = 1),
@@ -369,14 +373,16 @@ theorem stirMultiRoundProver_runToRound_invariant (M : ℕ) (φ : ι ↪ F) (deg
             if h : 0 < (stirMultiVSpec M ι).length ⟨(j : ℕ), j.isLt⟩
             then r.get ⟨0, h⟩ else 0) := by
           dsimp only [stirMultiRoundProver] at hfch
-          simpa only [support_pure, Set.mem_singleton_iff] using hfch
+          set_option backward.isDefEq.respectTransparency false in
+            simpa only [liftM_pure, support_pure, Set.mem_singleton_iff] using hfch
         refine ⟨by rw [hfch']; exact ihSt, ?_⟩
         intro iv hik hdir
         by_cases hlt : iv < j.val
         · show Fin.snoc (α := fun m : Fin ((j : ℕ) + 1) =>
               ((stirMultiVSpec M ι).toProtocolSpec F).«Type» (Fin.castLE j.isLt m))
             tr chal (Fin.castSucc ⟨iv, hlt⟩) = _
-          rw [Fin.snoc_castSucc]
+          set_option backward.isDefEq.respectTransparency false in
+            rw [Fin.snoc_castSucc]
           exact ihTr iv hlt hdir
         · -- the new entry is at the challenge round, whose direction contradicts `hdir`
           exfalso
@@ -403,7 +409,8 @@ theorem stirMultiRoundProver_runToRound_invariant (M : ℕ) (φ : ι ↪ F) (deg
         · show Fin.snoc (α := fun m : Fin ((j : ℕ) + 1) =>
               ((stirMultiVSpec M ι).toProtocolSpec F).«Type» (Fin.castLE j.isLt m))
             tr msg (Fin.castSucc ⟨iv, hlt⟩) = _
-          rw [Fin.snoc_castSucc]
+          set_option backward.isDefEq.respectTransparency false in
+            rw [Fin.snoc_castSucc]
           exact ihTr iv hlt hdir
         · have hiv : iv = j.val := by simp only [Fin.val_succ] at hik; omega
           subst hiv
@@ -411,7 +418,8 @@ theorem stirMultiRoundProver_runToRound_invariant (M : ℕ) (φ : ι ↪ F) (deg
           show Fin.snoc (α := fun m : Fin ((j : ℕ) + 1) =>
               ((stirMultiVSpec M ι).toProtocolSpec F).«Type» (Fin.castLE j.isLt m))
             tr msg (Fin.last (j : ℕ)) = _
-          rw [Fin.snoc_last, hmsg, ihSt]
+          set_option backward.isDefEq.respectTransparency false in
+            rw [Fin.snoc_last, hmsg, ihSt]
           show Vector.cast _ (packFiniteFunction ι
             (Combine.combine φ deg st.2 (fun _ : Fin 1 => stmtIn.2 ())
               (fun _ : Fin 1 => deg))) = _
@@ -433,7 +441,7 @@ theorem mem_of_relDistFromCode_le_zero {f : ι → F} {C : Set (ι → F)}
   haveI : Nonempty C := hne.to_subtype
   obtain ⟨v, hv, hdist⟩ := Code.exists_relClosest_codeword_of_Nonempty_Code C f
   have h0 : (Code.relHammingDist f v : ENNReal) = 0 :=
-    hdist.trans (le_antisymm h (zero_le _))
+    hdist.trans (le_antisymm h (by positivity))
   have h1 : Code.relHammingDist f v = 0 := by
     rw [NNRat.cast, NNRatCast.nnratCast, ENNReal.instNNRatCast] at h0
     simp only [ENNReal.coe_eq_zero] at h0
@@ -719,11 +727,13 @@ of the decision bit (paired with the empty output-oracle family), for every tran
 theorem checkingVerifier_toVerifier_verify (M : ℕ) (φ : ι ↪ F) (deg : ℕ)
     (stmtIn : Unit × ∀ i, OracleStatement ι F i)
     (tr : FullTranscript ((stirMultiVSpec M ι).toProtocolSpec F)) :
-    (stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr
+    (OracleVerifier.toVerifier (Oₛₒ := fun i : Empty => nomatch i) (stirCheckingVerifier M φ deg)).verify stmtIn tr
       = pure (checkingBool M φ deg stmtIn.2 tr.messages tr.challenges,
           fun i : Empty => i.elim) := by
   dsimp only [OracleVerifier.toVerifier, stirCheckingVerifier]
   erw [simulateQ_lift_checkingComp, pure_bind]
+  apply OptionT.ext
+  simp only [OptionT.run_mk, LawfulApplicative.map_pure, Option.map_some, OptionT.run_pure]
 
 open scoped Classical in
 /-- Exact support characterization of the checking verifier: for a fixed transcript, the verifier
@@ -733,7 +743,7 @@ theorem checkingVerifier_support_iff
     (stmtIn : Unit × ∀ i, OracleStatement ι F i)
     (tr : FullTranscript ((stirMultiVSpec M ι).toProtocolSpec F))
     (out : Bool × (∀ _ : Empty, Unit)) :
-    out ∈ _root_.support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr) ↔
+    out ∈ support ((OracleVerifier.toVerifier (Oₛₒ := fun i : Empty => nomatch i) (stirCheckingVerifier M φ deg)).verify stmtIn tr) ↔
       out = (checkingBool M φ deg stmtIn.2 tr.messages tr.challenges,
         fun i : Empty => i.elim) := by
   rw [checkingVerifier_toVerifier_verify]
@@ -747,7 +757,7 @@ theorem checkingVerifier_acceptance_iff_checkingBool
     (stmtIn : Unit × ∀ i, OracleStatement ι F i)
     (tr : FullTranscript ((stirMultiVSpec M ι).toProtocolSpec F))
     (out : Bool × (∀ _ : Empty, Unit))
-    (hout : out ∈ _root_.support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr)) :
+    (hout : out ∈ support ((OracleVerifier.toVerifier (Oₛₒ := fun i : Empty => nomatch i) (stirCheckingVerifier M φ deg)).verify stmtIn tr)) :
     out.1 = true ↔ checkingBool M φ deg stmtIn.2 tr.messages tr.challenges = true := by
   have hout_eq := (checkingVerifier_support_iff M φ deg stmtIn tr out).mp hout
   constructor
@@ -767,7 +777,7 @@ theorem checkingVerifier_acceptance_implies_checkingBool
     (stmtIn : Unit × ∀ i, OracleStatement ι F i)
     (tr : FullTranscript ((stirMultiVSpec M ι).toProtocolSpec F))
     (out : Bool × (∀ _ : Empty, Unit))
-    (hout : out ∈ _root_.support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr))
+    (hout : out ∈ support ((OracleVerifier.toVerifier (Oₛₒ := fun i : Empty => nomatch i) (stirCheckingVerifier M φ deg)).verify stmtIn tr))
     (hacc : out.1 = true) :
     checkingBool M φ deg stmtIn.2 tr.messages tr.challenges = true := by
   exact (checkingVerifier_acceptance_iff_checkingBool M φ deg stmtIn tr out hout).mp hacc
@@ -779,7 +789,7 @@ theorem checkingVerifier_acceptance_implies_fold_check
     (stmtIn : Unit × ∀ i, OracleStatement ι F i)
     (tr : FullTranscript ((stirMultiVSpec M ι).toProtocolSpec F))
     (out : Bool × (∀ _ : Empty, Unit))
-    (hout : out ∈ _root_.support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr))
+    (hout : out ∈ support ((OracleVerifier.toVerifier (Oₛₒ := fun i : Empty => nomatch i) (stirCheckingVerifier M φ deg)).verify stmtIn tr))
     (hacc : out.1 = true) :
     inputAns stmtIn.2 (queryPoint φ (chalFE tr.challenges (outChalIdx M 0)))
       = msgAns tr.messages (msgIdx M 0)
@@ -795,7 +805,7 @@ theorem checkingVerifier_acceptance_implies_round_consistency
     (stmtIn : Unit × ∀ i, OracleStatement ι F i)
     (tr : FullTranscript ((stirMultiVSpec M ι).toProtocolSpec F))
     (out : Bool × (∀ _ : Empty, Unit))
-    (hout : out ∈ _root_.support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr))
+    (hout : out ∈ support ((OracleVerifier.toVerifier (Oₛₒ := fun i : Empty => nomatch i) (stirCheckingVerifier M φ deg)).verify stmtIn tr))
     (hacc : out.1 = true)
     (j : Fin M) :
     (msgAns tr.messages (msgIdx M j.castSucc)
@@ -821,7 +831,7 @@ theorem checkingVerifier_acceptance_implies_out_consistency
     (stmtIn : Unit × ∀ i, OracleStatement ι F i)
     (tr : FullTranscript ((stirMultiVSpec M ι).toProtocolSpec F))
     (out : Bool × (∀ _ : Empty, Unit))
-    (hout : out ∈ _root_.support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr))
+    (hout : out ∈ support ((OracleVerifier.toVerifier (Oₛₒ := fun i : Empty => nomatch i) (stirCheckingVerifier M φ deg)).verify stmtIn tr))
     (hacc : out.1 = true)
     (j : Fin M) :
     msgAns tr.messages (msgIdx M j.castSucc)
@@ -841,7 +851,7 @@ theorem checkingVerifier_acceptance_implies_shift_consistency
     (stmtIn : Unit × ∀ i, OracleStatement ι F i)
     (tr : FullTranscript ((stirMultiVSpec M ι).toProtocolSpec F))
     (out : Bool × (∀ _ : Empty, Unit))
-    (hout : out ∈ _root_.support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr))
+    (hout : out ∈ support ((OracleVerifier.toVerifier (Oₛₒ := fun i : Empty => nomatch i) (stirCheckingVerifier M φ deg)).verify stmtIn tr))
     (hacc : out.1 = true)
     (j : Fin M) :
     msgAns tr.messages (msgIdx M j.castSucc)
@@ -861,7 +871,7 @@ theorem checkingVerifier_acceptance_implies_final_in_code
     (stmtIn : Unit × ∀ i, OracleStatement ι F i)
     (tr : FullTranscript ((stirMultiVSpec M ι).toProtocolSpec F))
     (out : Bool × (∀ _ : Empty, Unit))
-    (hout : out ∈ _root_.support ((stirCheckingVerifier M φ deg).toVerifier.verify stmtIn tr))
+    (hout : out ∈ support ((OracleVerifier.toVerifier (Oₛₒ := fun i : Empty => nomatch i) (stirCheckingVerifier M φ deg)).verify stmtIn tr))
     (hacc : out.1 = true) :
     (fun x : ι =>
       (((List.finRange (Fintype.card ι)).map (fun k =>
@@ -874,6 +884,7 @@ theorem checkingVerifier_acceptance_implies_final_in_code
     (checkingVerifier_acceptance_implies_checkingBool M φ deg stmtIn tr out hout hacc)
 
 set_option maxHeartbeats 1600000 in
+set_option backward.isDefEq.respectTransparency false in
 /-- **Perfect completeness of the checking (M+1)-round STIR Vector IOPP**, for arbitrary
 symbolic depth `M`, against the genuine perfect-completeness relation `stirRelation deg φ 0`:
 on the honest run every transcript message is the packed genuine fold of the input codeword
@@ -881,11 +892,24 @@ on the honest run every transcript message is the packed genuine fold of the inp
 full-read low-degree check sees exactly the input codeword, which the `δ = 0` input relation
 forces into the code. -/
 theorem stirCheckingIOP_perfectCompleteness (M : ℕ) (φ : ι ↪ F) (deg : ℕ) :
-    OracleReduction.perfectCompleteness (pure ()) isEmptyElim
+    OracleReduction.perfectCompleteness (Oₛₒ := fun i : Empty => nomatch i) (pure ()) isEmptyElim
       (stirRelation deg φ 0) acceptRejectOracleRel (stirCheckingIOP M φ deg) := by
-  rw [OracleReduction.unroll_n_message_reduction_perfectCompleteness
-    (reduction := stirCheckingIOP M φ deg) (stirRelation deg φ 0) acceptRejectOracleRel
-    (pure ()) isEmptyElim inferInstance
+  letI : Inhabited F := ⟨0⟩
+  letI : ∀ q, Fintype (([((stirMultiVSpec M ι).toProtocolSpec F).Challenge]ₒ' ProtocolSpec.challengeOracleInterface).Range q) :=
+    fun ⟨i, _⟩ => by
+      change Fintype (((stirMultiVSpec M ι).toProtocolSpec F).Challenge i)
+      dsimp [ProtocolSpec.Challenge]
+      infer_instance
+  letI : ∀ q, Inhabited (([((stirMultiVSpec M ι).toProtocolSpec F).Challenge]ₒ' ProtocolSpec.challengeOracleInterface).Range q) :=
+    fun ⟨i, _⟩ => by
+      change Inhabited (((stirMultiVSpec M ι).toProtocolSpec F).Challenge i)
+      dsimp [ProtocolSpec.Challenge]
+      infer_instance
+  -- Supply the vacuous output interface before elaborating the native unroll lemma.
+  rw [@OracleReduction.unroll_n_message_reduction_perfectCompleteness
+    _ _ _ _ _ _ _ _ _ Empty _ (fun _ : Empty => Unit) _ (fun i => nomatch i)
+    _ _ _ _ _ (stirCheckingIOP M φ deg) (stirRelation deg φ 0) acceptRejectOracleRel
+    (pure ()) isEmptyElim (OracleComp.prFail_eq_zero _)
     (by simp only [Set.fmap_eq_image, IsEmpty.forall_iff, implies_true])]
   intro stmtIn oStmtIn witIn h_relIn
   -- the δ = 0 input relation is genuine code membership
@@ -897,52 +921,41 @@ theorem stirCheckingIOP_perfectCompleteness (M : ℕ) (φ : ι ↪ F) (deg : ℕ
   simp only [checkingVerifier_toVerifier_verify]
   simp only [Fin.isValue, bind_pure_comp, pure_bind, bind_map_left, liftM_bind, liftM_map,
     Prod.mk.eta, bind_assoc, _root_.map_pure, liftComp_pure, liftM_pure]
-  rw [probEvent_eq_one_iff]
-  refine ⟨?_, ?_⟩
-  · -- SAFETY: the run never fails (the prefix is plain `OracleComp`; the rest is pure)
-    rw [probFailure_bind_eq_zero_iff]
-    refine ⟨?_, fun α _hα => ?_⟩
-    · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
-    · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
-      simp only [OptionT.run_pure, HasEvalPMF.probFailure_eq_zero, zero_add,
-        probOutput_eq_zero_iff, support_pure, Set.mem_singleton_iff, reduceCtorEq,
-        not_false_eq_true]
-  · -- CORRECTNESS: every output in the support satisfies the relation + agreement
-    intro x hx
-    simp only [support_bind, Set.mem_iUnion, exists_prop] at hx
-    obtain ⟨α, hα, hx⟩ := hx
-    -- the run-support invariant: every transcript message is the honest packed codeword
-    have hα' : α ∈ _root_.support
-        ((stirMultiRoundProver M φ deg).runToRound (Fin.last (3 * M + 3))
-          (stmtIn, oStmtIn) witIn) := by
-      simpa only [OptionT.support_liftM] using hα
-    have hinv := stirMultiRoundProver_runToRound_invariant M φ deg (stmtIn, oStmtIn) witIn
-      (Fin.last (3 * M + 3)) α hα'
-    have hmsgs : ∀ j, FullTranscript.messages (pSpec := (stirMultiVSpec M ι).toProtocolSpec F)
-        α.1 j
-        = Vector.cast (stirMultiVSpec_length_msg j) (packFiniteFunction ι (oStmtIn ())) := by
-      intro j
-      have hdir : ((j.1 : Fin (3 * M + 3)) : ℕ) % 3 = 1 :=
-        (stirVSpec_dir_eq_msg_iff (M := M) (msgLen := fun _ => Fintype.card ι)
-          (chalLen := 1)).mp j.2
-      exact hinv.2 j.1.val j.1.isLt hdir
-    have hbool : checkingBool M φ deg oStmtIn
-        (FullTranscript.messages (pSpec := (stirMultiVSpec M ι).toProtocolSpec F) α.1)
-        (FullTranscript.challenges (pSpec := (stirMultiVSpec M ι).toProtocolSpec F) α.1)
-        = true :=
-      checkingBool_honest M φ deg (oStmtIn ()) hmem oStmtIn rfl _ hmsgs _
-    rw [OptionT.mem_support_iff] at hx
-    simp only [OptionT.run_map, support_map, Set.mem_image] at hx
-    erw [OptionT_run_liftComp_pure] at hx
-    simp only [support_pure, Set.mem_singleton_iff, exists_eq_left, Option.map_some,
-      Option.some.injEq] at hx
-    subst hx
-    have hfn : ∀ (f g : ∀ _ : Empty, Unit), f = g := fun _ _ => funext fun i => i.elim
-    refine ⟨?_, ?_, hfn _ _⟩
-    · simp only [acceptRejectOracleRel, Set.mem_singleton_iff, Prod.mk.injEq, hbool]
-    · show (true : Bool) = checkingBool M φ deg oStmtIn _ _
-      rw [hbool]
+  apply (OptionT.prEvent_mk_eq_one_iff _ _).2
+  intro x hx
+  have hopt {κ : Type} {spec : OracleSpec.{0, 0} κ} {β : Type} (mx : OracleComp spec β) :
+      (liftM mx : OptionT (OracleComp spec) β) = some <$> mx := by
+    change (mx >>= fun x => pure (some x)) = some <$> mx
+    rw [map_eq_bind_pure_comp]
+    rfl
+  obtain ⟨a, ha, hx⟩ := OracleComp.mem_support_bind_peel _ _ hx
+  erw [hopt] at ha
+  obtain ⟨α, hα', heq⟩ := OracleComp.mem_support_map_peel _ _ ha
+  subst a
+  have hinv := stirMultiRoundProver_runToRound_invariant M φ deg (stmtIn, oStmtIn) witIn
+    (Fin.last (3 * M + 3)) α hα'
+  have hmsgs : ∀ j, FullTranscript.messages (pSpec := (stirMultiVSpec M ι).toProtocolSpec F)
+      α.1 j
+      = Vector.cast (stirMultiVSpec_length_msg j) (packFiniteFunction ι (oStmtIn ())) := by
+    intro j
+    have hdir : ((j.1 : Fin (3 * M + 3)) : ℕ) % 3 = 1 :=
+      (stirVSpec_dir_eq_msg_iff (M := M) (msgLen := fun _ => Fintype.card ι)
+        (chalLen := 1)).mp j.2
+    exact hinv.2 j.1.val j.1.isLt hdir
+  have hbool : checkingBool M φ deg oStmtIn
+      (FullTranscript.messages (pSpec := (stirMultiVSpec M ι).toProtocolSpec F) α.1)
+      (FullTranscript.challenges (pSpec := (stirMultiVSpec M ι).toProtocolSpec F) α.1)
+      = true :=
+    checkingBool_honest M φ deg (oStmtIn ()) hmem oStmtIn rfl _ hmsgs _
+  simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure,
+    simulateQ_pure, LawfulApplicative.map_pure, Option.map_some, liftComp_pure] at hx
+  have hv := OracleComp.eq_of_mem_support_pure _ hx
+  subst x
+  have hfn : ∀ (f g : ∀ _ : Empty, Unit), f = g := fun _ _ => funext fun i => i.elim
+  refine ⟨_, rfl, ?_, ?_, hfn _ _⟩
+  · simp only [acceptRejectOracleRel, Set.mem_singleton_iff, Prod.mk.injEq, hbool]
+  · show (true : Bool) = checkingBool M φ deg oStmtIn _ _
+    rw [hbool]
 
 end Completeness
 
@@ -964,7 +977,7 @@ per-round proximity-gap analysis. NOT proven here; consumed as a hypothesis. -/
 def stirCheckingRbrSoundnessResidual (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0) : Prop :=
   OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
-    (stirRelation deg φ δ) (stirCheckingIOP M φ deg).verifier ε_rbr
+    (stirRelation deg φ δ) (stirCheckingIOP M φ deg).toOracleVerifier ε_rbr
 
 /-- **The CA bridge residual**: the implication from the EXISTING Johnson-regime
 correlated-agreement residuals to rbr knowledge soundness of the checking verifier —
@@ -1121,14 +1134,11 @@ theorem stirCheckingRbrSoundness_of_one_le_first
     (h1 : ∀ i : (stirMultiVSpec M ι).ChallengeIdx, (i.1 : ℕ) = 0 → 1 ≤ ε_rbr i) :
     stirCheckingRbrSoundnessResidual M φ deg δ ε_rbr := by
   refine ⟨fun _ => Unit,
-    { eqIn := rfl
+    { extractIn := fun _ _ => ()
       extractMid := fun _ _ _ _ => ()
       extractOut := fun _ _ _ => () },
     { toFun := fun m stmtIn _ _ => (m : ℕ) = 0 → (stmtIn, ()) ∈ stirRelation deg φ δ
-      toFun_empty := fun stmtIn witMid => by
-        constructor
-        · intro h _; exact h
-        · intro h; exact h (by simp)
+      toFun_empty := fun stmtIn witIn h => h rfl
       toFun_next := fun m hdir stmtIn tr msg witMid h => by
         intro hc0
         exfalso
@@ -1143,9 +1153,9 @@ theorem stirCheckingRbrSoundness_of_one_le_first
         omega }, ?_⟩
   intro stmtIn witIn prover i
   by_cases h0 : (i.1 : ℕ) = 0
-  · refine le_trans probEvent_le_one ?_
+  · refine le_trans (prEvent_le_one _) ?_
     exact_mod_cast h1 i h0
-  · refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+  · refine le_trans (le_of_eq ((OracleComp.prEvent_eq_zero_iff _ _).2 ?_)) (by positivity)
     rintro ⟨tr, chal, lg⟩ _ hp
     obtain ⟨w, hno, -⟩ := hp
     exact hno fun hc => absurd (by simpa using hc) h0

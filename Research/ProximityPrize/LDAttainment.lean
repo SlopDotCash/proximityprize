@@ -9,8 +9,8 @@ import Research.ProximityPrize.GrandChallenges
 /-!
 # Attainment resolution of the formalized Grand List Decoding Challenge (ABF26 §1)
 
-This file **completely resolves the formalized statement** `grandListDecodingChallenge`
-(and with it `listDecodingPrize`), in the *negative* direction sanctioned by its own
+This file **completely resolves the formalized statement** `continuousGrandListDecodingChallenge`
+(and with it `continuousListDecodingPrize`), in the *negative* direction sanctioned by its own
 docstring ("or proving no such `δ*_C` exists for some parameter regime").
 
 ## The resolution
@@ -189,14 +189,14 @@ variable {F ι : Type} [Field F] [Fintype F] [DecidableEq F]
 
 /-- **The formalized Grand List Decoding Challenge degenerates to the radius-1 question.**
 
-`grandListDecodingChallenge C m ε*` holds *iff* the whole interleaved code is small:
+`continuousGrandListDecodingChallenge C m ε*` holds *iff* the whole interleaved code is small:
 `Λ(C^⋈m, 1) ≤ ε*·|F|`.  In particular the `∃ δ*`-with-strict-maximality shape carries no
 information about list-decoding thresholds: for any `δ* < 1` the maximality clause fails
 on the grid plateau just above `δ*` (`exists_gt_Lambda_eq`), leaving only the degenerate
 witness `δ* = 1`. -/
 theorem grandListDecodingChallenge_iff_Lambda_one_le
     (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0) :
-    grandListDecodingChallenge C m ε_star ↔
+    continuousGrandListDecodingChallenge C m ε_star ↔
       (ListDecodable.Lambda (C^⋈ (Fin m)) ((1 : ℝ≥0) : ℝ) : ENNReal) ≤
         (ε_star : ENNReal) * (Fintype.card F : ENNReal) := by
   constructor
@@ -302,7 +302,7 @@ least two evaluation points) and every interleaving parameter `m ≥ 1`: already
 `1/2` instance of the challenge fails. -/
 theorem not_listDecodingPrize_of_two_le_card
     (domain : ι ↪ F) {m : ℕ} (hm : m ≠ 0) (hι : 2 ≤ Fintype.card ι) :
-    ¬ GrandChallenges.listDecodingPrize domain m := by
+    ¬ GrandChallenges.continuousListDecodingPrize domain m := by
   intro h
   have h0 := h 0
   refine not_grandListDecodingChallengeRS domain ?_ hm ?_ h0

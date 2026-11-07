@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Poulami Das (Least Authority), Alexander Hicks
 -/
 
-import ArkLib.Data.CodingTheory.ReedSolomon
-import ArkLib.Data.CodingTheory.ListDecodability
-import ArkLib.Data.MvPolynomial.Multilinear
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
+import ProximityPrize.Extensions.Data.MvPolynomial.Multilinear
 import ArkLib.Data.Probability.Notation
 import ArkLib.ToMathlib.CountingAgreementBricks
 
@@ -56,7 +56,7 @@ lemma crs_equiv_rs_random_point_agreement
     (∃ σ : Fin s → F,
       let w : Fin s → MvPolynomial (Fin (m + 1)) F :=
         fun i => MvPolynomial.X 0 * rename Fin.succ (eqPolynomial (r i))
-      let multiCRSCode := multiConstrainedCode φ m s w σ
+      let multiCRSCode := ReedSolomon.Compatibility.multiConstrainedCode φ m s w σ
       ∃ u u' : ι → F, u ≠ u' ∧
         u ∈ closeCodewordsRel multiCRSCode f δ ∧
         u' ∈ closeCodewordsRel multiCRSCode f δ)
@@ -66,9 +66,9 @@ lemma crs_equiv_rs_random_point_agreement
   · rintro ⟨u, u', huu, hu, hu', hagree⟩
     refine ⟨fun i => MvPolynomial.eval (r i) (mVdecode u), u.val, u'.val, huu, ?_, ?_⟩
     · refine ⟨⟨u.2, fun i => ?_⟩, hu.2⟩
-      rw [weightConstraint_eqPolynomial_iff _ (mVdecode_mem_restrictDegree _)]
+      rw [ReedSolomon.Compatibility.weightConstraint_eqPolynomial_iff _ (mVdecode_mem_restrictDegree _)]
     · refine ⟨⟨u'.2, fun i => ?_⟩, hu'.2⟩
-      rw [weightConstraint_eqPolynomial_iff _ (mVdecode_mem_restrictDegree _)]
+      rw [ReedSolomon.Compatibility.weightConstraint_eqPolynomial_iff _ (mVdecode_mem_restrictDegree _)]
       exact (hagree i).symm
   · rintro ⟨σv, u, u', huu, hu, hu'⟩
     obtain ⟨⟨hmu, hcu⟩, hbu⟩ := hu
@@ -99,7 +99,7 @@ lemma oodSampling_crs_eq_rs
                             let ri := rs i
                             let rVec := fun j : Fin m => ri ^ (2^(j : ℕ))
                             MvPolynomial.X 0 * rename Fin.succ (eqPolynomial rVec)
-                        let multiCRSCode := multiConstrainedCode φ m s w σ
+                        let multiCRSCode := ReedSolomon.Compatibility.multiConstrainedCode φ m s w σ
                         ∃ u u' : ι → F, u ≠ u' ∧
                           u ∈ closeCodewordsRel multiCRSCode f δ ∧
                           u' ∈ closeCodewordsRel multiCRSCode f δ)]
@@ -122,7 +122,7 @@ lemma oodSampling_crs_eq_rs
           let ri := rs i
           let rVec := fun j : Fin m => ri ^ (2^(j : ℕ))
           MvPolynomial.X 0 * rename Fin.succ (eqPolynomial rVec)
-      let multiCRSCode := multiConstrainedCode φ m s w σ
+      let multiCRSCode := ReedSolomon.Compatibility.multiConstrainedCode φ m s w σ
       ∃ u u' : ι → F, u ≠ u' ∧
         u ∈ closeCodewordsRel multiCRSCode f ↑δ ∧
         u' ∈ closeCodewordsRel multiCRSCode f ↑δ)
@@ -142,7 +142,7 @@ lemma oodSampling_crs_eq_rs
         let ri := rs i
         let rVec := fun j : Fin m => ri ^ (2^(j : ℕ))
         MvPolynomial.X 0 * rename Fin.succ (eqPolynomial rVec)
-      let multiCRSCode := multiConstrainedCode φ m s w σ
+      let multiCRSCode := ReedSolomon.Compatibility.multiConstrainedCode φ m s w σ
       ∃ u u' : ι → F, u ≠ u' ∧
         u ∈ closeCodewordsRel multiCRSCode f ↑δ ∧
         u' ∈ closeCodewordsRel multiCRSCode f ↑δ) : (Fin s → F) → PMF Prop) =
@@ -165,7 +165,7 @@ open LinearMvExtension Polynomial
 is exactly `#event / #domain`. -/
 private lemma uniform_event_mass {α : Type} [Fintype α] [Nonempty α]
     (P : α → Prop) [DecidablePred P] :
-    PMF.bind (PMF.uniformOfFintype α) (fun r => PMF.pure (P r)) True
+    PMF.bind (ProximityPrize.Compatibility.uniformOfFintype α) (fun r => PMF.pure (P r)) True
       = ((Finset.univ.filter P).card : ENNReal) * ((Fintype.card α : ENNReal))⁻¹ := by
   classical
   rw [PMF.bind_apply, tsum_fintype]
@@ -173,7 +173,7 @@ private lemma uniform_event_mass {α : Type} [Fintype α] [Nonempty α]
   · rw [Finset.sum_filter]
     refine Finset.sum_congr rfl fun a _ => ?_
     by_cases h : P a <;>
-      simp [PMF.uniformOfFintype_apply, PMF.pure_apply, h, eq_iff_iff]
+      simp [ProximityPrize.Compatibility.uniformOfFintype_apply, PMF.pure_apply, h, eq_iff_iff]
   · rw [Finset.sum_const, nsmul_eq_mul]
 
 /-- Distinct smooth codewords decode to distinct univariate polynomials (the decoded
@@ -211,7 +211,7 @@ private lemma mVdecode_eval_pow {φ : ι ↪ F} [Smooth φ] {m : ℕ} (u : smoot
     rw [hhom, hg, MvPolynomial.eval₂_id]
   have h2 : powAlgHom (mVdecode u) = ((decodeLT u : Polynomial F)) := by
     have := powContraction_is_right_inverse_to_linearMvExtension (decodeLT u)
-    simpa [powContraction, mVdecode] using this
+    exact this
   rw [← h1, h2]
 
 end CountingBridge
@@ -283,7 +283,7 @@ lemma oodSampling_rs_le_bound
       · rw [hzero, Polynomial.natDegree_zero]
         positivity
       · exact (Polynomial.natDegree_lt_iff_degree_lt hzero).mpr hmem
-    simpa using Polynomial.card_filter_forall_eval_eq_le_of_natDegree_lt
+    exact Polynomial.card_filter_forall_eval_eq_le_of_natDegree_lt
       (F := F) (N := 2 ^ m) (s := s)
       (p := (decodeLT (⟨p.1, h1.1⟩ : smoothCode φ m) : Polynomial F))
       (q := (decodeLT (⟨p.2, h2.1⟩ : smoothCode φ m) : Polynomial F))

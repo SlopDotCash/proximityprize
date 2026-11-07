@@ -267,7 +267,7 @@ omit [DecidableEq ι] in
 goal `δ_ε_correlatedAgreementCurves` in the strict Johnson regime, from a per-`(u, P)` producer
 of the off-centre bundle.  No `hβ`/`hγ`/`hsubst` residual appears in the hypothesis list. -/
 theorem correlatedAgreement_affine_curves_johnson_of_section5DataOffcentreFin_strict
-    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (hInput : ∀ (_hk : 0 < k) (u : WordStack F (Fin (k + 1)) ι),
       Pr_{
@@ -291,7 +291,7 @@ theorem correlatedAgreement_affine_curves_johnson_of_section5DataOffcentreFin_st
 /-- **Closed square-root-radius keystone front door (off-centre, per-`P`).**  As the strict
 front door, with the boundary branch supplied as the packaged `BoundaryCardResidual`. -/
 theorem correlatedAgreement_affine_curves_johnson_of_section5DataOffcentreFin
-    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain)
     (hInput : ∀ (_hk : 0 < k) (u : WordStack F (Fin (k + 1)) ι),
       Pr_{

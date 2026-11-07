@@ -56,7 +56,7 @@ round verifiers), in the stateless regime: one application of the n-ary failing-
 keystone at the per-round failing-determinism witnesses and per-round bounds. -/
 theorem sumcheckLoop_rbrKnowledgeSoundness [IsDomain L] [Subsingleton σ]
     [Inhabited (∀ j, aOStmtIn.OStmtIn j)]
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0) :
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail init = 0) :
     (sumcheckLoopOracleVerifier κ L K P ℓ ℓ' aOStmtIn).rbrKnowledgeSoundness init impl
       (sumcheckRoundRelation κ L K P ℓ ℓ' h_l aOStmtIn 0)
       (sumcheckRoundRelation κ L K P ℓ ℓ' h_l aOStmtIn (Fin.last ℓ'))
@@ -110,7 +110,7 @@ the `hCoreInteractionAppendRbrKnowledgeSoundness` residual of
 `FullRingSwitching.fullOracleVerifier_rbrKnowledgeSoundness`. -/
 theorem coreInteraction_rbrKnowledgeSoundness_wired [Subsingleton σ]
     [Inhabited (∀ j, aOStmtIn.OStmtIn j)]
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0) :
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail init = 0) :
     (coreInteractionOracleVerifier κ L K P ℓ ℓ' h_l aOStmtIn).rbrKnowledgeSoundness
       (init := init) (impl := impl)
       (relIn := sumcheckRoundRelation κ L K P ℓ ℓ' h_l aOStmtIn 0)

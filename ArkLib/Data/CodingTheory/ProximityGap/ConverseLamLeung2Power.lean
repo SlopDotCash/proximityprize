@@ -155,9 +155,9 @@ theorem zero_sum_imp_antipodal {a : ℕ} (ha : 1 ≤ a) {ζ : F}
         have hib : i < d + d := hSlt i hi.1
         have h : i - d + d = i := by omega
         rw [h]; exact ⟨by omega, hi.1⟩
-      · intro j _; dsimp only; omega
+      · intro j _; omega
       · intro i hi; simp only [mem_filter] at hi
-        have hib : i < d + d := hSlt i hi.1; dsimp only; omega
+        have hib : i < d + d := hSlt i hi.1; omega
       · intro j hj; simp only [mem_filter, mem_range] at hj
         rw [pow_add, hhalf]; ring
     rw [hA, hB, sub_neg_eq_add, Finset.sum_filter_add_sum_filter_not, hsum]

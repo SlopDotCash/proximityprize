@@ -219,7 +219,7 @@ theorem independentUpTo_four_delete
     apply Subtype.ext
     exact congrArg (fun z : K => z.1) hxy
   have hcomp := hKLI.comp e he
-  simpa only [Function.comp_apply, e] using hcomp
+  exact hcomp
 
 /-- If exactly one column of an eight-column MDS frame lies in a syndrome
 plane, a projectively injective chord assignment still has size at most
@@ -459,9 +459,7 @@ theorem uniqueEightCoreResidual_not_exactly_one_contained_column
     rw [<- Fintype.card_coe, hVcard]
     norm_num
   have hMDS4 : IndependentUpTo (F := F) (quotientColumn C0) 4 := by
-    simpa only [C0, sourceComplementCode, domV] using
-      reedSolomon_eight_four_quotientColumns_independentUpTo_four
-        domV hVcard
+    exact reedSolomon_eight_four_quotientColumns_independentUpTo_four domV hVcard
   have hrepr : ∀ gamma ∈ G,
       Nonempty (WeightTwoRepresentation C0 v0 v1 gamma) := by
     intro gamma hgamma

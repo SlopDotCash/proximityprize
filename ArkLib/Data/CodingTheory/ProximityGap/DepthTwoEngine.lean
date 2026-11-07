@@ -75,7 +75,7 @@ theorem e3_vanishing_iff_char0 {p : ℕ} [Fact p.Prime] {m : ℕ} (hm : 1 ≤ m)
     ∑ t ∈ upperTriples A, g ^ (t.1 + t.2.1 + t.2.2) = 0 ↔ e3FoldedSum m A = 0 := by
   have h := foldedSum_vanishing_iff_char0 hm hg (upperTriples A)
     (fun t => t.1 + t.2.1 + t.2.2) (fun _ => 1) hp
-  simpa using h
+  simpa [e3FoldedSum] using h
 
 /-- The `ℓ¹` weight of the triple family is its cardinality, at most `|A|³`. -/
 theorem l1Weight_upperTriples (A : Finset ℕ) :

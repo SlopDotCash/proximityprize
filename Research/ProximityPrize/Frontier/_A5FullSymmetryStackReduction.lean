@@ -88,6 +88,8 @@ theorem stackBadCount_translate
   ext γ
   simp only [Finset.mem_filter, Finset.mem_univ, true_and,
     Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
+  erw [Finset.mem_filter, Finset.mem_filter]
+  simp only [Finset.mem_univ, true_and]
   exact mcaEvent_translate C hc₀ hc₁ γ
 
 /-! ## The full symmetry transform: affine-rotation composed with codeword translation -/

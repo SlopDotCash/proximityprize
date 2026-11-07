@@ -21,13 +21,13 @@ Since
 `sumcheckVerifier = (sumcheckOracleReduction …).verifier
   = (logupConcreteSumcheckOracleReduction …).verifier.liftContext (logupSumcheckOracleLens …)`
 (definitionally, `rfl`), this brick transfers the inner generic multi-round sum-check
-**round-by-round soundness** through the context lift via `OracleVerifier.liftContext_rbr_soundness`,
+**round-by-round soundness** through the context lift via `OracleVerifier.liftContextLegacy_rbr_soundness`,
 and then bridges round-by-round soundness to plain soundness, exactly mirroring (on the soundness
 side) the `sumcheckCompletenessResidual_holds` development in `Security/SumcheckCompletenessClose.lean`.
 
 ## Structure of the lift
 
-`OracleVerifier.liftContext_rbr_soundness` (in `LiftContext/OracleReduction.lean`) lifts the inner
+`OracleVerifier.liftContextLegacy_rbr_soundness` (in `LiftContext/OracleReduction.lean`) lifts the inner
 oracle verifier's round-by-round soundness to the outer one. It consumes:
 
 * `Logup.logupSumcheck_liftContextCoherent` — the proven (axiom-clean) `LiftContextCoherent`
@@ -77,7 +77,7 @@ namespace Logup
 
 section SumcheckSoundnessLift
 
-variable {ι : Type} (oSpec : OracleSpec ι) [oSpec.Fintype]
+variable {ι : Type} (oSpec : OracleSpec ι) [∀ q, Fintype (oSpec.Range q)]
 variable (F : Type) [Field F] [Fintype F] [DecidableEq F] [Fact ((-1 : F) ≠ 1)]
   [SampleableType F]
 variable (n M : ℕ)
@@ -117,8 +117,9 @@ def SumcheckLensProjSound
       (∀ i, LogupSumcheckOracleStatement F n M params i))) : Prop :=
   ∀ outerStmtIn : StmtAfterOuter F n M params × (∀ i, OStmtAfterOuter F n M params i),
     outerStmtIn ∉ midLanguage F n M params →
-    (logupSumcheckOracleLens.{0} oSpec F n M params).toLens.proj outerStmtIn ∉ innerLangIn
+    (logupSumcheckOracleLens oSpec F n M params).toLens.proj outerStmtIn ∉ innerLangIn
 
+omit [∀ q, Fintype (oSpec.Range q)] in
 /-- **`OracleStatement.Lens.IsSound` for the LogUp embedded sum-check lens**, assembled from the
 named projection hypothesis `hProj` (genuine soundness algebra) and the *vacuous* `lift_sound`.
 
@@ -129,25 +130,25 @@ soundness mirror of the trivial `lift_complete` in `sumcheckLensComplete`, which
 
 Marked `@[reducible]` so it can serve as the `lensSound` instance argument of
 `liftContext_rbr_soundness`. Universe-pinned to `0` to match `sumcheckVerifier`. -/
-@[reducible] def sumcheckLensSound
+theorem sumcheckLensSound
     (innerLangIn : Set (LogupSumcheckStmtIn F n M params ×
       (∀ i, LogupSumcheckOracleStatement F n M params i)))
     (hProj : SumcheckLensProjSound oSpec F n M params innerLangIn) :
-    (logupSumcheckOracleLens.{0} oSpec F n M params).toLens.IsSound
+    (logupSumcheckOracleLens oSpec F n M params).toLens.IsSound
       (midLanguage F n M params) outputRelation.language
       innerLangIn (Set.univ)
       ((logupConcreteSumcheckOracleReduction oSpec F n M params
           (Fact.out : (-1 : F) ≠ 1)).verifier.toVerifier.compatStatement
-        (logupSumcheckOracleLens.{0} oSpec F n M params).toLens) where
+        (logupSumcheckOracleLens oSpec F n M params).toLens) where
   proj_sound := hProj
   lift_sound := by
-    intro _ _ _ hNot
+    intro _ _ _ _ hNot
     -- inner output language is `Set.univ`, so `∉ Set.univ` is unsatisfiable.
     exact absurd (Set.mem_univ _) hNot
 
 /-- **Round-by-round soundness of `sumcheckVerifier`** (the lifted embedded sum-check verifier),
 obtained by transferring the inner concrete sum-check oracle reduction's round-by-round soundness
-through `OracleVerifier.liftContext_rbr_soundness`.
+through `OracleVerifier.liftContextLegacy_rbr_soundness`.
 
 * `hProj` — the `proj_sound` algebraic obligation (named residual gap), threaded into
   `sumcheckLensSound`;
@@ -169,11 +170,11 @@ theorem sumcheckVerifier_rbrSoundness
         innerLangIn (Set.univ) rbrSoundnessError) :
     (sumcheckVerifier oSpec F n M params).rbrSoundness init impl
       (midLanguage F n M params) outputRelation.language rbrSoundnessError := by
-  haveI := logupSumcheck_liftContextCoherent oSpec F n M params
-  haveI := sumcheckLensSound oSpec F n M params innerLangIn hProj
+  have := logupSumcheck_liftContextCoherent oSpec F n M params
+  have := sumcheckLensSound oSpec F n M params innerLangIn hProj
   -- `sumcheckVerifier = (logupConcreteSumcheckOracleReduction …).verifier.liftContext lens` (`rfl`).
-  exact OracleVerifier.liftContext_rbr_soundness
-    (lens := logupSumcheckOracleLens.{0} oSpec F n M params)
+  exact OracleVerifier.liftContextLegacy_rbr_soundness
+    (lens := logupSumcheckOracleLens oSpec F n M params)
     (logupConcreteSumcheckOracleReduction oSpec F n M params (Fact.out : (-1 : F) ≠ 1)).verifier
     hInnerRbr
 

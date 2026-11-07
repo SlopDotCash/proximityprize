@@ -384,7 +384,7 @@ theorem not_explainableCoreSupply_rootsOfUnity {ζ : F} (hζ : IsPrimitiveRoot �
     refine le_trans hge ?_
     convert hle using 2
     ext T
-    simp only [ProximityGap.Ownership.ExplainableOn, Finset.mem_filter]
+    simp [ProximityGap.Ownership.ExplainableOn]
   omega
 
 open scoped Classical in

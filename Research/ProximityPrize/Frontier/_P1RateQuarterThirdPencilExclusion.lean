@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.ReedSolomonSparseWitness
 import Research.ProximityPrize.Frontier._P1RateQuarterPencilCountCharge
 import Research.ProximityPrize.Frontier._P1RateQuarterCanonicalCodeBridge
 
@@ -552,52 +553,29 @@ theorem agree_partner (j : Fin 3) :
 
 theorem p0fun_mem (hg : orderOf g = 2 ^ 30) (hg0 : g ≠ 0) :
     p0fun g ∈ predecessorCode (powDomain g hg hg0) := by
-  refine ReedSolomon.mem_code_of_polynomial_of_degree_lt_of_eval
-    ((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 26) + (Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 25))
-    ?_ ?_
-  · have hnd : ((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 26) +
-        (Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 25)).natDegree ≤ 2 ^ 26 :=
-      (Polynomial.natDegree_add_le _ _).trans (max_le
-        (Polynomial.natDegree_X_pow_le _)
-        ((Polynomial.natDegree_X_pow_le _).trans (by norm_num)))
-    by_cases hzero : ((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 26) +
-        (Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 25)) = 0
-    · rw [hzero, Polynomial.degree_zero]
-      exact_mod_cast WithBot.bot_lt_coe k
-    · rw [← Polynomial.natDegree_lt_iff_degree_lt hzero]
-      have hk : (2 : ℕ) ^ 26 < k := by norm_num [k]
-      omega
-  · intro i
-    have hxm : xm g i = (g ^ ((i : Fin N) : ℕ)) ^ ((2 : ℕ) ^ 25) := rfl
-    show xm g i ^ 2 + xm g i = _
-    rw [Polynomial.eval_add, Polynomial.eval_pow, Polynomial.eval_pow,
-      Polynomial.eval_X, hxm, ← pow_mul,
-      show (2 : ℕ) ^ 25 * 2 = 2 ^ 26 by norm_num]
+  have hw : p0fun g = fun i =>
+      ((powDomain g hg hg0) i) ^ ((2 : ℕ) ^ 26) +
+        ((powDomain g hg hg0) i) ^ ((2 : ℕ) ^ 25) := by
+    funext i
+    change ((g ^ (i : ℕ)) ^ ((2 : ℕ) ^ 25)) ^ 2 +
+      (g ^ (i : ℕ)) ^ ((2 : ℕ) ^ 25) = _
+    rw [← pow_mul, show (2 : ℕ) ^ 25 * 2 = 2 ^ 26 by norm_num]
     rfl
+  rw [hw]
+  exact ReedSolomon.mem_code_add_monomials (powDomain g hg hg0)
+    (by norm_num [k]) (by norm_num [k])
 
 theorem pPfun_mem (hg : orderOf g = 2 ^ 30) (hg0 : g ≠ 0) (j : Fin 3) :
     pPfun g j ∈ predecessorCode (powDomain g hg hg0) := by
-  refine ReedSolomon.mem_code_of_polynomial_of_degree_lt_of_eval
-    ((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 26) + Polynomial.C (gamP j)) ?_ ?_
-  · have hnd : ((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 26) +
-        Polynomial.C (gamP j)).natDegree ≤ 2 ^ 26 :=
-      (Polynomial.natDegree_add_le _ _).trans (max_le
-        (Polynomial.natDegree_X_pow_le _)
-        ((Polynomial.natDegree_C _).le.trans (by norm_num)))
-    by_cases hzero : ((Polynomial.X : F[X]) ^ ((2 : ℕ) ^ 26) +
-        Polynomial.C (gamP j)) = 0
-    · rw [hzero, Polynomial.degree_zero]
-      exact_mod_cast WithBot.bot_lt_coe k
-    · rw [← Polynomial.natDegree_lt_iff_degree_lt hzero]
-      have hk : (2 : ℕ) ^ 26 < k := by norm_num [k]
-      omega
-  · intro i
-    have hxm : xm g i = (g ^ ((i : Fin N) : ℕ)) ^ ((2 : ℕ) ^ 25) := rfl
-    show xm g i ^ 2 + gamP j = _
-    rw [Polynomial.eval_add, Polynomial.eval_pow, Polynomial.eval_X,
-      Polynomial.eval_C, hxm, ← pow_mul,
-      show (2 : ℕ) ^ 25 * 2 = 2 ^ 26 by norm_num]
+  have hw : pPfun g j = fun i =>
+      ((powDomain g hg hg0) i) ^ ((2 : ℕ) ^ 26) + gamP j := by
+    funext i
+    change ((g ^ (i : ℕ)) ^ ((2 : ℕ) ^ 25)) ^ 2 + gamP j = _
+    rw [← pow_mul, show (2 : ℕ) ^ 25 * 2 = 2 ^ 26 by norm_num]
     rfl
+  rw [hw]
+  exact ReedSolomon.mem_code_monomial_add_constant
+    (powDomain g hg hg0) (by norm_num [k]) (gamP j)
 
 theorem onefun_mem (hg : orderOf g = 2 ^ 30) (hg0 : g ≠ 0) :
     (fun _ : Fin N => (1 : F)) ∈ predecessorCode (powDomain g hg hg0) := by

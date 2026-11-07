@@ -1,0 +1,124 @@
+{
+  "description": "Native final completeness and successful verifier support API ports; preserve public hypotheses, numeric bounds, actual output materialization and rejection branches.",
+  "files": [
+    {
+      "path": "ArkLib/ProofSystem/Logup/Security/LogupCompletenessFinal.lean",
+      "original_source_sha256": "033a1ec3c3306ded70979d90275b49b6e36f1ddb3991bfb52b039e24dca93302",
+      "original_source": "/-\nCopyright (c) 2026 ArkLib Contributors. All rights reserved.\nReleased under Apache 2.0 license as described in the file LICENSE.\nAuthors: ArkLib Contributors\n-/\nimport ArkLib.ProofSystem.Logup.Security.LogupCompletenessWired\nimport ArkLib.ProofSystem.Logup.Security.SumcheckCompletenessUncond\nimport ArkLib.ProofSystem.Logup.Security.LogupSoundnessMsgSeam\nimport ArkLib.ProofSystem.Logup.Security.LogupInitImplFacts\n\n/-!\n# LogUp Protocol 2 completeness — final end-to-end assembly (issue #13)\n\nCombines the three proven pillars into a single end-to-end completeness statement:\n\n* `logup_completeness_wired` (`LogupCompletenessWired.lean`) — the full LogUp oracle-reduction\n  completeness from `{hInit, hSumcheck, seam-direction facts, honest-impl side conditions}`, with\n  the append-composition residual discharged by the proven non-perfect message-seam append\n  keystone (`append_completeness_msg`).\n* `sumcheckCompletenessResidual_unconditional` (`SumcheckCompletenessUncond.lean`) — the\n  embedded sumcheck phase's perfect completeness, **unconditional** in the protocol (the inner\n  multi-round completeness via the proven `CubeFiber` faithfulness, and the `proj_complete`\n  obligation via the claim-true `midRelation`), modulo only the standard data facts\n  `hInit`/`hImplSupp`.\n* the structural seam facts `logupSumcheck_length_pos` / `logup_seam_dir` /\n  `logupSumcheckPSpec_first_dir` (`LogupSoundnessMsgSeam.lean`) — discharged outright from\n  `0 < n`.\n\nThe result: the genuine `(logupOracleReduction).completeness init impl (inputRelation F n M)\noutputRelation (logupCompletenessError F n)`, from only\n\n* `hn : 0 < n` — non-degenerate table;\n* `hInit : NeverFail init` and `hImplSupp` — standard data facts on the shared-oracle state; and\n* `himplSP`/`himplNF`/`himplVB` — the standard honest-implementation side conditions\n  (state-preserving, never-failing, value-state-blind), all vacuous for `oSpec = []ₒ`.\n\n**De-larped (issue #13, dmvt audit):** the headline previously also consumed the honest-support\nhypothesis `hHonest`, which was **unsatisfiable** — it quantified over *all* after-outer statements\nand demanded an honest preimage and pole-freeness, but a statement with a corrupted `.multiplicity`\noracle has no honest preimage and an adversarial `xChallenge` hits poles. The theorem was therefore\nuninstantiable. The embedded-sumcheck completeness is now taken from the claim-true `midRelation`\n(its membership *is* the zero-sum claim the inner sumcheck needs), and `hHonest` is gone.\n\n## Instantiability witness (the audit's acceptance gate)\n\n`logup_completeness_final_instantiable` below instantiates **every** hypothesis of the headline on\na concrete example — `F = ZMod 5`, `n = M = 1`, `params = ⟨1, _, _⟩`, ambient oracle `[]ₒ`,\n`init = pure ()`, the empty implementation — proving the hypothesis set is satisfiable and the\nheadline produces an actual completeness fact for a concrete LogUp instance.\n\nNo `sorry`, no new axioms; the axiom audit at the bottom must print\n`[propext, Classical.choice, Quot.sound]` with no `sorryAx`.\n-/\n\nopen OracleComp OracleSpec ProtocolSpec\n\nnamespace Logup\n\nnoncomputable section\n\nvariable {ι : Type} (oSpec : OracleSpec ι) [oSpec.Fintype] [oSpec.Inhabited]\nvariable (F : Type) [Field F] [Fintype F] [DecidableEq F] [Inhabited F] [SampleableType F]\n  [Fact ((-1 : F) ≠ 1)]\nvariable (n M : ℕ) (params : ProtocolParams M)\nvariable {σ : Type} (init : ProbComp σ) (impl : QueryImpl oSpec (StateT σ ProbComp))\n\n/-- **LogUp Protocol 2 completeness, end-to-end (issue #13).** The full LogUp oracle reduction is\ncomplete with error `logupCompletenessError F n`, from only the non-degeneracy `0 < n` and the\nstandard data / honest-implementation side conditions. No honest-support hypothesis: the\nembedded-sumcheck phase is complete from the claim-true `midRelation` unconditionally. -/\ntheorem logup_completeness_final\n    (hn : 0 < n)\n    (hInit : NeverFail init)\n    (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,\n      Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s)\n        = support (liftM q : OracleComp oSpec β))\n    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),\n      x ∈ support ((impl t).run s) → x.2 = s)\n    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)\n    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),\n      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :\n    (logupOracleReduction oSpec F n M params).completeness init impl\n      (inputRelation F n M) outputRelation (logupCompletenessError F n) :=\n  logup_completeness_wired oSpec F n M params init impl hInit\n    (sumcheckCompletenessResidual_unconditional oSpec F n M params init impl hInit hImplSupp)\n    (logupSumcheck_length_pos n hn)\n    (logup_seam_dir F n M params hn)\n    (logupSumcheckPSpec_first_dir F n M params hn)\n    himplSP himplNF himplVB\n\nend\n\n/-! ## Instantiability witness: a concrete `ZMod 5` LogUp instance\n\nDischarges **all** hypotheses of `logup_completeness_final` on a concrete example, per the issue-#13\naudit acceptance gate (\"every headline theorem instantiable on a concrete example\"). This is what\nthe deleted `hHonest`-based headline could never do. -/\n\nsection Witness\n\nlocal instance : Fact (Nat.Prime 5) := ⟨by norm_num⟩\n\n/-- `-1 ≠ 1` in `ZMod 5` (characteristic `5 ≠ 2`). -/\nlocal instance : Fact ((-1 : ZMod 5) ≠ 1) := ⟨by decide⟩\n\n/-- The empty ambient oracle spec is (vacuously) finite. -/\nlocal instance instEmptySpecFintypeFinal : ([]ₒ : OracleSpec PEmpty).Fintype where\n  fintype_B := fun q => q.elim\n\n/-- The empty ambient oracle spec is (vacuously) inhabited. -/\nlocal instance instEmptySpecInhabitedFinal : ([]ₒ : OracleSpec PEmpty).Inhabited where\n  inhabited_B := fun q => q.elim\n\n/-- Concrete protocol parameters for the witness: partial-sum size `ℓ = 1` at `M = 1`. -/\nnoncomputable def witnessParams : ProtocolParams 1 := ⟨1, Nat.one_pos, by omega⟩\n\n/-- The (unique) query implementation over the empty ambient oracle spec: there are no queries. -/\nnoncomputable def emptyOracleImpl : QueryImpl []ₒ (StateT Unit ProbComp) :=\n  fun t => t.elim\n\n/-- **The headline is instantiable** (issue #13 audit acceptance gate): a concrete LogUp instance —\n`F = ZMod 5`, table rows `n = 1`, columns `M = 1`, partial-sum size `ℓ = 1`, empty ambient oracle,\n`init = pure ()` — discharges every hypothesis of `logup_completeness_final`, yielding the genuine\nend-to-end completeness fact for this instance. All side conditions are *proved* (the `[]ₒ` ones\nvacuously: `([]ₒ).Domain = PEmpty` has no inhabitants), none assumed. -/\ntheorem logup_completeness_final_instantiable :\n    (logupOracleReduction []ₒ (ZMod 5) 1 1 witnessParams).completeness\n      (pure () : ProbComp Unit) emptyOracleImpl\n      (inputRelation (ZMod 5) 1 1) outputRelation\n      (logupCompletenessError (ZMod 5) 1) :=\n  logup_completeness_final []ₒ (ZMod 5) 1 1 witnessParams (pure ()) emptyOracleImpl\n    Nat.one_pos\n    (neverFail_pure_init ())\n    (fun q _ => q.1.elim)\n    (fun t => t.elim)\n    (fun t => t.elim)\n    (fun t => t.elim)\n\nend Witness\n\nend Logup\n\n/- Axiom audit: must be [propext, Classical.choice, Quot.sound] with NO sorryAx. -/\n#print axioms Logup.logup_completeness_final\n#print axioms Logup.logup_completeness_final_instantiable\n",
+      "reviewed_source_sha256": "c6dc793abdb710386d6ec2915629954c39ad92f0339ccc4e0424cbd981c5f5cd",
+      "validation": {
+        "file": "ArkLib/ProofSystem/Logup/Security/LogupCompletenessFinal.lean",
+        "status": "temporary_overlay_source_check",
+        "compiler_exit_code": 0,
+        "admission_checker_exit_code": 0,
+        "elapsed_seconds": 7.101,
+        "source_before_sha256": "c6dc793abdb710386d6ec2915629954c39ad92f0339ccc4e0424cbd981c5f5cd",
+        "source_after_sha256": "c6dc793abdb710386d6ec2915629954c39ad92f0339ccc4e0424cbd981c5f5cd",
+        "import_artifacts": {
+          "ArkLib.ProofSystem.Logup.Security.LogupCompletenessWired": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Logup/Security/LogupCompletenessWired.olean",
+            "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Logup/Security/LogupCompletenessWired.olean",
+            "sha256": "a7d861e1bdd18b1b2caf4243a95f27022608db5a25171e29cedb6a2da48a7a6b",
+            "artifact_family": {
+              "LogupCompletenessWired.olean": "a7d861e1bdd18b1b2caf4243a95f27022608db5a25171e29cedb6a2da48a7a6b"
+            }
+          },
+          "ArkLib.ProofSystem.Logup.Security.SumcheckCompletenessUncond": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Logup/Security/SumcheckCompletenessUncond.olean",
+            "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Logup/Security/SumcheckCompletenessUncond.olean",
+            "sha256": "cf857cacbc6f67c9469707c1c8d6fe07a16fc4a037f1011ca6fd766138d33c7d",
+            "artifact_family": {
+              "SumcheckCompletenessUncond.olean": "cf857cacbc6f67c9469707c1c8d6fe07a16fc4a037f1011ca6fd766138d33c7d"
+            }
+          },
+          "ArkLib.ProofSystem.Logup.Security.LogupSoundnessMsgSeam": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Logup/Security/LogupSoundnessMsgSeam.olean",
+            "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Logup/Security/LogupSoundnessMsgSeam.olean",
+            "sha256": "10bc41fd255a982a6bdfe809e58d3ab0fc61a2724833582676ad870246943a52",
+            "artifact_family": {
+              "LogupSoundnessMsgSeam.olean": "10bc41fd255a982a6bdfe809e58d3ab0fc61a2724833582676ad870246943a52"
+            }
+          },
+          "ArkLib.ProofSystem.Logup.Security.LogupInitImplFacts": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Logup/Security/LogupInitImplFacts.olean",
+            "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Logup/Security/LogupInitImplFacts.olean",
+            "sha256": "169dd4b91324a8ac64c0ed566ef7fee2419c53d1c40d0d7743b4e9545281448a",
+            "artifact_family": {
+              "LogupInitImplFacts.olean": "169dd4b91324a8ac64c0ed566ef7fee2419c53d1c40d0d7743b4e9545281448a"
+            }
+          },
+          "Mathlib.Algebra.Field.ZMod": {
+            "path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/mathlib/.lake/build/lib/lean/Mathlib/Algebra/Field/ZMod.olean",
+            "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/mathlib/.lake/build/lib/lean/Mathlib/Algebra/Field/ZMod.olean",
+            "sha256": "d886362f8c01bf30860bf5cee5f639ca61a649f6518de1dfa2572c52d6006658",
+            "artifact_family": {
+              "ZMod.olean": "d886362f8c01bf30860bf5cee5f639ca61a649f6518de1dfa2572c52d6006658",
+              "ZMod.ir": "9b7197eed33a11555049e74fdc6dabc23020b5f8a89e53693b46f302a9c1261f",
+              "ZMod.ir.sig": "8f7962f1470bb2c6bf2e30378a393b451f6b70d6b34675fea58142d9cf2ddfdd",
+              "ZMod.olean.private": "84b93fd30a71ea20f1962f8d0384e3df780b6bf17863cca3b094f3d51e66057a",
+              "ZMod.olean.server": "2c81c252597db220b6d70d65968feab47dfc89533a0e17b9ab2d48462ac4b3cc"
+            }
+          }
+        },
+        "imports_unchanged": true,
+        "log": "/tmp/arklib-native-overlay/logs/ArkLib.ProofSystem.Logup.Security.LogupCompletenessFinal.lean.1793253734860392000.check.log",
+        "not_a_lake_package_build": true,
+        "standard_axiom_reports": 2
+      },
+      "change": "Replace retired aggregate finite/inhabited oracle classes by the corresponding pointwise families and construct the empty families vacuously. Keep whole-state value-law equality in the same explicit discrete measurable observation space as its wired owner; use native prFail for the unchanged implementation failure premise. Import Mathlib.Algebra.Field.ZMod to supply the existing concrete witness field; prove the same primality5 fact by kernel decide. Headline hypotheses, numerical error, concrete field/table/parameter witness and every public theorem name are unchanged."
+    },
+    {
+      "path": "ArkLib/ProofSystem/Logup/Security/OuterVerifierSupport.lean",
+      "original_source_sha256": "90f7378bc932f435de59f148b9a06c9acd6f204700eb348e84a9280f157d0689",
+      "original_source": "/-\nCopyright (c) 2026 ArkLib Contributors. All rights reserved.\nReleased under Apache 2.0 license as described in the file LICENSE.\nAuthors: ArkLib Contributors\n-/\nimport ArkLib.ProofSystem.Logup.Security.OuterMarginalBound\nimport ArkLib.ProofSystem.Logup.Security.OuterRunSamplesChallenge\n\n/-!\n# LogUp outer verifier: support-level output facts (issue #13, `hsupp` verifier half)\n\nThe support-level consequences of the proven outer-verifier closed form\n(`simulateQ_outerVerify_eq`), at the **plain (`toVerifier`) level** consumed by the soundness\ngame:\n\n* `outer_toVerifier_verify_support` — every surviving (`some`) output of\n  `(outerVerifier).toVerifier.verify (stmt, oStmt) transcript` carries\n  `xChallenge = chalX transcript.challenges` (the round-1 challenge read off the transcript) and\n  passes the input oracles through unchanged (`oStmtOut (.input i) = oStmt i`).\n\n* `outer_toVerifier_accept_pins_challenge` — hence acceptance into the **sharp** protocol-level\n  claim language pins the transcript's round-1 challenge into the challenge-level sharp language\n  `midSoundnessLanguageSharp oStmt`.  This is exactly the verifier half of the `hsupp` side\n  condition of the run-marginal capstone\n  `outer_bad_accept_le_outerSoundnessError_sharp_comap`: composed with the prover-side\n  transcript-extension fact (the round-1 entry of the final transcript is the round-1 challenge\n  drawn during the run), it forces the drawn challenge into the sharp language on every accepting\n  outcome.\n-/\n\nopen OracleComp OracleSpec ProtocolSpec\nopen scoped ENNReal NNReal\n\nnamespace Logup\n\nsection OuterSupport\n\nvariable {ι : Type} {oSpec : OracleSpec ι}\nvariable {F : Type} [Field F] [Fintype F] [DecidableEq F] [Fact ((-1 : F) ≠ 1)]\nvariable {n M : ℕ} {params : ProtocolParams M}\n\n/-- **Support-level output facts of the compiled (plain) outer verifier.**  Every surviving\noutput carries the transcript's round-1 challenge in its `xChallenge` field and passes the input\noracles through unchanged. -/\ntheorem outer_toVerifier_verify_support\n    (stmt : StmtIn F n M) (oStmt : ∀ i, OStmtIn F n M i)\n    (transcript : FullTranscript (outerPSpec F n params))\n    (res : StmtAfterOuter F n M params × (∀ i, OStmtAfterOuter F n M params i))\n    (hres : some res ∈ support\n      (((outerVerifier oSpec F n M params).toVerifier.verify\n        (stmt, oStmt) transcript).run)) :\n    res.1.xChallenge = chalX F n M params (transcript.challenges) ∧\n      ∀ i, res.2 (.input i) = oStmt i := by\n  classical\n  simp only [OracleVerifier.toVerifier] at hres\n  rw [simulateQ_outerVerify_eq (oSpec := oSpec) (F := F) (n := n) (M := M) (params := params) (stmt := stmt) (oStmt := oStmt) (chal := transcript.challenges) (msgs := transcript.messages)] at hres\n  by_cases hacc : ∀ u : Hypercube n,\n      chalX F n M params transcript.challenges + evalOnHypercube (tableOracle oStmt) u ≠ 0\n  · rw [if_pos hacc] at hres\n    simp only [OptionT.run_pure, pure_bind, support_pure,\n      Set.mem_singleton_iff, Option.some.injEq] at hres\n    subst hres\n    refine ⟨rfl, fun i => ?_⟩\n    rfl\n  · rw [if_neg hacc] at hres\n    simp only [OptionT.run_failure, failure_bind] at hres\n    simp at hres\n\n/-- **Acceptance into the sharp protocol language pins the transcript challenge.**  The verifier\nhalf of the run-marginal `hsupp` side condition: any surviving output of the compiled outer\nverifier that lands in `midSoundnessProtocolLanguageSharp` forces the transcript's round-1\nchallenge into the challenge-level sharp language. -/\ntheorem outer_toVerifier_accept_pins_challenge\n    (stmt : StmtIn F n M) (oStmt : ∀ i, OStmtIn F n M i)\n    (transcript : FullTranscript (outerPSpec F n params))\n    (res : StmtAfterOuter F n M params × (∀ i, OStmtAfterOuter F n M params i))\n    (hres : some res ∈ support\n      (((outerVerifier oSpec F n M params).toVerifier.verify\n        (stmt, oStmt) transcript).run))\n    (hmem : res ∈ midSoundnessProtocolLanguageSharp F n M params) :\n    chalX F n M params (transcript.challenges) ∈ midSoundnessLanguageSharp oStmt := by\n  obtain ⟨hx, hin⟩ := outer_toVerifier_verify_support stmt oStmt transcript res hres\n  rw [← hx]\n  exact (mem_midSoundnessProtocolLanguageSharp_iff oStmt res.1 res.2 hin).mp hmem\n\nend OuterSupport\n\nend Logup\n\n/-! ### Axiom audit (issue #13 outer verifier support facts) -/\n\n#print axioms Logup.outer_toVerifier_verify_support\n#print axioms Logup.outer_toVerifier_accept_pins_challenge\n",
+      "reviewed_source_sha256": "9790210f58cf96dbe87c6888f742185e30191a1547fd4d87625e3c5bb0848a94",
+      "validation": {
+        "file": "ArkLib/ProofSystem/Logup/Security/OuterVerifierSupport.lean",
+        "status": "temporary_overlay_source_check",
+        "compiler_exit_code": 0,
+        "admission_checker_exit_code": 0,
+        "elapsed_seconds": 20.107,
+        "source_before_sha256": "9790210f58cf96dbe87c6888f742185e30191a1547fd4d87625e3c5bb0848a94",
+        "source_after_sha256": "9790210f58cf96dbe87c6888f742185e30191a1547fd4d87625e3c5bb0848a94",
+        "import_artifacts": {
+          "ArkLib.ProofSystem.Logup.Security.OuterMarginalBound": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Logup/Security/OuterMarginalBound.olean",
+            "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Logup/Security/OuterMarginalBound.olean",
+            "sha256": "dc9943ad495b6e2d2e38ebc2ec7f72ce64a96ad59681b540d18e4c9c36e69ef2",
+            "artifact_family": {
+              "OuterMarginalBound.olean": "dc9943ad495b6e2d2e38ebc2ec7f72ce64a96ad59681b540d18e4c9c36e69ef2"
+            }
+          },
+          "ArkLib.ProofSystem.Logup.Security.OuterRunSamplesChallenge": {
+            "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Logup/Security/OuterRunSamplesChallenge.olean",
+            "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Logup/Security/OuterRunSamplesChallenge.olean",
+            "sha256": "2779dd906b17515ffe48161259f01b6036984dfd256ecfa6a4c9ad63749bc1d7",
+            "artifact_family": {
+              "OuterRunSamplesChallenge.olean": "2779dd906b17515ffe48161259f01b6036984dfd256ecfa6a4c9ad63749bc1d7"
+            }
+          }
+        },
+        "imports_unchanged": true,
+        "log": "/tmp/arklib-native-overlay/logs/ArkLib.ProofSystem.Logup.Security.OuterVerifierSupport.lean.1793253682091659000.check.log",
+        "not_a_lake_package_build": true,
+        "standard_axiom_reports": 2
+      },
+      "change": "Apply the existing verifier closed form through congrArg OptionT.run before native output Option.map support simplification. Successful outputs pin xChallenge and preserve every input oracle through actual native materializeOutput; the rejection branch is pure none and cannot contain some res. No statement or hypotheses changed."
+    }
+  ],
+  "package_validation_pending": false,
+  "canonical_sources_changed": false,
+  "new_admissions_or_axioms": false,
+  "current_validation": {
+    "status": "package_validation_passed",
+    "receipt": "scripts/integration/final-validation.json",
+    "check": "default_libraries",
+    "source_commit": "7483975d251b3549313243ea9d5ada700af121f9",
+    "source_snapshot_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+    "resolved_package_pending_paths": [
+      "/package_validation_pending"
+    ],
+    "superseded_historical_status_paths": [],
+    "scope": "Current checked-in sources passed the final four-library package build. Original status text and all earlier receipts remain historical snapshots, not current pending claims."
+  }
+}

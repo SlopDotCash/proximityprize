@@ -4,13 +4,13 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Spartan.Basic
+import ProximityPrize.Extensions.ProofSystem.Spartan.Basic
 import ArkLib.ProofSystem.Spartan.FirstSumcheckReduction
 import ArkLib.ProofSystem.Spartan.SecondSumcheckReduction
 import ArkLib.ProofSystem.Spartan.R1CSMleEquivalence
-import ArkLib.ProofSystem.Component.CheckClaim
+import ProximityPrize.Extensions.ProofSystem.Component.CheckClaim
 import ArkLib.ProofSystem.Sumcheck.Spec.General
-import ArkLib.OracleReduction.Composition.Sequential.Append
+import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.Append
 
 set_option linter.style.longFile 1800
 
@@ -57,7 +57,8 @@ structured:
 
 open OracleComp OracleInterface ProtocolSpec Function
 
-deriving instance Fintype for R1CS.MatrixIdx
+instance R1CS.instFintypeMatrixIdx : Fintype R1CS.MatrixIdx :=
+  ⟨{.A, .B, .C}, by intro i; cases i <;> simp⟩
 
 namespace Spartan.Spec
 
@@ -88,8 +89,8 @@ and oracle access to `A, B, C, 𝕨`. The terminal check is the oracle predicate
 random-linear-combination of the evaluation claims is consistent with the matrices/witness at the
 verifier's point.
 
-We model this with the in-tree `CheckClaim.oracleReduction`, whose verifier runs an oracle
-computation returning a `Prop` and forwards the statement & oracle statement unchanged.  -/
+We model this with the in-tree `CheckClaim.oracleReduction`, whose verifier forwards the statement and oracle statements unchanged. The diagnostic predicate
+is separate data; it is not executed by this pass-through reduction.  -/
 
 /-- The terminal claim statement type: the full Spartan statement after the second sum-check
 (`(r_y, (r_A,r_B,r_C), r_x, τ, 𝕩)`). -/
@@ -97,9 +98,9 @@ computation returning a `Prop` and forwards the statement & oracle statement unc
 def FinalStatement : Type := Statement.AfterSecondSumcheck R pp
 
 /-- The terminal oracle-statement family: unchanged from after the second sum-check
-(`bundled (v_A,v_B,v_C) , A, B, C, 𝕨`). -/
+(`v_A, v_B, v_C, A, B, C, 𝕨`). -/
 @[reducible]
-def FinalOracleStatement : Fin 1 ⊕ (R1CS.MatrixIdx ⊕ Fin 1) → Type :=
+def FinalOracleStatement : R1CS.MatrixIdx ⊕ (R1CS.MatrixIdx ⊕ Fin 1) → Type :=
   OracleStatement.AfterSecondSumcheck R pp
 
 instance : ∀ i, OracleInterface (FinalOracleStatement R pp i) :=
@@ -107,7 +108,7 @@ instance : ∀ i, OracleInterface (FinalOracleStatement R pp i) :=
 
 /-- The terminal predicate evaluated as an oracle computation over the final oracle statements.
 
-It queries the bundled evaluation-claim oracle for `(v_A, v_B, v_C)` and forms the
+It queries the three canonical scalar evaluation-claim oracles for `(v_A, v_B, v_C)` and forms the
 random-linear-combination value `r_A · v_A + r_B · v_B + r_C · v_C`, where the coefficients are
 read from the (non-oracle) statement. The terminal obligation is that this combined value equals
 the value the verifier accumulated through the second sum-check; that cross-phase identity is the
@@ -122,24 +123,24 @@ def finalPredicate :
     -- `AfterSecondSumcheck = r_y × (AfterLinearCombination)` and
     -- `AfterLinearCombination = (r_A,r_B,r_C) × (AfterSendEvalClaim)`, so `r = stmt.2.1`.
     let r : R1CS.MatrixIdx → R := stmt.2.1
-    -- Query the bundled evaluation-claim oracle for `(v_A, v_B, v_C)`.
+    -- Query the canonical scalar evaluation-claim oracles for `(v_A, v_B, v_C)`.
     let vA ← (OracleComp.lift <| OracleSpec.query
       (spec := [FinalOracleStatement R pp]ₒ)
-      (show [FinalOracleStatement R pp]ₒ.Domain from ⟨.inl 0, ⟨.A, ()⟩⟩) :
+      (show [FinalOracleStatement R pp]ₒ.Domain from ⟨.inl .A, ()⟩) :
       OracleComp [FinalOracleStatement R pp]ₒ R)
     let vB ← (OracleComp.lift <| OracleSpec.query
       (spec := [FinalOracleStatement R pp]ₒ)
-      (show [FinalOracleStatement R pp]ₒ.Domain from ⟨.inl 0, ⟨.B, ()⟩⟩) :
+      (show [FinalOracleStatement R pp]ₒ.Domain from ⟨.inl .B, ()⟩) :
       OracleComp [FinalOracleStatement R pp]ₒ R)
     let vC ← (OracleComp.lift <| OracleSpec.query
       (spec := [FinalOracleStatement R pp]ₒ)
-      (show [FinalOracleStatement R pp]ₒ.Domain from ⟨.inl 0, ⟨.C, ()⟩⟩) :
+      (show [FinalOracleStatement R pp]ₒ.Domain from ⟨.inl .C, ()⟩) :
       OracleComp [FinalOracleStatement R pp]ₒ R)
     let combined : R := r .A * vA + r .B * vB + r .C * vC
     return (combined = combined)
 
-/-- The final `CheckClaim` oracle reduction for Spartan: a zero-round oracle reduction that runs
-`finalPredicate` and forwards the (oracle) statement unchanged. Built from the in-tree
+/-- The final `CheckClaim` oracle reduction for Spartan: a zero-round oracle reduction that forwards
+the (oracle) statement unchanged; `finalPredicate` remains the diagnostic predicate. Built from the in-tree
 `CheckClaim.oracleReduction`. -/
 def finalCheck :
     OracleReduction oSpec
@@ -147,7 +148,7 @@ def finalCheck :
       (FinalStatement R pp) (FinalOracleStatement R pp) Unit
       !p[] :=
   CheckClaim.oracleReduction oSpec
-    (FinalStatement R pp) (FinalOracleStatement R pp) (finalPredicate R pp)
+    (FinalStatement R pp) (FinalOracleStatement R pp)
 
 /-- The target-carrying terminal statement needed for the real Spartan final check. The first
 component is the final target emitted by the second sum-check; the second component carries the
@@ -315,6 +316,7 @@ theorem zEvalFromFinalOracles_simOracle0_eq_pureFold
     (Finset.univ : Finset (Fin (2 ^ pp.ℓ_n))).toList 0
 
 omit [IsDomain R] [Fintype R] [SampleableType R] in
+set_option backward.isDefEq.respectTransparency false in
 /-- One pure `Z(r_y)` fold step is exactly the equality-kernel coefficient times the corresponding
 entry of the R1CS vector `x || w`. In the witness branch, the witness oracle interface is evaluated
 at a Boolean point and collapses by `MvPolynomial.MLE_eval_zeroOne`. -/
@@ -328,8 +330,7 @@ theorem zEvalPureFoldStep_eq_zTerm
   classical
   unfold zEvalPureFoldStep R1CS.𝕫
   by_cases hy : (yEnum : ℕ) < 2 ^ pp.ℓ_n - 2 ^ pp.ℓ_w
-  · simp [hy, PublicParams.toSizeR1CS, R1CS.Size.n_x, Fin.append, Fin.addCases]
-    congr 1
+  · simp [hy, PublicParams.toSizeR1CS, R1CS.Size.n_x, Fin.append, Fin.addCases, Fin.cast, Fin.castLT, Fin.subNat]
   · let e : Fin (2 ^ pp.ℓ_w) :=
       ⟨(yEnum : ℕ) - (2 ^ pp.ℓ_n - 2 ^ pp.ℓ_w),
         by
@@ -340,16 +341,20 @@ theorem zEvalPureFoldStep_eq_zTerm
     have hquery :
         OracleInterface.answer (oStmt (.inr (.inr 0))) (boolPoint R e) =
           oStmt (.inr (.inr 0)) e := by
-      simpa [OracleInterface.answer, boolPoint, Function.comp_apply] using
+      change MvPolynomial.eval (boolPoint R e)
+        (MvPolynomial.MLE ((oStmt (.inr (.inr 0))) ∘ finFunctionFinEquiv)) = _
+      simpa only [boolPoint] using
         (MvPolynomial.MLE_eval_zeroOne
           (R := R) (σ := Fin pp.ℓ_w)
           (x := finFunctionFinEquiv.symm e)
-          (evals := (oStmt (.inr (.inr 0))) ∘ finFunctionFinEquiv))
-    simp [hy, PublicParams.toSizeR1CS, R1CS.Size.n_x, Fin.append, Fin.addCases]
-    simpa [e] using
-      congrArg
-        (fun z => MvPolynomial.eval stmt.1 (MvPolynomial.eqPolynomial (boolPoint R yEnum)) * z)
-        hquery
+          (evals := (oStmt (.inr (.inr 0))) ∘ finFunctionFinEquiv)).trans
+          (by exact congrArg (oStmt (.inr (.inr 0))) (Equiv.apply_symm_apply finFunctionFinEquiv e))
+    simp [hy, PublicParams.toSizeR1CS, R1CS.Size.n_x, Fin.append, Fin.addCases, Fin.cast, Fin.castLT, Fin.subNat]
+    with_unfolding_all
+      simpa [e] using
+        congrArg
+          (fun z => MvPolynomial.eval stmt.1 (MvPolynomial.eqPolynomial (boolPoint R yEnum)) * z)
+          hquery
 
 omit [IsDomain R] [Fintype R] [SampleableType R] in
 private theorem zEvalPureFold_list_eq_acc_add_sum
@@ -504,10 +509,11 @@ noncomputable def finalCheckWithClaim :
       (FinalClaimStatement R pp) (FinalOracleStatement R pp) Unit
       !p[] :=
   CheckClaim.oracleReduction oSpec
-    (FinalClaimStatement R pp) (FinalOracleStatement R pp) (finalClaimPredicate R pp)
+    (FinalClaimStatement R pp) (FinalOracleStatement R pp)
 
 /-- Input relation front door for the target-carrying Spartan final check. The semantic terminal
-equation is enforced by `finalClaimPredicate` inside the zero-round oracle verifier; this relation
+equation is recorded by `finalClaimPredicate` in the relation; the canonical zero-round verifier
+is a pass-through, so this relation
 keeps the composition endpoint type explicit for later `CheckClaim` completeness plumbing. -/
 @[reducible]
 def finalCheckWithClaimRelIn :
@@ -876,9 +882,15 @@ theorem matrix_toMLE_eval_row_boolColumn
   rw [Matrix.toMLE, MvPolynomial.MLE']
   rw [MvPolynomial.MLE_eval_eq_sum_eqTilde]
   rw [MvPolynomial.MLE_eval_eq_sum_eqTilde]
-  simp [MvPolynomial.MLE', MvPolynomial.eqTilde, MvPolynomial.eval_mul]
+  simp [MvPolynomial.MLE', MvPolynomial.eqTilde, MvPolynomial.eval_mul,
+    Function.comp_apply, MvPolynomial.MLE_eval_zeroOne]
+  apply Finset.sum_congr rfl
+  intro x _
+  congr 1
+  exact MvPolynomial.MLE'_eval_zeroOne yBits (M (finFunctionFinEquiv x))
 
 omit [IsDomain R] [Fintype R] [SampleableType R] in
+set_option backward.isDefEq.respectTransparency false in
 /-- **Second sum-check input claim threading.** The Boolean-cube sum of Spartan's second
 sum-check virtual polynomial equals the random linear combination of the first sum-check
 evaluation claims computed from the matrix/witness oracles. -/
@@ -923,7 +935,6 @@ theorem secondSumCheckVirtualPolynomial_hypercubeSum_eq_evalClaimValue
           r idx * MvPolynomial.eval r_x
             (MvPolynomial.MLE ((Matrix.mulVec (Mat idx) z) ∘ finFunctionFinEquiv)) := by
     simp [evalClaimValue, r, r_x, x, z, Mat, PublicParams.toSizeR1CS]
-    rfl
   rw [hclaim, htarget]
   refine Fintype.sum_equiv (finFunctionFinEquiv (m := 2) (n := pp.ℓ_n))
     (fun yBits : Fin pp.ℓ_n → Fin 2 =>
@@ -938,12 +949,26 @@ theorem secondSumCheckVirtualPolynomial_hypercubeSum_eq_evalClaimValue
                 Mat idx (finFunctionFinEquiv xBits) yEnum))))
     ?_
   intro yBits
-  simp [secondSumCheckVirtualPolynomial, matrix_toMLE_eval_row_boolColumn, r, r_x, x, z, Mat,
-    MvPolynomial.eval_add, MvPolynomial.eval_mul, MvPolynomial.eval_C]
+  simp only [secondSumCheckVirtualPolynomial, MvPolynomial.eval_add, MvPolynomial.eval_mul,
+    MvPolynomial.eval_C]
+  let matrixEval (idx : R1CS.MatrixIdx) :=
+    MvPolynomial.eval (yBits : Fin pp.ℓ_n → R)
+      (MvPolynomial.eval (MvPolynomial.C ∘ r_x) (Mat idx).toMLE)
+  let zEval := MvPolynomial.eval (yBits : Fin pp.ℓ_n → R)
+    (MvPolynomial.MLE (z ∘ finFunctionFinEquiv))
+  change r .A * matrixEval .A * zEval + r .B * matrixEval .B * zEval +
+    r .C * matrixEval .C * zEval = _
+  dsimp only [matrixEval, zEval]
+  rw [matrix_toMLE_eval_row_boolColumn (R := R) pp (Mat .A) r_x yBits,
+    matrix_toMLE_eval_row_boolColumn (R := R) pp (Mat .B) r_x yBits,
+    matrix_toMLE_eval_row_boolColumn (R := R) pp (Mat .C) r_x yBits,
+    MvPolynomial.MLE_eval_zeroOne]
+  simp only [Function.comp_apply]
   rw [matrixIdx_sum]
-  ring_nf
+  ring
 
 omit [IsDomain R] [Fintype R] [SampleableType R] in
+set_option backward.isDefEq.respectTransparency false in
 /-- Stored-claim form of `secondSumCheckVirtualPolynomial_hypercubeSum_eq_evalClaimValue`: if the
 bundled eval-claim oracle contains the honest `evalClaimValue`, the second sum-check's initial
 cube-sum equals the random linear combination of that stored oracle. -/
@@ -951,13 +976,13 @@ theorem secondSumCheckVirtualPolynomial_hypercubeSum_eq_claimOracle
     (stmt : Statement.AfterLinearCombination R pp)
     (oStmt : ∀ i, OracleStatement.AfterLinearCombination R pp i)
     (hEval : ∀ idx,
-      oStmt (.inl 0) idx = evalClaimValue R pp stmt.2 (fun i => oStmt (.inr i)) idx) :
+      oStmt (.inl idx) = evalClaimValue R pp stmt.2 (fun i => oStmt (.inr i)) idx) :
     (∑ yBits : Fin pp.ℓ_n → Fin 2,
         MvPolynomial.eval (yBits : Fin pp.ℓ_n → R)
           (secondSumCheckVirtualPolynomial R pp stmt oStmt))
       =
       ∑ idx : R1CS.MatrixIdx,
-        stmt.1 idx * oStmt (.inl 0) idx := by
+        stmt.1 idx * (show R from oStmt (.inl idx)) := by
   rw [secondSumCheckVirtualPolynomial_hypercubeSum_eq_evalClaimValue R pp stmt oStmt]
   refine Finset.sum_congr rfl fun idx _ => ?_
   rw [hEval idx]
@@ -1394,7 +1419,7 @@ theorem composedRbrKnowledgeSoundnessWithClaimValueRelStatement_of_broadStatemen
         intro stmtIn tr witOut hValue
         exact kSF.toFun_full stmtIn tr witOut <|
           lt_of_lt_of_le hValue <|
-            probEvent_mono fun _ _ h =>
+            prEvent_mono _ _ _ fun _ h =>
               finalCheckWithClaimValueRelIn_subset_finalCheckWithClaimRelOut R pp h }
   refine ⟨WitMid, extractor, kSFValue, ?_⟩
   simpa [kSFValue] using hProb

@@ -1,0 +1,149 @@
+{
+  "downstream_revision": "883e99d61e51264327b5fee859732d047f7d7038",
+  "canonical_dependency": {
+    "repository": "https://github.com/Verified-zkEVM/VCVio",
+    "revision": "6214f907760776ceab8b1f828c9015f549e66e31"
+  },
+  "files": {
+    "ArkLib/Commitments/Functional/MerkleTree/Extraction.lean": {
+      "source_sha256": "62da00e68bd2de7f9c8f44673891937bdf3ff31cea5528948dad1229e8b5843a",
+      "declarations": [
+        {
+          "original": "InductiveMerkleTree.getPutativeRootWithHash_injective_of_hash_injective",
+          "destination": "InductiveMerkleTree.getPutativeRootWithHash_injective_of_hash_injective",
+          "action": "preserved",
+          "kind": "theorem"
+        },
+        {
+          "original": "InductiveMerkleTree.opening_binding",
+          "destination": "InductiveMerkleTree.opening_binding",
+          "action": "preserved",
+          "kind": "theorem"
+        },
+        {
+          "original": "InductiveMerkleTree.extractLeaf",
+          "destination": "InductiveMerkleTree.extractLeaf",
+          "action": "preserved",
+          "kind": "def"
+        },
+        {
+          "original": "InductiveMerkleTree.extractLeaf_eq_opened",
+          "destination": "InductiveMerkleTree.extractLeaf_eq_opened",
+          "action": "preserved",
+          "kind": "theorem"
+        },
+        {
+          "original": "InductiveMerkleTree.extracted_leaf_unique",
+          "destination": "InductiveMerkleTree.extracted_leaf_unique",
+          "action": "preserved",
+          "kind": "theorem"
+        },
+        {
+          "original": "InductiveMerkleTree.multi_instance_extracted_leaves_unique",
+          "destination": "InductiveMerkleTree.multi_instance_extracted_leaves_unique",
+          "action": "preserved",
+          "kind": "theorem"
+        },
+        {
+          "original": "InductiveMerkleTree.randomOracle_extractability_bound",
+          "destination": null,
+          "action": "retired: legacy game/event API is absent from the current dependency; its unconditional birthday-plus-guessing bound is not established for the current experiment",
+          "kind": "theorem"
+        }
+      ],
+      "destination_sha256": "d1eca1eef18c416975e8ddd2d827704f66d2f8621ee94301f36ef3888b816456"
+    },
+    "ArkLib/Commitments/Functional/MerkleTree/Batch.lean": {
+      "source_sha256": "773348868d853c64f07a16052f189d51115068ffce999d73a6350182f80a458c",
+      "declarations": [
+        {
+          "original": "InductiveMerkleTree.simulateQ_verifyProof_run",
+          "destination": "InductiveMerkleTree.simulateQ_verifyProof_run",
+          "action": "preserved",
+          "kind": "theorem"
+        },
+        {
+          "original": "InductiveMerkleTree.simulateQ_verifyProof_rejects_wrong_root",
+          "destination": "InductiveMerkleTree.simulateQ_verifyProof_rejects_wrong_root",
+          "action": "preserved",
+          "kind": "theorem"
+        },
+        {
+          "original": "InductiveMerkleTree.simulateQ_honest_verify_accepts",
+          "destination": "InductiveMerkleTree.simulateQ_honest_verify_accepts",
+          "action": "preserved",
+          "kind": "theorem"
+        },
+        {
+          "original": "InductiveMerkleTree.batchOpening",
+          "destination": "InductiveMerkleTree.batchOpening",
+          "action": "preserved",
+          "kind": "def"
+        },
+        {
+          "original": "InductiveMerkleTree.verifyOpening",
+          "destination": "InductiveMerkleTree.verifyOpening",
+          "action": "preserved",
+          "kind": "def"
+        },
+        {
+          "original": "InductiveMerkleTree.functional_batch_completeness",
+          "destination": "InductiveMerkleTree.functional_list_batch_completeness",
+          "action": "renamed to distinguish independent opening lists from canonical compressed selector proofs",
+          "kind": "theorem"
+        },
+        {
+          "original": "InductiveMerkleTree.simulateQ_verifyOpening_honest",
+          "destination": "InductiveMerkleTree.simulateQ_verifyOpening_honest",
+          "action": "preserved",
+          "kind": "theorem"
+        },
+        {
+          "original": "InductiveMerkleTree.simulateQ_honest_batch_verify_accepts",
+          "destination": "InductiveMerkleTree.simulateQ_honest_batch_verify_accepts",
+          "action": "preserved",
+          "kind": "theorem"
+        },
+        {
+          "original": "InductiveMerkleTree.simulateQ_mapM_all_accept",
+          "destination": "InductiveMerkleTree.simulateQ_mapM_all_accept",
+          "action": "preserved",
+          "kind": "theorem"
+        },
+        {
+          "original": "InductiveMerkleTree.simulateQ_honest_batch_run_accepts",
+          "destination": "InductiveMerkleTree.simulateQ_honest_batch_run_accepts",
+          "action": "preserved",
+          "kind": "theorem"
+        }
+      ],
+      "destination_sha256": "341aae0bd60679f1fcc13863cc13ee98f1e4e55dc679fead40b2e97d83dc8c04"
+    }
+  },
+  "current_probability_api": {
+    "owner": "VCVio/CryptoFoundations/MerkleTree/Inductive/Extractability.lean",
+    "general_wrapper": "InductiveMerkleTree.randomOracle_extractability_rom_bound",
+    "experiment": "InductiveMerkleTree.extractabilityExperiment",
+    "event": "InductiveMerkleTree.OpeningExtractionFailure",
+    "bound": "InductiveMerkleTree.extractabilityROMErrorNumerator s qb / Fintype.card α",
+    "sampling_contract": "UniformAnswerMeasure (InductiveMerkleTree.spec α)",
+    "conditional_corollary": "InductiveMerkleTree.randomOracle_extractability_rom_birthday_bound",
+    "conditional_hypotheses": [
+      "2 * (2 * s.leafCount - 1) + 1 ≤ qb",
+      "2 * (2 * s.leafCount - 1) * s.depth ≤ qb"
+    ],
+    "note": "New wrapper names make the model and bound migration explicit. The corollary uses the former numerical expression only for the current experiment and only under the canonical quadratic-bound hypotheses."
+  },
+  "batch_api": {
+    "canonical_owner": "VCVio/CryptoFoundations/MerkleTree/Inductive/Batch/Completeness.lean",
+    "canonical": "InductiveMerkleTree.functional_batch_completeness",
+    "canonical_meaning": "a compressed proof for a Boolean selector opening at least one leaf",
+    "retained": "InductiveMerkleTree.functional_list_batch_completeness",
+    "retained_meaning": "every independent single-position opening in an arbitrary list reconstructs the honest root"
+  },
+  "validation": {
+    "method": "scripts/pg-iterate.sh on actual source files against built imports",
+    "Extraction.lean": "exit 0, 27 s; new current-ROM wrappers report only propext, Classical.choice, Quot.sound",
+    "Batch.lean": "exit 0, 32 s"
+  }
+}

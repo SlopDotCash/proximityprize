@@ -1,0 +1,70 @@
+{
+  "canonical_owner": "ArkLib/ProofSystem/Binius/BinaryBasefold/Relations.lean",
+  "canonical_api": "Binius.BinaryBasefold.getFoldingChallenges",
+  "canonical_convention": "Chronological challenge storage; the slice reads challenges[k+j].",
+  "compatibility_owner": "ProximityPrize/Compatibility/BiniusChallengeOrder.lean",
+  "compatibility_sha256": "e0b6ccca57cb6df8df8f2ec97d09698c3ca3c1e6532933d12a30eac1adb4f3f6",
+  "compatibility_api": "Binius.BinaryBasefold.Compatibility.newestFirstFoldingChallenges",
+  "compatibility_convention": "An explicitly newest-first input is reversed once and passed to the canonical slice. No canonical model is modified.",
+  "mathematical_bridge": "Supplying the reversed canonical input to the newest-first adapter yields exactly the canonical slice, by Fin.rev_rev.",
+  "regression_client": "ArkLibTest/Compatibility/BiniusChallengeOrder.lean",
+  "regression_client_sha256": "a4657de99f8dc01707986f139301a0e8f21037a810e06d3ca4c5590e86571c5c",
+  "separation": "The two-challenge vector [0,1] produces first value0 through canonical slicing and first value1 through the newest-first adapter. The fixtures prevent identifying the two input conventions.",
+  "validation": {
+    "compatibility_source": "Isolated actual-import pg-iterate raw0 + admission checker,21s; reverse bridge only propext/Quot.sound.",
+    "client_source_composition": {
+      "kind": "temporary-overlay exact helper+client source composition; imports hoisted only",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "elapsed_seconds": 49.487,
+      "source_sha256": "87cadbd905e67363065c20bdbed836c66629a876d8b7911ede68c688efb50481",
+      "source_and_imports_unchanged": true,
+      "axioms": [
+        "propext",
+        "Quot.sound"
+      ],
+      "not_a_lake_package_build": true
+    },
+    "actual_client_module": {
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "elapsed_seconds": 52.536,
+      "source_before_sha256": "a4657de99f8dc01707986f139301a0e8f21037a810e06d3ca4c5590e86571c5c",
+      "source_after_sha256": "a4657de99f8dc01707986f139301a0e8f21037a810e06d3ca4c5590e86571c5c",
+      "imports_unchanged": true,
+      "not_a_lake_package_build": true
+    }
+  },
+  "remaining_integration": "Basic historical slices and witness encoding are explicitly named and checked (binius-basic-convention-migration.json). QuerySuffix now proves complete logical-check conversion (binius-query-convention-migration.json). Remaining caller imports and the final package build remain separate requirements.",
+  "folding_bridge": {
+    "path": "ProximityPrize/Compatibility/BiniusFolding.lean",
+    "sha256": "b352a7bf4342d73977cb4be08eda9ec9866eda0e5823affdbd87885a30571482",
+    "declarations": [
+      "Binius.BinaryBasefold.Compatibility.reverseFinalChallenges_involutive",
+      "Binius.BinaryBasefold.Compatibility.iterated_fold_eq_canonical"
+    ],
+    "meaning": "Explicit final-statement reversal preserves metadata and is involutive. At destination ≤ ℓ, the broader legacy iterator is exactly the canonical iteratedFold for the same chronological challenge vector. Raw matrix layouts are not identified.",
+    "validation": {
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "elapsed_seconds": 15.671,
+      "source_before_sha256": "b352a7bf4342d73977cb4be08eda9ec9866eda0e5823affdbd87885a30571482",
+      "source_after_sha256": "b352a7bf4342d73977cb4be08eda9ec9866eda0e5823affdbd87885a30571482",
+      "imports_unchanged": true,
+      "not_a_lake_package_build": true
+    },
+    "axioms": "Statement reversal: propext/Quot.sound; bounded iteration bridge: propext/Classical.choice/Quot.sound"
+  },
+  "current_validation": {
+    "status": "package_validation_passed",
+    "receipt": "scripts/integration/final-validation.json",
+    "check": "default_libraries",
+    "source_commit": "7483975d251b3549313243ea9d5ada700af121f9",
+    "source_snapshot_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+    "resolved_package_pending_paths": [],
+    "superseded_historical_status_paths": [
+      "/remaining_integration"
+    ],
+    "scope": "Current checked-in sources passed the final four-library package build. Original status text and all earlier receipts remain historical snapshots, not current pending claims."
+  }
+}

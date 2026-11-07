@@ -271,11 +271,9 @@ noncomputable def curveHenselDatum_of_truncatedLocalRoot {k deg : ℕ} {domain :
     (fun z => PowerSeries.C ((π_z z (root z))
       (BCIKS20.HenselNumerator.βHensel H x₀ R hHyp 0)))
     (fun z hz => by
-      dsimp only
       rw [dif_pos hz]
       exact Polynomial.dvd_iff_isRoot.mp (hdvd z hz))
     (fun z hz => by
-      dsimp only
       rw [dif_pos hz, ← htrunc z hz]
       exact trunc_localSeries_isRoot_of_alphaFromBeta_vanishing hHyp hξ hlc z (root z)
         (hx z hz) hvanish)
@@ -289,7 +287,6 @@ noncomputable def curveHenselDatum_of_truncatedLocalRoot {k deg : ℕ} {domain :
         constantCoeff_localSeries hHyp z (root z) (hx z hz), PowerSeries.constantCoeff_C,
         sub_self])
     (fun z hz => by
-      dsimp only
       rw [dif_pos hz]
       exact specialized_separable_of_R_separable hHyp z (root z) (hx z hz) hR)
 

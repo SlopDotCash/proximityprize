@@ -4,9 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.SpartanFirstChallenge
 import ArkLib.ProofSystem.Spartan.FirstChallengeCoherent
 import ArkLib.ProofSystem.Spartan.ZeroCheckComplete
-import ArkLib.ProofSystem.Component.RandomQuery
+import ProximityPrize.Extensions.ProofSystem.Component.RandomQuery
 
 /-!
 # The Spartan `firstChallenge` phase is (unconditionally) perfectly complete (issue #114)
@@ -37,7 +38,7 @@ open MvPolynomial OracleComp OracleSpec ProtocolSpec OracleInterface Function
 namespace Spartan.Spec
 
 variable {R : Type} [CommRing R] [IsDomain R] [Fintype R] [DecidableEq R] [SampleableType R]
-  [VCVCompatible R] (pp : Spartan.PublicParams) {ι : Type} (oSpec : OracleSpec ι)
+  (pp : Spartan.PublicParams) {ι : Type} (oSpec : OracleSpec ι)
 
 local instance :
     VerifierOnly (⟨!v[.V_to_P], !v[FirstChallenge R pp]⟩ : ProtocolSpec 1) where
@@ -78,89 +79,36 @@ instance firstChallengeLensComplete :
         (firstChallengeContextLens R pp).toContext) where
   proj_complete := by
     rintro ⟨𝕩, oStmt⟩ ⟨⟩ hRelIn
-    simp only [firstChallengeRelIn, Set.mem_setOf_eq] at hRelIn
-    simp only [firstChallengeContextLens, firstChallengeStmtLens, OracleContext.Lens.toContext,
-      Context.Lens.proj, RandomQuery.relIn, Set.mem_setOf_eq]
+    simp only [firstChallengeRelIn, Set.mem_ofPred_eq] at hRelIn
+    simp only [firstChallengeContextLens, firstChallengeStmtLens, RandomQuery.relIn, Set.mem_ofPred_eq]
     exact zeroCheckVirtualPolynomial_eq_zero_of_satisfied pp 𝕩 oStmt hRelIn
   lift_complete := by
     rintro ⟨𝕩, oStmt⟩ ⟨⟩ ⟨q, innerO⟩ ⟨⟩ _hCompat hRelIn _hRelOut
-    simp only [firstChallengeRelIn, Set.mem_setOf_eq] at hRelIn
-    simpa only [firstChallengeRelOut, Set.mem_setOf_eq] using hRelIn
+    simp only [firstChallengeRelIn, Set.mem_ofPred_eq] at hRelIn
+    exact hRelIn
 
-set_option maxHeartbeats 0 in
-/-- **`firstChallenge` phase perfect completeness (issue #114), unconditional.** The Spartan
-`firstChallenge` oracle reduction is perfectly complete from `firstChallengeRelIn` to
-`firstChallengeRelOut`.
-
-The protocol implementation is behaviorally the old `RandomQuery` lift, but the concrete reduction
-is now the direct `firstChallengeProver`/`firstChallengeVerifier` pair. Proving completeness against
-that run avoids the heavy deep-lens normalization while preserving the same semantic endpoints. -/
-theorem firstChallenge_perfectCompleteness
+omit [IsDomain R] [Fintype R] [DecidableEq R] in
+/-- The completed downstream `Unit`-witness challenge phase preserves the R1CS relation and
+honest prover/verifier agreement on every raw run outcome. It makes no completion claim about
+the inherited canonical admitted constructor. -/
+theorem completedFirstChallenge_perfectCompleteness
     {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)} :
-    (oracleReduction.firstChallenge R pp oSpec).perfectCompleteness init impl
+    (oracleReduction.completedFirstChallenge R pp oSpec).perfectCompleteness init impl
       (firstChallengeRelIn (R := R) pp) (firstChallengeRelOut (R := R) pp) := by
-  simp only [OracleReduction.perfectCompleteness, oracleReduction.firstChallenge,
-    firstChallengeRelIn, firstChallengeRelOut]
-  simp only [Reduction.perfectCompleteness_eq_prob_one]
-  intro ⟨stmt, oStmt⟩ wit hRelIn
-  simp only [OracleReduction.toReduction, Reduction.run, Prover.run_of_verifier_first,
-    firstChallengeProver, firstChallengeVerifier, OracleVerifier.toVerifier, Verifier.run]
-  simp_rw [show (pure : _ → OptionT (OracleComp _) _) = fun x => (pure (some x) :
-    OracleComp _ _) from rfl]
-  try simp only [← OracleComp.liftComp_eq_liftM, OracleComp.liftComp_pure,
-    pure_bind, bind_assoc]
-  erw [simulateQ_bind]
-  erw [simulateQ_bind]
-  simp only [QueryImpl.addLift_def, simulateQ_pure,
-    QueryImpl.simulateQ_add_liftComp_right, QueryImpl.simulateQ_add_liftComp_left,
-    simulateQ_query,
-    ← OracleComp.liftComp_eq_liftM, OracleComp.liftComp_pure,
-    pure_bind, bind_assoc, map_pure, monadLift_pure, monadLift_bind]
-  erw [simulateQ_bind]
-  simp only [QueryImpl.addLift_def, simulateQ_pure,
-    QueryImpl.simulateQ_add_liftComp_right, QueryImpl.simulateQ_add_liftComp_left,
-    simulateQ_query,
-    ← OracleComp.liftComp_eq_liftM, OracleComp.liftComp_pure,
-    pure_bind, bind_assoc, map_pure, monadLift_pure, monadLift_bind,
-    OptionT.run_mk, OptionT.run_pure, OptionT.run_bind, OptionT.run,
-    Option.getM, Option.bind_some, Option.elimM,
-    FullTranscript.challenges, FullTranscript.messages, ChallengeIdx, Challenge]
-  try erw [simulateQ_query]
-  simp only [Fin.isValue, Fin.vcons_of_one, ChallengeIdx,
-    Challenge, ofPFunctor_toPFunctor, QueryImpl.liftTarget_self, MessageIdx,
-    Message, bind_map_left, StateT.run'_eq, StateT.run_bind, map_bind, OptionT.mk_bind,
-    Set.mem_setOf_eq, probEvent_eq_one_iff, probFailure_bind_eq_zero_iff,
-    OptionT.probFailure_liftM, HasEvalPMF.probFailure_eq_zero, OptionT.support_liftM,
-    Prod.forall, true_and, support_bind, Set.mem_iUnion, OptionT.mem_support_iff,
-    OptionT.run_mk, support_map, Set.mem_image, Prod.exists, exists_and_right,
-    exists_eq_right, exists_prop, forall_exists_index, and_imp, Prod.mk.injEq]
-  constructor <;> intro <;> intro <;> intro <;> intro
-  all_goals try erw [simulateQ_bind]
-  all_goals simp only [MonadLift.monadLift, liftM, monadLift, MonadLiftT.monadLift]
-  all_goals simp only [OracleComp.liftComp_pure, QueryImpl.simulateQ_add_liftComp_left,
-    simulateQ_pure, simulateQ_id', pure_bind, bind_assoc, map_pure, monadLift_pure,
-    OptionT.run_mk, OptionT.run_pure, OptionT.run_bind, OptionT.run,
-    StateT.run'_eq, probFailure_eq_zero,
-    support_pure, Set.mem_singleton_iff, Prod.eq_iff_fst_eq_snd_eq]
-  all_goals try erw [simulateQ_pure]
-  all_goals try simp_all only [simulateQ_pure, pure_bind, map_pure,
-    OptionT.run_mk, OptionT.run_pure, OptionT.run_bind, OptionT.run,
-    StateT.run'_eq, StateT.run_pure, probFailure_eq_zero,
-    support_pure, support_map, Set.mem_singleton_iff, Set.mem_image,
-    OptionT.probFailure_eq, probOutput_pure]
-  · erw [simulateQ_bind, simulateQ_pure]
-    simp only [pure_bind]
-    erw [simulateQ_pure]
-    simp [map_pure, OptionT.mk, probFailure_pure]
-  · intro wOut q2 stmt2 oOut2 sI hsI chalR sC hQuery sV hSupp
-    try erw [simulateQ_bind] at hSupp
-    try simp only [liftComp_eq_liftM, pure_bind, simulateQ_pure, OptionT.lift,
-      OptionT.run_mk, map_pure] at hSupp
-    try erw [simulateQ_pure] at hSupp
-    simp only [pure_bind, simulateQ_pure, StateT.run_pure, support_pure, StateT.run, StateT.run',
-      Set.mem_singleton_iff, Prod.mk.injEq, Option.some.injEq] at hSupp
-    obtain ⟨⟨rfl, ⟨⟨rfl, rfl⟩, rfl⟩, rfl⟩, ⟨rfl, rfl⟩, rfl⟩ := hSupp
-    refine ⟨?_, ⟨rfl, rfl⟩, rfl⟩
-    simpa only [Set.mem_setOf_eq] using hRelIn
+  change ((oracleReduction.completedFirstChallenge R pp oSpec).toReduction).perfectCompleteness
+    init impl (firstChallengeRelIn (R := R) pp) (firstChallengeRelOut (R := R) pp)
+  apply Reduction.perfectCompleteness_of_run_support
+  rintro ⟨stmt, oStmt⟩ ⟨⟩ hRelIn z hz
+  simp only [oracleReduction.completedFirstChallenge, OracleReduction.toReduction, Reduction.run,
+    Prover.run_of_verifier_first, firstChallengeProver, firstChallengeVerifier,
+    OracleVerifier.toVerifier, Verifier.run] at hz
+  simp only [OptionT.run_bind, OptionT.run_mk, OptionT.run_pure, OptionT.run_monadLift,
+    simulateQ_pure, pure_bind, map_pure, liftM_pure,
+    Option.elimM, Option.getM_some, Option.map_some] at hz
+  simp_all [firstChallengeRelIn, firstChallengeRelOut]
+  obtain ⟨q, _, rfl⟩ := hz
+  exact ⟨_, q, stmt, oStmt, ⟨(), rfl⟩, hRelIn⟩
 
 end Spartan.Spec
+
+#print axioms Spartan.Spec.completedFirstChallenge_perfectCompleteness

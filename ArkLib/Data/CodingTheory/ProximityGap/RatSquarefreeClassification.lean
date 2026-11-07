@@ -98,12 +98,12 @@ theorem rat_squarefree_classification :
           intro i f
           have h : e₁ * i + e₂ * f ≡ 1 * i + 0 * f [MOD p] :=
             Nat.ModEq.add (he₁p.mul_right i) (he₂p.mul_right f)
-          simpa only [one_mul, zero_mul, add_zero] using h
+          simpa only [Nat.ModEq, one_mul, zero_mul, add_zero] using h
         have hmodm : ∀ i f : ℕ, (e₁ * i + e₂ * f) % m = f % m := by
           intro i f
           have h : e₁ * i + e₂ * f ≡ 0 * i + 1 * f [MOD m] :=
             Nat.ModEq.add (he₁m.mul_right i) (he₂m.mul_right f)
-          simpa only [one_mul, zero_mul, zero_add] using h
+          simpa only [Nat.ModEq, one_mul, zero_mul, zero_add] using h
         have hpdn : p ∣ p * m := ⟨m, rfl⟩
         have hmdn : m ∣ p * m := ⟨p, Nat.mul_comm p m⟩
         have hsection : ∀ e < n, (e₁ * (e % p) + e₂ * (e % m)) % n = e := by

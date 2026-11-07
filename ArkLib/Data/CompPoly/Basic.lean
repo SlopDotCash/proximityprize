@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao
 -/
 import CompPoly
-import ArkLib.OracleReduction.OracleInterface
+import ProximityPrize.Extensions.OracleReduction.OracleInterface
 
 /-!
 # Shared CompPoly Wrappers and Oracle Interfaces

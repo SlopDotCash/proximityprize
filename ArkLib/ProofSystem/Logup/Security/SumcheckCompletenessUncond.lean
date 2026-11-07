@@ -35,7 +35,7 @@ consumer of that form was uninstantiable. It is strictly superseded by
 open OracleComp OracleSpec ProtocolSpec
 namespace Logup
 noncomputable section
-variable {ι : Type} (oSpec : OracleSpec ι) [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} (oSpec : OracleSpec ι) [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
 variable (F : Type) [Field F] [Fintype F] [DecidableEq F] [Inhabited F] [SampleableType F]
   [Fact ((-1 : F) ≠ 1)]
 variable (n M : ℕ) (params : ProtocolParams M)

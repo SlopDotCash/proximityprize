@@ -9,9 +9,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves
 import Mathlib.FieldTheory.Finite.Basic
 
 /-!
-# Why the Johnson-regime curve axiom carries `0 < ρ`
+# Why the Johnson-regime curve bound requires a positive rate
 
-`large_agreement_set_on_curve_implies_correlated_agreement'` (Theorem 6.2 of [BCIKS20]) asks for
+The historical axiom for Theorem 6.2 of [BCIKS20] asked for
 more than `((1 + 1 / (2 * m)) ^ 7 * m ^ 7) / (3 * ρ ^ (3 / 2)) * n ^ 2 * (l - 1)` close curve
 points. Lean defines `x / 0 = 0`, so at `deg = 0` (Reed-Solomon code `{0}`, rate `ρ = 0`) that
 threshold is `0`, and `δ₀ 0 m = 1`. The remaining hypothesis only asks for one curve point that is
@@ -21,9 +21,10 @@ Take one coordinate over `ZMod 3`, `u 0 = 0`, `u 1 = 1` and `δ = 0`. The curve 
 is `u 0 = 0`, a codeword. The conclusion asks for codewords `v` with `u i = v i` on at least one
 coordinate for both `i`, but `v 1 = 0 ≠ 1 = u 1`.
 
-`UnguardedJohnsonCurve` is the statement of the axiom as it stood before the `hrate` hypothesis
-was added. `not_unguardedJohnsonCurve` proves that statement is false, so the guard cannot be
-removed. The cited theorem assumes a positive rate.
+`UnguardedJohnsonCurve` records the historical unguarded statement using the current
+Reed–Solomon API. `not_unguardedJohnsonCurve` refutes it. The current theorem
+`large_agreement_set_on_curve_implies_correlated_agreement'` assumes `0 < deg`,
+which excludes the zero-rate case.
 
 ## References
 
@@ -36,7 +37,7 @@ open scoped LinearCode
 
 namespace ProximityGap.CurvesDegenerate
 
-/-- The Johnson-regime curve axiom without the `0 < ρ` guard. -/
+/-- The historical Johnson-regime curve axiom without the positive-rate guard. -/
 def UnguardedJohnsonCurve : Prop :=
   ∀ {F : Type} [Field F] [Fintype F] [DecidableEq F] {n : ℕ} [NeZero n] {l : ℕ} [Finite F]
     {m deg : ℕ} {domain : Fin n ↪ F} {δ : ℚ≥0},
@@ -46,7 +47,7 @@ def UnguardedJohnsonCurve : Prop :=
     ((1 + 1 / (2 * m)) ^ 7 * m ^ 7) /
         (3 * (Real.rpow (ρ (ReedSolomon.code domain deg)) (3 / 2 : ℚ)))
       * n ^ 2 * (l - 1) <
-      (coeffs_of_close_proximity_curve (F := F) δ u (ReedSolomon.code domain deg)).card →
+      (coeffs_of_close_proximity_curve (F := F) (δ : ℝ≥0) u (ReedSolomon.toFinset domain deg)).card →
     ∃ v : Fin l → Fin n → F,
       (∀ i, v i ∈ ReedSolomon.code domain deg) ∧
         (1 - δ) * n ≤ ({ x : Fin n | ∀ i, u i x = v i x } : Finset _).card
@@ -57,15 +58,12 @@ instance : Fact (Nat.Prime 3) := ⟨Nat.prime_three⟩
 def dom : Fin 1 ↪ ZMod 3 := ⟨fun _ => 0, fun a b _ => Subsingleton.elim a b⟩
 
 lemma code_zero {w : Fin 1 → ZMod 3} (hw : w ∈ ReedSolomon.code dom 0) : w = 0 := by
-  obtain ⟨y, hy, rfl⟩ := hw
-  have : y = 0 := by simpa [Polynomial.mem_degreeLT] using hy
-  subst this
-  simp
+  rwa [ReedSolomon.code_zero, Submodule.mem_bot] at hw
 
 /-- At `deg = 0` the rate is `0`, so the guard `0 < ρ` excludes this case. -/
 lemma rate_zero_deg : ρ (ReedSolomon.code dom 0) = 0 := by
   have hdim : LinearCode.dim (ReedSolomon.code (ι := Fin 1) (F := ZMod 3) dom 0) = 0 :=
-    ReedSolomon.dim_eq_deg_of_le' (ι := Fin 1) (F := ZMod 3) (α := dom) (by simp)
+    ReedSolomon.dim_eq_deg_of_le (α := dom) (by simp)
   unfold LinearCode.rate
   rw [hdim]
   simp
@@ -75,23 +73,23 @@ def u : Fin 2 → Fin 1 → ZMod 3 := ![fun _ => 0, fun _ => 1]
 
 /-- The curve point at `z = 0` is the codeword `0`, so `0` is a close parameter at `δ = 0`. -/
 lemma zero_mem_close :
-    (0 : ZMod 3) ∈ coeffs_of_close_proximity_curve (F := ZMod 3) (0 : ℚ≥0) u
-      (ReedSolomon.code dom 0) := by
+    (0 : ZMod 3) ∈ coeffs_of_close_proximity_curve (F := ZMod 3) (0 : ℝ≥0) u
+      (ReedSolomon.toFinset dom 0) := by
   have heval : Curve.polynomialCurveEval (F := ZMod 3) (A := ZMod 3) u 0 = 0 := by
     funext x
     simp [Curve.polynomialCurveEval, Fin.sum_univ_two, u]
-  simp only [coeffs_of_close_proximity_curve, Finset.mem_filter, Finset.mem_univ, true_and,
-    heval]
+  simp only [coeffs_of_close_proximity_curve, Set.mem_toFinset, Set.mem_ofPred_eq, heval]
   have h := Code.relDistFromCode_le_relDist_to_mem (0 : Fin 1 → ZMod 3)
     (C := (ReedSolomon.code dom 0 : Set (Fin 1 → ZMod 3))) 0 (Submodule.zero_mem _)
-  simpa [Code.relHammingDist] using h
+  simpa [ReedSolomon.toFinset, ReedSolomon.RScodeSet, Code.relHammingDist,
+    ← ENNReal.coe_nnratCast] using h
 
 /-- The unguarded statement is false: it is refuted at `deg = 0`. -/
 theorem not_unguardedJohnsonCurve : ¬ UnguardedJohnsonCurve := by
   intro hax
   have hρ := rate_zero_deg
-  have hpos : 0 < (coeffs_of_close_proximity_curve (F := ZMod 3) (0 : ℚ≥0) u
-      (ReedSolomon.code dom 0)).card :=
+  have hpos : 0 < (coeffs_of_close_proximity_curve (F := ZMod 3) (0 : ℝ≥0) u
+      (ReedSolomon.toFinset dom 0)).card :=
     Finset.card_pos.mpr ⟨0, zero_mem_close⟩
   obtain ⟨v, hv, hagree⟩ := hax (F := ZMod 3) (n := 1) (l := 2) (m := 3) (deg := 0)
     (domain := dom) (δ := 0) (by norm_num) (by rw [hρ]; simp [δ₀]) (u := u) (by

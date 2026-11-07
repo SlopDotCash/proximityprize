@@ -145,7 +145,7 @@ This is the finite-combinatorics wrapper needed after the geometric uniqueness
 argument assigns each winning challenge to a distinguishing `3`-coordinate
 agreement set. -/
 theorem winningSet_ncard_le_four_of_injective_threeSubsets
-    (x : ViolatingInstance KoalaBear.rsCodeSet (3 / 10) 2)
+    (x : ExistentialEncoding.ViolatingInstance KoalaBear.rsCodeSet (3 / 10) 2)
     (pick :
       { γ : KoalaBear.Sextic //
           γ ∈ winningSet KoalaBear.rsCodeSet (3 / 10) x.v x.μ₁ x.μ₂ x.f₁ x.f₂ } →
@@ -167,7 +167,7 @@ combinatorial cap.  Once the structural lemmas above are upgraded into
 `4 < 2^70`. -/
 theorem not_fenziSanso_concrete_residual_of_ncard_le_four
     (hcap :
-      ∀ x : ViolatingInstance KoalaBear.rsCodeSet (3 / 10) 2,
+      ∀ x : ExistentialEncoding.ViolatingInstance KoalaBear.rsCodeSet (3 / 10) 2,
         (winningSet KoalaBear.rsCodeSet (3 / 10) x.v x.μ₁ x.μ₂ x.f₁ x.f₂).ncard ≤ 4) :
     ¬ fenziSanso_upperBound_attack_concrete_residual := by
   rintro ⟨x, hx⟩

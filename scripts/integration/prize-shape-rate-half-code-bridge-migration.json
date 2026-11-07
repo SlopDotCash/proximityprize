@@ -1,0 +1,286 @@
+{
+  "owner": "Research/ProximityPrize/Frontier/_PrizeShapeRateHalfBracket.lean",
+  "original_source_sha256": "5e6c278f0c28f20455bbd4204dd3791f23dc912bfbd5dd0393a611d1265e286f",
+  "original_source_provenance": "Pre-native-fix source preserved by the root in /tmp/arklib-root-build17-originals.json.",
+  "public_contract_count": 20,
+  "public_contracts_unchanged": true,
+  "original_public_headers": [
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.natCast_div_le_inv_of_mul_le",
+      "header": "/-- A finite count budget `E * Q <= p` gives the normalized bound `E/p <= Q^-1`. -/\ntheorem natCast_div_le_inv_of_mul_le {E Q p : Nat}\n    (hQ : 0 < Q) (hp : 0 < p) (hbudget : E * Q <= p) :\n    (E : ENNReal) / (p : ENNReal) <= ((Q : ENNReal)\u207b\u00b9 : ENNReal) ",
+      "normalized_header_sha256": "03976e3e3888887ff4872d6a6fa50bfb7ae4a78e3d83edcf34d513f7baa15026"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.epsStar_coe_eq_natCast_inv",
+      "header": "/-- The canonical prize error, coerced to `ENNReal`, is the inverse of the natural\npower `2^128`. -/\ntheorem epsStar_coe_eq_natCast_inv :\n    (ProximityGap.epsStar : ENNReal) = (((2 ^ 128 : Nat) : ENNReal)\u207b\u00b9 : ENNReal) ",
+      "normalized_header_sha256": "4aca25e8d77e9339e9952dfca2ac25f76f26f23b049f9fd7ebd8c768e8ac610f"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.predecessorRadius",
+      "header": "/-- The lattice point immediately before `a/n`. -/\nnoncomputable def predecessorRadius (n a : Nat) : NNReal ",
+      "normalized_header_sha256": "f9e13e6dd736b60298e3947547288b9daf98f2e313038fbedc9e161646c1f3da"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.latticeBoundary_le_mcaDeltaStar_of_predecessor_good",
+      "header": "/-- A good predecessor fills the entire open real interval below the next Hamming\nlattice point.  This is the general form of the half-predecessor connector. -/\ntheorem latticeBoundary_le_mcaDeltaStar_of_predecessor_good\n    {F : Type} [Field F] [Fintype F] [DecidableEq F]\n    {n a : Nat} [NeZero n] (ha1 : 1 <= a) (han : a <= n)\n    (C : Set (Fin n -> F)) (epsilonStar : ENNReal)\n    (hprev : epsMCA (F := F) (A := F) C (predecessorRadius n a) <= epsilonStar) :\n    (a : NNReal) / (n : NNReal) <=\n      mcaDeltaStar (F := F) (A := F) C epsilonStar ",
+      "normalized_header_sha256": "c14d191b08692fa6eb71edb35e7aaa1da03760b2c819c80346266926694e8fd6"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.epsStar_lt_epsMCA_of_exact_rounded_quotient_supply",
+      "header": "/-- The rounded quotient second-moment construction, retaining the actual field quotient\ninstead of replacing it by the uniform worst-case bound `2^128+2`. -/\ntheorem epsStar_lt_epsMCA_of_exact_rounded_quotient_supply\n    {p s m r : Nat} [Fact p.Prime] [NeZero s] [NeZero m]\n    (hpLo : 2 ^ 128 <= p) (hpHi : p < 2 ^ 256)\n    (hs : 1 <= s) (hm : 1 <= m) (hr2 : 2 <= r) (hr : r <= s)\n    {g : ZMod p} (hg : orderOf g = s * m)\n    (hSupply : p / 2 ^ 128 + 3 <= Nat.choose s r) :\n    (ProximityGap.epsStar : ENNReal) <\n      epsMCA (F := ZMod p) (evalCode g (s * m) ((r - 1) * m - 1))\n        (1 - (r : NNReal) / (s : NNReal)) ",
+      "normalized_header_sha256": "7155858a4d2e7301ba01a27b07bb7646d5c6ebe91dac3ae09ad4aa74712dcc7c"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.mcaDeltaStar_le_of_exact_rounded_quotient_supply",
+      "header": "/-- Operational ceiling from the exact field-normalized rounded supply. -/\ntheorem mcaDeltaStar_le_of_exact_rounded_quotient_supply\n    {p s m r : Nat} [Fact p.Prime] [NeZero s] [NeZero m]\n    (hpLo : 2 ^ 128 <= p) (hpHi : p < 2 ^ 256)\n    (hs : 1 <= s) (hm : 1 <= m) (hr2 : 2 <= r) (hr : r <= s)\n    {g : ZMod p} (hg : orderOf g = s * m)\n    (hSupply : p / 2 ^ 128 + 3 <= Nat.choose s r) :\n    mcaDeltaStar (F := ZMod p)\n        (evalCode g (s * m) ((r - 1) * m - 1))\n        (ProximityGap.epsStar : ENNReal) <=\n      1 - (r : NNReal) / (s : NNReal) ",
+      "normalized_header_sha256": "6fb721d5ae7f4df7b89c3ba86463b2901baa9b203afaf5eccd8bdc0ce8bddce9"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.firstPrime_rateHalf_s32_supply_short",
+      "header": "/-- The immediately preceding dyadic quotient has too few central supports even for the\nsmaller first-field rounded target. -/\ntheorem firstPrime_rateHalf_s32_supply_short :\n    Nat.choose 32 17 <\n      ArkLib.ProximityGap.PrizeShapePrimeP30.P / 2 ^ 128 + 3 ",
+      "normalized_header_sha256": "46c82bf9348f2a8f9ce8ade6699ab5f5686b05f4f20a13aae9f4269b17bd24d9"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.secondPrime_rateHalf_s32_supply_short",
+      "header": "/-- The size-`32` quotient is also too short for the larger second-field budget. -/\ntheorem secondPrime_rateHalf_s32_supply_short :\n    Nat.choose 32 17 <\n      ArkLib.ProximityGap.PrizeShapePrimeP30Second.P / 2 ^ 128 + 3 ",
+      "normalized_header_sha256": "38a7c79ab693b63d00d59ca0e93c2ac65011316f0636ad6418c2a325d4b2eb5a"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.firstPrime_rateHalf_s64_supply",
+      "header": "/-- Quotient size `64` has ample supply for the first certified field. -/\ntheorem firstPrime_rateHalf_s64_supply :\n    ArkLib.ProximityGap.PrizeShapePrimeP30.P / 2 ^ 128 + 3 <= Nat.choose 64 33 ",
+      "normalized_header_sha256": "11ca9c955bb4c1dd5940c68a18fb907031e7f34f8e94fa256069c32ef6a55db6"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.secondPrime_rateHalf_s64_supply",
+      "header": "/-- Quotient size `64` also has ample supply for the second certified field. -/\ntheorem secondPrime_rateHalf_s64_supply :\n    ArkLib.ProximityGap.PrizeShapePrimeP30Second.P / 2 ^ 128 + 3 <=\n      Nat.choose 64 33 ",
+      "normalized_header_sha256": "ee6970604585eae50a328895e2798ac4dee2fd6a3aa80281e1cd5fe2a3fc27b0"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.firstPrime_rateHalf_epsStar_lt_epsMCA_thirtyOneSixtyFour",
+      "header": "/-- Strict badness at `31/64` for the first exact-rate-half prize-shaped code. -/\ntheorem firstPrime_rateHalf_epsStar_lt_epsMCA_thirtyOneSixtyFour :\n    (ProximityGap.epsStar : ENNReal) <\n      epsMCA (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n        (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g\n          (2 ^ 30) (2 ^ 29 - 1)) (31 / 64 : NNReal) ",
+      "normalized_header_sha256": "ac920863d9f944513f5fb2b2b4459646cb5f477849e2dca82ad4006357446de9"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.firstPrime_rateHalf_mcaDeltaStar_le_thirtyOneSixtyFour",
+      "header": "/-- **First-field exact-rate-half ceiling:** `deltaStar <= 31/64`. -/\ntheorem firstPrime_rateHalf_mcaDeltaStar_le_thirtyOneSixtyFour :\n    mcaDeltaStar\n      (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n      (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n      (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g\n        (2 ^ 30) (2 ^ 29 - 1))\n      (ProximityGap.epsStar : ENNReal) <= (31 / 64 : NNReal) ",
+      "normalized_header_sha256": "570b86b267e31c5e00fdde540719936f45d7c294eb7db4c0c66928952de18530"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.secondPrime_rateHalf_mcaDeltaStar_le_thirtyOneSixtyFour",
+      "header": "/-- **Second-field exact-rate-half ceiling:** `deltaStar <= 31/64`. -/\ntheorem secondPrime_rateHalf_mcaDeltaStar_le_thirtyOneSixtyFour :\n    mcaDeltaStar\n      (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n      (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n      (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g\n        (2 ^ 30) (2 ^ 29 - 1))\n      (ProximityGap.epsStar : ENNReal) <= (31 / 64 : NNReal) ",
+      "normalized_header_sha256": "c9473bfd8710b0c37530b3092a0faaa9a0a552072f5a95e04c188c0128181b95"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.firstPrime_rateHalf_ladder_floor",
+      "header": "/-- The production staircase reaches `178956971 / 2^30` unconditionally in the first field. -/\ntheorem firstPrime_rateHalf_ladder_floor :\n    (178956971 : NNReal) / (2 ^ 30 : NNReal) <=\n      mcaDeltaStar\n        (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n        (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n        (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g\n          (2 ^ 30) (2 ^ 29 - 1))\n        (ProximityGap.epsStar : ENNReal) ",
+      "normalized_header_sha256": "bcec2042626990f5c5638062cc9916d524827bf4dbb7c5323b65c4c5550763fd"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.secondPrime_rateHalf_ladder_floor",
+      "header": "/-- The same unconditional staircase floor in the second certified field. -/\ntheorem secondPrime_rateHalf_ladder_floor :\n    (178956971 : NNReal) / (2 ^ 30 : NNReal) <=\n      mcaDeltaStar\n        (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n        (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n        (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g\n          (2 ^ 30) (2 ^ 29 - 1))\n        (ProximityGap.epsStar : ENNReal) ",
+      "normalized_header_sha256": "337fa04ce06c6c084e408cbccd378737c8ee086c6f32d11ced0d4db269b72d60"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.firstPrime_rateHalf_deltaStar_bracket",
+      "header": "/-- The strongest presently unconditional concrete bracket supplied by the landed\ngood- and bad-side mechanisms in the first field. -/\ntheorem firstPrime_rateHalf_deltaStar_bracket :\n    (178956971 : NNReal) / (2 ^ 30 : NNReal) <=\n        mcaDeltaStar\n          (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n          (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n          (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g\n            (2 ^ 30) (2 ^ 29 - 1))\n          (ProximityGap.epsStar : ENNReal) \u2227\n      mcaDeltaStar\n          (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n          (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n          (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g\n            (2 ^ 30) (2 ^ 29 - 1))\n          (ProximityGap.epsStar : ENNReal) <= (31 / 64 : NNReal) ",
+      "normalized_header_sha256": "2d3f6d542ce06a34180a4111f808dc179c2174fd33639cb2e8e02766e2067f7e"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.secondPrime_rateHalf_deltaStar_bracket",
+      "header": "/-- The corresponding unconditional concrete bracket in the second certified field. -/\ntheorem secondPrime_rateHalf_deltaStar_bracket :\n    (178956971 : NNReal) / (2 ^ 30 : NNReal) <=\n        mcaDeltaStar\n          (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n          (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n          (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g\n            (2 ^ 30) (2 ^ 29 - 1))\n          (ProximityGap.epsStar : ENNReal) \u2227\n      mcaDeltaStar\n          (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n          (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n          (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g\n            (2 ^ 30) (2 ^ 29 - 1))\n          (ProximityGap.epsStar : ENNReal) <= (31 / 64 : NNReal) ",
+      "normalized_header_sha256": "447b5ddc3a686022c7b5de55cd5374d6621210ca02d9ed770df0a4c42a54801e"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.firstPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count",
+      "header": "/-- A literal `n`-scalar cap at the predecessor of `31/64` would make the quotient\nceiling exact.  This is the smallest one-rung all-stack residual left by the bracket. -/\ntheorem firstPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count\n    (hcount : forall u : WordStack\n      (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P) (Fin 2) (Fin (2 ^ 30)),\n      (Finset.univ.filter fun gamma : ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P =>\n        mcaEvent\n          (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g\n            (2 ^ 30) (2 ^ 29 - 1))\n          (predecessorRadius (2 ^ 30) (31 * 2 ^ 24))\n          (u 0) (u 1) gamma).card <= 2 ^ 30) :\n    mcaDeltaStar\n      (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n      (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n      (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g\n        (2 ^ 30) (2 ^ 29 - 1))\n      (ProximityGap.epsStar : ENNReal) = (31 / 64 : NNReal) ",
+      "normalized_header_sha256": "23a00aec622af8dc8f93b88c81e964752724713f018a8394bd5aa3eec8e26fd1"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.secondPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count",
+      "header": "/-- In the second certified field the exact normalized budget is twice the block\nlength.  Thus a `2n`-scalar cap at the same predecessor pins the same quotient\nceiling exactly. -/\ntheorem secondPrime_rateHalf_deltaStar_eq_thirtyOneSixtyFour_of_predecessor_count\n    (hcount : forall u : WordStack\n      (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P) (Fin 2) (Fin (2 ^ 30)),\n      (Finset.univ.filter fun gamma : ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P =>\n        mcaEvent\n          (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g\n            (2 ^ 30) (2 ^ 29 - 1))\n          (predecessorRadius (2 ^ 30) (31 * 2 ^ 24))\n          (u 0) (u 1) gamma).card <= 2 ^ 31) :\n    mcaDeltaStar\n      (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n      (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n      (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g\n        (2 ^ 30) (2 ^ 29 - 1))\n      (ProximityGap.epsStar : ENNReal) = (31 / 64 : NNReal) ",
+      "normalized_header_sha256": "e9cc4383dfa6893f37b87a6e3a7fced600965b2f7e3987c6f07551f07a9a7171"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.firstPrime_rateHalf_not_halfPredecessor_badCount_le_length",
+      "header": "/-- **Naive half-predecessor refutation at exact rate `1/2`.**  There cannot be an\nall-stack `n`-scalar bound at the last lattice point below `1/2`: monotonicity would make\n`31/64` good, contradicting the unconditional quotient-spread bad witness there. -/\ntheorem firstPrime_rateHalf_not_halfPredecessor_badCount_le_length :\n    \u00ac (forall u : WordStack\n      (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P) (Fin 2) (Fin (2 ^ 30)),\n      (Finset.univ.filter fun gamma : ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P =>\n        mcaEvent\n          (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g\n            (2 ^ 30) (2 ^ 29 - 1))\n          (((2 ^ 29 - 1 : Nat) : NNReal) / (2 ^ 30 : NNReal))\n          (u 0) (u 1) gamma).card <= 2 ^ 30) ",
+      "normalized_header_sha256": "e6f58d2be3f8d496a1a51eb586a989da4c53ed7f41963f1e6000c552ec83ed5f"
+    }
+  ],
+  "original_changed_commands": [
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.latticeBoundary_le_mcaDeltaStar_of_predecessor_good",
+      "command": "/-- A good predecessor fills the entire open real interval below the next Hamming\nlattice point.  This is the general form of the half-predecessor connector. -/\ntheorem latticeBoundary_le_mcaDeltaStar_of_predecessor_good\n    {F : Type} [Field F] [Fintype F] [DecidableEq F]\n    {n a : Nat} [NeZero n] (ha1 : 1 <= a) (han : a <= n)\n    (C : Set (Fin n -> F)) (epsilonStar : ENNReal)\n    (hprev : epsMCA (F := F) (A := F) C (predecessorRadius n a) <= epsilonStar) :\n    (a : NNReal) / (n : NNReal) <=\n      mcaDeltaStar (F := F) (A := F) C epsilonStar := by\n  let w : Nat := a - 1\n  let deltaPrev : NNReal := predecessorRadius n a\n  let deltaBoundary : NNReal := (a : NNReal) / (n : NNReal)\n  have hnpos : 0 < n := Nat.pos_of_ne_zero (NeZero.ne n)\n  have hn0 : (n : NNReal) \u2260 0 := by exact_mod_cast hnpos.ne'\n  have hwa : w + 1 = a := by\n    dsimp only [w]\n    omega\n  have hprevMul : deltaPrev * (n : NNReal) = (w : NNReal) := by\n    dsimp only [deltaPrev, predecessorRadius, w]\n    exact div_mul_cancel\u2080 _ hn0\n  have hboundaryMul : deltaBoundary * (n : NNReal) = (a : NNReal) := by\n    dsimp only [deltaBoundary]\n    exact div_mul_cancel\u2080 _ hn0\n  have hboundaryLeOne : deltaBoundary <= 1 := by\n    dsimp only [deltaBoundary]\n    rw [div_le_one (by positivity)]\n    exact_mod_cast han\n  have hgood : forall delta : NNReal, delta < deltaBoundary ->\n      epsMCA (F := F) (A := F) C delta <= epsilonStar := by\n    intro delta hdelta\n    by_cases hle : delta <= deltaPrev\n    \u00b7 exact le_trans (epsMCA_mono C hle) hprev\n    \u00b7 have hprevDelta : deltaPrev < delta := lt_of_not_ge hle\n      have hlowerFloor : (w : NNReal) <= delta * (n : NNReal) := by\n        have hm := mul_lt_mul_of_pos_right hprevDelta (by positivity)\n        rw [hprevMul] at hm\n        exact hm.le\n      have hupperFloor : delta * (n : NNReal) < (a : NNReal) := by\n        have hm := mul_lt_mul_of_pos_right hdelta (by positivity)\n        rwa [hboundaryMul] at hm\n      have hfloorDelta :\n          Nat.floor (delta * (Fintype.card (Fin n) : NNReal)) = w := by\n        rw [Fintype.card_fin, Nat.floor_eq_iff (zero_le _)]\n        constructor\n        \u00b7 exact hlowerFloor\n        \u00b7 have hcast : ((w : NNReal) + 1) = (a : NNReal) := by\n            exact_mod_cast hwa\n          rw [hcast]\n          exact hupperFloor\n      have hfloorPrev :\n          Nat.floor (deltaPrev * (Fintype.card (Fin n) : NNReal)) = w := by\n        rw [Fintype.card_fin, hprevMul, Nat.floor_natCast]\n      rw [ProximityGap.epsMCA_eq_of_floor_eq (F := F) (A := F) C\n        (hfloorDelta.trans hfloorPrev.symm)]\n      exact hprev\n  change deltaBoundary <= mcaDeltaStar (F := F) (A := F) C epsilonStar\n  by_contra hnot\n  rw [not_le] at hnot\n  obtain \u27e8delta, hstarDelta, hdeltaBoundary\u27e9 := exists_between hnot\n  have hdeltaLe := le_mcaDeltaStar_of_good (F := F) (A := F) C epsilonStar\n    (le_trans hdeltaBoundary.le hboundaryLeOne) (hgood delta hdeltaBoundary)\n  exact (not_lt_of_ge hdeltaLe) hstarDelta\n\n/-! ## Field-normalized quotient spread -/\n\n"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.firstPrime_rateHalf_ladder_floor",
+      "command": "/-- The production staircase reaches `178956971 / 2^30` unconditionally in the first field. -/\ntheorem firstPrime_rateHalf_ladder_floor :\n    (178956971 : NNReal) / (2 ^ 30 : NNReal) <=\n      mcaDeltaStar\n        (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n        (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n        (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g\n          (2 ^ 30) (2 ^ 29 - 1))\n        (ProximityGap.epsStar : ENNReal) := by\n  letI : NeZero (2 ^ 30 : Nat) := \u27e8by norm_num\u27e9\n  let dom : Fin (2 ^ 30) \u21aa ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P :=\n    ProximityGap.Ownership.smoothDom ArkLib.ProximityGap.PrizeShapePrimeP30.g\n      (2 ^ 30) ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g\n  have hbudget : ((2 ^ 30 : Nat) : ENNReal) /\n      (Fintype.card (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P) : ENNReal) <=\n        (ProximityGap.epsStar : ENNReal) := by\n    rw [ZMod.card]\n    have h := natCast_div_le_inv_of_mul_le\n      (E := 2 ^ 30) (Q := 2 ^ 128)\n      (p := ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n      (by norm_num) ArkLib.ProximityGap.PrizeShapePrimeP30.prime_P.pos (by norm_num)\n    rwa [epsStar_coe_eq_natCast_inv]\n  have hlower := ProximityGap.ProductionRegime.production_good_ladder_reach\n    (dom := dom) (k := 2 ^ 29) (by norm_num) hbudget\n  have hcode :\n      evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g\n          (2 ^ 30) (2 ^ 29 - 1) =\n        ((ProximityGap.SpikeFloor.rsCode dom (2 ^ 29) :\n          Submodule (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)\n            (Fin (2 ^ 30) -> ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)) :\n          Set (Fin (2 ^ 30) -> ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)) := by\n    simpa only [dom, Nat.sub_add_cancel (by norm_num : 1 <= 2 ^ 29)] using\n      (ProximityGap.Ownership.evalCode_eq_rsCode\n        ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g (2 ^ 29 - 1))\n  rw [\u2190 hcode] at hlower\n  convert hlower using 1 <;> norm_num\n\n"
+    },
+    {
+      "name": "ArkLib.ProximityGap.Frontier.PrizeShapeRateHalfBracket.secondPrime_rateHalf_ladder_floor",
+      "command": "/-- The same unconditional staircase floor in the second certified field. -/\ntheorem secondPrime_rateHalf_ladder_floor :\n    (178956971 : NNReal) / (2 ^ 30 : NNReal) <=\n      mcaDeltaStar\n        (F := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n        (A := ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n        (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g\n          (2 ^ 30) (2 ^ 29 - 1))\n        (ProximityGap.epsStar : ENNReal) := by\n  letI : NeZero (2 ^ 30 : Nat) := \u27e8by norm_num\u27e9\n  let dom : Fin (2 ^ 30) \u21aa ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P :=\n    ProximityGap.Ownership.smoothDom ArkLib.ProximityGap.PrizeShapePrimeP30Second.g\n      (2 ^ 30) ArkLib.ProximityGap.PrizeShapePrimeP30Second.orderOf_g\n  have hbudget : ((2 ^ 30 : Nat) : ENNReal) /\n      (Fintype.card (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P) : ENNReal) <=\n        (ProximityGap.epsStar : ENNReal) := by\n    rw [ZMod.card]\n    have h := natCast_div_le_inv_of_mul_le\n      (E := 2 ^ 30) (Q := 2 ^ 128)\n      (p := ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n      (by norm_num) ArkLib.ProximityGap.PrizeShapePrimeP30Second.prime_P.pos (by norm_num)\n    rwa [epsStar_coe_eq_natCast_inv]\n  have hlower := ProximityGap.ProductionRegime.production_good_ladder_reach\n    (dom := dom) (k := 2 ^ 29) (by norm_num) hbudget\n  have hcode :\n      evalCode ArkLib.ProximityGap.PrizeShapePrimeP30Second.g\n          (2 ^ 30) (2 ^ 29 - 1) =\n        ((ProximityGap.SpikeFloor.rsCode dom (2 ^ 29) :\n          Submodule (ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)\n            (Fin (2 ^ 30) -> ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)) :\n          Set (Fin (2 ^ 30) -> ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)) := by\n    simpa only [dom, Nat.sub_add_cancel (by norm_num : 1 <= 2 ^ 29)] using\n      (ProximityGap.Ownership.evalCode_eq_rsCode\n        ArkLib.ProximityGap.PrizeShapePrimeP30Second.orderOf_g (2 ^ 29 - 1))\n  rw [\u2190 hcode] at hlower\n  convert hlower using 1 <;> norm_num\n\n"
+    }
+  ],
+  "private_helper": "Superseded by ProximityGap.Ownership.evalCode_pred_eq_rsCode in ProximityPrize/Compatibility/EvaluationCodeDimension.lean; positive dimension remains explicit.",
+  "mathematical_scope": "All20 original public signatures and both concrete bounds are unchanged. The predecessor-count hypotheses remain explicit in the equality targets. This port does not close the production conjecture.",
+  "validation": {
+    "initial_port": {
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "elapsed_seconds": 11.466,
+      "source_after_sha256": "a1e40ffb3e2d7f702eb1c11d09944caaac0ab7cbda0c9be2c0524b799cc05e6e",
+      "imports_unchanged": true,
+      "log": "/tmp/arklib-native-overlay/logs/Research.ProximityPrize.Frontier._PrizeShapeRateHalfBracket.lean.1793252248703054000.check.log",
+      "not_a_lake_package_build": true
+    },
+    "final_shared_dimension_dedup": {
+      "file": "Research/ProximityPrize/Frontier/_PrizeShapeRateHalfBracket.lean",
+      "status": "temporary_overlay_source_check",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "elapsed_seconds": 39.974,
+      "source_before_sha256": "a4705ccf8ad4637d0c44b07530f98f6b73af62e13b3c7515b3c7e536cee63b8a",
+      "source_after_sha256": "a4705ccf8ad4637d0c44b07530f98f6b73af62e13b3c7515b3c7e536cee63b8a",
+      "import_artifacts": {
+        "ProximityPrize.Compatibility.EvaluationCodeDimension": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Compatibility/EvaluationCodeDimension.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Compatibility/EvaluationCodeDimension.olean",
+          "sha256": "5110ea8b2aa5ab81d3e1acf1ae0af59dea7c612cd4eabad6d2f9658104cb06d3",
+          "artifact_family": {
+            "EvaluationCodeDimension.olean": "5110ea8b2aa5ab81d3e1acf1ae0af59dea7c612cd4eabad6d2f9658104cb06d3"
+          }
+        },
+        "Research.ProximityPrize.Frontier._GenericQuotientInterpolationSpread": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_GenericQuotientInterpolationSpread.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_GenericQuotientInterpolationSpread.olean",
+          "sha256": "67a02ed5ebd308dd6c7dd822992194ab7429bc7a7c3b11989f01430c2c889eec",
+          "artifact_family": {
+            "_GenericQuotientInterpolationSpread.olean": "67a02ed5ebd308dd6c7dd822992194ab7429bc7a7c3b11989f01430c2c889eec"
+          }
+        },
+        "Research.ProximityPrize.Frontier._SecondMomentUniformFieldWindow": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_SecondMomentUniformFieldWindow.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_SecondMomentUniformFieldWindow.olean",
+          "sha256": "87f1b42b76600068ae2d0f84db0810e7ef41bd196187e59e362214a4e3757070",
+          "artifact_family": {
+            "_SecondMomentUniformFieldWindow.olean": "87f1b42b76600068ae2d0f84db0810e7ef41bd196187e59e362214a4e3757070"
+          }
+        },
+        "Research.ProximityPrize.Frontier._PrizeShapePrimeP30": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_PrizeShapePrimeP30.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_PrizeShapePrimeP30.olean",
+          "sha256": "2fa60b860ad07dcb05fc496f1c5c941ae7b8f50a74e095755f59bdf3dacdaef9",
+          "artifact_family": {
+            "_PrizeShapePrimeP30.olean": "2fa60b860ad07dcb05fc496f1c5c941ae7b8f50a74e095755f59bdf3dacdaef9"
+          }
+        },
+        "Research.ProximityPrize.Frontier._PrizeShapePrimeP30Second": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_PrizeShapePrimeP30Second.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_PrizeShapePrimeP30Second.olean",
+          "sha256": "c8e24d6d86125712c7c4ac02936fa9144cbde0b1c175946e9fb4250881c31ce9",
+          "artifact_family": {
+            "_PrizeShapePrimeP30Second.olean": "c8e24d6d86125712c7c4ac02936fa9144cbde0b1c175946e9fb4250881c31ce9"
+          }
+        },
+        "Research.ProximityPrize.ProductionRegimeBracket": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/ProductionRegimeBracket.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/ProductionRegimeBracket.olean",
+          "sha256": "bfde8b6a313b8f38622fcc1802228a1539da74b30c07e85c704afcf1b164eebd",
+          "artifact_family": {
+            "ProductionRegimeBracket.olean": "bfde8b6a313b8f38622fcc1802228a1539da74b30c07e85c704afcf1b164eebd"
+          }
+        }
+      },
+      "imports_unchanged": true,
+      "log": "/tmp/arklib-native-overlay/logs/Research.ProximityPrize.Frontier._PrizeShapeRateHalfBracket.lean.1793253095336121000.check.log",
+      "not_a_lake_package_build": true
+    }
+  },
+  "import_boundary": "All five imported owners resolve to actual .lake package artifacts in this strict temporary-runner source check. A new whole-package build remains separate.",
+  "axioms": "All seven original printed anchors use only propext, Classical.choice and Quot.sound.",
+  "new_admissions": false,
+  "shared_dimension_dedup": {
+    "path": "ProximityPrize/Compatibility/EvaluationCodeDimension.lean",
+    "scope": "Private generic bridge moved to the shared positive-dimension compatibility owner; all original20public headers and bounds remain unchanged.",
+    "validation": {
+      "file": "Research/ProximityPrize/Frontier/_PrizeShapeRateHalfBracket.lean",
+      "status": "temporary_overlay_source_check",
+      "compiler_exit_code": 0,
+      "admission_checker_exit_code": 0,
+      "elapsed_seconds": 39.974,
+      "source_before_sha256": "a4705ccf8ad4637d0c44b07530f98f6b73af62e13b3c7515b3c7e536cee63b8a",
+      "source_after_sha256": "a4705ccf8ad4637d0c44b07530f98f6b73af62e13b3c7515b3c7e536cee63b8a",
+      "import_artifacts": {
+        "ProximityPrize.Compatibility.EvaluationCodeDimension": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Compatibility/EvaluationCodeDimension.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Compatibility/EvaluationCodeDimension.olean",
+          "sha256": "5110ea8b2aa5ab81d3e1acf1ae0af59dea7c612cd4eabad6d2f9658104cb06d3",
+          "artifact_family": {
+            "EvaluationCodeDimension.olean": "5110ea8b2aa5ab81d3e1acf1ae0af59dea7c612cd4eabad6d2f9658104cb06d3"
+          }
+        },
+        "Research.ProximityPrize.Frontier._GenericQuotientInterpolationSpread": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_GenericQuotientInterpolationSpread.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_GenericQuotientInterpolationSpread.olean",
+          "sha256": "67a02ed5ebd308dd6c7dd822992194ab7429bc7a7c3b11989f01430c2c889eec",
+          "artifact_family": {
+            "_GenericQuotientInterpolationSpread.olean": "67a02ed5ebd308dd6c7dd822992194ab7429bc7a7c3b11989f01430c2c889eec"
+          }
+        },
+        "Research.ProximityPrize.Frontier._SecondMomentUniformFieldWindow": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_SecondMomentUniformFieldWindow.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_SecondMomentUniformFieldWindow.olean",
+          "sha256": "87f1b42b76600068ae2d0f84db0810e7ef41bd196187e59e362214a4e3757070",
+          "artifact_family": {
+            "_SecondMomentUniformFieldWindow.olean": "87f1b42b76600068ae2d0f84db0810e7ef41bd196187e59e362214a4e3757070"
+          }
+        },
+        "Research.ProximityPrize.Frontier._PrizeShapePrimeP30": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_PrizeShapePrimeP30.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_PrizeShapePrimeP30.olean",
+          "sha256": "2fa60b860ad07dcb05fc496f1c5c941ae7b8f50a74e095755f59bdf3dacdaef9",
+          "artifact_family": {
+            "_PrizeShapePrimeP30.olean": "2fa60b860ad07dcb05fc496f1c5c941ae7b8f50a74e095755f59bdf3dacdaef9"
+          }
+        },
+        "Research.ProximityPrize.Frontier._PrizeShapePrimeP30Second": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/Frontier/_PrizeShapePrimeP30Second.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/Frontier/_PrizeShapePrimeP30Second.olean",
+          "sha256": "c8e24d6d86125712c7c4ac02936fa9144cbde0b1c175946e9fb4250881c31ce9",
+          "artifact_family": {
+            "_PrizeShapePrimeP30Second.olean": "c8e24d6d86125712c7c4ac02936fa9144cbde0b1c175946e9fb4250881c31ce9"
+          }
+        },
+        "Research.ProximityPrize.ProductionRegimeBracket": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/Research/ProximityPrize/ProductionRegimeBracket.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/Research/ProximityPrize/ProductionRegimeBracket.olean",
+          "sha256": "bfde8b6a313b8f38622fcc1802228a1539da74b30c07e85c704afcf1b164eebd",
+          "artifact_family": {
+            "ProductionRegimeBracket.olean": "bfde8b6a313b8f38622fcc1802228a1539da74b30c07e85c704afcf1b164eebd"
+          }
+        }
+      },
+      "imports_unchanged": true,
+      "log": "/tmp/arklib-native-overlay/logs/Research.ProximityPrize.Frontier._PrizeShapeRateHalfBracket.lean.1793253095336121000.check.log",
+      "not_a_lake_package_build": true
+    },
+    "current_sha256": "a4705ccf8ad4637d0c44b07530f98f6b73af62e13b3c7515b3c7e536cee63b8a"
+  },
+  "current_validation": {
+    "status": "package_validation_passed",
+    "receipt": "scripts/integration/final-validation.json",
+    "check": "default_libraries",
+    "source_commit": "7483975d251b3549313243ea9d5ada700af121f9",
+    "source_snapshot_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+    "resolved_package_pending_paths": [],
+    "superseded_historical_status_paths": [],
+    "scope": "Current checked-in sources passed the final four-library package build. Original status text and all earlier receipts remain historical snapshots, not current pending claims."
+  },
+  "hash_scope_notes": [
+    {
+      "field": "/shared_dimension_dedup/current_sha256",
+      "scope": "This preserved hash records the Bracket consumer source at that port, not the helper named in the adjacent path field.",
+      "recorded_hash_owner": "Research/ProximityPrize/Frontier/_PrizeShapeRateHalfBracket.lean",
+      "related_helper": "ProximityPrize/Compatibility/EvaluationCodeDimension.lean"
+    }
+  ]
+}

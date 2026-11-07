@@ -4,8 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.BatchedFri.Security
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.Main
+import ArkLib.Data.Probability.Notation
+import ProximityPrize.Extensions.ProofSystem.BatchedFri.Security
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.Main
 import ArkLib.OracleReduction.Completeness
 import ArkLib.ToMathlib.FriQueryRoundProb
 
@@ -42,18 +43,17 @@ theorem getChallenge_probOutput_uniform_eq_Pr
     [Nonempty (Fin l → (ω.subdomain 0).toFinset)]
     [Inhabited (Fin l → (ω.subdomain 0).toFinset)]
     (q : Fin l → (ω.subdomain 0).toFinset) :
-    Pr[= q |
-      simulateQ (ProtocolSpec.challengeQueryImpl (pSpec := pSpec (ω := ω) l))
-        ((pSpec (ω := ω) l).getChallenge ⟨0, by simp⟩)]
-      = Pr_{ let y ← PMF.uniformOfFintype (Fin l → (ω.subdomain 0).toFinset) }[y = q] := by
+    Pr{let eventOutput ← (simulateQ (ProtocolSpec.challengeQueryImpl (pSpec := pSpec (ω := ω) l))
+        ((pSpec (ω := ω) l).getChallenge ⟨0, by simp⟩))}[eventOutput = (q)]
+      = Pr_{ let y ← ProximityPrize.Compatibility.uniformOfFintype (Fin l → (ω.subdomain 0).toFinset) }[y = q] := by
   unfold ProtocolSpec.getChallenge
   erw [simulateQ_query]
   simp only [ProtocolSpec.challengeQueryImpl, OracleQuery.cont_query, OracleQuery.input_query]
-  change Pr[= q | id <$> ($ᵗ (Fin l → (ω.subdomain 0).toFinset))]
-      = Pr_{ let y ← PMF.uniformOfFintype (Fin l → (ω.subdomain 0).toFinset) }[y = q]
+  change Pr{let eventOutput ← (id <$> ($ᵗ (Fin l → (ω.subdomain 0).toFinset)))}[eventOutput = (q)]
+      = Pr_{ let y ← ProximityPrize.Compatibility.uniformOfFintype (Fin l → (ω.subdomain 0).toFinset) }[y = q]
   simp only [id_map]
-  rw [OracleReduction.probOutput_uniformOfFintype_eq_Pr
-    (L := Fin l → (ω.subdomain 0).toFinset) (x := q)]
+  exact (ProximityPrize.Compatibility.pmf_uniform_probability_eq_native
+    (fun y : Fin l → (ω.subdomain 0).toFinset => y = q)).symm
 
 end Spec.QueryRound
 
@@ -72,7 +72,7 @@ queries land in the good set with probability at most `(1 - δ) ^ t` when the go
 at most `1 - δ`. -/
 def probabilityAcceptanceBound (G : Finset ι) (δ : ℝ≥0∞) (t : ℕ) : Prop :=
   (G.card : ℝ≥0∞) / Fintype.card ι ≤ 1 - δ →
-    (PMF.uniformOfFintype (Fin t → ι)).toOuterMeasure
+    (ProximityPrize.Compatibility.uniformOfFintype (Fin t → ι)).toOuterMeasure
         {q : Fin t → ι | ∀ j, q j ∈ G}
       ≤ (1 - δ) ^ t
 
@@ -88,7 +88,7 @@ one query lands outside the good set with probability at least `1 - (1 - δ) ^ t
 def probabilityDetectionBound (G : Finset ι) (δ : ℝ≥0∞) (t : ℕ) : Prop :=
   (G.card : ℝ≥0∞) / Fintype.card ι ≤ 1 - δ →
     1 - (1 - δ) ^ t
-      ≤ (PMF.uniformOfFintype (Fin t → ι)).toOuterMeasure
+      ≤ (ProximityPrize.Compatibility.uniformOfFintype (Fin t → ι)).toOuterMeasure
           {q : Fin t → ι | ¬ (∀ j, q j ∈ G)}
 
 /-- The probability-space query-round detection frontier is discharged by the Mathlib-only
@@ -101,6 +101,7 @@ theorem probabilityDetectionBound_holds (G : Finset ι) (δ : ℝ≥0∞) (t : �
 end QueryRound
 
 variable {𝔽 : Type} [NonBinaryField 𝔽] [Fintype 𝔽] [DecidableEq 𝔽] [Nontrivial 𝔽]
+private noncomputable local instance : SampleableType 𝔽 := SampleableType.ofFintype 𝔽
 variable {n : ℕ} {k : ℕ}
 variable {s : Fin (k + 1) → ℕ+} {d : ℕ+}
 variable {ω : SmoothCosetFftDomain n 𝔽}
@@ -168,7 +169,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBound
 
 /-- Instantiate the Claim 8.2 frontier with the proved probability-space query-round bound and
 the structural Batched FRI oracle-lens package. -/
-def FriQuerySoundnessParts.of_queryRoundProbabilityBoundAndBatchedFRIOracleLens
+def FriQuerySoundnessParts.of_queryRoundProbabilityBoundAndCanonicalBatchingSeam
     {t : ℕ}
     {α : ℝ≥0}
     (f : Fin t.succ → (ω.subdomain 0 → 𝔽))
@@ -185,7 +186,7 @@ def FriQuerySoundnessParts.of_queryRoundProbabilityBoundAndBatchedFRIOracleLens
     (agreementBridge : Prop)
     (pieces_imply_claim :
       QueryRound.probabilityAcceptanceBound G δ queries →
-      batchedFRIOracleLensReduction
+      batchedFRICanonicalSeam
         (n := n) (s := s) (d := d) (ω := ω)
         (domain_size_cond := domain_size_cond) l t →
       agreementBridge →
@@ -195,7 +196,7 @@ def FriQuerySoundnessParts.of_queryRoundProbabilityBoundAndBatchedFRIOracleLens
       (h_agreement := h_agreement) (m_ge_3 := m_ge_3) where
   query_round_acceptance_bound := QueryRound.probabilityAcceptanceBound G δ queries
   batching_oracle_lens_reduction :=
-    batchedFRIOracleLensReduction
+    batchedFRICanonicalSeam
       (n := n) (s := s) (d := d) (ω := ω)
       (domain_size_cond := domain_size_cond) l t
   correlated_agreement_to_jointAgreement := agreementBridge
@@ -203,7 +204,7 @@ def FriQuerySoundnessParts.of_queryRoundProbabilityBoundAndBatchedFRIOracleLens
 
 /-- Reassemble Claim 8.2 after discharging the probability-space query-round bound and the
 structural Batched FRI oracle-lens package. -/
-theorem fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLens
+theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeam
     {t : ℕ}
     {α : ℝ≥0}
     (f : Fin t.succ → (ω.subdomain 0 → 𝔽))
@@ -220,7 +221,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLens
     {agreementBridge : Prop}
     (pieces_imply_claim :
       QueryRound.probabilityAcceptanceBound G δ queries →
-      batchedFRIOracleLensReduction
+      batchedFRICanonicalSeam
         (n := n) (s := s) (d := d) (ω := ω)
         (domain_size_cond := domain_size_cond) l t →
       agreementBridge →
@@ -230,13 +231,13 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLens
     fri_query_soundness (n := n) (ω := ω) (f := f)
       (h_agreement := h_agreement) (m_ge_3 := m_ge_3) := by
   let parts :=
-    FriQuerySoundnessParts.of_queryRoundProbabilityBoundAndBatchedFRIOracleLens
+    FriQuerySoundnessParts.of_queryRoundProbabilityBoundAndCanonicalBatchingSeam
       (n := n) (s := s) (d := d) (ω := ω)
       (f := f) (h_agreement := h_agreement) (m_ge_3 := m_ge_3)
       G δ queries l domain_size_cond agreementBridge pieces_imply_claim
   exact fri_query_soundness_of_parts (n := n) (ω := ω) f h_agreement m_ge_3 parts
     (QueryRound.probabilityAcceptanceBound_holds G δ queries)
-    (batchedFRIOracleLensReduction_holds
+    (batchedFRICanonicalSeam_holds
       (n := n) (s := s) (d := d) (ω := ω)
       (domain_size_cond := domain_size_cond) l t)
     h_agreementBridge
@@ -248,7 +249,7 @@ FRI oracle lens, and a concrete `Code.jointProximity` witness.
 This removes the arbitrary `agreementBridge : Prop` from this front door: the remaining
 coding-theoretic obligation is exactly the proximity predicate equivalent to the
 `Code.jointAgreement` conclusion of `fri_query_soundness`. -/
-theorem fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndJointProximity
+theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndJointProximity
     {t : ℕ}
     {α : ℝ≥0}
     (f : Fin t.succ → (ω.subdomain 0 → 𝔽))
@@ -270,7 +271,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLens
     fri_query_soundness (n := n) (ω := ω) (f := f)
       (h_agreement := h_agreement) (m_ge_3 := m_ge_3) := by
   exact
-    fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLens
+    fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeam
       (n := n) (s := s) (d := d) (ω := ω)
       f h_agreement m_ge_3 G δ queries l domain_size_cond
       (agreementBridge :=
@@ -286,7 +287,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLens
 /-- Probability-route Claim 8.2 front door from the affine-line correlated-agreement predicate.
 
 This is the query-level probability analogue of the density-route affine-line CA wrapper. -/
-theorem fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndAffineLineCA
+theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndAffineLineCA
     {α : ℝ≥0}
     (f : Fin 2 → (ω.subdomain 0 → 𝔽))
     (h_agreement :
@@ -314,7 +315,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLens
     fri_query_soundness (n := n) (ω := ω) (f := f)
       (h_agreement := h_agreement) (m_ge_3 := m_ge_3) := by
   exact
-    fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndJointProximity
+    fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndJointProximity
       (n := n) (s := s) (d := d) (ω := ω) (t := 1)
       (f := f) h_agreement m_ge_3 G δ queries l domain_size_cond
       (ProximityGap.jointProximity_of_δ_ε_correlatedAgreementAffineLines
@@ -332,7 +333,7 @@ Compared with `...AndAffineLineCA`, callers no longer supply the packaged
 the BCIKS20 affine-line theorem inputs: the strict coefficient-polynomial residual, the closed
 boundary residual, the square-root-radius side condition, and the affine-line probability trigger.
 -/
-theorem fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSAffineLine
+theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSAffineLine
     {α : ℝ≥0}
     (f : Fin 2 → (ω.subdomain 0 → 𝔽))
     (h_agreement :
@@ -391,11 +392,11 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLens
         ProximityGap.errorBound (1 - α) (2 ^ n) rsDomain := by
     simpa [rsDomain] using h_prob
   exact
-    fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndAffineLineCA
+    fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndAffineLineCA
       (n := n) (s := s) (d := d) (ω := ω)
       (f := f) h_agreement m_ge_3 G δ queries l domain_size_cond
       (ε := ProximityGap.errorBound (1 - α) (2 ^ n) rsDomain)
-      (ProximityGap.RS_correlatedAgreement_affineLines
+      (ProximityGap.Compatibility.RS_correlatedAgreement_affineLines_closed
         (ι := ω.subdomain 0) (F := 𝔽) (deg := 2 ^ n)
         (domain := rsDomain) (δ := 1 - α)
         hStrictCoeff' hBoundaryCard' hδ')
@@ -406,7 +407,7 @@ omit [Nontrivial 𝔽] in
 
 The query-round probability theorem and Batched FRI lens are discharged; the remaining
 coding-theoretic inputs are the affine-spaces CA predicate and its probability trigger. -/
-theorem fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndAffineSpacesCA
+theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndAffineSpacesCA
     {t : ℕ}
     {α : ℝ≥0}
     (f : Fin t.succ → (ω.subdomain 0 → 𝔽))
@@ -435,7 +436,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLens
     fri_query_soundness (n := n) (ω := ω) (f := f)
       (h_agreement := h_agreement) (m_ge_3 := m_ge_3) := by
   exact
-    fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndJointProximity
+    fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndJointProximity
       (n := n) (s := s) (d := d) (ω := ω)
       (f := f) h_agreement m_ge_3 G δ queries l domain_size_cond
       (ProximityGap.jointProximity_of_δ_ε_correlatedAgreementAffineSpaces
@@ -447,7 +448,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLens
 
 /-- Probability-route Claim 8.2 front door from the polynomial-curve correlated-agreement
 predicate. -/
-theorem fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndCurveCA
+theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndCurveCA
     {t : ℕ}
     {α : ℝ≥0}
     (f : Fin t.succ → (ω.subdomain 0 → 𝔽))
@@ -476,7 +477,7 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLens
     fri_query_soundness (n := n) (ω := ω) (f := f)
       (h_agreement := h_agreement) (m_ge_3 := m_ge_3) := by
   exact
-    fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndJointProximity
+    fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndJointProximity
       (n := n) (s := s) (d := d) (ω := ω)
       (f := f) h_agreement m_ge_3 G δ queries l domain_size_cond
       (ProximityGap.jointProximity_of_δ_ε_correlatedAgreementCurves
@@ -491,7 +492,7 @@ Reed-Solomon curve correlated-agreement theorem on the Batched FRI subdomain.
 
 Callers provide the BCIKS20 curve theorem inputs and the curve probability trigger directly,
 rather than a pre-packaged `δ_ε_correlatedAgreementCurves` predicate. -/
-theorem fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSCurve
+theorem fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSCurve
     {t : ℕ}
     {α : ℝ≥0}
     (f : Fin t.succ → (ω.subdomain 0 → 𝔽))
@@ -552,14 +553,14 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLens
         t * ProximityGap.errorBound (1 - α) (2 ^ n) rsDomain := by
     simpa [rsDomain] using h_prob
   exact
-    fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndCurveCA
+    fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndCurveCA
       (n := n) (s := s) (d := d) (ω := ω)
       (f := f) h_agreement m_ge_3 G δ queries l domain_size_cond
       (ε := ProximityGap.errorBound (1 - α) (2 ^ n) rsDomain)
-      (ProximityGap.correlatedAgreement_affine_curves
+      (ProximityGap.correlatedAgreement_affine_curves_of_strict_coeff_polys_and_boundary
         (ι := ω.subdomain 0) (F := 𝔽) (k := t) (deg := 2 ^ n)
         (domain := rsDomain) (δ := 1 - α)
-        hStrictCoeff' hBoundary' hδ')
+        hδ' hStrictCoeff' hBoundary')
       hprob'
 
 /-! ### Axiom audit (issue #14 probability adapter) -/
@@ -570,20 +571,20 @@ theorem fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLens
 #print axioms Fri.QueryRound.probabilityDetectionBound_holds
 #print axioms Fri.FriQuerySoundnessParts.of_queryRoundProbabilityBound
 #print axioms Fri.fri_query_soundness_of_queryRoundProbabilityBound
-#print axioms Fri.FriQuerySoundnessParts.of_queryRoundProbabilityBoundAndBatchedFRIOracleLens
-#print axioms Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLens
+#print axioms Fri.FriQuerySoundnessParts.of_queryRoundProbabilityBoundAndCanonicalBatchingSeam
+#print axioms Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeam
 set_option linter.style.longLine false in
-#print axioms Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndJointProximity
+#print axioms Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndJointProximity
 set_option linter.style.longLine false in
-#print axioms Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndAffineLineCA
+#print axioms Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndAffineLineCA
 set_option linter.style.longLine false in
-#print axioms Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSAffineLine
+#print axioms Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSAffineLine
 set_option linter.style.longLine false in
-#print axioms Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndAffineSpacesCA
+#print axioms Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndAffineSpacesCA
 set_option linter.style.longLine false in
-#print axioms Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndCurveCA
+#print axioms Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndCurveCA
 set_option linter.style.longLine false in
-#print axioms Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndBatchedFRIOracleLensAndRSCurve
+#print axioms Fri.fri_query_soundness_of_queryRoundProbabilityBoundAndCanonicalBatchingSeamAndRSCurve
 
 end ProbabilityAdapter
 end Fri
