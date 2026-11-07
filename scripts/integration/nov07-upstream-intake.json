@@ -76,5 +76,20 @@
     "migrated_clients": 20,
     "generated_client_emitter": "scripts/probes/probe_w16_tz_emit_lean.py",
     "disposition": "The certificates share the same square-and-multiply computation and correctness theorem; their public statements still use ordinary monoid powers."
+  },
+  "upstream_tree_review": {
+    "tracked_upstream_blobs": 1749,
+    "tracked_in_downstream": 1746,
+    "lean_sources": 1435,
+    "byte_identical_lean_sources": 1433,
+    "reviewed_lean_adaptations": {
+      "ArkLib/Data/Polynomial/SplitFold.lean": "Generalize coefficient universes while delegating the upstream polynomial construction.",
+      "scripts/LintStyle.lean": "Enforce the module policy using the canonical inventory so the separate classic library keeps its ownership."
+    },
+    "downstream_documentation_policy": {
+      "ArkLib/ToMathlib/README.md": "The existing README and repo-map describe this directory outside the Lean source tree.",
+      "docs/kb/_generated/declarations.json": "Local generated declaration catalog.",
+      "docs/kb/_generated/dedup-report.md": "Local generated review aid."
+    }
   }
 }

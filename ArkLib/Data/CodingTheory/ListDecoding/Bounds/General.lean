@@ -81,9 +81,8 @@ section LowerBounds_General
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
-/- The canonical ListDecodability.Bounds.Basic owner provides the three Hamming-ball
-cardinality and averaging declarations formerly copied here. Their point-list definitions are
-identical; the canonical statements also remove unnecessary decidability/nonempty premises. -/
+/- The canonical ListDecodability.Bounds.Linear owner provides the volume bounds.
+The wrappers below retain the downstream list-size API through the finite-alphabet bridge. -/
 
 /-- **ABF26 Lemma 3.7 [Eli57].** Elias volume lower bound on list size for an arbitrary
 finite-alphabet code:
@@ -105,60 +104,11 @@ theorem lambda_ge_elias_volume_eli57
         ((hammingBallVolume (Fintype.card A) δ (Fintype.card ι) : ℝ)
           / (Fintype.card A : ℝ) ^ ((Fintype.card ι : ℝ) - k))
       ≤ (Lambda C δ : ENNReal) := by
-  classical
-  set q : ℕ := Fintype.card A with hq_def
-  set n : ℕ := Fintype.card ι with hn_def
-  set Vol : ℕ := hammingBallVolume q δ n with hVol_def
-  have hδ_nonneg : (0 : ℝ) ≤ δ := le_of_lt _hδ_pos
-  have hsum : ∑ f : ι → A, (closeCodewordsRel C f δ).ncard = q ^ k * Vol := by
-    erw [sum_ncard_closeCodewordsRel_eq_of_set C δ hδ_nonneg, hcard, hVol_def]
-  -- Choose a received word attaining the maximum point-list size.
-  obtain ⟨f₀, -, hf₀max⟩ := Finset.exists_max_image Finset.univ
-    (fun f => (closeCodewordsRel C f δ).ncard)
-    Finset.univ_nonempty
-  set s₀ : ℕ := (closeCodewordsRel C f₀ δ).ncard with hs₀_def
-  have hsum_le :
-      (∑ f : ι → A, (closeCodewordsRel C f δ).ncard) ≤ q ^ n * s₀ := by
-    have hcard_univ : (Finset.univ : Finset (ι → A)).card = q ^ n := by
-      rw [Finset.card_univ, Fintype.card_fun]
-    calc (∑ f : ι → A, (closeCodewordsRel C f δ).ncard)
-        ≤ (Finset.univ : Finset (ι → A)).card • s₀ :=
-          Finset.sum_le_card_nsmul _ _ _ (fun f _ => hf₀max f (Finset.mem_univ f))
-      _ = q ^ n * s₀ := by rw [hcard_univ, smul_eq_mul]
-  -- Combine: q^k · Vol ≤ q^n · s₀.
-  have hnat : q ^ k * Vol ≤ q ^ n * s₀ := hsum ▸ hsum_le
-  -- Pass to reals and isolate `Vol / q^{n-k} ≤ s₀`.
-  have hqr_pos : (0 : ℝ) < (q : ℝ) := by
-    exact_mod_cast (Fintype.card_pos : 0 < Fintype.card A)
-  set P : ℝ := (q : ℝ) ^ ((n : ℝ) - (k : ℝ)) with hP_def
-  have hP_pos : 0 < P := Real.rpow_pos_of_pos hqr_pos _
-  have hqk_pos : (0 : ℝ) < (q : ℝ) ^ k := pow_pos hqr_pos k
-  have hpow : (q : ℝ) ^ n = (q : ℝ) ^ k * P := by
-    rw [hP_def, ← Real.rpow_natCast (q : ℝ) n, ← Real.rpow_natCast (q : ℝ) k,
-      ← Real.rpow_add hqr_pos]
-    congr 1; ring
-  have hM_le : (Vol : ℝ) / P ≤ (s₀ : ℝ) := by
-    rw [div_le_iff₀ hP_pos]
-    have h1 : (q : ℝ) ^ k * (Vol : ℝ) ≤ (q : ℝ) ^ n * (s₀ : ℝ) := by
-      exact_mod_cast hnat
-    rw [hpow] at h1
-    have h2 : (q : ℝ) ^ k * (Vol : ℝ)
-        ≤ (q : ℝ) ^ k * ((s₀ : ℝ) * P) := by
-      have heq : (q : ℝ) ^ k * ((s₀ : ℝ) * P) = (q : ℝ) ^ k * P * (s₀ : ℝ) := by ring
-      rw [heq]; exact h1
-    exact le_of_mul_le_mul_left h2 hqk_pos
-  -- Lift to `ℝ≥0∞`: the maximised list at `f₀` already realises the bound.
-  simp only [Lambda, ENat.toENNReal_iSup]
-  refine le_iSup_of_le f₀ ?_
-  rw [← hs₀_def]
-  have hcast : ENat.toENNReal ((s₀ : ℕ) : ℕ∞) = ENNReal.ofReal (s₀ : ℝ) := by
-    rw [ENNReal.ofReal_natCast]; simp
-  rw [hcast]
-  exact ENNReal.ofReal_le_ofReal hM_le
+  rw [ProximityPrize.Compatibility.legacyLambda_eq_canonical]
+  exact lambda_ge_elias_volume C k hcard δ _hδ_pos
 
-/-- **ABF26 Lemma 3.7 [Eli57] for a field-linear code.** This preserves the original
-field-linear API as a specialization of `lambda_ge_elias_volume_eli57`; linearity enters only
-through the identity `|C| = |F| ^ finrank F C`. -/
+/-- **ABF26 Lemma 3.7 [Eli57] for a field-linear code**, using the canonical
+`linear_lambda_ge_elias_volume`. -/
 theorem linear_lambda_ge_elias_volume_eli57
     (C : Submodule F (ι → F)) (δ : ℝ) (_hδ_pos : 0 < δ) (_hδ_lt : δ < 1) :
     ENNReal.ofReal
@@ -166,12 +116,8 @@ theorem linear_lambda_ge_elias_volume_eli57
           / (Fintype.card F : ℝ) ^
               ((Fintype.card ι : ℝ) - Module.finrank F C))
       ≤ (Lambda ((C : Set (ι → F))) δ : ENNReal) := by
-  apply lambda_ge_elias_volume_eli57 (C := (C : Set (ι → F)))
-    (k := Module.finrank F C) (δ := δ) ?_ _hδ_pos _hδ_lt
-  classical
-  haveI : Fintype (↥C) := Fintype.ofFinite _
-  rw [← Nat.card_coe_set_eq, Nat.card_eq_fintype_card]
-  exact Module.card_eq_pow_finrank (K := F) (V := ↥C)
+  rw [ProximityPrize.Compatibility.legacyLambda_eq_canonical]
+  exact linear_lambda_ge_elias_volume C δ _hδ_pos
 
 /-! ### MS77 Hamming-ball volume bound (ingredient (★) for C3.8 below).
 
@@ -184,12 +130,9 @@ is genuinely **false**: `Vol_q(δ,n)` is a step function of `δ` (it changes onl
 countermodel-documented style.) So the faithful MS77 statement carries the lattice
 hypothesis `δ·n = ⌊δ·n⌋₊` — the minimal correct reading of [MS77, Ch.10 Lem 7].
 
-Everything below proves `(★)` at lattice points. The whole bound collapses, `q`-independently,
-to one Stirling inequality `stirlingSeq k · stirlingSeq (n−k) ≤ 2 · stirlingSeq n`
-(`1 ≤ k ≤ n−1`), which is discharged via mathlib's `Real.sqrt_pi_le_stirlingSeq` lower bound,
-a ported Robbins upper bound `stirlingSeq m ≤ √π·e^{1/(12m)}`, and exact handling of the
-three tight corners `(n,k) ∈ {(2,1),(3,1),(3,2)}` (with `(2,1)` an exact equality
-`stirlingSeq(1)² = 2·stirlingSeq(2) = e²/2`). -/
+The lattice volume bound uses the canonical `qary_shell_entropy_lower` and includes the shell at
+`⌊δ·n⌋` in the Hamming-ball volume. The auxiliary Stirling and binomial identities remain available
+under their historical names. -/
 
 namespace ABF26C38
 
@@ -299,131 +242,8 @@ theorem sqrtpi_exp_le_two : √π * Real.exp (1/9) ≤ 2 := by
 -- ===== CORE LEMMA =====
 -- For k ≥ 1, j ≥ 1: stirlingSeq k * stirlingSeq j ≤ 2 * stirlingSeq (k+j)
 theorem core_stirling_add {k j : ℕ} (hk : 1 ≤ k) (hj : 1 ≤ j) :
-    stirlingSeq k * stirlingSeq j ≤ 2 * stirlingSeq (k + j) := by
-  have hsqrtπ_pos : (0 : ℝ) < √π := Real.sqrt_pos.mpr Real.pi_pos
-  -- corner (1,1)
-  by_cases h11 : k = 1 ∧ j = 1
-  · obtain ⟨rfl, rfl⟩ := h11
-    -- ss1 * ss1 = e²/2 = 2·ss2
-    have hsum2 : (1:ℕ) + 1 = 2 := rfl
-    rw [hsum2, stirlingSeq_one, ss2_eq]
-    -- e/√2 * (e/√2) = e²/2 = 2 * (e²/4); exact equality
-    have h2 : √(2:ℝ) ^ 2 = 2 := Real.sq_sqrt (by norm_num)
-    have h2pos : 0 < √(2:ℝ) := Real.sqrt_pos.mpr (by norm_num)
-    have heq : Real.exp 1 / √2 * (Real.exp 1 / √2) = 2 * (Real.exp 1 ^ 2 / 4) := by
-      rw [div_mul_div_comm]
-      have hden : √(2:ℝ) * √2 = 2 := by nlinarith [h2]
-      rw [hden]; ring
-    rw [heq]
-  -- corner (1,2) or (2,1)
-  by_cases h12 : (k = 1 ∧ j = 2) ∨ (k = 2 ∧ j = 1)
-  · have hval : stirlingSeq k * stirlingSeq j = Real.exp 1 / √2 * (Real.exp 1 ^ 2 / 4) := by
-      rcases h12 with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩
-      · rw [stirlingSeq_one, ss2_eq]
-      · rw [stirlingSeq_one, ss2_eq]; ring
-    have hsum : k + j = 3 := by rcases h12 with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;> rfl
-    rw [hval, hsum, ss3_eq]
-    -- e/√2 * e²/4 ≤ 2 · (2 e³/(9√6))   ⟺   486 ≤ 512  after clearing radicals
-    have h2 : √(2:ℝ) ^ 2 = 2 := Real.sq_sqrt (by norm_num)
-    have h6 : √(6:ℝ) ^ 2 = 6 := Real.sq_sqrt (by norm_num)
-    have h2pos : 0 < √(2:ℝ) := Real.sqrt_pos.mpr (by norm_num)
-    have h6pos : 0 < √(6:ℝ) := Real.sqrt_pos.mpr (by norm_num)
-    have hepos : 0 < Real.exp 1 := Real.exp_pos 1
-    have he3 : 0 < Real.exp 1 ^ 3 := by positivity
-    -- key radical inequality: 9√6 ≤ 16√2  (square: 486 ≤ 512)
-    have hrad : 9 * √(6:ℝ) ≤ 16 * √(2:ℝ) := by
-      nlinarith [h2, h6, h2pos, h6pos, Real.sqrt_nonneg (2:ℝ), Real.sqrt_nonneg (6:ℝ),
-        mul_pos h2pos h6pos]
-    -- LHS = e³/(4√2), RHS = 4e³/(9√6).
-    have hLeq : Real.exp 1 / √2 * (Real.exp 1 ^ 2 / 4) = Real.exp 1 ^ 3 / (4 * √2) := by
-      rw [show Real.exp 1 ^ 3 = Real.exp 1 * Real.exp 1 ^ 2 by ring]
-      field_simp
-    have hReq : 2 * (2 * Real.exp 1 ^ 3 / (9 * √6)) = 4 * Real.exp 1 ^ 3 / (9 * √6) := by
-      ring
-    rw [hLeq, hReq]
-    rw [div_le_div_iff₀ (by positivity) (by positivity)]
-    -- e³ * (9√6) ≤ (4 e³) * (4 √2) = 16 e³ √2;  use hrad and e³ ≥ 0
-    nlinarith [hrad, he3, mul_le_mul_of_nonneg_left hrad he3.le]
-  -- generic case: 1/k + 1/j ≤ 4/3
-  · have hkr : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast hk
-    have hjr : (1 : ℝ) ≤ (j : ℝ) := by exact_mod_cast hj
-    have hkpos : (0:ℝ) < (k:ℝ) := by linarith
-    have hjpos : (0:ℝ) < (j:ℝ) := by linarith
-    -- robbins on k and j
-    have hrk := robbins_upper (m := k) (by omega)
-    have hrj := robbins_upper (m := j) (by omega)
-    have hssk : 0 ≤ stirlingSeq k := (sqrt_pi_le_stirlingSeq (by omega)).trans' hsqrtπ_pos.le
-    have hssj : 0 ≤ stirlingSeq j := (sqrt_pi_le_stirlingSeq (by omega)).trans' hsqrtπ_pos.le
-    -- ss k * ss j ≤ (√π e^{1/12k}) (√π e^{1/12j}) = π e^{1/12k+1/12j}
-    have hprod : stirlingSeq k * stirlingSeq j ≤
-        (√π * Real.exp (1/(12*k))) * (√π * Real.exp (1/(12*j))) :=
-      mul_le_mul hrk hrj hssj (by positivity)
-    -- exponent ≤ 1/9
-    have hexp_le : 1/(12*(k:ℝ)) + 1/(12*(j:ℝ)) ≤ 1/9 := by
-      -- equivalent to 1/k + 1/j ≤ 4/3
-      have hsum_le : 1/(k:ℝ) + 1/(j:ℝ) ≤ 4/3 := by
-        -- enumerate the non-corner cases
-        rcases Nat.lt_or_ge k 3 with hk3 | hk3
-        · interval_cases k
-          · -- k = 1; then j ≥ 3 (since not (1,1),(1,2))
-            have hj3 : 3 ≤ j := by
-              rcases Nat.lt_or_ge j 3 with hj3 | hj3
-              · interval_cases j
-                · exact absurd ⟨rfl, rfl⟩ h11
-                · exact absurd (Or.inl ⟨rfl, rfl⟩) h12
-              · exact hj3
-            have hjle : (1:ℝ)/(j:ℝ) ≤ 1/3 := by
-              rw [div_le_div_iff₀ hjpos (by norm_num)]
-              have : (3:ℝ) ≤ (j:ℝ) := by exact_mod_cast hj3
-              linarith
-            simp only [Nat.cast_one, div_one]
-            linarith
-          · -- k = 2; then j ≥ 2 (since not (2,1))
-            have hj2 : 2 ≤ j := by
-              rcases Nat.lt_or_ge j 2 with hj2 | hj2
-              · interval_cases j
-                · exact absurd (Or.inr ⟨rfl, rfl⟩) h12
-              · exact hj2
-            have hjle : (1:ℝ)/(j:ℝ) ≤ 1/2 := by
-              rw [div_le_div_iff₀ hjpos (by norm_num)]
-              have : (2:ℝ) ≤ (j:ℝ) := by exact_mod_cast hj2
-              linarith
-            have hcast2 : ((2:ℕ):ℝ) = 2 := by norm_num
-            rw [hcast2]
-            linarith
-        · -- k ≥ 3; 1/k ≤ 1/3, 1/j ≤ 1
-          have hk3r : (3:ℝ) ≤ (k:ℝ) := by exact_mod_cast hk3
-          have h1 : (1:ℝ)/(k:ℝ) ≤ 1/3 := by
-            rw [div_le_div_iff₀ hkpos (by norm_num)]; linarith
-          have h2 : (1:ℝ)/(j:ℝ) ≤ 1 := by
-            rw [div_le_one hjpos]; linarith
-          linarith
-      -- now scale by 1/12
-      have e1 : 1/(12*(k:ℝ)) = (1/12) * (1/(k:ℝ)) := by ring
-      have e2 : 1/(12*(j:ℝ)) = (1/12) * (1/(j:ℝ)) := by ring
-      rw [e1, e2]
-      nlinarith [hsum_le]
-    -- assemble: π e^{exp} ≤ π e^{1/9} = √π (√π e^{1/9}) ≤ √π · 2 = 2√π ≤ 2 ss(k+j)
-    have hmono_exp : Real.exp (1/(12*(k:ℝ)) + 1/(12*(j:ℝ))) ≤ Real.exp (1/9) :=
-      Real.exp_le_exp.mpr hexp_le
-    have hπsq : √π * √π = π := Real.mul_self_sqrt Real.pi_pos.le
-    have hstep1 : (√π * Real.exp (1/(12*k))) * (√π * Real.exp (1/(12*j)))
-        = π * Real.exp (1/(12*(k:ℝ)) + 1/(12*(j:ℝ))) := by
-      have hcomb : Real.exp (1/(12*(k:ℝ))) * Real.exp (1/(12*(j:ℝ)))
-          = Real.exp (1/(12*(k:ℝ)) + 1/(12*(j:ℝ))) := (Real.exp_add _ _).symm
-      calc (√π * Real.exp (1/(12*k))) * (√π * Real.exp (1/(12*j)))
-          = (√π * √π) * (Real.exp (1/(12*(k:ℝ))) * Real.exp (1/(12*(j:ℝ)))) := by ring
-        _ = π * Real.exp (1/(12*(k:ℝ)) + 1/(12*(j:ℝ))) := by rw [hπsq, hcomb]
-    have hge : √π ≤ stirlingSeq (k + j) := sqrt_pi_le_stirlingSeq (by omega)
-    calc stirlingSeq k * stirlingSeq j
-        ≤ (√π * Real.exp (1/(12*k))) * (√π * Real.exp (1/(12*j))) := hprod
-      _ = π * Real.exp (1/(12*(k:ℝ)) + 1/(12*(j:ℝ))) := hstep1
-      _ ≤ π * Real.exp (1/9) := by
-            apply mul_le_mul_of_nonneg_left hmono_exp Real.pi_pos.le
-      _ = √π * (√π * Real.exp (1/9)) := by rw [← mul_assoc, hπsq]
-      _ ≤ √π * 2 := by apply mul_le_mul_of_nonneg_left sqrtpi_exp_le_two hsqrtπ_pos.le
-      _ = 2 * √π := by ring
-      _ ≤ 2 * stirlingSeq (k + j) := by linarith [hge]
+    stirlingSeq k * stirlingSeq j ≤ 2 * stirlingSeq (k + j) :=
+  stirlingSeq_mul_le_two_mul_add k j
 
 -- ===== Stirling/binomial collapse for the MS77 reduction =====
 
@@ -594,124 +414,13 @@ theorem ms77_lattice (q n : ℕ) (δ : ℝ)
     (hlat : δ * n = (⌊δ * n⌋₊ : ℝ)) :
     (q:ℝ) ^ ((n:ℝ) * qEntropy q δ) / (8 * (n:ℝ) * δ * (1 - δ)) ^ ((1:ℝ)/2)
       ≤ (hammingBallVolume q δ n : ℝ) := by
-  classical
-  set K : ℕ := ⌊δ * n⌋₊ with hKdef
-  have hnpos : (0:ℝ) < n := by exact_mod_cast hn
-  -- δ*n = K, so K = δ*n ∈ (0, n)
-  have hKr : (K:ℝ) = δ * n := hlat.symm
-  have hKpos_r : (0:ℝ) < (K:ℝ) := by rw [hKr]; positivity
-  have hK1 : 1 ≤ K := by
-    have : 0 < K := by exact_mod_cast hKpos_r
-    omega
-  -- K < n
-  have hKlt_r : (K:ℝ) < (n:ℝ) := by
-    rw [hKr]
-    calc δ * n < 1 * n := by apply mul_lt_mul_of_pos_right hδ1 hnpos
-      _ = n := by ring
-  have hKltn : K < n := by exact_mod_cast hKlt_r
-  -- set j = n - K ≥ 1, n = K + j
-  set j : ℕ := n - K with hjdef
-  have hj1 : 1 ≤ j := by omega
-  have hnKj : n = K + j := by omega
-  have hjpos_r : (0:ℝ) < (j:ℝ) := by exact_mod_cast hj1
-  -- δ = K/n, 1-δ = j/n
-  have hδeq : δ = (K:ℝ) / n := by rw [hKr]; field_simp
-  have h1δeq : 1 - δ = (j:ℝ) / n := by
-    rw [hδeq, hnKj]; push_cast; field_simp; ring
-  -- positivity facts
-  have hqr1 : (1:ℝ) ≤ (q:ℝ) - 1 := by
-    have : (2:ℝ) ≤ (q:ℝ) := by exact_mod_cast hq
-    linarith
-  have hqr1pos : (0:ℝ) < (q:ℝ) - 1 := by linarith
-  -- S = √(8nδ(1-δ)) = √(8Kj/(K+j))
-  have hSval : (8 * (n:ℝ) * δ * (1 - δ)) ^ ((1:ℝ)/2) = √(8 * (K:ℝ) * j / (K + j)) := by
-    rw [← Real.sqrt_eq_rpow]
-    congr 1
-    rw [h1δeq, hδeq, hnKj]
-    push_cast
-    field_simp
-  -- entropy/power identity, then split off (q-1)^K
-  have hqpow := qpow_eq_exp q n δ hq
-  -- exp(n·δ·log(q-1)) = (q-1)^K
-  have hsplit : (q:ℝ) ^ ((n:ℝ) * qEntropy q δ)
-      = ((q:ℝ) - 1) ^ K
-        * Real.exp ((n:ℝ) * (- δ * Real.log δ - (1-δ) * Real.log (1-δ))) := by
-    rw [hqpow]
-    rw [show (n:ℝ) * (δ * Real.log ((q:ℝ)-1) - δ * Real.log δ - (1-δ) * Real.log (1-δ))
-        = (n:ℝ) * δ * Real.log ((q:ℝ)-1)
-          + (n:ℝ) * (- δ * Real.log δ - (1-δ) * Real.log (1-δ)) by ring]
-    rw [Real.exp_add]
-    congr 1
-    -- exp(n·δ·log(q-1)) = (q-1)^K, since n·δ = K
-    have hnδ : (n:ℝ) * δ = (K:ℝ) := by rw [hKr]; ring
-    rw [show (n:ℝ) * δ * Real.log ((q:ℝ)-1) = (K:ℝ) * Real.log ((q:ℝ)-1) by rw [hnδ]]
-    rw [Real.exp_nat_mul, Real.exp_log hqr1pos]
-  -- Bform via B_eq (with δ = K/(K+j))
-  have hBform : Real.exp ((n:ℝ) * (- δ * Real.log δ - (1-δ) * Real.log (1-δ)))
-      = (((K:ℝ)+j)/K)^K * (((K:ℝ)+j)/j)^j := by
-    rw [← B_eq K j hK1 hj1]
-    congr 1
-    -- n·(-δ log δ - (1-δ)log(1-δ)) = (K+j)·(-(K/(K+j))log(K/(K+j)) - (1-K/(K+j))log(1-K/(K+j)))
-    have hcast_add : (((K + j : ℕ)) : ℝ) = (K:ℝ) + j := by push_cast; ring
-    rw [hcast_add]
-    have hδeq' : δ = (K:ℝ) / ((K:ℝ) + j) := by rw [hδeq, hnKj]; push_cast; ring
-    have hnr : (n:ℝ) = (K:ℝ) + j := by rw [hnKj]; push_cast; ring
-    rw [hδeq', hnr]
-  -- Single largest term: hammingBallVolume ≥ C(n,K)·(q-1)^K
-  have hsingle : ((Nat.choose n K) * ((q - 1) ^ K) : ℝ) ≤ (hammingBallVolume q δ n : ℝ) := by
-    rw [hammingBallVolume]
-    have hmem : K ∈ Finset.range (⌊δ * n⌋₊ + 1) := by
-      rw [← hKdef]; simp
-    have hterm : (Nat.choose n K * (q - 1) ^ K : ℕ)
-        ≤ ∑ i ∈ Finset.range (⌊δ * n⌋₊ + 1), Nat.choose n i * (q - 1) ^ i := by
-      apply Finset.single_le_sum (f := fun i => Nat.choose n i * (q - 1) ^ i)
-        (fun i _ => Nat.zero_le _) hmem
-    have hcast := (Nat.cast_le (α := ℝ)).mpr hterm
-    have hqsub : ((q - 1 : ℕ) : ℝ) = (q:ℝ) - 1 := by
-      have h1q : 1 ≤ q := by omega
-      rw [Nat.cast_sub h1q]; push_cast; ring
-    push_cast [hqsub] at hcast ⊢
-    convert hcast using 2
-  -- master eq: S·C(n,K) = (2 ss(K+j)/(ss K ss j)) · Bform
-  have hmaster : √(8 * (K:ℝ) * j / (K + j)) * (Nat.choose n K : ℝ)
-      = (2 * stirlingSeq (K + j) / (stirlingSeq K * stirlingSeq j))
-        * ((((K:ℝ)+j)/K)^K * (((K:ℝ)+j)/j)^j) := by
-    rw [hnKj]; exact master_eq K j hK1 hj1
-  -- core lemma ⇒ Bform ≤ S·C(n,K)
-  have hsqrtπ_pos : (0:ℝ) < √π := Real.sqrt_pos.mpr Real.pi_pos
-  have hssK : 0 < stirlingSeq K :=
-    lt_of_lt_of_le hsqrtπ_pos (sqrt_pi_le_stirlingSeq (by omega))
-  have hssj : 0 < stirlingSeq j :=
-    lt_of_lt_of_le hsqrtπ_pos (sqrt_pi_le_stirlingSeq (by omega))
-  have hcore : stirlingSeq K * stirlingSeq j ≤ 2 * stirlingSeq (K + j) :=
-    core_stirling_add hK1 hj1
-  have hBpos : 0 ≤ (((K:ℝ)+j)/K)^K * (((K:ℝ)+j)/j)^j := by positivity
-  have hSpos : (0:ℝ) < √(8 * (K:ℝ) * j / (K + j)) := by
-    apply Real.sqrt_pos.mpr; positivity
-  -- Bform ≤ S·C(n,K)
-  have hBle : (((K:ℝ)+j)/K)^K * (((K:ℝ)+j)/j)^j
-      ≤ √(8 * (K:ℝ) * j / (K + j)) * (Nat.choose n K : ℝ) := by
-    rw [hmaster]
-    -- ratio ≥ 1: 2 ss(K+j)/(ss K ss j) ≥ 1
-    have hratio : (1:ℝ) ≤ 2 * stirlingSeq (K + j) / (stirlingSeq K * stirlingSeq j) := by
-      rw [le_div_iff₀ (by positivity)]
-      linarith [hcore]
-    nlinarith [hBpos, hratio]
-  -- assemble: q^{nH}/S = (q-1)^K · Bform / S ≤ (q-1)^K · C(n,K) ≤ Vol
-  rw [hSval, hsplit, hBform]
-  -- goal: ((q-1)^K · Bform) / √(...) ≤ Vol
-  have hqK_pos : (0:ℝ) ≤ ((q:ℝ) - 1) ^ K := by positivity
-  calc ((q:ℝ) - 1) ^ K * ((((K:ℝ)+j)/K)^K * (((K:ℝ)+j)/j)^j) / √(8 * (K:ℝ) * j / (K + j))
-      = ((q:ℝ) - 1) ^ K * ((((K:ℝ)+j)/K)^K * (((K:ℝ)+j)/j)^j / √(8 * (K:ℝ) * j / (K + j))) := by
-        rw [mul_div_assoc]
-    _ ≤ ((q:ℝ) - 1) ^ K * (Nat.choose n K : ℝ) := by
-        apply mul_le_mul_of_nonneg_left _ hqK_pos
-        rw [div_le_iff₀ hSpos, mul_comm (Nat.choose n K : ℝ)]
-        exact hBle
-    _ = ((Nat.choose n K) * ((q - 1) ^ K) : ℝ) := by
-        ring
-    _ ≤ (hammingBallVolume q δ n : ℝ) := hsingle
-
+  let d := ⌊δ * (n : ℝ)⌋₊
+  have hshell : Nat.choose n d * (q - 1) ^ d ≤ hammingBallVolume q δ n := by
+    unfold hammingBallVolume
+    exact Finset.single_le_sum
+      (s := Finset.range (d + 1)) (f := fun i => Nat.choose n i * (q - 1) ^ i)
+      (fun i _ => Nat.zero_le _) (Finset.mem_range.mpr (Nat.lt_succ_self d))
+  exact (qary_shell_entropy_lower q n d δ hq hlat.symm).trans (by exact_mod_cast hshell)
 
 end ABF26C38
 
@@ -751,16 +460,9 @@ exponent `n·(ρ-1+H_q) = k - n + n·H_q`, giving `q^{n(ρ-1+H_q)} = q^{n·H_q} 
 the C3.8 real RHS `= (q^{n·H_q}/√(8nδ(1-δ))) / q^{n-k} ≤ Vol / q^{n-k}` by (★), which is
 exactly the L3.7 real bound, and `ENNReal.ofReal` is monotone.
 
-Inequality (★) at the lattice point is `ABF26C38.ms77_lattice` (proven above). It collapses,
-`q`-independently, to one Stirling inequality: the single largest term gives
-`Vol ≥ C(n,K)(q-1)^K` (`K = ⌊δn⌋ = δn`); the entropy/power identity cancels the `(q-1)^K`
-exactly against `q^{n·H_q}`; the radical constant `√(8nδ(1-δ))` collapses to give the
-*exact* equation `√(8K(n−K)/n)·C(n,K) = (2·stirlingSeq n / (stirlingSeq K·stirlingSeq(n−K)))
-·exp(n·H_bin(K/n))`; whence (★) ⟺ `stirlingSeq K·stirlingSeq(n−K) ≤ 2·stirlingSeq n`
-(`ABF26C38.core_stirling_add`), discharged via mathlib's `Real.sqrt_pi_le_stirlingSeq`, a
-ported Robbins upper bound `stirlingSeq m ≤ √π·e^{1/(12m)}` (`ABF26C38.robbins_upper`,
-telescoped from `Stirling.log_stirlingSeq_diff_le`), and exact treatment of the three tight
-corners `{(2,1),(3,1),(3,2)}` (with `(2,1)` an exact equality `stirlingSeq(1)² = e²/2`).
+At the lattice point `K = ⌊δn⌋ = δn`, `ABF26C38.ms77_lattice` obtains (★) from
+`qary_shell_entropy_lower` for the shell `C(n,K)(q-1)^K`, which is at most the full volume.
+The canonical shell estimate uses `stirlingSeq_mul_le_two_mul_add` for its factor of two.
 [MS77, MacWilliams–Sloane, *The Theory of Error-Correcting Codes*, Ch. 10, Lemma 7]. -/
 theorem lambda_ge_entropy_volume_of_floor_eq
     {A : Type} [Fintype A] [Nontrivial A] [DecidableEq A]
@@ -793,7 +495,7 @@ theorem linear_lambda_ge_entropy_volume_of_floor_eq
           / (8 * n * δ * (1 - δ)) ^ ((1 : ℝ) / 2))
       ≤ (Lambda ((C : Set (ι → F))) δ : ENNReal) := by
   rw [ProximityPrize.Compatibility.legacyLambda_eq_canonical]
-  exact linear_lambda_ge_entropy_volume C δ _hδ_pos _hδ_lt
+  exact linear_lambda_ge_entropy_volume C δ
     ⟨⌊δ * (Fintype.card ι : ℝ)⌋₊, hlat.symm⟩
 
 /- **ST20 plurality-center averaging core (in-tree, fully proven).**
@@ -867,195 +569,15 @@ theorem exists_representative_center_sum_hammingDist_le
     ∃ z : ι → F, (∑ j, hammingDist z (c j)) ≤ ℓ * Fintype.card ι :=
   exists_representative_center_sum_hammingDist_le_generic (A := F) ℓ c
 
--- ===== ST20 (T3.9) helper 1: range fiber lower bound =====
-private theorem st20_range_fiber_ge (a m i : ℕ) (hm : 0 < m) (hi : i < m) :
-    a / m ≤ (Finset.range a |>.filter (fun t => t % m = i)).card := by
-  have hsub : (Finset.range (a / m)).image (fun s => s * m + i)
-      ⊆ (Finset.range a |>.filter (fun t => t % m = i)) := by
-    intro x hx
-    simp only [Finset.mem_image, Finset.mem_range] at hx
-    obtain ⟨s, hs, rfl⟩ := hx
-    simp only [Finset.mem_filter, Finset.mem_range]
-    refine ⟨?_, ?_⟩
-    · have hstep : s * m + m ≤ (a / m) * m := by
-        have hs1 : s + 1 ≤ a / m := hs
-        calc s * m + m = (s + 1) * m := by ring
-          _ ≤ (a/m) * m := Nat.mul_le_mul_right m hs1
-      have hdm : (a/m) * m ≤ a := Nat.div_mul_le_self a m
-      omega
-    · have : (s * m + i) % m = i % m := Nat.mul_add_mod' s m i
-      rw [this, Nat.mod_eq_of_lt hi]
-  calc a / m = (Finset.range (a / m)).card := by rw [Finset.card_range]
-    _ = ((Finset.range (a / m)).image (fun s => s * m + i)).card := by
-        rw [Finset.card_image_of_injOn]
-        intro x _ y _ h; simp only at h
-        have : x * m = y * m := by omega
-        exact Nat.eq_of_mul_eq_mul_right hm this
-    _ ≤ _ := Finset.card_le_card hsub
-
--- ===== ST20 (T3.9) helper 2: fiber lower bound transported to attach =====
-private theorem st20_attach_fiber_ge (Sc : Finset ι) (m : ℕ) (hm : 0 < m) (j : ℕ) (hj : j < m)
-    (e : {x // x ∈ Sc} ≃ Fin Sc.card) :
-    Sc.card / m ≤ (Sc.attach.filter (fun x => (e x).val % m = j)).card := by
-  have hbij : (Sc.attach.filter (fun x => (e x).val % m = j)).card
-      = (Finset.univ.filter (fun t : Fin Sc.card => t.val % m = j)).card := by
-    apply Finset.card_bij (fun x _ => e x)
-    · intro x hx; simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-      simp only [Finset.mem_filter] at hx; exact hx.2
-    · intro x _ y _ h; exact e.injective h
-    · intro t ht
-      refine ⟨e.symm t, ?_, ?_⟩
-      · simp only [Finset.mem_filter, Finset.mem_attach, true_and, Equiv.apply_symm_apply]
-        simp only [Finset.mem_filter, Finset.mem_univ, true_and] at ht; exact ht
-      · simp [Equiv.apply_symm_apply]
-  rw [hbij]
-  have hrange : (Finset.univ.filter (fun t : Fin Sc.card => t.val % m = j)).card
-      = (Finset.range Sc.card |>.filter (fun t => t % m = j)).card := by
-    apply Finset.card_bij (fun (t : Fin Sc.card) _ => t.val)
-    · intro t ht; simp only [Finset.mem_filter, Finset.mem_range]
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at ht
-      exact ⟨t.isLt, ht⟩
-    · intro x _ y _ h; exact Fin.ext h
-    · intro v hv; simp only [Finset.mem_filter, Finset.mem_range] at hv
-      exact ⟨⟨v, hv.1⟩, by simp [Finset.mem_filter, hv.2], rfl⟩
-  rw [hrange]
-  exact st20_range_fiber_ge _ _ _ hm hj
-
--- ===== ST20 (T3.9) helper 3: pure-nat arithmetic inequality (lattice form) =====
-private theorem st20_nat_ineq (ℓ r₀ : ℕ) (hℓ : 1 ≤ ℓ) :
-    ((ℓ+1)*r₀/ℓ) - ((ℓ+1)*r₀/ℓ)/(ℓ+1) ≤ r₀ := by
-  set a := (ℓ+1)*r₀/ℓ with ha
-  have hAl : a * ℓ ≤ (ℓ+1)*r₀ := Nat.div_mul_le_self _ _
-  obtain ⟨s, hs_le, hs_eq⟩ : ∃ s, s ≤ ℓ ∧ a = (ℓ+1) * (a/(ℓ+1)) + s := by
-    refine ⟨a % (ℓ+1), ?_, ?_⟩
-    · have := Nat.mod_lt a (show 0 < ℓ+1 by omega); omega
-    · have := Nat.div_add_mod a (ℓ+1); omega
-  set b := a/(ℓ+1) with hb
-  rw [Nat.sub_le_iff_le_add, hs_eq]
-  have hcore : ℓ*b + s ≤ r₀ := by
-    have key : ((ℓ+1)*b + s) * ℓ ≤ (ℓ+1)*r₀ := by rw [← hs_eq]; exact hAl
-    nlinarith [key, hs_le, hℓ, Nat.zero_le b, Nat.zero_le s, Nat.zero_le r₀,
-               Nat.mul_le_mul_right ℓ hs_le]
-  have hexp : (ℓ+1)*b = ℓ*b + b := by ring
-  rw [hexp]; omega
-
--- ===== ST20 (T3.9) helper 4: kernel extraction =====
-private theorem st20_kernel_extract (C : Submodule F (ι → F)) (S : Finset ι) (ℓ : ℕ)
-    (hdim : S.card < Module.finrank F C) (hq : ℓ + 1 ≤ Fintype.card F) :
-    ∃ cf : Fin (ℓ + 1) → (ι → F), Function.Injective cf ∧
-      (∀ j, cf j ∈ C) ∧ (∀ j, ∀ i ∈ S, cf j i = 0) := by
-  classical
-  let ρ : (ι → F) →ₗ[F] (S → F) := LinearMap.funLeft F F (fun i : S => (i : ι))
-  let g : C →ₗ[F] (S → F) := ρ.comp C.subtype
-  haveI : FiniteDimensional F C := inferInstance
-  have hrn := LinearMap.finrank_range_add_finrank_ker g
-  have hrange : Module.finrank F (LinearMap.range g) ≤ S.card := by
-    have h1 : Module.finrank F (LinearMap.range g) ≤ Module.finrank F (S → F) :=
-      Submodule.finrank_le _
-    have h2 : Module.finrank F (S → F) = S.card := by rw [Module.finrank_pi]; simp
-    omega
-  have hker : 1 ≤ Module.finrank F (LinearMap.ker g) := by omega
-  haveI : Fintype (LinearMap.ker g) := Fintype.ofFinite _
-  have hcard_ker : Fintype.card (LinearMap.ker g)
-      = Fintype.card F ^ Module.finrank F (LinearMap.ker g) :=
-    Module.card_eq_pow_finrank (K := F) (V := LinearMap.ker g)
-  have hq1 : 1 < Fintype.card F := Fintype.one_lt_card
-  have hge : Fintype.card F ≤ Fintype.card (LinearMap.ker g) := by
-    rw [hcard_ker]
-    calc Fintype.card F = Fintype.card F ^ 1 := (pow_one _).symm
-      _ ≤ _ := Nat.pow_le_pow_right (le_of_lt hq1) hker
-  have hle : ℓ + 1 ≤ Fintype.card (LinearMap.ker g) := le_trans hq hge
-  obtain ⟨emb⟩ : Nonempty (Fin (ℓ+1) ↪ (LinearMap.ker g)) :=
-    Function.Embedding.nonempty_of_card_le (by simpa using hle)
-  refine ⟨fun j => (((emb j : C) : ι → F)), ?_, ?_, ?_⟩
-  · intro a b hab
-    apply emb.injective
-    have h2 : (emb a : C) = (emb b : C) := Subtype.ext hab
-    exact Subtype.ext h2
-  · intro j; exact (emb j : C).2
-  · intro j i hi
-    have hmem : (emb j : C) ∈ LinearMap.ker g := (emb j).2
-    rw [LinearMap.mem_ker] at hmem
-    have hcf := congr_fun hmem ⟨i, hi⟩
-    have hgval : (g (emb j)) ⟨i, hi⟩ = (((emb j : C) : ι → F)) i := rfl
-    rw [hgval] at hcf
-    simpa using hcf
-
--- ===== ST20 (T3.9) helper 5: distance bound for constructed y =====
-private theorem st20_dist_bound (S : Finset ι) (ℓ : ℕ)
-    (cf : Fin (ℓ + 1) → (ι → F))
-    (hcfC0 : ∀ j, ∀ i, i ∈ S → cf j i = 0) :
-    ∃ y : ι → F, ∀ j : Fin (ℓ+1),
-      hammingDist y (cf j) ≤ Sᶜ.card - Sᶜ.card / (ℓ+1) := by
-  classical
-  set Sc : Finset ι := Sᶜ with hSc
-  set e : {x // x ∈ Sc} ≃ Fin Sc.card := Sc.equivFin with he
-  set partN : {x // x ∈ Sc} → Fin (ℓ+1) :=
-    fun x => ⟨(e x).val % (ℓ+1), Nat.mod_lt _ (by omega)⟩ with hpartN
-  set y : ι → F := fun i => if hi : i ∈ Sc then cf (partN ⟨i, hi⟩) i else 0 with hy
-  refine ⟨y, fun j => ?_⟩
-  rw [hammingDist]
-  have hsub : (Finset.univ.filter (fun i => y i ≠ cf j i)) ⊆
-      (Sc.attach.filter (fun x => partN x ≠ j)).image Subtype.val := by
-    intro i hi
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hi
-    by_cases hiSc : i ∈ Sc
-    · simp only [Finset.mem_image, Finset.mem_filter, Finset.mem_attach, true_and]
-      refine ⟨⟨i, hiSc⟩, ?_, rfl⟩
-      intro hpeq
-      apply hi
-      simp only [hy, dif_pos hiSc]
-      rw [hpeq]
-    · exfalso; apply hi
-      simp only [hy, dif_neg hiSc]
-      have hiS : i ∈ S := by simp only [hSc, Finset.mem_compl, not_not] at hiSc; exact hiSc
-      exact (hcfC0 j i hiS).symm
-  have hpartition := Finset.card_filter_add_card_filter_not (s := Sc.attach)
-    (p := fun x => partN x = j)
-  have hfiber : Sc.card / (ℓ+1) ≤ (Sc.attach.filter (fun x => partN x = j)).card := by
-    have hbase := st20_attach_fiber_ge Sc (ℓ+1) (by omega) j.val j.isLt e
-    have hcongr : (Sc.attach.filter (fun x => (e x).val % (ℓ+1) = j.val)).card
-        = (Sc.attach.filter (fun x => partN x = j)).card := by
-      apply congrArg Finset.card
-      apply Finset.filter_congr
-      intro x _
-      constructor
-      · intro h; apply Fin.ext; simp only [hpartN]; exact h
-      · intro h; have := congrArg Fin.val h; simpa [hpartN] using this
-    rw [← hcongr]; exact hbase
-  have hattach_card : Sc.attach.card = Sc.card := Finset.card_attach
-  calc (Finset.univ.filter (fun i => y i ≠ cf j i)).card
-      ≤ ((Sc.attach.filter (fun x => partN x ≠ j)).image Subtype.val).card :=
-        Finset.card_le_card hsub
-    _ ≤ (Sc.attach.filter (fun x => partN x ≠ j)).card := Finset.card_image_le
-    _ ≤ Sc.card - Sc.card / (ℓ+1) := by
-        have hne : (Sc.attach.filter (fun x => partN x ≠ j)).card
-            = (Sc.attach.filter (fun x => ¬ (partN x = j))).card := by congr 1
-        rw [hne]; omega
-
--- ===== ST20 (T3.9) helper 6: |C| = q^{finrank C} =====
-private theorem st20_ncard_eq (C : Submodule F (ι → F)) :
-    Set.ncard (C : Set (ι → F)) = Fintype.card F ^ Module.finrank F C := by
-  haveI : Fintype C := Fintype.ofFinite _
-  rw [Set.ncard_eq_toFinset_card' (C : Set (ι → F)), Set.toFinset_card]
-  have hcong : Fintype.card (↑C : Set (ι → F)) = Fintype.card C := by
-    apply Fintype.card_congr; rfl
-  rw [hcong, Module.card_eq_pow_finrank (K := F) (V := C)]
-
 /-- **ABF26 Theorem 3.9 [ST20 Thm 1.2], linear refinement.** Generalized Singleton bound
 for list decoding. For a linear code `C ⊆ F^n` with `0 < ℓ < |F|`, `δ ∈ (0,1)` and
 `|Λ(C, δ)| ≤ ℓ`:
 
   `|C| ≤ |F|^{n - ⌊(ℓ+1)/ℓ · δ · n⌋}`.
 
-**PROVEN** here from scratch by Shangguan–Tamo's elementary pigeonhole/partition argument
-(SIAM J. Comput. 52(3), eq. (2); the cycle-space machinery in ST20 is only for the
-*tightness* results T1.6/T1.9, NOT for this bound). Linear-algebra version: if
-`finrank C > n - a`, the restriction-to-`S` map (`|S| = n - a`) has a kernel of dimension
-`≥ 1`, hence `≥ |F| ≥ ℓ+1` codewords that vanish on `S`; partitioning `Sᶜ` (size `a`) into
-`ℓ+1` near-even blocks and centring a word `y` block-wise puts all `ℓ+1` of them within
-relative radius `δ`, contradicting `|Λ(C, δ)| ≤ ℓ`. Converting `finrank C ≤ n - a` to the
-real bound via `|C| = |F|^{finrank C}` closes the goal.
+The canonical `linear_card_le_generalized_singleton` formalizes Shangguan–Tamo's pigeonhole and
+partition argument (SIAM J. Comput. 52(3), eq. (2)). The finite-alphabet list-size bridge supplies
+its list-size hypothesis for this API.
 
 **SIGFIX (two hypotheses added vs. the bare ABF26 statement — both are faithful to ST20
 and necessary).** The unparameterised statement is *false*: e.g. `C = {0}` (always
@@ -1080,91 +602,9 @@ theorem linear_C_le_generalized_singleton_st20
       ≤ (Fintype.card F : ℝ) ^
           ((Fintype.card ι : ℝ)
             - (Nat.floor (((ℓ : ℝ) + 1) / ℓ * δ * Fintype.card ι) : ℝ)) := by
-  classical
-  set q : ℕ := Fintype.card F with hq_def
-  set n : ℕ := Fintype.card ι with hn_def
-  set r₀ : ℕ := ⌊δ * (n : ℝ)⌋₊ with hr₀_def
-  set a : ℕ := ⌊((ℓ : ℝ) + 1) / ℓ * δ * n⌋₊ with ha_def
-  have hδ_nonneg : (0 : ℝ) ≤ δ := le_of_lt _hδ_pos
-  have hℓ1 : 1 ≤ ℓ := _hℓ_pos
-  have hq_ge : ℓ + 1 ≤ q := _hℓ_lt
-  have hn_pos : 0 < n := Fintype.card_pos
-  have ha_le' : a ≤ n := ha_le
-  -- a = (ℓ+1)*r₀/ℓ  (nat)
-  have ha_eq : a = (ℓ + 1) * r₀ / ℓ := by
-    have hℓr : (ℓ : ℝ) ≠ 0 := by exact_mod_cast (show ℓ ≠ 0 by omega)
-    have hrw : ((ℓ : ℝ) + 1) / ℓ * δ * n = (((ℓ + 1) * r₀ : ℕ) : ℝ) / (ℓ : ℝ) := by
-      have : ((ℓ : ℝ) + 1) / ℓ * δ * n = ((ℓ : ℝ) + 1) / ℓ * (δ * n) := by ring
-      rw [this, hlat]
-      push_cast
-      field_simp
-    rw [ha_def, hrw, Nat.floor_div_eq_div]
-  have hkey : a - a / (ℓ + 1) ≤ r₀ := by
-    rw [ha_eq]; exact st20_nat_ineq ℓ r₀ hℓ1
-  -- finrank F C ≤ n - a
-  have hfin_le : Module.finrank F C ≤ n - a := by
-    by_contra hcon
-    push Not at hcon
-    obtain ⟨S, _, hS⟩ := Finset.exists_subset_card_eq (s := (Finset.univ : Finset ι))
-      (n := n - a) (by rw [Finset.card_univ, ← hn_def]; omega)
-    have hScard : S.card = n - a := hS
-    have hdim : S.card < Module.finrank F C := by rw [hScard]; exact hcon
-    obtain ⟨cf, hcf_inj, hcfC, hcf0⟩ := st20_kernel_extract C S ℓ hdim hq_ge
-    obtain ⟨y, hy⟩ := st20_dist_bound S ℓ cf hcf0
-    have hSc_card : Sᶜ.card = a := by
-      rw [Finset.card_compl, hScard, ← hn_def]; omega
-    -- each cf j ∈ closeCodewordsRel C y δ
-    have hmem : ∀ j, cf j ∈ closeCodewordsRel (↑C : Set (ι → F)) y δ := by
-      intro j
-      have hdist : hammingDist y (cf j) ≤ r₀ := by
-        have h1 := hy j; rw [hSc_card] at h1; exact le_trans h1 hkey
-      simp only [closeCodewordsRel, relHammingBall, Set.mem_setOf_eq, SetLike.mem_coe]
-      refine ⟨hcfC j, ?_⟩
-      simp only [Code.relHammingDist, NNRat.cast_div, NNRat.cast_natCast]
-      rw [div_le_iff₀ (by exact_mod_cast hn_pos : (0 : ℝ) < (n : ℝ))]
-      -- goal: ↑Δ₀(y, cf j) ≤ δ * ↑n  (modulo a subsingleton Decidable instance on hammingDist)
-      have hcast : (hammingDist y (cf j) : ℝ) ≤ δ * (n : ℝ) := by
-        have h1 : (hammingDist y (cf j) : ℝ) ≤ (r₀ : ℝ) := by exact_mod_cast hdist
-        have h2 : (r₀ : ℝ) ≤ δ * (n : ℝ) := by
-          rw [hr₀_def]; exact Nat.floor_le (mul_nonneg hδ_nonneg (Nat.cast_nonneg n))
-        exact le_trans h1 h2
-      convert hcast using 2
-      congr!
-    -- ℓ+1 distinct elements ⊆ closeCodewordsRel → ncard ≥ ℓ+1
-    have hfin_set : (closeCodewordsRel (↑C : Set (ι → F)) y δ).Finite := Set.toFinite _
-    have hTcard : (Finset.univ.image cf).card = ℓ + 1 := by
-      rw [Finset.card_image_of_injective _ hcf_inj, Finset.card_univ, Fintype.card_fin]
-    have hTsub : (↑(Finset.univ.image cf) : Set (ι → F))
-        ⊆ closeCodewordsRel (↑C : Set (ι → F)) y δ := by
-      intro x hx
-      simp only [Finset.coe_image, Finset.coe_univ, Set.image_univ, Set.mem_range] at hx
-      obtain ⟨j, rfl⟩ := hx; exact hmem j
-    have hge : ℓ + 1 ≤ (closeCodewordsRel (↑C : Set (ι → F)) y δ).ncard := by
-      calc ℓ + 1 = (Finset.univ.image cf).card := hTcard.symm
-        _ = (↑(Finset.univ.image cf) : Set (ι → F)).ncard := (Set.ncard_coe_finset _).symm
-        _ ≤ _ := Set.ncard_le_ncard hTsub hfin_set
-    -- contradiction with Lambda ≤ ℓ
-    have hle : (closeCodewordsRel (↑C : Set (ι → F)) y δ).ncard ≤ ℓ := by
-      have hLam : ((closeCodewordsRel (↑C : Set (ι → F)) y δ).ncard : ℕ∞) ≤ (ℓ : ℕ∞) := by
-        refine le_trans ?_ _hΛ
-        rw [Lambda]
-        exact le_iSup (fun f => ((closeCodewordsRel (↑C : Set (ι → F)) f δ).ncard : ℕ∞)) y
-      exact_mod_cast hLam
-    omega
-  -- convert to rpow conclusion
-  rw [st20_ncard_eq C]
-  have hq1r : (1 : ℝ) ≤ (q : ℝ) := by
-    have : 1 ≤ q := by omega
-    exact_mod_cast this
-  have hqpos : (0 : ℝ) < (q : ℝ) := by positivity
-  -- RHS rpow = pow since exponent = (n-a : ℕ)
-  have hexp : ((n : ℝ) - (a : ℝ)) = ((n - a : ℕ) : ℝ) := by rw [Nat.cast_sub ha_le']
-  calc ((q ^ Module.finrank F C : ℕ) : ℝ)
-      = (q : ℝ) ^ Module.finrank F C := by push_cast; ring
-    _ ≤ (q : ℝ) ^ (n - a) := by
-        apply pow_le_pow_right₀ hq1r hfin_le
-    _ = (q : ℝ) ^ ((n - a : ℕ) : ℝ) := by rw [Real.rpow_natCast]
-    _ = (q : ℝ) ^ ((n : ℝ) - (a : ℝ)) := by rw [hexp]
+  rw [ProximityPrize.Compatibility.legacyLambda_eq_canonical] at _hΛ
+  exact linear_card_le_generalized_singleton C ℓ δ _hℓ_lt
+    ⟨⌊δ * (Fintype.card ι : ℝ)⌋₊, hlat.symm⟩ ha_le _hΛ
 
 end LowerBounds_General
 

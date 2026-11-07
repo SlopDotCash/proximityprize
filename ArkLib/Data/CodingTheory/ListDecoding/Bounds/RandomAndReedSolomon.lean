@@ -200,26 +200,10 @@ theorem not_exists_randomLinearLambdaLowerEvent_of_dim_zero :
 success probability is zero. -/
 theorem randomLinearLambdaLowerProbability_eq_zero_of_dim_zero :
     randomLinearLambdaLowerProbability (ZMod 2) (Fin 1) 2 0 0 0 1 = 0 := by
-  classical
-  unfold randomLinearLambdaLowerProbability
-  have hEventFalse :
-      (fun G : Matrix (Fin 0) (Fin 1) (ZMod 2) =>
-        randomLinearLambdaLowerEvent (F := ZMod 2) (ι := Fin 1) 2 0 0 0 1 G) =
-        fun _ => False := by
-    funext G
-    refine propext (iff_false_intro ?_)
-    intro hG
-    exact not_exists_randomLinearLambdaLowerEvent_of_dim_zero ⟨G, hG⟩
-  change
-    (PMF.map
-        (fun G : Matrix (Fin 0) (Fin 1) (ZMod 2) =>
-          randomLinearLambdaLowerEvent (F := ZMod 2) (ι := Fin 1) 2 0 0 0 1 G)
-        (uniformRandomLinearGeneratorMatrix (ZMod 2) 0 (Fin 1))) True = 0
-  rw [hEventFalse]
-  change (PMF.map (Function.const (Matrix (Fin 0) (Fin 1) (ZMod 2)) False)
-      (uniformRandomLinearGeneratorMatrix (ZMod 2) 0 (Fin 1))) True = 0
-  rw [PMF.map_const]
-  simp [PMF.pure_apply]
+  refine le_antisymm (le_of_not_gt ?_) zero_le
+  intro hprob
+  exact not_exists_randomLinearLambdaLowerEvent_of_dim_zero
+    (exists_randomLinearLambdaLowerEvent_of_probability_pos hprob)
 
 /-- Conversely, one good generator matrix gives positive success probability.
 
