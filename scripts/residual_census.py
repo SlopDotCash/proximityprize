@@ -172,8 +172,9 @@ def split_signature(window: str) -> tuple[str, str]:
     return window[:sig_colon], window[sig_colon + 1 : end]
 
 
-def strip_forall_prefix(result: str) -> str:
-    """Strip leading `∀ ...,` binders from a result type."""
+def split_forall_prefix(result: str) -> tuple[str, str]:
+    """Retain leading universal binders separately from the result body."""
+    binders: list[str] = []
     s = result.strip()
     for _ in range(8):
         if not s.startswith("∀"):
@@ -185,11 +186,20 @@ def strip_forall_prefix(result: str) -> str:
             elif c in CLOSE_BRACKETS:
                 depth = max(0, depth - 1)
             elif c == "," and depth == 0:
+                binder = s[1:i].strip()
+                if not binder.startswith(tuple("({[⦃")):
+                    binder = "(" + binder + ")"
+                binders.append(binder)
                 s = s[i + 1 :].strip()
                 break
         else:
-            return ""
-    return s
+            return " ".join(binders), ""
+    return " ".join(binders), s
+
+
+def strip_forall_prefix(result: str) -> str:
+    """Strip leading `∀ ...,` binders from a result type."""
+    return split_forall_prefix(result)[1]
 
 
 def result_head(result: str) -> str:
@@ -288,7 +298,7 @@ def binder_names_and_type(content: str) -> tuple[list[str], str] | None:
     for tok in re.findall(r"[^\s,]+", names):
         tok = tok.strip()
         tok = tok.strip("(){}[]⦃⦄")
-        if not tok or tok == "_" or tok.startswith("_"):
+        if not tok or tok == "_":
             continue
         if any(ch in tok for ch in ":=<>|\\/"):
             continue
@@ -316,7 +326,8 @@ def is_proposition_shaped(typ: str) -> bool:
     if "//" in typ:
         return False
     return bool(
-        BARE_EQUAL_RE.search(typ)
+        re.fullmatch(r"(?:_root_\.)?(?:True|False)", typ.strip())
+        or BARE_EQUAL_RE.search(typ)
         or COMPARISON_RE.search(typ)
         or any(marker in typ for marker in PROPOSITION_MARKERS)
     )
@@ -365,6 +376,8 @@ def extra_explicit_binders(binders: str, result: str) -> list[str]:
         names, typ = parsed
         if not looks_like_proof_assumption(names, typ):
             continue
+        if not names:
+            extras.append("<anonymous>")
         for name in names:
             if not mentions_word(result, name):
                 extras.append(name)
@@ -625,8 +638,9 @@ def find_providers(all_decls: list[dict], residuals: list[dict]) -> None:
         last = d["name"].rsplit(".", 1)[-1]
         head_full = result_head(d["result"])
         head_last = head_full.rsplit(".", 1)[-1]
-        result_no_forall = strip_forall_prefix(d["result"])
-        extra_binders = extra_explicit_binders(d["binders"], d["result"])
+        forall_binders, result_no_forall = split_forall_prefix(d["result"])
+        all_binders = d["binders"] + " " + forall_binders
+        extra_binders = extra_explicit_binders(all_binders, result_no_forall)
 
         targets: set[str] = set()
         if head_last in by_name:
@@ -638,7 +652,7 @@ def find_providers(all_decls: list[dict], residuals: list[dict]) -> None:
                     # result type, else it is about something adjacent.
                     if mentions_word(d["result"], rname):
                         targets.add(rname)
-        consumed = [n for n in census_names if mentions_word(d["binders"], n)]
+        consumed = [n for n in census_names if mentions_word(all_binders, n)]
         # `P ↔ Q` states an equivalence; it proves nothing about `P` itself.
         is_equivalence = has_top_level(result_no_forall, "↔")
         # `R → Q`, `R ∨ Q`, `R = Q` relate `R` to something else; not a proof of `R`.
