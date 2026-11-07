@@ -6,8 +6,9 @@ provided, scans only those Lean files/directories. Fails if live
 (non-comment) code contains (`axiom` text inside a string literal is data):
   - `native_decide` / `bv_decide` (kernel-bypassing decision procedures), the
     equivalent `decide +native` / `decide (native := true)` forms and `bv_check`,
-    or direct use of the compiler-trust axioms they rely on (`Lean.ofReduceBool`,
-    `Lean.ofReduceNat`, `Lean.trustCompiler`), or
+    or direct use of the compiler-trust axioms and native reduction primitives
+    they rely on (`Lean.ofReduceBool`, `Lean.ofReduceNat`, `Lean.trustCompiler`,
+    `Lean.reduceBool`, `Lean.reduceNat`), or
   - an `unsafe` declaration modifier, live `unsafeCast`, or `implemented_by`
     attribute (repository policy: block unsafe decls, unsafeCast, and
     evaluator-diverging `implemented_by`; this is a fast precheck, not a claim
@@ -74,12 +75,10 @@ import re
 import sys
 from pathlib import Path
 
-# `Lean.ofReduceBool` / `Lean.ofReduceNat` applied directly as terms add the same
-# compiler-trust axioms (`Lean.ofReduceBool`, `Lean.trustCompiler`) as
-# `native_decide`, without any tactic spelling.
+# Native reduction primitives can be called directly without a tactic spelling.
 TOKEN_RE = re.compile(
     r"\b(native_decide|bv_decide|unsafeCast|implemented_by"
-    r"|ofReduceBool|ofReduceNat|trustCompiler)\b"
+    r"|ofReduceBool|ofReduceNat|trustCompiler|reduceBool|reduceNat)\b"
 )
 # Meta code can add a kernel declaration without the `axiom` keyword, e.g.
 # `run_cmd liftCoreM <| addDecl (.axiomDecl { name := `w, type := mkConst ``False, .. })`.
@@ -961,7 +960,7 @@ def main() -> int:
         print("\n".join(allowed_hits))
     print(
         "forbidden-token precheck: clean (no native_decide / bv_decide / "
-        "ofReduceBool / ofReduceNat / trustCompiler / "
+        "ofReduceBool / ofReduceNat / trustCompiler / reduceBool / reduceNat / "
         "unsafe declaration / unsafeCast / implemented_by / "
         "undocumented custom axiom / vacuous `: True` placebo; "
         f"{len(allowed_hits)} allowlisted residual axiom(s))"
