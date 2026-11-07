@@ -7,7 +7,7 @@ The strict census counts declarations under `ArkLib/` of the form
 provider has no residual dependencies, no extra proof-like explicit binders, and no
 ambiguous namespace match. Conditional reductions are useful proof plumbing, but they
 remain **open** until their side conditions are proved. An equivalence (`R ↔ Q`), a
-result whose first top-level connective after the residual is `→`, `∨` or `=`, or an
+result whose loosest top-level connective after the residual is `→`, `∨` or `=`, or an
 instance with a parameter fixed to a numeral (`R (k := 0)`) is not a provider. A residual
 is **refuted** when the tree contains a concrete theorem of a negated residual instance,
 and a proved negation outranks any apparent provider.

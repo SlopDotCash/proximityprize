@@ -7,6 +7,27 @@ import unittest
 HEADER = "namespace T\n\n"
 FOOTER = "\nend T\n"
 
+# The prize-path residual of `ArkLib/Data/CodingTheory/ProximityGap/SubJohnsonListSupply.lean`
+# (the open list-bound core of #389), with a true implication that proves nothing about it.
+SUPPLY = """namespace ProximityGap.Ownership
+
+variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
+variable {n : ℕ} [NeZero n]
+
+def SubJohnsonListBound (dom : Fin n ↪ F) (k m L A : ℕ) : Prop :=
+  ∀ w : Fin n → F,
+    (bigAgreeCodewords dom k m w).card ≤ L
+      ∧ ∀ c ∈ bigAgreeCodewords dom k m w, (listAgreeSet c w).card ≤ A
+
+def SubJohnsonListResidual (dom : Fin n ↪ F) (k m L A : ℕ) : Prop :=
+  SubJohnsonListBound dom k m L A
+
+theorem subJohnsonListResidual_and_false_imp (dom : Fin n ↪ F) (k m L A : ℕ) :
+    SubJohnsonListResidual dom k m L A ∧ False → True := fun _ => trivial
+
+end ProximityGap.Ownership
+"""
+
 
 class ResidualCensusTests(unittest.TestCase):
     def setUp(self):
@@ -48,6 +69,14 @@ class ResidualCensusTests(unittest.TestCase):
         self.assertEqual(conn("FooResidual ∧ (A → B)"), "∧")
         self.assertIsNone(conn("FooResidual (f := fun x => x = x)"))
         self.assertIsNone(conn("FooResidual (k := k)"))
+        self.assertEqual(conn("FooResidual ∧ True → False"), "→")
+        self.assertEqual(conn("FooResidual ∧ True ∨ False"), "∨")
+        self.assertEqual(conn("FooResidual = True ∧ True"), "=")
+        self.assertEqual(conn("FooResidual ∧ ∀ n : Nat, n = n → True"), "∧")
+        self.assertEqual(conn("FooResidual ∧ ∃ n, n = n → True"), "∧")
+        self.assertEqual(conn("FooResidual ∧ a = b"), "∧")
+        self.assertIsNone(conn("FooResidual fun x => x → x"))
+        self.assertEqual(conn("∃ n : Nat, ∀ k : Nat, FooResidual (k := k) → n = n"), "→")
 
     def test_implication_from_residual_is_not_a_provider(self):
         got = self.statuses(
@@ -71,6 +100,42 @@ class ResidualCensusTests(unittest.TestCase):
             "theorem fooResidual_and {k : Nat} : FooResidual (k := k) ∧ (True → True) :=\n"
             "  ⟨trivial, id⟩\n")
         self.assertEqual(got["FooResidual"], "discharged")
+
+    def test_conjunction_under_implication_or_disjunction_is_not_a_provider(self):
+        got = self.statuses(
+            "def FooResidual {k : Nat} : Prop := True\n"
+            "def BarResidual {k : Nat} : Prop := True\n\n"
+            "theorem fooResidual_and_imp {k : Nat} : FooResidual (k := k) ∧ False → True :=\n"
+            "  fun _ => trivial\n"
+            "theorem barResidual_and_or {k : Nat} : BarResidual (k := k) ∧ False ∨ True :=\n"
+            "  Or.inr trivial\n")
+        self.assertEqual(got["FooResidual"], "open")
+        self.assertEqual(got["BarResidual"], "open")
+
+    def test_existential_result_with_implication_is_not_a_provider(self):
+        got = self.statuses(
+            "def FooResidual {k : Nat} : Prop := True\n\n"
+            "theorem fooResidual_holds :\n"
+            "    ∃ n : Nat, ∀ k : Nat, FooResidual (k := k) → n = n :=\n"
+            "  ⟨0, fun _ _ => rfl⟩\n")
+        self.assertEqual(got["FooResidual"], "open")
+
+    def test_left_conjunct_with_quantified_tail_still_discharges(self):
+        got = self.statuses(
+            "def FooResidual {k : Nat} : Prop := True\n\n"
+            "theorem fooResidual_and_forall {k : Nat} :\n"
+            "    FooResidual (k := k) ∧ ∀ n : Nat, n = n → True :=\n"
+            "  ⟨trivial, fun _ _ => trivial⟩\n")
+        self.assertEqual(got["FooResidual"], "discharged")
+
+    def test_prize_list_bound_is_not_discharged_by_an_implication(self):
+        folder = self.root / "ArkLib" / "Data" / "CodingTheory" / "ProximityGap"
+        folder.mkdir(parents=True, exist_ok=True)
+        (folder / "SubJohnsonListSupply.lean").write_text(SUPPLY)
+        decls, residuals, _ = self.census.collect(self.root)
+        self.census.find_providers(decls, residuals)
+        got = {r["name"]: r["status"] for r in residuals}
+        self.assertEqual(got["SubJohnsonListResidual"], "open")
 
     def test_numeral_specialisation_is_not_a_provider(self):
         got = self.statuses(
