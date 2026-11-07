@@ -251,11 +251,11 @@ def main():
         print(f"direct n=128 character pencils at p = {k}*2^128+1 PASS: "
               f"t=3 {CHAR_T3}, t=4 {CHAR_T4}", flush=True)
 
-    # 5. Direct re-computation of the five highest distinct t=4 values.
+    # 5. Direct re-computation of the five highest distinct t=4 values reported by the primary probe.
     for (a, b), expected in TOP.items():
         t4 = direct_counts(128, prize, a, b)[1]
         assert t4 == expected, (a, b, t4, expected)
-    print(f"direct top-5 PASS: {sorted(TOP.items(), key=lambda kv: -kv[1])}",
+    print(f"direct check of reported values PASS: {sorted(TOP.items(), key=lambda kv: -kv[1])}",
           flush=True)
 
     # 6. Direct re-computation of the fixed 30-pencil sample.
@@ -272,4 +272,6 @@ def main():
 
 
 if __name__ == "__main__":
+    if not __debug__:
+        raise SystemExit("Run without Python optimization to enable the certificate checks.")
     sys.exit(main())

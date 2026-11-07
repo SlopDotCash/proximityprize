@@ -50,7 +50,7 @@ This continues the measured character-pencil rungs
 
 Scope (read before citing).  Finite fields only; the smooth domain ``mu_128``;
 dimension-two affine code; monomial pencils only -- this is **not** a maximum
-over arbitrary word pairs.  ``n = 128`` is three rungs below the production
+over arbitrary word pairs.  ``n = 128`` is far below the production
 ``n = 2^30/2^32``; nothing here is a production-regime statement, a ``delta*``
 claim, or a step toward the prize.  The ``1 + n*C(n/4,2)`` agreement across five
 rungs is an observed pattern in finite data, not a theorem in ``n``.  The
@@ -284,7 +284,7 @@ def main():
             top.append((pair, count))
         if len(top) == 5:
             break
-    print(f"top distinct t=4 values: {[(count, pair) for pair, count in top]}",
+    print(f"top distinct t=4 values among unpruned pencils: {[(count, pair) for pair, count in top]}",
           flush=True)
     sample = tuple(sorted({((i * 17) % 128, (i * 29) % 128) for i in range(30)}))
     print("sample " + " ".join(f"{pair}:{counts[pair]}" for pair in sample),
@@ -297,4 +297,6 @@ def main():
 
 
 if __name__ == "__main__":
+    if not __debug__:
+        raise SystemExit("Run without Python optimization to enable the certificate checks.")
     sys.exit(main())
