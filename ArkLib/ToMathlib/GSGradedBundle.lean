@@ -53,8 +53,18 @@ Conditions (i) and (ii) are genuinely **not** derivable from the graph-extractio
 
 They are isolated as the named residual `MonicHighYResidual` whose consumer
 `section5DataOffcentreFin_of_gradedBundle_residual` is **proven**: together with the per-`P`
-producers it yields the full satisfiable off-centre §5 bundle, with (iii)–(v) discharged by the
-graded bundle and *only* (i)–(ii) remaining as the GS-factor residual.
+producers it yields the off-centre §5 bundle, with (iii)–(v) discharged by the graded bundle and
+(i)–(ii) remaining as the GS-factor residual.
+
+**Branch-degree qualification (F6).**  The consumer also takes the legacy genuine-root
+representative `hrep : polyToPowerSeries𝕃 gb.H Ppoly = gammaGenuine …`, which is kernel-proved
+**unsatisfiable whenever `2 ≤ gb.H.natDegree`**
+(`GenuinePpolyConverter.not_hrepG_of_two_le_natDegree`, re-exported at this bundle as
+`LocalSeriesCorrected.hrep_gradedBundle_unsat_of_two_le_natDegree`).  So the consumer is a
+valid conditional adapter that is vacuous in the branch-degree `≥ 2` regime; it does not
+produce a higher-degree representative.  (Condition (ii) is about `natDegreeY R`, not about
+`d_H = gb.H.natDegree`, so it does not exclude that regime.)  See `LocalSeriesCorrected` for
+the corrected T-aware route.
 
 ## References
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon Codes*,
@@ -289,11 +299,14 @@ structure MonicHighYResidual {x₀ : F} (b : Bundle (F := F) x₀) : Prop where
 variable {ι : Type} [Fintype ι]
 variable [Fintype F] [DecidableEq F]
 
-/-- **The capstone with (iii)–(v) discharged.**  The satisfiable per-`P` off-centre §5 bundle
+/-- **The capstone with (iii)–(v) discharged.**  The per-`P` off-centre §5 bundle
 from a graded GS bundle plus *only* the `MonicHighYResidual` (conditions (i)–(ii)) and the
 per-`P` producers: `hdHD`/`hD_Rx0`/`hR` are supplied by the graded bundle, monicity and the
 `Y`-degree dichotomy by the residual.  This is the proven consumer pinning the residual as
-exactly the remaining GS-factor gap. -/
+the remaining GS-factor gap *on this surface*.  **Legacy at `d_H ≥ 2`:** the `hrep` input is
+the F6-refuted genuine-root shape, empty whenever `2 ≤ gb.H.natDegree`
+(`LocalSeriesCorrected.hrep_gradedBundle_unsat_of_two_le_natDegree`), so this consumer is
+vacuous there and only the `d_H = 1` lane is not obstructed. -/
 noncomputable def section5DataOffcentreFin_of_gradedBundle_residual
     {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}

@@ -33,6 +33,15 @@ This is not a new analytic estimate.  It is the exact flatness interface for
 the deep-r wall: proving DC-subtracted Wick at logarithmic depth is equivalent
 to proving that the `r`-fold additive convolution of `1_G` is flat at Wick
 scale.
+
+API note: `centeredRepR G r c` is *definitionally* `repR G r c - |G|^r/q`, so
+statements about `centeredRepR` apply verbatim (by `rfl`/`exact`) to the raw
+`repR - mean` form.  The former `rfl`-only restatements
+(`centeredRepR_eq_repR_sub_mean`, `sum_centeredRepR_sq_eq_sum_repR_sub_mean_sq`,
+`centered_variance_bound_iff_repR_sub_mean_variance_bound`, …) and the
+caller-less one-line `repR_sub_mean` copies of the centered/deviation/DC-energy
+lemmas were removed; the remaining `repR_sub_mean` forms are those other
+lemmas or files consume.
 -/
 
 set_option autoImplicit false
@@ -902,24 +911,6 @@ theorem abs_deviationR_eq_card_mul_abs_centeredRepR (G : Finset F) (r : ℕ) (c 
   have hq_nonneg : 0 ≤ (Fintype.card F : ℝ) := by positivity
   rw [abs_of_nonneg hq_nonneg]
 
-/-- Pointwise alias from centered representation to raw `repR - mean`. -/
-theorem centeredRepR_eq_repR_sub_mean (G : Finset F) (r : ℕ) (c : F) :
-    centeredRepR G r c
-      = (repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ) := by
-  rfl
-
-/-- Pointwise square alias from centered representation to raw `repR - mean`. -/
-theorem centeredRepR_sq_eq_repR_sub_mean_sq (G : Finset F) (r : ℕ) (c : F) :
-    (centeredRepR G r c) ^ 2
-      = ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2 := by
-  rfl
-
-/-- Pointwise absolute-value alias from centered representation to raw `repR - mean`. -/
-theorem abs_centeredRepR_eq_abs_repR_sub_mean (G : Finset F) (r : ℕ) (c : F) :
-    |centeredRepR G r c|
-      = |(repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)| := by
-  rfl
-
 /-- The arbitrary-depth deviation is mean-zero. -/
 theorem sum_deviationR_zero (G : Finset F) (r : ℕ) :
     ∑ c : F, deviationR G r c = 0 := by
@@ -950,11 +941,6 @@ theorem sum_centeredRepR_zero (G : Finset F) (r : ℕ) :
         rw [Finset.sum_div]
     _ = 0 := by rw [sum_deviationR_zero, zero_div]
 
-/-- Direct raw representation-function flatness is mean-zero. -/
-theorem sum_repR_sub_mean_zero (G : Finset F) (r : ℕ) :
-    ∑ c : F, ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) = 0 := by
-  simpa [centeredRepR] using sum_centeredRepR_zero G r
-
 /-- Square-sum of centered representation equals normalized deviation variance. -/
 theorem sum_centeredRepR_sq_eq_normalized_variance (G : Finset F) (r : ℕ) :
     ∑ c : F, (centeredRepR G r c) ^ 2
@@ -962,13 +948,6 @@ theorem sum_centeredRepR_sq_eq_normalized_variance (G : Finset F) (r : ℕ) :
   refine Finset.sum_congr rfl (fun c _ => ?_)
   rw [centeredRepR_eq_deviation_div]
   ring
-
-/-- Raw `repR - mean` square-sum equals normalized deviation variance. -/
-theorem sum_repR_sub_mean_sq_eq_normalized_variance (G : Finset F) (r : ℕ) :
-    ∑ c : F,
-        ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2
-      = ∑ c : F, (deviationR G r c) ^ 2 / (Fintype.card F : ℝ) ^ 2 := by
-  simpa [centeredRepR] using sum_centeredRepR_sq_eq_normalized_variance G r
 
 /-- Unnormalized deviation square-sum is `q^2` times centered square-sum. -/
 theorem sum_deviationR_sq_eq_card_sq_mul_sum_centeredRepR_sq (G : Finset F) (r : ℕ) :
@@ -980,15 +959,6 @@ theorem sum_deviationR_sq_eq_card_sq_mul_sum_centeredRepR_sq (G : Finset F) (r :
         exact deviationR_sq_eq_card_sq_mul_centeredRepR_sq G r c
     _ = (Fintype.card F : ℝ) ^ 2 * ∑ c : F, (centeredRepR G r c) ^ 2 := by
         rw [Finset.mul_sum]
-
-/-- Unnormalized deviation square-sum is `q^2` times raw `repR - mean`
-square-sum. -/
-theorem sum_deviationR_sq_eq_card_sq_mul_sum_repR_sub_mean_sq (G : Finset F) (r : ℕ) :
-    ∑ c : F, (deviationR G r c) ^ 2
-      = (Fintype.card F : ℝ) ^ 2
-          * ∑ c : F,
-            ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2 := by
-  simpa [centeredRepR] using sum_deviationR_sq_eq_card_sq_mul_sum_centeredRepR_sq G r
 
 /-- The original DC gap is field size times the centered probability-scale
 variance. -/
@@ -1004,15 +974,6 @@ theorem dcGap_eq_card_mul_sum_centeredRepR_sq (G : Finset F) (r : ℕ) :
         rw [sum_deviationR_sq_eq_card_sq_mul_sum_centeredRepR_sq G r]
     _ = (Fintype.card F : ℝ) * ∑ c : F, (centeredRepR G r c) ^ 2 := by
         field_simp [hq]
-
-/-- Direct raw `repR - mean` version of the DC-gap/probability-scale variance
-identity. -/
-theorem dcGap_eq_card_mul_sum_repR_sub_mean_sq (G : Finset F) (r : ℕ) :
-    (Fintype.card F : ℝ) * (rEnergy G r : ℝ) - (G.card : ℝ) ^ (2 * r)
-      = (Fintype.card F : ℝ)
-          * ∑ c : F,
-            ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2 := by
-  simpa [centeredRepR] using dcGap_eq_card_mul_sum_centeredRepR_sq G r
 
 /-- Constant-`K` DC energy in centered probability-scale variance language. -/
 theorem dcEnergyBoundWithConstant_iff_centeredRepR_variance
@@ -1164,26 +1125,6 @@ theorem forall_eta_le_sqrt_floor_of_centered_variance_bound
   forall_eta_le_sqrt_floor_of_dcEnergyCeilWallWithConstant hψ G hq hK
     (dcEnergyCeilWallWithConstant_of_centered_variance_bound G K hvar)
 
-/-- A ceiling-depth raw `repR - mean` flatness estimate gives the final
-optimized per-frequency bound directly. -/
-theorem forall_eta_le_sqrt_floor_of_repR_sub_mean_variance_bound
-    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F) {K : ℝ}
-    (hq : Real.exp 1 ≤ (Fintype.card F : ℝ)) (hK : 0 ≤ K)
-    (hvar :
-      ∑ c : F,
-          ((repR G ⌈Real.log (Fintype.card F : ℝ)⌉₊ c : ℝ)
-            - (G.card : ℝ) ^ ⌈Real.log (Fintype.card F : ℝ)⌉₊
-              / (Fintype.card F : ℝ)) ^ 2
-        ≤ K ^ ⌈Real.log (Fintype.card F : ℝ)⌉₊
-          * ((Nat.doubleFactorial (2 * ⌈Real.log (Fintype.card F : ℝ)⌉₊ - 1) : ℝ)
-            * (G.card : ℝ) ^ ⌈Real.log (Fintype.card F : ℝ)⌉₊)) :
-    ∀ b : F, b ≠ 0 →
-      ‖eta ψ G b‖
-        ≤ Real.sqrt
-            (2 * Real.exp 1 * K * (G.card : ℝ) * (Real.log (Fintype.card F : ℝ) + 1)) :=
-  forall_eta_le_sqrt_floor_of_dcEnergyCeilWallWithConstant hψ G hq hK
-    (dcEnergyCeilWallWithConstant_of_repR_sub_mean_variance_bound G K hvar)
-
 /-- A ceiling-depth unnormalized deviation flatness estimate gives the final
 optimized per-frequency bound directly. -/
 theorem forall_eta_le_sqrt_floor_of_deviation_variance_bound
@@ -1310,19 +1251,6 @@ theorem not_dcEnergyWallWithConstant_of_centered_variance_lower_bound_gt
     ¬ DCEnergyWallWithConstant G K :=
   not_dcEnergyWallWithConstant_of_centered_variance_gt G K (hbudget.trans_le hlower)
 
-/-- A single over-budget raw `repR - mean` variance refutes the all-rung
-constant wall. -/
-theorem not_dcEnergyWallWithConstant_of_repR_sub_mean_variance_gt
-    (G : Finset F) (K : ℝ) {r : ℕ}
-    (hgt :
-      K ^ r * ((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r)
-        < ∑ c : F,
-            ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2) :
-    ¬ DCEnergyWallWithConstant G K := by
-  intro hwall
-  have hle := (dcEnergyWallWithConstant_iff_forall_repR_sub_mean_variance G K).mp hwall r
-  exact not_le_of_gt hgt hle
-
 /-- A single over-budget unnormalized deviation variance refutes the all-rung
 constant wall. -/
 theorem not_dcEnergyWallWithConstant_of_deviation_variance_gt
@@ -1358,20 +1286,6 @@ theorem not_dcEnergyWallWithConstantUpTo_of_centered_variance_lower_bound_gt
       K ^ r * ((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r) < B) :
     ¬ DCEnergyWallWithConstantUpTo G K R :=
   not_dcEnergyWallWithConstantUpTo_of_centered_variance_gt G K hr (hbudget.trans_le hlower)
-
-/-- A single over-budget raw `repR - mean` variance within the cutoff refutes
-the finite-depth constant wall. -/
-theorem not_dcEnergyWallWithConstantUpTo_of_repR_sub_mean_variance_gt
-    (G : Finset F) (K : ℝ) {R r : ℕ} (hr : r ≤ R)
-    (hgt :
-      K ^ r * ((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r)
-        < ∑ c : F,
-            ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2) :
-    ¬ DCEnergyWallWithConstantUpTo G K R := by
-  intro hwall
-  have hle :=
-    (dcEnergyWallWithConstantUpTo_iff_forall_repR_sub_mean_variance G K R).mp hwall r hr
-  exact not_le_of_gt hgt hle
 
 /-- A single over-budget unnormalized deviation variance within the cutoff
 refutes the finite-depth constant wall. -/
@@ -1412,23 +1326,6 @@ theorem not_dcEnergyCeilWallWithConstant_of_centered_variance_lower_bound_gt
             * (G.card : ℝ) ^ ⌈Real.log (Fintype.card F : ℝ)⌉₊) < B) :
     ¬ DCEnergyCeilWallWithConstant G K :=
   not_dcEnergyCeilWallWithConstant_of_centered_variance_gt G K (hbudget.trans_le hlower)
-
-/-- An over-budget raw `repR - mean` variance at the ceiling depth refutes the
-one-rung ceiling wall. -/
-theorem not_dcEnergyCeilWallWithConstant_of_repR_sub_mean_variance_gt
-    (G : Finset F) (K : ℝ)
-    (hgt :
-      K ^ ⌈Real.log (Fintype.card F : ℝ)⌉₊
-          * ((Nat.doubleFactorial (2 * ⌈Real.log (Fintype.card F : ℝ)⌉₊ - 1) : ℝ)
-            * (G.card : ℝ) ^ ⌈Real.log (Fintype.card F : ℝ)⌉₊)
-        < ∑ c : F,
-            ((repR G ⌈Real.log (Fintype.card F : ℝ)⌉₊ c : ℝ)
-              - (G.card : ℝ) ^ ⌈Real.log (Fintype.card F : ℝ)⌉₊
-                / (Fintype.card F : ℝ)) ^ 2) :
-    ¬ DCEnergyCeilWallWithConstant G K := by
-  intro hwall
-  have hle := (dcEnergyCeilWallWithConstant_iff_repR_sub_mean_variance G K).mp hwall
-  exact not_le_of_gt hgt hle
 
 /-- An over-budget unnormalized deviation variance at the ceiling depth
 refutes the one-rung ceiling wall. -/
@@ -1487,16 +1384,6 @@ theorem dcEnergyBoundWithConstant_of_centered_variance_bound
     DCEnergyBoundWithConstant G r K :=
   (dcEnergyBoundWithConstant_iff_centeredRepR_variance G r K).mpr (hvar.trans hbudget)
 
-/-- A budgeted raw `repR - mean` variance consumer for the constant-`K` target. -/
-theorem dcEnergyBoundWithConstant_of_repR_sub_mean_variance_bound
-    (G : Finset F) (r : ℕ) (K : ℝ) {B : ℝ}
-    (hvar : ∑ c : F,
-      ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2 ≤ B)
-    (hbudget :
-      B ≤ K ^ r * ((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r)) :
-    DCEnergyBoundWithConstant G r K :=
-  (dcEnergyBoundWithConstant_iff_repR_sub_mean_variance G r K).mpr (hvar.trans hbudget)
-
 /-- If centered variance exceeds the constant-`K` Wick budget, then the
 constant-`K` DC-energy target is impossible. -/
 theorem not_dcEnergyBoundWithConstant_of_centered_variance_gt
@@ -1532,17 +1419,6 @@ theorem not_dcEnergyBoundWithConstant_of_centered_variance_lower_bound_gt
     ¬ DCEnergyBoundWithConstant G r K :=
   not_dcEnergyBoundWithConstant_of_centered_variance_gt G r K (hbudget.trans_le hlower)
 
-/-- Lower-bound certificate obstruction in raw `repR - mean` variance language
-for the constant-`K` target. -/
-theorem not_dcEnergyBoundWithConstant_of_repR_sub_mean_variance_lower_bound_gt
-    (G : Finset F) (r : ℕ) (K : ℝ) {B : ℝ}
-    (hlower : B ≤ ∑ c : F,
-      ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2)
-    (hbudget :
-      K ^ r * ((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r) < B) :
-    ¬ DCEnergyBoundWithConstant G r K :=
-  not_dcEnergyBoundWithConstant_of_repR_sub_mean_variance_gt G r K (hbudget.trans_le hlower)
-
 /-- Energy-scale variance bound gives probability-scale centered variance. -/
 theorem centered_variance_bound_of_deviation_variance_bound
     (G : Finset F) (r : ℕ) {B : ℝ}
@@ -1559,40 +1435,6 @@ theorem deviation_variance_bound_of_centered_variance_bound
     ∑ c : F, (deviationR G r c) ^ 2
       ≤ (Fintype.card F : ℝ) ^ 2 * B :=
   (deviation_variance_bound_iff_centered_variance_bound G r).mpr hvar
-
-/-- Energy-scale variance bound gives raw `repR - mean` variance. -/
-theorem repR_sub_mean_variance_bound_of_deviation_variance_bound
-    (G : Finset F) (r : ℕ) {B : ℝ}
-    (hvar : ∑ c : F, (deviationR G r c) ^ 2
-      ≤ (Fintype.card F : ℝ) ^ 2 * B) :
-    ∑ c : F,
-      ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2 ≤ B :=
-  (deviation_variance_bound_iff_repR_sub_mean_variance_bound G r).mp hvar
-
-/-- Raw `repR - mean` variance gives the corresponding energy-scale
-deviation variance bound. -/
-theorem deviation_variance_bound_of_repR_sub_mean_variance_bound
-    (G : Finset F) (r : ℕ) {B : ℝ}
-    (hvar : ∑ c : F,
-      ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2 ≤ B) :
-    ∑ c : F, (deviationR G r c) ^ 2
-      ≤ (Fintype.card F : ℝ) ^ 2 * B :=
-  (deviation_variance_bound_iff_repR_sub_mean_variance_bound G r).mpr hvar
-
-/-- The centered and raw `repR - mean` square-sums are identical. -/
-theorem sum_centeredRepR_sq_eq_sum_repR_sub_mean_sq (G : Finset F) (r : ℕ) :
-    ∑ c : F, (centeredRepR G r c) ^ 2
-      = ∑ c : F,
-          ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2 := by
-  rfl
-
-/-- Centered and raw `repR - mean` variance budgets are the same hypothesis. -/
-theorem centered_variance_bound_iff_repR_sub_mean_variance_bound
-    (G : Finset F) (r : ℕ) {B : ℝ} :
-    (∑ c : F, (centeredRepR G r c) ^ 2 ≤ B)
-      ↔ ∑ c : F,
-          ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2 ≤ B := by
-  rfl
 
 /-- Multiplicative invariance of the `r`-fold representation function. -/
 theorem repR_smul (G : Finset F) (r : ℕ)
@@ -1666,16 +1508,6 @@ theorem centeredRepR_smul (G : Finset F) (r : ℕ)
   rw [centeredRepR_eq_deviation_div, centeredRepR_eq_deviation_div,
     deviationR_smul G r hmul hinv h0 ha c]
 
-/-- The raw `repR - mean` representation inherits multiplicative invariance. -/
-theorem repR_sub_mean_smul (G : Finset F) (r : ℕ)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G)
-    {a : F} (ha : a ∈ G) (c : F) :
-    (repR G r (a * c) : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)
-      = (repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ) := by
-  simpa [centeredRepR] using centeredRepR_smul G r hmul hinv h0 ha c
-
 /-- Arbitrary-depth orbit multiplicity for the flatness deficit. -/
 theorem deficit_ge_orbit (G : Finset F) (r : ℕ)
     (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
@@ -1728,18 +1560,6 @@ theorem centered_deficit_ge_orbit (G : Finset F) (r : ℕ)
     _ ≤ ∑ c : F, (centeredRepR G r c) ^ 2 :=
         Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _)
           (fun c _ _ => sq_nonneg _)
-
-/-- Orbit multiplicity for the raw `repR - mean` variance. -/
-theorem repR_sub_mean_variance_ge_orbit (G : Finset F) (r : ℕ)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G)
-    {b : F} (hb : b ≠ 0) :
-    (G.card : ℝ)
-        * ((repR G r b : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2
-      ≤ ∑ c : F,
-          ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2 := by
-  simpa [centeredRepR] using centered_deficit_ge_orbit G r hmul hinv h0 hb
 
 /-- Orbit multiplicity in DC-energy form. -/
 theorem energy_ge_orbit (G : Finset F) (r : ℕ)
@@ -2009,27 +1829,6 @@ theorem not_dcEnergyBound_of_repR_sub_mean_variance_gt (G : Finset F) (r : ℕ)
   have hle := repR_sub_mean_variance_bound_of_dcEnergyBound G r hdc
   exact not_le_of_gt hbudget hle
 
-/-- Lower-bound certificate form: if a certified lower bound `B` for raw
-`repR - mean` variance already exceeds the Wick variance budget, then
-`DCEnergyBound` is impossible. -/
-theorem not_dcEnergyBound_of_repR_sub_mean_variance_lower_bound_gt
-    (G : Finset F) (r : ℕ) {B : ℝ}
-    (hlower : B ≤ ∑ c : F,
-        ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2)
-    (hbudget : (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r < B) :
-    ¬ DCEnergyBound G r :=
-  not_dcEnergyBound_of_repR_sub_mean_variance_gt G r (hbudget.trans_le hlower)
-
-/-- A budgeted raw `L^2` flatness consumer: if an analytic estimate bounds the
-raw `repR - mean` square-sum by `B`, and `B` fits the Wick budget, then
-`DCEnergyBound` follows. -/
-theorem dcEnergyBound_of_repR_sub_mean_variance_bound (G : Finset F) (r : ℕ) {B : ℝ}
-    (hvar : ∑ c : F,
-        ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2 ≤ B)
-    (hbudget : B ≤ (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r) :
-    DCEnergyBound G r :=
-  dcEnergyBound_of_repR_sub_mean_variance G r (hvar.trans hbudget)
-
 /-- Tail-count form of centered flatness: the number of offsets with centered
 representation at least `a` is bounded by the centered second moment divided by
 `a^2`. -/
@@ -2104,28 +1903,6 @@ theorem card_filter_abs_repR_sub_mean_ge_le_of_centered_variance_bound
   exact
     card_filter_abs_centeredRepR_ge_le_of_centered_variance_bound G r hvar ha
 
-/-- Tail-count consumer from a direct raw `repR - mean` square-sum bound. -/
-theorem card_filter_abs_repR_sub_mean_ge_le_of_repR_sub_mean_variance_bound
-    (G : Finset F) (r : ℕ) {B a : ℝ}
-    (hvar : ∑ c : F,
-        ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2 ≤ B)
-    (ha : 0 < a) :
-    (((Finset.univ : Finset F).filter (fun c =>
-      a ≤ |(repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)|)).card : ℝ)
-      ≤ B / a ^ 2 := by
-  exact card_filter_abs_repR_sub_mean_ge_le_of_centered_variance_bound G r
-    (by simpa [centeredRepR] using hvar) ha
-
-/-- Direct representation-function version of the `DCEnergyBound` tail-count
-consumer. -/
-theorem card_filter_abs_repR_sub_mean_ge_le_of_dcEnergyBound
-    (G : Finset F) (r : ℕ) (hdc : DCEnergyBound G r) {a : ℝ} (ha : 0 < a) :
-    (((Finset.univ : Finset F).filter (fun c =>
-      a ≤ |(repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)|)).card : ℝ)
-      ≤ ((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r) / a ^ 2 := by
-  exact
-    card_filter_abs_centeredRepR_ge_le_of_dcEnergyBound G r hdc ha
-
 /-- Direct representation-function version of the nonzero tail-count consumer
 from a centered variance budget. -/
 theorem card_filter_nonzero_abs_repR_sub_mean_ge_le_of_centered_variance_bound
@@ -2136,29 +1913,6 @@ theorem card_filter_nonzero_abs_repR_sub_mean_ge_le_of_centered_variance_bound
       ≤ B / a ^ 2 := by
   exact
     card_filter_nonzero_abs_centeredRepR_ge_le_of_centered_variance_bound G r hvar ha
-
-/-- Nonzero tail-count consumer from a direct raw `repR - mean` square-sum
-bound. -/
-theorem card_filter_nonzero_abs_repR_sub_mean_ge_le_of_repR_sub_mean_variance_bound
-    (G : Finset F) (r : ℕ) {B a : ℝ}
-    (hvar : ∑ c : F,
-        ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2 ≤ B)
-    (ha : 0 < a) :
-    (((Finset.univ : Finset F).filter (fun c => c ≠ 0 ∧
-      a ≤ |(repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)|)).card : ℝ)
-      ≤ B / a ^ 2 := by
-  exact card_filter_nonzero_abs_repR_sub_mean_ge_le_of_centered_variance_bound G r
-    (by simpa [centeredRepR] using hvar) ha
-
-/-- Direct representation-function version of the nonzero `DCEnergyBound`
-tail-count consumer. -/
-theorem card_filter_nonzero_abs_repR_sub_mean_ge_le_of_dcEnergyBound
-    (G : Finset F) (r : ℕ) (hdc : DCEnergyBound G r) {a : ℝ} (ha : 0 < a) :
-    (((Finset.univ : Finset F).filter (fun c => c ≠ 0 ∧
-      a ≤ |(repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)|)).card : ℝ)
-      ≤ ((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r) / a ^ 2 := by
-  exact
-    card_filter_nonzero_abs_centeredRepR_ge_le_of_dcEnergyBound G r hdc ha
 
 /-- A global centered variance bound controls every individual offset, without
 using multiplicative orbit structure.  The orbit lemmas below improve this by
@@ -2191,17 +1945,6 @@ theorem repR_sub_mean_sq_le_of_centered_variance_bound_global
   simpa [centeredRepR] using
     centered_sq_le_of_centered_variance_bound_global G r hvar c
 
-/-- Direct representation-function global pointwise square bound from a raw
-`repR - mean` square-sum budget. -/
-theorem repR_sub_mean_sq_le_of_repR_sub_mean_variance_bound_global
-    (G : Finset F) (r : ℕ) {B : ℝ}
-    (hvar : ∑ c : F,
-        ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2 ≤ B)
-    (c : F) :
-    ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2 ≤ B := by
-  exact repR_sub_mean_sq_le_of_centered_variance_bound_global G r
-    (by simpa [centeredRepR] using hvar) c
-
 /-- Direct representation-function absolute-value form of the global
 pointwise bound from a centered variance budget. -/
 theorem abs_repR_sub_mean_le_sqrt_of_centered_variance_bound_global
@@ -2210,17 +1953,6 @@ theorem abs_repR_sub_mean_le_sqrt_of_centered_variance_bound_global
     |(repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)| ≤ Real.sqrt B := by
   simpa [centeredRepR] using
     abs_centeredRepR_le_sqrt_of_centered_variance_bound_global G r hvar c
-
-/-- Direct representation-function global absolute-value pointwise bound from
-a raw `repR - mean` square-sum budget. -/
-theorem abs_repR_sub_mean_le_sqrt_of_repR_sub_mean_variance_bound_global
-    (G : Finset F) (r : ℕ) {B : ℝ}
-    (hvar : ∑ c : F,
-        ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2 ≤ B)
-    (c : F) :
-    |(repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)| ≤ Real.sqrt B := by
-  exact abs_repR_sub_mean_le_sqrt_of_centered_variance_bound_global G r
-    (by simpa [centeredRepR] using hvar) c
 
 /-- `DCEnergyBound` controls every individual centered offset, without using
 multiplicative orbit structure. -/
@@ -2238,24 +1970,6 @@ theorem abs_centeredRepR_le_sqrt_of_dcEnergyBound_global (G : Finset F) (r : ℕ
       ≤ Real.sqrt ((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r) := by
   exact abs_centeredRepR_le_sqrt_of_centered_variance_bound_global G r
     (centered_variance_bound_of_dcEnergyBound G r hdc) c
-
-/-- Direct representation-function version of the global pointwise square
-bound from `DCEnergyBound`, with no subgroup hypothesis. -/
-theorem repR_sub_mean_sq_le_of_dcEnergyBound_global
-    (G : Finset F) (r : ℕ) (hdc : DCEnergyBound G r) (c : F) :
-    ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2
-      ≤ (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r := by
-  simpa [centeredRepR] using
-    centered_sq_le_of_dcEnergyBound_global G r hdc c
-
-/-- Direct representation-function absolute-value global pointwise bound from
-`DCEnergyBound`, with no subgroup hypothesis. -/
-theorem abs_repR_sub_mean_le_sqrt_of_dcEnergyBound_global
-    (G : Finset F) (r : ℕ) (hdc : DCEnergyBound G r) (c : F) :
-    |(repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)|
-      ≤ Real.sqrt ((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r) := by
-  simpa [centeredRepR] using
-    abs_centeredRepR_le_sqrt_of_dcEnergyBound_global G r hdc c
 
 /-- Centered orbit budget from a centered variance hypothesis. -/
 theorem centered_orbit_budget_of_centered_variance_bound (G : Finset F) (r : ℕ)
@@ -2301,40 +2015,6 @@ theorem repR_sub_mean_orbit_budget_of_repR_sub_mean_variance_bound
       ≤ B := by
   exact repR_sub_mean_orbit_budget_of_centered_variance_bound G r hmul hinv h0
     (by simpa [centeredRepR] using hvar) hb
-
-/-- Exact fixed-fiber obstruction to a centered variance budget, in direct
-`repR - mean` language. -/
-theorem not_centered_variance_bound_of_repR_sub_mean_orbit_budget_gt
-    (G : Finset F) (r : ℕ)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G)
-    {B : ℝ} {b : F} (hb : b ≠ 0)
-    (hbudget :
-      B < (G.card : ℝ)
-          * ((repR G r b : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2) :
-    ¬ ∑ c : F, (centeredRepR G r c) ^ 2 ≤ B := by
-  intro hvar
-  have hle := repR_sub_mean_orbit_budget_of_centered_variance_bound
-    G r hmul hinv h0 hvar hb
-  exact not_le_of_gt hbudget hle
-
-/-- Exact fixed-fiber obstruction to a raw `repR - mean` variance budget. -/
-theorem not_repR_sub_mean_variance_bound_of_orbit_budget_gt
-    (G : Finset F) (r : ℕ)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G)
-    {B : ℝ} {b : F} (hb : b ≠ 0)
-    (hbudget :
-      B < (G.card : ℝ)
-          * ((repR G r b : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2) :
-    ¬ ∑ c : F,
-        ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2 ≤ B := by
-  intro hvar
-  have hle := repR_sub_mean_orbit_budget_of_repR_sub_mean_variance_bound
-    G r hmul hinv h0 hvar hb
-  exact not_le_of_gt hbudget hle
 
 /-- A single large nonzero centered offset forces an entire multiplicative
 orbit of variance. -/
@@ -2438,59 +2118,6 @@ theorem orbit_budget_of_large_abs_repR_sub_mean_of_repR_sub_mean_variance_bound
   orbit_budget_of_large_abs_repR_sub_mean G r hmul hinv h0
     (by simpa [centeredRepR] using hvar) ha_nonneg hb hlarge
 
-/-- Exclusion form from a raw `repR - mean` square-sum budget: if the orbit
-cost of threshold `a` exceeds the raw variance budget `B`, then no nonzero
-fiber can have raw deviation at least `a`. -/
-theorem no_large_abs_repR_sub_mean_of_repR_sub_mean_variance_bound
-    (G : Finset F) (r : ℕ)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G)
-    {B a : ℝ}
-    (hvar : ∑ c : F,
-        ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2 ≤ B)
-    (ha_nonneg : 0 ≤ a)
-    (hbudget : B < (G.card : ℝ) * a ^ 2) :
-    ¬ ∃ b : F, b ≠ 0 ∧
-      a ≤ |(repR G r b : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)| := by
-  rintro ⟨b, hb, hlarge⟩
-  have hle := orbit_budget_of_large_abs_repR_sub_mean_of_repR_sub_mean_variance_bound
-    G r hmul hinv h0 hvar ha_nonneg hb hlarge
-  exact not_le_of_gt hbudget hle
-
-/-- Exclusion form from a centered variance budget in direct `repR - mean`
-language. -/
-theorem no_large_abs_repR_sub_mean_of_centered_variance_bound
-    (G : Finset F) (r : ℕ)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G)
-    {B a : ℝ} (hvar : ∑ c : F, (centeredRepR G r c) ^ 2 ≤ B)
-    (ha_nonneg : 0 ≤ a)
-    (hbudget : B < (G.card : ℝ) * a ^ 2) :
-    ¬ ∃ b : F, b ≠ 0 ∧
-      a ≤ |(repR G r b : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)| := by
-  rintro ⟨b, hb, hlarge⟩
-  have hle := orbit_budget_of_large_abs_repR_sub_mean
-    G r hmul hinv h0 hvar ha_nonneg hb hlarge
-  exact not_le_of_gt hbudget hle
-
-/-- Direct representation-function version of the orbit budget under
-`DCEnergyBound`. -/
-theorem orbit_budget_of_large_abs_repR_sub_mean_of_dcEnergyBound
-    (G : Finset F) (r : ℕ)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G)
-    (hdc : DCEnergyBound G r)
-    {a : ℝ} (ha_nonneg : 0 ≤ a)
-    {b : F} (hb : b ≠ 0)
-    (hlarge : a ≤ |(repR G r b : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)|) :
-    (G.card : ℝ) * a ^ 2
-      ≤ (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r :=
-  orbit_budget_of_large_abs_centeredRepR_of_dcEnergyBound G r hmul hinv h0 hdc ha_nonneg hb
-    (by simpa [centeredRepR] using hlarge)
-
 /-- Direct representation-function obstruction form: a single too-large
 nonzero deviation of `repR` from its mean refutes `DCEnergyBound`. -/
 theorem not_dcEnergyBound_of_large_abs_repR_sub_mean
@@ -2507,25 +2134,6 @@ theorem not_dcEnergyBound_of_large_abs_repR_sub_mean
     ¬ DCEnergyBound G r :=
   not_dcEnergyBound_of_large_abs_centeredRepR G r hmul hinv h0 ha_nonneg hb
     (by simpa [centeredRepR] using hlarge) hbudget
-
-/-- Direct representation-function exclusion form: under `DCEnergyBound`, no
-nonzero `repR` fiber can exceed a threshold whose orbit cost is above the Wick
-budget. -/
-theorem no_large_abs_repR_sub_mean_of_dcEnergyBound
-    (G : Finset F) (r : ℕ)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G)
-    (hdc : DCEnergyBound G r)
-    {a : ℝ} (ha_nonneg : 0 ≤ a)
-    (hbudget :
-      (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
-        < (G.card : ℝ) * a ^ 2) :
-    ¬ ∃ b : F, b ≠ 0 ∧
-      a ≤ |(repR G r b : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)| := by
-  rintro ⟨b, hb, hlarge⟩
-  exact not_dcEnergyBound_of_large_abs_repR_sub_mean
-    G r hmul hinv h0 ha_nonneg hb hlarge hbudget hdc
 
 /-- Divided centered pointwise budget from a centered variance hypothesis,
 exposing the `/ |G|` orbit saving. -/
@@ -2584,23 +2192,6 @@ theorem repR_sub_mean_orbit_budget_of_dcEnergyBound
       ≤ (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r := by
   exact repR_sub_mean_orbit_budget_of_centered_variance_bound G r hmul hinv h0
     (centered_variance_bound_of_dcEnergyBound G r hdc) hb
-
-/-- Exact fixed-fiber obstruction to `DCEnergyBound`, in direct
-`repR - mean` language. -/
-theorem not_dcEnergyBound_of_repR_sub_mean_orbit_budget_gt
-    (G : Finset F) (r : ℕ)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G)
-    {b : F} (hb : b ≠ 0)
-    (hbudget :
-      (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
-        < (G.card : ℝ)
-          * ((repR G r b : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2) :
-    ¬ DCEnergyBound G r := by
-  intro hdc
-  have hle := repR_sub_mean_orbit_budget_of_dcEnergyBound G r hmul hinv h0 hdc hb
-  exact not_le_of_gt hbudget hle
 
 /-- Divided centered pointwise budget, exposing the `/ |G|` saving on the
 probability-scale representation function. -/
@@ -2738,69 +2329,6 @@ theorem forall_nonzero_centered_sq_le_of_dcEnergyBound (G : Finset F) (r : ℕ)
   intro b hb
   exact centered_sq_le_of_dcEnergyBound G r hmul hinv h0 hGpos hdc hb
 
-/-- Uniform nonzero-offset absolute bound from a centered variance hypothesis,
-in direct representation-function language. -/
-theorem forall_nonzero_abs_repR_sub_mean_le_sqrt_of_centered_variance_bound
-    (G : Finset F) (r : ℕ)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G)
-    (hGpos : 0 < G.card)
-    {B : ℝ} (hvar : ∑ c : F, (centeredRepR G r c) ^ 2 ≤ B) :
-    ∀ b : F, b ≠ 0 →
-      |(repR G r b : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)|
-        ≤ Real.sqrt (B / (G.card : ℝ)) := by
-  intro b hb
-  exact abs_repR_sub_mean_le_sqrt_of_centered_variance_bound G r
-    hmul hinv h0 hGpos hvar hb
-
-/-- Uniform nonzero-offset square bound from a raw `repR - mean` square-sum
-hypothesis, in direct representation-function language. -/
-theorem forall_nonzero_repR_sub_mean_sq_le_of_repR_sub_mean_variance_bound
-    (G : Finset F) (r : ℕ)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G)
-    (hGpos : 0 < G.card)
-    {B : ℝ}
-    (hvar : ∑ c : F,
-        ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2 ≤ B) :
-    ∀ b : F, b ≠ 0 →
-      ((repR G r b : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2
-        ≤ B / (G.card : ℝ) := by
-  intro b hb
-  exact repR_sub_mean_sq_le_of_repR_sub_mean_variance_bound G r
-    hmul hinv h0 hGpos hvar hb
-
-/-- Uniform nonzero-offset square bound from `DCEnergyBound`, in direct
-representation-function language. -/
-theorem forall_nonzero_repR_sub_mean_sq_le_of_dcEnergyBound (G : Finset F) (r : ℕ)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G)
-    (hGpos : 0 < G.card)
-    (hdc : DCEnergyBound G r) :
-    ∀ b : F, b ≠ 0 →
-      ((repR G r b : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2
-        ≤ ((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r)
-            / (G.card : ℝ) := by
-  intro b hb
-  exact repR_sub_mean_sq_le_of_dcEnergyBound G r hmul hinv h0 hGpos hdc hb
-
-/-- Uniform nonzero-offset raw orbit budget from `DCEnergyBound`. -/
-theorem forall_nonzero_repR_sub_mean_orbit_budget_of_dcEnergyBound
-    (G : Finset F) (r : ℕ)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G)
-    (hdc : DCEnergyBound G r) :
-    ∀ b : F, b ≠ 0 →
-      (G.card : ℝ)
-          * ((repR G r b : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2
-        ≤ (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r := by
-  intro b hb
-  exact repR_sub_mean_orbit_budget_of_dcEnergyBound G r hmul hinv h0 hdc hb
-
 /-- Uniform nonzero-offset absolute bound from `DCEnergyBound`, in centered
 probability-scale language. -/
 theorem forall_nonzero_abs_centeredRepR_le_sqrt_of_dcEnergyBound (G : Finset F) (r : ℕ)
@@ -2816,24 +2344,6 @@ theorem forall_nonzero_abs_centeredRepR_le_sqrt_of_dcEnergyBound (G : Finset F) 
   intro b hb
   exact abs_centeredRepR_le_sqrt_of_dcEnergyBound G r hmul hinv h0 hGpos hdc hb
 
-/-- Uniform nonzero-offset absolute bound from a raw `repR - mean` square-sum
-hypothesis, in direct representation-function language. -/
-theorem forall_nonzero_abs_repR_sub_mean_le_sqrt_of_repR_sub_mean_variance_bound
-    (G : Finset F) (r : ℕ)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G)
-    (hGpos : 0 < G.card)
-    {B : ℝ}
-    (hvar : ∑ c : F,
-        ((repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2 ≤ B) :
-    ∀ b : F, b ≠ 0 →
-      |(repR G r b : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)|
-        ≤ Real.sqrt (B / (G.card : ℝ)) := by
-  intro b hb
-  exact abs_repR_sub_mean_le_sqrt_of_repR_sub_mean_variance_bound G r
-    hmul hinv h0 hGpos hvar hb
-
 /-- The nonzero orbit-saved flatness bound in direct representation-function
 language: `repR(c)` is close to its flat mean `|G|^r / q`. -/
 theorem abs_repR_sub_mean_le_sqrt_of_dcEnergyBound (G : Finset F) (r : ℕ)
@@ -2848,22 +2358,6 @@ theorem abs_repR_sub_mean_le_sqrt_of_dcEnergyBound (G : Finset F) (r : ℕ)
           / (G.card : ℝ)) := by
   simpa [centeredRepR] using
     abs_centeredRepR_le_sqrt_of_dcEnergyBound G r hmul hinv h0 hGpos hdc hb
-
-/-- Uniform nonzero orbit-saved flatness in direct representation-function
-language. -/
-theorem forall_nonzero_abs_repR_sub_mean_le_sqrt_of_dcEnergyBound
-    (G : Finset F) (r : ℕ)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G)
-    (hGpos : 0 < G.card)
-    (hdc : DCEnergyBound G r) :
-    ∀ b : F, b ≠ 0 →
-      |(repR G r b : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)|
-        ≤ Real.sqrt (((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r)
-            / (G.card : ℝ)) := by
-  intro b hb
-  exact abs_repR_sub_mean_le_sqrt_of_dcEnergyBound G r hmul hinv h0 hGpos hdc hb
 
 /-- A uniform absolute flatness bound on the centered representation controls
 the centered variance by `q * A^2`. -/
@@ -2909,17 +2403,6 @@ theorem repR_sub_mean_variance_bound_of_uniform_abs_repR_sub_mean
       ≤ (Fintype.card F : ℝ) * A ^ 2 := by
   simpa [centeredRepR] using
     centered_variance_bound_of_uniform_abs_repR_sub_mean G r hA
-
-/-- Uniform representation-function flatness implies `DCEnergyBound` once its
-square budget fits the Wick variance budget. -/
-theorem dcEnergyBound_of_uniform_abs_repR_sub_mean (G : Finset F) (r : ℕ) {A : ℝ}
-    (hA : ∀ c : F,
-      |(repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)| ≤ A)
-    (hbudget : (Fintype.card F : ℝ) * A ^ 2
-      ≤ (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r) :
-    DCEnergyBound G r :=
-  dcEnergyBound_of_repR_sub_mean_variance G r
-    ((repR_sub_mean_variance_bound_of_uniform_abs_repR_sub_mean G r hA).trans hbudget)
 
 /-- A zero/nonzero split for centered flatness: control the zero offset by `Z`
 and all nonzero offsets by a uniform absolute bound `A`. -/
@@ -2982,21 +2465,6 @@ theorem repR_sub_mean_variance_bound_of_zero_and_nonzero_abs_repR_sub_mean
   simpa [centeredRepR] using
     centered_variance_bound_of_zero_and_nonzero_abs_repR_sub_mean G r hzero hA
 
-/-- Direct representation-function version of the zero/nonzero split route to
-`DCEnergyBound`. -/
-theorem dcEnergyBound_of_zero_and_nonzero_abs_repR_sub_mean
-    (G : Finset F) (r : ℕ) {Z A : ℝ}
-    (hzero :
-      ((repR G r 0 : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2 ≤ Z)
-    (hA : ∀ c : F, c ≠ 0 →
-      |(repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)| ≤ A)
-    (hbudget : Z + ((Fintype.card F - 1 : ℕ) : ℝ) * A ^ 2
-      ≤ (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r) :
-    DCEnergyBound G r :=
-  dcEnergyBound_of_repR_sub_mean_variance G r
-    ((repR_sub_mean_variance_bound_of_zero_and_nonzero_abs_repR_sub_mean G r hzero hA).trans
-      hbudget)
-
 /-- A nonzero-offset uniform absolute bound also controls the zero offset,
 because the centered representation is mean-zero. -/
 theorem abs_centeredRepR_zero_le_card_sub_one_mul_of_nonzero_abs
@@ -3034,18 +2502,6 @@ theorem abs_repR_sub_mean_zero_le_card_sub_one_mul_of_nonzero_abs
   simpa [centeredRepR] using
     abs_centeredRepR_zero_le_card_sub_one_mul_of_nonzero_abs G r
       (fun c hc => by simpa [centeredRepR] using hA c hc)
-
-/-- Squared form of the raw zero-fiber control from nonzero raw deviations. -/
-theorem repR_sub_mean_zero_sq_le_card_sub_one_mul_sq_of_nonzero_abs
-    (G : Finset F) (r : ℕ) {A : ℝ}
-    (hA : ∀ c : F, c ≠ 0 →
-      |(repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)| ≤ A) :
-    ((repR G r 0 : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)) ^ 2
-      ≤ (((Fintype.card F - 1 : ℕ) : ℝ) * A) ^ 2 := by
-  have hzero_abs := abs_repR_sub_mean_zero_le_card_sub_one_mul_of_nonzero_abs G r hA
-  nlinarith [sq_abs ((repR G r 0 : ℝ)
-    - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)),
-    abs_nonneg ((repR G r 0 : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ))]
 
 /-- A nonzero-only uniform absolute bound controls the whole centered
 variance, with the zero offset paid for by mean-zero. -/
@@ -3097,19 +2553,6 @@ theorem repR_sub_mean_variance_bound_of_nonzero_abs_repR_sub_mean
   simpa [centeredRepR] using
     centered_variance_bound_of_nonzero_abs_repR_sub_mean G r hA
 
-/-- Direct representation-function version of the nonzero-only route to
-`DCEnergyBound`. -/
-theorem dcEnergyBound_of_nonzero_abs_repR_sub_mean
-    (G : Finset F) (r : ℕ) {A : ℝ}
-    (hA : ∀ c : F, c ≠ 0 →
-      |(repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)| ≤ A)
-    (hbudget : (((Fintype.card F - 1 : ℕ) : ℝ) * A) ^ 2
-        + ((Fintype.card F - 1 : ℕ) : ℝ) * A ^ 2
-      ≤ (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r) :
-    DCEnergyBound G r :=
-  dcEnergyBound_of_repR_sub_mean_variance G r
-    ((repR_sub_mean_variance_bound_of_nonzero_abs_repR_sub_mean G r hA).trans hbudget)
-
 end ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance
 
 /-! ## Axiom audit -/
@@ -3151,7 +2594,6 @@ end ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.forall_eta_le_sqrt_floor_of_dcEnergyCeilWallWithConstant
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.forall_eta_le_sqrt_floor_of_sum_nonzero_moment_bound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.forall_eta_le_sqrt_floor_of_centered_variance_bound
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.forall_eta_le_sqrt_floor_of_repR_sub_mean_variance_bound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.forall_eta_le_sqrt_floor_of_deviation_variance_bound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.DCEnergyBoundWithConstant.mono_pow
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.DCEnergyBoundWithConstant.mono
@@ -3179,18 +2621,11 @@ end ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.deviationR_eq_card_mul_centeredRepR
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.deviationR_sq_eq_card_sq_mul_centeredRepR_sq
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.abs_deviationR_eq_card_mul_abs_centeredRepR
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.centeredRepR_eq_repR_sub_mean
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.centeredRepR_sq_eq_repR_sub_mean_sq
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.abs_centeredRepR_eq_abs_repR_sub_mean
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.sum_deviationR_zero
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.sum_centeredRepR_zero
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.sum_repR_sub_mean_zero
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.sum_centeredRepR_sq_eq_normalized_variance
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.sum_repR_sub_mean_sq_eq_normalized_variance
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.sum_deviationR_sq_eq_card_sq_mul_sum_centeredRepR_sq
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.sum_deviationR_sq_eq_card_sq_mul_sum_repR_sub_mean_sq
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.dcGap_eq_card_mul_sum_centeredRepR_sq
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.dcGap_eq_card_mul_sum_repR_sub_mean_sq
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.dcEnergyBoundWithConstant_iff_centeredRepR_variance
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.dcEnergyBoundWithConstant_iff_repR_sub_mean_variance
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.deviation_variance_bound_iff_centered_variance_bound
@@ -3210,39 +2645,28 @@ end ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.dcEnergyWallWithConstantUpTo_iff_forall_deviation_variance
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyWallWithConstant_of_centered_variance_gt
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyWallWithConstant_of_centered_variance_lower_bound_gt
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyWallWithConstant_of_repR_sub_mean_variance_gt
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyWallWithConstant_of_deviation_variance_gt
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyWallWithConstantUpTo_of_centered_variance_gt
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyWallWithConstantUpTo_of_centered_variance_lower_bound_gt
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyWallWithConstantUpTo_of_repR_sub_mean_variance_gt
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyWallWithConstantUpTo_of_deviation_variance_gt
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyCeilWallWithConstant_of_centered_variance_gt
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyCeilWallWithConstant_of_centered_variance_lower_bound_gt
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyCeilWallWithConstant_of_repR_sub_mean_variance_gt
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyCeilWallWithConstant_of_deviation_variance_gt
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.dcEnergyBoundWithConstant_of_deviation_variance_bound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyBoundWithConstant_of_deviation_variance_gt
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyBoundWithConstant_of_deviation_variance_lower_bound_gt
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.dcEnergyBoundWithConstant_of_centered_variance_bound
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.dcEnergyBoundWithConstant_of_repR_sub_mean_variance_bound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyBoundWithConstant_of_centered_variance_gt
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyBoundWithConstant_of_repR_sub_mean_variance_gt
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyBoundWithConstant_of_centered_variance_lower_bound_gt
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyBoundWithConstant_of_repR_sub_mean_variance_lower_bound_gt
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.centered_variance_bound_of_deviation_variance_bound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.deviation_variance_bound_of_centered_variance_bound
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.repR_sub_mean_variance_bound_of_deviation_variance_bound
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.deviation_variance_bound_of_repR_sub_mean_variance_bound
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.sum_centeredRepR_sq_eq_sum_repR_sub_mean_sq
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.centered_variance_bound_iff_repR_sub_mean_variance_bound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.repR_smul
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.varianceSummand_smul
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.deviationR_smul
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.centeredRepR_smul
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.repR_sub_mean_smul
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.deficit_ge_orbit
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.centered_deficit_ge_orbit
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.repR_sub_mean_variance_ge_orbit
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.energy_ge_orbit
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.orbit_deviation_budget_of_dcEnergyBound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.deviation_sq_le_of_dcEnergyBound
@@ -3264,45 +2688,29 @@ end ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.repR_sub_mean_variance_bound_of_dcEnergyBound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.dcEnergyBound_of_repR_sub_mean_variance
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyBound_of_repR_sub_mean_variance_gt
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyBound_of_repR_sub_mean_variance_lower_bound_gt
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.dcEnergyBound_of_repR_sub_mean_variance_bound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.card_filter_abs_centeredRepR_ge_le_variance_div
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.card_filter_abs_centeredRepR_ge_le_of_centered_variance_bound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.card_filter_abs_centeredRepR_ge_le_of_dcEnergyBound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.card_filter_nonzero_abs_centeredRepR_ge_le_of_centered_variance_bound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.card_filter_nonzero_abs_centeredRepR_ge_le_of_dcEnergyBound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.card_filter_abs_repR_sub_mean_ge_le_of_centered_variance_bound
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.card_filter_abs_repR_sub_mean_ge_le_of_repR_sub_mean_variance_bound
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.card_filter_abs_repR_sub_mean_ge_le_of_dcEnergyBound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.card_filter_nonzero_abs_repR_sub_mean_ge_le_of_centered_variance_bound
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.card_filter_nonzero_abs_repR_sub_mean_ge_le_of_repR_sub_mean_variance_bound
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.card_filter_nonzero_abs_repR_sub_mean_ge_le_of_dcEnergyBound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.centered_sq_le_of_centered_variance_bound_global
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.abs_centeredRepR_le_sqrt_of_centered_variance_bound_global
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.repR_sub_mean_sq_le_of_centered_variance_bound_global
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.repR_sub_mean_sq_le_of_repR_sub_mean_variance_bound_global
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.abs_repR_sub_mean_le_sqrt_of_centered_variance_bound_global
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.abs_repR_sub_mean_le_sqrt_of_repR_sub_mean_variance_bound_global
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.centered_sq_le_of_dcEnergyBound_global
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.abs_centeredRepR_le_sqrt_of_dcEnergyBound_global
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.repR_sub_mean_sq_le_of_dcEnergyBound_global
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.abs_repR_sub_mean_le_sqrt_of_dcEnergyBound_global
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.centered_orbit_budget_of_centered_variance_bound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.repR_sub_mean_orbit_budget_of_centered_variance_bound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.repR_sub_mean_orbit_budget_of_repR_sub_mean_variance_bound
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_centered_variance_bound_of_repR_sub_mean_orbit_budget_gt
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_repR_sub_mean_variance_bound_of_orbit_budget_gt
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.orbit_budget_of_large_abs_centeredRepR
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.orbit_budget_of_large_abs_centeredRepR_of_dcEnergyBound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyBound_of_large_abs_centeredRepR
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.no_large_abs_centeredRepR_of_dcEnergyBound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.orbit_budget_of_large_abs_repR_sub_mean
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.orbit_budget_of_large_abs_repR_sub_mean_of_repR_sub_mean_variance_bound
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.no_large_abs_repR_sub_mean_of_repR_sub_mean_variance_bound
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.no_large_abs_repR_sub_mean_of_centered_variance_bound
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.orbit_budget_of_large_abs_repR_sub_mean_of_dcEnergyBound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyBound_of_large_abs_repR_sub_mean
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.no_large_abs_repR_sub_mean_of_dcEnergyBound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.centered_sq_le_of_centered_variance_bound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.abs_centeredRepR_le_sqrt_of_centered_variance_bound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.centered_orbit_budget_of_dcEnergyBound
@@ -3314,31 +2722,20 @@ end ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.abs_centeredRepR_le_sqrt_of_dcEnergyBound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.abs_repR_sub_mean_le_sqrt_of_repR_sub_mean_variance_bound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.forall_nonzero_centered_sq_le_of_dcEnergyBound
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.forall_nonzero_abs_repR_sub_mean_le_sqrt_of_centered_variance_bound
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.forall_nonzero_repR_sub_mean_sq_le_of_repR_sub_mean_variance_bound
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.forall_nonzero_repR_sub_mean_sq_le_of_dcEnergyBound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.repR_sub_mean_orbit_budget_of_dcEnergyBound
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.not_dcEnergyBound_of_repR_sub_mean_orbit_budget_gt
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.forall_nonzero_repR_sub_mean_orbit_budget_of_dcEnergyBound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.forall_nonzero_abs_centeredRepR_le_sqrt_of_dcEnergyBound
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.forall_nonzero_abs_repR_sub_mean_le_sqrt_of_repR_sub_mean_variance_bound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.abs_repR_sub_mean_le_sqrt_of_dcEnergyBound
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.forall_nonzero_abs_repR_sub_mean_le_sqrt_of_dcEnergyBound
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.centered_variance_bound_of_uniform_abs_centeredRepR
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.dcEnergyBound_of_uniform_abs_centeredRepR
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.centered_variance_bound_of_uniform_abs_repR_sub_mean
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.repR_sub_mean_variance_bound_of_uniform_abs_repR_sub_mean
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.dcEnergyBound_of_uniform_abs_repR_sub_mean
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.centered_variance_bound_of_zero_and_nonzero_abs_centeredRepR
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.dcEnergyBound_of_zero_and_nonzero_abs_centeredRepR
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.centered_variance_bound_of_zero_and_nonzero_abs_repR_sub_mean
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.repR_sub_mean_variance_bound_of_zero_and_nonzero_abs_repR_sub_mean
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.dcEnergyBound_of_zero_and_nonzero_abs_repR_sub_mean
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.abs_centeredRepR_zero_le_card_sub_one_mul_of_nonzero_abs
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.abs_repR_sub_mean_zero_le_card_sub_one_mul_of_nonzero_abs
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.repR_sub_mean_zero_sq_le_card_sub_one_mul_sq_of_nonzero_abs
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.centered_variance_bound_of_nonzero_abs_centeredRepR
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.dcEnergyBound_of_nonzero_abs_centeredRepR
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.centered_variance_bound_of_nonzero_abs_repR_sub_mean
 #print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.repR_sub_mean_variance_bound_of_nonzero_abs_repR_sub_mean
-#print axioms ArkLib.ProximityGap.Frontier.R240GeneralRFoldVariance.dcEnergyBound_of_nonzero_abs_repR_sub_mean

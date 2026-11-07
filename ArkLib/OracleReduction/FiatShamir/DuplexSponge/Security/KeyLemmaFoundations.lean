@@ -203,13 +203,57 @@ noncomputable def claim5_22Bound {n : ℕ} {pSpec : ProtocolSpec n}
     (tₕ tₚ tₚᵢ : ℕ) (εcodec : pSpec.ChallengeIdx → ℝ≥0) : ℝ :=
   (θStar tₕ tₚ tₚᵢ : ℝ) * ((⨆ i, εcodec i : ℝ≥0) : ℝ) + ((∑ i, εcodec i : ℝ≥0) : ℝ)
 
-/-- CO25 Claim 5.24 bound (Eq. 55): `7L(2tₕ+2+2tₚ+L+2tₚᵢ)/(2|Σ|^c) − 5(L+1)/|Σ|^c` — the
-verifier-replay bad-event probability for the Hyb₃/Hyb₄ step. -/
+/-- CO25 Claim 5.24 bound (Eq. 55) as transcribed here:
+`7L(2tₕ+2+2tₚ+L+2tₚᵢ)/(2|Σ|^c) − 5(L+1)/|Σ|^c` — the intended verifier-replay bad-event
+budget for the Hyb₃/Hyb₄ step.
+
+**Boundary caveat.** This expression is a difference and is **negative at `L = 0`**
+(it equals `−5/|Σ|^c` there, for every prover budget; `claim5_24Bound_neg_of_L_eq_zero`),
+and nonnegative exactly when `1 ≤ L` (`claim5_24Bound_nonneg_of_one_le`). A total-variation
+bound `Δ ≤ claim5_24Bound … 0` is therefore unsatisfiable. Any residual that quantifies over
+`L` with only the guard `pSpec.totalNumPermQueries ≤ L` (e.g. `Hyb34StepResidual`,
+`Hyb34StepResidualS`) admits `L = 0` and is false for zero-permutation protocols unless it
+additionally requires `1 ≤ L`. Whether the `−5(L+1)/|Σ|^c` term faithfully transcribes the
+paper, and the paper's precise parameter regime, has not been re-verified here; the numeric
+assembly `claimSum_le_ηStarPaper` only shows the sum of the per-step bounds fits under
+`ηStarPaper`, not that this individual step bound is attainable. -/
 noncomputable def claim5_24Bound (U : Type) [SpongeUnit U] [Fintype U] [SpongeSize]
     (tₕ tₚ tₚᵢ L : ℕ) : ℝ :=
   (7 * (L : ℝ) * (2 * (tₕ : ℝ) + 2 + 2 * (tₚ : ℝ) + (L : ℝ) + 2 * (tₚᵢ : ℝ)))
       / (2 * (Fintype.card U : ℝ) ^ SpongeSize.C)
     - (5 * ((L : ℝ) + 1)) / ((Fintype.card U : ℝ) ^ SpongeSize.C)
+
+/-- Boundary witness: at `L = 0` the transcribed Claim 5.24 bound is strictly negative,
+independently of the prover budgets, so no total-variation distance can be bounded by it. -/
+lemma claim5_24Bound_neg_of_L_eq_zero (U : Type) [SpongeUnit U] [Fintype U] [SpongeSize]
+    (tₕ tₚ tₚᵢ : ℕ) : claim5_24Bound U tₕ tₚ tₚᵢ 0 < 0 := by
+  have hU : Nonempty U := ⟨0⟩
+  have hc0 : (0 : ℝ) < (Fintype.card U : ℝ) := by exact_mod_cast Fintype.card_pos
+  have hP : (0 : ℝ) < (Fintype.card U : ℝ) ^ SpongeSize.C := pow_pos hc0 _
+  have h5 : (0 : ℝ) < 5 * ((0 : ℕ) + 1 : ℝ) / (Fintype.card U : ℝ) ^ SpongeSize.C := by
+    positivity
+  unfold claim5_24Bound
+  simp only [Nat.cast_zero, mul_zero, zero_mul, zero_div, zero_sub] at h5 ⊢
+  linarith
+
+/-- For `1 ≤ L` the transcribed Claim 5.24 bound is nonnegative (so the negativity is
+confined to the `L = 0` boundary). -/
+lemma claim5_24Bound_nonneg_of_one_le (U : Type) [SpongeUnit U] [Fintype U] [SpongeSize]
+    (tₕ tₚ tₚᵢ L : ℕ) (hL : 1 ≤ L) : 0 ≤ claim5_24Bound U tₕ tₚ tₚᵢ L := by
+  have hU : Nonempty U := ⟨0⟩
+  have hc0 : (0 : ℝ) < (Fintype.card U : ℝ) := by exact_mod_cast Fintype.card_pos
+  have hP : (0 : ℝ) < (Fintype.card U : ℝ) ^ SpongeSize.C := pow_pos hc0 _
+  have hL' : (1 : ℝ) ≤ (L : ℝ) := by exact_mod_cast hL
+  have hrw : claim5_24Bound U tₕ tₚ tₚᵢ L
+      = (7 * (L : ℝ) * (2 * (tₕ : ℝ) + 2 + 2 * (tₚ : ℝ) + (L : ℝ) + 2 * (tₚᵢ : ℝ))
+          - 10 * ((L : ℝ) + 1)) / (2 * (Fintype.card U : ℝ) ^ SpongeSize.C) := by
+    unfold claim5_24Bound
+    field_simp
+    ring
+  rw [hrw]
+  apply div_nonneg _ (by positivity)
+  nlinarith [Nat.cast_nonneg (α := ℝ) tₕ, Nat.cast_nonneg (α := ℝ) tₚ,
+    Nat.cast_nonneg (α := ℝ) tₚᵢ]
 
 /-- Paper-exponent `ηStar` (denominator `2·|U|^C`, CO25 Eq. 5): the bound the §5.8 hybrid
 chain delivers. Mirrors `DuplexSpongeFS.ηStar` except for the denominator exponent. -/

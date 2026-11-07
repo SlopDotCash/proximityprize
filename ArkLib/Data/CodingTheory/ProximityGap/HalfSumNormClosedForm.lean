@@ -147,7 +147,9 @@ theorem norm_halfSum_eq {m : ℕ} (hm : 1 ≤ m) {ζ : L} [NeZero ((2:ℕ) ^ (m 
 because `ζ` is a unit with `N_{K/ℚ}(ζ) = 1` (`IsPrimitiveRoot.norm_eq_one`, `n = 2^{m+1} ≠ 2`).
 Hence the **entire `⟨ζ⟩`-rotation orbit** of the half-run subset sum has norm a pure power of
 `2` and contributes **no** odd-prime bad-prime candidate — extending the Half-Sum base ledger
-from the single all-ones run to its whole `n/2`-element rotation orbit, uniformly in `m`. -/
+from the single all-ones run to its whole rotation orbit, uniformly in `m`. That orbit has
+`n` elements, not `n/2`: since `α ≠ 0` (its norm is nonzero), `ζ^a·α = ζ^b·α` forces
+`a ≡ b mod n`, so for `n = 8` the eight rotated sums are pairwise distinct. -/
 theorem norm_rotated_halfSum_eq {m : ℕ} (hm : 1 ≤ m) {ζ : L} (a : ℕ)
     [NeZero ((2:ℕ) ^ (m + 1))]
     (hζ : IsPrimitiveRoot ζ ((2:ℕ) ^ (m + 1)))

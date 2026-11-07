@@ -45,10 +45,14 @@ construction — with Lovett's algebraic core no longer an open premise.
 
 So the precise residual ledger after this file: **`SymbolicMinorFromLovett` ∧
 `DualRowsFromNonsingularEval` ∧ `FieldLargeForMinor`** ⟹ unconditional
-`GMMDSDualZeroPatternTheorem` / `GMMDSResidual`.  Both residuals are linear algebra over
-`F(a)` / dual spaces (NOT character sums); each is proven *satisfiable* in
-`LovettDualSpanConnector.lean` (from the goal itself / from the symbolic-rank interface), so the
-decomposition introduces no `False` obligation.
+`GMMDSDualZeroPatternTheorem` / `GMMDSResidual`.  **Status correction:** this ledger is
+vacuous in the intended regime. The target `GMMDSDualZeroPatternTheorem` is refuted for
+`k < card ι` (`AGL24.not_gmmDsDualZeroPatternTheorem`), `DualRowsFromNonsingularEval` is refuted
+(`not_dualRowsFromNonsingularEval`), and `SymbolicMinorFromLovett` is refuted for `1 ≤ k`
+(`not_symbolicMinorFromLovett`, below). Earlier "satisfiable" claims only exhibited
+goal-conditional implications, which supply no inhabitant. The theorems below are valid
+conditional wiring, retained as historical records; they do not reduce GM-MDS to true
+residuals.
 
 Issue #389.
 -/
@@ -85,8 +89,10 @@ dual-zero-pattern boundary with **no Lovett hypothesis remaining** — only the 
 missing GM-MDS encoding/dual moves (and the field-size regime) are required.  Axiom-clean.
 
 This is the wiring capstone of the Lovett route: Lovett's algebraic Theorem 1.7 is fully
-discharged in-tree; what is left is exactly the GM-MDS *matrix construction* (symbolic minor
-non-vanishing + dual repackaging), isolated as two satisfiable residuals. -/
+discharged in-tree. The two remaining hypotheses are, however, both refuted as stated
+(`not_symbolicMinorFromLovett`, `not_dualRowsFromNonsingularEval`), and so is the conclusion for
+`k < card ι` (`AGL24.not_gmmDsDualZeroPatternTheorem`): this is a valid but vacuous conditional
+theorem, kept as a historical record. -/
 theorem gmmDsDualZeroPatternTheorem_unconditional {k : ℕ} (hk : 1 ≤ k)
     (hminor : SymbolicMinorFromLovett ι F k)
     (hdual : DualRowsFromNonsingularEval ι F k)
@@ -99,9 +105,10 @@ theorem gmmDsDualZeroPatternTheorem_unconditional {k : ℕ} (hk : 1 ≤ k)
 unconditional dual-zero-pattern boundary to the older existential `GMMDSResidual` interface that
 `AGL24.symbolicFullRank_of_classical_imports` consumes.  No Lovett hypothesis.  Axiom-clean.
 
-Supplying this in place of the classical `GMMDSResidual` import removes GM-MDS as an unproven
-*algebraic* assumption from the AGL24 cone: its algebraic core (Lovett Thm 1.7) is proved, and
-the residue is the two named encoding/dual moves. -/
+Its hypotheses `hminor`/`hdual` are refuted as stated (`not_symbolicMinorFromLovett`,
+`not_dualRowsFromNonsingularEval`), so this does **not** remove GM-MDS as an assumption of the
+AGL24 cone; the consumer-facing GM-MDS boundary is the pinned
+`AGL24.GMMDSDualZeroPatternTheoremPinned`. -/
 theorem gmmDsResidual_unconditional {k : ℕ} (hk : 1 ≤ k)
     (hminor : SymbolicMinorFromLovett ι F k)
     (hdual : DualRowsFromNonsingularEval ι F k)
@@ -110,20 +117,33 @@ theorem gmmDsResidual_unconditional {k : ℕ} (hk : 1 ≤ k)
   AGL24.gmmDsResidual_of_dualZeroPatternTheorem
     (gmmDsDualZeroPatternTheorem_unconditional hk hminor hdual hfield)
 
-/-! ## Non-vacuity: the post-Lovett residual pair is satisfiable
+/-! ## Status of the post-Lovett residual pair: both residuals are FALSE as stated
 
-We record that the remaining obligation `SymbolicMinorFromLovett ∧ DualRowsFromNonsingularEval ∧
-FieldLargeForMinor` is *not* `False`: it is implied by the AGL24 goal itself
-(`GMMDSDualZeroPatternTheorem`), exactly mirroring the satisfiability witnesses in
-`LovettDualSpanConnector.lean` / `LovettToGZPDualBridgeReduction.lean`.  So the decomposition is
-honest — the Lovett discharge does not collapse the chain into a vacuous obligation. -/
+An earlier version of this section claimed the remaining obligation
+`SymbolicMinorFromLovett ∧ DualRowsFromNonsingularEval ∧ FieldLargeForMinor` is "satisfiable /
+not `False`" because the AGL24 goal `GMMDSDualZeroPatternTheorem` implies it. That inference is
+invalid: an implication from an *unproved* goal supplies no inhabitant. Worse, the goal itself
+is refuted in the intended regime `k < card ι` (`AGL24.not_gmmDsDualZeroPatternTheorem`, the
+13th false-residual catch), and so are both residuals:
+
+* `DualRowsFromNonsingularEval` is `False` whenever `k < card ι` and an embedding `ι ↪ F`
+  exists (`not_dualRowsFromNonsingularEval`, the 12th catch);
+* `SymbolicMinorFromLovett` is `False` whenever `1 ≤ k` (`not_symbolicMinorFromLovett` below):
+  at `t = 1`, `e ≡ ∅`, `δ ≡ 0` the `GZPCondition` hypothesis holds vacuously, but the RIM has no
+  rows, so no row selector `Fin 1 × Fin k → RIMRowIdx e` exists. This is the same
+  missing-WPC mechanism as `rimKernelTrivialFromLovett_refuted` (the 14th catch).
+
+So `gmmDsDualZeroPatternTheorem_unconditional` / `gmmDsResidual_unconditional` are valid
+conditional theorems with unsatisfiable hypotheses in the intended regime; they are historical
+wiring, not a reduction of GM-MDS to open-but-plausible residuals. The dimensionally faithful,
+WPC-guarded objects are the pinned target `AGL24.GMMDSDualZeroPatternTheoremPinned` and
+`RIMKernelTrivialFromLovettWPC`. -/
 
 omit [DecidableEq ι] [Nonempty ι] [Fintype F] in
-/-- `DualRowsFromNonsingularEval` is satisfiable from the AGL24 goal (it discards the supplied
-`φ`/nonsingularity witness and uses the goal's own dual rows).  Axiom-clean.  This is the
-goal-conditional satisfiability statement; combined with the symbolic-rank satisfiability of
-`SymbolicMinorFromLovett` (`symbolicMinor_of_symbolicFullRank`) it shows the post-Lovett pair
-is inhabited whenever the goal is, hence not `False`. -/
+/-- `DualRowsFromNonsingularEval`'s dual-row conclusion shape, *conditional on* the AGL24 goal
+(it discards the supplied `φ`/nonsingularity witness and uses the goal's own dual rows).
+Axiom-clean. This is only a goal-conditional implication; it does **not** show the residual is
+satisfiable (the goal is refuted for `k < card ι`, `AGL24.not_gmmDsDualZeroPatternTheorem`). -/
 theorem dualRows_inhabited_of_goal {k : ℕ}
     (hgoal : AGL24.GMMDSDualZeroPatternTheorem (ι := ι) (F := F) k)
     {t : ℕ} (e : ι → Finset (Fin (t + 1))) (δ : Fin (t + 1) → ℕ)
@@ -134,6 +154,27 @@ theorem dualRows_inhabited_of_goal {k : ℕ}
         AGL24.dotForm.orthogonal (ReedSolomon.code φ k) :=
   dualRowsFromNonsingularEval_inhabited_of_goal hgoal e δ hgzp
 
+omit [Nonempty ι] [Fintype F] in
+/-- **`SymbolicMinorFromLovett` is FALSE as stated** for every `1 ≤ k` (and every `ι`, `F`).
+Witness: `t = 1`, the all-empty edge family and `δ ≡ 0`. `GZPCondition` holds vacuously (no
+`κ ≤ 0` has positive total), Lovett's Theorem 1.7 holds (`lovettThm17_unconditional`), but
+`RIMRowIdx (fun _ => ∅)` is empty while `Fin 1 × Fin k` is inhabited, so no row selector exists.
+Same mechanism as `rimKernelTrivialFromLovett_refuted` (#389, 14th catch). Axiom-clean. -/
+theorem not_symbolicMinorFromLovett {k : ℕ} (hk : 1 ≤ k) :
+    ¬ SymbolicMinorFromLovett ι F k := by
+  classical
+  intro h
+  have hgzp : AGL24.GZPCondition (fun _ : ι => (∅ : Finset (Fin (1 + 1))))
+      (fun _ => 0) k := by
+    intro κ hκ hpos
+    exfalso
+    have hz : ∀ j, κ j = 0 := fun j => Nat.le_zero.mp (hκ j)
+    simp only [hz] at hpos
+    simp at hpos
+  obtain ⟨rows, _, _⟩ := h lovettThm17_unconditional_forall
+    (fun _ : ι => (∅ : Finset (Fin (1 + 1)))) (fun _ => 0) hgzp
+  exact absurd (rows (0, ⟨0, hk⟩)).2.property.1 (by simp)
+
 end ArkLib.GMMDS
 
 -- Axiom audit: must report only `[propext, Classical.choice, Quot.sound]` (no `sorryAx`).
@@ -142,3 +183,4 @@ end ArkLib.GMMDS
 #print axioms ArkLib.GMMDS.gmmDsDualZeroPatternTheorem_unconditional
 #print axioms ArkLib.GMMDS.gmmDsResidual_unconditional
 #print axioms ArkLib.GMMDS.dualRows_inhabited_of_goal
+#print axioms ArkLib.GMMDS.not_symbolicMinorFromLovett

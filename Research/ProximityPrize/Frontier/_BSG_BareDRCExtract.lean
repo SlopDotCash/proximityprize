@@ -13,9 +13,17 @@ import Mathlib.Tactic.Positivity
 # BSG — assembling the `BareDRCExtract` extraction
 
 This file assembles the proven dependent-random-choice (DRC) extraction sub-lemmas
-(`_BSG_EX_*`, `_BSG_DRC1`) into the residual `BareDRCExtract`, the SINGLE remaining input to the
-whole BGK chain
+(`_BSG_EX_*`, `_BSG_DRC1`) into the interface `BareDRCExtract`, which an older plan treated as the
+single remaining input to the chain
 `BareDRCExtract → BareDRC (bareDRC_of_extract) → BSGCore → BGK → δ*-floor`.
+
+**Status correction.** `BareDRCExtract` and `DRCRefinedReps` are both **false for every choice of
+constants** (`bareDRCExtract_false`, `drcRefinedReps_false` in
+`_BSG_EX_BareDRCExtractFalse.lean`): at `K = 1` the complete graph on a large Sidon set meets all
+graph hypotheses, yet no constant-fraction subset has linear doubling. The chain above is
+therefore vacuous at its first link and does **not** make BGK or the δ*-floor unconditional modulo
+anything satisfiable. The counting lemmas proven here (E2b, E4b, E4b′) are valid and reusable; the
+energy-coupled replacement interface is `DRCKernelEnergy` (`_BSGC_attempt4.lean`), still open.
 
 ## What is proven here (axiom-clean)
 
@@ -31,20 +39,19 @@ size and difference-set bookkeeping that `BareDRCExtract` demands:
   named hypothesis `DRCRefinedReps`, with ALL the size/nonemptiness/difference-set bookkeeping
   (E0/E1 size half + E4b) discharged here.
 
-## The genuine residual (named, NOT a hidden `sorry`)
+## The named hypothesis `DRCRefinedReps` (REFUTED for all constants)
 
-`DRCRefinedReps` is the one deep fact DRC needs and that the proven counting layer cannot supply:
-the existence of a constant-fraction **refinement** `A''` of the good neighbourhood inside which
-*every* difference has many representations. The *naive* elementary representation route for it is
-machine-checked **false** in `_BSG_EX_E4cObstruction` (the factorisation
-`a - a' = (a-w) - (a'-w)` does NOT land in `A'' ×ˢ A''`); the correct route is the Ruzsa-triangle /
-Plünnecke-Petridis argument on the common-neighbour structure. `DRCRefinedReps` is **strictly
-smaller** than `BareDRCExtract`: it need not produce the size bound `C₁ K #A' ≥ #A` nor the final
-`#(A'-A') ≤ C₂ K^c #A'`; it produces only the refined set with its representation lower bound, and
-this file derives both quantitative conclusions from it (size via the good-vertex datum, doubling
-via E4b).
+`DRCRefinedReps` asks for a constant-fraction **refinement** `A''` of the good neighbourhood inside
+which *every* difference has many representations. The *naive* elementary representation route for
+it is machine-checked **false** in `_BSG_EX_E4cObstruction` (the factorisation
+`a - a' = (a-w) - (a'-w)` does NOT land in `A'' ×ˢ A''`). More decisively, `DRCRefinedReps` itself
+is unsatisfiable: `bareDRCExtract_of_refinedReps` (proved below) shows it implies
+`BareDRCExtract`, which is false for every choice of constants, so `drcRefinedReps_false` holds.
+Like `BareDRCExtract`, it uses only graph data and discards the additive-energy information that
+a correct Ruzsa/Plünnecke–Petridis argument needs; no such argument can discharge it.
 
-Thus the BGK chain is unconditional modulo the single named `DRCRefinedReps`.
+Thus the BGK chain is **not** unconditional modulo `DRCRefinedReps`: that hypothesis is false,
+and the assembly theorem below is a valid but vacuous implication.
 
 ## References
 
@@ -110,9 +117,10 @@ theorem card_diffSet_le_of_reps_ge (A'' : Finset α) (t s : ℕ) (ht : 0 < t)
   have h3 : #(A'' - A'') * t ≤ (s * #A'') * t := le_trans h1 h2
   exact Nat.le_of_mul_le_mul_right h3 ht
 
-/-! ## The genuine residual: the refined representation supply -/
+/-! ## The (refuted) refined representation supply -/
 
-/-- **`DRCRefinedReps` — the popular-difference refinement of dependent random choice.**
+/-- **`DRCRefinedReps` — the popular-difference refinement interface (REFUTED for all constants;
+see `drcRefinedReps_false` in `_BSG_EX_BareDRCExtractFalse.lean`).**
 
 Given the post-averaging data of `BareDRCExtract` (a good vertex `b₀` with a large neighbourhood
 `N = leftNbhd A G b₀`, the cherry-richness, the edge-density), this asserts the existence of:
@@ -125,9 +133,10 @@ Given the post-averaging data of `BareDRCExtract` (a good vertex `b₀` with a l
 
 These three facts are exactly the input that the proven E4b (`card_diffSet_le_of_reps_ge`) turns
 into the doubling bound `#(A''-A'') ≤ s·#A''`, and the size relation chains to the
-`BareDRCExtract` size conclusion. This is the genuinely deep DRC content: the naive route to the
-representation lower bound is refuted (`naiveDiffReps_REFUTED`); the real route is Ruzsa/Plünnecke
-on the common-neighbour structure.
+`BareDRCExtract` size conclusion. The naive route to the representation lower bound is refuted
+(`naiveDiffReps_REFUTED`), and the interface as a whole is false for every choice of constants
+(`drcRefinedReps_false`): its graph-only hypotheses hold for the complete graph on a large Sidon
+set at `K = 1`.
 
 The parameter `s` is the (`K`-polynomial) refinement factor; `DRCRefinedReps C₁ C₂ c` fixes its
 growth as `s ≤ C₂ * K ^ c` and ties the size factor to `C₁`. -/
@@ -151,8 +160,8 @@ the containment `A'' ⊆ A` follows from `A'' ⊆ leftNbhd A G b₀ ⊆ A`; and 
 `#(A''-A'') ≤ C₂ K^c #A''` is the proven `card_diffSet_le_of_reps_ge` applied with the supplied
 threshold `t`, size relation `#A'' ≤ s·t`, and representation lower bound, using `s ≤ C₂ K^c`.
 
-All the quantitative content this file proves (E4b) is load-bearing here; the only unproven input
-is the *existence* of the refinement with its representation lower bound — the named residual. -/
+The implication is valid, and its contrapositive is how `drcRefinedReps_false` is derived; but
+since `DRCRefinedReps` is false for all constants, it supplies no instance of `BareDRCExtract`. -/
 theorem bareDRCExtract_of_refinedReps {C₁ C₂ c : ℕ} (hR : DRCRefinedReps C₁ C₂ c) :
     BareDRCExtract C₁ C₂ c := by
   intro α _ _ A K G b₀ hK hA hGsub hb₀ hdense hcherry hgood

@@ -8,12 +8,14 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
 /-!
-# Meta-theorem: every second-order method is capped at `√S`, only depth helps (#407)
+# Meta-theorem: a method whose only datum is `∑ η²` is capped at `√S` (#407)
 
 This file is the *organizing* meta-theorem of the δ* program. It certifies, axiom-clean and
-family-independent, **why every second-order / energy / SDP / Parseval method is provably capped**
-at the trivial second-moment bound — and pins the residual escape route to the high-moment depth
-alone.
+family-independent, that any bound computed from the second moment `S = ∑ η²` **alone** is
+capped at the trivial second-moment bound `√S`, and it records the elementary behaviour of the
+high-moment route. It does **not** show that only unbounded moment depth can improve on `√S`:
+a method that also uses a fixed higher moment, extra algebraic structure or matrix
+constraints is outside the no-go (see `flat_depthTwo_lt_sqrt_secondMoment`).
 
 Let `η : ι → ℝ` be a finite family (think: the Gauss periods `η_b = Σ_{x∈μ_n} e_p(bx)`), with
 second moment `S = ∑_i (η i)²`. Then:
@@ -28,7 +30,7 @@ second moment `S = ∑_i (η i)²`. Then:
   only datum is `∑ η²`) can ever prove `max < √S`. This is the machine-checked "why" the prize
   floor `√(n·log(q/n)) ≪ √S = √(n·q)` is out of reach for all second-order arguments.
 
-## Only the high-moment depth can close the gap (the residual escape route)
+## The high-moment route
 
 * `sup_le_moment_root` — the valid high-moment route: `max_i |η i| ≤ (∑_i |η i|^{2r})^{1/(2r)}`.
 * `momentRoot_one_eq_sqrt` — at depth `r = 1` that route is *exactly* `√S`: depth-1 gives nothing
@@ -39,21 +41,28 @@ second moment `S = ∑_i (η i)²`. Then:
 * `flat_gapFactor_antitone` — that factor `m^{1/(2r)}` is **non-increasing in `r`** (for `m ≥ 1`):
   every extra moment-order tightens the bound, never loosens it.
 * `flat_gapFactor_tendsto_one` — and `m^{1/(2r)} → 1` as `r → ∞`: in the limit the high-moment
-  route recovers the true max exactly. **The gap closes only as `r` grows** — the depth is the
-  whole story.
-* `momentDepth_method_floor` — but no *single fixed* depth `r` ever beats `√S`: the spike has
-  depth-`r` moment `S^r` for every `r`, so a single-depth method `g` has `g (S^r) ≥ √S`. Helping
-  requires the depth `r → ∞` jointly with the family being far from a spike — for the Gauss
-  periods, exactly the open BGK / Bourgain–Glibichuk–Konyagin char-sum cancellation input.
+  route recovers the flat profile's true max exactly. This is a statement about **exact**
+  recovery; it does not say that improving on `√S` needs `r → ∞`.
+* `flat_depthTwo_lt_sqrt_secondMoment` — a *fixed* depth already improves on `√S` for a
+  non-spike family: for four entries equal to `1` (`S = 4`, `√S = 2`) the depth-`2` route gives
+  `4^{1/4} = √2 < 2`.
+* `momentDepth_method_floor` — what the spike does rule out: a method `g` that sees **only** the
+  depth-`r` moment has `g (S^r) ≥ √S`, because the spike's depth-`r` moment is `S^r`. This
+  constrains `g` only at the spike's moment value `S^r`; it does not force `g` to be large at
+  the (smaller) depth-`r` moment of a flatter family (for the flat example above that moment is
+  `4`, not `S^2 = 16`). So it does not exclude a fixed-depth improvement when the family's
+  actual higher moment is small, nor methods using extra algebraic or matrix data.
 
-Net statement: the open core of the prize is **irreducibly a high-moment statement**. Second-order
-data caps at `√S` (tight); the only slack lives in the moment depth `r → ∞`, and pinning the rate
-at which the flat profile beats the spike at depth `r ≈ log q` is the BGK wall.
+Net statement: data consisting of `∑ η²` alone caps at `√S` (tight). Improving on `√S` needs
+information beyond the second moment, for example a good bound on a higher moment of the actual
+family. For the Gauss periods, the strength needed at depth `r ≈ log q` to reach the prize
+floor is the BGK / Bourgain–Glibichuk–Konyagin char-sum cancellation input, which is open.
 
 This consolidates `Frontier._MomentMethodNoGo`, `MomentSupNormBridge`, and
 `Frontier._MetaTheoremSecondOrderFloor` into one named meta-theorem and adds the affirmative
-"gap-closes-only-with-depth" facts (`flat_momentRoot`, `flat_gapFactor_antitone`,
-`flat_gapFactor_tendsto_one`) that those files leave implicit.
+flat-profile facts (`flat_momentRoot`, `flat_gapFactor_antitone`,
+`flat_gapFactor_tendsto_one`, `flat_depthTwo_lt_sqrt_secondMoment`) that those files leave
+implicit.
 
 Axiom target: `[propext, Classical.choice, Quot.sound]`. Issue #407.
 -/
@@ -147,10 +156,12 @@ theorem momentRoot_one_eq_sqrt (η : ι → ℝ) :
   rw [hsum, Real.sqrt_eq_rpow]
   norm_num
 
-/-- **No single fixed depth `r` beats the cap.** For every fixed `r ≥ 1`, any `g` certifying the
-sup-norm from the depth-`r` moment alone — `∀ η b, |η b| ≤ g (∑_i (η i)^{2r})` — has `g (S^r) ≥ √S`.
-The spike's depth-`r` moment is `S^r` for *every* `r`, so raising the order never lowers the floor:
-a single-depth moment method is just as capped as the second-order one. -/
+/-- **The spike floor for a depth-`r`-only method.** For every fixed `r ≥ 1`, any `g` certifying
+the sup-norm from the depth-`r` moment alone — `∀ η b, |η b| ≤ g (∑_i (η i)^{2r})` — has
+`g (S^r) ≥ √S`, because the spike's depth-`r` moment is `S^r`. This is a lower bound on `g` at
+the spike's moment value only. It does **not** say a fixed depth cannot beat `√S`: a family
+with second moment `S` but depth-`r` moment smaller than `S^r` (e.g. a flat one) can get a
+better bound at that same fixed depth (`flat_depthTwo_lt_sqrt_secondMoment`). -/
 theorem momentDepth_method_floor {r : ℕ} (hr : 1 ≤ r) (g : ℝ → ℝ)
     (hg : ∀ (η : ι → ℝ) (b : ι), |η b| ≤ g (∑ i, (η i) ^ (2 * r)))
     {S : ℝ} (hS : 0 ≤ S) :
@@ -161,12 +172,12 @@ theorem momentDepth_method_floor {r : ℕ} (hr : 1 ≤ r) (g : ℝ → ℝ)
     rw [spike_pow_sum b₀ _ (by omega), pow_mul, Real.sq_sqrt hS]
   rwa [spike_abs b₀ hS, hmom] at h
 
-/-! ## 4. The flat profile: the gap is exactly `m^{1/(2r)}`, closing only as `r → ∞`
+/-! ## 4. The flat profile: the gap is exactly `m^{1/(2r)}`
 
 For the *flat* family (all `m` entries equal to `a ≥ 0`, the maximal-spread profile), the
-high-moment route over-estimates the true max `a` by exactly `m^{1/(2r)}`. This is the affirmative
-counterpart of the spike no-go: the spike forces the floor `√S` at every depth; the flat profile
-shows the route can in fact approach the true max — but **only** as the depth `r → ∞`. -/
+high-moment route over-estimates the true max `a` by exactly `m^{1/(2r)}`. Compared with the
+second-order bound `√S = a·√m`, every fixed depth `r ≥ 2` is already strictly better when
+`m ≥ 2`; the over-estimate factor tends to `1` (exact recovery) only as `r → ∞`. -/
 
 /-- **Flat-profile high-moment value.** For the flat family of `m` entries each equal to `a ≥ 0`
 over `Fin m` (`m ≥ 1`, `r ≥ 1`), the high-moment route returns exactly `a · m^{1/(2r)}`. The true
@@ -181,6 +192,24 @@ theorem flat_momentRoot {m : ℕ} (hm : 1 ≤ m) {a : ℝ} (ha : 0 ≤ a) {r : �
   congr 1
   rw [one_div, show (2 * (r : ℝ)) = ((2 * r : ℕ) : ℝ) by push_cast; ring]
   exact Real.pow_rpow_inv_natCast ha (by omega)
+
+/-- **A fixed depth already beats `√S` on a flat family.** For four entries equal to `1`
+(second moment `S = 4`, so `√S = 2`), the depth-`2` high-moment route gives
+`4^{1/4} = √2 < 2`. So improving on the second-order cap does not require unbounded depth;
+it requires the family's actual higher moment to be small (here `4`, versus the spike's
+`S^2 = 16`). -/
+theorem flat_depthTwo_lt_sqrt_secondMoment :
+    (∑ _i : Fin 4, |(1 : ℝ)| ^ (2 * 2)) ^ ((1 : ℝ) / (2 * ((2 : ℕ) : ℝ)))
+      < Real.sqrt (∑ _i : Fin 4, (1 : ℝ) ^ 2) := by
+  rw [flat_momentRoot (by norm_num) zero_le_one (by norm_num)]
+  have he : (1 : ℝ) / (2 * ((2 : ℕ) : ℝ)) = ((4 : ℕ) : ℝ)⁻¹ := by norm_num
+  have hS : Real.sqrt (∑ _i : Fin 4, (1 : ℝ) ^ 2) = 2 := by
+    rw [show (∑ _i : Fin 4, (1 : ℝ) ^ 2) = 2 ^ 2 by norm_num [Finset.sum_const]]
+    exact Real.sqrt_sq (by norm_num)
+  rw [he, one_mul, hS]
+  calc ((4 : ℕ) : ℝ) ^ (((4 : ℕ) : ℝ)⁻¹) < ((2 : ℝ) ^ 4) ^ (((4 : ℕ) : ℝ)⁻¹) :=
+        Real.rpow_lt_rpow (by norm_num) (by norm_num) (by positivity)
+    _ = 2 := Real.pow_rpow_inv_natCast (by norm_num) (by norm_num)
 
 /-- The gap (over-estimate) factor of the high-moment route on a flat `m`-entry profile at depth
 `r`: `gapFactor m r = m^{1/(2r)}`. By `flat_momentRoot` the route equals `a · gapFactor m r` while
@@ -206,9 +235,9 @@ theorem flat_gapFactor_antitone {m : ℕ} (hm : 1 ≤ m) {r s : ℕ} (hr : 1 ≤
   exact Real.rpow_le_rpow_of_exponent_le hm1 hexp
 
 /-- **The gap factor tends to `1` as the moment-order `r → ∞`** (for `m ≥ 1`): the high-moment
-route recovers the true max exactly in the limit. `m^{1/(2r)} → 1`. So the *only* way to beat the
-second-order cap is to drive the depth `r → ∞` — the residual escape route is the high moments
-alone. -/
+route recovers the flat profile's true max exactly in the limit. `m^{1/(2r)} → 1`. This is about
+exact recovery only; beating the second-order cap already happens at fixed depth
+(`flat_depthTwo_lt_sqrt_secondMoment`). -/
 theorem flat_gapFactor_tendsto_one {m : ℕ} (hm : 1 ≤ m) :
     Tendsto (fun r : ℕ => gapFactor m r) atTop (𝓝 1) := by
   have hm0 : (m : ℝ) ≠ 0 := by positivity
@@ -236,6 +265,7 @@ end ProximityGap.MetaTheoremSecondOrderCap
 #print axioms ProximityGap.MetaTheoremSecondOrderCap.momentRoot_one_eq_sqrt
 #print axioms ProximityGap.MetaTheoremSecondOrderCap.momentDepth_method_floor
 #print axioms ProximityGap.MetaTheoremSecondOrderCap.flat_momentRoot
+#print axioms ProximityGap.MetaTheoremSecondOrderCap.flat_depthTwo_lt_sqrt_secondMoment
 #print axioms ProximityGap.MetaTheoremSecondOrderCap.gapFactor_one
 #print axioms ProximityGap.MetaTheoremSecondOrderCap.flat_gapFactor_antitone
 #print axioms ProximityGap.MetaTheoremSecondOrderCap.flat_gapFactor_tendsto_one

@@ -57,8 +57,10 @@ at analogue scales (n = 32 with D = 3/7, n = 64 with D = 7/15, all over budget,
 field-size-free). The remaining Lean step is precisely named here:
 `OverBudgetDegenerateStackExists`, and
 `firstPrime_predecessor_cap_refuted_of_overBudget_stack` reduces `¬hcount` to it.
-This file does **not** claim `¬hcount`; it lands the channel plus the
-single-subset production instantiation.
+This file does **not** itself prove `¬hcount`; it lands the channel plus the
+single-subset production instantiation.  **Status update:** the residual is discharged in
+`Frontier/_SYZ3OverBudgetStackWitness.lean` (`syz2_overBudgetDegenerateStackExists`), so
+`¬hcount` holds (`SYZ3OverBudgetStackWitness.firstPrime_predecessor_cap_refuted_via_syz2`).
 
 **Untouched:** the unconditional bracket `178956971/2^30 ≤ δ* ≤ 31/64` and the CORE.
 
@@ -398,14 +400,17 @@ theorem firstPrime_production_singleSubset_badScalar_lower :
 
 /-! ## The precisely named residual and the refutation reduction -/
 
-/-- **The SYZ2 residual (open).** There exists a stack whose `mcaEvent`-bad-scalar
-count at the `31/64`-predecessor radius strictly exceeds the `2^30` budget.
+/-- **The SYZ2 residual (DISCHARGED downstream in SYZ3).** There exists a stack whose
+`mcaEvent`-bad-scalar count at the `31/64`-predecessor radius strictly exceeds the `2^30`
+budget.  It was left open in this file; `Frontier/_SYZ3OverBudgetStackWitness.lean` proves it
+(`SYZ3OverBudgetStackWitness.syz2_overBudgetDegenerateStackExists`, from the explicit
+three-subset stack), and `firstPrime_predecessor_cap_refuted_of_overBudget_stack` below then
+refutes `hcount`.
 
 The SYZ1 probe evidence: a `D = 3` simultaneous degenerate stack yields
 `3·(31·2^24 − 1) ≈ 1.56·10^9 > 2^30` with exact additivity at both probed analogue
-scales; the syndrome rank budget `2(t−k)·D < 2(n−k)` admits `D ≤ 30`. What remains
-in Lean is constructing a stack simultaneously degenerate for three subsets with
-essentially disjoint pencil images. -/
+scales; the syndrome rank budget `2(t−k)·D < 2(n−k)` (here `t − k = 16777217`,
+`n − k = 2^29`) admits `D ≤ 31` (`31·16777217 = 520093727 < 2^29 < 32·16777217`). -/
 def OverBudgetDegenerateStackExists : Prop :=
   ∃ u : WordStack (ZMod P) (Fin 2) (Fin (2 ^ 30)),
     2 ^ 30 < (Finset.univ.filter fun γ : ZMod P =>

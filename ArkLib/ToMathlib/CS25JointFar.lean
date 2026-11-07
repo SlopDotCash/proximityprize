@@ -260,9 +260,11 @@ theorem rs_epsCA_implies_lambda_extended_cs25_complete
 
 /-- Prop-level CS25 endpoint from the fully discharged deep-hole chain.
 
-This targets the public ABF26 T5.3 / CS25 proposition from
-`ArkLib.Data.CodingTheory.Connections.ListDecodingAndCA`, while keeping the arithmetic side
-conditions required by the complete deep-hole proof explicit. -/
+This inhabits the ABF26 T5.3 / CS25 proposition
+`CodingTheory.rs_epsCA_implies_lambda_extended_cs25` (downstream extension
+`ProximityPrize.Extensions.Data.CodingTheory.Connections.ListDecodingAndCA`), whose statement
+now carries the same regime guards `hkn`, `hs_pos`, `hkS` used by the complete deep-hole proof
+(they exclude the full-rate instances on which the unguarded statement was false). -/
 theorem rs_epsCA_implies_lambda_extended_cs25_complete_prop
     (domain : ι ↪ F) (k : ℕ) (δ : ℝ) (η : ℝ)
     (hk_pos : 0 < k)
@@ -280,7 +282,7 @@ theorem rs_epsCA_implies_lambda_extended_cs25_complete_prop
             δ.toNNReal δ.toNNReal).toReal ≤
           η * (1 / k - Fintype.card ι / (k * Fintype.card F))) :
     CodingTheory.rs_epsCA_implies_lambda_extended_cs25 domain k δ η
-      hk_pos hδ_pos hδ_min hη_lo hη_lt hε_ca :=
+      hk_pos hδ_pos hδ_min hη_lo hη_lt hkn hs_pos hkS hε_ca :=
   rs_epsCA_implies_lambda_extended_cs25_complete
     domain k δ η hk_pos hη_lo hη_lt hkn hs_pos (le_of_lt hδ_pos) hkS hε_ca
 

@@ -65,6 +65,21 @@ This directory contains various utility scripts for the ArkLib project.
   nested in tactics, terms, extensible interpolated strings, and diagnostic-capturing commands.
   The plugin supplies precise syntax diagnostics; it is not presented as a sandbox against
   arbitrary hostile Lean metaprogramming, so the independent source pass remains mandatory
+- **`forbidden_tokens.py`** - CI gate 1, a pre-build lexical precheck: rejects `native_decide`-style
+  evaluation, `unsafe` declarations, metaprograms that add declarations, vacuous `: True`
+  placebos (except byte-pinned inherited upstream stubs listed in
+  `upstream-source-policy.json`), bodyless `opaque`, and every custom `axiom` that is not pinned in
+  `residual_axioms.txt` (fully qualified name, defining file and signature digest;
+  `--print-residual-manifest` prints the current pins for a reviewed update)
+- **`sorry_census.py`** - CI gate 2: lexical census of live `sorry`/`admit`/`sorryAx` holes
+  (`--fail-on-holes`)
+- **`lean_lexer.py`** - Lean lexer shared by `forbidden_tokens.py`, `sorry_census.py` and
+  `check-research-boundary.py` (comments, literals, interpolation holes, quoted identifiers);
+  lexical only, not an elaborated declaration or axiom audit
+- **`axiom_audit.py`** - CI gate 3, post-build: `#print axioms` over the flagship declarations in
+  `flagship_axioms.txt`, plus an inventory from Lean metadata requiring every axiom of the
+  imported `ArkLib`/`Research` modules to be a pinned residual (`--print-modules` lists the
+  modules to build first)
 
 ### Dependency Analysis
 - **`dependency_analysis/`** - Complete dependency analysis toolkit
@@ -288,15 +303,26 @@ python3 scripts/module_times.py update .lake/build/arklib-module-times.json \
 
 ## Requirements
 
-- Python 3.6+ (for Python scripts)
+- **Python 3.12** for the validation entry point. The validation job in
+  `.github/workflows/ci.yml` selects Python 3.12, installs the pinned
+  `requirements-validation.txt` (`numpy==2.4.4`, whose own metadata requires Python 3.11 or
+  newer) and runs `validate.sh`, which runs the `scripts/tests` regressions, the forbidden-token
+  precheck, the sorry census, the axiom audit and the docs/KB checks. Use the same version
+  locally, for example
+  `python3.12 -m venv .venv && .venv/bin/python -m pip install -r scripts/requirements-validation.txt`.
+  Older interpreters are not tested in CI and are not supported, even where a script happens to
+  run on one.
+- The issue tracker `sorry-tracker.py` is separate from the validation entry point: its workflow
+  (`.github/workflows/sorry-tracker.yml`) runs it on Python 3.11 with its own pinned
+  `requirements-sorry-tracker.txt`.
 - Lean 4 (for Lean scripts)
 - Graphviz (for dependency visualization)
-- Virtual environment (`.venv`) for Python dependencies
 
 ## Notes
 
 - Most scripts should be run from the ArkLib root directory
-- Python scripts require the virtual environment to be activated
+- Scripts that import third-party packages (for example the `numpy` probe regressions under
+  `scripts/tests`) need the environment above activated
 - Some scripts may require specific Lean toolchain versions
 - `validate.sh` is the recommended local wrapper; use the lower-level scripts directly when you
   want to run or debug one piece in isolation

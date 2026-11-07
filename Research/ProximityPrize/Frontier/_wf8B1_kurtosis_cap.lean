@@ -10,9 +10,11 @@ import ArkLib.Data.CodingTheory.ProximityGap.SidonModNegEnergyEquality
 /-!
 # wf-B1 — W3-base: the kurtosis cap `M_4 ≤ 3n·M_2` (`m_1 ≤ 1`), PROVEN axiom-clean
 
-This file closes the **r = 2** energy bound of the W3 program (issue #444). The first
-Wick-normalized moment satisfies `m_1 ≤ 1`, equivalently the kurtosis cap
-`M_4 ≤ 3n·M_2`, for the thin 2-power NTT subgroup `μ_n ⊂ F_p`.
+This file proves the **r = 2** energy bound of the W3 program (issue #444) in the
+**exact-energy regime `p > 2^n`**: the first Wick-normalized moment satisfies `m_1 ≤ 1`,
+equivalently the kurtosis cap `M_4 ≤ 3n·M_2`, for the thin 2-power NTT subgroup `μ_n ⊂ F_p`.
+For `n ≥ 32` the hypothesis `p > 2^n` excludes the prize window `p ≈ n⁴`; there the cap is
+supported only by the probe below, not by this theorem.
 
 ## The exact reduction (no Hasse–Weil needed)
 
@@ -40,15 +42,15 @@ spurious 2+2 collisions are *exactly zero* in this regime), substituting `|G| = 
 > `m·(M_4 − 3n·M_2) = q·(3n²−3n) − n⁴ − 3n·(qn − n²) = −n·(n³ − 3n² + 3q)`,
 
 which is `≤ 0` whenever `3q ≥ n²(3 − n)`. For `n ≥ 3` the RHS is `≤ 0 ≤ 3q`; for `n = 2`
-it is `4 ≤ 3q` (any prime `q ≥ 2`). So the cap holds **unconditionally** in the regime where
-the exact energy holds (`p > 2^n`, `n = 2^m`, `m ≥ 1`) — no prime threshold beyond exactness,
-no curve point count.
+it is `4 ≤ 3q` (any prime `q ≥ 2`). So the cap holds in the regime where the exact energy is
+proven (`p > 2^n`, `n = 2^m`, `m ≥ 1`) — no prime threshold beyond exactness, no curve point
+count. Outside `p > 2^n` (in particular at `p ≈ n⁴`, `n ≥ 32`) nothing here is proven.
 
 ## Pre-screen
 
 `scripts/probes/rust/probe_wf8B1_kurtosis_cap.rs` at prize scale (`p ≈ n^4`, several primes
-per `n`, `n` up to 128): max `M_4/(3n·M_2) = 0.992 < 1`, `spur = 0` everywhere. Matches the
-exact algebra (the cap is tight as `q → ∞`: `m_1 → 1⁻`).
+per `n`, `n` up to 128): max `M_4/(3n·M_2) = 0.992 < 1`, `spur = 0` everywhere. This is empirical evidence for the
+prize window, not a proof there (the cap is tight as `q → ∞`: `m_1 → 1⁻`).
 
 Issue #444 (lane B1). Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`).
 -/
@@ -138,7 +140,8 @@ of the subgroup Gauss sums `η_b = ∑_{y∈μ_n} ψ(b·y)` is at most `3n` time
 Combines the general `kurtosis_cap` with the proven exact char-`p` energy
 `E(μ_n) = 3n² − 3n` (`mu_n_additiveEnergy_eq` → `additiveEnergy_eq_addEnergy`). A primitive
 additive character `ψ` is a proof device (one exists on every `ZMod p`). This pins the r = 2
-W3 brick `m_1 ≤ 1` unconditionally in the deployed regime. -/
+W3 brick `m_1 ≤ 1` in the exact-energy regime `p > 2^n` only; for `n ≥ 32` that excludes the
+prize window `p ≈ n⁴`. -/
 theorem mu_n_kurtosis_cap (hn2 : n = 2 ^ m) (hm : 1 ≤ m) (hp : 2 ^ n < p)
     {ω : ZMod p} (hω : IsPrimitiveRoot ω n)
     {ψ : AddChar (ZMod p) ℂ} (hψ : ψ.IsPrimitive) :

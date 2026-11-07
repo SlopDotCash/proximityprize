@@ -230,8 +230,11 @@ pair + DIST rungs m ≥ 12; P1 `SwarmResidual`; W15 strip sliver / Λ ≤ 2 (emp
   production δ* remain open.
 - **All-depth cyclic energy floor (PR #7): exact lower bound.**
   `REnergyCyclicFloorAllDepth.lean` lifts the depth-three cyclic-orbit floor to every depth at least
-  three. It supplies a stronger reusable lower floor, not an upper energy bound, characteristic
-  transfer, capacity theorem, or CORE closure.
+  three. It is stronger than the adjacent-swap floor but weaker than the permutation floor
+  `_LowerBoundPermMatchingFloor.rEnergy_ge_perm` (`|G|.descFactorial r * r! ≤ rEnergy G r`) except
+  for tiny supports (`|G| ≤ 5` at depth three, `|G| ≤ 4` at depth four, including the depth-four
+  floor of `REnergyFourCyclicFloor.lean`); prefer `rEnergy_ge_perm` as the reusable lower floor.
+  It is not an upper energy bound, characteristic transfer, capacity theorem, or CORE closure.
 - **G330 spectrum boundary (ported ArkLib PR #541): exact collision certificate.**
   `_G330SpectrumExactBoundary.lean` proves the order-eight weight-{1,3} spectrum has `40` values at
   every prime `p ≡ 1 (mod 8)`, `p ≠ 17`; the exceptional collision prime is exactly `17`. The full

@@ -8,6 +8,7 @@ import Mathlib.Data.Nat.PrimeFin
 import Mathlib.Data.Nat.Log
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Tactic.NormNum
+import Research.ProximityPrize.Frontier._AlmostAllPrimesWick
 
 /-!
 # `GoodPrimeFamilyDensity`: bad-prime count and density in the prize family (#444, thread T9)
@@ -91,28 +92,17 @@ namespace ArkLib.ProximityGap.Frontier.GoodPrimeFamilyDensity
 open Finset
 
 /-- The product of distinct prime factors of `N` divides `N` and each factor is `≥ 2`, hence
-`2 ^ (#primeFactors N) ≤ N` for `N ≥ 1`. (Same mechanism as `_AlmostAllPrimesWick`; reproved
-locally to keep imports minimal.) -/
+`2 ^ (#primeFactors N) ≤ N` for `N ≥ 1`.  Thin wrapper over the canonical copy in
+`_AlmostAllPrimesWick`. -/
 theorem two_pow_card_primeFactors_le {N : ℕ} (hN : 1 ≤ N) :
-    2 ^ N.primeFactors.card ≤ N := by
-  classical
-  have hprod_dvd : (∏ p ∈ N.primeFactors, p) ∣ N := Nat.prod_primeFactors_dvd N
-  have hprod_le : (∏ p ∈ N.primeFactors, p) ≤ N := Nat.le_of_dvd hN hprod_dvd
-  have hconst : (∏ _p ∈ N.primeFactors, (2 : ℕ)) ≤ ∏ p ∈ N.primeFactors, p := by
-    apply Finset.prod_le_prod'
-    intro p hp
-    exact (Nat.prime_of_mem_primeFactors hp).two_le
-  have hconst_eq : (∏ _p ∈ N.primeFactors, (2 : ℕ)) = 2 ^ N.primeFactors.card := by
-    simp [Finset.prod_const]
-  calc 2 ^ N.primeFactors.card
-      = ∏ _p ∈ N.primeFactors, (2 : ℕ) := hconst_eq.symm
-    _ ≤ ∏ p ∈ N.primeFactors, p := hconst
-    _ ≤ N := hprod_le
+    2 ^ N.primeFactors.card ≤ N :=
+  ArkLib.ProximityGap.Frontier.AlmostAllPrimesWick.two_pow_card_primeFactors_le hN
 
-/-- The distinct-prime-factor count of a positive integer is `≤ log₂` of it. -/
+/-- The distinct-prime-factor count of a positive integer is `≤ log₂` of it (thin wrapper over
+`_AlmostAllPrimesWick`). -/
 theorem card_primeFactors_le_natLog {N : ℕ} (hN : 1 ≤ N) :
     N.primeFactors.card ≤ Nat.log 2 N :=
-  Nat.le_log_of_pow_le Nat.one_lt_two (two_pow_card_primeFactors_le hN)
+  ArkLib.ProximityGap.Frontier.AlmostAllPrimesWick.card_primeFactors_le_natLog hN
 
 /-! ### The bad-prime set ⊆ divisors of the product of relation values -/
 

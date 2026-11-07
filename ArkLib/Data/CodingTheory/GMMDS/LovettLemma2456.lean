@@ -18,8 +18,11 @@ closes independence directly.
 
 This file isolates that **assembly**: from the structured witness (the existence of an index
 `i₀` with `vᵢ₀ = (1,…,1,0)` of weight `k−1`, i.e. the combined output of Lemmas 2.5 + 2.6) plus
-the `d`-induction hypothesis, it proves the conclusion of `LovettPrimitiveStep`.  The combinatorial
-construction of that witness (Lemmas 2.4 + 2.5 + 2.6) is the remaining residual `LovettWitness`.
+the `d`-induction hypothesis, it proves the conclusion of `LovettPrimitiveStep`.  The bundled
+witness-existence interface `LovettWitnessExists` below is a **historical, refuted** residual: it
+omits the premise that the system is a dependent minimal counterexample, and is false
+(`not_lovettWitnessExists` in `LovettMergeIndepProof.lean`).  Theorem 1.7 is instead proved
+unconditionally through `LovettMergeIndep` (`lovettThm17_unconditional`).
 
 Issue #389.
 -/
@@ -39,6 +42,25 @@ def oneVec (n : ℕ) (hn : 1 ≤ n) : Fin n → ℕ :=
 
 theorem oneVec_last {n : ℕ} (hn : 1 ≤ n) : oneVec n hn (lastCoord n hn) = 0 := by
   simp [oneVec, lastCoord]
+
+/-- The weight of `(1,…,1,0) ∈ ℕⁿ` is `n − 1`. -/
+theorem oneVec_vAbs {n : ℕ} (hn : 1 ≤ n) : vAbs (oneVec n hn) = n - 1 := by
+  classical
+  unfold vAbs oneVec
+  rw [Finset.sum_ite, Finset.sum_const, Finset.sum_const]
+  simp only [smul_eq_mul, mul_one, mul_zero, add_zero]
+  -- number of j with (j:ℕ) < n-1 is n-1
+  rw [show (n-1) = (Finset.range (n-1)).card from (Finset.card_range _).symm]
+  apply Finset.card_bij (fun (x : Fin n) _ => (x : ℕ))
+  · intro a ha
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at ha ⊢
+    simpa using ha
+  · intro a _ b _ h; exact Fin.val_injective h
+  · intro b hb
+    simp only [Finset.mem_range] at hb
+    refine ⟨⟨b, by omega⟩, ?_, rfl⟩
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+    simpa using hb
 
 /-- **The structured witness** (Lovett's Lemma 2.5).  In a *primitive* `V*(k)` system, some
 vector is *exactly* `(1,…,1,0)` of weight `n − 1`.
@@ -135,15 +157,7 @@ noncomputable def sigmaSplitEquiv {m' : ℕ} (G : Fin (m' + 1) → ℕ) (i₀ : 
     show Unique (Fin (G ((finSuccEquiv' i₀).symm none)))
     rw [finSuccEquiv'_symm_none, h1]; infer_instance
   (Equiv.sigmaCongrLeft' (finSuccEquiv' i₀)).trans
-    ((show (Σ o : Option (Fin m'), δ o) ≃ Option (Σ a : Fin m', δ (some a)) from
-      { toFun := fun p => match p with
-          | ⟨none, _⟩ => none
-          | ⟨some a, x⟩ => some ⟨a, x⟩
-        invFun := fun o => match o with
-          | none => ⟨none, default⟩
-          | some ⟨a, x⟩ => ⟨some a, x⟩
-        left_inv := by rintro ⟨(_ | a), x⟩ <;> simp [Unique.eq_default]
-        right_inv := by rintro (_ | ⟨a, x⟩) <;> simp }).trans
+    ((sigmaOptionUniqueEquiv δ).trans
       (Equiv.optionCongr (Equiv.sigmaCongrRight (fun a =>
         finCongr (by rw [finSuccEquiv'_symm_some])))))
 
@@ -205,27 +219,7 @@ theorem lovettHolds_of_witness_nEqK {m : ℕ} {V : Fin m → (Fin n → ℕ)} {k
   set V' : Fin m' → (Fin n → ℕ) := V ∘ σ with hV'def
   -- The witness block has size 1: k - |vᵢ₀| = k - (n-1) = 1 (since n = k).
   have hblock1 : k - vAbs (V i₀) = 1 := by
-    rw [hone]
-    have hwt : vAbs (oneVec n hn) = n - 1 := by
-      classical
-      unfold vAbs oneVec
-      rw [Finset.sum_ite, Finset.sum_const, Finset.sum_const]
-      simp only [smul_eq_mul, mul_one, mul_zero, add_zero]
-      -- number of j with (j:ℕ) < n-1 is n-1
-      have hcard : (Finset.univ.filter (fun x : Fin n => (x : ℕ) < n - 1)).card = n - 1 := by
-        rw [show (n-1) = (Finset.range (n-1)).card from (Finset.card_range _).symm]
-        apply Finset.card_bij (fun (x : Fin n) _ => (x : ℕ))
-        · intro a ha
-          simp only [Finset.mem_filter, Finset.mem_univ, true_and] at ha ⊢
-          simpa using ha
-        · intro a _ b _ h; exact Fin.val_injective h
-        · intro b hb
-          simp only [Finset.mem_range] at hb
-          refine ⟨⟨b, by omega⟩, ?_, rfl⟩
-          simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-          simpa using hb
-      rw [hcard]
-    rw [hwt]; omega
+    rw [hone, oneVec_vAbs hn]; omega
   -- V' is V*(k)
   have hV'star : IsVStar V' k := isVStar_comp hV (Fin.succAbove_right_injective)
   -- d drops
@@ -285,11 +279,17 @@ theorem lovettHolds_of_witness_nEqK {m : ℕ} {V : Fin m → (Fin n → ℕ)} {k
   rw [hfun]
   exact (linearIndependent_equiv e (f := g)).mpr hopt
 
-/-- **The remaining combinatorial residual** (Lovett Lemmas 2.4 + 2.5 + 2.6).  Every *primitive*
-`V*(k)` system contains the structured witness `(1,…,1,0)`.  Lovett constructs it by: Lemma 2.4
-(tight constraints are singletons or the whole set), Lemma 2.5 (some vector is `(1,…,1,0)`, using
-the IH at `n − 1`), and Lemma 2.6 (`n = k`, using the IH at smaller `d`).  All three appeal to the
-minimal-counterexample IHs, packaged here exactly as in `LovettPrimitiveStep`. -/
+/-- **Historical, refuted combinatorial residual** (an over-strong packaging of Lovett Lemmas
+2.4 + 2.5 + 2.6).  It asks every *primitive* `V*(k)` system satisfying the minimal-counterexample
+IHs (packaged as in `LovettPrimitiveStep`) to contain the structured witness `(1,…,1,0)`.
+
+**This `Prop` is false.**  Lovett derives the witness only for a *dependent* minimal
+counterexample, and that dependence premise is missing here.  Since the IHs are always true
+(`lovettThm17_unconditional`), the statement fails on small independent systems: at `n = 0` the
+single empty vector `emptyV` (a witness needs `1 ≤ n`), and at `n = 2` the zero vector
+`mcV = [(0,0)]`, which contains no `(1,0)`.  See `not_lovettWitnessExists`
+(`LovettMergeIndepProof.lean`).  The consumers in `LovettNLtK.lean` are therefore vacuous
+implications; the live route is `LovettMergeIndep`. -/
 def LovettWitnessExists (F : Type*) [Field F] : Prop :=
   ∀ {n m : ℕ} (V : Fin m → (Fin n → ℕ)) (k : ℕ), 1 ≤ k → IsVStar V k →
     (∀ j : Fin n, ∃ i, V i j = 0) →
@@ -308,24 +308,7 @@ theorem witness_n_le_k {m : ℕ} {V : Fin m → (Fin n → ℕ)} {k : ℕ} (hk :
     (hV : IsVStar V k) (hn : 1 ≤ n) {i₀ : Fin m} (hone : V i₀ = oneVec n hn) : n ≤ k := by
   classical
   have hwt : vAbs (V i₀) = n - 1 := by
-    rw [hone]
-    have hwt' : vAbs (oneVec n hn) = n - 1 := by
-      classical
-      unfold vAbs oneVec
-      rw [Finset.sum_ite, Finset.sum_const, Finset.sum_const]
-      simp only [smul_eq_mul, mul_one, mul_zero, add_zero]
-      have hcard : (Finset.univ.filter (fun x : Fin n => (x : ℕ) < n - 1)).card = n - 1 := by
-        rw [show (n-1) = (Finset.range (n-1)).card from (Finset.card_range _).symm]
-        apply Finset.card_bij (fun (x : Fin n) _ => (x : ℕ))
-        · intro a ha
-          simp only [Finset.mem_filter, Finset.mem_univ, true_and] at ha ⊢; simpa using ha
-        · intro a _ b _ h; exact Fin.val_injective h
-        · intro b hb
-          simp only [Finset.mem_range] at hb
-          refine ⟨⟨b, by omega⟩, ?_, rfl⟩
-          simp only [Finset.mem_filter, Finset.mem_univ, true_and]; simpa using hb
-      rw [hcard]
-    exact hwt'
+    rw [hone]; exact oneVec_vAbs hn
   have := hV.weight_le i₀
   omega
 

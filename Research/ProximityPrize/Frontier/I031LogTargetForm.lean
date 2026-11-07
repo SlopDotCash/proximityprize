@@ -39,7 +39,7 @@ prize-target form. Two facts do all the work:
 - `log_sub_log_div_eq_log` -- `log q − log(q/n) = log n` for `0 < q`, `0 < n` (the removed entropy).
 - `i031_norm_eta_le_logTarget` (HEADLINE) -- the I031 union bound re-stated at the prize-target
   scale: conditional on the SAME named-open sub-Gaussian tail (consumed via the proven bridge with
-  `m = (q−1)/n`), `‖η_b‖ ≤ √(2·C₀·n·log(q/n))` for every `b`. The bound that was at scale
+  `m = (q−1)/n`), `‖η_b‖ ≤ √(2·C₀·n·log(q/n))` for every `b ≠ 0`. The bound that was at scale
   `log((q−1)/n)` is lifted to the prize-target `log(q/n)` by monotonicity of `√` and `log`.
 - `i031_logTarget_le_trivial` (rule-4 quantitative cartography) -- `√(2·C₀·n·log(q/n)) ≤
   √(2·C₀·n·log q)`: the prize-target bound sits BELOW the trivial `log q` bound, with the gap
@@ -103,8 +103,9 @@ theorem log_sub_log_div_eq_log {q n : ℝ} (hq : 0 < q) (hn : 0 < n) :
 
 /-- **The I031 union bound, re-stated at the prize-target scale `log(q/n)`.** With proxy variance
 `C₀·n` (`0 < C₀·n`), prize regime `1 < q` and `0 < n`, and orbit count `m = (q−1)/n`, if the
-period magnitudes satisfy the named-open sub-Gaussian tail bound (the SAME hypothesis the proven
-bridge consumes), then **every** period magnitude is bounded at the prize-target scale:
+nonzero-frequency period magnitudes satisfy the named-open sub-Gaussian tail bound (the SAME
+hypothesis the proven bridge consumes), then **every** nonzero-frequency (`b ≠ 0`) period
+magnitude is bounded at the prize-target scale:
 
 > `‖η_b‖ ≤ √(2·(C₀·n)·log(q/n))`.
 
@@ -117,11 +118,12 @@ union bound **at the prize target `log(q/n)`**. The residual is the tail Prop = 
 theorem i031_norm_eta_le_logTarget {F : Type*} [Field F] [Fintype F] [DecidableEq F]
     (ψ : AddChar F ℂ) (G : Finset F) {C₀ n q : ℝ}
     (hC : 0 < C₀ * n) (hn : 0 < n) (hq : 1 < q) (hindex : n ≤ q - 1)
-    (h : SubGaussianTailBound (periodMagnitudes ψ G) (C₀ * n) ((q - 1) / n)) (b : F) :
+    (h : SubGaussianTailBound (periodMagnitudes ψ G) (C₀ * n) ((q - 1) / n)) {b : F}
+    (hb : b ≠ 0) :
     ‖eta ψ G b‖ ≤ Real.sqrt (2 * (C₀ * n) * Real.log (q / n)) := by
   -- the orbit count m = (q−1)/n ≥ 1 since the subgroup μ_n has index ≥ 1 (n ≤ q−1, as n ∣ q−1)
   have hm : (1 : ℝ) ≤ (q - 1) / n := (one_le_div hn).mpr hindex
-  have hbridge := i031_norm_eta_le_of_subGaussian ψ G hC hm h b
+  have hbridge := i031_norm_eta_le_of_subGaussian ψ G hC hm h hb
   apply le_trans hbridge
   apply Real.sqrt_le_sqrt
   have hlog := log_div_pred_le_log_div (q := q) (n := n) hn hq
@@ -149,7 +151,7 @@ open ArkLib.ProximityGap.I031DilationOrbitReduction
 
 /-- **The I031 union bound on the literal `M(μ_n)`, at the prize-target scale.** The prize object
 is `M(μ_n) = max_{b≠0} ‖η_b‖ = (nonzeroFreqs F).sup' _ (‖η_·‖)`. The per-`b` bound
-`i031_norm_eta_le_logTarget` holds for EVERY `b`, so `Finset.sup'_le` lifts it to the sup itself:
+`i031_norm_eta_le_logTarget` holds for EVERY `b ≠ 0`, so `Finset.sup'_le` lifts it to the sup:
 
 > `M(μ_n) = (nonzeroFreqs F).sup' hne (‖η_·‖) ≤ √(2·(C₀·n)·log(q/n))`,
 
@@ -165,8 +167,8 @@ theorem i031_M_le_logTarget {F : Type*} [Field F] [Fintype F] [DecidableEq F]
     (nonzeroFreqs F).sup' hne (fun b => ‖eta ψ G b‖)
       ≤ Real.sqrt (2 * (C₀ * n) * Real.log (q / n)) := by
   apply Finset.sup'_le
-  intro b _
-  exact i031_norm_eta_le_logTarget ψ G hC hn hq hindex h b
+  intro b hb
+  exact i031_norm_eta_le_logTarget ψ G hC hn hq hindex h (mem_nonzeroFreqs.mp hb)
 
 end ArkLib.ProximityGap.I031LogTargetForm
 

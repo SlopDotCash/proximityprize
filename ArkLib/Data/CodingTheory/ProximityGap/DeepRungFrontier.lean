@@ -20,10 +20,14 @@ at witness size `w = w₀+1`.  Proving every bad scalar OWNS that many at the ba
 the genuine open object: a different line-incidence counting surface for `k = Θ(ρn)`, with
 no known technique (Weil/√q insufficient, sum-product helps supply not line incidence).
 
-**This file's honest contribution.**  It does NOT prove the open cap.  It (1) names it as
-an explicit `Prop` (`DeepRungOwnershipCap`) generalizing the `ownership_card` ingredient of
-`march` from agreement `d+2` to the constant-rate witness threshold `w₀`, with the tight
-per-witness floor `C(w₀, d+1)`; and (2) proves the ENTIRE consumer chain machine-checked:
+**This file's honest contribution.**  It does NOT prove the open cap.  It (1) names an
+explicit `Prop` (`DeepRungOwnershipCap`) written in the shape of `march`'s ownership count,
+targeting the constant-rate witness threshold `w₀` with floor `C(w₀, d+1)`; and (2) proves the
+consumer chain machine-checked.  **Caveat:** the `Prop` chooses its tuple type, ownership map
+and universe existentially, with no link to witness subsets or non-degenerate tuples, so it is
+equivalent to the bare count `#bad · Ω ≤ U` (`deepRungOwnershipCap_iff_count`).  It is a direct
+count assumption, not a structural ownership statement; the structural residual (with the
+actual owned-subset type and ownership predicate) is not formalized here.  The chain:
 
 * `deepRung_abstract_count` — the abstract ownership-to-count skeleton: any family of
   pairwise-disjoint owned-tuple sets, one per bad scalar, each of size `≥ Ω`, inside a
@@ -36,11 +40,11 @@ per-witness floor `C(w₀, d+1)`; and (2) proves the ENTIRE consumer chain machi
   `mcaDeltaStar = 1 − r/2^μ`, the same headline as `kkh26_march_deltaStar_pin` but now
   fed by the tight deep-rung floor instead of the minimal-witness `d+2`.
 
-So the deep-band frontier is reduced, modularly and machine-checked, to ONE named Prop:
-the deeper-rung ownership lower bound at the constant-rate radius.  The Prop itself stays
-open (per the honesty contract — the recognized list-decoding wall); everything from it to
-the prize pin is now an axiom-clean reduction.  `deepRung_recovers_march` certifies the
-named cap reproduces the proven `march` count at its `w₀ = d+2` boundary instance.
+So the deep-band pin is reduced, machine-checked, to ONE named Prop, which is the bad-scalar
+count at the constant-rate radius.  That count stays open (the recognized list-decoding
+wall); everything from it to the prize pin is an axiom-clean reduction.
+`deepRung_recovers_march` only checks that the chain's conclusion at `w₀ = d+2` has the same
+shape as the proven `march` count; given the equivalence with the count, this is automatic.
 
 Issue #389, route-2 constant-rate follow-up.
 -/
@@ -93,21 +97,27 @@ theorem deepRung_abstract_count {B : Finset (ZMod p)}
 /-! ## The named residual: the deeper-rung ownership cap -/
 
 open Classical in
-/-- **THE DEEPER-RUNG OWNERSHIP CAP (#389, the open object).**  Generalizes the
-`ownership_card` ingredient of `march` from the minimal witness (agreement `d+2`, ownership
-`d+2`) to the constant-rate band radius: for the degree-`d` evaluation code at agreement
-threshold above `w₀ ≥ d+2`, every stack `(u₀,u₁)` admits, for each bad scalar `γ`, a family
-`Φ γ` of owned non-degenerate tuples inside a universe `G`, such that
+/-- **The deeper-rung count residual (#389), in ownership-shaped form.**  For the degree-`d`
+evaluation code at agreement threshold above `w₀`, every stack `(u₀,u₁)` admits, for each bad
+scalar `γ`, a finset `Φ γ` in some type `τ` and a finset `G` of size `U`, such that
 
-* every bad scalar owns at least `Ω` tuples,
-* distinct bad scalars own disjoint families,
-* all owned tuples live in `G`, of size `U`.
+* every bad scalar gets at least `Ω` elements,
+* distinct bad scalars get disjoint finsets,
+* all of them lie in `G`.
 
-`Ω = C(w₀, d+1)` is the tight per-witness cap (the deviation-stack ceiling
-`C(w−1,d+1)|_{w=w₀+1}`); `U = C(n, d+1)·(n−d−1)` is the pair universe.  At the minimal
-witness (`w₀ = d+2`, `Ω = C(d+2,d+1) = d+2`) this IS `march`'s `ownership_card`.  At the
-constant-rate radius (`w₀ = rm`, `Ω = C(rm,(r−2)m+1)`) it is the open list-incidence wall:
-no known technique supplies it for `k = Θ(ρn)`. -/
+**What this Prop actually says.**  The type `τ`, the map `Φ` and the universe `G` are chosen
+existentially, with no link to witness subsets, interpolation or non-degenerate tuples.  So
+the Prop is *equivalent* to the bare count `#bad · Ω ≤ U` at every stack
+(`deepRungOwnershipCap_iff_count`): one direction is the disjoint-union count, and conversely
+one can label each bad scalar by `Ω` fresh tokens inside `range U`.  It is therefore a direct
+count assumption written in ownership notation, not a structural ownership statement.  An
+honest structural residual would fix `τ` to the actual owned-subset type and constrain `Φ` by
+the ownership predicate; that statement is not formalized here.
+
+The intended parameters are `Ω = C(w₀, d+1)` (the deviation-stack ceiling
+`C(w−1,d+1)|_{w=w₀+1}`) and `U = C(n, d+1)·(n−d−1)`.  At the constant-rate radius
+(`w₀ = rm`, `Ω = C(rm,(r−2)m+1)`) the count is open: no known technique supplies it for
+`k = Θ(ρn)`. -/
 def DeepRungOwnershipCap (g : ZMod p) (n d w₀ Ω U : ℕ) : Prop :=
   ∀ (u₀ u₁ : Fin n → ZMod p) {δ : ℝ≥0},
     ((w₀ : ℕ) : ℝ≥0) < (1 - δ) * (Fintype.card (Fin n) : ℝ≥0) →
@@ -137,6 +147,55 @@ theorem deepRung_badScalars_card_mul_le {d w₀ Ω U : ℕ}
   have h := @deepRung_abstract_count p _ B τ hτ Φ G Ω U hU hP hdisj hsub
   rw [hBeq] at h
   exact h
+
+open Classical in
+/-- **The named cap is exactly the count.**  `DeepRungOwnershipCap g n d w₀ Ω U` holds iff
+every stack has `#bad · Ω ≤ U` at every radius whose witness threshold exceeds `w₀`.  The
+forward direction is `deepRung_badScalars_card_mul_le`.  For the converse, take `τ = ℕ`,
+`G = range U`, and give the `i`-th bad scalar (in any enumeration) the block
+`[i·Ω, i·Ω + Ω)`; the blocks are disjoint and lie in `range U` because `#bad · Ω ≤ U`.  So
+the cap carries no structural information beyond the count. -/
+theorem deepRungOwnershipCap_iff_count {d w₀ Ω U : ℕ} :
+    DeepRungOwnershipCap g n d w₀ Ω U ↔
+      ∀ (u₀ u₁ : Fin n → ZMod p) {δ : ℝ≥0},
+        ((w₀ : ℕ) : ℝ≥0) < (1 - δ) * (Fintype.card (Fin n) : ℝ≥0) →
+        (Finset.univ.filter (fun γ : ZMod p =>
+          mcaEvent (F := ZMod p) (A := ZMod p) (evalCode g n d) δ u₀ u₁ γ)).card * Ω ≤ U := by
+  constructor
+  · intro hcap u₀ u₁ δ hδ
+    exact deepRung_badScalars_card_mul_le hcap hδ u₀ u₁
+  · intro hcount u₀ u₁ δ hδ
+    have hBU := hcount u₀ u₁ hδ
+    generalize hB : Finset.univ.filter (fun γ : ZMod p =>
+      mcaEvent (F := ZMod p) (A := ZMod p) (evalCode g n d) δ u₀ u₁ γ) = B at hBU
+    let idx : {x // x ∈ B} → ℕ := fun γ => (B.equivFin γ : ℕ)
+    have hidx_lt : ∀ γ, idx γ < B.card := fun γ => (B.equivFin γ).isLt
+    have hidx_inj : Function.Injective idx := fun γ₁ γ₂ h =>
+      B.equivFin.injective (Fin.ext h)
+    refine ⟨ℕ, inferInstance, B, rfl,
+      fun γ => Finset.Ico (idx γ * Ω) (idx γ * Ω + Ω), Finset.range U,
+      Finset.card_range U, ?_, ?_, ?_⟩
+    · intro γ
+      simp
+    · intro γ₁ _ γ₂ _ hne
+      have hne' : idx γ₁ ≠ idx γ₂ := fun h => hne (hidx_inj h)
+      rw [Finset.disjoint_left]
+      intro x hx₁ hx₂
+      rw [Finset.mem_Ico] at hx₁ hx₂
+      rcases Nat.lt_or_gt_of_ne hne' with hlt | hlt
+      · have hmul : (idx γ₁ + 1) * Ω ≤ idx γ₂ * Ω := Nat.mul_le_mul_right Ω hlt
+        rw [Nat.add_one_mul] at hmul
+        omega
+      · have hmul : (idx γ₂ + 1) * Ω ≤ idx γ₁ * Ω := Nat.mul_le_mul_right Ω hlt
+        rw [Nat.add_one_mul] at hmul
+        omega
+    · intro x hx
+      obtain ⟨γ, _, hxγ⟩ := Finset.mem_biUnion.mp hx
+      rw [Finset.mem_Ico] at hxγ
+      rw [Finset.mem_range]
+      have hmul : (idx γ + 1) * Ω ≤ B.card * Ω := Nat.mul_le_mul_right Ω (hidx_lt γ)
+      rw [Nat.add_one_mul] at hmul
+      omega
 
 open Classical in
 /-- **Count ⟹ MCA error.**  Granting the cap, the MCA error of the degree-`d` evaluation
@@ -214,18 +273,19 @@ theorem deepRung_deltaStar_pin {μ r Ω U : ℕ} (hμ : 1 ≤ μ) (hr2 : 2 ≤ r
     hr2 hr εstar hhi (deepRung_interiorCeiling hr2 hn hgn hΩ hcap εstar hlo)
   rwa [mul_one] at h
 
-/-! ## Consistency: at the minimal witness the named cap IS `march`'s `ownership_card`
+/-! ## Consistency check at the minimal witness
 
-To certify the named Prop is the honest generalization (and not a vacuous re-statement), we
-show the consumer chain reproduces the proven `march` bound at `(w₀, Ω, U) = (d+2, d+2,
-C(n,d+2))`.  We do NOT re-prove `march`; we exhibit that `deepRung_badScalars_card_mul_le`
-at those parameters has the SAME conclusion `#bad · (d+2) ≤ C(n,d+2)`, so the named cap, if
-supplied at the minimal witness, is exactly the already-proven count. -/
+The consumer chain at `(w₀, Ω, U) = (d+2, d+2, C(n,d+2))` has the same conclusion
+`#bad · (d+2) ≤ C(n,d+2)` as the proven `march_badScalars_card_mul_le`.  This is only a
+shape check: since the named cap is equivalent to the count itself
+(`deepRungOwnershipCap_iff_count`), matching conclusions at matching parameters is
+automatic and does not show that the cap encodes any ownership structure. -/
 
 open Classical in
 /-- The named cap, instantiated at the minimal witness `(d+2, d+2, C(n,d+2))`, yields
-literally the `march_badScalars_card_mul_le` conclusion.  This certifies the Prop is the
-faithful generalization: the proven `march` count is its `w₀ = d+2` boundary instance. -/
+literally the `march_badScalars_card_mul_le` conclusion.  This is a parameter-matching
+check, not evidence of a structural relation (the cap is the count; see
+`deepRungOwnershipCap_iff_count`). -/
 theorem deepRung_recovers_march {d : ℕ}
     (hcap : DeepRungOwnershipCap g n d (d + 2) (d + 2) (n.choose (d + 2))) {δ : ℝ≥0}
     (hδ : ((d + 2 : ℕ) : ℝ≥0) < (1 - δ) * (Fintype.card (Fin n) : ℝ≥0))

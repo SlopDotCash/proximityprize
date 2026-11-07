@@ -1,11 +1,21 @@
 # Fable referee 2026-07-11: G56 reports the A5/A6 sign sweep over 68 primes
 # p==1 mod 32, n=32, found ZERO (A5<0, A6>0) cells. Question: is
-#   H_impl:   A5 < 0  =>  A6 < 0   (a usable one-directional structural law)
-# TRUE as a field-uniform partial theorem, or is the empty quadrant just a
-# small/biased sample (H_null)? A one-directional implication would be a real
-# partial gate (it would let a prover certify A6>=0 by ruling out A5<0), so it
-# must be tested hard before G56's "no monotone rule" verdict is accepted as
-# fully closing the route. Extend the sweep + widen to multiple dyadic n.
+#   H_impl:   A5 < 0  =>  A6 < 0
+# TRUE as a field-uniform law, or is the empty quadrant just a small/biased
+# sample (H_null)? Extend the sweep + widen to multiple dyadic n.
+#
+# LOGIC CORRECTION (audit finding T43).  An earlier version of this header said
+# H_impl "would let a prover certify A6>=0 by ruling out A5<0".  That is denying
+# the antecedent.  The valid contrapositive of H_impl is
+#   A6 >= 0  =>  A5 >= 0,
+# i.e. H_impl can only transfer NONNEGATIVITY from A6 down to A5 (or negativity
+# from A5 up to A6).  Certifying A6 >= 0 from A5 >= 0 would need the DIFFERENT
+# implication  A5 >= 0 => A6 >= 0  (empty (A5>=0, A6<0) quadrant), and that is
+# false: for n=16, p=113 the exact covariances are A5 = 1,727,120 > 0 and
+# A6 = -77,440 < 0 (regression asserted below).  That cell satisfies H_impl
+# vacuously while the formerly claimed conclusion A6 >= 0 fails.
+# The sweep below is a finite sample; an empty quadrant here is NOT a uniform
+# theorem.  Sign buckets: '+' means >= 0 (zero is counted with '+'), '-' means < 0.
 import math
 import numpy as np
 
@@ -75,12 +85,18 @@ def sweep(n, r_pair, pmax, label):
                     viol.append((p,a5,a6))
         p+=1
     print(f"[{label}] n={n} r={r_pair} primes_checked={checked} pmax={pmax}")
-    print(f"    (A5<0,A6<0)={cnt['--']}  (A5>0,A6<0)={cnt['+-']}  (A5>0,A6>0)={cnt['++']}  (A5<0,A6>0)={cnt['-+']}")
+    print(f"    (A5<0,A6<0)={cnt['--']}  (A5>=0,A6<0)={cnt['+-']}  (A5>=0,A6>=0)={cnt['++']}  (A5<0,A6>=0)={cnt['-+']}")
     if viol:
-        print(f"    *** H_impl VIOLATED: A5<0 & A6>0 witnesses: {viol[:5]}")
+        print(f"    *** H_impl VIOLATED: A5<0 & A6>=0 witnesses: {viol[:5]}")
     else:
-        print(f"    H_impl (A5<0 => A6<0) HOLDS on this sample; also flag reverse-quadrant count (A5>0,A6<0)={cnt['+-']}")
+        print(f"    H_impl (A5<0 => A6<0) holds on this finite sample only (not a uniform theorem); "
+              f"(A5>=0,A6<0) count={cnt['+-']} (nonzero => 'A5>=0 => A6>=0' fails, so A6>=0 is NOT certified)")
     return cnt,viol
+
+# Regression (T43): exact F113, n=16 witness refuting "A5 >= 0 => A6 >= 0".
+_a5, _a6 = A_r(113, 16, 5), A_r(113, 16, 6)
+assert (_a5, _a6) == (1727120, -77440), (_a5, _a6)
+print(f"[regression] n=16 p=113: A5={_a5} > 0, A6={_a6} < 0  (A5>=0 does not imply A6>=0)")
 
 # n=32 extended well past G56's 19937 cap
 sweep(32,(5,6),40000,"n32-extended")

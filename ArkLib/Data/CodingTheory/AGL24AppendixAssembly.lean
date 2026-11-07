@@ -123,25 +123,126 @@ theorem evaluated_witness_of_pinning {t k : ℕ} (ht : 1 ≤ t)
   rw [← hweq]
   exact hzero
 
+/-! ### Empty edges carry no rank information
+
+The pinning route needs every edge nonempty (the `y` vector of `evaluated_witness_of_pinning`
+reads a value off each edge, and `PinningProperty` genuinely fails when an edge is empty and
+`k < card ι`). But weak partition connectivity does **not** force nonempty edges: an empty edge
+touches no cell, so it contributes `0 - 1 = 0` to every partition sum. (For instance, at `t = 0`
+the all-empty family is `k`-WPC for every `k`.) Earlier versions of the assembly therefore took
+a global side premise "every WPC family has only nonempty edges", which is **false** for every
+`k` and nonempty `ι`, making the composite discharges vacuous.
+
+The repair below removes that premise: replacing each empty edge by the singleton `{0}` keeps
+weak partition connectivity (edges only grow) and adds no RIM rows (a singleton has no
+non-minimal vertex), so the symbolic kernel can only shrink. Hence it suffices to prove the
+Theorem 2.11 interface for families whose edges are all nonempty. -/
+
+/-- Replace every empty edge by the singleton `{0}`; nonempty edges are unchanged. -/
+def fillEmptyEdges {ι' : Type*} {t : ℕ} (e : ι' → Finset (Fin (t + 1))) :
+    ι' → Finset (Fin (t + 1)) :=
+  fun i => if (e i).Nonempty then e i else {0}
+
+theorem fillEmptyEdges_nonempty {ι' : Type*} {t : ℕ} (e : ι' → Finset (Fin (t + 1)))
+    (i : ι') : (fillEmptyEdges e i).Nonempty := by
+  unfold fillEmptyEdges
+  split_ifs with h
+  · exact h
+  · exact Finset.singleton_nonempty _
+
+theorem subset_fillEmptyEdges {ι' : Type*} {t : ℕ} (e : ι' → Finset (Fin (t + 1)))
+    (i : ι') : e i ⊆ fillEmptyEdges e i := by
+  unfold fillEmptyEdges
+  split_ifs with h
+  · exact Finset.Subset.refl _
+  · rw [Finset.not_nonempty_iff_eq_empty.mp h]
+    exact Finset.empty_subset _
+
+/-- Weak partition connectivity is monotone under enlarging edges. -/
+theorem weaklyPartitionConnected_mono_edges {V ι' : Type*} [Fintype V] [DecidableEq V]
+    [Fintype ι'] {k : ℕ} {s : Finset V} {e e' : ι' → Finset V}
+    (hsub : ∀ i, e i ⊆ e' i) (h : WeaklyPartitionConnected k s e) :
+    WeaklyPartitionConnected k s e' := by
+  intro P
+  refine le_trans (h P) (Finset.sum_le_sum fun i _ => Nat.sub_le_sub_right ?_ 1)
+  refine Finset.card_le_card fun c hc => ?_
+  simp only [touchedCells, Finset.mem_filter] at hc ⊢
+  exact ⟨hc.1, hc.2.mono (Finset.inter_subset_inter
+    (Finset.inter_subset_inter (hsub i) (Finset.Subset.refl _)) (Finset.Subset.refl _))⟩
+
+omit [Nonempty ι] in
+theorem min'_congr_of_eq {α : Type*} [LinearOrder α] {s s' : Finset α} (h : s = s')
+    (hs : s.Nonempty) (hs' : s'.Nonempty) : s.min' hs = s'.min' hs' := by
+  subst h
+  rfl
+
+omit [Fintype ι] [DecidableEq ι] [Nonempty ι] [Fintype F] [DecidableEq F] in
+/-- Filling empty edges adds no RIM rows, so every symbolic kernel vector of `RIM F e` is a
+kernel vector of `RIM F (fillEmptyEdges e)`. -/
+theorem RIM_fillEmptyEdges_mulVec_eq_zero {t k : ℕ} (e : ι → Finset (Fin (t + 1)))
+    (v : Fin t × Fin k → MvPolynomial ι F) (hker : (RIM F e).mulVec v = 0) :
+    (RIM F (fillEmptyEdges e)).mulVec v = 0 := by
+  classical
+  funext r'
+  obtain ⟨i, j, hj, j', hj', hlt⟩ := r'
+  -- A row needs two distinct vertices, so `e i` was nonempty and is unchanged.
+  have hnei : (e i).Nonempty := by
+    by_contra hnone
+    have hfill : fillEmptyEdges e i = {0} := by
+      simp [fillEmptyEdges, hnone]
+    rw [hfill, Finset.mem_singleton] at hj hj'
+    rw [hj, hj'] at hlt
+    exact lt_irrefl _ hlt
+  have hfe : fillEmptyEdges e i = e i := by
+    simp [fillEmptyEdges, hnei]
+  have hj0 : j ∈ e i := hfe ▸ hj
+  have hj0' : j' ∈ e i := hfe ▸ hj'
+  have hrow := congrFun hker ⟨i, ⟨j, hj0, j', hj0', hlt⟩⟩
+  have hentry : ∀ c : Fin t × Fin k,
+      RIM F (fillEmptyEdges e) ⟨i, ⟨j, hj, j', hj', hlt⟩⟩ c =
+        RIM F e ⟨i, ⟨j, hj0, j', hj0', hlt⟩⟩ c := by
+    intro c
+    simp only [RIM]
+    rw [min'_congr_of_eq hfe ⟨j, hj⟩ ⟨j, hj0⟩]
+  simp only [Matrix.mulVec, dotProduct] at hrow ⊢
+  simp_rw [hentry]
+  exact hrow
+
+omit [DecidableEq ι] [Nonempty ι] [Fintype F] [DecidableEq F] in
+/-- **The Theorem 2.11 interface from its nonempty-edge case.** It suffices to prove symbolic
+full rank for weakly-partition-connected families all of whose edges are nonempty: a general
+family reduces to `fillEmptyEdges e`. This replaces the former (false) global premise that
+every WPC family has nonempty edges. -/
+theorem symbolicFullRankResidual_of_nonempty_edges {k : ℕ}
+    (h : ∀ {t : ℕ}, 1 ≤ t → ∀ e : ι → Finset (Fin (t + 1)),
+      (∀ i, (e i).Nonempty) →
+      WeaklyPartitionConnected k (Finset.univ : Finset (Fin (t + 1))) e →
+      ∀ v : Fin t × Fin k → MvPolynomial ι F,
+        (RIM F e).mulVec v = 0 → v = 0) :
+    SymbolicFullRankResidual (ι := ι) F k := by
+  intro t ht e hwpc v hker
+  exact h ht (fillEmptyEdges e) (fillEmptyEdges_nonempty e)
+    (weaklyPartitionConnected_mono_edges (subset_fillEmptyEdges e) hwpc) v
+    (RIM_fillEmptyEdges_mulVec_eq_zero e v hker)
+
 /-- **The Theorem 2.11 interface from pinning witnesses**: composed with brick 18's
-evaluated⟹symbolic reduction. After this, the entire campaign rests on producing pinning
-witnesses (GM-MDS + Frank) and the §3 recursion. -/
+evaluated⟹symbolic reduction. Pinning witnesses are only requested for nonempty-edge WPC
+families; empty edges are handled by `symbolicFullRankResidual_of_nonempty_edges`. -/
 theorem symbolicFullRank_of_pinning {k : ℕ}
     (hwitness : ∀ {t : ℕ}, 1 ≤ t → ∀ e : ι → Finset (Fin (t + 1)),
       (∀ i, (e i).Nonempty) →
       WeaklyPartitionConnected k (Finset.univ : Finset (Fin (t + 1))) e →
-      ∃ φ : ι ↪ F, PinningProperty (k := k) φ e)
-    (hnonempty : ∀ {t : ℕ}, ∀ e : ι → Finset (Fin (t + 1)),
-      WeaklyPartitionConnected k (Finset.univ : Finset (Fin (t + 1))) e →
-      ∀ i, (e i).Nonempty) :
+      ∃ φ : ι ↪ F, PinningProperty (k := k) φ e) :
     SymbolicFullRankResidual (ι := ι) F k := by
-  refine symbolicFullRankResidual_of_evaluated_witness fun {t} ht e hwpc => ?_
-  obtain ⟨φ, hpin⟩ := hwitness ht e (hnonempty e hwpc) hwpc
-  exact ⟨fun i => φ i, fun w hker =>
-    evaluated_witness_of_pinning ht φ e (hnonempty e hwpc) hwpc hpin w hker⟩
+  refine symbolicFullRankResidual_of_nonempty_edges fun {t} ht e hne hwpc v hker => ?_
+  obtain ⟨φ, hpin⟩ := hwitness ht e hne hwpc
+  exact symbolic_kernel_trivial_of_evaluated e (fun i => φ i)
+    (fun w hw => evaluated_witness_of_pinning ht φ e hne hwpc hpin w hw) v hker
 
 end AGL24
 
 -- Axiom audit: must report only `[propext, Classical.choice, Quot.sound]` (no `sorryAx`).
 #print axioms AGL24.evaluated_witness_of_pinning
+#print axioms AGL24.RIM_fillEmptyEdges_mulVec_eq_zero
+#print axioms AGL24.symbolicFullRankResidual_of_nonempty_edges
 #print axioms AGL24.symbolicFullRank_of_pinning

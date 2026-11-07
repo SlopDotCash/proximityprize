@@ -21,15 +21,21 @@ This file records, axiom-clean, exactly what the recursion buys for the worst-ca
 * `eta_tower_triangle` — the ONLY unconditional consequence: `‖η_b^{(μ)}‖ ≤ ‖a‖ + ‖bω‖`.
 * `M_doubling` — hence `M(2^μ) ≤ 2·M(2^{μ-1})`, i.e. the lift only gives `M ≤ n` (TRIVIAL).
 
-**The refutation of the lift (numerics, probe_attack09):** at the worst-case frequency `b*` the two
-sub-period halves `a = η_{b*}^{(μ-1)}` and `bω = η_{b*ω}^{(μ-1)}` align in phase EXACTLY — the
-triangle inequality is tight (`ratio_to_tri = 1.000` for μ ≤ 6 at p=257). So there is no provable
-`√2`-decorrelation factor to insert per level; any sub-`2×` lift would need an unconditional phase
-non-alignment statement at the maximizer, which is precisely the worst-case cancellation BGK/Paley
-controls. The parallelogram law conserves the SECOND MOMENT (`‖η‖²+‖η̃‖²=2(‖a‖²+‖b‖²)`) but the
-twisted period `η̃` is a DIFFERENT frequency's period, so it gives no bound on `M` itself.
+**Evidence against the lift (numerics, probe_attack09; not a proof):** at the sampled worst-case
+frequency `b*` the two sub-period halves `a = η_{b*}^{(μ-1)}` and `bω = η_{b*ω}^{(μ-1)}` were
+observed to align in phase — the triangle inequality was tight in the sample (`ratio_to_tri = 1.000`
+for μ ≤ 6 at p=257). So no `√2`-decorrelation factor per level is proved here; a sub-`2×` lift would
+need a phase non-alignment statement at the maximizer.  Sampled alignment at small `p` does **not**
+prove that every factor below `2` is impossible (audit R-083/R-054 extension).
 
-Verdict: the tower lift reduces to the same wall. This brick lands the honest trivial-doubling law.
+The parallelogram law conserves the SECOND MOMENT (`‖η‖²+‖η̃‖²=2(‖a‖²+‖b‖²)`).  The twisted sum
+`η̃ = a − b` is in general a **character-weighted** sum over `μ_{2^μ}` (weight `+1` on `H`, `−1` on
+`ωH`), **not** an ordinary Gauss period at another frequency: e.g. on `μ_2 ⊂ F₅` with `b = 1` it is
+`ζ₅ − ζ₅^{-1}`, which has nonzero imaginary part, while every ordinary `μ_2` period is real.  So
+`η̃` is outside the original unweighted frequency family, and the identity gives no bound on `M`.
+
+Verdict: the recursion alone yields only the trivial doubling law, landed here; the lift beyond it
+needs control of the joint/weighted two-frequency object.
 -/
 
 open Finset
@@ -69,10 +75,10 @@ theorem eta_tower_triangle (ψ : AddChar F ℂ) {G H : Finset F} {ω : F} (hω :
   exact norm_add_le _ _
 
 /-- **Trivial doubling of the worst-case spectrum.** If `Mprev` bounds the level-`(μ−1)` spectrum at
-BOTH relevant frequencies `b` and `bω`, the recursion only propagates `M(2^μ) ≤ 2·Mprev` — the
-triangle inequality is tight at the maximizer (probe: exact phase alignment), so no sub-`2×` factor
-is unconditionally available. Iterated from the proven base, this gives only `M ≤ n`, far above the
-prize target `√(n log m)`. -/
+BOTH relevant frequencies `b` and `bω`, the recursion only propagates `M(2^μ) ≤ 2·Mprev` — in the
+probe the triangle inequality was tight at the sampled maximizer, so no sub-`2×` factor is proved
+here (nor is one proved impossible). Iterated from the proven base, this gives only `M ≤ n`, far
+above the prize target `√(n log m)`. -/
 theorem M_doubling (ψ : AddChar F ℂ) {G H : Finset F} {ω : F} (hω : ω ≠ 0)
     (hsplit : G = H ∪ H.image (fun x => ω * x))
     (hdisj : Disjoint H (H.image (fun x => ω * x))) {Mprev : ℝ} (b : F)
@@ -83,8 +89,8 @@ theorem M_doubling (ψ : AddChar F ℂ) {G H : Finset F} {ω : F} (hω : ω ≠ 
 
 /-- **Second-moment conservation (parallelogram).** For the period `η = a + b` and its twist
 `η̃ = a − b`, `‖η‖² + ‖η̃‖² = 2(‖a‖² + ‖b‖²)`. This conserves the TOTAL second moment across the
-period and its twist, but `η̃` is a different frequency's object — it gives no worst-case `M` bound,
-which is exactly why the lift stalls. -/
+period and its twist, but `η̃` is a character-weighted sum (not an ordinary period of the same
+family) — it gives no worst-case `M` bound. -/
 theorem period_parallelogram (a b : ℂ) :
     ‖a + b‖ ^ 2 + ‖a - b‖ ^ 2 = 2 * (‖a‖ ^ 2 + ‖b‖ ^ 2) :=
   parallelogram_law_with_norm ℂ a b

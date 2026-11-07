@@ -12,24 +12,39 @@ import Mathlib.Algebra.Group.Action.Defs
 # Reducing the MCA bad-scalar count to the line's list size (#232)
 
 The Mutual Correlated Agreement error is `ε_mca = (#bad γ)/q`, where `γ` is **bad** when the line
-`u₀ + γ·u₁` agrees with some codeword on `≥ t = (1-δ)·n` of the `n` evaluation points. The prize asks
-to bound `#bad γ` by a constant (independent of `q`). This file proves the **pigeonhole reduction**
-that cuts the problem down to the line's list size:
+`u₀ + γ·u₁` agrees with some codeword on a set of `≥ t = (1-δ)·n` of the `n` evaluation points on
+which the pair `(u₀, u₁)` is not jointly agreeing. The prize asks to bound `#bad γ` by a constant
+(independent of `q`). This file proves only the **combinatorial pigeonhole ingredient** of a
+per-codeword reduction:
 
 * `pigeonhole_large_fibers` — for any `h : ι → κ`, at most `n/t` values are hit by `h` at least `t`
   times (`t · #{y : |h⁻¹(y)| ≥ t} ≤ n`, where `n = |ι|`).
 
-**Application (the reduction).** Fix the agreement codeword `P`. Where `u₁(x) ≠ 0`, a coordinate `x`
-is matched by the *single* scalar `γ_x(P) = (P(x) - u₀(x))/u₁(x)`. A scalar `γ` with `≥ t` agreement
-against `P` therefore has `≥ t` coordinates `x` with `γ_x(P) = γ`. Applying the pigeonhole to
-`x ↦ γ_x(P)` gives **at most `n/t` bad scalars per codeword `P`**. Hence
+**Intended application, with its hypotheses (audit PG-043; not formalized here).** Fix the
+agreement codeword `P`. Let `Z = {x : u₁(x) = 0}`. Where `u₁(x) ≠ 0`, a coordinate `x` is matched
+by the *single* scalar `γ_x(P) = (P(x) - u₀(x))/u₁(x)`. On `Z`, however, agreement with `P` does
+not depend on `γ` at all: `x ∈ Z` agrees for *every* `γ` iff `u₀(x) = P(x)`. Writing
+`z_P = #{x ∈ Z : u₀(x) = P(x)}`, a scalar `γ` with `≥ t` agreement against `P` has only
+`≥ t - z_P` coordinates `x ∉ Z` with `γ_x(P) = γ`. Applying the pigeonhole to `x ↦ γ_x(P)` on the
+`n - |Z|` coordinates outside `Z` therefore gives
 
-`#bad γ ≤ (#distinct agreement codewords) · n/t = (line list size) · 1/(1-δ)`.
+* at most `(n - |Z|)/(t - z_P)` scalars with `≥ t` agreement against `P`, **when `t > z_P`**;
+* at most `n/t` such scalars **when `u₁` is nowhere zero** (`Z = ∅`);
+* no bound at all from this argument when `z_P ≥ t` (then every `γ` agrees with `P` on `≥ t`
+  points).
 
-So `ε_mca` is bounded by a *constant* (in `q`) **iff** the line `{u₀ + γu₁ : γ}` has a list size
-bounded in `q` at radius `δ`. The prize is thereby reduced to a list-decoding bound for the line —
-which is known (poly) below the Johnson radius and is exactly the open question past it. This file
-proves the reduction's combinatorial core, axiom-clean; it does not resolve the open list bound.
+The plain `n/t` per-codeword bound is false without such a hypothesis, even for genuine local MCA
+witnesses: over `F₅`, length-`4` constant code, `t = 3`, `u₁ = (0,0,1,1)`, `u₀ = (0,0,-1,-2)`,
+`P = 0`. The scalars `1` and `2` each agree with `P` on three coordinates (the first two plus the
+third, resp. fourth); each witness contains a zero and a nonzero entry of `u₁`, so `u₁` agrees with
+no constant there and both are MCA events. Two bad scalars share `P`, while `⌊n/t⌋ = 1`.
+
+Under the nowhere-zero hypothesis one gets
+`#bad γ ≤ (#distinct agreement codewords) · n/t = (line list size) · 1/(1-δ)`, so a `q`-independent
+line list size *implies* a `q`-independent `#bad γ`. The **converse** (a bounded bad-scalar count
+forcing a bounded line list size) is *not* proved here or supplied by this argument. This file
+proves only the pigeonhole core, axiom-clean; it neither formalizes the per-codeword reduction nor
+resolves the open list bound.
 -/
 
 namespace ArkLib.CodingTheory.MCAReduction

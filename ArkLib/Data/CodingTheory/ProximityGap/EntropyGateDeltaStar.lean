@@ -21,6 +21,14 @@ inequalities that the probe `probe_ceiling_constant.py` validates as
 
 Result: `mcaDeltaStar_le_of_entropy_gate` — one-binomial-sandwich-in, δ*-ceiling-out, with
 the onset radius `a = k+m+1` placed by the entropy condition.  Axiom-clean.
+
+**Honest scope (field-size range).**  The theorem also carries the explicit threshold-smallness
+hypothesis `ε*·q·(C'+2)² ≤ 1`.  This is *not* automatic: since `C'+2 ≥ 2` it forces
+`q ≤ 1/(4ε*)`, so at `ε* = 2^-128` it requires `q ≤ 2^126` and is **unsatisfiable** for every
+field with `q ≥ 2^128` (there `ε*·q ≥ 1` and the left side is at least `4`), regardless of how
+`q` and `C'` grow.  The `F₃₁` example below is a valid instance, but the theorem does not by
+itself yield a δ* ceiling at a production field-size floor `q ≥ 2^128`; that would need a
+different, compatible parameter/budget argument, which this file does not supply.
 -/
 
 set_option autoImplicit false
@@ -90,8 +98,9 @@ open Classical in
 * the **lower entropy wall**  `a!·(2·q^m) ≤ (n+1−a)^a`  (witness mass clears the budget:
   `H(a/n)·n ≳ (a−k)·log₂q`, i.e. `P ≥ 2q^m`),
 * the **upper truncation wall**  `n^a < a!·q^{m+1}`  (`P < q^{m+1}`, the `Λ`-collapse),
-* the threshold smallness  `ε*·(q·(C'+2)²) ≤ 1`  (true at `ε* = 2^-128` for any
-  polynomial `q,C'`),
+* the threshold smallness  `ε*·(q·(C'+2)²) ≤ 1`  (an explicit hypothesis, NOT automatic:
+  as `C'+2 ≥ 2` it needs `q ≤ 1/(4ε*)`, i.e. `q ≤ 2^126` at `ε* = 2^-128`, and it is
+  impossible for `q ≥ 2^128`),
 
 the MCA threshold obeys `mcaDeltaStar (rsCode dom k) ε* ≤ δ` at every band radius
 `(1−δ)n ≤ a`.  The two walls are discharged from the binomial sandwich
@@ -105,7 +114,7 @@ theorem mcaDeltaStar_le_of_entropy_gate (dom : Fin n ↪ F) {k m : ℕ}
     (hlo : (k + m + 1)! * (2 * (Fintype.card F) ^ m)
         ≤ (n + 1 - (k + m + 1)) ^ (k + m + 1))
     (hhiwall : n ^ (k + m + 1) < (k + m + 1)! * (Fintype.card F) ^ (m + 1))
-    -- threshold smallness (ε*=2^-128 makes this trivially true for polynomial q, C'):
+    -- threshold smallness (explicit; at ε*=2^-128 it needs q ≤ 2^126, false for q ≥ 2^128):
     (hsmall : εstar * ((Fintype.card F : ℝ≥0∞)
           * (↑((k + m + 1).choose (k + 1) * (n - (k + 1)).choose m + 2) : ℝ≥0∞) ^ 2) ≤ 1) :
     mcaDeltaStar (F := F) (A := F)

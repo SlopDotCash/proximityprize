@@ -62,8 +62,19 @@ The repair is **non-vacuous and sufficient for the assembly**:
   interface. Every orientation-derived `δ` satisfies the pin, so the pinned target is all the
   assembly ever needs.
 
-So the GM-MDS import is correctly stated as `GMMDSDualZeroPatternTheoremPinned`; the unpinned
-`GMMDSDualZeroPatternTheorem` is an over-statement that no GM-MDS theorem can satisfy.
+So the consumer-facing GM-MDS boundary is `GMMDSDualZeroPatternTheoremPinned`; the unpinned
+`GMMDSDualZeroPatternTheorem` is an over-statement that no GM-MDS theorem can satisfy (a
+refutation of the *encoded boundary*, not of the published theorem).
+
+Scope caveats. The pin restores the dimension count, but the pinned target is still a
+*conditional* boundary, not a proved theorem: an existential evaluation embedding `φ : ι ↪ F`
+with the required nonsingularity needs enough field elements (or a field extension), so it is
+not an unconditional statement over arbitrarily small fields, and the dimensional-consistency
+lemmas below give only a necessary condition, not its truth. (The in-tree Lovett route,
+`AGL24PinnedConnector.lean`, exposes the field-size obligation as `FieldLargeForMinor`.)
+Earlier versions of the capstone also required a global "WPC families have nonempty edges"
+premise, which is false for every `k`; it has been removed
+(`symbolicFullRankResidual_of_nonempty_edges`).
 
 Issue #354 / #389.
 -/
@@ -213,12 +224,9 @@ the pinned target is **all the assembly needs**. Axiom-clean. -/
 theorem symbolicFullRank_of_classical_imports_pinned
     [Fintype F] [DecidableEq F] {k : ℕ}
     (hfrank : FrankOrientationResidual ι k)
-    (hgm : GMMDSDualZeroPatternTheoremPinned (ι := ι) (F := F) k)
-    (hnonempty : ∀ {t : ℕ}, ∀ e : ι → Finset (Fin (t + 1)),
-      WeaklyPartitionConnected k (Finset.univ : Finset (Fin (t + 1))) e →
-      ∀ i, (e i).Nonempty) :
+    (hgm : GMMDSDualZeroPatternTheoremPinned (ι := ι) (F := F) k) :
     SymbolicFullRankResidual (ι := ι) F k := by
-  refine symbolicFullRank_of_pinning ?_ hnonempty
+  refine symbolicFullRank_of_pinning ?_
   intro t ht e hne hwpc
   -- Frank: the orientation with root and crossing supply.
   obtain ⟨O, r, hroot, hcross⟩ := hfrank ht e hne hwpc
@@ -230,7 +238,8 @@ theorem symbolicFullRank_of_classical_imports_pinned
 
 /-! ## Non-vacuity of the pinned target
 
-Two honesty checks that the repair did not over-correct into an impossible obligation:
+Two necessary-condition checks that the repair did not over-correct into an obviously
+impossible obligation (they do **not** prove the pinned target true or satisfiable):
 
 * the **hypothesis class is inhabited** — a generic zero pattern satisfying both `GZPCondition`
   *and* the pin `∑ⱼ δⱼ = card ι − k` exists for every head orientation with `k ≤ indeg r`

@@ -86,27 +86,26 @@ instance : ∀ j, OracleInterface ((pSpec (F := F)).Challenge j) :=
 instance [SampleableType F] : ∀ j, SampleableType ((pSpec (F := F)).Challenge j)
   | ⟨0, _⟩ => (inferInstance : SampleableType F)
 
-/-- **Lemma 6.10 of [ABF26]** (knowledge soundness of Construction 6.9).
+/-- **Legacy alias — not Lemma 6.10 of [ABF26].**
 
-For any `δ ∈ (0, δ_min(C))`, the simplified IOR has knowledge soundness
-(paper Def A.5) from `R̃²_{C,δ}` to `R̃¹_{C,δ}` with error
+Despite its name, this theorem does **not** state knowledge soundness of Construction 6.9. Its
+type mentions none of this protocol's `verifier`, `reduction`, output relation
+`outputRelationFor`, or the error `ε_mca(C, δ) + |Λ(C^{≡2}, δ)| / |F|`; it is literally
+`ToyProblem.Spec.protocol62_knowledgeSoundnessViaRewinding C δ decode`, i.e. the 2×2 algebraic
+reconstruction lemma for the abstract acceptance predicate `ToyProblem.Spec.toyAccepts`.
 
-  `ε_mca(C, δ) + |Λ(C^{≡2}, δ)| / |F|`.
+That acceptance predicate is *not* verifier acceptance: it already assumes that the input lies in
+`ToyProblem.Spec.outputRelation` and that the response is the honest combination of a supplied
+decoded pair `decode pre`. Moreover `outputRelation` ignores its witness component
+(`ToyProblem.Spec.outputRelation` reads only the statement), so the "extracted" membership is the
+assumed membership. No MCA / list-size accounting, decoder validity, or replay/rewinding execution
+bridge to the actual C6.9 verifier is proved here.
 
-Note the cleaner error term compared with L6.6: there's no `(1-δ)^t`
-spot-check term because C6.9 has no spot-check round.
-
-The proof is the "1-round version" of L6.8's KnowledgeStateFunction
-construction; same extractor strategy (erasure-decode against the
-agreement set).
-
-**Statement-level finding & repair (2026-06).** Same wall as L6.6 / L6.8: ArkLib's
-`Verifier.knowledgeSoundness` (`OracleReduction/Security/Basic.lean`, line 328) quantifies only over
-a single-run `Extractor.Straightline` with no re-invocation handle, so the 2-special-sound
-*rewinding* extractor this lemma needs is not expressible against it. The rewinding extractor is the
-*same* one as for Construction 6.2 (it extracts the input message pair `(u₁, u₂)` to the `R̃²`
-relation `ToyProblem.Spec.outputRelation` — exactly this lemma's `relIn`), so we reuse the proven
-`protocol62_knowledgeSoundnessViaRewinding`. -/
+The genuine Lemma 6.10-shaped statements for C6.9 are the canonical
+`ToyProblem.SimplifiedIOR.verifier_knowledgeSoundness` /
+`ToyProblem.SimplifiedIOR.knowledgeSoundnessWith_of_transition_failure_prob_le` (in
+`ArkLib/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean`) and the executable IRS contracts in
+`ArkLib/ProofSystem/ToyProblem/Impl/IRS.lean`. Do not cite this alias as a proof of L6.10. -/
 theorem simplifiedIOR_knowledgeSound
     [SampleableType F] [Nonempty ι] [Nonempty F]
     (C : Set (ι → F)) (δ : ℝ≥0)
@@ -124,6 +123,6 @@ end SimplifiedIOR
 
 end ToyProblem
 
-/-! ### Axiom audit (issue #18 simplified ToyProblem bridge residual frontier) -/
+/-! ### Axiom audit (legacy rewinding-algebra alias; not an L6.10 proof) -/
 
 #print axioms ToyProblem.SimplifiedIOR.simplifiedIOR_knowledgeSound

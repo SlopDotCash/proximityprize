@@ -13,6 +13,12 @@ incomplete sum is bounded **unconditionally**:
 * `eta_constIndex_norm_le` : for `b ≠ 0`,  `‖η_b(G_χ)‖ ≤ ((m−1)·√q + 1)/m`.
 * `worstCaseIncompleteSumBound_constIndex` : discharges the in-tree named open Prop
   `WorstCaseIncompleteSumBound ψ (G_χ) (((m−1)√q+1)/m)²` — no hypothesis beyond `m ≥ 2`.
+  *(Corrected 2026-10-28, audit T48 / T107: both endpoints, `ConstantIndexGaussSumBound.lean:144,187`,
+  also require the additive character `ψ` to be **primitive** (`hψ : ψ.IsPrimitive`), the same
+  input the classical Gauss-sum formula needs. The headline "no hypothesis beyond `m ≥ 2`" omitted
+  it. Discharging the generic `WorstCaseIncompleteSumBound` at this large scale `M` does not by
+  itself establish a particular beyond-Johnson coding theorem; that still needs its quantitative
+  consumer.)*
 
 Since `|G_χ| = (q−1)/m =: n`, the bound reads `‖η_b‖ ≲ √m·√n` — **genuine square-root cancellation
 for every CONSTANT (or polylog) index `m`**, which is the beyond-Johnson, sub-`√q` per-frequency

@@ -117,6 +117,25 @@ class AxiomHeadForms(unittest.TestCase):
             with self.subTest(name=name):
                 self.assert_rejected(f"namespace Copied\naxiom {name} : False\nend Copied\n", name)
 
+    def test_pinned_residual_name_does_not_authorize_another_statement(self) -> None:
+        # Audit 2026-10-28 T03: reusing a pinned residual's name in another file
+        # with another statement (here `False`) is not the reviewed declaration.
+        # Borrow live entries: entries are deleted when their axiom is discharged.
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import forbidden_tokens
+
+        pins, errors = forbidden_tokens.load_manifest(ROOT / "scripts" / "residual_axioms.txt")
+        self.assertEqual(errors, [])
+        if not pins:
+            self.skipTest("scripts/residual_axioms.txt pins no residual axiom")
+        for fqn in pins:
+            simple = forbidden_tokens.simple_name(fqn)
+            with self.subTest(fqn=fqn):
+                self.assert_rejected(f"axiom {fqn} : False\n",
+                                     f"residual axiom {fqn} does not match its reviewed pin")
+                self.assert_rejected(f"namespace Arbitrary\naxiom {simple} : False\n"
+                                     f"end Arbitrary\n", f"is not the pinned residual {fqn}")
+
     def test_commented_out_axiom_stays_invisible(self) -> None:
         self.assert_clean(
             "/- axiom hidden : False -/\n"
@@ -152,6 +171,54 @@ class UnicodeNameCoverage(unittest.TestCase):
             "theorem \u03b1 : True := by trivial\n",
             "vacuous placebo",
         )
+
+
+# Audit 2026-10-28 T02. Each header was checked with Lean v4.30.0-rc2, and
+# `#print axioms` of a theorem using it lists the axiom under exactly the
+# fully qualified name below (set LEAN_TEST_EXECUTABLE to re-check).
+# name -> (source, name as written, fully qualified name)
+NAME_FORMS = {
+    # tooling-counterexamples.json, case `unicode_axiom`
+    "audit_unicode": ("axiom \u03c8 : False\n", "\u03c8", "\u03c8"),
+    "quoted_dot_and_space": ("axiom \u00aba.b c\u00bb : False\n", "\u00aba.b c\u00bb", "\u00aba.b c\u00bb"),
+    "qualified_unicode": ("namespace Ns\naxiom \U0001d53d.\u03b1\u03b2 : False\nend Ns\n",
+                          "\U0001d53d.\u03b1\u03b2", "Ns.\U0001d53d.\u03b1\u03b2"),
+    "root_qualified": ("namespace Ns\naxiom _root_.Top.x : False\nend Ns\n",
+                       "_root_.Top.x", "Top.x"),
+    "attributed_multiline": (
+        "namespace Ns\n/-- doc -/\n@[deprecated \"use the proof\" (since := \"2026-10-28\")]\n"
+        "private\n  noncomputable\naxiom\n  -- name next\n  \u00abquoted\u00bb.\u03c8'\n  : False\nend Ns\n",
+        "\u00abquoted\u00bb.\u03c8'", "Ns.quoted.\u03c8'"),
+    "set_option_in": ("set_option autoImplicit false in\naxiom Q.\u03b5\u2081 : False\n", "Q.\u03b5\u2081", "Q.\u03b5\u2081"),
+}
+
+
+class DeclarationNameForms(unittest.TestCase):
+    """Unicode, quoted, qualified, attributed and multiline headers all reach the
+    pin check, under the fully qualified name Lean gives the axiom. This is a
+    lexical precheck over Lean's identifier grammar, not an elaborated audit."""
+
+    def test_each_name_form_is_rejected_under_its_full_name(self) -> None:
+        for label, (source, written, full) in NAME_FORMS.items():
+            with self.subTest(label=label):
+                result = run_scan(source)
+                self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+                self.assertIn(f"forbidden custom axiom declaration {written}", result.stderr)
+                self.assertIn(f"`{full}  ", result.stderr)
+
+    @unittest.skipUnless(os.environ.get("LEAN_TEST_EXECUTABLE"),
+                         "set LEAN_TEST_EXECUTABLE to the pinned Lean binary")
+    def test_lean_reports_the_same_full_names(self) -> None:
+        for label, (source, _written, full) in NAME_FORMS.items():
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as tmp:
+                path = Path(tmp) / "Probe.lean"
+                path.write_text(source + "set_option linter.deprecated false in\n"
+                                f"theorem uses : False := {full}\n#print axioms uses\n",
+                                encoding="utf-8")
+                proc = subprocess.run([os.environ["LEAN_TEST_EXECUTABLE"], str(path)],
+                                      capture_output=True, text=True, timeout=120)
+                self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+                self.assertIn(f"depends on axioms: [{full}]", proc.stdout)
 
 
 if __name__ == "__main__":

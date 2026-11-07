@@ -390,7 +390,8 @@ theorem gk16Claim16StructuralData_holds
     GK16Claim16StructuralData domain k s ω (ReedSolomon.Folded.frsCode domain k s ω) := by
   intro A hA_le
   have hAs : Module.finrank F A ≤ s := le_trans (Submodule.finrank_mono hA_le) hCs
-  exact ArkLib.FRS.GK16.gk16Claim16StructuralData_at domain k s ω hinj hk A hA_le hAs
+  exact ArkLib.FRS.GK16.gk16Claim16StructuralData_at domain k s ω
+    (hinj.comp Subtype.val_injective) hk A hA_le hAs
     (fun Q => hω_sep Q)
 
 /-- **ABF26 Theorem 2.18 [GK16], FRS half** (reduced to the GK16 §4 degree-budget

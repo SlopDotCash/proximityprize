@@ -13,8 +13,10 @@ and a cyclic shift of the quotient origin reverses both covariances. Fable's Ran
 target was: does a W-INTRINSIC, sponsor-uniform ORIGIN ANCHOR exist that recovers absolute
 placement independent of R_r?
 
-G260 answers NO, structurally. The quotient origin is a GAUGE. Every origin marker M
-computable from W alone is translation-covariant and falls into exactly one class:
+G260 answers NO for LABEL-FREE (translation-covariant) markers. The quotient origin is a
+GAUGE for such markers. Under the explicit MARKER HYPOTHESIS that M is computed from W without
+using the given coordinate labels -- i.e. M is translation-covariant -- it falls into one of
+two classes:
 
   (INV)  invariant:     M(shift(W,c)) = M(W)        (autocorrelation values, |DFT|,
                         value multiset, any degree-k moment). Gives identity and a
@@ -26,7 +28,18 @@ computable from W alone is translation-covariant and falls into exactly one clas
                         physical origin to use.
 
 Because the target covariance is shift-NON-invariant (and sign-reversing shifts are
-abundant and persistent as support thins to prize scale), neither class pins the sign.
+abundant and persistent at the tested supports), neither class pins the sign once the
+equivariant marker's VALUE (the displacement) is discarded and only the canonicalized profile
+is kept.
+
+SCOPE (audit 2026-10-28, L103). This dichotomy is NOT exhaustive over functions of an indexed
+profile: a marker may use the given labels, e.g. W |-> W[0], which is generally neither
+invariant nor equivariant as a residue selector, and an actual sponsor construction may carry
+absolute placement data. Such markers and constructions are outside this no-go. What is
+actually checked is restricted: the exact Z/7 shift witness and the argmax-canonicalization
+collapse of a shift orbit. Compare g265_coordinate_reparametrization_nogo.py: genuine
+primitive-root changes relabel BOTH W and R covariantly; a one-sided relabel is an abstract
+countermodel to label-free hypotheses (as in G258), not a physical symmetry of the fixed pair.
 
 This script:
   (1) exhibits the exact small Z/7 witness kernel-checked in the Lean companion;
@@ -138,7 +151,11 @@ for (mm, supp) in [(101, 50), (211, 64), (401, 64), (809, 80), (1601, 96), (3203
     print(f"    m={mm:5d} supp/m={supp/mm:.3f}: simultaneous reversing shifts = {both:4d} "
           f"({100.0*both/(mm-1):.1f}% of nontrivial shifts)")
 
-print("\nVERDICT: the quotient origin is a gauge; every W-intrinsic marker is invariant or")
-print("equivariant and cannot select the physical origin R_r uses. No origin anchor pins the")
-print("covariance sign. The missing datum is ABSOLUTE row placement = the original joint")
+print("\nVERDICT (restricted): for LABEL-FREE, translation-covariant markers of W the quotient")
+print("origin is a gauge: an invariant marker cannot separate a shift orbit, and an equivariant")
+print("marker, once its displacement value is discarded and only the canonicalized profile kept,")
+print("cannot select the physical origin R_r uses (checked: exact Z/7 witness, argmax orbit")
+print("collapse, finite-cell reversing-shift counts). Markers that use the given coordinate")
+print("labels (e.g. W -> W[0]) or absolute placement data from the actual sponsor construction")
+print("are NOT excluded. The missing datum is ABSOLUTE row placement = the original joint")
 print("sponsor-prime BGK/Paley covariance. CORE OPEN / ON-BGK.")

@@ -47,7 +47,9 @@ attribute [local instance] Classical.propDecidable
 variable {K U : Type} [Fintype K] [Fintype U] [DecidableEq U]
 
 /-- Restrict an ambient finset to a containing finset, represented by its
-subtype. -/
+subtype.  This duplicates `FreshPetalPruning.restrictTo` and
+`EqualSlopeJohnsonClosure.restrictTo`; neither module is in this file's import
+closure, so the copies are kept until a shared base module hosts them. -/
 def restrictToGround (V A : Finset U) : Finset V :=
   Finset.univ.filter fun x : V => x.1 ∈ A
 

@@ -119,6 +119,12 @@ omit [(i : mlIOPCS.pSpec.ChallengeIdx) → SampleableType (mlIOPCS.pSpec.Challen
 -- `[IsDomain L] [IsDomain K]` are needed by the core-interaction (final-sumcheck) completeness,
 -- which invokes the DP24 capstone `A_MLE_eval_eq_compute_final_eq_value` (an `IsDomain` algebra
 -- lemma). They hold in every real instantiation (`binaryTowerProfile` builds from fields `K`, `L`).
+/-- **Compatibility wrapper (no logical content beyond its last hypothesis).** The hypothesis
+`hBatchingCoreAppendPerfectCompleteness` is exactly the conclusion, and
+`OracleReduction.append_perfectCompleteness` returns its append residual unchanged, so the
+component assembly from `hBatching`, `hRounds` and `hCoreInteractionAppendPerfectCompleteness`
+does no work. The genuine discharge of the internal seams is the end-to-end
+`fullOracleReduction_perfectCompleteness` in the `EndToEndCompleteness` section below. -/
 lemma batchingCore_perfectCompleteness [IsDomain L] [IsDomain K]
     (hBatching : BatchingPhase.batchingReduction_perfectCompleteness_residual
       (κ := κ) (L := L) (K := K) (P := P) (ℓ := ℓ) (ℓ' := ℓ') (h_l := h_l)
@@ -194,7 +200,14 @@ soundness, where it backs the DP24 row-extraction capstone; it holds in every re
 
 The generic RingSwitching wrapper no longer carries a free Boolean-domain embedding `𝓑`. The
 current local KState repairs use the always-valid unit error bounds in the batching and iterated
-sumcheck phases until the separate DP24/Schwartz-Zippel root-count residual is proved. -/
+sumcheck phases until the separate DP24/Schwartz-Zippel root-count residual is proved.
+
+**Scope: residual wrapper, not a soundness proof.** The hypothesis
+`hFullAppendRbrKnowledgeSoundness` is exactly the conclusion (up to unfolding
+`fullOracleVerifier`/`fullRbrKnowledgeError`), and `OracleVerifier.append_rbrKnowledgeSoundness`
+returns its residual unchanged, so the long component assembly (including
+`hCoreInteractionAppendRbrKnowledgeSoundness` and `hBatchingCoreAppendRbrKnowledgeSoundness`)
+adds no logical content. Full-verifier RBR knowledge soundness remains open. -/
 theorem fullOracleVerifier_rbrKnowledgeSoundness [IsDomain L] [IsDomain K]
     (hCoreInteractionAppendRbrKnowledgeSoundness :
       (SumcheckPhase.coreInteractionOracleVerifier κ L K P ℓ ℓ' h_l

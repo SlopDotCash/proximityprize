@@ -53,7 +53,9 @@ where it would contribute and give `m_4 = 3m_2²`). Hence
 
 A measure is semicircular `⟺ κ_4 = 0 ⟺ m_4 = 2·m_2²`. We prove:
 
-* `freeKappa4_eq`            : `κ₄ = m₄ − 2·m₂²` (the NC(4) inversion, by `ring`).
+* `freeKappa4_eq`            : notation only — it restates its hypothesis `κ₄ = m₄ − 2·m₂²`.  `κ₄` is
+                                NOT defined in Lean; the NC(4) inversion is the cited Speicher identity,
+                                entered as a hypothesis (audit 2026-10-28, CW-B18-19).
 * `semicircle_iff_m4`        : `κ₄ = 0 ⟺ m₄ = 2·m₂²`.
 * `not_semicircle_of_m4_gt`  : the measured strict gap `m₄ > 2·m₂²` gives `κ₄ > 0` — **NON-semicircular**,
                                 refuting E24's `κ_{r>2} = 0`. (Plug the A15 numbers: `m₄=2976 > 2·m₂²=2048`
@@ -82,8 +84,9 @@ namespace ArkLib.ProximityGap.FreeCumulantObstruction
 (`m₁ = m₃ = 0`). The free cumulant `κ₄` is, by Speicher's formula summed over the non-crossing
 partitions of `{1,2,3,4}`, `κ₄ = m₄ − 2·m₂²`: the full block gives `κ₄`, the two NON-crossing
 pairings `{12}{34}`, `{14}{23}` give `2κ₂²` with `κ₂ = m₂`, and the crossing pairing `{13}{24}` is
-excluded (that exclusion is exactly *freeness*). This is the definitional identity; we record it as a
-`ring` fact tying the abstract `κ₄` to the observable moments. -/
+excluded (that exclusion is exactly *freeness*).  NOTATION ONLY (CW-B18-19): `κ₄` is not defined in
+Lean and the statement is its own hypothesis `hk`; it records the convention, it does not prove the
+NC(4) inversion. -/
 theorem freeKappa4_eq (m2 m4 kappa4 : ℝ) (hk : kappa4 = m4 - 2 * m2 ^ 2) :
     kappa4 = m4 - 2 * m2 ^ 2 := hk
 

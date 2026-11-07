@@ -32,8 +32,9 @@ the **single** §5 coefficient-polynomial extraction residual:
 * `jointAgreement_of_latticeThreshold_of_coeffPolys` — per stack: quantitative threshold +
   extraction ⟹ `jointAgreement`, at every radius `δ` (in particular the exact lattice endpoint).
 * `LatticeCoeffPolyExtraction` — the extraction-only residual surface (BCIKS20 §5 list-decoding
-  at the endpoint).  Its *unconditional* form is refuted at small parameters (see below), so the
-  surviving frontier is a regime-restricted version, not this Prop as stated.
+  at the endpoint).  It is refuted at small parameters (see below), and its all-decoded-family
+  quantifier also fails on ambiguous decodings, so the surviving frontier is an existence /
+  selection-compatible extraction obligation, not this Prop as stated.
 * `correlatedAgreementCurves_of_latticeExtraction` — consumer shape: the extraction supply alone
   yields `δ_ε_correlatedAgreementCurves` with `ε = (n+1)/|F|`.
 * `BoundaryCardLatticeThresholdResidual` + `boundaryCardLatticeThresholdResidual_of_extraction`
@@ -49,9 +50,23 @@ at least `6 > 5 = (n+1)k` (`Pr ≥ 6/7 > 5/7`) while `jointAgreement` fails.  He
 quantitative threshold *alone* is false as a lattice-leaf hypothesis.  The extraction is
 load-bearing, not droppable: the same endpoint refutes the extraction-only surface itself
 (`not_latticeCoeffPolyExtraction`, hence also the canonical-family form
-`not_latticeCanonicalCoeffPolyExtraction`), so the surviving frontier is a regime-restricted
-extraction statement, not the unconditional one — the `ZMod 11` witness below shows that
-restriction is not vacuity.
+`not_latticeCanonicalCoeffPolyExtraction`), so neither Prop is an open target as stated.
+
+**Why restricting the regime alone does not repair them (ambiguous decodings).**  Both Props
+quantify over *every* decoded family (and the canonical form demands uniqueness among them),
+so they fail even where correlated agreement is true, whenever a curve point has two
+decodings.  At the `ZMod 11`, `n = 8`, `deg = 2`, `k = 1`, `δ = 1/2` endpoint of the witness
+below, take `u 0 = 0` on coordinates `0..3` and `1` on `4..7`, `u 1 = 0`: every curve point is
+`u 0`, both constants `0` and `1` decode at distance `4/8`, all `11 > 9 = (n+1)k` parameters are
+good, and the family `P z = C 1` at `z = 0`, `C 0` elsewhere has a constant coefficient that no
+degree-`< 2` polynomial in `z` interpolates (zeros at `1, 2` force it to vanish, contradicting
+the value `1` at `0`); the two constant families also break canonical uniqueness.  Yet
+`jointAgreement` holds (`u 0` is close to a constant, `u 1` is a codeword).  (This ambiguity
+witness is recorded from the 2026-10-28 audit, PG-309, and is not kernel-checked here; the
+kernel refutations above use the `ZMod 7` endpoint.)  A correct replacement must be an
+existence / selection-compatible coefficient-family obligation (or a dichotomy handling
+ambiguous lists), not an all-choice or uniqueness demand.  The `ZMod 11` zero-stack witness
+below shows the conditional hypothesis spine is satisfiable, not that either Prop holds.
 
 The witness namespace instantiates the per-stack theorem end-to-end at a genuine lattice
 endpoint (`ZMod 11`, `n = 8`, `deg = 2`, `deg·n = 16 = 4²`, `δ·n = 4` integral): the zero stack
@@ -233,9 +248,11 @@ residual from it via the (radius-generic, proven) canonical-agreement transport
 
 This is a reduction layer, not a closure, and the unconditional canonical Prop is *false* at the
 `ZMod 7` endpoint of `BoundaryLatticeThresholdRefutation`
-(`not_latticeCanonicalCoeffPolyExtraction`).  What remains open is the regime-restricted version:
-BCIKS20 §5 list-decoding at the exact endpoint — the same open core as
-`StrictCanonicalCoeffPolysResidual`, with the strict-radius slack no longer available. -/
+(`not_latticeCanonicalCoeffPolyExtraction`).  Its uniqueness clause also fails whenever a good
+curve point has two decodings (see the ambiguity note in the module header), so the open
+content is not this Prop under a regime restriction but an existence / selection-compatible
+form of BCIKS20 §5 list-decoding extraction at the exact endpoint, with the strict-radius slack
+no longer available. -/
 
 omit [Nonempty ι] in
 /-- **Canonical-family form of the lattice extraction residual.**  For every stack over the

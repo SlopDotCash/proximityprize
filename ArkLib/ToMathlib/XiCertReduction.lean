@@ -52,6 +52,13 @@ Write `Q := evalX (C x₀) R` and `v := w.eval (C x₀)` (the centre fold).
   vanishing ⟺ the branch `(Y − C v)` divides the representative), and the composition degree
   bounds `natDegree_eval_le` / `cert_natDegree_le` for the `hbig` accounting.
 
+**Scope caveat (F7).**  The `ξ`-unit closure is correct under its premises, but it consumes the
+global branch separation `hbr : G.eval (w.eval (C x₀)) ≠ 0`, which
+`BranchSeparationUnsat.branchCert_eq_zero` refutes for `2 ≤ H.natDegree`.  Eliminating `hxi`
+does not repair that obstruction: the `xiFree` capstones can be non-vacuous only for linear
+`H`, and the legacy `gammaGenuine_eq_trunc_global_xiFree` additionally retains the F6-refuted
+`hrepG`.
+
 ## References
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon
   Codes*, §5–§6, Appendix A.3–A.5 (the `ξ`-regularity along the decoded surface; here closed
@@ -257,7 +264,10 @@ variable [Fintype F] [DecidableEq F]
 
 /-- **Claim 5.8′ from purely structural global data (legacy representative)**:
 `BranchCertificates.gammaGenuine_eq_trunc_global` with `hxi` and `hξ` ELIMINATED (both are
-now theorems) and `hbig` sharpened (the `ξ`-certificate contributes zero degree). -/
+now theorems) and `hbig` sharpened (the `ξ`-certificate contributes zero degree).
+
+Caveat: `hbr` is refuted for `2 ≤ H.natDegree` (F7, `BranchSeparationUnsat.branchCert_eq_zero`)
+and `hrepG` by F6 there, so this theorem can be non-vacuous only for linear `H`. -/
 theorem gammaGenuine_eq_trunc_global_xiFree {x₀ : F} {R : F[X][X][Y]}
     (hHyp : Hypotheses x₀ R H)
     {D k : ℕ} (hD : Bivariate.totalDegree H ≤ D) (hH : 0 < H.natDegree)
@@ -291,7 +301,10 @@ theorem gammaGenuine_eq_trunc_global_xiFree {x₀ : F} {R : F[X][X][Y]}
 
 /-- **Claim 5.8′ from purely structural global data (F6-corrected representative)**:
 `DecodedCapstonesCorrected.gammaGenuine_eq_trunc_global_corrected` with `hxi` and `hξ`
-ELIMINATED and `hbig` sharpened. -/
+ELIMINATED and `hbig` sharpened.
+
+Caveat: `hbr` is refuted for `2 ≤ H.natDegree` (F7, `BranchSeparationUnsat.branchCert_eq_zero`),
+so this theorem can be non-vacuous only for linear `H`. -/
 theorem gammaGenuine_eq_trunc_global_corrected_xiFree {x₀ : F} {R : F[X][X][Y]}
     (hHyp : Hypotheses x₀ R H)
     {D k : ℕ} (hD : Bivariate.totalDegree H ≤ D) (hH : 0 < H.natDegree)

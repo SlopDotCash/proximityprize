@@ -51,9 +51,14 @@ reduced to the **single named wraparound-injection hypothesis**
 >                            (i.e. `|Wrap| ≤ |matchings|·slack`).
 
 Given that hypothesis, the bound transfers: `|S| ≤ |matchings|·(n^r + slack)`. The whole open content
-is concentrated in `slack` (and in proving `WrapInjectsIntoSlack` makes `slack` *small*). When
-`slack = 0` (char 0, or `n ≲ √p` where there are no wraparound solutions) this recovers the exact
-char-0 bound. When the wraparound tag is bounded by the DC excess `|G|^{2r}/q − (something)`, the
+is concentrated in `slack`: `WrapInjectsIntoSlack` by itself is **trivially satisfiable** with
+`slack = |Wrap|` (`wrapInjectsIntoSlack_card`), so a meaningful residual must come with an explicit
+small bound on `slack` (e.g. `slack ≤ n^r`, or `slack = 0`).  When `slack = 0` (e.g. char 0,
+`wrapInjectsIntoSlack_zero_of_charZero`) this recovers the exact char-0 bound.  (Audit CW-B14-03:
+an earlier claim that `n ≲ √p` forces no wraparound is **false** — in `𝔽₂₅₇`, `μ₁₆ = ⟨2⟩`
+(`16 ≤ √257`) contains `1, 2, −4` and `1 + 1 + 2 + (−4) = 0` is an unpaired zero-sum `4`-tuple; in
+`𝔽₁₇`, `μ₄ = {1, 4, 13, 16}` and `5·1 + 3·4 = 17 ≡ 0` gives an unpaired `8`-tuple.) When the
+wraparound tag is bounded by the DC excess `|G|^{2r}/q − (something)`, the
 DC-subtracted energy `A_r ≤ Wick` follows — the genuinely true prize object.
 
 **Honesty.** Nothing here claims `E_r ≤ Wick` in char `p` (that is FALSE, see above). The brick is the
@@ -151,7 +156,7 @@ theorem card_le_of_two_covers
     (card_le_of_cover_by_matchings Wr M cellWr tSlack hcoverWr hcellWr)
 
 /-- **`slack = 0` recovers the char-0 bound exactly.** When there are no wraparound solutions
-(`Wr = ∅`, the char-0 / `n ≲ √p` regime), the tag vanishes and the matching injection gives the bare
+(`Wr = ∅`, e.g. the char-0 regime), the tag vanishes and the matching injection gives the bare
 `|S| ≤ |M|·tMain` — i.e. char-0 is the `slack = 0` instance of the tagged char-`p` bound. -/
 theorem card_le_no_wrap
     (S P : Finset κ) (M : Finset ι) (tMain : ℕ)
@@ -193,7 +198,8 @@ def pairedSol (G : Finset F) (r : ℕ) : Finset (Fin (2 * r) → F) :=
     (fun c => ∃ σ : Equiv.Perm (Fin (2 * r)), IsPairing σ ∧ ∀ i, c (σ i) = - c i)
 
 /-- The **wraparound (char-`p`) part**: zero-sum tuples with NO antipodal matching — the genuine
-char-`p` extras the DC term counts. (In char 0 / `n ≲ √p` this set is empty.) -/
+char-`p` extras the DC term counts. (For `2^k`-th roots in char 0 this set is empty; it can be
+nonempty already for small `n ≤ √p`, e.g. `μ₁₆ ⊂ 𝔽₂₅₇`.) -/
 def wrapSol (G : Finset F) (r : ℕ) : Finset (Fin (2 * r) → F) :=
   (zeroSumSol G (2 * r)).filter
     (fun c => ¬ ∃ σ : Equiv.Perm (Fin (2 * r)), IsPairing σ ∧ ∀ i, c (σ i) = - c i)
@@ -233,14 +239,25 @@ theorem pairedSol_card_le (G : Finset F) (r : ℕ) :
 /-- **The named WRAPAROUND-INJECTION hypothesis (the open residual, char-`p`).**
 
 `WrapInjectsIntoSlack G r slack` asserts the wraparound set injects into `matchings × [slack]`, i.e.
-`|Wrap| ≤ |matchings|·slack`. This is the SINGLE genuine open input: bounding the genuine char-`p`
-extra solutions by a *small* `slack`. The deep analytic content — that `slack` is `o(n^r)` (so the tag
+`|Wrap| ≤ |matchings|·slack`.  On its own this carries **no** content: it holds with
+`slack = |Wrap|` (`wrapInjectsIntoSlack_card`).  The open input is the instance with an explicit
+*small* `slack` (e.g. `slack = 0`, or `slack ≤ n^r`). The deep analytic content — that `slack` is
+`o(n^r)` (so the tag
 does not destroy the bound) at the prize scale — is the Konyagin–Shparlinski / di Benedetto / DC-excess
 input; it is FALSE for the raw `E_r ≤ Wick` (where the DC term forces `slack ≈ n^r·(|G|^r/(q·Wick))`,
 not small) and TRUE for the DC-subtracted `A_r` (the genuinely thinness-essential object). The brick
 below transfers the bound for WHATEVER `slack` this hypothesis supplies. -/
 def WrapInjectsIntoSlack (G : Finset F) (r slack : ℕ) : Prop :=
   (wrapSol G r).card ≤ (matchings r).card * slack
+
+/-- **`WrapInjectsIntoSlack` is trivially satisfiable without a size bound (audit CW-B14-03).**
+Since `#matchings = (2r−1)‼ ≥ 1`, the choice `slack = |Wrap|` always works; the hypothesis only has
+content together with an explicit small bound on `slack`. -/
+theorem wrapInjectsIntoSlack_card (G : Finset F) (r : ℕ) :
+    WrapInjectsIntoSlack G r (wrapSol G r).card := by
+  unfold WrapInjectsIntoSlack
+  rw [matchings, pairings_card_eq_doubleFactorial r]
+  exact Nat.le_mul_of_pos_left _ (Nat.doubleFactorial_pos _)
 
 /-- **The char-`p` matching injection with a bounded wraparound tag (the S2 brick).** Given the named
 wraparound-injection hypothesis with budget `slack`, the zero-sum count is bounded by the char-0 main
@@ -277,9 +294,8 @@ theorem zeroSumCount_le_doubleFactorial_with_tag (G : Finset F) (r slack : ℕ)
   rwa [matchings, pairings_card_eq_doubleFactorial r] at h
 
 /-- **`slack = 0` ⟹ the char-0 bound, recovered through the tag.** When `WrapInjectsIntoSlack G r 0`
-holds (no wraparound solutions: char 0, or `n ≲ √p`), the tagged bound collapses to the exact
-char-0 closed form `zeroSumCount G (2r) ≤ (2r−1)‼·n^r`. This shows the tagged char-`p` statement is a
-strict generalization of (and reduces to) the proven char-0 bound. -/
+holds (no wraparound solutions, e.g. char-0 `2^k`-th roots), the tagged bound collapses to the exact
+char-0 closed form `zeroSumCount G (2r) ≤ (2r−1)‼·n^r`. -/
 theorem zeroSumCount_le_doubleFactorial_of_no_wrap (G : Finset F) (r : ℕ)
     (hwrap : WrapInjectsIntoSlack G r 0) :
     zeroSumCount G (2 * r) ≤ (2 * r - 1)‼ * G.card ^ r := by
@@ -289,9 +305,8 @@ theorem zeroSumCount_le_doubleFactorial_of_no_wrap (G : Finset F) (r : ℕ)
 /-- **Consistency check: in char 0 the wraparound set is empty, so `slack = 0` for free.** For a
 finset `G` of `2^k`-th roots of unity (`k ≥ 1`) over a char-0 field, every zero-sum tuple is paired
 (Lam–Leung), hence `wrapSol G r = ∅` and `WrapInjectsIntoSlack G r 0` holds unconditionally. The tagged
-bound then reproduces `zeroSumCount_le_doubleFactorial_dyadic`. This closes the loop: the wraparound
-tag is genuinely `0` exactly where the char-0 proof applies, and only becomes nonzero in the char-`p`
-prize regime. -/
+bound then reproduces `zeroSumCount_le_doubleFactorial_dyadic`.  (In char `p` the wraparound tag
+can be nonzero even for small subgroups, e.g. `μ₁₆ ⊂ 𝔽₂₅₇`; see the module docstring.) -/
 theorem wrapInjectsIntoSlack_zero_of_charZero
     {L : Type*} [Field L] [CharZero L] [DecidableEq L]
     {k r : ℕ} (hk : 1 ≤ k) (G : Finset L) (hG : ∀ z ∈ G, z ^ (2 ^ k) = 1) :
@@ -331,6 +346,7 @@ end ArkLib.ProximityGap.NegationClosedWalk
 #print axioms ArkLib.ProximityGap.Frontier.ShawMatchingInjection.card_le_matching_with_wrap_tag
 #print axioms ArkLib.ProximityGap.Frontier.ShawMatchingInjection.card_le_of_two_covers
 #print axioms ArkLib.ProximityGap.NegationClosedWalk.pairedSol_card_le
+#print axioms ArkLib.ProximityGap.NegationClosedWalk.wrapInjectsIntoSlack_card
 #print axioms ArkLib.ProximityGap.NegationClosedWalk.zeroSumCount_le_matching_with_tag
 #print axioms ArkLib.ProximityGap.NegationClosedWalk.zeroSumCount_le_doubleFactorial_with_tag
 #print axioms ArkLib.ProximityGap.NegationClosedWalk.zeroSumCount_le_doubleFactorial_of_no_wrap

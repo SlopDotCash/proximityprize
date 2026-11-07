@@ -6,28 +6,27 @@ Authors: ArkLib Contributors (wf-L6, #444)
 import Research.ProximityPrize.Frontier._CharZeroEnergyClosedForm
 
 /-!
-# Discharging the char-`0` Lam–Leung ceiling hypothesis at `r ∈ {4,5,6}` (residual census, #444, wf-L6)
+# Char-`0` Lam–Leung ceilings and strict deficits at `r ∈ {4,5,6}` (residual census, #444, wf-L6)
 
-## What this discharges (the residual-census close-out action)
+## What this file proves
 
-The slack route `Frontier/_wf6P2_charp_lamleung_slack.lean` carries the char-`0` Lam–Leung ceiling
-`(S-M1) : A_r ≤ (2r−1)‼·n^r` as a **free hypothesis** (`hZceiling`) consumed by
-`slack_domination_implies_SM1` (`(Z ≤ ceiling) → (S ≤ ceiling − Z) → Z + S ≤ ceiling`). Two prior
-landed lanes discharged that ceiling input unconditionally only at the ENDS of the proven ladder:
-`_wf9OT4_charzero_ceiling_discharge.lean` at `r ∈ {2,3}` and
-`_wfL6_charzero_ceiling_discharge_high.lean` at `r ∈ {7,8,9}`. The MIDDLE rungs `r ∈ {4,5,6}` —
-whose char-`0` exact closed forms `E_4, E_5, E_6` and non-strict ceilings `E_r ≤ (2r−1)‼·n^r`
-(`E4_le_wick / E5_le_wick / E6_le_wick`) are ALREADY PROVEN unconditionally in
-`_CharZeroEnergyClosedForm.lean` — were never wired into the slack-route discharge, and their
-strict-slack positivity `0 < (2r−1)‼·n^r − E_r` (the non-vacuity certificate that
-`deficit_two_pos`/`deficit_three_pos` provide at `r ∈ {2,3}`) was MISSING at `r ∈ {4,5,6}`.
+The char-`0` exact closed forms `E_4, E_5, E_6` and non-strict ceilings `E_r ≤ (2r−1)‼·n^r`
+(`E4_le_wick / E5_le_wick / E6_le_wick`) are proven in `_CharZeroEnergyClosedForm.lean`.  This file
+re-exports those ceilings and proves the strict deficit positivity `0 < (2r−1)‼·n^r − E_r` at the three
+middle rungs `r ∈ {4,5,6}` (only `deficit_{two,three}_pos` were in tree; the high rungs `r ∈ {7,8,9}`
+are in `_wfL6_charzero_ceiling_discharge_high.lean`).  It lives on the integer closed-form carrier
+(`E_r : ℤ`).
 
-This file **closes the contiguous ceiling-discharge ladder `r = 2..9`** on the in-tree closed-form
-`ℤ`-carrier: it proves the strict deficit positivity at the three middle rungs (NEW — only
-`deficit_{two,three}_pos` were in tree) and assembles the `(P2-Slack) ⟹ (S-M1)` consumer with the
-char-`0` ceiling input PROVEN (`E{4,5,6}_le_wick`) rather than free, for each middle rung. It lives on
-the integer closed-form carrier (`E_r : ℤ`), so it needs NO `CharZero F` instance synthesis and is
-robust under both `lake build` and `lake env lean`.
+## Correction (audit 2026-10-28, CW-B18-08)
+
+An earlier version of this file framed these ceilings as "discharging the free `hZceiling`
+hypothesis of the slack route".  That was wrong: the slack residual `(P2-Slack) : Spur ≤ ceiling − E_r`
+ALONE gives `E_r + Spur ≤ ceiling` by `linarith` (`WF6P2.slack_domination_implies_SM1` takes only the
+residual, and `hZceiling` has been dropped from `WF6P2.slack_route_full`).  The char-`0` ceiling is
+not a load-bearing input of that implication; the per-rung `(P2-Slack) ⟹ (S-M1)` consumers that
+"supplied" it were redundant and have been removed.  What remains meaningful is the ceiling itself and
+the STRICT deficit positivity, which certifies that `(P2-Slack)` is non-vacuous (there is real
+headroom `ceiling − E_r > 0` for `Spur`).
 
 ## What is PROVEN here (axiom-clean: `propext, Classical.choice, Quot.sound`; NO sorryAx)
 
@@ -35,23 +34,15 @@ robust under both `lake build` and `lake env lean`.
   re-exported from the in-tree `E{4,5,6}_le_wick`.
 * `charzero_slack_{four,five,six}_pos` — the slack `(2r−1)‼·n^r − E_r(ℂ) > 0` is genuine (strict)
   for `n ≥ 2` (NEW: closes the `deficit_*_pos` ladder, which previously stopped at `r=3`), so the
-  discharge is non-vacuous: there IS real headroom for the spurious term to live in.
-* `SM1_{four,five,six}_of_slack` — `(P2-Slack) at r ⟹ A_r ≤ (2r−1)‼·n^r`, with the char-`0`
-  ceiling input PROVEN, so the consumer rests ONLY on the open `(P2-Slack)` residual
-  `Spur ≤ ceiling − E_r`. This is `slack_domination_implies_SM1` with the former free `hZceiling`
-  DISCHARGED, at the three middle depths.
+  `(P2-Slack)` residual is non-vacuous: there IS real headroom for the spurious term to live in.
 * `SM1_{four,five,six}_at_faithful_edge` — at the faithfulness edge `Spur = 0` (where `A_r = E_r`)
   the prize bound IS the char-`0` ceiling, no residual needed.
 
 ## Honest scope
 
-This is the char-`0` HALF only, completing the middle of the `r = 2..9` ladder. It removes the free
-`hZceiling` hypothesis from the slack route at `r ∈ {4,5,6}` (a conditional input becomes
-unconditional — a real tightening of the formal cone). It does NOT bound the spurious char-`p` term
-`Spur_r(p)`; the `(P2-Slack)` spurious-domination residual stays GENUINELY OPEN (= the BGK char-`p`
-wall, the genuine open core: the char-`p` transfer of the energy bound at depth `r ≈ ln q`, refuted
-at the prize prime). No `δ*` / capacity / beyond-Johnson claim. `CORE M(μ_n) ≤ C·√(n·log(p/n))`
-UNCHANGED/OPEN.
+Char-`0` only.  It does NOT bound the spurious char-`p` term `Spur_r(p)`; the `(P2-Slack)` residual
+stays GENUINELY OPEN (the BGK char-`p` wall).  No `δ*` / capacity / beyond-Johnson claim.
+`CORE M(μ_n) ≤ C·√(n·log(p/n))` UNCHANGED/OPEN.
 
 Issue #444, wf-L6.
 -/
@@ -68,7 +59,7 @@ open ProximityGap.Frontier.CharZeroEnergy
 
 The source `_CharZeroEnergyClosedForm.lean` proves the non-strict ceilings `E{4,5,6}_le_wick` and the
 exact deficit identities `deficit_{four,five,six}`, but the strict positivity certificates
-`0 < wick r n − E_r n` (non-vacuity of the discharge) were only established at `r ∈ {2,3}`. These
+`0 < wick r n − E_r n` (non-vacuity of the `(P2-Slack)` residual) were only established at `r ∈ {2,3}`. These
 three lemmas fill that gap, matching the `n ≥ 2` regime of the corresponding `E_r ≤ wick`. -/
 
 /-- **Strict char-`0` slack at `r = 4`** (`n ≥ 2`): `0 < 4!!·n⁴ − E_4(μ_n)`, i.e. the deficit
@@ -105,11 +96,10 @@ theorem deficit_six_pos (n : ℤ) (hn : 2 ≤ n) : 0 < wick 6 n - E6 n := by
     mul_pos (by linarith) hquartic
   nlinarith [hprod]
 
-/-! ## Char-`0` Lam–Leung ceiling, UNCONDITIONAL, at `r ∈ {4,5,6}` (the discharged `hZceiling`) -/
+/-! ## Char-`0` Lam–Leung ceiling, UNCONDITIONAL, at `r ∈ {4,5,6}` -/
 
 /-- **Char-`0` Lam–Leung ceiling at `r = 4`, UNCONDITIONAL** (`n ≥ 2`):
-`E_4(μ_n) ≤ (2·4−1)‼·n⁴ = 105 n⁴`. Re-exported from the in-tree `E4_le_wick`; this is the former
-free `hZceiling` of the slack route at `r=4`, now PROVEN. -/
+`E_4(μ_n) ≤ (2·4−1)‼·n⁴ = 105 n⁴`. Re-exported from the in-tree `E4_le_wick`. -/
 theorem charzero_ceiling_four (n : ℤ) (hn : 2 ≤ n) : E4 n ≤ wick 4 n :=
   E4_le_wick n hn
 
@@ -120,45 +110,6 @@ theorem charzero_ceiling_five (n : ℤ) (hn : 2 ≤ n) : E5 n ≤ wick 5 n :=
 /-- **Char-`0` Lam–Leung ceiling at `r = 6`, UNCONDITIONAL** (`n ≥ 2`): `E_6(μ_n) ≤ 10395 n⁶`. -/
 theorem charzero_ceiling_six (n : ℤ) (hn : 2 ≤ n) : E6 n ≤ wick 6 n :=
   E6_le_wick n hn
-
-/-! ## The `(P2-Slack) ⟹ (S-M1)` consumer with the char-`0` ceiling DISCHARGED
-
-`slack_domination_implies_SM1` on `ℤ`: char-`p` energy `A = E + Spur`; if the spurious part fits in
-the ceiling slack (`Spur ≤ ceiling − E`, the open residual) and `Spur ≥ 0`, then `A ≤ ceiling`. The
-ceiling input `E ≤ ceiling` is supplied PROVEN at each rung (`charzero_ceiling_r`) — never free. -/
-
-/-- Generic `(P2-Slack) ⟹ (S-M1)` step on `ℤ`. Identical to the OT4 / high-rung generic step;
-restated here so the file is self-contained on the closed-form `E_r` carriers. -/
-theorem P2Slack_residual_implies_energy_le
-    (A E Spur ceiling : ℤ)
-    (hsplit : A = E + Spur) (hspur : 0 ≤ Spur)
-    (hresid : Spur ≤ ceiling - E) :
-    A ≤ ceiling := by
-  rw [hsplit]; linarith
-
-/-- **`(S-M1)` at `r = 4` with the char-`0` ceiling DISCHARGED.** Decompose `A_4 = E_4 + Spur`. The
-consumer needs `Spur ≤ ceiling − E_4` (the open `(P2-Slack)` residual) AND `E_4 ≤ ceiling` (formerly
-the free `hZceiling`). The latter is PROVEN (`charzero_ceiling_four`), so this consumes ONLY the open
-residual: `(P2-Slack) at r=4 ⟹ A_4 ≤ 105 n⁴`. -/
-theorem SM1_four_of_slack (n : ℤ) (hn : 2 ≤ n)
-    (Spur : ℤ) (hspur : 0 ≤ Spur)
-    (hresid : Spur ≤ wick 4 n - E4 n) :
-    E4 n + Spur ≤ wick 4 n :=
-  P2Slack_residual_implies_energy_le (E4 n + Spur) (E4 n) Spur (wick 4 n) rfl hspur hresid
-
-/-- **`(S-M1)` at `r = 5` with the char-`0` ceiling DISCHARGED.** -/
-theorem SM1_five_of_slack (n : ℤ) (hn : 2 ≤ n)
-    (Spur : ℤ) (hspur : 0 ≤ Spur)
-    (hresid : Spur ≤ wick 5 n - E5 n) :
-    E5 n + Spur ≤ wick 5 n :=
-  P2Slack_residual_implies_energy_le (E5 n + Spur) (E5 n) Spur (wick 5 n) rfl hspur hresid
-
-/-- **`(S-M1)` at `r = 6` with the char-`0` ceiling DISCHARGED.** -/
-theorem SM1_six_of_slack (n : ℤ) (hn : 2 ≤ n)
-    (Spur : ℤ) (hspur : 0 ≤ Spur)
-    (hresid : Spur ≤ wick 6 n - E6 n) :
-    E6 n + Spur ≤ wick 6 n :=
-  P2Slack_residual_implies_energy_le (E6 n + Spur) (E6 n) Spur (wick 6 n) rfl hspur hresid
 
 /-! ## Faithfulness-edge sanity (`Spur = 0`): the prize bound IS the char-`0` ceiling -/
 
@@ -180,9 +131,6 @@ end ArkLib.ProximityGap.Frontier.WFL6Mid
 #print axioms ArkLib.ProximityGap.Frontier.WFL6Mid.charzero_ceiling_four
 #print axioms ArkLib.ProximityGap.Frontier.WFL6Mid.charzero_ceiling_five
 #print axioms ArkLib.ProximityGap.Frontier.WFL6Mid.charzero_ceiling_six
-#print axioms ArkLib.ProximityGap.Frontier.WFL6Mid.SM1_four_of_slack
-#print axioms ArkLib.ProximityGap.Frontier.WFL6Mid.SM1_five_of_slack
-#print axioms ArkLib.ProximityGap.Frontier.WFL6Mid.SM1_six_of_slack
 #print axioms ArkLib.ProximityGap.Frontier.WFL6Mid.SM1_four_at_faithful_edge
 #print axioms ArkLib.ProximityGap.Frontier.WFL6Mid.SM1_five_at_faithful_edge
 #print axioms ArkLib.ProximityGap.Frontier.WFL6Mid.SM1_six_at_faithful_edge

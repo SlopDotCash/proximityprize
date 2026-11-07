@@ -18,10 +18,13 @@ MEASUREMENTS (m up to 1200, several primes x characters each):
  (M1) K₆ := Σ_a‖Ŝ‖⁶/(m⁴q³) directly — prediction under equidistribution:
       the average is Gumbel-IMMUNE: modes ~ complex Gaussian variance
       s²·q (s² = Σ_{j≠0}|J_j|²/(mq)·m ≈ m−2), E|G|⁶ = 6·(var)³ ⇒
-      K₆ ≈ 6·((m−2)/m)³ → 6.  If K₆ is O(1)-flat, the r=3 core truth is
-      C ≈ 3·K₆ + o(1) — ABSOLUTE — and only the INPUTS carry the log.
- (M2) waste of the Hölder chain: (B_meas·K₄_meas)/K₆ — how much the
-      sup·quartic composition overpays (expected ~ log m /(K₆/K₄-ish)).
+      K₆ ≈ 6·((m−2)/m)³ → 6.  A flat sampled MEDIAN is evidence only about
+      typical cells; a uniform absolute core constant needs control of the
+      SUPREMUM over all (q, chi), which no finite sample provides (audit
+      2026-10-28, L103).  K6_max is printed alongside for that reason.
+ (M2) waste of the Hölder chain, computed PER SAMPLE as (B·K₄)/K₆ for the same
+      (q, chi) and then summarized (median / max) — not as a ratio of separately
+      sorted medians, which can mix different samples.
  (M3) the identity check Σ_a‖Ŝ‖⁶ = m·Σ_c‖(S⋆S⋆S)(c)‖² at small m (exact
       convolution, machine precision) — the circularity record.
 """
@@ -107,24 +110,27 @@ def main():
     ms = [9, 12, 18, 24, 36, 48, 72, 96, 144, 192, 288, 384, 480, 720, 960, 1200]
     print("\n(M1/M2) K6 direct vs composed B*K4 (5 primes x 3 chars per m):")
     print(f"{'m':>5} {'K6_med':>7} {'K6_max':>7} {'pred 6((m-2)/m)^3':>17} "
-          f"{'B_med':>6} {'K4_med':>7} {'waste B*K4/K6':>13}")
+          f"{'B_med':>6} {'K4_med':>7} {'waste_med':>9} {'waste_max':>9}")
     for m in ms:
         qs = primes_1mod(m, 5)
-        Bs, K4s, K6s = [], [], []
+        Bs, K4s, K6s, wastes = [], [], [], []
         for q in qs:
             ks = [k for k in range(1, m) if math.gcd(k, m) == 1][:3]
             for k in ks:
                 B, K4, K6 = moments(q, m, k)
                 Bs.append(B); K4s.append(K4); K6s.append(K6)
-        Bs.sort(); K4s.sort(); K6s.sort()
+                wastes.append((B * K4) / K6)  # per-sample Hölder waste (same q, chi)
+        Bs.sort(); K4s.sort(); K6s.sort(); wastes.sort()
         n2 = len(K6s) // 2
         pred = 6 * ((m - 2) / m) ** 3
-        waste = (Bs[n2] * K4s[n2]) / K6s[n2]
         print(f"{m:>5} {K6s[n2]:>7.3f} {K6s[-1]:>7.3f} {pred:>17.3f} "
-              f"{Bs[n2]:>6.2f} {K4s[n2]:>7.3f} {waste:>13.2f}")
-    print("\n  verdict: if K6_med is flat-in-m near the Gaussian value ~6, the r=3")
-    print("  core truth has an ABSOLUTE constant (the Gumbel log lives only in the")
-    print("  sup); the Hölder-composed route pays exactly that log as 'waste'.")
+              f"{Bs[n2]:>6.2f} {K4s[n2]:>7.3f} {wastes[len(wastes) // 2]:>9.2f} "
+              f"{wastes[-1]:>9.2f}")
+    print("\n  verdict (finite evidence only): a K6_med flat-in-m near the Gaussian value")
+    print("  ~6 is consistent with an absolute core constant at typical cells, but it does")
+    print("  NOT establish one: the supremum over (q, chi) is uncontrolled by a median.")
+    print("  The per-sample waste column measures what the Hölder composition overpays")
+    print("  on these samples.")
 
 if __name__ == "__main__":
     main()

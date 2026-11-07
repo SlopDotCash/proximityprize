@@ -42,6 +42,18 @@ As in `InitAppendRbr`, the keystone's single phase-2 seam-crossing leg is taken 
 typed hypothesis `hPhase2` (`appendRbrKnowledgeSoundnessPhase2Residual`), quantified over the
 destructured inner extractors / knowledge state functions — exactly the shape the keystone
 consumes.  Everything else is proven.
+
+## Scope (audit 2026-10-28, L36)
+
+The relations of this composition carry no proximity content.  The composed input relation
+`stirSeamRelInit` is the statement-independent gate `{_ | 0 < δ}`, and the output relation is
+`Set.univ` with `Unit` witnesses.  For `δ > 0` both relations are universal, and every verifier
+is round-by-round knowledge sound for such relations with zero error: the constant-true knowledge
+state function never flips.  So the theorems below are budget and seam-transport bookkeeping at
+the spot-check budget; they do not certify that the original input word is close to a low-degree
+code, and they are not the missing STIR proximity-soundness result.  The missing word at the
+seam (see the HONESTY note of `RealBudgetRbr.lean`) is why no statement-dependent relation sits
+here.
 -/
 
 namespace StirIOP
@@ -193,7 +205,9 @@ the fold challenge `C_fold`, the genuine spot-check budget
 `V₂`'s RBR leg (`h₂` of the keystone) is the LANDED
 `stirFinalVectorVerifierChecked_toVerifier_rbrKnowledgeSoundness` (`RealBudgetRbr.lean`) —
 no hypothesis; the phase-2 seam residual is the single named hypothesis `hPhase2`, exactly as
-in `InitAppendRbr`. -/
+in `InitAppendRbr`.  Scope: the input relation is the δ-positivity gate and the output relation
+is `Set.univ`, so this certifies no proximity property of the input word (module docstring,
+"Scope"). -/
 theorem stirSeam_initPacked_append_checkedFinal_rbrKnowledgeSoundness
     (δ : ℝ≥0)
     (hInit : ∃ s, s ∈ support init)

@@ -8,11 +8,20 @@ import Mathlib
 import ArkLib.Data.CodingTheory.ProximityGap.GG25CurveDecodability
 
 /-!
-# Curve decodability gives a non-covering condition (issue #334, K5, brick 3)
+# Curve decodability: no single δ-ball contains the code (issue #334, K5, brick 3)
 
-[Jo26] (ePrint 2026/891) **Lemma 5.4**: a nonzero `F_q`-additive code that is
-`(ℓ, δ, a, b)`-curve-decodable with `a ≤ q` and `b > ℓ + 1` cannot `δ`-cover the ambient
-space — for every word `y` some codeword is farther than `δ` from it.
+[Jo26] (ePrint 2026/891) **Lemma 5.4**: for a nonzero `F_q`-additive code that is
+`(ℓ, δ, a, b)`-curve-decodable with `a ≤ q` and `b > ℓ + 1`, for every word `y` some codeword
+is farther than `δ` from it — i.e. `∀ y, ∃ c ∈ C, δᵣ(y, c) > δ`: no single closed radius-`δ`
+ball (around any center `y`) contains all of `C`.
+
+**Terminology caveat.** This is *not* the negation of the ordinary covering property
+"`C` `δ`-covers the ambient space", which is `∀ y, ∃ c ∈ C, δᵣ(y, c) ≤ δ`; its negation would
+be `∃ y, ∀ c ∈ C, δᵣ(y, c) > δ`, with the quantifiers swapped. The two notions are genuinely
+different: a nonzero full ambient linear code over `F_q` (`q ≥ 2`) with `ℓ = 0`, `δ = 0`,
+`a = b = q` is curve-decodable (a full close set forces the selector to equal the constant
+input word everywhere), covers every ambient word at radius `0`, and still satisfies the
+far-codeword conclusion proved here.
 
 Proof (the paper's, formalized): if every codeword were `δ`-close to `y`, the instance
 `u₀ = y, u₁ = ⋯ = u_ℓ = 0, f(α) = α^{ℓ+1} • v` (any fixed `0 ≠ v ∈ C`) has **full** close set
@@ -102,10 +111,12 @@ theorem eq_zero_of_curve_agree_many {ℓ : ℕ} {v : A} {c : Fin (ℓ + 1) → A
     _ ≤ P.natDegree := Polynomial.card_roots' P
   omega
 
-/-- **[Jo26] Lemma 5.4 (curve decodability gives a non-covering condition).** A nonzero
-`(ℓ, δ, a, b)`-curve-decodable `F`-additive code (a submodule — additivity is what supplies
-`α^{ℓ+1} • v ∈ C`) with `a ≤ q` and `b > ℓ + 1` cannot `δ`-cover the space: for every `y`
-some codeword is farther than `δ`. -/
+/-- **[Jo26] Lemma 5.4 (curve decodability: no single δ-ball contains the code).** For a
+nonzero `(ℓ, δ, a, b)`-curve-decodable `F`-additive code (a submodule — additivity is what
+supplies `α^{ℓ+1} • v ∈ C`) with `a ≤ q` and `b > ℓ + 1`: for every `y` some codeword is
+farther than `δ` (`∀ y, ∃ c ∈ C, δᵣ(y, c) > δ`), so no radius-`δ` ball contains all of `C`.
+This is not the negation of ordinary covering (`∀ y, ∃ c ∈ C, δᵣ(y, c) ≤ δ`); see the module
+docstring. -/
 theorem exists_far_codeword_of_curveDecodable {C : Submodule F (ι → A)} {ℓ : ℕ} {δ : ℝ≥0}
     {a b : ℕ}
     (h : CurveDecodable (F := F) (C : Set (ι → A)) ℓ δ a b)

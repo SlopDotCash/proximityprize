@@ -35,7 +35,14 @@ substitution-divisibility argument, kernel `substVar` / `sub_X_dvd_of_subst_eq_z
 
 `LovettMergeIndep` is a TRUE statement (vacuously so wherever no merge candidate occurs, and the
 genuine substitution lemma where one does), so this is a usable residual — unlike the two refuted
-forms.  Discharging it closes Theorem 1.7 and the prize route R3.
+forms.
+
+**Current status (this file's framing is historical).** When this file was written, the primitive
+step / merge branch was the remaining open core of Theorem 1.7. It is now **discharged**:
+`LovettMergeIndepProof.lovettMergeIndep` proves `LovettMergeIndep F`, and
+`LovettMergeIndepProof.lovettThm17_unconditional` (via `lovettThm17_of_mergeIndep` below) gives
+Lovett's Theorem 1.7 unconditionally. The "remaining open content" wording above records the
+state at the time of writing, not open debt.
 
 Issue #389.
 -/
@@ -183,8 +190,8 @@ def LovettMergeIndep (F : Type*) [Field F] : Prop :=
 /-- **The primitive step, modulo the CORRECT merge residual `LovettMergeIndep`.**  Handles `n = 0`
 directly and splits `n ≥ 1` via `witness_or_mergeCandidate`: the witness branch through
 `lovettHolds_of_witness`, the merge branch through `LovettMergeIndep` (independence *given* a merge
-candidate).  This reduction is genuinely usable — `LovettMergeIndep` is true — discharging it closes
-Theorem 1.7 and the prize route R3. -/
+candidate).  This reduction is genuinely usable — `LovettMergeIndep` is true, and it is proved in
+`LovettMergeIndepProof.lean` (`lovettMergeIndep`). -/
 theorem lovettPrimitiveStep_of_mergeIndep (hmi : LovettMergeIndep F) : LovettPrimitiveStep F := by
   intro n m V k hk hV hprim IHn IHd IHm
   rcases Nat.eq_zero_or_pos n with hn0 | hnpos

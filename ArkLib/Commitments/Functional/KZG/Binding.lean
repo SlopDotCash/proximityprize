@@ -23,6 +23,17 @@ from the probabilistic game transformations.
 * `bindingGameExt` records the sampled secret and proof elements used by the reduction.
 * `mapBindingToTsdh` maps extended binding outputs to `t`-SDH instances.
 
+## Interpretation of the adversary's coins (cached-coin experiment)
+
+`binding` is stated for the game interpreted by `impl := randomOracle =
+uniformSampleImpl.withCaching` on `unifSpec`, the only oracle available to the adversary.
+Because `unifSpec` has a single unit-input query per sample size, this interpreter caches the
+adversary's *private* uniform draws by size: every later draw from the same `Fin (k + 1)`
+returns the value of the first one (e.g. two `Fin 2` draws always agree). The bound therefore
+concerns this cached-coin experiment, not ordinary randomized-adversary execution with fresh
+private coins (`unifFwdImpl`) plus a separate public hash oracle. Transporting the reduction to
+the fresh-coin interpretation is open work in this formalization.
+
 ## References
 
 This proof follows the extended version of the KZG paper, which has all the security proofs.
@@ -156,21 +167,18 @@ lemma t_sdh_denominator_ne_zero_of_opening_equations
 
 omit [DecidableEq G₁] [Group G₂] [PrimeOrderWith G₂ p]
   [Module (ZMod p) (Additive G₁)] [Module (ZMod p) (Additive G₂)] in
-/-- A nontrivial element of a prime-order group has order `p`. -/
-lemma binding_order_of_eq_prime_of_ne_one (x : G₁) (hx : x ≠ 1) : orderOf x = p := by
-  have hdvd := orderOf_dvd_natCard (G := G₁) x
-  rw [PrimeOrderWith.hCard] at hdvd
-  rcases (Nat.dvd_prime Fact.out).1 hdvd with h1 | hp'
-  · exact absurd (orderOf_eq_one_iff.1 h1) hx
-  · exact hp'
+/-- A nontrivial element of a prime-order group has order `p`.
+Compatibility alias of the shared `Groups.orderOf_eq_prime_of_ne_one` (`KZG/Algebra.lean`). -/
+lemma binding_order_of_eq_prime_of_ne_one (x : G₁) (hx : x ≠ 1) : orderOf x = p :=
+  Groups.orderOf_eq_prime_of_ne_one x hx
 
 omit [DecidableEq G₁] [Group G₂] [PrimeOrderWith G₂ p]
   [Module (ZMod p) (Additive G₁)] [Module (ZMod p) (Additive G₂)] in
-/-- Every element of a prime-order group is a `ZMod p` power of a nontrivial generator. -/
+/-- Every element of a prime-order group is a `ZMod p` power of a nontrivial generator.
+Compatibility alias of the shared `Groups.exists_zmod_power_of_generator` (`KZG/Algebra.lean`). -/
 lemma binding_exists_zmod_power_of_generator (hpG1 : Nat.card G₁ = p) (hg₁ : g₁ ≠ 1)
-    (hord : orderOf g₁ = p) (x : G₁) : ∃ a : ZMod p, x = g₁ ^ a.val := by
-  obtain ⟨k, hk⟩ : ∃ k : ℕ, g₁ ^ k = x := mem_powers_of_prime_card hpG1 hg₁
-  exact ⟨(k : ZMod p), by rw [ZMod.val_natCast, ← hk, ← pow_mod_orderOf g₁ k, hord]⟩
+    (hord : orderOf g₁ = p) (x : G₁) : ∃ a : ZMod p, x = g₁ ^ a.val :=
+  Groups.exists_zmod_power_of_generator hpG1 hg₁ hord x
 
 omit [DecidableEq G₁] in
 include g₁ g₂ pairing in
@@ -747,7 +755,9 @@ lemma t_sdh_error_bound {n : ℕ} {AuxState : Type} [SampleableType G₁]
     adversary)
 
 omit [DecidableEq G₁] in
-/-- The KZG scheme satisfies evaluation binding provided `t`-SDH holds. -/
+/-- The KZG scheme satisfies evaluation binding provided `t`-SDH holds, in the cached-coin
+experiment `impl := randomOracle` on `unifSpec` (see the module docstring); the fresh-coin
+`unifFwdImpl` game is not covered. -/
 theorem binding {g₁ : G₁} {g₂ : G₂} (hg₁ : g₁ ≠ 1)
     (hpair : pairing g₁ g₂ ≠ 0) [SampleableType G₁] (tSdhError : ℝ≥0)
     (htSdh : Groups.tSdhAssumption (p := p) (G₁ := G₁) (G₂ := G₂) (g₁ := g₁)

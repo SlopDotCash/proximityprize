@@ -13,7 +13,8 @@ The prize counterexample needs a `q`-independent (field-size-independent) family
 smooth domain `μ_n` (`n = 2^μ`) whose power sums concentrate on a single target. Rounds 7–8 of the
 #232/#407 development obtained the `e_1 = 0` (first power sum) concentration via the **negation**
 involution `x ↦ −x` (`SubsetSumNegSymmConcentration.lean`). This file proves the **general cyclotomic
-generalization** and the structural reason it is a dead end for the interior.
+generalization**, and records (as commentary backed by probes, not as a theorem) why it appears to
+be a dead end for the interior.
 
 > **`powerSum_eq_zero_of_smul_invariant`** — if `S ⊆ F` is invariant under multiplication by `ξ`
 > (`ξ·S = S`, `ξ ≠ 0`), then for **every** `j` with `ξ^j ≠ 1` the power sum `∑_{x∈S} x^j = 0`.
@@ -25,13 +26,20 @@ the negation-symmetric `e_1 = 0`.
 
 **Why this is the dichotomy, not a bypass.** A `ξ`-invariant `S` (with `ξ` a primitive `2^s`-th root)
 is a union of full `⟨ξ⟩`-orbits, so its subset-sum polynomial factors through the power map:
-`∏_{x∈S}(X − x) = ∏_{orbits}(X^{2^s} − x_o^{2^s})`, a polynomial in `X^{2^s}`. That is **exactly** the
-"correlated" / degenerate stratum (`MonomialSubgroupCorrelated.lean`) excluded from the genuine MCA
-challenge. Numerically (probes, `n = 8, 16`): every `q`-INDEPENDENT concentrating subset is of this
-form (count constant in `q`: 28 at `n=16, a=4, e_1=0`), while NON-correlated concentration appears
+`∏_{x∈S}(X − x) = ∏_{orbits}(X^{2^s} − x_o^{2^s})`, a polynomial in `X^{2^s}`. That is the
+"correlated" / degenerate stratum of `MonomialSubgroupCorrelated.lean`.  Caveat (audit correction,
+2026-10-28, PG-042 propagation): such invariant/coset directions are **not** automatically excluded
+from the MCA bad event.  Joint agreement of the pair on one coset/half-subgroup does not give joint
+agreement on every witness set, and `mcaEvent` (`Errors.lean`) only requires *some* witness set `S`
+on which the line agrees with a codeword while the pair is not jointly explained on that same `S`;
+the PG-042 audit records an explicit `F₁₇`, order-8-subgroup instance of exactly this.  The formal
+power-sum identities below are valid; the discard of these directions is not proved.
+Numerically (probes, `n = 8, 16`): every `q`-INDEPENDENT concentrating subset is of this form
+(count constant in `q`: 28 at `n=16, a=4, e_1=0`), while NON-correlated concentration appears
 only at finitely many "bad primes" `p ≤ (2t)^{n/2}` (`q`-DEPENDENT — the char-`p` additive-energy
-anomaly = the BGK/Paley object). Hence the closed/`q`-independent combinatorial families reach only
-the low-regime bands; the interior δ\* is irreducibly `q`-dependent.
+anomaly = the BGK/Paley object).  This suggests (probe evidence only, no theorem here) that the
+closed/`q`-independent combinatorial families reach only the low-regime bands and that the interior
+δ\* is `q`-dependent.
 
 Issue #407.
 -/

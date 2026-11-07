@@ -62,10 +62,13 @@ Which leaves are reusable as-is, and where the seams needed work:
   what makes the `1/|R|` kernel-event analysis of leaf 5 sound).
 * **Phases 1, 2** are reusable as-is from `ShortPhaseRbrKnowledgeLeaves.lean`.
 * The terminal `tightRelG` (carried target = true RLC + binding) is the composition surface for
-  the future `secondSumcheckWithTarget ▷ finalCheckWithClaim` continuation (the landed K4 leaf
-  `finalCheckWithClaim_rbrKnowledgeSoundness` consumes the doomed target at the far end); that
-  continuation needs a target-carrying second sum-check lift, which does not exist in-tree yet
-  and is tracked on #329.
+  the `secondSumcheckWithTarget ▷ finalCheckWithClaim` continuation (the landed K4 leaf
+  `finalCheckWithClaim_rbrKnowledgeSoundness` consumes the doomed target at the far end). When
+  this file was written that continuation (a target-carrying second sum-check lift) did not
+  exist in-tree (#329); it has since been constructed in the 8-phase apex — see the scope note
+  below (`TightComposedFull.lean`, `TightApexPure.lean`), whose rbr-knowledge results are, like
+  this file's headline, conditional on the canonical sum-check round-knowledge bounds. This file
+  keeps the genuine 6-phase shorter-chain result.
 
 ## Main results
 

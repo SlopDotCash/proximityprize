@@ -26,8 +26,9 @@ controlled by `‖S_b‖`, the norm of a sum of `t-1` unit phasors:
 > `‖η_b‖ ≤ (1 + √q · ‖S_b‖) / t`.
 
 The **triangle bound** `‖S_b‖ ≤ t-1` recovers the classical `‖η_b‖ ≤ √q` anchor exactly
-(`norm_eta_torsion_le`). The **prize** `‖η_b‖ ≤ √(2n·ln q)` is EQUIVALENT (with `d = n`,
-`t ≈ q/n`) to the square-root-cancellation bound
+(`norm_eta_torsion_le`). The **prize** `‖η_b‖ ≤ √(2n·ln q)` is IMPLIED BY (with `d = n`,
+`t ≈ q/n`; only this direction, `norm_eta_le_of_phasorCancellation`, is formalized — the
+converse is informal, up to the `±1` offset) the square-root-cancellation bound
 
 > `‖S_b‖ ≤ (t·√(2n·ln q) − 1)/√q ≈ √(2t·ln q)`,    **uniformly in `b ≠ 0`**
 
@@ -65,7 +66,8 @@ of the search over `b`: the EVT logarithm of the family size `q`.
 
 ## HONEST SCOPE (rule 6)
 
-This **does not prove CORE**. It is a *strictly-more-tractable equivalent*: it converts the wall
+This **does not prove CORE**. It is a *reformulation* (formally only the sufficient direction
+phasor-cancellation ⟹ η-bound is proved): it converts the wall
 from a bound on an incomplete character sum into a bound on the discrepancy of an explicit set of
 `t` complex phases of unit modulus — the effective-Sato-Tate object. The open content
 (`PhasorCancellation` = `‖T_b‖ ≤ √q·√(2t ln q)` uniformly) is Katz's vertical equidistribution
@@ -267,17 +269,17 @@ theorem norm_eta_le_sqrt_via_phasor {d : ℕ} (hd : d ∣ Fintype.card F - 1) (h
   nlinarith [hsqrt1, ht0R]
 
 /-- **The EXACT second-moment phasor identity** (the average-case genuine sub-step).  Squaring the
-exact identity `t·η_b = -1 + T_b` and summing over ALL `b` (Parseval): since `t²‖η_b‖² = ‖-1+T_b‖²`
-pointwise,
-  `∑_{b∈F} ‖-1 + T_b‖² = t² · ∑_{b∈F} ‖η_b‖² = t² · q·|G|`,
-using the proven `subgroup_gaussSum_secondMoment` (`∑_b ‖η_b‖² = q·|G|`).  This makes the AVERAGE
-phasor cancellation rigorous: the mean of `‖-1+T_b‖²` over the `q` frequencies is `t²·q·n/q = t²·n`,
-so the RMS phasor sum is `‖T_b‖ ≈ t√n`, i.e. `‖S_b‖ = ‖T_b‖/√q ≈ t√n/√q = √(q/n) = √t` — EXACTLY
-square-root cancellation of the `t` unit phasors on average.  The wall is therefore PURELY the
-worst-case-over-`b` excess `√(2 ln q)` above this proven `√t` average — the effective Sato-Tate /
-union-bound logarithm, isolated.  (NOTE: this identity holds at `b = 0` too, where `η_0 = |G|` and
-the completion identity's hypotheses do not require `b ≠ 0` for the squared form via Parseval; we
-state it over all `b`, which is the clean Parseval form.) -/
+exact identity `t·η_b = -1 + T_b` (valid for `b ≠ 0`) and summing over the NONZERO `b`: since
+`t²‖η_b‖² = ‖-1+T_b‖²` pointwise for `b ≠ 0`,
+  `∑_{b≠0} ‖-1 + T_b‖² = t² · ∑_{b≠0} ‖η_b‖² = t² · (q·|G| − |G|²)`,
+using the proven Parseval identity `∑_{b∈F} ‖η_b‖² = q·|G|` minus the `b = 0` term
+`‖η_0‖² = |G|²`.  (The completion identity `t·η_b = -1 + T_b` is only used, and only stated, for
+`b ≠ 0`; the sum is over `Finset.univ.erase 0`.)  This makes the AVERAGE phasor cancellation
+rigorous: the mean of `‖-1+T_b‖²` over the `q − 1` nonzero frequencies is
+`t²·n·(q−n)/(q−1) ≈ t²·n`, so the RMS phasor sum is `‖T_b‖ ≈ t√n`, i.e.
+`‖S_b‖ = ‖T_b‖/√q ≈ t√n/√q ≈ √t` — square-root cancellation of the `t` unit phasors on average.
+The wall is therefore the worst-case-over-`b` excess `√(2 ln q)` above this proven `≈ √t`
+average — the effective Sato-Tate / union-bound logarithm, isolated. -/
 theorem phasorSum_secondMoment {d : ℕ} (hd : d ∣ Fintype.card F - 1) (hd0 : 0 < d)
     {χ : MulChar F ℂ} (hord : orderOf χ = Fintype.card F - 1)
     {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) :

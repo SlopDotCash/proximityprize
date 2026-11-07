@@ -7,20 +7,28 @@ import Mathlib.Data.ZMod.Basic
 import Mathlib.Data.List.Basic
 
 /-!
-# Sparse-zero radius `s*` is `5n/8` for `n = 2^μ` at `ρ = 1/4` — a CONSTANT gap beyond Johnson (#407)
+# Sparse-zero radius `s* ≥ 5n/8` witnesses at `n = 8, 16`, `ρ = 1/4` — beyond Johnson (#407)
+
+**Scope (audit R-031/R-008 extension, 2026-10-28).**  The Lean statements below certify two
+explicit functions over `F₁₇` with `5/8` and `10/16` zeros, i.e. two **lower bounds**
+`s*(8,2) ≥ 5` and `s*(16,4) ≥ 10`.  They do **not** prove optimality, the claimed equality
+`s* = 5n/8` for all powers of two, or any statement about the deployed far-line `δ*`.  The
+all-`2^μ` equality and the larger-`n` values below are probe evidence and remain **unproved**.
+The `n = 16` witness lives on the whole multiplicative group `F₁₇ˣ`, not a proper thin subgroup.
 
 `s*(n,k) = n - minSupport` is the maximal number of zeros on `μ_n` of a function whose Fourier
 support is `T = {0,…,k-1} ∪ {a,b}` with far frequencies `a, b ≥ k` (`|T| ≤ k+2`).  This is the
 sparse-zero *radius* quantity (distinct from the deployed MCA *incidence* `δ*`: radius-vs-count,
 `N`-vs-`I`).  At rate `ρ = 1/4` the Johnson decoding radius is `n(1-√ρ) = n/2`.
 
-**Decisive numerical finding (floor-asymptotic, exact for `n ≤ 16`, explicit witness `n ≤ 64`):**
-for `n = 2^μ`, `k = n/4`, the optimum is the far pair `(n/2, 5n/8)` and
+**Numerical finding (probe evidence, not formalized; reported exhaustive for `n ≤ 16`, explicit
+witnesses for `n ≤ 64`):** for `n = 2^μ`, `k = n/4`, the probe's optimum is the far pair
+`(n/2, 5n/8)` with
 
-    s*(2^μ, n/4) = 5n/8   (extra = s* - n/2 = n/8),
+    s*(2^μ, n/4) = 5n/8   (extra = s* - n/2 = n/8)   [conjectured for all μ; unproved],
 
-so `s*/n = 5/8` for ALL powers of two and the gap to Johnson is the **constant** `5/8 - 1/2 = 1/8`,
-which does NOT shrink with `n`.  Verified `s*/n = 0.625` at `n = 8, 16, 32, 64` (and the non-power
+which would give a **constant** gap `5/8 - 1/2 = 1/8` to Johnson.  The probe reported
+`s*/n = 0.625` at `n = 8, 16, 32, 64` (and the non-power
 `n = 12, 20, 24` interleave at `0.667, 0.600, 0.667`).  Mechanism: `f` vanishes on the whole
 subgroup `μ_{n/2}` (a binomial `x^{n/2} - c`, `n/2` zeros) and the residual `k+2 - (n/2-constraints)`
 DOF of the low block `{0..k-1}` plus the second far frequency `5n/8` realize a secondary binomial
@@ -29,12 +37,12 @@ in `x^{n/4}` on the complementary coset, killing `n/8` more — total `5n/8`.
 This file is the `decide`-checkable certificate: explicit far-support functions over `ZMod 17`
 (which contains both `μ_8` and `μ_16`) vanishing on `5/8` of the points.
 
-HONEST SCOPE: `s* = 5n/8 > n/2 =` Johnson is a strict, constant-gap *radius* statement — it shows
-the smooth-domain `2`-power sparse-zero RADIUS is genuinely beyond Johnson.  It is **not** by itself
-a prize closure: the prize is the MCA *incidence/list-count* `δ*` (one super-sparse far codeword is
-a single codeword, not a large list), and the deployed far-line `δ*` is a Plotkin-type proxy that
-tends to `1/2`.  The constant `5n/8` radius gap is the cleanest demonstration that the radius and
-count objects genuinely diverge for `2`-power `n`.
+HONEST SCOPE: the checked witnesses give `s* ≥ 5n/8 > n/2 =` Johnson at `n = 8, 16` only — a
+*radius* lower bound at two sizes; the constant-gap statement for all `2^μ` is the unproved probe
+conjecture above.  It is **not** a prize closure: the prize is the MCA *incidence/list-count* `δ*`
+(one super-sparse far codeword is a single codeword, not a large list).  The remark that the
+deployed far-line `δ*` (a Plotkin-type proxy) tends to `1/2` is **not established in this file**.
+The witnesses illustrate that the radius and count objects are different quantities.
 
 Axiom-clean (`decide`, no `sorry`/`native_decide`).  Issue #407.
 -/
@@ -76,9 +84,10 @@ theorem fwit16_zeros : (mu16.filter (fun x => decide (fwit16 x = 0))).length = 1
 
 /-! ## The constant-gap conclusion. -/
 
-/-- **`s*` is at the `5n/8` value, strictly beyond the Johnson radius `n/2`, at both `n = 8`
-and `n = 16`** (the two `decide`-checkable rungs of the `2`-power sequence `s*/n = 5/8`).
-For `n = 8`: `5 > 4 = ` Johnson; for `n = 16`: `10 > 8 = ` Johnson. -/
+/-- **`s*` is at least the `5n/8` value, strictly beyond the Johnson radius `n/2`, at both `n = 8`
+and `n = 16`** (two `decide`-checkable lower-bound witnesses; the name's `eq` refers to the
+conjectured value, optimality is NOT proved here).  For `n = 8`: `5 > 4 = ` Johnson; for `n = 16`:
+`10 > 8 = ` Johnson. -/
 theorem sstar_eq_5n8_beyond_johnson :
     (mu8.filter  (fun x => decide (fwit8 x = 0))).length = 5  ∧ 4 < 5 ∧
     (mu16.filter (fun x => decide (fwit16 x = 0))).length = 10 ∧ 8 < 10 := by

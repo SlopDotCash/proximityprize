@@ -6,72 +6,93 @@ Authors: ArkLib Contributors
 import Mathlib.Tactic
 
 /-!
-# Closed form for the over-determined far-line incidence MAX (#407, δ* decoupling)
+# A cubic proxy for the over-determined far-line incidence MAX (#407, δ* decoupling)
 
-This file records the **closed form** of the over-determined far-line incidence MAX for the
-prize-regime thin 2-power subgroup `μ_n ⊊ F_q^×` (`n = 2^μ`), in the rate `k = 2`,
-over-determined witness size `s = k + 2 = 4` (`s − k = 2`), and the structural inequality that
-makes it matter for the δ* decoupling.
+This file records an **empirically fitted cubic proxy** for the over-determined far-line
+incidence MAX at rate `k = 2`, over-determined witness size `s = k + 2 = 4` (`s − k = 2`),
+together with the purely arithmetic comparison of that proxy against the budget `4·m`.  Nothing
+in this file defines or counts an actual incidence: no field, Reed–Solomon code, bad-scalar set or
+cardinality appears in any declaration below.
 
-## Background (the δ* decoupling, char-0 / p-independent)
+## Background (the hoped-for δ* decoupling — conjectural, not proved here)
 
-The far-line incidence `I(a,b; r = n−s)` counts the `γ` with `x^a + γ x^b` within distance `r`
-of `RS[μ_n, k]`. For `s − k ≥ 2` (over-determined) it is **p-independent** (= its char-0 value,
-proven via `disc(x^{2^μ} − 1) = ± n^n` a power of `2`), so the binding witness size
-`s* = min { s : I(s) ≤ budget }` is computed in pure cyclotomic char-0 data and δ* decouples from
-the open p-dependent BGK character-sum max. The single remaining char-0 open item is the
-asymptotic `s*(n,k)` of the over-determined incidence threshold.
+The far-line incidence `I(a,b; r = n−s)` counts the `γ ∈ F_q` with `x^a + γ x^b` within distance
+`r` of `RS[μ_n, k]`.  The campaign conjectured that for `s − k ≥ 2` (over-determined) this count
+is `p`-independent (equal to a characteristic-0 value), so that the binding witness size
+`s* = min { s : I(s) ≤ budget }` would be computable from cyclotomic char-0 data and δ* would
+decouple from the `p`-dependent BGK character-sum max.  **That `p`-independence is not proved,
+and it is false without arithmetic hypotheses on `q`:**
 
-## This file's contribution: the MAX is an exact cubic, and it dominates budget
+* The heuristic "`disc(x^{2^μ} − 1) = ± n^n` is a power of `2`" only shows that the *domain
+  roots* stay distinct mod every odd prime.  It does not exclude odd primes dividing the
+  evaluation minors / resultants that decide whether a given `γ` is bad (the audit's PG-083 records
+  a separate kernel-checked failure of a resultant premise), so it gives no good-prime transfer
+  for the incidence count.
+* An actual bad-scalar set is a subset of `F_q`, so the count is at most `q`.  For example
+  `n = 32 = 4·8` in `F_97` (`97` prime and `32 ∣ 96`, so `μ_32 ⊊ F_97^×`; the element `28` has
+  `28^32 = 1` and `28^16 = −1` mod `97`) has incidence `≤ 97`, while the proxy below gives
+  `overdetIncidenceMax 8 = 897`.  So the proxy is not a field-independent count; at best it could
+  be a large-characteristic value under a precise good-prime condition that is not yet stated.
 
-The empirical, exactly-reproduced (probe `probe_overdet_max_closedform.py`,
-`probe_overdet_antipodal_only.py`, `probe_overdet_mechanism.py`; full-direction search and exact
-integer cross-check) over-determined incidence MAX at `s = k + 2`, `k = 2`, is
+Using the proxy to decouple δ* from `p` would therefore need (i) explicit arithmetic good-prime
+hypotheses on `q` (relative to `n`, `k`, `s`) and (ii) a proof that, under them, the actual count
+equals `overdetIncidenceMax`.  Neither is supplied here.
 
-> **`I_max(n) = n³/32 − n²/8 + 1`**,  written here with `n = 4·m` as **`2·m³ − 2·m² + 1`**,
+## This file's contribution: a cubic proxy and its arithmetic domination of budget
 
-attained at the **antipodal direction `(a,b) = (n/2, n/2 − 1)`**. Verified EXACTLY for
-`n = 8, 12, 16, 20, 24, 28, 32, 36, 40` (`m = 2 … 10`), reproducing the campaign's published
-sequence `9, 37, 97, 201, 361, 589, 897, 1297, 1801`. The mechanism: the bulk `2m³ − 2m²` are the
-nonzero-`γ` proportional-reduction witnesses; the `+1` is exactly the trivial `γ = 0` witness (the
-unique `γ` with an antipodal-closed witness set).
+The campaign's probe scripts (`probe_overdet_max_closedform.py`,
+`probe_overdet_antipodal_only.py`, `probe_overdet_mechanism.py`; not present in this tree — the
+in-tree `scripts/probes/g322_*`, `g325_*`, `g326_*` only re-evaluate the polynomial) reported the
+over-determined incidence MAX at `s = k + 2`, `k = 2`, at finitely many `(n, q)` cells as
 
-We formalize:
-* `overdetIncidenceMax m := 2*m^3 - 2*m^2 + 1` — the closed form (`ℕ`, in terms of `m = n/4`);
-* `overdetIncidenceMax_values` — it matches the published sequence on `m = 2 … 10` (`decide`);
-* **`overdetIncidenceMax_gt_budget`** — `overdetIncidenceMax m > 4*m` for `m ≥ 2`, i.e. the
-  over-determined incidence MAX **strictly exceeds the budget `n = 4·m`**. This is the quantitative
-  form of "the binding `s*` is always over-determined", the inequality underpinning the δ*
-  decoupling. (`budget ~ n`; here exactly `n = 4m` at `k = 2`.)
+> `I_max(n) = n³/32 − n²/8 + 1`,  written here with `n = 4·m` as `2·m³ − 2·m² + 1`,
 
-**Scope / honesty.** This is the EXACT closed form of the over-determined incidence MAX (an
-empirical cyclotomic count, reproduced exactly at every probed `n`), and a fully-proved arithmetic
-domination over budget. It is NOT a closure of CORE: it pins one ingredient (the over-det MAX curve)
-that the open `s*(n,k)` asymptotic still needs (the MAX is at `s = k+2`; the budget-crossing `s*`
-requires the full `s`-dependence). The closed form's *cyclotomic derivation* is not formalized here
-(only its arithmetic and the domination); the value is established by exact computation.
+attained at the antipodal direction `(a,b) = (n/2, n/2 − 1)`, for
+`n = 8, 12, 16, 20, 24, 28, 32, 36, 40` (`m = 2 … 10`), i.e. the sequence
+`9, 37, 97, 201, 361, 589, 897, 1297, 1801`.  These are finite probe observations in the fields
+the probes used (any such cell needs `q > I_max(n)`, since a count of scalars is at most `q`), not
+a theorem.  Note also that `n = 12, 20, 24, 28, 36, 40` are not powers of two, so these cells lie
+outside the thin `2`-power subgroup family the discriminant heuristic was about.  The probes'
+suggested mechanism (the bulk `2m³ − 2m²` from nonzero-`γ` proportional-reduction witnesses, the
+`+1` from the trivial `γ = 0` witness) is likewise unformalized.
+
+We formalize only arithmetic facts about the polynomial:
+* `overdetIncidenceMax m := 2*m^3 - 2*m^2 + 1` — the cubic proxy (`ℕ`, in terms of `m = n/4`);
+* `overdetIncidenceMax_values` — it evaluates to the reported sequence on `m = 2 … 10`
+  (`decide`);
+* `overdetIncidenceMax_bulk` — the factorisation `2m³ − 2m² = 2m²(m − 1)`;
+* **`overdetIncidenceMax_gt_budget`** — `overdetIncidenceMax m > 4*m` for `m ≥ 2`.  Only if the
+  actual over-determined incidence were shown to equal the proxy (under suitable good-prime
+  hypotheses) would this say that the incidence exceeds the budget `n = 4·m` at `s = k + 2`.
+
+**Scope / honesty.**  The proxy is a finite-probe / conjectural stand-in for the over-determined
+incidence MAX, not its proved value, and it is provably not a field-independent count (the `F_97`
+example above).  The theorems below are arithmetic facts about a polynomial; they do not establish
+`p`-independence of δ*, the antipodal maximality, or any equality with an actual incidence count.
 -/
 
 namespace ArkLib.ProximityGap.OverdetIncidence
 
-/-- The over-determined far-line incidence MAX at rate `k = 2`, over-determined witness size
-`s = k + 2 = 4`, for the thin 2-power subgroup `μ_n` with `n = 4·m`. Closed form
-`2·m³ − 2·m² + 1` (equivalently `n³/32 − n²/8 + 1`), attained at the antipodal direction
-`(n/2, n/2 − 1)`. -/
+/-- **Cubic proxy** (not a proved count) for the over-determined far-line incidence MAX at rate
+`k = 2`, over-determined witness size `s = k + 2 = 4`, with `n = 4·m`: the polynomial
+`2·m³ − 2·m² + 1` (equivalently `n³/32 − n²/8 + 1`) fitted to finitely many probe cells.  It is
+not a field-independent incidence count (an actual count is `≤ q`; e.g. `m = 8` gives `897 > 97`
+for `μ_32 ⊊ F_97^×`), and no theorem here relates it to an actual bad-scalar set. -/
 def overdetIncidenceMax (m : ℕ) : ℕ := 2 * m ^ 3 - 2 * m ^ 2 + 1
 
-/-- The closed form reproduces the campaign's published over-determined incidence MAX sequence
-`9, 37, 97, 201, 361, 589, 897, 1297, 1801` at `n = 8 … 40` (`m = 2 … 10`). Verified by exact
-full-direction search + integer cross-check in the probes; here checked against the closed form. -/
+/-- The cubic proxy evaluates to the campaign's reported over-determined incidence MAX sequence
+`9, 37, 97, 201, 361, 589, 897, 1297, 1801` at `n = 8 … 40` (`m = 2 … 10`).  This only evaluates
+the polynomial; the reported values themselves are finite probe observations (in fields with
+`q` larger than the value), not formalized counts. -/
 theorem overdetIncidenceMax_values :
     overdetIncidenceMax 2 = 9 ∧ overdetIncidenceMax 3 = 37 ∧ overdetIncidenceMax 4 = 97 ∧
     overdetIncidenceMax 5 = 201 ∧ overdetIncidenceMax 6 = 361 ∧ overdetIncidenceMax 7 = 589 ∧
     overdetIncidenceMax 8 = 897 ∧ overdetIncidenceMax 9 = 1297 ∧ overdetIncidenceMax 10 = 1801 := by
   decide
 
-/-- `2·m³ − 2·m² = 2·m²·(m − 1)`, the nonzero-`γ` bulk of the over-det incidence MAX (the `+1` is
-the trivial `γ = 0` witness). A convenient factored identity over `ℕ` (no truncation: `m² ≥ m`
-for the inner subtraction; `2m³ ≥ 2m²`). -/
+/-- `2·m³ − 2·m² = 2·m²·(m − 1)`, the "bulk" term of the cubic proxy (the probes attribute it to
+nonzero-`γ` witnesses and the `+1` to `γ = 0`; that attribution is not formalized).  A convenient
+factored identity over `ℕ` (no truncation: `m² ≥ m` for the inner subtraction; `2m³ ≥ 2m²`). -/
 theorem overdetIncidenceMax_bulk (m : ℕ) :
     2 * m ^ 3 - 2 * m ^ 2 = 2 * m ^ 2 * (m - 1) := by
   rcases m with _ | m
@@ -85,17 +106,16 @@ theorem overdetIncidenceMax_bulk (m : ℕ) :
       omega
     rw [hrhs, hlhs]
 
-/-- **The δ* decoupling inequality (quantitative).** For `m ≥ 2` (i.e. `n = 4m ≥ 8`, the regime
-where over-determination `s − k ≥ 2` is nondegenerate), the over-determined incidence MAX
-**strictly exceeds the budget** `n = 4·m`:
+/-- **Arithmetic domination of budget by the cubic proxy.** For `m ≥ 2` (i.e. `n = 4m ≥ 8`),
+the polynomial proxy strictly exceeds `4·m`:
 
 > `overdetIncidenceMax m > 4·m`.
 
-Since the over-determined incidence MAX `≫ budget` at `s = k+2` for every `m ≥ 2`, the binding
-witness size `s*` (the first `s` whose incidence drops to `≤ budget`) can never be the
-over-determined boundary `s = k+2`; the incidence stays above budget there. This is the arithmetic
-core of "the binding is always over-determined ⟹ δ* is p-independent" (decoupled from the
-p-dependent BGK max), proven outright over `ℕ`. -/
+This is a fact about the polynomial only.  It would imply that the actual over-determined
+incidence exceeds the budget at `s = k + 2` only after a separate proof that the actual count
+equals the proxy under explicit good-prime hypotheses on `q`; no such bridge exists, and the proxy
+is not field-independent (see the module docstring).  In particular this theorem does not show
+that δ* is `p`-independent or decoupled from the BGK max. -/
 theorem overdetIncidenceMax_gt_budget {m : ℕ} (hm : 2 ≤ m) :
     overdetIncidenceMax m > 4 * m := by
   unfold overdetIncidenceMax

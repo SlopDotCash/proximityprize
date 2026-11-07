@@ -195,32 +195,30 @@ variables are the random linear combination coefficients.
 
 \subsection{Sending a Claim}
 
-The SendClaim reduction enables a prover to transmit a claim (oracle statement) to the verifier, who then verifies a relationship between the original and transmitted claims.
+The SendClaim reduction lets the prover send a claim (a single oracle message computed from the input statement) to the verifier. The verifier does \emph{not} check anything at runtime: the intended relationship between the input and the sent claim is carried by the output relation, to be discharged by a later stage.
 
 \begin{definition}[SendClaim Oracle Reduction]
     \label{def:sendclaim_oracle_reduction}
     The SendClaim reduction is a one-round protocol for claim transmission:
     \begin{itemize}
-        \item \textbf{Protocol specification}: $\pSpec := [(\PtoVdir, \OStmtIn)]$ (single oracle message)
-        \item \textbf{Input}: Statement and single oracle statement (via $\mathsf{Unique}$ index type)
-        \item \textbf{Prover}: Sends the input oracle statement as protocol message
-        \item \textbf{Verifier}: Executes oracle computation $\mathsf{relComp} : \StmtIn \to \OracleComp[\OStmtIn]_{\mathcal{O}} \Unit$
-        \item \textbf{Output oracle statements}: Sum type $\OStmtIn \oplus \OStmtIn$ containing both original and transmitted claims
-        \item \textbf{Output relation}: $R_{\mathsf{out}}((), \mathsf{oracles}) := \mathsf{oracles}(\mathsf{inl}) = \mathsf{oracles}(\mathsf{inr})$
+        \item \textbf{Protocol specification}: $\pSpec := [(\PtoVdir, \mathsf{Message})]$ (single oracle message)
+        \item \textbf{Prover}: Sends the claim $f(\mathsf{stmt}, \mathsf{oStmt}) : \mathsf{Message}$
+        \item \textbf{Verifier}: A pure pass-through; it returns the input statement unchanged and never rejects
+        \item \textbf{Output oracle statements}: the input oracle statements together with the sent message
+        \item \textbf{Output relation}: the input relation refined by the claim predicate $P$ over statement, oracle statements and message (a semantic obligation, not a runtime check)
     \end{itemize}
     \lean{SendClaim.oracleReduction}
     \uses{def:oracle_reduction}
 \end{definition}
 
-\begin{theorem}[SendClaim Perfect Completeness]
-    The SendClaim oracle reduction satisfies perfect completeness when the input relation matches the oracle computation requirement.
-    % \lean{SendClaim.completeness} % TODO: theorem is not currently formalized.
+\begin{theorem}[SendClaim Coordinate-wise Special Soundness]
+    The SendClaim oracle verifier is coordinate-wise special sound for any coordinate-wise structure, with the trivial extractor, from the input relation to the refined output relation.
+    \lean{SendClaim.oracleVerifier_coordinateWiseSpecialSoundWith}
     \uses{def:sendclaim_oracle_reduction}
 \end{theorem}
 
-\begin{remark}[SendClaim Development Status]
-    The SendClaim reduction is currently under active development in the Lean formalization. Several components including the verifier embedding and completeness proof require further implementation. The current version represents a specialized case that may be generalized in future iterations.
-    % TODO: Complete implementation as noted in the Lean code
+\begin{remark}[SendClaim Completeness Status]
+    Perfect completeness of the SendClaim oracle reduction (an honest claim lands in the refined output relation whenever the input is in the input relation and $f$ respects $P$) is not yet formalized in the canonical module. There is no plain soundness theorem: since the verifier never rejects, soundness content is only the relation-transport statement above.
 \end{remark}
 
 \subsection{Claim Reduction}
@@ -262,10 +260,17 @@ A fundamental building block for constructing complex proof systems is the abili
     \uses{def:oracle_reduction, def:reduceclaim_reduction}
 \end{definition}
 
-\begin{remark}[ReduceClaim Oracle Completeness]
-    The oracle version's completeness proof is currently under development in the Lean formalization.
-    % TODO: Complete when oracleReduction_completeness is implemented
-\end{remark}
+\begin{theorem}[ReduceClaim Oracle Perfect Completeness]
+    The ReduceClaim oracle reduction satisfies perfect completeness when the relation condition holds.
+    \lean{ReduceClaim.oracleReduction_completeness}
+    \uses{def:reduceclaim_oracle_reduction}
+\end{theorem}
+
+\begin{theorem}[ReduceClaim Round-by-Round Knowledge Soundness]
+    Both the plain and oracle ReduceClaim verifiers are round-by-round knowledge sound with zero error, given an inverse witness map $\mathsf{mapWitInv}$ that pulls any $R_{\mathsf{out}}$ witness of a mapped statement back to an $R_{\mathsf{in}}$ witness.
+    \lean{ReduceClaim.verifier_rbrKnowledgeSoundness, ReduceClaim.oracleVerifier_rbrKnowledgeSoundness}
+    \uses{def:reduceclaim_reduction, def:reduceclaim_oracle_reduction}
+\end{theorem}
 
 \subsection{Claim Verification}
 
@@ -294,23 +299,25 @@ Another essential building block is the ability to verify that a given predicate
 
 \begin{definition}[CheckClaim Oracle Reduction]
     \label{def:checkclaim_oracle_reduction}
-    The oracle version handles predicates that require oracle access:
+    Unlike the plain version, the oracle version does \emph{not} check anything at runtime:
     \begin{itemize}
-        \item \textbf{Oracle predicate}: $\mathsf{pred} : \StmtIn \to \OracleComp[\OStmtIn]_{\mathcal{O}} \Prop$
-        \item \textbf{Never-fails condition}: $\mathsf{pred}(\mathsf{stmt})$ never fails for any statement
-        \item \textbf{Oracle computation}: Verifier executes oracle computation to check predicate
-        \item \textbf{Input relation}: Defined via oracle simulation of the predicate
+        \item \textbf{Verifier}: A pure pass-through; it returns the statement and oracle statements unchanged, takes no predicate, and never rejects
+        \item \textbf{Checked predicate}: $P : \StmtIn \to (\forall i,\ \OStmtIn(i)) \to \Prop$ is carried only by the output relation $R_{\mathsf{out}} := R_{\mathsf{in}} \cap \{x \mid P(x)\}$
+        \item \textbf{Consequence}: an input violating $P$ is accepted exactly like one satisfying it; $P$ is a semantic obligation that a later stage (or the surrounding relation chain) must discharge
     \end{itemize}
+    The pure pass-through shape is what lets this verifier be a left factor in a coordinate-wise special soundness composition; the \texttt{guard}-based plain reduction above is the variant that actually rejects.
     \lean{CheckClaim.oracleReduction}
     \uses{def:oracle_reduction, def:checkclaim_reduction}
 \end{definition}
 
 \begin{theorem}[CheckClaim Oracle Perfect Completeness]
-    The CheckClaim oracle reduction satisfies perfect completeness.
-    % \lean{CheckClaim.oracleReduction_completeness}  % TODO: theorem not yet stated in ArkLib (currently commented out in CheckClaim.lean); relink once proven
+    The CheckClaim oracle reduction is perfectly complete from $R_{\mathsf{in}}$ to $R_{\mathsf{in}} \cap \{x \mid P(x)\}$, under the explicit hypothesis that every $R_{\mathsf{in}}$ input already satisfies $P$.
+    \lean{CheckClaim.oracleReduction_completeness}
     \uses{def:checkclaim_oracle_reduction}
 \end{theorem}
 
-\begin{remark}[CheckClaim Security Analysis]
-    The round-by-round knowledge soundness proofs for both reduction and oracle versions are currently under development in the Lean formalization.
-\end{remark}
+\begin{theorem}[CheckClaim Security]
+    The plain CheckClaim verifier is round-by-round knowledge sound with zero error (its \texttt{guard} rejects inputs violating the predicate). The oracle verifier is coordinate-wise special sound into $R_{\mathsf{in}} \cap \{x \mid P(x)\}$; this is a relation-transport statement and does not mean the oracle verifier rejects inputs violating $P$.
+    \lean{CheckClaim.verifier_rbr_knowledge_soundness, CheckClaim.oracleVerifier_coordinateWiseSpecialSoundWith}
+    \uses{def:checkclaim_reduction, def:checkclaim_oracle_reduction}
+\end{theorem}

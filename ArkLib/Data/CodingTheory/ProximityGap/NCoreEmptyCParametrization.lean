@@ -19,32 +19,46 @@ nonvanishing certificate is a full-rank square subsystem — a *candidate* list-
 
 The prize-decisive question (the single most decisive remaining cyclic-sieving experiment): does the
 **count of `n`-core-EMPTY certificates** grow polynomially or super-polynomially in `n` at prize
-parameters? This file settles the count exactly on the in-tree `nCoreEmpty` object.
+parameters? This file does not settle that question: it proves only that, with no size budget,
+the in-tree `nCoreEmpty` object has infinitely many instances at each fixed `n ≥ 1`.
 
 ## The result
 
 For *any* `c : Fin n → ℕ`, the bead function `β_c r := r + n · c r` is **`n`-core-EMPTY**: its
 residues `β_c r mod n = r` are trivially the identity permutation, hence pairwise distinct
 (`nCoreEmpty_cParam`). Moreover `c ↦ β_c` is **injective** (`cParam_injective`). Therefore the
-`n`-core-EMPTY configurations are at least as numerous as `ℕ^{Fin n} = ℕ^n` — an *unbounded,
-super-polynomial* family (`exists_infinite_nCoreEmpty`, `nCoreEmpty_card_unbounded`).
+`n`-core-EMPTY configurations are at least as numerous as `ℕ^{Fin n} = ℕ^n`; in particular for
+each fixed `n ≥ 1` they form an *infinite* family (`exists_injection_nCoreEmpty`,
+`infinite_nCoreEmpty`, `nCoreEmpty_card_unbounded`).
+
+**Infinitude is not a growth rate.**  These results contain no size budget, so they say nothing
+about polynomial versus super-polynomial growth.  Under the natural grading by
+`|c| = Σ_r c r`, the number of `c` with `|c| = S` is `C(S+n-1, n-1)` and the number with
+`|c| ≤ S` is `C(S+n, n)`: at fixed `n` both are *polynomial* in `S` of degree `n − 1`, resp. `n`
+(for `n = 1` there are only `S + 1` configurations with budget `≤ S`).  Super-polynomial growth
+can only appear when `n` varies together with a specified budget `S(n)`; no such relation or
+uniform-budget count is formalized here.
 
 ## The honest reading (why this is a REDUCTION, not a refutation of the floor)
 
-The super-poly explosion lives entirely in the **certificate / support** count. The numerical probe
-`scripts/probes/probe_ncore_empty_listgrowth_prize.py` measures this exactly:
-the size-graded `n`-core-EMPTY count is the binomial `Σ_{S} C(S+n-1, n-1)` (validated against brute
-force for `n ∈ {4,6,8,10}`), which is *super-poly* (e.g. `n=256`, Johnson agreement: `> 10^37`).
-But the **EXACT `F_p` codeword list** (the `δ*`-relevant quantity) is *tiny* and `p`-independent: at
+Any growth lives entirely in the **certificate / support** count. The numerical probe
+`scripts/probes/probe_ncore_empty_listgrowth_prize.py` (not present in this tree) reported the
+size-graded `n`-core-EMPTY count as the binomial `Σ_{S} C(S+n-1, n-1)` (checked against brute
+force for `n ∈ {4,6,8,10}`), which is large when `n` and the budget grow together (e.g. `n=256`
+with a Johnson-agreement budget: `> 10^37`); that is a probe observation at chosen `(n, S(n))`,
+not a theorem of this file.
+By contrast the same probes reported (unformalized) that the **`F_p` codeword list** (the
+`δ*`-relevant quantity) is *tiny* at the probed cells: at
 the Johnson radius the worst smooth-`μ_n` list is `O(1/ρ)` (a handful), collapsing to `1` above the
 `k+1` boundary, and the only larger list — the `a = k+1` spike — is **generic MDS** list-decoding
 (smooth `≈` random domain), *not* a cyclic-sieving effect.
 
 This is exactly the in-tree core-vs-list split
 `#cores ≤ L · C(A, k+m+1)` (`SubJohnsonListSupply.explainableCoreSupply_of_listBound`): the
-`n`-core enumeration counts the `C(A, k+m+1)` **supports**, which this file shows is super-poly,
-*not* the codeword list `L`. The cyclic-sieving lever therefore gives **no list boost** over a
-random domain; the route REDUCES to the same named open core (`SubJohnsonListBound`'s `L`).
+`n`-core enumeration counts the `C(A, k+m+1)` **supports** (this file shows only that the
+unrestricted `n`-core-empty family is infinite at each fixed `n`), *not* the codeword list `L`.
+On the probe evidence the cyclic-sieving lever gives **no list boost** over a random domain; the
+route REDUCES to the same named open core (`SubJohnsonListBound`'s `L`).
 **No closure, no refutation — a precise reduction.** See `Research/ProximityPrize/DISPROOF_LOG.md`.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); finite/elementary.
@@ -85,19 +99,21 @@ theorem cParam_injective : Function.Injective (cParam (n := n)) := by
   have hn : 0 < n := Nat.pos_of_ne_zero (fun h0 => (h0 ▸ r).elim0)
   exact Nat.eq_of_mul_eq_mul_left hn hmul
 
-/-- **Super-poly certificate count, sharp form.** There is an injection from `ℕ^{Fin n}` into the
-`n`-core-EMPTY bead functions. Hence at every fixed `n ≥ 1` there are *infinitely many*
-`n`-core-EMPTY configurations — the certificate count is unbounded (super-polynomial in any size
-budget), the exact statement the cyclic-sieving experiment confirms. -/
+/-- **Injective `c`-parametrization of `n`-core-EMPTY configurations.** There is an injection from
+`ℕ^{Fin n}` into the `n`-core-EMPTY bead functions. Hence at every fixed `n ≥ 1` there are
+*infinitely many* `n`-core-EMPTY configurations.  This is an unrestricted infinitude statement, not
+a growth rate: graded by `Σ_r c r ≤ S`, the parametrized family has `C(S+n, n)` members, which is
+polynomial in `S` at fixed `n`. -/
 theorem exists_injection_nCoreEmpty :
     ∃ f : (Fin n → ℕ) → (Fin n → ℕ),
       Function.Injective f ∧ ∀ c, nCoreEmpty (f c) :=
   ⟨cParam, cParam_injective, nCoreEmpty_cParam⟩
 
 /-- **For `n ≥ 1`, the `n`-core-EMPTY configurations form an infinite set.** (Direct corollary:
-`ℕ^{Fin n}` is infinite and injects in.) This is the unbounded/super-poly verdict on the
-*certificate* count — to be read against the *codeword-list* poly bound (see module docstring and
-`SubJohnsonListSupply`). -/
+`ℕ^{Fin n}` is infinite and injects in.) This says the unrestricted *certificate* family is
+infinite; it implies no polynomial or super-polynomial growth rate in any size budget (see the
+module docstring), and is to be read against the *codeword-list* bound in
+`SubJohnsonListSupply`. -/
 theorem infinite_nCoreEmpty [NeZero n] :
     {β : Fin n → ℕ | nCoreEmpty β}.Infinite := by
   have hr : (0 : ℕ) < n := Nat.pos_of_ne_zero (NeZero.ne n)
@@ -109,8 +125,9 @@ theorem infinite_nCoreEmpty [NeZero n] :
 
 /-- An explicit witnessing family showing the count exceeds any finite bound `N`: the `N+1` distinct
 configurations `cParam (fun _ => i)` for `i = 0,…,N` are pairwise distinct and all `n`-core-EMPTY,
-for `n ≥ 1`. (The genuine count is the binomial `C(S+n-1,n-1)`; here we only need unboundedness to
-state the super-poly verdict against the poly list bound.) -/
+for `n ≥ 1`. (Graded by `Σ_r c r = S`, the parametrized count is the binomial `C(S+n-1,n-1)`,
+polynomial in `S` at fixed `n`; this theorem records only unboundedness of the unrestricted family
+and is not a super-polynomial growth statement.) -/
 theorem nCoreEmpty_card_unbounded [NeZero n] (N : ℕ) :
     ∃ S : Finset (Fin n → ℕ), N < S.card ∧ ∀ β ∈ S, nCoreEmpty β := by
   classical

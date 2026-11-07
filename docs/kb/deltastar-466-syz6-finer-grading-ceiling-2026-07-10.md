@@ -37,15 +37,34 @@ SYZ6 refines to **`1024` blocks of `2^20`**:
 
 At block count `B` with `D = 3` subsets, minimize radius over core size `C`, region size
 `R = (B−C)/3` subject to the degree cap `C·blk < 2^29` (i.e. `C < B/2`) and the over-budget
-constraint `3R > C`. Optimum: `C = B/2 − 1` (largest the cap allows, with `B−C ≡ 0 mod 3`),
-radius `= (2R·blk − 1)/2^30`. As `B → ∞` this `→ 1/3⁺`, the `D=3` infimum `(1−ρ)/(2−ρ)=1/3`
-at `ρ=1/2`, approached but not attained. At `B=1024`: `C=511`, `R=171`, radius `358612991/2^30`.
+constraint `3R > C`. Optimum: the largest `C < B/2` with `B−C ≡ 0 mod 3`, radius
+`= (2R·blk − 1)/2^30`. At `B=1024`: `C=511`, `R=171`, radius `358612991/2^30`.
+
+**The grading is finite (audit T159).** The domain is fixed at size `2^30`, and equal blocks force
+`B ∣ 2^30`, i.e. `B = 2^j` with `j ≤ 30` (`blk = 2^(30−j) ≥ 1`). So `B` is a **bounded** parameter.
+An earlier version said "as `B → ∞` this `→ 1/3⁺`, the `D=3` infimum, approached but not attained".
+That is not meaningful on a fixed domain. The exact template optimum over all admissible
+gradings is:
+- `C = B/2 − 1` for even `j`, `C = B/2 − 2` for odd `j`; the radius is non-increasing in `j`
+  (`j=6`: SYZ4's `369098751/2^30`; `j=10`: SYZ6's `358612991/2^30`; `j=12,13`: `358088703/2^30`;
+  `j=14,15`: `357957631/2^30`; …);
+- the minimum is at the finest grading `B = 2^30` (`blk = 1`): `C = 2^29 − 1`, `R = 178956971`,
+  radius `357913941/2^30 = ⌊2^30/3⌋/2^30 = 1/3 − 1/(3·2^30)`. That is slightly **below** `1/3`,
+  because of the `−1` in `predecessorRadius`.
+
+So within this fixed-domain template `1/3` is **not** an unattained infimum approached from above.
+`(1−ρ)/(2−ρ) = 1/3` is only an asymptotic (growing-domain) reference value for the `D = 3` channel.
+At `B = 2^30` the template's arithmetic side conditions all hold: degree cap; `t ≥ 2^29`; bad count
+`3·357913942 = 1073741826 > 2^30`; mass `> epsStar`, since `P < 1073741826·2^128`. But no Lean proof
+finer than `B = 1024` exists, and nobody has checked whether the channel argument carries over
+unchanged at `blk = 1`.
 
 **Honest gaps.**
-- The remaining gap to `1/3 = 0.33333` (≈ `0.00065`) is **pure lattice** — a finer grading
-  (larger `B`, e.g. `2^13` blocks of `2^17`, optimal `C = 2^12−1`, radius `→ 357913941/2^30`)
-  closes it further at the cost of a heavier (but still per-region-constant) proof. `1/3` is the
-  unattained infimum.
+- The remaining gap between `358612991/2^30` and the template minimum `357913941/2^30`
+  (≈ `0.00065`) is **pure lattice**: a finer grading closes it at the cost of a heavier proof.
+  (Correction: an earlier example, "`2^13` blocks of `2^17`, optimal `C = 2^12−1`, radius
+  `→ 357913941/2^30`", was wrong. `3 ∤ 2^13 − (2^12 − 1)`, and the template optimum at `B = 2^13`
+  is `C = 4094`, `R = 1366`, radius `358088703/2^30`. The value `357913941/2^30` needs `B = 2^30`.)
 - The conceptual gap `[Johnson 1 − √(1/2) ≈ 0.2929, 1/3]` is **untouched** — Johnson remains
   strictly below, no contradiction.
 - The unconditional good-side floor `178956971/2^30 ≈ 0.1667` is unchanged.

@@ -1,5 +1,19 @@
 # #466 L4(B): the I031 entropy reduction cancels at the TAIL too — union-over-cosets ≡ the quotient moment bound (2026-07-01)
 
+> **Scope correction (2026-10-28 audit, T48; cross T87/T100).** The PART 0 identity is a valid
+> limitation, but only of that particular input. When the only information is per-rep moments to
+> depth `r`, the Markov/union route equals the quotient moment bound. The broader conclusions do
+> not follow:
+> - It does not show that every other tail argument consumes the same input.
+> - The measured creep above one proposed constant (`M/[σ√(ln m)] ≈ 1.15–1.21` at two primes with
+>   `n = 16`) does not eliminate all `O(1)` constants.
+> - "Do NOT re-attempt … any repackaging" and "fully closed" are therefore stronger than the
+>   evidence.
+>
+> The Gaussian comparator must also match the real/complex normalization: for even `n`, `G = −G`,
+> so every period is real, and a complex Gaussian model changes the tail constants. The finite
+> ratios in PARTS 1–2 are measurements, not a universal tail no-go.
+
 **Verdict: KILL — the I031 lead is fully closed.** DISPROOF tag `466-r4-i031-tail-cosmetic`.
 Probe `scripts/probes/probe_466_i031_tail.py` → `_out_466_i031_tail.txt` (deterministic,
 no RNG; independently re-run 2026-07-02, byte-identical). Completes the round-1 moment-side

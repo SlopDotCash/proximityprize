@@ -14,10 +14,23 @@ import ArkLib.Data.CodingTheory.ProximityGap.CosetRigidity
 Complement to `CosetExactCount.card_vanishingEsymm_subsets_eq` (which counts the `h ∣ n` case as
 exactly `n/h`). Here we prove the **dichotomy**: a vanishing-statistic `h`-subset of `μ_n` injects
 into the `gcd(h,n)`-th roots of unity, so `|S| ≤ gcd(h,n)`; hence when `h ∤ n` (so `gcd(h,n) < h`)
-**no** such subset exists (`not_exists_esymm_zero_of_not_dvd`). Over the smooth domain `μ_{2^k}` the
-only divisors of `n=2^k` are powers of `2`, so vanishing-statistic `h`-subsets exist **iff** `h` is
-a power of `2` — a structural fact special to the power-of-2 smooth domain the prize fixes, and a
-sharp reason the coset construction is confined to power-of-2 agreement levels. Axiom-clean.
+**no** such subset exists (`not_exists_esymm_zero_of_not_dvd`). This impossibility direction holds
+over any field, in arbitrary characteristic.
+
+Over the smooth domain `μ_{2^k}` the divisors of `n = 2^k` are exactly the powers of `2` that are
+`≤ n`, so the precise criterion is `h ∣ n`, i.e. `h = 2^j` with `j ≤ k` — **not** "every power of
+`2`": e.g. for `n = 8`, `h = 16` is a power of `2` but no `16`-element subset of `μ_8`
+exists at all.
+The two directions have different hypotheses:
+* *necessity* (`h ∣ n`, proved here) needs only `0 < n`, `0 < h` and `S ⊆ {x | x^n = 1}`;
+* *existence* for `h ∣ n` is **not** proved in this file; it is
+  `CosetExactCount.card_vanishingEsymm_subsets_eq`, which additionally assumes a primitive `n`-th
+  root of unity `ζ ∈ F` (so the full domain `μ_n` of `n` distinct roots is available) and then
+  counts exactly `n/h` such subsets.
+So, given a primitive `2^k`-th root of unity in `F`, vanishing-statistic `h`-subsets of `μ_{2^k}`
+(`0 < h`) exist iff `h ∣ 2^k`, a structural fact special to the power-of-2 smooth domain the prize
+fixes and a sharp reason the coset construction is confined to power-of-2 agreement levels `≤ n`.
+Axiom-clean.
 -/
 
 open Polynomial Finset
@@ -30,8 +43,9 @@ variable {F : Type*} [Field F] [DecidableEq F]
 `e_1(S)=…=e_{h-1}(S)=0` then (rigidity) all its elements share `x^h = c`; combined with `x^n = 1`
 this forces `x^{gcd(h,n)}` to be the common constant, so `S` injects into the `gcd(h,n)`-th roots of
 unity — hence `|S| ≤ gcd(h,n)`. Therefore when `h ∤ n` (so `gcd(h,n) < h`) NO such `S` exists.
-Over the smooth domain `μ_{2^k}` this says: vanishing-statistic `h`-subsets exist **only** when `h`
-is a power of `2`; for every non-power-of-2 `h` the count is `0`. -/
+Over the smooth domain `μ_{2^k}` this says: vanishing-statistic `h`-subsets exist **only** when
+`h ∣ 2^k`, i.e. `h` is a power of `2` with `h ≤ 2^k`; for every other `h > 0` (non-powers of `2`
+and powers of `2` exceeding `n`) the count is `0`. -/
 theorem card_le_gcd_of_esymm_zero {n h : ℕ} (hn : 0 < n) (hh : 0 < h)
     (S : Finset F) (hSsub : ∀ x ∈ S, x ^ n = 1) (hScard : S.card = h)
     (hesymm : ∀ j, 1 ≤ j → j ≤ h - 1 → S.val.esymm j = 0) :

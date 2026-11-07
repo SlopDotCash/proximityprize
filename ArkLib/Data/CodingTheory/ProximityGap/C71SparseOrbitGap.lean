@@ -21,12 +21,25 @@ conjecture that does **not** reduce to BGK:
 > action-non-stabilised admissibility class supported on `<= 3` monomial positions).
 
 ## The sharp question this file answers
-`ActionOrbitGeneralF.eigen_forces_monomial` PINS that the per-line `gamma`-orbit closure of the bad
-set (the source of the `O(1)/|F|` action-orbit count) is available **only** for a *single-monomial*
-direction `f` -- because orbit-closure requires `f` to be a dilation eigenvector
-`f.comp (C mu * X) = C c * f`, and (when `mu` has large multiplicative order, the prize regime
-`deg f < n` on `mu_n`) only monomials are eigenvectors. So orbit-closure is a **1-sparse**
-property, not a 3-sparse one.
+The in-tree action-orbit producer derives per-line `gamma`-orbit closure of the bad set (the source
+of the `O(1)/|F|` action-orbit count) from the **sufficient** condition that the direction `f` is a
+dilation eigenvector `f.comp (C mu * X) = C c * f`. `ActionOrbitGeneralF.eigen_forces_monomial`
+shows that (when `mu` has large multiplicative order, the prize regime `deg f < n` on `mu_n`) only
+monomials satisfy that eigenvector identity. So the eigenvector *producer* of orbit closure is a
+**1-sparse** mechanism, not a 3-sparse one.
+
+**Correction (audit 2026-10-28, PG-105).** An earlier version of this header said that
+orbit-closure *requires* `f` to be a dilation eigenvector, and concluded that a multi-term
+direction's bad set "is not a union of `gamma`-orbits" and that "no" orbit compression can apply.
+That is a converse error: the coefficient lemmas below only refute the eigenvector identity; they
+do not show the identity is *necessary* for bad-set invariance. Concrete counterexample: over
+`mu_4 ⊆ F_5` with the constant code, exact agreement `delta = 0`, offset `u_0 = 0` and direction
+`f = X + X^2` (evaluations `2, 1, 2, 0` on `1, 2, 3, 4`), the scalar bad set is `{0}` (`gamma = 0`
+is explainable while the rows are not jointly codewords; every nonzero multiple of `f` stays
+nonconstant). `{0}` is invariant under every multiplicative scalar action, yet `f` is not a
+dilation eigenvector for the primitive 4th root `mu = 2` (its two support eigenvalues `2 ≠ 4`
+differ). The conclusions below are therefore restricted to the **inapplicability of the eigenvector
+producer**, not impossibility of orbit closure or orbit counting.
 
 A probe (`scripts/probes/probe_c71_sparse_orbit_gap.py`, EXACT full-`alpha`-sweep bad-set strength
 on the thin domain `mu_n`, `n = 2^a`, `k = n/4`, three primes `p in {17, 41, 521}` spanning
@@ -36,12 +49,14 @@ on the thin domain `mu_n`, `n = 2^a`, `k = n/4`, three primes `p in {17, 41, 521
 uniformly across all three primes -- so the worst-case `<=3`-sparse adversary is **strictly
 multi-term** (`s23max > s1max`), NOT a monomial. (Route **B** of the probe.)
 
-**Consequence (gap-localization).** Even granting Conjecture 7.1 ("worst case is `<=3`-sparse"), the
-worst case is a *genuine* 2- or 3-term direction, which by the eigenvector pin is **not** a dilation
-eigenvector, so its bad set is **not** a union of `gamma`-orbits and receives **no** `O(1)/|F|`
-action-orbit compression. Closing the prize through the in-tree action-orbit machinery therefore
-needs a NON-orbit incidence argument on the 2- or 3-term strata -- the action-orbit count alone
-provably misses the worst case.
+**Consequence (gap-localization, producer-level only).** Even granting Conjecture 7.1 ("worst case
+is `<=3`-sparse"), the probe's worst case is a *genuine* 2- or 3-term direction, which by the
+eigenvector pin is **not** a dilation eigenvector. Hence the eigenvector-based action-orbit producer
+does **not** supply orbit closure (and so does not supply its `O(1)/|F|` compression) for that
+direction. Whether the bad set of such a direction is nevertheless orbit-closed, or admits some
+other orbit-counting argument, is **not decided here** (see the PG-105 counterexample above).
+Closing the prize through the in-tree machinery therefore needs either a different orbit-closure
+producer or a non-orbit incidence argument on the 2- or 3-term strata.
 
 ## What is formalized here (axiom-clean, no new analytic content)
 The structural half of that statement -- the contrapositive of the pin, packaged as a usable
@@ -51,10 +66,10 @@ constraint lemma:
   dilation values differ (`mu^i != mu^j`, automatic when `mu` has order `> deg f`), then `f` is
   **not** a dilation eigenvector -- there is no scalar `c` with `f.comp (C mu * X) = C c * f`.
 * `multiterm_not_orbit_eligible` : a direction `f` with `>= 2` support terms (under the same
-  dilation-distinctness as the pin) is not a dilation eigenvector; i.e. the orbit-closure hypothesis
-  used by the action-orbit mechanism fails on every genuinely multi-term direction. This is the
+  dilation-distinctness as the pin) is not a dilation eigenvector; i.e. the eigenvector hypothesis
+  used by the action-orbit producer fails on every genuinely multi-term direction. This is the
   formal statement that the probe's Route-B worst case (a 2- or 3-term direction) escapes
-  the orbit pin.
+  the eigenvector producer. (It does not prove the bad set fails to be orbit-closed.)
 
 These extend the PROVEN `ActionOrbitGeneralF` pin
 (`dilation_eigen_coeff` / `eigen_forces_monomial`); they add no character-sum / incidence content.
@@ -88,12 +103,14 @@ theorem not_eigen_of_two_distinct_support (μ : F) (f : F[X])
 /-- **Genuinely multi-term directions are not orbit-eligible (the probe's Route-B obstruction,
 formal).** Under the same dilation-distinctness hypothesis used by `eigen_forces_monomial`
 (guaranteed when `orderOf μ > f.natDegree`, the prize regime `deg f < n` on `μ_n`), a direction `f`
-with `2 ≤ f.support.card` is **not** a dilation eigenvector. Hence the action-orbit per-line orbit
-closure -- which requires the eigenvector identity -- cannot apply to any genuine 2- or 3-term
-direction, which is exactly the worst-case sparse adversary found by the probe
-(`s23max = 9 > s1max = 8`,
-uniform over `p ∈ {17,41,521}`). So even if Conjecture 7.1 holds, the orbit count misses the worst
-case and a non-orbit incidence bound on the multi-term strata is required. -/
+with `2 ≤ f.support.card` is **not** a dilation eigenvector. Hence the eigenvector-based producer
+of per-line orbit closure (which takes the eigenvector identity as its sufficient hypothesis) does
+not apply to any genuine 2- or 3-term direction, which is exactly the worst-case sparse adversary
+found by the probe (`s23max = 9 > s1max = 8`, uniform over `p ∈ {17,41,521}`). This does **not**
+show that the bad set of such a direction fails to be orbit-closed: eigenvector failure is not
+necessary-condition failure (PG-105; e.g. `f = X + X^2` on `mu_4 ⊆ F_5`, constant code, `delta = 0`,
+has the orbit-invariant bad set `{0}`). So even if Conjecture 7.1 holds, the multi-term strata need
+a different orbit-closure producer or a non-orbit incidence bound. -/
 theorem multiterm_not_orbit_eligible (μ : F) (f : F[X])
     (hdistinct : ∀ a ∈ f.support, ∀ b ∈ f.support, μ ^ a = μ ^ b → a = b)
     (hcard : 2 ≤ f.support.card) :

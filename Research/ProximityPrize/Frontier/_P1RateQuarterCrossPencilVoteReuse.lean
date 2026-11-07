@@ -8,6 +8,8 @@ import Research.ProximityPrize.Frontier.PencilPairwiseBonferroni
 import Research.ProximityPrize.Frontier._P1RateQuarterAgreementOverlapGraph
 import ArkLib.Data.CodingTheory.ProximityGap.ScaleBracketFull
 import ArkLib.Data.CodingTheory.ProximityGap.WindowCrossWitness
+import Research.ProximityPrize.Frontier._P1RateQuarterPinnedAnchorPetalGrowth
+import Research.ProximityPrize.Frontier._P1RateQuarterCommonBaseDeterminantCollapse
 
 /-!
 # Cross-pencil vote reuse is necessary at the P1 predecessor
@@ -33,7 +35,7 @@ is kept separate so it is not confused with the exact prize-scale count.)
 
 set_option autoImplicit false
 set_option linter.unusedSectionVars false
-set_option linter.style.longFile 4300
+set_option linter.style.longFile 4100
 set_option maxRecDepth 2000000
 set_option maxHeartbeats 1000000
 
@@ -180,6 +182,28 @@ theorem sum_petalLoad_eq_sum_card (J : Finset ι) (V : ι → Finset (Fin N)) :
   intro j hj
   simp [Finset.sum_ite_mem]
 
+/-- **Symbolic load pigeonhole.**  If every petal has at least `a` coordinates and the
+incidence count `|ι| * a` exceeds `N * b`, some coordinate lies in more than `b` petals.  The
+numeric load spikes below are arithmetic instances. -/
+theorem exists_petalLoad_gt_of_card_floor
+    [Fintype ι] (V : ι → Finset (Fin N)) {a b : ℕ}
+    (hfloor : ∀ j, a ≤ (V j).card)
+    (hlt : N * b < Fintype.card ι * a) :
+    ∃ x : Fin N, b < petalLoad Finset.univ V x := by
+  by_contra hload
+  push Not at hload
+  have hupp : (∑ x : Fin N, petalLoad Finset.univ V x) ≤ N * b := by
+    calc
+      (∑ x : Fin N, petalLoad Finset.univ V x) ≤ ∑ _x : Fin N, b :=
+        Finset.sum_le_sum fun x _hx => hload x
+      _ = N * b := by simp
+  have hlow : Fintype.card ι * a ≤ ∑ j : ι, (V j).card := by
+    calc
+      Fintype.card ι * a = ∑ _j : ι, a := by simp
+      _ ≤ ∑ j : ι, (V j).card := Finset.sum_le_sum fun j _hj => hfloor j
+  rw [sum_petalLoad_eq_sum_card] at hupp
+  omega
+
 /-- A threshold witness whose pencil alignment has size at most the nine-rider floor has
 at least `60,118,357` actual off-alignment coordinates. -/
 theorem subNine_witnessVotePetal_card_floor
@@ -207,30 +231,11 @@ theorem exists_coordinate_petalLoad_ge_60118358
     (hA : ∀ j, (alignedSet u0 u1 (w0 j) (w1 j)).card ≤ 532676609) :
     ∃ x : Fin N, 60118358 ≤ petalLoad Finset.univ
       (fun j => witnessVotePetal u0 u1 (w0 j) (w1 j) (S j)) x := by
-  classical
-  let V : ι → Finset (Fin N) := fun j =>
-    witnessVotePetal u0 u1 (w0 j) (w1 j) (S j)
-  by_contra hload
-  push Not at hload
-  have hupp : (∑ x : Fin N, petalLoad Finset.univ V x) ≤ N * 60118357 := by
-    calc
-      (∑ x : Fin N, petalLoad Finset.univ V x) ≤ ∑ _x : Fin N, 60118357 := by
-        exact Finset.sum_le_sum fun x _hx => by
-          have hx : petalLoad Finset.univ V x < 60118358 := by
-            simpa only [V] using hload x
-          omega
-      _ = N * 60118357 := by simp
-  have hlow : (N + 1) * 60118357 ≤ ∑ j : ι, (V j).card := by
-    calc
-      (N + 1) * 60118357 = ∑ _j : ι, 60118357 := by simp [hcard]
-      _ ≤ ∑ j : ι, (V j).card := by
-        exact Finset.sum_le_sum fun j _hj =>
-          subNine_witnessVotePetal_card_floor u0 u1 (w0 j) (w1 j) (S j)
-            (hS j) (hA j)
-  have heq := sum_petalLoad_eq_sum_card (Finset.univ : Finset ι) V
-  rw [heq] at hupp
-  have hpos : 0 < 60118357 := by norm_num
-  omega
+  obtain ⟨x, hx⟩ := exists_petalLoad_gt_of_card_floor (a := 60118357) (b := 60118357)
+    (fun j => witnessVotePetal u0 u1 (w0 j) (w1 j) (S j))
+    (fun j => subNine_witnessVotePetal_card_floor u0 u1 (w0 j) (w1 j) (S j) (hS j) (hA j))
+    (by rw [hcard]; norm_num [N])
+  exact ⟨x, by omega⟩
 
 /-- Exact prize-scale version after choosing one base: `N` sub-nine partners force a
 coordinate load of at least the full petal floor `60,118,357`. -/
@@ -244,30 +249,11 @@ theorem exists_coordinate_petalLoad_ge_60118357_of_card_N
     (hA : ∀ j, (alignedSet u0 u1 (w0 j) (w1 j)).card ≤ 532676609) :
     ∃ x : Fin N, 60118357 ≤ petalLoad Finset.univ
       (fun j => witnessVotePetal u0 u1 (w0 j) (w1 j) (S j)) x := by
-  classical
-  let V : ι → Finset (Fin N) := fun j =>
-    witnessVotePetal u0 u1 (w0 j) (w1 j) (S j)
-  by_contra hload
-  push Not at hload
-  have hupp : (∑ x : Fin N, petalLoad Finset.univ V x) ≤ N * 60118356 := by
-    calc
-      (∑ x : Fin N, petalLoad Finset.univ V x) ≤ ∑ _x : Fin N, 60118356 := by
-        exact Finset.sum_le_sum fun x _hx => by
-          have hx : petalLoad Finset.univ V x < 60118357 := by
-            simpa only [V] using hload x
-          omega
-      _ = N * 60118356 := by simp
-  have hlow : N * 60118357 ≤ ∑ j : ι, (V j).card := by
-    calc
-      N * 60118357 = ∑ _j : ι, 60118357 := by simp [hcard]
-      _ ≤ ∑ j : ι, (V j).card := by
-        exact Finset.sum_le_sum fun j _hj =>
-          subNine_witnessVotePetal_card_floor u0 u1 (w0 j) (w1 j) (S j)
-            (hS j) (hA j)
-  have heq := sum_petalLoad_eq_sum_card (Finset.univ : Finset ι) V
-  rw [heq] at hupp
-  have hNpos : 0 < N := by norm_num [N]
-  omega
+  obtain ⟨x, hx⟩ := exists_petalLoad_gt_of_card_floor (a := 60118357) (b := 60118356)
+    (fun j => witnessVotePetal u0 u1 (w0 j) (w1 j) (S j))
+    (fun j => subNine_witnessVotePetal_card_floor u0 u1 (w0 j) (w1 j) (S j) (hS j) (hA j))
+    (by rw [hcard]; norm_num [N])
+  exact ⟨x, by omega⟩
 
 /-! ## Common-base interpretation of the petals -/
 
@@ -444,14 +430,9 @@ theorem commonBase_pencilDir_ne_of_baseMismatch
   have hx := congrFun heq x
   rw [commonBase_pencilDir_apply hgamma p0 p u0 u1 x hp,
     commonBase_pencilDir_apply hgamma' p0 p' u0 u1 x hp'] at hx
-  have he : u0 x + gamma0 * u1 x - p0 x ≠ 0 := by
-    exact sub_ne_zero.mpr hmiss.symm
-  have hinv : (gamma - gamma0)⁻¹ = (gamma' - gamma0)⁻¹ := by
-    apply mul_right_cancel₀ he
-    linear_combination hx
-  have hsub : gamma - gamma0 = gamma' - gamma0 := inv_injective hinv
-  apply hgg'
-  linear_combination hsub
+  exact hgg' (P1RateQuarterCommonBaseDeterminantCollapse.mobiusDirectionValue_injOn_nonbase
+    gamma0 (u1 x) (u0 x + gamma0 * u1 x - p0 x) (sub_ne_zero.mpr hmiss.symm)
+    (Ne.symm hgamma) (Ne.symm hgamma') hx)
 
 theorem commonBase_pencilKey_ne_of_baseMismatch
     {gamma0 gamma gamma' : F}
@@ -594,6 +575,48 @@ theorem commonBase_centeredPencilEval_crossCoordinate_rankOne
   dsimp only
   ring
 
+/-- **Symbolic base-mismatch lift.**  A positive common-base petal load at `x` places `x` in
+the base mismatch set, and the load equals the number of partners whose witness set contains
+`x`.  The numeric common-base load spikes are instances. -/
+theorem baseMismatch_hit_of_commonBase_petalLoad
+    [Fintype ι]
+    (gamma0 : F) (gamma : ι → F)
+    (p0 u0 u1 : Fin N → F) (p : ι → Fin N → F)
+    (S : ι → Finset (Fin N))
+    (hgamma : ∀ j, gamma0 ≠ gamma j)
+    (hp : ∀ j, ∀ x ∈ S j, p j x = u0 x + gamma j * u1 x)
+    {m : ℕ} (hm : 0 < m) {x : Fin N}
+    (hxload : m ≤ petalLoad Finset.univ (fun j => witnessVotePetal u0 u1
+      (pencilBase gamma0 (gamma j) p0 (p j))
+      (pencilDir gamma0 (gamma j) p0 (p j)) (S j)) x) :
+    x ∈ baseMismatchSet gamma0 p0 u0 u1 ∧ m ≤ (partnerHitSet S x).card := by
+  classical
+  let V : ι → Finset (Fin N) := fun j => witnessVotePetal u0 u1
+    (pencilBase gamma0 (gamma j) p0 (p j))
+    (pencilDir gamma0 (gamma j) p0 (p j)) (S j)
+  have hpetal : ∀ j, V j = S j ∩ baseMismatchSet gamma0 p0 u0 u1 := by
+    intro j
+    exact witnessVotePetal_commonBase_eq (hgamma j) p0 (p j) u0 u1 (S j) (hp j)
+  have hxpos : 0 < petalLoad Finset.univ V x := lt_of_lt_of_le hm hxload
+  obtain ⟨j, hj⟩ : ∃ j, x ∈ V j := by
+    have hnempty : (Finset.univ.filter fun j : ι => x ∈ V j).Nonempty := by
+      exact Finset.card_pos.mp (by simpa only [petalLoad] using hxpos)
+    obtain ⟨j, hj⟩ := hnempty
+    exact ⟨j, (Finset.mem_filter.mp hj).2⟩
+  have hxmis : x ∈ baseMismatchSet gamma0 p0 u0 u1 := by
+    rw [hpetal j, Finset.mem_inter] at hj
+    exact hj.2
+  refine ⟨hxmis, ?_⟩
+  have hloadEq : petalLoad Finset.univ V x = (partnerHitSet S x).card := by
+    simp only [petalLoad, partnerHitSet]
+    congr 1
+    ext j
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+    rw [hpetal j, Finset.mem_inter]
+    exact and_iff_left hxmis
+  rw [← hloadEq]
+  exact hxload
+
 /-- **Common-base load spike.**  If `N+1` partner witnesses through one fixed base all have
 sub-nine pencil alignment, then the base misses a coordinate on which at least `60,118,358`
 partners agree with their respective scalar line words. -/
@@ -611,40 +634,12 @@ theorem exists_baseMismatch_hit_by_60118358_partners
       (pencilDir gamma0 (gamma j) p0 (p j))).card ≤ 532676609) :
     ∃ x ∈ baseMismatchSet gamma0 p0 u0 u1,
       60118358 ≤ (Finset.univ.filter fun j : ι => x ∈ S j).card := by
-  classical
-  let V : ι → Finset (Fin N) := fun j => witnessVotePetal u0 u1
-    (pencilBase gamma0 (gamma j) p0 (p j))
-    (pencilDir gamma0 (gamma j) p0 (p j)) (S j)
   obtain ⟨x, hxload⟩ := exists_coordinate_petalLoad_ge_60118358 u0 u1
     (fun j => pencilBase gamma0 (gamma j) p0 (p j))
     (fun j => pencilDir gamma0 (gamma j) p0 (p j)) S hcard hS hA
-  have hpetal : ∀ j, V j = S j ∩ baseMismatchSet gamma0 p0 u0 u1 := by
-    intro j
-    exact witnessVotePetal_commonBase_eq (hgamma j) p0 (p j) u0 u1 (S j) (hp j)
-  have hxpos : 0 < petalLoad Finset.univ V x := by
-    simpa only [V] using lt_of_lt_of_le (by norm_num : 0 < 60118358) hxload
-  obtain ⟨j, hj⟩ : ∃ j, x ∈ V j := by
-    have hnempty : (Finset.univ.filter fun j : ι => x ∈ V j).Nonempty := by
-      exact Finset.card_pos.mp (by simpa only [petalLoad] using hxpos)
-    obtain ⟨j, hj⟩ := hnempty
-    exact ⟨j, (Finset.mem_filter.mp hj).2⟩
-  have hxmis : x ∈ baseMismatchSet gamma0 p0 u0 u1 := by
-    rw [hpetal j, Finset.mem_inter] at hj
-    exact hj.2
-  refine ⟨x, hxmis, ?_⟩
-  have hloadEq : petalLoad Finset.univ V x =
-      (Finset.univ.filter fun j : ι => x ∈ S j).card := by
-    simp only [petalLoad]
-    congr 1
-    ext j
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-    rw [hpetal j, Finset.mem_inter]
-    constructor
-    · exact fun hj => hj.1
-    · intro hj
-      exact ⟨hj, hxmis⟩
-  rw [← hloadEq]
-  simpa only [V] using hxload
+  have h := baseMismatch_hit_of_commonBase_petalLoad gamma0 gamma p0 u0 u1 p S hgamma hp
+    (by norm_num : 0 < 60118358) hxload
+  exact ⟨x, h.1, by simpa only [partnerHitSet] using h.2⟩
 
 /-- **Prize-scale common-base load spike.**  In a family of `N+1` witnesses, fixing one as
 base leaves exactly `N` partners.  If all corresponding pencils have sub-nine alignment,
@@ -663,37 +658,12 @@ theorem exists_baseMismatch_hit_by_60118357_of_N_partners
       (pencilDir gamma0 (gamma j) p0 (p j))).card ≤ 532676609) :
     ∃ x ∈ baseMismatchSet gamma0 p0 u0 u1,
       60118357 ≤ (Finset.univ.filter fun j : ι => x ∈ S j).card := by
-  classical
-  let V : ι → Finset (Fin N) := fun j => witnessVotePetal u0 u1
-    (pencilBase gamma0 (gamma j) p0 (p j))
-    (pencilDir gamma0 (gamma j) p0 (p j)) (S j)
   obtain ⟨x, hxload⟩ := exists_coordinate_petalLoad_ge_60118357_of_card_N u0 u1
     (fun j => pencilBase gamma0 (gamma j) p0 (p j))
     (fun j => pencilDir gamma0 (gamma j) p0 (p j)) S hcard hS hA
-  have hpetal : ∀ j, V j = S j ∩ baseMismatchSet gamma0 p0 u0 u1 := by
-    intro j
-    exact witnessVotePetal_commonBase_eq (hgamma j) p0 (p j) u0 u1 (S j) (hp j)
-  have hxpos : 0 < petalLoad Finset.univ V x := by
-    simpa only [V] using lt_of_lt_of_le (by norm_num : 0 < 60118357) hxload
-  obtain ⟨j, hj⟩ : ∃ j, x ∈ V j := by
-    have hnempty : (Finset.univ.filter fun j : ι => x ∈ V j).Nonempty := by
-      exact Finset.card_pos.mp (by simpa only [petalLoad] using hxpos)
-    obtain ⟨j, hj⟩ := hnempty
-    exact ⟨j, (Finset.mem_filter.mp hj).2⟩
-  have hxmis : x ∈ baseMismatchSet gamma0 p0 u0 u1 := by
-    rw [hpetal j, Finset.mem_inter] at hj
-    exact hj.2
-  refine ⟨x, hxmis, ?_⟩
-  have hloadEq : petalLoad Finset.univ V x =
-      (Finset.univ.filter fun j : ι => x ∈ S j).card := by
-    simp only [petalLoad]
-    congr 1
-    ext j
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-    rw [hpetal j, Finset.mem_inter]
-    exact and_iff_left hxmis
-  rw [← hloadEq]
-  simpa only [V] using hxload
+  have h := baseMismatch_hit_of_commonBase_petalLoad gamma0 gamma p0 u0 u1 p S hgamma hp
+    (by norm_num : 0 < 60118357) hxload
+  exact ⟨x, h.1, by simpa only [partnerHitSet] using h.2⟩
 
 /-- **Prize-scale sub-nine minor clique.**  The common-base load spike can be selected so
 that at least `60,118,357` partners form a complete nonzero-minor family at one coordinate. -/
@@ -756,6 +726,54 @@ theorem witnessVotePetal_subset_voteSet
   rw [mem_voteSet_iff]
   exact ⟨hx.2, hp x hx.1⟩
 
+/-- A supplied common-base petal load injects into distinct common-base pencils. -/
+theorem commonBase_petalLoad_le_distinctPencils
+    [Fintype ι]
+    (gamma0 : F) (gamma : ι → F)
+    (p0 u0 u1 : Fin N → F) (p : ι → Fin N → F)
+    (S : ι → Finset (Fin N))
+    (hgamma0 : ∀ j, gamma0 ≠ gamma j)
+    (hgamma : Function.Injective gamma)
+    (hp : ∀ j, ∀ x ∈ S j, p j x = u0 x + gamma j * u1 x)
+    (x : Fin N) :
+    petalLoad Finset.univ (fun j => witnessVotePetal u0 u1
+      (pencilBase gamma0 (gamma j) p0 (p j))
+      (pencilDir gamma0 (gamma j) p0 (p j)) (S j)) x ≤
+    (Finset.univ.image fun j : ι =>
+      (pencilBase gamma0 (gamma j) p0 (p j),
+        pencilDir gamma0 (gamma j) p0 (p j))).card := by
+  classical
+  let w0 : ι → Fin N → F := fun j => pencilBase gamma0 (gamma j) p0 (p j)
+  let w1 : ι → Fin N → F := fun j => pencilDir gamma0 (gamma j) p0 (p j)
+  let V : ι → Finset (Fin N) := fun j => witnessVotePetal u0 u1 (w0 j) (w1 j) (S j)
+  let key : ι → (Fin N → F) × (Fin N → F) := fun j => (w0 j, w1 j)
+  have hfiber : ∀ j ∈ (Finset.univ : Finset ι), ∀ j' ∈ Finset.univ,
+      j ≠ j' → key j = key j' → Disjoint (V j) (V j') := by
+    intro j _hj j' _hj' hjj' hkey
+    have hgam : gamma j ≠ gamma j' := fun heq => hjj' (hgamma heq)
+    have h0 : w0 j = w0 j' := congrArg Prod.fst hkey
+    have h1 : w1 j = w1 j' := congrArg Prod.snd hkey
+    apply Finset.disjoint_left.mpr
+    intro y hy hy'
+    have hyv := witnessVotePetal_subset_voteSet u0 u1 (w0 j) (w1 j) (gamma j) (S j)
+      (fun z hz => by
+        have hrepro := congrFun (pencil_reproduces_second (hgamma0 j) p0 (p j)) z
+        change pencilBase gamma0 (gamma j) p0 (p j) z +
+          gamma j * pencilDir gamma0 (gamma j) p0 (p j) z = _
+        simpa only [Pi.add_apply, Pi.smul_apply, smul_eq_mul] using
+          hrepro.trans (hp j z hz)) hy
+    have hyv' := witnessVotePetal_subset_voteSet u0 u1 (w0 j') (w1 j') (gamma j') (S j')
+      (fun z hz => by
+        have hrepro := congrFun (pencil_reproduces_second (hgamma0 j') p0 (p j')) z
+        change pencilBase gamma0 (gamma j') p0 (p j') z +
+          gamma j' * pencilDir gamma0 (gamma j') p0 (p j') z = _
+        simpa only [Pi.add_apply, Pi.smul_apply, smul_eq_mul] using
+          hrepro.trans (hp j' z hz)) hy'
+    rw [← h0, ← h1] at hyv'
+    exact Finset.disjoint_left.mp (voteSet_disjoint u0 u1 (w0 j) (w1 j) hgam) hyv hyv'
+  simpa only [V, key, w0, w1] using
+    petalLoad_le_image_card_of_fiber_disjoint (Finset.univ : Finset ι) V key hfiber x
+
 /-- **Prize-scale pencil explosion.**  Fixing one base in an `N+1` family leaves `N`
 partners.  If every common-base pencil lies below the nine-rider alignment floor, the
 `60,118,357`-fold petal load injects into distinct pencil keys: there are at least
@@ -776,43 +794,11 @@ theorem commonBase_distinctPencils_ge_60118357
     60118357 ≤ (Finset.univ.image fun j : ι =>
       (pencilBase gamma0 (gamma j) p0 (p j),
         pencilDir gamma0 (gamma j) p0 (p j))).card := by
-  classical
-  let w0 : ι → Fin N → F := fun j => pencilBase gamma0 (gamma j) p0 (p j)
-  let w1 : ι → Fin N → F := fun j => pencilDir gamma0 (gamma j) p0 (p j)
-  let V : ι → Finset (Fin N) := fun j =>
-    witnessVotePetal u0 u1 (w0 j) (w1 j) (S j)
-  let key : ι → (Fin N → F) × (Fin N → F) := fun j => (w0 j, w1 j)
-  obtain ⟨x, hxload⟩ := exists_coordinate_petalLoad_ge_60118357_of_card_N
-    u0 u1 w0 w1 S hcard hS hA
-  have hfiber : ∀ j ∈ (Finset.univ : Finset ι), ∀ j' ∈ Finset.univ,
-      j ≠ j' → key j = key j' → Disjoint (V j) (V j') := by
-    intro j _hj j' _hj' hjj' hkey
-    have hgam : gamma j ≠ gamma j' := fun heq => hjj' (hgamma heq)
-    have h0 : w0 j = w0 j' := congrArg Prod.fst hkey
-    have h1 : w1 j = w1 j' := congrArg Prod.snd hkey
-    apply Finset.disjoint_left.mpr
-    intro y hy hy'
-    have hyv := witnessVotePetal_subset_voteSet u0 u1 (w0 j) (w1 j) (gamma j) (S j)
-      (fun z hz => by
-        have hrepro := congrFun
-          (pencil_reproduces_second (hgamma0 j) p0 (p j)) z
-        change pencilBase gamma0 (gamma j) p0 (p j) z +
-          gamma j * pencilDir gamma0 (gamma j) p0 (p j) z = _
-        simpa only [Pi.add_apply, Pi.smul_apply, smul_eq_mul] using
-          hrepro.trans (hp j z hz)) hy
-    have hyv' := witnessVotePetal_subset_voteSet u0 u1 (w0 j') (w1 j') (gamma j') (S j')
-      (fun z hz => by
-        have hrepro := congrFun
-          (pencil_reproduces_second (hgamma0 j') p0 (p j')) z
-        change pencilBase gamma0 (gamma j') p0 (p j') z +
-          gamma j' * pencilDir gamma0 (gamma j') p0 (p j') z = _
-        simpa only [Pi.add_apply, Pi.smul_apply, smul_eq_mul] using
-          hrepro.trans (hp j' z hz)) hy'
-    rw [← h0, ← h1] at hyv'
-    exact Finset.disjoint_left.mp (voteSet_disjoint u0 u1 (w0 j) (w1 j) hgam) hyv hyv'
-  have himage := hxload.trans (petalLoad_le_image_card_of_fiber_disjoint
-    (Finset.univ : Finset ι) V key hfiber x)
-  simpa only [key, w0, w1] using himage
+  obtain ⟨x, hxload⟩ := exists_coordinate_petalLoad_ge_60118357_of_card_N u0 u1
+    (fun j => pencilBase gamma0 (gamma j) p0 (p j))
+    (fun j => pencilDir gamma0 (gamma j) p0 (p j)) S hcard hS hA
+  exact hxload.trans (commonBase_petalLoad_le_distinctPencils
+    gamma0 gamma p0 u0 u1 p S hgamma0 hgamma hp x)
 
 /-- **Unconditional per-base above-sub-nine-or-explosive dichotomy.**  For the `N` partners left
 after fixing a base in an exact `N+1` family, either one common-base pencil has alignment at
@@ -876,30 +862,11 @@ theorem exists_coordinate_petalLoad_ge_55924056_of_card_N
     (hA : ∀ j, (alignedSet u0 u1 (w0 j) (w1 j)).card ≤ 536870910) :
     ∃ x : Fin N, 55924056 ≤ petalLoad Finset.univ
       (fun j => witnessVotePetal u0 u1 (w0 j) (w1 j) (S j)) x := by
-  classical
-  let V : ι → Finset (Fin N) := fun j =>
-    witnessVotePetal u0 u1 (w0 j) (w1 j) (S j)
-  by_contra hload
-  push Not at hload
-  have hupp : (∑ x : Fin N, petalLoad Finset.univ V x) ≤ N * 55924055 := by
-    calc
-      (∑ x : Fin N, petalLoad Finset.univ V x) ≤ ∑ _x : Fin N, 55924055 := by
-        exact Finset.sum_le_sum fun x _hx => by
-          have hx : petalLoad Finset.univ V x < 55924056 := by
-            simpa only [V] using hload x
-          omega
-      _ = N * 55924055 := by simp
-  have hlow : N * 55924056 ≤ ∑ j : ι, (V j).card := by
-    calc
-      N * 55924056 = ∑ _j : ι, 55924056 := by simp [hcard]
-      _ ≤ ∑ j : ι, (V j).card := by
-        exact Finset.sum_le_sum fun j _hj =>
-          johnsonLight_witnessVotePetal_card_floor u0 u1 (w0 j) (w1 j) (S j)
-            (hS j) (hA j)
-  have heq := sum_petalLoad_eq_sum_card (Finset.univ : Finset ι) V
-  rw [heq] at hupp
-  have hNpos : 0 < N := by norm_num [N]
-  omega
+  obtain ⟨x, hx⟩ := exists_petalLoad_gt_of_card_floor (a := 55924056) (b := 55924055)
+    (fun j => witnessVotePetal u0 u1 (w0 j) (w1 j) (S j))
+    (fun j => johnsonLight_witnessVotePetal_card_floor u0 u1 (w0 j) (w1 j) (S j) (hS j) (hA j))
+    (by rw [hcard]; norm_num [N])
+  exact ⟨x, by omega⟩
 
 /-- Exact-Johnson analogue of the common-base load spike: the selected high-load coordinate
 is missed by the base and hit by at least `55,924,056` partners. -/
@@ -917,84 +884,12 @@ theorem exists_baseMismatch_hit_by_55924056_of_N_partners
       (pencilDir gamma0 (gamma j) p0 (p j))).card ≤ 536870910) :
     ∃ x ∈ baseMismatchSet gamma0 p0 u0 u1,
       55924056 ≤ (partnerHitSet S x).card := by
-  classical
-  let V : ι → Finset (Fin N) := fun j => witnessVotePetal u0 u1
-    (pencilBase gamma0 (gamma j) p0 (p j))
-    (pencilDir gamma0 (gamma j) p0 (p j)) (S j)
   obtain ⟨x, hxload⟩ := exists_coordinate_petalLoad_ge_55924056_of_card_N u0 u1
     (fun j => pencilBase gamma0 (gamma j) p0 (p j))
     (fun j => pencilDir gamma0 (gamma j) p0 (p j)) S hcard hS hA
-  have hpetal : ∀ j, V j = S j ∩ baseMismatchSet gamma0 p0 u0 u1 := by
-    intro j
-    exact witnessVotePetal_commonBase_eq (hgamma j) p0 (p j) u0 u1 (S j) (hp j)
-  have hxpos : 0 < petalLoad Finset.univ V x := by
-    simpa only [V] using lt_of_lt_of_le (by norm_num : 0 < 55924056) hxload
-  obtain ⟨j, hj⟩ : ∃ j, x ∈ V j := by
-    have hnempty : (Finset.univ.filter fun j : ι => x ∈ V j).Nonempty := by
-      exact Finset.card_pos.mp (by simpa only [petalLoad] using hxpos)
-    obtain ⟨j, hj⟩ := hnempty
-    exact ⟨j, (Finset.mem_filter.mp hj).2⟩
-  have hxmis : x ∈ baseMismatchSet gamma0 p0 u0 u1 := by
-    rw [hpetal j, Finset.mem_inter] at hj
-    exact hj.2
-  refine ⟨x, hxmis, ?_⟩
-  have hloadEq : petalLoad Finset.univ V x = (partnerHitSet S x).card := by
-    simp only [petalLoad, partnerHitSet]
-    congr 1
-    ext j
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-    rw [hpetal j, Finset.mem_inter]
-    exact and_iff_left hxmis
-  rw [← hloadEq]
-  simpa only [V] using hxload
-
-/-- A supplied common-base petal load injects into distinct common-base pencils. -/
-theorem commonBase_petalLoad_le_distinctPencils
-    [Fintype ι]
-    (gamma0 : F) (gamma : ι → F)
-    (p0 u0 u1 : Fin N → F) (p : ι → Fin N → F)
-    (S : ι → Finset (Fin N))
-    (hgamma0 : ∀ j, gamma0 ≠ gamma j)
-    (hgamma : Function.Injective gamma)
-    (hp : ∀ j, ∀ x ∈ S j, p j x = u0 x + gamma j * u1 x)
-    (x : Fin N) :
-    petalLoad Finset.univ (fun j => witnessVotePetal u0 u1
-      (pencilBase gamma0 (gamma j) p0 (p j))
-      (pencilDir gamma0 (gamma j) p0 (p j)) (S j)) x ≤
-    (Finset.univ.image fun j : ι =>
-      (pencilBase gamma0 (gamma j) p0 (p j),
-        pencilDir gamma0 (gamma j) p0 (p j))).card := by
-  classical
-  let w0 : ι → Fin N → F := fun j => pencilBase gamma0 (gamma j) p0 (p j)
-  let w1 : ι → Fin N → F := fun j => pencilDir gamma0 (gamma j) p0 (p j)
-  let V : ι → Finset (Fin N) := fun j => witnessVotePetal u0 u1 (w0 j) (w1 j) (S j)
-  let key : ι → (Fin N → F) × (Fin N → F) := fun j => (w0 j, w1 j)
-  have hfiber : ∀ j ∈ (Finset.univ : Finset ι), ∀ j' ∈ Finset.univ,
-      j ≠ j' → key j = key j' → Disjoint (V j) (V j') := by
-    intro j _hj j' _hj' hjj' hkey
-    have hgam : gamma j ≠ gamma j' := fun heq => hjj' (hgamma heq)
-    have h0 : w0 j = w0 j' := congrArg Prod.fst hkey
-    have h1 : w1 j = w1 j' := congrArg Prod.snd hkey
-    apply Finset.disjoint_left.mpr
-    intro y hy hy'
-    have hyv := witnessVotePetal_subset_voteSet u0 u1 (w0 j) (w1 j) (gamma j) (S j)
-      (fun z hz => by
-        have hrepro := congrFun (pencil_reproduces_second (hgamma0 j) p0 (p j)) z
-        change pencilBase gamma0 (gamma j) p0 (p j) z +
-          gamma j * pencilDir gamma0 (gamma j) p0 (p j) z = _
-        simpa only [Pi.add_apply, Pi.smul_apply, smul_eq_mul] using
-          hrepro.trans (hp j z hz)) hy
-    have hyv' := witnessVotePetal_subset_voteSet u0 u1 (w0 j') (w1 j') (gamma j') (S j')
-      (fun z hz => by
-        have hrepro := congrFun (pencil_reproduces_second (hgamma0 j') p0 (p j')) z
-        change pencilBase gamma0 (gamma j') p0 (p j') z +
-          gamma j' * pencilDir gamma0 (gamma j') p0 (p j') z = _
-        simpa only [Pi.add_apply, Pi.smul_apply, smul_eq_mul] using
-          hrepro.trans (hp j' z hz)) hy'
-    rw [← h0, ← h1] at hyv'
-    exact Finset.disjoint_left.mp (voteSet_disjoint u0 u1 (w0 j) (w1 j) hgam) hyv hyv'
-  simpa only [V, key, w0, w1] using
-    petalLoad_le_image_card_of_fiber_disjoint (Finset.univ : Finset ι) V key hfiber x
+  have h := baseMismatch_hit_of_commonBase_petalLoad gamma0 gamma p0 u0 u1 p S hgamma hp
+    (by norm_num : 0 < 55924056) hxload
+  exact ⟨x, h.1, h.2⟩
 
 /-- In the exact Johnson-light branch there are at least `55,924,056` distinct pencils
 through the base. -/
@@ -1172,9 +1067,12 @@ theorem subNine_twoCoordinate_concentration_arithmetic :
   rw [Nat.choose_two_right, Nat.choose_two_right]
   norm_num [N]
 
-/-- One below the Johnson-light pair-load target is exactly the last quotient-compatible
-integer; this records sharpness of the pigeonhole rounding. -/
-theorem johnsonLight_twoCoordinate_floor_pred_satisfiable :
+/-- Sharpness of the pigeonhole rounding: using the Johnson-light pair-load target `2,912,712`
+itself as the per-pair cap is consistent with the incidence count (the exact average is
+`N * C(55924056, 2) / C(N, 2) ≈ 2,912,711.34`).  So this double count cannot force a pair load
+of `2,912,713`; the largest cap it contradicts is `2,912,711`
+(`johnsonLight_twoCoordinate_concentration_arithmetic`). -/
+theorem johnsonLight_twoCoordinate_target_cap_consistent :
     N * ((55924056).choose 2) ≤ N.choose 2 * 2912712 := by
   rw [Nat.choose_two_right, Nat.choose_two_right]
   norm_num [N]
@@ -3069,12 +2967,10 @@ theorem direction_sub_eq_locator_mul_C_of_commonCore
     (hagree : ∀ x ∈ Cset, r.eval (dom x) = r₀.eval (dom x)) :
     r - r₀ = (Cset.prod fun x => X - C (dom x)) * C (r - r₀).leadingCoeff := by
   let L : F[X] := Cset.prod fun x => X - C (dom x)
-  have hLmonic : L.Monic := by
-    exact monic_prod_of_monic _ _ fun x _ => monic_X_sub_C (dom x)
-  have hLdeg : L.natDegree = k - 1 := by
-    change (Cset.prod fun x => X - C (dom x)).natDegree = k - 1
-    rw [natDegree_prod_of_monic _ _ fun x _ => monic_X_sub_C (dom x)]
-    simpa using hcard
+  have hLmonic : L.Monic :=
+    P1RateQuarterCommonBaseDeterminantCollapse.domainLocator_monic dom Cset
+  have hLdeg : L.natDegree = k - 1 :=
+    (P1RateQuarterCommonBaseDeterminantCollapse.domainLocator_natDegree dom Cset).trans hcard
   have hdiffdeg : (r - r₀).natDegree ≤ k - 1 := by
     exact (natDegree_sub_le r r₀).trans (max_le (by omega) (by omega))
   by_cases hzero : r - r₀ = 0
@@ -3332,9 +3228,8 @@ theorem source_collinear_of_eval_collinear_on_k
       intro x hx
       simp only [M, eval_sub, eval_mul, eval_C]
       exact sub_eq_zero.mpr (hcol x hx)
-    have hlocDegree : (S.prod fun x => X - C (dom x)).natDegree = S.card := by
-      rw [natDegree_prod_of_monic _ _ fun x _ => monic_X_sub_C (dom x)]
-      simp
+    have hlocDegree : (S.prod fun x => X - C (dom x)).natDegree = S.card :=
+      P1RateQuarterCommonBaseDeterminantCollapse.domainLocator_natDegree dom S
     have hle := natDegree_le_of_dvd hdvd hne
     rw [hlocDegree] at hle
     omega
@@ -3887,26 +3782,9 @@ theorem three_pointsOn_force_core_ge_352321537
     {line : LineParameter F} (hline : line ∈ lineParameters family)
     (hthree : 3 ≤ (pointsOn family line).card) :
     352321537 ≤ (jointCore dom (u 0) (u 1) line.1 line.2).card := by
-  let z := (jointCore dom (u 0) (u 1) line.1 line.2).card
-  let L := (pointsOn family line).card
-  have hpack := pointsOn_card_mul_max_add_core_le family hline
-  simp only [Fintype.card_fin] at hpack
-  rw [show (pointsOn family line).card = L from rfl,
-    show (jointCore dom (u 0) (u 1) line.1 line.2).card = z from rfl] at hpack
-  have hpack' : L * max 1
-      (⌈(1 - delta) * (N : NNReal)⌉₊ - z) + z ≤ N := by
-    exact hpack
-  have hthreshold' : predecessorThreshold ≤ ⌈(1 - delta) * (N : NNReal)⌉₊ := by
-    simpa only [Fintype.card_fin] using hthreshold
-  have hfactor : predecessorThreshold - z ≤ max 1
-      (⌈(1 - delta) * (N : NNReal)⌉₊ - z) :=
-    (Nat.sub_le_sub_right hthreshold' z).trans (le_max_right _ _)
-  have hmul : 3 * (predecessorThreshold - z) ≤
-      L * max 1
-        (⌈(1 - delta) * (N : NNReal)⌉₊ - z) :=
-    Nat.mul_le_mul hthree hfactor
-  have hbase : 3 * (predecessorThreshold - z) + z ≤ N :=
-    (Nat.add_le_add_right hmul z).trans hpack'
+  have hbase :=
+    P1RateQuarterPinnedAnchorPetalGrowth.le_pointsOn_card_mul_threshold_sub_core_add_core_le
+      family hthreshold hline hthree
   have hT := predecessorThreshold_eq
   norm_num [N] at hbase ⊢
   omega
@@ -3937,26 +3815,9 @@ theorem four_pointsOn_force_core_ge_432479347
     {line : LineParameter F} (hline : line ∈ lineParameters family)
     (hfour : 4 ≤ (pointsOn family line).card) :
     432479347 ≤ (jointCore dom (u 0) (u 1) line.1 line.2).card := by
-  let z := (jointCore dom (u 0) (u 1) line.1 line.2).card
-  let L := (pointsOn family line).card
-  have hpack := pointsOn_card_mul_max_add_core_le family hline
-  simp only [Fintype.card_fin] at hpack
-  rw [show (pointsOn family line).card = L from rfl,
-    show (jointCore dom (u 0) (u 1) line.1 line.2).card = z from rfl] at hpack
-  have hpack' : L * max 1
-      (⌈(1 - delta) * (N : NNReal)⌉₊ - z) + z ≤ N := by
-    exact hpack
-  have hthreshold' : predecessorThreshold ≤ ⌈(1 - delta) * (N : NNReal)⌉₊ := by
-    simpa only [Fintype.card_fin] using hthreshold
-  have hfactor : predecessorThreshold - z ≤ max 1
-      (⌈(1 - delta) * (N : NNReal)⌉₊ - z) :=
-    (Nat.sub_le_sub_right hthreshold' z).trans (le_max_right _ _)
-  have hmul : 4 * (predecessorThreshold - z) ≤
-      L * max 1
-        (⌈(1 - delta) * (N : NNReal)⌉₊ - z) :=
-    Nat.mul_le_mul hfour hfactor
-  have hbase : 4 * (predecessorThreshold - z) + z ≤ N :=
-    (Nat.add_le_add_right hmul z).trans hpack'
+  have hbase :=
+    P1RateQuarterPinnedAnchorPetalGrowth.le_pointsOn_card_mul_threshold_sub_core_add_core_le
+      family hthreshold hline hfour
   have hT := predecessorThreshold_eq
   norm_num [N] at hbase ⊢
   omega
@@ -3975,32 +3836,9 @@ theorem pointsOn_card_le_three_of_core_lt_432479347
   exact (Nat.not_le_of_lt hcore)
     (four_pointsOn_force_core_ge_432479347 family hthreshold hline hfour)
 
-/-- First two rungs of the exact P1 line-multiplicity ladder. -/
-theorem relevantLine_core_ge_352321537_or_card_eq_two
-    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
-    (family : BadScalarRichPointFamily dom k delta u)
-    (hthreshold : predecessorThreshold ≤
-      ⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊)
-    {line : LineParameter F} (hline : line ∈ lineParameters family) :
-    352321537 ≤ (jointCore dom (u 0) (u 1) line.1 line.2).card ∨
-      (pointsOn family line).card = 2 := by
-  by_cases hcore : 352321537 ≤ (jointCore dom (u 0) (u 1) line.1 line.2).card
-  · exact Or.inl hcore
-  · exact Or.inr (pointsOn_card_eq_two_of_core_lt_352321537
-      family hthreshold hline (by omega))
-
-theorem relevantLine_core_ge_432479347_or_card_le_three
-    {dom : Fin N ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) (Fin N)}
-    (family : BadScalarRichPointFamily dom k delta u)
-    (hthreshold : predecessorThreshold ≤
-      ⌈(1 - delta) * (Fintype.card (Fin N) : NNReal)⌉₊)
-    {line : LineParameter F} (hline : line ∈ lineParameters family) :
-    432479347 ≤ (jointCore dom (u 0) (u 1) line.1 line.2).card ∨
-      (pointsOn family line).card ≤ 3 := by
-  by_cases hcore : 432479347 ≤ (jointCore dom (u 0) (u 1) line.1 line.2).card
-  · exact Or.inl hcore
-  · exact Or.inr (pointsOn_card_le_three_of_core_lt_432479347
-      family hthreshold hline (by omega))
+/-! The two-rung dichotomies `relevantLine_core_ge_352321537_or_card_eq_two` and
+`relevantLine_core_ge_432479347_or_card_le_three` live in
+`P1RateQuarterPinnedAnchorPetalGrowth` (same names); they are not duplicated here. -/
 
 #print axioms private_petals_card_le_N
 #print axioms cross_pencil_reuse_of_N_lt_card
@@ -4050,7 +3888,7 @@ theorem relevantLine_core_ge_432479347_or_card_le_three
 #print axioms prizeField_supports_projectiveMinorClique_60118357
 #print axioms johnsonLight_twoCoordinate_concentration_arithmetic
 #print axioms subNine_twoCoordinate_concentration_arithmetic
-#print axioms johnsonLight_twoCoordinate_floor_pred_satisfiable
+#print axioms johnsonLight_twoCoordinate_target_cap_consistent
 #print axioms exists_two_coordinates_commonPetalLoad_ge_2912712
 #print axioms commonBase_johnsonLight_exists_twoCoordinateMinorClique_2912712
 #print axioms saturatedFullFiber_voteSet_card_eq_one
@@ -4145,7 +3983,5 @@ theorem relevantLine_core_ge_432479347_or_card_le_three
 #print axioms pointsOn_card_eq_two_of_core_lt_352321537
 #print axioms four_pointsOn_force_core_ge_432479347
 #print axioms pointsOn_card_le_three_of_core_lt_432479347
-#print axioms relevantLine_core_ge_352321537_or_card_eq_two
-#print axioms relevantLine_core_ge_432479347_or_card_le_three
 
 end ArkLib.ProximityGap.Frontier.P1RateQuarterCrossPencilVoteReuse

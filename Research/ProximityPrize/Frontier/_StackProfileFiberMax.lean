@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.OpenCoreConditionalPin
+import Research.ProximityPrize.Frontier._StackProfileDominationInterface
 
 /-!
 # Profile fibers have exact maximizers
@@ -34,13 +35,10 @@ variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module F A]
 
-/-- The actual bad-scalar count appearing in `WorstCaseIncidenceBounded`. -/
-noncomputable def StackBadCount (K : Type) [Field K] [Fintype K] [DecidableEq K]
-    {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-    {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module K A]
-    (C : Set (ι -> A)) (δ : ℝ≥0) (u : WordStack A (Fin 2) ι) : ℕ := by
-  classical
-  exact (Finset.univ.filter (fun γ : K => mcaEvent (F := K) C δ (u 0) (u 1) γ)).card
+/-! `StackBadCount` and `UsedProfile` are the canonical declarations of
+`_StackProfileDominationInterface.lean`, re-exported here (this file used to carry an identical
+private copy, giving distinct constants for the same object). -/
+export StackProfileDominationInterface (StackBadCount UsedProfile)
 
 /-- A one-stack incidence budget for the actual MCA bad-scalar count. -/
 def StackBounded (K : Type) [Field K] [Fintype K] [DecidableEq K]
@@ -75,11 +73,6 @@ def FamilyDominates (K : Type) [Field K] [Fintype K] [DecidableEq K]
     (R : Finset (WordStack A (Fin 2) ι)) : Prop :=
   ∀ u : WordStack A (Fin 2) ι,
     ∃ r ∈ R, StackBadCount K C δ u ≤ StackBadCount K C δ r
-
-/-- The profile value is actually attained by at least one stack. -/
-def UsedProfile {P : Type}
-    (profile : WordStack A (Fin 2) ι -> P) (p : P) : Prop :=
-  ∃ u : WordStack A (Fin 2) ι, profile u = p
 
 /-- The finite fiber of stacks with profile `p`. -/
 noncomputable def profileFiber {P : Type}

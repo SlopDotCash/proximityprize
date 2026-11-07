@@ -26,8 +26,9 @@ of the linear diagonal `#{(y',y) : y' = y} = |G|`. It is *not* `|G|` and *not* `
 genuine off-diagonal contribution survives because `x ↦ x²` is not injective. (Concretely, in odd
 characteristic `x'² = x²  ↔  x' = ±x`; for a multiplicative subgroup `G` closed under negation — e.g.
 any even-order `2^k` smooth FRI subgroup, which contains `−1` — the map is exactly `2`-to-`1`, so the
-collision count is `2|G|` and the typical quadratic subgroup sum has size `√(2|G|)`, still far below
-the full-field `√q`.)
+collision count is `2|G|` and the **root-mean-square** of the quadratic subgroup sum over all `q`
+frequencies is `√(2|G|)`, far below the full-field `√q`. This is L² information only: it does not
+by itself say what a typical or worst-case `‖ζ_b‖` is (compare audit finding PG-048).)
 
 ## Honest scope
 
@@ -125,11 +126,15 @@ theorem subgroup_quadratic_gaussSum_secondMoment {ψ : AddChar F ℂ} (hψ : ψ.
     rw [hcast]; push_cast; ring
   exact_mod_cast hreal
 
-/-- **The quadratic subgroup Gauss sum vanishes on average at the full-field scale.** The L²-average
-of `‖ζ_b‖²` over the `q` frequencies equals the average square-collision count, `≤ |G|²/q`. The point
-(mirroring the linear case): the *typical* quadratic subgroup sum is far below the full-field `√q`,
-so any improvement must come from a per-frequency *worst-case* bound — which is exactly the Weil input
-this development does not have. We record the average identity in its raw exact form. -/
+/-- **The L²-average of the quadratic subgroup Gauss sum.** The average of `‖ζ_b‖²` over the `q`
+frequencies equals the square-collision count `#{(x',x) ∈ G×G : x'² = x²}` itself (the factor `q`
+from the second moment cancels against the `1/q` of the average; there is no further `1/q`). Its
+immediate generic bound is `≤ |G|²`; for a negation-closed `G` with `0 ∉ G` in odd characteristic it
+is exactly `2|G|`. (Sanity check: for `G = {1}` every `‖ζ_b‖ = 1`, so the average is `1`.) The point
+(mirroring the linear case): the **root-mean-square** quadratic subgroup sum is far below the
+full-field `√q`; this is L² information and not a theorem about the typical or worst-case value of
+`‖ζ_b‖`. Any per-frequency improvement needs a *worst-case* bound — exactly the Weil input this
+development does not have. We record the average identity in its raw exact form. -/
 theorem subgroup_quadratic_gaussSum_l2_average {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
     (hq : 0 < Fintype.card F) :
     (∑ b : F, ‖zeta ψ G b‖ ^ 2) / (Fintype.card F : ℝ)

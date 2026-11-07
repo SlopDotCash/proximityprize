@@ -87,30 +87,59 @@ noncomputable def badVals (n k m : ℕ) : Finset (Fin (n / 2) → ℤ) :=
 /-- `#bad_n(k,m)` — the number of distinct nonzero graded values; this is the probe's `cf`. -/
 noncomputable def cf (n k m : ℕ) : ℕ := (badVals n k m).card
 
-/-! ## The two named combinatorial gaps (the genuine content of E6) -/
+/-! ## The two ORIGINAL unguarded Props (both FALSE as stated)
 
-/-- **The doubling bijection (gap, even half).** There is a value-set bijection between the
-bad graded values at level `2n`, grade `2m'`, capacity `k`, and those at level `n`, grade `m'`,
-capacity `k/2`. (Probe `cf(2n,k,2m') = cf(n,k/2,m')`, "ALL HOLD".) Stated as the cardinality
-identity it directly governs `cf`. -/
+The two Props below were the original transcription of E6. Their literal universal forms are
+false at their quantified boundaries (counterexamples proved below):
+
+* `OddGradeVanishes` includes `m = 1`, where the lower-grade condition is vacuous:
+  `cf 2 0 1 ≠ 0` (singletons `{0}, {1}` give `+1, −1`; the exact count is `2`). Independent
+  enumeration also gives `cf 16 4 1 = 2256`.
+* `DoublingBijection` quantifies over all `k` and truncates `k/2`, dropping the parity guard:
+  `cf 8 1 2 = 0` (odd admissible size `3`, see `cf_eq_zero_of_odd_card`) but `cf 4 0 1 ≠ 0`
+  (the exact count is `4`). It also fails for non-power-of-two levels (enumeration: e.g.
+  `cf 6 0 2 = 3` versus `cf 3 0 1 = 2`).
+
+They are kept (not deleted) because later files cite them by name; use the guarded forms
+`OddGradeVanishesGuarded` / `DoublingBijectionGuarded` instead. -/
+
+/-- **(FALSE as stated; see `not_doublingBijection`.)** Original unguarded even-half Prop:
+`cf(2n,k,2m') = cf(n,k/2,m')` for all `n, k, m'`. -/
 def DoublingBijection : Prop :=
   ∀ n k m' : ℕ, cf (2 * n) k (2 * m') = cf n (k / 2) m'
 
-/-- **Antipodal odd-vanishing (gap, odd half).** At even level `2n`, every odd grade has empty
-bad-value set (the antipodal `-1 ∈ μ_{2n}` forces the odd graded piece to vanish whenever the
-lower pieces do). (Probe `cf(2n,k,odd)=0`.) -/
+/-- **(FALSE as stated; see `not_oddGradeVanishes`.)** Original unguarded odd-half Prop:
+`cf(2n,k,m) = 0` for every odd `m`, including `m = 1`. -/
 def OddGradeVanishes : Prop :=
   ∀ n k m : ℕ, Odd m → cf (2 * n) k m = 0
 
-/-! ## E6 from the named gaps (honest reduction) -/
+/-! ## Guarded forms (the intended E6 statements) -/
 
-/-- **E6 even half**, derived from `DoublingBijection`. -/
-theorem E6_even (h : DoublingBijection) (n k m' : ℕ) :
-    cf (2 * n) k (2 * m') = cf n (k / 2) m' := h n k m'
+/-- **Guarded odd half.** At even level `2n` (`n > 0`), every odd grade `m ≥ 3` has an empty
+bad-value set: the grade-`1` constraint forces antipodal closure, and the antipodal map flips the
+sign of every odd-graded contribution. PROVED below as `oddGradeVanishesGuarded_holds`, by
+transport from `_Close07c_OddGradeVanishesFull.cf_odd_eq_zero`. -/
+def OddGradeVanishesGuarded : Prop :=
+  ∀ n k m : ℕ, 0 < n → Odd m → 1 < m → cf (2 * n) k m = 0
 
-/-- **E6 odd half**, derived from `OddGradeVanishes`. -/
-theorem E6_odd (h : OddGradeVanishes) (n k m : ℕ) (hm : Odd m) :
-    cf (2 * n) k m = 0 := h n k m hm
+/-- **Guarded even half (OPEN).** On the `2`-adic tower `n = 2^(t+1)`, for EVEN capacity `k` and
+grade `m' ≥ 1`, `cf(2n,k,2m') = cf(n,k/2,m')`. Independent exact enumeration confirms it at
+`n ∈ {2, 4, 8}` (levels `4, 8, 16`) for all even `k` and all `m'`; it is NOT proved in Lean
+(see `_Close07a_DoublingFoldMap` / `_Close07b_DoublingInduction` for the fold-map reduction).
+Without the guards it is false (`not_doublingBijection`, and non-power-of-two levels). -/
+def DoublingBijectionGuarded : Prop :=
+  ∀ t k m' : ℕ, Even k → 1 ≤ m' →
+    cf (2 * 2 ^ (t + 1)) k (2 * m') = cf (2 ^ (t + 1)) (k / 2) m'
+
+/-! ## E6 from the guarded statements -/
+
+/-- **E6 even half**, derived from the guarded (open) `DoublingBijectionGuarded`. -/
+theorem E6_even (h : DoublingBijectionGuarded) (t k m' : ℕ) (hk : Even k) (hm' : 1 ≤ m') :
+    cf (2 * 2 ^ (t + 1)) k (2 * m') = cf (2 ^ (t + 1)) (k / 2) m' := h t k m' hk hm'
+
+/-- **E6 odd half**, derived from `OddGradeVanishesGuarded` (which is proved below). -/
+theorem E6_odd (h : OddGradeVanishesGuarded) (n k m : ℕ) (hn : 0 < n) (hm : Odd m)
+    (hm1 : 1 < m) : cf (2 * n) k m = 0 := h n k m hn hm hm1
 
 /-! ## Elementary scaffolding proved unconditionally (axiom-clean) -/
 

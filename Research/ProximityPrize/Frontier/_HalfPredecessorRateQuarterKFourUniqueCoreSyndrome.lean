@@ -106,6 +106,34 @@ structure WeightTwoRepresentation
       leftCoeff • quotientColumn C left +
         rightCoeff • quotientColumn C right
 
+/-- Choose one weight-two representation for each selected scalar, as the endpoint and
+coefficient functions consumed by the weight-two syndrome theorems. -/
+theorem exists_weightTwoChoice_of_representations
+    {J : Type} [Fintype J] [Nonempty J] [DecidableEq J]
+    (C : Submodule F (J → F)) (v0 v1 : J → F) (G : Finset F)
+    (hrepr : ∀ gamma ∈ G,
+      Nonempty (WeightTwoRepresentation C v0 v1 gamma)) :
+    ∃ (left right : F → J) (a b : F → F),
+      (∀ gamma ∈ G, left gamma ≠ right gamma) ∧
+      (∀ gamma ∈ G, quotientAffinePoint C v0 v1 gamma =
+        a gamma • quotientColumn C (left gamma) +
+          b gamma • quotientColumn C (right gamma)) := by
+  classical
+  let rep (gamma : F) (hgamma : gamma ∈ G) :
+      WeightTwoRepresentation C v0 v1 gamma :=
+    Classical.choice (hrepr gamma hgamma)
+  let fallback : J := Classical.choice (inferInstance : Nonempty J)
+  refine ⟨fun gamma ↦ if hgamma : gamma ∈ G then (rep gamma hgamma).left else fallback,
+    fun gamma ↦ if hgamma : gamma ∈ G then (rep gamma hgamma).right else fallback,
+    fun gamma ↦ if hgamma : gamma ∈ G then (rep gamma hgamma).leftCoeff else 0,
+    fun gamma ↦ if hgamma : gamma ∈ G then (rep gamma hgamma).rightCoeff else 0, ?_, ?_⟩
+  · intro gamma hgamma
+    simp only [dif_pos hgamma]
+    exact (rep gamma hgamma).left_ne_right
+  · intro gamma hgamma
+    simp only [dif_pos hgamma]
+    exact (rep gamma hgamma).syndrome
+
 /-- A version of the weight-two syndrome theorem accepting an existential
 representation for each selected scalar. -/
 theorem weightTwoSyndromeLine_card_le_of_representations
@@ -119,27 +147,10 @@ theorem weightTwoSyndromeLine_card_le_of_representations
     (hrepr : ∀ gamma ∈ G,
       Nonempty (WeightTwoRepresentation C v0 v1 gamma)) :
     G.card ≤ Fintype.card J := by
-  classical
-  let rep (gamma : F) (hgamma : gamma ∈ G) :
-      WeightTwoRepresentation C v0 v1 gamma :=
-    Classical.choice (hrepr gamma hgamma)
-  let fallback : J := Classical.choice (inferInstance : Nonempty J)
-  let left : F → J := fun gamma ↦
-    if hgamma : gamma ∈ G then (rep gamma hgamma).left else fallback
-  let right : F → J := fun gamma ↦
-    if hgamma : gamma ∈ G then (rep gamma hgamma).right else fallback
-  let a : F → F := fun gamma ↦
-    if hgamma : gamma ∈ G then (rep gamma hgamma).leftCoeff else 0
-  let b : F → F := fun gamma ↦
-    if hgamma : gamma ∈ G then (rep gamma hgamma).rightCoeff else 0
-  apply weightTwoSyndromeLine_card_le
-    C v0 v1 hrows hMDS4 hnoColumn G left right a b
-  · intro gamma hgamma
-    simp only [left, right, dif_pos hgamma]
-    exact (rep gamma hgamma).left_ne_right
-  · intro gamma hgamma
-    simp only [left, right, a, b, dif_pos hgamma]
-    exact (rep gamma hgamma).syndrome
+  obtain ⟨left, right, a, b, hends, hsyn⟩ :=
+    exists_weightTwoChoice_of_representations C v0 v1 G hrepr
+  exact weightTwoSyndromeLine_card_le C v0 v1 hrows hMDS4 hnoColumn G left right a b
+    hends hsyn
 
 /-- The strict seven-edge version for an eight-coordinate quotient frame. -/
 theorem weightTwoSyndromeLine_card_le_seven_of_representations
@@ -154,27 +165,10 @@ theorem weightTwoSyndromeLine_card_le_seven_of_representations
     (hrepr : ∀ gamma ∈ G,
       Nonempty (WeightTwoRepresentation C v0 v1 gamma)) :
     G.card ≤ 7 := by
-  classical
-  let rep (gamma : F) (hgamma : gamma ∈ G) :
-      WeightTwoRepresentation C v0 v1 gamma :=
-    Classical.choice (hrepr gamma hgamma)
-  let fallback : J := Classical.choice (inferInstance : Nonempty J)
-  let left : F → J := fun gamma ↦
-    if hgamma : gamma ∈ G then (rep gamma hgamma).left else fallback
-  let right : F → J := fun gamma ↦
-    if hgamma : gamma ∈ G then (rep gamma hgamma).right else fallback
-  let a : F → F := fun gamma ↦
-    if hgamma : gamma ∈ G then (rep gamma hgamma).leftCoeff else 0
-  let b : F → F := fun gamma ↦
-    if hgamma : gamma ∈ G then (rep gamma hgamma).rightCoeff else 0
-  apply weightTwoSyndromeLine_card_le_seven
-    C v0 v1 hJ hrows hMDS4 hnoColumn G left right a b
-  · intro gamma hgamma
-    simp only [left, right, dif_pos hgamma]
-    exact (rep gamma hgamma).left_ne_right
-  · intro gamma hgamma
-    simp only [left, right, a, b, dif_pos hgamma]
-    exact (rep gamma hgamma).syndrome
+  obtain ⟨left, right, a, b, hends, hsyn⟩ :=
+    exists_weightTwoChoice_of_representations C v0 v1 G hrepr
+  exact weightTwoSyndromeLine_card_le_seven C v0 v1 hJ hrows hMDS4 hnoColumn G left right a b
+    hends hsyn
 
 /-- A regular outsider gives an actual two-column syndrome on the punctured
 source complement.  The subtracted word is the cubic residual from
@@ -293,136 +287,10 @@ theorem regular_weightTwoSyndromeRepresentation
           e right • quotientColumn C0 right := by
       simp only [map_add, map_smul, quotientColumn]
 
-/-- The older non-strict chord bound would force the regular population to be
-exactly eight.  The strict theorem below shows that these two quotient
-hypotheses cannot in fact hold simultaneously for a unique-core residual. -/
-theorem regularOutsideLine_card_eq_eight_of_quotient_generic
-    {dom : I ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) I}
-    (family : BadScalarRichPointFamily dom 4 delta u)
-    (hn : Fintype.card I = 16)
-    (residual : UniqueEightCoreResidual family)
-    (hrows : QuotientRowsIndependent
-      (sourceComplementCode family residual.source)
-      (sourceComplementRow0 family residual.source)
-      (sourceComplementRow1 family residual.source))
-    (hnoColumn : ∀ i : ↑(sourceComplement family residual.source),
-      quotientColumn (sourceComplementCode family residual.source) i ∉
-        span F ({
-          (sourceComplementCode family residual.source).mkQ
-            (sourceComplementRow0 family residual.source),
-          (sourceComplementCode family residual.source).mkQ
-            (sourceComplementRow1 family residual.source)} :
-              Set ((↑(sourceComplement family residual.source) → F) ⧸
-                sourceComplementCode family residual.source))) :
-    (regularOutsideLine family residual.source).card = 8 := by
-  classical
-  let V := sourceComplement family residual.source
-  let domV := sourceComplementDomain family residual.source
-  let C0 := sourceComplementCode family residual.source
-  let v0 := sourceComplementRow0 family residual.source
-  let v1 := sourceComplementRow1 family residual.source
-  let G := regularOutsideLine family residual.source
-  have hVcard : Fintype.card ↑V = 8 := by
-    rw [Fintype.card_coe]
-    simp only [V, sourceComplement, Finset.card_sdiff,
-      Finset.inter_univ, Finset.card_univ, hn,
-      residual.source_core_card]
-  haveI : Nonempty ↑V := by
-    apply Finset.Nonempty.to_subtype
-    apply Finset.card_pos.mp
-    rw [← Fintype.card_coe]
-    omega
-  have hrows' : QuotientRowsIndependent C0 v0 v1 := by
-    simpa only [C0, v0, v1] using hrows
-  have hnoColumn' : ∀ i : ↑V, quotientColumn C0 i ∉
-      span F ({C0.mkQ v0, C0.mkQ v1} : Set ((↑V → F) ⧸ C0)) := by
-    simpa only [V, C0, v0, v1] using hnoColumn
-  have hMDS4 : IndependentUpTo (F := F) (quotientColumn C0) 4 := by
-    simpa only [C0, sourceComplementCode, domV] using
-      reedSolomon_eight_four_quotientColumns_independentUpTo_four
-        domV hVcard
-  have hrepr : ∀ gamma ∈ G,
-      Nonempty (WeightTwoRepresentation C0 v0 v1 gamma) := by
-    intro gamma hgamma
-    simpa only [G, C0, v0, v1] using
-      regular_weightTwoSyndromeRepresentation
-        family hn residual.source_mem residual.source_core_card hgamma
-  have hupper : G.card ≤ 8 := by
-    have hbound := weightTwoSyndromeLine_card_le_of_representations
-      C0 v0 v1 hrows' hMDS4 hnoColumn' G hrepr
-    change G.card ≤ Fintype.card ↑V at hbound
-    rw [hVcard] at hbound
-    exact hbound
-  have hlower : 8 ≤ G.card := by
-    simpa only [G] using residual.eight_regular_outsiders
-  simpa only [G] using Nat.le_antisymm hupper hlower
-
-/-- The intermediate non-strict quotient trichotomy.  It is strictly sharpened
-to the two degeneracy branches below. -/
-theorem regularOutsideLine_card_eq_eight_or_quotient_degenerate
-    {dom : I ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) I}
-    (family : BadScalarRichPointFamily dom 4 delta u)
-    (hn : Fintype.card I = 16)
-    (residual : UniqueEightCoreResidual family) :
-    (regularOutsideLine family residual.source).card = 8 ∨
-      ¬ QuotientRowsIndependent
-        (sourceComplementCode family residual.source)
-        (sourceComplementRow0 family residual.source)
-        (sourceComplementRow1 family residual.source) ∨
-      ∃ i : ↑(sourceComplement family residual.source),
-        quotientColumn (sourceComplementCode family residual.source) i ∈
-          span F ({
-            (sourceComplementCode family residual.source).mkQ
-              (sourceComplementRow0 family residual.source),
-            (sourceComplementCode family residual.source).mkQ
-              (sourceComplementRow1 family residual.source)} :
-              Set ((↑(sourceComplement family residual.source) → F) ⧸
-                sourceComplementCode family residual.source)) := by
-  classical
-  let V := sourceComplement family residual.source
-  let domV := sourceComplementDomain family residual.source
-  let C0 := sourceComplementCode family residual.source
-  let v0 := sourceComplementRow0 family residual.source
-  let v1 := sourceComplementRow1 family residual.source
-  let G := regularOutsideLine family residual.source
-  have hVcard : Fintype.card ↑V = 8 := by
-    rw [Fintype.card_coe]
-    simp only [V, sourceComplement, Finset.card_sdiff,
-      Finset.inter_univ, Finset.card_univ, hn,
-      residual.source_core_card]
-  haveI : Nonempty ↑V := by
-    apply Finset.Nonempty.to_subtype
-    apply Finset.card_pos.mp
-    rw [← Fintype.card_coe]
-    omega
-  by_cases hrows : QuotientRowsIndependent C0 v0 v1
-  · by_cases hcolumn : ∃ i : ↑V, quotientColumn C0 i ∈
-        span F ({C0.mkQ v0, C0.mkQ v1} : Set ((↑V → F) ⧸ C0))
-    · exact Or.inr (Or.inr (by
-        simpa only [V, C0, v0, v1] using hcolumn))
-    · have hnoColumn : ∀ i : ↑V, quotientColumn C0 i ∉
-          span F ({C0.mkQ v0, C0.mkQ v1} : Set ((↑V → F) ⧸ C0)) := by
-        simpa only [not_exists] using hcolumn
-      have hMDS4 : IndependentUpTo (F := F) (quotientColumn C0) 4 := by
-        simpa only [C0, sourceComplementCode, domV] using
-          reedSolomon_eight_four_quotientColumns_independentUpTo_four
-            domV hVcard
-      have hrepr : ∀ gamma ∈ G,
-          Nonempty (WeightTwoRepresentation C0 v0 v1 gamma) := by
-        intro gamma hgamma
-        simpa only [G, C0, v0, v1] using
-          regular_weightTwoSyndromeRepresentation
-            family hn residual.source_mem residual.source_core_card hgamma
-      have hupper : G.card ≤ 8 := by
-        have hbound := weightTwoSyndromeLine_card_le_of_representations
-          C0 v0 v1 hrows hMDS4 hnoColumn G hrepr
-        change G.card ≤ Fintype.card ↑V at hbound
-        rw [hVcard] at hbound
-        exact hbound
-      have hlower : 8 ≤ G.card := by
-        simpa only [G] using residual.eight_regular_outsiders
-      exact Or.inl (by simpa only [G] using Nat.le_antisymm hupper hlower)
-  · exact Or.inr (Or.inl (by simpa only [C0, v0, v1] using hrows))
+/-! The former `regularOutsideLine_card_eq_eight_of_quotient_generic` (whose hypotheses
+`hrows ∧ hnoColumn` can never hold, by `uniqueEightCoreResidual_quotient_degenerate`) and the
+non-strict trichotomy `regularOutsideLine_card_eq_eight_or_quotient_degenerate` (whose first
+disjunct only arises in that impossible branch) were superseded by the theorem below and removed. -/
 
 /-- **The nondegenerate unique-core syndrome branch is impossible.**
 
@@ -494,9 +362,8 @@ end ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourUniqueCoreSyndro
 /-! ## Axiom audit -/
 
 open ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourUniqueCoreSyndrome
+#print axioms exists_weightTwoChoice_of_representations
 #print axioms weightTwoSyndromeLine_card_le_of_representations
 #print axioms weightTwoSyndromeLine_card_le_seven_of_representations
 #print axioms regular_weightTwoSyndromeRepresentation
-#print axioms regularOutsideLine_card_eq_eight_of_quotient_generic
-#print axioms regularOutsideLine_card_eq_eight_or_quotient_degenerate
 #print axioms uniqueEightCoreResidual_quotient_degenerate

@@ -22,24 +22,35 @@ then *derived* by the engine + a single cancellation of `#A`.
   `#(A'' − N₁) · #A ≤ s · (#(A'' − A) · #(N₁ − A))`.
 
 Adding the energy control `#(A'' − A) · #(N₁ − A) ≤ #A · #A''` and cancelling `#A > 0` gives the
-one-sided linear Ruzsa input `#(A'' − N₁) ≤ s · #A''`. This is exactly the (O2)
-symmetric→one-sided linearization that `PrunedFibreSupply` left in its residual — here it is
-**discharged by the proven engine**, at the cost of replacing it with the strictly weaker, engine-
-native energy hypothesis (which mentions no difference set `A'' − N₁` at all).
+one-sided linear Ruzsa input `#(A'' − N₁) ≤ s · #A''`. The (O2) symmetric→one-sided linearization
+that `PrunedFibreSupply` left in its residual is thereby derived by the proven engine, *given* the
+energy hypothesis. That implication is valid; the energy hypothesis itself is not attainable.
 
-## Why `PrunedFibreWithEnergy` is strictly smaller than `RelativeDiffCalibration`
+## `PrunedFibreWithEnergy` is unsatisfiable (audit 2026-10-28, R-212)
 
-It has **no `#(A'' − N₁)` clause** (the engine produces it). It replaces it with the every-pair
-richness (the engine's input) and the energy bound `#(A'' − A) · #(N₁ − A) ≤ #A · #A''`. Neither is
-vacuous (both hold when `A` is a subgroup, where every difference lands back in `A`), and neither is
-`RelativeDiffCalibration` renamed: the asymmetric Ruzsa conclusion has been removed and the proven
-symmetric path-count does the linearization. The residual carries only the coupled apex-pruning +
-second-fibre choice + energy content — the genuine deep core of Tao–Vu Lemma 2.30.
+An earlier version of this header called `PrunedFibreWithEnergy` a "strictly weaker", non-vacuous
+residual and "the genuine deep core of Tao–Vu Lemma 2.30". That is false. For nonempty
+`A'', N₁ ⊆ A`, translating `A` gives `#(A'' − A) ≥ #A` and `#(N₁ − A) ≥ #A`, while `#A'' ≤ #A`;
+so the energy clause forces `#A'' = #A`, i.e. `A'' = A` (`energy_forces_full` in
+`_BSG_EX_E4g_EnergyDegen.lean`). Since `A''` must also lie in the apex neighbourhood
+`leftNbhd A G b₀`, which the density hypotheses allow to be a proper subset, the universally
+quantified `Prop` is **false for every choice of constants**:
+* `prunedFibreWithEnergy_false_singleton` (below): `A = {0,1} ⊆ ZMod 3`, `G = {(0,0)}`, `b₀ = 0`,
+  `K = 1`. The density, cherry and good-fibre hypotheses read `4 ≤ 4`, `16 ≤ 32`, `2 ≤ 4`, but the
+  forced choices `A'' = N₁ = {0}` make the energy clause `4 ≤ 2`;
+* `prunedFibreWithEnergy_false` in `_BSG_EX_E4g_attempt0.lean`: an independent diagonal-graph
+  refutation of the apex-confinement / size-calibration pair.
+Hence every theorem below is a valid implication from an unsatisfiable premise: it reduces
+nothing. A genuine replacement needs an attainable difference/energy bound with its proper losses
+(for example the scaled `PrunedFibreRelEnergy` named in `_BSG_EX_E4g_EnergyDegen.lean`), a
+nonvacuity / production theorem under the intended dense-graph hypotheses, and a rederived
+calibration; none of that is proved here.
 
 ## Status
 
-`REDUCES-FURTHER`. `RelativeDiffCalibration` is reduced to `PrunedFibreWithEnergy`, with the
-path-count application and the `#A`-cancellation proven axiom-clean.
+`REFUTED-TARGET`. The implication `PrunedFibreWithEnergy → RelativeDiffCalibration` (path-count
+application and `#A`-cancellation) is proven axiom-clean, but its premise is false
+(`prunedFibreWithEnergy_false_singleton`), so it is not a reduction of `RelativeDiffCalibration`.
 
 ## References
 * W. T. Gowers, *A new proof of Szemerédi's theorem for AP4* (1998), §6.
@@ -53,9 +64,11 @@ namespace Finset.BSG
 
 variable {α : Type*} [AddCommGroup α] [DecidableEq α]
 
-/-! ## The strictly-smaller residual: a pruned second fibre with energy control -/
+/-! ## The (unsatisfiable) residual: a pruned second fibre with energy control -/
 
 /-- **`PrunedFibreWithEnergy` — the residual whose one-sided bound is produced by the engine.**
+**Unsatisfiable** for every `C₁ s_C s_c`: see `prunedFibreWithEnergy_false_singleton` below and the
+module docstring (R-212). Kept as a specification record, not as an open target.
 
 From the post-averaging data it asserts the existence of a refinement `A'' ⊆ leftNbhd A G b₀`, a
 second popular fibre `b₁ ∈ A`, and a factor `s ≤ s_C · K ^ s_c`, satisfying:
@@ -113,10 +126,56 @@ theorem drcRuzsaInputFixed_of_prunedFibreWithEnergy {C₁ s_C s_c : ℕ}
   drcRuzsaInputFixed_of_calibration (relativeDiffCalibration_of_prunedFibreWithEnergy h)
 
 /-- **`PrunedFibreWithEnergy → BareDRCExtract`** (full composition through the BSG chain; PROVEN
-axiom-clean). Proving `PrunedFibreWithEnergy` discharges the BSG half of BGK. -/
+axiom-clean). The premise is false (`prunedFibreWithEnergy_false_singleton`), so this does not
+discharge, or reduce, the BSG half of BGK. -/
 theorem bareDRCExtract_of_prunedFibreWithEnergy {C₁ s_C s_c : ℕ}
     (h : PrunedFibreWithEnergy C₁ s_C s_c) : BareDRCExtract C₁ (s_C ^ 3) (3 * s_c) :=
   bareDRCExtract_of_ruzsaInputFixed (drcRuzsaInputFixed_of_prunedFibreWithEnergy h)
+
+/-! ## Specification regression: the energy clause is unattainable (R-212) -/
+
+/-- Translation lower bound used by the countermodel: `#A ≤ #(B − A)` for nonempty `B`. -/
+private lemma card_le_card_sub_of_nonempty {β : Type*} [AddCommGroup β] [DecidableEq β]
+    (A B : Finset β) (hB : B.Nonempty) : #A ≤ #(B - A) := by
+  obtain ⟨b, hb⟩ := hB
+  refine Finset.card_le_card_of_injOn (fun a => b - a) ?_ ?_
+  · intro a ha
+    exact Finset.sub_mem_sub hb ha
+  · intro a _ a' _ h
+    simpa using sub_right_injective h
+
+/-- **`PrunedFibreWithEnergy` is false for every choice of constants (singleton-neighbourhood
+countermodel).** Take `A = {0, 1} ⊆ ZMod 3`, `G = {(0, 0)}`, `b₀ = 0`, `K = 1`. The density,
+cherry and good-fibre hypotheses hold (`4 ≤ 4`, `16 ≤ 32`, `2 ≤ 4`). Any admissible output has
+`A'' ⊆ leftNbhd A G 0 = {0}`, so `#A'' ≤ 1`, and nonempty `A''`, `N₁` give
+`#(A'' − A), #(N₁ − A) ≥ #A = 2`; the energy clause would then read `4 ≤ 2`. This holds for all
+`C₁ s_C s_c`, so the failure is independent of the calibration constants. -/
+theorem prunedFibreWithEnergy_false_singleton (C₁ s_C s_c : ℕ) :
+    ¬ PrunedFibreWithEnergy C₁ s_C s_c := by
+  intro h
+  have hA : ({0, 1} : Finset (ZMod 3)).Nonempty := ⟨0, by simp⟩
+  have hGsub : ({((0 : ZMod 3), (0 : ZMod 3))} : Finset (ZMod 3 × ZMod 3)) ⊆
+      ({0, 1} : Finset (ZMod 3)) ×ˢ ({0, 1} : Finset (ZMod 3)) := by decide
+  have hcardA : #({0, 1} : Finset (ZMod 3)) = 2 := by decide
+  have hnb : leftNbhd ({0, 1} : Finset (ZMod 3)) {((0 : ZMod 3), (0 : ZMod 3))} 0 = {0} := by
+    decide
+  have hdeg : ∀ b : ZMod 3, rDeg ({0, 1} : Finset (ZMod 3)) {((0 : ZMod 3), (0 : ZMod 3))} b =
+      if b = 0 then 1 else 0 := by decide
+  have hsum : ∑ b ∈ ({0, 1} : Finset (ZMod 3)),
+      rDeg ({0, 1} : Finset (ZMod 3)) {((0 : ZMod 3), (0 : ZMod 3))} b ^ 2 = 1 := by
+    simp [hdeg]
+  obtain ⟨A'', b₁, s, -, hsub, hne, hBne, -, -, -, -, henergy⟩ :=
+    h (α := ZMod 3) {0, 1} 1 {((0 : ZMod 3), (0 : ZMod 3))} 0 one_pos hA hGsub (by simp)
+      (by rw [hcardA]; decide) (by rw [hcardA, hsum]; decide)
+      (by rw [hcardA, hdeg]; decide)
+  have h1 : #A'' ≤ 1 := by
+    have := Finset.card_le_card hsub
+    rwa [hnb, Finset.card_singleton] at this
+  have h2 := card_le_card_sub_of_nonempty ({0, 1} : Finset (ZMod 3)) A'' hne
+  have h3 := card_le_card_sub_of_nonempty ({0, 1} : Finset (ZMod 3)) _ hBne
+  rw [hcardA] at h2 h3 henergy
+  have h4 := Nat.mul_le_mul h2 h3
+  omega
 
 end Finset.BSG
 
@@ -124,3 +183,4 @@ end Finset.BSG
 #print axioms Finset.BSG.relativeDiffCalibration_of_prunedFibreWithEnergy
 #print axioms Finset.BSG.drcRuzsaInputFixed_of_prunedFibreWithEnergy
 #print axioms Finset.BSG.bareDRCExtract_of_prunedFibreWithEnergy
+#print axioms Finset.BSG.prunedFibreWithEnergy_false_singleton

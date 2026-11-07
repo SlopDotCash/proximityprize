@@ -28,12 +28,25 @@ orderOf x = 2^i`, kernel).  Every known escape constructor is BLOCKED there:
    a remaining degree budget of `134217727` — deficit exactly `2²⁴ + 1`.
 3. **Coset unions** reduce via `y = x^{2^j}` to the same problem one level down
    (self-similar) — no new window opens.
-4. **Probe census on the literal dyadic domain** (`μ_256 ⊂ F_65537`, the actual
-   256th roots of unity): exact Bezout solution dimension **0** across every
-   dyadic-structured geometry (coset truncations, coset unions, two-level shared
-   sets, random domain subsets, arcs at `Σ = 167`); the stall-family census on
-   the dyadic domain topped out at the two-pencil capacity `2(N−T+1) = 230 < 256`
+4. **Probe battery on the literal dyadic domain** (`μ_256 ⊂ F_65537`, the actual
+   256th roots of unity; a small finite battery, not exhaustive): exact Bezout
+   solution dimension **0** on genuine coset truncations, coset unions, random
+   domain subsets and cyclic arcs at `Σ = 167`, but dimension **8** on the
+   two-level shared set (`μ_32`-cosets plus common extra roots) — the
+   binomial-dependence family `α(x^32 − s₀) + β(x^32 − s₂) = λ(x^32 − s₄)` times
+   the shared-root factor, which item 2's triple-point coverage count (not
+   Bezout dimension) excludes as an escape.  The stall-family census on the
+   dyadic domain topped out at the two-pencil capacity `2(N−T+1) = 230 < 256`
    — no over-budget family found.
+   *Correction (2026-10-28 repository audit, finding L115):* the original probe
+   built its "`μ_32`/`μ_64` subgroups" and "cosets" as strides of a numerically
+   sorted list of `μ_256`; those are arbitrary subsets (only 5 of the claimed 32
+   elements satisfy `x^32 = 1`, and the claimed `μ_64`-cosets overlapped), so its
+   "dimension 0 everywhere" line did not test the stated configurations.  The
+   probe now builds subgroups from exponent-ordered powers, takes coset
+   representatives from distinct quotient classes, and asserts membership and
+   disjointness before ranking (regression:
+   `scripts/tests/test_dyadic_domain_escape_cosets.py`).
 
 **Consequence:** `StallResidual(μ_{2^30})` is UNREFUTED; the adversarial-domain
 refutation is confined to non-dyadic domains.  The escape-free margin machinery

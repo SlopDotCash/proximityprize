@@ -22,9 +22,11 @@ the degree condition (the 4-term leading coefficient has `|·| ≤ 2 < p`, so it
 and the root `g(ζ) = 0`.  `g ≠ 0` follows because some primitive root is not a root of `g`.
 
 **Contrapositive**: `p > 2^n ⟹ μ_n ⊆ F_p` has no nontrivial additive parallelogram, i.e.
-`SidonModNeg(μ_n)`; with `rootsOfUnity_additiveEnergy_eq` that pins `E(μ_n) = 3n(n−1)` and hence
-δ* to its ladder value — **unconditionally, for every explicit smooth-RS code of length
-`n < log₂ p`**.  Axiom-clean.
+`SidonModNeg(μ_n)`; with `rootsOfUnity_additiveEnergy_eq` that pins the additive energy
+`E(μ_n) = 3n(n−1)` (energy excess `0`) unconditionally whenever `p > 2^n` (`n < log₂ p`).
+This is an **energy identity only**: no general bridge from the additive energy of `μ_n` to
+`δ*` (or to `ε_mca`, list sizes or incidence) for every smooth-RS code is proved here or
+supplied by this file, so it does not by itself pin δ* for any code family.  Axiom-clean.
 -/
 
 open Polynomial

@@ -8,7 +8,7 @@ import Research.ProximityPrize.Frontier._P1RateQuarterPencilHarvestCap
 
 /-!
 # Cross-cone bridge: the P1 swarm's moment layer IS the B-side lag machinery
-# (formal, via `fourthMoment_eq_lag_energy`); the OPEN layers are provably
+# (formal, via `fourthMoment_eq_lag_energy`); the OPEN layers sit in
 # different regimes (calibrated non-bridge)
 
 Issue #466 — the first FORMAL bridge attempt between the two campaign cones:
@@ -39,18 +39,23 @@ angle family, `_R309TowerRungFour`).
 * **The calibrated NON-bridge at the open layers** (the honest core):
   1. **Completeness ratio.**  The P1 swarm's sums are incomplete of length
      `N = 2^30` over `F_P` with `N⁴ < P < N⁶` (`swarm_sub_burgess`, kernel):
-     `θ = log_P N ≈ 0.19 < 1/4` — BELOW the Burgess range, where no
-     general-modulus bound exists and only subgroup-specific (BGK) methods
-     apply.  The B-side's `J_j` are COMPLETE character sums over `F_q`
-     (ratio 1, individually `√q` by Weil); its openness is elsewhere.
+     `θ = log_P N ≈ 0.19 < 1/4` — BELOW the Burgess range, so the
+     general-modulus Burgess estimate does not apply and the known nontrivial
+     bounds are subgroup-specific (BGK).  That limits those input estimates;
+     it is not an impossibility theorem for other techniques.  The B-side's
+     `J_j` are COMPLETE character sums over `F_q` (ratio 1; a Jacobi sum
+     `J(χ, χ')` has modulus `√q` by Weil when `χ`, `χ'` and `χχ'` are all
+     nontrivial, and modulus `1` for a nontrivial inverse pair); its openness
+     is elsewhere.
   2. **Moment depth.**  The B-side's open inputs are FIXED-DEPTH family
      averages (`OffZeroLagBound` at depth 1 ~ `√m·q`; `OffZeroQuadLagBound` at
      depth 2 / `r = 4` ~ `m^{3/2}q²`).  The P1 swarm needs a LIST-level
      statement (`#heavy-fibers ≤ N`-scale): the exact second moment gives
-     Chebyshev counts `~ P^{k−2}` — astronomically above the needed budget —
-     so no fixed moment transports.  A formal reduction between the walls
-     would have to convert completeness ratio `2^{−128} ↔ 1` and depth
-     `list ↔ r = 4`; character-sum technology does neither.
+     Chebyshev counts `~ P^{k−2}` — astronomically above the needed budget.
+     A formal reduction between the walls would have to convert completeness
+     ratio `2^{−128} ↔ 1` and depth `list ↔ r = 4`; no such transport is known
+     or formalized here, which is not a proof that none exists (audit T48,
+     2026-10-28).
 
 **Verdict**: outcome (ii) + (iii) of the coordinator's taxonomy — a REAL
 partial bridge (the shared moment-identity layer, now formal, with the B-side

@@ -40,15 +40,19 @@ so the discrepancy this route can feed is `≈ cond·p^{−1/2} = n·p^{−1/2} 
 To beat the per-frequency **non-conspiracy threshold** `1/m` (the level the `m = (p−1)/n` Gauss-sum
 phases must cancel below to give a non-trivial floor) the discrepancy must satisfy
   `n/√p < 1/m`  ⟺  `n·m < √p`  ⟺  `(p−1) < √p`,
-which is **false for every `p ≥ 2`**. Equivalently, the comment's framing: one would need
+which is **false for every `p ≥ 3`** (the theorem below assumes `p ≥ 3`; `p = 2` is excluded).
+Equivalently, the comment's framing: one would need
 `conductor < √(n/m) = 2^{−48} < 1` — impossible, since a non-trivial conductor is `≥ 1`.
 
-So the additive-FT Deligne bound is **pointwise vacuous** (`n/√p ≈ √p ≫ 1 ≫ 1/m`) at *every* `p`.
+So, for the proxy conductor `cond(n) = n` (a definition here, not a sheaf-conductor computation),
+the additive-FT Deligne discrepancy `n/√p` never beats the threshold `1/m` (`p ≥ 3`). It need not
+be large: in the thin regime `n/√p` is tiny (below), just not below `1/m`. (An earlier version
+wrote `n/√p ≈ √p ≫ 1`, contradicting the example below; audit 2026-10-28, R-215.)
 At prize scale (`n = 2^32`, `m = 2^128`, `p = n·m ≈ 2^160`): `n/√p = 2^{−48}`, target `1/m = 2^{−128}`
 — **short by `2^80`** in the log-2 of the bound. (The Mellin/§4.3 framework is *strictly worse*: KU's
 own §4.4 remark notes the complexity there enters **exponentially**, `c = 2^{Θ(n)}`.)
 
-We formalize the clean integer statement `n·m < √p ⟺ (p−1) < √p`, refute it for all `p ≥ 2`
+We formalize the clean integer statement `n·m < √p ⟺ (p−1) < √p`, refute it for all `p ≥ 3`
 (via `(p-1)^2 ≥ p` ⟺ `p^2 - 3p + 1 ≥ 0`, true for `p ≥ 3`), and pin the prize gap exactly.
 
 This is a machine-checked **localization** of the wall, not a closure of the prize: it certifies that

@@ -7,7 +7,7 @@ import ArkLib.Data.CodingTheory.InterleavedLambdaGe
 import ArkLib.Data.CodingTheory.InterleavedListSize
 
 /-!
-# List-recovery / interleaved reformulation: the two challenges collapse on `δ*` (#232, ABF26 §5)
+# List-recovery / interleaved reformulation: the list-size sandwich (#232, ABF26 §5)
 
 This file attacks the **list-recovery / `m`-interleaved** reformulation of the Proximity Prize open
 core (Issue #232, ABF26 *Grand List Decoding Challenge*).  ABF26 §5 asks whether the single-code
@@ -40,27 +40,39 @@ This file *composes* them into the genuinely new content of the §5-collapse que
 3. `interleaved_finite_iff_base_finite` — finiteness collapse: `Λ(C^{≡m}, δ) < ⊤ ⟺ Λ(C, δ) < ⊤`
    (the interleaving neither creates nor destroys infinite lists).
 
-4. `deltaStar_collapse_forward` / `deltaStar_collapse_backward` — the **`δ*`-collapse**, stated at a
-   polynomial threshold: a radius `δ` is "good" for the base code at threshold `B` (`Λ(C,δ) ≤ B`)
-   implies it is "good" for the interleaved code at threshold `B^m`, and conversely a radius good for
-   the interleaved code at threshold `B` is good for the base code at the *same* `B`.  So the largest
-   radius with a polynomial list — the prize quantity `δ*` — is the **same** for `C` and `C^{≡m}` up
-   to the fixed `m`-power on the threshold.  The interleaved/list-recovery reformulation does **not**
-   move `δ*`: the two challenges collapse.
+4. `deltaStar_collapse_forward` / `deltaStar_collapse_backward` — the **budget-changing list-size
+   transfer** (the historical `deltaStar_*` names do not mean an equality of thresholds): a
+   radius `δ` that is "good" for the base code at budget `B` (`Λ(C,δ) ≤ B`) is "good" for the
+   interleaved code at the *larger* budget `B^m`, and a radius good for the interleaved code at
+   budget `B` is good for the base code at the *same* `B`.
+
+   **What this does not give.** Because the forward leg changes the budget from `B` to `B^m`, these
+   theorems do **not** show that the fixed-budget list threshold is the same for `C` and `C^{≡m}`.
+   That equality is false in general. Take the binary repetition code of length 3, arity `m = 2` and
+   budget `B = 2`. The base code has only 2 codewords, so every radius up to `1` is `2`-good. The
+   interleaved code consists of the 4 constant pair-words. At `δ = 2/3` the received word
+   `((0,0),(0,1),(1,0))` lists 3 distinct constants, so `δ = 2/3` is not `2`-good. Below `2/3`, any
+   listed constant must occupy at least 2 of the 3 coordinates, so at most one is listed. The
+   fixed-`B` good-radius supremum is therefore `2/3` for `C^{≡2}` against `1` for `C`. What
+   does transfer, for fixed `m`, is the *existence of some polynomial list bound* (an asymptotic
+   threshold notion). Nothing here defines or compares the repository's MCA threshold `mcaDeltaStar`, so this
+   is also not a statement about the security-budget MCA `δ*`.
 
 5. `gap_present_in_interleaved` — the convergent-wall confirmation: *any* base-code list-size lower
    bound at an interior radius `δ` propagates verbatim to the interleaved code
-   (`L ≤ Λ(C,δ) ≤ Λ(C^{≡m},δ)`).  So the open gap `(1-√ρ, 1-ρ)` is present *inside* `C^{≡m}` exactly
-   where it is present in `C` — the list-recovery view inherits, rather than resolves, the wall.
+   (`L ≤ Λ(C,δ) ≤ Λ(C^{≡m},δ)`).  So every list-size obstruction known for `C` is also present in
+   `C^{≡m}` at the same radius (the interleaved code may have additional ones). The list-recovery
+   view inherits, rather than resolves, the wall.
 
 ## Honest scope (what is NOT done)
 
-This is a verified **reduction**, not a closure.  It proves the two challenges collapse *up to the
-fixed `m`-power* on the polynomial threshold, so the interleaved view gives no new leverage on
-`δ*` in the open interior.  The deep `m`-independent GGR11 bound (`lambda_le_ggr11`, exponent `m → r`)
-is still gated on the external Erase-Decode-tree residual `GGR11TreeStructure`; even that improved
-exponent only *tightens the threshold transfer*, it does **not** move `δ*` either, since the lower
-bound `Λ(C,δ) ≤ Λ(C^{≡m},δ)` is unconditional and exact in the `m=1` case.  The actual prize — a
+This is a verified **list-size sandwich**, not a closure and not a threshold equality.  It proves
+that, for fixed `m`, a polynomial list bound exists for `C` iff one exists for `C^{≡m}`, with the
+budget raised to the fixed `m`-th power in one direction. At a *fixed* budget the list thresholds of
+`C` and `C^{≡m}` can differ (see the repetition-code example in item 4), and the MCA threshold
+`mcaDeltaStar` is not addressed. The deep `m`-independent GGR11 bound (`lambda_le_ggr11`,
+exponent `m → r`) is still gated on the external Erase-Decode-tree residual `GGR11TreeStructure`;
+that improved exponent would only *tighten the budget transfer*.  The actual prize — a
 matching interior upper bound for `Λ(C,δ)` itself on the smooth domain — is untouched; the
 list-recovery reformulation provably reduces *to* it (this file), it does not *solve* it.
 
@@ -135,23 +147,27 @@ theorem interleaved_finite_iff_base_finite [Fintype F] [Nonempty ι] [DecidableE
 
 /-! ### 4. The `δ*`-collapse at a polynomial threshold. -/
 
-/-- A radius `δ` is **`B`-good** for a code `D` if its maximised list size is `≤ B`.  The prize
-quantity `δ*` is the supremum of radii that are `ε·|F|`-good (for `ε = 2^{-128}`); we keep `B`
-abstract so the statement is threshold-agnostic. -/
+/-- A radius `δ` is **`B`-good** for a code `D` if its maximised list size is `≤ B`.  This is a
+list-size goodness notion only. It is not the repository's MCA threshold `mcaDeltaStar`, and no
+theorem here relates the two. -/
 def IsGood (D : Set (ι → F)) (δ : ℝ) (B : ℕ∞) : Prop := ListDecodable.Lambda D δ ≤ B
 
-/-- **`δ*`-collapse, forward.** Every radius that is `B`-good for the base code is `B^m`-good for the
-interleaved code.  So the base code's set of polynomial-list radii is contained (after raising the
-threshold to the fixed power `B^m`) in the interleaved code's. -/
+/-- **Budget-changing transfer, forward** (historical name `deltaStar_collapse_forward`). Every
+radius that is `B`-good for the base code is `B^m`-good for the interleaved code.  The budget
+changes from `B` to `B^m`, so this does not show that `B`-good radii of `C` are `B`-good for
+`C^{≡m}`. -/
 theorem deltaStar_collapse_forward [Fintype F] [Nonempty ι] [DecidableEq F] {m : ℕ}
     (C : Set (ι → F)) (δ : ℝ) {B : ℕ∞} (h : IsGood C δ B) :
     IsGood (interleavedCodeSet (κ := Fin m) C) δ (B ^ m) :=
   interleaved_poly_of_base_poly C δ h
 
-/-- **`δ*`-collapse, backward.** Every radius that is `B`-good for the interleaved code is `B`-good
-for the base code, at the *same* threshold `B`.  Combined with `deltaStar_collapse_forward`, this
-shows the prize threshold radius `δ*` is identical for `C` and `C^{≡m}` up to the fixed `m`-power on
-the polynomial threshold: **the two ABF26 challenges collapse.** -/
+/-- **Budget-preserving transfer, backward** (historical name `deltaStar_collapse_backward`). Every
+radius that is `B`-good for the interleaved code is `B`-good for the base code, at the *same*
+budget `B`.  So the fixed-budget list threshold of `C^{≡m}` is at most that of `C`. Together with
+`deltaStar_collapse_forward`, this transfers the *existence of a polynomial list bound* for fixed
+`m`. It does **not** give equality of fixed-budget thresholds (binary repetition code of length 3,
+`m = 2`, `B = 2`: suprema `1` for `C` and `2/3` for `C^{≡2}`), and it says nothing about the MCA
+threshold `mcaDeltaStar`. -/
 theorem deltaStar_collapse_backward [Fintype F] [Nonempty ι] [DecidableEq F] {m : ℕ} [NeZero m]
     (C : Set (ι → F)) (δ : ℝ) {B : ℕ∞}
     (h : IsGood (interleavedCodeSet (κ := Fin m) C) δ B) :
@@ -160,9 +176,9 @@ theorem deltaStar_collapse_backward [Fintype F] [Nonempty ι] [DecidableEq F] {m
 
 /-- **The collapse, packaged as a biconditional bracket.** For fixed `m ≠ 0`:
 `Λ(C,δ) ≤ B` implies `Λ(C^{≡m},δ) ≤ B^m`, and `Λ(C^{≡m},δ) ≤ B` implies `Λ(C,δ) ≤ B`.  These two
-implications bracket the interleaved list size by the base list size at every radius, so the largest
-radius with a polynomial list (the prize `δ*`) coincides for the two codes.  The interleaved /
-list-recovery reformulation therefore yields **no new leverage** on `δ*` in the open interior. -/
+implications bracket the interleaved list size by the base list size at every radius. For fixed `m`,
+a radius admits *some* polynomial list bound for `C` iff it does for `C^{≡m}`. At a fixed budget the
+two good-radius suprema can differ, and the MCA threshold `mcaDeltaStar` is not compared. -/
 theorem deltaStar_collapse_bracket [Fintype F] [Nonempty ι] [DecidableEq F] {m : ℕ} [NeZero m]
     (C : Set (ι → F)) (δ : ℝ) (B : ℕ∞) :
     (IsGood C δ B → IsGood (interleavedCodeSet (κ := Fin m) C) δ (B ^ m)) ∧

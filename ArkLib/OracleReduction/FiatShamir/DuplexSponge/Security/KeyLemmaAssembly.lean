@@ -142,7 +142,13 @@ theorem keyLemmaEager_of_hybSteps
 coupling pair — `εA` bounding `Δ(Hyb₃, Hyb3Strict)` (the bad-event mass off the replay
 path) and `εB` bounding `Δ(Hyb3Strict, Hyb₄)` (the hit-path collapse), summing to
 `claim5_24Bound` — imply the full eager key lemma. This composes
-`VerifierReplay.hyb34Step_of_strictSplit` with `keyLemmaEager_of_hybSteps`. -/
+`VerifierReplay.hyb34Step_of_strictSplit` with `keyLemmaEager_of_hybSteps`.
+
+Boundary caveat: `claim5_24Bound … 0 < 0` (`claim5_24Bound_neg_of_L_eq_zero`), and `hA`/`hB`
+are only guarded by `pSpec.totalNumPermQueries ≤ L`. For a zero-permutation protocol
+(`pSpec.totalNumPermQueries = 0`) the instance `L = 0` forces `εA … 0, εB … 0 ≥ 0`, so
+`hA`, `hB`, `hsum` are then jointly unsatisfiable and this theorem is vacuous for such
+protocols; it is informative only where the hypotheses are attainable (`1 ≤ L`). -/
 theorem keyLemmaEager_of_steps_strictSplit
     [DecidableEq ι] [SampleableType U] [∀ i, VCVCompatible (pSpec.Challenge i)]
     [SampleableType (OracleFamily (fsChallengeOracle StmtIn pSpec))]

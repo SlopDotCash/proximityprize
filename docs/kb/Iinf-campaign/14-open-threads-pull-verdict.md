@@ -1,9 +1,24 @@
 # Pulling all 8 open threads — verdict (wf_fbb6da8a-b8c, 2026-06-16)
 
 8-thread parallel investigation of every open/dropped thread around the proof-obligation map, each
-adversarially verified (3 lenses) + judged. **Verdict: no escape from the BGK wall. 7/8 collapse to the
+adversarially verified (3 lenses) + judged. **Verdict: no escape from the BGK wall. 6/8 collapse to the
 open core M(n); 1 (T4) is a genuine non-BGK object but inert; 1 (T7) dies on a DIFFERENT, independent wall.**
 Two findings correct earlier docs.
+
+> **Correction (2026-10-28 audit, T48).**
+> - **Count.** The table below has six collapses (T1, T2, T3, T5, T6, T8) plus two distinct cases
+>   (T4, T7). The original header said "7/8 collapse" *and* listed both other cases, which adds up to
+>   nine; the header and bottom line now say 6/8.
+> - **Three different objects.** T2's "`#bad = E_k = p⁻¹Σ_b|S(b)|^{2k} = M(n)` exactly" is withdrawn.
+>   The moment identity equates the energy `E_k` with an averaged power of the periods. It does not
+>   identify that number with the spectral maximum `M(n)` or with an MCA bad-scalar count. Already
+>   for `μ₂ = {1, −1} ⊆ F₅` at `k = 1`: `E_1 = 2`, every nonzero period has modulus `< 2`
+>   (`≈ 0.618, 1.618`), and the constant code on `{1, −1}` with the pencil `(0,1) + γ·(0,2)` has exactly
+>   one bad scalar (`γ = 2`) at radius `0`.
+> - **Norm envelopes.** In correction 1 below, the failure of a norm-size certificate for larger `n`
+>   does not prove that a chosen sponsor prime is bad (cross T85).
+>
+> The finite correction evidence (the T1 and T2 computations) is kept.
 
 ## Per-thread (all grounded by computation)
 | thread | verdict | why |
@@ -36,7 +51,7 @@ Two findings correct earlier docs.
 3. **T4** — real but inert; do not pursue (no prize signal).
 
 ## Honest bottom line
-No escape. 7/8 threads = the same open core `M(n) ≤ C√(n log(p/n))` (thin-2-power Gauss-period / Paley)
+No escape. 6/8 threads = the same open core `M(n) ≤ C√(n log(p/n))` (thin-2-power Gauss-period / Paley)
 in new vocabulary; T4 is char-0-clean but inert; T7 is a genuinely independent second wall. The recurring
 law (exactly the honesty contract): **any prize-scale bound silently invokes √n-cancellation (= open core);
 any genuinely char-0-clean angle loses all prize signal.** char-0 telescopes to Wick, char-p at r≈log q

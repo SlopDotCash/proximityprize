@@ -16,26 +16,51 @@ computable and pins the shape of the q-independent count.
    ```
    multiplier `m = I/n = n/4 − 1` for `n = 8,16,32,64 → m = 1,3,7,15`. Quantized to integer
    multiples of n; multiplier set by the core-size spectrum (all `core=2` at w=4).
-   The multiplier is **flat at `n/4−1` across the whole low band `w ∈ [4, ρn]`**
-   (n=16: w=4→3, w=8(=ρn)→3 — same multiplier).
+   **CORRECTED (2026-10-28 audit, T125):** the earlier claim that the multiplier is flat at
+   `n/4−1` across the whole low band `w ∈ [4, ρn]` is **false**. Complete exact cyclotomic
+   enumeration at `n=16`, `ρ=1/2` (evidence
+   `docs/audits/repository-review-2026-10-28/kb42-incidence-plateau-counterexample.json`) gives:
 
-3. **⇒ The q-independent incidence is QUADRATIC (`~ n²/4`) at and below the window edge,
-   NOT `≤ n`.** This **definitively refutes** the "prize floor = is the q-independent
-   incidence ≤ n (a constant-factor question)" reframing carried from round 3. The constant
-   is not a constant; the count grows like n²/4 on the plateau.
+   | w | valid subsets (`e₂=0, e₁≠0`) | distinct `e₁` values `I(w)` | multiplier `I/n` |
+   |---|---|---|---|
+   | 4 | 48 | 48 | 3 |
+   | 5 | 48 | 16 | 1 |
+   | 8 | 64 | 48 | 3 |
+   | 9 | 80 | 48 | 3 |
+   | 12 | 16 | 16 | 1 |
+   | 13 | 16 | 16 | 1 |
+
+   So already on the allowed `w ≡ 1 (mod 4)` support band inside `[4, ρn]`, `I(5)=16 ≠ 48`:
+   there is no constant plateau 48 at n=16. Subset counts and distinct-image counts also
+   differ (w=5: 48 subsets, 16 images), so the two must be reported separately. What survives:
+   the w=4 closed form above and the support/parity law in item 1. At n=16 the
+   `w ≡ 0 (mod 4)` values `I(4)=I(8)=48` coincide, but no plateau theorem on any band is
+   proved; any such statement must name its band and be proved.
+
+3. **⇒ At w=4 the q-independent pure-direction image count is QUADRATIC (`n²/4 − n`), NOT
+   `≤ n`** (for n > 8). This refutes the "is the q-independent incidence ≤ n (a
+   constant-factor question)" reframing carried from round 3 *for this pure-direction count at
+   w=4*. It does not by itself say anything about other w (see the corrected table) or about
+   a fixed code's agreement threshold (see the caveat below).
 
 ## The corrected, sharpened localization
 
 - Window = `(1−√ρ, 1−ρ−Θ(1/log n))`. The window **edge** is `δ* = 1−ρ−Θ(1/log n)`, i.e.
   *just below capacity* `1−ρ`, so `w* = (1−δ*)n = ρn + Θ(n/log n)` — **just above** the
   capacity-agreement `ρn`.
-- On the plateau `[4, ρn]` (capacity and below) the multiplier is `n/4−1` → quadratic.
-- Past capacity it **decays**: n=16 shows `w=8,9 → 3n`, then `w=12,13 → n` (multiplier 3→1)
-  over `Δw ≈ n/4`. The `Θ(1/log n)` backoff buys a w-window of `≈ n/log n` past capacity.
-- **The prize floor is therefore a DECAY-RATE question, not a bound:**
-  does the multiplier decay from `n/4−1` (at `w=ρn`) down to `O(1)` (≤ the `q·ε*=n` budget)
-  within the backoff window `w ∈ [ρn, ρn + Θ(n/log n)]`?
-  This is the correct statement of what the `Θ(1/log n)` in `δ*` is doing.
+- Below capacity there is **no** flat plateau: at n=16 the multiplier is 3 at w=4, 1 at w=5,
+  3 at w=8 (corrected table above). Only w=4 has a proved closed form (`n/4−1`).
+- Past capacity, n=16 shows `w=8,9 → 3n`, then `w=12,13 → n` (multiplier 3→1) over
+  `Δw ≈ n/4`; since w=5 already has multiplier 1, the profile is not monotone and "decay"
+  here is only a description of these finite rows.
+- **Proposed (unproved) reframing as a DECAY-RATE question:** does the multiplier fall to
+  `O(1)` (≤ the `q·ε*=n` budget) within the backoff window `w ∈ [ρn, ρn + Θ(n/log n)]`?
+  This is a *candidate* reading of the `Θ(1/log n)` in `δ*`, not an equivalence with the
+  prize. Caveat: the definition of `I(w)` changes the selected polynomial/constraint family
+  with `w` (the subset size enters the constraint), so mapping the profile `w ↦ I(w)` to the
+  agreement threshold of **one fixed code/stack** needs a separate bridge that is not proved.
+  The characteristic-zero counts also do not automatically give finite-field injectivity or
+  worst-direction extremality.
 
 ## Honest status vs the 72-sweep verdict
 
@@ -46,10 +71,10 @@ This does **not** escape the open core ([[arklib-407-72-conjecture-sweep]]):
   *is* the Gauss-period / Paley-graph bound in disguise — the same open core, in 6 equivalent
   forms. No new closure.
 
-What is genuinely new and correct: (a) the exact closed form `n²/4−n` for the pure plateau,
-(b) the `w≡0,1 mod 4` support law, (c) the reframing of the prize floor from a false
-"constant bound" to a **decay-rate within the log-backoff window** — a correct localization
-of *where* the open content sits and *why* `δ*` carries `Θ(1/log n)`.
+What survives: (a) the exact closed form `I(4) = n²/4−n` (verified n=8,16,32,64; not a
+whole-band plateau — see the corrected table), (b) the `w≡0,1 mod 4` characteristic-zero
+support/parity law, (c) a *proposed* decay-rate reframing within the log-backoff window,
+which is a heuristic localization only until the fixed-code/threshold bridge is proved.
 
 ## Decisive next measurement (not yet run)
 

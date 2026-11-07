@@ -26,9 +26,14 @@ is collinear in `Γ_n` — at every smooth scale `n = 2^m`, uniformly (probe: al
   12-term cancellation is `field_simp; ring`.
 * `shape1_collinear` — **the supply theorem**: instantiating `P = ζ^t` at a primitive
   `2^m`-th root (`ζ^(2^(m−1)) = −1` converts the inverses to the wrapped exponents)
-  yields the collinearity of the exponent triple above for every `t < 2^(m−1)` — an
-  infinite, scale-uniform family of second-layer circuits; rotations and Galois twists
-  generate the rest of the layer's orbits.
+  yields the collinearity of the exponent triple above for every `t < 2^(m−1)`. Collinearity
+  alone is not a wide circuit: a genuine (six-position) circuit also needs the six exponents
+  to be pairwise distinct mod `n` (the `Distinct6` guard of
+  `MCADualPencilLaw.dependent_iff_collinear`). This guard fails for some parameters — at
+  `t = 0` all three pairs share the endpoint `ζ` (exponent `1`), and small scales permit
+  further repeated endpoints — so only the parameter values satisfying the distinctness guard
+  supply second-layer circuits (audit finding PG-143). That rotations and Galois twists
+  generate the rest of the layer's orbits is a probe observation, not proved here.
 
 ## Honest scope
 

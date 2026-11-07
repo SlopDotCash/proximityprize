@@ -17,12 +17,23 @@ The proof is a one-line fiber count: `u_i + γ·v_i = c_i ⟺ γ = (c_i − u_i)
 agreement set of `γ` is exactly the fiber `f⁻¹(γ)`; the fibers partition `Fin n`, so the `γ` with
 `≥ w` agreements number at most `n/w`.
 
-This is the **per-codeword half of the LD⟺MCA bridge**: summing over the `L` codewords within the
-ball gives `#{bad γ} ≤ ⌊n/w⌋ · L`, i.e. the far-line incidence is controlled by the list size `L`
-(in the window `w ~ n/2`, `⌊n/w⌋ ≤ 2`, so incidence `≤ 2L`). It makes precise that the MCA
-threshold and the list-decoding radius coincide up to the factor `⌊n/w⌋` — the two grand
-challenges are the same `δ*`. (The remaining open content is the list size `L` itself for explicit
-smooth RS beyond Johnson; this lemma does not bound `L`.)
+Summing over codewords gives `line_list_incidence_le`: the number of scalars `γ` for which
+`u + γ·v` is `w`-close to *some* codeword is at most `⌊n/w⌋` times the size of the
+**line-union list** `lineUnionList u v w C` — the codewords of `C` that are `w`-close to *some*
+point of the whole line.
+
+**This is not a list-decoding/MCA equivalence.**  The line-union list is not the list around a
+single received word, and an ordinary (point-centred) list-decoding bound does not bound it.
+Example: the constant code on `3` coordinates over `F₇`, `w = 2`, `u = (0,0,1)`, `v = (1,2,3)`.
+Any point-centred list has at most one constant codeword (two `2`-subsets of `3` coordinates
+meet, forcing the constants to agree), and `v` agrees with a constant on at most one
+coordinate, so `v` is a far direction.  Yet `γ = 0, 3, 6` make `u + γ·v` agree with the
+constants `0, 3, 5` on two coordinates, so the line-union list has `3` members and the bound
+proved here reads `3 ≤ 3 · ⌊3/2⌋ = 3`.  Substituting the point-centred bound `1` for the
+union list would give the false `3 ≤ 1`.  Turning a point-centred list bound into a bound on
+the line-union list (and accounting for the MCA no-joint-agreement clause, which this count
+ignores) is a separate reduction that is not proved here, so this file does not show that the
+MCA threshold and the list-decoding radius coincide.  It also does not bound any list size.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`).
 -/
@@ -71,19 +82,25 @@ theorem line_codeword_incidence_le
   Nat.le_div_iff_mul_le hw |>.mpr (line_codeword_incidence_mul_le u v c hv w)
 
 open Classical in
-/-- **The quantified LD⟺MCA bridge.** The far-line incidence — the number of scalars `γ` for which
-`u + γ·v` agrees on `≥ w` coordinates with *some* codeword in `C` — is at most `⌊n/w⌋` times the
-number of codewords of `C` that lie within `w`-agreement of the line. In the window `w ~ n/2`,
-`⌊n/w⌋ ≤ 2`, so the incidence is `≤ 2·L` where `L` is the line's close-codeword list size: the MCA
-threshold and the list-decoding radius coincide up to the factor `⌊n/w⌋`. -/
+/-- The **line-union list**: the codewords of `C` that agree on `≥ w` coordinates with *some*
+point `u + γ·v` of the line.  This is a union over all line points, not the list around one
+received word. -/
+noncomputable def lineUnionList (u v : Fin n → F) (w : ℕ) (C : Finset (Fin n → F)) :
+    Finset (Fin n → F) :=
+  C.filter (fun c => ∃ γ : F, w ≤ (univ.filter (fun i : Fin n => u i + γ * v i = c i)).card)
+
+open Classical in
+/-- **Line incidence versus the line-union list.** The number of scalars `γ` for which
+`u + γ·v` agrees on `≥ w` coordinates with *some* codeword in `C` is at most `⌊n/w⌋` times the
+size of the line-union list `lineUnionList u v w C`.  In the window `w ~ n/2`, `⌊n/w⌋ ≤ 2`.
+The right-hand side is a line-union count, not a point-centred list size; bounding it by an
+ordinary list-decoding bound needs a separate reduction (see the module docstring). -/
 theorem line_list_incidence_le (u v : Fin n → F) (hv : ∀ i, v i ≠ 0) {w : ℕ} (hw : 0 < w)
     (C : Finset (Fin n → F)) :
     (univ.filter (fun γ : F =>
         ∃ c ∈ C, w ≤ (univ.filter (fun i : Fin n => u i + γ * v i = c i)).card)).card
-      ≤ (C.filter (fun c => ∃ γ : F,
-          w ≤ (univ.filter (fun i : Fin n => u i + γ * v i = c i)).card)).card * (n / w) := by
-  set close := C.filter (fun c => ∃ γ : F,
-      w ≤ (univ.filter (fun i : Fin n => u i + γ * v i = c i)).card) with hclose
+      ≤ (lineUnionList u v w C).card * (n / w) := by
+  set close := lineUnionList u v w C with hclose
   have hsub : (univ.filter (fun γ : F =>
         ∃ c ∈ C, w ≤ (univ.filter (fun i : Fin n => u i + γ * v i = c i)).card))
       ⊆ close.biUnion (fun c => univ.filter (fun γ : F =>
@@ -91,7 +108,7 @@ theorem line_list_incidence_le (u v : Fin n → F) (hv : ∀ i, v i ≠ 0) {w : 
     intro γ hγ
     rw [mem_filter] at hγ; obtain ⟨_, c, hcC, hcw⟩ := hγ
     rw [mem_biUnion]
-    exact ⟨c, by rw [hclose, mem_filter]; exact ⟨hcC, γ, hcw⟩,
+    exact ⟨c, by rw [hclose, lineUnionList, mem_filter]; exact ⟨hcC, γ, hcw⟩,
       by rw [mem_filter]; exact ⟨mem_univ _, hcw⟩⟩
   calc (univ.filter (fun γ : F =>
           ∃ c ∈ C, w ≤ (univ.filter (fun i : Fin n => u i + γ * v i = c i)).card)).card

@@ -132,7 +132,6 @@ theorem cell_improvement_of_surface
   exact cell_improvement_of_pinning_package' (H := sectionBranch w x₀) hn hT hk
     R hRirr E P hdec hdvdR x₀
     (hypotheses_of_surface hRirr hwdvd x₀)
-    (Fact.out)
     (sectionBranch_monic w x₀)
     (htail_of_surface hRirr hwdeg hwdvd x₀)
     e he u₀ u₁ hD matchingSet

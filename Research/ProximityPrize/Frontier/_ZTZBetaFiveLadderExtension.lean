@@ -22,8 +22,9 @@ certified primes:
 Windows: `n = 16 → [2²⁰, 2²¹]`, `n = 32 → [2²⁵, 2²⁶]`, `n = 64 → [2³⁰, 2³¹]`.
 
 **Why β = 5 (prize relevance).**  The polynomial-field δ* ceiling consumer
-`kkh26_mcaDeltaStar_le_of_TZ` needs `β ≥ 3`; higher β enlarges the head-room of the counting
-step (`supply ~ n^{β−1−o(1)}` on paper).  Extending the **quintic** ladder past its lone
+`kkh26_mcaDeltaStar_le_of_TZ` has no `β` hypothesis (only its budget inequality `hcount`);
+higher β enlarges the head-room of the counting step (the budget decreases in β while
+`supply ~ n^{β−1−o(1)}` on paper grows).  Extending the **quintic** ladder past its lone
 `n = 8` data point is genuine prize-consumer progress, complementing the landed cubic
 (`_ZTZBetaThreeLadderExtension.lean`, up to n = 4096) and β = 2
 (`_W16TZPrizeScaleP30.lean`, up to n = 2^30) ladders.

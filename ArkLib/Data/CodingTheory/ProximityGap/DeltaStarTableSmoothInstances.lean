@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib.Tactic
 
 /-!
-# Round 11 — A verified table of EXACT two-sided interior δ* crossovers
+# Round 11 — A verified table of exact two-sided integer-floor list crossovers
 
 Attacking ANGLE 2 of the Ethereum Proximity Prize (ABF26 / ArkLib #232) at
 finite, fully-decidable scale.  Round 10 pinned the *exact* two-sided
@@ -28,32 +28,50 @@ number of points of `G` where they coincide, and the **list at threshold `a`**
 
   `listSize a = #{ polys P : agree(w, P) ≥ a }`
 
-is exactly `|Λ(C, δ)|` for relative distance `δ = 1 - a/n`.
+is exactly the ordinary fixed-word list `|Λ(C, w, δ)|` at the sample radius
+`δ = 1 - a/n`. (These are fixed-word ordinary lists for one explicit received
+word per row, **not** worst-stack `ε_mca` thresholds.)
 
-A threshold `a*` is a **two-sided crossover at bound `B`** when
-`listSize a* ≤ B < listSize (a*-1)`, and it is **interior to the open prize
-window** `δ* ∈ (1 - √ρ, 1 - ρ)` exactly when
+An integer agreement floor `a*` (named `aMinGood` in the code) is a
+**two-sided crossover at bound `B`** when `listSize a* ≤ B < listSize (a*-1)`.
+Since `listSize` is antitone in the threshold, the good floors are exactly the
+`a ≥ a*`: `a*` is the **minimum** good integer agreement floor (every larger
+floor is also good), not the largest one.
 
-  `k < a*`        (so `δ* < 1 - ρ`,   above the trivial `k`-agreement floor) and
-  `a*^2 < k·n`    (so `δ* > 1 - √ρ`,  below the Johnson `√(kn)` agreement radius).
+**Radius cell.** In the ordinary radius convention the list at radius `δ` is
+the list at floor `⌈(1-δ)n⌉`, so the bound holds exactly for
+`δ < 1 - (a*-1)/n` and fails at `δ = 1 - (a*-1)/n`. The good radii form the
+half-open cell `[0, 1 - (a*-1)/n)`: its supremum `1 - (a*-1)/n` is **not**
+attained, and `1 - a*/n` is merely an attained good sample radius. For row 1 the
+radial supremum is `3/4` (not `11/16`); for rows 2/3 it is `3/4` (not `5/8`).
+
+The **integer** floor `a*` is interior to the agreement window when
+
+  `k < a*`        (above the trivial `k`-agreement floor) and
+  `a*^2 < k·n`    (below the Johnson `√(kn)` agreement radius),
+
+so the attained sample radius `1 - a*/n` lies in `(1 - √ρ, 1 - ρ)`. The radial
+supremum need not: for rows 2/3, `a* - 1 = k`, so the supremum `3/4` equals the
+capacity endpoint `1 - ρ` and is **not** strictly interior. For row 1 the
+supremum `3/4` is strictly interior (`1 - √(3/16) < 3/4 < 13/16`).
 
 ## What is proven for EACH row (`decide` + structural antitonicity)
 
 * exact list sizes `listSize a* = …` and `listSize (a*-1) = …`;
 * `crossover_le : listSize a* ≤ B` and `crossover_gt : B < listSize (a*-1)`;
-* **MAXIMALITY / no-gap**, proven *structurally* from antitonicity of `listSize`
+* **no gap above `a*`**, proven *structurally* from antitonicity of `listSize`
   in `a` (no expensive finite range scan):  `listSize a ≤ B` for **every**
-  `a ≥ a*`, while it fails at `a*-1`.  Thus `a*` is exactly the largest
-  threshold whose list fits `B` — there is genuinely no gap;
-* **INTERIOR** : `k < a*` and `a*^2 < k·n`.
+  `a ≥ a*`, while it fails at `a*-1` (and hence, by antitonicity, at every
+  `a ≤ a*-1`).  Thus `a*` is exactly the minimum good integer floor;
+* **INTERIOR (integer floor)** : `k < a*` and `a*^2 < k·n`.
 
 The three rows:
 
-| field    | `n`  | `k` | `a*` | `B`  | `listSize a*` | `listSize (a*-1)` | interior            |
-|----------|------|-----|------|------|---------------|-------------------|---------------------|
-| `ZMod 17`| `16` | `3` | `5`  | `10` | `10`          | `62`              | `3<5`, `25<48`      |
-| `ZMod 41`| `8`  | `2` | `3`  | `10` | `4`           | `20`              | `2<3`, `9<16`       |
-| `ZMod 97`| `8`  | `2` | `3`  | `10` | `3`           | `22`              | `2<3`, `9<16`       |
+| field    | `n`  | `k` | `a*` | `B`  | list at `a*` | list at `a*-1` | int. floor     | good radii |
+|----------|------|-----|------|------|--------------|----------------|----------------|------------|
+| `ZMod 17`| `16` | `3` | `5`  | `10` | `10`         | `62`           | `3<5`, `25<48` | `[0, 3/4)` |
+| `ZMod 41`| `8`  | `2` | `3`  | `10` | `4`          | `20`           | `2<3`, `9<16`  | `[0, 3/4)` |
+| `ZMod 97`| `8`  | `2` | `3`  | `10` | `3`          | `22`           | `2<3`, `9<16`  | `[0, 3/4)` |
 
 The capstone `delta_star_table` bundles all three rows.
 
@@ -62,8 +80,8 @@ The capstone `delta_star_table` bundles all three rows.
 Each row is a single explicit finite instance, not the asymptotic prize family
 `RS[F, L, k]` with `|F| < 2^256`, `ε* = 2^-128`.  The table does not by itself
 resolve the open interior; it is a set of exact, machine-checked, *non-vacuous*
-data points, each realizing a fully two-sided (no-gap) crossover at a strictly
-interior threshold, across three distinct smooth fields and two rates.  Every
+data points, each realizing a fully two-sided (no-gap) crossover at an interior
+integer agreement floor, across three distinct smooth fields and two rates.  Every
 hypothesis is a fixed numeral (word, `B`, `a*`), hence concrete and satisfiable —
 nothing is vacuous.  The subgroup claims are themselves machine-checked
 (`G_pow_eq_one` lemmas below).
@@ -93,13 +111,15 @@ theorem genListSize_antitone {ι : Type} (P : List ι) (ag : ι → ℕ)
   simp only [decide_eq_true_eq] at hi ⊢
   exact le_trans h hi
 
-/-- **No-gap maximality (generic).**  If the list fits the bound `B` at the
-crossover `a*`, then by antitonicity it fits `B` at *every* threshold `a ≥ a*`.
-Combined with the strict failure at `a*-1`, this certifies that `a*` is the
-largest threshold whose list satisfies the bound: there is no gap. -/
+/-- **No gap above the crossover (generic).**  If the list fits the bound `B` at
+the crossover `a*`, then by antitonicity it fits `B` at *every* threshold
+`a ≥ a*`.  Combined with the strict failure at `a*-1`, this certifies that `a*`
+is the **minimum** integer agreement floor whose list satisfies the bound (all
+larger floors also satisfy it): there is no gap.  (The theorem name is
+historical.) -/
 theorem maximal_of_crossover_le {ι : Type} (P : List ι) (ag : ι → ℕ)
-    (aStar B : ℕ) (hle : genListSize P ag aStar ≤ B) :
-    ∀ a, aStar ≤ a → genListSize P ag a ≤ B :=
+    (aMinGood B : ℕ) (hle : genListSize P ag aMinGood ≤ B) :
+    ∀ a, aMinGood ≤ a → genListSize P ag a ≤ B :=
   fun _ ha => le_trans (genListSize_antitone P ag ha) hle
 
 /-! ## Row 1 — `RS[ZMod 17, {x : x^16 = 1}, 3]`  (quadratics, `n = 16`, `k = 3`)
@@ -134,8 +154,10 @@ def agIdx (i : ℕ × ℕ × ℕ) : ℕ := agree i.1 i.2.1 i.2.2
 /-- `listSize a = |Λ(C, δ)|`, `δ = 1 - a/16`. -/
 def listSize (a : ℕ) : ℕ := genListSize allPoly agIdx a
 
-/-- The crossover threshold `a* = 5` (`δ* = 1 - 5/16 = 11/16`). -/
-def aStar : ℕ := 5
+/-- The minimum good integer agreement floor `a* = 5`. The good radii are exactly
+`δ < 1 - 4/16 = 3/4` (supremum `3/4`, not attained); `11/16 = 1 - 5/16` is an attained
+good sample radius, not the radial threshold. -/
+def aMinGood : ℕ := 5
 /-- The prize-style list-size bound. -/
 def B : ℕ := 10
 
@@ -144,20 +166,20 @@ i.e. `G` really is the 2-power multiplicative subgroup `{x : x¹⁶ = 1}`. -/
 theorem G_pow_eq_one : ∀ x ∈ G, (x ^ 16) % p = 1 := by decide
 
 /-- Exact list size at the crossover `a* = 5`. -/
-theorem listSize_aStar : listSize 5 = 10 := by decide
+theorem listSize_aMinGood : listSize 5 = 10 := by decide
 /-- Exact list size just below, at `a* - 1 = 4`. -/
 theorem listSize_pred : listSize 4 = 62 := by decide
 
 /-- Upper side: the list fits `B = 10` at the crossover. -/
-theorem crossover_le : listSize aStar ≤ B := by decide
+theorem crossover_le : listSize aMinGood ≤ B := by decide
 /-- Lower side: the list strictly exceeds `B` one step below. -/
-theorem crossover_gt : B < listSize (aStar - 1) := by decide
-/-- No-gap maximality: the list fits `B` at every `a ≥ a* = 5`. -/
-theorem maximal : ∀ a, aStar ≤ a → listSize a ≤ B :=
-  maximal_of_crossover_le allPoly agIdx aStar B crossover_le
-/-- The crossover is strictly interior: `k < a*` and `a*² < k·n`
+theorem crossover_gt : B < listSize (aMinGood - 1) := by decide
+/-- No gap above `a*`: the list fits `B` at every floor `a ≥ a* = 5`. -/
+theorem maximal : ∀ a, aMinGood ≤ a → listSize a ≤ B :=
+  maximal_of_crossover_le allPoly agIdx aMinGood B crossover_le
+/-- The integer floor is interior: `k < a*` and `a*² < k·n`
 (`3 < 5` and `25 < 48 = 3·16`). -/
-theorem interior : 3 < aStar ∧ aStar * aStar < 3 * 16 := by decide
+theorem interior : 3 < aMinGood ∧ aMinGood * aMinGood < 3 * 16 := by decide
 
 end Row1
 
@@ -192,8 +214,10 @@ def agIdx (i : ℕ × ℕ) : ℕ := agree i.1 i.2
 /-- `listSize a = |Λ(C, δ)|`, `δ = 1 - a/8`. -/
 def listSize (a : ℕ) : ℕ := genListSize allPoly agIdx a
 
-/-- The crossover threshold `a* = 3` (`δ* = 1 - 3/8 = 5/8`). -/
-def aStar : ℕ := 3
+/-- The minimum good integer agreement floor `a* = 3`. The good radii are exactly
+`δ < 1 - 2/8 = 3/4` (supremum `3/4 = 1 - ρ`, the capacity endpoint, not attained);
+`5/8 = 1 - 3/8` is an attained good sample radius, not the radial threshold. -/
+def aMinGood : ℕ := 3
 /-- The prize-style list-size bound. -/
 def B : ℕ := 10
 
@@ -201,20 +225,20 @@ def B : ℕ := 10
 theorem G_pow_eq_one : ∀ x ∈ G, (x ^ 8) % p = 1 := by decide
 
 /-- Exact list size at the crossover `a* = 3`. -/
-theorem listSize_aStar : listSize 3 = 4 := by decide
+theorem listSize_aMinGood : listSize 3 = 4 := by decide
 /-- Exact list size just below, at `a* - 1 = 2`. -/
 theorem listSize_pred : listSize 2 = 20 := by decide
 
 /-- Upper side: the list fits `B = 10` at the crossover. -/
-theorem crossover_le : listSize aStar ≤ B := by decide
+theorem crossover_le : listSize aMinGood ≤ B := by decide
 /-- Lower side: the list strictly exceeds `B` one step below. -/
-theorem crossover_gt : B < listSize (aStar - 1) := by decide
-/-- No-gap maximality: the list fits `B` at every `a ≥ a* = 3`. -/
-theorem maximal : ∀ a, aStar ≤ a → listSize a ≤ B :=
-  maximal_of_crossover_le allPoly agIdx aStar B crossover_le
-/-- The crossover is strictly interior: `k < a*` and `a*² < k·n`
+theorem crossover_gt : B < listSize (aMinGood - 1) := by decide
+/-- No gap above `a*`: the list fits `B` at every floor `a ≥ a* = 3`. -/
+theorem maximal : ∀ a, aMinGood ≤ a → listSize a ≤ B :=
+  maximal_of_crossover_le allPoly agIdx aMinGood B crossover_le
+/-- The integer floor is interior: `k < a*` and `a*² < k·n`
 (`2 < 3` and `9 < 16 = 2·8`). -/
-theorem interior : 2 < aStar ∧ aStar * aStar < 2 * 8 := by decide
+theorem interior : 2 < aMinGood ∧ aMinGood * aMinGood < 2 * 8 := by decide
 
 end Row2
 
@@ -249,8 +273,10 @@ def agIdx (i : ℕ × ℕ) : ℕ := agree i.1 i.2
 /-- `listSize a = |Λ(C, δ)|`, `δ = 1 - a/8`. -/
 def listSize (a : ℕ) : ℕ := genListSize allPoly agIdx a
 
-/-- The crossover threshold `a* = 3` (`δ* = 1 - 3/8 = 5/8`). -/
-def aStar : ℕ := 3
+/-- The minimum good integer agreement floor `a* = 3`. The good radii are exactly
+`δ < 1 - 2/8 = 3/4` (supremum `3/4 = 1 - ρ`, the capacity endpoint, not attained);
+`5/8 = 1 - 3/8` is an attained good sample radius, not the radial threshold. -/
+def aMinGood : ℕ := 3
 /-- The prize-style list-size bound. -/
 def B : ℕ := 10
 
@@ -258,26 +284,26 @@ def B : ℕ := 10
 theorem G_pow_eq_one : ∀ x ∈ G, (x ^ 8) % p = 1 := by decide
 
 /-- Exact list size at the crossover `a* = 3`. -/
-theorem listSize_aStar : listSize 3 = 3 := by decide
+theorem listSize_aMinGood : listSize 3 = 3 := by decide
 /-- Exact list size just below, at `a* - 1 = 2`. -/
 theorem listSize_pred : listSize 2 = 22 := by decide
 
 /-- Upper side: the list fits `B = 10` at the crossover. -/
-theorem crossover_le : listSize aStar ≤ B := by decide
+theorem crossover_le : listSize aMinGood ≤ B := by decide
 /-- Lower side: the list strictly exceeds `B` one step below. -/
-theorem crossover_gt : B < listSize (aStar - 1) := by decide
-/-- No-gap maximality: the list fits `B` at every `a ≥ a* = 3`. -/
-theorem maximal : ∀ a, aStar ≤ a → listSize a ≤ B :=
-  maximal_of_crossover_le allPoly agIdx aStar B crossover_le
-/-- The crossover is strictly interior: `k < a*` and `a*² < k·n`
+theorem crossover_gt : B < listSize (aMinGood - 1) := by decide
+/-- No gap above `a*`: the list fits `B` at every floor `a ≥ a* = 3`. -/
+theorem maximal : ∀ a, aMinGood ≤ a → listSize a ≤ B :=
+  maximal_of_crossover_le allPoly agIdx aMinGood B crossover_le
+/-- The integer floor is interior: `k < a*` and `a*² < k·n`
 (`2 < 3` and `9 < 16 = 2·8`). -/
-theorem interior : 2 < aStar ∧ aStar * aStar < 2 * 8 := by decide
+theorem interior : 2 < aMinGood ∧ aMinGood * aMinGood < 2 * 8 := by decide
 
 end Row3
 
 /-! ## Capstone — the verified δ* table -/
 
-/-- **A verified table of exact two-sided interior δ\* crossovers.**
+/-- **A verified table of exact two-sided integer-floor list crossovers.**
 
 For each of three explicit, prize-faithful, smooth-domain Reed–Solomon instances
 — `RS[ZMod 17, F^*, 3]` (`n=16`), `RS[ZMod 41, {x:x⁸=1}, 2]` (`n=8`) and
@@ -285,29 +311,35 @@ For each of three explicit, prize-faithful, smooth-domain Reed–Solomon instanc
 bound `B = 10`, the listed threshold `a*` is simultaneously:
 
 * a **two-sided crossover**: `listSize a* ≤ B < listSize (a*-1)`;
-* the **maximal** such threshold (`listSize a ≤ B` for *all* `a ≥ a*`), so the
-  crossover is sharp with no gap; and
-* strictly **interior** to the prize window: `k < a*` and `a*² < k·n`
-  (`δ* ∈ (1-√ρ, 1-ρ)`).
+* the **minimum** good integer agreement floor (`listSize a ≤ B` for *all*
+  `a ≥ a*`, and it fails below), so the crossover is sharp with no gap; and
+* an **interior integer floor**: `k < a*` and `a*² < k·n` (so the attained
+  sample radius `1 - a*/n` lies in `(1-√ρ, 1-ρ)`).
+
+In radius terms the bound holds exactly on the half-open cell
+`[0, 1 - (a*-1)/n)`, with unattained supremum `3/4` in every row; for rows 2/3
+that supremum equals the capacity endpoint `1 - ρ`. These are ordinary
+fixed-word lists for one explicit word per row, not worst-stack `ε_mca`
+thresholds.
 
 This scales the single Round-10 crossover to three machine-checked, non-vacuous
 rows across distinct fields and two rates. -/
 theorem delta_star_table :
     -- Row 1: ZMod 17, n=16, k=3, a*=5, B=10
-    (Row1.listSize Row1.aStar ≤ Row1.B ∧
-     Row1.B < Row1.listSize (Row1.aStar - 1) ∧
-     (∀ a, Row1.aStar ≤ a → Row1.listSize a ≤ Row1.B) ∧
-     (3 < Row1.aStar ∧ Row1.aStar * Row1.aStar < 3 * 16)) ∧
+    (Row1.listSize Row1.aMinGood ≤ Row1.B ∧
+     Row1.B < Row1.listSize (Row1.aMinGood - 1) ∧
+     (∀ a, Row1.aMinGood ≤ a → Row1.listSize a ≤ Row1.B) ∧
+     (3 < Row1.aMinGood ∧ Row1.aMinGood * Row1.aMinGood < 3 * 16)) ∧
     -- Row 2: ZMod 41, n=8, k=2, a*=3, B=10
-    (Row2.listSize Row2.aStar ≤ Row2.B ∧
-     Row2.B < Row2.listSize (Row2.aStar - 1) ∧
-     (∀ a, Row2.aStar ≤ a → Row2.listSize a ≤ Row2.B) ∧
-     (2 < Row2.aStar ∧ Row2.aStar * Row2.aStar < 2 * 8)) ∧
+    (Row2.listSize Row2.aMinGood ≤ Row2.B ∧
+     Row2.B < Row2.listSize (Row2.aMinGood - 1) ∧
+     (∀ a, Row2.aMinGood ≤ a → Row2.listSize a ≤ Row2.B) ∧
+     (2 < Row2.aMinGood ∧ Row2.aMinGood * Row2.aMinGood < 2 * 8)) ∧
     -- Row 3: ZMod 97, n=8, k=2, a*=3, B=10
-    (Row3.listSize Row3.aStar ≤ Row3.B ∧
-     Row3.B < Row3.listSize (Row3.aStar - 1) ∧
-     (∀ a, Row3.aStar ≤ a → Row3.listSize a ≤ Row3.B) ∧
-     (2 < Row3.aStar ∧ Row3.aStar * Row3.aStar < 2 * 8)) :=
+    (Row3.listSize Row3.aMinGood ≤ Row3.B ∧
+     Row3.B < Row3.listSize (Row3.aMinGood - 1) ∧
+     (∀ a, Row3.aMinGood ≤ a → Row3.listSize a ≤ Row3.B) ∧
+     (2 < Row3.aMinGood ∧ Row3.aMinGood * Row3.aMinGood < 2 * 8)) :=
   ⟨⟨Row1.crossover_le, Row1.crossover_gt, Row1.maximal, Row1.interior⟩,
    ⟨Row2.crossover_le, Row2.crossover_gt, Row2.maximal, Row2.interior⟩,
    ⟨Row3.crossover_le, Row3.crossover_gt, Row3.maximal, Row3.interior⟩⟩

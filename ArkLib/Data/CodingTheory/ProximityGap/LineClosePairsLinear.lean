@@ -21,9 +21,13 @@ RS object the prize's interior regime turns on.
 
 This is the per-line companion of the O29 ball-intersection linear collapse
 (`BallIntersectionSecondMomentLinear`), and the bridge from the abstract per-line chain (rounds
-14–14f) to genuine Reed–Solomon structure: above the unique-decoding radius the slice is empty
-(round 14f); the open interior `(1−√ρ, 1−ρ)` is exactly where the slice becomes nonzero and the
-RS weight enumerator must be bounded.
+14–14f) to genuine Reed–Solomon structure.  In distance coordinates (radius `n − a`), the slice
+`wt ≤ 2(n−a)` is empty when `2(n−a) < d`, i.e. when the radius is **below** the
+unique-decoding radius `d/2` (equivalently, when the agreement `a` is above `n − d/2`); this is
+round 14f.  For an MDS/RS code (`d = n−k+1`) the slice becomes nonzero as soon as
+`2(n−a) ≥ d`, i.e. from about the unique-decoding radius `(1−ρ)/2` on, which is already below
+the Johnson radius `1−√ρ`; so it is nonzero throughout the open interior `(1−√ρ, 1−ρ)` but not
+only there, and bounding the RS weight enumerator on this slice is where the interior work lies.
 
 Axiom-clean: `propext, Classical.choice, Quot.sound`.
 -/

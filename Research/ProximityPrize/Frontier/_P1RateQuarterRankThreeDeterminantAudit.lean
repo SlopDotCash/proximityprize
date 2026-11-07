@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._P1RateQuarterScaleArithmetic
 import Research.ProximityPrize.Frontier._HalfPredecessorRateQuarterDeterminantMultiplicity
+import Research.ProximityPrize.Frontier._P1RateQuarterPredecessorGenericSplit
 
 /-!
 # P1 rate-quarter rank-three determinant audit
@@ -18,9 +19,16 @@ with the two unconditional core-mass floors available from threshold incidence:
 * one sharp Plotkin anchor plus two universal pair intersections:
   `327272221 + 2*(2*T-N) = 550968437`.
 
-Both are far below the determinant onset `1610612735`.  Thus determinant
-multiplicity remains a valid amplifier, but cannot fire from the current
-rank-three seed without a genuinely new core-growth input.
+Both are far below the determinant onset `1610612735`.
+
+**Scope (numeric comparisons only).**  Every theorem below is a closed numeral identity or
+inequality (proved by `norm_num`/`omega`) about the literal P1 constants; `T` is tied to the
+canonical predecessor threshold by `T_eq_predecessorThreshold`.  The prose readings — that
+determinant multiplicity "cannot fire" from the current seed, that one-line petal iteration
+"cannot create" the needed mass, that root counts "cannot close" the three-pencil overflow —
+are *interpretations* of these comparisons for the specific estimates named here, not
+formalized method no-go theorems: no statement quantifies over proof strategies or ties these
+numerals to the consumers' hypotheses.
 -/
 
 set_option autoImplicit false
@@ -29,8 +37,13 @@ namespace ArkLib.ProximityGap.Frontier.P1RateQuarterRankThreeDeterminantAudit
 
 open P1RateQuarterScaleArithmetic
 
-/-- Literal predecessor agreement threshold. -/
+/-- Literal predecessor agreement threshold (numeral copy; see `T_eq_predecessorThreshold`). -/
 abbrev T : Nat := 592794966
+
+/-- The local numeral `T` is the canonical P1 predecessor threshold. -/
+theorem T_eq_predecessorThreshold :
+    T = P1RateQuarterPredecessorGenericSplit.predecessorThreshold :=
+  P1RateQuarterPredecessorGenericSplit.predecessorThreshold_eq.symm
 
 /-- First core sum that strictly exceeds the determinant degree budget after
 subtracting the `N`-coordinate universe. -/
@@ -61,8 +74,8 @@ theorem pinnedAnchor_determinant_deficit_eq :
       (327272221 + 2 * (2 * T - N)) = 1059644298 := by
   norm_num [determinantCoreSumOnset, T, N, k]
 
-/-- Exact no-go comparison: neither current unconditional core-mass floor
-reaches the three-line determinant-collapse onset. -/
+/-- Numeric comparison: neither of the two named core-mass floors reaches the
+three-line determinant-collapse onset. -/
 theorem current_coreMass_floors_below_determinant_onset :
     3 * T - N < determinantCoreSumOnset ∧
       327272221 + 2 * (2 * T - N) < determinantCoreSumOnset := by
@@ -91,7 +104,7 @@ theorem pinnedAnchor_sum_below_onset_of_other_cores_le
   have hOnset := determinantCoreSumOnset_eq
   omega
 
-/-! ## One-line petal recursion no-go -/
+/-! ## One-line petal recursion: numeric comparisons -/
 
 /-- Fresh agreement size available after deleting one line core. -/
 abbrev freshAgreementFloor : Nat := T - (k - 1)
@@ -109,13 +122,14 @@ iterate drops by more than thirty-two million coordinates. -/
 theorem petalUpdate_145836060_eq : petalUpdate 145836060 = 113383381 := by
   norm_num [petalUpdate, freshAgreementFloor, T, k, N]
 
-/-- Exact attracting integer fixed point of the one-line reduced Plotkin map. -/
+/-- Integer fixed point of the one-line reduced Plotkin map (only the fixed-point identity is
+proved here; no attraction/stability statement is formalized). -/
 theorem petalUpdate_fixedPoint_eq : petalUpdate 109061044 = 109061044 := by
   norm_num [petalUpdate, freshAgreementFloor, T, k, N]
 
 /-- The fixed point is strictly weaker than the universal inclusion--exclusion
-pair-core floor.  Therefore independent one-line petal iteration cannot create
-the new mass needed by determinant collapse. -/
+pair-core floor.  (Informal reading: iterating this particular one-line petal
+update does not by itself supply the mass needed by determinant collapse.) -/
 theorem petalUpdate_fixedPoint_below_universal_pair_floor :
     petalUpdate 109061044 < 2 * T - N := by
   norm_num [petalUpdate, freshAgreementFloor, T, k, N]
@@ -320,7 +334,7 @@ theorem oneHole_threshold_assignment_forces_bin_ge_197598322
   norm_num [T] at hcover
   omega
 
-/-- Exact no-go comparison: the guaranteed bin does not reach `k`. -/
+/-- Numeric comparison: the guaranteed bin does not reach `k`. -/
 theorem oneHole_threeCore_pigeonhole_below_k : 197598322 < k := by
   norm_num [k]
 
@@ -510,8 +524,9 @@ theorem threshold_twoBlock_crossCoverage_below_k :
 
 /-! ## Three-pair Hall-ledger wall -/
 
-/-- The existing low-multiplicity/exact-three ledger cannot improve the
-four-disjoint-bad-pair theorem to three pairs.  This literal assignment
+/-- Numerical feasibility of the low-multiplicity/exact-three ledger at three pairs (informal
+reading: that ledger's inequalities alone do not improve the four-disjoint-bad-pair theorem to
+three pairs; only the numeral feasibility is proved).  This literal assignment
 saturates the exact-three universe and pair inequality while satisfying the
 weighted low-mass and six-endpoint surplus constraints with exact slack
 `96076784937031003`. -/
@@ -540,8 +555,9 @@ theorem two_alignedCore_pairRoot_floor_eq :
 /-- For three pencil clusters, the three pair-root blocks impose
 `3*111848106` scalar vanishing constraints on two independent degree-`<k`
 difference polynomials, which have `2k` coefficients.  The raw linear system
-therefore retains this large dimension slack; root counts plus the triangle
-identity cannot close the three-pencil overflow. -/
+therefore retains this large dimension slack.  (Informal reading: these raw
+root counts plus the triangle identity do not by themselves close the three-pencil
+overflow; only the numeral identity is proved.) -/
 theorem threePencil_pairRoot_linearDimension_slack_eq :
     2 * k - 3 * (2 * (T - 1) - N) = 201326594 := by
   norm_num [k, T, N]
@@ -555,6 +571,7 @@ end ArkLib.ProximityGap.Frontier.P1RateQuarterRankThreeDeterminantAudit
 open ArkLib.ProximityGap.Frontier.P1RateQuarterRankThreeDeterminantAudit
 
 #print axioms determinantCoreSumOnset_eq
+#print axioms T_eq_predecessorThreshold
 #print axioms threeThreshold_pairCoreMassFloor_eq
 #print axioms pinnedAnchor_plus_two_pairFloors_eq
 #print axioms bonferroni_determinant_deficit_eq

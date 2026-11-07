@@ -1,5 +1,14 @@
 # Structural advance: per-direction I_dir(s) is a clean step function; δ* = max far-line agreement (list-decoding radius) — #407
 
+> **Scope correction (2026-10-28 audit, T48; see the banner in
+> `deltastar-RESOLUTION-tracks-floor-not-half.md`).** The displayed identity
+> `δ* = 1 − s*/n` with `s*` "the max agreement of a far monomial line" conflates two quantities. A
+> budget crossing counts how many scalars attain each agreement threshold. That is not in general
+> the deepest agreement attained by at least one scalar. The formula also covers only the monomial
+> far-line family: an incidence upper-bound witness for that family does not prove extremality
+> among all stacks, so it does not give the MCA `δ*`. The step profiles are finite exact data at
+> `n = 24`, `k = 2`. As the later far-line guard says, `δ*` remains an interval, not a value.
+
 The irregular envelope `I(s)` (361,71,40,24,18,15,15,5 …) that blocked the closed-form derivation is RESOLVED:
 it is the **max over directions** of clean **per-direction** curves. Engine single-direction mode (`pg n k a b`).
 

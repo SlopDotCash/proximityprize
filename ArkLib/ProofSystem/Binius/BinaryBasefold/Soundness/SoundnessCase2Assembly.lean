@@ -18,16 +18,21 @@ except with probability `steps · |S_next| / |L|`.
 This file does all the proof assembly work now — the RS unfolding of `BBF_Code`, the
 `Nontrivial`/`NeZero` side instances, the `UDRClose ↔ distance ≤ uniqueDecodingRadius`
 arithmetic, and the ENNReal cast algebra — and packages the result as
-`prop421Case2_probability_bound_of_bridges`, conditional on exactly the two statement-level inputs still
-being produced by other active lanes:
+`prop421Case2_probability_bound_of_bridges`, stated with the two statement-level inputs as
+hypotheses:
 
 1. **the fold/tensor bridge** (`iterated_fold_eq_multilinearCombine_preTensorCombine`, proved
    in `Soundness/Incremental.lean`), and
-2. **the Lemma 4.22 far-lift** (the `PreTensor*` lane): a fiberwise-far oracle's pre-tensor
-   stack is NOT jointly proximate to the interleaved destination code at unique decoding
-   radius.
+2. **the Lemma 4.22 far-lift**: a fiberwise-far oracle's pre-tensor stack is NOT jointly
+   proximate to the interleaved destination code at unique decoding radius.
 
-Once both land, the Proposition 4.21 case-2 probability bound follows directly.
+**Current status:** both inputs are now supplied, so this is not an open probability hole.
+`SoundnessCase2FarLift.lean` proves the far-lift
+(`fiberwiseClose_of_jointProximityNat_farLiftLocal`) and reduces the bound to the fold/tensor
+bridge (`prop421Case2_probability_bound_of_bridge`), and
+`SoundnessCase2Probability.lean` feeds it the concrete bridge to obtain
+`prop421Case2_probability_bound` and the hypothesis-free wrapper
+`prop_4_21_case_2_fiberwise_far`.
 -/
 
 set_option linter.unusedSectionVars false

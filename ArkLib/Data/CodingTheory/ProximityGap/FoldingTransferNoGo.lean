@@ -19,20 +19,26 @@ for the FOLDED code transfer to the plain smooth-domain RS list?
 abstractly: coordinates `Fin N × Fin (d+1)` (`N` orbits of size `d+1`), folding by the first
 coordinate.
 
-* `foldedAgree_mul_le_plainAgree` — the only direction that holds: each fully-agreeing orbit
+* `foldedAgree_mul_le_plainAgree` — the lossless upward direction: each fully-agreeing orbit
   contributes `d+1` plain agreements, so `(d+1) · foldedAgree ≤ plainAgree`.  (A plain-list bound
-  therefore transfers UP to the folded code — the useless direction.)
-* `folding_transfer_no_go` (the NO-GO) — the converse fails **maximally**: over any type with
-  `0 ≠ 1` there is a word `w` with `plainAgree w 0 = N·d` — a `d/(d+1)` fraction of ALL coordinates,
-  far above any list-decoding radius — while `foldedAgree w 0 = 0`: **not a single orbit agrees**.
-  Witness: `w(o, p) = 1` if `p = 0` else `0` (one corrupted position per orbit).
+  therefore transfers UP to the folded code.)
+* `plainAgree_le_mul_add_foldedAgree` — a **lossy downward** direction also holds: every orbit
+  that does not fully agree contributes at most `d` plain agreements, so
+  `plainAgree ≤ N·d + foldedAgree`, i.e. `foldedAgree ≥ max(0, plainAgree − N·d)`.  Equivalently,
+  folded relative distance is at most `(d+1)` times plain relative distance, so a folded list
+  bound at folded radius `δ` controls the plain list at plain radius `δ/(d+1)`.
+* `folding_transfer_no_go` (the NO-GO) — the lossy converse cannot be improved at thresholds
+  `≤ N·d`: over any type with `0 ≠ 1` there is a word `w` with `plainAgree w 0 = N·d` — a
+  `d/(d+1)` fraction of ALL coordinates — while `foldedAgree w 0 = 0`: **not a single orbit
+  agrees**.  Witness: `w(o, p) = 1` if `p = 0` else `0` (one corrupted position per orbit).
 
-Consequence: a folded-code list bound at ANY radius (even capacity) says nothing about the plain
-list even at relative radius `1/(d+1)` — the agreement structure simply does not transfer downward.
-The folded-RS capacity results bound lists of words close IN THE FOLDED METRIC, a strictly smaller
-set than plain-close words.  Closing this gap (a transfer that survives per-orbit corruption) is
-precisely the open part of §6 route 4 — now isolated as such, with the naive route a
-theorem-certified dead end.
+Consequence: no positive folded agreement follows from a plain-agreement threshold `A ≤ N·d`
+(`not_plainToFoldAgreementTransfer_of_A_le_N_mul_d_of_T_pos`), so a folded-code list bound says
+nothing about plain-close words at plain relative radius `≥ 1/(d+1)`.  Above that cutoff the lossy
+bound gives a genuine but `(d+1)`-fold radius-shrinking transfer.  The folded-RS capacity results
+bound lists of words close IN THE FOLDED METRIC; neither the lossy bound nor the no-go closes the
+desired capacity-scale transfer to the plain smooth-domain RS list (a transfer that survives
+per-orbit corruption without the `(d+1)` loss), which remains the open part of §6 route 4.
 
 All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 -/
@@ -70,6 +76,38 @@ theorem foldedAgree_mul_le_plainAgree (w v : Fin N × Fin (d + 1) → F) :
   rw [Nat.mul_comm]
   exact hcard
 
+/-- **The lossy downward transfer:** `plainAgree ≤ N·d + foldedAgree`.  Every orbit that does not
+fully agree contributes at most `d` plain agreements, and every fully agreeing orbit contributes
+`d+1`.  Equivalently `foldedAgree ≥ plainAgree − N·d`, i.e. folded relative distance is at most
+`(d+1)` times plain relative distance; so a folded list bound controls the plain list at the
+plain radius divided by `(d+1)`. -/
+theorem plainAgree_le_mul_add_foldedAgree (w v : Fin N × Fin (d + 1) → F) :
+    plainAgree w v ≤ N * d + foldedAgree w v := by
+  classical
+  set a : Fin N → ℕ :=
+    fun o => (Finset.univ.filter fun p : Fin (d + 1) => w (o, p) = v (o, p)).card with ha
+  have hsplit : plainAgree w v = ∑ o, a o := by
+    rw [plainAgree, Finset.card_filter, Fintype.sum_prod_type]
+    simp only [ha, Finset.card_filter]
+  have hbound : ∀ o, a o ≤ d + (if ∀ p, w (o, p) = v (o, p) then 1 else 0) := by
+    intro o
+    split_ifs with h
+    · calc a o ≤ (Finset.univ : Finset (Fin (d + 1))).card := Finset.card_filter_le _ _
+        _ = d + 1 := by simp
+    · push Not at h
+      obtain ⟨p, hp⟩ := h
+      have hlt : a o < d + 1 := by
+        calc a o < (Finset.univ : Finset (Fin (d + 1))).card :=
+              Finset.card_lt_card (Finset.filter_ssubset.mpr ⟨p, Finset.mem_univ _, hp⟩)
+          _ = d + 1 := by simp
+      omega
+  calc plainAgree w v = ∑ o, a o := hsplit
+    _ ≤ ∑ o, (d + if ∀ p, w (o, p) = v (o, p) then 1 else 0) :=
+        Finset.sum_le_sum fun o _ => hbound o
+    _ = N * d + foldedAgree w v := by
+        rw [Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+          smul_eq_mul, foldedAgree, Finset.card_filter]
+
 /-- The adversarial word: corrupted at exactly the first position of every orbit. -/
 def oneCorruptionPerOrbit (N d : ℕ) (F : Type*) [Zero F] [One F] :
     Fin N × Fin (d + 1) → F :=
@@ -98,8 +136,10 @@ per orbit has:
   (far above every list-decoding radius), yet
 * folded agreement `= 0` — **no orbit survives**.
 
-So folded-code list bounds (at any radius, including the capacity results for folded RS) give NO
-information about plain-close words: the naive §6-route-4 transfer is a certified dead end. -/
+So no positive folded agreement can be deduced from plain agreement `≤ N·d`: folded-code list
+bounds give no information about plain-close words at plain relative radius `≥ 1/(d+1)`.  (Above
+that cutoff the lossy bound `plainAgree_le_mul_add_foldedAgree` does transfer, with the radius
+divided by `d+1`.) -/
 theorem folding_transfer_no_go (N d : ℕ) (F : Type*) [Zero F] [One F]
     [DecidableEq F] (h01 : (0 : F) ≠ 1) :
     plainAgree (oneCorruptionPerOrbit N d F) (0 : Fin N × Fin (d + 1) → F) = N * d ∧
@@ -167,6 +207,7 @@ end ArkLib.CodingTheory.FoldingTransferNoGo
 
 /-! ## Axiom audit -/
 #print axioms ArkLib.CodingTheory.FoldingTransferNoGo.foldedAgree_mul_le_plainAgree
+#print axioms ArkLib.CodingTheory.FoldingTransferNoGo.plainAgree_le_mul_add_foldedAgree
 #print axioms ArkLib.CodingTheory.FoldingTransferNoGo.folding_transfer_no_go
 #print axioms ArkLib.CodingTheory.FoldingTransferNoGo.no_go_concrete
 open ArkLib.CodingTheory.FoldingTransferNoGo in

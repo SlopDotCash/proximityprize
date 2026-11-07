@@ -13,10 +13,14 @@ import Research.ProximityPrize.Frontier._R299PatternStratification
 ## The accounting discovery (this session, 2026-07-10)
 
 Split `tripleConv J d` by whether the ordered triple `(i, d−j−i, j)` has all three
-`H`-coset labels distinct (`H = {0,u,2u}`, `u = m/3`).  The non-distinct part is
+`H`-coset labels distinct (`H = {0,u,2u}`, intended `u = m/3`).  Scope note (2026-10-29
+audit CW-B11-07): the Lean statements take an ARBITRARY `u : ZMod m` with no `3u = 0`
+constraint, so `inH u` is a coset-of-`H` test only when `3u = 0`; for general `u` it is
+just the three-translate test `x ∈ {0, u, 2u}`.  All accounting theorems below hold for
+every `u`.  The non-distinct part is
 COUNT-THIN: for fixed `(d, j)` the bad `i`-set is contained in two explicit
 translate-triples plus three doubling-fibers — at most `6 + 3k₂` elements
-(`k₂ = #{i : 2i = 0} = gcd(2,m) ≤ 2`).  Hence with only the classical envelope
+(`k₂ = #{i : 2i = 0} = gcd(2,m) ≤ 2`, proved as `card_two_torsion_le_two`).  Hence with only the classical envelope
 `‖J‖² ≤ q` the ENTIRE non-distinct stratum satisfies
 
   `∑_d ‖nonDist(d)‖² ≤ (6+3k₂)²·m³·q³ ≤ 144·m³·q³`  — UNCONDITIONALLY,
@@ -38,14 +42,17 @@ scale accounting of the R298 diagonal and the R299 SAME3/TWO classes at once
 * `tripleConvEnergyBound_of_distStratum` / `distStratumEnergyBound_of_tripleConv`
   — the TWO-SIDED accounting: `TripleConvEnergyBound (2C_D + 288)` ⟸
   `DistStratumEnergyBound C_D` and conversely (`2C + 288`), given only `‖J‖² ≤ q`
-  and `k₂ ≤ 2`;
+  (the 2-torsion bound `k₂ ≤ 2` is proved once, `card_two_torsion_le_two`);
 * `distStratumEnergyBound_trivial` — instantiability: `C = m²` always (the
   baseline `m²` gap, now provably confined to DIST);
 * **ladder rungs** `distStratum_eq_zero_m3` / `_m6` +
   `distStratumEnergyBound_rung_m3` / `_m6` — at `m = 3, 6` (`u ≤ 2` cosets) the
   DIST pattern is EMPTY by pigeonhole (kernel-checked by `decide`), so the open
-  Prop holds with `C = 0` for EVERY coefficient sequence and every `q`: the Prop
-  is instantiable and calibrated.
+  Prop holds with `C = 0` for EVERY coefficient sequence and every `q`.  These are
+  DEGENERATE sanity checks (the Prop is vacuous there), not evidence of calibration:
+  at a fixed `m` the target `TripleConvEnergyBound` already holds with the absolute
+  constant `m² = 9` or `36` from the trivial baseline, so these rungs say nothing about
+  the constant at growing `m`.
 
 ## The r=3 rung dependency graph after this brick
 
@@ -144,6 +151,40 @@ theorem card_double_fiber_le_card_kernel (t : ZMod m) :
     · intro a _ b _ hab
       have : a - i₀ = b - i₀ := hab
       linear_combination this
+
+/-- In `ZMod m`, an element killed by `2` has value `0` or `m / 2`. -/
+theorem val_of_two_mul_eq_zero {i : ZMod m} (h : 2 * i = 0) :
+    i.val = 0 ∨ i.val = m / 2 := by
+  have hlt : i.val < m := ZMod.val_lt i
+  have hcast : (((2 * i.val : ℕ)) : ZMod m) = 2 * i := by
+    push_cast; rw [ZMod.natCast_zmod_val]
+  have hdvd : m ∣ 2 * i.val := by
+    rw [← ZMod.natCast_eq_zero_iff, hcast, h]
+  obtain ⟨k, hk⟩ := hdvd
+  have hm : 0 < m := Nat.pos_of_ne_zero (NeZero.ne m)
+  have hk2 : k < 2 := by
+    by_contra hc
+    have hc : 2 ≤ k := by omega
+    have : m * 2 ≤ m * k := Nat.mul_le_mul_left m hc
+    omega
+  interval_cases k <;> omega
+
+/-- **The 2-torsion bound** `k₂ = #{i : ZMod m | 2i = 0} ≤ 2` (it equals `gcd(2, m)`),
+proved once so the accounting theorems below need no `k₂` hypothesis. -/
+theorem card_two_torsion_le_two :
+    (Finset.univ.filter (fun i : ZMod m => 2 * i = 0)).card ≤ 2 := by
+  classical
+  calc (Finset.univ.filter (fun i : ZMod m => 2 * i = 0)).card
+      ≤ ({0, m / 2} : Finset ℕ).card := by
+        apply Finset.card_le_card_of_injOn (fun i : ZMod m => i.val)
+        · intro i hi
+          have h2 : 2 * i = 0 := (Finset.mem_filter.mp hi).2
+          rcases val_of_two_mul_eq_zero h2 with h | h
+          · simp [h]
+          · simp [h]
+        · intro a _ b _ hab
+          exact ZMod.val_injective m hab
+    _ ≤ 2 := Finset.card_le_two
 
 /-- **The bad-index inclusion**: a non-distinct triple pins `i` into the two
 translate-triples or a doubling fiber. -/
@@ -301,18 +342,17 @@ section Accounting
 
 variable {J : ZMod m → ℂ} {u : ZMod m} {q : ℕ}
 
-/-- From the classical square envelope `‖J‖² ≤ q` and `k₂ ≤ 2`:
-`∑_d ‖nonDist‖² ≤ 144·m³·q³` unconditionally. -/
+/-- From the classical square envelope `‖J‖² ≤ q` (and the always-true `k₂ ≤ 2`,
+`card_two_torsion_le_two`): `∑_d ‖nonDist‖² ≤ 144·m³·q³` unconditionally. -/
 theorem nonDistStratum_energy_le_of_sq_bound
-    (hJ : ∀ i : ZMod m, ‖J i‖ ^ 2 ≤ (q : ℝ))
-    (hk₂ : (Finset.univ.filter (fun i : ZMod m => 2 * i = 0)).card ≤ 2) :
+    (hJ : ∀ i : ZMod m, ‖J i‖ ^ 2 ≤ (q : ℝ)) :
     ∑ d : ZMod m, ‖nonDistStratum J u d‖ ^ 2 ≤ 144 * (m : ℝ) ^ 3 * (q : ℝ) ^ 3 := by
   have hB0 : (0 : ℝ) ≤ Real.sqrt (q : ℝ) := Real.sqrt_nonneg _
   have hJroot : ∀ i : ZMod m, ‖J i‖ ≤ Real.sqrt (q : ℝ) := by
     intro i
     have h := Real.sqrt_le_sqrt (hJ i)
     rwa [Real.sqrt_sq (norm_nonneg _)] at h
-  have hbase := nonDistStratum_energy_le hB0 hJroot u (k₂ := 2) hk₂
+  have hbase := nonDistStratum_energy_le hB0 hJroot u (k₂ := 2) card_two_torsion_le_two
   have hsqrt : (Real.sqrt (q : ℝ)) ^ 6 = (q : ℝ) ^ 3 := by
     have hq0 : 0 ≤ (q : ℝ) := by positivity
     have hs2 : (Real.sqrt (q : ℝ)) ^ 2 = (q : ℝ) := Real.sq_sqrt hq0
@@ -329,12 +369,11 @@ open core with constant `2·C_D + 288`, given only the classical coefficient
 envelope.  The rung's dependency graph is now `DistStratumEnergyBound` ALONE. -/
 theorem tripleConvEnergyBound_of_distStratum
     (hJ : ∀ i : ZMod m, ‖J i‖ ^ 2 ≤ (q : ℝ))
-    (hk₂ : (Finset.univ.filter (fun i : ZMod m => 2 * i = 0)).card ≤ 2)
     {C_D : ℝ} (hD : DistStratumEnergyBound J u q C_D) :
     TripleConvEnergyBound J q (2 * C_D + 288) := by
   unfold TripleConvEnergyBound
   unfold DistStratumEnergyBound at hD
-  have hnon := nonDistStratum_energy_le_of_sq_bound (u := u) hJ hk₂
+  have hnon := nonDistStratum_energy_le_of_sq_bound (u := u) hJ
   have hsplit : ∑ d : ZMod m, ‖tripleConv J d‖ ^ 2
       ≤ 2 * (∑ d : ZMod m, ‖distStratum J u d‖ ^ 2)
         + 2 * (∑ d : ZMod m, ‖nonDistStratum J u d‖ ^ 2) := by
@@ -348,12 +387,11 @@ theorem tripleConvEnergyBound_of_distStratum
 with constant `2·C + 288` — the localization is two-sided. -/
 theorem distStratumEnergyBound_of_tripleConvEnergyBound
     (hJ : ∀ i : ZMod m, ‖J i‖ ^ 2 ≤ (q : ℝ))
-    (hk₂ : (Finset.univ.filter (fun i : ZMod m => 2 * i = 0)).card ≤ 2)
     {C : ℝ} (hT : TripleConvEnergyBound J q C) :
     DistStratumEnergyBound J u q (2 * C + 288) := by
   unfold DistStratumEnergyBound
   unfold TripleConvEnergyBound at hT
-  have hnon := nonDistStratum_energy_le_of_sq_bound (u := u) hJ hk₂
+  have hnon := nonDistStratum_energy_le_of_sq_bound (u := u) hJ
   have hsplit : ∑ d : ZMod m, ‖distStratum J u d‖ ^ 2
       ≤ 2 * (∑ d : ZMod m, ‖tripleConv J d‖ ^ 2)
         + 2 * (∑ d : ZMod m, ‖nonDistStratum J u d‖ ^ 2) := by
@@ -426,7 +464,11 @@ theorem distStratumEnergyBound_trivial
 
 end Accounting
 
-/-! ### Ladder rungs: the Prop discharges with `C = 0` when there are ≤ 2 cosets -/
+/-! ### Degenerate ladder rungs: the Prop discharges with `C = 0` when there are ≤ 2 cosets
+
+These are sanity checks only: the DIST pattern is empty, so the bound is vacuous, and at
+fixed `m` the full `TripleConvEnergyBound` already holds with the absolute constant `m²`
+from the trivial baseline.  They carry no information about calibration at growing `m`. -/
 
 /-- At `m = 3` (`u = 1`, a single coset) the DIST pattern is empty (kernel-checked). -/
 theorem distStratum_eq_zero_m3 (J : ZMod 3 → ℂ) (d : ZMod 3) :
@@ -447,14 +489,14 @@ theorem distStratum_eq_zero_m6 (J : ZMod 6 → ℂ) (d : ZMod 6) :
   intro i _
   exact (by decide : ∀ d j i : ZMod 6, ¬ allCosetsDistinct 2 i (d - j - i) j) d j i
 
-/-- **Ladder rung m = 3**: the minimal open Prop holds with `C = 0` for every
-coefficient sequence and every `q`. -/
+/-- **Degenerate ladder rung m = 3**: the minimal open Prop holds with `C = 0` for every
+coefficient sequence and every `q`, because the DIST stratum is identically zero. -/
 theorem distStratumEnergyBound_rung_m3 (J : ZMod 3 → ℂ) (q : ℕ) :
     DistStratumEnergyBound J 1 q 0 := by
   unfold DistStratumEnergyBound
   simp [distStratum_eq_zero_m3]
 
-/-- **Ladder rung m = 6**: likewise with `C = 0`. -/
+/-- **Degenerate ladder rung m = 6**: likewise with `C = 0` (DIST is identically zero). -/
 theorem distStratumEnergyBound_rung_m6 (J : ZMod 6 → ℂ) (q : ℕ) :
     DistStratumEnergyBound J 2 q 0 := by
   unfold DistStratumEnergyBound

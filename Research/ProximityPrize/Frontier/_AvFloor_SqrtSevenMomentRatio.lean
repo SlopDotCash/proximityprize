@@ -36,7 +36,7 @@ nothing new is needed at the kernel level — this is a clean one-rung extension
 Substituting `A₄ = q·E₄ − n⁸` and `A₃ = q·E₃ − n⁶` (`nonzero_moment` at `r = 4`, `r = 3`) gives
 the cross-multiplied inequality recorded as `energy_moment_floor_sqrt7`:
 
-> `q·E₄ − n⁸  ≤  M² · (q·E₃ − n⁶)`,   i.e.   `M² ≥ (q·E₄ − n⁶)/(q·E₃ − n⁶)`.
+> `q·E₄ − n⁸  ≤  M² · (q·E₃ − n⁶)`,   i.e.   `M² ≥ (q·E₄ − n⁸)/(q·E₃ − n⁶)`.
 
 As `q → ∞` this `→ E₄/E₃`. The double-factorial substrate values `Eᵣ(μ_n) ~ (2r−1)!!·n^r`
 (`E₂ ~ 3n²`, `E₃ ~ 15n³`, `E₄ ~ 105n⁴`, with `3 = 3!!, 15 = 5!!, 105 = 7!!`) give
@@ -45,16 +45,20 @@ As `q → ∞` this `→ E₄/E₃`. The double-factorial substrate values `Eᵣ
 **Honesty note (probe-verified, evidence not a kernel claim).** Exact integer computation of
 `E₄(μ_n) = rEnergy(μ_n, 4)` over PROPER thin subgroups `μ_n ⊆ F_p^*` with `p > n⁴` and `n | p−1`
 (`n = 4,8,16,32,64`) gives `E₄/(105·n⁴) = 0.182, 0.442, 0.676, 0.831, 0.917` (→ 1, slow because
-`E₄` carries large lower-order corrections — it is NOT a clean degree-4 polynomial in `n`, unlike
-`E₃ = 15n³−45n²+40n` which is exact) and `A₄/A₃` empirically `→ 7n` (`430.8 / 448 = 0.96` at
-`n = 64`). So the numeric value `7n` of `A₄/A₃` is recorded as **asymptotic computational
-evidence**, NOT as an exact closed-form theorem in this file. The Lean theorems below state ONLY
+`E₄` carries large lower-order corrections — it is NOT a clean degree-4 polynomial in `n`; even
+`E₃ = 15n³−45n²+40n` is only the char-0 value, NOT exact in this regime: at `n = 64`,
+`p = 16778497 > 64⁴` one has `E₃ = 3796480 > 3750400`, see `_CLTDecorrelatedCeiling.lean`,
+R-213) and `A₄/A₃` empirically `→ 7n` (`430.8 / 448 = 0.96` at `n = 64`). So the finite trend
+of `A₄/A₃` toward `7n` is recorded as **computational evidence** at a few sampled `(n, p)`, NOT
+as an established joint `(n, q)` asymptotic, an exact closed form, or a kernel `√7` floor. The
+Lean theorems below state ONLY
 the unconditional cross-multiplied inequality, which holds for ANY `G` regardless of the `E_r`
 values — exactly as for the `√3` and `√5` floors.
 
 This is the next rung of the LOWER half of the prize (the floor) made axiom-clean from the
-substrate. It does NOT close CORE (an UPPER bound): the floor only certifies that the honest value
-`M` is at least `√7·√n` asymptotically, sharpening the gap to the conjectured `√(n·log(p/n))`.
+substrate. It does NOT close CORE (an UPPER bound): the floor only certifies `M² ≥ A₄/A₃`; the
+`√7·√n` reading is conditional on the (unproved) asymptotic `A₄/A₃ → 7n`, which would sharpen the
+gap to the conjectured `√(n·log(p/n))`.
 -/
 
 set_option autoImplicit false

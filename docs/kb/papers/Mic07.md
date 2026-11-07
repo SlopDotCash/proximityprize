@@ -32,6 +32,9 @@ the analytic core of the norm-growth bound in the weak-binding argument.
 - The cited negacyclic product-norm layer is proved: `Rq.l2NormSq_mul_le` establishes the
   per-entry convolution bound and `scalarVecMul_mul_l2NormSq_le` lifts it to vectors.
 - No open gap remains for the specific inequality ArkLib currently imports from `Mic07`.
+- The statement is pinned to the power-of-two negacyclic ring `powTwoCyclotomic α`
+  (`X^{2^α} + 1`) with centered representatives; it is not claimed for a general cyclotomic
+  modulus.
 
 ## Source Access
 

@@ -221,7 +221,7 @@ def zeroCheckVirtualPolynomial (𝕩 : Statement.AfterFirstMessage R pp)
 @[simp]
 abbrev FirstChallenge : Type := Fin pp.ℓ_m → R
 
-/-- Unfolds to `(τ, x) : (Fin (2 ^ ℓ_n - 2 ^ ℓ_w) → R) × (Fin (2 ^ ℓ_m) → R)` -/
+/-- Unfolds to `(τ, 𝕩) : (Fin ℓ_m → R) × (Fin (2 ^ ℓ_n - 2 ^ ℓ_w) → R)` -/
 @[simp]
 abbrev Statement.AfterFirstChallenge : Type :=
   FirstChallenge R pp × Statement.AfterFirstMessage R pp
@@ -262,7 +262,7 @@ def oracleReduction.firstChallenge :
 @[simp]
 abbrev FirstSumcheckChallenge : Type := Fin pp.ℓ_m → R
 
-/-- Unfolds to `(r_x, τ, 𝕩) : (Fin ℓ_m → R) × (Fin (2 ^ ℓ_n - 2 ^ ℓ_w) → R) × (Fin ℓ_m → R)` -/
+/-- Unfolds to `(r_x, τ, 𝕩) : (Fin ℓ_m → R) × (Fin ℓ_m → R) × (Fin (2 ^ ℓ_n - 2 ^ ℓ_w) → R)` -/
 @[simp]
 abbrev Statement.AfterFirstSumcheck : Type :=
   FirstSumcheckChallenge R pp × Statement.AfterFirstChallenge R pp
@@ -344,7 +344,7 @@ def oracleReduction.sendEvalClaim :
 abbrev LinearCombinationChallenge : Type := R1CS.MatrixIdx → R
 
 /-- Unfolds to `((r_A, r_B, r_C), r_x, τ, 𝕩) :`
-  `(R1CS.MatrixIdx → R) × (Fin (2 ^ ℓ_m) → R) × (Fin ℓ_m → R) × (Fin (2 ^ ℓ_n - 2 ^ ℓ_w) → R)` -/
+  `(R1CS.MatrixIdx → R) × (Fin ℓ_m → R) × (Fin ℓ_m → R) × (Fin (2 ^ ℓ_n - 2 ^ ℓ_w) → R)` -/
 @[simp]
 abbrev Statement.AfterLinearCombination : Type :=
   LinearCombinationChallenge R × Statement.AfterSendEvalClaim R pp
@@ -391,7 +391,7 @@ def secondSumCheckVirtualPolynomial
 abbrev SecondSumcheckChallenge : Type := Fin pp.ℓ_n → R
 
 /-- Unfolds to `(r_y, (r_A, r_B, r_C), r_x, τ, 𝕩) :`
-  `(Fin ℓ_n → R) × (R1CS.MatrixIdx → R) × (Fin (2 ^ ℓ_m) → R) × (Fin ℓ_m → R) ×`
+  `(Fin ℓ_n → R) × (R1CS.MatrixIdx → R) × (Fin ℓ_m → R) × (Fin ℓ_m → R) ×`
   `(Fin (2 ^ ℓ_n - 2 ^ ℓ_w) → R)` -/
 @[simp]
 abbrev Statement.AfterSecondSumcheck : Type :=

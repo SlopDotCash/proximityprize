@@ -1,5 +1,20 @@
 # #407 dual assault — consolidated synthesis (M(n) face + direct floor face), 11 expert angles (2026-06-13)
 
+> **Scope correction (2026-10-28 audit, T48; cross T87/T104).**
+> - **Sum-product row.** "μ_n is JOINTLY Sidon with every dilate (`E^+(μ_n, ξμ_n) = n²`)" is false
+>   as a universal statement. Taking `ξ = 1`, or any `ξ ∈ μ_n`, gives the ordinary energy, which is
+>   already `3n² − 3n` in characteristic zero for an even dyadic subgroup. In thin prime fields it
+>   can be larger still (for example `μ₃₂ ⊆ F₃₂₉₉₃` has `3744`).
+> - **Stepanov row.** The heavy-set counts are finite statistics. They do not prove a uniform
+>   Gaussian tail.
+> - **Amplification row.** The maximum-at-zero identity `max_h |D_r(h)| = D_r(0)` holds for that one
+>   positive-definite correlation. It does not eliminate every signed or weighted amplification.
+> - **Bottom line.** "None exists in current mathematics" is not established. The angles refute the
+>   specific tested routes.
+>
+> The explicit retraction of the unrealizable, freely chosen Gauss-phase spike (Hasse–Davenport
+> row) is correct and is kept.
+
 Two adversarial multi-agent assaults (M(n) character-sum sup-norm; direct floor I(δ)≤q·ε*), 11 completed
 expert angles, taken over and synthesized manually after a rate-limit interruption. **Verdict: no proof
 (expected — recognized open core), but a COMPLETE, sharp, often-decisive map; every angle resolved with a

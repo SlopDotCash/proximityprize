@@ -16,8 +16,10 @@ cyclotomic resultant lift):
 
 > `worst_period_sidon_le` :  `‖η_b‖⁴ ≤ 3·q·|G|²`   for every `b`.
 
-So `max_b ‖η_b‖ ≤ (3q)^{1/4}·√|G|`, which is **below the completion bound `√q`** exactly when
-`|G| < q/3` — and for `|G| = n < √q` it is `≈ q^{1/4}√n ≪ √q`. This is a genuine sub-`√q` upper bound
+So `max_b ‖η_b‖ ≤ (3q)^{1/4}·√|G|`, which is **strictly below the completion bound `√q`**
+exactly when `3|G|² < q`, i.e. `|G| < √(q/3)` (not `|G| < q/3`: the fourth-root bound loses a
+square). The weak-endpoint fourth-power form `‖η_b‖⁴ ≤ q²` under `3|G|² ≤ q` is the checked
+`worst_period_sidon_le_completion_pow4` below. For `|G| = n ≪ √q` the bound is `≈ q^{1/4}√n ≪ √q`. This is a genuine sub-`√q` upper bound
 on the worst subgroup Gaussian period, narrowing the bracket `[√n, √q]` on its proven (upper) side; the
 conjecture asserts the analogous bound at every moment `r`, giving `√(n log f)`.
 
@@ -38,7 +40,9 @@ variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
 /-- **Sub-`√q` worst-period bound in the Sidon regime.** If `G` is Sidon-mod-negation
 (`repCount G t ≤ 2` for all `t ≠ 0`), then every Gaussian period satisfies `‖η_b‖⁴ ≤ 3·q·|G|²`, hence
-`max_b ‖η_b‖ ≤ (3q)^{1/4}√|G|` — below the completion bound `√q` for `|G| < q/3`. -/
+`max_b ‖η_b‖ ≤ (3q)^{1/4}√|G|` — strictly below the completion bound `√q` exactly when
+`3|G|² < q` (i.e. `|G| < √(q/3)`); see `worst_period_sidon_le_completion_pow4` for the
+weak-endpoint form under `3|G|² ≤ q`. -/
 theorem worst_period_sidon_le {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
     (hrep : ∀ t : F, t ≠ 0 → repCount G t ≤ 2) (b : F) :
     ‖eta ψ G b‖ ^ 4 ≤ 3 * (Fintype.card F : ℝ) * (G.card : ℝ) ^ 2 := by

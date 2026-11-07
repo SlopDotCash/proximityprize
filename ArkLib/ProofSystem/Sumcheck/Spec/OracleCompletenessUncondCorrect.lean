@@ -10,14 +10,16 @@ import ArkLib.ProofSystem.Sumcheck.Spec.SingleRoundCohWired
 
 `Sumcheck.Spec.oracleReduction_perfectCompleteness` (`OracleCompletenessThreaded.lean`) proves the
 multi-round oracle-level perfect completeness via the genuine, bridge-FREE `seqCompose` threaded
-keystone (no false `toReduction = reduction` equation), conditional only on the per-round
+keystone (no `toReduction = reduction` equation is used), conditional only on the per-round
 oracle-routing lens coherence `[coh : ∀ i, LiftContextCoherent (sumcheckOracleLens i) Simple.verifier]`
 plus the standard data facts `hInit`/`hImplSupp`.
 
 That `coh` is now a THEOREM: `coh_proven_inst` (`SingleRoundCohWired.lean`) supplies it from the
 proven `CubeFiber` (`SingleRoundFaithful.coh_proven`). Feeding it discharges the last residual, so
 the multi-round sum-check oracle perfect completeness is unconditional modulo only the honest data
-facts. This is the correct replacement for the false-bridge `oracleReduction_perfectCompleteness_uncond`. -/
+facts. It does not go through the bridge route of `oracleReduction_perfectCompleteness_uncond`.
+That route was once believed to rest on a false bridge; under canonical message-reading verifiers
+the bridge holds (`oracleReductionToReductionResidual_holds`, `OracleCompletenessUncond.lean`). -/
 
 open OracleComp OracleSpec ProtocolSpec
 namespace Sumcheck.Spec

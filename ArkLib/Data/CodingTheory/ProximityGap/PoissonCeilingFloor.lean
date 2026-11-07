@@ -8,11 +8,17 @@ import ArkLib.Data.CodingTheory.ProximityGap.KKH26CeilingMarch
 /-!
 # The Poisson ceiling floor, Part A: the exact incidence counts (#371, cycle 2 S1′)
 
-The probe-discovered **Poisson ceiling law** (five field sizes, 1–3%):
-`E[badcount at the ceiling] = q(1 − e^{−C(n,k+1)/q})`.  Since `sup ≥ mean`, its
-Bonferroni lower bound is an **unconditional, census-free bad side** for the ceiling
-radius of every fixed-dimension evaluation code — no cyclotomic injectivity, no
-`(2^μ)^{2^{μ−1}}` threshold, no Landau resultants, no Thorner–Zaman supply.
+The probe-discovered **Poisson ceiling heuristic**: across five tested field sizes the mean
+bad count at the ceiling was fitted by `E[badcount at the ceiling] ≈ q(1 − e^{−C(n,k+1)/q})`
+with observed relative errors of 1–3%.  This is an **approximation / discovery heuristic, not
+an exact finite-field identity** (2026-10-28 audit, PG-325): e.g. at `p = 3`, `n = 2`, degree
+`0`, `δ = 0` the exact mean bad count over uniformly random stacks is `(q − 1)/q = 2/3`, while
+the displayed expression gives `3(1 − e^{−1/3}) ≈ 0.850`.  The rigorous content does not use
+the Poisson formula: since `sup ≥ mean`, the exact singleton/pair counts proved here plus
+Bonferroni give an **unconditional, census-free bad side** for the ceiling radius of every
+fixed-dimension evaluation code (under the stated field-size guard `C(n, d+2) + 1 ≤ p`) —
+no cyclotomic injectivity, no `(2^μ)^{2^{μ−1}}` threshold, no Landau resultants,
+no Thorner–Zaman supply.
 
 **This file (Part A)** proves the exact counting core:
 

@@ -15,6 +15,11 @@ list-decodable below the explicit Johnson radius
 
   `√(T·B) < A`,  `A = (n−e) − n/q`,  `B = (n − (n−(k−1))) − n/q`,  `T = n(1−1/q)`.
 
+"List-decodable" here means only the existential `∃ ℓ, ∀ w, closeCount … ≤ ℓ`, which holds for
+every finite code at every radius (`ℓ = |RS|`). The quantitative bound
+`⌊(T² − A²)/(A² − T·B)⌋₊ + 1` is `rs_johnson_radius_explicit` (`CS25RSJohnsonRadius.lean`);
+falling outside the Johnson condition does not show the list is large.
+
 `sorry`/`axiom`-free.
 -/
 

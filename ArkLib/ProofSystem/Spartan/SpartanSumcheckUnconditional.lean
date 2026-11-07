@@ -25,23 +25,31 @@ it does not depend on the parts of `FirstSumcheckComplete`/`SpartanBricks` that 
 the relations and lens-completeness instance are therefore restated here under fresh names
 (`firstSumcheckRelIn'`, `firstSumcheckRelOut'`, `firstSumcheckLensComplete'`).
 
-## What is and is not unconditional
+## What is and is not unconditional (legacy route)
 
-`Sumcheck.Spec.oracleReduction_perfectCompleteness_of_bridge` is stated modulo a single explicit,
-clearly-named residual: the verifier-side fusion bridge
+`Sumcheck.Spec.oracleReduction_perfectCompleteness_of_bridge` is stated modulo the explicit
+bridge
 
   `hBridge : (oracleReduction R deg D n oSpec).toReduction = reduction R deg D n oSpec`
 
 (`Sumcheck.Spec.oracleReductionToReductionResidual`), together with the standard execution-side side
 conditions `hInit : NeverFail init` and `hImplSupp` (the implementation routes oracle queries with
-the bare-oracle support). The provers of `oracleReduction.toReduction` and `reduction` are
-definitionally equal; `hBridge` is the *only* remaining mathematical content — the `seqCompose`
-verifier-fusion analogue of `Prover.append_run`, still open at the general composition layer.
+the bare-oracle support). Accordingly `firstSumcheck_perfectCompleteness_unconditional` keeps
+`hBridge` as an explicit hypothesis; despite its name it is a conditional, legacy theorem.
 
-Accordingly `firstSumcheck_perfectCompleteness_unconditional` threads `hBridge`/`hInit`/`hImplSupp`
-through. Once the seqCompose verifier-fusion residual lands as a closed theorem, instantiating
-`hBridge` makes it depend only on `hInit`/`hImplSupp` (the irreducible execution-model side
-conditions), with no sum-check inner-completeness obligation on the caller.
+**Status of `hBridge` (updated).** The general verifier-fusion layer is no longer open: binary
+verifier fusion is proved (`binaryVerifierFusion_proof` in `OracleCompletenessUncond.lean`) and
+lifts to `seqCompose` (`OracleVerifier.seqCompose_toVerifier_of_binary`), so
+`Sumcheck.Spec.oracleReductionToReductionResidual_of_binary` reduces `hBridge` to the per-round
+equation `(SingleRound.oracleReduction i).toReduction = SingleRound.reduction i`. That per-round
+equation holds under the canonical message-reading round verifiers
+(`Sumcheck.Spec.SingleRound.oracleReduction_toReduction_eq_reduction`), so `hBridge` is supplied
+by `Sumcheck.Spec.oracleReductionToReductionResidual_holds`. The live, bridge-free result is
+`FirstSumcheckBridgeFree.firstSumcheck_perfectCompleteness_bridgeFree`, which needs only
+`hInit`/`hImplSupp` (via `Sumcheck.Spec.oracleReduction_perfectCompleteness_unconditional`). The
+relations, lens-completeness instance and transfer proof below duplicate those of
+`FirstSumcheckComplete` and `FirstSumcheckBridgeFree`; the primed names are used only in this
+file.
 -/
 
 open MvPolynomial OracleComp OracleSpec Sumcheck
@@ -116,10 +124,11 @@ theorem firstSumcheck_perfectCompleteness'
 The inner multi-round sum-check oracle perfect completeness `h_inner` is supplied by
 `Sumcheck.Spec.oracleReduction_perfectCompleteness_of_bridge` specialized at `deg = 3`,
 `D = boolEmbedding R`,
-`n = pp.ℓ_m`. It remains stated modulo the single explicit verifier-fusion bridge `hBridge`
-(`oracleReductionToReductionResidual`) plus the execution-model side conditions
-`hInit`/`hImplSupp`, exactly those of the inner oracle completeness; no sum-check
-inner-completeness obligation is left to the caller. -/
+`n = pp.ℓ_m`. It remains stated modulo the explicit bridge `hBridge`
+(`oracleReductionToReductionResidual`, which holds as
+`Sumcheck.Spec.oracleReductionToReductionResidual_holds`) plus the execution-model side conditions `hInit`/`hImplSupp`.
+Use `firstSumcheck_perfectCompleteness_bridgeFree` (`FirstSumcheckBridgeFree.lean`) for the
+bridge-free statement. -/
 theorem firstSumcheck_perfectCompleteness_unconditional
     {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
     [Inhabited R] [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]

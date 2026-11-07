@@ -1,0 +1,719 @@
+diff --git a/Zkpc/Basic.lean b/Zkpc/Basic.lean
+index 300e0f3..c90565f 100644
+--- a/Zkpc/Basic.lean
++++ b/Zkpc/Basic.lean
+@@ -2,13 +2,19 @@
+ # zk-payments-confetti: Lean formalization root
+ 
+ Protocol-layer formalization of zk payment channels over an idealized ledger.
+-Crypto primitives enter as named axioms in `Zkpc.Assumptions` and nowhere else.
++Cryptography is idealized, not axiomatized: `Zkpc.Assumptions` is a named
++data registry that declares no Lean `axiom`, and the cryptographic
++properties enter as restrictions on the symbolic transitions or the ideal
++game views. No real SNARK, signature or encryption scheme is instantiated,
++and the wire-level bridges are open (see `OPEN-PROOFS.md`, "Known gaps").
++The modules are all imported by the umbrella `Zkpc.lean`.
+ See `PROVING.md` for the model boundary and contribution rules.
+ -/
+ 
+ namespace Zkpc
+ 
+-/-- Marker for the library scaffold; replaced by real content as modules land. -/
++/-- Version marker for the library (kept for compatibility; the content
++lives in the modules imported by `Zkpc.lean`). -/
+ def scaffoldVersion : String := "0.1.0"
+ 
+ end Zkpc
+diff --git a/Zkpc/Core/Flat.lean b/Zkpc/Core/Flat.lean
+index d66cc0f..626b4bd 100644
+--- a/Zkpc/Core/Flat.lean
++++ b/Zkpc/Core/Flat.lean
+@@ -14,6 +14,23 @@ theorems D2–D4/I1 are proved over the transition system in
+ `Zkpc.Core.T1/T2/T3/T5`, whose guards these bodies mirror clause by
+ clause (each body cites its `Step` constructor).
+ 
++**Not a refinement (audit SM01).** Mirroring guards is not a proof that
++composing these bodies refines `Core.Step`, and no such proof exists in
++this development. The bodies also leave shared state unsynchronized:
++`spend` returns the ticket and the new payer state but never inserts the
++emitted signal into `LedgerSt.sigs`; `redeem` returns an updated
++`PayeeSt` but has no ledger result, so it never records the accepted
++tuple in `LedgerSt.acc`. Yet `sweep` pays only tuples in `LedgerSt.acc`
++and `dispute` requires both signals in `LedgerSt.sigs`. Starting from
++`Core.init`, the honest `open'` → `spend` → accepting `redeem` → `sweep`
++sequence therefore pays the gateway nothing, and two emitted conflicting
++tickets are not disputable through `dispute`. The tuple exposes no
++operation that establishes those records. So `flatScheme` is a typing
++exercise only: the T1–T5 guarantees are theorems about `Core.Step`, not
++about executions of this tuple. Closing the gap needs a joint execution
++state with explicit ledger updates, a refinement proof onto `Core.Step`,
++and checked honest-pay and conflicting-pair traces.
++
+ Symbolic identifications carried over from State.lean:
+ * a secret *is* the channel identity (`cm ≡ k`), so the carrier of
+   secrets is the signal field `F`;
+diff --git a/Zkpc/Core/T5.lean b/Zkpc/Core/T5.lean
+index fc953c9..4f5994b 100644
+--- a/Zkpc/Core/T5.lean
++++ b/Zkpc/Core/T5.lean
+@@ -7,7 +7,19 @@ Payer-close half of T5: an honest payer whose MC20 close
+ (unused-enumeration `U`) was included at machine time `t` is settled its
+ T3 amount once the window `τ` elapses — settlement is *automatic at
+ expiry* (Spec.md §2 Close), needs no second transaction, and no
+-counterparty behavior can delay or alter it.
++counterparty behavior can disable it or alter its payout.
++
++**Scope (audit SM02).** What is proved is existential: from a reachable
++state there *exists* a reachable settled state at clock
++`max(now, t + τ)` with the T3 payout. Nothing here quantifies over
++executions, defines a fairness predicate on traces, or proves that every
++execution settles at that exact clock. `Step.tick` is enabled in every
++state, including after the window has expired, so a schedule may tick any
++finite number of extra times before settling. Weak fairness rules out only
++*infinite* postponement of a continuously enabled action, so it yields at
++most eventual settlement, never settlement exactly at `t + τ`. A pathwise
++deadline would need a stronger rule (for example a tick that first
++processes all due automatic settlements); that is not modelled.
+ 
+ Decomposition (matching Spec.md's statement):
+ * `settleClose_enabled` (Zkpc.Core.T3) — from `clock ≥ t + τ` on, the
+@@ -30,32 +42,36 @@ Decomposition (matching Spec.md's statement):
+   untouched, so window expiry is always reachable.
+ * `T5_payer_close_liveness` — the bundle: a settling continuation exists,
+   reaching `closeSettled = true` and the T3 payout `D − j·C` at machine
+-  time `max(now, t + τ)` exactly.
++  time `max(now, t + τ)` exactly (in that constructed continuation; other
++  schedules may settle later, see the scope note above).
+ 
+ The payee half of Spec.md T5 ("a sweep submitted at `t` is paid by
+ `t + Δ`, no window") is part of T2's collectability: `sweepOne_enabled`
+ and `T2_collectable` (Zkpc.Core.T2) show sweeps enabled and settling with
+ no ticks at all.
+ 
+-**Fairness hypothesis (stated per State.lean's header, made explicit
+-here):** the machine cannot force internal actions to occur, so liveness
+-is proved as (a) a constructive settling continuation from every reachable
+-state, plus (b) persistence — the settlement stays enabled under every
+-other action. Under the idealized ledger's guarantee that enabled contract
+-logic is eventually executed (weak fairness for the `settleClose` and
+-`tick` actions — Spec.md §5's "contract logic executes exactly as
+-specified", automatic window settlement included), every execution
+-settles: a weakly-fair run cannot avoid an action that (b) keeps
+-continuously enabled. The adversary controls scheduling but not the
+-ledger's own automatic actions.
++**Fairness hypothesis (informal; not formalized here):** the machine
++cannot force internal actions to occur, so what is proved is (a) a
++constructive settling continuation from every reachable state, plus
++(b) persistence — the settlement stays enabled under every other action.
++Informally, under the idealized ledger's guarantee that enabled contract
++logic is eventually executed (weak fairness for `settleClose`), a
++weakly-fair run cannot avoid an action that (b) keeps continuously
++enabled, so it *eventually* settles. That trace-level argument is not a
++Lean theorem (no trace or fairness predicate is defined), and it gives
++eventual settlement only: weak fairness permits any finite delay, so it
++does not give settlement at the exact clock `t + τ`.
+ 
+ GATE-NOTE (deltas between Spec.md T5 and these statements):
+ 1. *`Δ` folded to zero.* Spec.md's bound is `t + Δ + τ` with `Δ` the
+    ledger inclusion delay. The machine includes actions instantly at their
+    clock value (State.lean header), so the bound here is machine-time
+    `t + τ`, with `t` the recorded inclusion time of the close;
+-   `T5_payer_close_liveness` pins the settling state's clock to
+-   `max(now, t + τ)` — the "exactly, no `O(·)` slack" clause of Spec.md T5.
++   `T5_payer_close_liveness` exhibits a settling state whose clock is
++   `max(now, t + τ)`. This shows the deadline is *attainable*; it does not
++   establish Spec.md T5's "exactly, no `O(·)` slack" clause for every
++   schedule (see the scope note: extra ticks before settlement are
++   always possible in this machine).
+    `Δ` re-enters as prose when interpreting machine time.
+ 2. *"Cannot extend these bounds"* is rendered as `settleClose_stable`
+    (no step disables the settlement or changes its payout fields) rather
+@@ -167,22 +183,23 @@ theorem settleClose_stable {s s' : St K M} {a : Act K M}
+ 
+ /-- **T5 — Closure liveness, payer close (Spec.md §7 T5, rev-7/8).** An
+ honest payer whose MC20 close (claimed-unused set `U`) was included at
+-machine time `t` (window `τ`, not yet settled) reaches, from any
+-reachable state and against any adversary scheduling, a state in which
+-its close *has* settled:
++machine time `t` (window `τ`, not yet settled) has, from any reachable
++state, a reachable continuation in which its close *has* settled:
+ 
+-* at machine time exactly `max(now, t + τ)` — settlement fires the moment
+-  the window expires, with no slack (Spec.md: "settled ... by
+-  `t + Δ + τ` exactly"; GATE-NOTE 1 for the `Δ` folding);
++* at machine time exactly `max(now, t + τ)` in that continuation — the
++  deadline is attainable (GATE-NOTE 1 for the `Δ` folding). This is an
++  existential statement: it does not say every schedule settles at that
++  clock, and other schedules may tick past `t + τ` first;
+ * with payout exactly its T3 floor `D − j·C` for its `j` emitted spends
+   (via `C·|U| + (D − cap·C)` and `close_payout_arith`), stated additively
+   as `paid + j·C = D` via the honest solvency invariant.
+ 
+ The continuation consists of ticks (always enabled) followed by the
+ automatic settlement (enabled by `settleClose_enabled`, kept enabled by
+-`settleClose_stable`); under the idealized ledger's fairness — enabled
+-contract logic eventually executes (see the file header) — every
+-execution contains it. No counterparty transaction is involved anywhere:
++`settleClose_stable`). Under the informal fairness reading in the file
++header, every weakly-fair execution eventually settles, though not
++necessarily at that clock; no trace-level statement is proved. No
++counterparty transaction is involved anywhere:
+ counterparty silence is harmless, and the three voiding surfaces are all
+ closed for honest payers (`honest_never_slashed`,
+ `honest_closeDispute_never_fires`, `honest_settleVoid_never_fires`). -/
+diff --git a/Zkpc/Fleet/Basic.lean b/Zkpc/Fleet/Basic.lean
+index af05178..2a42edc 100644
+--- a/Zkpc/Fleet/Basic.lean
++++ b/Zkpc/Fleet/Basic.lean
+@@ -53,7 +53,10 @@ the `FleetFair` trace hypothesis rather than as transition-relation magic.
+ - **`slash` is enabled only on real evidence** (`hconf`: a conflicting
+   pair exists among accepted tickets — same index, different messages; the
+   merge-time evidence of MC17 makes such a pair sufficient, and the RLN
+-  algebra of `Zkpc.Games.RLN` makes the ledger's recomputation sound).
++  algebra of `Zkpc.Games.RLN` makes the ledger's recomputation sound *for
++  distinct digests*; distinct messages give distinct digests only on the
++  no-hash-collision event, which this symbolic model does not track — see
++  `Conflict`, audit SM09).
+   That the slash *happens*, and within `L`, is an honest-infrastructure
+   guarantee (Spec.md §5 idealized ledger + §1 MC11 + §2 MC17: gateways
+   reconcile, emit merge-time evidence, and the ledger includes it), NOT a
+@@ -143,10 +146,23 @@ structure Ev (N : ℕ) (P : Type) where
+ deriving DecidableEq
+ 
+ /-- A conflicting pair (Spec.md §2 `Redeem` evidence branch / MC17 merge):
+-same index (same nullifier), different messages — two distinct points on
+-the member's RLN line for that index, i.e. valid `Dispute` evidence
+-(`Zkpc.Games.RLN.rln_evidence_complete`). By MC14 gateway-binding, any
+-cross-gateway reuse of an index is automatically conflicting. -/
++same index (same nullifier), different **messages**. By MC14
++gateway-binding, any cross-gateway reuse of an index is conflicting in this
++symbolic sense.
++
++This is a symbolic predicate, stronger than what the wire supplies (audit
++SM09). `Zkpc.Games.rln_evidence_complete` needs distinct field **digests**
++`x ≠ x'`, and distinct messages do not give distinct digests: a
++finite-field-valued hash can collide, and domain separation does not make
++the message-to-field map injective. So identifying a `Conflict` with two
++distinct RLN line points, and hence with valid `Dispute` evidence, holds
++only on the no-collision event; a wire-level bridge must condition on that
++event or charge its probability (for two fixed distinct messages and a
++uniform nonzero digest range of size `p - 1`, a collision has probability
++`1/(p-1)`, with adaptive query accounting on top). The fleet theorems are
++valid as stated because they *assume* a deadline slash response to this
++symbolic `Conflict`; that the wire protocol supplies one under real hash
++semantics is not proved here. -/
+ def Conflict (e₁ e₂ : Ev N P) : Prop :=
+   e₁.idx = e₂.idx ∧ e₁.msg ≠ e₂.msg
+ 
+diff --git a/Zkpc/Games/Calibration.lean b/Zkpc/Games/Calibration.lean
+index 4bea676..9cf3d10 100644
+--- a/Zkpc/Games/Calibration.lean
++++ b/Zkpc/Games/Calibration.lean
+@@ -33,8 +33,10 @@ witnessing that the game catches the named leak:
+ * `multTag` + `multTagDistinguisher` — a variant leaking a persistent
+   per-secret tag **only on the second-and-later spend within an epoch
+   session**; a `q = 2` session winner reads the challenge batch's second
+-  ticket's tag. This is the K4 construction that motivated the session form:
+-  a `q = 1` challenge never sees the second ticket, so it would miss the tag.
++  ticket's tag. This is the K4 construction that motivated the session form.
++  The intended claim that a `q = 1` challenge would miss the tag fails for
++  this interface: genesis counters are adversary-chosen, so one ticket can
++  already be a "second" spend (see the caveat at `multTag`, audit SM07).
+ 
+ ## GATE-NOTE register (encoding deltas, all deliberate)
+ 
+@@ -59,9 +61,10 @@ witnessing that the game catches the named leak:
+   persistent leak is known to it, and any count asymmetry is set at open;
+   each winner still exercises the *challenge* surface (the leak surfaces in
+   the challenge batch) and proves advantage exactly `1/2`. The `q = 1`-safety
+-  direction of `multTag` (that only the session form catches it) is argued in
+-  prose, not formalized; only the `q = 2` winner is a constructive term, as
+-  the battery requires.
++  direction of `multTag` (that only the session form catches it) is not
++  formalized, and is false as `multTag` is defined, because the adversary
++  chooses the genesis spend counters (audit SM07); only the `q = 2` winner is
++  a constructive term.
+ * **GATE-NOTE (identity-derived leaks).** `nfeReuse` and `multTag` model the
+   leaked component as the payer's opening handle (a stand-in for the persistent
+   secret-derived value `H_e(k)` / `H_tag(k)`), epoch-independent. Modeling it
+@@ -381,9 +384,22 @@ theorem unlinkAdvantage_nfeReuse [DecidableEq H] (budget : ℕ) (hb : 1 ≤ budg
+ 
+ `multTag` leaks a persistent per-secret tag (the identity handle) **only on
+ the second-and-later spend within an epoch session**: the first spend of an
+-epoch carries `none`, the second carries `some val`. A `q = 1` challenge sees
+-only the first ticket (tag `none`) and cannot distinguish; a `q = 2` session
++epoch carries `none`, the second carries `some val`, *when the counters start
++from honest values*. The intended reading is that a `q = 1` challenge sees
++only a first ticket (tag `none`) and cannot distinguish; a `q = 2` session
+ challenge surfaces the tag in the second ticket, and the winner matches it.
++
++Caveat (audit SM07): the one-ticket-safety half is prose only and is false
++for this interface. `GenesisInput := MultPSt H`, and `openCh` returns the
++adversary-chosen genesis state unchanged, counters included. Opening a
++candidate with `lastEpoch = some 0`, `epochCnt = 1` (and distinct known
++tags) passes game freshness at epoch 0 (`GSt.init` sets `lastSig := none`
++independently), and a single challenge spend computes count `2` and reveals
++`some val`, so a `q = 1` challenge already distinguishes perfectly. The
++proved `q = 2` winner below is still valid; no one-ticket security
++statement is proved. Making the separation real needs the honest counters
++initialised internally by `openCh` (or a restricted-genesis one-ticket
++theorem).
+ This is the K4 construction that motivated the session form (Spec.md §7 T4,
+ rev-9): the `q = 2` winner below is the constructive witness that the session
+ challenge closes Concern 1. -/
+diff --git a/Zkpc/Games/FlatInstance.lean b/Zkpc/Games/FlatInstance.lean
+index 8b7993f..3998ec4 100644
+--- a/Zkpc/Games/FlatInstance.lean
++++ b/Zkpc/Games/FlatInstance.lean
+@@ -29,15 +29,23 @@ assumption 3) each of `nf_e`, `y`, `nf` is a fresh-uniform random-oracle
+ output keyed on `(k, index)` / `(k, epoch)`. Because the honest emission
+ consumes a *fresh* index at every spend (the index counter strictly
+ increases; `MC2` retries replay the stored ticket via `lastTicket` rather
+-than re-querying), each key is queried at most once on the honest path, so
+-the lazy-random-oracle value is distributionally a fresh independent uniform
+-draw. We therefore sample `nf_e`, `y`, `nf` fresh per emission directly (the
+-`randomOracle` idiom collapsed to its honest-path marginal). `y` is the
++than re-querying), each *index* key `(k, i)` is queried at most once on the
++honest path, so `y` and `nf` are distributionally fresh independent uniform
++draws. This argument does **not** cover the *epoch* key `(k, e)`: two spends
++in the same epoch query the same `H_e(k, e)` and so receive the *same*
++`nf_e` (audit SM04). The instance nevertheless samples all three of
++`nf_e`, `y`, `nf` fresh per emission (and `spend` ignores its epoch
++argument), so its `nf_e` marginal differs from the real one; see the
++epoch-pseudonym GATE-NOTE below. `y` is the
+ ideal form of `singleSignalHiding`: with a fresh-uniform slope `a` and a
+ digest `x ≠ 0`, `y = k + a·x` is uniform and independent of `k`, so the
+ ideal observable is a fresh uniform value (`Zkpc.Games.rln_single_point_hiding`
+-is the algebraic core; the `x = 0` degenerate point is excluded by the
+-`H_x`-domain-separation the RLN file prescribes). `x = H_x(m)` is modelled as
++is the algebraic core). The `x = 0` degenerate point is **not** excluded in
++this instance: with `M := F` and `x := m`, nothing stops an adversary from
++choosing message `0`, and at `x = 0` the real signal is `y = k`
++(`rln_x_zero_degenerate`, `Games/RLN.lean`), while `flatSpend` still
++returns a uniform secret-independent `y`. The domain separation the RLN file
++prescribes for `H_x` is not encoded here (audit SM04). `x = H_x(m)` is modelled as
+ the identity digest (`M := F`, `x := m`): `H_x` is a public deterministic map
+ carrying only the adversary-chosen message, identical for both candidates,
+ and UNLINK gives the adversary no `H_x` oracle to distinguish it from a
+@@ -53,10 +61,18 @@ over all states with no reachability invariant, so no state-carried epoch
+ pseudonym could be relied upon to be fresh). Within-session linkage via a
+ shared `nf_{e^*}` is "by design" (MC6) and is exactly the property the
+ adversary already knows about the challenge batch (it *is* one session), so
+-independent per-emission pseudonyms only *increase* hiding; the real
+-scheme's `nf_e = H_e(k,e)` is bridged to this ideal via `prfRomIdealization`
+-plus the challenge epoch's freshness (its pseudonym slot is unqueried
+-pre-challenge).
++independent per-emission pseudonyms change the joint view rather than merely
++adding hiding. In the real scheme two tickets of one payer in one epoch carry
++*equal* `nf_e = H_e(k,e)` with probability `1`; here they are equal with
++probability `1/|F|`. Challenge-epoch freshness makes the *first* access to
++that slot fresh, but does not make repeated accesses to it independent, and
++a PRF/ROM hybrid must preserve repeated-key equality. So this ideal is **not**
++a checked ROM marginal of the stated RLN ticket distribution, and no
++concrete-to-ideal reduction is proved: `T4_flat_unlinkability` is a theorem
++about this ideal instance only. Closing the gap (audit SM04) needs one cached
++pseudonym per payer and epoch, the challenge coupling re-proved under a
++reachable-state freshness invariant, nonzero digests encoded (or their
++bad-event cost charged), and the concrete-to-ideal joint-view reduction.
+ 
+ GATE-NOTE (deposit fold): instantiation A has no receipt-grown refund
+ (`serve` is a no-op), so the deposit bound `(j+q)·C ≤ D` of Spec.md T4 is a
+diff --git a/Zkpc/Games/T4.lean b/Zkpc/Games/T4.lean
+index aee908a..2bf2a26 100644
+--- a/Zkpc/Games/T4.lean
++++ b/Zkpc/Games/T4.lean
+@@ -7,6 +7,14 @@ The headline theorem of the development: against the flat-ticket ideal
+ instantiation A (`Zkpc.Games.FlatInstance.flatInstance`), **every** UNLINK
+ adversary has advantage exactly `0`.
+ 
++**Scope (audits SM04, SM06).** This is a theorem about the proof-free,
++independently sampled ideal `flatInstance` only. No Lean file constructs a
++full wire-ticket `UnlinkScheme` (with `π`, `root`, `e` and a cached epoch
++pseudonym) or proves `zkBridgeObligation` for one, and `flatInstance` is not
++a checked ROM marginal of the real ticket distribution (it resamples `nf_e`
++per emission and does not exclude digest `0`; see `FlatInstance.lean`). So
++the theorem does not establish unlinkability of the real scheme.
++
+ ## F1 — the theorem
+ 
+ `T4_flat_unlinkability : unlinkAdvantage (flatInstance budget) A = 0` for
+@@ -39,25 +47,32 @@ already reduced to the one challenge obligation.
+ 
+ `#print axioms T4_flat_unlinkability` lists only Lean's own
+ `propext`/`Classical.choice`/`Quot.sound` — no proof escape hatches and no
+-declared assumptions (K2 audit clean). Which named entries of
+-`Zkpc.Assumptions.Named` this ideal model discharges, and how:
++declared assumptions (K2 audit clean). Below, "discharged" means *the ideal
++model is built so the assumption is not needed for this ideal theorem*; it
++does not mean the assumption has been proved for, or reduced to, a real
++construction. Which named entries of `Zkpc.Assumptions.Named` this ideal
++model idealizes away, and how:
+ 
+ * **`nizkZeroKnowledge`** — the ticket `View` carries no proof object `π`
+-  (nor `root`, `e`); removing `π` from the view *is* the simulation
+-  (`Assumptions` table row 2). The residual full-ticket obligation is the
++  (nor `root`, `e`). Dropping `π` from a datatype is not a proof that the
++  real scheme's `π` is zero-knowledge; it only moves that question into the
+   M1 `zkBridgeObligation` between a `π`-carrying `Sfull` and this proof-free
+-  instance, whose disposition (π simulatable; `root`/`e`
+-  adversary-computable and candidate-common) is recorded on `flatInstance`
+-  and in `Zkpc.Games.zkBridgeObligation`.
++  instance. That obligation is a *definition* in
++  `Zkpc.Games.zkBridgeObligation`; it is not proved for any full scheme in
++  this development (audit SM06).
+ * **`prfRomIdealization`** — every random ticket component (`nf_e`, `y`,
+-  `nf`) is a fresh-uniform random-oracle output, sampled directly because
+-  each honest `(k, index)`/`(k, epoch)` key is queried at most once (the
+-  index counter strictly increases; MC2 retries replay `lastTicket`).
++  `nf`) is sampled fresh-uniform per emission. For `y`, `nf` this matches
++  the ROM because each honest `(k, index)` key is queried at most once (the
++  index counter strictly increases; MC2 retries replay `lastTicket`). For
++  `nf_e` it does **not**: the epoch key `(k, epoch)` repeats within an epoch,
++  so the real scheme repeats `nf_e` where this instance resamples it (audit
++  SM04). No concrete-to-ideal reduction is proved.
+ * **`singleSignalHiding`** — `y = k + a·x` with a fresh-uniform slope and a
+   nonzero digest is uniform and independent of `k`; the ideal observable is
+   a fresh uniform value (`Zkpc.Games.rln_single_point_hiding` is the
+-  algebraic core; the `x = 0` degenerate point is excluded by the
+-  `H_x`-domain-separation `Zkpc.Games.RLN` prescribes).
++  algebraic core). The `x = 0` degenerate point, where the real `y = k`,
++  is not excluded by the instance (`x := m` and message `0` is allowed);
++  the domain separation `Zkpc.Games.RLN` prescribes is not encoded (SM04).
+ 
+ Per-instance obligations discharged for the flat instance:
+ `Zkpc.Games.flat_spendBatch_none_zero` (O2 — batch totality on solvent
+@@ -67,9 +82,9 @@ never fails).
+ 
+ ## F3 — the gate record
+ 
+-For the gate/paper: the flat-ticket instantiation A achieves
+-information-theoretically perfect spend unlinkability in the ideal ROM
+-model, for adversaries with the full pre-challenge abort/evict power of the
++For the gate/paper: the ideal flat instance `flatInstance` (not a checked
++ROM marginal of instantiation A's tickets; see the scope note above) has
++information-theoretically perfect spend unlinkability, for adversaries with the full pre-challenge abort/evict power of the
+ BOLT §1.4 oracle (native to the UNLINK oracle surface) and adversary-chosen
+ session length `q ≥ 1` (rev-9 session form). The two honest limits Spec.md
+ T4 states are *not* over-claimed: within-session linkage via `nf_{e^*}` is
+@@ -85,9 +100,10 @@ namespace Zkpc.Games
+ 
+ variable {F : Type} [SampleableType F]
+ 
+-/-- **T4-A, the headline (Spec.md §7 T4, instantiation A).** For every
+-deposit budget and every UNLINK adversary, the flat-ticket ideal instance
+-has spend-unlinkability advantage `|Pr[b' = b] − 1/2|` equal to exactly `0`:
++/-- **T4-A, the headline (Spec.md §7 T4, ideal instantiation A).** For every
++deposit budget and every UNLINK adversary, the proof-free ideal instance
++`flatInstance` (not the real wire ticket; audits SM04, SM06) has
++spend-unlinkability advantage `|Pr[b' = b] − 1/2|` equal to exactly `0`:
+ perfect indistinguishability. Discharged by the challenge-response coupling
+ `challengeResp_flat_bitfree` (both candidates emit the state-independent
+ ideal batch `flatFreshBatch`) fed to the must-pass closer
+diff --git a/Zkpc/Games/T7.lean b/Zkpc/Games/T7.lean
+index 70da82e..0b74706 100644
+--- a/Zkpc/Games/T7.lean
++++ b/Zkpc/Games/T7.lean
+@@ -22,26 +22,40 @@ random-oracle query lands on the first component `k` (a `roA(k,·)`,
+ 
+ `T7_frame_bound` proves the **blind-guess bound** `frameWinProb ≤ 1/|F|` for
+ any adversary whose evidence distribution is independent of `k`
+-(hypothesis `hobliv`): with no RO query hitting `k`, the evidence is
+-uncorrelated with `k`, so the guess `recoverSecret ev*` matches the uniform
++(hypothesis `hobliv : ∀ k, 𝒟[frameEvidence mclose A k] = 𝒟[gen]`). This is
++a *global distributional-independence assumption* on the adversary's
++evidence; it is not a conditioning on a good event, a PPT restriction, or a
++query-count bound, and it is not implied by "no RO query hit `k`" (absence
++of a guessed-secret hit does not by itself make the evidence distribution
++the same for every `k`). Under it the evidence is uncorrelated with `k`, so
++the guess `recoverSecret ev*` matches the uniform
+ `k` with probability exactly `1/|F|` (`frame_blind_bound`). The proof commutes
+ the independent `k`-draw past the evidence generation (`evalDist_bind_comm`)
+ and bounds the resulting `k`-sum by the single-point mass `1/|F|`
+ (`frame_inner_bound`).
+ 
+ GATE-NOTE (PPT scoping of Spec T7, the deferred hard half). Spec T7 states
+-`Pr[slash] ≤ negl(λ)` for every **PPT** adversary; the full explicit bound is
+-`(q_A + q_Id + q_E + 1)/|F_p|` — the `+1` is the blind guess proved here, and
+-each `q_·/|F_p|` is the union-bound mass of the corresponding RO channel's
+-queries landing on the hidden `k`. Formalising those query terms is the lazy
++`Pr[slash] ≤ negl(λ)` for every **PPT** adversary. The proposed explicit
++bound `(q_A + q_Id + q_E + 1)/|F_p|` (the `+1` is the blind guess proved
++here, each `q_·/|F_p|` the union-bound mass of an RO channel's queries
++landing on `k`) is **not correct for this game as stated**: it omits the
++zero-digest bad event that `Frame.lean` warns about. Attack (audit SM05):
++query `roX` on two distinct messages; if either digest is `0`, spend on that
++message, so the honest signal has `y = k`, and output
++`(nf=0, x=1, y=k, x'=0, y'=k)`, which satisfies `Slashes`. No `roA`, `roId`
++or `roE` query is used, yet for a uniform field of size `p ≥ 2` this wins
++with probability `1 - (1 - 1/p)^2 > 1/p`. Any full bound must therefore
++include the zero-digest channel (and any other collision or query channel)
++in its bad-event ledger. Formalising those query terms is the lazy
+ random-oracle *identical-until-bad* accounting over an unbounded interactive
+ adversary — the estimated-hard 20% flagged in the E1 survey
+ (`research_knowledge/vcvio-gap.md §3`). We ship the blind-guess term rigorously
+-and scope the query terms behind the `hobliv` hypothesis (the "no query hit
+-`k`" good event), which IS the PPT scoping the deliverable permits: a
+-query-bounded adversary that does not correlate its evidence with `k`.
+-Discharging `hobliv` unconditionally for a `q`-query-bounded adversary, with
+-the residual `(q_A+q_Id+q_E)/|F|` bad-event mass, is the follow-up.
++and state the rest as the conditional hypothesis `hobliv`. That is a
++conditional theorem, not the PPT bound: `hobliv` is an assumption the
++theorem does not discharge for any query-bounded adversary. The follow-up is
++a theorem for every `q`-query-bounded adversary against the shared-cache
++game, with an explicit bad-event mass covering the RO query channels *and*
++the zero-digest event; no such bound is proved or claimed here.
+ 
+ ## The rev-11 must-win calibration battery (anti-vacuity)
+ 
+@@ -56,10 +70,17 @@ signal schemes — the breaks the theorem must be able to detect:
+   distinct digests share one line, so their two points recover `k`
+   (`Zkpc.Games.recoverSecret_line`) and slash with probability `1`.
+ 
+-Both are constructive terms (not unproven gaps), witnessing that the FRAME win
+-predicate `Slashes` is satisfiable exactly when the signal degenerates — the
+-calibration content that the sound RLN (fresh `a` per index, `y = k + a·x`)
+-avoids.
++Both are constructive terms (not unproven gaps) showing that `Slashes` is
++satisfiable by evidence built from degenerate signals. They are weaker than
++protocol calibrations (audit SM07): (1) `frameGameAReuse` places its second
++signal at digest `0`, where `y = k` whatever the slope, so replacing the
++second `a` by an independent fresh `a'` still recovers exactly `k`; the
++witness therefore does not isolate the defect of *reusing* a slope. Isolating
++it needs two distinct **nonzero** digests and a comparison with fresh slopes.
++(2) Both games build the evidence directly inside a game that holds `k`;
++neither constructs an adversary against an altered `frameImpl` and checks
++what it learns through that interface. Neither is a statement that the
++sound RLN avoids these breaks.
+ -/
+ 
+ open OracleSpec OracleComp
+@@ -82,7 +103,10 @@ def frameGameYK : ProbComp Bool := do
+ 
+ /-- Degenerate-RLN FRAME game with `a` reused across indices: both honest
+ signals lie on the *same* line `Y = k + a·X`, so their two points at digests
+-`1` and `0` recover `k`. A calibration game (Spec.md T7 anti-vacuity). -/
++`1` and `0` recover `k`. A calibration game (Spec.md T7 anti-vacuity).
++Caveat (audit SM07): the digest-`0` point alone equals `k`, so this game is
++won with probability `1` even with independent slopes; it does not isolate
++slope reuse. -/
+ def frameGameAReuse : ProbComp Bool := do
+   let k ← ($ᵗ F)
+   let a ← ($ᵗ F)
+@@ -198,12 +222,14 @@ lemma frame_blind_bound (gen : ProbComp (Evidence F)) :
+         mul_le_mul_right' tsum_probOutput_le_one _
+     _ = (Fintype.card F : ENNReal)⁻¹ := one_mul _
+ 
+-/-- **T7 FRAME bound (Spec.md §7 T7, instantiation A).** For every honest
+-member and every adversary whose evidence is independent of the secret `k`
+-(the RO-oblivious / query-scoped good event, `hobliv`), the probability that
+-`Dispute` slashes the honest member is at most `1/|F|` — the blind guess. See
+-the module GATE-NOTE for the full PPT bound `(q_A+q_Id+q_E+1)/|F_p|` and the
+-deferred identical-until-bad query accounting for the `q_·/|F|` terms. -/
++/-- **T7 FRAME bound, conditional blind-guess form (Spec.md §7 T7,
++instantiation A).** For every honest member and every adversary whose
++evidence distribution is the same for every secret `k` (the global
++independence hypothesis `hobliv`), the probability that `Dispute` slashes the
++honest member is at most `1/|F|`, the blind guess. This is not Spec T7's PPT
++bound: `hobliv` is assumed, not derived from a query bound. See the module
++GATE-NOTE for why the proposed `(q_A+q_Id+q_E+1)/|F_p|` form also omits the
++zero-digest event (audit SM05). -/
+ theorem T7_frame_bound (mclose : M)
+     (A : F → OracleComp (frameSpec F M) (Evidence F))
+     (gen : ProbComp (Evidence F))
+diff --git a/Zkpc/Games/Unlink.lean b/Zkpc/Games/Unlink.lean
+index f60cde4..60fbe23 100644
+--- a/Zkpc/Games/Unlink.lean
++++ b/Zkpc/Games/Unlink.lean
+@@ -444,7 +444,12 @@ same membership root, and the epoch is the `tick` count the adversary
+ itself controls), so a reduction can reinsert them into any proof-free
+ view without knowing `b` — dropping them loses nothing. `nf_e` is NOT
+ droppable (it is the epoch-linkability surface the freshness predicate
+-exists for) and must remain in `Sfree.View`. -/
++exists for) and must remain in `Sfree.View`.
++
++**Status (audit SM06): open.** This is only the statement of the
++obligation. No file in this development constructs a full wire-ticket
++`UnlinkScheme` `Sfull` or proves `zkBridgeObligation Sfull Sfree εZK` for any
++instance, so no T4 result here applies to the real ticket. -/
+ def zkBridgeObligation (Sfull Sfree : UnlinkScheme) (εZK : ℝ) : Prop :=
+   ∀ A : UnlinkAdversary Sfull, ∃ A' : UnlinkAdversary Sfree,
+     unlinkAdvantage Sfull A ≤ unlinkAdvantage Sfree A' + εZK
+diff --git a/Zkpc/Refund/Safety.lean b/Zkpc/Refund/Safety.lean
+index b410b47..9224edd 100644
+--- a/Zkpc/Refund/Safety.lean
++++ b/Zkpc/Refund/Safety.lean
+@@ -21,9 +21,11 @@ From these:
+   is no cross-channel receipt in the model, so `R` sums only this channel's
+   refunds, exactly what the `H_tag(k)` binding guarantees.
+ * **T3-B — payer floor** (`T3_B_floor`, Spec.md §7 T3 refund variant): a
+-  cooperatively closed (honest, unslashed) channel recovers exactly
+-  `payerPay = D − Σc = (D + R) − j·C_max` and is never slashed. The floor
+-  `(D + R_held) − j·C_max` is recovered on the nose and is never forfeited.
++  channel that is settled and *assumed* not slashed recovers exactly
++  `payerPay = D − Σc = (D + R) − j·C_max`. The `slashed = false` premise is a
++  hypothesis, not a conclusion: nothing here proves that an honest payer
++  avoids forfeit, because `Step.forceClose` is enabled from every open state
++  (State.lean GATE-NOTE on forfeit, audit SM03).
+ * **conservation** (`conservation`, Spec.md MC18): payer + payee payout `= D`
+   per settled channel, in every settlement path (cooperative or forfeit) —
+   the exact-`D` netting MC18 asserts.
+@@ -101,10 +103,13 @@ theorem conservation {s : St Rep} (h : Reach Rep Cmax D r0 s)
+ /-- **T3-B — Payer balance floor (Spec.md §7 T3, refund variant).** A channel
+ that closed cooperatively (settled, not slashed — the honest closer's path,
+ which chooses `close`, never `forceClose`) recovers exactly the floor
+-`payerPay = D − Σc`, equivalently `(D + R_held) − j·C_max`, and is provably
+-**not slashed**. The floor is recovered on the nose and never forfeited:
+-`payerPay + Σc = D`. (An honest payer never takes the `forceClose` forfeit
+-path, so `slashed = false` for it — see `honest_close_not_slashed`.) -/
++`payerPay = D − Σc`, equivalently `(D + R_held) − j·C_max`, on the nose: `payerPay + Σc = D`.
++`slashed = false` is a *premise*. It is not derived for honest payers: the
++machine's `forceClose` is enabled from every open state (no response window,
++no cheater proof, audit SM03), so any channel, honest or not, can reach a
++forfeit settlement in one step. There is no `honest_close_not_slashed`
++theorem; `close_not_slashed` below only shows that a cooperative close
++preserves an existing `slashed = false`. -/
+ theorem T3_B_floor {s : St Rep} (h : Reach Rep Cmax D r0 s)
+     (hset : s.settled = true) (hns : s.slashed = false) :
+     s.payerPay + s.sumc = D :=
+@@ -118,10 +123,11 @@ theorem T3_B_floor_eq {s : St Rep} (h : Reach Rep Cmax D r0 s)
+   have := T3_B_floor h hset hns
+   omega
+ 
+-/-- **Cooperative close is never a slash (Spec.md §7 T3 "no close-dispute
+-path slashes an honest closer").** The `close` action leaves `slashed =
+-false`; only `forceClose` sets it. So an honest payer that closes at its true
+-count is never slashed — the exculpability facet of T3-B in this machine. -/
++/-- **Cooperative close preserves `slashed = false`.** If the channel is not
++slashed before a `close` step, it is not slashed after it; only `forceClose`
++sets `slashed`. This is a one-step preservation fact, not honest-payer
++exculpability: it does not show an honest payer reaches `close` before an
++(unguarded) `forceClose` fires (audit SM03). -/
+ theorem close_not_slashed (s : St Rep) (hs : s.slashed = false)
+     {s' : St Rep} (hstep : Step Cmax D s .close s') :
+     s'.slashed = false := by
+@@ -148,25 +154,23 @@ hidden, and close-time netting cannot reach a frozen channel), and under the
+ MC4-scoped gateway-priority windows the race has no unclaimed remainder to
+ capture.
+ 
+-In this machine the race is closed **structurally**: `settle` happens exactly
+-once per channel (the `closed`/`settled` flags, enforced by every action's
+-`closed = false` guard — see `Inv`'s `settled → closed` clause), and *every*
+-settlement path — cooperative `close` and forfeiting `forceClose` alike —
+-conserves exactly `D` (`conservation`). There is no execution in which a
+-self-slash both consumes service and strands funds: the fund-slash path
+-(`forceClose_forfeit`) routes the whole deposit to the payee, and a
+-cooperatively-closed honest payer is protected by the T3-B floor
+-(`T3_B_floor`) and is never slashed (`close_not_slashed`). -/
+-
+-/-- **H5 — self-slash race closure (Spec.md MC18/MC4; gates.md R3-2).** Every
+-settled B channel — whether it settled cooperatively or through the
+-fund-slash forfeit path — conserves exactly the deposit `D` between the two
+-parties, and settlement happens at most once. No settlement path strands
+-funds, so the self-slash race (consume service, then slash to escape payment)
+-cannot leave the payee short: the fund-slash path (`forceClose_forfeit`)
+-routes the whole deposit to the payee. This packages `conservation` as the H5
+-no-stranding statement; `forceClose_forfeit` supplies the slashed-path payee
+-recovery. -/
++What this machine proves is narrower than "the race is closed". Every
++action is guarded by `closed = false`, so at most one settlement step occurs
++per channel (by inspection of `Step`; no at-most-once theorem is stated), and
++*every* settlement path — cooperative `close` and forfeiting `forceClose`
++alike — conserves exactly `D` (`conservation`). The fund-slash path
++(`forceClose_forfeit`) routes the whole deposit to the payee. Nothing here
++models time, so no temporal no-stranding statement is proved, and honest
++payers are not shown to avoid forfeit (`T3_B_floor` assumes `slashed = false`;
++audit SM03, SM08). -/
++
++/-- **H5 alias of `conservation` (Spec.md MC18/MC4; gates.md R3-2).** Its
++type is exactly `conservation`'s: every settled B channel, whether it settled
++cooperatively or by forfeit, splits exactly `D` between the two parties. It
++is kept under this name for callers. Despite the name, it does **not** state
++at-most-once settlement, any temporal no-stranding property, or a race
++argument; those are not proved here (audit SM08). `forceClose_forfeit`
++separately gives the slashed-path payee payout. -/
+ theorem self_slash_race_closed {s : St Rep} (h : Reach Rep Cmax D r0 s)
+     (hset : s.settled = true) :
+     s.payerPay + s.payeePay = D :=
+diff --git a/Zkpc/Refund/State.lean b/Zkpc/Refund/State.lean
+index 39905a0..ff8005d 100644
+--- a/Zkpc/Refund/State.lean
++++ b/Zkpc/Refund/State.lean
+@@ -59,6 +59,18 @@ representation types alike.
+   whose `k`-gated per-nullifier claims cannot run): the payee takes the whole
+   deposit `D`, the payer nothing. It settles the channel (conserving `D`) and
+   marks it slashed, which is exactly the path task H5 cites.
++* **GATE-NOTE (forfeit is unguarded — audit SM03).** `forceClose` is enabled
++  from *every* state with `closed = false`, including `St.init r0`: it has no
++  clock, pending request, response window `τ`, honest-response opportunity,
++  or proof of a failed upgrade. One step from genesis therefore forfeits any
++  positive deposit to the payee before any service or misbehavior. Spec.md's
++  ForceClose instead opens a `τ` response window in which a timely payer
++  close protects an honest payer, and fund-slash requires a failed upgrade;
++  this machine merges both outcomes into one unconditionally enabled action
++  and models neither authorization condition. Consequently this layer is
++  **settlement-outcome arithmetic** (conservation, the cooperative floor,
++  T1-B): it does not prove that an honest payer avoids forfeit, nor anything
++  about the force-close scheduling race.
+ -/
+ 
+ namespace Zkpc.Refund
+@@ -134,7 +146,8 @@ inductive Step (Cmax D : ℕ) : St Rep → Act Rep → St Rep → Prop
+                  payeePay := s.idx * Cmax - s.R }
+   /-- Force-close with forfeit (Spec.md MC18; the fund-slash path): the payee
+   takes the whole deposit `D`, the payer nothing; the channel is marked
+-  slashed and settled. -/
++  slashed and settled. Unguarded: enabled from every open state, with no
++  response window or cheater proof (see the GATE-NOTE on forfeit, SM03). -/
+   | forceClose (s : St Rep)
+       (hlive : s.closed = false) :
+       Step Cmax D s .forceClose
+diff --git a/Spec.md b/Spec.md
+index 8279bbe..a737793 100644
+--- a/Spec.md
++++ b/Spec.md
+@@ -398,6 +398,9 @@
+   responds in time — it monitors the ledger for its $cm$ (§1) and
+   $\tau > \Delta$ guarantees its response lands — so forfeit only
+   transfers value from payers that abandoned the protocol.
++  The Lean refund machine (`Zkpc/Refund/State.lean`) does not model this
++  window: its `forceClose` is enabled from every open state, so it proves
++  settlement arithmetic only, not honest-payer protection (audit SM03).
+   **B slash path (rev-3 R3-2; scoped to identity-slashes in rev-10,
+   F9-1b):** a *slashed* B channel is frozen and never closes, so
+   close-time netting cannot settle it. For an **identity-slash**
+@@ -988,7 +991,12 @@
+   its T3-floor amount by $t + \Delta + \tau$ exactly (inclusion by
+   $t+\Delta$, window $\tau$, settlement automatic at expiry — §2 pins the
+   automatic execution, so there is no second transaction and no $O(\cdot)$
+-  slack; rev-1 finding: "$O(\Delta)$" is not a formal statement). An
++  slack; rev-1 finding: "$O(\Delta)$" is not a formal statement).
++  The Lean theorem `Core.T5_payer_close_liveness` proves only that such a
++  settled state is reachable; weak fairness gives eventual settlement, not
++  this exact clock, so the exact deadline additionally needs a scheduling
++  rule that processes due automatic settlements before time advances (not
++  modelled; audit SM02). An
+   honest closer's window admits no valid dispute in A (MC20: its
+   claimed-unused nullifiers are PRF-hidden pre-close, so no pre-close
+   checkpoint contains them; its double-sign evidence cannot exist per
+@@ -1052,7 +1060,9 @@
+ signals (same $nf$, different $x$) are both accepted by honest gateways,
+ the member is slashed — evicted fleet-wide — within $L$ of the second
+ acceptance. The fleet's uncompensated exposure is bounded by $f(L)$
+-unconditionally, and is recoverable through the `Dispute` window's
++on the event that no two relevant gateway-bound messages collide under
++$H_x$ (collision resistance, assumption 3; a ROM bridge must charge that
++probability), and is recoverable through the `Dispute` window's
+ documented-conflict claims (MC16/MC19) **up to the member's remaining
+ deposit at slash time, for acceptances checkpointed pre-slash** (rev-2
+ NEW-3, rev-3 R3-3: recovery is remainder-capped and checkpoint-gated — an
+@@ -1072,7 +1082,9 @@
+ 
+ **Why the bound has this shape.** Gateway-bound messages make every
+ cross-gateway reuse of an index a *conflicting* pair (different gateway ⇒
+-different $m$ ⇒ different $x$), and within one gateway a reused index is
++different $m$ ⇒ different $x$ except on an $H_x$ collision, which the
++symbolic Lean `Fleet.Conflict` does not track; see audit SM09), and
++within one gateway a reused index is
+ either bit-identical (reject-duplicate, no value) or conflicting. So all
+ value beyond the solvency entitlement $\lfloor D/C \rfloor \cdot C$ comes
+ from conflicting acceptances. From the first conflicting acceptance, the

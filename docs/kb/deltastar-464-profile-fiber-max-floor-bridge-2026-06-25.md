@@ -89,10 +89,6 @@ deltaStar_pin_of_linnik_candidateListExactSmallest_usedProfileFiberMaxContract
 deltaStar_pin_of_tz_candidateListExactSmallest_usedProfileFiberMaxContract
 deltaStar_pin_of_linnik_candidateListExactSmallest_usedProfileScannerContract
 deltaStar_pin_of_tz_candidateListExactSmallest_usedProfileScannerContract
-deltaStar_pin_of_linnik_candidateListExactSmallest_usedProfileBudgetScannerContract
-deltaStar_pin_of_profileBudgetScanner_of_linnikInputs
-deltaStar_pin_of_tz_candidateListExactSmallest_usedProfileBudgetScannerContract
-deltaStar_pin_of_profileBudgetScanner_of_tzInputs
 ```
 
 So a profile classification can now feed the Linnik/TZ floor contracts without restating a
@@ -114,9 +110,11 @@ The negative iff
 is the matching refutation socket: floor-goodness plus an above-budget used representative is
 exactly a failure of the proposed floor-good family-budget theorem.
 
-The two `*_of_linnikInputs` / `*_of_tzInputs` wrappers make that diagnostic explicit: once the
-profile scanner already proves max-containment and the used-profile budget, the same delta-star pin
-follows without using the least-prime or TZ supply hypotheses as counting input.
+Once the profile scanner already proves max-containment and the used-profile budget,
+`deltaStar_pin_of_profileScannerBudget` gives the delta-star pin without any least-prime or TZ
+supply hypothesis.  The former `*_usedProfileBudgetScannerContract` and `*_of_linnikInputs` /
+`*_of_tzInputs` wrappers, which took those number-theoretic inputs and ignored them, were removed
+(audit CW-B09-08).
 
 The substrate now exposes the same budget scanner directly, before passing through the floor
 contract:

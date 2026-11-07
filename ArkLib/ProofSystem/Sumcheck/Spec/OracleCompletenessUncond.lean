@@ -47,8 +47,9 @@ That fact is *orthogonal* to the seqCompose fusion — it is the per-round
 instantiation whose single-round lens discharges its `LiftContextCoherent` side condition (as the
 LogUp / Spartan lenses do).
 
-No `sorry`/`admit`; the one genuinely-deep residual that this file does **not** internally close is
-kept as the explicit named hypothesis `hPerRound`.
+Under the canonical ArkLib message-reading round verifiers `hPerRound` is itself proved
+(`SingleRound.oracleReduction_toReduction_eq_reduction`, `BridgeAndAppendResiduals.lean`), so the
+bridge holds unconditionally: `oracleReductionToReductionResidual_holds`. No `sorry`/`admit`.
 -/
 
 open ProtocolSpec OracleComp OracleSpec
@@ -83,19 +84,26 @@ set_option linter.unusedSectionVars false in
 (`binaryVerifierFusion_proof`), so the whole bridge follows from the single-round
 `liftContext`-commutation fact `hPerRound`.
 
-**LEGACY (audit 2026-06-10).** The target Prop `oracleReductionToReductionResidual` is
-superseded and suspected false as stated (its per-round input `hPerRound` is the documented
-suspected-false single-round `oracleReduction_eq_reduction`; see the note on the residual def
-in `OracleCompleteness.lean`).  The binary-fusion half proven here is genuine
-(`binaryVerifierFusion_proof` via `oracleVerifier_append_toVerifier`), but nothing on the live
-path consumes this implication — the bridge-free apex is
-`oracleReduction_perfectCompleteness_unconditional` (`OracleCompletenessUncondCorrect.lean`).
-Kept as a historical reduction record. -/
+**Status.** An earlier audit marked the target `oracleReductionToReductionResidual` as suspected
+false, because a former downstream oracle round verifier ignored the prover message. The canonical
+round verifiers both read the message, `hPerRound` is proved, and the bridge holds:
+`oracleReductionToReductionResidual_holds`. The bridge-free apex
+`oracleReduction_perfectCompleteness_unconditional` (`OracleCompletenessUncondCorrect.lean`) does
+not depend on this route. -/
 theorem oracleReductionToReduction_of_perRound
     (hPerRound : ∀ i, (SingleRound.oracleReduction R n deg D oSpec i).toReduction =
       SingleRound.reduction R n deg D oSpec i) :
     oracleReductionToReductionResidual R deg D n oSpec :=
   oracleReductionToReductionResidual_of_binary (binaryVerifierFusion_proof oSpec) hPerRound
+
+set_option linter.unusedSectionVars false in
+/-- **The multi-round sum-check oracle-to-plain bridge holds.** The binary fusion is
+`binaryVerifierFusion_proof` and the per-round bridge is
+`SingleRound.oracleReduction_toReduction_eq_reduction`. -/
+theorem oracleReductionToReductionResidual_holds :
+    oracleReductionToReductionResidual R deg D n oSpec :=
+  oracleReductionToReduction_of_perRound
+    (fun i => SingleRound.oracleReduction_toReduction_eq_reduction i)
 
 /-- **Full multi-round sum-check perfect completeness (oracle level) — no `hBridge`.**
 
@@ -127,4 +135,5 @@ end Sumcheck.Spec
 
 #print axioms Sumcheck.Spec.binaryVerifierFusion_proof
 #print axioms Sumcheck.Spec.oracleReductionToReduction_of_perRound
+#print axioms Sumcheck.Spec.oracleReductionToReductionResidual_holds
 #print axioms Sumcheck.Spec.oracleReduction_perfectCompleteness_uncond

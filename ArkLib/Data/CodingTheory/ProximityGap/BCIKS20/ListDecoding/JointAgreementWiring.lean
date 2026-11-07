@@ -47,7 +47,18 @@ per-`ModifiedGuruswami`-solution counting package `hcounting` provides a
 `Claim57ResidualsDescended` bundle (no `hfactor`) together with the explicit coincidence hypothesis
 `pg_RsetDescended = pg_Rset`; the legacy `Claim57Residuals` instance is rebuilt internally with
 `Claim57Residuals.ofDescended`.  This removes the legacy `hfactor` field from the §6 caller's
-obligation, leaving only the honest descended residuals plus the documented coincidence. -/
+obligation, leaving only the honest descended residuals plus the documented coincidence.
+
+**`hunique` remains an open hypothesis.** It asks that at every close parameter `z` *every*
+degree-`<(k+1)` interpolant `δ`-close to `u₀ + z • u₁` equals `PzFamily z`. In the strict-Johnson
+list regime `(1−ρ)/2 < δ < 1 − √ρ` this per-parameter uniqueness is false in general: e.g. with
+degree `< 2` on `10` points of `F₁₁` and received word five `0`s then five `1`s, the constants `0`
+and `1` are both at relative distance `1/2 < 1 − √(2/10)` and agree nowhere (audit 2026-10-28,
+PG-029; source-level, not a Lean theorem). The collapse lemma
+`RSDistinct.degreeLT_eq_of_match_common_on_domain` (`MatchingDomainUniqueness.lean`) only yields
+equality for interpolants that already match a *common* `g` on a *common* domain of size `≥ k+1`;
+no in-tree producer supplies such a domain for every close interpolant, so it does **not**
+discharge `hunique`. -/
 theorem RS_jointAgreement_finMapTwoWords_of_prob_gt_strict_johnson_and_exists_natCeil_counting_descended
     {m k : ℕ} (hk : 0 < k) {ωs : Fin n ↪ F}
     [DecidableEq (RatFunc F)]

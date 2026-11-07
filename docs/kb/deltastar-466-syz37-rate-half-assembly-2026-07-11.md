@@ -20,6 +20,19 @@ exactly 1/2** and finds:
   syzygy. The `μ_n` (roots-of-unity) domain does **not** unbalance the μ-basis — so there are no
   unbalanced instances to lift-test; none exist.
 
+> **Correction (2026-10-28 audit, finding L125).** The `unbalanced μ-basis = 0` count above was an
+> artifact: the original `min_syzygy_degree` counted the polynomial multiple `X·h` of the first
+> syzygy generator as a second generator, which forces `μ₂ ≤ μ₁ + 1`. The probe now reads module
+> generator degrees from second differences of the bounded syzygy dimensions, and the same sweep
+> reports **27** unbalanced instances (`μ₁ + 1 < μ₂`, e.g. `(μ₁, μ₂) = (1, 3)`), all with
+> generation deficiency 0 in the sampled fields. The "for all" and "domain-independent" statements
+> above are also only sampled: over `F₁₇` with `μ₁₆ = ⟨3⟩`, `k = 8`, `T = {4,6,11,12}`,
+> `A = {0,1,8}`, `B = {2,9,10}`, `C = {3,5,7}`, the interior-band cores `T∪A∪C∪{13}`,
+> `T∪A∪B∪{14}`, `T∪B∪C∪{15}` (size 11, pair overlaps `7 < k`, union 16) have μ-basis degrees
+> `(0, 3)`, in-budget syzygy dimension 1 and union-generation deficiency 1 (regression:
+> `scripts/tests/test_syz_mu_basis_probes.py`). This is an exact geometric deficiency only; no
+> bad-scalar or prize refutation follows from it alone (cf. audit T62).
+
 ## The probe (`scripts/probes/probe_syz37_rate_half_assembly.py`)
 
 Rate-1/2 configs `k = n//2`, `n ∈ {10,…,20}`, `p ∈ {31,101,65537}`, generic + roots-of-unity

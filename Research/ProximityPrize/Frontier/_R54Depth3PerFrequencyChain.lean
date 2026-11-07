@@ -31,7 +31,9 @@ prize, unlike the raw route).
 
 **Honest scope note.**  The DC term `|G|^{2r}/q` overtakes the Wick term `(2r−1)‼·|G|^r` when
 `n^{2r}/q ≳ n^r`, i.e. `r ≳ log_n q = β`.  So the DC crossover that makes RAW
-`GaussianEnergyBound` fail is a DEEP-`r` phenomenon (`r ≈ β ≈ 129` at prize), NOT `r = 3`:
+`GaussianEnergyBound` fail sets in at `r = 6` at prize scale (`n = 2^30`, `q = n·2^128`,
+`β = 158/30 ≈ 5.27`: `log₂(n⁵/(q·9‼)) ≈ −17.9`, `log₂(n⁶/(q·11‼)) ≈ +8.7`; an earlier `r ≈ β ≈ 129`
+was wrong, audit CW-DL04b-04), NOT `r = 3`:
 at `r = 3`, prize scale, the DC term `|G|⁶/q = n⁵/2¹²⁸` is negligible against `45n²`, so the
 round-53 raw headroom reduction is correctly shaped and its open target (`excess ≤ 45n²`) is
 the genuine remaining content at `r = 3`.  The small-`β` "violations" are DC artifacts of

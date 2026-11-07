@@ -23,22 +23,30 @@ surviving hypothesis after the H1/H2/H3 refutations is the staircase law
 
 where `Λ(n,k,e)` is the worst-case bad-scalar count at error level `e`.  For
 `q ∈ (2¹²⁸, 2¹²⁹)` the budget is `ε*·q ∈ (1, 2)`, so the law predicts `δ* = 1/n`
-exactly iff its two lowest rungs hold *at the literal budget*:
+exactly iff `Λ(0) ≤ 1 < 2 ≤ Λ(1)` *at the literal budget* — only the exact base rung
+and a LOWER bound on the first jump are needed:
 
 * `Λ(0) = 1` — below the granularity radius at most one scalar is bad (the
   forced-`univ` uniqueness collapse), so `ε_mca ≤ 1/q ≤ 2⁻¹²⁸`: every `δ < 1/n` is
   **good**;
-* `Λ(1) = 2` — at `δ = 1/n` a two-bad-scalar spike stack exists whenever the
+* `Λ(1) ≥ 2` — at `δ = 1/n` a two-bad-scalar spike stack exists whenever the
   punctured code still has positive distance (`k + 2 ≤ n`), so
   `ε_mca ≥ 2/q > 2⁻¹²⁸`: every `δ ≥ 1/n` is **bad**.
 
-Both rungs are delivered by the in-tree granularity ladder
+The first jump is NOT exactly `2` in general: e.g. `n = 4`, `k = 2` over `F₅` on its
+four nonzero elements, with `u₀ = X³`, `u₁ = X²` at `δ = 1/4`, has all four nonzero
+scalars bad (for `γ ≠ 0`, `X³ + γX²` agrees with the affine codeword `−γ²X − γ³` on
+the three domain points other than `γ`, while `X²` agrees with no affine polynomial on
+three points), so there `Λ(1) = 4`.  Only `Λ(1) ≥ 2` is used and proved here.
+
+Both facts are delivered by the in-tree granularity ladder
 (`mcaDeltaStar_rs_eq_granularity`, `GranularityLadderRS.lean`) on its `j = 1` band,
 whose window `ε* ∈ [1/q, 2/q)` contains `2⁻¹²⁸` exactly when `2¹²⁸ ≤ q < 2¹²⁹` —
 that is the entire content of the two field-size hypotheses below.  The brackets
 meet through the ledger engine (`le_mcaDeltaStar_of_good` / `mcaDeltaStar_le_of_bad`
-inside `mcaDeltaStar_eq_of_good_below_of_bad_above`), so the staircase law's rungs
-`Λ(0) = 1` and `Λ(1) = 2` are now machine-checked at the literal challenge error.
+inside `mcaDeltaStar_eq_of_good_below_of_bad_above`), so the base rung `Λ(0) = 1` and
+the lower jump `Λ(1) ≥ 2` — hence the exact pin `δ* = 1/n` — are machine-checked at
+the literal challenge error.
 
 Instantiations:
 
@@ -114,7 +122,8 @@ injective evaluation domain of size `n`, any dimension `k` with `k + 2 ≤ n`):
   `mcaDeltaStar (RS[F, dom, k]) 2⁻¹²⁸ = 1/n`.
 
 Good side (`Λ(0) = 1`): every `δ < 1/n` has `ε_mca ≤ 1/|F| ≤ 2⁻¹²⁸`.  Bad side
-(`Λ(1) = 2`): at `δ = 1/n` the two-bad-scalar spike forces `ε_mca ≥ 2/|F| > 2⁻¹²⁸`.
+(`Λ(1) ≥ 2`, a lower bound only — the first jump can exceed `2`): at `δ = 1/n` the
+two-bad-scalar spike forces `ε_mca ≥ 2/|F| > 2⁻¹²⁸`.
 This is the `j = 1` band of the granularity ladder, whose window `[1/|F|, 2/|F|)`
 contains `2⁻¹²⁸` exactly because `2¹²⁸ < |F| < 2¹²⁹`. -/
 theorem mcaDeltaStar_eq_inv_n (dom : Fin n ↪ F) {k : ℕ} (hkn : k + 2 ≤ n)

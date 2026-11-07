@@ -22,9 +22,12 @@ energy bound (`GVHBKEnergyReduction`, `E(G)³ ≤ 260·|G|⁸`):
   the Johnson-scale frequency count `N` satisfies `(N·q)³ ≤ 260·|G|⁸`, i.e.
   `N ≤ 260^{1/3}·|G|^{8/3}/q`.
 
-In production (`|G| = n`, `q = 2¹²⁸`): `N < 1` whenever `q > 260^{1/3}·n^{8/3}` — i.e. for all
-smooth domains up to `n ≈ 2⁴⁸`, **no Gauss-sum frequency reaches the Johnson scale at all**,
-conditional only on the one open subgroup sum-product input.  (Honest scope, unchanged from
+In production (`|G| = n`, `q = 2¹²⁸`): `N < 1` (so `N = 0`) whenever `q³ > 260·n⁸`, i.e.
+`q > 260^{1/3}·n^{8/3}`.  At `q = 2¹²⁸` this is `log₂ n < 48 − log₂(260)/8 ≈ 46.997`, so it
+covers smooth domains up to `n = 2⁴⁶` but NOT all `n` up to `2⁴⁸` (the constant `260^{1/3}`
+costs about one bit of `log₂ n`).  In that range **no Gauss-sum frequency reaches the Johnson
+scale at all**, conditional on the open subgroup sum-product input `GVRepBound`.
+(Honest scope, unchanged from
 the parent: this is the AVERAGE side — it provably beats Johnson but does not pin the
 worst-case `δ*` apex; it sharpens the proven average bound with an explicit constant.)
 -/
@@ -54,7 +57,8 @@ theorem additiveEnergy_eq_fourthMoment (G : Finset F) :
 open ArkLib.ProximityGap.SubgroupGaussSumAntiConc in
 /-- **The GV-sharpened average-side anti-concentration.**  Under the named Garcia–Voloch
 input, the count `N` of frequencies reaching the Johnson scale `‖η_b‖² ≥ q` satisfies
-`(N·q)³ ≤ 260·|G|⁸` — so `N ≤ 260^{1/3}·|G|^{8/3}/q`, vanishing for `q ≫ |G|^{5/3}`. -/
+`(N·q)³ ≤ 260·|G|⁸` — so `N ≤ 260^{1/3}·|G|^{8/3}/q`, and `N = 0` as soon as
+`q > 260^{1/3}·|G|^{8/3}` (i.e. `q³ > 260·|G|⁸`).  Conditional on `GVRepBound G M`. -/
 theorem card_johnson_scale_le_gv {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
     (G : Finset F) (hq : 0 < Fintype.card F) {M : ℕ} (h : GVRepBound G M) :
     (((Finset.univ.filter

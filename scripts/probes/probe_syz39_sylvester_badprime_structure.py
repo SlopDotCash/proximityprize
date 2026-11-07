@@ -12,18 +12,31 @@ over a mu_n domain.  Equivalent evaluation form:
       does NOT have full column rank.
 
 All entries are cyclotomic integers in Z[omega_n].  Over a field GF(p)
-containing mu_n, "bad prime" = rank drops mod p.  In char 0 the obstruction is
-the gcd-of-maximal-minors ideal; bad rational primes divide Norm(any nonzero
-maximal minor).  We:
+containing mu_n, "bad prime" = rank drops mod p at the chosen embedding
+omega -> w.  In char 0 the obstruction is the gcd-of-maximal-minors ideal: rank
+loss modulo a prime IDEAL P of Z[omega] means ALL maximal minors lie in the SAME
+P.  A rational prime q dividing Norm(minor) for every minor is only a NECESSARY
+candidate filter: each norm can be divisible by q through a DIFFERENT prime
+ideal above q (different embedding).  Example (audit finding L126): the 2x1
+matrix (i-2, i+2)^T over Z[i] has both norms 5, but rank 1 modulo both primes
+above 5 (i=2 and i=-2), since the entries never vanish together.  Moreover only
+the first 40 nonzero maximal minors are used, which over-approximates further.
 
-  (1) GF(p) rank scan over p = 1 mod n to enumerate ACTUAL bad primes per config
-      (reproduces the known n=13,k=7 p=31 flip);
-  (2) exact cyclotomic-integer computation of a maximal minor, its norm
-      Res(Phi_n, minor) in Z, and its factorization  ->  the SIZE BOUND and the
-      factor structure (does it factor through cyclotomic norms of root
-      differences?);
-  (3) structural read: are the bad primes exactly the primes dividing small
-      cyclotomic quantities (differences of roots of unity)?
+We report three distinct layers:
+
+  (1) ACTUAL rank failures: GF(p) rank scan over p = 1 mod n at ONE chosen
+      embedding w (reproduces the known n=13,k=7 p=31 flip);
+  (2) NORM CANDIDATES (over-inclusive): small primes q < 20000 dividing the
+      norm Res(Phi_n, minor) of each of the first 40 nonzero maximal minors;
+  (3) COMMON-PRIME-IDEAL obstructions: for a candidate q = 1 mod n (q split, so
+      the primes above q are (q, omega - zeta) for the primitive n-th roots zeta
+      in GF(q)), the FULL matrix is reduced at every embedding zeta and its
+      rank is computed exactly; q is certified iff some embedding loses rank.
+      Candidates with q != 1 mod n (inert/ramified primes, residue field larger
+      than GF(q)) are left UNCERTIFIED, neither confirmed nor excluded.
+  plus an exact integer norm of one minor (Hadamard-bounded CRT, see
+  crt_resultant) and its factorization (trial division, so the factor list is
+  a complete certified factorization).
 
 Pure stdlib.
 """
@@ -122,7 +135,11 @@ def resultant_int(A,B):
         return k if any(p) else -1
     res=Fraction(1); s=1
     a,b=A,B
-    while d(b)>0 or (d(b)==0 and b[0]!=0):
+    if d(a)<0 or d(b)<0: return 0
+    # Loop only while deg b > 0; a nonzero constant b ends with b0^deg(a) below.
+    # (The earlier condition also looped on a nonzero constant b, reduced a mod b to
+    # 0 and wrongly returned 0 for every coprime pair.)
+    while d(b)>0:
         da,db=d(a),d(b)
         if db<0: return 0
         # a mod b
@@ -415,14 +432,21 @@ def analyze_config(n,k,CA,CB,CC,label,verbose=True):
             if any(detc.c):
                 minorpolys.append(detc.c)
         info['n_nonzero_minors']=len(minorpolys)
-        # char-0 bad primes: q | gcd-of-minor-norms  <=>  Res(Phi_n, minor)=0 mod q
-        # for EVERY minor. Scan small primes q.
-        char0_bad=[]
-        if minorpolys:
-            for q in SMALLPRIMES:
-                if all(resultant_mod(phi,mp,q)==0 for mp in minorpolys):
-                    char0_bad.append(q)
-        info['char0_bad_primes']=char0_bad
+        # Norm CANDIDATES: q divides Res(Phi_n, minor) for every one of the (at
+        # most 40) computed minors.  Necessary for a common prime-ideal
+        # obstruction, NOT sufficient (different minors may vanish at different
+        # primes above q); see the module docstring.
+        cands=norm_candidate_primes(phi,minorpolys,SMALLPRIMES)
+        info['norm_candidate_primes']=cands
+        # Common-prime-ideal certification for split candidates (q = 1 mod n),
+        # using the FULL matrix at every embedding omega -> zeta.
+        certified=[]; uncertified=[]
+        for q in cands:
+            bad_emb=common_ideal_rank_deficient_embeddings(Mc,ncols,n,q)
+            if bad_emb is None: uncertified.append(q)
+            elif bad_emb: certified.append(q)
+        info['common_ideal_bad_primes']=certified
+        info['uncertified_candidate_primes']=uncertified
         # exact norm of a single minor (size bound) via CRT of Res mod primes
         if minorpolys:
             mp=minorpolys[0]
@@ -433,26 +457,71 @@ def analyze_config(n,k,CA,CB,CC,label,verbose=True):
 
 SMALLPRIMES=[p for p in range(2,20000) if all(p%d for d in range(2,int(p**.5)+1))]
 
+def norm_candidate_primes(phi, minorpolys, primes):
+    """Primes q (from `primes`) with Res(phi, mp) = 0 mod q for EVERY minor mp.
+
+    phi = Phi_n is monic, so resultant_mod(phi, mp, q) is the reduction of the
+    integer norm Res(phi, mp) for every q.  This is an over-inclusive CANDIDATE
+    list for common prime-ideal obstructions (see the module docstring).  With no
+    nonzero minors there is no information and the list is empty."""
+    if not minorpolys: return []
+    return [q for q in primes
+            if all(resultant_mod(phi,mp,q)==0 for mp in minorpolys)]
+
+def common_ideal_rank_deficient_embeddings(Mc, ncols, n, q):
+    """For a prime q = 1 mod n, return the primitive n-th roots zeta in GF(q) at
+    which the matrix Mc (rows of Cyc entries in Z[omega_n]) has rank < ncols
+    modulo the prime ideal (q, omega - zeta).  Rank < ncols there is equivalent
+    to ALL maximal minors lying in that common prime ideal.  Returns None when
+    q != 1 mod n (prime ideals above q have a residue field larger than GF(q);
+    not decided by this probe)."""
+    if (q-1)%n or q%n==0: return None
+    ru=roots_of_unity(n,q)
+    if ru is None: return None
+    zetas=[z for z in ru if all(pow(z,d,q)!=1 for d in range(1,n))]
+    bad=[]
+    for z in zetas:
+        rows=[[sum(c*pow(z,i,q) for i,c in enumerate(e.c))%q for e in row] for row in Mc]
+        if rank_mod(rows,ncols,q)<ncols: bad.append(z)
+    return bad
+
+def resultant_hadamard_bound(A,B):
+    """A proved bound H >= |Res(A,B)| for integer polys A,B (low->high).
+
+    Res(A,B) is the determinant of the Sylvester matrix, which has deg(B) rows
+    carrying the coefficients of A and deg(A) rows carrying those of B, so by
+    Hadamard's inequality |Res| <= ||A||_2^deg(B) * ||B||_2^deg(A).  Returned as
+    an integer ceiling (via an integer square root of the squared bound)."""
+    da,db=deg(A),deg(B)
+    if da<0 or db<0: return 0
+    sq=sum(x*x for x in A[:da+1])**db * sum(x*x for x in B[:db+1])**da
+    r=math.isqrt(sq)
+    return r if r*r==sq else r+1
+
 def crt_resultant(A,B):
-    """Exact |Res(A,B)| via CRT of resultant mod primes (Hadamard-bounded)."""
-    import math as _m
-    # Hadamard-ish bound on |Res| = prod |B(root_i)| <= (1+maxcoef)^deg ... just
-    # accumulate primes until product stabilizes twice.
-    prod=1; rem=0; primes=[]
-    for q in SMALLPRIMES:
-        if q<3: continue
+    """Exact |Res(A,B)| via CRT of resultant mod primes, stopped only once the
+    modulus exceeds 2*H for the PROVED Hadamard bound H >= |Res(A,B)|
+    (resultant_hadamard_bound), so the symmetric residue is the integer itself.
+
+    Primes dividing lc(A)*lc(B) are skipped, so the degrees used by resultant_mod
+    are the true degrees and its value is the reduction of the integer
+    resultant.  (A fixed 10**40 modulus cap, used before the L126 audit fix,
+    was not a bound: A = X-1, B = 11992411764462614086353260819346129198106
+    returned 1, because the product of the primes 3..103 is B-1.)"""
+    da,db=deg(A),deg(B)
+    if da<0 or db<0: return 0
+    H=resultant_hadamard_bound(A,B)
+    lead=A[da]*B[db]
+    prod=1; rem=0
+    q=2
+    while prod<=2*H:
+        q+=1
+        if any(q%d==0 for d in range(2,math.isqrt(q)+1)): continue
+        if lead%q==0: continue
         r=resultant_mod(A,B,q)
-        # incremental CRT
-        if not primes:
-            rem=r; prod=q
-        else:
-            # solve x = rem (mod prod), x = r (mod q)
-            g,inv=prod%q, None
-            inv=pow(prod%q,q-2,q)
-            t=((r-rem)*inv)%q
-            rem=rem+prod*t; prod*=q
-        primes.append(q)
-        if prod>10**40: break
+        # incremental CRT: x = rem (mod prod), x = r (mod q)
+        t=((r-rem)*pow(prod%q,q-2,q))%q
+        rem=rem+prod*t; prod*=q
     # symmetric representative
     if rem>prod//2: rem-=prod
     return abs(rem)
@@ -492,17 +561,23 @@ def main():
         cfgs=list(band_triples(n,k,cap=1200))
         random.Random(7).shuffle(cfgs)
         cfgs=cfgs[:120]
-        dimok=0; consist_ok=True
-        # aggregate per ncols: max extra-bad-prime (excluding n), max bitlen(|Res|)
+        dimok=0; consist_ok=True; cert_consist_ok=True
+        # aggregate per ncols: max extra norm-candidate prime (excluding n),
+        # max bitlen(|Res|)
         agg={}
-        extra_primes=set()
+        extra_primes=set(); certified_primes=set(); uncertified_primes=set()
         for CA,CB,CC in cfgs:
             info=analyze_config(n,k,CA,CB,CC,"")
-            if info is None or not info['dim_ok'] or 'char0_bad_primes' not in info: continue
+            if info is None or not info['dim_ok'] or 'norm_candidate_primes' not in info:
+                continue
             dimok+=1
-            c0=set(info['char0_bad_primes'])
+            c0=set(info['norm_candidate_primes'])
             extra=sorted(c0-{n})
             extra_primes|=set(extra)
+            certified_primes|=set(info['common_ideal_bad_primes'])
+            uncertified_primes|=set(info['uncertified_candidate_primes'])
+            if not (set(info['bad_primes_in_scan'])<=set(info['common_ideal_bad_primes'])):
+                cert_consist_ok=False
             nc=info['ncols']; bl=info['single_minor_norm'].bit_length()
             a=agg.setdefault(nc,{'cnt':0,'n_in_all':True,'maxextra':0,'maxbl':0,'exset':set()})
             a['cnt']+=1
@@ -511,14 +586,20 @@ def main():
             a['maxbl']=max(a['maxbl'],bl)
             a['exset']|=set(extra)
             if not (set(info['bad_primes_in_scan'])<=c0): consist_ok=False
-        print(f"  analyzed dim_ok configs: {dimok}; scan⊆char0 consistency: {consist_ok}")
-        print(f"  ALL genuine extra bad primes (excl n={n}) seen: {sorted(extra_primes)}")
-        print(f"  per-ncols  [ncols: cnt, n|Res always?, max_extra_prime, max_bitlen(|Res|), extra_primes]")
+        print(f"  analyzed dim_ok configs: {dimok}; scan⊆norm-candidates: {consist_ok}; "
+              f"scan⊆common-ideal-certified: {cert_consist_ok}")
+        print(f"  norm-divisor CANDIDATE primes (excl n={n}; necessary filter only, first 40 "
+              f"minors, q<20000): {sorted(extra_primes)}")
+        print(f"  COMMON-PRIME-IDEAL certified bad primes (q=1 mod n, some embedding loses "
+              f"rank): {sorted(certified_primes)}")
+        print(f"  UNCERTIFIED candidates (q!=1 mod n, not decided): {sorted(uncertified_primes)}")
+        print(f"  per-ncols  [ncols: cnt, n|Res always?, max_extra_candidate, max_bitlen(|Res|), "
+              f"extra_candidates]")
         for nc in sorted(agg):
             a=agg[nc]
             print(f"    ncols={nc:2d}: cnt={a['cnt']:3d} n_divides_all={a['n_in_all']} "
-                  f"max_extra_prime={a['maxextra']} max_bitlen|Res|={a['maxbl']} "
-                  f"extra_primes={sorted(a['exset'])[:12]}")
+                  f"max_extra_candidate={a['maxextra']} max_bitlen|Res|={a['maxbl']} "
+                  f"extra_candidates={sorted(a['exset'])[:12]}")
 
 if __name__=="__main__":
     main()

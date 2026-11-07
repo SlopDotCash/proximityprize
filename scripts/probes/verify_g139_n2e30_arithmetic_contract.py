@@ -11,9 +11,11 @@ bridge:
 * if a result JSON is supplied, its half-window and collision fields match the
   expected production-row certificate values.
 
-It intentionally does not read the 128 retained chunk binaries; that remains
-the job of the release verifier.
-Certificate checks remain active under Python optimization.
+The release verifier reads the 128 retained chunk binaries. This script checks
+primality, factorization, and generator order. Its optional result and independent
+JSON checks validate supplied metadata against fixed values and hashes. They do
+not recompute the Phi image or verify the chunks. Without JSON inputs the injective
+and collision fields are null. Certificate checks stay active under optimization.
 """
 
 from __future__ import annotations

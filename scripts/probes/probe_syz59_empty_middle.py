@@ -15,9 +15,22 @@ For a CONSTANT syzygy c₀W_AB + c₁W_AC + c₂W_BC = 0 (all-nonzero coeffs, ba
 Bridge:  product_δ₁ = cofactor_δ₁ + max(a,b,c)  on constant-syzygy witnesses.
 
 This probe (1) checks the bridge arithmetic on explicit F_p (4,4,4) witnesses via exact
-linear algebra, and (2) enumerates small balanced-interior triples and confirms the empty
-middle in the PRODUCT convention: every realizable (constant-syzygy) witness has
-δ₁ = max(a,b,c); none has max(a,b,c) < δ₁ ≤ ⌊S/2⌋ − 2.
+linear algebra, and (2) checks three hand-built balanced (d,d,d) examples, d ∈ {3,4,5}, in the
+PRODUCT convention: each has δ₁ = max(a,b,c), so none has max(a,b,c) < δ₁ ≤ ⌊S/2⌋ − 2.
+
+Scope (read before citing (2) as an "empty middle" census):
+  * Every example in (2) is built as f = 3g − 2h, i.e. with a constant syzygy planted by
+    construction.  Its δ₁ = max(a,b,c) is therefore forced by the carrier; the three examples
+    are not an enumeration of split locator triples, and f is not checked to split on any
+    evaluation domain.  The absence of a middle witness here says nothing about triples outside
+    this constant-syzygy carrier.
+  * A genuine on-domain middle witness exists: SYZ71 (`probe_syz71_verify_f41.py`) replays a
+    (6,6,6) band triple on mu_20 ⊂ F_41 with linear cofactors (29+10X, 30+X), product degree 7,
+    and no constant syzygy.  So "the realizable middle is empty" is false in general; it is not
+    a bad-scalar or prize counterexample either.
+  * `min_syzygy_product_degree` grades each slot by its own polynomial degree (slot i gets
+    cofactor degree ≤ D − deg f_i), so it minimises the product degree also on unequal-degree
+    inputs; a uniform cofactor bound does not (see scripts/tests/test_syz_generator_gap.py).
 """
 
 from itertools import combinations
@@ -36,38 +49,61 @@ def poly_from_roots(roots, p):
     return c
 
 
+def _degree(P, p):
+    """Degree of a coefficient list (low->high) over F_p; -1 for the zero polynomial."""
+    return max((i for i, x in enumerate(P) if x % p), default=-1)
+
+
+def _graded_syzygies(polys, p, bounds):
+    """Basis of the syzygies sum_i s_i P_i = 0 with deg s_i <= bounds[i] (bounds[i] < 0 forces
+    s_i = 0).  Each basis vector is returned as a list of per-slot coefficient lists."""
+    sizes = [max(b + 1, 0) for b in bounds]
+    offsets = [sum(sizes[:i]) for i in range(len(sizes))]
+    nvars = sum(sizes)
+    if nvars == 0:
+        return []
+    maxdeg = max(len(P) - 1 + sz - 1 for P, sz in zip(polys, sizes) if sz)
+    rows = []
+    for d in range(maxdeg + 1):
+        row = [0] * nvars
+        for i, P in enumerate(polys):
+            for j in range(sizes[i]):
+                k = d - j  # coeff index in P_i
+                if 0 <= k < len(P):
+                    row[offsets[i] + j] = (row[offsets[i] + j] + P[k]) % p
+        rows.append(row)
+    return [[vec[offsets[i]:offsets[i] + sizes[i]] for i in range(len(polys))]
+            for vec in nullspace(rows, nvars, p)]
+
+
+def syzygy_degrees(slots, polys, p):
+    """(product degree, cofactor degree) of a nonzero syzygy given by per-slot coefficients."""
+    degs = [_degree(P, p) for P in polys]
+    sdegs = [_degree(s, p) for s in slots]
+    product = max(degs[i] + sdegs[i] for i in range(len(slots)) if sdegs[i] >= 0)
+    return product, max(sdegs)
+
+
+def has_constant_syzygy(polys, p):
+    """True iff some nonzero constant vector (c_i) has sum_i c_i P_i = 0 over F_p."""
+    return bool(_graded_syzygies(polys, p, [0] * len(polys)))
+
+
 def min_syzygy_product_degree(polys, p, Dmax):
-    """Minimal max-slot product-degree of a nonzero syzygy (s0,s1,s2) with deg s_i <= t,
-    searched over increasing cofactor bound t. Returns (product_deg, cofactor_deg)."""
-    n = 3
-    degs = [len(P) - 1 for P in polys]
-    for t in range(0, Dmax + 1):  # cofactor degree bound
-        # unknowns: coeffs of s_i, i<3, each length t+1 -> total 3*(t+1)
-        ncoef = t + 1
-        nvars = n * ncoef
-        # equation: sum_i P_i * s_i == 0 ; degree up to max(degs)+t
-        maxdeg = max(degs) + t
-        rows = []
-        for d in range(maxdeg + 1):
-            row = [0] * nvars
-            for i, P in enumerate(polys):
-                for j in range(ncoef):
-                    k = d - j  # coeff index in P_i
-                    if 0 <= k < len(P):
-                        row[i * ncoef + j] = (row[i * ncoef + j] + P[k]) % p
-            rows.append(row)
-        # nullspace over F_p
-        ns = nullspace(rows, nvars, p)
-        for vec in ns:
-            # product-degree of this syzygy
-            pd = -1
-            for i in range(n):
-                si = vec[i * ncoef:(i + 1) * ncoef]
-                if any(x % p for x in si):
-                    sdeg = max(j for j, x in enumerate(si) if x % p)
-                    pd = max(pd, degs[i] + sdeg)
-            if pd >= 0:
-                return pd, t
+    """Minimal max-slot PRODUCT degree max_i deg(s_i P_i) of a nonzero syzygy, searched over the
+    product bound D = 0..Dmax with the slot-specific grading deg s_i <= D - deg P_i.  Returns
+    (product_deg, cofactor_deg) where cofactor_deg is the cofactor degree of one syzygy attaining
+    the minimum, or (None, None) if no syzygy has product degree <= Dmax.
+
+    For equal input degrees d this agrees with searching a uniform cofactor bound t (product
+    degree d + t); for unequal degrees only the slot-specific grading is a minimiser."""
+    degs = [_degree(P, p) for P in polys]
+    for D in range(0, Dmax + 1):
+        basis = _graded_syzygies(polys, p, [D - d for d in degs])
+        if basis:
+            product, cofactor = syzygy_degrees(basis[0], polys, p)
+            assert product == D, "graded search must attain its own bound"
+            return product, cofactor
     return None, None
 
 
@@ -118,7 +154,7 @@ def check_bridge():
         c1, c2 = 3 % p, (-2) % p
         f = [(c1 * gi + c2 * hi) % p for gi, hi in zip(g, h)]
         polys = [f, g, h]
-        pd, cd = min_syzygy_product_degree(polys, p, 6)
+        pd, cd = min_syzygy_product_degree(polys, p, 12)
         S = 4 + 4 + 4
         print(f"  p={p}: min syzygy  product_deg={pd}  cofactor_deg={cd}  "
               f"max(a,b,c)=4  ⌊S/2⌋={S//2}  gap={S-2*pd}  ι={S//2-pd}")
@@ -129,7 +165,8 @@ def check_bridge():
 
 
 def check_empty_middle():
-    print("\n=== (2) empty middle (product convention) on balanced-interior triples ===")
+    print("\n=== (2) floor attainment (product convention) on three planted f = 3g - 2h triples ===")
+    print("    (constant syzygy planted by construction; not a census of split locator triples)")
     p = 101
     # balanced-interior profiles (a,b,c) with a,b,c in {3,4,5}, sum S, pairwise |diff|<=1
     profiles = []
@@ -148,7 +185,7 @@ def check_empty_middle():
         h = poly_from_roots(list(range(a + 1, a + b + 1)), p)
         f = [((3 * gi) % p - (2 * hi) % p) % p for gi, hi in zip(g, h)]
         polys = [f, g, h]
-        pd, cd = min_syzygy_product_degree(polys, p, d + 2)
+        pd, cd = min_syzygy_product_degree(polys, p, S)
         floor = max(a, b, c)
         middle = floor < pd <= (S // 2) - 2
         rows.append((S, floor, pd, S // 2, middle))
@@ -156,7 +193,9 @@ def check_empty_middle():
               f"⌊S/2⌋={S//2}  middle={middle}")
     assert all(pd == floor for (_, floor, pd, _, _) in rows), "floor should be attained"
     assert not any(m for *_, m in rows), "no middle witnesses"
-    print("  empty-middle OK: every witness has δ₁ = max (floor attained); zero middle.")
+    print("  floor OK: each planted constant-syzygy example has δ₁ = max (floor attained).")
+    print("  (Not an empty-middle theorem: SYZ71 replays a genuine product-degree-7 (6,6,6)")
+    print("   middle witness on mu_20 ⊂ F_41; see probe_syz71_verify_f41.py.)")
 
 
 if __name__ == "__main__":

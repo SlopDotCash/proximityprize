@@ -17,6 +17,12 @@ upper witness at radius `0`.
 This is a guardrail for the refuted black-box line-decoding statement: it packages the exact
 zero-code value as a one-sided obstruction, without asserting any Guruswami--Sudan extraction or
 repairing ABF26 Theorem 4.21.
+
+Note: below `1 / |F|` the zero code admits **no** `GrandMCAResolution`
+(`not_GrandMCAResolution_bot_of_lt_inv_card`). Earlier statements of the form "every such
+resolution has `δStar = 0`" therefore quantified over an empty type; they were vacuous and have
+been folded into that proof. Pure `epsStar`-specialisation and existential-`rfl` wrappers were
+pruned as well; callers instantiate the general declarations with `ε_star := epsStar`.
 -/
 
 namespace ProximityGap.MCAZeroCode
@@ -42,50 +48,6 @@ def MCAUpperWitness_bot_of_lt_inv_card (ε_star : ℝ≥0)
       rw [epsMCA_bot_eq_inv_card]
       exact hε
 
-/-- Existential form of `MCAUpperWitness_bot_of_lt_inv_card`, preserving the certified radius. -/
-theorem exists_MCAUpperWitness_bot_of_lt_inv_card (ε_star : ℝ≥0)
-    (hε : (ε_star : ENNReal) < (1 : ENNReal) / (Fintype.card F : ENNReal)) :
-    ∃ w : GrandChallenges.MCAUpperWitness (F := F)
-        (Cbot (ι := ι) (F := F) : Set (ι → F)) ε_star,
-      w.δ = 0 :=
-  ⟨MCAUpperWitness_bot_of_lt_inv_card (ι := ι) (F := F) ε_star hε, rfl⟩
-
-/-- `epsStar` specialization of the zero-code upper witness. -/
-noncomputable def MCAUpperWitness_bot_epsStar_of_lt_inv_card
-    (hε : (epsStar : ENNReal) < (1 : ENNReal) / (Fintype.card F : ENNReal)) :
-    GrandChallenges.MCAUpperWitness (F := F)
-      (Cbot (ι := ι) (F := F) : Set (ι → F)) epsStar :=
-  MCAUpperWitness_bot_of_lt_inv_card (ι := ι) (F := F) epsStar hε
-
-/-- Existential `epsStar` specialization, preserving the certified radius `0`. -/
-theorem exists_MCAUpperWitness_bot_epsStar_of_lt_inv_card
-    (hε : (epsStar : ENNReal) < (1 : ENNReal) / (Fintype.card F : ENNReal)) :
-    ∃ w : GrandChallenges.MCAUpperWitness (F := F)
-        (Cbot (ι := ι) (F := F) : Set (ι → F)) epsStar,
-      w.δ = 0 :=
-  ⟨MCAUpperWitness_bot_epsStar_of_lt_inv_card (ι := ι) (F := F) hε, rfl⟩
-
-/-- Any supplied zero-code MCA resolution below `1 / |F|` has threshold exactly `0`. -/
-theorem GrandMCAResolution_bot_deltaStar_eq_zero_of_lt_inv_card (ε_star : ℝ≥0)
-    (hε : (ε_star : ENNReal) < (1 : ENNReal) / (Fintype.card F : ENNReal))
-    (R : GrandChallenges.GrandMCAResolution (F := F)
-      (Cbot (ι := ι) (F := F) : Set (ι → F)) ε_star) :
-    R.δStar = 0 := by
-  let w := MCAUpperWitness_bot_of_lt_inv_card (ι := ι) (F := F) ε_star hε
-  have hle : R.δStar ≤ 0 := by
-    change R.δStar ≤ w.δ
-    exact w.δStar_le R
-  exact le_antisymm hle (by positivity)
-
-/-- `epsStar` specialization: any supplied zero-code MCA resolution below `1 / |F|` has
-threshold exactly `0`. -/
-theorem GrandMCAResolution_bot_deltaStar_eq_zero_of_epsStar_lt_inv_card
-    (hε : (epsStar : ENNReal) < (1 : ENNReal) / (Fintype.card F : ENNReal))
-    (R : GrandChallenges.GrandMCAResolution (F := F)
-      (Cbot (ι := ι) (F := F) : Set (ι → F)) epsStar) :
-    R.δStar = 0 :=
-  GrandMCAResolution_bot_deltaStar_eq_zero_of_lt_inv_card (ι := ι) (F := F) epsStar hε R
-
 /-- Below `1 / |F|`, the zero code admits no MCA resolution: any resolution would first have
 threshold `0` by the upper witness, but then its bound contradicts the exact zero-code value. -/
 theorem not_GrandMCAResolution_bot_of_lt_inv_card (ε_star : ℝ≥0)
@@ -93,10 +55,13 @@ theorem not_GrandMCAResolution_bot_of_lt_inv_card (ε_star : ℝ≥0)
     ¬ Nonempty (GrandChallenges.GrandMCAResolution (F := F)
       (Cbot (ι := ι) (F := F) : Set (ι → F)) ε_star) := by
   rintro ⟨R⟩
-  have hδ :
-      R.δStar = 0 :=
-    GrandMCAResolution_bot_deltaStar_eq_zero_of_lt_inv_card
-      (ι := ι) (F := F) ε_star hε R
+  -- The upper witness at radius `0` forces `R.δStar ≤ 0`, hence `R.δStar = 0`.
+  have hδ : R.δStar = 0 := by
+    let w := MCAUpperWitness_bot_of_lt_inv_card (ι := ι) (F := F) ε_star hε
+    have hle : R.δStar ≤ 0 := by
+      change R.δStar ≤ w.δ
+      exact w.δStar_le R
+    exact le_antisymm hle (by positivity)
   have hbound :
       epsMCA (F := F) (A := F) (Cbot (ι := ι) (F := F) : Set (ι → F)) 0 ≤
         (ε_star : ENNReal) := by
@@ -107,13 +72,6 @@ theorem not_GrandMCAResolution_bot_of_lt_inv_card (ε_star : ℝ≥0)
     rw [epsMCA_bot_eq_inv_card]
     exact hε
   exact (not_le_of_gt hexceeds) hbound
-
-/-- `epsStar` specialization of the zero-code no-resolution guardrail. -/
-theorem not_GrandMCAResolution_bot_epsStar_of_lt_inv_card
-    (hε : (epsStar : ENNReal) < (1 : ENNReal) / (Fintype.card F : ENNReal)) :
-    ¬ Nonempty (GrandChallenges.GrandMCAResolution (F := F)
-      (Cbot (ι := ι) (F := F) : Set (ι → F)) epsStar) :=
-  not_GrandMCAResolution_bot_of_lt_inv_card (ι := ι) (F := F) epsStar hε
 
 /-- If the target is below the exact zero-code value `1 / |F|`, then the bottom linear code
 does not satisfy the predicate-level Grand MCA challenge. -/
@@ -129,13 +87,6 @@ theorem not_grandMCAChallenge_bot_of_lt_inv_card (ε_star : ℝ≥0)
       bound := by simpa [Cbot] using hbound
       maximal := by simpa [Cbot] using hmaximal }
   exact not_GrandMCAResolution_bot_of_lt_inv_card (ι := ι) (F := F) ε_star hε ⟨R⟩
-
-/-- `epsStar` specialization: below the exact zero-code value `1 / |F|`, the bottom linear code
-does not satisfy the predicate-level Grand MCA challenge. -/
-theorem not_grandMCAChallenge_bot_epsStar_of_lt_inv_card
-    (hε : (epsStar : ENNReal) < (1 : ENNReal) / (Fintype.card F : ENNReal)) :
-    ¬ grandMCAChallenge (F := F) (ι := ι) (⊥ : LinearCode ι F) epsStar :=
-  not_grandMCAChallenge_bot_of_lt_inv_card (ι := ι) (F := F) epsStar hε
 
 /-- Any zero-code MCA resolution forces the target error to be at least the exact zero-code value
 `1 / |F|`. This is the contrapositive form of `not_GrandMCAResolution_bot_of_lt_inv_card`. -/
@@ -164,29 +115,6 @@ def MCALowerWitness_bot_of_inv_card_le (ε_star : ℝ≥0)
     (C := (Cbot (ι := ι) (F := F) : Set (ι → F))) (δ := 0) (by simp) <| by
       rw [epsMCA_bot_eq_inv_card]
       exact hε
-
-/-- Existential form of `MCALowerWitness_bot_of_inv_card_le`, preserving the certified radius. -/
-theorem exists_MCALowerWitness_bot_of_inv_card_le (ε_star : ℝ≥0)
-    (hε : (1 : ENNReal) / (Fintype.card F : ENNReal) ≤ (ε_star : ENNReal)) :
-    ∃ w : GrandChallenges.MCALowerWitness (F := F)
-        (Cbot (ι := ι) (F := F) : Set (ι → F)) ε_star,
-      w.δ = 0 :=
-  ⟨MCALowerWitness_bot_of_inv_card_le (ι := ι) (F := F) ε_star hε, rfl⟩
-
-/-- `epsStar` specialization of the zero-code lower witness. -/
-noncomputable def MCALowerWitness_bot_epsStar_of_inv_card_le
-    (hε : (1 : ENNReal) / (Fintype.card F : ENNReal) ≤ (epsStar : ENNReal)) :
-    GrandChallenges.MCALowerWitness (F := F)
-      (Cbot (ι := ι) (F := F) : Set (ι → F)) epsStar :=
-  MCALowerWitness_bot_of_inv_card_le (ι := ι) (F := F) epsStar hε
-
-/-- Existential `epsStar` specialization, preserving the certified radius `0`. -/
-theorem exists_MCALowerWitness_bot_epsStar_of_inv_card_le
-    (hε : (1 : ENNReal) / (Fintype.card F : ENNReal) ≤ (epsStar : ENNReal)) :
-    ∃ w : GrandChallenges.MCALowerWitness (F := F)
-        (Cbot (ι := ι) (F := F) : Set (ι → F)) epsStar,
-      w.δ = 0 :=
-  ⟨MCALowerWitness_bot_epsStar_of_inv_card_le (ι := ι) (F := F) hε, rfl⟩
 
 omit [DecidableEq F] in
 /-- Concrete `epsStar = 2^-128` specialization: if `|F| < 2^128`, then the formal threshold
@@ -251,57 +179,31 @@ noncomputable def MCAUpperWitness_bot_epsStar_of_card_lt_two_pow
     (hcard : Fintype.card F < 2 ^ (128 : ℕ)) :
     GrandChallenges.MCAUpperWitness (F := F)
       (Cbot (ι := ι) (F := F) : Set (ι → F)) epsStar :=
-  MCAUpperWitness_bot_epsStar_of_lt_inv_card
-    (ι := ι) (F := F) (epsStar_lt_inv_card_of_card_lt_two_pow (F := F) hcard)
-
-/-- Existential field-size specialization, preserving the certified radius `0`. -/
-theorem exists_MCAUpperWitness_bot_epsStar_of_card_lt_two_pow
-    (hcard : Fintype.card F < 2 ^ (128 : ℕ)) :
-    ∃ w : GrandChallenges.MCAUpperWitness (F := F)
-        (Cbot (ι := ι) (F := F) : Set (ι → F)) epsStar,
-      w.δ = 0 :=
-  ⟨MCAUpperWitness_bot_epsStar_of_card_lt_two_pow (ι := ι) (F := F) hcard, rfl⟩
+  MCAUpperWitness_bot_of_lt_inv_card
+    (ι := ι) (F := F) epsStar (epsStar_lt_inv_card_of_card_lt_two_pow (F := F) hcard)
 
 /-- Field-size specialization of the zero-code lower witness at `epsStar`. -/
 noncomputable def MCALowerWitness_bot_epsStar_of_two_pow_le_card
     (hcard : 2 ^ (128 : ℕ) ≤ Fintype.card F) :
     GrandChallenges.MCALowerWitness (F := F)
       (Cbot (ι := ι) (F := F) : Set (ι → F)) epsStar :=
-  MCALowerWitness_bot_epsStar_of_inv_card_le
-    (ι := ι) (F := F) (inv_card_le_epsStar_of_two_pow_le_card (F := F) hcard)
-
-/-- Existential field-size lower-witness specialization, preserving the certified radius `0`. -/
-theorem exists_MCALowerWitness_bot_epsStar_of_two_pow_le_card
-    (hcard : 2 ^ (128 : ℕ) ≤ Fintype.card F) :
-    ∃ w : GrandChallenges.MCALowerWitness (F := F)
-        (Cbot (ι := ι) (F := F) : Set (ι → F)) epsStar,
-      w.δ = 0 :=
-  ⟨MCALowerWitness_bot_epsStar_of_two_pow_le_card (ι := ι) (F := F) hcard, rfl⟩
-
-/-- Field-size specialization: any supplied zero-code MCA resolution at `epsStar` has threshold
-exactly `0`. -/
-theorem GrandMCAResolution_bot_deltaStar_eq_zero_of_card_lt_two_pow
-    (hcard : Fintype.card F < 2 ^ (128 : ℕ))
-    (R : GrandChallenges.GrandMCAResolution (F := F)
-      (Cbot (ι := ι) (F := F) : Set (ι → F)) epsStar) :
-    R.δStar = 0 :=
-  GrandMCAResolution_bot_deltaStar_eq_zero_of_epsStar_lt_inv_card
-    (ι := ι) (F := F) (epsStar_lt_inv_card_of_card_lt_two_pow (F := F) hcard) R
+  MCALowerWitness_bot_of_inv_card_le
+    (ι := ι) (F := F) epsStar (inv_card_le_epsStar_of_two_pow_le_card (F := F) hcard)
 
 /-- Field-size specialization of the zero-code no-resolution guardrail at `epsStar`. -/
 theorem not_GrandMCAResolution_bot_epsStar_of_card_lt_two_pow
     (hcard : Fintype.card F < 2 ^ (128 : ℕ)) :
     ¬ Nonempty (GrandChallenges.GrandMCAResolution (F := F)
       (Cbot (ι := ι) (F := F) : Set (ι → F)) epsStar) :=
-  not_GrandMCAResolution_bot_epsStar_of_lt_inv_card
-    (ι := ι) (F := F) (epsStar_lt_inv_card_of_card_lt_two_pow (F := F) hcard)
+  not_GrandMCAResolution_bot_of_lt_inv_card
+    (ι := ι) (F := F) epsStar (epsStar_lt_inv_card_of_card_lt_two_pow (F := F) hcard)
 
 /-- Field-size specialization of the bottom-code Grand MCA predicate refutation at `epsStar`. -/
 theorem not_grandMCAChallenge_bot_epsStar_of_card_lt_two_pow
     (hcard : Fintype.card F < 2 ^ (128 : ℕ)) :
     ¬ grandMCAChallenge (F := F) (ι := ι) (⊥ : LinearCode ι F) epsStar :=
-  not_grandMCAChallenge_bot_epsStar_of_lt_inv_card
-    (ι := ι) (F := F) (epsStar_lt_inv_card_of_card_lt_two_pow (F := F) hcard)
+  not_grandMCAChallenge_bot_of_lt_inv_card
+    (ι := ι) (F := F) epsStar (epsStar_lt_inv_card_of_card_lt_two_pow (F := F) hcard)
 
 /-- Any zero-code MCA resolution at `epsStar` forces the field to have at least `2^128`
 elements. This is the contrapositive form of the numeric zero-code no-resolution guardrail. -/
@@ -326,28 +228,15 @@ end General
 /-! ## Source audit -/
 
 #print axioms MCAUpperWitness_bot_of_lt_inv_card
-#print axioms exists_MCAUpperWitness_bot_of_lt_inv_card
-#print axioms MCAUpperWitness_bot_epsStar_of_lt_inv_card
-#print axioms exists_MCAUpperWitness_bot_epsStar_of_lt_inv_card
-#print axioms GrandMCAResolution_bot_deltaStar_eq_zero_of_lt_inv_card
-#print axioms GrandMCAResolution_bot_deltaStar_eq_zero_of_epsStar_lt_inv_card
 #print axioms not_GrandMCAResolution_bot_of_lt_inv_card
-#print axioms not_GrandMCAResolution_bot_epsStar_of_lt_inv_card
 #print axioms not_grandMCAChallenge_bot_of_lt_inv_card
-#print axioms not_grandMCAChallenge_bot_epsStar_of_lt_inv_card
 #print axioms inv_card_le_of_GrandMCAResolution_bot
 #print axioms inv_card_le_of_grandMCAChallenge_bot
 #print axioms MCALowerWitness_bot_of_inv_card_le
-#print axioms exists_MCALowerWitness_bot_of_inv_card_le
-#print axioms MCALowerWitness_bot_epsStar_of_inv_card_le
-#print axioms exists_MCALowerWitness_bot_epsStar_of_inv_card_le
 #print axioms epsStar_lt_inv_card_of_card_lt_two_pow
 #print axioms inv_card_le_epsStar_of_two_pow_le_card
 #print axioms MCAUpperWitness_bot_epsStar_of_card_lt_two_pow
-#print axioms exists_MCAUpperWitness_bot_epsStar_of_card_lt_two_pow
 #print axioms MCALowerWitness_bot_epsStar_of_two_pow_le_card
-#print axioms exists_MCALowerWitness_bot_epsStar_of_two_pow_le_card
-#print axioms GrandMCAResolution_bot_deltaStar_eq_zero_of_card_lt_two_pow
 #print axioms not_GrandMCAResolution_bot_epsStar_of_card_lt_two_pow
 #print axioms not_grandMCAChallenge_bot_epsStar_of_card_lt_two_pow
 #print axioms card_two_pow_le_of_GrandMCAResolution_bot_epsStar

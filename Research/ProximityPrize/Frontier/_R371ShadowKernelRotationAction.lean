@@ -80,6 +80,49 @@ theorem rotZ_bijective (hm : 0 < m) : Function.Bijective (rotZ m hm) :=
   Function.bijective_iff_has_inverse.mpr
     ⟨rotZinv m hm, fun z => rotZinv_rotZ m hm z, fun z => rotZ_rotZinv m hm z⟩
 
+/-! ### Coordinate dynamics of `rotZ`
+
+Shared owner of the coordinate-tracking lemmas used by R395 (orbit-compressed certificate)
+and G89 (first-incidence wall equivalence). -/
+
+/-- The head coordinate after one rotation: wrap with a sign flip. -/
+theorem rotZ_head (hm : 0 < m) (w : Fin m → ℤ) :
+    rotZ m hm w ⟨0, hm⟩ = -w ⟨m - 1, by omega⟩ := by
+  unfold rotZ
+  rw [if_pos rfl]
+
+/-- A tail coordinate after one rotation: shift down by one slot, no sign. -/
+theorem rotZ_tail (hm : 0 < m) (w : Fin m → ℤ) (j : Fin m) (hj : (j : ℕ) ≠ 0) :
+    rotZ m hm w j = w ⟨(j : ℕ) - 1, by have := j.isLt; omega⟩ := by
+  unfold rotZ
+  rw [if_neg hj]
+
+/-- Rotation dynamics without wrap: after `k` steps, coordinate `j` sits at `j + k`. -/
+theorem iterate_rotZ_apply (hm : 0 < m) (z : Fin m → ℤ) (k j : ℕ) (hjk : j + k < m) :
+    ((rotZ m hm)^[k] z) ⟨j + k, hjk⟩ = z ⟨j, by omega⟩ := by
+  induction k with
+  | zero => rfl
+  | succ k ih =>
+      rw [Function.iterate_succ_apply']
+      rw [rotZ_tail m hm _ ⟨j + (k + 1), hjk⟩ (by show j + (k + 1) ≠ 0; omega)]
+      rw [show (⟨((⟨j + (k + 1), hjk⟩ : Fin m) : ℕ) - 1, by
+          have := (⟨j + (k + 1), hjk⟩ : Fin m).isLt
+          omega⟩ : Fin m)
+        = ⟨j + k, by omega⟩ from Fin.ext (show j + (k + 1) - 1 = j + k from by omega)]
+      exact ih (by omega)
+
+/-- After `m − j` steps, coordinate `j` arrives at the head with a sign flip. -/
+theorem iterate_rotZ_head (hm : 0 < m) (z : Fin m → ℤ) (j : ℕ) (hj : j < m) :
+    ((rotZ m hm)^[m - j] z) ⟨0, hm⟩ = -z ⟨j, hj⟩ := by
+  have hstep : m - j = (m - 1 - j) + 1 := by omega
+  rw [hstep, Function.iterate_succ_apply', rotZ_head m hm]
+  have harr : ((rotZ m hm)^[m - 1 - j] z) ⟨m - 1, by omega⟩ = z ⟨j, hj⟩ := by
+    have h0 := iterate_rotZ_apply m hm z (m - 1 - j) j (by omega)
+    rw [show (⟨j + (m - 1 - j), by omega⟩ : Fin m) = ⟨m - 1, by omega⟩ from
+      Fin.ext (show j + (m - 1 - j) = m - 1 from by omega)] at h0
+    exact h0
+  rw [harr]
+
 /-- **Rotation twists the evaluation by `g`** (using `g^m = −1`). -/
 theorem evalVec_rotZ (g : F) (hm : 0 < m) (hg : g ^ m = -1) (z : Fin m → ℤ) :
     evalVec g m (rotZ m hm z) = g * evalVec g m z := by

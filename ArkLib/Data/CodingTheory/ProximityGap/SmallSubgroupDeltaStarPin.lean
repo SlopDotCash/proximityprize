@@ -24,20 +24,24 @@ Stepanov, no open sum-product conjecture).
 
 * `cubicSupply_sq_le_sharp` — feeding the EXACT energy through the in-tree
   Cauchy–Schwarz list/supply bridge `T(G)² ≤ |G|·E(G)`
-  (`zeroSumTriples_sq_le_card_energy_viaCoset`) gives the SHARP cubic-supply ceiling on
+  (`zeroSumTriples_sq_le_card_energy_viaCoset`) gives the cubic-supply **upper bound** on
   `μ_n`:
     `zeroSumTriples (μ_n)² ≤ 3·n²·(n−1)`,
   i.e. `T(μ_n) ≤ √3 · n · √(n−1) < √3 · n^{3/2}`.  This sharpens the conditional
-  `zeroSumTriples_sq_le_of_sidonModNeg` bound `T² ≤ 3n³` by the exact `3n²` correction —
-  the minimal additive obstruction, now machine-checked with the equality input.
+  `zeroSumTriples_sq_le_of_sidonModNeg` bound `T² ≤ 3n³` by the exact `3n²` correction.
+  ("Sharp" in the name refers only to using the *exact* energy as input; it is **not** a
+  tightness claim.  No matching lower bound is proved, and the bound is far from tight in
+  natural cases: in characteristic zero a dyadic root set has no zero-sum triples, and e.g.
+  `μ₈ ⊂ 𝔽₂₅₇` has `zeroSumTriples = 0`.)
 
 * `cubic_explainable_core_sq_le_sharp` — transported to the *cubic word* `x ↦ x³` over any
   domain whose image is `μ_n`: its explainable-3-core supply `S` satisfies
     `S² ≤ 3·n²·(n−1)`,
   via `cubicSupply_eq_sumZeroCard` + `sumZeroCard_le_zeroSumTriples_image`.  The Sylvester
-  cubic — the worst-case sub-Johnson *additive* obstruction, `Θ(n²)` on the full field — is
-  pinned to `Θ(n^{3/2})` on the smooth NTT domain, UNCONDITIONALLY (the open Garcia–Voloch
-  sum-product input is no longer needed; the cyclotomic energy equality supplies it exactly).
+  cubic — the worst-case sub-Johnson *additive* obstruction, `Θ(n²)` on the full field — has
+  supply at most `O(n^{3/2})` on the smooth NTT domain, unconditionally for `p > 2^n` (the
+  open Garcia–Voloch sum-product input is not needed for this upper bound; the cyclotomic
+  energy equality supplies it).  This is an upper envelope only, not a `Θ` law.
 
 ## The complete δ* pin
 
@@ -46,7 +50,7 @@ The δ* failure side is the in-tree ceiling `mcaDeltaStar_le_of_deep_band`
 
 The δ* success (lower) side requires an interleaved **list-size** bound at the good radius
 for ALL word pairs `u₀, u₁` (`mcaDeltaStar_ge_of_interleavedList`).  The minimal-energy /
-small cubic-supply data proven above controls the *single canonical* obstruction word, but
+cubic-supply upper bound proven above concerns the *single canonical* obstruction word, but
 the general per-pair interleaved list bound that the MCA lower dictionary consumes is NOT a
 closed in-tree consumer of the cubic supply: bridging single-word supply to the all-pairs
 interleaved list is the open beyond-Johnson question for explicit RS (issue #334 core A,
@@ -81,17 +85,19 @@ open ArkLib.ProximityGap.EnergyEqualitySidonModNeg
 
 variable {p : ℕ} [Fact p.Prime] {n m : ℕ}
 
-/-! ## Part 1 — the SHARP cubic supply pin from the EXACT energy -/
+/-! ## Part 1 — the cubic supply upper bound from the EXACT energy -/
 
-/-- **The sharp small-subgroup cubic-supply pin.**  For `n = 2^m` (`m ≥ 1`) and a prime
+/-- **The small-subgroup cubic-supply upper bound.**  For `n = 2^m` (`m ≥ 1`) and a prime
 `p > 2^n` with a primitive `n`-th root `ω`, the zero-sum-triple count of `μ_n` obeys
 
   `zeroSumTriples (μ_n)² ≤ 3·n²·(n−1)`,
 
-i.e. `T(μ_n) ≤ √3 · n · √(n−1) < √3 · n^{3/2}`.  This is the minimal cubic supply, derived
-from the EXACT additive energy `E(μ_n) = 3n²−3n` through the in-tree Cauchy–Schwarz bridge
+i.e. `T(μ_n) ≤ √3 · n · √(n−1) < √3 · n^{3/2}`.  Derived from the EXACT additive energy
+`E(μ_n) = 3n²−3n` (the minimal energy value) through the in-tree Cauchy–Schwarz bridge
 `T(G)² ≤ |G|·E(G)` — sharper than the `T² ≤ 3n³` bound from the inequality `E ≤ 3n²` by the
-exact `3n²` correction.  Unconditional for `p > 2^n`. -/
+exact `3n²` correction.  Unconditional for `p > 2^n`.  This is an upper bound only: the name's
+"sharp" refers to the exact energy input, not to tightness, and no lower bound on `T(μ_n)` is
+proved (the actual count can be `0`, e.g. `μ₈ ⊂ 𝔽₂₅₇`). -/
 theorem cubicSupply_sq_le_sharp (hn2 : n = 2 ^ m) (hm : 1 ≤ m) (hp : 2 ^ n < p)
     {ω : ZMod p} (hω : IsPrimitiveRoot ω n) :
     (zeroSumTriples (muN p n)) ^ 2 ≤ 3 * n ^ 2 * (n - 1) := by
@@ -122,15 +128,16 @@ theorem cubicSupply_sq_le_sharp (hn2 : n = 2 ^ m) (hm : 1 ≤ m) (hp : 2 ^ n < p
   rw [hkey]
 
 open Classical in
-/-- **The sharp cubic-word explainable-core supply pin** over a domain with image `μ_n`.
+/-- **The cubic-word explainable-core supply upper bound** over a domain with image `μ_n`.
 For any `dom : Fin n ↪ ZMod p` whose image is the 2-power NTT subgroup `μ_n`, the cubic word
 `x ↦ x³` has explainable-3-core supply `S` with
 
   `S² ≤ 3·n²·(n−1)`,
 
 i.e. `S ≤ √3 · n · √(n−1) ≪ n²`.  The Sylvester additive obstruction, `Θ(n²)` on the full
-field, is pinned to `Θ(n^{3/2})` on the smooth NTT domain — UNCONDITIONALLY for `p > 2^n`
-(the cyclotomic energy equality replaces the open Garcia–Voloch input). -/
+field, has supply at most `O(n^{3/2})` on the smooth NTT domain — unconditionally for
+`p > 2^n` (the cyclotomic energy equality replaces the open Garcia–Voloch input for this upper
+bound).  No matching lower bound is proved; this is an envelope, not a `Θ` law. -/
 theorem cubic_explainable_core_sq_le_sharp [NeZero n]
     (hn2 : n = 2 ^ m) (hm : 1 ≤ m) (hp : 2 ^ n < p)
     {ω : ZMod p} (hω : IsPrimitiveRoot ω n)
@@ -183,9 +190,9 @@ theorem smallSubgroup_deltaStar_le {q : ℕ} [Fact q.Prime] [NeZero n]
 /-- **The success-side list hypothesis** for the small-subgroup δ* pin.  This is the open
 beyond-Johnson list-decoding obligation, stated as an explicit named `Prop` (NOT proven —
 issue #334 core A / [ABF26] §5): at the good radius `δgood`, the interleaved list of `C` at
-the collapse floor has size `≤ L` for ALL word pairs `u₀, u₁`.  The minimal-energy / small
-cubic-supply data (`cubicSupply_sq_le_sharp`) controls the canonical obstruction word; this
-hypothesis packages the missing all-pairs upgrade. -/
+the collapse floor has size `≤ L` for ALL word pairs `u₀, u₁`.  The cubic-supply upper bound
+(`cubicSupply_sq_le_sharp`) concerns only the canonical obstruction word; this hypothesis is a
+separate all-pairs obligation that the supply bound does not imply. -/
 def SmallSubgroupGoodList {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
     {F : Type} [Field F] [Fintype F] [DecidableEq F]
     (C : Finset (ι → F)) (δgood : ℝ≥0) (L : ℕ) : Prop :=

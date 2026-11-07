@@ -27,7 +27,14 @@ CO25 §5.6 events. The honest per-state versions (`E_inv_honest`, `E_fork_honest
 residuals are tracked: 5.12 is discharged (`Lemma512Honest.lean`), while 5.14 and 5.16
 are REFUTED as stated (`Lemma514ForkFalse.lean`, `Lemma516TimePFalse.lean`) due to the
 `redundantEntryDS` deviation from CO25 Def. 5.5; only the `E_{time,h}` half is proven
-(`Lemma516HashHalf.lean`). Do not cite the trivial forms here as discharging CO25 §5.6.
+(`Lemma516HashHalf.lean`). Do not cite the trivial forms here as discharging CO25 §5.6,
+and do not count `lemma_5_12` / `lemma_5_14` / `lemma_5_16` from this file as completed paper
+claims in theorem-completion summaries: each is a projection of the assumed `¬ E`.
+
+**Legacy model.** The bad event `E` here is built on the legacy, same-direction
+`redundantEntryDS` (see its audit warning). Paper-direction (CO25 Def. 5.5) redundancy and
+events live in `BadEventsPaper.lean` / `PaperBadEvents.lean`; production consumers should be
+routed to that model, migrating the affected `Lemma512Honest.lean` proofs together.
 -/
 
 open OracleComp OracleSpec ProtocolSpec
@@ -68,7 +75,15 @@ disjuncts below instead use the *same direction* with the state pair reversed
 (`(p, y, x)` resp. `(p⁻¹, x, y)`). Machine-checked consequence: the M2c honest residual
 `Lemma5_16HonestFalseAsStated` is FALSE against this definition
 (`Lemma516TimePFalse.lemma5_16HonestFalseAsStated_false`), and the `Lemma5_14HonestFalseStatement`
-fork analysis carries the same risk. Repairing this definition (swap `.inl ↦ .inr` in the
+fork analysis carries the same risk.
+
+Concrete effect: for a consistent identity permutation and any state `a`, the two-entry trace
+`(p⁻¹, a, a); (p, a, a)` survives this deduplication (the second entry is an ordinary replay of
+the known inverse pair, but its certificate would have to be the opposite-direction entry), and
+`notFunction` then flags the surviving forward entry merely because an earlier inverse entry
+returned its input — no unequal-response test is involved. So `¬ E` here is *stronger* than
+genuine permutation consistency, and ordinary replay can count as bad. The paper-direction
+repair is `redundantEntryDSPaper` (`BadEventsPaper.lean`). Repairing this definition (swap `.inl ↦ .inr` in the
 second disjunct of the forward arm and `.inr ↦ .inl` in the inverse arm) changes the
 meaning of `E`; downstream proofs in `Lemma512Honest.lean` use the current certificates
 and must be reworked together with the repair. -/
@@ -379,9 +394,9 @@ not occur, then the permutation-consistency event `E_prp(tr)` does not occur. -/
 theorem lemma_5_10 (h : ¬ E trace) : ¬ E_prp trace :=
   not_collisionPerm_of_not_combined (trace := trace) h
 
-/-- The inversion bad event ($E_{\text{inv}}$), indicating that the backtrack procedure
-encountered a state loop. This is conservatively tracked as a subevent of the combined bad event
-$E$. -/
+/-- **Placeholder, not CO25's $E_{\text{inv}}$.** Literally `E trace ∧ state = 0`; it does not
+encode any backtrack/state-loop behaviour. The intended event is the inversion bad event of
+CO25 §5.6; its honest per-state form is `E_inv_honest` (`KeyLemmaFoundations.lean`). -/
 def inv : Prop :=
   E trace ∧ state = 0
 
@@ -390,13 +405,15 @@ alias E_inv := inv
 lemma not_inv_of_not_combined (h : ¬ E trace) : ¬ E_inv trace state :=
   fun hinv => h hinv.1
 
-/-- CO25 Lemma 5.12, current trace-event form. If `E(tr)` does not occur, then the
-inverse-step event is absent for every sponge state. -/
+/-- Placeholder form named after CO25 Lemma 5.12: since `E_inv` is the placeholder
+`E trace ∧ state = 0`, this merely projects the assumed `¬ E`. It is **not** CO25 Lemma 5.12;
+see `Lemma512Honest.lean` for the honest version. -/
 theorem lemma_5_12 (h : ¬ E trace) : ¬ E_inv trace state :=
   not_inv_of_not_combined (trace := trace) (state := state) h
 
-/-- The backtracking fork event ($E_{\text{fork}}$), representing the occurrence of a fork
-during backtracking (i.e. multiple predecessor candidates). -/
+/-- **Placeholder, not CO25's $E_{\text{fork}}$.** Literally `E trace ∧ state = 0`; it does not
+encode backtracking forks (multiple predecessor candidates). The honest per-state form is
+`E_fork_honest` (`KeyLemmaFoundations.lean`). -/
 def fork : Prop :=
   E trace ∧ state = 0
 
@@ -405,21 +422,25 @@ alias E_fork := fork
 lemma not_fork_of_not_combined (h : ¬ E trace) : ¬ E_fork trace state :=
   fun hfork => h hfork.1
 
-/-- CO25 Lemma 5.14, current trace-event form. If `E(tr)` does not occur, then the
-BackTrack fork event is absent for every sponge state. -/
+/-- Placeholder form named after CO25 Lemma 5.14: since `E_fork` is the placeholder
+`E trace ∧ state = 0`, this merely projects the assumed `¬ E`. It is **not** CO25 Lemma 5.14
+(the honest legacy-model statement is refuted in `Lemma514ForkFalse.lean`; see
+`Lemma514PaperFork.lean` for the paper-direction model). -/
 theorem lemma_5_14 (h : ¬ E trace) : ¬ E_fork trace state :=
   not_fork_of_not_combined (trace := trace) (state := state) h
 
 
-/-- The out-of-order hash query event ($E_{\text{time}, h}$), representing the occurrence
-of hash queries executed out of order relative to the backtrack sequence. -/
+/-- **Placeholder, not CO25's $E_{\text{time}, h}$.** Literally `E trace ∧ state = 0`; it does
+not encode out-of-order hash queries. The honest form is in `KeyLemmaFoundations.lean`
+(`E_time_honest`), with the hash half proven in `Lemma516HashHalf.lean`. -/
 def outOfOrderHash : Prop :=
   E trace ∧ state = 0
 
 alias E_time_h := outOfOrderHash
 
-/-- The out-of-order permutation query event ($E_{\text{time}, p}$), representing the occurrence
-of permutation queries executed out of order relative to the backtrack sequence. -/
+/-- **Placeholder, not CO25's $E_{\text{time}, p}$.** Literally `E trace ∧ state = 0`; it does
+not encode out-of-order permutation queries. The honest legacy-model statement is refuted in
+`Lemma516TimePFalse.lean`. -/
 def outOfOrderPerm : Prop :=
   E trace ∧ state = 0
 
@@ -433,8 +454,9 @@ alias E_time := outOfOrder
 lemma not_outOfOrder_of_not_combined (h : ¬ E trace) : ¬ E_time trace state :=
   fun htime => htime.elim (fun hh => h hh.1) (fun hp => h hp.1)
 
-/-- CO25 Lemma 5.16, current trace-event form. If `E(tr)` does not occur, then the
-BackTrack ordering event is absent for every sponge state. -/
+/-- Placeholder form named after CO25 Lemma 5.16: since both halves of `E_time` are the
+placeholder `E trace ∧ state = 0`, this merely projects the assumed `¬ E`. It is **not** CO25
+Lemma 5.16 (the honest legacy-model statement is refuted in `Lemma516TimePFalse.lean`). -/
 theorem lemma_5_16 (h : ¬ E trace) : ¬ E_time trace state :=
   not_outOfOrder_of_not_combined (trace := trace) (state := state) h
 

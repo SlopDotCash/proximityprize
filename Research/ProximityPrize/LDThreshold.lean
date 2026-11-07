@@ -11,14 +11,14 @@ import ProximityPrize.Extensions.Data.CodingTheory.JohnsonBound.Family
 /-!
 # Value bounds for the genuine list-decoding threshold (ABF26 §1, faithful form)
 
-`GrandChallengeLDAttainment` shows the `∃ δ*`-with-maximality formalization of the Grand
+`LDAttainment` shows the `∃ δ*`-with-maximality formalization of the Grand
 List Decoding Challenge is degenerate; `GrandChallengeLattice` provides the faithful
 object instead: `listLatticeThreshold C m ε*` — the largest grid index `j` (radius `j/n`)
 with `Λ(C^⋈m, j/n) ≤ ε*·|F|`.  The paper's actual challenge is to *determine the value*
 of this threshold.  This file proves the two value bounds within reach of current
 mathematics:
 
-* **Capacity-side upper bound** (`GrandChallenges.listLatticeThreshold_le_capacity`, unconditional):
+* **Capacity-side upper bound** (`ProximityGap.listLatticeThreshold_le_capacity`, unconditional):
   for every Reed–Solomon instance with `1 ≤ deg ≤ n`, `m ≥ 1`, `ε* < 1`,
   `GrandChallenges.listLatticeThreshold ≤ n - deg`.  Reason: at any radius `j/n` with `j > n - deg`,
   the `|F|`-sized family `{c · ∏_{t ∈ T}(X - x_t) : c ∈ F}` (with `|T| = n - j < deg`)
@@ -83,49 +83,6 @@ theorem Lambda_le_of_johnson_condition
   rw [card_closeCodewordsRelFinset_eq_ncard] at hpt
   exact_mod_cast hpt
 
-/-- Johnson-side membership in the lattice set: a radical-free Johnson cap `ℓ` at radius
-`j/n` whose `m`-th power clears the budget puts `j` in the list-decoding lattice set. -/
-theorem mem_listLatticeSet_of_johnson
-    (C : Set (ι → F)) {m j : ℕ} (hjn : j ≤ Fintype.card ι)
-    {ℓ : ℕ} {β : ℝ} (hq : 0 < Fintype.card F) (hβ : 0 ≤ β)
-    (hcond : ((Fintype.card ι : ℝ) * (1 - 1 / (Fintype.card F : ℝ)) * (1 + β ^ 2)
-        - 2 * β * (((Fintype.card ι -
-              ⌊(((j : ℝ≥0) / (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ)
-                * (Fintype.card ι : ℝ)⌋₊ : ℕ) : ℝ)
-          - (Fintype.card ι : ℝ) / (Fintype.card F : ℝ)))
-      + (ℓ : ℝ) * ((((Fintype.card ι - Code.minDist C : ℕ) : ℝ)
-          - (Fintype.card ι : ℝ) / (Fintype.card F : ℝ))
-        - 2 * β * (((Fintype.card ι -
-              ⌊(((j : ℝ≥0) / (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ)
-                * (Fintype.card ι : ℝ)⌋₊ : ℕ) : ℝ)
-          - (Fintype.card ι : ℝ) / (Fintype.card F : ℝ))
-        + β ^ 2 * (Fintype.card ι : ℝ) * (1 - 1 / (Fintype.card F : ℝ))) < 0)
-    {ε_star : ℝ≥0}
-    (hpow : ((ℓ : ENNReal)) ^ m ≤ (ε_star : ENNReal) * (Fintype.card F : ENNReal)) :
-    j ∈ GrandChallenges.listLatticeSet C m ε_star := by
-  classical
-  rw [GrandChallenges.listLatticeSet, Finset.mem_filter, Finset.mem_range]
-  refine ⟨Nat.lt_succ_of_le hjn, ?_⟩
-  -- base-code Johnson cap at radius j/n
-  have hbase : Lambda C (((j : ℝ≥0) / (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ) ≤ (ℓ : ℕ∞) :=
-    Lambda_le_of_johnson_condition C _ (by positivity) hq hβ hcond
-  -- interleaved cap via the m-th-power bound
-  have hint : Lambda (C^⋈ (Fin m)) (((j : ℝ≥0) / (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ) ≤
-      (Lambda C (((j : ℝ≥0) / (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ)) ^ m := by
-    show Lambda (Code.interleavedCodeSet (κ := Fin m) C)
-        (((j : ℝ≥0) / (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ) ≤ _
-    exact InterleavedCode.ListSize.Lambda_interleaved_le_pow (m := m) C _
-  have hpowENat : Lambda (C^⋈ (Fin m)) (((j : ℝ≥0) / (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ) ≤
-      ((ℓ : ℕ∞)) ^ m :=
-    le_trans hint (pow_le_pow_left' hbase m)
-  -- cast `ℕ∞ → ℝ≥0∞` and conclude
-  calc (Lambda (C^⋈ (Fin m)) (((j : ℝ≥0) / (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ) : ENNReal)
-      ≤ (((ℓ : ℕ∞) ^ m : ℕ∞) : ENNReal) := by exact_mod_cast hpowENat
-    _ = ((ℓ : ENNReal)) ^ m := by
-        push_cast
-        rfl
-    _ ≤ (ε_star : ENNReal) * (Fintype.card F : ENNReal) := hpow
-
 /-- **Generic lower certificate for the list-decoding lattice set.**  Any base-code
 `Λ(C, j/n) ≤ ℓ` cap whose `m`-th power clears the prize budget puts the lattice index `j`
 in the faithful list-decoding lattice set.  This is the Johnson-side wrapper with the hard
@@ -156,6 +113,56 @@ theorem mem_listLatticeSet_of_Lambda_le
         rfl
     _ ≤ (ε_star : ENNReal) * (Fintype.card F : ENNReal) := hpow
 
+/-- Johnson-side membership in the lattice set: a radical-free Johnson cap `ℓ` at radius
+`j/n` whose `m`-th power clears the budget puts `j` in the list-decoding lattice set. -/
+theorem mem_listLatticeSet_of_johnson
+    (C : Set (ι → F)) {m j : ℕ} (hjn : j ≤ Fintype.card ι)
+    {ℓ : ℕ} {β : ℝ} (hq : 0 < Fintype.card F) (hβ : 0 ≤ β)
+    (hcond : ((Fintype.card ι : ℝ) * (1 - 1 / (Fintype.card F : ℝ)) * (1 + β ^ 2)
+        - 2 * β * (((Fintype.card ι -
+              ⌊(((j : ℝ≥0) / (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ)
+                * (Fintype.card ι : ℝ)⌋₊ : ℕ) : ℝ)
+          - (Fintype.card ι : ℝ) / (Fintype.card F : ℝ)))
+      + (ℓ : ℝ) * ((((Fintype.card ι - Code.minDist C : ℕ) : ℝ)
+          - (Fintype.card ι : ℝ) / (Fintype.card F : ℝ))
+        - 2 * β * (((Fintype.card ι -
+              ⌊(((j : ℝ≥0) / (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ)
+                * (Fintype.card ι : ℝ)⌋₊ : ℕ) : ℝ)
+          - (Fintype.card ι : ℝ) / (Fintype.card F : ℝ))
+        + β ^ 2 * (Fintype.card ι : ℝ) * (1 - 1 / (Fintype.card F : ℝ))) < 0)
+    {ε_star : ℝ≥0}
+    (hpow : ((ℓ : ENNReal)) ^ m ≤ (ε_star : ENNReal) * (Fintype.card F : ENNReal)) :
+    j ∈ GrandChallenges.listLatticeSet C m ε_star :=
+  mem_listLatticeSet_of_Lambda_le C hjn
+    (Lambda_le_of_johnson_condition C _ (by positivity) hq hβ hcond) hpow
+
+/-- **Generic lower witness from a base `Λ` cap.**  This is the witness-valued version of
+`mem_listLatticeSet_of_Lambda_le`: once a base-code list-size bound
+`Λ(C, j/n) ≤ ℓ` clears the interleaved prize budget, it produces the public
+`ContinuousListLowerWitness` consumed by the faithful list-prize lattice API. -/
+noncomputable def listLowerWitness_of_Lambda_le
+    (C : Set (ι → F)) {m j ℓ : ℕ} (hjn : j ≤ Fintype.card ι)
+    (hLambda :
+      Lambda C (((j : ℝ≥0) / (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ) ≤ (ℓ : ℕ∞))
+    {ε_star : ℝ≥0}
+    (hpow : ((ℓ : ENNReal)) ^ m ≤ (ε_star : ENNReal) * (Fintype.card F : ENNReal)) :
+    GrandChallenges.ContinuousListLowerWitness C m ε_star := by
+  classical
+  let δ : ℝ≥0 := (j : ℝ≥0) / (Fintype.card ι : ℝ≥0)
+  have hδ_le : δ ≤ 1 := by
+    have hn0 : (Fintype.card ι : ℝ≥0) ≠ 0 := by
+      exact_mod_cast (Fintype.card_ne_zero (α := ι))
+    calc
+      δ = (j : ℝ≥0) / (Fintype.card ι : ℝ≥0) := rfl
+      _ ≤ (Fintype.card ι : ℝ≥0) / (Fintype.card ι : ℝ≥0) := by
+        exact div_le_div_of_nonneg_right (by exact_mod_cast hjn) (by positivity)
+      _ = 1 := div_self hn0
+  have hmem := mem_listLatticeSet_of_Lambda_le
+    (C := C) (m := m) (j := j) (ℓ := ℓ) hjn hLambda hpow
+  rw [GrandChallenges.listLatticeSet, Finset.mem_filter, Finset.mem_range] at hmem
+  exact GrandChallenges.ContinuousListLowerWitness.ofLe (C := C) (m := m)
+    (ε_star := ε_star) (δ := δ) hδ_le hmem.2
+
 /-- **Johnson-side lower witness for the list-decoding challenge.**  A lattice
 radius `j/n` with a budget-clearing Johnson cap is immediately a
 `ContinuousListLowerWitness`, not only a member of the faithful lattice set. -/
@@ -176,22 +183,9 @@ noncomputable def listLowerWitness_of_johnson
         + β ^ 2 * (Fintype.card ι : ℝ) * (1 - 1 / (Fintype.card F : ℝ))) < 0)
     {ε_star : ℝ≥0}
     (hpow : ((ℓ : ENNReal)) ^ m ≤ (ε_star : ENNReal) * (Fintype.card F : ENNReal)) :
-    GrandChallenges.ContinuousListLowerWitness C m ε_star := by
-  classical
-  let δ : ℝ≥0 := (j : ℝ≥0) / (Fintype.card ι : ℝ≥0)
-  have hδ_le : δ ≤ 1 := by
-    have hn0 : (Fintype.card ι : ℝ≥0) ≠ 0 := by
-      exact_mod_cast (Fintype.card_ne_zero (α := ι))
-    calc
-      δ = (j : ℝ≥0) / (Fintype.card ι : ℝ≥0) := rfl
-      _ ≤ (Fintype.card ι : ℝ≥0) / (Fintype.card ι : ℝ≥0) := by
-        exact div_le_div_of_nonneg_right (by exact_mod_cast hjn) (by positivity)
-      _ = 1 := div_self hn0
-  have hmem := mem_listLatticeSet_of_johnson
-    (C := C) (m := m) (j := j) hjn (ℓ := ℓ) (β := β) hq hβ hcond hpow
-  rw [GrandChallenges.listLatticeSet, Finset.mem_filter, Finset.mem_range] at hmem
-  exact GrandChallenges.ContinuousListLowerWitness.ofLe (C := C) (m := m)
-    (ε_star := ε_star) (δ := δ) hδ_le hmem.2
+    GrandChallenges.ContinuousListLowerWitness C m ε_star :=
+  listLowerWitness_of_Lambda_le C hjn
+    (Lambda_le_of_johnson_condition C _ (by positivity) hq hβ hcond) hpow
 
 /-- **Johnson-side lower bound on the genuine threshold.**  Any lattice radius `j/n`
 with a budget-clearing Johnson cap lower-bounds `GrandChallenges.listLatticeThreshold`. -/
@@ -229,33 +223,6 @@ theorem le_listLatticeThreshold_of_Lambda_le
     (hne : (GrandChallenges.listLatticeSet C m ε_star).Nonempty) :
     j ≤ GrandChallenges.listLatticeThreshold C m ε_star hne :=
   Finset.le_max' _ _ (mem_listLatticeSet_of_Lambda_le C hjn hLambda hpow)
-
-/-- **Generic lower witness from a base `Λ` cap.**  This is the witness-valued version of
-`mem_listLatticeSet_of_Lambda_le`: once a base-code list-size bound
-`Λ(C, j/n) ≤ ℓ` clears the interleaved prize budget, it produces the public
-`ContinuousListLowerWitness` consumed by the faithful list-prize lattice API. -/
-noncomputable def listLowerWitness_of_Lambda_le
-    (C : Set (ι → F)) {m j ℓ : ℕ} (hjn : j ≤ Fintype.card ι)
-    (hLambda :
-      Lambda C (((j : ℝ≥0) / (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ) ≤ (ℓ : ℕ∞))
-    {ε_star : ℝ≥0}
-    (hpow : ((ℓ : ENNReal)) ^ m ≤ (ε_star : ENNReal) * (Fintype.card F : ENNReal)) :
-    GrandChallenges.ContinuousListLowerWitness C m ε_star := by
-  classical
-  let δ : ℝ≥0 := (j : ℝ≥0) / (Fintype.card ι : ℝ≥0)
-  have hδ_le : δ ≤ 1 := by
-    have hn0 : (Fintype.card ι : ℝ≥0) ≠ 0 := by
-      exact_mod_cast (Fintype.card_ne_zero (α := ι))
-    calc
-      δ = (j : ℝ≥0) / (Fintype.card ι : ℝ≥0) := rfl
-      _ ≤ (Fintype.card ι : ℝ≥0) / (Fintype.card ι : ℝ≥0) := by
-        exact div_le_div_of_nonneg_right (by exact_mod_cast hjn) (by positivity)
-      _ = 1 := div_self hn0
-  have hmem := mem_listLatticeSet_of_Lambda_le
-    (C := C) (m := m) (j := j) (ℓ := ℓ) hjn hLambda hpow
-  rw [GrandChallenges.listLatticeSet, Finset.mem_filter, Finset.mem_range] at hmem
-  exact GrandChallenges.ContinuousListLowerWitness.ofLe (C := C) (m := m)
-    (ε_star := ε_star) (δ := δ) hδ_le hmem.2
 
 #print axioms ProximityGap.listLowerWitness_of_Lambda_le
 

@@ -8,17 +8,17 @@
     "start": "next start"
   },
   "dependencies": {
-    "katex": "^0.17.0",
-    "next": "^15.5.19",
+    "katex": "^0.18.10",
+    "next": "^15.5.28",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.3.0",
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/katex": "^0.16.8",
     "@types/node": "^25.9.3",
     "@types/react": "^19.2.17",
-    "tailwindcss": "^4.3.0",
+    "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3"
   }
 }

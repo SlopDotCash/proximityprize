@@ -10,8 +10,19 @@ import ArkLib.ProofSystem.Fri.Spec.HonestFolding
 /-!
 # FRI: Perfect Completeness of the Composed Folding Reduction (scratch / issue #117)
 
-This scratch module develops the perfect-completeness theorem for the *composed* FRI folding
-reduction (`Fri.Spec.reductionFold` and its extension to the query round, `Fri.Spec.reduction`).
+This scratch module is the first layer of the perfect-completeness development for the
+*composed* FRI folding reduction (`Fri.Spec.reductionFold` and its extension to the query round,
+`Fri.Spec.reduction`).
+
+**Local scope.** The declarations in this file are only: the challenge `SampleableType`
+instances, the two per-round residual Props (`foldRoundPerfectCompletenessResidual`,
+`finalFoldRoundPerfectCompletenessResidual`), and the theorems `foldRound_perfectCompleteness` /
+`finalFoldRound_perfectCompleteness`, which return their residual hypothesis unchanged. Nothing
+here proves per-round or composed completeness. The residuals are discharged in the companion
+modules `FriCompletePerRound.lean` (`foldRoundPerfectCompletenessResidual_holds`) and
+`FriCompleteFinalRound.lean` (`finalFoldRoundPerfectCompletenessResidual_holds`), and the
+composition (bricks C/D) is assembled in `FriCompleteCompose.lean`
+(`reduction_perfectCompleteness_of_phases`) and `Fri/Spec/Completeness.lean`.
 
 ## Architecture (bricks A–D, per issue #117)
 
@@ -20,11 +31,14 @@ The composed reduction is built by `OracleReduction.append`/`seqCompose` out of 
 * the final folding round `FinalFoldPhase.finalFoldOracleReduction` (`pSpec` = 2 messages),
 * the (zero-prover-message) query round `QueryRound.queryOracleReduction`.
 
-Perfect completeness of the whole is assembled from per-round perfect completeness via the
-**fully-proven** composition keystones:
-* `Reduction.seqCompose_perfectCompleteness_of_append` (n-ary from binary `append`, 0 sorries),
-* `OracleReduction.append_perfectCompleteness` / `reduction_append_perfectCompleteness`
-  (binary, **named-residual** reductions whose deep dependency is the proven `Prover.append_run`).
+The intended plan (carried out in the companion modules listed above, not here) assembles
+perfect completeness of the whole from per-round perfect completeness via composition results:
+* `Reduction.seqCompose_perfectCompleteness_of_append` (n-ary from a supplied binary-append
+  hypothesis `hAppend`),
+* the binary append perfect-completeness keystones (e.g. the challenge-seam
+  `Reduction.append_perfectCompleteness_challenge` used by `FriCompleteCompose.lean`); the plain
+  `OracleReduction.append_perfectCompleteness` / `reduction_append_perfectCompleteness` front
+  doors in `Append.lean` take their named append residual as a hypothesis.
 
 ### `NeverFail` convention (Brick B)
 
@@ -38,9 +52,9 @@ carries `hInit : NeverFail init` from the start, exactly as the Binius repairs d
 
 The per-round monadic unrolling through FRI's concrete `pSpec` is the genuinely deep step (cf. the
 ~150-line Binius `foldOracleReduction_perfectCompleteness`). We expose it as a named `def : Prop`
-residual per round, plus a proven `_of_residual` reduction. The composition layer (bricks C, D) is
-then *fully* discharged against those residuals using the proven composition keystones — no `sorry`
-and no new axioms in the composition material itself.
+residual per round, plus a theorem returning that residual. This file contains no composition
+material: bricks C/D are in `FriCompleteCompose.lean` / `Fri/Spec/Completeness.lean`, and the
+per-round residuals are discharged in `FriCompletePerRound.lean` / `FriCompleteFinalRound.lean`.
 -/
 
 namespace Fri

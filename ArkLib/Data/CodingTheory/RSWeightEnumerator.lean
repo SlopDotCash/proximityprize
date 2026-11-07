@@ -10,11 +10,18 @@ import Mathlib.FieldTheory.Finiteness
 # Reed–Solomon (MDS) support counts — toward the weight enumerator `A_d`
 
 The MDS weight enumerator of `RS[deg]` is assembled by inclusion–exclusion from the *support
-counts*: how many degree-`<deg` codewords vanish on a given coordinate set `S` (equivalently, are
-supported on its complement).  Over a finite field, that count is `q^{deg − |S|}` — the cardinality
-of the vanishing subspace whose dimension is `deg − |S|` (`finrank_ker_evalOnS`).  This is the
-entropy-free combinatorial core feeding the CS25 second-moment bound (#82): the pairwise / weight
-distribution `∑_d A_d · …` builds on these counts.
+counts*: how many degree-`<deg` **polynomials** vanish on a given coordinate set `S` (equivalently,
+have evaluation support in its complement).  Over a finite field, that count is `q^{deg − |S|}` —
+the cardinality of the vanishing subspace whose dimension is `deg − |S|` (`finrank_ker_evalOnS`).
+This is the entropy-free combinatorial core feeding the CS25 second-moment bound (#82): the
+pairwise / weight distribution `∑_d A_d · …` builds on these counts.
+
+**Polynomials vs. codewords.** Every count in this file is over coefficient polynomials in
+`degreeLT F deg`, for unrestricted `deg`. These equal counts of distinct RS codewords only when
+the evaluation map is injective, which holds for `deg ≤ n = |ι|` (distinct nodes):
+`evalOnS_univ_injective`. For `deg > n` each codeword is hit by `q^{deg − n}` polynomials, so
+upper bounds (`card_evalWeight_le`) remain valid as overcounts, but an exact codeword enumerator
+must either assume `deg ≤ n` or divide by that kernel multiplicity.
 -/
 
 namespace ArkLib.CS25
@@ -68,6 +75,25 @@ theorem natCard_ker_evalOnS_general (α : ι ↪ F) (deg : ℕ) (S : Finset ι) 
       rw [eq_bot_iff, ← hbot']; exact hle
     rw [hbot]; simp
 
+/-- **Injectivity bridge (polynomials = codewords for `deg ≤ n`).**  When `deg ≤ |ι|`, the full
+evaluation map `degreeLT F deg → (univ → F)` has trivial kernel: its kernel has
+`q^{deg − n} = 1` elements (`natCard_ker_evalOnS_general`). -/
+theorem ker_evalOnS_univ_eq_bot (α : ι ↪ F) (deg : ℕ) (hdeg : deg ≤ Fintype.card ι) :
+    LinearMap.ker (evalOnS α deg Finset.univ) = ⊥ := by
+  have h := natCard_ker_evalOnS_general α deg Finset.univ
+  rw [Finset.card_univ, Nat.sub_eq_zero_of_le hdeg, pow_zero] at h
+  haveI : Subsingleton (LinearMap.ker (evalOnS α deg Finset.univ)) :=
+    (Nat.card_eq_one_iff_unique.mp h).1
+  exact Submodule.eq_bot_of_subsingleton
+
+/-- **Injectivity bridge.**  For `deg ≤ |ι|`, distinct degree-`<deg` polynomials have distinct
+evaluation words, so every polynomial count in this file and in `RSWeightEnumeratorExact.lean`
+is also a count of distinct Reed–Solomon codewords.  Without `deg ≤ |ι|` this fails (the kernel
+has `q^{deg − n}` elements). -/
+theorem evalOnS_univ_injective (α : ι ↪ F) (deg : ℕ) (hdeg : deg ≤ Fintype.card ι) :
+    Function.Injective (evalOnS α deg Finset.univ) :=
+  LinearMap.ker_eq_bot.mp (ker_evalOnS_univ_eq_bot α deg hdeg)
+
 /-- **Support-⊆ sum.**  Summing the support count over all `d`-element coordinate sets `T` (a
 codeword of weight `d` is supported on some such `T`, i.e. vanishes on `Tᶜ`):
 
@@ -75,7 +101,8 @@ codeword of weight `d` is supported on some such `T`, i.e. vanishes on `Tᶜ`):
 
 There are `C(n,d)` sets `T`, each contributing the constant `q^{deg − |Tᶜ|} = q^{deg − (n − d)}`
 (`natCard_ker_evalOnS_general`).  This is the right-hand side of the MDS weight-enumerator upper
-bound `A_d ≤ C(n,d)·q^{d−(n−deg)}` (every weight-`d` codeword is counted in its own support term). -/
+bound `A_d ≤ C(n,d)·q^{d−(n−deg)}` (every weight-`d` polynomial is counted in its own support
+term). -/
 theorem supportSubsetSum_eq (α : ι ↪ F) (deg d : ℕ) :
     ∑ T ∈ (Finset.univ : Finset ι).powersetCard d,
         Nat.card (LinearMap.ker (evalOnS α deg Tᶜ))
@@ -97,8 +124,9 @@ noncomputable def evalSupport (α : ι ↪ F) {deg : ℕ} (p : Polynomial.degree
 omit [Fintype F] in
 /-- **Support ↔ vanishing.**  A degree-`<deg` polynomial lies in the vanishing subspace on `Tᶜ`
 exactly when its evaluation support is contained in `T` — both say `p` vanishes off `T`.  This
-identifies the support-`⊆ T` codewords with `ker (evalOnS α deg Tᶜ)`, bridging the support counts
-to the actual weight distribution. -/
+identifies the support-`⊆ T` polynomials with `ker (evalOnS α deg Tᶜ)`, bridging the support
+counts to the polynomial weight distribution (which is the codeword weight distribution when
+`deg ≤ n`, via `evalOnS_univ_injective`). -/
 theorem mem_ker_evalOnS_compl_iff (α : ι ↪ F) (deg : ℕ) (T : Finset ι)
     (p : Polynomial.degreeLT F deg) :
     p ∈ LinearMap.ker (evalOnS α deg Tᶜ) ↔ evalSupport α p ⊆ T := by
@@ -119,7 +147,9 @@ omit [DecidableEq ι] in
 degree-`<deg` polynomials whose evaluation has Hamming weight exactly `d` is at most the
 support-⊆ sum: every such polynomial is supported on (hence counted in) the term for its own
 `d`-element support set.  Combined with `supportSubsetSum_eq`, this is the classical MDS
-weight-distribution upper bound feeding the CS25 second moment (#82). -/
+weight-distribution upper bound feeding the CS25 second moment (#82).  It counts polynomials;
+the number of distinct weight-`d` codewords is at most this count (with equality of the two
+counts when `deg ≤ n`, by `evalOnS_univ_injective`). -/
 theorem card_evalWeight_le (α : ι ↪ F) (deg : ℕ)
     [Fintype (Polynomial.degreeLT F deg)] (d : ℕ) :
     (Finset.univ.filter
@@ -171,6 +201,8 @@ end ArkLib.CS25
 -- Axiom audit.
 #print axioms ArkLib.CS25.natCard_ker_evalOnS
 #print axioms ArkLib.CS25.natCard_ker_evalOnS_general
+#print axioms ArkLib.CS25.ker_evalOnS_univ_eq_bot
+#print axioms ArkLib.CS25.evalOnS_univ_injective
 #print axioms ArkLib.CS25.supportSubsetSum_eq
 #print axioms ArkLib.CS25.mem_ker_evalOnS_compl_iff
 #print axioms ArkLib.CS25.card_evalWeight_le

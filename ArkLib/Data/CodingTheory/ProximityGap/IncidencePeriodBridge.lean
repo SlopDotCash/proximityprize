@@ -8,15 +8,28 @@ import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
 /-!
 # The incidence = period identities (F1 = F2) — #407
 
-This file makes the **far-line incidence** (face F1 of the open core,
-`epsMCA_ge_far_incidence` / `LineIncidenceSpectral.lineIncidence_spectral`) *literally
-equal*, term by term and in `L²`, to the **Gaussian-period spectrum** (face F2,
-`SubgroupGaussSumSecondMoment.eta`, `η_b = ∑_{y∈G} ψ(b·y)`).
+This file proves two exact Fourier identities between an **elementary one-dimensional
+line–set incidence** and the **Gaussian-period spectrum** (face F2,
+`SubgroupGaussSumSecondMoment.eta`, `η_b = ∑_{y∈G} ψ(b·y)`), term by term and in `L²`.
 
-The syndrome space here is the field itself (`V = F`, one-dimensional), the geometry on
-which the prize's far-coset attack lives.  The ball is the smooth subgroup `S = G = μ_n`,
-the affine line is `γ ↦ s₀ + γ·s₁`, and the incidence is
-`I(s₀, s₁) = #{γ ∈ F : s₀ + γ·s₁ ∈ G}`.
+**Scope (read before citing).** The ambient space is the field itself (`V = F`,
+one-dimensional). The "ball" is an arbitrary finset `G ⊆ F` (typically `μ_n`), the affine line
+is `γ ↦ s₀ + γ·s₁`, and the incidence is `I(s₀, s₁) = #{γ ∈ F : s₀ + γ·s₁ ∈ G}`. This model
+is degenerate:
+
+* if `s₁ ≠ 0`, the map `γ ↦ s₀ + γ·s₁` is a bijection of `F`, so `I(s₀, s₁) = |G|` *exactly*
+  for every offset and every `G`. The Fourier sum keeps only the trivial frequency `b = 0`, and
+  no nonzero period `η_b` appears;
+* if `s₁ = 0`, the "line" is the single point `s₀` and `I(s₀, 0) = q·[s₀ ∈ G]`. This is a
+  degenerate point, not a far line. The Parseval identity (b) uses exactly this zero-direction
+  family.
+
+So these identities are correct but encode **no** control by nonzero periods of the actual
+prize object: the far-line incidence of a general RS syndrome ball in the quotient
+`F^n / C` of dimension `n − k` (face F1, `epsMCA_ge_far_incidence` /
+`LineIncidenceSpectral.lineIncidence_spectral`). This file is **not** a loss-free
+prize-incidence ↔ period dictionary. That dictionary would need an actual quotient/ball
+identification together with a nontrivial frequency relation, and neither is proved here.
 
 ## The two identities
 
@@ -28,9 +41,10 @@ the affine line is `γ ↦ s₀ + γ·s₁`, and the incidence is
   annihilating the line's direction `s₁` (the spectral support of any γ-average).  Over
   `V = F` this support is `{0}` when `s₁ ≠ 0` (the line is all of `F`, incidence `= |G|`,
   matching `η₀ = |G|`) and *all* of `F` when `s₁ = 0` (the "line" is the point `s₀`,
-  incidence `= q·[s₀∈G]`, the full Fourier inversion of `1_G`).  This is exactly the
-  spectral mechanism of `LineIncidenceSpectral.lineIncidence_spectral` read off in the
-  `η_b` basis: only the `s₁^⊥` frequencies survive the γ-average.
+  incidence `= q·[s₀∈G]`, the full Fourier inversion of `1_G`).  It is the one-dimensional
+  shadow of the spectral mechanism of `LineIncidenceSpectral.lineIncidence_spectral`: only
+  the `s₁^⊥` frequencies survive the γ-average. In this model that leaves either `b = 0` alone
+  or a point evaluation, never a nontrivial far-line period sum.
 
 * **`incidence_l2_eq_period_l2`** (b, the L²/Parseval F1 = F2):
 
@@ -38,9 +52,8 @@ the affine line is `γ ↦ s₀ + γ·s₁`, and the incidence is
 
   Both sides equal `q²·|G|`: the left because `I(s₀,0) = q·[s₀∈G]` gives `q²·|G|`, the
   right because `∑_b ‖η_b‖² = q·|G|` (`subgroup_gaussSum_secondMoment`).  This is the
-  L²-mass identity tying the incidence energy of the far-direction family to the total
-  period energy — the quantitative skeleton of wall W4 (`charSum_l2_pairing`), now stated
-  directly between the incidence count `I` and the period spectrum `η`.
+  L²-mass identity tying the incidence energy of the *zero-direction (point) family* to the
+  total period energy. It is Parseval for `1_G`, not an energy identity for far lines.
 
 Axiom-clean; pure additive-character orthogonality, no field-size or regime hypotheses.
 Issue #407.
@@ -53,8 +66,10 @@ namespace ArkLib.ProximityGap.IncidencePeriodBridge
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
-/-- **The far-line incidence over the field `V = F`.** The number of scalars `γ` for which
-the point `s₀ + γ·s₁` of the affine line lands in the ball `G`. -/
+/-- **The one-dimensional line–set incidence over the field `V = F`.** The number of scalars
+`γ` for which the point `s₀ + γ·s₁` of the affine line lands in `G`. This is `|G|` whenever
+`s₁ ≠ 0` and `q·[s₀ ∈ G]` when `s₁ = 0`. It is not the prize's far-line incidence in the
+`(n − k)`-dimensional syndrome quotient. -/
 noncomputable def lineIncidence (G : Finset F) (s₀ s₁ : F) : ℕ :=
   (Finset.univ.filter (fun γ : F => s₀ + γ * s₁ ∈ G)).card
 
@@ -93,9 +108,11 @@ annihilating the direction `s₁`:
 
   `I(s₀, s₁) = ∑_{b : b·s₁ = 0} conj(η_b) · ψ(b·s₀)`.
 
-The trivial frequency `b = 0` always satisfies `b·s₁ = 0` and contributes the average
-`η₀ = |G|`; the remaining `s₁^⊥` frequencies carry the spectral error.  This is the
-mechanism of `LineIncidenceSpectral.lineIncidence_spectral` written in the `η_b` basis. -/
+The trivial frequency `b = 0` always satisfies `b·s₁ = 0` and contributes `η₀ = |G|`. Over
+`V = F` there are no other `s₁^⊥` frequencies when `s₁ ≠ 0`, so the identity reads
+`I = |G|`. When `s₁ = 0` it is Fourier inversion of `1_G` at the point `s₀`. It is the
+one-dimensional instance of `LineIncidenceSpectral.lineIncidence_spectral`, not a nonzero-period
+bound on prize syndrome-ball incidence. -/
 theorem lineIncidence_period_sum {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
     (G : Finset F) (s₀ s₁ : F) :
     (lineIncidence G s₀ s₁ : ℂ)
@@ -170,8 +187,8 @@ the total period energy:
   `∑_{s₀ ∈ F} I(s₀, 0)² = q · ∑_{b ∈ F} ‖η_b‖²`.
 
 Both sides are `q²·|G|`: the left because `I(s₀,0) = q·[s₀∈G]`, the right because
-`∑_b ‖η_b‖² = q·|G|` (`subgroup_gaussSum_secondMoment`).  This is the exact L²-mass
-bridge between the far-line incidence energy and the Gaussian-period spectrum. -/
+`∑_b ‖η_b‖² = q·|G|` (`subgroup_gaussSum_secondMoment`).  This is Parseval for `1_G` on the
+degenerate zero-direction (point) family. It is not an energy identity for far lines. -/
 theorem incidence_l2_eq_period_l2 {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
     (G : Finset F) :
     (∑ s₀ : F, ((lineIncidence G s₀ 0 : ℝ)) ^ 2)

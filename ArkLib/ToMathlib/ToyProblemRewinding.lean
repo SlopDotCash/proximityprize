@@ -7,7 +7,7 @@ Authors: ArkLib Contributors
 import ProximityPrize.Extensions.ProofSystem.ToyProblem.Spec.SimplifiedIOR
 
 /-!
-# Rewinding knowledge soundness for the toy IOR: kernel-dependency audit & usage
+# Toy-IOR rewinding algebra: kernel-dependency audit & framework usage (not a security proof)
 
 This module sits *downstream* of the toy-problem spec files and serves two purposes:
 
@@ -17,23 +17,37 @@ This module sits *downstream* of the toy-problem spec files and serves two purpo
    `protocol62_knowledgeSoundnessViaRewinding` — depends on **no** `sorry` and **no** project-level
    assumed constant (only Lean's standard `propext`/`Classical.choice`/`Quot.sound`).
 
-2. **Usage demonstration.** It shows the proven rewinding witness driving the framework's
-   operational guarantee `Extractor.knowledgeSoundnessViaRewinding.extracts`: whenever a malicious
-   prover beats the 2-special-sound knowledge error `1/|F|` at a recorded prefix, a witness in the
-   relaxed relation `R̃²_{C,δ}` is extractable — *for free* from the proven 2-special-soundness, no
-   re-derivation.
+2. **Usage demonstration of the abstract framework.** It shows the rewinding witness driving the
+   framework's operational guarantee `Extractor.knowledgeSoundnessViaRewinding.extracts`.
 
-## Where the actual content lives
+## Scope (read before citing)
 
-The concrete rewinding extractor for ABF26 Construction 6.2 / 6.9 and the reductions of the three
-knowledge-soundness holes to their named bridge residuals live in the owned spec files:
+This is **not** an end-to-end security result for the toy IOR. The success event measured here
+is the abstract predicate `toyAccepts C δ decode pre`, not acceptance by the actual Construction
+6.2 / 6.9 verifier against a malicious prover. `toyAccepts` already contains, as a conjunct, the
+membership of the input in `outputRelation C δ` (with the supplied decoded pair), and
+`outputRelation` reads only the statement, never the witness component. So the "extracted"
+membership is exactly the assumed one; the 2×2 solve is valid algebra but is not needed for it.
+No verifier spot checks, spot-check count `t`, MCA / list-size error, decoder validity, or
+replay/rewinding execution bridge appear in any statement below.
 
-* `ArkLib/ProofSystem/ToyProblem/Spec/General.lean` —
+The actual knowledge-soundness theorems for the toy protocols are the canonical
+`ToyProblem.Spec.oracleVerifier_knowledgeSoundness_winningSetUpperBound` (L6.6,
+`ArkLib/ProofSystem/ToyProblem/Spec/KnowledgeSoundness.lean`),
+`ToyProblem.Spec.oracleVerifier_rbrKnowledgeSoundnessWorstCase` (L6.8,
+`ArkLib/ProofSystem/ToyProblem/Spec/General.lean`), and
+`ToyProblem.SimplifiedIOR.verifier_knowledgeSoundness` (L6.10,
+`ArkLib/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean`), which use straightline extractors.
+
+## Where the rewinding-algebra content lives
+
+* `ProximityPrize/Extensions/ProofSystem/ToyProblem/Spec/General.lean` —
   `toyCombine`, `toySolve`, `toySolve_combine`, `toyRewindingExtractor`, `toyAccepts`,
   `toyRewindingExtractor_twoSpecialSound`, `protocol62_knowledgeSoundnessViaRewinding`, and the
-  bridge-reduced `protocol62_knowledgeSound` (L6.6) / `protocol62_rbrKnowledgeSound` (L6.8).
-* `ArkLib/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean` —
-  the bridge-reduced `simplifiedIOR_knowledgeSound` (L6.10).
+  legacy aliases `protocol62_knowledgeSound` / `protocol62_rbrKnowledgeSound` (which, despite
+  their names, restate the same abstract predicate and are not proofs of L6.6 / L6.8).
+* `ProximityPrize/Extensions/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean` —
+  the legacy alias `simplifiedIOR_knowledgeSound` (likewise not a proof of L6.10).
 
 The abstract framework consumed by all of the above is
 `ArkLib/ToMathlib/RewindingExtractor.lean`.
@@ -59,14 +73,14 @@ open scoped ProbabilityTheory
 variable {ι F : Type} [Fintype ι] [Field F]
 variable {k : ℕ}
 
-/-- **Operational extraction guarantee for the toy IOR (proven).** A malicious prover that, at a
-recorded prefix `pre`, beats the 2-special-sound knowledge error `1/|F|` over fresh combination
-randomness `γ` yields an extractable witness in the relaxed relation `R̃²_{C,δ}`.
+/-- **Framework usage example (abstract acceptance predicate).** At a recorded prefix `pre`, if
+the abstract predicate `toyAccepts C δ decode pre` holds for more than a `1/|F|` fraction of
+challenges `γ`, then some rewinding extractor lands in `outputRelation C δ`.
 
-This is the framework's `knowledgeSoundnessViaRewinding.extracts` instantiated at the *proven* toy
-witness `protocol62_knowledgeSoundnessViaRewinding`. It demonstrates the rewinding predicate is
-usable end-to-end, not an inert interface: the witness is produced with no `sorry` and no
-project-level assumed constant beyond Lean's standard kernel dependencies. -/
+This is the framework's `knowledgeSoundnessViaRewinding.extracts` instantiated at
+`protocol62_knowledgeSoundnessViaRewinding`. It is **not** an end-to-end guarantee against a
+malicious prover of the actual toy verifier: `hwin` measures `toyAccepts`, which already assumes
+the conclusion's relation membership, rather than verifier acceptance. -/
 theorem toyProtocol_extracts [Fintype F] [Nonempty F]
     (C : Set (ι → F)) (δ : ℝ≥0)
     (decode : ToyPrefix ι F k → (Fin k → F) × (Fin k → F))

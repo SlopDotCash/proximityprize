@@ -38,10 +38,17 @@ short-character-sum wall; equivalently the Paley-graph-conjecture face of the op
    hair past `s*` drives the count strictly below `1` (hence to `0` as a `ℕ`), so no `v` can
    exceed `s*` — a clean contrapositive, no `ε`-fudge needed.
 3. `periodMagnitudes` + `norm_eta_mem_periodMagnitudes` + `i031_norm_eta_le_of_subGaussian` —
-   the wiring to the period family: specializing `S` to the magnitudes `{‖η_b‖}` and `C = C₀·n`
-   yields `‖η_b‖ ≤ √(2·C₀·n·log m)` for *every* `b`, **conditional on**
-   `SubGaussianTailBound (periodMagnitudes ψ G) (C₀·n) m`. Combined with `card_distinct_eta_le`
-   (`m =` transversal size) this is the I031 union bound `M(μ_n) ≤ √(2·C₀·n·log m)`.
+   the wiring to the period family: specializing `S` to the **nonzero-frequency** magnitudes
+   `{‖η_b‖ : b ≠ 0}` and `C = C₀·n` yields `‖η_b‖ ≤ √(2·C₀·n·log m)` for every `b ≠ 0`,
+   **conditional on** `SubGaussianTailBound (periodMagnitudes ψ G) (C₀·n) m`. Combined with
+   `card_distinct_eta_le` (`m =` transversal size) this is the I031 union bound
+   `M(μ_n) = max_{b≠0} ‖η_b‖ ≤ √(2·C₀·n·log m)`.
+4. `allFrequencyPeriodMagnitudes` + `card_le_of_allFrequency_subGaussian` — why the principal
+   period `b = 0` must be excluded: `η_0 = |G| = n`, so a tail bound on the all-frequency set
+   (an earlier version of `periodMagnitudes`) forces `n ≤ √(2·C₀·n·log m)`, i.e.
+   `C₀ ≥ n / (2·log m)` — not a constant independent of `n` (at `n = 2^30`, `m ≈ 2^128` this is
+   `C₀` of order millions). That all-frequency input therefore cannot represent the
+   fixed-constant `b ≠ 0` wall.
 
 ## Honest scope
 
@@ -69,8 +76,9 @@ namespace ArkLib.ProximityGap.I031SubGaussianMaxBridge
 
 /-- **The sub-Gaussian tail bound (the single open input).** A finset `S ⊆ ℝ` of magnitudes
 satisfies `SubGaussianTailBound S C m` when, for every threshold `s > 0`, the number of members
-exceeding `s` is at most `m·exp(−s²/(2C))`. For the I031 consumer, `S` is the set of period
-magnitudes `{‖η_b‖}`, `m` is the number of distinct periods (orbit-count `[F^*:G]+1`), and the
+exceeding `s` is at most `m·exp(−s²/(2C))`. For the I031 consumer, `S` is the set of
+nonzero-frequency period magnitudes `{‖η_b‖ : b ≠ 0}` (`periodMagnitudes`), `m` is the number of
+distinct nonzero-frequency periods (orbit-count `[F^*:G]`), and the
 proxy variance is `C = C₀·n` (the proven √n average scale). This is the recognized-open
 per-period sub-Gaussian tail — the BGK/Lamzouri short-character-sum wall. -/
 def SubGaussianTailBound (S : Finset ℝ) (C m : ℝ) : Prop :=
@@ -157,12 +165,36 @@ open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
-/-- **The finset of period magnitudes** `{‖η_b‖ : b ∈ F}` (the distinct values of `b ↦ ‖η_b‖`).
-This is the `S` the bridge consumes. By orbit invariance there are at most `m = [F^*:G]+1`
-distinct *periods* (`SubgroupGaussSumOrbitReduction.card_distinct_eta_le`), hence at most `m`
-distinct magnitudes; `m` is the union-bound count. -/
+/-- **The finset of nonzero-frequency period magnitudes** `{‖η_b‖ : b ∈ F, b ≠ 0}` (the distinct
+values of `b ↦ ‖η_b‖` on the nonzero frequencies). This is the `S` the bridge consumes. The
+principal frequency `b = 0` is excluded on purpose: `η_0 = |G|`, and including it would force the
+proxy constant to grow with `n` (see `card_le_of_allFrequency_subGaussian`). By orbit invariance
+there are at most `m = [F^*:G]` distinct nonzero-frequency periods
+(`SubgroupGaussSumOrbitReduction.card_distinct_eta_le`), hence at most `m` distinct magnitudes;
+`m` is the union-bound count. -/
 noncomputable def periodMagnitudes (ψ : AddChar F ℂ) (G : Finset F) : Finset ℝ :=
+  ((Finset.univ.filter (fun b : F => b ≠ 0)).image (eta ψ G)).image (fun z => ‖z‖)
+
+/-- The **all-frequency** magnitude set `{‖η_b‖ : b ∈ F}`, *including* the principal period
+`η_0 = |G|`. Kept only to record why it is the wrong input for the I031 wall
+(`card_le_of_allFrequency_subGaussian`); the bridge consumes `periodMagnitudes`. -/
+noncomputable def allFrequencyPeriodMagnitudes (ψ : AddChar F ℂ) (G : Finset F) : Finset ℝ :=
   (Finset.univ.image (eta ψ G)).image (fun z => ‖z‖)
+
+/-- **The principal period obstructs the all-frequency tail input.** Since `η_0 = |G|`, a
+sub-Gaussian tail bound on the all-frequency magnitudes at proxy `C` forces
+`|G| ≤ √(2·C·log m)`. With `C = C₀·n` and `n = |G| > 0`, `m > 1`, this means
+`C₀ ≥ n / (2·log m)`: the all-frequency input cannot hold with a constant `C₀` independent of
+`n`, so it does not represent the fixed-constant `max_{b≠0}` wall. -/
+theorem card_le_of_allFrequency_subGaussian (ψ : AddChar F ℂ) (G : Finset F) {C m : ℝ}
+    (hC : 0 < C) (hm : 1 ≤ m) (h : SubGaussianTailBound (allFrequencyPeriodMagnitudes ψ G) C m) :
+    (G.card : ℝ) ≤ Real.sqrt (2 * C * Real.log m) := by
+  have hmem : (G.card : ℝ) ∈ allFrequencyPeriodMagnitudes ψ G := by
+    unfold allFrequencyPeriodMagnitudes
+    rw [Finset.mem_image]
+    refine ⟨eta ψ G 0, Finset.mem_image_of_mem _ (Finset.mem_univ 0), ?_⟩
+    simp [eta]
+  exact subgaussian_max_le hC hm h _ hmem
 
 /-- Period-specialized failure certificate for the named sub-Gaussian input. To refute the
 period tail assumption it is enough, and necessary, to exhibit a threshold whose period-magnitude
@@ -177,27 +209,29 @@ theorem not_periodSubGaussianTailBound_iff_exists_tail_count_gt
     (not_SubGaussianTailBound_iff_exists_tail_count_gt
       (S := periodMagnitudes ψ G) (C := C) (m := m))
 
-/-- Every period magnitude `‖η_b‖` lies in `periodMagnitudes`. -/
-theorem norm_eta_mem_periodMagnitudes (ψ : AddChar F ℂ) (G : Finset F) (b : F) :
+/-- Every nonzero-frequency period magnitude `‖η_b‖` (`b ≠ 0`) lies in `periodMagnitudes`. -/
+theorem norm_eta_mem_periodMagnitudes (ψ : AddChar F ℂ) (G : Finset F) {b : F} (hb : b ≠ 0) :
     ‖eta ψ G b‖ ∈ periodMagnitudes ψ G := by
   unfold periodMagnitudes
   rw [Finset.mem_image]
-  exact ⟨eta ψ G b, Finset.mem_image_of_mem _ (Finset.mem_univ b), rfl⟩
+  exact ⟨eta ψ G b, Finset.mem_image_of_mem _ (Finset.mem_filter.mpr ⟨Finset.mem_univ b, hb⟩),
+    rfl⟩
 
 /-- **The I031 union bound (conditional on the named open input).** With proxy variance `C₀·n`
-(`0 < C₀·n`) and orbit-count `m ≥ 1`, if the period magnitudes satisfy the sub-Gaussian tail
-bound, then **every** period magnitude is `≤ √(2·C₀·n·log m)`:
+(`0 < C₀·n`) and orbit-count `m ≥ 1`, if the nonzero-frequency period magnitudes satisfy the
+sub-Gaussian tail bound, then **every** nonzero-frequency period magnitude is
+`≤ √(2·C₀·n·log m)`:
 
-> `M(μ_n) = max_{b} ‖η_b‖ ≤ √(2·C₀·n·log m)`.
+> `M(μ_n) = max_{b≠0} ‖η_b‖ ≤ √(2·C₀·n·log m)`.
 
 This is the L7-modular I031 deliverable: the bound is PROVEN axiom-clean *given* the single open
 analytic Prop `SubGaussianTailBound (periodMagnitudes ψ G) (C₀·n) m`. NO closure is claimed; that
-Prop is the BGK/Lamzouri per-period tail wall. -/
+Prop is the BGK/Lamzouri per-period tail wall (on `b ≠ 0`; the principal period is excluded). -/
 theorem i031_norm_eta_le_of_subGaussian (ψ : AddChar F ℂ) (G : Finset F) {C₀ n m : ℝ}
     (hC : 0 < C₀ * n) (hm : 1 ≤ m)
-    (h : SubGaussianTailBound (periodMagnitudes ψ G) (C₀ * n) m) (b : F) :
+    (h : SubGaussianTailBound (periodMagnitudes ψ G) (C₀ * n) m) {b : F} (hb : b ≠ 0) :
     ‖eta ψ G b‖ ≤ Real.sqrt (2 * (C₀ * n) * Real.log m) :=
-  subgaussian_max_le hC hm h _ (norm_eta_mem_periodMagnitudes ψ G b)
+  subgaussian_max_le hC hm h _ (norm_eta_mem_periodMagnitudes ψ G hb)
 
 end ArkLib.ProximityGap.I031SubGaussianMaxBridge
 
@@ -206,4 +240,5 @@ end ArkLib.ProximityGap.I031SubGaussianMaxBridge
 #print axioms ArkLib.ProximityGap.I031SubGaussianMaxBridge.subgaussian_max_le
 #print axioms ArkLib.ProximityGap.I031SubGaussianMaxBridge.not_periodSubGaussianTailBound_iff_exists_tail_count_gt
 #print axioms ArkLib.ProximityGap.I031SubGaussianMaxBridge.norm_eta_mem_periodMagnitudes
+#print axioms ArkLib.ProximityGap.I031SubGaussianMaxBridge.card_le_of_allFrequency_subGaussian
 #print axioms ArkLib.ProximityGap.I031SubGaussianMaxBridge.i031_norm_eta_le_of_subGaussian

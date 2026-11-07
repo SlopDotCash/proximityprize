@@ -9,9 +9,17 @@ import ArkLib.Data.CodingTheory.ProximityGap.LineHeavySetBound
 # Issue #232: the per-line first-moment bound (round 14d)
 
 The per-line decode chain needs the first moment `M := ∑_γ |Λ(γ,a)|` bounded uniformly (the
-round-14 numeric probe found it field-size independent, `≈ poly(n)`). This file proves the exact
-combinatorial bound by the **one-vote-per-coordinate** primitive (the single-codeword form of the
-round-14 double counting, = Hab25 Lemma 1 / `[AHIV17]`):
+round-14 numeric probe *observed* it to be field-size independent, `≈ poly(n)`, on the probed
+instances). This file proves an explicit **code-cardinality** first-moment bound by the
+**one-vote-per-coordinate** primitive (the single-codeword form of the round-14 double counting,
+= Hab25 Lemma 1 / `[AHIV17]`). It does **not** prove the field-size-independent `poly(n)` bound
+the probe suggested: the right-hand side carries the factor `|C|`, which for Reed–Solomon codes
+is `q^k` and so carries exactly the field dependence. Generic sharpness example: for the code of
+all constant words on any nonempty domain, `f = 0`, `g = 1` and `a = n`, every `f + γ·g` is a
+codeword with list size exactly `1`, so `M = q` and the proved inequality reads `q·n ≤ q·n`
+(this pencil is jointly correlated, so it is not an MCA counterexample, but nothing in the
+generic statement excludes it). A uniform polynomial bound would need an additional
+farness/list-control hypothesis that this file does not assume or prove (audit finding PG-141):
 
 **Single-codeword vote count.** On a line `{f + γ·g}` with nowhere-zero direction (`g i ≠ 0`),
 each coordinate `i` agrees with a fixed codeword `c` at *exactly one* line parameter
@@ -89,9 +97,10 @@ theorem single_decode_card_mul_le (f g c : Fin n → F) (a : ℕ) (hg : ∀ i, g
     _ = n := sum_agree_single_eq f g c hg
 
 /-- **The per-line first-moment bound.** On a line with nowhere-zero direction, the per-line list
-mass `M = ∑_γ |Λ(γ,a)|` obeys `M · a ≤ |C| · n` — field-size independent, exactly the round-14
-numeric probe's `M ≈ poly(n)`. Proof: the first moment reindexes (Fubini over the code) to the sum
-of single-codeword decode counts, each `≤ n/a`. -/
+mass `M = ∑_γ |Λ(γ,a)|` obeys `M · a ≤ |C| · n`. This is an explicit code-cardinality bound, not
+a field-size-independent one: `|C|` is `q^k` for Reed–Solomon codes, and the constant-word code
+with `f = 0`, `g = 1`, `a = n` attains `M = q` (see the module docstring). Proof: the first moment
+reindexes (Fubini over the code) to the sum of single-codeword decode counts, each `≤ n/a`. -/
 theorem line_first_moment_bound (C : Finset (Fin n → F)) (f g : Fin n → F) (a : ℕ)
     (hg : ∀ i, g i ≠ 0) :
     (∑ γ : F, (lineList C f g a γ).card) * a ≤ C.card * n := by
@@ -114,9 +123,9 @@ first-moment bound (`M·a ≤ |C|·n`, this file) with the second-moment bound a
 on every line with nowhere-zero direction in the `2a > n` window, with `0 < a`:
     `#{γ : |Λ(γ,a)| ≥ L} · L² · a · (2a−d) ≤ |C|·n·(2a−d) + a·(|C|²−|C|)·2(n−d)`.
 Every quantity on the right is an explicit `(n, d, a, |C|)` polynomial with NO `∑_γ` left — the
-per-line decode heaviness is bounded by code parameters alone, field-size-independent (the
-round-14 numeric probe's `M ≈ poly(n)`). This is the per-line "few bad points" the per-code
-threshold `δ*` is read from. -/
+per-line decode heaviness is bounded by code parameters, including the code cardinality `|C|`.
+It is **not** field-size-independent: `|C| = q^k` for Reed–Solomon codes, so the bound does not
+establish the round-14 probe's observed `M ≈ poly(n)`. -/
 theorem heavyLineSet_card_explicit_bound (C : Finset (Fin n → F)) (f g : Fin n → F)
     (a d L : ℕ) (hg : ∀ i, g i ≠ 0) (hn : n < 2 * a)
     (hd : ∀ p ∈ C.offDiag, d ≤ (supp p.1 p.2).card) :

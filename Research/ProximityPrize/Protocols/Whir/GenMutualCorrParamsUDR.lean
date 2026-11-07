@@ -221,6 +221,7 @@ noncomputable def genMutualCorrParamsUDR (P : Params ι F)
     have hmca := mca_rsc_pair_holds (0 : F) (φ i j) (P.varCount i - (j : ℕ))
       Fin.valEmbedding (hk i j) (fun _ => rfl)
     unfold mca_rsc at hmca
+    specialize hmca (fun j => by simpa using j.isLt)
     have h0 : 0 ≤ (1 + (pairUDRGen P S φ inst1 inst2 inst3 inst4 i j).rate) / 2 := by
       have := hrate_nonneg i j
       linarith

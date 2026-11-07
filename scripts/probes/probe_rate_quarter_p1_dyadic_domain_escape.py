@@ -15,10 +15,21 @@ so coset root-sets have 2-power sizes.  Sections:
   B. Two-level constructions ((x^m - s)*alpha with shared alpha-roots): shared
      roots are TRIPLE points, raising the coverage demand; exact arithmetic shows
      the demand exceeds the degree budget at prize scale AND at mu_256 scale.
-  C. Exhaustive-ish Bezout solution-dimension census on the dyadic domain
+  C. Small Bezout solution-dimension battery on the dyadic domain
      mu_256 c F_65537: X, Y, Z c mu_256 at escape sizes (56,56,55), over
-     structured dyadic families (subgroup-coset truncations, coset unions,
-     two-level sets, random domain subsets) — expect dimension 0 everywhere.
+     structured dyadic families (genuine subgroup-coset truncations, coset
+     unions, two-level sets, random domain subsets, cyclic arcs).  Subgroups
+     and cosets are built from exponent-ordered powers w256^(8i), w256^(4i)
+     with representatives from distinct quotient classes, and membership /
+     disjointness is asserted before any rank check.  Result: dimension 0 on
+     every family EXCEPT the two-level shared set, which has dimension 8 (an
+     exact family a = alpha*h, b = beta*h, c = lambda*l*h, deg h <= 7, from the
+     linear dependence of the three binomials x^32 - s_i times the common
+     shared-root factor).  Section B's triple-point coverage count, not Bezout
+     dimension, is what excludes that shape; this battery does not turn the
+     Bezout family into a stall family, and it is not exhaustive.
+     (An earlier version took strides of a NUMERICALLY sorted list of mu_256,
+     which are not subgroups or cosets, and reported dimension 0 everywhere.)
   D. Full stall-family census on the dyadic domain (single/dual/coset-shaped
      pencil constructions with dom = mu_256): max #stall-bad vs the two-pencil
      capacity 2(N-T+1) = 230 and the budget N = 256.
@@ -63,13 +74,22 @@ for (lbl, NN, TT, kk, m) in (("prize", N, T, k, 2 ** 27), ("mu_256", 256, 142, 6
 
 # ---------------------------------------------------------------------------
 print("\n" + "=" * 78)
-print("C. Bezout solution-dimension census on the dyadic domain mu_256 c F_65537")
+print("C. Bezout solution-dimension battery on the dyadic domain mu_256 c F_65537")
 print("=" * 78)
 q = 65537
 g = 3  # primitive root of F_65537
 w256 = pow(g, (q - 1) // 256, q)
-DOM = sorted(pow(w256, i, q) for i in range(256))
+# DOM_CYC is mu_256 in EXPONENT order: DOM_CYC[i] = w256^i.  Every subgroup /
+# coset / cyclic-arc construction below is built from exponents, never from a
+# numerically sorted list: numerical order of the field representatives does
+# not preserve cyclic exponent order, so strides of a sorted list are arbitrary
+# subsets, not subgroups (repository audit 2026-10-28, finding L115).
+DOM_CYC = [pow(w256, i, q) for i in range(256)]
+# DOM (numerically sorted) is kept only as a set enumeration of mu_256 for the
+# random subsets of Section C and the positional evaluation domain of Section D.
+DOM = sorted(DOM_CYC)
 assert len(set(DOM)) == 256
+assert pow(w256, 128, q) != 1 and pow(w256, 256, q) == 1  # w256 has order 256
 
 
 def rref_rank(Mx, qq):
@@ -126,10 +146,31 @@ def bezout_dim(X, Y, Z, kk, qq):
 
 import numpy as np
 rng = np.random.default_rng(1211)
-mu32 = [DOM[i] for i in range(0, 256, 8)]     # the mu_32 subgroup inside DOM
-mu64 = [DOM[i] for i in range(0, 256, 4)]     # mu_64
-cos32 = [sorted((DOM[j] * x) % q for x in mu32) for j in (1, 2, 3, 5, 6, 7)]
-cos64 = [sorted((DOM[j] * x) % q for x in mu64) for j in (1, 2, 3)]
+mu32 = [pow(w256, 8 * i, q) for i in range(32)]   # mu_32 = <w256^8>, exponent order
+mu64 = [pow(w256, 4 * i, q) for i in range(64)]   # mu_64 = <w256^4>, exponent order
+# Coset representatives w256^j from DISTINCT quotient classes: j mod 8 for
+# mu_256/mu_32 (classes 1,2,3,5,6,7) and j mod 4 for mu_256/mu_64 (classes 1,2,3).
+REPS32, REPS64 = (1, 2, 3, 5, 6, 7), (1, 2, 3)
+assert len({j % 8 for j in REPS32}) == len(REPS32) and all(j % 8 for j in REPS32)
+assert len({j % 4 for j in REPS64}) == len(REPS64) and all(j % 4 for j in REPS64)
+cos32 = [[(DOM_CYC[j] * x) % q for x in mu32] for j in REPS32]
+cos64 = [[(DOM_CYC[j] * x) % q for x in mu64] for j in REPS64]
+# Structural checks BEFORE any rank computation: genuine subgroups, genuine
+# cosets inside mu_256, pairwise disjoint (distinct quotient classes).
+assert len(set(mu32)) == 32 and all(pow(x, 32, q) == 1 for x in mu32)
+assert len(set(mu64)) == 64 and all(pow(x, 64, q) == 1 for x in mu64)
+_dom_set = set(DOM_CYC)
+for _fam, _size in ((cos32, 32), (cos64, 64)):
+    for _c in _fam:
+        assert len(set(_c)) == _size and set(_c) <= _dom_set
+        # x in w^j * mu_s  <=>  (x * w^-j)^s == 1; checked via x^s == (w^j)^s
+        _xs = {pow(x, _size, q) for x in _c}
+        assert len(_xs) == 1 and _xs != {1}
+    for _a in range(len(_fam)):
+        for _b in range(_a + 1, len(_fam)):
+            assert not set(_fam[_a]) & set(_fam[_b]), "cosets must be disjoint"
+print("  subgroup/coset checks passed: mu_32, mu_64 genuine; 6 mu_32-cosets and"
+      " 3 mu_64-cosets pairwise disjoint")
 tests = []
 # (a) mu_64-coset truncations to (56,56,55) — the direct dyadic analogue
 tests.append(("mu64-coset trunc", cos64[0][:56], cos64[1][:56], cos64[2][:55]))
@@ -147,7 +188,7 @@ for s in range(3):
     pts = list(map(int, rng.choice(DOM, size=167, replace=False)))
     tests.append((f"random-{s}", pts[:56], pts[56:112], pts[112:167]))
 # (e) contiguous-in-cyclic-order arcs
-tests.append(("arcs", DOM[:56], DOM[56:112], DOM[112:167]))
+tests.append(("arcs", DOM_CYC[:56], DOM_CYC[56:112], DOM_CYC[112:167]))
 worst = 0
 for lbl, X, Y, Z in tests:
     dim, nv = bezout_dim(X, Y, Z, ks, q)
@@ -155,6 +196,10 @@ for lbl, X, Y, Z in tests:
     print(f"  {lbl:20s}: Sigma = {len(X)+len(Y)+len(Z)}, dim = {dim} (vars {nv})")
 print(f"  MAX dimension over dyadic-structured battery: {worst}"
       f"  (generic bound max(0, 2k - Sigma) = {max(0, 2 * ks - 167)})")
+print("  note: a positive dimension on 'two-level shared' is the binomial-dependence"
+      " family\n  alpha(x^32-s0)+beta(x^32-s2) = lambda(x^32-s4) times the shared-root"
+      " factor;\n  Section B (triple-point coverage), not this rank test, excludes that"
+      " shape.")
 
 # ---------------------------------------------------------------------------
 print("\n" + "=" * 78)
@@ -252,8 +297,10 @@ print("     window [234881024, 268435455]: the adversarial-domain refutation")
 print("     CANNOT be transported to the literal dyadic prize domain.")
 print("  2. Two-level and coset-union variants are blocked exactly (triple-point")
 print("     counting / self-similar reduction).")
-print("  3. Exact Bezout dimension = 0 across all dyadic-structured geometries")
-print("     tried at mu_256/F_65537; stall census on the dyadic domain never")
-print("     exceeded the two-pencil capacity 2(N-T+1).")
-print("  => StallResidual on mu_{2^30} is UNREFUTED and the escape-free margin")
-print("     machinery is the live route; the dyadic obstruction is kernel-ready.")
+print("  3. Exact Bezout dimension at mu_256/F_65537: 0 on genuine coset")
+print(f"     truncations, coset unions, random subsets and cyclic arcs; {worst} on the")
+print("     two-level shared set (binomial-dependence family, excluded as an")
+print("     escape only by Section B's coverage count).  The stall census on the")
+print("     dyadic domain never exceeded the two-pencil capacity 2(N-T+1).")
+print("  => No escape constructed here; StallResidual on mu_{2^30} remains OPEN")
+print("     (unrefuted, not proved).  This finite battery is not exhaustive.")

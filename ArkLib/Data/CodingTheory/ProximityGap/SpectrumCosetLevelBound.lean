@@ -6,43 +6,54 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.CosetExactCount
 
 /-!
-# Fiber-count reduction of the bad-spectrum cardinality to the coset-level count (#389, partial — NOT a closure)
+# Fiber-count bound for subsets of `μ_n` by their coset values (#389, NOT a closure)
 
-The seed-census chain (`SmoothSupplyTowerBridge.lean` → `SeedCensusBound.lean`) reduced the
-deployed smooth-domain `ExplainableCoreSupply` to bounding the bad-spectrum cardinality
-`S.card` (the deep-band bad-scalar count), via
-`census_iff_spectrum_bound_of_free : seeds.card ≤ B ↔ S.card ≤ B · h`. So the whole supply
-reduces to `S.card = O(n log n)`.
+The seed-census chain (`SmoothSupplyTowerBridge.lean` → `SeedCensusBound.lean`) relates the
+deployed smooth-domain `ExplainableCoreSupply` to the bad-spectrum cardinality `S.card` (the
+deep-band bad-scalar count), via
+`census_iff_spectrum_bound_of_free : seeds.card ≤ B ↔ S.card ≤ B · h`, and states the supply
+target as `S.card = O(n log n)`. As explained in the correction below, under this file's
+hypothesis `S ⊆ μ_n` that target is trivially true.
 
-This file performs the **next clean reduction step**: it groups the bad spectrum `S ⊆ μ_n`
-by the `h`-th power map `x ↦ x^h` (whose fibers are exactly the `μ_h`-cosets, each of size
-exactly `h` by `CosetExactCount.fiber_card_eq`) and concludes the pure pigeonhole fact
+This file groups a set `S ⊆ μ_n` by the `h`-th power map `x ↦ x^h` (whose fibers are exactly
+the `μ_h`-cosets, each of size exactly `h` by `CosetExactCount.fiber_card_eq`) and proves the
+pure pigeonhole fact
 
-  **`S.card ≤ (#distinct coset-levels meeting S) · h`,**  where  `#levels = (S.image (·^h)).card`.
+  **`S.card ≤ (#distinct coset values meeting S) · h`,**  where  `#values = (S.image (·^h)).card`.
 
-This converts `S.card = O(n log n)` to the cleaner **tower-depth residual**
-`#coset-levels = O(log n)`. The fiber-values `c = x^h` all lie in `μ_{n/h}`, the order-`n/h`
-subgroup whose tower descent (`CensusTowerFinite.tower_closed_finite`,
-`CensusTowerDescent.tower_closed_of_dyadic_sums_zero`) structures the spectrum into dyadic
-levels — so `#coset-levels` is exactly the count of dyadic tower levels the spectrum meets.
+## Correction (audit 2026-10-28, PG-104): under `S ⊆ μ_n` the stated target is already trivial
+
+An earlier version of this header said that this pigeonhole step converts `S.card = O(n log n)`
+into a "tower-depth residual" `#coset-levels = O(log n)`, and that `#coset-levels` is the number of
+dyadic tower levels the spectrum meets. Both statements are wrong:
+
+* **The `O(n log n)` target needs no descent estimate under this file's hypothesis.** With
+  `S ⊆ μ_n` and `ζ` a primitive `n`-th root, `S.card ≤ n` directly
+  (`spectrum_card_le_n` below). So a residual of the form `S.card ≤ C · n log n` with `S ⊆ μ_n`
+  carries no open content; if the intended bad spectrum is a genuinely open quantity, it must live
+  in a larger ambient set (e.g. scalars of the full field `F`, not of `μ_n`), and its budget must be
+  restated against that ambient set before this reduction can be used.
+* **`O(log n)` is far stronger than what the target needs.** Through
+  `S.card ≤ #values · h`, the bound `S.card ≤ C · n log n` follows from
+  `#values ≤ C · (n/h) · log n`, which is already implied by the trivial bound
+  `#values ≤ n/h` (`spectrum_levels_card_le` below). Asking for `#values = O(log n)` discards the
+  `n/h` factor and is a much stronger, unmotivated statement.
+* **Coset values are not dyadic tower depths.** `S.image (·^h) ⊆ μ_{n/h}` counts field values
+  (equivalently `μ_h`-cosets met by `S`), not subgroup-depth indices: at `h = 1`, `S = μ_n` the
+  image has `n` values while `μ_n` (for `n = 2^a`) has only `log₂ n + 1` dyadic subgroup depths.
+
+The proved inequalities below are correct; only the earlier interpretation was wrong. No
+`O(log n)` bound on `#values` is asserted, and none is needed for the `O(n log n)` target.
 
 ## What is proved here (axiom-clean)
 
-* `spectrum_card_le_levels_mul_h` — **THE REDUCTION.** For any finite `S ⊆ μ_n` (with `h ∣ n`,
-  `ζ` a primitive `n`-th root), each `(·^h)`-fiber of `S` is contained in a full `μ_h`-coset of
-  size `h` (`fiber_card_eq`), so `S.card ≤ (S.image (·^h)).card · h`. Pure pigeonhole.
-* `spectrum_levels_subset_subgroup` — the fiber-values are graded: `S.image (·^h) ⊆ μ_{n/h}`,
-  i.e. every coset-level `c = x^h` is an `(n/h)`-th root of unity. This is the bridge that
-  identifies `#coset-levels` with the count of tower levels (the residual the dyadic descent
-  bounds).
-
-## Honesty
-
-This is a **reduction**, not a closure: it replaces `S.card ≤ O(n log n)` with the cleaner
-named residual `#coset-levels = (S.image (·^h)).card ≤ O(log n)` (the tower-depth count).
-No `O(log n)` bound is asserted here; pinning `#coset-levels` is the dyadic tower-descent
-problem, which reduces toward the recognized open core (#357/#389). The named-residual
-convention applies.
+* `spectrum_card_le_levels_mul_h` — for any finite `S ⊆ μ_n` (with `h ∣ n`, `ζ` a primitive `n`-th
+  root), each `(·^h)`-fiber of `S` is contained in a full `μ_h`-coset of size `h`
+  (`fiber_card_eq`), so `S.card ≤ (S.image (·^h)).card · h`. Pure pigeonhole.
+* `spectrum_levels_subset_subgroup` — every coset value `c = x^h` is an `(n/h)`-th root of unity:
+  `S.image (·^h) ⊆ μ_{n/h}`.
+* `spectrum_card_le_n`, `spectrum_levels_card_le` — the trivial bounds `S.card ≤ n` and
+  `#values ≤ n/h`, recorded to make the degeneracy above explicit.
 -/
 
 set_option linter.unusedSectionVars false
@@ -62,9 +73,10 @@ elements (`fiber_card_eq`); hence each fiber has size `≤ h`. By pigeonhole
 
   `S.card ≤ (S.image (·^h)).card · h`.
 
-The right factor `(S.image (·^h)).card` is the number of distinct coset-levels `c = x^h` the
-spectrum meets. This reduces the `S.card = O(n log n)` bound to the cleaner tower-depth
-residual `#coset-levels ≤ O(log n)`. -/
+The right factor `(S.image (·^h)).card` is the number of distinct coset values `c = x^h` the set
+meets (a count of field values in `μ_{n/h}`, not of dyadic tower depths). Under `S ⊆ μ_n` the
+bound `S.card ≤ n` already holds trivially (`spectrum_card_le_n`), so this inequality does not
+reduce any open `O(n log n)` target; see the module docstring (PG-104). -/
 theorem spectrum_card_le_levels_mul_h {ζ : F} {n h : ℕ} (hn : 0 < n) (hh : 0 < h) (hdvd : h ∣ n)
     (hζ : IsPrimitiveRoot ζ n) (S : Finset F) (hS : S ⊆ nthRootsFinset n (1 : F)) :
     S.card ≤ (S.image (fun x => x ^ h)).card * h := by
@@ -88,11 +100,11 @@ theorem spectrum_card_le_levels_mul_h {ζ : F} {n h : ℕ} (hn : 0 < n) (hh : 0 
   rw [mul_comm] at hpig
   exact hpig
 
-/-- **Coset-levels are graded into the order-`n/h` subgroup.** Every fiber-value `c = x^h`
-(`x ∈ S ⊆ μ_n`) is an `(n/h)`-th root of unity: `c ∈ μ_{n/h}`. Hence `#coset-levels` counts a
-subset of `μ_{n/h}` — the subgroup whose 2-adic tower descent
-(`CensusTowerFinite.tower_closed_finite`) structures the spectrum into dyadic levels. This is
-the bridge identifying the pigeonhole right factor with the tower-level count. -/
+/-- **Coset values lie in the order-`n/h` subgroup.** Every fiber-value `c = x^h`
+(`x ∈ S ⊆ μ_n`) is an `(n/h)`-th root of unity: `c ∈ μ_{n/h}`. Hence the pigeonhole right factor
+counts a subset of `μ_{n/h}` (field values / `μ_h`-cosets met by `S`). It is **not** a count of
+dyadic tower depths: at `h = 1`, `S = μ_n` it equals `n`, whereas `μ_{2^a}` has only `a + 1`
+subgroup depths (PG-104). -/
 theorem spectrum_levels_subset_subgroup {n h : ℕ} (hn : 0 < n) (hdvd : h ∣ n)
     (S : Finset F) (hS : S ⊆ nthRootsFinset n (1 : F)) :
     S.image (fun x => x ^ h) ⊆ nthRootsFinset (n / h) (1 : F) := by
@@ -104,8 +116,29 @@ theorem spectrum_levels_subset_subgroup {n h : ℕ} (hn : 0 < n) (hdvd : h ∣ n
   rw [mem_nthRootsFinset hnh]
   rw [← pow_mul, Nat.mul_div_cancel' hdvd, hxn]
 
+/-- **The trivial cardinality bound (PG-104).** Under this file's domain hypothesis `S ⊆ μ_n`
+(with `ζ` a primitive `n`-th root), `S.card ≤ n`. In particular any target of the form
+`S.card ≤ C · n log n` (`C ≥ 1`, `n ≥ 3`) needs no descent estimate. -/
+theorem spectrum_card_le_n {ζ : F} {n : ℕ} (hζ : IsPrimitiveRoot ζ n) (S : Finset F)
+    (hS : S ⊆ nthRootsFinset n (1 : F)) :
+    S.card ≤ n :=
+  (Finset.card_le_card hS).trans hζ.card_nthRootsFinset.le
+
+/-- **The trivial coset-value bound (PG-104).** The number of distinct coset values met by
+`S ⊆ μ_n` is at most `n/h`. Through `spectrum_card_le_levels_mul_h` this alone already gives
+`S.card ≤ n`, so a residual `#values = O(log n)` is far stronger than any `O(n log n)` target
+requires. -/
+theorem spectrum_levels_card_le {ζ : F} {n h : ℕ} (hn : 0 < n) (hdvd : h ∣ n)
+    (hζ : IsPrimitiveRoot ζ n) (S : Finset F) (hS : S ⊆ nthRootsFinset n (1 : F)) :
+    (S.image (fun x => x ^ h)).card ≤ n / h := by
+  have hζ' : IsPrimitiveRoot (ζ ^ h) (n / h) := hζ.pow hn (Nat.mul_div_cancel' hdvd).symm
+  exact (Finset.card_le_card (spectrum_levels_subset_subgroup hn hdvd S hS)).trans
+    hζ'.card_nthRootsFinset.le
+
 end ArkLib.ProximityGap.Rigidity
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only — NO sorryAx)
 #print axioms ArkLib.ProximityGap.Rigidity.spectrum_card_le_levels_mul_h
 #print axioms ArkLib.ProximityGap.Rigidity.spectrum_levels_subset_subgroup
+#print axioms ArkLib.ProximityGap.Rigidity.spectrum_card_le_n
+#print axioms ArkLib.ProximityGap.Rigidity.spectrum_levels_card_le

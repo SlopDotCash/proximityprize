@@ -28,8 +28,9 @@ within distance `1/2` of a constant word, so `Pr ≥ 6/7 > 5/7 = k·(n+1)/|F|`. 
 injective, so no constant codeword can agree with it on two coordinates.  Hence the residual is
 false as stated.  Moreover the extraction-only surface `LatticeCoeffPolyExtraction` is itself
 refuted at this endpoint (`not_latticeCoeffPolyExtraction`): the extraction is load-bearing, but
-the unconditional formulation of it is too strong — the surviving frontier is a regime-restricted
-extraction statement, not the unconditional one.
+the all-decoded-family formulation of it is too strong — it also fails on ambiguous decodings
+where correlated agreement holds (see the module header of `BoundaryLatticeThresholdLeaf`), so
+the surviving frontier is an existence / selection-compatible extraction statement.
 
 ## Verification
 `./scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/BoundaryLatticeThresholdRefutation.lean`

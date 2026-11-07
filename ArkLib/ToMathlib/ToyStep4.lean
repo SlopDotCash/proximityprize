@@ -10,49 +10,37 @@ import ProximityPrize.Extensions.Data.CodingTheory.InterleavedCode
 import ProximityPrize.Extensions.Data.CodingTheory.Basic.RelativeDistance
 
 /-!
-# Toy IOR soundness — the §6.4.1 Step-4 winning-set injection (ABF26 L6.12)
+# Toy IOR — a distinct-challenge → winning-set cardinality bridge
 
-This file builds the **genuine Step-4 construction** of [ABF26] §6.4.1 — the
-list→challenge injection used by `ToyProblem.simplified_iop_soundness_listDecoding_lb`
-(`ProofSystem/ToyProblem/SoundnessBounds.lean`) to close the L6.12 proof.
+This file proves a **cardinality bridge**, not the ABF26 Lemma 6.12 attack. An
+injective family of `N` challenges all lying in a winning set
+`Ω^{f₁,f₂}_{v,μ₁,μ₂}` (Definition 6.11) forces `|Ω| ≥ N ≥ N·|F| / (|F| + N − 1)`.
+It is used by the honest-instance lemma
+`ToyProblem.winningSet_zeroInstance_ncard_ge_listDecoding_expr`
+(`ProximityPrize/Extensions/ProofSystem/ToyProblem/SoundnessBounds.lean`).
 
-Steps 1–3 (the finite-`iSup` maximiser, the per-pair collision bound
-`linearForm_collision_prob`/`pair_linearForm_collision_le`, and Claim B.1
-`exists_large_image_of_pairwise_collision_bound`) are proven in tree. The residual is the
-*combinatorial heart of the attack*: turning `N := |Λ(C^{≡2}, δ)|` distinct `δ`-close
-codeword pairs into a single attack instance whose winning-challenge set
-`Ω^{f₁,f₂}_{v,μ₁,μ₂}` (Definition 6.11) has at least `N·|F| / (|F| + N − 1)` elements.
+## What it does not prove
 
-## The construction
+* No hypothesis says the instance `(f₁, f₂)` **violates** the relaxed relation, so the
+  bridge applies equally to valid (honest) instances; e.g. the all-zero instance, where
+  every challenge wins. Its conclusions are therefore not soundness lower bounds.
+* The codeword family `c : Fin N → ι → F` is **not** required to be distinct, nor to
+  come from the list `Λ(C^{≡2}, δ)`; only the challenges are injective.
+* The genuine Lemma 6.12 (violating instance, fixed-encoding relation, final bound
+  `N·|F| / (|F| + 2N)`) is the canonical
+  `ToyProblem.exists_winningSetFor_ncard_ge_of_lambda_lt_card`
+  (`ArkLib/ProofSystem/ToyProblem/SoundnessBounds.lean`). There
+  `N·|F| / (|F| + N − 1)` is only the intermediate first-B.1 image bound.
 
-The pivotal arithmetic observation that makes the bound *attainable by a genuine injection*
-(rather than only by Claim B.1's averaging) is:
+## Contents
 
-  `N·|F| / (|F| + N − 1) ≤ N`   (since `N·|F| ≤ N·(|F| + N − 1) ⟺ 0 ≤ N·(N−1)`).
-
-So it suffices to exhibit `N` **distinct winning challenges**, i.e. an injection
-`Fin N ↪ winningSet`. That is exactly the §6.4.1 attack: each of the `N` distinct codewords
-of the list is realised at a *distinct* passing challenge `γ`, and each such `γ` lies in the
-winning set because the line `f₁ + γ·f₂` is `δ`-close to the corresponding codeword (in `C`
-by linearity of the encoder) which satisfies the toy relation at `μ₁ + γ·μ₂`.
-
-We package the construction in two reusable pieces:
-
-* `winningSet_ncard_ge_of_injOn` — the **arithmetic + cardinality bridge**: an `InjOn`
-  challenge family landing in `winningSet` lower-bounds `|winningSet|` by its size, hence by
-  the list-decoding bound `N·|F| / (|F| + N − 1)`. (Axiom-clean, unconditional.)
-
-* `winningChal_mem_winningSet` — the **per-challenge winning-set membership**: under the
-  linear-encoder hypothesis `hEnc`, if the line `f₁ + γ·f₂` is `δ`-close to a codeword
-  `c ∈ C`, then `γ ∈ winningSet C δ 0 0 0 f₁ f₂`. (This is the `v = μ₁ = μ₂ = 0` instance,
-  for which the linear constraint is vacuous; it mirrors the `hrel_of_mem` bridge of
-  `simplified_iop_soundness_ca_lb`.)
-
-* `simplified_iop_listDecoding_lb_of_winningChallenges` — the **assembled Step-4 lemma**:
-  given a list of `N` distinct codewords each yielding (at a distinct, injectively assigned
-  challenge) a `δ`-close line, the winning set has `≥ N·|F| / (|F| + N − 1)` elements. This
-  is the faithful Step-4 conclusion, with the genuine attack data (`hEnc`, the distinct
-  winning challenges) carried as documented hypotheses rather than smuggled as the goal.
+* `listDecoding_lb_le_listSize` — `N·|F| / (|F| + N − 1) ≤ N`.
+* `winningSet_card_ge_of_inj` / `winningSet_ncard_ge_of_inj` — an injective family of
+  winning challenges lower-bounds `|winningSet|` by `N`, hence by the expression above.
+* `winningChal_mem_winningSet` — under the linear-encoder hypothesis `hEnc`, if
+  `f₁ + γ·f₂` is `δ`-close to some `c ∈ C`, then `γ ∈ winningSet C δ 0 0 0 f₁ f₂`
+  (the `v = μ₁ = μ₂ = 0` instance, where the linear constraint is vacuous).
+* `simplified_iop_listDecoding_lb_of_winningChallenges` — the two combined.
 
 ## References
 
@@ -71,12 +59,12 @@ set_option linter.unusedFintypeInType false
 
 variable {ι F : Type} [Fintype ι] [Field F] [Fintype F] [DecidableEq F]
 
-/-! ## Step-4 arithmetic: the bound never exceeds the list size -/
+/-! ## Arithmetic: the expression never exceeds the list size -/
 
-/-- **L6.12 Step-4 arithmetic core.** The list-decoding lower bound
+/-- **Arithmetic core.** The expression
 `N·|F| / (|F| + N − 1)` never exceeds `N`: clearing the positive denominator,
 `N·|F| ≤ N·(|F| + N − 1)` is `0 ≤ N·(N − 1)`. Hence a winning set with `≥ N`
-distinct challenges already realises the bound. PROVEN, axiom-clean. -/
+distinct challenges already exceeds it. PROVEN, axiom-clean. -/
 lemma listDecoding_lb_le_listSize (N : ℕ) (M : ℝ) (hM : (1 : ℝ) ≤ M) :
     ((N : ℝ) * M) / (M + (N : ℝ) - 1) ≤ (N : ℝ) := by
   rcases Nat.eq_zero_or_pos N with hN | hN
@@ -88,7 +76,7 @@ lemma listDecoding_lb_le_listSize (N : ℕ) (M : ℝ) (hM : (1 : ℝ) ≤ M) :
 
 /-! ## Cardinality bridge: distinct winning challenges lower-bound the winning set -/
 
-/-- **Step-4 cardinality bridge.** If `chal : Fin N → F` is injective and every value
+/-- **Cardinality bridge.** If `chal : Fin N → F` is injective and every value
 `chal j` lies in `winningSet C δ v μ₁ μ₂ f₁ f₂`, then the winning set has at least `N`
 elements. PROVEN, axiom-clean (pure `Set.ncard_le_ncard_of_injOn`). -/
 lemma winningSet_card_ge_of_inj {k N : ℕ} {C : Set (ι → F)} {δ : ℝ≥0}
@@ -105,9 +93,9 @@ lemma winningSet_card_ge_of_inj {k N : ℕ} {C : Set (ι → F)} {δ : ℝ≥0}
     (t := winningSet (k := k) C δ v μ₁ μ₂ f₁ f₂) chal hmaps hinjOn (Set.toFinite _)
   rwa [Set.ncard_univ, Nat.card_eq_fintype_card, Fintype.card_fin] at h
 
-/-- **Step-4 cardinality bridge (real-valued, with the list-decoding bound).** An injective
-family of `N` winning challenges forces the winning set's cardinality to be at least the
-list-decoding lower bound `N·|F| / (|F| + N − 1)`. Combines `winningSet_card_ge_of_inj`
+/-- **Cardinality bridge (real-valued).** An injective
+family of `N` winning challenges forces the winning set's cardinality to be at least
+`N·|F| / (|F| + N − 1)`. Combines `winningSet_card_ge_of_inj`
 (distinct challenges ⟹ `|Ω| ≥ N`) with `listDecoding_lb_le_listSize` (`N·|F|/(|F|+N−1) ≤ N`).
 PROVEN, axiom-clean. -/
 lemma winningSet_ncard_ge_of_inj {k N : ℕ} {C : Set (ι → F)} {δ : ℝ≥0}
@@ -127,7 +115,7 @@ lemma winningSet_ncard_ge_of_inj {k N : ℕ} {C : Set (ι → F)} {δ : ℝ≥0}
 
 /-! ## Per-challenge winning-set membership (the `v = μ₁ = μ₂ = 0` instance) -/
 
-/-- **Per-challenge winning-set membership (Step-4 core).** Under the linear-encoder
+/-- **Per-challenge winning-set membership.** Under the linear-encoder
 hypothesis `hEnc` (the code's standing assumption, cf. `simplified_iop_soundness_ca_lb`),
 a challenge `γ` is *winning* for the attack instance `(0, 0, 0, f₁, f₂)` whenever the line
 `f₁ + γ·f₂` is `δ`-close to *some* codeword `c ∈ C`.
@@ -169,23 +157,17 @@ theorem winningChal_mem_winningSet [Nonempty ι] {k : ℕ} {C : Set (ι → F)} 
       have := (hT_agree j).1 hj
       simpa using this
 
-/-! ## The assembled Step-4 winning-set bound -/
+/-! ## The assembled cardinality bridge -/
 
-/-- **L6.12 Step-4 (assembled, ABF26 §6.4.1).** The genuine list→challenge injection.
+/-- **Distinct-challenge cardinality bridge (zero-constraint instance).**
 
-Suppose we have:
+Given the linear-encoder hypothesis `hEnc`, an injective `chal : Fin N → F`, and for each
+`j` some codeword `c j ∈ C` to which the line `f₁ + (chal j)·f₂` is `δ`-close, the winning
+set of `(0, 0, 0, f₁, f₂)` has at least `N ≥ N·|F| / (|F| + N − 1)` elements.
 
-* the linear-encoder hypothesis `hEnc` (the toy relation's standing assumption);
-* an injective challenge assignment `chal : Fin N → F` (the §6.4.1 distinct passing
-  challenges, one per list element — *distinct* by the field-size regime `|F| > binom(N,2)`
-  via the per-pair separation of Steps 2–3);
-* for each `j`, a codeword `c j ∈ C` to which the line `f₁ + (chal j)·f₂` is `δ`-close
-  (the list element realised at its challenge).
-
-Then the attack instance `(0, 0, 0, f₁, f₂)` has winning set of cardinality at least
-`N·|F| / (|F| + N − 1)` — the L6.12 conclusion. This is the faithful Step-4: the genuine
-distinct-challenge attack data is the input, and the cardinality bound is *derived*
-(not assumed). PROVEN, axiom-clean. -/
+Only the challenges must be distinct; the `c j` need not be distinct or list elements, and
+no violation condition on `(f₁, f₂)` is assumed, so honest instances satisfy the
+hypotheses. This is not the ABF26 L6.12 attack (see the module docstring). -/
 theorem simplified_iop_listDecoding_lb_of_winningChallenges [Nonempty ι] {k N : ℕ}
     {C : Set (ι → F)} {δ : ℝ≥0} (δlt : δ ≤ 1)
     (hEnc : ∃ encode : (Fin k → F) →ₗ[F] (ι → F),
@@ -209,7 +191,7 @@ Each `#print axioms` below must report only Lean's standard kernel axioms
 (`propext`, `Classical.choice`, `Quot.sound`) — i.e. **no** `sorryAx` and **no** project-level
 assumed constant. -/
 
--- Step-4 arithmetic core (pure real analysis):
+-- Arithmetic core (pure real analysis):
 #print axioms ToyProblem.listDecoding_lb_le_listSize
 
 -- Cardinality bridge (Set.ncard_le_ncard_of_injOn):
@@ -221,5 +203,5 @@ assumed constant. -/
 -- Per-challenge winning-set membership (the v = μ₁ = μ₂ = 0 instance):
 #print axioms ToyProblem.winningChal_mem_winningSet
 
--- The assembled Step-4 lemma (the genuine L6.12 §6.4.1 list→challenge injection):
+-- The assembled cardinality bridge (not the L6.12 attack; see module docstring):
 #print axioms ToyProblem.simplified_iop_listDecoding_lb_of_winningChallenges

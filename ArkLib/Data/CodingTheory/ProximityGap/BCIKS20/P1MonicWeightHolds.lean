@@ -6,16 +6,24 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1MonicWeightRefutation
 
 /-!
-# BCIKS20 Appendix A.4 (P1) — the weight-1 bound HOLDS on the good instance (#138)
+# BCIKS20 Appendix A.4 (P1) — an order-1 weight witness on a good instance (#138)
 
 The positive companion to `weight_refuted`.  The (P1) weight invariant of #138 is false-as-stated
-because `ClaimA2.Hypotheses` does not bound `deg R`; `weight_refuted` exhibits failure on
-`R = Y² − 2 + u·s` (the lift direction carries ground-`X` degree, giving cleared weight `2 > 1`).
-This file exhibits the matching success on `R = Y² − 2 + u` (lift direction a constant): the unique
-cleared quotient `a = mk(monomial 1 (−1))` has `Λ_𝒪`-weight exactly `1 ≤ 1`.  Together the two pin
-the **exact boundary** of the carved predicate: the weight-1 invariant holds iff the lift direction
-is free of ground-`X` degree — i.e. the genuine BCIKS20 invariant is the carved predicate plus a
-`deg R` bound.  Axiom-clean.
+because `ClaimA2.Hypotheses` does not bound `deg R`; `weight_refuted` exhibits failure at order 1
+on `R = Y² − 2 + u·s` (the lift direction carries ground-`X` degree; no order-1 quotient has
+weight `≤ 1`).  This file exhibits an order-1 success on `R = Y² − 2 + u` (lift direction a
+constant): the quotient `a = mk(monomial 1 (−1))` satisfies `β₁ = a·ξ` and has `Λ_𝒪`-weight
+exactly `1 ≤ 1`.
+
+**Scope.** `weight_holds` is a single order-1 existential witness for one concrete `R`; it is not
+the all-order invariant, and uniqueness of the quotient is not proved here. The two examples show
+that the order-1 weight bound depends on the degree budget of the lift direction; they do **not**
+prove that the weight-1 invariant holds iff the lift direction is free of ground-`X` degree. That
+unqualified converse is false even at order 1: for `R = H(Y) + u·s·H(Y)` with the same
+`H = Y² − 2` over `F_3`, the lift direction `s·H(Y)` has ground degree but vanishes modulo `H`, so
+`β₁ = 0` and `a = 0` satisfies the bound (informal example, not formalized here). Any
+characterization needs a precise normalized family (quotient normalization, noncancellation) with
+both directions proved.  Axiom-clean.
 -/
 
 noncomputable section
@@ -83,11 +91,13 @@ private lemma h3KXG : (3 : K[X]) = 0 := by
   rw [show (3 : K[X]) = Polynomial.C (3 : K) from (map_ofNat Polynomial.C 3).symm,
     show (3 : K) = 0 from by decide, map_zero]
 
-/-- **The (P1) weight bound HOLDS on the good instance.**  For `RG = Y² − 2 + u` (constant lift
-direction), the unique cleared quotient `a = mk(monomial 1 (−1))` of `β₁ = a·ξ` has `Λ_𝒪`-weight
-`1 ≤ 1`.  Paired with `weight_refuted` (where `R = Y² − 2 + u·s` gives weight `2 > 1`), this pins the
-exact boundary: the weight-1 invariant holds iff the lift direction is free of ground-`X` degree —
-i.e. the genuine BCIKS20 invariant is the carved predicate plus a `deg R` bound. -/
+/-- **An order-1 (P1) weight witness on the good instance.**  For `RG = Y² − 2 + u` (constant lift
+direction), the cleared quotient `a = mk(monomial 1 (−1))` satisfies `β₁ = a·ξ` and has
+`Λ_𝒪`-weight `1 ≤ 1`.  This is one order-1 existential witness for one `R`, not the all-order
+invariant. Paired with `weight_refuted` (where `R = Y² − 2 + u·s` admits no such order-1
+quotient), it shows dependence on the degree budget of the lift direction; it does not prove an
+iff characterization in terms of the ground-`X` degree of the lift direction (see the module
+docstring for a scalar-multiple deformation where that converse fails). -/
 theorem weight_holds (hH : 0 < myH.natDegree) :
     ∃ a : 𝒪 myH, βHensel myH 0 myRG myHypG 1 = a * ClaimA2.ξ 0 myRG myH myHypG
         ∧ weight_Λ_over_𝒪 hH a 2 ≤ WithBot.some 1 := by

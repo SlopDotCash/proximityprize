@@ -15,14 +15,15 @@ Issue lalalune/ArkLib#444 (Ethereum Proximity Prize, thin 2-power Gauss-period w
 `_wf5A1_phase_transfer_spectral.lean` (lane A1) studied the phase-aware dyadic-transfer
 strategy: telescope `M(2^{i+1}) ≤ ρ_i · M(2^i)` and bound the geometric mean of the per-level
 ratios by `√2`, which yields the **pure** dyadic `√n` law
-`M(2^L) ≤ M(1) · (√2)^L = M(1) · √(2^L)` (`sqrtLaw_of_geomean_le`).  It then **refuted** the
-hypothesis `∏ρ ≤ (√2)^N`: the measured worst-frequency ratios have product `> (√2)^6`
-(`measuredProd_gt_sqrt2_pow_six`, `geomeanThresholdRefuted`).
+`M(2^L) ≤ M(1) · (√2)^L = M(1) · √(2^L)` (`sqrtLaw_of_geomean_le`).  It then recorded probe
+data showing the *measured* worst-frequency ratios violate the hypothesis `∏ρ ≤ (√2)^N`
+(product `> (√2)^6`; arithmetic check `measuredProd_gt_sqrt2_pow_six`,
+`measuredRatios_prod_exceeds_sqrt2_pow` — numerical evidence, not a Lean refutation).
 
 But the PRIZE floor is the *weaker* bound
   `M(n) ≤ C · √(n · log(p/n)) = C · √(2^L) · √(log(p/n))`,
 i.e. the pure `√n` law TIMES an extra `√(log(p/n))` factor.  So the geomean target `ρ̄ ≤ √2`
-A1 refuted is **strictly stronger than the prize**: it asks for the pure `√n` law with NO log
+A1 numerically refuted is **strictly stronger than the prize**: it asks for the pure `√n` law with NO log
 slack.  This file makes that separation an axiom-clean theorem, so the campaign does not read
 A1's refutation as "the prize fails on the dyadic route" — it is only "the *pure-√n*
 specialization of the route fails; the prize-floor specialization has an extra `√log` of slack

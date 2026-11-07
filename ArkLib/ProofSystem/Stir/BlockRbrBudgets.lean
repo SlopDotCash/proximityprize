@@ -20,14 +20,17 @@ Unlike the initial `[C_fold]` block (whose verifier *relays the input oracle*, s
 zero-error relay proof of `InitRbrSoundness.lean` goes through), both remaining blocks
 expose the prover's *message* as the output oracle and make **no checks**.  For an
 adversarial prover the output oracle can therefore be δ-close to the code while the input
-oracle is δ-far, and the naive zero-error RBR statement is **false**.  This file proves the positive budgets and records the counterexample design for the
-unsupported proximity claim:
+oracle is δ-far, and the naive zero-error RBR statement is **false**.  This file proves
+what is true (the indicator budgets below) and records, as a source-level argument, why the
+zero-error statement fails:
 
-* **Refutation design** (§3; mechanization deferred): the final block does
+* **Refutation design (argument only; mechanization deferred, §3)**: the final block does
   NOT satisfy `rbrKnowledgeSoundness` with error `0` for
   `stirOStmtRel F → stirOStmtRel (F × F)`, whenever a δ-far word and a δ-close word exist
   and the implementation state initializer can produce a state.  The breaking prover sends
   a fixed δ-close word as the in-the-clear final message, ignoring its δ-far input oracle.
+  No Lean theorem states this refutation; the argument is sound under the stated far/close
+  witness assumptions.
 
 * **Indicator budgets (TRUE)**: via the threshold knowledge state function
   (`ThresholdKSF.thresholdKSF`), both blocks satisfy `rbrKnowledgeSoundness` with the
@@ -93,13 +96,15 @@ theorem stirFinalVerifier_toVerifier_run (r : F) (oStmt : ∀ i, OStmt ι F i)
 The threshold state function tracks `relIn`-membership of the input pair up to a designated
 challenge round and is `True` afterwards; the flip probability is `0` at every challenge
 round except the designated one.  For these check-free blocks this is the sharpest budget
-shape attainable for the proximity relations (the refutation in §3 shows the unit budget
-cannot be removed). -/
+shape attainable for the proximity relations (the cheating-prover argument recorded in §3 and
+in the module docstring shows the unit budget cannot be removed; that refutation is not
+mechanized). -/
 
 set_option linter.unusedSectionVars false in
 /-- **Indicator-budget RBR knowledge soundness of the final `[p, C_fin]` block.**  The whole
 unit budget sits on the unique challenge round `C_fin`. This does not establish a zero budget;
-the conditional counterexample design is recorded in §3. -/
+the conditional counterexample design recorded in §3 (not mechanized) argues that the budget
+cannot be lowered to `0`. -/
 theorem stirFinalVerifier_rbrKnowledgeSoundness_indicator (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0) :
     (stirFinalVerifier (ι := ι) (F := F)).rbrKnowledgeSoundness init impl
       (stirOStmtRel F φ deg δ) (stirOStmtRel (F × F) φ deg δ)

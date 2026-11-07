@@ -20,7 +20,7 @@ components `P₀, P₁` of the corrected (T-loaded) representative
 companion … is NOT produced by the converter").  This file proves the budget **in the form the
 Hensel recursion actually supports** — an explicit, `t`-graded budget telescoped through the
 `(A.1)` per-step degree growth — and pins, with in-tree kernel-checked evidence, why the paper's
-*absolute* (weight-1) form is out of reach for every bookkeeping route.
+*absolute* (weight-1) form does not follow from the graded hypotheses this accounting consumes.
 
 ## The degree-accounting argument (found, and how far it goes)
 
@@ -48,14 +48,16 @@ canonical coefficients into the converter yields the **budgeted T-loaded represe
 
 ## The honest wall (twofold, both machine-checked)
 
-1. **The absolute (weight-1) #138 budget is NOT reachable by this — or any — degree bookkeeping.**
+1. **The absolute (weight-1) #138 budget is refuted under the graded hypotheses used here.**
    `XDegreeBudgetProbe.graded_rescue_dead` (in-tree, kernel-checked): the
    `P1MonicWeightRefutation` witness satisfies monicity, the paper grading
    `degreeX (R.coeff j) ≤ D − j`, the strongest pointwise trivariate grading, and every other
    graded side condition at the pinned `D = 2`, yet the budget `deg_X c₀ ≤ 1 ∧ (D+1−d_H) +
-   deg_X c₁ ≤ 1` FAILS at `t = 1`.  So the `t`-graded budget proven here is optimal-in-kind:
-   the gap to the paper's absolute form is genuinely GS-*geometric* (the agreement structure
-   tying the `Z`-direction of `R` to codewords), not recursive degree accounting.
+   deg_X c₁ ≤ 1` FAILS at `t = 1`.  So no argument consuming only these graded hypotheses can
+   produce the absolute budget; closing the gap needs extra input (plausibly the GS-*geometric*
+   agreement structure tying the `Z`-direction of `R` to codewords).  This is a single
+   counterexample to the absolute budget, not a lower bound: no optimality of the linear-in-`t`
+   slope of the graded budget is claimed or proved.
    Re-exported below as `weight_one_budget_wall`.
 
 2. **The `ξ⁻¹`-weight supply is the one fixed constant the accounting does not produce.**  The
@@ -316,15 +318,15 @@ theorem branch_field_budgeted_of_graded_disc_tail
 
 end Wiring
 
-/-! ## 5. The wall, re-exported: the absolute (weight-1) budget is dead for bookkeeping -/
+/-! ## 5. The wall, re-exported: the absolute budget is refuted under the graded hypotheses -/
 
 open BCIKS20.HenselNumerator.WeightWitness in
 /-- **The absolute #138 budget cannot follow from the accounting above** (re-export of the
 kernel-checked `XDegreeBudgetProbe.graded_rescue_dead`): the `P1MonicWeightRefutation` witness
 satisfies EVERY graded hypothesis consumed by `alpha_preimage_weight_le_graded` at the pinned
 `D = 2`, yet the absolute budget `deg_X c₀ ≤ 1 ∧ (D+1−d_H) + deg_X c₁ ≤ 1` fails at `t = 1`.
-So the `t`-graded budget of this file is optimal-in-kind for degree-bookkeeping routes; the gap
-to the paper's weight-1 invariant is GS-geometric. -/
+So the absolute budget is refuted under these graded hypotheses alone; this is one witness, not
+a lower bound, and no optimality of the graded budget's linear-in-`t` slope is claimed. -/
 theorem weight_one_budget_wall (hH : 0 < myH.natDegree) :
     (myH.Monic
       ∧ Bivariate.totalDegree myH ≤ 2

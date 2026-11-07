@@ -38,8 +38,10 @@ namespace KoalaBear
 
 /-- Four evaluation points in the KoalaBear-sextic field: the canonical casts of
 `0, 1, 2, 3 : ℕ`. (Pairwise distinct since the characteristic is the KoalaBear
-prime `p = 2^31 - 2^24 + 1 > 4`; the prize-regime soundness anchors only need
-linearity, so distinctness is not used below.) -/
+prime `p = 2^31 - 2^24 + 1 > 4`. Distinctness is not used in this file; it is
+proved as `KoalaBear.rsPoint_injective` in `KoalaIRSAccounting.lean`, where the
+minimum distance needs it, and the violation certificate of the leaderboard
+attack instance in `KoalaBearAttackInstance.lean` needs it too.) -/
 noncomputable def rsPoint : Fin 4 → Sextic := fun j => (j.val : Sextic)
 
 /-- The genuine **rate-`1/2` KoalaBear-sextic Reed–Solomon evaluation encoder**:

@@ -13,6 +13,25 @@ This file evaluates the three-core Lagrange defects entirely in `Nat` modulo
 the certified prime.  It avoids direct reduction of large `ZMod` products and
 inverses, while retaining a small proved cast bridge in
 `_NatModProductCertificate.lean`.
+
+## Scope (what this file does and does not certify)
+
+* The headline result `chartZ_eq_fingerprint` only says that the chart `chartZ` *defined in
+  this file* (ratio of two row-reduced defect coordinates) reproduces the fingerprint table.
+  This file builds no direction vectors and never instantiates
+  `projectively_separated_of_chart`; it proves no separation statement on its own.
+* The six reduction constants `row{0,1,2}At{6,15}` are bare literals here; nothing in this
+  file states or proves their meaning.  They coincide with the column-`6` and column-`15`
+  entries of the row-reduced annihilator `rowTab` of `_W7RateHalfFingerprintSeal.lean`, where
+  the pivot shape is proved (`rowTab_pivot`), but that identification is not checked here.
+* The end-to-end, hypothesis-free separation theorem for the concrete direction family
+  (`directionNat`, `direction_projectively_separated`) lives in
+  `_W7RateHalfFingerprintSeal.lean`, which does not import this file.  This file is a parallel
+  `Nat`-evaluation certificate of the chart values only; its sole importer is `All.lean`.
+* Each core uses `32` basis coordinates and `31` outside coordinates, so exactly one
+  coordinate of `mu_64` is in neither list: `58` for core `0`, `63` for core `1`, `61` for
+  core `2`.  These coordinates are not used (only `31` outside points per core enter the
+  table, `93 = 3·31` fingerprints in all); no claim is made about them.
 -/
 
 set_option autoImplicit false

@@ -31,9 +31,15 @@ monomial bound, packaged as the named numeric surface `MonomialBoundaryBound`.
 Production relevance: 2-power smooth domains always have `3 ∤ n`, so the boundary-row
 defect case (triangles strictly beating monomials; at `3 ∣ n` the excess pair
 `(X^{n−2}, X^{n−3})` is itself coset-triangle-structured and ties) is the *generic*
-production shape.  The surviving v4 surface restricts domination to rows with
-`d ≥ 2b` (off the boundary rows), where the monomial family has survived every
-falsifier run to date.
+production shape.
+
+**The v4 correction is refuted too.**  The v4 surface `MonomialDominationOffBoundary`
+restricts domination to rows with `d ≥ 2b` (off the boundary rows).  On the same code it
+fails at the off-boundary row `a = 7` (`δ = 1/8`, band `b = 2`, `k + n + 1 = 13 ≤ 14 = 2a`):
+`ε_mca(C84, 1/8) = 2/17` (`epsMCA_eighth_eq`) while every monomial pair has at most one bad
+scalar, `monomialEps ≤ 1/17` (`monomialEps_eighth_le`, proved unconditionally).  Hence
+`monomialDominationOffBoundary_refuted`: v4 is false for every crossing `ac ≤ 6`.  The seven
+quarter-radius certificates and the conditional v3 refutation above remain valid.
 
 Issue #357 (the boundary-row incidence arc).
 -/
@@ -235,15 +241,15 @@ theorem monomialDomination_refuted_of_monomial_bound (hmono : MonomialBoundaryBo
       _ = 4 := by rw [ENNReal.div_mul_cancel h17 h17']
   exact absurd h74 (by norm_num)
 
-/-! ## The surviving v4 surface -/
+/-! ## The v4 surface (also refuted, see below) -/
 
-/-- **The corrected domination surface (v4): monomial domination off the boundary rows.**
+/-- **The v4 domination surface: monomial domination off the boundary rows.**
 The agreement row `a` has band `b = n − a + 1`; the row is *off-boundary* when the
 code's distance budget clears twice the band (`2b ≤ n − k + 1`, i.e. `k + n + 1 ≤ 2a`).
-The refutation above lives exactly on the excluded rows (`a = 6`, `k = 4`, `n = 8`:
-`k + n + 1 = 13 > 12 = 2a`).  Off the boundary rows the monomial family has survived
-every falsifier run to date (binomial attacks, random stacks, floor bands, the pencil
-strip — whose extremal stacks are themselves monomial — and the `3 ∣ n` boundary ties). -/
+The triangle refutation above lives on the excluded rows (`a = 6`, `k = 4`, `n = 8`:
+`k + n + 1 = 13 > 12 = 2a`).  **This surface is false as well**: at the off-boundary row
+`a = 7` of the same code the full MCA error is `2/17` while the monomial family reaches only
+`1/17` (`monomialDominationOffBoundary_refuted`, for every crossing `ac ≤ 6`). -/
 def MonomialDominationOffBoundary {n : ℕ} (dom : Fin n → F17)
     (C : Set (Fin n → F17)) (k ac : ℕ) : Prop :=
   ∀ a : ℕ, ac < a → a ≤ n → k + n + 1 ≤ 2 * a →
@@ -251,16 +257,244 @@ def MonomialDominationOffBoundary {n : ℕ} (dom : Fin n → F17)
       ≤ ProximityGap.MonomialDominationPin.monomialEps dom C
           (1 - (a : ℝ≥0) / (n : ℝ≥0))
 
-/-- v4 weakens v3: the off-boundary surface follows from full domination.  (The converse
-fails — by this file's refutation — which is precisely the content of the correction.) -/
+/-- v4 weakens v3: the off-boundary surface follows from full domination.  (Both surfaces are
+refuted on `C84` for small crossings: v3 conditionally on `MonomialBoundaryBound`, v4
+unconditionally by `monomialDominationOffBoundary_refuted`.) -/
 theorem offBoundary_of_monomialDomination {n k ac : ℕ} (dom : Fin n → F17)
     (C : Set (Fin n → F17))
     (h : ProximityGap.MonomialDominationPin.MonomialDomination dom C ac) :
     MonomialDominationOffBoundary dom C k ac :=
   fun a hac han _ => h a hac han
 
+/-! ## The v4 surface is also refuted: agreement `a = 7`, `δ = 1/8`
+
+On the same code `C84`, the off-boundary row `a = 7` (`k + n + 1 = 13 ≤ 14 = 2a`, band `b = 2`,
+distance `5 ≥ 2b = 4`) already separates the full MCA error from the monomial one:
+
+* `ε_mca(C84, 1/8) = 2/17` (the universal second band, `MCABandTwoExact`);
+* every monomial pair `(X^s, X^t)` has at most one bad scalar at `δ = 1/8`, so
+  `monomialEps dom C84 (1/8) ≤ 1/17` (`monomialEps_eighth_le`).
+
+The monomial upper bound is proved here unconditionally: a monomial line `x^s + γx^t` that agrees
+with a cubic codeword on `7` of the `8` points must itself be a codeword, because the
+coefficient functionals `φ_j(g) = ∑ᵢ g i · dom i^{8−j}` (`4 ≤ j ≤ 7`) kill cubics, kill the line for
+the (at least two) `j ∉ {s, t}`, and are nonzero on the single-point spike.  Two distinct bad
+scalars would then put both monomials in the code, contradicting badness. -/
+
+/-- Every point of the domain `⟨2⟩ ⊆ F₁₇` is nonzero. -/
+private theorem dom_ne_zero (i : Fin 8) : dom i ≠ 0 := by
+  fin_cases i <;> decide
+
+/-- Power sums over `μ₈ = ⟨2⟩`: `∑ᵢ dom i ^ e = 0` for `e < 16` with `8 ∤ e`. -/
+private theorem psum_dom_eq_zero (e : ℕ) (he : e < 16) (h8 : e % 8 ≠ 0) :
+    ∑ i : Fin 8, dom i ^ e = 0 := by
+  interval_cases e <;> first | omega | decide
+
+/-- The coefficient functionals `φ_j`, `4 ≤ j ≤ 7`, vanish on every codeword of `C84`. -/
+private theorem phi_codeword_eq_zero {w : Fin 8 → F17} (hw : w ∈ C84) {j : ℕ}
+    (hj4 : 4 ≤ j) (hj7 : j ≤ 7) :
+    ∑ i, w i * dom i ^ (8 - j) = 0 := by
+  obtain ⟨P, hP, rfl⟩ := hw
+  have hnat : P.natDegree < 4 := by
+    by_cases hP0 : P = 0
+    · rw [hP0, Polynomial.natDegree_zero]; norm_num
+    · exact (Polynomial.natDegree_lt_iff_degree_lt hP0).mpr hP
+  have hexp : ∀ i, P.eval (dom i) * dom i ^ (8 - j)
+      = ∑ m ∈ Finset.range 4, P.coeff m * dom i ^ (m + (8 - j)) := by
+    intro i
+    rw [Polynomial.eval_eq_sum_range' hnat, Finset.sum_mul]
+    refine Finset.sum_congr rfl fun m _ => ?_
+    rw [pow_add]; ring
+  show ∑ i, P.eval (dom i) * dom i ^ (8 - j) = 0
+  simp_rw [hexp]
+  rw [Finset.sum_comm]
+  refine Finset.sum_eq_zero fun m hm => ?_
+  rw [Finset.mem_range] at hm
+  rw [← Finset.mul_sum, psum_dom_eq_zero _ (by omega) (by omega), mul_zero]
+
+/-- For `4 ≤ j ≤ 7` with `j ∉ {s, t}`, the functional `φ_j` vanishes on the monomial line. -/
+private theorem phi_monomialLine_eq_zero (s t : Fin 8) (γ : F17) {j : ℕ}
+    (hj4 : 4 ≤ j) (hj7 : j ≤ 7) (hjs : j ≠ (s : ℕ)) (hjt : j ≠ (t : ℕ)) :
+    ∑ i, (dom i ^ (s : ℕ) + γ * dom i ^ (t : ℕ)) * dom i ^ (8 - j) = 0 := by
+  have hs := s.isLt
+  have ht := t.isLt
+  have hexp : ∀ i, (dom i ^ (s : ℕ) + γ * dom i ^ (t : ℕ)) * dom i ^ (8 - j)
+      = dom i ^ ((s : ℕ) + (8 - j)) + γ * dom i ^ ((t : ℕ) + (8 - j)) := by
+    intro i; rw [pow_add, pow_add]; ring
+  simp_rw [hexp]
+  rw [Finset.sum_add_distrib, ← Finset.mul_sum,
+    psum_dom_eq_zero _ (by omega) (by omega), psum_dom_eq_zero _ (by omega) (by omega),
+    mul_zero, add_zero]
+
+/-- **Seven-point closeness forces a monomial line into the code.**  If the line
+`x ↦ x^s + γ·x^t` agrees with a codeword of `C84` on at least `7` of the `8` positions, then the
+line itself is a codeword. -/
+private theorem monomialLine_mem_of_seven {s t : Fin 8} {γ : F17} {S : Finset (Fin 8)}
+    (hS : 7 ≤ S.card) {w : Fin 8 → F17} (hw : w ∈ C84)
+    (hag : ∀ i ∈ S, w i = dom i ^ (s : ℕ) + γ * dom i ^ (t : ℕ)) :
+    (fun i => dom i ^ (s : ℕ) + γ * dom i ^ (t : ℕ)) ∈ C84 := by
+  suffices h : (fun i => dom i ^ (s : ℕ) + γ * dom i ^ (t : ℕ)) = w by rw [h]; exact hw
+  funext r
+  by_cases hr : r ∈ S
+  · exact (hag r hr).symm
+  · have hother : ∀ i, i ≠ r → i ∈ S := by
+      intro i hir
+      by_contra hiS
+      have hsub : S ⊆ (Finset.univ.erase r).erase i := by
+        intro x hx
+        rw [Finset.mem_erase, Finset.mem_erase]
+        exact ⟨fun h => hiS (h ▸ hx), fun h => hr (h ▸ hx), Finset.mem_univ x⟩
+      have hc := Finset.card_le_card hsub
+      have h6 : ((Finset.univ.erase r).erase i).card = 6 := by
+        rw [Finset.card_erase_of_mem (Finset.mem_erase.mpr ⟨hir, Finset.mem_univ i⟩),
+          Finset.card_erase_of_mem (Finset.mem_univ r), Finset.card_univ, Fintype.card_fin]
+      omega
+    obtain ⟨j, hj4, hj7, hjs, hjt⟩ :
+        ∃ j : ℕ, 4 ≤ j ∧ j ≤ 7 ∧ j ≠ (s : ℕ) ∧ j ≠ (t : ℕ) := by
+      by_cases h4 : (4 : ℕ) ≠ s ∧ (4 : ℕ) ≠ t
+      · exact ⟨4, by omega, by omega, h4.1, h4.2⟩
+      · by_cases h5 : (5 : ℕ) ≠ s ∧ (5 : ℕ) ≠ t
+        · exact ⟨5, by omega, by omega, h5.1, h5.2⟩
+        · exact ⟨6, by omega, by omega, by omega, by omega⟩
+    set g : Fin 8 → F17 := fun i => (dom i ^ (s : ℕ) + γ * dom i ^ (t : ℕ)) - w i with hg
+    have hgz : ∀ i, i ≠ r → g i = 0 := by
+      intro i hir
+      rw [hg]
+      simp only []
+      rw [hag i (hother i hir), sub_self]
+    have hphi : ∑ i, g i * dom i ^ (8 - j) = 0 := by
+      have hsplit : ∑ i, g i * dom i ^ (8 - j)
+          = ∑ i, (dom i ^ (s : ℕ) + γ * dom i ^ (t : ℕ)) * dom i ^ (8 - j)
+            - ∑ i, w i * dom i ^ (8 - j) := by
+        rw [← Finset.sum_sub_distrib]
+        refine Finset.sum_congr rfl fun i _ => ?_
+        rw [hg]; ring
+      rw [hsplit, phi_monomialLine_eq_zero s t γ hj4 hj7 hjs hjt,
+        phi_codeword_eq_zero hw hj4 hj7, sub_zero]
+    have hsingle : ∑ i, g i * dom i ^ (8 - j) = g r * dom r ^ (8 - j) :=
+      Finset.sum_eq_single r (fun i _ hir => by rw [hgz i hir, zero_mul])
+        (fun h => absurd (Finset.mem_univ r) h)
+    rw [hsingle] at hphi
+    have hgr : g r = 0 := by
+      rcases mul_eq_zero.mp hphi with h | h
+      · exact h
+      · exact absurd h (pow_ne_zero _ (dom_ne_zero r))
+    exact sub_eq_zero.mp hgr
+
+/-- The size clause at `δ = 1/8`, `n = 8`: a witness has at least `7` positions. -/
+private theorem seven_le_of_card_clause {S : Finset (Fin 8)}
+    (hS : (S.card : ℝ≥0) ≥ (1 - (1/8 : ℝ≥0)) * (Fintype.card (Fin 8) : ℝ≥0)) :
+    7 ≤ S.card := by
+  have h18 : (1/8 : ℝ≥0) ≤ 1 := by
+    rw [div_le_one (by norm_num : (0 : ℝ≥0) < 8)]
+    norm_num
+  have h78 : (1 - (1/8 : ℝ≥0)) * (Fintype.card (Fin 8) : ℝ≥0) = 7 := by
+    rw [Fintype.card_fin, ← NNReal.coe_inj, NNReal.coe_mul, NNReal.coe_sub h18]
+    push_cast
+    norm_num
+  have h7 : (7 : ℝ≥0) ≤ S.card := by
+    rw [← h78]
+    exact hS
+  exact_mod_cast h7
+
+open Classical in
+/-- **At most one bad scalar per monomial pair at `δ = 1/8`.** -/
+private theorem monomial_badScalar_card_le_one (s t : Fin 8) :
+    (Finset.filter (fun γ : F17 => mcaEvent (F := F17) (C84 : Set (Fin 8 → F17)) (1/8)
+        (fun i => dom i ^ (s : ℕ)) (fun i => dom i ^ (t : ℕ)) γ) Finset.univ).card ≤ 1 := by
+  rw [Finset.card_le_one]
+  intro γ hγ γ' hγ'
+  rw [Finset.mem_filter] at hγ hγ'
+  obtain ⟨S, hS, ⟨w, hwmem, hweq⟩, hno⟩ := hγ.2
+  obtain ⟨S', hS', ⟨w', hwmem', hweq'⟩, _⟩ := hγ'.2
+  have m1 := monomialLine_mem_of_seven (s := s) (t := t) (γ := γ)
+    (seven_le_of_card_clause hS) hwmem (fun i hi => by simpa [smul_eq_mul] using hweq i hi)
+  have m2 := monomialLine_mem_of_seven (s := s) (t := t) (γ := γ')
+    (seven_le_of_card_clause hS') hwmem' (fun i hi => by simpa [smul_eq_mul] using hweq' i hi)
+  by_contra hne
+  have hsub : (γ - γ') • (fun i : Fin 8 => dom i ^ (t : ℕ)) ∈ C84 := by
+    have h := C84.sub_mem m1 m2
+    convert h using 1
+    funext i
+    simp only [Pi.smul_apply, Pi.sub_apply, smul_eq_mul]
+    ring
+  have hu1 : (fun i : Fin 8 => dom i ^ (t : ℕ)) ∈ C84 := by
+    have h := C84.smul_mem (γ - γ')⁻¹ hsub
+    rwa [inv_smul_smul₀ (sub_ne_zero.mpr hne)] at h
+  have hu0 : (fun i : Fin 8 => dom i ^ (s : ℕ)) ∈ C84 := by
+    have h := C84.sub_mem m1 (C84.smul_mem γ hu1)
+    convert h using 1
+    funext i
+    simp only [Pi.smul_apply, Pi.sub_apply, smul_eq_mul]
+    ring
+  exact hno ⟨_, hu0, _, hu1, fun i _ => ⟨rfl, rfl⟩⟩
+
+open Classical in
+/-- **The monomial census at agreement `7`:** `monomialEps dom C84 (1/8) ≤ 1/17`. -/
+theorem monomialEps_eighth_le :
+    ProximityGap.MonomialDominationPin.monomialEps dom (C84 : Set (Fin 8 → F17)) (1/8)
+      ≤ 1 / 17 := by
+  unfold ProximityGap.MonomialDominationPin.monomialEps
+  refine iSup_le fun s => iSup_le fun t => ?_
+  calc _ ≤ 1 / (Fintype.card F17 : ℝ≥0∞) := by
+        rw [prob_uniform_eq_card_filter_div_card]
+        simp only [ENNReal.coe_natCast]
+        gcongr
+        exact_mod_cast monomial_badScalar_card_le_one s t
+    _ = 1 / 17 := by
+        rw [show Fintype.card F17 = 17 from by simp [ZMod.card]]
+        norm_num
+
+/-- **The full MCA error at agreement `7`:** `ε_mca(C84, 1/8) = 2/17` (universal second band). -/
+theorem epsMCA_eighth_eq :
+    epsMCA (F := F17) (A := F17) (C84 : Set (Fin 8 → F17)) (1/8) = 2 / 17 := by
+  have h8 : (1/8 : ℝ≥0) * (Fintype.card (Fin 8) : ℝ≥0) = 1 := by
+    rw [Fintype.card_fin]
+    norm_num
+  rw [ProximityGap.MCABandTwoExact.epsMCA_eq_two_div_card_of_dist4 C84
+    ProximityGap.DeltaStarSecondPin.C84_noLowWeight (by rw [Fintype.card_fin]; norm_num)
+    (le_of_eq h8.symm) (by rw [h8]; norm_num)
+    (show (0 : Fin 8) ≠ 1 by decide) (show (1 : F17) ≠ 0 by decide)]
+  rw [show Fintype.card F17 = 17 from by simp [ZMod.card]]
+  norm_num
+
+/-- The radius `1/8` is the grid radius of agreement `a = 7` at `n = 8`. -/
+private theorem eighth_eq_grid :
+    (1 - ((7 : ℕ) : ℝ≥0) / ((8 : ℕ) : ℝ≥0)) = (1/8 : ℝ≥0) := by
+  have h78 : ((7 : ℕ) : ℝ≥0) / ((8 : ℕ) : ℝ≥0) = 7/8 := by
+    rw [← NNReal.coe_inj]
+    push_cast
+    norm_num
+  have h781 : (7/8 : ℝ≥0) ≤ 1 := by
+    rw [div_le_one (by norm_num : (0 : ℝ≥0) < 8)]
+    norm_num
+  rw [h78, tsub_eq_iff_eq_add_of_le h781]
+  rw [← NNReal.coe_inj]
+  push_cast
+  norm_num
+
+/-- **The corrected v4 surface `MonomialDominationOffBoundary` is FALSE on `C84`** for every
+crossing `ac ≤ 6` (unconditionally): the off-boundary row `a = 7` (`k + n + 1 = 13 ≤ 14 = 2a`)
+has `ε_mca = 2/17` while the monomial family only reaches `1/17`. -/
+theorem monomialDominationOffBoundary_refuted {ac : ℕ} (hac : ac ≤ 6) :
+    ¬ MonomialDominationOffBoundary dom (C84 : Set (Fin 8 → F17)) 4 ac := by
+  intro h
+  have h7 := h 7 (by omega) (by norm_num) (by norm_num)
+  rw [eighth_eq_grid, epsMCA_eighth_eq] at h7
+  have hchain : (2 / 17 : ℝ≥0∞) ≤ 1 / 17 := le_trans h7 monomialEps_eighth_le
+  have h17 : (17 : ℝ≥0∞) ≠ 0 := by norm_num
+  have h17' : (17 : ℝ≥0∞) ≠ ⊤ := by norm_num
+  have h21 : (2 : ℝ≥0∞) ≤ 1 := by
+    calc (2 : ℝ≥0∞) = 2 / 17 * 17 := by rw [ENNReal.div_mul_cancel h17 h17']
+      _ ≤ 1 / 17 * 17 := mul_le_mul_left hchain 17
+      _ = 1 := by rw [ENNReal.div_mul_cancel h17 h17']
+  exact absurd h21 (by norm_num)
+
 end ProximityGap.MonomialDominationBoundaryRefuted
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only)
 #print axioms ProximityGap.MonomialDominationBoundaryRefuted.epsMCA_quarter_ge_seven
 #print axioms ProximityGap.MonomialDominationBoundaryRefuted.monomialDomination_refuted_of_monomial_bound
+#print axioms ProximityGap.MonomialDominationBoundaryRefuted.monomialEps_eighth_le
+#print axioms ProximityGap.MonomialDominationBoundaryRefuted.epsMCA_eighth_eq
+#print axioms ProximityGap.MonomialDominationBoundaryRefuted.monomialDominationOffBoundary_refuted

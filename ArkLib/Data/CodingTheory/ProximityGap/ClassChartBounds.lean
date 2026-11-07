@@ -34,8 +34,14 @@ of a fiber is a point of the torsion locus of the variety
 `V(p₁ − a₁, …, p_t − a_t) ⊆ 𝔾_m^w` (when `D₀` consists of roots of unity). Aliev–Smyth
 (Thm 1.1, arXiv:0704.1747: the number of maximal torsion cosets on a degree-`d`
 hypersurface in `𝔾_m^n` is `≤ c₁(n)·d^{c₂(n)}`, explicit constants) bounds the *isolated*
-torsion points uniformly in `a` and in the field; the positive-dimensional torsion cosets
-are the structured "coset-family" members, counted by the tower machinery
+torsion points uniformly in `a` — **but only in characteristic zero** (the theorem is stated
+over `ℂ`; its introduction discusses transfer only to characteristic zero).  It does **not**
+supply this bound over the finite fields this file allows: over `\bar F_p` every nonzero element
+is torsion, so the degree-1 curve `x + y = 1` in `𝔾_m²` has infinitely many torsion points yet
+contains no positive-dimensional torus coset; already in finite odd `F_q` it has `(q − 3)/2`
+distinct unordered nonzero solution pairs, unbounded at fixed `w = 2`, `d = 1`.  Using it over
+`F_q` would need a sound lifting/separation theorem (not available here).  The positive-dimensional
+torsion cosets are the structured "coset-family" members, counted by the tower machinery
 (O46–O50, per coset). Here the input is packaged as the named hypotheses
 `ASIsolatedBound` / `CosetFamilyBound` and the decomposition
 `fiber = isolated ⊔ coset-family ⟹ |fiber| ≤ C_AS + B` is machine-checked. The
@@ -184,7 +190,9 @@ coset family of the fiber variety" — concretely: `S` contains a union of nontr
 `μ_d`-cosets, the shape classified by the tower theory). The two named hypotheses
 package, respectively, Aliev–Smyth Thm 1.1 (arXiv:0704.1747) applied to the isolated
 torsion points of `V(p₁ − a₁, …, p_t − a_t) ⊆ 𝔾_m^w`, and the per-coset tower count
-(O46–O50). Neither is claimed here; the decomposition theorem is what is proved. -/
+(O46–O50). Neither is claimed here; the decomposition theorem is what is proved.  Aliev–Smyth
+is a characteristic-zero theorem: over a finite field `F` the hypothesis `ASIsolatedBound` is
+**not** supplied by it (and the field-uniform form fails, e.g. `x + y = 1` over `F_q`). -/
 
 section AlievSmyth
 
@@ -192,9 +200,10 @@ variable {IsCosetFam : Finset F → Prop} [DecidablePred IsCosetFam]
 
 /-- **Named hypothesis (Aliev–Smyth, Thm 1.1 of arXiv:0704.1747)**: the *isolated* part
 of every nonzero-class fiber — members outside all positive-dimensional torsion coset
-families — has cardinality at most `C`, uniformly in the class parameters. A–S give this
-with the explicit field-independent constant `C = c₁(w)·d^{c₂(w)}` for the fiber variety;
-the constant stays abstract here. -/
+families — has cardinality at most `C`, uniformly in the class parameters. In
+characteristic zero A–S give this with the explicit constant `C = c₁(w)·d^{c₂(w)}` for the fiber
+variety; for the arbitrary (in particular finite) fields `F` allowed here it is an assumption
+not supplied by A–S (module docstring). The constant stays abstract here. -/
 def ASIsolatedBound (D₀ : Finset F) (w t : ℕ) (IsCosetFam : Finset F → Prop)
     [DecidablePred IsCosetFam] (C : ℕ) : Prop :=
   ∀ a : ℕ → F, (∃ j ∈ Finset.Icc 1 t, a j ≠ 0) →

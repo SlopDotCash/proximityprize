@@ -11,12 +11,23 @@ import ArkLib.Data.CodingTheory.ProximityGap.MCAThresholdLedger
 The bracket engine (`MCAThresholdLedger.lean`) ships the two *one-sided* brackets
 `le_mcaDeltaStar_of_good` (a good point lies below `δ*`) and `mcaDeltaStar_le_of_bad` (a bad
 point lies above `δ*`). To *pin* `δ*` to an exact value — the grand-challenge target, "two
-`mcaDeltaStar` brackets that **meet**" — one needs the two-sided combinator that produces an
-equality `δ* = δ₀` from a good point at `δ₀` together with badness strictly above it.
+`mcaDeltaStar` brackets that **meet**" — one needs a two-sided combinator that produces an
+equality `δ* = δ₀`.
 
-This file supplies that missing piece, `mcaDeltaStar_eq_of_good_of_bad_above`, plus the
-convenient `bad_above` packaging. Every exact `δ*` pin (toy instances now, the eventual
-explicit smooth-RS pin later) routes through it.
+The usable form is **`mcaDeltaStar_eq_of_good_below_of_bad_above`**: goodness at every radius
+strictly below `δ₀` and badness at every radius `≥ δ₀` give `δ* = δ₀`, with `δ₀` itself bad.
+The in-tree exact pins use this shape (or the equivalent jump pin
+`MCAListBracketInterpolation.mcaDeltaStar_eq_of_jump`): `ε_mca` sees the radius only through the
+agreement floor `⌈(1 − δ)·n⌉₊` (`MCAStepFunction.epsMCA_eq_of_ceil_eq`), whose cells are open on
+the right, so a threshold `δ* < 1` is never itself a good radius
+(`MCAStepFunction.lt_epsMCA_mcaDeltaStar_of_lt_one`).
+
+**Correction (audit 2026-10-28, PG-027).** An earlier version of this header presented the
+closed-good combinator `mcaDeltaStar_eq_of_good_of_bad_above` (goodness **at** `δ₀`, badness at
+every `δ > δ₀`) as the missing piece through which every exact pin routes. That implication is
+valid, but its premises are never jointly satisfiable for the repository's `ε_mca`
+(`MCAStepFunction.not_good_and_bad_above`), so it pins no threshold; the same holds for its alias
+`mcaDeltaStar_eq_of_good_of_strictMono_bad`, which has identical hypotheses and conclusion.
 
 **Empirical anchor (probe-verified, cross-checked two ways, witness-disciplined; see
 `scripts/probes/probe_exact_pin.py` and the dossier `docs/wiki/fable-deltastar-attack-2026-06.md`):**
@@ -24,7 +35,8 @@ for `RS[F₁₃, D, 2]` (`n = 4`), `ε_mca = 1/13` for `δ < 1/4` and `= 4/13` f
 sitting exactly at the unique-decoding radius `(1−ρ)/2 = 1/4`. Hence for any `ε* ∈ [1/13, 4/13)`,
 `δ*(RS[F₁₃,D,2], ε*) = 1/4` — the *first exact δ\* value for any code* (the dossier records none
 exist anywhere). Its Lean discharge (the exact `epsMCA` computation for that concrete code) is the
-remaining ingredient; this combinator is the bracket-meet half, proven now.
+remaining ingredient; the good-below/bad-at-and-above combinator is the bracket-meet half,
+proven now.
 
 Axiom-clean: `[propext, Classical.choice, Quot.sound]` (see `#print axioms` at EOF).
 -/
@@ -38,10 +50,13 @@ variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {A : Type} [Fintype A] [DecidableEq A] [AddCommGroup A] [Module F A]
 
-/-- **The exact-pin combinator.** If `δ₀ ≤ 1` is a *good* radius (`ε_mca(C, δ₀) ≤ ε*`) and
-*every strictly larger* radius is *bad* (`ε* < ε_mca(C, δ)` for all `δ > δ₀`), then the formal
-threshold is pinned exactly: `δ*(C, ε*) = δ₀`. This is the two-sided "brackets meet" statement —
-the grand-challenge target shape. -/
+/-- **Closed-good pin (vacuous premises).** If `δ₀ ≤ 1` is a *good* radius
+(`ε_mca(C, δ₀) ≤ ε*`) and *every strictly larger* radius is *bad* (`ε* < ε_mca(C, δ)` for all
+`δ > δ₀`), then `δ*(C, ε*) = δ₀`. The implication is valid, but for the repository's `ε_mca` the
+premises are never jointly satisfiable: every radius has a strictly larger radius with the same
+agreement floor and hence the same MCA error (`MCAStepFunction.not_good_and_bad_above`; audit
+2026-10-28, PG-027). It therefore pins no threshold; exact pins use
+`mcaDeltaStar_eq_of_good_below_of_bad_above` (goodness below `δ₀`, badness at and above it). -/
 theorem mcaDeltaStar_eq_of_good_of_bad_above
     (C : Set (ι → A)) (εstar : ℝ≥0∞) {δ₀ : ℝ≥0}
     (hδ₀ : δ₀ ≤ 1)
@@ -55,10 +70,10 @@ theorem mcaDeltaStar_eq_of_good_of_bad_above
   by_contra hnot
   exact absurd hδ.2 (not_le_of_gt (hbad δ (lt_of_not_ge hnot)))
 
-/-- Convenience repackaging: the "bad above" hypothesis from a single monotone bad threshold.
-If `δ₀` is good and there is a *bad radius arbitrarily close above* — concretely, every
-`δ > δ₀` is bad — the pin holds. (Same content; named for the consumer that supplies a
-bad-point family.) -/
+/-- Alias of `mcaDeltaStar_eq_of_good_of_bad_above`, with identical hypotheses (goodness at
+`δ₀`, badness at every `δ > δ₀`) and conclusion; it adds no guarantee. Its premises are likewise
+never jointly satisfiable for the repository's `ε_mca`
+(`MCAStepFunction.not_good_and_bad_above`). -/
 theorem mcaDeltaStar_eq_of_good_of_strictMono_bad
     (C : Set (ι → A)) (εstar : ℝ≥0∞) {δ₀ : ℝ≥0}
     (hδ₀ : δ₀ ≤ 1)

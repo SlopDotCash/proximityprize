@@ -26,15 +26,21 @@ two-sided bracket valid at **every** sub-plateau radius `δ`:
 ## The honest open core (ABF26 §1, issue #232)
 
 The ratio of the two endpoints is `C(n, max(⌈(1-δ)n⌉, k+1)) / (⌊δ·n⌋+1)`, which is
-*exponential* in `n` in the Johnson→capacity window. Hence — as `epsMCA_bracket_gap_excludes_pin`
-records — for the deployed prize parameters (`q < 2²⁵⁶`, `ε* = 2⁻¹²⁸`, `k ≤ 2⁴⁰`, smooth
-power-of-two domain) **these two proven bounds straddle `ε*` over the whole interior**: the
-window upper bound already exceeds `ε*` well below the Johnson radius, while the linear lower
-bound stays below `ε*` until far above capacity. Neither in-tree bound is tight enough to
-certify the crossover `δ*`, which is exactly the new-mathematics content of the Grand MCA
-Challenge (the strong Johnson-range upper bound `poly(n)/q` and the strong near-capacity
-superpolynomial lower bound, neither of which is currently known for explicit smooth-domain
-RS codes; see `MutualCorrAgreement.mca_johnson_bound_CONJECTURE` and the §3 state of the art).
+*exponential* in `n` in the Johnson→capacity window. Heuristically, for the deployed prize
+parameters (`q < 2²⁵⁶`, `ε* = 2⁻¹²⁸`, `k ≤ 2⁴⁰`, smooth power-of-two domain) one expects these
+two proven bounds to straddle `ε*` over much of the interior: the window upper bound exceeds
+`ε*` well below the Johnson radius, while the linear lower bound `(⌊δ·n⌋+1)/q` stays tiny on its
+whole domain of validity. **This straddle claim is not formalized here** (no theorem in this file
+instantiates the deployed parameters); note also that the lower bound is only stated for
+`⌊δ·n⌋+1+k ≤ n`, i.e. strictly below capacity, so it says nothing at or above capacity. Neither
+in-tree bound is tight enough to certify the crossover `δ*`, which is exactly the
+new-mathematics content of the Grand MCA Challenge (the strong Johnson-range upper bound
+`poly(n)/q` and the strong near-capacity superpolynomial lower bound, neither of which is
+currently known for explicit smooth-domain RS codes; see
+`MutualCorrAgreement.mca_johnson_bound_CONJECTURE` and the §3 state of the art).
+
+(An earlier `epsMCA_bracket_gap_excludes_pin` merely returned `epsMCA_bracket` together with
+its own straddle hypotheses verbatim; it added no content and has been removed.)
 
 This file therefore does **not** claim the prize; it states precisely, and machine-checks, the
 two-sided bracket that the proven theory delivers and the exact sense in which it falls short.
@@ -105,42 +111,6 @@ theorem epsMCA_bracket (domain : ι ↪ F) (k : ℕ) (δ : ℝ≥0)
           (max (⌈((1 : ℝ≥0) - δ) * (Fintype.card ι : ℝ≥0)⌉₊) (k + 1)) : ENNReal) /
         (Fintype.card F : ENNReal) :=
   ⟨epsMCA_ge_linear_floor domain k δ hk hq, epsMCA_le_choose_div domain k δ⟩
-
-/-- **The proven bracket cannot decide the prize predicate when its endpoints straddle `ε*`.**
-
-If at radius `δ` the lower spike floor is `≤ ε*` while the upper window count is `> ε*`, then
-**both** the true error `ε_mca(RS, δ)` and the target `ε*` provably lie in the bracket interval
-`[lo, hi]` (the `ε_mca` membership is the content of `epsMCA_bracket`; the `ε*` membership is
-the straddle hypothesis). The proven bracket therefore does not pin down the sign of
-`ε_mca(RS, δ) − ε*`: it is consistent with `ε_mca ≤ ε*` (δ admissible for the prize) and with
-`ε_mca > ε*` (δ excluded). This is the formal shadow of the headline finding — with the
-exponential bracket gap such a straddling `δ` exists across the entire Johnson→capacity window
-for prize field sizes, so no in-tree bound certifies the crossover `δ*`. -/
-theorem epsMCA_bracket_gap_excludes_pin (domain : ι ↪ F) (k : ℕ) (δ : ℝ≥0)
-    {ε_star : ℝ≥0∞}
-    (hk : ⌊(δ : ℝ≥0) * (Fintype.card ι : ℝ≥0)⌋₊ + 1 + k ≤ Fintype.card ι)
-    (hq : ⌊(δ : ℝ≥0) * (Fintype.card ι : ℝ≥0)⌋₊ + 1 ≤ Fintype.card F)
-    (hlo : ((⌊(δ : ℝ≥0) * (Fintype.card ι : ℝ≥0)⌋₊ + 1 : ℕ) : ℝ≥0∞) /
-        (Fintype.card F : ℝ≥0∞) ≤ ε_star)
-    (hhi : ε_star <
-      ((Fintype.card ι).choose
-          (max (⌈((1 : ℝ≥0) - δ) * (Fintype.card ι : ℝ≥0)⌉₊) (k + 1)) : ENNReal) /
-        (Fintype.card F : ENNReal)) :
-    -- `ε_mca` lies in the bracket interval ...
-    (((⌊(δ : ℝ≥0) * (Fintype.card ι : ℝ≥0)⌋₊ + 1 : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤
-        epsMCA (F := F) (A := F) (ReedSolomon.code domain k : Set (ι → F)) δ ∧
-      epsMCA (F := F) (A := F) (ReedSolomon.code domain k : Set (ι → F)) δ ≤
-        ((Fintype.card ι).choose
-            (max (⌈((1 : ℝ≥0) - δ) * (Fintype.card ι : ℝ≥0)⌉₊) (k + 1)) : ENNReal) /
-          (Fintype.card F : ENNReal)) ∧
-    -- ... and so does `ε*`, on the *open* side of each endpoint, so the order is undetermined.
-    (((⌊(δ : ℝ≥0) * (Fintype.card ι : ℝ≥0)⌋₊ + 1 : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤
-        ε_star ∧
-      ε_star <
-        ((Fintype.card ι).choose
-            (max (⌈((1 : ℝ≥0) - δ) * (Fintype.card ι : ℝ≥0)⌉₊) (k + 1)) : ENNReal) /
-          (Fintype.card F : ENNReal)) :=
-  ⟨epsMCA_bracket domain k δ hk hq, hlo, hhi⟩
 
 end ProximityGap
 

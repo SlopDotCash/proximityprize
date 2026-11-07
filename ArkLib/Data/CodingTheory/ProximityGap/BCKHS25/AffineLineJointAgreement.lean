@@ -23,6 +23,13 @@ codewords of the Reed–Solomon code.
 This is the consumer-side bridge: it is exactly the output shape demanded by the
 list-decoding branch of `δ_ε_correlatedAgreementAffineLines`, supplied here from
 the Hensel-free joint pair rather than the §5 Hensel coefficient extraction.
+
+**Scope caveat (2026-10-28 audit, PG-323).**  The upstream degree budget
+`hn : k + 2e + h + 1 = n` (with `h : ℕ`) forces `2e ≤ n − k − 1`, so every per-`z` seed radius
+`e` accepted here is within the unique-decoding radius of the dimension-`k + 1` code; only the
+output loss `e + h` may exceed UDR.  The theorems below therefore do not complete the
+list-decoding branch for seed radii beyond UDR; that needs a separate theorem with post-UDR
+seed hypotheses.
 -/
 
 namespace BCKHS25
@@ -116,7 +123,7 @@ theorem jointAgreement_of_jointDisagreement_le {deg : ℕ} [NeZero deg]
 
 /-- **[BCKHS25] §2 Hensel-free affine-line `jointAgreement` (end-to-end).**
 
-Direct consumer closure: from the per-`z` list-decoding hypothesis (`prox`: a
+Direct consumer closure: from the per-`z` proximity hypothesis (`prox`: a
 large set `S` of curve parameters, each with a degree-`k` proximate within
 Hamming distance `e` of the line combination `u₀ + u₁·z`) together with the
 Polishchuk–Spielman ratio (`hratio`) and degree budget (`hn`, `hDZ`), the line
@@ -126,8 +133,10 @@ proximity radius `⌊δ·n⌋`.
 
 This chains [BCKHS25] Claim 2.3 (`exists_joint_proximate`, built on Lemma 2.1's
 Berlekamp–Welch pair) with the joint-pair → `jointAgreement` bridge, giving the
-list-decoding-branch output of `δ_ε_correlatedAgreementAffineLines` entirely on
-the Hensel-free route. -/
+`jointAgreement` output shape of `δ_ε_correlatedAgreementAffineLines` on the Hensel-free route.
+Scope (PG-323): `hn` forces `2e ≤ n − k − 1`, so the seed radius `e` is within the
+unique-decoding radius of the dimension-`k + 1` code; this does not supply the list-decoding
+branch for per-seed radii beyond UDR. -/
 theorem jointAgreement_of_proximates (k e h DZ : ℕ) {δ : ℝ≥0}
     (hn : k + 2 * e + h + 1 = Fintype.card ι)
     (hDZ : e + 1 ≤ (h + 1) * DZ) (hDZ0 : 0 < DZ)
@@ -151,12 +160,16 @@ theorem jointAgreement_of_proximates (k e h DZ : ℕ) {δ : ℝ≥0}
 
 /-- **[BCKHS25] §2 distance restoration (2.4 ∘ 2.2 chain).** Combining Theorem
 2.2's uniform-in-`z` line closeness (`proximity_gap_listDecoding`) with Lemma 2.4
-(`card_jointDisagreement_filter_mul_le`) sharpens the joint disagreement bound:
-the SAME joint pair `(p₀, p₁)` produced by Claim 2.3 has joint disagreement `d`
-with `(u₀, u₁)` satisfying `(|Z| − 1)·d ≤ |Z|·(e + h)` for every `z`-set `Z` of
-size `≥ 2` — i.e. `d ≤ |Z|/(|Z| − 1)·(e + h)`, which beats the raw `e + h` bound
-as `|Z|` grows. This is the oversized-error-locator distance restoration that
-closes the [BCKHS25] §2 Berlekamp–Welch route. -/
+(`card_jointDisagreement_filter_mul_le`): the joint pair `(p₀, p₁)` produced by
+Theorem 2.2 has joint disagreement `d` with `(u₀, u₁)` satisfying
+`(|Z| − 1)·d ≤ |Z|·(e + h)` for every `z`-set `Z` of size `≥ 2`, i.e.
+`d ≤ |Z|/(|Z| − 1)·(e + h)`.
+
+**Interpretation (2026-10-28 audit, PG-229).** For finite `|Z| ≥ 2` the multiplier
+`|Z|/(|Z| − 1)` is strictly greater than `1`, so this averaging bound is **weaker** than the raw
+bound `d ≤ e + h` already supplied by `exists_joint_proximate` (Claim 2.3) under the same
+hypotheses; it only approaches `e + h` from above as `|Z| → ∞`.  It is a valid averaging
+inequality, not a sharpening of the raw joint-disagreement bound. -/
 theorem card_jointDisagreement_restored (k e h DZ : ℕ)
     (hn : k + 2 * e + h + 1 = Fintype.card ι)
     (hDZ : e + 1 ≤ (h + 1) * DZ) (hDZ0 : 0 < DZ)
@@ -190,13 +203,14 @@ theorem card_jointDisagreement_restored (k e h DZ : ℕ)
 
 /-- **[BCKHS25] §2 restored-distance affine-line `jointAgreement`.**
 
-This is the consumer form of `card_jointDisagreement_restored`: if the restored
-bound
-`(|S| - 1) * d ≤ |S| * (e + h)`
-fits inside the target proximity radius, i.e.
-`|S| * (e + h) ≤ (|S| - 1) * ⌊δ n⌋`, then the same Hensel-free
-Berlekamp-Welch/Polishchuk-Spielman route yields `jointAgreement` for the
-two-row affine-line stack. -/
+Consumer form stated with the restored-bound fit guard
+`|S| * (e + h) ≤ (|S| - 1) * ⌊δ n⌋`.
+
+**Redundancy (2026-10-28 audit, PG-229).** This guard is *stronger* than the raw fit
+`e + h ≤ ⌊δ n⌋` (since `(|S| - 1)(e + h) ≤ |S|(e + h)`), and the conclusion is the same, so this
+theorem is a special case of `jointAgreement_of_proximates`; it is now proved by deriving the raw
+fit and delegating to that theorem.  It is kept only for API compatibility with existing callers
+and gives no stronger existence conclusion. -/
 theorem jointAgreement_of_proximates_restored (k e h DZ : ℕ) {δ : ℝ≥0}
     (hn : k + 2 * e + h + 1 = Fintype.card ι)
     (hDZ : e + 1 ≤ (h + 1) * DZ) (hDZ0 : 0 < DZ)
@@ -211,39 +225,12 @@ theorem jointAgreement_of_proximates_restored (k e h DZ : ℕ) {δ : ℝ≥0}
         (S.card - 1) * Nat.floor (δ * (Fintype.card ι : ℝ≥0))) :
     jointAgreement (F := F) (κ := Fin 2) (ι := ι)
       (C := ReedSolomon.code domain (k + 1)) (δ := δ) (W := lineWordStack u₀ u₁) := by
-  classical
-  haveI := Fintype.ofFinite F
   have hS0 : 0 < S.card := by omega
-  obtain ⟨p₀, p₁, hp₀, hp₁, hrestored⟩ :=
-    card_jointDisagreement_restored k e h DZ hn hDZ hDZ0 domain u₀ u₁ S hS0 prox hratio
-  have hrestoredS := hrestored S hS2
   have hpos : 0 < S.card - 1 := by omega
-  have hdis_oriented :
-      (Finset.univ.filter
-        (fun x => ¬(u₀ x = p₀.eval (domain x) ∧ u₁ x = p₁.eval (domain x)))).card
-        ≤ Nat.floor (δ * (Fintype.card ι : ℝ≥0)) := by
+  -- the restored fit guard implies the raw fit `e + h ≤ ⌊δ n⌋`
+  have hraw : e + h ≤ Nat.floor (δ * (Fintype.card ι : ℝ≥0)) := by
     refine le_of_mul_le_mul_left ?_ hpos
-    exact le_trans hrestoredS hfit
-  have hfilter :
-      Finset.univ.filter
-        (fun x => ¬(p₀.eval (domain x) = u₀ x ∧ p₁.eval (domain x) = u₁ x))
-        =
-      Finset.univ.filter
-        (fun x => ¬(u₀ x = p₀.eval (domain x) ∧ u₁ x = p₁.eval (domain x))) := by
-    apply Finset.filter_congr
-    intro x _hx
-    constructor
-    · intro h h'
-      exact h ⟨h'.1.symm, h'.2.symm⟩
-    · intro h h'
-      exact h ⟨h'.1.symm, h'.2.symm⟩
-  have hdis :
-      (Finset.univ.filter
-        (fun x => ¬(p₀.eval (domain x) = u₀ x ∧ p₁.eval (domain x) = u₁ x))).card
-        ≤ Nat.floor (δ * (Fintype.card ι : ℝ≥0)) := by
-    rwa [hfilter]
-  haveI : NeZero (k + 1) := ⟨Nat.succ_ne_zero k⟩
-  exact jointAgreement_of_jointDisagreement_le (deg := k + 1)
-    (Nat.lt_succ_of_le hp₀) (Nat.lt_succ_of_le hp₁) hdis
+    exact le_trans (mul_le_mul_of_nonneg_right (Nat.sub_le _ _) (Nat.zero_le _)) hfit
+  exact jointAgreement_of_proximates k e h DZ hn hDZ hDZ0 domain u₀ u₁ S hS0 prox hratio hraw
 
 end BCKHS25

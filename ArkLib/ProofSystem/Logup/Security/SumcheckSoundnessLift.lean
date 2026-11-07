@@ -51,8 +51,11 @@ oracle verifier's round-by-round soundness to the outer one. It consumes:
 
 * `hInnerRbr` — the round-by-round soundness of the inner concrete sum-check *oracle* reduction
   `logupConcreteSumcheckOracleReduction` (= `Sumcheck.Spec.oracleReduction …`). The single-round
-  generic sum-check RBR knowledge soundness exists in-tree
-  (`Sumcheck.Spec.SingleRound.oracleVerifier_rbrKnowledgeSoundness`, axiom-clean); its *multi-round*
+  generic sum-check RBR knowledge soundness is stated in-tree
+  (`Sumcheck.Spec.SingleRound.oracleVerifier_rbrKnowledgeSoundness`), but under the canonical
+  message-checking semantics it is transported from the upstream
+  `Simple.oracleVerifier_rbrKnowledgeSoundness`, which is still an inherited `sorry` (it is *not*
+  axiom-clean); its *multi-round*
   oracle-level packaging is the sequential-composition keystone still being assembled in the
   framework layer, so it is taken here as an explicit named hypothesis (a later brick supplies it —
   same convention as the completeness brick's `hInner`).
@@ -65,9 +68,25 @@ combinatorial and probabilistic backbone already in `Security/RoundByRound.lean`
 assembled into a single end-to-end theorem. It is therefore taken as the named hypothesis
 `hRbrToSound` (the second genuine residual gap).
 
-No `sorry`/`admit`. The three genuine upstream gaps are the named hypotheses `hProj`, `hInnerRbr`,
-and `hRbrToSound`; everything mechanical (the lens-soundness assembly, the coherence threading, the
-vacuous `lift_sound`, the lift application, and the residual repackaging) is proven and axiom-clean.
+No `sorry`/`admit`. Within *this* conditional RBR-lift route, the upstream inputs are the named
+hypotheses `hProj`, `hInnerRbr`, and `hRbrToSound`; everything mechanical (the lens-soundness
+assembly, the coherence threading, the vacuous `lift_sound`, the lift application, and the
+residual repackaging) is proven and axiom-clean.
+
+**Current status (the "three gaps" above are not open gaps of the encoded result).** Two of the
+inputs have since been supplied: the projection soundness by `SumcheckLensProjSound_holds`
+(`SumcheckLensProjSound.lean`), and the RBR-to-plain bridge by `marginalBridge_holds`
+(`MarginalBridgeProof.lean`) with `rbrSoundness_imp_soundness_of_marginal`
+(`RbrToSoundBridge.lean`), under the honest-implementation side conditions (state preservation,
+never-failing, state-independent answer distribution); see `SumcheckSoundnessWired.lean`
+(`sumcheckSoundnessResidual_holds_wired`, which still takes `hProj` and `hInnerRbr`).
+An earlier route discharged `SumcheckSoundnessResidual` outright with error `0`
+(`sumcheckSoundnessResidual_pointwise`, formerly in `SumcheckSoundnessPointwise.lean`), but it
+relied on the obsolete input-query rejection law and was **retired** in the canonical sum-check
+message-semantics migration (`scripts/integration/sumcheck-message-semantics-retirements.json`).
+So the embedded sum-check soundness residual is currently *not* discharged unconditionally in
+tree; the RBR-lift route of this file and the wired route remain conditional (their inner
+round-by-round soundness input is still a hypothesis).
 -/
 
 open OracleComp ProtocolSpec

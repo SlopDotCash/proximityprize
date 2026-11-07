@@ -177,7 +177,13 @@ threshold is pinned exactly:
 
 Unlike `kkh26_deltaStar_pin_allWitness` this carries **no binomial hypothesis**: the
 budget-below-supply inequality `C(2^μ,r)/r < 2^r·C(2^{μ-1},r)` is discharged outright by
-`choose_bulk` for the entire low-degree range. Still no `CensusDomination`, no open math. -/
+`choose_bulk` for the entire low-degree range. Still no `CensusDomination`, no open math.
+
+**Scope.** The KKH26 threshold is the explicit guard `hp : (2^μ)^(2^(μ−1)) < p`, i.e.
+`p > n^{n/2}` with `n = 2^μ` — doubly exponential in `μ` (at `μ = 30`, `log₂ p > 30·2^29 ≈ 1.6·10^10`,
+far above production fields `q ≈ 2^158`) — and the pinned budget `ε*` is the `p`-dependent value
+above, not a fixed `2^{-128}`. So this infinite family is a statement about huge fields, not about
+prize parameters. -/
 theorem kkh26_deltaStar_pin_lowdegree
     {p : ℕ} [Fact p.Prime] {μ r : ℕ} (hμ : 1 ≤ μ) {g : ZMod p}
     (hg : orderOf g = 2 ^ μ * 1)
@@ -216,8 +222,8 @@ instance primeFact_KKH26DeltaStarPinAllWitness_1 : Fact (Nat.Prime 4129) := ⟨b
 
 /-- **A concrete, FULLY-DISCHARGED unconditional δ* pin — zero hypotheses.** Every side condition
 of `kkh26_deltaStar_pin_allWitness` is closed by `decide`/`norm_num` for the explicit Reed–Solomon
-evaluation code over `ZMod 4129` at the order-8 element `g = 777` (μ=3, m=1, r=2, n=8, rate 1/4,
-code degree `(r−2)m = 0`):
+evaluation code over `ZMod 4129` at the order-8 element `g = 777` (μ=3, m=1, r=2, n=8, code
+degree bound `(r−2)m = 0`, i.e. the constant code: dimension 1 on 8 distinct points, rate 1/8):
 
   `mcaDeltaStar (evalCode 777 8 0) (14/4129) = 1 − 2/2^3 = 3/4`.
 

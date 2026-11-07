@@ -57,10 +57,15 @@ R2 claimed the coefficient budget for `γ(x) − w(x,Z)` might require the A.2 r
 does **not**: at a fixed coordinate every object in the kill is a fiber-factor polynomial, and
 its budget is inherited from the interpolant by divisibility (`coeff_budget_of_dvd`).  What
 the kill *does* still need — and what neither the budgets nor this file supplies — is the
-**assignment coherence**: that each *unwitnessed* cell scalar's decode value at the coordinate
-roots in a *witness-rich* factor.  Witnessed scalars root in rich factors by construction
-(pigeonhole, `exists_witness_rich_factor`); a rogue scalar whose decode roots only in a factor
-carrying `≤ B + d·dw` witnessed agreements escapes every budget argument, and is excluded in
+**assignment coherence**: that each cell scalar's decode value at the coordinate (in
+particular every *unwitnessed* one) roots in a *witness-rich* factor.  Even witnessed scalars
+are not all captured: the pigeonhole
+lemma `exists_witness_rich_factor` only supplies **some** irreducible factor carrying `> τ` of
+the witnessed agreements (together with that subset of `W`); it does not place every witnessed
+scalar in a rich factor, and a witnessed scalar may root only in sparse factors.  The factor-kill
+lemmas apply only to the rich factor they are handed.  Any scalar (unwitnessed, or witnessed
+only through sparse factors) whose decode roots only in a factor carrying `≤ B + d·dw` witnessed
+agreements escapes every budget argument, and is excluded in
 the paper only by the global single-branch capture (all decodes are fibers of ONE branch —
 the in-tree `GSPerScalarCapture`/section-factor lane, NOT the weight recursion).  So the
 A.2-free reduction is: `CoordinateUpgrade ⟸ per-coordinate witness-rich factor assignment`,

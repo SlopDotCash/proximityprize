@@ -22,9 +22,13 @@ invariant), the central-depth spectrum is invariant under the full group generat
 multiplicative subgroup and `-1` (i.e. `⟨mu, -1⟩`).  This is a structural constraint the across-depth
 palindrome does NOT give at a single fixed depth.
 
-This is a CONSTRAINT on the open obstruction (the central-depth spectrum cardinality is even —
-its nonzero part splits into `±` pairs unless a value is its own negative, which over a field of
-odd characteristic means the value is `0`), NOT a computation of `|spectrum (|mu|/2)|` (the
+This is a CONSTRAINT on the open obstruction (over a field of odd characteristic the only value
+equal to its own negative is `0`, so the spectrum's NONZERO part splits into `±` pairs and has even
+cardinality; hence the whole central-depth spectrum has odd cardinality when it contains `0` and
+even cardinality when it does not — e.g. the probe's `|spectrum 8| = 2577` is odd because `0` is
+attained; for `mu = {1,2,3,4} ⊆ F₅`, `r = 2`, the two-subset sums cover all of `F₅`, size `5`).
+The parity statement is not formalized here.  This is NOT a computation of
+`|spectrum (|mu|/2)|` (the
 prize-critical open quantity = BCHKS 1.12).  Field-universal finite combinatorics; thinness enters
 only via which depth is central.  Makes NO capacity / beyond-Johnson / growth-law claim; the
 cliff-at-`n/2` is a DEPTH index here, not an incidence-decay claim — untouched. CORE
@@ -59,11 +63,11 @@ theorem spectrum_central_neg_invariant {mu : Finset F} {r : ℕ} (hr2 : 2 * r = 
   rw [hself] at h
   exact h.symm
 
-/-- **Consequence: the central-depth spectrum cardinality is even off the fixed point.** Negation is
-a fixed-point-free involution on `F \ {0}` in odd characteristic, so a negation-closed finite set's
-nonzero part has even cardinality.  We expose the structural fact that the central-depth spectrum is
-closed under negation (the cardinality parity statement is the immediate corollary, recorded in the
-module doc); here we package the invariance in the `Finset`-negation form most consumers want. -/
+/-- **Membership form of the central-depth negation invariance.** Negation is a fixed-point-free
+involution on `F \ {0}` in odd characteristic, so a negation-closed finite set's nonzero part (the
+set with `0` erased) has even cardinality; the full set's cardinality is odd exactly when it
+contains `0`.  That parity corollary is only recorded in the module doc and is not proved here;
+this theorem packages the invariance in the elementwise `v ∈ spectrum → -v ∈ spectrum` form. -/
 theorem spectrum_central_neg_mem {mu : Finset F} {r : ℕ} (hr2 : 2 * r = mu.card)
     (htot : ∑ z ∈ mu, z = 0) {v : F} (hv : v ∈ subsetSumSpectrum mu r) :
     -v ∈ subsetSumSpectrum mu r := by

@@ -8,18 +8,26 @@ import ArkLib.Data.CodingTheory.Connections.EpsMCABadGlue
 import ArkLib.Data.CodingTheory.ProximityGap.MCAThresholdLedger
 
 /-!
-# The δ* ⟺ list-size reduction, assembled (#389)
+# Two one-way links between list sizes and `δ*` (#389)
 
-Every face of the δ* problem (MCA error, line–ball incidence, bad scalars) collapses to
-the **sub-Johnson list size** of explicit Reed–Solomon.  This file makes that a theorem.
+This file proves two **separate, one-directional** statements relating Reed–Solomon list
+sizes and bad-scalar counts to the MCA threshold `mcaDeltaStar`.  It does **not** prove an
+equivalence between `δ*` and a list-size bound.
 
-* `mcaBad_card_le_singleWordList` — the **link**: for the canonical MCA direction `u₁ = xᵏ`
-  (domain avoiding `0`), `mcaBad ⊆ {δ-close scalars}`, so its size is at most the
-  single-word list `#{Q ∈ rsCode dom (k+1) : agree(Q,u₀) ≥ a} · ⌊n/a⌋`.
-* `mcaDeltaStar_ge_of_uniform_mcaBad` — the **assembly**: a uniform per-stack bad-scalar
-  bound `B` with `B/|F| ≤ ε*` forces `δ ≤ mcaDeltaStar`.
+* `mcaBad_card_le_singleWordList` — a **specialized link**: for the single direction
+  `u₁ = xᵏ` only (on a domain avoiding `0`, with `k < n` and `a ≤ (1-δ)·n`),
+  `mcaBad ⊆ {δ-close scalars}`, so its size is at most the single-word list count
+  `#{Q ∈ rsCode dom (k+1) : agree(Q,u₀) ≥ a} · ⌊n/a⌋`.  Other directions `u₁` are not
+  covered.
+* `mcaDeltaStar_ge_of_uniform_mcaBad` — a **general assembly**: a bad-scalar bound `B` assumed
+  *uniformly over all stacks* `(u 0, u 1)` with `B/|F| ≤ ε*` forces `δ ≤ mcaDeltaStar`.
 
-Pinning δ* is exactly bounding that one list — the open core.  Issue #389.
+The first theorem does not discharge the second theorem's uniform hypothesis: that would need
+an all-direction normalization (reducing an arbitrary `u₁` to the `xᵏ` case, or bounding it
+directly), which is not proved here.  Neither theorem gives the converse (an MCA or `δ*` bound
+implying a list-size bound).  So "pinning `δ*` is exactly bounding one list" is **not** a
+theorem of this file; the two statements are only sufficient-direction ingredients.
+Issue #389.
 -/
 
 open Finset Polynomial
@@ -33,7 +41,10 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {n : ℕ} [NeZero n]
 
 open Classical in
-/-- **The link: `mcaBad ⊆ δ-close scalars`, hence bounded by the single-word list.** -/
+/-- **The specialized link: `mcaBad ⊆ δ-close scalars`, hence bounded by the single-word list.**
+Only for the direction `u₁ = xᵏ` on a zero-avoiding domain; it bounds the bad scalars of that one
+stack shape and does not by itself give the uniform all-stack bound used by
+`mcaDeltaStar_ge_of_uniform_mcaBad`. -/
 theorem mcaBad_card_le_singleWordList (dom : Fin n ↪ F) {k a : ℕ} (ha : 1 ≤ a)
     (hk : k < n) (hdom : ∀ i, dom i ≠ 0) {δ : ℝ≥0} (u₀ : Fin n → F)
     (haδ : (a : ℝ≥0) ≤ (1 - δ) * Fintype.card (Fin n)) :
@@ -59,7 +70,9 @@ theorem mcaBad_card_le_singleWordList (dom : Fin n ↪ F) {k a : ℕ} (ha : 1 �
   exact le_trans ha_le_S (Finset.card_le_card hSsub)
 
 open Classical in
-/-- **The assembly: a uniform bad-scalar bound pushes `δ*` up.** -/
+/-- **The assembly: a uniform bad-scalar bound pushes `δ*` up.** The bound `hcard` is an
+independent hypothesis over *all* stacks; it is not derived from
+`mcaBad_card_le_singleWordList`, which covers only the direction `xᵏ`. -/
 theorem mcaDeltaStar_ge_of_uniform_mcaBad
     (C : Set (Fin n → F)) {δ : ℝ≥0} (hδ : δ ≤ 1) {εstar : ℝ≥0∞} {B : ℝ}
     (hcard : ∀ u : WordStack F (Fin 2) (Fin n),

@@ -22,7 +22,9 @@ canonical small NTT field; `|G| = 16 ≪ q = 257` is the deployed `|G| ≪ q` re
 
 * `gvRepBound_H16 : GVRepBound H16 4` — every nonzero `t` has at most `4`
   representations `t = c + d`, `c, d ∈ H16` (`decide`), and `4³ = 64 ≤ 64·16² = 16384`.
-  So `M = 4 = 4·16^{2/3}` saturates the Garcia–Voloch exponent exactly at this point.
+  This does NOT saturate the Garcia–Voloch bound: `M = 4` is well below
+  `4·16^{2/3} ≈ 25.4`, and `64` is strictly smaller than `16384` (the integer-clean form
+  would admit any `M ≤ 25`).  The witness is valid but far from tight.
 * `additiveEnergy_H16_le_gv` — the conditional bound `E(H16)³ ≤ 260·16⁸` instantiated,
   consistent with the exactly-known `E(H16) = 912` (`912³ = 758 550 528 ≤
   1 116 691 496 960`): the chain is non-vacuous and the GV ceiling is comfortably above

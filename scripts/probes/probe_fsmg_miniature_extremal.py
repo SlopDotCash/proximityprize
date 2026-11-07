@@ -21,8 +21,16 @@ Part C  builds the three-core construction EXACTLY in the m=2 miniature
         constraints, so every degree-<8 explanation with >= 18 agreements is a
         Y-linear factor: the census is complete, not heuristic.
 Part D  validation: the same decoder reproduces the known result that the
-        swarm's isolated-fibre F_97 stack has ZERO bad scalars at agreement 18
-        (36 at 17), so the construction below is not a decoder artifact.
+        swarm's isolated-fibre F_97 stack has ZERO bad scalars at agreement 18,
+        so the construction below is not a decoder artifact.  Only the
+        agreement-18 case is validated here: the fixed (1,7)-weighted degree 17
+        decoder is complete only for agreement >= 18, so ``census`` rejects
+        lower thresholds.  At agreement 17 a degree-17 polynomial can have 17
+        roots without vanishing; the parameterized multiplicity-2 engine
+        ``Census(97, 32, 8, 17, xs)`` in
+        ``probe_fsmf_predecessor_miniature_census.py`` finds 36 bad scalars on
+        this stack, whereas this fixed decoder would silently report 0
+        (regression: ``scripts/tests/test_fsmg_miniature_threshold.py``).
 
 Deterministic; pure python; no external dependencies.
 """
@@ -353,7 +361,9 @@ def extrapolation_functional(core_idx, x_i, xs, p):
 
 def gs_candidates(word, xs, p):
     """All q (deg<8) with agreement >= 18 on (xs, word).  Complete census via
-    multiplicity-1 GS: (1,7)-weighted degree 17, 33 monomials, 32 constraints."""
+    multiplicity-1 GS: (1,7)-weighted degree 17, 33 monomials, 32 constraints.
+    Completeness needs agreement >= 18 (> weighted degree 17); explanations
+    with exactly 17 agreements may be missing from the returned list."""
     monos = [(a, b) for b in range(3) for a in range(18 - 7 * b)]
     assert len(monos) == 33
     rows = []
@@ -409,7 +419,21 @@ def is_rs_on(row, support, xs, p):
 
 
 def census(u0, u1, xs, p, thresh=T18, verbose=False):
-    """Exact MCA bad count at agreement >= thresh, all gamma in F_p."""
+    """Exact MCA bad count at agreement >= thresh, all gamma in F_p.
+
+    ``gs_candidates`` uses a fixed (1,7)-weighted degree 17 interpolation, so it
+    lists every degree-<8 explanation only at agreement >= T18 = 18 (a nonzero
+    degree-17 polynomial cannot have 18 roots).  For thresh < 18 close
+    codewords can be missed and the count silently undercounts (on the Part D
+    isolated-fibre stack: 0 here versus 36 from the complete multiplicity-2
+    engine at agreement 17), so such thresholds are rejected; use
+    ``probe_fsmf_predecessor_miniature_census.Census`` for them.
+    """
+    if thresh < T18:
+        raise ValueError(
+            f"census: thresh={thresh} < {T18} is unsupported; the fixed "
+            f"(1,7)-weighted degree-17 decoder is complete only for agreement "
+            f">= {T18}")
     bad = []
     for gamma in range(p):
         word = [(a + gamma * b) % p for a, b in zip(u0, u1)]
@@ -627,17 +651,27 @@ def perturbation_search(u0, u1, xs, p, base_count):
     return worst
 
 
+# The swarm's isolated-fibre F_97 [32,8] stack used by Part D (and by the
+# threshold regression test).
+ISOLATED_FIBRE_P = 97
+ISOLATED_FIBRE_OMEGA = 28
+ISOLATED_FIBRE_U0 = [0, 0, 77, 0, 0, 0, 0, 0, 0, 59, 53, 54, 54, 26, 84, 45,
+                     0, 0, 20, 0, 0, 0, 0, 0, 0, 38, 44, 43, 43, 71, 13, 52]
+ISOLATED_FIBRE_U1 = [0, 0, 46, 0, 0, 0, 0, 0, 0, 16, 24, 38, 36, 93, 7, 2,
+                     0, 0, 46, 0, 0, 0, 0, 0, 0, 16, 24, 38, 36, 93, 7, 2]
+
+
+def isolated_fibre_domain() -> list[int]:
+    p = ISOLATED_FIBRE_P
+    return [pow(ISOLATED_FIBRE_OMEGA, i, p) for i in range(N32)]
+
+
 def part_d_validation():
     """Reproduce the known zero census of the isolated-fibre stack at 18."""
     print("\n--- decoder validation on the swarm's isolated-fibre F_97 stack ---")
-    p = 97
-    omega = 28
-    xs = [pow(omega, i, p) for i in range(32)]
-    U0 = [0, 0, 77, 0, 0, 0, 0, 0, 0, 59, 53, 54, 54, 26, 84, 45,
-          0, 0, 20, 0, 0, 0, 0, 0, 0, 38, 44, 43, 43, 71, 13, 52]
-    U1 = [0, 0, 46, 0, 0, 0, 0, 0, 0, 16, 24, 38, 36, 93, 7, 2,
-          0, 0, 46, 0, 0, 0, 0, 0, 0, 16, 24, 38, 36, 93, 7, 2]
-    bad18 = census(U0, U1, xs, p, thresh=18)
+    p = ISOLATED_FIBRE_P
+    xs = isolated_fibre_domain()
+    bad18 = census(ISOLATED_FIBRE_U0, ISOLATED_FIBRE_U1, xs, p, thresh=18)
     print(f"  isolated-fibre stack, agreement >= 18: badCount = {len(bad18)} "
           f"(expected 0)")
     assert len(bad18) == 0

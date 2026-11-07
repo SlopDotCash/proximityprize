@@ -9,10 +9,20 @@ import Research.ProximityPrize.LineDecodingSpec
 /-!
 # Low-output line-decoding prize-threshold wrappers
 
-This companion module keeps `LineDecodingGrandChallengesPrizeSpec.lean` stable while exposing
+This companion module keeps `Research.ProximityPrize.LineDecodingSpec` stable while exposing
 weaker consumers of its concrete-`mcaThreshold` bracket packages. The repaired line-decoding
 hypotheses remain explicit throughout; these declarations only forget the threshold
 satisfy/maximality payload from already-proved wrappers.
+
+## Honest scope — vacuous at every prize rate
+
+The prize-rate hypotheses consumed here (`MCAForallDoubleCover`, per-bad-scalar double cover,
+`mcaBadCount = 0`, `∀ γ, ¬ mcaEvent`, `epsMCA = 0` for `RS[domain, ⌊prizeRates j · n⌋]`) are all
+**false**: see `not_MCAForallDoubleCover_prizeRateRS`,
+`not_forall_badScalarDoubleCover_prizeRateRS`, `not_forall_mcaBadCount_eq_zero_prizeRateRS`, `not_forall_not_mcaEvent_prizeRateRS` and
+`epsMCA_prizeRateRS_ne_zero` in `Research.ProximityPrize.LineDecoding3` (audit 2026-10-28,
+CW-B21-01).  Every prize-rate declaration in this module therefore has an unsatisfiable hypothesis
+and a vacuous conclusion; it is kept only as API shape, not as a prize-facing result.
 -/
 
 set_option linter.style.longLine false

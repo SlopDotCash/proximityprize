@@ -811,12 +811,14 @@ gives the bound. The statement is phrased for any per-coordinate *representative
 `hz : ∀ i, ∃ j, z i = c j i` (plurality is the canonical ST20 choice; the aggregate bound is the
 same for any representative). The existence of such a `z` (take `z = c 0`) is immediate.
 
-This proves the *averaging* ingredient (b) of T3.9's reduction. It does NOT close T3.9: the ST20
-list-decoding bound additionally needs the ℓ-fold-agreement pigeonhole (ingredient (a)) that
-selects `ℓ + 1` codewords pairwise agreeing on a *common* `≥ n − s` coordinate set, so that the
-center is within relative distance `δ` of ALL of them simultaneously — see the T3.9 docstring and
-`research/proximity-prize/dispositions/pc-w2-ST20-core.md`. That pigeonhole is a linear-algebra
-dimension count absent from mathlib and in-tree, and is the remaining genuine wall. -/
+This proves the *averaging* ingredient (b) of T3.9's reduction. By itself it does not close T3.9:
+the ST20 list-decoding bound additionally needs the ℓ-fold-agreement pigeonhole (ingredient (a))
+that selects `ℓ + 1` codewords pairwise agreeing on a *common* `≥ n − s` coordinate set, so that
+the center is within relative distance `δ` of ALL of them simultaneously. When this note was
+written that kernel/partition ingredient was described as an external wall absent in tree. **It
+is no longer absent:** the helpers below (range-fiber and kernel extraction, the block partition
+and the distance bound) and `linear_C_le_generalized_singleton_st20` give the full proof of the
+linear T3.9 bound (under its lattice and meaningful-radius hypotheses `hlat`, `ha_le`). -/
 /-- **ST20 plurality-center averaging core, alphabet-generic.**
 Given `ℓ + 1` words `c₀, …, c_ℓ : ι → A` over any finite alphabet `A`, the
 *representative* centre `z` (here `z = c₀`) satisfies the aggregate-distance bound

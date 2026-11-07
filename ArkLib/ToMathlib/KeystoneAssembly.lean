@@ -34,8 +34,30 @@ The reduction proceeds by:
    witness coefficient polynomial system.
 4. Concluding the probability lower bounds for the affine curves.
 
-This file wires the individual modular steps into a unified, clean assembly, establishing
-`δ_ε_correlatedAgreementCurves` from the standing mathematical hypotheses.
+This file wires the individual modular steps into a **conditional** assembly, deriving
+`δ_ε_correlatedAgreementCurves` from explicit hypotheses.
+
+## Scope and remaining inputs
+
+The theorems here are valid conditional assemblies; they do **not** construct the substantive
+§5 inputs.  In particular:
+
+* `section5DataFin_of_producers` still takes the Prop-5.5 representative `hrep`, the
+  coefficient-ring degree bound `hdegX`, the per-`z` Hensel datum `hHensel`, the separate
+  coefficient-degree bounds `hdeg`, the centred-only `hsubst` (which holds only at `x₀ = 0`,
+  `SubstFieldCaveat.hasSubst_shiftSeries_iff_eq_zero`) and a total root selector `root`
+  (which cannot exist once one rational-root fibre is empty,
+  `not_exists_total_matchingVanishes_of_isEmpty`) as hypotheses.
+* The front doors require a full per-decoding producer of `Section5StrictDataFin` (or the
+  equivalent `hSection5` inputs) and, at the Johnson boundary, a separate boundary
+  coefficient-polynomial producer.
+* The target bundle `Section5StrictDataFin` uses the transposed linear representative in its
+  `hPz` field, which is affine in the codeword variable; by
+  `FaithfulCurveExtraction.no_linRep_of_nonaffine` it cannot serve decoded families with a member
+  of degree `≥ 2` on a good point, so this route covers only codeword-affine decoded families and
+  is not the general [BCIKS20] Prop. 5.5 conclusion.  General consumers should route through the
+  faithful `FaithfulCurveExtraction.CurveFamilyData` interface (whose producer is likewise not
+  proved in-tree; issue #304).
 
 ## Key Formalizations
 * `htailDeg_field`: Adapts the tail degree truncation bounds to the finite-range datum.
@@ -43,8 +65,8 @@ This file wires the individual modular steps into a unified, clean assembly, est
   `Section5StrictDataFin`.
 * `correlatedAgreement_listDecoding_closed_fin`: Front-door theorem proving the correlated
   agreement curve bounds from the finite-range datum.
-* `keystone_of_section5Inputs`: The end-to-end assembly theorem discharging all intermediate
-  residuals.
+* `keystone_of_section5Inputs`: The conditional assembly theorem from per-decoding §5 inputs
+  (it discharges the intermediate wiring, not the substantive §5 inputs themselves).
 
 ## References
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon Codes*,

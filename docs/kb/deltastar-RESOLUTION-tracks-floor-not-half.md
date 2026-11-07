@@ -1,5 +1,19 @@
 # RESOLUTION: far-line incidence δ* increases toward 1−ρ (the floor), NOT ½ — earlier "→½" was a small-n artifact (#407)
 
+> **Scope correction (2026-10-28 audit, T48).** The far-line notes (this one,
+> `deltastar-perdirection-decomposition-listdecoding.md` and
+> `farline-incidence-is-plotkin-proxy-not-mca-deltastar.md`) extrapolate in mutually incompatible
+> directions from a handful of finite rows. None of the extrapolations is established.
+> - **Rate varies.** With `k = 2` fixed and `n = 16, 24, 32`, the rate `ρ = k/n` changes from row to
+>   row, so these rows cannot establish a fixed-rate limit. "δ* heads toward `1−ρ`" and "the
+>   qualitative answer is settled" are withdrawn.
+> - **What a budget crossing measures.** A budget crossing `s*` counts how many scalars attain each
+>   agreement threshold. That is not in general the deepest agreement attained by at least one
+>   scalar.
+> - **No extremality.** An incidence count for the monomial family is not an MCA statement over all
+>   stacks without an extremality theorem. The later guard at the end of this note applies to every
+>   exact or asymptotic claim here: `δ*` remains an interval, not a value.
+
 The decisive cheap computation (validated Rust engine) settles the outcome-1-vs-2 question from the previous
 analysis, and **corrects my earlier over-extrapolation**.
 

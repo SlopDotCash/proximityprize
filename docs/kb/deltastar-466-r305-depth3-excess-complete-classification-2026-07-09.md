@@ -25,7 +25,8 @@ with the independent FFT method) ✓.
 
 ## Census results
 
-- **n=16 (COMPLETE, all β)**: 40 bad primes total; the largest is p=41521 (β=3.835) — the
+- **n=16 (COMPLETE, all β)**: 57 bad primes total (an earlier "40" was a miscount, audit
+  CW-DL04b-01; exact recount over all primes `p ≡ 1 mod 16` up to `6^8`, matching r52); the largest is p=41521 (β=3.835) — the
   n=16 depth-3 excess is now a CLOSED finite object. All 13 exact-Wick violations have
   β < 3 (largest violating prime 641, β=2.331), so the β ≥ 3 rung at n=16 is TRUE — now by
   complete enumeration, not scan evidence. Excess quantum over all bad primes: 48.
@@ -49,6 +50,17 @@ with the independent FFT method) ✓.
   - the violation set in `[32³, 2·10⁶]` is exactly the 19 primes r304 found by scanning —
     the two independent methods agree on every compared prime;
   - excess quantum over all 1,158 bad primes: 96.
+  - *Re-certification (2026-10-28 repository audit, finding L114):* the original
+    `probe_r305_complete_census.py` obtained its "exact" norms by rounding complex128
+    products and casting to int64 (wrong for `n = 64`: `Norm(6)` came back as
+    `2⁶³ − 1` instead of `6³²`), so the run above was not a completeness certificate.
+    The probe now computes norms exactly (integer 2-power tower = `Res(x^{n/2}+1, z)`),
+    asserts each factorization multiplies back, and certifies primality only below the
+    deterministic Miller–Rabin bound (bases 2..41), exiting with status 2 otherwise.
+    The exact `n = 32` rerun reproduces every figure above (1,594,368 classes, 2,345
+    norms, max `2821109907456`, 1,158 bad primes, 156 violations, largest violator
+    21523361, largest bad prime 3487801441, quantum 96) and is now certified complete
+    relative to the norm-divisibility lemma.
 
 ## What this changes
 

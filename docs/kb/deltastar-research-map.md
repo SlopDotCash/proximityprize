@@ -16,7 +16,7 @@ promising never-tried attack vectors.
 
 Companion ledgers: `docs/wiki/deltastar-357-nine-hypotheses-2026-06-11.md` (hypothesis queue),
 `docs/wiki/open-math-hypotheses-334-deltastar-2026-06.md` (K/A wave),
-`docs/wiki/residual-census.md` (whole-project residual map),
+`docs/wiki/residual-census.md` (syntactic inventory of strict `ArkLib/` residuals only),
 `Research/ProximityPrize/CLAUDE.md` (build and honesty rules).
 
 > **2026-06-13 literature sweep — see [`deltastar-literature-findings-2026-06-13.md`](deltastar-literature-findings-2026-06-13.md).**

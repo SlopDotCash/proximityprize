@@ -40,9 +40,12 @@ question in the window: **NO** — the suggestion was an artifact of unoptimized
    `Λ = 2`, safe, large-zero, `mcaEvent` count `2`.
 3. `campaign_rateQuarter_L_one_refuted` — the campaign shape `(16, 4, 9)` satisfies all
    four gates: `L_near = 1` is FALSE there, over every field and domain.
-4. `three_a_trichotomy` — the boundary is machine-pinned to a width-`k` gap: every shape
-   is in the part-3 discharge regime (`2n + k ≤ 3a`), the refuted regime (`3a ≤ 2n`),
-   or the residual gap `2n < 3a < 2n + k`.
+4. `three_a_trichotomy` — a bare arithmetic split of `3a` against `2n` and `2n + k`:
+   every shape is in the part-3 discharge regime (`2n + k ≤ 3a`), the band `3a ≤ 2n`,
+   or the residual gap `2n < 3a < 2n + k`.  The band `3a ≤ 2n` is the REFUTED regime
+   only when the other refuter gates `1 ≤ k`, `n + 1 ≤ 2a`, `2k − 1 ≤ a` also hold
+   (e.g. `(n,k,a) = (16,4,8)` has `3a ≤ 2n` but `n + 1 > 2a`, so headline 2 does not
+   apply there).
 
 ## What remains open (honesty)
 
@@ -351,8 +354,10 @@ theorem campaign_rateQuarter_L_one_refuted (dom : Fin 16 ↪ F) :
   not_largeZeroSafeLineListBudgeted_one dom (by norm_num) (by norm_num) (by norm_num)
     (by norm_num)
 
-/-- The machine-pinned boundary: every shape lands in the part-3 discharge regime, the
-refuted regime, or the width-`k` gap `2n < 3a < 2n + k`. -/
+/-- A bare `omega` split: every shape lands in the part-3 discharge regime
+(`2n + k ≤ 3a`), the band `3a ≤ 2n`, or the width-`k` gap `2n < 3a < 2n + k`.  The band
+`3a ≤ 2n` is the refuted regime of `not_largeZeroSafeLineListBudgeted_one` only under the
+additional gates `1 ≤ k`, `n + 1 ≤ 2a`, `2k − 1 ≤ a`; this theorem does not assert them. -/
 theorem three_a_trichotomy (n k a : ℕ) :
     3 * a ≤ 2 * n ∨ 2 * n + k ≤ 3 * a ∨ (2 * n < 3 * a ∧ 3 * a < 2 * n + k) := by
   omega

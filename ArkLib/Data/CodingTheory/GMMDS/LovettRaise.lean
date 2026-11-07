@@ -11,10 +11,14 @@ import ArkLib.Data.CodingTheory.GMMDS.LovettSeparateStep
 import ArkLib.Data.CodingTheory.GMMDS.LovettLemma2456
 
 /-!
-# Lovett's GM-MDS proof: the witness-raise and the `n < k` closure (#389)
+# Lovett's GM-MDS proof: the witness-raise construction for the `n < k` closure (#389)
 
-This file carries the `n < k` branch of Lovett's primitive-case closure (arXiv:1803.02523,
-Lemma 2.6 + final contradiction), as a *direct* independence proof.
+**Scope of this file.** This file provides the *raise construction* used by the `n < k` branch of
+Lovett's primitive-case closure (arXiv:1803.02523, Lemma 2.6 + final contradiction): `raiseVec`
+and its basic lemmas, ending with `raiseVec_isVStar`. The independence closure itself is **not**
+in this file; it is assembled in the separate consumer `LovettNLtK.lean`
+(`lovettHolds_nLtK`, and `lovettHolds_of_witness` combining the `n < k` and `n = k` cases). The
+outline below describes the whole argument, of which only the first bullet is proved here.
 
 Given a primitive `V*(k)` system with a witness `vᵢ₀ = (1,…,1,0)` (Lemma 2.5) and `n < k`, define
 the **raised** system `V'` that equals `V` except at `i₀`, where the last coordinate is set to `1`
@@ -97,25 +101,10 @@ theorem pVanish_raiseVec_self {V : Fin m → (Fin n → ℕ)} (hn : 1 ≤ n) (i�
 
 /-! ## `V*(k)` is preserved by the witness raise -/
 
-/-- The weight of `oneVec` is `n − 1` (re-derivation; matches `LovettLemma2456`). -/
-theorem vAbs_oneVec (hn : 1 ≤ n) : vAbs (oneVec n hn) = n - 1 := by
-  classical
-  unfold vAbs oneVec
-  rw [Finset.sum_ite, Finset.sum_const, Finset.sum_const]
-  simp only [smul_eq_mul, mul_one, mul_zero, add_zero]
-  have hcard : (Finset.univ.filter (fun x : Fin n => (x : ℕ) < n - 1)).card = n - 1 := by
-    rw [show (n-1) = (Finset.range (n-1)).card from (Finset.card_range _).symm]
-    apply Finset.card_bij (fun (x : Fin n) _ => (x : ℕ))
-    · intro a ha
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at ha ⊢
-      simpa using ha
-    · intro a _ b _ h; exact Fin.val_injective h
-    · intro b hb
-      simp only [Finset.mem_range] at hb
-      refine ⟨⟨b, by omega⟩, ?_, rfl⟩
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-      simpa using hb
-  rw [hcard]
+/-- The weight of `oneVec` is `n − 1` (compatibility alias of `oneVec_vAbs` in
+`LovettLemma2456`). -/
+theorem vAbs_oneVec (hn : 1 ≤ n) : vAbs (oneVec n hn) = n - 1 :=
+  oneVec_vAbs hn
 
 /-- **The raise preserves `V*(k)`** (Lovett Lemma 2.6, "V' satisfies V*(k)").  Raising the
 witness `vᵢ₀ = (1,…,1,0)` to `(1,…,1,1)` keeps every property: weights stay `≤ k−1` (since

@@ -311,10 +311,13 @@ Hab25 derives the bound by generalising the Guruswami–Sudan bivariate analysis
    verbatim by both [BCIKS20] and Hab25 at the very end of the argument.
 
 The honest decomposition is therefore: step 3 (and the elementary Lemma 1 counting) is
-**proven** in this file; steps 1–2 are **named residual `Prop`s**; and the reduction
-"`Hab25GSInterpolation` ⟹ main `ε_mca` bound ⟹ `MCALowerWitness`" is **proven** below, so
-that *when the residuals are discharged the Grand-MCA lower witness at the Johnson radius
-follows mechanically*. -/
+**proven** in this file; steps 1–2 are **named residual `Prop`s**. The edge
+"`Hab25GSInterpolation` ⟹ main `ε_mca` bound" is the identity (the residual is definitionally
+the bound), and "⟹ `MCALowerWitness`" is a direct application of `MCALowerWitness.ofLe`; the
+Step-1 CA residual is not consumed. So nothing below reduces the deep content: discharging
+`Hab25GSInterpolation` *is* proving the Johnson-range bound (audit CW-B19-05). The
+`*_viaBCHKS25` / `*_directBCHKS25` wrappers restate the same endpoint through the
+`GrandChallenges` BCHKS25 consumers. -/
 
 namespace Hab25Johnson
 
@@ -336,23 +339,27 @@ noncomputable def johnsonBoundReal
     (_domain : ι ↪ F) (k : ℕ) (η δ : ℝ≥0) : ℝ :=
   CodingTheory.rs_epsMCA_johnson_range_boundReal _domain k η δ
 
-/-- The Johnson-range side condition `δ < 1 − √ρ₊ − η` on the radius, in real form. Matches
-the `_hδ` hypothesis of `rs_epsMCA_johnson_range_bchks25`. -/
-def InJohnsonRange (_domain : ι ↪ F) (k : ℕ) (η δ : ℝ≥0) : Prop :=
-  (δ : ℝ) <
-    1 - (((k : ℝ) / Fintype.card ι + 1 / Fintype.card ι) ^ ((1 : ℝ) / 2)) - (η : ℝ)
+/-- The Johnson-range side condition `δ < 1 − √ρ₊ − η` on the radius, in real form. A named
+alias of the canonical `CodingTheory.rs_epsMCA_johnson_range_condition` (the `_hδ` hypothesis
+of `rs_epsMCA_johnson_range_bchks25`). -/
+def InJohnsonRange (domain : ι ↪ F) (k : ℕ) (η δ : ℝ≥0) : Prop :=
+  CodingTheory.rs_epsMCA_johnson_range_condition domain k η δ
 
 /-! ### Residual `Prop`s (the deep GS nodes, consumed as hypotheses)
 
 These mirror the skeleton's steps 1–2. Each is `sorry`/`axiom`-free: it is a *named
-hypothesis*, not an admitted theorem. The reduction below proves the main bound *from* them. -/
+hypothesis*, not an admitted theorem. Only the Step-2 residual is consumed below, and it is
+definitionally the main bound itself (audit CW-B19-05); the Step-1 CA residual is recorded for
+documentation and is not a hypothesis of any theorem in this file. -/
 
 /-- **Step-1 residual: the [BCIKS20] correlated-agreement input.** A pointer at the in-tree
 `BCIKS20/ListDecoding/Agreement.lean` chain (owned by a live external session): the
 interleaved fold of `(f₀, f₁)` along the affine line is `δ`-close to `C` outside an
 `ε_ca`-fraction of scalars. We package it abstractly as: the CA error of the RS code at the
 Johnson radius is bounded by the *same* numeric expression as the target MCA bound. (In the
-paper this CA-side bound is the starting point that the §3 GS analysis upgrades to MCA.) -/
+paper this CA-side bound is the starting point that the §3 GS analysis upgrades to MCA.)
+It is **not consumed** by any theorem here: since `Hab25GSInterpolation` already is the
+target bound, a CA hypothesis would be unused. -/
 def Hab25CAInput (domain : ι ↪ F) (k : ℕ) (η δ : ℝ≥0) : Prop :=
   epsCA (F := F) (A := F) ((ReedSolomon.code domain k : Set (ι → F))) δ δ ≤
     ENNReal.ofReal (johnsonBoundReal domain k η δ)
@@ -387,16 +394,14 @@ For a smooth-domain Reed–Solomon code, slack `η > 0`, and radius `δ` in the 
 
   `ε_mca(RS[F, L, k], δ) ≤ johnsonBoundReal`.
 
-**Proven reduction.** This is the proven `main-bound ⟸ residuals` edge: it follows directly
-from the Step-2 residual `Hab25GSInterpolation`. The Step-1 CA residual `Hab25CAInput` is the
-input the paper's §3 analysis *consumes* to produce `Hab25GSInterpolation`; we expose it as a
-hypothesis so the dependency on the [BCIKS20] chain is explicit, even though the final numeric
-edge is carried by the GS residual. When both residuals are discharged in-tree the bound holds
-unconditionally. -/
+**Not a reduction (audit CW-B19-05).** `Hab25GSInterpolation` is definitionally
+`rs_epsMCA_johnson_range_bchks25`, i.e. the conclusion itself, so this theorem is the identity
+on its hypothesis; it records the statement in Hab25 vocabulary only. The Step-1 CA residual
+`Hab25CAInput` is not needed and is no longer a hypothesis. All of the deep §3 content remains
+in `hGS`. -/
 theorem hab25_mca_johnson_bound
     (domain : ι ↪ F) (k : ℕ) (η δ : ℝ≥0)
     (hη : 0 < η) (hδ : InJohnsonRange domain k η δ)
-    (_hCA : Hab25CAInput domain k η δ)
     (hGS : Hab25GSInterpolation domain k η δ hη hδ) :
     epsMCA (F := F) (A := F) ((ReedSolomon.code domain k : Set (ι → F))) δ ≤
       ENNReal.ofReal (johnsonBoundReal domain k η δ) :=
@@ -404,23 +409,21 @@ theorem hab25_mca_johnson_bound
 
 /-- **Proven bridge: Hab25 main bound ⟹ Grand-MCA `MCALowerWitness`.**
 
-Given the Hab25 residuals (Step-1 CA input + Step-2 GS interpolation), the Johnson-range side
+Given the Hab25 Step-2 residual (which is already the `ε_mca` bound), the Johnson-range side
 condition, `δ ≤ 1`, and the Phase-5 numeric check `johnsonBoundReal ≤ ε*`, the smooth-domain
 RS code admits an `MCALowerWitness` at radius `δ` — i.e. it pins the Grand-MCA threshold from
-below, `δ*_C ≥ δ`. So **once the residuals close, the Grand-MCA lower witness at the Johnson
-radius `1 − √ρ` follows mechanically.**
+below, `δ*_C ≥ δ`. This is a direct application of `MCALowerWitness.ofLe` to `hGS`.
 
 The construction routes through the in-tree `MCALowerWitness.ofLe`, feeding it the `ε_mca`
 bound from `hab25_mca_johnson_bound` composed with the numeric check. -/
 def mcaLowerWitness_ofHab25Johnson
     (domain : ι ↪ F) (k : ℕ) (η δ ε_star : ℝ≥0)
     (hη : 0 < η) (hδ : InJohnsonRange domain k η δ) (hδ_le_one : δ ≤ 1)
-    (hCA : Hab25CAInput domain k η δ)
     (hGS : Hab25GSInterpolation domain k η δ hη hδ)
     (hle : ENNReal.ofReal (johnsonBoundReal domain k η δ) ≤ (ε_star : ENNReal)) :
     MCALowerWitness (ReedSolomon.code domain k : Set (ι → F)) ε_star :=
   MCALowerWitness.ofLe hδ_le_one
-    (le_trans (hab25_mca_johnson_bound domain k η δ hη hδ hCA hGS) hle)
+    (le_trans (hab25_mca_johnson_bound domain k η δ hη hδ hGS) hle)
 
 /-- **Hab25 Johnson residuals also make the faithful MCA lattice threshold exist.**
 
@@ -430,7 +433,6 @@ constructing the intermediate `MCALowerWitness`. -/
 theorem mcaThresholdExists_ofHab25Johnson
     (domain : ι ↪ F) (k : ℕ) (η δ ε_star : ℝ≥0)
     (hη : 0 < η) (hδ : InJohnsonRange domain k η δ) (hδ_le_one : δ ≤ 1)
-    (hCA : Hab25CAInput domain k η δ)
     (hGS : Hab25GSInterpolation domain k η δ hη hδ)
     (hle : ENNReal.ofReal (johnsonBoundReal domain k η δ) ≤ (ε_star : ENNReal)) :
     GrandChallengesLattice.mcaThresholdExists
@@ -439,23 +441,22 @@ theorem mcaThresholdExists_ofHab25Johnson
     unfold GrandChallengesLattice.mcaSatisfies
     rw [← GrandChallengesLattice.epsMCA_eq_at_latticeIndex
       (ReedSolomon.code domain k : Set (ι → F)) δ hδ_le_one]
-    exact le_trans (hab25_mca_johnson_bound domain k η δ hη hδ hCA hGS) hle⟩
+    exact le_trans (hab25_mca_johnson_bound domain k η δ hη hδ hGS) hle⟩
 
 /-- The faithful MCA threshold created from Hab25 Johnson residuals satisfies the MCA bound. -/
 theorem mcaThreshold_spec_ofHab25Johnson
     (domain : ι ↪ F) (k : ℕ) (η δ ε_star : ℝ≥0)
     (hη : 0 < η) (hδ : InJohnsonRange domain k η δ) (hδ_le_one : δ ≤ 1)
-    (hCA : Hab25CAInput domain k η δ)
     (hGS : Hab25GSInterpolation domain k η δ hη hδ)
     (hle : ENNReal.ofReal (johnsonBoundReal domain k η δ) ≤ (ε_star : ENNReal)) :
-    let hne := mcaThresholdExists_ofHab25Johnson domain k η δ ε_star hη hδ hδ_le_one hCA hGS hle
+    let hne := mcaThresholdExists_ofHab25Johnson domain k η δ ε_star hη hδ hδ_le_one hGS hle
     GrandChallengesLattice.mcaSatisfies
       (ReedSolomon.code domain k : Set (ι → F)) ε_star
       (GrandChallengesLattice.mcaThreshold
         (ReedSolomon.code domain k : Set (ι → F)) ε_star hne) :=
   GrandChallengesLattice.mcaThreshold_spec
     (ReedSolomon.code domain k : Set (ι → F)) ε_star
-    (mcaThresholdExists_ofHab25Johnson domain k η δ ε_star hη hδ hδ_le_one hCA hGS hle)
+    (mcaThresholdExists_ofHab25Johnson domain k η δ ε_star hη hδ hδ_le_one hGS hle)
 
 /-- **Same bridge stated against the in-tree `MCALowerWitness.ofJohnsonBCHKS25` RHS.**
 
@@ -467,20 +468,12 @@ confirming shape-compatibility of the whole pipeline. -/
 def mcaLowerWitness_ofHab25Johnson_viaBCHKS25
     (domain : ι ↪ F) (k : ℕ) (η δ ε_star : ℝ≥0)
     (hη : 0 < η)
-    (hδ_johnson :
-        (δ : ℝ) <
-          1 - (((k : ℝ) / Fintype.card ι + 1 / Fintype.card ι) ^ ((1 : ℝ) / 2)) - (η : ℝ))
+    (hδ_johnson : InJohnsonRange domain k η δ)
     (hδ_le_one : δ ≤ 1)
     (hGS : Hab25GSInterpolation domain k η δ hη hδ_johnson)
     (hle :
         ENNReal.ofReal
-          (let n : ℝ := Fintype.card ι
-           let ρ_plus : ℝ := k / n + 1 / n
-           let m : ℝ := max ⌈(ρ_plus ^ ((1 : ℝ) / 2)) / (2 * η)⌉ 3
-           ((2 * (m + 1/2) ^ 5 + 3 * (m + 1/2) * δ * ρ_plus)
-              / (3 * ρ_plus ^ ((3 : ℝ) / 2)) * n
-            + (m + 1/2) / ρ_plus ^ ((1 : ℝ) / 2))
-             / (Fintype.card F : ℝ)) ≤ (ε_star : ENNReal)) :
+          (johnsonBoundReal domain k η δ) ≤ (ε_star : ENNReal)) :
     MCALowerWitness (ReedSolomon.code domain k : Set (ι → F)) ε_star :=
   MCALowerWitness.ofJohnsonBCHKS25 domain k η δ ε_star hη hδ_johnson hδ_le_one hGS hle
 
@@ -489,20 +482,12 @@ exist. -/
 theorem mcaThresholdExists_ofHab25Johnson_viaBCHKS25
     (domain : ι ↪ F) (k : ℕ) (η δ ε_star : ℝ≥0)
     (hη : 0 < η)
-    (hδ_johnson :
-        (δ : ℝ) <
-          1 - (((k : ℝ) / Fintype.card ι + 1 / Fintype.card ι) ^ ((1 : ℝ) / 2)) - (η : ℝ))
+    (hδ_johnson : InJohnsonRange domain k η δ)
     (hδ_le_one : δ ≤ 1)
     (hGS : Hab25GSInterpolation domain k η δ hη hδ_johnson)
     (hle :
         ENNReal.ofReal
-          (let n : ℝ := Fintype.card ι
-           let ρ_plus : ℝ := k / n + 1 / n
-           let m : ℝ := max ⌈(ρ_plus ^ ((1 : ℝ) / 2)) / (2 * η)⌉ 3
-           ((2 * (m + 1/2) ^ 5 + 3 * (m + 1/2) * δ * ρ_plus)
-              / (3 * ρ_plus ^ ((3 : ℝ) / 2)) * n
-            + (m + 1/2) / ρ_plus ^ ((1 : ℝ) / 2))
-             / (Fintype.card F : ℝ)) ≤ (ε_star : ENNReal)) :
+          (johnsonBoundReal domain k η δ) ≤ (ε_star : ENNReal)) :
     GrandChallengesLattice.mcaThresholdExists
       (ReedSolomon.code domain k : Set (ι → F)) ε_star :=
   GrandChallengesLattice.mcaThresholdExists_ofJohnsonBCHKS25 domain k η δ ε_star hη
@@ -513,20 +498,12 @@ the MCA bound. -/
 theorem mcaThreshold_spec_ofHab25Johnson_viaBCHKS25
     (domain : ι ↪ F) (k : ℕ) (η δ ε_star : ℝ≥0)
     (hη : 0 < η)
-    (hδ_johnson :
-        (δ : ℝ) <
-          1 - (((k : ℝ) / Fintype.card ι + 1 / Fintype.card ι) ^ ((1 : ℝ) / 2)) - (η : ℝ))
+    (hδ_johnson : InJohnsonRange domain k η δ)
     (hδ_le_one : δ ≤ 1)
     (hGS : Hab25GSInterpolation domain k η δ hη hδ_johnson)
     (hle :
         ENNReal.ofReal
-          (let n : ℝ := Fintype.card ι
-           let ρ_plus : ℝ := k / n + 1 / n
-           let m : ℝ := max ⌈(ρ_plus ^ ((1 : ℝ) / 2)) / (2 * η)⌉ 3
-           ((2 * (m + 1/2) ^ 5 + 3 * (m + 1/2) * δ * ρ_plus)
-              / (3 * ρ_plus ^ ((3 : ℝ) / 2)) * n
-            + (m + 1/2) / ρ_plus ^ ((1 : ℝ) / 2))
-             / (Fintype.card F : ℝ)) ≤ (ε_star : ENNReal)) :
+          (johnsonBoundReal domain k η δ) ≤ (ε_star : ENNReal)) :
     let hne := mcaThresholdExists_ofHab25Johnson_viaBCHKS25 domain k η δ ε_star hη
       hδ_johnson hδ_le_one hGS hle
     GrandChallengesLattice.mcaSatisfies
@@ -544,20 +521,12 @@ Grand-MCA lattice bridge rather than reconstructing the generic threshold spec. 
 theorem mcaThreshold_spec_ofHab25Johnson_directBCHKS25
     (domain : ι ↪ F) (k : ℕ) (η δ ε_star : ℝ≥0)
     (hη : 0 < η)
-    (hδ_johnson :
-        (δ : ℝ) <
-          1 - (((k : ℝ) / Fintype.card ι + 1 / Fintype.card ι) ^ ((1 : ℝ) / 2)) - (η : ℝ))
+    (hδ_johnson : InJohnsonRange domain k η δ)
     (hδ_le_one : δ ≤ 1)
     (hGS : Hab25GSInterpolation domain k η δ hη hδ_johnson)
     (hle :
         ENNReal.ofReal
-          (let n : ℝ := Fintype.card ι
-           let ρ_plus : ℝ := k / n + 1 / n
-           let m : ℝ := max ⌈(ρ_plus ^ ((1 : ℝ) / 2)) / (2 * η)⌉ 3
-           ((2 * (m + 1/2) ^ 5 + 3 * (m + 1/2) * δ * ρ_plus)
-              / (3 * ρ_plus ^ ((3 : ℝ) / 2)) * n
-            + (m + 1/2) / ρ_plus ^ ((1 : ℝ) / 2))
-             / (Fintype.card F : ℝ)) ≤ (ε_star : ENNReal)) :
+          (johnsonBoundReal domain k η δ) ≤ (ε_star : ENNReal)) :
     let hne := GrandChallengesLattice.mcaThresholdExists_ofJohnsonBCHKS25
       domain k η δ ε_star hη hδ_johnson hδ_le_one hGS hle
     GrandChallengesLattice.mcaSatisfies
@@ -572,20 +541,12 @@ MCA lattice threshold directly. -/
 theorem mcaThresholdLattice_bracketed_ofHab25Johnson_and_epsCAGt
     (domain : ι ↪ F) (k : ℕ) (η δ_lo δ_hi ε_star : ℝ≥0)
     (hη : 0 < η)
-    (hδ_johnson :
-        (δ_lo : ℝ) <
-          1 - (((k : ℝ) / Fintype.card ι + 1 / Fintype.card ι) ^ ((1 : ℝ) / 2)) - (η : ℝ))
+    (hδ_johnson : InJohnsonRange domain k η δ_lo)
     (hδlo_le_one : δ_lo ≤ 1)
     (hGS : Hab25GSInterpolation domain k η δ_lo hη hδ_johnson)
     (hle :
         ENNReal.ofReal
-          (let n : ℝ := Fintype.card ι
-           let ρ_plus : ℝ := k / n + 1 / n
-           let m : ℝ := max ⌈(ρ_plus ^ ((1 : ℝ) / 2)) / (2 * η)⌉ 3
-           ((2 * (m + 1/2) ^ 5 + 3 * (m + 1/2) * δ_lo * ρ_plus)
-              / (3 * ρ_plus ^ ((3 : ℝ) / 2)) * n
-            + (m + 1/2) / ρ_plus ^ ((1 : ℝ) / 2))
-             / (Fintype.card F : ℝ)) ≤ (ε_star : ENNReal))
+          (johnsonBoundReal domain k η δ_lo) ≤ (ε_star : ENNReal))
     (hhi :
       epsCA (F := F) (A := F) (ReedSolomon.code domain k : Set (ι → F)) δ_hi δ_hi >
         (ε_star : ENNReal))
@@ -606,21 +567,12 @@ faithful MCA lattice threshold directly. -/
 theorem mcaThresholdLattice_bracketed_ofHab25Johnson_and_RSBreakdownCS25
     (domain : ι ↪ F) (k : ℕ) (η δ_lo δ_hi ε_star : ℝ≥0)
     (hη : 0 < η)
-    (hδ_johnson :
-        (δ_lo : ℝ) <
-          1 - (((k : ℝ) / Fintype.card ι + 1 / Fintype.card ι) ^ ((1 : ℝ) / 2)) -
-            (η : ℝ))
+    (hδ_johnson : InJohnsonRange domain k η δ_lo)
     (hδlo_le_one : δ_lo ≤ 1)
     (hGS : Hab25GSInterpolation domain k η δ_lo hη hδ_johnson)
     (hle :
         ENNReal.ofReal
-          (let n : ℝ := Fintype.card ι
-           let ρ_plus : ℝ := k / n + 1 / n
-           let m : ℝ := max ⌈(ρ_plus ^ ((1 : ℝ) / 2)) / (2 * η)⌉ 3
-           ((2 * (m + 1/2) ^ 5 + 3 * (m + 1/2) * δ_lo * ρ_plus)
-              / (3 * ρ_plus ^ ((3 : ℝ) / 2)) * n
-            + (m + 1/2) / ρ_plus ^ ((1 : ℝ) / 2))
-             / (Fintype.card F : ℝ)) ≤ (ε_star : ENNReal))
+          (johnsonBoundReal domain k η δ_lo) ≤ (ε_star : ENNReal))
     (hδhi : δ_hi ≤ 1)
     (hq_ge : 10 ≤ Fintype.card F)
     (hδ_cs_lo :
@@ -648,21 +600,12 @@ lattice threshold directly for Reed-Solomon codes. -/
 theorem mcaThresholdLattice_bracketed_ofHab25Johnson_and_SamplingDG25
     (domain : ι ↪ F) (k : ℕ) (η δ_lo δ_hi δ' ε_star : ℝ≥0)
     (hη : 0 < η)
-    (hδ_johnson :
-        (δ_lo : ℝ) <
-          1 - (((k : ℝ) / Fintype.card ι + 1 / Fintype.card ι) ^ ((1 : ℝ) / 2)) -
-            (η : ℝ))
+    (hδ_johnson : InJohnsonRange domain k η δ_lo)
     (hδlo_le_one : δ_lo ≤ 1)
     (hGS : Hab25GSInterpolation domain k η δ_lo hη hδ_johnson)
     (hle :
         ENNReal.ofReal
-          (let n : ℝ := Fintype.card ι
-           let ρ_plus : ℝ := k / n + 1 / n
-           let m : ℝ := max ⌈(ρ_plus ^ ((1 : ℝ) / 2)) / (2 * η)⌉ 3
-           ((2 * (m + 1/2) ^ 5 + 3 * (m + 1/2) * δ_lo * ρ_plus)
-              / (3 * ρ_plus ^ ((3 : ℝ) / 2)) * n
-            + (m + 1/2) / ρ_plus ^ ((1 : ℝ) / 2))
-             / (Fintype.card F : ℝ)) ≤ (ε_star : ENNReal))
+          (johnsonBoundReal domain k η δ_lo) ≤ (ε_star : ENNReal))
     (hδhi : δ_hi ≤ 1)
     (hδ' : (δ' : ENNReal) =
       ⨆ u : ι → F, δᵣ(u, (ReedSolomon.code domain k : Set (ι → F))))

@@ -352,7 +352,8 @@ theorem holes_subset_fourHoleInterpolatedLine_core
   exact ⟨fourHoleInterpolant_eval family residual cross (u 0) hi,
     fourHoleInterpolant_eval family residual cross (u 1) hi⟩
 
-/-- Sharp line-population consequence for the all-four subpopulation. -/
+/-- Line-population upper bound for the all-four subpopulation: at most four members.
+(Only the upper bound is proved; no attainment witness is given here.) -/
 theorem allFourHolePopulation_card_le_four
     {dom : I ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) I}
     (family : BadScalarRichPointFamily dom 4 delta u)

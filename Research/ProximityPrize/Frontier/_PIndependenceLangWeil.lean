@@ -37,6 +37,25 @@ so as a polynomial in `γ` it has **`q`-independent degree** `= #{z∈S : Q₁(z
 every trial). Its coefficients are fixed elements of `ℤ[ζ_n]` (symmetric functions of the data), i.e.
 **`q`-independent**. The whole incidence is the (finite) union over the `C(n,s)` subsets `S`.
 
+**CORRECTION (audit T163) — the product encodes the wrong event.** `R_S(γ) = ∏_{z∈S} ℓ_z(γ)` with
+`ℓ_z(γ) = Q₀(z) + γ·Q₁(z) − W(z)` vanishes iff **some** factor vanishes. Its root set is the *union*
+of the per-point roots `γ_z`: the scalars at which the line point matches at **at least one**
+`z ∈ S`. Agreement on `S` needs **every** residual to vanish. So the per-subset bad set is the
+*common* root set of the `ℓ_z` (the roots of their gcd), not the root set of their product. Each
+`ℓ_z` is affine in `γ`; when some `Q₁(z) ≠ 0`, the per-subset bad set therefore has at most one
+element, and it is nonempty iff all the `γ_z` coincide (with `Q₀(z) = W(z)` wherever `Q₁(z) = 0`).
+`deg R_S = #{z : Q₁(z) ≠ 0}` counts per-point roots, not bad scalars.
+
+Consequently, everything below that reads "root count of `R_S`" as "per-subset bad-`γ` count", or
+as `I(δ)`, is **not** established. That includes the docstrings of
+`incidence_eq_degree_of_good`, `incidence_preserved_of_good_reduction`, `pindependence_per_subset`,
+`incidence_charP_eq_char0_of_good` and `foundation_qIndependence`, and the "THE THEOREM" /
+"Therefore the prize-scale incidence is exactly the char-`0` count" prose. The Lean theorems
+themselves are correct, generic, field-uniform root-count facts about an arbitrary split separable
+polynomial and its good reductions. They remain valid, but they do not prove the `q`-independence
+of the incidence. A correct per-subset formulation would have to count coincidences
+`γ_z = γ_{z'}` of the per-point roots, before and after reduction mod `p`.
+
 ## What `p`-independence reduces to (THE THEOREM, airtight)
 
 A monic-up-to-leading-unit polynomial `f ∈ ℤ[ζ_n][γ]` of `q`-independent degree `d` has
@@ -59,7 +78,8 @@ polynomial in `n`**. The discriminant of a degree-`d` polynomial with such coeff
 the over-determined (`s−k ≥ 2`) bad-prime exponent is **stable `≈ 2`** (`n=16→17`, `n=32→2113`,
 `n=64→2753`; `probe_overdet_pindep_threshold.py`), so `q₀(n) ≈ n²` in practice and provably
 `q₀(n) < n⁴` (well below the prize prime `q ≈ n·2^128`). **Therefore the prize-scale incidence is
-exactly the char-`0` (number-field) count.** (Contrast: the *under*-determined `s−k=1` band has
+exactly the char-`0` (number-field) count.** *(Not established: see the audit-T163 correction
+above. This conclusion rests on reading the root count of `R_S` as the bad-`γ` count.)* (Contrast: the *under*-determined `s−k=1` band has
 exponent `3.25 → 3.95 → 5.99`, growing — that band is the analytic BGK object, and is **above** `δ*`,
 so it does NOT control the floor. The over-det band, which DOES control `δ*`, is `p`-independent.)
 
@@ -177,8 +197,9 @@ def GoodReduction (D : SubsetResultant K) (φ : K →+* L) : Prop :=
 
 /-- **THE FOUNDATION THEOREM (`p`-independence per subset).** For a subset-resultant `D` that is
 split & separable over `K = ℚ(ζ_n)` and reduces *goodly* mod `p` (= `p` not dividing `lc·disc`), the
-number of bad scalars `γ` over `F_p` equals the `q`-independent degree `d` — which is the SAME number
-over `ℚ(ζ_n)`. I.e. `I_S(F_p) = d = I_S(ℚ(ζ_n))`. This is "dim 0 ⟹ `#points = deg`, `q`-independent
+number of distinct roots of `R_S` over `F_p` equals the `q`-independent degree `d` — which is the SAME
+number over `ℚ(ζ_n)`. (Originally read as the number of bad scalars `γ`; per the audit-T163 correction
+in the module docstring, roots of the product `R_S` are not the bad scalars.) I.e. `I_S(F_p) = d = I_S(ℚ(ζ_n))`. This is "dim 0 ⟹ `#points = deg`, `q`-independent
 above the threshold," proven elementarily and field-uniformly. -/
 theorem pindependence_per_subset
     (D : SubsetResultant K) (φ : K →+* L)
@@ -191,8 +212,9 @@ theorem pindependence_per_subset
   · rw [card_distinct_roots_eq_degree_of_splits_separable D.RS_ne hsplit hsep, D.deg_eq]
 
 /-- **Corollary: char-`p` count = char-`0` count at a good prime.** Directly: the two distinct-root
-counts coincide. This is the verbatim statement `I(δ) = #Z_{n,δ}(F_q) = deg(Z_{n,δ})` for `q` above
-the bad-prime threshold. -/
+counts coincide. (This was described as the verbatim statement `I(δ) = #Z_{n,δ}(F_q) = deg(Z_{n,δ})`;
+per the audit-T163 correction in the module docstring, the root count of `R_S` is a union count, not the
+incidence, so that identification is not established.) -/
 theorem incidence_charP_eq_char0_of_good
     (D : SubsetResultant K) (φ : K →+* L)
     (hsplit : D.RS.Splits) (hsep : D.RS.Separable)

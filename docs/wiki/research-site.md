@@ -75,3 +75,33 @@ revert to main. Rebuild and publish the reverted source with Wrangler, then run 
 
 The old `deltastar-paper.pages.dev` project is separate. Its redirects can only be
 changed through the account that owns it; this workflow never deploys to it.
+
+## Dependency advisories
+
+This section covers both website projects, `website/deltastar-paper/` and
+`website/truthmining/`. Run `npm audit` in each after every lockfile change. The
+2026-10-28 refresh moved both to Next.js 15.5.28, sharp 0.35.5, KaTeX 0.18.10,
+nanoid 3.3.20, source-map-js 1.2.2, and PostCSS 8.5.32 for the Tailwind plugin.
+Truth Mining also moved to Tailwind CSS 4.3.3, because its 4.3.1 plugin pinned
+PostCSS 8.5.15. KaTeX 0.18 adds a `katex-` prefix to internal classes such as
+`base` and `strut`; Truth Mining styles only `.katex` and `.katex-display`.
+
+Both audits still report the `postcss@8.4.31` copy that Next.js 15 pins exactly:
+a high PostCSS entry (GHSA-qx2v-qp2m-jg93, GHSA-6g55-p6wh-862q,
+GHSA-fxqj-rqcc-2cmp, GHSA-r28c-9q8g-f849) and a moderate `next` entry through it.
+No Next 15 release removes the pin. Next 16.3 and later pin PostCSS 8.5.23, so
+`npm audit fix --force` would make an unreviewed major upgrade. The residual does
+not reach the published sites under these conditions:
+
+- Each site uses `output: "export"`, and its workflow publishes only `out/` to
+  Cloudflare Pages. No Next.js server, image optimization API, Server Actions,
+  rewrites, middleware, or Pages Functions run in production.
+- PostCSS runs only during builds. Its inputs are the sites' own stylesheets,
+  Tailwind output, KaTeX's packaged stylesheet, and the font CSS that `next/font`
+  generates for Truth Mining. The advisories need attacker-controlled CSS, such
+  as a crafted `sourceMappingURL` comment or `</style>` text. HTTP requests to a
+  development server cannot supply that input.
+
+Recheck these conditions before a site processes third-party CSS, serves pages
+with `next start`, or moves to Next 16.3 or later. A clean audit does not certify
+third-party code.

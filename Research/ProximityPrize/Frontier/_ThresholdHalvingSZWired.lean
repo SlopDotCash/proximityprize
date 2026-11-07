@@ -22,7 +22,7 @@ as an **abstract hypothesis** — the proven single-variable Schwartz–Zippel d
 `n · R'` envelope is just assumed. This file removes that abstract hypothesis: it instantiates the
 rate slot `R'` so that `n · R'` is *exactly* the Schwartz–Zippel density envelope, and then derives
 `foldFail ≤ n · R'` as a **theorem** from the proven SZ root count — `card_roots_in_le_natDegree` —
-combined with the folded-RS degree bound `deg(p) ≤ n · rate`.
+combined with an ASSUMED degree bound `deg(p) ≤ n · rate` (a model input, see Honesty).
 
 ## The wiring identity
 
@@ -69,10 +69,13 @@ named.
 
 * Everything proven rests only on Mathlib's univariate root count and clean `norm_cast` — axiom
   audit `⊆ {propext, Classical.choice, Quot.sound}` (no `sorryAx`).
-* The folded-RS degree bound `deg(p) ≤ n·rate` is a *genuine, non-trivial* honest hypothesis (the
-  RS folding degree law — it is the defining property of the folded code, supplied by the protocol,
-  not vacuous). It is the only input replacing the former abstract `hfold`, and it is strictly
-  *weaker / more concrete* than assuming `foldFail ≤ n·R'` outright.
+* The degree bound `deg(p) ≤ n·rate` is an **assumed model input**, not a protocol fact proven or
+  derived here (audit CW-B15-06).  FRI folding is *linear* in the folding challenge, so the
+  single-challenge Schwartz–Zippel polynomial has degree `1`, not `n·rate`; the `n·R/|F|` term of
+  the ePrint 2026/858 per-round error comes from correlated agreement, not from a degree law of
+  the folded code.  This file therefore only shows: IF some nonzero `p` with `deg(p) ≤ n·rate`
+  governs the folding failure, THEN Schwartz–Zippel gives `foldFail ≤ n·R'`.  It replaces the
+  abstract `hfold` by this (differently-shaped) assumption, not by a theorem about FRI.
 * The genuine ≈2×-query query-amplification term `(1 − δ/2)^q` is still carried as the explicit
   named residual `QueryAmpTail`; we never discharge it.
 * This is the **lossy 2×-query above-Johnson route**, not the grand zero-loss `δ*` (the open BGK
@@ -170,13 +173,14 @@ Suppose the per-round FRI soundness error `ε` splits as `ε ≤ szDensityReal p
 Given:
 
 * `hp : p ≠ 0` — the consistency polynomial is nonzero (the prover's claimed folded word is wrong);
-* `hdeg : deg(p) ≤ n · rate` — the folded-RS degree law (genuine, non-trivial protocol fact: the
-  defining degree property of the folded code);
+* `hdeg : deg(p) ≤ n · rate` — an assumed degree bound (a model input, NOT a proven FRI protocol
+  fact; FRI folding is linear in the challenge, see the module Honesty note);
 * `htail : QueryAmpTail tail q halfRadius` — the named (only open) query-amplification residual,
 
 then `PerRoundFRIError ε n (rate/|F|) q halfRadius` holds. Crucially, **no `hfold` hypothesis is
-taken**: the `n · R'` folding bound is discharged internally by `foldFail_le_of_degree_bound`
-(= Schwartz–Zippel). Only `QueryAmpTail` is hypothesized; we never discharge it. -/
+taken**: the `n · R'` folding bound is derived internally by `foldFail_le_of_degree_bound`
+(= Schwartz–Zippel) from the assumed `hdeg`. Besides `hdeg`, only `QueryAmpTail` is hypothesized;
+we never discharge it. -/
 theorem perRound_from_SZ_wired
     {ε tail : ℝ} {p : F[X]} (hp : p ≠ 0) {n : ℕ} {rate halfRadius : ℝ} {q : ℕ}
     (hdeg : (p.natDegree : ℝ) ≤ (n : ℝ) * rate)

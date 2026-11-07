@@ -35,8 +35,12 @@ the worst-case `sup_{s₀} ‖𝒮‖²` lies in `[M, |V|·M]`, a multiplicative
    (a bad witness exists), but a budget proving the upper side small requires `B² ≥`
    the worst value, which the L² route only bounds by `|V|·M` — i.e. one needs *uniform*
    (every-`s₀`) square-root cancellation of the structured Gauss-period sum
-   `∑_ψ Ŝ(ψ)·ψ(s₀)`.  That is exactly the open **BGK / Paley** content
-   `max_{b≠0} ‖∑_{y∈μ_n} ψ(by)‖ ≤ 2√n` (`WorstCaseIncompleteSumBound`).
+   `∑_ψ Ŝ(ψ)·ψ(s₀)`.  Heuristically this is the open **BGK / Paley** content; the file does
+   NOT prove a reduction from that arbitrary hyperplane mass to a period bound, and the displayed
+   period target `max_{b≠0} ‖∑_{y∈μ_n} ψ(by)‖ ≤ 2√n` (`WorstCaseIncompleteSumBound`) omits the
+   logarithmic factor of the actual prize target `C·√(n·log(q/n))` (audit 2026-10-28, R-211).
+   These loose upper/lower envelopes also do not rule out every symmetry- or structure-assisted
+   argument.
 
 **Conclusion (a precise reduction, per the honesty contract):** the C1 second-moment route
 does *not* move the `δ*` lower bracket past Johnson — it reduces, with a `√|V| = q^{n/2}`
@@ -108,8 +112,9 @@ undershoots the hyperplane mass (`B² < M`), the prize Shaw bound is FALSE with 
 bad witness (`not_mcaShawConjecture_of_lt_secondMoment`).  Hence any *valid* budget must
 satisfy `B² ≥ M`; but the L² route only proves the worst case `≤ |V|·M`, so certifying a
 budget `B` with `B² < |V|·M` (anything below the trivial union bound) requires bounding the
-worst `‖𝒮(s₀)‖` *uniformly in `s₀`* — the open `√`-cancellation of `∑_ψ Ŝ(ψ)ψ(s₀)`, i.e.
-BGK / Paley `max_b ‖η_b‖ ≤ 2√n`.  This restates the route's dependence on BGK. -/
+worst `‖𝒮(s₀)‖` *uniformly in `s₀`* — the open `√`-cancellation of `∑_ψ Ŝ(ψ)ψ(s₀)`. That this
+is the BGK / Paley period bound is a heuristic identification, not proved here (and the
+`2√n` form omits the prize's logarithmic factor; R-211). -/
 theorem shaw_worst_case_needs_uniform_cancellation [Nonempty V] (S : Finset V) (s₁ : V)
     (B : ℝ) (hB : B ^ 2 < hyperplaneMass (F := F) S s₁) :
     ¬ MCAShawConjecture (F := F) S B := by

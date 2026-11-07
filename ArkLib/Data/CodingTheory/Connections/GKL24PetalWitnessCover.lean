@@ -141,10 +141,13 @@ theorem epsMCA_le_ofReal_t51_firstMoment_of_maxDomainWitnessCover
 
 /-! ## 4. Regression sanity: the in-tree relaxed carrier plumbing is still reachable.
 
-We re-derive that the trivially-relaxed setting is consistent: a single-codeword carrier still
-satisfies the COVER and MEMBERSHIP halves of the atomic surface (the certificate fields are the
-genuine GKL24 content and are NOT claimed here). This documents that the only new obligation over
-the in-tree state is the maximal-domain certificate, not the carrier plumbing. -/
+We re-derive that the trivially-relaxed setting is consistent: the carrier `T` consisting of
+**all** codewords of `MC` (`Finset.univ.filter (· ∈ MC)`, not a single codeword) satisfies the
+COVER and MEMBERSHIP halves of the atomic surface (the certificate fields are the genuine GKL24
+content and are NOT claimed here). Its cardinality is `|MC|`, so this carrier gives no small
+carrier bound; a small (list-size) carrier remains the separate content of the maximal-domain
+certificate. This documents only that the carrier *plumbing* is not an extra obligation over
+the in-tree state. -/
 theorem maxDomainWitnessCover_carrier_cover_inTree
     (MC : Submodule F (ι → F)) (δ : ℝ≥0) (u : WordStack F (Fin 2) ι) :
     ∃ T : Finset (ι → F),

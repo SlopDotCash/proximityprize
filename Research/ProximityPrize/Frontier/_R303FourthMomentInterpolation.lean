@@ -16,7 +16,10 @@ import Research.ProximityPrize.Frontier._R302TraceFormulaPointCount
 The proposed target `∑_a ‖Ŝ(a)‖⁴ ≤ K₄·m²·q²` is IMPOSSIBLE: Parseval pins
 `∑_a ‖Ŝ(a)‖² ≈ m²q`, so power-mean forces `∑_a ‖Ŝ‖⁴ ≥ (m²q)²/m = m³q²`, and
 the EXACT diagonal (`{j₁,j₂} = {k₁,k₂}` additive quadruples) contributes
-`≈ 2(1−2/m)²·m³q²`.  The correct flat scale is `K₄·m³·q²`, and the probe
+`≈ 2(1−2/m)²·m³q²` — but this diagonal is NOT a lower bound: the complex
+off-diagonal terms can have negative real total (exact counterexample at
+p = 13, m = 12, k = 1: `M4 = 227196 < 391572 = m·D`).  Only the power-mean floor
+is a valid lower bound.  The correct flat scale is `K₄·m³·q²`, and the probe
 measures `K₄ ∈ [0.67, 3.2]` across all four m — bounded, flat in q.
 
 ## Main-term structure (the coordinator's Möbius question, resolved)
@@ -43,7 +46,8 @@ moment bound itself, `FourthMomentBound`, calibrated three ways below.
 * `conv2` / `hatF_conv2` — the DFT diagonalizes the 2-fold convolution;
 * `fourthMoment_eq_selfConv_energy` — **the exact F1 identity** (unconditional);
 * `FourthMomentBound K₄` — the NEW NAMED OPEN INPUT at the correct scale
-  `∑_a ‖Ŝ(a)‖⁴ ≤ K₄·m³·q²`; probe: `K₄ ≤ 3.2` at m ≤ 18, diagonal floor ≈ 2;
+  `∑_a ‖Ŝ(a)‖⁴ ≤ K₄·m³·q²`; probe: `K₄ ≤ 3.2` at m ≤ 18 (power-mean floor
+  `K₄ ⪆ 0.6`; the diagonal is not a floor);
 * `fourthMomentBound_of_fullDFTFlat` — hierarchy: flatness `K` ⟹ `K₄ = K⁴`
   (the 4th moment is strictly weaker than R302's `FullDFTFlat`);
 * `fourthMomentBound_unconditional` — calibration: `K₄ = m` always holds;
@@ -128,7 +132,7 @@ variable {u' : ℕ} [NeZero u']
 
 /-- **THE NAMED OPEN INPUT (correct scale)**: the fourth moment of the
 zero-removed Jacobi DFT at the flat/diagonal scale `m³q²`.  The `m²q²` scale is
-IMPOSSIBLE (power-mean + Parseval); the diagonal forces `K₄ ⪆ 2`; probe:
+IMPOSSIBLE (power-mean + Parseval; the diagonal share is NOT a lower bound); probe:
 `K₄ ≤ 3.2` at m = 9, 12, 15, 18, flat in q.  Strictly weaker than
 `FullDFTFlat` (see the hierarchy lemma). -/
 def FourthMomentBound (ψ : AddChar (ZMod (3 * u')) ℂ) (J : ZMod (3 * u') → ℂ)

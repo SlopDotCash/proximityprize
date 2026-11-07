@@ -95,7 +95,17 @@ discharged here. The char-0 anchor `hanchor : E0 + slack ≤ (2r·n)^r` and the 
 `hmean0 : 𝔼[W_r] = 0` have proven *char-0* in-tree analogues (Bessel/Wick backbone
 `_CharZeroBackboneAntitone`; DC-cancellation `probe_wraparound_correction`), but combined with
 `hwrap` they pin the RAW char-`p` energy `E_r(μ_n) ≤ (2r·n)^r`, which is in-tree-FALSE at prize
-depth (DC lower bound). Hence `isPrizeClosure = false` AND the conditional is non-vacuous only OFF
+depth (DC lower bound).
+
+**`hmean0` is independently unsatisfiable under the documented semantics (audit CW-B15-04).**
+In Lean `E0` and `Wr` are free reals, so `hmean0 ∧ hwrap` is satisfiable (take `E0` = the family
+mean).  But under the documented reading `E0 = E_r^{char0}` (the char-0 energy), the wraparound
+excess is nonnegative, `W_r(ω) = E_r(F_p) − E_r^{char0} ≥ 0` (char-0 solutions reduce injectively
+when `p ≡ 1 mod n`), so `hmean0 : 𝔼[W_r] = 0` together with `hwrap` forces `W_r(ω) = 0` for every
+`ω ∈ s`.  The DC floor already refutes that at prize depth (`W_6 > 0`, R-113, propagating to all
+larger depths), and `_TwoSidedWraparoundCharacterization` records the family mean of `W_k` as
+`n^{2k}/q > 0`.  So `hmean0` is not a harmless "centering": the honest centred quantity is the
+DC-subtracted `W_r − n^{2r}/q`. Hence `isPrizeClosure = false` AND the conditional is non-vacuous only OFF
 the prize regime; the prize-scale fix is the DC-subtracted moment `S_r` route.
 References: BGK (2006), di Benedetto (arXiv:2003.06165),
 Kowalski (2401.04756), Pisier (1704.02969), Katz, Deligne, ABF26 (2026/680), KKH26 (2026/782).
@@ -251,6 +261,8 @@ valid; NOT a reduction of the prize to `hVar` alone.
 `r ≈ log q`). It is **NOT** the only undischarged premise: `hwrap`, `hanchor`, `hdepth`, `hprim`,
 `hmean0` are ALSO free hypotheses of this theorem (not discharged here):
 * `hmean0` — centering `𝔼[W_r] = 0` (char-0 DC-cancellation analogue, `probe_wraparound_correction`);
+  with `E0 = E_r^{char0}` (so `W_r ≥ 0`) this alone forces `W_r ≡ 0` on `s`, already false at prize
+  depth by the DC floor (CW-B15-04) — the honest centring is `W_r − n^{2r}/q`;
 * `hwrap` — the wraparound decomposition `E_r(G_ω) = E0 + W_r(ω)`;
 * `hanchor` — the char-0 Bessel/Wick anchor `E0 + slack ≤ (2r·|G_ω|)^r` (`_CharZeroBackboneAntitone`);
 * `hdepth` — saddle depth `q = |F| ≤ exp r` (`r ≈ log q`);

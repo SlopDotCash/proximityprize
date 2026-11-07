@@ -148,7 +148,10 @@ theorem eq_zero_of_cleared_witness {x : Localization.Away ξ} {e : ℕ} {N : Pol
 /-! ## The budget recursion -/
 
 /-- The cleared-numerator degree budget: `dv` at order `0`; one `DZ + d·(budget + 2t·dξ) +
-2t·dξ` step per order (quadratic in `t`).  Monotone by construction. -/
+2t·dξ` step per order.  Monotone by construction.  This budget is **not** quadratic in `t`
+in general: the step multiplies the previous budget by `d`, so for `d ≥ 2` it grows
+exponentially (e.g. at `(d, dv, DZ, dξ) = (2, 1, 0, 0)` it is `2^t`).  The sharp quadratic
+budget is proved separately in `SectionNewtonClearedSharp`. -/
 def clearedBudget (d dv DZ dξ : ℕ) : ℕ → ℕ
   | 0 => dv
   | (t + 1) => max (clearedBudget d dv DZ dξ t)
@@ -262,7 +265,8 @@ theorem powTop_cleared {t G : ℕ}
 
 /-- **THE CLEARED NEWTON FILTRATION** (the elementary `(A.4)`): over `Localization.Away ξ̄`,
 with polynomial data of degree ≤ `DZ`, seed `v`, and derivative response `𝔞 ξ̄`, every Newton
-coefficient clears at exponent `2t − 1` with the explicit quadratic budget. -/
+coefficient clears at exponent `2t − 1` with the explicit recursive budget `clearedBudget`
+(exponential in `t` when `d ≥ 2`; see `SectionNewtonClearedSharp` for a quadratic budget). -/
 theorem gamma_cleared {DZ : ℕ}
     (hQdeg : ∀ i j, ∃ q : Polynomial F, q.natDegree ≤ DZ ∧ 𝔞 q = coeff j (QA.coeff i))
     (hresp : Polynomial.eval (𝔞 v) (Polynomial.derivative (Q₀ QA)) = 𝔞 ξ) :

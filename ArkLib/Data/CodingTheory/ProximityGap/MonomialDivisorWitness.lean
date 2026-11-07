@@ -10,9 +10,9 @@ import ArkLib.Data.CodingTheory.ProximityGap.GranularityLadderRS
 
 The constructive half of the SPECTRUM = −μ_n law, discovered by configuration
 extraction (`probe_wb_spectrum_odd_n_discrimination.py` round): at the interior
-slice of agreement `d + 1` (a divisor `d` of the subgroup order), the monomial
-line `x^{2d}·(x − x₀)` agrees with the **degree-one codeword** `A²·(x − x₀)` on
-the `d + 1` domain points `{x₀} ∪ c₁μ_d`, via the one-line identity
+slice of agreement `d + 1` (a proper divisor `d` of the subgroup order), the
+monomial line `x^{2d}·(x − x₀)` agrees with the **degree-one codeword**
+`A²·(x − x₀)` on the domain points `{x₀} ∪ c₁μ_d`, via the one-line identity
 
   `x^{2d}(x − x₀) − A²(x − x₀) = (x − x₀)(x^{2d} − A²)`,
 
@@ -25,11 +25,22 @@ machinery needed.
 
 This file proves the agreement identity for arbitrary fields and parameters:
 `monomial_divisor_agreement` — the line at `γ = −x₀` agrees with a codeword of
-degree ≤ 1 on every point of `{x₀} ∪ {x : x^{2d} = A²}`.  Consumers instantiate
-with `A := c₁^d`, `c₁ ∈ μ_n`, `d ∣ n` to land `d + 1` domain agreements at the
-slice `w = n − d − 1`: the divisor-graded interior spectrum lower bound, and
-the explanation of the supply arithmetic (`s = 2d + 1`; no integer `d` at
-`s = 6`, hence the measured emptiness).
+degree ≤ 1 on every point of `{x₀} ∪ {x : x^{2d} = A²}`.  All four theorems here
+are **pointwise** algebraic identities; none of them counts agreement points.
+
+**Cardinality is not proved here and needs extra hypotheses.**  The set
+`{x₀} ∪ c₁μ_d` has `d + 1` elements only when (i) the coset `c₁μ_d` really has
+`d` elements (e.g. `c₁ ≠ 0` and `F` contains `d` distinct `d`-th roots of unity,
+as when `d ∣ n` and `μ_n ⊆ F` has `n` elements), and (ii) the anchor lies
+**outside** the coset, `x₀ ∉ c₁μ_d`.  If `x₀ ∈ c₁μ_d` the union has only `d`
+points.  In particular `d = n` with `x₀, c₁ ∈ μ_n` gives `c₁μ_n = μ_n ∋ x₀`, so
+this construction can never produce `n + 1` domain agreements; a consumer needs
+a proper divisor `d` of `n` and an anchor `x₀ ∈ μ_n \ c₁μ_d`.  Under those
+hypotheses, consumers instantiating with `A := c₁^d`, `c₁ ∈ μ_n`, `d ∣ n` would
+land `d + 1` domain agreements at the slice `w = n − d − 1` (the divisor-graded
+interior spectrum lower bound, and the explanation of the supply arithmetic
+`s = 2d + 1`; no integer `d` at `s = 6`, hence the measured emptiness); that
+counting step is a separate, unformalized bridge.
 -/
 
 open Polynomial

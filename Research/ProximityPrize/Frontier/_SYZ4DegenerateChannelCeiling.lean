@@ -6,6 +6,7 @@ Authors: ArkLib Contributors
 
 import ProximityPrize.Compatibility.EvaluationCodeDimension
 import Research.ProximityPrize.Frontier._PrizeShapeRateHalfBracket
+import Research.ProximityPrize.Frontier._SYZ2PredecessorCapRefutationCore
 import ArkLib.Data.CodingTheory.ProximityGap.MCAWitnessSpread
 
 /-!
@@ -24,8 +25,8 @@ in `Frontier/_SYZ2PredecessorCapRefutationCore.lean`, SYZ3 over-budget stack in
 degenerate codewords on a `33`-block subset, whose complement (`31` blocks per subset) carried the
 bad scalars — a radius of `predecessorRadius (2^30) (31·2^24) ≈ 31/64`.  There the `33` agreement
 blocks were `31` *vanishing-core* blocks (`Z_N` kills them, so agreement is free) plus a `2`-block
-distinguishing pair; the core is capped at `31` blocks because the codeword degree `|N|·2^24` must
-stay below the RS dimension `2^29` (`32·2^24 = 2^29` is already too big).  To reach a *smaller*
+distinguishing pair; the core is capped at `31` blocks because the row-0 codeword `Z_N(X)·X` has degree
+`|N|·2^24 + 1`, which must stay below the RS dimension `2^29` (`32·2^24 = 2^29` is already too big).  To reach a *smaller*
 radius one needs *larger* agreement subsets, which the vanishing core cannot supply.
 
 SYZ4 instead grows agreement by *zero-multiplier* blocks: the codeword keeps degree `31·2^24 < 2^29`
@@ -39,14 +40,17 @@ the bad scalars.  Three subsets give
   `3 · 22 · 2^24 = 1107296256 > 2^30`
 
 distinct `mcaEvent`-bad scalars at radius `predecessorRadius (2^30) (22·2^24) = 369098751/2^30`.
-Since `2^30 < 1107296256 < 1107296256·2^128 / ... ` the mass `1107296256 / P` strictly exceeds
-`epsStar = 2^-128` (equivalently `P < 1107296256·2^128`), so the radius is *bad*, and
+Since `1107296256 = 2^30 + 2^25` and `2^30·192 + 1 < 2^25·2^128`, we have
+`P = 2^30·(2^128 + 192) + 1 < 1107296256·2^128`, i.e. the mass `1107296256 / P` strictly exceeds
+`epsStar = 2^-128`, so the radius is *bad*, and
 `mcaDeltaStar_le_of_bad` pins the ceiling.
 
 **The optimum, and why `1/3` is the (unattained) infimum.**  With block granularity `2^24`
 (`64` blocks) and `D = 3` subsets, minimizing the radius over feasible agreement sizes gives exactly
 `42` agreement blocks: `43` blocks would leave only `3·21·2^24 = 63·2^24 < 2^30` bad scalars.  As the
-block granularity is refined the optimum `radius → 1/3⁺`: the general `D = 3` bound is
+block granularity is refined the optimum radius decreases toward `1/3⁺` (on the fixed `2^30` domain
+the finest grading `blk = 1` bottoms out at `357913942/2^30 > 1/3`, with the cap `C·blk + 1 < 2^29`;
+see SYZ6): the general `D = 3` bound is
 `(1−ρ)/(2−ρ) = 1/3` at `ρ = 1/2`, approached but **not attained**, the obstruction being precisely
 the degree cap `ρ_core < 1/2` on the vanishing core.  `11/32 ≈ 0.34375` is the concrete rung landed
 here; Johnson `1 − √(1/2) ≈ 0.2929` remains strictly below — no contradiction.
@@ -55,13 +59,13 @@ here; Johnson `1 − √(1/2) ≈ 0.2929` remains strictly below — no contradi
 CORE (pinning `δ*` exactly) remains OPEN: sharpening the *ceiling* says nothing about `δ*` itself.
 
 **Provenance.**  The channel theorems (`pencilScalar`, `mcaEvent_pencil`,
-`rsCode_eq_of_agree_on_card_le`) are restated verbatim (with attribution) from
-`Frontier/_SYZ2PredecessorCapRefutationCore.lean` (SYZ2) via
-`Frontier/_SYZ3OverBudgetStackWitness.lean` (SYZ3), and the kernel-cheap `binaryPow` from
-`Frontier/_PrizeShapePrimeP30.lean`, because those originals are `private` or not in the shared
-olean cache.  The block scaffold (`ω`, `zval`, `ZNX`, `card_fiber`, `card_filter_label`) is likewise
-adapted from SYZ3; only the label layer (`m0`, `m1`, `nd`, `SLab`) and the counts change, plus the
-new ceiling consumer.
+`rsCode_eq_of_agree_on_card_le`) are imported from the public SYZ2 originals in
+`Frontier/_SYZ2PredecessorCapRefutationCore.lean`.  The kernel-cheap `binaryPow` is a private
+copy of the one in `Frontier/_PrizeShapePrimeP30.lean` (the original is `private`; the same
+copy recurs across ~19 Frontier files and is maintenance debt, not a correctness issue).  The
+block scaffold (`ω`, `zval`, `ZNX`, `card_fiber`, `card_filter_label`) is copied from SYZ3 with
+only the label layer (`m0`, `m1`, `nd`, `SLab`) and the counts changed, plus the new ceiling
+consumer; it is not yet parameterized by `(B, C, regions)`.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
@@ -78,85 +82,11 @@ open ArkLib.ProximityGap.KKH26
 
 namespace ArkLib.ProximityGap.Frontier.SYZ4DegenerateChannelCeiling
 
-/-! ## The SYZ2 channel, restated (verbatim from SYZ2 via SYZ3, with attribution) -/
+/-! ## The SYZ2 channel (imported from `_SYZ2PredecessorCapRefutationCore.lean`) -/
 
-section Channel
-
-variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
-variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
-
-/-- The pencil scalar attached to an off-`S` point `x` of a degenerate subset
-(SYZ2 `pencilScalar`). -/
-noncomputable def pencilScalar (u₀ u₁ v₀ v₁ : ι → F) (x : ι) : F :=
-  -((u₀ x - v₀ x) / (u₁ x - v₁ x))
-
-/-- SYZ2 channel theorem (a): the codeword pencil agrees with the line on `S ∪ {x}`. -/
-theorem pencil_line_agrees {S : Finset ι} {u₀ u₁ v₀ v₁ : ι → F}
-    (h₀ : ∀ i ∈ S, v₀ i = u₀ i) (h₁ : ∀ i ∈ S, v₁ i = u₁ i)
-    {x : ι} (hd₁ : u₁ x ≠ v₁ x) :
-    ∀ i ∈ insert x S,
-      (v₀ + pencilScalar u₀ u₁ v₀ v₁ x • v₁) i
-        = u₀ i + pencilScalar u₀ u₁ v₀ v₁ x • u₁ i := by
-  intro i hi
-  rcases Finset.mem_insert.mp hi with rfl | hiS
-  · have hne : u₁ i - v₁ i ≠ 0 := sub_ne_zero.mpr hd₁
-    have key : pencilScalar u₀ u₁ v₀ v₁ i * (u₁ i - v₁ i) = -(u₀ i - v₀ i) := by
-      rw [pencilScalar, neg_mul, div_mul_cancel₀ _ hne]
-    simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul]
-    linear_combination -key
-  · simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, h₀ i hiS, h₁ i hiS]
-
-/-- SYZ2 channel theorem (b): the pair-joint clause fails on the enlarged witness set. -/
-theorem not_pairJointAgreesOn_insert (C : Submodule F (ι → F))
-    {S : Finset ι} {u₀ u₁ v₁ : ι → F}
-    (huniq₁ : ∀ w ∈ (C : Set (ι → F)), (∀ i ∈ S, w i = u₁ i) → w = v₁)
-    {x : ι} (hd₁ : u₁ x ≠ v₁ x) :
-    ¬ pairJointAgreesOn (C : Set (ι → F)) (insert x S) u₀ u₁ := by
-  rintro ⟨w₀, hw₀, w₁, hw₁, h⟩
-  have hw₁v : w₁ = v₁ :=
-    huniq₁ w₁ hw₁ fun i hi => (h i (Finset.mem_insert_of_mem hi)).2
-  have hx : w₁ x = u₁ x := (h x (Finset.mem_insert_self x S)).2
-  rw [hw₁v] at hx
-  exact hd₁ hx.symm
-
-/-- SYZ2 per-point channel: every eligible off-`S` point produces a literal
-`mcaEvent`-bad scalar. -/
-theorem mcaEvent_pencil (C : Submodule F (ι → F)) {δ : ℝ≥0}
-    {S : Finset ι} {u₀ u₁ v₀ v₁ : ι → F}
-    (hv₀ : v₀ ∈ C) (hv₁ : v₁ ∈ C)
-    (h₀ : ∀ i ∈ S, v₀ i = u₀ i) (h₁ : ∀ i ∈ S, v₁ i = u₁ i)
-    (huniq₁ : ∀ w ∈ (C : Set (ι → F)), (∀ i ∈ S, w i = u₁ i) → w = v₁)
-    {x : ι} (hd₁ : u₁ x ≠ v₁ x)
-    (hcard : (((insert x S).card : ℝ≥0)) ≥ (1 - δ) * Fintype.card ι) :
-    mcaEvent (C : Set (ι → F)) δ u₀ u₁ (pencilScalar u₀ u₁ v₀ v₁ x) :=
-  ⟨insert x S, hcard,
-    ⟨v₀ + pencilScalar u₀ u₁ v₀ v₁ x • v₁,
-      C.add_mem hv₀ (C.smul_mem _ hv₁),
-      pencil_line_agrees h₀ h₁ hd₁⟩,
-    not_pairJointAgreesOn_insert C huniq₁ hd₁⟩
-
-/-- SYZ2 Reed–Solomon interpolation uniqueness on any subset of at least `k` points. -/
-theorem rsCode_eq_of_agree_on_card_le {n : ℕ} [NeZero n]
-    (dom : Fin n ↪ F) {k : ℕ} {S : Finset (Fin n)} (hk : k ≤ S.card)
-    {w w' : Fin n → F} (hw : w ∈ rsCode dom k) (hw' : w' ∈ rsCode dom k)
-    (hagree : ∀ i ∈ S, w i = w' i) : w = w' := by
-  obtain ⟨p, hP, rfl⟩ := hw
-  obtain ⟨Q, hQ, rfl⟩ := hw'
-  have hPQ : p - Q = 0 := by
-    refine Polynomial.eq_zero_of_degree_lt_of_eval_finset_eq_zero
-      (f := p - Q) (s := S.image dom) ?_ ?_
-    · rw [Finset.card_image_of_injective _ dom.injective]
-      calc (p - Q).degree ≤ max p.degree Q.degree := Polynomial.degree_sub_le p Q
-        _ < (k : WithBot ℕ) := max_lt hP hQ
-        _ ≤ (S.card : WithBot ℕ) := by exact_mod_cast hk
-    · intro x hx
-      obtain ⟨i, hi, rfl⟩ := Finset.mem_image.mp hx
-      rw [Polynomial.eval_sub, sub_eq_zero]
-      exact hagree i hi
-  have hPQ' : p = Q := sub_eq_zero.mp hPQ
-  rw [hPQ']
-
-end Channel
+open ArkLib.ProximityGap.Frontier.SYZ2PredecessorCapRefutationCore
+  (pencilScalar pencil_line_agrees not_pairJointAgreesOn_insert mcaEvent_pencil
+    rsCode_eq_of_agree_on_card_le)
 
 /-! ## Kernel-cheap exponentiation (restated from `_PrizeShapePrimeP30.lean`) -/
 
@@ -841,7 +771,8 @@ theorem firstPrime_rateHalf_mcaDeltaStar_le_exact :
   norm_num
 
 /-- The achieved ceiling is strictly below `11/32` (and, a fortiori, below the previous
-`31/64`), while remaining above Johnson `1 − √(1/2)`. -/
+`31/64`).  Only this upper comparison is proved; that the radius `≈ 0.34375` also lies above
+Johnson `1 − √(1/2) ≈ 0.2929` is a numerical remark, not part of this theorem. -/
 theorem syz4_radius_lt_elevenThirtyTwo :
     predecessorRadius (2 ^ 30) (22 * 2 ^ 24) < (11 / 32 : ℝ≥0) := by
   rw [predecessorRadius]

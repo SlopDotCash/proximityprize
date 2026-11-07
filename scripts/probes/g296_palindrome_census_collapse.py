@@ -18,11 +18,7 @@ from itertools import combinations
 def subgroup(p, n):
     # order-n multiplicative subgroup of F_p^*, requires n | p-1
     assert (p - 1) % n == 0, (p, n)
-    g = None
-    for cand in range(2, p):
-        # find element of exact order n: take a generator^((p-1)/n)
-        pass
-    # primitive root
+    # element of exact order n: a primitive root raised to the power (p-1)/n
     def order(a):
         x = a % p; o = 1
         while x != 1:

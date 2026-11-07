@@ -29,11 +29,18 @@ This is the **average-case / Markov** localization of the open core, NOT a closu
 needs the *worst-case over `b ≠ 0`* sup-norm to track the `√2`-per-level L² scale on **every**
 path; the Markov bound only confines the failure to a set of size `≤ 2^μ·(start mass)/T`. Probes
 (`/tmp/pg-probes/probe_tower_levelset.py`) show this Markov budget is loose by exactly the BGK
-factor: at the prize threshold `T = (2·√(n·log(p/n)))²` the *true* bad set is **empty** at every
-tested `n ∈ {16,32,64}`, `β ∈ {4,5}`, while Markov still permits `~q·n/T` thousands. That gap —
-between the provable Markov budget and the empirically-empty bad set above `2·`floor — **is** the
-open BGK / short-character-sum cancellation wall. No capacity over-claim; CORE
-`M(μ_n) ≤ C·√(n·log(p/n))` stays **open**.
+factor: at the prize threshold `T = (2·√(n·log(p/n)))²` the true **nonzero-frequency** bad set
+`{b ≠ 0 : ‖η_b‖² ≥ T}` is **empty** at every tested `n ∈ {16,32,64}`, `β ∈ {4,5}`, while Markov
+still permits `~q·n/T` thousands. That gap — between the provable Markov budget and the
+empirically-empty nonzero bad set above `2·`floor — **is** the open BGK / short-character-sum
+cancellation wall. No capacity over-claim; CORE `M(μ_n) ≤ C·√(n·log(p/n))` stays **open**.
+
+**Zero frequency.** The theorems below filter over **all** `b : F`, including `b = 0`, where
+`‖η_0‖² = |G_μ|² = n²`. Whenever `T ≤ n²` (e.g. `n = 64`, `p ≈ n⁴`:
+`T ≈ 4·64·log(64³) ≈ 3194 < 4096 = n²`) the zero frequency necessarily lies in the formal level
+set, so the formal set is *never* empty in that regime. The empirical "empty" statement above is
+about the different predicate with `b = 0` excluded; the formal all-frequency Markov inequality
+remains valid (and implies the same bound for the nonzero subset, which it contains).
 
 See `SubgroupGaussSumTowerL2.lean` (the iterated-doubling substrate) and
 `SubgroupGaussSumLevelSet.lean` (the single-level Markov bound).

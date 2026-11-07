@@ -31,11 +31,23 @@ axiom-clean (`[propext, Classical.choice, Quot.sound]`), composing only genuinel
 upstream lemmas. A grep of the tree confirms this wiring did not previously exist (the in-tree
 Johnson-range MCA coverage rests on an external-admit `Prop` stub, not a theorem).
 
-The bridge carries one **explicit honest hypothesis** `hwit`: each line-close `γ` admits a witness
-codeword in a *common* Johnson ball that matches the pencil at the active coordinate. This is the
-output of a Guruswami–Sudan / Johnson list decoder *below the √-radius* `1 - √ρ` — a known,
-sub-capacity, in-principle-derivable fact — kept as an explicit hypothesis (route (c)) rather than
-re-deriving the decoder. It is **not** the open prize and is **not** smuggled/faked.
+The per-stack bridge carries one **explicit hypothesis** `hwit`: each line-close `γ` admits a
+witness codeword in a *common* Johnson ball (one center `w` for all `γ`) that matches the pencil at
+the active coordinate. This is **not** a known fact, and its uniform (all-stacks) line-close form is
+**false**:
+
+* at the zero direction `u 1 = 0` no active coordinate exists, and
+* for a codeword pencil every scalar is line-close, so the per-stack count forces
+  `|F| ≤ n(n-k+1)/johnsonDenom` (`reedSolomon_wholeLine_card_field_le_johnson_of_hwit`), which fails
+  e.g. over `GF(5)`, `n = 4`, `k = 2` (`johnson_fin4_k2_bound_lt_five`;
+  `CommonCenterJohnsonRefutation.hwitAll_common_center_refutable` packages the refutation).
+
+The headline `rs_epsMCA_le_johnson_ceil_of_hwit` therefore uses the corrected hypothesis
+`hwitBad`: only **MCA-bad** scalars (`mcaEvent`) need a common-center witness, and the active
+coordinate is required only when a bad scalar exists. This excludes jointly explained codeword
+pencils (for which `mcaEvent` never fires) and the zero direction. `hwitBad` is an explicit,
+unproven hypothesis — no instance at a nontrivial radius is proved in-tree, and whether a single common
+center exists below the Johnson radius is not established.
 
 The **beyond-Johnson band** `(1 - √ρ, 1 - ρ]` — where the list size is super-polynomial and which
 is the actual content of the ABF26 (eprint 2026/680) `mcaConjecture` — is **not addressed here**.
@@ -186,8 +198,9 @@ In the up-to-Johnson regime (`0 < johnsonDenom`), the number of pencil scalars `
 
 Composition of two proven results: the affine-root pinning (`gsList_bad_gamma_bound`) injects the
 line-close `γ` into the RS Johnson ball Finset `L`; the RS Johnson list size (`rs_card_ball_le`)
-bounds `|L|`. `hwit` is the explicit sub-Johnson decoder bridge (a known fact below `1 - √ρ`, not
-the open prize). -/
+bounds `|L|`. `hwit` is an explicit per-stack hypothesis (a common Johnson-ball center for all
+line-close scalars); it is not a known fact, and it fails for codeword pencils over small fields
+(see `reedSolomon_wholeLine_card_field_le_johnson_of_hwit`). -/
 theorem rs_lineCloseCount_le_johnson
     {k : ℕ} [NeZero k] {domain : ι ↪ F} (hk : k ≤ Fintype.card ι)
     (δ : ℝ≥0) (e : ℕ) (x : ι)
@@ -231,6 +244,50 @@ theorem rs_lineCloseCount_le_johnson
   calc (S.card : ℚ) ≤ (L.card : ℚ) := hSL'
     _ ≤ _ := hLJ
 
+open Classical in
+/-- **T1' — Johnson count of the MCA-bad scalars from a common-center witness (axiom-clean).**
+
+Same mechanism as `rs_lineCloseCount_le_johnson`, but only `mcaEvent`-bad scalars need a witness,
+and the active coordinate `u 1 x ≠ 0` is demanded only at bad scalars. If no scalar is bad the count
+is `0`; otherwise a bad scalar supplies `u 1 x ≠ 0` and the affine-root pinning injects the bad set
+into the RS Johnson ball. -/
+theorem rs_badCount_le_johnson
+    {k : ℕ} [NeZero k] {domain : ι ↪ F} (hk : k ≤ Fintype.card ι)
+    (δ : ℝ≥0) (e : ℕ) (x : ι)
+    (u : Code.WordStack F (Fin 2) ι)
+    (w : ι → F)
+    (hen : e ≤ Fintype.card ι)
+    (hJ : 0 < ArkLib.JohnsonBound.johnsonDenom
+            (Fintype.card ι) (Fintype.card ι - k + 1) e)
+    (Cset : Finset (ι → F))
+    (hCset : (↑Cset : Set (ι → F)) = (ReedSolomon.code domain k : Set (ι → F)))
+    (hwit : ∀ γ : F,
+      mcaEvent (A := F) (ReedSolomon.code domain k : Set (ι → F)) δ (u 0) (u 1) γ →
+      u 1 x ≠ 0 ∧ ∃ c ∈ Cset, Δ₀(c, w) ≤ e ∧ c x = u 0 x + γ * u 1 x) :
+    ((Finset.univ.filter (fun γ : F =>
+        mcaEvent (A := F) (ReedSolomon.code domain k : Set (ι → F)) δ (u 0) (u 1) γ)).card : ℚ)
+      ≤ (Fintype.card ι : ℚ) * ((Fintype.card ι - k + 1 : ℕ) : ℚ)
+          / ArkLib.JohnsonBound.johnsonDenom
+              (Fintype.card ι) (Fintype.card ι - k + 1) e := by
+  set L : Finset (ι → F) := Cset.filter (fun c => Δ₀(c, w) ≤ e) with hL
+  set S : Finset F := Finset.univ.filter (fun γ : F =>
+      mcaEvent (A := F) (ReedSolomon.code domain k : Set (ι → F)) δ (u 0) (u 1) γ) with hS
+  have hSL : S.card ≤ L.card := by
+    by_cases hne : S.Nonempty
+    · obtain ⟨γ₀, hγ₀⟩ := hne
+      rw [hS, Finset.mem_filter] at hγ₀
+      refine gsList_bad_gamma_bound L (u 0) (u 1) x (hwit γ₀ hγ₀.2).1 S ?_
+      intro γ hγ
+      rw [hS, Finset.mem_filter] at hγ
+      obtain ⟨c, hc_mem, hc_ball, hc_eq⟩ := (hwit γ hγ.2).2
+      exact ⟨c, by rw [hL, Finset.mem_filter]; exact ⟨hc_mem, hc_ball⟩, hc_eq⟩
+    · rw [Finset.not_nonempty_iff_eq_empty.mp hne, Finset.card_empty]
+      exact Nat.zero_le _
+  have hLJ := ArkLib.JohnsonBound.rs_card_ball_le
+    (k := k) (α := domain) Cset hCset w e hk hen hJ
+  have hSL' : (S.card : ℚ) ≤ (L.card : ℚ) := by exact_mod_cast hSL
+  exact le_trans hSL' hLJ
+
 /-- **T2 — `epsMCA` Johnson bound from a uniform line-close count (axiom-clean).**
 Direct specialization of the proven `epsMCA_le_of_lineCloseCount_le` to the RS code: any uniform
 line-close-count bound `ℓ` yields `epsMCA(RS, δ) ≤ ℓ/|F|`. (`ℓ` is supplied by `T1` in the Johnson
@@ -246,11 +303,18 @@ theorem rs_epsMCA_le_johnson_div_q
   epsMCA_le_of_lineCloseCount_le
     (F := F) (A := F) (ReedSolomon.code domain k : Set (ι → F)) δ ℓ hcount
 
-/-- **Headline corollary: sub-Johnson `epsMCA` from the explicit decoder bridge (axiom-clean).**
-In the up-to-Johnson regime, given the sub-Johnson clustering hypothesis `hwitAll` (for every pencil
-`u`, a fixed active coordinate and a common Johnson ball containing the per-`γ` witnesses), the RS
-`epsMCA` is bounded by the RS Johnson list size (`ℚ → ℕ` ceiling) over `|F|`. This is the honest,
-explicitly-conditional sub-Johnson bound; the beyond-Johnson band is untouched and open. -/
+open Classical in
+/-- **Headline corollary: sub-Johnson `epsMCA` from an explicit common-center hypothesis.**
+In the up-to-Johnson regime, given the clustering hypothesis `hwitBad` (for every pencil `u`, a
+coordinate `x` and a common Johnson-ball center `w` such that every **MCA-bad** scalar has
+`u 1 x ≠ 0` and a witness in that ball matching the pencil at `x`), the RS `epsMCA` is bounded by
+the RS Johnson list size (`ℚ → ℕ` ceiling) over `|F|`.
+
+An earlier version quantified over all *line-close* scalars and required `u 1 x ≠ 0` for every
+stack; that hypothesis was unsatisfiable (zero direction) and refuted for codeword pencils
+(`CommonCenterJohnsonRefutation.hwitAll_common_center_refutable`). `hwitBad` avoids both, but it
+remains an explicit, unproven hypothesis — this is a conditional statement, not a theorem about RS
+below the Johnson radius. The beyond-Johnson band is untouched and open. -/
 theorem rs_epsMCA_le_johnson_ceil_of_hwit
     {k : ℕ} [NeZero k] (domain : ι ↪ F) (hk : k ≤ Fintype.card ι)
     (δ : ℝ≥0) (e : ℕ) (hen : e ≤ Fintype.card ι)
@@ -258,9 +322,9 @@ theorem rs_epsMCA_le_johnson_ceil_of_hwit
             (Fintype.card ι) (Fintype.card ι - k + 1) e)
     (Cset : Finset (ι → F))
     (hCset : (↑Cset : Set (ι → F)) = (ReedSolomon.code domain k : Set (ι → F)))
-    (hwitAll : ∀ u : Code.WordStack F (Fin 2) ι, ∃ x : ι, u 1 x ≠ 0 ∧ ∃ w : ι → F,
-      ∀ γ : F, δᵣ(u 0 + γ • u 1, (ReedSolomon.code domain k : Set (ι → F))) ≤ δ →
-        ∃ c ∈ Cset, Δ₀(c, w) ≤ e ∧ c x = u 0 x + γ * u 1 x) :
+    (hwitBad : ∀ u : Code.WordStack F (Fin 2) ι, ∃ x : ι, ∃ w : ι → F,
+      ∀ γ : F, mcaEvent (A := F) (ReedSolomon.code domain k : Set (ι → F)) δ (u 0) (u 1) γ →
+        u 1 x ≠ 0 ∧ ∃ c ∈ Cset, Δ₀(c, w) ≤ e ∧ c x = u 0 x + γ * u 1 x) :
     epsMCA (F := F) (A := F) (ReedSolomon.code domain k : Set (ι → F)) δ
       ≤ ((⌈(Fintype.card ι : ℚ) * ((Fintype.card ι - k + 1 : ℕ) : ℚ)
             / ArkLib.JohnsonBound.johnsonDenom
@@ -270,15 +334,16 @@ theorem rs_epsMCA_le_johnson_ceil_of_hwit
   set ℓ : ℕ := ⌈(Fintype.card ι : ℚ) * ((Fintype.card ι - k + 1 : ℕ) : ℚ)
             / ArkLib.JohnsonBound.johnsonDenom
                 (Fintype.card ι) (Fintype.card ι - k + 1) e⌉₊ with hℓ
-  refine rs_epsMCA_le_johnson_div_q (k := k) domain δ ℓ ?_
+  refine epsMCA_le_of_badCount_le (F := F) (A := F)
+    (ReedSolomon.code domain k : Set (ι → F)) δ ℓ ?_
   intro u
-  obtain ⟨x, hx, w, hwit⟩ := hwitAll u
-  have h1 := rs_lineCloseCount_le_johnson (k := k) (domain := domain)
-    hk δ e x u hx w hen hJ Cset hCset hwit
+  obtain ⟨x, w, hwit⟩ := hwitBad u
+  have h1 := rs_badCount_le_johnson (k := k) (domain := domain)
+    hk δ e x u w hen hJ Cset hCset hwit
   -- `(count : ℚ) ≤ Johnson` and `ℓ = ⌈Johnson⌉₊`, so `count ≤ ℓ` over `ℕ`.
-  have hcq : ((Finset.univ.filter
-      (fun γ : F => δᵣ(u 0 + γ • u 1,
-        (ReedSolomon.code domain k : Set (ι → F))) ≤ δ)).card : ℚ) ≤ (ℓ : ℚ) := by
+  have hcq : ((Finset.univ.filter (fun γ : F =>
+      mcaEvent (A := F) (ReedSolomon.code domain k : Set (ι → F)) δ (u 0) (u 1) γ)).card : ℚ)
+      ≤ (ℓ : ℚ) := by
     rw [hℓ]; exact le_trans h1 (Nat.le_ceil _)
   exact_mod_cast hcq
 
@@ -287,6 +352,8 @@ theorem rs_epsMCA_le_johnson_ceil_of_hwit
 #print axioms ProximityGap.MCAGS.reedSolomon_affineLine_all_scalars_close_of_mem
 #print axioms ProximityGap.MCAGS.reedSolomon_wholeLine_card_field_le_johnson_of_hwit
 #print axioms ProximityGap.MCAGS.johnson_fin4_k2_bound_lt_five
+#print axioms ProximityGap.MCAGS.rs_badCount_le_johnson
+#print axioms ProximityGap.MCAGS.rs_epsMCA_le_johnson_ceil_of_hwit
 
 end ProximityGap.MCAGS
 
@@ -295,11 +362,11 @@ namespace ProximityGap.GrandChallenges
 open ProximityGap ProximityGap.MCAGS
 
 /-- **Wire the sub-Johnson `epsMCA` bound into the `MCALowerWitness` prize API (axiom-clean).**
-Given the up-to-Johnson hypotheses and the explicit sub-Johnson clustering `hwitAll`, plus the
-numeric envelope `hle : ⌈Johnson⌉/|F| ≤ ε*`, the RS code admits a `MCALowerWitness` at `ε*`. This
-connects `rs_epsMCA_le_johnson_ceil_of_hwit` to the prize lower-witness machinery (it was otherwise
-wired into no witness). Both `hwitAll` (the sub-`√ρ` decoder bridge) and `hle` are kept explicit;
-no open conjecture is smuggled, and the beyond-Johnson keystone is untouched. -/
+Given the up-to-Johnson hypotheses and the explicit MCA-bad common-center hypothesis `hwitBad`,
+plus the numeric envelope `hle : ⌈Johnson⌉/|F| ≤ ε*`, the RS code admits a `MCALowerWitness` at
+`ε*`. This connects `rs_epsMCA_le_johnson_ceil_of_hwit` to the prize lower-witness machinery. Both
+`hwitBad` (an unproven hypothesis, not a known decoder fact) and `hle` are kept explicit; the
+beyond-Johnson keystone is untouched. -/
 noncomputable def MCALowerWitness.ofRsJohnsonCount
     {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
     {F : Type} [Field F] [Fintype F] [DecidableEq F]
@@ -309,9 +376,9 @@ noncomputable def MCALowerWitness.ofRsJohnsonCount
             (Fintype.card ι) (Fintype.card ι - k + 1) e)
     (Cset : Finset (ι → F))
     (hCset : (↑Cset : Set (ι → F)) = (ReedSolomon.code domain k : Set (ι → F)))
-    (hwitAll : ∀ u : Code.WordStack F (Fin 2) ι, ∃ x : ι, u 1 x ≠ 0 ∧ ∃ w : ι → F,
-      ∀ γ : F, δᵣ(u 0 + γ • u 1, (ReedSolomon.code domain k : Set (ι → F))) ≤ δ →
-        ∃ c ∈ Cset, Δ₀(c, w) ≤ e ∧ c x = u 0 x + γ * u 1 x)
+    (hwitBad : ∀ u : Code.WordStack F (Fin 2) ι, ∃ x : ι, ∃ w : ι → F,
+      ∀ γ : F, mcaEvent (A := F) (ReedSolomon.code domain k : Set (ι → F)) δ (u 0) (u 1) γ →
+        u 1 x ≠ 0 ∧ ∃ c ∈ Cset, Δ₀(c, w) ≤ e ∧ c x = u 0 x + γ * u 1 x)
     (hδ : δ ≤ 1)
     (ε_star : ℝ≥0)
     (hle : ((⌈(Fintype.card ι : ℚ) * ((Fintype.card ι - k + 1 : ℕ) : ℚ)
@@ -320,6 +387,6 @@ noncomputable def MCALowerWitness.ofRsJohnsonCount
         / (Fintype.card F : ENNReal) ≤ (ε_star : ENNReal)) :
     MCALowerWitness (ReedSolomon.code domain k : Set (ι → F)) ε_star :=
   MCALowerWitness.ofLe hδ
-    (le_trans (rs_epsMCA_le_johnson_ceil_of_hwit domain hk δ e hen hJ Cset hCset hwitAll) hle)
+    (le_trans (rs_epsMCA_le_johnson_ceil_of_hwit domain hk δ e hen hJ Cset hCset hwitBad) hle)
 
 end ProximityGap.GrandChallenges

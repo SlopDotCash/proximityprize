@@ -239,25 +239,8 @@ theorem exists_window_repr {f g h : K[X]} {d : Fin 3 → ℕ}
               add_zero, sub_zero, SYZ61.syzygyMap_apply]
             exact hφr
           rw [SYZ61.syzygyMap_apply] at hmap; exact hmap
-        -- leading-vector shift lemma
-        have lvShift : ∀ (c : K) (nⱼ : ℕ) (eⱼ : Fin 3 → K[X]), nⱼ ≤ M →
-            pdeg d eⱼ = (nⱼ : WithBot ℕ) →
-            lv d M ((C c * X ^ (M - nⱼ)) • eⱼ) = c • lv d nⱼ eⱼ := by
-          intro c nⱼ eⱼ hnⱼ hpdⱼ
-          rcases eq_or_ne c 0 with hc0 | hc0
-          · subst hc0; simp only [map_zero, zero_mul, zero_smul]; funext i; simp [lv]
-          · set qc : K[X] := C c * X ^ (M - nⱼ) with hqc
-            have hqcne : qc ≠ 0 := mul_ne_zero (by simpa using hc0) (pow_ne_zero _ X_ne_zero)
-            have hqcnd : qc.natDegree = M - nⱼ := by
-              rw [hqc, natDegree_C_mul (by simpa using hc0), natDegree_X_pow]
-            have hqclead : qc.leadingCoeff = c := by
-              rw [hqc, leadingCoeff_mul, leadingCoeff_X_pow, mul_one, leadingCoeff_C]
-            have hsm := lv_smul_top (d := d) (q := qc) hqcne hpdⱼ
-            rw [hqcnd] at hsm
-            have hidx : M - nⱼ + nⱼ = M := by omega
-            rw [hidx] at hsm; rw [hsm, hqclead]
-        have hlvq₁ : lv d M (q₁ • e₁) = c₁ • lc₁ := by rw [hq₁]; exact lvShift c₁ n₁ e₁ hn₁M hpd₁
-        have hlvq₂ : lv d M (q₂ • e₂) = c₂ • lc₂ := by rw [hq₂]; exact lvShift c₂ n₂ e₂ hn₂M hpd₂
+        have hlvq₁ : lv d M (q₁ • e₁) = c₁ • lc₁ := by rw [hq₁]; exact SYZ63.lv_C_mul_X_pow_smul (d := d) c₁ hn₁M hpd₁
+        have hlvq₂ : lv d M (q₂ • e₂) = c₂ • lc₂ := by rw [hq₂]; exact SYZ63.lv_C_mul_X_pow_smul (d := d) c₂ hn₂M hpd₂
         have hlvr' : lv d M r' = 0 := by
           rw [hr', show r - (q₁ • e₁ + q₂ • e₂)
                 = r + (-1 : K) • (q₁ • e₁) + (-1 : K) • (q₂ • e₂) by
@@ -462,13 +445,21 @@ theorem rankNullity_windowKD {f g h : K[X]} {d : Fin 3 → ℕ}
 
 /-- **The degree-sum law `n₁ + n₂ = d₀ + d₁ + d₂`, unconditional.**  Both structural inputs of
 `SYZ44.degree_sum_of_hilbert` are now discharged theory: `TwoRamp` in SYZ64, `RankNullity` here.  For
-a coprime triple with the generator weights, the μ-basis product-degrees satisfy the classical
-degree-sum law with no remaining named hypothesis. -/
+a coprime triple with the generator weights, there is a μ-basis `(e₁, e₂)` of the syzygy kernel
+(kernel members with `pdeg d eᵢ = nᵢ`, `n₁ ≤ n₂`, `K`-independent leading vectors, generating the
+kernel) whose product-degrees satisfy the classical degree-sum law, with no remaining named
+hypothesis.  The μ-basis data is part of the conclusion, so `n₁, n₂` are the degrees of an actual
+generating pair of the kernel rather than an unconstrained pair of naturals. -/
 theorem degree_sum_unconditional {f g h : K[X]} {d : Fin 3 → ℕ}
     (hf : f ≠ 0) (hg : g ≠ 0) (hh : h ≠ 0)
     (hd0 : d 0 = f.natDegree) (hd1 : d 1 = g.natDegree) (hd2 : d 2 = h.natDegree)
     (hfg : IsCoprime f g) (hfh : IsCoprime f h) :
-    ∃ n₁ n₂ : ℕ, n₁ ≤ n₂ ∧ n₁ + n₂ = d 0 + d 1 + d 2 := by
+    ∃ (e₁ e₂ : Fin 3 → K[X]) (n₁ n₂ : ℕ),
+      e₁ ∈ LinearMap.ker (SYZ61.syzygyMap f g h) ∧ e₂ ∈ LinearMap.ker (SYZ61.syzygyMap f g h) ∧
+      pdeg d e₁ = (n₁ : WithBot ℕ) ∧ pdeg d e₂ = (n₂ : WithBot ℕ) ∧ n₁ ≤ n₂ ∧
+      LinearIndependent K ![lv d n₁ e₁, lv d n₂ e₂] ∧
+      LinearMap.ker (SYZ61.syzygyMap f g h) = Submodule.span K[X] ({e₁, e₂} : Set (Fin 3 → K[X])) ∧
+      n₁ + n₂ = d 0 + d 1 + d 2 := by
   obtain ⟨D₀, hRankNull⟩ := rankNullity_windowKD hf hg hh hd0 hd1 hd2 hfg hfh
   exact SYZ64.degree_sum_of_rankNullity hfg hfh D₀ hRankNull
 

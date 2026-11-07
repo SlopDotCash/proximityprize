@@ -9,11 +9,13 @@ import Research.ProximityPrize.MCAJohnsonCount
 # Issue #244 — the `hwitAll` common-center clustering hypothesis, audited
 
 `ProximityGap.MCAGS.rs_epsMCA_le_johnson_ceil_of_hwit`
-(`MCAJohnsonCount.lean`) is conditional on a clustering hypothesis `hwitAll`:
+(`MCAJohnsonCount.lean`) was originally conditional on a clustering hypothesis `hwitAll`:
 for the pencil there is a single active coordinate `x`, a center word `w`, and a sub-Johnson
 radius `e` such that **every** line-close scalar `γ` is explained by a codeword `c` with
 `Δ₀(c, w) ≤ e` and `c x = u₀ x + γ·u₁ x`. Issue #244 claims this is refutable past the
-half-Johnson radius.
+half-Johnson radius. (Following this refutation and audit CW-B21-06, the headline now assumes
+the weaker MCA-bad-scalar hypothesis `hwitBad`, which codeword pencils such as the one below do
+not violate; the refutation here concerns the original line-close shape.)
 
 This file resolves the audit **end-to-end**, and in doing so corrects the issue's own
 proposed Lean target.

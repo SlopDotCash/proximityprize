@@ -6,58 +6,82 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.CumulantDyadicDescent
 
 /-!
-# The EXACT dyadic binomial-convolution recursion for `N₀` (#407, Lever B bootstrap)
+# Factorised summands of the dyadic binomial-convolution recursion for `N₀` (#407, Lever B)
 
-This file CLOSES the per-level descent of `CumulantDyadicDescent.lean` from the diagonal
-*inequality* `2·N₀(H,r) ≤ N₀(G,r)` to the **exact equation**
+The target of this file is the **exact equation**
 
 > `N₀(G, r) = ∑_{s=0}^{r} C(r,s) · N₀(H, s) · N₀(H, r−s)`     (`G = H ⊔ ζ·H`, `ζ ≠ 0`)
 
-under one explicit, per-level, **character-sum-free** hypothesis: `DyadicFactorizes H ζ`, the
-statement that a relation `∑ u + ζ·∑ w = 0` between an `H`-sum and an `(ζH)`-sum forces both halves
-to vanish (`∑ u = 0` and `∑ w = 0`).  Over `ℚ(ζ_n)` (char 0) this is the degree-2 field-extension
-basis property `{1, ζ}` of `ℚ(ζ_n) / ℚ(ζ_{n/2})` (it is TRUE there); over `F_p` it is the
-**per-level height gate** — and it FAILS exactly when there is a spurious mod-`p` vanishing.
+sharpening the diagonal *inequality* `2·N₀(H,r) ≤ N₀(G,r)` of `CumulantDyadicDescent.lean`.
+**What is actually proved here is less:** the factorisation of each coset-pattern summand
+(`crossPattern_factor`, `crossPattern_factored_summand`) under a factorisation hypothesis, and the
+unconditional endpoint identities (`crossPattern_endpoint_zero`, `crossPattern_endpoint_full`,
+`endpoints_sum_eq_diagonal`).  The tuple-pattern split in the form
+`N₀(G,r) = ∑_{T⊆Fin r} crossPattern H ζ (r−|T|) |T|` and the resulting full convolution theorem are
+**not** formalized in this file (there is no `N0_dyadic_split` / `N0_dyadic_convolution`).  A
+partition into pattern cells, `N₀(G,r) = ∑_T crossCell H K r T`, is proved separately in
+`CumulantDyadicSplitExact.N0_dyadic_split_exact`, but the identification of those cells with
+`crossPattern` is not proved.
+
+The factorisation hypothesis comes in two forms:
+
+* `DyadicFactorizes H ζ` — a relation `A + ζ·B = 0` between an `H`-sum `A` and an `H`-sum `B` of
+  **arbitrary length** (repetitions allowed) forces `A = B = 0`.  Over `ℚ(ζ_n)` (char 0) this is
+  the degree-2 basis property `{1, ζ}` of `ℚ(ζ_n) / ℚ(ζ_{n/2})`.  **Over a prime field it is
+  false** as soon as `H` contains a nonzero element `h`, for every `ζ`: repeated copies of `h`
+  generate all of `F_p`, so `A = −ζh` and `B = h ≠ 0` is a relation
+  (`not_dyadicFactorizes_zmod`).  This includes thin dyadic examples: `p = 257`, `H = μ₂ = {±1}`,
+  `ζ = 16` of order `4`, `4⁴ = 256 < 257` (`not_dyadicFactorizes_thin_example`).  The file's
+  ambient `[Fintype F]` scope cannot instantiate the char-0 statement either.
+* `DyadicFactorizesUpTo H ζ L` — the same implication restricted to relations of **total length**
+  `≤ L`.  This bounded form is the meaningful finite-field height-gate input: a mod-`p` relation of
+  small total length lifts to a genuine characteristic-zero relation when the height is `< p`.
+  `crossPattern_factor_of_upTo` gives the summand factorisation for `a + s ≤ L`.  No in-tree
+  theorem establishes `DyadicFactorizesUpTo` for thin subgroups; it remains an explicit
+  hypothesis.
 
 ## What this corrects and sharpens (vs. the prior `CumulantDyadicDescent` docstring)
 
 `CumulantDyadicDescent` claimed the cross/off-diagonal terms `0 < |T| < r` "DOMINATE for `r ≥ 2`"
 and "leave the same wall, now per-level".  That measurement was a **char-`p`** count (where spurious
-vanishing inflates `N₀`).  The genuinely-new content here, verified by exact char-0 enumeration
-(`scripts` `probe_bootstrap*.py`, `probe_egf.py`), is that **in char 0 the cross terms FACTOR
-EXACTLY and the recursion has a closed form**:
+vanishing inflates `N₀`).  The observation motivating this file, from exact char-0 enumeration
+(`scripts` `probe_bootstrap*.py`, `probe_egf.py`; probe evidence, not a Lean theorem), is that
+**in char 0 the cross terms factor and the recursion has a closed form**:
 
 * each coset-pattern term factorises, `#{(u,w) : ∑u + ζ∑w = 0} = N₀(H,s)·N₀(H,r−s)`
-  (this is `crossPattern_factor`, the basis property);
-* hence `N₀(G,·)` is the **binomial convolution** of `N₀(H,·)` with itself
-  (`N0_dyadic_convolution`), i.e. the exponential generating function squares: `F_G = F_H²`.
+  (this is the content of `crossPattern_factor`, the basis property);
+* granted the (unformalized) split, `N₀(G,·)` is then the **binomial convolution** of `N₀(H,·)`
+  with itself, i.e. the exponential generating function squares: `F_G = F_H²`.
   Iterating `μ_n = μ_{n/2} ⊔ ζ μ_{n/2}` down to `μ_2 = {±1}` (whose EGF is the Bessel `I₀(2x)`)
   gives `F_{μ_n}(x) = I₀(2x)^{n/2}`, so `E_r(μ_n) = N₀(μ_n, 2r) = (2r)!·[x^{2r}] I₀(2x)^{n/2}`
-  — the **exact Gaussian/Wick moments** `(2r−1)‼·n^r + O(n^{r−1})`.  The cross terms are NOT a wall
-  in char 0; they are the convolution.
+  — the characteristic-zero moments, `(2r−1)‼·n^r` plus lower-order corrections (e.g.
+  `E₂ = 3n² − 3n`).  This char-0 computation is commentary; it is not a theorem of this file.
 
-## Where the bootstrap stalls (the honest, precise obstruction)
+## Where the bootstrap stalls (the precise obstruction)
 
-The recursion is *unconditional combinatorics* (`N0_dyadic_split`, the field-agnostic coset-pattern
-decomposition: `N₀(G,r) = ∑_s C(r,s)·crossPattern …`) PLUS the per-level factorisation
-`DyadicFactorizes H ζ`.  The split holds in EVERY field; the factorisation is the ONLY char-`p`
-input.  So the entire char-`p` excess `N₀_p(G,r) − ∑_s C(r,s) N₀_p(H,s) N₀_p(H,r−s)` (the measured
-"cross fraction") is **exactly the failure of `DyadicFactorizes`** — a spurious vanishing
-`∑u + ζ∑w ≡ 0 (mod p)` with `(∑u, ∑w) ≠ (0,0)`, i.e. `p ∣ N_{ℚ(ζ_n)/ℚ}(∑u + ζ∑w)`: the **per-level
-height gate** (`VanishingRootSumHeightGate.HeightSpuriousFree`).  The bootstrap
-`B_β → B_{log n}` is therefore *equivalent*, level by level, to `DyadicFactorizes` holding up the
-tower to depth `log n` — and this is **thinness-essential**: `DyadicFactorizes` is provable for thin
-`μ_n` (`n ≤ p^{1/4}`, height `< p`) and demonstrably FALSE for thick/structured primes (Fermat),
-exactly the regime-gating BCHKS Conjecture 1.12 requires.  No thickness-monotone method can prove
-`DyadicFactorizes`, since it is false for thick subgroups — consistent with the §407 obstruction.
+The intended recursion is combinatorics (the field-agnostic coset-pattern decomposition
+`N₀(G,r) = ∑_s C(r,s)·crossPattern …`, not formalized here) PLUS a per-level factorisation.  The
+char-`p` excess `N₀_p(G,r) − ∑_s C(r,s) N₀_p(H,s) N₀_p(H,r−s)` (the measured "cross fraction")
+comes from spurious vanishings `∑u + ζ∑w ≡ 0 (mod p)` with `(∑u, ∑w) ≠ (0,0)` of the relevant
+**bounded** length, i.e. `p ∣ N_{ℚ(ζ_n)/ℚ}(∑u + ζ∑w)`: the per-level height gate
+(`VanishingRootSumHeightGate.HeightSpuriousFree`).  Only a bounded-length gate
+(`DyadicFactorizesUpTo`, length `≤ r` at order `r`) can hold over a finite field; the unbounded
+`DyadicFactorizes` fails in every prime field (see above), thin or thick.  A bounded gate is
+plausible for thin `μ_n` (height `< p`) and fails for thick/structured primes (Fermat), but no
+in-tree theorem proves it for thin subgroups, and the full bootstrap `B_β → B_{log n}` is not
+proved here.
 
 ## Main results (axiom target `[propext, Classical.choice, Quot.sound]`)
 
-* `crossPattern` — `#{(u : Fin (r−s) → H, w : Fin s → H) : ∑u + ζ·∑w = 0}`, the coset-pattern count.
-* `crossPattern_factor` — under `DyadicFactorizes`: `crossPattern H ζ r s = N₀(H,r−s)·N₀(H,s)`.
-* `crossPattern_zero_of_not` — without it, the diagonal endpoints `s ∈ {0,r}` still factor
-  (recovering the proven `2·N₀(H,r)` floor) but interior `s` carry the (possibly spurious) excess.
-* `DyadicFactorizes` — the named per-level char-`p` hypothesis (= the height gate).
+* `crossPattern` — `#{(u : Fin a → H, w : Fin s → H) : ∑u + ζ·∑w = 0}`, the coset-pattern count.
+* `crossPattern_factor` — under `DyadicFactorizes`: `crossPattern H ζ a s = N₀(H,a)·N₀(H,s)`
+  (vacuous over prime fields, since the hypothesis is false there).
+* `crossPattern_factor_of_upTo` — the same for `a + s ≤ L` under the bounded
+  `DyadicFactorizesUpTo H ζ L`.
+* `crossPattern_endpoint_zero` / `crossPattern_endpoint_full` / `endpoints_sum_eq_diagonal` — the
+  diagonal endpoints `s ∈ {0,r}` factor unconditionally, recovering the `2·N₀(H,r)` floor.
+* `not_dyadicFactorizes_zmod` / `not_dyadicFactorizes_thin_example` — refutations of the unbounded
+  predicate over prime fields, including a thin dyadic instance.
 
 ## References
 - [BCHKS25] ECCC TR25-169 / ePrint 2025/2055, Conjecture 1.12.
@@ -86,16 +110,33 @@ noncomputable def crossPattern (H : Finset F) (ζ : F) (a s : ℕ) : ℕ :=
   ((Fintype.piFinset (fun _ : Fin a => H) ×ˢ Fintype.piFinset (fun _ : Fin s => H)).filter
     (fun p => (∑ i, p.1 i) + ζ * (∑ j, p.2 j) = 0)).card
 
-/-- **The per-level factorisation hypothesis (= the height gate, char-sum-free).**
-`DyadicFactorizes H ζ`: every relation `A + ζ·B = 0` between an `H`-sum `A` and an `H`-sum `B`
-forces `A = 0` and `B = 0`.  Over `ℚ(ζ_n)` this is the basis property of `{1, ζ}` for the degree-2
-extension `ℚ(ζ_n)/ℚ(ζ_{n/2})` (TRUE).  Over `F_p` it is the per-level spurious-free / height gate
-(`VanishingRootSumHeightGate.HeightSpuriousFree`), which is *thinness-essential*: it holds for thin
-`μ_n` and FAILS for thick/structured (Fermat) primes. -/
+/-- **The unbounded per-level factorisation hypothesis.**
+`DyadicFactorizes H ζ`: every relation `A + ζ·B = 0` between an `H`-sum `A` and an `H`-sum `B`,
+each of **arbitrary length with repetitions**, forces `A = 0` and `B = 0`.  Over `ℚ(ζ_n)` the
+analogous statement is the basis property of `{1, ζ}` for `ℚ(ζ_n)/ℚ(ζ_{n/2})`, but this file's
+`[Fintype F]` scope cannot express that.  **Over a prime field it is false** whenever `H` has a
+nonzero element (`not_dyadicFactorizes_zmod`), including thin dyadic subgroups
+(`not_dyadicFactorizes_thin_example`).  The meaningful finite-field height gate is the bounded
+`DyadicFactorizesUpTo`. -/
 def DyadicFactorizes (H : Finset F) (ζ : F) : Prop :=
   ∀ A B : F, (∃ a, ∃ u : Fin a → F, (∀ i, u i ∈ H) ∧ ∑ i, u i = A) →
              (∃ s, ∃ w : Fin s → F, (∀ j, w j ∈ H) ∧ ∑ j, w j = B) →
              A + ζ * B = 0 → A = 0 ∧ B = 0
+
+/-- **The bounded per-level factorisation hypothesis (the finite-field height gate).**
+`DyadicFactorizesUpTo H ζ L`: every relation `∑ u + ζ·∑ w = 0` with `u : Fin a → H`,
+`w : Fin s → H` and total length `a + s ≤ L` forces `∑ u = 0` and `∑ w = 0`.  Bounding the length
+is essential: without it the predicate fails in every prime field (`not_dyadicFactorizes_zmod`).
+It is an explicit hypothesis; no in-tree theorem proves it for thin subgroups. -/
+def DyadicFactorizesUpTo (H : Finset F) (ζ : F) (L : ℕ) : Prop :=
+  ∀ a s : ℕ, a + s ≤ L → ∀ u : Fin a → F, ∀ w : Fin s → F,
+    (∀ i, u i ∈ H) → (∀ j, w j ∈ H) →
+    (∑ i, u i) + ζ * (∑ j, w j) = 0 → (∑ i, u i) = 0 ∧ (∑ j, w j) = 0
+
+/-- The unbounded predicate implies every bounded one. -/
+theorem DyadicFactorizes.upTo {H : Finset F} {ζ : F} (hfac : DyadicFactorizes H ζ) (L : ℕ) :
+    DyadicFactorizesUpTo H ζ L :=
+  fun a s _ u w hu hw hsum => hfac _ _ ⟨a, u, hu, rfl⟩ ⟨s, w, hw, rfl⟩ hsum
 
 /-! ## 2. Factorisation of a coset-pattern count under the hypothesis. -/
 
@@ -105,9 +146,10 @@ coset-pattern count splits as a product of two relation counts:
 
 > `crossPattern H ζ a s = N₀(H, a) · N₀(H, s)`.
 
-This is the genuinely-new, character-sum-free identity: in char 0 it makes the dyadic split a clean
-binomial convolution.  (The forward direction `∑u=0 ∧ ∑w=0 ⟹ ∑u+ζ∑w=0` is unconditional; only the
-reverse uses the hypothesis.) -/
+(The forward direction `∑u=0 ∧ ∑w=0 ⟹ ∑u+ζ∑w=0` is unconditional; only the reverse uses the
+hypothesis.)  Over a prime field the hypothesis `DyadicFactorizes` is false whenever `H` has a
+nonzero element (`not_dyadicFactorizes_zmod`), so this form is vacuous there; use
+`crossPattern_factor_of_upTo` with the bounded gate instead. -/
 theorem crossPattern_factor {H : Finset F} {ζ : F} (hfac : DyadicFactorizes H ζ) (a s : ℕ) :
     crossPattern H ζ a s = N0 H a * N0 H s := by
   classical
@@ -133,6 +175,65 @@ theorem crossPattern_factor {H : Finset F} {ζ : F} (hfac : DyadicFactorizes H �
     rw [Finset.mem_filter, Finset.mem_product]
     refine ⟨⟨hp1, hp2⟩, ?_⟩
     rw [hs1, hs2]; ring
+
+/-- **Coset-pattern factorisation under the bounded gate.**  If `DyadicFactorizesUpTo H ζ L` and
+`a + s ≤ L`, then `crossPattern H ζ a s = N₀(H, a) · N₀(H, s)`.  This is the finite-field-meaningful
+form of `crossPattern_factor`: only relations of total length `a + s` are used. -/
+theorem crossPattern_factor_of_upTo {H : Finset F} {ζ : F} {L : ℕ}
+    (hfac : DyadicFactorizesUpTo H ζ L) {a s : ℕ} (has : a + s ≤ L) :
+    crossPattern H ζ a s = N0 H a * N0 H s := by
+  classical
+  rw [crossPattern, N0_card_eq, N0_card_eq, ← Finset.card_product]
+  apply Finset.card_bij (fun p _ => p)
+  · intro p hp
+    rw [Finset.mem_filter, Finset.mem_product] at hp
+    obtain ⟨⟨hp1, hp2⟩, hsum⟩ := hp
+    rw [Finset.mem_product, Finset.mem_filter, Finset.mem_filter]
+    have := hfac a s has p.1 p.2 (Fintype.mem_piFinset.mp hp1) (Fintype.mem_piFinset.mp hp2) hsum
+    exact ⟨⟨hp1, this.1⟩, ⟨hp2, this.2⟩⟩
+  · intro p _ p' _ h; exact h
+  · intro p hp
+    rw [Finset.mem_product, Finset.mem_filter, Finset.mem_filter] at hp
+    obtain ⟨⟨hp1, hs1⟩, ⟨hp2, hs2⟩⟩ := hp
+    refine ⟨p, ?_, rfl⟩
+    rw [Finset.mem_filter, Finset.mem_product]
+    refine ⟨⟨hp1, hp2⟩, ?_⟩
+    rw [hs1, hs2]; ring
+
+/-! ## 2b. The unbounded predicate is false over prime fields. -/
+
+/-- **`DyadicFactorizes` fails in every prime field.**  If `H ⊆ ZMod p` contains a nonzero `h`,
+then for every `ζ` the unbounded predicate fails: `(-ζ).val` copies of `h` sum to `A = -ζ·h`, one
+copy sums to `B = h`, and `A + ζ·B = 0` while `B ≠ 0`.  Repetitions of unbounded length generate the
+whole field, so the unbounded predicate cannot serve as a finite-field height gate. -/
+theorem not_dyadicFactorizes_zmod {p : ℕ} [Fact p.Prime] {H : Finset (ZMod p)} {h : ZMod p}
+    (hH : h ∈ H) (hh : h ≠ 0) (ζ : ZMod p) : ¬ DyadicFactorizes H ζ := by
+  intro hfac
+  have hA : ∃ a, ∃ u : Fin a → ZMod p, (∀ i, u i ∈ H) ∧ ∑ i, u i = -ζ * h := by
+    refine ⟨(-ζ).val, fun _ => h, fun _ => hH, ?_⟩
+    rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
+      ZMod.natCast_zmod_val]
+  have hB : ∃ s, ∃ w : Fin s → ZMod p, (∀ j, w j ∈ H) ∧ ∑ j, w j = h :=
+    ⟨1, fun _ => h, fun _ => hH, by simp⟩
+  exact hh (hfac _ _ hA hB (by ring)).2
+
+section ThinExample
+
+local instance fact_prime_257 : Fact (Nat.Prime 257) := ⟨by norm_num⟩
+
+/-- **A thin dyadic refutation of the unbounded predicate.**  In `F₂₅₇`, `ζ = 16` is a primitive
+`4`-th root of unity, `H = {1, -1} = μ₂`, and the thinness condition `4⁴ = 256 < 257` holds, yet
+`DyadicFactorizes H 16` is false (by `not_dyadicFactorizes_zmod`; concretely `241` copies of `1`
+and one copy of `1` give `241 + 16·1 = 257 = 0`). -/
+theorem not_dyadicFactorizes_thin_example :
+    IsPrimitiveRoot (16 : ZMod 257) 4 ∧ (4 : ℕ) ^ 4 < 257 ∧
+      ¬ DyadicFactorizes ({1, -1} : Finset (ZMod 257)) 16 := by
+  refine ⟨?_, by norm_num, not_dyadicFactorizes_zmod (h := 1) (by simp) one_ne_zero 16⟩
+  refine IsPrimitiveRoot.mk_of_lt _ (by decide : 0 < 4) (by decide) ?_
+  intro l hl hlt
+  interval_cases l <;> decide
+
+end ThinExample
 
 /-! ## 3. The endpoint patterns always factor (unconditional diagonal floor). -/
 
@@ -167,18 +268,18 @@ theorem crossPattern_endpoint_zero {H : Finset F} {ζ : F} (a : ℕ) :
 
 /-! ## 4. The field-agnostic dyadic split (the unconditional combinatorial backbone). -/
 
-/-- **The dyadic split, fiber form (field-agnostic).**  Map each sum-zero `G`-tuple `v : Fin r → G`
+/-- **The all-`ζH` endpoint pattern factors.**  `crossPattern H ζ 0 s = N₀(H, s)` for `ζ ≠ 0`.
+
+Context (the intended split, **not formalized here**).  Map each sum-zero `G`-tuple `v : Fin r → G`
 (`G = H ∪ ζH`, disjoint) to its `ζH`-support `T = {i : v i ∈ ζH}`.  The fiber over a fixed support
 `T` of size `s` is in bijection with the coset-pattern data: the `H`-coordinates on `Tᶜ` and the
 `H`-preimages of the `ζH`-coordinates on `T`, whose joint relation is `∑(H-part) + ζ∑(preimages) = 0`
 — exactly the `crossPattern`.  Summing the fiber cards over `T ⊆ Fin r` and grouping by `|T| = s`
-(there are `C(r,s)` supports of size `s`) gives the headline split.  This holds in EVERY field; only
-`crossPattern_factor` (§2) uses char-0 / the height gate.
-
-We record the consumer form directly: under the factorisation hypothesis the split collapses to the
-binomial convolution.  (The pure field-agnostic split is the statement
-`N₀(G,r) = ∑_{T⊆Fin r} crossPattern H ζ (r−|T|) |T|`; combined with `crossPattern_factor` and the
-count `#{T : |T| = s} = C(r,s)` it yields `N0_dyadic_convolution`.) -/
+(there are `C(r,s)` supports of size `s`) would give the split
+`N₀(G,r) = ∑_{T⊆Fin r} crossPattern H ζ (r−|T|) |T|`, which combined with
+`crossPattern_factor_of_upTo` (at `L = r`) and `#{T : |T| = s} = C(r,s)` would yield the
+convolution.  Neither the split nor the convolution theorem is proved in this file; only this
+endpoint identity is. -/
 theorem crossPattern_endpoint_full {H : Finset F} {ζ : F} (hζ : ζ ≠ 0)
     (hdisj : Disjoint H (H.image (fun y => ζ * y))) (s : ℕ) :
     crossPattern H ζ 0 s = N0 H s := by
@@ -215,9 +316,9 @@ theorem crossPattern_endpoint_full {H : Finset F} {ζ : F} (hζ : ζ ≠ 0)
 (all-`H`) and `s = r` (all-`ζH`) coset patterns each contribute exactly `N₀(H, r)`
 (`crossPattern_endpoint_zero` and `crossPattern_endpoint_full`), unconditionally.  Their sum is the
 diagonal floor `2·N₀(H, r)` of `CumulantDyadicDescent.N0_dyadic_descent_ge` — recovered here as the
-two extreme terms of the convolution.  The genuinely-new content is that under
-`DyadicFactorizes` ALL interior terms also factor (`crossPattern_factor`), turning the *inequality*
-`2·N₀(H,r) ≤ N₀(G,r)` into the *exact* binomial convolution. -/
+two extreme terms of the convolution.  Under a factorisation gate the interior terms also factor
+(`crossPattern_factor_of_upTo`); turning the *inequality* `2·N₀(H,r) ≤ N₀(G,r)` into the exact
+binomial convolution would additionally need the unformalized tuple-pattern split. -/
 theorem endpoints_sum_eq_diagonal {H : Finset F} {ζ : F} (hζ : ζ ≠ 0)
     (hdisj : Disjoint H (H.image (fun y => ζ * y))) (r : ℕ) :
     crossPattern H ζ r 0 + crossPattern H ζ 0 r = 2 * N0 H r := by
@@ -226,18 +327,15 @@ theorem endpoints_sum_eq_diagonal {H : Finset F} {ζ : F} (hζ : ζ ≠ 0)
 
 /-! ## 6. The headline: the binomial-convolution recursion (under the per-level height gate). -/
 
-/-- **The dyadic binomial-convolution recursion (#407, Lever B bootstrap CLOSED per-level).**
+/-- **Factorised summand of the dyadic convolution (not the full recursion).**
 
-Under the per-level factorisation hypothesis `DyadicFactorizes H ζ` (the char-sum-free height gate),
-every coset-pattern term of the dyadic split factorises, so the additive-relation count of the union
-is the **binomial convolution** of the half-subgroup count with itself:
-
-> `crossPattern`-summed split  ⟹  `N₀(H ∪ ζH, r) = ∑_{s=0}^{r} C(r,s)·N₀(H,s)·N₀(H,r−s)`.
-
-We deliver the *factorised summand* form: each term `C(r,s)·crossPattern H ζ (r−s) s` equals
-`C(r,s)·N₀(H,r−s)·N₀(H,s)` under the hypothesis.  In char 0 this is the EGF identity `F_G = F_H²`,
-giving `N₀(μ_n,r) = (the n/2-fold convolution of the `μ_2` count) = (2r)!·[x^{2r}] I₀(2x)^{n/2}`,
-the exact Gaussian/Wick moments — the cross terms are the convolution, NOT a wall. -/
+Under `DyadicFactorizes H ζ`, each term `C(r,s)·crossPattern H ζ (r−s) s` equals
+`C(r,s)·N₀(H,r−s)·N₀(H,s)`.  This is only the summand identity: the split
+`N₀(H ∪ ζH, r) = ∑_s C(r,s)·crossPattern H ζ (r−s) s` is not proved here, so the full recursion
+`N₀(H ∪ ζH, r) = ∑_{s=0}^{r} C(r,s)·N₀(H,s)·N₀(H,r−s)` is not a theorem of this file.  Moreover the
+unbounded hypothesis is false over prime fields (`not_dyadicFactorizes_zmod`); the bounded
+`crossPattern_factor_of_upTo` is the finite-field-meaningful version.  The char-0 EGF identity
+`F_G = F_H²` and `N₀(μ_n,2r) = (2r)!·[x^{2r}] I₀(2x)^{n/2}` are commentary. -/
 theorem crossPattern_factored_summand {H : Finset F} {ζ : F} (hfac : DyadicFactorizes H ζ)
     (r s : ℕ) :
     Nat.choose r s * crossPattern H ζ (r - s) s
@@ -247,8 +345,8 @@ theorem crossPattern_factored_summand {H : Finset F} {ζ : F} (hfac : DyadicFact
 /-- **The convolution lower bound is at least the diagonal floor (consistency check).**  The two
 endpoint terms of the factorised convolution sum to `2·N₀(H,r)` (`endpoints_sum_eq_diagonal`),
 matching `CumulantDyadicDescent.N0_dyadic_descent_ge`.  The full convolution adds the
-(nonnegative) interior terms — which under `DyadicFactorizes` are exactly `C(r,s)N₀(H,s)N₀(H,r−s)`,
-the off-diagonal mass that in char 0 completes the Gaussian moment. -/
+(nonnegative) interior terms — which under a factorisation gate are `C(r,s)N₀(H,s)N₀(H,r−s)`;
+the split itself is not formalized here. -/
 theorem diagonal_le_two_endpoints {H : Finset F} {ζ : F} (hζ : ζ ≠ 0)
     (hdisj : Disjoint H (H.image (fun y => ζ * y))) (r : ℕ) :
     2 * N0 H r = crossPattern H ζ r 0 + crossPattern H ζ 0 r :=
@@ -263,3 +361,6 @@ end ArkLib.ProximityGap.CumulantDyadicConvolution
 #print axioms ArkLib.ProximityGap.CumulantDyadicConvolution.endpoints_sum_eq_diagonal
 #print axioms ArkLib.ProximityGap.CumulantDyadicConvolution.crossPattern_factored_summand
 #print axioms ArkLib.ProximityGap.CumulantDyadicConvolution.diagonal_le_two_endpoints
+#print axioms ArkLib.ProximityGap.CumulantDyadicConvolution.crossPattern_factor_of_upTo
+#print axioms ArkLib.ProximityGap.CumulantDyadicConvolution.not_dyadicFactorizes_zmod
+#print axioms ArkLib.ProximityGap.CumulantDyadicConvolution.not_dyadicFactorizes_thin_example

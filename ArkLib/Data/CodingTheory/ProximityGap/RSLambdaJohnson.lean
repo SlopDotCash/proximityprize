@@ -58,7 +58,6 @@ theorem reedSolomon_Lambda_le_johnson
   set e : ℕ := ⌊δ * (Fintype.card ι : ℝ)⌋₊ with he
   set a : ℕ := Fintype.card ι - e with ha
   set Den : ℕ := a ^ 2 - Fintype.card ι * (k - 1) with hD
-  have hDpos : 0 < Den := by rw [hD]; exact Nat.sub_pos_of_lt hgap
   apply ListDecodable.Lambda_le_natCast_of_forall_closeFinset_card_le
   intro f
   set L : Finset (ι → F) := closeCodewordsRelFinset ((ReedSolomon.code α k : Set (ι → F))) f δ
@@ -93,17 +92,8 @@ theorem reedSolomon_Lambda_le_johnson
       rw [← Finset.card_univ (α := ι)]
       exact Finset.card_filter_add_card_filter_not _
     omega
-  -- second-moment Johnson bound (real-valued) and conversion to a ℕ list-size cap
-  have hreal := reedSolomon_johnson_list_bound (D := α) (k := k) (w := f) L a hpoly hclose
-  have hsub : ((a : ℝ) ^ 2 - (Fintype.card ι : ℝ) * ((k - 1 : ℕ) : ℝ)) = ((Den : ℕ) : ℝ) := by
-    rw [hD, Nat.cast_sub (le_of_lt hgap)]; push_cast; ring
-  rw [hsub] at hreal
-  have hnat : L.card * Den ≤ Fintype.card ι ^ 2 := by
-    have hcast : (L.card : ℝ) * ((Den : ℕ) : ℝ) ≤ ((Fintype.card ι ^ 2 : ℕ) : ℝ) := by
-      calc (L.card : ℝ) * ((Den : ℕ) : ℝ) ≤ (Fintype.card ι : ℝ) ^ 2 := hreal
-        _ = ((Fintype.card ι ^ 2 : ℕ) : ℝ) := by push_cast; ring
-    exact_mod_cast hcast
-  exact (Nat.le_div_iff_mul_le hDpos).2 hnat
+  -- second-moment Johnson bound, in its shared natural-number form
+  exact reedSolomon_johnson_list_card_le_div α k f L a hpoly hclose hgap
 
 #print axioms reedSolomon_Lambda_le_johnson
 

@@ -42,7 +42,7 @@ This is the fixed-root version of the FS15-FS18 quantifier mismatch. Their almos
 
 ## Asymptotics
 
-For dyadic `n=2^k`, the candidate affine packet has size `nφ(n)=n^2/2`. Fixing one split prime embedding generically retains only the rotation packet of size `n`, losing `φ(n)=n/2`. Therefore the hoped-for extra linear-in-`n` gain is on the wrong side of the quantifier. Recovering it would require simultaneous vanishing across many distinct embeddings, the transversality/height route already closed by G88V and the FS16 exponential norm ceiling.
+For dyadic `n=2^k`, the candidate affine packet has size `nφ(n)=n^2/2`. Fixing one split prime embedding generically retains only the rotation packet of size `n`, losing `φ(n)=n/2`. *(Scope note, 2026-10-28 audit T48: the 2048-transform fixed-root count above is an exact finite fact; an independent replay confirmed all vectors distinct, exactly 64 vanishing, all with multiplier 1. "Generically" at every `n` is not proved by that one cell, and the computation does not rule out every use of Galois data. G78's generator invariance is compatible with it, because reindexing the whole weighted relation family preserves total mass even though an individual fixed relation can vanish at only one embedding. Both scoped facts stand.)* Therefore the hoped-for extra linear-in-`n` gain is on the wrong side of the quantifier. Recovering it would require simultaneous vanishing across many distinct embeddings, the transversality/height route already closed by G88V and the FS16 exponential norm ceiling.
 
 ## Honest frontier
 

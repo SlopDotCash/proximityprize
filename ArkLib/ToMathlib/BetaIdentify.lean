@@ -18,8 +18,11 @@ hβ : ∀ t, β (H := H) R t = betaRec x₀ R H hHyp Bcoeff t
 
 that `GammaFromBeta.hγ_field_of_betaEq` consumes (and that threads, unchanged, all the way to the
 milestone `Section5Concrete.correlatedAgreement_affine_curves_johnson_concrete`).  It then delivers
-the strongest closure the in-tree statements support, replacing `hβ` by a strictly *smaller* and
-provably-equivalent residual everywhere in the consumer chain.
+the strongest closure the in-tree statements support, replacing `hβ` by an embedding-level
+residual that is **logically equivalent** to it (via the injective embedding,
+`betaEmbedEq_iff_betaEq`) everywhere in the consumer chain. This changes the surface form (the
+residual now sits at the level the consumer algebra uses) for convenience; it does **not**
+reduce the logical proof debt, and the equivalence supplies no numerator identification.
 
 ## What `hβ` is, and why the two textbook closure routes fail
 
@@ -90,8 +93,9 @@ injective
    `betaCurveInputFin_of_bundle`, `section5Concrete_of_close_word`,
    `correlatedAgreement_affine_curves_johnson_concrete`), each consuming `hβemb` in place of `hβ`.
 
-The net effect: the §5 milestone is reached from the **strictly smaller, provably-equivalent**
-embedding-level residual, with the residual sitting at the level the consumer algebra uses.
+The net effect: the §5 milestone is reached from the **provably-equivalent** embedding-level
+residual (equivalent to `hβ`, not logically smaller), with the residual sitting at the level the
+consumer algebra uses. All wrappers remain conditional on that residual.
 No `sorry`/`axiom`/`native_decide`.
 
 ## References
@@ -143,7 +147,8 @@ theorem β_weight_le (R : F[X][X][Y]) {H : F[X][Y]}
 
 /-! ## The embedding-level residual and its equivalence with `hβ`
 
-The honest, strictly-smaller residual that the consumer algebra actually uses. -/
+The embedding-level residual that the consumer algebra actually uses. It is equivalent to `hβ`
+(`betaEmbedEq_iff_betaEq`), so it is a more convenient surface form, not a weaker obligation. -/
 
 /-- The **embedding-level numerator-identification residual**: the images of `β R t` and the genuine
 recursion `betaRec … t` agree in the function field `𝕃 H`, for every `t`.  This is the residual that
@@ -216,8 +221,9 @@ theorem intree_gamma_eq_γ'_of_betaEmbedEq (x₀ : F) (R : F[X][X][Y]) (H : F[X]
 
 /-- **The `Section5StrictData.hγ` field, discharged from the embedding-level residual `hβemb`.**
 This
-is the embedding-level analogue of `GammaFromBeta.hγ_field_of_betaEq`: under the *strictly smaller*
-residual `BetaEmbedEq`, the in-tree `γ` equals the `betaRec`-built substitution form — literally the
+is the embedding-level analogue of `GammaFromBeta.hγ_field_of_betaEq`: under the (equivalent to
+`hβ`) residual `BetaEmbedEq`, the in-tree `γ` equals the `betaRec`-built substitution form —
+literally the
 `hγ` field of `Section5StrictData`/`BetaCurveInput`/`BetaCurveInputFin`.  No `sorry`, no `axiom`. -/
 theorem hγ_field_of_betaEmbedEq (x₀ : F) (R : F[X][X][Y]) (H : F[X][Y])
     [Fact (Irreducible H)] [Fact (0 < H.natDegree)] (hHyp : Hypotheses x₀ R H)
@@ -249,7 +255,8 @@ end BetaIdentify
 
 Each wrapper mirrors a node of the existing `hβ`-threaded chain
 (`GammaFromBeta` → `BetaInputSupply` → `Section5Concrete`), replacing the element-level `hβ` by the
-strictly-smaller `BetaIdentify.BetaEmbedEq`.  None edits the read-only consumer files: each simply
+equivalent embedding-level `BetaIdentify.BetaEmbedEq`.  None edits the read-only consumer files:
+each simply
 feeds `BetaIdentify.betaEmbedEq_of_betaEq` … no — feeds the embedding residual through
 `betaEmbedEq_iff_betaEq` to recover the `hβ` the existing builders expect, so the embedding residual
 becomes the public surface while the proven element-level builders are reused verbatim. -/
@@ -313,10 +320,11 @@ variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
 
 /-- **`BetaCurveInput` from the embedding-level residual.**  The `…_betaEmb` analogue of
-`BetaInputSupply.betaCurveInput_of_section5`, with `BetaEmbedEq` in place of the element-level `hβ`.
+`BetaInputSupply.betaCurveInput_of_section5`, with `BetaEmbedEq` in place of the element-level `hβ`;
+like it, it builds the bundle for one decoded family `P`.
 -/
 noncomputable def betaCurveInput_of_section5_betaEmb {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
-    {u : WordStack F (Fin (k + 1)) ι}
+    {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}
     (R : F[X][X][Y]) (H : F[X][Y])
     (hIrr : Fact (Irreducible H)) (hPos : Fact (0 < H.natDegree))
     (hHyp : Hypotheses (0 : F) R H)
@@ -339,17 +347,17 @@ noncomputable def betaCurveInput_of_section5_betaEmb {k deg : ℕ} {domain : ι 
         ≤ (WithBot.some ((R.natDegree - 1) * (D - H.natDegree + 1)) : WithBot ℕ))
     (hcardConcrete : ∀ t, k ≤ t → (↑matchingSet.card : WithBot ℕ)
         > (((2 * t + 1) * R.natDegree * D * H.natDegree : ℕ) : WithBot ℕ))
-    (hMatchingDvd : ∀ (P : F → Polynomial F) (v₀ v₁ : F[X]),
+    (hMatchingDvd : ∀ v₀ v₁ : F[X],
       γ (0 : F) R H hHyp = polyToPowerSeries𝕃 H
         ((Polynomial.map Polynomial.C v₀)
           + (Polynomial.C Polynomial.X) * (Polynomial.map Polynomial.C v₁)) →
       HenselDatumProducer.MatchingDvdInput (k := k) (deg := deg) (domain := domain) (δ := δ) u P v₀ v₁)
-    (hdegPz : ∀ (_P : F → Polynomial F) (v₀ v₁ : F[X]),
+    (hdegPz : ∀ v₀ v₁ : F[X],
       γ (0 : F) R H hHyp = polyToPowerSeries𝕃 H
         ((Polynomial.map Polynomial.C v₀)
           + (Polynomial.C Polynomial.X) * (Polynomial.map Polynomial.C v₁)) →
       v₀.natDegree < k + 1 ∧ v₁.natDegree < k + 1) :
-    BetaCurveInput (k := k) (deg := deg) (domain := domain) (δ := δ) u :=
+    BetaCurveInput (k := k) (deg := deg) (domain := domain) (δ := δ) u P :=
   betaCurveInput_of_section5
     (k := k) (deg := deg) (domain := domain) (δ := δ) (u := u)
     R H hIrr hPos hHyp Bcoeff hH D hD matchingSet root Ppoly hrep hdegX
@@ -357,9 +365,10 @@ noncomputable def betaCurveInput_of_section5_betaEmb {k deg : ℕ} {domain : ι 
     mp hd1 hdH_le hdH_D hbB hBzero hbξ hcardConcrete hMatchingDvd hdegPz
 
 /-- **`BetaCurveInputFin` from the embedding-level residual.**  The `…_betaEmb` analogue of
-`BetaInputSupply.betaCurveInputFin_of_section5`, with `BetaEmbedEq` in place of `hβ`. -/
+`BetaInputSupply.betaCurveInputFin_of_section5`, with `BetaEmbedEq` in place of `hβ`; like it, it
+builds the bundle for one decoded family `P`. -/
 noncomputable def betaCurveInputFin_of_section5_betaEmb {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
-    {u : WordStack F (Fin (k + 1)) ι}
+    {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}
     (R : F[X][X][Y]) (H : F[X][Y])
     (hIrr : Fact (Irreducible H)) (hPos : Fact (0 < H.natDegree))
     (hHyp : Hypotheses (0 : F) R H)
@@ -384,17 +393,17 @@ noncomputable def betaCurveInputFin_of_section5_betaEmb {k deg : ℕ} {domain : 
     (hcardConcreteFin : ∀ t, k ≤ t → t ≤ T → (↑matchingSet.card : WithBot ℕ)
         > (((2 * t + 1) * R.natDegree * D * H.natDegree : ℕ) : WithBot ℕ))
     (htailDeg : ∀ t, T < t → BetaToCurveCoeffPolys.αFromBeta (0 : F) R H hHyp Bcoeff t = 0)
-    (hMatchingDvd : ∀ (P : F → Polynomial F) (v₀ v₁ : F[X]),
+    (hMatchingDvd : ∀ v₀ v₁ : F[X],
       γ (0 : F) R H hHyp = polyToPowerSeries𝕃 H
         ((Polynomial.map Polynomial.C v₀)
           + (Polynomial.C Polynomial.X) * (Polynomial.map Polynomial.C v₁)) →
       HenselDatumProducer.MatchingDvdInput (k := k) (deg := deg) (domain := domain) (δ := δ) u P v₀ v₁)
-    (hdegPz : ∀ (_P : F → Polynomial F) (v₀ v₁ : F[X]),
+    (hdegPz : ∀ v₀ v₁ : F[X],
       γ (0 : F) R H hHyp = polyToPowerSeries𝕃 H
         ((Polynomial.map Polynomial.C v₀)
           + (Polynomial.C Polynomial.X) * (Polynomial.map Polynomial.C v₁)) →
       v₀.natDegree < k + 1 ∧ v₁.natDegree < k + 1) :
-    BetaCurveInputFin (k := k) (deg := deg) (domain := domain) (δ := δ) u :=
+    BetaCurveInputFin (k := k) (deg := deg) (domain := domain) (δ := δ) u P :=
   betaCurveInputFin_of_section5
     (k := k) (deg := deg) (domain := domain) (δ := δ) (u := u)
     R H hIrr hPos hHyp Bcoeff hH D hD matchingSet root T Ppoly hrep hdegX
@@ -416,9 +425,11 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
 /-- **The §5 milestone from the embedding-level residual.**  The `…_betaEmb` analogue of
 `Section5Concrete.correlatedAgreement_affine_curves_johnson_concrete`: the literal BCIKS20 keystone
 goal `δ_ε_correlatedAgreementCurves` holds in the strict square-root Johnson regime, with the single
-numerator residual now the strictly-smaller, provably-equivalent **embedding-level** `BetaEmbedEq`
-in
-place of the element-level `hβ`.  Everything else is forwarded verbatim to the proven milestone. -/
+numerator residual now the provably-equivalent (not logically smaller) **embedding-level**
+`BetaEmbedEq` in place of the element-level `hβ`.  Everything else, including the per-`(u, P)`
+producer `perWord`, is forwarded verbatim to that milestone, which is a conditional reduction
+whose hypotheses are not satisfiable as assembled (see the `Section5Concrete` module
+docstring). -/
 theorem correlatedAgreement_affine_curves_johnson_concrete_betaEmb
     {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
@@ -437,7 +448,10 @@ theorem correlatedAgreement_affine_curves_johnson_concrete_betaEmb
     (hbξ : weight_Λ_over_𝒪 b.hH (ξ (0 : F) b.R b.H b.hHyp) b.D
         ≤ (WithBot.some ((b.R.natDegree - 1) * (b.D - b.H.natDegree + 1)) : WithBot ℕ))
     (hβemb : BetaEmbedEq (0 : F) b.R b.H b.hHyp Bcoeff)
-    (perWord : ∀ (u : WordStack F (Fin (k + 1)) ι),
+    (perWord : ∀ (u : WordStack F (Fin (k + 1)) ι) (P : F → Polynomial F),
+      (∀ z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ,
+        (P z).natDegree < deg ∧
+          δᵣ(∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
       Σ' (matchingSet : Finset F) (root : (z : F) → rationalRoot (H_tilde' b.H) z) (T : ℕ)
          (Ppoly : F[X][Y]),
         (polyToPowerSeries𝕃 b.H Ppoly = γ (0 : F) b.R b.H b.hHyp) ×'
@@ -448,12 +462,12 @@ theorem correlatedAgreement_affine_curves_johnson_concrete_betaEmb
           > (((2 * t + 1) * b.R.natDegree * b.D * b.H.natDegree : ℕ) : WithBot ℕ)) ×'
         (∀ t, T < t →
           BetaToCurveCoeffPolys.αFromBeta (0 : F) b.R b.H b.hHyp Bcoeff t = 0) ×'
-        (∀ (P : F → Polynomial F) (v₀ v₁ : F[X]),
+        (∀ v₀ v₁ : F[X],
           γ (0 : F) b.R b.H b.hHyp = polyToPowerSeries𝕃 b.H
             ((Polynomial.map Polynomial.C v₀)
               + (Polynomial.C Polynomial.X) * (Polynomial.map Polynomial.C v₁)) →
           HenselDatumProducer.MatchingDvdInput (k := k) (deg := deg) (domain := domain) (δ := δ) u P v₀ v₁) ×'
-        (∀ (_P : F → Polynomial F) (v₀ v₁ : F[X]),
+        (∀ v₀ v₁ : F[X],
           γ (0 : F) b.R b.H b.hHyp = polyToPowerSeries𝕃 b.H
             ((Polynomial.map Polynomial.C v₀)
               + (Polynomial.C Polynomial.X) * (Polynomial.map Polynomial.C v₁)) →

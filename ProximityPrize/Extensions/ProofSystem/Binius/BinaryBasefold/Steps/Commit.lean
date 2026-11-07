@@ -79,7 +79,16 @@ The proof follows the same pattern as `foldOracleReduction_perfectCompleteness`:
 open scoped NNReal
 
 /-! The historical predicate uses newest-first challenges and its original bad-event branch.
-It is not identified with the canonical knowledge invariant. -/
+It is not identified with the canonical knowledge invariant.
+
+**Relaxed semantics.**  Both cases go through the historical `masterKStateCore`, whose bad-event
+disjunct (evaluated at the oracle index) is `True` for any unfinished (pending) block.  By
+`badEventExistsProp_of_lt`, the `m = 0` case (oracle index `i.castSucc < ℓ`) holds for every
+input, and so does the `m = 1` case whenever `i.succ < ℓ`.  This predicate therefore does not by
+itself enforce witness consistency, and its bad-event branch is not a sampled folding bad
+event.  The canonical
+`commitKnowledgeStateFunction` (re-exported below) instead uses the genuine incremental bad
+event `HasIncrementalBadEvent`, which has no such `True` branch. -/
 namespace Historical
 
 def commitKStateProp (i : Fin ℓ) (m : Fin (1 + 1))

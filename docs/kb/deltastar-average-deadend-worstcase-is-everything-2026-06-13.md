@@ -1,5 +1,15 @@
 # MDS average is a dead end; δ* is purely worst-case, located in the window (2026-06-13)
 
+> **Scope correction (2026-10-28 audit, T48).**
+> - **Not specific to MDS.** The average-ball formula `avg(a) = q^k·Vol_q(n−a)/q^n` is correct for
+>   **any** code with `q^k` codewords; it does not use the MDS property.
+> - **Sampled lists are lower bounds.** The "worst-case list" row comes from sampled words, so it is
+>   a lower bound on the worst case. It cannot give a universal worst-case upper bound.
+> - **No `δ*` interval follows.** `δ* ∈ (0.625, 0.688)` is not established as the exact MCA `δ*`
+>   interval: that needs the missing list-to-MCA bridge and an extremality input.
+> - **Averages are not useless.** An exponentially small average shows that this particular average
+>   does not determine the threshold. It does not exclude every use of average information.
+
 Executed computation (not asserted). Closes off the "use the explicit MDS weight enumerator" avenue
 as a **negative result**, and pins concretely where δ* sits.
 

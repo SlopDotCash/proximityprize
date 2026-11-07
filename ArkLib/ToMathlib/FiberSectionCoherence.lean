@@ -43,18 +43,15 @@ family `v : F → F[X]` of the fibers?
     `(hsplit, on-branch, hbr)` package at the in-tree factorization, mirroring
     `SectionGlobalLift.global_facts_of_fiber_sections` with the coherence DERIVED, not assumed.
 
-**Build note (olean-thrash workaround)**: the ArkLib oleans are mid-rebuild this session, so
-this scratch does NOT import `ArkLib.*`.  The consumed prerequisites are inlined VERBATIM
-(statements and proofs unchanged, same fully-qualified names) from:
-  - `ArkLib/ToMathlib/SectionGlobalLift.lean` (`eval_section_evalX`, `centre_section_dvd`,
-    `section_dvd_global_of_fibers`, `eval_section_natDegree_le`,
-    `branch_ne_zero_of_separable`, `exists_split_branch_of_factorization`);
-  - `ArkLib/ToMathlib/MatchingGeometryProducers.lean` (`card_gt_of_compl_subset`);
-  - `ArkLib/ToMathlib/DiscriminantBadSet.lean` (`Match304.card_nonvanishing_gt`).
-`Bivariate.evalX` / `evalX_eq_map` come from the stable CompPoly package import.  When the
-tree heals, delete the inlined Part 0 and restore
-`import ArkLib.ToMathlib.SectionGlobalLift` + `import ArkLib.ToMathlib.DiscriminantBadSet`
-(that variant verified green earlier as the original draft).
+**Build note (historical; superseded).** When this file was drafted the ArkLib oleans were
+mid-rebuild, so the scratch did not import `ArkLib.*` and inlined its prerequisites verbatim
+(from `SectionGlobalLift.lean`: `eval_section_evalX`, `centre_section_dvd`,
+`section_dvd_global_of_fibers`, `eval_section_natDegree_le`, `branch_ne_zero_of_separable`,
+`exists_split_branch_of_factorization`; from `MatchingGeometryProducers.lean`:
+`card_gt_of_compl_subset`; from `DiscriminantBadSet.lean`: `Match304.card_nonvanishing_gt`).
+**Current source status:** that workaround has been undone. The file now imports
+`ArkLib.ToMathlib.SectionGlobalLift` (which transitively provides the prerequisites above), and
+"Part 0" below is an empty placeholder section with no inlined copies.
 -/
 
 set_option linter.style.longLine false
@@ -65,7 +62,8 @@ open scoped BigOperators
 
 namespace ArkLib
 
-/-! ## Part 0 — inlined prerequisites (verbatim from the in-tree files, see build note) -/
+/-! ## Part 0 — (empty) formerly inlined prerequisites; now supplied by the imports
+(see the build note) -/
 
 
 namespace FiberSectionCoherence

@@ -11,7 +11,9 @@ import ArkLib.ToMathlib.ProtocolCountingBricks
 The batched-FRI joint-proximity residual — the bound on the probability that a random linear
 combination of functions is `δ`-close to a Reed–Solomon code while the individual functions are
 not jointly close — is tracked **honestly** as the named proposition
-`ProximityGap.Issue14.BatchedFRIJointProximityKernel` (an open `def : Prop` in `Issue14Kernels`).
+`ProximityGap.Issue14.BatchedFRIJointProximityKernel` (an open `def : Prop` in
+`BatchedFRIJointProximity.lean`, with joint closeness measured in columns via `jointColumnDist`
+and an explicit error parameter `ε`; the intended `ε` depends on the decoding regime).
 
 Its proof is the beyond-list-decoding-radius mass bound and is **not** in tree. This module
 intentionally contains **no** `theorem` discharging it: an earlier `breakthrough`/`Resolution`

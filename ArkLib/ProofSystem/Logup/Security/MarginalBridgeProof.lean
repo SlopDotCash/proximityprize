@@ -12,10 +12,14 @@ import ArkLib.OracleReduction.ProcessRoundSupport
 # Discharging the MarginalBridge residual (issue #13)
 
 Proof of `Verifier.MarginalBridge` (the rbr→soundness per-round marginal domination) from the
-proven trailing-drop + union-bound infrastructure in `Security/RoundByRound.lean`, under the
-single **state-preservation side condition** `hso` on the shared-oracle implementation (the same
+proven trailing-drop + union-bound infrastructure in `Security/RoundByRound.lean`, under side
+conditions on the shared-oracle implementation. The note below motivates the
+**state-preservation** condition (called `hso` there; `himplSP` in the final theorem), the same
 side condition the sequential-composition seam toolkit `probComp_seam_swap_union_le` consumes,
-dischargeable for the LogUp instantiations via `OptionTStateT.addLift_state_preserving`).
+dischargeable for the LogUp instantiations via `OptionTStateT.addLift_state_preserving`.
+It is **not** the only condition: the final theorem `marginalBridge_holds` assumes state
+preservation (`himplSP`), never-failing (`himplNF`) **and** a state-independent response law
+(`himplVB`: the answer distribution does not depend on the state).
 
 ## Why `hso` is necessary (the statement is FALSE without it)
 

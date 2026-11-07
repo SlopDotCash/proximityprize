@@ -17,24 +17,39 @@ has codeword agreements `≤ 3` (`nodal_word_agreement_le` — the plain root bo
 so `w` is in every capped class), and a `3`-subset `T` of the domain is an
 explainable core as soon as `∏_{x∈T} x = −γ` (`nodal_explainableOn`): the
 collinearity law of the nodal cubic is PURELY multiplicative — Vieta pins
-`e₃ = −γ` while `e₁, e₂` are exactly the two degrees of freedom of a line.  On a
-multiplicative subgroup the third point `−γ/(x₁x₂)` of every pair lies in the
-domain automatically, so `≈ C(n,2)/3` cores fire — **independently of `q`**.
+`e₃ = −γ` while `e₁, e₂` are exactly the two degrees of freedom of a line (for
+three distinct points the same Vieta argument makes `∏ x = −γ` also *necessary*).
+On a multiplicative subgroup `H` the third point `−γ/(x₁x₂)` of a pair lies in
+`H` **iff `−γ ∈ H`** (coset condition).  If `−γ ∉ H` there is no product-`(−γ)`
+triple in `H` at all and the counted fibre is empty: e.g. `μ₄ = {1,4,13,16} ⊂ F₁₇`
+with `γ = 2` has `−γ = 15 ∉ μ₄`.  For the intended construction choose `−γ ∈ H`,
+e.g. `γ = −1`; then every pair `{x₁, x₂}` whose third point `−γ/(x₁x₂)` is distinct
+from both extends, so `≈ C(n,2)/3` cores fire — independently of `q`.  That lower
+count is **probe evidence, not proved here**: the Lean content is only the
+inclusion `fibre count ≤ supply` (`nodal_supply_ge`), which is valid but gives no
+positive fibre count by itself.
 
 Probe (companion run to `probe_monomial_supply_witness.py`, exact):
 `2,794,155` explainable `3`-cores on `μ₄₀₉₆ ⊂ F₁₂₂₈₉` vs the ceiling
-`C(4096,2)/3 = 2,795,520` — the sandwich closes to `O(n)`, and the construction
-is verbatim the same at `q = 2^128`.
+`C(4096,2)/3 = 2,795,520` — the sandwich closes to `O(n)` on that instance.  The
+construction transfers to any field of **odd characteristic** containing a dyadic
+subgroup `μ_n` (i.e. `n ∣ q − 1`, e.g. a prime `q ≈ 2^128` with `n ∣ q − 1`); it does
+**not** apply literally at `q = 2^128`, since a characteristic-`2` field has a
+multiplicative group of odd order `2^128 − 1` and hence no nontrivial dyadic
+root subgroup.
 
 The matching ceiling is `cap3_supply_mul_le`: for ANY word with agreements `≤ 3`,
 the `3`-core count satisfies `3·E ≤ C(n,2)` — straight from the moment–supply
 identity (`moment_identity_base`: `Σ_c C(a_c, 2) = C(n,2)` identically).
-Together: **the `(k, m) = (2, 0)` agreement-capped supply is `C(n,2)/3 + O(n)`
-EXACTLY, on every multiplicative-subgroup domain at EVERY field size** — the
-first exact sub-Johnson supply value, and the refutation of every `B = o(n²)`
-form of `SubJohnsonSupplyResidual` at `m = 0`: no `q`-condition can save it (the
-nodal collinearity never references the additive structure that the Frobenius
-witness needed, nor the field-size room the monomial witness needed).
+Together with the probe-level lower count (under the coset condition `−γ ∈ H`),
+this indicates that **the `(k, m) = (2, 0)` agreement-capped supply is
+`C(n,2)/3 + O(n)` on multiplicative-subgroup domains**, and would refute every
+`B = o(n²)` form of `SubJohnsonSupplyResidual` at `m = 0` (the nodal collinearity
+never references the additive structure that the Frobenius witness needed, nor the
+field-size room the monomial witness needed).  Only the ceiling and the inclusion
+`fibre ≤ supply` are formalized here; a Lean refutation needs a proved positive
+lower bound on the product-`(−γ)` fibre (with distinctness and the coset
+condition), which this file does not supply.
 -/
 
 open Finset Polynomial
@@ -160,8 +175,11 @@ theorem nodal_explainableOn (dom : Fin n ↪ F) {γ : F}
 
 open Classical in
 /-- **The supply floor of the nodal word**: every product-`(−γ)` triple is an
-explainable core.  On a multiplicative subgroup every pair extends, so the count
-is `C(n,2)/3 − O(n)` — at every field size. -/
+explainable core, so the product-`(−γ)` fibre count is at most the supply.  This
+gives no positive count by itself: on a multiplicative subgroup `H` the fibre is
+empty unless `−γ ∈ H`; when `−γ ∈ H` (e.g. `γ = −1`) a pair extends whenever its
+third point `−γ/(x₁x₂)` is distinct from both, and the count is then expected
+(probe evidence, not proved here) to be `C(n,2)/3 − O(n)`. -/
 theorem nodal_supply_ge (dom : Fin n ↪ F) {γ : F} (h0 : ∀ i, dom i ≠ 0) :
     ((((Finset.univ : Finset (Fin n)).powersetCard 3).filter
       (fun T => ∏ i ∈ T, dom i = -γ)).card)

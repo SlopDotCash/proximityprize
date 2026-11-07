@@ -43,20 +43,28 @@ sharper of the two caps as the operative bound on `|L|`.
 
 ## Where each tool wins (the verified data points)
 
-* **Fisher is strictly sharper** at the explicit interior point of `RS[F₇,F₇,2]` (`n=7, k=2, a=3`,
-  `δ = 4/7` strictly inside the gap, the verified two-sided pin of `ListInteriorTwoSidedF7`):
-  `P = 7 < J ≈ 24.5` (`fisher_wins_F7`). It also wins just above the Johnson radius
-  (`n=15, k=2, a=4`: `P = 17.5 < J = 225`, `fisher_wins_near_johnson`) and near capacity
-  (`n=15, k=2, a=8`: `P = 3.75 < J ≈ 4.59`, `fisher_wins_near_capacity`).
-* **Johnson is strictly sharper** in the *middle* of the gap once `k ≥ 3`–`4`: e.g.
-  `n=16, k=4, a=9` (`J ≈ 7.76 < P ≈ 14.44`, `johnson_wins_mid_gap`),
-  `n=31, k=3, a=12` (`J ≈ 11.72 < P ≈ 20.43`, `johnson_wins_k3`),
-  `n=63, k=4, a=20` (`J ≈ 18.81 < P ≈ 122.9`, `johnson_wins_large`).
+Location convention: the open gap `(1 − √ρ, 1 − ρ)` in radius is the agreement window
+`k < a < √(kn)`, i.e. `k < a` and `a² < kn`. Capacity corresponds to `a → k` (radius `→ 1 − ρ`);
+`a → n` is radius `→ 0`, deep inside the Johnson-decodable region. Points with `a² ≥ kn` lie
+**outside** the open gap. Both caps are only meaningful when `d = a² − n(k−1) > 0` and `a ≥ k`, so
+in-gap comparisons live in the sub-band `n(k−1) < a² < nk`.
 
-So neither tool dominates: the Fisher/poly-method bound wins at *both ends* of the agreement window
-(just above the Johnson radius, where the Johnson denominator `d` is tiny, and again near the capacity
-endpoint `a → n`), while the second-moment Johnson bound wins in the *middle band* for the higher-rate
-codes (`k ≥ 3`). The crossover criterion `crossover_iff` is the exact, machine-checkable boundary.
+* **Inside the gap, Fisher is strictly sharper** at the explicit point of `RS[F₇,F₇,2]`
+  (`n=7, k=2, a=3`: `2 < 3`, `9 < 14`; the verified two-sided pin of `ListInteriorTwoSidedF7`):
+  `P = 7 < J ≈ 24.5` (`fisher_wins_F7`), and at `n=15, k=2, a=4` (`2 < 4`, `16 < 30`):
+  `P = 17.5 < J = 225` (`fisher_wins_near_johnson`).
+* **Inside the gap, Johnson is strictly sharper** at `n=31, k=3, a=9` (`3 < 9`, `81 < 93`,
+  `d = 19`): `J = 961/19 ≈ 50.6 < P = 4495/84 ≈ 53.5` (`johnson_wins_in_gap`).
+* **Outside the gap** (`a² ≥ kn`, inside the Johnson radius) the file also records valid numerical
+  comparisons: Fisher wins at `n=15, k=2, a=8` (`64 > 30`; `fisher_wins_outside_gap`), and Johnson
+  wins at `n=16, k=4, a=9` (`81 > 64`; `johnson_wins_outside_gap_k4`), `n=31, k=3, a=12`
+  (`144 > 93`; `johnson_wins_outside_gap_k3`) and `n=63, k=4, a=20` (`400 > 252`;
+  `johnson_wins_outside_gap_large`). These are **not** gap-interior instances.
+
+So neither tool dominates inside the open gap: `neither_dominates` pairs the in-gap Fisher win
+`(7,2,3)` with the in-gap Johnson win `(31,3,9)`, each with its checked location guard
+`k < a ∧ a² < k·n`. The crossover criterion `crossover_iff` is the exact, machine-checkable
+boundary between the two caps at any given `(n, k, a)`.
 
 ## Honest assessment
 
@@ -243,71 +251,101 @@ theorem fisher_wins_near_johnson :
 theorem fisher_wins_near_johnson_crossover : fisherCap 15 2 4 < johnsonCap 15 2 4 :=
   (crossover_iff 15 2 4 (by norm_num) (by decide)).mpr fisher_wins_near_johnson
 
-/-- **FISHER WINS — near the capacity endpoint.** `n=15, k=2, a=8`: `d = 8² − 15 = 49`,
+/-- **FISHER WINS — outside the open gap (high agreement).** `n=15, k=2, a=8`: `d = 8² − 15 = 49`,
 `J = 225/49 ≈ 4.59`, `P = C(15,2)/C(8,2) = 105/28 = 3.75`. Cross-product: `105·49 = 5145 <
-28·225 = 6300`. So Fisher also wins at the *high-agreement* end of the window. -/
-theorem fisher_wins_near_capacity :
+28·225 = 6300`. Location: `a² = 64 > 30 = k·n`, so this point lies inside the Johnson radius,
+**outside** the open gap (it is not near capacity, which is `a → k`). -/
+theorem fisher_wins_outside_gap :
     (Nat.choose 15 2 : ℝ) * ((8 : ℝ) ^ 2 - (15 : ℝ) * ((2 - 1 : ℕ) : ℝ))
       < (Nat.choose 8 2 : ℝ) * (15 : ℝ) ^ 2 := by
   have h1 : Nat.choose 15 2 = 105 := by decide
   have h2 : Nat.choose 8 2 = 28 := by decide
   rw [h1, h2]; norm_num
 
-theorem fisher_wins_near_capacity_crossover : fisherCap 15 2 8 < johnsonCap 15 2 8 :=
-  (crossover_iff 15 2 8 (by norm_num) (by decide)).mpr fisher_wins_near_capacity
+theorem fisher_wins_outside_gap_crossover : fisherCap 15 2 8 < johnsonCap 15 2 8 :=
+  (crossover_iff 15 2 8 (by norm_num) (by decide)).mpr fisher_wins_outside_gap
 
-/-- **JOHNSON WINS — the middle of the gap, `k = 4`.** `n=16, k=4, a=9`: `d = 9² − 16·3 = 33`,
+/-- **JOHNSON WINS — outside the open gap, `k = 4`.** `n=16, k=4, a=9`: `d = 9² − 16·3 = 33`,
 `J = 256/33 ≈ 7.76`, while `P = C(16,4)/C(9,4) = 1820/126 ≈ 14.44`. Reverse cross-product:
-`C(9,4)·n² = 126·256 = 32256 < C(16,4)·d = 1820·33 = 60060`. So in the interior middle band the
-second-moment Johnson bound is the sharper tool. -/
-theorem johnson_wins_mid_gap :
+`C(9,4)·n² = 126·256 = 32256 < C(16,4)·d = 1820·33 = 60060`. Location: `a² = 81 > 64 = k·n`, so
+this point is inside the Johnson radius, **not** in the open gap. -/
+theorem johnson_wins_outside_gap_k4 :
     (Nat.choose 9 4 : ℝ) * (16 : ℝ) ^ 2
       < (Nat.choose 16 4 : ℝ) * ((9 : ℝ) ^ 2 - (16 : ℝ) * ((4 - 1 : ℕ) : ℝ)) := by
   have h1 : Nat.choose 9 4 = 126 := by decide
   have h2 : Nat.choose 16 4 = 1820 := by decide
   rw [h1, h2]; norm_num
 
-theorem johnson_wins_mid_gap_crossover : johnsonCap 16 4 9 < fisherCap 16 4 9 :=
-  (johnson_strictly_sharper_iff 16 4 9 (by norm_num) (by decide)).mpr johnson_wins_mid_gap
+theorem johnson_wins_outside_gap_k4_crossover : johnsonCap 16 4 9 < fisherCap 16 4 9 :=
+  (johnson_strictly_sharper_iff 16 4 9 (by norm_num) (by decide)).mpr johnson_wins_outside_gap_k4
 
-/-- **JOHNSON WINS — middle band, `k = 3`.** `n=31, k=3, a=12`: `d = 12² − 31·2 = 82`,
+/-- **JOHNSON WINS — outside the open gap, `k = 3`.** `n=31, k=3, a=12`: `d = 12² − 31·2 = 82`,
 `J = 961/82 ≈ 11.72`, `P = C(31,3)/C(12,3) = 4495/220 ≈ 20.43`. Reverse cross-product:
-`C(12,3)·n² = 220·961 = 211420 < C(31,3)·d = 4495·82 = 368590`. -/
-theorem johnson_wins_k3 :
+`C(12,3)·n² = 220·961 = 211420 < C(31,3)·d = 4495·82 = 368590`. Location: `a² = 144 > 93 = k·n`,
+so this point is **not** in the open gap. -/
+theorem johnson_wins_outside_gap_k3 :
     (Nat.choose 12 3 : ℝ) * (31 : ℝ) ^ 2
       < (Nat.choose 31 3 : ℝ) * ((12 : ℝ) ^ 2 - (31 : ℝ) * ((3 - 1 : ℕ) : ℝ)) := by
   have h1 : Nat.choose 12 3 = 220 := by decide
   have h2 : Nat.choose 31 3 = 4495 := by decide
   rw [h1, h2]; norm_num
 
-theorem johnson_wins_k3_crossover : johnsonCap 31 3 12 < fisherCap 31 3 12 :=
-  (johnson_strictly_sharper_iff 31 3 12 (by norm_num) (by decide)).mpr johnson_wins_k3
+theorem johnson_wins_outside_gap_k3_crossover : johnsonCap 31 3 12 < fisherCap 31 3 12 :=
+  (johnson_strictly_sharper_iff 31 3 12 (by norm_num) (by decide)).mpr johnson_wins_outside_gap_k3
 
-/-- **JOHNSON WINS — middle band, low rate.** `n=63, k=4, a=20`: `d = 20² − 63·3 = 211`,
+/-- **JOHNSON WINS — outside the open gap, low rate.** `n=63, k=4, a=20`: `d = 20² − 63·3 = 211`,
 `J = 3969/211 ≈ 18.81`, `P = C(63,4)/C(20,4) = 595665/4845 ≈ 122.9` — here Johnson is dramatically
 sharper. Reverse cross-product: `C(20,4)·n² = 4845·3969 = 19229805 < C(63,4)·d =
-595665·211 = 125685315`. -/
-theorem johnson_wins_large :
+595665·211 = 125685315`. Location: `a² = 400 > 252 = k·n`, so this point is **not** in the open
+gap. -/
+theorem johnson_wins_outside_gap_large :
     (Nat.choose 20 4 : ℝ) * (63 : ℝ) ^ 2
       < (Nat.choose 63 4 : ℝ) * ((20 : ℝ) ^ 2 - (63 : ℝ) * ((4 - 1 : ℕ) : ℝ)) := by
   have h1 : Nat.choose 20 4 = 4845 := by decide
   have h2 : Nat.choose 63 4 = 595665 := by decide
   rw [h1, h2]; norm_num
 
-theorem johnson_wins_large_crossover : johnsonCap 63 4 20 < fisherCap 63 4 20 :=
-  (johnson_strictly_sharper_iff 63 4 20 (by norm_num) (by decide)).mpr johnson_wins_large
+theorem johnson_wins_outside_gap_large_crossover : johnsonCap 63 4 20 < fisherCap 63 4 20 :=
+  (johnson_strictly_sharper_iff 63 4 20 (by norm_num) (by decide)).mpr
+    johnson_wins_outside_gap_large
 
-/-! ## Summary: neither tool dominates -/
+/-- **JOHNSON WINS — inside the open gap, `k = 3`.** `n=31, k=3, a=9`: location `3 < 9` and
+`a² = 81 < 93 = k·n`; Johnson denominator `d = 9² − 31·2 = 19 > 0`. `J = 961/19 ≈ 50.58`,
+`P = C(31,3)/C(9,3) = 4495/84 ≈ 53.51`. Reverse cross-product:
+`C(9,3)·n² = 84·961 = 80724 < C(31,3)·d = 4495·19 = 85405`. -/
+theorem johnson_wins_in_gap :
+    (Nat.choose 9 3 : ℝ) * (31 : ℝ) ^ 2
+      < (Nat.choose 31 3 : ℝ) * ((9 : ℝ) ^ 2 - (31 : ℝ) * ((3 - 1 : ℕ) : ℝ)) := by
+  have h1 : Nat.choose 9 3 = 84 := by decide
+  have h2 : Nat.choose 31 3 = 4495 := by decide
+  rw [h1, h2]; norm_num
 
-/-- **Neither bound dominates the other across the interior.** There exist explicit interior instances
-where Fisher is strictly sharper (the verified `RS[F₇,F₇,2]` point `(7,2,3)`) and explicit interior
-instances where Johnson is strictly sharper (`(16,4,9)`), so neither the second-moment Johnson cap nor
-the Fisher/poly-method cap dominates the other on the open gap. The crossover criterion `crossover_iff`
-(equivalently `johnson_strictly_sharper_iff`) is the exact, `decide`-checkable boundary, and
-`combined_list_bound` always supplies the better of the two. -/
+/-- The point `(n,k,a) = (31,3,9)` lies in the open gap: `k < a` and `a² < k·n`. -/
+theorem johnson_wins_in_gap_location : (3 : ℕ) < 9 ∧ (9 : ℕ) ^ 2 < 3 * 31 := by decide
+
+theorem johnson_wins_in_gap_crossover : johnsonCap 31 3 9 < fisherCap 31 3 9 :=
+  (johnson_strictly_sharper_iff 31 3 9 (by norm_num) (by decide)).mpr johnson_wins_in_gap
+
+/-- The F₇ point `(n,k,a) = (7,2,3)` lies in the open gap: `k < a` and `a² < k·n`. -/
+theorem fisher_wins_F7_location : (2 : ℕ) < 3 ∧ (3 : ℕ) ^ 2 < 2 * 7 := by decide
+
+/-- The point `(n,k,a) = (15,2,4)` lies in the open gap: `k < a` and `a² < k·n`. -/
+theorem fisher_wins_near_johnson_location : (2 : ℕ) < 4 ∧ (4 : ℕ) ^ 2 < 2 * 15 := by decide
+
+/-! ## Summary: neither tool dominates inside the open gap -/
+
+/-- **Neither bound dominates the other inside the open gap.** The in-gap point `(7,2,3)`
+(`2 < 3`, `9 < 14`; the verified `RS[F₇,F₇,2]` point) has the Fisher cap strictly sharper, and the
+in-gap point `(31,3,9)` (`3 < 9`, `81 < 93`) has the Johnson cap strictly sharper. Each comparison
+is paired with its checked location guard `k < a ∧ a² < k·n`, so neither the second-moment Johnson
+cap nor the Fisher/poly-method cap dominates the other on the open gap. The crossover criterion
+`crossover_iff` (equivalently `johnson_strictly_sharper_iff`) is the exact, `decide`-checkable
+boundary, and `combined_list_bound` always supplies the better of the two. -/
 theorem neither_dominates :
-    (fisherCap 7 2 3 < johnsonCap 7 2 3) ∧ (johnsonCap 16 4 9 < fisherCap 16 4 9) :=
-  ⟨fisher_wins_F7_crossover, johnson_wins_mid_gap_crossover⟩
+    (((2 : ℕ) < 3 ∧ (3 : ℕ) ^ 2 < 2 * 7) ∧ fisherCap 7 2 3 < johnsonCap 7 2 3) ∧
+      (((3 : ℕ) < 9 ∧ (9 : ℕ) ^ 2 < 3 * 31) ∧ johnsonCap 31 3 9 < fisherCap 31 3 9) :=
+  ⟨⟨fisher_wins_F7_location, fisher_wins_F7_crossover⟩,
+    ⟨johnson_wins_in_gap_location, johnson_wins_in_gap_crossover⟩⟩
 
 end ArkLib.CodingTheory.FisherJohnsonCrossover
 
@@ -315,4 +353,4 @@ end ArkLib.CodingTheory.FisherJohnsonCrossover
 #print axioms ArkLib.CodingTheory.FisherJohnsonCrossover.combined_list_bound
 #print axioms ArkLib.CodingTheory.FisherJohnsonCrossover.neither_dominates
 #print axioms ArkLib.CodingTheory.FisherJohnsonCrossover.fisher_wins_F7_crossover
-#print axioms ArkLib.CodingTheory.FisherJohnsonCrossover.johnson_wins_mid_gap_crossover
+#print axioms ArkLib.CodingTheory.FisherJohnsonCrossover.johnson_wins_in_gap_crossover

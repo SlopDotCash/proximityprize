@@ -6,6 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib.NumberTheory.JacobiSum.Basic
 import Research.ProximityPrize.Frontier._R26BoundedResidual
 import Research.ProximityPrize.Frontier._R19ExplicitCharacterRung
+import Research.ProximityPrize.Frontier._JacKatzBoundedConductorFamily
 
 /-!
 # LANE RESL2 (#466 round 26): the bounded-residual subfamily gate — exact L² cross
@@ -99,19 +100,11 @@ theorem crossKernel_eq_jacobiSum (χ' χ'' : MulChar F ℂ) :
   ring
 
 /-- **Exact Jacobi-sum modulus** over ℂ: for `χ`, `φ`, `χφ` all nontrivial,
-`‖J(χ,φ)‖ = √q`. -/
+`‖J(χ,φ)‖ = √q`.  Delegates to the shared `JacKatz.norm_jacobiSum_eq_sqrt`. -/
 theorem norm_jacobiSum_eq_sqrt_card {χ φ : MulChar F ℂ} (hχ : χ ≠ 1) (hφ : φ ≠ 1)
     (hχφ : χ * φ ≠ 1) {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) :
-    ‖jacobiSum χ φ‖ = Real.sqrt (Fintype.card F) := by
-  have hrel := jacobiSum_mul_nontrivial hχφ ψ
-  have hnorm : ‖gaussSum (χ * φ) ψ‖ * ‖jacobiSum χ φ‖ = ‖gaussSum χ ψ‖ * ‖gaussSum φ ψ‖ := by
-    rw [← norm_mul, ← norm_mul, hrel]
-  rw [norm_gaussSum_eq_sqrt_card hχφ hψ, norm_gaussSum_eq_sqrt_card hχ hψ,
-    norm_gaussSum_eq_sqrt_card hφ hψ] at hnorm
-  have hqpos : (0 : ℝ) < Real.sqrt (Fintype.card F) := by
-    have : (0 : ℝ) < (Fintype.card F : ℝ) := by exact_mod_cast Fintype.card_pos
-    positivity
-  exact mul_left_cancel₀ (ne_of_gt hqpos) hnorm
+    ‖jacobiSum χ φ‖ = Real.sqrt (Fintype.card F) :=
+  ArkLib.ProximityGap.Frontier.JacKatz.norm_jacobiSum_eq_sqrt hχ hφ hχφ hψ
 
 /-- **Exact cross-kernel modulus**: `‖K(χ',χ'')‖ = √q` for nontrivial `χ' ≠ χ''`. -/
 theorem norm_crossKernel {χ' χ'' : MulChar F ℂ} (h1 : χ' ≠ 1) (h2 : χ'' ≠ 1)

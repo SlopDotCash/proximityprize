@@ -10,11 +10,16 @@ import Mathlib.Tactic
 # NOT-RAMANUJAN: the prize Gauss-period graph `Cay(F_q, μ_n)` is not Ramanujan (#407)
 
 `B := max_{b≠0} ‖η_b‖`, `η_b = ∑_{x∈μ_n} e_p(b·x)`, is the non-principal eigenvalue (up to the
-standard `Re`/magnitude convention) of the generalized Paley graph `Cay(F_q, μ_n)`. The Ramanujan
-property of that graph is exactly `B ≤ 2√n`. This file proves an UNCONDITIONAL **lower** companion
-to the moment ladder, and the consequence that the graph is **NOT Ramanujan** (`B > 2√n`) once the
-field is large enough, conditional only on an explicit, proven numeric lower bound on the additive
-energy at a fixed depth `r`.
+standard `Re`/magnitude convention) of the generalized Paley graph `Cay(F_q, μ_n)`. The standard
+Ramanujan cutoff for an `n`-regular graph is `2√(n−1)`, applied to the nontrivial eigenvalues
+(here the `η_b`, `b ≠ 0`, the trivial eigenvalue `η_0 = n` being excluded) of an **undirected**
+graph — for the Cayley graph this needs `μ_n = −μ_n` (e.g. `n` even), so that the `η_b` are real.
+It is NOT the looser benchmark `B ≤ 2√n` used below. This file proves an UNCONDITIONAL **lower**
+companion to the moment ladder, and the obstruction `B > 2√n` (strictly above the looser `2√n`
+benchmark) once the field is large enough, conditional only on an explicit numeric lower bound
+on the additive energy at a fixed depth `r`. Since `2√n > 2√(n−1)`, in the undirected setting
+above this obstruction is a *sufficient* condition for the graph to be **NOT Ramanujan**; it is
+not an equivalence, and no non-Ramanujan conclusion follows when the explicit energy budget fails.
 
 ## The mechanism
 
@@ -33,8 +38,9 @@ If at some depth `r` the field is large enough that
 
 > `4^r · n^r · (q−1)  <  q·E_r − n^{2r}`   (the **energy-clears-budget** inequality),
 
-then `(2√n)^{2r} = 4^r n^r < (q·E_r − n^{2r})/(q−1) ≤ B^{2r}`, so `B > 2√n`: the graph is NOT
-Ramanujan. The hypothesis is a single inequality over `ℝ`; it is **discharged by the proven char-0
+then `(2√n)^{2r} = 4^r n^r < (q·E_r − n^{2r})/(q−1) ≤ B^{2r}`, so `B > 2√n > 2√(n−1)`: in the
+undirected setting (`μ_n = −μ_n`) the graph is NOT Ramanujan. The hypothesis is a single
+inequality over `ℝ`; it is **discharged by the char-0
 energy lower bound**
 `E_r(μ_n) ≥ A_r := (2r−1)‼ · (n/2)(n/2−1)···(n/2−r+1) · 2^r`
 (antipodal pairs on distinct classes; `E_r(char-p) ≥ E_r(char-0) ≥ A_r`). Since `A_r/n^r → (2r−1)‼`
@@ -42,8 +48,9 @@ and `((2r−1)‼)^{1/2r} > 2` first at `r = 6` (value `2.1614`), the inequality
 is not Ramanujan — exactly when `q` clears the DC term `n^{2r}`, i.e. `β = log_n q` exceeds a
 threshold `β_thr(n)` with `β_thr → 6` as `n → ∞` (`≈ 4.46` at `n = 256`, `≈ 5.58` at `n = 2^30`;
 see `scripts/probes/probe_407_notram_*`). At the prize `β = 5.27 < 5.58` the budget caps the usable
-depth at `r = 5`, giving `B ≥ 1.984√n` only (just below the Ramanujan line), so this method does NOT
-declare the prize graph non-Ramanujan — honest scope: it is a clean theorem for `β` above threshold.
+depth at `r = 5`, giving `B ≥ 1.984√n` only (below the `2√n` benchmark, and also below the true
+cutoff `2√(n−1)` for large `n`), so this method does NOT declare the prize graph non-Ramanujan —
+honest scope: it is a clean sufficient obstruction for `β` above threshold.
 
 The numeric energy lower bound `A_r ≥ 4^r n^r (q−1) + n^{2r}` at a fixed `r` is the supplied proven
 inequality (the project's named-input convention); everything above it is unconditional and
@@ -121,8 +128,11 @@ additive energy clears the doubled Ramanujan budget plus the DC term:
 
 > `(4 : ℝ)^r · (G.card)^r · (q − 1)  <  q·E_r − (G.card)^{2r}`     (`henergy`).
 
-Then there is a nontrivial frequency `b ≠ 0` with `‖η_b‖ > 2·√|G|` — i.e. `B > 2√n`, so the
-generalized Paley graph `Cay(F_q, G)` is **not Ramanujan**. The hypothesis is exactly the
+Then there is a nontrivial frequency `b ≠ 0` with `‖η_b‖ > 2·√|G|` — i.e. `B > 2√n`, an
+obstruction above the looser `2√n` benchmark. Since `2√n > 2√(n−1)`, when `G = −G` (so that
+`Cay(F_q, G)` is an undirected `n`-regular graph with real eigenvalues `η_b`) this implies the
+generalized Paley graph is **not Ramanujan**; the theorem itself states only the eigenvalue
+bound. The hypothesis is exactly the
 explicit numeric energy lower bound at the fixed depth `r` (discharged in char 0 by
 `E_r(μ_n) ≥ (2r−1)‼·(n/2)_r·2^r`, with `((2r−1)‼)^{1/2r} > 2` from `r = 6` on). Everything else is
 unconditional (the average lower bound above). -/

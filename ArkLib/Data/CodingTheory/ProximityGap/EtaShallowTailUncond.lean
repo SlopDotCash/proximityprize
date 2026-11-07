@@ -25,21 +25,33 @@ Lam–Leung, no char-`p` energy transfer, no BGK/Paley input.
 
 ## Where the shallow tail lives, and the exact obstruction it does not cross
 
-The trivial bound `E_r ≤ n^{2r-1}` is genuinely weaker than the Gaussian/Wick bound
-`E_r ≤ (2r-1)‼·n^r` precisely once `n^{2r-1} > (2r-1)‼·n^r`, i.e. `n^{r-1} > (2r-1)‼`, i.e.
-roughly `r ≲ log_n((2r-1)‼) ≈ r·log_n(2r)`, which holds for all `r` (the trivial bound is never
-*better* than Wick) — so the trivial bound NEVER reaches the sub-Gaussian `√(2n ln q)` target. What
-it *does* give unconditionally is the per-order ceiling `M ≤ n^{1-1/r}·(q−n)^{1/2r}`, sub-`√q` exactly
-when `n^{2r-2}(q−n) < q^r`. At `r = 1` this is the Parseval value `M ≤ √(q n − n²) < √(qn)`; at
-`r = 2` it is `EtaQuarticUncond`'s `M ≤ √n·(q−n)^{1/4}` (sub-`√q` for `q ≳ n^2`); as `r → ∞` it
-relaxes toward `M ≲ n·(q)^{0}` — the unconditional reach is the band `q ≲ n^{r/(r-1)}`, which shrinks
-to `q ≲ n` as `r` grows. **The sub-Gaussian deep tail at `λ ≈ √(ln p)` (needing `r ≈ ln q` with
-`E_r ≈ r!·n^r`) is unreachable from the trivial energy bound**: the gap `E_r ≤ n^{2r-1}` vs.
-`(2r-1)‼·n^r` is the factor `n^{r-1}/(2r-1)‼`, and closing it is exactly the open char-`p` energy
-transfer named in `CumulantGaussPeriodBound.CumulantEnergyBound` (provably false at structured primes,
-`not_cumulantBound_of_excess`). So this file pins the boundary: **the unconditionally-reachable tail
-is `r = O(1)` (the band `q ≲ n^{r/(r-1)}`), and the obstruction is the energy excess
-`E_r − (2r-1)‼·n^r` over the Wick value, which is exactly the antipodal/collision discrepancy term.**
+Write `U_r := (n^{2r-2}(q−n))^{1/(2r)}` for the order-`r` ceiling. Equivalently
+`U_r = n·((q−n)/n²)^{1/(2r)}`. At `r = 1` it is the coset-reduced Parseval value
+`U_1 = √(q − n) < √q`; the plain, non-coset Parseval bound would be `√(qn − n²)`, and the coset
+reduction divides by `n`. At `r = 2` it is `EtaQuarticUncond`'s `M ≤ √n·(q−n)^{1/4}`.
+
+**Higher orders give no gain over order 1 plus the triangle bound.** The trivial triangle bound
+is `M ≤ n`, since `η_b` is a sum of `n` unit-modulus terms. From the closed form:
+
+* if `q − n ≥ n²`, then `(q−n)/n² ≥ 1`, so `U_r ≥ n` for every `r`: no order beats the triangle
+  bound;
+* if `q − n < n²`, then `(q−n)/n² < 1`, so `U_r` *increases* with `r` (toward `n`), and `r = 1`
+  is the best order.
+
+So the resulting unconditional shallow ceiling is just `M ≤ min(√(q − n), n)`, obtained from
+order 1 and the triangle bound. There is no higher-order regime in which the shallow tail
+improves on it.
+
+**Comparison with the Wick value.** The trivial bound `E_r ≤ n^{2r-1}` is weaker than the
+Gaussian/Wick bound `E_r ≤ (2r-1)‼·n^r` exactly when `n^{r-1} > (2r-1)‼`. That does **not** hold
+for all `r`: for fixed `n` the double factorial eventually wins (already `n = 1, r = 2` gives
+`1 < 3`). In any case the trivial energy bound does not reach the sub-Gaussian `√(2n ln q)`
+target. **The sub-Gaussian deep tail at `λ ≈ √(ln p)` (needing `r ≈ ln q` with `E_r ≈ r!·n^r`)
+is unreachable from the trivial energy bound.** Closing the gap between `n^{2r-1}` and the Wick
+value is the open char-`p` energy transfer named in
+`CumulantGaussPeriodBound.CumulantEnergyBound` (provably false at structured primes,
+`not_cumulantBound_of_excess`). The obstruction is the energy excess `E_r − (2r-1)‼·n^r` over the
+Wick value, which is the antipodal/collision discrepancy term.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`). Issue #407.
 -/

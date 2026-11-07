@@ -21,9 +21,14 @@ that prime.  This file lands the **second** such witness, at a different scale/p
 
 This is **sub-Johnson** content (agreement `3 < √(2·8) ≈ 4`, the Johnson radius for `k = 2`,
 `n = 8`): at radius `5/8`, one step below the capacity radius `6/8`, the tower-shaped word
-`x³` contributes *no* bad scalars over `F₇₃`.  The lift is prime-dependent — over `F₁₇` the
-same subgroup has `24` zero-sum triples (the rigidity fails), the Mann–Conway–Jones height
-phenomenon, matching the additive-energy contrast in `EnergyMinimalF73.lean`.  Issue #389.
+`x³` contributes *no* bad scalars over `F₇₃`.  The lift is prime-dependent in general (the
+Mann–Conway–Jones height phenomenon; see the additive-energy contrast in
+`EnergyMinimalF73.lean`), but `μ₈ ⊂ F₁₇` is **not** a cubic-supply contrast: its `24` zero-sum
+triples are *ordered triples allowing repetition* (e.g. `(1,1,15)`, `(1,8,8)`), all degenerate.
+Exact enumeration gives **zero** distinct `3`-subsets of `μ₈ ⊂ F₁₇` summing to `0`, so its
+cubic-orchard supply (which counts distinct `3`-cores) is also `0`.  A genuine finite-field failure
+of the char-`0` rigidity is e.g. `μ₃₂ ⊂ F₉₇`, which contains the distinct zero-sum triple
+`{1, 18, 78}` although `3 ∤ 32`.  Issue #389.
 -/
 
 open Finset

@@ -34,6 +34,18 @@ numeric check.  This is the provable lower side of the Lambda-Elias frontier; th
 research boundary is only the strip between the Johnson radius and the full list-decoding
 capacity radius (the Johnson→capacity gap), which is not needed for the cap when `(τ r, ℓ r)`
 lands in the Johnson region.
+
+**Caveat on the end-to-end theorem (audit CW-B22-07).** Pairing this Johnson cap with the
+*adjacent* Elias-volume failure
+(`listPrizeLatticeResolved_of_ordinaryRSCapacity_johnson_sq_and_elias_next`) is not known
+to be satisfiable at the prize rates, and appears jointly infeasible: `hsq` needs `ℓ r ≥ 1`, so
+`hpow` forces `q ≥ 2^128`; `hvol_next` (with `hammingBallVolume ≤ 2^n q^(τ+1)`) then forces
+roughly `τ > n - k - 1 - n/128`, while the Johnson inequality `hsq` needs roughly
+`τ < n - √(n(k-1))`. These are incompatible at rate `1/16` (about `0.93n` vs `0.75n`), and an exact
+rational sweep (`n ≤ 256`, `q = 2^b` with `128 ≤ b ≤ 800`, `m = 1`) found the conditions feasible
+only at rate `1/2` with `n ∈ {2, 4}`, never at all four rates simultaneously. The end-to-end
+statement is therefore conditional wiring with (most likely) unsatisfiable hypotheses; a genuine
+closing would need a list-size ceiling that is actually adjacent to the Johnson cap.
 -/
 
 namespace ProximityGap
@@ -324,9 +336,11 @@ The capacity reductions above land on the named lower-side predicate
 `GrandChallengesLattice.listPrizeLatticeResolved_of_ordinaryRSCapacityAtPrizeRates_and_elias_next`
 consumes that predicate (plus the interleaving budget and the adjacent Elias-volume failure
 certificate) to resolve the faithful four-rate list-decoding lattice prize.  Composing the two
-gives a single criterion whose only remaining content is the per-rate Johnson capacity
-inequality `hsq` and the per-rate adjacent Elias-volume inequality `hvol_next` — both finite
-numeric checks at the concrete prize degrees `k_r = ⌊ρ_r · n⌋`. -/
+gives a single criterion whose remaining content is the per-rate Johnson capacity inequality
+`hsq` and the per-rate adjacent Elias-volume inequality `hvol_next`. Each is a finite numeric
+check on its own, but they are **not jointly satisfiable** in any known instance at the four prize
+rates (see the module-level caveat): the Johnson cap and the adjacent Elias failure live at
+different radii. -/
 
 /-- **Johnson-capacity ⊕ Elias closing of the faithful four-rate list-decoding lattice prize.**
 
@@ -336,7 +350,11 @@ cap `Λ(RS_{k_r}, (τ r).val / n) ≤ ℓ r` (the lower side of the Lambda-Elias
 at the adjacent index `(τ r).val + 1`.  Together they pin the faithful list-decoding lattice
 threshold at `τ`.  This is the capacity-resolved analogue of
 `listPrizeLatticeResolved_of_johnson_sq_and_elias_next`, routed explicitly through the named
-`OrdinaryRSCapacityAtPrizeRates` predicate. -/
+`OrdinaryRSCapacityAtPrizeRates` predicate.
+
+Caveat: the hypotheses `hsq`, `hpow` and `hvol_next` appear jointly unsatisfiable at the four
+prize rates (module-level caveat, audit CW-B22-07); this is conditional wiring, not a route that
+is known to instantiate. -/
 theorem listPrizeLatticeResolved_of_ordinaryRSCapacity_johnson_sq_and_elias_next
     (domain : ι ↪ F) (m : ℕ)
     (τ : Fin 4 → Fin (Fintype.card ι + 1))

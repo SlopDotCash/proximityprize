@@ -30,10 +30,21 @@ This module proves the heart of that coincidence — the **nested-`simulateQ` ag
   condition on the inner oracle queries (the two passthrough summands — the shared `oSpec` and the
   prover messages — are automatic).
 
-Together these turn the open `toVerifier_comm` obligation into a single, checkable per-inner-query
-faithfulness statement, which an honest virtual lens (e.g. the sum-check / Spartan lenses)
-discharges
-by reconstructing each inner oracle evaluation from the outer oracle queries.
+Together these reduce the *oracle-semantics* part of `toVerifier_comm` (the nested-`simulateQ`
+agreement) to a single, checkable per-inner-query faithfulness statement (`hfaith`), which a virtual
+lens (e.g. the sum-check / Spartan lenses) discharges by reconstructing each inner oracle evaluation
+from the outer oracle queries.
+
+Faithfulness alone does **not** give `toVerifier_comm`.  The builder below
+(`liftContext_toVerifier_comm_of` / `liftContextCoherent_of`) takes three independent conditions:
+the statement projection `hproj`, the faithfulness `hfaith`, and the value-level **output** condition
+`hlift`, saying that the value-level lens lift of the inner verifier's routed output oracles equals
+the outer routing `embedOStmt` / `hEqOStmt`.  `hlift` is not implied by `hfaith`: the historical
+Batched FRI lift had faithful input routing while its two final slot-`0` values were the virtual
+random linear combination (prover side) and the first batched word (verifier side), so `hlift`
+failed there (audit finding L69). That lift (`batchedFRIOracleLens` / `liftedFRI`) is retired:
+the canonical `BatchedFri.Spec.batchedFRIreduction` runs an explicit batching round that
+materializes the combined oracle before the FRI reduction, so no lens lift of FRI is claimed.
 
 The two genuinely-content lemmas are axiom-clean (`propext`, `Quot.sound` only).
 -/
@@ -158,8 +169,9 @@ theorem fullRouter_simOracle2_agree_of_faithful
 
 The nested-`simulateQ` agreement is the oracle-semantics core of `toVerifier_comm`. Assembling it
 with the value-level statement coherences (`hproj`, `hlift`) discharges the full verifier-equality.
-The two value-level conditions are exactly what an honest lens satisfies by `rfl`/`simp` once its
-`toLens` is defined to match its explicit `projStmt` / `liftStmt` / `embedOStmt` routing. -/
+The two value-level conditions are separate obligations, not consequences of `hfaith`: they hold
+(often by `rfl`/`simp`) exactly when the lens' `toLens` projection and lift reproduce its explicit
+`projStmt` / `liftStmt` / `embedOStmt` routing, and must be checked for each lens. -/
 
 section Builder
 
@@ -280,8 +292,8 @@ theorem liftContext_toVerifier_comm_of
 /-- **`LiftContextCoherent` instance builder.** Discharges the #433 framework obligation for any
 lens
 satisfying the three coherence conditions — turning the previously-open `toVerifier_comm` into a
-checklist (statement projection + output lift + per-inner-query oracle faithfulness) that honest
-virtual lenses satisfy. -/
+checklist (statement projection + output lift + per-inner-query oracle faithfulness), each of which
+must be verified for the lens at hand (the output lift `hlift` is independent of faithfulness). -/
 @[reducible] def liftContextCoherent_of
     (stmtLens : OracleStatement.OracleLens oSpec OuterStmtIn OuterStmtOut InnerStmtIn InnerStmtOut
               OuterOStmtIn OuterOStmtOut InnerOStmtIn InnerOStmtOut pSpec)

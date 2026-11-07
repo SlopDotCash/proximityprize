@@ -11,11 +11,19 @@ import Mathlib.Tactic
 # The SIGNED period-power sum IS a zero-sum count (#444, #407)
 
 The campaign's thinness-discriminator search (`DISPROOF_LOG`, "SIGNED deep period-power cancellation
-IS thinness-essential") located the prize's rule-3 lever in the **signed** deep period-power sum
-`∑_{b≠0} η_b^r`, NOT the absolute moment `∑_b |η_b|^{2r}` — taking `|·|` (as every moment / energy /
-Wick / count packaging does) destroys exactly the signed cancellation that distinguishes the thin
-`β≈4-5` regime from the thick one. The signed sum is therefore the object a CORE proof must exploit,
-and the moment route's `|·|` is provably the rule-3 leak.
+IS thinness-essential") proposed, on the basis of probes, the **signed** deep period-power sum
+`∑_{b≠0} η_b^r` as the prize's rule-3 lever, rather than the absolute moment `∑_b |η_b|^{2r}`.
+
+**Scope correction (audit finding PG-144).** Nothing in this file proves that taking `|·|` destroys
+a signal, nor that a CORE proof must use the signed sum: the theorem below is an orthogonality
+identity valid for every finite set, with no necessity or no-go content. Moreover, on the intended
+**negation-closed** sets (e.g. an even-order subgroup `μ_n ∋ −1`) every period is real
+(`SubgroupGaussSumRawMoment.eta_conj_eq`), so at every **even** order `2r` one has
+`η_b^{2r} = |η_b|^{2r}` pointwise and the signed and absolute nonzero-frequency sums coincide
+(cf. `SubgroupGaussSumRawMoment.N0_eq_rEnergy_of_neg_closed`, `N₀(G,2r) = E_r(G)`). Any genuine
+distinction between the signed and absolute objects there can only concern odd orders, and any
+asserted obstruction for absolute moments would have to be proved separately; it is not inferred
+from probes or from this identity.
 
 This file formalizes the **exact algebraic content** of that object: for a finite field `F`
 (`card F = q`), additive characters `ψ : AddChar F ℂ`, and any finite set `S ⊆ F`, the Gauss period
@@ -32,10 +40,11 @@ indicator) and the general-`r` companion of `CS25FourierIdentity.fourier_pair_id
 pair form). Mechanism: a character carries sums to products, `(∑_x ψ x)^r = ∑_{tuples} ψ(∑_i x i)`,
 then orthogonality `∑_ψ ψ a = q·[a=0]` collapses the character sum to the count.
 
-Honest scope: this is the EXACT structural identity for the signed period-power sum — a NON-MOMENT,
-char-free, field-universal Fourier identity (NO `|·|` anywhere, so it preserves the thin signal). It
-is NOT a CORE bound: bounding `∑_{ψ≠0} η_ψ^r` quantitatively at `r ≈ log q` (the deep signed
-cancellation) is the open BGK wall. This brick makes the object the wall is about exact + reusable.
+Honest scope: this is the EXACT structural identity for the signed period-power sum — a char-free,
+field-universal Fourier identity with no `|·|` (for negation-closed `S` and even `r` it coincides
+with the absolute moment identity, see above). It is NOT a CORE bound: bounding `∑_{ψ≠0} η_ψ^r`
+quantitatively at `r ≈ log q` (the deep signed cancellation) is the open BGK wall. This brick makes
+the object the wall is about exact + reusable.
 `CORE  M(μ_n) ≤ C·√(n·log(q/n))  OPEN.`
 
 Issues #444, #407.
@@ -82,8 +91,9 @@ lemma period_pow_eq_tuple_sum (S : Finset F) (ψ : AddChar F ℂ) (r : ℕ) :
 /-- **The signed period-power sum is `q` times the `r`-fold zero-sum count.** For any finite `S ⊆ F`
 and any `r`,
 `∑_ψ (∑_{x∈S} ψ x)^r = q · #{ t : Fin r → S : ∑_i t i = 0 }`,
-an identity in `ℂ`. This is the EXACT algebraic form of the thinness-essential signed period-power
-sum (`DISPROOF_LOG`): no `|·|`, so the signed cancellation is preserved. The `r=1` case is
+an identity in `ℂ`. This is the exact algebraic form of the signed period-power sum proposed in
+`DISPROOF_LOG` (no `|·|`; for negation-closed `S` and even `r` the periods are real and it equals
+the absolute moment, so no extra sign information is retained there). The `r=1` case is
 `SubgroupCharacterSumNoGo.charSum_zero_count`; this is the general-`r` power generalization. -/
 theorem signedPeriodPow_eq_zeroSumCount (S : Finset F) (r : ℕ) :
     (∑ ψ : AddChar F ℂ, (∑ x ∈ S, ψ x) ^ r)

@@ -10,8 +10,8 @@ import Mathlib.LinearAlgebra.Lagrange
 /-!
 # The RS-list divisor bound on a smooth domain (#389, the divisor route made concrete)
 
-`DivisorListBound.lean` proved the injective backbone of the char-0-cyclotomic route at the
-pure-polynomial level.  This file makes it **load-bearing for the actual RS code** on any
+`DivisorListBound.lean` proved the injective gcd backbone of the divisor route at the
+pure-polynomial level.  This file transfers it **to the actual RS code** on any finite-field
 evaluation domain `dom : Fin n ↪ F`, with vanishing polynomial `Z = ∏_i (X − dom i)`
 (`= Xⁿ − 1` exactly when `dom` enumerates `μ_n`):
 
@@ -22,9 +22,19 @@ evaluation domain `dom : Fin n ↪ F`, with vanishing polynomial `Z = ∏_i (X �
   agreement `≥ a ≥ k` injects (via `c ↦ gcd(W − c, Z)`) into the divisors of `Z` of degree
   `≥ a`, so **`|list| ≤ #{monic divisors of Z of degree ≥ a}`**.
 
-On `μ_n` (`Z = Xⁿ − 1`) the divisor count is `O(n)` in characteristic zero (cyclotomic
-factorisation) and `2ⁿ` over the deployed split field — the past-Johnson wall isolated in
-one structural inequality, now in the RS vocabulary.  Issue #389.
+**Scope: which field the divisors are counted over.**  The theorems here assume `[Fintype F]`
+and count monic divisors of `Z` in `F[X]`, the evaluation field itself.  When `dom` enumerates
+`n` distinct roots of `Xⁿ − 1` in `F`, the polynomial `Z = Xⁿ − 1` SPLITS into `n` distinct
+linear factors over `F`, so it has exactly `2ⁿ` monic divisors; this is true in any field
+containing the `n` evaluation roots, characteristic zero included (e.g. over `ℂ`).  The
+cyclotomic count is different: over `ℚ`, `Xⁿ − 1 = ∏_{d ∣ n} Φ_d` has `2^{τ(n)}` monic
+divisors (`τ(n)` = number of divisors of `n`), which is `2^{m+1} = O(n)` only for dyadic
+`n = 2^m`.  That rational count does NOT apply to the RS bound proved here: `ℚ` does not
+contain `μ_n` for `n > 2` (so no `Fin n ↪ ℚ` enumerates `μ_n`), and enlarging the coefficient
+field to contain the evaluation points destroys the rational count.  Using a rational count
+would require an additional integrality / rational-coefficient constraint on the gcds
+`gcd(W − c, Z)`, which is not formalised here.  Over the deployed finite split field the bound
+is therefore the vacuous `2ⁿ`.  Issue #389.
 -/
 
 open Polynomial EuclideanDomain
@@ -100,8 +110,10 @@ polynomials whose agreement with `w` reaches `a ≥ k` injects, via `C ↦ gcd(W
 list cardinality equals its gcd-image, every element of which divides `Z` with degree
 `≥ a`.  Hence `|list| ≤ #{monic divisors of Z of degree ≥ a}`.
 
-On `μ_n` (`Z = Xⁿ − 1`) this is the char-`0`-cyclotomic route made RS-concrete: poly over
-`ℚ`, vacuous over the split field — the past-Johnson wall in one structural inequality. -/
+The divisors are counted in `F[X]` for the finite evaluation field `F`.  On `μ_n ⊆ F`
+(`Z = Xⁿ − 1`, split into `n` distinct linear factors) that count is `2ⁿ`, so the bound is
+vacuous there; the `ℚ`-cyclotomic count `2^{τ(n)}` does not apply to this theorem (see the
+module docstring). -/
 theorem rs_list_card_le_divisors (dom : Fin n ↪ F) (w : Fin n → F) {k a : ℕ}
     (hka : k ≤ a) (L : Finset F[X])
     (hL : ∀ cw ∈ L, cw.degree < (k : ℕ) ∧

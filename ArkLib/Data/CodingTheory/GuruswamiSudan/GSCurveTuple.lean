@@ -45,9 +45,13 @@ attribute [local instance] Classical.propDecidable
 variable {F : Type} [Field F]
 
 /-- The **`L`-ary generic curve fold** `∑ⱼ Zʲ·fⱼ : Fin n → F(Z)` of `L` received words
-`f j : Fin n → F`, with the formal variable `Z := RatFunc.X`. This is the word over
-`K = F(Z)` whose Guruswami–Sudan interpolant simultaneously decodes every scalar curve fold
-`∑ⱼ zʲ·fⱼ` (`z ∈ F`) — the `parℓ = L` power-combiner generalization of `genericFold`. -/
+`f j : Fin n → F`, with the formal variable `Z := RatFunc.X` — the `parℓ = L` power-combiner
+generalization of `genericFold`. This file's results concern roots of the Guruswami–Sudan
+interpolant of this *generic* `F(Z)`-fold: a root with enough agreement carries a unique
+polynomial tuple (`curve_tuple_of_agreement`). They do **not** show that this interpolant
+simultaneously decodes every scalar curve fold `∑ⱼ zʲ·fⱼ` (`z ∈ F`): specialization `Z ↦ z` and
+coverage of arbitrary scalar decoded roots are a separate obligation (compare the
+`GuruswamiSudan/GSIntegerRepresentative.lean` route). -/
 noncomputable def curveFold {n L : ℕ} (f : Fin L → Fin n → F) : Fin n → RatFunc F :=
   fun i => ∑ j : Fin L, (RatFunc.X : RatFunc F) ^ (j : ℕ) * algebraMap F (RatFunc F) (f j i)
 

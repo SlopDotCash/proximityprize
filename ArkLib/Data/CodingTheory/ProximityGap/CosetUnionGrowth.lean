@@ -22,10 +22,14 @@ here away from any rotation/root-of-unity machinery:
   `x^{d·j}` is `≥ C(|orbits|, j)`.
 
 Specializations recover the landed bounds:
-* antipodal pairs (`d = 2`, `|orbits| = n/2`) ⟹ `x^{2j}` supply `≥ C(n/2, j) = Θ(n^j)`;
+* antipodal pairs (`d = 2`, `|orbits| = n/2`) ⟹ `x^{2j}` supply `≥ C(n/2, j)`, which is
+  `Θ(n^j)` for **fixed** `j` as `n → ∞` (not uniformly in `j`);
 * cube cosets (`d = 3`, `j = 1`, `|orbits| = n/3`) ⟹ `x³` supply `≥ n/3 = Θ(n)`;
-and extend to every `(d, j)` and every domain carrying a disjoint sum-zero coset family
-(`μ_d`-cosets when `μ_d ⊂ F` and `d ∣ n`).  Issue #389.
+and extend to every `(d, j)` and every domain carrying a disjoint sum-zero coset family.
+The theorems take the zero sums as an explicit hypothesis (`hsum`).  A standard source is the
+family of `μ_d`-cosets `a·μ_d` when `d > 1`, `d ∣ n`, and `F` contains `d` distinct `d`-th roots
+of unity (so `char F ∤ d`): then `Σ_{ζ∈μ_d} ζ = 0` and each coset sums to `0`.  For `d = 1`
+the "coset" `{a}` sums to `a`, which is nonzero unless `a = 0`.  Issue #389.
 -/
 
 open Finset
@@ -88,8 +92,9 @@ theorem coset_union_growth (dom : Fin n ↪ F) (orbits : Finset (Finset (Fin n))
 open Classical in
 /-- **Unified coset supply growth.**  The deep-band supply of the tower word `x^{d·j}` is at
 least `C(|orbits|, j)` whenever the domain carries `|orbits|` pairwise-disjoint zero-sum
-`d`-subsets.  Recovers the antipodal `Θ(n^j)` (`d = 2`) and cube-coset `Θ(n)` (`d = 3, j = 1`)
-bounds, for every `(d, j)`. -/
+`d`-subsets.  Recovers the antipodal `C(n/2, j)` (`Θ(n^j)` for fixed `j`; `d = 2`) and
+cube-coset `n/3` (`d = 3, j = 1`) bounds, for every `(d, j)`; the zero sums are the explicit
+hypothesis `hsum`. -/
 theorem cosetSupply_ge (dom : Fin n ↪ F) (orbits : Finset (Finset (Fin n)))
     (d j : ℕ) (hd : 1 ≤ d) (hdj : 2 ≤ d * j)
     (hcard : ∀ O ∈ orbits, O.card = d)

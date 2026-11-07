@@ -12,24 +12,32 @@ import Mathlib.Data.Nat.Choose.Central
 import Mathlib.Data.Nat.Choose.Sum
 import Mathlib.Data.Nat.Factorial.DoubleFactorial
 import Mathlib.Tactic
+import Research.ProximityPrize.Frontier._AvW0_BesselWickAllR
 
 /-!
-# Self-improving char-0 Wick bound via the direction-doubling fixed point (#444, SELF_IMPROVING)
+# Self-improving char-0 Wick bound via the direction-convolution fixed point (#444, SELF_IMPROVING)
 
 The char-0 energy is `E_r(μ_{2m}) = besselE r m := (2r)! · [x^{2r}] I0^m` (the Bessel-identity RHS
 of `_AvW0_BesselWickAllR`, with `I0 = Σ_k x^{2k}/(k!)²` the per-direction central count). Adding
 directions is the power `I0 ↦ I0^m`. Because `I0^{m₁+m₂} = I0^{m₁}·I0^{m₂}`, the energy of the
 **product of two direction-systems** is the binomial convolution of the factors' energies — an
-EXACT self-improving (tensor-doubling) recursion. The **fixed point** of that recursion is the
+EXACT self-improving (tensor/convolution) recursion. The **fixed point** of that recursion is the
 Gaussian (Wick) envelope `Wick_r(m) = (2r-1)‼·(2m)^r` (the `2r`-th moment of `N(0,2m)`): it is
 **convolution-stable with EQUALITY** (Gaussian stability `N(0,1)+N(0,1)=N(0,2)`), via the kernel
 identity
 
     `Σ_{a+b=r} C(2r,2a)·(2a-1)‼·(2b-1)‼ = (2r-1)‼·2^r`.
 
-With the base case `E_r(1)=C(2r,r) ≤ Wick_r(1)` (slack `1/r!`) the Wick bound then propagates up
-the entire 2-power tower `m=2^μ` by induction, with NO loss — a second self-contained derivation
-of `besselWick_allR`.
+With the base case `E_r(1)=C(2r,r) ≤ Wick_r(1)` (slack `1/r!`) the Wick bound then propagates to
+every `m` by induction on the number of directions, adding **one** direction per step
+(`m → m+1` via `besselE_add r m 1` and `wick_convStable r m 1`), with NO loss — an alternative
+proof of `AvW0.besselWick_allR`. (The recursion itself allows arbitrary splits `m₁+m₂`, e.g.
+doubling `m → 2m`, but the induction below only uses the one-direction step.)
+
+The objects `I0`, `besselE` and the Wick envelope `wickRHS` are the canonical declarations of
+`_AvW0_BesselWickAllR` (imported, not re-declared); the new content of this file is the exact
+convolution recursion `besselE_add`, the fixed-point identity `wick_convStable`, and the
+convolution-induction re-derivation `besselE_le_wick`.
 
 ## Proven here (axiom-clean `{propext, Classical.choice, Quot.sound}`, non-vacuous)
 
@@ -44,8 +52,9 @@ of `besselWick_allR`.
 * `besselE_one_le_wick` — base case under the Wick envelope, slack `1/r!`.
 
 Together: base case `besselE r 1 ≤ Wick_r(1)` + the recursion `besselE_add` (which is termwise
-dominated by `wick_convStable` when each factor is) gives, by induction on the tower height,
-`besselE r m ≤ Wick_r(m)` for every `m` — a self-contained second proof of `besselWick_allR`.
+dominated by `wick_convStable` when each factor is) gives, by induction on the number of
+directions `m` (one direction per step), `besselE r m ≤ Wick_r(m)` for every `m` — an alternative
+proof of the same statement as `AvW0.besselWick_allR`.
 
 ## Honest scope (#444)
 
@@ -63,25 +72,22 @@ set_option autoImplicit false
 namespace ArkLib.ProximityGap.Frontier.SelfImproving
 
 open PowerSeries BigOperators Finset
+open ArkLib.ProximityGap.Frontier.AvW0 (I0 besselE wickRHS factorial_split besselWick_allR)
 
 /-! ## The Gaussian/Wick envelope and its exact fixed-point (convolution-stability) -/
 
-/-- The Wick envelope `Wick_r(m) = (2r-1)‼·(2m)^r`, the `2r`-th moment of `N(0,2m)`. -/
-noncomputable def wickW (r m : ℕ) : ℚ := (Nat.doubleFactorial (2 * r - 1)) * ((2 * m : ℕ) : ℚ) ^ r
+/-! The Wick envelope `Wick_r(m) = (2r-1)‼·(2m)^r` (the `2r`-th moment of `N(0,2m)`) is
+`AvW0.wickRHS`. -/
 
-/-- `(2a-1)‼ · 2^a · a! = (2a)!`: the double-factorial split (Gaussian moment in factorial form). -/
+/-- `(2a-1)‼ · 2^a · a! = (2a)!`: the double-factorial split (Gaussian moment in factorial form),
+read off from `AvW0.factorial_split` at `m = 1`. -/
 theorem dfac_mul (a : ℕ) :
     (Nat.doubleFactorial (2 * a - 1) : ℚ) * (2 ^ a * Nat.factorial a) = Nat.factorial (2 * a) := by
-  have hN : Nat.factorial (2 * a)
-      = Nat.doubleFactorial (2 * a - 1) * (2 ^ a * Nat.factorial a) := by
-    rcases a with _ | k
-    · simp [Nat.doubleFactorial]
-    · have h1 : 2 * (k + 1) = (2 * k + 1) + 1 := by ring
-      rw [h1, Nat.factorial_eq_mul_doubleFactorial]
-      have h2 : (2 * k + 1) + 1 = 2 * (k + 1) := by ring
-      have h3 : 2 * (k + 1) - 1 = 2 * k + 1 := by omega
-      rw [h2, Nat.doubleFactorial_two_mul, h3]; ring
-  exact_mod_cast hN.symm
+  have h := factorial_split a 1
+  have hfr : (Nat.factorial a : ℚ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero a
+  push_cast at h
+  field_simp at h
+  linear_combination -h
 
 /-- **The kernel identity (fixed-point equation):**
 `Σ_{a+b=r} C(2r,2a)·(2a-1)‼·(2b-1)‼ = (2r-1)‼·2^r`. This is Gaussian stability
@@ -179,9 +185,9 @@ theorem wickKernel (r : ℕ) :
 `N(0,2m₁)+N(0,2m₂)=N(0,2(m₁+m₂))`, exact.) -/
 theorem wick_convStable (r m₁ m₂ : ℕ) :
     ∑ a ∈ Finset.range (r + 1),
-        (Nat.choose (2 * r) (2 * a) : ℚ) * wickW a m₁ * wickW (r - a) m₂
-      = wickW r (m₁ + m₂) := by
-  unfold wickW
+        (Nat.choose (2 * r) (2 * a) : ℚ) * wickRHS a m₁ * wickRHS (r - a) m₂
+      = wickRHS r (m₁ + m₂) := by
+  unfold wickRHS
   -- factor out: each summand = C(2r,2a)(2a-1)‼(2(r-a)-1)‼ · (2m₁)^a (2m₂)^{r-a}
   -- Σ = (Σ kernel-weighted) but with the (2m)^a split; use binomial theorem in (2m₁,2m₂).
   -- Cleanest: prove via the multinomial form. We show LHS = Σ_a C(2r,2a)(2a-1)‼(2(r-a)-1)‼ x^a y^{r-a}
@@ -273,14 +279,8 @@ theorem wick_convStable (r m₁ m₂ : ℕ) :
 
 /-! ## The base case `besselE r 1 = C(2r,r) ≤ Wick_r(1)` (slack `1/r!`). -/
 
-/-- The per-direction EGF, identical to `_AvW0_BesselWickAllR.I0`. -/
-noncomputable def I0 : PowerSeries ℚ :=
-  PowerSeries.mk (fun j => if j % 2 = 0 then (1 : ℚ) / (Nat.factorial (j / 2))^2 else 0)
-
-/-- The Bessel char-0 energy `besselE r m := (2r)!·[x^{2r}] I0^m`, identical to
-`_AvW0_BesselWickAllR.besselE`. -/
-noncomputable def besselE (r m : ℕ) : ℚ :=
-  (Nat.factorial (2 * r)) * PowerSeries.coeff (R := ℚ) (2 * r) (I0 ^ m)
+/-! `I0` (the per-direction EGF) and `besselE r m := (2r)!·[x^{2r}] I0^m` are the canonical
+declarations `AvW0.I0` and `AvW0.besselE`. -/
 
 /-- Odd coefficients of every power `I0^m` vanish (each `I0` coeff is even-supported). -/
 theorem coeff_I0pow_odd (m j : ℕ) (hj : j % 2 = 1) :
@@ -317,7 +317,7 @@ theorem sum_even_reindex {M : Type*} [AddCommMonoid M] (r : ℕ) (f : ℕ → M)
   · intro a ha; omega
   · intro i hi; rw [Finset.mem_filter] at hi; congr 1; omega
 
-/-- **EXACT direction-doubling (tensor) recursion** — the self-improving relation. Because
+/-- **EXACT direction-convolution (tensor) recursion** — the self-improving relation. Because
 `I0^{m₁+m₂} = I0^{m₁}·I0^{m₂}`, the energy of the product direction-system is the binomial
 convolution of the factor energies:
 `besselE r (m₁+m₂) = Σ_{a+b=r} C(2r,2a)·besselE a m₁·besselE b m₂`. (Odd cross-terms vanish.) -/
@@ -373,12 +373,12 @@ theorem besselE_one (r : ℕ) : besselE r 1 = (Nat.centralBinom r : ℚ) := by
     exact_mod_cast hcb.symm
   rw [heq]; ring
 
-/-- **Base case under the Wick envelope:** `besselE r 1 ≤ wickW r 1` (slack `1/r!`, since
-`C(2r,r) = (2r-1)‼·2^r/r!` and `wickW r 1 = (2r-1)‼·2^r`). -/
-theorem besselE_one_le_wick (r : ℕ) : besselE r 1 ≤ wickW r 1 := by
+/-- **Base case under the Wick envelope:** `besselE r 1 ≤ wickRHS r 1` (slack `1/r!`, since
+`C(2r,r) = (2r-1)‼·2^r/r!` and `wickRHS r 1 = (2r-1)‼·2^r`). -/
+theorem besselE_one_le_wick (r : ℕ) : besselE r 1 ≤ wickRHS r 1 := by
   rw [besselE_one]
-  unfold wickW
-  -- C(2r,r) = (2r)!/(r!)²,  wickW r 1 = (2r-1)‼ (2)^r = (2r)!/r!.  So ratio = 1/r! ≤ 1.
+  unfold wickRHS
+  -- C(2r,r) = (2r)!/(r!)²,  wickRHS r 1 = (2r-1)‼ (2)^r = (2r)!/r!.  So ratio = 1/r! ≤ 1.
   have hcb : (Nat.centralBinom r : ℚ) * Nat.factorial r = (Nat.factorial (2*r) : ℚ) / Nat.factorial r := by
     rw [Nat.centralBinom]
     have hcbN : Nat.choose (2 * r) r * (Nat.factorial r * Nat.factorial r) = Nat.factorial (2 * r) := by
@@ -412,7 +412,7 @@ theorem besselE_one_le_wick (r : ℕ) : besselE r 1 ≤ wickW r 1 := by
         apply mul_le_mul_of_nonneg_left hfr1 hcbnn
     _ = (Nat.factorial (2*r) : ℚ) / Nat.factorial r := hcb
 
-/-! ## Capstone: tower induction closes char-0 Wick a second way. -/
+/-! ## Capstone: convolution induction re-derives char-0 Wick a second way. -/
 
 /-- `besselE r m ≥ 0` (energies are sums of nonneg central counts). -/
 theorem besselE_nonneg (r m : ℕ) : 0 ≤ besselE r m := by
@@ -437,20 +437,21 @@ theorem besselE_nonneg (r m : ℕ) : 0 ≤ besselE r m := by
         · positivity
         · rfl
 
-/-- `wickW r m ≥ 0`. -/
-theorem wickW_nonneg (r m : ℕ) : 0 ≤ wickW r m := by unfold wickW; positivity
+/-- `wickRHS r m ≥ 0`. -/
+theorem wickRHS_nonneg (r m : ℕ) : 0 ≤ wickRHS r m := by unfold wickRHS; positivity
 
-/-- **Tower induction (capstone): the self-improving fixed point CLOSES char-0 Wick.**
-`besselE r m ≤ wickW r m` for ALL `r, m`, by induction on the number of directions `m`: base case
+/-- **Convolution induction (capstone): the fixed point re-derives char-0 Wick.**
+`besselE r m ≤ wickRHS r m` for ALL `r, m` — the same statement as `AvW0.besselWick_allR`, proved
+here a second way, by induction on the number of directions `m` (one direction per step): base case
 `besselE_one_le_wick`, step via the EXACT recursion `besselE_add r m 1`, the EXACT fixed-point
 `wick_convStable r m 1`, and termwise domination (each convolution summand of `besselE` is `≤` the
-corresponding summand of `wickW`, all factors nonneg). This re-derives `besselWick_allR` purely
-from the direction-doubling fixed point — no `exp(x²)` coefficient domination. -/
-theorem besselE_le_wick (r m : ℕ) : besselE r m ≤ wickW r m := by
+corresponding summand of `wickRHS`, all factors nonneg). This re-derives `besselWick_allR` purely
+from the convolution fixed point — no `exp(x²)` coefficient domination. -/
+theorem besselE_le_wick (r m : ℕ) : besselE r m ≤ wickRHS r m := by
   induction m generalizing r with
   | zero =>
-      -- besselE r 0 = (2r)! [x^{2r}] 1 = (2r)! * (1 if r=0 else 0); wickW r 0 = (2r-1)‼ * 0^r
-      unfold besselE wickW
+      -- besselE r 0 = (2r)! [x^{2r}] 1 = (2r)! * (1 if r=0 else 0); wickRHS r 0 = (2r-1)‼ * 0^r
+      unfold besselE wickRHS
       rcases Nat.eq_zero_or_pos r with hr | hr
       · subst hr; simp
       · rw [pow_zero, PowerSeries.coeff_one, if_neg (by omega)]
@@ -463,21 +464,21 @@ theorem besselE_le_wick (r m : ℕ) : besselE r m ≤ wickW r m := by
       rw [← wick_convStable r k 1]
       apply Finset.sum_le_sum
       intro a ha; rw [Finset.mem_range] at ha
-      -- C(2r,2a) besselE a k besselE (r-a) 1 ≤ C(2r,2a) wickW a k wickW (r-a) 1
+      -- C(2r,2a) besselE a k besselE (r-a) 1 ≤ C(2r,2a) wickRHS a k wickRHS (r-a) 1
       have hc : (0 : ℚ) ≤ (Nat.choose (2 * r) (2 * a) : ℚ) := by positivity
-      have h1 : besselE a k ≤ wickW a k := ih a
-      have h2 : besselE (r - a) 1 ≤ wickW (r - a) 1 := besselE_one_le_wick (r - a)
+      have h1 : besselE a k ≤ wickRHS a k := ih a
+      have h2 : besselE (r - a) 1 ≤ wickRHS (r - a) 1 := besselE_one_le_wick (r - a)
       have hb1 : 0 ≤ besselE a k := besselE_nonneg a k
       have hb2 : 0 ≤ besselE (r - a) 1 := besselE_nonneg (r - a) 1
-      have hw1 : 0 ≤ wickW a k := wickW_nonneg a k
+      have hw1 : 0 ≤ wickRHS a k := wickRHS_nonneg a k
       -- C * x * y ≤ C * X * Y from 0≤x≤X, 0≤y≤Y, 0≤C
-      have hxy : besselE a k * besselE (r - a) 1 ≤ wickW a k * wickW (r - a) 1 :=
+      have hxy : besselE a k * besselE (r - a) 1 ≤ wickRHS a k * wickRHS (r - a) 1 :=
         mul_le_mul h1 h2 hb2 hw1
       calc (Nat.choose (2 * r) (2 * a) : ℚ) * besselE a k * besselE (r - a) 1
           = (Nat.choose (2 * r) (2 * a) : ℚ) * (besselE a k * besselE (r - a) 1) := by ring
-        _ ≤ (Nat.choose (2 * r) (2 * a) : ℚ) * (wickW a k * wickW (r - a) 1) :=
+        _ ≤ (Nat.choose (2 * r) (2 * a) : ℚ) * (wickRHS a k * wickRHS (r - a) 1) :=
             mul_le_mul_of_nonneg_left hxy hc
-        _ = (Nat.choose (2 * r) (2 * a) : ℚ) * wickW a k * wickW (r - a) 1 := by ring
+        _ = (Nat.choose (2 * r) (2 * a) : ℚ) * wickRHS a k * wickRHS (r - a) 1 := by ring
 
 /-! ## Axiom audit -/
 #print axioms dfac_mul

@@ -65,8 +65,9 @@ value, and asserting it equals `√(log(p/n))` is *assuming the prize bound*, no
 energy/moment-type aggregate (`= (1/φ)Σ_v log⁺|·|_v`), which is CONJUGATE to the wall, not milder
 (F1). The non-archimedean local masses cannot fix an *archimedean* support radius: `p`-adic /
 `2`-adic valuations are archimedean-blind (F3, in-tree `_DilationZeroEntropyNoGo`,
-`HeightGateBindingDepthVacuity`), and at the prize scale the binding-depth norms dwarf `p` so the
-height gate is vacuous.
+`HeightGateBindingDepthVacuity`), and at the prize scale the binding-depth norm *envelope*
+`t^{n/4}` dwarfs `p`, so that envelope cannot certify the height gate (an upper envelope only;
+no realized-norm lower bound or `p`-divisibility is proved there).
 
 ## What is PROVED here (axiom-clean, pure inequalities)
 

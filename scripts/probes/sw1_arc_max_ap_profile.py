@@ -22,8 +22,10 @@ The sliding-window maximum of one coset is O(n log n) via searchsorted on the so
 concatenated with its p-shift (cyclic windows).
 
 Baseline.  For comparison we run the same statistic on uniformly random n-subsets of Z/p (the
-"random model"), with the same number of samples as cosets examined, so the two maxima are
-comparable order statistics.
+"random model": n DISTINCT residues, drawn by rejection-resampling any row with a repeated
+point), with exactly the same number of samples as cosets examined, so the two maxima are
+comparable order statistics.  (An earlier version drew n residues with replacement and capped
+the random trials below the coset count; both changed the compared object.)
 
 Output.  Per (n, p): a table over a log grid of L.  Summary: worst R over L, where it sits.
 PASS iff every measured R(L) <= R_MAX (a calibration threshold, NOT a proof of anything).
@@ -76,6 +78,21 @@ def coset_matrix(g, p, n, xs, i0, count):
         bs[k] = b
         b = (b * g) % p
     return mulmod_split(bs[:, None], xs[None, :], p)
+
+
+def uniform_subsets(rng, count, n, p):
+    """(count, n) int64 rows, each a uniformly random n-SUBSET of Z/p (distinct entries).
+
+    Rows are drawn i.i.d. with replacement and any row containing a repeated residue is redrawn;
+    conditioning a uniform n-tuple on distinctness gives a uniform ordered n-subset."""
+    assert 0 < n <= p
+    rows = rng.integers(0, p, size=(count, n), dtype=np.int64)
+    while True:
+        S = np.sort(rows, axis=1)
+        bad = np.nonzero((S[:, 1:] == S[:, :-1]).any(axis=1))[0]
+        if bad.size == 0:
+            return rows
+        rows[bad] = rng.integers(0, p, size=(bad.size, n), dtype=np.int64)
 
 
 def max_window_counts(rows, p, Ls):
@@ -147,13 +164,13 @@ def run_cell(n, p, budget_cosets, rng):
                 ci = (cos_base + r) if exact else int(sel[r])
                 best[L] = (cnt, ci, start)
         done += c
-    # random baseline with the same number of samples (capped for time)
-    rtotal = min(total, 1 << 17 if not FAST else 1 << 15)
+    # random baseline: uniform n-subsets, the same number of samples as cosets examined
+    rtotal = total
     rbest = {L: 0 for L in Ls}
     done = 0
     while done < rtotal:
         c = min(chunk, rtotal - done)
-        rows = rng.integers(0, p, size=(c, n), dtype=np.int64)
+        rows = uniform_subsets(rng, c, n, p)
         res = max_window_counts(rows, p, Ls)
         for L, (cnt, _, _) in zip(Ls, res):
             rbest[L] = max(rbest[L], cnt)

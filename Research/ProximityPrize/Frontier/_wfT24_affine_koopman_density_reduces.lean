@@ -9,8 +9,8 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
 /-!
 # T24 — "Sarnak–Xue DENSITY of the affine Koopman operator caps the non-tempered count" REDUCES TO
-        the wall (primary **F1** via the Parseval/Markov level-set duality; terminal **F0**); and its
-        prize-closing SHARP form is **REFUTED** at `β = 4` (#444)
+        the wall (primary **F1** via the Parseval/Markov level-set duality; terminal **F0**); the earlier
+        "sharp form REFUTED" verdict is **WITHDRAWN** (miscalibrated Gaussian test, audit CW-DL08a-02) (#444)
 
 Candidate **T24** (architect `G5-4`). Let `U` be the Koopman operator of the affine `ax+b` action on
 `L²(F_p)`, decomposed over the principal series `π_χ` of `G_aff = F_p ⋊ μ_n`, `n = 2^30`, `p = Θ(n^4)`.
@@ -19,14 +19,17 @@ The periods are matrix coefficients `⟨U_b ξ, ξ⟩ = η_b`, `η_b = Σ_{x∈�
 
 > `N(s) := #{b ≠ 0 : ‖η_b‖ ≥ n^{1/2+s}} ≤ p^{1−2s+o(1)}`, `0 ≤ s ≤ 1/2`,
 
-with sharp log-refined form `#{‖η_b‖ ≥ t√n} ≤ m·e^{−(1−o(1))t²}` (`m = (p−1)/n`), claimed to force
-`M(n) ≤ √(2 n log(p/n))`.
+with a sharp log-refined form claimed to force `M(n) ≤ √(2 n log(p/n))`.  The candidate wrote the
+sharp form as `#{‖η_b‖ ≥ t√n} ≤ m·e^{−(1−o(1))t²}` (`m = (p−1)/n`), but that is mis-normalized:
+`η_b/√n` has unit variance (`E|η_b|² = n` up to `O(n²/p)`), so the Gaussian tail is `e^{−t²/2}`, and
+only the `e^{−t²/2}` form matches both `E_r ≤ (2r−1)‼ n^r` and the claimed edge `√(2 log m)`.  The
+correctly normalized sharp form is `N_t ≤ m·e^{−(1/2−o(1))t²}`.
 
-## Verdict: REDUCES-TO-WALL (F1; terminal F0). The closing SHARP form is additionally REFUTED.
+## Verdict: REDUCES-TO-WALL (F1; terminal F0). No refutation of the sharp form.
 
 Two machine-faithful probes (`scripts/probes/rust/probe_wfT24_affine_koopman_density.rs`,
-`probe_wfT24_density_overshoot.rs`, exact `F_p`, `p` prime, `n | p−1`, `m > 1`, `β = log_p n = 0.25`
-exactly, full `p−1` nonzero-frequency sweep) establish the three load-bearing facts:
+`probe_wfT24_density_overshoot.rs`, exact `F_p`, `p` prime, `n | p−1`, `m > 1`, `log_n p ≈ 4` (`p ≈ n^4`),
+full `p−1` nonzero-frequency sweep) give the following (all EMPIRICAL, `n ∈ {8,16,32}`):
 
 **(M0) The affine Koopman wrapping is COSMETIC — the density count is over the SAME multiset `{η_b}`
 as the abelian Cayley graph.** Restricting `U` to the translation subgroup `F_p ⊴ G_aff` decomposes
@@ -36,29 +39,25 @@ at every cell (`μ_n = −μ_n` for `n` even ⟹ `η_b ∈ ℝ`), so `{η_b}` IS
 abelian adjacency `Cay(F_p, μ_n)`. The "non-abelian principal series" supplies the SAME eigenvalues;
 the density count `N(s)` is a count over `b` of the abelian eigenvalues — there is no new input. This
 is the C12-EDGE observation (`_wfA11`, `probe_c12_sarnak_xue_edge.py`) carried to the count form, and
-it is the trigger of **F5/F11**: the "affine" object equals the in-tree abelian Cayley spectrum.
+it is the trigger of **F5/F11**. (This is a representation-theoretic remark; it is not formalized here.)
 
 **(M1) The best density bound the period spectrum yields IS the Parseval/Markov level-set inequality
-(= F1), and the literal `p^{1−2s}` exponent is itself FALSE** (overshot by the true count). For every
-`r`, the trace/Parseval identity `Σ_{b≠0} ‖η_b‖^{2r} = p·E_r(μ_n) − n^{2r}` and the Markov level-set
-inequality give the count bound
-`N(s) ≤ (Σ_{b≠0}‖η_b‖^{2r}) / (n^{1/2+s})^{2r}` (the `levelSet_le_moment` lemma below). Minimizing over
-`r` is the ENTIRE handle the period spectrum offers on `N(s)`; it is **fence F1** (a moment/energy
-functional). Measured: the empirical exponent `log_p N(s)` OVERSHOOTS the claimed `1−2s` by up to
-`0.29` (n=8), `0.245` (n=16), `0.204` (n=32) — so the claimed power-law density is too strong; the
-honest density datum is `p^{1−2s+o(1)}` whose `o(1)` is governed by the SAME `E_r` whose char-`p`
-control is the open transfer. There is NO affine-Plancherel improvement below the Markov bound: the
-empirical `N(s)` and the Markov-min bound track the same `E_r`.
+(= F1), and the literal `p^{1−2s}` exponent overshoots at small `n`.** For every `r`, the
+trace/Parseval identity `Σ_{b≠0} ‖η_b‖^{2r} = p·E_r(μ_n) − n^{2r}` and the Markov level-set inequality
+give the count bound `N(s) ≤ (Σ_{b≠0}‖η_b‖^{2r}) / (n^{1/2+s})^{2r}` (the `levelSet_le_moment` lemma
+below). Minimizing over `r` is the entire handle the period spectrum offers on `N(s)`; it is fence
+**F1** (a moment/energy functional). Measured: the empirical exponent `log_p N(s)` exceeds `1−2s` by up
+to `0.29` (n=8), `0.245` (n=16), `0.204` (n=32), decreasing in `n` — consistent with a `p^{1−2s+o(1)}`
+law whose `o(1)` is governed by the same `E_r` whose char-`p` control is the open transfer.
 
-**(M2)/(M3) The SHARP, prize-CLOSING form is REFUTED.** The closing claim `N_t ≤ m·e^{−t²}` (the
-Gaussian density that would give `M ≤ √(2 n log(p/n))`) requires the empirical tail constant
-`c_eff := −log(N_t/m)/t² ≥ 1`. Measured `c_eff ≈ 0.65–0.73` in the bulk (`t ≥ 1.75`) at EVERY cell —
-the period tail is HEAVIER than Gaussian (`c_eff < 1`), so `N_t > m·e^{−t²}`. Equivalently the
-normalized edge `t_max = M/√n` VIOLATES the predicted `√(log m)`: measured `2.58 > 2.50` (n=8),
-`3.32 > 2.88` (n=16), `4.06 > 3.22` (n=32). The heavier-than-Gaussian tail `c_eff < 1` is the BGK
-content (the GROWING free cumulants of `_wfA15`): it is exactly the failure of the `E_r ≤ (2r−1)‼ n^r`
-Gaussian energy bound to hold with the constant `1`. So the sharp affine-density form is FALSE at the
-prize regime — `refuted_sharp_gaussian_density` below packages a concrete `c_eff < 1` countermodel.
+**(M2)/(M3) The sharp form is NOT refuted (correction, audit CW-DL08a-02).** An earlier version of
+this file tested the measured tail against `m·e^{−t²}` (tail constant `1`) and declared the sharp
+form refuted because the measured `c_eff := −log(N_t/m)/t² ≈ 0.65–0.73 < 1` in the bulk (`t ≥ 1.75`).
+That test is miscalibrated: the correctly normalized threshold is `1/2`, and `0.65–0.73 > 1/2`.
+Likewise the measured normalized edges `t_max = M/√n = 2.58, 3.32, 4.06` (n = 8, 16, 32) exceed
+`√(log m) ≈ 2.50, 2.88, 3.22` but sit **below** the prize-shape edge `√(2 log m) ≈ 3.53, 4.08, 4.56`
+(`m ≈ n³`).  So the small-`n` data are consistent with the prize-shape bound and give no "BGK excess".
+They also do not prove it: three small cells say nothing about `n = 2^30`.
 
 ## The exact reduction map (T24 ⟶ F1 ⟶ F0)
 
@@ -67,34 +66,28 @@ Writing `t = n^{s}` (so `‖η_b‖ ≥ t√n`), the ONLY spectral handle is `S(
 each `r` (Markov on the `2r`-th moment, `E_r = Σ‖η_b‖^{2r}/((p−1)n^r)` the normalized energy). This is
 identically the in-tree moment ladder `M^{2r} ≤ Σ_b‖η_b‖^{2r}` viewed at a threshold (the top level
 set is the single largest period). Minimizing over `r` at `r ≈ ln q` and demanding `N(s*) < 1` returns
-`M ≤ √(2 n ln q)` **iff** `E_r ≤ (2r−1)‼ n^r` at `r ≈ ln q` — the char-`p` energy transfer, char-0
+`M ≤ √(2 n ln q)` given `E_r ≤ (2r−1)‼ n^r` at `r ≈ ln q` — the char-`p` energy transfer, char-0
 proven (`char0_prize_moment_bound`), char-`p` OPEN for `n = 2^30` (the BGK/Paley wall). So T24's
-density form and the in-tree moment/edge forms are ONE statement; the density "count, not edge"
-distinction is a Legendre-dual recoordinatization that does not change the open input. This is the
-SAME funnel as T11 (min-entropy level-set), T12 (rate function), A01 (S2 equidistribution): the
-level-set count is F1-conjugate to the energy, and is therefore (by the conservation law) the wall.
+density form and the in-tree moment/edge forms carry the same open input. This is the SAME funnel as
+T11 (min-entropy level-set), T12 (rate function), A01 (S2 equidistribution).  (This reduction is
+prose; only the Markov step below is formalized.)
 
 ## What this file proves (axiom-clean, elementary real arithmetic + finite sums)
 
-1. `levelSet_le_moment` — the **Markov/Parseval level-set inequality** (the entire spectral handle on
-   the density count): for any threshold `θ > 0`, depth `r`, and finite period family,
-   `(#{b : θ ≤ ‖η_b‖}) · θ^(2r) ≤ Σ_b ‖η_b‖^(2r)`. This is F1: the count is bounded only by a moment.
-2. `density_exponent_eq_moment_exponent` — the **reduction identity**: the best density exponent
-   `log_p N(s)` equals `log_p( (Σ‖η_b‖^{2r}) · n^{−(1+2s)r} )` minimized over `r`; T24's `1−2s` is the
-   `r→∞` idealization, achievable iff `E_r ≤ (2r−1)‼n^r` (the open transfer).
-3. `sharp_density_iff_gaussian_energy` — the **biconditional**: the sharp claim `N_t ≤ m·e^{−t²}` for
-   all `t` is equivalent (via `S(t) = exp(−t²)`, Legendre) to the sub-Gaussian energy `E_r ≤ (2r−1)‼n^r`
-   read at the saddle `r = t²/2`. T24's closing form IS the open energy transfer.
-4. `refuted_sharp_gaussian_density` — the **REFUTATION**: with the measured tail constant `c < 1`
-   (`c_eff ≈ 0.66`), the true count `N_t = m·e^{−c·t²}` STRICTLY EXCEEDS `m·e^{−t²}` for every `t > 0`,
-   so the sharp Gaussian density bound is false. Concretely the normalized edge `t_max = √(log m / c)`
-   exceeds the claimed `√(log m)`, giving `M = √(n log(p/n)/c) > √(n log(p/n))` — the BGK excess.
-5. `affine_count_eq_abelian_count` — the **(M0) cosmetic identity**: the affine-Koopman non-tempered
-   count and the abelian-Cayley large-eigenvalue count are the SAME finite cardinality (same `{η_b}`).
+1. `levelSet_le_moment` — the **Markov level-set inequality**: for any threshold `θ ≥ 0`, depth `r`,
+   and finite nonnegative family, `(#{b : θ ≤ a b}) · θ^(2r) ≤ Σ_b (a b)^(2r)`.
+2. `density_le_normalized_energy` — the same inequality at the threshold `θ = n^{1/2+s}`, written as
+   `N · n^{(1+2s)r} ≤ Σ_b (a b)^(2r)`.  This is one-sided (an upper bound on the count by a moment);
+   no identity minimized over `r` is proved.
+3. `exp_neg_mul_sq_le_exp_neg_mul_sq_iff` — an elementary real lemma: for `t > 0`,
+   `e^{−c t²} ≤ e^{−κ t²} ↔ κ ≤ c`.  (It does not mention `E_r`; the link to the energy is prose.)
+4. `mul_exp_neg_mul_sq_lt_of_lt` — an elementary real lemma: for `c < κ`, `t > 0`, `m > 0`,
+   `m·e^{−κ t²} < m·e^{−c t²}`.  It holds for arbitrary such `c`; it is not a countermodel.
+5. `log_lt_mul_sq_of_edge` — an elementary real lemma: if `c·t² = log m`, `c < κ`, `t > 0`, then
+   `log m < κ·t²` (a tail constant below `κ` pushes the edge above `√(log m / κ)`).
 
-NO closure is claimed. T24 is **REDUCES-TO-WALL** (primary **F1** via Parseval/Markov level-set
-duality; terminal **F0** the conservation law), and its prize-closing sharp form is **REFUTED** at
-`β = 4`. The honest residual is the one the whole campaign reduces to: the char-`p` transfer
+NO closure is claimed, and no refutation is claimed. T24 is **REDUCES-TO-WALL** (primary **F1**,
+terminal **F0**). The honest residual is the one the whole campaign reduces to: the char-`p` transfer
 `E_r(μ_n) ≤ (2r−1)‼ n^r` at `r ≈ ln q`, `n = 2^30` — the BGK/Paley short-character-sum wall.
 
 Issue #444.
@@ -113,8 +106,8 @@ namespace ProximityGap.Frontier.AffineKoopmanDensityReduces
 /-- **Markov level-set inequality (the density bound IS a moment bound = F1).** For a finite index
 set `B`, nonnegative magnitudes `a : B → ℝ` (the `‖η_b‖`), a threshold `θ ≥ 0`, and any natural depth
 `r`, the count of indices exceeding the threshold, times `θ^(2r)`, is at most the `2r`-th moment sum:
-`(#{b : θ ≤ a b}) · θ^(2r) ≤ Σ_b (a b)^(2r)`. This is the ONLY handle the period spectrum gives on the
-"non-tempered count" `N`; it is fence **F1** (the count is controlled solely by an energy/moment). -/
+`(#{b : θ ≤ a b}) · θ^(2r) ≤ Σ_b (a b)^(2r)`. This is the moment handle on the
+"non-tempered count" `N` used throughout T24; it is fence **F1** (the count bounded by a moment). -/
 theorem levelSet_le_moment {B : Type*} [Fintype B] (a : B → ℝ) (ha : ∀ b, 0 ≤ a b)
     (θ : ℝ) (hθ : 0 ≤ θ) (r : ℕ) :
     ((Finset.univ.filter (fun b => θ ≤ a b)).card : ℝ) * θ ^ (2 * r)
@@ -137,17 +130,14 @@ theorem levelSet_le_moment {B : Type*} [Fintype B] (a : B → ℝ) (ha : ∀ b, 
   intro b _ _
   exact pow_nonneg (ha b) (2 * r)
 
-/-! ## 2. The reduction identity: the density exponent IS a moment exponent. -/
+/-! ## 2. The Markov bound at the prize threshold (one-sided). -/
 
-/-- **The honest density bound is the Markov-moment bound (= F1).** Specializing
-`levelSet_le_moment` to the prize threshold `θ = n^{1/2+s}` (so `θ^(2r) = n^{(1+2s)r}`) and dividing,
-the non-tempered count is bounded by the normalized energy moment:
-`N(s) ≤ (Σ_b ‖η_b‖^{2r}) / n^{(1+2s)r}`. Writing `Σ_b ‖η_b‖^{2r} = (p−1)·n^r·E_r` (Parseval, `E_r` the
-normalized energy), this is `N(s) ≤ (p−1)·E_r·n^{−2 s r}` — the count's only spectral handle. T24's
-claimed exponent `1−2s` is the `E_r ≤ (2r−1)‼ n^r`, `r→∞` idealization (the open transfer). We record
-the clean algebraic form `N · n^{(1+2s)r} ≤ Σ`. -/
+/-- **The density bound at the prize threshold (one-sided Markov).** Specializing
+`levelSet_le_moment` to `θ = n^{1/2+s}` (so `θ^(2r) = n^{(1+2s)r}`) gives
+`N(s) · n^{(1+2s)r} ≤ Σ_b ‖η_b‖^{2r}`.  Writing `Σ_b ‖η_b‖^{2r} = (p−1)·n^r·E_r` (Parseval, `E_r` the
+normalized energy — prose, not formalized here), this reads `N(s) ≤ (p−1)·E_r·n^{−2 s r}`. -/
 theorem density_le_normalized_energy {B : Type*} [Fintype B] (a : B → ℝ) (ha : ∀ b, 0 ≤ a b)
-    (n : ℝ) (hn : 1 ≤ n) (s : ℝ) (hs : 0 ≤ s) (r : ℕ) :
+    (n : ℝ) (hn : 1 ≤ n) (s : ℝ) (r : ℕ) :
     ((Finset.univ.filter (fun b => n ^ (1/2 + s) ≤ a b)).card : ℝ) * n ^ ((1 + 2 * s) * r)
       ≤ ∑ b, (a b) ^ (2 * r) := by
   classical
@@ -162,78 +152,46 @@ theorem density_le_normalized_energy {B : Type*} [Fintype B] (a : B → ℝ) (ha
   rw [hpow] at hkey
   exact hkey
 
-/-! ## 3. The sharp closing form ⟺ the sub-Gaussian energy transfer (the open input). -/
+/-! ## 3. Elementary Gaussian-tail comparisons (real lemmas; the energy link is prose). -/
 
-/-- **The sharp density form IS the sub-Gaussian energy law (Legendre duality).** The closing claim is
-`S(t) := N_t/m ≤ e^{−t²}` for all `t ≥ 0` (then demanding `S(t_max) ≥ 1/m` gives `t_max ≤ √(log m)`,
-i.e. `M ≤ √(n log m)`). On the survival/exponent axis this is `−log S(t) ≥ t²`. By Markov at depth
-`r = t²/2` (the saddle of `e^{r·2t²/2 − r²·…}`), `−log S(t) ≥ t²` for all `t` is equivalent to the
-sub-Gaussian moment growth `E_r ≤ (2r−1)‼ n^r` at `r = t²/2`. We record the elementary equivalence at
-fixed `t`: a survival `S = e^{−c t²}` satisfies the Gaussian bound `S ≤ e^{−t²}` **iff** `c ≥ 1`. The
-constant `c` is exactly the inverse-energy tail constant; `c ≥ 1 ⟺ E_r ≤ (2r−1)‼ n^r`. -/
-theorem sharp_density_iff_gaussian_energy {c t : ℝ} (ht : 0 < t) :
-    Real.exp (-(c * t ^ 2)) ≤ Real.exp (-(t ^ 2)) ↔ 1 ≤ c := by
+/-- **Comparing Gaussian tails (elementary).** For `t > 0`, `e^{−c t²} ≤ e^{−κ t²}` iff `κ ≤ c`.
+For T24 the relevant normalization is `κ = 1/2` (`η_b/√n` has unit variance); the audited earlier
+version used `κ = 1`, which is miscalibrated.  No statement about `E_r` is proved here. -/
+theorem exp_neg_mul_sq_le_exp_neg_mul_sq_iff {c κ t : ℝ} (ht : 0 < t) :
+    Real.exp (-(c * t ^ 2)) ≤ Real.exp (-(κ * t ^ 2)) ↔ κ ≤ c := by
   rw [Real.exp_le_exp]
   have ht2 : 0 < t ^ 2 := by positivity
   constructor
   · intro h
-    -- -(c t²) ≤ -(t²)  ⟹  t² ≤ c t²  ⟹  1 ≤ c
-    have h' : t ^ 2 ≤ c * t ^ 2 := by linarith
-    nlinarith [h', ht2]
+    have h' : κ * t ^ 2 ≤ c * t ^ 2 := by linarith
+    exact le_of_mul_le_mul_right h' ht2
   · intro h
-    -- 1 ≤ c  ⟹  t² ≤ c t²  ⟹  -(c t²) ≤ -(t²)
     nlinarith [mul_le_mul_of_nonneg_right h (le_of_lt ht2)]
 
-/-! ## 4. THE REFUTATION: the measured tail constant `c < 1` breaks the sharp Gaussian density. -/
-
-/-- **REFUTED (sharp affine-density form).** The prize-closing claim `N_t ≤ m·e^{−t²}` requires the
-empirical survival exponent `c := −log(N_t/m)/t²` to be `≥ 1`. The probes measure `c ≈ 0.66 < 1` in
-the bulk at `β = 4` (heavier-than-Gaussian tail = the BGK content). With ANY `0 < c < 1`, the true
-count `m·e^{−c t²}` STRICTLY EXCEEDS the claimed `m·e^{−t²}` for every `t > 0`, and the resulting
-normalized edge `t_max = √(log m / c)` exceeds the claimed `√(log m)`. So the sharp density bound is
-false. (The honest, surviving version is only the WEAK `o(1)`-power form, which reduces to F1.) -/
-theorem refuted_sharp_gaussian_density {c t mm : ℝ} (hc0 : 0 < c) (hc1 : c < 1) (ht : 0 < t)
-    (hm : 0 < mm) :
-    mm * Real.exp (-(t ^ 2)) < mm * Real.exp (-(c * t ^ 2)) := by
+/-- **A smaller tail constant gives a larger count (elementary).** For `c < κ`, `t > 0`, `m > 0`:
+`m·e^{−κ t²} < m·e^{−c t²}`.  This holds for every such `c`; it is not a countermodel to any
+density claim.  (The measured `c_eff ≈ 0.65–0.73` is above the correctly normalized `κ = 1/2`.) -/
+theorem mul_exp_neg_mul_sq_lt_of_lt {c κ t mm : ℝ} (hcκ : c < κ) (ht : 0 < t) (hm : 0 < mm) :
+    mm * Real.exp (-(κ * t ^ 2)) < mm * Real.exp (-(c * t ^ 2)) := by
   apply mul_lt_mul_of_pos_left _ hm
   rw [Real.exp_lt_exp]
-  -- -(t²) < -(c t²)  ⟺  c t² < t²  ⟺  c < 1
   have ht2 : 0 < t ^ 2 := by positivity
-  nlinarith [mul_lt_mul_of_pos_right hc1 ht2]
+  nlinarith [mul_lt_mul_of_pos_right hcκ ht2]
 
-/-- **The edge consequence of `c < 1` (the BGK excess, quantified).** If the survival is
-`S(t) = e^{−c t²}` with `c < 1`, the count-vanishing normalized edge `t_max` (where `m·S(t_max) = 1`,
-i.e. `c·t_max² = log m`) is `t_max² = (log m)/c > log m`. So `M = t_max·√n = √(n·log m / c)` strictly
-exceeds the claimed `√(n log m)` by the factor `1/√c > 1`. This is the precise statement that the
-heavier-than-Gaussian period tail pushes `M` above the Sarnak–Xue/Gaussian edge — the BGK wall. -/
-theorem edge_exceeds_gaussian {c m tmax : ℝ} (hc0 : 0 < c) (hc1 : c < 1) (hm : 1 < m)
+/-- **Edge comparison (elementary).** If the survival is `e^{−c t²}` and the count-vanishing edge
+satisfies `c·t_max² = log m`, then `c < κ` gives `log m < κ·t_max²`, i.e. `t_max > √(log m / κ)`. -/
+theorem log_lt_mul_sq_of_edge {c κ m tmax : ℝ} (hcκ : c < κ)
     (hedge : c * tmax ^ 2 = Real.log m) (htpos : 0 < tmax) :
-    Real.log m < tmax ^ 2 := by
+    Real.log m < κ * tmax ^ 2 := by
   have ht2 : 0 < tmax ^ 2 := by positivity
-  -- log m = c·tmax² < 1·tmax² = tmax²
-  calc Real.log m = c * tmax ^ 2 := hedge.symm
-    _ < 1 * tmax ^ 2 := by nlinarith [mul_lt_mul_of_pos_right hc1 ht2]
-    _ = tmax ^ 2 := one_mul _
-
-/-! ## 5. (M0) The affine-Koopman count = the abelian-Cayley count (cosmetic wrapping). -/
-
-/-- **(M0) The affine wrapping is cosmetic.** The "number of `τ`-non-tempered frequencies of the
-affine Koopman operator" and the "number of large eigenvalues of the abelian Cayley graph
-`Cay(F_p, μ_n)`" are the SAME finite cardinality, because the period family `{η_b}` indexing both is
-literally one multiset: the affine `F_p`-matrix coefficients ARE the abelian additive-character
-eigenvalues `η_b`. Formally, given the same magnitude function `a` and threshold `θ`, the two counts
-are equal by definitional reflexivity. (This is the trigger of F5/F11: the "non-abelian principal
-series" supplies no eigenvalue not already in the abelian spectrum.) -/
-theorem affine_count_eq_abelian_count {B : Type*} [Fintype B] (a : B → ℝ) (θ : ℝ) :
-    (Finset.univ.filter (fun b => θ ≤ a b)).card
-      = (Finset.univ.filter (fun b => θ ≤ a b)).card := rfl
+  rw [← hedge]
+  exact mul_lt_mul_of_pos_right hcκ ht2
 
 end ProximityGap.Frontier.AffineKoopmanDensityReduces
 
 /-! ## Axiom audit -/
 #print axioms ProximityGap.Frontier.AffineKoopmanDensityReduces.levelSet_le_moment
 #print axioms ProximityGap.Frontier.AffineKoopmanDensityReduces.density_le_normalized_energy
-#print axioms ProximityGap.Frontier.AffineKoopmanDensityReduces.sharp_density_iff_gaussian_energy
-#print axioms ProximityGap.Frontier.AffineKoopmanDensityReduces.refuted_sharp_gaussian_density
-#print axioms ProximityGap.Frontier.AffineKoopmanDensityReduces.edge_exceeds_gaussian
-#print axioms ProximityGap.Frontier.AffineKoopmanDensityReduces.affine_count_eq_abelian_count
+#print axioms ProximityGap.Frontier.AffineKoopmanDensityReduces.exp_neg_mul_sq_le_exp_neg_mul_sq_iff
+#print axioms ProximityGap.Frontier.AffineKoopmanDensityReduces.mul_exp_neg_mul_sq_lt_of_lt
+#print axioms ProximityGap.Frontier.AffineKoopmanDensityReduces.log_lt_mul_sq_of_edge

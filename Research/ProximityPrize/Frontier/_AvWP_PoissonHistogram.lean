@@ -45,19 +45,42 @@ The combinatorial CORE of that picture, abstractly, with no analysis and no floa
   ```
   i.e. `p · g(0) = Σ_b ĝ(b)`, where `ĝ(b) = Σ_v f v · ψ(φ v · b)`. This is the EXACT Poisson identity
   `E_r^{𝔽_p} = (1/p)Σ_b|η_b|^{2r}` once `ĝ(b)` is recognized as `|η_b|^{2r}` (the energy specialization,
-  a separate combinatorial identity carried in the docstring, verified exactly below).
+  a separate combinatorial identity carried in the docstring; it is NOT proved in Lean here, only
+  checked numerically, see below).
 * `wraparound_excess_eq` : `W_r = g(0) − f(0)` with `f(0)` the char-0 (zero-difference) fibre.
 
 The energy specialization `ĝ(b) = |η_b|^{2r}` and the Bessel value of `f(0)=E_r^{char0}` were verified
 to exact integers (Python, exact arithmetic): for `n=8` at `p∈{17,41,89}` and `n=16` at
 `p∈{97,113,257}`, all `r∈{2,3,4}`, the three quantities `g(0)`, `(1/p)Σ_b|η_b|^{2r}`, and the
 fibre-decomposition `f(0)+W_r` agree exactly (e.g. `n=16,p=97,r=3`: `g(0)=191680`, `f(0)=50560`,
-`W_r=141120`); and the minimal wrapping shell at onset has size **exactly `n`** (the dihedral orbit of
-one minimal relation), a clean onset-shell law.
+`W_r=141120`). These are finite numerical checks, not Lean proofs.
+
+**Correction (audit R-306): there is no "minimal shell has size exactly `n`" law.** An earlier
+version of this header claimed that the minimal wrapping shell at onset has size exactly `n` (the
+dihedral orbit of one minimal relation). That is false already in the listed cell `n = 16`,
+`p = 113`, primitive root `g = 35`, `r = 2` (exact coefficient-basis enumeration reported by the
+2026-10-28 repository audit): `E_2^{𝔽_p} = 1104`, `E_2^{char0} = 720`, `W_2 = 384`. Grouping ordered
+two-root sums by residue and taking all unequal char-0 coefficient vectors (basis `1, ζ, …, ζ⁷` of
+`ℚ(ζ₁₆)`) within each residue fibre gives **32 distinct** nonzero wrapping difference vectors, all of
+minimal `ℓ¹` weight `4`, forming **two** cyclic `μ₁₆`-orbits of `16` each, with representatives
+`(-2,0,0,0,0,-1,0,-1)` and `(-2,0,0,0,0,0,1,1)`. (Weight-`2` wrapping cannot occur since distinct
+single roots reduce distinctly.) Two further distinctions matter:
+
+* **ordered mass vs distinct vectors**: `W_r` counts ordered sum-pairs with multiplicity `f(v)`; the
+  shell size counts distinct vectors `v`. These are different numbers.
+* **subgroup vs Galois/dihedral action**: multiplying a relation `v(g) = 0` by a root `g^j` keeps it
+  in the fixed-`g` kernel (cyclic `μ_n`-orbit), but a Galois conjugation can move it to a different
+  split prime; in the cell above the conjugate of the first representative is NOT in the fixed-`g`
+  kernel. A "single dihedral orbit" claim therefore needs a fixed-prime-ideal invariance proof, which
+  is absent.
+
+No classification or transitivity of the onset shell is proved or claimed here.
 
 ## Honest scope (#444)
 
-This identity is **exact and new** as a closed Poisson/periodization description of `W_r`, but it is a
+The Lean theorems are generic finite-Fourier facts (histogram orthogonality, inversion at `0`,
+distinguished-zero-fibre split) over an arbitrary index type; the energy/Bessel instantiation
+(`ĝ(b) = |η_b|^{2r}`, `f(0) = E_r^{char0}`) is not formalized. As a description of `W_r` it is a
 REFORMULATION, not a bound: it rewrites `W_r` as the dual-frequency wrapping mass `g(0)−f(0)`. Bounding
 that mass at the saddle `r ≈ log p` is exactly the BGK wall (the `b≠0` dual frequencies `|η_b|` are the
 sup-norm object). See `_OnsetGrowthLaw` for the onset-vs-saddle inversion at prize scale and

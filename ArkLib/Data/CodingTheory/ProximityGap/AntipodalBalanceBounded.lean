@@ -20,9 +20,13 @@ char-`p`-realizable `BoundedHalfBasisIndep`** rather than char-0 cyclotomic inde
 Mechanism: `ζ^{j+N} = −ζ^j` collapses the sum to `∑_j (a_j − b_j) ζ^j = 0` with coefficients bounded
 by `C`, so `BoundedHalfBasisIndep` kills each. This is the bounded swap for the one char-0 step
 (`debruijn_prime_power_weighted`) inside `count_antipodal`; the rest of that proof (transport to the
-weight surface) is characteristic-independent. With this,
-`BoundedHalfBasisIndep` ⟹ the char-`p` Wick
-ladder for all `r` — the prize reduces to that one named hypothesis at prize support (= BGK).
+weight surface) is characteristic-independent. This is a valid **conditional** step:
+`BoundedHalfBasisIndep` (with a bound `C` covering the weights that occur) ⟹ antipodal balance.
+It does not reduce the prize to that hypothesis: `BoundedHalfBasisIndep` is **false** in the prize
+regime (`not_boundedHalfBasisIndep_of_card_lt`: it needs `(C+1)^N ≤ |F|`; concretely
+`not_boundedHalfBasisIndep_zmod65537` at `n = 16`, `p = 65537`, `C = 4`), and a fixed `C` does not
+cover the weights of arbitrarily large tuples, so it gives no Wick ladder for all `r` without a
+separate uniform coefficient bound.
 
 Issue #407.
 -/

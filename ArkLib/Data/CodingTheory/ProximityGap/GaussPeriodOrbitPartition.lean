@@ -6,27 +6,33 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.GaussPeriodCosetReduction
 
 /-!
-# The exact `μ_n`-orbit partition of the Gauss-period sup-norm sum (#389, #407)
+# Per-orbit block sums for the Gauss-period moment (#389, #407)
 
 `GaussPeriodCosetReduction` proves the *one-orbit* inequality
-`|G| · ‖η_{b₀}‖^{2r} ≤ ∑_{b≠0} ‖η_b‖^{2r}` by dropping every orbit except `G·b₀`. The full
-structure is sharper and exact: for a finite multiplicative subgroup `G = μ_n ⊆ F^×`, left
-multiplication by `G` acts **freely** on `F^× = F \ {0}` (free because `0 ∉ G` and `G` is a group:
-`u·b = b ⟹ u = 1`), so `F^×` is partitioned into orbits, **each of size exactly `n = |G|`**, and on
-each orbit the period magnitude `‖η_b‖` is *constant* (`eta_mul_left`). Hence:
+`|G| · ‖η_{b₀}‖^{2r} ≤ ∑_{b≠0} ‖η_b‖^{2r}` by dropping every orbit except `G·b₀`. Mathematically,
+for a finite multiplicative subgroup `G = μ_n ⊆ F^×`, left multiplication by `G` acts freely on
+`F^× = F \ {0}`, so `F^×` is partitioned into orbits of size `n = |G|`, and on each orbit the
+period magnitude `‖η_b‖` is constant (`eta_mul_left`). **This file formalizes only the
+single-orbit pieces of that picture.** The declarations actually proved are:
 
-* **Per-orbit block sum** (`sum_over_orbit_of_const`): for any orbit-constant target `f`,
-  `∑_{c ∈ G·b₀} f(c) = n · f(b₀)` — the orbit contributes `n` identical copies.
-* **Orbit cardinality** (`orbit_card_eq`): `|G·b₀| = |G|` for `b₀ ≠ 0` (free action).
-* **Subgroup-order divisibility** (`card_dvd_card_units`): `n ∣ (q − 1)` — the number of
-  cosets `m = (q−1)/n` is an integer (Lagrange for the free action on `F^×`).
-* **The exact partitioned moment sum** (`sum_erase_eq_card_mul_sum_image`): summing an
-  orbit-constant `f` over `F^×` equals `n` times the sum over one element per orbit.
+* **Orbit cardinality** (`orbit_card_eq`): `|G·b₀| = |G|` for `b₀ ≠ 0` and *any* finset `G`
+  (injectivity of `u ↦ u·b₀`; no group closure is used).
+* **Per-orbit block sum** (`sum_over_orbit_of_const`): if `f` is *assumed* constant on `G·b₀`
+  (hypothesis `hconst`), then `∑_{c ∈ G·b₀} f(c) = |G| • f(b₀)`.
+* **Moment specialization** (`eta_pow_const_on_orbit`, `sum_eta_pow_over_orbit`): under the
+  closure hypothesis `hbij` and `0 ∉ G`, `‖η_c‖^{2r}` is constant on `G·b₀`, so the orbit of `b₀`
+  contributes exactly `|G| • ‖η_{b₀}‖^{2r}` to the moment sum.
+* **Containment and size cap** (`orbit_subset_units`, `card_le_units`): `G·b₀ ⊆ F^×`, hence
+  `|G| ≤ q − 1` whenever `0 ∉ G`.
 
-This formalizes the `/n` ↔ `m = (q−1)/n` cosets bookkeeping that `cosetReduced_eta_pow_le`
-records as a *lossy* one-orbit drop, upgrading it to the **exact orbit-partition identity** —
-the rule-3-passing structural locus (coset-localization is a multiplicative-group property of
-`μ_n`, false for an unstructured thin set). NON-MOMENT (pure free-action / orbit-partition
+**Not proved here.** The file does *not* declare a divisibility theorem `|G| ∣ (q − 1)` nor a
+global partitioned-sum identity over all of `F^×` (an earlier version of this docstring listed
+`card_dvd_card_units` and `sum_erase_eq_card_mul_sum_image`; neither exists). The cap
+`|G| ≤ q − 1` cannot replace divisibility: a 4-element subset of `F_7^×` satisfies `4 ≤ 6` but
+`4 ∤ 6`. Divisibility and the exact global orbit-partition identity need a genuine subgroup
+(Lagrange) / orbit-partition producer, which remains to be supplied; downstream uses should rely
+only on the per-orbit statements above, which refine the lossy one-orbit drop in
+`cosetReduced_eta_pow_le` to an exact *single-orbit* block sum. NON-MOMENT (pure free-action
 combinatorics); extends `eta_mul_left`. Axiom-clean. Issues #389, #407.
 -/
 
@@ -81,12 +87,11 @@ theorem sum_eta_pow_over_orbit {ψ : AddChar F ℂ} {G : Finset F}
       = G.card • ‖eta ψ G b₀‖ ^ (2 * r) :=
   sum_over_orbit_of_const hb₀ (eta_pow_const_on_orbit hbij h0 r)
 
-/-- **Subgroup order divides `q − 1`** (Lagrange via the free orbit map). For a finite
-multiplicative subgroup `G` of a finite field, with `1 ∈ G` ensuring the orbit `G·b₀ ⊆ F^×`
-realizes the order, `|G| ∣ (Fintype.card F − 1)`. Proven by exhibiting `G·b₀` (for any `b₀ ≠ 0`)
-as a card-`|G|` subset of `F^× = univ.erase 0` and routing through the orbit partition; here we
-give the clean count `|G| = (G·b₀).card ≤ q − 1`. The full divisibility is the orbit-partition
-corollary. -/
+/-- **The orbit `G·b₀` lies in `F^×`.** For any finset `G` with `0 ∉ G` and any `b₀ ≠ 0`, every
+`u·b₀` with `u ∈ G` is nonzero, so `G·b₀ ⊆ F^× = univ.erase 0`. Combined with `orbit_card_eq`
+this gives only the size cap `|G| ≤ q − 1` (`card_le_units`); it does **not** give the
+divisibility `|G| ∣ (q − 1)`, which needs subgroup closure and a full orbit partition and is not
+proved in this file. -/
 theorem orbit_subset_units {G : Finset F} (h0 : (0 : F) ∉ G) {b₀ : F} (hb₀ : b₀ ≠ 0) :
     G.image (fun u => u * b₀) ⊆ Finset.univ.erase (0 : F) := by
   intro c hc

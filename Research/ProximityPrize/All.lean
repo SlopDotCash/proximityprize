@@ -3296,6 +3296,7 @@ import Research.ProximityPrize.MDSMaxAgreement
 import Research.ProximityPrize.MonomialGammaFibration
 import Research.ProximityPrize.Overreach
 import Research.ProximityPrize.PermanentlyBlocked
+import Research.ProximityPrize.PrizeRateBounds
 import Research.ProximityPrize.ProductionJohnsonBudget
 import Research.ProximityPrize.ProductionRegimeBracket
 import Research.ProximityPrize.Protocols.Stir.WindowCAFeed

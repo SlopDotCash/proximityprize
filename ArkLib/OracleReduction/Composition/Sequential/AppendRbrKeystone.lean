@@ -11,9 +11,14 @@ import ArkLib.ToVCVio.EvalDist.Instances.OptionT
 /-!
 # Round-by-round (knowledge) soundness append keystone — `appendRbr*SoundnessResidual` discharge
 
-This file makes the round-by-round soundness append keystone **unconditional** for the
-deterministic-`V₁` message-seam case that issue #29 (and #114 / #13) need. It targets the named
-residual `Verifier.appendRbrSoundnessResidual` (and the knowledge variant) recorded in `Append.lean`.
+This file reduces the round-by-round soundness append keystone, for the deterministic-`V₁`
+message-seam case that issue #29 (and #114 / #13) need, to an explicit **phase-2 residual**; it is
+**not** unconditional (see "Status" below). It targets the named residual
+`Verifier.appendRbrSoundnessResidual` (and the knowledge variant) recorded in `Append.lean`. The
+phase-1 transport and the extractor assembly are genuinely proved; the phase-2 bound (and, in the
+knowledge variant, the composite knowledge state function and the whole per-round bound) remain
+hypotheses. The phase-2 discussion concerns the chosen appended state function
+`StateFunction.append`; it does not show that every alternative composition invariant fails.
 
 The two side hypotheses missing from the residual statement (`hVerify`: `V₁` deterministic &
 non-failing — which also supplies the `verify` function; `hInit`: a reachable initial state) are the

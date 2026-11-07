@@ -290,13 +290,51 @@ def rateSegment (state : CanonicalSpongeState U) : Vector U SpongeSize.R :=
 def capacitySegment (state : CanonicalSpongeState U) : Vector U SpongeSize.C :=
   Vector.drop state SpongeSize.R
 
-/-- The canonical sponge state satisfies the `SpongeState` type class -/
+/-- The bytes of a 32-byte initialization vector that are packed into the `k`-th capacity unit:
+the half-open byte range `[k * s, (k + 1) * s)` where `s = HasSize.size U UInt8`. -/
+def ivUnitBytes (iv : Vector UInt8 32) (k : Nat) : ByteArray :=
+  ByteArray.mk (iv.toArray.extract (k * HasSize.size U UInt8) ((k + 1) * HasSize.size U UInt8))
+
+/-- The `k`-th capacity unit packed from a 32-byte initialization vector: the deserialization of
+`ivUnitBytes iv k` when that byte range lies entirely inside the IV, and `0` otherwise (or when
+deserialization fails). -/
+def ivUnit (iv : Vector UInt8 32) (k : Nat) : U :=
+  if (k + 1) * HasSize.size U UInt8 ≤ 32 then
+    (DeserializeOption.deserialize (ivUnitBytes (U := U) iv k) : Option U).getD 0
+  else 0
+
+/-- The canonical seed-to-state initializer for the canonical sponge state.
+
+Following spongefish's `Permutation::new(iv)` for byte-oriented permutations (e.g. the Keccak
+permutation, which copies the 32-byte tag into `state[R .. R + 32]`), the rate segment is set to
+zero and the IV is packed into the **capacity** segment, starting at position `R`: capacity unit
+`k` is `ivUnit iv k`, i.e. the deserialization of IV bytes `[k * s, (k + 1) * s)` with
+`s = HasSize.size U UInt8`.
+
+Specification limits (this is a generic packing, not a per-permutation spongefish specification):
+IV bytes that do not fit in whole units inside the capacity segment are dropped, and a byte chunk
+that fails to deserialize contributes the unit `0`. For `U = UInt8` and `32 ≤ C` the packing is
+injective (`ivToState_injective_uint8`), so distinct IVs yield distinct sponge states. -/
+def ivToState (iv : Vector UInt8 32) : Vector U SpongeSize.N :=
+  Vector.ofFn fun j => if SpongeSize.R ≤ j.val then ivUnit iv (j.val - SpongeSize.R) else 0
+
+/-- The canonical sponge state satisfies the `SpongeState` type class. Its `Initialize` field is
+the specified IV-in-capacity packing `ivToState` (not a constant placeholder). -/
 instance {U : Type} [SpongeUnit U] [SpongeSize] :
     SpongeState U (Vector U SpongeSize.N) where
-  -- PROBLEM: no canonical implementation of this. We temporarily set it to the all-zero vector
-  new := fun _ => 0
+  new := ivToState
   get := id
   update := fun _ v => v
+
+/-- The canonical state initializer is `ivToState`. -/
+theorem new_eq_ivToState (iv : Vector UInt8 32) :
+    (Initialize.new iv : Vector U SpongeSize.N) = ivToState iv := rfl
+
+/-- Capacity entry `R + k` of the canonical initial state is the `k`-th packed IV unit. -/
+theorem ivToState_getElem_capacity (iv : Vector UInt8 32) (k : Nat)
+    (hk : SpongeSize.R + k < SpongeSize.N) :
+    (ivToState (U := U) iv)[SpongeSize.R + k] = ivUnit iv k := by
+  simp [ivToState]
 
 end CanonicalSpongeState
 
@@ -392,6 +430,11 @@ instance : Initialize (DuplexSponge U C) (Vector UInt8 32) where
     absorbPos := 0,
     squeezePos := Fin.last SpongeSize.R
   }
+
+/-- Initializing a duplex sponge from an IV initializes its permutation state from the same IV
+(for the canonical state this is `CanonicalSpongeState.ivToState`). -/
+@[simp] theorem new_state (iv : Vector UInt8 32) :
+    (Initialize.new iv : DuplexSponge U C).state = (Initialize.new iv : C) := rfl
 
 /--
 ### Absorb a list of units into the sponge (paper version)
@@ -660,3 +703,33 @@ instance : HasSize UInt8 UInt8 where
 instance : SpongeUnit UInt8 where
 
 end UInt8
+
+namespace CanonicalSpongeState
+
+/-- For byte units, the `k`-th packed IV unit is the `k`-th IV byte. -/
+theorem ivUnit_uint8 (iv : Vector UInt8 32) (k : Nat) (hk : k < 32) :
+    ivUnit (U := UInt8) iv k = iv[k] := by
+  have hs : HasSize.size UInt8 UInt8 = 1 := rfl
+  unfold ivUnit ivUnitBytes
+  simp only [hs, Nat.mul_one]
+  have hle : k + 1 ≤ 32 := by omega
+  simp only [hle, ↓reduceIte]
+  show (if h : _ then _ else _ : Option UInt8).getD 0 = _
+  have hsz : (ByteArray.mk (iv.toArray.extract k (k + 1))).size = 1 := by
+    simp [ByteArray.size]; omega
+  simp only [hsz, ↓reduceDIte]
+  simp [ByteArray.getElem_eq_getElem_data, Vector.getElem_toArray]
+
+/-- For byte units and capacity at least `32`, the canonical initializer is injective: distinct
+32-byte IVs yield distinct initial sponge states. -/
+theorem ivToState_injective_uint8 [SpongeSize] (hC : 32 ≤ SpongeSize.C) :
+    Function.Injective (ivToState (U := UInt8) : Vector UInt8 32 → Vector UInt8 SpongeSize.N) := by
+  intro iv₁ iv₂ h
+  apply Vector.ext
+  intro k hk
+  have hN : SpongeSize.R + k < SpongeSize.N := by
+    have := SpongeSize.R_plus_C_eq_N; omega
+  have := congrArg (fun v => v[SpongeSize.R + k]) h
+  simpa [ivToState_getElem_capacity _ _ hN, ivUnit_uint8 _ _ hk] using this
+
+end CanonicalSpongeState

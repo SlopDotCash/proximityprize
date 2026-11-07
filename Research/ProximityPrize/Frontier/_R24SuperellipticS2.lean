@@ -60,7 +60,8 @@ parameter-choice lane (mimic `_R23ParameterChoice`).
 
 EXACTLY ONE input: `DBlockIndependence F d (card F) D g` for the desired 2-power order.
 It is proven below for `d = 4`; the `d = 8` norm-fold endpoint is proven in
-`_R25OcticNormFold` and exposed to this S2 API by `_R147OcticSuperellipticS2Consumer`.
+`_R25D8Descent` (canonical `dBlockIndependence_eight`; `_R25OcticNormFold` re-exports it
+and carries an alternative descent route) and exposed to this S2 API by `_R147OcticSuperellipticS2Consumer`.
 Higher doublings (`d = 16, 32, ...`) remain the norm-fold construction.  Everything else in
 the order-`d` Stepanov chain through the per-fiber count is machine-checked below.  No prize
 closure claimed.

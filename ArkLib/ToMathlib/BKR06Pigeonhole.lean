@@ -53,16 +53,28 @@ BKR06's *tight* count uses that a subspace polynomial is **linearized**: its onl
 nonzero coefficients sit at the `q`-power exponents `q^0, …, q^v`, so the
 "top coefficients above `q^u`" live in `≤ v − u` slots and the pattern count is
 `q^{m(v−u)}`, giving `|𝓛| ≥ q^{v(m−v)} / q^{m(v−u)} = q^{(u+1)m − v²}` (Lemma 3.5).
-The linearized-support theorem (`subspacePoly` is supported on `{q^i}`) is itself a
-substantial additive-polynomial / Frobenius result *not present in mathlib*, so the
-in-tree pattern pigeonhole below uses the **generic** coefficient window of width
-`w` slots rather than the tight `v − u` slots.  Consequently the count delivered by
-the fully-proven pipeline is the generic `N < q^{v(m−v)} / (#K)^w`, and the bridge
-from that to the in-tree target `q^{(α−β²)·log q}` (which equals the tight
-`q^{(u+1)m − v²}` under BKR06's parameter choices `v ≈ βm`, `k = q^u`) is surfaced as
-a single explicit, named arithmetic hypothesis `hexp` of `bkr06_hfamily_of_card`.
-This is the only residual: the count and the pigeonhole themselves are proven,
-`sorry`-free and axiom-clean.
+The linearized-support theorem (`subspacePoly` is supported on `{q^i}`) is a substantial
+additive-polynomial / Frobenius result *not present in mathlib*; when this file was written
+it was not available in tree either, so the pattern pigeonhole below uses the **generic**
+coefficient window of width `w` slots rather than the tight `v − u` slots.  The count
+delivered by this file is therefore the generic `N < q^{v(m−v)} / (#K)^w`, and the bridge from
+that to the target `q^{(α−β²)·log q}` (which equals the tight `q^{(u+1)m − v²}` under BKR06's
+parameter choices `v ≈ βm`, `k = q^u`) is surfaced as an explicit, named arithmetic
+hypothesis `hexp` of `bkr06_hfamily_of_card`.  The count and the pigeonhole themselves are
+proven, `sorry`-free and axiom-clean.
+
+**Status update.** The sparse/tight route now exists in tree: the linearized-support theorem
+(`isQPowSupported_subspacePoly'`) feeds the tight pigeonhole of `BKR06TightFamily.lean`, and
+`BKR06FamilyDischarge.lean` / `BKR06BareT312.lean` use it to prove the bare BKR06 endpoint
+(`rs_lambda_superpoly_extension_bkr06_proven`). So "sparse support unavailable" and "`hexp`
+is the only residual" describe only this file's old generic interface.
+
+**Limitation of the generic window.** In the usual cutoff regime the generic producer
+`bkr06_pigeonhole_family_card` cannot itself yield a family with at least two members: if
+`v ≥ 1` and `k ≤ q^{v−1}` (with `q = #F`, `#K = q^m`), the coverage hypothesis
+`q^v < k + w` forces `w > q^v − q^{v−1} ≥ v`, and then for `N ≥ 1`,
+`(#K)^w · N ≥ q^{mw} > q^{v(m−v)}`, contradicting `hbig`. This limits the old interface only;
+its conditional pigeonhole proof and the later tight BKR06 results remain valid.
 
 All declarations compile `sorry`/`axiom`-free and are axiom-clean
 (`[propext, Classical.choice, Quot.sound]`).

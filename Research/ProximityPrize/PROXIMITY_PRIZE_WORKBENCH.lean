@@ -110,24 +110,28 @@ Correlated Agreement* [ABF26]. Prize: <https://proximityprize.org/>. Two grand c
 Reed–Solomon on a smooth domain) and the **grand list-decoding challenge** (list-decode explicit RS
 to capacity).
 
-This file pulls the whole #357 → #371 → #389 campaign down to **one operator, one inequality, one
-closed form**:
+This file organizes the #357 → #371 → #389 campaign around **one operator, one inequality, one
+candidate closed form** (an organizing heuristic; the formal content is the axiom-audited
+theorems at the end):
 
 1. the **doubling reduction** `badScalars_card_le_cosetLowWeight` collapses the one-parameter family
    of correlated-agreement events into a single static low-weight coset count (axiom-clean);
 2. the **closed-form δ*** `deltaStar_closedForm = H_q⁻¹(1 − ρ − log_q(1/ε*)/n)` — a computable
    *random UPPER bound* (the true δ* is the q-independent monomial-extremal radius below it, R9);
-3. the **Shaw operator** `𝖲_D` whose single spectral invariant `B(μ_n)` *is* every "unknown
-   quantity" the prize has been reduced to, and whose **corrected gap law** `B ≤ C·√(n·log(q/n))`
-   (the `√2·√n` form is refuted, R3) is the lone residual — the W4/Shkredov wall
-   (`ShawFlatnessConjecture`).
+3. the **Shaw operator** `𝖲_D`, whose spectral gap `B(μ_n)` *heuristically* organizes the
+   "unknown quantities" the prize has been reduced to, and whose **corrected gap law**
+   `B ≤ C·√(n·log(q/n))` on multiplicative subgroups (the `√2·√n` form is refuted, R3) is the
+   open W4/Shkredov-type conjecture `ShawFlatnessConjecture`.  No declaration in this file links
+   that conjecture to `WorstCaseIncidenceBound`, `badScalars`, or `epsMCA`; the links in §0–§9
+   are heuristics, not theorems.
 
 --------------------------------------------------------------------------------------------------
-## 0. THE CENSUS OF UNKNOWNS — and the proof they are ONE quantity (the Shaw operator)
+## 0. THE CENSUS OF UNKNOWNS — a heuristic organization by ONE operator (the Shaw operator)
 
 The programme reduced the prize, in seven independent forms, to a list of "unknown quantities".
-The analytic claim of this file is that **they are all the same scalar**, the spectral gap of one
-explicit operator:
+The heuristic thesis of this file (NOT a proved statement) is that they are all governed by the
+spectrum of one explicit operator; the "reduces to" column below records heuristic dependence,
+not in-tree reductions:
 
 | # | face | object | reduces to |
 |---|------|--------|------------|
@@ -158,8 +162,10 @@ character-sum family: each additive character `χ_b(x) = ψ(bx)` is an eigenvect
                                       `E_2 = E` (Forms 2, 3, 6) and the deep band (Forms 4, 5,
                                       `CensusDomination`, …) controlled by `E_m` up to `m ≈ ρn`.
 
-So the seven faces are **not seven unknowns but one** — the operator `𝖲_D` — read at different
-spectral depth. *That answers the task's "are they the same quantity": yes, through `𝖲_D`.*
+So, heuristically, the seven faces are read off one operator `𝖲_D` at different spectral depth.
+What is machine-checked is only `shawOp_eigen` (characters are eigenvectors) and
+`shaw_offdiag_moment_le` (a Hölder bound of higher moments by the gap); no identification of the
+faces with each other is proved here.
 
 --------------------------------------------------------------------------------------------------
 ## 1. THE REGIME DICHOTOMY — what is the same, and what is genuinely different
@@ -180,9 +186,9 @@ from `‖η_b‖ ≤ B` for all `b≠0`,
 
   `∑_{b≠0} ‖η_b‖^{2m} ≤ B^{2m−2} · (q·|D| − |D|²)`   for every `m ≥ 1`.
 
-So although `E_2` and `E_{ρn}` are different unknowns, **they collapse to one the instant the gap
-`B` is controlled.** This is why `B(μ_n)` — not `E` — is the master scalar, and why the prize is
-exactly the *gap* problem, at all depths simultaneously.
+So although `E_2` and `E_{ρn}` are different unknowns, a bound on the gap `B` bounds both.  This
+is the (heuristic) reason this file treats `B(μ_n)` — not `E` — as the master scalar; the
+step from these moments to the prize quantities is not formalized here.
 
 --------------------------------------------------------------------------------------------------
 ## 2. THE PRIZE REGIME is `n ≪ √q` — and why it is still open
@@ -191,16 +197,19 @@ Production: `n = 2^25`, `q ≈ n·2^128 ≈ 2^153`, `ε* = 2^{-128}`, `ρ = 1/2`
 
 * `n ≤ √q` holds with enormous room (`2^25 ≤ 2^{76.5}`), so the transport hypothesis is met and
   `n^4/q = 2^{100}/2^{153}` is negligible: **if** the corrected gap law `B ≤ C·√(n·log(q/n))` holds,
-  the chain gives `E = n^{2+o(1)}` and `δ*` lands at its (random-UPPER-bound) closed form.
-* the subgroup is **small**, `n = p^{0.16}`; the worst-case gap is `B = Θ(√(n·log(q/n))) =
-  n^{1/2+o(1)}` (NOT `√2·√n` — the moment floor bounds the average, not the max; see R3/§8), and the
-  *upper* bound `B ≤ C·√(n·log(q/n))` is the classical open W4/Bourgain problem (Shkredov; HBK; BGK).
+  the energy transport gives `E = n^{2+o(1)}`; the further step to a value of `δ*` is heuristic
+  and not formalized.
+* the subgroup is **small**, `n = p^{0.16}`; numerically (`probe_shaw_flatness_refute.py`) the
+  worst-case gap behaves like `√(n·log(q/n))` (NOT `√2·√n` — the moment floor bounds the average,
+  not the max; see R3/§8).  Neither a matching lower nor upper bound is proved: the *upper* bound
+  `B ≤ C·√(n·log(q/n))` is the classical open W4/Bourgain problem (Shkredov; HBK; BGK).
   **MRSS does not suffice for the prize**: the excess exponent `0.225` is a *constant*, not `o(1)`,
   and with `q` exponentially large the line–ball error blows up as `q^{Ω(n)}`.
 * **δ* itself is structured, not random** (R9): BCHKS 2025/169 + Crites–Stewart prove the
   smooth domain gives counterexamples below the capacity/random value, and the worst-case far line
-  above Johnson is provably a MONOMIAL `x^a` — so the true `δ*` is the explicit, q-independent
-  monomial-extremal radius, with `H_q⁻¹(...)` only its upper bound.
+  above Johnson is empirically a MONOMIAL `x^a` (`probe_monomial_extremal.py`; not proved) —
+  suggesting the true `δ*` is a q-independent monomial-extremal radius, with `H_q⁻¹(...)` only a
+  heuristic upper bound.
 
 --------------------------------------------------------------------------------------------------
 ## Honesty statement (campaign contract)
@@ -208,7 +217,8 @@ Production: `n = 2^25`, `q ≈ n·2^128 ≈ 2^153`, `ε* = 2^{-128}`, `ρ = 1/2`
 The prize is a **recognized open problem**. This file does **not** claim to close it. Every
 `theorem` is axiom-clean Lean (`propext, Classical.choice, Quot.sound`); the open core is isolated
 as the named `Prop`s `WorstCaseIncidenceBound` / `ShawFlatnessConjecture`, *labelled as the
-classical wall*. "Named residual = modularity, not closure." Refutations live in
+classical wall*; these are two separate open `Prop`s, and no in-tree theorem relates them.
+"Named residual = modularity, not closure." Refutations live in
 `Research/ProximityPrize/DISPROOF_LOG.md` and the §9 ledger below.
 
 ## References
@@ -222,7 +232,7 @@ classical wall*. "Named residual = modularity, not closure." Refutations live in
 
 
 /-! ## 2026-08-16 addendum — doc sync (no theorem change)
-- `Research/ProximityPrize/DISPROOF_LOG.md` synced to canonical `Research/ProximityPrize/DISPROOF_LOG.md` (53709 lines, tail G330 spectrum exact boundary).
+- `Research/ProximityPrize/DISPROOF_LOG.md` synced to canonical `Research/ProximityPrize/DISPROOF_LOG.md` (tail at that sync: G330 spectrum exact boundary; the log is append-only, so no line count is recorded here).
 - `Frontier/README.md` § Live targets augmented with SYZ70/SYZ71 + REnergyCyclicFloor + G330 (§ Verified standalone additions after dossier v3).
 - No production verdict change: **OPEN / ON-BGK**.
 -/
@@ -246,11 +256,14 @@ variable {n m : ℕ}
 `δ`-close to `C` iff its syndrome `H w` has a weight-`≤ b` representative, `b = ⌊δn⌋`. For a *stack*
 `w₀, w₁`, the bad scalars are the `γ` for which `w₀ + γ·w₁` is `δ`-close to `C`; on the syndrome
 side this is the affine line `{s₀ + γ·s₁}` (`s_i = H wᵢ`) meeting the radius-`b` syndrome ball.
-`ε_mca` is (up to the proven reductions in `Errors.lean`) `#badScalars / q`. -/
+`#badScalars / q` is a line-closeness count, not `ε_mca` itself (see `badScalars`). -/
 
 /-- `badScalars H b s₀ s₁` — the bad scalars of the syndrome line `{s₀ + γ·s₁}`: those `γ` for which
-the coset `s₀ + γ·s₁` contains a Hamming-weight `≤ b` word. Its normalisation `#badScalars / |F|`
-is the mutual-correlated-agreement error `ε_mca`. -/
+the coset `s₀ + γ·s₁` contains a Hamming-weight `≤ b` word.  This is a plain syndrome-ball
+closeness count for an arbitrary `H`: it has no shared-witness-set clause and no
+"not jointly close" clause, so `#badScalars / |F|` is NOT `epsMCA`.  (Mathematically the MCA-bad
+scalars of the line form a subset of these closeness scalars, so this count upper-bounds the
+per-line MCA count; no theorem in this file states that comparison.) -/
 noncomputable def badScalars (H : (Fin n → F) →ₗ[F] (Fin m → F)) (b : ℕ)
     (s₀ s₁ : Fin m → F) : Finset F :=
   Finset.univ.filter (fun γ => ∃ e : Fin n → F, hammingNorm e ≤ b ∧ H e = s₀ + γ • s₁)
@@ -325,19 +338,21 @@ over the choice of far line. `(R)` says this worst case stays within budget. -/
 
 /-- **`(R)` — the worst-case line–ball incidence bound (the open core).** With `B = q·ε*` the prize
 budget, `(R)` asserts that **every** far line's coset weight-enumerator stays within budget; by
-`badScalars_card_le_cosetLowWeight` this bounds every bad-scalar count by `B`, hence `ε_mca ≤ ε*`.
+`badScalars_card_le_cosetLowWeight` this bounds every bad-scalar (line-closeness) count by `B`
+(which in turn would bound the per-line MCA count; see `badScalars`).
 
-It is *provably equivalent* to the worst-case beyond-Johnson **list size** of explicit smooth-domain
-RS, and to the **additive-energy** estimate `E(μ_n) = n^{2+o(1)}` (Shkredov; open ~25y; no `2023–26`
-paper beats `n^{2.45}` for `n ≤ √p`). §6 shows it is the *top spectral moment* of the Shaw operator
-— i.e. `(R) ⟸ ShawFlatness`. Do not discharge without solving the classical problem. -/
+Heuristically `(R)` is related to the worst-case beyond-Johnson **list size** of explicit
+smooth-domain RS and to the **additive-energy** estimate `E(μ_n) = n^{2+o(1)}` (Shkredov; open
+~25y; no `2023–26` paper beats `n^{2.45}` for `n ≤ √p`), and to the top spectral moments of the
+Shaw operator.  None of these relations is proved here: no declaration derives `(R)` from
+`ShawFlatness`/`ShawGapLaw` or establishes an equivalence with list size or energy. -/
 def WorstCaseIncidenceBound
     (H : (Fin n → F) →ₗ[F] (Fin m → F)) (b : ℕ) (B : ℕ) : Prop :=
   ∀ s₀ s₁ : Fin m → F, s₁ ≠ 0 → (cosetLowWeight H b s₀ s₁).card ≤ B
 
 /-- **The prize bound, conditional on `(R)`.** Given `(R)`, every far line has at most `B` bad
-scalars; with `B = ⌊q·ε*⌋` this is `ε_mca(C, δ) ≤ ε*`, i.e. `δ ≤ δ*`. Axiom-clean; the only
-hypothesis is the named classical wall. -/
+scalars (in the line-closeness sense of `badScalars`).  Axiom-clean; the only hypothesis is the
+named open `Prop`.  The further passage to `ε_mca(C, δ) ≤ ε*` is not formalized here. -/
 theorem badScalars_card_le_of_worstCase
     (H : (Fin n → F) →ₗ[F] (Fin m → F)) (b B : ℕ)
     (hR : WorstCaseIncidenceBound H b B) :
@@ -401,8 +416,9 @@ spectral moment at once: for all `M ≥ 1`,
 
 This is the structural reason `B(μ_n)` — not the 4th moment `E` — is the master unknown: energy
 (`M=2`) and the deep-band fibre (`M ≈ ρn`) are *different* moments that collapse to the same scalar
-the instant the gap is controlled. So `(R)` (a top moment) reduces to `ShawFlatness` (the gap).
-Pure Hölder on the second moment; no Weil. -/
+the instant the gap is controlled.  This is a bound on character-sum moments only; it does not
+by itself connect to `(R)`, `badScalars`, or `epsMCA`.  Pure Hölder on the second moment; no
+Weil. -/
 theorem shaw_offdiag_moment_le {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (D : Finset F)
     {B : ℝ} (hB : ∀ b : F, b ≠ 0 → ‖eta ψ D b‖ ≤ B) {M : ℕ} (hM : 1 ≤ M) :
     ∑ b ∈ Finset.univ.erase (0 : F), ‖eta ψ D b‖ ^ (2 * M)
@@ -427,8 +443,8 @@ theorem shaw_offdiag_moment_le {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (D : 
 /-! ## §7  Flatness, the sharp constant, and the two-sided energy pin -/
 
 /-- **Shaw Spectral Flatness** at constant `C`: every nontrivial frequency has square-root–cancelled
-magnitude, `‖η_b‖ ≤ C·√|D|`. The lone closed conjecture of the prize is that *some absolute `C`
-works for the production domain* (`ShawFlatnessConjecture`). -/
+magnitude, `‖η_b‖ ≤ C·√|D|`.  (This `√|D|` scale is refuted for the max, R3; the surviving
+open conjecture is the log-corrected, subgroup-restricted `ShawFlatnessConjecture` of §8.) -/
 def ShawFlatness (ψ : AddChar F ℂ) (D : Finset F) (C : ℝ) : Prop :=
   ∀ b : F, b ≠ 0 → ‖eta ψ D b‖ ≤ C * Real.sqrt (D.card)
 
@@ -460,7 +476,7 @@ theorem shaw_flatness_constant_ge_sqrt_two {ψ : AddChar F ℂ} (hψ : ψ.IsPrim
     le_trans hfloor hupper
   nlinarith [hchain, hnR]
 
-/-! ## §8  THE PROXIMITY PRIZE CONJECTURE (corrected scale — closed, no residuals)
+/-! ## §8  The Shaw gap conjecture (corrected scale, multiplicative subgroups — OPEN)
 
 **Refutation update (2026-06-13, `probe_shaw_flatness_refute.py`, `6a073c50e`).** The first form of
 this conjecture — `B(μ_n) ≤ √2·√n` — is **empirically FALSE**: direct computation gives
@@ -468,8 +484,14 @@ this conjecture — `B(μ_n) ≤ √2·√n` — is **empirically FALSE**: direc
 **4th moment**, which bounds the `L⁴/L²`-weighted *average* of `|η_b|²` (≈ `3n`), NOT the *maximum*;
 the max exceeds any moment-derived bound by a `√(log(#cosets)) = √(log(q/n))` factor (the classic
 moment-method-cannot-reach-the-max / W4 gap). So `shaw_flatness_constant_ge_sqrt_two` is a valid
-LOWER bound on the *average* constant; it does **not** pin the max. The corrected — and now
-refutation-surviving — scale is below. (For the prize `q/n ≈ 1/ε* = 2^128`, so the correction is
+LOWER bound on the *average* constant; it does **not** pin the max. The corrected scale is below.
+
+**Second refutation (CW audit).** The corrected law cannot be quantified over *arbitrary* finsets
+`D` with `|D|² ≤ q`: for an interval `D = {0,…,m−1} ⊆ F_p` and `ψ(x) = e(x/p)`, `b = 1`, one has
+`|η_1| = |sin(πm/p)/sin(π/p)| ≈ m`, while the bound is `C·√(m·log₂(p/m))`; at `p = 1000003`,
+`m = 1000` this forces `C ≥ 10.02`, at `p = 10¹² + 39`, `m = 10⁶` it forces `C ≥ 224`, and the
+required `C` grows like `√(m / log m)`.  The conjecture below is therefore restricted to
+multiplicative subgroups `D ≤ F^×`, the case the prize needs. (For the prize `q/n ≈ 1/ε* = 2^128`, so the correction is
 `B ≈ √128·√n ≈ 11.3·√n`, and the surviving `√(log(1/ε*))` IS the window's `Θ(1/log n)` lower-order
 content.) Crucially the corrected bound **still yields the Shkredov target** `E ≤ n²·O(log q) =
 n^{2+o(1)}` (the log is subpolynomial), so it is the right open W4 core, not a weaker statement. -/
@@ -480,58 +502,71 @@ noncomputable def ShawGapLaw (ψ : AddChar F ℂ) (D : Finset F) (C : ℝ) : Pro
   ∀ b : F, b ≠ 0 →
     ‖eta ψ D b‖ ≤ C * Real.sqrt ((D.card : ℝ) * Real.logb 2 ((Fintype.card F : ℝ) / D.card))
 
-/-- **THE PROXIMITY PRIZE CONJECTURE (corrected).** There is an absolute constant `C` such that the
-production smooth domain `μ_n` (`n² ≤ q`, NTT prime `q`) obeys the Shaw gap law
-`B(μ_n) ≤ C·√(n·log(q/n))`. This is the worst-case incomplete-character-sum bound for a small
-multiplicative subgroup (`n ≪ √q`) — the recognized open **W4 / Bourgain–Konyagin** problem,
-provably NOT decidable from the energy floor (the √log moment-vs-max gap). By §6 it controls every
-moment, hence every face; with it the closed-form `δ*` of §4 holds *with the `√(log(1/ε*))`-corrected
-lower-order term*. Every quantity is explicit and finite-instance-decidable (no `∃`-over-objects, no
-incomputable lemma) — it is the prize, reduced to this one bound and nothing else. -/
+/-- **The Shaw gap conjecture (corrected, subgroup-restricted; OPEN).** There is an absolute
+constant `C` such that every multiplicative subgroup `D ≤ F^×` (encoded as a finset avoiding `0`,
+containing `1`, and closed under multiplication) with `|D|² ≤ q` obeys the Shaw gap law
+`B(D) ≤ C·√(|D|·log₂(q/|D|))`.  This is a worst-case incomplete-character-sum bound for a small
+multiplicative subgroup (`n ≪ √q`) — an open **W4 / Bourgain–Konyagin**-type problem, not
+decidable from the energy floor (the √log moment-vs-max gap).  By §6 it would bound every
+character-sum moment of `D`.  It is NOT shown here to imply or be implied by
+`WorstCaseIncidenceBound`, a list-size bound, or any statement about `δ*`; the earlier
+unrestricted form (all finsets `D`) is false (interval counterexample above). -/
 def ShawFlatnessConjecture : Prop :=
   ∃ C : ℝ, 0 < C ∧
     ∀ {F : Type} [Field F] [Fintype F] [DecidableEq F]
       (ψ : AddChar F ℂ) (D : Finset F),
-      ψ.IsPrimitive → (D.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ) →
+      ψ.IsPrimitive → (0 : F) ∉ D → (1 : F) ∈ D → (∀ x ∈ D, ∀ y ∈ D, x * y ∈ D) →
+      (D.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ) →
       ShawGapLaw ψ D C
 
-/-! ## §8b  The STRUCTURED closed-form δ* (the true value) — entropy law, proven ceiling, open floor
+/-! ## §8b  The HISTORICAL structured candidate `prizeDeltaStar` — refuted pin, ladder ceiling
 
-The average/Shaw view (§4–§8) gives δ* via the worst-case spectral error. The **structured** view
-(in-tree `PrizeEntropyDeltaStar.lean`, axiom-clean on `main`) pins the exact *value* and proves one
-direction unconditionally. The two are the same δ*: `H_q⁻¹(1−ρ−log_q(1/ε*)/n) = prizeDeltaStar` (the
-entropy law is the explicit closed form of the `H_q⁻¹` level set).
+**Status: historical / refuted.**  `prizeDeltaStar` below mirrors the in-tree
+`ProximityGap.PrizeEntropy.prizeDeltaStar`, which that module itself labels the *historical
+mixed-base candidate*: `Real.binEntropy` uses natural logarithms while the denominator is
+`logb 2`.  The associated pin `PrizePinConjecture` is refuted
+(`prizePinConjecture_degreeZero_F12289_REFUTED`, #checked below), and so are the naive
+actual-rate repairs (`PrizeEntropyPinRefuted`).  It is NOT the value of `H_q⁻¹(1−ρ−log_q(1/ε*)/n)`:
+at `n = 2^25`, `q = 2^153`, `ρ = 1/2`, `B = 2^25`, `H_q⁻¹(…) ≈ 0.4935` while
+`prizeDeltaStar = 0.4723` (Mathlib `binEntropy`; `≈ 0.46` with a binary-entropy numerator), and
+by R9 neither expression is known to be the true `δ*`.
 
 The worst-case list on the dyadic subgroup `μ_s` is the **maximal subset-sum fibre**
 `N_fib(s,r) = C(s/2 − r%2, ⌊r/2⌋)` — *exact* via the Lam–Leung antipodal law (two `r`-subsets have
 equal sum iff their symmetric difference is a union of antipodal pairs, so the sum depends only on
 the *singleton part*; `TwoPowerFibreValue`). At constant rate the ladder forces `r ≈ ρs+2`, list
-`2^{(s/2)·H(ρ)}`, exceeding the budget `B = q·ε* (≈ n)` exactly at `δ = prizeDeltaStar`. -/
+`2^{(s/2)·H(ρ)}`, exceeding the budget `B = q·ε* (≈ n)` — heuristically near the historical
+`prizeDeltaStar`; the machine-checked ceiling is the discrete `1 − r/2^μ` (below). -/
 
-/-- **THE STRUCTURED CLOSED-FORM δ*** `= 1 − ρ − H(ρ)/log₂ B`, `H` = binary entropy, `B = q·ε*`.
-A single computable real (no `∃`-over-objects, no incomputable lemma), strictly inside `(1−√ρ, 1−ρ)`.
-Mirrors in-tree `ProximityGap.PrizeEntropy.prizeDeltaStar`. -/
+/-- **Historical mixed-base candidate** `1 − ρ − binEntropy ρ / log₂ B` (`binEntropy` is in
+nats), `B = q·ε*`.  Mirrors in-tree `ProximityGap.PrizeEntropy.prizeDeltaStar`; its pin is refuted
+(see §8b).  It lies in `(1−√ρ, 1−ρ)` only under side conditions: `prizeDeltaStar_lt_capacity`
+needs `B > 2`, and `prizeDeltaStar_gt_johnson` needs `binEntropy ρ / (√ρ − ρ) < log₂ B`
+(e.g. `B = 2` makes it negative). -/
 noncomputable def prizeDeltaStar (ρ B : ℝ) : ℝ :=
   1 - ρ - Real.binEntropy ρ / Real.logb 2 B
 
-/- **State of the structured pin (the definitive frontier, 2026-06-13; docs refreshed 2026-08-16 — no pin change):**
-* **CEILING — PROVEN, unconditional** (`PrizeEntropyDeltaStar.prizeDeltaStar_ceiling`, axiom-clean):
-  `δ* ≤ prizeDeltaStar` via the explicit ladder family, under the MILD decidable hypothesis `q > 2^μ`
-  ∧ `q ∤ (collision resultants)` — a finite checkable prime spectrum, NOT the `s^{s/2}<q` transfer
-  wall, NO `CensusDomination`, no incomputable lemma. The structured adversary is realizable.
-* **FLOOR — the single open core** (`PrizeFloorStatement`): for every word, the list at radius
-  `δ < prizeDeltaStar` is `≤ B` (worst-case `ε_mca ≤ ε*`). This is the worst-case list UPPER bound
-  for explicit smooth RS above Johnson = **BCHKS25 Conj 1.12** = the structured **optimality** (no
-  word beats the antipodal ladder). Proving it pins `δ* = prizeDeltaStar` and resolves BOTH grand
-  challenges (via the in-tree LD⇔MCA bridges).
+/- **State of the structured candidate (2026-06-13; corrected in the CW audit):**
+* **CEILING — PROVEN in its stated regime** (`PrizeEntropyDeltaStar.prizeDeltaStar_ceiling`,
+  axiom-clean): the dyadic ladder family gives `δ* ≤ 1 − r/2^μ` for
+  `evalCode g n ((r−2)·m)`, under the decidable hypotheses `2^μ < p` and `p ∤` collision
+  resultants (NOT the `s^{s/2}<q` transfer wall, NO `CensusDomination`).  Despite its name the
+  theorem does NOT identify `1 − r/2^μ` with `prizeDeltaStar`; "CEILING `δ* ≤ prizeDeltaStar`" is
+  not proved.
+* **FLOOR — historical, mis-parameterized** (`PrizeFloorStatement`): for every word, the list at
+  radius `δ < prizeDeltaStar` is `≤ B`.  It uses the degree ratio `k/n` instead of the rate
+  `(k+1)/n` (see the canonical module), and the companion pin is refuted, so it is not a usable
+  target as stated.  The underlying open question — the worst-case list upper bound for explicit
+  smooth RS above Johnson (BCHKS25 Conj 1.12; no word beats the antipodal ladder) — remains open.
 
 **Why BGK's known `B(μ_n)=o(n)` does NOT close the floor (the trap):** BGK bounds the *generic*
 character sum (the AVERAGE direction), but the floor's worst case is the *structured* ladder
 extremizer, whose list `N_fib` is `≫` generic. So the floor is NOT a character-sum cancellation
 bound — it is the combinatorial optimality of the antipodal subset-sum fibre, which the Shaw
 operator encodes as its top moment `E_{ρn}` (R6/R7), not its gap. The gap `B` (W4, §8) controls the
-generic stratum; the floor's open content is the optimality of the top moment — and the two are the
-SAME wall (BCHKS Thm 1.9: worst-case incidence ⟺ explicit-RS beyond-Johnson list size).
+generic stratum; the floor's open content is the optimality of the top moment.  Heuristically the
+two are the same wall (cf. the external BCHKS 2025/169 Thm 1.9 relating worst-case incidence to
+explicit-RS beyond-Johnson list size); no such equivalence is formalized in this file.
 
 **§8c — THE MOMENT-PROBLEM FRAMING + the floor's HEALTH (2026-06-13, convergent across agents).**
 The floor is a *constrained Chebyshev–Markov moment problem*. The agreement profile `{a_c}` of EVERY
@@ -541,8 +576,8 @@ word has its first `k` binomial moments fixed and w-INDEPENDENT: `Σ_c C(a_c,j) 
             given the fixed first-`k` moments.
 The *unconstrained* max is the trivial Johnson bound `C(n,k)/C(t,k)`; the gap down to `N_fib` is
 ENTIRELY the realizability constraint, which is the first **≥3-wise word-coupled moment** (the pair
-/2-wise layer caps at EXACTLY Johnson). That moment `⟺ E(μ_n)=n^{2+o(1)} ⟺ ShawGapLaw §8` —
-independently re-derived by the swarm's 4-angle workflow.
+/2-wise layer caps at EXACTLY Johnson).  Heuristically that moment is tied to `E(μ_n)=n^{2+o(1)}`
+and to `ShawGapLaw` (§8); no such equivalence is formalized.
 
 **The floor is plausibly TRUE (not refuted on the prize domain):**
 * the catastrophic smooth-domain counterexample (BCHKS Thm 1.6) is **characteristic-2 ONLY**;
@@ -557,9 +592,10 @@ independently re-derived by the swarm's 4-angle workflow.
 pair/2-wise moment → Johnson only; char-0 higher moment → prime-INDEPENDENT pigeonhole failure at
 `r≥5` (`n^5>p` forces spurious vanishing, no NTT prime avoids it); antipodal/Möbius symmetry →
 exponent-halving (√ of the count) only, never the `e^{Θ(n)}` rate gap; GS interpolation / HOMDS /
-character sums → invisible to the cyclic structure. The single missing input is the √-cancellation
-Gauss-sum bound `max_{b≠0}|Σ_{x∈μ_n} e_p(bx)| ≤ C√(n·log(p/n))` for `n=q^{1/4}` (= `ShawGapLaw`) —
-the recognized open Burgess–Shkredov wall. -/
+character sums → invisible to the cyclic structure.  The conjectured missing input (heuristic,
+not a formal reduction) is the √-cancellation Gauss-sum bound
+`max_{b≠0}|Σ_{x∈μ_n} e_p(bx)| ≤ C√(n·log(p/n))` for `n=q^{1/4}` (`ShawGapLaw` on `μ_n`) — the
+recognized open Burgess–Shkredov wall. -/
 
 /-
 ### §9  Refutation ledger (the conjecture SURVIVES all of these — they fix its sharp form)
@@ -587,8 +623,9 @@ R6. "the deep band is the energy E"          — REFUTED (§1,§6): the window i
     documented stall of both lanes (`CensusDomination`; the n^{2.45} energy wall).
 
 R7. "N_fib, SplitLocusBound, WindowRationalBounded, CensusDomination are different unknowns"
-    — REFUTED (§0,§6): all are high spectral moments of the ONE Shaw operator 𝖲_D; `shawOp_eigen`
-    + `shaw_offdiag_moment_le` exhibit the identification.
+    — HEURISTIC ONLY (§0,§6): all are expected to be governed by high spectral moments of the one
+    Shaw operator 𝖲_D; `shawOp_eigen` + `shaw_offdiag_moment_le` prove only the spectral facts,
+    not the identification.
 
 R8. "the bad-scalar count needs a per-γ argument"— REFUTED (§2): `badScalars_card_le_cosetLowWeight`
     removes the quantifier over γ — the whole line family is one static coset count.
@@ -604,10 +641,10 @@ R10. "the corrected bound is weaker than Shkredov" — REFUTED: `B ≤ C·√(n�
     `E ≤ n²·O(log q) = n^{2+o(1)}` (log is subpolynomial), the exact Shkredov target. The √log is
     the genuine `√(log(1/ε*))` lower-order content, not a weakening.
 
-What remains genuinely open is exactly `ShawFlatnessConjecture` (the corrected `ShawGapLaw`
-`B ≤ C·√(n·log(q/n))`) ⟺ `WorstCaseIncidenceBound` ⟺ monomial-extremal optimality — the W4/Bourgain
-worst-case character-sum bound for the small production subgroup, equivalently (BCHKS 2025/169
-Thm 1.9) explicit-μ_n-RS beyond-Johnson list-decoding — and nothing else. That is the prize.
+What remains open includes `ShawFlatnessConjecture` (the subgroup-restricted `ShawGapLaw`
+`B ≤ C·√(n·log(q/n))`), `WorstCaseIncidenceBound`, and monomial-extremal optimality.  This file
+treats them as heuristically linked (cf. BCHKS 2025/169 Thm 1.9 for incidence vs. list size), but
+proves no equivalence or implication among them.
 
 --------------------------------------------------------------------------------------------------
 ### §10  Status ledger (honest)
@@ -622,15 +659,16 @@ Thm 1.9) explicit-μ_n-RS beyond-Johnson list-decoding — and nothing else. Tha
 | `shaw_offdiag_moment_le` (gap controls ALL moments) | **PROVEN, axiom-clean** |
 | `energy_le_of_flatness` (flatness ⟹ Sidon energy) | **PROVEN, axiom-clean** |
 | `shaw_flatness_constant_ge_sqrt_two` (moment/avg lower bound C ≥ √2) | **PROVEN, axiom-clean** |
-| `deltaStar_closedForm` (closed-form δ*, random UPPER bound) | **CONJECTURE** (computable) |
-| `ShawGapLaw` `B ≤ C·√(n·log(q/n))` = `ShawFlatnessConjecture` = `(R)` | **OPEN CORE** = W4/Shkredov wall |
+| `deltaStar_closedForm` (candidate expression) | **DEFINITION only** — not identified with δ* |
+| `prizeDeltaStar` (mixed-base structured candidate) | **HISTORICAL**; pin refuted (§8b) |
+| `ShawFlatnessConjecture` (subgroup-restricted `ShawGapLaw`) | **OPEN conjecture** (W4/Shkredov type) |
+| `WorstCaseIncidenceBound` `(R)` | **OPEN `Prop`**; no proved link to the row above |
 
-**One sentence.** Every face of the prize is one spectral statistic of the Shaw operator `𝖲_D`; a
-single bound on its gap — the corrected `B(μ_n) ≤ C·√(n·log(q/n))` (the `√2·√n` form is refuted, R3) —
-controls all of them at once and yields the closed form `δ*_avg = H_q⁻¹(1−ρ−log_q(1/ε*)/n)` (a random
-UPPER bound; the true δ* is the q-independent monomial-extremal radius, R9); everything above the gap
-is machine-checked here, and the gap bound is exactly the classical W4/Shkredov wall `E(μ_n)=n^{2+o(1)}`
-— the prize, reduced to that one bound and nothing else.
+**One sentence.** Heuristically, the faces of the prize are spectral statistics of the Shaw
+operator `𝖲_D`, and a bound on its gap — the corrected `B(μ_n) ≤ C·√(n·log(q/n))` (the `√2·√n`
+form is refuted, R3) — would control all its character-sum moments at once; what is
+machine-checked here is exactly the eight PROVEN rows of the table above, while the links from the
+gap to `(R)`, to list sizes, and to any closed form for δ* are unproved heuristics.
 -/
 
 end ProximityPrize
@@ -659,9 +697,6 @@ prevent disproved finite laws from being reused as exact inputs.
 #check @ProximityGap.ProjectiveMetricUnification.projectiveBallIncidence_eq_lowCosetWeightCount
 #check @ProximityGap.ProjectiveQuotientBall.pencilJointFar_quotientPencil_iff_not_jointProximity
 #check @ProximityGap.ProjectiveQuotientBall.badSlotCount_eq_projectiveBallIncidence_of_not_jointProximity
-#check @ProximityGap.ProjectiveQuotientBall.affineBallIncidence_spectral
-#check @ProximityGap.ProjectiveMetricUnification.mem_quotientSyndromeBall_iff_cosetRelWeight_le
-#check @ProximityGap.ProjectiveMetricUnification.projectiveBallIncidence_eq_lowCosetWeightCount
 #check @ProximityGap.ProjectiveProperQuotientBall.properQuotientBall_subset_quotientSyndromeBall
 #check @ProximityGap.ProjectiveProperQuotientBall.properQuotientBall_eq_quotientSyndromeBall_of_pencilJointFar
 #check @ProximityGap.ProjectiveProperQuotientBall.badSlotCount_eq_properProjectiveBallIncidence
@@ -805,10 +840,8 @@ prevent disproved finite laws from being reused as exact inputs.
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterOverlapThreeKFour.overlap_three_kfour_constant_quotient_reconciliation
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterOverlapThreeKFour.unique_line_intersection_of_common_factor
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourLongOutsiderCollapse.outsideLineAtLeast_ten_card_le_one_of_card_gt_sixteen
-#check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterKFourLongOutsiderCollapse.eight_le_regularOutsideLine_card_of_card_gt_sixteen
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterOverlapThreeKFourPopulation.offBothPoints_card_le_ten_of_relevant_core_cap
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterOverlapThreeKFourPopulation.card_le_sixteen_of_equal_slope_overlap_three_core_cap
-#check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterOverlapThreeKFourUnequalResidual.overlap_three_core_cap_saturation_of_sixteen_lt_card
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterOverlapThreeKFourUnequalClosure.offBothPoints_card_le_nine_of_unequal_slope
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterOverlapThreeKFourUnequalClosure.card_le_sixteen_of_overlap_three_core_cap
 #check ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterCoreBandSynthesis.lineDeterminant_eq_zero_of_three_relevant_half_core_lines

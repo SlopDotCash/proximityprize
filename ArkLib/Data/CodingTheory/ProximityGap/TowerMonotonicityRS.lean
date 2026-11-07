@@ -26,8 +26,12 @@ and dimensions `K = 2K′ − 1`:
 
   `ε_mca(RS[F, g^{2j}, K′], δ) ≤ ε_mca(RS[F, gⁱ, 2K′−1], δ)`  for every `δ` —
 
-every exact value, floor bound, or supply instance at scale `m` transports to scale
-`2m`, hence to every dyadic scale above, with no side conditions beyond `orderOf g`.
+so every floor bound or supply instance at scale `m` transports to scale `2m`, hence to every
+dyadic scale above, with no side conditions beyond `orderOf g`.  An *exact* downstairs value
+transports only as an upstairs **lower bound**: the same value upstairs needs a matching upper
+bound.  Exactness can genuinely fail: over `F_5` with `g = 2` (order `4`) and `δ = 1/4`, the
+downstairs constant code on `{1, 4}` has `δn < 1` and exact `ε = 1/5`, while the upstairs constant
+code on `μ_4` has `δn = 1` and exact `ε = 2/5` (second band, repetition distance `4`).
 -/
 
 open Finset Polynomial

@@ -33,9 +33,9 @@ machine-checked) at `s = 16`, `ρ = 1/4` (`k+1 = 5`, rotation ceiling `C(16,5) =
 
 | fold `r` | `n · chooseCH 16 r` | vs `C(16,5)=4368` |
 |----------|---------------------|-------------------|
-| `r = 0`  | `16`                | **below** (vacuous-loose, bound says nothing) |
-| `r = 1`  | `256`               | **below** |
-| `r = 2`  | `2176`              | **below** — and the bound `spectrum ≤ 2176` is **VIOLATED** (see next §) |
+| `r = 0`  | `16`                | **below** (char-0 spectrum `1`: bound holds) |
+| `r = 1`  | `256`               | **below** — char-0 spectrum `2256`: bound **VIOLATED** (see next §) |
+| `r = 2`  | `2176`              | **below** — char-0 spectrum `1848`: bound HOLDS despite being below |
 | `r = 3`  | `13056`             | **above** — crossing fold `M_cross = 3`, bound now holds but `13056 ≫ 4368` |
 | `r ≥ 4`  | `≥ 62016`           | **above** (`crossing_closed_upward`), ever looser |
 
@@ -43,18 +43,19 @@ So the crossing fold here is `M_cross = 3 ≈ 0.19·s`, and "above the crossing"
 `spectrum ≤ 13056, 62016, …` — a ceiling that exceeds the rotation ceiling `4368` by `3×, 14×, …`.
 **This is the vacuous large-`r` regime: the bound holds only because the right side is enormous.**
 
-## The bound is VIOLATED below the crossing — so this is NON-TAUTOLOGICAL
+## The bound CAN FAIL below the crossing — so this is NON-TAUTOLOGICAL
 
-The conditional is NOT a triviality that holds for all `r`. **Below the crossing the bound
-`spectrum ≤ n·C(s+r−1,r)` is genuinely FALSE.** At `s = 16`, `r = 2` the CH ceiling is `n·C(17,2) =
-2176`, but the actual distinct complete-homogeneous spectrum at the higher rates already EXCEEDS it:
-exact full enumeration over `(k+1)`-subsets of `μ_16` gives `#distinct h_2 = 2752` at `k+1 = 6`,
-`3592` at `k+1 = 7`, `4041` at `k+1 = 8` (probe, good prime `p ≡ 1 mod 16`), and the dossier records
-a `#distinct h_2 = 3408 > 2176` witness at `s = 16`, `r = 2/3` — all `> 2176`. So at the binding
-*small*-`r` end the bound is **violated**, confirming the conditional has real content (it is FALSE
-below `M_cross`, only becoming TRUE once the CH ceiling has ballooned past the rotation ceiling at and
-above `M_cross`). The hypothesis `hcross` is therefore a genuine constraint, not a tautology — and the
-regime it selects is exactly the one where the conclusion is loose.
+The conditional is NOT a triviality that holds for all `r`. At the tabulated configuration
+`s = 16`, `k+1 = 5`, `n = 16`, exact char-0 (`ℤ[ζ_16]`) enumeration of the distinct `h_r` values over
+the `C(16,5) = 4368` five-subsets gives `1, 2256, 1848` for `r = 0, 1, 2`, against the CH ceilings
+`16, 256, 2176`. So at `r = 1` the bound `spectrum ≤ n·C(s+r−1,r)` is **violated** (`2256 > 256`),
+while at `r = 0` and `r = 2` it holds even though both are below the crossing. Hence the bound is
+NOT "false below `M_cross`" in general; it merely is not guaranteed there, and the `r = 1` witness
+shows the hypothesis `hcross` is a genuine constraint, not a tautology. (Other configurations: at
+`k+1 = 6, 7, 8` the char-0 counts of `#distinct h_2` are `3216, 4385, 5177`, all `> 2176`; the
+earlier-quoted `2752, 3592, 4041` were reduced counts modulo an unrecorded good prime `p ≡ 1 mod 16`.
+Those configurations have a different rotation ceiling `C(16,k+1)` than the table above.) The regime
+`hcross` selects is exactly the one where the conclusion is loose.
 
 ## `poly = n` is REFUTED strictly below `M_cross` at the prize scale `s = 32`
 
@@ -90,14 +91,15 @@ OPEN residual. **The exact `M_cross` / `r ↔ δ` map is OPEN; nothing here clos
   `rotCeil ≤ n·chooseCH s r₁`, and `r₁ ≤ r`, conclude `spectrum ≤ n·C(s+r−1,r)`. **HONEST as a
   conditional only**, and (per the above) firing exactly in the vacuous large-`r` regime.
 * `crossing_concrete_s16` / `upward_closure_concrete_s16` — the machine-checked crossing at
-  `M_cross = 3`, with the below-crossing gap exhibited (`16·chooseCH 16 2 = 2176 < 4368`).
+  `M_cross = 3`, with the below-crossing gap exhibited (`16·chooseCH 16 2 = 2176 < 4368`). (The
+  spectrum counts quoted in the header are offline enumerations, not formalized.)
 
 ## Honest scope (one paragraph)
 
 This is a VACUOUS-REGIME RECORD: the conditional `leading_exponent_pinned` is a true, axiom-clean
 `le_trans`, but its hypothesis `rotCeil ≤ n·chooseCH s r₁` is met only when the CH ceiling has grown
-large (the vacuous large-`r` regime), the conclusion is then loose-to-vacuous, the bound is VIOLATED
-below the crossing (so the conditional is non-tautological), the `poly = n` form is REFUTED at the
+large (the vacuous large-`r` regime), the conclusion is then loose-to-vacuous, the bound CAN FAIL
+below the crossing (`r = 1` witness; so the conditional is non-tautological), the `poly = n` form is REFUTED at the
 prize scale `s = 32` strictly below `M_cross`, and the exact `M_cross` / `r ↔ δ` map is OPEN. **It is
 NOT a `δ*` lower bound and must never be cited as one** — it is honest substrate recording exactly
 where the complete-homogeneous crossing argument is and is not informative.
@@ -190,35 +192,35 @@ larger fold `r₂ ≥ r₁`:
 has grown past the rotation ceiling at `M_cross`, only grows further (`crossing_concrete_s16`:
 `13056, 62016, …` at `s = 16` vs `C(16,5) = 4368`), so the resulting bound `spectrum ≤ n·chooseCH s r`
 is loose-to-vacuous. (Monotonicity of `chooseCH` in `r`, Part 1.) -/
-theorem crossing_closed_upward (s k₁ T n : ℕ) (hs : 1 ≤ s)
+theorem crossing_closed_upward (s T n : ℕ) (hs : 1 ≤ s)
     {r₁ r₂ : ℕ} (hr : r₁ ≤ r₂)
     (hcross : T ≤ n * chooseCH s r₁) :
     T ≤ n * chooseCH s r₂ := by
   refine le_trans hcross ?_
   exact Nat.mul_le_mul_left n (chooseCH_mono_right s hs hr)
 
-/-- **A crossing fold EXISTS (existential form).** Since `chooseCH s r → ∞` in `r` (Part 1 growth,
-`s ≥ 2`) while `T` is fixed, there is a fold `M` with `T ≤ n · chooseCH s M`; above it the inequality
-stays met (`crossing_closed_upward`). This packages "there is a fold at/above which the inequality
-binds" for the conditional below — it makes NO claim about *which* fold the `δ*` binder is, nor that
-the resulting bound is non-vacuous there. -/
+/-- **Upward-closure, existential packaging.** GIVEN a witness fold `M` with `T ≤ n · chooseCH s M`
+(the hypothesis `hM`; the existence of such a fold from `chooseCH s r → ∞` is NOT proved here), the
+inequality holds at every fold `≥ M` (`crossing_closed_upward`). It makes NO claim about *which* fold
+the `δ*` binder is, nor that the resulting bound is non-vacuous there. -/
 theorem exists_crossing_fold (s T n : ℕ) (hs : 1 ≤ s)
     {M : ℕ} (hM : T ≤ n * chooseCH s M) :
     ∃ M₀, ∀ r ≥ M₀, T ≤ n * chooseCH s r :=
-  ⟨M, fun r hr => crossing_closed_upward s 0 T n hs hr hM⟩
+  ⟨M, fun r hr => crossing_closed_upward s T n hs hr hM⟩
 
 /-! ## Part 3 — the capstone CONDITIONAL (firing in the vacuous regime)
 
 ⚠️ The capstone below is a true `le_trans`, but it is NOT a `δ*` lower bound. Its hypothesis
 `hcross` is met only at and above the crossing fold `M_cross` — the VACUOUS large-`r` regime where the
 CH ceiling has grown large (header). Below `M_cross` the conclusion `spectrum ≤ n·C(s+r−1,r)` is
-genuinely FALSE (header §"VIOLATED below the crossing"), so the conditional has real content; but the
+not guaranteed and can fail (header: `r = 1` witness at `s = 16, k+1 = 5`), so the conditional has real content; but the
 regime where it fires is exactly where the bound is loose. Do NOT read this as pinning `δ*`. -/
 
 /-- **CAPSTONE (CONDITIONAL, vacuous-regime) — `spectrum ≤ n·C(s+r−1,r)` at and above the crossing
 fold.** GIVEN
-* `hrot : spectrum ≤ rotCeil` — the PROVEN rotation ceiling (`_SpecS1`: `#distinct h_r ≤ C(s,k+1)`,
-  here `rotCeil = C(s,k+1)`; the `/gcd` refinement only makes it smaller, so `≤ C(s,k+1)` is valid),
+* `hrot : spectrum ≤ rotCeil` — the trivial ceiling `#distinct h_r ≤ C(s,k+1)` (at most one value
+  per subset; here `rotCeil = C(s,k+1)`. NB: the `C(s,k+1)/gcd(s,r)` "refinement" advertised in
+  `_SpecS1` is FALSE in general, so only the trivial ceiling is valid),
 * `hcross : rotCeil ≤ n · chooseCH s r₁` — the binomial crossing inequality at the crossing fold
   `r₁ = M_cross` (upward-closed by `crossing_closed_upward`),
 * `hr : r₁ ≤ r` — the binding fold is at or above the crossing fold,
@@ -226,15 +228,15 @@ THEN
   `spectrum ≤ n · chooseCH s r = n · C(s+r−1, r)`.
 ⚠️ This is a pure `le_trans`, HONEST as a CONDITIONAL only. It is **NOT a `δ*` lower bound**: the
 hypothesis `hcross` selects the VACUOUS large-`r` regime (CH ceiling grown past the rotation ceiling,
-conclusion loose-to-vacuous); below the crossing the conclusion is FALSE (header), so the conditional
-is non-tautological; the `poly = n` form is REFUTED at `s = 32` strictly below `M_cross`; and the
+conclusion loose-to-vacuous); below the crossing the conclusion can fail (header, `r = 1`), so the
+conditional is non-tautological; the `poly = n` form is REFUTED at `s = 32` strictly below `M_cross`; and the
 exact `M_cross` / `r ↔ δ` map is OPEN. Cite this only as the vacuous-regime record it is. -/
 theorem leading_exponent_pinned (spectrum rotCeil n s r₁ r : ℕ) (hs : 1 ≤ s)
     (hrot : spectrum ≤ rotCeil)
     (hcross : rotCeil ≤ n * chooseCH s r₁)
     (hr : r₁ ≤ r) :
     spectrum ≤ n * chooseCH s r :=
-  le_trans hrot (crossing_closed_upward s 0 rotCeil n hs hr hcross)
+  le_trans hrot (crossing_closed_upward s rotCeil n hs hr hcross)
 
 /-- **The capstone conditional in `CompleteHomogeneousSpectrumBound` form (`poly = n`).** Identical
 content, phrased against the F1 floor `Prop`: at and above the crossing fold the spectrum satisfies
@@ -255,10 +257,10 @@ theorem spectrumBound_of_crossing (spectrum rotCeil n s r₁ r : ℕ) (hs : 1 �
 /-- **Crossing-fold sanity at `s = 16, ρ = 1/4` (`k+1 = 5`), exhibiting the below-crossing gap.** The
 rotation ceiling is `C(16,5) = 4368`; with `n = 16` the CH ceiling crosses it at `M_cross = 3`:
 `16 · chooseCH 16 3 = 16 · C(18,3) = 16 · 816 = 13056 ≥ 4368`, while at `r = 2`
-`16 · chooseCH 16 2 = 16 · 136 = 2176 < 4368` — **strictly below**, the small-`r` regime where the
-bound `spectrum ≤ 2176` is VIOLATED by the actual spectrum (`#distinct h_2 = 2752, 3592, 4041` at
-`k+1 = 6, 7, 8`; dossier `3408 > 2176`). So the conditional is NON-TAUTOLOGICAL: it fails below
-`M_cross = 3` and only holds above, in the vacuous regime (`13056 ≫ 4368`). -/
+`16 · chooseCH 16 2 = 16 · 136 = 2176 < 4368` — **strictly below** the crossing. Below the crossing
+the bound is not guaranteed: at this configuration the char-0 spectrum at `r = 1` is `2256 > 256`
+(violated), while at `r = 2` it is `1848 ≤ 2176` (holds). Above `M_cross = 3` it holds, in the
+vacuous regime (`13056 ≫ 4368`). (Spectrum counts are offline enumerations, not formalized.) -/
 theorem crossing_concrete_s16 :
     Nat.choose 16 5 = 4368
     ∧ 16 * chooseCH 16 2 < Nat.choose 16 5

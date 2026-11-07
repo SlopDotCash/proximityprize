@@ -285,7 +285,8 @@ theorem exists_code_of_randomLinearLambdaLowerFirstMomentResidual
 /-- **ABF26 Theorem 3.11 [GLMRSW22 Thm 4.1].** Random linear code lower bound. Fix a
 prime `q`, `δ ∈ (0, 1 - 1/q)`, and `ε ∈ (0, 1)`. There exists `γ > 0` such that for all
 `1 - H_q(δ) - γ < ρ < 1 - H_q(δ)` and all sufficiently large `n`, some linear code
-`C ⊆ F^n` of rate `ρ` satisfies:
+`C ⊆ F^n` of rate `ρ` (here: dimension exactly `⌈ρ n⌉`, i.e. rate in `[ρ, ρ + 1/n)`)
+satisfies:
 
   `|Λ(C, δ)| > ⌊H_q(δ) / (1 - H_q(δ) - ρ) - ε⌋`
 
@@ -296,8 +297,9 @@ code statement consumed by downstream bounds.
 
 **STATUS: NEEDS_CLASSICAL.** The [GLMRSW22 Thm 4.1] random-linear-code lower bound is
 settled classical coding theory but unformalized anywhere; mathlib lacks the
-list-decoding / entropy-rate API the proof needs. Discharging the `sorry` is a ground-up
-formalization, not a port. (Secondary DESIGN_OBSTRUCTION: the paper's `1 - q^{-Ω(n)}`
+list-decoding / entropy-rate API the proof needs. Proving the statement (an explicit `Prop`
+definition with no proof attached; there is no `sorry` here) is a ground-up formalization, not a
+port. (Secondary DESIGN_OBSTRUCTION: the paper's `1 - q^{-Ω(n)}`
 probabilistic guarantee is downgraded here to a bare existential witness; the faithful
 random-generator-matrix surface is `random_linear_lambda_lower_glmrsw22_random_generator_matrix`
 below.) See `research/formal/arklib-proof-research-2026-06.md`. -/
@@ -312,13 +314,15 @@ def random_linear_lambda_lower_glmrsw22
           ∀ {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
             {F : Type} [Field F] [Fintype F] [DecidableEq F],
             Fintype.card F = q → n₀ ≤ Fintype.card ι →
-            -- Rate `≥ ρ` (not `= ρ`) so the statement is provable for *any* real
-            -- `ρ` in the interval, including irrationals where the rational
-            -- `finrank/|ι|` cannot exactly equal `ρ`. The conclusion's bound is
-            -- monotone in `ρ`, so a code of rate strictly above `ρ` still
-            -- witnesses the `ρ`-indexed bound.
+            -- Dimension pinned to `⌈ρ n⌉` (rate in `[ρ, ρ + 1/n)`), not `= ρ n`, so the
+            -- statement makes sense for *any* real `ρ` in the interval, including
+            -- irrationals where `finrank/|ι|` cannot exactly equal `ρ`. A bare lower
+            -- bound `rate ≥ ρ` would be vacuous: the full ambient code `F^n` (rate 1)
+            -- has `Λ(F^n, δ) ≥ n + 1` (zero word plus the `n` unit vectors, once
+            -- `n ≥ 1/δ`), beating any fixed floor bound without any random-code
+            -- content; pinning the dimension rules that witness out.
             ∃ C : Submodule F (ι → F),
-              (Module.finrank F C : ℝ) / Fintype.card ι ≥ ρ ∧
+              Module.finrank F C = ⌈ρ * Fintype.card ι⌉₊ ∧
               (Lambda ((C : Set (ι → F))) δ : ENNReal) >
                 ((Nat.floor (qEntropy q δ / (1 - qEntropy q δ - ρ) - ε) : ℕ) : ENNReal)
   -- ABF26-T3.11; external statement [GLMRSW22 Thm 4.1].
@@ -328,9 +332,12 @@ def random_linear_lambda_lower_glmrsw22
   -- generator-matrix probability space; the missing theorem is the GLMRSW22 first-moment
   -- count showing this success probability is positive (indeed high). Genuinely external.
 
-/-- Faithful random-generator-matrix form of the GLMRSW22 lower bound, with the high-probability
+/-- Random-generator-matrix form of the GLMRSW22 lower bound, with the high-probability
 estimate weakened to the positive-probability assertion sufficient for an existential code
-witness.  The full paper theorem should strengthen the final conjunct to `1 - q^{-Ω(n)}`. -/
+witness.  The generator dimension is pinned to `k = ⌈ρ n⌉` (the random-code ensemble at the
+prescribed rate; an unrestricted `∃ k` would admit the vacuous identity-matrix witness
+`k = n`, whose code is all of `F^n`).  The full paper theorem should strengthen the final
+conjunct to `1 - q^{-Ω(n)}`; that high-probability estimate remains open in-tree. -/
 noncomputable def random_linear_lambda_lower_glmrsw22_random_generator_matrix
     (q : ℕ) (_hq_pp : IsPrimePow q)
     (δ : ℝ) (_hδ_pos : 0 < δ) (_hδ_lt : δ < 1 - 1 / q)
@@ -342,8 +349,7 @@ noncomputable def random_linear_lambda_lower_glmrsw22_random_generator_matrix
           ∀ {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
             {F : Type} [Field F] [Fintype F] [DecidableEq F],
             Fintype.card F = q → n₀ ≤ Fintype.card ι →
-            ∃ k : ℕ,
-              0 < randomLinearLambdaLowerProbability F ι q k δ ε ρ
+              0 < randomLinearLambdaLowerProbability F ι q ⌈ρ * Fintype.card ι⌉₊ δ ε ρ
 
 /-- Positive probability in the random-generator-matrix form reassembles the legacy existential
 GLMRSW22 front door. -/
@@ -367,12 +373,23 @@ theorem random_linear_lambda_lower_glmrsw22_of_random_generator_matrix
   letI : Field F := hField
   letI : Fintype F := hFFintype
   letI : DecidableEq F := hFDecidable
-  rcases hn₀ (ι := ι) (F := F) hFq hn with ⟨k, hprob⟩
+  have hprob := hn₀ (ι := ι) (F := F) hFq hn
   rcases exists_randomLinearLambdaLowerEvent_of_probability_pos
-      (F := F) (ι := ι) (q := q) (k := k) (δ := δ) (ε := ε) (ρ := ρ) hprob with
+      (F := F) (ι := ι) (q := q) (k := ⌈ρ * Fintype.card ι⌉₊) (δ := δ) (ε := ε) (ρ := ρ)
+      hprob with
     ⟨G, hG⟩
-  exact exists_code_of_randomLinearLambdaLowerEvent
-    (F := F) (ι := ι) (q := q) (k := k) (δ := δ) (ε := ε) (ρ := ρ) hG
+  refine ⟨randomLinearCodeOfGeneratorMatrix G, ?_, by simpa using hG.2⟩
+  apply le_antisymm
+  · -- the code of a `k × n` generator matrix has dimension at most `k`
+    calc Module.finrank F (randomLinearCodeOfGeneratorMatrix G)
+        ≤ Module.finrank F (Fin ⌈ρ * Fintype.card ι⌉₊ → F) :=
+          LinearMap.finrank_range_le _
+      _ = ⌈ρ * Fintype.card ι⌉₊ := by simp
+  · -- the event's rate bound `dim / n ≥ ρ` forces `dim ≥ ⌈ρ n⌉`
+    have hrate := hG.1
+    have hn_pos : (0 : ℝ) < Fintype.card ι := by exact_mod_cast Fintype.card_pos
+    rw [ge_iff_le, le_div_iff₀ hn_pos] at hrate
+    exact Nat.ceil_le.mpr (by simpa [LinearCode.dim] using hrate)
 
 /-- A named first-moment residual family supplies the faithful random-generator-matrix
 GLMRSW22 surface.  The theorem only unfolds
@@ -389,8 +406,7 @@ theorem random_linear_lambda_lower_glmrsw22_random_generator_matrix_of_first_mom
             ∀ {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
               {F : Type} [Field F] [Fintype F] [DecidableEq F],
               Fintype.card F = q → n₀ ≤ Fintype.card ι →
-              ∃ k : ℕ,
-                randomLinearLambdaLowerFirstMomentResidual F ι q k δ ε ρ) :
+                randomLinearLambdaLowerFirstMomentResidual F ι q ⌈ρ * Fintype.card ι⌉₊ δ ε ρ) :
     random_linear_lambda_lower_glmrsw22_random_generator_matrix
       q hq_pp δ hδ_pos hδ_lt ε hε_pos hε_lt := by
   simpa [random_linear_lambda_lower_glmrsw22_random_generator_matrix,
@@ -408,8 +424,7 @@ theorem random_linear_lambda_lower_glmrsw22_of_first_moment_residual
             ∀ {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
               {F : Type} [Field F] [Fintype F] [DecidableEq F],
               Fintype.card F = q → n₀ ≤ Fintype.card ι →
-              ∃ k : ℕ,
-                randomLinearLambdaLowerFirstMomentResidual F ι q k δ ε ρ) :
+                randomLinearLambdaLowerFirstMomentResidual F ι q ⌈ρ * Fintype.card ι⌉₊ δ ε ρ) :
     random_linear_lambda_lower_glmrsw22 q hq_pp δ hδ_pos hδ_lt ε hε_pos hε_lt :=
   random_linear_lambda_lower_glmrsw22_of_random_generator_matrix q hq_pp δ hδ_pos hδ_lt ε
     hε_pos hε_lt
@@ -660,8 +675,10 @@ reduction — no `sorry`, no silent weakening):
   (subspaces of `K` of fixed dimension `v` sharing the top coefficients of their subspace
   polynomials; counted via Gaussian binomials against the number of top-coefficient
   patterns — left as a named residual here, see the module/PARAMETER-DEFECT note);
-* the "infinitely many prime powers" sequence still lives only in the bare external `Prop`
-  `rs_lambda_superpoly_extension_bkr06`.
+* the "infinitely many prime powers" sequence lives only in the bare statement
+  `rs_lambda_superpoly_extension_bkr06` (no longer external: it is proved by
+  `BKR06.rs_lambda_superpoly_extension_bkr06_proven` in `ToMathlib/BKR06BareT312.lean`, by a
+  route that supplies its own witness sequence).
 
 Compared to `_of_residuals`/`_of_injection`, this is the *first* form that can actually be
 fed by BKR06: the subspace lives in a real extension `K`, so `Module.finrank F (𝓛 i)` is
@@ -733,9 +750,10 @@ residual further: it assumes only the genuine *geometric* step — an injective 
 the counting arithmetic in-tree via `Set.ncard_le_ncard_of_injOn` together with the proven
 value-fiber engine in `ArkLib.ToMathlib.BKR06FiberCount`
 (`BKR06.card_subspacePolyHom_fiber_eq_natDegree`: a degree-`q^d` linearized polynomial takes
-each value in its image exactly `q^d` times). The statement below remains an external `Prop`
-only because the *unhypothesized* in-tree statement cannot supply that geometric encoding nor
-the "infinitely many `q`" prime-power witness sequence. -/
+each value in its image exactly `q^d` times). (Historical: these reductions were written when
+the statement below was still external because no in-tree construction supplied the geometric
+encoding or the "infinitely many `q`" prime-power witness sequence. That is no longer the case:
+see the PROVEN status above — `rs_lambda_superpoly_extension_bkr06_proven` supplies both.) -/
 def rs_lambda_superpoly_extension_bkr06
     (α β : ℝ) (_hα_pos : 0 < α) (_hα_lt : α < β) (_hβ_lt : β < 1) :
     Prop :=
@@ -868,9 +886,10 @@ high-multiplicity count `hcount` as an explicit hypothesis.
 residual to its geometric core: it assumes only an index type `S` of cardinality
 `p^{p^α·β/2}` (the high-multiplicity polynomial-family index) and an injection placing the
 family at distinct close codewords, discharging *all* of the counting/Ω arithmetic in-tree
-via `Set.ncard_le_ncard_of_injOn`. The statement below remains an external `Prop` only
-because the *unhypothesized* in-tree statement cannot supply that high-multiplicity
-construction nor the `p₀` threshold. -/
+via `Set.ncard_le_ncard_of_injOn`. (Historical: these reductions were written when the
+statement below was still external because no in-tree construction supplied the
+high-multiplicity family or the `p₀` threshold. That is no longer the case: see the PROVEN
+status above — `rs_lambda_large_prime_ghsz02_proven` supplies them.) -/
 def rs_lambda_large_prime_ghsz02
     (α β : ℝ) (_hα_pos : 0 < α) (_hα_lt : α < 1) (_hβ_pos : 0 < β) (_hβ_lt : β < 1) :
     Prop :=

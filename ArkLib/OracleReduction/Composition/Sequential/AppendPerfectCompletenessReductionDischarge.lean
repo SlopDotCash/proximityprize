@@ -23,10 +23,17 @@ seam keystone:
   (message seam, `P_to_V`; lossless `init` + support-faithful `impl`).
 * `reductionAppendPerfectCompletenessResidual_challenge` ← `append_perfectCompleteness_challenge`
   (challenge seam, `V_to_P`; state-preserving / never-failing `impl`).
-* `reductionAppendPerfectCompletenessResidual_holds` — the **seam-direction-free**
-  discharge: a total case split on the seam round's direction (the appended seam round
-  `m` is `pSpec₂`'s round `0`, `append_dir_natAdd`) routes to whichever keystone applies,
-  so only the union of the two honest-`impl` side conditions is needed — no `hDir` hypothesis.
+* `reductionAppendPerfectCompletenessResidual_holds_of_nonempty_right` — the
+  **seam-direction-free** discharge for a nonempty trailing protocol (`hn : 0 < n`): a total case
+  split on the seam round's direction (the appended seam round `m` is `pSpec₂`'s round `0`,
+  `append_dir_natAdd`) routes to whichever keystone applies, so only the union of the two
+  honest-`impl` side conditions is needed — no `hDir` hypothesis.
+
+The fully total discharge `Reduction.reductionAppendPerfectCompletenessResidual_holds` lives in
+`AppendPerfectCompletenessTotal.lean`: it also covers an empty trailing protocol (`n = 0`), so it
+needs no `0 < n` hypothesis. This file formerly declared a second theorem under that same fully
+qualified name with a different signature, which made the two modules impossible to import
+together; the `0 < n` variant here now carries the distinct `_of_nonempty_right` name.
 
 No `sorry`, no new axioms: each proof is a keystone application.
 -/

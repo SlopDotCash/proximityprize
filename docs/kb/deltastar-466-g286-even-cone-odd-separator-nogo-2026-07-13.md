@@ -42,11 +42,16 @@ G280 realizable family — at eight sponsor-faithful cells `n ∈ {8,16}`,
 1. **Zero is strictly outside the convex hull at every cell.** Six cells (`8,113`; `8,257`;
    `16,257`; `16,433`; `16,977`; `16,1153`) have 0 not even in the *affine* hull, and an exact
    nontrivial separating functional with an explicit positive rational margin is exhibited. The two
-   cells (`16,97`; `16,113`) have 0 in the affine hull but out of the *convex* hull, so 0 is the
-   min-norm affine point and there is NO nontrivial linear separator there at all (only the trivial
-   affine constant `phi(v)=1`). Either way 0 is NOT the barycenter — contra a naive reading of
-   G284's countermodel — but note the affine-hull cells already show that convexity alone does not
-   supply a linear separator; parity does the real work.
+   cells (`16,97`; `16,113`) have 0 in the affine hull but out of the *convex* hull. Either way 0
+   is NOT the barycenter — contra a naive reading of G284's countermodel.
+   **Correction (audit 2026-10-28, L104):** this page previously said the two affine-hull cells
+   admit NO nontrivial linear separator (0 being the min-norm point of the affine hull) and that
+   "convexity alone does not supply a linear separator". That was false: a finite convex hull
+   missing 0 is always strictly linearly separated from 0 (e.g. `V = {1, 2} ⊂ ℚ` has 0 in its
+   affine hull, yet `w = 1` separates), and the old probe's "trivial affine constant" took the
+   same value at 0, so it separated nothing. The corrected probe solves an exact separator LP and
+   exhibits a verified nonzero, coordinate-even linear separator with `min_v ⟨w,v⟩ = 1 > 0` at both
+   cells. The parity argument below is unaffected: it concerns coordinate-ODD normals only.
 
 2. **But an odd normal is impossible for a sharper structural reason.** Every realizable profile is
    coordinate-even. For the reflection involution `σ: x ↦ -x`, any coordinate-ODD functional `φ`
@@ -58,9 +63,12 @@ G280 realizable family — at eight sponsor-faithful cells `n ∈ {8,16}`,
    nonzero even part; the even part's pairing is the same even inner product analysed in G276/G280,
    polarity-invariant and carrying no binding beyond it.
 
-Net dichotomy: on the actual sponsor cone, *oddness and separation are mutually exclusive*. The
-"predeclared row-labelled ODD linear normal with positive margin" hatch is self-contradictory. Any
-surviving certificate must be genuinely NON-LINEAR (odd quadratic or higher).
+Net dichotomy: on the actual sponsor cone, *coordinate-oddness and separation are mutually
+exclusive* for linear normals. The "predeclared row-labelled coordinate-ODD linear normal with
+positive margin" hatch is self-contradictory. (An earlier sentence here concluded that any surviving
+certificate must be non-linear; that does not follow, since even linear separators exist at every
+tested cell, and whether the certificate's "odd" requirement means coordinate reflection or global
+polarity is a separate question — audit crosslink R-253.)
 
 ## Formal payload
 
@@ -78,10 +86,13 @@ Axioms for all five: `[propext, Classical.choice, Quot.sound]`, no `sorryAx`, no
 zero-axiom `decide` witnesses at the exact `n=8, p=113` cell: `c 1 = c 112 = 5911`, odd two-point
 pairing `1·5911 + (-1)·5911 = 0`, even two-point pairing `1·5911 + 1·5911 = 11822 > 0`.
 
-Probe `scripts/probes/g286_hull_zero_probe.py` (pure exact-rational LP, no floats): gates A-D
+Probe `scripts/probes/g286_hull_zero_probe.py` (pure exact-rational LP, no floats): gates A-E
 (A: every realizable profile coordinate-even; B: odd functional annihilates the cone; C: even
-functional pairs nonzero; D: zero out of the convex hull at every cell) are hard `SystemExit(1)`
-gates; PASS.
+functional pairs nonzero; D: zero out of the convex hull at every cell, with a separator
+certificate and no iteration-cap "unknown"; E: every recorded separator is nonzero, coordinate-even
+and strictly positive on the profiles) are hard `SystemExit(1)` gates; PASS (gate C's fallback and
+gate E were added by the 2026-10-28 L104 repair; regression test
+`scripts/tests/test_g286_hull_separator.py`).
 
 ## Validation
 

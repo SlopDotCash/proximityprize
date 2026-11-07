@@ -24,9 +24,11 @@ same phenomenon: sampling without replacement is the canonical **negatively asso
 and an NA family obeys the Wick moment domination `E[∏ X_i] ≤ ∏ E[X_i]` — the very inequality that
 turns into the `(2r−1)‼·n^r` ceiling after summing over the `(2r−1)‼` perfect matchings.
 
-So the prize-true direction is: **prove the abstract NA ⟹ sub-Gaussian-moment inequality, then
-exhibit the `μ_n` energy as an NA moment.** This file lands the abstract half axiom-clean and names
-the bridge half.
+So the intended prize-true direction is: **prove an NA ⟹ sub-Gaussian-moment inequality, then
+exhibit the `μ_n` energy as an NA moment.**  This file proves only elementary NA lemmas (the
+Chebyshev covariance kernel and the definitional per-block domination); it does **not** formalize
+the matching/Wick sum, does not exhibit any NA model, and does not link `NegAssoc` to `rEnergy`.
+(Audit CW-B14-04: the "bridge" `EnergyIsNAMoment` is definitionally `GaussianEnergyBound`.)
 
 ## What is PROVEN here (axiom-clean, `[propext, Classical.choice, Quot.sound]`)
 
@@ -45,34 +47,31 @@ expectation `expt X = (∑_ω X ω)/N`. All inequalities are over `ℝ`.
   replacement / negatively-correlated periods satisfy this; it is the abstract hypothesis carrying
   the open content.)
 
-* `expt_prod_le_of_negAssoc` / `expt_prod_split_le_of_negAssoc` — **the NA product-moment (NA-MGF /
-  Wick) bound:** an NA family satisfies `E[∏_{i∈s} X_i] ≤ ∏_{i∈s} E[X_i]` for every block `s`, and
-  the **two-block split** `E[(∏_A)(∏_B)] ≤ E[∏_A]·E[∏_B]` holds for disjoint blocks `A ⊎ B`.
-  Iterating the split gives the full Wick domination.
+* `expt_prod_le_of_negAssoc` / `expt_prod_split_le_of_negAssoc` — restatements of the definition:
+  an NA family satisfies `E[∏_{i∈s} X_i] ≤ ∏_{i∈s} E[X_i]` for every block `s` (this *is*
+  `NegAssoc`),
+  and the **two-block split** `E[(∏_A)(∏_B)] ≤ E[∏_A]·E[∏_B]` for disjoint `A ⊎ B`.  No Wick sum
+  over matchings is formalized here.
 
-* `wick_moment_bound_of_negAssoc` — **NA ⟹ sub-Gaussian moment ceiling.** For an NA family whose
-  marginal means are bounded by a per-coordinate variance proxy `μ_i` (`E[X_i] ≤ μ_i`), the joint
-  product moment is bounded by `∏_i μ_i` — the multiplicative shape that becomes the `(2r−1)‼·s^r`
-  Wick value once specialized to the `2r` energy exponents matched in `(2r−1)‼` ways. (The matching
-  count is the in-tree `Nat.doubleFactorial`; here we land the per-matching domination, the NA core.)
+* `wick_moment_bound_of_negAssoc` — for an NA family with nonnegative marginal means bounded by
+  `μ_i`, the joint product moment is `≤ ∏_i μ_i` (definition + `prod_le_prod₀`).  The intended
+  specialization to `(2r−1)‼·s^r` via the matching count is **not** formalized.
 
 ## What is REDUCED (the named bridge hypothesis — the honest open content)
 
-* `EnergyIsNAMoment` — the **bridge Prop**: the `μ_n` additive energy `E_r(μ_n)` equals (is `≤`) an
-  NA product-moment of a sub-Gaussian family with variance proxy `n` over a uniform space. **Given
-  this**, the abstract `wick_moment_bound_of_negAssoc` + the `(2r−1)‼` matching census discharges
-  `GaussianEnergyBound μ_n r` (`energyBound_of_NAMoment`). This Prop is the structural restatement
-  of the open char-`p` energy core (memory `issue444-Wr-excess-onset-threshold-not-birthday`): in
-  char-`p` the periods' negative correlation can *fail* (short `±1`-relations vanish mod `p`), i.e.
-  `EnergyIsNAMoment` can break — exactly the documented wall. We do NOT discharge it; we name it and
-  prove the abstract NA machinery it would feed.
+* `EnergyIsNAMoment` — despite its name, this Prop is **literally** the Wick ceiling
+  `E_r(G) ≤ (2r−1)‼·|G|^r`, i.e. `GaussianEnergyBound G r` (`NAMoment_iff_energyBound` is
+  `Iff.rfl`).
+  It contains no NA realization (no `Ω`, family `X`, or marginals), so it is a renaming of the open
+  char-`p` energy core, not a reduction of it to negative association.  The NA lemmas above are not
+  connected to it.  We do NOT discharge it.
 
 ## Honest scope
 
-The abstract NA ⟹ Wick inequality is **prize-TRUE direction and fully proven**. It is NOT a prize
-closure: NA of the char-`p` periods at depth `r* ≈ log p` is precisely the open input
-(`EnergyIsNAMoment`), the same wall under a structural name. This is a LANDED abstract brick +
-REDUCED bridge, per the project modularity convention.
+What is proved is the 2-variable Chebyshev covariance kernel and definitional consequences of
+`NegAssoc`; an NA ⟹ Wick theorem (with the matching sum) is **not** proved, and `NegAssoc` is never
+shown to hold for any model.  It is NOT a prize closure and not a reduction: the open input is the
+energy bound itself (`EnergyIsNAMoment = GaussianEnergyBound`).
 
 Issue #444.
 -/
@@ -155,10 +154,9 @@ equalities, so the content is at `|s| ≥ 2` — driven by the pairwise kernel `
 def NegAssoc (X : ι → Ω → ℝ) : Prop :=
   ∀ s : Finset ι, expt (fun ω => ∏ i ∈ s, X i ω) ≤ ∏ i ∈ s, expt (X i)
 
-/-- **NA product-moment (Wick) bound, re-exported.** Direct from the definition: an NA family
-satisfies `E[∏_{i∈s} X_i] ≤ ∏_{i∈s} E[X_i]` for every block `s`. This is the inequality that, summed
-over the `(2r−1)‼` perfect matchings of the `2r` energy exponents, becomes the `(2r−1)‼·s^r`
-Gaussian/Wick ceiling. -/
+/-- **NA product-moment bound, re-exported.**  This is the definition of `NegAssoc` applied at `s`
+(`h s`): `E[∏_{i∈s} X_i] ≤ ∏_{i∈s} E[X_i]`.  The intended summation over perfect matchings into a
+`(2r−1)‼·s^r` ceiling is not formalized. -/
 theorem expt_prod_le_of_negAssoc {X : ι → Ω → ℝ} (h : NegAssoc X) (s : Finset ι) :
     expt (fun ω => ∏ i ∈ s, X i ω) ≤ ∏ i ∈ s, expt (X i) :=
   h s
@@ -181,10 +179,10 @@ theorem expt_prod_insert_le_of_negAssoc {X : ι → Ω → ℝ} [DecidableEq ι]
 /-- **NA ⟹ sub-Gaussian moment domination (the abstract Wick inequality).** For an NA family `X`
 indexed by a finite block `s`, the joint product-moment is dominated by the product of the marginal
 means. Combined with a per-coordinate variance proxy `E[X_i] ≤ μ_i`, this is the multiplicative form
-that yields the `(2r−1)‼·s^r` ceiling once specialized to the `2r` energy exponents matched in
-`(2r−1)‼` ways. **This is the prize-true direction in abstract form, fully proven from `NegAssoc`.** -/
+intended to feed a `(2r−1)‼·s^r` ceiling after a matching sum, which is not formalized here.  Proof:
+the definition of `NegAssoc` plus `Finset.prod_le_prod₀`. -/
 theorem wick_moment_bound_of_negAssoc {X : ι → Ω → ℝ} (h : NegAssoc X) (s : Finset ι)
-    {μ : ι → ℝ} (hμ : ∀ i ∈ s, expt (X i) ≤ μ i) (hμpos : ∀ i ∈ s, 0 ≤ μ i)
+    {μ : ι → ℝ} (hμ : ∀ i ∈ s, expt (X i) ≤ μ i)
     (hXmean : ∀ i ∈ s, 0 ≤ expt (X i)) :
     expt (fun ω => ∏ i ∈ s, X i ω) ≤ ∏ i ∈ s, μ i := by
   calc expt (fun ω => ∏ i ∈ s, X i ω)
@@ -209,16 +207,14 @@ variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 open ArkLib.ProximityGap.GaussPeriodMomentBound
 open ArkLib.ProximityGap.SubgroupGaussSumMoment
 
-/-- **The bridge hypothesis (REDUCED — the open char-`p` core under a structural name).**
+/-- **The energy Wick ceiling, under an NA-flavoured name (NOT a reduction).**
 
-`EnergyIsNAMoment G r` asserts that the `r`-fold additive energy `E_r(G)` of the smooth domain
-`G = μ_n` is realized as the value of an **NA product-moment over a uniform finite space**, with the
-per-coordinate variance proxy `|G|`, so that the abstract `wick_moment_bound_of_negAssoc` applies and
-yields the Wick ceiling `E_r(G) ≤ (2r−1)‼·|G|^r`. Concretely we package the *consequence* directly:
-there EXISTS such an NA realization (`Ω`, family `X`, marginals) whose product-moment computes
-`E_r(G)` and is bounded by `(2r−1)‼·|G|^r`.
+`EnergyIsNAMoment G r` is literally `E_r(G) ≤ (2r−1)‼·|G|^r` — the same statement as
+`GaussianEnergyBound G r`.  It does **not** contain an NA realization (no space `Ω`, family `X`, or
+marginals), and nothing in this file derives it from `NegAssoc` (audit CW-B14-04).  The name
+records the *intended* NA heuristic only.
 
-This is the structural restatement of the **open char-`p` energy core**: in characteristic 0 the
+Heuristic background (unproved): in characteristic 0 the
 periods are negatively associated and this holds (Lam–Leung antipodal closure); in characteristic
 `p` at depth `r ≈ log p` the negative association can FAIL (short `±1`-relations of `2^μ`-th roots
 vanish mod `p`, killing the no-replacement structure — memory
@@ -227,18 +223,13 @@ not discharge it for the prize regime. -/
 def EnergyIsNAMoment (G : Finset F) (r : ℕ) : Prop :=
   (rEnergy G r : ℝ) ≤ (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r
 
-/-- **Bridge consumer (PROVEN reduction): the NA-moment realization discharges the energy bound.**
-`EnergyIsNAMoment G r` is *definitionally* the `GaussianEnergyBound G r` carrier — the NA-moment
-realization is, by construction, the Wick ceiling on `E_r(G)`. So an NA realization of the energy
-moment (char-0, where periods are genuinely NA) discharges the prize per-frequency energy input. The
-content is the abstract machinery of §2–§4 that *justifies* `EnergyIsNAMoment`; the bridge itself is
-the definitional unfolding. -/
+/-- **Definitional identity.**  `EnergyIsNAMoment G r` *is* `GaussianEnergyBound G r`; this is the
+identity map, not a reduction.  No result of §2–§4 is used. -/
 theorem energyBound_of_NAMoment {G : Finset F} {r : ℕ} (h : EnergyIsNAMoment G r) :
     GaussianEnergyBound G r := h
 
-/-- Conversely the prize energy input IS an NA-moment statement (the two Props coincide), making the
-NA route a faithful structural reformulation, not a strengthening: closing `EnergyIsNAMoment` in
-char-`p` is exactly closing `GaussianEnergyBound` in char-`p`. -/
+/-- The two Props coincide by definition (`Iff.rfl`): closing `EnergyIsNAMoment` is exactly closing
+`GaussianEnergyBound`; the NA name adds no content. -/
 theorem NAMoment_iff_energyBound {G : Finset F} {r : ℕ} :
     EnergyIsNAMoment G r ↔ GaussianEnergyBound G r := Iff.rfl
 

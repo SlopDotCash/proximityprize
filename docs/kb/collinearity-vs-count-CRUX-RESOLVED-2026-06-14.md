@@ -12,8 +12,15 @@ The decisive question was: does μ_n antipodal rigidity force close codewords CO
 beyond Johnson, even when the LIST is large (the GG25/FRS "collinear-but-large-list" escape)? Answer: NO.
 
 STRUCTURAL leg (completed, collinearity_beyond_johnson = **not-forced**, refuted=True):
-1. **Forced collinearity is a GENERIC-RS degree fact, no rigidity gain.** Three close codewords sharing
-   a degree-<k structure are collinear for elementary interpolation reasons, not μ_n antipodal rigidity.
+1. **Collinearity is not forced, even at an interior radius; there is no rigidity gain.** *(Corrected,
+   audit T162. An earlier version said three close codewords "sharing a degree-<k structure are collinear
+   for elementary interpolation reasons". That is false: being codewords of the same RS code is the only
+   shared degree-<k structure, and it does not make three of them collinear.)* Below the unique-decoding
+   radius `(n−k+1)/(2n)` at most one codeword is within `δ` of a word, so "collinearity" of close triples
+   holds only **vacuously**. From the non-collinear-triple onset `δ=(n−k+1)/(2n)≈(1−ρ)/2` (item 3), which
+   is an *interior* radius strictly below Johnson, machine-built examples give three mutually close
+   codewords that are **not** collinear. Neither interpolation nor μ_n antipodal rigidity forces close
+   codewords onto a line beyond unique decoding.
 2. **Non-collinearity does NOT imply MCA-badness.** A disjoint multi-line tiled word keeps ε_mca→0
    (its witness agreement sets stay correlated). Measured two-line MCA-bad-rate vs budget~n/|F|: δ=0.5,
    0.625→0.000 all n; δ=0.70→0.032(n16)/0.000(n32)/0.000(n48); δ=0.73→0.025(n16)/0.003(n32)/0.000(n48)

@@ -8,8 +8,13 @@ Context (predecessors):
   * SYZ53  imbalance iota = floor((delta2-delta1)/2); iota<=1 <=> gap g:=delta2-delta1 <= 3.
   * SYZ50/52  the band-realizable (4,4,4),t=2 interior witnesses (mu14 subset F_p) are genuine
     CONSTANT-syzygy witnesses: W_BC = R*W_AC + c*W_AB with R,c in F_p constants, i.e. the three
-    band polynomials are F-linearly DEPENDENT.  A constant syzygy is a DEGREE-0 syzygy => delta1=0
-    => gap g = S = 12 (the maximal gap).  So these witnesses are the gap>=4 branch, NOT gap<=3.
+    band polynomials are F-linearly DEPENDENT.  A constant syzygy has COFACTOR degree 0 but
+    PRODUCT degree max(a,b,c) = 4 (SYZ47 floor attained, SYZ59 convention bridge).  The degree-sum
+    law delta1+delta2 = S is a law for PRODUCT degrees, so these witnesses have delta1 = 4,
+    delta2 = 8, gap g = 4, iota = 2: the gap>=4 branch, NOT gap<=3.  (Earlier versions of this
+    probe substituted the cofactor degree 0 for delta1 and printed delta1=0, gap=12, iota=6; that
+    mixed the two conventions.  For equal degrees d, product_delta1 = d + cofactor_delta1; for
+    unequal degrees only the slot-graded search in probe_syz59_empty_middle is a minimiser.)
   * SYZ53-pscaling  those big-gap witnesses STILL produce only max mca-bad = 3 (generic pencil
     floor) at every large prime, deep below ceiling sum(n-s_i)=12.  VERDICT: collapse.
 
@@ -25,11 +30,20 @@ This probe does the two things SYZ55 needs on top of that verdict:
       We show the small-p over-budget excess is entirely ACCIDENTAL and the large-p survivors are
       entirely STRUCTURAL (<= 3).  That is the per-scalar mechanism.
 
-  (2) THE SPLIT COVERAGE.  Compute, per realizable witness, the minimal syzygy degree delta1 (hence
-      gap g = S - 2*delta1), over the band-realizable interior configs.  Question: is every
-      realizable witness either gap<=3 (near-balance, iota<=1) OR a low-degree-syzygy (gap>=4) one
-      whose lift is floor-bounded?  Are there MIDDLE-gap (g in {4..S-1}, delta1 in {1..(S-4)/2})
-      realizable witnesses that are neither near-balance nor fully constant-dependent?
+  (2) THE SPLIT COVERAGE.  Compute, per witness, the minimal PRODUCT syzygy degree delta1 (hence
+      gap g = S - 2*delta1) and whether a constant syzygy exists, over the interior configs.
+      MIDDLE = gap >= 4 without a constant syzygy.
+
+SCOPE CAVEATS (do not cite (2) as an exhaustive census):
+  * The witnesses come from `probe_syz52_witness_lift.find_witnesses`, which only constructs
+    constant-syzygy level sets.  Every enumerated witness therefore has a constant syzygy by
+    construction, and "zero MIDDLE witnesses" is built into the search carrier; it does not
+    exhaust realizable triples.  SYZ71 (`probe_syz71_verify_f41.py`) replays a genuine on-domain
+    middle witness: (6,6,6) on mu_20 subset F_41 with linear cofactors and product degree 7.
+  * (1) samples stacks and skips correlated ones (`mca`); it is per-scalar forensics on the stacks
+    it finds, not a maximum over all stacks.  The n16/n20 configs inherit SYZ52's triple-region
+    convention (|T| = n - 3a), see `probe_syz52_witness_lift.py`.
+  * None of this is a bad-scalar or prize counterexample, nor a proof of the large-field floor.
 """
 import itertools, random, sys, os, collections
 import numpy as np
@@ -38,6 +52,7 @@ from probe_syz28_d3_coplanar_crack import (rref_rank_nullbasis, dual_basis_cache
     A_C_basis, deficiency)
 from probe_syz52_witness_lift import (find_witnesses, build_interp_tensor, _agr_masks, cores_of)
 from probe_syz53_p_scaling import (subset_parity, exact_badz, next_prime_1modn, is_prime)
+from probe_syz59_empty_middle import min_syzygy_product_degree, has_constant_syzygy
 
 # ------------------------------------------------------------------ minimal syzygy degree delta1
 def poly_from_roots(roots, p):
@@ -51,9 +66,13 @@ def poly_from_roots(roots, p):
         c = nc
     return c
 
-def min_syzygy_degree(polys, p, dmax=None):
-    """Smallest d such that (A0,A1,A2) with deg Ai <= d and sum Ai*fi = 0 has a nonzero solution.
-    Returns (delta1, nullity_at_delta1).  Pure linear algebra over F_p."""
+def min_cofactor_degree(polys, p, dmax=None):
+    """Smallest UNIFORM COFACTOR bound d such that (A0,A1,A2) with deg Ai <= d and
+    sum Ai*fi = 0 has a nonzero solution.  Returns (d, nullity_at_d).
+
+    This is a cofactor degree, NOT the product degree delta1 of the degree-sum law
+    delta1 + delta2 = S; use `min_product_degree` for gaps.  (For equal input degrees e the
+    product delta1 is e + d; for unequal degrees there is no such shift.)"""
     degs = [len(f)-1 for f in polys]
     S = sum(degs)
     if dmax is None: dmax = S
@@ -73,6 +92,15 @@ def min_syzygy_degree(polys, p, dmax=None):
         if null:
             return d, len(null)
     return dmax+1, 0
+
+def min_product_degree(polys, p):
+    """Minimal PRODUCT syzygy degree delta1 = min max_i deg(Ai*fi) (slot-graded search, the
+    convention of the degree-sum law), with gap g = S - 2*delta1, and whether a constant syzygy
+    exists.  Returns (delta1, gap, constant_exists)."""
+    S = sum(len(f)-1 for f in polys)
+    d1, _ = min_syzygy_product_degree(polys, p, S)
+    assert d1 is not None, "Koszul syzygies (f2,-f1,0) have product degree <= S"
+    return d1, S - 2*d1, has_constant_syzygy(polys, p)
 
 # ------------------------------------------------------------------ (1) forensic attribution
 def forensic_stack(mu, k, s, p, cores, seed, trials, target_excess_only=True):
@@ -134,12 +162,14 @@ def run_forensics():
         # pick a constant-syzygy witness; confirm delta1=0 via its three band polynomials
         AC,BC,AB,T,R=wit[0]
         polys=[poly_from_roots([mu[i] for i in idx],p) for idx in (AC,BC,AB)]
-        d1,nul=min_syzygy_degree(polys,p)
-        S=sum(len(f)-1 for f in polys); gap=S-2*d1
+        cd,nul=min_cofactor_degree(polys,p)
+        d1,gap,const=min_product_degree(polys,p)
+        S=sum(len(f)-1 for f in polys)
         cores=cores_of(AC,BC,AB,T)
         res=forensic_stack(mu,k,s,p,cores,seed=7,trials=1500)
         print(f"\n  p={p} (log2={np.log2(p):.1f})  witness #0  band degs={[len(f)-1 for f in polys]} "
-              f"S={S}  delta1={d1} (nullity {nul})  gap g=S-2*delta1={gap}  [iota=floor(g/2)={gap//2}]")
+              f"S={S}  product delta1={d1} (cofactor deg {cd}, nullity {nul}, constant={const})  "
+              f"gap g=S-2*delta1={gap}  [iota=floor(g/2)={gap//2}]")
         if res is None:
             print("    no degenerate stack found"); continue
         bad,attrib,u0,u1=res
@@ -155,9 +185,11 @@ def run_forensics():
 # ------------------------------------------------------------------ (2) split coverage / middle-gap
 def run_split_coverage():
     print("\n"+"="*92)
-    print("(2) SPLIT COVERAGE: per-witness minimal syzygy degree delta1 (=> gap g=S-2*delta1)")
+    print("(2) SPLIT COVERAGE: per-witness minimal PRODUCT syzygy degree delta1 (=> gap g=S-2*delta1)")
     print("    gap<=3 : near-balance branch (iota<=1).   gap>=4 : low-syzygy branch.")
-    print("    MIDDLE = gap in {4..S-1} with delta1 in {1..}, i.e. NOT constant (delta1=0) NOR near-balance.")
+    print("    MIDDLE = gap>=4 with NO constant syzygy (constant syzygy: product delta1 = max degree).")
+    print("    CARRIER CAVEAT: find_witnesses only constructs constant-syzygy level sets, so MIDDLE=0")
+    print("    below is forced by the search carrier and is not an exhaustive census (cf. SYZ71).")
     print("="*92)
     configs=[(14,7,4,2),(16,8,4,3),(18,9,5,3),(20,10,5,4),(22,11,6,4)]
     for (n,k,a,t) in configs:
@@ -166,20 +198,19 @@ def run_split_coverage():
         mu,wit=find_witnesses(p,n,a,max_wit=150)
         if not wit:
             print(f"  n={n} (a,a,a)=({a},{a},{a}) t={t}: syzygy-empty on domain"); continue
-        buckets=collections.Counter()  # (delta1, gap) -> count
-        d1min=99
+        buckets=collections.Counter()  # (product delta1, gap, constant syzygy?) -> count
         for (AC,BC,AB,T,R) in wit:
             polys=[poly_from_roots([mu[i] for i in idx],p) for idx in (AC,BC,AB)]
-            d1,_=min_syzygy_degree(polys,p,dmax=S)
-            gap=S-2*d1
-            buckets[(d1,gap)]+=1
-            d1min=min(d1min,d1)
+            d1,gap,const=min_product_degree(polys,p)
+            buckets[(d1,gap,const)]+=1
         print(f"\n  n={n} k={k} (a,a,a)=({a},{a},{a}) t={t}  S={S}  #wit={len(wit)}  p={p}")
-        for (d1,gap),c in sorted(buckets.items()):
-            branch="near-balance(g<=3)" if gap<=3 else ("constant-dep(delta1=0)" if d1==0 else "MIDDLE")
-            print(f"     delta1={d1:<2} gap={gap:<3} : {c:<5} witnesses   [{branch}]")
-        mids=sum(c for (d1,gap),c in buckets.items() if gap>=4 and d1>=1)
-        print(f"     --> MIDDLE-gap (g>=4, delta1>=1) realizable witnesses: {mids}")
+        for (d1,gap,const),c in sorted(buckets.items()):
+            branch=("near-balance(g<=3)" if gap<=3 else
+                    ("constant-dep(cofactor deg 0)" if const else "MIDDLE"))
+            print(f"     product delta1={d1:<2} gap={gap:<3} : {c:<5} witnesses   [{branch}]")
+        mids=sum(c for (d1,gap,const),c in buckets.items() if gap>=4 and not const)
+        print(f"     --> MIDDLE (g>=4, no constant syzygy) witnesses in this constant-only carrier: "
+              f"{mids}")
 
 if __name__=="__main__":
     run_forensics()

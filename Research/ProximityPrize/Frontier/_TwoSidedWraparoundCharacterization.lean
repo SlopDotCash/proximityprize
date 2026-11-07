@@ -10,7 +10,15 @@ import ArkLib.Data.CodingTheory.ProximityGap.PrizeStructuralConstant
 import ArkLib.Data.CodingTheory.ProximityGap.DCSubtractedMoment
 
 /-!
-# The EXACT two-sided wraparound characterization of `M(μ_n)` at depth `k ≈ log m` (#444)
+# A two-sided wraparound sufficient bracket for `M(μ_n)` at depth `k ≈ log m` (#444)
+
+**Scope correction (audit CW-B15-05).**  Despite the historical task wording below, this file
+does NOT prove an exact `⟺` characterization of `M`.  The exact iffs are between `A_k`-bounds and
+wraparound inequalities; bounds on `M` follow only one way, through the lossy sandwich
+`M^{2k} ≤ A_k ≤ (q−1)·M^{2k}`.  In particular `M^{2k} ≤ B` gives only `A_k ≤ (q−1)·B`, so
+`M ≤ C√(n log m)` is not characterized (a factor `q−1` is lost in each converse), and
+`twosided_from_variance` uses a single two-sided deviation `|W_k − mean| ≤ δ`, not a family
+variance bound.  Read "characterization" below as "sufficient two-sided bracket".
 
 **Task `[twosided-wraparound]`.**  Per the directive *"prove the two-sided characterization: at
 `k ≈ log m`, `M ≤ C√(n log m) ⟺ Var(W_k)` not-too-positive AND `M ≥ c√(n log m) ⟺ Var(W_k)`
@@ -49,7 +57,8 @@ Right: the sum of `q−1` terms each `≤ max`, `A_k = Σ a^k ≤ (q−1)·(max 
 
 From the sandwich and the decomposition, with threshold `B := (C·n·log m)^k` on the upper side and
 `L := (c·n·log m)^k` on the lower side (so that `M² ≤ C n log m ⟺ M^{2k} ≤ B` etc.), BOTH bounds
-become a **single inequality on the wraparound fluctuation** `W_k − mean`:
+are IMPLIED BY a **single inequality on the wraparound fluctuation** `W_k − mean` (sufficient
+conditions only — the converses lose a factor `q−1` through the sandwich):
 
 * **UPPER** `M ≤ C√(n log m)`  ⟸  `A_k ≤ B`  ⟺  `q·(W_k − mean) ≤ B − q·E_k^{c0}`
   — the wraparound fluctuation is **not-too-positive** (sub-Gaussian).        (`upper_iff_wrap_le`)
@@ -69,8 +78,8 @@ PROVEN axiom-clean here: the exact algebraic decomposition `Ak_decomp`; the unco
 `sandwich`; both characterization directions `upper_iff_wrap_le` / `lower_iff_wrap_ge`; the
 combined `twosided_bracket` and the variance-driven `twosided_from_variance`.  These reduce BOTH
 BGK bounds, at depth `k`, to the SAME two-sided control of the wraparound fluctuation `W_k − mean`
-— from opposite sides of one `A_k` bracket.  This is the structural two-sided characterization the
-task asks for.  It does NOT bound `W_k` (that two-sided control at `k ≈ log m` is the open
+— from opposite sides of one `A_k` bracket.  This is a structural two-sided SUFFICIENT bracket
+(not an exact `⟺` for `M`: each converse loses the factor `q−1`).  It does NOT bound `W_k` (that two-sided control at `k ≈ log m` is the open
 Burgess/Paley/BGK wall — `Var(W_k)`); the value here is the exact reduction of both bounds to that
 one object, both directions from a single `A_k` bracket.  NOT prize closure.
 -/

@@ -27,7 +27,9 @@ degree-`<k` on `k+1` distinct nodes, so no codeword *pair* agrees with `(u₀,u�
 Feeding a family `𝒮` of `(k+1)`-windows with **distinct** window-sums into the engine
 `MCAWitnessSpread.epsMCA_ge_card_div_of_mcaEvent_set` gives
 `ε_mca(C, 1 − (k+1)/n) ≥ |𝒮| / |F|`  (`epsMCA_ge_of_window_family`),
-at `δ = 1 − (k+1)/n = capacity − 1/n` — strictly inside the Johnson→capacity gap. The "sunflower"
+at `δ = 1 − (k+1)/n = capacity − 1/n`. This radius is strictly inside the Johnson→capacity gap
+`(1 − √ρ, 1 − ρ)` exactly when `(k+1)² < k·n` (equivalently `(k+1)/n < √(k/n)`); for small `n`
+relative to `k` it can lie at or below the Johnson radius. The "sunflower"
 family `{0,…,k-1, k+j}` for `j = 0,…,n-k-1` has `n-k` windows with distinct sums (its only varying
 node is `k+j`), giving the headline `ε_mca ≥ (n-k)/|F|` for every rate.
 
@@ -38,15 +40,22 @@ node is `k+j`), giving the headline `ε_mca ≥ (n-k)/|F|` for every rate.
 * The same `mcaEvent_of_window` holds for *any* `(k+1)`-subset (not just consecutive), so on a
   structured/smooth domain `|𝒮|` may be pushed up to the number of distinct `(k+1)`-subset sums of the
   node set — quadratic `Θ(k(n-k))` for an arithmetic node set, more for spread-out nodes.
-* **It is edge-tight.** A window of size `k+2` would force the line to be degree-`<k` there under *two*
-  independent divided-difference conditions on a single `γ` — generically unsolvable; making them
-  dependent forces `u₁∈C`, i.e. `pairJointAgreesOn` (the obstruction). So no single algebraic line
-  beats `δ = capacity − 1/n`. The smooth-domain cyclic structure (`xⁿ=1` on `L`) does **not** rescue
-  the *monomial* line (it degenerates: `x^{k+n}=xᵏ` on `L`); reaching the gap **interior** needs
-  multiplicity (Guruswami–Sudan) or a genuinely different construction — the open prize.
-* The bound is `O(n)/|F|` (or `O(n²)/|F|`), which is `< ε* = 2⁻¹²⁸` for the prize's large fields
-  (`|F|` up to `2²⁵⁶`), so it does **not** pin the prize threshold `δ*` — that needs an *exponential*
-  spread `|𝒮| ~ 2¹²⁸`. This file delineates the open core; it does not close it.
+* **Edge-tightness holds only for this monomial stack.** For the specific stack
+  `u₀ = x^{k+1}`, `u₁ = x^k`, every line point `u₀ + γ·u₁` evaluates the degree-`(k+1)` polynomial
+  `X^k(X + γ)`, so it agrees with any degree-`<k` codeword on at most `k+1` nodes: this stack never
+  witnesses an event at agreement `k+2` (radius below `capacity − 1/n`). This is **not** a statement
+  about all lines or stacks. The already proved `BandAttainmentChained.band_attainment_chained`
+  gives, e.g. at `n = 8, k = 2, m = 1, r = 3`, a stack with direction `X²` (strongly far from
+  degree `< 2`) and three bad scalars, each at agreement `4` (radius `1/2`), i.e. deeper than
+  `capacity − 1/n = 5/8`. Even a stack whose offset `u₀` is a codeword and whose direction is far
+  is bad at the single scalar `γ = 0` with an all-coordinate witness. The smooth-domain cyclic
+  structure (`xⁿ=1` on `L`) does not rescue the *monomial* stack either (it degenerates:
+  `x^{k+n}=xᵏ` on `L`).
+* The bound is `O(n)/|F|` (or `O(n²)/|F|`). Whether this is below `ε* = 2⁻¹²⁸` depends on the field
+  size relative to `n`: it needs roughly `|F| > |𝒮|·2¹²⁸`, which `|F| ≤ 2²⁵⁶` alone does not
+  guarantee. In any case it is a lower bound of size `|𝒮|/|F|` and does **not** pin the prize
+  threshold `δ*`, which would need a much larger spread. This file delineates part of the open
+  core; it does not close it.
 
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026.

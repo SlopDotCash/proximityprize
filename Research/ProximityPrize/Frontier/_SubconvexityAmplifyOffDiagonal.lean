@@ -55,10 +55,13 @@ So the amplifier's gain is bounded by the very `L^∞/L²` ratio of `{K_c}` it i
 diagonal pins the `L²` (`√n`) value, the off-diagonal worst case is the `L^∞` `Θ(n)` Paley value.
 This file proves the finite-Fourier core of that saturation: **the Parseval identity for the
 off-diagonal** (`offdiag_parseval`: `Σ_c |K_c|² = N·Σ_t|f t|²`, the exact `L²` of the off-diagonal)
-and the amplification inequality (`amplified_ratio_bound`: `M² ≤ S/|A(b₀)|²`). Together they record
-the no-gain verdict: the achievable `M²`-bound from a self-aligned amplifier of length `|L|` is
-`S/|L|² ≥ (diagonal)/|L| = E₁/|L| = n(p-n)/|L|`, which for any *sparse* `L` stays at the trivial
-`~n·p/|L| ≫ n` scale (exact: `|L|=16` gives `M²≤68994` vs actual `191` at `n=16`), and only reaches
+and the amplification inequality (`amplified_ratio_bound`: `M² ≤ S/|A(b₀)|²`). Together they
+motivate (but do NOT prove) the no-gain verdict: **if** the off-diagonal part
+`Σ_{c≠c'} x_c x̄_{c'} T_{c-c'}` of `S` is nonnegative — which is neither proven here nor true in
+general (audit CW-B15-10) — then the achievable `M²`-bound from a self-aligned amplifier of length
+`|L|` satisfies `S/|L|² ≥ (diagonal)/|L| = E₁/|L| = n(p-n)/|L|`, which for any *sparse* `L` stays
+at the trivial `~n·p/|L| ≫ n` scale (one numerical instance: `|L|=16` gives `M²≤68994` vs actual
+`191` at `n=16`; the prime `p` of that probe run is not recorded here), and only reaches
 the prize when `L` is essentially all `N` characters — i.e. when `A` is a delta at `b₀` and the
 inequality is the tautology `M² ≤ M²`. The off-diagonal does NOT factor away; it reduces to the SAME
 `μ_n`-incomplete-sum wall.
@@ -73,6 +76,13 @@ Parseval, locating the residual precisely at `max_c |K_c|` = the worst incomplet
 
 Pure finite linear algebra over `ℂ` (an inner-product / Parseval identity on a finite character
 group) + Cauchy–Schwarz; **axiom-clean** (`propext, Classical.choice, Quot.sound`). Issue #444.
+
+**Scope of the Lean (audit CW-B15-10).** The proven statements are generic: `amplified_*` is
+`Finset.single_le_sum`, and `offdiag_parseval` is abstract Parseval under a *hypothesised*
+orthogonality relation with a free constant `N : ℂ`.  No declaration mentions `K_c`, `μ_n`, Gauss
+sums, `T_k`, or the identity `|T_k| = √p·n·|K_c|`; those, the worst-case `|K_c|` numerics and the
+lower bound `S/|L|² ≥ n(p-n)/|L|` (which additionally needs the unproven off-diagonal sign
+condition) are prose/probe content only.
 
 ## In-tree neighbours
 - `_AmplificationGainOne` — QUE/Iwaniec–Sarnak flat-spectrum gain ≡ 1 (abstract no-go).

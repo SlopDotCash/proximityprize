@@ -60,8 +60,13 @@ lemmas, and makes NO capacity / beyond-Johnson / cliff-at-n/2 claim. CORE
 Probe (`scripts/probes/probe_energy_lower_bound_general.py`, 12/12 decisive): PROPER thin
 `μ_n = 2^a` (a=2..4), `p = 1 mod n`, NEVER `n = q-1`, small AND large primes (`p > n^3` and
 `p < n^3`) incl. Fermat 257/65537, `r = 2,3,4`. In EVERY case `W_r = rEnergy(F_p) r -
-negSymCount(2r) >= 0`; `W_r = 0` exactly when `p > n^3`, `W_r > 0` at small `p` (the
-extra-collision surplus). The lower bound is UNCONDITIONAL.
+negSymCount(2r) >= 0`, with `W_r > 0` at small `p` (the extra-collision surplus) and `W_r = 0`
+at the larger primes of that sweep. *Correction (audit CW-DL07b-02):* an earlier version said
+`W_r = 0` "exactly when `p > n^3`"; that is neither sufficient nor necessary. Exact counts: `n=16,
+r=3, p=41521 > n^3` gives `E_3 = 51040` against the char-0 value `50560`; `n=8, r=4, p=1201 > n^3`
+gives `E_4 = 190184` against `190120`; while `n=8, r=3, p=337 < n^3` already has `E_3 = 5120` equal
+to char 0 (and `p=313` gives `5168`). The vanishing cutoff is governed by the largest prime dividing
+the norms of short cyclotomic relations, not by `n^3`. The lower bound is UNCONDITIONAL.
 
 Issue #444. Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`).
 -/

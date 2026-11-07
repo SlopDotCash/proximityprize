@@ -21,8 +21,13 @@ Sections:
      interpolation), maximizing #stall-bad.  Run both at q ~ N (F_257) and q >> N
      (F_1031) since the prize field has P ~ 2^158 >> N = 2^30.
   D. Part (b) diagnostics for the maximal family found: base scalar of max pool F,
-     rider-direction agreement histogram on Z = {D=0} vs the stall window
-     [T-F, floor(sqrt((N-F)(k-1)))].
+     histogram on Z = {D=0} of the agreement with u1 of each partner's DERIVED
+     flow-map direction (q_gamma - p0)/(gamma - gamma0), q_gamma = w0 + gamma*w1,
+     vs the stall window [T-F, floor(sqrt((N-F)(k-1)))].  (Using the partner
+     pencil's stored slope w1 instead is wrong unless that pencil passes through
+     p0; repository audit 2026-10-28, L116.)  The flow-map lower bound T-F is
+     asserted for every contributing partner.  This is a diagnostic check, not a
+     refutation or proof of the flow-map theorem.
 
 All arithmetic exact (python ints / numpy int64 mod q); all randomness seeded.
 """
@@ -245,6 +250,52 @@ def summarize(N, q, k, T, F0, out, label):
     print(f"    {label}: #bad={len(bad)}  #stall-bad={len(stall)}  (N={N}, q={q},"
           f" cap N-T+1={N - T + 1})")
     return bad, stall
+
+
+def derived_direction(q, p0, g0, w0, w1, g):
+    """Flow-map direction through the base codeword p0 (at scalar g0) and the
+    partner codeword q_g = w0 + g*w1 (at scalar g != g0): (q_g - p0)/(g - g0).
+    This equals the stored slope w1 only when the partner's pencil also passes
+    through p0, which nothing here imposes — so w1 itself must NOT be used."""
+    assert (g - g0) % q != 0, "partner scalar must differ from the base scalar"
+    qg = (w0 + g * w1) % q
+    return ((qg - p0) % q) * modinv((g - g0) % q, q) % q
+
+
+def rider_direction_buckets(q, T, k, u0, u1, g0, p0, stall_opts):
+    """Bucket each partner gamma != g0 by the agreement on Z = {p0 = u0 + g0*u1}
+    of its DERIVED direction (q_g - p0)/(g - g0) with u1, against the stall window
+    [T - F, isqrt((N - F)(k - 1))], where F = N - |Z| is the base pool.
+
+    Flow-map lower bound (asserted for EVERY contributing partner option): on
+    Z ∩ S_g, where S_g is the partner's agreement set (|S_g| = A >= T), the
+    derived direction equals u1, so its agreement on Z is >= |Z| + A - N >= T - F.
+    Hence the "<T-F (sterile)" bucket is empty by this bound; it is kept only so
+    that a violation would be visible.  Each gamma is bucketed by its first
+    option.  Returns (bucket dict, per-gamma agreements, Z, F, (win_lo, win_hi))."""
+    from collections import Counter
+    N = len(u0)
+    D = (p0 - u0 - g0 * u1) % q
+    Z = np.where(D == 0)[0]
+    Fp = N - len(Z)
+    win_lo = T - Fp
+    win_hi = isqrt((N - Fp) * (k - 1))
+    hist, agrs = Counter(), {}
+    for g, opts in stall_opts.items():
+        if g == g0:
+            continue
+        for idx, (_, A, _, (w0, w1)) in enumerate(opts):
+            dirn = derived_direction(q, p0, g0, w0, w1, g)
+            agrZ = int((dirn[Z] == (u1[Z] % q)).sum())
+            lower = len(Z) + A - N
+            assert agrZ >= lower >= win_lo, (
+                f"flow-map lower bound violated at gamma={g}: {agrZ} < {lower}")
+            if idx == 0:
+                agrs[g] = agrZ
+                hist["<T-F (sterile)" if agrZ < win_lo else
+                     "in window" if agrZ <= win_hi else
+                     ">JohnsonZ (counted)"] += 1
+    return dict(hist), agrs, Z, Fp, (win_lo, win_hi)
 
 
 # ---------------------------------------------------------------------------
@@ -482,24 +533,17 @@ if cfg is not None:
     g0 = max(stall_opts, key=lambda g: max(x[0] for x in stall_opts[g]))
     Fp, A0, _, (v0, v1) = max(stall_opts[g0], key=lambda x: x[0])
     p0 = (v0 + g0 * v1) % q
-    D = (p0 - u0 - g0 * u1) % q
-    Z = np.where(D == 0)[0]
-    win_lo = T - Fp
-    win_hi = isqrt((N - Fp) * (k - 1))
+    # Flow-map direction of each partner: (q_g - p0)/(g - g0) with q_g = w0 + g*w1
+    # (NOT the partner pencil's stored slope w1, which passes through p0 only if
+    # that pencil does).  The flow-map lower bound T-F is asserted per partner.
+    hist, _, Z, Fz, (win_lo, win_hi) = rider_direction_buckets(
+        q, T, k, u0, u1, g0, p0, stall_opts)
+    assert Fz == Fp, "base pool must match the agreement set of p0"
     print(f"  base gamma0={g0}: pool F={Fp}, |Z|={len(Z)},"
           f" stall window on Z = [{win_lo}, {win_hi}] (width {win_hi - win_lo})")
-    # rider directions: for each other stall-bad gamma, its codeword's direction row
-    hist = Counter()
-    for g, o in stall_opts.items():
-        if g == g0:
-            continue
-        _, _, _, (w0, w1) = o[0]
-        # flow-map direction: w1 agreement with u1 on Z
-        agrZ = int(((w1[Z] % q) == (u1[Z] % q)).sum())
-        bucket = ("<T-F (sterile)" if agrZ < win_lo else
-                  "in window" if agrZ <= win_hi else ">JohnsonZ (counted)")
-        hist[bucket] += 1
-    print(f"  rider direction agreement-on-Z buckets: {dict(hist)}")
+    print(f"  derived-direction agreement-on-Z buckets: {hist}")
+    print("  (flow-map lower bound >= T-F asserted for every contributing partner;")
+    print("   the sterile bucket is empty by that bound)")
 else:
     print("  (no stall family found at mu_256/q=1031 — unexpected)")
 

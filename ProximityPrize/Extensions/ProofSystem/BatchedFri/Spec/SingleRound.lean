@@ -52,13 +52,14 @@ variable {ω : SmoothCosetFftDomain n F}
 
 namespace BatchingRound
 
--- DEFINITION COMPLETED (2026-06-04): batching-round input relation. The batched-FRI input is a
--- collection of `m + 1` purported codewords on the full domain `ω`, each committed to its own
--- low-degree witness polynomial (degree `< 2 ^ (∑ s) * d`). Following [BCIKS20 §8]/[FRI1216], the
--- well-formed-input relation asserts every batched oracle is the honest evaluation of its witness
--- polynomial on `ω`. (No `δ`: the relation is stated on the witnessed polynomials directly; the
--- subsequent proximity claim is carried by the FRI round-0 relation after batching — see
--- `outputRelation`, which composes with `Fri.Spec.FoldPhase.inputRelation`.)
+-- Batching-round input relation (canonical `BatchingRound.inputRelation δ`). The batched-FRI input
+-- is a collection of `m + 1` purported codewords on the full domain `ω`, each paired with its own
+-- witness polynomial (degree `< 2 ^ (∑ s) * d`). SCOPE: the relation is parameterized by `δ` and
+-- asks for one common set of evaluation points of relative size at least `1 - δ` on which every
+-- batched oracle agrees with its witness polynomial; only at `δ = 0` does it say that every oracle
+-- is the exact (honest) evaluation of its witness on `ω`. The output relation
+-- (`BatchingRound.outputRelation`) is the FRI round-0 input relation `Fri.Spec.inputRelation` at
+-- the same radius.
 -- The generic upstream `batchSpec S` supplies the message/challenge interfaces and the
 -- inherited finiteness/nonemptiness instances. Its challenge type is the supplied `S`.
 
