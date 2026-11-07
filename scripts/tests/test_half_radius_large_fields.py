@@ -25,6 +25,14 @@ class LargeFieldCertificates(unittest.TestCase):
         self.assertTrue(all(sum(x * int(y) for x, y in zip(row, kernel[0])) % p == 0
                             for row in matrix))
 
+    def test_object_array_with_numpy_scalars_uses_unbounded_integers(self):
+        p = 2**61 - 1
+        matrix = np.array([[np.int64(p - 1), np.int64(p - 2)],
+                           [np.int64(1), np.int64(2)]], dtype=object)
+        reduced, pivots = probe.np_rref(matrix, p)
+        self.assertEqual(pivots, [0])
+        self.assertEqual(reduced.tolist(), [[1, 2], [0, 0]])
+
     def test_inverse_and_noncanonical_integer_representatives(self):
         p = 2**61 - 1
         matrix = [[p - 1, p - 2], [1, 3]]
@@ -32,6 +40,12 @@ class LargeFieldCertificates(unittest.TestCase):
         inverse = probe.np_inverse(lifted, p)
         product = np.asarray(matrix, dtype=object) @ inverse % p
         self.assertEqual(product.tolist(), [[1, 0], [0, 1]])
+
+    def test_inverse_rejects_singular_and_nonsquare_matrices(self):
+        with self.assertRaisesRegex(ValueError, "singular"):
+            probe.np_inverse([[1, 2], [2, 4]], 17)
+        with self.assertRaisesRegex(ValueError, "square"):
+            probe.np_inverse([[1, 0, 0], [0, 1, 0]], 17)
 
     def test_agreement_checks_annihilate_actual_rs_codewords(self):
         for p in (17, 2**31 - 1, 2**61 - 1):

@@ -16,6 +16,7 @@ It reports a certificate if the conjectural dyadic bound #bad <= n fails.
 """
 
 from itertools import combinations, product
+from operator import index
 import random
 import sys
 
@@ -336,8 +337,13 @@ def field_array(values, p, terms=1):
     """
     import numpy as np
 
-    dtype = np.int64 if terms * (p - 1) ** 2 <= np.iinfo(np.int64).max else object
-    return (np.asarray(values, dtype=object) % p).astype(dtype)
+    values = np.asarray(values, dtype=object)
+    if terms * (p - 1) ** 2 <= np.iinfo(np.int64).max:
+        return (values % p).astype(np.int64)
+    # Object arrays can still hold NumPy integer scalars with fixed-width arithmetic.
+    residues = np.fromiter((index(value) % p for value in values.flat),
+                           dtype=object, count=values.size)
+    return residues.reshape(values.shape)
 
 
 def np_rref(matrix, p):
@@ -385,10 +391,13 @@ def np_inverse(matrix, p):
     import numpy as np
 
     a = field_array(matrix, p)
+    if a.ndim != 2 or a.shape[0] != a.shape[1]:
+        raise ValueError("matrix must be square")
     n = len(a)
     augmented = np.concatenate([a, np.eye(n, dtype=a.dtype)], axis=1)
     reduced, pivots = np_rref(augmented, p)
-    assert pivots[:n] == list(range(n))
+    if pivots[:n] != list(range(n)):
+        raise ValueError(f"matrix is singular modulo {p}")
     return reduced[:, n:]
 
 
