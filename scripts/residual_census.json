@@ -486,7 +486,7 @@
      "name": "AGL24.rimFailureProb_of_rootedOutCut_and_dualZeroPattern",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/AGL24Issue354Discharge.lean",
-     "line": 67,
+     "line": 70,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hfrank",

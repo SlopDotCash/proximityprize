@@ -27,7 +27,8 @@ label is a conservative triage heuristic, not a kernel-checked fact:
   instance, so the residual family is not uniformly true. A refutation outranks every
   provider; proved instances stay listed, since an instance proof next to an instance
   refutation is mixed parameter-scope coverage, not a contradiction. Negated
-  existentials do not count because their domains may have no witnesses.
+  existentials and negations under a universal introduced beneath a connective do not
+  count because their domains may have no witnesses.
 - **open** — everything else, including residuals with conditional providers only.
 
 The named-residual convention is a modularity pattern, not an incompleteness marker:

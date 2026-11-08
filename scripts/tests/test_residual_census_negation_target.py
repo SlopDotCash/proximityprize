@@ -146,6 +146,15 @@ class NegationTargetTests(unittest.TestCase):
                     )
                     self.assertEqual(got["FooResidual"], "open")
 
+    def test_user_defined_empty_universal_conjunct_does_not_refute(self):
+        got = self.statuses(
+            "inductive CensusEmpty\n"
+            "def FooResidual (x : CensusEmpty) : Prop := True\n"
+            "def BarResidual : Prop := False\n"
+            "theorem t : ¬ BarResidual ∧ (∀ x : CensusEmpty, ¬ FooResidual x) :=\n"
+            "  ⟨id, fun x => nomatch x⟩\n")
+        self.assertEqual(got, {"FooResidual": "open", "BarResidual": "refuted"})
+
     def test_relation_and_binder_shapes(self):
         for negated, want in [
             ("(R == Q)", []),

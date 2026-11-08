@@ -57,7 +57,7 @@ GM-MDS matrix construction (Lovett §1, AGL24 Appendix A / [9, Thm A.2]).
    `1 ≤ t` premises. This does **not** show the universally quantified residual is satisfiable —
    and in fact it is not: `RIMKernelTrivialFromLovett` is **refuted**
    (`rimKernelTrivialFromLovett_refuted`, and for every `1 ≤ k`
-   `not_rimKernelTrivialFromLovett`, in `LovettRIMKernelTrivial.lean`; the 14th false-residual
+   `not_rimKernelTrivialFromLovett`, in `LovettPremisesRefutation.lean`; the 14th false-residual
    catch: at `e ≡ ∅`, `δ ≡ 0` the bare `GZPCondition` holds but the RIM has no rows).
 
 4. **The column-index bijection brick** (`rimCols_equiv_pFamUnion_index_of_shape`): the AGL24
@@ -100,7 +100,7 @@ independent over the *dual-variable* ring `MvPolynomial (Fin n) F`, and the GM-M
 correspondence transports that independence — across the column-index bijection
 `Fin t × Fin k ≃ Σᵢ Fin(k − |vᵢ|)` and the ring change — to the RIM's full column rank, i.e.
 its trivial polynomial kernel.  **As stated this `Prop` is FALSE** for every `1 ≤ k`
-(`not_rimKernelTrivialFromLovett`, `LovettRIMKernelTrivial.lean`): replacing the
+(`not_rimKernelTrivialFromLovett`, `LovettPremisesRefutation.lean`): replacing the
 `WeaklyPartitionConnected` hypothesis of `exists_nonzero_poly_minor` by a bare `GZPCondition`
 loses the nondegeneracy (`e ≡ ∅`, `δ ≡ 0` satisfies `GZPCondition` with a zero-row RIM). The
 corrected form is `RIMKernelTrivialFromLovettWPC`. -/
