@@ -103,11 +103,14 @@ theorem symbolicFullRank_lovett_free {k : ℕ} (hk : 1 ≤ k)
     (hfield : FieldLargeForMinor ι F k) :
     AGL24.SymbolicFullRankResidual (ι := ι) F k := by
   letI : DecidableEq F := Classical.decEq F
-  intro t ht e hwpc v hker
-  exact AGL24.symbolicFullRank_of_classical_imports (ι := ι) (F := F)
-    (AGL24.frankOrientationResidual_of_rootedOutCutTheorem (ι := ι) hfrank)
-    (gmmDsResidual_unconditional hk hminor hdual hfield)
-    ht e hwpc v hker
+  apply AGL24.symbolicFullRank_of_pinning (ι := ι) (F := F) (k := k)
+  intro t ht e hne hwpc
+  obtain ⟨O, r, hroot, hcross⟩ :=
+    AGL24.frankOrientationResidual_of_rootedOutCutTheorem hfrank ht e hne hwpc
+  have hgzp := AGL24.gzp_of_orientation O r k hne hroot hcross
+  obtain ⟨φ, d, h, hsupp, hspan⟩ :=
+    gmmDsResidual_unconditional hk hminor hdual hfield e _ hgzp
+  exact ⟨φ, AGL24.pinning_of_dual_span φ e h hsupp hspan⟩
 
 end ArkLib.GMMDS
 

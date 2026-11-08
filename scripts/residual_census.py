@@ -54,7 +54,8 @@ Every provider gets a verdict:
 
 Refutations are declarations proving `¬ R ...`.  One counts only when it has
 no proof-like binder, premise, included proof-like section variable or
-`Prop`-class instance assumption.
+`Prop`-class instance assumption. Negations under a universal introduced
+beneath a connective do not count, since its domain may be empty.
 
 Row status:
 
@@ -754,7 +755,8 @@ def conclusion_atoms(result: str) -> list[dict]:
     """
     out: list[dict] = []
 
-    def walk(s: str, premises: list[str], binders: list[dict], depth: int) -> None:
+    def walk(s: str, premises: list[str], binders: list[dict], depth: int,
+             nested_binders: bool = False) -> None:
         s = strip_outer_parens(s)
         if depth > 32:
             out.append({"kind": "other", "text": s, "premises": premises, "binders": binders})
@@ -767,6 +769,9 @@ def conclusion_atoms(result: str) -> list[dict]:
             entries, bounded = forall_binders(s[1:comma])
             binders = binders + entries
             premises = premises + bounded
+            # A universal beneath a connective can be vacuous over an empty
+            # user-defined domain, even when its variable occurs in the residual.
+            nested_binders = nested_binders or depth > 0
             s = strip_outer_parens(s[comma + 1 :])
         if has_top_level(s, "↔"):
             out.append({"kind": "iff", "text": s, "premises": premises, "binders": binders})
@@ -781,7 +786,8 @@ def conclusion_atoms(result: str) -> list[dict]:
                     new_binders.extend(dependent)
                 else:
                     new_premises.append(norm_space(part))
-            walk(parts[-1], premises + new_premises, binders + new_binders, depth + 1)
+            walk(parts[-1], premises + new_premises, binders + new_binders, depth + 1,
+                 nested_binders)
             return
         if has_top_level(s, "∨"):
             out.append({"kind": "or", "text": s, "premises": premises, "binders": binders})
@@ -789,10 +795,11 @@ def conclusion_atoms(result: str) -> list[dict]:
         conjuncts = split_top_level(s, "∧")
         if len(conjuncts) > 1:
             for c in conjuncts:
-                walk(c, premises, binders, depth + 1)
+                walk(c, premises, binders, depth + 1, nested_binders)
             return
         if s.startswith("¬"):
-            out.append({"kind": "negation", "text": s, "premises": premises, "binders": binders})
+            out.append({"kind": "negation", "text": s, "premises": premises, "binders": binders,
+                        "nested_binders": nested_binders})
             return
         if _has_relation(s):
             out.append({"kind": "relation", "text": s, "premises": premises, "binders": binders})
@@ -1510,6 +1517,8 @@ def find_providers(all_decls: list[dict], residuals: list[dict]) -> None:
                 if last in by_name:
                     candidates.setdefault(last, []).append((head, atom))
             elif atom["kind"] == "negation":
+                if atom.get("nested_binders"):
+                    continue
                 for inner, inner_binders in negated_atoms(atom["text"][1:]):
                     head = atom_head(inner)
                     last = head.rsplit(".", 1)[-1]
@@ -1857,7 +1866,8 @@ WIKI_HEADER = [
     "  instance, so the residual family is not uniformly true. A refutation outranks every",
     "  provider; proved instances stay listed, since an instance proof next to an instance",
     "  refutation is mixed parameter-scope coverage, not a contradiction. Negated",
-    "  existentials do not count because their domains may have no witnesses.",
+    "  existentials and negations under a universal introduced beneath a connective do not",
+    "  count because their domains may have no witnesses.",
     "- **open** — everything else, including residuals with conditional providers only.",
     "",
     "The named-residual convention is a modularity pattern, not an incompleteness marker:",

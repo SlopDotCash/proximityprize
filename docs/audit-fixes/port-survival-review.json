@@ -2,65 +2,6 @@
  "method": "Per-file check of the old 4.30 audit-fix diff (audit-fixes worktree vs 4451cab28) against cw-fixes-435. Used because the per-batch briefs for 37 ported batches were lost.",
  "files_compared": 923,
  "fully_surviving": 749,
- "partial_70_to_99_not_individually_reviewed": [
-  "ArkLib/Data/CodingTheory/GMMDS/LovettMergeBranch.lean",
-  "ArkLib/Data/CodingTheory/GuruswamiSudan/GSCurveTuple.lean",
-  "ArkLib/Data/CodingTheory/InterleavedFinOneEq.lean",
-  "ArkLib/Data/CodingTheory/ListDecoding/Bounds/General.lean",
-  "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StructuredWeightInduction.lean",
-  "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/WeightedAgreementDegenerate.lean",
-  "ArkLib/Data/CodingTheory/ProximityGap/CrossCellShkredovBound.lean",
-  "ArkLib/Data/CodingTheory/ProximityGap/DeviationSupSplit.lean",
-  "ArkLib/Data/CodingTheory/ProximityGap/E2VanishWidthFourFullCount.lean",
-  "ArkLib/Data/CodingTheory/ProximityGap/Jo26ObstructionRowCount.lean",
-  "ArkLib/Data/CodingTheory/ProximityGap/MCAFiniteTable.lean",
-  "ArkLib/Data/CodingTheory/ProximityGap/MCAStepFunction.lean",
-  "ArkLib/Data/CodingTheory/ProximityGap/PrizeEquivalence.lean",
-  "ArkLib/Data/CodingTheory/ProximityGap/TwoBranchSmoothDomainRefutation.lean",
-  "ArkLib/OracleReduction/Composition/Sequential/AppendSoundnessMsgProof.lean",
-  "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Basic.lean",
-  "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaSalted.lean",
-  "ArkLib/OracleReduction/LiftContext/Coherence.lean",
-  "ArkLib/OracleReduction/ProbOneBindCompose.lean",
-  "ArkLib/ProofSystem/BatchedFri/QueryRoundProbability.lean",
-  "ArkLib/ProofSystem/BatchedFri/QuerySoundnessSmallField.lean",
-  "ArkLib/ProofSystem/Binius/FRIBinius/CoreInteractionPhase.lean",
-  "ArkLib/ProofSystem/Logup/LogupGrandSumIdentity.lean",
-  "ArkLib/ProofSystem/Logup/Security/Completeness.lean",
-  "ArkLib/ProofSystem/Logup/Security/LogupCompletenessWired.lean",
-  "ArkLib/ProofSystem/Logup/Security/LogupSoundnessClose.lean",
-  "ArkLib/ProofSystem/Logup/Security/LogupSoundnessUncond.lean",
-  "ArkLib/ProofSystem/Logup/Security/RbrToSoundBridge.lean",
-  "ArkLib/ProofSystem/Plonk/Composition.lean",
-  "ArkLib/ProofSystem/Spartan/ComposedCompleteness.lean",
-  "ArkLib/ProofSystem/Spartan/FirstSumcheckComplete.lean",
-  "ArkLib/ProofSystem/Spartan/SpartanSumcheckUnconditional.lean",
-  "ArkLib/ProofSystem/Stir/CheckingVerifier.lean",
-  "ArkLib/ProofSystem/Stir/MultiRoundAssembly.lean",
-  "ArkLib/ProofSystem/Stir/RbrFrontDoor.lean",
-  "ArkLib/ProofSystem/Sumcheck/Spec/SingleRoundFaithful.lean",
-  "ArkLib/ProofSystem/ToyProblem/Metrics.lean",
-  "ArkLib/ToMathlib/BetaInputSupply.lean",
-  "ArkLib/ToMathlib/IngredientCBridge.lean",
-  "ArkLib/ToMathlib/KoalaBearAttackInstance.lean",
-  "ArkLib/ToMathlib/SpartanBricks.lean",
-  "ArkLib/ToVCVio/LazyPermMarginal.lean",
-  "Research/ProximityPrize/DOSSIER.md",
-  "Research/ProximityPrize/Frontier/_R325BinomialRecurrenceReturnBound.lean",
-  "Research/ProximityPrize/Frontier/_SYZ26LiftingTest.lean",
-  "Research/ProximityPrize/MCALatticeExact.lean",
-  "docs/kb/papers/LS18.md",
-  "docs/wiki/generated-files.md",
-  "docs/wiki/proximity-prize-leaderboard.md",
-  "docs/wiki/quickstart.md",
-  "docs/wiki/residual-census.md",
-  "scripts/README.md",
-  "scripts/forbidden_tokens.py",
-  "scripts/residual_axioms.txt",
-  "scripts/residual_census.py",
-  "scripts/tests/test_forbidden_tokens_axiom_heads.py",
-  "scripts/tests/test_residual_census_audit.py"
- ],
  "reviewed_below_70": [
   {
    "path": "ArkLib/Data/CodingTheory/BerlekampWelch/Sorries.lean",
@@ -763,6 +704,293 @@
    "verdict": "preserved",
    "note": "Comment wording differs; it still builds axiom_audit.py --print-modules before the audit.",
    "set": "restB"
+  }
+ ],
+ "reviewed_70_to_99": [
+  {
+   "path": "ArkLib/Data/CodingTheory/GMMDS/LovettMergeBranch.lean",
+   "verdict": "preserved",
+   "note": "Historical-interface framing kept and strengthened: current text says MergeContradiction is false (not_mergeContradiction, LovettMergeIndepProof.lean:382) and off the live route."
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/GuruswamiSudan/GSCurveTuple.lean",
+   "verdict": "preserved",
+   "note": "curveFold scope caveat present verbatim; only the cross-reference now reads `GuruswamiSudan/GSIntegerRepresentative.lean` route."
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/InterleavedFinOneEq.lean",
+   "verdict": "preserved",
+   "note": "Lambda_interleaved_fin_one_ge is still the m = 1 instance of Lambda_interleaved_ge; the signature is now namespaced ListDecodable.Lambda."
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ListDecoding/Bounds/General.lean",
+   "verdict": "preserved",
+   "note": "ST20 docstring fix kept. The lost inline comment fixed a stale 'external MS77 ingredient' claim inside lambda_ge_entropy_volume's proof; main moved that proof and the stale claim is gone (that sub-fix is obsolete). The docstring cites ABF26C38.ms77_lattice."
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StructuredWeightInduction.lean",
+   "verdict": "preserved",
+   "note": "PG-332 live-cell restriction (sigmaLambda lam <= natDegreeY R) and the vanished-cell by_cases are present; the rw is split into an explicit hterm step for the new API."
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/WeightedAgreementDegenerate.lean",
+   "verdict": "preserved",
+   "note": "All refutations (not_unguardedCurve/Primed/JohnsonCurves, not_affineHullSpaces/Primed) are present. The header now correctly says the replacements are proved canonical theorems with a 0 < deg guard (checked in WeightedAgreement.lean and Curves.lean), so the old 'unproved surfaces' lines are superseded."
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/CrossCellShkredovBound.lean",
+   "verdict": "preserved",
+   "note": "The 'exact computer counts, not in-tree Lean refutations' caveat is present in reworded and stronger form (lines 176-182)."
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/DeviationSupSplit.lean",
+   "verdict": "preserved",
+   "note": "Same proof; Mathlib's zero_le now takes no explicit argument (`exact zero_le`)."
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/E2VanishWidthFourFullCount.lean",
+   "verdict": "preserved",
+   "note": "The zmod97 counterexample is present; the rw is merged with the closing arithmetic step for Lean 4.35."
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/Jo26ObstructionRowCount.lean",
+   "verdict": "preserved",
+   "note": "Same line with implicit `zero_le`."
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/MCAFiniteTable.lean",
+   "verdict": "preserved",
+   "note": "Same line with implicit `zero_le`."
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/MCAStepFunction.lean",
+   "verdict": "preserved",
+   "note": "Both lines are present with implicit `zero_le`."
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/PrizeEquivalence.lean",
+   "verdict": "preserved",
+   "note": "Both lines are present with implicit `zero_le`."
+  },
+  {
+   "path": "ArkLib/Data/CodingTheory/ProximityGap/TwoBranchSmoothDomainRefutation.lean",
+   "verdict": "preserved",
+   "note": "Refutation is present; the hlower' step is re-proved via Nat.le_trans/convert instead of simpa."
+  },
+  {
+   "path": "ArkLib/OracleReduction/Composition/Sequential/AppendSoundnessMsgProof.lean",
+   "verdict": "preserved",
+   "note": "The stage-bounds 'sorry' claim is gone: it now reads 'completed in append_soundness_of_game_factorization'. The scope paragraph is present verbatim."
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Basic.lean",
+   "verdict": "preserved",
+   "note": "Both memoryless-oracle caveats are present; the path is now the full ProximityPrize/Extensions/OracleReduction/Security/Rewinding.lean plus a section name, which exists."
+  },
+  {
+   "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaSalted.lean",
+   "verdict": "preserved",
+   "note": "Claim 5.24 open-on-two-counts text is present (rewrapped, lines 689-700), with an added L = 0 caveat."
+  },
+  {
+   "path": "ArkLib/OracleReduction/LiftContext/Coherence.lean",
+   "verdict": "preserved",
+   "note": "L69 hlift caveat is present; the stale liftingLens pointer is replaced by a note that the Batched FRI lens lift is retired."
+  },
+  {
+   "path": "ArkLib/OracleReduction/ProbOneBindCompose.lean",
+   "verdict": "preserved",
+   "note": "The compatibility wrapper around _root_.probEvent_bind_eq_one is present, now in probEvent notation."
+  },
+  {
+   "path": "ArkLib/ProofSystem/BatchedFri/QueryRoundProbability.lean",
+   "verdict": "preserved",
+   "note": "The L70 friDegree fix is present (48 uses). The Scope paragraph is present on the renamed ...CanonicalBatchingSeamAndJointProximity theorem (lens replaced by batching seam; the probabilityAcceptanceBound_holds sentence is reworded)."
+  },
+  {
+   "path": "ArkLib/ProofSystem/BatchedFri/QuerySoundnessSmallField.lean",
+   "verdict": "preserved",
+   "note": "Vacuity lemmas and docstrings are present. hstep uses mul_le_mul_of_nonneg_left (Mathlib rename); the Claim 8.3 theorem is renamed fri_soundness_canonicalIndependent_of_card_le_curve with the 'vacuous' heading."
+  },
+  {
+   "path": "ArkLib/ProofSystem/Binius/FRIBinius/CoreInteractionPhase.lean",
+   "verdict": "preserved",
+   "note": "The pass-through caveat is present on the _native theorem and references finalSumcheckStep_is_logic_complete_native."
+  },
+  {
+   "path": "ArkLib/ProofSystem/Logup/LogupGrandSumIdentity.lean",
+   "verdict": "preserved",
+   "note": "Status update is present and correctly revised for main: the soundness-side routes (sumcheckSoundnessResidual_pointwise, logup_soundness_end_to_end) were retired per scripts/integration/sumcheck-message-semantics-retirements.json, so the old lines naming them as live were rightly dropped."
+  },
+  {
+   "path": "ArkLib/ProofSystem/Logup/Security/Completeness.lean",
+   "verdict": "preserved",
+   "note": "Historical/current-status text is present; the reference is now OracleReduction.liftContextLegacy_completeness (current name)."
+  },
+  {
+   "path": "ArkLib/ProofSystem/Logup/Security/LogupCompletenessWired.lean",
+   "verdict": "preserved",
+   "note": "Side-condition and hSumcheck-not-missing fixes are present. The AppendCoherent-instance caveat is obsolete: that instance no longer exists and appendToReductionResidual_proof (AppendOracleAdapters.lean) is now genuinely unconditional, as the current text says."
+  },
+  {
+   "path": "ArkLib/ProofSystem/Logup/Security/LogupSoundnessClose.lean",
+   "verdict": "preserved",
+   "note": "The hOuter-refuted caveat is present. The lost lines named logup_soundness_end_to_end as live; it is now retired, and the text correctly points to outerVerifier_soundness_mid / _sharp."
+  },
+  {
+   "path": "ArkLib/ProofSystem/Logup/Security/LogupSoundnessUncond.lean",
+   "verdict": "preserved",
+   "note": "Vacuous-conditional and adapter-scope caveats are present; the retired logup_soundness_end_to_end is replaced by the surviving outer-phase results."
+  },
+  {
+   "path": "ArkLib/ProofSystem/Logup/Security/RbrToSoundBridge.lean",
+   "verdict": "preserved",
+   "note": "MarginalBridge scope and falsity caveats are present; the RoundByRound.lean path is reworded to 'that same extension module'."
+  },
+  {
+   "path": "ArkLib/ProofSystem/Plonk/Composition.lean",
+   "verdict": "preserved",
+   "note": "Docstring fix present verbatim; the knowledge-soundness proof uses `simp only [OptionT.run_pure, liftM_pure]` and `apply hbad.1 _ (by rw [← hextracted]; rfl)` in place of the old rw/refine lines, with the same never-failing-extractor structure (`hextracted : some ... = extracted`)."
+  },
+  {
+   "path": "ArkLib/ProofSystem/Spartan/ComposedCompleteness.lean",
+   "verdict": "preserved",
+   "note": "Status paragraph and h2..h8 notes present; the cited leaf was renamed to `completedFirstChallenge_perfectCompleteness` (consumer `completedFirstChallenge_perfectCompleteness_consumer`), which both exist."
+  },
+  {
+   "path": "ArkLib/ProofSystem/Spartan/FirstSumcheckComplete.lean",
+   "verdict": "preserved",
+   "note": "Current-status text present; the lost line was reworded to 'phase statement without `h_inner` (still under hInit/hImplSupp)', which is more precise. Cited declarations exist."
+  },
+  {
+   "path": "ArkLib/ProofSystem/Spartan/SpartanSumcheckUnconditional.lean",
+   "verdict": "preserved",
+   "note": "Legacy/conditional labelling and the pointer to the bridge-free theorem survive. The lost 'suspected false' lines are obsolete: main now proves the per-round bridge (`SingleRound.oracleReduction_toReduction_eq_reduction`, `oracleReductionToReductionResidual_holds`), and the docstrings say so."
+  },
+  {
+   "path": "ArkLib/ProofSystem/Stir/CheckingVerifier.lean",
+   "verdict": "preserved",
+   "note": "`repeatParam j.castSucc + s` and the separate `hfin` hypothesis are present in all five front doors. The lost `(P.repeatParam j.succ)` last argument is now `(P.foldingParam j.succ)`, which is the further L36 correction matching `stir_rbr_soundness` in MultiRoundAssembly."
+  },
+  {
+   "path": "ArkLib/ProofSystem/Stir/MultiRoundAssembly.lean",
+   "verdict": "preserved",
+   "note": "`repeatParam j.castSucc + s` and the separate `hfin` are present; the lost lines now use `foldingParam j.succ` (the k_i correction, consistent across the STIR front doors)."
+  },
+  {
+   "path": "ArkLib/ProofSystem/Stir/RbrFrontDoor.lean",
+   "verdict": "preserved",
+   "note": "The L36 docstring was reworded to also record the foldingParam correction; `h_fin` is a separate hypothesis; budget uses `foldingParam j.succ`."
+  },
+  {
+   "path": "ArkLib/ProofSystem/Sumcheck/Spec/SingleRoundFaithful.lean",
+   "verdict": "preserved",
+   "note": "`coh_proven` docstring still says it does not by itself discharge hPerRound or the #13 bridge. The lost 'hSimpleBridge is false / hPerRound refuted' claim is obsolete: main supplies the bridge via `Simple.oracleReduction_eq_reduction` under canonical semantics, and the text was updated."
+  },
+  {
+   "path": "ArkLib/ProofSystem/ToyProblem/Metrics.lean",
+   "verdict": "preserved",
+   "note": "The L33 degeneracy status section survives verbatim. Main moved the fixed-encoding objects into `ToyProblem/SoundnessBounds.lean` as `ViolatingInstance`/`winningSetRatio`/`winningSetDensity`; the existential ones moved to `ExistentialEncoding`. The CA transfer is `epsCA_le_winningSetDensity` in Metrics, so the added `...For` declarations are redundant."
+  },
+  {
+   "path": "ArkLib/ToMathlib/BetaInputSupply.lean",
+   "verdict": "preserved",
+   "note": "Per-decoded-family P repair present; the lost text reads 'conditional on all of the inputs above; nothing in-tree supplies them', with only a line break moved. An L74 vacuity note was added."
+  },
+  {
+   "path": "ArkLib/ToMathlib/IngredientCBridge.lean",
+   "verdict": "preserved",
+   "note": "Current-status paragraph present; the L14 remaining-work text now names `specialization_eq_proximate_root_of_hensel` plus the missing coefficient extraction, in place of `pi_z_eq_zero_of_specialization_eq`, which is more accurate."
+  },
+  {
+   "path": "ArkLib/ToMathlib/KoalaBearAttackInstance.lean",
+   "verdict": "preserved",
+   "note": "Same theorems, now qualified as `ExistentialEncoding.winningSetRatio` / `ExistentialEncoding.ViolatingInstance` after main's namespace move."
+  },
+  {
+   "path": "ArkLib/ToMathlib/SpartanBricks.lean",
+   "verdict": "preserved",
+   "note": "Historical/current-status notes present. The short-phase variant is now cited as `composedRbrKnowledgeSoundnessPreserving_of_sumcheck_rounds`, the declaration that exists, and is honestly marked conditional on hRound2/hRound3."
+  },
+  {
+   "path": "ArkLib/ToVCVio/LazyPermMarginal.lean",
+   "verdict": "preserved",
+   "note": "The 'Still not in this file' paragraph is present and now points at `RandomOracleEagerTableDep.lean` in place of `EagerTable.lean`."
+  },
+  {
+   "path": "Research/ProximityPrize/DOSSIER.md",
+   "verdict": "preserved",
+   "note": "The §5 scope/snapshot rewrite is present; the scope sentence now covers `ArkLib/**` and `ProximityPrize/**`, matching main's census SCOPE."
+  },
+  {
+   "path": "Research/ProximityPrize/Frontier/_R325BinomialRecurrenceReturnBound.lean",
+   "verdict": "preserved",
+   "note": "T129 corrections present; the closing `exp(O(r))` sentence continues with an added caveat."
+  },
+  {
+   "path": "Research/ProximityPrize/Frontier/_SYZ26LiftingTest.lean",
+   "verdict": "preserved",
+   "note": "The L121 scope correction is present; the lost line was reflowed (line 93)."
+  },
+  {
+   "path": "Research/ProximityPrize/MCALatticeExact.lean",
+   "verdict": "preserved",
+   "note": "The band-scope docs and `lt_two_mul_add_three_of_fieldBand` are present; only the local `hΣ` was renamed `hSig`."
+  },
+  {
+   "path": "docs/kb/papers/LS18.md",
+   "verdict": "preserved",
+   "note": "The 'Formal Statement And Status' section (ℓ1 regime, Euclidean form not the statement) is present. The Open Gaps bullets were reworded by main to 'no open gap for the specific result ArkLib imports', which is consistent."
+  },
+  {
+   "path": "docs/wiki/generated-files.md",
+   "verdict": "preserved",
+   "note": "The census row is present; its scope now reads `ArkLib/` and `ProximityPrize/` with source locations, matching main's census."
+  },
+  {
+   "path": "docs/wiki/proximity-prize-leaderboard.md",
+   "verdict": "preserved",
+   "note": "The L33 status section is present; the fixed-encoding scalar is cited as `ToyProblem.winningSetDensity` / `epsCA_le_winningSetDensity`, the names that exist."
+  },
+  {
+   "path": "docs/wiki/quickstart.md",
+   "verdict": "preserved",
+   "note": "Python 3.12, `axiom_audit.py --print-modules`, residual-pin and shared-lexer text all present; reflowed in the reorganised section (lines 440-475)."
+  },
+  {
+   "path": "docs/wiki/residual-census.md",
+   "verdict": "preserved",
+   "note": "The classifier-hardening addendum is present; its scope sentence now reads 'syntactic inventory (now of `ArkLib/` and `ProximityPrize/`)'."
+  },
+  {
+   "path": "scripts/README.md",
+   "verdict": "preserved",
+   "note": "The gate descriptions and Python 3.12 requirement are present, adapted to main's `uv run --no-project --python 3.12` workflow (the venv/pip lines were replaced by uv equivalents)."
+  },
+  {
+   "path": "scripts/forbidden_tokens.py",
+   "verdict": "preserved",
+   "note": "Native-form, interpolated-hole, `bv_check`, reading and placebo checks are all present in rewritten form (`native_eval_hits`, `command_view`, `parents[1]` REPO_ROOT). The precheck runs clean."
+  },
+  {
+   "path": "scripts/residual_axioms.txt",
+   "verdict": "preserved",
+   "note": "The header rewrite is present (extended to ProximityPrize). The lost pin line is obsolete: `large_agreement_set_on_curve_implies_correlated_agreement` is now a theorem in BCIKS20/Curves.lean, so no axiom remains to pin; the precheck reports 0 allowlisted axioms, clean."
+  },
+  {
+   "path": "scripts/residual_census.py",
+   "verdict": "preserved",
+   "note": "Conclusion-atom walk, `negated_targets`, instance-only status and scope text are all present, generalised; SCOPE extended to `ProximityPrize/**`."
+  },
+  {
+   "path": "scripts/tests/test_forbidden_tokens_axiom_heads.py",
+   "verdict": "preserved",
+   "note": "T02 comment present, reworded to 'was checked with Lean v4.30.0-rc2' (a historical statement, accurate on the 4.35 tree)."
+  },
+  {
+   "path": "scripts/tests/test_residual_census_audit.py",
+   "verdict": "preserved",
+   "note": "The scope assertions are present, updated to the extended `ArkLib/**/*.lean and ProximityPrize/**/*.lean only` scope; the tests pass."
   }
  ]
 }
