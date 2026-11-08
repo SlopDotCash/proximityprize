@@ -60,7 +60,7 @@ theorem βHensel_weight_bound_zero_structured (x₀ : F) (R : F[X][X][Y])
   refine le_trans (weight_Λ_over_𝒪_le_of_mk_eq hDH hH rfl) ?_
   have hweq : weight_Λ (Polynomial.X : F[X][Y]) H D
       = WithBot.some (D + 1 - Bivariate.natDegreeY H) := by
-    rw [weight_Λ, Polynomial.support_X (by norm_num)]
+    rw [weight_Λ, Polynomial.support_X]
     simp
   rw [hweq]
   refine WithBot.coe_le_coe.mpr ?_
@@ -89,7 +89,7 @@ theorem βHensel_weight_bound_zero_rebased (x₀ : F) (R : F[X][X][Y])
   refine le_trans (weight_Λ_over_𝒪_le_of_mk_eq hDH hH rfl) ?_
   have hweq : weight_Λ (Polynomial.X : F[X][Y]) H D
       = WithBot.some (D + 1 - Bivariate.natDegreeY H) := by
-    rw [weight_Λ, Polynomial.support_X (by norm_num)]
+    rw [weight_Λ, Polynomial.support_X]
     simp
   rw [hweq]
   refine WithBot.coe_le_coe.mpr ?_
@@ -993,8 +993,14 @@ theorem anchoredSuccTerm_discharge (x₀ : F) (R : F[X][X][Y])
   by_cases hzero : Bivariate.natDegreeY R < sigmaLambda lam
   · -- the zero cell: B = 0 kills the whole term
     unfold StructuredSuccTermBound
-    rw [B_coeff_eq_zero_of_natDegreeY_lt x₀ R i1 lam hzero, mul_zero, zero_mul,
-      weight_Λ_over_𝒪_zero]
+    rw [B_coeff_eq_zero_of_natDegreeY_lt x₀ R i1 lam hzero]
+    have hterm : W𝒪 H ^ (i1 + deltaSave i1 - 1) *
+        ClaimA2.ξ x₀ R H hHyp ^ (2 * i1 + sigmaLambda lam - 2) * 0 *
+        partitionProd lam (fun l => if _h : l < k + 1 then βHensel H x₀ R hHyp l else 0) = 0 := by
+      exact (congrArg (fun z : 𝒪 H => z *
+        partitionProd lam (fun l => if _h : l < k + 1 then βHensel H x₀ R hHyp l else 0))
+          (mul_zero _)).trans (zero_mul _)
+    rw [hterm, weight_Λ_over_𝒪_zero]
     exact bot_le
   · push_neg at hzero
     -- the live cell: supplier + anchored arithmetic
@@ -1143,9 +1149,8 @@ theorem βHensel_one (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀
     rfl
   rw [hδ, hσ, hprod]
   norm_num
-  first
-  | rfl
-  | exact congrArg _ (Subsingleton.elim _ _)
+  exact (mul_one _).trans (congrArg (B_coeff H x₀ R 1)
+    (Subsingleton.elim (α := Nat.Partition 0) (Nat.Partition.indiscrete 0) default))
 
 /-! ## D-monotonicity: converting the anchored bound to any larger weight parameter
 

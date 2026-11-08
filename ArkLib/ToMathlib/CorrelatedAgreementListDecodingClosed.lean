@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.Curves
 import ArkLib.ToMathlib.BetaToCurveCoeffPolys
 import ArkLib.ToMathlib.KeystoneCapstone
 
@@ -260,6 +260,8 @@ theorem hcoeffPoly_of_section5Extraction {k deg : ℕ} {domain : ι ↪ F} {δ :
   intro P hP
   exact hcoeffPoly_witness_of_section5Data (hExtract P hP)
 
+-- Native curve conclusions use the canonical sampler; extraction residuals retain PMF sampling.
+
 /-! ## The closed keystone
 
 We feed the assembled `hcoeffPoly` to the real strict-Johnson front door and the boundary residual
@@ -282,7 +284,7 @@ goal):
 The strict-Johnson branch is wired through `curveCoeffPolys_of_betaRec` (so `betaRec` is consumed),
 through the bundling lemma, and through the real front door. -/
 theorem correlatedAgreement_affine_curves_listDecoding_closed {k deg : ℕ}
-    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain)
     (hExtract : ∀ (u : WordStack F (Fin (k + 1)) ι),
       Pr_{
@@ -322,7 +324,7 @@ bridges: the strict branch supplies a single `P₀` with coefficient polynomials
 uniqueness for each stack, while the closed square-root boundary is reduced to its
 actual data, equality at the boundary plus nonempty good-coefficient set. -/
 theorem correlatedAgreement_affine_curves_listDecoding_closed_canonical {k deg : ℕ}
-    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain)
     (hStrictCanonicalCoeff :
       ∀ u : WordStack F (Fin (k + 1)) ι,
@@ -356,7 +358,7 @@ This is the coefficient-polynomial analogue of
 Johnson branch may use the probability/radius hypotheses to choose its canonical decoded family and
 coefficient witnesses, while the closed square-root boundary remains explicit. -/
 theorem correlatedAgreement_affine_curves_listDecoding_closed_of_strict_canonical_coeff
-    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain)
     (hStrictCanonicalCoeff : ∀ (_hk : 0 < k) (u : WordStack F (Fin (k + 1)) ι),
       Pr_{
@@ -398,7 +400,7 @@ This is the evaluation-polynomial analogue of
 `correlatedAgreement_affine_curves_listDecoding_closed_of_strict_canonical_coeff`.
 It exposes the existing curve front door through the non-cyclic closed layer. -/
 theorem correlatedAgreement_affine_curves_listDecoding_closed_of_strict_canonical_eval
-    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain)
     (hStrictCanonicalEval :
       ∀ (_hk : 0 < k) (u : WordStack F (Fin (k + 1)) ι),
@@ -473,7 +475,7 @@ This is the direct residual target for the current §5 assembly: the betaRec
 extraction datum is still genuine `Section5StrictData`, while the theorem
 packages it into the canonical-coefficient front door automatically. -/
 theorem correlatedAgreement_affine_curves_listDecoding_closed_of_section5_canonical
-    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain)
     (hCanonicalExtract :
       ∀ u : WordStack F (Fin (k + 1)) ι,
@@ -506,7 +508,7 @@ In the strict Johnson branch, it is enough to provide one canonical decoded fami
 canonical datum to each decoded family using `section5StrictData_of_eq_on_good`, then calls the
 per-decoding closed keystone. -/
 theorem correlatedAgreement_affine_curves_listDecoding_closed_of_strict_section5_canonical
-    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain)
     (hCanonicalExtract : ∀ (u : WordStack F (Fin (k + 1)) ι),
       Pr_{

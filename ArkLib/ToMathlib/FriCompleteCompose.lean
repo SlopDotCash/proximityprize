@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.ToMathlib.FriComplete
-import ArkLib.OracleReduction.Composition.Sequential.General
+import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.General
 import ArkLib.OracleReduction.Composition.Sequential.AppendPerfectCompletenessChallenge
 import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 
@@ -86,20 +86,18 @@ theorem reduction_perfectCompleteness_of_phases
       Witness F s d (Fin.last (k + 1)))}
     {relIn : Set ((Statement F (0 : Fin (k + 1)) × ∀ j, OracleStatement s ω (0 : Fin (k + 1)) j) ×
       Witness F s d (0 : Fin (k + 2)))}
-    [OracleVerifier.Append.AppendCoherent (reductionFold k s d (ω := ω)).verifier]
+
     (hFold : OracleReduction.perfectCompleteness init impl relIn relMid
       (reductionFold k s d (ω := ω)))
     (hQuery : OracleReduction.perfectCompleteness init impl relMid relOut
-      (QueryRound.queryOracleReduction.{0} (k := k) s d dom_size_cond l)) :
+      (QueryRound.queryOracleReduction (k := k) s d dom_size_cond l)) :
     letI : ∀ i, SampleableType
         (((pSpecFold k s (ω := ω) ++ₚ FinalFoldPhase.pSpec F) ++ₚ
           QueryRound.pSpec l (ω := ω)).Challenge i) :=
       @ProtocolSpec.instSampleableTypeChallengeAppend _ _ _ _ hFoldChallenge hQueryChallenge
     OracleReduction.perfectCompleteness init impl relIn relOut
       ((reductionFold k s d (ω := ω)).append
-        (QueryRound.queryOracleReduction.{0} (k := k) s d dom_size_cond l)) := by
-  haveI : (([]ₒ : OracleSpec PEmpty)).Inhabited := { inhabited_B := fun i => nomatch i }
-  haveI : (([]ₒ : OracleSpec PEmpty)).Fintype := { fintype_B := fun i => nomatch i }
+        (QueryRound.queryOracleReduction (k := k) s d dom_size_cond l)) := by
   -- The seam round (global index `m = |pSpecFold| + 2`, i.e. the first query-round message)
   -- is a `V_to_P` challenge.
   have hDirSeam : ((pSpecFold k s (ω := ω) ++ₚ FinalFoldPhase.pSpec F)
@@ -115,15 +113,15 @@ theorem reduction_perfectCompleteness_of_phases
   unfold OracleReduction.perfectCompleteness
   -- Verifier-fusion bridge: `toReduction` commutes with `append` (proven unconditionally).
   have hb : ((reductionFold k s d (ω := ω)).append
-        (QueryRound.queryOracleReduction.{0} (k := k) s d dom_size_cond l)).toReduction
+        (QueryRound.queryOracleReduction (k := k) s d dom_size_cond l)).toReduction
       = (reductionFold k s d (ω := ω)).toReduction.append
-        (QueryRound.queryOracleReduction.{0} (k := k) s d dom_size_cond l).toReduction :=
+        (QueryRound.queryOracleReduction (k := k) s d dom_size_cond l).toReduction :=
     OracleReduction.appendToReductionResidual_proof (reductionFold k s d (ω := ω))
-      (QueryRound.queryOracleReduction.{0} (k := k) s d dom_size_cond l)
+      (QueryRound.queryOracleReduction (k := k) s d dom_size_cond l)
   rw [hb]
   exact Reduction.append_perfectCompleteness_challenge
     (reductionFold k s d (ω := ω)).toReduction
-    (QueryRound.queryOracleReduction.{0} (k := k) s d dom_size_cond l).toReduction
+    (QueryRound.queryOracleReduction (k := k) s d dom_size_cond l).toReduction
     hFold hQuery Nat.one_pos hDirSeam rfl
     (fun t => isEmptyElim t) (fun t => isEmptyElim t) hInit
 

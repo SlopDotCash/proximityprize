@@ -103,18 +103,18 @@ def coordIndex : Coord ↪ Fin N where
     have hr : e.2 = e'.2 := Fin.ext (by omega)
     exact Prod.ext (fibreNat_injective hf) hr
 
-theorem g_ne_zero : g ≠ (0 : F) := by decide
+theorem g_ne_zero : ArkLib.ProximityGap.PrizeShapePrimeP30.g ≠ (0 : F) := by decide
 
 /-- The actual P1 smooth subgroup, re-enumerated by split fibres. -/
 def domain : Coord ↪ F :=
   coordIndex.trans
-    (_root_.ProximityGap.KKH26RegimeSplit.powDomain g orderOf_g g_ne_zero)
+    (_root_.ProximityGap.KKH26RegimeSplit.powDomain ArkLib.ProximityGap.PrizeShapePrimeP30.g orderOf_g g_ne_zero)
 
 @[simp] theorem domain_apply (e : Coord) :
-    domain e = g ^ ((e.2 : ℕ) + 16 * fibreNat e.1) := rfl
+    domain e = ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ ((e.2 : ℕ) + 16 * fibreNat e.1) := rfl
 
-theorem g_pow_N : g ^ N = (1 : F) := by
-  have h := pow_orderOf_eq_one g
+theorem g_pow_N : ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ N = (1 : F) := by
+  have h := pow_orderOf_eq_one ArkLib.ProximityGap.PrizeShapePrimeP30.g
   rw [orderOf_g] at h
   exact h
 
@@ -123,15 +123,15 @@ sixteenth-root residue. -/
 theorem domain_pow_m (e : Coord) : domain e ^ m = z ^ (e.2 : ℕ) := by
   rw [domain_apply, ← pow_mul]
   calc
-    g ^ (((e.2 : ℕ) + 16 * fibreNat e.1) * m) =
-        g ^ (m * (e.2 : ℕ) + N * fibreNat e.1) := by
+    ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (((e.2 : ℕ) + 16 * fibreNat e.1) * m) =
+        ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (m * (e.2 : ℕ) + N * fibreNat e.1) := by
           congr 1
           norm_num [N, m]
           ring
-    _ = g ^ (m * (e.2 : ℕ)) * (g ^ N) ^ fibreNat e.1 := by
-          rw [pow_add, pow_mul g N (fibreNat e.1)]
-    _ = g ^ (m * (e.2 : ℕ)) := by rw [g_pow_N]; simp
-    _ = (g ^ m) ^ (e.2 : ℕ) := by rw [pow_mul]
+    _ = ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (m * (e.2 : ℕ)) * (ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ N) ^ fibreNat e.1 := by
+          rw [pow_add, pow_mul ArkLib.ProximityGap.PrizeShapePrimeP30.g N (fibreNat e.1)]
+    _ = ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (m * (e.2 : ℕ)) := by rw [g_pow_N]; simp
+    _ = (ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ m) ^ (e.2 : ℕ) := by rw [pow_mul]
     _ = z ^ (e.2 : ℕ) := by rw [g_pow_m]
 
 theorem domain_ne_zero (e : Coord) : domain e ≠ 0 :=

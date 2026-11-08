@@ -148,7 +148,7 @@ noncomputable def section5DataFin_of_producers {k deg : ℕ} {domain : ι ↪ F}
 omit [DecidableEq ι] in
 /-- Proves the correlated agreement curves bound from the finite-range extraction datum. -/
 theorem correlatedAgreement_listDecoding_closed_fin {k deg : ℕ}
-    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain)
     (hExtractFin : ∀ (u : WordStack F (Fin (k + 1)) ι),
       Pr_{
@@ -181,7 +181,7 @@ theorem correlatedAgreement_listDecoding_closed_fin {k deg : ℕ}
 omit [DecidableEq ι] in
 /-- Proves the correlated agreement curves bound in the strict Johnson range. -/
 theorem correlatedAgreement_listDecoding_strict_fin {k deg : ℕ}
-    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (hExtractFin : ∀ (u : WordStack F (Fin (k + 1)) ι),
       Pr_{
@@ -207,7 +207,7 @@ omit [DecidableEq ι] in
 /-- Theorem proving the correlated agreement curves bound from the genuine Section 5 inputs,
 integrating both the strict and boundary branches of the reduction. -/
 theorem keystone_of_section5Inputs {k deg : ℕ}
-    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain)
     -- the genuine §5 standing inputs, per curve/decoding, packaged as a `Section5StrictDataFin`
     -- producer (each component is supplied via `section5DataFin_of_producers`):
@@ -252,7 +252,7 @@ theorem keystone_of_section5Inputs {k deg : ℕ}
 omit [DecidableEq ι] in
 /-- Strict final assembly theorem without the boundary branch. -/
 theorem keystone_of_section5Inputs_strict {k deg : ℕ}
-    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
+    {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg domain)
     (hSection5 : ∀ (u : WordStack F (Fin (k + 1)) ι),
       Pr_{

@@ -109,7 +109,8 @@ theorem constantCoeff_mapped_eq_slice_eval {x₀ : F} {R : F[X][X][Y]}
   rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, PowerSeries.coeff_map,
     coeff_coeffHom_loc, Polynomial.taylor_coeff_zero]
   have h1 : locLift hHyp (q.eval (Polynomial.C x₀))
-      = algebraMap (𝒪 H) (Localization.Away (ξ x₀ R H hHyp))
+      = (@algebraMap (𝒪 H) (Localization.Away (ξ x₀ R H hHyp))
+          inferInstance inferInstance inferInstance)
           (Ideal.Quotient.mk (Ideal.span {H_tilde' H})
             (Polynomial.C (q.eval (Polynomial.C x₀)))) := rfl
   rw [h1, π_hat_z_comp, π_z_mk, Polynomial.evalEval_C]

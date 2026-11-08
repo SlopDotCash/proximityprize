@@ -85,7 +85,6 @@ theorem witness_pin_eq_neg_sum {F : Type*} [Field F] (S : Finset F) (k : ℕ) (h
     have := hmmonic; rw [Polynomial.Monic, Polynomial.leadingCoeff, hmdeg] at this; exact this
   have hcc1 : cc = 1 := by
     have h := congrArg (fun q => Polynomial.coeff q (k + 1)) hc
-    simp only at h
     rw [hPcoeff_top, Polynomial.coeff_mul_C, hm_top, one_mul] at h
     exact h.symm
   subst hcc1
@@ -95,7 +94,6 @@ theorem witness_pin_eq_neg_sum {F : Type*} [Field F] (S : Finset F) (k : ℕ) (h
       simpa using this
     rw [hmdef]; rw [hScard] at hpred; simpa using hpred
   have h := congrArg (fun q => Polynomial.coeff q k) hc
-  simp only at h
   rw [hPcoeff_k, Polynomial.coeff_mul_C, hm_k, mul_one] at h
   exact h
 

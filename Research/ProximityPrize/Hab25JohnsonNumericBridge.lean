@@ -1218,11 +1218,11 @@ theorem mcaThreshold_eq_latticeIndexOf_algebraicData_card_le_and_epsCAGt_adjacen
     GrandChallenges.MCAUpperWitness.ofEpsCAGt
       (MC := ReedSolomon.code domain k) (ε_star := ε_star) (δ := δ_hi) hhi
   have hδhi' : whi.δ ≤ 1 := by
-    simpa [whi] using hδhi
+    simpa [whi, GrandChallenges.MCAUpperWitness.ofEpsCAGt] using hδhi
   have hadj' :
       (GrandChallengesLattice.latticeIndexOf (ι := ι₀) whi.δ hδhi').val =
         (GrandChallengesLattice.latticeIndexOf (ι := ι₀) δ_lo hδlo_le_one).val + 1 := by
-    simpa [whi] using hadj
+    simpa [whi, GrandChallenges.MCAUpperWitness.ofEpsCAGt] using hadj
   simpa [whi, hδhi'] using
     (mcaThreshold_eq_latticeIndexOf_algebraicData_card_le_and_upperWitness_adjacent
       hδlo_le_one A N B hB hNB hBdiv hN hle whi hδhi' hadj')
@@ -1263,11 +1263,11 @@ theorem mcaThreshold_eq_latticeIndexOf_algebraicData_card_le_nat_and_epsCAGt_adj
     GrandChallenges.MCAUpperWitness.ofEpsCAGt
       (MC := ReedSolomon.code domain k) (ε_star := ε_star) (δ := δ_hi) hhi
   have hδhi' : whi.δ ≤ 1 := by
-    simpa [whi] using hδhi
+    simpa [whi, GrandChallenges.MCAUpperWitness.ofEpsCAGt] using hδhi
   have hadj' :
       (GrandChallengesLattice.latticeIndexOf (ι := ι₀) whi.δ hδhi').val =
         (GrandChallengesLattice.latticeIndexOf (ι := ι₀) δ_lo hδlo_le_one).val + 1 := by
-    simpa [whi] using hadj
+    simpa [whi, GrandChallenges.MCAUpperWitness.ofEpsCAGt] using hadj
   simpa [whi, hδhi'] using
     (mcaThreshold_eq_latticeIndexOf_algebraicData_card_le_nat_and_upperWitness_adjacent
       hδlo_le_one A N hNdiv hN hle whi hδhi' hadj')
@@ -1308,11 +1308,11 @@ theorem mcaThreshold_eq_latticeIndexOf_algebraicData_algebraic_cover_and_epsCAGt
     GrandChallenges.MCAUpperWitness.ofEpsCAGt
       (MC := ReedSolomon.code domain k) (ε_star := ε_star) (δ := δ_hi) hhi
   have hδhi' : whi.δ ≤ 1 := by
-    simpa [whi] using hδhi
+    simpa [whi, GrandChallenges.MCAUpperWitness.ofEpsCAGt] using hδhi
   have hadj' :
       (GrandChallengesLattice.latticeIndexOf (ι := ι₀) whi.δ hδhi').val =
         (GrandChallengesLattice.latticeIndexOf (ι := ι₀) δ_lo hδlo_le_one).val + 1 := by
-    simpa [whi] using hadj
+    simpa [whi, GrandChallenges.MCAUpperWitness.ofEpsCAGt] using hadj
   simpa [whi, hδhi'] using
     (mcaThreshold_eq_latticeIndexOf_algebraicData_algebraic_cover_and_upperWitness_adjacent
       hδlo_le_one A N B hB hNB hBdiv hAlg hle whi hδhi' hadj')
@@ -1352,11 +1352,11 @@ theorem mcaThreshold_eq_latticeIndexOf_algebraicData_algebraic_cover_nat_and_eps
     GrandChallenges.MCAUpperWitness.ofEpsCAGt
       (MC := ReedSolomon.code domain k) (ε_star := ε_star) (δ := δ_hi) hhi
   have hδhi' : whi.δ ≤ 1 := by
-    simpa [whi] using hδhi
+    simpa [whi, GrandChallenges.MCAUpperWitness.ofEpsCAGt] using hδhi
   have hadj' :
       (GrandChallengesLattice.latticeIndexOf (ι := ι₀) whi.δ hδhi').val =
         (GrandChallengesLattice.latticeIndexOf (ι := ι₀) δ_lo hδlo_le_one).val + 1 := by
-    simpa [whi] using hadj
+    simpa [whi, GrandChallenges.MCAUpperWitness.ofEpsCAGt] using hadj
   simpa [whi, hδhi'] using
     (mcaThreshold_eq_latticeIndexOf_algebraicData_algebraic_cover_nat_and_upperWitness_adjacent
       hδlo_le_one A N hNdiv hAlg hle whi hδhi' hadj')

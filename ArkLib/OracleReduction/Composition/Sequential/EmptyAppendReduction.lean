@@ -28,9 +28,9 @@ variable {ι : Type} {oSpec : OracleSpec ι} {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt
 concatenated transcript — the prover side via `Prover.append_run_empty`. -/
 theorem run_append_empty (stmt : Stmt₁) (wit : Wit₁) :
     (R₁.append R₂).run stmt wit = (do
-      let x ← liftM (liftM (R₁.prover.run stmt wit) :
+      let x ← liftM (liftAppendLeft pSpec₂ (R₁.prover.run stmt wit) :
         OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) _)
-      let x_1 ← liftM (liftM (R₂.prover.run x.2.1 x.2.2) :
+      let x_1 ← liftM (liftAppendRight pSpec₁ (R₂.prover.run x.2.1 x.2.2) :
         OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) _)
       let stmtOut ← @liftM (OracleComp oSpec)
         (OptionT (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)))

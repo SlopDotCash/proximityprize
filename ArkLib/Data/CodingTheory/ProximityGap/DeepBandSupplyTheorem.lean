@@ -47,8 +47,7 @@ theorem choose_mul_le_of_le {a c t : ℕ} (hac : a ≤ c) (ht : 1 ≤ t) :
     · rw [Nat.choose_eq_zero_of_lt ht']
       omega
   · have hkey : a.choose t * t = a * (a - 1).choose (t - 1) := by
-      have h0 := Nat.succ_mul_choose_eq (a - 1) (t - 1)
-      simp only [Nat.succ_eq_add_one] at h0
+      have h0 := Nat.add_one_mul_choose_eq (a - 1) (t - 1)
       rw [show a - 1 + 1 = a from by omega, show t - 1 + 1 = t from by omega] at h0
       omega
     rw [hkey]

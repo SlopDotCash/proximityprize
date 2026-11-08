@@ -249,7 +249,11 @@ theorem βHensel_one_w (x₀ : F) :
       = 0 := by
     intro lam _
     rw [B_coeff, hasseCoeffRepr_one_Rw]
-    simp
+    set_option backward.isDefEq.respectTransparency false in
+      simp [mul_zero]
+    all_goals
+      exact mul_zero ((W𝒪 (Hw (F := F))) ^ deltaSave 1 *
+        (ξ x₀ (Rw (F := F)) (Hw (F := F)) (hypw x₀)) ^ sigmaLambda lam)
   rw [h0, Finset.sum_empty, Finset.sum_eq_zero h1, add_zero, neg_zero]
 
 open BCIKS20.HenselNumerator in
@@ -458,7 +462,7 @@ theorem goodSet_w_eq_univ {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι
     {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} :
     ProximityGap.RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain)
       (fun _ _ => (0 : F)) δ = Finset.univ := by
-  rw [ProximityGap.RS_goodCoeffsCurve]
+  dsimp only [ProximityGap.RS_goodCoeffsCurve]
   refine Finset.filter_true_of_mem ?_
   intro z _
   have hsum : (∑ t : Fin (k + 1), (z ^ (t : ℕ)) • (fun _ _ => (0 : F)) t : ι → F)
@@ -475,7 +479,8 @@ theorem goodSet_w_eq_univ {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι
       = 0 := by
     simp [Code.relHammingDist]
   rw [hd]
-  exact le_trans (le_of_eq (by rw [ENNReal.coe_NNRat_coe_NNReal]; norm_num)) (zero_le _)
+  simpa only [ENNReal.coe_NNRat_coe_NNReal, NNRat.cast_zero, ENNReal.coe_zero] using
+    (show (0 : ENNReal) ≤ (δ : ENNReal) from bot_le)
 
 end WithFintype
 

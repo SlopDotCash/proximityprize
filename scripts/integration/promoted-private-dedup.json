@@ -1,0 +1,242 @@
+{
+  "upstream_revision": "94fb4cdd70c2ea061037bf6337611300d71c4e88",
+  "method": "remove only confirmed identical private helpers that became public in the authoritative module; preserve every other semantic command and all manual source ports",
+  "files": {
+    "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean": {
+      "before_sha256": "a64524ccce98efa727f7914ccf6f00586bc06a8c187665994c207673c6e68a27",
+      "after_sha256": "b231eac82df8a1ac085e1f214e58397360199bc5562ce11ef84538a9dc62e4f9",
+      "removed": [
+        {
+          "name": "GuruswamiSudan.lagrangeInterpolateRaw",
+          "kind": "def",
+          "source_line": 133,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 317,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.rawToPolyBounded",
+          "kind": "def",
+          "source_line": 149,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 333,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.compPolyCandidate",
+          "kind": "def",
+          "source_line": 155,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 339,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.compPolyCandidateSet",
+          "kind": "def",
+          "source_line": 169,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 353,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.evalCoeffVecAt",
+          "kind": "def",
+          "source_line": 205,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 389,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.hasseDerivEvalAt",
+          "kind": "def",
+          "source_line": 221,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 405,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.hasseMultiplicityCheck",
+          "kind": "def",
+          "source_line": 233,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 417,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.isWitnessC",
+          "kind": "def",
+          "source_line": 279,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 463,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.witnessVarCount",
+          "kind": "def",
+          "source_line": 339,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 523,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.witnessVarToPair",
+          "kind": "def",
+          "source_line": 342,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 526,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.witnessSolToCoeffVec",
+          "kind": "def",
+          "source_line": 367,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 551,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.gsDerivBlockSize",
+          "kind": "def",
+          "source_line": 372,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 556,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.gsDerivRowCount",
+          "kind": "def",
+          "source_line": 375,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 559,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.gsLinearRowCount",
+          "kind": "def",
+          "source_line": 378,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 562,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.gsLinearMatrixEntry",
+          "kind": "def",
+          "source_line": 381,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 565,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.gsLinearMatrix",
+          "kind": "def",
+          "source_line": 402,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 586,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.gsLinearRhs",
+          "kind": "def",
+          "source_line": 408,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 592,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.solveGsWitnessAtTarget",
+          "kind": "def",
+          "source_line": 412,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 596,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.witnessTargets",
+          "kind": "def",
+          "source_line": 422,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 606,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.computeGsWitness",
+          "kind": "def",
+          "source_line": 428,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 612,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.hasWitnessC",
+          "kind": "def",
+          "source_line": 433,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 617,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.polyToRaw",
+          "kind": "def",
+          "source_line": 459,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 642,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.evalQAtPRaw",
+          "kind": "def",
+          "source_line": 467,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 650,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.isQRootRaw",
+          "kind": "def",
+          "source_line": 488,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 671,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.witnessCandidateSet",
+          "kind": "def",
+          "source_line": 521,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 704,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        },
+        {
+          "name": "GuruswamiSudan.guruswami_sudan_for_proximity_gap_existence",
+          "kind": "lemma",
+          "source_line": 658,
+          "upstream_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+          "upstream_line": 892,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        }
+      ],
+      "retained_semantic_commands": 25
+    },
+    "ProximityPrize/Extensions/ProofSystem/Stir/Combine.lean": {
+      "before_sha256": "f49b34fe2806b113ec692539542c47312236195c04765b05ed5aeb84c6fd5a63",
+      "after_sha256": "ced595a76d84b2035d337f61b0ae5946303f808b6b3904bb9c46177ab19a64d6",
+      "removed": [
+        {
+          "name": "Combine.block_size",
+          "kind": "def",
+          "source_line": 57,
+          "upstream_owner": "ArkLib/ProofSystem/Stir/Combine.lean",
+          "upstream_line": 105,
+          "reason": "same full name, declaration kind, active context, and normalized signature/body modulo private/public visibility"
+        }
+      ],
+      "retained_semantic_commands": 19
+    }
+  },
+  "removed_commands": 27,
+  "not_removed": "No unresolved promoted-private collisions remain from this inventory. Non-exact helpers received manual interface reviews recorded below; generic compatibility geometry remains where canonical folding soundness is more restrictive.",
+  "manual_review_outcomes": {
+    "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean": "The four non-exact helper copies were removed after Lean-checked original-premise examples against canonical witnessPairToVar and existence/property declarations; the distinct specificationDecoder contract remains named explicitly. See downstream-extension-audit.json.",
+    "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/Folding.lean": "Removed obsolete raw-arity coefficient helper implementations in favor of canonical logarithmic-arity primitives. Preserved necessary general-degree geometry in Compatibility and the exact betaRec wrapper statement. Full source composition and both public axiom reports pass; see downstream-extension-audit.json."
+  }
+}

@@ -43,8 +43,8 @@ theorem stirFullReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) (M : �
         = support (liftM q : OracleComp []ₒ β)) :
     (stirFullReduction φ deg M).perfectCompleteness init impl
       (stirOStmtRel Unit φ deg δ) (stirOStmtRel (F × F) φ deg δ) := by
-  haveI : (([]ₒ : OracleSpec PEmpty)).Inhabited := { inhabited_B := fun i => nomatch i }
-  haveI : (([]ₒ : OracleSpec PEmpty)).Fintype := { fintype_B := fun i => nomatch i }
+  haveI : ∀ q, Inhabited (([]ₒ : OracleSpec.{0, 0} PEmpty).Range q) := fun q => nomatch q
+  haveI : ∀ q, Fintype (([]ₒ : OracleSpec.{0, 0} PEmpty).Range q) := fun q => nomatch q
   -- per-index challenge instances for the tail spec
   haveI hTF : ∀ j, Fintype (((ProtocolSpec.seqCompose (fun _ : Fin M => pSpec3 ι F))
       ++ₚ pSpecFinal ι F).Challenge j) := appendChallenge_fintype _ _
@@ -55,17 +55,17 @@ theorem stirFullReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) (M : �
     ((ProtocolSpec.seqCompose (fun _ : Fin M => pSpec3 ι F)) ++ₚ pSpecFinal ι F)
   haveI := ProtocolSpec.appendCombinedOracle_inhabited []ₒ (pSpecInit F)
     ((ProtocolSpec.seqCompose (fun _ : Fin M => pSpec3 ι F)) ++ₚ pSpecFinal ι F)
-  haveI : ([]ₒ + [(pSpecInit F).Challenge]ₒ).Fintype := by
+  haveI : ∀ q, Fintype (([]ₒ + [(pSpecInit F).Challenge]ₒ).Range q) := by
     haveI := challengeOracle_fintype (pSpecInit F); infer_instance
-  haveI : ([]ₒ + [(pSpecInit F).Challenge]ₒ).Inhabited := by
+  haveI : ∀ q, Inhabited (([]ₒ + [(pSpecInit F).Challenge]ₒ).Range q) := by
     haveI := challengeOracle_inhabited (pSpecInit F); infer_instance
-  haveI : ([]ₒ + [((ProtocolSpec.seqCompose (fun _ : Fin M => pSpec3 ι F))
-      ++ₚ pSpecFinal ι F).Challenge]ₒ).Fintype := by
+  haveI : ∀ q, Fintype (([]ₒ + [((ProtocolSpec.seqCompose (fun _ : Fin M => pSpec3 ι F))
+      ++ₚ pSpecFinal ι F).Challenge]ₒ).Range q) := by
     haveI := challengeOracle_fintype ((ProtocolSpec.seqCompose
       (fun _ : Fin M => pSpec3 ι F)) ++ₚ pSpecFinal ι F)
     infer_instance
-  haveI : ([]ₒ + [((ProtocolSpec.seqCompose (fun _ : Fin M => pSpec3 ι F))
-      ++ₚ pSpecFinal ι F).Challenge]ₒ).Inhabited := by
+  haveI : ∀ q, Inhabited (([]ₒ + [((ProtocolSpec.seqCompose (fun _ : Fin M => pSpec3 ι F))
+      ++ₚ pSpecFinal ι F).Challenge]ₒ).Range q) := by
     haveI := challengeOracle_inhabited ((ProtocolSpec.seqCompose
       (fun _ : Fin M => pSpec3 ι F)) ++ₚ pSpecFinal ι F)
     infer_instance

@@ -102,7 +102,7 @@ theorem disc_le_house_pow {ι : Type*} (s : Finset ι)
     ∏ i ∈ s, spacing i ≤ ((2 * house) ^ 2) ^ s.card := by
   calc ∏ i ∈ s, spacing i
       ≤ ∏ _i ∈ s, (2 * house) ^ 2 :=
-        Finset.prod_le_prod hsp hbound
+        Finset.prod_le_prod₀ hsp hbound
     _ = ((2 * house) ^ 2) ^ s.card := by rw [Finset.prod_const]
 
 /-- **The geomean is blind to an outlier — the decisive collapse.** A discriminant-shaped
@@ -129,7 +129,7 @@ theorem resultant_le_house_pow {ι : Type*} (s : Finset ι)
     (hbound : ∀ i ∈ s, spacing i ≤ 2 * house) :
     ∏ i ∈ s, spacing i ≤ (2 * house) ^ s.card := by
   calc ∏ i ∈ s, spacing i
-      ≤ ∏ _i ∈ s, (2 * house) := Finset.prod_le_prod hsp hbound
+      ≤ ∏ _i ∈ s, (2 * house) := Finset.prod_le_prod₀ hsp hbound
     _ = (2 * house) ^ s.card := by rw [Finset.prod_const]
 
 end ArkLib.ProximityGap.H8DiscriminantGeomeanCollapse

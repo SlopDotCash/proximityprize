@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Whir.CheckedVerifier
 
 /-!
@@ -10,15 +11,15 @@ import ArkLib.ProofSystem.Whir.CheckedVerifier
 
 `WhirIOP.whir_rbr_soundness` (`Whir/RBRSoundness.lean`, WHIR Theorem 5.2) is an
 existential front door: it demands *some* `VectorIOP` `π` with `2 * M + 2` challenge
-slots that `IsSecureWithGap` at the WHIR per-round budget. Until now its only
+slots that `IsSecureWithGapAveraged` at the WHIR per-round budget. Until now its only
 dischargers (`whir_rbr_soundness_of_secure_gap`, `whir_vector_iop_breakthrough`)
-consumed an **abstract** `π` together with its full `IsSecureWithGap` proof — both
+consumed an **abstract** `π` together with its full `IsSecureWithGapAveraged` proof — both
 completeness and soundness as hypotheses.
 
 This file instantiates the existential with the **concrete checked WHIR construction**
 `Whir302Checked.whirCheckedVectorIOP` (real over-the-wire sumcheck-consistency and
 final-zero-sum checks; perfect completeness PROVEN —
-`whirCheckedVectorIOP_perfectCompleteness`). The completeness leg of `IsSecureWithGap`
+`whirCheckedVectorIOP_perfectCompleteness`). The completeness leg of `IsSecureWithGapAveraged`
 is therefore discharged, and the front door reduces to exactly two named gates:
 
 * `hChallengeCard` — the challenge-cardinality pin
@@ -75,9 +76,9 @@ theorem whir_rbr_soundness_of_checkedVectorIOP_rbr
         let maxDeg := (Finset.univ : Finset (Fin m_0)).sup (fun i => wPoly₀.degreeOf (Fin.succ i))
         let dstar := 1 + (wPoly₀.degreeOf 0) + maxDeg
         let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
-          Fintype (BlockRelDistance.indexPowT (S 0) (P.φ 0) j) := h.inst1 0
+          Fintype (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := h.inst1 0
         let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
-          Nonempty (BlockRelDistance.indexPowT (S 0) (P.φ 0) j) := h.inst2 0
+          Nonempty (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := h.inst2 0
         ∀ j : Fin ((P.foldingParam 0) + 1),
           let errStar_0 j := h.errStar 0 j (h.C 0 j) (h.Gen_α 0 j).parℓ (h.δ 0)
         ∀ j : Fin (P.foldingParam 0),
@@ -95,9 +96,9 @@ theorem whir_rbr_soundness_of_checkedVectorIOP_rbr
         let dstar := 1 + (wPoly₀.degreeOf 0) + maxDeg
         let d := max dstar 3
         let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
-          Fintype (BlockRelDistance.indexPowT (S i) (P.φ i) j) := h.inst1
+          Fintype (BlockRelDistance.Generic.indexPowT (S i) (P.φ i) j) := h.inst1
         let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
-          Nonempty (BlockRelDistance.indexPowT (S i) (P.φ i) j) := h.inst2
+          Nonempty (BlockRelDistance.Generic.indexPowT (S i) (P.φ i) j) := h.inst2
         ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
           let errStar i j := h.errStar i j (h.C i j) (h.Gen_α i j).parℓ (h.δ i)
         ∀ i : Fin (M + 1), ∀ j : Fin (P.foldingParam i),
@@ -107,7 +108,7 @@ theorem whir_rbr_soundness_of_checkedVectorIOP_rbr
     (d' : ℕ)
     (hChallengeCard :
       Fintype.card ((whirPaperTranscriptVectorSpec P d').ChallengeIdx) = 2 * M + 2)
-    (hSound : OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
+    (hSound : OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim
       (whirRelation m_0 (P.φ 0) (h.δ 0))
       (paperTranscriptOracleVerifier P d' (whirVerifyChecked P d'))
       (fun _ =>
@@ -119,7 +120,7 @@ theorem whir_rbr_soundness_of_checkedVectorIOP_rbr
       (P := P) (S := S) (hParams := hParams) (h := h)
       hm_0 (σ₀ := σ₀) (wPoly₀ := wPoly₀) (δ := δ)
       ε_fold ε_out ε_shift ε_fin h_fold_0 h_out h_shift h_fold_i h_fin :=
-  whir_rbr_soundness_of_secure_gap (ι := Unit)
+  whir_rbr_soundness_of_secure_gap
     hm_0 (σ₀ := σ₀) (wPoly₀ := wPoly₀) (δ := δ)
     ε_fold ε_out ε_shift ε_fin h_fold_0 h_out h_shift h_fold_i h_fin
     hChallengeCard (whirCheckedVectorIOP P d')

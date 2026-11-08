@@ -1,0 +1,162 @@
+/-
+Downstream additions retained during the ArkLib integration.
+Initial source and revision: scripts/integration/downstream-extension-audit.json.
+Shared declarations come from the canonical ArkLib modules.
+Checked-in source owns later API ports. Generate separate review candidates with:
+scripts/integration/extract_downstream_extensions.py --output-dir <directory>.
+-/
+import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Relay
+
+/-
+Copyright (c) 2025 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Chung Thai Nguyen, Quang Dao
+-/
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Steps.Fold
+import ArkLib.OracleReduction.Composition.Sequential.ChallengeOracleFintype
+
+/-!
+# Binary Basefold Relay Step
+
+The relay round of the Binary Basefold core interaction (used in non-commitment rounds) as an
+oracle reduction. Defines the prover (`relayOracleProver`), verifier (`relayOracleVerifier`), and
+reduction (`relayOracleReduction`), proves its perfect completeness and round-relation
+preservation, and provides the round-by-round knowledge extractor (`relayRbrExtractor`).
+-/
+
+set_option backward.isDefEq.respectTransparency false
+
+namespace Binius.BinaryBasefold.CoreInteraction
+noncomputable section
+open OracleSpec OracleComp ProtocolSpec Finset AdditiveNTT Polynomial MvPolynomial
+open Binius.BinaryBasefold
+open scoped NNReal ProbabilityTheory
+
+variable {r : ℕ} [NeZero r]
+variable {L : Type} [Field L] [Fintype L] [DecidableEq L] [CharP L 2]
+  [SampleableType L]
+variable (𝔽q : Type) [Field 𝔽q] [Fintype 𝔽q] [DecidableEq 𝔽q]
+  [h_Fq_char_prime : Fact (Nat.Prime (ringChar 𝔽q))] [hF₂ : Fact (Fintype.card 𝔽q = 2)]
+variable [Algebra 𝔽q L]
+variable (β : Fin r → L) [hβ_lin_indep : Fact (LinearIndependent 𝔽q β)]
+  [h_β₀_eq_1 : Fact (β 0 = 1)]
+variable {ℓ 𝓡 ϑ : ℕ} (γ_repetitions : ℕ) [NeZero ℓ] [NeZero 𝓡] [NeZero ϑ] -- Should we allow ℓ = 0?
+variable {h_ℓ_add_R_rate : ℓ + 𝓡 < r} -- ℓ ∈ {1, ..., r-1}
+variable {𝓑 : Fin 2 ↪ L}
+variable [hdiv : Fact (ϑ ∣ ℓ)]
+
+section SingleIteratedSteps
+variable {Context : Type} {mp : SumcheckMultiplierParam L ℓ Context} -- Sumcheck context
+
+section RelayStep
+/- the relay is just to place the conditional oracle message -/
+
+/-- Compatibility name for the canonical relay prover state. -/
+abbrev relayPrvState (i : Fin ℓ) :=
+  RelayProverState (Context := Context) 𝔽q β (ϑ := ϑ)
+    (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i
+
+/-! The prover for the `i`-th round of Binary relayfold. -/
+lemma h_oracle_size_eq_relay (i : Fin ℓ) (hNCR : ¬ isCommitmentRound ℓ ϑ i) :
+    toOutCodewordsCount ℓ ϑ i.castSucc =
+      toOutCodewordsCount ℓ ϑ i.succ := by
+  simp only [toOutCodewordsCount_succ_eq, hNCR, ↓reduceIte]
+
+def relayOracleVerifier_embed (i : Fin ℓ) (hNCR : ¬ isCommitmentRound ℓ ϑ i) :
+    Fin (toOutCodewordsCount ℓ ϑ i.succ) →
+    Fin (toOutCodewordsCount ℓ ϑ i.castSucc) ⊕ pSpecRelay.MessageIdx
+  := fun j => Sum.inl ⟨j.val, by rw [h_oracle_size_eq_relay i hNCR]; omega⟩
+
+/-! The oracle verifier for the `i`-th round of Binary relayfold. -/
+variable {R : Type} [CommSemiring R] [DecidableEq R] [SampleableType R]
+  {n : ℕ} {deg : ℕ} {m : ℕ} {D : Fin m ↪ R}
+
+variable {σ : Type} {init : ProbComp σ} {impl : QueryImpl []ₒ (StateT σ ProbComp)}
+
+namespace Historical
+
+/-- Reindexing preserves the historical strict predicate, with its original challenge order. -/
+lemma strictRoundRelation_relay_preserved (i : Fin ℓ)
+    (hNCR : ¬ isCommitmentRound ℓ ϑ i)
+    (stmtIn : Statement Context i.succ)
+    (oStmtIn : ∀ j, OracleStatement 𝔽q β ϑ i.castSucc j)
+    (witIn : Witness 𝔽q β i.succ)
+    (h_relIn : strictFoldStepRelOutProp (mp := mp) 𝔽q β (ϑ := ϑ)
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) i ((stmtIn, oStmtIn), witIn)) :
+    strictRoundRelationProp (mp := mp) 𝔽q β (ϑ := ϑ)
+      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) i.succ
+      ((stmtIn, fun (j : Fin (toOutCodewordsCount ℓ ϑ i.succ)) =>
+        oStmtIn ⟨j.val, by rw [h_oracle_size_eq_relay i hNCR]; omega⟩), witIn) := by
+  dsimp only [strictRoundRelationProp, strictFoldStepRelOutProp, Fin.val_succ, Set.mem_setOf_eq] at ⊢ h_relIn
+  dsimp only [strictOracleWitnessConsistency, strictOracleFoldingConsistencyProp] at h_relIn ⊢
+  constructor
+  · exact h_relIn.1
+  · constructor
+    · exact h_relIn.2.1
+    · dsimp only [OracleFrontierIndex.mkFromStmtIdx]
+      dsimp only [OracleFrontierIndex.mkFromStmtIdxCastSuccOfSucc] at h_relIn
+      intro (j : Fin (toOutCodewordsCount ℓ ϑ i.succ))
+      have h_toOutCodewordsCount_eq : toOutCodewordsCount ℓ ϑ i.succ =
+        toOutCodewordsCount ℓ ϑ i.castSucc := (h_oracle_size_eq_relay i hNCR).symm
+      have hbound : j.val * ϑ ≤ i.val := by
+        have hle := toCodewordsCount_mul_ϑ_le_i ℓ ϑ i.castSucc
+          (Fin.cast h_toOutCodewordsCount_eq j)
+        simpa only [Fin.val_cast, Fin.val_castSucc, i.isLt, ↓reduceIte] using hle
+      have hchal := getFoldingChallenges_tail_castSucc_eq_of_le
+        (r := r) (𝓡 := 𝓡) (ϑ := j.val * ϑ) i stmtIn.challenges 0
+        (by simpa using hbound) (by simp only [zero_add, Fin.val_succ]; omega)
+      simpa only [Fin.cast, Fin.val_cast, olderStmtChallenges_succ_castSucc,
+        olderStmtChallenges_self, hchal]
+        using h_relIn.2.2 (Fin.cast h_toOutCodewordsCount_eq j)
+
+def relayKStateProp (i : Fin ℓ) (hNCR : ¬ isCommitmentRound ℓ ϑ i)
+    (stmtIn : Statement (L := L) Context i.succ)
+  (witMid : Witness (L := L) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.succ)
+  (oStmtIn : (∀ j, OracleStatement 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ i.castSucc j))
+  : Prop :=
+  -- The zero-round state is the output relation pulled back along the oracle relabeling.
+  masterKStateCore (mp := mp) (𝓑 := 𝓑) (ϑ := ϑ) 𝔽q β
+    (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+    (stmtIdx := i.succ) (oracleIdx := i.succ)
+    (h_le := le_rfl)
+    (stmt := stmtIn) (wit := witMid) (oStmt := mapOStmtOutRelayStep
+      𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hNCR oStmtIn)
+
+
+end Historical
+
+/-! The relay step oracle transformation equals mkVerifierOStmtOut.
+This shows that mapOStmtOutRelayStep is exactly what the verifier produces. -/
+omit [CharP L 2] [SampleableType L] [DecidableEq 𝔽q] hF₂ h_β₀_eq_1 [NeZero 𝓡] h_Fq_char_prime in
+lemma mapOStmtOut_eq_mkVerifierOStmtOut_relayStep
+    (i : Fin ℓ) (hNCR : ¬ isCommitmentRound ℓ ϑ i)
+    (oStmtIn : ∀ j, OracleStatement 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ i.castSucc j)
+    (transcript : FullTranscript pSpecRelay) :
+    let v := relayOracleVerifier (Context := Context) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hNCR
+    mapOStmtOutRelayStep 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hNCR oStmtIn =
+    OracleVerifier.materializeOutput v transcript.challenges oStmtIn transcript.messages :=
+  mapOStmtOutRelayStep_eq_materializeOutput (Context := Context) 𝔽q β i hNCR oStmtIn transcript
+
+omit [CharP L 2] [SampleableType L] [DecidableEq 𝔽q] hF₂ h_β₀_eq_1 [NeZero 𝓡] h_Fq_char_prime in
+lemma getFirstOracle_mapOStmtOutRelayStep_eq (i : Fin ℓ)
+    (hNCR : ¬ isCommitmentRound ℓ ϑ i)
+    (oStmtIn : ∀ j, OracleStatement 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ i.castSucc j) :
+    getFirstOracle 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      (mapOStmtOutRelayStep 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hNCR oStmtIn) =
+    getFirstOracle 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) oStmtIn := by
+  funext y
+  simp only [getFirstOracle, mapOStmtOutRelayStep]
+
+/-- The authoritative native relay knowledge-state function. -/
+noncomputable abbrev relayKState_native := @relayKnowledgeStateFunction
+
+#print axioms relayKState_native
+#print axioms Historical.strictRoundRelation_relay_preserved
+#print axioms mapOStmtOut_eq_mkVerifierOStmtOut_relayStep
+#print axioms getFirstOracle_mapOStmtOutRelayStep_eq
+
+/-! Knowledge state function (KState) for single round -/
+end RelayStep
+end SingleIteratedSteps
+end
+end Binius.BinaryBasefold.CoreInteraction

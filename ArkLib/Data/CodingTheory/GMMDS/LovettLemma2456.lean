@@ -182,7 +182,7 @@ theorem sigmaSplitEquiv_isSome {m' : ℕ} (G : Fin (m' + 1) → ℕ) (i₀ : Fin
   obtain ⟨qf, qs⟩ := q
   cases hq1
   refine ⟨finCongr (by rw [finSuccEquiv'_symm_some]) qs, ?_, ?_⟩
-  · simpa using hq2
+  · simpa only [finCongr_apply_coe] using hq2
   · rfl
 
 /-- **The primitive-case assembly, `n = k` branch** (Lovett's final contradiction).  From the

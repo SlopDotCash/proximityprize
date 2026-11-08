@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.Incremental
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.Incremental
 
 /-!
 # Issue #317: preTensorCombine residuals retired

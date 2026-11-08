@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.SubspaceDesign
+import ProximityPrize.Extensions.Data.CodingTheory.SubspaceDesign
 
 /-!
 # The R2 (CZ25 subspace-design) route has a structural floor on UNFOLDED codes (#407)

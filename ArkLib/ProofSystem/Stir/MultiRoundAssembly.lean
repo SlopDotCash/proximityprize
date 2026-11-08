@@ -4,11 +4,13 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Stir.MainThm
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
+import ProximityPrize.Extensions.ProofSystem.Stir.MainThm
 import ArkLib.ProofSystem.Stir.MultiRoundSpec
 import ArkLib.ProofSystem.Stir.RoundVector
 import ArkLib.ProofSystem.Stir.RoundCompleteness
 import ArkLib.OracleReduction.Completeness
+import ProximityPrize.Compatibility.ConstantOutputCompleteness
 
 /-!
 # Issue #301 (STIR, mechanical track): the (M+1)-round STIR Vector IOPP assembly.
@@ -106,47 +108,16 @@ noncomputable def stirMultiRoundProver (M : ℕ) (φ : ι ↪ F) (deg : ℕ) :
 /-- **The multi-round STIR verifier shell**: forwards acceptance (no output oracles). The
 genuine per-round consistency checks are the open soundness side (see the residuals below). -/
 def stirMultiRoundVerifier (M : ℕ) :
-    OracleVerifier []ₒ Unit (OracleStatement ι F) Bool (fun _ : Empty => Unit)
-      ((stirMultiVSpec M ι).toProtocolSpec F) where
-  verify := fun _ _ => pure true
-  embed := ⟨fun i => i.elim, fun i => i.elim⟩
-  hEq := fun i => i.elim
+    OracleProofVerifier []ₒ Unit (OracleStatement ι F)
+      ((stirMultiVSpec M ι).toProtocolSpec F) :=
+  OracleProofVerifier.ofVerify (fun _ _ => pure true)
 
 /-- **The assembled (M+1)-round STIR Vector IOPP** — the protocol object that the `∃ π` of
 `stir_main` / `stir_rbr_soundness` quantifies over, with the `stirVSpec` wire shape. -/
 noncomputable def stirMultiRoundIOP (M : ℕ) (φ : ι ↪ F) (deg : ℕ) :
-    VectorIOP Unit (OracleStatement ι F) Unit (stirMultiVSpec M ι) F where
-  prover := stirMultiRoundProver M φ deg
-  verifier := stirMultiRoundVerifier M
-
-section Instances
-
-variable {M : ℕ}
-
-/-- Local `VCVCompatible` packaging of the ambient `Field`/`Fintype`/`DecidableEq` data
-(needed for `Fintype (Vector F n)` on the challenge ranges). -/
-instance : VCVCompatible F := { toFintype := inferInstance, toInhabited := ⟨0⟩ }
-
-/-- Finiteness of the multi-round challenge oracle spec (every challenge range is
-`Vector F len`), pinned to the canonical `challengeOracleInterface` (the interface that the
-completeness machinery elaborates `[pSpec.Challenge]ₒ` with). -/
-instance :
-    ([((stirMultiVSpec M ι).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).Fintype where
-  fintype_B := fun q => by
-    show Fintype (((stirMultiVSpec M ι).toProtocolSpec F).Challenge q.1)
-    dsimp
-    infer_instance
-
-/-- Inhabitedness of the multi-round challenge oracle spec (pinned as above). -/
-instance :
-    ([((stirMultiVSpec M ι).toProtocolSpec F).Challenge]ₒ'challengeOracleInterface).Inhabited
-    where
-  inhabited_B := fun q => by
-    show Inhabited (((stirMultiVSpec M ι).toProtocolSpec F).Challenge q.1)
-    dsimp
-    infer_instance
-
-end Instances
+    VectorIOP Unit (OracleStatement ι F) Unit (stirMultiVSpec M ι) F :=
+  OracleReduction.mk (Oₛₒ := fun e : Empty => nomatch e)
+    (stirMultiRoundProver M φ deg) (stirMultiRoundVerifier M)
 
 section Completeness
 
@@ -162,48 +133,18 @@ probability one. (The genuine fold messages are exercised but not inspected — 
 checks are the open soundness side.) -/
 theorem stirMultiRoundIOP_perfectCompleteness (M : ℕ) (φ : ι ↪ F) (deg : ℕ)
     (relIn : Set ((Unit × ∀ i, OracleStatement ι F i) × Unit)) :
-    OracleReduction.perfectCompleteness (pure ()) isEmptyElim relIn acceptRejectOracleRel
+    OracleReduction.perfectCompleteness (Oₛₒ := fun i : Empty => nomatch i) (pure ()) isEmptyElim relIn acceptRejectOracleRel
       (stirMultiRoundIOP M φ deg) := by
-  rw [OracleReduction.unroll_n_message_reduction_perfectCompleteness
-    (reduction := stirMultiRoundIOP M φ deg) relIn acceptRejectOracleRel (pure ()) isEmptyElim
-    inferInstance
-    (by simp only [Set.fmap_eq_image, IsEmpty.forall_iff, implies_true])]
-  intro stmtIn oStmtIn witIn h_relIn
-  dsimp only [stirMultiRoundIOP, stirMultiRoundProver, stirMultiRoundVerifier,
-    OracleVerifier.toVerifier]
-  simp only [Fin.isValue, bind_pure_comp, pure_bind, bind_map_left, liftM_bind, liftM_map,
-    Prod.mk.eta, bind_assoc, map_pure, liftComp_pure, liftM_pure, OptionT.simulateQ_pure]
-  rw [probEvent_eq_one_iff]
-  refine ⟨?_, ?_⟩
-  · -- SAFETY: the run never fails
-    rw [probFailure_bind_eq_zero_iff]
-    refine ⟨?_, fun α _hα => ?_⟩
-    · simp only [probFailure_map, OptionT.probFailure_liftM, OptionT.probFailure_lift,
-        _root_.probFailure_liftComp, HasEvalPMF.probFailure_eq_zero]
-    · rw [probFailure_map, OptionT.probFailure_liftComp_of_OracleComp_Option]
-      simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-        Function.comp_apply, Option.map_some, probFailure_map, HasEvalPMF.probFailure_eq_zero,
-        probOutput_eq_zero_iff, support_map, support_liftM, Set.mem_image, reduceCtorEq,
-        Set.mem_setOf_eq, not_exists, not_and, exists_const, not_false_eq_true, add_zero,
-        zero_add]
-      intro y hy
-      erw [OptionT.simulateQ_pure, OptionT.run_pure] at hy
-      simp only [support_pure, Set.mem_singleton_iff] at hy
-      subst hy
-      simp only [Option.map_some, reduceCtorEq, not_false_eq_true]
-  · -- CORRECTNESS: every output in the support satisfies the relation + agreement
-    intro x hx
-    simp only [support_bind, Set.mem_iUnion, exists_prop] at hx
-    obtain ⟨α, _hα, hx⟩ := hx
-    rw [OptionT.mem_support_iff] at hx
-    erw [OptionT.simulateQ_pure, OptionT.run_pure] at hx
-    simp only [OptionT.run_map, OptionT.run_monadLift, OptionT.run_pure, _root_.map_pure,
-      Function.comp_apply, Option.map_some, support_map, support_pure, Set.mem_image,
-      Set.mem_singleton_iff, Option.some.injEq, exists_eq_left, exists_eq_right] at hx
-    subst hx
-    have hfn : ∀ (f g : ∀ _ : Empty, Unit), f = g := fun _ _ => funext fun i => i.elim
-    refine ⟨?_, rfl, hfn _ _⟩
-    simp only [acceptRejectOracleRel, Set.mem_singleton_iff, Prod.mk.injEq]
+  unfold OracleReduction.perfectCompleteness
+  refine Reduction.perfectCompleteness_of_constant_output _ _ _ _ _
+    (true, isEmptyElim) () (fun _ => rfl) ?_ ?_
+  · intro stmt tr
+    apply OptionT.ext
+    simp only [Verifier.run, OracleReduction.toReduction, stirMultiRoundIOP,
+      stirMultiRoundVerifier, OracleProofVerifier.ofVerify, OracleVerifier.toVerifier, OptionT.run_pure,
+      simulateQ_pure, LawfulApplicative.map_pure]
+    congr 2
+  · rfl
 
 end Completeness
 
@@ -223,15 +164,15 @@ is retained only because `stirMultiRoundIOP_isSecureWithGap` below is general wi
 do not try to discharge it at a sub-1 budget.  Consumed as a hypothesis below; NOT fabricated. -/
 def stirMultiRoundRbrSoundnessResidual (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0) : Prop :=
-  OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
-    (stirRelation deg φ δ) (stirMultiRoundIOP M φ deg).verifier ε_rbr
+  OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim
+    (stirRelation deg φ δ) (OracleProof.toOracleVerifier (stirMultiRoundIOP M φ deg)) ε_rbr
 
-/-- The assembled multi-round STIR IOPP is `IsSecureWithGap`, given the (open) rbr-soundness
+/-- The assembled multi-round STIR IOPP is `IsSecureWithGapAveraged`, given the (open) rbr-soundness
 residual: the completeness leg is the proven `stirMultiRoundIOP_perfectCompleteness`. -/
 theorem stirMultiRoundIOP_isSecureWithGap (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (hSound : stirMultiRoundRbrSoundnessResidual M φ deg δ ε_rbr) :
-    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
+    IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
       (stirMultiRoundIOP M φ deg) where
   is_complete := stirMultiRoundIOP_perfectCompleteness M φ deg _
   is_rbr_knowledge_sound := hSound
@@ -264,7 +205,7 @@ theorem stir_rbr_soundness_of_secure_vectorIOP
         Dist.δ j < (1 - Bstar (rate (code (P.φ j) (degree ι P j)))))
     (ε_fold : ℝ≥0) (ε_out : Fin M → ℝ≥0) (ε_shift : Fin M → ℝ≥0) (ε_fin : ℝ≥0)
     (π : VectorIOP Unit (OracleStatement (ι 0) F) Unit (stirMultiVSpec M (ι 0)) F)
-    (hSecure : IsSecureWithGap
+    (hSecure : IsSecureWithGapAveraged
       (stirRelation (degree ι P 0) (P.φ 0) 0)
       (stirRelation (degree ι P 0) (P.φ 0) (Dist.δ 0))
       (fun _ => ({ε_fold} ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max' (by simp))
@@ -293,7 +234,7 @@ theorem stir_rbr_soundness_of_secure_vectorIOP
 the assembled multi-round object. The existential witnesses are fully constructed —
 `n := 3M + 3`, `vPSpec := stirMultiVSpec M (ι 0)` (challenge count `2M + 2` by the landed
 `stirVSpec_card_challengeIdx`), `π := stirMultiRoundIOP` — and the completeness leg of
-`IsSecureWithGap` is proven. The genuinely open legs are consumed as hypotheses:
+`IsSecureWithGapAveraged` is proven. The genuinely open legs are consumed as hypotheses:
 the rbr-soundness residual (`hSound`, Johnson-CA-gated) and the per-round error bounds
 (`hfold`/`hrest`, statements about the free parameters `ε_fold/ε_out/ε_shift/ε_fin`). -/
 theorem stir_rbr_soundness_of_residuals
@@ -351,7 +292,7 @@ theorem stir_main_of_secure_vectorIOP
             Real.log (1 / rate (code φ degree)))
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (π : VectorIOP Unit (OracleStatement ι F) Unit (stirMultiVSpec M ι) F)
-    (hSecure : IsSecureWithGap (stirRelation degree φ 0) (stirRelation degree φ δ) ε_rbr π)
+    (hSecure : IsSecureWithGapAveraged (stirRelation degree φ 0) (stirRelation degree φ δ) ε_rbr π)
     (hε : ∀ i, ε_rbr i ≤ (1 : ℚ≥0) / (2 ^ secpar))
     (hM : ∃ c > 0, M ≤ c * (Real.log degree / Real.log k))
     (hLen : ∃ cₖ : ℕ → ℝ, proofLen ≤ (Fintype.card ι) + (cₖ k) * (Real.log degree))
@@ -369,7 +310,7 @@ theorem stir_main_of_secure_vectorIOP
 
 /-- **Theorem 5.1 front door (#301, mechanical track)**: `stir_main` instantiated with the
 assembled multi-round object (`n := 3M + 3`, `vPSpec := stirMultiVSpec M ι`,
-`π := stirMultiRoundIOP M φ degree`), with the completeness leg of `IsSecureWithGap` proven.
+`π := stirMultiRoundIOP M φ degree`), with the completeness leg of `IsSecureWithGapAveraged` proven.
 Consumed as hypotheses (the genuinely open legs): the rbr-soundness residual (`hSound`,
 Johnson-CA-gated), the rbr error bound (`hε`), and the complexity claims about the free
 parameters `M`/`proofLen`/`qNumtoInput`/`qNumtoProofstr` (`hM`/`hLen`/`hQin`/`hQpf`). -/

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier._ResonanceAgreementReality
+import Research.ProximityPrize.Frontier._ResonanceAgreementOffDiagNonneg
 import Research.ProximityPrize.Frontier._ResonanceTowerFloor
 
 /-!
@@ -55,18 +56,6 @@ private theorem nat_pred_cast_pow_eq (r : ℕ) :
     ((m - 1 : ℕ) : ℝ) ^ r = ((m : ℝ) - 1) ^ r := by
   have hm : (1 : ℕ) ≤ m := NeZero.one_le
   rw [Nat.cast_sub hm, Nat.cast_one]
-
-/-- **The off-diagonal real part is nonnegative.** For unit-modulus phases, the agreement off-diagonal
-sits at or above `0`: `resonanceMoment u r = (m-1)^r + (resonanceOffDiag u r).re` and the in-tree Wick
-floor gives `(m-1)^r ≤ resonanceMoment u r`, so `0 ≤ (resonanceOffDiag u r).re`. The off-diagonal never
-interferes destructively below the Wick floor. -/
-theorem resonanceOffDiag_re_nonneg (u : ZMod m → ℂ) (r : ℕ)
-    (hu : ∀ a : ZMod m, ‖u a‖ = 1) :
-    0 ≤ (resonanceOffDiag u r).re := by
-  have hdecomp := resonanceMoment_eq_wick_add_offDiag_re u r (fun a _ => hu a)
-  have hfloor : ((m : ℝ) - 1) ^ r ≤ resonanceMoment u r := resonanceMoment_ge_pow u hu r
-  rw [hdecomp, nat_pred_cast_pow_eq r] at hfloor
-  linarith
 
 /-- **Phase-gauge invariance of the resonance moment.** Rotating every phase by a fixed unit-modulus
 `c` (`u ↦ c·u`) leaves `phaseSum` scaled by `c^r`, hence each `‖phaseSum‖²` unchanged (`‖c^r‖²=1`), so

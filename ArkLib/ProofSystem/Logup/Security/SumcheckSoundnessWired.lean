@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Logup.Security.MarginalBridgeProof
 import ArkLib.ProofSystem.Sumcheck.Spec.SeqComposeRbrSoundness
 
@@ -43,11 +44,16 @@ noncomputable section
 open OracleComp OracleSpec ProtocolSpec
 open scoped NNReal ENNReal
 
+-- Preserve full old value-law observations locally under canonical native semantics.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ :=
+  ⟨fun _ => True.intro⟩
+
 namespace Logup
 
 section SumcheckSoundnessWired
 
-variable {ι : Type} (oSpec : OracleSpec ι) [oSpec.Fintype]
+variable {ι : Type} (oSpec : OracleSpec ι) [∀ q, Fintype (oSpec.Range q)]
 variable (F : Type) [Field F] [Fintype F] [DecidableEq F] [Fact ((-1 : F) ≠ 1)]
   [SampleableType F]
 variable (n M : ℕ)
@@ -94,11 +100,11 @@ theorem sumcheckSoundnessResidual_holds_wired
     (hProj : SumcheckLensProjSound oSpec F n M params innerLangIn)
     (hInnerRbr :
       (logupConcreteSumcheckOracleReduction oSpec F n M params
-          (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundness init impl
+          (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundnessAveraged init impl
         innerLangIn (Set.univ) rbrSoundnessError)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     SumcheckSoundnessResidual oSpec F n M params init impl sumcheckSoundnessError :=
@@ -128,9 +134,9 @@ def SumcheckLensProjSoundFor
       (∀ i, LogupSumcheckOracleStatement F n M params i))) : Prop :=
   ∀ outerStmtIn : StmtAfterOuter F n M params × (∀ i, OStmtAfterOuter F n M params i),
     outerStmtIn ∉ outerLangIn →
-    (logupSumcheckOracleLens.{0} oSpec F n M params).toLens.proj outerStmtIn ∉ innerLangIn
+    (logupSumcheckOracleLens oSpec F n M params).toLens.proj outerStmtIn ∉ innerLangIn
 
-omit [oSpec.Fintype] [Fact ((-1 : F) ≠ 1)] in
+omit [∀ q, Fintype (oSpec.Range q)] [Fact ((-1 : F) ≠ 1)] in
 /-- Promote the historical `midLanguage` projection-soundness fact to any outer language containing
 `midLanguage`.
 
@@ -148,22 +154,23 @@ theorem SumcheckLensProjSoundFor_of_midLanguage_subset
   intro outerStmtIn hNotOuter
   exact hProj outerStmtIn (fun hMid => hNotOuter (hSubset hMid))
 
+omit [∀ q, Fintype (oSpec.Range q)] in
 /-- `OracleStatement.Lens.IsSound` for the LogUp sum-check lens, parametrized by the outer input
 language.  The output side is still vacuous because the inner output language is `Set.univ`. -/
-@[reducible] def sumcheckLensSoundFor
+theorem sumcheckLensSoundFor
     (outerLangIn : Set (StmtAfterOuter F n M params ×
       (∀ i, OStmtAfterOuter F n M params i)))
     (innerLangIn : Set (LogupSumcheckStmtIn F n M params ×
       (∀ i, LogupSumcheckOracleStatement F n M params i)))
     (hProj : SumcheckLensProjSoundFor oSpec F n M params outerLangIn innerLangIn) :
-    (logupSumcheckOracleLens.{0} oSpec F n M params).toLens.IsSound
+    (logupSumcheckOracleLens oSpec F n M params).toLens.IsSound
       outerLangIn outputRelation.language innerLangIn (Set.univ)
       ((logupConcreteSumcheckOracleReduction oSpec F n M params
           (Fact.out : (-1 : F) ≠ 1)).verifier.toVerifier.compatStatement
-        (logupSumcheckOracleLens.{0} oSpec F n M params).toLens) where
+        (logupSumcheckOracleLens oSpec F n M params).toLens) where
   proj_sound := hProj
   lift_sound := by
-    intro _ _ _ hNot
+    intro _ _ _ _ hNot
     exact absurd (Set.mem_univ _) hNot
 
 /-- **Lifted RBR soundness of the embedded sum-check over an arbitrary outer language.** -/
@@ -176,14 +183,14 @@ theorem sumcheckVerifier_rbrSoundness_forLang
     (hProj : SumcheckLensProjSoundFor oSpec F n M params outerLangIn innerLangIn)
     (hInnerRbr :
       (logupConcreteSumcheckOracleReduction oSpec F n M params
-          (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundness init impl
+          (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundnessAveraged init impl
         innerLangIn (Set.univ) rbrSoundnessError) :
-    (sumcheckVerifier oSpec F n M params).rbrSoundness init impl
+    (sumcheckVerifier oSpec F n M params).rbrSoundnessAveraged init impl
       outerLangIn outputRelation.language rbrSoundnessError := by
-  haveI := logupSumcheck_liftContextCoherent oSpec F n M params
-  haveI := sumcheckLensSoundFor oSpec F n M params outerLangIn innerLangIn hProj
-  exact OracleVerifier.liftContext_rbr_soundness
-    (lens := logupSumcheckOracleLens.{0} oSpec F n M params)
+  have := logupSumcheck_liftContextCoherent oSpec F n M params
+  have := sumcheckLensSoundFor oSpec F n M params outerLangIn innerLangIn hProj
+  exact OracleVerifier.liftContextLegacy_rbr_soundness
+    (lens := logupSumcheckOracleLens oSpec F n M params)
     (logupConcreteSumcheckOracleReduction oSpec F n M params (Fact.out : (-1 : F) ≠ 1)).verifier
     hInnerRbr
 
@@ -204,11 +211,11 @@ theorem sumcheckVerifier_soundness_forLang_wired
     (hProj : SumcheckLensProjSoundFor oSpec F n M params outerLangIn innerLangIn)
     (hInnerRbr :
       (logupConcreteSumcheckOracleReduction oSpec F n M params
-          (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundness init impl
+          (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundnessAveraged init impl
         innerLangIn (Set.univ) rbrSoundnessError)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     (sumcheckVerifier oSpec F n M params).soundness init impl
@@ -226,7 +233,7 @@ theorem sumcheckVerifier_soundness_forLang_wired
   LogUp callers.
   -/
 
-omit [oSpec.Fintype] [Fintype F] in
+omit [∀ q, Fintype (oSpec.Range q)] [Fintype F] in
 /-- **Concrete LogUp inner sum-check RBR from per-round RBR plus binary append-RBR.**
 
   This specializes `Sumcheck.Spec.oracleVerifier_rbrSoundness_of_round_append` to LogUp's degree and
@@ -241,7 +248,7 @@ theorem logupConcreteSumcheckOracleReduction_rbrSoundness_roundAppend
           (Sumcheck.Spec.SingleRound.pSpec F (logupSumcheckDegree M params)).ChallengeIdx → ℝ≥0)
       (hRound : ∀ i : Fin n,
         (Sumcheck.Spec.SingleRound.oracleVerifier F n (logupSumcheckDegree M params)
-            (signDomain F (Fact.out : (-1 : F) ≠ 1)) oSpec i).rbrSoundness init impl
+            (signDomain F (Fact.out : (-1 : F) ≠ 1)) oSpec i).rbrSoundnessAveraged init impl
           (lang i.castSucc) (lang i.succ) (rbrSoundnessError i))
       (hAppend : ∀ {S₁ S₂ S₃ : Type} {k₁ k₂ : ℕ}
           {p₁ : ProtocolSpec k₁} {p₂ : ProtocolSpec k₂}
@@ -249,11 +256,11 @@ theorem logupConcreteSumcheckOracleReduction_rbrSoundness_roundAppend
           (V₁ : Verifier oSpec S₁ S₂ p₁) (V₂ : Verifier oSpec S₂ S₃ p₂)
           {l₁ : Set S₁} {l₂ : Set S₂} {l₃ : Set S₃}
           {e₁ : p₁.ChallengeIdx → ℝ≥0} {e₂ : p₂.ChallengeIdx → ℝ≥0},
-          V₁.rbrSoundness init impl l₁ l₂ e₁ → V₂.rbrSoundness init impl l₂ l₃ e₂ →
-          (V₁.append V₂).rbrSoundness init impl l₁ l₃
+          V₁.rbrSoundnessAveraged init impl l₁ l₂ e₁ → V₂.rbrSoundnessAveraged init impl l₂ l₃ e₂ →
+          (V₁.append V₂).rbrSoundnessAveraged init impl l₁ l₃
             (Sum.elim e₁ e₂ ∘ ChallengeIdx.sumEquiv.symm)) :
       (logupConcreteSumcheckOracleReduction oSpec F n M params
-          (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundness init impl
+          (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundnessAveraged init impl
         (lang 0) (lang (Fin.last n))
         (fun combinedIdx =>
           letI ij := ProtocolSpec.seqComposeChallengeIdxToSigma combinedIdx
@@ -290,7 +297,7 @@ theorem sumcheckVerifier_soundness_forLang_wired_roundAppend
       (hProj : SumcheckLensProjSoundFor oSpec F n M params outerLangIn (lang 0))
       (hRound : ∀ i : Fin n,
         (Sumcheck.Spec.SingleRound.oracleVerifier F n (logupSumcheckDegree M params)
-            (signDomain F (Fact.out : (-1 : F) ≠ 1)) oSpec i).rbrSoundness init impl
+            (signDomain F (Fact.out : (-1 : F) ≠ 1)) oSpec i).rbrSoundnessAveraged init impl
           (lang i.castSucc) (lang i.succ) (rbrSoundnessError i))
       (hAppend : ∀ {S₁ S₂ S₃ : Type} {k₁ k₂ : ℕ}
           {p₁ : ProtocolSpec k₁} {p₂ : ProtocolSpec k₂}
@@ -298,12 +305,12 @@ theorem sumcheckVerifier_soundness_forLang_wired_roundAppend
           (V₁ : Verifier oSpec S₁ S₂ p₁) (V₂ : Verifier oSpec S₂ S₃ p₂)
           {l₁ : Set S₁} {l₂ : Set S₂} {l₃ : Set S₃}
           {e₁ : p₁.ChallengeIdx → ℝ≥0} {e₂ : p₂.ChallengeIdx → ℝ≥0},
-          V₁.rbrSoundness init impl l₁ l₂ e₁ → V₂.rbrSoundness init impl l₂ l₃ e₂ →
-          (V₁.append V₂).rbrSoundness init impl l₁ l₃
+          V₁.rbrSoundnessAveraged init impl l₁ l₂ e₁ → V₂.rbrSoundnessAveraged init impl l₂ l₃ e₂ →
+          (V₁.append V₂).rbrSoundnessAveraged init impl l₁ l₃
             (Sum.elim e₁ e₂ ∘ ChallengeIdx.sumEquiv.symm))
       (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
         x ∈ support ((impl t).run s) → x.2 = s)
-      (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+      (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
       (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
         evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
       (sumcheckVerifier oSpec F n M params).soundness init impl
@@ -314,7 +321,7 @@ theorem sumcheckVerifier_soundness_forLang_wired_roundAppend
         rbrSoundnessError ij.1 ij.2
     have hInner :
         (logupConcreteSumcheckOracleReduction oSpec F n M params
-            (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundness init impl
+            (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundnessAveraged init impl
           (lang 0) (Set.univ) composedError := by
       rw [← hLast]
       exact logupConcreteSumcheckOracleReduction_rbrSoundness_roundAppend

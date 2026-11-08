@@ -150,7 +150,6 @@ theorem lineList_le_succ_agreement (dom : Fin n ↪ F) (k a : ℕ) (hkn : k < n)
       simp only [] at hpt
       have e1 := congrFun hP₁ev i
       have e2 := congrFun hP₂ev i
-      simp only [] at e1 e2
       rw [hD]
       simp only [Polynomial.eval_sub, Polynomial.eval_mul, Polynomial.eval_C,
         Polynomial.eval_pow, Polynomial.eval_X]

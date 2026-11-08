@@ -4,6 +4,7 @@ import Mathlib.Data.Finset.Basic
 import Mathlib.Tactic
 
 import ArkLib.Data.CodingTheory.Quarantine.Hypotheses
+import ArkLib.Data.CodingTheory.Quarantine.CounterexampleFixture
 
 set_option maxRecDepth 4096
 
@@ -15,18 +16,9 @@ the candidate bounds from statistical mechanics, quantum information,
 and additive combinatorics.
 -/
 
-abbrev F := ZMod 3
-abbrev n : ℕ := 4
-abbrev m : ℕ := 2
+namespace ProximityGap.QuarantineHypotheses.Refutations
 
-def H_matrix : Matrix (Fin 2) (Fin 4) F :=
-  ![![1, 0, 1, 1],
-    ![0, 1, 1, 2]]
-
--- Valid codewords
-def w0 : Fin 4 → F := ![0, 0, 0, 0]
-def w1 : Fin 4 → F := ![1, 1, 2, 0]
-def w2 : Fin 4 → F := ![2, 1, 0, 1]
+open ProximityGap.HypothesisCounterexample
 
 -- The bundle is the set of these 3 codewords
 def U : Finset (Fin 4 → F) := {w0, w1, w2}
@@ -92,3 +84,5 @@ theorem refute_SumProduct_escape :
   have h_bound : weight (fun i => c3 i * c4 i) ≤ 2 := h c3 c4 (by decide) (by decide) (by decide)
   revert h_bound
   decide
+
+end ProximityGap.QuarantineHypotheses.Refutations

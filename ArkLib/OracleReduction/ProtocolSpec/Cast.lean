@@ -3,19 +3,23 @@ Copyright (c) 2024-2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao
 -/
+module
 
-import ArkLib.OracleReduction.ProtocolSpec.Basic
+public import ArkLib.OracleReduction.ProtocolSpec.Basic
 
 /-!
-# Dependent Casting for Protocol Specifications
+  # Casting for ProtocolSpec and related structures
 
-This module formalizes dependent casting functions and equivalence relations for `ProtocolSpec` and
-its associated components across round-count and specification equalities. In interactive oracle
-proofs, reductions are often defined over varying parameterizations of the protocol structure (e.g.,
-varying round counts or message spaces). Dependent casting allows safe transport of message indices
-(`MessageIdx`), challenge indices (`ChallengeIdx`), and transcripts (`Transcript`, `FullTranscript`)
-between structurally isomorphic specifications.
+  We define custom dependent casts (registered as `DCast` instances) for the following structures:
+  - `ProtocolSpec`
+  - `MessageIdx` and `ChallengeIdx`
+  - `(Full)Transcript`
+  - Related oracle interface instances
+
+  We also show basic properties about these casts.
 -/
+
+@[expose] public section
 
 open OracleComp
 
@@ -80,9 +84,8 @@ theorem cast_id : MessageIdx.cast (Eq.refl n₁) rfl = (id : pSpec₁.MessageIdx
 
 theorem cast_injective : Function.Injective (MessageIdx.cast hn hSpec) := by
   intro i j h'
-  simp only [MessageIdx, MessageIdx.cast, Subtype.mk.injEq, Fin.cast_inj] at h'
   ext : 1
-  exact h'
+  exact Fin.cast_injective hn (congrArg Subtype.val h')
 
 instance instDCast₂ : DCast₂ Nat ProtocolSpec (fun _ pSpec => MessageIdx pSpec) where
   dcast₂ h := MessageIdx.cast h
@@ -119,9 +122,8 @@ theorem cast_id : ChallengeIdx.cast (Eq.refl n₁) rfl = (id : pSpec₁.Challeng
 
 theorem cast_injective : Function.Injective (ChallengeIdx.cast hn hSpec) := by
   intro i j h'
-  simp only [ChallengeIdx, ChallengeIdx.cast, Subtype.mk.injEq, Fin.cast_inj] at h'
   ext : 1
-  exact h'
+  exact Fin.cast_injective hn (congrArg Subtype.val h')
 
 instance instDCast₂ : DCast₂ Nat ProtocolSpec (fun _ pSpec => ChallengeIdx pSpec) where
   dcast₂ h := ChallengeIdx.cast h
@@ -170,6 +172,23 @@ instance instDCast₃ : DCast₃ Nat (fun n => Fin (n + 1)) (fun n _ => Protocol
     (by simp only [ProtocolSpec.cast_eq_dcast, dcast_eq_root_cast]; exact h'')
     T
   dcast₃_id := cast_id
+
+/-- The transcript-specific cast agrees with the generic dependent cast. -/
+theorem cast_eq_dcast₃ (T : pSpec₁.Transcript k) :
+    T.cast hn hIdx hSpec =
+      (dcast₃ (δ := fun (n : ℕ) (k : Fin (n + 1)) (pSpec : ProtocolSpec n) => pSpec.Transcript k) hn
+        (by subst hn; exact Fin.ext hIdx)
+        (by
+          subst hn
+          have hkl : k = l := Fin.ext hIdx
+          subst l
+          exact hSpec) T :
+          pSpec₂.Transcript l) := by
+  subst hn
+  have hkl : k = l := Fin.ext hIdx
+  subst l
+  cases hSpec
+  rfl
 
 end Transcript
 

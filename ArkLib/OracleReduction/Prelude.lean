@@ -3,15 +3,18 @@ Copyright (c) 2024 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao
 -/
+module
 
-import Batteries.Data.Vector.Lemmas
-import VCVio.OracleComp.Constructions.SampleableType
+public import Batteries.Data.Vector.Lemmas
+public import VCVio.OracleComp.Constructions.SampleableType
 
 /-!
   # Prelude for Interactive (Oracle) Reductions
 
   This file contains preliminary definitions and instances that is used in defining I(O)Rs.
 -/
+
+@[expose] public section
 
 open OracleComp
 
@@ -24,7 +27,7 @@ open OracleComp
 This sends `(a : α) → γ (.inl a)` and `(b : β) → γ (.inr b)` to `(a : α ⊕ β) → γ a`. -/
 infixr:35 " ⊕ᵥ " => Sum.rec
 
--- Local option decidable equality instance used by oracle-reduction definitions.
+-- Figure out where to put this instance
 instance instDecidableEqOption {α : Type*} [DecidableEq α] :
     DecidableEq (Option α) := inferInstance
 
@@ -35,7 +38,7 @@ class VCVCompatible (α : Type*) extends Fintype α, Inhabited α where
 
 instance {α : Type*} [VCVCompatible α] : DecidableEq α := VCVCompatible.type_decidableEq'
 
--- Candidate upstreaming targets: port the first lemma to Batteries and the second to mathlib.
+-- TODO: port first to batteries, second to mathlib
 
 @[simp]
 theorem Vector.ofFn_get {α : Type*} {n : ℕ} (v : Vector α n) : Vector.ofFn (Vector.get v) = v := by
@@ -88,11 +91,9 @@ instance : Coe (Fin 2) Direction := ⟨equivFin2.invFun⟩
 
 instance : Coe Bool Direction := ⟨equivBool.invFun⟩
 
-@[simp]
 lemma not_P_to_V_eq_V_to_P {x : Direction} (h : x ≠ .V_to_P) : x = .P_to_V := by
   cases x <;> simp_all
 
-@[simp]
 lemma not_V_to_P_eq_P_to_V {x : Direction} (h : x ≠ .P_to_V) : x = .V_to_P := by
   cases x <;> simp_all
 
@@ -100,7 +101,7 @@ end Direction
 
 section Relation
 
--- This can use mathlib's `Rel` once it becomes `Set`-based upstream.
+-- TODO: use mathlib's `Rel` which will be `Set`-based in the next update
 
 /-- The associated language `Set α` for a relation `Set (α × β)`. -/
 @[reducible]
@@ -116,6 +117,20 @@ theorem Set.mem_language_iff {α β} (rel : Set (α × β)) (stmt : α) :
 theorem Set.not_mem_language_iff {α β} (rel : Set (α × β)) (stmt : α) :
     stmt ∉ rel.language ↔ ∀ wit, (stmt, wit) ∉ rel := by
   simp [language]
+
+/-- The classical witness selector for a relation: some witness of `stmt` when one exists, and
+`none` otherwise. -/
+noncomputable def Set.chooseWitness {α β} (rel : Set (α × β)) (stmt : α) : Option β :=
+  open Classical in if h : ∃ wit, (stmt, wit) ∈ rel then some h.choose else none
+
+/-- The selected witness is invalid exactly when the statement is outside the language. -/
+theorem Set.forall_mem_chooseWitness_notMem_iff {α β} (rel : Set (α × β)) (stmt : α) :
+    (∀ wit ∈ rel.chooseWitness stmt, (stmt, wit) ∉ rel) ↔ stmt ∉ rel.language := by
+  unfold Set.chooseWitness
+  split_ifs with h
+  · simp only [Option.mem_def, Option.some.injEq, forall_eq', Set.not_mem_language_iff]
+    exact iff_of_false (· h.choose_spec) (· _ h.choose_spec)
+  · simpa using h
 
 /-- The trivial relation on Boolean statement and unit witness, which outputs the Boolean (i.e.
   accepts or rejects). -/

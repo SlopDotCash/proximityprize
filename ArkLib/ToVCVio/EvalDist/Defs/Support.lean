@@ -4,17 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import VCVio.EvalDist.Monad.Basic
+import VCVio.EvalDist.Monad.Support
 
 /-!
-# Additions to VCV-io's `EvalDist.Defs.Support`
+# Canonical operational-support helpers
+
+`support_bind_exists` and `eq_of_mem_support_pure` are supplied by VCVio's canonical
+`MonadAttach` / `ExactMonadAttach` API, including its general universes.
 -/
-
-lemma support_bind_exists {m : Type → Type} [Monad m] [LawfulMonad m] [HasEvalSet m]
-    {α β : Type} (x : m α) (f : α → m β) {y : β}
-    (hy : y ∈ support (x >>= f)) : ∃ a, a ∈ support x ∧ y ∈ support (f a) := by
-  simpa [mem_support_bind_iff] using hy
-
-lemma eq_of_mem_support_pure {m : Type → Type} [Monad m] [LawfulMonad m] [HasEvalSet m]
-    {α : Type} {x y : α} (h : y ∈ support (pure x : m α)) : y = x := by
-  simpa [mem_support_pure_iff] using h

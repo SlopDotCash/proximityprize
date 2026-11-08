@@ -5,6 +5,7 @@ Authors: TrapLord, ArkLib Contributors
 -/
 
 import Mathlib
+import ArkLib.Data.Probability.Notation
 import ArkLib.Data.CodingTheory.AGL24ConditionalAssembly
 import ArkLib.Data.CodingTheory.AGL24ProbDischarge
 
@@ -54,12 +55,12 @@ omit [Nonempty ι] [DecidableEq F] in
 costs at most the factor `#(ι → F) / #(ι ↪ F)` against the uniform distribution on all
 tuples, for every event. -/
 theorem toOuterMeasure_map_uniformEmbedding_le [Nonempty (ι ↪ F)] (A : Set (ι → F)) :
-    ((PMF.uniformOfFintype (ι ↪ F)).map (fun φ i => φ i)).toOuterMeasure A
+    ((ProximityPrize.Compatibility.uniformOfFintype (ι ↪ F)).map (fun φ i => φ i)).toOuterMeasure A
       ≤ ((Fintype.card (ι → F) : ℝ≥0∞) / Fintype.card (ι ↪ F)) *
-        (PMF.uniformOfFintype (ι → F)).toOuterMeasure A := by
+        (ProximityPrize.Compatibility.uniformOfFintype (ι → F)).toOuterMeasure A := by
   classical
-  rw [PMF.toOuterMeasure_map_apply, PMF.toOuterMeasure_uniformOfFintype_apply,
-    PMF.toOuterMeasure_uniformOfFintype_apply]
+  rw [PMF.toOuterMeasure_map_apply, ProximityPrize.Compatibility.toOuterMeasure_uniformOfFintype_apply,
+    ProximityPrize.Compatibility.toOuterMeasure_uniformOfFintype_apply]
   have hcard : Fintype.card ((fun φ : ι ↪ F => fun i => φ i) ⁻¹' A) ≤ Fintype.card A :=
     Fintype.card_le_of_injective
       (fun x => ⟨(fun i => x.1 i), x.2⟩)
@@ -86,7 +87,7 @@ nonzero kernel vector exists and the rank-deficit event is empty. -/
 theorem RIMRankDeficitSet_of_t_eq_zero {k : ℕ} (e : ι → Finset (Fin (0 + 1))) :
     RIMRankDeficitSet (F := F) (k := k) e = ∅ := by
   ext α
-  simp only [RIMRankDeficitSet, Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false]
+  simp only [RIMRankDeficitSet, Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false]
   rintro ⟨v, hv, -⟩
   exact hv (funext fun c => c.1.elim0)
 
@@ -101,7 +102,7 @@ theorem failure_bound_uniformEmbedding_of_symbolic {k L : ℕ} (hL : 1 ≤ L) {r
       ≤ ((L * (Fintype.card ι - k) : ℕ) : ℝ))
     [Nonempty (ι ↪ F)]
     (hsym : SymbolicFullRankResidual (ι := ι) F k) :
-    (PMF.uniformOfFintype (ι ↪ F)).toOuterMeasure
+    (ProximityPrize.Compatibility.uniformOfFintype (ι ↪ F)).toOuterMeasure
         {φ : ι ↪ F | ¬ Lambda (ReedSolomon.code φ k : Set (ι → F)) r ≤ (L : ℕ∞)}
       ≤ (Fintype.card (WpcIndex ι k L) : ℝ≥0∞) *
         (((Fintype.card (ι → F) : ℝ≥0∞) / Fintype.card (ι ↪ F)) *
@@ -111,7 +112,7 @@ theorem failure_bound_uniformEmbedding_of_symbolic {k L : ℕ} (hL : 1 ≤ L) {r
   obtain ⟨t', e, hwpc⟩ := idx
   unfold RIMFullRankFailureProbResidual
   refine (toOuterMeasure_map_uniformEmbedding_le _).trans ?_
-  gcongr ?_ * ?_
+  refine mul_le_mul_right ?_ _
   obtain ⟨t, ht⟩ := t'
   rcases Nat.eq_zero_or_pos t with rfl | htpos
   · simp [RIMRankDeficitSet_of_t_eq_zero]

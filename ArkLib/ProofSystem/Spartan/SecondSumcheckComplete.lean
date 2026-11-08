@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Spartan.SecondSumcheckReduction
 import ArkLib.ProofSystem.Spartan.SecondSumcheckRelIn
 import ArkLib.ProofSystem.Spartan.SumcheckPhaseRbr
@@ -32,7 +33,7 @@ The outer input relation `secondSumcheckRelIn` therefore pins that carried targe
   challenge `r_y` but leaves the matrices/witness/public input unchanged).
 * `secondSumcheckLensComplete` — `proj_complete` via `secondSC_relationRound_zero` (rewriting the
   carried target by the RLC equation), `lift_complete` via R1CS pass-through.
-* `secondSumcheck_perfectCompleteness` — `OracleReduction.liftContext_perfectCompleteness` with
+* `secondSumcheck_perfectCompleteness` — `OracleReduction.liftContextLegacy_perfectCompleteness` with
   `secondSumcheckCoherent` (#433), `secondSumcheckLensComplete`, and the inner multi-round sum-check
   perfect completeness `h_inner` (taken as a hypothesis, as for the first sum-check).
 -/
@@ -89,7 +90,7 @@ instance secondSumcheckLensComplete :
         (secondSumcheckContextLens pp).toContext) where
   proj_complete := by
     rintro ⟨⟨t, stmt⟩, oStmt⟩ ⟨⟩ hRelIn
-    simp only [secondSumcheckRelIn, Set.mem_setOf_eq] at hRelIn
+    simp only [secondSumcheckRelIn, Set.mem_ofPred_eq] at hRelIn
     obtain ⟨_hR1CS, ht⟩ := hRelIn
     rw [ht]
     exact Bricks.secondSC_relationRound_zero pp stmt oStmt
@@ -97,14 +98,15 @@ instance secondSumcheckLensComplete :
       rfl
   lift_complete := by
     rintro ⟨⟨t, stmt⟩, oStmt⟩ ⟨⟩ ⟨⟨t_out, r_y⟩, oStmt'⟩ ⟨⟩ _hCompat hRelIn _hRelOut
-    simp only [secondSumcheckRelIn, Set.mem_setOf_eq] at hRelIn
-    simpa only [secondSumcheckRelOut, Set.mem_setOf_eq] using hRelIn.1
+    simp only [secondSumcheckRelIn, Set.mem_ofPred_eq] at hRelIn
+    simpa only [secondSumcheckRelOut, Set.mem_ofPred_eq, secondSumcheckContextLens,
+      OracleContext.Lens.toContext, secondSumcheckStmtLens, Statement.Lens.lift] using hRelIn.1
 
 /-- **Second sum-check phase perfect completeness (issue #114).** The Spartan second sum-check
 oracle reduction is perfectly complete from `secondSumcheckRelIn` to `secondSumcheckRelOut`, given
 the inner multi-round sum-check perfect completeness `h_inner`.
 
-The transfer is `OracleReduction.liftContext_perfectCompleteness` with the coherence instance
+The transfer is `OracleReduction.liftContextLegacy_perfectCompleteness` with the coherence instance
 `secondSumcheckCoherent` (#433), the lens-completeness instance `secondSumcheckLensComplete`, and
 `hStmt = rfl`. As for the first sum-check, `h_inner` is the perfect completeness of the generic full
 sum-check oracle reduction (over `ℓ_n` variables, degree `2`, Boolean domain). -/
@@ -118,7 +120,7 @@ theorem secondSumcheck_perfectCompleteness
     (secondSumcheckReduction pp oSpec).perfectCompleteness init impl
       (secondSumcheckRelIn (R := R) pp) (secondSumcheckRelOut (R := R) pp) := by
   haveI := secondSumcheckCoherent (R := R) pp oSpec
-  exact OracleReduction.liftContext_perfectCompleteness
+  exact OracleReduction.liftContextLegacy_perfectCompleteness
     (R := Sumcheck.Spec.oracleReduction R 2 (boolEmbedding R) pp.ℓ_n oSpec)
     (lens := secondSumcheckContextLens pp)
     (stmtLens := secondSumcheckOracleLens pp oSpec)
@@ -152,9 +154,9 @@ theorem secondSumcheck_rbrSoundness
       ∀ i, Sumcheck.Spec.OracleStatement R pp.ℓ_n 2 i))
     (rbrSoundnessError : (Sumcheck.Spec.pSpec R 2 pp.ℓ_n).ChallengeIdx → ℝ≥0)
     (h_inner :
-      (Sumcheck.Spec.oracleReduction R 2 (boolEmbedding R) pp.ℓ_n oSpec).verifier.rbrSoundness
+      (Sumcheck.Spec.oracleReduction R 2 (boolEmbedding R) pp.ℓ_n oSpec).verifier.rbrSoundnessAveraged
         init impl innerLangIn innerLangOut rbrSoundnessError) :
-    (secondSumcheckReduction pp oSpec).verifier.rbrSoundness init impl
+    (secondSumcheckReduction pp oSpec).verifier.rbrSoundnessAveraged init impl
       ((secondSumcheckOracleLens pp oSpec).toLens.proj ⁻¹' innerLangIn)
       ((secondSumcheckOracleLens pp oSpec).toLens.transportedLangOut innerLangOut
         ((Sumcheck.Spec.oracleReduction R 2 (boolEmbedding R)

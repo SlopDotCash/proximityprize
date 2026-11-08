@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ArkLib.Data.Probability.Notation
 import Mathlib.Data.Matrix.Mul
 import Mathlib.Probability.Distributions.Uniform
 import Mathlib.Probability.ProbabilityMassFunction.Constructions
@@ -153,12 +154,12 @@ lemma card_mat_eq {m : Fin k → F} (hm : m ≠ 0) (v : ι → F) :
 /-- **The first-moment linchpin.** For a fixed nonzero message `m`, the uniform distribution on
 generator matrices pushes forward under `G ↦ m ᵥ* G` to the uniform distribution on codewords. -/
 theorem map_vecMul_uniformOfFintype {m : Fin k → F} (hm : m ≠ 0) :
-    (PMF.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => m ᵥ* G)
-      = PMF.uniformOfFintype (ι → F) := by
+    (ProximityPrize.Compatibility.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => m ᵥ* G)
+      = ProximityPrize.Compatibility.uniformOfFintype (ι → F) := by
   classical
   ext v
   rw [PMF.map_apply, tsum_fintype]
-  simp only [PMF.uniformOfFintype_apply]
+  simp only [ProximityPrize.Compatibility.uniformOfFintype_apply]
   -- goal: ∑ G, (if v = m ᵥ* G then (card Matrix)⁻¹ else 0) = (card (ι → F))⁻¹
   rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul]
   have hfilter :
@@ -189,9 +190,9 @@ theorem map_vecMul_uniformOfFintype {m : Fin k → F} (hm : m ≠ 0) :
 /-- Pointwise form: a fixed nonzero message lands on any given codeword with probability
 `(q^n)⁻¹`. -/
 theorem vecMul_uniform_apply {m : Fin k → F} (hm : m ≠ 0) (v : ι → F) :
-    ((PMF.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => m ᵥ* G)) v
+    ((ProximityPrize.Compatibility.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => m ᵥ* G)) v
       = (Fintype.card (ι → F) : ℝ≥0∞)⁻¹ := by
-  rw [map_vecMul_uniformOfFintype hm, PMF.uniformOfFintype_apply]
+  rw [map_vecMul_uniformOfFintype hm, ProximityPrize.Compatibility.uniformOfFintype_apply]
 
 /-- **The first-moment summand.** For a fixed nonzero message `m` and any target set `S` of
 codewords, the random codeword `m ᵥ* G` lands in `S` with probability `|S| / q^n`. This is
@@ -199,9 +200,9 @@ exactly the per-message term the GLMRSW22 first moment sums over the `q^k − 1`
 messages. -/
 theorem vecMul_uniform_mem_prob {m : Fin k → F} (hm : m ≠ 0)
     (S : Set (ι → F)) [Fintype S] :
-    ((PMF.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => m ᵥ* G)).toOuterMeasure S
+    ((ProximityPrize.Compatibility.uniformOfFintype (Matrix (Fin k) ι F)).map (fun G => m ᵥ* G)).toOuterMeasure S
       = Fintype.card S / Fintype.card (ι → F) := by
-  rw [map_vecMul_uniformOfFintype hm, PMF.toOuterMeasure_uniformOfFintype_apply]
+  rw [map_vecMul_uniformOfFintype hm, ProximityPrize.Compatibility.toOuterMeasure_uniformOfFintype_apply]
 
 /-- **The first-moment count (division-free `ℕ` form).** For a fixed nonzero message `m` and any
 finite set `S` of codewords, `|{G : m ᵥ* G ∈ S}| · |ι → F| = |S| · |Matrix|`: a fixed nonzero

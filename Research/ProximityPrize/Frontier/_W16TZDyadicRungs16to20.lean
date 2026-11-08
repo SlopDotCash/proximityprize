@@ -6,6 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26ThornerZaman
 import Mathlib.NumberTheory.LucasPrimality
 import Mathlib.Tactic.NormNum.Prime
+import Research.ProximityPrize.Support.BinaryPower
 
 /-!
 # W16 — intermediate dyadic `TZPrimeSupply` rungs `n = 2^16 .. 2^20` (#466)
@@ -20,8 +21,7 @@ i.e. the window `[2^(2k), 2^(2k+1)]` contains at least twenty primes `≡ 1 (mod
 Every witness prime has the kernel-cheap two-factor Lucas shape `p − 1 = 2^a · c`
 (`a = max(k, 2k−20)`, `c` an odd prime of ≤ 21 bits, witness `g = 3`), sieved and
 independently re-verified by `scripts/probes/probe_w16_tz_prize_scale.py` and emitted
-by `scripts/probes/probe_w16_tz_emit_lean.py`.  `binaryPow` is the locally verified
-square-and-multiply exponentiation (provenance: `Frontier/_PrizeShapePrimeP30.lean`).
+by `scripts/probes/probe_w16_tz_emit_lean.py`.  The certificates use the shared, verified `binaryPow`.
 
 The asymptotic [TZ24] statement remains the named open hypothesis; these are concrete,
 axiom-clean discharges at the dyadic moduli, feeding small-supply consumers
@@ -37,52 +37,7 @@ set_option maxHeartbeats 1000000
 
 open ArkLib.ProximityGap.KKH26
 
-/-! ## Kernel-cheap exponentiation (provenance: `Frontier/_PrizeShapePrimeP30.lean`,
-verbatim copy of the locally verified square-and-multiply implementation) -/
-
-/-- Structurally recursive fuel wrapper for kernel-cheap square-and-multiply
-exponentiation. -/
-private def binaryPowAux {M : Type*} [Monoid M] (a : M) (n : ℕ) : ℕ → M
-  | 0 => 1
-  | fuel + 1 =>
-      if n = 0 then 1
-      else if n % 2 = 0 then
-        binaryPowAux (a * a) (n / 2) fuel
-      else
-        a * binaryPowAux (a * a) (n / 2) fuel
-
-/-- Kernel-cheap square-and-multiply exponentiation. -/
-private def binaryPow {M : Type*} [Monoid M] (a : M) (n : ℕ) : M :=
-  binaryPowAux a n (n + 1)
-
-private theorem binaryPowAux_eq_pow {M : Type*} [Monoid M] (a : M) (n fuel : ℕ)
-    (hnfuel : n < fuel) : binaryPowAux a n fuel = a ^ n := by
-  induction fuel generalizing a n with
-  | zero => omega
-  | succ fuel ih =>
-      rw [binaryPowAux]
-      split_ifs with h0 heven
-      · subst n
-        simp
-      · have hnpos : 0 < n := Nat.pos_of_ne_zero h0
-        have hhalf : n / 2 < fuel :=
-          (Nat.div_lt_self hnpos (by norm_num)).trans_le (by omega)
-        rw [ih (a * a) (n / 2) hhalf, ← pow_two, ← pow_mul]
-        have hdvd : 2 ∣ n := (Nat.dvd_iff_mod_eq_zero).2 heven
-        have htwo : 2 * (n / 2) = n := Nat.mul_div_cancel' hdvd
-        congr 1
-      · have hnpos : 0 < n := Nat.pos_of_ne_zero h0
-        have hhalf : n / 2 < fuel :=
-          (Nat.div_lt_self hnpos (by norm_num)).trans_le (by omega)
-        rw [ih (a * a) (n / 2) hhalf, ← pow_two, ← pow_mul, ← pow_succ']
-        have hnmod : n % 2 = 1 := by omega
-        have hdecomp := Nat.mod_add_div n 2
-        congr 1
-        omega
-
-private theorem binaryPow_eq_pow {M : Type*} [Monoid M] (a : M) (n : ℕ) :
-    binaryPow a n = a ^ n := by
-  exact binaryPowAux_eq_pow a n (n + 1) (by omega)
+open ArkLib.ProximityGap.BinaryPower (binaryPow_eq_pow)
 
 /-- **Two-factor Lucas certificate.**  If `p − 1 = 2^e · c` with `c` an odd prime, a
 witness `g` with `g^(p−1) = 1`, `g^((p−1)/2) ≠ 1`, `g^((p−1)/c) ≠ 1` certifies `p`

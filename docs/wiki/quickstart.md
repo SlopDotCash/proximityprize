@@ -1,122 +1,165 @@
 # Quickstart
 
-All pushes and pull requests for this project belong in `SlopDotCash/proximityprize`.
-Never push or submit PRs to `Verified-zkEVM/ArkLib`, including through a personal
-fork. See the [repository destination rule](../../CONTRIBUTING.md#repository-destination--never-submit-to-upstream-arklib).
+## Downstream integration and build ownership
+
+This checkout merges the canonical ArkLib library with Proximity Prize extensions.
+The authoritative upstream revision and module inventory are recorded in
+[`scripts/arklib-upstream.json`](../../scripts/arklib-upstream.json). The default
+build includes `ArkLib`, the classic downstream `ArkLibExtensions`, the research
+library `ResearchProximityPrize`, and `ProximityPrizeExtensions`. Existing ArkLib
+imports remain valid; downstream declarations extracted from overlapping modules
+live under `ProximityPrize/Extensions/` and import the authoritative definitions.
+
+Use `./scripts/lake-locked.sh build <targets>` and
+`./scripts/lake-locked.sh exe cache get` for local builds and cache fetches. The
+wrapper serializes each checkout and limits builds across the machine. Keep this
+checkout's Lean 4.35 dependencies separate from older Lean 4.30 build artifacts.
+These locks limit Lake invocations; they do not set the compiler-worker pool within each build.
+On a cold checkout, fetch the cache before building. For repeated research proof
+iteration, use `scripts/pg-warm.sh` once and `scripts/pg-iterate.sh <file.lean>`.
+The warm-up script prints the full build log on failure and preserves the build exit status;
+successful runs show only the final two build lines. The iteration wrapper trusts the compiler
+exit status for errors, then checks actual admission warnings and `sorryAx` in printed axiom
+reports. Words such as `errors` or `sorry` in filenames or benign messages do not mean failure.
+It does not generate axiom reports automatically; the project build and kernel audit remain
+required for final verification.
+
+`scripts/validate.sh` combines the canonical upstream compile-time acceptance,
+runtime, style, warning, and probability-retirement checks with downstream Python
+regressions, proof-source gates, flagship axiom checks, both module boundaries,
+and generated-KB checks. The import gate first verifies canonical file provenance
+and the complete local import graph with `scripts/integration/check_consolidation.py`;
+this requires the pinned upstream revision in the local Git object database.
+CI checks out full history for that verification. Supplemental theorem workflows also run the
+proof-source gate and a locked package build of their leaf before direct, explicitly
+`-DautoImplicit=false` axiom-report checks. `--lint` additionally applies the existing style baseline
+to classic downstream modules. `--axioms` runs the canonical kernel-level axiom
+regression sweep. Upstream-inherited proof debt is recorded explicitly; a successful
+integration check does not constitute closure of an open research theorem.
+ArkLib proved the ten previously inherited tuple placeholder theorems. The pinned
+[`scripts/upstream-source-policy.json`](../../scripts/upstream-source-policy.json) records
+an empty placeholder exception list. The source precheck also rejects proof-as-sorry
+and kernel-skip debug options in live Lean source or `lakefile.toml`.
+Run `uv run --no-project --python 3.12 python scripts/forbidden_tokens.py` for the
+full source precheck. Pass files or directories to check a focused scope.
+
+Inherited sorry entries normally require the exact upstream file. A reviewed
+`downstream_adaptations` entry may fill another declaration in that file while retaining an
+unchanged admitted constructor. Such a retained hole additionally needs its original full name,
+exact stripped-command hash, reviewed current file hash, and pinned upstream Git blob. Each
+census token must remain inside that exact command; new or changed admitted commands,
+copied declarations, and tokens outside the unchanged command remain errors.
+
+Stage new source paths, run `scripts/update-lib.sh` and
+`scripts/update-research-lib.py`, and commit the generated module surfaces.
+Never push or open pull requests to `Verified-zkEVM/ArkLib`; the publishing
+destination is always `SlopDotCash/proximityprize`.
 
 This page is the recommended agent playbook for commands and validation.
 Use it as the main guide for routine local checks.
 
-## Recommended Validation
+## Python tooling
 
-Install the Python regression dependencies in your active virtual environment first:
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) for
+all repository Python entry points, including validation scripts and CI.
+CI uses uv 0.13.6. The uv commands below select Python
+3.12; uv downloads it if needed. Run them from the repository root.
+These checks use only the standard library. `--no-project` runs them without
+installing a Python package or creating a project environment.
+
+## Dependency versions
+
+Before a large contribution or a forward-port, fetch the intended upstream remote and
+compare your branch with its merge target (`git log HEAD..origin/main --oneline`,
+`git diff HEAD origin/main -- lean-toolchain lakefile.toml lake-manifest.json`).
+Review intervening API additions before writing replacement infrastructure. If the
+checkout contains unrelated work, use a separate worktree for the forward-port and
+leave that work intact.
+
+`lean-toolchain` names the Lean release. `lakefile.toml` declares the direct dependency
+revisions; Mathlib and PolyFun arrive through those packages. `lake-manifest.json` records the
+exact resolved revision of every package, so read it, not this page, for the current versions.
+Dependency updates normally use CompPoly and doc-gen4 release/patch tags matching ArkLib's Lean
+toolchain, and an exact VCVio commit reachable from upstream `main`. An unreleased CompPoly fix may
+use a documented exception in the dependency PR body: state why the matching release is
+insufficient, link the upstream change, and identify the actual merged commit used. Preserve this
+rationale when rebasing or rewriting that PR; the manifest alone does not explain it. Do not invent
+a release tag or assume a PR head will be its eventual merge revision.
+
+A side-branch dependency pin is for a **draft integration PR only**, with the upstream PR and a
+repin-before-merge obligation recorded. After upstream merge, use the actual post-squash/rebase
+commit or published tag, update the manifest normally, rebuild and run full validation, and rebase
+and revalidate dependent PRs. A draft's successful check against a side-branch SHA does not waive
+this merge condition.
+
+## Dependency validation
+
+The dependency-upgrade PR author records the upstream change, resolved revision and any release
+exception in the PR body. A maintainer verifies the actual pins, rebased dependents and fresh
+validation before merging. After upstream merge, edit `lakefile.toml` to the verified merged
+revisions or matching tags, then resolve and validate normally:
 
 ```bash
-python3 -m pip install -r scripts/requirements-validation.txt
+lake update VCVio CompPoly
+lake exe cache get
+./scripts/validate.sh --axioms
 ```
 
-CI installs the same pinned dependencies before running the validation wrapper.
+`lake update` intentionally resolves dependency refs again. To reproduce an existing lock, run
+`lake build` to materialize its recorded commits; do not update just to load that graph.
+Review current-API references when changing dependencies. Prefer owning module names for library
+routing; preserve immutable paper/source snapshots only as explicitly labelled provenance.
+
+A newer PolyFun revision must be validated against VCVio
+before ArkLib can adopt it, so a VCVio bump and its PolyFun revision move together.
+ArkLib uses native measures throughout its probability statements; the
+[migration ledger](../design/native-measure-ledger.md) records the conversion and upstream API map.
+Validate a changed dependency set with `./scripts/validate.sh --axioms` before merging.
+
+## Build artifacts and focused checks
+
+Run each check on a coherent source and dependency graph with the intended toolchain and
+`lake-manifest.json`. Verify that every imported module, including transitive dependencies,
+resolves to its intended source revision. Let Lake rebuild dependencies in order for that graph;
+do not switch revisions or replace imported outputs through unrelated concurrent work while checks
+run. After changing source or dependency revisions, run `lake build` and the required validation
+on that graph; cached artifacts from another revision do not validate it.
+
+For focused checks, prefer `lake build ArkLib.Path.To.Module`. A direct `lake env lean` invocation
+does not inherit the package's Lean options or build-time source-policy plugin. In particular,
+a probe using default `autoImplicit` can accept an undeclared parameter that the project rejects.
+`pg-iterate.sh` passes `-DautoImplicit=false` explicitly to match the package policy.
+It checks the file against the source policy and audits any axiom reports it emits.
+Compilation failures, admission warnings, and unapproved reported axioms fail the check.
+Treat such a probe as provisional until the source passes the project build.
+
+When agents are running a shared shell script, replace that script atomically through a temporary
+file and rename, or coordinate a boundary with no new invocations. An in-place rewrite can shift
+byte offsets in an existing Bash reader after a long command returns, causing a spurious syntax
+failure. Rerun any interrupted wrapper; compiler and package-build results remain authoritative.
+
+The September 4 baseline in `docs/design/00-current-status.md` records the original typed
+interaction implementation train, not the current package versions.
+
+## Recommended Validation
+
 For a convenient routine check, run:
 
 ```bash
 ./scripts/validate.sh
 ```
 
-For pull requests, CI also runs the validation wrapper when a gate input is
-deleted or moved into a documentation path. The scope comparison includes both
-sides of renames. If Git cannot compare the pull-request base with the checkout,
-the scope step fails instead of classifying the change as documentation-only.
-
 On a cold clone, fetch precompiled dependencies first:
 
 ```bash
-./scripts/lake-locked.sh exe cache get
+lake exe cache get
 ./scripts/validate.sh
 ```
 
-## Concurrent Agent Builds (`lake-locked.sh`)
-
-When several agents share a machine (even in different checkouts/worktrees), never run bare
-`lake build` or `lake exe cache get`. Use the serialized wrapper, a drop-in replacement for
-`lake`:
-
-```bash
-./scripts/lake-locked.sh build ArkLib.Some.Target
-./scripts/lake-locked.sh exe cache get
-```
-
-This applies to helper scripts too: `scripts/pg-warm.sh` originally called bare `lake build`
-and bypassed the lock (observed 2026-07-10: two warm builds plus a locked build ran three
-simultaneous lake drivers compiling the same files); it now routes through `lake-locked.sh`.
-If you write a script that builds, call the wrapper, never bare `lake`.
-
-What it does (observed failure mode 2026-06-11: 7 concurrent lake builds plus a racing
-`cache get` in shared checkouts produced 60+ lean workers on 12 cores, corrupted oleans, and
-four builds silently recompiling all of Mathlib from source):
-
-- **Per-checkout exclusive lock** (`.lake/agent-build.lock`): at most one lake invocation per
-  checkout. A second invocation waits and then gets a warm incremental build instead of a
-  corrupting race. Lake has no built-in lock and no `--jobs` cap in the pinned version.
-- **Machine-wide build slots** (`~/.cache/lake-build-slots`, default 2, override with
-  `LAKE_LOCKED_SLOTS`): caps total concurrent builds across all checkouts so each gets real
-  cores instead of thrashing.
-- **Mathlib cache guard**: if `.lake/packages/mathlib` is present but its root olean is
-  missing, it runs `lake exe cache get` first (inside the lock). A build must never fall back
-  to compiling Mathlib from source — that is hours of CPU and the main melt-down mode.
-- **Stale-lock stealing**: locks carry a heartbeat refreshed every 30s; a lock whose heartbeat
-  is older than `LAKE_LOCKED_STALE_SECS` (default 300) is presumed killed and stolen, so a
-  `taskkill`ed build never wedges the queue.
-
-`./scripts/validate.sh` and `./scripts/build-project.sh` already route their builds through the
-wrapper. `LAKE_LOCKED_DISABLE=1` bypasses it (single-tenant machines, CI debugging).
-
-Build hygiene on shared machines:
-
-- One `lake exe cache get` to **completion** before the first build in a fresh checkout; never
-  run it concurrently with builds in the same checkout (the wrapper enforces this).
-- A build process tree (lake + lean workers) that has been running for far longer than the
-  target warrants — for example a small-target build past 20–30 minutes that is grinding
-  through `Mathlib/` files — usually indicates a clobbered cache, not a slow build. Kill the
-  build tree (never agent processes), restore the cache, retry through the wrapper.
-
-Do not use bare `lake update` as a routine cache-repair command. It re-resolves
-`lake-manifest.json` and may delete/re-clone package directories while other checks are running.
-Use `lake exe cache get` after syncing instead. Run `lake update` only when intentionally changing
-dependency pins, and commit the resulting manifest together with the matching `lean-toolchain`.
-
-### Recovering a corrupted or re-cloning `mathlib` package
-
-Symptoms (tree-wide build failures, OOM, or stalls that are not your change):
-
-- `.lake/packages/mathlib` is large on disk but has no checked-out source
-  (e.g. `Mathlib/Algebra/Field/Basic.lean` is missing) or `git -C .lake/packages/mathlib rev-parse HEAD` fails.
-- Many concurrent `git-remote-https ... mathlib4` clone processes are racing into that one
-  directory, so it never converges and every session's build fails on missing `mathlib` oleans.
-
-Root cause: a per-session package fetch checked out mathlib's default branch instead of the
-manifest-pinned revision, and parallel sessions racing the same directory prevent convergence.
-
-Non-destructive recovery (one actor at a time; do **not** `rm -rf` the shared package — the pinned
-revision is usually already fetched inside it):
-
-```bash
-# 1. Pause (do not kill) the racing clones so the directory stops being overwritten.
-pkill -STOP -f 'git-remote-https.*mathlib4'
-
-# 2. Check out the revision pinned in lake-manifest.json (NOT the default branch).
-#    Find the pin with: python3 -c "import json;print([p['rev'] for p in json.load(open('lake-manifest.json'))['packages'] if p['name']=='mathlib'][0])"
-git -C .lake/packages/mathlib checkout -f <manifest-pinned-rev>
-
-# 3. Decompress the matching precompiled oleans for that revision.
-lake exe cache get
-
-# 4. Verify a real build completes.
-lake build Research.ProximityPrize.Collapse
-```
-
-Prevention: never run `lake update` for cache repair (see above); let a single coordinator do
-package recovery; the only source of truth for the mathlib revision is the `mathlib` entry in
-`lake-manifest.json`.
+Validation also runs the native-probability retirement fixtures and
+`lake exe retiredsweep --require-empty`. This gate rejects direct retired API references in
+ArkLib declaration types and bodies, without a baseline exception. See
+[probability conventions](probability-conventions.md) when porting an older branch.
 
 ## Validation By Change Type
 
@@ -133,24 +176,104 @@ git add path/to/newfile.lean
 ./scripts/validate.sh
 ```
 
-`./scripts/update-lib.sh` only considers tracked files, and now fails fast if untracked
-`ArkLib/**/*.lean` files are present. `python3 scripts/update-research-lib.py` does the
-same for `Research/ProximityPrize/**/*.lean`: an untracked research module is an error,
-so `./scripts/check-imports.sh` cannot report a fresh `All.lean` while that module is
-absent from the default build. Stage the file before regenerating the umbrella.
+`./scripts/update-lib.sh` and `python3 scripts/update-research-lib.py` require new Lean
+files in their source trees to be staged. `./scripts/check-imports.sh` runs both generators
+and verifies that the committed import surfaces match the tracked source.
 
-### Lean-heavy refactors or cleanup
+### Compile-time acceptance tests
+
+Place examples and regression tests under `ArkLibTest/`, mirroring the production module path.
+Run `lake test` to build them; `./scripts/validate.sh` runs this target by default and rejects all
+test warnings, including admissions. Stage new tests so source linting and the trust inventory
+include them. Production modules must not import tests.
+
+Typed Interaction PRs also have a focused hosted check, including when stacked on a feature
+branch. It compiles all tracked modules under `ArkLib/Interaction/`, `ArkLibTest/Interaction/`,
+`ArkLib/ProofSystem/Sumcheck/Interaction/` and `ArkLibTest/ProofSystem/Sumcheck/Interaction/` with
+the existing build-time source-policy plugin and rejects every warning in those modules,
+including admissions. This is early feedback, not a replacement for `lake test` or the full
+validation/axiom gate before merging to `main`. The semantic acceptance requirements live in
+[`../design/01c-access-execution-contract.md`](../design/01c-access-execution-contract.md).
+
+### Lean source-policy checks
 
 ```bash
-./scripts/validate.sh --lint
+lake exe lint-style
 ```
 
-This adds `./scripts/lint-style.sh` to the convenience wrapper. The main CI build currently runs
-with lint disabled, so treat this as opt-in for now.
+`./scripts/validate.sh` runs this gate by default. The Lean executable scans every module imported
+by `ArkLib.lean` and every tracked `ArkLibTest` module, parses import headers with Lean itself, and has no exception file. It allows
+project-specific mathematical Unicode notation, while rejecting invisible controls, bidirectional
+controls, and nonstandard space characters that can conceal source changes. It also rejects
+blanket package-root imports. The normal `lake build` loads ArkLib's Lean syntax-tree plugin, which
+rejects source-level linter suppressions in their actual parsed context.
+
+The header policy understands the Lean module system, so `module`, `public import`, `meta import`
+and `import all` all parse, and it pins the canonical header order every file under `ArkLib/`
+follows. See [`module-system.md`](module-system.md).
+
 If the task is specifically Lean warning cleanup, follow
 [`../skills/fix-lean-warnings.md`](../skills/fix-lean-warnings.md).
 
+### Filling a `sorry`, or work that must stay axiom-clean
+
+```bash
+./scripts/validate.sh --axioms
+```
+
+This first runs `./scripts/test-axiomsweep.sh` — the executable fixture matrix under
+`scripts/AxiomSweepTestFixtures/` that certifies the sweep tool itself (gate directions,
+the native-trust floor, and the exit-code contract) — and then
+`lake exe axiomsweep --check`: a kernel-level sweep of every `ArkLib.*`
+declaration's axiom dependencies (the `#print axioms` information, library-wide) diffed
+against the committed baseline `scripts/axiom_baseline.json`. It fails on *new* `sorryAx`
+or non-standard-axiom taint, while reporting closed gaps without blocking cleanup.
+
+A PR may be opened with unfinished proofs, but merging into `main` must not introduce new
+`sorry`/`admit` or additional admitted proof debt. Compare the source and baseline diffs against
+the canonical base; a baseline edit cannot make new debt mergeable, and closing another gap does
+not offset a new admission. Refresh the baseline only for verified closures or renames of
+existing debt, and commit that reviewed bookkeeping in the same PR:
+
+```bash
+lake exe axiomsweep --update-baseline
+```
+
+The baseline's `sorry` and `nonstandard` lists are empty. Its `solicited` list holds the only
+admitted statements: true external results, each with a tracking issue linked from its docstring,
+whose proofs are left open for contributors
+([issue #1352](https://github.com/Verified-zkEVM/ArkLib/issues/1352)). The sweep rejects a
+solicited entry that no longer depends on `sorryAx`, depends on another nonstandard axiom, lacks
+its issue link, or has a dependent outside the solicited list, and `--update-baseline` preserves
+the list. Adding an entry needs maintainer review; see
+[`scripts/README.md`](../../scripts/README.md) for the exact rules.
+
+Native-compiler trust
+(`Lean.ofReduceBool`, `Lean.trustCompiler`, and the per-declaration
+`…._native.<tactic>.ax_<n>_<n>` axioms that `native_decide`-style tactics mint) is held to
+a zero-debt rule: no baseline edit can green it, and `--update-baseline` refuses to write
+while such taint is present — remove the dependency instead.
+
+CI enforces both the fixture matrix and the library regression check (see `ci.yml`).
+It also runs `scripts/source-trust-audit.py` over every tracked Lean file under `ArkLib/` and `ArkLibTest/`.
+That deterministic, comment/string-aware inventory reports source-only constructs that an
+environment sweep cannot see reliably: admissions in examples or defaults/autoparams and
+constructs in files outside the imported roots. Compare this inventory with the PR base when
+checking for new admissions, for example with
+`uv run --no-project --python 3.12 python scripts/source-trust-audit.py --base-ref origin/main` after fetching the canonical base.
+The inventory complements the kernel sweep; neither a net count nor a refreshed baseline
+substitutes for reviewing new source admissions. Working branches may still contain unfinished
+proofs while their PR is under review.
+
 ### Docstrings, blueprint, or website changes
+
+For prose-only docstring corrections or citation relocation, run the normal validation gate,
+compile the changed Lean modules directly, and verify citation keys and links. Full API
+documentation generation is optional for these edits; it also processes imported dependencies
+and can be substantially slower than a warm Lean build.
+
+When changing documentation rendering, build configuration, or generated API-page behavior, or
+when a complete API preview is requested, run:
 
 ```bash
 ./scripts/validate.sh --docs
@@ -162,46 +285,82 @@ For website or blueprint output, run:
 ./scripts/validate.sh --site
 ```
 
-`./scripts/build-web.sh` is still what assembles the site, and it skips blueprint generation if
-`leanblueprint` is not installed. If blueprint output matters, install it first:
+`./scripts/build-web.sh` assembles the site, and skips blueprint generation if `leanblueprint`
+is not installed. If blueprint output matters, install it first:
 
 ```bash
-python3 -m pip install leanblueprint
+uv tool install --python 3.12 leanblueprint
 ```
-
-## Stale-Olean Kernel Errors (`unknown constant Semiring.toMonoid` etc.)
-
-Symptom: `lake env lean <file>` (or `pg-iterate.sh`) fails with a KERNEL error
-`(kernel) unknown constant 'Semiring.toMonoid'` (or another long-renamed instance path),
-usually pointing at a line that merely *applies* an imported theorem. Cause: a `.olean` in the
-import cone was compiled against a different toolchain/Mathlib revision (toolchain drift in the
-shared checkout); the elaborator inlines a constant name that no longer exists.
-
-Fix (verified 2026-07-09, three occurrences in one session):
-
-```bash
-./scripts/lake-locked.sh build <TheStaleModule>   # rebuild JUST the suspect module
-```
-
-Isolation recipe: binary-search the import cone with tiny `/tmp` test files that `#check` and
-then *apply* the suspect theorems — `#check` alone does not force the failure; an application
-in a real `theorem` does. Suspect first any module whose `.olean` mtime predates the last
-toolchain bump (`ls -la .lake/build/lib/lean/.../*.olean`). Both ArkLib and Mathlib modules
-can be affected (`Mathlib.LinearAlgebra.Matrix.AbsoluteValue` was one instance).
 
 ## Important Notes
 
 - `./scripts/validate.sh` is the recommended convenience wrapper for routine local validation.
-- By default it runs the forbidden-token precheck, `lake build`, the zero-hole sorry census, the
-  flagship axiom audit, umbrella-import checks, docs integrity checks, and knowledge-base checks,
-  so a clean local `validate.sh` matches the CI gate set (issue #111 parity). Compiler warnings in
-  the inherited research corpus remain visible but are not a zero-budget gate; `--lint` enforces
-  the maintained style-exception baseline, and `check-warning-log.py` supports targeted cleanup.
+- By default it runs `lake build`, rejects non-`sorry` warnings in the canonical ArkLib inventory, runs the
+  Lean-native source-policy gate, runs the compiled `toyproblem-runtime`, `hachi-runtime`,
+  `sumcheck-runtime`, and `fri-extractor-runtime` checks, checks generated imports and documentation
+  integrity, and lints knowledge-base inputs.
 - The lower-level scripts remain valid when you only want one specific check.
-- `scripts/build-project.sh` is now just a compile-only helper, not the convenience wrapper.
-- `scripts/README.md` is still useful as an inventory of helper scripts.
+- Ordinary validation checks the committed bibliography and citation indexes under
+  `docs/kb/_generated/`; declaration and dedup catalogs are untracked local outputs.
+- `scripts/build-project.sh` is a compile-only helper, not the convenience wrapper.
+- `scripts/README.md` is the inventory of helper scripts.
 - Only run docs and site builds when those surfaces are relevant; they are slower and more
   tool-dependent than normal Lean builds.
+- Canonical style linting is always enforced; `--lint` additionally checks the maintained classic
+  downstream style baseline.
+
+## Checking axiom hygiene correctly
+
+New declarations may depend only on a subset of `{propext, Classical.choice, Quot.sound}`.
+Custom axioms, new admissions, and native-compiler trust dependencies must not merge (see
+[Review and Merge Readiness](../../CONTRIBUTING.md#review-and-merge-readiness)). Two traps make a
+naive check report success on something that should fail:
+
+- **`#print axioms` is only meaningful for declarations that elaborated cleanly.**
+  (`Lean.collectAxioms` does traverse both the type and the value, so a `sorry`-patched
+  statement *does* report `sorryAx` — but a declaration that failed to elaborate outright may
+  not exist to probe at all, and probing a *different*, successfully-elaborated declaration
+  proves nothing about the broken one.) Check the file compiles with zero errors first; a
+  belt-and-braces `(← getConstInfo n).type.hasSorry = false` assertion is cheap in sweep
+  metaprograms. A silent `#print axioms` result on its own is not evidence the intended
+  statement was proved.
+- **A metaprogram sweep over the environment silently skips private declarations**, whose internal
+  names are mangled. De-mangle with `Lean.privateToUserName?` before filtering by module, or the
+  sweep will quietly under-report.
+
+When reporting results, prefer "axiom-clean against the baseline" over "axiom-free", and state the
+counting basis (public / source-level / all-non-internal) — declaration totals are not comparable
+across differently-written probes, whereas the set of `sorryAx` carriers is.
+
+## Compiled execution checks
+
+Some things a theorem cannot state — that a definition compiles to code at all, and that running
+it gives the expected answer — are checked by compiled executables under `scripts/`, declared as
+`lean_exe` targets in `lakefile.toml` and run by `validate.sh`:
+
+| target | file | what it certifies |
+| --- | --- | --- |
+| `toyproblem-runtime` | `scripts/ToyProblemRuntime.lean` | the toy-problem launch cone |
+| `hachi-runtime` | `scripts/HachiRuntime.lean` | the nonrecursive Hachi honest-prover path |
+| `sumcheck-runtime` | `scripts/SumcheckRuntime.lean` | CompPoly messages and honest multivariate execution, including private effects, public abort and the retained original oracle |
+| `fri-extractor-runtime` | `scripts/FriExtractorRuntime.lean` | measured FRI extraction, input guards, raw interpolation corner cases, and exact small instruction counts |
+
+**Put them here, not under `ArkLib/`.** A file under `ArkLib/` is picked up by the generated
+library root, so a `#eval` in one is paid on every build by everyone; and `#eval` runs in the
+interpreter, which is far slower than compiled code. The pattern each file follows is a
+`check : String → Bool → IO Unit` that throws on failure, a `run : IO Unit` listing the checks,
+and `def main := run`.
+
+Two things to get right when adding one:
+
+- **Make each check lazy** — `def myCheck : Unit → Bool := fun _ => …`, not `def myCheck : Bool`.
+  Top-level values of non-function type are evaluated at *module initialization*, so an eager
+  check runs before `main` does. A slow one then hangs the executable before it can print
+  anything, and per-check timings all read zero because the work already happened.
+- **Keep the gated checks fast, and put slow ones behind a flag.** `hachi-runtime` gates on its
+  millisecond checks and hides its composed protocol run behind `--full` (that run passes, but
+  takes about six minutes — the honest sumcheck prover dominates), with `--timing` for per-check
+  costs.
 
 ## Optional Direct Commands
 
@@ -209,17 +368,15 @@ You can still run the underlying pieces directly when debugging a specific issue
 
 ```bash
 lake build
-python3 ./scripts/forbidden_tokens.py
-python3 ./scripts/sorry_census.py --fail-on-holes
-# build the flagship modules that sit outside the ProximityGap umbrella
-# (KZG, Merkle, Hensel, SubspacePoly) before auditing them:
-awk '!/^([[:space:]]*(#|$))/ { print $1 }' scripts/flagship_axioms.txt \
-  | LC_ALL=C sort -u | xargs ./scripts/lake-locked.sh build
-python3 ./scripts/axiom_audit.py
+lake exe toyproblem-runtime
+lake exe hachi-runtime
+lake exe sumcheck-runtime
+lake exe fri-extractor-runtime
 ./scripts/check-imports.sh
-python3 ./scripts/check-docs-integrity.py
-python3 ./scripts/kb/check_generated.py
-python3 ./scripts/kb/lint.py --strict-cited-pages
+uv run --no-project --python 3.12 python ./scripts/check-docs-integrity.py
+uv run --no-project --python 3.12 python ./scripts/kb/lint.py
+./scripts/test-axiomsweep.sh
+lake exe axiomsweep --check
 ```
 
 If you specifically need to regenerate `ArkLib.lean`, use:
@@ -231,161 +388,153 @@ If you specifically need to regenerate `ArkLib.lean`, use:
 If blueprint output matters and `leanblueprint` is missing:
 
 ```bash
-python3 -m pip install leanblueprint
+uv tool install --python 3.12 leanblueprint
 ```
 
 ## CI Mapping
 
+Main CI sets `LEAN_NUM_THREADS=1` for each Lean build job. Research import closures were
+measured at roughly 6.4 GiB per compiler process during integration, so per-CPU parallelism
+does not fit the 16 GB runner. The pinned Lean runtime otherwise
+[defaults Lake's task pool to the hardware concurrency](https://github.com/leanprover/lean4/blob/v4.35.0/src/runtime/object.cpp#L1037-L1052).
+This worker limit applies to the prebuilds, default build, and validation wrapper. The checkout and
+machine locks separately limit simultaneous Lake invocations. All four libraries remain in
+the default build.
+
 - [`../../.github/workflows/ci.yml`](../../.github/workflows/ci.yml)
-  runs the timing-enabled `./scripts/validate.sh` path on PRs and pushes to
-  `main`. Additional clean and warm benchmarks require a manual dispatch with
-  the `benchmark` input enabled. It then
-  uploads timing artifacts and posts a comparison report on same-repo PRs.
-  Before fetching dependency artifacts, CI runs `scripts/repair-lake-cache.py`
-  to quarantine cached Git packages whose own checkout or HEAD cannot be resolved.
-  Lake then re-fetches those packages from the existing manifest; valid packages
-  and their compiled artifacts are preserved.
-  The `.lake` cache is saved under a key unique to each run attempt (with
-  newest-prefix restore), so when a hosted runner dies mid-build,
-  `gh run rerun <id> --failed` resumes from the latest partial snapshot and
-  successive main-branch attempts ratchet forward; `docs.yml` uses the same scheme.
-  Only main publishes cache snapshots. PRs and manual branch runs restore main
-  snapshots but do not save branch-scoped copies: each snapshot is roughly 3 GB,
-  and PR copies previously evicted the shared compilation and documentation
-  progress from the repository cache. Once main has a complete warm snapshot,
-  PRs rebuild their changed modules against it. A failed branch run does not
-  retain partial progress; land prerequisite build repairs separately when needed.
-  The full validation build uses one Lean worker to limit peak memory:
-  two-worker attempts repeatedly terminated in the heavy Frontier region
-  before saving their caches. Validation has a 270-minute budget within a
-  330-minute job, leaving room to save artifacts. A cold full-library build
-  can take nearly four hours before the additional flagship targets compile;
-  the validation budget covers both stages. The former 20-minute limit
-  repeatedly interrupted healthy builds. Website compilation and documentation
-  each have 150 minutes within a 330-minute job. Compilation uses one worker;
-  documentation generation uses two after the compiled library is available.
-  Before caching, `scripts/ci-stop-lean.sh` stops leftover Lake and Lean workers
-  on disposable GitHub-hosted Linux runners. Cancelled steps can otherwise leave
-  writers running and make the archive fail with "file changed as we read it".
-  The helper refuses to run locally or on shared self-hosted runners.
-  Main CI and Pages builds finish before the latest queued main run starts,
-  so incoming merges do not repeatedly interrupt compilation or cache saves.
-  Superseded non-main runs may still be cancelled.
-  A timeout remains a failing check until the entire command passes.
-  CI logs active Lean workers and memory usage every 30 seconds so an
-  interrupted build can be traced to its in-flight module.
-  It also enforces the issue #47 verification gates: a fast precheck rejecting
-  `native_decide`/`bv_decide`/custom `axiom` declarations and the
-  `debug.skipKernelTC`/`debug.*AsSorry` options (in live source or `lakefile.toml`)
-  (`scripts/forbidden_tokens.py`, which requires Python 3.11+ for TOML parsing),
-  a comment-stripped sorry census requiring
-  zero live holes (`scripts/sorry_census.py --fail-on-holes`), and a
-  `#print axioms` sweep over the pinned flagship list
-  (`scripts/axiom_audit.py` reading `scripts/flagship_axioms.txt`) that must
-  stay within `propext`, `Classical.choice`, `Quot.sound`. Renaming or
-  deleting a pinned flagship theorem without updating the list is a hard CI
-  failure. Because some pinned flagship modules (KZG, Merkle tree, Hensel,
-  SubspacePoly, sequential composition, and Binius) live outside the ProximityGap umbrella that `lake build`
-  targets, `validate.sh` first builds every module named in
-  `scripts/flagship_axioms.txt` explicitly before running the audit. As of issue #111 these same three gates also run from
-  `./scripts/validate.sh`, so local validation matches CI.
-- The declaration scanner restricts leading indentation to the current line, so
-  large masked block comments do not cause repeated scans of all following blank lines.
-- The forbidden-token precheck rejects every custom `axiom` *except* the
-  documented, tracked residuals listed in
-  [`../../scripts/residual_axioms.txt`](../../scripts/residual_axioms.txt) (route (a)
-  of #111). Each allowlist entry names one residual axiom and the issue that owns its
-  eventual discharge; an undocumented or newly added `axiom` still fails the gate, and a
-  stale allowlist entry (matching no live axiom) prints a warning to prompt cleanup.
-  `scripts/forbidden_tokens.py` also accepts explicit Lean files or directories for
-  focused checks; stale allowlist warnings are only meaningful on the default full-tree scan.
+  runs the timing-enabled main build on PRs, merge groups, pushes to `main`, and a nightly
+  schedule. It prebuilds canonical `ArkLib`, then `ArkLibExtensions` and `ProximityPrizeExtensions`,
+  on separate runners so a cold build can finish within each job's time budget. The final job
+  requires both prebuilds and the Blueprint render to succeed before it runs the full default
+  build, including `ResearchProximityPrize`. It builds incrementally from the latest `main`
+  build (see [Build Cache](#build-cache)), times the library phases, the native build, and the
+  `./scripts/validate.sh` path, runs the
+  source trust inventory plus axiom-sweep fixture matrix and library regression baseline
+  (all axiom verdicts enforcing). A separate read-only job renders the blueprint without Lean
+  caches. The required build explicitly checks rendering success and validates the generated
+  declarations against its existing `ArkLibBlueprint` build, then reuses the Lean build for
+  API-documentation generation on main pushes. The PR-head jobs have read-only contents
+  permission; on pushes, a separate job deploys its generated static-site artifact with
+  Pages/OIDC permission. It uploads timing artifacts consumed by the trusted
+  [`../../.github/workflows/build-timing-report.yml`](../../.github/workflows/build-timing-report.yml)
+  workflow, which renders the report and posts it on the PR.
+- [`../../.github/workflows/interaction.yml`](../../.github/workflows/interaction.yml)
+  provides focused compilation and zero-warning checks for typed Interaction production and
+  acceptance modules. It also runs on feature-base stacked PRs. Its read-only job restores,
+  but never saves, the dependency and build caches and does not retain checkout credentials. Passing
+  this check does not waive the full validation/axiom gate for the eventual `main` target.
 - [`../../.github/workflows/check-imports.yml`](../../.github/workflows/check-imports.yml)
-  checks that `ArkLib.lean` matches the tracked source tree.
+  checks pinned canonical-source provenance, the library/research boundary, and the generated
+  `ArkLib.lean`, `ProximityPrize.lean`, `ProximityPrize/Extensions.lean`, and Research umbrellas,
+  including their Lake ownership. Both this workflow and the main CI run without path filters
+  for PRs targeting `main` and for merge groups, so a generated-root-only change or a change to
+  an integration script or manifest still runs validation. Focused regression tests in
+  `scripts/tests/test_ci_pr_gate_inputs.py` protect this coverage.
 - [`../../.github/workflows/docs-integrity.yml`](../../.github/workflows/docs-integrity.yml)
-  checks local markdown links and the `CLAUDE.md` symlink.
+  checks that `AGENTS.md` exists and local markdown links resolve.
+- [`../../.github/workflows/kb-generated.yml`](../../.github/workflows/kb-generated.yml)
+  checks KB regeneration and linting on relevant pull requests and pushes to `main`, and fails
+  when tracked outputs are stale. It has read-only repository permissions.
+
+To validate a stacked PR while it targets a feature branch, dispatch the existing CI, import,
+and docs-integrity workflows on its published head branch:
+
+```bash
+review_branch=your-published-head-branch
+gh workflow run ci.yml --ref "$review_branch"
+gh workflow run check-imports.yml --ref "$review_branch"
+gh workflow run docs-integrity.yml --ref "$review_branch"
+gh run list --branch "$review_branch" --event workflow_dispatch \
+  --json workflowName,headSha,status,conclusion,url
+```
+
+Check that each run's `headSha` equals the reviewed commit, and retain the run URLs with the
+validation evidence. A later push needs checks for its new head. Dispatch uses the existing
+read-only CI build job; the Pages publisher runs only on push events. Local validation, required
+GitHub reviews, and the eventual main-target and merge-queue checks still apply.
+
+Where repository rules require a merge queue, pull requests enter it after their normal review
+and required checks pass. The queue creates a temporary integration ref containing the queued changes on current `main`; the CI,
+import, and docs-integrity workflows run again on that `merge_group` ref before GitHub may merge it.
+The CI validation path includes the Lean-native source-policy gate. PR-only timing comparisons and
+comments remain attached to the ordinary PR run and are intentionally skipped for merge groups,
+which do not carry a pull-request payload. Workflow triggers do not configure required checks or
+branch protection: verify those repository settings before relying on automatic enforcement.
+Upstream integration PRs require a merge commit as described in
+[upstream-integration.md](upstream-integration.md#integrating-another-upstream-snapshot).
+
+## Build Cache
+
+CI keeps two caches. The dependency cache holds `.lake/packages` and is keyed by
+`lake-manifest.json` and `lean-toolchain`. The build cache holds ArkLib's own `.lake/build`; every
+`main` run saves one, and every run restores the newest. Lake decides what to rebuild from content
+hashes of each module's source and imports, so a restored build is only a starting point: a PR
+rebuilds the modules it changed and everything that imports them, and nothing else. Lake stores
+each module's messages in its trace, so warnings from modules it does not rebuild are replayed and
+the warning budgets still see them.
+
+Only `main` saves cross-run Lean caches. Each successful prebuild transfers its completed
+`.lake/packages` and `.lake/build` to the next job in the same workflow run. The handoff omits
+regenerated setup files and verifies the archive checksum, checkout SHA, run identity, runner
+platform, and dependency inputs before restoring it. Pull request and merge-queue builds never
+publish caches another run can load. A push to `main` waits for the running `main` build so it
+can save its caches.
+
+The nightly scheduled run, and a manual run with `clean_build` set, skips the build cache and
+builds from scratch. That keeps an absolute build-time trend and checks that nothing passes only
+because of stale cached output.
 
 ## Manual Timing Helper
 
 If you need to reproduce the timing workflow locally, the same helper script can
-capture a measurement and render a report:
+capture a measurement and render a report. Its default command labels match the plain
+Lake commands measured by isolated CI. Run the following reproduction only on a machine
+where no other agent can build; use the locked wrapper for routine shared-machine builds.
+Set `BUILD_TIMING_NATIVE_COMMAND` and `BUILD_TIMING_TEST_COMMAND` to match any custom
+native-build or validation commands, so the report describes what was measured:
 
 ```bash
-bash scripts/build_timing_report.sh run clean_build /tmp/build-timing.jsonl -- \
-  bash -eo pipefail -c 'rm -rf .lake/build && lake build'
-bash scripts/build_timing_report.sh render /tmp/build-timing.jsonl
+export BUILD_TIMING_LOG_DIR=/tmp/build-timing
+bash scripts/build_timing_report.sh run library_build /tmp/build-timing/results.jsonl -- \
+  bash -eo pipefail -c 'lake build'
+bash scripts/build_timing_report.sh run native_build /tmp/build-timing/results.jsonl -- \
+  bash -eo pipefail -c 'lake build toyproblem-runtime hachi-runtime sumcheck-runtime fri-extractor-runtime lint-style'
+bash scripts/build_timing_report.sh run test_path /tmp/build-timing/results.jsonl -- \
+  bash -eo pipefail -c './scripts/validate.sh'
+bash scripts/build_timing_report.sh render /tmp/build-timing/results.jsonl
 ```
 
-## Swarm Verification Discipline
+Read the rows in that order, because each phase leaves the build state warmer:
 
-Hard-won rules for multi-agent sessions where several agents land commits on
-`main` concurrently (distilled from the 2026-06-10 #232 frontier sessions):
+- `library_build` in CI sums the measured wall and CPU time of the canonical prebuild, extensions
+  prebuild, and full default `lake build`. Runner setup, queueing, and artifact transfer are outside
+  the measurement. The combined log includes all three phases for per-module attribution.
+  The local recipe measures one default `lake build` against the current artifacts.
+- `native_build` carries the `.c.o` chain that the compiled executables link — currently
+  `toyproblem-runtime`, `hachi-runtime`, `sumcheck-runtime`, `fri-extractor-runtime`, and `lint-style`.
+  It is the row that swings on `.lake` cache state, so a dependency bump shows its cost here. **Adding a compiled executable to
+  `validate.sh` means
+  adding it to this command too**, or its link cost lands in `test_path` instead.
+- `test_path` is therefore the cost of the validation gate itself on an already-built project,
+  not of a cold `./scripts/validate.sh`. CI passes no flags, so `--docs`, `--site` and
+  `--axioms` never appear in it.
 
-- **An announced brick is not a brick.** Commit messages and `Research/ProximityPrize/DISPROOF_LOG.md`
-  entries can name theorems that never landed (found once: a theorem announced
-  in a commit message existed nowhere in history). Before citing or building on
-  a named lemma, `grep` the tree — not the log — and prefer
-  `git log -S <name>` to confirm a Lean occurrence.
-- **`#print axioms` lines are expected output.** Several modules end with
-  `#print axioms <thm>` audit lines by convention. A zero-output compile gate
-  must treat those lines as a pass signal (each should read exactly
-  `[propext, Classical.choice, Quot.sound]`); anything else in the output —
-  warnings, errors, `sorry` notices — is a failure.
-- **Main-branch CI runs supersede in queue.** With
-  `cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}`, queued main
-  runs are replaced by newer pushes; individual-push runs showing `cancelled`
-  is normal. The head run validates the whole tree, so "CI green on every
-  push" means: the most recent *completed* main run is green and contains your
-  commits (`git merge-base --is-ancestor <sha> <ci-sha>`).
-- **Joint-import check before declaring a batch done.** Single-file
-  `lake env lean` passes do not rule out cross-module name clashes. After
-  landing several new modules, build exactly those targets
-  (`lake build <Module1> <Module2> …`) and compile a scratch file importing
-  all of them together.
-- **Rebase before every push; new files only.** Concurrent agents editing
-  shared files (especially `ArkLib.lean`, `Research/ProximityPrize/DISPROOF_LOG.md`) is the main
-  collision source. One designated writer appends to shared logs; everyone
-  else ships new modules and lets `./scripts/update-lib.sh` regenerate the
-  import index at commit time.
-- **After landing, confirm your commit survived: `git branch -r --contains
-  <sha>`.** Concurrent lanes rewrite history; locally-green commits get
-  dropped while the file content survives untracked on disk. Recovery is
-  cheap — `git add` + re-commit the surviving file (byte-identical to the
-  orphan blob), then push via a detached worktree if the main tree has other
-  lanes' unstaged edits: `git worktree add /tmp/wt FETCH_HEAD && cd /tmp/wt &&
-  git cherry-pick <sha> && git push fork HEAD:main`.
-- **Agent deaths leave complete orphan files — check before re-proving.** A
-  prover that hits its session limit after writing but before verifying
-  leaves a finished (often fully correct) file at its target path. Before
-  relaunching the brick, `git status --short` the target directory, compile
-  the orphan, and fix at most the 1–2 mechanical tactic errors (recurring
-  shapes: `Set.injOn_id` unification → introduce the `InjOn` proof as a
-  `have`; `WithBot` casts → `WithBot.coe_le_coe.mpr`; `smul_eq_mul`
-  commutation → `simp [smul_eq_mul]` then `ring`, since `simp [mul_comm]`
-  loops).
-- **Investigate `sorryAx` before accepting an axiom audit.** Resolve compiler
-  errors first: failed elaboration can insert placeholder proofs even when
-  the source contains no `sorry`. If compilation is clean, rebuild the import closure
-  (`./scripts/lake-locked.sh build <each imported module>`) and re-check before debugging the
-  proof; stale imports have also caused this symptom.
-- **Keep prize-scale counting proofs symbolic.** Prove the counting inequality
-  with a variable dimension before applying it at a large literal dimension.
-  `ScaleThresholdBracket.lean` uses this pattern to avoid expensive checking
-  of the concrete finite-universe proof term. Reaching the end of a tactic
-  script is not enough: wait for the entire module and its axiom audit to pass.
+A row whose measurement could not be taken renders as `measurement failed`, not as a missing row.
 
-- **Batch expensive finite kernel checks.** A single reduction over a large list
-  can retain excessive memory. Prove small consecutive batch summaries with
-  `decide +kernel`, then combine them using a generic list decomposition lemma.
-  Keep the original public checker and theorem statements unchanged, and verify
-  the complete module and its axiom output after assembling the batches.
-  For function-space boxes, split one coordinate into separate private theorems
-  before combining them by finite cases. `_R394L1KernelCertificate.lean` checks
-  its `13^4` box in 13 slices: the monolithic decision exhausted a hosted
-  runner's 16 GiB RAM and 3 GiB swap. The public certificate and its assumptions
-  remain unchanged.
-  Reuse that checked box certificate for weaker predicates: R395's nonzero-head
-  condition follows directly from R394, avoiding another full enumeration.
+Wall time of an incremental build depends on how much the change invalidated, so it is not
+comparable across PRs. The per-module comparison is. Lake prints `Built <module> (<time>)` exactly
+for the modules it rebuilt, and `scripts/module_times.py` keeps a table of the latest such time
+for every module in `.lake/build/arklib-module-times.json`, which travels with the build cache.
+The report compares each rebuilt module against that table, and the table's sum before and after
+the run estimates clean-build compile time without running a clean build. Module times are printed
+with the precision Lake reported (`22`, `3.5`, `0.770`); Lake emits whole seconds above 10s.
 
+Timing artifacts include the PR head, actual measured checkout (normally GitHub's synthetic PR
+merge commit), exact base, dependency-manifest hash, exact/fallback cache state, and runner
+image/version. Reports show both wall time and CPU work (`user + sys`). Movement in both suggests
+changed compilation work or runner speed; wall-only movement more often indicates scheduling or I/O
+contention. These diagnostics improve attribution, but one hosted-runner sample is still not a
+performance verdict. Per-file rows are leads to remeasure, not blocking regression claims.
 
 ### Fast-iteration exit status
 

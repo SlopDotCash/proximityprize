@@ -3,9 +3,10 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Stir.InitRbrSoundness
 import ArkLib.ProofSystem.Stir.Round3Completeness
-import ArkLib.ProofSystem.Stir.Combine
+import ProximityPrize.Extensions.ProofSystem.Stir.Combine
 import ArkLib.ProofSystem.Whir.ThresholdKSF
 
 /-!
@@ -20,10 +21,10 @@ Unlike the initial `[C_fold]` block (whose verifier *relays the input oracle*, s
 zero-error relay proof of `InitRbrSoundness.lean` goes through), both remaining blocks
 expose the prover's *message* as the output oracle and make **no checks**.  For an
 adversarial prover the output oracle can therefore be δ-close to the code while the input
-oracle is δ-far, and the naive zero-error RBR statement is **false**.  This file proves
-exactly what is true and refutes exactly what is false:
+oracle is δ-far, and the naive zero-error RBR statement is **false**.  This file proves the positive budgets and records the counterexample design for the
+unsupported proximity claim:
 
-* **Refutation** (`stirFinalVerifier_not_rbrKnowledgeSoundness_zero`): the final block does
+* **Refutation design** (§3; mechanization deferred): the final block does
   NOT satisfy `rbrKnowledgeSoundness` with error `0` for
   `stirOStmtRel F → stirOStmtRel (F × F)`, whenever a δ-far word and a δ-close word exist
   and the implementation state initializer can produce a state.  The breaking prover sends
@@ -98,10 +99,10 @@ cannot be removed). -/
 
 set_option linter.unusedSectionVars false in
 /-- **Indicator-budget RBR knowledge soundness of the final `[p, C_fin]` block.**  The whole
-unit budget sits on the unique challenge round `C_fin`; the budget cannot be lowered to `0`
-(see `stirFinalVerifier_not_rbrKnowledgeSoundness_zero`). -/
+unit budget sits on the unique challenge round `C_fin`. This does not establish a zero budget;
+the conditional counterexample design is recorded in §3. -/
 theorem stirFinalVerifier_rbrKnowledgeSoundness_indicator (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0) :
-    (stirFinalVerifier (ι := ι) (F := F)).rbrKnowledgeSoundness init impl
+    (stirFinalVerifier (ι := ι) (F := F)).rbrKnowledgeSoundnessAveraged init impl
       (stirOStmtRel F φ deg δ) (stirOStmtRel (F × F) φ deg δ)
       (fun i => if i = ⟨1, pSpecFinal_dir_one⟩ then 1 else 0) := by
   refine ThresholdKSF.rbrKnowledgeSoundness_indicator init impl
@@ -119,7 +120,7 @@ challenge.**  The flip probability at the out-sample challenge round `C_out` is 
 the state function is constant there (neither challenge round touches the oracle). -/
 theorem stirRound3Verifier'_rbrKnowledgeSoundness_indicator_shift
     (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0) :
-    (stirRound3Verifier' φ deg).rbrKnowledgeSoundness init impl
+    (stirRound3Verifier' φ deg).rbrKnowledgeSoundnessAveraged init impl
       (stirOStmtRel F φ deg δ) (stirOStmtRel F φ deg δ)
       (fun i => if i = ⟨2, pSpec3_dir_two⟩ then 1 else 0) := by
   refine ThresholdKSF.rbrKnowledgeSoundness_indicator init impl
@@ -139,7 +140,7 @@ either challenge round of the 3-slot block, but (absent a checking verifier) at 
 round must carry it. -/
 theorem stirRound3Verifier'_rbrKnowledgeSoundness_indicator_out
     (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0) :
-    (stirRound3Verifier' φ deg).rbrKnowledgeSoundness init impl
+    (stirRound3Verifier' φ deg).rbrKnowledgeSoundnessAveraged init impl
       (stirOStmtRel F φ deg δ) (stirOStmtRel F φ deg δ)
       (fun i => if i = ⟨1, pSpec3_dir_one⟩ then 1 else 0) := by
   refine ThresholdKSF.rbrKnowledgeSoundness_indicator init impl
@@ -154,7 +155,7 @@ theorem stirRound3Verifier'_rbrKnowledgeSoundness_indicator_out
 set_option linter.unusedSectionVars false in
 /-- Reduction-level packaging of the final-block indicator budget. -/
 theorem stirFinalReduction_rbrKnowledgeSoundness_indicator (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0) :
-    (stirFinalReduction (ι := ι) (F := F)).verifier.rbrKnowledgeSoundness init impl
+    (stirFinalReduction (ι := ι) (F := F)).verifier.rbrKnowledgeSoundnessAveraged init impl
       (stirOStmtRel F φ deg δ) (stirOStmtRel (F × F) φ deg δ)
       (fun i => if i = ⟨1, pSpecFinal_dir_one⟩ then 1 else 0) :=
   stirFinalVerifier_rbrKnowledgeSoundness_indicator init impl φ deg δ
@@ -163,7 +164,7 @@ set_option linter.unusedSectionVars false in
 /-- Reduction-level packaging of the 3-slot-block indicator budget (shift placement). -/
 theorem stirRound3Reduction'_rbrKnowledgeSoundness_indicator_shift
     (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0) :
-    (stirRound3Reduction' φ deg).verifier.rbrKnowledgeSoundness init impl
+    (stirRound3Reduction' φ deg).verifier.rbrKnowledgeSoundnessAveraged init impl
       (stirOStmtRel F φ deg δ) (stirOStmtRel F φ deg δ)
       (fun i => if i = ⟨2, pSpec3_dir_two⟩ then 1 else 0) :=
   stirRound3Verifier'_rbrKnowledgeSoundness_indicator_shift init impl φ deg δ
@@ -183,24 +184,22 @@ check-free verifier supports *no* nonvacuous zero-error output guarantee: `∅` 
 available, and (for the STIR final block) `stirOStmtRel` is refuted below. -/
 theorem _root_.Verifier.rbrKnowledgeSoundness_empty_relOut
     (verifier : Verifier oSpec StmtIn StmtOut pSpec) (relIn : Set (StmtIn × Unit)) :
-    verifier.rbrKnowledgeSoundness init' impl' relIn
+    verifier.rbrKnowledgeSoundnessAveraged init' impl' relIn
       (∅ : Set (StmtOut × WitOut)) 0 := by
   refine ⟨fun _ => Unit, ThresholdKSF.unitExtractor, {
     toFun := fun m stmtIn _ _ => m = 0 ∧ (stmtIn, ()) ∈ relIn
-    toFun_empty := fun stmtIn w => ⟨fun h => ⟨rfl, h⟩, fun h => h.2⟩
+    toFun_empty := fun _ _ h => h.2
     toFun_next := fun m _ _ _ _ _ h => absurd h.1 (Fin.succ_ne_zero m)
     toFun_full := fun stmtIn tr witOut h => by
-      exfalso
-      refine absurd h (not_lt.mpr (le_of_eq ?_))
-      rw [probEvent_eq_zero_iff]
-      intro x _ hx
-      exact hx
+      rw [gt_iff_lt, OracleComp.OptionT.prEvent_mk_pos_iff] at h
+      obtain ⟨x, _, hfalse⟩ := h
+      exact hfalse.elim
   }, ?_⟩
   intro stmtIn witIn prover i
-  refine le_trans (le_of_eq ?_) (zero_le _)
-  rw [probEvent_eq_zero_iff]
-  rintro ⟨transcript, challenge, log⟩ _ ⟨witMid, _, hyes, _⟩
-  exact Fin.succ_ne_zero i.1 hyes
+  refine le_trans (le_of_eq ?_) (by positivity)
+  rw [OracleComp.prEvent_eq_zero_iff]
+  rintro ⟨transcript, challenge, log⟩ _ ⟨witMid, _, hyes⟩
+  exact Fin.succ_ne_zero i.1 hyes.1
 
 end EmptyRelOut
 
@@ -211,27 +210,27 @@ set_option linter.unusedSectionVars false in
 is definitionally the input statement.  This is the (nonvacuous) zero-error content of the
 final relay verifier; the oracle-proximity relation pair is exactly what fails (§3). -/
 theorem stirFinalVerifier_rbrKnowledgeSoundness_pending (P : Set F) :
-    (stirFinalVerifier (ι := ι) (F := F)).rbrKnowledgeSoundness init impl
+    (stirFinalVerifier (ι := ι) (F := F)).rbrKnowledgeSoundnessAveraged init impl
       {x : (F × ∀ i, OStmt ι F i) × Unit | x.1.1 ∈ P}
       {x : ((F × F) × ∀ i, OStmt ι F i) × Unit | x.1.1.1 ∈ P} 0 := by
   refine ⟨fun _ => Unit, ThresholdKSF.unitExtractor, {
     toFun := fun _ stmtIn _ _ => stmtIn.1 ∈ P
-    toFun_empty := fun _ _ => Iff.rfl
+    toFun_empty := fun _ _ h => h
     toFun_next := fun _ _ _ _ _ _ h => h
     toFun_full := fun stmtIn tr witOut hpr => by
       obtain ⟨r, oStmt⟩ := stmtIn
-      rw [gt_iff_lt, probEvent_pos_iff] at hpr
+      rw [gt_iff_lt, OracleComp.OptionT.prEvent_mk_pos_iff] at hpr
       obtain ⟨x, hx, hrel⟩ := hpr
-      rw [OptionT.mem_support_iff] at hx
-      simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
+      simp only [support_bind, Set.mem_iUnion, exists_prop] at hx
       obtain ⟨s, _, hx⟩ := hx
       erw [stirFinalVerifier_toVerifier_run, simulateQ_optionT_pure_run'] at hx
+      simp only [support_pure, Set.mem_singleton_iff] at hx
       cases (Option.some.inj hx)
       exact hrel
   }, ?_⟩
   intro stmtIn witIn prover i
-  refine le_trans (le_of_eq ?_) (zero_le _)
-  rw [probEvent_eq_zero_iff]
+  refine le_trans (le_of_eq ?_) (by positivity)
+  rw [OracleComp.prEvent_eq_zero_iff]
   rintro ⟨transcript, challenge, log⟩ _ ⟨witMid, hnot, hyes⟩
   exact hnot hyes
 

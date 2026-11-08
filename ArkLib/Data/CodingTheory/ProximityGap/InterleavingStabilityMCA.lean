@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
 import Mathlib
 
 /-!
@@ -320,7 +320,6 @@ theorem epsMCA_interleaved_le_epsMCA (C : Submodule F (ι → A)) (t : ℕ) [NeZ
     (fun γ => if h : mcaEvent ((C : Set (ι → A))^⋈ (Fin t)) δ (u 0) (u 1) γ
       then jointPairSubmodule C h.choose (u 0) (u 1) else ⊥)
     (fun γ => by
-      dsimp only
       split_ifs with h
       · exact jointPairSubmodule_ne_top C (u 0) (u 1) h.choose_spec.2.2
       · exact bot_ne_top)

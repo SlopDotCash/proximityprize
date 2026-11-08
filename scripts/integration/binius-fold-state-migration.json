@@ -1,0 +1,35 @@
+{
+  "canonical_owner": "ArkLib/ProofSystem/Binius/BinaryBasefold/Steps/Fold.lean",
+  "historical_owner": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Steps/Fold.lean",
+  "source_sha256": "484485bdae970e6f8853305760cf7857afd0969856b1fd15770d31e7d009dc9f",
+  "previous_source_archive": "scripts/integration/retired/binius-steps-fold-pre-native.lean.txt",
+  "previous_source_sha256": "18319183785809bb2f094f332f3b0cdf88e41e0dc38953a7a00f977e73dd0609",
+  "caller_inventory": "All old state/helper names and the retired axiom are used only internally in the old owner; the only external matches are two explanatory RingSwitching comments. No executable caller was rerouted to an incompatible state.",
+  "retired_commands": [
+    "Binius.BinaryBasefold.CoreInteraction.foldKnowledgeStateFunction_toFun_full",
+    "Binius.BinaryBasefold.CoreInteraction.foldStep_rbrExtractionFailureEvent_imply_sumcheck_or_badEvent",
+    "Binius.BinaryBasefold.CoreInteraction.foldStep_doom_escape_probability_bound"
+  ],
+  "reason": "The old wrappers extend challenges by Fin.cons and use historical low-row-bit encoding, while name resolution after extraction selects the canonical chronological Fin.snoc verifier/extractor/knowledge state. No equality between those states is asserted. The custom axiom was unused; the authoritative canonical owner has completed native state-function and soundness proofs.",
+  "preserved_historical_namespace": "Binius.BinaryBasefold.CoreInteraction.Historical",
+  "preserved_completed_math": [
+    "foldStep_oracleWitnessConsistency_unique_witMid",
+    "foldStepHStarFromWitMid_eq_of_oracleWitnessConsistency",
+    "incrementalBadEventExistsProp_fold_step_backward"
+  ],
+  "preserved_data": "Historical state predicates, unique-witness structure, explicit newest-first codeword, witness-dependent round polynomial, and fresh incremental bad-event definition retain their original mathematical conventions.",
+  "native_delegation": {
+    "foldStep_rbrExtractionFailureEvent_imply_sumcheck_or_badEvent_native": "foldStepFreshBadEvent_or_of_rbrExtractionFailureEvent",
+    "foldStep_doom_escape_probability_bound_native": "prob_foldStep_rbrExtractionFailureEvent_le"
+  },
+  "regression_reference": "ArkLibTest/Compatibility/FRIBiniusEncoding.lean explicitly distinguishes canonical and reversed bit order; no raw matrix identity is fabricated.",
+  "validation": {
+    "kind": "temporary-overlay isolated source; not a Lake package build",
+    "receipt": "/tmp/arklib-historical-StepsFold-native3.receipt.json",
+    "elapsed_seconds": 3.589,
+    "axiom_audit": "All three preserved Historical proof anchors and both direct native proof aliases depend only on propext, Classical.choice, Quot.sound.",
+    "owner_receipt": "/tmp/arklib-historical-StepsFold-owner-native1.receipt.json",
+    "owner_elapsed_seconds": 5.758
+  },
+  "source_debt": "Retired exact custom-axiom entry removed from scripts/residual_axioms.txt; final residual census must be regenerated after all source ports stabilize."
+}

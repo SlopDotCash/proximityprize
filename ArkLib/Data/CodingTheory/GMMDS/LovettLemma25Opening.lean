@@ -58,7 +58,7 @@ theorem exists_inner_zero_of_ne_oneVec {V : Fin m → (Fin n → ℕ)} {k : ℕ}
       apply Fin.ext; simp only [lastCoord]; omega
     rw [hjl, hlast]
     simp only [oneVec, lastCoord]
-    rw [if_neg (by omega : ¬ ((n - 1 : ℕ) < n - 1))]
+    simp
 
 /-- **The Lemma 2.5 alternative** (combinatorial form).  In a primitive `V*(k)` system with
 `m ≥ 1`: **either** the structured witness exists (some `vᵢ₀ = (1,…,1,0)`), **or** there is an

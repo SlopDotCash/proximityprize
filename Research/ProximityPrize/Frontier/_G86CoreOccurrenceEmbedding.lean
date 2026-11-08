@@ -141,7 +141,8 @@ theorem exists_perm_comp_of_multiset_eq
   refine ⟨σ, ?_⟩
   funext i
   have hget := hp.getElem_idxBij_eq_getElem ⟨i.val, by simpa using i.isLt⟩
-  simpa only [Function.comp_apply, List.getElem_ofFn, σ] using hget.symm
+  simpa only [Function.comp_apply, List.getElem_ofFn, σ,
+    Equiv.coe_fn_mk, Fin.eta] using hget.symm
 
 end ArkLib.ProximityGap.Frontier.G86CoreOccurrenceEmbedding
 

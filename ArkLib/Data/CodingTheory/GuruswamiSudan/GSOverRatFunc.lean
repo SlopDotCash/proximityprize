@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.GuruswamiSudan.GuruswamiSudan
+import ProximityPrize.Extensions.Data.CodingTheory.GuruswamiSudan.GuruswamiSudan
 import Mathlib.FieldTheory.RatFunc.AsPolynomial
 
 /-!
@@ -76,7 +76,7 @@ theorem gs_existence_over_ratfunc {n : ℕ} (k m : ℕ) (ωs : Fin n ↪ F) (f�
       GuruswamiSudan.Conditions k m (gs_degree_bound k n m)
         (liftedDomain ωs) (genericFold f₀ f₁) Q := by
   classical
-  exact GuruswamiSudan.gs_existence (m := m) k n (liftedDomain ωs) (genericFold f₀ f₁) hk hn hm
+  exact GuruswamiSudan.gs_existence (m := m) k n (liftedDomain ωs) (genericFold f₀ f₁) hk hm
 
 /-- **Divisibility consequence over `K = F(Z)` (Step S1 at the generic level).**
 

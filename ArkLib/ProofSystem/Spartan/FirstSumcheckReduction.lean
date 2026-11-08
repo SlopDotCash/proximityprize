@@ -7,8 +7,8 @@ Authors: ArkLib Contributors
 import ArkLib.ProofSystem.Spartan.FirstSumcheckCubeSum
 import ArkLib.ProofSystem.Spartan.FirstChallengeCoherent
 import ArkLib.ProofSystem.Sumcheck.Spec.General
-import ArkLib.ProofSystem.Sumcheck.Domain
-import ArkLib.OracleReduction.LiftContext.OracleReduction
+import ProximityPrize.Extensions.ProofSystem.Sumcheck.Domain
+import ProximityPrize.Extensions.OracleReduction.LiftContext.OracleReduction
 
 /-!
 # The Spartan first sum-check oracle reduction (issue #114)
@@ -19,7 +19,7 @@ Constructs Spartan's **first sum-check** oracle reduction (phase 3), the analogu
 
   `ℱ(X) = eqPolynomial(τ)(X) · (Ã(X)·B̃(X) − C̃(X))`  (`firstSumCheckVirtualPolynomial`),
 
-via `OracleReduction.liftContext`.
+via `OracleReduction.liftContextLegacy`.
 
 Two structural differences from the second sum-check:
 
@@ -91,11 +91,13 @@ theorem matVecMLEEvalFromOracles_simOracle
   · -- collapse the outer fold to a `Finset.sum`, then identify it with `eval point M̃`
     congr 1
     rw [foldl_add_eq_sum', zero_add, Finset.sum_map_toList]
-    rw [matVecMLE, MLE_eval_eq_sum_eqTilde, ← Equiv.sum_comp finFunctionFinEquiv]
+    unfold matVecMLE Algebra.rowProduct MLE'
+    rw [MLE_eval_eq_sum_eqTilde, ← Equiv.sum_comp finFunctionFinEquiv]
     refine Finset.sum_congr rfl fun xBits _ => ?_
     have hb : boolPoint R (finFunctionFinEquiv xBits) = (fun i => ((xBits i : Fin 2) : R)) := by
       funext j; simp [boolPoint, Equiv.symm_apply_apply]
-    rw [hb, eqTilde, eqPolynomial_symm, Function.comp_apply]
+    rw [hb, eqTilde, eqPolynomial_symm]
+    rfl
   · -- each outer step is deterministic: the inner fold reconstructs `(M *ᵥ 𝕫)(x)`
     intro acc xEnum
     simp only [simulateQ_bind, matVecRowSum_simOracle, pure_bind, simulateQ_pure]
@@ -122,7 +124,8 @@ theorem firstSCEvalFromOracles_simOracle
   unfold firstSCEvalFromOracles
   simp only [simulateQ_bind, matVecMLEEvalFromOracles_simOracle, pure_bind, simulateQ_pure]
   refine congrArg pure ?_
-  simp only [firstSumCheckVirtualPolynomial, map_mul, map_sub]
+  exact (Algebra.firstVirtual_eval (fun i => oos (.inl i))
+    (R1CS.𝕫 stmt.2 (oos (.inr 0))) stmt.1 point).symm
 
 omit [SampleableType R] in
 /-- **`hfaith` for the first sum-check lens.** The lens' reconstruction lifted into the verifier's
@@ -171,6 +174,7 @@ noncomputable def firstSumcheckOracleLens :
     | ⟨_, point⟩ => ReaderT.mk fun stmt => firstSCEvalFromOracles pp oSpec stmt point
   embedOStmt := Function.Embedding.inl
   hEqOStmt := fun _ => rfl
+  outputInterface_heq := fun _ => HEq.rfl
 
 /-- The value-level oracle context lens for the first sum-check. -/
 noncomputable def firstSumcheckContextLens :
@@ -192,18 +196,8 @@ noncomputable def firstSumcheckReduction :
       (Statement.AfterFirstChallenge R pp) (OracleStatement.AfterFirstChallenge R pp) Unit
       (Statement.AfterFirstSumcheck R pp) (OracleStatement.AfterFirstSumcheck R pp) Unit
       (Sumcheck.Spec.pSpec R 3 pp.ℓ_m) :=
-  (Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).liftContext
+  (Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).liftContextLegacy
     (firstSumcheckContextLens pp) (firstSumcheckOracleLens pp oSpec)
-
-instance instFirstSumcheckVerifierAppendCoherent :
-    OracleVerifier.Append.AppendCoherent (firstSumcheckReduction (R := R) pp oSpec).verifier where
-  hCohInl i k h := by
-    simp only [firstSumcheckReduction, OracleVerifier.liftContext, Function.Embedding.inl_apply] at h
-    obtain rfl := Sum.inl.inj h
-    rfl
-  hCohInr i k h := by
-    simp only [firstSumcheckReduction, OracleVerifier.liftContext, Function.Embedding.inl_apply] at h
-    cases h
 
 /-- **`LiftContextCoherent` instance for the Spartan first sum-check lens** — the #433 framework gate
 for the first sum-check lift, the first-phase analogue of `secondSumcheckCoherent`. -/
@@ -226,9 +220,11 @@ for the first sum-check lift, the first-phase analogue of `secondSumcheckCoheren
       intro os oos transcript so
       obtain ⟨τ, 𝕩⟩ := os
       simp [firstSumcheckOracleLens, firstSumcheckStmtLens, OracleStatement.Lens.lift,
-        OracleStatement.Lens.proj])
+        OracleStatement.Lens.proj]
+      funext i
+      rfl)
 
-omit [Fintype R] [SampleableType R] in
+omit [Fintype R] in
 /-- **`firstSumcheckResidual` discharged (degree-corrected).** The first sum-check oracle reduction
 exists, of the type the Spartan composition consumes — over `ℓ_m` variables with the **degree-`3`**
 sum-check protocol spec. (The scaffold's `firstSumcheckResidual` declares degree `2`; the honest

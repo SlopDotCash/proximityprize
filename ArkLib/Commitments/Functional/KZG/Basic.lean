@@ -3,19 +3,20 @@ Copyright (c) 2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tobias Rothmann, Quang Dao
 -/
+module
 
-import ArkLib.Commitments.Functional.Basic
-import ArkLib.Commitments.Functional.KZG.Algebra
-import ArkLib.Commitments.Functional.KZG.Sampling
-import CompPoly.Univariate.Basic
-import CompPoly.Univariate.ToPoly
-import CompPoly.Univariate.Lagrange
-import ArkLib.ToCompPoly.Univariate.Basic
-import Mathlib.Algebra.Field.ZMod
-import Mathlib.Algebra.Order.Star.Basic
-import Mathlib.Algebra.Polynomial.FieldDivision
-import VCVio.OracleComp.SimSemantics.QueryImpl.Constructions
-import VCVio.OracleComp.QueryTracking.CachingOracle
+public import ArkLib.Commitments.Functional.Basic
+public import ArkLib.Commitments.Functional.KZG.Algebra
+public import ArkLib.Commitments.Functional.KZG.Sampling
+public import CompPoly.Univariate.Basic
+public import CompPoly.Univariate.ToPoly
+public import CompPoly.Univariate.Lagrange
+public import ArkLib.ToCompPoly.Univariate.Basic
+public import Mathlib.Algebra.Field.ZMod
+public import Mathlib.Algebra.Order.Star.Basic
+public import Mathlib.Algebra.Polynomial.FieldDivision
+public import VCVio.OracleComp.SimSemantics.QueryImpl.Constructions.Core
+public import VCVio.OracleComp.QueryTracking.CachingOracle
 
 /-!
 # The KZG Polynomial Commitment Scheme
@@ -33,6 +34,8 @@ functional commitment scheme. Correctness and security proofs live in sibling fi
 * [Kate, A., Zaverucha, G. M., and Goldberg, I.,
   *Constant-Size Commitments to Polynomials and Their Applications*][KZG10]
 -/
+
+@[expose] public section
 
 open CompPoly CompPoly.CPolynomial
 
@@ -57,10 +60,10 @@ def commit (srs : Vector G₁ (n + 1)) (coeffs : Fin (n + 1) → ZMod p) : G₁ 
 
 /-- To generate an opening proving that a polynomial `poly` has a certain evaluation at `z`,
   we return the commitment to the polynomial `q(X) = (poly(X) - poly.eval z) / (X - z)` -/
-def generateOpening [Fact (Nat.Prime p)] (srs : Vector G₁ (n + 1))
+def generateOpening (srs : Vector G₁ (n + 1))
     (coeffs : Fin (n + 1) → ZMod p) (z : ZMod p) : G₁ :=
     letI poly : CPolynomial (ZMod p) := CPolynomial.ofFn coeffs
-    letI q : CPolynomial (ZMod p) := CPolynomial.divByMonic (poly - C (eval z poly)) (X - C z)
+    letI q : CPolynomial (ZMod p) := divByMonic (poly - C (eval z poly)) (X - C z)
     commit srs (fun i : Fin (n + 1) => q.coeff i)
 
 /-- To verify a KZG opening `opening` for a commitment `commitment` at point `z` with claimed
@@ -74,7 +77,7 @@ def verifyOpening (verifySrs : Vector G₂ 2) (commitment : G₁) (opening : G�
 omit [Module (ZMod p) (Additive G₁)] [DecidableEq G₁] [Fact (0 < p)] in
 /-- The commitment to a mathlib polynomial `poly` of maximum degree `n` is equal to
 `g₁ ^ (poly.1.eval a).val` -/
-theorem commit_eq {a : ZMod p} (hpG1 : Nat.card G₁ = p)
+theorem commit_eq {a : ZMod p}
     (poly : Polynomial.degreeLT (ZMod p) (n + 1)) :
     commit (Groups.PowerSrs.tower g₁ a n) (Polynomial.degreeLTEquiv _ _ poly)
       = g₁ ^ (poly.1.eval a).val := by
@@ -86,7 +89,9 @@ theorem commit_eq {a : ZMod p} (hpG1 : Nat.card G₁ = p)
       this,
       ←orderOf_dvd_sub_iff_zpow_eq_zpow]
   have hordg₁ : g₁ = 1 ∨ orderOf g₁ = p := by
-    have ord_g₁_dvd : orderOf g₁ ∣ p := by rw [← hpG1]; apply orderOf_dvd_natCard
+    have ord_g₁_dvd : orderOf g₁ ∣ p := by
+      rw [← PrimeOrderWith.hCard (G := G₁)]
+      apply orderOf_dvd_natCard
     rw [Nat.dvd_prime hp.out, orderOf_eq_one_iff] at ord_g₁_dvd
     exact ord_g₁_dvd
   rcases hordg₁ with ord1 | ordp
@@ -101,7 +106,7 @@ theorem commit_eq {a : ZMod p} (hpG1 : Nat.card G₁ = p)
 omit [Module (ZMod p) (Additive G₁)] [DecidableEq G₁] [Fact (0 < p)] in
 /-- The commitment to a computable polynomial (CPolynomial) `poly` of
 maximum degree `n` is equal to `g₁ ^ (poly.eval a).val`. -/
-theorem commit_eq_c_polynomial {a : ZMod p} (hpG1 : Nat.card G₁ = p)
+theorem commit_eq_c_polynomial {a : ZMod p}
     (poly : CPolynomial (ZMod p)) (hn : poly.degree ≤ n) :
     commit (Groups.PowerSrs.tower g₁ a n)
       ((coeff poly) ∘ Fin.val)
@@ -113,7 +118,15 @@ theorem commit_eq_c_polynomial {a : ZMod p} (hpG1 : Nat.card G₁ = p)
   rw [show ((coeff poly) ∘ Fin.val : Fin (n + 1) → ZMod p) =
       Polynomial.degreeLTEquiv (ZMod p) (n + 1) ⟨poly.toPoly, h_mem⟩ from by
     ext i; simp only [Function.comp_apply, Polynomial.degreeLTEquiv]; exact coeff_toPoly poly i]
-  exact commit_eq hpG1 ⟨poly.toPoly, h_mem⟩
+  exact commit_eq ⟨poly.toPoly, h_mem⟩
+
+omit [DecidableEq Gₜ] [DecidableEq G₁] [Fact (0 < p)] in
+/-- A nonzero pairing value forces its first argument to be nontrivial. -/
+lemma ne_one_of_pairing_ne_zero (hpair : pairing g₁ g₂ ≠ 0) : g₁ ≠ 1 := by
+  intro h
+  apply hpair
+  rw [h]
+  exact LinearMap.map_zero₂ pairing _
 
 omit [DecidableEq Gₜ] [DecidableEq G₁] [Fact (0 < p)] in
 /-- Linearity of the pairing in the first argument, written multiplicatively. -/

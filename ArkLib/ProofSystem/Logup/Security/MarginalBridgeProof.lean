@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.Logup.Security.RbrToSoundBridge
 import ArkLib.OracleReduction.RunUnroll
+import ProximityPrize.Compatibility.ReductionRunNormalForm
 import ArkLib.OracleReduction.ProcessRoundSupport
 
 /-!
@@ -52,6 +53,13 @@ noncomputable section
 open OracleComp OracleSpec ProtocolSpec
 open scoped NNReal ENNReal
 
+-- The old PMF value-law hypotheses observed every subset. Keep those full observations
+-- local and discrete while the underlying computation retains canonical native semantics.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ :=
+  ⟨fun _ => True.intro⟩
+
+
 section Bricks
 
 variable {ι' : Type} {spec : OracleSpec ι'} {σ' : Type}
@@ -65,33 +73,33 @@ raise the probability of an event that is `False` on `none`. -/
 theorem probEvent_simulateQ_run'_optionMap_const_trailing_le {α β γ : Type}
     (so : QueryImpl spec (StateT σ' ProbComp)) (s : σ')
     (mx : OracleComp spec α) (gb : α → OracleComp spec (Option γ)) (h : α → β) (p : β → Prop) :
-    Pr[fun o : Option β => o.elim False p |
-        (simulateQ so (mx >>= fun a => gb a >>= fun og =>
-          (pure (Option.map (fun _ => h a) og) : OracleComp spec (Option β)))).run' s]
-      ≤ Pr[p | (simulateQ so (mx >>= fun a => (pure (h a) : OracleComp spec β))).run' s] := by
+    probEvent (fun o : Option β => o.elim False p) ((simulateQ so (mx >>= fun a => gb a >>= fun og =>
+          (pure (Option.map (fun _ => h a) og) : OracleComp spec (Option β)))).run' s)
+      ≤ probEvent (p) ((simulateQ so (mx >>= fun a => (pure (h a) : OracleComp spec β))).run' s) := by
   classical
   simp only [simulateQ_bind]
   rw [StateT.run'_eq, StateT.run'_eq, StateT.run_bind, StateT.run_bind]
-  rw [probEvent_map, probEvent_map]
+  simp only [probEvent, prEvent_map]
   refine Verifier.StateFunction.probEvent_bind_mono_heteroEvent (fun pr _ => ?_)
   obtain ⟨a, s'⟩ := pr
-  simp only [simulateQ_bind, simulateQ_pure, StateT.run_bind, StateT.run_pure]
+  simp only [probEvent]
+  simp only [simulateQ_pure, StateT.run_bind, StateT.run_pure]
   by_cases hpa : p (h a)
-  · refine le_trans probEvent_le_one (le_of_eq ?_)
-    rw [probEvent_pure_eq_indicator]
-    simp [Set.indicator, Function.comp, hpa]
-  · rw [probEvent_pure_eq_indicator]
-    simp only [Set.indicator, Set.mem_setOf_eq, Function.comp_apply, hpa, if_false,
+  · refine le_trans (prEvent_le_one _) (le_of_eq ?_)
+    rw [prEvent_pure]
+    simp [hpa]
+  · rw [prEvent_pure]
+    simp only [hpa, ite_false,
       nonpos_iff_eq_zero]
-    rw [probEvent_eq_zero_iff]
+    rw [OracleComp.prEvent_eq_zero_iff]
     rintro ⟨o, s''⟩ ho
     rw [mem_support_bind_iff] at ho
     obtain ⟨q, _, hq⟩ := ho
     simp only [support_pure, Set.mem_singleton_iff, Prod.mk.injEq] at hq
     obtain ⟨rfl, rfl⟩ := hq
     cases hq1 : q.1 with
-    | none => simp [hq1]
-    | some c => simp [hq1, hpa]
+    | none => simp
+    | some c => simp [hpa]
 
 /-- **Trailing drop for an arbitrary `Option`-valued trailing stage under a prefix-stable event.**
 After the prefix `mx` produces `a`, the run executes a trailing (arbitrary, possibly-failing,
@@ -107,26 +115,25 @@ theorem probEvent_simulateQ_run'_trailing_eventStable_le {α β ρ : Type}
     (mx : OracleComp spec α) (gb : α → OracleComp spec (Option β))
     (g : α → ρ) (p : β → Prop) (q : ρ → Prop)
     (hstable : ∀ a, ∀ o ∈ support (gb a), ∀ b, o = some b → p b → q (g a)) :
-    Pr[fun o : Option β => o.elim False p |
-        (simulateQ so (mx >>= fun a => gb a)).run' s]
-      ≤ Pr[q | (simulateQ so (mx >>= fun a => (pure (g a) : OracleComp spec ρ))).run' s] := by
+    probEvent (fun o : Option β => o.elim False p) ((simulateQ so (mx >>= fun a => gb a)).run' s)
+      ≤ probEvent (q) ((simulateQ so (mx >>= fun a => (pure (g a) : OracleComp spec ρ))).run' s) := by
   classical
   simp only [simulateQ_bind]
   rw [StateT.run'_eq, StateT.run'_eq, StateT.run_bind, StateT.run_bind]
-  rw [probEvent_map, probEvent_map]
+  simp only [probEvent, prEvent_map]
   refine Verifier.StateFunction.probEvent_bind_mono_heteroEvent (fun pr _ => ?_)
   obtain ⟨a, s'⟩ := pr
+  simp only [probEvent]
   simp only [simulateQ_pure, StateT.run_pure]
   by_cases hqa : q (g a)
-  · refine le_trans probEvent_le_one (le_of_eq ?_)
-    rw [probEvent_pure_eq_indicator]
-    simp [Set.indicator, Function.comp, hqa]
-  · rw [probEvent_pure_eq_indicator]
-    simp only [Set.indicator, Set.mem_setOf_eq, Function.comp_apply, hqa, if_false,
+  · refine le_trans (prEvent_le_one _) (le_of_eq ?_)
+    rw [prEvent_pure]
+    simp [hqa]
+  · rw [prEvent_pure]
+    simp only [hqa, ite_false,
       nonpos_iff_eq_zero]
-    rw [probEvent_eq_zero_iff]
+    rw [OracleComp.prEvent_eq_zero_iff]
     rintro ⟨o, s''⟩ ho
-    rw [Function.comp]
     cases o' : o with
     | none => simp
     | some b =>
@@ -189,7 +196,7 @@ variable {n : ℕ} {pSpec : ProtocolSpec n}
 /-- Taking back the length-`i.castSucc` prefix of `concat` recovers the input transcript. -/
 theorem concat_take_eq (i : Fin n) (t : Transcript i.castSucc pSpec) (ch : pSpec.«Type» i) :
     (((t.concat ch : Transcript i.succ pSpec)).take i.castSucc.val
-        (by simp [Fin.le_def]) : Transcript i.castSucc pSpec) = t := by
+        (by simp) : Transcript i.castSucc pSpec) = t := by
   funext j
   exact Fin.snoc_castSucc (α := fun k : Fin (i.1 + 1) =>
     pSpec.«Type» (Fin.castLE i.succ.is_le k)) ch t j
@@ -204,26 +211,6 @@ variable {ι : Type} {oSpec : OracleSpec ι}
   {StmtIn StmtOut : Type} {n : ℕ} {pSpec : ProtocolSpec n}
   [∀ i, SampleableType (pSpec.Challenge i)]
   {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
-
-omit [∀ i, SampleableType (pSpec.Challenge i)] in
-/-- **`(Reduction.run …).run` in two-stage normal form.**  The full soundness run is: the prover's
-(plain, never-failing) run, then the (lifted) verifier run, with the only genuine `Option`
-short-circuit (`getM`) absorbed into an `Option.map` of the final pairing. -/
-theorem reduction_run_run_nf {WitIn WitOut : Type}
-    (prover : Prover oSpec StmtIn WitIn StmtOut WitOut pSpec)
-    (verifier : Verifier oSpec StmtIn StmtOut pSpec)
-    (stmtIn : StmtIn) (witIn : WitIn) :
-    ((Reduction.mk prover verifier).run stmtIn witIn).run
-      = prover.run stmtIn witIn >>= fun pr =>
-          (OracleComp.liftComp ((verifier.run stmtIn pr.1).run) (oSpec + [pSpec.Challenge]ₒ))
-            >>= fun o =>
-          (pure (o.map (fun v => (pr, v))) :
-            OracleComp (oSpec + [pSpec.Challenge]ₒ)
-              (Option ((FullTranscript pSpec × StmtOut × WitOut) × StmtOut))) := by
-  rw [Reduction_run_def]
-  simp only [OptionT.run_bind, Option.elimM, OptionTStateT.lift_run_elim, OptionT.run_pure]
-  refine bind_congr fun x => bind_congr fun o => ?_
-  cases o <;> rfl
 
 variable {WitIn WitOut : Type}
 
@@ -243,18 +230,16 @@ theorem fullRun_flip_marginal_le_rbrGameFlipProb
     (sf : verifier.StateFunction init impl langIn langOut)
     (witIn : WitIn) (prover : Prover oSpec StmtIn WitIn StmtOut WitOut pSpec)
     (stmtIn : StmtIn) (i : pSpec.ChallengeIdx) (s : σ) :
-    Pr[fun o : Option ((FullTranscript pSpec × StmtOut × WitOut) × StmtOut) => o.elim False
+    probEvent (fun o : Option ((FullTranscript pSpec × StmtOut × WitOut) × StmtOut) => o.elim False
         (fun x => ¬ sf i.1.castSucc stmtIn (x.1.1.take i.1.castSucc.val i.1.castSucc.is_le) ∧
-          sf i.1.succ stmtIn (x.1.1.take i.1.succ.val i.1.succ.is_le))
-        | (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
-            (Reduction.run stmtIn witIn { prover := prover, verifier := verifier }).run).run' s]
-      ≤ Pr[fun p : pSpec.Transcript i.1.castSucc × pSpec.Challenge i =>
-          ¬ sf i.1.castSucc stmtIn p.1 ∧ sf i.1.succ stmtIn (p.1.concat p.2)
-        | (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
+          sf i.1.succ stmtIn (x.1.1.take i.1.succ.val i.1.succ.is_le))) ((simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
+            (Reduction.run stmtIn witIn { prover := prover, verifier := verifier }).run).run' s)
+      ≤ probEvent (fun p : pSpec.Transcript i.1.castSucc × pSpec.Challenge i =>
+          ¬ sf i.1.castSucc stmtIn p.1 ∧ sf i.1.succ stmtIn (p.1.concat p.2)) ((simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
             (do
               let ⟨transcript, _⟩ ← prover.runToRound i.1.castSucc stmtIn witIn
               let challenge ← liftComp (pSpec.getChallenge i) _
-              return (transcript, challenge))).run' s] := by
+              return (transcript, challenge))).run' s) := by
   -- Decompose `prover.run` to expose `runToRound i.castSucc >>= processRound i`.
   have hle₁ : i.1.castSucc ≤ Fin.last n := Fin.le_last _
   have hdecomp :
@@ -351,7 +336,7 @@ theorem fullRun_flip_marginal_le_rbrGameFlipProb
         -- which is `rk.1` (concat back to length cs recovers the input).
         have hconcat := ProtocolSpec.Transcript.concat_take_eq i.1 rk.1 c
         funext j
-        have hj := congrFun hsucc_eq (Fin.castLE (by simp [Fin.le_def]) j)
+        have hj := congrFun hsucc_eq (Fin.castLE (by simp) j)
         have hjc := congrFun hconcat j
         simp only [FullTranscript.take, Fin.take] at hj hjc ⊢
         rw [← hjc]
@@ -376,7 +361,7 @@ theorem marginalBridge_holds {langIn : Set StmtIn} {langOut : Set StmtOut}
     {rbrSoundnessError : pSpec.ChallengeIdx → ℝ≥0}
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (_himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     MarginalBridge init impl langIn langOut verifier rbrSoundnessError := by
@@ -451,43 +436,48 @@ theorem marginalBridge_holds {langIn : Set StmtIn} {langOut : Set StmtOut}
             rwa [hx2] at hAccept'
           -- The verifier marginal at `sp` produces `some sout ∈ langOut`, so its `langOut`-prob > 0.
           set evP : Option StmtOut → Prop := fun o => Option.elim o False (· ∈ langOut) with hevP
-          have hpos_sp : 0 < Pr[evP
-              | (simulateQ impl (verifier.verify stmtIn a.1).run).run' sp] := by
-            rw [probEvent_pos_iff]
+          have hpos_sp : 0 < probEvent (evP) ((simulateQ impl (verifier.verify stmtIn a.1).run).run' sp) := by
+            simp only [probEvent]
+            rw [OracleComp.prEvent_pos_iff]
             refine ⟨some sout, ?_, hsoutLang⟩
             rw [StateT.run'_eq, support_map, Set.mem_image]
             exact ⟨(some sout, sv), hvo, rfl⟩
           -- State-independence: the verifier value-distribution at `sp` equals that at `s`.
           have hstateIndep := evalDist_simulateQ_run'_state_indep impl himplSP himplVB
             (verifier.verify stmtIn a.1).run sp s
-          have hpos_s : 0 < Pr[evP
-              | (simulateQ impl (verifier.verify stmtIn a.1).run).run' s] := by
-            have heq : Pr[evP | (simulateQ impl (verifier.verify stmtIn a.1).run).run' sp]
-                = Pr[evP | (simulateQ impl (verifier.verify stmtIn a.1).run).run' s] := by
-              unfold probEvent; rw [hstateIndep]
+          have hpos_s : 0 < probEvent (evP) ((simulateQ impl (verifier.verify stmtIn a.1).run).run' s) := by
+            have heq : probEvent (evP) ((simulateQ impl (verifier.verify stmtIn a.1).run).run' sp)
+                = probEvent (evP) ((simulateQ impl (verifier.verify stmtIn a.1).run).run' s) := by
+              simp only [probEvent, prEvent_eq_evalDist_of_discrete]
+              rw [hstateIndep]
             rwa [heq] at hpos_sp
           -- The take-form transcript in `hzero` equals `x.1.1 = a.1`; `verifier.run = verifier.verify`.
           have htake : (FullTranscript.take (Fin.last n).val (Fin.last n).is_le x.1.1
                 : Transcript (Fin.last n) pSpec) = x.1.1 := by
             simp only [FullTranscript.take, Fin.val_last]; exact Fin.take_eq_self _
           rw [htake] at hzero
-          rw [Verifier.run, hxa, probEvent_optionT_mk] at hzero
+          rw [Verifier.run, hxa, OptionT.prEvent_mk] at hzero
           rw [show (fun o => Option.elim o False (· ∈ langOut)) = evP from rfl] at hzero
           -- `hzero` averages over `init`; the `s`-contribution is positive, contradiction.
-          have hpos_init : 0 < Pr[evP
-              | init >>= fun s' => (simulateQ impl (verifier.verify stmtIn a.1).run).run' s'] := by
-            rw [probEvent_bind_eq_tsum]
-            refine lt_of_lt_of_le ?_ (ENNReal.le_tsum s)
-            have hsval : 0 < Pr[= s | init] := by rw [probOutput_pos_iff]; exact hs
-            exact ENNReal.mul_pos (ne_of_gt hsval) (ne_of_gt hpos_s)
+          have hpos_init : 0 < probEvent (evP) (init >>= fun s' => (simulateQ impl (verifier.verify stmtIn a.1).run).run' s') := by
+            apply (OracleComp.prEvent_pos_iff _ _).2
+            obtain ⟨out, hout, hev⟩ := (OracleComp.prEvent_pos_iff _ _).1 hpos_s
+            exact ⟨out, (mem_support_bind_iff _ _ _).2 ⟨s, hs, hout⟩, hev⟩
           exact absurd hzero (ne_of_gt hpos_init)
     obtain ⟨i, hcast, hsucc⟩ := exists_challenge_flip_of_full init impl sf stmtIn hStmtIn x.1.1 hlast
     exact ⟨i, hcast, by rw [take_succ_eq_concat]; exact hsucc⟩
   case trailing =>
     -- Reduce the LHS to the `run'`/`Option.elim` shape; unfold the game on the RHS; then apply the
     -- per-round trailing-drop core.
-    rw [probEvent_optionT_mk, rbrGameFlipProb]
+    simp only [probEvent]
+    rw [OptionT.prEvent_mk, rbrGameFlipProb]
     refine probEvent_bind_mono_heteroEvent (fun s _hs => ?_)
     exact fullRun_flip_marginal_le_rbrGameFlipProb sf witIn prover stmtIn i s
 
 end Verifier
+
+#print axioms probEvent_simulateQ_run'_optionMap_const_trailing_le
+#print axioms probEvent_simulateQ_run'_trailing_eventStable_le
+#print axioms Prover.continueFromTo_take_support
+#print axioms Verifier.fullRun_flip_marginal_le_rbrGameFlipProb
+#print axioms Verifier.marginalBridge_holds

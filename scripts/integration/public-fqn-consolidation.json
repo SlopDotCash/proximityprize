@@ -1,0 +1,851 @@
+{
+  "method": "Manually reviewed public-name collisions; canonical files remain unchanged. Named command bodies, contexts and original/current source hashes record each consolidation. Actual Lean import checks are recorded separately.",
+  "consolidations": [
+    {
+      "consumer": "ArkLib/ToMathlib/MinimalSurfaceChain.lean",
+      "implementation_owner": "ArkLib/ToMathlib/RadicalAssembler.lean",
+      "before_sha256": "00d433b409a393f072cf60f5fcfb4b9b7226913bdb5625986f514c627b7b07cc",
+      "after_sha256": "62d8969603def9de06f0e996a3704045984baf0f72f20f13a1fd2ac55e7ad4d7",
+      "declarations": [
+        {
+          "name": "ArkLib.RadicalWire304.fiber_ne_zero",
+          "source_line": 71,
+          "owner_line": 90,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "d1b2ef76deca9430c140631af699cdae22a3e79f103f5852b8b4df550e51b829"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.H_dvd_radical_fiber",
+          "source_line": 78,
+          "owner_line": 97,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "7fc4e56cdc44eefec949ed68593e9ffa80d67db36140293354da139d70183380"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.natDegree_radical_fiber_le",
+          "source_line": 84,
+          "owner_line": 103,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "1b14fe582b0f8f7094db33e449687815d3ec811ca9d7940be01ad4560ebefc19"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.radical_fiber_ne_zero",
+          "source_line": 91,
+          "owner_line": 110,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "ee85af7ccc3a21de47a79e97db33367b933ddba180cf572d8720cb05c60ed3fc"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.eval_natDegree_le_of_coeff_le",
+          "source_line": 98,
+          "owner_line": 117,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "f34ade6862acc771b05f439df83549c0dfc4918078a9678c94e2b9089a27dac2"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.split_canonical_radical",
+          "source_line": 118,
+          "owner_line": 137,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "04776601e930dcfab3305e80241363ec3cb2eea125f260d89d2777732a0999e6"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.hbr_canonical_radical",
+          "source_line": 135,
+          "owner_line": 154,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "72d54bb814d41077168eab5a1a81fdd6c925bc564b1f3c8db86b29520e5bae5d"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.split_branch_radical",
+          "source_line": 148,
+          "owner_line": 167,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "133915ef5f312ffdd30d157cdb10cfc690af7e068fa3155d134a6939b05aeb8d"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.natDegree_radical_fiber_eq_add",
+          "source_line": 160,
+          "owner_line": 179,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "c59ef3466be043d1bfb144bd011f05a71ac51c69cf2c5eeed0c6619fd365986f"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.natDegree_radical_cofactor_le",
+          "source_line": 180,
+          "owner_line": 199,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "f37317e66584e83008d2e35245059705f591d841cf76f5d803bce021fce5a304"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.cert_radical_natDegree_le",
+          "source_line": 191,
+          "owner_line": 210,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "8bebbc4d5b0590e01c3bc6e3b362834e1152aa543481445e135f9f55aabda212"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.hbig_radical_of_coeff_budget",
+          "source_line": 210,
+          "owner_line": 229,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "f9fa7afdf853f81b75f9e15721a4587ee92c0d7ea076e9366588484d79173345"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.radical_cofactor_dvd_cofactor",
+          "source_line": 227,
+          "owner_line": 246,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "088db67e2e4a0f3f9f0a517e7b4ca1a9d1abc72d011d8493164a34712d371c1a"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.cert_radical_dvd_cert_fiber",
+          "source_line": 238,
+          "owner_line": 257,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "21b9bbf1d570613f3a355c787082d5ee9e9058dfc3d3471c2511eecbc2281d5e"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.hbig_radical_of_hbig_fiber",
+          "source_line": 249,
+          "owner_line": 268,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "c01116796c067486628399bd0c3828662ca68236a57cc5656c24f205824bbdbd"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.centreFold_dvd_radical",
+          "source_line": 281,
+          "owner_line": 300,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "be9d3f32091785ce6eeff828e1d04a921ecacbb75b83454c1df4077fbc91b0e6"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.evalEval_radical_eq_zero",
+          "source_line": 292,
+          "owner_line": 311,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "634f337dd01513c49ffa40c7702df015039606604ee9623c88831eba4d5a6817"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.rootDecodedRadical",
+          "source_line": 307,
+          "owner_line": 326,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "b17bc40631ceb9517d3cd00443f7548ce9411cdbbe154f96d18b30e369ea83cd"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.rootDecodedRadical_val",
+          "source_line": 319,
+          "owner_line": 338,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "b7d897ca21909963705b4839d61928e46d86970c2e0f0bbfce6b15e22d63b04a"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.rootDecodedRadical_val_monic",
+          "source_line": 331,
+          "owner_line": 350,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "13bcaafa4fa952ac00104647bb66fe252fda3e0ef48534b147034545ab175292"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.H_eval_centreFold_eq_zero_radical",
+          "source_line": 346,
+          "owner_line": 365,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "df012e8282f1a4fe5c1b75f9e76935fc00bad6e72ef0b0ecf12543fac1989e7b"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.xiCert_eq_derivativeCert_of_centreFold_root",
+          "source_line": 366,
+          "owner_line": 385,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "ced6a1b329c2c02c4cff3302d947ec5ee066da2d6b2b96af8e8e3ed8656ea613"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.xiCert_isUnit_of_centreFold_root",
+          "source_line": 392,
+          "owner_line": 411,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "ada97764bfdcdd6957a421f4f973c76b8000215e99596b02b63cb94d4f484100"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.xiCert_eval_monic_radical",
+          "source_line": 402,
+          "owner_line": 421,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "8020017c3e80cda135c7215b862084fc6ae1f0ab0018fbc7f619bb54cf6ef481"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.hx_of_global_structural_radical",
+          "source_line": 423,
+          "owner_line": 442,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "ad4e7931bd3d0bb9ba3cc1bc224929ee6ac1f0bd260543cb0e3c92827f2ac34f"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.mpFin_of_decoded_roots_radical_mapped",
+          "source_line": 449,
+          "owner_line": 468,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "6456528e3b4e0acca04c2d26de2caa2b8908ceddfbbdbf7adf20a592aa08196e"
+        },
+        {
+          "name": "ArkLib.RadicalWire304.mpFin_of_decoded_roots_radical",
+          "source_line": 476,
+          "owner_line": 495,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "43c609d9820bcbfa5ca41fa01eb58e08c0d7e215bf0ed8d7502cf6231ae7b7af"
+        },
+        {
+          "name": "ArkLib.RootOn304.Section5StrictDataFinOn.ofProducersOn_radical",
+          "source_line": 530,
+          "owner_line": 549,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "894869579e66d540ec135f6904bde32c66ee32fdb7f66ededd57d5bd3e201fdd"
+        },
+        {
+          "name": "ArkLib.RootOn304.hcoeffPoly_witness_of_producersOn_radical",
+          "source_line": 593,
+          "owner_line": 612,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "7d12db8564a84390d1ebb4f30d981ebee7f5a609f8be9e6f1910136e1eb75eae"
+        },
+        {
+          "name": "ArkLib.RootOn304.hcoeffPoly_witness_of_producersOn_radical_sep",
+          "source_line": 635,
+          "owner_line": 654,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "b0fbf978d21fe53fa9acd52cbbc5e9b270fe6ff61b800f77a44fa4b0351312d3"
+        }
+      ],
+      "rationale": "Identical named commands; same mathematical variable assumptions. Extra open namespaces/linter settings in XiCert consumers do not change the reviewed name resolution.",
+      "validation": "Strict pg-iterate against actual owner oleans passed30s; raw compiler exit0 and admission-output checker passed; all preserved axiom anchors standard3.",
+      "current_validated_sha256": "3c5a49fccdbcf0b7a34c069e171adebb94cb60359ccb60d4b483a90287e00023"
+    },
+    {
+      "consumer": "ArkLib/ToMathlib/BCIKS20GlobalAssembler.lean",
+      "implementation_owner": "ArkLib/ToMathlib/XiCertReduction.lean",
+      "before_sha256": "ee33afb080f4af8df07ef5027a760cd35c2bdf9e20d4d2771782f795d4eba38f",
+      "after_sha256": "9065024bf680b760a5f30f6f41d19a050cc4d74d3504ae1317717fc715c0643b",
+      "declarations": [
+        {
+          "name": "ArkLib.XiCertReduction.evalX_eval_centreFold_eq_zero",
+          "source_line": 86,
+          "owner_line": 117,
+          "identical_normalized_command": true,
+          "identical_context": false,
+          "removed_command_sha256": "a2cbfc1ecf1ce3475afac9b45d630d3de225f0280a0e3518b15f772e59039f5d"
+        },
+        {
+          "name": "ArkLib.XiCertReduction.H_eval_centreFold_eq_zero",
+          "source_line": 94,
+          "owner_line": 125,
+          "identical_normalized_command": true,
+          "identical_context": false,
+          "removed_command_sha256": "6db2318c08fea8ce4830b64f4e833c58d4f86a01383dc45502c6eae039374e4f"
+        },
+        {
+          "name": "ArkLib.XiCertReduction.derivative_eval_centreFold_isUnit",
+          "source_line": 110,
+          "owner_line": 141,
+          "identical_normalized_command": true,
+          "identical_context": false,
+          "removed_command_sha256": "3e5a42592d416afcfebed124b7d0ab5c0ce3585a4c3d361795f8d422761ba5e8"
+        },
+        {
+          "name": "ArkLib.XiCertReduction.xiCert_eq_derivativeCert",
+          "source_line": 127,
+          "owner_line": 158,
+          "identical_normalized_command": true,
+          "identical_context": false,
+          "removed_command_sha256": "69b8b86fb2012a73cd4a7e75551fb22df32987a31e98f29c69663648d5f4c094"
+        },
+        {
+          "name": "ArkLib.XiCertReduction.xiCert_isUnit",
+          "source_line": 156,
+          "owner_line": 187,
+          "identical_normalized_command": true,
+          "identical_context": false,
+          "removed_command_sha256": "7014fa5d2843d653fc08712abd6f91590921c71437f40b22c49af4fa5d538e03"
+        },
+        {
+          "name": "ArkLib.XiCertReduction.xiCert_ne_zero",
+          "source_line": 169,
+          "owner_line": 200,
+          "identical_normalized_command": true,
+          "identical_context": false,
+          "removed_command_sha256": "99961cabb473453565ab78844811f671de79634ed86c23513a4f5778092cb1fc"
+        },
+        {
+          "name": "ArkLib.XiCertReduction.xiCert_natDegree_eq_zero",
+          "source_line": 178,
+          "owner_line": 209,
+          "identical_normalized_command": true,
+          "identical_context": false,
+          "removed_command_sha256": "e2efff29215636691dbe7085ef37e7c7d3bda083861064e4ec40c2f297c77d76"
+        },
+        {
+          "name": "ArkLib.XiCertReduction.xi_ne_zero",
+          "source_line": 188,
+          "owner_line": 219,
+          "identical_normalized_command": true,
+          "identical_context": false,
+          "removed_command_sha256": "7f3b67edfc5d2f1e9a133874eb6eff97776311c4bd39c2364d7296b82f163f27"
+        }
+      ],
+      "rationale": "Identical named commands; same mathematical variable assumptions. Extra open namespaces/linter settings in XiCert consumers do not change the reviewed name resolution.",
+      "validation": "Strict pg-iterate against actual owner oleans passed28s; raw compiler exit0 and admission-output checker passed; all preserved axiom anchors standard3.",
+      "current_validated_sha256": "0b87fb03f0608d84af198a80a898b2a36b754282598e9f9e523ed53d28766a60"
+    },
+    {
+      "consumer": "ArkLib/ToMathlib/BCIKS20GlobalAssembler.lean",
+      "implementation_owner": "ArkLib/ToMathlib/BCIKS20BundleAssembler.lean",
+      "before_sha256": "9065024bf680b760a5f30f6f41d19a050cc4d74d3504ae1317717fc715c0643b",
+      "after_sha256": "0b87fb03f0608d84af198a80a898b2a36b754282598e9f9e523ed53d28766a60",
+      "declarations": [
+        {
+          "name": "ArkLib.RootOn304.Section5StrictDataFinOn.ofProducersOn",
+          "source_line": 108,
+          "owner_line": 140,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "68cd6f0f2b95310df35c93eaa6ff1bdff55b98c39449e9718eb3c9522770980c"
+        },
+        {
+          "name": "ArkLib.RootOn304.Section5StrictDataFinOn.ofProducersOn_gradedSigned",
+          "source_line": 166,
+          "owner_line": 286,
+          "identical_normalized_command": true,
+          "identical_context": true,
+          "removed_command_sha256": "b9db934777188b54d928ffdddf74bb19c63081cb6f3d7cfa67dbf1a179a19216"
+        }
+      ],
+      "rationale": "Identical named commands; same mathematical variable assumptions. Extra open namespaces/linter settings in XiCert consumers do not change the reviewed name resolution.",
+      "validation": "Strict pg-iterate against actual owner oleans passed28s; raw compiler exit0 and admission-output checker passed; all preserved axiom anchors standard3.",
+      "current_validated_sha256": "0b87fb03f0608d84af198a80a898b2a36b754282598e9f9e523ed53d28766a60"
+    },
+    {
+      "consumer": "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/QuerySuffix.lean",
+      "implementation_owner": "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhasePrelims.lean",
+      "before_sha256": "0b092dddbc0cd727decbf882914304288e195b6a0baee1eae7d844059d75a078",
+      "after_sha256": "808a86f61692fde59e106b7c70ebe8a90631a36380cf63f8bfc3a5abefe368f8",
+      "declarations": [
+        {
+          "name": "Binius.BinaryBasefold.QueryPhase.nBlocks",
+          "source_line": 366,
+          "owner_line": 91,
+          "identical_normalized_command": true,
+          "identical_context": false,
+          "removed_command_sha256": "fecb63bf0edfe113ca1119dd37bc2347cf41397986b5b3df9555416ebb713187"
+        },
+        {
+          "name": "Binius.BinaryBasefold.QueryPhase.extractSuffixFromChallenge",
+          "source_line": 369,
+          "owner_line": 95,
+          "identical_normalized_command": false,
+          "identical_context": false,
+          "removed_command_sha256": "ea1ff5fc5a6019314b642b6365857e37084a7c1046a140f7041cd15c4ddc1e51"
+        },
+        {
+          "name": "Binius.BinaryBasefold.QueryPhase.extractSuffixFromChallenge_congr_destIdx",
+          "source_line": 387,
+          "owner_line": 104,
+          "identical_normalized_command": false,
+          "identical_context": false,
+          "removed_command_sha256": "6e29870a7b0bed6593dde19e819451ae06186891d6fae6daaa14710fc7602a0a"
+        },
+        {
+          "name": "Binius.BinaryBasefold.QueryPhase.getChallengeSuffix",
+          "source_line": 398,
+          "owner_line": 174,
+          "identical_normalized_command": false,
+          "identical_context": false,
+          "removed_command_sha256": "2f678bf1337b3489adfff956ee868a522bc43a6a21acd5948db41bb118fd88c0"
+        },
+        {
+          "name": "Binius.BinaryBasefold.QueryPhase.getFiberPoint",
+          "source_line": 418,
+          "owner_line": 185,
+          "identical_normalized_command": false,
+          "identical_context": false,
+          "removed_command_sha256": "a877c23d6f75bf6657c78497000841fc696c0122f126ee1b807545abe416007c"
+        },
+        {
+          "name": "Binius.BinaryBasefold.QueryPhase.queryRbrKnowledgeError",
+          "source_line": 569,
+          "owner_line": 154,
+          "identical_normalized_command": false,
+          "identical_context": false,
+          "removed_command_sha256": "a0f3eafb06b3719d634da4b02896182f83d1f3ae69045188401b97b98bbc9602"
+        },
+        {
+          "name": "Binius.BinaryBasefold.QueryPhase.queryCodeword",
+          "source_line": 575,
+          "owner_line": 161,
+          "identical_normalized_command": true,
+          "identical_context": false,
+          "removed_command_sha256": "5341c1f8f74cc0eac1cb8da7d7bb51b519c6a60e75b38f7a062e8b3174e2061e"
+        },
+        {
+          "name": "Binius.BinaryBasefold.QueryPhase.queryFiberPoints",
+          "source_line": 601,
+          "owner_line": 208,
+          "identical_normalized_command": true,
+          "identical_context": false,
+          "removed_command_sha256": "3d475bad349dca737cee2d771e25b6862901f7abd44a60af5c0b60681305f9c3"
+        },
+        {
+          "name": "Binius.BinaryBasefold.QueryPhase.checkSingleFoldingStep",
+          "source_line": 625,
+          "owner_line": 230,
+          "identical_normalized_command": false,
+          "identical_context": false,
+          "removed_command_sha256": "d126435e19bd554a6382593ce575e254f9f76eb5e67917bc66003f333e72bd40"
+        },
+        {
+          "name": "Binius.BinaryBasefold.QueryPhase.checkSingleRepetition",
+          "source_line": 674,
+          "owner_line": 275,
+          "identical_normalized_command": false,
+          "identical_context": false,
+          "removed_command_sha256": "1fe5796da9b14da6854e43cd98a7c49c88f66fac421133fa8ff5bc76780532fb"
+        },
+        {
+          "name": "Binius.BinaryBasefold.QueryPhase.polyToOracleFunc_eq_getFirstOracle",
+          "source_line": 920,
+          "owner_line": 118,
+          "identical_normalized_command": false,
+          "identical_context": false,
+          "removed_command_sha256": "602bd9357d7b13a4cf415bc2ff452b8a12e1bc2c7f7dd17967eeb197eff9c8bc"
+        }
+      ],
+      "rationale": "Reuse canonical query-phase statements/computations; only cast/proof plumbing and helper spelling differ.",
+      "validation": "Owner import closures checked acyclic; actual Lean checks pending."
+    },
+    {
+      "consumer": "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhaseHelpers.lean",
+      "implementation_owner": "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhasePrelims.lean",
+      "before_sha256": "d344dc671c728bc6417bd198c17414b884c4c8a481b3b528fe362d081472e21a",
+      "after_sha256": "89af4f09d6c8b68cc8aaa42b02e4b55a1ac41f0c9b8bbce8836b29af2e80ed86",
+      "declarations": [
+        {
+          "name": "Binius.BinaryBasefold.getNextOracle_eq_oracleStatement",
+          "source_line": 48,
+          "owner_line": 604,
+          "identical_normalized_command": false,
+          "identical_context": false,
+          "removed_command_sha256": "c63f13ebe4f427e1570b2641a682e7293c150dc885f5e9339af20838ce579bcf"
+        },
+        {
+          "name": "Binius.BinaryBasefold.queryBlockIdx",
+          "source_line": 150,
+          "owner_line": 712,
+          "identical_normalized_command": true,
+          "identical_context": false,
+          "removed_command_sha256": "ddab0aec6c7067c0c26e8f4d7aa116f541dccaee8273f036a9461a03d3003910"
+        },
+        {
+          "name": "Binius.BinaryBasefold.queryBlockSourceIdx",
+          "source_line": 155,
+          "owner_line": 718,
+          "identical_normalized_command": true,
+          "identical_context": false,
+          "removed_command_sha256": "890693e20eb6c96f5afc4f59b1850b072c98bd134cacea3c41e6b17a5cd4bb05"
+        },
+        {
+          "name": "Binius.BinaryBasefold.queryBlockDestIdx",
+          "source_line": 160,
+          "owner_line": 724,
+          "identical_normalized_command": true,
+          "identical_context": false,
+          "removed_command_sha256": "64ff451aa88e85fe63a2a68c281e64950bbbc802a53f984bd6b76dffbba859c5"
+        },
+        {
+          "name": "Binius.BinaryBasefold.queryBlockSourceIdx_le",
+          "source_line": 167,
+          "owner_line": 733,
+          "identical_normalized_command": false,
+          "identical_context": false,
+          "removed_command_sha256": "cb4fb946d67b0f4b4fe4a1bd0f00f6fd1e74f5cb2cc0adebb65063e664ee9c92"
+        },
+        {
+          "name": "Binius.BinaryBasefold.queryBlockDestIdx_le",
+          "source_line": 174,
+          "owner_line": 742,
+          "identical_normalized_command": false,
+          "identical_context": false,
+          "removed_command_sha256": "403ce26100c48402158a4a8883e518005f59d443b183cde5151a91897e8a465a"
+        },
+        {
+          "name": "Binius.BinaryBasefold.queryBlockSourceSuffix",
+          "source_line": 180,
+          "owner_line": 749,
+          "identical_normalized_command": true,
+          "identical_context": false,
+          "removed_command_sha256": "9ca8abef6a0a28dde9c2be6aa973b9a1349e7ffcc0bca5fe0623ff9f2d1f76fe"
+        },
+        {
+          "name": "Binius.BinaryBasefold.queryBlockDestSuffix",
+          "source_line": 191,
+          "owner_line": 761,
+          "identical_normalized_command": true,
+          "identical_context": false,
+          "removed_command_sha256": "57ad87051d73d5554c569edb1d17a8f1c4bc2d4cca8d497484fb6e751a811e86"
+        },
+        {
+          "name": "Binius.BinaryBasefold.queryBlockDestIdx_eq_queryBlockSourceIdx_succ",
+          "source_line": 202,
+          "owner_line": 774,
+          "identical_normalized_command": false,
+          "identical_context": false,
+          "removed_command_sha256": "a89c9986b94cebee921a76ce0da074efe9384aa8f795a3e891ffd083cf9705b2"
+        },
+        {
+          "name": "Binius.BinaryBasefold.queryBlockDestSuffix_eq_queryBlockSourceSuffix_succ",
+          "source_line": 212,
+          "owner_line": 787,
+          "identical_normalized_command": false,
+          "identical_context": false,
+          "removed_command_sha256": "61f42739d7c068c4978c8256292966fde6cc90977f5e2b6ba0e69f5e5038d97d"
+        }
+      ],
+      "rationale": "Reuse canonical query-phase statements/computations; only cast/proof plumbing and helper spelling differ.",
+      "validation": "Owner import closures checked acyclic; actual Lean checks pending."
+    },
+    {
+      "consumer": "ArkLib/Data/CodingTheory/EntropyVolumeUpperBound.lean",
+      "implementation_owner": "ArkLib/Data/CodingTheory/EntropyVolumeUpper.lean",
+      "before_sha256": "873864452532bf8cb264a28ddafb3e17d57d5e6df676c1efde5ed610feaf34a4",
+      "after_sha256": "b2251299e2cda4c990d103ffe8b742e0fac203d9743b7a2ebc5aff2d8c4f3dad",
+      "declarations": [
+        {
+          "name": "CodingTheory.choose_pow_le_qEntropy",
+          "source_line": 53,
+          "owner_line": 55,
+          "identical_normalized_command": false,
+          "removed_command_sha256": "d4ac73c77b8e6c9f00f92291884e9d0d06050a30a8356ba9a039203022069da5",
+          "removed_command": "/-- **Per-term `q`-ary entropy upper bound.** For `2 ≤ q`, `0 < k`, `k < n`,\n`C(n,k) · (q-1)^k ≤ q^{n · H_q(k/n)}`. -/\ntheorem choose_pow_le_qEntropy (hq : 2 ≤ q) (n k : ℕ) (hk0 : 0 < k) (hkn : k < n) :\n    ((n.choose k : ℝ) * ((q : ℝ) - 1) ^ k)\n      ≤ (q : ℝ) ^ ((n : ℝ) * qEntropy q ((k : ℝ) / (n : ℝ))) := by\n  have hkle : k ≤ n := le_of_lt hkn\n  -- the entropy-clearing identity (landed)\n  have hid := entropy_rpow_eq (q := q) hq n k hk0 hkn\n  -- positivity of `D := k^k · (n-k)^{n-k}`\n  have hnk0 : 0 < n - k := Nat.sub_pos_of_lt hkn\n  have hDpos : (0 : ℝ) < (k : ℝ) ^ k * ((n - k : ℕ) : ℝ) ^ (n - k) := by\n    have h1 : (0 : ℝ) < (k : ℝ) ^ k := pow_pos (by exact_mod_cast hk0) k\n    have h2 : (0 : ℝ) < ((n - k : ℕ) : ℝ) ^ (n - k) := pow_pos (by exact_mod_cast hnk0) (n - k)\n    positivity\n  -- the combinatorial bound, cast to ℝ\n  have hcomb : ((n.choose k : ℝ) * ((k : ℝ) ^ k * ((n - k : ℕ) : ℝ) ^ (n - k))) ≤ (n : ℝ) ^ n := by\n    have := choose_mul_pow_self_le_pow n k hkle\n    exact_mod_cast this\n  have hq1 : (0 : ℝ) ≤ ((q : ℝ) - 1) ^ k := by\n    have : (1 : ℝ) ≤ (q : ℝ) := by exact_mod_cast (show 1 ≤ q by omega)\n    exact pow_nonneg (by linarith) k\n  -- multiply the combinatorial bound by (q-1)^k ≥ 0 and rewrite n^n via the identity\n  have hmul : ((q : ℝ) - 1) ^ k * ((n.choose k : ℝ) * ((k : ℝ) ^ k * ((n - k : ℕ) : ℝ) ^ (n - k)))\n      ≤ ((q : ℝ) - 1) ^ k * (n : ℝ) ^ n :=\n    mul_le_mul_of_nonneg_left hcomb hq1\n  -- (q-1)^k · n^n = q^{nH} · D  (from the identity)\n  rw [← hid] at hmul\n  -- hmul : (q-1)^k · (C(n,k) · D) ≤ q^{nH} · D ; cancel D > 0\n  have hgoal : ((q : ℝ) - 1) ^ k * (n.choose k : ℝ) ≤ (q : ℝ) ^ ((n : ℝ) * qEntropy q ((k:ℝ)/(n:ℝ))) := by\n    refine le_of_mul_le_mul_right ?_ hDpos\n    calc (((q : ℝ) - 1) ^ k * (n.choose k : ℝ)) * ((k : ℝ) ^ k * ((n - k : ℕ) : ℝ) ^ (n - k))\n        = ((q : ℝ) - 1) ^ k * ((n.choose k : ℝ) * ((k : ℝ) ^ k * ((n - k : ℕ) : ℝ) ^ (n - k))) := by\n          ring\n      _ ≤ (q : ℝ) ^ ((n : ℝ) * qEntropy q ((k:ℝ)/(n:ℝ)))\n            * ((k : ℝ) ^ k * ((n - k : ℕ) : ℝ) ^ (n - k)) := hmul\n  calc ((n.choose k : ℝ) * ((q : ℝ) - 1) ^ k)\n      = ((q : ℝ) - 1) ^ k * (n.choose k : ℝ) := by ring\n    _ ≤ (q : ℝ) ^ ((n : ℝ) * qEntropy q ((k:ℝ)/(n:ℝ))) := hgoal\n\n"
+        }
+      ],
+      "rationale": "Same q-ary entropy single-term upper-bound statement and arguments; reuse the earlier matching owner, retaining the consumer's additional bounds.",
+      "validation": {
+        "command": "scripts/pg-iterate.sh ArkLib/Data/CodingTheory/EntropyVolumeUpperBound.lean",
+        "result": "Passed; raw compiler exit 0 and admission output check passed.",
+        "receipt": "✅ OK (10s) — ArkLib/Data/CodingTheory/EntropyVolumeUpperBound.lean"
+      }
+    },
+    {
+      "consumer": "ArkLib/Data/CodingTheory/GuruswamiSudan/GSFactorDegreeOverRatFunc.lean",
+      "implementation_owner": "ArkLib/Data/Polynomial/BivariateFactorDegrees.lean",
+      "before_sha256": "27b79f3c3beae3473fa5e107d34b560484f037cbb3a6dd0d906c079233b81d49",
+      "after_sha256": "64e9351dc0618e3d1ef5336ebc4cd3f6159deefbca574621a395859d28e272db",
+      "declarations": [
+        {
+          "name": "Polynomial.Bivariate.degreeX_le_of_dvd",
+          "source_line": 53,
+          "owner_line": 64,
+          "identical_normalized_command": false,
+          "removed_command_sha256": "61a0b54c402f6ef2e6858f1c6efeb6d3e729abf4e6661b14bd6a0142051dfe64",
+          "removed_command": "/-- **Divisors inherit the `X`-degree bound.** Over a domain, `degreeX` is additive on\nproducts (`degreeX_mul`), so a divisor of a nonzero bivariate polynomial has no larger\n`X`-degree. -/\nlemma degreeX_le_of_dvd {f q : F[X][Y]} (hq : q ∣ f) (hf : f ≠ 0) :\n    degreeX q ≤ degreeX f := by\n  obtain ⟨s, rfl⟩ := hq\n  have hq0 : q ≠ 0 := fun h => hf (by simp [h])\n  have hs0 : s ≠ 0 := fun h => hf (by simp [h])\n  rw [degreeX_mul q s hq0 hs0]\n  exact Nat.le_add_right _ _\n\n"
+        }
+      ],
+      "rationale": "Canonical theorem has the same divisibility/nonzero premises over arbitrary Type* commutative domains; retain genuine GS coefficient-bound consumers.",
+      "validation": {
+        "command": "scripts/pg-iterate.sh ArkLib/Data/CodingTheory/GuruswamiSudan/GSFactorDegreeOverRatFunc.lean",
+        "result": "Passed; raw compiler exit 0 and admission output check passed.",
+        "receipt": "✅ OK (11s) — ArkLib/Data/CodingTheory/GuruswamiSudan/GSFactorDegreeOverRatFunc.lean"
+      }
+    },
+    {
+      "consumer": "ArkLib/Data/CodingTheory/ProximityGap/UpToCapacityListDecodingFalse.lean",
+      "implementation_owner": "ArkLib/Data/CodingTheory/ProximityGap/ListDecodingCapacityOverflow.lean",
+      "before_sha256": "0193b684886c59330857b79bed4a9c20633a1c077a5ddca67e5778fa34e29f6f",
+      "after_sha256": "69613a592e5fc3a5aeec321b82caacb8706e3b96aade6f8f71392cfa80b33fe4",
+      "declarations": [
+        {
+          "name": "CodingTheory.threshold_lt_pow_div",
+          "source_line": 45,
+          "owner_line": 40,
+          "identical_normalized_command": true,
+          "removed_command_sha256": "4d4988df5e9bca6cb24fcb048490efa1a6d7a9fac8a1e24e2feaaa44bf528466",
+          "removed_command": "/-- **`rpow` overflow bridge.** For `q > 1`, `0 < n1`, `0 < εq`, `logb q (n1·εq) < E → εq < q^E/n1`. -/\ntheorem threshold_lt_pow_div (q : ℝ) (hq : 1 < q) (n1 : ℝ) (hn1 : 0 < n1)\n    (εq : ℝ) (hεq : 0 < εq) (E : ℝ) (hE : Real.logb q (n1 * εq) < E) :\n    εq < q ^ E / n1 := by\n  have hA : 0 < n1 * εq := mul_pos hn1 hεq\n  have hlt : n1 * εq < q ^ E := (Real.logb_lt_iff_lt_rpow hq hA).mp hE\n  rw [lt_div_iff₀ hn1]; nlinarith [hlt]\n\n"
+        }
+      ],
+      "rationale": "Identical command and Real logarithm/power interface; retain unique concrete counterexample statements.",
+      "validation": {
+        "command": "scripts/pg-iterate.sh ArkLib/Data/CodingTheory/ProximityGap/UpToCapacityListDecodingFalse.lean",
+        "result": "Passed; raw compiler exit 0 and admission output check passed.",
+        "receipt": "✅ OK (44s) — ArkLib/Data/CodingTheory/ProximityGap/UpToCapacityListDecodingFalse.lean"
+      }
+    },
+    {
+      "consumer": "Research/ProximityPrize/Frontier/RatioImagePermInvariant.lean",
+      "implementation_owner": "Research/ProximityPrize/Frontier/AgreementSetPacking.lean",
+      "before_sha256": "4ad0644db7f885b9be41877b66fe3eb6ce1e44b0d7edadd9c19cd091b35001e9",
+      "after_sha256": "5813c780b1558c11e7b90d9ce638a3addd3dd9967a96ac49021515cff22333cc",
+      "declarations": [
+        {
+          "name": "ProximityGap.Ownership.pinnedScalars_card_le_choose",
+          "source_line": 191,
+          "owner_line": 128,
+          "identical_normalized_command": false,
+          "removed_command_sha256": "953cda70af66daee2978d1b3aba89689c99a6ec8a1a12d1f89907d3bff9b0513",
+          "removed_command": "/-- **The sharpened distinct-`γ` ceiling.** Chaining `pinnedScalars_card_le_ratioImage` with the\nsubset bound: the open `δ*`-governing distinct-`γ` count is `≤ C(n, k+1)`, a factor `(k+1)!` below\nthe in-tree `pinnedScalars_card_le_tuples`. -/\ntheorem pinnedScalars_card_le_choose (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :\n    (pinnedScalars dom k a u₀ u₁).card ≤ Nat.choose n (k + 1) :=\n  le_trans (pinnedScalars_card_le_ratioImage dom k a u₀ u₁)\n    (ratioImage_card_le_choose dom k u₀ u₁)\n\n"
+        }
+      ],
+      "rationale": "Same scalar packing statement, field assumptions and tuple parameters. Import the packing owner while retaining the ratio-image argument and its intermediate sharper bounds.",
+      "validation": {
+        "command": "scripts/pg-iterate.sh Research/ProximityPrize/Frontier/RatioImagePermInvariant.lean",
+        "receipt": "Passed 9s against actual imported AgreementSetPacking artifact; raw compiler exit 0 and admission-output check passed."
+      }
+    },
+    {
+      "consumer": "Research/ProximityPrize/Frontier/_BSG_EX_E1.lean",
+      "implementation_owner": "Research/ProximityPrize/Frontier/_BSG_EX_E0orient.lean",
+      "before_sha256": "ae6c0459df9772aed96a8abbd0c93acc296419ff9dfeb91be9a6d23157703025",
+      "after_sha256": "8eae4e54020f0ec214607b4603be1376fbb5d156cb9cb534148d03f534a3876a",
+      "declarations": [
+        {
+          "name": "Finset.BSG.leftNbhd_subset",
+          "source_line": 50,
+          "owner_line": 57,
+          "identical_normalized_command": true,
+          "removed_command_sha256": "25d8e338e51f8d2730b5d3acf87ae3cab4cee79cf699bf8aeb6764a163eb4ea6",
+          "removed_command": "/-- The left-neighbourhood is always a subset of `A` (trivial; `leftNbhd` is a `filter` of `A`). -/\nlemma leftNbhd_subset (A : Finset α) (G : Finset (α × α)) (b : α) :\n    leftNbhd A G b ⊆ A :=\n  Finset.filter_subset _ _\n\n"
+        }
+      ],
+      "rationale": "Identical theorem over the shared public leftNbhd definition from _BSG_DRC1; both owners have identical typeclass assumptions. Retain unique nonempty-neighborhood theorem.",
+      "validation": {
+        "command": "scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_BSG_EX_E1.lean",
+        "result": "Passed; raw compiler exit 0 and admission output check passed.",
+        "receipt": "✅ OK (8s) — Research/ProximityPrize/Frontier/_BSG_EX_E1.lean"
+      }
+    },
+    {
+      "consumer": "Research/ProximityPrize/Frontier/_ResonanceOffDiagFloorGauge.lean",
+      "implementation_owner": "Research/ProximityPrize/Frontier/_ResonanceAgreementOffDiagNonneg.lean",
+      "before_sha256": "d61cabcd8a3d3922a935fe03f9532fb7277d267e09258807ac10ac42a4c5e549",
+      "after_sha256": "8d1258cafe7c93c7bfb7c7298d5611aaf5eaf3a9e26ca43d9421e1f68b22aafd",
+      "declarations": [
+        {
+          "name": "ArkLib.ProximityGap.GaussPhaseResonance.resonanceOffDiag_re_nonneg",
+          "source_line": 63,
+          "owner_line": 35,
+          "identical_normalized_command": false,
+          "removed_command_sha256": "67dda72d2197f4b828c91baac1ffeee1812b474243dd4d304822225315e41cd1",
+          "removed_command": "/-- **The off-diagonal real part is nonnegative.** For unit-modulus phases, the agreement off-diagonal\nsits at or above `0`: `resonanceMoment u r = (m-1)^r + (resonanceOffDiag u r).re` and the in-tree Wick\nfloor gives `(m-1)^r ≤ resonanceMoment u r`, so `0 ≤ (resonanceOffDiag u r).re`. The off-diagonal never\ninterferes destructively below the Wick floor. -/\ntheorem resonanceOffDiag_re_nonneg (u : ZMod m → ℂ) (r : ℕ)\n    (hu : ∀ a : ZMod m, ‖u a‖ = 1) :\n    0 ≤ (resonanceOffDiag u r).re := by\n  have hdecomp := resonanceMoment_eq_wick_add_offDiag_re u r (fun a _ => hu a)\n  have hfloor : ((m : ℝ) - 1) ^ r ≤ resonanceMoment u r := resonanceMoment_ge_pow u hu r\n  rw [hdecomp, nat_pred_cast_pow_eq r] at hfloor\n  linarith\n\n"
+        }
+      ],
+      "rationale": "Same nonnegative real off-diagonal theorem with identical unit-modulus phases, NeZero modulus and natural exponent; preserve distinct gauge-invariance conclusions.",
+      "validation": {
+        "command": "scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_ResonanceOffDiagFloorGauge.lean",
+        "result": "Passed; raw compiler exit 0 and admission output check passed.",
+        "receipt": "✅ OK (25s) — Research/ProximityPrize/Frontier/_ResonanceOffDiagFloorGauge.lean"
+      }
+    }
+  ],
+  "distinct_challenge_models": {
+    "canonical_owner": "ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean",
+    "retained_owner": "Research/ProximityPrize/GrandChallenges.lean",
+    "reason": "Canonical challenges certify adjacent integer-grid crossings with Code.Lambda. The retained Research model certifies continuous maximal radii using the distinct legacy ListDecodable.Lambda; predicates and data are not interchangeable. Only colliding Research identifiers are renamed, preserving all assumptions/fields/proofs.",
+    "identifier_mapping": {
+      "grandListDecodingChallenge": "continuousGrandListDecodingChallenge",
+      "mcaPrize": "continuousMcaPrize",
+      "listDecodingPrize": "continuousListDecodingPrize",
+      "GrandListResolution": "ContinuousGrandListResolution",
+      "ListLowerWitness": "ContinuousListLowerWitness",
+      "ListUpperWitness": "ContinuousListUpperWitness"
+    },
+    "clients": [
+      {
+        "path": "Research/ProximityPrize/LDAttainment.lean",
+        "replacements": 5,
+        "before_sha256": "4e79ea5291b222421e9fbd9d11c9830a25b22b28997c80a7e15b2bb3ef7b8f1d",
+        "after_sha256": "7ddee1d20367cb5b7c460944bc27827a353b080c4730f54e8a951b596807807e"
+      },
+      {
+        "path": "Research/ProximityPrize/Decision.lean",
+        "replacements": 9,
+        "before_sha256": "df547fa8e398265690e3f10a369a3850f53ab90eec183f02c52edecb8bc684c6",
+        "after_sha256": "b50c30074852685f634284bf2b7d6f9647bd92a4e804e1b121cb23d6fbf4b0ed"
+      },
+      {
+        "path": "Research/ProximityPrize/Overreach.lean",
+        "replacements": 1,
+        "before_sha256": "c63d3eed17d62ef3d20e93c3b65ae9d54102ef22ba7115ea90e7e7bc77d2ca0e",
+        "after_sha256": "a433674602d071f0688b8bc95385f274edd6ee90ea2e398446fe3126666d7f87"
+      },
+      {
+        "path": "Research/ProximityPrize/MCABadCountRatio.lean",
+        "replacements": 2,
+        "before_sha256": "59e6235491b58f4801031448d4db99adcc7137b39f1f2f76c1be4383cdc225a0",
+        "after_sha256": "ca6139cc7bbe22849ebc51ac8a8c5d783b31494abe471f56ff858ca6ff33f992"
+      },
+      {
+        "path": "Research/ProximityPrize/Lattice2.lean",
+        "replacements": 4,
+        "before_sha256": "7218653ad702dcbbbd1b2c8137b71e7be0309a345f56f6344fd1cceab2aa8a59",
+        "after_sha256": "18f0a4a59bb9738b89fda43dd13fb37af9be44c525ee0ee35650a74347ef676d"
+      },
+      {
+        "path": "Research/ProximityPrize/GrandChallenges.lean",
+        "replacements": 88,
+        "before_sha256": "a27aff66527ba5a76d272a3f6de9e19532d571d1578a307cb473136799e75423",
+        "after_sha256": "f0de5fddd8cc0a610883034d9a851a7ec9d48926ef5d8dda84560f16c08e503d"
+      },
+      {
+        "path": "Research/ProximityPrize/ListDecodingConjectureRefutation.lean",
+        "replacements": 1,
+        "before_sha256": "1b0bfc35d67e4653627cfea32ae8f09021a95769f8256ad5d15ebff2e6bd8e75",
+        "after_sha256": "e821f0df0b7227eb8a251916d328fcbde1c8e58b0f24880251802e0b1d0cad04"
+      },
+      {
+        "path": "Research/ProximityPrize/LegacyWorkbench.lean",
+        "replacements": 4,
+        "before_sha256": "aa833de6f7b47f840ef9cc9c47b33fabdb41e3452f5e555e1df6511f62b70d88",
+        "after_sha256": "62c9a7073f0047f54c08bfe5e5ba254f2dceb25126fe223e4ab1c03c3906ed1a"
+      },
+      {
+        "path": "Research/ProximityPrize/LDThreshold.lean",
+        "replacements": 6,
+        "before_sha256": "e24093c391a462a8f4062bb733fc5aa5cd69571b365f972dd4d47d6912423c78",
+        "after_sha256": "73c4a0acecfc98e7391f55db2df53ad4ea7e3adf5c90d68658af83bfdc63a835"
+      },
+      {
+        "path": "Research/ProximityPrize/RadiusOne.lean",
+        "replacements": 3,
+        "before_sha256": "1e59caa954899a7d76ab5f599d9b6fca5c834a40b59c4ba147398e19ee855151",
+        "after_sha256": "54e7c7b33a010f8056d8d9487864ebcbe5cddc6057c4e2cc95b8ce4ae2dc4953"
+      },
+      {
+        "path": "Research/ProximityPrize/Lattice.lean",
+        "replacements": 2,
+        "before_sha256": "e31806a3a8bb428827c9800a9f2d62a9b922d4ea11a78ce8c8b679fd59f9c0bb",
+        "after_sha256": "6cd2b6e95da7dee441d24ffddfd2e340b3a0444008ec2434c27129196d8e065c"
+      },
+      {
+        "path": "Research/ProximityPrize/Collapse.lean",
+        "replacements": 7,
+        "before_sha256": "9e1e5500b9d09637bb17c913caf7631fcc2a72dc47c6d3298dc4f712780a1f9f",
+        "after_sha256": "9083fe7327b5e50ef4473a1347e74fd2ba0c17d984023fdd3d4102799402dec4"
+      },
+      {
+        "path": "Research/ProximityPrize/LDThresholdElias.lean",
+        "replacements": 3,
+        "before_sha256": "0e1306dc92461fce1fc3f45940a3e780cae40071478383fa7fe3afff113983b0",
+        "after_sha256": "6094698776ee0f1f457291862eda5ca5cd8289cc2401b622bb12031f12a1c1af"
+      },
+      {
+        "path": "Research/ProximityPrize/Resolution.lean",
+        "replacements": 12,
+        "before_sha256": "ad1eaba31878303a4a58d97274d78e61055561b56f30609a040d4accb31ac47d",
+        "after_sha256": "4fe0cd91e7cccb70bf791cf6548acdfaf5aaf08ca878d4765434b3edfa29cbd9"
+      },
+      {
+        "path": "Research/ProximityPrize/ListClosedForm.lean",
+        "replacements": 4,
+        "before_sha256": "7945b8d2e0e5a05a6d8f8cad877b8197d94dc9bc39bd6d0c29df1d98bf7adc1a",
+        "after_sha256": "b6e8ee4da222f2fca25536e7428eea72b3eeae9e0658f875f616a05727508af1"
+      },
+      {
+        "path": "Research/ProximityPrize/MCASecondMoment.lean",
+        "replacements": 1,
+        "before_sha256": "445103b54004e51c7c247ed372a5b1890a1afb132f747e6f3f06de38a770448c",
+        "after_sha256": "4d865a4a9ecbc9b032b63eae17458b692a18e11034bdc2ec6a74dc8a21e9a0fb"
+      },
+      {
+        "path": "Research/ProximityPrize/Frontier/_PrizeShapeGrandChallengeRefutation.lean",
+        "replacements": 2,
+        "before_sha256": "1635f5a11bf11a0abf0960ab982948d4143c6103c3ac76e3ac3d723cf8077be4",
+        "after_sha256": "131afcbceceff4337e5d0dee65cbd05d90352889d853419ef050856ad9473e67"
+      },
+      {
+        "path": "Research/ProximityPrize/Lattice2/Spec.lean",
+        "replacements": 7,
+        "before_sha256": "06f864dc396b9620c539d947bb35fe8bf3fe172404dcddf728d709b7ab641cc4",
+        "after_sha256": "40979f1ce4763b445d3ae5ef23b1a5427011b1848d1158dae86e4bb612fb337b"
+      },
+      {
+        "path": "Research/ProximityPrize/Lattice2/ListThreshold.lean",
+        "replacements": 14,
+        "before_sha256": "38ff0d1231114714441f906ddb52a3354d2c27414fab0373cf8b0aa6c6b746e9",
+        "after_sha256": "d77a0ce3b2c56a187f2ca6876d12658dec314fa8aa2debb488e0f96121d43a1f"
+      }
+    ],
+    "validation": "Renamed Research GrandChallenges owner passes strict pg-iterate (24s); actual import checks for Collapse (11s), Lattice (10s), MCAZeroCodeGuardrail (10s), MCAEndpointLower (11s) all pass after renaming. Full package build must verify all19 clients."
+  },
+  "distinct_interfaces": [
+    {
+      "path": "ArkLib/Data/CodingTheory/GMMDS/LovettMergeSubstitution.lean",
+      "old_identifier": "mergeVec",
+      "new_identifier": "mergeVecSameDimension",
+      "before_sha256": "bfa8d8dcd9bd12a2f009e72641aba29803828107a52d232eef82bba4b3803144",
+      "after_sha256": "6247599c1a4eb59b904b7658caa16f45673780e093c74d8d6ec9515b837fe3a1",
+      "rationale": "Distinct coordinate model: same-dimensional Function.update merge zeroes p and adds its mass to q; LovettCoordMerge.mergeVec lowers Fin n to Fin(n-1). Preserve both computations without an alias.",
+      "client_inventory": "Import-closure token scan found only this owning module; no other live caller requires renaming.",
+      "validation": {
+        "command": "scripts/pg-iterate.sh ArkLib/Data/CodingTheory/GMMDS/LovettMergeSubstitution.lean",
+        "result": "Passed; raw compiler exit 0 and admission output check passed.",
+        "receipt": "✅ OK (5s) — ArkLib/Data/CodingTheory/GMMDS/LovettMergeSubstitution.lean"
+      }
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/GuruswamiSudan/GSLargeCharSeparable.lean",
+      "old_identifier": "separable_of_natDegree_lt_ringChar",
+      "new_identifier": "separable_of_natDegree_lt_ringChar_or_zero",
+      "before_sha256": "e6bfd6190482227e503376df3874e8300992cf0287a8912818514f20d4137250",
+      "after_sha256": "42a4b3cc1f8b20ec24c0ca008907643884fcaf248e8d0b4b4f78f70070ae9f9a",
+      "rationale": "Broader interface preserves the original positive-degree premise and the characteristic-zero alternative; strict characteristic bound is owned by ToMathlib.SeparableLowDegree.",
+      "client_inventory": "Import-closure token scan found only this owning module; no other live caller requires renaming.",
+      "validation": {
+        "command": "scripts/pg-iterate.sh ArkLib/Data/CodingTheory/GuruswamiSudan/GSLargeCharSeparable.lean",
+        "result": "Passed; raw compiler exit 0 and admission output check passed.",
+        "receipt": "✅ OK (27s) — ArkLib/Data/CodingTheory/GuruswamiSudan/GSLargeCharSeparable.lean"
+      }
+    }
+  ],
+  "current_validation": {
+    "status": "package_validation_passed",
+    "receipt": "scripts/integration/final-validation.json",
+    "check": "default_libraries",
+    "source_commit": "7483975d251b3549313243ea9d5ada700af121f9",
+    "source_snapshot_sha256": "409575218737d68505ba7ded658fd0188023555e15010c876856e2cd917350f3",
+    "resolved_package_pending_paths": [],
+    "superseded_historical_status_paths": [
+      "/consolidations/3/validation",
+      "/consolidations/4/validation",
+      "/distinct_challenge_models/validation"
+    ],
+    "scope": "Current checked-in sources passed the final four-library package build. Original status text and all earlier receipts remain historical snapshots, not current pending claims."
+  }
+}

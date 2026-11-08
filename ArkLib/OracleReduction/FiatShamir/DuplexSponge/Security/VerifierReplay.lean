@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.KeyLemmaHybrids
+import VCVio.OracleComp.SimSemantics.StateT.Basic
 
 /-!
 # CO25 Claim 5.24 — verifier replay for `Hyb₃ → Hyb₄`: the deterministic layer
@@ -77,6 +78,11 @@ open OracleComp OracleSpec ProtocolSpec OracleReduction
 
 namespace DuplexSpongeFS.VerifierReplay
 
+-- Observe every event of the eager experiment's optional transcript output.
+local instance {n : ℕ} (pSpec : ProtocolSpec n) {StmtIn StmtOut : Type}
+    {κ : Type} (spec : OracleSpec κ) :
+    MeasurableSpace (StmtIn × StmtOut × pSpec.Messages × QueryLog spec × QueryLog spec) := ⊤
+
 open DSTraceStorage TraceTransform ProverTransform KeyLemmaFoundations KeyLemmaHybrids
 
 -- Sections below share one DSFS-wide variable block; several bricks use only a slice of it.
@@ -90,22 +96,12 @@ section SupportBricks
 
 universe u
 
-/-- Simulating an oracle computation through *any* oracle-valued implementation can only
-shrink the support: every output reachable after `simulateQ` was already reachable in the
-source computation (where each query may return any value). Oracle-monad analogue of VCVio's
-`support_simulateQ_run'_subset` (which covers the `StateT` case). -/
+/-- The oracle-valued specialization of VCVio's simulation support bound. -/
 theorem support_simulateQ_subset {ι₁ ι₂ : Type u} {spec : OracleSpec ι₁}
     {spec' : OracleSpec ι₂} {α : Type u}
     (impl : QueryImpl spec (OracleComp spec')) (oa : OracleComp spec α) :
-    support (simulateQ impl oa) ⊆ support oa := by
-  induction oa using OracleComp.inductionOn with
-  | pure x => simp
-  | query_bind t mx ih =>
-      intro x hx
-      rw [simulateQ_query_bind] at hx
-      rw [mem_support_bind_iff] at hx
-      obtain ⟨u, _, hx⟩ := hx
-      exact (mem_support_bind_iff _ _ _).mpr ⟨u, mem_support_query t u, ih u hx⟩
+    support (simulateQ impl oa) ⊆ support oa :=
+  OracleComp.support_simulateQ_subset impl oa
 
 end SupportBricks
 
@@ -288,7 +284,8 @@ theorem d2sCodecBridgeImplMemo_commit
       simp only [support_pure, Set.mem_singleton_iff, Option.some.injEq,
         Prod.mk.injEq] at h
       obtain ⟨hr, hm⟩ := h
-      subst hr; subst hm
+      cases hr
+      cases hm
       exact ⟨hl, [], by simp⟩
   | none =>
       rw [d2sCodecBridgeImplMemo_run_miss gq memo hl] at h
@@ -313,7 +310,6 @@ theorem d2sCodecBridgeImplMemo_commit
           simp only [support_pure, Set.mem_singleton_iff, Option.some.injEq,
             Prod.mk.injEq] at h
           obtain ⟨hr, hm⟩ := h
-          subst hr; subst hm
           refine ⟨?_, [bridgeMemoEntry (Salt := Salt) gq r], rfl⟩
           exact lookupD2SAlgoMemo_insert_self_of_none memo
             (bridgeMemoEntry (Salt := Salt) gq r) hl
@@ -651,7 +647,8 @@ theorem memoCoherentTable_keystone
       simp only [support_pure, Set.mem_singleton_iff, Option.some.injEq,
         Prod.mk.injEq] at h
       obtain ⟨hr, hm⟩ := h
-      subst hr; subst hm
+      cases hr
+      cases hm
       exact ⟨hcoh gq.1 gq.2.1
         (SaltCodec.encode (U := U) (δ := δ) (Salt := Salt) gq.2.2.1) gq.2.2.2
         r msgs hl hparse, hcoh⟩
@@ -675,7 +672,6 @@ theorem memoCoherentTable_keystone
           simp only [support_pure, Set.mem_singleton_iff, Option.some.injEq,
             Prod.mk.injEq] at h
           obtain ⟨hr, hm⟩ := h
-          subst hr; subst hm
           have hfresh := deserialize_of_mem_support_bridge_table c gq msgs hparse r ho
           refine ⟨hfresh, hcoh.insert gq r fun msgs' hparse' => ?_⟩
           rw [hparse'] at hparse
@@ -909,7 +905,7 @@ noncomputable def Hyb3Strict [SampleableType U]
     (V : Verifier oSpec StmtIn StmtOut pSpec)
     (P : OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U)
       (StmtIn × pSpec.Messages)) :
-    SPMF (Option (StmtIn × StmtOut × pSpec.Messages
+    MeasureTheory.Measure (Option (StmtIn × StmtOut × pSpec.Messages
       × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec)
       × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec))) :=
   𝒟[hybGameEagerSplit (T_H := T_H) (T_P := T_P) δ
@@ -948,7 +944,7 @@ theorem hyb34Step_of_strictSplit [SampleableType U]
       IsQueryBoundP P (fun j => dsQueryFlavor j = .hash) tₕ →
       IsQueryBoundP P (fun j => dsQueryFlavor j = .perm) tₚ →
       IsQueryBoundP P (fun j => dsQueryFlavor j = .permInv) tₚᵢ →
-      SPMF.tvDist (Hyb3 T_H T_P δ Salt oImpl V P)
+      MeasureTheory.Measure.tvDist (Hyb3 T_H T_P δ Salt oImpl V P)
           (Hyb3Strict T_H T_P δ Salt oImpl V P)
         ≤ εA tₕ tₚ tₚᵢ L)
     (hB : ∀ (V : Verifier oSpec StmtIn StmtOut pSpec)
@@ -959,7 +955,7 @@ theorem hyb34Step_of_strictSplit [SampleableType U]
       IsQueryBoundP P (fun j => dsQueryFlavor j = .hash) tₕ →
       IsQueryBoundP P (fun j => dsQueryFlavor j = .perm) tₚ →
       IsQueryBoundP P (fun j => dsQueryFlavor j = .permInv) tₚᵢ →
-      SPMF.tvDist (Hyb3Strict T_H T_P δ Salt oImpl V P)
+      MeasureTheory.Measure.tvDist (Hyb3Strict T_H T_P δ Salt oImpl V P)
           (Hyb4 oImpl V
             (eagerSimulatedProver (T_H := T_H) (T_P := T_P) (δ' := δ) (Salt' := Salt) P))
         ≤ εB tₕ tₚ tₚᵢ L)
@@ -970,10 +966,25 @@ theorem hyb34Step_of_strictSplit [SampleableType U]
   intro V P tₕ tₚ tₚᵢ L hL hHash hPerm hPermInv
   have h1 := hA V P tₕ tₚ tₚᵢ L hL hHash hPerm hPermInv
   have h2 := hB V P tₕ tₚ tₚᵢ L hL hHash hPerm hPermInv
-  have htri := SPMF.tvDist_triangle (Hyb3 T_H T_P δ Salt oImpl V P)
+  haveI : MeasureTheory.IsSubprobabilityMeasure (Hyb3 T_H T_P δ Salt oImpl V P) := by
+    unfold Hyb3
+    infer_instance
+  haveI : MeasureTheory.IsSubprobabilityMeasure (Hyb3Strict T_H T_P δ Salt oImpl V P) := by
+    unfold Hyb3Strict
+    infer_instance
+  haveI : MeasureTheory.IsSubprobabilityMeasure
+      (Hyb4 oImpl V
+        (eagerSimulatedProver (T_H := T_H) (T_P := T_P) (δ' := δ) (Salt' := Salt) P)) := by
+    unfold Hyb4
+    infer_instance
+  have htri := MeasureTheory.Measure.tvDist_triangle
+    (Hyb3 T_H T_P δ Salt oImpl V P)
     (Hyb3Strict T_H T_P δ Salt oImpl V P)
     (Hyb4 oImpl V
       (eagerSimulatedProver (T_H := T_H) (T_P := T_P) (δ' := δ) (Salt' := Salt) P))
+    (MeasureTheory.measure_univ_le _)
+    (MeasureTheory.measure_univ_le _)
+    (MeasureTheory.measure_univ_le _)
   have hs := hsum tₕ tₚ tₚᵢ L
   linarith
 

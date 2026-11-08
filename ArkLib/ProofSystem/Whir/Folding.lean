@@ -4,10 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Poulami Das, Miguel Quaresma (Least Authority), Alexander Hicks
 -/
 
-import ArkLib.Data.CodingTheory.ReedSolomon
-import ArkLib.Data.MvPolynomial.LinearMvExtension
-import ArkLib.Data.Polynomial.SplitFold
-import ArkLib.Data.Probability.Instances
+import ArkLib.Data.Probability.Notation
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.MvPolynomial.LinearMvExtension
+import ProximityPrize.Extensions.Data.Polynomial.SplitFold
+import ProximityPrize.Extensions.Data.Probability.Instances
 import ArkLib.ProofSystem.Whir.BlockRelDistance
 import ArkLib.ProofSystem.Whir.MutualCorrAgreement
 
@@ -42,7 +43,7 @@ Open question: should we aim to add tags?
 
 namespace Fold
 
-open BlockRelDistance Vector Finset
+open BlockRelDistance.Generic Vector Finset
 
 variable {F : Type} [Field F] {ι : Type} [Pow ι ℕ]
 
@@ -112,7 +113,7 @@ univariate polynomial by a degree-`< N` one via the even/odd decomposition
 takes a degree-`< 2^m` polynomial to a degree-`< 2^(m-k)` polynomial. -/
 namespace FoldingHelpers
 
-open Polynomial BlockRelDistance ReedSolomon
+open Polynomial BlockRelDistance.Generic ReedSolomon
 
 variable {F : Type*} [Field F]
 
@@ -752,9 +753,9 @@ theorem Pr_le_finset_sum_of_implies {α : Type} (D : PMF.{0} α) {β : Type} [De
               rw [if_pos hQi₀, mul_one]
       _ ≤ ∑ i ∈ s, D r * (if Q i r then (1 : ENNReal) else 0) :=
             Finset.single_le_sum (f := fun i => D r * (if Q i r then (1 : ENNReal) else 0))
-              (fun i _ => zero_le _) hi₀s
+              (fun i _ => by positivity) hi₀s
   · simp only [hP, if_false, MulZeroClass.mul_zero]
-    exact zero_le _
+    exact by positivity
 
 /-- If `A x` is always a subset of `B x`, then the event that the two sets differ is contained
 in the event that the reverse inclusion fails. -/
@@ -923,7 +924,7 @@ lemma folding_preserves_listdecoding_base
         ] < errStar C' 2 δ
   := by
     intro f hδ
-    let D : PMF F := PMF.uniformOfFintype F
+    let D : PMF F := ProximityPrize.Compatibility.uniformOfFintype F
     -- The genuine probabilistic content: reverse-inclusion failure is rare (≡ L4.23 / MCA).
     have hrev' := hrev f hδ
     -- Event domination: under the forward inclusion `foldSet ⊆ listBlock'`, the event
@@ -1009,7 +1010,7 @@ lemma folding_preserves_listdecoding_base_of_mca_bridge
         ] ≤ errStarV δ
   := by
     intro f hδ
-    let D : PMF F := PMF.uniformOfFintype F
+    let D : PMF F := ProximityPrize.Compatibility.uniformOfFintype F
     have hmono :
         Pr_{let α ← D}[
           let listBlock : Set ((indexPowT S φ 0) → F) := Λᵣ(0, k, f, S_0, C, hcode, δ)

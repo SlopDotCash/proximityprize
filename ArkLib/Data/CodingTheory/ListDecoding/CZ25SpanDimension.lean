@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.SubspaceDesign
-import ArkLib.Data.CodingTheory.ListDecodability
+import ProximityPrize.Extensions.Data.CodingTheory.SubspaceDesign
+import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
 import ArkLib.Data.CodingTheory.ListDecoding.CZ25DesignToLambda
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Algebra.Order.Floor.Extended
@@ -145,7 +145,9 @@ theorem finrank_inf_ker_ge_card_vanishing
   have hindep : LinearIndependent F (fun t : {t // t ∈ S} => (⟨b t.1, hmem t⟩ : W)) := by
     have hcomp := hb.comp (fun t : {t // t ∈ S} => t.1) Subtype.val_injective
     have hsub : LinearIndependent F
-        (fun t : {t // t ∈ S} => (W.subtype) (⟨b t.1, hmem t⟩)) := by simpa using hcomp
+        (fun t : {t // t ∈ S} => (W.subtype) (⟨b t.1, hmem t⟩)) := by
+      change LinearIndependent F (b ∘ fun t : {t // t ∈ S} => t.1)
+      exact hcomp
     exact hsub.of_comp _
   have hcard := hindep.fintype_card_le_finrank
   rwa [Fintype.card_coe] at hcard

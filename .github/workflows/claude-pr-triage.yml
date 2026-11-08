@@ -19,7 +19,8 @@
 # Hard guardrails enforced OUTSIDE the model:
 #   - PR head code is never checked out, built, or run.
 #   - Auto-merge is refused for changes under .github/, Research/ProximityPrize/DISPROOF_LOG.md,
-#     CLAUDE.md, AGENTS.md, lean-toolchain, lakefile*, or .gitmodules.
+#     CLAUDE.md, AGENTS.md, lean-toolchain, lakefile*, .gitmodules, or the pinned
+#     ArkLib inventory. Upstream integrations require a manual merge commit.
 #   - Merges go through GitHub's auto-merge queue / branch checks, so red CI
 #     can never be merged by this workflow.
 #   - A missing or unparseable verdict fails safe to needs-human-review.
@@ -144,7 +145,7 @@ jobs:
         if: steps.verdict.outputs.verdict == 'auto_merge'
         run: |
           BLOCKED=false
-          if grep -Eq '^(\.github/|DISPROOF_LOG\.md$|CLAUDE\.md$|AGENTS\.md$|lean-toolchain$|lakefile|\.gitmodules$)' "$WORKDIR/changed_files.txt"; then
+          if grep -Eq '^(\.github/|DISPROOF_LOG\.md$|CLAUDE\.md$|AGENTS\.md$|lean-toolchain$|lakefile|\.gitmodules$|scripts/arklib-upstream\.json$)' "$WORKDIR/changed_files.txt"; then
             BLOCKED=true
             echo "::warning::PR touches protected paths; downgrading auto_merge to needs-human-review"
           fi
@@ -209,7 +210,7 @@ jobs:
           fi
 
           if [ "$FINAL" = "merge" ]; then
-            if grep -Eq '^(\.github/|DISPROOF_LOG\.md$|CLAUDE\.md$|AGENTS\.md$|lean-toolchain$|lakefile|\.gitmodules$)' "$WORKDIR/changed_files.txt"; then
+            if grep -Eq '^(\.github/|DISPROOF_LOG\.md$|CLAUDE\.md$|AGENTS\.md$|lean-toolchain$|lakefile|\.gitmodules$|scripts/arklib-upstream\.json$)' "$WORKDIR/changed_files.txt"; then
               gh pr edit "$PR_NUMBER" --repo "$REPO" --add-label needs-human-review
               echo "::warning::Research said merge, but protected paths are touched; left for a human."
             else

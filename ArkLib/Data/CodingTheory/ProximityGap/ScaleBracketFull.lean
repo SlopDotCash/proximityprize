@@ -483,6 +483,8 @@ theorem embW_inj : Function.Injective embW := by
     ZMod.val_cast_of_lt (Nat.lt_of_lt_of_le y.isLt (by norm_num))
   exact Fin.ext (by rw [← hx, ← hy, h])
 
+set_option maxRecDepth 4096
+
 /-- The Reed–Solomon code: evaluations of polynomials of degree `< 2^19` (given by coefficient
 vectors) at the `2^20` points. -/
 def codeW : Finset (Fin (2 ^ 20) → ZMod pW) :=
@@ -490,14 +492,16 @@ def codeW : Finset (Fin (2 ^ 20) → ZMod pW) :=
     Finset.univ
 
 /-- The difference polynomial of two coefficient vectors. -/
-noncomputable def diffPolyW (c c' : Fin (2 ^ 19) → ZMod pW) : Polynomial (ZMod pW) :=
-  ∑ i : Fin (2 ^ 19), Polynomial.C (c i - c' i) * Polynomial.X ^ (i : ℕ)
+private noncomputable def coefficientDifferencePolynomial {K : Type*} [CommRing K]
+    (k : ℕ) (c c' : Fin k → K) : Polynomial K :=
+  ∑ i : Fin k, Polynomial.C (c i - c' i) * Polynomial.X ^ (i : ℕ)
 
-theorem coeffW (c c' : Fin (2 ^ 19) → ZMod pW) (j : Fin (2 ^ 19)) :
-    (diffPolyW c c').coeff (j : ℕ) = c j - c' j := by
-  unfold diffPolyW
+private theorem coefficientDifferencePolynomial_coeffW {K : Type*} [CommRing K]
+    (k : ℕ) (c c' : Fin k → K) (j : Fin k) :
+    (coefficientDifferencePolynomial k c c').coeff (j : ℕ) = c j - c' j := by
+  unfold coefficientDifferencePolynomial
   rw [Polynomial.finset_sum_coeff]
-  have hterm : ∀ i : Fin (2 ^ 19),
+  have hterm : ∀ i : Fin k,
       (Polynomial.C (c i - c' i) * Polynomial.X ^ (i : ℕ)).coeff (j : ℕ)
         = if j = i then c i - c' i else 0 := by
     intro i
@@ -509,22 +513,65 @@ theorem coeffW (c c' : Fin (2 ^ 19) → ZMod pW) (j : Fin (2 ^ 19)) :
   rw [Finset.sum_congr rfl fun i _ => hterm i, Finset.sum_ite_eq]
   simp
 
-theorem evalW (c c' : Fin (2 ^ 19) → ZMod pW) (z : ZMod pW) :
-    (diffPolyW c c').eval z =
+private theorem coefficientDifferencePolynomial_evalW {K : Type*} [CommRing K]
+    (k : ℕ) (c c' : Fin k → K) (z : K) :
+    (coefficientDifferencePolynomial k c c').eval z =
       (∑ i, c i * z ^ (i : ℕ)) - ∑ i, c' i * z ^ (i : ℕ) := by
-  unfold diffPolyW
+  unfold coefficientDifferencePolynomial
   rw [Polynomial.eval_finset_sum, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl fun i _ => ?_
   simp [sub_mul]
 
-theorem degW (c c' : Fin (2 ^ 19) → ZMod pW) :
-    (diffPolyW c c').natDegree ≤ 2 ^ 19 - 1 := by
-  unfold diffPolyW
+private theorem coefficientDifferencePolynomial_degW {K : Type*} [CommRing K]
+    (k : ℕ) (c c' : Fin k → K) :
+    (coefficientDifferencePolynomial k c c').natDegree ≤ k - 1 := by
+  unfold coefficientDifferencePolynomial
   refine Polynomial.natDegree_sum_le_of_forall_le _ _ fun i _ => ?_
   refine le_trans (Polynomial.natDegree_C_mul_le _ _) ?_
-  rw [Polynomial.natDegree_X_pow]
+  refine le_trans (Polynomial.natDegree_X_pow_le (i : ℕ)) ?_
   have := i.isLt
   omega
+
+/-- Package the explicit polynomial and its proved specification before specialization. -/
+private theorem existsCoefficientDifferencePolynomial {K : Type*} [CommRing K]
+    (k : ℕ) (c c' : Fin k → K) :
+    ∃ p : Polynomial K, p = coefficientDifferencePolynomial k c c' ∧
+      (∀ j : Fin k, p.coeff (j : ℕ) = c j - c' j) ∧
+      (∀ z : K, p.eval z =
+        (∑ i, c i * z ^ (i : ℕ)) - ∑ i, c' i * z ^ (i : ℕ)) ∧
+      p.natDegree ≤ k - 1 := by
+  exact ⟨coefficientDifferencePolynomial k c c', rfl,
+    coefficientDifferencePolynomial_coeffW k c c',
+    coefficientDifferencePolynomial_evalW k c c',
+    coefficientDifferencePolynomial_degW k c c'⟩
+
+/- The choice boundary prevents kernel projection reduction from expanding the specialized
+524,288-term sum. Its equality to the explicit polynomial is part of the proved specification. -/
+private noncomputable def abstractCoefficientDifferencePolynomial {K : Type*} [CommRing K]
+    (k : ℕ) (c c' : Fin k → K) : Polynomial K :=
+  Classical.choose (existsCoefficientDifferencePolynomial k c c')
+
+private theorem abstractCoefficientDifferencePolynomial_eq {K : Type*} [CommRing K]
+    (k : ℕ) (c c' : Fin k → K) :
+    abstractCoefficientDifferencePolynomial k c c' = coefficientDifferencePolynomial k c c' :=
+  (Classical.choose_spec (existsCoefficientDifferencePolynomial k c c')).1
+
+/-- The difference polynomial specialized to the prize-scale coefficient length. -/
+noncomputable def diffPolyW (c c' : Fin (2 ^ 19) → ZMod pW) : Polynomial (ZMod pW) :=
+  abstractCoefficientDifferencePolynomial (2 ^ 19) c c'
+
+theorem coeffW (c c' : Fin (2 ^ 19) → ZMod pW) (j : Fin (2 ^ 19)) :
+    (diffPolyW c c').coeff (j : ℕ) = c j - c' j :=
+  (Classical.choose_spec (existsCoefficientDifferencePolynomial (2 ^ 19) c c')).2.1 j
+
+theorem evalW (c c' : Fin (2 ^ 19) → ZMod pW) (z : ZMod pW) :
+    (diffPolyW c c').eval z =
+      (∑ i, c i * z ^ (i : ℕ)) - ∑ i, c' i * z ^ (i : ℕ) :=
+  (Classical.choose_spec (existsCoefficientDifferencePolynomial (2 ^ 19) c c')).2.2.1 z
+
+theorem degW (c c' : Fin (2 ^ 19) → ZMod pW) :
+    (diffPolyW c c').natDegree ≤ 2 ^ 19 - 1 :=
+  (Classical.choose_spec (existsCoefficientDifferencePolynomial (2 ^ 19) c c')).2.2.2
 
 /-- Root counting: a nonzero difference polynomial vanishes on at most `2^19 − 1` of the
 evaluation points. -/

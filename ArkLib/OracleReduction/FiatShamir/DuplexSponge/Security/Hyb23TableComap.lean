@@ -86,11 +86,14 @@ theorem evalDist_fTable_comap_betaKeyOf_eq_uniform
       Nonempty ((fsChallengeOracle (StmtIn × Salt) pSpec).Range q)]
     [SampleableType (OracleFamily (fsChallengeOracle (StmtIn × Salt) pSpec))]
     [SampleableType ((s : DecodeSuccessKey StmtIn pSpec U δ) →
+      (eSpec (U := U) StmtIn pSpec δ).Range s.1)]
+    [MeasurableSpace ((s : DecodeSuccessKey StmtIn pSpec U δ) →
       (eSpec (U := U) StmtIn pSpec δ).Range s.1)] :
     𝒟[do
         let f ← $ᵗ OracleFamily (fsChallengeOracle (StmtIn × Salt) pSpec)
-        pure (fun s : DecodeSuccessKey StmtIn pSpec U δ =>
-          f (betaKeyOf (Salt := Salt) s))]
+        pure (show ((s : DecodeSuccessKey StmtIn pSpec U δ) →
+          (eSpec (U := U) StmtIn pSpec δ).Range s.1) from
+          fun s => f (betaKeyOf (Salt := Salt) s))]
       = 𝒟[$ᵗ ((s : DecodeSuccessKey StmtIn pSpec U δ) →
           (eSpec (U := U) StmtIn pSpec δ).Range s.1)] := by
   have h := evalDist_uniformFamily_comap_injective
@@ -100,8 +103,7 @@ theorem evalDist_fTable_comap_betaKeyOf_eq_uniform
     (betaKeyOf (Salt := Salt))
     (betaKeyOf_injective (Salt := Salt))
     (fun s => Equiv.refl (pSpec.Challenge s.1.1))
-  simp only [Equiv.refl_apply] at h
-  exact h
+  with_unfolding_all exact h
 
 end DuplexSpongeFS.Hyb23Bricks
 

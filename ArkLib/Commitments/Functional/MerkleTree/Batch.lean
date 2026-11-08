@@ -36,7 +36,7 @@ with acceptance as `some ()`; the migration to the `m Bool` API is mechanical �
 * `simulateQ_verifyProof_rejects_wrong_root` — rejection is observable (`false`), so acceptance
   statements are non-vacuous.
 * `simulateQ_honest_verify_accepts` — single-index completeness, acceptance form.
-* `functional_batch_completeness` — every honest opening in a batch reconstructs the root.
+* `functional_list_batch_completeness` — every honest opening in a list reconstructs the root.
 * `simulateQ_honest_batch_verify_accepts` — every honest opening in a batch verifies (accept).
 * `simulateQ_honest_batch_run_accepts` — the whole batch, verified in one `mapM` pass, accepts.
 -/
@@ -103,9 +103,10 @@ def verifyOpening [DecidableEq α] {s : Skeleton}
     OracleComp (spec α) Bool :=
   verifyProof (m := OracleComp (spec α)) o.1 o.2.1 rootValue o.2.2
 
-/-- Functional batch completeness: every honest opening in the batch reconstructs the root.
-This follows from the single-index `functional_completeness` by `List.map`/membership. -/
-theorem functional_batch_completeness {s : Skeleton}
+/-- Every independent honest opening in the list reconstructs the root.
+This follows from the single-index `functional_completeness` by `List.map`/membership. VCVio's
+canonical `functional_batch_completeness` concerns compressed selector-based batch proofs. -/
+theorem functional_list_batch_completeness {s : Skeleton}
     (idxs : List (SkeletonLeafIndex s)) (leaf_data_tree : LeafData α s) (hash : α → α → α) :
     ∀ o ∈ batchOpening leaf_data_tree
         (buildMerkleTreeWithHash leaf_data_tree hash) idxs,

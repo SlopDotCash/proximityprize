@@ -50,7 +50,7 @@ theorem pg_eval_on_Z_eval_eval_eq_evalEval_evalX
   have hcommZ :
       ((pg_eval_on_Z (F := F) R z).eval P).eval x₀ = fZ ((R.eval q).eval r) := by
     have h := Polynomial.map_mapRingHom_eval_map_eval (f := fZ) (p := R) (q := q) r
-    simpa [pg_eval_on_Z, fZ, hqmap, hr] using h
+    simpa [pg_eval_on_Z, Trivariate.evalAtZ_eq_map_map_evalRingHom, fZ, hqmap, hr] using h
   set p := Bivariate.evalX (Polynomial.C x₀) R with hp
   have hp_map : p = R.map (Polynomial.evalRingHom (Polynomial.C x₀)) := by
     exact hp.trans (pg_evalX_eq_map_evalRingHom (F := F) x₀ R)

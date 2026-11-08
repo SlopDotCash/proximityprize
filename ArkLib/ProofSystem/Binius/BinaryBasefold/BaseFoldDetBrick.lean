@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Prelude
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Prelude
 
 /-!
 # Issue #317 brick: `baseFoldMatrix` determinant is nonzero (fiber distinctness)

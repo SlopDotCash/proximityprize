@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrSoundnessPhase2Proof
 import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 
@@ -62,23 +63,23 @@ Proof: `OracleVerifier.rbrSoundness` is definitionally `toVerifier`-level; rewri
 Protocol-level keystone. -/
 theorem append_rbrSoundness_subsingleton [Subsingleton σ]
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
-    [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
+
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂)
     {rbrSoundnessError₁ : pSpec₁.ChallengeIdx → ℝ≥0}
     {rbrSoundnessError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (verify : (Stmt₁ × ∀ i, OStmt₁ i) → pSpec₁.FullTranscript → (Stmt₂ × ∀ i, OStmt₂ i))
     (hVerify : V₁.toVerifier = ⟨fun stmt tr => pure (verify stmt tr)⟩)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE₂ : Nonempty (Stmt₂ × ∀ i, OStmt₂ i))
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
-    (h₁ : V₁.rbrSoundness init impl lang₁ lang₂ rbrSoundnessError₁)
-    (h₂ : V₂.rbrSoundness init impl lang₂ lang₃ rbrSoundnessError₂) :
-      (OracleVerifier.append (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁ V₂).rbrSoundness
+    (h₁ : V₁.rbrSoundnessAveraged init impl lang₁ lang₂ rbrSoundnessError₁)
+    (h₂ : V₂.rbrSoundnessAveraged init impl lang₂ lang₃ rbrSoundnessError₂) :
+      (OracleVerifier.append (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁ V₂).rbrSoundnessAveraged
         init impl lang₁ lang₃
         (Sum.elim rbrSoundnessError₁ rbrSoundnessError₂ ∘ ChallengeIdx.sumEquiv.symm) := by
-  unfold OracleVerifier.rbrSoundness at h₁ h₂ ⊢
+  unfold OracleVerifier.rbrSoundnessAveraged at h₁ h₂ ⊢
   rw [OracleReduction.oracleVerifier_append_toVerifier]
   exact Verifier.append_rbrSoundness_keystone_subsingleton_unconditional
     V₁.toVerifier V₂.toVerifier verify hVerify hInit hInitNF hNE₂ hn hDir hDir₂ h₁ h₂
@@ -90,19 +91,19 @@ residual's conclusion is precisely the keystone's, so this is definitional from
 needs an unproved hypothesis in the stateless regime. -/
 theorem appendRbrSoundnessResidual_msg_subsingleton [Subsingleton σ]
     (V₁ : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec₁)
-    [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) V₁]
+
     (V₂ : OracleVerifier oSpec Stmt₂ OStmt₂ Stmt₃ OStmt₃ pSpec₂)
     {rbrSoundnessError₁ : pSpec₁.ChallengeIdx → ℝ≥0}
     {rbrSoundnessError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (verify : (Stmt₁ × ∀ i, OStmt₁ i) → pSpec₁.FullTranscript → (Stmt₂ × ∀ i, OStmt₂ i))
     (hVerify : V₁.toVerifier = ⟨fun stmt tr => pure (verify stmt tr)⟩)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE₂ : Nonempty (Stmt₂ × ∀ i, OStmt₂ i))
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
-    (h₁ : V₁.rbrSoundness init impl lang₁ lang₂ rbrSoundnessError₁)
-    (h₂ : V₂.rbrSoundness init impl lang₂ lang₃ rbrSoundnessError₂) :
+    (h₁ : V₁.rbrSoundnessAveraged init impl lang₁ lang₂ rbrSoundnessError₁)
+    (h₂ : V₂.rbrSoundnessAveraged init impl lang₂ lang₃ rbrSoundnessError₂) :
     appendRbrSoundnessResidual (init := init) (impl := impl) V₁ V₂ h₁ h₂ :=
   append_rbrSoundness_subsingleton V₁ V₂ verify hVerify hInit hInitNF hNE₂ hn hDir hDir₂ h₁ h₂
 

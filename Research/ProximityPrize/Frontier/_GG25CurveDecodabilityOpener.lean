@@ -93,7 +93,7 @@ noncomputable def constCurveAssignment (C : Submodule F (ι → A)) {ℓ : ℕ} 
     funext i
     -- The constant curve evaluates to `f α` at the seed `α`: only the `j = 0` term survives.
     rw [Finset.sum_eq_single (0 : Fin (ℓ + 1))]
-    · simp only [Fin.val_zero, if_true, pow_zero, one_smul]
+    · simp
     · intro j _ hj0
       have hj : (j : ℕ) ≠ 0 := fun h => hj0 (Fin.ext h)
       rw [if_neg hj, Pi.zero_apply, smul_zero]

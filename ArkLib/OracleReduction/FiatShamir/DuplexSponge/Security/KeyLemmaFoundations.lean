@@ -8,6 +8,8 @@ import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.KeyLemma
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.ProverTransform
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.BadEvents
 import ArkLib.OracleReduction.Security.OracleDistribution
+import VCVio.EvalDist.MeasureTVDist.Bind
+import ProximityPrize.Compatibility.DiscreteProbability
 
 /-!
 # Foundations bricks for the DSFS Key Lemma (CO25 Lemma 5.1)
@@ -84,52 +86,33 @@ namespace DuplexSpongeFS.KeyLemmaFoundations
 open Backtrack Lookahead DSTraceStorage TraceTransform ProverTransform
 open scoped NNReal
 
-/-! ## F2 — SPMF four-step triangle chain (CO25 §5.8 assembly)
+/-! ## F2 — subprobability-measure four-step triangle chain (CO25 §5.8 assembly)
 
-Resurrects the May-18 `tvDist_hybridChain4` on the `SPMF.tvDist` surface: the total
+Resurrects the May-18 `tvDist_hybridChain4` on the canonical measure TV surface: the total
 variation between `Hyb₀` and `Hyb₄` is bounded by the sum of the four per-step bounds. -/
 
 /-- F2 — four-step total-variation triangle chain across the CO25 §5.8 hybrid ladder
 `Hyb₀ … Hyb₄`. -/
-lemma tvDist_chain4 {α : Type} (H₀ H₁ H₂ H₃ H₄ : SPMF α)
+lemma tvDist_chain4 {α : Type} [MeasurableSpace α]
+    (H₀ H₁ H₂ H₃ H₄ : MeasureTheory.Measure α)
+    [MeasureTheory.IsSubprobabilityMeasure H₀] [MeasureTheory.IsSubprobabilityMeasure H₁]
+    [MeasureTheory.IsSubprobabilityMeasure H₂] [MeasureTheory.IsSubprobabilityMeasure H₃]
+    [MeasureTheory.IsSubprobabilityMeasure H₄]
     {e₀₁ e₁₂ e₂₃ e₃₄ : ℝ}
     (h₀₁ : H₀.tvDist H₁ ≤ e₀₁) (h₁₂ : H₁.tvDist H₂ ≤ e₁₂)
     (h₂₃ : H₂.tvDist H₃ ≤ e₂₃) (h₃₄ : H₃.tvDist H₄ ≤ e₃₄) :
     H₀.tvDist H₄ ≤ e₀₁ + e₁₂ + e₂₃ + e₃₄ := by
-  have t₁ := SPMF.tvDist_triangle H₀ H₁ H₄
-  have t₂ := SPMF.tvDist_triangle H₁ H₂ H₄
-  have t₃ := SPMF.tvDist_triangle H₂ H₃ H₄
+  have t₁ := MeasureTheory.Measure.tvDist_triangle H₀ H₁ H₄
+    (MeasureTheory.measure_univ_le H₀) (MeasureTheory.measure_univ_le H₁) (MeasureTheory.measure_univ_le H₄)
+  have t₂ := MeasureTheory.Measure.tvDist_triangle H₁ H₂ H₄
+    (MeasureTheory.measure_univ_le H₁) (MeasureTheory.measure_univ_le H₂) (MeasureTheory.measure_univ_le H₄)
+  have t₃ := MeasureTheory.Measure.tvDist_triangle H₂ H₃ H₄
+    (MeasureTheory.measure_univ_le H₂) (MeasureTheory.measure_univ_le H₃) (MeasureTheory.measure_univ_le H₄)
   linarith
 
 /-! ## F8 — abort elimination (`OptionT` → plain `OracleComp`) for the witness prover -/
 
 section DeAbort
-
-/-- Single-defect coupling bound for pushforwards: if `g₁` and `g₂` agree everywhere except
-possibly at `z₀`, the TV distance between the pushforwards of `μ` is at most the mass of
-`z₀`. -/
-private lemma pmf_tvDist_map_map_le_apply {γ β : Type} (μ : PMF γ) (g₁ g₂ : γ → β) (z₀ : γ)
-    (hagree : ∀ z, z ≠ z₀ → g₁ z = g₂ z) :
-    PMF.tvDist (μ.map g₁) (μ.map g₂) ≤ (μ z₀).toReal := by
-  letI : DecidableEq β := Classical.decEq β
-  rw [PMF.tvDist_def]
-  refine ENNReal.toReal_mono (PMF.apply_ne_top μ z₀) ?_
-  rw [PMF.etvDist]
-  have hpoint : ∀ y, ENNReal.absDiff ((μ.map g₁) y) ((μ.map g₂) y)
-      ≤ (if y = g₁ z₀ then μ z₀ else 0) + (if y = g₂ z₀ then μ z₀ else 0) := by
-    intro y
-    rw [PMF.map_apply, PMF.map_apply]
-    refine le_trans (ENNReal.absDiff_tsum_le _ _) ?_
-    have hzero : ∀ z, z ≠ z₀ →
-        ENNReal.absDiff (if y = g₁ z then μ z else 0) (if y = g₂ z then μ z else 0) = 0 := by
-      intro z hz
-      rw [hagree z hz]
-      exact ENNReal.absDiff_self _
-    rw [tsum_eq_single z₀ hzero]
-    exact ENNReal.absDiff_le_add _ _
-  refine le_trans (ENNReal.div_le_div_right (ENNReal.tsum_le_tsum hpoint) 2) ?_
-  rw [ENNReal.tsum_add, tsum_ite_eq, tsum_ite_eq, ← two_mul, mul_div_assoc,
-    ENNReal.mul_div_cancel two_ne_zero ENNReal.ofNat_ne_top]
 
 /-- Abort elimination (`OptionT` → plain `OracleComp`): replace abort by a default output.
 This is how the (aborting) `d2sAlgo` becomes the plain `OracleComp` witness `P'` demanded by
@@ -145,41 +128,54 @@ lemma isQueryBoundP_deAbort {ι' : Type} {spec : OracleSpec ι'} {α : Type} [In
     IsQueryBoundP (deAbort oa) p b :=
   (isQueryBoundP_map_iff _ _ _).mpr h
 
+section NativeFailureBound
+
+variable {ι' : Type} {spec : OracleSpec ι'} [OracleSpec.UniformAnswerMeasure spec]
+  {α : Type} [Inhabited α]
+
+private local instance : MeasurableSpace α := ⊤
+
 /-- F8b — `deAbort` moves at most the abort mass: the TV distance between the de-aborted
 computation and the sub-probability original is bounded by the abort probability. Consumed by
 the Hyb₄ → witness bridge together with the §5.7 abort analysis (`Pr[abort] ≤ Pr[E]`). -/
-lemma tvDist_deAbort_le_probFailure {ι' : Type} {spec : OracleSpec ι'}
-    [spec.Fintype] [spec.Inhabited] {α : Type} [Inhabited α]
-    (oa : AbortComp spec α) :
-    SPMF.tvDist 𝒟[deAbort oa] 𝒟[oa] ≤ (Pr[⊥ | oa]).toReal := by
+lemma tvDist_deAbort_le_probFailure (oa : AbortComp spec α) :
+    MeasureTheory.Measure.tvDist 𝒟[deAbort oa] 𝒟[oa] ≤ (prFail oa).toReal := by
   classical
-  set μ : PMF (Option (Option α)) := (𝒟[oa.run]).toPMF with hμ
-  have h₁ : (𝒟[deAbort oa]).toPMF = μ.map (Option.map (fun o => o.getD default)) := by
-    rw [deAbort, evalDist_map, SPMF.toPMF_map, hμ]
-    rfl
-  have h₂ : (𝒟[oa]).toPMF = μ.map (fun z => z.bind id) := by
-    have hbind : (𝒟[oa] : SPMF α)
-        = (𝒟[oa.run] >>= fun y => match y with | some a => pure a | none => failure) := rfl
-    rw [hbind, SPMF.toPMF_bind, ← PMF.bind_pure_comp]
-    unfold Option.elimM
-    rw [PMF.monad_bind_eq_bind]
-    refine PMF.bind_congr _ _ _ fun z => ?_
-    intro _
-    match z with
-    | none => rfl
-    | some none => simp [SPMF.toPMF_failure, Function.comp]
-    | some (some a) => simp [SPMF.toPMF_pure, Function.comp]
-  unfold SPMF.tvDist
-  rw [h₁, h₂]
-  refine le_trans (pmf_tvDist_map_map_le_apply μ _ _ (some none) ?_) ?_
-  · intro z hz
-    match z with
-    | none => rfl
-    | some none => exact absurd rfl hz
-    | some (some a) => rfl
-  · refine ENNReal.toReal_mono (ne_top_of_le_ne_top ENNReal.one_ne_top probFailure_le_one) ?_
-    rw [OptionT.probFailure_eq]
-    exact le_add_self
+  let before : OptionT (OracleComp spec) (Option α) := OptionT.lift oa.run
+  let f : Option α → OptionT (OracleComp spec) α := fun out => pure (out.getD default)
+  let g : Option α → OptionT (OracleComp spec) α := fun out => out.getM
+  have hb := measureETVDist_bind_bind_le_of_bad before f g
+    Measurable.of_discrete Measurable.of_discrete
+    (MeasurableSet.of_discrete : MeasurableSet ({none} : Set (Option α))) 0 (by
+      filter_upwards [] with out hout
+      cases out with
+      | none => simp at hout
+      | some a => simp [f, g, Option.getM])
+  simp only [zero_mul, add_zero] at hb
+  have hl : before >>= f = OptionT.lift (deAbort oa) := by
+    apply OptionT.ext
+    simp [before, f, deAbort, OptionT.run_lift, OptionT.run_bind, Option.elimM, bind_assoc]
+  have hr : before >>= g = oa := by
+    apply OptionT.ext
+    simp only [before, g, OptionT.run_lift, OptionT.run_bind, Option.elimM,
+      Option.getM, bind_assoc, pure_bind]
+    calc _ = oa.run >>= pure := by
+           apply bind_congr
+           intro out
+           cases out <;> rfl
+         _ = oa.run := bind_pure _
+  rw [hl, hr] at hb
+  have hfail : prFail oa = Pr{let out ← oa.run}[out = none] := by
+    conv_lhs => rw [show oa = OptionT.mk oa.run from rfl]
+    rw [ProximityPrize.Compatibility.prFail_mk, OracleComp.prFail_eq_zero, zero_add]
+  rw [measureETVDist, OptionT.evalDist_lift] at hb
+  have hmass : 𝒟[before] {none} = prFail oa := by
+    dsimp only [before]
+    rw [OptionT.evalDist_lift, hfail, prEvent_eq_evalDist_singleton]
+  rw [hmass] at hb
+  exact ENNReal.toReal_mono (ne_top_of_le_ne_top ENNReal.one_ne_top (prFail_le_one oa)) hb
+
+end NativeFailureBound
 
 end DeAbort
 
@@ -519,19 +515,18 @@ lemma d2sCodecBridgeImpl_run_left_budget
   | none =>
       simp [hmb]
   | some mb =>
-      simp only [hmb, OptionT.run_bind, pure_bind, OptionT.run_lift,
-        HasQuery.instOfMonadLift_query]
-      unfold Option.elimM
-      rw [bind_assoc]
-      simp only [pure_bind, Option.elim]
-      refine (isQueryBoundP_query_bind_iff _ _ _ _).mpr
-        ⟨Or.inr one_pos, fun ch => ?_⟩
-      exact IsQueryBoundP.mono
-        (isQueryBoundP_bind (m := 0)
-          (uniformDeserializePreimage_left_budget
-            (pSpec := pSpec) (U := U) (StmtIn := StmtIn) (Salt := Salt) (i := gq.1) ch)
-          (fun x _ => isQueryBoundP_pure _ _ _))
-        (Nat.zero_le _)
+      simp only [hmb, OptionT.run_bind, OptionT.lift, OptionT.run_mk,
+        HasQuery.instOfMonadLift_query, bind_assoc, pure_bind, Option.elimM, Option.elim]
+      apply isQueryBoundP_bind (n := 1) (m := 0)
+      · exact ⟨Or.inr one_pos, fun _ => trivial⟩
+      · intro out _
+        cases out with
+        | none => exact isQueryBoundP_pure _ _ _
+        | some ch =>
+            exact isQueryBoundP_bind (m := 0)
+              (uniformDeserializePreimage_left_budget
+                (pSpec := pSpec) (U := U) (StmtIn := StmtIn) (Salt := Salt) (i := gq.1) ch)
+              (fun _ _ => isQueryBoundP_pure _ _ _)
 
 omit [∀ i, DecidableEq (pSpec.Message i)] in
 /-- F5 — the Eq. 16 **memoized** codec bridge makes at most one basic-FS challenge query per
@@ -768,6 +763,10 @@ noncomputable def basicFiatShamirGameEagerRand
   | some stmtOut =>
       pure (some ⟨stmtIn, stmtOut, messages, projectLeftQueryLog pLogAll, vLog⟩)
 
+-- Preserve the all-event observations of the retained discrete eager experiments.
+private local instance {κ : Type} (spec : OracleSpec κ) :
+    MeasurableSpace (StmtIn × StmtOut × pSpec.Messages × QueryLog spec × QueryLog spec) := ⊤
+
 variable {T_H T_P : Type} [LawfulTraceNablaImpl T_H T_P StmtIn U]
 
 /-- F10b — eager remapped DSFS game (`Hyb₀` of the §5.8 ladder): run the DSFS game against a
@@ -830,7 +829,7 @@ def KeyLemmaStatementEager
       (StmtIn × pSpec.Messages),
     (∀ i : ι, IsQueryBoundP P' (fun j => isSharedCoinIdx i j = true) (tₒ i)) ∧
     IsQueryBoundP P' (fun j => isFSChallengeCoinIdx j = true) (θStar tₕ tₚ tₚᵢ) ∧
-    SPMF.tvDist
+    MeasureTheory.Measure.tvDist
         𝒟[basicFiatShamirGameEagerRand Df oImpl V P']
         𝒟[duplexSpongeFiatShamirGameRemappedEager (T_H := T_H) (T_P := T_P) δ Dds oImpl V P]
       ≤ ηStarPaper (pSpec := pSpec) U tₕ tₚ tₚᵢ L codec.decodingBias

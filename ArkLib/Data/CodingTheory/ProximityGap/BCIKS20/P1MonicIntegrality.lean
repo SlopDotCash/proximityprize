@@ -94,10 +94,22 @@ lemma isUnit_ξ_of_monic (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses 
     exact Ideal.mul_mem_right q I hHmem
   have hm : Ideal.Quotient.mk I b * Ideal.Quotient.mk I (Polynomial.derivative g) = 1 := by
     have hc := congrArg (Ideal.Quotient.mk I) hab
-    rw [map_add, map_mul, map_mul, map_one, hmkg, mul_zero, zero_add] at hc
-    exact hc
+    rw [map_add, map_mul, map_mul, map_one, hmkg] at hc
+    calc
+      Ideal.Quotient.mk I b * Ideal.Quotient.mk I (Polynomial.derivative g)
+          = 0 + Ideal.Quotient.mk I b * Ideal.Quotient.mk I (Polynomial.derivative g) :=
+        (zero_add _).symm
+      _ = Ideal.Quotient.mk I a * 0 +
+          Ideal.Quotient.mk I b * Ideal.Quotient.mk I (Polynomial.derivative g) :=
+        congrArg (fun z : 𝒪 H => z + Ideal.Quotient.mk I b *
+          Ideal.Quotient.mk I (Polynomial.derivative g)) (mul_zero (Ideal.Quotient.mk I a)).symm
+      _ = 1 := hc
   rw [hξ]
-  exact IsUnit.of_mul_eq_one_right _ hm
+  exact ⟨{ val := Ideal.Quotient.mk I (Polynomial.derivative g)
+           inv := Ideal.Quotient.mk I b
+           val_inv := (mul_comm (Ideal.Quotient.mk I (Polynomial.derivative g))
+             (Ideal.Quotient.mk I b)).trans hm
+           inv_val := hm }, rfl⟩
 
 /-- **The integrality half of #138 (monic), PROVEN.**  For monic `H`, every genuine Hensel
 coefficient `αGenuine t` is the embedding of an `𝒪`-element — i.e. `αGenuine t` is integral — with no
@@ -134,7 +146,9 @@ theorem xi_pow_dvd_βHensel_succ_of_monic (x₀ : F) (R : F[X][X][Y])
         = βHensel H x₀ R hHyp (t + 1)
             * ((↑uξ⁻¹ : 𝒪 H) * ClaimA2.ξ x₀ R H hHyp) ^ (2 * t + 1) := by
     ring
-  rw [hregroup, hinv, one_pow, mul_one]
+  rw [hregroup, hinv]
+  exact ((congrArg (fun z : 𝒪 H => βHensel H x₀ R hHyp (t + 1) * z)
+    (one_pow (2 * t + 1))).trans (mul_one _)).symm
 
 #print axioms isUnit_ξ_of_monic
 #print axioms alphaGenuine_regular_of_monic

@@ -207,7 +207,8 @@ theorem latticeIndexOf_le_mcaThreshold_ofLineDecodingTarget
     latticeIndexOf (ι := ι) δ hδ_le_one ≤
       mcaThreshold (C : Set (ι → F)) ε_star
         (mcaThresholdExists_ofLineDecodingTarget C δ a ε_star hδ_le_one hcov hle) := by
-  simpa [mcaThresholdExists_ofLineDecodingTarget, MCALowerWitness.ofLineDecodingTarget]
+  simpa [mcaThresholdExists_ofLineDecodingTarget, MCALowerWitness.ofLineDecodingTarget,
+    MCALowerWitness.ofLe]
     using MCALowerWitness_le_mcaThreshold (C : Set (ι → F)) ε_star
       (mcaThresholdExists_ofLineDecodingTarget C δ a ε_star hδ_le_one hcov hle)
       (MCALowerWitness.ofLineDecodingTarget C δ a ε_star hδ_le_one hcov hle)

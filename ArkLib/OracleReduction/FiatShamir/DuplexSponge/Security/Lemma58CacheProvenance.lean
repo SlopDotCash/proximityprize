@@ -164,11 +164,10 @@ theorem cacheFold_hash_mem (c₀ : DSCache StmtIn U) (ℓ : List (DSEntry StmtIn
           · intro hstep
             simp only at hstep
             rcases eq_or_ne q q' with rfl | hne
-            · simp only [OracleSpec.QueryCache.cacheQuery, Function.update_self] at hstep
+            · rw [OracleSpec.QueryCache.cacheQuery_self] at hstep
               cases hstep
               exact Or.inr (List.mem_cons_self ..)
-            · simp only [OracleSpec.QueryCache.cacheQuery,
-                Function.update_of_ne hne] at hstep
+            · rw [OracleSpec.QueryCache.cacheQuery_of_ne _ _ hne] at hstep
               exact Or.inl hstep
           · intro hstep
             exact Or.inl hstep
@@ -249,7 +248,8 @@ theorem mem_slotList_of_pair_fst {c : DSCache StmtIn U}
   classical
   unfold slotList
   refine List.mem_append_right _ ?_
-  exact List.mem_flatMap.mpr ⟨p, h, by simp⟩
+  exact List.mem_flatMap.mpr ⟨p, h, by
+    with_unfolding_all exact List.mem_cons_self⟩
 
 /-- A cached pair's value capacity is a slot. -/
 theorem mem_slotList_of_pair_snd {c : DSCache StmtIn U}
@@ -258,7 +258,8 @@ theorem mem_slotList_of_pair_snd {c : DSCache StmtIn U}
   classical
   unfold slotList
   refine List.mem_append_right _ ?_
-  exact List.mem_flatMap.mpr ⟨p, h, by simp⟩
+  exact List.mem_flatMap.mpr ⟨p, h, by
+    with_unfolding_all exact List.mem_cons_of_mem _ (List.mem_singleton_self _)⟩
 
 end DuplexSpongeFS.EagerLazyDS
 

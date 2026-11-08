@@ -180,7 +180,7 @@ theorem pi_z_xi_ne_zero_of_monic {x₀ : F} {R : F[X][X][Y]}
 
 /-- `𝒪 H` is nontrivial: `H̃'` has positive degree, so its span is proper. -/
 theorem nontrivial_𝒪 : Nontrivial (𝒪 H) := by
-  refine Ideal.Quotient.nontrivial ?_
+  refine Ideal.Quotient.nontrivial_iff.mpr ?_
   rw [Ne, Ideal.span_singleton_eq_top]
   intro hu
   have hdeg := Polynomial.natDegree_eq_zero_of_isUnit hu
@@ -191,9 +191,11 @@ theorem nontrivial_𝒪 : Nontrivial (𝒪 H) := by
 /-- For monic `H`, `ξ ≠ 0` outright. -/
 theorem xi_ne_zero_of_monic {x₀ : F} {R : F[X][X][Y]}
     (hHyp : Hypotheses x₀ R H) (hlc : H.leadingCoeff = 1) :
-    ξ x₀ R H hHyp ≠ 0 :=
-  haveI := nontrivial_𝒪 (H := H)
-  (BCIKS20.HenselNumerator.isUnit_ξ_of_monic (H := H) x₀ R hHyp hlc).ne_zero
+    ξ x₀ R H hHyp ≠ 0 := by
+  letI : Nontrivial (𝒪 H) := nontrivial_𝒪 (H := H)
+  have hunit : IsUnit (ξ x₀ R H hHyp) :=
+    BCIKS20.HenselNumerator.isUnit_ξ_of_monic (H := H) x₀ R hHyp hlc
+  exact @IsUnit.ne_zero (𝒪 H) _ _ (ξ x₀ R H hHyp) hunit
 
 /-! ## The grand composition: hlin from GS-side data only -/
 

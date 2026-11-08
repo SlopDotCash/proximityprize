@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.WeightedAgreement
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.WeightedAgreement
 import Research.ProximityPrize.GrandChallenges
 import ArkLib.Data.CodingTheory.ProximityGap.MCABadCount
 import Mathlib.Tactic.Linarith
@@ -103,13 +103,7 @@ theorem mcaBadCount_lt_of_gs_curve_cover
   set S' : Finset F := univ.filter (fun γ : F => mcaEvent C δ u₀ u₁ γ) with hS'
   have hcard : mcaBadCount (F := F) C δ u₀ u₁ = S'.card := rfl
   rw [hcard] at hge
-  -- size hypotheses for the curve lemma, `l = 0`
-  have hn_pos : 0 < Fintype.card ι := Fintype.card_pos
-  have hMn : 2 ≤ M * Fintype.card ι + 1 := by
-    have : 1 ≤ M * Fintype.card ι := Nat.one_le_iff_ne_zero.mpr (by positivity)
-    omega
-  have h1 : S'.card > 0 + 1 := by omega
-  have h2 : S'.card ≥ (M * Fintype.card ι + 1) * (0 + 1) := by simpa using hge
+  have hcard_ge : S'.card ≥ (M * Fintype.card ι + 1) * (0 + 1) := by simpa using hge
   -- the cover gives curve-agreement at every bad scalar `z ∈ S'`
   have hagree : ∀ z ∈ S',
       (α : ℝ) ≤ agree μ
@@ -122,7 +116,7 @@ theorem mcaBadCount_lt_of_gs_curve_cover
       mu_set μ { x : ι | ∀ i, (![u₀, u₁] : Fin 2 → ι → F) i x = v i x } ≥ (α : ℝ) :=
     sufficiently_large_list_agreement_on_curve_implies_correlated_agreement
       (l := 0) (u := ![u₀, u₁]) (μ := μ) (α := α) (M := M) hμ (v := v) (S' := S')
-      h1 h2 hagree
+      hcard_ge hagree
   exact absurd hcorr (not_le.mpr hfail)
 
 /-- Uniform `ε_mca` wrapper for the faithful T4.21 repair.

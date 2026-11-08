@@ -56,7 +56,7 @@ theorem graded_count {NC DY cW : ℕ} (h : NC < cW) :
 `1 < k`: from `a + (k-1)·b ≤ D` we get `(k-1)·b ≤ D`, i.e. `b ≤ D/(k-1)`. -/
 theorem snd_le_div_of_mem_weigthBoundIndices {k D : ℕ} (hk : 1 < k) {p : ℕ × ℕ}
     (hp : p ∈ weigthBoundIndices k D) : p.2 ≤ D / (k - 1) := by
-  simp only [weigthBoundIndices, mem_filter] at hp
+  simp only [weigthBoundIndices, weightBoundIndices, mem_filter] at hp
   refine (Nat.le_div_iff_mul_le (Nat.sub_pos_of_lt hk)).mpr ?_
   calc p.2 * (k - 1) = (k - 1) * p.2 := Nat.mul_comm _ _
     _ ≤ p.1 + (k - 1) * p.2 := Nat.le_add_left _ _
@@ -205,7 +205,7 @@ theorem gs_existence_zDegree_graded {n : ℕ} (k m : ℕ) (ωs : Fin n ↪ F)
   set DW := DZ + DY with hDW
   -- 1. the graded dimension count
   have hcount : numConstraints n m < numVars k D :=
-    gs_numVars_gt_numConstraints_of_gt_one hn hk hm
+    gs_numVars_gt_numConstraints_of_gt_one (n := n) (m := m) hk
   have hcard : n * (constraintIndices m).card * (DW + 1) <
       (weigthBoundIndices k D).card * (DZ + 1) := by
     rw [hDW, hDZ]

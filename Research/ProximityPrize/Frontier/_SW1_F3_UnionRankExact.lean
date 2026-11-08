@@ -400,8 +400,11 @@ theorem exists_bridge_functionals_local (C : Submodule F (ι → F)) {r t : ℕ}
       apply LinearMap.ext
       intro v
       have := congrArg (fun f => f ((C.mkQ v, 0) : SyndromePair C)) ha
-      simpa [LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.add_apply,
-        LinearMap.comp_apply, hlbar_mk] using this
+      have heval : ∑ d, a d * (lbar i d) (C.mkQ v) = 0 := by
+        simpa [LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.add_apply,
+          LinearMap.comp_apply] using this
+      simpa only [LinearMap.sum_apply, LinearMap.smul_apply, LinearMap.zero_apply,
+        smul_eq_mul, hlbar_mk] using heval
     exact Fintype.linearIndependent_iff.mp (hℓli i) a hzero
   · rintro ⟨i, j⟩ ⟨q₀, q₁⟩ hv
     have h₀ : restrictQ C U q₀ = 0 := by

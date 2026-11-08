@@ -3,10 +3,12 @@ Copyright (c) 2024-2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tobias Rothmann
 -/
-import ArkLib.Data.Lattices.CyclotomicRing.PowTwo
-import ArkLib.Data.Lattices.CyclotomicRing.Galois.Order
-import Mathlib.RingTheory.Polynomial.Cyclotomic.Factorization
-import Mathlib.RingTheory.ZMod.UnitsCyclic
+module
+
+public import ArkLib.Data.Lattices.CyclotomicRing.PowTwo
+public import ArkLib.Data.Lattices.CyclotomicRing.Galois.Order
+public import Mathlib.RingTheory.Polynomial.Cyclotomic.Factorization
+public import Mathlib.RingTheory.ZMod.UnitsCyclic
 
 /-!
 # Two-Factor Decomposition of `R_q` for `q ≡ 5 (mod 8)` (Hachi §3, Lemma 5)
@@ -33,22 +35,24 @@ lifting-the-exponent toolkit of `Galois/Order.lean` together with
 * [Nguyen, N. K., O'Rourke, G., and Zhang, J., *Hachi …*][NOZ26]
 -/
 
+@[expose] public section
+
 open Polynomial
 
 namespace ArkLib.Lattices.CyclotomicModulus
 
-variable (q : ℕ) [Fact (Nat.Prime q)] [NeZero q] [BEq (ZMod q)] [LawfulBEq (ZMod q)]
+variable (q : ℕ)
 
 /-! ## Phase 2: the cyclotomic identity (free from `IsCyclotomic`) -/
 
-omit [NeZero q] in
 /-- **`X^{2^α}+1 = Φ_{2^{α+1}}` over `Z_q`** (Hachi modulus is the `2^{α+1}`-th cyclotomic).
-Immediate from the `IsCyclotomic` instance of `powTwoCyclotomic` and `powTwoCyclotomic_toPoly`;
-`conductor = 2^{α+1}` definitionally. -/
+Follows from the prime-power cyclotomic formula, over any `ZMod q`. -/
 theorem Xpow_add_one_eq_cyclotomic (α : ℕ) :
     (Polynomial.X ^ (2 ^ α) + 1 : (ZMod q)[X]) = cyclotomic (2 ^ (α + 1)) (ZMod q) := by
-  have h := (powTwoCyclotomic_isCyclotomic (R := ZMod q) α).isCyclotomic
-  rwa [powTwoCyclotomic_toPoly] at h
+  rw [cyclotomic_prime_pow_eq_geom_sum (R := ZMod q) (p := 2) (n := α) Nat.prime_two,
+    Finset.sum_range_succ, Finset.sum_range_one, pow_zero, pow_one, add_comm]
+
+variable [Fact (Nat.Prime q)] [NeZero q] [BEq (ZMod q)] [LawfulBEq (ZMod q)]
 
 /-! ## Phase 1: the order of `q` and `−1 ∉ ⟨q⟩` -/
 
@@ -56,15 +60,19 @@ omit [Fact (Nat.Prime q)] [NeZero q] [BEq (ZMod q)] [LawfulBEq (ZMod q)] in
 /-- **(Phase 1)** The multiplicative order of `q` modulo the conductor `2^{α+1}` is `2^{α-1}`,
 for `q ≡ 5 (mod 8)`. Writing `q = 1 + 4·(2t+1)` (from `q = 8t+5`) with `2t+1` odd, this is
 `ZMod.orderOf_one_add_four_mul` over `ZMod (2^{(α-1)+2})`. -/
-theorem orderOf_q_eq (hq5 : q % 8 = 5) {α : ℕ} (hα : 1 ≤ α) :
+theorem orderOf_q_eq (hq5 : q % 8 = 5) {α : ℕ} :
     orderOf (q : ZMod (2 ^ (α + 1))) = 2 ^ (α - 1) := by
-  obtain ⟨t, ht⟩ : ∃ t, q = 8 * t + 5 := ⟨q / 8, by omega⟩
-  have hae : α - 1 + 2 = α + 1 := by omega
-  have key := ZMod.orderOf_one_add_four_mul (2 * (t : ℤ) + 1) ⟨t, by ring⟩ (α - 1)
-  rw [hae] at key
-  rw [← key]
-  congr 1
-  rw [ht]; push_cast; ring
+  rcases Nat.eq_zero_or_pos α with rfl | hα
+  · have hq2 : (q : ZMod 2) = 1 := by
+      exact (ZMod.natCast_eq_natCast_iff q 1 2).mpr (by rw [Nat.ModEq]; omega)
+    simpa using congrArg orderOf hq2
+  · obtain ⟨t, ht⟩ : ∃ t, q = 8 * t + 5 := ⟨q / 8, by omega⟩
+    have hae : α - 1 + 2 = α + 1 := by omega
+    have key := ZMod.orderOf_one_add_four_mul (2 * (t : ℤ) + 1) ⟨t, by ring⟩ (α - 1)
+    rw [hae] at key
+    rw [← key]
+    congr 1
+    rw [ht]; push_cast; ring
 
 omit [Fact (Nat.Prime q)] [NeZero q] [BEq (ZMod q)] [LawfulBEq (ZMod q)] in
 /-- **(Phase 1)** `−1 ∉ ⟨q⟩` in `(Z/2^{α+1})ˣ`, stated as: no power of `q` equals `−1`. For
@@ -85,7 +93,7 @@ theorem neg_one_notMem_powers_q (hq5 : q % 8 = 5) {α : ℕ} (hα : 1 ≤ α) :
 
 /-! ## Phase 2: factor count -/
 
-omit [BEq (ZMod q)] [LawfulBEq (ZMod q)] in
+omit [NeZero q] [BEq (ZMod q)] [LawfulBEq (ZMod q)] in
 /-- **(Phase 2)** `Φ_{2^{α+1}}` over `Z_q` has exactly two distinct monic irreducible factors,
 each of degree `2^{α-1} = d/2`, for `q ≡ 5 (mod 8)`. From Mathlib's
 `normalizedFactors_cyclotomic_card` (count `= φ(2^{α+1}) / ord = 2^α / 2^{α-1} = 2`) and
@@ -101,7 +109,7 @@ theorem cyclotomic_card_normalizedFactors (hq5 : q % 8 = 5) {α : ℕ} (hα : 1 
     Nat.totient_prime_pow_succ Nat.prime_two α]
   have hord : orderOf (ZMod.unitOfCoprime (q ^ 1) (hcop.pow_left 1)) = 2 ^ (α - 1) := by
     rw [← orderOf_units, ZMod.coe_unitOfCoprime, pow_one]
-    exact orderOf_q_eq q hq5 hα
+    exact orderOf_q_eq q hq5
   rw [hord, show (2 : ℕ) - 1 = 1 from rfl, mul_one,
     Nat.pow_div (Nat.sub_le α 1) (by norm_num), show α - (α - 1) = 1 from by omega, pow_one]
 

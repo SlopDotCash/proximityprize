@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.Data.CodingTheory.ProximityGap.DG25.ReedSolomon
+import ProximityPrize.Compatibility.UniformProbability
 
 /-!
 # DG25 tensor proximity gap — contrapositive forms
@@ -28,6 +29,12 @@ open NNReal Finset
 
 namespace ProximityGap
 
+-- This mathematical PMF client opts into finite enumeration only when no native sampler exists.
+-- The instance is local to this module; executable and caller-provided samplers retain priority.
+noncomputable local instance (priority := 10) legacyFiniteSampler
+    {T : Type} [Fintype T] [Nonempty T] : SampleableType T :=
+  SampleableType.ofFintype T
+
 section Generic
 
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
@@ -47,7 +54,8 @@ lemma multilinearCorrelatedAgreement_contrapositive
     (h_far : ¬ jointProximityNat (C := C) (u := u) e) :
     Pr_{let r ← $ᵖ (Fin ϑ → F)}[ Δ₀(r |⨂| u, C) ≤ e ]
       ≤ (ϑ : ℝ≥0) * ε / (Fintype.card F : ℝ≥0) :=
-  le_of_not_gt fun h_gt => h_far (hCA u h_gt)
+  le_of_not_gt fun h_gt => h_far (hCA u (by
+    rwa [← ProximityPrize.Compatibility.pmf_uniform_probability_eq_native]))
 
 end Generic
 

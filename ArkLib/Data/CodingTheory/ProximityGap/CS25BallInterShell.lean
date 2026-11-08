@@ -60,7 +60,7 @@ theorem ballInterCount_add_inner_le_ball (r : ℕ) (v : ι → F) :
           (fun x : ι → F => ¬ hammingDist (0 : ι → F) v ≤ hammingDist x 0 + r)).card
       ≤ (Finset.univ.filter (fun x : ι → F => hammingDist x 0 ≤ r)).card := by
   have hshell := ballInterCount_le_shell r v
-  have hpart := Finset.filter_card_add_filter_neg_card_eq_card
+  have hpart := Finset.card_filter_add_card_filter_not
     (s := Finset.univ.filter (fun x : ι → F => hammingDist x 0 ≤ r))
     (p := fun x : ι → F => hammingDist (0 : ι → F) v ≤ hammingDist x 0 + r)
   have hshell' : ballInterCount r v

@@ -199,16 +199,11 @@ theorem dvd_specialization_of_close {n deg m : ℕ} (ωs : Fin n ↪ F) (f₀ f�
   -- `W` is a Reed–Solomon codeword polynomial
   have hmem : ReedSolomon.evalOnPoints ωs W ∈ ReedSolomon.code ωs deg :=
     Submodule.mem_map.mpr ⟨W, Polynomial.mem_degreeLT.mpr hWdeg, rfl⟩
-  have hWn : W.natDegree < n := by
-    rcases eq_or_ne W 0 with rfl | hW
-    · simpa using Nat.lt_of_lt_of_le (Nat.succ_pos deg) hk
-    · exact Nat.lt_of_lt_of_le ((Polynomial.natDegree_lt_iff_degree_lt hW).mpr hWdeg)
-        (Nat.le_of_succ_le hk)
   -- the Lagrange round-trip: `codewordToPoly` of the evaluation codeword is `W` itself
   have hcw : ReedSolomon.codewordToPoly (⟨ReedSolomon.evalOnPoints ωs W, hmem⟩ :
       ReedSolomon.code ωs deg) = W := by
-    have h := GuruswamiSudan.interpolate_eq_of_degree_lt (ωs := ωs) W hWn
-    simpa [ReedSolomon.codewordToPoly, ReedSolomon.evalOnPoints] using h
+    exact ReedSolomon.toPolynomial_evalWord_of_degree_lt hWdeg
+      (by simpa using Nat.le_of_succ_le hk)
   have hmain := GuruswamiSudan.OverRatFunc.scalar_fold_decoded_divides_specialization
     ωs f₀ f₁ hQ hrep z hz hk hm ⟨ReedSolomon.evalOnPoints ωs W, hmem⟩
     (by rw [hcw]; convert hdist using 3; congr!)

@@ -4,7 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.OracleReduction.Security.RoundByRound
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
+import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
 
 /-!
 # Truncating rbr knowledge soundness at an error-`1` challenge round
@@ -65,8 +66,8 @@ def KnowledgeStateFunction.truncateAfter
     V.KnowledgeStateFunction init impl relIn relOut' E where
   toFun := fun m stmtIn tr w => m.val ≤ j.1.val → kSF.toFun m stmtIn tr w
   toFun_empty := fun stmtIn witMid => by
-    rw [kSF.toFun_empty stmtIn witMid]
-    exact ⟨fun h _ => h, fun h => h (Nat.zero_le _)⟩
+    intro h
+    exact kSF.toFun_empty stmtIn witMid (h (Nat.zero_le _))
   toFun_next := fun m hdir stmtIn tr msg witMid h => by
     intro hm
     have hm' : m.val ≤ j.1.val := by simpa using hm
@@ -87,27 +88,28 @@ theorem rbrKnowledgeSoundness_relOut_any_of_one_le_error
     {relIn : Set (StmtIn × WitIn)} {relOut : Set (StmtOut × WitOut)}
     {V : Verifier oSpec StmtIn StmtOut pSpec}
     {err : pSpec.ChallengeIdx → ℝ≥0}
-    (hKS : V.rbrKnowledgeSoundness init impl relIn relOut err)
+    (hKS : V.rbrKnowledgeSoundnessAveraged init impl relIn relOut err)
     (j : pSpec.ChallengeIdx) (hj : 1 ≤ err j)
     (relOut' : Set (StmtOut × WitOut)) :
-    V.rbrKnowledgeSoundness init impl relIn relOut' err := by
+    V.rbrKnowledgeSoundnessAveraged init impl relIn relOut' err := by
   obtain ⟨WitMid, E, kSF, hbound⟩ := hKS
   refine ⟨WitMid, E, kSF.truncateAfter j relOut', ?_⟩
   intro stmtIn witIn prover i
   rcases lt_trichotomy i.1.val j.1.val with hlt | heq | hgt
   · -- strictly before `j`: the truncated flip event is contained in the original one
-    refine le_trans (probEvent_mono ?_) (hbound stmtIn witIn prover i)
+    refine le_trans (prEvent_mono_of_support _ _ _ ?_) (hbound stmtIn witIn prover i)
     rintro ⟨transcript, challenge, _log⟩ _ ⟨witMid, hnot, hsucc⟩
     exact ⟨witMid, fun hcast => hnot (fun _ => hcast),
       hsucc (by simpa using Nat.succ_le_of_lt hlt)⟩
   · -- at `j`: trivial bound `1 ≤ err j`
     have hij : i = j := Subtype.ext (Fin.ext heq)
     subst hij
-    exact le_trans probEvent_le_one (by exact_mod_cast hj)
+    exact le_trans (prEvent_le_one _) (by exact_mod_cast hj)
   · -- strictly after `j`: the truncated state is already `True` before the challenge,
     -- so the flip event is empty
-    refine le_trans (le_of_eq ?_) (zero_le _)
-    rw [probEvent_eq_zero_iff]
+    refine le_trans (le_of_eq ?_) (by positivity)
+    change prEvent _ = 0
+    rw [OracleComp.prEvent_eq_zero_iff]
     rintro ⟨transcript, challenge, _log⟩ _ ⟨witMid, hnot, _⟩
     exact hnot (fun hle => absurd hle (by simpa using Nat.not_le.mpr hgt))
 
@@ -127,18 +129,17 @@ variable {ι : Type} {oSpec : OracleSpec ι}
 
 open scoped NNReal
 
-omit [∀ i, OracleInterface (OStmt₂ i)] in
 /-- `OracleVerifier` companion of `Verifier.rbrKnowledgeSoundness_relOut_any_of_one_le_error`. -/
 theorem rbrKnowledgeSoundness_relOut_any_of_one_le_error
     {relIn : Set ((Stmt₁ × ∀ i, OStmt₁ i) × Wit₁)}
     {relOut : Set ((Stmt₂ × ∀ i, OStmt₂ i) × Wit₂)}
     {V : OracleVerifier oSpec Stmt₁ OStmt₁ Stmt₂ OStmt₂ pSpec}
     {err : pSpec.ChallengeIdx → ℝ≥0}
-    (hKS : V.rbrKnowledgeSoundness init impl relIn relOut err)
+    (hKS : V.rbrKnowledgeSoundnessAveraged init impl relIn relOut err)
     (j : pSpec.ChallengeIdx) (hj : 1 ≤ err j)
     (relOut' : Set ((Stmt₂ × ∀ i, OStmt₂ i) × Wit₂)) :
-    V.rbrKnowledgeSoundness init impl relIn relOut' err := by
-  unfold OracleVerifier.rbrKnowledgeSoundness at hKS ⊢
+    V.rbrKnowledgeSoundnessAveraged init impl relIn relOut' err := by
+  unfold OracleVerifier.rbrKnowledgeSoundnessAveraged at hKS ⊢
   exact Verifier.rbrKnowledgeSoundness_relOut_any_of_one_le_error hKS j hj relOut'
 
 end OracleVerifier

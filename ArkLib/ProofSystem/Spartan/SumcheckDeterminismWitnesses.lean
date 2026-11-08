@@ -34,8 +34,9 @@ variable {ι : Type} (oSpec : OracleSpec ι)
 /-- **The full multi-round sum-check oracle verifier compiles failing-deterministically**
 (any degree, any round count): n-ary composition of the per-round failing-det collapses. -/
 theorem sumcheckFull_toVerifier_isFailingDet (deg : ℕ) {m : ℕ} (D : Fin m ↪ R) (n : ℕ) :
-    (Sumcheck.Spec.oracleVerifier R deg D n oSpec).toVerifier.IsFailingDet :=
-  OracleVerifier.seqCompose_toVerifier_isFailingDet
+    (Sumcheck.Spec.oracleVerifier R deg D n oSpec).toVerifier.IsFailingDet := by
+  rw [Sumcheck.Spec.oracleVerifier_toVerifier_eq_seqCompose]
+  exact OracleVerifier.seqCompose_toVerifier_isFailingDet
     (Stmt := Sumcheck.Spec.StatementRound R n)
     (OStmt := fun _ => Sumcheck.Spec.OracleStatement R n deg)
     (Sumcheck.Spec.SingleRound.oracleVerifier R n deg D oSpec)
@@ -50,9 +51,9 @@ theorem firstSumcheck_toVerifier_isFailingDet :
     change OracleVerifier.LiftContextCoherent (firstSumcheckOracleLens pp oSpec)
       (Sumcheck.Spec.oracleReduction R 3 (boolEmbedding R) pp.ℓ_m oSpec).verifier
     exact firstSumcheckCoherent (R := R) pp oSpec
-  show ((Sumcheck.Spec.oracleVerifier R 3 (boolEmbedding R) pp.ℓ_m oSpec).liftContext
+  show ((Sumcheck.Spec.oracleVerifier R 3 (boolEmbedding R) pp.ℓ_m oSpec).liftContextLegacy
     (firstSumcheckOracleLens pp oSpec)).toVerifier.IsFailingDet
-  rw [OracleVerifier.liftContext_toVerifier_comm]
+  rw [OracleVerifier.liftContextLegacy_toVerifier_comm]
   obtain ⟨v?, hv⟩ := sumcheckFull_toVerifier_isFailingDet oSpec 3 (boolEmbedding R) pp.ℓ_m
   exact ⟨_, Verifier.liftContext_failingDet _ _ v? hv⟩
 
@@ -64,9 +65,9 @@ theorem secondSumcheck_toVerifier_isFailingDet :
     change OracleVerifier.LiftContextCoherent (secondSumcheckOracleLens pp oSpec)
       (Sumcheck.Spec.oracleReduction R 2 (boolEmbedding R) pp.ℓ_n oSpec).verifier
     exact secondSumcheckCoherent (R := R) pp oSpec
-  show ((Sumcheck.Spec.oracleVerifier R 2 (boolEmbedding R) pp.ℓ_n oSpec).liftContext
+  show ((Sumcheck.Spec.oracleVerifier R 2 (boolEmbedding R) pp.ℓ_n oSpec).liftContextLegacy
     (secondSumcheckOracleLens pp oSpec)).toVerifier.IsFailingDet
-  rw [OracleVerifier.liftContext_toVerifier_comm]
+  rw [OracleVerifier.liftContextLegacy_toVerifier_comm]
   obtain ⟨v?, hv⟩ := sumcheckFull_toVerifier_isFailingDet oSpec 2 (boolEmbedding R) pp.ℓ_n
   exact ⟨_, Verifier.liftContext_failingDet _ _ v? hv⟩
 

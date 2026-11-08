@@ -181,7 +181,7 @@ theorem wickOdd_le_pow (r : ℕ) : wickOdd r ≤ (2 * (r : ℝ)) ^ r := by
   unfold wickOdd
   calc ∏ i ∈ Finset.range r, (2 * (i : ℝ) + 1)
       ≤ ∏ _i ∈ Finset.range r, (2 * (r : ℝ)) := by
-        refine Finset.prod_le_prod (fun i _ => by positivity) (fun i hi => ?_)
+        refine Finset.prod_le_prod₀ (fun i _ => by positivity) (fun i hi => ?_)
         have : (i : ℝ) + 1 ≤ (r : ℝ) := by exact_mod_cast Nat.succ_le_of_lt (Finset.mem_range.mp hi)
         linarith
     _ = (2 * (r : ℝ)) ^ r := by rw [Finset.prod_const, Finset.card_range]

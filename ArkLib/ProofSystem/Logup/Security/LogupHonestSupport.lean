@@ -141,8 +141,9 @@ inside the completeness error. -/
 theorem poleEvent_le_logupCompletenessError (oStmt : ∀ i, OStmtIn F n M i)
     [DecidablePred
       (fun x : F => ∃ u : Hypercube n, x + evalOnHypercube (tableOracle oStmt) u = 0)] :
-    probEvent (uniformSample F)
+    probEvent
       (fun x : F => ∃ u : Hypercube n, x + evalOnHypercube (tableOracle oStmt) u = 0)
+      (uniformSample F)
       ≤ (logupCompletenessError F n : ℝ≥0∞) :=
   probEvent_pole_le_logupCompletenessError F n M oStmt
 

@@ -121,7 +121,7 @@ theorem antiSign_histogram (k : ℕ) : ∑ i, antiSign k i = 0 := by
   have hcompl :
       (Finset.univ.filter (fun i : Fin (2 * k) => ¬ (i : ℕ) < k)).card = k := by
     have htot : (Finset.univ : Finset (Fin (2 * k))).card = 2 * k := by simp
-    have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+    have hsplit := Finset.card_filter_add_card_filter_not
       (s := (Finset.univ : Finset (Fin (2 * k))))
       (p := fun i : Fin (2 * k) => (i : ℕ) < k)
     rw [hfilter, htot] at hsplit

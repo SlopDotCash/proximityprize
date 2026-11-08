@@ -1,0 +1,26 @@
+{
+  "before_count": 56,
+  "after_count": 57,
+  "unchanged_entries": 53,
+  "scope": "Keep historical mathematics explicit and replace the invalid mixed-model step pin with both completed native obligations. No missing entry is skipped or replaced by an assumption.",
+  "replacements": {
+    "Binius.FRIBinius.CoreInteractionPhase.sumcheckFold_input_bridge_counterexample": [
+      "Binius.FRIBinius.CoreInteractionPhase.sumcheckFold_legacy_input_bridge_counterexample"
+    ],
+    "Binius.BinaryBasefold.QueryPhase.query_phase_final_fold_eq_constant": [
+      "Binius.BinaryBasefold.QueryPhase.Historical.query_phase_final_fold_eq_constant"
+    ],
+    "Binius.BinaryBasefold.QueryPhase.query_phase_step_preserves_fold": [
+      "Binius.BinaryBasefold.QueryPhase.checkSingleFoldingStep_simulate",
+      "Binius.BinaryBasefold.QueryPhase.logicalComputeFoldedValue_eq_totalFold_of_strictConsistency"
+    ]
+  },
+  "step_disposition": "The old execution-support claim concluded a differently ordered historical fold. Its exact source and invalid-bridge rationale are in binius-query-folding-migration.json. Native execution equality preserves the carried-value guard and rejection; native logical folding gives the next chronological iteratedFold under the actual canonical strict consistency relation. These separate completed theorems replace the unsupported identity.",
+  "actual_import_validation": {
+    "receipt": "/tmp/arklib-flagship-pin-candidate-actual-import.receipt.json",
+    "compiler_exit_code": 0,
+    "admission_checker_exit_code": 0,
+    "source_and_imports_stable": true,
+    "axioms": "propext, Classical.choice, Quot.sound only"
+  }
+}

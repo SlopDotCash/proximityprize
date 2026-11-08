@@ -43,7 +43,7 @@ duplicate** — keep both:
 * `GrandChallengesLattice.lean` (plural) indexes the lattice by `Finset (Fin (n+1))`
   (`Finset.univ.filter …`) in namespace `ProximityGap.GrandChallengesLattice`. It adds the
   step-function bridge to the real-valued `MCALowerWitness`/`MCAUpperWitness`/
-  `ListLowerWitness`/`ListUpperWitness` framework (`latticeIndexOf`, `*_bracketed`,
+  `ContinuousListLowerWitness`/`ContinuousListUpperWitness` framework (`latticeIndexOf`, `*_bracketed`,
   uniqueness), which this file does not.
 
 The bridge API in `GrandChallengesLattice.lean`
@@ -142,7 +142,7 @@ open Classical ListDecodable in
 /-- Lattice radii at which the interleaved list-size bound holds (list-decoding side). -/
 noncomputable def listLatticeSet (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0) : Finset ℕ :=
   (Finset.range (Fintype.card ι + 1)).filter
-    (fun j => (Lambda (C^⋈ (Fin m)) (((j : ℝ≥0) / (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ) :
+    (fun j => (ListDecodable.Lambda (C^⋈ (Fin m)) (((j : ℝ≥0) / (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ) :
         ENNReal) ≤ (ε_star : ENNReal) * (Fintype.card F : ENNReal))
 
 open Classical in
@@ -157,12 +157,12 @@ of `mcaLatticeThreshold_spec`. -/
 theorem listLatticeThreshold_spec (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0)
     (hne : (listLatticeSet C m ε_star).Nonempty) :
     (listLatticeThreshold C m ε_star hne : ℝ≥0) / (Fintype.card ι : ℝ≥0) ≤ 1 ∧
-    (Lambda (C^⋈ (Fin m))
+    (ListDecodable.Lambda (C^⋈ (Fin m))
         (((listLatticeThreshold C m ε_star hne : ℝ≥0) / (Fintype.card ι : ℝ≥0) :
           ℝ≥0) : ℝ) : ENNReal) ≤
       (ε_star : ENNReal) * (Fintype.card F : ENNReal) ∧
     ∀ j : ℕ, j ≤ Fintype.card ι → listLatticeThreshold C m ε_star hne < j →
-      (Lambda (C^⋈ (Fin m)) (((j : ℝ≥0) / (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ) :
+      (ListDecodable.Lambda (C^⋈ (Fin m)) (((j : ℝ≥0) / (Fintype.card ι : ℝ≥0) : ℝ≥0) : ℝ) :
         ENNReal) > (ε_star : ENNReal) * (Fintype.card F : ENNReal) := by
   classical
   have hcard : (0 : ℝ≥0) < (Fintype.card ι : ℝ≥0) := by

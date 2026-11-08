@@ -43,6 +43,7 @@ theorem hammingBall_ncard_le_qEntropy {F : Type} [Fintype F] [DecidableEq F] [Ze
   have heq : (ListDecodable.hammingBall (0 : ι → F) r).ncard
       = hammingBallVolume (Fintype.card F) ((r : ℝ) / (n : ℝ)) n := by
     rw [hammingBallVolume_eq_ncard_hammingBall ((r : ℝ) / (n : ℝ)) (0 : ι → F), hfloor]
+    congr 1
   rw [heq]
   have hent := hammingBallVolume_le_qEntropy (q := Fintype.card F) hq ((r : ℝ) / (n : ℝ))
     (by rw [hfloor]; exact hrn) (by rw [hfloor]; exact hcap)

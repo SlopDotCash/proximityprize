@@ -174,7 +174,7 @@ theorem supportInterpolant_natDegree_lt_three
   apply natDegree_lt_of_degree_lt_of_pos (by norm_num)
   have hdeg := Lagrange.degree_interpolate_lt
     (s := directionSupportSet u1) (v := dom) (r := w) dom.injective.injOn
-  simpa only [hsupport] using hdeg
+  simpa only [supportInterpolant, hsupport] using hdeg
 
 theorem exists_codePolynomial_of_mem_zeroAgreementStratum
     (dom : Fin 16 ↪ F) (u0 u1 : Fin 16 → F) {t : Nat}

@@ -40,24 +40,11 @@ variable {m : ℕ} (k : ℕ) {δ : ℚ} {x₀ : F} {u₀ u₁ : Fin n → F} {Q 
 set_option linter.unusedDecidableInType false
 
 omit [DecidableEq F] [DecidableEq (RatFunc F)] [Finite F] in
-/-- *Accessible twin of the sealed `eval_on_Z`.*  The per-`z` `Z`-specialization used throughout
-the proven Claim-5.7 machinery in `Extraction.lean` is `pg_eval_on_Z`, and it reduces, by `rfl`,
-to exactly the definitional body of `Trivariate.eval_on_Z`, namely
-`p.map (mapRingHom (evalRingHom z))`.
-
-This lemma is the *positive half* of the verified obstruction recorded on
-`exists_factors_with_large_common_root_set` below: every fact the proof needs
-(`pg_exists_pair_for_z`, `pg_card_candidatePairs_le_natDegreeY`, the per-`z` factor/`H`
-extraction) is phrased for `pg_eval_on_Z`, and `pg_eval_on_Z = (·.map (mapRingHom (evalRingHom z)))`
-holds definitionally — whereas the *same body* wrapped in `Trivariate.eval_on_Z` (which the
-  Claim-5.7
-statement uses) is `opaque` and hence provably inaccessible: not `eval_on_Z 0 z = 0`, not
-  additivity,
-and not `eval_on_Z p z = pg_eval_on_Z p z` is derivable (all fail with "made no progress" / `rfl`
-failure, since `opaque` blocks delta-reduction). -/
+/-- The per-`z` specialization in Claim 5.7 uses the coefficient map from
+`Trivariate.evalAtZ`. -/
 lemma c57_pg_eval_on_Z_body (p : F[Z][X][Y]) (z : F) :
     pg_eval_on_Z (F := F) p z = p.map (Polynomial.mapRingHom (Polynomial.evalRingHom z)) :=
-  rfl
+  Trivariate.evalAtZ_eq_map_map_evalRingHom z p
 
 /-! ### GAP ANALYSIS for the §5 list-decoding agreement claims (5.7 – 5.11)
 
@@ -134,15 +121,9 @@ Closing any of these honestly requires first landing (i) an `#S` lower-bound hyp
 present in the current tree. -/
 
 omit [DecidableEq F] [DecidableEq (RatFunc F)] [Finite F] in
-/-- *De-sealed `eval_on_Z` agrees with its accessible twin* (Gap-A resolution, cf. the obstruction
-note on `exists_factors_with_large_common_root_set`). `Trivariate.eval_on_Z` is no longer `opaque`
-(it is a transparent `def` with equation lemma `eval_on_Z_eq`), so its body
-`p.map (mapRingHom (evalRingHom z))` is now definitionally exposed; in particular it is *equal* to
-the accessible twin `pg_eval_on_Z`. Under the old `opaque` declaration this equality failed `rfl`
-despite identical bodies — that is precisely the (now-resolved) Gap A. -/
+/-- Both historical specializations delegate to `Trivariate.evalAtZ`. -/
 lemma c57_eval_on_Z_eq_pg (p : F[Z][X][Y]) (z : F) :
-    Trivariate.eval_on_Z p z = pg_eval_on_Z (F := F) p z := by
-  rw [Trivariate.eval_on_Z_eq]; rfl
+    Trivariate.eval_on_Z p z = pg_eval_on_Z (F := F) p z := rfl
 
 omit [DecidableEq F] [DecidableEq (RatFunc F)] [Finite F] in
 /-- `eval_on_Z` sends `0` to `0` (now provable — was inaccessible under the old `opaque`). -/
@@ -382,7 +363,8 @@ theorem Q_vanishes_on_close_codeword_graph [DecidableEq (Polynomial F)]
     rw [hpt, hQz]; exact htr
   have hdeg : (Qz.eval P).natDegree ≤ Bivariate.natWeightedDegree Qz 1 k := by
     have hPdeg : P.natDegree ≤ (k + 1) - 1 := by
-      simpa using (exists_Pz_of_coeffs_of_close_proximity (n := n) (k := k) hS).choose_spec.1
+      simpa only [P, Nat.add_sub_cancel] using
+        (Pz_natDegree_le (n := n) (k := k) hS)
     simpa using GuruswamiSudan.degree_eval_le_weightedDegree Qz P (k + 1) hPdeg
   have := gapB_vanish_of_orderM_and_count ωs Qz P (u₀ + z • u₁) m
     (Bivariate.natWeightedDegree Qz 1 k) A hroots hA hdeg hcount
@@ -633,7 +615,7 @@ lemma exists_pg_factors_with_large_common_root_set_of_dvd (δ : ℚ) (x₀ : F)
         H ∈
           UniqueFactorizationMonoid.normalizedFactors
             (Bivariate.evalX (Polynomial.C x₀) R) := by
-    simpa [pg_candidatePairs] using hmem
+    simpa [pg_candidatePairs, UniqueFactorizationMonoid.mem_primeFactors] using hmem
   refine ⟨R, H, hpair.1, ?_, ?_, ?_, ?_, hsep R hpair.1, ?_, hlarge⟩
   · exact pg_Rset_irreducible (F := F) (k := k) h_gs R hpair.1
   · exact UniqueFactorizationMonoid.irreducible_of_normalized_factor
@@ -641,7 +623,7 @@ lemma exists_pg_factors_with_large_common_root_set_of_dvd (δ : ℚ) (x₀ : F)
   · exact pg_candidatePairs_snd_natDegree_pos (F := F) (k := k) (x₀ := x₀)
       (h_gs := h_gs) hsep hmem
   · exact UniqueFactorizationMonoid.dvd_of_mem_normalizedFactors hpair.2
-  · simpa [c57_eval_on_Z_eq_pg] using hcard_pg
+  · exact hcard_pg
 
 omit [DecidableEq (RatFunc F)] in
 /-- Candidate-pair extraction from the `pg_eval_on_Z` divisibility hypothesis

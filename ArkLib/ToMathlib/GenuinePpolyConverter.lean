@@ -118,7 +118,8 @@ theorem not_hrepG_of_two_le_natDegree (hdeg : 2 ≤ H.natDegree)
   intro h
   have h0 : liftToFunctionField (H := H) (Ppoly.coeff 0) = α₀ H := by
     have hc := congrArg (fun s : PowerSeries (𝕃 H) => PowerSeries.coeff 0 s) h
-    simpa only [coeff_polyToPowerSeries𝕃, PowerSeries.coeff_zero_eq_constantCoeff_apply,
+    rw [coeff_polyToPowerSeries𝕃] at hc
+    simpa only [PowerSeries.coeff_zero_eq_constantCoeff_apply,
       gammaGenuine_constantCoeff hHyp] using hc
   exact BCIKS20.ZLinearClosureAudit.α₀_ne_lift H hdeg (Ppoly.coeff 0) h0.symm
 
@@ -192,7 +193,8 @@ theorem corrected_rep_T_loaded (hdeg : 2 ≤ H.natDegree)
   have h0 : liftToFunctionField (H := H) (P₀.coeff 0)
       + functionFieldT (H := H) * liftToFunctionField (H := H) (P₁.coeff 0) = α₀ H := by
     have hc := congrArg (fun s : PowerSeries (𝕃 H) => PowerSeries.coeff 0 s) hrepT
-    simpa only [coeff_polyToPowerSeries𝕃T, PowerSeries.coeff_zero_eq_constantCoeff_apply,
+    rw [coeff_polyToPowerSeries𝕃T] at hc
+    simpa only [PowerSeries.coeff_zero_eq_constantCoeff_apply,
       gammaGenuine_constantCoeff hHyp] using hc
   rw [hzero, mul_zero, add_zero] at h0
   exact BCIKS20.ZLinearClosureAudit.α₀_ne_lift H hdeg (P₀.coeff 0) h0.symm

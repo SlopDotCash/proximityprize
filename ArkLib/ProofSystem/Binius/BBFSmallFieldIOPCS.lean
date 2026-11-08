@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao, ArkLib Contributors
 -/
 
-import ArkLib.ProofSystem.Binius.BinaryBasefold.General
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.General
 import ArkLib.ProofSystem.Binius.FRIBinius.General
 
 /-!

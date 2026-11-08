@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.EvaluationCodeDimension
 import Research.ProximityPrize.Frontier._PrizeShapeRateHalfBracket
 
 /-!
@@ -371,8 +372,7 @@ theorem firstPrime_production_singleSubset_badScalar_lower :
       = ((rsCode (smoothDom g (2 ^ 30) orderOf_g) (2 ^ 29) :
           Submodule (ZMod P) (Fin (2 ^ 30) → ZMod P)) :
           Set (Fin (2 ^ 30) → ZMod P)) := by
-    simpa only [Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 29)] using
-      (evalCode_eq_rsCode orderOf_g (2 ^ 29 - 1))
+    exact ProximityGap.Ownership.evalCode_pred_eq_rsCode orderOf_g (by norm_num)
   simp only [hbridge]
   have hmain := badScalar_count_ge_of_constructed_stack
     (rsCode (smoothDom g (2 ^ 30) orderOf_g) (2 ^ 29))

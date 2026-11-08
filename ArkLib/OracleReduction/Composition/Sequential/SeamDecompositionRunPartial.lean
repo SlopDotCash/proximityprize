@@ -199,17 +199,20 @@ theorem append_continueFromTo_right_msg_partial (hn : 0 < n)
         {u' : pSpec₂.Transcript j₂}, HEq u u' →
         HEq (Transcript.appendRight T₁ u) (Transcript.appendRight T₁ u') := by
       intro j₁ j₂ hj u u' hu; subst hj; rw [eq_of_heq hu]
-    refine map_heq_congr (by rw [eR]) (by rw [eTgt]) (fun a a' ha => ?_)
+    rw [bind_pure_comp]
+    refine map_heq_congr ?_ ?_ (fun a a' ha => ?_)
       (HEq.trans (liftComp_continueFromTo_heq_target eR P₂ c1 c2 p)
         (liftComp_continueFromTo_heq_start
           (superSpec := oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)
           (show (⟨1, by omega⟩ : Fin n).castSucc = (⟨0, hn⟩ : Fin n).succ from by ext; simp)
           P₂ c1 c2 _ p HEq.rfl))
-    obtain ⟨t, s⟩ := a
-    obtain ⟨t', s'⟩ := a'
-    obtain ⟨ht, hs⟩ := prod_heq_split (by rw [eR]) (by rw [eR]) ha
-    refine prodMk_heq (by rw [eTgt]) (by rw [eTgt]) (happ eR ht)
-      ((cast_heq _ _).trans (hs.trans (cast_heq _ _).symm))
+    · rw [eR]
+    · rw [eTgt]
+    · obtain ⟨t, s⟩ := a
+      obtain ⟨t', s'⟩ := a'
+      obtain ⟨ht, hs⟩ := prod_heq_split (by rw [eR]) (by rw [eR]) ha
+      refine prodMk_heq (by rw [eTgt]) (by rw [eTgt]) (happ eR ht)
+        ((cast_heq _ _).trans (hs.trans (cast_heq _ _).symm))
 
 end Prover
 

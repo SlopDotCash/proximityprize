@@ -568,7 +568,7 @@ theorem add_coeff {p q : UniPoly Q} {i : ℕ} (hi : i < (add_raw p q).size) :
 := by
   unfold add_raw coeff
   change (Array.zipWith _ _ _)[i] = _
-  rw [Array.getElem_zipWith]
+  rw [Array.getElem_zipWith hi]
   rw [Array.rightpad_getElem_eq_getD, Array.rightpad_getElem_eq_getD]
 
 theorem add_coeff? (p q : UniPoly Q) (i : ℕ) :
@@ -760,13 +760,13 @@ noncomputable def toPoly (p : UniPoly R) : Polynomial R :=
 
 /-- a more low-level and direct definition of `toPoly`; currently unused. -/
 noncomputable def toPoly' (p : UniPoly R) : Polynomial R :=
-  Polynomial.ofFinsupp (Finsupp.onFinset (Finset.range p.size) p.coeff (by
+  Polynomial.ofFinsupp (AddMonoidAlgebra.ofCoeff (Finsupp.onFinset (Finset.range p.size) p.coeff (by
     intro n hn
     rw [Finset.mem_range]
     by_contra! h
     have h' : p.coeff n = 0 := by simp [h]
     contradiction
-  ))
+  )))
 
 noncomputable def UniPolyC.toPoly (p : UniPolyC R) : Polynomial R := p.val.toPoly
 
@@ -931,7 +931,7 @@ open Trim
   simp_all [Trim.equiv]
 
 /-- The `UniPoly.equiv` is indeed an equivalence relation. -/
-instance instEquivalenceEquiv : Equivalence (equiv (R := R)) where
+theorem instEquivalenceEquiv : Equivalence (equiv (R := R)) where
   refl := equiv_refl
   symm := equiv_symm
   trans := equiv_trans
@@ -943,7 +943,7 @@ instance instSetoidUniPoly : Setoid (UniPoly R) where
 
 /-- The quotient of `UniPoly R` by `UniPoly.equiv`. This will be changen to be equivalent to
   `Polynomial R`. -/
-def QuotientUniPoly (R : Type*) [Ring R] [BEq R] := Quotient (@instSetoidUniPoly R _)
+def QuotientUniPoly (R : Type*) [Ring R] [BEq R] := Quotient (instSetoidUniPoly (R := R))
 
 -- operations on `UniPoly` descend to `QuotientUniPoly`
 namespace QuotientUniPoly

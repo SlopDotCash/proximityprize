@@ -189,7 +189,7 @@ theorem eq_section_of_many_fiber_agreements {H : F[X][Y]} [Fact (Irreducible H)]
   have hrepw : canonicalRepOf𝒪 hH (β - wO) = canonicalRepOf𝒪 hH β - Polynomial.C w := by
     have h1 : β - wO = Ideal.Quotient.mk (Ideal.span {H_tilde' H})
         (canonicalRepOf𝒪 hH β - Polynomial.C w) := by
-      rw [RingHom.map_sub, mk_canonicalRepOf𝒪]
+      rw [map_sub, mk_canonicalRepOf𝒪]
     rw [h1, canonicalRepOf𝒪_mk]
     refine (Polynomial.modByMonic_eq_self_iff (H_tilde'_monic H hH)).2 ?_
     refine lt_of_le_of_lt (Polynomial.degree_sub_le _ _) ?_
@@ -211,7 +211,7 @@ theorem eq_section_of_many_fiber_agreements {H : F[X][Y]} [Fact (Irreducible H)]
     intro z hz
     obtain ⟨root, hroot⟩ := hS z hz
     refine ⟨root, ?_⟩
-    rw [RingHom.map_sub, hroot, hwO, π_z_mk, Polynomial.evalEval_C, sub_self]
+    rw [map_sub, hroot, hwO, π_z_mk, Polynomial.evalEval_C, sub_self]
   -- fire the budget-form Lemma A.1
   have h0 : β - wO = 0 :=
     eq_zero_of_coeff_budget_of_many_vanishing hH (β - wO) hD hb' hvan hcard

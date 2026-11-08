@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Spartan.TightSeamBridge
 import ArkLib.ProofSystem.Spartan.FinalCheckWithClaimLeaf
 
@@ -62,8 +63,8 @@ def tightFinalRelOut :
         (secondSumCheckVirtualPolynomial R pp (dropFirstTarget pp x.1.1.2) x.1.2)
       ∧ (x.1.1.2.2, x.1.2) ∈ evalClaimBindingRel (R := R) pp }
 
-/-- The tight terminal predicate (documentation-level: the oracle `CheckClaim` discards the
-`Prop`; the semantic content lives in `tightFinalRelOut`). It mirrors `finalClaimPredicate`
+/-- The tight terminal predicate is a diagnostic specification. Canonical `CheckClaim` does
+not execute it; the semantic content lives in `tightFinalRelOut`. It mirrors `finalClaimPredicate`
 through the target-dropping projections. -/
 noncomputable def tightFinalPredicate :
     ReaderT (Statement.AfterSecondSumcheckWithTarget R pp)
@@ -83,7 +84,6 @@ noncomputable def finalCheckTight :
   CheckClaim.oracleReduction oSpec
     (Statement.AfterSecondSumcheckWithTarget R pp)
     (OracleStatement.AfterLinearCombination R pp)
-    (tightFinalPredicate pp)
 
 /-! ## The doom transport: direct ⟹ transported -/
 
@@ -125,7 +125,7 @@ the conjoined carried second sum-check output relation to the tight final relati
 The transport `tightFinalRelOut ⊆ transported₂ ∩ binding` is `transported₂_of_direct` plus the
 binding pass-through. -/
 theorem finalCheckTight_rbrKnowledgeSoundness :
-    (finalCheckTight (R := R) pp oSpec).verifier.rbrKnowledgeSoundness init impl
+    (finalCheckTight (R := R) pp oSpec).verifier.rbrKnowledgeSoundnessAveraged init impl
       ((secondSumcheckWithTargetRbrRelOut (R := R) pp oSpec)
         ∩ {y | y.1 ∈ bindingAtSecondOut (R := R) pp})
       (tightFinalRelOut (R := R) pp) 0 :=

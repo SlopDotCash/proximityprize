@@ -3,9 +3,11 @@ Copyright (c) 2024-2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tobias Rothmann
 -/
-import ArkLib.Data.Lattices.CyclotomicRing.Core.Basic
-import ArkLib.Data.Lattices.Vectors
-import Mathlib.Data.ZMod.ValMinAbs
+module
+
+public import ArkLib.Data.Lattices.CyclotomicRing.Core.Basic
+public import ArkLib.Data.Lattices.Vectors
+public import Mathlib.Data.ZMod.ValMinAbs
 
 /-!
 # Norms On The Cyclotomic Ring
@@ -18,7 +20,7 @@ Coefficient norms for elements of the computable cyclotomic ring
 Norms are defined relative to a `CenteredCoeffView`, an integer-valued
 representative map on coefficients. The canonical instance for `R = ZMod q`
 is `zmodCenteredView`, which uses `ZMod.valMinAbs` to map each residue to the
-balanced range `[-(q-1)/2, (q-1)/2]`, matching the `mod± q` convention used in
+balanced representative `r` with `-q < 2 * r ≤ q`, matching the `mod± q` convention used in
 the literature.
 
 ## Main definitions
@@ -29,6 +31,8 @@ the literature.
   `CPolynomial R` (centered `ℓ∞`, `ℓ₁`, squared `ℓ₂`), returned as `ℕ`.
 * `PolyVec.cInfNorm` / `l1Norm` / `l2NormSq` — their vector lifts.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 
@@ -44,7 +48,7 @@ structure CenteredCoeffView (R : Type*) where
   repr : R → ℤ
 
 /-- The balanced representative for `ZMod q`, sending each residue to its unique
-representative in `[-(q-1)/2, (q-1)/2]` via `ZMod.valMinAbs`. -/
+representative `r` satisfying `-q < 2 * r ≤ q` via `ZMod.valMinAbs`. -/
 def zmodCenteredView (q : ℕ) [NeZero q] : CenteredCoeffView (ZMod q) where
   repr := ZMod.valMinAbs
 

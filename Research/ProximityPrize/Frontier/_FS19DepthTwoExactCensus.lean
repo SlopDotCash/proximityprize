@@ -172,7 +172,6 @@ theorem pairA_card (hm : 0 < m) : (pairA m).card = (2 * m) * (2 * m) := by
       rw [Finset.mem_product]
       exact ⟨mem_range.mpr (hcmem.1 0), mem_range.mpr (hcmem.1 2)⟩
     · rintro c hcmem c' hcmem' heq
-      dsimp only at heq
       simp only [pairA, Finset.mem_filter] at hcmem hcmem'
       have h0 : c 0 = c' 0 := congrArg Prod.fst heq
       have h2 : c 2 = c' 2 := congrArg Prod.snd heq
@@ -208,7 +207,6 @@ theorem pairB_card (hm : 0 < m) : (pairB m).card = (2 * m) * (2 * m) := by
       rw [Finset.mem_product]
       exact ⟨mem_range.mpr (hcmem.1 0), mem_range.mpr (hcmem.1 1)⟩
     · rintro c hcmem c' hcmem' heq
-      dsimp only at heq
       simp only [pairB, Finset.mem_filter] at hcmem hcmem'
       have h0 : c 0 = c' 0 := congrArg Prod.fst heq
       have h1 : c 1 = c' 1 := congrArg Prod.snd heq
@@ -244,7 +242,6 @@ theorem pairC_card (hm : 0 < m) : (pairC m).card = (2 * m) * (2 * m) := by
       rw [Finset.mem_product]
       exact ⟨mem_range.mpr (hcmem.1 0), mem_range.mpr (hcmem.1 1)⟩
     · rintro c hcmem c' hcmem' heq
-      dsimp only at heq
       simp only [pairC, Finset.mem_filter] at hcmem hcmem'
       have h0 : c 0 = c' 0 := congrArg Prod.fst heq
       have h1 : c 1 = c' 1 := congrArg Prod.snd heq
@@ -282,7 +279,6 @@ theorem interAB_card (hm : 0 < m) : (pairA m ∩ pairB m).card = 2 * m := by
       simp only [pairA, Finset.mem_filter, mem_expTuples_iff] at hcmem
       exact mem_range.mpr (hcmem.1.1 0)
     · rintro c hcmem c' hcmem' heq
-      dsimp only at heq
       rw [Finset.mem_inter] at hcmem hcmem'
       simp only [pairA, pairB, Finset.mem_filter, mem_expTuples_iff] at hcmem hcmem'
       funext i
@@ -328,7 +324,6 @@ theorem interAC_card (hm : 0 < m) : (pairA m ∩ pairC m).card = 2 * m := by
       simp only [pairA, Finset.mem_filter, mem_expTuples_iff] at hcmem
       exact mem_range.mpr (hcmem.1.1 0)
     · rintro c hcmem c' hcmem' heq
-      dsimp only at heq
       rw [Finset.mem_inter] at hcmem hcmem'
       simp only [pairA, pairC, Finset.mem_filter, mem_expTuples_iff] at hcmem hcmem'
       funext i
@@ -373,7 +368,6 @@ theorem interBC_card (hm : 0 < m) : (pairB m ∩ pairC m).card = 2 * m := by
       simp only [pairB, Finset.mem_filter, mem_expTuples_iff] at hcmem
       exact mem_range.mpr (hcmem.1.1 0)
     · rintro c hcmem c' hcmem' heq
-      dsimp only at heq
       rw [Finset.mem_inter] at hcmem hcmem'
       simp only [pairB, pairC, Finset.mem_filter, mem_expTuples_iff] at hcmem hcmem'
       -- from B: c2 = sh c0, c3 = sh c1; from C: c3 = sh c0, c2 = sh c1 → c0 = c1

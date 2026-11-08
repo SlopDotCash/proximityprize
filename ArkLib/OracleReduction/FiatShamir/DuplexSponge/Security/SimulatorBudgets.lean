@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.KeyLemmaFoundations
+import Batteries.Tactic.OpenPrivate
 
 /-!
 # Simulator query budgets — CO25 Lemma 5.1 conjuncts (a) and (b) for the `d2sAlgo` witness

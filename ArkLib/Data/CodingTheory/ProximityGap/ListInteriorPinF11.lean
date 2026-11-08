@@ -58,7 +58,7 @@ open ArkLib.CodingTheory.TinyInteriorTwoSided (reedSolomon_pairPacking_list_boun
 instance fact_prime_eleven : Fact (Nat.Prime 11) := ⟨by norm_num⟩
 
 /-- The evaluation domain: all eleven points of `F₁₁`, indexed by `Fin 11` via `DD i = i`. -/
-def DD : Fin 11 ↪ ZMod 11 := ⟨fun i => (i : ZMod 11), by decide⟩
+def DD : Fin 11 ↪ ZMod 11 := ⟨fun i => (i : ZMod 11), fun _ _ h => h⟩
 
 /-- The explicit received word `w = (0,1,8,5,9,4,7,2,6,3,10)` (the cubing permutation `i ↦ i³`). -/
 def w11 : Fin 11 → ZMod 11 := ![0, 1, 8, 5, 9, 4, 7, 2, 6, 3, 10]

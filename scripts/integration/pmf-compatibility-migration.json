@@ -1,0 +1,297 @@
+{
+  "compatibility_module": "ArkLib.Data.Probability.Notation",
+  "namespace": "ProximityPrize.Compatibility",
+  "reason": "Mathlib4.35 deprecated PMF uniform aliases now denote measures. Historical downstream PMF clients use explicit finite-PMF constructors, whose event probabilities are bridged to canonical native sampling.",
+  "canonical_files_excluded": true,
+  "file_count": 37,
+  "replacement_count": 254,
+  "files": [
+    {
+      "path": "ArkLib/ToMathlib/CountingAgreementBricks.lean",
+      "replacements": 17,
+      "names": [
+        "uniformOfFintype",
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "ArkLib/ToMathlib/FriQueryRoundProb.lean",
+      "replacements": 15,
+      "names": [
+        "uniformOfFintype",
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "ArkLib/ToVCVio/LazyPermBridge.lean",
+      "replacements": 65,
+      "names": [
+        "mem_support_uniformOfFinset_iff",
+        "uniformOfFinset",
+        "uniformOfFinset_apply_of_mem",
+        "uniformOfFinset_apply_of_notMem",
+        "uniformOfFintype",
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "ArkLib/ToVCVio/LazyPermMarginal.lean",
+      "replacements": 34,
+      "names": [
+        "mem_support_uniformOfFinset_iff",
+        "uniformOfFinset",
+        "uniformOfFinset_apply_of_mem",
+        "uniformOfFinset_apply_of_notMem"
+      ]
+    },
+    {
+      "path": "ArkLib/OracleReduction/Completeness.lean",
+      "replacements": 2,
+      "names": [
+        "uniformOfFintype"
+      ]
+    },
+    {
+      "path": "ArkLib/ProofSystem/Whir/OutofDomainSmpl.lean",
+      "replacements": 2,
+      "names": [
+        "uniformOfFintype",
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "ArkLib/ProofSystem/Whir/Folding.lean",
+      "replacements": 2,
+      "names": [
+        "uniformOfFintype"
+      ]
+    },
+    {
+      "path": "ArkLib/ProofSystem/BatchedFri/QueryRoundProbability.lean",
+      "replacements": 4,
+      "names": [
+        "uniformOfFintype"
+      ]
+    },
+    {
+      "path": "ArkLib/ProofSystem/BatchedFri/QueryRoundAnalysis.lean",
+      "replacements": 6,
+      "names": [
+        "uniformOfFintype",
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/Probability/UniformSubset.lean",
+      "replacements": 1,
+      "names": [
+        "uniformOfFintype"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/Probability/UniformPushforward.lean",
+      "replacements": 3,
+      "names": [
+        "uniformOfFintype",
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/Probability/DistinctTuples.lean",
+      "replacements": 4,
+      "names": [
+        "uniformOfFintype",
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/RandomLinearCodePairwiseProb.lean",
+      "replacements": 3,
+      "names": [
+        "toOuterMeasure_uniformOfFintype_apply",
+        "uniformOfFintype"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/RandomLinearCodeFirstMoment.lean",
+      "replacements": 3,
+      "names": [
+        "uniformOfFintype"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/RandomLinearCodeEquidistribution.lean",
+      "replacements": 7,
+      "names": [
+        "toOuterMeasure_uniformOfFintype_apply",
+        "uniformOfFintype",
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/AGL24Issue354Discharge.lean",
+      "replacements": 1,
+      "names": [
+        "uniformOfFintype"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/RandomLinearCodeRankEquidist.lean",
+      "replacements": 2,
+      "names": [
+        "uniformOfFintype"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/AGL24ProbDischarge.lean",
+      "replacements": 6,
+      "names": [
+        "uniformOfFintype",
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/RandomLinearCodeMatrixEquidist.lean",
+      "replacements": 7,
+      "names": [
+        "toOuterMeasure_uniformOfFintype_apply",
+        "uniformOfFintype",
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/RandomLinearCodeParallelProb.lean",
+      "replacements": 1,
+      "names": [
+        "uniformOfFintype"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/Classes/Serde.lean",
+      "replacements": 2,
+      "names": [
+        "uniformOfFintype"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/LineDecodingRefutation.lean",
+      "replacements": 1,
+      "names": [
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/LineDecodingRepair.lean",
+      "replacements": 2,
+      "names": [
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Pigeonhole.lean",
+      "replacements": 2,
+      "names": [
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/GoodCoeffs.lean",
+      "replacements": 1,
+      "names": [
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/ListDecoding/Bounds/RandomAndReedSolomon.lean",
+      "replacements": 1,
+      "names": [
+        "uniformOfFintype"
+      ]
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Defs.lean",
+      "replacements": 2,
+      "names": [
+        "uniformOfFintype"
+      ]
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Preliminaries.lean",
+      "replacements": 5,
+      "names": [
+        "uniformOfFintype",
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/EagerLazyDS.lean",
+      "replacements": 24,
+      "names": [
+        "mem_support_uniformOfFinset_iff",
+        "uniformOfFinset",
+        "uniformOfFintype"
+      ]
+    },
+    {
+      "path": "Research/ProximityPrize/DG25Sampling.lean",
+      "replacements": 1,
+      "names": [
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "Research/ProximityPrize/CapacityBounds.lean",
+      "replacements": 1,
+      "names": [
+        "uniformOfFintype"
+      ]
+    },
+    {
+      "path": "Research/ProximityPrize/MCAEndpointLower.lean",
+      "replacements": 1,
+      "names": [
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "Research/ProximityPrize/RadiusOne.lean",
+      "replacements": 1,
+      "names": [
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "ProximityPrize/Compatibility/UniformProbability.lean",
+      "replacements": 1,
+      "names": [
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "ProximityPrize/Extensions/Data/Probability/Instances.lean",
+      "replacements": 11,
+      "names": [
+        "uniformOfFinset",
+        "uniformOfFinset_apply",
+        "uniformOfFintype",
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "ProximityPrize/Extensions/Data/Probability/Combinatorial.lean",
+      "replacements": 2,
+      "names": [
+        "uniformOfFintype",
+        "uniformOfFintype_apply"
+      ]
+    },
+    {
+      "path": "ProximityPrize/Extensions/Data/CodingTheory/DivergenceOfSets.lean",
+      "replacements": 11,
+      "names": [
+        "uniformOfFintype",
+        "uniformOfFintype_apply"
+      ]
+    }
+  ]
+}

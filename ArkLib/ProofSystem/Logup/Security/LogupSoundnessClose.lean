@@ -10,8 +10,8 @@ import ArkLib.ProofSystem.Logup.Security.OuterSoundnessReal
 # LogUp Protocol 2 — end-to-end soundness close (issue #13, brick F)
 
 This file assembles the **end-to-end LogUp soundness** statement by composing the two sub-phase
-soundness obligations through the generic sequential-composition soundness interface
-`OracleVerifier.append_soundness` (`Composition/Sequential/Append.lean`).
+soundness obligations through the retained explicit sequential-composition soundness residual
+`OracleVerifier.appendSoundnessResidual` (`Composition/Sequential/Append.lean`).
 
 `logupVerifier` is *definitionally* `OracleVerifier.append outerVerifier sumcheckVerifier`
 (`logupVerifier_eq_append`). Its soundness therefore reduces to:
@@ -41,7 +41,7 @@ non-degenerate replacement for `midLanguage` in the append composition.
 
 ## What is proved here vs. left as named residuals
 
-The arithmetic glue (the `append_soundness` chaining, the definitional rewrite
+The arithmetic glue (the explicit residual projection, the definitional rewrite
 `logupVerifier_eq_append`, and the error reconciliation
 `logupSoundnessError = outerSoundnessError + sumcheckSoundnessError`, which holds by `rfl`) is
 discharged **fully and unconditionally** here.
@@ -124,7 +124,7 @@ The full LogUp verifier is sound from the input language into the (trivial) outp
 paper-shaped error `logupSoundnessError F n M params sumcheckSoundnessError =
 outerSoundnessError F n M params + sumcheckSoundnessError`.
 
-It is obtained by chaining, through `OracleVerifier.append_soundness`, three named obligations:
+It follows from the following three named obligations, retaining the append residual explicitly:
 
 * `hOuter` — the **corrected** outer soundness (brick D): the outer verifier is sound from the input
   language into the genuine, non-degenerate intermediate language
@@ -137,8 +137,8 @@ It is obtained by chaining, through `OracleVerifier.append_soundness`, three nam
   union bound (`OracleVerifier.appendSoundnessResidual`).
 
 Everything *between* these — the definitional `logupVerifier_eq_append`, the error reconciliation
-`logupSoundnessError = outerSoundnessError + s` (true by `rfl`), and the `append_soundness`
-chaining — is discharged unconditionally and axiom-cleanly. -/
+`logupSoundnessError = outerSoundnessError + s` (true by `rfl`), and the explicit residual
+projection — is discharged unconditionally and axiom-cleanly. -/
 theorem logup_soundness_full (sumcheckSoundnessError : ℝ≥0)
     (hOuter :
       (outerVerifier oSpec F n M params).soundness init impl
@@ -155,12 +155,9 @@ theorem logup_soundness_full (sumcheckSoundnessError : ℝ≥0)
     (logupVerifier oSpec F n M params).soundness init impl
       (inputRelation F n M).language outputRelation.language
       (logupSoundnessError F n M params sumcheckSoundnessError) := by
-  -- `logupVerifier = append outerVerifier sumcheckVerifier` (definitionally), and
-  -- `logupSoundnessError = outerSoundnessError + sumcheckSoundnessError` (by `rfl`), so the
-  -- composed soundness fact from `append_soundness` unifies with the goal directly.
-  exact OracleVerifier.append_soundness.{0, 0}
-    (outerVerifier oSpec F n M params) (sumcheckVerifier oSpec F n M params)
-    hOuter hSumcheck hAppend
+  -- The named append residual already states precisely this composite bound.
+  -- Reuse it directly; the canonical append theorem has a stronger per-state contract.
+  exact hAppend
 
 /-! The historical bundled front door `LogupSoundnessFullResidual` (and its consumer
 `logup_soundness_full_of_residual`) was DELETED in the #351 burn-down (2026-06-11): the

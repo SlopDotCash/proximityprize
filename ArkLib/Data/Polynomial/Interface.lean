@@ -3,10 +3,13 @@ Copyright (c) 2024-2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+module
 
-import ArkLib.Data.Fin.Lift
-import Mathlib.RingTheory.Polynomial.Basic
+public import ArkLib.Data.Fin.Lift
+public import Mathlib.RingTheory.Polynomial.Basic
 /-! # Polynomial Coefficient Interfaces -/
+
+@[expose] public section
 
 
 section PolynomialInterface
@@ -44,7 +47,7 @@ lemma degree_polynomialOfCoeffs_deg_lt_deg :
   aesop (add simp [polynomialOfCoeffs, degree_lt_iff_coeff_zero])
 
 @[simp]
-lemma polynomialOfCoeffs_mem_degreeLT [NeZero deg] :
+lemma polynomialOfCoeffs_mem_degreeLT :
     polynomialOfCoeffs coeffs ∈ degreeLT F deg := by
   aesop (add simp Polynomial.mem_degreeLT)
 
@@ -71,12 +74,9 @@ lemma polynomialOfCoeffs_eq_zero :
     simp only [polynomialOfCoeffs, ne_eq, coeff_ofFinsupp, Finsupp.coe_mk, coeff_zero,
       dite_eq_right_iff] at this
     exact this hx
-  · simp only [polynomialOfCoeffs, ne_eq, ofFinsupp_eq_zero, AddMonoidAlgebra.ext_iff,
-      Finsupp.coe_mk]
-    intro m
-    split_ifs with hm
-    · exact h m hm
-    · rfl
+  · ext m
+    rw [coeff_polynomialOfCoeffs_eq_coeffs']
+    simp [h]
 
 lemma polynomialOfCoeffs_coeffsOfPolynomial {p : F[X]}
     (h : p.natDegree + 1 = deg) : polynomialOfCoeffs (coeffsOfPolynomial (deg := deg) p) = p := by
@@ -97,7 +97,7 @@ lemma support_polynomialOfCoeffs : (polynomialOfCoeffs coeffs).support =
     Finset.map ⟨Fin.val, Fin.val_injective⟩ {i | coeffs i ≠ 0} := rfl
 
 @[simp]
-lemma eval_polynomialsOfCoeffs [NeZero deg] {α : F} :
+lemma eval_polynomialsOfCoeffs {α : F} :
     (polynomialOfCoeffs coeffs).eval α = ∑ x ∈ {i | coeffs i ≠ 0}, coeffs x * α ^ x.1 := by
   simp [eval_eq_sum, sum_def, Fin.liftF]
 

@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Stir.MultiRoundAssembly
 import ArkLib.ProofSystem.Whir.ThresholdKSF
 
@@ -58,10 +59,11 @@ theorem stirMultiRoundRbrSoundness_indicator (M : ℕ) (φ : ι ↪ F) (deg : �
     (δ : ℝ≥0) :
     stirMultiRoundRbrSoundnessResidual M φ deg δ
       (fun i => if i = foldChalIdx (F := F) (ι := ι) M then 1 else 0) := by
-  unfold stirMultiRoundRbrSoundnessResidual OracleProof.rbrKnowledgeSoundness
-    OracleVerifier.rbrKnowledgeSoundness
+  unfold stirMultiRoundRbrSoundnessResidual OracleProof.rbrKnowledgeSoundnessAveraged
+    OracleVerifier.rbrKnowledgeSoundnessAveraged
   exact ThresholdKSF.rbrKnowledgeSoundness_indicator (pure ()) isEmptyElim
-    ((stirMultiRoundIOP M φ deg).verifier.toVerifier)
+    ((stirMultiRoundIOP M φ deg).toOracleVerifier.toVerifier
+      (Oₛₒ := fun i : Empty => nomatch i))
     (stirRelation deg φ δ) acceptRejectOracleRel
     (fun _ stmtIn _ => (stmtIn, ()) ∈ stirRelation deg φ δ)
     (foldChalIdx (F := F) (ι := ι) M)
@@ -72,7 +74,7 @@ theorem stirMultiRoundRbrSoundness_indicator (M : ℕ) (φ : ι ↪ F) (deg : �
 through the existing general wiring. -/
 theorem stirMultiRoundIOP_isSecureWithGap_indicator (M : ℕ) (φ : ι ↪ F) (deg : ℕ)
     (δ : ℝ≥0) :
-    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ)
+    IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ)
       (fun i => if i = foldChalIdx (F := F) (ι := ι) M then 1 else 0)
       (stirMultiRoundIOP M φ deg) :=
   stirMultiRoundIOP_isSecureWithGap M φ deg δ _

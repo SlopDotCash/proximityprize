@@ -1,172 +1,160 @@
 \section{Coding Theory}\label{sec:coding_theory}
 
-This section records the coding-theoretic interface used by the FRI, STIR, and WHIR
-formalizations. The Lean development is intentionally split between a small reusable core
-(``distance'', ``linear code'', ``list decoding'', and Reed--Solomon code APIs) and a larger
-proximity-gap/list-decoding layer. The proof-system chapters use the core definitions directly
-and consume the deeper proximity-gap theorems through explicit named hypotheses when the
-corresponding mathematics is still open in ArkLib.
+This section contains definitions and theorems about coding theory as they are used in the rest of the library.
 
-\subsection{Core codes and distances}\label{sec:coding_core}
-
-\begin{definition}[Code distance]\label{def:code_distance}
-    \lean{Code.dist,Code.relHammingDist}
-    The Hamming distance $\Delta_0(f,g)$ and relative Hamming distance $\Delta(f,g)$ count,
-    respectively, the number and fraction of coordinates on which two words disagree.
+\begin{definition}[Code Distance]
+    \label{def:code_distance}
+    \lean{Code.dist}
+    \leanok
+    The distance of a code $\code\subseteq\Sigma^{\evaldomain}$ is the least Hamming distance
+    between two distinct codewords; it is $0$ if $\code$ has fewer than two elements.
 \end{definition}
 
-\begin{definition}[Distance from a code]\label{def:distance_from_code}
-    \lean{Code.distFromCode,Code.relDistFromCode}
-    \uses{def:code_distance}
-    The distance from a word $f$ to a code $\code$ is the minimum distance from $f$ to a
-    codeword of $\code$, in either absolute or relative form.
+\begin{definition}[Distance from a Code]
+    \label{def:distance_from_code}
+    \lean{Code.distFromCode}
+    \leanok
+    The distance $\Delta(u,\code)$ of a word $u$ from a code $\code$ is the least Hamming distance
+    between $u$ and a codeword, valued in $\mathbb{N}\cup\{\infty\}$ (it is $\infty$ when
+    $\code$ is empty).
 \end{definition}
 
-\begin{definition}[Abstract code]\label{def:code}
-    \lean{ListDecodable.Code}
-    A code over an index type $\iota$ and alphabet $F$ is represented as a set of words
-    $\iota \to F$.
+\begin{definition}[Generator Matrix]
+    \label{def:generator_matrix}
+    \lean{LinearCode.fromRowGenMat, LinearCode.fromColGenMat}
+    \leanok
+    A matrix $G$ generates the linear code spanned by its rows (equivalently, the image of
+    $v\mapsto vG$); the column variant takes the image of $v\mapsto Gv$.
 \end{definition}
 
-\begin{definition}[Linear code]\label{def:linear_code}
+\begin{definition}[Parity Check Matrix]
+    \label{def:parity_check_matrix}
+    \lean{LinearCode.byCheckMatrix}
+    \leanok
+    A matrix $H$ defines the linear code $\{c : Hc = 0\}$, the kernel of $c\mapsto Hc$.
+\end{definition}
+
+\begin{definition}[Code]
+    \label{def:code}
+    A code of length $\evaldomain$ over an alphabet $\Sigma$ is a set
+    $\code\subseteq\Sigma^{\evaldomain}$ of words. The formalization uses
+    $\mathsf{Set}\,(\evaldomain\to\Sigma)$ directly and has no separate declaration for it.
+\end{definition}
+
+\begin{definition}[Linear Code]
+    \label{def:linear_code}
     \lean{LinearCode}
-    \uses{def:code}
-    Linear codes are submodules of the word module. This is the representation used by
-    Reed--Solomon codes and by the correlated-agreement predicates.
+    \leanok
+    A linear code of length $\evaldomain$ over $\field$ is an $\field$-submodule of
+    $\field^{\evaldomain}$.
 \end{definition}
 
-\begin{definition}[Generator and check matrices]\label{def:generator_matrix}
-    \lean{LinearCode.fromRowGenMat,LinearCode.fromColGenMat,LinearCode.byCheckMatrix}
-    \uses{def:linear_code}
-    Linear codes can be constructed from row or column generator matrices, and from parity-check
-    matrices.
+\begin{definition}[Interleaved Code]
+    \label{def:interleaved_code}
+    \lean{Code.interleavedCodeSet}
+    \leanok
+    The $\kappa$-fold interleaving of a code $\code$ is the set of
+    $\evaldomain\times\kappa$ matrices each of whose columns lies in $\code$.
 \end{definition}
 
-\begin{definition}[Interleaved code]\label{def:interleaved_code}
-    \lean{interleavedCodeSet,CodeInterleavable}
-    \uses{def:linear_code}
-    The interleaved code of a base code records stacks of codewords sharing the same coordinate
-    set. It is the ambient object behind joint agreement and list-recovery style arguments.
+\begin{definition}[Reed-Solomon Code]
+    \label{def:reed_solomon_code}
+    \lean{ReedSolomon.code}
+    \leanok
+    For an injective map $\evaldomain\hookrightarrow\field$ and $\degree\in\mathbb{N}$,
+    $\rscode[\field,\evaldomain,\degree]$ is the image of the polynomials of degree less than
+    $\degree$ under evaluation on $\evaldomain$.
 \end{definition}
 
-\subsection{Reed--Solomon codes}\label{sec:reed_solomon_codes}
-
-\begin{definition}[Reed--Solomon code]\label{def:reed_solomon_code}
-    \lean{ReedSolomon.evalOnPoints,ReedSolomon.code,ReedSolomon.genMatrix,ReedSolomon.checkMatrix}
-    \uses{def:linear_code}
-    For an injective evaluation map $\phi : \iota \hookrightarrow \field$ and a degree bound
-    $d$, $\rscode[\field,\phi,d]$ is the image of polynomials of degree $<d$ under evaluation on
-    $\phi(\iota)$. The library also provides the Vandermonde generator matrix and the standard
-    check matrix for finite domains.
+\begin{definition}[Smooth Reed-Solomon Code]
+    \label{def:smooth_rs_code}
+    \lean{ReedSolomon.code, Domain.SmoothCosetFftDomain}
+    \leanok
+    A smooth Reed--Solomon code is a Reed--Solomon code whose evaluation domain is a smooth coset
+    FFT domain: a coset of a multiplicative subgroup of $\field^\times$ of order $2^n$.
 \end{definition}
 
-\begin{lemma}[Codeword witnesses and transport]\label{lem:rs_codeword_api}
-    \lean{ReedSolomon.mem_code_of_polynomial_of_degree_lt_of_eval,ReedSolomon.mem_code_iff_exists_polynomial,ReedSolomon.codeword_equiv_of_eval_eq}
-    \uses{def:reed_solomon_code}
-    A word is in a Reed--Solomon code when it is the evaluation of a polynomial below the degree
-    bound. Codewords can also be transported across equivalent evaluation domains when the
-    embeddings select the same field points.
-\end{lemma}
-
-\begin{definition}[Smooth and constrained Reed--Solomon codes]\label{def:smooth_rs_code}
-    \lean{smoothCode,constrainedCode,multiConstrainedCode}
-    \uses{def:reed_solomon_code}
-    STIR and WHIR use smooth Reed--Solomon domains and constrained variants. The constrained
-    code definitions add one or more polynomial constraints to the base smooth Reed--Solomon
-    relation.
+\begin{definition}[Constrained Code]
+    \label{def:constrained_code}
+    \lean{ReedSolomon.constrainedCode}
+    \leanok
+    For a smooth domain $\evaldomain$ of size $2^n$, $m\in\mathbb{N}$, a weight polynomial
+    $\hat{w}\in\field[Z,X_1,\ldots,X_m]$ and $\sigma\in\field$, the constrained code
+    $\crscode[\field,\evaldomain,m,\hat{w},\sigma]$ consists of the codewords
+    $f\in\rscode[\field,\evaldomain,2^m]$ whose multilinear polynomial $\hat{f}$ satisfies
+    $\sum_{b\in\{0,1\}^m}\hat{w}(\hat{f}(b),b)=\sigma$.
 \end{definition}
 
-\subsection{List decoding}\label{sec:list_decoding}
-
-\begin{definition}[Hamming balls and close codewords]\label{def:list_close_codewords}
-    \lean{ListDecodable.hammingBall,ListDecodable.relHammingBall,ListDecodable.closeCodewords,ListDecodable.closeCodewordsRel}
-    \uses{def:distance_from_code,def:code}
-    The list around a received word is the set of codewords whose Hamming or relative Hamming
-    distance from that word is at most the chosen radius.
+\begin{definition}[Multi-constrained Code]
+    \label{def:multi_constrained_code}
+    \lean{ReedSolomon.multiConstrainedCode}
+    \leanok
+    The multi-constrained code for weights $\hat{w}_0,\ldots,\hat{w}_{t-1}$ and targets
+    $\sigma_0,\ldots,\sigma_{t-1}$ consists of the codewords of $\rscode[\field,\evaldomain,2^m]$
+    that satisfy every one of the $t$ weight constraints.
 \end{definition}
 
-\begin{definition}[List decodability]\label{def:list_decodable}
-    \lean{ListDecodable.listDecodable,ListDecodable.uniqueDecodable}
-    \uses{def:list_close_codewords}
-    A code is $(\delta,\ell)$-list decodable when every relative Hamming ball of radius
-    $\delta$ contains at most $\ell$ codewords. Unique decodability is the special case
-    $\ell = 1$.
-\end{definition}
-
-\begin{definition}[Maximized list size]\label{def:lambda_list_size}
-    \lean{ListDecodable.Lambda,ListDecodable.closeCodewordsRelFinset}
-    \uses{def:list_decodable}
-    The value $\Lambda(\code,\delta)$ is the maximum list size over all received words. Finset
-    wrappers connect this maximized definition to finite-cardinality proofs.
-\end{definition}
-
-\begin{lemma}[Basic list-size monotonicity]\label{lem:list_size_basics}
-    \lean{ListDecodable.closeCodewordsRel_subset_of_le,ListDecodable.Lambda_mono,ListDecodable.Lambda_le_natCast_of_forall_ncard_le}
-    \uses{def:lambda_list_size}
-    Close-codeword lists and the maximized list size are monotone in the decoding radius, and
-    pointwise finite list-size bounds package into a bound on $\Lambda(\code,\delta)$.
-\end{lemma}
-
-\subsection{Proximity gaps and correlated agreement}\label{sec:proximity_gap_defs}
-
-\begin{definition}[Proximity measure and proximity gap]\label{def:proximity_gap}
-    \lean{ProximityGap.proximityMeasure,ProximityGap.proximityGap,ProximityGap.δ_ε_proximityGap}
+\begin{definition}[Proximity Measure]
+    \label{def:proximity_measure}
+    \lean{ProximityGap.proximityMeasure}
+    \leanok
     \uses{def:distance_from_code}
-    The proximity-gap predicates express a dichotomy: a sampled family is either always
-    $\delta$-close to the target code or is $\delta$-close with probability at most $\epsilon$.
-    This is the generic coding-theory statement that FRI, STIR, and WHIR specialize to
-    Reed--Solomon codes.
+    For words $u,v$, a code $\code$ and $d\in\mathbb{N}$, the proximity measure is the number of
+    $r\in\field$ with $\Delta(r u+(1-r)v,\code)\le d$.
 \end{definition}
 
-\begin{definition}[Correlated agreement]\label{def:correlated_agreement}
-    \lean{ProximityGap.δ_ε_correlatedAgreementAffineLines,ProximityGap.δ_ε_correlatedAgreementCurves,ProximityGap.δ_ε_correlatedAgreementAffineSpaces}
-    \uses{def:proximity_gap,def:interleaved_code}
-    Correlated agreement turns a high probability of random linear, curve, or affine-space
-    combinations being close to a code into a common agreement set for the whole stack of words.
+\begin{definition}[Proximity Gap]
+    \label{def:proximity_gap}
+    \lean{ProximityGap.proximityGap}
+    \leanok
+    \uses{def:distance_from_code}
+    A code $\code$ has a proximity gap at distance $d$ with bound $b$ if, for all words $u,v$
+    whose proximity measure exceeds $b$, the pair $(u,v)$ is within distance $d$ of the
+    2-fold interleaved code of $\code$.
 \end{definition}
 
-\begin{lemma}[Agreement-to-proximity bridges]\label{lem:joint_proximity_bridges}
-    \lean{ProximityGap.jointProximity_of_δ_ε_correlatedAgreementAffineLines,ProximityGap.jointProximity_of_δ_ε_correlatedAgreementCurves,ProximityGap.jointProximity_of_δ_ε_correlatedAgreementAffineSpaces}
-    \uses{def:correlated_agreement}
-    The correlated-agreement predicates are converted into the concrete joint-proximity witnesses
-    consumed by FRI and Batched FRI soundness adapters.
-\end{lemma}
+\begin{definition}[List Decodability]
+    \label{def:list_decodable}
+    \lean{Code.IsListDecodable}
+    \leanok
+    \uses{def:distance_from_code,def:code}
+    A code $\code$ is $(r,\ell)$-list decodable if every word has at most $\lfloor\ell\rfloor$
+    codewords within relative Hamming distance $r$.
+\end{definition}
 
-\begin{theorem}[BCIKS20 Reed--Solomon proximity gap]\label{thm:bciks_rs_gap}
-    \lean{ProximityGap.proximity_gap_RSCodes,ProximityGap.proximity_gap_RSCodes_johnson_of_betaRec}
-    \uses{def:reed_solomon_code,def:proximity_gap,def:correlated_agreement}
-    ArkLib contains the Reed--Solomon proximity-gap front doors used by STIR and Batched FRI.
-    Some routes are unconditional in small-field or vacuous regimes; the full Johnson-regime curve
-    correlated-agreement input is deliberately exposed as named residual hypotheses in the
-    proof-system chapters.
-\end{theorem}
+\begin{definition}[List of Close Codewords]
+    \label{def:list_close_codewords}
+    \lean{Code.closeCodewordsRel}
+    \leanok
+    \uses{def:distance_from_code,def:code}
+    For a word $y$ and $r\in\mathbb{R}$, $\Lambda(\code,y,r)$ is the set of codewords within
+    relative Hamming distance $r$ of $y$.
+\end{definition}
 
-\subsection{List-size and capacity prerequisites}\label{sec:list_size_prereqs}
+\subsection{Theorems}
 
-\begin{theorem}[Johnson and Reed--Solomon list-size bounds]\label{thm:rs_johnson_list_size}
-    \lean{ArkLib.CodingTheory.ReedSolomonJohnson.reedSolomon_johnson_list_bound,ArkLib.JohnsonBound.rs_card_ball_le,JohnsonBound.johnson_bound,JohnsonBound.card_ball_le}
+\begin{theorem}[List decoding of Reed--Solomon codes up to the Johnson bound]
+    \label{thm:rs_list_decoding_johnson}
+    \lean{ReedSolomon.listDecodable_reedSolomon}
+    \leanok
     \uses{def:reed_solomon_code,def:list_decodable}
-    The coding-theory tree develops Johnson-style list-size bounds and Reed--Solomon
-    specializations. These results feed the proximity-gap and MCA layers rather than the
-    executable protocol objects directly.
+    Let $\evaldomain$ be a nonempty finite domain embedded in a field $\field$, let $\degree>0$,
+    and let $\rate=\min\{\degree,|\evaldomain|\}/|\evaldomain|$ be the rate of
+    $\rscode[\field,\evaldomain,\degree]$. For every real $\eta>0$, the code
+    $\rscode[\field,\evaldomain,\degree]$ is
+    $\bigl(1-\sqrt{\rate}-\eta,\ 1/(2\eta\sqrt{\rate})\bigr)$-list decodable. The field need not
+    be finite, and the bound does not depend on $|\field|$.
 \end{theorem}
+\begin{proof}
+    \leanok
+    Two distinct codewords agree in fewer than $\degree$ positions, so their agreement is at
+    most $\min\{\degree,|\evaldomain|\}=\rate|\evaldomain|$. A counting bound for any code whose
+    pairwise agreements are this small gives at most $1/(2\eta\sqrt{\rate})$ codewords within
+    relative distance $1-\sqrt{\rate}-\eta$ of any word. This is Theorem~4.3 of~\cite{ACFY24}.
+\end{proof}
 
-\begin{theorem}[Entropy and volume bounds]\label{thm:entropy_volume_bounds}
-    \lean{CodingTheory.qEntropy,CodingTheory.choose_pow_le_qEntropy,CodingTheory.card_mul_hammingBallVolume_le_of_minDist}
-    \uses{def:code_distance}
-    The supporting theory includes $q$-ary entropy, Hamming-ball volume estimates, and classical
-    Hamming/Plotkin/Gilbert--Varshamov style bounds. These modules support capacity and lower
-    bound work around the STIR/WHIR proximity prerequisites.
-\end{theorem}
-
-\begin{remark}[Current status]\label{rem:coding_status}
-    The core APIs above are active dependencies of the proof-system formalizations. The strongest
-    Reed--Solomon proximity and MCA statements remain a research frontier in places, so downstream
-    STIR, WHIR, and Batched FRI theorems state the missing mathematical legs as named residuals
-    instead of hiding them behind untracked assumptions.  Within the identity-fold wire models the
-    protocol-level soundness no longer consumes these residuals at all: the STIR checking
-    verifier's round-by-round soundness is proven outright at its genuine (tight) budget and
-    lifted to arbitrary security parameters by repetition
-    (Theorems~\ref{thm:stir_subunit_discharge}--\ref{thm:stir_rep_wire}); the correlated-agreement
-    residuals remain exactly the inputs of the degree-reducing fold regime.
-\end{remark}
+The proximity-gap and mutual correlated agreement results for Reed--Solomon codes are stated
+where the protocols use them: Theorem~\ref{thm:proximity_gap} for random linear combinations,
+and Lemma~\ref{lemma:mca_rs_udr} and Theorems~\ref{thm:mca_rs_johnson},
+\ref{thm:mca_rs_capacity} and~\ref{thm:power_batching_capacity} for mutual correlated agreement
+in the unique-decoding, Johnson and capacity regimes.

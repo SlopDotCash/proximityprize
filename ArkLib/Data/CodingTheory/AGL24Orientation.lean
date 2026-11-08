@@ -106,7 +106,7 @@ theorem card_induced_le_card_heads_sub {e : ι → Finset V} (O : HeadOrientatio
       + (Finset.univ.filter (fun i => O.head i ∈ T ∧ ¬ e i ⊆ T)).card
       = (Finset.univ.filter (fun i => O.head i ∈ T)).card := by
     rw [← Finset.filter_filter, ← Finset.filter_filter]
-    exact Finset.filter_card_add_filter_neg_card_eq_card (fun i => e i ⊆ T)
+    exact Finset.card_filter_add_card_filter_not (fun i => e i ⊆ T)
   -- Induced edges all have heads in T.
   have hsub : (Finset.univ.filter (fun i => e i ⊆ T)).card
       ≤ (Finset.univ.filter (fun i => O.head i ∈ T ∧ e i ⊆ T)).card := by

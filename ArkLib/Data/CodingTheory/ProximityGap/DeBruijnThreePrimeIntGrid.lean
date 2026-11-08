@@ -192,7 +192,6 @@ lemma int_modular_eq {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q)
   have h1 := hcst j hj
   have h2 := hcst 0 hq.pos
   have h4 : (W i j : ℚ) + (W 0 0 : ℚ) = (W i 0 : ℚ) + (W 0 j : ℚ) := by
-    simp only at h1 h2
     linarith
   exact_mod_cast h4
 
@@ -350,7 +349,6 @@ theorem int_grid_three_prime {p q r : ℕ} (hp : p.Prime) (hq : q.Prime)
       (fun j' k' => W i j' k' - W 0 j' k') hdiff j hj k hk
     show W i j k = W 0 j k + (W i 0 k - W 0 0 k - W i 0 0 + W 0 0 0)
       + (W i j 0 - W 0 j 0)
-    simp only at hmod
     omega
   · rintro ⟨α, β, γ, hαβγ⟩
     have hsplit : ∑ i ∈ Finset.range p, ∑ j ∈ Finset.range q,

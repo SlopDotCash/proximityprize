@@ -1,0 +1,16 @@
+{
+  "canonical_owner": "ArkLib/OracleReduction/Execution.lean",
+  "canonical_declaration": "Reduction.run_run_eq_bind",
+  "compatibility_owner": "ProximityPrize/Compatibility/ReductionRunNormalForm.lean",
+  "preserved_public_name": "Verifier.reduction_run_run_nf",
+  "removed_copy": {
+    "source": "ArkLib/ProofSystem/Logup/Security/MarginalBridgeProof.lean",
+    "before_sha256": "494a85d4a3010754fb3897e260c798219099391d844d5876a05b616a64a9980e",
+    "command_sha256": "4e8424e8162cfbef426287a75861022e03295b9f0d39a34579c22bd13558f5cb",
+    "after_sha256": "2da49971653c29b410bfb7aec0cb2300c220e492d62aa7df39b7656f1a117f16"
+  },
+  "lighter_consumer": "ArkLib/ProofSystem/Logup/Security/OuterRunDecomposition.lean",
+  "semantics": "Exact delegation to canonical prover/verifier normal form, preserving Option verifier failures, without any probability or state-preservation premise. Removes the generic execution dependency on LogUp marginal-security proofs.",
+  "validation": "Generic owner actual-import strict PASS42s, axioms [propext, Quot.sound]. Exact current generic owner + complete OuterRunDecomposition composition strict PASS14s; all four generic/LogUp headline axiom reports are [propext, Classical.choice, Quot.sound]. No admissions. Actual package boundary remains required.",
+  "lighter_consumer_sha256": "7e5504257b45008f4bb96dfc4206b3506a6b9d2623dff44198b63f4e59b76204"
+}

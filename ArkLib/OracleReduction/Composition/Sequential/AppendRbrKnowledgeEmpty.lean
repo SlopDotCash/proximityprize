@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeSoundness
 
 /-!
@@ -36,9 +37,9 @@ theorem append_rbrKnowledgeSoundness_keystone_empty
     (hVerify : V₁ = ⟨fun stmt tr => pure (verify stmt tr)⟩)
     (hInit : ∃ s, s ∈ support init)
     (hNE₂ : Nonempty Stmt₂) (hNEW₂ : Nonempty Wit₂)
-    (h₁ : V₁.rbrKnowledgeSoundness init impl rel₁ rel₂ rbrKnowledgeError₁)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl rel₂ rel₃ rbrKnowledgeError₂) :
-    (V₁.append V₂).rbrKnowledgeSoundness init impl rel₁ rel₃
+    (h₁ : V₁.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂ rbrKnowledgeError₁)
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ rbrKnowledgeError₂) :
+    (V₁.append V₂).rbrKnowledgeSoundnessAveraged init impl rel₁ rel₃
       (Sum.elim rbrKnowledgeError₁ rbrKnowledgeError₂ ∘ ChallengeIdx.sumEquiv.symm) :=
   append_rbrKnowledgeSoundness_keystone_unconditional V₁ V₂ verify hVerify hInit hNE₂ hNEW₂ h₁ h₂
     (fun _kSF₁ _kSF₂ _stmtIn _witIn _prover i₂ => Fin.elim0 i₂.1)

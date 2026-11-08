@@ -147,7 +147,6 @@ theorem autocorrSummand_jacobi_factor {χa χb : MulChar F ℂ} {ψ : AddChar F 
     -- h : χb (-1) * gaussSum χb⁻¹ ψ⁻¹ = gaussSum χb⁻¹ ψ.  Multiply both sides by χb (-1):
     -- χb(-1)·(χb(-1)·g(χb⁻¹,ψ⁻¹)) = χb(-1)·g(χb⁻¹,ψ), i.e. g(χb⁻¹,ψ⁻¹) = χb(-1)·g(χb⁻¹,ψ).
     have h2 := congrArg (fun z => χb (-1) * z) h
-    simp only at h2
     rw [← mul_assoc, hsq, one_mul] at h2
     exact h2
   rw [hconj]

@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.MvPolynomial.Multilinear
+import ProximityPrize.Extensions.Data.MvPolynomial.Multilinear
 import ArkLib.ProofSystem.ConstraintSystem.R1CS
-import ArkLib.ProofSystem.Spartan.Basic
+import ProximityPrize.Extensions.ProofSystem.Spartan.Basic
 
 /-!
 # Spartan R1CS-to-sumcheck MLE equivalences (issue #114)
@@ -240,7 +240,7 @@ theorem zeroCheckVirtualPolynomial_eq_mle'_r1csResidual
     Spartan.Spec.zeroCheckVirtualPolynomial S pp stmt oStmt =
       MLE' (fun i : Fin (2 ^ pp.ℓ_m) =>
         r1csResidual stmt (fun idx => oStmt (.inl idx)) (oStmt (.inr 0)) i) := by
-  simp only [Spartan.Spec.zeroCheckVirtualPolynomial, MLE', MLE, r1csResidual,
+  simp only [Spartan.Spec.zeroCheckVirtualPolynomial_eq_sum, MLE', MLE, r1csResidual,
     Function.comp_apply]
   exact Fintype.sum_equiv finFunctionFinEquiv.symm _ _ (by
     intro x
@@ -261,7 +261,7 @@ theorem r1cs_relation_iff_zeroCheckVirtualPolynomial_zero
     R1CS.relation S pp.toSizeR1CS stmt (fun idx => oStmt (.inl idx)) (oStmt (.inr 0))
       ↔ Spartan.Spec.zeroCheckVirtualPolynomial S pp stmt oStmt = 0 := by
   rw [zeroCheckVirtualPolynomial_eq_mle'_r1csResidual]
-  simpa using
+  simpa [Spartan.PublicParams.toSizeR1CS] using
     (r1cs_relation_iff_mle'_residual_zero (R := S) (k := pp.ℓ_m)
       (sz := pp.toSizeR1CS) rfl stmt (fun idx => oStmt (.inl idx)) (oStmt (.inr 0)))
 

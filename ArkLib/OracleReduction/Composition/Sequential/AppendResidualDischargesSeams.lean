@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeChallenge
 import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
 import ArkLib.OracleReduction.Composition.Sequential.AppendPerfectCompletenessTotal
@@ -33,6 +34,13 @@ so these conditional forms are the honest endpoints. -/
 open OracleComp OracleSpec ProtocolSpec
 open scoped NNReal
 
+attribute [local instance] finiteUniformAnswers
+
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A B : Type) : MeasurableSpace (A × B) := ⊤
+private local instance (A : Type) : MeasurableSpace (Option A) := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ := ⟨fun _ => True.intro⟩
+
 namespace Verifier
 
 section ChallengeSeam
@@ -53,13 +61,13 @@ theorem appendRbrKnowledgeSoundnessResidual_challenge_subsingleton [Subsingleton
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (verify : Stmt₁ → pSpec₁.FullTranscript → Stmt₂)
     (hVerify : V₁ = ⟨fun stmt tr => pure (verify stmt tr)⟩)
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNE₂ : Nonempty Stmt₂) (hNEW₂ : Nonempty Wit₂)
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .V_to_P)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .V_to_P)
-    (h₁ : V₁.rbrKnowledgeSoundness init impl rel₁ rel₂ rbrKnowledgeError₁)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl rel₂ rel₃ rbrKnowledgeError₂) :
+    (h₁ : V₁.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂ rbrKnowledgeError₁)
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ rbrKnowledgeError₂) :
     appendRbrKnowledgeSoundnessResidual V₁ V₂ h₁ h₂ :=
   append_rbrKnowledgeSoundness_keystone_subsingleton_challenge V₁ V₂ verify hVerify
     hInit hInitNF hNE₂ hNEW₂ hn hDir hDir₂ h₁ h₂
@@ -84,14 +92,14 @@ theorem appendRbrKnowledgeSoundnessResidual_failingDet_subsingleton
     (V₂ : Verifier oSpec Stmt₂ Stmt₃ pSpec₂)
     {rel₁ : Set (Stmt₁ × Wit₁)} {rel₂ : Set (Stmt₂ × Wit₂)} {rel₃ : Set (Stmt₃ × Wit₃)}
     {err₁ : pSpec₁.ChallengeIdx → ℝ≥0} {err₂ : pSpec₂.ChallengeIdx → ℝ≥0}
-    (hInit : ∃ s, s ∈ support init) (hInitNF : Pr[⊥ | init] = 0)
+    (hInit : ∃ s, s ∈ support init) (hInitNF : prFail (init) = 0)
     (hNEW₂ : Nonempty Wit₂)
     (hn : 0 < n)
     (hDir : (pSpec₁ ++ₚ pSpec₂).dir (⟨m, by omega⟩ : Fin (m + n)) = .P_to_V)
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
-    (h₁ : Verifier.rbrKnowledgeSoundness init impl rel₁ rel₂
+    (h₁ : Verifier.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂
       (⟨fun s tr => OptionT.mk (pure (verify? s tr))⟩ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁) err₁)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl rel₂ rel₃ err₂) :
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ err₂) :
     appendRbrKnowledgeSoundnessResidual
       (⟨fun s tr => OptionT.mk (pure (verify? s tr))⟩ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁)
       V₂ h₁ h₂ :=
@@ -111,9 +119,9 @@ theorem appendRbrKnowledgeSoundnessResidual_failingDet_empty
     {err₁ : pSpec₁.ChallengeIdx → ℝ≥0} {err₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (hInit : ∃ s, s ∈ support init)
     (hNEW₂ : Nonempty Wit₂)
-    (h₁ : Verifier.rbrKnowledgeSoundness init impl rel₁ rel₂
+    (h₁ : Verifier.rbrKnowledgeSoundnessAveraged init impl rel₁ rel₂
       (⟨fun s tr => OptionT.mk (pure (verify? s tr))⟩ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁) err₁)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl rel₂ rel₃ err₂) :
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl rel₂ rel₃ err₂) :
     appendRbrKnowledgeSoundnessResidual
       (⟨fun s tr => OptionT.mk (pure (verify? s tr))⟩ : Verifier oSpec Stmt₁ Stmt₂ pSpec₁)
       V₂ h₁ h₂ :=
@@ -125,7 +133,7 @@ end Verifier
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
   {Stmt₁ Stmt₂ Stmt₃ Wit₁ Wit₂ Wit₃ : Type}
   {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
@@ -148,7 +156,7 @@ theorem reductionAppendCompletenessResidual_total_pos
     (hInit : NeverFail init)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     reductionAppendCompletenessResidual R₁ R₂ h₁ h₂ :=

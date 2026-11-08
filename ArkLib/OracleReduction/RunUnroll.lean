@@ -3,9 +3,11 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.OracleReduction.Execution
-import ArkLib.OracleReduction.Security.Basic
+import ProximityPrize.Extensions.OracleReduction.Execution
+import ProximityPrize.Extensions.OracleReduction.Security.Basic
 import ArkLib.ToMathlib.OracleCompEvalDistBindComm
+import ProximityPrize.Compatibility.StatePreservingSimulation
+import ProximityPrize.Compatibility.DiscreteProbability
 
 /-!
 # Unrolled-run form of a reduction, and the ε-completeness characterization
@@ -71,7 +73,7 @@ theorem completeness_iff_run_unrolled
             OptionT (OracleComp (oSpec + [pSpec.Challenge]ₒ))
               ((FullTranscript pSpec × StmtOut × WitOut) × StmtOut)))
         completenessError := by
-  unfold Reduction.completeness
+  unfold Reduction.completeness completenessFromRun
   simp only [run_eq_unrolled]
 
 #print axioms run_eq_unrolled
@@ -144,18 +146,17 @@ theorem probEvent_run'_simulateQ_addLift_getChallenge_bind
     (i : pSpec.ChallengeIdx)
     (k : pSpec.Challenge i → OracleComp (oSpec + [pSpec.Challenge]ₒ) β)
     (p : β → Prop) :
-    Pr[p | (simulateQ (QueryImpl.addLift impl challengeQueryImpl :
+    probEvent (p) ((simulateQ (QueryImpl.addLift impl challengeQueryImpl :
         QueryImpl (oSpec + [pSpec.Challenge]ₒ) (StateT σ ProbComp))
         ((liftM (getChallenge pSpec i) :
-            OracleComp (oSpec + [pSpec.Challenge]ₒ) (pSpec.Challenge i)) >>= k)).run' s]
+            OracleComp (oSpec + [pSpec.Challenge]ₒ) (pSpec.Challenge i)) >>= k)).run' s)
       = ∑' c : pSpec.Challenge i,
-          Pr[= c | ($ᵗ pSpec.Challenge i)] *
-            Pr[p | (simulateQ (QueryImpl.addLift impl challengeQueryImpl :
-              QueryImpl (oSpec + [pSpec.Challenge]ₒ) (StateT σ ProbComp)) (k c)).run' s] := by
-  rw [run'_simulateQ_addLift_getChallenge_bind, probEvent_bind_eq_tsum]
+          probOutput (($ᵗ pSpec.Challenge i)) (c) *
+            probEvent (p) ((simulateQ (QueryImpl.addLift impl challengeQueryImpl :
+              QueryImpl (oSpec + [pSpec.Challenge]ₒ) (StateT σ ProbComp)) (k c)).run' s) := by
+  rw [run'_simulateQ_addLift_getChallenge_bind]
+  exact prEvent_bind_eq_tsum_of_countable _ _ _
 
-#print axioms simulateQ_addLift_getChallenge
-#print axioms run'_simulateQ_addLift_getChallenge_bind
 #print axioms probEvent_run'_simulateQ_addLift_getChallenge_bind
 
 end ChallengeCoherence
@@ -225,13 +226,10 @@ theorem probComp_seam_union_le
     (init : ProbComp σ) (so : QueryImpl spec (StateT σ ProbComp))
     (mx : OptionT (OracleComp spec) α) (my : α → OptionT (OracleComp spec) β)
     (pg : α → Prop) (qg : β → Prop) (e₁ e₂ : ℝ≥0∞)
-    (h₁ : Pr[fun r => ¬ Option.elim r.1 True pg
-          | init >>= fun s => (simulateQ so mx.run).run s] ≤ e₁)
+    (h₁ : probEvent (fun r => ¬ Option.elim r.1 True pg) (init >>= fun s => (simulateQ so mx.run).run s) ≤ e₁)
     (h₂ : ∀ a s', (some a, s') ∈ support (init >>= fun s => (simulateQ so mx.run).run s) → pg a →
-          Pr[fun o => ¬ Option.elim o True qg
-            | (simulateQ so (my a).run).run' s'] ≤ e₂) :
-    Pr[fun o => ¬ Option.elim o True qg
-        | init >>= fun s => (simulateQ so (mx >>= my).run).run' s] ≤ e₁ + e₂ := by
+          probEvent (fun o => ¬ Option.elim o True qg) ((simulateQ so (my a).run).run' s') ≤ e₂) :
+    probEvent (fun o => ¬ Option.elim o True qg) (init >>= fun s => (simulateQ so (mx >>= my).run).run' s) ≤ e₁ + e₂ := by
   classical
   have hgame : (init >>= fun s => (simulateQ so ((mx >>= my).run)).run' s)
       = (init >>= fun s => (simulateQ so mx.run).run s) >>= fun r =>
@@ -240,14 +238,17 @@ theorem probComp_seam_union_le
     refine bind_congr fun s => ?_
     rw [simulateQ_run'_optionT_bind_run]
   rw [hgame]
-  refine probEvent_bind_le_add
-    (mx := init >>= fun s => (simulateQ so mx.run).run s)
-    (p := fun (r : Option α × σ) => Option.elim r.1 True pg)
-    (q := fun (o : Option β) => Option.elim o True qg) h₁ ?_
-  rintro ⟨o, s'⟩ hmem hp
-  cases o with
-  | none => simp [probEvent_pure]
-  | some a => exact h₂ a s' hmem hp
+  have hbound := prEvent_bind_le_prEvent_add_of_support
+    (init >>= fun s => (simulateQ so mx.run).run s)
+    (fun r => r.1.elim (pure none) (fun a => (simulateQ so (my a).run).run' r.2))
+    (fun r => ¬ Option.elim r.1 True pg) (fun o => ¬ Option.elim o True qg)
+    (ε := e₂) (by
+      rintro ⟨o, s'⟩ hmem hp
+      have hp' : Option.elim o True pg := not_not.mp hp
+      cases o with
+      | none => simp
+      | some a => exact h₂ a s' hmem hp')
+  exact hbound.trans (add_le_add h₁ le_rfl)
 
 #print axioms probComp_seam_union_le
 
@@ -259,9 +260,9 @@ be discharged directly from `V₁`/`V₂.soundness`. -/
 theorem probEvent_run_eq_run'_fst
     (so : QueryImpl spec (StateT σ ProbComp)) (init : ProbComp σ)
     {α : Type} (X : OracleComp spec α) (P : α → Prop) :
-    Pr[fun r => P r.1 | init >>= fun s => (simulateQ so X).run s]
-      = Pr[P | init >>= fun s => (simulateQ so X).run' s] := by
-  simp only [StateT.run'_eq, ← map_bind, probEvent_map, Function.comp_def]
+    probEvent (fun r => P r.1) (init >>= fun s => (simulateQ so X).run s)
+      = probEvent (P) (init >>= fun s => (simulateQ so X).run' s) := by
+  simp only [probEvent, StateT.run'_eq, ← map_bind, prEvent_map]
 
 #print axioms probEvent_run_eq_run'_fst
 
@@ -275,10 +276,8 @@ theorem probEvent_simQ_run'_congr_marginal
     (so : QueryImpl spec (StateT σ ProbComp)) (init : ProbComp σ)
     (X Y : OptionT (OracleComp spec) α) (g : α → β) (q : β → Prop)
     (h : (g <$> X) = (g <$> Y)) :
-    Pr[fun o => Option.elim o False (fun a => q (g a)) |
-        init >>= fun s => (simulateQ so X.run).run' s]
-    = Pr[fun o => Option.elim o False (fun a => q (g a)) |
-        init >>= fun s => (simulateQ so Y.run).run' s] := by
+    probEvent (fun o => Option.elim o False (fun a => q (g a))) (init >>= fun s => (simulateQ so X.run).run' s)
+    = probEvent (fun o => Option.elim o False (fun a => q (g a))) (init >>= fun s => (simulateQ so Y.run).run' s) := by
   have h' : Option.map g <$> X.run = Option.map g <$> Y.run := by
     have := congrArg OptionT.run h
     simpa only [OptionT.run_map] using this
@@ -291,11 +290,13 @@ theorem probEvent_simQ_run'_congr_marginal
     have h3 := congrFun (congrArg StateT.run h'') s
     simp only [StateT.run_map] at h3
     have h4 := congrArg (fun z => Prod.fst <$> z) h3
-    simp only [Functor.map_map, Function.comp] at h4 ⊢
+    simp only [Functor.map_map] at h4 ⊢
     exact h4
   have hpe : (fun o : Option α => Option.elim o False (fun a => q (g a)))
       = (fun ob => Option.elim ob False q) ∘ (Option.map g) := by funext o; cases o <;> rfl
-  rw [hpe, probEvent_comp, probEvent_comp, key]
+  rw [hpe]
+  simpa only [probEvent, Functor.map_map, Function.comp_def] using
+    congrArg (probEvent (fun ob => Option.elim ob False q)) key
 
 #print axioms probEvent_simQ_run'_congr_marginal
 
@@ -336,28 +337,44 @@ theorem simulateQ_liftComp_run_eq_of_query
 from types that are equal only *propositionally* — `(pSpec₁ ++ₚ pSpec₂).Challenge (inl c) = pSpec₁.Challenge c`
 — so their `SampleableType` instances differ syntactically). `probEvent` is defined through `evalDist`,
 so this still feeds the downstream `probEvent` reconciliation. -/
-theorem evalDist_simulateQ_liftComp_run_eq_of_query
+theorem evalDistEq_simulateQ_liftComp_run_eq_of_query
     {ιᵢ ιₘ : Type} {I₀ : OracleSpec ιᵢ} {M₀ : OracleSpec ιₘ} {σ' : Type}
     [MonadLiftT (OracleQuery I₀) (OracleQuery M₀)]
     (h : QueryImpl M₀ (StateT σ' ProbComp)) (h₁ : QueryImpl I₀ (StateT σ' ProbComp))
     (hquery : ∀ (t : I₀.Domain) (s : σ'),
-      evalDist ((simulateQ h (OracleComp.liftComp
-        (liftM (I₀.query t) : OracleComp I₀ (I₀.Range t)) M₀)).run s)
-        = evalDist ((h₁ t).run s))
+      (simulateQ h (OracleComp.liftComp
+        (liftM (I₀.query t) : OracleComp I₀ (I₀.Range t)) M₀)).run s =ᵈ (h₁ t).run s)
     {γ : Type} (oa : OracleComp I₀ γ) (s : σ') :
-    evalDist ((simulateQ h (OracleComp.liftComp oa M₀)).run s)
-      = evalDist ((simulateQ h₁ oa).run s) := by
+    (simulateQ h (OracleComp.liftComp oa M₀)).run s =ᵈ (simulateQ h₁ oa).run s := by
   induction oa using OracleComp.inductionOn generalizing s with
   | pure x => simp [simulateQ_pure, StateT.run_pure, OracleComp.liftComp_pure]
   | query_bind t k ih =>
       have hq1 : simulateQ h₁ (liftM (I₀.query t) : OracleComp I₀ (I₀.Range t)) = h₁ t := by
         simp [simulateQ_query]
       rw [OracleComp.liftComp_bind, simulateQ_bind, StateT.run_bind,
-          simulateQ_bind, StateT.run_bind, hq1, evalDist_bind, evalDist_bind, hquery t s]
-      refine bind_congr ?_
-      rintro ⟨a, s'⟩
-      exact ih a s'
+        simulateQ_bind, StateT.run_bind, hq1]
+      exact (hquery t s).bind (fun p => ih p.1 p.2)
 
+/-- Full per-query discrete distribution equality determines every output observation. -/
+theorem evalDist_simulateQ_liftComp_run_eq_of_query
+    {ιᵢ ιₘ : Type} {I₀ : OracleSpec ιᵢ} {M₀ : OracleSpec ιₘ} {σ' : Type}
+    [MonadLiftT (OracleQuery I₀) (OracleQuery M₀)]
+    (h : QueryImpl M₀ (StateT σ' ProbComp)) (h₁ : QueryImpl I₀ (StateT σ' ProbComp))
+    (hquery : ∀ (t : I₀.Domain) (s : σ'),
+      letI : MeasurableSpace (I₀.Range t × σ') := ⊤
+      evalDist ((simulateQ h (OracleComp.liftComp
+        (liftM (I₀.query t) : OracleComp I₀ (I₀.Range t)) M₀)).run s)
+        = evalDist ((h₁ t).run s))
+    {γ : Type} [MeasurableSpace (γ × σ')] (oa : OracleComp I₀ γ) (s : σ') :
+    evalDist ((simulateQ h (OracleComp.liftComp oa M₀)).run s)
+      = evalDist ((simulateQ h₁ oa).run s) := by
+  apply EvalDistEq.evalDist_eq
+  apply evalDistEq_simulateQ_liftComp_run_eq_of_query h h₁
+  intro t s
+  let : MeasurableSpace (I₀.Range t × σ') := ⊤
+  exact EvalDistEq.of_evalDist_eq (hquery t s)
+
+#print axioms evalDistEq_simulateQ_liftComp_run_eq_of_query
 #print axioms evalDist_simulateQ_liftComp_run_eq_of_query
 
 /-- **Transport of uniform sampling along a type equality.** If `α = β` (propositionally), the
@@ -366,13 +383,14 @@ though the two `SampleableType` instances are independent. The cast is a bijecti
 has equal probability on both sides. This is the arithmetic kernel of the seam's challenge-oracle
 restriction: `(pSpec₁ ++ₚ pSpec₂).Challenge (inl c)` and `pSpec₁.Challenge c` are equal types sampled
 by distinct instances, reconciled here. -/
-theorem evalDist_cast_uniformSample {α β : Type} [SampleableType α] [SampleableType β] [Finite α]
+theorem evalDist_cast_uniformSample {α β : Type} [SampleableType α] [SampleableType β]
+    [Finite α] [MeasurableSpace β]
     (h : α = β) :
     evalDist ((fun x => (h ▸ x : β)) <$> ($ᵗ α : ProbComp α)) = evalDist ($ᵗ β : ProbComp β) := by
   have hbij : Function.Bijective (fun x => (h ▸ x : β)) := by
-    subst h; simpa using Function.bijective_id
-  refine evalDist_ext (fun y => ?_)
-  exact probOutput_map_bijective_uniform_cross (α := α) (β := β) (fun x => (h ▸ x : β)) hbij y
+    subst h
+    exact Function.bijective_id
+  exact (SampleableType.map_uniformSample_evalDistEq_of_bijective hbij).evalDist_eq
 
 #print axioms evalDist_cast_uniformSample
 
@@ -382,11 +400,10 @@ this is what's actually needed: the challenge `SubSpec`'s response map (`(liftM 
 by `LawfulSubSpec`, so the combined-oracle uniform challenge maps onto `pSpec₁`'s uniform challenge
 *without* ever naming the underlying (private) `range_challenge_append_inl` cast. -/
 theorem evalDist_map_bijective_uniformSample {α β : Type}
-    [SampleableType α] [SampleableType β] [Finite α]
+    [SampleableType α] [SampleableType β] [Finite α] [MeasurableSpace β]
     (f : α → β) (hf : Function.Bijective f) :
     evalDist (f <$> ($ᵗ α : ProbComp α)) = evalDist ($ᵗ β : ProbComp β) := by
-  refine evalDist_ext (fun y => ?_)
-  exact probOutput_map_bijective_uniform_cross (α := α) (β := β) f hf y
+  exact (SampleableType.map_uniformSample_evalDistEq_of_bijective hf).evalDist_eq
 
 #print axioms evalDist_map_bijective_uniformSample
 
@@ -398,16 +415,9 @@ predicate. This lemma converts between them: a `probEvent` of `p` over `OptionT.
 `none`/failure as `False`). This is the first wiring step of the `appendSoundness` connect: it brings
 the soundness goal to the `ProbComp` level where `probComp_seam_union_le` applies. -/
 theorem probEvent_optionT_mk {α : Type} (PROG : ProbComp (Option α)) (p : α → Prop) :
-    Pr[p | (OptionT.mk PROG : OptionT ProbComp α)]
-      = Pr[fun o => Option.elim o False p | PROG] := by
-  classical
-  rw [probEvent_eq_tsum_indicator, probEvent_eq_tsum_indicator,
-      tsum_option _ ENNReal.summable]
-  have hnone : ({x | Option.elim x False p}.indicator (Pr[= · | PROG]) none) = 0 := by simp
-  rw [hnone, zero_add]
-  refine tsum_congr (fun a => ?_)
-  by_cases h : p a <;>
-    simp [Set.indicator_apply, OptionT.probOutput_eq, h]
+    probEvent (p) ((OptionT.mk PROG : OptionT ProbComp α))
+      = probEvent (fun o => Option.elim o False p) (PROG) := by
+  exact OptionT.prEvent_mk PROG p
 
 #print axioms probEvent_optionT_mk
 
@@ -442,7 +452,7 @@ theorem lift_run_elim {ι : Type} {spec : OracleSpec ι} {α β : Type}
     ((liftM X : OptionT (OracleComp spec) α).run >>= fun o => o.elim (pure none) k)
       = X >>= k := by
   simp only [OptionT.run, OptionT.lift, OptionT.mk, liftM, monadLift, MonadLift.monadLift,
-    map_eq_pure_bind, bind_assoc, pure_bind, Option.elim]
+    bind_assoc, pure_bind, Option.elim]
 
 #print axioms lift_run_elim
 
@@ -452,48 +462,15 @@ just `pure c` — its randomness washes out. This is the probabilistic heart of 
 when the verifier `V₁` rejects (the failure branch), whether the *next* prover stage `snd` was already
 run (natural order) or skipped (union-bound order) cannot change the outcome distribution, because
 `snd` never fails and so marginalizes away. -/
-theorem evalDist_bind_const {γ δ : Type} (X : ProbComp γ) (c : δ) (hX : Pr[⊥ | X] = 0) :
-    evalDist (X >>= fun _ => (pure c : ProbComp δ)) = pure c := by
-  haveI : DecidableEq δ := Classical.decEq δ
-  have h1 : Pr[= c | X >>= fun _ => (pure c : ProbComp δ)] = 1 := by
-    rw [probOutput_bind_eq_tsum]; simp only [probOutput_pure_self, mul_one]
-    exact tsum_probOutput_eq_one' hX
-  have hsupp := (probOutput_eq_one_iff (mx := X >>= fun _ => (pure c : ProbComp δ)) (x := c)).mp h1
-  rw [show (pure c : SPMF δ) = evalDist (pure c : ProbComp δ) from (evalDist_pure c).symm]
-  apply SPMF.ext; intro o
-  rw [← probOutput_def, ← probOutput_def]
-  rcases eq_or_ne o c with rfl | ho
-  · rw [h1, probOutput_pure_self]
-  · have hmem : o ∉ support (X >>= fun _ => (pure c : ProbComp δ)) := by rw [hsupp.2]; simpa using ho
-    rw [probOutput_eq_zero_of_not_mem_support hmem, probOutput_pure]; simp [ho]
+theorem evalDist_bind_const {γ δ : Type} [MeasurableSpace δ] (X : ProbComp γ) (c : δ) (hX : probFailure (X) = 0) :
+    evalDist (X >>= fun _ => (pure c : ProbComp δ)) = MeasureTheory.Measure.dirac c := by
+  let : MeasurableSpace γ := ⊤
+  have htotal : 𝒟[X] Set.univ = 1 := by
+    rw [← prEvent_true_eq_evalDist_apply_univ]
+    exact (prFail_eq_zero_iff X).mp hX
+  rw [_root_.evalDist_bind_const, htotal, one_smul, evalDist_pure]
 
 #print axioms evalDist_bind_const
-
-/-- **`simulateQ` preserves the `σ`-state on its support, when every query implementation does.**
-Holds for `challengeQueryImpl` (which threads `σ` unchanged) and for empty `oSpec`. This is the
-independence ingredient for the seam swap: a state-preserving prover stage cannot affect a later
-verifier stage's `simulateQ` state, so the two stages commute distributionally
-(`OracleComp.evalDist_bind_comm`). -/
-theorem simulateQ_state_preserving
-    (so : QueryImpl spec (StateT σ ProbComp))
-    (hso : ∀ (t : spec.Domain) (s : σ) (x : spec.Range t × σ),
-      x ∈ support ((so t).run s) → x.2 = s)
-    {α : Type} (X : OracleComp spec α) (s : σ) :
-    ∀ x ∈ support ((simulateQ so X).run s), x.2 = s := by
-  induction X using OracleComp.inductionOn generalizing s with
-  | pure a =>
-    intro x hx
-    simp only [simulateQ_pure, StateT.run_pure, support_pure, Set.mem_singleton_iff] at hx
-    subst hx; rfl
-  | query_bind t oa ih =>
-    intro x hx
-    simp only [simulateQ_bind, simulateQ_query, OracleQuery.input_query, OracleQuery.cont_query,
-      id_map, StateT.run_bind, support_bind, Set.mem_iUnion] at hx
-    obtain ⟨⟨u, s'⟩, hmem1, hmem2⟩ := hx
-    have hs' : s' = s := hso t s ⟨u, s'⟩ hmem1
-    exact hs' ▸ ih u s' x hmem2
-
-#print axioms simulateQ_state_preserving
 
 /-- **`simulateQ` never fails when every query implementation never fails.** If `so` answers every
 query with a never-failing `StateT σ ProbComp` computation, then simulating any `OracleComp` under `so`
@@ -502,126 +479,75 @@ prover stage, run under the honest interactive implementation (`addLift impl cha
 fails — provers contain no `failure`, and the challenge oracle samples uniformly. -/
 theorem simulateQ_run_neverFail
     (so : QueryImpl spec (StateT σ ProbComp))
-    (hnf : ∀ (t : spec.Domain) (s : σ), Pr[⊥ | (so t).run s] = 0)
+    (hnf : ∀ (t : spec.Domain) (s : σ), probFailure ((so t).run s) = 0)
     {α : Type} (X : OracleComp spec α) (s : σ) :
-    Pr[⊥ | (simulateQ so X).run s] = 0 := by
+    probFailure ((simulateQ so X).run s) = 0 := by
   induction X using OracleComp.inductionOn generalizing s with
-  | pure a => simp [simulateQ_pure, StateT.run_pure]
+  | pure a => simp [probFailure, simulateQ_pure, StateT.run_pure]
   | query_bind t oa ih =>
-    simp only [simulateQ_bind, simulateQ_query, OracleQuery.input_query, OracleQuery.cont_query,
-      id_map, StateT.run_bind]
-    rw [probFailure_bind_eq_add_tsum, hnf t s]
-    simp only [zero_add]
-    rw [ENNReal.tsum_eq_zero]
-    rintro ⟨u, s'⟩
-    rw [mul_eq_zero]
-    by_cases h : (u, s') ∈ support ((so t).run s)
-    · right; exact ih u s'
-    · left; rw [probOutput_eq_zero_of_not_mem_support h]
+    simp only [simulateQ_bind, simulateQ_query, OracleQuery.input_query,
+      OracleQuery.cont_query, id_map, StateT.run_bind]
+    refine (ProximityPrize.Compatibility.prFail_bind_eq_zero_iff _ _).2 ⟨hnf t s, ?_⟩
+    rintro ⟨u, s'⟩ _
+    exact ih u s'
 
 #print axioms simulateQ_run_neverFail
 
-/-- **State-fixing for a simulated bind.** When the implementation preserves `σ`, the continuation of
-a simulated bind runs from the *same* state `s` (not a threaded one), since the first stage leaves `σ`
-unchanged. This is the step that makes the seam stages commute: after fixing all states to `s`, the
-value-binds can be reordered by `bind_comm`/`evalDist_bind_comm`. -/
-theorem simulateQ_run_bind_state_fixed
-    (so : QueryImpl spec (StateT σ ProbComp))
-    (hso : ∀ (t : spec.Domain) (s : σ) (x : spec.Range t × σ),
-      x ∈ support ((so t).run s) → x.2 = s)
-    {α β : Type} (A : OracleComp spec α) (g : α → OracleComp spec β) (s : σ) :
-    (simulateQ so (A >>= g)).run s
-      = (simulateQ so A).run s >>= fun p => (simulateQ so (g p.1)).run s := by
-  rw [simulateQ_bind, StateT.run_bind]
-  refine OracleComp.bind_congr_of_forall_mem_support _ (fun p hp => ?_)
-  obtain ⟨a, s'⟩ := p
-  rw [show s' = s from simulateQ_state_preserving so hso A s ⟨a, s'⟩ hp]
 
-#print axioms simulateQ_run_bind_state_fixed
 
-/-- **Seam stage swap.** Under state-preservation, two simulated stages `A`, `B` commute
-distributionally: `simulateQ so (A >>= fun a => B >>= fun b => k a b)` has the same `run'`-distribution
-as the `B`-then-`A` order. State-fixing (`simulateQ_run_bind_state_fixed`) makes all stages run from the
-same `s`, then `SPMF.bind_comm` (unconditional) reorders. This is the `V₁↔snd` reorder used to apply
-`probComp_seam_union_le` with stages matching `V₁`/`V₂` soundness for `appendSoundness`. -/
-theorem evalDist_simulateQ_swap
-    (so : QueryImpl spec (StateT σ ProbComp))
-    (hso : ∀ (t : spec.Domain) (s : σ) (x : spec.Range t × σ),
-      x ∈ support ((so t).run s) → x.2 = s)
-    {α β γ : Type}
-    (A : OracleComp spec α) (B : OracleComp spec β) (k : α → β → OracleComp spec γ) (s : σ) :
-    evalDist ((simulateQ so (A >>= fun a => B >>= fun b => k a b)).run' s)
-      = evalDist ((simulateQ so (B >>= fun b => A >>= fun a => k a b)).run' s) := by
-  rw [StateT.run'_eq, StateT.run'_eq, evalDist_map, evalDist_map]
-  congr 1
-  simp only [simulateQ_run_bind_state_fixed so hso, evalDist_bind]
-  exact SPMF.bind_comm _ _ _
-
-#print axioms evalDist_simulateQ_swap
-
-/-- **Seam stage swap under a common prefix.** The `appendSoundness` reorder is `snd ↔ V₁`, but both
-run *inside* the `fst` prover's continuation (each may depend on `fst`'s seam output `x`), so the
-top-level `evalDist_simulateQ_swap` does not apply directly. This generalization swaps the two
-adjacent stages `A x`, `B x` underneath an arbitrary prefix `FST`: state-fixing collapses every bind
-to the same `s`, then `bind_congr` peels the prefix and `SPMF.bind_comm` swaps the inner pair. This is
-the exact tool that turns the flat soundness chain `fst >>= snd >>= (V₁ >>= V₂)` into the
-`(fst >>= V₁) >>= (snd >>= V₂) = mx >>= my` form `probComp_seam_union_le` consumes. -/
-theorem evalDist_simulateQ_swap_prefix
-    (so : QueryImpl spec (StateT σ ProbComp))
-    (hso : ∀ (t : spec.Domain) (s : σ) (x : spec.Range t × σ),
-      x ∈ support ((so t).run s) → x.2 = s)
-    {α₀ α β γ : Type}
-    (FST : OracleComp spec α₀) (A : α₀ → OracleComp spec α) (B : α₀ → OracleComp spec β)
-    (k : α₀ → α → β → OracleComp spec γ) (s : σ) :
-    evalDist ((simulateQ so
-        (FST >>= fun x => A x >>= fun a => B x >>= fun b => k x a b)).run' s)
-      = evalDist ((simulateQ so
-        (FST >>= fun x => B x >>= fun b => A x >>= fun a => k x a b)).run' s) := by
-  rw [StateT.run'_eq, StateT.run'_eq, evalDist_map, evalDist_map]
-  congr 1
-  simp only [simulateQ_run_bind_state_fixed so hso, evalDist_bind]
-  refine bind_congr fun p => ?_
-  exact SPMF.bind_comm _ _ _
-
-#print axioms evalDist_simulateQ_swap_prefix
-
-/-- **Seam elim-commute under a common prefix (full evalDist).** After the `snd ↔ V₁` swap, the chain
-reads `… >>= fun o => Bb >>= fun b => o.elim (pure none) (C b)` — the prover stage `Bb` (= `snd`) sits
-*outside* the verifier output `o`'s short-circuit, but the union-bound form needs it *inside* the
-success branch (run only when `V₁` accepts). This lemma moves `Bb` inside the elim at the full
-`evalDist` level (so it composes with `evalDist_simulateQ_swap_prefix`): on `o = some c` both orders
-run `Bb >>= C c`; on `o = none` the natural order runs-and-discards `Bb` while the union-bound order
-skips it, and these agree because `Bb` never fails (`hB`) and so marginalizes (`evalDist_bind_const`).
-This is the final tool turning the flat soundness chain into `probComp_seam_union_le`'s `mx >>= my`. -/
-theorem elim_comm_prefix
+/-- A total `ProbComp` stage can cross an optional short-circuit under a common prefix. -/
+theorem evalDistEq_elim_comm_prefix
     (so : QueryImpl spec (StateT σ ProbComp))
     (hso : ∀ (t : spec.Domain) (s : σ) (x : spec.Range t × σ),
       x ∈ support ((so t).run s) → x.2 = s)
     {α₀ γ β δ : Type}
     (PRE : OracleComp spec α₀) (mO : α₀ → OracleComp spec (Option γ))
     (Bb : α₀ → OracleComp spec β) (C : α₀ → β → γ → OracleComp spec (Option δ))
-    (hB : ∀ (x : α₀) (s' : σ), Pr[⊥ | (simulateQ so (Bb x)).run s'] = 0)
+    (hB : ∀ (x : α₀) (s' : σ), probFailure ((simulateQ so (Bb x)).run s') = 0)
+    (s : σ) :
+    (simulateQ so (PRE >>= fun x => mO x >>= fun o => Bb x >>= fun b =>
+        o.elim (pure none) (fun c => C x b c))).run' s =ᵈ
+      (simulateQ so (PRE >>= fun x => mO x >>= fun o =>
+        o.elim (pure none) (fun c => Bb x >>= fun b => C x b c))).run' s := by
+  rw [StateT.run'_eq, StateT.run'_eq]
+  have h :
+      (simulateQ so (PRE >>= fun x => mO x >>= fun o => Bb x >>= fun b =>
+        o.elim (pure none) (fun c => C x b c))).run s =ᵈ
+      (simulateQ so (PRE >>= fun x => mO x >>= fun o =>
+        o.elim (pure none) (fun c => Bb x >>= fun b => C x b c))).run s := by
+    simp only [simulateQ_run_bind_state_fixed so hso]
+    apply EvalDistEq.bind_right
+    intro p
+    apply EvalDistEq.bind_right
+    intro q
+    cases q.1 with
+    | some c =>
+      simp only [Option.elim_some, simulateQ_run_bind_state_fixed so hso]
+      exact EvalDistEq.rfl
+    | none =>
+      simp only [Option.elim_none, simulateQ_pure, StateT.run_pure]
+      let : MeasurableSpace (Option δ × σ) := ⊤
+      apply evalDistEq_iff_evalDist_eq.mpr
+      rw [evalDist_bind_const _ (none, s) (hB p.1 s), evalDist_pure]
+  exact h.map Prod.fst
+
+/-- The historical short-circuit commute observed in any output measurable structure. -/
+theorem elim_comm_prefix
+    (so : QueryImpl spec (StateT σ ProbComp))
+    (hso : ∀ (t : spec.Domain) (s : σ) (x : spec.Range t × σ),
+      x ∈ support ((so t).run s) → x.2 = s)
+    {α₀ γ β δ : Type} [MeasurableSpace (Option δ)]
+    (PRE : OracleComp spec α₀) (mO : α₀ → OracleComp spec (Option γ))
+    (Bb : α₀ → OracleComp spec β) (C : α₀ → β → γ → OracleComp spec (Option δ))
+    (hB : ∀ (x : α₀) (s' : σ), probFailure ((simulateQ so (Bb x)).run s') = 0)
     (s : σ) :
     evalDist ((simulateQ so (PRE >>= fun x => mO x >>= fun o => Bb x >>= fun b =>
         o.elim (pure none) (fun c => C x b c))).run' s)
       = evalDist ((simulateQ so (PRE >>= fun x => mO x >>= fun o =>
-        o.elim (pure none) (fun c => Bb x >>= fun b => C x b c))).run' s) := by
-  rw [StateT.run'_eq, StateT.run'_eq, evalDist_map, evalDist_map]
-  congr 1
-  simp only [simulateQ_run_bind_state_fixed so hso, evalDist_bind]
-  refine bind_congr fun p => ?_
-  refine bind_congr fun q => ?_
-  cases hq : q.1 with
-  | some c => simp only [Option.elim_some, simulateQ_run_bind_state_fixed so hso, evalDist_bind]
-  | none =>
-    simp only [Option.elim_none]
-    have hp : 𝒟[(simulateQ so (pure none : OracleComp spec (Option δ))).run s]
-        = (pure (none, s) : SPMF (Option δ × σ)) := by simp
-    rw [hp, show (𝒟[(simulateQ so (Bb p.1)).run s] >>= fun _ => (pure (none, s) : SPMF (Option δ × σ)))
-        = evalDist ((simulateQ so (Bb p.1)).run s >>= fun _ => pure (none, s)) from by
-          rw [evalDist_bind]; simp]
-    exact evalDist_bind_const _ (none, s) (hB p.1 s)
+        o.elim (pure none) (fun c => Bb x >>= fun b => C x b c))).run' s) :=
+  (evalDistEq_elim_comm_prefix so hso PRE mO Bb C hB s).evalDist_eq
 
+#print axioms evalDistEq_elim_comm_prefix
 #print axioms elim_comm_prefix
 
 /-- **Elim-stage commute (bad-event level).** A never-failing plain stage `B` may be moved across an
@@ -633,19 +559,14 @@ theorem elim_comm_prefix
 theorem probEvent_elim_comm {α γ β : Type}
     (mO : ProbComp (Option α)) (B : ProbComp γ)
     (C : α → γ → ProbComp (Option β)) (badpred : Option β → Prop) (hnone : ¬ badpred none) :
-    Pr[badpred | mO >>= fun o => B >>= fun b => o.elim (pure none) (fun a => C a b)]
-      = Pr[badpred | mO >>= fun o => o.elim (pure none) (fun a => B >>= fun b => C a b)] := by
-  classical
-  rw [probEvent_bind_eq_tsum, probEvent_bind_eq_tsum]
-  refine tsum_congr fun o => ?_
-  congr 1
+    probEvent (badpred) (mO >>= fun o => B >>= fun b => o.elim (pure none) (fun a => C a b))
+      = probEvent (badpred) (mO >>= fun o => o.elim (pure none) (fun a => B >>= fun b => C a b)) := by
+  unfold probEvent
+  refine prEvent_bind_congr mO _ _ badpred badpred ?_
+  intro o
   cases o with
-  | none =>
-    simp only [Option.elim_none]
-    rw [probEvent_bind_eq_tsum]
-    simp [probEvent_pure, hnone]
-  | some a =>
-    simp only [Option.elim_some]
+  | none => simp [hnone]
+  | some a => rfl
 
 #print axioms probEvent_elim_comm
 
@@ -655,34 +576,45 @@ simulated computation's value-distribution (`run'`) is independent of the starti
 `challengeQueryImpl` (uniform sample, `σ` untouched) and empty `oSpec`. Lets `probComp_seam_union_le`'s
 per-threaded-state `h₂` be discharged by the verifier's (state-averaged) soundness, since every threaded
 state gives the same value-distribution. -/
+theorem evalDistEq_simulateQ_run'_state_indep
+    (so : QueryImpl spec (StateT σ ProbComp))
+    (hso : ∀ (t : spec.Domain) (s : σ) (x : spec.Range t × σ),
+      x ∈ support ((so t).run s) → x.2 = s)
+    (hvb : ∀ (t : spec.Domain) (s s' : σ), (so t).run' s =ᵈ (so t).run' s')
+    {α : Type} (X : OracleComp spec α) (s s' : σ) :
+    (simulateQ so X).run' s =ᵈ (simulateQ so X).run' s' := by
+  induction X using OracleComp.inductionOn generalizing s s' with
+  | pure a => simp [simulateQ_pure, StateT.run'_eq, StateT.run_pure]
+  | query_bind t oa ih =>
+    have hq : ∀ r : σ, (simulateQ so (liftM (OracleSpec.query t))).run r = (so t).run r := by
+      intro r
+      simp only [simulateQ_query, OracleQuery.input_query, OracleQuery.cont_query, id_map]
+    have key : ∀ r : σ,
+        (simulateQ so (liftM (OracleSpec.query t) >>= oa)).run' r =
+        (so t).run' r >>= fun a => (simulateQ so (oa a)).run' r := by
+      intro r
+      rw [StateT.run'_eq, simulateQ_run_bind_state_fixed so hso, hq r]
+      simp only [StateT.run'_eq, map_bind, bind_map_left]
+    rw [key s, key s']
+    exact (hvb t s s').bind (fun a => ih a s s')
+
+/-- Value-state blindness, with full discrete query laws and arbitrary output observations. -/
 theorem evalDist_simulateQ_run'_state_indep
     (so : QueryImpl spec (StateT σ ProbComp))
     (hso : ∀ (t : spec.Domain) (s : σ) (x : spec.Range t × σ),
       x ∈ support ((so t).run s) → x.2 = s)
     (hvb : ∀ (t : spec.Domain) (s s' : σ),
+      letI : MeasurableSpace (spec.Range t) := ⊤
       evalDist ((so t).run' s) = evalDist ((so t).run' s'))
-    {α : Type} (X : OracleComp spec α) (s s' : σ) :
+    {α : Type} [MeasurableSpace α] (X : OracleComp spec α) (s s' : σ) :
     evalDist ((simulateQ so X).run' s) = evalDist ((simulateQ so X).run' s') := by
-  induction X using OracleComp.inductionOn generalizing s s' with
-  | pure a => simp [simulateQ_pure, StateT.run'_eq, StateT.run_pure]
-  | query_bind t oa ih =>
-    have hq : ∀ r : σ, (simulateQ so (liftM (OracleSpec.query t))).run r = (so t).run r := by
-      intro r; simp only [simulateQ_query, OracleQuery.input_query, OracleQuery.cont_query, id_map]
-    have key : ∀ r : σ,
-        evalDist ((simulateQ so (liftM (OracleSpec.query t) >>= oa)).run' r)
-        = (evalDist ((so t).run' r)) >>= fun a => evalDist ((simulateQ so (oa a)).run' r) := by
-      intro r
-      rw [StateT.run'_eq, simulateQ_run_bind_state_fixed so hso (liftM (OracleSpec.query t)) oa r,
-        hq r, map_bind, evalDist_bind,
-        show (evalDist ((so t).run' r)) = (fun x => x.1) <$> evalDist ((so t).run r) from by
-          rw [StateT.run'_eq, evalDist_map],
-        bind_map_left]
-      refine bind_congr fun p => ?_
-      rw [StateT.run'_eq]
-    rw [key s, key s', hvb t s s']
-    refine bind_congr fun a => ?_
-    rw [ih a s s']
+  apply EvalDistEq.evalDist_eq
+  apply evalDistEq_simulateQ_run'_state_indep so hso
+  intro t s s'
+  let : MeasurableSpace (spec.Range t) := ⊤
+  exact EvalDistEq.of_evalDist_eq (hvb t s s')
 
+#print axioms evalDistEq_simulateQ_run'_state_indep
 #print axioms evalDist_simulateQ_run'_state_indep
 
 /-- **Seam swap as a bare `evalDist` equality (the reorder, packaged for `rw`).** The natural-order
@@ -696,10 +628,10 @@ theorem seam_swap_evalDist_eq
     (init : ProbComp σ) (so : QueryImpl spec (StateT σ ProbComp))
     (hso : ∀ (t : spec.Domain) (s : σ) (x : spec.Range t × σ),
       x ∈ support ((so t).run s) → x.2 = s)
-    {A B C D : Type}
+    {A B C D : Type} [MeasurableSpace (Option D)]
     (FST : OracleComp spec A) (SND : A → OracleComp spec B)
     (W1 : A → OptionT (OracleComp spec) C) (W2 : A → B → C → OptionT (OracleComp spec) D)
-    (hB : ∀ (x : A) (s' : σ), Pr[⊥ | (simulateQ so (SND x)).run s'] = 0) :
+    (hB : ∀ (x : A) (s' : σ), probFailure ((simulateQ so (SND x)).run s') = 0) :
     𝒟[init >>= fun s => (simulateQ so
         (liftM FST >>= fun x => liftM (SND x) >>= fun a => W1 x >>= fun s₂ =>
           W2 x a s₂).run).run' s]
@@ -717,14 +649,15 @@ theorem seam_swap_evalDist_eq
       >>= fun p => liftM (SND p.1) >>= fun a => W2 p.1 a p.2) : OptionT (OracleComp spec) D).run
     = FST >>= fun x => (W1 x).run >>= fun o₁ =>
         o₁.elim (pure none) (fun s₂ => SND x >>= fun a => (W2 x a s₂).run) := by
-    simp only [OptionT.run_bind, Option.elimM, lift_run_elim, bind_assoc, OptionT.run_pure,
-      pure_bind, Option.elim_some]
-  rw [h1, h2, evalDist_bind, evalDist_bind]
-  refine bind_congr fun s => ?_
-  rw [evalDist_simulateQ_swap_prefix so hso FST SND (fun x => (W1 x).run)
-      (fun x a o₁ => o₁.elim (pure none) (fun s₂ => (W2 x a s₂).run)) s]
-  exact elim_comm_prefix so hso FST (fun x => (W1 x).run) SND
-    (fun x a s₂ => (W2 x a s₂).run) hB s
+    simp only [OptionT.run_bind, Option.elimM, lift_run_elim, bind_assoc, pure_bind]
+  rw [h1, h2]
+  apply EvalDistEq.evalDist_eq
+  apply EvalDistEq.bind_right
+  intro s
+  exact (evalDistEq_simulateQ_swap_prefix so hso FST SND (fun x => (W1 x).run)
+    (fun x a o₁ => o₁.elim (pure none) (fun s₂ => (W2 x a s₂).run)) s).trans
+    (evalDistEq_elim_comm_prefix so hso FST (fun x => (W1 x).run) SND
+      (fun x a s₂ => (W2 x a s₂).run) hB s)
 
 #print axioms seam_swap_evalDist_eq
 
@@ -741,17 +674,18 @@ theorem seam_swap_probEvent_eq
     {A B C D : Type}
     (FST : OracleComp spec A) (SND : A → OracleComp spec B)
     (W1 : A → OptionT (OracleComp spec) C) (W2 : A → B → C → OptionT (OracleComp spec) D)
-    (hB : ∀ (x : A) (s' : σ), Pr[⊥ | (simulateQ so (SND x)).run s'] = 0)
+    (hB : ∀ (x : A) (s' : σ), probFailure ((simulateQ so (SND x)).run s') = 0)
     (p : Option D → Prop) :
-    Pr[p | init >>= fun s => (simulateQ so
+    probEvent (p) (init >>= fun s => (simulateQ so
         (liftM FST >>= fun x => liftM (SND x) >>= fun a => W1 x >>= fun s₂ =>
-          W2 x a s₂).run).run' s]
-    = Pr[p | init >>= fun s => (simulateQ so
+          W2 x a s₂).run).run' s)
+    = probEvent (p) (init >>= fun s => (simulateQ so
         ((liftM FST >>= fun x => W1 x >>= fun s₂ =>
             (pure (x, s₂) : OptionT (OracleComp spec) (A × C)))
-          >>= fun p => liftM (SND p.1) >>= fun a => W2 p.1 a p.2).run).run' s] := by
-  unfold probEvent
-  rw [seam_swap_evalDist_eq init so hso FST SND W1 W2 hB]
+          >>= fun p => liftM (SND p.1) >>= fun a => W2 p.1 a p.2).run).run' s) := by
+  let : MeasurableSpace (Option D) := ⊤
+  exact (EvalDistEq.of_evalDist_eq
+    (seam_swap_evalDist_eq init so hso FST SND W1 W2 hB)).prEvent_eq p
 
 #print axioms seam_swap_probEvent_eq
 
@@ -772,29 +706,27 @@ theorem probComp_seam_swap_union_le
     {A B C D : Type}
     (FST : OracleComp spec A) (SND : A → OracleComp spec B)
     (W1 : A → OptionT (OracleComp spec) C) (W2 : A → B → C → OptionT (OracleComp spec) D)
-    (hB : ∀ (x : A) (s' : σ), Pr[⊥ | (simulateQ so (SND x)).run s'] = 0)
+    (hB : ∀ (x : A) (s' : σ), probFailure ((simulateQ so (SND x)).run s') = 0)
     (pg : C → Prop) (qg : D → Prop) (e₁ e₂ : ℝ≥0∞)
-    (h₁ : Pr[fun r => ¬ Option.elim r.1 True (fun p : A × C => pg p.2)
-          | init >>= fun s => (simulateQ so
+    (h₁ : probEvent (fun r => ¬ Option.elim r.1 True (fun p : A × C => pg p.2)) (init >>= fun s => (simulateQ so
               (liftM FST >>= fun x => W1 x >>= fun s₂ =>
-                (pure (x, s₂) : OptionT (OracleComp spec) (A × C))).run).run s] ≤ e₁)
+                (pure (x, s₂) : OptionT (OracleComp spec) (A × C))).run).run s) ≤ e₁)
     (h₂ : ∀ (p : A × C) (s' : σ),
           (some p, s') ∈ support (init >>= fun s => (simulateQ so
               (liftM FST >>= fun x => W1 x >>= fun s₂ =>
                 (pure (x, s₂) : OptionT (OracleComp spec) (A × C))).run).run s) → pg p.2 →
-          Pr[fun o => ¬ Option.elim o True qg
-            | (simulateQ so (liftM (SND p.1) >>= fun a => W2 p.1 a p.2).run).run' s'] ≤ e₂) :
-    Pr[fun o => ¬ Option.elim o True qg
-        | init >>= fun s => (simulateQ so
+          probEvent (fun o => ¬ Option.elim o True qg) ((simulateQ so (liftM (SND p.1) >>= fun a => W2 p.1 a p.2).run).run' s') ≤ e₂) :
+    probEvent (fun o => ¬ Option.elim o True qg) (init >>= fun s => (simulateQ so
             (liftM FST >>= fun x => liftM (SND x) >>= fun a => W1 x >>= fun s₂ =>
-              W2 x a s₂).run).run' s] ≤ e₁ + e₂ := by
-  have key := seam_swap_evalDist_eq init so hso FST SND W1 W2 hB
+              W2 x a s₂).run).run' s) ≤ e₁ + e₂ := by
+  have key := seam_swap_probEvent_eq init so hso FST SND W1 W2 hB
+    (fun o => ¬ Option.elim o True qg)
   have hmain := probComp_seam_union_le init so
     (liftM FST >>= fun x => W1 x >>= fun s₂ => (pure (x, s₂) : OptionT (OracleComp spec) (A × C)))
     (fun p => liftM (SND p.1) >>= fun a => W2 p.1 a p.2)
     (fun p : A × C => pg p.2) qg e₁ e₂ h₁ h₂
-  unfold probEvent at hmain ⊢
-  rw [key]; exact hmain
+  rw [key]
+  exact hmain
 
 #print axioms probComp_seam_swap_union_le
 
@@ -818,31 +750,33 @@ theorem addLift_state_preserving (impl : QueryImpl oSpec (StateT σ ProbComp))
       monadLift_self] at hx
     exact himpl t s x hx
   · simp only [QueryImpl.addLift_def, QueryImpl.add_apply_inr, QueryImpl.liftTarget_apply] at hx
-    change x ∈ support ((fun a => (a, s)) <$> challengeQueryImpl t) at hx
-    simp only [support_map, Set.mem_image] at hx
-    obtain ⟨a, _, rfl⟩ := hx; rfl
+    simp only [StateT.run_liftM, MonadAttach.support_bind, Set.mem_iUnion,
+      MonadAttach.support_pure, Set.mem_singleton_iff] at hx
+    obtain ⟨a, _, rfl⟩ := hx
+    rfl
 
 /-- **`addLift impl challengeQueryImpl` never fails when `impl` never fails.** The shared-oracle half
 (`inl`) inherits `impl`'s non-failure; the challenge half (`inr`) is a uniform sample (`$ᵗ`), which
 never fails. Combined with `simulateQ_run_neverFail`, this discharges the `hB` side-condition of
 `appendSoundness` for the honest interactive implementation (vacuous when `oSpec = []ₒ`). -/
 theorem addLift_neverFail (impl : QueryImpl oSpec (StateT σ ProbComp))
-    (himpl : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0) :
+    (himpl : ∀ (t : oSpec.Domain) (s : σ), probFailure ((impl t).run s) = 0) :
     ∀ (t : (oSpec + [pSpec.Challenge]ₒ).Domain) (s : σ),
-      Pr[⊥ | ((impl.addLift challengeQueryImpl :
-        QueryImpl (oSpec + [pSpec.Challenge]ₒ) (StateT σ ProbComp)) t).run s] = 0 := by
+      probFailure (((impl.addLift challengeQueryImpl :
+        QueryImpl (oSpec + [pSpec.Challenge]ₒ) (StateT σ ProbComp)) t).run s) = 0 := by
   rintro (t | t) s
   · simp only [QueryImpl.addLift_def, QueryImpl.add_apply_inl, QueryImpl.liftTarget_apply,
       monadLift_self]
     exact himpl t s
-  · simp [QueryImpl.addLift_def, QueryImpl.add_apply_inr, QueryImpl.liftTarget_apply,
-      StateT.run_monadLift, probFailure_map, challengeQueryImpl]
+  · exact OracleComp.prFail_eq_zero _
 
 /-- **`addLift impl challengeQueryImpl` is value-state-blind when `impl` is.** Discharges `hvb`. -/
 theorem addLift_value_blind (impl : QueryImpl oSpec (StateT σ ProbComp))
     (himpl : ∀ (t : oSpec.Domain) (s s' : σ),
+      letI : MeasurableSpace (oSpec.Range t) := ⊤
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     ∀ (t : (oSpec + [pSpec.Challenge]ₒ).Domain) (s s' : σ),
+      letI : MeasurableSpace ((oSpec + [pSpec.Challenge]ₒ).Range t) := ⊤
       evalDist (((impl.addLift challengeQueryImpl :
         QueryImpl (oSpec + [pSpec.Challenge]ₒ) (StateT σ ProbComp)) t).run' s)
         = evalDist (((impl.addLift challengeQueryImpl :
@@ -851,14 +785,18 @@ theorem addLift_value_blind (impl : QueryImpl oSpec (StateT σ ProbComp))
   · simp only [QueryImpl.addLift_def, QueryImpl.add_apply_inl, QueryImpl.liftTarget_apply,
       monadLift_self]
     exact himpl t s s'
-  · have h : ∀ r : σ, evalDist (((impl.addLift challengeQueryImpl :
-        QueryImpl (oSpec + [pSpec.Challenge]ₒ) (StateT σ ProbComp)) (Sum.inr t)).run' r)
-        = evalDist (challengeQueryImpl t) := by
+  · have h : ∀ r : σ, ((impl.addLift challengeQueryImpl :
+        QueryImpl (oSpec + [pSpec.Challenge]ₒ) (StateT σ ProbComp)) (Sum.inr t)).run' r
+        = challengeQueryImpl t := by
       intro r
-      simp only [QueryImpl.addLift_def, QueryImpl.add_apply_inr, QueryImpl.liftTarget_apply]
-      change evalDist ((fun a => a.1) <$> ((fun a => (a, r)) <$> challengeQueryImpl t)) = _
-      simp [Functor.map_map]
-    rw [h s, h s']
+      simp only [QueryImpl.addLift_def, QueryImpl.add_apply_inr, QueryImpl.liftTarget_apply,
+        StateT.run'_eq, StateT.run_liftM, bind_pure_comp, Functor.map_map]
+      exact id_map _
+    exact congrArg (@evalDist ProbComp _ _ ⊤) ((h s).trans (h s').symm)
+
+#print axioms addLift_state_preserving
+#print axioms addLift_neverFail
+#print axioms addLift_value_blind
 
 end AddLiftBridges
 

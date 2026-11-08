@@ -7,8 +7,8 @@ Authors: Chung Thai Nguyen
 import ArkLib.Data.Hash.DuplexSponge
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Preliminaries
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Defs
-import ArkLib.OracleReduction.Security.Basic
-import ArkLib.OracleReduction.Security.Rewinding
+import ProximityPrize.Extensions.OracleReduction.Security.Basic
+import ProximityPrize.Extensions.OracleReduction.Security.Rewinding
 
 /-!
 # Substrate for Duplex-Sponge Fiat-Shamir
@@ -131,7 +131,7 @@ abbrev perIndexQueryBoundedFamily
 /-- Paper-facing alias for CO25 Definition 3.7 failure probability. -/
 abbrev failureProbability
     {Message : Type}
-    [oSpec.Fintype] [oSpec.Inhabited]
+    [OracleSpec.UniformAnswerMeasure oSpec]
     (admissible : Set Statement)
     (verifier : NonInteractiveVerifier Message oSpec Statement Bool)
     (prover : OracleComp oSpec (Statement × Message))
@@ -141,7 +141,7 @@ abbrev failureProbability
 /-- Paper-facing alias for CO25 Definition 3.7 with explicit security parameter `λ`. -/
 abbrev failureProbabilityFamily
     {oSpec : ℕ → OracleSpec ι}
-    [∀ secParam, (oSpec secParam).Fintype] [∀ secParam, (oSpec secParam).Inhabited]
+    [∀ secParam, OracleSpec.UniformAnswerMeasure (oSpec secParam)]
     {Statement Message : ℕ → Type}
     (admissible : (secParam : ℕ) → Set (Statement secParam))
     (verifier :
@@ -158,7 +158,7 @@ abbrev RewindingExtractor (Message : Type) :=
 /-- Paper-facing alias for CO25 Definition 3.8 rewinding knowledge soundness. -/
 abbrev rewindingKnowledgeSoundness
     {Message : Type}
-    [oSpec.Fintype] [oSpec.Inhabited]
+    [OracleSpec.UniformAnswerMeasure oSpec]
     (admissible : Set Statement)
     (relation : Set (Statement × Witness))
     (verifier : NonInteractiveVerifier Message oSpec Statement Bool)
@@ -175,7 +175,7 @@ abbrev rewindingKnowledgeSoundness
 /-- Paper-facing alias for CO25 Definition 3.8 with explicit security parameter `λ`. -/
 abbrev rewindingKnowledgeSoundnessFamily
     {oSpec : ℕ → OracleSpec ι}
-    [∀ secParam, (oSpec secParam).Fintype] [∀ secParam, (oSpec secParam).Inhabited]
+    [∀ secParam, OracleSpec.UniformAnswerMeasure (oSpec secParam)]
     {Statement Witness Message : ℕ → Type}
     (admissible : (secParam : ℕ) → Set (Statement secParam))
     (relation : (secParam : ℕ) → Set (Statement secParam × Witness secParam))

@@ -62,7 +62,7 @@ theorem dyadicTailMGF_of_towerStep_reindexed_quarter_sum
     DyadicTailMGFBound (Finset.univ : Finset F)
       (fun b => ‖eta ψ (towerStep G₀ ζ (k + 1)) b‖) := by
   exact dyadicTailMGF_of_towerStep_reindexed_quarter ψ G₀ ζ hvalid hk
-    (by simpa [DyadicQuarterMGFBound] using hLeft)
+    (by simpa [DyadicQuarterMGFBound, WFS11.MGFBound] using hLeft)
 
 /-- Reindexed R198-route prize-square endpoint at one valid tower step. -/
 theorem prize_sq_of_towerStep_reindexed_quarter
@@ -101,7 +101,7 @@ theorem prize_sq_of_towerStep_reindexed_quarter_sum
           (Fintype.card F : ℝ)))) :
     Mmax ^ 2 ≤ 2 * Real.exp 1 * (2 / (1 / 8 : ℝ)) * n * (r : ℝ) := by
   exact prize_sq_of_towerStep_reindexed_quarter ψ G₀ ζ hvalid hk
-    (by simpa [DyadicQuarterMGFBound] using hLeft)
+    (by simpa [DyadicQuarterMGFBound, WFS11.MGFBound] using hLeft)
     hMmax hn hQ hP hr hrQ hmoment
 
 end ArkLib.ProximityGap.Frontier.R207TowerStepDilationPrizeConsumer

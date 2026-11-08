@@ -216,7 +216,7 @@ theorem gs_existence_sloped {n : ℕ} (k m : ℕ) (ωs : Fin n ↪ F)
   set DYZ := slopedBudget k D with hDYZ
   -- 1. the dimension count
   have hcount : numConstraints n m < numVars k D :=
-    gs_numVars_gt_numConstraints_of_gt_one hn hk hm
+    gs_numVars_gt_numConstraints_of_gt_one (n := n) (m := m) hk
   have hcard : n * (constraintIndices m).card < (weigthBoundIndices k D).card := by
     simpa [numVars, numConstraints] using hcount
   -- 2. a nonzero kernel vector of the sloped F-linear system

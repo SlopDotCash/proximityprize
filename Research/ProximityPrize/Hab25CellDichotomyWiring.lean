@@ -148,7 +148,8 @@ theorem cell_improvement_of_window
     obtain ⟨d, hdP⟩ := hdec z hz
     have hcap : AffineCaptured domain k δ u z (v₀, v₁) :=
       d.affineCaptured (by rw [hdP]; exact hPaff z hz)
-    exact affineCaptured_improve hd0 hd1 hcap
+    exact affineCaptured_improve (domain := domain) (k := k) (δ := δ)
+      (u := u) (γ := z) (ab := (v₀, v₁)) hd0 hd1 hcap
   · exact Or.inl (le_trans (by omega) hT)
 
 open Classical in
@@ -200,7 +201,8 @@ theorem hK4_of_window
           (fun i => v₁.eval (domain i) - u 1 i) z x = 0 := by
       intro z hz
       obtain ⟨d, hdP⟩ := hdec z hz
-      exact affineCaptured_improve hd0 hd1
+      exact affineCaptured_improve (domain := domain) (k := k) (δ := δ)
+        (u := u) (γ := z) (ab := (v₀, v₁)) hd0 hd1
         (d.affineCaptured (by rw [hdP]; exact hPaff z hz))
     have hcard := factorImprove_card_le_n
       (fun i => v₀.eval (domain i) - u 0 i)

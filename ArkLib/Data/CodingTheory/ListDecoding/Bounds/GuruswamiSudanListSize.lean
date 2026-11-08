@@ -63,7 +63,7 @@ theorem natDegree_psi_le (Q : MvPolynomial (Fin 2) F) (deg_Y : ℕ)
     (psi Q).natDegree ≤ deg_Y := by
   classical
   have hsum : psi Q
-      = ∑ m ∈ Q.support, psi (MvPolynomial.monomial m (MvPolynomial.coeff m Q)) := by
+      = ∑ m ∈ Q.support, psi (MvPolynomial.monomial m (Q.coeff m)) := by
     conv_lhs => rw [Q.as_sum]
     rw [map_sum]
   rw [hsum]
@@ -71,14 +71,14 @@ theorem natDegree_psi_le (Q : MvPolynomial (Fin 2) F) (deg_Y : ℕ)
   refine Finset.sup_le ?_
   intro m hm
   simp only [Function.comp_apply]
-  have hmono : psi (MvPolynomial.monomial m (MvPolynomial.coeff m Q))
-      = Polynomial.C (Polynomial.C (MvPolynomial.coeff m Q) * Polynomial.X ^ m 0)
+  have hmono : psi (MvPolynomial.monomial m (Q.coeff m))
+      = Polynomial.C (Polynomial.C (Q.coeff m) * Polynomial.X ^ m 0)
           * Polynomial.X ^ m 1 := by
     rw [psi, MvPolynomial.aeval_monomial, Finsupp.prod_fintype _ _ (fun i => by simp),
       Fin.prod_univ_two]
     simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
-    rw [show (algebraMap F (Polynomial (Polynomial F))) (MvPolynomial.coeff m Q)
-          = Polynomial.C (Polynomial.C (MvPolynomial.coeff m Q)) from rfl,
+    rw [show (algebraMap F (Polynomial (Polynomial F))) (Q.coeff m)
+          = Polynomial.C (Polynomial.C (Q.coeff m)) from rfl,
       Polynomial.C_mul, Polynomial.C_pow]
     ring
   rw [hmono]

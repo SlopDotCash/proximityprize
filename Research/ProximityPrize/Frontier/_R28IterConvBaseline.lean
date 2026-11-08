@@ -65,7 +65,9 @@ theorem norm_iterConv_le_card_pow_mul_bound (J : ZMod m → ℂ) {B : ℝ} (hB0 
                 Finset.card_le_card (by
                   intro j _hj
                   exact Finset.mem_univ j)
-              simpa [ZMod.card] using (Nat.cast_le.mpr hle : _)
+              have hle' : ((Finset.univ \ {(0 : ZMod m)}).card : ℝ) ≤
+                  ((Finset.univ : Finset (ZMod m)).card : ℝ) := Nat.cast_le.mpr hle
+              simpa [ZMod.card] using hle' 
             exact mul_le_mul_of_nonneg_right hcard (by positivity)
         _ = (m : ℝ) ^ (r + 1) * B ^ (r + 1) := by ring
 

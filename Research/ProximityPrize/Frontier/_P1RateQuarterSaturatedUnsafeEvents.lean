@@ -53,13 +53,11 @@ theorem saturatedHoleCoord_injective : Function.Injective saturatedHoleCoord := 
     exact (selectedCoordEmbedding 13).injective h
   · exfalso
     have hsnd : (13 : Fin 16) = 15 := by
-      simpa only [saturatedHoleCoord, selectedCoordEmbedding, hole] using
-        congrArg Prod.snd h
+      exact congrArg Prod.snd h
     exact (by decide : (13 : Fin 16) ≠ 15) hsnd
   · exfalso
     have hsnd : (15 : Fin 16) = 13 := by
-      simpa only [saturatedHoleCoord, selectedCoordEmbedding, hole] using
-        congrArg Prod.snd h
+      exact congrArg Prod.snd h
     exact (by decide : (15 : Fin 16) ≠ 13) hsnd
   · exact congrArg Sum.inr (Subsingleton.elim a b)
 
@@ -111,10 +109,9 @@ theorem saturatedHole_domain_pow_m (h : SaturatedHoleIndex) :
       holeFibreValue (saturatedHoleKind h) := by
   rcases h with q | a
   · rw [domain_pow_m]
-    simp [saturatedHoleCoord, saturatedHoleKind, holeFibreValue,
-      selectedCoordEmbedding]
+    rfl
   · rw [domain_pow_m]
-    simp [saturatedHoleCoord, saturatedHoleKind, holeFibreValue, hole]
+    rfl
 
 /-- Direction values on the two kinds of saturated holes. -/
 def saturatedHoleValue : Fin 2 → Fin 3 → F := ![
@@ -136,9 +133,8 @@ theorem direction_eval_saturatedHole (i : Fin 3) (h : SaturatedHoleIndex) :
           newHoleValue i := by
       apply direction_eval_newHole i
       exact (mem_selectedCoords_iff 13 _).2 ⟨q, rfl⟩
-    simpa only [saturatedHoleKind, saturatedHoleValue] using hdir
-  · simpa only [saturatedHoleCoord, saturatedHoleKind, saturatedHoleValue,
-      hole] using direction_eval_hole_fibre i (Sum.inr 0)
+    exact hdir
+  · exact direction_eval_hole_fibre i (Sum.inr 0)
 
 theorem saturatedHoleConstant_cross (a : Fin 2) (i : Fin 3) :
     holeConstant a i * (2 - saturatedHoleValue a i) =
@@ -237,3 +233,19 @@ theorem saturated_unsafe_mcaEvent
       saturated_unsafe_pair_mismatch L h i
 
 end ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction
+
+#print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.saturatedHoleCoord_injective
+#print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.saturatedHoleCoord_mem_newHoles
+#print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.saturatedHoleCoord_old
+#print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.saturatedHoleCoord_not_mem_commonRoots
+#print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.saturatedHole_locator_ne_zero
+#print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.saturatedHoleCoord_not_mem_amplifiedCore
+#print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.saturatedHole_domain_pow_m
+#print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.saturatedHoleValue_ne_two
+#print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.direction_eval_saturatedHole
+#print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.saturatedHoleConstant_cross
+#print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.saturatedHole_fold_identity
+#print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.amplifiedU_rows_saturatedHole
+#print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.saturated_unsafe_fresh_agreement
+#print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.saturated_unsafe_pair_mismatch
+#print axioms ArkLib.ProximityGap.Frontier.P1RateQuarterSaturatedConstruction.saturated_unsafe_mcaEvent

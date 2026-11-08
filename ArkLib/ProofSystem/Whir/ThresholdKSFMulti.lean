@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.OracleReduction.FullPredKSF
 
 /-!
@@ -54,17 +55,16 @@ theorem rbrKnowledgeSoundness_of_flipBound_via_salvageBounds
         pred m.succ stmtIn (tr.concat msg) → pred m.castSucc stmtIn tr)
     (hFlip : ∀ stmtIn witIn
       (prover : Prover oSpec StmtIn Unit StmtOut WitOut pSpec),
-      Pr[fun x : pSpec.Transcript c.1.castSucc × pSpec.Challenge c ×
+      probEvent (fun x : pSpec.Transcript c.1.castSucc × pSpec.Challenge c ×
           (oSpec + [pSpec.Challenge]ₒ).QueryLog =>
-          ¬ pred c.1.castSucc stmtIn x.1
-        | do
+          ¬ pred c.1.castSucc stmtIn x.1) (do
           (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
             (do
               let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
                 prover.runWithLogToRound c.1.castSucc stmtIn witIn
               let challenge ← liftComp (pSpec.getChallenge c) _
-              return (transcript, challenge, proveQueryLog))).run' (← init)] ≤ (ε : ℝ≥0∞)) :
-    verifier.rbrKnowledgeSoundness init impl relIn relOut
+              return (transcript, challenge, proveQueryLog))).run' (← init)) ≤ (ε : ℝ≥0∞)) :
+    verifier.rbrKnowledgeSoundnessAveraged init impl relIn relOut
       (fun i => if i = c then ε else 0) := by
   classical
   -- the obligations, stated in beta-reduced form (definitional unfolding does the rest)
@@ -105,14 +105,14 @@ theorem rbrKnowledgeSoundness_of_flipBound_via_salvageBounds
   by_cases hic : i = c
   · subst hic
     simp only [if_pos rfl]
-    refine le_trans (probEvent_mono ?_) (hFlip stmtIn witIn prover)
+    refine le_trans (_root_.prEvent_mono_of_support _ _ _ ?_) (hFlip stmtIn witIn prover)
     rintro ⟨tr, ch, log⟩ _ ⟨hne, _⟩
     have hne' : ¬ (if (i.1.castSucc : Fin (n + 1)).val ≤ i.1.val then
         pred i.1.castSucc stmtIn tr else True) := hne
     rw [if_pos (by simp)] at hne'
     exact hne'
   · simp only [if_neg hic, ENNReal.coe_zero, nonpos_iff_eq_zero]
-    rw [probEvent_eq_zero_iff]
+    rw [OracleComp.prEvent_eq_zero_iff]
     rintro ⟨tr, ch, log⟩ _ ⟨hne, hsucc⟩
     have hne' : ¬ (if (i.1.castSucc : Fin (n + 1)).val ≤ c.1.val then
         pred i.1.castSucc stmtIn tr else True) := hne
@@ -133,9 +133,9 @@ theorem rbrKnowledgeSoundness_mono (verifier : Verifier oSpec StmtIn StmtOut pSp
     {WitIn : Type}
     (relIn : Set (StmtIn × WitIn)) (relOut : Set (StmtOut × WitOut))
     {ε ε' : pSpec.ChallengeIdx → ℝ≥0}
-    (h : verifier.rbrKnowledgeSoundness init impl relIn relOut ε)
+    (h : verifier.rbrKnowledgeSoundnessAveraged init impl relIn relOut ε)
     (hle : ∀ i, ε i ≤ ε' i) :
-    verifier.rbrKnowledgeSoundness init impl relIn relOut ε' := by
+    verifier.rbrKnowledgeSoundnessAveraged init impl relIn relOut ε' := by
   obtain ⟨WitMid, ext, kSF, hbound⟩ := h
   exact ⟨WitMid, ext, kSF, fun stmtIn witIn prover i =>
     le_trans (hbound stmtIn witIn prover i) (by exact_mod_cast hle i)⟩

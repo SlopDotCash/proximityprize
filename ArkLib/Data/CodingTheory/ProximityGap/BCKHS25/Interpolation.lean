@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import CompPoly.ToMathlib.Polynomial.BivariateDegree
 import ArkLib.Data.CodingTheory.PolishchukSpielman
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Guruswami
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Guruswami
 import ArkLib.ToMathlib.Polynomial.EvalExt
 import Mathlib.LinearAlgebra.Matrix.ToLin
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
@@ -853,15 +853,10 @@ theorem proximity_gap_listDecoding (k e h DZ : ℕ)
 
 end PSApplication
 
-/-- **[BCKHS25] Lemma 3.1, integer-cap wrapper.** The improved
-Guruswami-Sudan interpolation step used by the BCKHS25 route is already proved
-in the BCIKS20 list-decoding development as
-`ProximityGap.modified_guruswami_has_a_solution`. This wrapper exposes that
-proved theorem under the BCKHS25 file, with the honest integer-side conditions
-currently required by the shared GS box. The remaining paper-to-Lean work is
-the real-parameter arithmetic that discharges `hDx` and `hYZ` from the
-BCKHS25 constants; the interpolation object itself is no longer an open
-construction. -/
+/-- **[BCKHS25] Lemma 3.1, integer-cap wrapper.** Exposes the canonical BCIKS20
+modified Guruswami-Sudan construction under the existing integer-cap premises.
+For positive multiplicity it uses the canonical interpolation count directly.
+For zero multiplicity the constant polynomial `1` meets the supplied degree caps. -/
 theorem exists_modified_guruswami_interpolant {K : Type} [Field K] [DecidableEq K]
     [DecidableEq (RatFunc K)] {m n k : ℕ} (hn : 0 < n) (hk : 0 < k)
     {ωs : Fin n ↪ K} {u₀ u₁ : Fin n → K}
@@ -870,6 +865,32 @@ theorem exists_modified_guruswami_interpolant {K : Type} [Field K] [DecidableEq 
     (hYZ : ((ProximityGap.gsDpg n m k + ProximityGap.gsZCap n m k : ℕ) : ℝ) ≤
       n * (m + 1 / (2 : ℚ)) ^ 3 / (6 * Real.sqrt ((k + 1) / n))) :
     ∃ Q, ProximityGap.ModifiedGuruswami (F := K) m n k ωs Q u₀ u₁ := by
-  exact ProximityGap.modified_guruswami_has_a_solution (F := K) hn hk hDx hYZ
+  rcases Nat.eq_zero_or_pos m with rfl | hm
+  · have hDx_pos : 0 < ProximityGap.D_X ((k + 1) / (n : ℚ)) n 0 :=
+      lt_of_le_of_lt (Nat.cast_nonneg _) hDx
+    have hYZ_nonneg :=
+      (Nat.cast_nonneg (ProximityGap.gsDpg n 0 k + ProximityGap.gsZCap n 0 k) :
+        (0 : ℝ) ≤ _).trans hYZ
+    refine ⟨1, ?_⟩
+    refine ⟨one_ne_zero, ?_, ?_, ?_, ?_, ?_⟩
+    · simpa only [ProximityGap.natWeightedDegree_one_triv, Nat.cast_zero] using hDx_pos
+    · intro i
+      rw [ProximityGap.rootMultiplicity_one_triv]
+      change (0 : ℕ) ≤ 0
+      exact Nat.le_refl 0
+    · simpa only [Trivariate.degreeInX, ProximityGap.degreeX_one_triv, Nat.cast_zero] using hDx_pos
+    · simpa only [Trivariate.D_Y, Trivariate.degreeInY,
+        ProximityGap.natDegreeY_one_triv, Nat.cast_zero] using
+        (div_pos hDx_pos (Nat.cast_pos.mpr hk))
+    · have hdegree : Trivariate.D_YZ (1 : K[Z][X][Y]) ≤ 0 + 0 :=
+        ProximityGap.D_YZ_le_of_ZdegLE
+          (by simp only [ProximityGap.natDegreeY_one_triv, le_refl])
+          (by
+            intro i j
+            by_cases hj : j = 0 <;> by_cases hi : i = 0 <;>
+              simp [Polynomial.coeff_one, hj, hi])
+      exact (show (Trivariate.D_YZ (1 : K[Z][X][Y]) : ℝ) ≤ 0 by
+        exact_mod_cast hdegree).trans hYZ_nonneg
+  · exact ProximityGap.modified_guruswami_has_a_solution (F := K) hn hk hm
 
 end BCKHS25

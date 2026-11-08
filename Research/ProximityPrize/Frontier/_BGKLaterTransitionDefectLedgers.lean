@@ -378,7 +378,7 @@ theorem product_lt_injectiveCoefficient_of_distributedLateHalfUnit
     ∏ i : Fin 6, c i < injectiveCoefficient := by
   have hprod : (∏ i : Fin 6, c i) ≤
       ∏ i : Fin 6, robustWickScale * distributedLateHalfUnit i :=
-    Finset.prod_le_prod (fun i _ => hc0 i) (fun i _ => hc i)
+    Finset.prod_le_prod₀ (fun i _ => hc0 i) (fun i _ => hc i)
   calc
     (∏ i : Fin 6, c i) ≤
         robustWickScale ^ 6 * ∏ i : Fin 6, distributedLateHalfUnit i := by

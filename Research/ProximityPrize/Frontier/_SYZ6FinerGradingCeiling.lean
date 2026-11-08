@@ -4,8 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ProximityPrize.Compatibility.EvaluationCodeDimension
 import Research.ProximityPrize.Frontier._PrizeShapeRateHalfBracket
 import ArkLib.Data.CodingTheory.ProximityGap.MCAWitnessSpread
+import Research.ProximityPrize.Support.BinaryPower
 
 /-!
 # SYZ6: the finer-grading degenerate-channel ceiling (issue #466 / #507)
@@ -154,50 +156,7 @@ end Channel
 
 /-! ## Kernel-cheap exponentiation (restated from `_PrizeShapePrimeP30.lean` via SYZ4) -/
 
-section BinaryPow
-
-private def binaryPowAux {M : Type*} [Monoid M] (a : M) (n : ℕ) : ℕ → M
-  | 0 => 1
-  | fuel + 1 =>
-      if n = 0 then 1
-      else if n % 2 = 0 then
-        binaryPowAux (a * a) (n / 2) fuel
-      else
-        a * binaryPowAux (a * a) (n / 2) fuel
-
-private def binaryPow {M : Type*} [Monoid M] (a : M) (n : ℕ) : M :=
-  binaryPowAux a n (n + 1)
-
-private theorem binaryPowAux_eq_pow {M : Type*} [Monoid M] (a : M) (n fuel : ℕ)
-    (hnfuel : n < fuel) : binaryPowAux a n fuel = a ^ n := by
-  induction fuel generalizing a n with
-  | zero => omega
-  | succ fuel ih =>
-      rw [binaryPowAux]
-      split_ifs with h0 heven
-      · subst n
-        simp
-      · have hnpos : 0 < n := Nat.pos_of_ne_zero h0
-        have hhalf : n / 2 < fuel :=
-          (Nat.div_lt_self hnpos (by norm_num)).trans_le (by omega)
-        rw [ih (a * a) (n / 2) hhalf, ← pow_two, ← pow_mul]
-        have hdvd : 2 ∣ n := (Nat.dvd_iff_mod_eq_zero).2 heven
-        have htwo : 2 * (n / 2) = n := Nat.mul_div_cancel' hdvd
-        congr 1
-      · have hnpos : 0 < n := Nat.pos_of_ne_zero h0
-        have hhalf : n / 2 < fuel :=
-          (Nat.div_lt_self hnpos (by norm_num)).trans_le (by omega)
-        rw [ih (a * a) (n / 2) hhalf, ← pow_two, ← pow_mul, ← pow_succ']
-        have hnmod : n % 2 = 1 := by omega
-        have hdecomp := Nat.mod_add_div n 2
-        congr 1
-        omega
-
-private theorem binaryPow_eq_pow {M : Type*} [Monoid M] (a : M) (n : ℕ) :
-    binaryPow a n = a ^ n := by
-  exact binaryPowAux_eq_pow a n (n + 1) (by omega)
-
-end BinaryPow
+open ArkLib.ProximityGap.BinaryPower (binaryPow_eq_pow)
 
 /-! ## Production construction at the first certified prize field -/
 
@@ -238,13 +197,13 @@ def lb (i : Fin (2 ^ 30)) : ℕ := (i : ℕ) % 1024
 
 theorem lb_lt (i : Fin (2 ^ 30)) : lb i < 1024 := Nat.mod_lt _ (by norm_num)
 
-theorem g_pow_full : g ^ (1073741824 : ℕ) = 1 := by
+theorem g_pow_full : ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (1073741824 : ℕ) = 1 := by
   have he : (1073741824 : ℕ) = 2 ^ 30 := by norm_num
   rw [he, ← orderOf_g]
-  exact pow_orderOf_eq_one g
+  exact pow_orderOf_eq_one ArkLib.ProximityGap.PrizeShapePrimeP30.g
 
 /-- The order-`1024` block character `ω = g^{2^20}`. -/
-noncomputable def ω : ZMod P := g ^ (1048576 : ℕ)
+noncomputable def ω : ZMod P := ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (1048576 : ℕ)
 
 theorem ω_pow_1024 : ω ^ (1024 : ℕ) = 1 := by
   rw [ω, ← pow_mul]
@@ -285,7 +244,7 @@ theorem ω_pow_inj {a b : ℕ} (ha : a < 1024) (hb : b < 1024) (h : ω ^ a = ω 
   exact congrArg Fin.val hfin
 
 /-- The `2^20`-th power of `g^i` sees only the label of `i`. -/
-theorem g_pow_block (i : ℕ) : (g ^ i) ^ (1048576 : ℕ) = ω ^ (i % 1024) := by
+theorem g_pow_block (i : ℕ) : (ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ i) ^ (1048576 : ℕ) = ω ^ (i % 1024) := by
   rw [← pow_mul, Nat.mul_comm, pow_mul]
   show ω ^ i = ω ^ (i % 1024)
   exact ω_pow_mod i
@@ -321,7 +280,7 @@ theorem ZNX_natDegree_le : ZNX.natDegree ≤ 535822336 := by
     simp [Polynomial.natDegree_C]
   · rw [Finset.sum_const, Finset.card_range, smul_eq_mul]
 
-theorem ZNX_eval (i : ℕ) : ZNX.eval (g ^ i) = zval (i % 1024) := by
+theorem ZNX_eval (i : ℕ) : ZNX.eval (ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ i) = zval (i % 1024) := by
   rw [ZNX, Polynomial.eval_prod, zval]
   refine Finset.prod_congr rfl fun a _ => ?_
   rw [Polynomial.eval_sub, Polynomial.eval_pow, Polynomial.eval_X, Polynomial.eval_C,
@@ -502,7 +461,7 @@ noncomputable def u1 : Fin (2 ^ 30) → ZMod P := fun i =>
 
 /-- The row-0 word: label multiplier times the core vanishing value times `g^i`. -/
 noncomputable def u0 : Fin (2 ^ 30) → ZMod P := fun i =>
-  (m0 (lb i) : ZMod P) * zval (lb i) * g ^ (i : ℕ)
+  (m0 (lb i) : ZMod P) * zval (lb i) * ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i : ℕ)
 
 /-- The row-1 codeword of subset `j`. -/
 noncomputable def v1 (j : Fin 3) : Fin (2 ^ 30) → ZMod P := fun i =>
@@ -510,14 +469,14 @@ noncomputable def v1 (j : Fin 3) : Fin (2 ^ 30) → ZMod P := fun i =>
 
 /-- The row-0 codeword of subset `j`. -/
 noncomputable def v0 (j : Fin 3) : Fin (2 ^ 30) → ZMod P := fun i =>
-  (c0 j : ZMod P) * zval (lb i) * g ^ (i : ℕ)
+  (c0 j : ZMod P) * zval (lb i) * ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i : ℕ)
 
 /-- The production code, in generic Reed–Solomon form. -/
 noncomputable def prodCode : Submodule (ZMod P) (Fin (2 ^ 30) → ZMod P) :=
-  rsCode (smoothDom g (2 ^ 30) orderOf_g) (2 ^ 29)
+  rsCode (smoothDom ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) orderOf_g) (2 ^ 29)
 
 theorem dom_apply (i : Fin (2 ^ 30)) :
-    (smoothDom g (2 ^ 30) orderOf_g) i = g ^ (i : ℕ) := rfl
+    (smoothDom ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) orderOf_g) i = ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i : ℕ) := rfl
 
 theorem znx_degree_lt : ZNX.degree < 2 ^ 29 := by
   have h2 : ZNX.natDegree < 2 ^ 29 := lt_of_le_of_lt ZNX_natDegree_le (by norm_num)
@@ -532,16 +491,16 @@ theorem znxX_degree_lt : (ZNX * Polynomial.X).degree < 2 ^ 29 := by
       ≤ (535822336 : ℕ) + (1 : ℕ) := add_le_add hz hx
     _ < 2 ^ 29 := by norm_num
 
-noncomputable def znxWord : Fin (2 ^ 30) → ZMod P := fun i => ZNX.eval (g ^ (i : ℕ))
+noncomputable def znxWord : Fin (2 ^ 30) → ZMod P := fun i => ZNX.eval (ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i : ℕ))
 
 noncomputable def xznxWord : Fin (2 ^ 30) → ZMod P :=
-  fun i => (ZNX * Polynomial.X).eval (g ^ (i : ℕ))
+  fun i => (ZNX * Polynomial.X).eval (ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i : ℕ))
 
 theorem znxWord_apply (i : Fin (2 ^ 30)) : znxWord i = zval (lb i) :=
   ZNX_eval (i : ℕ)
 
-theorem xznxWord_apply (i : Fin (2 ^ 30)) : xznxWord i = zval (lb i) * g ^ (i : ℕ) := by
-  show (ZNX * Polynomial.X).eval (g ^ (i : ℕ)) = zval (lb i) * g ^ (i : ℕ)
+theorem xznxWord_apply (i : Fin (2 ^ 30)) : xznxWord i = zval (lb i) * ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i : ℕ) := by
+  show (ZNX * Polynomial.X).eval (ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i : ℕ)) = zval (lb i) * ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i : ℕ)
   rw [Polynomial.eval_mul, Polynomial.eval_X, ZNX_eval]
   rfl
 
@@ -692,7 +651,7 @@ theorem card_S (j : Fin 3) : (S j).card = 715128832 := by
 
 theorem card_E (j : Fin 3) : (E j).card = 358612992 := by
   have hcount : ((Finset.range 1024).filter fun b => b ∉ SLab j).card = 342 := by
-    have hkey := Finset.filter_card_add_filter_neg_card_eq_card
+    have hkey := Finset.card_filter_add_card_filter_not
       (s := Finset.range 1024) (p := fun b => b ∈ SLab j)
     rw [filter_mem_SLab, card_SLab, Finset.card_range] at hkey
     omega
@@ -704,7 +663,7 @@ theorem card_E (j : Fin 3) : (E j).card = 358612992 := by
 theorem uniq_v1 (j : Fin 3) : ∀ w ∈ (prodCode : Set (Fin (2 ^ 30) → ZMod P)),
     (∀ i ∈ S j, w i = u1 i) → w = v1 j := by
   intro w hw hagree
-  refine rsCode_eq_of_agree_on_card_le (smoothDom g (2 ^ 30) orderOf_g)
+  refine rsCode_eq_of_agree_on_card_le (smoothDom ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) orderOf_g)
     (k := 2 ^ 29) (S := S j) (by rw [card_S]; norm_num) hw (v1_mem j) ?_
   intro i hi
   rw [hagree i hi, ← agree_v1 j i hi]
@@ -750,7 +709,7 @@ theorem row1_ne (j : Fin 3) {i : Fin (2 ^ 30)} (h : lb i ∉ SLab j) :
 `den · γ = −num · g^i`. -/
 theorem pencil_mul_den (j : Fin 3) {i : Fin (2 ^ 30)} (h : lb i ∉ SLab j) :
     ((nd j (lb i)).2 : ZMod P) * pencilScalar u0 u1 (v0 j) (v1 j) i
-      = -(((nd j (lb i)).1 : ZMod P) * g ^ (i : ℕ)) := by
+      = -(((nd j (lb i)).1 : ZMod P) * ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i : ℕ)) := by
   obtain ⟨hb511, hne, hm1le, hc1le, -, hid⟩ :=
     fact_A j (lb i) (Finset.mem_range.mpr (lb_lt i)) h
   have hz : zval (lb i) ≠ 0 := zval_ne_zero hb511 (lb_lt i)
@@ -763,7 +722,7 @@ theorem pencil_mul_den (j : Fin 3) {i : Fin (2 ^ 30)} (h : lb i ∉ SLab j) :
     ring
   have h0 : u0 i - v0 j i
       = ((m0 (lb i) : ZMod P) - ((c0 j : ℕ) : ZMod P)) * zval (lb i)
-          * g ^ (i : ℕ) := by
+          * ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i : ℕ) := by
     simp only [u0, v0]
     ring
   have hkey : ((nd j (lb i)).2 : ZMod P)
@@ -777,7 +736,7 @@ theorem pencil_mul_den (j : Fin 3) {i : Fin (2 ^ 30)} (h : lb i ∉ SLab j) :
     rw [h1]
     exact mul_ne_zero he1 hz
   rw [pencilScalar, mul_neg, neg_inj, ← mul_div_assoc, div_eq_iff hden, h0, h1]
-  generalize g ^ (i : ℕ) = G
+  generalize ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i : ℕ) = G
   linear_combination (zval (lb i) * G) * hkey
 
 /-- **Slot injectivity.** Two eligible slots with equal pencil scalars coincide. -/
@@ -793,20 +752,19 @@ theorem slot_injective {j j' : Fin 3} {i i' : Fin (2 ^ 30)}
   have hden' := pencil_mul_den j' h'
   rw [heq] at hden
   have hcross : ((nd j (lb i)).1 : ZMod P) * ((nd j' (lb i')).2 : ZMod P)
-        * g ^ (i : ℕ)
+        * ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i : ℕ)
       = ((nd j' (lb i')).1 : ZMod P) * ((nd j (lb i)).2 : ZMod P)
-        * g ^ (i' : ℕ) := by
+        * ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i' : ℕ) := by
     have e1 := congrArg (fun z => ((nd j' (lb i')).2 : ZMod P) * z) hden
     have e2 := congrArg (fun z => ((nd j (lb i)).2 : ZMod P) * z) hden'
-    simp only at e1 e2
     have e3 : ((nd j' (lb i')).2 : ZMod P)
-          * -(((nd j (lb i)).1 : ZMod P) * g ^ (i : ℕ))
+          * -(((nd j (lb i)).1 : ZMod P) * ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i : ℕ))
         = ((nd j (lb i)).2 : ZMod P)
-          * -(((nd j' (lb i')).1 : ZMod P) * g ^ (i' : ℕ)) := by
+          * -(((nd j' (lb i')).1 : ZMod P) * ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i' : ℕ)) := by
       rw [← e1, ← e2]
       ring
     linear_combination -e3
-  have hgN : ∀ m : ℕ, (g ^ m) ^ (1073741824 : ℕ) = 1 := by
+  have hgN : ∀ m : ℕ, (ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ m) ^ (1073741824 : ℕ) = 1 := by
     intro m
     rw [← pow_mul, Nat.mul_comm, pow_mul, g_pow_full, one_pow]
   have hpow : (((nd j (lb i)).1 * (nd j' (lb i')).2 : ℕ) : ZMod P)
@@ -829,19 +787,19 @@ theorem slot_injective {j j' : Fin 3} {i i' : Fin (2 ^ 30)}
   have hconst : (((nd j (lb i)).1 * (nd j (lb i)).2 : ℕ) : ZMod P) ≠ 0 := by
     rcases hmem with hp | hp | hp <;> rw [hp] <;>
       exact natCast_ne_zero_small (by norm_num) (lt_P_small (by norm_num))
-  have hgi : g ^ (i : ℕ) = g ^ ((i' : ℕ)) := by
-    have hc : (((nd j (lb i)).1 * (nd j (lb i)).2 : ℕ) : ZMod P) * g ^ (i : ℕ)
-        = (((nd j (lb i)).1 * (nd j (lb i)).2 : ℕ) : ZMod P) * g ^ (i' : ℕ) := by
+  have hgi : ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i : ℕ) = ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ ((i' : ℕ)) := by
+    have hc : (((nd j (lb i)).1 * (nd j (lb i)).2 : ℕ) : ZMod P) * ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i : ℕ)
+        = (((nd j (lb i)).1 * (nd j (lb i)).2 : ℕ) : ZMod P) * ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i' : ℕ) := by
       push_cast
-      calc ((nd j (lb i)).1 : ZMod P) * ((nd j (lb i)).2 : ZMod P) * g ^ (i : ℕ)
+      calc ((nd j (lb i)).1 : ZMod P) * ((nd j (lb i)).2 : ZMod P) * ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i : ℕ)
           = ((nd j (lb i)).1 : ZMod P) * ((nd j' (lb i')).2 : ZMod P)
-              * g ^ (i : ℕ) := by rw [hsame]
+              * ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i : ℕ) := by rw [hsame]
         _ = ((nd j' (lb i')).1 : ZMod P) * ((nd j (lb i)).2 : ZMod P)
-              * g ^ (i' : ℕ) := hcross
+              * ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i' : ℕ) := hcross
         _ = ((nd j (lb i)).1 : ZMod P) * ((nd j (lb i)).2 : ZMod P)
-              * g ^ (i' : ℕ) := by rw [hsame]
+              * ArkLib.ProximityGap.PrizeShapePrimeP30.g ^ (i' : ℕ) := by rw [hsame]
     exact mul_left_cancel₀ hconst hc
-  have hii : i = i' := (smoothDom g (2 ^ 30) orderOf_g).injective hgi
+  have hii : i = i' := (smoothDom ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) orderOf_g).injective hgi
   subst hii
   exact ⟨fact_nd_inj j j' (lb i) (Finset.mem_range.mpr (lb_lt i)) h h' hsame, rfl⟩
 
@@ -947,14 +905,13 @@ i.e. `δ* ≤ 358612991/2^30 ≈ 0.33398`, unconditional — sharpening the prev
 theorem firstPrime_rateHalf_mcaDeltaStar_le_syz6 :
     mcaDeltaStar
       (F := ZMod P) (A := ZMod P)
-      (evalCode g (2 ^ 30) (2 ^ 29 - 1))
+      (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1))
       (ProximityGap.epsStar : ℝ≥0∞)
       ≤ predecessorRadius (2 ^ 30) (342 * 2 ^ 20) := by
-  have hbridge : evalCode g (2 ^ 30) (2 ^ 29 - 1)
+  have hbridge : evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1)
       = ((prodCode : Submodule (ZMod P) (Fin (2 ^ 30) → ZMod P)) :
           Set (Fin (2 ^ 30) → ZMod P)) := by
-    simpa only [prodCode, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 29)] using
-      (evalCode_eq_rsCode orderOf_g (2 ^ 29 - 1))
+    exact ProximityGap.Ownership.evalCode_pred_eq_rsCode orderOf_g (by norm_num)
   rw [hbridge]
   have hbad : ∀ γ ∈ badSet,
       mcaEvent (prodCode : Set (Fin (2 ^ 30) → ZMod P)) δnew (ustack 0) (ustack 1) γ := by
@@ -979,7 +936,7 @@ theorem firstPrime_rateHalf_mcaDeltaStar_le_syz6 :
 theorem firstPrime_rateHalf_mcaDeltaStar_le_exact :
     mcaDeltaStar
       (F := ZMod P) (A := ZMod P)
-      (evalCode g (2 ^ 30) (2 ^ 29 - 1))
+      (evalCode ArkLib.ProximityGap.PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 29 - 1))
       (ProximityGap.epsStar : ℝ≥0∞)
       ≤ (358612991 : ℝ≥0) / (2 ^ 30 : ℝ≥0) := by
   refine le_trans firstPrime_rateHalf_mcaDeltaStar_le_syz6 ?_

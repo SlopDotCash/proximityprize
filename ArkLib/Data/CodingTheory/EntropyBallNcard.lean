@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.HammingBallVolume
+import ProximityPrize.Extensions.Data.CodingTheory.HammingBallVolume
 import ArkLib.Data.CodingTheory.EntropyVolumeBound
 
 /-!
@@ -43,6 +43,7 @@ theorem hammingBall_ncard_ge_qEntropy (hq : 2 ≤ Fintype.card F) (r : ℕ)
   have heq : (ListDecodable.hammingBall (0 : ι → F) r).ncard
       = hammingBallVolume (Fintype.card F) ((r : ℝ) / (n : ℝ)) n := by
     rw [hammingBallVolume_eq_ncard_hammingBall ((r : ℝ) / (n : ℝ)) (0 : ι → F), hfloor]
+    congr 1
   rw [heq]
   have hent := hammingBallVolume_ge_qEntropy hq ((r : ℝ) / (n : ℝ)) n
     (by rw [hfloor]; exact hr0) (by rw [hfloor]; exact hrn)

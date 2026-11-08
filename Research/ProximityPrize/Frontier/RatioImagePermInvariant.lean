@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Frontier.PinnedScalarRatioImage
+import Research.ProximityPrize.Frontier.AgreementSetPacking
 
 /-!
 # The residual-ratio is PERMUTATION-INVARIANT in the tuple, so the distinct-`γ` count
@@ -184,14 +185,6 @@ theorem ratioImage_card_le_choose (dom : Fin n ↪ F) (k : ℕ) (u₀ u₁ : Fin
   refine le_trans (Finset.card_le_card (ratioImage_subset_subsetImage dom k u₀ u₁)) ?_
   refine le_trans (Finset.card_image_le) ?_
   rw [Finset.card_powersetCard, Finset.card_univ, Fintype.card_fin]
-
-/-- **The sharpened distinct-`γ` ceiling.** Chaining `pinnedScalars_card_le_ratioImage` with the
-subset bound: the open `δ*`-governing distinct-`γ` count is `≤ C(n, k+1)`, a factor `(k+1)!` below
-the in-tree `pinnedScalars_card_le_tuples`. -/
-theorem pinnedScalars_card_le_choose (dom : Fin n ↪ F) (k a : ℕ) (u₀ u₁ : Fin n → F) :
-    (pinnedScalars dom k a u₀ u₁).card ≤ Nat.choose n (k + 1) :=
-  le_trans (pinnedScalars_card_le_ratioImage dom k a u₀ u₁)
-    (ratioImage_card_le_choose dom k u₀ u₁)
 
 end ProximityGap.Ownership
 

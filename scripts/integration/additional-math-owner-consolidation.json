@@ -1,0 +1,49 @@
+{
+  "source_revision": "883e99d61e51264327b5fee859732d047f7d7038",
+  "consolidations": [
+    {
+      "old_owner": "ArkLib/Data/CodingTheory/ListDecoding/Bounds/General.lean",
+      "canonical_owner": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/Basic.lean",
+      "names": [
+        "CodingTheory.card_filter_hammingDist_le_eq_hammingBallVolume",
+        "CodingTheory.sum_ncard_closeCodewordsRel_eq_of_set",
+        "CodingTheory.sum_ncard_closeCodewordsRel_eq"
+      ],
+      "scope": "Exact cardinality/averaging laws; canonical statements remove unnecessary decidability and nonempty constraints. Consumer rewriting crosses the definitional point-list bridge."
+    },
+    {
+      "old_owner": "ArkLib/Data/CodingTheory/ListDecoding/Bounds/General.lean",
+      "canonical_owner": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/Linear.lean",
+      "names": [
+        "CodingTheory.lambda_ge_entropy_volume",
+        "CodingTheory.linear_lambda_ge_entropy_volume"
+      ],
+      "retained_adapters": [
+        "CodingTheory.lambda_ge_entropy_volume_of_floor_eq",
+        "CodingTheory.linear_lambda_ge_entropy_volume_of_floor_eq"
+      ],
+      "scope": "Legacy floor-equality hypotheses give canonical integer-lattice witnesses. The finite-alphabet Lambda equality bridge preserves the legacy ncard interpretation. No external Lean calls to the old floor-argument forms were found."
+    },
+    {
+      "old_owner": "ArkLib/Data/CodingTheory/GuruswamiSudan/GSAffinePair.lean",
+      "canonical_owner": "ArkLib/ToMathlib/LinearAlgebra/LagrangeLine.lean",
+      "names": [
+        "Lagrange.map_basisDivisor",
+        "Lagrange.map_basis",
+        "Lagrange.map_interpolate"
+      ],
+      "scope": "Identical arbitrary-universe field-homomorphism and Finset interpolation contracts. GS-specific affine-pair proofs remain."
+    },
+    {
+      "old_owner": "ArkLib/Data/CodingTheory/ProximityGap/Jo26PowerGeneratorInterleaving.lean",
+      "canonical_owner": "ArkLib/Data/CodingTheory/ProximityGap/InterleavingStabilityMCAP.lean",
+      "names": [
+        "ProximityGapP.epsMCAP_le_epsMCAP_interleaved",
+        "ProximityGapP.epsMCAP_interleaved_le_epsMCAP",
+        "ProximityGapP.epsMCAP_interleaved_eq"
+      ],
+      "scope": "Identical general exponent-map, scalar-module, positive-width interleaving contracts. Unique joint-tuple API and generic-generator/factor corollaries remain."
+    }
+  ],
+  "validation": "All three consumer modules pass strict actual-import source checks; their printed anchors are standard-axiom clean. Actual package integration is verified by the subsequent serialized build."
+}

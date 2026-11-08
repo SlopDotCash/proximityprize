@@ -5,7 +5,7 @@ Authors: Quang Dao
 -/
 
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Defs
-import ArkLib.OracleReduction.Security.Basic
+import ProximityPrize.Extensions.OracleReduction.Security.Basic
 
 /-!
 # Completeness of Duplex-Sponge Fiat-Shamir

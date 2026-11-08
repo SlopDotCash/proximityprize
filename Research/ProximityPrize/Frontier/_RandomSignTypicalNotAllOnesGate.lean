@@ -78,6 +78,7 @@ theorem badSignCount_singletonSpike
       (Finset.univ.filter (fun (σ : S) => B < singletonSpike allOnes H σ))
         = ({allOnes} : Finset S) := by
     ext σ
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_singleton]
     by_cases hσ : σ = allOnes
     · simp [singletonSpike, hσ, hBH]
     · simp [singletonSpike, hσ, not_lt.mpr hB]

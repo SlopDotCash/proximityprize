@@ -409,7 +409,7 @@ theorem awayMoment_two_mul_le_of_familyQuartic
   refine (Finset.sum_le_sum hpt).trans ?_
   have hcard : ((Finset.univ \ D).card : ℝ) ≤ q := by
     have := Finset.card_le_card (Finset.subset_univ (Finset.univ \ D))
-    simpa [hqdef, Finset.card_univ] using (Nat.cast_le.mpr this : _)
+    simpa [hqdef, Finset.card_univ] using (Nat.cast_le.mpr this : ((Finset.univ \ D).card : ℝ) ≤ (Fintype.card F : ℝ))
   have hcomplete : ∑ s₀ ∈ Finset.univ \ D, ‖∑ χ ∈ X, g χ * twistedThinSum χ G s₀‖ ^ 4
       ≤ ∑ t : F, ‖∑ χ ∈ X, g χ * twistedThinSum χ G t‖ ^ 4 :=
     Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _)

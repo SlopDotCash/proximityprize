@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ArkLib.Data.Probability.Notation
 import Mathlib.Probability.Distributions.Uniform
 import Mathlib.Probability.ProbabilityMassFunction.Constructions
 
@@ -31,11 +32,11 @@ theorem map_uniformOfFintype_of_fiber_card_eq
     (hfib : ∀ b₁ b₂ : B,
       (Finset.univ.filter (fun a => f a = b₁)).card
         = (Finset.univ.filter (fun a => f a = b₂)).card) :
-    (PMF.uniformOfFintype A).map f = PMF.uniformOfFintype B := by
+    (ProximityPrize.Compatibility.uniformOfFintype A).map f = ProximityPrize.Compatibility.uniformOfFintype B := by
   classical
   ext b
   rw [PMF.map_apply, tsum_fintype]
-  simp only [PMF.uniformOfFintype_apply]
+  simp only [ProximityPrize.Compatibility.uniformOfFintype_apply]
   rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul]
   have hfilter :
       (Finset.univ.filter (fun a => b = f a)) = (Finset.univ.filter (fun a => f a = b)) := by

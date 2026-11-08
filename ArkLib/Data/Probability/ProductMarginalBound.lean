@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.DiscreteProbability
 import ArkLib.Data.Probability.MarginalBound
 import ArkLib.Data.Probability.ProductMarginal
 
@@ -76,61 +77,43 @@ end Counting
 
 section ProductMarginal
 
-variable {β : Type u} {m : Type u → Type v} [Monad m] [HasEvalSPMF m]
+variable {β : Type} {m : Type → Type v} [Monad m] [LawfulMonad m]
+  [EvalDistSemantics m] [LawfulEvalDistSemantics m]
 
 /-- **Product-marginal domination.**  If the first stage's output distribution on `Vector F t`
 is dominated by the uniform one (`Pr[= v] ≤ 1/|F|^t`, true in particular for `t` independent
 uniform draws), and the event is supported inside the coordinatewise bad set (`q` has
 probability `0` after drawing any `v` with some `v.get i ∉ L i`), then the game's event
 probability is at most the product of the per-coordinate uniform measures `∏ i, |L i| / |F|`. -/
-lemma probEvent_bind_le_uniform_marginal_product {F : Type u} [Fintype F] [DecidableEq F]
+lemma probEvent_bind_le_uniform_marginal_product {F : Type} [Fintype F] [DecidableEq F]
     {t : ℕ} (mx : m (Vector F t)) (k : Vector F t → m β) (q : β → Prop) (L : Fin t → Finset F)
-    (hunif : ∀ v : Vector F t, Pr[= v | mx] ≤ ((Fintype.card F : ℝ≥0∞) ^ t)⁻¹)
-    (hsupp : ∀ v : Vector F t, (¬ ∀ i, v.get i ∈ L i) → Pr[ q | k v] = 0) :
-    Pr[ q | mx >>= k]
+    (hunif : ∀ v : Vector F t, probOutput (mx) (v) ≤ ((Fintype.card F : ℝ≥0∞) ^ t)⁻¹)
+    (hsupp : ∀ v : Vector F t, (¬ ∀ i, v.get i ∈ L i) → probEvent (q) (k v) = 0) :
+    probEvent (q) (mx >>= k)
       ≤ ∏ i, ((L i).card : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) := by
   classical
-  letI instV : Fintype (Vector F t) := Fintype.ofEquiv _ Equiv.rootVectorEquivFin.symm
-  have hcardV : (Fintype.card (Vector F t) : ℝ≥0∞) = (Fintype.card F : ℝ≥0∞) ^ t := by
-    rw [card_vector_pow]; push_cast; rfl
-  have hunif' : ∀ v : Vector F t, Pr[= v | mx] ≤ (Fintype.card (Vector F t) : ℝ≥0∞)⁻¹ := by
-    intro v; rw [hcardV]; exact hunif v
-  refine le_trans
-    (probEvent_bind_le_uniform_marginal mx k q {v : Vector F t | ∀ i, v.get i ∈ L i}
-      hunif' (fun v hv => hsupp v hv)) ?_
-  have hfilter : (Finset.univ.filter
-        (· ∈ {v : Vector F t | ∀ i, v.get i ∈ L i})).card = ∏ i, (L i).card := by
-    rw [← card_filter_forall_get_mem (α := F) (t := t) L]
-    exact congrArg Finset.card
-      (Finset.filter_congr (fun v _ => by simp [Set.mem_setOf_eq]))
-  rw [hfilter, hcardV]
-  refine le_of_eq ?_
-  calc ((∏ i, (L i).card : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ^ t
-      = (∏ i, ((L i).card : ℝ≥0∞)) * ((Fintype.card F : ℝ≥0∞)⁻¹) ^ t := by
-        rw [div_eq_mul_inv, ENNReal.inv_pow]; push_cast; rfl
-    _ = (∏ i, ((L i).card : ℝ≥0∞)) * ∏ _i : Fin t, (Fintype.card F : ℝ≥0∞)⁻¹ := by
-        rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
-    _ = ∏ i, ((L i).card : ℝ≥0∞) * (Fintype.card F : ℝ≥0∞)⁻¹ := by
-        rw [Finset.prod_mul_distrib]
-    _ = ∏ i, ((L i).card : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) := by
-        simp_rw [div_eq_mul_inv]
+  have hbound := probEvent_bind_le_uniform_vector_marginal mx k q
+    (fun i => (L i : Set F))
+    (fun v => by simpa only [ENNReal.inv_pow] using hunif v)
+    (fun v hv => hsupp v (not_forall.mpr hv))
+  simpa using hbound
 
 /-- **Repetition-amplification headline.**  Under the hypotheses of
 `probEvent_bind_le_uniform_marginal_product`, a uniform per-coordinate bound `|L i| ≤ s`
 amplifies to the `t`-fold power bound `(s / |F|) ^ t` — the `(·)^t` round-budget shape of the
 #301 repetition lift. -/
-lemma probEvent_bind_le_pow_uniform_marginal {F : Type u} [Fintype F] [DecidableEq F]
+lemma probEvent_bind_le_pow_uniform_marginal {F : Type} [Fintype F] [DecidableEq F]
     {t : ℕ} (mx : m (Vector F t)) (k : Vector F t → m β) (q : β → Prop) (L : Fin t → Finset F)
     (s : ℕ)
-    (hunif : ∀ v : Vector F t, Pr[= v | mx] ≤ ((Fintype.card F : ℝ≥0∞) ^ t)⁻¹)
-    (hsupp : ∀ v : Vector F t, (¬ ∀ i, v.get i ∈ L i) → Pr[ q | k v] = 0)
+    (hunif : ∀ v : Vector F t, probOutput (mx) (v) ≤ ((Fintype.card F : ℝ≥0∞) ^ t)⁻¹)
+    (hsupp : ∀ v : Vector F t, (¬ ∀ i, v.get i ∈ L i) → probEvent (q) (k v) = 0)
     (hL : ∀ i, (L i).card ≤ s) :
-    Pr[ q | mx >>= k] ≤ ((s : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) ^ t := by
+    probEvent (q) (mx >>= k) ≤ ((s : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) ^ t := by
   refine le_trans
     (probEvent_bind_le_uniform_marginal_product mx k q L hunif hsupp) ?_
   calc ∏ i, ((L i).card : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)
       ≤ ∏ _i : Fin t, (s : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) :=
-        Finset.prod_le_prod' (fun i _ =>
+        Finset.prod_le_prod (fun i _ =>
           ENNReal.div_le_div_right (Nat.cast_le.mpr (hL i)) _)
     _ = ((s : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) ^ t := by
         rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
@@ -139,8 +122,9 @@ end ProductMarginal
 
 section PowMatrix
 
-variable {α β : Type u} {m : Type u → Type v} [Monad m] [HasEvalSPMF m]
-variable {F : Type u} [Fintype F] {t : ℕ}
+variable {α β : Type} {m : Type → Type v} [Monad m] [LawfulMonad m]
+  [EvalDistSemantics m] [LawfulEvalDistSemantics m]
+variable {F : Type} [Fintype F] {t : ℕ}
 
 private lemma prod_filter_le_pow (L : Fin t → Set F) [∀ i, DecidablePred (· ∈ L i)] (s : ℕ)
     (hL : ∀ i, (Finset.univ.filter (· ∈ L i)).card ≤ s) :
@@ -148,7 +132,7 @@ private lemma prod_filter_le_pow (L : Fin t → Set F) [∀ i, DecidablePred (·
       ≤ ((s : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) ^ t :=
   calc ∏ i : Fin t, (((Finset.univ.filter (· ∈ L i)).card : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞))
       ≤ ∏ _i : Fin t, (s : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) :=
-        Finset.prod_le_prod' (fun i _ =>
+        Finset.prod_le_prod (fun i _ =>
           ENNReal.div_le_div_right (Nat.cast_le.mpr (hL i)) _)
     _ = ((s : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) ^ t := by
         rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
@@ -161,10 +145,10 @@ cardinality bound. -/
 theorem probEvent_bind_le_pow_uniform_marginal_comap
     (mx : m α) (f : α → Vector F t) (k : α → m β) (q : β → Prop)
     (L : Fin t → Set F) [∀ i, DecidablePred (· ∈ L i)] (s : ℕ)
-    (hunif : ∀ v : Vector F t, Pr[ fun a => f a = v | mx] ≤ (Fintype.card F : ℝ≥0∞)⁻¹ ^ t)
-    (hsupp : ∀ a : α, (∃ i : Fin t, (f a).get i ∉ L i) → Pr[ q | k a] = 0)
+    (hunif : ∀ v : Vector F t, probEvent (fun a => f a = v) (mx) ≤ (Fintype.card F : ℝ≥0∞)⁻¹ ^ t)
+    (hsupp : ∀ a : α, (∃ i : Fin t, (f a).get i ∉ L i) → probEvent (q) (k a) = 0)
     (hL : ∀ i, (Finset.univ.filter (· ∈ L i)).card ≤ s) :
-    Pr[ q | mx >>= k] ≤ ((s : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) ^ t :=
+    probEvent (q) (mx >>= k) ≤ ((s : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) ^ t :=
   le_trans
     (probEvent_bind_le_uniform_vector_marginal_comap mx f k q L hunif hsupp)
     (prod_filter_le_pow L s hL)
@@ -181,9 +165,9 @@ power bound for a game drawing its vector challenge directly by `$ᵗ` — `huni
 theorem probEvent_uniform_vector_bind_le_pow [SampleableType (Vector F t)] {β : Type}
     (k : Vector F t → ProbComp β) (q : β → Prop)
     (L : Fin t → Set F) [∀ i, DecidablePred (· ∈ L i)] (s : ℕ)
-    (hsupp : ∀ v : Vector F t, (∃ i : Fin t, v.get i ∉ L i) → Pr[ q | k v] = 0)
+    (hsupp : ∀ v : Vector F t, (∃ i : Fin t, v.get i ∉ L i) → probEvent (q) (k v) = 0)
     (hL : ∀ i, (Finset.univ.filter (· ∈ L i)).card ≤ s) :
-    Pr[ q | $ᵗ (Vector F t) >>= k] ≤ ((s : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) ^ t :=
+    probEvent (q) ($ᵗ (Vector F t) >>= k) ≤ ((s : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)) ^ t :=
   le_trans
     (probEvent_uniform_vector_bind_le k q L hsupp)
     (prod_filter_le_pow L s hL)

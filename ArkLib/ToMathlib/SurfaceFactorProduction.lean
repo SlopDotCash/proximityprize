@@ -388,7 +388,7 @@ theorem exists_pg_factor_with_global_section_divisor
     have hmem' : R' ∈ UniqueFactorizationMonoid.normalizedFactors Q := by
       have h := hRmem
       unfold pg_Rset at h
-      simpa using h
+      simpa only [Multiset.mem_toFinset] using h
     exact UniqueFactorizationMonoid.dvd_of_mem_normalizedFactors hmem'
   have hRdeg : R'.natDegree ≤ Q.natDegree :=
     Polynomial.natDegree_le_of_dvd hdvdQ h_gs.Q_ne_0

@@ -3,8 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.OracleReduction.Composition.Sequential.Append
-import ArkLib.OracleReduction.Security.Basic
+import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.Append
+import ProximityPrize.Extensions.OracleReduction.Security.Basic
+import ArkLib.OracleReduction.Composition.Sequential.ChallengeSeamBridge
 
 /-!
 # Challenge-oracle restriction for the sequential-composition seam (issue #13)
@@ -36,6 +37,10 @@ open scoped NNReal ENNReal
 
 namespace ArkLib.SeamChallengeRestriction
 
+-- Retained PMF statements use all-subsets observations.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ := ⟨fun _ => True.intro⟩
+
 universe u
 
 set_option maxHeartbeats 1200000
@@ -50,8 +55,7 @@ theorem evalDist_map_bijective_uniformSample
     [SampleableType α] [SampleableType β] [Finite α]
     (f : α → β) (hf : Function.Bijective f) :
     evalDist (f <$> ($ᵗ α : ProbComp α)) = evalDist ($ᵗ β : ProbComp β) := by
-  refine evalDist_ext (fun y => ?_)
-  exact probOutput_map_bijective_uniform_cross (α := α) (β := β) f hf y
+  exact (SampleableType.map_uniformSample_evalDistEq_of_bijective hf).evalDist_eq
 
 /-- **State-paired bijection-uniform transport.** The `(·, s)`-paired form, matching the seam's
 challenge case once the `StateT.run` layer is exposed: the fresh challenge is sampled (via the
@@ -62,7 +66,8 @@ theorem evalDist_pairMap_bijective_uniformSample
     evalDist ((fun a => (cont a, s)) <$> ($ᵗ α : ProbComp α))
       = evalDist ((fun a => (a, s)) <$> ($ᵗ β : ProbComp β)) := by
   rw [show (fun a => (cont a, s)) = (fun b => (b, s)) ∘ cont from rfl, comp_map]
-  exact evalDist_map_eq_of_evalDist_eq (evalDist_map_bijective_uniformSample cont hf) (fun x => (x, s))
+  exact ((SampleableType.map_uniformSample_evalDistEq_of_bijective hf).map
+    (fun x => (x, s))).evalDist_eq
 
 variable {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
 
@@ -83,8 +88,6 @@ single queries to whole phase-1 computations, completing the seam's challenge-or
 theorem hquery_evalDist {ι : Type} {oSpec : OracleSpec ι}
     [∀ i, SampleableType (pSpec₁.Challenge i)]
     [∀ i, SampleableType ((pSpec₁ ++ₚ pSpec₂).Challenge i)]
-    [[pSpec₁.Challenge]ₒ.Fintype] [[pSpec₁.Challenge]ₒ.Inhabited]
-    [[(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ.Fintype] [[(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ.Inhabited]
     {σ : Type} (impl : QueryImpl oSpec (StateT σ ProbComp))
     (t : (oSpec + [pSpec₁.Challenge]ₒ).Domain) (s : σ) :
     evalDist ((simulateQ
@@ -95,42 +98,37 @@ theorem hquery_evalDist {ι : Type} {oSpec : OracleSpec ι}
           : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) _)).run s)
       = evalDist ((((impl.addLift (challengeQueryImpl (pSpec := pSpec₁))) :
           QueryImpl _ (StateT σ ProbComp)) t).run s) := by
-  rcases t with o | c
-  · -- Base-oracle query: both handlers run the *same* `impl o` (no cast).
-    have hL : simulateQ
-        ((impl.addLift (challengeQueryImpl (pSpec := pSpec₁ ++ₚ pSpec₂))) :
-          QueryImpl _ (StateT σ ProbComp))
-        (liftM (liftM (OracleSpec.query (Sum.inl o)) :
-            OracleComp (oSpec + [pSpec₁.Challenge]ₒ) ((oSpec + [pSpec₁.Challenge]ₒ).Range (Sum.inl o)))
-          : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) _) = impl o := by
-      change simulateQ _ (liftM (liftM (OracleSpec.query (Sum.inl o)) :
-          OracleQuery (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) _)) = _
-      simp [simulateQ_query, OracleQuery.liftM_right_add_right_add_query, QueryImpl.addLift_def,
-        QueryImpl.add_apply_inl, QueryImpl.liftTarget_apply, OracleSpec.query]
-    have hR : ((impl.addLift (challengeQueryImpl (pSpec := pSpec₁))) :
-        QueryImpl _ (StateT σ ProbComp)) (Sum.inl o) = impl o := by
-      simp [QueryImpl.addLift_def, QueryImpl.add_apply_inl, QueryImpl.liftTarget_apply]
-    rw [hL, hR]
-  · -- Challenge query: combined-oracle uniform challenge maps onto `pSpec₁`'s via the bijective
-    -- (cast) `SubSpec` response map; the shared-oracle state `s` is untouched.
-    change evalDist ((simulateQ
-        ((impl.addLift (challengeQueryImpl (pSpec := pSpec₁ ++ₚ pSpec₂))) :
-          QueryImpl _ (StateT σ ProbComp))
-        (liftM (liftM (OracleSpec.query (Sum.inr c)) :
-          OracleQuery (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) _))).run s) = _
-    simp only [simulateQ_query, OracleQuery.liftM_right_add_right_add_def,
-      OracleQuery.liftM_add_right_def, QueryImpl.addLift_def, QueryImpl.add_apply_inr,
-      QueryImpl.liftTarget_apply, challengeQueryImpl, OracleSpec.query,
-      OracleQuery.input_apply, OracleQuery.cont_apply]
-    simp [StateT.run_map, evalDist_map]
-    have hbij : Function.Bijective (liftM (OracleQuery.mk c id) :
-        OracleQuery [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ ([pSpec₁.Challenge]ₒ.Range c)).cont := by
-      first
-        | exact cast_bijective _
-        | exact eqRec_bijective _
-        | exact eq_mpr_bijective _
-    rw [← evalDist_map, ← evalDist_map]
-    convert evalDist_pairMap_bijective_uniformSample _ s hbij using 2
+  cases t with
+  | inl t =>
+      have hcomp : simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₁ ++ₚ pSpec₂)))
+          (liftM (liftM (OracleSpec.query (spec := oSpec + [pSpec₁.Challenge]ₒ) (.inl t)) :
+            OracleComp (oSpec + [pSpec₁.Challenge]ₒ) _) :
+            OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) _) = impl t :=
+        by
+          change simulateQ _ (liftM (liftM (OracleSpec.query (Sum.inl t)) :
+            OracleQuery (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) _)) = _
+          simp [simulateQ_query, OracleQuery.liftM_right_add_right_add_query,
+            QueryImpl.addLift_def, QueryImpl.add_apply_inl, QueryImpl.liftTarget_apply,
+            OracleSpec.query]
+      rw [hcomp]
+      rfl
+  | inr t =>
+      rcases t with ⟨i, q⟩
+      cases q
+      have ht : (pSpec₁ ++ₚ pSpec₂).Challenge (ChallengeIdx.inl i) = pSpec₁.Challenge i := by
+        simp [ChallengeIdx.inl, ProtocolSpec.append]
+      have hstate {A : Type} (p : ProbComp A) :
+          (liftM p : StateT σ ProbComp A).run s = (fun a => (a, s)) <$> p := by
+        change (p >>= fun a => pure (a, s)) = _
+        rw [map_eq_bind_pure_comp]
+        rfl
+      change evalDist (((cast ht) <$>
+          (liftM (uniformSample ((pSpec₁ ++ₚ pSpec₂).Challenge (ChallengeIdx.inl i))) :
+            StateT σ ProbComp _)).run s) =
+        evalDist ((liftM (uniformSample (pSpec₁.Challenge i)) : StateT σ ProbComp _).run s)
+      rw [Prover.liftM_map_comm, hstate, hstate]
+      exact ((SampleableType.map_uniformSample_evalDistEq_of_bijective
+        (cast_bijective ht)).map (fun a => (a, s))).evalDist_eq
 
 /-- **`evalDist` lifting of per-query agreement to whole computations.** The `evalDist`-and-`run`
 twin of VCVio's `simulateQ_liftM_eq_of_query`: if two handlers `h` (over the larger oracle `M₀`) and
@@ -142,20 +140,21 @@ theorem evalDist_simulateQ_liftM_run_eq_of_query
     [MonadLiftT (OracleComp I₀) (OracleComp M₀)] [LawfulMonadLiftT (OracleComp I₀) (OracleComp M₀)]
     (h : QueryImpl M₀ (StateT σ' ProbComp)) (h₁ : QueryImpl I₀ (StateT σ' ProbComp))
     (hq : ∀ (t : I₀.Domain) (s : σ'),
+      let : MeasurableSpace (I₀.Range t × σ') := ⊤
       evalDist ((simulateQ h (liftM (liftM (I₀.query t) :
         OracleComp I₀ (I₀.Range t)) : OracleComp M₀ (I₀.Range t))).run s) = evalDist ((h₁ t).run s))
     {δ : Type} (oa : OracleComp I₀ δ) (s : σ') :
     evalDist ((simulateQ h (liftM oa : OracleComp M₀ δ)).run s)
       = evalDist ((simulateQ h₁ oa).run s) := by
+  suffices hdist : (simulateQ h (liftM oa : OracleComp M₀ δ)).run s =ᵈ
+      (simulateQ h₁ oa).run s from hdist.evalDist_eq
   induction oa using OracleComp.inductionOn generalizing s with
-  | pure x => simp [simulateQ_pure, StateT.run_pure]
+  | pure x => simp only [liftM_pure, simulateQ_pure, StateT.run_pure]; exact EvalDistEq.rfl
   | query_bind t k ih =>
       have hq1 : simulateQ h₁ (liftM (I₀.query t) : OracleComp I₀ (I₀.Range t)) = h₁ t := by
         simp [simulateQ_query]
-      rw [liftM_bind, simulateQ_bind, StateT.run_bind, simulateQ_bind, StateT.run_bind, hq1,
-          evalDist_bind, evalDist_bind, hq t s]
-      refine bind_congr ?_
-      rintro ⟨a, s'⟩
-      exact ih a s'
+      rw [liftM_bind, simulateQ_bind, StateT.run_bind, simulateQ_bind, StateT.run_bind, hq1]
+      let : MeasurableSpace (I₀.Range t × σ') := ⊤
+      exact (EvalDistEq.of_evalDist_eq (hq t s)).bind fun ⟨a, s'⟩ => ih a s' 
 
 end ArkLib.SeamChallengeRestriction

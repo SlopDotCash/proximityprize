@@ -228,8 +228,9 @@ theorem mcaEvent_of_quotient_subset
       have himage : SH.card = S.card := by
         apply Finset.card_image_of_injOn
         intro i _ j _ hij
-        apply (smoothDom g (s * m) hg).injective
-        simpa [smoothDom] using hij
+        exact (smoothDom g (s * m) hg).injective (by
+          change g ^ (i : ℕ) = g ^ (j : ℕ)
+          exact hij)
       rw [himage, hScard, Nat.mul_comm]
     refine subceiling_ca_failure hm hwindow.2 SH hSHsub hSHcard q1 hq1nat ?_
     intro x hx

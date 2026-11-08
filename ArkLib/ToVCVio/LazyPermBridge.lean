@@ -3,9 +3,12 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ArkLib.Data.Probability.Notation
 import ArkLib.ToVCVio.LazyPermMarginal
 import ArkLib.Data.Hash.DuplexSponge
 import VCVio
+import Mathlib.Probability.ProbabilityMassFunction.Constructions
+import Mathlib.MeasureTheory.Integral.Lebesgue.Countable
 
 /-!
 # The lazy permutation oracle — implementations and step distributions
@@ -29,6 +32,46 @@ once, then answer eagerly) is increment B.
 
 open OracleComp OracleSpec
 open scoped ENNReal NNReal
+
+open MeasureTheory
+
+namespace ProximityPrize.Compatibility
+
+/-- Finite native uniform sampling denotes the corresponding PMF measure. -/
+theorem evalDist_uniformSample_eq_toMeasure {α : Type} [Fintype α] [SampleableType α]
+    [MeasurableSpace α] [MeasurableSingletonClass α] :
+    evalDist ($ᵗ α : ProbComp α) = (uniformOfFintype α).toMeasure := by
+  apply Measure.ext_of_singleton
+  intro a
+  rw [SampleableType.evalDist_uniformSample_singleton,
+    PMF.toMeasure_apply_singleton _ _ (measurableSet_singleton _), uniformOfFintype_apply]
+
+/-- Push a finite uniform sample into an arbitrary measurable output type. -/
+theorem evalDist_uniform_map_eq_toMeasure {α β : Type} [Fintype α] [SampleableType α]
+    [MeasurableSpace β] (f : α → β) :
+    evalDist (f <$> ($ᵗ α : ProbComp α)) = ((uniformOfFintype α).map f).toMeasure := by
+  let : MeasurableSpace α := ⊤
+  rw [evalDist_map_of_discrete, evalDist_uniformSample_eq_toMeasure,
+    PMF.toMeasure_map f _ Measurable.of_discrete]
+
+/-- Compose finite PMF prefix and continuation models through native measure semantics. -/
+theorem evalDist_bind_finitePMF {α β : Type} [Fintype α]
+    [MeasurableSpace α] [DiscreteMeasurableSpace α] [MeasurableSpace β]
+    (mx : ProbComp α) (f : α → ProbComp β) (p : PMF α) (q : α → PMF β)
+    (hmx : evalDist mx = p.toMeasure)
+    (hf : ∀ a ∈ p.support, evalDist (f a) = (q a).toMeasure) :
+    evalDist (mx >>= f) = (p.bind q).toMeasure := by
+  rw [evalDist_bind_of_discrete, hmx]
+  ext s hs : 1
+  rw [Measure.bind_apply hs Measurable.of_discrete.aemeasurable,
+    lintegral_fintype, PMF.toMeasure_bind_apply _ _ _ hs, tsum_fintype]
+  apply Finset.sum_congr rfl
+  intro a _
+  rw [PMF.toMeasure_apply_singleton _ _ (measurableSet_singleton _), mul_comm]
+  by_cases ha : p a = 0
+  · simp [ha]
+  · rw [hf a (ha)]
+end ProximityPrize.Compatibility
 
 namespace LazyPermBridge
 
@@ -97,51 +140,6 @@ lemma unusedKeysList_nodup (c : List (X × X)) : (unusedKeysList c).Nodup := by
   classical
   exact Finset.nodup_toList _
 
-/-- **The lazy step distribution**: over a duplicate-free nonempty list, `sampleUnused` is
-the uniform distribution on the list's finset (lifted to the success branch). This connects
-the implementation's fresh-query step to the chain rules of `LazyPermMarginal`. -/
-theorem evalDist_sampleUnused_run (xs : List X) (hnd : xs.Nodup) (hxs : xs ≠ []) :
-    (evalDist (sampleUnused xs)).run
-      = (PMF.uniformOfFinset xs.toFinset (by
-          simpa [Finset.nonempty_iff_ne_empty, List.toFinset_eq_empty_iff] using hxs)).map
-            some := by
-  classical
-  rcases xs with _ | ⟨y, ys⟩
-  · exact absurd rfl hxs
-  · ext o
-    rcases o with _ | x
-    · -- failure mass is zero on both sides
-      have hfail : Pr[⊥ | sampleUnused (y :: ys)] = 0 := by
-        simp [sampleUnused]
-      rw [show ((evalDist (sampleUnused (y :: ys))).run none)
-          = Pr[⊥ | sampleUnused (y :: ys)] from rfl, hfail]
-      rw [PMF.map_apply]
-      refine (ENNReal.tsum_eq_zero.mpr fun b => ?_).symm
-      simp
-    · -- success mass: `count/length = 1/card` for a duplicate-free list
-      have hout : ((evalDist (sampleUnused (y :: ys))).run (some x))
-          = Pr[= x | sampleUnused (y :: ys)] := rfl
-      rw [hout]
-      have hcount : Pr[= x | sampleUnused (y :: ys)]
-          = ((y :: ys).count x : ℝ≥0∞) / (y :: ys).length := by
-        show Pr[= x | ((y :: ys)[·]) <$> $[0..ys.length]] = _
-        rw [List.count, ← List.countP_eq_sum_fin_ite]
-        simp [probOutput_map_eq_sum_fintype_ite, div_eq_mul_inv, @eq_comm _ x]
-      rw [hcount, PMF.map_apply]
-      refine Eq.trans ?_ (tsum_eq_single x
-        (fun b hb => if_neg (fun h => hb (Option.some_inj.mp h).symm))).symm
-      rw [if_pos rfl]
-      by_cases hx : x ∈ (y :: ys)
-      · rw [PMF.uniformOfFinset_apply_of_mem (hs := ⟨y, by simp⟩)
-            (List.mem_toFinset.mpr hx),
-          List.count_eq_one_of_mem hnd hx, List.toFinset_card_of_nodup hnd]
-        simp [ENNReal.div_eq_inv_mul]
-      · rw [PMF.uniformOfFinset_apply_of_notMem (hs := ⟨y, by simp⟩)
-            (fun h => hx (List.mem_toFinset.mp h)),
-          List.count_eq_zero_of_not_mem hx]
-        simp
-
-
 /-- The fresh sample lands in the list (nonempty case). -/
 lemma support_sampleUnused {xs : List X} (h : xs ≠ []) :
     support (sampleUnused xs) ⊆ {x | x ∈ xs} := by
@@ -155,22 +153,44 @@ lemma support_sampleUnused {xs : List X} (h : xs ≠ []) :
 /-- Event probability of the fresh sample: `countP/length` (mirrors
 `probEvent_uniformSelectList`, without the `OptionT` layer). -/
 lemma probEvent_sampleUnused {xs : List X} (h : xs ≠ []) (p : X → Prop) [DecidablePred p] :
-    Pr[ p | sampleUnused xs] = ((xs.countP p : ℕ) : ℝ≥0∞) / xs.length := by
-  classical
+    Pr{let x ← sampleUnused xs}[p x] = ((xs.countP p : ℕ) : ℝ≥0∞) / xs.length := by
   rcases xs with _ | ⟨y, ys⟩
   · exact absurd rfl h
-  · show Pr[ p | ((y :: ys)[·]) <$> $[0..ys.length]] = _
-    simp only [Fin.getElem_fin, probEvent_map, ProbComp.probEvent_uniformFin,
-      Function.comp_apply, Fin.countP_eq_countP_map_finRange, Nat.cast_add, Nat.cast_one,
-      List.length_cons]
-    congr 2
-    exact List.countP_finRange_getElem (y :: ys) (fun b => decide (p b))
+  · have hs : ($ (y :: ys) : OptionT ProbComp X) =
+        OptionT.lift (sampleUnused (y :: ys)) := rfl
+    have hc := ProbComp.prEvent_uniformSelectList (y :: ys) p
+    rw [hs, OptionT.prEvent_lift] at hc
+    exact hc
+
+/-- Over a nonempty duplicate-free list, the native sample denotes its uniform PMF measure. -/
+theorem evalDist_sampleUnused [MeasurableSpace X] [DiscreteMeasurableSpace X]
+    (xs : List X) (hnd : xs.Nodup) (hxs : xs ≠ []) :
+    evalDist (sampleUnused xs) =
+      (ProximityPrize.Compatibility.uniformOfFinset xs.toFinset (by
+        simpa [Finset.nonempty_iff_ne_empty, List.toFinset_eq_empty_iff] using hxs)).toMeasure := by
+  classical
+  apply Measure.ext_of_singleton
+  intro x
+  rw [← prEvent_eq_evalDist_singleton, probEvent_sampleUnused hxs,
+    PMF.toMeasure_apply_singleton _ _ (measurableSet_singleton _)]
+  have hc : xs.countP (fun b => decide (b = x)) = xs.count x := by
+    simp only [List.count]
+    congr 1
+  rw [hc]
+  by_cases hx : x ∈ xs
+  · rw [ProximityPrize.Compatibility.uniformOfFinset_apply_of_mem (hs := ⟨x, by simpa using hx⟩)
+        (List.mem_toFinset.mpr hx), List.count_eq_one_of_mem hnd hx,
+      List.toFinset_card_of_nodup hnd]
+    simp
+  · rw [ProximityPrize.Compatibility.uniformOfFinset_apply_of_notMem (hs := by simpa using hxs)
+        (fun h => hx (List.mem_toFinset.mp h)), List.count_eq_zero_of_not_mem hx]
+    simp
 
 /-- **The per-step landing bound (4D-3 atom)**: a fresh sample from a duplicate-free pool
 lands in a target set with probability at most `|target| / |pool|`. -/
 lemma probEvent_sampleUnused_le_card {xs : List X} (h : xs ≠ []) (hnd : xs.Nodup)
     (S : Finset X) :
-    Pr[ (· ∈ S) | sampleUnused xs] ≤ (S.card : ℝ≥0∞) / xs.length := by
+    Pr{let x ← sampleUnused xs}[x ∈ S] ≤ (S.card : ℝ≥0∞) / xs.length := by
   classical
   rw [probEvent_sampleUnused h]
   refine ENNReal.div_le_div_right ?_ _
@@ -187,9 +207,9 @@ lemma probEvent_sampleUnused_le_card {xs : List X} (h : xs ≠ []) (hnd : xs.Nod
 the whole type hits a target set with probability at most `|target| / |type|`. -/
 lemma probEvent_uniformSample_le_card {Y : Type} [Fintype Y] [Nonempty Y] [SampleableType Y]
     [DecidableEq Y] (S : Finset Y) :
-    Pr[ (· ∈ S) | $ᵗ Y] ≤ (S.card : ℝ≥0∞) / Fintype.card Y := by
+    Pr{let y ← $ᵗ Y}[y ∈ S] ≤ (S.card : ℝ≥0∞) / Fintype.card Y := by
   classical
-  rw [probEvent_uniformSample]
+  rw [SampleableType.prEvent_uniformSample]
   refine ENNReal.div_le_div_right ?_ _
   exact_mod_cast Finset.card_le_card (fun x hx => (Finset.mem_filter.mp hx).2)
 
@@ -494,9 +514,9 @@ theorem map_onestep_uniform (c : List (X × X)) (a b : X)
     (hkeys : (c.map Prod.fst).Nodup) (hvals : (c.map Prod.snd).Nodup)
     (ha : a ∉ c.map Prod.fst) (hb : b ∉ c.map Prod.snd)
     (hne : (extendsFinset c).Nonempty) :
-    (PMF.uniformOfFinset (extendsFinset c) hne).map
+    (ProximityPrize.Compatibility.uniformOfFinset (extendsFinset c) hne).map
         (fun π => (Equiv.swap a (π.symm b)).trans π)
-      = PMF.uniformOfFinset (extendsFinset (c.concat (a, b)))
+      = ProximityPrize.Compatibility.uniformOfFinset (extendsFinset (c.concat (a, b)))
           (extendsFinset_concat_nonempty c a b ha hb hne) := by
   classical
   letI : DecidableEq (Equiv.Perm X) := Classical.decEq _
@@ -506,7 +526,7 @@ theorem map_onestep_uniform (c : List (X × X)) (a b : X)
   · -- count the fiber: one preimage per unused output
     have hsum : ∀ π : Equiv.Perm X,
         (if τ = (Equiv.swap a (π.symm b)).trans π then
-          (PMF.uniformOfFinset (extendsFinset c) hne) π else 0)
+          (ProximityPrize.Compatibility.uniformOfFinset (extendsFinset c) hne) π else 0)
         = (if π ∈ (extendsFinset c).filter
             (fun π => (Equiv.swap a (π.symm b)).trans π = τ) then
               ((extendsFinset c).card : ℝ≥0∞)⁻¹ else 0) := by
@@ -515,13 +535,13 @@ theorem map_onestep_uniform (c : List (X × X)) (a b : X)
       · by_cases hstep : (Equiv.swap a (π.symm b)).trans π = τ
         · rw [if_pos hstep.symm, if_pos (Finset.mem_filter.mpr
               ⟨mem_extendsFinset.mpr hmem, hstep⟩),
-            PMF.uniformOfFinset_apply_of_mem (hs := hne) (mem_extendsFinset.mpr hmem)]
+            ProximityPrize.Compatibility.uniformOfFinset_apply_of_mem (hs := hne) (mem_extendsFinset.mpr hmem)]
         · rw [if_neg (fun h => hstep h.symm)]
           split_ifs with h2
           · exact absurd (Finset.mem_filter.mp h2).2 hstep
           · rfl
-      · have h0 : (PMF.uniformOfFinset (extendsFinset c) hne) π = 0 :=
-          PMF.uniformOfFinset_apply_of_notMem (hs := hne)
+      · have h0 : (ProximityPrize.Compatibility.uniformOfFinset (extendsFinset c) hne) π = 0 :=
+          ProximityPrize.Compatibility.uniformOfFinset_apply_of_notMem (hs := hne)
             (fun h => hmem (mem_extendsFinset.mp h))
         split_ifs with h1 h2 h2
         · exact absurd (mem_extendsFinset.mp (Finset.mem_filter.mp h2).1) hmem
@@ -547,7 +567,7 @@ theorem map_onestep_uniform (c : List (X × X)) (a b : X)
         obtain ⟨w, hw, rfl⟩ := (onestep_fiber_iff c a b ha hb hτ π).mp
           ⟨mem_extendsFinset.mp hπc, hstep⟩
         exact ⟨w, mem_unusedFinset.mpr hw, rfl⟩
-    rw [hcard, PMF.uniformOfFinset_apply_of_mem
+    rw [hcard, ProximityPrize.Compatibility.uniformOfFinset_apply_of_mem
         (hs := extendsFinset_concat_nonempty c a b ha hb hne) (mem_extendsFinset.mpr hτ),
       card_extendsFinset_eq_card_unused_mul c a b ha hb,
       show (Finset.univ.filter (fun b : X => b ∉ c.map Prod.snd)) = unusedFinset c from rfl,
@@ -559,13 +579,13 @@ theorem map_onestep_uniform (c : List (X × X)) (a b : X)
       have := unusedFinset_nonempty c a hkeys hvals ha
       exact_mod_cast Nat.cast_ne_zero.mpr (Finset.card_pos.mpr this).ne'
   · -- off the grown extensions both sides vanish
-    rw [PMF.uniformOfFinset_apply_of_notMem
+    rw [ProximityPrize.Compatibility.uniformOfFinset_apply_of_notMem
       (hs := extendsFinset_concat_nonempty c a b ha hb hne)
       (fun h => hτ (mem_extendsFinset.mp h))]
     refine Finset.sum_eq_zero fun π _ => ?_
     by_cases hstep : τ = (Equiv.swap a (π.symm b)).trans π
     · rw [if_pos hstep]
-      refine PMF.uniformOfFinset_apply_of_notMem (hs := hne) (fun hmem => ?_)
+      refine ProximityPrize.Compatibility.uniformOfFinset_apply_of_notMem (hs := hne) (fun hmem => ?_)
       exact hτ (hstep ▸ onestep_extends c a b ha hb (mem_extendsFinset.mp hmem))
     · rw [if_neg hstep]
 
@@ -606,8 +626,8 @@ theorem map_permExtending_uniform (c₀ rest : List (X × X))
     (hkeys : (((c₀ ++ rest).map Prod.fst)).Nodup)
     (hvals : (((c₀ ++ rest).map Prod.snd)).Nodup)
     (hne : (extendsFinset c₀).Nonempty) :
-    (PMF.uniformOfFinset (extendsFinset c₀) hne).map (permExtending rest)
-      = PMF.uniformOfFinset (extendsFinset (c₀ ++ rest))
+    (ProximityPrize.Compatibility.uniformOfFinset (extendsFinset c₀) hne).map (permExtending rest)
+      = ProximityPrize.Compatibility.uniformOfFinset (extendsFinset (c₀ ++ rest))
           (extendsFinset_append_nonempty c₀ rest hkeys hvals hne) := by
   classical
   induction rest generalizing c₀ with
@@ -655,24 +675,6 @@ lemma toFinset_unusedKeysList (c : List (X × X)) :
   ext a
   simp [unusedKeysList, unusedFinset, List.map_map, Function.comp_def]
 
-/-- `bind` of a PMF against an `Option.elim`-shaped function only depends on the success
-branch over the success support. -/
-private lemma pmf_bind_elim_congr {α β : Type} (p : PMF (Option α))
-    (f g : α → PMF (Option β))
-    (h : ∀ a, p (some a) ≠ 0 → f a = g a) :
-    (p.bind (fun o => o.elim (PMF.pure none) f))
-      = (p.bind (fun o => o.elim (PMF.pure none) g)) := by
-  classical
-  ext b
-  rw [PMF.bind_apply, PMF.bind_apply]
-  refine tsum_congr fun o => ?_
-  rcases o with _ | a
-  · rfl
-  · rcases eq_or_ne (p (some a)) 0 with ha | ha
-    · rw [ha, zero_mul, zero_mul]
-    · simp only [Option.elim_some]
-      rw [h a ha]
-
 section PMFAbsorption
 
 variable [SampleableType (Equiv.Perm X)]
@@ -681,8 +683,8 @@ variable [SampleableType (Equiv.Perm X)]
 definitionally `uniformOfFinset univ`, and `extendsFinset [] = univ`). -/
 theorem map_permExtending_uniform_fintype (rest : List (X × X))
     (hkeys : ((rest.map Prod.fst)).Nodup) (hvals : ((rest.map Prod.snd)).Nodup) :
-    (PMF.uniformOfFintype (Equiv.Perm X)).map (permExtending rest)
-      = PMF.uniformOfFinset (extendsFinset rest)
+    (ProximityPrize.Compatibility.uniformOfFintype (Equiv.Perm X)).map (permExtending rest)
+      = ProximityPrize.Compatibility.uniformOfFinset (extendsFinset rest)
           (by
             have := extendsFinset_append_nonempty [] rest (by simpa using hkeys)
               (by simpa using hvals) (by simp)
@@ -690,11 +692,11 @@ theorem map_permExtending_uniform_fintype (rest : List (X × X))
   classical
   have h := map_permExtending_uniform [] rest (by simpa using hkeys)
     (by simpa using hvals) (by simp)
-  have huniv : PMF.uniformOfFintype (Equiv.Perm X)
-      = PMF.uniformOfFinset (extendsFinset ([] : List (X × X)))
+  have huniv : ProximityPrize.Compatibility.uniformOfFintype (Equiv.Perm X)
+      = ProximityPrize.Compatibility.uniformOfFinset (extendsFinset ([] : List (X × X)))
           (by simp) := by
     ext π
-    rw [PMF.uniformOfFintype_apply, PMF.uniformOfFinset_apply_of_mem
+    rw [ProximityPrize.Compatibility.uniformOfFintype_apply, ProximityPrize.Compatibility.uniformOfFinset_apply_of_mem
       (hs := by simp) (by simp [mem_extendsFinset])]
     simp
   rw [huniv]
@@ -707,11 +709,11 @@ theorem pmf_absorb {α : Type} (c : List (X × X)) (a : X)
     (hkeys : (c.map Prod.fst).Nodup) (hvals : (c.map Prod.snd).Nodup)
     (ha : a ∉ c.map Prod.fst) (hne : (extendsFinset c).Nonempty)
     (ψ : Equiv.Perm X → α) :
-    (PMF.uniformOfFinset (unusedFinset c)
+    (ProximityPrize.Compatibility.uniformOfFinset (unusedFinset c)
         (unusedFinset_nonempty c a hkeys hvals ha)).bind (fun b =>
-      ((PMF.uniformOfFintype (Equiv.Perm X)).map
+      ((ProximityPrize.Compatibility.uniformOfFintype (Equiv.Perm X)).map
         (fun π => ψ (permExtending (c.concat (a, b)) π))))
-      = (PMF.uniformOfFintype (Equiv.Perm X)).map
+      = (ProximityPrize.Compatibility.uniformOfFintype (Equiv.Perm X)).map
           (fun π => ψ (permExtending c π)) := by
   classical
   -- nodups of the grown cache, for unused `b` (rewritten per-fibre on the support)
@@ -737,29 +739,28 @@ theorem pmf_absorb {α : Type} (c : List (X × X)) (a : X)
   rw [LazyPermMarginal.bind_congr_support _ _
     (fun b =>
       if h : (extendsFinset (c.concat (a, b))).Nonempty then
-        (PMF.uniformOfFinset (extendsFinset (c.concat (a, b))) h).map ψ
-      else (PMF.uniformOfFinset (extendsFinset c) hne).map ψ)
+        (ProximityPrize.Compatibility.uniformOfFinset (extendsFinset (c.concat (a, b))) h).map ψ
+      else (ProximityPrize.Compatibility.uniformOfFinset (extendsFinset c) hne).map ψ)
     (by
       intro b hb
-      rw [PMF.mem_support_uniformOfFinset_iff, mem_unusedFinset] at hb
+      rw [ProximityPrize.Compatibility.mem_support_uniformOfFinset_iff, mem_unusedFinset] at hb
       obtain ⟨hk', hv'⟩ := hgrow b hb
       have hpos := extendsFinset_concat_nonempty c a b ha hb hne
-      dsimp only
       rw [dif_pos hpos,
         show (fun π => ψ (permExtending (c.concat (a, b)) π))
           = ψ ∘ (permExtending (c.concat (a, b))) from rfl, ← PMF.map_comp,
         map_permExtending_uniform_fintype (c.concat (a, b)) hk' hv'])]
   -- pull the `ψ`-map out of the bind and apply the chain rule
-  have hpull : (PMF.uniformOfFinset (unusedFinset c)
+  have hpull : (ProximityPrize.Compatibility.uniformOfFinset (unusedFinset c)
       (unusedFinset_nonempty c a hkeys hvals ha)).bind (fun b =>
         (if h : (extendsFinset (c.concat (a, b))).Nonempty then
-          (PMF.uniformOfFinset (extendsFinset (c.concat (a, b))) h).map ψ
-        else (PMF.uniformOfFinset (extendsFinset c) hne).map ψ))
-      = ((PMF.uniformOfFinset (unusedFinset c)
+          (ProximityPrize.Compatibility.uniformOfFinset (extendsFinset (c.concat (a, b))) h).map ψ
+        else (ProximityPrize.Compatibility.uniformOfFinset (extendsFinset c) hne).map ψ))
+      = ((ProximityPrize.Compatibility.uniformOfFinset (unusedFinset c)
           (unusedFinset_nonempty c a hkeys hvals ha)).bind (fun b =>
             if h : (extendsFinset (c.concat (a, b))).Nonempty then
-              PMF.uniformOfFinset (extendsFinset (c.concat (a, b))) h
-            else PMF.uniformOfFinset (extendsFinset c) hne)).map ψ := by
+              ProximityPrize.Compatibility.uniformOfFinset (extendsFinset (c.concat (a, b))) h
+            else ProximityPrize.Compatibility.uniformOfFinset (extendsFinset c) hne)).map ψ := by
     rw [PMF.map_bind]
     refine congrArg _ (funext fun b => ?_)
     split_ifs <;> rfl
@@ -774,14 +775,14 @@ theorem pmf_absorb_inv {α : Type} (c : List (X × X)) (b : X)
     (hkeys : (c.map Prod.fst).Nodup) (hvals : (c.map Prod.snd).Nodup)
     (hb : b ∉ c.map Prod.snd) (hne : (extendsFinset c).Nonempty)
     (ψ : Equiv.Perm X → α) :
-    (PMF.uniformOfFinset (unusedFinset (c.map Prod.swap))
+    (ProximityPrize.Compatibility.uniformOfFinset (unusedFinset (c.map Prod.swap))
         (unusedFinset_nonempty (c.map Prod.swap) b
           (by simpa [List.map_map, Function.comp_def] using hvals)
           (by simpa [List.map_map, Function.comp_def] using hkeys)
           (by simpa [List.map_map, Function.comp_def] using hb))).bind (fun a =>
-      ((PMF.uniformOfFintype (Equiv.Perm X)).map
+      ((ProximityPrize.Compatibility.uniformOfFintype (Equiv.Perm X)).map
         (fun π => ψ (permExtending (c.concat (a, b)) π))))
-      = (PMF.uniformOfFintype (Equiv.Perm X)).map
+      = (ProximityPrize.Compatibility.uniformOfFintype (Equiv.Perm X)).map
           (fun π => ψ (permExtending c π)) := by
   classical
   have hgrow : ∀ a, a ∉ c.map Prod.fst →
@@ -805,11 +806,11 @@ theorem pmf_absorb_inv {α : Type} (c : List (X × X)) (b : X)
   rw [LazyPermMarginal.bind_congr_support _ _
     (fun a =>
       if h : (extendsFinset (c.concat (a, b))).Nonempty then
-        (PMF.uniformOfFinset (extendsFinset (c.concat (a, b))) h).map ψ
-      else (PMF.uniformOfFinset (extendsFinset c) hne).map ψ)
+        (ProximityPrize.Compatibility.uniformOfFinset (extendsFinset (c.concat (a, b))) h).map ψ
+      else (ProximityPrize.Compatibility.uniformOfFinset (extendsFinset c) hne).map ψ)
     (by
       intro a ha
-      rw [PMF.mem_support_uniformOfFinset_iff, mem_unusedFinset] at ha
+      rw [ProximityPrize.Compatibility.mem_support_uniformOfFinset_iff, mem_unusedFinset] at ha
       have haK : a ∉ c.map Prod.fst := by
         simpa [List.map_map, Function.comp_def] using ha
       obtain ⟨hk', hv'⟩ := hgrow a haK
@@ -817,27 +818,26 @@ theorem pmf_absorb_inv {α : Type} (c : List (X × X)) (b : X)
         have := extendsFinset_append_nonempty [] (c.concat (a, b))
           (by simpa using hk') (by simpa using hv') (by simp)
         simpa using this
-      dsimp only
       rw [dif_pos hpos,
         show (fun π => ψ (permExtending (c.concat (a, b)) π))
           = ψ ∘ (permExtending (c.concat (a, b))) from rfl, ← PMF.map_comp,
         map_permExtending_uniform_fintype (c.concat (a, b)) hk' hv'])]
-  have hpull : (PMF.uniformOfFinset (unusedFinset (c.map Prod.swap))
+  have hpull : (ProximityPrize.Compatibility.uniformOfFinset (unusedFinset (c.map Prod.swap))
       (unusedFinset_nonempty (c.map Prod.swap) b
         (by simpa [List.map_map, Function.comp_def] using hvals)
         (by simpa [List.map_map, Function.comp_def] using hkeys)
         (by simpa [List.map_map, Function.comp_def] using hb))).bind (fun a =>
         (if h : (extendsFinset (c.concat (a, b))).Nonempty then
-          (PMF.uniformOfFinset (extendsFinset (c.concat (a, b))) h).map ψ
-        else (PMF.uniformOfFinset (extendsFinset c) hne).map ψ))
-      = ((PMF.uniformOfFinset (unusedFinset (c.map Prod.swap))
+          (ProximityPrize.Compatibility.uniformOfFinset (extendsFinset (c.concat (a, b))) h).map ψ
+        else (ProximityPrize.Compatibility.uniformOfFinset (extendsFinset c) hne).map ψ))
+      = ((ProximityPrize.Compatibility.uniformOfFinset (unusedFinset (c.map Prod.swap))
           (unusedFinset_nonempty (c.map Prod.swap) b
             (by simpa [List.map_map, Function.comp_def] using hvals)
             (by simpa [List.map_map, Function.comp_def] using hkeys)
             (by simpa [List.map_map, Function.comp_def] using hb))).bind (fun a =>
             if h : (extendsFinset (c.concat (a, b))).Nonempty then
-              PMF.uniformOfFinset (extendsFinset (c.concat (a, b))) h
-            else PMF.uniformOfFinset (extendsFinset c) hne)).map ψ := by
+              ProximityPrize.Compatibility.uniformOfFinset (extendsFinset (c.concat (a, b))) h
+            else ProximityPrize.Compatibility.uniformOfFinset (extendsFinset c) hne)).map ψ := by
     rw [PMF.map_bind]
     refine congrArg _ (funext fun a => ?_)
     split_ifs <;> rfl
@@ -851,13 +851,13 @@ theorem pmf_absorb_spectator {α γ : Type} (c : List (X × X)) (a : X)
     (hkeys : (c.map Prod.fst).Nodup) (hvals : (c.map Prod.snd).Nodup)
     (ha : a ∉ c.map Prod.fst) (hne : (extendsFinset c).Nonempty)
     (G : PMF γ) (ψ : γ → Equiv.Perm X → α) :
-    (PMF.uniformOfFinset (unusedFinset c)
+    (ProximityPrize.Compatibility.uniformOfFinset (unusedFinset c)
         (unusedFinset_nonempty c a hkeys hvals ha)).bind (fun b =>
       G.bind (fun g =>
-        (PMF.uniformOfFintype (Equiv.Perm X)).map
+        (ProximityPrize.Compatibility.uniformOfFintype (Equiv.Perm X)).map
           (fun π => ψ g (permExtending (c.concat (a, b)) π))))
       = G.bind (fun g =>
-          (PMF.uniformOfFintype (Equiv.Perm X)).map
+          (ProximityPrize.Compatibility.uniformOfFintype (Equiv.Perm X)).map
             (fun π => ψ g (permExtending c π))) := by
   rw [PMF.bind_comm]
   exact congrArg _ (funext fun g => pmf_absorb c a hkeys hvals ha hne (ψ g))
@@ -867,16 +867,16 @@ theorem pmf_absorb_inv_spectator {α γ : Type} (c : List (X × X)) (b : X)
     (hkeys : (c.map Prod.fst).Nodup) (hvals : (c.map Prod.snd).Nodup)
     (hb : b ∉ c.map Prod.snd) (hne : (extendsFinset c).Nonempty)
     (G : PMF γ) (ψ : γ → Equiv.Perm X → α) :
-    (PMF.uniformOfFinset (unusedFinset (c.map Prod.swap))
+    (ProximityPrize.Compatibility.uniformOfFinset (unusedFinset (c.map Prod.swap))
         (unusedFinset_nonempty (c.map Prod.swap) b
           (by simpa [List.map_map, Function.comp_def] using hvals)
           (by simpa [List.map_map, Function.comp_def] using hkeys)
           (by simpa [List.map_map, Function.comp_def] using hb))).bind (fun a =>
       G.bind (fun g =>
-        (PMF.uniformOfFintype (Equiv.Perm X)).map
+        (ProximityPrize.Compatibility.uniformOfFintype (Equiv.Perm X)).map
           (fun π => ψ g (permExtending (c.concat (a, b)) π))))
       = G.bind (fun g =>
-          (PMF.uniformOfFintype (Equiv.Perm X)).map
+          (ProximityPrize.Compatibility.uniformOfFintype (Equiv.Perm X)).map
             (fun π => ψ g (permExtending c π))) := by
   rw [PMF.bind_comm]
   exact congrArg _ (funext fun g => pmf_absorb_inv c b hkeys hvals hb hne (ψ g))
@@ -898,56 +898,55 @@ def permFn (π : Equiv.Perm X) : (t : X ⊕ X) → X :=
 
 private lemma uniformOfFinset_congr {β : Type} [DecidableEq β] {s t : Finset β}
     (h : s = t) (hs : s.Nonempty) (ht : t.Nonempty) :
-    PMF.uniformOfFinset s hs = PMF.uniformOfFinset t ht := by
+    ProximityPrize.Compatibility.uniformOfFinset s hs = ProximityPrize.Compatibility.uniformOfFinset t ht := by
   subst h
   rfl
 
-/-- Reduce the overlay-evaluation program's `toPMF` to PMF maps. -/
-lemma toPMF_overlay {α : Type} (c' : List (X × X)) (F : Equiv.Perm X → α) :
-    (evalDist (do
+/-- The native overlay distribution is the pushforward of the finite permutation PMF. -/
+lemma evalDist_overlay {α : Type} [MeasurableSpace α]
+    (c' : List (X × X)) (F : Equiv.Perm X → α) :
+    evalDist (do
       let π ← $ᵗ (Equiv.Perm X)
-      pure (F (permExtending c' π)) : ProbComp α)).toPMF
-      = ((PMF.uniformOfFintype (Equiv.Perm X)).map
-          (fun π => F (permExtending c' π))).map some := by
+      pure (F (permExtending c' π)) : ProbComp α)
+      = ((ProximityPrize.Compatibility.uniformOfFintype (Equiv.Perm X)).map
+          (fun π => F (permExtending c' π))).toMeasure := by
   have hprog : (do
       let π ← $ᵗ (Equiv.Perm X)
       pure (F (permExtending c' π)) : ProbComp α)
       = (fun π => F (permExtending c' π)) <$> ($ᵗ (Equiv.Perm X)) := by
     rw [map_eq_bind_pure_comp]
     rfl
-  rw [hprog, evalDist_map, SPMF.toPMF_map, evalDist_uniformSample, SPMF.liftM_eq_map,
-    SPMF.toPMF_mk, PMF.monad_map_eq_map, PMF.map_comp, PMF.map_comp]
-  rfl
+  rw [hprog, ProximityPrize.Compatibility.evalDist_uniform_map_eq_toMeasure]
 
-/-- The sample's `toPMF` over a cache's unused values. -/
-lemma toPMF_sampleUnused (c : List (X × X)) (a : X)
+/-- The fresh output has the uniform unused-values measure. -/
+lemma evalDist_sampleUnused_values [MeasurableSpace X] [DiscreteMeasurableSpace X]
+    (c : List (X × X)) (a : X)
     (hkeys : (c.map Prod.fst).Nodup) (hvals : (c.map Prod.snd).Nodup)
     (ha : a ∉ c.map Prod.fst) :
-    (evalDist (sampleUnused (unusedValuesList c))).toPMF
-      = (PMF.uniformOfFinset (unusedFinset c)
-          (unusedFinset_nonempty c a hkeys hvals ha)).map some := by
-  rw [← SPMF.run_eq_toPMF,
-    evalDist_sampleUnused_run (unusedValuesList c) (unusedValuesList_nodup c)
+    evalDist (sampleUnused (unusedValuesList c))
+      = (ProximityPrize.Compatibility.uniformOfFinset (unusedFinset c)
+          (unusedFinset_nonempty c a hkeys hvals ha)).toMeasure := by
+  rw [evalDist_sampleUnused (unusedValuesList c) (unusedValuesList_nodup c)
       (by
         intro hnil
         have := unusedFinset_nonempty c a hkeys hvals ha
         rw [← toFinset_unusedValuesList, hnil] at this
         simpa using this)]
-  exact congrArg (PMF.map some)
+  exact congrArg PMF.toMeasure
     (uniformOfFinset_congr (toFinset_unusedValuesList c) _ _)
 
-/-- The sample's `toPMF` over a cache's unused keys (the swapped cache's unused values). -/
-lemma toPMF_sampleUnusedKeys (c : List (X × X)) (b : X)
+/-- The fresh input has the uniform unused-keys measure. -/
+lemma evalDist_sampleUnused_keys [MeasurableSpace X] [DiscreteMeasurableSpace X]
+    (c : List (X × X)) (b : X)
     (hkeys : (c.map Prod.fst).Nodup) (hvals : (c.map Prod.snd).Nodup)
     (hb : b ∉ c.map Prod.snd) :
-    (evalDist (sampleUnused (unusedKeysList c))).toPMF
-      = (PMF.uniformOfFinset (unusedFinset (c.map Prod.swap))
+    evalDist (sampleUnused (unusedKeysList c))
+      = (ProximityPrize.Compatibility.uniformOfFinset (unusedFinset (c.map Prod.swap))
           (unusedFinset_nonempty (c.map Prod.swap) b
             (by simpa [List.map_map, Function.comp_def] using hvals)
             (by simpa [List.map_map, Function.comp_def] using hkeys)
-            (by simpa [List.map_map, Function.comp_def] using hb))).map some := by
-  rw [← SPMF.run_eq_toPMF,
-    evalDist_sampleUnused_run (unusedKeysList c) (unusedKeysList_nodup c)
+            (by simpa [List.map_map, Function.comp_def] using hb))).toMeasure := by
+  rw [evalDist_sampleUnused (unusedKeysList c) (unusedKeysList_nodup c)
       (by
         intro hnil
         have := unusedFinset_nonempty (c.map Prod.swap) b
@@ -956,7 +955,7 @@ lemma toPMF_sampleUnusedKeys (c : List (X × X)) (b : X)
           (by simpa [List.map_map, Function.comp_def] using hb)
         rw [← toFinset_unusedKeysList, hnil] at this
         simpa using this)]
-  exact congrArg (PMF.map some)
+  exact congrArg PMF.toMeasure
     (uniformOfFinset_congr (toFinset_unusedKeysList c) _ _)
 
 set_option maxHeartbeats 1600000 in
@@ -965,7 +964,7 @@ bidirectional permutation oracle from a duplicate-free cache has the same distri
 sampling one uniform permutation and answering eagerly through the cache overlay. The
 permutation analogue of `evalDist_simulateQ_randomOracle_run'_eq_tableExtending`. -/
 theorem evalDist_simulateQ_lazyPermImpl_run'
-    {α : Type} (oa : OracleComp ((X ⊕ X) →ₒ X) α) (c : List (X × X))
+    {α : Type} [MeasurableSpace α] (oa : OracleComp ((X ⊕ X) →ₒ X) α) (c : List (X × X))
     (hkeys : (c.map Prod.fst).Nodup) (hvals : (c.map Prod.snd).Nodup) :
     evalDist ((simulateQ lazyPermImpl oa).run' c)
       = evalDist (do
@@ -973,6 +972,7 @@ theorem evalDist_simulateQ_lazyPermImpl_run'
           pure (evalWithAnswerFn (QueryImpl.ofFn (permFn (permExtending c π))) oa)
           : ProbComp α) := by
   classical
+  let : MeasurableSpace X := ⊤
   induction oa using OracleComp.inductionOn generalizing c with
   | pure a =>
     have hlhs : (simulateQ lazyPermImpl (pure a : OracleComp _ α)).run' c
@@ -982,10 +982,7 @@ theorem evalDist_simulateQ_lazyPermImpl_run'
       rw [map_pure]
     rw [hlhs]
     simp only [evalWithAnswerFn_pure]
-    symm
-    refine evalDist_ext fun x => ?_
-    rw [probOutput_bind_eq_tsum, ENNReal.tsum_mul_right,
-      tsum_probOutput_eq_one' (mx := $ᵗ (Equiv.Perm X)) (by simp), one_mul]
+    simp
   | query_bind t k ih =>
     have hred : (simulateQ lazyPermImpl
           (liftM (((X ⊕ X) →ₒ X).query t) >>= k)).run' c
@@ -1021,32 +1018,18 @@ theorem evalDist_simulateQ_lazyPermImpl_run'
                 sampleUnused (unusedValuesList c)) = _
           rw [hc]
         rw [hstep, bind_map_left]
-        rw [← SPMF.toPMF_inj]
-        rw [evalDist_bind, SPMF.toPMF_bind]
-        rw [toPMF_overlay c
-          (fun σ => evalWithAnswerFn (QueryImpl.ofFn (permFn σ)) (k (permFn σ (Sum.inl x))))]
-        rw [toPMF_sampleUnused c x hkeys hvals hx]
-        rw [show Option.elimM ((PMF.uniformOfFinset (unusedFinset c)
-              (unusedFinset_nonempty c x hkeys hvals hx)).map some)
-            (PMF.pure none)
-            (fun b => (evalDist ((simulateQ lazyPermImpl (k b)).run'
-              (c.concat (x, b)))).toPMF)
-          = (PMF.uniformOfFinset (unusedFinset c)
-              (unusedFinset_nonempty c x hkeys hvals hx)).bind
-              (fun b => (evalDist ((simulateQ lazyPermImpl (k b)).run'
-                (c.concat (x, b)))).toPMF) from by
-          rw [Option.elimM, PMF.monad_bind_eq_bind, PMF.bind_map]
-          rfl]
-        have hfib : ∀ b ∈ (PMF.uniformOfFinset (unusedFinset c)
+        rw [evalDist_overlay c
+          (fun σ => evalWithAnswerFn (QueryImpl.ofFn (permFn σ))
+            (k (permFn σ (Sum.inl x))))]
+        have hfib : ∀ b ∈ (ProximityPrize.Compatibility.uniformOfFinset (unusedFinset c)
             (unusedFinset_nonempty c x hkeys hvals hx)).support,
-            (evalDist ((simulateQ lazyPermImpl (k b)).run' (c.concat (x, b)))).toPMF
-            = ((PMF.uniformOfFintype (Equiv.Perm X)).map
+            (evalDist ((simulateQ lazyPermImpl (k b)).run' (c.concat (x, b))))
+            = ((ProximityPrize.Compatibility.uniformOfFintype (Equiv.Perm X)).map
                 (fun π => evalWithAnswerFn
                   (QueryImpl.ofFn (permFn (permExtending (c.concat (x, b)) π)))
-                  (k (permFn (permExtending (c.concat (x, b)) π) (Sum.inl x))))).map
-                some := by
+                  (k (permFn (permExtending (c.concat (x, b)) π) (Sum.inl x))))).toMeasure := by
           intro b hb
-          rw [PMF.mem_support_uniformOfFinset_iff, mem_unusedFinset] at hb
+          rw [ProximityPrize.Compatibility.mem_support_uniformOfFinset_iff, mem_unusedFinset] at hb
           have hk' : (((c.concat (x, b)).map Prod.fst)).Nodup := by
             simp only [List.concat_eq_append, List.map_append, List.map_cons, List.map_nil]
             rw [List.nodup_append]
@@ -1064,10 +1047,10 @@ theorem evalDist_simulateQ_lazyPermImpl_run'
               subst hv
               exact fun h => hb (h ▸ hu)⟩
           rw [ih b (c.concat (x, b)) hk' hv',
-            toPMF_overlay (c.concat (x, b))
+            evalDist_overlay (c.concat (x, b))
               (fun σ => evalWithAnswerFn (QueryImpl.ofFn (permFn σ)) (k b))]
           -- replace the continuation argument `b` by the overlay's value at `x`
-          congr 1
+          apply congrArg PMF.toMeasure
           refine congrArg _ (funext fun π => ?_)
           have hagree : permExtending (c.concat (x, b)) π x = b := by
             have := extends_permExtending (c.concat (x, b)) π hk' hv'
@@ -1075,12 +1058,13 @@ theorem evalDist_simulateQ_lazyPermImpl_run'
           dsimp only [Function.comp_apply]
           rw [show permFn (permExtending (c.concat (x, b)) π) (Sum.inl x)
               = permExtending (c.concat (x, b)) π x from rfl, hagree]
-        rw [LazyPermMarginal.bind_congr_support _ _ _ hfib, ← PMF.map_bind]
         have hne : (extendsFinset c).Nonempty := by
           have := extendsFinset_append_nonempty [] c (by simpa using hkeys)
             (by simpa using hvals) (by simp)
           simpa using this
-        exact congrArg (fun p => PMF.map some p)
+        refine (ProximityPrize.Compatibility.evalDist_bind_finitePMF _ _ _ _
+          (evalDist_sampleUnused_values c x hkeys hvals hx) hfib).trans ?_
+        exact congrArg PMF.toMeasure
           (pmf_absorb c x hkeys hvals hx hne
             (fun σ => evalWithAnswerFn (QueryImpl.ofFn (permFn σ))
               (k (permFn σ (Sum.inl x)))))
@@ -1120,41 +1104,21 @@ theorem evalDist_simulateQ_lazyPermImpl_run'
                 sampleUnused (unusedKeysList c)) = _
           rw [hc]
         rw [hstep, bind_map_left]
-        rw [← SPMF.toPMF_inj]
-        rw [evalDist_bind, SPMF.toPMF_bind]
-        rw [toPMF_overlay c
-          (fun σ => evalWithAnswerFn (QueryImpl.ofFn (permFn σ)) (k (permFn σ (Sum.inr y))))]
-        rw [toPMF_sampleUnusedKeys c y hkeys hvals hy]
-        rw [show Option.elimM ((PMF.uniformOfFinset (unusedFinset (c.map Prod.swap))
-              (unusedFinset_nonempty (c.map Prod.swap) y
-                (by simpa [List.map_map, Function.comp_def] using hvals)
-                (by simpa [List.map_map, Function.comp_def] using hkeys)
-                (by simpa [List.map_map, Function.comp_def] using hy))).map some)
-            (PMF.pure none)
-            (fun a => (evalDist ((simulateQ lazyPermImpl (k a)).run'
-              (c.concat (a, y)))).toPMF)
-          = (PMF.uniformOfFinset (unusedFinset (c.map Prod.swap))
-              (unusedFinset_nonempty (c.map Prod.swap) y
-                (by simpa [List.map_map, Function.comp_def] using hvals)
-                (by simpa [List.map_map, Function.comp_def] using hkeys)
-                (by simpa [List.map_map, Function.comp_def] using hy))).bind
-              (fun a => (evalDist ((simulateQ lazyPermImpl (k a)).run'
-                (c.concat (a, y)))).toPMF) from by
-          rw [Option.elimM, PMF.monad_bind_eq_bind, PMF.bind_map]
-          rfl]
-        have hfib : ∀ a ∈ (PMF.uniformOfFinset (unusedFinset (c.map Prod.swap))
+        rw [evalDist_overlay c
+          (fun σ => evalWithAnswerFn (QueryImpl.ofFn (permFn σ))
+            (k (permFn σ (Sum.inr y))))]
+        have hfib : ∀ a ∈ (ProximityPrize.Compatibility.uniformOfFinset (unusedFinset (c.map Prod.swap))
             (unusedFinset_nonempty (c.map Prod.swap) y
               (by simpa [List.map_map, Function.comp_def] using hvals)
               (by simpa [List.map_map, Function.comp_def] using hkeys)
               (by simpa [List.map_map, Function.comp_def] using hy))).support,
-            (evalDist ((simulateQ lazyPermImpl (k a)).run' (c.concat (a, y)))).toPMF
-            = ((PMF.uniformOfFintype (Equiv.Perm X)).map
+            (evalDist ((simulateQ lazyPermImpl (k a)).run' (c.concat (a, y))))
+            = ((ProximityPrize.Compatibility.uniformOfFintype (Equiv.Perm X)).map
                 (fun π => evalWithAnswerFn
                   (QueryImpl.ofFn (permFn (permExtending (c.concat (a, y)) π)))
-                  (k (permFn (permExtending (c.concat (a, y)) π) (Sum.inr y))))).map
-                some := by
+                  (k (permFn (permExtending (c.concat (a, y)) π) (Sum.inr y))))).toMeasure := by
           intro a ha
-          rw [PMF.mem_support_uniformOfFinset_iff, mem_unusedFinset] at ha
+          rw [ProximityPrize.Compatibility.mem_support_uniformOfFinset_iff, mem_unusedFinset] at ha
           have haK : a ∉ c.map Prod.fst := by
             simpa [List.map_map, Function.comp_def] using ha
           have hk' : (((c.concat (a, y)).map Prod.fst)).Nodup := by
@@ -1174,9 +1138,9 @@ theorem evalDist_simulateQ_lazyPermImpl_run'
               subst hv
               exact fun h => hy (h ▸ hu)⟩
           rw [ih a (c.concat (a, y)) hk' hv',
-            toPMF_overlay (c.concat (a, y))
+            evalDist_overlay (c.concat (a, y))
               (fun σ => evalWithAnswerFn (QueryImpl.ofFn (permFn σ)) (k a))]
-          congr 1
+          apply congrArg PMF.toMeasure
           refine congrArg _ (funext fun π => ?_)
           have hagree : permExtending (c.concat (a, y)) π a = y := by
             have := extends_permExtending (c.concat (a, y)) π hk' hv'
@@ -1186,12 +1150,13 @@ theorem evalDist_simulateQ_lazyPermImpl_run'
           dsimp only [Function.comp_apply]
           rw [show permFn (permExtending (c.concat (a, y)) π) (Sum.inr y)
               = (permExtending (c.concat (a, y)) π).symm y from rfl, hsymm]
-        rw [LazyPermMarginal.bind_congr_support _ _ _ hfib, ← PMF.map_bind]
         have hne : (extendsFinset c).Nonempty := by
           have := extendsFinset_append_nonempty [] c (by simpa using hkeys)
             (by simpa using hvals) (by simp)
           simpa using this
-        exact congrArg (fun p => PMF.map some p)
+        refine (ProximityPrize.Compatibility.evalDist_bind_finitePMF _ _ _ _
+          (evalDist_sampleUnused_keys c y hkeys hvals hy) hfib).trans ?_
+        exact congrArg PMF.toMeasure
           (pmf_absorb_inv c y hkeys hvals hy hne
             (fun σ => evalWithAnswerFn (QueryImpl.ofFn (permFn σ))
               (k (permFn σ (Sum.inr y)))))
@@ -1235,7 +1200,7 @@ end Facts
 end LazyPermBridge
 
 /-! ## Axiom audit — kernel-clean. -/
-#print axioms LazyPermBridge.evalDist_sampleUnused_run
+#print axioms LazyPermBridge.evalDist_sampleUnused
 #print axioms LazyPermBridge.onestep_fiber_iff
 #print axioms LazyPermBridge.extends_permExtending
 #print axioms LazyPermBridge.map_onestep_uniform

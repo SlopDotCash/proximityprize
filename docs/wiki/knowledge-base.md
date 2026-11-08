@@ -33,42 +33,42 @@ The current KB policy is:
 
 ## Maintenance Rules
 
-- `blueprint/src/references.bib` is still the bibliographic source of truth.
+- `blueprint/src/references.bib` is the bibliographic source of truth.
 - The BibTeX key is the canonical identifier across Lean, bibliography, and KB pages.
 - Keep process guidance here in `docs/wiki/`; keep paper content in `docs/kb/`.
 - Prefer persistent pages over branch-local scratch notes when the result will help future PRs or
   reviewers.
-- Pushes to `main` that change Lean or KB inputs run the `Refresh KB Generated Files` workflow.
-  When regeneration changes derived files, the workflow opens a generated-only PR and either
-  enables auto-merge or merges it immediately when no required checks block it.
-- Pull requests that change Lean or KB inputs (including only `references.bib`, `docs/kb/papers/`,
-  `docs/kb/sources/` or `docs/kb/_generated/`) run the same workflow as a check: regenerate,
-  `check_generated.py`, `lint.py --strict-cited-pages`, and the committed-output check. `ci.yml`
-  treats KB-only pull requests as documentation-only and skips `validate.sh`, so this workflow is
-  what gates them.
+- The read-only `Refresh KB Generated Files` workflow runs on relevant pull requests and pushes to
+  `main` and supports manual dispatch. It regenerates the KB, runs `check_generated.py` and
+  `lint.py --strict-cited-pages --use-generated-indexes`, and checks that the commit contains all
+  required indexes and scaffolds. Commit refreshed files alongside changes to their inputs.
 
 ## Review Integration
 
-For `.github/workflows/review.yml`, attach:
+`.github/workflows/review.yml` resolves the citation keys of the changed Lean files from
+`docs/kb/_generated/lean-citations.json` on the base ref and passes the corresponding
+`docs/kb/papers/KEY.md` pages to the reviewer as `spec_refs`. A `/review` comment can add to that:
 
-- KB paper pages via `repo_context_refs`;
-- KB audit pages for deep source-to-code comparison;
-- public paper URLs via `external_refs` when raw source text is needed.
+- lines under `Internal:` are merged into `spec_refs`, so this is where to attach an audit page or
+  any KB page the automatic resolution misses;
+- lines under `External:` and `Comments:` become free-text instructions, so this is where public
+  paper URLs go.
 
-This keeps review prompts grounded in repository-local context instead of rebuilding it ad hoc.
+Because the resolution reads the base ref, a paper page added in the same PR is not picked up
+automatically — attach it under `Internal:`.
 
-For local preparation of those fields, use:
+To prepare a comment body locally, use:
 
 ```bash
-python3 ./scripts/kb/review_context.py \
+uv run --no-project --python 3.12 python ./scripts/kb/review_context.py \
   --files ArkLib/ProofSystem/Fri/Spec/SingleRound.lean \
   --format review
 ```
 
-or pass explicit keys with `--keys BCIKS20,ACFY24`.
+or pass explicit keys with `--keys BCIKS20,ACFY24`. The helper reads the committed
+`lean-citations.json`, so a file whose citations changed in the working tree needs `--keys`.
 
-The helper emits a normal `/review` comment body using the sections supported by the current
-workflow:
+The helper emits a `/review` comment body in the sections the workflow parses:
 
 ```text
 /review

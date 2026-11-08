@@ -23,7 +23,7 @@ completeness-side compatible context is over the *prover's* output, and the plai
 The mathematical content is structural, not probabilistic: the honest per-round prover *forwards*
 its polynomial oracle (`receiveChallenge` outputs `fun _ => (poly, hp)` destructured from its
 input state), and every round's oracle verifier routes its single output oracle from its single
-input oracle (`embed = Function.Embedding.inl`).  So on **every** point of the run support — for
+input oracle under canonical output materialization.  So on **every** point of the run support — for
 any query answers, hence under any simulation — the output oracle equals the input oracle, and the
 pinned conjunct rides along the existing (unconditional) completeness for free.
 
@@ -41,12 +41,9 @@ Main results:
 * `Sumcheck.Spec.SingleRound.oracleReduction_perfectCompleteness_pinned`: per-round enriched
   completeness `relationRoundPinned P i.castSucc → relationRoundPinned P i.succ` (conditional
   only on the same lens coherence `[coh]` as the plain per-round completeness).
-* `Sumcheck.Spec.oracleReduction_perfectCompleteness_pinned` /
-  `…_pinned_unconditional`: the composed pinned completeness `relationRoundPinned P 0 →
-  relationRoundPinned P (Fin.last n)` for every `P`, assembled through the relation-generic
-  n-ary keystone `OracleReduction.seqCompose_perfectCompleteness_threaded` (instantiated at
-  `rel := relationRoundPinned P`), with the coherence residual discharged by the proven
-  `SingleRound.coh_proven_inst` in the unconditional form. -/
+* `Sumcheck.Spec.oracleReduction_perfectCompleteness_pinned` and its unconditional wrapper
+  carry the pinned relation from round `0` to `Fin.last n` through canonical guarded-verifier
+  sequential composition. The unconditional wrapper supplies `SingleRound.coh_proven_inst`. -/
 
 open OracleComp OracleSpec ProtocolSpec MvPolynomial Polynomial
 open scoped NNReal
@@ -70,28 +67,17 @@ theorem mem_support_verifier_run_of_mem_support_run
     {td : FullTranscript pSpec} {prv : StmtOut × WitOut} {vOut : StmtOut}
     (hy : some ((td, prv), vOut) ∈ support (OptionT.run (red.run stmt wit))) :
     some vOut ∈ support (OptionT.run (red.verifier.run stmt td)) := by
-  classical
-  unfold Reduction.run at hy
-  simp only [OptionT.run_bind, Option.elimM, bind_assoc, mem_support_bind_iff] at hy
-  obtain ⟨prOpt, hpr, hy⟩ := hy
-  cases prOpt with
-  | none => simp at hy
-  | some pr =>
-    simp only [Option.elim_some, mem_support_bind_iff] at hy
-    obtain ⟨vOpt2, hv, hy⟩ := hy
-    rw [OptionT.run_liftM_run, support_map,
-      support_simulateQ_eq_OracleComp_of_superSpec _ _ (fun _ => rfl)] at hv
-    obtain ⟨vOpt, hvOpt, rfl⟩ := hv
-    cases vOpt with
-    | none => simp [Option.getM] at hy
-    | some v =>
-      simp only [Option.elim_some, Option.getM_some, OptionT.run_bind, OptionT.run_pure,
-        pure_bind, support_pure, Set.mem_singleton_iff, Option.some_inj] at hy
-      have hpr1 : pr = (td, prv) := (congrArg Prod.fst hy.symm)
-      have hv1 : v = vOut := (congrArg Prod.snd hy.symm)
-      subst hv1
-      rw [hpr1] at hvOpt
-      exact hvOpt
+  rw [Reduction.run_run_eq_bind, mem_support_bind_iff] at hy
+  obtain ⟨pr, _, hrest⟩ := hy
+  rw [mem_support_bind_iff] at hrest
+  obtain ⟨vOpt, hv, hout⟩ := hrest
+  cases vOpt with
+  | none => simp at hout
+  | some v =>
+    simp only [Option.map_some, support_pure, Set.mem_singleton_iff,
+      Option.some.injEq, Prod.mk.injEq] at hout
+    obtain ⟨rfl, rfl⟩ := hout
+    simpa only [OracleComp.support_liftComp] using hv
 
 variable {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
 
@@ -116,11 +102,11 @@ theorem perfectCompleteness_strengthen_support
         (out.2, out.1.2.2) ∈ relOut → out.1.2.1 = out.2 → (out.2, out.1.2.2) ∈ relOut') :
     red.perfectCompleteness init impl relIn' relOut' := by
   intro stmtIn witIn hmem
-  refine le_trans (h stmtIn witIn (hIn hmem)) (probEvent_mono ?_)
+  refine le_trans (h stmtIn witIn (hIn hmem)) (prEvent_mono_of_support _ _ _ ?_)
   rintro ⟨⟨tr, prvStmtOut, witOut⟩, stmtOut⟩ hx ⟨h1, h2⟩
   refine ⟨?_, h2⟩
   rw [OptionT.mem_support_iff] at hx
-  simp only [OptionT.run_mk, support_bind, Set.mem_iUnion] at hx
+  simp only [OptionT.run_mk, support_bind, Set.mem_iUnion, exists_prop] at hx
   obtain ⟨s, _, hx⟩ := hx
   exact hPin stmtIn witIn hmem _
     (_root_.support_simulateQ_run'_subset _ _ s hx) h1 h2
@@ -153,17 +139,14 @@ lemma mem_relationRoundPinned_iff {P : R⦃≤ deg⦄[X Fin n]} {i : Fin (n + 1)
 
 namespace SingleRound
 
-omit [SampleableType R] in
-/-- The `i`-th-round sum-check oracle verifier passes its polynomial oracle through:
-`embed = Function.Embedding.inl` definitionally (`sumcheckOracleLens.embedOStmt`). -/
-theorem oracleVerifier_embed_inl {i : Fin n} (a : Unit) :
-    (oracleVerifier R n deg D oSpec i).embed a = Sum.inl a := rfl
+/-- The canonical round materializes the unchanged input polynomial oracle, including its
+virtual output representation. -/
+theorem oracleVerifier_materializeOutput_eq_input (i : Fin n)
+    (chals : (pSpec R deg).Challenges) (oStmt : ∀ j, OracleStatement R n deg j)
+    (messages : (pSpec R deg).Messages) :
+    (oracleVerifier R n deg D oSpec i).materializeOutput chals oStmt messages = oStmt := rfl
 
-omit [SampleableType R] in
-/-- **Per-round oracle pass-through.** Any statement in the support of the (plain-verifier view
-of the) `i`-th-round sum-check oracle verifier's run carries the *unchanged* input polynomial
-oracle.  Single-round analogue of the composed `mem_support_oracleVerifier_run_oStmt`
-(`SumcheckPhaseRbr.lean`); here the `embed`-routing is `Sum.inl` by `rfl`. -/
+/-- Every reachable compiled round output carries the unchanged input polynomial oracle. -/
 theorem mem_support_oracleVerifier_run_oStmt {i : Fin n}
     {stmt : StatementRound R n i.castSucc} {oStmt : ∀ j, OracleStatement R n deg j}
     {tr : FullTranscript (pSpec R deg)}
@@ -171,37 +154,17 @@ theorem mem_support_oracleVerifier_run_oStmt {i : Fin n}
     (h : out ∈ support ((oracleVerifier R n deg D oSpec i).toVerifier.run (stmt, oStmt) tr)) :
     out.2 = oStmt := by
   classical
-  rw [Verifier.run, OracleVerifier.toVerifier] at h
-  simp only [OptionT.mem_support_iff, OptionT.run_bind, Option.elimM] at h
-  rw [mem_support_bind_iff] at h
-  obtain ⟨a, _, ha⟩ := h
-  cases a with
-  | none => simp at ha
+  simp only [Verifier.run, OracleVerifier.toVerifier, OptionT.mem_support_iff,
+    OptionT.run_mk, support_map, Set.mem_image] at h
+  obtain ⟨result, _, hresult⟩ := h
+  cases result with
+  | none => simp at hresult
   | some stmtOut =>
-    simp only [Option.elim_some, OptionT.run_pure, support_pure, Set.mem_singleton_iff,
-      Option.some_inj] at ha
-    subst ha
-    funext j
-    change OracleVerifier.mkVerifierOStmtOut
-        (oracleVerifier R n deg D oSpec i).embed
-        (oracleVerifier R n deg D oSpec i).hEq oStmt tr j = oStmt j
-    have he : (oracleVerifier R n deg D oSpec i).embed j = Sum.inl j :=
-      oracleVerifier_embed_inl j
-    unfold OracleVerifier.mkVerifierOStmtOut
-    split
-    next k h' =>
-      cases j
-      have hk : k = () := by
-        have hsum : (Sum.inl () : Unit ⊕ (pSpec R deg).MessageIdx) = Sum.inl k := by
-          simpa only [he] using h'
-        exact (Sum.inl.inj hsum).symm
-      cases hk
-      simp only [eqRec_eq_cast, cast_cast, cast_eq]
-    next k h' =>
-      rw [he] at h'
-      exact absurd h' (by simp)
+    simp only [Option.map_some, Option.some.injEq] at hresult
+    have hOracle := congrArg Prod.snd hresult
+    rw [oracleVerifier_materializeOutput_eq_input] at hOracle
+    exact hOracle.symm
 
-omit [SampleableType R] in
 /-- **Per-round run-level oracle pass-through.** Any successful outcome of the `i`-th-round
 sum-check oracle reduction's run has verifier-output oracle equal to the input oracle. -/
 theorem mem_support_run_oStmt {i : Fin n}
@@ -212,10 +175,14 @@ theorem mem_support_run_oStmt {i : Fin n}
     {vOut : StatementRound R n i.succ × ∀ j, OracleStatement R n deg j}
     (h : some ((td, prv), vOut) ∈ support
       (OptionT.run ((oracleReduction R n deg D oSpec i).toReduction.run (stmt, oStmt) witIn))) :
-    vOut.2 = oStmt :=
-  mem_support_oracleVerifier_run_oStmt
-    ((OptionT.mem_support_iff _ _).mpr
-      (Reduction.mem_support_verifier_run_of_mem_support_run _ (stmt, oStmt) witIn h))
+    vOut.2 = oStmt := by
+  have hVerify : some vOut ∈ support (OptionT.run
+      ((oracleReduction R n deg D oSpec i).verifier.toVerifier.run (stmt, oStmt) td)) :=
+    Reduction.mem_support_verifier_run_of_mem_support_run
+      (oracleReduction R n deg D oSpec i).toReduction (stmt, oStmt) witIn h
+  rw [oracleReduction_verifier_eq_verifier] at hVerify
+  exact mem_support_oracleVerifier_run_oStmt (i := i) (tr := td)
+    ((OptionT.mem_support_iff _ _).mpr hVerify)
 
 variable {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
 
@@ -229,14 +196,15 @@ same single coherence residual `[coh]`); the pinned conjunct holds on the *entir
 because the verifier routes its output oracle from its input oracle
 (`mem_support_run_oStmt`). -/
 theorem oracleReduction_perfectCompleteness_pinned [Fintype R] [Inhabited R]
-    [oSpec.Fintype] [oSpec.Inhabited]
+    [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
     (P : R⦃≤ deg⦄[X Fin n]) (i : Fin n)
     [coh : OracleVerifier.LiftContextCoherent (sumcheckOracleLens R n deg D oSpec i)
       (Simple.oracleReduction R deg D oSpec).verifier] :
     (oracleReduction R n deg D oSpec i).perfectCompleteness init impl
       (relationRoundPinned R n deg D P i.castSucc) (relationRoundPinned R n deg D P i.succ) := by
   refine Reduction.perfectCompleteness_strengthen_support
-    (oracleReduction_perfectCompleteness (init := init) (impl := impl) i)
+    (oracleReduction_perfectCompleteness_of_liftContextCoherent
+      (init := init) (impl := impl) (_coh := coh) i)
     Set.inter_subset_left ?_
   rintro ⟨stmt, oStmt⟩ witIn ⟨_, hpin⟩ ⟨⟨td, prv⟩, vOut⟩ hsupp h1 _
   refine ⟨h1, ?_⟩
@@ -251,22 +219,17 @@ variable {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ Pro
 
 section Composed
 
-variable [Fintype R] [Inhabited R] [oSpec.Fintype] [oSpec.Inhabited]
+variable [Fintype R] [Inhabited R] [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
 
--- As in `OracleCompletenessThreaded.lean`: the `@`-applied keystone elaborates a large dependent
--- `seqCompose` `toReduction` bridge, so we raise the heartbeat limit.
 set_option maxHeartbeats 1000000 in
 set_option linter.unusedFintypeInType false in
 /-- **Composed multi-round sum-check perfect completeness, pinned (issue #329, task K).**
 
 For every fixed polynomial `P`, the full sum-check oracle reduction is perfectly complete from
 `relationRoundPinned P 0` to `relationRoundPinned P (Fin.last n)`: the terminal relation *pins
-the carried polynomial oracle* in addition to the terminal sum-check claim.  Assembled through
-the relation-generic n-ary keystone `OracleReduction.seqCompose_perfectCompleteness_threaded`
-instantiated at `rel := relationRoundPinned P`, from the per-round pinned completeness
-`SingleRound.oracleReduction_perfectCompleteness_pinned` — exactly the assembly of the plain
-`oracleReduction_perfectCompleteness` (`OracleCompletenessThreaded.lean`) along the enriched
-relation family. -/
+the carried polynomial oracle* in addition to the terminal sum-check claim. Canonical
+guarded-verifier sequential composition lifts the per-round pinned completeness
+`SingleRound.oracleReduction_perfectCompleteness_pinned` to the full protocol. -/
 theorem oracleReduction_perfectCompleteness_pinned
     (P : R⦃≤ deg⦄[X Fin n])
     [coh : ∀ i, OracleVerifier.LiftContextCoherent (SingleRound.sumcheckOracleLens R n deg D oSpec i)
@@ -277,15 +240,19 @@ theorem oracleReduction_perfectCompleteness_pinned
         = support (liftM q : OracleComp oSpec β)) :
     (oracleReduction R deg D n oSpec).perfectCompleteness init impl
       (relationRoundPinned R n deg D P 0) (relationRoundPinned R n deg D P (Fin.last n)) := by
-  exact @OracleReduction.seqCompose_perfectCompleteness_threaded
-    ι oSpec _ _ σ init impl n (StatementRound R n) _ (fun _ => OracleStatement R n deg) _
-    (fun _ => Unit) _ _ _ _
-    (fun _ => SingleRound.chalFintype) (fun _ => SingleRound.chalInhab)
-    (SingleRound.oracleReduction R n deg D oSpec) _
-    (fun i => relationRoundPinned R n deg D P i)
-    (fun _ => ⟨by omega, SingleRound.pSpec_dir_zero⟩)
-    hInit hImplSupp
-    (fun i => SingleRound.oracleReduction_perfectCompleteness_pinned (coh := coh i) P i)
+  change (oracleReduction R deg D n oSpec).toReduction.perfectCompleteness init impl _ _
+  rw [oracleReduction_toReduction]
+  refine Reduction.seqCompose_perfectCompleteness_of_guarded_verifiers
+    (fun i => StatementRound R n i × ∀ j, OracleStatement R n deg j)
+    (fun _ => Unit) init impl (relationRoundPinned R n deg D P)
+    (SingleRound.reduction R n deg D oSpec)
+    (fun _ => inferInstance) (SingleRound.verifierGuardedForm R n deg D oSpec) ?_
+  intro i s
+  have h := SingleRound.oracleReduction_perfectCompleteness_pinned
+    (init := pure s) (impl := impl) (coh := coh i) P i
+  change (SingleRound.oracleReduction R n deg D oSpec i).toReduction.perfectCompleteness
+    (pure s) impl _ _ at h
+  simpa only [SingleRound.oracleReduction_toReduction] using h
 
 set_option linter.unusedFintypeInType false in
 /-- **Composed pinned completeness, UNCONDITIONAL.** The per-round lens coherence residual is
@@ -315,3 +282,5 @@ end Sumcheck.Spec
 #print axioms Sumcheck.Spec.SingleRound.oracleReduction_perfectCompleteness_pinned
 #print axioms Sumcheck.Spec.oracleReduction_perfectCompleteness_pinned
 #print axioms Sumcheck.Spec.oracleReduction_perfectCompleteness_pinned_unconditional
+
+#print axioms Sumcheck.Spec.SingleRound.oracleVerifier_materializeOutput_eq_input

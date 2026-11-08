@@ -7,8 +7,8 @@ Authors: Eliza
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Polynomial.BigOperators
 import Mathlib.Algebra.Polynomial.Roots
-import ArkLib.Data.Polynomial.Bivariate
-import ArkLib.Data.Polynomial.Trivariate
+import ProximityPrize.Extensions.Data.Polynomial.Bivariate
+import ProximityPrize.Extensions.Data.Polynomial.Trivariate
 
 /-!
 # A reusable weighted/total-degree arithmetic toolkit for bivariate/trivariate polynomials
@@ -94,6 +94,7 @@ theorem natWeightedDegree_mono_weights (f : F[X][Y]) {u u' v v' : ℕ}
   refine le_trans ?_ (Finset.le_sup (f := fun m => u' * (f.coeff m).natDegree + v' * m) hm)
   exact Nat.add_le_add (Nat.mul_le_mul_right _ hu) (Nat.mul_le_mul_right _ hv)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **Weighted-degree product bound.**  For *any* weight pair `(u, v)`,
 `natWeightedDegree (f * g) u v ≤ natWeightedDegree f u v + natWeightedDegree g u v`.
 
@@ -150,9 +151,17 @@ theorem natWeightedDegree_mul_le (f g : F[X][Y]) (u v : ℕ) :
       ⟨(0, k), by simp⟩ (fun x => (f.coeff x.1 * g.coeff x.2).natDegree)
   have hnd_le : (∑ x ∈ Finset.antidiagonal k, f.coeff x.1 * g.coeff x.2).natDegree ≤
       (f.coeff x₀.1 * g.coeff x₀.2).natDegree := by
-    rw [← hx₀deg]
-    exact Polynomial.natDegree_sum_le_of_forall_le _ _
-      (fun x hx => Finset.le_sup (f := fun x => (f.coeff x.1 * g.coeff x.2).natDegree) hx)
+    let summands : ℕ × ℕ → F[X] := fun x => f.coeff x.1 * g.coeff x.2
+    have h_each : ∀ x ∈ Finset.antidiagonal k,
+        (summands x).natDegree ≤
+          (Finset.antidiagonal k).sup (fun x : ℕ × ℕ => (summands x).natDegree) := by
+      intro x hx
+      exact Finset.le_sup (f := fun x : ℕ × ℕ => (summands x).natDegree) hx
+    have h_sum : (∑ x ∈ Finset.antidiagonal k, summands x).natDegree ≤
+        (Finset.antidiagonal k).sup (fun x : ℕ × ℕ => (summands x).natDegree) :=
+      Polynomial.natDegree_sum_le_of_forall_le
+        (S := F) (s := Finset.antidiagonal k) summands h_each
+    simpa only [summands, hx₀deg] using h_sum
   calc u * (∑ x ∈ Finset.antidiagonal k, f.coeff x.1 * g.coeff x.2).natDegree + v * k
       ≤ u * (f.coeff x₀.1 * g.coeff x₀.2).natDegree + v * k :=
         Nat.add_le_add_right (Nat.mul_le_mul_left u hnd_le) (v * k)
@@ -284,7 +293,7 @@ theorem degreeX_eval_on_Z_le (Q : F[Z][X][Y]) (z : F) :
 theorem natDegreeY_eval_on_Z_le (Q : F[Z][X][Y]) (z : F) :
     natDegreeY (Trivariate.eval_on_Z Q z) ≤ Trivariate.D_Y Q := by
   rw [degreeY_as_weighted_deg]
-  unfold Trivariate.D_Y
+  unfold Trivariate.D_Y Trivariate.degreeInY
   rw [degreeY_as_weighted_deg]
   exact natWeightedDegree_eval_on_Z_le Q z 0 1
 

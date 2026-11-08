@@ -73,7 +73,7 @@ theorem rs_nonzero_wt_lower (domain : ι ↪ F) {k : ℕ}
       _ ≤ Multiset.card p.roots := Multiset.toFinset_card_le _
       _ ≤ p.natDegree := p.card_roots'
   -- weight = n − #zeros
-  have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+  have hsplit := Finset.card_filter_add_card_filter_not
     (s := (Finset.univ : Finset ι))
     (p := fun i => ReedSolomon.evalOnPoints domain p i = 0)
   have hwt : wt (ReedSolomon.evalOnPoints domain p)

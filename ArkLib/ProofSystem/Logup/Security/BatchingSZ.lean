@@ -69,8 +69,8 @@ theorem signedFactor_degreeOf (a : F) (j i : Fin n) :
         gcongr
         · exact le_of_eq (degreeOf_C (R := F) a i)
         · by_cases h : i = j
-          · simpa only [h, if_pos rfl] using degreeOf_X_le (R := F) j i
-          · simpa only [h, if_neg h] using
+          · simpa only [h, ite_true] using degreeOf_X_le (R := F) j i
+          · simpa only [h, ite_false] using
               le_of_eq (degreeOf_X_of_ne (R := F) (i := i) (j := j) h)
     _ = if i = j then 1 else 0 := by norm_num
 

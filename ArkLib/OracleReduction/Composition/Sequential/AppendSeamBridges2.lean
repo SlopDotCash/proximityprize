@@ -52,7 +52,7 @@ open scoped ENNReal NNReal
 
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι}
   {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
   {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
@@ -131,8 +131,20 @@ private theorem hcoh_right' {α : Type} (oa : OptionT (OracleComp oSpec) α) :
     (liftM oa : OptionT (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)) α)
     = liftM (liftM oa : OptionT (OracleComp (oSpec + [pSpec₂.Challenge]ₒ)) α) := by
   apply OptionT.ext
-  simp only [liftM, MonadLiftT.monadLift, MonadLift.monadLift, OptionT.run_mk,
-    ← QueryImpl.simulateQ_compose]
+  change simulateQ (fun t => liftM (OracleSpec.query t) :
+      QueryImpl oSpec (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ))) oa.run =
+    simulateQ (fun t => liftM (OracleSpec.query t) :
+      QueryImpl (oSpec + [pSpec₂.Challenge]ₒ)
+        (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)))
+      (simulateQ (fun t => liftM (OracleSpec.query t) :
+        QueryImpl oSpec (OracleComp (oSpec + [pSpec₂.Challenge]ₒ))) oa.run)
+  rw [← QueryImpl.simulateQ_compose]
+  induction oa.run using OracleComp.inductionOn with
+  | pure x => simp only [simulateQ_pure]
+  | query_bind t k ih =>
+    simp only [simulateQ_bind, simulateQ_query, QueryImpl.apply_compose,
+      OracleQuery.input_query, OracleQuery.cont_query, id_map]
+    exact bind_congr fun a => ih a
 
 /-! ### The stage bodies are `liftM` of the per-phase reduction run -/
 
@@ -152,21 +164,24 @@ theorem appendStage₁_run_eq_liftM
   rw [← liftM_optionT_run_eq_seam_left' (R₁.run stmt wit)]
   rw [Reduction_run_def]
   unfold appendStage₁
+  simp only [liftAppendLeft]
   simp only [liftM_bind, liftM_pure, OptionT.run_bind, OptionT.run_pure,
     lift_oc_optionT_coh_left', Option.elimM]
-  refine bind_congr fun o₁ => ?_
-  cases o₁ with
-  | none => rfl
-  | some x =>
-    obtain ⟨tr, so, wo⟩ := x
-    simp only [Option.elim_some]
-    -- Reduce to the verify-leg `.run` equality (continuation identical on both sides). The
-    -- appendStage₁ leg lifts `verify` directly `oSpec → combined`; the `liftM (R₁.run)` leg lifts it
-    -- `oSpec → pSpec₁ → combined`. Both lifts normalize to the same `simulateQ`-of-`simulateQ` term.
-    congr 1
-    simp only [liftM, MonadLiftT.monadLift, MonadLift.monadLift, OptionT.run_mk]
-    rw [← QueryImpl.simulateQ_compose]
-    rfl
+  congr 1
+  · exact congrArg OptionT.run (lift_oc_optionT_coh_left' (R₁.prover.run stmt wit))
+  · funext o₁
+    cases o₁ with
+    | none => rfl
+    | some x =>
+      obtain ⟨tr, so, wo⟩ := x
+      simp only [Option.elim_some]
+      -- Reduce to the verify-leg `.run` equality (continuation identical on both sides). The
+      -- appendStage₁ leg lifts `verify` directly `oSpec → combined`; the `liftM (R₁.run)` leg lifts it
+      -- `oSpec → pSpec₁ → combined`. Both lifts normalize to the same `simulateQ`-of-`simulateQ` term.
+      congr 1
+      simp only [liftM, MonadLiftT.monadLift, MonadLift.monadLift, OptionT.run_mk]
+      rw [← QueryImpl.simulateQ_compose]
+      rfl
 
 /-- **The `OptionT.run` of the phase-2 stage body equals `liftM` of `R₂.run`'s `OptionT.run`.**
 `appendStage₂ R₁ R₂ a` (the `P₂ → V₂` leg from a phase-1 success `a`, run under the *combined*
@@ -196,6 +211,7 @@ theorem appendStage₂_run_eq_liftM
   rw [Reduction_run_def]
   simp only [map_eq_pure_bind, bind_assoc]
   unfold appendStage₂
+  simp only [liftAppendRight]
   rw [hag]
   -- Collapse the trailing `pure`-bind on the RHS, distribute the seam-`liftM` over the prover→verify
   -- bind chain (`liftM_bind`/`liftM_pure`), then reconcile the prover legs (`lift_oc_optionT_coh_right'`)
@@ -203,15 +219,15 @@ theorem appendStage₂_run_eq_liftM
   simp only [pure_bind, liftM_bind, liftM_pure, lift_oc_optionT_coh_right']
   -- Prover legs now match; the verify legs differ only by the direct (`MonadLift.monadLift`) vs
   -- two-step (`liftM ∘ liftM`) seam lift, reconciled by `hcoh_right'`.
-  refine bind_congr fun a_1 => ?_
-  -- The continuation `pure (merge …)` is identical on both sides; the verify legs differ only by the
-  -- direct (`MonadLift.monadLift`) vs two-step (`liftM ∘ liftM`) seam lift. Drop to `.run`, split the
-  -- bind, and normalize both lift routes to the common `simulateQ`-of-`simulateQ` term.
-  apply OptionT.ext
-  simp only [OptionT.run_bind]
   congr 1
-  simp only [liftM, MonadLiftT.monadLift, MonadLift.monadLift, OptionT.run_mk]
-  rw [← QueryImpl.simulateQ_compose]
-  rfl
+  · exact lift_oc_optionT_coh_right' (R₂.prover.run a.2 a.1.2.2)
+  · funext a_1
+    apply congrArg (fun v : OptionT
+        (OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)) Stmt₃ =>
+      v >>= fun s₃ => pure ((a.1.1 ++ₜ a_1.1, a_1.2.1, a_1.2.2), s₃))
+    exact hcoh_right' (R₂.verifier.verify a.2 a_1.1)
+
+#print axioms appendStage₁_run_eq_liftM
+#print axioms appendStage₂_run_eq_liftM
 
 end Reduction

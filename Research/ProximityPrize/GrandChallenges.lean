@@ -4,11 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alexander Hicks
 -/
 
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
 import Research.ProximityPrize.CapacityBounds
 
-import ArkLib.Data.CodingTheory.ReedSolomon
-import ArkLib.Data.CodingTheory.ListDecodability
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
 
 /-!
 # Grand Challenges from ABF26 §1
@@ -63,7 +63,7 @@ threshold" content lives on the `1/n`-lattice. Two complementary lattice encodin
   (`GrandChallengeLDThreshold{,Elias,JohnsonSq,HalfDist}.lean`) bound.
 * `GrandChallengesLattice.lean` (plural) — `Fin (n+1)`-indexed lattice threshold in its own
   `GrandChallengesLattice` namespace, plus the step-function bridge that lets the one-sided
-  witnesses (`MCALowerWitness`/`MCAUpperWitness`, `ListLowerWitness`/`ListUpperWitness`)
+  witnesses (`MCALowerWitness`/`MCAUpperWitness`, `ContinuousListLowerWitness`/`ContinuousListUpperWitness`)
   bracket the lattice threshold (`*_bracketed`).
 
 See the `GrandChallengeLattice.lean` header for why the two `Finset` representations cannot
@@ -110,7 +110,7 @@ bound fails strictly above `δ*_C`. The paper poses this for `C := RS[F, L, k]` 
 
 `|Λ(C^≡m, δ)|` is the maximised list size from `ABF26-D2.8`. The bound `ε* · |F|` is read
 in `ENNReal` to handle the `Lambda = ⊤` edge case uniformly. -/
-def grandListDecodingChallenge {F ι : Type} [Field F] [Fintype F] [DecidableEq F]
+def continuousGrandListDecodingChallenge {F ι : Type} [Field F] [Fintype F] [DecidableEq F]
     [Fintype ι] [Nonempty ι] [DecidableEq ι]
     (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0) : Prop :=
   ∃ δ_C_star : ℝ≥0,
@@ -159,16 +159,16 @@ def grandMCAChallengeRSrate (domain : ι ↪ F) (ρ ε_star : ℝ≥0) : Prop :=
 /-- The **Grand List Decoding Challenge** for `C := RS[F, domain, k]`, `m`-fold
 interleaved. -/
 def grandListDecodingChallengeRS (domain : ι ↪ F) (k m : ℕ) (ε_star : ℝ≥0) : Prop :=
-  grandListDecodingChallenge (ReedSolomon.code domain k : Set (ι → F)) m ε_star
+  continuousGrandListDecodingChallenge (ReedSolomon.code domain k : Set (ι → F)) m ε_star
 
 /-- The **ABF26 §1 MCA prize**: resolve the Grand MCA Challenge at *every* prize rate
 `ρ ∈ {1/2,1/4,1/8,1/16}` with `ε* = 2^(-128)`. -/
-def mcaPrize (domain : ι ↪ F) : Prop :=
+def continuousMcaPrize (domain : ι ↪ F) : Prop :=
   ∀ j : Fin 4, grandMCAChallengeRSrate domain (prizeRates j) epsStar
 
 /-- The **ABF26 §1 list-decoding prize** at interleaving `m`: resolve the Grand List
 Decoding Challenge at every prize rate with `ε* = 2^(-128)`. -/
-def listDecodingPrize (domain : ι ↪ F) (m : ℕ) : Prop :=
+def continuousListDecodingPrize (domain : ι ↪ F) (m : ℕ) : Prop :=
   ∀ j : Fin 4,
     grandListDecodingChallengeRS domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ m epsStar
 
@@ -400,7 +400,7 @@ theorem GrandMCAResolution.δStar_eq_zero_of_upperWitness {C : Set (ι → F)}
     (hw : w.δ = 0) : R.δStar = 0 := by
   have hle : R.δStar ≤ 0 := by
     simpa [hw] using w.δStar_le R
-  exact le_antisymm hle (zero_le R.δStar)
+  exact le_antisymm hle (show 0 ≤ R.δStar by positivity)
 
 /-- The cutoff radius of a Grand-MCA resolution is unique. -/
 theorem GrandMCAResolution.δStar_eq {C : Set (ι → F)} {ε_star : ℝ≥0}
@@ -865,7 +865,7 @@ The list-decoding mirror of the MCA framework. The maximised list size `Λ(C^⋈
 `Λ` in the radius (`ListDecodable.Lambda_mono`) replaces `epsMCA_mono`. -/
 
 /-- A full resolution of the Grand List Decoding Challenge for `C`, `m`-fold interleaved. -/
-structure GrandListResolution (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0) where
+structure ContinuousGrandListResolution (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0) where
   /-- The maximal threshold `δ*`. -/
   δStar : ℝ≥0
   /-- `δ* ∈ [0, 1]`. -/
@@ -880,7 +880,7 @@ structure GrandListResolution (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0)
 
 /-- **Lower one-sided progress** for list decoding. A radius `δ ≤ 1` at which the list
 size is still within `ε* · |F|`. Forces `δ* ≥ δ`. -/
-structure ListLowerWitness (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0) where
+structure ContinuousListLowerWitness (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0) where
   /-- The certified radius. -/
   δ : ℝ≥0
   /-- `δ ∈ [0, 1]`. -/
@@ -891,7 +891,7 @@ structure ListLowerWitness (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0) wh
 
 /-- **Upper one-sided progress** for list decoding. A radius `δ` at which the list size
 already exceeds `ε* · |F|`. Forces `δ* ≤ δ`. -/
-structure ListUpperWitness (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0) where
+structure ContinuousListUpperWitness (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0) where
   /-- The certified radius. -/
   δ : ℝ≥0
   /-- `|Λ(C^⋈m, δ)| > ε* · |F|`. -/
@@ -901,8 +901,8 @@ structure ListUpperWitness (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0) wh
 /-- A list-decoding resolution of `RS[F, domain, k]` *is* a proof of the Grand List
 Decoding Challenge predicate. -/
 theorem grandListDecodingChallenge_of_resolution {C : Set (ι → F)} {m : ℕ} {ε_star : ℝ≥0}
-    (R : GrandListResolution C m ε_star) :
-    grandListDecodingChallenge C m ε_star :=
+    (R : ContinuousGrandListResolution C m ε_star) :
+    continuousGrandListDecodingChallenge C m ε_star :=
   ⟨R.δStar, R.le_one, R.bound, R.maximal⟩
 
 /-- Monotonicity of the (coerced) maximised list size in the radius — the list-decoding
@@ -914,143 +914,143 @@ theorem lambda_coe_mono {C : Set (ι → F)} {m : ℕ} {a b : ℝ≥0} (hab : a 
   exact_mod_cast ListDecodable.Lambda_mono (C := C^⋈ (Fin m)) hr
 
 /-- A list lower witness bounds every resolution's threshold from below: `δ ≤ δ*`. -/
-theorem ListLowerWitness.le_δStar {C : Set (ι → F)} {m : ℕ} {ε_star : ℝ≥0}
-    (w : ListLowerWitness C m ε_star) (R : GrandListResolution C m ε_star) :
+theorem ContinuousListLowerWitness.le_δStar {C : Set (ι → F)} {m : ℕ} {ε_star : ℝ≥0}
+    (w : ContinuousListLowerWitness C m ε_star) (R : ContinuousGrandListResolution C m ε_star) :
     w.δ ≤ R.δStar := by
   by_contra h
   push Not at h
   exact absurd w.bound (not_le.mpr (R.maximal w.δ h w.le_one))
 
 /-- A list upper witness bounds every resolution's threshold from above: `δ* ≤ δ`. -/
-theorem ListUpperWitness.δStar_le {C : Set (ι → F)} {m : ℕ} {ε_star : ℝ≥0}
-    (w : ListUpperWitness C m ε_star) (R : GrandListResolution C m ε_star) :
+theorem ContinuousListUpperWitness.δStar_le {C : Set (ι → F)} {m : ℕ} {ε_star : ℝ≥0}
+    (w : ContinuousListUpperWitness C m ε_star) (R : ContinuousGrandListResolution C m ε_star) :
     R.δStar ≤ w.δ := by
   by_contra h
   push Not at h
   exact absurd (le_trans (lambda_coe_mono (le_of_lt h)) R.bound) (not_le.mpr w.exceeds)
 
 /-- **Bridge (list-size upper bound ⇒ list lower witness).** Any radius `δ ≤ 1` whose
-maximised list size is at most `ε*·|F|` is a `ListLowerWitness`. -/
-def ListLowerWitness.ofLe {C : Set (ι → F)} {m : ℕ} {ε_star δ : ℝ≥0}
+maximised list size is at most `ε*·|F|` is a `ContinuousListLowerWitness`. -/
+def ContinuousListLowerWitness.ofLe {C : Set (ι → F)} {m : ℕ} {ε_star δ : ℝ≥0}
     (hδ : δ ≤ 1)
     (h : (ListDecodable.Lambda (C^⋈ (Fin m)) (δ : ℝ) : ENNReal) ≤
       ((ε_star : ENNReal) * (Fintype.card F : ENNReal))) :
-    ListLowerWitness C m ε_star :=
+    ContinuousListLowerWitness C m ε_star :=
   ⟨δ, hδ, h⟩
 
 /-- **Bridge from real-radius list bounds.** Many list-decoding theorems state their radius as
 a real expression.  Once that expression is identified with a nonnegative radius `δnn ≤ 1`,
-the real-radius bound gives a `ListLowerWitness`. -/
-def ListLowerWitness.ofRealLe {C : Set (ι → F)} {m : ℕ} {ε_star : ℝ≥0}
+the real-radius bound gives a `ContinuousListLowerWitness`. -/
+def ContinuousListLowerWitness.ofRealLe {C : Set (ι → F)} {m : ℕ} {ε_star : ℝ≥0}
     {δ : ℝ} (δnn : ℝ≥0) (hδ_eq : (δnn : ℝ) = δ) (hδ : δnn ≤ 1)
     (h : (ListDecodable.Lambda (C^⋈ (Fin m)) δ : ENNReal) ≤
       ((ε_star : ENNReal) * (Fintype.card F : ENNReal))) :
-    ListLowerWitness C m ε_star :=
+    ContinuousListLowerWitness C m ε_star :=
   let h' : (ListDecodable.Lambda (C^⋈ (Fin m)) (δnn : ℝ) : ENNReal) ≤
       ((ε_star : ENNReal) * (Fintype.card F : ENNReal)) := by
     rw [hδ_eq]
     exact h
-  ListLowerWitness.ofLe hδ h'
+  ContinuousListLowerWitness.ofLe hδ h'
 
 /-- **Bridge (list-size lower bound ⇒ list upper witness).** Any radius where the
-maximised list size already exceeds `ε*·|F|` is a `ListUpperWitness`. -/
-def ListUpperWitness.ofGt {C : Set (ι → F)} {m : ℕ} {ε_star δ : ℝ≥0}
+maximised list size already exceeds `ε*·|F|` is a `ContinuousListUpperWitness`. -/
+def ContinuousListUpperWitness.ofGt {C : Set (ι → F)} {m : ℕ} {ε_star δ : ℝ≥0}
     (h : (ListDecodable.Lambda (C^⋈ (Fin m)) (δ : ℝ) : ENNReal) >
       ((ε_star : ENNReal) * (Fintype.card F : ENNReal))) :
-    ListUpperWitness C m ε_star :=
+    ContinuousListUpperWitness C m ε_star :=
   ⟨δ, h⟩
 
 /-- **Bridge from real-radius lower bounds.** A real-radius strict lower bound becomes a
-`ListUpperWitness` once the real radius is identified with a nonnegative radius. -/
-def ListUpperWitness.ofRealGt {C : Set (ι → F)} {m : ℕ} {ε_star : ℝ≥0}
+`ContinuousListUpperWitness` once the real radius is identified with a nonnegative radius. -/
+def ContinuousListUpperWitness.ofRealGt {C : Set (ι → F)} {m : ℕ} {ε_star : ℝ≥0}
     {δ : ℝ} (δnn : ℝ≥0) (hδ_eq : (δnn : ℝ) = δ)
     (h : (ListDecodable.Lambda (C^⋈ (Fin m)) δ : ENNReal) >
       ((ε_star : ENNReal) * (Fintype.card F : ENNReal))) :
-    ListUpperWitness C m ε_star :=
+    ContinuousListUpperWitness C m ε_star :=
   let h' : (ListDecodable.Lambda (C^⋈ (Fin m)) (δnn : ℝ) : ENNReal) >
       ((ε_star : ENNReal) * (Fintype.card F : ENNReal)) := by
     rw [hδ_eq]
     exact h
-  ListUpperWitness.ofGt h'
+  ContinuousListUpperWitness.ofGt h'
 
 /-- A list lower witness remains valid when the list-size threshold is relaxed. -/
-def ListLowerWitness.monoThreshold {C : Set (ι → F)} {m : ℕ} {ε_star ε_star' : ℝ≥0}
-    (w : ListLowerWitness C m ε_star)
+def ContinuousListLowerWitness.monoThreshold {C : Set (ι → F)} {m : ℕ} {ε_star ε_star' : ℝ≥0}
+    (w : ContinuousListLowerWitness C m ε_star)
     (hε : (ε_star : ENNReal) * (Fintype.card F : ENNReal) ≤
       (ε_star' : ENNReal) * (Fintype.card F : ENNReal)) :
-    ListLowerWitness C m ε_star' :=
+    ContinuousListLowerWitness C m ε_star' :=
   ⟨w.δ, w.le_one, le_trans w.bound hε⟩
 
 /-- A list upper witness remains valid when the list-size threshold is tightened. -/
-def ListUpperWitness.monoThreshold {C : Set (ι → F)} {m : ℕ} {ε_star ε_star' : ℝ≥0}
-    (w : ListUpperWitness C m ε_star)
+def ContinuousListUpperWitness.monoThreshold {C : Set (ι → F)} {m : ℕ} {ε_star ε_star' : ℝ≥0}
+    (w : ContinuousListUpperWitness C m ε_star)
     (hε : (ε_star' : ENNReal) * (Fintype.card F : ENNReal) ≤
       (ε_star : ENNReal) * (Fintype.card F : ENNReal)) :
-    ListUpperWitness C m ε_star' :=
+    ContinuousListUpperWitness C m ε_star' :=
   ⟨w.δ, lt_of_le_of_lt hε w.exceeds⟩
 
 /-! ### The same cutoff skeleton for list-decoding witnesses -/
 
 /-- A full list-decoding resolution is itself a lower witness at its cutoff radius. -/
-def GrandListResolution.toLowerWitness {C : Set (ι → F)} {m : ℕ} {ε_star : ℝ≥0}
-    (R : GrandListResolution C m ε_star) : ListLowerWitness C m ε_star :=
+def ContinuousGrandListResolution.toLowerWitness {C : Set (ι → F)} {m : ℕ} {ε_star : ℝ≥0}
+    (R : ContinuousGrandListResolution C m ε_star) : ContinuousListLowerWitness C m ε_star :=
   ⟨R.δStar, R.le_one, R.bound⟩
 
 /-- Every radius strictly above a resolved list-decoding cutoff, while still in `[0,1]`, is
 an upper witness. -/
-def GrandListResolution.upperWitnessOfGt {C : Set (ι → F)} {m : ℕ} {ε_star δ : ℝ≥0}
-    (R : GrandListResolution C m ε_star) (hgt : R.δStar < δ) (hδ : δ ≤ 1) :
-    ListUpperWitness C m ε_star :=
+def ContinuousGrandListResolution.upperWitnessOfGt {C : Set (ι → F)} {m : ℕ} {ε_star δ : ℝ≥0}
+    (R : ContinuousGrandListResolution C m ε_star) (hgt : R.δStar < δ) (hδ : δ ≤ 1) :
+    ContinuousListUpperWitness C m ε_star :=
   ⟨δ, R.maximal δ hgt hδ⟩
 
 /-- List lower witnesses are downward closed in the radius. -/
-def ListLowerWitness.monoRadius {C : Set (ι → F)} {m : ℕ} {ε_star δ' : ℝ≥0}
-    (w : ListLowerWitness C m ε_star) (hδ : δ' ≤ w.δ) :
-    ListLowerWitness C m ε_star :=
+def ContinuousListLowerWitness.monoRadius {C : Set (ι → F)} {m : ℕ} {ε_star δ' : ℝ≥0}
+    (w : ContinuousListLowerWitness C m ε_star) (hδ : δ' ≤ w.δ) :
+    ContinuousListLowerWitness C m ε_star :=
   ⟨δ', le_trans hδ w.le_one, le_trans (lambda_coe_mono hδ) w.bound⟩
 
 /-- List upper witnesses are upward closed in the radius. -/
-def ListUpperWitness.monoRadius {C : Set (ι → F)} {m : ℕ} {ε_star δ' : ℝ≥0}
-    (w : ListUpperWitness C m ε_star) (hδ : w.δ ≤ δ') :
-    ListUpperWitness C m ε_star :=
+def ContinuousListUpperWitness.monoRadius {C : Set (ι → F)} {m : ℕ} {ε_star δ' : ℝ≥0}
+    (w : ContinuousListUpperWitness C m ε_star) (hδ : w.δ ≤ δ') :
+    ContinuousListUpperWitness C m ε_star :=
   ⟨δ', lt_of_lt_of_le w.exceeds (lambda_coe_mono hδ)⟩
 
 /-- Combined monotonicity for list lower witnesses: decrease the radius and relax the
 list-size target. -/
-def ListLowerWitness.mono {C : Set (ι → F)} {m : ℕ} {ε_star ε_star' δ' : ℝ≥0}
-    (w : ListLowerWitness C m ε_star) (hδ : δ' ≤ w.δ)
+def ContinuousListLowerWitness.mono {C : Set (ι → F)} {m : ℕ} {ε_star ε_star' δ' : ℝ≥0}
+    (w : ContinuousListLowerWitness C m ε_star) (hδ : δ' ≤ w.δ)
     (hε : (ε_star : ENNReal) * (Fintype.card F : ENNReal) ≤
       (ε_star' : ENNReal) * (Fintype.card F : ENNReal)) :
-    ListLowerWitness C m ε_star' :=
-  ListLowerWitness.monoThreshold (w.monoRadius hδ) hε
+    ContinuousListLowerWitness C m ε_star' :=
+  ContinuousListLowerWitness.monoThreshold (w.monoRadius hδ) hε
 
 /-- Combined monotonicity for list upper witnesses: increase the radius and tighten the
 list-size target. -/
-def ListUpperWitness.mono {C : Set (ι → F)} {m : ℕ} {ε_star ε_star' δ' : ℝ≥0}
-    (w : ListUpperWitness C m ε_star) (hδ : w.δ ≤ δ')
+def ContinuousListUpperWitness.mono {C : Set (ι → F)} {m : ℕ} {ε_star ε_star' δ' : ℝ≥0}
+    (w : ContinuousListUpperWitness C m ε_star) (hδ : w.δ ≤ δ')
     (hε : (ε_star' : ENNReal) * (Fintype.card F : ENNReal) ≤
       (ε_star : ENNReal) * (Fintype.card F : ENNReal)) :
-    ListUpperWitness C m ε_star' :=
-  ListUpperWitness.monoThreshold (w.monoRadius hδ) hε
+    ContinuousListUpperWitness C m ε_star' :=
+  ContinuousListUpperWitness.monoThreshold (w.monoRadius hδ) hε
 
 /-- The set of radii certified by list lower witnesses. -/
 def listLowerWitnessRadii (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0) : Set ℝ≥0 :=
-  {δ | ∃ w : ListLowerWitness C m ε_star, w.δ = δ}
+  {δ | ∃ w : ContinuousListLowerWitness C m ε_star, w.δ = δ}
 
 /-- The set of radii certified by list upper witnesses. -/
 def listUpperWitnessRadii (C : Set (ι → F)) (m : ℕ) (ε_star : ℝ≥0) : Set ℝ≥0 :=
-  {δ | ∃ w : ListUpperWitness C m ε_star, w.δ = δ}
+  {δ | ∃ w : ContinuousListUpperWitness C m ε_star, w.δ = δ}
 
 /-- The resolved list-decoding cutoff radius belongs to the lower-witness radius set. -/
-theorem GrandListResolution.δStar_mem_lowerWitnessRadii {C : Set (ι → F)}
-    {m : ℕ} {ε_star : ℝ≥0} (R : GrandListResolution C m ε_star) :
+theorem ContinuousGrandListResolution.δStar_mem_lowerWitnessRadii {C : Set (ι → F)}
+    {m : ℕ} {ε_star : ℝ≥0} (R : ContinuousGrandListResolution C m ε_star) :
     R.δStar ∈ listLowerWitnessRadii C m ε_star :=
   ⟨R.toLowerWitness, rfl⟩
 
 /-- Under a full list-decoding resolution, the lower-witness radii are exactly the radii below
 `δ*`. -/
-theorem GrandListResolution.mem_lowerWitnessRadii_iff {C : Set (ι → F)}
-    {m : ℕ} {ε_star δ : ℝ≥0} (R : GrandListResolution C m ε_star) :
+theorem ContinuousGrandListResolution.mem_lowerWitnessRadii_iff {C : Set (ι → F)}
+    {m : ℕ} {ε_star δ : ℝ≥0} (R : ContinuousGrandListResolution C m ε_star) :
     δ ∈ listLowerWitnessRadii C m ε_star ↔ δ ≤ R.δStar := by
   constructor
   · rintro ⟨w, hw⟩
@@ -1059,16 +1059,16 @@ theorem GrandListResolution.mem_lowerWitnessRadii_iff {C : Set (ι → F)}
   · intro hδ
     exact ⟨R.toLowerWitness.monoRadius hδ, rfl⟩
 
-/-- Set form of `GrandListResolution.mem_lowerWitnessRadii_iff`: the lower side is `Iic δ*`. -/
-theorem GrandListResolution.lowerWitnessRadii_eq_Iic {C : Set (ι → F)}
-    {m : ℕ} {ε_star : ℝ≥0} (R : GrandListResolution C m ε_star) :
+/-- Set form of `ContinuousGrandListResolution.mem_lowerWitnessRadii_iff`: the lower side is `Iic δ*`. -/
+theorem ContinuousGrandListResolution.lowerWitnessRadii_eq_Iic {C : Set (ι → F)}
+    {m : ℕ} {ε_star : ℝ≥0} (R : ContinuousGrandListResolution C m ε_star) :
     listLowerWitnessRadii C m ε_star = Set.Iic R.δStar := by
   ext δ
   exact R.mem_lowerWitnessRadii_iff
 
 /-- Inside `[0,1]`, list upper-witness radii are exactly the radii strictly above `δ*`. -/
-theorem GrandListResolution.mem_upperWitnessRadii_iff_of_le_one {C : Set (ι → F)}
-    {m : ℕ} {ε_star δ : ℝ≥0} (R : GrandListResolution C m ε_star) (hδ : δ ≤ 1) :
+theorem ContinuousGrandListResolution.mem_upperWitnessRadii_iff_of_le_one {C : Set (ι → F)}
+    {m : ℕ} {ε_star δ : ℝ≥0} (R : ContinuousGrandListResolution C m ε_star) (hδ : δ ≤ 1) :
     δ ∈ listUpperWitnessRadii C m ε_star ↔ R.δStar < δ := by
   constructor
   · rintro ⟨w, hw⟩
@@ -1084,45 +1084,45 @@ theorem GrandListResolution.mem_upperWitnessRadii_iff_of_le_one {C : Set (ι →
     exact ⟨R.upperWitnessOfGt hgt hδ, rfl⟩
 
 /-- No resolved list-decoding cutoff is itself an upper witness. -/
-theorem GrandListResolution.not_δStar_mem_upperWitnessRadii {C : Set (ι → F)}
-    {m : ℕ} {ε_star : ℝ≥0} (R : GrandListResolution C m ε_star) :
+theorem ContinuousGrandListResolution.not_δStar_mem_upperWitnessRadii {C : Set (ι → F)}
+    {m : ℕ} {ε_star : ℝ≥0} (R : ContinuousGrandListResolution C m ε_star) :
     R.δStar ∉ listUpperWitnessRadii C m ε_star := by
   rw [R.mem_upperWitnessRadii_iff_of_le_one R.le_one]
   exact lt_irrefl R.δStar
 
 /-- Any lower/upper list witness pair brackets correctly once a resolution exists. -/
 theorem listWitness_le_upper_of_resolution {C : Set (ι → F)} {m : ℕ} {ε_star : ℝ≥0}
-    (wlo : ListLowerWitness C m ε_star) (whi : ListUpperWitness C m ε_star)
-    (R : GrandListResolution C m ε_star) :
+    (wlo : ContinuousListLowerWitness C m ε_star) (whi : ContinuousListUpperWitness C m ε_star)
+    (R : ContinuousGrandListResolution C m ε_star) :
     wlo.δ ≤ whi.δ :=
   le_trans (wlo.le_δStar R) (whi.δStar_le R)
 
 /-- A resolved list-decoding instance forbids crossed one-sided witnesses. -/
 theorem not_listWitnesses_crossed_of_resolution {C : Set (ι → F)} {m : ℕ}
-    {ε_star : ℝ≥0} (wlo : ListLowerWitness C m ε_star)
-    (whi : ListUpperWitness C m ε_star) (R : GrandListResolution C m ε_star) :
+    {ε_star : ℝ≥0} (wlo : ContinuousListLowerWitness C m ε_star)
+    (whi : ContinuousListUpperWitness C m ε_star) (R : ContinuousGrandListResolution C m ε_star) :
     ¬ whi.δ < wlo.δ :=
   not_lt_of_ge (listWitness_le_upper_of_resolution wlo whi R)
 
 /-- A lower witness at radius `1` forces the resolved list-decoding cutoff to be `1`. -/
-theorem GrandListResolution.δStar_eq_one_of_lowerWitness {C : Set (ι → F)}
-    {m : ℕ} {ε_star : ℝ≥0} (R : GrandListResolution C m ε_star)
-    (w : ListLowerWitness C m ε_star) (hw : w.δ = 1) : R.δStar = 1 := by
+theorem ContinuousGrandListResolution.δStar_eq_one_of_lowerWitness {C : Set (ι → F)}
+    {m : ℕ} {ε_star : ℝ≥0} (R : ContinuousGrandListResolution C m ε_star)
+    (w : ContinuousListLowerWitness C m ε_star) (hw : w.δ = 1) : R.δStar = 1 := by
   have hle : (1 : ℝ≥0) ≤ R.δStar := by
     simpa [hw] using w.le_δStar R
   exact le_antisymm R.le_one hle
 
 /-- An upper witness at radius `0` forces the resolved list-decoding cutoff to be `0`. -/
-theorem GrandListResolution.δStar_eq_zero_of_upperWitness {C : Set (ι → F)}
-    {m : ℕ} {ε_star : ℝ≥0} (R : GrandListResolution C m ε_star)
-    (w : ListUpperWitness C m ε_star) (hw : w.δ = 0) : R.δStar = 0 := by
+theorem ContinuousGrandListResolution.δStar_eq_zero_of_upperWitness {C : Set (ι → F)}
+    {m : ℕ} {ε_star : ℝ≥0} (R : ContinuousGrandListResolution C m ε_star)
+    (w : ContinuousListUpperWitness C m ε_star) (hw : w.δ = 0) : R.δStar = 0 := by
   have hle : R.δStar ≤ 0 := by
     simpa [hw] using w.δStar_le R
-  exact le_antisymm hle (zero_le R.δStar)
+  exact le_antisymm hle (show 0 ≤ R.δStar by positivity)
 
 /-- The cutoff radius of a Grand List-Decoding resolution is unique. -/
-theorem GrandListResolution.δStar_eq {C : Set (ι → F)} {m : ℕ} {ε_star : ℝ≥0}
-    (R S : GrandListResolution C m ε_star) : R.δStar = S.δStar :=
+theorem ContinuousGrandListResolution.δStar_eq {C : Set (ι → F)} {m : ℕ} {ε_star : ℝ≥0}
+    (R S : ContinuousGrandListResolution C m ε_star) : R.δStar = S.δStar :=
   le_antisymm (R.toLowerWitness.le_δStar S) (S.toLowerWitness.le_δStar R)
 
 /-! ## First instantiation: the symbolic ρ = 1/2 interval (Phase 1 scaffold)
@@ -1150,14 +1150,14 @@ theorem mca_threshold_bracketed
 
 /-- **Symbolic interval for Grand List Decoding resolutions.** For an RS code with
 `m`-fold interleaving at threshold `ε*`, a lower list witness and an upper list witness
-bracket the maximal threshold of any `GrandListResolution`: `δ_lo ≤ δ* ≤ δ_hi`.
+bracket the maximal threshold of any `ContinuousGrandListResolution`: `δ_lo ≤ δ* ≤ δ_hi`.
 This is the real-threshold-resolution analogue of the faithful lattice brackets in
 `GrandChallengesLattice`. -/
 theorem list_threshold_bracketed
     (domain : ι ↪ F) (k m : ℕ) (ε_star : ℝ≥0)
-    (wlo : ListLowerWitness (ReedSolomon.code domain k : Set (ι → F)) m ε_star)
-    (whi : ListUpperWitness (ReedSolomon.code domain k : Set (ι → F)) m ε_star)
-    (R : GrandListResolution (ReedSolomon.code domain k : Set (ι → F)) m ε_star) :
+    (wlo : ContinuousListLowerWitness (ReedSolomon.code domain k : Set (ι → F)) m ε_star)
+    (whi : ContinuousListUpperWitness (ReedSolomon.code domain k : Set (ι → F)) m ε_star)
+    (R : ContinuousGrandListResolution (ReedSolomon.code domain k : Set (ι → F)) m ε_star) :
     wlo.δ ≤ R.δStar ∧ R.δStar ≤ whi.δ :=
   ⟨wlo.le_δStar R, whi.δStar_le R⟩
 

@@ -135,13 +135,10 @@ theorem weighted_lag_correlation
       rw [mul_assoc, mul_inv_cancel₀ hw0', mul_one]
       exact hu
     · intro z _
-      dsimp only
       rw [mul_assoc, inv_mul_cancel₀ hw0', mul_one]
     · intro u _
-      dsimp only
       rw [mul_assoc, mul_inv_cancel₀ hw0', mul_one]
     · intro z hz
-      dsimp only
       have hmem : z * w⁻¹ ∈ G := (Finset.mem_filter.mp hz).2
       have hzw : z * w⁻¹ * w = z := by
         rw [mul_assoc, inv_mul_cancel₀ hw0', mul_one]

@@ -68,8 +68,7 @@ theorem betaRec_weight_le_graded (x₀ : F) (R : F[X][X][Y]) (H : F[X][Y])
     (bB := fun i₁ {m} p => (d - Multiset.card p.parts) * A + (D - Multiset.card p.parts))
     (wβ := fun t => α * (2 * t - 1) + A) ?_ ?_ ?_ ?_ ?_
   · -- hbW (monic)
-    simpa using
-      BCIKS20.HenselNumerator.W𝒪_weight_le_zero_of_monic H hmonic hH hD
+    exact BCIKS20.HenselNumerator.W𝒪_weight_le_zero_of_monic H hmonic hH hD
   · -- hbξ via weight_ξ_bound
     have h := weight_ξ_bound (H := H) (R := R) x₀ hH hHyp hd2 hD hD_Rx0
     have hbridge : (Bivariate.natDegreeY R - 1) * (D - Bivariate.natDegreeY H + 1)

@@ -182,7 +182,7 @@ theorem boundary_slice_badSet_eq_unconditional (dom : Fin n ↪ F) {k : ℕ} (hk
     have hPdeg' : P.natDegree < k := by
       by_cases hP0 : P = 0
       · subst hP0
-        simpa using hk
+        simpa only [Polynomial.natDegree_zero] using (show 0 < k by omega)
       · exact (Polynomial.natDegree_lt_iff_degree_lt hP0).mpr hPdeg
     have hlinezero : residual dom k t (fun i => u₀ i + γ * u₁ i) = 0 := by
       refine residual_eq_zero_of_extends dom k t hPdeg' fun a => ?_
@@ -216,7 +216,7 @@ theorem boundary_slice_badSet_eq_unconditional (dom : Fin n ↪ F) {k : ℕ} (hk
       have hP₁deg' : P₁.natDegree < k := by
         by_cases hP0 : P₁ = 0
         · subst hP0
-          simpa using hk
+          simpa only [Polynomial.natDegree_zero] using (show 0 < k by omega)
         · exact (Polynomial.natDegree_lt_iff_degree_lt hP0).mpr hP₁deg
       refine hres1 (residual_eq_zero_of_extends dom k t hP₁deg' fun a => ?_)
       exact ((hagj (t a) (Finset.mem_image_of_mem t (Finset.mem_univ a))).2).symm

@@ -3,9 +3,10 @@ Copyright (c) 2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tobias Rothmann
 -/
+module
 
-import ArkLib.Data.GroupTheory.PrimeOrder
-import Mathlib.Algebra.Field.ZMod
+public import ArkLib.Data.GroupTheory.PrimeOrder
+public import Mathlib.Algebra.Field.ZMod
 
 /-!
 # Algebraic Support for KZG-Style SRSes
@@ -22,6 +23,8 @@ KZG, t-SDH, and ARSDH reductions.
 
 This file contains general algebraic support lemmas and does not cite an external paper directly.
 -/
+
+@[expose] public section
 
 namespace Groups
 
@@ -54,6 +57,15 @@ lemma generator_ne_one_of_generate
     g₁ ≠ 1 := by
   rw [hsrs] at hgen
   simpa [generate, tower] using hgen
+
+omit [PrimeOrderWith G₂ p] in
+/-- Conversely, a nontrivial base generator makes the first prover SRS element nontrivial. -/
+lemma generate_ne_one_of_generator_ne_one
+    {n : ℕ} {τ : ZMod p} {srs : Vector G₁ (n + 1) × Vector G₂ 2}
+    (hsrs : srs = generate (g₁ := g₁) (g₂ := g₂) n τ) (hg₁ : g₁ ≠ 1) :
+    srs.1[0] ≠ 1 := by
+  rw [hsrs]
+  simpa [generate, tower] using hg₁
 
 end PowerSrs
 
@@ -102,9 +114,9 @@ lemma gpow_val_mul_eq {g : G} (hord : orderOf g = p) (a b : ZMod p) :
   gpow_eq_of_nat_cast_eq hord _ _ (by push_cast [ZMod.natCast_zmod_val]; ring)
 
 /-- Every element of a prime-order group is a `ZMod p` power of a nontrivial generator. -/
-lemma exists_zmod_power_of_generator {g : G} (hpG : Nat.card G = p) (hg : g ≠ 1)
+lemma exists_zmod_power_of_generator {g : G} (hg : g ≠ 1)
     (hord : orderOf g = p) (x : G) : ∃ a : ZMod p, x = g ^ a.val := by
-  obtain ⟨k, hk⟩ : ∃ k : ℕ, g ^ k = x := mem_powers_of_prime_card hpG hg
+  obtain ⟨k, hk⟩ : ∃ k : ℕ, g ^ k = x := mem_powers_of_prime_card PrimeOrderWith.hCard hg
   exact ⟨(k : ZMod p), by rw [ZMod.val_natCast, ← hk, ← pow_mod_orderOf g k, hord]⟩
 
 end PrimeOrder

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ArkLib.Data.Probability.Notation
 import Mathlib
 
 /-!
@@ -65,12 +66,12 @@ product PMF, lands entirely in `G`.  This is definitionally
 (via `ProbabilityTheory.Pr_eq_tsum_indicator`). -/
 noncomputable def queryAcceptProb [Nonempty ι] (G : Finset ι) (t : ℕ) : ℝ≥0∞ :=
   ∑' q : Fin t → ι,
-    (PMF.uniformOfFintype (Fin t → ι)) q * (if (∀ j, q j ∈ G) then (1 : ℝ≥0∞) else 0)
+    (ProximityPrize.Compatibility.uniformOfFintype (Fin t → ι)) q * (if (∀ j, q j ∈ G) then (1 : ℝ≥0∞) else 0)
 
 /-- Complementary detection probability: some query lands outside `G`. -/
 noncomputable def queryDetectProb [Nonempty ι] (G : Finset ι) (t : ℕ) : ℝ≥0∞ :=
   ∑' q : Fin t → ι,
-    (PMF.uniformOfFintype (Fin t → ι)) q * (if ¬ (∀ j, q j ∈ G) then (1 : ℝ≥0∞) else 0)
+    (ProximityPrize.Compatibility.uniformOfFintype (Fin t → ι)) q * (if ¬ (∀ j, q j ∈ G) then (1 : ℝ≥0∞) else 0)
 
 /-- Indicator-sum bookkeeping: `∑ x, (if p x then 1 else 0) = |{x | p x}|` in `ℝ≥0∞`.
 Uses `Finset.sum_boole` (stable across mathlib v4.30). -/
@@ -90,7 +91,7 @@ theorem queryAcceptProb_eq [Nonempty ι] (G : Finset ι) (t : ℕ) :
   -- turn the tsum over the fintype into a finite sum
   rw [tsum_fintype]
   -- each uniform weight is the constant (card (Fin t → ι))⁻¹
-  simp_rw [PMF.uniformOfFintype_apply]
+  simp_rw [ProximityPrize.Compatibility.uniformOfFintype_apply]
   -- factor the constant out of the indicator sum
   rw [← Finset.mul_sum]
   -- reduce the indicator sum to the filter cardinality, then count
@@ -141,9 +142,9 @@ theorem queryAcceptProb_add_detect [Nonempty ι] (G : Finset ι) (t : ℕ) :
   rw [← ENNReal.tsum_add]
   have hpoint :
       (fun q : Fin t → ι =>
-          (PMF.uniformOfFintype (Fin t → ι)) q * (if (∀ j, q j ∈ G) then (1:ℝ≥0∞) else 0)
-        + (PMF.uniformOfFintype (Fin t → ι)) q * (if ¬ (∀ j, q j ∈ G) then (1:ℝ≥0∞) else 0))
-        = fun q : Fin t → ι => (PMF.uniformOfFintype (Fin t → ι)) q := by
+          (ProximityPrize.Compatibility.uniformOfFintype (Fin t → ι)) q * (if (∀ j, q j ∈ G) then (1:ℝ≥0∞) else 0)
+        + (ProximityPrize.Compatibility.uniformOfFintype (Fin t → ι)) q * (if ¬ (∀ j, q j ∈ G) then (1:ℝ≥0∞) else 0))
+        = fun q : Fin t → ι => (ProximityPrize.Compatibility.uniformOfFintype (Fin t → ι)) q := by
     funext q
     by_cases hq : (∀ j, q j ∈ G) <;> simp [hq]
   rw [hpoint, PMF.tsum_coe]

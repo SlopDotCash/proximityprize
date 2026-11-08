@@ -7,46 +7,23 @@ import ArkLib.ProofSystem.Logup.Security.SubPhaseSplit
 import ArkLib.ProofSystem.Logup.Security.OuterMaliciousSoundness
 
 /-!
-# LogUp Protocol 2 — discharging the named soundness residual `Prop`s (issue #13)
+# Logup facts and conditional protocol interfaces
 
-`Security/SubPhaseSplit.lean` names the split soundness residual surface of LogUp Protocol 2:
-
-* `OuterSoundnessResidual` — the outer phase is sound from the input language into the
-  zero-mid-claim `midLanguage` with the paper error `outerSoundnessError`;
-* `SumcheckSoundnessResidual` — the embedded sumcheck is sound from `midLanguage` into the
-  output language;
-* `AppendSoundnessResidual` — the composed `logupVerifier` headline soundness;
-* `SubPhaseSoundnessResidual` / `LogupSoundnessBrickResidual` — the bundles.
-
-All of these are now **theorems**.  This file plugs the proven dischargers into the named
-residual `Prop`s, closing the residual surface they name:
-
-* `outerSoundnessResidual_holds` — from `outerVerifier_soundness_mid`
-  (`OuterMaliciousSoundness.lean`): the claim-based two-challenge RBR state function
-  (`outerMidStateFunction`) whose round-1 flip is the per-`m` bad-challenge count
-  (`outerBadChallenges_card_le`) and whose round-3 flip is the `(z, λ)` Schwartz–Zippel count
-  (`card_filter_claimZero_mul_card_le` + `claim_not_identicallyZero`), composed with the proven
-  marginal bridge `Verifier.marginalBridge_holds`.
-* `sumcheckSoundnessResidual_holds_pointwise` — re-export of the discharged
-  `sumcheckSoundnessResidual_pointwise` (error-`0` RBR via pointwise rejection).
-* `subPhaseSoundnessResidual_holds` — the conjunction of the two.
-* `appendSoundnessResidual_holds` — from `logup_soundness_end_to_end` (message-seam append +
-  oracle-routing fusion on top of the two halves).
-* `logupSoundnessBrickResidual_holds` — the full split-brick bundle.
-
-Remaining hypotheses are *side conditions only*, not protocol obligations:
-
-* `hn : 0 < n` (nonempty cube), `hpole : 2 ^ n < Fintype.card F` (field beats the hypercube),
-  `hnK : n ≤ params.numGroups` (enough batching groups for the `(z, λ)` Schwartz–Zippel budget
-  `(n + 1)/|F| ≤ (numGroups + 1)/|F|` of the paper error shape);
-* `himplSP` / `himplNF` / `himplVB` — the standard state-preserving, never-failing,
-  value-blind shared-oracle implementation conditions consumed by the marginal bridge.
-
-No `sorry`; axiom audit at the bottom.
+The old input-only sumcheck rejection, zero-error closure, and dependent unconditional soundness
+capstones were retired during canonical message-polynomial integration. This module retains its
+independent outer-phase mathematics and explicit conditional protocol interfaces. It does not
+claim the retired embedded-sumcheck soundness completion. Exact former commands and the checked
+finite regression are recorded in
+`scripts/integration/sumcheck-message-semantics-retirements.json`.
 -/
 
 open scoped NNReal ENNReal
 open OracleComp OracleSpec ProtocolSpec
+
+-- Preserve the original whole-value equality observation within this module.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ :=
+  ⟨fun _ => True.intro⟩
 
 namespace Logup
 
@@ -71,75 +48,11 @@ theorem outerSoundnessResidual_holds
     (hpole : 2 ^ n < Fintype.card F) (hnK : n ≤ params.numGroups)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     OuterSoundnessResidual oSpec F n M params init impl :=
   outerVerifier_soundness_mid oSpec F n M params init impl hpole hnK himplSP himplNF himplVB
-
-/-- **`SumcheckSoundnessResidual` is a theorem** (issue #13, embedded-sumcheck half): re-export
-of the discharged pointwise route at the `SubPhaseSplit` naming site. -/
-theorem sumcheckSoundnessResidual_holds_pointwise [oSpec.Fintype] [oSpec.Inhabited]
-    (sumcheckSoundnessError : ℝ≥0) (hn : 0 < n)
-    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
-      x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
-    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
-    SumcheckSoundnessResidual oSpec F n M params init impl sumcheckSoundnessError :=
-  sumcheckSoundnessResidual_pointwise oSpec F n M params hn sumcheckSoundnessError
-    himplSP himplNF himplVB
-
-/-- **`SubPhaseSoundnessResidual` is a theorem** (issue #13): both sub-phase soundness halves of
-the LogUp composition hold — the outer half by the claim-based RBR route, the embedded-sumcheck
-half by the pointwise route. -/
-theorem subPhaseSoundnessResidual_holds [oSpec.Fintype] [oSpec.Inhabited]
-    (sumcheckSoundnessError : ℝ≥0) (hn : 0 < n)
-    (hpole : 2 ^ n < Fintype.card F) (hnK : n ≤ params.numGroups)
-    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
-      x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
-    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
-    SubPhaseSoundnessResidual oSpec F n M params init impl sumcheckSoundnessError :=
-  ⟨outerSoundnessResidual_holds oSpec F n M params init impl hpole hnK
-      himplSP himplNF himplVB,
-    sumcheckSoundnessResidual_holds_pointwise oSpec F n M params init impl
-      sumcheckSoundnessError hn himplSP himplNF himplVB⟩
-
-/-- **`AppendSoundnessResidual` is a theorem** (issue #13): the composed `logupVerifier` headline
-soundness, from `logup_soundness_end_to_end` (the two discharged halves + the proven message-seam
-append keystone + the proven oracle-routing fusion). -/
-theorem appendSoundnessResidual_holds [oSpec.Fintype] [oSpec.Inhabited]
-    (sumcheckSoundnessError : ℝ≥0) (hn : 0 < n)
-    (hpole : 2 ^ n < Fintype.card F) (hnK : n ≤ params.numGroups)
-    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
-      x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
-    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
-    AppendSoundnessResidual oSpec F n M params init impl sumcheckSoundnessError :=
-  logup_soundness_end_to_end oSpec F n M params init impl sumcheckSoundnessError hn
-    hpole hnK himplSP himplNF himplVB
-
-/-- **`LogupSoundnessBrickResidual` is a theorem** (issue #13): the fully split soundness
-residual surface — outer half, embedded-sumcheck half, and append-composition headline — holds
-under the standard side conditions only. -/
-theorem logupSoundnessBrickResidual_holds [oSpec.Fintype] [oSpec.Inhabited]
-    (sumcheckSoundnessError : ℝ≥0) (hn : 0 < n)
-    (hpole : 2 ^ n < Fintype.card F) (hnK : n ≤ params.numGroups)
-    (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
-      x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
-    (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
-      evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
-    LogupSoundnessBrickResidual oSpec F n M params init impl sumcheckSoundnessError :=
-  ⟨outerSoundnessResidual_holds oSpec F n M params init impl hpole hnK
-      himplSP himplNF himplVB,
-    sumcheckSoundnessResidual_holds_pointwise oSpec F n M params init impl
-      sumcheckSoundnessError hn himplSP himplNF himplVB,
-    appendSoundnessResidual_holds oSpec F n M params init impl sumcheckSoundnessError hn
-      hpole hnK himplSP himplNF himplVB⟩
 
 end ResidualDischarge
 
@@ -148,7 +61,3 @@ end Logup
 /-! ### Axiom audit (issue #13 named soundness residual dischargers) -/
 
 #print axioms Logup.outerSoundnessResidual_holds
-#print axioms Logup.sumcheckSoundnessResidual_holds_pointwise
-#print axioms Logup.subPhaseSoundnessResidual_holds
-#print axioms Logup.appendSoundnessResidual_holds
-#print axioms Logup.logupSoundnessBrickResidual_holds

@@ -87,7 +87,7 @@ theorem half_le_mcaDeltaStar_of_predecessor_good
         rwa [hhalfMul] at hm
       have hfloorDelta :
           Nat.floor (delta * (Fintype.card (Fin n) : ℝ≥0)) = w := by
-        rw [Fintype.card_fin, Nat.floor_eq_iff (zero_le _)]
+        rw [Fintype.card_fin, Nat.floor_eq_iff (by positivity)]
         constructor
         · exact hlowerFloor
         · dsimp only [w]
@@ -188,6 +188,18 @@ theorem evalCode_deltaStar_eq_half_of_predecessor_badCount_le
     mcaDeltaStar_le_half_of_floor_eq_length hg hQ hk hnEven hfloor hkquarter hsupply
   exact le_antisymm hupper hlower
 
+/-- A positive-dimensional power-domain Reed–Solomon code is the KKH evaluation code
+of degree at most `k - 1`. The dimension cancellation is proved for symbolic `k`, so callers
+can specialize large dimensions without reducing them inside the code representation. -/
+theorem evalCode_pred_eq_reedSolomon {p n k : ℕ} [Fact p.Prime] [NeZero n]
+    (g : ZMod p) (hg : orderOf g = n) (hg0 : g ≠ 0) (hk : 0 < k) :
+    evalCode g n (k - 1) =
+      (ReedSolomon.code (ProximityGap.KKH26RegimeSplit.powDomain g hg hg0) k :
+        Set (Fin n → ZMod p)) := by
+  have hdim : k - 1 + 1 = k := Nat.sub_add_cancel hk
+  simpa only [hdim] using
+    ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon g hg hg0 (k - 1)
+
 /-! ## Concrete prize-shaped arithmetic specializations -/
 
 local instance firstPrimeFact :
@@ -219,6 +231,7 @@ theorem firstPrime_rateSixteenth_deltaStar_eq_half_of_badCount
     ArkLib.ProximityGap.PrizeShapePrimeP30.P_div_two_pow_128
     (by norm_num) (by norm_num) hcount
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **Unconditional first-prime rate-`1/16` pin.**  The fully assembled rich-point
 incidence theorem supplies the literal predecessor count, so the prize-shaped operational
 threshold is exactly `1/2` with no named geometric residual. -/
@@ -248,16 +261,15 @@ theorem firstPrime_rateSixteenth_deltaStar_eq_half :
           (2 ^ 30) (2 ^ 26 - 1) =
         (ReedSolomon.code dom (2 ^ 26) :
           Set (Fin (2 ^ 30) → ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)) := by
-    simpa only [dom, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 26)] using
-      (ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon
-        ArkLib.ProximityGap.PrizeShapePrimeP30.g
-        ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g hg0
-        (2 ^ 26 - 1))
+    exact evalCode_pred_eq_reedSolomon (k := 2 ^ 26)
+      ArkLib.ProximityGap.PrizeShapePrimeP30.g
+      ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g hg0 (by norm_num)
   rw [← hcode] at hcount
   simpa only [halfPredecessorRadius,
     ArkLib.ProximityGap.Frontier.R382HalfRadiusPinConnector.halfPredecessorRadius]
     using hcount
 
+set_option backward.isDefEq.respectTransparency false in
 /-- **Unconditional first-prime rate-`1/8` pin.**  The complete exceptional-line
 pruning and third-moment incidence theorem bounds the literal predecessor bad-scalar
 set by the code length, so the operational threshold is exactly `1/2`. -/
@@ -290,11 +302,9 @@ theorem firstPrime_rateEighth_deltaStar_eq_half :
           (2 ^ 30) (2 ^ 27 - 1) =
         (ReedSolomon.code dom (2 ^ 27) :
           Set (Fin (2 ^ 30) → ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)) := by
-    simpa only [dom, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 27)] using
-      (ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon
-        ArkLib.ProximityGap.PrizeShapePrimeP30.g
-        ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g hg0
-        (2 ^ 27 - 1))
+    exact evalCode_pred_eq_reedSolomon (k := 2 ^ 27)
+      ArkLib.ProximityGap.PrizeShapePrimeP30.g
+      ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g hg0 (by norm_num)
   rw [← hcode] at hcount
   simpa only [halfPredecessorRadius,
     ArkLib.ProximityGap.Frontier.R382HalfRadiusPinConnector.halfPredecessorRadius]
@@ -384,11 +394,9 @@ theorem secondPrime_rateSixteenth_seventeenThirtyTwo_le_deltaStar :
           (2 ^ 30) (2 ^ 26 - 1) =
         (ReedSolomon.code dom (2 ^ 26) :
           Set (Fin (2 ^ 30) → ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)) := by
-    simpa only [dom, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 26)] using
-      (ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon
-        ArkLib.ProximityGap.PrizeShapePrimeP30Second.g
-        ArkLib.ProximityGap.PrizeShapePrimeP30Second.orderOf_g hg0
-        (2 ^ 26 - 1))
+    exact evalCode_pred_eq_reedSolomon (k := 2 ^ 26)
+      ArkLib.ProximityGap.PrizeShapePrimeP30Second.g
+      ArkLib.ProximityGap.PrizeShapePrimeP30Second.orderOf_g hg0 (by norm_num)
   rw [← hcode] at hcount
   simpa only [show 2 * 2 ^ 30 = 2 ^ 31 by norm_num] using hcount
 
@@ -408,6 +416,8 @@ theorem secondPrime_rateSixteenth_half_lt_deltaStar :
 end ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins
 
 /-! ## Axiom audit -/
+
+#print axioms ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.evalCode_pred_eq_reedSolomon
 
 #print axioms
   ArkLib.ProximityGap.Frontier.PrizeShapeLowRateExactPins.evalCode_deltaStar_eq_half_of_predecessor_badCount_le

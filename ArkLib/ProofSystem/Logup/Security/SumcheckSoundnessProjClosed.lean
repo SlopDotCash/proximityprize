@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Logup.Security.SumcheckLensProjSound
 import ArkLib.ProofSystem.Logup.Security.MarginalBridgeProof
 
@@ -76,11 +77,17 @@ noncomputable section
 open OracleComp OracleSpec ProtocolSpec
 open scoped NNReal ENNReal
 
+-- Full value-distribution equality retains the old all-subset observation contract.
+-- These observation spaces are local; computation semantics remain canonical.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ :=
+  ⟨fun _ => True.intro⟩
+
 namespace Logup
 
 section SumcheckSoundnessProjClosed
 
-variable {ι : Type} (oSpec : OracleSpec ι) [oSpec.Fintype]
+variable {ι : Type} (oSpec : OracleSpec ι) [∀ q, Fintype (oSpec.Range q)]
 variable (F : Type) [Field F] [Fintype F] [DecidableEq F] [Fact ((-1 : F) ≠ 1)]
   [SampleableType F]
 variable (n M : ℕ)
@@ -112,12 +119,12 @@ theorem sumcheckSoundnessResidual_holds_projClosed
     (hError : sumcheckSoundnessError = ∑ i, rbrSoundnessError i)
     (hInnerRbr :
       (logupConcreteSumcheckOracleReduction oSpec F n M params
-          (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundness init impl
+          (Fact.out : (-1 : F) ≠ 1)).verifier.rbrSoundnessAveraged init impl
         (logupSumcheckInputLanguage F n M params (Fact.out : (-1 : F) ≠ 1))
         (Set.univ) rbrSoundnessError)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     SumcheckSoundnessResidual oSpec F n M params init impl sumcheckSoundnessError :=

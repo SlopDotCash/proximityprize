@@ -11,7 +11,7 @@ import ArkLib.ToMathlib.WhirBricksConstruction
 
 This file records the residual checkpoint for the `whir_vector_iop_residual`
 mathematics.  The hard WHIR work is still the concrete Vector IOP construction,
-its `IsSecureWithGap` proof, and the fold/OOD/shift/final budget inequalities.
+its `IsSecureWithGapAveraged` proof, and the fold/OOD/shift/final budget inequalities.
 This standalone surface only assembles those residuals through the existing
 `whir_rbr_soundness_of_whirVectorSpec_secure_gap` theorem.
 -/
@@ -37,9 +37,9 @@ theorem whir_vector_iop_breakthrough
         (fun i => wPoly₀.degreeOf (Fin.succ i))
       let dstar := 1 + (wPoly₀.degreeOf 0) + maxDeg
       let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
-        Fintype (BlockRelDistance.indexPowT (S 0) (P.φ 0) j) := h.inst1 0
+        Fintype (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := h.inst1 0
       let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
-        Nonempty (BlockRelDistance.indexPowT (S 0) (P.φ 0) j) := h.inst2 0
+        Nonempty (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := h.inst2 0
       ∀ _ : Fin ((P.foldingParam 0) + 1),
         let errStar_0 j := h.errStar 0 j (h.C 0 j) (h.Gen_α 0 j).parℓ (h.δ 0)
       ∀ j : Fin (P.foldingParam 0),
@@ -59,9 +59,9 @@ theorem whir_vector_iop_breakthrough
       let dstar := 1 + (wPoly₀.degreeOf 0) + maxDeg
       let d := max dstar 3
       let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
-        Fintype (BlockRelDistance.indexPowT (S i) (P.φ i) j) := h.inst1
+        Fintype (BlockRelDistance.Generic.indexPowT (S i) (P.φ i) j) := h.inst1
       let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
-        Nonempty (BlockRelDistance.indexPowT (S i) (P.φ i) j) := h.inst2
+        Nonempty (BlockRelDistance.Generic.indexPowT (S i) (P.φ i) j) := h.inst2
       ∀ i : Fin (M + 1), ∀ _ : Fin ((P.foldingParam i) + 1),
         let errStar i j := h.errStar i j (h.C i j) (h.Gen_α i j).parℓ (h.δ i)
       ∀ i : Fin (M + 1), ∀ j : Fin (P.foldingParam i),
@@ -76,7 +76,7 @@ theorem whir_vector_iop_breakthrough
       let ε_rbr : (WhirIOP.Construction.whirVectorSpec M).ChallengeIdx → ℝ≥0 :=
         fun _ => (Finset.univ.image max_ε_folds ∪ {ε_fin} ∪ Finset.univ.image ε_out ∪
           Finset.univ.image ε_shift).max' (by simp)
-      VectorIOP.IsSecureWithGap (WhirIOP.whirRelation m_0 (P.φ 0) 0)
+      VectorIOP.IsSecureWithGapAveraged (WhirIOP.whirRelation m_0 (P.φ 0) 0)
         (WhirIOP.whirRelation m_0 (P.φ 0) (h.δ 0)) ε_rbr π) :
     WhirIOP.whir_rbr_soundness (F := F) (M := M) ι (d := d) (dstar := dstar)
       (P := P) (S := S) (hParams := hParams) (h := h) hm_0 (σ₀ := σ₀)

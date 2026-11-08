@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.JohnsonBound.Family
+import ProximityPrize.Extensions.Data.CodingTheory.JohnsonBound.Family
 
 /-!
 # Johnson-bound statement-level witness data

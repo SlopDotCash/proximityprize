@@ -1,4 +1,28 @@
 {
- "note": "Upstream-inherited sorry/admit holes baseline (see #470). Emptied 2026-07-09: every entry was proven or removed on main (census: 0 live holes). Add entries ONLY for holes imported by an upstream sync, with an issue reference.",
- "holes": []
+  "note": "Live source holes from upstream’s solicited problem set (#1352). The pinned Git revision and exact file hashes bind each declaration. The kernel baseline separately records all solicited declarations, including transitive taint.",
+  "repository": "https://github.com/Verified-zkEVM/ArkLib",
+  "revision": "31ff7ddf9bc209ffaeab516359cd17f47d9bd6f1",
+  "issue": "https://github.com/Verified-zkEVM/ArkLib/issues/1352",
+  "holes": [
+    {
+      "file": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/Linear.lean",
+      "decl": "theorem random_linear_lambda_lower",
+      "sha256": "ec496d88db52588ba2abdd24cedeec01cf165fa231294e650c0518f0f9c5eb9b"
+    },
+    {
+      "file": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/ReedSolomon.lean",
+      "decl": "theorem rs_lambda_superpoly_extension",
+      "sha256": "baaf1d53772fa8584471f96ca2ca24f17e3b039a6eb531cdb74489d0a47e11af"
+    },
+    {
+      "file": "ArkLib/Data/CodingTheory/ListDecodability/Bounds/ReedSolomon.lean",
+      "decl": "theorem rs_random_domain_lambda_le",
+      "sha256": "baaf1d53772fa8584471f96ca2ca24f17e3b039a6eb531cdb74489d0a47e11af"
+    },
+    {
+      "file": "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds.lean",
+      "decl": "theorem exists_rs_epsCa_large_near_capacity",
+      "sha256": "2f210c3ce9351ace9917519e8cb588b557b17e417f338511937de18e44fee1ed"
+    }
+  ]
 }

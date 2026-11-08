@@ -199,11 +199,6 @@ theorem sum_jointFamily_card_eq_choose [Fintype F] (D : ι ↪ F) (k : ℕ) :
     refine Finset.sum_congr rfl (fun p _ => ?_)
     unfold jointFamily
     congr 1
-    apply Finset.filter_congr
-    intro S _
-    constructor
-    · rintro ⟨h1, h2⟩; rw [Prod.ext_iff]; exact ⟨h1, h2⟩
-    · intro h; rw [Prod.ext_iff] at h; exact ⟨h.1, h.2⟩
   rw [hconv, ← hpart]
 
 /-- **Double pigeonhole on the joint fiber.** Since the `(k+2)`-fibers total `C(n, k+2)` over the

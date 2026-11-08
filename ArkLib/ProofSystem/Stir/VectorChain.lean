@@ -28,16 +28,7 @@ noncomputable def stirVectorBlocksReduction (φ : ι ↪ F) (deg : ℕ) (M : ℕ
       (ProtocolSpec.seqCompose (fun _ : Fin M => (stirRound3VSpec ι F).toProtocolSpec F)) :=
   OracleReduction.seqCompose (fun _ => F) (fun _ => VOStmt ι F) (fun _ => Unit)
     (fun _ => stirRound3VectorReductionMid φ deg)
-    (coh := fun _ => instStirRound3VectorReductionMidAppendCoherent φ deg)
 
-instance instStirVectorBlocksReductionAppendCoherent (φ : ι ↪ F) (deg : ℕ) (M : ℕ) :
-    OracleVerifier.Append.AppendCoherent (stirVectorBlocksReduction φ deg M).verifier :=
-  OracleReduction.seqCompose_verifier_appendCoherent
-    (fun _ => F) (fun _ => VOStmt ι F) (fun _ => Unit)
-    (fun _ => stirRound3VectorReductionMid φ deg)
-    (coh := fun _ => instStirRound3VectorReductionMidAppendCoherent φ deg)
-
-/-! ## Compound-head interface registrations (the FullChain idiom) -/
 
 instance instStirVecTailMsgInterface (M : ℕ) : ∀ j, OracleInterface
     (((ProtocolSpec.seqCompose (fun _ : Fin M => (stirRound3VSpec ι F).toProtocolSpec F))

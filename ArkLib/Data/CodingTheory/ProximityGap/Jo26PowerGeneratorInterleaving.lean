@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.InterleavingStabilityMCA
 import ArkLib.Data.CodingTheory.ProximityGap.Jo26GeneratorMCA
-import ArkLib.Data.CodingTheory.ProximityGap.ProximityGapP
+import ArkLib.Data.CodingTheory.ProximityGap.InterleavingStabilityMCAP
 
 /-!
 # Interleaving stability for the power-generator MCA error — exact invariance
@@ -150,147 +150,8 @@ theorem jointTupleSubmodule_ne_top (C : Submodule F (ι → A)) {S : Finset ι} 
 
 /-! ### The easy direction: zero-row embedding -/
 
-open Classical in
-/-- **`ε_mcaP(C, exp, δ) ≤ ε_mcaP(C^≡t, exp, δ)`** ([Jo26] Theorem 4.2, lower half,
-power-generator case).  Embedding a base `parℓ`-stack into the interleaved code via the
-zero-row embedding (row `0` of every interleaved symbol carries the stack, all other rows
-are `0`) maps every base `mcaEventP` witness to an interleaved one, with the same witness
-set `S` and the same seed `γ`. -/
-theorem epsMCAP_le_epsMCAP_interleaved (C : Submodule F (ι → A)) {parℓ : ℕ}
-    (exp : Fin parℓ → ℕ) (t : ℕ) [NeZero t] (δ : ℝ≥0) :
-    epsMCAP (F := F) (A := A) (C : Set (ι → A)) exp δ
-      ≤ epsMCAP (F := F) (A := Fin t → A) ((C : Set (ι → A))^⋈ (Fin t)) exp δ := by
-  classical
-  unfold epsMCAP
-  apply iSup_le
-  intro v
-  set u : WordStack (Fin t → A) (Fin parℓ) ι :=
-    fun j i k => if k = (0 : Fin t) then v j i else 0 with hu
-  have h_imp : ∀ γ : F, mcaEventP (C : Set (ι → A)) exp δ v γ →
-      mcaEventP ((C : Set (ι → A))^⋈ (Fin t)) exp δ u γ := by
-    rintro γ ⟨S, hcard, ⟨w, hw, hagree⟩, hnotuple⟩
-    refine ⟨S, hcard, ?_, ?_⟩
-    · refine ⟨fun i k => if k = (0 : Fin t) then w i else 0, ?_, ?_⟩
-      · intro k
-        show (fun i => if k = (0 : Fin t) then w i else 0) ∈ (C : Set (ι → A))
-        by_cases hk : k = 0
-        · subst hk; simpa using hw
-        · simp only [if_neg hk]; exact C.zero_mem
-      · intro i hi
-        funext k
-        show (if k = (0 : Fin t) then w i else 0) = curveComb exp u γ i k
-        have hc : curveComb (A := Fin t → A) exp u γ i k
-            = ∑ j, γ ^ exp j • u j i k := by
-          simp only [curveComb, Finset.sum_apply, Pi.smul_apply]
-        rw [hc]
-        by_cases hk : k = 0
-        · subst hk
-          rw [if_pos rfl, hagree i hi]
-          show curveComb exp v γ i = ∑ j, γ ^ exp j • u j i 0
-          simp [curveComb, hu]
-        · rw [if_neg hk]
-          simp [hu, hk]
-    · rintro ⟨V, hVmem, hVag⟩
-      apply hnotuple
-      have hVmem' : ∀ j, ∀ k : Fin t, (fun i => V j i k) ∈ (C : Set (ι → A)) := hVmem
-      refine ⟨fun j i => V j i 0, fun j => hVmem' j 0, fun i hi j => ?_⟩
-      have h := congrArg (fun f : Fin t → A => f 0) (hVag i hi j)
-      show V j i 0 = v j i
-      simpa [hu] using h
-  refine le_trans (Pr_le_Pr_of_implies _ _ _ h_imp) ?_
-  exact le_iSup
-    (fun w : WordStack (Fin t → A) (Fin parℓ) ι =>
-      Pr_{let γ ← $ᵖ F}[mcaEventP ((C : Set (ι → A))^⋈ (Fin t)) exp δ w γ])
-    u
-
-/-! ### The hard direction: one combination vector preserves every bad seed -/
-
-open Classical in
-/-- **`ε_mcaP(C^≡t, exp, δ) ≤ ε_mcaP(C, exp, δ)`** ([Jo26] Theorem 4.4, power-generator
-case).  The bad-seed subspaces `K_γ` are indexed by the seed set `F` itself, so the
-covering lemma provides a single nonzero combination vector `λ` outside all of them; the
-fixed `λ`-combined base stack is then bad at every seed where the interleaved stack was
-bad — same `γ`, same witness set.  No averaging, no union bound, no interleaving-width
-factor. -/
-theorem epsMCAP_interleaved_le_epsMCAP (C : Submodule F (ι → A)) {parℓ : ℕ}
-    (exp : Fin parℓ → ℕ) (t : ℕ) [NeZero t] (δ : ℝ≥0) :
-    epsMCAP (F := F) (A := Fin t → A) ((C : Set (ι → A))^⋈ (Fin t)) exp δ
-      ≤ epsMCAP (F := F) (A := A) (C : Set (ι → A)) exp δ := by
-  classical
-  unfold epsMCAP
-  apply iSup_le
-  intro u
-  -- the per-seed bad subspace (⊥ off the bad-seed set)
-  obtain ⟨lam, hlam0, hlamK⟩ := ProximityGap.exists_nonzero_notMem_of_proper_family
-    (Nat.one_le_iff_ne_zero.mpr (NeZero.ne t))
-    (fun γ => if h : mcaEventP ((C : Set (ι → A))^⋈ (Fin t)) exp δ u γ
-      then jointTupleSubmodule C h.choose u else ⊥)
-    (fun γ => by
-      dsimp only
-      split_ifs with h
-      · exact jointTupleSubmodule_ne_top C u h.choose_spec.2.2
-      · exact bot_ne_top)
-  -- the λ-combined base stack
-  set v : WordStack A (Fin parℓ) ι := fun j i => ∑ k, lam k • u j i k with hv
-  have h_imp : ∀ γ : F,
-      mcaEventP ((C : Set (ι → A))^⋈ (Fin t)) exp δ u γ →
-      mcaEventP (C : Set (ι → A)) exp δ v γ := by
-    intro γ h
-    obtain ⟨hcard, ⟨w, hwmem, hwagree⟩, hnotuple⟩ := h.choose_spec
-    refine ⟨h.choose, hcard, ?_, ?_⟩
-    · -- closeness: the λ-combination of the rows of `w`
-      refine ⟨fun i => ∑ k, lam k • w i k, ?_, ?_⟩
-      · have hrows : ∀ k : Fin t, (fun i => w i k) ∈ (C : Set (ι → A)) := hwmem
-        have heq : (fun i => ∑ k, lam k • w i k)
-            = ∑ k, lam k • (fun i => w i k) := by
-          funext i
-          rw [Finset.sum_apply]
-          exact Finset.sum_congr rfl fun k _ => rfl
-        rw [heq]
-        exact Submodule.sum_mem _ fun k _ => C.smul_mem _ (hrows k)
-      · intro i hi
-        have hw := hwagree i hi
-        have hpt : ∀ k : Fin t, w i k = ∑ j, γ ^ exp j • u j i k := by
-          intro k
-          have := congrArg (fun f : Fin t → A => f k) hw
-          simpa [curveComb, Finset.sum_apply, Pi.smul_apply] using this
-        calc (fun i => ∑ k, lam k • w i k) i = ∑ k, lam k • w i k := rfl
-          _ = ∑ k, lam k • ∑ j, γ ^ exp j • u j i k :=
-              Finset.sum_congr rfl fun k _ => by rw [hpt k]
-          _ = ∑ k, ∑ j, lam k • (γ ^ exp j • u j i k) :=
-              Finset.sum_congr rfl fun k _ => Finset.smul_sum
-          _ = ∑ j, ∑ k, lam k • (γ ^ exp j • u j i k) := Finset.sum_comm
-          _ = ∑ j, γ ^ exp j • ∑ k, lam k • u j i k := by
-              refine Finset.sum_congr rfl fun j _ => ?_
-              rw [Finset.smul_sum]
-              exact Finset.sum_congr rfl fun k _ => by
-                rw [smul_smul, smul_smul, mul_comm]
-          _ = curveComb exp v γ i := rfl
-    · -- no joint tuple: exactly `lam ∉ K_γ`
-      intro htuple
-      have hmem := hlamK γ
-      rw [dif_pos h] at hmem
-      exact hmem htuple
-  refine le_trans (Pr_le_Pr_of_implies _ _ _ h_imp) ?_
-  exact le_iSup
-    (fun w : WordStack A (Fin parℓ) ι =>
-      Pr_{let γ ← $ᵖ F}[mcaEventP (C : Set (ι → A)) exp δ w γ])
-    v
-
-/-! ### The headline: exact invariance -/
-
-/-- **[Jo26] Corollary 4.5 (power-generator case): the general-`parℓ` MCA error is
-exactly invariant under row-wise interleaving.**  `ε_mcaP(C^≡t, exp, δ) = ε_mcaP(C, exp, δ)`.
-The power generator's seed set is `F` itself (`|Ω| = q`), so [Jo26] Theorem 4.4 applies
-with no interleaving-width factor: interleaving is **free** for power-generator mutual
-correlated agreement, at every stack width `parℓ` and every exponent map `exp`.
-Issue #334, hypothesis K1. -/
-theorem epsMCAP_interleaved_eq (C : Submodule F (ι → A)) {parℓ : ℕ}
-    (exp : Fin parℓ → ℕ) (t : ℕ) [NeZero t] (δ : ℝ≥0) :
-    epsMCAP (F := F) (A := Fin t → A) ((C : Set (ι → A))^⋈ (Fin t)) exp δ
-      = epsMCAP (F := F) (A := A) (C : Set (ι → A)) exp δ :=
-  le_antisymm (epsMCAP_interleaved_le_epsMCAP C exp t δ)
-    (epsMCAP_le_epsMCAP_interleaved C exp t δ)
+/- The three exact-invariance declarations are supplied by InterleavingStabilityMCAP.
+The public joint-tuple construction above and the generator/factor corollaries below remain. -/
 
 /-- **Power-generator exactness fence.**  The generic generator-MCA layer, specialized to
 the Reed-Solomon power generator `γ ↦ (γ ^ exp j)_j`, agrees after row-wise interleaving
@@ -303,7 +164,10 @@ theorem epsMCAGen_powGen_interleaved_eq_epsMCAP (C : Submodule F (ι → A)) {pa
         (fun γ : F => fun j : Fin parℓ => γ ^ exp j)
         ((C : Set (ι → A))^⋈ (Fin t)) δ
       = epsMCAP (F := F) (A := A) (C : Set (ι → A)) exp δ := by
-  rw [ProximityGap.Jo26Gen.epsMCAGen_powGen_eq_epsMCAP, epsMCAP_interleaved_eq]
+  calc _ = epsMCAP (F := F) (A := Fin t → A) ((C : Set (ι → A))^⋈ (Fin t)) exp δ := by
+         exact ProximityGap.Jo26Gen.epsMCAGen_powGen_eq_epsMCAP
+           ((C : Set (ι → A))^⋈ (Fin t)) exp δ
+       _ = _ := epsMCAP_interleaved_eq C exp t δ
 
 /-! ### The [Jo26] Theorem 4.2 factor bound, as a corollary of equality -/
 

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ArkLib.Data.CodingTheory.Connections.ListDecodingAndCA
+import ProximityPrize.Extensions.Data.CodingTheory.Connections.ListDecodingAndCA
 import ArkLib.ToMathlib.CS25Claim3Counting
 
 /-!

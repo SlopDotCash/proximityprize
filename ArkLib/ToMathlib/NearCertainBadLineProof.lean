@@ -67,15 +67,15 @@ theorem not_jointProximity_zero_of_row_not_mem
     ¬ jointProximity (C := C) (u := u) 0 := by
   classical
   intro hjp
-  -- Unfold `jointProximity` and convert the relative-distance bound to a membership.
-  rw [jointProximity, interleave_wordStack_eq] at hjp
-  -- `hjp : δᵣ(u.transpose, interleavedCodeSet C) ≤ (0 : ℝ≥0)`
-  rw [relDistFromCode_le_iff_distFromCode_le] at hjp
-  simp only [zero_mul, Nat.floor_zero, Nat.cast_zero, nonpos_iff_eq_zero] at hjp
-  rw [distFromCode_eq_zero_iff_mem] at hjp
-  -- `hjp : u.transpose ∈ interleavedCodeSet C`, i.e. every row of `u` is in `C`.
-  simp only [interleavedCodeSet] at hjp
-  exact hk (hjp k)
+  -- Present the interleaved word as a function, keeping distance rewrites independent of
+  -- the transparency of `WordStack`, `Word`, and `Matrix` type aliases.
+  have hdist : Δ₀((fun i j => u j i), interleavedCodeSet C) = 0 := by
+    have habs := (relDistFromCode_le_iff_distFromCode_le
+      (F := Fin 2 → F) (fun i j => u j i) (0 : ℝ≥0)).mp hjp
+    simpa only [zero_mul, Nat.floor_zero, Nat.cast_zero, nonpos_iff_eq_zero] using habs
+  have hmem := (distFromCode_eq_zero_iff_mem (interleavedCodeSet C)
+    (fun i j => u j i)).mp hdist
+  exact hk (hmem k)
 
 /-- **All-but-one producer for `NearCertainBadLine`.**
 If a stack is not jointly close and every scalar except one distinguished bad scalar makes the

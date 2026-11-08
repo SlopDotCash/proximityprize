@@ -61,7 +61,7 @@ theorem rs_ld_threshold_trapped_rate12
       simp only [Fintype.card_fin]; norm_num
     have hr : (263 : ℝ≥0) ≤ ((1 : ℝ≥0) / 2 ^ 128) * (Fintype.card F : ℝ≥0) := by
       have hFr : (263 : ℝ≥0) * (2 : ℝ≥0) ^ 128 ≤ (Fintype.card F : ℝ≥0) := by exact_mod_cast hF1
-      have hmul := mul_le_mul_left' hFr ((1 : ℝ≥0) / 2 ^ 128)
+      have hmul := mul_le_mul_right hFr ((1 : ℝ≥0) / 2 ^ 128)
       have hone : ((1 : ℝ≥0) / 2 ^ 128) * ((263 : ℝ≥0) * 2 ^ 128) = 263 := by
         rw [one_div, mul_comm (263 : ℝ≥0) ((2 : ℝ≥0) ^ 128), ← mul_assoc,
           inv_mul_cancel₀ (by positivity), one_mul]

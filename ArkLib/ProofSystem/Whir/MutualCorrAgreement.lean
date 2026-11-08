@@ -5,10 +5,10 @@ Authors: Poulami Das, Miguel Quaresma (Least Authority), Alexander Hicks, Petar 
 -/
 
 import ArkLib.Data.Probability.Notation
-import ArkLib.Data.CodingTheory.ListDecodability
-import ArkLib.Data.CodingTheory.InterleavedCode
-import ArkLib.Data.CodingTheory.ReedSolomon
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
+import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
+import ProximityPrize.Extensions.Data.CodingTheory.InterleavedCode
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
 import ArkLib.ProofSystem.Whir.ProximityGen
 
 

@@ -3,9 +3,10 @@ Copyright (c) 2024-2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao
 -/
+module
 
-import ArkLib.Data.Fin.Tuple.Notation
-import Mathlib.Data.List.DropRight
+public import ArkLib.Data.Fin.Tuple.Notation
+public import Mathlib.Data.List.DropRight
 
 /-!
 # Lemmas for Take and Drop for `Fin` tuples
@@ -13,6 +14,8 @@ import Mathlib.Data.List.DropRight
 This file contains some properties of `Fin.{r}take` and `Fin.{r}drop`, which are already defined in
 `ArkLib.Data.Fin.Tuple.Defs` (except `Fin.take` which is already in mathlib).
 -/
+
+@[expose] public section
 
 universe u v
 
@@ -64,14 +67,6 @@ theorem rtake_self (v : (i : Fin n) → α i) :
 theorem rtake_self' {α : Sort*} (v : Fin n → α) : rtake n (by omega) v = v :=
   rtake_self v
 
--- @[simp]
--- theorem rtake_succ_eq_cons (m : ℕ) (h : m < n) (v : (i : Fin n) → α i) :
---     rtake (m + 1) (Nat.le_add_right_of_le h) v =
---       cons (v ⟨m, by omega⟩) (rtake m h v) := by
---   ext i <;> simp [rtake, Fin.natAdd, cons]
---   · unfold rtake
---     simp [Fin.cast]
-
 /-- Taking `m` elements from the end of a tuple is the same as taking the first `m` elements of the
 tuple in reverse, and then reversing the result. -/
 theorem rtake_eq_take_rev {α : Sort*} (m : ℕ) (h : m ≤ n) (v : Fin n → α) :
@@ -121,15 +116,19 @@ theorem ofFn_rtake_get {α : Type*} {m : ℕ} (l : List α) (h : m ≤ l.length)
 /-- `Fin.rtake` intertwines with `List.rtake` via `List.get`. -/
 theorem get_rtake_eq_rtake_get_comp_cast {α : Type*} {m : ℕ} (l : List α) (h : m ≤ l.length) :
     (l.rtake m).get = rtake m h l.get ∘ Fin.cast (by simp [List.rtake]; omega) := by
-  ext i
-  simp [List.rtake, natAdd, Fin.cast]
+  rw! (castMode := .all) [← ofFn_rtake_get l h]
+  funext i
+  rw [List.get_ofFn]
+  rfl
 
 /-- Alternative version with `v : Fin n → α` instead of `l : List α`. -/
 theorem get_rtake_ofFn_eq_rtake_comp_cast {α : Type*} {m : ℕ} (v : Fin n → α) (h : m ≤ n) :
     ((List.ofFn v).rtake m).get =
       rtake m h v ∘ Fin.cast (by simp [List.rtake]; omega) := by
-  ext i
-  simp [List.rtake, natAdd, Fin.cast]
+  rw! (castMode := .all) [← ofFn_rtake_eq_rtake_ofFn h v]
+  funext i
+  rw [List.get_ofFn]
+  rfl
 
 /-
 * `Fin.drop`: Given `h : m ≤ n`, `Fin.drop m h v` for a `n`-tuple `v = (v 0, ..., v (n - 1))` is the
@@ -200,7 +199,8 @@ theorem drop_update_of_lt (m : ℕ) (h : m ≤ n) (v : (i : Fin n) → α i) (i 
   simp only [Fin.cast, val_addNat, drop_apply, update, dite_eq_right_iff]
   intro h'
   subst h'
-  simp_all only [add_lt_iff_neg_right, not_lt_zero']
+  simp_all only [add_lt_iff_neg_right]
+  omega
 
 /-- `drop` commutes with `update` for indices at or after the drop point. -/
 @[simp]
@@ -218,14 +218,17 @@ theorem drop_update_of_ge (m : ℕ) (h : m ≤ n) (v : (i : Fin n) → α i) (i 
   next h_1 =>
     subst h_1
     simp_all only [add_tsub_cancel_right, Fin.eta, ↓reduceDIte]
-    rw [eqRec_eq_cast, dcast_eq_root_cast, _root_.cast_cast, _root_.cast_eq]
+    simp only [dcast, eqRec_eq_cast]
+    rw [_root_.cast_cast]
+    exact (cast_eq _ x).symm
   next h_1 =>
     simp_all only [right_eq_dite_iff]
     intro h_2
     subst h_2
     simp_all only [Nat.sub_add_cancel, Fin.eta, not_true_eq_false]
 
-/-- Version of `drop_addCases_left` that specializes `addCases` to `append`. -/
+/-- Dropping the first `m ≤ n` elements of `append u v`, where `u` is an `n`-tuple,
+is the same as dropping the first `m` elements of `u` and then appending `v`. -/
 theorem drop_append_left {n' : ℕ} {α : Sort*} (m : ℕ) (h : m ≤ n) (u : (i : Fin n) → α)
     (v : (i : Fin n') → α) :
       drop m (Nat.le_add_right_of_le h) (append u v) =
@@ -333,7 +336,8 @@ theorem take_drop_addCases' (m : ℕ) (h : m ≤ n) (v : (i : Fin n) → α i) :
   · simp
   · have : i.val - m + m = i.val := by omega
     rw! [this]
-    simp only [eqRec_eq_cast, _root_.cast_cast]
+    simp only [eqRec_eq_cast]
+    rw [_root_.cast_cast]
 
 /-- The concatenation of the first `m` elements and the last `n - m` elements of a tuple is the
 same as the original tuple. -/
@@ -346,8 +350,8 @@ theorem take_drop_append {α : Sort*} (m : ℕ) (h : m ≤ n) (v : Fin n → α)
   · have : i.val - m + m = i.val := by omega
     simp [this]
 
-/-- Taking the first `m₂ - m₁` elements of the last `m₂` elements of a tuple is the same as taking
-the first `m₂ - m₁` elements of the original tuple. -/
+/-- Taking the first `m₂ - m₁` elements after dropping `m₁` elements is the same as dropping
+`m₁` elements from the first `m₂` elements. Both give the slice `[m₁, m₂)`. -/
 theorem take_drop_eq_drop_take (m₁ m₂ : ℕ) (h₁ : m₁ ≤ m₂) (h₂ : m₂ ≤ n) (v : (i : Fin n) → α i) :
     take (m₂ - m₁) (by omega) (drop m₁ (by omega) v) =
       drop m₁ (by omega) (take m₂ h₂ v) := by

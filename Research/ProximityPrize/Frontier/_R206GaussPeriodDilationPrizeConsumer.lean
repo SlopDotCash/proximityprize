@@ -75,7 +75,7 @@ theorem dyadicTailMGF_of_gaussPeriod_dilation_reindexed_quarter_sum
     DyadicTailMGFBound (Finset.univ : Finset F)
       (fun b => ‖eta ψ (G ∪ dilate ζ G) b‖) := by
   exact dyadicTailMGF_of_gaussPeriod_dilation_reindexed_quarter ψ G hζ hdisj
-    (by simpa [DyadicQuarterMGFBound] using hLeft)
+    (by simpa [DyadicQuarterMGFBound, WFS11.MGFBound] using hLeft)
 
 /-- Prize-square endpoint for the actual dilation-recursion parent. -/
 theorem prize_sq_of_gaussPeriod_dilation_quarter
@@ -144,7 +144,7 @@ theorem prize_sq_of_gaussPeriod_dilation_reindexed_quarter_sum
           (Fintype.card F : ℝ)))) :
     Mmax ^ 2 ≤ 2 * Real.exp 1 * (2 / (1 / 8 : ℝ)) * n * (r : ℝ) := by
   exact prize_sq_of_gaussPeriod_dilation_reindexed_quarter ψ G hζ hdisj
-    (by simpa [DyadicQuarterMGFBound] using hLeft)
+    (by simpa [DyadicQuarterMGFBound, WFS11.MGFBound] using hLeft)
     hMmax hn hQ hP hr hrQ hmoment
 
 end ArkLib.ProximityGap.Frontier.R206GaussPeriodDilationPrizeConsumer

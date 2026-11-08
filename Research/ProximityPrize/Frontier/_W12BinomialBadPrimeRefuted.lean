@@ -166,7 +166,7 @@ theorem prod_pow_odd_reindex (k : ℕ) {s : ℕ} (hs : Odd s) (a b : ℤ) :
   have hco : Nat.Coprime s (2 ^ (k + 1)) :=
     Nat.Coprime.pow_right _
       (Nat.coprime_comm.mp ((Nat.prime_two.coprime_iff_not_dvd).mpr hnd))
-  obtain ⟨s', _, hs'⟩ := Nat.exists_mul_emod_eq_one_of_coprime hco
+  obtain ⟨s', _, hs'⟩ := Nat.exists_mul_mod_eq_one_of_coprime hco
     (Nat.one_lt_pow (Nat.succ_ne_zero k) (by norm_num))
   have hss' : s * s' = 2 ^ (k + 1) * (s * s' / 2 ^ (k + 1)) + 1 := by
     conv_lhs => rw [← Nat.div_add_mod (s * s') (2 ^ (k + 1))]

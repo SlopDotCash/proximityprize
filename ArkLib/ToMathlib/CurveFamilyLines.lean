@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.ToMathlib.CurveFamilyHensel
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.Main
-import ArkLib.Data.CodingTheory.ProximityGap.Errors
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.Main
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
 
 /-!
 # Issue #304 — anti-vacuity of the faithful surface + the affine-lines front door
@@ -48,6 +48,9 @@ namespace FaithfulCurveExtraction
 
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
+
+-- The historical finite-field surface uses its existing uniform finite sampler.
+private noncomputable local instance : SampleableType F := SampleableType.ofFintype F
 
 /-! ## Part 1 — anti-vacuity -/
 

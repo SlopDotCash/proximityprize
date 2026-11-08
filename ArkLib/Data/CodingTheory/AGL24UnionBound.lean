@@ -96,7 +96,7 @@ a point mass at a noninjective tuple.
 
 The embedding-based `conditional_failure_bound` assumes the predicate for WPC
 families and the pushforward of a PMF on evaluation embeddings. The distribution
-bridge to that assembly is PR #338. -/
+bridge for uniform embeddings is in `ArkLib.Data.CodingTheory.AGL24EmbeddingDischarge`. -/
 def RIMFullRankFailureProbResidual (D : PMF (ι → F)) {t k : ℕ}
     (e : ι → Finset (Fin (t + 1))) (bound : ENNReal) : Prop :=
   D.toOuterMeasure (RIMRankDeficitSet (F := F) (k := k) e) ≤ bound

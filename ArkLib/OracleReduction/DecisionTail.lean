@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.OracleReduction.Basic
+import ProximityPrize.Extensions.OracleReduction.Basic
 
 /-!
 # The decision tail (#301)
@@ -37,6 +37,7 @@ variable {ι : Type} {oSpec : OracleSpec ι} {StmtIn WitIn StmtOut WitOut : Type
   {ιₛᵢ : Type} {OStmtIn : ιₛᵢ → Type} {ιₛₒ : Type} {OStmtOut : ιₛₒ → Type}
   {n : ℕ} {pSpec : ProtocolSpec n}
   [∀ i, OracleInterface (OStmtIn i)] [∀ i, OracleInterface (pSpec.Message i)]
+  [∀ i, OracleInterface (OStmtOut i)]
 
 /-- **The decision tail**: turn an oracle reduction into an oracle proof by post-composing a
 Boolean decision on the output statement; the output oracles and witness are discarded
@@ -44,17 +45,17 @@ Boolean decision on the output statement; the output oracles and witness are dis
 decision to their respective output statements, so output agreement is inherited. -/
 def toProof (d : StmtOut → Bool)
     (R : OracleReduction oSpec StmtIn OStmtIn WitIn StmtOut OStmtOut WitOut pSpec) :
-    OracleProof oSpec StmtIn OStmtIn WitIn pSpec where
-  prover := Prover.mapOutput
-    (fun s : StmtOut × ∀ i, OStmtOut i =>
-      ((d s.1, fun e : Empty => nomatch e) : Bool × ∀ _ : Empty, Unit))
-    (fun _ => ()) R.prover
-  verifier :=
-    { verify := fun stmt chals => do
-        let s ← R.verifier.verify stmt chals
-        return d s
-      embed := ⟨Empty.elim, fun e => e.elim⟩
-      hEq := fun e => e.elim }
+    OracleProof oSpec StmtIn OStmtIn WitIn pSpec := by
+  refine @OracleReduction.mk ι oSpec StmtIn ιₛᵢ OStmtIn WitIn Bool Empty
+    (fun _ : Empty => Unit) Unit n pSpec inferInstance inferInstance
+    (fun e => nomatch e) ?_ ?_
+  · exact Prover.mapOutput
+      (fun s : StmtOut × ∀ i, OStmtOut i =>
+        ((d s.1, fun e : Empty => nomatch e) : Bool × ∀ _ : Empty, Unit))
+      (fun _ => ()) R.prover
+  · exact OracleProofVerifier.ofVerify fun stmt chals => do
+      let s ← R.verifier.verify stmt chals
+      return d s
 
 end OracleReduction
 

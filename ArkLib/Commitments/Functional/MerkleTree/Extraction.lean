@@ -31,10 +31,11 @@ function-facing API and adds an ArkLib-facing bridge to the upstream probabilist
 
 ## Random-oracle bridge
 
-The theorem `randomOracle_extractability_bound` below re-exports the upstream VCVio
+The theorem `randomOracle_extractability_rom_bound` below re-exports the upstream VCVio
 query-log extractor and birthday-bound result in ArkLib's Merkle namespace. For any bounded
 two-phase adversary, the probability of accepting an opening that disagrees with the extractor is
-at most `((qb + s.depth)^2)/(2 |α|) + 1/|α|`.
+bounded by the canonical stopping-time numerator divided by `|α|`. The experiment uses the current
+shared-cache random-oracle semantics; its sampling law is explicit in `UniformAnswerMeasure`.
 -/
 
 namespace InductiveMerkleTree
@@ -130,20 +131,42 @@ section RandomOracleBinding
 This is the ArkLib-facing form of VCVio's SNARGs §18.5 theorem. A two-phase adversary first
 commits to a claimed root, then opens one position. If the combined adversary has total query bound
 `qb`, the probability that verification accepts while the query-log extractor disagrees with the
-opened `(leaf, proof)` pair is bounded by the birthday collision term plus the one-shot
-unqueried-root guessing term:
+opened `(leaf, proof)` pair is bounded by the current stopping-time error numerator:
 
-`((qb + s.depth)^2) / (2 * |α|) + 1 / |α|`.
+`extractabilityROMErrorNumerator s qb / |α|`.
 
-Thus the deterministic no-collision binding lemmas in this file now have the probabilistic
-random-oracle step required by issue #119. -/
-theorem randomOracle_extractability_bound [DecidableEq α] [Fintype α] [Inhabited α]
+The upstream `extractability_rom_bound_quadratic` gives a birthday-shaped specialization under
+its explicit query-dominance and depth hypotheses. This general wrapper does not assume them. -/
+theorem randomOracle_extractability_rom_bound [DecidableEq α] [Fintype α]
+    [UniformAnswerMeasure (spec α)]
     {s : Skeleton} (𝒜 : Adversary α s) (qb : ℕ)
     (h_IsQueryBound_qb : 𝒜.IsTwoPhaseTotalQueryBound qb) :
-    Pr[AdversaryWinsExtractabilityGame | extractabilityGame 𝒜] ≤
-      ((qb + s.depth) ^ 2 : ENNReal) / (2 * Fintype.card α)
-      + 1 / (Fintype.card α) :=
-  extractability 𝒜 qb h_IsQueryBound_qb
+    Pr{let z ← extractabilityExperiment 𝒜}[OpeningExtractionFailure z] ≤
+      (extractabilityROMErrorNumerator s qb : ENNReal) *
+        (Fintype.card α : ENNReal)⁻¹ :=
+  extractability_rom_bound 𝒜 qb h_IsQueryBound_qb
+
+/-- The former birthday-plus-guessing numerical expression is a valid corollary for the current
+ROM experiment under the canonical query-dominance and depth conditions. This does not restore
+the retired unconditional wrapper or its former probability experiment. -/
+theorem randomOracle_extractability_rom_birthday_bound [DecidableEq α] [Fintype α]
+    [UniformAnswerMeasure (spec α)]
+    {s : Skeleton} (𝒜 : Adversary α s) (qb : ℕ)
+    (h : 𝒜.IsTwoPhaseTotalQueryBound qb)
+    (hdominance : 2 * (2 * s.leafCount - 1) + 1 ≤ qb)
+    (hdepth : 2 * (2 * s.leafCount - 1) * s.depth ≤ qb) :
+    Pr{let z ← extractabilityExperiment 𝒜}[OpeningExtractionFailure z] ≤
+      (((qb + s.depth : ℕ) : ENNReal) ^ 2) / (2 * Fintype.card α)
+        + 1 / (Fintype.card α) := by
+  have hbudget : (qb : ENNReal) ≤ ((qb + s.depth : ℕ) : ENNReal) := by
+    exact_mod_cast Nat.le_add_right qb s.depth
+  have hnum := pow_le_pow_left' hbudget 2
+  calc
+    _ ≤ (qb : ENNReal) ^ 2 / (2 * Fintype.card α) :=
+      extractability_rom_bound_quadratic 𝒜 qb h hdominance hdepth
+    _ ≤ (((qb + s.depth : ℕ) : ENNReal) ^ 2) / (2 * Fintype.card α) :=
+      mul_le_mul hnum le_rfl zero_le zero_le
+    _ ≤ _ := le_add_of_nonneg_right zero_le
 
 end RandomOracleBinding
 
@@ -156,4 +179,5 @@ end InductiveMerkleTree
 #print axioms InductiveMerkleTree.extractLeaf_eq_opened
 #print axioms InductiveMerkleTree.extracted_leaf_unique
 #print axioms InductiveMerkleTree.multi_instance_extracted_leaves_unique
-#print axioms InductiveMerkleTree.randomOracle_extractability_bound
+#print axioms InductiveMerkleTree.randomOracle_extractability_rom_bound
+#print axioms InductiveMerkleTree.randomOracle_extractability_rom_birthday_bound

@@ -39,15 +39,15 @@ lemma natDegree_aeval_le (Q : MvPolynomial (Fin 2) F) (deg_X deg_Y : ℕ)
       ≤ deg_X + deg_Y * f.natDegree := by
   let g : Fin 2 → Polynomial F := fun i => if i = 0 then Polynomial.X else f
   have heval : MvPolynomial.aeval g Q
-      = ∑ m ∈ Q.support, MvPolynomial.aeval g (MvPolynomial.monomial m (MvPolynomial.coeff m Q)) := by
+      = ∑ m ∈ Q.support, MvPolynomial.aeval g (MvPolynomial.monomial m (Q.coeff m)) := by
     rw [← map_sum, ← MvPolynomial.as_sum]
   rw [heval]
   refine le_trans (Polynomial.natDegree_sum_le _ _) ?_
   refine Finset.sup_le ?_
   intro m hm
   simp only [Function.comp_apply]
-  have h_eval_m : MvPolynomial.aeval g (MvPolynomial.monomial m (MvPolynomial.coeff m Q)) =
-      Polynomial.C (MvPolynomial.coeff m Q) * g 0 ^ m 0 * g 1 ^ m 1 := by
+  have h_eval_m : MvPolynomial.aeval g (MvPolynomial.monomial m (Q.coeff m)) =
+      Polynomial.C (Q.coeff m) * g 0 ^ m 0 * g 1 ^ m 1 := by
     rw [MvPolynomial.aeval_monomial, Polynomial.algebraMap_eq, Finsupp.prod_fintype,
       Fin.prod_univ_two, ← mul_assoc]
     intro i; rw [pow_zero]
@@ -63,8 +63,8 @@ lemma natDegree_aeval_le (Q : MvPolynomial (Fin 2) F) (deg_X deg_Y : ℕ)
   have h1 : (f ^ m 1).natDegree ≤ m 1 * f.natDegree := Polynomial.natDegree_pow_le
   have hX_m : m 0 ≤ deg_X := le_trans (MvPolynomial.monomial_le_degreeOf 0 hm) hX
   have hY_m : m 1 ≤ deg_Y := le_trans (MvPolynomial.monomial_le_degreeOf 1 hm) hY
-  calc (Polynomial.C (MvPolynomial.coeff m Q) * Polynomial.X ^ m 0 * f ^ m 1).natDegree
-      ≤ (Polynomial.C (MvPolynomial.coeff m Q) * Polynomial.X ^ m 0).natDegree
+  calc (Polynomial.C (Q.coeff m) * Polynomial.X ^ m 0 * f ^ m 1).natDegree
+      ≤ (Polynomial.C (Q.coeff m) * Polynomial.X ^ m 0).natDegree
           + (f ^ m 1).natDegree := Polynomial.natDegree_mul_le
     _ ≤ (Polynomial.X ^ m 0 : Polynomial F).natDegree + (f ^ m 1).natDegree := by
         gcongr; exact Polynomial.natDegree_C_mul_le _ _

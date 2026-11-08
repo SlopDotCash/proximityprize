@@ -41,28 +41,37 @@ No `sorry`, no new axioms.
 open OracleComp OracleSpec ProtocolSpec OptionTStateT
 open scoped ENNReal NNReal
 
+-- Historical PMF contracts observe every subset, including complete product outputs.
+private local instance (A : Type) : MeasurableSpace A := ⊤
+private local instance (A B : Type) : MeasurableSpace (A × B) := ⊤
+private local instance (A : Type) : MeasurableSpace (Option A) := ⊤
+private local instance (A : Type) : @DiscreteMeasurableSpace A ⊤ := ⟨fun _ => True.intro⟩
+
 namespace Reduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
   {Stmt₁ Wit₁ Stmt₂ Wit₂ Stmt₃ Wit₃ : Type}
   {m n : ℕ} {pSpec₁ : ProtocolSpec m} {pSpec₂ : ProtocolSpec n}
   [∀ i, SampleableType (pSpec₁.Challenge i)] [∀ i, SampleableType (pSpec₂.Challenge i)]
   {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
   {rel₁ : Set (Stmt₁ × Wit₁)} {rel₂ : Set (Stmt₂ × Wit₂)} {rel₃ : Set (Stmt₃ × Wit₃)}
 
+omit [(q : ι) → Fintype (oSpec.Range q)] [(q : ι) → Inhabited (oSpec.Range q)] in
 /-- **Phase-2 challenge-seam transfer at `probEvent`, `OracleComp` form.** Any event on a
 `pSpec₂`-side computation `g`, lifted into the *combined* challenge oracle and simulated from state
 `s'`, has the same probability as on `g` simulated under `pSpec₂`'s own challenge oracle. Immediate
 from the proven `evalDist_run'_challengeSeam_right`. -/
 private theorem probEvent_seam_transfer_right_oc {α : Type}
     (g : OracleComp (oSpec + [pSpec₂.Challenge]ₒ) α) (P : α → Prop) (s' : σ) :
-    Pr[P | (simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₁ ++ₚ pSpec₂)) :
+    probEvent (P) ((simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₁ ++ₚ pSpec₂)) :
         QueryImpl _ (StateT σ ProbComp))
-        (liftM g : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) α)).run' s']
-    = Pr[P | (simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₂)) :
-        QueryImpl _ (StateT σ ProbComp)) g).run' s'] := by
-  unfold probEvent
-  rw [OracleReduction.evalDist_run'_challengeSeam_right impl g s']
+        (liftM g : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) α)).run' s')
+    = probEvent (P) ((simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₂)) :
+        QueryImpl _ (StateT σ ProbComp)) g).run' s') := by
+  have hed := OracleReduction.evalDist_run'_challengeSeam_right
+    (pSpec₁ := pSpec₁) (pSpec₂ := pSpec₂) impl g s'
+  simpa only [probEvent, prEvent_eq_evalDist_of_discrete] using
+    congrArg (fun μ : MeasureTheory.Measure α => μ {x | P x}) hed
 
 /-- **Marginalization congruence for the `¬ Option.elim · False ·` (completeness bad-event) shape,
 per-state.** Two `OptionT`-valued computations that agree after projecting through `g₁`/`g₂` give
@@ -72,10 +81,8 @@ private theorem marg_het_state_neg {ιₛ : Type} {spec : OracleSpec ιₛ} {α�
     (so : QueryImpl spec (StateT σ ProbComp)) (s' : σ)
     (X : OptionT (OracleComp spec) α₁) (Y : OptionT (OracleComp spec) α₂)
     (g₁ : α₁ → β) (g₂ : α₂ → β) (q : β → Prop) (h : (g₁ <$> X) = (g₂ <$> Y)) :
-    Pr[fun o => ¬ Option.elim o False (fun a => q (g₁ a)) |
-        (simulateQ so X.run).run' s']
-    = Pr[fun o => ¬ Option.elim o False (fun a => q (g₂ a)) |
-        (simulateQ so Y.run).run' s'] := by
+    probEvent (fun o => ¬ Option.elim o False (fun a => q (g₁ a))) ((simulateQ so X.run).run' s')
+    = probEvent (fun o => ¬ Option.elim o False (fun a => q (g₂ a))) ((simulateQ so Y.run).run' s') := by
   have h' : Option.map g₁ <$> X.run = Option.map g₂ <$> Y.run := by
     have := congrArg OptionT.run h; simpa only [OptionT.run_map] using this
   have h'' : (Option.map g₁ <$> simulateQ so X.run) = (Option.map g₂ <$> simulateQ so Y.run) := by
@@ -86,13 +93,17 @@ private theorem marg_het_state_neg {ιₛ : Type} {spec : OracleSpec ιₛ} {α�
     have h3 := congrFun (congrArg StateT.run h'') s'
     simp only [StateT.run_map] at h3
     have h4 := congrArg (fun z => Prod.fst <$> z) h3
-    simp only [Functor.map_map, Function.comp_def] at h4 ⊢; exact h4
-  have hpe1 : (fun o : Option α₁ => ¬ Option.elim o False (fun a => q (g₁ a)))
-      = (fun ob => ¬ Option.elim ob False q) ∘ (Option.map g₁) := by funext o; cases o <;> rfl
-  have hpe2 : (fun o : Option α₂ => ¬ Option.elim o False (fun a => q (g₂ a)))
-      = (fun ob => ¬ Option.elim ob False q) ∘ (Option.map g₂) := by funext o; cases o <;> rfl
-  rw [hpe1, hpe2, probEvent_comp, probEvent_comp, key]
+    simp only [Functor.map_map] at h4 ⊢; exact h4
+  have helim : ∀ {A : Type} (g : A → β) (o : Option A),
+      (¬ Option.elim (Option.map g o) False q) =
+        (¬ Option.elim o False (fun a => q (g a))) := by
+    intro A g o
+    cases o <;> rfl
+  simpa only [probEvent, Functor.map_map, helim] using
+    congrArg (fun mx : ProbComp (Option β) =>
+      probEvent (fun ob => ¬ Option.elim ob False q) mx) key
 
+omit [(q : ι) → Fintype (oSpec.Range q)] [(q : ι) → Inhabited (oSpec.Range q)] in
 /-- **The discharged `hStage1Bridge`.** The `Prod.fst`-marginal of the state-threaded phase-1 stage
 game (combined challenge oracle) is distributionally the phase-1 completeness game `gameOf R₁`
 (own challenge oracle). -/
@@ -114,11 +125,12 @@ theorem appendStage1Bridge
       (simulateQ (impl.addLift (challengeQueryImpl (pSpec := pSpec₁)) :
         QueryImpl _ (StateT σ ProbComp)) ((R₁.run stmt wit).run)).run' s)
   simp only [map_bind]
-  rw [evalDist_bind, evalDist_bind]
-  refine bind_congr fun s => ?_
+  apply OracleComp.evalDist_bind_congr_of_support init
+  intro s _
   rw [← StateT.run'_eq]
   exact OracleReduction.evalDist_run'_challengeSeam_left impl (R₁.run stmt wit).run s
 
+omit [(q : ι) → Fintype (oSpec.Range q)] [(q : ι) → Inhabited (oSpec.Range q)] in
 /-- **The discharged `hStage2Bridge`.** For a phase-1 success `a` (with the completeness agreement
 `a.1.2.1 = a.2` from `goodOf`), the phase-2 stage game's bad event from the seam state `s'` is
 *equal* to the phase-2 completeness game's bad event on the intermediate pair: the transcript merge
@@ -133,11 +145,9 @@ theorem appendStage2Bridge
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s'))
     (a : (FullTranscript pSpec₁ × Stmt₂ × Wit₂) × Stmt₂) (s' : σ)
     (hgood : goodOf m pSpec₁ rel₂ a) :
-    Pr[fun o => ¬ Option.elim o False (goodOf (m + n) (pSpec₁ ++ₚ pSpec₂) rel₃ ·)
-        | (StateT.run' (simulateQ (impl.addLift challengeQueryImpl)
-            (OptionT.run (appendStage₂ R₁ R₂ a))) s' : ProbComp (Option _))]
-      ≤ Pr[fun o => ¬ Option.elim o False (goodOf n pSpec₂ rel₃ ·)
-        | gameOf init impl R₂ a.2 a.1.2.2] := by
+    probEvent (fun o => ¬ Option.elim o False (goodOf (m + n) (pSpec₁ ++ₚ pSpec₂) rel₃ ·)) ((StateT.run' (simulateQ (impl.addLift challengeQueryImpl)
+            (OptionT.run (appendStage₂ R₁ R₂ a))) s' : ProbComp (Option _)))
+      ≤ probEvent (fun o => ¬ Option.elim o False (goodOf n pSpec₂ rel₃ ·)) (gameOf init impl R₂ a.2 a.1.2.2) := by
   refine le_of_eq ?_
   rw [appendStage₂_run_eq_liftM R₁ R₂ a hgood.2]
   -- Step 1: challenge-seam relabel (combined → `pSpec₂`'s own oracle), from the seam state `s'`.
@@ -161,37 +171,36 @@ theorem appendStage2Bridge
       = (fun o => ¬ Option.elim o False (goodOf n pSpec₂ rel₃ ·)) := by
     funext o; cases o <;> rfl
   rw [hYpred]
-  have hstate : Pr[fun o => ¬ Option.elim o False (goodOf n pSpec₂ rel₃ ·) |
-        init >>= fun s => (simulateQ
+  have hstate : probEvent (fun o => ¬ Option.elim o False (goodOf n pSpec₂ rel₃ ·)) (init >>= fun s => (simulateQ
           (impl.addLift (challengeQueryImpl (pSpec := pSpec₂)) : QueryImpl _ (StateT σ ProbComp))
-          (R₂.run a.2 a.1.2.2).run).run' s]
-      = Pr[fun o => ¬ Option.elim o False (goodOf n pSpec₂ rel₃ ·) |
-        init >>= fun _ => (simulateQ
+          (R₂.run a.2 a.1.2.2).run).run' s)
+      = probEvent (fun o => ¬ Option.elim o False (goodOf n pSpec₂ rel₃ ·)) (init >>= fun _ => (simulateQ
           (impl.addLift (challengeQueryImpl (pSpec := pSpec₂)) : QueryImpl _ (StateT σ ProbComp))
-          (R₂.run a.2 a.1.2.2).run).run' s'] := by
+          (R₂.run a.2 a.1.2.2).run).run' s') := by
     have hed : evalDist (init >>= fun s => (simulateQ
           (impl.addLift (challengeQueryImpl (pSpec := pSpec₂)) : QueryImpl _ (StateT σ ProbComp))
           (R₂.run a.2 a.1.2.2).run).run' s)
         = evalDist (init >>= fun _ => (simulateQ
           (impl.addLift (challengeQueryImpl (pSpec := pSpec₂)) : QueryImpl _ (StateT σ ProbComp))
           (R₂.run a.2 a.1.2.2).run).run' s') := by
-      rw [evalDist_bind, evalDist_bind]
-      refine bind_congr fun s => ?_
+      apply OracleComp.evalDist_bind_congr_of_support init
+      intro s _
       exact evalDist_simulateQ_run'_state_indep _ (addLift_state_preserving impl himplSP)
         (addLift_value_blind impl himplVB) _ s s'
-    unfold probEvent
-    rw [hed]
-  have hconst : Pr[fun o => ¬ Option.elim o False (goodOf n pSpec₂ rel₃ ·) |
-        init >>= fun _ => (simulateQ
+    simpa only [probEvent, prEvent_eq_evalDist_of_discrete] using
+      congrArg (fun μ : MeasureTheory.Measure (Option _) =>
+        μ {o | ¬ Option.elim o False (goodOf n pSpec₂ rel₃)}) hed
+  have hconst : probEvent (fun o => ¬ Option.elim o False (goodOf n pSpec₂ rel₃ ·)) (init >>= fun _ => (simulateQ
           (impl.addLift (challengeQueryImpl (pSpec := pSpec₂)) : QueryImpl _ (StateT σ ProbComp))
-          (R₂.run a.2 a.1.2.2).run).run' s']
-      = Pr[fun o => ¬ Option.elim o False (goodOf n pSpec₂ rel₃ ·) |
-        (simulateQ
+          (R₂.run a.2 a.1.2.2).run).run' s')
+      = probEvent (fun o => ¬ Option.elim o False (goodOf n pSpec₂ rel₃ ·)) ((simulateQ
           (impl.addLift (challengeQueryImpl (pSpec := pSpec₂)) : QueryImpl _ (StateT σ ProbComp))
-          (R₂.run a.2 a.1.2.2).run).run' s'] := by
-    rw [probEvent_bind_const, probFailure_eq_zero, tsub_zero, one_mul]
+          (R₂.run a.2 a.1.2.2).run).run' s') := by
+    simp only [probEvent, map_bind]
+    exact OracleComp.prEvent_bind_const init _
   exact (hconst.symm.trans hstate.symm)
 
+omit [(q : ι) → Fintype (oSpec.Range q)] [(q : ι) → Inhabited (oSpec.Range q)] in
 /-- **The discharged `hTot`.** The simulated appended honest game is a `ProbComp` and never
 *samples* a failure (its only failure mode is the explicit `none` value, accounted in the bad
 event). -/
@@ -199,8 +208,8 @@ theorem append_game_tot
     (R₁ : Reduction oSpec Stmt₁ Wit₁ Stmt₂ Wit₂ pSpec₁)
     (R₂ : Reduction oSpec Stmt₂ Wit₂ Stmt₃ Wit₃ pSpec₂)
     (stmt : Stmt₁) (wit : Wit₁) :
-    Pr[⊥ | gameOf init impl (R₁.append R₂) stmt wit] = 0 :=
-  probFailure_eq_zero
+    prFail (gameOf init impl (R₁.append R₂) stmt wit) = 0 :=
+  OracleComp.prFail_eq_zero _
 
 /-- **The error-bearing message-seam append-completeness keystone — no residual hypothesis.**
 
@@ -219,7 +228,7 @@ theorem append_completeness_msg
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     (R₁.append R₂).completeness init impl rel₁ rel₃ (e₁ + e₂) :=
@@ -232,7 +241,7 @@ end Reduction
 
 namespace OracleReduction
 
-variable {ι : Type} {oSpec : OracleSpec ι} [oSpec.Fintype] [oSpec.Inhabited]
+variable {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
     {m n : ℕ}
     {Stmt₁ : Type} {ιₛ₁ : Type} {OStmt₁ : ιₛ₁ → Type}
     [Oₛ₁ : ∀ i, OracleInterface (OStmt₁ i)]
@@ -261,7 +270,7 @@ the statement of `OracleReduction.appendCompletenessResidual`, i.e. the complete
 blocker of issue #13 (LogUp Protocol 2: `e₁ = logupCompletenessError`, `e₂ = 0`). -/
 theorem append_completeness_msg
     (R₁ : OracleReduction oSpec Stmt₁ OStmt₁ Wit₁ Stmt₂ OStmt₂ Wit₂ pSpec₁)
-    [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) R₁.verifier]
+
     (R₂ : OracleReduction oSpec Stmt₂ OStmt₂ Wit₂ Stmt₃ OStmt₃ Wit₃ pSpec₂)
     {e₁ e₂ : ℝ≥0}
     (h₁ : R₁.completeness init impl rel₁ rel₂ e₁)
@@ -271,7 +280,7 @@ theorem append_completeness_msg
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     (R₁.append R₂).completeness init impl rel₁ rel₃ (e₁ + e₂) := by
@@ -289,7 +298,7 @@ free parameter of this theorem undetermined by the arguments — consumers with 
 oracle interfaces should pin it explicitly (e.g. `.{0, 0}`). -/
 theorem appendCompletenessResidual_msg
     (R₁ : OracleReduction oSpec Stmt₁ OStmt₁ Wit₁ Stmt₂ OStmt₂ Wit₂ pSpec₁)
-    [OracleVerifier.Append.AppendCoherent (Oₛ₁ := Oₛ₁) (Oₛ₂ := Oₛ₂) (Oₘ₁ := Oₘ₁) R₁.verifier]
+
     (R₂ : OracleReduction oSpec Stmt₂ OStmt₂ Wit₂ Stmt₃ OStmt₃ Wit₃ pSpec₂)
     {e₁ e₂ : ℝ≥0}
     (h₁ : R₁.completeness init impl rel₁ rel₂ e₁)
@@ -299,7 +308,7 @@ theorem appendCompletenessResidual_msg
     (hDir₂ : pSpec₂.dir (⟨0, hn⟩ : Fin n) = .P_to_V)
     (himplSP : ∀ (t : oSpec.Domain) (s : σ) (x : oSpec.Range t × σ),
       x ∈ support ((impl t).run s) → x.2 = s)
-    (himplNF : ∀ (t : oSpec.Domain) (s : σ), Pr[⊥ | (impl t).run s] = 0)
+    (himplNF : ∀ (t : oSpec.Domain) (s : σ), prFail ((impl t).run s) = 0)
     (himplVB : ∀ (t : oSpec.Domain) (s s' : σ),
       evalDist ((impl t).run' s) = evalDist ((impl t).run' s')) :
     appendCompletenessResidual R₁ R₂ h₁ h₂ :=

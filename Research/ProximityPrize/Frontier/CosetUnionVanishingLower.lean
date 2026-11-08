@@ -128,8 +128,8 @@ example :
   refine card_le_vanishing_of_blockUnions
     (fun _ => ({0, 2, 4} : Finset (ZMod 6))) ?_ ?_ ?_
   · intro i j hij; exact absurd (Subsingleton.elim i j) hij
-  · intro i; refine ⟨(0 : ZMod 6), ?_⟩; simp only; decide
-  · intro i; simp only; decide
+  · intro i; refine ⟨(0 : ZMod 6), ?_⟩; decide
+  · intro i; decide
 
 end ArkLib.ProximityGap.CosetUnionVanishingLower
 

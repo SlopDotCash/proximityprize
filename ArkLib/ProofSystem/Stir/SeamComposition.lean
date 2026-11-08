@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Stir.RealBudgetRbr
 import ArkLib.ProofSystem.Stir.InitAppendRbr
 
@@ -64,8 +65,10 @@ the wire format of the checked final block. -/
 def stirInitVerifierPacked :
     OracleVerifier []ₒ Unit (VOStmt ι F) F (VOStmt ι F) (pSpecInit F) where
   verify := fun _ chals => pure (chals ⟨0, pSpecInit_dir_zero⟩)
-  embed := ⟨fun _ => Sum.inl (), fun _ _ _ => rfl⟩
-  hEq := fun _ => rfl
+  outputOracle := .inl {
+    embed := ⟨fun _ => Sum.inl (), fun _ _ _ => rfl⟩
+    hEq := fun _ => rfl
+    outputInterface_heq := by intro u; cases u <;> rfl }
 
 /-- The deterministic statement map computed by the packed init relay: read the fold
 challenge off the transcript and forward the packed input oracle unchanged. -/
@@ -102,30 +105,30 @@ and both relations are the statement-independent δ-positivity gate, so the cons
 state function survives every round, the trivial `Unit` extractor works, and the
 per-challenge error is `0` (the `stirInitVerifier_rbrKnowledgeSoundness` proof shape). -/
 theorem stirInitVerifierPacked_rbrKnowledgeSoundness (δ : ℝ≥0) :
-    (stirInitVerifierPacked (ι := ι) (F := F)).toVerifier.rbrKnowledgeSoundness init impl
+    (stirInitVerifierPacked (ι := ι) (F := F)).toVerifier.rbrKnowledgeSoundnessAveraged init impl
       (stirSeamRelInit ι F δ) (stirSpotRelIn ι F δ) 0 := by
   refine ⟨fun _ => Unit, {
-    eqIn := rfl
+    extractIn := fun _ _ => ()
     extractMid := fun _ _ _ _ => ()
     extractOut := fun _ _ _ => ()
   }, {
     -- The knowledge state function: the δ-positivity gate (statement-independent, constant
     -- across rounds).
     toFun := fun _ stmtIn _ _ => (stmtIn, ()) ∈ stirSeamRelInit ι F δ
-    toFun_empty := fun _ _ => Iff.rfl
+    toFun_empty := fun _ _ h => h
     toFun_next := fun _ _ _ _ _ _ h => h
     toFun_full := fun stmtIn tr witOut hpr => by
       -- A positive-probability output in `stirSpotRelIn` IS the gate `0 < δ`, which is the
       -- (statement-independent) goal.
-      rw [gt_iff_lt, probEvent_pos_iff] at hpr
+      rw [gt_iff_lt, OptionT.prEvent_mk_pos_iff] at hpr
       obtain ⟨x, _hx, hrel⟩ := hpr
       exact hrel
   }, ?_⟩
   -- Per-challenge bound: the event "state false before the challenge, true after" is
   -- pointwise contradictory (the state ignores the transcript), so its probability is 0.
   intro stmtIn witIn prover i
-  refine le_trans (le_of_eq ?_) (zero_le _)
-  rw [probEvent_eq_zero_iff]
+  refine le_trans (le_of_eq ?_) (by positivity)
+  rw [OracleComp.prEvent_eq_zero_iff]
   rintro ⟨transcript, challenge, log⟩ _ ⟨witMid, hnot, hyes⟩
   exact hnot hyes
 
@@ -152,7 +155,7 @@ theorem stirInitPacked_append_rbrKnowledgeSoundness
     {rbrKnowledgeError₂ : pSpec₂.ChallengeIdx → ℝ≥0}
     (δ : ℝ≥0)
     (hInit : ∃ s, s ∈ support init)
-    (h₂ : V₂.rbrKnowledgeSoundness init impl (stirSpotRelIn ι F δ) rel₃ rbrKnowledgeError₂)
+    (h₂ : V₂.rbrKnowledgeSoundnessAveraged init impl (stirSpotRelIn ι F δ) rel₃ rbrKnowledgeError₂)
     (hPhase2 : ∀ {WitMid₁ : Fin (1 + 1) → Type} {WitMid₂ : Fin (n + 1) → Type}
       {E₁ : Extractor.RoundByRound []ₒ (Unit × ∀ i, VOStmt ι F i) Unit Unit
         (pSpecInit F) WitMid₁}
@@ -164,7 +167,7 @@ theorem stirInitPacked_append_rbrKnowledgeSoundness
         (stirInitVerifierPacked (ι := ι) (F := F)).toVerifier V₂ kSF₁ kSF₂
         stirInitVerifyPacked stirInitVerifierPacked_toVerifier_eq hInit
         (rbrKnowledgeError₂ := rbrKnowledgeError₂)) :
-    @Verifier.rbrKnowledgeSoundness PEmpty.{1} []ₒ (Unit × ((i : Unit) → VOStmt ι F i)) Unit
+    @Verifier.rbrKnowledgeSoundnessAveraged PEmpty.{1} []ₒ (Unit × ((i : Unit) → VOStmt ι F i)) Unit
       Stmt₃ Wit₃ (1 + n) (pSpecInit F ++ₚ pSpec₂)
       (fun i => instSampleableTypeChallengeAppend i) σ init impl
       (stirSeamRelInit ι F δ) rel₃
@@ -212,7 +215,7 @@ theorem stirSeam_initPacked_append_checkedFinal_rbrKnowledgeSoundness
         stirInitVerifyPacked stirInitVerifierPacked_toVerifier_eq hInit
         (rbrKnowledgeError₂ := fun i =>
           if i = ⟨1, stirFinalVSpec_dir_one⟩ then stirSpotBudget ι F δ else 0)) :
-    @Verifier.rbrKnowledgeSoundness PEmpty.{1} []ₒ (Unit × ((i : Unit) → VOStmt ι F i)) Unit
+    @Verifier.rbrKnowledgeSoundnessAveraged PEmpty.{1} []ₒ (Unit × ((i : Unit) → VOStmt ι F i)) Unit
       ((F × F) × ∀ i, VOStmt ι F i) Unit (1 + 2)
       (pSpecInit F ++ₚ (stirFinalVSpec ι F).toProtocolSpec F)
       (fun i => instSampleableTypeChallengeAppend i) σ init impl
@@ -252,7 +255,7 @@ theorem stirSeam_initPacked_append_checkedFinal_rbrKnowledgeSoundness_of_dvd
         stirInitVerifyPacked stirInitVerifierPacked_toVerifier_eq hInit
         (rbrKnowledgeError₂ := fun i =>
           if i = ⟨1, stirFinalVSpec_dir_one⟩ then stirSpotBudget ι F δ else 0)) :
-    @Verifier.rbrKnowledgeSoundness PEmpty.{1} []ₒ (Unit × ((i : Unit) → VOStmt ι F i)) Unit
+    @Verifier.rbrKnowledgeSoundnessAveraged PEmpty.{1} []ₒ (Unit × ((i : Unit) → VOStmt ι F i)) Unit
       ((F × F) × ∀ i, VOStmt ι F i) Unit (1 + 2)
       (pSpecInit F ++ₚ (stirFinalVSpec ι F).toProtocolSpec F)
       (fun i => instSampleableTypeChallengeAppend i) σ init impl

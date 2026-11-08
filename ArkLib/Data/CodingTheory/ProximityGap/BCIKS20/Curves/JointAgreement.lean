@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Prelude
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.GoodCoeffs
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 
 /-!
 # Joint agreement for parameterized curves ([BCIKS20] §6.1)
@@ -549,6 +549,9 @@ theorem RS_jointAgreement_of_goodCoeffsCurve_card_gt {k deg : ℕ} {domain : ι 
             have hbt : ¬ ((t : ℕ) = (b : ℕ)) := fun h => hb (Fin.ext h.symm)
             simp [hbt])
           (fun ht => absurd (Finset.mem_univ t) ht)] at hcoeff
+      apply Finset.mem_filter.mpr
+      refine ⟨Finset.mem_univ i, ?_⟩
+      change (P.coeff (t : ℕ)).eval (domain i) = u t i
       simpa [Polynomial.Bivariate.evalX, Polynomial.coeff] using hcoeff
   · have hdeg_gt : n < deg := Nat.lt_of_not_ge hdeg_le
     have hp_mem (p : F[X]) (w : ι → F)

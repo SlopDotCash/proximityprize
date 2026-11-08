@@ -101,7 +101,6 @@ theorem uniform_not_necessary :
         rw [show (4:ℝ) = 2^2 from by norm_num, Real.sqrt_sq (by norm_num)]] at this
     simp only [show (1 : ℕ) ≠ 0 from by norm_num, if_neg, if_pos]
     norm_num
-    linarith
 
 end ArkLib.ProximityGap.Attack01bLyapunov
 

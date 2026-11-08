@@ -85,7 +85,7 @@ theorem greedyProduct_le_two_pow (a : ℕ) (r : Fin a → ℝ)
     (h0 : ∀ i, 0 ≤ r i) (h1 : ∀ i, r i ≤ 1) :
     (∏ i, (1 + r i)) ≤ 2 ^ a := by
   calc (∏ i, (1 + r i)) ≤ ∏ _i : Fin a, (2 : ℝ) := by
-          apply Finset.prod_le_prod
+          apply Finset.prod_le_prod₀
           · intro i _; have := (greedyFactor_mem (r i) (h0 i) (h1 i)).1; linarith
           · intro i _; exact (greedyFactor_mem (r i) (h0 i) (h1 i)).2
     _ = 2 ^ a := by simp [Finset.prod_const]
@@ -95,7 +95,7 @@ theorem one_le_greedyProduct (a : ℕ) (r : Fin a → ℝ) (h0 : ∀ i, 0 ≤ r 
     1 ≤ ∏ i, (1 + r i) := by
   have h1 : (1 : ℝ) = ∏ _i : Fin a, (1 : ℝ) := by simp
   rw [h1]
-  apply Finset.prod_le_prod
+  apply Finset.prod_le_prod₀
   · intro i _; norm_num
   · intro i _; have := h0 i; linarith
 
@@ -120,7 +120,7 @@ theorem greedyProduct_ge_two_pow_of_capped {a : ℕ} (r : Fin a → ℝ)
   have hcompl_ge : 1 ≤ ∏ i ∈ Sᶜ, (1 + r i) := by
     have h1 : (1 : ℝ) = ∏ _i ∈ Sᶜ, (1 : ℝ) := by simp
     rw [h1]
-    apply Finset.prod_le_prod
+    apply Finset.prod_le_prod₀
     · intro i _; norm_num
     · intro i _; have := h0 i; linarith
   rw [hsplit, hScard]

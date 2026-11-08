@@ -6,6 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib.NumberTheory.JacobiSum.Basic
 import Mathlib.NumberTheory.LegendreSymbol.QuadraticChar.Basic
 import Mathlib.NumberTheory.LegendreSymbol.AddCharacter
+import Mathlib.NumberTheory.LegendreSymbol.Complex
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Data.Real.Sqrt
 import Mathlib.Analysis.Complex.Norm

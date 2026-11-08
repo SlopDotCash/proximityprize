@@ -4,14 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao
 -/
 
-import Mathlib.Logic.Embedding.Basic
+import CompPoly.Data.Classes.HasSize
 
-/-!
-  # `HasSize` class
+/-! # Compatibility import for `HasSize`
+
+The canonical class is supplied by `CompPoly.Data.Classes.HasSize`.
 -/
-
-/-- Type class for types that has an injective mapping to a vector of a given length `size` of
-  another type (often `UInt8`). -/
-class HasSize (α : Type*) (β : Type*) where
-  size : Nat
-  toFun : α ↪ Vector β size

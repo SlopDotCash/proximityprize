@@ -232,7 +232,7 @@ theorem prod_cosh_le_exp {m : ℕ} (θ : Fin m → ℝ) (y : ℝ) :
     ∏ k : Fin m, Real.cosh (2 * Real.cos (θ k) * y) ≤ Real.exp ((2 * m : ℝ) * y ^ 2) := by
   calc ∏ k : Fin m, Real.cosh (2 * Real.cos (θ k) * y)
       ≤ ∏ _k : Fin m, Real.exp (2 * y ^ 2) := by
-        apply Finset.prod_le_prod
+        apply Finset.prod_le_prod₀
         · intro k _; positivity
         · intro k _; exact cosh_two_cos_le_exp (θ k) y
     _ = Real.exp ((2 * m : ℝ) * y ^ 2) := by

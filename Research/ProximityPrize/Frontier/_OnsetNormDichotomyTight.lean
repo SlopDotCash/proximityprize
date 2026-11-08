@@ -61,7 +61,7 @@ theorem house_norm_le {ι : Type*} (s : Finset ι) (a : ι → ℝ) (r : ℝ)
     (hnonneg : ∀ j ∈ s, 0 ≤ a j) (hbound : ∀ j ∈ s, a j ≤ 2 * r) :
     ∏ j ∈ s, a j ≤ (2 * r) ^ s.card := by
   calc ∏ j ∈ s, a j ≤ ∏ _j ∈ s, (2 * r) :=
-        Finset.prod_le_prod hnonneg hbound
+        Finset.prod_le_prod₀ hnonneg hbound
     _ = (2 * r) ^ s.card := by rw [Finset.prod_const]
 
 /-- **The combined onset theorem.** A wraparound witness has nonzero norm `N` (a `ℕ`) divisible by `p`, equal to a

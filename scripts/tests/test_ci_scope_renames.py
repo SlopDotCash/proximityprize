@@ -5,7 +5,7 @@ import subprocess
 import tempfile
 import unittest
 
-from test_ci_pr_gate_inputs import scope_step_script
+from test_ci_pr_gate_inputs import WORKFLOWS, find_bash, scope_step_script
 
 
 def run_scope(*, invalid_base=False):
@@ -26,7 +26,7 @@ def run_scope(*, invalid_base=False):
         output = root / "github-output"
         env = dict(os.environ, EVENT_NAME="pull_request", GITHUB_OUTPUT=str(output),
                    PR_BASE_SHA="0" * 40 if invalid_base else base)
-        result = subprocess.run(["bash", "-c", scope_step_script()], cwd=root,
+        result = subprocess.run([find_bash(), "-c", scope_step_script()], cwd=root,
                                 env=env, capture_output=True, text=True)
         return result, output.read_text() if output.exists() else ""
 
@@ -39,5 +39,10 @@ class ScopeRenames(unittest.TestCase):
 
     def test_invalid_comparison_cannot_certify_documentation_only(self):
         result, output = run_scope(invalid_base=True)
-        self.assertNotEqual(result.returncode, 0)
+        workflow = (WORKFLOWS / "ci.yml").read_text(encoding="utf-8")
+        if "Determine Lean validation scope" in workflow:
+            self.assertNotEqual(result.returncode, 0)
+        else:
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertIn("lean-relevant=true", output)
         self.assertNotIn("lean-relevant=false", output)

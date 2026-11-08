@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Poulami Das (Least Authority), Alexander Hicks
 -/
 
-import ArkLib.Data.CodingTheory.ReedSolomon
-import ArkLib.Data.CodingTheory.ListDecodability
-import ArkLib.OracleReduction.VectorIOR
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
+import ProximityPrize.Extensions.OracleReduction.VectorIOR
 import ArkLib.ProofSystem.Whir.BlockRelDistance
 import ArkLib.ProofSystem.Whir.MutualCorrAgreement
 import ArkLib.ProofSystem.Whir.ProximityGen
@@ -40,7 +40,7 @@ Open question: should we aim to add tags?
 -/
 namespace WhirIOP
 
-open BigOperators BlockRelDistance MutualCorrAgreement Generator Finset
+open BigOperators BlockRelDistance.Generic MutualCorrAgreement Generator Finset
      ListDecodable NNReal ReedSolomon
 
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
@@ -175,9 +175,9 @@ def whirRelation
   DISPOSITION (2026-06-04): open — the deepest obligation, gated on (a) the full MCA chain and
   (b) a construction that does not yet exist in the tree. The conclusion is an *existential* that
   must **construct** an `n`-message Vector IOPP `π : VectorIOP …` realizing the WHIR protocol
-  (Construction 5.1) and then prove `IsSecureWithGap` for it with the per-round RBR error `ε_rbr`.
+  (Construction 5.1) and then prove `IsSecureWithGapAveraged` for it with per-round error `ε_rbr`.
   No such `π` is built anywhere in ArkLib yet, so the `∃ π` cannot be introduced. Even granting the
-  construction, the `IsSecureWithGap` bound composes the folding list-decoding lemmas
+  construction, the `IsSecureWithGapAveraged` bound composes the folding list-decoding lemmas
   (`Whir/Folding.lean` L4.20–4.23, open) with the MCA `errStar` bounds (`mca_rsc`/`mca_linearCode`,
   open). This is therefore strictly downstream of every other WHIR sorry: it requires the protocol
   construction *plus* the entire upstream chain, not a folding/MCA lemma in isolation.
@@ -240,7 +240,7 @@ def whir_rbr_soundness
         let ε_rbr : vPSpec.ChallengeIdx → ℝ≥0 :=
           fun _ => (univ.image max_ε_folds ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max'
             (by simp)
-        VectorIOP.IsSecureWithGap (whirRelation m_0 (P.φ 0) 0)
+        VectorIOP.IsSecureWithGapAveraged (whirRelation m_0 (P.φ 0) 0)
                          (whirRelation m_0 (P.φ 0) (h.δ 0))
                           ε_rbr π
 

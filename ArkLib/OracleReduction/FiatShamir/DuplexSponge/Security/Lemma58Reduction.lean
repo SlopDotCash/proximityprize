@@ -52,13 +52,11 @@ theorem lemma5_8EagerPaperResidual_holds : Lemma5_8EagerPaperResidual StmtIn U :
 theorem honestBad_birthday_unconditional
     {α : Type} (P : OracleComp (duplexSpongeChallengeOracle StmtIn U) α) (T : ℕ)
     (hT : IsTotalQueryBound P T) (st₀ : CanonicalSpongeState U) :
-    (Pr[ fun z : α × QueryLog (duplexSpongeChallengeOracle StmtIn U) =>
-        ∃ S : Backtrack.S_BT z.2 st₀,
-          E_inv_honest z.2 st₀ S ∨ E_fork_honest z.2 st₀ S ∨ E_time_honest z.2 st₀ S |
-      do
+    (Pr{let z ← (do
         let c ← (D_DS StmtIn U).sample
         simulateQ ((D_DS StmtIn U).toImpl c)
-          ((simulateQ loggingOracle P).run)]).toReal
+          ((simulateQ loggingOracle P).run))}[∃ S : Backtrack.S_BT z.2 st₀,
+          E_inv_honest z.2 st₀ S ∨ E_fork_honest z.2 st₀ S ∨ E_time_honest z.2 st₀ S]).toReal
       ≤ lemma5_8Bound U T :=
   honestBad_birthday_of_paperResidual lemma5_8EagerPaperResidual_holds P T hT st₀
 
@@ -70,13 +68,11 @@ theorem honestBad_claim5_21Bound_unconditional
     (tₕ tₚ tₚᵢ L : ℕ)
     (hT : IsTotalQueryBound P (tₕ + 1 + tₚ + L + tₚᵢ))
     (st₀ : CanonicalSpongeState U) :
-    (Pr[ fun z : α × QueryLog (duplexSpongeChallengeOracle StmtIn U) =>
-        ∃ S : Backtrack.S_BT z.2 st₀,
-          E_inv_honest z.2 st₀ S ∨ E_fork_honest z.2 st₀ S ∨ E_time_honest z.2 st₀ S |
-      do
+    (Pr{let z ← (do
         let c ← (D_DS StmtIn U).sample
         simulateQ ((D_DS StmtIn U).toImpl c)
-          ((simulateQ loggingOracle P).run)]).toReal
+          ((simulateQ loggingOracle P).run))}[∃ S : Backtrack.S_BT z.2 st₀,
+          E_inv_honest z.2 st₀ S ∨ E_fork_honest z.2 st₀ S ∨ E_time_honest z.2 st₀ S]).toReal
       ≤ claim5_21Bound U tₕ tₚ tₚᵢ L :=
   honestBad_claim5_21Bound_of_paperResidual lemma5_8EagerPaperResidual_holds
     P tₕ tₚ tₚᵢ L hT st₀

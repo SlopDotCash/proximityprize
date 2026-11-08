@@ -2101,7 +2101,7 @@ theorem card_filter_abs_repR_sub_mean_ge_le_of_centered_variance_bound
     (((Finset.univ : Finset F).filter (fun c =>
       a ≤ |(repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)|)).card : ℝ)
       ≤ B / a ^ 2 := by
-  simpa [centeredRepR] using
+  exact
     card_filter_abs_centeredRepR_ge_le_of_centered_variance_bound G r hvar ha
 
 /-- Tail-count consumer from a direct raw `repR - mean` square-sum bound. -/
@@ -2123,7 +2123,7 @@ theorem card_filter_abs_repR_sub_mean_ge_le_of_dcEnergyBound
     (((Finset.univ : Finset F).filter (fun c =>
       a ≤ |(repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)|)).card : ℝ)
       ≤ ((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r) / a ^ 2 := by
-  simpa [centeredRepR] using
+  exact
     card_filter_abs_centeredRepR_ge_le_of_dcEnergyBound G r hdc ha
 
 /-- Direct representation-function version of the nonzero tail-count consumer
@@ -2134,7 +2134,7 @@ theorem card_filter_nonzero_abs_repR_sub_mean_ge_le_of_centered_variance_bound
     (((Finset.univ : Finset F).filter (fun c => c ≠ 0 ∧
       a ≤ |(repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)|)).card : ℝ)
       ≤ B / a ^ 2 := by
-  simpa [centeredRepR] using
+  exact
     card_filter_nonzero_abs_centeredRepR_ge_le_of_centered_variance_bound G r hvar ha
 
 /-- Nonzero tail-count consumer from a direct raw `repR - mean` square-sum
@@ -2157,7 +2157,7 @@ theorem card_filter_nonzero_abs_repR_sub_mean_ge_le_of_dcEnergyBound
     (((Finset.univ : Finset F).filter (fun c => c ≠ 0 ∧
       a ≤ |(repR G r c : ℝ) - (G.card : ℝ) ^ r / (Fintype.card F : ℝ)|)).card : ℝ)
       ≤ ((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r) / a ^ 2 := by
-  simpa [centeredRepR] using
+  exact
     card_filter_nonzero_abs_centeredRepR_ge_le_of_dcEnergyBound G r hdc ha
 
 /-- A global centered variance bound controls every individual offset, without

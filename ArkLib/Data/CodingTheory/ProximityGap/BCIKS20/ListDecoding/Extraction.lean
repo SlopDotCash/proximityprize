@@ -5,8 +5,8 @@ Authors: Quang Dao, Katerina Hristova, František Silváši, Julian Sutherland,
          Ilia Vlasov, Chung Thai Nguyen
 -/
 
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Guruswami
-import ArkLib.Data.Polynomial.RationalFunctions
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Guruswami
+import ProximityPrize.Extensions.Data.Polynomial.RationalFunctions
 
 /-!
 # BCIKS20 §5 list decoding: factor extraction and discriminant non-vanishing
@@ -202,9 +202,9 @@ theorem eq512_descent_of_fraction_field_contraction
   have hdvd2 : g.map φ ∣ (Polynomial.expand R n r).map φ := by
     rw [hexpand_map]; exact Dvd.intro_left _ rfl
   have hd1R : (Polynomial.expand R n r) ∣ g :=
-    (hEprim.dvd_iff_fraction_map_dvd_fraction_map (K := K) hgprim).mpr hdvd1
+    (hEprim.dvd_iff_fraction_map_dvd_fraction_map (K := K)).mpr hdvd1
   have hd2R : g ∣ (Polynomial.expand R n r) :=
-    (hgprim.dvd_iff_fraction_map_dvd_fraction_map (K := K) hEprim).mpr hdvd2
+    (hgprim.dvd_iff_fraction_map_dvd_fraction_map (K := K)).mpr hdvd2
   have hassoc : Associated (Polynomial.expand R n r) g := associated_of_dvd_dvd hd1R hd2R
   have hE_irr : Irreducible (Polynomial.expand R n r) := hassoc.symm.irreducible hg
   have hr_irr : Irreducible r := Polynomial.of_irreducible_expand hn.ne' hE_irr
@@ -751,7 +751,7 @@ theorem pg_Rset_irreducible (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁) :
   unfold pg_Rset at hR
   -- `hR` is membership in the `toFinset` of the multiset of normalized factors
   have hR' : R ∈ UniqueFactorizationMonoid.normalizedFactors Q := by
-    simpa using hR
+    simpa [UniqueFactorizationMonoid.mem_primeFactors] using hR
   exact UniqueFactorizationMonoid.irreducible_of_normalized_factor (a := Q) R hR'
 
 noncomputable def pg_candidatePairs
@@ -806,7 +806,7 @@ theorem pg_candidatePairs_snd_natDegree_pos (x₀ : F)
         H ∈
           UniqueFactorizationMonoid.normalizedFactors
             (Bivariate.evalX (Polynomial.C x₀) R) := by
-    simpa [pg_candidatePairs] using hmem
+    simpa [pg_candidatePairs, UniqueFactorizationMonoid.mem_primeFactors] using hmem
   exact pg_natDegree_pos_of_mem_normalizedFactors_of_separable
     (Bivariate.evalX (Polynomial.C x₀) R) (hsep R h'.1) h'.2
 
@@ -857,15 +857,12 @@ theorem pg_card_normalizedFactors_toFinset_le_natDegree (p : F[Z][X]) (hp : p.Se
 
 omit [DecidableEq F] [DecidableEq (RatFunc F)] [Finite F] in
 theorem pg_evalX_eq_map_evalRingHom (x₀ : F) (R : F[Z][X][Y]) :
-    Bivariate.evalX (Polynomial.C x₀) R = R.map (Polynomial.evalRingHom (Polynomial.C x₀)) := by
-  classical
-  ext n n'
-  · simp [Bivariate.evalX, Polynomial.coeff_map]
-    simp [Polynomial.coeff]
+    Bivariate.evalX (Polynomial.C x₀) R = R.map (Polynomial.evalRingHom (Polynomial.C x₀)) :=
+  Trivariate.evalAtX_eq_map_evalRingHom x₀ R
 
 open scoped Polynomial.Bivariate in
 noncomputable def pg_eval_on_Z (p : F[Z][X][Y]) (z : F) : Polynomial (Polynomial F) :=
-  p.map (Polynomial.mapRingHom (Polynomial.evalRingHom z))
+  Trivariate.evalAtZ z p
 
 omit [DecidableEq (RatFunc F)] in
 theorem pg_exists_H_of_R_eval_zero (δ : ℚ) (x₀ : F)
@@ -911,7 +908,7 @@ theorem pg_exists_H_of_R_eval_zero (δ : ℚ) (x₀ : F)
     -- rewrite the left-hand evaluation using `map_mapRingHom_eval_map_eval`
     have hcommZ : ((pg_eval_on_Z (F := F) R z.1).eval P).eval x₀ = fZ ((R.eval q).eval r) := by
       have h := Polynomial.map_mapRingHom_eval_map_eval (f := fZ) (p := R) (q := q) r
-      simpa [pg_eval_on_Z, fZ, hqmap, hr] using h
+      simpa [pg_eval_on_Z, Trivariate.evalAtZ_eq_map_map_evalRingHom, fZ, hqmap, hr] using h
     have hfz0 : fZ ((R.eval q).eval r) = 0 := by
       -- combine `hx` and `hcommZ`
       calc
@@ -999,7 +996,7 @@ theorem pg_exists_R_of_Q_eval_zero (δ : ℚ)
   let evZ' : F[Z][X][Y] →+* Polynomial (Polynomial F) := Polynomial.mapRingHom evZ
   let φ : F[Z][X][Y] →+* F[X] := (Polynomial.evalRingHom P).comp evZ'
   have hφQ : φ Q = 0 := by
-    simpa [φ, evZ', evZ, pg_eval_on_Z] using hQ'
+    simpa [φ, evZ', evZ, pg_eval_on_Z, Trivariate.evalAtZ_eq_map_map_evalRingHom] using hQ'
   -- Use associated product of normalizedFactors
   have hassoc : Associated ((UniqueFactorizationMonoid.normalizedFactors Q).prod) Q :=
     UniqueFactorizationMonoid.prod_normalizedFactors (a := Q) h_gs.Q_ne_0
@@ -1029,7 +1026,7 @@ theorem pg_exists_R_of_Q_eval_zero (δ : ℚ)
     dsimp [pg_Rset]
     exact (Multiset.mem_toFinset).2 hRmem
   · -- show (pg_eval_on_Z R z.1).eval P = 0
-    simpa [φ, evZ', evZ, pg_eval_on_Z] using hR0
+    simpa [φ, evZ', evZ, pg_eval_on_Z, Trivariate.evalAtZ_eq_map_map_evalRingHom] using hR0
 
 omit [DecidableEq (RatFunc F)] in
 theorem pg_exists_pair_for_z (δ : ℚ) (x₀ : F)
@@ -1093,7 +1090,7 @@ theorem pg_exists_pair_for_z (δ : ℚ) (x₀ : F)
           H ∈
             UniqueFactorizationMonoid.normalizedFactors (Bivariate.evalX (Polynomial.C x₀) R) :=
       And.intro hRmem hHmem
-    simpa [pg_candidatePairs] using h'
+    simpa [pg_candidatePairs, UniqueFactorizationMonoid.mem_primeFactors] using h'
   -- 5) Package everything.
   refine ⟨R, H, hPairMem, ?_⟩
   -- Discharge the inner `let P := ...` binder using our local `P`.
@@ -1289,7 +1286,8 @@ theorem pg_sum_natDegreeY_Rset_le_natDegreeY_Q (h_gs : ModifiedGuruswami m n k �
     Polynomial.natDegree_eq_natDegree (p := s.prod) (q := Q) hdeg_assoc
   have hnatY_assoc : Bivariate.natDegreeY s.prod = Bivariate.natDegreeY Q := by
     simp [Bivariate.natDegreeY, hnat_assoc]
-  simpa [hnatY_assoc] using hleft_le_prod
+  rw [hnatY_assoc] at hleft_le_prod
+  simpa [hs] using hleft_le_prod
 
 omit [DecidableEq (RatFunc F)] [Finite F] in
 theorem pg_card_candidatePairs_le_natDegreeY (x₀ : F) (h_gs : ModifiedGuruswami m n k ωs Q u₀ u₁)
@@ -1424,9 +1422,10 @@ theorem common_roots_subset_S_β_mk
           _root_.BCIKS20AppendixA.𝒪 H) := by
   intro z hz
   obtain ⟨t, hHt, hPt⟩ := hroot z (by simpa using hz)
-  refine ⟨⟨t, hHt⟩, ?_⟩
-  rw [_root_.BCIKS20AppendixA.π_z, Ideal.Quotient.lift_mk]
-  exact hPt
+  let root : _root_.BCIKS20AppendixA.rationalRoot
+      (_root_.BCIKS20AppendixA.H_tilde' H) z := ⟨t, hHt⟩
+  refine ⟨root, ?_⟩
+  exact (_root_.BCIKS20AppendixA.π_z_mk z root P).trans hPt
 
 omit [DecidableEq F] [DecidableEq (RatFunc F)] [Finite F] in
 theorem common_roots_force_lift_zero

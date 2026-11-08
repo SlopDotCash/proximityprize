@@ -1,3 +1,4 @@
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ToMathlib.WhirBricksConstruction
 
 open MvPolynomial
@@ -59,8 +60,9 @@ def whirVectorIOP_rbrKnowledgeSoundness {F : Type} [Field F] [Fintype F] [Decida
     [Nonempty (ιs 0)] (δ : ℝ≥0)
     (εRbr : (whirPaperTranscriptVectorSpec P d).ChallengeIdx → ℝ≥0) :
     Prop :=
-  OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
-    (whirRelation m0 (P.φ 0) δ) (whirVectorIOP P d).verifier εRbr
+  OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim
+    (whirRelation m0 (P.φ 0) δ)
+      (OracleProof.toOracleVerifier (whirVectorIOP P d)) εRbr
 
 /-- Residual: package the two security legs for the concrete WHIR `VectorIOP`. -/
 def whirVectorIOP_isSecureWithGap {F : Type} [Field F] [Fintype F] [DecidableEq F]
@@ -70,7 +72,7 @@ def whirVectorIOP_isSecureWithGap {F : Type} [Field F] [Fintype F] [DecidableEq 
     [Nonempty (ιs 0)] (δ : ℝ≥0)
     (εRbr : (whirPaperTranscriptVectorSpec P d).ChallengeIdx → ℝ≥0) :
     Prop :=
-  VectorIOP.IsSecureWithGap (whirRelation m0 (P.φ 0) 0) (whirRelation m0 (P.φ 0) δ)
+  VectorIOP.IsSecureWithGapAveraged (whirRelation m0 (P.φ 0) 0) (whirRelation m0 (P.φ 0) δ)
     εRbr (whirVectorIOP P d)
 
 /-- The WHIR `VectorIOP` is secure with gap if its completeness and RBR soundness residuals hold. -/

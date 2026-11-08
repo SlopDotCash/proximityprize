@@ -91,7 +91,7 @@ theorem gzp_of_orientation {e : ι → Finset V} (O : HeadOrientation e) (r : V)
   have hheads : (Finset.univ.filter (fun i => O.head i ∈ T)).card
       + (Finset.univ.filter (fun i => O.head i ∉ T)).card = Fintype.card ι := by
     rw [← Finset.card_univ (α := ι)]
-    exact Finset.filter_card_add_filter_neg_card_eq_card (fun i => O.head i ∈ T)
+    exact Finset.card_filter_add_card_filter_not (fun i => O.head i ∈ T)
   by_cases hrT : r ∈ T
   · -- Case 1: the root is in T — the crossing supply applies; δ sums to indeg off the root.
     have hTne : T ≠ Finset.univ := by

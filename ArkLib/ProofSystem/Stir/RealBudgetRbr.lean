@@ -3,6 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.OracleReduction.FullPredKSF
 import ArkLib.ProofSystem.Stir.CheckedFinalBlock
 import ArkLib.ProofSystem.Whir.SubUnitRbr
@@ -339,7 +340,7 @@ lemma stirSpotPred_concat (δ : ℝ≥0) (m : Fin 2)
         exact_mod_cast hle
       show 0 < δ
       by_contra hδ
-      have hδ0 : δ = 0 := le_antisymm (not_lt.mp hδ) (zero_le δ)
+      have hδ0 : δ = 0 := le_antisymm (not_lt.mp hδ) (by positivity)
       subst hδ0
       rw [tsub_zero, NNReal.coe_one, one_mul] at hag
       linarith
@@ -378,18 +379,18 @@ theorem stirFinalVectorVerifierChecked_toVerifier_verify
               (FullTranscript.mk2 w r1).messages stmtIn
               (FullTranscript.mk2 w r1).challenges)) : OptionT (OracleComp []ₒ) (F × F))
           pure (s, fun _ : Unit => w)) := by
-  have h1 : (stirFinalVectorVerifierChecked (ι := ι) (F := F)).toVerifier.verify
-      (stmtIn, oStmtIn) (FullTranscript.mk2 w r1)
-      = ((do
-          let s ← (simulateQ (OracleInterface.simOracle2 []ₒ oStmtIn
-                (FullTranscript.mk2 w r1).messages)
-              (OptionT.mk (stirFinalCheckedComp stmtIn
-                (FullTranscript.mk2 w r1).challenges))
-              : OptionT (OracleComp []ₒ) (F × F))
-          pure (s, fun _ : Unit => w))
-        : OptionT (OracleComp []ₒ) ((F × F) × ∀ i, VOStmt ι F i)) := rfl
-  rw [h1, simulateQ_optionT_stirFinalCheckedComp]
-  rfl
+  change (Option.map (fun result => (result,
+      (stirFinalVectorVerifierChecked (ι := ι) (F := F)).materializeOutput
+        (FullTranscript.mk2 w r1).challenges oStmtIn (FullTranscript.mk2 w r1).messages)) <$>
+    simulateQ (OracleInterface.simOracle2 []ₒ oStmtIn (FullTranscript.mk2 w r1).messages)
+      (stirFinalCheckedComp stmtIn (FullTranscript.mk2 w r1).challenges)) = _
+  rw [simulateQ_stirFinalCheckedComp]
+  cases h : stirFinalCheckedAns oStmtIn (FullTranscript.mk2 w r1).messages stmtIn
+    (FullTranscript.mk2 w r1).challenges <;>
+    simp only [OptionT.run_bind, OptionT.run_mk, OptionT.run_pure, pure_bind,
+      _root_.map_pure, Option.map_none, Option.map_some, Option.elim_none, Option.elim_some]
+  · rfl
+  · rfl
 
 /-- **The failure branch**: if the checked decision is `none` on the transcript, the whole
 verifier run (under ANY query implementation and initialization) succeeds with probability
@@ -401,9 +402,9 @@ theorem probEvent_checkedRun_mk2_eq_zero {σ : Type} (init : ProbComp σ)
     (hfail : stirFinalCheckedAns oSt (FullTranscript.mk2 w r1).messages r
         (FullTranscript.mk2 w r1).challenges = none)
     (q : (F × F) × (∀ i, VOStmt ι F i) → Prop) :
-    Pr[q | OptionT.mk do
+    probEvent (q) (OptionT.mk do
         (simulateQ impl ((stirFinalVectorVerifierChecked (ι := ι) (F := F)).toVerifier.run
-          (r, oSt) (FullTranscript.mk2 w r1))).run' (← init)] = 0 := by
+          (r, oSt) (FullTranscript.mk2 w r1))).run' (← init)) = 0 := by
   have hver : ((stirFinalVectorVerifierChecked (ι := ι) (F := F)).toVerifier.run
       (r, oSt) (FullTranscript.mk2 w r1))
       = (OptionT.mk (pure none) :
@@ -412,7 +413,7 @@ theorem probEvent_checkedRun_mk2_eq_zero {σ : Type} (init : ProbComp σ)
         (r, oSt) (FullTranscript.mk2 w r1) = _
     rw [stirFinalVectorVerifierChecked_toVerifier_verify, hfail]
     rfl
-  refine probEvent_eq_zero ?_
+  refine (ProximityPrize.Compatibility.DiscreteSupportSemantics.prEvent_eq_zero_iff _ _).2 ?_
   intro y hy
   intro _
   rw [OptionT.mem_support_iff] at hy
@@ -458,19 +459,18 @@ theorem probEvent_spotGame_le
         / (Fintype.card F : ℝ≥0∞) ≤ B)
     (stmtIn : StmtIn) (witIn : WitIn)
     (prover : Prover oSpec StmtIn WitIn StmtOut WitOut (vspec.toProtocolSpec F)) :
-    Pr[fun x : (vspec.toProtocolSpec F).Transcript c.1.castSucc ×
+    probEvent (fun x : (vspec.toProtocolSpec F).Transcript c.1.castSucc ×
           (vspec.toProtocolSpec F).Challenge c ×
           (oSpec + ([(vspec.toProtocolSpec F).Challenge]ₒ'
             (fun i => challengeOracleInterface i))).QueryLog =>
-        P x.1 ∧ S x.1 (chalElemOf vspec c x.2.1)
-      | (do
+        P x.1 ∧ S x.1 (chalElemOf vspec c x.2.1)) ((do
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
           (do
             let ⟨⟨transcript, _⟩, proveQueryLog⟩ ←
               prover.runWithLogToRound c.1.castSucc stmtIn witIn
             let challenge ← liftComp ((vspec.toProtocolSpec F).getChallenge c) _
             return (transcript, challenge, proveQueryLog))).run' (← init)
-        : ProbComp _)]
+        : ProbComp _))
       ≤ B := by
   classical
   -- peel the init draw
@@ -487,7 +487,7 @@ theorem probEvent_spotGame_le
     (fun ch => pure (tr, ch, log)) _]
   -- collapse the pure trailing stage and recombine the average into a bind
   simp only [simulateQ_pure, StateT.run'_pure_lib]
-  rw [← probEvent_bind_eq_tsum]
+  rw [← OracleComp.prEvent_bind_eq_tsum]
   by_cases hP : P tr
   · -- the prefix predicate holds: comap marginal bound at the carried field element
     refine le_trans (probEvent_bind_le_uniform_marginal_comap
@@ -496,7 +496,7 @@ theorem probEvent_spotGame_le
       (fun x => le_of_eq (probEvent_chalElemOf_eq_uniform vspec c hc x)) ?_) ?_
     · -- the continuation forces the per-challenge condition at the carried value
       intro ch hch
-      refine probEvent_eq_zero ?_
+      refine (ProximityPrize.Compatibility.DiscreteSupportSemantics.prEvent_eq_zero_iff _ _).2 ?_
       rintro x hx ⟨-, hS⟩
       simp only [support_pure, Set.mem_singleton_iff] at hx
       subst hx
@@ -509,7 +509,9 @@ theorem probEvent_spotGame_le
       rw [hfilter]
       exact hB tr hP
   · -- the prefix predicate fails: the event is empty at this prefix
-    refine le_trans (le_of_eq (probEvent_eq_zero ?_)) (zero_le _)
+    refine le_trans (le_of_eq
+      ((ProximityPrize.Compatibility.DiscreteSupportSemantics.prEvent_eq_zero_iff _ _).2 ?_))
+      (by positivity)
     rintro x hx ⟨hPx, -⟩
     simp only [support_bind, support_pure, Set.mem_iUnion, Set.mem_singleton_iff,
       exists_prop] at hx
@@ -537,7 +539,7 @@ concentrated on the repetition challenge `C_fin` with value
 `(1−δ)·|ι|·⌈|F|/|ι|⌉/|F|` (= `1−δ` exactly when `|ι| ∣ |F|`). -/
 theorem stirFinalVectorVerifierChecked_toVerifier_rbrKnowledgeSoundness {σ : Type}
     (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp)) (δ : ℝ≥0) :
-    (stirFinalVectorVerifierChecked (ι := ι) (F := F)).toVerifier.rbrKnowledgeSoundness
+    (stirFinalVectorVerifierChecked (ι := ι) (F := F)).toVerifier.rbrKnowledgeSoundnessAveraged
       init impl (stirSpotRelIn ι F δ)
       (Set.univ : Set ((((F × F) × ∀ i, VOStmt ι F i)) × Unit))
       (fun i => if i = ⟨1, stirFinalVSpec_dir_one⟩ then stirSpotBudget ι F δ else 0) := by
@@ -574,7 +576,7 @@ theorem stirFinalVectorVerifierChecked_toVerifier_rbrKnowledgeSoundness {σ : Ty
       · exact Subtype.ext rfl
     subst hi
     rw [if_pos rfl]
-    refine le_trans (probEvent_mono ?_)
+    refine le_trans (prEvent_mono_of_support _ _ _ ?_)
       (probEvent_spotGame_le init impl
         (⟨1, stirFinalVSpec_dir_one⟩ :
           ((stirFinalVSpec ι F).toProtocolSpec F).ChallengeIdx) rfl
@@ -644,7 +646,7 @@ theorem stirFinalVectorVerifierChecked_toVerifier_rbrKnowledgeSoundness {σ : Ty
               push_cast
               ring
           _ ≤ ((1 - δ) * (Fintype.card ι : ℝ≥0)) * (stirSpotMaxFiber ι F : ℝ≥0) :=
-              mul_le_mul_right' hAnn _
+              mul_le_mul_of_nonneg_right hAnn (by positivity)
           _ = (1 - δ) * ((Fintype.card ι * stirSpotMaxFiber ι F : ℕ) : ℝ≥0) := by
               push_cast
               ring
@@ -678,7 +680,7 @@ open scoped Classical in
 `stirFinalVectorVerifierChecked` at the real spot-check budget. -/
 theorem stirFinalVectorVerifierChecked_rbrKnowledgeSoundness {σ : Type}
     (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp)) (δ : ℝ≥0) :
-    OracleVerifier.rbrKnowledgeSoundness init impl (stirSpotRelIn ι F δ)
+    OracleVerifier.rbrKnowledgeSoundnessAveraged init impl (stirSpotRelIn ι F δ)
       (Set.univ : Set ((((F × F) × ∀ i, VOStmt ι F i)) × Unit))
       (stirFinalVectorVerifierChecked (ι := ι) (F := F))
       (fun i => if i = ⟨1, stirFinalVSpec_dir_one⟩ then stirSpotBudget ι F δ else 0) :=
@@ -691,7 +693,7 @@ RBR knowledge sound at budget exactly `1 − δ` on the repetition challenge. -/
 theorem stirFinalVectorVerifierChecked_rbrKnowledgeSoundness_of_dvd {σ : Type}
     (init : ProbComp σ) (impl : QueryImpl []ₒ (StateT σ ProbComp)) (δ : ℝ≥0)
     (hdvd : Fintype.card ι ∣ Fintype.card F) :
-    OracleVerifier.rbrKnowledgeSoundness init impl (stirSpotRelIn ι F δ)
+    OracleVerifier.rbrKnowledgeSoundnessAveraged init impl (stirSpotRelIn ι F δ)
       (Set.univ : Set ((((F × F) × ∀ i, VOStmt ι F i)) × Unit))
       (stirFinalVectorVerifierChecked (ι := ι) (F := F))
       (fun i => if i = ⟨1, stirFinalVSpec_dir_one⟩ then 1 - δ else 0) := by

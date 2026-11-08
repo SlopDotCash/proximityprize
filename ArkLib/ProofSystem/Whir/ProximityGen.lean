@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mirco Richter, Poulami Das, Miguel Quaresma (Least Authority), Alexander Hicks
 -/
 
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 import ArkLib.Data.Probability.Notation
 
 /-!

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.JohnsonBound.ListSize
-import ArkLib.Data.CodingTheory.Basic.Distance
+import ProximityPrize.Extensions.Data.CodingTheory.Basic.Distance
 
 /-!
 # Johnson list-size bound in terms of `Code.minDist`

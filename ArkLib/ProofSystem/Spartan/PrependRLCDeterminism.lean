@@ -27,10 +27,10 @@ omit [IsDomain R] [SampleableType R] in
 /-- **`hV₆` witness: the honest RLC-target adapter's compiled verifier is pure.** -/
 theorem prependRLCTarget_toVerifier_pure :
     (prependRLCTarget (R := R) pp oSpec).verifier.toVerifier
-      = ⟨fun p _tr => pure ((∑ idx, p.1.1 idx * p.2 (.inl 0) idx, p.1), p.2)⟩ := by
+      = ⟨fun p _tr => pure ((∑ idx, p.1.1 idx * (show R from p.2 (.inl idx)), p.1), p.2)⟩ := by
   have h := OracleVerifier.toVerifier_eq_pure_of_collapse
     (prependRLCTarget (R := R) pp oSpec).verifier
-    (fun p _tr => (∑ idx, p.1.1 idx * p.2 (.inl 0) idx, p.1))
+    (fun p _tr => (∑ idx, p.1.1 idx * (show R from p.2 (.inl idx)), p.1))
     (fun stmt oStmt tr => by
       exact_mod_cast simulateQ_prependRLCTargetVerifier (R := R) pp oSpec stmt oStmt
         tr.messages tr.challenges)

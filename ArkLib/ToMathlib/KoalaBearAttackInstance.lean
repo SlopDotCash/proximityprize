@@ -277,7 +277,7 @@ theorem instance_violates :
 /-! ## The instance, the full-field winning set, and the residual theorems -/
 
 /-- The violating attack instance. -/
-noncomputable def attackInstance : ViolatingInstance KoalaBear.rsCodeSet (3 / 10) 2 where
+noncomputable def attackInstance : ExistentialEncoding.ViolatingInstance KoalaBear.rsCodeSet (3 / 10) 2 where
   v := v
   μ₁ := 0
   μ₂ := 0

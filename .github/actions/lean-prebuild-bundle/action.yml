@@ -1,0 +1,65 @@
+name: Transfer a same-run Lean prebuild
+description: Archive or restore pinned Lean build outputs and their timing logs
+inputs:
+  phase:
+    description: Canonical or extensions prebuild phase
+    required: true
+  operation:
+    description: Save or restore the phase bundle
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Download this run's prebuild
+      if: inputs.operation == 'restore'
+      uses: actions/download-artifact@v8
+      with:
+        name: arklib-lean-${{ inputs.phase }}
+        path: ${{ runner.temp }}/arklib-lean-${{ inputs.phase }}
+
+    - name: Verify and transfer Lean build state
+      shell: bash
+      env:
+        PREBUILD_PHASE: ${{ inputs.phase }}
+        PREBUILD_OPERATION: ${{ inputs.operation }}
+      run: |
+        set -euo pipefail
+        case "$PREBUILD_PHASE" in
+          canonical|extensions) ;;
+          *) echo "Unknown Lean prebuild phase: $PREBUILD_PHASE" >&2; exit 1 ;;
+        esac
+        bundle="$RUNNER_TEMP/arklib-lean-$PREBUILD_PHASE"
+        archive="$bundle/lake.tar.zst"
+        source_identity() {
+          printf '%s\n' "$PREBUILD_PHASE" "$GITHUB_RUN_ID" "$RUNNER_OS" "$RUNNER_ARCH"
+          git rev-parse HEAD
+          sha256sum lean-toolchain lakefile.toml lake-manifest.json
+        }
+        archive_hash() {
+          sha256sum "$archive" | cut -d ' ' -f 1
+        }
+        case "$PREBUILD_OPERATION" in
+          save)
+            source_identity > "$bundle/source.txt"
+            tar --exclude='*.setup.json' -cf - .lake/packages .lake/build | zstd -T1 -o "$archive"
+            archive_hash > "$bundle/archive.sha256"
+            ;;
+          restore)
+            source_identity | cmp - "$bundle/source.txt"
+            archive_hash | cmp - "$bundle/archive.sha256"
+            zstd -dc "$archive" | tar -xf -
+            rm -- "$archive"
+            ;;
+          *) echo "Unknown Lean prebuild operation: $PREBUILD_OPERATION" >&2; exit 1 ;;
+        esac
+
+    - name: Upload prebuild for dependent jobs
+      if: inputs.operation == 'save'
+      uses: actions/upload-artifact@v7
+      with:
+        name: arklib-lean-${{ inputs.phase }}
+        path: ${{ runner.temp }}/arklib-lean-${{ inputs.phase }}
+        if-no-files-found: error
+        compression-level: 0
+        overwrite: true
+        retention-days: 1

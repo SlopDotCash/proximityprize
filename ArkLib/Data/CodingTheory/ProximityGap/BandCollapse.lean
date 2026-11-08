@@ -275,7 +275,7 @@ theorem badScalar_card_le_band
     exact hinjzero i hvi γ hγm.1 γ' hγm'.1 hγm.2 hγm'.2
   have hcount : ∀ i ∈ sv, B.card - 1 ≤ (B.filter (fun γ => w γ i ≠ 0)).card := by
     intro i hi
-    have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+    have hsplit := Finset.card_filter_add_card_filter_not
       (s := B) (p := fun γ => w γ i = 0)
     have hsame : (B.filter (fun γ => ¬ w γ i = 0)).card
         = (B.filter (fun γ => w γ i ≠ 0)).card := rfl

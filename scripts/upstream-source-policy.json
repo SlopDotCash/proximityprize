@@ -1,0 +1,7 @@
+{
+  "repository": "https://github.com/Verified-zkEVM/ArkLib",
+  "revision": "31ff7ddf9bc209ffaeab516359cd17f47d9bd6f1",
+  "issue": "https://github.com/SlopDotCash/proximityprize/issues/2",
+  "note": "No inherited placeholder theorems remain at this revision. The previous tuple stubs were proved upstream. No native evaluation or custom axiom is exempted.",
+  "exceptions": []
+}

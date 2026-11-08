@@ -38,7 +38,7 @@ variable {F : Type} [Field F]
 `Q(X + p)` equals the value at `p` of the `d`-th Hasse derivative of `Q`. -/
 lemma coeff_shift_eq_eval_hasseDeriv (p : Fin 2 → F) (Q : MvPolynomial (Fin 2) F)
     (d : Fin 2 →₀ ℕ) :
-    coeff d (aeval (fun i => X i + C (p i)) Q) = eval p (hasseDeriv d Q) := by
+    (aeval (fun i => X i + C (p i)) Q).coeff d = eval p (hasseDeriv d Q) := by
   have hmap : MvPolynomial.map (eval p) (taylor Q) = aeval (fun i => X i + C (p i)) Q := by
     have h : (MvPolynomial.map (eval p)).comp taylor
         = (aeval (fun i => X i + C (p i)) : MvPolynomial (Fin 2) F →ₐ[F] _).toRingHom := by
@@ -100,13 +100,13 @@ theorem rootMultiplicity_aeval_ge
     · simp [hΘ, hv, hpoint, hw, Polynomial.comp_eq_aeval]
   -- Heart: `Tᵐ ∣ Θ R`.
   have hXmR : (Polynomial.X : Polynomial F) ^ m ∣ Θ R := by
-    have hΘR : Θ R = ∑ d ∈ R.support, Θ (monomial d (coeff d R)) := by
+    have hΘR : Θ R = ∑ d ∈ R.support, Θ (monomial d (R.coeff d)) := by
       conv_lhs => rw [R.as_sum]
       rw [map_sum]
     rw [hΘR]
     apply Finset.dvd_sum
     intro d hd
-    have hcoeff : coeff d R ≠ 0 := MvPolynomial.mem_support_iff.mp hd
+    have hcoeff : R.coeff d ≠ 0 := MvPolynomial.mem_support_iff.mp hd
     have hdeg : m ≤ d 0 + d 1 := by
       by_contra hlt
       push_neg at hlt
@@ -115,7 +115,7 @@ theorem rootMultiplicity_aeval_ge
       exact h_mult d (by rw [fin2_sum]; omega)
     rw [hΘ, MvPolynomial.aeval_monomial, Finsupp.prod_fintype _ _ (fun i => by simp),
       Fin.prod_univ_two]
-    -- goal: Tᵐ ∣ algebraMap _ _ (coeff d R) * (g 0 ^ d 0 * g 1 ^ d 1)
+    -- goal: Tᵐ ∣ algebraMap _ _ (R.coeff d) * (g 0 ^ d 0 * g 1 ^ d 1)
     refine Dvd.dvd.mul_left ?_ _
     show (Polynomial.X : Polynomial F) ^ m ∣ Polynomial.X ^ (d 0) * w ^ (d 1)
     have h1 : (Polynomial.X : Polynomial F) ^ (d 0) * Polynomial.X ^ (d 1)

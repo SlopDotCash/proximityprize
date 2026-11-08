@@ -1,0 +1,1133 @@
+{
+  "source_revision": "1040ed0e6f208de9afd1a1aa56888ccd830c0964",
+  "rename_revision": "2befd24ba5433ebbfdfdedd6a1e9275f7ffd4950",
+  "upstream_revision": "db91471fcb5e1dd90fa638bf3b5d5eb45d0dd012",
+  "canonical_boundary": "All upstream-tracked paths excluded from downstream rewriting.",
+  "scope": "Explicit prover-averaged APIs preserve the earlier game. The canonical fixed-prefix API is used for callers that originally required WorstCase. No converse upgrade from an averaged bound is supplied.",
+  "verified_upstream_renames": {
+    "Verifier.cast_rbrKnowledgeSoundness": "Verifier.cast_rbrKnowledgeSoundnessAveraged",
+    "OracleVerifier.cast_rbrKnowledgeSoundness": "OracleVerifier.cast_rbrKnowledgeSoundnessAveraged",
+    "OracleVerifier.castIdx_rbrKnowledgeSoundnessWorstCase": "OracleVerifier.castIdx_rbrKnowledgeSoundness",
+    "Verifier.append_rbrKnowledgeSoundnessWorstCaseWith_of_guarded_first": "Verifier.append_rbrKnowledgeSoundnessWith_of_guarded_first",
+    "Verifier.append_rbrKnowledgeSoundnessWorstCase_of_guarded_first": "Verifier.append_rbrKnowledgeSoundness_of_guarded_first",
+    "OracleVerifier.append_rbrKnowledgeSoundnessWorstCase_of_guarded_first": "OracleVerifier.append_rbrKnowledgeSoundness_of_guarded_first",
+    "Verifier.append_rbrSoundnessWorstCase_of_pure_first": "Verifier.append_rbrSoundness_of_pure_first",
+    "Verifier.seqCompose_rbrKnowledgeSoundnessWorstCaseWith_of_guarded": "Verifier.seqCompose_rbrKnowledgeSoundnessWith_of_guarded",
+    "Verifier.seqCompose_rbrKnowledgeSoundnessWorstCase_of_guarded": "Verifier.seqCompose_rbrKnowledgeSoundness_of_guarded",
+    "OracleVerifier.seqCompose_rbrKnowledgeSoundnessWorstCaseWith_of_guarded": "OracleVerifier.seqCompose_rbrKnowledgeSoundnessWith_of_guarded",
+    "OracleVerifier.seqCompose_rbrKnowledgeSoundnessWorstCase_of_guarded": "OracleVerifier.seqCompose_rbrKnowledgeSoundness_of_guarded",
+    "OracleVerifier.liftContext_rbrSoundnessWorstCase": "OracleVerifier.liftContext_rbrSoundness",
+    "OracleVerifier.liftContext_rbrKnowledgeSoundnessWorstCaseWith": "OracleVerifier.liftContext_rbrKnowledgeSoundnessWith",
+    "OracleVerifier.liftContext_rbrKnowledgeSoundnessWorstCase": "OracleVerifier.liftContext_rbrKnowledgeSoundness",
+    "Verifier.liftContext_rbrSoundnessWorstCase": "Verifier.liftContext_rbrSoundness",
+    "Verifier.liftContext_rbrKnowledgeSoundnessWorstCaseWith": "Verifier.liftContext_rbrKnowledgeSoundnessWith",
+    "Verifier.liftContext_rbrKnowledgeSoundnessWorstCase": "Verifier.liftContext_rbrKnowledgeSoundness",
+    "Verifier.GuardedForm.knowledgeSoundnessWith_of_rbrKnowledgeSoundnessWorstCaseWith": "Verifier.GuardedForm.knowledgeSoundnessWith_of_rbrKnowledgeSoundnessWith",
+    "Verifier.GuardedForm.knowledgeSoundness_of_rbrKnowledgeSoundnessWorstCaseWith": "Verifier.GuardedForm.knowledgeSoundness_of_rbrKnowledgeSoundnessWith",
+    "Verifier.GuardedForm.knowledgeSoundness_of_rbrKnowledgeSoundnessWorstCase": "Verifier.GuardedForm.knowledgeSoundness_of_rbrKnowledgeSoundness",
+    "OracleVerifier.knowledgeSoundnessWith_of_rbrKnowledgeSoundnessWorstCaseWith_of_guarded": "OracleVerifier.knowledgeSoundnessWith_of_rbrKnowledgeSoundnessWith_of_guarded",
+    "OracleVerifier.knowledgeSoundness_of_rbrKnowledgeSoundnessWorstCaseWith_of_guarded": "OracleVerifier.knowledgeSoundness_of_rbrKnowledgeSoundnessWith_of_guarded",
+    "OracleVerifier.knowledgeSoundness_of_rbrKnowledgeSoundnessWorstCase_of_guarded": "OracleVerifier.knowledgeSoundness_of_rbrKnowledgeSoundness_of_guarded",
+    "Verifier.rbrKnowledgeSoundnessWorstCaseWith_of_two_message": "Verifier.rbrKnowledgeSoundnessWith_of_two_message",
+    "Verifier.rbrKnowledgeSoundnessWorstCaseWith_of_isEmpty_challengeIdx": "Verifier.rbrKnowledgeSoundnessWith_of_isEmpty_challengeIdx",
+    "Verifier.rbrSoundnessWorstCase_of_rbrKnowledgeSoundnessWorstCaseWith": "Verifier.rbrSoundness_of_rbrKnowledgeSoundnessWith",
+    "Verifier.rbrSoundnessWorstCase_of_rbrKnowledgeSoundnessWorstCase": "Verifier.rbrSoundness_of_rbrKnowledgeSoundness",
+    "Verifier.soundness_of_rbrSoundnessWorstCase_of_full": "Verifier.soundness_of_rbrSoundness_of_full",
+    "Verifier.GuardedForm.soundness_of_rbrSoundnessWorstCase": "Verifier.GuardedForm.soundness_of_rbrSoundness",
+    "OracleVerifier.soundness_of_rbrSoundnessWorstCase_of_guarded": "OracleVerifier.soundness_of_rbrSoundness_of_guarded",
+    "Verifier.rbrKnowledgeSoundness_implies_rbrSoundness": "Verifier.rbrKnowledgeSoundnessAveraged_implies_rbrSoundnessAveraged",
+    "Verifier.rbrSoundness_implies_rbrKnowledgeSoundness": "Verifier.rbrSoundnessAveraged_implies_rbrKnowledgeSoundnessAveraged",
+    "Verifier.rbrSoundness_iff_rbrKnowledgeSoundness": "Verifier.rbrSoundnessAveraged_iff_rbrKnowledgeSoundnessAveraged",
+    "Verifier.rbrKnowledgeSoundnessWorstCase_implies_rbrSoundnessWorstCase": "Verifier.rbrKnowledgeSoundness_implies_rbrSoundness",
+    "Verifier.rbrSoundnessWorstCase_implies_rbrKnowledgeSoundnessWorstCase": "Verifier.rbrSoundness_implies_rbrKnowledgeSoundness",
+    "Verifier.rbrSoundnessWorstCase_iff_rbrKnowledgeSoundnessWorstCase": "Verifier.rbrSoundness_iff_rbrKnowledgeSoundness",
+    "Verifier.rbrSoundness_iff_rbrKnowledgeSoundness_unit": "Verifier.rbrSoundnessAveraged_iff_rbrKnowledgeSoundnessAveraged_unit",
+    "Verifier.rbrSoundnessWorstCase_iff_rbrKnowledgeSoundnessWorstCase_unit": "Verifier.rbrSoundness_iff_rbrKnowledgeSoundness_unit",
+    "Verifier.rbrSoundness": "Verifier.rbrSoundnessAveraged",
+    "Verifier.rbrKnowledgeSoundness": "Verifier.rbrKnowledgeSoundnessAveraged",
+    "Verifier.rbrKnowledgeSoundnessWith": "Verifier.rbrKnowledgeSoundnessAveragedWith",
+    "Verifier.rbrKnowledgeSoundness_iff_exists_with": "Verifier.rbrKnowledgeSoundnessAveraged_iff_exists_with",
+    "Verifier.rbrSoundnessWorstCase": "Verifier.rbrSoundness",
+    "Verifier.rbrKnowledgeSoundnessWorstCase": "Verifier.rbrKnowledgeSoundness",
+    "Verifier.rbrKnowledgeSoundnessWorstCaseWith": "Verifier.rbrKnowledgeSoundnessWith",
+    "Verifier.rbrKnowledgeSoundnessWorstCase_iff_exists_with": "Verifier.rbrKnowledgeSoundness_iff_exists_with",
+    "Verifier.rbrSoundnessWorstCase_implies_rbrSoundness": "Verifier.rbrSoundness_implies_rbrSoundnessAveraged",
+    "Verifier.rbrKnowledgeSoundnessWorstCase_implies_rbrKnowledgeSoundness": "Verifier.rbrKnowledgeSoundness_implies_rbrKnowledgeSoundnessAveraged",
+    "Verifier.rbrKnowledgeSoundnessWorstCaseWith_implies_rbrKnowledgeSoundnessWith": "Verifier.rbrKnowledgeSoundnessWith_implies_rbrKnowledgeSoundnessAveragedWith",
+    "Verifier.rbrKnowledgeSoundnessOneShot_implies_rbrKnowledgeSoundness": "Verifier.rbrKnowledgeSoundnessOneShot_implies_rbrKnowledgeSoundnessAveraged",
+    "OracleVerifier.rbrSoundness": "OracleVerifier.rbrSoundnessAveraged",
+    "OracleVerifier.rbrKnowledgeSoundness": "OracleVerifier.rbrKnowledgeSoundnessAveraged",
+    "OracleVerifier.rbrKnowledgeSoundnessWith": "OracleVerifier.rbrKnowledgeSoundnessAveragedWith",
+    "OracleProof.rbrKnowledgeSoundness": "OracleProof.rbrKnowledgeSoundnessAveraged",
+    "OracleProof.rbrKnowledgeSoundnessWorstCase": "OracleProof.rbrKnowledgeSoundness",
+    "OracleProof.rbrKnowledgeSoundnessWorstCase_implies_rbrKnowledgeSoundness": "OracleProof.rbrKnowledgeSoundness_implies_rbrKnowledgeSoundnessAveraged",
+    "Verifier.id_rbrSoundness": "Verifier.id_rbrSoundnessAveraged",
+    "Verifier.id_rbrKnowledgeSoundness": "Verifier.id_rbrKnowledgeSoundnessAveraged",
+    "OracleVerifier.id_rbrKnowledgeSoundness": "OracleVerifier.id_rbrKnowledgeSoundnessAveraged"
+  },
+  "historical_extractions": {
+    "ArkLib/OracleReduction/Execution.lean": [
+      "Prover.runWithLogToRound_discard_log_eq_runToRound"
+    ],
+    "ArkLib/OracleReduction/Security/Implications.lean": [
+      "Verifier.rbrKnowledgeSoundnessAveraged_implies_rbrSoundnessAveraged"
+    ],
+    "ArkLib/OracleReduction/Security/RbrGame.lean": [
+      "ProtocolSpec.prEvent_simulateQ_addLift_getChallenge_bind_le"
+    ],
+    "ArkLib/OracleReduction/Security/RoundByRound.lean": [
+      "OracleProof.rbrKnowledgeSoundnessAveraged",
+      "OracleProof.rbrKnowledgeSoundness_implies_rbrKnowledgeSoundnessAveraged",
+      "OracleVerifier.id_rbrKnowledgeSoundnessAveraged",
+      "OracleVerifier.rbrKnowledgeSoundnessAveraged",
+      "OracleVerifier.rbrKnowledgeSoundnessAveragedWith",
+      "OracleVerifier.rbrSoundnessAveraged",
+      "Verifier.id_rbrKnowledgeSoundnessAveraged",
+      "Verifier.id_rbrSoundnessAveraged",
+      "Verifier.rbrKnowledgeSoundnessAveraged",
+      "Verifier.rbrKnowledgeSoundnessAveragedWith",
+      "Verifier.rbrKnowledgeSoundnessWith_implies_rbrKnowledgeSoundnessAveragedWith",
+      "Verifier.rbrKnowledgeSoundness_implies_rbrKnowledgeSoundnessAveraged",
+      "Verifier.rbrSoundnessAveraged",
+      "Verifier.rbrSoundness_implies_rbrSoundnessAveraged"
+    ]
+  },
+  "new_compatibility_sources": {
+    "ProximityPrize/Compatibility/AveragedRbr/Security/Execution.lean": "e71c24c19008f58da0810c7ab3e7d8bc345993b69e2ecc8d5317943a152f11fc",
+    "ProximityPrize/Compatibility/AveragedRbr/Security/Implications.lean": "b4db451d2a1df5eeb27884810043fe6dcf68dc22a7ae646d22db975e72044d98",
+    "ProximityPrize/Compatibility/AveragedRbr/Security/RbrGame.lean": "32538eb85ca42b946bc6f82f1bd38b8ae0e8145e59ff28aee926a938811bcb36",
+    "ProximityPrize/Compatibility/AveragedRbr/Security/RoundByRound.lean": "085a3d92639dcf22b2c74188c5e0f3d9a2eabfb5386f4fad08f55c3afc6c34bb"
+  },
+  "caller_migrations": {
+    "ArkLib/OracleReduction/CastInOut.lean": {
+      "before_sha256": "7dae58960b62fb6e13c2d6fdc058a463f9398ed3a3689418720a5a9e5a6126d9",
+      "after_sha256": "854adcee35d0a87f0a33097151df34a0a3461c9bbd395e072d401810f88a0b18",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 4,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/OracleReduction/Completeness.lean": {
+      "before_sha256": "99cf5a3fdc29505d163414d70149a204c6dc1c95b137b649556d1c1c4a29cc0a",
+      "after_sha256": "ff0f3f9cb8786009b6e6f9e1f9b70b4d99cb9b366ca457ca011a0f4209fdf6d6",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 1,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.Execution",
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKeystone.lean": {
+      "before_sha256": "c38ca659bab83384b5b32dbff29f5105a0bdf4af366f9413ce065b8e13c88950",
+      "after_sha256": "959f2898e0d37b47c04286923b399853eef5e7892f1c8bdff8ec7c08b010513d",
+      "renames": {
+        "rbrSoundness": "rbrSoundnessAveraged",
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 2,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeChallenge.lean": {
+      "before_sha256": "e9b8f2d0ca83aeb2d56fb9539a76279eb40b0fed7c9b044d7bc322d5926a1a4f",
+      "after_sha256": "f7eef35af5bf388750299ccd62924e9577fb085ed189a674f349084344e298be",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 3,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeChallengeOracleLift.lean": {
+      "before_sha256": "48329b01db7ae28126117bf9181f12c0b6ac261dbff08ea5ee3ac60c23b36d8c",
+      "after_sha256": "4850537409906c499de37af4dbaccc0252163fa1465999925015fc907c50164d",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 4,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeEmpty.lean": {
+      "before_sha256": "cf56a5b1d5b831dab18acc3cb7faa525c91024499c768c9faf08609e1a8caee8",
+      "after_sha256": "7f329745fe171574b83c88dbae913540117aa5fba76fc3d350a1c8c3e1e220a0",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 3,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeOracleLift.lean": {
+      "before_sha256": "367214ec14ed695f9e6914622385864679902dc481fb96fda7024df39a8bc858",
+      "after_sha256": "4a634aabd690250b4481ca33b98048674f954bd5e459fdf3f962eee6d721d127",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 6,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgePhase2ReconcileProof.lean": {
+      "before_sha256": "7e99c0218b23401190e2170b5c8c2d5b0101d26aea9f54da71a7cafec1721672",
+      "after_sha256": "6fbc5d85b7f1a8f577bec637ec929d17d7df8b83c562b540931e08015930aaf1",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 3,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeSoundness.lean": {
+      "before_sha256": "fab3b9a6ff9cc0f9d922136f0e613099b6329fa50ce98ff2443f0c6bf4a1a58e",
+      "after_sha256": "701770137f0c7a1ec5adf5cb909da0f7133aaef6b5f852a458f3795bce505c80",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 6,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeStateCollapse.lean": {
+      "before_sha256": "5bc4d560cffc451371891607e3bda144784dce004305c4f76798316976e5d354",
+      "after_sha256": "a813df76509b7b8cbf2c24c96614e9f4b2a50ede5896a4535b5693703dcd08f9",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged",
+        "rbrSoundness": "rbrSoundnessAveraged"
+      },
+      "occurrences": 10,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/OracleReduction/Composition/Sequential/AppendRbrSoundnessOracleLift.lean": {
+      "before_sha256": "2fb43828000a9e096f83719af7918652d99671534e58fca31eaca775d5da2578",
+      "after_sha256": "dc40916dab16519edf4c47b95b7d535e251a4ccf8b4a089ac0d78d1992e13bcb",
+      "renames": {
+        "rbrSoundness": "rbrSoundnessAveraged"
+      },
+      "occurrences": 6,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/OracleReduction/Composition/Sequential/AppendRbrSoundnessPhase2Proof.lean": {
+      "before_sha256": "016773b5ae3e224526c71343d32c887ae7d007fc789719ea6fd7027b6b28fd7f",
+      "after_sha256": "1d7d682f761c6d3d8b09db91837e375734113b0952f5ed9c2361be7d7c0b64be",
+      "renames": {
+        "rbrSoundness": "rbrSoundnessAveraged"
+      },
+      "occurrences": 5,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/OracleReduction/Composition/Sequential/AppendResidualDischarges.lean": {
+      "before_sha256": "3b8755134891011b3e5100b4135aa3070017fbc10e581dbe5a639bcc823942fd",
+      "after_sha256": "86f7fea510129dcc3dc706849026299118117ef9ab70710e469e78d9b5eff40e",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 2,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/OracleReduction/Composition/Sequential/AppendResidualDischargesSeams.lean": {
+      "before_sha256": "760964aca47c1c27324dc8f2ab931655997dd5d94f7d6e90fcb9475ad8a34969",
+      "after_sha256": "31fdb073d6cb09d8c9f178f79a201c35fdde542aae1da1530ff2088eeb409181",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 6,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/OracleReduction/Composition/Sequential/KnowledgeFailure.lean": {
+      "before_sha256": "239fb34748ec63023f1709e50b04287bd0c7cbeb4cb870a9b8eaa22c4dc21460",
+      "after_sha256": "4def4c7a7e5ed51393a26ed3add26d8705dd54d5a8758819d5af64a4633e9c0a",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 25,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/OracleReduction/Composition/Sequential/SeqComposeRbrKnowledgeProof.lean": {
+      "before_sha256": "46dd018275887739cb2b92b4a8787113352d5384b9d7f2d8df4aa549e6126cf9",
+      "after_sha256": "0e93ba6133fd38a2d6ba56f2154c900d4d128328d88de7ad818c0927d03882a3",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged",
+        "id_rbrKnowledgeSoundness": "id_rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 6,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/OracleReduction/FullPredKSF.lean": {
+      "before_sha256": "46b2ee62aa5aa2f78f8c8d888d4097871c21b17651826cd39743bdac90c055ba",
+      "after_sha256": "69a44d2c1ae8b2ee36a7ca7059c3e22eb10602431c41be1008128a1eae340e42",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 1,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/OracleReduction/Security/ImplicationsCore.lean": {
+      "before_sha256": "73510e1a7f78893073f94a2bd3feb507eea6beafeb74d9069c64fd6762788c17",
+      "after_sha256": "04d80e9b62354c630b2a0b8ac8bea846ba658797f203a280b424e827240d0a8a",
+      "renames": {
+        "rbrKnowledgeSoundnessWorstCase": "rbrKnowledgeSoundness",
+        "knowledgeSoundness_of_rbrKnowledgeSoundnessWorstCase": "knowledgeSoundness_of_rbrKnowledgeSoundness",
+        "rbrSoundness": "rbrSoundnessAveraged",
+        "rbrKnowledgeSoundness_implies_rbrSoundness": "rbrKnowledgeSoundnessAveraged_implies_rbrSoundnessAveraged"
+      },
+      "occurrences": 4,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.Implications",
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/OracleReduction/Security/RbrKnowledgeConjoin.lean": {
+      "before_sha256": "7b3c39d8d4059f4d2325cfa8f3980dce07dc9bcffe0b418c469086e5a1a44e4a",
+      "after_sha256": "fd0123b21f89638c78afbb3592ff2c5ca3e7cd0873581d0e501e2c3dff1e1195",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 2,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/OracleReduction/Security/RbrKnowledgeTruncate.lean": {
+      "before_sha256": "ccff05cbc86a0911b6134ef448e0683be3f3b72f1dcff179be8c292fa5bb0f37",
+      "after_sha256": "e0556a0d20966c4235e72c31ab6cf7834f6c57832cf93fe83db87ca7065383fa",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 5,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/OracleReduction/StateCollapse.lean": {
+      "before_sha256": "fa372a85ef4ab214735d1d6d265cb8fa2113aa9831f2a8e0acd6ec628e4144ec",
+      "after_sha256": "98aaab9d48aa97157c61a6906dfbf6fb48304966146b8e272ebf06cc7c9eacb4",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged",
+        "rbrSoundness": "rbrSoundnessAveraged"
+      },
+      "occurrences": 4,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Binius/FRIBinius/CoreInteractionPhase.lean": {
+      "before_sha256": "d1b9be35de59548d93e5160f9109901d878e0ce27c86941314342c1131fda9e9",
+      "after_sha256": "ed9f0864277710d3340c7d9456dfd7d14be9eb2f96f2ce718621a3fcbf311d9c",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged",
+        "rbrKnowledgeSoundnessWorstCaseWith_of_isEmpty_challengeIdx": "rbrKnowledgeSoundnessWith_of_isEmpty_challengeIdx",
+        "rbrKnowledgeSoundnessWorstCase_implies_rbrKnowledgeSoundness": "rbrKnowledgeSoundness_implies_rbrKnowledgeSoundnessAveraged",
+        "rbrKnowledgeSoundnessWorstCase_iff_exists_with": "rbrKnowledgeSoundness_iff_exists_with"
+      },
+      "occurrences": 6,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Binius/FRIBinius/General.lean": {
+      "before_sha256": "0836c224a4e63ebdbd4179256ec3a582446774604faa010895a477bc56dacc0c",
+      "after_sha256": "3de902e9345c7acbc68227bc29a97ce2636bcbc98bba921a81d95baad3011f87",
+      "followup_after_sha256": "89f038def59491b69697b7462ed889ff49e1989f81bc2861ff2103aca5cadd7c",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 4,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Logup/Security/LogupProtocol2Status.lean": {
+      "before_sha256": "d54c4a431314b892749e3434ebcbd7a68d266b7f9dcc7e15d2e523bc08fb4716",
+      "after_sha256": "bcef57a71df8a7939d3cf0cf040e92c34de478034cbd01926fe2198320d75d30",
+      "renames": {
+        "rbrSoundness": "rbrSoundnessAveraged"
+      },
+      "occurrences": 14,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Logup/Security/OuterMaliciousSoundness.lean": {
+      "before_sha256": "c45b871d6952c503e06b91dcdbe336a7aa1eaf94d9f2e7e84238b054d1492f2e",
+      "after_sha256": "69bd9bb8dac6c0d7e1b1119e4276184101c84d5a88b4ebc09e442d374edc55e4",
+      "renames": {
+        "rbrSoundness": "rbrSoundnessAveraged"
+      },
+      "occurrences": 1,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Logup/Security/OuterRbrSoundness.lean": {
+      "before_sha256": "89643d3c2ef062326d5d9cb4b172346bffd82958e9691945ba7f2e2f5f7b6616",
+      "after_sha256": "136bccb33d3910d6ad225467cd072fc4e8c9b525baebe1086b3d82f9212e2d85",
+      "renames": {
+        "rbrSoundness": "rbrSoundnessAveraged"
+      },
+      "occurrences": 5,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Logup/Security/RbrToSoundBridge.lean": {
+      "before_sha256": "621663b96a77e781ec2c305b9163329254b7d5ea5c302c5f0adafbc8a9945bb4",
+      "after_sha256": "eefeda6a277f228d496dbba3adf1cbf9dbaa91a2e6c166297bc9461a77eff250",
+      "renames": {
+        "rbrSoundness": "rbrSoundnessAveraged"
+      },
+      "occurrences": 3,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Logup/Security/SumcheckSoundness.lean": {
+      "before_sha256": "f6e046d3ae43866c693835672396f0418ff34089c7f169b66eee75107e26f890",
+      "after_sha256": "c7b293aa9fceb1d99666711e288cb03661b03c3b434d844665d8bb99ae1355c5",
+      "renames": {
+        "rbrSoundness": "rbrSoundnessAveraged"
+      },
+      "occurrences": 1,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Logup/Security/SumcheckSoundnessLift.lean": {
+      "before_sha256": "a3fb515dbc5b4a2cd7ea245b10ae90f25e3040f2c75b70e53e9f475e831c192e",
+      "after_sha256": "fe11b21311a7e976a8916b227610d13c3a8c859ea6d18298254bcf002facc1a6",
+      "renames": {
+        "rbrSoundness": "rbrSoundnessAveraged"
+      },
+      "occurrences": 4,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Logup/Security/SumcheckSoundnessProjClosed.lean": {
+      "before_sha256": "05b903d5f4d29351c30db7262ec21aa32cef9eccf97bf9b533b13d738e46a300",
+      "after_sha256": "ddec539be88bdf83840d036817be007c40573ffe3160063d2385d147e81933b9",
+      "renames": {
+        "rbrSoundness": "rbrSoundnessAveraged"
+      },
+      "occurrences": 1,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Logup/Security/SumcheckSoundnessWired.lean": {
+      "before_sha256": "06e6860488397e661e461474451583e95810fdeafcac0ca11e70c6901e1509b5",
+      "after_sha256": "998162bc760950d34f8a2a76f5bf7f8dd3af271b5c74d97ad7a148361e0deea7",
+      "renames": {
+        "rbrSoundness": "rbrSoundnessAveraged"
+      },
+      "occurrences": 14,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/RingSwitching/BatchingPhase.lean": {
+      "before_sha256": "288d42e119cd40cc4c8da514fcfef1bd92232489ec228f944e80a86da1cf7f73",
+      "after_sha256": "d71e1650d051f1c17e2ab64b101df652746c2f3f8cad53020b2c0b4e9b8b7e8e",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 1,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/RingSwitching/General.lean": {
+      "before_sha256": "1f7e4c20aef9004eb24c4e38ffe9774cdbfc4b88e45658d75913ed0ab6fd40ed",
+      "after_sha256": "484508dfab0a1415b1f6ad1c7a367dbe21c04118a153cd7f399c8053d5bc3626",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 4,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/RingSwitching/RbrKnowledgeWiring.lean": {
+      "before_sha256": "f97f27f661e2b9916e1bc1e6605cbe95215f297779f0dba11393496de59aa10a",
+      "after_sha256": "e35d83d62ad05d83261a86f53f362c9e16a172006af9b6bc1b1016633f66a3fa",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 2,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/RingSwitching/RbrKnowledgeWiringFull.lean": {
+      "before_sha256": "a31eacf63e9bf3d5d322e6e145eac36c4ec3bf9d9dc2daf7cc207f441bf885d5",
+      "after_sha256": "fd4ce181e3a75f8cca66d113f98b137eb7b5c063af7cf02b1ac89b34570a8abc",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 3,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ],
+      "followup_after_sha256": "7cd544a0bcc1c815eac51771710f9db8427004e2ce120fb08024aadaa6747b1a",
+      "followup": "The canonical MLIOPCS field supplies fixed-prefix soundness, which implies the averaged bound used by the historical append seam."
+    },
+    "ArkLib/ProofSystem/RingSwitching/SumcheckPhase.lean": {
+      "before_sha256": "84b6a01d396db5045b391a8daedf05b5ea120152663fe541be3c9f944536c299",
+      "after_sha256": "6e580c244903c15a1571af942db56b71bd082acf1cef6214a260b93c35acf176",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 4,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Stir/BlockRbrBudgets.lean": {
+      "before_sha256": "e8297b3e6c3f1524293c0cda8648731ae701287f42ef3d3df3d1e0e18086fbd0",
+      "after_sha256": "8e59a26b226ee1a7f99e872fd7cda409edad201f960142e814dc11820135d5a3",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 7,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Stir/ChainRbrIndicator.lean": {
+      "before_sha256": "1e65a8bc7ef18013c9314e3d196afb96a875ee0f8741de79f87563e14b5fa3ad",
+      "after_sha256": "e9caac585bfd2a318cc96708847b737ad89e8c07d65a677b3c34f00be3ccc203",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 3,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Stir/CheckingVerifier.lean": {
+      "before_sha256": "346a480b9f0b7f66c202a7d5130c89d512a8bd8f40f3cc8eeb594f240ac1f8c2",
+      "after_sha256": "87db67f82f3b6690ff529f06955a1803b866f9f571ebed788325fc426d659e83",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 1,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Stir/InitAppendRbr.lean": {
+      "before_sha256": "29b233103ccb558dab91f27ec1ea2cc1a5c5d8769935a106add4e8593164175b",
+      "after_sha256": "f07ce9f1f2e6feba71993b9f03511a8bb59fda4bf2fc0a9bbc8314c1453630ac",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 2,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Stir/InitRbrSoundness.lean": {
+      "before_sha256": "d07e429c39737a7ae7344319f190becdc27ec025232ccda7138c51dc869ec076",
+      "after_sha256": "5de372bf2643f8f885a0f095b80a9b8f7a96ae20128e980026393308f80ed632",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 3,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Stir/MultiRoundAssembly.lean": {
+      "before_sha256": "4527a023991bb22b2b56b689817378d021812126068957d185f7418e51a6c89c",
+      "after_sha256": "1214cd1805afe875f351d821378f1ca6e01a4290e291d7687c0d86b3b36bfff1",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 1,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Stir/MultiRoundSpecT.lean": {
+      "before_sha256": "5b8f97e0836263cc389789ff581ab418a7306f6bf0605aa0ff3040b6562a8102",
+      "after_sha256": "31f15b70ed6cc14a31e25a647b52b0c963d2f3ad3bccb6d8beb9c252ac0fdd46",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 1,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Stir/RbrBudgetMono.lean": {
+      "before_sha256": "52bcbaef8be8e705612f196f3cd6e40575bdaf659328dc522528fbca068472c4",
+      "after_sha256": "aa70340e8575a99e0cdd1520e27a4f013b6755c24055cfd7f9fa60a208b1e97c",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 12,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Stir/RealBudgetRbr.lean": {
+      "before_sha256": "9cfa6d7a5caca0b19cf7537a14106c2699cc2c16e6130f867766d656c330b38f",
+      "after_sha256": "b56ae2a0c232051297682815aaca348883e3d5f3023cff063385c81c3cf783c0",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 3,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Stir/RepWire.lean": {
+      "before_sha256": "a5f80f24c6a41eaaae910852ed43facee09921bde970a2b53f79874a04ebc5b2",
+      "after_sha256": "58ec8ec9875021ef2a72615256de0fa502948e4c66646960c543b45b7d7ec2e1",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 1,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Stir/SeamComposition.lean": {
+      "before_sha256": "0ae952019328bcfbc45415484a4d4683190b00a5b047b1ffd78dc94184962a0a",
+      "after_sha256": "d7510fe40c4bdda9d508700baa76865f309ed50b9f9bc63ec947e9eb7f6dd136",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 5,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Stir/ShellRbrIndicator.lean": {
+      "before_sha256": "265e510c0855a20e4c532e45df5d64e129681954f946abdcb26d863050556dd3",
+      "after_sha256": "280734d0fcb613729a436312298ea4122638ecc644e429169a2455308c7d5c94",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 2,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Stir/SubUnitRbr.lean": {
+      "before_sha256": "6346a8a99e22f6b4f0cf32a10c9dcbcdeecc94bc98927dc2f47ccb4b69f746cf",
+      "after_sha256": "9f5bd7709918c15f475a265c42312f4dafe000db164987f885e024014fd18dab",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 1,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Sumcheck/Spec/OracleRbrSoundness.lean": {
+      "before_sha256": "87450babeb27643b0b21c74cd8e0b9c93479dda1d494aeb7bcf924b4788b56f5",
+      "after_sha256": "e006069dbf4468efb07b517edb1040f4440eba9b15a035d0dcb0d2cf78146a6c",
+      "renames": {
+        "rbrSoundness": "rbrSoundnessAveraged"
+      },
+      "occurrences": 6,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Sumcheck/Spec/RbrKnowledgeSoundnessNary.lean": {
+      "before_sha256": "8d6c34001b0135d3bac18fde5b28186e327b8ca277b430dbfaecab6b7af9c2ed",
+      "after_sha256": "ac9a0273a5b6027b1f25c3557c1b4545d3edc43dc0ac22a41c862f0bea53ffd5",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 2,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Sumcheck/Spec/RbrKnowledgeSoundnessOracle.lean": {
+      "before_sha256": "ed577a0bc1f2993559118b69547528acf267603d8b57d59b639a696b27db57da",
+      "after_sha256": "7dc1b7db3800ca47b2025d3b4b51a8503d31714f8d140e3dca103cd30fef8f66",
+      "followup_after_sha256": "ff7726ac6f744c388c7565601445f960a9c2bd101c2916b2230137fa9d2e11db",
+      "followup": "Rewrite through the ported lift-context and sequential verifier equalities.",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 4,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Sumcheck/Spec/SeqComposeRbrSoundness.lean": {
+      "before_sha256": "9f28792e808ba7e0d8dd1be07414216471fec0e66d34c095bb7684bd22adb535",
+      "after_sha256": "6488ca253612ed1d2add7a0ec33594db18bfa76f68749e2f6508874d26b05f1b",
+      "renames": {
+        "rbrSoundness": "rbrSoundnessAveraged",
+        "id_rbrSoundness": "id_rbrSoundnessAveraged"
+      },
+      "occurrences": 18,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Sumcheck/Spec/SingleRoundPlainRbr.lean": {
+      "before_sha256": "c9af0c238b51c2575df63fbb68cc372b288b7464ba850ac2fb01a17fc950845e",
+      "after_sha256": "d249964b77fbebee36ca6235d24bcfa221a08840f7a43784a14cd60b3839a7df",
+      "renames": {
+        "rbrSoundness": "rbrSoundnessAveraged"
+      },
+      "occurrences": 2,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.Execution",
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Whir/ChallengeCardPin.lean": {
+      "before_sha256": "f6a04d32f21a8214795de7f7e51d8516851890624943bb57fbc07b439f4fa2df",
+      "after_sha256": "3a8d7c66dc1f9a0ea8e808e0d7d5bf8d2900294273b3aa13255efd5d60a085cb",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 1,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Whir/CheckedVerifier.lean": {
+      "before_sha256": "72ddd0ec0e220b0a83d79c99dd479bdcd54a737619ebfa764e10b795967975df",
+      "after_sha256": "53f780cc65da7e862faf8fd36442ffa424d961117c61e62fa349c7ed21465af9",
+      "followup_after_sha256": "4c9e52fc1bb7e4bfb7eefb85acbfe3f5204aa6cf2a00c6b89621f0353ed4848d",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 1,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Whir/Protocol.lean": {
+      "before_sha256": "fb74921898bdb860e30811ae2181fd0b1243496e1a82f3318a4659486bf0bcea",
+      "after_sha256": "6ffab674e880acadac54664199f03cf4de7eaa96483a7aceb70e7f54a3ae9078",
+      "followup_after_sha256": "1fa4e3d56f5a86cb28ebffeef22ee49723b5ce26b6454c7be2772f7d0c8f2d25",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 1,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Whir/ProtocolSoundness.lean": {
+      "before_sha256": "f51173ba054b393fe55a9c5e18208edfca6d603bcf5d6b8be8fcb5ee28f2a78f",
+      "after_sha256": "0274a5d84ad9ae7cf6ed7b50eb87d8e188925e4e4adeaaa65c9fd5657b141b29",
+      "followup_after_sha256": "95fbdba13c8a351dbde0a4997774860ed868a4bed1615328e8f46d1d7e43456b",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 3,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Whir/RBRSoundnessCheckedBridge.lean": {
+      "before_sha256": "9d52de515a6797aad91939352e462d10ee56f3d121aa2db1ef24c1d88d3cb4d4",
+      "after_sha256": "b06c9d13090df1472a8f0dc5efa1390ddd6669ef479819e57a2552e023cc0d2f",
+      "followup_after_sha256": "81722ec4d774769f35f50ad2e8554aad9112701ea391d896edc6dce95f9a7e41",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 1,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Whir/SubUnitRbr.lean": {
+      "before_sha256": "25f574fc281b7cadc5588a05b6da64a29c759a800626cd314da8f535202be7ff",
+      "after_sha256": "e181384ef1f9f331178df4636195ef3621503b64bc728898ce0965a2005a93a8",
+      "followup_after_sha256": "f7264dde10b076dbc91011f7dcd69add4227dd69207ec43036e7e14731ecb712",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 6,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Whir/ThresholdKSF.lean": {
+      "before_sha256": "7bfd36798ca8f5f8fef1d9952bee9ad2bde190a5f683f989601c45268acf3019",
+      "after_sha256": "13c3ca66a2814f70ecb3825a6a850c9228c45e637f48bab8cf893f0a5a8e07c6",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 6,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ProofSystem/Whir/ThresholdKSFMulti.lean": {
+      "before_sha256": "b1e13e16facb89772cf2490f9fb6f8e0ca3d86aec5a4b236f9222076ad29a44b",
+      "after_sha256": "b558cfaa602925e540025d4e42a30ec6ef01bb98a14d41646cba058e08f5e1af",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 3,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ArkLib/ToMathlib/WhirBricksConstruction.lean": {
+      "before_sha256": "7462d9b1beb249a69abe8636113944fea812543fbc39509dcf3da6bdb8de90f6",
+      "after_sha256": "17c683a679775f5efb395cd27971b563620f97cb0c0d1d4fe3748150204383c4",
+      "followup_after_sha256": "63ad44cbe1d43c7d858e3034131d4e45ce0cebae4c8ae73326a6eca3c5001f8f",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 1,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ProximityPrize/Compatibility/PureKnowledge.lean": {
+      "before_sha256": "27cc7db630a803890744a1d6b843e1de3f6346e8ded6a99aaadbe7d915fea9eb",
+      "after_sha256": "b7ccc1b557ced5484510ddb890e8e70e739ca9ee8909be20e556b2627fe1f144",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 5,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RbrGame",
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ProximityPrize/Compatibility/SumcheckKnowledge.lean": {
+      "before_sha256": "e150e60b409acf5158f3273dbb23abec6f46d258c02ec6bb4337650afbc446de",
+      "after_sha256": "7ae26141f6fea612a5bc55edef89f25ccbd8b8e4149933679fbb35bfb5d242b7",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 1,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean": {
+      "before_sha256": "beb89e15019d9bbaa8972e1f662e14b320d6215b91d40a0c8681f00f3350b2cd",
+      "after_sha256": "898681da6e3a0ef9f9d0df51fd89fdccc2a1a84ad9278f4dd22891cad241883b",
+      "renames": {
+        "rbrSoundness": "rbrSoundnessAveraged",
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 12,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ProximityPrize/Extensions/OracleReduction/LiftContext/OracleReduction.lean": {
+      "before_sha256": "aa5f318255fb7edae55ab8d1ddabf0ad20fc5011ca2fad6b6d0ebda2fbddd352",
+      "after_sha256": "b4fbeb04bc55675344f01ac9d78688850bc6e21013d0f51627ff3e71a20bedf3",
+      "followup_after_sha256": "efbc6f6673d8c895648d95ff42a50666b17d3615a8117165b86948665df10b63",
+      "followup": "Use the verifier-level averaged lift-context bridge and import its owning reduction extension.",
+      "renames": {
+        "rbrSoundness": "rbrSoundnessAveraged",
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 6,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/General.lean": {
+      "before_sha256": "edd93577528be02c21b6a1f5bf6a7d71191f087f6e1412ba7d7aaa29b452592f",
+      "after_sha256": "0286582b7ddb9cb8f5c66729e38db40dc2273d79d7c54910a9acf7cd376f3536",
+      "followup_after_sha256": "75803baf046086a04d13da711795b0f9417704bad418d02e4ef1eff624682136",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 2,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    },
+    "ProximityPrize/Extensions/ProofSystem/Component/SendWitness.lean": {
+      "before_sha256": "abae6ce361390a0d606982389ecea063796346f45f3aedd793191e807f94c95f",
+      "after_sha256": "4df9fd59fcd82c76f578f16f272433f02c28759cae2cd587293815e2663b8760",
+      "renames": {
+        "rbrKnowledgeSoundness": "rbrKnowledgeSoundnessAveraged"
+      },
+      "occurrences": 3,
+      "historical_imports": [
+        "ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound"
+      ]
+    }
+  },
+  "coordinated_excluded_callers": {
+    "ArkLib/ProofSystem/Plonk/Composition.lean": [
+      "rbrKnowledgeSoundness",
+      "rbrSoundness"
+    ],
+    "ArkLib/ProofSystem/Plonk/PermutationCheck.lean": [
+      "rbrKnowledgeSoundness",
+      "rbrSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/ComposedRbrKnowledgeSoundness.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/ComposedRbrKnowledgeWithClaimFinal.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/ComposedTightRbrKnowledge.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/FinalCheckRbrKnowledgeLeaf.lean": [
+      "id_rbrKnowledgeSoundness",
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/FinalCheckWithClaimLeaf.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/FirstSumcheckComplete.lean": [
+      "rbrKnowledgeSoundness",
+      "rbrSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/FirstSumcheckWithTarget.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/LinearCombinationTightLeaf.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/RLCKernelBound.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/RbrKnowledgeWiring.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/SecondSumcheckComplete.lean": [
+      "rbrSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/SecondSumcheckWithTarget.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/ShortPhaseKnowledgeLeaves.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/ShortPhaseRbrKnowledgeLeaves.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/SpartanRBRProof.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/SpartanRBRWithClaimProof.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/SumcheckKnowledgeLeaves.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/SumcheckPhaseRbr.lean": [
+      "rbrSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/TightApexPure.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/TightComposedFull.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/TightConjoinedSecondLeaf.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/TightFinalLeaf.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/TightFinalTrivial.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/TightMidLeaves.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ProofSystem/Spartan/TightSeamBridge.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ArkLib/ToMathlib/SpartanBricks.lean": [
+      "rbrKnowledgeSoundness"
+    ],
+    "ProximityPrize/Extensions/ProofSystem/Plonk/Basic.lean": [
+      "rbrKnowledgeSoundness",
+      "rbrSoundness"
+    ]
+  },
+  "removed_commands": [
+    {
+      "path": "ArkLib/OracleReduction/Security/ImplicationsCore.lean",
+      "name": "Verifier.knowledgeSoundness_error_mono",
+      "command": "/-- **Knowledge-soundness error monotonicity** (hypothesis-first restatement of\n`Verifier.knowledgeSoundness.mono_error`, in the argument order consumed by\n`ProofSystem/Binius/FRIBinius/General.lean`). -/\ntheorem knowledgeSoundness_error_mono\n    {relIn : Set (StmtIn × WitIn)} {relOut : Set (StmtOut × WitOut)}\n    {verifier : Verifier oSpec StmtIn StmtOut pSpec}\n    {knowledgeError₁ knowledgeError₂ : ℝ≥0}\n    (hε : knowledgeError₁ ≤ knowledgeError₂)\n    (h : verifier.knowledgeSoundness init impl relIn relOut knowledgeError₁) :\n    verifier.knowledgeSoundness init impl relIn relOut knowledgeError₂ :=\n  knowledgeSoundness.mono_error init impl h hε\n\n\n",
+      "canonical_replacement": "ArkLib.OracleReduction.Security.Basic"
+    },
+    {
+      "path": "ProximityPrize/Extensions/OracleReduction/Security/RoundByRound.lean",
+      "name": "three anonymous CoeFun instances",
+      "command": "/-- Coercion to the underlying function of a state function -/\ninstance {langIn : Set StmtIn} {langOut : Set StmtOut}\n    {verifier : Verifier oSpec StmtIn StmtOut pSpec} :\n    CoeFun (verifier.StateFunction init impl langIn langOut)\n    (fun _ => (m : Fin (n + 1)) → StmtIn → Transcript m pSpec → Prop) := ⟨fun f => f.toFun⟩\n\ninstance {langIn : Set StmtIn} {langOut : Set StmtOut}\n    {verifier : Verifier oSpec StmtIn StmtOut pSpec} :\n    CoeFun (KnowledgeStateFunctionOneShot init impl langIn langOut verifier)\n    (fun _ => (m : Fin (n + 1)) → StmtIn → Transcript m pSpec → Prop) := ⟨fun f => f.toFun⟩\n\ninstance {relIn : Set (StmtIn × WitIn)} {relOut : Set (StmtOut × WitOut)}\n    {verifier : Verifier oSpec StmtIn StmtOut pSpec} {WitMid : Fin (n + 1) → Type}\n    {extractor : Extractor.RoundByRound oSpec StmtIn WitIn WitOut pSpec WitMid} :\n    CoeFun (verifier.KnowledgeStateFunction init impl relIn relOut extractor)\n    (fun _ => (m : Fin (n + 1)) → StmtIn → Transcript m pSpec → WitMid m → Prop) :=\n      ⟨fun f => f.toFun⟩\n",
+      "canonical_replacement": "Native RoundByRound owns StateFunction and KnowledgeStateFunction coercions. The removed OneShot coercion has no theorem consumers."
+    }
+  ],
+  "removed_audit_pins": {
+    "path": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/General.lean",
+    "declarations": [
+      "Verifier.seqCompose_rbrSoundness",
+      "Verifier.seqCompose_rbrKnowledgeSoundness",
+      "OracleVerifier.seqCompose_rbrSoundness",
+      "OracleVerifier.seqCompose_rbrKnowledgeSoundness"
+    ],
+    "before_sha256": "0fe2fcf093bdeb5ba332e1818590253a7a300088b2a43c88cd04c7c686d0c3f8",
+    "after_sha256": "a87244a41ef0b7f6ae48e2e6a0b2f1e9be375eb79e110dec09544fad85c127b4",
+    "reason": "Upstream retired these four composition declarations. Their prior downstream variants assumed the complete conclusion, and the four audit commands were the only Lean command references."
+  },
+  "whir_averaged_security": {
+    "historical_owner": "ArkLib/OracleReduction/VectorIOR.lean",
+    "historical_name": "VectorIOP.IsSecureWithGap",
+    "retained_name": "VectorIOP.IsSecureWithGapAveraged",
+    "scope": "Preserve the prover-averaged completeness and knowledge-soundness bundle for downstream WHIR. The native VectorIOR owner retains the fixed-prefix bundle.",
+    "source_sha256": {
+      "ArkLib/ProofSystem/Whir/CheckedVerifier.lean": "4c9e52fc1bb7e4bfb7eefb85acbfe3f5204aa6cf2a00c6b89621f0353ed4848d",
+      "ArkLib/ProofSystem/Whir/Protocol.lean": "1fa4e3d56f5a86cb28ebffeef22ee49723b5ce26b6454c7be2772f7d0c8f2d25",
+      "ArkLib/ProofSystem/Whir/ProtocolSoundness.lean": "95fbdba13c8a351dbde0a4997774860ed868a4bed1615328e8f46d1d7e43456b",
+      "ArkLib/ProofSystem/Whir/RBRSoundness.lean": "c6e286fa2934c5bfe1b825e888b1a93cbc0ef4bed65ef9e53ca4b4ae47dc059e",
+      "ArkLib/ProofSystem/Whir/RBRSoundnessCheckedBridge.lean": "81722ec4d774769f35f50ad2e8554aad9112701ea391d896edc6dce95f9a7e41",
+      "ArkLib/ProofSystem/Whir/RbrBudgetAccounting.lean": "9596b4a7247f7815d0fb04c8f1e98f3cc62d500af16ab833f0921f23bf191f82",
+      "ArkLib/ProofSystem/Whir/SubUnitRbr.lean": "f7264dde10b076dbc91011f7dcd69add4227dd69207ec43036e7e14731ecb712",
+      "ArkLib/ProofSystem/Whir/WhirVectorIOPProof.lean": "20f837f4c6e87486ce82fb19278061d7546d15640d5679910e28e63eea22c004",
+      "ArkLib/ToMathlib/WhirBricksConstruction.lean": "63ad44cbe1d43c7d858e3034131d4e45ce0cebae4c8ae73326a6eca3c5001f8f",
+      "ProximityPrize/Extensions/OracleReduction/VectorIOR.lean": "689e4945263ac867718619777b7802344a317c57549fc6335ee74de5fd8650d5"
+    },
+    "axiom_reports": 8,
+    "axiom_output_sha256": "4b10221d45185ee2d677afdaaf3248f990227d67cad8f06060d538f072a4b24f"
+  },
+  "binius_query_transport": {
+    "source_declaration": "Verifier.rbrKnowledgeSoundness_implies_rbrKnowledgeSoundnessAveraged",
+    "downstream_callers": {
+      "ArkLib/ProofSystem/Binius/FRIBinius/General.lean": "Binius.FRIBinius.FullFRIBinius.fullOracleVerifier_rbrKnowledgeSoundness_wired",
+      "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/General.lean": "Binius.BinaryBasefold.FullBinaryBasefold.fullOracleVerifier_rbrKnowledgeSoundness_wired"
+    },
+    "axiom_reports": 2,
+    "axiom_output_sha256": "dda5eb711e5fe2494da69a27cfb572f271b3618bfbc60734c8ca9a4c43fc27a7"
+  },
+  "one_shot": "No theorem consumer in downstream sources. The only live reference was its orphan CoeFun instance. Neither its game nor its machinery is restored.",
+  "canonical_delegations": [
+    {
+      "path": "ProximityPrize/Extensions/OracleReduction/Security/Basic.lean",
+      "name": "Verifier.knowledgeSoundness.mono_error",
+      "canonical_module": "ArkLib.OracleReduction.Security.Basic",
+      "canonical_declaration": "Verifier.knowledgeSoundness_error_mono",
+      "before_sha256": "881c42b58330d6a1a26485c39ed4b96c7134ac644a2eb3ace0d5bb20291cc3c0",
+      "after_sha256": "628998a52c3cd9269a2d8f4d530504e677ced2b3338d2f4df73e333022f29412",
+      "axiom_output_sha256": "6700cf7a7c31533d36f585995880cb9116a5c11b35b681710b02b4288f0b7225"
+    }
+  ],
+  "validation": "The 17 extracted commands match the normalized historical source. All four compatibility modules compile against the rebuilt canonical dependencies in an isolated Lean overlay. An import client confirmed that all 17 declarations depend only on the standard Lean axioms. Package validation is tracked separately.",
+  "focused_validation": {
+    "historical_axiom_reports": 17,
+    "historical_axiom_output_sha256": "ee64109def07f9107f587a5b84bd103b8f632ede4f219d700c543b44c99bd6e5",
+    "historical_module_linters": [
+      "linter.style.missingEnd",
+      "linter.style.emptyLine"
+    ],
+    "standard_axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "sequential_composition_dependency_cone": {
+      "modules_compiled": 63,
+      "standard_axiom_reports": 200,
+      "targets": [
+        "ArkLib.OracleReduction.Composition.Sequential.AppendResidualDischargesSeams",
+        "ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeChallengeOracleLift",
+        "ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeStateCollapse",
+        "ArkLib.OracleReduction.Composition.Sequential.AppendRbrSoundnessOracleLift",
+        "ArkLib.OracleReduction.Composition.Sequential.SeqComposeRbrKnowledgeProof"
+      ]
+    },
+    "additional_compiled_modules_and_axiom_report_counts": {
+      "ArkLib.OracleReduction.CastInOut": 6,
+      "ArkLib.OracleReduction.Security.ImplicationsCore": 9,
+      "ArkLib.OracleReduction.Security.RbrKnowledgeConjoin": 2,
+      "ArkLib.OracleReduction.Security.RbrKnowledgeTruncate": 3,
+      "ProximityPrize.Extensions.OracleReduction.Cast": 0,
+      "ProximityPrize.Extensions.OracleReduction.Composition.Sequential.Append": 4,
+      "ProximityPrize.Extensions.OracleReduction.Composition.Sequential.General": 10,
+      "ProximityPrize.Extensions.OracleReduction.Security.Basic": 1,
+      "ProximityPrize.Extensions.OracleReduction.Security.RoundByRound": 0
+    }
+  },
+  "partial_run_logging": {
+    "declaration": "Prover.runWithLogToRound_discard_log_eq_runToRound",
+    "original_owner": "ArkLib/OracleReduction/Execution.lean",
+    "retained_owner": "ProximityPrize/Compatibility/AveragedRbr/Security/Execution.lean",
+    "callers": [
+      "ArkLib/OracleReduction/Completeness.lean",
+      "ArkLib/ProofSystem/Sumcheck/Spec/SingleRoundPlainRbr.lean",
+      "ProximityPrize/Compatibility/AveragedRbr/Security/Implications.lean"
+    ],
+    "canonical_basis": "VCVio loggingOracle.fst_map_run_simulateQ"
+  },
+  "challenge_free_plonk_native": {
+    "disposition": "The Plonk gate, permutation and composition proofs discharge the fixed-prefix challenge branch by eliminating its empty challenge index.",
+    "checked_sources": {
+      "ProximityPrize/Extensions/ProofSystem/Plonk/Basic.lean": "196acdc9656ecce677385b52029f157434ec9aedf5b8c3d88e83c1e9a83bb3a2",
+      "ArkLib/ProofSystem/Plonk/PermutationCheck.lean": "0c4377df130fe41a59cd245b713c194315dcf71c00c308cdfb593994c46f23bd",
+      "ArkLib/ProofSystem/Plonk/Composition.lean": "7797a3dd2b6fda8e497b2a838c6a5ece217bb31decb6874f358187b2d44fcc1c"
+    },
+    "focused_log_sha256": "2192bf69bbd1fef702b2a9bdb695aa2e5412a5c9415cd7cea50f417b8c715827"
+  },
+  "stir_averaged_security": {
+    "tested_upstream_revision": "31ff7ddf9bc209ffaeab516359cd17f47d9bd6f1",
+    "bundle": "VectorIOP.IsSecureWithGapAveraged",
+    "scope": "Historical STIR statements and front doors package perfect completeness with prover-averaged round-by-round knowledge soundness.",
+    "canonical_calls": {
+      "Curves": "The weighted agreement wrapper supplies the common-denominator cardinality threshold, and the strict affine wrapper supplies the positive degree and strict Johnson radius.",
+      "Combine": "The historical wrappers supply the positive degree and strict radius to the canonical combination theorem."
+    },
+    "source_sha256": {
+      "ArkLib/ProofSystem/Stir/CheckingVerifier.lean": "b8c101a5abf0cb555bdea87bacc82ad549e3ed991cc56892baf9898bcb01c5e9",
+      "ArkLib/ProofSystem/Stir/MultiRoundAssembly.lean": "c1279ba4c2a97feb84b512e81ffe7b54a494a64552575a4f1767ab3cdbdecf4d",
+      "ArkLib/ProofSystem/Stir/RbrFrontDoor.lean": "0536036ba2db3fbb3fe4fdd89b27d68de83e165a95e0d2a574d077cfff499e36",
+      "ArkLib/ProofSystem/Stir/RepWire.lean": "0f0516d4c82668c0e01d28fc49287b97ea7a3e8fd55d9fbc5031a62864efe1ff",
+      "ArkLib/ProofSystem/Stir/ShellRbrIndicator.lean": "26c49e8f6417125c5ff2c58f67ec067987ec6d87e48883a57d797bf2459fd01d",
+      "ArkLib/ProofSystem/Stir/SubUnitRbr.lean": "76724f56a2259abb6f45ddb4710bfdd93bd49da3478d13a51a0e0c3301e76d2b",
+      "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean": "d8304bb0d89c33fbcab63d5b07df8ceb79b7ca1c39dcd0566565fe9db08f61af",
+      "ProximityPrize/Extensions/ProofSystem/Stir/Combine.lean": "e5419b05d0b91ce6ac1a7431e804a71815142e39a0eda6c0eb62ee6b2b1ba79f",
+      "ProximityPrize/Extensions/ProofSystem/Stir/MainThm.lean": "3e4a4d232d7950ffc2eacbe9e561090d47e119644edcfdcd2c5fdbeba2cb865a"
+    },
+    "validation": "Nine exact current source checks passed in a private overlay with rebuilt changed canonical prerequisites and reused transitive artifacts.",
+    "axiom_reports": 12,
+    "axiom_output_sha256": "f459a00ec143a70b8291b8647674b11861d5910e578f5d56dad7171fa32a620b"
+  }
+}

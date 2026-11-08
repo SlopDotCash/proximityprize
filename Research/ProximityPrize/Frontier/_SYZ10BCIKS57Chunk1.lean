@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.GuruswamiSudan.GuruswamiSudan
+import ProximityPrize.Extensions.Data.CodingTheory.GuruswamiSudan.GuruswamiSudan
 
 /-!
 # SYZ10 — BCIKS20 Claim 5.7 program, Chunk 1: the surface / interpolation existence step
@@ -33,7 +33,7 @@ re-deriving the interpolation dimension count.
 
 * `SurfaceInterpolantSupply k n m ωs f : Prop` — existence of a GS interpolation surface at the
   rate-corrected degree bound `gs_degree_bound k n m`.
-* `surfaceInterpolantSupply` — its discharge from `gs_existence` (`1 < k`, `n ≠ 0`, `1 ≤ m`).
+* `surfaceInterpolantSupply` — the compatibility wrapper for `gs_existence`.
 * `SurfaceInterpolantSupply.{surface, surface_conditions, surface_ne_zero,
   surface_weightedDegree_le, surface_roots, surface_multiplicity}` — accessors bridging to the
   fields chunk 2 selects `H` from.
@@ -64,13 +64,12 @@ Named as a Prop so Chunk 2 can consume the surface without re-running the dimens
 def SurfaceInterpolantSupply (k n m : ℕ) (ωs : Fin n ↪ F) (f : Fin n → F) : Prop :=
   ∃ Q : F[X][Y], GuruswamiSudan.Conditions k m (gs_degree_bound k n m) ωs f Q
 
-/-- **Chunk 1 (discharge).**  The surface-existence step holds whenever `1 < k`, `n ≠ 0`,
-`1 ≤ m`.  This is a verbatim repackaging of the in-tree, axiom-clean
-`GuruswamiSudan.gs_existence` — no new mathematics; the dimension count lives there. -/
+/-- The surface-existence step follows from `GuruswamiSudan.gs_existence` for `1 < k` and `1 ≤ m`.
+The wrapper retains the named `hn` argument for existing callers. -/
 theorem surfaceInterpolantSupply {k n m : ℕ} {ωs : Fin n ↪ F} {f : Fin n → F}
     (hk : 1 < k) (hn : n ≠ 0) (hm : 1 ≤ m) :
     SurfaceInterpolantSupply k n m ωs f :=
-  GuruswamiSudan.gs_existence k n ωs f hk hn hm
+  GuruswamiSudan.gs_existence k n ωs f hk hm
 
 namespace SurfaceInterpolantSupply
 

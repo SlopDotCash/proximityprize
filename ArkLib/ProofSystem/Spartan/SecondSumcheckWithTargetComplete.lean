@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ArkLib.ProofSystem.Sumcheck.Spec.PinnedCompleteness
 import ArkLib.ProofSystem.Spartan.SecondSumcheckComplete
 import ArkLib.ProofSystem.Spartan.TightFinalLeaf
 
@@ -22,7 +23,7 @@ This module dissolves that obstruction *without* the prover-side pass-through, b
 completeness event already contains `prvStmtOut = stmtOut` (prover output statement = verifier
 output statement), and the verifier output of any `Reduction.run` support point lies in the
 support of `Verifier.run` on the produced transcript
-(`Reduction.verifier_output_mem_support_of_run`, proven here by peeling the run's bind chain).
+(`Reduction.verifier_output_mem_support_of_run`, delegated to the shared run-support theorem).
 So the lens completeness condition may assume `Verifier.compatStatement` — and for the sum-check
 verifier the oracle pass-through *is* in-tree
 (`Sumcheck.Spec.mem_support_oracleVerifier_run_oStmt`), which pins the inner output oracle to the
@@ -61,32 +62,8 @@ theorem Reduction.verifier_output_mem_support_of_run
     {x : (FullTranscript pSpec × StmtOut × WitOut) × StmtOut}
     (h : some x ∈ support (OptionT.run (R.run stmt wit))) :
     x.2 ∈ support (R.verifier.run stmt x.1.1) := by
-  unfold Reduction.run at h
-  simp only [OptionT.run_bind, Option.elimM, bind_assoc] at h
-  rw [mem_support_bind_iff] at h
-  obtain ⟨pOpt, _hp, h⟩ := h
-  cases pOpt with
-  | none => simp at h
-  | some pres =>
-    simp only [Option.elim_some] at h
-    rw [mem_support_bind_iff] at h
-    obtain ⟨vOpt, hv, h⟩ := h
-    cases vOpt with
-    | none => simp at h
-    | some vo =>
-      cases vo with
-      | none =>
-        simp [Option.getM, Option.elimM] at h
-      | some vout =>
-        simp only [Option.elim_some, Option.getM_some, OptionT.run_bind, OptionT.run_pure,
-          pure_bind, support_pure, Set.mem_singleton_iff, Option.some_inj] at h
-        subst h
-        rw [OptionT.run_liftM_run, support_map,
-          support_simulateQ_eq_OracleComp_of_superSpec _ _ (fun _ => rfl)] at hv
-        obtain ⟨v', hv', hveq⟩ := hv
-        obtain rfl : v' = some vout := by
-          simpa using hveq
-        exact (OptionT.mem_support_iff _ _).2 hv'
+  exact (OptionT.mem_support_iff _ _).2
+    (Reduction.mem_support_verifier_run_of_mem_support_run R stmt wit h)
 
 variable [∀ i, SampleableType (pSpec.Challenge i)]
   {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
@@ -163,32 +140,30 @@ theorem liftContext_completeness_verifierCompat
       (f := f)
       (mx := R.run (lens.stmt.proj outerStmtIn) (lens.wit.proj (outerStmtIn, outerWitIn)))
   have hR :
-      Pr[(fun x ↦
-          match x with
-          | ((_, prvStmtOut, witOut), stmtOut) =>
-            (stmtOut, witOut) ∈ innerRelOut ∧ prvStmtOut = stmtOut) |
-          OptionT.mk do
+      Pr{let x ← OptionT.mk (do
             let __do_lift ← init
             (simulateQ pImpl
               ((R.run (lens.stmt.proj outerStmtIn)
-                (lens.wit.proj (outerStmtIn, outerWitIn))).run)).run' __do_lift] ≥
+                (lens.wit.proj (outerStmtIn, outerWitIn))).run)).run' __do_lift)}[
+          match x with
+          | ((_, prvStmtOut, witOut), stmtOut) =>
+            (stmtOut, witOut) ∈ innerRelOut ∧ prvStmtOut = stmtOut] ≥
         1 - ↑completenessError := by
     simpa [pImpl] using
       h (lens.stmt.proj outerStmtIn) (lens.wit.proj (outerStmtIn, outerWitIn))
         (hProj _ _ hRelIn)
   change
-      Pr[(fun x ↦
-          match x with
-          | ((_, prvStmtOut, witOut), stmtOut) =>
-            (stmtOut, witOut) ∈ outerRelOut ∧ prvStmtOut = stmtOut) |
-          OptionT.mk do
+      Pr{let x ← OptionT.mk (do
             let __do_lift ← init
             (simulateQ pImpl (((R.liftContext lens).run outerStmtIn outerWitIn).run)).run'
-              __do_lift] ≥ 1 - ↑completenessError
+              __do_lift)}[
+          match x with
+          | ((_, prvStmtOut, witOut), stmtOut) =>
+            (stmtOut, witOut) ∈ outerRelOut ∧ prvStmtOut = stmtOut] ≥ 1 - ↑completenessError
   rw [hExecMap]
   refine le_trans hR ?_
-  rw [probEvent_map]
-  apply probEvent_mono
+  rw [prEvent_map]
+  apply prEvent_mono_of_support
   intro x hx
   simp [f]
   intro hInnerRelOut hEqStmt
@@ -259,7 +234,7 @@ variable
   {completenessError : ℝ≥0}
 
 /-- Oracle-reduction wrapper of `Reduction.liftContext_completeness_verifierCompat`, mirroring
-`OracleReduction.liftContext_completeness`. -/
+`OracleReduction.liftContextLegacy_completeness`. -/
 theorem liftContext_completeness_verifierCompat
     (hStmt : stmtLens.toLens = lens.stmt)
     [coh : OracleVerifier.LiftContextCoherent stmtLens R.verifier]
@@ -273,10 +248,10 @@ theorem liftContext_completeness_verifierCompat
         lens.toContext.wit.lift (outerStmtIn, outerWitIn)
           (innerStmtOut, innerWitOut)) ∈ outerRelOut)
     (h : R.completeness init impl innerRelIn innerRelOut completenessError) :
-      (R.liftContext lens stmtLens).completeness init impl outerRelIn outerRelOut
+      (R.liftContextLegacy lens stmtLens).completeness init impl outerRelIn outerRelOut
         completenessError := by
   unfold OracleReduction.completeness at h ⊢
-  rw [OracleReduction.liftContext_toReduction_comm hStmt]
+  rw [OracleReduction.liftContextLegacy_toReduction_comm hStmt]
   exact Reduction.liftContext_completeness_verifierCompat hProj hLiftC h
 
 /-- Perfect-completeness form of `liftContext_completeness_verifierCompat`. -/
@@ -293,7 +268,7 @@ theorem liftContext_perfectCompleteness_verifierCompat
         lens.toContext.wit.lift (outerStmtIn, outerWitIn)
           (innerStmtOut, innerWitOut)) ∈ outerRelOut)
     (h : R.perfectCompleteness init impl innerRelIn innerRelOut) :
-      (R.liftContext lens stmtLens).perfectCompleteness init impl outerRelIn outerRelOut :=
+      (R.liftContextLegacy lens stmtLens).perfectCompleteness init impl outerRelIn outerRelOut :=
   liftContext_completeness_verifierCompat hStmt hProj hLiftC h
 
 end OracleReduction
@@ -437,7 +412,7 @@ facts `hInit`/`hImplSupp`: the inner completeness is discharged by the bridge-fr
 `Sumcheck.Spec.oracleReduction_perfectCompleteness_unconditional`. -/
 theorem secondSumcheckWithTarget_perfectCompleteness_unconditional
     {σ : Type} {init : ProbComp σ} {impl : QueryImpl oSpec (StateT σ ProbComp)}
-    [oSpec.Fintype] [oSpec.Inhabited]
+    [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
     (hInit : NeverFail init)
     (hImplSupp : ∀ {β} (q : OracleQuery oSpec β) s,
       Prod.fst <$> support ((QueryImpl.mapQuery impl q).run s)

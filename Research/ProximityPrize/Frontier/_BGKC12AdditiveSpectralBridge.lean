@@ -125,17 +125,19 @@ theorem subsetDifferenceMultiplicity_eq_subsetSumCrossCorrelation
   apply Finset.sum_congr rfl
   intro s _hs
   rw [show phaseFiberCount (labelSum r) (t + s) = subsetSumCount G r (t + s) by
-      simpa [labelSum] using
+      convert
         (ArkLib.ProximityGap.Frontier.BGKLateNewtonTwoColourPhysicalBridge.labelSubsetFiber_eq_valueSubsetFiber
           G r (t + s)).trans
         (ArkLib.ProximityGap.Frontier.BGKLateNewtonTwoColourPhysicalBridge.valueSubsetFiber_eq_subsetSumCount
-          G r (t + s))]
+          G r (t + s)) using 1
+      congr 1]
   rw [show phaseFiberCount (labelSum (r - 1)) s = subsetSumCount G (r - 1) s by
-      simpa [labelSum] using
+      convert
         (ArkLib.ProximityGap.Frontier.BGKLateNewtonTwoColourPhysicalBridge.labelSubsetFiber_eq_valueSubsetFiber
           G (r - 1) s).trans
         (ArkLib.ProximityGap.Frontier.BGKLateNewtonTwoColourPhysicalBridge.valueSubsetFiber_eq_subsetSumCount
-          G (r - 1) s)]
+          G (r - 1) s) using 1
+      congr 1]
 
 end DifferenceConvolution
 

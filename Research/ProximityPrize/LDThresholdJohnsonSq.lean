@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import Research.ProximityPrize.Lattice
 import ArkLib.Data.CodingTheory.InterleavedListSize
-import ArkLib.Data.CodingTheory.JohnsonBound.Family
+import ProximityPrize.Extensions.Data.CodingTheory.JohnsonBound.Family
 
 /-!
 # Squared-form Johnson floor for the genuine list-decoding threshold

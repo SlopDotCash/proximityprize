@@ -50,7 +50,7 @@ theorem stirBlocksReduction_perfectCompleteness (φ : ι ↪ F) (deg : ℕ) (M :
   OracleReduction.seqCompose_perfectCompleteness_threaded
     (fun _ : Fin (M + 1) => F) (fun _ => OStmt ι F) (fun _ => Unit)
     (fun _ => stirRound3Reduction' φ deg)
-    (coh := fun _ => instStirRound3Reduction'AppendCoherent φ deg)
+
     (fun _ => stirOStmtRel F φ deg δ)
     (fun _ => ⟨by omega, pSpec3_dir_zero⟩)
     hInit hImplSupp

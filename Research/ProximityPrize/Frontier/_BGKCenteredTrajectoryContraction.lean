@@ -201,16 +201,12 @@ theorem injectiveSevenTransform_eq_sum_deletedDiagonalTerm
     injectiveSevenTransform w = ∑ j : Fin 7, deletedDiagonalTerm w j := by
   classical
   have h7 := ArkLib.ProximityGap.MomentCollisionRigidity.multiset_newton w 7
-  have ha7 : (Finset.antidiagonal 7).filter (fun a => a.1 < 7) =
+  have ha7 : (HasAntidiagonal.antidiagonal 7).filter (fun a => a.1 < 7) =
       {(0, 7), (1, 6), (2, 5), (3, 4), (4, 3), (5, 2), (6, 1)} := by
     decide
   rw [ha7] at h7
-  have he0 : (Finset.univ.val.map w).esymm 0 = (1 : Complex) := by
-    simp [Multiset.esymm]
   norm_num [Finset.sum_insert, ArkLib.ProximityGap.MomentCollisionRigidity.psumMs,
     phasePowerSum] at h7
-  rw [he0] at h7
-  norm_num at h7
   have huniv : (Finset.univ : Finset (Fin 7)) = {0, 1, 2, 3, 4, 5, 6} := by decide
   unfold injectiveSevenTransform
   rw [huniv]
@@ -653,6 +649,16 @@ def productionQ : Nat := productionN * (2 ^ 128 + 192) + 1
 
 def injectiveCoefficient : Nat := 126871
 
+private theorem productionN_value : productionN = 1073741824 := by
+  norm_num [productionN]
+
+private theorem productionQ_value : productionQ = 365375409332725729550921208179070755120141565953 := by
+  unfold productionQ productionN
+  decide +kernel
+
+private theorem productionChoose_value : productionN.choose 2 = 576460751766552576 := by
+  rw [Nat.choose_two_right, productionN_value]
+
 /-- The normalized depth-two lower envelope forced solely by the `n/2` antipodal zero-sum
 subsets. -/
 noncomputable def antipodalDepthTwoLower (q n : Nat) : Real :=
@@ -683,7 +689,9 @@ theorem normalizedSubsetDeviation_two_ge_antipodalLower
 theorem production_antipodal_first_transition_arithmetic :
     3 * ((productionQ : Real) * (productionQ - productionN) / productionN) <
       (productionN : Real) * antipodalDepthTwoLower productionQ productionN := by
-  norm_num [antipodalDepthTwoLower, productionQ, productionN, Nat.choose_two_right]
+  simp only [antipodalDepthTwoLower]
+  rw [productionChoose_value, productionQ_value, productionN_value]
+  norm_num
 
 /-- Quantitative form: the forced antipodal contribution exceeds Wick `3` by more than
 `2^-29` (and less than `2^-28` at the level of the lower envelope). -/
@@ -694,8 +702,9 @@ theorem production_antipodal_first_ratio_window :
       (productionN : Real) * antipodalDepthTwoLower productionQ productionN /
           ((productionQ : Real) * (productionQ - productionN) / productionN) <
         3 + (2 : Real) ^ (-28 : Int) := by
-  norm_num [antipodalDepthTwoLower, productionQ, productionN, Nat.choose_two_right,
-    zpow_neg]
+  simp only [antipodalDepthTwoLower]
+  rw [productionChoose_value, productionQ_value, productionN_value]
+  norm_num [zpow_neg]
 
 /-- The forced antipodal excess itself lies well inside the `501/500` ordinary-Wick tolerance,
 but the relaxed selected-defect cap `2*(501/500)` is still far below it.  This is only a statement
@@ -746,7 +755,8 @@ theorem production_first_transition_ratio_gt_three_plus_two_neg29
   rw [hn, hq] at hone
   have honepos : 0 < normalizedSubsetDeviation G 1 := by
     rw [hone]
-    norm_num [productionQ, productionN]
+    rw [productionQ_value, productionN_value]
+    norm_num
   have harith := production_antipodal_first_ratio_window.1
   calc
     3 + (2 : Real) ^ (-29 : Int) <

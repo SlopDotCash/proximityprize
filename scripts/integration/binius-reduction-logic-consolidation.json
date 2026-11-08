@@ -1,0 +1,790 @@
+{
+  "file": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/ReductionLogic.lean",
+  "original_source_sha256": "b90d6e69751dbaa556a23dbb5a2ba4ff90f9fc8aee4b16b3546f5c3fd7efdaaa",
+  "original_source": "/-\nDownstream additions retained during the ArkLib integration.\nInitial source and revision: scripts/integration/downstream-extension-audit.json.\nShared declarations come from the canonical ArkLib modules.\nChecked-in source owns later API ports. Generate separate review candidates with:\nscripts/integration/extract_downstream_extensions.py --output-dir <directory>.\n-/\nimport ArkLib.ProofSystem.Binius.BinaryBasefold.ReductionLogic\n\n/-\nCopyright (c) 2025 ArkLib Contributors. All rights reserved.\nReleased under Apache 2.0 license as described in the file LICENSE.\nAuthors: Chung Thai Nguyen, Quang Dao\n-/\nimport ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Spec\nimport ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Relations\nimport ArkLib.ProofSystem.Binius.BinaryBasefold.BitsOfIndex\nimport ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToMidLastEval\nimport ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToMidSucc\nimport ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToNextSumEq\nimport ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.FinalOracleBridge\nimport ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.IteratedFoldToLevel\nimport ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.FinalConstantWeld\nimport ArkLib.ToVCVio.Oracle\nimport ArkLib.ToVCVio.SimulationInfrastructure\nimport ArkLib.OracleReduction.Completeness\nimport ArkLib.Data.Misc.Basic\n\n/-!\n## Binary Basefold single steps\n- **Fold step** :\n  P sends V the polynomial `h_i(X) := Σ_{w ∈ B_{ℓ-i-1}} h(r'_0, ..., r'_{i-1}, X, w_0, ...\n  w_{ℓ-i-2})`.\n  V requires `s_i ?= h_i(0) + h_i(1)`. V samples `r'_i ← L`, sets `s_{i+1} := h_i(r'_i)`,\n  and sends P `r'_i`.\n- **Relay step** : transform relOut of fold step in case of non-commitment round to match\n  roundRelation\n- **Commit step** :\n    P defines `f^(i+1): S^(i+1) → L` as the function `fold(f^(i), r'_i)` of Definition 4.6.\n    if `i+1 < ℓ` and `ϑ | i+1` then\n    P submits (submit, ℓ+R-i-1, f^(i+1)) to the oracle `F_Vec^L`\n- **Final sum-check step** :\n  - P sends V the final constant `c := f^(ℓ)(0, ..., 0)`\n  - V verifies : `s_ℓ = eqTilde(r, r') * c`\n  => `c` should be equal to `t(r'_0, ..., r'_{ℓ-1})`\n-/\n\nset_option maxHeartbeats 400000\nset_option linter.style.longFile 2000\nset_option linter.unusedDecidableInType false\nset_option linter.unusedFintypeInType false\nnamespace Binius.BinaryBasefold.CoreInteraction\nnoncomputable section\nopen OracleSpec OracleComp ProtocolSpec Finset AdditiveNTT Polynomial MvPolynomial\nopen Sumcheck.Structured\nopen Binius.BinaryBasefold\nopen scoped NNReal\n\n/-- Taking the rightmost `n` entries after consing one value drops the cons head. -/\ntheorem fin_rtake_cons_const {n : ℕ} {α : Type*} (x : α) (v : Fin n → α) :\n    Fin.rtake (n := n + 1) (α := fun _ : Fin (n + 1) => α)\n      (m := n) (v := Fin.cons x v) (h := Nat.le_succ n) = v := by\n  funext i\n  simp [Fin.rtake, Fin.natAdd]\n  rw [show (⟨1 + i.val, by omega⟩ : Fin (n + 1)) = i.succ by\n    ext\n    simp only [Fin.val_succ]\n    omega\n  ]\n  exact Fin.cons_succ (α := fun _ => α) x v i\n\nvariable {r : ℕ} [NeZero r]\nvariable {L : Type} [Field L] [Fintype L] [DecidableEq L] [CharP L 2]\n  [SampleableType L]\nvariable (𝔽q : Type) [Field 𝔽q] [Fintype 𝔽q] [DecidableEq 𝔽q]\n  [h_Fq_char_prime : Fact (Nat.Prime (ringChar 𝔽q))] [hF₂ : Fact (Fintype.card 𝔽q = 2)]\nvariable [Algebra 𝔽q L]\nvariable (β : Fin r → L) [hβ_lin_indep : Fact (LinearIndependent 𝔽q β)]\n  [h_β₀_eq_1 : Fact (β 0 = 1)]\nvariable {ℓ 𝓡 ϑ : ℕ} (γ_repetitions : ℕ) [NeZero ℓ] [NeZero 𝓡] [NeZero ϑ] -- Should we allow ℓ = 0?\nvariable {h_ℓ_add_R_rate : ℓ + 𝓡 < r} -- ℓ ∈ {1, ..., r-1}\nvariable {𝓑 : Fin 2 ↪ L}\nvariable [hdiv : Fact (ϑ ∣ ℓ)]\n\nomit [Field L] [Fintype L] [DecidableEq L] [CharP L 2] [SampleableType L]\n  [NeZero r] [NeZero ℓ] [NeZero 𝓡] [NeZero ϑ] hdiv in\n/-- Successor-index form of `getFoldingChallenges_rtake_self`, matching commit-step goals. -/\nlemma getFoldingChallenges_rtake_self_succ (i : Fin ℓ)\n    (challenges : Fin i.succ → L) (k : ℕ)\n    (h h' : k + ϑ ≤ i.succ)\n    (hr : i.val + 1 ≤ i.val + 1) :\n    getFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ϑ) i.succ\n      (Fin.rtake (n := i.val + 1) (α := fun _ : Fin (i.val + 1) => L)\n        (m := i.val + 1) (v := challenges) (h := hr)) k h =\n    getFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ϑ) i.succ challenges k h' := by\n  have hrtake :\n      Fin.rtake (n := i.val + 1) (α := fun _ : Fin (i.val + 1) => L)\n        (m := i.val + 1) (v := challenges) (h := hr) =\n      challenges := by\n    have hhr : hr = (by omega : i.val + 1 ≤ i.val + 1) := Subsingleton.elim _ _\n    rw [hhr]\n    exact Fin.rtake_self' challenges\n  rw [hrtake]\n\nomit [CharP L 2] [SampleableType L] [DecidableEq 𝔽q] hF₂ h_β₀_eq_1 [NeZero ℓ] in\n/-- `iterated_fold` is proof-irrelevant in its destination equality and bound proofs. -/\nlemma iterated_fold_proof_irrel {i : Fin r} {steps : ℕ} {destIdx : Fin r}\n    (h_destIdx h_destIdx' : destIdx.val = i.val + steps)\n    (h_destIdx_le h_destIdx_le' : destIdx ≤ ℓ)\n    (f : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i)\n    (r_challenges : Fin steps → L) :\n    iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (i := i) (steps := steps) (destIdx := destIdx)\n      (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le)\n      (f := f) (r_challenges := r_challenges) =\n    iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (i := i) (steps := steps) (destIdx := destIdx)\n      (h_destIdx := h_destIdx') (h_destIdx_le := h_destIdx_le')\n      (f := f) (r_challenges := r_challenges) := by\n  have h_eq : h_destIdx = h_destIdx' := Subsingleton.elim _ _\n  have h_le_eq : h_destIdx_le = h_destIdx_le' := Subsingleton.elim _ _\n  subst h_eq\n  subst h_le_eq\n  rfl\n\nsection GenericLogic\n\ndef hEq {ιₒᵢ ιₒₒ : Type} {OracleIn : ιₒᵢ → Type}\n    {OracleOut : ιₒₒ → Type} {n : ℕ} {pSpec : ProtocolSpec n}\n  (embed : ιₒₒ ↪ ιₒᵢ ⊕ pSpec.MessageIdx) :=\n  ∀ i, OracleOut i =\n    match embed i with\n    | Sum.inl j => OracleIn j\n    | Sum.inr j => pSpec.Message j\n\n/-- The Pure Logic of an interactive reduction step.\nParametrized by a 'Challenges' type that aggregates all verifier randomness. -/\nstructure ReductionLogicStep\n    (StmtIn WitIn : Type)\n    {ιₒᵢ ιₒₒ : Type}\n    (OracleIn : ιₒᵢ → Type) (OracleOut : ιₒₒ → Type)\n    (StmtOut WitOut : Type)\n    {n : ℕ} (pSpec : ProtocolSpec n) where\n\n  -- 1. The Specification (Relations) - now with indexed oracles\n  completeness_relIn    : (StmtIn × (∀ i, OracleIn i)) × WitIn → Prop\n  completeness_relOut   : (StmtOut × (∀ i, OracleOut i)) × WitOut → Prop\n\n  -- 2. The Verifier (Pure Logic)\n  verifierCheck : StmtIn → FullTranscript pSpec → Prop\n  verifierOut   : StmtIn → FullTranscript pSpec → StmtOut\n\n  -- 2b. Oracle Embedding (like OracleVerifier)\n  embed : ιₒₒ ↪ ιₒᵢ ⊕ pSpec.MessageIdx\n  hEq : hEq (OracleIn := OracleIn) (OracleOut := OracleOut) (ιₒᵢ := ιₒᵢ) (ιₒₒ := ιₒₒ)\n    (pSpec := pSpec) (embed := embed)\n\n  -- 3. The Honest Prover (Pure Logic)\n  honestProverTranscript : StmtIn → WitIn → (∀ i, OracleIn i) → pSpec.Challenges → FullTranscript pSpec\n\n  -- 4. The Prover's Output State\n  proverOut : StmtIn → WitIn → (∀ i, OracleIn i) → FullTranscript pSpec →\n    ((StmtOut × (∀ i, OracleOut i)) × WitOut)\n\n/-- Strong Completeness:\n  \"For ANY set of challenges, the honest transcript passes the check\n   and leads to a valid next state.\" -/\n@[reducible]\ndef ReductionLogicStep.IsStronglyComplete\n    {StmtIn WitIn : Type}\n    {ιₒᵢ ιₒₒ : Type} {OracleIn : ιₒᵢ → Type} {OracleOut : ιₒₒ → Type}\n    {StmtOut WitOut : Type}\n    {n : ℕ} {pSpec : ProtocolSpec n}\n    (step : ReductionLogicStep StmtIn WitIn OracleIn OracleOut StmtOut WitOut pSpec) : Prop :=\n  ∀ (stmtIn : StmtIn) (witIn : WitIn) (oStmtIn : ∀ i, OracleIn i) (challenges : pSpec.Challenges),\n\n    -- Assumption: The input relation holds (valid start state)\n    (h_relIn : step.completeness_relIn ((stmtIn, oStmtIn), witIn)) →\n\n    -- 1. Generate the Honest Transcript (Deterministic given challenges)\n    let transcript := step.honestProverTranscript stmtIn witIn oStmtIn challenges\n\n    -- 2. The Verifier MUST accept this transcript\n    step.verifierCheck stmtIn transcript ∧\n\n    -- 3. The output MUST be valid and consistent\n    let verifierStmtOut := step.verifierOut stmtIn transcript\n\n    -- Compute verifier oracle output via embedding (like OracleVerifier.toVerifier)\n    let verifierOStmtOut := OracleVerifier.mkVerifierOStmtOut step.embed step.hEq\n      oStmtIn transcript\n      -- fun i => match h : step.embed i with\n      -- | Sum.inl j => by simpa only [step.hEq, h] using (oStmtIn j)\n      -- | Sum.inr j => by simpa only [step.hEq, h] using (transcript.messages j)\n\n    let ((proverStmtOut, proverOStmtOut), proverWitOut) :=\n      step.proverOut stmtIn witIn oStmtIn transcript\n\n    -- Conclusion A: The Prover's output satisfies the next relation (Soundness/Completeness)\n    step.completeness_relOut ((verifierStmtOut, verifierOStmtOut), proverWitOut) ∧\n\n    -- Conclusion B: The Prover and Verifier agree on the next statement\n    proverStmtOut = verifierStmtOut ∧\n\n    -- Conclusion C: The Prover and Verifier agree on the oracle statements\n    proverOStmtOut = verifierOStmtOut\n\n/-- Oracle-aware reduction logic step for protocols where the verifier queries oracles\nduring verification (e.g., QueryPhase in Binary Basefold).\n\nUnlike `ReductionLogicStep` where `verifierCheck` is a pure `Prop`, here it returns\n`OptionT (OracleComp (oSpec + ([OracleIn]ₒ + [pSpec.Message]ₒ))) StmtOut` to support oracle\nqueries during verification. This matches the signature of `OracleVerifier.verify`.\n\nAll other components (embed, hEq, relations, proverOut, verifierOut) remain pure,\ngiving definitional equality when accessed via dot notation. -/\nstructure OracleAwareReductionLogicStep\n    {ι : Type} (oSpec : OracleSpec ι)\n    (StmtIn WitIn : Type)\n    {ιₒᵢ ιₒₒ : Type}\n    (OracleIn : ιₒᵢ → Type) (OracleOut : ιₒₒ → Type)\n    (StmtOut WitOut : Type)\n    {n : ℕ} (pSpec : ProtocolSpec n)\n    [Oₛᵢ : ∀ i, OracleInterface (OracleIn i)]\n    [Oₘ : ∀ i, OracleInterface (pSpec.Message i)] where\n\n  -- 1. The Specification (wRelations) - same as ReductionLogicStep\n  completeness_relIn : (StmtIn × (∀ i, OracleIn i)) × WitIn → Prop\n  completeness_relOut : (StmtOut × (∀ i, OracleOut i)) × WitOut → Prop\n\n  -- 2. The Verifier (Oracle-Aware)\n  -- Key difference: verifierCheck is monadic, can query oracles\n  -- Uses the extended spec: oSpec + ([OracleIn]ₒ + [pSpec.Message]ₒ)\n  -- Same signature as OracleVerifier.verify\n  verifierCheck : StmtIn → FullTranscript pSpec →\n    OptionT (OracleComp (oSpec + ([OracleIn]ₒ + [pSpec.Message]ₒ))) StmtOut\n  -- Output computation remains pure/deterministic\n  verifierOut   : StmtIn → FullTranscript pSpec → StmtOut\n\n  -- 2b. Oracle Embedding (same as ReductionLogicStep)\n  embed : ιₒₒ ↪ ιₒᵢ ⊕ pSpec.MessageIdx\n  hEq : hEq (OracleIn := OracleIn) (OracleOut := OracleOut) (ιₒᵢ := ιₒᵢ) (ιₒₒ := ιₒₒ)\n    (pSpec := pSpec) (embed := embed)\n\n  -- 3. The Honest Prover (Pure Logic) - same as ReductionLogicStep\n  honestProverTranscript : StmtIn → WitIn → (∀ i, OracleIn i)\n    → pSpec.Challenges → FullTranscript pSpec\n\n  -- 4. The Prover's Output State - same as ReductionLogicStep\n  proverOut : StmtIn → WitIn → (∀ i, OracleIn i) → FullTranscript pSpec →\n    ((StmtOut × (∀ i, OracleOut i)) × WitOut)\n\n/-- Strong Completeness Under Simulation for Oracle-Aware Reduction Logic:\n  \\\"For ANY set of challenges, when the verifier check is run under honest oracle simulation,\n   it succeeds with probability 1, and the output satisfies the relation.\\\"\n\n  This is the appropriate notion of completeness for verifiers that query oracles during\n  verification (e.g., the query phase in Binary Basefold). Unlike `IsStronglyComplete`,\n  which checks the raw `OracleComp`, this checks the simulated execution where oracle\n  queries are answered by the honest oracle statements.\n\n  The key difference: In raw execution, oracle queries return arbitrary values, so guards\n  checking oracle responses will fail. Under simulation with `simOracle2`, queries are\n  answered by `oStmtIn`, making the guards pass.\n\n  **Type Constraint**: The step's `querySpec` must be `oSpec + ([OracleIn]ₒ + [pSpec.Message]ₒ)`\n  for the simulation to type-check. This is the natural structure where:\n  - `oSpec` is the shared/base oracle (e.g., random oracle, hash function)\n  - `[OracleIn]ₒ` are the oracle statements the verifier can query\n  - `[pSpec.Message]ₒ` are the prover messages the verifier can query -/\n@[reducible]\ndef OracleAwareReductionLogicStep.IsStronglyCompleteUnderSimulation\n    {ι : Type} {oSpec : OracleSpec ι} [OracleSpec.Fintype oSpec] [OracleSpec.Inhabited oSpec]\n    {StmtIn WitIn : Type}\n    {ιₒᵢ ιₒₒ : Type} {OracleIn : ιₒᵢ → Type} {OracleOut : ιₒₒ → Type}\n    {StmtOut WitOut : Type}\n    {n : ℕ} {pSpec : ProtocolSpec n}\n    [Oₛᵢ : ∀ i, OracleInterface (OracleIn i)]\n    [Oₘ : ∀ i, OracleInterface (pSpec.Message i)]\n    -- The step uses oSpec as its base oracle; internally it accesses\n    -- oSpec + ([OracleIn]ₒ + [pSpec.Message]ₒ)\n    (step : OracleAwareReductionLogicStep oSpec\n      StmtIn WitIn OracleIn OracleOut StmtOut WitOut pSpec) : Prop :=\n  ∀ (stmtIn : StmtIn) (witIn : WitIn) (oStmtIn : ∀ i, OracleIn i) (challenges : pSpec.Challenges),\n\n    -- Assumption: The input relation holds (valid start state)\n    (h_relIn : step.completeness_relIn ((stmtIn, oStmtIn), witIn)) →\n\n    -- 1. Generate the Honest Transcript (Deterministic given challenges)\n    let transcript := step.honestProverTranscript stmtIn witIn oStmtIn challenges\n\n    -- 2. Define the honest oracle simulator\n    -- simOracle2 oSpec t₁ t₂ : SimOracle.Stateless (oSpec + ([T₁]ₒ + [T₂]ₒ)) oSpec\n    -- This answers queries to OracleIn using oStmtIn and queries to Messages using transcript\n    let so := OracleInterface.simOracle2 oSpec oStmtIn transcript.messages\n\n    -- 3. The Verifier check under simulation MUST succeed with probability 1\n    Pr[⊥ | OptionT.mk (simulateQ so (step.verifierCheck stmtIn transcript).run)] = 0 ∧\n\n    -- 4. The output MUST be valid and consistent\n    let verifierStmtOut := step.verifierOut stmtIn transcript\n\n    -- Compute verifier oracle output via embedding (like OracleVerifier.toVerifier)\n    let verifierOStmtOut := OracleVerifier.mkVerifierOStmtOut step.embed step.hEq\n      oStmtIn transcript\n\n    let ((proverStmtOut, proverOStmtOut), proverWitOut) :=\n      step.proverOut stmtIn witIn oStmtIn transcript\n\n    -- Conclusion A: The Prover's output satisfies the next relation\n    step.completeness_relOut ((verifierStmtOut, verifierOStmtOut), proverWitOut) ∧\n\n    -- Conclusion B: The Prover and Verifier agree on the next statement\n    proverStmtOut = verifierStmtOut ∧\n\n    -- Conclusion C: The Prover and Verifier agree on the oracle statements\n    proverOStmtOut = verifierOStmtOut\n\n/-- **RBR Extraction Failure Event**: Generic predicate for round-by-round knowledge soundness.\n\nThis captures when the RBR extractor fails to produce a valid witness at round `i.1.castSucc`,\nbut a valid witness exists at round `i.1.succ`. This is the fundamental \"bad event\" that must\nbe bounded in all RBR knowledge soundness proofs.\n\n**Usage:** Instantiate with protocol-specific `kSF`, `extractor`, and transcript to get the\nphase-specific doom-escape event. The `kSF` argument may be a bare state-function or a\n`Verifier.KnowledgeStateFunction` (coerced to its `toFun` via the `CoeFun` instance). -/\n@[reducible]\ndef rbrExtractionFailureEvent {ι : Type} {oSpec : OracleSpec ι}\n    {StmtIn WitIn WitOut : Type} {n : ℕ}\n    {pSpec : ProtocolSpec n} {WitMid : Fin (n + 1) → Type}\n    (kSF : (m : Fin (n + 1)) → StmtIn → Transcript m pSpec → WitMid m → Prop)\n    (extractor : Extractor.RoundByRound oSpec StmtIn WitIn WitOut pSpec WitMid)\n    (i : pSpec.ChallengeIdx) (stmtIn : StmtIn)\n    (transcript : Transcript i.1.castSucc pSpec) (challenge : pSpec.Challenge i) : Prop :=\n  ∃ witMid : WitMid i.1.succ,\n    ¬ kSF i.1.castSucc stmtIn transcript\n      (extractor.extractMid i.1 stmtIn (transcript.concat challenge) witMid) ∧\n    kSF i.1.succ stmtIn (transcript.concat challenge) witMid\n\nend GenericLogic\n\nsection SingleIteratedSteps\nvariable {Context : Type} {mp : SumcheckMultiplierParam L ℓ Context} -- Sumcheck context\nsection FoldStep\n\n/-- The Logic Instance for the i-th round of Binary Folding. -/\ndef foldStepLogic (i : Fin ℓ) :\n    ReductionLogicStep\n      -- In/Out Types\n      (Statement (L := L) Context i.castSucc)\n      (Witness (L := L) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.castSucc)\n      (OracleStatement 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.castSucc)\n      (OracleStatement 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.castSucc)\n      (Statement (L := L) Context i.succ)\n      (Witness (L := L) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.succ)\n      -- Protocol Spec\n      (pSpecFold (L := L))\n      where\n\n  -- 1. Relations (using strict relations for completeness)\n  completeness_relIn := fun ((s, o), w) =>\n    ((s, o), w) ∈ strictRoundRelation 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (𝓑 := 𝓑) i.castSucc (mp := mp)\n  completeness_relOut := fun ((s, o), w) =>\n    ((s, o), w) ∈ strictFoldStepRelOut 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (𝓑 := 𝓑) i (mp := mp)\n\n  -- 2. Verifier Logic (Using extracted kernels)\n  verifierCheck := fun s t =>\n    foldVerifierCheck i s (𝓑 := 𝓑) (t.messages ⟨0, rfl⟩)\n\n  verifierOut := fun s t =>\n    foldVerifierStmtOut i s (t.messages ⟨0, rfl⟩) (t.challenges ⟨1, rfl⟩)\n\n  -- 2b. Oracle Embedding (must match foldOracleVerifier)\n  embed := ⟨fun j => by\n    if hj : j.val < toOutCodewordsCount ℓ ϑ i.castSucc then\n      exact Sum.inl ⟨j.val, by omega⟩\n    else omega -- never happens\n  , by\n    intro a b h_ab_eq\n    simp only [MessageIdx, Fin.is_lt, ↓reduceDIte, Fin.eta, Sum.inl.injEq] at h_ab_eq\n    exact h_ab_eq\n  ⟩\n  hEq := fun oracleIdx => by\n    simp only [MessageIdx, Fin.is_lt, ↓reduceDIte, Fin.eta, Function.Embedding.coeFn_mk]\n\n  -- 3. Honest Prover Logic (Constructing the transcript)\n  --    \"Given input and the future challenge, what would the transcript look like?\"\n  honestProverTranscript := fun _stmtIn witIn _oStmtIn chal =>\n    let msg : ↥L⦃≤ 2⦄[X] := foldProverComputeMsg (L := L) 𝔽q β\n      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) i witIn\n    FullTranscript.mk2 msg (chal ⟨1, rfl⟩)\n\n  -- 4. Prover Output (State Update)\n  proverOut := fun s w o t =>\n    let h_i : (pSpecFold (L := L)).«Type» 0 := t ⟨0, by omega⟩\n    let r_i' : (pSpecFold (L := L)).«Type» 1 := t ⟨1, by omega⟩\n    getFoldProverFinalOutput 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i\n      (s, o, w, h_i, r_i')\n\nvariable {R : Type} [CommSemiring R] [DecidableEq R] [SampleableType R]\n  {n : ℕ} {deg : ℕ} {m : ℕ} {D : Fin m ↪ R}\nvariable {σ : Type} {init : ProbComp σ} {impl : QueryImpl []ₒ (StateT σ ProbComp)}\n\nomit [SampleableType L] in\n/-- The Main Lemma: Binary Folding satisfies Strong Completeness.\n\nThis proves that for any valid input satisfying `roundRelation`, the honest prover-verifier\ninteraction correctly computes the sumcheck polynomial and updates the witness through folding.\n\n**Proof Structure:**\n- Verifier check: Uses `projectToNextSumcheckPoly_sum_eq`.\n- Output relation: Uses `badEventExistsProp_succ_preserved` for bad events, and preservation lemmas\n  (e.g., `witnessStructuralInvariant_succ_preserved`) otherwise.\n- Agreement: Prover and verifier agree on output statements and oracles. -/\nlemma foldStep_is_logic_complete (i : Fin ℓ) :\n    (foldStepLogic 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑)\n      (mp := mp) i).IsStronglyComplete := by\n  intro stmtIn witIn oStmtIn challenges h_relIn\n  let step := (foldStepLogic 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) (mp := mp) i)\n  let transcript := step.honestProverTranscript stmtIn witIn oStmtIn challenges\n  let verifierStmtOut := step.verifierOut stmtIn transcript\n  let verifierOStmtOut := OracleVerifier.mkVerifierOStmtOut step.embed step.hEq\n    oStmtIn transcript\n  let proverOutput := step.proverOut stmtIn witIn oStmtIn transcript\n  let proverStmtOut := proverOutput.1.1\n  let proverOStmtOut := proverOutput.1.2\n  let proverWitOut := proverOutput.2\n  -- Extract properties from h_relIn (strictRoundRelation)\n  simp only [foldStepLogic, strictRoundRelation, strictRoundRelationProp,\n    Set.mem_setOf_eq] at h_relIn\n\n  -- We'll need sumcheck consistency for Fact 1, so extract it from either branch\n  have h_sumcheck_cons : sumcheckConsistencyProp (𝓑 := 𝓑) stmtIn.sumcheck_target witIn.H\n    := h_relIn.1\n\n  let h_VCheck_passed : step.verifierCheck stmtIn transcript := by\n    -- Fact 1: Verifier check passes (sumcheck condition)\n    simp only [step, foldStepLogic, foldVerifierCheck, foldProverComputeMsg]\n    rw [h_sumcheck_cons]\n    apply Sumcheck.Structured.getSumcheckRoundPoly_sum_eq\n\n  have hStmtOut_eq : proverStmtOut = verifierStmtOut := by\n    -- Fact 3: Prover and verifier statements agree\n    change (step.proverOut stmtIn witIn oStmtIn transcript).1.1 = step.verifierOut stmtIn transcript\n    simp only [step, foldStepLogic]; simp only [Fin.mk_one, Fin.isValue, Fin.zero_eta, Fin.val_succ]\n    rfl\n\n  have hOStmtOut_eq : proverOStmtOut = verifierOStmtOut := by\n    change (step.proverOut stmtIn witIn oStmtIn transcript).1.2\n      = OracleVerifier.mkVerifierOStmtOut step.embed step.hEq oStmtIn transcript\n    simp only [step, foldStepLogic]\n    -- Fact 4: Prover and verifier oracle statements agree\n    funext j\n    simp only [Prod.mk.eta, Fin.isValue, MessageIdx, Fin.is_lt, ↓reduceDIte,\n      Fin.eta, Fin.zero_eta, Fin.mk_one, Function.Embedding.coeFn_mk, Sum.inl.injEq,\n      OracleVerifier.mkVerifierOStmtOut_inl, cast_eq]\n\n  -- Key fact: Oracle statements are unchanged in the fold step\n  -- (all oracle indices map via Sum.inl in the embedding)\n  have h_verifierOStmtOut_eq : verifierOStmtOut = oStmtIn := by\n    rw [← hOStmtOut_eq]\n    simp only [proverOStmtOut, proverOutput, step, foldStepLogic]\n\n  let hRelOut : step.completeness_relOut ((verifierStmtOut, verifierOStmtOut), proverWitOut) := by\n    -- Fact 2: Output relation holds (strictFoldStepRelOut)\n    simp only [step, foldStepLogic, strictFoldStepRelOut, strictFoldStepRelOutProp, Set.mem_setOf_eq]\n    let r_i' : L := by\n      simpa [ProtocolSpec.Challenge, pSpecFold] using challenges ⟨⟨1, by omega⟩, by rfl⟩\n    simp only [Fin.val_succ]\n    constructor\n    · -- Part 2.1: sumcheck consistency\n      unfold sumcheckConsistencyProp\n      dsimp only [verifierStmtOut, proverWitOut, proverOutput]\n      simp only [step, foldStepLogic, foldVerifierStmtOut, getFoldProverFinalOutput, transcript]\n      apply Sumcheck.Structured.projectToNextSumcheckPoly_sum_eq\n    · -- Part 2.2: strictOracleWitnessConsistency\n      simp only [Fin.coe_castSucc] at h_relIn\n      have h_oracleWitConsistency_In := h_relIn.2\n      rw [h_verifierOStmtOut_eq];\n      dsimp only [strictOracleWitnessConsistency] at h_oracleWitConsistency_In ⊢\n      -- Extract the three components from the input\n      obtain ⟨h_wit_struct_In, h_oracle_folding_In⟩ :=\n        h_oracleWitConsistency_In\n      -- Now prove each component for the output\n      refine ⟨?_, ?_⟩\n      · -- Component 1: witnessStructuralInvariant\n        unfold witnessStructuralInvariant\n        obtain ⟨h_H_In, h_f_In⟩ := h_wit_struct_In\n        dsimp only [Fin.val_succ, proverWitOut, proverOutput, step,\n          foldStepLogic, verifierStmtOut]\n        constructor\n        · rw [h_H_In]\n          exact Sumcheck.Structured.projectToNextSumcheckPoly_eq_projectToMidSumcheckPoly_succ\n            (L := L) (ℓ := ℓ) (t := witIn.t) (m := mp.multpoly stmtIn.ctx) (i := i)\n            (challenges := stmtIn.challenges) (r_i' := r_i')\n        · conv_lhs =>\n            rw [h_f_In]\n            rw [←getMidCodewords_succ]\n          rfl\n      · -- Component 2: strictOracleFoldingConsistencyProp\n        have h_oracleIdx_eq : (OracleFrontierIndex.mkFromStmtIdx i.castSucc).val\n          = (OracleFrontierIndex.mkFromStmtIdxCastSuccOfSucc i).val := by rfl\n        have h_challenges_eq :\n            Fin.tail verifierStmtOut.challenges = stmtIn.challenges := by\n          dsimp only [foldStepLogic, verifierStmtOut, step]\n          rfl\n        rw! (castMode := .all) [h_oracleIdx_eq] at h_oracle_folding_In\n        simp at h_oracle_folding_In ⊢\n        rw! (castMode := .all) [h_challenges_eq]\n        exact h_oracle_folding_In\n\n  -- Prove the four required facts\n  refine ⟨?_, ?_, ?_, ?_⟩\n  · exact h_VCheck_passed\n  · exact hRelOut\n  · exact hStmtOut_eq\n  · exact hOStmtOut_eq\n\nend FoldStep\n\nsection CommitStep\n\ndef commitStepLogic_embedFn (i : Fin ℓ) :\n    (Fin (toOutCodewordsCount ℓ ϑ i.succ)) → Fin (toOutCodewordsCount ℓ ϑ i.castSucc) ⊕ (pSpecCommit 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i).MessageIdx :=\n  fun j => by\n  if hj : j.val < toOutCodewordsCount ℓ ϑ i.castSucc then\n    exact Sum.inl ⟨j.val, hj⟩\n  else\n    exact Sum.inr ⟨⟨0, Nat.zero_lt_one⟩, rfl⟩\n\ndef commitStepLogic_embed_inj (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i) :\n    Function.Injective (commitStepLogic_embedFn  𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (ϑ := ϑ) i) := by\n  intro a b h_ab_eq\n  simp only [MessageIdx, commitStepLogic_embedFn, Fin.isValue] at h_ab_eq\n  split_ifs at h_ab_eq with h_ab_eq_l h_ab_eq_r\n  · simp at h_ab_eq; apply Fin.eq_of_val_eq; exact h_ab_eq\n  · have ha_lt : a < toOutCodewordsCount ℓ ϑ i.succ := by omega\n    have hb_lt : b < toOutCodewordsCount ℓ ϑ i.succ := by omega\n    conv_rhs at ha_lt => rw [toOutCodewordsCount_succ_eq ℓ ϑ i]\n    conv_rhs at hb_lt => rw [toOutCodewordsCount_succ_eq ℓ ϑ i]\n    simp only [hCR, ↓reduceIte] at ha_lt hb_lt\n    have h_a : a = toOutCodewordsCount ℓ ϑ i.castSucc := by omega\n    have h_b : b = toOutCodewordsCount ℓ ϑ i.castSucc := by omega\n    omega\n\n/- the CommitStep is a 1-message oracle reduction to place the conditional oracle message -/\ndef commitStepLogic_embed (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i) :\n    Fin (toOutCodewordsCount ℓ ϑ i.succ) ↪ Fin (toOutCodewordsCount ℓ ϑ i.castSucc) ⊕ (pSpecCommit 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i).MessageIdx := ⟨\n  commitStepLogic_embedFn  𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (ϑ := ϑ) i\n  , commitStepLogic_embed_inj 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (ϑ := ϑ) i hCR\n  ⟩\n\n-- ⊢ ∀ (i_1 : Fin (toOutCodewordsCount ℓ ϑ i.succ)),\n--   OracleStatement 𝔽q β ϑ i.succ i_1 =\n--     match (commitStepLogic_embed 𝔽q β i hCR) i_1 with\n--     match (commitStepLogic_embed 𝔽q β ϑ i hCR) i_1 with\n--     | Sum.inl j => OracleStatement 𝔽q β ϑ i.castSucc j\n--     | Sum.inr j => (pSpecCommit 𝔽q β i).Message j\n\ndef commitStepHEq (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i) :\n    hEq (OracleIn := OracleStatement 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ i.castSucc)\n    (OracleOut := OracleStatement 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ i.succ)\n    (ιₒᵢ := Fin (toOutCodewordsCount ℓ ϑ i.castSucc)) (ιₒₒ := Fin (toOutCodewordsCount ℓ ϑ i.succ))\n    (pSpec := pSpecCommit 𝔽q β i) (embed := commitStepLogic_embed 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (ϑ := ϑ) i hCR)\n  := fun oracleIdx => by\n    unfold OracleStatement pSpecCommit commitStepLogic_embed commitStepLogic_embedFn\n    simp only [MessageIdx, Fin.isValue, Function.Embedding.coeFn_mk, Message,\n      Matrix.cons_val_fin_one]\n    by_cases hlt : oracleIdx.val < toOutCodewordsCount ℓ ϑ i.castSucc\n    · simp only [hlt, ↓reduceDIte]\n    · simp only [hlt, ↓reduceDIte, Fin.isValue]\n      have hOracleIdx_lt : oracleIdx.val < toOutCodewordsCount ℓ ϑ i.succ := by omega\n      simp only [toOutCodewordsCount_succ_eq ℓ ϑ i, hCR, ↓reduceIte] at hOracleIdx_lt\n      have hOracleIdx : oracleIdx = toOutCodewordsCount ℓ ϑ i.castSucc := by omega\n      simp_rw [hOracleIdx]\n      have h := toOutCodewordsCount_mul_ϑ_eq_i_succ ℓ ϑ (i := i) (hCR := hCR)\n      unfold OracleFunction\n      congr 1; congr 1\n      funext x\n      congr 1; congr 1\n      simp only [Fin.mk.injEq]; rw [h]\n\n/-- The Logic Instance for the commit step.\nThis is a trivial 1-message protocol where the prover just sends an oracle and the verifier\naccepts it. -/\ndef commitStepLogic (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i) :\n    ReductionLogicStep\n      (Statement (L := L) Context i.succ)\n      (Witness (L := L) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.succ)\n      (OracleStatement 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.castSucc)\n      (OracleStatement 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.succ)\n      (Statement (L := L) Context i.succ)\n      (Witness (L := L) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.succ)\n      (pSpecCommit 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i) where\n\n  completeness_relIn := fun ((stmt, oStmt), wit) =>\n    ((stmt, oStmt), wit) ∈ strictFoldStepRelOut (mp := mp) 𝔽q β (ϑ := ϑ)\n      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) i\n\n  completeness_relOut := fun ((stmt, oStmt), wit) =>\n    ((stmt, oStmt), wit) ∈ strictRoundRelation (mp := mp) 𝔽q β (ϑ := ϑ)\n      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) i.succ\n\n  -- No verification needed - just accept\n  verifierCheck := fun _ _ => True\n\n  -- Statement doesn't change\n  verifierOut := fun stmt _ => stmt\n\n  -- Oracle embedding: new oracle index maps to the message\n  embed := commitStepLogic_embed 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hCR\n\n  hEq := (commitStepHEq 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hCR)\n\n  -- No challenges in 1-message protocol, so transcript is just the message\n  honestProverTranscript := fun _stmt wit _oStmt _challenges =>\n    fun ⟨0, _⟩ => wit.f\n\n  -- Prover output: statement unchanged, oracle extended with new function\n  proverOut := fun stmt wit oStmtIn transcript =>\n    let oStmtOut :=\n    snoc_oracle 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (destIdx := ⟨i.val + 1, by omega⟩) (h_destIdx := by rfl) oStmtIn (newOracleFn := wit.f)\n      -- OracleVerifier.mkVerifierOStmtOut\n      -- (embed := (commitStepLogic_embed 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hCR))\n      -- (hEq := (commitStepHEq 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i hCR))\n      -- oStmtIn transcript\n    ((stmt, oStmtOut), wit)\n\nuniverse u v\n/-- Applying a casted nondependent function is the same as casting the argument backward first. -/\ntheorem cast_fun_eq_fun_cast_arg {α β : Type u} {γ : Type v} {hαβ : α = β}\n    {hfun : (α → γ) = (β → γ)} (f : α → γ) (x : β) :\n    cast hfun f x = f (cast hαβ.symm x) := by\n  subst hαβ\n  cases hfun\n  rfl\n\ntheorem cast_fun_eq_fun_cast_arg_rev {α β : Type u} {γ : Type v} {hαβ : α = β}\n    {hfun : (β → γ) = (α → γ)} (f : β → γ) (x : α) :\n    cast hfun f x = f (cast hαβ x) := by\n  subst hαβ\n  cases hfun\n  rfl\n\ntheorem fun_heq_cast_arg {α β : Type u} {γ : Type v} (hαβ : α = β)\n    (f : β → γ) :\n    HEq (fun x : α => f (cast hαβ x)) f := by\n  subst hαβ\n  rfl\n\ntheorem verifier_inr_transport_heq {n : ℕ} {pSpec : ProtocolSpec n}\n    {ιₛᵢ ιₛₒ : Type}\n    {OStmtIn : ιₛᵢ → Type} {OStmtOut : ιₛₒ → Type}\n    (embed : ιₛₒ ↪ ιₛᵢ ⊕ pSpec.MessageIdx)\n    (hTypes : hEq (OracleIn := OStmtIn) (OracleOut := OStmtOut)\n      (pSpec := pSpec) (embed := embed))\n    {idx : ιₛₒ} {msgIdx : pSpec.MessageIdx}\n    (h : embed idx = Sum.inr msgIdx) (x : pSpec.Message msgIdx) :\n    HEq ((hTypes idx ▸ h ▸ x : OStmtOut idx)) x := by\n  refine (eqRec_heq (φ := fun T : Type => T) (hTypes idx).symm (h ▸ x)).trans ?_\n  rw [eqRec_eq_cast]\n  exact cast_heq _ x\n\nomit [CharP L 2] [SampleableType L] [DecidableEq 𝔽q] h_β₀_eq_1 in\n/-- Old-oracle branch of the commit-step `snoc_oracle`/verifier-output agreement.\nFor old frontier indices, both constructions route to the same input oracle. -/\nlemma snoc_oracle_eq_mkVerifierOStmtOut_commitStep_old\n    (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i)\n    (oStmtIn : ∀ j : Fin (toOutCodewordsCount ℓ ϑ i.castSucc),\n      OracleStatement 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ i.castSucc j)\n    (newOracle : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (domainIdx := ⟨i.val + 1, by omega⟩))\n    (transcript : FullTranscript (pSpecCommit 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i))\n    (j : Fin (toOutCodewordsCount ℓ ϑ i.succ))\n    (hj : j.val < toOutCodewordsCount ℓ ϑ i.castSucc) :\n    snoc_oracle 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n        (destIdx := ⟨i.val + 1, by omega⟩) (h_destIdx := by rfl) oStmtIn newOracle j =\n      OracleVerifier.mkVerifierOStmtOut (commitStepLogic (mp := mp) 𝔽q β (ϑ := ϑ)\n        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) i hCR).embed\n        (commitStepLogic (mp := mp) 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n          (𝓑 := 𝓑) i hCR).hEq oStmtIn transcript j := by\n  dsimp only [snoc_oracle]\n  simp only [hCR, ↓reduceDIte]\n  have h_embed : (commitStepLogic (mp := mp) 𝔽q β (ϑ := ϑ)\n      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) i hCR).embed j =\n      Sum.inl ⟨j.val, hj⟩ := by\n    simp only [commitStepLogic, commitStepLogic_embed, Function.Embedding.coeFn_mk,\n      commitStepLogic_embedFn, hj, dif_pos]\n  rw [OracleVerifier.mkVerifierOStmtOut_inl _ _ _ _ _ _ h_embed]\n  simp only [hj, dif_pos, eqRec_eq_cast, cast_cast]\n  apply eq_of_heq\n  refine HEq.trans ?_ (cast_heq _ (oStmtIn ⟨j.val, hj⟩)).symm\n  have hidx : (⟨j.val, by omega⟩ :\n      Fin (toOutCodewordsCount ℓ ϑ i.castSucc)) = ⟨j.val, hj⟩ := by\n    ext\n    rfl\n  cases hidx\n  rfl\n\nomit [CharP L 2] [SampleableType L] [DecidableEq 𝔽q] h_β₀_eq_1 in\n/-- New-oracle branch of the commit-step `snoc_oracle`/verifier-output agreement.\nThe `snoc_oracle` side is now a direct cast of the transcript message oracle. -/\nlemma snoc_oracle_eq_mkVerifierOStmtOut_commitStep_new\n    (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i)\n    (oStmtIn : ∀ j : Fin (toOutCodewordsCount ℓ ϑ i.castSucc),\n      OracleStatement 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ i.castSucc j)\n    (newOracle : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (domainIdx := ⟨i.val + 1, by omega⟩))\n    (transcript : FullTranscript (pSpecCommit 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i))\n    (h_transcript_eq : transcript.messages ⟨0, rfl⟩ = newOracle)\n    (j : Fin (toOutCodewordsCount ℓ ϑ i.succ))\n    (hj : ¬ j.val < toOutCodewordsCount ℓ ϑ i.castSucc) :\n    snoc_oracle 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n        (destIdx := ⟨i.val + 1, by omega⟩) (h_destIdx := by rfl) oStmtIn newOracle j =\n      OracleVerifier.mkVerifierOStmtOut (commitStepLogic (mp := mp) 𝔽q β (ϑ := ϑ)\n        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) i hCR).embed\n        (commitStepLogic (mp := mp) 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n          (𝓑 := 𝓑) i hCR).hEq oStmtIn transcript j := by\n  have h_embed : (commitStepLogic (mp := mp) 𝔽q β (ϑ := ϑ)\n      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) i hCR).embed j =\n      Sum.inr ⟨0, rfl⟩ := by\n    simp only [commitStepLogic, commitStepLogic_embed, Function.Embedding.coeFn_mk,\n      commitStepLogic_embedFn, hj, dif_neg, not_false_eq_true]\n    rfl\n  rw [OracleVerifier.mkVerifierOStmtOut_inr _ _ _ _ _ _ h_embed]\n  apply eq_of_heq\n  have h_snoc :\n      HEq (snoc_oracle 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n        (destIdx := ⟨i.val + 1, by omega⟩) (h_destIdx := by rfl) oStmtIn newOracle j)\n        newOracle := by\n    exact snoc_oracle_new_heq_of_commit 𝔽q β\n      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (h_destIdx := by rfl)\n      (i := i) hCR oStmtIn newOracle j hj\n  have h_msg : HEq newOracle (transcript.messages ⟨0, rfl⟩) :=\n    heq_of_eq h_transcript_eq.symm\n  have h_transport :\n      HEq ((((commitStepLogic (mp := mp) 𝔽q β (ϑ := ϑ)\n          (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) i hCR).hEq j) ▸\n          h_embed ▸ transcript.messages ⟨0, rfl⟩ :\n            OracleStatement 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ i.succ j))\n        (transcript.messages ⟨0, rfl⟩) := by\n    exact verifier_inr_transport_heq\n      (embed := (commitStepLogic (mp := mp) 𝔽q β (ϑ := ϑ)\n        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) i hCR).embed)\n      (hTypes := (commitStepLogic (mp := mp) 𝔽q β (ϑ := ϑ)\n        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) i hCR).hEq)\n      h_embed (transcript.messages ⟨0, rfl⟩)\n  exact h_snoc.trans (h_msg.trans h_transport.symm)\n\nomit [CharP L 2] [SampleableType L] [DecidableEq 𝔽q] h_β₀_eq_1 in\n/-- Helper lemma: snoc_oracle matches mkVerifierOStmtOut for commit steps.\n\nThis proves that when we add a new oracle via `snoc_oracle`, the result matches what the verifier\ncomputes using `OracleVerifier.mkVerifierOStmtOut` with the commit step's embedding.\n\nThe key insight:\n- For indices `j < toOutCodewordsCount ℓ ϑ i.castSucc`: embed maps to `Sum.inl j` (old oracle)\n- For index `j = toOutCodewordsCount ℓ ϑ i.castSucc`: embed maps to `Sum.inr 0`\n  (new oracle from message)\n-/\nlemma snoc_oracle_eq_mkVerifierOStmtOut_commitStep\n    (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i)\n    (oStmtIn : ∀ j : Fin (toOutCodewordsCount ℓ ϑ i.castSucc),\n      OracleStatement 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ϑ i.castSucc j)\n    (newOracle : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (domainIdx := ⟨i.val + 1, by omega⟩))\n    (transcript : FullTranscript (pSpecCommit 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i))\n    (h_transcript_eq : transcript.messages ⟨0, rfl⟩ = newOracle) :\n    snoc_oracle 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (destIdx := ⟨i.val + 1, by omega⟩) (h_destIdx := by rfl) oStmtIn newOracle =\n    OracleVerifier.mkVerifierOStmtOut (commitStepLogic (mp := mp) 𝔽q β (ϑ := ϑ)\n      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) i hCR).embed\n      (commitStepLogic (mp := mp) 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n        (𝓑 := 𝓑) i hCR).hEq oStmtIn transcript := by\n  funext j\n  by_cases hj : j.val < toOutCodewordsCount ℓ ϑ i.castSucc\n  · exact snoc_oracle_eq_mkVerifierOStmtOut_commitStep_old 𝔽q β\n      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑)\n      i hCR oStmtIn newOracle transcript j hj\n  · exact snoc_oracle_eq_mkVerifierOStmtOut_commitStep_new 𝔽q β\n      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑)\n      i hCR oStmtIn newOracle transcript h_transcript_eq j hj\n\n/-- Oracle folding consistency is preserved when adding a new oracle in a commit step.\n\nThis lemma shows that if `oStmtIn` satisfies `oracleFoldingConsistencyProp` at round `i.castSucc`,\nthen `oStmtOut` (constructed via `mkVerifierOStmtOut` with commit step's embed/hEq) satisfies it\nat `i.succ`.\n\n**Key insight**: In a commit step:\n- The oracle frontier index values are equal:\n  `(mkFromStmtIdxCastSuccOfSucc i).val = (mkFromStmtIdx i.succ).val`\n- The challenges don't change (commit step has no verifier challenges)\n- Therefore oracle folding consistency trivially carries over\n-/\n-- Arithmetic bound lemmas\nlemma commitStep_j_bound (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i)\n    (j : Fin (toOutCodewordsCount ℓ ϑ i.succ))\n    (hj : j.val + 1 < toOutCodewordsCount ℓ ϑ i.succ) :\n    j.val < toOutCodewordsCount ℓ ϑ i.castSucc := by\n  have h_count_succ : toOutCodewordsCount ℓ ϑ i.succ = toOutCodewordsCount ℓ ϑ i.castSucc + 1 := by\n    simp only [toOutCodewordsCount_succ_eq, hCR, ↓reduceIte]\n  conv_rhs at hj => rw [h_count_succ]\n  omega\n\nlemma commitStep_j_is_last (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i)\n    (j : Fin (toOutCodewordsCount ℓ ϑ i.succ))\n    (hj : j.val + 1 < toOutCodewordsCount ℓ ϑ i.succ)\n    (hj_next : ¬ j.val + 1 < toOutCodewordsCount ℓ ϑ i.castSucc) :\n    j.val + 1 = toOutCodewordsCount ℓ ϑ i.castSucc := by\n  have h_count_succ : toOutCodewordsCount ℓ ϑ i.succ = toOutCodewordsCount ℓ ϑ i.castSucc + 1 := by\n    simp only [toOutCodewordsCount_succ_eq, hCR, ↓reduceIte]\n  conv_rhs at hj => rw [h_count_succ]\n  omega\n\nomit [SampleableType L] h_β₀_eq_1 in\nlemma strictOracleFoldingConsistency_commitStep\n    (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i)\n    (stmtIn : Statement (L := L) Context i.succ)\n    (witIn : Witness 𝔽q β i.succ)\n    (oStmtIn : ∀ j, OracleStatement 𝔽q β ϑ i.castSucc j)\n    (challenges : (pSpecCommit 𝔽q β i).Challenges)\n    (h_wit_struct_In : witnessStructuralInvariant 𝔽q β (mp := mp) stmtIn witIn)\n    (h_oracle_folding_In : strictOracleFoldingConsistencyProp 𝔽q β (t := witIn.t) (i := i.castSucc)\n      (challenges := Fin.rtake (m := i)\n        (v := stmtIn.challenges) (h := by\n          simp only [Fin.val_succ, le_add_iff_nonneg_right, zero_le]))\n      (oStmt := oStmtIn)) :\n    let step := (commitStepLogic 𝔽q β (ϑ := ϑ)\n      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) (mp := mp) i (hCR := hCR))\n    let transcript := step.honestProverTranscript stmtIn witIn oStmtIn challenges\n    let verifierStmtOut := step.verifierOut stmtIn transcript\n    let verifierOStmtOut := OracleVerifier.mkVerifierOStmtOut step.embed step.hEq\n      oStmtIn transcript\n    strictOracleFoldingConsistencyProp 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (i := i.succ)\n      (challenges := Fin.rtake (m := i.val + 1)\n        (v := verifierStmtOut.challenges) (h := by simp only [Fin.val_succ, le_refl]))\n      (oStmt := verifierOStmtOut) (t := witIn.t)\n    := by\n  let step := (commitStepLogic 𝔽q β (ϑ := ϑ)\n    (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) (mp := mp) i (hCR := hCR))\n  let transcript := step.honestProverTranscript stmtIn witIn oStmtIn challenges\n  let verifierStmtOut := step.verifierOut stmtIn transcript\n  let verifierOStmtOut := OracleVerifier.mkVerifierOStmtOut step.embed step.hEq\n    oStmtIn transcript\n  let P₀ : L⦃< 2 ^ ℓ⦄[X] :=\n    polynomialFromNovelCoeffsF₂ 𝔽q β ℓ (by omega)\n      (fun ω => witIn.t.val.eval (statementOrderBitsOfIndex ω))\n  let f₀ := polyToOracleFunc 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n    (domainIdx := 0) (P := P₀)\n\n  have h_wit_f_eq : witIn.f = getMidCodewords 𝔽q β witIn.t stmtIn.challenges :=\n    h_wit_struct_In.2\n  have h_oracle_folding_tail :\n      strictOracleFoldingConsistencyProp 𝔽q β (t := witIn.t) (i := i.castSucc)\n        (challenges := Fin.tail stmtIn.challenges) (oStmt := oStmtIn) := by\n    convert h_oracle_folding_In using 2\n    exact (show Fin.rtake (n := i.val + 1) (α := fun _ : Fin (i.val + 1) => L)\n        (m := i.val) (v := stmtIn.challenges) (h := by omega) =\n        Fin.tail stmtIn.challenges by\n      rw [← Fin.cons_self_tail stmtIn.challenges]\n      exact fin_rtake_cons_const (stmtIn.challenges ⟨0, Nat.succ_pos i.val⟩)\n        (Fin.tail stmtIn.challenges)).symm\n  have h_OStmtOut_eq : verifierOStmtOut = snoc_oracle 𝔽q β (ϑ := ϑ)\n      (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (destIdx := ⟨i.val + 1, by omega⟩) (h_destIdx := by rfl)\n      oStmtIn (newOracleFn := witIn.f) := by\n    rw [snoc_oracle_eq_mkVerifierOStmtOut_commitStep 𝔽q β (ϑ := ϑ)\n      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) (mp := mp)\n      i hCR oStmtIn witIn.f transcript (by rfl)]\n  have h_challenges_eq : stmtIn.challenges = verifierStmtOut.challenges := by rfl\n  have h_rtake_full (h : i.val + 1 ≤ i.val + 1) :\n      Fin.rtake (n := i.val + 1) (α := fun _ : Fin (i.val + 1) => L)\n        (m := i.val + 1) (v := stmtIn.challenges) (h := h) =\n      stmtIn.challenges := by\n    simpa using (Fin.rtake_self' (v := stmtIn.challenges))\n\n  simp only [strictOracleFoldingConsistencyProp]\n  intro j\n  have h_count_succ :\n      toOutCodewordsCount ℓ ϑ i.succ = toOutCodewordsCount ℓ ϑ i.castSucc + 1 := by\n    simp only [toOutCodewordsCount_succ_eq, hCR, ↓reduceIte]\n  have h_j_bound : j.val < toOutCodewordsCount ℓ ϑ i.succ := j.isLt\n  by_cases hj : j.val < toOutCodewordsCount ℓ ϑ i.castSucc\n  · have h_verifier_eq_old : verifierOStmtOut j = oStmtIn ⟨j.val, hj⟩ := by\n      rw [h_OStmtOut_eq]\n      dsimp only [snoc_oracle]\n      simp only [hj, ↓reduceDIte]\n    change verifierOStmtOut j = _\n    rw [h_verifier_eq_old]\n    have h_old_steps_bound : j.val * ϑ ≤ i.val := by\n      have hle := toCodewordsCount_mul_ϑ_le_i ℓ ϑ i.castSucc ⟨j.val, hj⟩\n      simpa only [Fin.val_castSucc, i.isLt, ↓reduceIte] using hle\n    have h_chal_tail :\n        getFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := j.val * ϑ) i.castSucc\n            (Fin.tail stmtIn.challenges) 0 (h := by\n              simpa only [zero_add, Fin.val_castSucc] using h_old_steps_bound) =\n          getFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := j.val * ϑ) i.succ\n            stmtIn.challenges 0 (h := by\n              simp only [zero_add, Fin.val_succ]\n              omega) := by\n      simpa only [zero_add] using\n        (getFoldingChallenges_tail_castSucc_eq_of_le (r := r) (𝓡 := 𝓡)\n          (ϑ := j.val * ϑ) i stmtIn.challenges 0\n          (by simpa only [zero_add, Fin.val_castSucc] using h_old_steps_bound)\n          (by\n            simp only [zero_add, Fin.val_succ]\n            omega))\n    have h_old_eq := h_oracle_folding_tail ⟨j.val, hj⟩\n    rw [← h_challenges_eq]\n    have h_chal_full :\n        getFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := j.val * ϑ) i.succ\n            (Fin.rtake (n := i.val + 1) (α := fun _ : Fin (i.val + 1) => L)\n              (m := i.val + 1) (v := stmtIn.challenges)\n              (h := by exact le_rfl)) 0 (h := by\n              simp only [zero_add, Fin.val_succ]\n              omega) =\n          getFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := j.val * ϑ) i.succ\n            stmtIn.challenges 0 (h := by\n              simp only [zero_add, Fin.val_succ]\n              omega) := by\n      exact getFoldingChallenges_rtake_self_succ (r := r) (𝓡 := 𝓡)\n        (ϑ := j.val * ϑ) (i := i) (challenges := stmtIn.challenges) (k := 0)\n        (h := by\n          simp only [zero_add, Fin.val_succ]\n          omega)\n        (h' := by\n          simp only [zero_add, Fin.val_succ]\n          omega)\n        (hr := by exact le_rfl)\n    have h_chal_eq :\n        getFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := j.val * ϑ) i.castSucc\n            (Fin.tail stmtIn.challenges) 0 (h := by\n              simpa only [zero_add, Fin.val_castSucc] using h_old_steps_bound) =\n          getFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := j.val * ϑ) i.succ\n            (Fin.rtake (n := i.val + 1) (α := fun _ : Fin (i.val + 1) => L)\n              (m := i.val + 1) (v := stmtIn.challenges)\n              (h := by exact le_rfl)) 0 (h := by\n              simp only [zero_add, Fin.val_succ]\n              omega) :=\n      h_chal_tail.trans h_chal_full.symm\n    exact h_old_eq.trans (by\n      rw [h_chal_eq]\n      simp only [Fin.val_mk]\n      apply iterated_fold_proof_irrel)\n  · change verifierOStmtOut j = _\n    rw [h_OStmtOut_eq]\n    dsimp only [snoc_oracle]\n    simp only [hj, ↓reduceDIte, hCR]\n    have h_j_eq : j.val = toOutCodewordsCount ℓ ϑ i.castSucc := by omega\n    have h_domain_idx_eq : (oraclePositionToDomainIndex (positionIdx := j)).val = i.val + 1 := by\n      simp only [h_j_eq]\n      exact toOutCodewordsCount_mul_ϑ_eq_i_succ ℓ ϑ i hCR\n    funext x\n    dsimp only [Fin.val_last, getMidCodewords] at h_wit_f_eq\n    rw [h_wit_f_eq]\n    rw [← h_challenges_eq]\n    have h_new_steps_eq : j.val * ϑ = i.val + 1 := by\n      simpa only [oraclePositionToDomainIndex, Fin.val_mk] using h_domain_idx_eq\n\n    have h_cast_elim := iterated_fold_congr_dest_index 𝔽q β\n      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := 0)\n      (steps := i.succ)\n      (destIdx := ⟨oraclePositionToDomainIndex ℓ ϑ j, by omega⟩)\n      (destIdx' := ⟨i.succ, by simp only [Fin.val_succ]; omega⟩)\n      (h_destIdx := by\n        simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod, Fin.val_succ, zero_add]\n        exact h_domain_idx_eq)\n      (h_destIdx_le := by simp only [oracle_index_le_ℓ])\n      (h_destIdx_eq_destIdx' := by\n        simp only [Fin.val_succ, Fin.mk.injEq]\n        exact h_domain_idx_eq)\n      (f := f₀)\n      (r_challenges := foldOrderChallenges stmtIn.challenges)\n    dsimp only [f₀, P₀] at h_cast_elim\n    unfold polyToOracleFunc at h_cast_elim\n    rw [cast_fun_eq_fun_cast_arg (hαβ := by\n      apply congrArg (fun idx => (sDomain 𝔽q β h_ℓ_add_R_rate idx : Type))\n      exact Fin.eq_of_val_eq h_new_steps_eq.symm)]\n    have h_first := (h_cast_elim x).symm\n    refine h_first.trans ?_\n    unfold getFoldingChallenges\n\n    have h_cast_elim2 := iterated_fold_congr_steps_index 𝔽q β\n      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := 0)\n      (steps := i.succ) (steps' := j.val * ϑ)\n      (destIdx := ⟨oraclePositionToDomainIndex ℓ ϑ j, by omega⟩)\n      (h_steps_eq_steps' := by exact h_domain_idx_eq.symm)\n      (h_destIdx := by\n        simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod, Fin.val_succ, zero_add]\n        exact h_domain_idx_eq)\n      (h_destIdx_le := by simp only [oracle_index_le_ℓ])\n      (f := f₀) (r_challenges := foldOrderChallenges stmtIn.challenges)\n    dsimp only [f₀, P₀] at h_cast_elim2\n    unfold polyToOracleFunc at h_cast_elim2\n    rw [h_cast_elim2]\n    dsimp only [Fin.val_succ, Fin.take_apply, Fin.castLE_refl]\n    congr 1\n    dsimp only [oraclePositionToDomainIndex] at h_domain_idx_eq\n    have h_challenges_eq_take :\n        (fun cIdx : Fin (j.val * ϑ) =>\n          foldOrderChallenges (ℓ := ℓ) (L := L) (i := i.succ)\n            stmtIn.challenges ⟨cIdx.val, by\n          simpa only [Fin.val_succ, h_domain_idx_eq] using cIdx.isLt⟩) =\n        (fun cIdx : Fin (j.val * ϑ) =>\n          foldOrderChallenges (ℓ := ℓ) (L := L) (i := i.succ)\n          (Fin.rtake (n := i.val + 1) (α := fun _ : Fin (i.val + 1) => L)\n            (m := i.val + 1) (v := stmtIn.challenges)\n            (h := by exact le_rfl)) ⟨0 + cIdx.val, by\n          simpa only [zero_add, Fin.val_succ, h_domain_idx_eq] using cIdx.isLt⟩) := by\n      rw [h_rtake_full]\n      funext cId\n      simp only [Fin.val_succ, zero_add]\n    simpa using h_challenges_eq_take\n\nomit [SampleableType L] h_β₀_eq_1 in\n/-- Commit step logic is strongly complete.\nThe key insight is that the commit step just extends the oracle without changing the statement,\nand the verifier always accepts (no verification check). -/\nlemma commitStep_is_logic_complete (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i) :\n    (commitStepLogic (mp := mp) 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (𝓑 := 𝓑) i (hCR := hCR)).IsStronglyComplete := by\n  intro stmtIn witIn oStmtIn challenges h_relIn\n  let step := (commitStepLogic 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n    (𝓑 := 𝓑) (mp := mp) i (hCR := hCR))\n  let transcript := step.honestProverTranscript stmtIn witIn oStmtIn challenges\n  let verifierStmtOut := step.verifierOut stmtIn transcript\n  let verifierOStmtOut := OracleVerifier.mkVerifierOStmtOut step.embed step.hEq\n    oStmtIn transcript\n  let proverOutput := step.proverOut stmtIn witIn oStmtIn transcript\n  let proverStmtOut := proverOutput.1.1\n  let proverOStmtOut := proverOutput.1.2\n  let proverWitOut := proverOutput.2\n\n  -- Extract properties from h_relIn (strictFoldStepRelOut)\n  dsimp only [commitStepLogic, strictFoldStepRelOut, strictFoldStepRelOutProp,\n    strictRoundRelation, strictRoundRelationProp, Set.mem_setOf_eq] at h_relIn\n  dsimp only [strictFoldStepRelOutProp, strictRoundRelationProp, Fin.val_succ] at h_relIn\n\n  -- We'll need sumcheck consistency for Fact 1, so extract it from either branch\n  have h_sumcheck_cons : sumcheckConsistencyProp (𝓑 := 𝓑) stmtIn.sumcheck_target witIn.H\n    := h_relIn.1\n  let h_VCheck_passed : step.verifierCheck stmtIn transcript := by\n    dsimp only [commitStepLogic, Prod.mk.eta, step]\n\n  have hStmtOut_eq : proverStmtOut = verifierStmtOut := by\n    change (step.proverOut stmtIn witIn oStmtIn transcript).1.1 = step.verifierOut stmtIn transcript\n    dsimp only [step, commitStepLogic]\n  have hOStmtOut_eq : proverOStmtOut = verifierOStmtOut := by\n    -- clear_value h_VCheck_passed\n    change (step.proverOut stmtIn witIn oStmtIn transcript).1.2\n      = OracleVerifier.mkVerifierOStmtOut step.embed step.hEq oStmtIn transcript\n    conv_lhs => dsimp only [step, commitStepLogic]\n    dsimp only [transcript, step]\n    rw [snoc_oracle_eq_mkVerifierOStmtOut_commitStep 𝔽q β (ϑ := ϑ)\n      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) (mp := mp)\n      i hCR oStmtIn witIn.f transcript (by rfl)]\n\n  have h_first_oracle_eq : (getFirstOracle 𝔽q β verifierOStmtOut)\n    = (getFirstOracle 𝔽q β oStmtIn) := by\n    rw [← hOStmtOut_eq]\n    dsimp only [proverOStmtOut, proverOutput, step, commitStepLogic]\n    exact getFirstOracle_snoc_oracle 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i (by rfl) oStmtIn _\n\n  let hRelOut : step.completeness_relOut ((verifierStmtOut, verifierOStmtOut), proverWitOut) := by\n    -- Fact 2: Output relation holds (strictRoundRelation)\n    dsimp only [step, commitStepLogic, strictRoundRelation, strictRoundRelationProp,\n      Set.mem_setOf_eq]\n    simp only [Fin.val_succ]\n    constructor\n    · -- Part 2.1: sumcheck consistency\n      exact h_sumcheck_cons\n    · -- Part 2.2: strictOracleWitnessConsistency\n      have h_strictOracleWitConsistency_In := h_relIn.2\n      dsimp only [strictOracleWitnessConsistency] at h_strictOracleWitConsistency_In ⊢\n      -- Extract the two components from the input\n      obtain ⟨h_wit_struct_In, h_strict_oracle_folding_In⟩ := h_strictOracleWitConsistency_In\n      -- Now prove each component for the output\n      refine ⟨?_, ?_⟩\n      · -- Component 1: witnessStructuralInvariant\n        exact h_wit_struct_In\n      · -- Component 2: strictOracleFoldingConsistencyProp\n        exact strictOracleFoldingConsistency_commitStep 𝔽q β (ϑ := ϑ) (𝓑 := 𝓑)\n          (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (witIn := witIn)\n          (stmtIn := stmtIn) (hCR := hCR) (h_wit_struct_In := h_wit_struct_In)\n          (h_oracle_folding_In := h_strict_oracle_folding_In) (challenges := challenges)\n\n  -- Prove the four required facts\n  refine ⟨?_, ?_, ?_, ?_⟩\n  · exact h_VCheck_passed\n  · exact hRelOut\n  · exact hStmtOut_eq\n  · exact hOStmtOut_eq\n\nend CommitStep\n\nsection FinalSumcheckStep\n/-!\n## Final Sumcheck Step\n\nThis section implements the final sumcheck step that sends the constant `c := f^(ℓ)(0, ..., 0)`\nfrom the prover to the verifier. This step completes the sumcheck verification by ensuring\nthe final constant is consistent with the folding chain.\n\nThe step consists of :\n- P → V : constant `c := f^(ℓ)(0, ..., 0)`\n- V verifies : `s_ℓ = eqTilde(r, r') * c`\n=> `c` should be equal to `t(r'_0, ..., r'_{ℓ-1})` and `f^(ℓ)(0, ..., 0)`\n\n**Key Mathematical Insight** : At round ℓ, we have :\n- `P^(ℓ)(X) = Σ_{w ∈ B_0} H_ℓ(w) · X_w^(ℓ)(X) = H_ℓ(0) · X_0^(ℓ)(X) = H_ℓ(0)`\n- Since `H_ℓ(X)` is constant (zero-variate): `H_ℓ(X) = t(r'_0, ..., r'_{ℓ-1})`\n- Therefore : `P^(ℓ)(X) = t(r'_0, ..., r'_{ℓ-1})` (constant polynomial)\n- And `s_ℓ = ∑_{w ∈ B_0} t(r'_0, ..., r'_{ℓ-1}) = t(r'_0, ..., r'_{ℓ-1})`\n-/\n\n/-- Oracle interface instance for the final sumcheck step message -/\ninstance : ∀ j, OracleInterface ((pSpecFinalSumcheckStep (L := L)).Message j) := fun j =>\n  match j with\n  | ⟨0, _⟩ => OracleInterface.instDefault\n\n/-- The Logic Instance for the final sumcheck step.\nThis is a 1-message protocol where the prover sends the final constant c. -/\ndef finalSumcheckStepLogic :\n    ReductionLogicStep\n      -- In/Out Types\n      (Statement (L := L) (SumcheckBaseContext L ℓ) (Fin.last ℓ))\n      (Witness (L := L) 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (Fin.last ℓ))\n      (OracleStatement 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (Fin.last ℓ))\n      (OracleStatement 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (Fin.last ℓ))\n      (FinalSumcheckStatementOut (L := L) (ℓ := ℓ))\n      (Unit)\n      -- Protocol Spec\n      (pSpecFinalSumcheckStep (L := L))\n      where\n\n  completeness_relIn := fun ((stmt, oStmt), wit) =>\n    ((stmt, oStmt), wit) ∈ strictRoundRelation 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (𝓑 := 𝓑) (mp := BBF_SumcheckMultiplierParam) (Fin.last ℓ)\n\n  completeness_relOut := fun ((stmtOut, oStmtOut), witOut) =>\n    -- For strict relations, we need t from the input witness\n    -- In completeness proofs, this will be extracted from h_relIn via\n    -- strictOracleWitnessConsistency\n      ((stmtOut, oStmtOut), witOut) ∈ strictFinalSumcheckRelOut 𝔽q β (ϑ := ϑ)\n        (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n\n  verifierCheck := fun stmtIn transcript =>\n    let c : L := transcript.messages ⟨0, rfl⟩\n    let eq_tilde_eval := eqTilde (r := stmtIn.ctx.t_eval_point) (r' := stmtIn.challenges)\n    stmtIn.sumcheck_target = eq_tilde_eval * c\n\n  verifierOut := fun stmtIn transcript =>\n    let c : L := transcript.messages ⟨0, rfl⟩\n    {\n      ctx := stmtIn.ctx,\n      sumcheck_target := stmtIn.sumcheck_target,\n      challenges := stmtIn.challenges,\n      final_constant := c\n    }\n\n  honestProverTranscript := fun _stmtIn witIn _oStmtIn _chal =>\n    -- The honest prover sends c = f^(ℓ)(0, ..., 0)\n    let c : L := witIn.f ⟨0, by simp only [zero_mem]⟩\n    FullTranscript.mk1 c\n\n  proverOut := fun stmtIn witIn oStmtIn transcript =>\n    let c : L := transcript.messages ⟨0, rfl⟩\n    let stmtOut : FinalSumcheckStatementOut (L := L) (ℓ := ℓ) := {\n      ctx := stmtIn.ctx,\n      sumcheck_target := stmtIn.sumcheck_target,\n      challenges := stmtIn.challenges,\n      final_constant := c\n    }\n    ((stmtOut, oStmtIn), ())\n\n  embed := ⟨fun j => by\n    have h_lt : j.val < toOutCodewordsCount ℓ ϑ (Fin.last ℓ) := j.isLt\n    exact Sum.inl ⟨j.val, by omega⟩\n  , by\n    intro a b h_ab_eq\n    simp only [MessageIdx, Fin.eta, Sum.inl.injEq] at h_ab_eq\n    exact h_ab_eq\n  ⟩\n  hEq := fun oracleIdx => by simp only [Fin.eta]\n\nomit [Fintype L] [DecidableEq L] [CharP L 2] [SampleableType L] [NeZero ℓ] in\n/-- At `Fin.last ℓ`, sumcheck consistency is the single empty-variable evaluation. -/\nlemma sumcheckConsistency_at_last_simplifies\n    (target : L) (H : L⦃≤ 2⦄[X Fin (ℓ - Fin.last ℓ)])\n    (h_cons : sumcheckConsistencyProp (𝓑 := 𝓑) target H) :\n    target = H.val.eval (fun _ => (0 : L)) := by\n  simp only [Fin.val_last] at H h_cons ⊢\n  simp only [sumcheckConsistencyProp] at h_cons\n  haveI : IsEmpty (Fin 0) := Fin.isEmpty\n  rw [Finset.sum_eq_single (a := fun _ => 0)\n    (h₀ := fun b _ hb_ne => by\n      exfalso\n      apply hb_ne\n      funext i\n      simp only [tsub_self] at i\n      exact i.elim0)\n    (h₁ := fun h_not_mem => by\n      exfalso\n      apply h_not_mem\n      simp only [Fintype.mem_piFinset]\n      intro i\n      simp only [tsub_self] at i\n      exact i.elim0)] at h_cons\n  exact h_cons\n\nomit [CharP L 2] [SampleableType L] [DecidableEq 𝔽q] h_β₀_eq_1 in\n/-- The final sumcheck verifier check follows from sumcheck consistency, witness structure, and the\nfinal codeword evaluation identity. -/\nlemma finalSumcheckStep_verifierCheck_passed_of_finalCodeword\n    (stmtIn : Statement (SumcheckBaseContext L ℓ) (Fin.last ℓ))\n    (witIn : Witness 𝔽q β (Fin.last ℓ))\n    (oStmtIn : ∀ j, OracleStatement 𝔽q β ϑ (Fin.last ℓ) j)\n    (challenges : (pSpecFinalSumcheckStep (L := L)).Challenges)\n    (h_sumcheck_cons : sumcheckConsistencyProp (𝓑 := 𝓑) stmtIn.sumcheck_target witIn.H)\n    (h_wit_struct : witnessStructuralInvariant 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (mp := BBF_SumcheckMultiplierParam) (stmt := stmtIn) (wit := witIn))\n    (h_final_codeword :\n      witIn.f ⟨0, by simp only [zero_mem]⟩ = witIn.t.val.eval stmtIn.challenges) :\n    (finalSumcheckStepLogic 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (𝓑 := 𝓑)).verifierCheck stmtIn\n        ((finalSumcheckStepLogic 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n          (𝓑 := 𝓑)).honestProverTranscript stmtIn witIn oStmtIn challenges) := by\n  have h_target_eq_H_eval :\n      stmtIn.sumcheck_target = witIn.H.val.eval (fun _ => (0 : L)) :=\n    sumcheckConsistency_at_last_simplifies (L := L) (ℓ := ℓ) (𝓑 := 𝓑)\n      stmtIn.sumcheck_target witIn.H h_sumcheck_cons\n  have h_proj_eval :\n      (projectToMidSumcheckPoly ℓ witIn.t\n        (m := (BBF_SumcheckMultiplierParam (L := L) (ℓ := ℓ)).multpoly stmtIn.ctx)\n        (Fin.last ℓ) stmtIn.challenges).val.eval (fun _ => (0 : L)) =\n      ((BBF_SumcheckMultiplierParam (L := L) (ℓ := ℓ)).multpoly stmtIn.ctx).val.eval\n        stmtIn.challenges * witIn.t.val.eval stmtIn.challenges := by\n    apply Sumcheck.Structured.projectToMidSumcheckPoly_at_last_eval\n  have h_eq : stmtIn.sumcheck_target =\n      eqTilde stmtIn.ctx.t_eval_point stmtIn.challenges *\n        witIn.f ⟨0, by simp only [zero_mem]⟩ := by\n    calc\n      stmtIn.sumcheck_target\n          = witIn.H.val.eval (fun _ => (0 : L)) := h_target_eq_H_eval\n      _ = (projectToMidSumcheckPoly ℓ witIn.t\n            (m := (BBF_SumcheckMultiplierParam (L := L) (ℓ := ℓ)).multpoly stmtIn.ctx)\n            (Fin.last ℓ) stmtIn.challenges).val.eval (fun _ => (0 : L)) := by\n            rw [h_wit_struct.1]\n      _ = ((BBF_SumcheckMultiplierParam (L := L) (ℓ := ℓ)).multpoly stmtIn.ctx).val.eval\n            stmtIn.challenges * witIn.t.val.eval stmtIn.challenges := h_proj_eval\n      _ = eqTilde stmtIn.ctx.t_eval_point stmtIn.challenges *\n            witIn.t.val.eval stmtIn.challenges := by\n            rfl\n      _ = eqTilde stmtIn.ctx.t_eval_point stmtIn.challenges *\n            witIn.f ⟨0, by simp only [zero_mem]⟩ := by\n            rw [h_final_codeword]\n  dsimp [finalSumcheckStepLogic, FullTranscript.mk1] at h_eq ⊢\n  exact h_eq\n\nomit [SampleableType L] in\n/-- The final folded codeword value sent by the honest prover is the multilinear polynomial\nevaluation at the statement challenges. -/\nlemma finalSumcheckStep_final_codeword_eq_eval\n    (stmtIn : Statement (SumcheckBaseContext L ℓ) (Fin.last ℓ))\n    (witIn : Witness 𝔽q β (Fin.last ℓ))\n    (h_wit_struct : witnessStructuralInvariant 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (mp := BBF_SumcheckMultiplierParam) (stmt := stmtIn) (wit := witIn)) :\n    witIn.f ⟨0, by simp only [zero_mem]⟩ = witIn.t.val.eval stmtIn.challenges := by\n  rw [h_wit_struct.2]\n  exact getMidCodewords_last_apply_eq_eval 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n    (t := witIn.t) (challenges := stmtIn.challenges)\n    (y := ⟨0, by simp only [Fin.val_last, zero_mem]⟩)\n\nomit [SampleableType L] in\n/-- The final sumcheck verifier check follows directly from sumcheck consistency and witness\nstructure. -/\nlemma finalSumcheckStep_verifierCheck_passed\n    (stmtIn : Statement (SumcheckBaseContext L ℓ) (Fin.last ℓ))\n    (witIn : Witness 𝔽q β (Fin.last ℓ))\n    (oStmtIn : ∀ j, OracleStatement 𝔽q β ϑ (Fin.last ℓ) j)\n    (challenges : (pSpecFinalSumcheckStep (L := L)).Challenges)\n    (h_sumcheck_cons : sumcheckConsistencyProp (𝓑 := 𝓑) stmtIn.sumcheck_target witIn.H)\n    (h_wit_struct : witnessStructuralInvariant 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (mp := BBF_SumcheckMultiplierParam) (stmt := stmtIn) (wit := witIn)) :\n    (finalSumcheckStepLogic 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (𝓑 := 𝓑)).verifierCheck stmtIn\n        ((finalSumcheckStepLogic 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n          (𝓑 := 𝓑)).honestProverTranscript stmtIn witIn oStmtIn challenges) := by\n  exact finalSumcheckStep_verifierCheck_passed_of_finalCodeword 𝔽q β\n    (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑)\n    (stmtIn := stmtIn) (witIn := witIn) (oStmtIn := oStmtIn) (challenges := challenges)\n    (h_sumcheck_cons := h_sumcheck_cons) (h_wit_struct := h_wit_struct)\n    (h_final_codeword := finalSumcheckStep_final_codeword_eq_eval 𝔽q β\n      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (stmtIn := stmtIn) (witIn := witIn)\n      (h_wit_struct := h_wit_struct))\n\nomit [CharP L 2] [SampleableType L] [DecidableEq 𝔽q] h_β₀_eq_1 in\n/-- The oracle-folding part of the final relation output is exactly the synchronized final-round\ninput consistency. The remaining relation-out obligation is the final constant fold. -/\nlemma finalSumcheckStep_strictOracleFoldingConsistency_out\n    (stmtIn : Statement (SumcheckBaseContext L ℓ) (Fin.last ℓ))\n    (witIn : Witness 𝔽q β (Fin.last ℓ))\n    (oStmtIn : ∀ j, OracleStatement 𝔽q β ϑ (Fin.last ℓ) j)\n    (h_strictOracleWitConsistency_In : strictOracleWitnessConsistency 𝔽q β\n      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (Context := SumcheckBaseContext L ℓ)\n      (mp := BBF_SumcheckMultiplierParam) (stmtIdx := Fin.last ℓ)\n      (oracleIdx := OracleFrontierIndex.mkFromStmtIdx (Fin.last ℓ)) (stmt := stmtIn)\n      (wit := witIn) (oStmt := oStmtIn)) :\n    strictOracleFoldingConsistencyProp 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (t := witIn.t) (i := Fin.last ℓ) (challenges := stmtIn.challenges)\n      (oStmt := oStmtIn) := by\n  simpa [strictOracleWitnessConsistency, olderStmtChallenges_self] using\n    h_strictOracleWitConsistency_In.2\n\n/-\nThe two direct final-step helper proofs below are stale after the challenge-order migration and have\nno live callers. The public final-step completeness theorem is the explicit\n`FinalSumcheckStepLogicCompleteResidual` surface below; keep these helper sketches out of the active\nelaboration path until the full direct proof is restored.\n\nomit [SampleableType L] in\n/-- **Strict version**: When folding the last oracle to level `ℓ` (final sumcheck),\nthe iterated fold of the last oracle equals the constant function.\n\nThis is the strict version that uses exact equality instead of UDR codewords.\nIt is used in the final sumcheck step to show that the folding chain correctly\nterminates at the constant function. -/\nlemma iterated_fold_to_const_strict\n    (stmtIn : Statement (SumcheckBaseContext L ℓ) (Fin.last ℓ))\n    (witIn : Witness 𝔽q β (Fin.last ℓ))\n    (oStmtIn : ∀ j, OracleStatement 𝔽q β ϑ (Fin.last ℓ) j)\n    (challenges : (pSpecFinalSumcheckStep (L := L)).Challenges)\n    (h_strictOracleWitConsistency_In : strictOracleWitnessConsistency 𝔽q β\n      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (Context := SumcheckBaseContext L ℓ)\n      (mp := BBF_SumcheckMultiplierParam) (stmtIdx := Fin.last ℓ)\n      (oracleIdx := OracleFrontierIndex.mkFromStmtIdx (Fin.last ℓ))\n      (stmt := stmtIn) (wit := witIn) (oStmt := oStmtIn)) :\n    let step := finalSumcheckStepLogic 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑)\n    let transcript := step.honestProverTranscript stmtIn witIn oStmtIn challenges\n    let verifierStmtOut := step.verifierOut stmtIn transcript\n    let verifierOStmtOut := OracleVerifier.mkVerifierOStmtOut step.embed step.hEq oStmtIn transcript\n    let lastDomainIdx := getLastOracleDomainIndex ℓ ϑ (Fin.last ℓ)\n    -- have h_eq := getLastOracleDomainIndex_last (ℓ := ℓ) (ϑ := ϑ)\n    let k := lastDomainIdx.val\n    have h_k: k = ℓ - ϑ := by\n      dsimp only [k, lastDomainIdx]\n      rw [getLastOraclePositionIndex_last, Nat.sub_mul, Nat.one_mul, Nat.div_mul_cancel (hdiv.out)]\n    let curDomainIdx : Fin r := ⟨k, by\n      rw [h_k]\n      omega\n    ⟩\n    have h_destIdx_eq: curDomainIdx.val = lastDomainIdx.val := rfl\n    let f_k : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) curDomainIdx :=\n      getLastOracle (h_destIdx := h_destIdx_eq) (oracleFrontierIdx := Fin.last ℓ)\n        𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (oStmt := verifierOStmtOut)\n    let finalChallenges : Fin ϑ → L := fun cId => verifierStmtOut.challenges ⟨k + cId, by\n      rw [h_k]\n      have h_le : ϑ ≤ ℓ := by apply Nat.le_of_dvd (by exact Nat.pos_of_neZero ℓ) (hdiv.out)\n      have h_cId : cId.val < ϑ := cId.isLt\n      have h_last : (Fin.last ℓ).val = ℓ := rfl\n      omega\n    ⟩\n    let destDomainIdx : Fin r := ⟨k + ϑ, by\n      rw [h_k]\n      have h_le : ϑ ≤ ℓ := by apply Nat.le_of_dvd (by exact Nat.pos_of_neZero ℓ) (hdiv.out)\n      omega\n    ⟩\n    let folded := iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (i := curDomainIdx) (steps := ϑ) (destIdx := destDomainIdx) (h_destIdx := by rfl)\n      (h_destIdx_le := by\n        dsimp only [destDomainIdx, k, lastDomainIdx];\n        rw [getLastOraclePositionIndex_last, Nat.sub_mul, Nat.one_mul,\n          Nat.div_mul_cancel (hdiv.out)]\n        rw [Nat.sub_add_cancel (by exact Nat.le_of_dvd (h:=by\n          exact Nat.pos_of_neZero ℓ) (hdiv.out))]\n      ) (f := f_k)\n      (r_challenges := finalChallenges)\n\n    ∀ y, folded y = transcript.messages ⟨0, rfl⟩ := by\n  have h_ϑ_le_ℓ : ϑ ≤ ℓ := by apply Nat.le_of_dvd (by exact Nat.pos_of_neZero ℓ) (hdiv.out)\n  intro step transcript verifierStmtOut verifierOStmtOut\n  intro lastDomainIdx k h_k curDomainIdx h_destIdx_eq f_k finalChallenges destDomainIdx folded\n  let P₀: L⦃< 2 ^ ℓ⦄[X] := polynomialFromNovelCoeffsF₂ 𝔽q β ℓ (by omega)\n    (fun ω => witIn.t.val.eval (bitsOfIndex ω))\n  let f₀ := polyToOracleFunc 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (domainIdx := 0) (P := P₀)\n  -- From strictOracleWitnessConsistency, we can construct strictfinalSumcheckStepFoldingStateProp\n  -- which contains strictFinalConstantConsistency, giving us the desired equality\n  -- Extract components from h_strictOracleWitConsistency_In\n  have h_wit_struct := h_strictOracleWitConsistency_In.1\n  have h_strict_oracle_folding := h_strictOracleWitConsistency_In.2\n  dsimp only [Fin.val_last, OracleFrontierIndex.val_mkFromStmtIdx,\n    strictOracleFoldingConsistencyProp] at h_strict_oracle_folding\n  -- Construct the input for strictfinalSumcheckStepFoldingStateProp\n  let stmtOut : FinalSumcheckStatementOut (L := L) (ℓ := ℓ) := {\n    ctx := stmtIn.ctx,\n    sumcheck_target := stmtIn.sumcheck_target,\n    challenges := stmtIn.challenges,\n    final_constant := transcript.messages ⟨0, rfl⟩\n  }\n  let c : L := transcript.messages ⟨0, rfl⟩\n  have h_VOStmtOut_eq : verifierOStmtOut = oStmtIn := by rfl\n  have h_challenges_eq : stmtIn.challenges = verifierStmtOut.challenges := by rfl\n  have h_eq : folded = fun x => stmtOut.final_constant := by\n    change folded = fun x => c\n    dsimp only [folded, f_k]\n    -- , getLastOracle]\n    -- f_last is the iterated_fold of f₀ yielded from P₀\n    have h_f_last_consistency := h_strict_oracle_folding\n      (j := (getLastOraclePositionIndex ℓ ϑ (Fin.last ℓ)))\n    --   h_f_last_consistency : oStmtIn (getLastOraclePositionIndex ℓ ϑ (Fin.last ℓ)) =\n    -- iterated_fold 𝔽q β 0 (↑(getLastOraclePositionIndex ℓ ϑ (Fin.last ℓ)) * ϑ) ⋯ ⋯\n    --   (polyToOracleFunc 𝔽q β ↑(polynomialFromNovelCoeffsF₂ 𝔽q β ℓ ⋯\n    --     fun ω ↦ (MvPolynomial.eval ↑↑ω) ↑witIn.t))\n    --   (getFoldingChallenges (Fin.last ℓ) (Fin.take ℓ ⋯ stmtIn.challenges) 0 ⋯)\n\n    rw [h_VOStmtOut_eq]\n    dsimp only [c, transcript, step, finalSumcheckStepLogic]\n    dsimp only [FullTranscript.mk1, FullTranscript.messages]\n    simp only [Fin.val_last]\n    have h_wit_f_eq : witIn.f = getMidCodewords 𝔽q β witIn.t stmtIn.challenges := h_wit_struct.2\n    dsimp only [Fin.val_last, getMidCodewords] at h_wit_f_eq\n    conv_rhs => rw [h_wit_f_eq]; simp only\n    have h_curDomainIdx_eq : curDomainIdx = ⟨ℓ - ϑ, by omega⟩ := by\n      dsimp [curDomainIdx, k, lastDomainIdx]\n      simp only [Fin.mk.injEq]\n      rw [getLastOraclePositionIndex_last, Nat.sub_mul,\n        Nat.div_mul_cancel (hdiv.out)]; simp only [one_mul]\n\n    let res := iterated_fold_congr_source_index 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (i := curDomainIdx) (i' := ⟨ℓ - ϑ, by omega⟩) (h := h_curDomainIdx_eq) (steps := ϑ)\n      (destIdx := destDomainIdx)\n      (h_destIdx := by rfl) (h_destIdx' := by simp only [destDomainIdx, h_k])\n      (h_destIdx_le := by\n        dsimp only [destDomainIdx]; rw [h_k];\n        rw [Nat.sub_add_cancel (by exact Nat.le_of_dvd (h:=by\n          exact Nat.pos_of_neZero ℓ) (hdiv.out))]\n      ) (f := (getLastOracle 𝔽q β h_destIdx_eq oStmtIn)) (r_challenges := finalChallenges)\n    rw [res]\n    dsimp only [getLastOracle, finalChallenges, verifierStmtOut, step, finalSumcheckStepLogic]\n    rw [h_f_last_consistency]\n    simp only [Fin.take_eq_self]\n    -- Extract the inner iterated_fold function\n    let k_pos_idx := getLastOraclePositionIndex ℓ ϑ (Fin.last ℓ)\n    let k_steps := k_pos_idx.val * ϑ\n    have h_k_steps_eq : k_steps = k := by\n      dsimp only [k_steps, k_pos_idx, k, lastDomainIdx]\n    -- The inner iterated_fold is already a function from domain k to L\n    -- We can remove the cast wrapper since the domains match\n    have h_cast_elim := iterated_fold_congr_dest_index 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (i := 0) (steps := k_steps) (destIdx := curDomainIdx) (destIdx' := ⟨k_steps, by omega⟩)\n      (h_destIdx := by simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod, zero_add]; omega)\n      (h_destIdx_le := by\n        dsimp only [curDomainIdx]; simp only [h_k, tsub_le_iff_right, le_add_iff_nonneg_right,\n          zero_le]; )\n      (h_destIdx_eq_destIdx' := by rfl)\n      (f := f₀) (r_challenges := getFoldingChallenges (𝓡 := 𝓡) (r := r) (Fin.last ℓ) stmtIn.challenges 0 (by simp only [zero_add, Fin.val_last]; omega))\n    have h_cast_elim2 := iterated_fold_congr_dest_index 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := 0)\n      (steps := k_steps)\n      (destIdx := ⟨ℓ - ϑ, by omega⟩)\n      (destIdx' := curDomainIdx)\n      (h_destIdx := by simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod, zero_add]; omega)\n      (h_destIdx_le := by\n        dsimp only [curDomainIdx]; simp only [h_k_steps_eq, h_k, tsub_le_iff_right,\n          le_add_iff_nonneg_right, zero_le]; )\n      (h_destIdx_eq_destIdx' := by dsimp only [curDomainIdx]; simp only [Fin.val_last, Fin.mk.injEq]; omega)\n      (f := f₀) (r_challenges := getFoldingChallenges (𝓡 := 𝓡) (r := r) (Fin.last ℓ) stmtIn.challenges 0 (by simp only [zero_add, Fin.val_last]; omega))\n\n    dsimp only [k_steps, k_pos_idx, f₀, P₀] at h_cast_elim\n    dsimp only [k_steps, k_pos_idx, f₀, P₀] at h_cast_elim2\n    conv_lhs =>\n      simp only [←h_cast_elim]\n      simp only [←h_cast_elim2]\n      simp only [←fun_eta_expansion]\n\n    have h_transitivity := iterated_fold_transitivity 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (i := 0) (midIdx := ⟨ℓ - ϑ, by omega⟩) (destIdx := destDomainIdx)\n      (steps₁ := k_steps) (steps₂ := ϑ)\n      (h_midIdx := by simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod, h_k_steps_eq, h_k, zero_add])\n      (h_destIdx := by\n        dsimp only [destDomainIdx, k_steps, k_pos_idx];\n        rw [h_k]; simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod, zero_add, Nat.add_right_cancel_iff]\n        rw [getLastOraclePositionIndex_last]; simp only\n        rw [Nat.sub_mul]; rw [Nat.div_mul_cancel (hdiv.out)]; simp only [one_mul]\n      )\n      (h_destIdx_le := by\n        dsimp only [destDomainIdx]\n        rw [h_k]\n        rw [Nat.sub_add_cancel (by exact Nat.le_of_dvd (h:=by exact Nat.pos_of_neZero ℓ) (hdiv.out))])\n      (f := f₀)\n      (r_challenges₁ := getFoldingChallenges (𝓡 := 𝓡) (r := r) (Fin.last ℓ) stmtIn.challenges 0 (by simp only [zero_add, Fin.val_last]; omega))\n      (r_challenges₂ := finalChallenges)\n    have h_finalChallenges_eq : finalChallenges = fun cId : Fin ϑ => stmtIn.challenges ⟨k + cId.val, by\n      rw [h_k]\n      have h_le : ϑ ≤ ℓ := by apply Nat.le_of_dvd (by exact Nat.pos_of_neZero ℓ) (hdiv.out)\n      have h_cId : cId.val < ϑ := cId.isLt\n      have h_last : (Fin.last ℓ).val = ℓ := rfl\n      omega\n    ⟩ := by rfl\n    rw [h_finalChallenges_eq] at h_transitivity\n    rw [h_transitivity]\n    have h_steps_eq : k_steps + ϑ = ℓ := by\n      dsimp only [k_steps, k_pos_idx, h_k_steps_eq, h_k]\n      rw [getLastOraclePositionIndex_last];\n      simp only [Nat.sub_mul, Nat.one_mul, Nat.div_mul_cancel (hdiv.out)];\n      rw [Nat.sub_add_cancel (by exact Nat.le_of_dvd (h:=by exact Nat.pos_of_neZero ℓ) (hdiv.out))]\n\n    -- Show that the concatenated challenges equal stmtIn.challenges\n    have h_concat_challenges_eq : Fin.append (getFoldingChallenges (𝓡 := 𝓡) (r := r) (ϑ := k_steps) (Fin.last ℓ) stmtIn.challenges 0 (by simp only [zero_add, Fin.val_last]; omega))\n        finalChallenges = fun (cIdx : Fin (k_steps + ϑ)) => stmtIn.challenges ⟨cIdx, by simp only [Fin.val_last]; omega⟩ := by\n      funext cId\n      dsimp only [getFoldingChallenges, finalChallenges]\n      by_cases h : cId.val < k_steps\n      · -- Case 1: cId < k_steps, so it's from the first part\n        simp only [Fin.val_last]\n        dsimp only [Fin.append, Fin.addCases]\n        simp only [h, ↓reduceDIte, getFoldingChallenges, Fin.val_last, Fin.coe_castLT, zero_add]\n      · -- Case 2: cId >= k_steps, so it's from the second part\n        simp only [Fin.val_last]\n        dsimp only [Fin.append, Fin.addCases]\n        simp [h, ↓reduceDIte, Fin.coe_subNat, Fin.coe_cast, eq_rec_constant]\n        congr 1\n        simp only [Fin.val_last, Fin.mk.injEq]\n        rw [add_comm]; rw [←h_k_steps_eq]; omega\n    dsimp only [finalChallenges] at h_concat_challenges_eq\n    rw [h_challenges_eq.symm] at h_concat_challenges_eq\n    simp only [h_concat_challenges_eq]\n    funext y\n    have h_cast_elim3 := iterated_fold_congr_dest_index 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := 0)\n      (steps := k_steps + ϑ)\n      (destIdx := destDomainIdx)\n      (destIdx' := ⟨Fin.last ℓ, by omega⟩)\n      (h_destIdx := by simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod, zero_add]; rfl)\n      (h_destIdx_le := by dsimp only [destDomainIdx]; omega)\n      (h_destIdx_eq_destIdx' := by\n        dsimp only [destDomainIdx]; simp only [Fin.val_last, Fin.mk.injEq]; omega)\n      (f := f₀) (r_challenges := fun (cIdx : Fin (k_steps + ϑ)) => stmtIn.challenges ⟨cIdx, by simp only [Fin.val_last]; omega⟩)\n    rw [h_cast_elim3]\n    have h_cast_elim4 := iterated_fold_congr_steps_index 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := 0)\n      (steps := ℓ) (steps' := k_steps + ϑ)\n      (destIdx := ⟨Fin.last ℓ, by omega⟩)\n      (h_steps_eq_steps' := by simp only [h_steps_eq]) (h_destIdx := by\n        dsimp only [destDomainIdx]; simp only [Fin.val_last, Fin.coe_ofNat_eq_mod, Nat.zero_mod,\n          zero_add];)\n      (h_destIdx_le := by simp only [Fin.val_last, le_refl]) -- simp only [h_k_steps_eq, h_k, tsub_le_iff_right,\n      (f := f₀) (r_challenges := stmtIn.challenges)\n    rw [←h_cast_elim4]\n    set f_ℓ := iterated_fold 𝔽q β 0 ℓ (destIdx := ⟨Fin.last ℓ, by omega⟩)\n      (h_destIdx := by simp only [Fin.val_last, Fin.coe_ofNat_eq_mod, Nat.zero_mod, zero_add];)\n      (h_destIdx_le := by simp only [Fin.val_last, le_refl]) (f := f₀) (r_challenges := stmtIn.challenges)\n    have h_eval_eq : ∀ x, f_ℓ x = f_ℓ ⟨0, by simp only [zero_mem]⟩ := by\n      intro x\n      apply iterated_fold_to_level_ℓ_is_constant 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (t := witIn.t) (destIdx := ⟨Fin.last ℓ, by omega⟩) (h_destIdx := by simp only [Fin.val_last]) (challenges := stmtIn.challenges) (x := x) (y := 0)\n    rw [h_eval_eq]; rfl\n  rw [h_eq]\n  intro y\n  rfl\n\n/-- The verifier check passes in the final sumcheck step.\n\n**Proof structure:**\n1. From `sumcheckConsistencyProp`:\n   - `stmtIn.sumcheck_target = ∑ x ∈ 𝓑^ᶠ(0), witIn.H.val.eval x`\n   - Since `𝓑^ᶠ(0) = {∅}`, this simplifies to `witIn.H.val.eval (fun _ => 0)`\n\n2. From `witnessStructuralInvariant`:\n   - `witIn.H = projectToMidSumcheckPoly ...`\n   - Using `projectToMidSumcheckPoly_at_last`:\n   - `witIn.H.val.eval (fun _ => 0) = eqTilde(...) * witIn.f ⟨0, ...⟩`\n\n3. Combining these gives the verifier check equation. -/\nlemma finalSumcheckStep_verifierCheck_passed\n    (stmtIn : Statement (SumcheckBaseContext L ℓ) (Fin.last ℓ))\n    (witIn : Witness 𝔽q β (Fin.last ℓ))\n    (oStmtIn : ∀ j, OracleStatement 𝔽q β ϑ (Fin.last ℓ) j)\n    (challenges : (pSpecFinalSumcheckStep (L := L)).Challenges)\n    (h_sumcheck_cons : sumcheckConsistencyProp (𝓑 := 𝓑) stmtIn.sumcheck_target witIn.H)\n    (h_strictOracleWitConsistency_In : strictOracleWitnessConsistency 𝔽q β\n      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (Context := SumcheckBaseContext L ℓ)\n      (mp := BBF_SumcheckMultiplierParam) (stmtIdx := Fin.last ℓ)\n      (oracleIdx := OracleFrontierIndex.mkFromStmtIdx (Fin.last ℓ)) (stmt := stmtIn)\n      (wit := witIn) (oStmt := oStmtIn)) :\n    let step := finalSumcheckStepLogic 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑)\n    let transcript := step.honestProverTranscript stmtIn witIn oStmtIn challenges\n    step.verifierCheck stmtIn transcript := by\n  let step := finalSumcheckStepLogic 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑)\n  let transcript := step.honestProverTranscript stmtIn witIn oStmtIn challenges\n\n  -- Simplify the verifier check to the equality we need to prove\n  change (finalSumcheckStepLogic 𝔽q β).verifierCheck stmtIn transcript\n  simp only [finalSumcheckStepLogic]\n  dsimp only [sumcheckConsistencyProp] at h_sumcheck_cons\n\n  -- Simplify the sum to a single evaluation since 𝓑^ᶠ(0) = {∅}\n  rw [Finset.sum_eq_single (a := fun _ => 0) (h₀ := fun b _ hb_ne => by\n    have : b = fun x ↦ 0 := by\n      funext i;\n      rw [Fin.val_last] at i\n      simp only [tsub_self] at i; exact i.elim0\n    contradiction\n    ) (h₁ := fun h_not_mem => by\n      exfalso; apply h_not_mem\n      simp only [Fintype.mem_piFinset]; intro x\n      rw [Fin.val_last] at x\n      simp only [tsub_self] at x; exact x.elim0\n    )] at h_sumcheck_cons\n\n  have h_wit_structural_invariant := h_strictOracleWitConsistency_In.1\n\n  have h_f_eq_getMidCodewords_t : witIn.f = getMidCodewords 𝔽q β witIn.t stmtIn.challenges :=\n    h_wit_structural_invariant.2\n\n  have h_witIn_f_0_eq_c : witIn.f ⟨0, by simp only [zero_mem]⟩ = transcript.messages ⟨0, rfl⟩ := by\n    rfl\n  -- NOTE: this is important\n  let h_c_eq : (transcript.messages ⟨0, rfl⟩) = witIn.t.val.eval stmtIn.challenges := by\n    change witIn.f ⟨0, by simp only [zero_mem]⟩ = witIn.t.val.eval stmtIn.challenges\n    -- Since `f (f_ℓ)` is `getMidCodewords` of `t`, `f = fold(f₀, r') where f₀ = fun x => t.eval x`\n    dsimp only [getMidCodewords, Fin.coe_ofNat_eq_mod] at h_f_eq_getMidCodewords_t\n    rw [congr_fun h_f_eq_getMidCodewords_t ⟨0, by simp only [zero_mem]⟩]\n    --   ⊢ iterated_fold 𝔽q β 0 ℓ ⋯\n    --   (fun x ↦ Polynomial.eval ↑x ↑(polynomialFromNovelCoeffsF₂ 𝔽q β ℓ ⋯\n    --     fun ω ↦ (MvPolynomial.eval ↑↑ω) ↑witIn.t))\n    --   stmtIn.challenges ⟨↑⟨0, ⋯⟩, ⋯⟩ =\n    -- (MvPolynomial.eval stmtIn.challenges) ↑witIn.t\n    -- have h_eq : @Fin.mk r (0 % ℓ) (isLt := by exact Nat.pos_of_ne_zero (by omega)) = 0 := by\n      -- simp only [Nat.zero_mod, Fin.mk_zero']\n    let coeffs := fun (ω : Fin (2 ^ (ℓ - 0))) => witIn.t.val.eval (bitsOfIndex ω)\n    let res := iterated_fold_advances_evaluation_poly 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (i := 0) (steps := Fin.last ℓ) (destIdx := ⟨↑(Fin.last ℓ), by omega⟩) (h_destIdx := by\n        simp only [Fin.val_last, Fin.coe_ofNat_eq_mod, Nat.zero_mod, zero_add])\n      (h_destIdx_le := by simp only; omega) (coeffs := coeffs) (r_challenges := stmtIn.challenges)\n    unfold polyToOracleFunc at res\n    simp only at res\n    rw [intermediate_poly_P_base 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (h_ℓ := by omega) (coeffs := coeffs)] at res\n    dsimp only [polynomialFromNovelCoeffsF₂]\n    change iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) 0 ↑(Fin.last ℓ)\n      (destIdx := ⟨↑(Fin.last ℓ), by omega⟩) (by simp only [Fin.val_last, Fin.coe_ofNat_eq_mod,\n        Nat.zero_mod, zero_add]) (by simp only; omega)\n        (fun x ↦\n          Polynomial.eval (↑x) (polynomialFromNovelCoeffs 𝔽q β ℓ (h_ℓ := by omega) coeffs))\n        stmtIn.challenges ⟨0, by simp only [Fin.val_last, zero_mem]⟩ =\n      (MvPolynomial.eval stmtIn.challenges) (witIn.t.val)\n    rw [res]\n    --   (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate ⟨0 % ℓ + ℓ, ⋯⟩ fun j ↦\n    --     ∑ x, multilinearWeight stmtIn.challenges x * coeffs ⟨↑j * 2 ^ ℓ + ↑x, ⋯⟩) =\n    -- (MvPolynomial.eval stmtIn.challenges) ↑witIn.t\n    dsimp only [intermediateEvaluationPoly]\n    -- have h_empty_univ : Fin (ℓ - (Fin.last ℓ)) = Fin 0 := by\n      -- simp only [Fin.val_last, tsub_self]\n\n    haveI : IsEmpty (Fin (ℓ - (Fin.last ℓ).val)) := by\n      simp only [Fin.val_last, Nat.sub_self]\n      infer_instance\n    conv_lhs => -- Eliminate the intermediateNovelBasisX terms\n      dsimp only [intermediateNovelBasisX]\n      simp only [Finset.univ_eq_empty, Finset.prod_empty] -- eliminate the finsum over (Fin 0)\n      simp only [map_mul, mul_one]\n      rw [←map_sum] -- bring the `C` out of the sum\n    have h_Fin_eq : Fin (2 ^ (ℓ - ↑(Fin.last ℓ))) = Fin 1 := by\n      simp only [Fin.val_last, tsub_self, pow_zero]\n    haveI : Unique (Fin (2 ^ (ℓ - (Fin.last ℓ).val))) := by\n      simp only [Fin.val_last, Nat.sub_self, pow_zero]\n      exact Fin.instUnique\n    have h_default : (@default (Fin (2 ^ (ℓ - ↑(Fin.last ℓ)))) Unique.instInhabited).val = 0 := by\n      have hlt := (@default (Fin (2 ^ (ℓ - ↑(Fin.last ℓ)))) Unique.instInhabited).isLt\n      simp only [Fin.val_last, Nat.sub_self, pow_zero] at hlt\n      exact Nat.lt_one_iff.mp hlt\n    simp only [Fintype.sum_unique, Fin.val_zero, h_default]\n    simp only [Fin.val_last, Nat.sub_zero, zero_mul, zero_add, Fin.eta, map_sum, map_mul]\n    dsimp only [Nat.sub_zero, Fin.isValue, coeffs]\n    simp only [←map_mul, ←map_sum]\n    letI : NeZero (Fin.last ℓ).val := {\n      out := by\n        have h_ℓ_pos : ℓ > 0 := by exact Nat.pos_of_neZero ℓ\n        rw [Fin.val_last]; omega\n    }\n    let res := multilinear_eval_eq_sum_bool_hypercube (challenges := stmtIn.challenges)\n      (t := witIn.t)\n    simp only [Fin.val_last] at res\n    rw [res, Polynomial.eval_C];\n\n  -- Apply `projectToMidSumcheckPoly_at_last` to connect H.eval with eqTilde * f(0)\n  have h_H_eval_at_zero_eq_mul : witIn.H.val.eval (fun _ => (0 : L)) =\n      eqTilde stmtIn.ctx.t_eval_point stmtIn.challenges *\n      (witIn.f ⟨0, by simp only [zero_mem]⟩) := by\n    rw [h_wit_structural_invariant.1]\n    rw [Sumcheck.Structured.projectToMidSumcheckPoly_at_last_eval]\n    -- ↑witIn.t = witIn.f ⟨0, ⋯⟩\n    rw [h_witIn_f_0_eq_c, h_c_eq]; rfl\n\n  -- Combine to finish the proof\n  change stmtIn.sumcheck_target = eqTilde stmtIn.ctx.t_eval_point stmtIn.challenges *\n    witIn.f ⟨0, by simp only [Fin.val_last, zero_mem]⟩\n  rw [←h_H_eval_at_zero_eq_mul]\n  exact h_sumcheck_cons\n-/\n\n/- Final sumcheck step logic is strongly complete.\n**Key Proof Obligations:**\n1. **Verifier Check**: Show that `stmtIn.sumcheck_target = eq_tilde_eval * c`\n   where `c = wit.f ⟨0, ...⟩`\n   - This should follow from `h_relIn` (roundRelation) which includes `oracleWitnessConsistency`\n   - The `oracleWitnessConsistency` includes:\n     * `witnessStructuralInvariant`: `wit.H = projectToMidSumcheckPoly ...`\n       and `wit.f = getMidCodewords ...`\n     * `sumcheckConsistencyProp`:\n       `stmt.sumcheck_target = ∑ x ∈ (univ.map 𝓑) ^ᶠ (ℓ - ℓ), wit.H.val.eval x`\n       For `i = Fin.last ℓ`, we have `ℓ - ℓ = 0`, so this is a sum over 0 variables\n   - Need to connect these properties to show the verifier check passes\n\n2. **Relation Out**: Show that the output satisfies `finalSumcheckRelOut`\n  - This involves showing `finalFoldingStateProp` holds for the output\n-/\nset_option maxHeartbeats 4000000 in\n/-- **The final sumcheck step logic is strongly complete** (direct proof; discharges the former\n`FinalSumcheckStepLogicCompleteResidual`, issue #327). The four obligations: the verifier check\n(`finalSumcheckStep_verifierCheck_passed`), the relation out (oracle-folding consistency via\n`finalSumcheckStep_strictOracleFoldingConsistency_out` plus the final-constant weld\n`getLastOracle_finalFold_eq_eval'` against `finalSumcheckStep_final_codeword_eq_eval`), and the\ntwo prover/verifier output agreements (definitional). -/\nlemma finalSumcheckStep_is_logic_complete :\n    (finalSumcheckStepLogic 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n      (𝓑 := 𝓑)).IsStronglyComplete := by\n  intro stmtIn witIn oStmtIn challenges h_relIn\n  simp only [finalSumcheckStepLogic, strictRoundRelation, strictRoundRelationProp,\n    Set.mem_setOf_eq] at h_relIn\n  obtain ⟨h_sumcheck_cons, h_strictOWC⟩ := h_relIn\n  have h_wit_struct := h_strictOWC.1\n  refine ⟨?_, ?_, ?_, ?_⟩\n  · -- 1. verifier check\n    exact finalSumcheckStep_verifierCheck_passed 𝔽q β (𝓑 := 𝓑) (ϑ := ϑ)\n      (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (stmtIn := stmtIn) (witIn := witIn)\n      (oStmtIn := oStmtIn) (challenges := challenges)\n      (h_sumcheck_cons := h_sumcheck_cons) (h_wit_struct := h_wit_struct)\n  · -- 2. relation out\n    simp only [finalSumcheckStepLogic, strictFinalSumcheckRelOut,\n      strictFinalSumcheckRelOutProp, Set.mem_setOf_eq]\n    refine ⟨witIn.t, ?_, ?_⟩\n    · -- component 1: oracle-folding consistency at the output\n      exact finalSumcheckStep_strictOracleFoldingConsistency_out 𝔽q β\n        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (stmtIn := stmtIn) (witIn := witIn)\n        (oStmtIn := oStmtIn) h_strictOWC\n    · -- component 2: the final-constant consistency\n      funext x\n      have h_oracle_out := finalSumcheckStep_strictOracleFoldingConsistency_out 𝔽q β\n        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (stmtIn := stmtIn) (witIn := witIn)\n        (oStmtIn := oStmtIn) h_strictOWC\n      have h_k : (getLastOracleDomainIndex ℓ ϑ (Fin.last ℓ)).val = ℓ - ϑ := by\n        dsimp only [getLastOracleDomainIndex]\n        rw [getLastOraclePositionIndex_last, Nat.sub_mul, Nat.one_mul,\n          Nat.div_mul_cancel (hdiv.out)]\n      have hϑℓ : ϑ ≤ ℓ := Nat.le_of_dvd (Nat.pos_of_neZero ℓ) hdiv.out\n      have h_k' : (getLastOraclePositionIndex ℓ ϑ (Fin.last ℓ)) * ϑ = ℓ - ϑ := by\n        rw [getLastOraclePositionIndex_last, Nat.sub_mul, Nat.one_mul,\n          Nat.div_mul_cancel (hdiv.out)]\n      have h_final := getLastOracle_finalFold_eq_eval' 𝔽q β (t := witIn.t)\n        (challenges := stmtIn.challenges) (oStmt := oStmtIn) h_oracle_out\n        (curIdx := ⟨(getLastOracleDomainIndex ℓ ϑ (Fin.last ℓ)).val, by omega⟩)\n        (destIdx := ⟨(getLastOracleDomainIndex ℓ ϑ (Fin.last ℓ)).val + ϑ, by omega⟩)\n        (hcur := h_k) (hdest := rfl)\n        (hdest_le := by\n          simp only [Fin.mk_le_mk]\n          omega)\n        (h_destIdx_oracle := rfl)\n        (hpos := by omega)\n        (rchal := getFoldingChallenges (r := r) (𝓡 := 𝓡) (ϑ := ϑ)\n          (i := Fin.last ℓ) stmtIn.challenges\n          (getLastOracleDomainIndex ℓ ϑ (Fin.last ℓ)).val (h := by\n            simp only [Fin.val_last]\n            omega))\n        (hrchal := rfl)\n        (y := x)\n      have h_codeword := finalSumcheckStep_final_codeword_eq_eval 𝔽q β\n        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (stmtIn := stmtIn) (witIn := witIn)\n        h_wit_struct\n      exact h_final.trans h_codeword.symm\n  · -- 3. statements agree\n    rfl\n  · -- 4. oracle statements agree\n    rfl\n/-\n  intro stmtIn witIn oStmtIn challenges h_relIn\n  let step := (finalSumcheckStepLogic 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)\n    (𝓑 := 𝓑))\n  let transcript := step.honestProverTranscript stmtIn witIn oStmtIn challenges\n  let verifierStmtOut := step.verifierOut stmtIn transcript\n  let verifierOStmtOut := OracleVerifier.mkVerifierOStmtOut step.embed step.hEq\n    oStmtIn transcript\n  let proverOutput := step.proverOut stmtIn witIn oStmtIn transcript\n  let proverStmtOut := proverOutput.1.1\n  let proverOStmtOut := proverOutput.1.2\n  let proverWitOut := proverOutput.2\n  let c := transcript.messages ⟨0, rfl⟩\n\n  -- Extract properties from h_relIn BEFORE any simp changes its structure\n  simp only [finalSumcheckStepLogic, strictRoundRelation, strictRoundRelationProp,\n    Set.mem_setOf_eq] at h_relIn\n  obtain ⟨h_sumcheck_cons, h_strictOracleWitConsistency_In⟩ := h_relIn\n  -- Extract t from strictOracleWitnessConsistency (which includes witnessStructuralInvariant)\n  have h_wit_struct := h_strictOracleWitConsistency_In.1\n  let t := witIn.t\n  let h_VCheck_passed := finalSumcheckStep_verifierCheck_passed 𝔽q β (𝓑 := 𝓑) (ϑ := ϑ)\n    (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (stmtIn := stmtIn) (witIn := witIn)\n    (oStmtIn := oStmtIn) (challenges := challenges)\n    (h_sumcheck_cons := h_sumcheck_cons)\n    (h_strictOracleWitConsistency_In := by exact h_strictOracleWitConsistency_In)\n\n  have hStmtOut_eq : proverStmtOut = verifierStmtOut := by\n    change (step.proverOut stmtIn witIn oStmtIn transcript).1.1 = step.verifierOut stmtIn transcript\n    simp only [step, finalSumcheckStepLogic]\n\n  have hOStmtOut_eq : proverOStmtOut = verifierOStmtOut := by rfl -- not new oracles added\n\n  have h_first_oracle_eq : (getFirstOracle 𝔽q β verifierOStmtOut)\n    = (getFirstOracle 𝔽q β oStmtIn) := by\n    rw [← hOStmtOut_eq]\n    simp only [proverOStmtOut, proverOutput, step, finalSumcheckStepLogic, getFirstOracle]\n\n  let hRelOut : step.completeness_relOut ((verifierStmtOut, verifierOStmtOut), proverWitOut) := by\n    -- clear_value h_VCheck_passed\n    -- Fact 2: Output relation holds (foldStepRelOut)\n    simp only [finalSumcheckStepLogic, strictRoundRelation, strictRoundRelationProp, Fin.val_last,\n      Prod.mk.eta, Set.mem_setOf_eq, strictFinalSumcheckRelOut, strictFinalSumcheckRelOutProp,\n      strictfinalSumcheckStepFoldingStateProp, exists_and_right, Subtype.exists, Fin.isValue, MessageIdx,\n      Fin.eta, step]\n    -- let r_i' := challenges ⟨1, rfl⟩\n    -- rw [h_verifierOStmtOut_eq];\n    dsimp only [strictOracleWitnessConsistency, Fin.val_last, OracleFrontierIndex.mkFromStmtIdx,\n      strictOracleFoldingConsistencyProp, Fin.eta, ↓dreduceIte,\n    Bool.false_eq_true] at h_strictOracleWitConsistency_In ⊢\n    -- Extract the three components from the input\n    let ⟨h_wit_struct_In, h_oracle_folding_In⟩ := h_strictOracleWitConsistency_In\n    -- Now prove each component for the output\n    refine ⟨?_, ?_⟩\n    · -- Component 1: oracleFoldingConsistencyProp\n      use t\n      simp only [SetLike.coe_mem, exists_const]\n      exact h_oracle_folding_In\n    · -- Component 2: finalOracleFoldingConsistency\n      funext y\n      let res := iterated_fold_to_const_strict 𝔽q β (𝓑 := 𝓑) (ϑ := ϑ)\n        (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (stmtIn := stmtIn) (witIn := witIn)\n        (oStmtIn := oStmtIn) (challenges := challenges)\n        (h_strictOracleWitConsistency_In := h_strictOracleWitConsistency_In)\n      rw [res]; rfl\n\n  -- Prove the four required facts\n  refine ⟨?_, ?_, ?_, ?_⟩\n  · exact h_VCheck_passed\n  · exact hRelOut\n  · exact hStmtOut_eq\n  · exact hOStmtOut_eq\n-/\n\nend FinalSumcheckStep\nend SingleIteratedSteps\nend\nend Binius.BinaryBasefold.CoreInteraction\n",
+  "reviewed_source_sha256": "25258676e4eeb715442b90a0e50ec2e637175aaea05bb1c9e82dff9c184c8d67",
+  "canonical_sources_modified": false,
+  "all_original_public_names_preserved": true,
+  "public_declarations": [
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.fin_rtake_cons_const",
+      "kind": "theorem",
+      "original_header_sha256": "4022dfa863f692877aa2952c04eb9831bc3f2960343da6e2fab4eedf1f67d532",
+      "reviewed_header_sha256": "4022dfa863f692877aa2952c04eb9831bc3f2960343da6e2fab4eedf1f67d532",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.getFoldingChallenges_rtake_self_succ",
+      "kind": "lemma",
+      "original_header_sha256": "44fd0a3a67d4c3a7759042185c3fa2ff7f6ae9f5b6a0b235acd52079b9b42d30",
+      "reviewed_header_sha256": "c70196b6e1849f1c7fadda5d4cb2ab03afcba88bf2a5a12cc5d3dad1489c6991",
+      "header_text_unchanged": false
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.iterated_fold_proof_irrel",
+      "kind": "lemma",
+      "original_header_sha256": "6236b0a5d17bca44eea7d745fc014d4a32b859208c7548ab391b31162f058ba4",
+      "reviewed_header_sha256": "6236b0a5d17bca44eea7d745fc014d4a32b859208c7548ab391b31162f058ba4",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.hEq",
+      "kind": "def",
+      "original_header_sha256": "0970de0497e510d2d455b42a112cce20f9a6dcdaec910cdac1d57ea115b7520c",
+      "reviewed_header_sha256": "0970de0497e510d2d455b42a112cce20f9a6dcdaec910cdac1d57ea115b7520c",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.ReductionLogicStep",
+      "kind": "structure",
+      "original_header_sha256": "00cc0f0c33f6f386a2624b042b47d29ddf25b3aa7feebf594d60758543c1ad7a",
+      "reviewed_header_sha256": "00cc0f0c33f6f386a2624b042b47d29ddf25b3aa7feebf594d60758543c1ad7a",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.ReductionLogicStep.IsStronglyComplete",
+      "kind": "def",
+      "original_header_sha256": "b23b81954605a5f868843b1bfd636f11b613b3a61a569d71e59acfd8a69e8982",
+      "reviewed_header_sha256": "b23b81954605a5f868843b1bfd636f11b613b3a61a569d71e59acfd8a69e8982",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.OracleAwareReductionLogicStep",
+      "kind": "structure",
+      "original_header_sha256": "b9906f55cc7fddb54e081d58b07a18cd36dafa0271c8b2223f666523ad8096bf",
+      "reviewed_header_sha256": "b9906f55cc7fddb54e081d58b07a18cd36dafa0271c8b2223f666523ad8096bf",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.OracleAwareReductionLogicStep.IsStronglyCompleteUnderSimulation",
+      "kind": "def",
+      "original_header_sha256": "721117ca1d446ea4d5a7be4340462c62d4d5cf38e471755a5e803418ce732982",
+      "reviewed_header_sha256": "dc72137de703aaf6d71a98945e17cf051f4412af52d3f3b68585d3cd033704f1",
+      "header_text_unchanged": false
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.rbrExtractionFailureEvent",
+      "kind": "def",
+      "original_header_sha256": "b7a74ab404fd3f0a35b955c8285390b0fbe14d12a8b143a58904df236b96c410",
+      "reviewed_header_sha256": "b7a74ab404fd3f0a35b955c8285390b0fbe14d12a8b143a58904df236b96c410",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.foldStepLogic",
+      "kind": "def",
+      "original_header_sha256": "ae5eae40d46739ae106f47c1ed1f080404c467f54fa65d6dc2e520e711c40107",
+      "reviewed_header_sha256": "ae5eae40d46739ae106f47c1ed1f080404c467f54fa65d6dc2e520e711c40107",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.foldStep_is_logic_complete",
+      "kind": "lemma",
+      "original_header_sha256": "c9d4369acd4b8d39ccaac7230a845fab273179774fc770c9ee06ba8a8b275e6a",
+      "reviewed_header_sha256": "c9d4369acd4b8d39ccaac7230a845fab273179774fc770c9ee06ba8a8b275e6a",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.commitStepLogic_embedFn",
+      "kind": "def",
+      "original_header_sha256": "9970920ada3a88a03a8d0d5e1331d54fcf130bdfdc428a94b9f48fd57beb5476",
+      "reviewed_header_sha256": "9970920ada3a88a03a8d0d5e1331d54fcf130bdfdc428a94b9f48fd57beb5476",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.commitStepLogic_embed_inj",
+      "kind": "def",
+      "original_header_sha256": "0175fc3fc2a22dd8133d430c42cc3d0b31fc6d4beacf97c9810183c9832bef28",
+      "reviewed_header_sha256": "0175fc3fc2a22dd8133d430c42cc3d0b31fc6d4beacf97c9810183c9832bef28",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.commitStepLogic_embed",
+      "kind": "def",
+      "original_header_sha256": "694f7f23d31d3e7788f08ce1297c2a61c863d8b3a570590be78209ac40f28e59",
+      "reviewed_header_sha256": "694f7f23d31d3e7788f08ce1297c2a61c863d8b3a570590be78209ac40f28e59",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.commitStepHEq",
+      "kind": "def",
+      "original_header_sha256": "af07567a40e7becd8dfe1894b466248d1b9c41f02b5fa5ab9e61dee3dab6e707",
+      "reviewed_header_sha256": "af07567a40e7becd8dfe1894b466248d1b9c41f02b5fa5ab9e61dee3dab6e707",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.commitStepLogic",
+      "kind": "def",
+      "original_header_sha256": "a243ef11683b1c9fb46dc3337b1830862b8796480a87aa2aeb0f354be1b25c18",
+      "reviewed_header_sha256": "a243ef11683b1c9fb46dc3337b1830862b8796480a87aa2aeb0f354be1b25c18",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.cast_fun_eq_fun_cast_arg",
+      "kind": "theorem",
+      "original_header_sha256": "6e4bc47798eec61dc8cc390db96e3f90fdac913a45d2c4a67e6050c0200e2845",
+      "reviewed_header_sha256": "6e4bc47798eec61dc8cc390db96e3f90fdac913a45d2c4a67e6050c0200e2845",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.cast_fun_eq_fun_cast_arg_rev",
+      "kind": "theorem",
+      "original_header_sha256": "425de2147d6dc989b135501aa17d405799849705b57df5cda1bdf2e18cdb3868",
+      "reviewed_header_sha256": "425de2147d6dc989b135501aa17d405799849705b57df5cda1bdf2e18cdb3868",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.fun_heq_cast_arg",
+      "kind": "theorem",
+      "original_header_sha256": "63759330d2632cf6ada707f079a92fce6d84db95310979d43918af0335377641",
+      "reviewed_header_sha256": "63759330d2632cf6ada707f079a92fce6d84db95310979d43918af0335377641",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.verifier_inr_transport_heq",
+      "kind": "theorem",
+      "original_header_sha256": "06d11a3cf56a8861189da80393dbf7d8a134699e8b818854389f21edd95b0d32",
+      "reviewed_header_sha256": "06d11a3cf56a8861189da80393dbf7d8a134699e8b818854389f21edd95b0d32",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.snoc_oracle_eq_mkVerifierOStmtOut_commitStep_old",
+      "kind": "lemma",
+      "original_header_sha256": "c65de580bec352b7f83b0654054fc02754b1da5c9df5f8835b913f5464115904",
+      "reviewed_header_sha256": "c65de580bec352b7f83b0654054fc02754b1da5c9df5f8835b913f5464115904",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.snoc_oracle_eq_mkVerifierOStmtOut_commitStep_new",
+      "kind": "lemma",
+      "original_header_sha256": "271a67626a8be2c55b0016ad4c5e71c64feb93c29c01b435bea101187e0e4ea3",
+      "reviewed_header_sha256": "271a67626a8be2c55b0016ad4c5e71c64feb93c29c01b435bea101187e0e4ea3",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.snoc_oracle_eq_mkVerifierOStmtOut_commitStep",
+      "kind": "lemma",
+      "original_header_sha256": "6aebe411e1d8e4425638c98122f0cdbe15487338db5448c9dd955823156f7614",
+      "reviewed_header_sha256": "6aebe411e1d8e4425638c98122f0cdbe15487338db5448c9dd955823156f7614",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.commitStep_j_bound",
+      "kind": "lemma",
+      "original_header_sha256": "a7bad930fc602d73aefa9c1ed34d8e5ade36772f81932110abc56238958b23ff",
+      "reviewed_header_sha256": "a7bad930fc602d73aefa9c1ed34d8e5ade36772f81932110abc56238958b23ff",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.commitStep_j_is_last",
+      "kind": "lemma",
+      "original_header_sha256": "8c130f83c843140ef711d4787d9f697206de1fd6b63c02cd2fa35457988102b1",
+      "reviewed_header_sha256": "8c130f83c843140ef711d4787d9f697206de1fd6b63c02cd2fa35457988102b1",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.strictOracleFoldingConsistency_commitStep",
+      "kind": "lemma",
+      "original_header_sha256": "706d377d0e3195be41fe84940f6b213f3ec9d0c5fb9ca757bebcccc94de7d0a8",
+      "reviewed_header_sha256": "706d377d0e3195be41fe84940f6b213f3ec9d0c5fb9ca757bebcccc94de7d0a8",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.commitStep_is_logic_complete",
+      "kind": "lemma",
+      "original_header_sha256": "dd0e2a24b64b170f67b7b6358783caea1795da35c242434218b68262250956a1",
+      "reviewed_header_sha256": "dd0e2a24b64b170f67b7b6358783caea1795da35c242434218b68262250956a1",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.finalSumcheckStepLogic",
+      "kind": "def",
+      "original_header_sha256": "f6493e806affcaeb56e023d60e8894cc0302b862164a5cc058bf0ab8d0e34981",
+      "reviewed_header_sha256": "f6493e806affcaeb56e023d60e8894cc0302b862164a5cc058bf0ab8d0e34981",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.sumcheckConsistency_at_last_simplifies",
+      "kind": "lemma",
+      "original_header_sha256": "114f5a15bd8c26448a0b3eb3b1040c8d837909c7df6b3d21991ea13bbbf0538e",
+      "reviewed_header_sha256": "114f5a15bd8c26448a0b3eb3b1040c8d837909c7df6b3d21991ea13bbbf0538e",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.finalSumcheckStep_verifierCheck_passed_of_finalCodeword",
+      "kind": "lemma",
+      "original_header_sha256": "a209b5425227bff9201832853f29072fa30ef095cd7c365ef21ccd057e3cc795",
+      "reviewed_header_sha256": "a209b5425227bff9201832853f29072fa30ef095cd7c365ef21ccd057e3cc795",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.finalSumcheckStep_final_codeword_eq_eval",
+      "kind": "lemma",
+      "original_header_sha256": "74d4a00bf06aa2fbacb061544f46889004e9ad1e5526f07a9fa13412fe61be1a",
+      "reviewed_header_sha256": "74d4a00bf06aa2fbacb061544f46889004e9ad1e5526f07a9fa13412fe61be1a",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.finalSumcheckStep_verifierCheck_passed",
+      "kind": "lemma",
+      "original_header_sha256": "99b2583b08cc5c99f3657fd886b0e3388917b7e100ffb02eefc6ca0bfffcef89",
+      "reviewed_header_sha256": "99b2583b08cc5c99f3657fd886b0e3388917b7e100ffb02eefc6ca0bfffcef89",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.finalSumcheckStep_strictOracleFoldingConsistency_out",
+      "kind": "lemma",
+      "original_header_sha256": "733f8468dac0b4b05b51c391d6c96c36e0f27ad9be56e3a2f682c915b48874f1",
+      "reviewed_header_sha256": "733f8468dac0b4b05b51c391d6c96c36e0f27ad9be56e3a2f682c915b48874f1",
+      "header_text_unchanged": true
+    },
+    {
+      "name": "Binius.BinaryBasefold.CoreInteraction.finalSumcheckStep_is_logic_complete",
+      "kind": "lemma",
+      "original_header_sha256": "4684e0e153aa053a63f99f6934973937378ba745e2883a18fe4f09d9f79b6b76",
+      "reviewed_header_sha256": "4684e0e153aa053a63f99f6934973937378ba745e2883a18fe4f09d9f79b6b76",
+      "header_text_unchanged": true
+    }
+  ],
+  "consolidation": {
+    "canonical_concrete_steps": "The compatibility ReductionLogicStep record remains for legacy consumers. Its fold, commit and final instances use canonical strict relations, chronological challenge append and unchanged canonical prover/verifier kernels. Their strong completeness proofs delegate canonical foldStepLogic_isStronglyComplete, commitStepLogic_isStronglyComplete and finalSumcheckStepLogic_isStronglyComplete after explicit output-value equalities.",
+    "virtual_commit_output": "Private snocOracle_eq_legacy proves the virtual canonical commit output equals the historical value family; the existing old/new embedding transport lemmas prove equality with mkVerifierOStmtOut. No query-interface cast is introduced.",
+    "historical_mathematics": "The strictOracleFoldingConsistency_commitStep and finalSumcheckStep_final_codeword_eq_eval helpers retain the older reverse-variable/newest-first witness encoding, now stated through Compatibility.newestFirstCodeword and newestFirstFoldingChallenges. The final endpoint proof uses the actual coefficient-refinement bridge and reversed-index multilinear evaluation sum. No equality of unconverted historical and canonical intermediate codewords is asserted. The final endpoint proof is shared as Compatibility.newestFirstCodeword_last_apply_eq_eval in Reconstruct/IteratedFoldToLevel; the witness wrapper delegates that checked helper.",
+    "oracle_aware_failure": "Retired aggregate response classes become their pointwise finite/inhabited response families. The oracle-aware compatibility predicate records native probability of None in the simulated OptionT.run, retaining full rejection mass rather than discarding it.",
+    "duplicate_instance_removed": "The final-message OracleInterface was an identical instDefault duplicate of the canonical Spec interface; canonical ownership is reused.",
+    "inactive_sketches_archived": "Only inactive historical proof sketches were removed for readability. A lexical masked-command comparison confirmed that comment cleanup alone changed no active Lean commands; full original text is preserved above.",
+    "no_new_assumptions": "All original public theorem names are retained; no new theorem premise, admission, axiom, or native-trust tactic was added."
+  },
+  "axiom_anchors": 21,
+  "validation": {
+    "file": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/ReductionLogic.lean",
+    "status": "temporary_overlay_source_check",
+    "compiler_exit_code": 0,
+    "admission_checker_exit_code": 0,
+    "elapsed_seconds": 18.801,
+    "source_before_sha256": "25258676e4eeb715442b90a0e50ec2e637175aaea05bb1c9e82dff9c184c8d67",
+    "source_after_sha256": "25258676e4eeb715442b90a0e50ec2e637175aaea05bb1c9e82dff9c184c8d67",
+    "import_artifacts": {
+      "ArkLib.ProofSystem.Binius.BinaryBasefold.ReductionLogic": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/ReductionLogic.olean",
+        "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/ReductionLogic.olean",
+        "sha256": "334b3709d74699ab4f406ae4be36313bac824f972b8bc1b123bc6e54c8c76fe0",
+        "artifact_family": {
+          "ReductionLogic.olean": "334b3709d74699ab4f406ae4be36313bac824f972b8bc1b123bc6e54c8c76fe0",
+          "ReductionLogic.ir": "e76b4001c1c58fc76de784e4da8b28c0b773353161de947e71c26cd373a36dd7",
+          "ReductionLogic.ir.sig": "addf5a27139d300bfbc408b121725c30a0338f3dba1a317808207249544d27b1",
+          "ReductionLogic.olean.private": "f11806537f873bdab3dfd601f980c75f37a70193fe0172ebec72bc7b6c3794d9",
+          "ReductionLogic.olean.server": "70a0f0b15a19a27e4b73c3b2287914e5f5552a1fbbb7dacbee0da7718a9c00ca"
+        }
+      },
+      "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Spec": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Spec.olean",
+        "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Spec.olean",
+        "sha256": "8b48f5a23d419c958ef4a2d56aac0dd9032e9059199799f1cd29401bd2450288",
+        "artifact_family": {
+          "Spec.olean": "8b48f5a23d419c958ef4a2d56aac0dd9032e9059199799f1cd29401bd2450288"
+        }
+      },
+      "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Relations": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Relations.olean",
+        "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Relations.olean",
+        "sha256": "563eb42415264927528eaf0280d09a39a83a7161908c22da815953fb392b5829",
+        "artifact_family": {
+          "Relations.olean": "563eb42415264927528eaf0280d09a39a83a7161908c22da815953fb392b5829"
+        }
+      },
+      "ArkLib.ProofSystem.Binius.BinaryBasefold.BitsOfIndex": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/BitsOfIndex.olean",
+        "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/BitsOfIndex.olean",
+        "sha256": "20b9607b3b8800b419c48ddbadea6e71e9bafd2c978c2c5cd0f13eaaa712eef8",
+        "artifact_family": {
+          "BitsOfIndex.olean": "20b9607b3b8800b419c48ddbadea6e71e9bafd2c978c2c5cd0f13eaaa712eef8"
+        }
+      },
+      "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToMidLastEval": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/ProjectToMidLastEval.olean",
+        "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/ProjectToMidLastEval.olean",
+        "sha256": "9bfda8f1d26487e427d955dcd4ebf4687aa0cc834c0d7dcdf3c687cfa9726645",
+        "artifact_family": {
+          "ProjectToMidLastEval.olean": "9bfda8f1d26487e427d955dcd4ebf4687aa0cc834c0d7dcdf3c687cfa9726645"
+        }
+      },
+      "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToMidSucc": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/ProjectToMidSucc.olean",
+        "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/ProjectToMidSucc.olean",
+        "sha256": "b5a4f7360ce0c83bdb94f2ac758010d7ce4bd821b01615ee96eb24d0b728f639",
+        "artifact_family": {
+          "ProjectToMidSucc.olean": "b5a4f7360ce0c83bdb94f2ac758010d7ce4bd821b01615ee96eb24d0b728f639"
+        }
+      },
+      "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToNextSumEq": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/ProjectToNextSumEq.olean",
+        "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/ProjectToNextSumEq.olean",
+        "sha256": "9c3e4fa0c0d5ac8dcfa4d847602b20e4d07b0d1f47bb99fe8c9954f3bdb7f99e",
+        "artifact_family": {
+          "ProjectToNextSumEq.olean": "9c3e4fa0c0d5ac8dcfa4d847602b20e4d07b0d1f47bb99fe8c9954f3bdb7f99e"
+        }
+      },
+      "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.FinalOracleBridge": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/FinalOracleBridge.olean",
+        "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/FinalOracleBridge.olean",
+        "sha256": "6f131debee41845a5d3f3a7cace4f46cf85177b0e8f0ae4c5feee3e77f296b5d",
+        "artifact_family": {
+          "FinalOracleBridge.olean": "6f131debee41845a5d3f3a7cace4f46cf85177b0e8f0ae4c5feee3e77f296b5d"
+        }
+      },
+      "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.IteratedFoldToLevel": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/IteratedFoldToLevel.olean",
+        "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/IteratedFoldToLevel.olean",
+        "sha256": "8d1db097ab09ed12e548447d4d04e0c0f144b730a70aadbed24bcf488ef07c92",
+        "artifact_family": {
+          "IteratedFoldToLevel.olean": "8d1db097ab09ed12e548447d4d04e0c0f144b730a70aadbed24bcf488ef07c92"
+        }
+      },
+      "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.FinalConstantWeld": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/FinalConstantWeld.olean",
+        "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/FinalConstantWeld.olean",
+        "sha256": "cece2d7216bca803eec7cdb913827a6ec90c26ae08384f20e80496112909bc7f",
+        "artifact_family": {
+          "FinalConstantWeld.olean": "cece2d7216bca803eec7cdb913827a6ec90c26ae08384f20e80496112909bc7f"
+        }
+      },
+      "ArkLib.ToVCVio.Oracle": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ToVCVio/Oracle.olean",
+        "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ToVCVio/Oracle.olean",
+        "sha256": "8c6d124fc24d9d27300eb8fb6c57ab243290c28b67138a0bb98af58c43282e28",
+        "artifact_family": {
+          "Oracle.olean": "8c6d124fc24d9d27300eb8fb6c57ab243290c28b67138a0bb98af58c43282e28"
+        }
+      },
+      "ArkLib.ToVCVio.SimulationInfrastructure": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ToVCVio/SimulationInfrastructure.olean",
+        "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ToVCVio/SimulationInfrastructure.olean",
+        "sha256": "4d0df9a12d2a1b74a643748b301a569b62510e198877595fd2db3d8a141d317f",
+        "artifact_family": {
+          "SimulationInfrastructure.olean": "4d0df9a12d2a1b74a643748b301a569b62510e198877595fd2db3d8a141d317f"
+        }
+      },
+      "ArkLib.OracleReduction.Completeness": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/OracleReduction/Completeness.olean",
+        "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/OracleReduction/Completeness.olean",
+        "sha256": "400806216c16142351ee079aae5c817cbda659f41621181d1265382aaf9110b8",
+        "artifact_family": {
+          "Completeness.olean": "400806216c16142351ee079aae5c817cbda659f41621181d1265382aaf9110b8"
+        }
+      },
+      "ArkLib.Data.Misc.Basic": {
+        "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/Data/Misc/Basic.olean",
+        "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/Data/Misc/Basic.olean",
+        "sha256": "ab4000e344063a792e0844d2b1678a3f294e914f59bb8d99aabc126b7758b480",
+        "artifact_family": {
+          "Basic.olean": "ab4000e344063a792e0844d2b1678a3f294e914f59bb8d99aabc126b7758b480",
+          "Basic.ir": "b3bb1559238088c7856061ceba4527df8d573c833081c9196ffe3e83ccee5f96",
+          "Basic.ir.sig": "7c55099536cf3cbb3c91c28a2ba564f0ded1a17a342b65ec631f34dd7a658674",
+          "Basic.olean.private": "a0e817c59a88420e91e617bb89b769b4dc9c1f694413257265d8a3d0833b1b5c",
+          "Basic.olean.server": "1f43784d5817d8f1cd525e695a80a74b210fedab258cff589796c3681daa8c2f"
+        }
+      }
+    },
+    "imports_unchanged": true,
+    "log": "/tmp/arklib-native-overlay/logs/ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.ReductionLogic.lean.1793249488134127000.check.log",
+    "not_a_lake_package_build": true
+  },
+  "not_a_package_build": true,
+  "previous_temporary_overlay_owner_build": {
+    "steps": [
+      {
+        "kind": "temporary_overlay_plan",
+        "targets": [
+          "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.ReductionLogic"
+        ],
+        "compile_count": 1,
+        "blocked": [],
+        "plan": [
+          {
+            "module": "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.ReductionLogic",
+            "path": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/ReductionLogic.lean",
+            "source_sha256": "25e9b76e4de8b1a5d9c46cf45edaad69cb8e1bdcaa08e4e096f9d9e96aac6817",
+            "imports": [
+              "ArkLib.ProofSystem.Binius.BinaryBasefold.ReductionLogic",
+              "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Spec",
+              "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Relations",
+              "ArkLib.ProofSystem.Binius.BinaryBasefold.BitsOfIndex",
+              "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToMidLastEval",
+              "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToMidSucc",
+              "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToNextSumEq",
+              "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.FinalOracleBridge",
+              "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.IteratedFoldToLevel",
+              "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.FinalConstantWeld",
+              "ArkLib.ToVCVio.Oracle",
+              "ArkLib.ToVCVio.SimulationInfrastructure",
+              "ArkLib.OracleReduction.Completeness",
+              "ArkLib.Data.Misc.Basic"
+            ],
+            "canonical": false
+          }
+        ]
+      },
+      {
+        "module": "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.ReductionLogic",
+        "status": "compiled",
+        "elapsed_seconds": 11.83,
+        "log": "/tmp/arklib-native-overlay/logs/ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.ReductionLogic.log"
+      }
+    ],
+    "artifact_provenance": {
+      "module": "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.ReductionLogic",
+      "path": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/ReductionLogic.lean",
+      "source_sha256": "25e9b76e4de8b1a5d9c46cf45edaad69cb8e1bdcaa08e4e096f9d9e96aac6817",
+      "imports": [
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.ReductionLogic",
+        "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Spec",
+        "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Relations",
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.BitsOfIndex",
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToMidLastEval",
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToMidSucc",
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToNextSumEq",
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.FinalOracleBridge",
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.IteratedFoldToLevel",
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.FinalConstantWeld",
+        "ArkLib.ToVCVio.Oracle",
+        "ArkLib.ToVCVio.SimulationInfrastructure",
+        "ArkLib.OracleReduction.Completeness",
+        "ArkLib.Data.Misc.Basic"
+      ],
+      "canonical": false,
+      "status": "compiled",
+      "compiler_exit_code": 0,
+      "elapsed_seconds": 11.83,
+      "compiler_seconds": 11.802,
+      "slot_wait_seconds": 0.018,
+      "checked_at": "2026-10-29T04:27:47.400818+00:00",
+      "log": "/tmp/arklib-native-overlay/logs/ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.ReductionLogic.log",
+      "command_argv": [
+        "lake",
+        "env",
+        "env",
+        "LEAN_PATH=/tmp/arklib-native-overlay/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/cslib/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/batteries/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/Qq/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/aesop/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/proofwidgets/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/importGraph/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/plausible/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/PolyFun/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/MD4Lean/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/BibtexQuery/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/UnicodeBasic/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/Cli/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/leansqlite/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/mathlib/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/VCVio/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/doc-gen4/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/checkdecls/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/CompPoly/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean:/Users/nubs/.elan/toolchains/leanprover--lean4---v4.35.0/lib/lean",
+        "lean",
+        "-DautoImplicit=false",
+        "-o",
+        "/tmp/arklib-native-overlay/staging/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/ReductionLogic.olean",
+        "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/ReductionLogic.lean"
+      ],
+      "import_artifacts": {
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.ReductionLogic": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/ReductionLogic.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/ReductionLogic.olean",
+          "sha256": "334b3709d74699ab4f406ae4be36313bac824f972b8bc1b123bc6e54c8c76fe0",
+          "artifact_family": {
+            "ReductionLogic.olean": "334b3709d74699ab4f406ae4be36313bac824f972b8bc1b123bc6e54c8c76fe0",
+            "ReductionLogic.ir": "e76b4001c1c58fc76de784e4da8b28c0b773353161de947e71c26cd373a36dd7",
+            "ReductionLogic.ir.sig": "addf5a27139d300bfbc408b121725c30a0338f3dba1a317808207249544d27b1",
+            "ReductionLogic.olean.private": "f11806537f873bdab3dfd601f980c75f37a70193fe0172ebec72bc7b6c3794d9",
+            "ReductionLogic.olean.server": "70a0f0b15a19a27e4b73c3b2287914e5f5552a1fbbb7dacbee0da7718a9c00ca"
+          }
+        },
+        "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Spec": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Spec.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Spec.olean",
+          "sha256": "8b48f5a23d419c958ef4a2d56aac0dd9032e9059199799f1cd29401bd2450288",
+          "artifact_family": {
+            "Spec.olean": "8b48f5a23d419c958ef4a2d56aac0dd9032e9059199799f1cd29401bd2450288"
+          }
+        },
+        "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Relations": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Relations.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Relations.olean",
+          "sha256": "563eb42415264927528eaf0280d09a39a83a7161908c22da815953fb392b5829",
+          "artifact_family": {
+            "Relations.olean": "563eb42415264927528eaf0280d09a39a83a7161908c22da815953fb392b5829"
+          }
+        },
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.BitsOfIndex": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/BitsOfIndex.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/BitsOfIndex.olean",
+          "sha256": "20b9607b3b8800b419c48ddbadea6e71e9bafd2c978c2c5cd0f13eaaa712eef8",
+          "artifact_family": {
+            "BitsOfIndex.olean": "20b9607b3b8800b419c48ddbadea6e71e9bafd2c978c2c5cd0f13eaaa712eef8"
+          }
+        },
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToMidLastEval": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/ProjectToMidLastEval.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/ProjectToMidLastEval.olean",
+          "sha256": "9bfda8f1d26487e427d955dcd4ebf4687aa0cc834c0d7dcdf3c687cfa9726645",
+          "artifact_family": {
+            "ProjectToMidLastEval.olean": "9bfda8f1d26487e427d955dcd4ebf4687aa0cc834c0d7dcdf3c687cfa9726645"
+          }
+        },
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToMidSucc": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/ProjectToMidSucc.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/ProjectToMidSucc.olean",
+          "sha256": "b5a4f7360ce0c83bdb94f2ac758010d7ce4bd821b01615ee96eb24d0b728f639",
+          "artifact_family": {
+            "ProjectToMidSucc.olean": "b5a4f7360ce0c83bdb94f2ac758010d7ce4bd821b01615ee96eb24d0b728f639"
+          }
+        },
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToNextSumEq": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/ProjectToNextSumEq.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/ProjectToNextSumEq.olean",
+          "sha256": "9c3e4fa0c0d5ac8dcfa4d847602b20e4d07b0d1f47bb99fe8c9954f3bdb7f99e",
+          "artifact_family": {
+            "ProjectToNextSumEq.olean": "9c3e4fa0c0d5ac8dcfa4d847602b20e4d07b0d1f47bb99fe8c9954f3bdb7f99e"
+          }
+        },
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.FinalOracleBridge": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/FinalOracleBridge.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/FinalOracleBridge.olean",
+          "sha256": "6f131debee41845a5d3f3a7cace4f46cf85177b0e8f0ae4c5feee3e77f296b5d",
+          "artifact_family": {
+            "FinalOracleBridge.olean": "6f131debee41845a5d3f3a7cace4f46cf85177b0e8f0ae4c5feee3e77f296b5d"
+          }
+        },
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.IteratedFoldToLevel": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/IteratedFoldToLevel.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/IteratedFoldToLevel.olean",
+          "sha256": "71e6888b0203aa1e2e8b2b2d09551984ee34c014157f05ebbf73ecfe32abdaf5",
+          "artifact_family": {
+            "IteratedFoldToLevel.olean": "71e6888b0203aa1e2e8b2b2d09551984ee34c014157f05ebbf73ecfe32abdaf5"
+          }
+        },
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.FinalConstantWeld": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/FinalConstantWeld.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/FinalConstantWeld.olean",
+          "sha256": "cece2d7216bca803eec7cdb913827a6ec90c26ae08384f20e80496112909bc7f",
+          "artifact_family": {
+            "FinalConstantWeld.olean": "cece2d7216bca803eec7cdb913827a6ec90c26ae08384f20e80496112909bc7f"
+          }
+        },
+        "ArkLib.ToVCVio.Oracle": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ToVCVio/Oracle.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ToVCVio/Oracle.olean",
+          "sha256": "8c6d124fc24d9d27300eb8fb6c57ab243290c28b67138a0bb98af58c43282e28",
+          "artifact_family": {
+            "Oracle.olean": "8c6d124fc24d9d27300eb8fb6c57ab243290c28b67138a0bb98af58c43282e28"
+          }
+        },
+        "ArkLib.ToVCVio.SimulationInfrastructure": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ToVCVio/SimulationInfrastructure.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ToVCVio/SimulationInfrastructure.olean",
+          "sha256": "4d0df9a12d2a1b74a643748b301a569b62510e198877595fd2db3d8a141d317f",
+          "artifact_family": {
+            "SimulationInfrastructure.olean": "4d0df9a12d2a1b74a643748b301a569b62510e198877595fd2db3d8a141d317f"
+          }
+        },
+        "ArkLib.OracleReduction.Completeness": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/OracleReduction/Completeness.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/OracleReduction/Completeness.olean",
+          "sha256": "400806216c16142351ee079aae5c817cbda659f41621181d1265382aaf9110b8",
+          "artifact_family": {
+            "Completeness.olean": "400806216c16142351ee079aae5c817cbda659f41621181d1265382aaf9110b8"
+          }
+        },
+        "ArkLib.Data.Misc.Basic": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/Data/Misc/Basic.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/Data/Misc/Basic.olean",
+          "sha256": "ab4000e344063a792e0844d2b1678a3f294e914f59bb8d99aabc126b7758b480",
+          "artifact_family": {
+            "Basic.olean": "ab4000e344063a792e0844d2b1678a3f294e914f59bb8d99aabc126b7758b480",
+            "Basic.ir": "b3bb1559238088c7856061ceba4527df8d573c833081c9196ffe3e83ccee5f96",
+            "Basic.ir.sig": "7c55099536cf3cbb3c91c28a2ba564f0ded1a17a342b65ec631f34dd7a658674",
+            "Basic.olean.private": "a0e817c59a88420e91e617bb89b769b4dc9c1f694413257265d8a3d0833b1b5c",
+            "Basic.olean.server": "1f43784d5817d8f1cd525e695a80a74b210fedab258cff589796c3681daa8c2f"
+          }
+        }
+      },
+      "imports_unchanged": true,
+      "source_before_sha256": "25e9b76e4de8b1a5d9c46cf45edaad69cb8e1bdcaa08e4e096f9d9e96aac6817",
+      "source_after_sha256": "25e9b76e4de8b1a5d9c46cf45edaad69cb8e1bdcaa08e4e096f9d9e96aac6817",
+      "environment": "LEAN_PATH=/tmp/arklib-native-overlay/lib/lean:<pinned lake env LEAN_PATH>",
+      "compiler_slot": 0,
+      "not_a_lake_package_build": true,
+      "git_index_blob": "3ea09bcdd1abc0bdc304a76fc73c2e511b446f79",
+      "admission_checker_exit_code": 0,
+      "artifact": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/ReductionLogic.olean",
+      "artifact_sha256": "dd693ead3d0512f1a46ab5944a484b64794cf25b40a467f8d5d5fb5fa2c4ffde",
+      "artifact_family": {
+        "ReductionLogic.olean": "dd693ead3d0512f1a46ab5944a484b64794cf25b40a467f8d5d5fb5fa2c4ffde"
+      }
+    },
+    "not_a_lake_package_build": true
+  },
+  "current_owner_rebuild_pending": false,
+  "temporary_overlay_owner_build": {
+    "artifact_provenance": {
+      "module": "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.ReductionLogic",
+      "path": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/ReductionLogic.lean",
+      "source_sha256": "25258676e4eeb715442b90a0e50ec2e637175aaea05bb1c9e82dff9c184c8d67",
+      "imports": [
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.ReductionLogic",
+        "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Spec",
+        "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Relations",
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.BitsOfIndex",
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToMidLastEval",
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToMidSucc",
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToNextSumEq",
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.FinalOracleBridge",
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.IteratedFoldToLevel",
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.FinalConstantWeld",
+        "ArkLib.ToVCVio.Oracle",
+        "ArkLib.ToVCVio.SimulationInfrastructure",
+        "ArkLib.OracleReduction.Completeness",
+        "ArkLib.Data.Misc.Basic"
+      ],
+      "canonical": false,
+      "status": "compiled",
+      "compiler_exit_code": 0,
+      "elapsed_seconds": 25.799,
+      "compiler_seconds": 8.768,
+      "slot_wait_seconds": 17.017,
+      "checked_at": "2026-10-29T04:55:42.221375+00:00",
+      "log": "/tmp/arklib-native-overlay/logs/ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.ReductionLogic.log",
+      "command_argv": [
+        "lake",
+        "env",
+        "env",
+        "LEAN_PATH=/tmp/arklib-native-overlay/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/cslib/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/batteries/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/Qq/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/aesop/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/proofwidgets/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/importGraph/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/plausible/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/PolyFun/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/MD4Lean/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/BibtexQuery/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/UnicodeBasic/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/Cli/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/leansqlite/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/mathlib/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/VCVio/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/doc-gen4/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/checkdecls/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/packages/CompPoly/.lake/build/lib/lean:/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean:/Users/nubs/.elan/toolchains/leanprover--lean4---v4.35.0/lib/lean",
+        "lean",
+        "-DautoImplicit=false",
+        "-o",
+        "/tmp/arklib-native-overlay/staging/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/ReductionLogic.olean",
+        "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/ReductionLogic.lean"
+      ],
+      "import_artifacts": {
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.ReductionLogic": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/ReductionLogic.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/ReductionLogic.olean",
+          "sha256": "334b3709d74699ab4f406ae4be36313bac824f972b8bc1b123bc6e54c8c76fe0",
+          "artifact_family": {
+            "ReductionLogic.olean": "334b3709d74699ab4f406ae4be36313bac824f972b8bc1b123bc6e54c8c76fe0",
+            "ReductionLogic.ir": "e76b4001c1c58fc76de784e4da8b28c0b773353161de947e71c26cd373a36dd7",
+            "ReductionLogic.ir.sig": "addf5a27139d300bfbc408b121725c30a0338f3dba1a317808207249544d27b1",
+            "ReductionLogic.olean.private": "f11806537f873bdab3dfd601f980c75f37a70193fe0172ebec72bc7b6c3794d9",
+            "ReductionLogic.olean.server": "70a0f0b15a19a27e4b73c3b2287914e5f5552a1fbbb7dacbee0da7718a9c00ca"
+          }
+        },
+        "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Spec": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Spec.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Spec.olean",
+          "sha256": "8b48f5a23d419c958ef4a2d56aac0dd9032e9059199799f1cd29401bd2450288",
+          "artifact_family": {
+            "Spec.olean": "8b48f5a23d419c958ef4a2d56aac0dd9032e9059199799f1cd29401bd2450288"
+          }
+        },
+        "ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Relations": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Relations.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Relations.olean",
+          "sha256": "563eb42415264927528eaf0280d09a39a83a7161908c22da815953fb392b5829",
+          "artifact_family": {
+            "Relations.olean": "563eb42415264927528eaf0280d09a39a83a7161908c22da815953fb392b5829"
+          }
+        },
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.BitsOfIndex": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/BitsOfIndex.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/BitsOfIndex.olean",
+          "sha256": "20b9607b3b8800b419c48ddbadea6e71e9bafd2c978c2c5cd0f13eaaa712eef8",
+          "artifact_family": {
+            "BitsOfIndex.olean": "20b9607b3b8800b419c48ddbadea6e71e9bafd2c978c2c5cd0f13eaaa712eef8"
+          }
+        },
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToMidLastEval": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/ProjectToMidLastEval.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/ProjectToMidLastEval.olean",
+          "sha256": "9bfda8f1d26487e427d955dcd4ebf4687aa0cc834c0d7dcdf3c687cfa9726645",
+          "artifact_family": {
+            "ProjectToMidLastEval.olean": "9bfda8f1d26487e427d955dcd4ebf4687aa0cc834c0d7dcdf3c687cfa9726645"
+          }
+        },
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToMidSucc": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/ProjectToMidSucc.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/ProjectToMidSucc.olean",
+          "sha256": "b5a4f7360ce0c83bdb94f2ac758010d7ce4bd821b01615ee96eb24d0b728f639",
+          "artifact_family": {
+            "ProjectToMidSucc.olean": "b5a4f7360ce0c83bdb94f2ac758010d7ce4bd821b01615ee96eb24d0b728f639"
+          }
+        },
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.ProjectToNextSumEq": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/ProjectToNextSumEq.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/ProjectToNextSumEq.olean",
+          "sha256": "9c3e4fa0c0d5ac8dcfa4d847602b20e4d07b0d1f47bb99fe8c9954f3bdb7f99e",
+          "artifact_family": {
+            "ProjectToNextSumEq.olean": "9c3e4fa0c0d5ac8dcfa4d847602b20e4d07b0d1f47bb99fe8c9954f3bdb7f99e"
+          }
+        },
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.FinalOracleBridge": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/FinalOracleBridge.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/FinalOracleBridge.olean",
+          "sha256": "6f131debee41845a5d3f3a7cace4f46cf85177b0e8f0ae4c5feee3e77f296b5d",
+          "artifact_family": {
+            "FinalOracleBridge.olean": "6f131debee41845a5d3f3a7cace4f46cf85177b0e8f0ae4c5feee3e77f296b5d"
+          }
+        },
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.IteratedFoldToLevel": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/IteratedFoldToLevel.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/IteratedFoldToLevel.olean",
+          "sha256": "8d1db097ab09ed12e548447d4d04e0c0f144b730a70aadbed24bcf488ef07c92",
+          "artifact_family": {
+            "IteratedFoldToLevel.olean": "8d1db097ab09ed12e548447d4d04e0c0f144b730a70aadbed24bcf488ef07c92"
+          }
+        },
+        "ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.FinalConstantWeld": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/FinalConstantWeld.olean",
+          "real_path": "/private/tmp/arklib-native-overlay/lib/lean/ArkLib/ProofSystem/Binius/BinaryBasefold/Reconstruct/FinalConstantWeld.olean",
+          "sha256": "cece2d7216bca803eec7cdb913827a6ec90c26ae08384f20e80496112909bc7f",
+          "artifact_family": {
+            "FinalConstantWeld.olean": "cece2d7216bca803eec7cdb913827a6ec90c26ae08384f20e80496112909bc7f"
+          }
+        },
+        "ArkLib.ToVCVio.Oracle": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ToVCVio/Oracle.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ToVCVio/Oracle.olean",
+          "sha256": "8c6d124fc24d9d27300eb8fb6c57ab243290c28b67138a0bb98af58c43282e28",
+          "artifact_family": {
+            "Oracle.olean": "8c6d124fc24d9d27300eb8fb6c57ab243290c28b67138a0bb98af58c43282e28"
+          }
+        },
+        "ArkLib.ToVCVio.SimulationInfrastructure": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/ToVCVio/SimulationInfrastructure.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/ToVCVio/SimulationInfrastructure.olean",
+          "sha256": "4d0df9a12d2a1b74a643748b301a569b62510e198877595fd2db3d8a141d317f",
+          "artifact_family": {
+            "SimulationInfrastructure.olean": "4d0df9a12d2a1b74a643748b301a569b62510e198877595fd2db3d8a141d317f"
+          }
+        },
+        "ArkLib.OracleReduction.Completeness": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/OracleReduction/Completeness.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/OracleReduction/Completeness.olean",
+          "sha256": "400806216c16142351ee079aae5c817cbda659f41621181d1265382aaf9110b8",
+          "artifact_family": {
+            "Completeness.olean": "400806216c16142351ee079aae5c817cbda659f41621181d1265382aaf9110b8"
+          }
+        },
+        "ArkLib.Data.Misc.Basic": {
+          "path": "/tmp/arklib-native-overlay/lib/lean/ArkLib/Data/Misc/Basic.olean",
+          "real_path": "/Users/nubs/.codex/worktrees/arklib-integration/proximityprize/.lake/build/lib/lean/ArkLib/Data/Misc/Basic.olean",
+          "sha256": "ab4000e344063a792e0844d2b1678a3f294e914f59bb8d99aabc126b7758b480",
+          "artifact_family": {
+            "Basic.olean": "ab4000e344063a792e0844d2b1678a3f294e914f59bb8d99aabc126b7758b480",
+            "Basic.ir": "b3bb1559238088c7856061ceba4527df8d573c833081c9196ffe3e83ccee5f96",
+            "Basic.ir.sig": "7c55099536cf3cbb3c91c28a2ba564f0ded1a17a342b65ec631f34dd7a658674",
+            "Basic.olean.private": "a0e817c59a88420e91e617bb89b769b4dc9c1f694413257265d8a3d0833b1b5c",
+            "Basic.olean.server": "1f43784d5817d8f1cd525e695a80a74b210fedab258cff589796c3681daa8c2f"
+          }
+        }
+      },
+      "imports_unchanged": true,
+      "source_before_sha256": "25258676e4eeb715442b90a0e50ec2e637175aaea05bb1c9e82dff9c184c8d67",
+      "source_after_sha256": "25258676e4eeb715442b90a0e50ec2e637175aaea05bb1c9e82dff9c184c8d67",
+      "environment": "LEAN_PATH=/tmp/arklib-native-overlay/lib/lean:<pinned lake env LEAN_PATH>",
+      "compiler_slot": 0,
+      "not_a_lake_package_build": true,
+      "git_index_blob": "2022fc882897d2330789e581ba36bbb67be9d9b4",
+      "admission_checker_exit_code": 0,
+      "artifact": "/tmp/arklib-native-overlay/lib/lean/ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/ReductionLogic.olean",
+      "artifact_sha256": "f1ba72a3e9546ae7ae80e560c08804b7d8a31f7ed9fb6c5695fd63e41257c63e",
+      "artifact_family": {
+        "ReductionLogic.olean": "f1ba72a3e9546ae7ae80e560c08804b7d8a31f7ed9fb6c5695fd63e41257c63e"
+      }
+    },
+    "not_a_lake_package_build": true
+  }
+}

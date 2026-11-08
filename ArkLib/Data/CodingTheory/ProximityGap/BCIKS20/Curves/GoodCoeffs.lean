@@ -4,9 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
+import ArkLib.Data.Probability.Notation
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Prelude
-import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.BWMatrix
-import ArkLib.Data.CodingTheory.ReedSolomon
+import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.BWMatrix
+import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
 
 /-!
 # Good coefficients for parameterized curves ([BCIKS20] §6.1)
@@ -73,7 +74,7 @@ theorem RS_exists_Pz_of_mem_goodCoeffsCurve {k deg : ℕ} {domain : ι ↪ F} {�
   rcases hvC with ⟨Pz, hPz, rfl⟩
   refine ⟨Pz, ?_, ?_⟩
   · exact ReedSolomon.natDegree_lt_of_mem_degreeLT (deg := deg) hPz
-  · simpa [e] using hvdist
+  · simpa [e, ReedSolomon.evalOnPoints, Function.comp_def] using hvdist
 
 open scoped BigOperators in
 open Polynomial in
@@ -236,7 +237,7 @@ at every good parameter. -/
 theorem RS_BW_homMatrix_det_submatrix_eq_zero_of_goodCoeffsCurve_card_gt
     {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
     (u : WordStack F (Fin (k + 1)) ι)
-    (hdeg : deg ≤ Fintype.card ι)
+    (_hdeg : deg ≤ Fintype.card ι)
     (hδ : δ ≤ relativeUniqueDecodingRadius (ι := ι) (F := F)
       (C := ReedSolomon.code domain deg))
     (hS : (RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ).card
@@ -277,7 +278,7 @@ theorem RS_BW_homMatrix_det_submatrix_eq_zero_of_goodCoeffsCurve_card_gt
   have he1_le : e + 1 ≤ Fintype.card ι := by
     simpa [e] using
       (RS_floor_mul_card_ι_add_one_le_card_ι_of_le_relUDR (deg := deg) (domain := domain)
-        (δ := δ) (hdeg := hdeg) (hδ := hδ))
+        (δ := δ) hδ)
   have hk_le : k * (e + 1) ≤ k * Fintype.card ι := Nat.mul_le_mul_left k he1_le
   have hS' : k * Fintype.card ι < S.card := by
     simpa [S] using hS
@@ -513,8 +514,13 @@ theorem RS_exists_nonzero_kernelVec_BW_homMatrix_of_goodCoeffsCurve_card_gt
         Matrix.det ((L.submatrix rA id) - (R.submatrix rA id) * ⅟D * A21) = 0 := by
       exact (IsUnit.mul_right_eq_zero (a := Matrix.det D)
         (b := Matrix.det ((L.submatrix rA id) - (R.submatrix rA id) * ⅟D * A21)) hdetD).1 hmul
-    simpa [K0, Matrix.submatrix_sub, Matrix.submatrix_mul, Matrix.submatrix_submatrix,
-      Matrix.mul_assoc, Function.comp, L, R] using hdetSchur
+    have hK0 : K0.submatrix rA id =
+        L.submatrix rA id - (R.submatrix rA id) * ⅟D * A21 := by
+      change L.submatrix rA id - (R * (⅟D * A21)).submatrix rA id = _
+      rw [Matrix.submatrix_mul R (⅟D * A21) rA id id Function.bijective_id]
+      simp only [Matrix.submatrix_id_id, Matrix.mul_assoc]
+    rw [hK0]
+    exact hdetSchur
   have hg : ∀ i : ι,
       ((∑ t : Fin (k + 1), Polynomial.C (u t i) * Polynomial.X ^ (t : ℕ) : F[X])).natDegree ≤ k := by
     intro i
@@ -552,7 +558,7 @@ theorem RS_exists_nonzero_kernelVec_BW_homMatrix_of_goodCoeffsCurve_card_gt
     intro i j
     simpa [hD] using
       (RS_natDegree_inv_neg_vandermonde_C_eq_zero
-        (F := F) n (fun t : Fin n => domain (rB t)) hvB i j)
+        (F := F) n (fun t : Fin n => domain (rB t)) i j)
   have hdegInvDA21 : ∀ i j, ((⅟D * A21) i j).natDegree ≤ k := by
     intro i j
     classical
@@ -603,7 +609,7 @@ theorem RS_exists_nonzero_kernelVec_BW_homMatrix_of_goodCoeffsCurve_card_gt
   have hcard_m : m ≤ Fintype.card ι := by
     simpa [m, e, he] using
       (RS_floor_mul_card_ι_add_one_le_card_ι_of_le_relUDR (deg := deg) (domain := domain)
-        (δ := δ) hdeg hδ)
+        (δ := δ) hδ)
   obtain ⟨a, ha0, ha_deg, haKer⟩ :=
     RS_exists_nonzero_kernelVec_of_det_submatrix_eq_zero_natDegree_le (ι := ι) (F := F) e k K0
       (by simpa [m] using hcard_m) hdegK0 (by
@@ -690,7 +696,7 @@ theorem card_RS_goodCoeffsCurve_gt_of_prob_gt_kn_div_q
         ((Finset.filter (α := F) P Finset.univ).card : ℝ≥0) / (Fintype.card F : ℝ≥0) := by
     classical
     -- Expand the probability mass at `True`
-    simp only [Bind.bind, PMF.bind, PMF.uniformOfFintype_apply, pure, PMF.pure_apply, eq_iff_iff,
+    simp only [Bind.bind, PMF.bind, ProximityPrize.Compatibility.uniformOfFintype_apply, pure, PMF.pure_apply, eq_iff_iff,
       mul_ite, mul_one, mul_zero, ENNReal.coe_natCast]
     simp only [DFunLike.coe, true_iff]
     -- Reduce the infinite sum to the finite support

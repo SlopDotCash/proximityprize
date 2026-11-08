@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.ToVCVio.OracleComp.RandomOracleEagerTableDep
-import ArkLib.OracleReduction.FiatShamir.Basic
+import ProximityPrize.Extensions.OracleReduction.FiatShamir.Basic
 
 /-!
 # Eager challenge-table sampling for the Fiat-Shamir challenge oracle (#116)
@@ -109,7 +109,7 @@ sample a uniform full challenge table `g : (q : Domain) → Range q` once, then 
 computation deterministically against `g`. Specialization of
 `OracleComp.evalDist_simulateQ_randomOracle_run'_empty_eq_uniformTableDep` to the Fiat-Shamir
 challenge oracle. -/
-theorem fsChallenge_lazy_eq_eager {α : Type}
+theorem fsChallenge_lazy_eq_eager {α : Type} [MeasurableSpace α]
     (oa : OracleComp (fsChallengeOracle StmtIn pSpec) α) :
     evalDist ((simulateQ randomOracle oa).run' ∅) =
       evalDist (do

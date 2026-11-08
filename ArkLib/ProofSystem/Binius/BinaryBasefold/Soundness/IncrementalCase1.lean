@@ -10,9 +10,9 @@ Schwartz–Zippel bound (degree ≤ 1 fold difference, butterfly-matrix
 non-degeneracy) summed by a union bound over the disagreement set.
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.DG25
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Compliance
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Compliance
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.IncrementalHelpers
-import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.Lift
+import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.Lift
 import ArkLib.ProofSystem.Binius.BinaryBasefold.BaseFoldDetBrick
 import CompPoly.Fields.Binary.Tower.Prelude
 
@@ -562,9 +562,9 @@ theorem prop_4_21_2_case_1_residual_holds
       exact h_sub
     refine le_trans
       (Pr_le_Pr_of_implies ($ᵖ L) _ (fun _ => False) (fun rc h => h.1 hEk)) ?_
-    simp only [PMF.monad_pure_eq_pure, PMF.monad_bind_eq_bind, PMF.bind_const,
-      PMF.pure_apply, eq_iff_iff, iff_false, not_true_eq_false, ↓reduceIte,
-      _root_.zero_le]
+    change (PMF.bind ($ᵖ L) (fun _ => PMF.pure False)) True ≤ _
+    rw [PMF.bind_const, PMF.pure_apply]
+    simp
   case pos =>
   -- The deterministic condition holds; bound Pr[E(k+1)] by the union bound.
   by_cases hk1ϑ : k + 1 = ϑ
@@ -790,11 +790,23 @@ theorem prop_4_21_2_case_1_residual_holds
           (i := block_start_idx) (steps := k + 1) (destIdx := midIdx_i_succ)
           (h_destIdx := hK1d) (h_destIdx_le := h_ms_le) f_bar
           (Fin.snoc r_prefix rc)) W :=
-        hag ⟨idx.val / 2, by
-          have h1 : idx.val < 2 ^ (ϑ - k) := idx.isLt
-          have h2 : (2 : ℕ) ^ (ϑ - k) = 2 * 2 ^ (ϑ - (k + 1)) := by
-            rw [hsteps, pow_succ, Nat.mul_comm]
-          omega⟩
+        by
+          have h := hag ⟨idx.val / 2, by
+            have h1 : idx.val < 2 ^ (ϑ - k) := idx.isLt
+            have h2 : (2 : ℕ) ^ (ϑ - k) = 2 * 2 ^ (ϑ - (k + 1)) := by
+              rw [hsteps, pow_succ, Nat.mul_comm]
+            omega⟩
+          have hs : ϑ - (k + 1) ≠ 0 := by omega
+          have h_bound_dest : midIdx_i_succ.val + (ϑ - (k + 1)) < r := by
+            rw [← hDk1_dest]
+            exact destIdx.isLt
+          have h_eq_dest : destIdx =
+              (⟨midIdx_i_succ.val + (ϑ - (k + 1)), h_bound_dest⟩ : Fin r) :=
+            Fin.eq_of_val_eq hDk1_dest
+          subst h_eq_dest
+          simpa only [fiberEvaluations, quotientFiber, qMap_total_fiber, hs, ↓reduceDIte,
+            W, Fin.eta, Subtype.coe_eta] using h
+
       have hlast : ∀ F : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
           block_start_idx,
           iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := block_start_idx)
