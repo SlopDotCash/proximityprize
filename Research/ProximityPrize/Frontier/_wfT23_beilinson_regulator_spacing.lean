@@ -119,31 +119,46 @@ we only need the *quantitative consequence* that the claimed uniform separation 
 `(half−1)·s ≤ W`, i.e. `s ≤ W/(half−1)`. At prize scale the RHS is astronomically below the claimed
 floor, refuting (S). -/
 
-/-- **Pigeonhole spacing ceiling (abstract).** If `cnt` points lie in an interval of width `W` and
-are pairwise `≥ s`-separated, then the interval must be at least `(cnt−1)·s` wide: `(cnt−1)·s ≤ W`.
-Equivalently, a uniform separation `s` larger than `W/(cnt−1)` is IMPOSSIBLE for `cnt` points in a
-width-`W` window. We state the contrapositive-friendly inequality directly (over any linear ordered
-field, so it applies verbatim to the exact-`ℚ` prize-scale certification below). -/
+/-- **Pigeonhole spacing ceiling (abstract).** If `cnt ≥ 1` ordered points `x 0, …, x (cnt−1)` lie
+in an interval `[a, a + W]` of width `W` and consecutive points are `≥ s`-separated, then the
+interval must be at least `(cnt−1)·s` wide: `(cnt−1)·s ≤ W`. Equivalently, a uniform separation `s`
+larger than `W/(cnt−1)` is IMPOSSIBLE for `cnt` points in a width-`W` window. Stated over any
+linearly ordered field so it applies verbatim to the exact-`ℚ` prize-scale certification below. -/
 theorem separation_forces_width {𝕜 : Type*} [Field 𝕜] [LinearOrder 𝕜] [IsStrictOrderedRing 𝕜]
-    (cnt : ℕ) (s W : 𝕜) (hs : 0 ≤ s)
-    (hsep_fits : ((cnt : 𝕜) - 1) * s ≤ W) :
-    ((cnt : 𝕜) - 1) * s ≤ W := hsep_fits
+    (cnt : ℕ) (hcnt : 1 ≤ cnt) (a s W : 𝕜) (x : ℕ → 𝕜)
+    (hlow : a ≤ x 0) (hhigh : x (cnt - 1) ≤ a + W)
+    (hsep : ∀ i < cnt - 1, s ≤ x (i + 1) - x i) :
+    ((cnt : 𝕜) - 1) * s ≤ W := by
+  have hsum_le :
+      ∑ _i ∈ Finset.range (cnt - 1), s ≤
+        ∑ i ∈ Finset.range (cnt - 1), (x (i + 1) - x i) :=
+    Finset.sum_le_sum (fun i hi => hsep i (Finset.mem_range.mp hi))
+  have hsum_const : ∑ _i ∈ Finset.range (cnt - 1), s = ((cnt : 𝕜) - 1) * s := by
+    rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul, Nat.cast_sub hcnt, Nat.cast_one]
+  have htele : ∑ i ∈ Finset.range (cnt - 1), (x (i + 1) - x i) = x (cnt - 1) - x 0 :=
+    Finset.sum_range_sub x (cnt - 1)
+  have hwidth : x (cnt - 1) - x 0 ≤ W := by linarith
+  linarith [hsum_le, hsum_const, htele, hwidth]
 
 /-- **The impossibility witness: a uniform separation exceeding the window-per-point cannot hold.**
-If `cnt` points are pairwise `≥ s`-separated and lie in width `W`, then `(cnt−1)·s ≤ W`; hence if
-`(cnt−1)·s > W` no such configuration exists. This is the engine of the refutation: at prize scale
-`cnt = m/2 ≈ n^3/2`, `W ≈ 2.83·√n`, `s = 1/(√n·(log n)^A)`, the product `(cnt−1)·s ≈ n^{2.5}/polylog`
-hugely exceeds `W ≈ √n`, so the claimed separation is impossible. -/
+If `cnt ≥ 1` points are consecutively `≥ s`-separated inside an interval `[a, a + W]` of width `W`,
+then `(cnt−1)·s ≤ W`; hence if `(cnt−1)·s > W` no such configuration exists. This is the engine of
+the refutation: at prize scale `cnt = m/2 ≈ n^3/2`, `W ≈ 2.83·√n`, `s = 1/(√n·(log n)^A)`, the
+product `(cnt−1)·s ≈ n^{2.5}/polylog` hugely exceeds `W ≈ √n`, so the claimed separation is
+impossible. -/
 theorem uniform_separation_impossible {𝕜 : Type*} [Field 𝕜] [LinearOrder 𝕜] [IsStrictOrderedRing 𝕜]
-    (cnt : ℕ) (s W : 𝕜)
+    (cnt : ℕ) (hcnt : 1 ≤ cnt) (s W : 𝕜)
     (hgt : W < ((cnt : 𝕜) - 1) * s) :
-    ¬ (((cnt : 𝕜) - 1) * s ≤ W) := not_le.mpr hgt
+    ¬ ∃ (a : 𝕜) (x : ℕ → 𝕜),
+        a ≤ x 0 ∧ x (cnt - 1) ≤ a + W ∧ ∀ i < cnt - 1, s ≤ x (i + 1) - x i := by
+  rintro ⟨a, x, hlow, hhigh, hsep⟩
+  exact not_le_of_gt hgt (separation_forces_width cnt hcnt a s W x hlow hhigh hsep)
 
 /-! ## 2. Exact prize-scale numeric refutation of (S) (`n = 2^30`, `β = 4`)
 
 We certify the impossibility at the prize point with explicit rationals (lower/upper proxies):
 - distinct periods `m = (p−1)/n ≈ n^3 = 2^{90}`; at least `half = m/2` lie in window width
-  `W ≈ 2.83·√n ≈ 2.83·2^{15} ≈ 92682` (Chebyshev, RMS `= √n = 2^{15}`).
+  `W = 2√2·√n = 2√2·2^{15} ≈ 92681.9`, rounded up to `92682` (Chebyshev, RMS `= √n = 2^{15}`).
 - The claimed separation floor at `A = 0` is `s = 1/√n = 2^{−15} ≈ 3.05·10^{−5}`.
 - The pigeonhole product `(half−1)·s` already at the modest count `half = 2^{40}` is
   `≈ 2^{40}·2^{−15} = 2^{25} ≈ 3.36·10^7`, VASTLY exceeding `W ≈ 92682`.
@@ -154,7 +169,8 @@ inside the Parseval window. We use `half = 2^{40}` as a generous lower proxy for
 /-- Window half is generous lower proxy `2^{40}` for the true `m/2 ≈ 2^{89}` periods in-window. -/
 def cntProxy : ℕ := 2^40
 
-/-- Parseval window width upper proxy `W = 92682 > 2.83·√n` at `n = 2^30` (`√n = 2^{15} = 32768`). -/
+/-- Parseval window width upper proxy `W = 92682 ≥ 2√2·√n ≈ 92681.9` at `n = 2^30`
+(`√n = 2^{15} = 32768`). Note `W < 2.83·√n = 92733`; the earlier "`> 2.83·√n`" was false. -/
 def windowW : ℚ := 92682
 
 /-- Claimed separation floor at `A = 0`: `s = 1/√n = 1/32768` (upper proxy `1/32768`). -/
@@ -170,11 +186,14 @@ theorem sep_impossible_prize :
   unfold windowW cntProxy sepFloor
   norm_num
 
-/-- Restatement via the abstract engine: no configuration of `cntProxy` points in width `windowW`
-can be `sepFloor`-separated. -/
+/-- Restatement via the abstract engine: no configuration of `cntProxy` points in an interval of
+width `windowW` can have consecutive spacing at least `sepFloor`. -/
 theorem no_such_config_prize :
-    ¬ (((cntProxy : ℚ) - 1) * sepFloor ≤ windowW) :=
-  uniform_separation_impossible (W := windowW) (s := sepFloor) cntProxy sep_impossible_prize
+    ¬ ∃ (a : ℚ) (x : ℕ → ℚ),
+        a ≤ x 0 ∧ x (cntProxy - 1) ≤ a + windowW ∧
+        ∀ i < cntProxy - 1, sepFloor ≤ x (i + 1) - x i :=
+  uniform_separation_impossible cntProxy (by unfold cntProxy; norm_num)
+    sepFloor windowW sep_impossible_prize
 
 /-! ## 3. The F0 reduction (even charitably): Parseval mass ⟹ RMS = √n = Johnson ceiling
 
@@ -184,36 +203,67 @@ Johnson / second-moment ceiling, F0), independent of any spacing claim: the maxi
 RMS but a second-moment argument cannot bound it ABOVE by anything below the trivial `√(p−n)`
 without phase information. We state the clean RMS identity that is the F0 ceiling. -/
 
-/-- **Parseval pins the RMS of the period orbit to `√(mass/count)` — the F0 second-moment ceiling.**
-If the distinct periods have total squared mass `mass = Σ|η_b|²` over `count = m` periods, the
-mean-square is `mass/count`. At prize scale `mass = p − n`, `count = m ≈ n^3`, giving mean-square
-`≈ n`, RMS `√n` (Johnson). A spacing/counting argument over the orbit reads exactly this
-second-order datum and is, by F0, blind to the rare-event `√log` excess that the prize needs. We
-certify the mean-square is `mass/count` (the only quantity any counting/spacing route can extract).
--/
-theorem parseval_meanSquare (count : ℕ) (mass : ℝ) (hc : 0 < count) :
-    mass / (count : ℝ) = mass / (count : ℝ) := rfl
+/-- **Parseval pins the mean-square of the distinct period orbit to `n − (n−1)/count ≤ n` — the F0
+second-moment ceiling.** Over `count = m = (p−1)/n` distinct coset periods (`p − 1 = count·n`), the
+total squared mass `Σ_{distinct}|η_b|² = p − n` has mean-square `(p − n)/count = n − (n − 1)/count`,
+which is at most `n` (RMS `≤ √n`, Johnson) whenever `1 ≤ n`. A spacing/counting argument over the
+orbit reads only this second-order datum and is, by F0, blind to the rare-event `√log` excess. -/
+theorem parseval_meanSquare (count : ℕ) (p n : ℝ) (hc : 0 < count)
+    (hp : p - 1 = (count : ℝ) * n) (hn : 1 ≤ n) :
+    (p - n) / (count : ℝ) = n - (n - 1) / (count : ℝ) ∧
+      (p - n) / (count : ℝ) ≤ n := by
+  have hcR : (0 : ℝ) < (count : ℝ) := by exact_mod_cast hc
+  have hcne : (count : ℝ) ≠ 0 := ne_of_gt hcR
+  have heq : (p - n) / (count : ℝ) = n - (n - 1) / (count : ℝ) := by
+    have hpn : p - n = (count : ℝ) * n - (n - 1) := by linarith [hp]
+    rw [hpn, sub_div, mul_div_cancel_left₀ n hcne]
+  refine ⟨heq, ?_⟩
+  have hdiv : 0 ≤ (n - 1) / (count : ℝ) := div_nonneg (by linarith) (le_of_lt hcR)
+  linarith [heq, hdiv]
 
 /-- **F0 capture: the second-moment ceiling does not see the max.** For nonneg `ySq : ι → ℝ` with
 mean `≤ μ̄` (the Parseval normalization, here `μ̄ = mass/count = n`), the SUM of squares is `≤ card·μ̄`
-— but this gives NO upper bound on `max ySq` beyond the trivial `≤ card·μ̄`. We record that the
-second moment bounds only the AVERAGE, not the maximum: the max can be as large as the whole mass.
-This is the F0 mechanism the candidate cannot escape: the regulator/spacing route only ever
-constrains the second moment (`= √n`), never isolates the worst `b`. -/
-theorem secondMoment_bounds_average_not_max {ι : Type*} (s : Finset ι) (ySq : ι → ℝ) (mbar : ℝ)
-    (hpos : ∀ i ∈ s, 0 ≤ ySq i) (hmean : ∑ i ∈ s, ySq i ≤ (s.card : ℝ) * mbar) :
-    ∑ i ∈ s, ySq i ≤ (s.card : ℝ) * mbar := hmean
+— so each entry satisfies `ySq i ≤ card·μ̄`, and for any `i₀ ∈ s` the single-spike profile
+concentrated at `i₀` attains `ySq i₀ = card·μ̄` while obeying the same mean bound. Thus the second
+moment bounds only the AVERAGE, not the maximum: the max can be as large as the whole mass. -/
+theorem secondMoment_bounds_average_not_max {ι : Type*}
+    (s : Finset ι) (mbar : ℝ) (hmbar : 0 ≤ mbar) :
+    (∀ (ySq : ι → ℝ), (∀ i ∈ s, 0 ≤ ySq i) → ∑ i ∈ s, ySq i ≤ (s.card : ℝ) * mbar →
+      ∀ i ∈ s, ySq i ≤ (s.card : ℝ) * mbar) ∧
+    (∀ i₀ ∈ s, ∃ ySq : ι → ℝ,
+      (∀ i ∈ s, 0 ≤ ySq i) ∧
+      ∑ i ∈ s, ySq i = (s.card : ℝ) * mbar ∧
+      ySq i₀ = (s.card : ℝ) * mbar) := by
+  classical
+  refine ⟨?_, ?_⟩
+  · intro ySq hpos hmean i hi
+    exact le_trans (Finset.single_le_sum hpos hi) hmean
+  · intro i₀ hi₀
+    refine ⟨fun i => if i = i₀ then (s.card : ℝ) * mbar else 0, ?_, ?_, by simp⟩
+    · intro i _hi
+      dsimp only
+      split_ifs
+      · positivity
+      · exact le_rfl
+    · simp [Finset.sum_ite_eq', hi₀]
 
 /-- **The reversed-covolume trap (B)→(S), shared with T10/S8.** A regulator/covolume is a
 geometric-mean object over the `φ(n)` places; a LOWER bound on it cannot UPPER-bound the maximum
-spacing. Abstractly: for nonneg logs `logSpacing : ι → ℝ` of the per-place spacings with sum (=
-log-covolume) `≥ logReg`, the MAX log-spacing is `≥ logReg/card` (geom-mean ≤ max), NOT `≤` anything
-— so a covolume floor pushes the max UP, the wrong direction for an upper bound on `M`. (Same shape
-as T10 `geomMean_le_house`.) -/
+spacing. Abstractly: for logs `logSpacing : ι → ℝ` of the per-place spacings with sum (=
+log-covolume) `≥ logReg` and upper bound `maxLogSpacing` on `s`, the max log-spacing satisfies
+`logReg / s.card ≤ maxLogSpacing` (geom-mean ≤ max), NOT `≤` anything — so a covolume floor pushes
+the max UP, the wrong direction for an upper bound on `M`. (Same shape as T10 `geomMean_le_house`.) -/
 theorem covolume_lower_does_not_upper_bound_max {ι : Type*} (s : Finset ι) (logSpacing : ι → ℝ)
-    (logReg : ℝ) (hs : 0 < s.card) (hmaxle : ∀ i ∈ s, logSpacing i ≤ (∑ j ∈ s, logSpacing j))
+    (logReg maxLogSpacing : ℝ) (hs : 0 < s.card)
+    (hmaxle : ∀ i ∈ s, logSpacing i ≤ maxLogSpacing)
     (hcov : logReg ≤ ∑ i ∈ s, logSpacing i) :
-    logReg ≤ ∑ i ∈ s, logSpacing i := hcov
+    logReg / s.card ≤ maxLogSpacing := by
+  have hsum : ∑ i ∈ s, logSpacing i ≤ s.card * maxLogSpacing := by
+    calc ∑ i ∈ s, logSpacing i ≤ ∑ _i ∈ s, maxLogSpacing := Finset.sum_le_sum hmaxle
+      _ = s.card * maxLogSpacing := by rw [Finset.sum_const, nsmul_eq_mul]
+  have hcard : (0 : ℝ) < (s.card : ℝ) := by exact_mod_cast hs
+  rw [div_le_iff₀ hcard]
+  linarith [hcov, hsum]
 
 end ProximityGap.Frontier.BeilinsonRegulatorSpacing
 
