@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# Copyright (c) 2026 laooooonn. All rights reserved.
+# Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and LICENSE.
+# Authors: laooooonn (GitHub: andyboss1995)
 """Check that the staged two-power control digests pinned by the non-two-power column probes
 are now published by code that is already tracked in ``main``.
 

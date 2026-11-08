@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# Copyright (c) 2026 laooooonn. All rights reserved.
+# Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and LICENSE.
+# Authors: laooooonn (GitHub: andyboss1995)
 """Exact ``t = 3`` ceiling census of the column ``b = n - 1`` at NON-two-power rungs.
 
 The campaign's staged column lane measures the column ``b = n - 1`` of the ``t = 3`` ceiling
@@ -532,4 +535,6 @@ def main():
 
 
 if __name__ == "__main__":
+    if not __debug__:
+        raise SystemExit("Run without Python optimization to enable the certificate checks.")
     main()

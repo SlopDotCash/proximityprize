@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# Copyright (c) 2026 laooooonn. All rights reserved.
+# Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and LICENSE.
+# Authors: laooooonn (GitHub: andyboss1995)
 """Independent crosscheck of the ``t = 3`` ceiling column ``b = n - 1`` at non-two-power rungs.
 
 Second implementation of the SAME grid as ``probe_t3_ceiling_column_non2power.py``, with no
@@ -375,4 +378,6 @@ def main():
 
 
 if __name__ == "__main__":
+    if not __debug__:
+        raise SystemExit("Run without Python optimization to enable the certificate checks.")
     main()
