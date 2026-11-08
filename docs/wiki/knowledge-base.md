@@ -38,14 +38,10 @@ The current KB policy is:
 - Keep process guidance here in `docs/wiki/`; keep paper content in `docs/kb/`.
 - Prefer persistent pages over branch-local scratch notes when the result will help future PRs or
   reviewers.
-- Pushes to `main` that change Lean or KB inputs run the `Refresh KB Generated Files` workflow.
-  When regeneration changes derived files, the workflow opens a generated-only PR and either
-  enables auto-merge or merges it immediately when no required checks block it.
-- Pull requests that change Lean or KB inputs (including only `references.bib`, `docs/kb/papers/`,
-  `docs/kb/sources/` or `docs/kb/_generated/`) run the same workflow as a check: regenerate,
-  `check_generated.py`, `lint.py --strict-cited-pages`, and the committed-output check. `ci.yml`
-  treats KB-only pull requests as documentation-only and skips `validate.sh`, so this workflow is
-  what gates them.
+- The read-only `Refresh KB Generated Files` workflow runs on relevant pull requests and pushes to
+  `main` and supports manual dispatch. It regenerates the KB, runs `check_generated.py` and
+  `lint.py --strict-cited-pages --use-generated-indexes`, and checks that the commit contains all
+  required indexes and scaffolds. Commit refreshed files alongside changes to their inputs.
 
 ## Review Integration
 

@@ -359,7 +359,7 @@ theorem permCheckAfterGateVerifier_rbrSoundness :
         rw [hrun] at hout
         simp at hout
   }, ?_⟩
-  intro _ _ _ _ _ _ ⟨⟨0, _⟩, hdir⟩
+  intro _ _ ⟨⟨0, _⟩, hdir⟩
   exact absurd hdir (by simp)
 
 /-- The composed two-message Plonk verifier has zero-error round-by-round soundness for the
@@ -433,7 +433,7 @@ theorem plonkCheckVerifier_rbrSoundness :
           simp [map_pure]
       rw [hrun] at hout
       simp at hout
-  · intro _ _ _ _ _ _ i
+  · intro _ _ i
     exact False.elim (plonkCheckPSpec_challengeIdx_false 𝓡 numWires numGates i)
 
 /-- The composed two-message Plonk verifier has ordinary zero-error soundness. Any successful
@@ -714,7 +714,7 @@ theorem plonkCheckVerifier_rbrKnowledgeSoundness :
         rw [hrun] at hout
         simp at hout
   }, ?_⟩
-  intro _stmtIn _witIn _prover i
+  intro _ i
   exact False.elim (plonkCheckPSpec_challengeIdx_false 𝓡 numWires numGates i)
 
 #print axioms Plonk.plonkCheckVerifier_verify_eq

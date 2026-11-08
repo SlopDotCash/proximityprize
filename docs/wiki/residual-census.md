@@ -26,7 +26,9 @@ label is a conservative triage heuristic, not a kernel-checked fact:
 - **refuted** — a declaration with no recognised assumption proves the negation of some
   instance, so the residual family is not uniformly true. A refutation outranks every
   provider; proved instances stay listed, since an instance proof next to an instance
-  refutation is mixed parameter-scope coverage, not a contradiction.
+  refutation is mixed parameter-scope coverage, not a contradiction. The negation must refute
+  the residual outright; negated existentials, compound negations such as `¬ (R ∧ Q)` and
+  negations under a `∀` inside a conjunct are not counted.
 - **open** — everything else, including residuals with conditional providers only.
 
 The named-residual convention is a modularity pattern, not an incompleteness marker:

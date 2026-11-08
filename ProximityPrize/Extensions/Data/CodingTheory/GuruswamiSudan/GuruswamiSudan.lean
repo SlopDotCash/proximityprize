@@ -121,30 +121,6 @@ theorem decoder_dist_impl_mem
     p ∈ specificationDecoder k r D e ωs f := by
   simp [specificationDecoder, mem_polynomials_degree_lt.mpr h_degree, h_dist]
 
-/-! ### CompPoly-based interpolation candidate
-
-The following private helpers use CompPoly's computable `CPolynomial.Raw` type to build a
-Lagrange interpolation candidate from the first `min k n` evaluation points. The result is
-converted back to Mathlib's `Polynomial F` via coefficient extraction (`polynomialOfCoeffs`),
-which is fully computable.
-
-The candidate is constructed with `rawToPolyBounded`, whose output has bounded degree by
-construction (`degree_polynomialOfCoeffs_deg_lt_deg`). CompPoly's `Raw.toPoly` bridge is
-noncomputable, so we validate the candidate by degree and distance checks before insertion.
--/
-
-/-- Every element of `compPolyCandidateSet` satisfies the degree and distance bounds. -/
-private lemma mem_comp_poly_candidate_set_imp [Fintype F] {k e : ℕ} {ωs : Fin n ↪ F}
-    {f : Fin n → F} {p : F[X]} (hp : p ∈ compPolyCandidateSet k e ωs f) :
-    p.degree < k ∧ Δ₀(f, p.eval ∘ ωs) ≤ e := by
-  simp only [compPolyCandidateSet] at hp
-  split at hp
-  · split at hp
-    · rw [Finset.mem_singleton.mp hp]
-      exact decide_eq_true_eq.mp ‹_›
-    · simp at hp
-  · simp at hp
-
 /-! ### Hasse derivative evaluation for multiplicity checking
 
 The Guruswami–Sudan multiplicity condition requires that for each interpolation
@@ -283,17 +259,6 @@ private lemma is_q_root_raw_iff_all_coeff_zero {k D : ℕ}
     simp only [beq_iff_eq]
     exact h ⟨i, hi⟩
 
-/-- Every element of `witnessCandidateSet` has degree `< k` and distance `≤ e`. -/
-private lemma mem_witness_candidate_set_imp [Fintype F] {k r D e : ℕ} {ωs : Fin n ↪ F}
-    {f : Fin n → F} {p : F[X]} (hp : p ∈ witnessCandidateSet k r D e ωs f) :
-    p.degree < k ∧ Δ₀(f, p.eval ∘ ωs) ≤ e := by
-  unfold witnessCandidateSet at hp
-  split at hp
-  · rw [Finset.mem_filter] at hp
-    simp only [Bool.and_eq_true, decide_eq_true_eq] at hp
-    exact ⟨mem_polynomials_degree_lt.mp hp.1, hp.2.2⟩
-  · simp at hp
-
 /-- Strengthened witness soundness: when `r > 0`, every candidate in `witnessCandidateSet`
     is backed by a witness whose Hasse-derivative multiplicity conditions imply pointwise
     root vanishing at every interpolation point.
@@ -323,40 +288,11 @@ private lemma witness_candidate_set_witness_vanishes [Fintype F] {k r D e : ℕ}
       simp only [Bool.and_eq_true, decide_eq_true_eq] at hcond
       exact ⟨w.1, w.2, hcond.1, fun i ↦ is_witness_c_imp_eval_zero_at_points hr w.2 i⟩
 
-/--
-Decoder candidate set inspired by Guruswami–Sudan.
-
-**Definition.** The decoder returns the union of:
-* a CompPoly interpolation fast-path candidate set, and
-* a GS witness-filtered set computed from a linear-system witness search.
-
-The implementation combines two candidate sources:
-
-1. **CompPoly Lagrange candidate** (`compPolyCandidateSet`): A fast-path candidate
-   constructed via CompPoly's computable Lagrange interpolation from the first
-   `min k n` evaluation points. Included only if it passes degree and distance checks.
-
-2. **GS witness-filtered candidates** (`witnessCandidateSet`): A concrete witness
-   coefficient vector is computed by solving a linearized GS system with normalization.
-   Candidates are filtered by `Q(X, p(X)) = 0` and the distance bound.
-
-The fast-path and root checks are executable. The full candidate set is marked
-`noncomputable` because the current `linsolve` abstraction used to obtain a witness is
-noncomputable.
--/
+/-- Historical name for the canonical Guruswami–Sudan candidate specification. -/
 noncomputable def decoderCandidateSet [Fintype F] (k r D e : ℕ) (ωs : Fin n ↪ F)
     (f : Fin n → F) :
     Finset F[X] :=
-  compPolyCandidateSet k e ωs f ∪ witnessCandidateSet k r D e ωs f
-
-/-- Decoder soundness: every output polynomial has degree `< k` and distance `≤ e`. -/
-private lemma mem_decoderCandidateSet_imp [Fintype F] {k r D e : ℕ} {ωs : Fin n ↪ F}
-    {f : Fin n → F} {p : F[X]} (hp : p ∈ decoderCandidateSet k r D e ωs f) :
-    p.degree < k ∧ Δ₀(f, p.eval ∘ ωs) ≤ e := by
-  simp only [decoderCandidateSet, Finset.mem_union] at hp
-  rcases hp with h | h
-  · exact mem_comp_poly_candidate_set_imp h
-  · exact mem_witness_candidate_set_imp h
+  decoderCandidateSpec k r D e ωs f
 
 /-- Each decoded codeword is within `e` Hamming distance of the received message. -/
 theorem decoderCandidateSet_mem_impl_dist
@@ -368,7 +304,7 @@ theorem decoderCandidateSet_mem_impl_dist
     {p : F[X]}
     (h_in : p ∈ decoderCandidateSet k r D e ωs f) :
     Δ₀(f, p.eval ∘ ωs) ≤ e :=
-  (mem_decoderCandidateSet_imp h_in).2
+  decoderCandidateSpec_mem_impl_dist h_in
 
 /-- Alias for the candidate-set distance guarantee. -/
 theorem decoderCandidateSet_output_dist_le

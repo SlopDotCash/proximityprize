@@ -74,7 +74,7 @@ theorem stirMultiRoundRbrSoundness_indicator (M : ℕ) (φ : ι ↪ F) (deg : �
 through the existing general wiring. -/
 theorem stirMultiRoundIOP_isSecureWithGap_indicator (M : ℕ) (φ : ι ↪ F) (deg : ℕ)
     (δ : ℝ≥0) :
-    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ)
+    IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ)
       (fun i => if i = foldChalIdx (F := F) (ι := ι) M then 1 else 0)
       (stirMultiRoundIOP M φ deg) :=
   stirMultiRoundIOP_isSecureWithGap M φ deg δ _

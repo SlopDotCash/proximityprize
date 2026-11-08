@@ -92,7 +92,7 @@ def whirVectorIOP_rbrKnowledgeSoundness {F : Type} [Field F] [Fintype F] [Decida
     (whirRelation m0 (P.φ 0) δ)
       (OracleProof.toOracleVerifier (whirVectorIOP P d)) εRbr
 
-/-- The two security legs (`IsSecureWithGap`) of the placeholder `whirVectorIOP` at budget
+/-- The two security legs (`IsSecureWithGapAveraged`) of the placeholder `whirVectorIOP` at budget
 `εRbr`, with the same caveat as `whirVectorIOP_rbrKnowledgeSoundness`. -/
 def whirVectorIOP_isSecureWithGap {F : Type} [Field F] [Fintype F] [DecidableEq F]
     [SampleableType F] {M : ℕ}
@@ -101,7 +101,7 @@ def whirVectorIOP_isSecureWithGap {F : Type} [Field F] [Fintype F] [DecidableEq 
     [Nonempty (ιs 0)] (δ : ℝ≥0)
     (εRbr : (whirPaperTranscriptVectorSpec P d).ChallengeIdx → ℝ≥0) :
     Prop :=
-  VectorIOP.IsSecureWithGap (whirRelation m0 (P.φ 0) 0) (whirRelation m0 (P.φ 0) δ)
+  VectorIOP.IsSecureWithGapAveraged (whirRelation m0 (P.φ 0) 0) (whirRelation m0 (P.φ 0) δ)
     εRbr (whirVectorIOP P d)
 
 /-- The placeholder `whirVectorIOP` is secure with gap whenever its completeness and RBR soundness

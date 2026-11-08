@@ -177,9 +177,9 @@ def whirRelation
   supplied protocol `π`. This is a `Prop`-valued statement, not a proved theorem.
 
   `whir_rbr_soundness … h_fold_0 h_out h_shift h_fold_i h_fin vPSpec π` says that `vPSpec` has
-  `2 * M + 2` challenge slots and that `π` is `IsSecureWithGap` (perfectly complete for exact
-  codewords, round-by-round knowledge sound for `whirRelation m_0 (P.φ 0) (h.δ 0)`) at the
-  constant per-challenge budget `max (ε_fold, ε_out, ε_shift, ε_fin)`.
+  `2 * M + 2` challenge slots and that `π` is `IsSecureWithGapAveraged` (perfectly complete for
+  exact codewords, prover-averaged round-by-round knowledge sound for
+  `whirRelation m_0 (P.φ 0) (h.δ 0)`) at the constant per-challenge budget `max (ε_fold, ε_out, ε_shift, ε_fin)`.
 
   **Budget direction.** Each hypothesis requires the chosen error to *dominate* the analytic
   Theorem 5.2 bound (`bound ≤ ε`): an upper bound on a failure probability justifies every larger
@@ -282,7 +282,7 @@ def whir_rbr_soundness
         let ε_rbr : vPSpec.ChallengeIdx → ℝ≥0 :=
           fun _ => (univ.image max_ε_folds ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max'
             (by simp)
-        VectorIOP.IsSecureWithGap (whirRelation m_0 (P.φ 0) 0)
+        VectorIOP.IsSecureWithGapAveraged (whirRelation m_0 (P.φ 0) 0)
                          (whirRelation m_0 (P.φ 0) (h.δ 0))
                           ε_rbr π)
 

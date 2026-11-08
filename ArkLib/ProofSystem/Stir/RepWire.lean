@@ -1493,10 +1493,10 @@ theorem stirCheckingRepRbrSoundness_genuine :
           rw [stirEpsStarRep, if_neg h2, if_neg hmod2]
           simp)
 
-/-- **`IsSecureWithGap` for the t-repetition checking IOPP, hypothesis-free**: perfect
+/-- **`IsSecureWithGapAveraged` for the t-repetition checking IOPP, hypothesis-free**: perfect
 completeness (the core) + the genuine `(·)^t` rbr soundness (T1-rep). -/
 theorem stirCheckingIOPRep_isSecureWithGap_genuine :
-    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ)
+    IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ)
       (stirEpsStarRep (F := F) (ι := ι) M δ t) (stirCheckingIOPRep M φ deg t) where
   is_complete := stirCheckingIOPRep_perfectCompleteness M φ deg t
   is_rbr_knowledge_sound := stirCheckingRepRbrSoundness_genuine M φ deg δ t

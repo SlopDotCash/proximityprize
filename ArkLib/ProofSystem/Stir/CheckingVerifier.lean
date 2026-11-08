@@ -1235,18 +1235,18 @@ theorem stirCheckingCABridge_of_small_field
     stirCheckingCABridge M φ deg δ ε_rbr e ProxGapBound :=
   fun _ _ => stirCheckingRbrSoundness_of_small_field M φ deg δ hδ hq ε_rbr hε
 
-/-- **The checking IOPP is `IsSecureWithGap`**, with the completeness leg PROVEN
+/-- **The checking IOPP is `IsSecureWithGapAveraged`**, with the completeness leg PROVEN
 (`stirCheckingIOP_perfectCompleteness`) and the soundness leg consumed as the named
 checking-verifier residual. -/
 theorem stirCheckingIOP_isSecureWithGap (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (hSound : stirCheckingRbrSoundnessResidual M φ deg δ ε_rbr) :
-    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
+    IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
       (stirCheckingIOP M φ deg) where
   is_complete := stirCheckingIOP_perfectCompleteness M φ deg
   is_rbr_knowledge_sound := hSound
 
-/-- `IsSecureWithGap` for the checking IOPP from the named CA residuals + bridge. -/
+/-- `IsSecureWithGapAveraged` for the checking IOPP from the named CA residuals + bridge. -/
 theorem stirCheckingIOP_isSecureWithGap_of_CA (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (e ProxGapBound : Fin (M + 1) → ℝ≥0)
@@ -1255,12 +1255,12 @@ theorem stirCheckingIOP_isSecureWithGap_of_CA (M : ℕ) (φ : ι ↪ F) (deg : �
       ProximityGap.StrictCoeffPolysResidual (ι := ι) (F := F)
         (k := k) (deg := deg) (domain := φ) (δ := δ))
     (hPR : PerRoundProximityGap e ProxGapBound) :
-    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
+    IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
       (stirCheckingIOP M φ deg) :=
   stirCheckingIOP_isSecureWithGap M φ deg δ ε_rbr
     (stirCheckingRbrSoundness_of_CA M φ deg δ ε_rbr e ProxGapBound hBridge hCA hPR)
 
-/-- `IsSecureWithGap` for the checking IOPP in the small-field regime, with the BCIKS20
+/-- `IsSecureWithGapAveraged` for the checking IOPP in the small-field regime, with the BCIKS20
 strict-coefficient residual family discharged. The only remaining soundness hypothesis is the
 protocol-level checking bridge. -/
 theorem stirCheckingIOP_isSecureWithGap_of_card_le [DecidableEq ι]
@@ -1270,12 +1270,12 @@ theorem stirCheckingIOP_isSecureWithGap_of_card_le [DecidableEq ι]
     (hBridge : stirCheckingCABridge M φ deg δ ε_rbr ProxGapBound ProxGapBound)
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg φ)
     (hq : (Fintype.card F : ℝ≥0) ≤ (Fintype.card ι : ℝ≥0)) :
-    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
+    IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
       (stirCheckingIOP M φ deg) :=
   stirCheckingIOP_isSecureWithGap M φ deg δ ε_rbr
     (stirCheckingRbrSoundness_of_card_le M φ deg δ ε_rbr ProxGapBound hBridge hδ hq)
 
-/-- `IsSecureWithGap` for the checking IOPP in the sharp vacuous regime
+/-- `IsSecureWithGapAveraged` for the checking IOPP in the sharp vacuous regime
 `|F| ≤ deg^2 * 10^7`, with the BCIKS20 strict-coefficient residual family discharged. -/
 theorem stirCheckingIOP_isSecureWithGap_of_card_le_e7 [DecidableEq ι]
     (M : ℕ) (φ : ι ↪ F) (deg : ℕ) [NeZero deg] (δ : ℝ≥0)
@@ -1283,12 +1283,12 @@ theorem stirCheckingIOP_isSecureWithGap_of_card_le_e7 [DecidableEq ι]
     (ProxGapBound : Fin (M + 1) → ℝ≥0)
     (hBridge : stirCheckingCABridge M φ deg δ ε_rbr ProxGapBound ProxGapBound)
     (hq : (Fintype.card F : ℝ≥0) ≤ ((deg ^ 2 * 10 ^ 7 : ℕ) : ℝ≥0)) :
-    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
+    IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
       (stirCheckingIOP M φ deg) :=
   stirCheckingIOP_isSecureWithGap M φ deg δ ε_rbr
     (stirCheckingRbrSoundness_of_card_le_e7 M φ deg δ ε_rbr ProxGapBound hBridge hq)
 
-/-- `IsSecureWithGap` for the checking IOPP from the #304 large-sector residual family. -/
+/-- `IsSecureWithGapAveraged` for the checking IOPP from the #304 large-sector residual family. -/
 theorem stirCheckingIOP_isSecureWithGap_of_large [DecidableEq ι]
     (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
@@ -1297,12 +1297,12 @@ theorem stirCheckingIOP_isSecureWithGap_of_large [DecidableEq ι]
     (hLarge : ∀ k : ℕ, 0 < k →
       ProximityGap.StrictCoeffPolysLargeResidual (ι := ι) (F := F)
         (k := k) (deg := deg) (domain := φ) (δ := δ)) :
-    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
+    IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
       (stirCheckingIOP M φ deg) :=
   stirCheckingIOP_isSecureWithGap M φ deg δ ε_rbr
     (stirCheckingRbrSoundness_of_large M φ deg δ ε_rbr ProxGapBound hBridge hLarge)
 
-/-- **`IsSecureWithGap` for the checking IOPP in the small-field regime `|F| ≤ (m−1)·|ι|`,
+/-- **`IsSecureWithGapAveraged` for the checking IOPP in the small-field regime `|F| ≤ (m−1)·|ι|`,
 with NO residual hypotheses** (#301 Part B): completeness is the landed
 `stirCheckingIOP_perfectCompleteness`; soundness is the small-field discharge
 (`stirCheckingRbrSoundness_of_small_field`) — no CA family, no bridge, no per-round-gap
@@ -1314,7 +1314,7 @@ theorem stirCheckingIOP_isSecureWithGap_small_field
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (hε : ∀ i : (stirMultiVSpec M ι).ChallengeIdx, (i.1 : ℕ) = 0 →
       proximityError F deg (LinearCode.rate (code φ deg)) δ m ≤ ε_rbr i) :
-    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
+    IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
       (stirCheckingIOP M φ deg) :=
   stirCheckingIOP_isSecureWithGap M φ deg δ ε_rbr
     (stirCheckingRbrSoundness_of_small_field M φ deg δ hδ hq ε_rbr hε)

@@ -11,7 +11,7 @@ import ArkLib.ToMathlib.WhirBricksConstruction
 
 This file records the residual checkpoint for the `whir_vector_iop_residual`
 mathematics.  The hard WHIR work is still a Vector IOP that implements
-Construction 5.1 and its `IsSecureWithGap` proof; the fold/OOD/shift/final budget
+Construction 5.1 and its `IsSecureWithGapAveraged` proof; the fold/OOD/shift/final budget
 hypotheses only require the chosen errors to dominate the Theorem 5.2 bounds.
 This standalone surface only packages a supplied protocol over the message-free
 skeleton `whirVectorSpec M` and its supplied security proof through the existing
@@ -26,8 +26,8 @@ open scoped NNReal ProbabilityTheory
 
 /-- **Issue #113 checkpoint (packaging only):** `WhirIOP.whir_rbr_soundness` for a supplied
 protocol `π` over the message-free skeleton `whirVectorSpec M`, from its supplied
-`IsSecureWithGap` proof.  Despite its name this is not a WHIR soundness result: no protocol over
-`whirVectorSpec M` implements Construction 5.1, and all security content is the hypothesis
+`IsSecureWithGapAveraged` proof.  Despite its name this is not a WHIR soundness result: no
+protocol over `whirVectorSpec M` implements Construction 5.1, and all security content is the hypothesis
 `hSecure`. -/
 theorem whir_vector_iop_breakthrough
     {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
@@ -82,7 +82,7 @@ theorem whir_vector_iop_breakthrough
       let ε_rbr : (WhirIOP.Construction.whirVectorSpec M).ChallengeIdx → ℝ≥0 :=
         fun _ => (Finset.univ.image max_ε_folds ∪ {ε_fin} ∪ Finset.univ.image ε_out ∪
           Finset.univ.image ε_shift).max' (by simp)
-      VectorIOP.IsSecureWithGap (WhirIOP.whirRelation m_0 (P.φ 0) 0)
+      VectorIOP.IsSecureWithGapAveraged (WhirIOP.whirRelation m_0 (P.φ 0) 0)
         (WhirIOP.whirRelation m_0 (P.φ 0) (h.δ 0)) ε_rbr π) :
     WhirIOP.whir_rbr_soundness (F := F) (M := M) ι (d := d) (dstar := dstar)
       (P := P) (S := S) (hParams := hParams) (h := h) hm_0 (σ₀ := σ₀)

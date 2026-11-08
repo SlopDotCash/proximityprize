@@ -76,7 +76,7 @@ theorem gs_existence_over_ratfunc {n : ℕ} (k m : ℕ) (ωs : Fin n ↪ F) (f�
       GuruswamiSudan.Conditions k m (gs_degree_bound k n m)
         (liftedDomain ωs) (genericFold f₀ f₁) Q := by
   classical
-  exact GuruswamiSudan.gs_existence (m := m) k n (liftedDomain ωs) (genericFold f₀ f₁) hk hn hm
+  exact GuruswamiSudan.gs_existence (m := m) k n (liftedDomain ωs) (genericFold f₀ f₁) hk hm
 
 /-- **Divisibility consequence over `K = F(Z)` (Step S1 at the generic level).**
 

@@ -20,6 +20,18 @@ A token is classified as:
          slip past the `sorry` word-boundary match.
          The core `stop` tactic (`macro "stop" tacticSeq => repeat sorry`)
          in tactic position is also a hole: it yields `sorryAx` with no token.
+         `exact?` / `apply?` with the library-search `all` option left on
+         (`+all`, `(all := true)`, `(config := { all := true })`, and the
+         same after a later override) are holes too: on Lean v4.30.0-rc2
+         `Lean.Elab.LibrarySearch.exact?` calls `admitGoal` on that path
+         even when a complete proof was found, and the declaration still
+         elaborates. A computed or inherited value for `all` is treated
+         conservatively unless a later item turns it off. Use `-all` or
+         `(all := .false)` to explicitly select the non-collecting mode.
+         `apply?` in tactic position can also admit an incomplete suggestion
+         with `all` disabled. Use an explicit proof or a closing `exact?` in
+         place of `apply?`. The source scan recognizes ordinary tactic entry
+         forms and is not a parser for user-defined tactic syntax.
   doc  — inside a docstring `/-- ... -/`, block comment `/- ... -/`,
          line comment `-- ...`, raw-string literal, char literal, or the
          literal (non-splice) text of a string (includes prose words
@@ -80,6 +92,25 @@ STOP_RE = re.compile(
 SORRY_API_RE = re.compile(
     r"\b(mkSorry|mkLabeledSorry|mkSyntheticSorry\w*|admitGoal|elabSorry|evalSorry)\b"
 )
+# `exact?` / `apply?` are tactics, not identifiers, but `?` is an identifier
+# character, so the match is bounded the same way Lean lexes a name.
+_LIBSEARCH_RE = re.compile(r"exact\?|apply\?")
+# Same identifier classes as scripts/forbidden_tokens.py (Lean v4.30 isIdRest).
+_LETTER_LIKE = (
+    "\u03b1-\u03ba\u03bc-\u03c9"
+    "\u0391-\u039f\u03a1\u03a2\u03a4-\u03a9"
+    "\u03ca-\u03fb"
+    "\u1f00-\u1ffe"
+    "\u2100-\u214f"
+    "\U0001d49c-\U0001d59f"
+    "\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u00ff"
+    "\u0100-\u017f"
+)
+_SUBSCRIPT_ALNUM = "\u2080-\u2089\u2090-\u209c\u1d62-\u1d6a\u2c7c"
+_ID_FIRST_RE = re.compile("[" + "A-Za-z_" + _LETTER_LIKE + "]")
+_ID_REST_RE = re.compile("[" + "A-Za-z0-9_'!?" + _LETTER_LIKE + _SUBSCRIPT_ALNUM + "]")
+_OPEN_BRACKETS = {"(": ")", "{": "}", "[": "]", "⟨": "⟩"}
+_CLOSE_BRACKETS = {close: open_ for open_, close in _OPEN_BRACKETS.items()}
 
 
 _INVERT = bytes.maketrans(b"\x00\x01", b"\x01\x00")
@@ -107,6 +138,339 @@ def strip_comments_map(text: str) -> bytes:
     return lean_lexer.live_mask(readings).translate(_INVERT)
 
 
+def _skip_ws(text: str, mask: list[bool], i: int, end: int) -> int:
+    # The mask includes strings, which are terms and cannot be skipped as trivia.
+    while i < end:
+        if text[i].isspace():
+            i += 1
+        elif mask[i] and text.startswith("--", i):
+            newline = text.find("\n", i + 2, end)
+            i = end if newline < 0 else newline
+        elif mask[i] and text.startswith("/-", i):
+            depth = 1
+            i += 2
+            while i < end and depth:
+                if text.startswith("/-", i):
+                    depth += 1
+                    i += 2
+                elif text.startswith("-/", i):
+                    depth -= 1
+                    i += 2
+                else:
+                    i += 1
+        else:
+            break
+    return i
+
+
+def _read_ident(text: str, i: int, end: int) -> tuple[str | None, int]:
+    if i >= end:
+        return None, i
+    if text[i] == "«":
+        close = text.find("»", i + 1, end)
+        return (text[i + 1:close], close + 1) if close >= 0 else (None, i)
+    if not _ID_FIRST_RE.fullmatch(text[i]):
+        return None, i
+    j = i + 1
+    while j < end and _ID_REST_RE.fullmatch(text[j]):
+        j += 1
+    return text[i:j], j
+
+
+def _quoted_spans(text: str, mask: list[bool]) -> list[tuple[int, int]]:
+    """Live `«...»` names. Their interior is not a tactic, and `)` inside one is not syntax."""
+    spans: list[tuple[int, int]] = []
+    i, n = 0, len(text)
+    while i < n:
+        if text[i] == "«" and not mask[i]:
+            j = text.find("»", i + 1)
+            if j < 0:
+                break
+            spans.append((i, j + 1))
+            i = j + 1
+        else:
+            i += 1
+    return spans
+
+
+def _in_span(i: int, spans: list[tuple[int, int]]) -> bool:
+    return any(a <= i < b for a, b in spans)
+
+
+def _match_bracket(text: str, mask: list[bool], open_i: int, end: int) -> int | None:
+    """Index of the bracket closing `text[open_i]`, ignoring comments and `«...»`."""
+    close_for = _OPEN_BRACKETS.get(text[open_i])
+    if close_for is None:
+        return None
+    depth = 0
+    i = open_i
+    while i < end:
+        if mask[i]:
+            i += 1
+            continue
+        if text[i] == "«":
+            j = text.find("»", i + 1, end)
+            if j < 0:
+                return None
+            i = j + 1
+            continue
+        ch = text[i]
+        if ch in _OPEN_BRACKETS:
+            depth += 1
+        elif ch in _CLOSE_BRACKETS:
+            depth -= 1
+            if depth == 0 and ch == close_for:
+                return i
+            if depth < 0:
+                return None
+        i += 1
+    return None
+
+
+def _term_end(text: str, mask: list[bool], i: int, end: int) -> int:
+    """End of a config term: a top-level comma, or `end`."""
+    depth = 0
+    while i < end:
+        if mask[i]:
+            i += 1
+            continue
+        if text[i] == "«":
+            j = text.find("»", i + 1, end)
+            if j < 0:
+                return end
+            i = j + 1
+            continue
+        ch = text[i]
+        if ch in _OPEN_BRACKETS:
+            depth += 1
+        elif ch in _CLOSE_BRACKETS and depth:
+            depth -= 1
+        elif ch == "," and depth == 0:
+            return i
+        i += 1
+    return end
+
+
+_BOOL_ATOMS = tuple(
+    prefix + name for prefix in ("", ".", "Bool.", "_root_.Bool.") for name in ("false", "true")
+)
+_EXPLICIT_FALSE = {".false", "_root_.Bool.false"}
+
+
+def _paren_contents(
+    text: str, mask: list[bool], start: int, end: int
+) -> tuple[int, int]:
+    i = _skip_ws(text, mask, start, end)
+    while i < end and text[i] == "(":
+        close = _match_bracket(text, mask, i, end)
+        if close is None or _skip_ws(text, mask, close + 1, end) != end:
+            break
+        end = close
+        i = _skip_ws(text, mask, i + 1, end)
+    return i, end
+
+
+def _bool_atom(text: str, mask: list[bool], start: int, end: int) -> str | None:
+    i, end = _paren_contents(text, mask, start, end)
+    for atom in _BOOL_ATOMS:
+        if text.startswith(atom, i, end) and _skip_ws(text, mask, i + len(atom), end) == end:
+            return atom
+    return None
+
+
+def _config_has_all_off(text: str, mask: list[bool], start: int, end: int) -> bool:
+    """Recognize simple structure literals with a definitely disabled `all`.
+
+    Inherited/computed configurations need an explicit later override. Other
+    fields in a recognized literal must have simple values so a newline
+    introducing another field cannot be mistaken for part of their value.
+    """
+    i, end = _paren_contents(text, mask, start, end)
+    if i >= end or text[i] != "{":
+        return False
+    close = _match_bracket(text, mask, i, end)
+    if close is None or _skip_ws(text, mask, close + 1, end) != end:
+        return False
+    i = _skip_ws(text, mask, i + 1, close)
+    while i < close:
+        name, j = _read_ident(text, i, close)
+        j = _skip_ws(text, mask, j, close)
+        if name not in {"all", "grind", "star", "try?"} or not text.startswith(":=", j):
+            return False
+        value_end = _term_end(text, mask, j + 2, close)
+        atom = _bool_atom(text, mask, j + 2, value_end)
+        if atom is None or (name == "all" and atom not in _EXPLICIT_FALSE):
+            return False
+        i = _skip_ws(text, mask, value_end + 1, close)
+    return True
+
+
+def _config_may_enable_all(text: str, mask: list[bool], i: int) -> bool:
+    """Whether the optConfig may leave `LibrarySearchConfig.all` enabled.
+
+    Apply items left to right. A later `-all` clears a prior flag or unknown
+    configuration. Unqualified `false` and `Bool.false` can be shadowed, so
+    only an anonymous or root-qualified constructor certifies an off value.
+    """
+    known_off = True
+    end = len(text)
+    while True:
+        i = _skip_ws(text, mask, i, end)
+        if i >= end:
+            return not known_off
+        if text[i] in "+-":
+            # `posConfigItem` / `negConfigItem` require the adjacent identifier.
+            ident, j = _read_ident(text, i + 1, end)
+            if ident is None or mask[i + 1]:
+                return not known_off
+            if ident == "all":
+                known_off = text[i] == "-"
+            i = j
+            continue
+        if text[i] != "(":
+            return not known_off
+        name_at = _skip_ws(text, mask, i + 1, end)
+        ident, j = _read_ident(text, name_at, end)
+        j = _skip_ws(text, mask, j, end)
+        if ident is None or not text.startswith(":=", j):
+            return not known_off
+        close = _match_bracket(text, mask, i, end)
+        if close is None:
+            return not known_off
+        if ident == "all":
+            known_off = _bool_atom(text, mask, j + 2, close) in _EXPLICIT_FALSE
+        elif ident == "config":
+            known_off = _config_has_all_off(text, mask, j + 2, close)
+        i = close + 1
+
+
+# Search tactics share their names with valid term identifiers. Restrict the
+# bare apply? policy to tactic starts, not references such as `exact apply?`.
+_TACTIC_START_RE = re.compile(r"(?<![\w.'])\bby\b|`\(\s*(?:tactic|tacticSeq)\s*\|")
+_TACTIC_WRAPPER = (
+    r"all_goals|any_goals|focus|try|repeat1'|repeat'|repeat|"
+    r"with_reducible_and_instances|with_reducible|with_unfolding_all|"
+    r"with_unfolding_none|classical|unhygienic|show_term"
+)
+_TACTIC_LEAD_RE = re.compile(
+    rf"(?:[({{·]\s*|\.\s+|(?:{_TACTIC_WRAPPER})\s+)*"
+)
+_TACTIC_ALT_RE = re.compile(r"(?:first|solve)\b")
+_TACTIC_CASE_RE = re.compile(r"(?:case'?|next)\b[^\n]*=>\s*")
+_TACTIC_MATCH_RE = re.compile(r"match\b[^\n]*\bwith\b")
+_TACTIC_SCOPE_RE = re.compile(r"set_option\s+\S+\s+.+?\s+in\b\s*")
+_TACTIC_BODY_RE = re.compile(rf"(?:{_TACTIC_WRAPPER}|first|solve|[{{(·.]|\|)")
+
+
+def _tactic_prefix(prefix: str) -> bool:
+    tail = prefix.lstrip()
+    while True:
+        lead = _TACTIC_LEAD_RE.match(tail)
+        tail = tail[lead.end():]
+        scope = _TACTIC_SCOPE_RE.match(tail)
+        if not scope:
+            break
+        tail = tail[scope.end():]
+    if not tail or _TACTIC_CASE_RE.fullmatch(tail):
+        return True
+    if _TACTIC_MATCH_RE.match(tail) and tail.rstrip().endswith("=>"):
+        return True
+    if _TACTIC_ALT_RE.match(tail) and tail.rstrip().endswith("|"):
+        return True
+    # A separator inside a term (e.g. `exact (let x := y; apply?)`)
+    # is not a tactic separator.
+    if not tail.rstrip().endswith((";", "<;>")):
+        return False
+    if re.search(r"\blet\b", tail) and not tail.startswith("let "):
+        return False
+    brackets: list[str] = []
+    for ch in tail:
+        if ch in _OPEN_BRACKETS:
+            brackets.append(_OPEN_BRACKETS[ch])
+        elif brackets and ch == brackets[-1]:
+            brackets.pop()
+    return not brackets
+
+
+def _apply_tactic_position(code: str, start: int) -> bool:
+    """Recognize inline and indented entries in proofs and tactic quotations."""
+    line_start = code.rfind("\n", 0, start) + 1
+    prefix = code[line_start:start]
+    if any(_tactic_prefix(prefix[m.end():]) for m in _TACTIC_START_RE.finditer(prefix)):
+        return True
+    indent = len(prefix) - len(prefix.lstrip())
+    alternative = prefix.lstrip().startswith("|")
+    match_branch = alternative and "=>" in prefix
+    if alternative:
+        prefix = prefix.lstrip()[1:]
+        if match_branch:
+            prefix = prefix.rsplit("=>", 1)[1]
+    if not _tactic_prefix(prefix):
+        return False
+    line_end = line_start - 1
+    while line_end >= 0:
+        line_start = code.rfind("\n", 0, line_end) + 1
+        line = code[line_start:line_end]
+        line_end = line_start - 1
+        body = line.strip()
+        if not body:
+            continue
+        parent_indent = len(line) - len(line.lstrip())
+        if parent_indent > indent:
+            continue
+        opener = _TACTIC_MATCH_RE if match_branch else _TACTIC_ALT_RE
+        if opener.match(body):
+            alternative = False
+        if parent_indent == indent:
+            continue
+        for match in _TACTIC_START_RE.finditer(line):
+            rest = line[match.end():]
+            first_tactic = match.end() + len(rest) - len(rest.lstrip())
+            if not alternative and (not rest.strip() or first_tactic <= indent
+                                    or _TACTIC_BODY_RE.fullmatch(rest.strip())):
+                return True
+        if body.startswith("|") and body.endswith("=>"):
+            alternative = match_branch = True
+        elif not (_TACTIC_BODY_RE.fullmatch(body) or _TACTIC_CASE_RE.fullmatch(body)
+                  or _TACTIC_SCOPE_RE.fullmatch(body) or _TACTIC_MATCH_RE.fullmatch(body)):
+            return False
+        indent = parent_indent
+    return False
+
+
+def library_search_admit_tokens(text: str, mask: list[bool]) -> list[tuple[int, str]]:
+    """Live collection-mode `exact?` and potentially admitting `apply?` tactics."""
+    quoted = _quoted_spans(text, mask)
+    code: str | None = None
+    hits: list[tuple[int, str]] = []
+    for match in _LIBSEARCH_RE.finditer(text):
+        start = match.start()
+        if mask[start] or _in_span(start, quoted):
+            continue
+        if start > 0 and (text[start - 1] == "." or text[start - 1] == "«"
+                          or _ID_REST_RE.fullmatch(text[start - 1])):
+            continue
+        end = match.end()
+        if end < len(text) and _ID_REST_RE.fullmatch(text[end]):
+            continue
+        # `exact?%` is a term elaborator. It logs an error instead of admitting silently.
+        if match.group(0) == "exact?" and end < len(text) and text[end] == "%":
+            continue
+        tactic = match.group(0)
+        if tactic == "apply?":
+            if code is None:
+                live = [" " if masked and ch != "\n" else ch for ch, masked in zip(text, mask)]
+                for left, right in quoted:
+                    live[left:right] = ["\n" if ch == "\n" else " " for ch in live[left:right]]
+                code = "".join(live)
+            admitting = _apply_tactic_position(code, start)
+        else:
+            admitting = _config_may_enable_all(text, mask, end)
+        if admitting:
+            hits.append((start, tactic))
+    return hits
+
+
 def census(root: Path) -> list[dict]:
     rows: list[dict] = []
     for f in sorted(f for name in ("ArkLib", "Research", "ProximityPrize") for f in (root / name).rglob("*.lean")):
@@ -123,6 +487,7 @@ def census(root: Path) -> list[dict]:
                     if not mask[m.start(1)]]
         matches += [(m.start(1), m.group(1)) for m in SORRY_API_RE.finditer(text)
                     if not mask[m.start(1)]]
+        matches += library_search_admit_tokens(text, mask)
         for start, token in sorted(matches):
             line_no = text.count("\n", 0, start)
             in_comment = mask[start]

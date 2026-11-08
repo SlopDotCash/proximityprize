@@ -56,7 +56,7 @@ Contents:
    challenges: `(|F|−1)/|F|`).
 4. **The discharge**: `stirEpsStar` (the genuine budget), `stirCheckingRbrSoundness_genuine`
    (T1), `stirCheckingCABridge_genuine` (T2 — the named open bridge of #301, a fortiori),
-   `stirCheckingIOP_isSecureWithGap_genuine` (the first hypothesis-free `IsSecureWithGap`
+   `stirCheckingIOP_isSecureWithGap_genuine` (the first hypothesis-free `IsSecureWithGapAveraged`
    for the assembled STIR IOPP at a non-vacuous budget), and
    `stir_main_of_checkingIOP_genuine` (Theorem 5.1 with the soundness leg proven).
 
@@ -931,10 +931,10 @@ theorem stirCheckingCABridge_genuine (e ProxGapBound : Fin (M + 1) → ℝ≥0) 
     stirCheckingCABridge M φ deg δ (stirEpsStar (F := F) (ι := ι) M δ) e ProxGapBound :=
   fun _ _ => stirCheckingRbrSoundness_genuine M φ deg δ
 
-/-- **The first hypothesis-free `IsSecureWithGap` for the assembled STIR checking IOPP at a
+/-- **The first hypothesis-free `IsSecureWithGapAveraged` for the assembled STIR checking IOPP at a
 non-vacuous budget**: perfect completeness (landed) + the genuine rbr soundness (T1). -/
 theorem stirCheckingIOP_isSecureWithGap_genuine :
-    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ)
+    IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ)
       (stirEpsStar (F := F) (ι := ι) M δ) (stirCheckingIOP M φ deg) :=
   stirCheckingIOP_isSecureWithGap M φ deg δ _
     (stirCheckingRbrSoundness_genuine M φ deg δ)

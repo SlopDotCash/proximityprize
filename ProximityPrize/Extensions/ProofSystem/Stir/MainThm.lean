@@ -166,7 +166,7 @@ def stir_main
   ∃ vPSpec : ProtocolSpec.VectorSpec n,
   ∃ ε_rbr : vPSpec.ChallengeIdx → ℝ≥0,
   ∃ π : VectorIOP Unit (OracleStatement ι F) Unit vPSpec F,
-  IsSecureWithGap (stirRelation degree φ 0)
+  IsSecureWithGapAveraged (stirRelation degree φ 0)
                   (stirRelation degree φ δ)
                   ε_rbr π
   ∧ (∀ i, ε_rbr i ≤ (1 : ℚ≥0) / (2 ^ secpar))
@@ -256,7 +256,7 @@ def stir_rbr_soundness
     ∃ π : VectorIOP Unit (OracleStatement (ι 0) F) Unit vPSpec F,
     let ε_rbr : vPSpec.ChallengeIdx → ℝ≥0 :=
       fun _ => ({ε_fold} ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max' (by simp)
-    (IsSecureWithGap (stirRelation (degree ι P 0) (P.φ 0) 0)
+    (IsSecureWithGapAveraged (stirRelation (degree ι P 0) (P.φ 0) 0)
                     (stirRelation (degree ι P 0) (P.φ 0) (Dist.δ 0))
                     ε_rbr π) ∧
     -- `ε_fold ≤ errStar(degree₀/foldingParam₀, ρ₀, δ₀, foldingParam₀)`

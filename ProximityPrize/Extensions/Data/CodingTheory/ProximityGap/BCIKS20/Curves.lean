@@ -2662,7 +2662,7 @@ theorem correlatedAgreement_affine_curves_of_boundary_probability
     δ_ε_correlatedAgreementCurves (k := k) (A := F) (F := F) (ι := ι)
       (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) := by
   refine correlatedAgreement_affine_curves_of_list_decoding_obligations hδ ?_ hBoundary
-  intro _hk u hprob hJ hstrict
+  intro _hk u hprob _hJ hstrict
   apply correlatedAgreement_affine_curves (Nat.pos_of_neZero deg) hstrict u
   rw [← ProximityPrize.Compatibility.pmf_uniform_probability_eq_native]
   exact hprob

@@ -32,7 +32,7 @@ For substantial contributions, discuss the blueprint-first workflow described in
    paper page or audit for paper-specific statement/version mappings, coverage and gaps.
 3. Add the matching BibTeX entry to `blueprint/src/references.bib`.
 4. For durable paper context, create or update `docs/kb/papers/KEY.md` for the same citation key.
-   Leave stub-only paper pages and source metadata to the main-branch KB workflow.
+   Regenerate the indexes and commit any paper page or source metadata the generator scaffolds.
 5. Prefer public paper titles, venues, DOIs, or URLs in shared docs rather than pointing readers
    to private or local notes.
 
@@ -46,7 +46,7 @@ wiki routes contributors to them.
 - `docs/kb/papers/KEY.md` is the preferred repository-local landing page for a cited paper key.
 - `docs/kb/sources/KEY/metadata.yml` records source provenance and optional local artifacts.
 - `docs/kb/_generated/lean-citations.json` is the generated map from Lean files to cited keys.
-  Do not commit `_generated` changes from feature PRs.
+  Commit the refreshed index with changes to its inputs.
 
 ## Build And Publish Checks
 

@@ -9,7 +9,7 @@ from collections import defaultdict
 
 def load_dependencies(json_file: str):
     """Load dependency data from JSON file."""
-    with open(json_file, 'r') as f:
+    with open(json_file, 'r', encoding='utf-8') as f:
         return json.load(f)
 
 def show_module_info(data, module_name: str):

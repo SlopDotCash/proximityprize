@@ -54,7 +54,13 @@ Every provider gets a verdict:
 
 Refutations are declarations proving `¬ R ...`.  One counts only when it has
 no proof-like binder, premise, included proof-like section variable or
-`Prop`-class instance assumption.
+`Prop`-class instance assumption, and only when the negation refutes `R`
+outright: `¬ R ∧ Q` parses as `(¬ R) ∧ Q` and refutes `R`, `¬ (Q ∨ R)` refutes
+both disjuncts, and `¬ ∀ x, R x` and `¬ (Q → R)` refute `R`; `¬ R → Q`,
+`¬ (R ∧ Q)`, `¬ (R ↔ Q)`, `¬ R = Q` (and other relations), a residual under
+another head (`¬ IsEmpty R`), a negated existential (`¬ ∃ h : P, R`) and a
+negation under a `∀` inside a conjunct (`¬ B ∧ ∀ x : Empty, ¬ R`, whose binder
+type may be empty) do not establish a refutation by source inspection.
 
 Row status:
 
@@ -182,7 +188,7 @@ LITERAL_RE = re.compile(r"^(?:\d+(?:\.\d+)?|0x[0-9a-fA-F]+|∅|⊥|⊤|true|fals
 STATUSES = ("open", "instance_only", "discharged", "refuted")
 
 
-def strip_comments(text: str) -> str:
+def strip_comments(text: str, *, mask_literals: bool = False) -> str:
     """Blank out line comments, block comments, and docstrings (newlines kept).
 
     String literals in live code are not comments: a ``"/-"`` or ``"--"``
@@ -193,17 +199,45 @@ def strip_comments(text: str) -> str:
     """
     out = list(text)
     i, n, depth = 0, len(text), 0
+
+    def blank_literal(start: int, end: int) -> None:
+        if mask_literals:
+            for index in range(start, end):
+                if text[index] != "\n":
+                    out[index] = " "
+
     while i < n:
-        if depth == 0 and text[i] == "'":
-            # Char literal: 'x' or an escaped char such as '\n'. Skip it
-            # whole so a '"' char literal is not mistaken for a string.
+        if depth == 0 and text[i] == "«":
+            # Comment markers and quotes in escaped identifiers are name text.
+            end = text.find("»", i + 1)
+            i = n if end < 0 else end + 1
+            continue
+        if depth == 0 and text[i] == "r" and (
+            i == 0 or not is_ident_char(text[i - 1])
+        ):
+            quote = i + 1
+            while quote < n and text[quote] == "#":
+                quote += 1
+            if quote < n and text[quote] == '"':
+                delimiter = '"' + text[i + 1:quote]
+                end = text.find(delimiter, quote + 1)
+                end = n if end < 0 else end + len(delimiter)
+                blank_literal(i, end)
+                i = end
+                continue
+        if depth == 0 and text[i] == "'" and (i == 0 or not is_ident_char(text[i - 1])):
+            # An apostrophe inside a name such as A'B'Residual is not a quote.
+            # Skip char literals whole so a '"' character cannot start a string.
             if i + 2 < n and text[i + 2] == "'":
+                blank_literal(i, i + 3)
                 i += 3
                 continue
             if i + 3 < n and text[i + 1] == "\\" and text[i + 3] == "'":
+                blank_literal(i, i + 4)
                 i += 4
                 continue
         if depth == 0 and text[i] == '"':
+            start = i
             i += 1
             while i < n and text[i] != '"':
                 if text[i] == "\\" and i + 1 < n:
@@ -212,6 +246,7 @@ def strip_comments(text: str) -> str:
                     i += 1
             if i < n:
                 i += 1
+            blank_literal(start, i)
             continue
         if depth == 0 and text.startswith("--", i):
             j = text.find("\n", i)
@@ -488,7 +523,7 @@ def split_top_level_once(text: str, sep: str) -> tuple[str, str] | None:
 
 
 def is_ident_char(c: str) -> bool:
-    return c.isalnum() or c in "_'"
+    return c.isalnum() or c in "_'!?"
 
 
 def mentions_word(text: str, word: str) -> bool:
@@ -815,7 +850,8 @@ def conclusion_atoms(result: str) -> list[dict]:
     """
     out: list[dict] = []
 
-    def walk(s: str, premises: list[str], binders: list[dict], depth: int) -> None:
+    def walk(s: str, premises: list[str], binders: list[dict], depth: int,
+             nested_binders: bool = False) -> None:
         s = strip_outer_parens(s)
         if depth > 32:
             out.append({"kind": "other", "text": s, "premises": premises, "binders": binders})
@@ -828,6 +864,9 @@ def conclusion_atoms(result: str) -> list[dict]:
             entries, bounded = forall_binders(s[1:comma])
             binders = binders + entries
             premises = premises + bounded
+            # A `∀` below the top level (`¬ B ∧ ∀ x : Empty, ¬ R`) may range over an
+            # empty type, so a negation under it does not refute anything.
+            nested_binders = nested_binders or depth > 0
             s = strip_outer_parens(s[comma + 1 :])
         if has_top_level(s, "↔"):
             out.append({"kind": "iff", "text": s, "premises": premises, "binders": binders})
@@ -842,7 +881,8 @@ def conclusion_atoms(result: str) -> list[dict]:
                     new_binders.extend(dependent)
                 else:
                     new_premises.append(norm_space(part))
-            walk(parts[-1], premises + new_premises, binders + new_binders, depth + 1)
+            walk(parts[-1], premises + new_premises, binders + new_binders, depth + 1,
+                 nested_binders)
             return
         if has_top_level(s, "∨"):
             out.append({"kind": "or", "text": s, "premises": premises, "binders": binders})
@@ -850,10 +890,11 @@ def conclusion_atoms(result: str) -> list[dict]:
         conjuncts = split_top_level(s, "∧")
         if len(conjuncts) > 1:
             for c in conjuncts:
-                walk(c, premises, binders, depth + 1)
+                walk(c, premises, binders, depth + 1, nested_binders)
             return
         if s.startswith("¬"):
-            out.append({"kind": "negation", "text": s, "premises": premises, "binders": binders})
+            out.append({"kind": "negation", "text": s, "premises": premises, "binders": binders,
+                        "nested_binders": nested_binders})
             return
         if _has_relation(s):
             out.append({"kind": "relation", "text": s, "premises": premises, "binders": binders})
@@ -867,26 +908,101 @@ def conclusion_atoms(result: str) -> list[dict]:
     return out
 
 
-def negated_target(text: str) -> tuple[str, list[dict]] | None:
-    """(plain atom, inner `∀` binders) for `¬ X` when `X` is an application."""
+def _top_level_tokens(s: str) -> list[tuple[int, str]]:
+    """Depth-0 connectives and relations of `s`, as (index, token).
+
+    Relations include `=` (also in `==`), `≠`, `∈`, `∉` and comparisons.
+    The `=` of `:=` and `=>` is ignored.  Scanning stops at a
+    depth-0 `∀`, `∃`, `λ` or `fun`, whose body runs to the end of `s`.
+    """
+    out: list[tuple[int, str]] = []
+    depth = 0
+    for i, c in enumerate(s):
+        if c in OPEN_BRACKETS:
+            depth += 1
+        elif c in CLOSE_BRACKETS:
+            depth = max(0, depth - 1)
+        elif depth == 0:
+            if c in "∀∃λ" or (
+                s.startswith("fun", i)
+                and (i == 0 or not is_ident_char(s[i - 1]))
+                and s[i + 3 : i + 4].isspace()
+            ):
+                break
+            if c in "↔→∨∧≠∈∉<>≤≥":
+                out.append((i, c))
+            elif c == "=" and s[i - 1 : i] != ":" and s[i + 1 : i + 2] != ">":
+                out.append((i, c))
+    return out
+
+
+def negated_targets(text: str) -> list[tuple[str, list[dict]]]:
+    """(plain atom, inner binders) for each proposition that `¬ X` refutes outright.
+
+    `X` may be an application, `∀ x, X'`, `Y → X'` (`¬ (Y → X')` proves `¬ X'`, so the
+    antecedent is proved, not assumed) or `X₁ ∨ X₂` (`¬ (X₁ ∨ X₂)` proves both
+    negations).  `¬ (X₁ ∧ X₂)`, `¬ (X ↔ Y)`, relations, double negations and
+    existentials refute nothing by source inspection.
+    """
     s = text.strip()
     if not s.startswith("¬"):
-        return None
-    s = strip_outer_parens(s[1:])
-    binders: list[dict] = []
-    while s.startswith("∀"):
-        comma = depth0_index(s, ",")
-        if comma is None:
-            return None
-        entries, _bounded = forall_binders(s[1:comma])
-        binders.extend(entries)
-        s = strip_outer_parens(s[comma + 1 :])
-    for tok in ("↔", "→", "∨", "∧"):
-        if has_top_level(s, tok):
-            return None
-    if s.startswith("¬") or _has_relation(s) or not atom_head(s):
-        return None
-    return s, binders
+        return []
+    out: list[tuple[str, list[dict]]] = []
+
+    def walk(s: str, binders: list[dict], fuel: int) -> None:
+        s = strip_outer_parens(s)
+        if fuel == 0:
+            return
+        while s.startswith("∀"):
+            comma = depth0_index(s, ",")
+            if comma is None:
+                return
+            entries, _bounded = forall_binders(s[1:comma])
+            binders = binders + entries
+            s = strip_outer_parens(s[comma + 1 :])
+        if has_top_level(s, "↔"):
+            return
+        parts = split_top_level(s, "→")
+        if len(parts) > 1:
+            extra: list[dict] = []
+            for part in parts[:-1]:
+                dependent = arrow_binder(part)
+                if dependent is not None:
+                    extra.extend(dependent)
+            walk(parts[-1], binders + extra, fuel - 1)
+            return
+        disjuncts = split_top_level(s, "∨")
+        if len(disjuncts) > 1:
+            for part in disjuncts:
+                walk(part, binders, fuel - 1)
+            return
+        if has_top_level(s, "∧"):
+            return
+        if s.startswith("¬") or _has_relation(s) or not atom_head(s):
+            return
+        if s.startswith(("∃", "fun", "λ", "Σ", "∑", "∏")):
+            return
+        if any(t in "≠∈∉<>≤≥=" for _, t in _top_level_tokens(s)):
+            return  # `==`, `∈` and comparisons glued to a name (`n≤Q`) are relations too
+        out.append((s, binders))
+
+    walk(s[1:], [], 16)
+    return out
+
+
+def negation_targets(negated: str) -> list[str]:
+    """Heads that a result `¬ <negated>` refutes outright (a view of `find_providers`).
+
+    `¬` binds tighter than `∧`, `∨`, `→` and `↔`, so the result is split into
+    conclusion atoms first; a negation under a `∀` introduced inside a conjunct
+    is skipped because the binder type may be empty.
+    """
+    heads: list[str] = []
+    for atom in conclusion_atoms("¬ " + negated):
+        if atom["kind"] != "negation" or atom.get("nested_binders") or atom["premises"]:
+            continue
+        heads.extend(atom_head(inner) for inner, _ in negated_targets(atom["text"]))
+    return heads
 
 
 def residual_arguments(atom: str) -> list[tuple[str | None, str]]:
@@ -1051,7 +1167,9 @@ def parse_file(path: Path, root: Path) -> list[dict]:
     variables in scope (see `included_section_entries`).
     """
     text = path.read_text(encoding="utf-8", errors="replace")
-    code = strip_comments(text)
+    # Literal examples can contain entire declaration/namespace lines. Keep
+    # their newlines for locations but never inventory those lines as source.
+    code = strip_comments(text, mask_literals=True)
     lines = code.splitlines(keepends=True)
 
     line_starts: list[int] = []
@@ -1556,18 +1674,17 @@ def find_providers(all_decls: list[dict], residuals: list[dict]) -> None:
                 if last in by_name:
                     candidates.setdefault(last, []).append((head, atom))
             elif atom["kind"] == "negation":
-                target = negated_target(atom["text"])
-                if target is None:
+                if atom.get("nested_binders"):
                     continue
-                inner, inner_binders = target
-                head = atom_head(inner)
-                last = head.rsplit(".", 1)[-1]
-                if last in by_name:
-                    # Binders under the negation (`¬ ∀ k, R k`) are part of the
-                    # refuted proposition, not assumptions of the refutation.
-                    refuted.setdefault(last, []).append(
-                        (head, dict(atom, text=inner, inner_binders=inner_binders))
-                    )
+                for inner, inner_binders in negated_targets(atom["text"]):
+                    head = atom_head(inner)
+                    last = head.rsplit(".", 1)[-1]
+                    if last in by_name:
+                        # Binders under the negation (`¬ ∀ k, R k`) are part of the
+                        # refuted proposition, not assumptions of the refutation.
+                        refuted.setdefault(last, []).append(
+                            (head, dict(atom, text=inner, inner_binders=inner_binders))
+                        )
 
         whole_head = result_head(d["result"])
         whole_last = whole_head.rsplit(".", 1)[-1]
@@ -1906,7 +2023,9 @@ WIKI_HEADER = [
     "- **refuted** — a declaration with no recognised assumption proves the negation of some",
     "  instance, so the residual family is not uniformly true. A refutation outranks every",
     "  provider; proved instances stay listed, since an instance proof next to an instance",
-    "  refutation is mixed parameter-scope coverage, not a contradiction.",
+    "  refutation is mixed parameter-scope coverage, not a contradiction. The negation must refute",
+    "  the residual outright; negated existentials, compound negations such as `¬ (R ∧ Q)` and",
+    "  negations under a `∀` inside a conjunct are not counted.",
     "- **open** — everything else, including residuals with conditional providers only.",
     "",
     "The named-residual convention is a modularity pattern, not an incompleteness marker:",

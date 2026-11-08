@@ -11,10 +11,10 @@ import ArkLib.ProofSystem.Whir.CheckedVerifier
 
 `WhirIOP.whir_rbr_soundness` (`Whir/RBRSoundness.lean`, WHIR Theorem 5.2) is a
 statement about an explicitly supplied `VectorIOP` `π`: a `2 * M + 2` challenge-count
-pin and `IsSecureWithGap` at a per-round budget that dominates the Theorem 5.2 bounds.
+pin and `IsSecureWithGapAveraged` at a per-round budget that dominates the Theorem 5.2 bounds.
 Its packaging theorems (`whir_rbr_soundness_of_secure_gap`,
 `whir_vector_iop_breakthrough`) consume an **abstract** `π` together with its full
-`IsSecureWithGap` proof — both completeness and soundness as hypotheses.
+`IsSecureWithGapAveraged` proof — both completeness and soundness as hypotheses.
 
 This file instantiates the statement with the **checked construction**
 `Whir302Checked.whirCheckedVectorIOP` (real over-the-wire sumcheck-consistency and
@@ -23,7 +23,7 @@ final-zero-sum checks; perfect completeness PROVEN —
 Construction 5.1: its verifier never queries the input oracle, and
 `CheckedObliviousness.lean` proves that all-zero prover messages pass every one of its
 checks on every statement and challenge draw (`whirCheckingBool_allZero`). So the result
-below does not certify WHIR. The completeness leg of `IsSecureWithGap` is discharged,
+below does not certify WHIR. The completeness leg of `IsSecureWithGapAveraged` is discharged,
 leaving two named gates:
 
 * `hChallengeCard` — the challenge-cardinality pin

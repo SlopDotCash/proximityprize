@@ -1506,6 +1506,7 @@ import Research.ProximityPrize.Frontier._G332SpectrumIntegerRootCollision
 import Research.ProximityPrize.Frontier._G333Order64SpectrumFieldCaveat
 import Research.ProximityPrize.Frontier._G334Order32SpectrumEngineCaveat
 import Research.ProximityPrize.Frontier._G335SpectrumGeneratorNegSymmetry
+import Research.ProximityPrize.Frontier._G336Order64SpectrumEngineCaveat
 import Research.ProximityPrize.Frontier._G56AllDepthPatternDecomposition
 import Research.ProximityPrize.Frontier._G56PrimitiveConcentrationFactorialNoGo
 import Research.ProximityPrize.Frontier._G57AllDepthWraparoundDCConsumer
@@ -2932,6 +2933,7 @@ import Research.ProximityPrize.Frontier._TwoAdicParityGate
 import Research.ProximityPrize.Frontier._TwoAdicStallLocator
 import Research.ProximityPrize.Frontier._TwoAdicTropicalFloor
 import Research.ProximityPrize.Frontier._TwoAnchorBootstrapFirstStepNoGo
+import Research.ProximityPrize.Frontier._TwoPowerCyclotomicTrace
 import Research.ProximityPrize.Frontier._TwoPowerRootDescent
 import Research.ProximityPrize.Frontier._TwoSidedCapstone
 import Research.ProximityPrize.Frontier._TwoSidedUpperSumProductExponent

@@ -2608,7 +2608,7 @@
      "name": "DuplexSpongeFS.VerifierReplay.hyb34Step_of_strictSplit",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/VerifierReplay.lean",
-     "line": 948,
+     "line": 939,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hA",

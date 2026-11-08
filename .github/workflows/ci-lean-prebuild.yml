@@ -90,6 +90,10 @@ jobs:
           phase: canonical
           operation: restore
 
+      - name: Repair broken restored package checkouts
+        if: inputs.phase == 'canonical'
+        run: uv run --no-project --python 3.12 python scripts/repair-lake-cache.py
+
       - name: Set up Lean environment
         uses: leanprover/lean-action@v1.7.0
         with:

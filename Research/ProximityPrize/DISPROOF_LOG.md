@@ -48914,3 +48914,109 @@ counterexample, or closure of #164 is claimed.
 
 Reproduce with `scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_FrobeniusEnergyDescent.lean`.
 The three added theorems print their axioms for inspection.
+## [164-nt2-two-power-cyclotomic-trace] The 2-power trace hypothesis is a theorem
+
+Date: 2026-11-06. Target: the trace input of
+`ProximityGap.Frontier.BadPrimeBound.badPrimeBound_core` and the power-basis Gram matrix cited by
+the short-vector / theta reading of wraparound (`_wf7W6_shortvector_spur`,
+`_ThetaPoissonNormMismatchNoGo`).
+
+`Frontier/_TwoPowerCyclotomicTrace.lean` proves, for `n = 2^μ` and a primitive `n`-th root `ζ`:
+
+- the odd-residue sum of `ζ^{a m}` is `φ(n)`, `-φ(n)`, or `0` according as `m = 0`, `m = n/2`, or
+  neither (`oddUnitPowerSum`);
+- the Hermitian Gram matrix of the power basis `1, ζ, …, ζ^{φ(n)-1}` is `φ(n) · I`
+  (`powerBasis_gram`);
+- `∑_a ‖∑_k c_k ζ^{a k}‖² = φ(n) · ∑_k c_k²` (`galois_normSq_sum`), and for
+  `c_k ∈ {-1,0,1}` this is `φ(n) · |B|` (`signedIndicator_galois_normSq_sum`);
+- at `μ ≥ 3`, `badPrime_le_sq_of_nt2` feeds that identity into `badPrimeBound_core`, so the
+  full-window bound `p ≤ |B|²` needs only the splitting lower bound on the norm (NT1).
+
+This does not prove prime splitting, does not close the `R ~ log p` gap of the depth-parametrised
+Stickelberger bound, and does not close `δ*` or issue #164.
+
+`#print axioms` on the five public theorems reports only `propext`, `Classical.choice`, and
+`Quot.sound`.
+
+```
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_TwoPowerCyclotomicTrace.lean
+./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._TwoPowerCyclotomicTrace
+```
+### [SYZ72-middle-band-sampled-search] Strengthening the first middle-band witness test (2026-10-30)
+
+Date: 2026-10-30. Target: the `(6,6,6)` / product-degree-`7` middle-band slot of the F1 arc
+(`SYZ59.middleBand`) and the `F_41`, `mu_20` occupant recorded by SYZ70/SYZ71 (PR #5). Two
+results; both are reproducible exact-arithmetic probes. No Lean declaration is added or changed.
+
+**(1) The PR #5 hit test is not a certificate.** `scripts/probes/probe_syz71_linear_middle_slot.py`
+reported a hit whenever the `6 x 4` evaluation matrix of `(W_AC, X*W_AC, W_BC, X*W_BC)` on `S_AB`
+has rank `< 4`. A constant cofactor is a linear cofactor of degree `0`, so every *floor-attained*
+triple also passes: if a nontrivial constant relation `a*W_AC + b*W_BC = 0` holds on `S_AB`, then
+`(a, 0, b, 0)` is a kernel vector. Such a triple has minimal syzygy product degree
+`6 = max(a,b,c)`, which is exactly what `SYZ59.middleBand` excludes; a middle-band occupant needs
+`delta_1 = 7 = max + 1`. Rank `< 4` is therefore necessary but not sufficient, and it cannot
+distinguish the two classes. (The same script also aborted before printing its verdict on a
+`cp1252` console, because one final `sanity` line contained a non-ASCII glyph.)
+
+The *recorded* `F_41` witness is nonetheless genuine. The strict certificate in (2) accepts it with
+`s_AC = 29 + 10X`, `s_BC = 30 + X`, `s_AB = 9 + 11X`, all three slot products of degree `7`,
+constant-cofactor rank `3` and leftover `T = {20, 32}`. Nothing in PR #5 is withdrawn; only the
+test that produced it was too weak to serve as evidence, and it is now hardened (plus the console
+crash fixed).
+
+**(2) The probe samples the slot at 15 selected primes.** The new probe
+`scripts/probes/probe_syz72_middle_band_sweep.py` certifies `delta_1 = 7` exactly — rank `< 4` on
+`S_AB`; the combination divided by `W_AB` to recover `s_AB`; at least one slot product of degree
+exactly `7`; the `7 x 3` constant-cofactor matrix of full rank `3`; the combination nonzero on the
+leftover `T` — and then runs the prime sweep that
+[`AGENTS.md`](AGENTS.md) mandates before any small-`p` verdict is trusted in either direction.
+The sweep uses `mu_20` at 15 selected primes `p = 1 (mod 20)` from `41` through
+`2147484041`. At each prime it draws 20,000 `(S_AC, S_BC)` pairs with replacement and
+checks all `C(8,6) = 28` legal `S_AB` supports for each draw. The 560,000 checks per prime
+include possible repetitions and the 28 checks within a draw share a support pair.
+
+```
+           p   configs  rank<=3 certified    hit fraction
+          41    560000        8         8   1.43e-05
+          61    560000        5         5   8.93e-06
+         101    560000        2         2   3.57e-06
+ 181 … 2147484041 (12 primes, each)  560000   0   0   0
+```
+
+A separate scan checks all 20,720 configurations from the specified index progression pairs
+and legal third supports at each of `p = 41, 101, 1048601`. It finds zero certified occupants
+within that family.
+The `rank<=3` and `certified` columns agree on this random sample. The
+`--demo-false-positive` control separately replays an `F_41` triple that passes the original
+rank test and has constant-cofactor rank 2.
+
+A separate exact search found a witness at `p = 181` despite the zero-hit sample for that prime.
+The probe replays these supports and verifies their cofactors:
+
+```
+S_AC = [1, 150, 56, 59, 46, 42]
+S_BC = [74, 146, 180, 107, 122, 35]
+S_AB = [162, 31, 125, 19, 135, 139]
+T    = [22, 159]
+s_AC = 37 + 134X
+s_BC = 55 + X
+s_AB = 87 + 135X
+```
+
+All three products have degree 7 and the constant-cofactor matrix has rank 3. This witness
+establishes occupancy at `p = 181` independently of the random sample.
+
+**Scope.** The positive witnesses establish occupancy at their respective primes.
+Zero-hit rows apply to the tested support configurations. The existence of occupants
+outside those samples and at other primes remains open. `UniformSylvesterInjective`,
+`iota <= 1`, the over-budget genuine-stack lift, and production `delta*` remain OPEN / ON-BGK.
+
+Reproduction at the PR commit:
+
+```
+python scripts/probes/probe_syz72_middle_band_sweep.py --demo-false-positive   # ~5 min, exit 0
+python scripts/probes/probe_syz71_linear_middle_slot.py                        # ~50 s, exit 0
+```
+
+Evidence class: reproducible exact-arithmetic computation. No Lean file is added or modified by
+this entry, so no axiom read applies.

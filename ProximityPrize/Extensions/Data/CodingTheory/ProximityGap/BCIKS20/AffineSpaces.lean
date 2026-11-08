@@ -279,6 +279,8 @@ private lemma gs_degree_bound_le_inv_mu
     _ ≤ 1 / μ + 1 / (4 * μ) := add_le_add h5 h6
     _ = 5 / (4 * μ) := by ring
 
+-- These wrappers keep their named hypotheses for callers of the earlier affine-space API.
+
 /-- Theorem 1.7 front door with the affine-line Johnson residual supplied by the verified
 `betaRec` capsule at every radius `δ' ≤ δ` used internally by the affine-space proof. -/
 theorem correlatedAgreement_affine_spaces_johnson_of_betaRec [SampleableType F] {k : ℕ} [NeZero k]
@@ -304,7 +306,6 @@ theorem correlatedAgreement_affine_spaces_johnson_of_betaRec [SampleableType F] 
     (hε : errorBound δ deg domain < 1) :
     δ_ε_correlatedAgreementAffineSpaces (k := k) (A := F) (F := F) (ι := ι)
       (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) :=
-  -- The canonical theorem is stronger; the retained legacy residual input is unused.
   correlatedAgreement_affine_spaces (ι := ι) (F := F) (k := k) (deg := deg)
     (domain := domain) (δ := δ) hdeg hδ hε
 
@@ -341,7 +342,6 @@ theorem correlatedAgreement_affine_spaces_johnson_of_betaRec_strict_boundary [Sa
     (hε : errorBound δ deg domain < 1) :
     δ_ε_correlatedAgreementAffineSpaces (k := k) (A := F) (F := F) (ι := ι)
       (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) :=
-  -- The canonical theorem is stronger; the retained legacy residual input is unused.
   correlatedAgreement_affine_spaces (ι := ι) (F := F) (k := k) (deg := deg)
     (domain := domain) (δ := δ) hdeg hδ hε
 
@@ -370,7 +370,6 @@ theorem correlatedAgreement_affine_spaces_johnson_of_betaRecFin [SampleableType 
     (hε : errorBound δ deg domain < 1) :
     δ_ε_correlatedAgreementAffineSpaces (k := k) (A := F) (F := F) (ι := ι)
       (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) :=
-  -- The canonical theorem is stronger; the retained legacy residual input is unused.
   correlatedAgreement_affine_spaces (ι := ι) (F := F) (k := k) (deg := deg)
     (domain := domain) (δ := δ) hdeg hδ hε
 
@@ -404,7 +403,6 @@ theorem correlatedAgreement_affine_spaces_johnson_of_betaRecFin_strict_boundary 
     (hε : errorBound δ deg domain < 1) :
     δ_ε_correlatedAgreementAffineSpaces (k := k) (A := F) (F := F) (ι := ι)
       (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) :=
-  -- The canonical theorem is stronger; the retained legacy residual input is unused.
   correlatedAgreement_affine_spaces (ι := ι) (F := F) (k := k) (deg := deg)
     (domain := domain) (δ := δ) hdeg hδ hε
 

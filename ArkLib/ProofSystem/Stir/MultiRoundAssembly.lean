@@ -173,12 +173,12 @@ def stirMultiRoundRbrSoundnessResidual (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ
   OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim
     (stirRelation deg φ δ) (OracleProof.toOracleVerifier (stirMultiRoundIOP M φ deg)) ε_rbr
 
-/-- The assembled multi-round STIR IOPP is `IsSecureWithGap`, given the (open) rbr-soundness
+/-- The assembled multi-round STIR IOPP is `IsSecureWithGapAveraged`, given the (open) rbr-soundness
 residual: the completeness leg is the proven `stirMultiRoundIOP_perfectCompleteness`. -/
 theorem stirMultiRoundIOP_isSecureWithGap (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (hSound : stirMultiRoundRbrSoundnessResidual M φ deg δ ε_rbr) :
-    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
+    IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
       (stirMultiRoundIOP M φ deg) where
   is_complete := stirMultiRoundIOP_perfectCompleteness M φ deg _
   is_rbr_knowledge_sound := hSound
@@ -211,7 +211,7 @@ theorem stir_rbr_soundness_of_secure_vectorIOP
         Dist.δ j < (1 - Bstar (rate (code (P.φ j) (degree ι P j)))))
     (ε_fold : ℝ≥0) (ε_out : Fin M → ℝ≥0) (ε_shift : Fin M → ℝ≥0) (ε_fin : ℝ≥0)
     (π : VectorIOP Unit (OracleStatement (ι 0) F) Unit (stirMultiVSpec M (ι 0)) F)
-    (hSecure : IsSecureWithGap
+    (hSecure : IsSecureWithGapAveraged
       (stirRelation (degree ι P 0) (P.φ 0) 0)
       (stirRelation (degree ι P 0) (P.φ 0) (Dist.δ 0))
       (fun _ => ({ε_fold} ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max' (by simp))
@@ -239,7 +239,7 @@ theorem stir_rbr_soundness_of_secure_vectorIOP
 the assembled multi-round object. The existential witnesses are fully constructed —
 `n := 3M + 3`, `vPSpec := stirMultiVSpec M (ι 0)` (challenge count `2M + 2` by the landed
 `stirVSpec_card_challengeIdx`), `π := stirMultiRoundIOP` — and the completeness leg of
-`IsSecureWithGap` is proven. The genuinely open legs are consumed as hypotheses:
+`IsSecureWithGapAveraged` is proven. The genuinely open legs are consumed as hypotheses:
 the rbr-soundness residual (`hSound`, Johnson-CA-gated) and the per-round error bounds
 (`hfold`/`hrest`/`hfin`, statements about the free parameters `ε_fold/ε_out/ε_shift/ε_fin`). -/
 theorem stir_rbr_soundness_of_residuals
@@ -294,7 +294,7 @@ theorem stir_main_of_secure_vectorIOP
     (hF : FieldSizeCondition secpar φ degree)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (π : VectorIOP Unit (OracleStatement ι F) Unit (stirMultiVSpec M ι) F)
-    (hSecure : IsSecureWithGap (stirRelation degree φ 0) (stirRelation degree φ δ) ε_rbr π)
+    (hSecure : IsSecureWithGapAveraged (stirRelation degree φ 0) (stirRelation degree φ δ) ε_rbr π)
     (hε : ∀ i, ε_rbr i ≤ (1 : ℚ≥0) / (2 ^ secpar))
     (hM : ∃ c > 0, M ≤ c * (Real.log degree / Real.log k))
     (hLen : ∃ cₖ : ℕ → ℝ, proofLen ≤ (Fintype.card ι) + (cₖ k) * (Real.log degree))
@@ -308,7 +308,7 @@ theorem stir_main_of_secure_vectorIOP
 
 /-- **Theorem 5.1 front door (#301, mechanical track)**: `stir_main` instantiated with the
 assembled multi-round object (`n := 3M + 3`, `vPSpec := stirMultiVSpec M ι`,
-`π := stirMultiRoundIOP M φ degree`), with the completeness leg of `IsSecureWithGap` proven.
+`π := stirMultiRoundIOP M φ degree`), with the completeness leg of `IsSecureWithGapAveraged` proven.
 Consumed as hypotheses (the genuinely open legs): the rbr-soundness residual (`hSound`,
 Johnson-CA-gated), the rbr error bound (`hε`), and the complexity claims about the free
 parameters `M`/`proofLen`/`qNumtoInput`/`qNumtoProofstr` (`hM`/`hLen`/`hQin`/`hQpf`). -/

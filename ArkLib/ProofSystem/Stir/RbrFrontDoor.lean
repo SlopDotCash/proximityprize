@@ -10,7 +10,7 @@ import ArkLib.ProofSystem.Stir.MultiRoundSpec
 # The stir_rbr_soundness front door (#301)
 
 The front-door wiring — `stir_rbr_soundness` reduces to supplying a
-`VectorIOP` over the landed `stirVSpec` together with its `IsSecureWithGap` proof and the
+`VectorIOP` over the landed `stirVSpec` together with its `IsSecureWithGapAveraged` proof and the
 per-round error bounds (the STIR analogue of WHIR's
 `whir_rbr_soundness_of_whirVectorSpec_secure_gap`).
 
@@ -31,7 +31,7 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 open LinearCode in
 /-- **Front door for Lemma 5.4**: `stir_rbr_soundness` holds as soon as one supplies a
 `VectorIOP` over the canonical `stirVSpec` wire format (whose `2M+2` challenge count is the
-landed `stirVSpec_card_challengeIdx`), its `IsSecureWithGap` proof at the max'd round-error
+landed `stirVSpec_card_challengeIdx`), its `IsSecureWithGapAveraged` proof at the max'd round-error
 function, and the per-round error bounds. This isolates the remaining work on Lemma 5.4 to
 exactly: the protocol object, its security proof, and the budget inequalities — all wire-format
 independent of the `∃`-packaging. -/
@@ -49,7 +49,7 @@ theorem stir_rbr_soundness_of_stirVSpec_secure_gap
     (ε_fold : ℝ≥0) (ε_out : Fin M → ℝ≥0) (ε_shift : Fin M → ℝ≥0) (ε_fin : ℝ≥0)
     (msgLen : Fin (M + 1) → ℕ) (chalLen : ℕ)
     (π : VectorIOP Unit (OracleStatement (ι 0) F) Unit (stirVSpec M msgLen chalLen) F)
-    (hSecure : VectorIOP.IsSecureWithGap
+    (hSecure : VectorIOP.IsSecureWithGapAveraged
         (stirRelation (degree ι P 0) (P.φ 0) 0)
         (stirRelation (degree ι P 0) (P.φ 0) (Dist.δ 0))
         (fun _ => ({ε_fold} ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max' (by simp))

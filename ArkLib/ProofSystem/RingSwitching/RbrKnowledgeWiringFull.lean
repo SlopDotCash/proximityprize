@@ -114,8 +114,8 @@ theorem batchingCore_toVerifier_isFailingDet [IsDomain L] [IsDomain K] :
 /-- **Round-by-round knowledge soundness of the full ring-switching oracle verifier, wired** —
 no append residuals. This statement is exactly the `hFullAppendRbrKnowledgeSoundness` residual of
 `fullOracleVerifier_rbrKnowledgeSoundness`, proven by the failing-deterministic message-seam
-keystone at the batching-core composite determinism witness, with the MLIOPCS side supplied by
-the structure's own `rbrKnowledgeSoundness` field. The `Sum.elim` error is definitionally
+keystone at the batching-core composite determinism witness. The MLIOPCS fixed-prefix field
+implies the averaged bound used by the seam. The `Sum.elim` error is definitionally
 `fullRbrKnowledgeError`. -/
 theorem fullOracleVerifier_rbrKnowledgeSoundness_wired [IsDomain L] [IsDomain K] [Subsingleton σ]
     [Inhabited (∀ j, mlIOPCS.toAbstractOStmtIn.OStmtIn j)]
@@ -142,7 +142,8 @@ theorem fullOracleVerifier_rbrKnowledgeSoundness_wired [IsDomain L] [IsDomain K]
       mlIOPCS hMlnPos hMlnDir)
     (hDir₂ := hMlnDir)
     (h₁ := batchingCore_rbrKnowledgeSoundness_wired κ L K P ℓ ℓ' h_l mlIOPCS init hInit hInitNF)
-    (h₂ := mlIOPCS.rbrKnowledgeSoundnessAveraged)
+    (h₂ := OracleProof.rbrKnowledgeSoundness_implies_rbrKnowledgeSoundnessAveraged
+      mlIOPCS.rbrKnowledgeSoundness)
   have herr : (fun i => fullRbrKnowledgeError κ L K P ℓ' mlIOPCS i)
       = (Sum.elim (batchingCoreRbrKnowledgeError κ L K P ℓ') mlIOPCS.rbrKnowledgeError
           ∘ ⇑ChallengeIdx.sumEquiv.symm) := rfl

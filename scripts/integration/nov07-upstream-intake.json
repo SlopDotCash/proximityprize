@@ -93,5 +93,35 @@
     }
   },
   "initial_november_upstream": "db91471fcb5e1dd90fa638bf3b5d5eb45d0dd012",
-  "latest_downstream_base": "1482c50b3e3a047cbe696224342d9b1855bd4883"
+  "latest_downstream_base": "04bca190a5a33d156c14d872fa06ed7f544f7e7b",
+  "downstream_hachi_factor_swap": {
+    "downstream_commit": "8f2d555e5c446c97544f31917b5b99209c71c916",
+    "declaration": "ArkLib.Lattices.CyclotomicModulus.no_selfReciprocal_factor",
+    "canonical_source": "ArkLib/Data/Lattices/CyclotomicRing/Subfield/Field.lean",
+    "disposition": "Canonical ArkLib already proves the factor swap for every exponent. The downstream proof and its private helpers remain in Git history; the live source uses the canonical theorem."
+  },
+  "downstream_contributions": [
+    {
+      "downstream_commit": "9a6b877c89389dc2a31e33f8664858289e05eaec",
+      "source": "ArkLib/Data/CodingTheory/AGL24EmbeddingDischarge.lean",
+      "disposition": "Keep the uniform embedding transfer and conditional failure bound in ArkLibExtensions. Use the downstream PMF compatibility API and preserve the contributor and license notice from downstream main."
+    },
+    {
+      "downstream_commit": "54486c82403171b390871f8dcf54154942b97356",
+      "source": "Research/ProximityPrize/Frontier/_TwoPowerCyclotomicTrace.lean",
+      "disposition": "Keep the distinct complex trace, Gram matrix, and NT2-to-bad-prime results in Research. The file and its contributor and license notice match downstream main byte for byte."
+    }
+  ],
+  "additional_duplicate_implementations": [
+    {
+      "source": "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "canonical_source": "ArkLib/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "disposition": "The historical candidate set and distance theorems delegate to the canonical candidate specification and its distance theorem. Public signatures, including the historical radius parameters, are preserved."
+    },
+    {
+      "source": "ProximityPrize/Extensions/ProofSystem/Sumcheck/Spec/SingleRound.lean",
+      "canonical_source": "ArkLib/ProofSystem/Sumcheck/Spec/SingleRound.lean",
+      "disposition": "The classic module imports the canonical single-round instance for pSpec and retains its additional theorems."
+    }
+  ]
 }
