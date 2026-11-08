@@ -366,7 +366,8 @@ lemma hammingDist_le_pair_fiberwiseDistance_mul_two_pow_steps_farLiftLocal
       intro x hx
       simp only [ΔH, Finset.mem_filter, Finset.mem_univ, true_and] at hx
       let y_of_x := AdditiveNTT.iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate
-        i steps h_i_add_steps x
+        (i := ⟨i, by omega⟩) (destIdx := ⟨i.val + steps, by omega⟩) (k := steps)
+        (h_destIdx := by simp) (h_destIdx_le := h_i_add_steps) x
       apply Finset.mem_biUnion.mpr
       refine ⟨y_of_x, ?_, ?_⟩
       · rw [mem_fiberwiseDisagreementSetPerFiber]
@@ -606,7 +607,10 @@ lemma fiberwiseClose_of_jointProximityNat_farLiftLocal
         ≤ (Finset.univ.filter (fun y => (⋈|u) y ≠ V y)).card :=
           Finset.card_le_card hsubset
       _ = Δ₀((⋈|u), V) := by
-          rw [hammingDist]
+          delta hammingDist
+          congr 1
+          ext
+          simp only [Finset.mem_filter]
       _ ≤ e := hV_close
   -- 5. Conclude fiberwise closeness.
   have hfwd_le : fiberwiseDistance 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)

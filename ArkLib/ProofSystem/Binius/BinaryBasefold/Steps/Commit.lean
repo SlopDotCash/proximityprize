@@ -6,6 +6,9 @@ Authors: Chung Thai Nguyen, Quang Dao
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Fold
 import ArkLib.OracleReduction.Composition.Sequential.ChallengeOracleFintype
 
+-- Retain the finite uniform interpretation locally for these legacy probability lemmas.
+attribute [local instance] legacyUniformSpec
+
 /-!
 # Binary Basefold Commit Step
 
@@ -198,7 +201,13 @@ theorem commitOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : 
     simp only [probFailure_bind_eq_zero_iff]
     conv_lhs =>
       simp only [liftComp_eq_liftM, liftM_pure, probFailure_eq_zero]
-    rw [true_and]
+    first
+      | rw [true_and]
+      | (refine ⟨by simp [OptionT.probFailure_mk, OptionT.probFailure_lift,
+          probFailure_of_liftM_PMF], ?_⟩)
+      | (refine ⟨by rw [OptionT.probFailure_mk]; simp, ?_⟩)
+      | (refine ⟨by simp [liftM, monadLift, MonadLift.monadLift, OptionT.probFailure_lift,
+          probFailure_of_liftM_PMF], ?_⟩)
     intro inputState hInputState_mem_support
     simp only [Fin.isValue, Message, Matrix.cons_val_zero, Fin.succ_zero_eq_one, ChallengeIdx,
       Challenge, liftComp_eq_liftM, liftM_pure, support_pure,
@@ -206,7 +215,7 @@ theorem commitOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : 
     conv_lhs =>
       simp only [liftM, monadLift, MonadLift.monadLift]
       simp only [ChallengeIdx, Challenge, Fin.isValue, Matrix.cons_val_one, Matrix.cons_val_zero,
-        liftComp_eq_liftM, OptionT.probFailure_lift, HasEvalPMF.probFailure_eq_zero]
+        liftComp_eq_liftM, OptionT.probFailure_lift, probFailure_of_liftM_PMF]
     rw [true_and]
     intro r_i' h_r_i'_mem_query_1_support
     conv =>
@@ -228,7 +237,7 @@ theorem commitOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : 
     conv_lhs =>
       enter [1];
       simp only [Fin.isValue, Message, Matrix.cons_val_zero, Fin.succ_zero_eq_one, MessageIdx,
-        OptionT.run_map, HasEvalPMF.probFailure_eq_zero]
+        OptionT.run_map, probFailure_of_liftM_PMF]
     rw [zero_add]
     simp only [probOutput_eq_zero_iff]
     rw [OptionT.support_run_eq]
@@ -292,9 +301,9 @@ theorem commitOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : 
       Challenge, Fin.reduceLast, liftComp_eq_liftM] at hx_mem_support
     obtain ⟨newOracleFn, lastPrvState, h_prvFinalState_eq,
       ⟨h_prvOut_mem_support, h_verOut_mem_support⟩⟩ := hx_mem_support
-    conv at h_prvFinalState_eq =>
-      dsimp only [getCommitProverFinalOutput, commitOracleProver]
-      rw [Prod.mk.injEq]
+    try dsimp only [getCommitProverFinalOutput, commitOracleProver] at h_prvFinalState_eq
+    change some (newOracleFn, lastPrvState) = some _ at h_prvFinalState_eq
+    replace h_prvFinalState_eq := Prod.mk.inj (Option.some.inj h_prvFinalState_eq)
     conv at h_prvOut_mem_support =>
       dsimp only [commitOracleProver, commitOracleVerifier, OracleVerifier.toVerifier,
         FullTranscript.mk1]
@@ -302,6 +311,13 @@ theorem commitOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : 
       rw [OracleComp.mem_support_liftComp_iff]
       simp only [h_prvFinalState_eq, Fin.val_succ, support_pure, Set.mem_singleton_iff,
         Prod.mk.injEq]
+    try rw [h_prvFinalState_eq.2] at h_prvOut_mem_support
+    first
+      | (simp only [support_pure, Set.mem_singleton_iff, Prod.mk.injEq] at h_prvOut_mem_support
+         have _ := h_prvOut_mem_support.1.1)
+      | (rw [MonadAttach.mem_support, MonadAttach.canReturn_pure_iff] at h_prvOut_mem_support
+         simp only [Prod.mk.injEq] at h_prvOut_mem_support)
+      | skip
     conv at h_verOut_mem_support =>
       dsimp only [commitOracleVerifier, OracleVerifier.toVerifier, FullTranscript.mk1]
       erw [_root_.simulateQ_pure]
@@ -313,9 +329,12 @@ theorem commitOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : 
       -- pure equalities now
     simp only [Functor.map, OptionT.bind, OptionT.pure, pure_bind,
       Function.comp_apply, OptionT.mk, liftM_pure] at h_verOut_mem_support
-    erw [OptionT.mem_support_mk] at h_verOut_mem_support
-    simp only [support_pure, Set.mem_singleton_iff, Option.some.injEq,
-      Prod.mk.injEq] at h_verOut_mem_support
+    first
+      | (erw [OptionT.mem_support_mk] at h_verOut_mem_support
+         simp only [support_pure, Set.mem_singleton_iff, Option.some.injEq,
+           Prod.mk.injEq] at h_verOut_mem_support)
+      | (rw [MonadAttach.canReturn_pure_iff] at h_verOut_mem_support
+         simp only [Option.some.injEq, Prod.mk.injEq] at h_verOut_mem_support)
     -- Step 2e: Apply the logic completeness lemma
     obtain ⟨h_V_check, h_rel, h_agree⟩ := strongly_complete (stmtIn := stmtIn)
       (witIn := witIn) (h_relIn := h_relIn)
@@ -452,10 +471,19 @@ def commitKState (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i) :
             oStmtIn
             (msg : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
               (domainIdx := ⟨i.val + 1, by omega⟩))) := by
-        simpa only [OracleFrontierIndex.val_mkFromStmtIdx, olderStmtChallenges_self] using hGood.2.2.2
+        first
+          | exact hGood.2.2.2
+          | simpa only [OracleFrontierIndex.val_mkFromStmtIdx, olderStmtChallenges_self]
+              using hGood.2.2.2
+          | (have h := hGood.2.2.2
+             simp only [OracleFrontierIndex.val_mkFromStmtIdx, olderStmtChallenges_self] at h
+             exact h)
       have h_init_cast : firstOracleWitnessConsistencyProp 𝔽q β witMid.t
           (getFirstOracle 𝔽q β oStmtIn) := by
-        simpa only [getFirstOracle_snoc_oracle] using h_init
+        first
+          | simpa only [getFirstOracle_snoc_oracle] using h_init
+          | (erw [getFirstOracle_snoc_oracle] at h_init; exact h_init)
+          | (rw [← getFirstOracle_snoc_oracle 𝔽q β (h_destIdx := rfl)]; exact h_init)
       have h_fold_cast :
           oracleFoldingConsistencyProp 𝔽q β (i := i.castSucc) (Fin.tail stmtIn.challenges)
             oStmtIn := by
@@ -526,7 +554,10 @@ def commitKState (i : Fin ℓ) (hCR : isCommitmentRound ℓ ϑ i) :
         snoc_oracle_eq_mkVerifierOStmtOut_commitStep 𝔽q β (mp := mp)
           (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑) i hCR oStmtIn
           (tr.messages msgIdx0) tr rfl
-      exact h_oStmt_eq'.trans (by simpa only [OracleVerifier.mkVerifierOStmtOut] using h_oStmtOut_eq.symm)
+      first
+        | exact h_oStmt_eq'.trans h_oStmtOut_eq.symm
+        | exact h_oStmt_eq'.trans
+            (by simpa only [OracleVerifier.mkVerifierOStmtOut] using h_oStmtOut_eq.symm)
     rw [h_oStmt_eq]
     exact h_relOut
 

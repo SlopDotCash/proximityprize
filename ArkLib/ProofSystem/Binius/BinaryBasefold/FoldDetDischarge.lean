@@ -128,7 +128,9 @@ theorem foldMatrixNat_det_ne_zero (i : Fin r) (steps : ℕ)
   induction steps with
   | zero =>
       rw [foldMatrixNat]
-      simp [Matrix.det_fin_one]
+      change (Matrix.of fun (_ : Fin 1) (_ : Fin 1) => (1 : L)).det ≠ 0
+      rw [Matrix.det_fin_one]
+      simp
   | succ n ih =>
       rw [foldMatrixNat_succ_eq_submatrix]
       apply det_submatrix_equiv_ne_zero

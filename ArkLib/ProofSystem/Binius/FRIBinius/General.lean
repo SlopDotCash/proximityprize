@@ -11,6 +11,9 @@ import ArkLib.OracleReduction.Security.Basic
 import ArkLib.OracleReduction.Security.Implications
 import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
+
+-- Retain the finite uniform interpretation locally for these legacy probability lemmas.
+attribute [local instance] legacyUniformSpec
 /-!
 # FRI-Binius IOPCS
 
@@ -58,7 +61,9 @@ variable (h_l : ℓ = ℓ' + κ)
 variable {𝓑 : Fin 2 ↪ L}
 variable [hdiv : Fact (ϑ ∣ ℓ')]
 
-local instance : Empty → OracleInterface Unit := fun _ => OracleInterface.instDefault
+@[instance_reducible]
+private def instOracleInterfaceUnitOfEmptyFRI : Empty → OracleInterface Unit :=
+  fun _ => OracleInterface.instDefault
 
 
 -- Pin the profile before composing the dependent message and challenge families.

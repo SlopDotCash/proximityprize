@@ -86,12 +86,12 @@ lemma iteratedQuotientMap_val_eq_qMap_total_fiber_extractMiddleFinMask
     (v : (sDomain 𝔽q β h_ℓ_add_R_rate) ⟨0, Nat.pos_of_neZero r⟩)
     (y : (sDomain 𝔽q β h_ℓ_add_R_rate) ⟨i.val + steps, by
       have h𝓡 := Nat.pos_of_neZero 𝓡; have hr := h_ℓ_add_R_rate; omega⟩)
-    (hy : y.val = (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero ℓ⟩)
-      (k := i.val + steps)
-      (h_bound := by show 0 + (i.val + steps) ≤ ℓ; omega)
+    (hy : y.val = (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero r⟩)
+      (destIdx := ⟨0 + (i.val + steps), by omega⟩) (k := i.val + steps)
+      (h_destIdx := by simp) (h_destIdx_le := by show 0 + (i.val + steps) ≤ ℓ; omega)
       (x := v)).val) :
-    (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero ℓ⟩) (k := i.val)
-      (h_bound := by show 0 + i.val ≤ ℓ; have hi := i.isLt; omega)
+    (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero r⟩) (destIdx := ⟨0 + (i.val), by omega⟩) (k := i.val)
+      (h_destIdx := by simp) (h_destIdx_le := by show 0 + i.val ≤ ℓ; have hi := i.isLt; omega)
       (x := v)).val =
     (qMap_total_fiber 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
       (i := ⟨i.val, by have hi := i.isLt; have hr := h_ℓ_add_R_rate; omega⟩)
@@ -108,8 +108,8 @@ lemma iteratedQuotientMap_val_eq_qMap_total_fiber_extractMiddleFinMask
           show 0 + i.val < r; have hr := h_ℓ_add_R_rate; omega⟩
         ⟨i.val, by have hr := h_ℓ_add_R_rate; omega⟩
         (by apply Fin.eq_of_val_eq; show 0 + i.val = i.val; omega)
-        (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero ℓ⟩) (k := i.val)
-          (h_bound := by show 0 + i.val ≤ ℓ; omega)
+        (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero r⟩) (destIdx := ⟨0 + (i.val), by omega⟩) (k := i.val)
+          (h_destIdx := by simp) (h_destIdx_le := by show 0 + i.val ≤ ℓ; omega)
           (x := v)) =
       qMap_total_fiber 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
         (i := ⟨i.val, by have hr := h_ℓ_add_R_rate; omega⟩)
@@ -136,8 +136,8 @@ lemma iteratedQuotientMap_val_eq_qMap_total_fiber_extractMiddleFinMask
       (by show i.val < ℓ + 𝓡; omega)
       (by show 0 + i.val < ℓ + 𝓡; omega)
       _
-      (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero ℓ⟩) (k := i.val)
-        (h_bound := by show 0 + i.val ≤ ℓ; omega)
+      (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero r⟩) (destIdx := ⟨0 + (i.val), by omega⟩) (k := i.val)
+        (h_destIdx := by simp) (h_destIdx_le := by show 0 + i.val ≤ ℓ; omega)
         (x := v))
       (suffixLiftIdx_val 𝔽q β _ _ _ _)
       jj
@@ -145,8 +145,8 @@ lemma iteratedQuotientMap_val_eq_qMap_total_fiber_extractMiddleFinMask
       rfl) ?_
     -- LHS step 2: coefficient shift of the iterated quotient map (k := i.val)
     refine Eq.trans (getSDomainBasisCoeff_of_iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate
-      (i := ⟨0, Nat.pos_of_neZero ℓ⟩) (k := i.val)
-      (h_bound := by show 0 + i.val ≤ ℓ; omega)
+      (i := ⟨0, Nat.pos_of_neZero r⟩) (destIdx := ⟨0 + (i.val), by omega⟩) (k := i.val)
+      (h_destIdx := by simp) (h_destIdx_le := by show 0 + i.val ≤ ℓ; omega)
       (x := v)
       ⟨jj.val, by show jj.val < ℓ + 𝓡 - (0 + i.val); omega⟩) ?_
     -- Now: level-0 coefficient of v at (shifted) index = fiber_coeff ...
@@ -207,8 +207,8 @@ lemma iteratedQuotientMap_val_eq_qMap_total_fiber_extractMiddleFinMask
         (by show jj.val + i.val = jj.val - steps + (i.val + steps); omega)) ?_
       -- coefficient shift of the iterated quotient map (k := i.val + steps), reversed
       refine Eq.trans (getSDomainBasisCoeff_of_iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate
-        (i := ⟨0, Nat.pos_of_neZero ℓ⟩) (k := i.val + steps)
-        (h_bound := by show 0 + (i.val + steps) ≤ ℓ; omega)
+        (i := ⟨0, Nat.pos_of_neZero r⟩) (destIdx := ⟨0 + (i.val + steps), by omega⟩) (k := i.val + steps)
+        (h_destIdx := by simp) (h_destIdx_le := by show 0 + (i.val + steps) ≤ ℓ; omega)
         (x := v)
         ⟨jj.val - steps, by
           show jj.val - steps < ℓ + 𝓡 - (0 + (i.val + steps)); omega⟩).symm ?_
@@ -233,8 +233,8 @@ lemma cast_iteratedQuotientMap_eq_qMap_total_fiber_extractMiddleFinMask_core
     cast (congrArg (fun w => ↥(sDomain 𝔽q β h_ℓ_add_R_rate w))
         (show (⟨0 + i, by omega⟩ : Fin r) = ⟨i, by omega⟩ from
           Fin.eq_of_val_eq (Nat.zero_add i)))
-      (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero ℓ⟩) (k := i)
-        (h_bound := by show 0 + i ≤ ℓ; omega) (x := v)) =
+      (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero r⟩) (destIdx := ⟨0 + (i), by omega⟩) (k := i)
+        (h_destIdx := by simp) (h_destIdx_le := by show 0 + i ≤ ℓ; omega) (x := v)) =
     qMap_total_fiber 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
       (i := ⟨i, by omega⟩) (steps := steps)
       (h_i_add_steps := by
@@ -244,42 +244,42 @@ lemma cast_iteratedQuotientMap_eq_qMap_total_fiber_extractMiddleFinMask_core
       (y := cast (congrArg (fun w => ↥(sDomain 𝔽q β h_ℓ_add_R_rate w))
           (show (⟨0 + (i + steps), by omega⟩ : Fin r) = ⟨i + steps, by omega⟩ from
             Fin.eq_of_val_eq (Nat.zero_add (i + steps))))
-        (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero ℓ⟩)
-          (k := i + steps) (h_bound := by show 0 + (i + steps) ≤ ℓ; omega) (x := v)))
+        (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero r⟩)
+          (destIdx := ⟨0 + (i + steps), by omega⟩) (k := i + steps) (h_destIdx := by simp) (h_destIdx_le := by show 0 + (i + steps) ≤ ℓ; omega) (x := v)))
       (extractMiddleFinMask 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) v ⟨i, by omega⟩ steps) := by
   apply Subtype.ext
   have hy :
       (cast (congrArg (fun w => ↥(sDomain 𝔽q β h_ℓ_add_R_rate w))
           (show (⟨0 + (i + steps), by omega⟩ : Fin r) = ⟨i + steps, by omega⟩ from
             Fin.eq_of_val_eq (Nat.zero_add (i + steps))))
-        (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero ℓ⟩)
-          (k := i + steps) (h_bound := by show 0 + (i + steps) ≤ ℓ; omega) (x := v))).val =
-      (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero ℓ⟩)
-        (k := i + steps) (h_bound := by show 0 + (i + steps) ≤ ℓ; omega) (x := v)).val := by
+        (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero r⟩)
+          (destIdx := ⟨0 + (i + steps), by omega⟩) (k := i + steps) (h_destIdx := by simp) (h_destIdx_le := by show 0 + (i + steps) ≤ ℓ; omega) (x := v))).val =
+      (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero r⟩)
+        (destIdx := ⟨0 + (i + steps), by omega⟩) (k := i + steps) (h_destIdx := by simp) (h_destIdx_le := by show 0 + (i + steps) ≤ ℓ; omega) (x := v)).val := by
     exact val_of_cast_sDomain 𝔽q β
       (i₁ := ⟨0 + (i + steps), by omega⟩) (i₂ := ⟨i + steps, by omega⟩)
       (h := Fin.eq_of_val_eq (Nat.zero_add (i + steps)))
       (hty := congrArg (fun w => ↥(sDomain 𝔽q β h_ℓ_add_R_rate w))
         (show (⟨0 + (i + steps), by omega⟩ : Fin r) = ⟨i + steps, by omega⟩ from
           Fin.eq_of_val_eq (Nat.zero_add (i + steps))))
-      (z := iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero ℓ⟩)
-        (k := i + steps) (h_bound := by show 0 + (i + steps) ≤ ℓ; omega) (x := v))
+      (z := iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero r⟩)
+        (destIdx := ⟨0 + (i + steps), by omega⟩) (k := i + steps) (h_destIdx := by simp) (h_destIdx_le := by show 0 + (i + steps) ≤ ℓ; omega) (x := v))
   have hleft :
       (cast (congrArg (fun w => ↥(sDomain 𝔽q β h_ℓ_add_R_rate w))
           (show (⟨0 + i, by omega⟩ : Fin r) = ⟨i, by omega⟩ from
             Fin.eq_of_val_eq (Nat.zero_add i)))
-        (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero ℓ⟩) (k := i)
-          (h_bound := by show 0 + i ≤ ℓ; omega) (x := v))).val =
-      (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero ℓ⟩) (k := i)
-        (h_bound := by show 0 + i ≤ ℓ; omega) (x := v)).val := by
+        (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero r⟩) (destIdx := ⟨0 + (i), by omega⟩) (k := i)
+          (h_destIdx := by simp) (h_destIdx_le := by show 0 + i ≤ ℓ; omega) (x := v))).val =
+      (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero r⟩) (destIdx := ⟨0 + (i), by omega⟩) (k := i)
+        (h_destIdx := by simp) (h_destIdx_le := by show 0 + i ≤ ℓ; omega) (x := v)).val := by
     exact val_of_cast_sDomain 𝔽q β
       (i₁ := ⟨0 + i, by omega⟩) (i₂ := ⟨i, by omega⟩)
       (h := Fin.eq_of_val_eq (Nat.zero_add i))
       (hty := congrArg (fun w => ↥(sDomain 𝔽q β h_ℓ_add_R_rate w))
         (show (⟨0 + i, by omega⟩ : Fin r) = ⟨i, by omega⟩ from
           Fin.eq_of_val_eq (Nat.zero_add i)))
-      (z := iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero ℓ⟩) (k := i)
-        (h_bound := by show 0 + i ≤ ℓ; omega) (x := v))
+      (z := iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero r⟩) (destIdx := ⟨0 + (i), by omega⟩) (k := i)
+        (h_destIdx := by simp) (h_destIdx_le := by show 0 + i ≤ ℓ; omega) (x := v))
   exact hleft.trans
     (iteratedQuotientMap_val_eq_qMap_total_fiber_extractMiddleFinMask 𝔽q β
       (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
@@ -288,8 +288,8 @@ lemma cast_iteratedQuotientMap_eq_qMap_total_fiber_extractMiddleFinMask_core
       (y := cast (congrArg (fun w => ↥(sDomain 𝔽q β h_ℓ_add_R_rate w))
           (show (⟨0 + (i + steps), by omega⟩ : Fin r) = ⟨i + steps, by omega⟩ from
             Fin.eq_of_val_eq (Nat.zero_add (i + steps))))
-        (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero ℓ⟩)
-          (k := i + steps) (h_bound := by show 0 + (i + steps) ≤ ℓ; omega) (x := v)))
+        (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero r⟩)
+          (destIdx := ⟨0 + (i + steps), by omega⟩) (k := i + steps) (h_destIdx := by simp) (h_destIdx_le := by show 0 + (i + steps) ≤ ℓ; omega) (x := v)))
       hy)
 
 end
@@ -379,8 +379,8 @@ def extractSuffixFromChallenge (v : sDomain 𝔽q β h_ℓ_add_R_rate ⟨0, by o
     change 0 + destIdx.val = destIdx.val
     rw [Nat.zero_add]
   cast (congrArg (fun i => ↥(sDomain 𝔽q β h_ℓ_add_R_rate i)) h_idx_eq)
-    (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero ℓ⟩)
-      (k := destIdx.val) (h_bound := h_bound) (x := v))
+    (iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨0, Nat.pos_of_neZero r⟩)
+      (destIdx := ⟨0 + (destIdx.val), by omega⟩) (k := destIdx.val) (h_destIdx := by simp) (h_destIdx_le := h_bound) (x := v))
 
 omit [CharP L 2] [SampleableType L] [DecidableEq 𝔽q] hF₂ [NeZero 𝓡] in
 /-- Congruence lemma for challenge suffixes across equal destination indices. -/
@@ -905,7 +905,7 @@ private lemma getFirstOracle_apply_zero {i : Fin (ℓ + 1)}
     (y : sDomain 𝔽q β h_ℓ_add_R_rate 0) :
     getFirstOracle 𝔽q β oStmt y =
       oStmt ⟨0, (instNeZeroNatToOutCodewordsCount ℓ ϑ i).pos⟩
-        ⟨y.val, by simpa only [Fin.val_mk, zero_mul, Nat.zero_mod] using y.property⟩ := by
+        ⟨y.val, by convert y.property using 2; exact Fin.ext (by simp)⟩ := by
   unfold getFirstOracle
   rfl
 
@@ -990,7 +990,6 @@ lemma polyToOracleFunc_eq_getFirstOracle
     exact (val_of_cast_sDomain 𝔽q β firstIdx (0 : Fin r) h_firstIdx_zero
       (congrArg (fun j => (sDomain 𝔽q β h_ℓ_add_R_rate j : Type)) h_firstIdx_zero)
       y0).trans rfl
-  simp only [polyToOracleFunc]
   change P₀.val.eval y.val =
     P₀.val.eval (cast (congrArg (fun j => (sDomain 𝔽q β h_ℓ_add_R_rate j : Type))
       h_firstIdx_zero) y0).val

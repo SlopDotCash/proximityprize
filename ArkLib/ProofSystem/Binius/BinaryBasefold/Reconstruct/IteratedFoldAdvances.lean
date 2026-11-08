@@ -83,9 +83,11 @@ theorem fold_advances_evaluation_poly_step
     fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (destIdx := destIdx)
         (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le)
         (f := fun x => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
-          ⟨i.val, by omega⟩ coeffs).eval x.val) (r_chal := r_chal) =
+          ⟨i.val, by omega⟩
+          (by simp only [Fin.val_mk]; omega) coeffs).eval x.val) (r_chal := r_chal) =
       fun y => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
-        ⟨destIdx.val, by omega⟩ new_coeffs).eval y.val := by
+        ⟨destIdx.val, by omega⟩
+        (by simp only [Fin.val_mk]; omega) new_coeffs).eval y.val := by
   classical
   -- Reduce `destIdx` to its canonical `⟨i+1, _⟩` form. The index bound is derived from
   -- `h_i_lt`/`h_ℓ_add_R_rate` alone (independent of `h_destIdx`), so `subst` is unobstructed.
@@ -290,9 +292,11 @@ theorem iterated_fold_advances_evaluation_poly_nat
     iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (steps := steps)
         (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le)
         (f := fun x => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
-          ⟨i.val, by omega⟩ coeffs).eval x.val) (r_challenges := r_challenges) =
+          ⟨i.val, by omega⟩
+          (by simp only [Fin.val_mk]; omega) coeffs).eval x.val) (r_challenges := r_challenges) =
       fun y => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
         ⟨destIdx.val, by omega⟩
+        (by simp only [Fin.val_mk]; omega)
         (iteratedRefineCoeffs (𝓡 := 𝓡) (i := i) (destIdx := destIdx) steps h_destIdx h_destIdx_le
           coeffs r_challenges)).eval y.val := by
   induction steps generalizing destIdx with
@@ -303,7 +307,7 @@ theorem iterated_fold_advances_evaluation_poly_nat
     funext y
     rw [iterated_fold_zero_steps 𝔽q β (i := i) (h_destIdx := by simp only)
       (h_destIdx_le := h_destIdx_le)
-      (f := fun x => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate ⟨i.val, by omega⟩ coeffs).eval
+      (f := fun x => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate ⟨i.val, by omega⟩ (by simp only [Fin.val_mk]; omega) coeffs).eval
         x.val) (r_challenges := r_challenges) y]
     simp only [eq_mp_eq_cast, cast_eq]
     -- `iteratedRefineCoeffs 0 … = coeffs`, so the two eval-polys agree.
@@ -335,7 +339,7 @@ theorem iterated_fold_advances_evaluation_poly_nat
       exact this
     rw [iterated_fold_last 𝔽q β (i := i) (midIdx := mid) (destIdx := destIdx) (steps := n)
       (h_midIdx := h_mid_val) (h_destIdx := by omega) (h_destIdx_le := h_destIdx_le)
-      (f := fun x => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate ⟨i.val, by omega⟩ coeffs).eval
+      (f := fun x => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate ⟨i.val, by omega⟩ (by simp only [Fin.val_mk]; omega) coeffs).eval
         x.val) (r_challenges := r_challenges)]
     -- Apply the induction hypothesis to the inner `n`-fold (over `Fin.init r_challenges`).
     rw [ih (destIdx := mid) (h_destIdx := h_mid_val) (h_destIdx_le := h_mid_le)
@@ -368,9 +372,11 @@ theorem iterated_fold_advances_evaluation_poly
     iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i) (steps := steps.val)
         (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le)
         (f := fun x => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
-          ⟨i.val, by omega⟩ coeffs).eval x.val) (r_challenges := r_challenges) =
+          ⟨i.val, by omega⟩
+          (by simp only [Fin.val_mk]; omega) coeffs).eval x.val) (r_challenges := r_challenges) =
       fun y => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
         ⟨destIdx.val, by omega⟩
+        (by simp only [Fin.val_mk]; omega)
         (iteratedRefineCoeffs (𝓡 := 𝓡) (i := i) (destIdx := destIdx) steps.val h_destIdx
           h_destIdx_le coeffs r_challenges)).eval y.val :=
   iterated_fold_advances_evaluation_poly_nat 𝔽q β (i := i) (steps := steps.val)

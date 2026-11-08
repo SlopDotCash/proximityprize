@@ -124,7 +124,7 @@ lemma olderStmtChallenges_cons_castSucc {ℓ : ℕ} {L : Type} (i : Fin ℓ)
       have hval : i.val + 1 - i.val + j.val = j.val + 1 := by
         rw [Nat.add_sub_cancel_left]
         exact Nat.add_comm 1 j.val
-      simpa only [hval, Fin.val_succ] using j.succ.isLt⟩
+      simpa only [hval, Fin.val_succ, Fin.val_castSucc] using j.succ.isLt⟩
   have hidx : idx = j.succ := by
     apply Fin.ext
     simp only [idx, Fin.val_succ]
@@ -163,9 +163,8 @@ def isCommitmentRound (i : Fin ℓ) : Prop :=
 omit [NeZero ϑ] hdiv in
 lemma toOutCodewordsCountOf0 : toOutCodewordsCount ℓ ϑ 0 = 1 := by
   unfold toOutCodewordsCount
-  simp only [Fin.coe_ofNat_eq_mod, zero_mod, Nat.zero_div, zero_add, ite_eq_left_iff, not_lt,
-    nonpos_iff_eq_zero, zero_ne_one, imp_false]
-  exact NeZero.ne ℓ
+  simp only [Fin.coe_ofNat_eq_mod, zero_mod, Nat.zero_div, zero_add]
+  simp only [Nat.pos_of_ne_zero (NeZero.ne ℓ), ↓reduceIte]
 
 instance instNeZeroNatToOutCodewordsCount : ∀ i, NeZero (toOutCodewordsCount ℓ ϑ i) := by
   intro i
@@ -580,6 +579,7 @@ lemma mkLastOracleIndex_eq_getLastOraclePositionIndex (i : Fin (ℓ + 1)) :
     unfold toOutCodewordsCount
     simp only [hi, eq_mpr_eq_cast, cast_eq, ↓reduceIte, add_zero];
     have h_eq: i.val = ℓ := by omega
+    change ℓ / ϑ - 1 = i.val / ϑ - 1
     rw [h_eq]
 
 lemma getLastOraclePositionIndex_last : getLastOraclePositionIndex ℓ ϑ (Fin.last ℓ)
@@ -1100,10 +1100,9 @@ def snoc_oracle {i : Fin ℓ} {destIdx : Fin r}
         have h_ne_v_div_i_succ := hi (by omega)
         have h_count_eq: toOutCodewordsCount ℓ ϑ i.castSucc =
           toOutCodewordsCount ℓ ϑ i.succ := by
-          rw [h]; simp only [isCommitmentRound, ne_eq, right_eq_ite_iff, Nat.left_eq_add,
-            one_ne_zero, imp_false, not_and, Decidable.not_not];
-          intro hv_div_i_succ
-          exact False.elim (hi (by omega) (hv_div_i_succ))
+          rw [h, if_neg]
+          rintro ⟨hv_div_i_succ, -⟩
+          exact hi (by omega) hv_div_i_succ
         have hj_lt: j.val < toOutCodewordsCount ℓ ϑ i.castSucc := by
           rw [h_count_eq]
           exact j.isLt
@@ -1155,7 +1154,7 @@ def getFirstOracle {i : Fin (ℓ + 1)}
     sDomain 𝔽q β h_ℓ_add_R_rate 0 → L :=
   fun y =>
     oStmt ⟨0, (instNeZeroNatToOutCodewordsCount ℓ ϑ i).pos⟩
-      ⟨y.val, by simpa only [Fin.val_mk, zero_mul, Nat.zero_mod] using y.property⟩
+      ⟨y.val, by convert y.property using 2; exact Fin.ext (by simp)⟩
 
 omit [CharP L 2] [DecidableEq 𝔽q] hF₂ h_β₀_eq_1 [NeZero 𝓡] in
 /-- The first oracle is preserved when appending a new oracle.

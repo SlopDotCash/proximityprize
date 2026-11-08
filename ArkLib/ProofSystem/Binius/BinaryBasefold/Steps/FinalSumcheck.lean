@@ -9,6 +9,9 @@ import ArkLib.ToVCVio.Oracle
 import ArkLib.ToVCVio.Simulation
 import ArkLib.OracleReduction.Completeness
 
+-- Retain the finite uniform interpretation locally for these legacy probability lemmas.
+attribute [local instance] legacyUniformSpec
+
 /-!
 # Binary Basefold Final Sumcheck Step
 
@@ -162,7 +165,7 @@ theorem finalSumcheckOracleReduction_perfectCompleteness {σ : Type}
     𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑)
   -- Step 4: Split into safety and correctness goals
   refine ⟨?_, ?_⟩
-  · rw [← HasEvalSPMF.neverFail_iff]
+  · rw [← neverFail_iff]
     obtain ⟨h_V_check, -, -⟩ := strongly_complete (stmtIn := stmtIn)
       (witIn := witIn) (h_relIn := h_relIn) (challenges := fun ⟨j, hj⟩ => by
         dsimp only [pSpecFinalSumcheckStep, Fin.isValue, Matrix.cons_val_zero] at hj
@@ -307,9 +310,16 @@ lemma firstOracle_UDRClose_of_finalSumcheckStepOracleConsistency
           exact h_destIdxLast)
         (h_destIdx_le := h_destIdxLast_le) (f := oStmt jLast)
         (h_fw_dist_lt := h_fw_dist_lt)
-    convert h_close using 1
-    · exact h_zeroIdxLast_eq.symm
-    · exact (getFirstOracle_heq 𝔽q β oStmt _).trans (OracleStatement.oracle_heq_congr 𝔽q β
+    have h_udr_congr : ∀ {i₁ i₂ : Fin r} (_ : i₁ = i₂) (h₁ : i₁ ≤ ℓ) (h₂ : i₂ ≤ ℓ)
+        (f₁ : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i₁)
+        (f₂ : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i₂), HEq f₁ f₂ →
+        (UDRClose 𝔽q β i₁ h₁ f₁ ↔ UDRClose 𝔽q β i₂ h₂ f₂) := by
+      intro i₁ i₂ h h₁ h₂ f₁ f₂ hf
+      subst h
+      cases hf
+      rfl
+    refine (h_udr_congr h_zeroIdxLast_eq.symm _ _ _ _ ?_).mpr h_close
+    exact (getFirstOracle_heq 𝔽q β oStmt _).trans (OracleStatement.oracle_heq_congr 𝔽q β
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (oStmtIn := oStmt)
         (j := ⟨0, by
           letI := instNeZeroNatToOutCodewordsCount ℓ ϑ (Fin.last ℓ)
@@ -321,7 +331,7 @@ lemma firstOracle_UDRClose_of_finalSumcheckStepOracleConsistency
     have h_lt : ϑ < ℓ := by omega
     have h_div_gt_1 : ℓ / ϑ > 1 := by
       have h_res := (Nat.div_lt_div_right (a := ϑ) (b := ϑ) (c := ℓ) (ha := h_ϑ_pos.ne')
-        (by simp only [dvd_refl]) (by exact hdiv.out)).mpr h_lt
+        (by exact hdiv.out)).mpr h_lt
       rw [Nat.div_self (n := ϑ) (H := h_ϑ_pos)] at h_res
       exact h_res
     have h_j0_next_lt : ↑j0 + 1 < toOutCodewordsCount ℓ ϑ (Fin.last ℓ) := by
@@ -381,9 +391,16 @@ lemma firstOracle_UDRClose_of_finalSumcheckStepOracleConsistency
         (h_destIdx_le := h_destIdx0_le) (f := oStmt ⟨↑j0, by exact j0.isLt⟩)
         (h_fw_dist_lt := h_fw_dist_lt)
     have h_zeroIdx0_eq : zeroIdx0 = (0 : Fin r) := Fin.eq_of_val_eq (by simp [zeroIdx0, j0])
-    convert h_close using 1
-    · exact h_zeroIdx0_eq.symm
-    · exact (getFirstOracle_heq 𝔽q β oStmt _).trans (OracleStatement.oracle_heq_congr 𝔽q β
+    have h_udr_congr : ∀ {i₁ i₂ : Fin r} (_ : i₁ = i₂) (h₁ : i₁ ≤ ℓ) (h₂ : i₂ ≤ ℓ)
+        (f₁ : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i₁)
+        (f₂ : OracleFunction 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i₂), HEq f₁ f₂ →
+        (UDRClose 𝔽q β i₁ h₁ f₁ ↔ UDRClose 𝔽q β i₂ h₂ f₂) := by
+      intro i₁ i₂ h h₁ h₂ f₁ f₂ hf
+      subst h
+      cases hf
+      rfl
+    refine (h_udr_congr h_zeroIdx0_eq.symm _ _ _ _ ?_).mpr h_close
+    exact (getFirstOracle_heq 𝔽q β oStmt _).trans (OracleStatement.oracle_heq_congr 𝔽q β
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (oStmtIn := oStmt)
         (j := ⟨0, by
           letI := instNeZeroNatToOutCodewordsCount ℓ ϑ (Fin.last ℓ)
@@ -1355,7 +1372,10 @@ lemma decodedFirst_eq_novelEncoding
     (dist_to_UDRCodeword_le_uniqueDecodingRadius 𝔽q β 0 (Nat.zero_le ℓ) f hu)
   have hc' : 2 * hammingDist f (fun x => P.val.eval x.val) <
       BBF_CodeDistance 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate) 0 := by
-    simpa only [firstOracleWitnessConsistencyProp, P, hammingDist_comm] using hc
+    first
+      | exact hc
+      | (rw [hammingDist_comm]; exact hc)
+      | simpa only [firstOracleWitnessConsistencyProp, P, hammingDist_comm] using hc
   unfold BBF_CodeDistance at hc'
   change _ ≤ (_ - 1) / 2
   omega

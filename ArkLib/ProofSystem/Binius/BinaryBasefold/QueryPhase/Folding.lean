@@ -10,6 +10,9 @@ import ArkLib.OracleReduction.Completeness
 import ArkLib.OracleReduction.Basic
 import ArkLib.Data.Misc.Basic
 
+-- Retain the finite uniform interpretation locally for these legacy probability lemmas.
+attribute [local instance] legacyUniformSpec
+
 /-!
 ## Query Phase (Final Query Round)
 The final verification phase (proximity testing) as an oracle reduction.
@@ -340,7 +343,20 @@ lemma mem_support_queryFiberPoints
           add_zero, Fin.is_lt]⟩ q := fun _ => rfl
   simp only [OracleQuery.cont_query, id_eq, h_ans, Array.getElem_finRange, Fin.cast_mk,
     Fin.eta] at h_res
-  simpa only [Vector.get_eq_getElem, id_eq] using (Option.some.inj h_res)
+  first
+    | exact Option.some.inj h_res
+    | simpa only [Vector.get_eq_getElem, id_eq] using (Option.some.inj h_res)
+
+omit [NeZero r] [Field L] [Fintype L] [DecidableEq L] [CharP L 2] [SampleableType L] in
+/-- A simulated single lifted query, viewed as an `OptionT` computation, never returns `none`. -/
+private lemma not_canReturn_none_simulateQ_liftM_query
+    {ι ι' ι₀ : Type} {spec : OracleSpec ι} {spec' : OracleSpec ι'} {spec₀ : OracleSpec ι₀}
+    [MonadLiftT (OracleQuery spec₀) (OracleQuery spec)]
+    (so : QueryImpl spec (OracleComp spec')) (q : spec₀.Domain) :
+    ¬ MonadAttach.CanReturn
+      (simulateQ so (liftM (OracleSpec.query q) : OptionT (OracleComp spec) (spec₀.Range q)))
+      none := by
+  simp [liftM, monadLift, MonadLift.monadLift, MonadLiftT.monadLift, OptionT.lift, OptionT.mk]
 
 /-! Simulated `queryFiberPoints` has zero failure probability. -/
 omit [CharP L 2] [SampleableType L] [DecidableEq 𝔽q] hF₂ in
@@ -359,27 +375,13 @@ lemma probFailure_simulateQ_queryFiberPoints_eq_zero
           (queryFiberPoints 𝔽q β (γ_repetitions := γ_repetitions) (ϑ := ϑ)
             (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ((List.finRange (ℓ / ϑ)).get k) v))] = 0 := by
   dsimp only [queryFiberPoints, queryCodeword, OptionT.mk]
-  erw [simulateQ_bind]
-  erw [OptionT.probFailure_mk_do_bind_eq_zero_iff.{0, 0}]
-  constructor
-  · erw [OptionT.simulateQ_vector_mapM]
-    simp only [MessageIdx, Message, List.get_eq_getElem, HasEvalPMF.probFailure_eq_zero]
-  · intro x hx_mem_support
-    erw [OptionT.simulateQ_vector_mapM.{0}] at hx_mem_support
-    cases x with
-    | none =>
-      exact absurd hx_mem_support
-        (OptionT.not_mem_support_run_none_of_probFailure_eq_zero _ (by
-          apply OptionT.probFailure_vector_mapM_eq_zero
-          intro x _
-          erw [OptionT.probFailure_eq (m := OracleComp []ₒ)]
-          simp only [HasEvalPMF.probFailure_eq_zero, zero_add]
-          rw [probOutput_eq_zero_iff]
-          erw [simulateQ_map]
-          simp))
-    | some a =>
-      simp only [OptionT.mk]
-      erw [simulateQ_pure, probFailure_pure]
+  erw [OptionT.simulateQ_vector_mapM]
+  apply OptionT.probFailure_vector_mapM_eq_zero
+  intro x _
+  erw [OptionT.probFailure_eq (m := OracleComp []ₒ)]
+  simp only [probFailure_of_liftM_PMF, zero_add]
+  rw [probOutput_eq_zero_iff]
+  exact not_canReturn_none_simulateQ_liftM_query so _
 
 lemma getBit_eq_testBit (n k : ℕ) : Nat.getBit k n = 1 ↔ Nat.testBit n k = true := by
   unfold Nat.getBit Nat.testBit
@@ -941,7 +943,8 @@ lemma firstOracle_fullFold_eq_eval
         (polynomialFromNovelCoeffsF₂ 𝔽q β ℓ (by omega) coeffs₀) =
       (fun (x : sDomain 𝔽q β h_ℓ_add_R_rate 0) =>
         (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
-          ⟨(0 : Fin r).val, by have h0 : (0 : Fin r).val = 0 := rfl; omega⟩ coeffs₀).eval x.val) := by
+          ⟨(0 : Fin r).val, by have h0 : (0 : Fin r).val = 0 := rfl; omega⟩
+          (by simp) coeffs₀).eval x.val) := by
     funext x
     exact (congrArg (fun p => Polynomial.eval x.val p) h_base).symm
   rw [h_f₀]

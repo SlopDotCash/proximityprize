@@ -12,6 +12,9 @@ import ArkLib.ToVCVio.Simulation
 import ArkLib.OracleReduction.Completeness
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness
 
+-- Retain the finite uniform interpretation locally for these legacy probability lemmas.
+attribute [local instance] legacyUniformSpec
+
 /-!
 # Binary Basefold Fold Step
 
@@ -225,7 +228,7 @@ theorem foldOracleReduction_perfectCompleteness
     conv_lhs =>
       simp only [liftM, monadLift, MonadLift.monadLift]
       simp only [ChallengeIdx, Challenge, Fin.isValue, Matrix.cons_val_one, Matrix.cons_val_zero,
-        liftComp_eq_liftM, OptionT.probFailure_lift, HasEvalPMF.probFailure_eq_zero]
+        liftComp_eq_liftM, OptionT.probFailure_lift, probFailure_of_liftM_PMF]
     rw [true_and]
     intro r_i' h_r_i'_mem_query_1_support
     conv =>
@@ -234,7 +237,7 @@ theorem foldOracleReduction_perfectCompleteness
       simp only [liftM, monadLift, MonadLift.monadLift]
       simp only [ChallengeIdx, Challenge, Fin.isValue, Matrix.cons_val_one, Matrix.cons_val_zero,
         Fin.succ_one_eq_two, Message, Fin.succ_zero_eq_one, Fin.castSucc_one, liftComp_eq_liftM,
-        OptionT.probFailure_lift, HasEvalPMF.probFailure_eq_zero]
+        OptionT.probFailure_lift, probFailure_of_liftM_PMF]
     rw [true_and]
     intro h_receive_challenge_fn h_receive_challenge_fn_mem_support
     conv =>
@@ -243,7 +246,7 @@ theorem foldOracleReduction_perfectCompleteness
       simp only [liftM, monadLift, MonadLift.monadLift]
       simp only [ChallengeIdx, Challenge, Fin.isValue, Matrix.cons_val_one, Matrix.cons_val_zero,
         Fin.succ_one_eq_two, Message, Fin.succ_zero_eq_one, Fin.castSucc_one, liftComp_eq_liftM,
-        OptionT.probFailure_lift, HasEvalPMF.probFailure_eq_zero]
+        OptionT.probFailure_lift, probFailure_of_liftM_PMF]
     rw [true_and]
     -- ⊢ ∀ x ∈ .. support, ... ∧ ... ∧ ...
     intro h_prover_final_output h_prover_final_output_support
@@ -256,7 +259,7 @@ theorem foldOracleReduction_perfectCompleteness
     conv_lhs =>
       enter [1]
       simp only [MessageIdx, Fin.isValue, Message, Matrix.cons_val_zero, Fin.succ_zero_eq_one,
-        id_eq, bind_pure_comp, OptionT.run_map, HasEvalPMF.probFailure_eq_zero]
+        id_eq, bind_pure_comp, OptionT.run_map, probFailure_of_liftM_PMF]
     rw [zero_add]
     simp only [probOutput_eq_zero_iff]
     rw [OptionT.support_run_eq]
@@ -270,7 +273,7 @@ theorem foldOracleReduction_perfectCompleteness
     conv at h_vStmtOut_mem_support =>
       erw [simulateQ_bind]
       -- turn the simulated oracle query into OracleInterface.answer form
-      change vStmtOut ∈ _root_.support (Bind.bind (m := (OracleComp []ₒ)) _ _)
+      change vStmtOut ∈ support (Bind.bind (m := (OracleComp []ₒ)) _ _)
       erw [_root_.bind_pure_simulateQ_comp]
       simp only [Matrix.cons_val_zero, guard_eq]
       -- simp  [bind_pure_comp,
@@ -306,10 +309,16 @@ theorem foldOracleReduction_perfectCompleteness
         | 1 => exact r_i'
       )
     have h_V_check_is_true : V_check := h_V_check
-    simp only [h_V_check_is_true, ↓reduceIte, support_pure, Set.mem_singleton_iff, Fin.isValue,
-      exists_eq_left, OptionT.support_OptionT_pure_run] at h_vStmtOut_mem_support
-    rw [h_vStmtOut_mem_support]
-    simp only [OptionT.run_pure, probOutput_pure, reduceCtorEq, ↓reduceIte]
+    split_ifs at h_vStmtOut_mem_support with hc
+    · first
+        | (simp only [support_pure, Set.mem_singleton_iff, Fin.isValue, exists_eq_left,
+            OptionT.support_OptionT_pure_run] at h_vStmtOut_mem_support
+           rw [h_vStmtOut_mem_support])
+        | (obtain ⟨_, rfl, h⟩ := h_vStmtOut_mem_support
+           erw [OptionT.support_OptionT_pure_run, Set.mem_singleton_iff] at h
+           rw [h])
+      simp only [OptionT.run_pure, probOutput_pure, reduceCtorEq, ↓reduceIte]
+    · exact absurd h_V_check_is_true hc
   · -- GOAL 2: CORRECTNESS - Prove all outputs in support satisfy the relation
     intro x hx_mem_support
     rcases x with ⟨⟨prvStmtOut, prvOStmtOut⟩, ⟨verStmtOut, verOStmtOut⟩, witOut⟩
@@ -328,13 +337,16 @@ theorem foldOracleReduction_perfectCompleteness
         toPFunctor_add, toPFunctor_emptySpec, OptionT.support_run, ↓existsAndEq, and_true, true_and,
         exists_eq_right_right', liftM_pure, support_pure, exists_eq_left]
       dsimp only [monadLift, MonadLift.monadLift]
-    simp only [Fin.isValue, Challenge, Matrix.cons_val_one, Matrix.cons_val_zero, ChallengeIdx,
+    try simp only [Fin.isValue, Challenge, Matrix.cons_val_one, Matrix.cons_val_zero, ChallengeIdx,
       liftComp_eq_liftM, liftM_pure, liftComp_pure, support_pure, Set.mem_singleton_iff,
       Fin.reduceLast, MessageIdx, Message, exists_eq_left] at hx_mem_support
     -- Step 2b: Extract the challenge r1 and the trace equations
-    obtain ⟨r1, _h_r1_mem_challenge_support, i2, h_i2_eq, prvOut_eq, h_verOut_mem_support⟩ :=
-      hx_mem_support
-    obtain rfl := Set.eq_of_mem_singleton h_i2_eq
+    obtain ⟨msg0, st0, h_ms_eq, r1, _h_r1_mem_challenge_support, i_1, h_i1_mem, prvOut_eq,
+      h_verOut_mem_support⟩ := hx_mem_support
+    injection h_ms_eq with h_msg0 h_st0
+    subst h_msg0 h_st0
+    simp only [liftM_pure, support_pure, Set.mem_singleton_iff] at h_i1_mem
+    subst h_i1_mem
     simp only [liftM_pure, support_pure, Set.mem_singleton_iff] at prvOut_eq
     -- Step 2c: Simplify the verifier computation
     conv at h_verOut_mem_support =>
@@ -369,9 +381,15 @@ theorem foldOracleReduction_perfectCompleteness
         | 1 => exact r1
       )
     have h_V_check_is_true : V_check := h_V_check
-    simp only [h_V_check_is_true, ↓reduceIte, Fin.isValue, pure_bind] at h_verOut_mem_support
-    erw [simulateQ_pure, liftM_pure] at h_verOut_mem_support
-    erw [support_pure] at h_verOut_mem_support
+    split_ifs at h_verOut_mem_support with hc
+    swap
+    · exact absurd h_V_check_is_true hc
+    simp only [Fin.isValue, pure_bind] at h_verOut_mem_support
+    try erw [simulateQ_pure] at h_verOut_mem_support
+    try simp only [map_pure] at h_verOut_mem_support
+    try erw [liftM_pure] at h_verOut_mem_support
+    try simp only [OptionT.run_pure] at h_verOut_mem_support
+    try erw [support_pure] at h_verOut_mem_support
     simp only [Fin.isValue, Set.mem_singleton_iff, Option.some.injEq,
       Prod.mk.injEq] at h_verOut_mem_support
     obtain ⟨verStmtOut_eq, verOStmtOut_eq⟩ := h_verOut_mem_support
@@ -1406,10 +1424,21 @@ lemma foldStep_rbrExtractionFailureEvent_imply_sumcheck_or_badEvent (i : Fin ℓ
           -- statement; dropping the fresh head recovers `stmtOStmtIn.1.challenges`, which is exactly
           -- what the before-state (self-restricted) folding consistency uses. So the folded
           -- challenge slices — hence the iterated folds — coincide.
-          simp only [OracleFrontierIndex.val_mkFromStmtIdxCastSuccOfSucc,
-            OracleFrontierIndex.val_mkFromStmtIdx,
-            olderStmtChallenges_cons_castSucc, olderStmtChallenges_self] at h_iter ⊢
-          exact h_iter
+          first
+            | (simp only [OracleFrontierIndex.val_mkFromStmtIdxCastSuccOfSucc,
+                OracleFrontierIndex.val_mkFromStmtIdx,
+                olderStmtChallenges_cons_castSucc, olderStmtChallenges_self] at h_iter ⊢
+               exact h_iter)
+            | (dsimp only at h_iter ⊢
+               erw [olderStmtChallenges_cons_castSucc] at h_iter
+               erw [olderStmtChallenges_self]
+               exact h_iter)
+            | (erw [olderStmtChallenges_cons_castSucc] at h_iter
+               erw [olderStmtChallenges_self]
+               exact h_iter)
+            | (dsimp only at h_iter ⊢
+               erw [olderStmtChallenges_cons_castSucc] at h_iter
+               exact h_iter)
       change badSumcheckEventProp r_i' h_i h_star_extracted
       exact ⟨h_hi_ne_extracted, h_eval_eq_extracted⟩
     exact ⟨witMid, h_consistency, h_left_from_consistency⟩

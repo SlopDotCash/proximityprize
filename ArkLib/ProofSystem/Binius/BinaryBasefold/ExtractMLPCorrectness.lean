@@ -141,7 +141,7 @@ lemma polynomialFromNovelCoeffs_monomialToNovelCoeffs (m : ℕ) (h : m ≤ r)
   have hQdeg : (polynomialFromNovelCoeffs 𝔽q β m h a).degree < (2 ^ m : ℕ) := by
     have hprop := (polynomialFromNovelCoeffsF₂ 𝔽q β m h a).property
     rw [Polynomial.mem_degreeLT] at hprop
-    simpa using hprop
+    exact_mod_cast hprop
   apply Polynomial.ext
   intro n
   by_cases hn : n < 2 ^ m
@@ -737,8 +737,8 @@ lemma exists_firstOracleWitnessConsistency_of_UDRClose
     · simp only [hz, Polynomial.natDegree_zero]
       positivity
     · have := (Polynomial.natDegree_lt_iff_degree_lt hz).mpr (by
-        simpa using hprop)
-      simpa using this
+        exact_mod_cast hprop)
+      exact_mod_cast this
   -- 3. Statement-order coefficients of the close polynomial.
   set c : Fin (2 ^ ℓ) → L :=
     AdditiveNTT.monomialToNovelCoeffs 𝔽q β ℓ h_ℓ_le_r (fun i => P.val.coeff i.val) with hc

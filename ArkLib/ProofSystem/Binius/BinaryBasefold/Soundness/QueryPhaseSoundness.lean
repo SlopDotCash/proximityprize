@@ -125,6 +125,9 @@ lemma no_foldingBadEvent_of_no_bad_global
       oraclePositionToDomainIndex (positionIdx := j) + ϑ ≤ (Fin.last ℓ).val := by
     exact oracle_index_add_steps_le_ℓ (ℓ := ℓ) (ϑ := ϑ)
       (i := Fin.last ℓ) (j := j)
+  change foldingBadEventAtBlock 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+    (stmtIdx := Fin.last ℓ) (oracleIdx := Fin.last ℓ) (oStmt := oStmtIn)
+    (challenges := stmtIn.challenges) j
   have h_bad' := h_bad
   simp only [foldingBadEventAtBlock, h_branch] at h_bad' ⊢
   exact h_bad'
@@ -1050,12 +1053,16 @@ theorem lemma_4_25_reject_if_suffix_in_disagreement
                   (stmtIn := stmtIn) (oStmtIn := oStmtIn)
                   (j := j_prev) (hj := h_prev_succ)
                   (h_good := h_prev_good) (h_next_good := by
-                    simpa [j_cur, j_prev] using h_cur_good)
+                    first
+                      | exact h_cur_good
+                      | simpa [j_cur, j_prev] using h_cur_good)
                   (h_no_bad_global := h_no_bad_global)
                   (v := v) (h_accept := h_accept)
                   (h_point_ne := by
                     simpa [j_prev] using h_prev_point_ne)
-              simpa [j_cur, j_prev] using h_step
+              first
+                | exact h_step
+                | simpa [j_cur, j_prev] using h_step
         let j_end : Fin (nBlocks (ℓ := ℓ) (ϑ := ϑ)) := ⟨j_first.val + (j_last.val - j_first.val), by
           have h_le : j_first.val + (j_last.val - j_first.val) ≤ j_last.val := by
             rw [Nat.add_sub_of_le h_jfirst_le_jlast]
@@ -1479,6 +1486,9 @@ theorem prop_4_23_singleRepetition_proximityCheck_bound
         (oraclePositionToDomainIndex (positionIdx := j_star)).val + ϑ ≤ (Fin.last ℓ).val := by
       simp only [Fin.val_last,
         (oracle_index_add_steps_le_ℓ (ℓ := ℓ) (ϑ := ϑ) (i := Fin.last ℓ) (j := j_star))]
+    change foldingBadEventAtBlock 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      (stmtIdx := Fin.last ℓ) (oracleIdx := Fin.last ℓ) (oStmt := oStmtIn)
+      (challenges := stmtIn.challenges) j_star
     have h_bad' := h_bad
     simp only [foldingBadEventAtBlock, h_branch, r_challenges, i_star, destIdx] at h_bad' ⊢
     exact h_bad'

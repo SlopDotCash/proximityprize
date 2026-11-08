@@ -145,7 +145,11 @@ lemma pair_UDRClose_iterated_fold_UDRCodeword_of_fiberwiseClose
           (h_destIdx := h_destIdx) (h_destIdx_le := h_destIdx_le)
           f_star f_bar_star).card := by
     have h_card := Finset.card_le_card h_containment
-    simpa [hammingDist, folded_f, folded_bar] using h_card
+    first
+      | exact h_card
+      | simpa [hammingDist, folded_f, folded_bar, disagreementSet] using h_card
+      | (refine le_trans (le_of_eq ?_) h_card; delta hammingDist; congr 1; ext y
+         simp [folded_f, folded_bar, disagreementSet])
   have h_min_eq :
       fiberwiseDistance 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
         (i := sourceIdx) (steps := steps) (destIdx := destIdx)

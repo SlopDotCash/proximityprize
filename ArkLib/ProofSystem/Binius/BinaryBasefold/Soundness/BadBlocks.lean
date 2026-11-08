@@ -243,7 +243,7 @@ lemma goodBlock_implies_UDRClose
         (i := Fin.last ℓ) (j := getLastOraclePositionIndex ℓ ϑ (Fin.last ℓ)))
       (oStmtIn (getLastOraclePositionIndex ℓ ϑ (Fin.last ℓ))) h_fw
 
-set_option maxHeartbeats 1200000 in
+set_option maxHeartbeats 6000000 in
 -- This counting lemma unfolds the uniform distribution over a dependent `sDomain` suffix map.
 open Classical in
 lemma prob_uniform_suffix_mem
@@ -342,11 +342,12 @@ lemma prob_uniform_suffix_mem
           -- suffix v is exactly the iterated quotient of v
           have h_eq :
               toCanonDest (suffix v) =
-                iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := i0)
-                  (k := steps) (h_bound := h_i0_steps_le) (x := v) := by
+                iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨i0, by omega⟩)
+                  (destIdx := ⟨i0.val + steps, by omega⟩) (k := steps)
+                  (h_destIdx := by simp) (h_destIdx_le := h_i0_steps_le) (x := v) := by
             apply Subtype.ext
-            dsimp [toCanonDest, suffix, extractSuffixFromChallenge, steps, i0]
-            simp
+            rw [h_toCanonDest_val]
+            exact val_of_cast_sDomain 𝔽q β _ _ (Fin.ext (by simp)) _ _
           -- Use the characterization of fibers
           exact (is_fiber_iff_generates_quotient_point 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
             (i := i0) (steps := steps) (h_i_add_steps := h_i0_steps_le)
@@ -381,8 +382,9 @@ lemma prob_uniform_suffix_mem
       rcases hv_fiber' with ⟨k, hk_mem, hk_eq⟩
       have h_eq :
           toCanonDest y =
-            iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := i0)
-              (k := steps) (h_bound := h_i0_steps_le) (x := v) := by
+            iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨i0, by omega⟩)
+              (destIdx := ⟨i0.val + steps, by omega⟩) (k := steps)
+              (h_destIdx := by simp) (h_destIdx_le := h_i0_steps_le) (x := v) := by
         -- v is in the fiber of y, so y is the iterated quotient of v
         apply generates_quotient_point_if_is_fiber_of_y 𝔽q β
           (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := i0) (steps := steps)
@@ -392,11 +394,12 @@ lemma prob_uniform_suffix_mem
       have : suffix v = y := by
         have h_suffix_canon :
             toCanonDest (suffix v) =
-              iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := i0)
-                (k := steps) (h_bound := h_i0_steps_le) (x := v) := by
+              iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate (i := ⟨i0, by omega⟩)
+                (destIdx := ⟨i0.val + steps, by omega⟩) (k := steps)
+                (h_destIdx := by simp) (h_destIdx_le := h_i0_steps_le) (x := v) := by
           apply Subtype.ext
-          dsimp [toCanonDest, suffix, extractSuffixFromChallenge, steps, i0]
-          simp
+          rw [h_toCanonDest_val]
+          exact val_of_cast_sDomain 𝔽q β _ _ (Fin.ext (by simp)) _ _
         have hcanon : toCanonDest (suffix v) = toCanonDest y := h_suffix_canon.trans h_eq.symm
         apply Subtype.ext
         calc

@@ -6,6 +6,9 @@ Authors: Chung Thai Nguyen, Quang Dao
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Steps.Fold
 import ArkLib.OracleReduction.Composition.Sequential.ChallengeOracleFintype
 
+-- Retain the finite uniform interpretation locally for these legacy probability lemmas.
+attribute [local instance] legacyUniformSpec
+
 /-!
 # Binary Basefold Relay Step
 
@@ -76,6 +79,14 @@ def relayOracleVerifier_embed (i : Fin ℓ) (hNCR : ¬ isCommitmentRound ℓ ϑ 
     Fin (toOutCodewordsCount ℓ ϑ i.castSucc) ⊕ pSpecRelay.MessageIdx
   := fun j => Sum.inl ⟨j.val, by rw [h_oracle_size_eq_relay i hNCR]; omega⟩
 
+omit [NeZero r] [NeZero 𝓡] in
+/-- The relay-step oracle embedding is injective. -/
+theorem relayOracleVerifier_embed_injective (i : Fin ℓ) (hNCR : ¬ isCommitmentRound ℓ ϑ i) :
+    Function.Injective (relayOracleVerifier_embed (r := r) (𝓡 := 𝓡) i hNCR) := by
+  intro a b h_ab_eq
+  simp only [relayOracleVerifier_embed, MessageIdx, Sum.inl.injEq, Fin.mk.injEq] at h_ab_eq
+  exact Fin.ext h_ab_eq
+
 /-! The oracle verifier for the `i`-th round of Binary relayfold. -/
 noncomputable def relayOracleVerifier (i : Fin ℓ) (hNCR : ¬ isCommitmentRound ℓ ϑ i) :
   OracleVerifier.{0, 0}
@@ -89,13 +100,12 @@ noncomputable def relayOracleVerifier (i : Fin ℓ) (hNCR : ¬ isCommitmentRound
       (h_ℓ_add_R_rate := h_ℓ_add_R_rate) i.succ)
     (pSpec := pSpecRelay) where
   verify := fun stmtIn _ => pure stmtIn
-  embed := ⟨relayOracleVerifier_embed (r := r) (𝓡 := 𝓡) i hNCR, by
-    intro a b h_ab_eq
-    simp only [relayOracleVerifier_embed, MessageIdx, Sum.inl.injEq, Fin.mk.injEq] at h_ab_eq
-    exact Fin.ext h_ab_eq
-  ⟩
-  hEq := fun oracleIdx => by simp only [MessageIdx, Function.Embedding.coeFn_mk,
-    relayOracleVerifier_embed]
+  embed := ⟨relayOracleVerifier_embed (r := r) (𝓡 := 𝓡) i hNCR,
+    relayOracleVerifier_embed_injective (r := r) (𝓡 := 𝓡) i hNCR⟩
+  hEq := fun oracleIdx => by
+    first
+      | rfl
+      | (simp only [MessageIdx, Function.Embedding.coeFn_mk, relayOracleVerifier_embed]; done)
 
 /-! The oracle reduction that is the `i`-th round of Binary relayfold. -/
 noncomputable def relayOracleReduction (i : Fin ℓ) (hNCR : ¬ isCommitmentRound ℓ ϑ i) :
@@ -148,9 +158,10 @@ lemma strictRoundRelation_relay_preserved (i : Fin ℓ)
       have hchal := getFoldingChallenges_tail_castSucc_eq_of_le
         (r := r) (𝓡 := 𝓡) (ϑ := j.val * ϑ) i stmtIn.challenges 0
         (by simpa using hbound) (by simp only [zero_add, Fin.val_succ]; omega)
-      simpa only [Fin.val_cast, olderStmtChallenges_succ_castSucc,
-        olderStmtChallenges_self, hchal]
-        using h_relIn.2.2 (Fin.cast h_toOutCodewordsCount_eq j)
+      have h_rel_j := h_relIn.2.2 (Fin.cast h_toOutCodewordsCount_eq j)
+      simp only [Fin.val_cast, olderStmtChallenges_succ_castSucc,
+        olderStmtChallenges_self, hchal] at h_rel_j ⊢
+      exact h_rel_j
 
 omit [CharP L 2] [SampleableType L] [DecidableEq 𝔽q] h_β₀_eq_1 in
 theorem relayOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : Fin ℓ)
@@ -201,7 +212,7 @@ theorem relayOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : F
     conv_lhs =>
       simp only [liftM, monadLift, MonadLift.monadLift]
       simp only [ChallengeIdx, Challenge, Fin.isValue, Matrix.cons_val_one, Matrix.cons_val_zero,
-        liftComp_eq_liftM, OptionT.probFailure_lift, HasEvalPMF.probFailure_eq_zero]
+        liftComp_eq_liftM, OptionT.probFailure_lift, probFailure_of_liftM_PMF]
     erw [simulateQ_pure];
     -- erw [OptionT.probFailure_mk]
     simp only [ liftComp_eq_liftM, ChallengeIdx, Challenge,
@@ -212,7 +223,7 @@ theorem relayOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : F
     conv_lhs =>
       enter [1]
       simp only [MessageIdx, Fin.isValue, Message, Matrix.cons_val_zero, Fin.succ_zero_eq_one,
-        id_eq, bind_pure_comp, OptionT.run_map, HasEvalPMF.probFailure_eq_zero]
+        id_eq, bind_pure_comp, OptionT.run_map, probFailure_of_liftM_PMF]
     rw [zero_add]
     simp only [probOutput_eq_zero_iff]
     rw [OptionT.support_run_eq]
@@ -260,9 +271,12 @@ theorem relayOracleReduction_perfectCompleteness (hInit : NeverFail init) (i : F
       at h_verOut_mem_support
     simp only [OptionT.mk, liftM_pure, support_pure, Set.mem_singleton_iff,
       Option.some.injEq, Prod.mk.injEq] at h_verOut_mem_support
-    erw [OptionT.mem_support_mk] at h_verOut_mem_support
-    simp only [OptionT.run, support_pure, Set.mem_singleton_iff,
-      Option.some.injEq, Prod.mk.injEq] at h_verOut_mem_support
+    first
+      | (erw [OptionT.mem_support_mk] at h_verOut_mem_support
+         simp only [OptionT.run, support_pure, Set.mem_singleton_iff,
+           Option.some.injEq, Prod.mk.injEq] at h_verOut_mem_support)
+      | (rw [MonadAttach.canReturn_pure_iff] at h_verOut_mem_support
+         simp only [Option.some.injEq, Prod.mk.injEq] at h_verOut_mem_support)
     rcases h_verOut_mem_support with ⟨verStmtOut_eq, verOStmtOut_eq⟩
     obtain ⟨⟨prvStmtOut_eq, prvOStmtOut_eq⟩, prvWitOut_eq⟩ := h_prvOut_mem_support
     constructor
@@ -318,8 +332,12 @@ lemma mapOStmtOut_eq_mkVerifierOStmtOut_relayStep
     OracleVerifier.mkVerifierOStmtOut v.embed v.hEq oStmtIn transcript := by
   intro v
   funext j
-  simp [mapOStmtOutRelayStep, OracleVerifier.mkVerifierOStmtOut,
-    relayOracleVerifier, relayOracleVerifier_embed, v]
+  first
+    | (simp [mapOStmtOutRelayStep, OracleVerifier.mkVerifierOStmtOut,
+        relayOracleVerifier, relayOracleVerifier_embed, v]; done)
+    | (simp [mapOStmtOutRelayStep, OracleVerifier.mkVerifierOStmtOut,
+        relayOracleVerifier, relayOracleVerifier_embed, v]; rfl)
+    | rfl
 
 omit [CharP L 2] [SampleableType L] [DecidableEq 𝔽q] hF₂ h_β₀_eq_1 [NeZero 𝓡] in
 lemma getFirstOracle_mapOStmtOutRelayStep_eq (i : Fin ℓ)

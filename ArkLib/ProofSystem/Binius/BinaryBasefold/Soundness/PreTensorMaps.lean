@@ -112,10 +112,11 @@ lemma exists_codeword_preTensorCombine_eq_of_rows_mem
         exact Nat.div_lt_of_lt_mul hm'⟩
   -- the lifted codeword
   refine ⟨fun x => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
-      ⟨i.val, by omega⟩ C).eval x.val, ?_, ?_⟩
+      ⟨i.val, by omega⟩
+      (by simp only [Fin.val_mk]; omega) C).eval x.val, ?_, ?_⟩
   · -- membership: the iEP has degree < 2^(ℓ-i)
     simp only [BBF_Code, ReedSolomon.code, Submodule.mem_map]
-    refine ⟨intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate ⟨i.val, by omega⟩ C, ?_, ?_⟩
+    refine ⟨intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate ⟨i.val, by omega⟩ (by simp only [Fin.val_mk]; omega) C, ?_, ?_⟩
     · have := degree_intermediateEvaluationPoly_lt (𝔽q := 𝔽q) (β := β)
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (i := ⟨i.val, by omega⟩)
         (h_i := by simp only; omega) (coeffs := C)
@@ -141,10 +142,12 @@ lemma exists_codeword_preTensorCombine_eq_of_rows_mem
     have h1 :
         preTensorCombine_WordStack 𝔽q β i steps h_destIdx h_destIdx_le
           (fun x => (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
-            ⟨i.val, by omega⟩ C).eval x.val) j =
+            ⟨i.val, by omega⟩
+            (by simp only [Fin.val_mk]; omega) C).eval x.val) j =
         (fun y : sDomain 𝔽q β h_ℓ_add_R_rate destIdx =>
           (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
             ⟨destIdx.val, by omega⟩
+            (by simp only [Fin.val_mk]; omega)
             (iteratedRefineCoeffs (𝓡 := 𝓡) (i := ⟨i.val, by omega⟩) (destIdx := destIdx)
               steps h_destIdx h_destIdx_le C (bitsOfIndex (L := L) j))).eval y.val) :=
       h_adv
@@ -152,6 +155,7 @@ lemma exists_codeword_preTensorCombine_eq_of_rows_mem
         (fun y : sDomain 𝔽q β h_ℓ_add_R_rate destIdx =>
           (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
             ⟨destIdx.val, by omega⟩
+            (by simp only [Fin.val_mk]; omega)
             (iteratedRefineCoeffs (𝓡 := 𝓡) (i := ⟨i.val, by omega⟩) (destIdx := destIdx)
               steps h_destIdx h_destIdx_le C (bitsOfIndex (L := L) j))).eval y.val) = W j := by
       rw [hsel]
@@ -165,6 +169,7 @@ lemma exists_codeword_preTensorCombine_eq_of_rows_mem
       rw [haj]
       have : (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
           ⟨destIdx.val, by omega⟩
+          (by simp only [Fin.val_mk]; omega)
           (getINovelCoeffs (𝔽q := 𝔽q) (β := β)
             (h_ℓ_add_R_rate := h_ℓ_add_R_rate) destIdx h_destIdx_le (Pr j))) = Pr j := hrt
       rw [this]
@@ -456,7 +461,7 @@ lemma pair_fiberwiseDistance_le_interleaved_hammingDist
   have hle' : i.val + steps ≤ ℓ := by simpa using h_destIdx_le
   have h𝓡 := Nat.pos_of_neZero 𝓡
   unfold pair_fiberwiseDistance
-  rw [hammingDist]
+  delta hammingDist
   apply Finset.card_le_card
   intro y hy
   simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hy ⊢
@@ -616,7 +621,8 @@ lemma hammingDist_le_pair_fiberwiseDistance_mul_two_pow_steps
       intro x hx
       simp only [ΔH, Finset.mem_filter, Finset.mem_univ, true_and] at hx
       let y_of_x := AdditiveNTT.iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate
-        i steps h_i_add_steps x
+        (i := ⟨i, by omega⟩) (destIdx := ⟨i.val + steps, by omega⟩) (k := steps)
+        (h_destIdx := by simp) (h_destIdx_le := h_i_add_steps) x
       apply Finset.mem_biUnion.mpr
       refine ⟨y_of_x, ?_, ?_⟩
       · rw [mem_fiberwiseDisagreementSetPerFiber]

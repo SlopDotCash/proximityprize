@@ -9,6 +9,9 @@ import ArkLib.OracleReduction.CastInOut
 import ArkLib.OracleReduction.Composition.Sequential.General
 import ArkLib.OracleReduction.ProtocolSpec.SeqCompose
 
+-- Retain the finite uniform interpretation locally for these legacy probability lemmas.
+attribute [local instance] legacyUniformSpec
+
 /-!
 ## Binary Basefold Core Interaction Phase
 
@@ -1380,8 +1383,14 @@ instance finalSumcheckVerifier_appendCoherent :
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (𝓑 := 𝓑)) where
   hCohInl a k h := by
     have hak : a = k := by
-      simpa only [finalSumcheckVerifier, finalSumcheckStepLogic,
-        Function.Embedding.coeFn_mk, Sum.inl.injEq] using h
+      first
+        | simpa only [finalSumcheckVerifier, finalSumcheckStepLogic,
+            Function.Embedding.coeFn_mk, Sum.inl.injEq] using h
+        | (change Sum.inl _ = Sum.inl k at h
+           injection h with h
+           first
+             | exact Fin.ext (congrArg Fin.val h)
+             | skip)
     subst k
     rfl
   hCohInr a k h := by
@@ -2087,10 +2096,10 @@ block's charges with `foldRelayKnowledgeError` / `foldCommitKnowledgeError` and 
 Equality with the paper display RHS is not expected for arbitrary parameters unless the RHS is
 specialized or redefined to match the telescoping sum.
 
-Declared with `maxHeartbeats 200000` because the final bookkeeping expands and normalizes large
+Declared with `maxHeartbeats 800000` because the final bookkeeping expands and normalizes large
 nested `Finset` sums.
 -/
-set_option maxHeartbeats 200000 in
+set_option maxHeartbeats 800000 in
 theorem sumcheckFoldKnowledgeError_le :
     (∑ j : (pSpecSumcheckFold 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)).ChallengeIdx,
         sumcheckFoldKnowledgeError (L := L) 𝔽q β j)
@@ -2601,8 +2610,12 @@ theorem sumcheckFoldKnowledgeError_le :
           = (x.val + (ℓ / ϑ - 1) * ϑ) / ϑ := by rw [Nat.add_comm]
       _ = x.val / ϑ + (ℓ / ϑ - 1) := Nat.add_mul_div_right x.val (ℓ / ϑ - 1) hϑ
       _ = (ℓ / ϑ - 1) := by rw [Nat.div_eq_of_lt h_x_lt, Nat.zero_add]
-  simp only [nonLastSingleBlockCommitIdx, Fin.val_mk]
-  simp_rw [h_div_nonLastRelay, h_div_nonLastCommit, h_div_lastRelay]
+  try simp only [nonLastSingleBlockCommitIdx, Fin.val_mk]
+  have hcard_congr : ∀ (a b : ℕ) (ha : a < r) (hb : b < r), a = b →
+      Fintype.card (sDomain 𝔽q β h_ℓ_add_R_rate ⟨a, ha⟩) =
+        Fintype.card (sDomain 𝔽q β h_ℓ_add_R_rate ⟨b, hb⟩) := by
+    rintro a b ha hb rfl
+    rfl
   have h_nonLastDest_le_ℓ (x : Fin (ℓ / ϑ - 1)) : x.val * ϑ + ϑ ≤ ℓ := by
     have hx_le : x.val + 1 ≤ ℓ / ϑ := by
       exact le_trans (Nat.succ_le_of_lt x.isLt) (Nat.sub_le _ _)
@@ -2626,9 +2639,24 @@ theorem sumcheckFoldKnowledgeError_le :
         rw [Nat.sub_add_cancel (Nat.succ_le_of_lt h_lastQuot_pos)]
       _ ≤ ℓ := by
         rw [Nat.div_mul_cancel hdiv.out]
-  exact sumcheckFoldKnowledgeError_displayMass_le (𝔽q := 𝔽q) (L := L) (β := β)
-      (ℓ := ℓ) (𝓡 := 𝓡) (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-      h_nonLastDest_le_ℓ h_lastDest_le_ℓ
+  refine le_of_eq_of_le ?_ (sumcheckFoldKnowledgeError_displayMass_le (𝔽q := 𝔽q) (L := L)
+      (β := β) (ℓ := ℓ) (𝓡 := 𝓡) (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      h_nonLastDest_le_ℓ h_lastDest_le_ℓ)
+  have hr : ℓ + 𝓡 < r := h_ℓ_add_R_rate
+  have h𝓡 : 0 < 𝓡 := Nat.pos_of_neZero 𝓡
+  congr 1
+  · congr 1
+    · refine Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun x_1 _ => ?_
+      have hle := h_nonLastDest_le_ℓ x
+      rw [hcard_congr ((x.val * ϑ + x_1.val) / ϑ * ϑ + ϑ) (x.val * ϑ + ϑ) _ (by omega)
+        (by rw [h_div_nonLastRelay])]
+    · refine Finset.sum_congr rfl fun x _ => ?_
+      have hle := h_nonLastDest_le_ℓ x
+      erw [hcard_congr ((x.val * ϑ + (ϑ - 1)) / ϑ * ϑ + ϑ) (x.val * ϑ + ϑ) _ (by omega)
+        (by rw [h_div_nonLastCommit])]
+  · refine Finset.sum_congr rfl fun x _ => ?_
+    erw [hcard_congr (((ℓ / ϑ - 1) * ϑ + x.val) / ϑ * ϑ + ϑ) ((ℓ / ϑ - 1) * ϑ + ϑ) _ (by omega)
+      (by rw [h_div_lastRelay])]
 
 end CoreInteractionPhaseReduction
 

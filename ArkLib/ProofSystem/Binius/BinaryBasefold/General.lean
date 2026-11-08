@@ -8,6 +8,9 @@ import ArkLib.ProofSystem.Binius.BinaryBasefold.CoreInteractionPhase
 import ArkLib.ProofSystem.Binius.BinaryBasefold.QueryPhase
 import ArkLib.OracleReduction.Composition.Sequential.AppendOracleAdapters
 import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
+
+-- Retain the finite uniform interpretation locally for these legacy probability lemmas.
+attribute [local instance] legacyUniformSpec
 /-!
 ## Full Binary Basefold Protocol
 
@@ -49,7 +52,9 @@ variable {h_ℓ_add_R_rate : ℓ + 𝓡 < r} -- ℓ ∈ {1, ..., r-1}
 variable {𝓑 : Fin 2 ↪ L}
 variable [hdiv : Fact (ϑ ∣ ℓ)]
 
-instance : Empty → OracleInterface Unit := fun _ => OracleInterface.instDefault
+@[instance_reducible]
+def instOracleInterfaceUnitOfEmpty : Empty → OracleInterface Unit :=
+  fun _ => OracleInterface.instDefault
 
 open CoreInteraction QueryPhase
 /-- The oracle verifier for the full Binary Basefold protocol -/

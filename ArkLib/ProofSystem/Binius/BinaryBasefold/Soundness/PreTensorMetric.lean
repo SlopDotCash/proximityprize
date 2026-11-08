@@ -203,7 +203,7 @@ lemma iterated_fold_eq_of_fiberEvaluations_eq
     f g r_challenges y ?_
   intro idx
   have hidx := congrFun hfiber idx
-  simpa [fiberEvaluations] using hidx
+  exact hidx
 
 lemma preTensorCombine_row_eq_of_fiberEvaluations_eq
     (i : Fin ℓ) (steps : ℕ) {destIdx : Fin r}
@@ -323,7 +323,7 @@ lemma preTensorCombine_disagreementCols_subset_fiberwiseDisagreementSetPerFiber
       (i := ⟨i, by omega⟩) (destIdx := destIdx) (steps := steps)
       h_destIdx h_destIdx_le f g := by
   intro y hy
-  rw [Code.mem_disagreementCols] at hy
+  replace hy := Code.mem_disagreementCols.mp hy
   refine preTensorCombine_exists_row_ne_mem_fiberwiseDisagreementSetPerFiber 𝔽q β
     (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
     (i := i) (steps := steps) (destIdx := destIdx)
@@ -765,7 +765,7 @@ lemma preTensorCombine_jointProximityNat_of_fiberwiseClose
       fiberwiseDistance 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
         (i := ⟨i, by omega⟩) (destIdx := destIdx) (steps := steps)
         h_destIdx h_destIdx_le f_i := by
-    simpa [C_dest] using
+    exact
       preTensorCombine_distFromInterleavedCode_le_fiberwiseDistance_of_closest 𝔽q β
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
         (i := i) (steps := steps) (destIdx := destIdx)
@@ -863,7 +863,7 @@ lemma preTensorCombine_exists_close_interleavedCodeword_of_fiberwiseClose
   have hg_interleaved :
       (⋈|preTensorCombine_WordStack 𝔽q β i steps h_destIdx h_destIdx_le g) ∈
         interleavedCodeSet (C := C_dest) := by
-    simpa [C_dest] using
+    exact
       preTensorCombine_is_interleavedCodeword_of_codeword 𝔽q β
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
         (i := i) (steps := steps) (destIdx := destIdx)

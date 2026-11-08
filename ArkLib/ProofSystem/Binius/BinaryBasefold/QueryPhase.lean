@@ -6,6 +6,9 @@ Authors: Chung Thai Nguyen, Quang Dao
 import ArkLib.ProofSystem.Binius.BinaryBasefold.QueryPhase.Folding
 import ArkLib.ProofSystem.Binius.BinaryBasefold.FinalRelation
 
+-- Retain the finite uniform interpretation locally for these legacy probability lemmas.
+attribute [local instance] legacyUniformSpec
+
 /-!
 # Binary Basefold query completeness and knowledge soundness
 
@@ -176,7 +179,7 @@ lemma checkSingleRepetition_inner_forIn_probFailure_eq_zero
       constructor
       · -- queryFiberPoints never fails (oracle queries)
         simp only [MessageIdx, List.get_eq_getElem, List.getElem_finRange, Fin.eta,
-          HasEvalPMF.probFailure_eq_zero]
+          probFailure_of_liftM_PMF]
       · -- The guard and pure computation
         intro fiber_vec_opt h_fiber_vec_opt_mem_support
         have h_fiber_vec_eq_some :=
@@ -317,8 +320,8 @@ lemma checkSingleRepetition_probFailure_eq_zero
   -- rw [OptionT.liftComp_forIn]
   conv =>
     enter [1];
-    simp only [MessageIdx, List.forIn_yield_eq_foldlM, id_map', List.foldlM_range, bind_pure_comp,
-      HasEvalPMF.probFailure_eq_zero, zero_add, probOutput_eq_zero_iff', finSupport_map,
+    simp only [MessageIdx, List.forIn_yield_eq_foldlM, id_map', bind_pure_comp,
+      probFailure_of_liftM_PMF, zero_add, probOutput_eq_zero_iff', finSupport_map,
       Finset.mem_image, reduceCtorEq, and_false, exists_const, not_false_eq_true]
   rw [true_and]
   intro c h_c_support_inner_loop
@@ -669,7 +672,7 @@ lemma logical_checkSingleRepetition_of_mem_support_forIn_body {σ : Type}
       dsimp only [inner_base] at h_fst_mem
       unfold checkSingleFoldingStep at h_fst_mem
       erw [simulateQ_bind] at h_fst_mem
-      erw [simulateQ_bind, support_bind] at h_fst_mem
+      first | erw [simulateQ_bind, support_bind] at h_fst_mem | erw [support_bind] at h_fst_mem
       dsimp only [OptionT.run] at h_fst_mem
       simp only [Set.mem_iUnion, exists_prop] at h_fst_mem
       rcases h_fst_mem with ⟨fiber_vec_opt, h_fiber_vec_opt_mem_support, h_c_k_mem_output⟩
@@ -686,22 +689,7 @@ lemma logical_checkSingleRepetition_of_mem_support_forIn_body {σ : Type}
               (queryFiberPoints 𝔽q β (γ_repetitions := γ_repetitions) (ϑ := ϑ)
                 (h_ℓ_add_R_rate := h_ℓ_add_R_rate) ((List.finRange (ℓ / ϑ)).get k)
                 v)) := by
-        have h_fiber_vec_opt_mem_support' := h_fiber_vec_opt_mem_support
-        simp only [queryFiberPoints, support_bind,
-          Set.mem_iUnion, exists_prop] at h_fiber_vec_opt_mem_support' ⊢
-        rcases h_fiber_vec_opt_mem_support' with ⟨i, h_i_mem, h_i_out⟩
-        have h_eq : fiber_vec_opt = i := by
-          cases i with
-          | none =>
-            change fiber_vec_opt = none at h_i_out ⊢
-            exact h_i_out
-          | some val =>
-            change fiber_vec_opt = some val at h_i_out ⊢
-            exact h_i_out
-        subst h_eq
-        rw [bind_pure_comp]
-        convert h_i_mem using 1
-        rw [id_map']
+        exact h_fiber_vec_opt_mem_support
       have h_fiber_vec_opt_eq_some := exists_eq_some_of_mem_support_of_probOutput_none_eq_zero
         (x := fiber_vec_opt) (hx := h_fiber_vec_opt_mem_support_run)
         (hnone := h_probOutput_none_queryFiberPoints_eq_zero)
@@ -767,10 +755,14 @@ lemma logical_checkSingleRepetition_of_mem_support_forIn_body {σ : Type}
             OptionT.support_failure_run, Set.mem_singleton_iff, reduceCtorEq] at h_c_k_mem_output
         rw [h_V_check_def] at h_V_check_passed
         simp only [h_V_check_passed, ↓reduceIte] at h_c_k_mem_output
-        erw [simulateQ_pure, support_bind] at h_c_k_mem_output
-        simp only [support_pure, Set.mem_singleton_iff, Function.comp_apply,
-          Set.iUnion_iUnion_eq_left, OptionT.support_OptionT_pure_run,
-          Option.some.injEq] at h_c_k_mem_output
+        first
+          | erw [simulateQ_pure, support_bind] at h_c_k_mem_output
+          | skip
+        replace h_c_k_mem_output := by
+          first
+            | exact MonadAttach.canReturn_pure_iff.mp h_c_k_mem_output
+            | exact MonadAttach.canReturn_pure_iff.mp (MonadAttach.mem_support.mp h_c_k_mem_output)
+        try simp only [Option.some.injEq] at h_c_k_mem_output
         -- dsimp only [Functor.map] at h_c_k_mem_output
         have h_k_cast_gt_0 : 0 < k.castSucc := by
           change 0 < k.val
@@ -1070,7 +1062,9 @@ lemma logical_consistency_checks_passed_of_mem_support_V_run {σ : Type}
     dsimp only [queryPhaseLogicStep]
     -- Simplify the `(fun x ↦ x.1) <$> ...` part
     -- Group the last two `bind`
-    rw [pure_bind]; rw [bind_assoc]; rw [pure_bind]
+    try rw [pure_bind]
+    try rw [bind_assoc]
+    try rw [pure_bind]
     -- Distribute `simulateQ` over the `bind`
     erw [simulateQ_bind, simulateQ_bind, simulateQ_bind]
     -- Resolve the constant mappings
@@ -1242,8 +1236,8 @@ theorem queryPhaseLogicStep_isStronglyComplete :
     rw [OptionT.probFailure_mk]
     conv_lhs => -- first summand is 0
       enter [1]; simp only [MessageIdx, Message, Fin.isValue, _root_.OracleComp.liftM_OptionT_eq, bind_pure_comp,
-        _root_.map_pure, id_map', List.foldlM_range, OptionT.simulateQ_map,
-        HasEvalPMF.probFailure_eq_zero]
+        _root_.map_pure, id_map', OptionT.simulateQ_map,
+        probFailure_of_liftM_PMF]
     rw [zero_add]
     -- 2. Push simulation inside the 'bind' structure
     -- simulateQ (do a <- x; b) = do a <- simulateQ x; simulateQ b
@@ -1268,8 +1262,8 @@ theorem queryPhaseLogicStep_isStronglyComplete :
       -- rw [OptionT.probFailure_mk]
       -- conv_lhs =>
       --   enter [1]; simp only [MessageIdx, Message, Fin.isValue, _root_.OracleComp.liftM_OptionT_eq, bind_pure_comp,
-      --     _root_.map_pure, List.forIn_yield_eq_foldlM, id_map', List.foldlM_range,
-      --     HasEvalPMF.probFailure_eq_zero]
+      --     _root_.map_pure, List.forIn_yield_eq_foldlM, id_map',
+      --     probFailure_of_liftM_PMF]
       -- rw [zero_add]
       -- -- ⊢ Pr[=none | simulateQ_forIn_block] = 0
       -- change (Pr[=none | simulateQ_forIn_block] = 0)
@@ -1290,7 +1284,7 @@ theorem queryPhaseLogicStep_isStronglyComplete :
       conv_lhs =>
         enter [1];
         simp only [MessageIdx, Message, Fin.isValue, _root_.OracleComp.liftM_OptionT_eq, bind_pure_comp, _root_.map_pure,
-          HasEvalPMF.probFailure_eq_zero]
+          probFailure_of_liftM_PMF]
       rw [zero_add]
       apply OptionT.probOutput_none_run_eq_zero_of_probFailure_eq_zero
       erw [OptionT.probFailure_mk_bind_eq_zero_iff]
@@ -1303,7 +1297,7 @@ theorem queryPhaseLogicStep_isStronglyComplete :
         OptionT.probOutput_none_run_eq_zero_of_probFailure_eq_zero
           (hfail := h_probFailure_simulateQ_singleRepetition_eq_0)
       constructor
-      · simp only [HasEvalPMF.probFailure_eq_zero]
+      · simp only [probFailure_of_liftM_PMF]
       · intro x hx -- output from the single repetition
         have h_x_eq : ∃ val, x = some (val) := by
           have h_exists_some := exists_eq_some_of_mem_support_of_probOutput_none_eq_zero (x := x)
@@ -1312,7 +1306,7 @@ theorem queryPhaseLogicStep_isStronglyComplete :
         rcases h_x_eq with ⟨val, h_x_eq⟩
         rw [h_x_eq]
         rw [OptionT.probFailure_mk]
-        simp only [MessageIdx, Message, bind_pure_comp, HasEvalPMF.probFailure_eq_zero, zero_add]
+        simp only [MessageIdx, Message, bind_pure_comp, probFailure_of_liftM_PMF, zero_add]
         erw [simulateQ_pure]
         simp only [probOutput_eq_zero_iff, support_pure, Set.mem_singleton_iff, reduceCtorEq,
           not_false_eq_true]
@@ -1320,7 +1314,7 @@ theorem queryPhaseLogicStep_isStronglyComplete :
       OptionT.probOutput_none_run_eq_zero_of_probFailure_eq_zero
         (hfail := h_probFailure_simulateQ_forIn_eq_0)
     constructor
-    · simp only [HasEvalPMF.probFailure_eq_zero]
+    · simp only [probFailure_of_liftM_PMF]
     · intro x hx -- output from the forIn loop
       have h_x_eq : ∃ val, x = some (val) := by
         have h_exists_some := exists_eq_some_of_mem_support_of_probOutput_none_eq_zero (x := x)
@@ -1329,7 +1323,7 @@ theorem queryPhaseLogicStep_isStronglyComplete :
       rcases h_x_eq with ⟨val, h_x_eq⟩
       rw [h_x_eq]
       rw [OptionT.probFailure_mk]
-      simp only [HasEvalPMF.probFailure_eq_zero, zero_add]
+      simp only [probFailure_of_liftM_PMF, zero_add]
       erw [simulateQ_pure]
       simp only [probOutput_pure, reduceCtorEq, ↓reduceIte]
   exact ⟨h_guards_pass, rfl, rfl, rfl⟩
@@ -1385,7 +1379,7 @@ theorem queryOracleProof_perfectCompleteness {σ : Type}
       dsimp only [liftM, monadLift, MonadLift.monadLift]
       rw [OptionT.probFailure_lift]
       simp only [ChallengeIdx, Challenge, Fin.isValue, Matrix.cons_val_zero, _root_.OracleComp.liftComp_eq_liftM,
-        _root_.liftComp_id, HasEvalPMF.probFailure_eq_zero]
+        _root_.liftComp_id, probFailure_of_liftM_PMF]
     rw [true_and]
     intro chal h_chal_support
     -- 1.B Handle the `let receiveChallengeFn ← pure (...)`
@@ -1394,7 +1388,7 @@ theorem queryOracleProof_perfectCompleteness {σ : Type}
         Fin.succ_zero_eq_one, _root_.OracleComp.liftComp_eq_liftM]
       dsimp only [liftM, monadLift, MonadLift.monadLift]
       rw [OptionT.probFailure_lift]
-      simp only [Fin.isValue, _root_.OracleComp.liftComp_eq_liftM, _root_.liftComp_id, HasEvalPMF.probFailure_eq_zero]
+      simp only [Fin.isValue, _root_.OracleComp.liftComp_eq_liftM, _root_.liftComp_id, probFailure_of_liftM_PMF]
     rw [true_and]
     intro h_receiveChallengeFn h_receiveChallengeFn_support
     -- 1.B Handle the `(queryOracleReduction 𝔽q β γ_repetitions).prover.output
@@ -1405,7 +1399,7 @@ theorem queryOracleProof_perfectCompleteness {σ : Type}
         Fin.succ_zero_eq_one, _root_.OracleComp.liftComp_eq_liftM]
       dsimp only [liftM, monadLift, MonadLift.monadLift]
       rw [OptionT.probFailure_lift]
-      simp only [Fin.isValue, _root_.OracleComp.liftComp_eq_liftM, _root_.liftComp_id, HasEvalPMF.probFailure_eq_zero]
+      simp only [Fin.isValue, _root_.OracleComp.liftComp_eq_liftM, _root_.liftComp_id, probFailure_of_liftM_PMF]
     rw [true_and]
     intro prover_final_output h_prover_final_output_support
     conv at h_prover_final_output_support =>
@@ -1431,7 +1425,7 @@ theorem queryOracleProof_perfectCompleteness {σ : Type}
     conv_lhs =>
       enter [1]
       simp only [MessageIdx, Fin.isValue, Message, Matrix.cons_val_zero, Fin.succ_zero_eq_one,
-        id_eq, bind_pure_comp, OptionT.run_map, HasEvalPMF.probFailure_eq_zero]
+        id_eq, bind_pure_comp, OptionT.run_map, probFailure_of_liftM_PMF]
     rw [zero_add]
     simp only [probOutput_eq_zero_iff]
     rw [OptionT.support_run_eq]
@@ -1500,63 +1494,39 @@ theorem queryOracleProof_perfectCompleteness {σ : Type}
       _root_.OracleComp.liftComp_eq_liftM, Fin.reduceLast, MessageIdx] at hx_mem_support
     -- Step 2b: Extract the challenge r1 and the trace equations
     obtain ⟨r1, ⟨_h_r1_mem_challenge_support, h_trace_support⟩⟩ := hx_mem_support
-    rcases h_trace_support with ⟨prvWitOut, h_prvOut_mem_support, h_verOut_mem_support⟩
-    conv at h_prvOut_mem_support => -- similar simplification as in commit step
-      dsimp only [queryOracleProof, queryOracleReduction, queryPhaseLogicStep, queryOracleProver,
-        queryOracleVerifier, OracleVerifier.toVerifier, FullTranscript.mk1]
-      dsimp only [liftM, monadLift, MonadLift.monadLift]
-      rw [_root_.support_liftComp]
-      simp only [support_pure, Set.mem_singleton_iff, Prod.mk.injEq, and_true]
+    rcases h_trace_support with ⟨prvWitOut, h_prvWitOut_mem, h_rest⟩
+    have h_prvWitOut_eq : prvWitOut = _ := h_prvWitOut_mem
+    subst h_prvWitOut_eq
+    obtain ⟨witOut', h_prvOut_mem_support, h_verOut_mem_support⟩ := h_rest
+    dsimp only [queryOracleProof, queryOracleReduction, queryPhaseLogicStep, queryOracleProver,
+      queryOracleVerifier, OracleVerifier.toVerifier, FullTranscript.mk1] at h_prvOut_mem_support
+    first
+      | (simp only [liftM_pure, support_pure, Set.mem_singleton_iff, Prod.mk.injEq,
+          and_true] at h_prvOut_mem_support
+         have _ := h_prvOut_mem_support.1)
+      | (rw [MonadAttach.mem_support, liftM_pure, MonadAttach.canReturn_pure_iff]
+          at h_prvOut_mem_support
+         simp only [Prod.mk.injEq, and_true] at h_prvOut_mem_support)
+      | skip
     -- Step 2c: Simplify the verifier computation
-    conv at h_verOut_mem_support =>
-      erw [simulateQ_bind]
-      -- rw [OptionT.simulateQ_simOracle2_liftM_query_T2]
-      -- erw [_root_.bind_pure_simulateQ_comp]
-      simp only
-      -- simp only [show OptionT.pure (m := (OracleComp ([]ₒ
-        -- + ([OracleStatement 𝔽q β ϑ (Fin.last ℓ)]ₒ + [pSpecFold.Message]ₒ)))) = pure by rfl]
-      change (some (verStmtOut, verOStmtOut)) ∈ _root_.support (_root_.OracleComp.liftComp _ _)
-      rw [_root_.support_liftComp]
-      dsimp only [Functor.map]
-      erw [support_bind]
-      simp only [Fin.isValue, MessageIdx, Message, support_bind, Set.mem_iUnion, exists_prop,
-        Function.comp_apply, Set.iUnion_exists, Set.biUnion_and']
-      -- erw [support_pure]
-      -- simp only [Set.mem_singleton_iff, Option.some.injEq, Prod.mk.injEq]
-    rcases h_verOut_mem_support with ⟨VCheck_boolean, h_VCheck_boolean_mem_support,
-      VOut_boolean, h_VOut_boolean_mem_support, h_VOut_mem_support⟩
-    set V_check := step.verifierCheck stmtIn (FullTranscript.mk1
-      (msg0 := _)) with h_V_check_def
-    -- Apply the simulateQ safety lemma
-    -- Can't apply probFailure_simulateQ_simOracle2_eq_zero here
-    obtain ⟨h_V_check_not_fail, h_rel, h_agree⟩ := strongly_complete
-      (stmtIn := stmtIn) (witIn := witIn) (h_relIn := h_relIn)
-      (challenges := fun ⟨j, hj⟩ => by
-        match j with
-        | 0 => exact r1
-      )
-    have h_VOut_boolean_eq_true : VOut_boolean = true := by
-      match VCheck_boolean with -- VOut_boolean depends on VCheck_boolean
+    dsimp only [queryOracleProof, queryOracleReduction, queryPhaseLogicStep, queryOracleProver,
+      queryOracleVerifier, OracleVerifier.toVerifier, FullTranscript.mk1] at h_verOut_mem_support
+    have h_ver_true : verStmtOut = true := by
+      simp only [OptionT.run_bind, OptionT.run, OptionT.bind, OptionT.mk, liftM, monadLift,
+        MonadLift.monadLift, Function.comp_apply] at h_verOut_mem_support
+      try rw [_root_.support_liftComp] at h_verOut_mem_support
+      simp [MonadAttach.mem_support_bind, OptionT.pure, OptionT.mk] at h_verOut_mem_support
+      change MonadAttach.CanReturn (_ >>= _) _ at h_verOut_mem_support
+      rw [MonadAttach.canReturn_bind_iff] at h_verOut_mem_support
+      obtain ⟨o, -, ho⟩ := h_verOut_mem_support
+      cases o with
+      | none => simp at ho
       | some a =>
-        simp only [Fin.isValue] at h_VOut_boolean_mem_support
-        erw [simulateQ_pure] at h_VOut_boolean_mem_support
-        simp only [Fin.isValue, support_pure, Set.mem_singleton_iff] at h_VOut_boolean_mem_support
-        dsimp only [queryPhaseLogicStep] at h_VOut_boolean_mem_support
-        exact h_VOut_boolean_mem_support
-      | none =>
-        simp only [simulateQ_pure, support_pure, Set.mem_singleton_iff]
-          at h_VOut_boolean_mem_support
-        simp only [h_VOut_boolean_mem_support, support_pure, Set.mem_singleton_iff,
-          reduceCtorEq] at h_VOut_mem_support ⊢
-    simp only [h_VOut_boolean_eq_true, OptionT.support_OptionT_pure_run, Set.mem_singleton_iff,
-      Option.some.injEq, Prod.mk.injEq] at h_VOut_mem_support -- pure equalities now
-    have prvStmtOut_eq := h_prvOut_mem_support
-    obtain ⟨verStmtOut_eq, verOStmtOut_eq⟩ := h_VOut_mem_support
+        simp only [MonadAttach.canReturn_pure_iff, Option.some.injEq, Prod.mk.injEq] at ho
+        exact (Prod.mk.inj (Option.some.inj ho)).1
     constructor
-    · simpa [acceptRejectOracleRel, verStmtOut_eq]
-    · constructor
-      · rw [verStmtOut_eq, prvStmtOut_eq];
-      · exact Subsingleton.elim _ _
+    · simpa [acceptRejectOracleRel, h_ver_true]
+    · exact ⟨by rw [h_ver_true, h_prvOut_mem_support], Subsingleton.elim _ _⟩
 
 open scoped NNReal
 
@@ -1804,11 +1774,14 @@ theorem queryOracleVerifier_rbrKnowledgeSoundness {σ : Type} (init : ProbComp �
       erw [Functor.map_map]
       rw [← probEvent_eq_eq_probOutput]
       rw [probEvent_map]
-      rw [OracleQuery.cont_apply]
+      first | rw [OracleQuery.cont_apply] | erw [OracleQuery.cont_apply] | skip
       dsimp only [MonadLift.monadLift]
-      rw [OracleQuery.cont_apply]
+      first
+        | rw [OracleQuery.cont_apply]
+        | simp only [OracleQuery.cont_query]
+        | skip
       dsimp only [q]
-    simp_rw [OracleQuery.input_query, OracleQuery.snd_query]
+    try simp_rw [OracleQuery.input_query, OracleQuery.snd_query]
     conv_lhs => change (∑' (x_1 : (Fin γ_repetitions → ↥(sDomain 𝔽q β h_ℓ_add_R_rate 0))), _)
     conv =>
       enter [1, 1, x_1, 2]
@@ -1816,7 +1789,7 @@ theorem queryOracleVerifier_rbrKnowledgeSoundness {σ : Type} (init : ProbComp �
       erw [probEvent_eq_eq_probOutput]
       change Pr[=x_1 | $ᵗ (Fin γ_repetitions → ↥(sDomain 𝔽q β h_ℓ_add_R_rate 0))]
       rw [OracleReduction.probOutput_uniformOfFintype_eq_Pr (L := _) (x := x_1)]
-    rw [OracleReduction.tsum_uniform_Pr_eq_Pr
+    erw [OracleReduction.tsum_uniform_Pr_eq_Pr
       (L := (Fin γ_repetitions → ↥(sDomain 𝔽q β h_ℓ_add_R_rate 0)))
       (P := fun x_1 => P x.1.1 (q.2 x_1))]
       -- Now the goal is in do-notation form, which is exactly what Pr_ notation expands to
@@ -1853,8 +1826,22 @@ theorem queryOracleVerifier_rbrKnowledgeSoundness {σ : Type} (init : ProbComp �
         _ = Pr_{ let y ← $ᵖ (Fin γ_repetitions →
             ↥(sDomain 𝔽q β h_ℓ_add_R_rate 0)) }[ False ] := by
           congr 1; ext y;
-          simp only [Fin.isValue, h_P_nonempty, PMF.monad_pure_eq_pure, PMF.monad_bind_eq_bind,
-            PMF.bind_const, PMF.pure_apply, eq_iff_iff, iff_false, ite_not]
+          first
+            | (simp only [Fin.isValue, h_P_nonempty, PMF.monad_pure_eq_pure, PMF.monad_bind_eq_bind,
+                PMF.bind_const, PMF.pure_apply, eq_iff_iff, iff_false, ite_not]; done)
+            | (simp only [PMF.monad_pure_eq_pure, PMF.monad_bind_eq_bind]
+               have hfun : (fun z => PMF.pure (P x.1.1 z)) = fun _ => PMF.pure False :=
+                 funext fun z => by rw [eq_false (h_P_nonempty z)]
+               erw [hfun]
+               first
+                 | rfl
+                 | (simp only [PMF.bind_const, PMF.pure_apply]; by_cases hy : y <;> simp [hy]))
+            | (have hfun : (fun z => PMF.pure (P x.1.1 z)) = fun _ => PMF.pure False :=
+                 funext fun z => by rw [eq_false (h_P_nonempty z)]
+               erw [hfun]
+               first
+                 | rfl
+                 | (simp only [PMF.bind_const, PMF.pure_apply]; by_cases hy : y <;> simp [hy]))
         _ = 0 := by
           simp only [PMF.monad_pure_eq_pure, PMF.monad_bind_eq_bind, PMF.bind_const, PMF.pure_apply,
             eq_iff_iff, iff_false, not_true_eq_false, ↓reduceIte]

@@ -41,7 +41,7 @@ lemma intermediateEvaluationPoly_last_iteratedRefineCoeffs_eval
     (coeffs : Fin (2 ^ ℓ) → L) (r_challenges : Fin ℓ → L)
     (y : sDomain 𝔽q β h_ℓ_add_R_rate (i := ⟨(Fin.last ℓ).val, by omega⟩)) :
     (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
-      (i := ⟨(Fin.last ℓ).val, by omega⟩)
+      (i := ⟨(Fin.last ℓ).val, by omega⟩) (h_i := by simp)
       (iteratedRefineCoeffs (𝓡 := 𝓡) (i := 0)
         (destIdx := ⟨(Fin.last ℓ).val, by omega⟩) (Fin.last ℓ).val
         (by simp) (by simp) coeffs r_challenges)).eval y.val =
@@ -62,13 +62,17 @@ lemma intermediateEvaluationPoly_last_iteratedRefineCoeffs_eval
     have hlt := (@default (Fin (2 ^ (ℓ - (Fin.last ℓ).val))) Unique.instInhabited).isLt
     simp only [Fin.val_last, tsub_self, pow_zero] at hlt
     exact Nat.lt_one_iff.mp hlt
+  have h_zero : ∀ d : Fin (2 ^ (ℓ - (Fin.last ℓ).val)), d.val = 0 := fun d => by
+    have hlt := d.isLt
+    simp only [Fin.val_last, tsub_self, pow_zero] at hlt
+    omega
   simp only [Fintype.sum_unique, h_default]
   simp only [Polynomial.eval_C]
   unfold iteratedRefineCoeffs
   simp only [Fin.val_zero, zero_mul, zero_add]
   apply Finset.sum_congr rfl
   intro x _
-  simp
+  simp [h_zero]
 
 /-- The last mid-codeword value produced by the honest fold chain is the multilinear polynomial
 evaluation at the statement challenges. -/
@@ -90,8 +94,10 @@ lemma getMidCodewords_last_apply_eq_eval
     (r_challenges := foldOrderChallenges (ℓ := ℓ) (L := L) (i := Fin.last ℓ) challenges)
   unfold polyToOracleFunc at h_adv
   simp only [Fin.val_zero] at h_adv
-  have h_base := intermediate_poly_P_base 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
-    (h_ℓ := by omega) (coeffs := coeffs)
+  have h_base : intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate ⟨0, by omega⟩ (by simp) coeffs =
+      polynomialFromNovelCoeffs 𝔽q β ℓ (by omega) coeffs :=
+    intermediate_poly_P_base 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+      (h_ℓ := by omega) (coeffs := coeffs)
   rw [h_base] at h_adv
   change iterated_fold 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
       (i := 0) (steps := (Fin.last ℓ).val) (destIdx := ⟨Fin.last ℓ, by omega⟩)

@@ -1061,14 +1061,13 @@ lemma not_jointProximityNat_of_not_jointProximityNat_evenOdd_split
   apply h_far
   unfold jointProximityNat₂ jointProximityNat at h_close
   simp only at h_close
-  rw [Code.closeToCode_iff_closeToCodeword_of_minDist] at h_close
+  erw [Code.closeToCode_iff_closeToCodeword_of_minDist] at h_close
   rcases h_close with ⟨vSplit, hvSplit_mem, hvSplit_dist_le_e⟩
-  rw [closeToWord_iff_exists_possibleDisagreeCols] at hvSplit_dist_le_e
-  rcases hvSplit_dist_le_e with ⟨D, hD_card_le_e, h_agree_outside_D⟩
+  obtain ⟨D, hD_card_le_e, h_agree_outside_D⟩ :=
+    (@closeToWord_iff_exists_possibleDisagreeCols _ _ _ _ _ _ _).mp hvSplit_dist_le_e
   unfold jointProximityNat
   rw [Code.closeToCode_iff_closeToCodeword_of_minDist
     (u := ⋈|U) (e := e) (C := interleavedCodeSet (κ := Fin (2 ^ (s + 1))) C)]
-  simp_rw [closeToWord_iff_exists_possibleDisagreeCols]
   let VSplit_rowwise := Matrix.transpose vSplit
   let VSplit_even_rowwise := Matrix.transpose (VSplit_rowwise 0)
   let VSplit_odd_rowwise := Matrix.transpose (VSplit_rowwise 1)
@@ -1106,7 +1105,8 @@ lemma not_jointProximityNat_of_not_jointProximityNat_evenOdd_split
         rfl
       rw [h_fun]
       exact hRes
-  · use D
+  · refine (@closeToWord_iff_exists_possibleDisagreeCols _ _ _ _ _ _ _).mpr ?_
+    use D
     constructor
     · exact hD_card_le_e
     · intro colIdx h_colIdx_notin_D
@@ -1133,9 +1133,8 @@ lemma not_jointProximityNat_of_not_jointProximityNat_evenOdd_split
           apply Fin.eq_of_val_eq
           exact h_row_val.symm
         have hRes₀ := congrFun hRes0 ⟨rowIdx.val / 2, by omega⟩
-        dsimp [splitEvenOddRowWiseInterleavedWords] at hRes₀
-        have hRes₀' := hRes₀
-        simp only [h_row_eq] at hRes₀'
+        have hRes₀' : U rowIdx colIdx = vSplit colIdx 0 ⟨rowIdx.val / 2, by omega⟩ :=
+          (congrArg (fun k => U k colIdx) h_row_eq).symm.trans hRes₀
         have hvrow :
             v_rowwise_finmap rowIdx colIdx =
               vSplit colIdx 0 ⟨rowIdx.val / 2, by omega⟩ := by
@@ -1153,9 +1152,8 @@ lemma not_jointProximityNat_of_not_jointProximityNat_evenOdd_split
           apply Fin.eq_of_val_eq
           exact h_row_val.symm
         have hRes₁ := congrFun hRes1 ⟨rowIdx.val / 2, by omega⟩
-        dsimp [splitEvenOddRowWiseInterleavedWords] at hRes₁
-        have hRes₁' := hRes₁
-        simp only [h_row_eq] at hRes₁'
+        have hRes₁' : U rowIdx colIdx = vSplit colIdx 1 ⟨rowIdx.val / 2, by omega⟩ :=
+          (congrArg (fun k => U k colIdx) h_row_eq).symm.trans hRes₁
         have hvrow :
             v_rowwise_finmap rowIdx colIdx =
               vSplit colIdx 1 ⟨rowIdx.val / 2, by omega⟩ := by
@@ -1328,7 +1326,8 @@ lemma affineLineEvaluation_interleave_splitEvenOdd_fin1_eq_multilinearCombine
       multilinearCombine (F := L) U (fun (_ : Fin 1) => r) := by
   ext y
   simp [splitEvenOddRowWiseInterleavedWords, affineLineEvaluation, interleaveWordStack,
-    multilinearCombine, multilinearWeight, smul_eq_mul]
+    multilinearCombine, multilinearWeight]
+  rfl
 
 section Fin1Interleaving
 variable {A : Type*} [DecidableEq A] {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -1855,7 +1854,7 @@ lemma fiberwiseClose_fold_implies_affineLineEval_close_pos
         affineLineEvaluation (F := L)
         (interleaveWordStack U_even) (interleaveWordStack U_odd) r_new := by
     have h_eq0 := congrArg interleaveWordStack h_eq
-    rw [interleaveWordStack_affineLineEvaluation] at h_eq0
+    erw [interleaveWordStack_affineLineEvaluation] at h_eq0
     simp only [U, U_even, U_odd, fold_1_f, midIdx_ℓ] at h_eq0 ⊢
     exact h_eq0
   unfold jointProximityNat at h_joint

@@ -11,6 +11,9 @@ import ArkLib.ProofSystem.Binius.BinaryBasefold.ReductionLogic
 import ArkLib.ProofSystem.Binius.FRIBinius.Prelude
 import ArkLib.OracleReduction.LiftContext.Coherence
 
+-- Retain the finite uniform interpretation locally for these legacy probability lemmas.
+attribute [local instance] legacyUniformSpec
+
 /-!
 # Core Interaction Phase of FRI-Binius IOPCS
 This module implements the Core Interaction Phase of the FRI-Binius IOPCS.
@@ -528,7 +531,7 @@ def finalSumcheckStepLogic :
     finalSumcheckVerifierCheck κ L K β ℓ ℓ' h_l stmtIn (transcript.messages ⟨0, rfl⟩)
   verifierOut := fun stmtIn transcript =>
     finalSumcheckVerifierStmtOut κ L K β ℓ ℓ' h_l stmtIn (transcript.messages ⟨0, rfl⟩)
-  embed := ⟨fun j => Sum.inl j, fun a b h => by cases h; rfl⟩
+  embed := ⟨fun j => Sum.inl j, Sum.inl_injective⟩
   hEq := fun _ => rfl
   honestProverTranscript := fun _stmtIn witIn _oStmtIn _chal =>
     let c : L := finalSumcheckProverComputeMsg (κ := κ) (L := L) (K := K) (β := β)
@@ -891,9 +894,31 @@ lemma finalSumcheckStep_is_logic_complete :
     unfold BinaryBasefold.strictfinalSumcheckStepFoldingStateProp
     dsimp only [finalSumcheckVerifierStmtOut]
     constructor
-    · simpa [strictOracleWitnessConsistency, olderStmtChallenges_self,
-        verifierStmtOut, verifierOStmtOut, transcript, step, finalSumcheckStepLogic,
-        finalSumcheckVerifierStmtOut] using h_strictOracleWitConsistency.2
+    · first
+        | exact h_strictOracleWitConsistency.2
+        | (convert h_strictOracleWitConsistency.2 using 1
+           funext j
+           rfl)
+        | (convert h_strictOracleWitConsistency.2 using 2
+           funext j
+           rw [OracleVerifier.mkVerifierOStmtOut_inl _ _ _ _ j j rfl]
+           rfl)
+        | (convert h_strictOracleWitConsistency.2 using 1
+           · rfl
+           · first
+               | rfl
+               | (erw [olderStmtChallenges_self]; rfl)
+               | simp [verifierStmtOut, olderStmtChallenges_self]
+           · funext j
+             first
+               | rfl
+               | (simp only [verifierOStmtOut]
+                  rw [OracleVerifier.mkVerifierOStmtOut_inl _ _ _ _ j j rfl]
+                  rfl)
+               | simp [verifierOStmtOut, OracleVerifier.mkVerifierOStmtOut])
+        | (simpa [strictOracleWitnessConsistency, olderStmtChallenges_self,
+          verifierStmtOut, verifierOStmtOut, transcript, step, finalSumcheckStepLogic,
+          finalSumcheckVerifierStmtOut] using h_strictOracleWitConsistency.2)
     · funext y
       have h_const := iterated_fold_to_const_strict (κ := κ) (L := L) (K := K) (β := β)
         (ℓ := ℓ) (ℓ' := ℓ') (𝓡 := 𝓡) (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
@@ -957,7 +982,7 @@ theorem finalSumcheckOracleReduction_perfectCompleteness {σ : Type}
     conv_lhs =>
       simp only [liftM, monadLift, MonadLift.monadLift]
       simp only [ChallengeIdx, Challenge, Fin.isValue, Matrix.cons_val_one, Matrix.cons_val_zero,
-        liftComp_eq_liftM, OptionT.probFailure_lift, HasEvalPMF.probFailure_eq_zero]
+        liftComp_eq_liftM, OptionT.probFailure_lift, probFailure_of_liftM_PMF]
     rw [true_and]
     -- ⊢ ∀ x ∈ .. support, ... ∧ ... ∧ ...
     intro h_prover_final_output h_prover_final_output_support
@@ -971,7 +996,7 @@ theorem finalSumcheckOracleReduction_perfectCompleteness {σ : Type}
     conv_lhs =>
       enter [1]
       simp only [MessageIdx, Fin.isValue, Message, Matrix.cons_val_zero, Fin.succ_zero_eq_one,
-        id_eq, bind_pure_comp, OptionT.run_map, HasEvalPMF.probFailure_eq_zero]
+        id_eq, bind_pure_comp, OptionT.run_map, probFailure_of_liftM_PMF]
     rw [zero_add]
     simp only [probOutput_eq_zero_iff]
     rw [OptionT.support_run_eq]
@@ -986,7 +1011,7 @@ theorem finalSumcheckOracleReduction_perfectCompleteness {σ : Type}
       erw [simulateQ_bind]
       -- turn the simulated oracle query into OracleInterface.answer form
       erw [OptionT.simulateQ_simOracle2_liftM_query_T2] -- V queries P's message
-      change vStmtOut ∈ _root_.support (Bind.bind (m := (OracleComp []ₒ)) _ _)
+      change vStmtOut ∈ MonadAttach.support (Bind.bind (m := (OracleComp []ₒ)) _ _)
       erw [_root_.bind_pure_simulateQ_comp]
       simp only [Matrix.cons_val_zero, guard_eq]
       -- simp  [bind_pure_comp,
@@ -1054,7 +1079,7 @@ theorem finalSumcheckOracleReduction_perfectCompleteness {σ : Type}
     conv at h_verOut_mem_support =>
       erw [simulateQ_bind]
       simp only [Set.mem_singleton_iff]
-      change some (verStmtOut, verOStmtOut) ∈ _root_.support (liftComp _ _)
+      change some (verStmtOut, verOStmtOut) ∈ MonadAttach.support (liftComp _ _)
       rw [_root_.support_liftComp]
       dsimp only [Functor.map]
       erw [support_bind]
@@ -1580,7 +1605,9 @@ theorem coreInteractionOracleRbrKnowledgeError_le :
   simp only [Sum.elim_inl, Sum.elim_inr]
   have hb : (∑ i : (BinaryBasefold.pSpecFinalSumcheckStep (L := L)).ChallengeIdx,
       finalSumcheckKnowledgeError (L := L) i) = 0 := by
-    simpa using BinaryBasefold.CoreInteraction.finalSumcheckKnowledgeError_sum_eq_zero (L := L)
+    first
+      | exact BinaryBasefold.CoreInteraction.finalSumcheckKnowledgeError_sum_eq_zero (L := L)
+      | simpa using BinaryBasefold.CoreInteraction.finalSumcheckKnowledgeError_sum_eq_zero (L := L)
   rw [hb, add_zero]
   exact BinaryBasefold.CoreInteraction.sumcheckFoldKnowledgeError_le (𝔽q := K) (L := L) (β := β)
     (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (ℓ := ℓ')

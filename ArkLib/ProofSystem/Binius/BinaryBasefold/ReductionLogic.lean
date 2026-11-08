@@ -17,6 +17,9 @@ import ArkLib.ToVCVio.SimulationInfrastructure
 import ArkLib.OracleReduction.Completeness
 import ArkLib.Data.Misc.Basic
 
+-- Retain the finite uniform interpretation locally for these legacy probability lemmas.
+attribute [local instance] legacyUniformSpec
+
 /-!
 ## Binary Basefold single steps
 - **Fold step** :
@@ -437,7 +440,6 @@ lemma foldStep_is_logic_complete (i : Fin ℓ) :
     -- Fact 3: Prover and verifier statements agree
     change (step.proverOut stmtIn witIn oStmtIn transcript).1.1 = step.verifierOut stmtIn transcript
     simp only [step, foldStepLogic]; simp only [Fin.mk_one, Fin.isValue, Fin.zero_eta, Fin.val_succ]
-    rfl
 
   have hOStmtOut_eq : proverOStmtOut = verifierOStmtOut := by
     change (step.proverOut stmtIn witIn oStmtIn transcript).1.2
@@ -489,7 +491,7 @@ lemma foldStep_is_logic_complete (i : Fin ℓ) :
             (challenges := stmtIn.challenges) (r_i' := r_i')
         · conv_lhs =>
             rw [h_f_In]
-            rw [←getMidCodewords_succ]
+            erw [←getMidCodewords_succ]
           rfl
       · -- Component 2: strictOracleFoldingConsistencyProp
         have h_oracleIdx_eq : (OracleFrontierIndex.mkFromStmtIdx i.castSucc).val
@@ -681,7 +683,7 @@ lemma snoc_oracle_eq_mkVerifierOStmtOut_commitStep_old
       Sum.inl ⟨j.val, hj⟩ := by
     simp only [commitStepLogic, commitStepLogic_embed, Function.Embedding.coeFn_mk,
       commitStepLogic_embedFn, hj, dif_pos]
-  rw [OracleVerifier.mkVerifierOStmtOut_inl _ _ _ _ _ _ h_embed]
+  erw [OracleVerifier.mkVerifierOStmtOut_inl _ _ _ _ _ _ h_embed]
   simp only [hj, dif_pos, eqRec_eq_cast, cast_cast]
   apply eq_of_heq
   refine HEq.trans ?_ (cast_heq _ (oStmtIn ⟨j.val, hj⟩)).symm
@@ -717,7 +719,7 @@ lemma snoc_oracle_eq_mkVerifierOStmtOut_commitStep_new
     simp only [commitStepLogic, commitStepLogic_embed, Function.Embedding.coeFn_mk,
       commitStepLogic_embedFn, hj, dif_neg, not_false_eq_true]
     rfl
-  rw [OracleVerifier.mkVerifierOStmtOut_inr _ _ _ _ _ _ h_embed]
+  erw [OracleVerifier.mkVerifierOStmtOut_inr _ _ _ _ _ _ h_embed]
   apply eq_of_heq
   have h_snoc :
       HEq (snoc_oracle 𝔽q β (ϑ := ϑ) (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
@@ -936,9 +938,7 @@ lemma strictOracleFoldingConsistency_commitStep
               omega) :=
       h_chal_tail.trans h_chal_full.symm
     exact h_old_eq.trans (by
-      rw [h_chal_eq]
-      simp only [Fin.val_mk]
-      apply iterated_fold_proof_irrel)
+      rw [h_chal_eq])
   · change verifierOStmtOut j = _
     rw [h_OStmtOut_eq]
     dsimp only [snoc_oracle]
@@ -1178,7 +1178,7 @@ def finalSumcheckStepLogic :
     simp only [MessageIdx, Fin.eta, Sum.inl.injEq] at h_ab_eq
     exact h_ab_eq
   ⟩
-  hEq := fun oracleIdx => by simp only [Fin.eta]
+  hEq := fun oracleIdx => by rfl
 
 omit [Fintype L] [DecidableEq L] [CharP L 2] [SampleableType L] [NeZero ℓ] in
 /-- At `Fin.last ℓ`, sumcheck consistency is the single empty-variable evaluation. -/

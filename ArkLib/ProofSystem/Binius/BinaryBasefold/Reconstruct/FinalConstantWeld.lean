@@ -248,7 +248,8 @@ lemma getLastOracle_finalFold_eq_eval
           (fun ω => t.val.eval (statementOrderBitsOfIndex (L := L) ω))).val.eval x.val) =
       (fun (x : sDomain 𝔽q β h_ℓ_add_R_rate 0) =>
         (intermediateEvaluationPoly 𝔽q β h_ℓ_add_R_rate
-          ⟨(0 : Fin r).val, by have h0 : (0 : Fin r).val = 0 := rfl; omega⟩ coeffs₀).eval x.val) := by
+          ⟨(0 : Fin r).val, by have h0 : (0 : Fin r).val = 0 := rfl; omega⟩
+          (by simp) coeffs₀).eval x.val) := by
     funext x
     exact (congrArg (fun p => Polynomial.eval x.val p) h_base).symm
   rw [h_f₀]
@@ -283,7 +284,7 @@ lemma getLastOracle_finalFold_eq_eval
         omega))
   rw [h_adv2]
   -- Step 5: compose the two refinements.
-  rw [iteratedRefineCoeffs_comp
+  erw [iteratedRefineCoeffs_comp
     (i := 0) (mid := ⟨ℓ - ϑ, by omega⟩) (dest := ⟨ℓ, by omega⟩)
     (s₁ := ℓ - ϑ) (s₂ := ϑ)
     (h_mid := by simp only [Fin.val_zero, Nat.zero_add])
@@ -292,7 +293,7 @@ lemma getLastOracle_finalFold_eq_eval
     (h_dest_le := by simp only [Fin.mk_le_mk]; omega)
     (h_dest' := by simp only [Fin.val_zero, Nat.zero_add]; omega)]
   -- Step 6: convert the appended challenge vector to fold-order challenges.
-  rw [iteratedRefineCoeffs_congr_steps
+  erw [iteratedRefineCoeffs_congr_steps
     (i := 0) (dest := ⟨ℓ, by omega⟩)
     (s := (ℓ - ϑ) + ϑ) (s' := ℓ) (hs := by omega)
     (h_dest := by simp only [Fin.val_zero, Nat.zero_add]; omega)

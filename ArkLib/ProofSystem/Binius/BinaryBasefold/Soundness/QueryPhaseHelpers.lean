@@ -241,9 +241,13 @@ lemma queryBlockSourceSuffix_maps_to_destSuffix
     (v : sDomain 𝔽q β h_ℓ_add_R_rate 0) :
     iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate
       (i := ⟨(queryBlockIdx (ℓ := ℓ) (ϑ := ϑ) j).val * ϑ,
-        k_mul_ϑ_lt_ℓ (k := queryBlockIdx (ℓ := ℓ) (ϑ := ϑ) j)⟩)
-      (k := ϑ)
-      (h_bound := k_succ_mul_ϑ_le_ℓ_₂ (k := queryBlockIdx (ℓ := ℓ) (ϑ := ϑ) j))
+        lt_r_of_lt_ℓ (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+          (k_mul_ϑ_lt_ℓ (k := queryBlockIdx (ℓ := ℓ) (ϑ := ϑ) j))⟩)
+      (destIdx := ⟨(queryBlockIdx (ℓ := ℓ) (ϑ := ϑ) j).val * ϑ + ϑ,
+        lt_r_of_le_ℓ (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+          (k_succ_mul_ϑ_le_ℓ_₂ (k := queryBlockIdx (ℓ := ℓ) (ϑ := ϑ) j))⟩)
+      (k := ϑ) (h_destIdx := rfl)
+      (h_destIdx_le := k_succ_mul_ϑ_le_ℓ_₂ (k := queryBlockIdx (ℓ := ℓ) (ϑ := ϑ) j))
       (x := queryBlockSourceSuffix (𝔽q := 𝔽q) (β := β)
         (h_ℓ_add_R_rate := h_ℓ_add_R_rate) (ℓ := ℓ) (ϑ := ϑ) j v) =
     queryBlockDestSuffix (𝔽q := 𝔽q) (β := β)
@@ -270,9 +274,13 @@ lemma queryBlockSourceSuffix_maps_to_destSuffix
         (k := queryBlockIdx (ℓ := ℓ) (ϑ := ϑ) j) (v := v) =
       iteratedQuotientMap 𝔽q β h_ℓ_add_R_rate
         (i := ⟨(queryBlockIdx (ℓ := ℓ) (ϑ := ϑ) j).val * ϑ,
-          k_mul_ϑ_lt_ℓ (k := queryBlockIdx (ℓ := ℓ) (ϑ := ϑ) j)⟩)
-        (k := ϑ)
-        (h_bound := k_succ_mul_ϑ_le_ℓ_₂ (k := queryBlockIdx (ℓ := ℓ) (ϑ := ϑ) j))
+          lt_r_of_lt_ℓ (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+            (k_mul_ϑ_lt_ℓ (k := queryBlockIdx (ℓ := ℓ) (ϑ := ϑ) j))⟩)
+        (destIdx := ⟨(queryBlockIdx (ℓ := ℓ) (ϑ := ϑ) j).val * ϑ + ϑ,
+          lt_r_of_le_ℓ (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
+            (k_succ_mul_ϑ_le_ℓ_₂ (k := queryBlockIdx (ℓ := ℓ) (ϑ := ϑ) j))⟩)
+        (k := ϑ) (h_destIdx := rfl)
+        (h_destIdx_le := k_succ_mul_ϑ_le_ℓ_₂ (k := queryBlockIdx (ℓ := ℓ) (ϑ := ϑ) j))
         (x := getFiberPoint 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
           (queryBlockIdx (ℓ := ℓ) (ϑ := ϑ) j) v
           (extractMiddleFinMask 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
@@ -300,7 +308,7 @@ lemma queryBlockSourceSuffix_maps_to_destSuffix
       (i := ⟨(queryBlockIdx (ℓ := ℓ) (ϑ := ϑ) j).val * ϑ,
         k_mul_ϑ_lt_ℓ (k := queryBlockIdx (ℓ := ℓ) (ϑ := ϑ) j)⟩)
       (steps := ϑ), ?_⟩
-    rw [getFiberPoint_eq_qMap_total_fiber]
+    erw [getFiberPoint_eq_qMap_total_fiber]
   exact h_generates.symm
 
 set_option maxHeartbeats 400000 in

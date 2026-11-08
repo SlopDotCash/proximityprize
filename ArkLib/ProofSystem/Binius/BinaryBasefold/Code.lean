@@ -64,7 +64,7 @@ RS_{L, S⁽ⁱ⁾}[2^{ℓ+R-i}, 2^{ℓ-i}]. -/
 def BBF_Code (i : Fin r) :
     Submodule L ((sDomain 𝔽q β h_ℓ_add_R_rate) i → L) :=
   let domain : (sDomain 𝔽q β h_ℓ_add_R_rate) i ↪ L :=
-    ⟨fun x => x.val, fun x y h => by exact Subtype.ext h⟩
+    ⟨fun x => x.val, Subtype.val_injective⟩
   ReedSolomon.code (domain := domain) (deg := 2^(ℓ - i.val))
 
 omit [CharP L 2] [DecidableEq 𝔽q] hF₂ h_β₀_eq_1 [NeZero ℓ] [NeZero 𝓡] in
@@ -109,15 +109,15 @@ def getBBF_Codeword_of_poly (i : Fin r) (h_i : i ≤ ℓ) (P : L⦃< 2 ^ (ℓ - 
   exact ⟨g, h_g_mem⟩
 
 /-- The binary quotient map is a nonzero scalar multiple of `X^2 - X`. -/
-lemma qMap_eq_C_mul_X_sq_sub_X (i : Fin r) :
-    ∃ c : L, c ≠ 0 ∧ qMap 𝔽q β i = C c * (X ^ 2 - X) := by
+lemma qMap_eq_C_mul_X_sq_sub_X (i : Fin r) (h_i1 : i.val + 1 < r) :
+    ∃ c : L, c ≠ 0 ∧ qMap 𝔽q β i h_i1 = C c * (X ^ 2 - X) := by
   let c : L := ((W 𝔽q β i).eval (β i))^(Fintype.card 𝔽q)
-    / ((W 𝔽q β (i + 1)).eval (β (i + 1)))
+    / ((W 𝔽q β ⟨i.val + 1, h_i1⟩).eval (β ⟨i.val + 1, h_i1⟩))
   refine ⟨c, ?_, ?_⟩
   · unfold c
     apply div_ne_zero
     · exact pow_ne_zero _ (AdditiveNTT.Wᵢ_eval_βᵢ_neq_zero 𝔽q β i)
-    · exact AdditiveNTT.Wᵢ_eval_βᵢ_neq_zero 𝔽q β (i + 1)
+    · exact AdditiveNTT.Wᵢ_eval_βᵢ_neq_zero 𝔽q β ⟨i.val + 1, h_i1⟩
   · rw [qMap, prod_poly_sub_C_eq_poly_pow_card_sub_poly_in_L (p := X)]
     simp [hF₂.out, c]
 
@@ -129,56 +129,58 @@ lemma degree_X_sq_sub_X : (X ^ 2 - X : L[X]).degree = (2 : WithBot ℕ) := by
   rw [degree_X_pow]
   norm_num
 
-lemma qMap_degree (i : Fin r) : (qMap 𝔽q β i).degree = (2 : WithBot ℕ) := by
-  obtain ⟨c, hc, hq⟩ := qMap_eq_C_mul_X_sq_sub_X (𝔽q := 𝔽q) (β := β) (i := i)
+lemma qMap_degree (i : Fin r) (h_i1 : i.val + 1 < r) :
+    (qMap 𝔽q β i h_i1).degree = (2 : WithBot ℕ) := by
+  obtain ⟨c, hc, hq⟩ := qMap_eq_C_mul_X_sq_sub_X (𝔽q := 𝔽q) (β := β) (i := i) (h_i1 := h_i1)
   rw [hq, degree_C_mul hc, degree_X_sq_sub_X]
 
-lemma qMap_natDegree (i : Fin r) : (qMap 𝔽q β i).natDegree = 2 := by
+lemma qMap_natDegree (i : Fin r) (h_i1 : i.val + 1 < r) :
+    (qMap 𝔽q β i h_i1).natDegree = 2 := by
   apply Polynomial.natDegree_eq_of_degree_eq_some
-  exact qMap_degree (𝔽q := 𝔽q) (β := β) (i := i)
+  exact qMap_degree (𝔽q := 𝔽q) (β := β) (i := i) (h_i1 := h_i1)
 
-lemma qMap_leadingCoeff_ne_zero (i : Fin r) :
-    (qMap 𝔽q β i).leadingCoeff ≠ 0 := by
+lemma qMap_leadingCoeff_ne_zero (i : Fin r) (h_i1 : i.val + 1 < r) :
+    (qMap 𝔽q β i h_i1).leadingCoeff ≠ 0 := by
   intro h
-  exact qMap_ne_zero (𝔽q := 𝔽q) (β := β) i (Polynomial.leadingCoeff_eq_zero.mp h)
+  exact qMap_ne_zero (𝔽q := 𝔽q) (β := β) i h_i1 (Polynomial.leadingCoeff_eq_zero.mp h)
 
-lemma degree_even_qMap_term (i : Fin r) (a : L) (ha : a ≠ 0) (d : ℕ) :
-    ((C a * X ^ d).comp (qMap 𝔽q β i)).degree = ((2 * d : ℕ) : WithBot ℕ) := by
-  have hqpos : (0 : WithBot ℕ) < (qMap 𝔽q β i).degree := by
-    rw [qMap_degree (𝔽q := 𝔽q) (β := β) (i := i)]
+lemma degree_even_qMap_term (i : Fin r) (h_i1 : i.val + 1 < r) (a : L) (ha : a ≠ 0) (d : ℕ) :
+    ((C a * X ^ d).comp (qMap 𝔽q β i h_i1)).degree = ((2 * d : ℕ) : WithBot ℕ) := by
+  have hqpos : (0 : WithBot ℕ) < (qMap 𝔽q β i h_i1).degree := by
+    rw [qMap_degree (𝔽q := 𝔽q) (β := β) (i := i) (h_i1 := h_i1)]
     norm_num
   rw [Polynomial.degree_comp hqpos]
   rw [Polynomial.degree_C_mul_X_pow d ha]
-  rw [qMap_degree (𝔽q := 𝔽q) (β := β) (i := i)]
+  rw [qMap_degree (𝔽q := 𝔽q) (β := β) (i := i) (h_i1 := h_i1)]
   norm_num
   ring
 
-lemma leadingCoeff_even_qMap_term (i : Fin r) (a : L) (ha : a ≠ 0) (d : ℕ) :
-    ((C a * X ^ d).comp (qMap 𝔽q β i)).leadingCoeff =
-      a * (qMap 𝔽q β i).leadingCoeff ^ d := by
+lemma leadingCoeff_even_qMap_term (i : Fin r) (h_i1 : i.val + 1 < r) (a : L) (ha : a ≠ 0) (d : ℕ) :
+    ((C a * X ^ d).comp (qMap 𝔽q β i h_i1)).leadingCoeff =
+      a * (qMap 𝔽q β i h_i1).leadingCoeff ^ d := by
   rw [Polynomial.leadingCoeff_comp]
   · rw [Polynomial.leadingCoeff_C_mul_X_pow]
     rw [Polynomial.natDegree_C_mul_X_pow d a ha]
-  · rw [qMap_natDegree (𝔽q := 𝔽q) (β := β) (i := i)]
+  · rw [qMap_natDegree (𝔽q := 𝔽q) (β := β) (i := i) (h_i1 := h_i1)]
     norm_num
 
-lemma degree_odd_qMap_term (i : Fin r) (a : L) (ha : a ≠ 0) (d : ℕ) :
-    (X * (C a * X ^ d).comp (qMap 𝔽q β i)).degree =
+lemma degree_odd_qMap_term (i : Fin r) (h_i1 : i.val + 1 < r) (a : L) (ha : a ≠ 0) (d : ℕ) :
+    (X * (C a * X ^ d).comp (qMap 𝔽q β i h_i1)).degree =
       ((2 * d + 1 : ℕ) : WithBot ℕ) := by
   rw [Polynomial.degree_mul]
   rw [Polynomial.degree_X]
-  rw [degree_even_qMap_term (𝔽q := 𝔽q) (β := β) (i := i) a ha d]
+  rw [degree_even_qMap_term (𝔽q := 𝔽q) (β := β) (i := i) (h_i1 := h_i1) a ha d]
   norm_num
   ring
 
-lemma leadingCoeff_odd_qMap_term (i : Fin r) (a : L) (d : ℕ) :
-    (X * (C a * X ^ d).comp (qMap 𝔽q β i)).leadingCoeff =
-      a * (qMap 𝔽q β i).leadingCoeff ^ d := by
+lemma leadingCoeff_odd_qMap_term (i : Fin r) (h_i1 : i.val + 1 < r) (a : L) (d : ℕ) :
+    (X * (C a * X ^ d).comp (qMap 𝔽q β i h_i1)).leadingCoeff =
+      a * (qMap 𝔽q β i h_i1).leadingCoeff ^ d := by
   rw [Polynomial.leadingCoeff_mul]
   rw [Polynomial.leadingCoeff_X]
   by_cases ha : a = 0
   · simp [ha]
-  · rw [leadingCoeff_even_qMap_term (𝔽q := 𝔽q) (β := β) (i := i) a ha d]
+  · rw [leadingCoeff_even_qMap_term (𝔽q := 𝔽q) (β := β) (i := i) (h_i1 := h_i1) a ha d]
     ring
 
 lemma natDegree_C_mul_X_pow_lt {a : L} (ha : a ≠ 0) {d m : ℕ} (hd : d < m) :
@@ -195,19 +197,19 @@ lemma natDegree_add_lt_of_lt {P Q : L[X]} {m : ℕ}
 `A, B` of degree `< m`. This is the quadratic `qMap` replacement for the old intermediate
 novel-basis round trip. -/
 lemma qMap_quadratic_decomp_of_natDegree_lt
-    (i : Fin r) (m : ℕ) (hm : 0 < m) (P : L[X])
+    (i : Fin r) (h_i1 : i.val + 1 < r) (m : ℕ) (hm : 0 < m) (P : L[X])
     (hPbound : P.natDegree < 2 * m) :
     ∃ A B : L[X], A.natDegree < m ∧ B.natDegree < m ∧
-      P = A.comp (qMap 𝔽q β i) + X * B.comp (qMap 𝔽q β i) := by
+      P = A.comp (qMap 𝔽q β i h_i1) + X * B.comp (qMap 𝔽q β i h_i1) := by
   classical
-  let q := qMap 𝔽q β i
+  let q := qMap 𝔽q β i h_i1
   let c := q.leadingCoeff
-  have hc : c ≠ 0 := qMap_leadingCoeff_ne_zero (𝔽q := 𝔽q) (β := β) i
+  have hc : c ≠ 0 := qMap_leadingCoeff_ne_zero (𝔽q := 𝔽q) (β := β) i h_i1
   refine (Nat.strong_induction_on
     (p := fun n => ∀ (P : L[X]) (m : ℕ), 0 < m → P.natDegree < 2 * m →
       P.natDegree = n →
       ∃ A B : L[X], A.natDegree < m ∧ B.natDegree < m ∧
-        P = A.comp (qMap 𝔽q β i) + X * B.comp (qMap 𝔽q β i))
+        P = A.comp (qMap 𝔽q β i h_i1) + X * B.comp (qMap 𝔽q β i h_i1))
     P.natDegree ?_) P m hm hPbound rfl
   intro n ih P m hm hPbound hn
   subst hn
@@ -239,11 +241,11 @@ lemma qMap_quadratic_decomp_of_natDegree_lt
     let T : L[X] := (C a * X ^ d).comp q
     have hTdeg : T.degree = (n : WithBot ℕ) := by
       dsimp [T, q]
-      rw [degree_even_qMap_term (𝔽q := 𝔽q) (β := β) (i := i) a ha d]
+      rw [degree_even_qMap_term (𝔽q := 𝔽q) (β := β) (i := i) (h_i1 := h_i1) a ha d]
       rw [hn_eq]
     have hTlc : T.leadingCoeff = P.leadingCoeff := by
       dsimp [T, q, c, a]
-      rw [leadingCoeff_even_qMap_term (𝔽q := 𝔽q) (β := β) (i := i) a ha d]
+      rw [leadingCoeff_even_qMap_term (𝔽q := 𝔽q) (β := β) (i := i) (h_i1 := h_i1) a ha d]
       change (P.leadingCoeff / c ^ d) * c ^ d = P.leadingCoeff
       rw [div_eq_mul_inv, mul_assoc, inv_mul_cancel₀ hc_pow, mul_one]
     let P' : L[X] := P - T
@@ -294,11 +296,11 @@ lemma qMap_quadratic_decomp_of_natDegree_lt
     let T : L[X] := X * (C a * X ^ d).comp q
     have hTdeg : T.degree = (n : WithBot ℕ) := by
       dsimp [T, q]
-      rw [degree_odd_qMap_term (𝔽q := 𝔽q) (β := β) (i := i) a ha d]
+      rw [degree_odd_qMap_term (𝔽q := 𝔽q) (β := β) (i := i) (h_i1 := h_i1) a ha d]
       rw [hn_eq]
     have hTlc : T.leadingCoeff = P.leadingCoeff := by
       dsimp [T, q, c, a]
-      rw [leadingCoeff_odd_qMap_term (𝔽q := 𝔽q) (β := β) (i := i) a d]
+      rw [leadingCoeff_odd_qMap_term (𝔽q := 𝔽q) (β := β) (i := i) (h_i1 := h_i1) a d]
       change (P.leadingCoeff / c ^ d) * c ^ d = P.leadingCoeff
       rw [div_eq_mul_inv, mul_assoc, inv_mul_cancel₀ hc_pow, mul_one]
     let P' : L[X] := P - T
@@ -333,7 +335,7 @@ lemma qMap_quadratic_decomp_of_natDegree_lt
 lemma qMap_eval_qMap_total_fiber_one
     (i : Fin r) (h_i : i.val + 1 < ℓ + 𝓡) (h_le : i.val + 1 ≤ ℓ)
     (y : sDomain 𝔽q β h_ℓ_add_R_rate ⟨i.val + 1, by omega⟩) (k : Fin 2) :
-    (qMap 𝔽q β i).eval
+    (qMap 𝔽q β i (by omega)).eval
       ((qMap_total_fiber 𝔽q β (i := i) (steps := 1)
         (h_i_add_steps := h_i) (y := y) k).val : L) = y.val := by
   have hiℓ : i.val < ℓ := by omega
@@ -345,7 +347,9 @@ lemma qMap_eval_qMap_total_fiber_one
       (h_i_add_steps := h_i) (y := y) k := by
     apply Subtype.ext
     rfl
-  have hq := iteratedQuotientMap_k_eq_1_is_qMap 𝔽q β h_ℓ_add_R_rate iℓ (by omega) x
+  have hq := iteratedQuotientMap_k_eq_1_is_qMap 𝔽q β h_ℓ_add_R_rate
+    (i := ⟨iℓ, by omega⟩) (destIdx := ⟨iℓ + 1, by omega⟩)
+    (h_destIdx := by simp) (h_destIdx_le := by simp only [Fin.val_mk]; omega) x
   simp only [Subtype.ext_iff] at hq
   rw [← hx]
   rw [← hq]
@@ -371,7 +375,7 @@ lemma qMap_total_fiber_one_val_sub
 lemma fold_legacy_eval_qMap_decomp
     (i : Fin r) (h_i : i.val + 1 < ℓ + 𝓡) (h_le : i.val + 1 ≤ ℓ)
     (A B P : L[X])
-    (hP : P = A.comp (qMap 𝔽q β i) + X * B.comp (qMap 𝔽q β i))
+    (hP : P = A.comp (qMap 𝔽q β i (by omega)) + X * B.comp (qMap 𝔽q β i (by omega)))
     (r_chal : L)
     (y : sDomain 𝔽q β h_ℓ_add_R_rate ⟨i.val + 1, by omega⟩) :
     fold_legacy 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
@@ -382,10 +386,10 @@ lemma fold_legacy_eval_qMap_decomp
     (h_i_add_steps := h_i) (y := y)
   set x₀ := fiberMap 0
   set x₁ := fiberMap 1
-  have hq0 : (qMap 𝔽q β i).eval x₀.val = y.val := by
+  have hq0 : (qMap 𝔽q β i (by omega)).eval x₀.val = y.val := by
     simpa [x₀, fiberMap] using
       qMap_eval_qMap_total_fiber_one (𝔽q := 𝔽q) (β := β) (i := i) h_i h_le y 0
-  have hq1 : (qMap 𝔽q β i).eval x₁.val = y.val := by
+  have hq1 : (qMap 𝔽q β i (by omega)).eval x₁.val = y.val := by
     simpa [x₁, fiberMap] using
       qMap_eval_qMap_total_fiber_one (𝔽q := 𝔽q) (β := β) (i := i) h_i h_le y 1
   have hdiff : x₁.val - x₀.val = (1 : L) := by
@@ -442,7 +446,7 @@ lemma BBF_CodeDistance_eq (i : Fin r) (h_i : i ≤ ℓ) :
   haveI : NeZero (2 ^ (ℓ - i.val)) := ⟨pow_ne_zero _ (by norm_num)⟩
   -- Create the embedding from domain elements to L
   let domain : (sDomain 𝔽q β h_ℓ_add_R_rate) i ↪ L :=
-    ⟨fun x => x.val, fun x y h => by exact Subtype.ext h⟩
+    ⟨fun x => x.val, Subtype.val_injective⟩
   -- Create α : Fin m → L by composing with an equivalence
   let m := Fintype.card ((sDomain 𝔽q β h_ℓ_add_R_rate) i)
   have h_dist_RS := ReedSolomon.dist_eq' (F := L) (ι := (sDomain 𝔽q β h_ℓ_add_R_rate)
@@ -1398,7 +1402,7 @@ theorem fold_preserves_BBF_Code_membership
   let P : L[X] := Psub.val
   have hP_eval_fun :
       (fun x : sDomain 𝔽q β h_ℓ_add_R_rate i => P.eval x.val) = f := by
-    simpa [P, polyToOracleFunc] using hPsub_eval
+    exact hPsub_eval
   have ha_lt0 : i.val + 1 < r := by
     have hR : 0 < 𝓡 := Nat.pos_of_neZero 𝓡
     omega
@@ -1418,7 +1422,7 @@ theorem fold_preserves_BBF_Code_membership
     simpa [hpow] using hPdeg
   obtain ⟨A, B, hA, hB, hPdecomp⟩ :=
     qMap_quadratic_decomp_of_natDegree_lt (𝔽q := 𝔽q) (β := β)
-      (i := i) (m := m) hm P hPnat
+      (i := i) (h_i1 := ha_lt0) (m := m) hm P hPnat
   let Q : L[X] := C (1 - r_chal) * A + C r_chal * B
   unfold BBF_Code
   rw [ReedSolomon.mem_code_iff_exists_polynomial]
@@ -1473,7 +1477,7 @@ theorem exists_unfold_of_binary_BBF_Codewords
     (𝔽q := 𝔽q) (β := β) (h_ℓ_add_R_rate := h_ℓ_add_R_rate) destIdx' u₁cw
   let A : L[X] := A_sub.val
   let B : L[X] := B_sub.val
-  let P : L[X] := A.comp (qMap 𝔽q β i) + X * B.comp (qMap 𝔽q β i)
+  let P : L[X] := A.comp (qMap 𝔽q β i ha_lt0) + X * B.comp (qMap 𝔽q β i ha_lt0)
   let m : ℕ := 2 ^ (ℓ - destIdx'.val)
   have hm_pos : 0 < m := by
     dsimp [m]
@@ -1487,15 +1491,15 @@ theorem exists_unfold_of_binary_BBF_Codewords
     exact natDegree_of_mem_degreeLT (L := L) hm_pos A_sub.property
   have hB_nat : B.natDegree < m := by
     exact natDegree_of_mem_degreeLT (L := L) hm_pos B_sub.property
-  have hA_comp : (A.comp (qMap 𝔽q β i)).natDegree < 2 * m := by
-    rw [Polynomial.natDegree_comp, qMap_natDegree (𝔽q := 𝔽q) (β := β) (i := i)]
+  have hA_comp : (A.comp (qMap 𝔽q β i ha_lt0)).natDegree < 2 * m := by
+    rw [Polynomial.natDegree_comp, qMap_natDegree (𝔽q := 𝔽q) (β := β) (i := i) (h_i1 := ha_lt0)]
     omega
-  have hB_comp_le : (B.comp (qMap 𝔽q β i)).natDegree ≤ B.natDegree * 2 := by
-    rw [Polynomial.natDegree_comp, qMap_natDegree (𝔽q := 𝔽q) (β := β) (i := i)]
-  have hX_B_comp : (X * B.comp (qMap 𝔽q β i)).natDegree < 2 * m := by
+  have hB_comp_le : (B.comp (qMap 𝔽q β i ha_lt0)).natDegree ≤ B.natDegree * 2 := by
+    rw [Polynomial.natDegree_comp, qMap_natDegree (𝔽q := 𝔽q) (β := β) (i := i) (h_i1 := ha_lt0)]
+  have hX_B_comp : (X * B.comp (qMap 𝔽q β i ha_lt0)).natDegree < 2 * m := by
     calc
-      (X * B.comp (qMap 𝔽q β i)).natDegree
-          ≤ (X : L[X]).natDegree + (B.comp (qMap 𝔽q β i)).natDegree :=
+      (X * B.comp (qMap 𝔽q β i ha_lt0)).natDegree
+          ≤ (X : L[X]).natDegree + (B.comp (qMap 𝔽q β i ha_lt0)).natDegree :=
             Polynomial.natDegree_mul_le
       _ ≤ 1 + B.natDegree * 2 := by
             rw [Polynomial.natDegree_X]
@@ -1523,7 +1527,7 @@ theorem exists_unfold_of_binary_BBF_Codewords
   · funext y
     have hA_fun :
         (fun y : sDomain 𝔽q β h_ℓ_add_R_rate destIdx' => A.eval y.val) = u₀ := by
-      simpa [A, u₀cw, polyToOracleFunc] using hA_eval
+      exact hA_eval
     unfold fold
     simp only [cast_eq, g, polyToOracleFunc]
     change fold_legacy 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
@@ -1537,7 +1541,7 @@ theorem exists_unfold_of_binary_BBF_Codewords
   · funext y
     have hB_fun :
         (fun y : sDomain 𝔽q β h_ℓ_add_R_rate destIdx' => B.eval y.val) = u₁ := by
-      simpa [B, u₁cw, polyToOracleFunc] using hB_eval
+      exact hB_eval
     unfold fold
     simp only [cast_eq, g, polyToOracleFunc]
     change fold_legacy 𝔽q β (h_ℓ_add_R_rate := h_ℓ_add_R_rate)
