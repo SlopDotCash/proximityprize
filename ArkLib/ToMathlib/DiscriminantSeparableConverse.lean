@@ -6,7 +6,6 @@ Authors: ArkLib Contributors
 import ArkLib.ToMathlib.DiscriminantSeparable
 import Mathlib.FieldTheory.Perfect
 import Mathlib.RingTheory.Polynomial.GaussLemma
-import ArkLib.Data.Polynomial.Prelims
 
 /-!
 # Separable ⇒ nonzero discriminant (the converse bridge), and the perfect-field discharge
@@ -39,19 +38,6 @@ With `A = K[X]`, `K = F(Z)`, `F` of characteristic zero, `FractionRing A = K(X)`
 interpolant has nonzero `Y`-discriminant** — the S5 separability residual is discharged
 (`GSSeparabilityCharZero.lean`). In characteristic `p` the same statement holds for the
 separable factors; the inseparable `R(X, Y^{p^f})` descent remains the deep S4→S6 content.
-
-* `Univariate.discriminant_mul_leadingCoeff_pow_eq` /
-  `Univariate.discriminant_eq_neg_one_pow_mul_discr` — the **sign/normalization bridge** for
-  the custom `Univariate.discriminant f := lc(f)⁻¹ · resultant f f'` of
-  `ArkLib/Data/Polynomial/Prelims.lean` (a pinned upstream module, left byte-for-byte).  That
-  value is **not** the conventional discriminant: it omits the sign `(-1)^(n(n-1)/2)` and, when
-  `deg f' < n - 1` (characteristic dividing `n`), it uses the default-size resultant, which
-  differs from the size-`(n-1)` one by a power of `lc(f)`.  For `0 < deg f` with
-  `n := natDegree f`, `discriminant f · lc(f)^((n-1) - deg f') = (-1)^(n(n-1)/2) · discr f`;
-  in particular `discriminant f = (-1)^(n(n-1)/2) · discr f` when `deg f' = n - 1`.  E.g. over
-  `ℚ`, `discriminant (X² - 1) = -4` while `discr (X² - 1) = 4` (checked below).  The
-  separability equivalence `Univariate.separable_iff_discr_eq_zero` is unaffected (the
-  discrepancy is a unit); consumers wanting the conventional value should use `Polynomial.discr`.
 
 Axiom-clean: `[propext, Classical.choice, Quot.sound]`.
 -/
@@ -118,62 +104,7 @@ theorem discr_ne_zero_of_irreducible_of_perfectField_fractionRing
 
 end Polynomial
 
-namespace Univariate
-
-open Polynomial
-
-/-- **Normalization bridge for the custom `Univariate.discriminant`.**  For `0 < deg f`, the
-custom value `lc(f)⁻¹ · resultant f f'` (default resultant sizes) relates to Mathlib's
-conventional `Polynomial.discr` by the sign `(-1)^(n(n-1)/2)` and the size-padding factor
-`lc(f)^((n-1) - deg f')`, where `n = natDegree f`. -/
-theorem discriminant_mul_leadingCoeff_pow_eq {F : Type} [Field F] [Inhabited F] {f : F[X]}
-    (hf : 0 < f.degree) :
-    discriminant f * f.leadingCoeff ^ ((f.natDegree - 1) - f.derivative.natDegree) =
-      (-1) ^ (f.natDegree * (f.natDegree - 1) / 2) * f.discr := by
-  have hf0 : f ≠ 0 := ne_zero_of_degree_gt hf
-  have hlc : f.leadingCoeff ≠ 0 := leadingCoeff_ne_zero.mpr hf0
-  have hd : f.derivative.natDegree ≤ f.natDegree - 1 := natDegree_derivative_le f
-  have hpad := resultant_add_right_deg f f.derivative f.natDegree f.derivative.natDegree
-    ((f.natDegree - 1) - f.derivative.natDegree) le_rfl
-  rw [show f.derivative.natDegree + ((f.natDegree - 1) - f.derivative.natDegree) =
-      f.natDegree - 1 by omega, resultant_deriv hf, coeff_natDegree] at hpad
-  unfold discriminant
-  have hres : resultant f f.derivative =
-      resultant f f.derivative f.natDegree f.derivative.natDegree := rfl
-  rw [hres, show 1 / f.leadingCoeff * f.resultant f.derivative f.natDegree f.derivative.natDegree *
-        f.leadingCoeff ^ ((f.natDegree - 1) - f.derivative.natDegree) =
-      f.leadingCoeff⁻¹ * (f.leadingCoeff ^ ((f.natDegree - 1) - f.derivative.natDegree) *
-        f.resultant f.derivative f.natDegree f.derivative.natDegree) by ring, ← hpad]
-  field_simp
-
-/-- **The custom discriminant is the conventional one up to the omitted sign**, whenever the
-derivative has full degree `n - 1` (e.g. in characteristic zero):
-`discriminant f = (-1)^(n(n-1)/2) · discr f`. -/
-theorem discriminant_eq_neg_one_pow_mul_discr {F : Type} [Field F] [Inhabited F] {f : F[X]}
-    (hf : 0 < f.degree) (hd : f.derivative.natDegree = f.natDegree - 1) :
-    discriminant f = (-1) ^ (f.natDegree * (f.natDegree - 1) / 2) * f.discr := by
-  simpa [hd] using discriminant_mul_leadingCoeff_pow_eq hf
-
-/-- Quadratic sanity check: the custom value for `X² - 1` over `ℚ` is `-4`, the negative of the
-conventional discriminant `discr (X² - 1) = 4`. -/
-example : discriminant ((X ^ 2 - 1 : ℚ[X])) = -4 := by
-  have hnd : (X ^ 2 - 1 : ℚ[X]).natDegree = 2 := by compute_degree!
-  have hdeg : 0 < (X ^ 2 - 1 : ℚ[X]).degree := by
-    rw [degree_eq_natDegree (by intro h; simp [h] at hnd), hnd]; norm_num
-  have hder : (derivative (X ^ 2 - 1 : ℚ[X])).natDegree = 1 := by
-    simp
-  rw [discriminant_eq_neg_one_pow_mul_discr hdeg (by rw [hder, hnd]), hnd]
-  rw [discr_of_degree_eq_two (by rw [degree_eq_natDegree (by intro h; simp [h] at hnd), hnd]; rfl)]
-  have h2 : (X ^ 2 - 1 : ℚ[X]).coeff 2 = 1 := by simp [coeff_X_pow, coeff_one]
-  have h1 : (X ^ 2 - 1 : ℚ[X]).coeff 1 = 0 := by simp [coeff_X_pow, coeff_one]
-  have h0 : (X ^ 2 - 1 : ℚ[X]).coeff 0 = -1 := by simp [coeff_X_pow, coeff_one]
-  rw [h0, h1, h2]; norm_num
-
-end Univariate
-
 /-! ## Axiom audit — all kernel-clean. -/
 #print axioms Polynomial.discr_ne_zero_of_separable
 #print axioms Polynomial.discr_ne_zero_of_separable_map
 #print axioms Polynomial.discr_ne_zero_of_irreducible_of_perfectField_fractionRing
-#print axioms Univariate.discriminant_mul_leadingCoeff_pow_eq
-#print axioms Univariate.discriminant_eq_neg_one_pow_mul_discr

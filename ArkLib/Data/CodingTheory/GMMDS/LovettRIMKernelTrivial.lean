@@ -101,33 +101,6 @@ theorem rimKernelTrivialFromLovett_refuted :
   simp only [hv] at this
   exact one_ne_zero this
 
-/-- **`RIMKernelTrivialFromLovett` is FALSE for every `ι`, every field `F` and every `1 ≤ k`**
-(the general form of `rimKernelTrivialFromLovett_refuted`): the same witness `t = 1`, `e ≡ ∅`,
-`δ ≡ 0` gives a zero-row RIM, so the constant-`1` vector lies in its kernel. Hence any theorem
-taking `RIMKernelTrivialFromLovett ι F k` (with `1 ≤ k`) as a hypothesis is vacuous. Axiom-clean. -/
-theorem not_rimKernelTrivialFromLovett {ι : Type*} [Fintype ι] [DecidableEq ι]
-    {F : Type*} [Field F] {k : ℕ} (hk : 1 ≤ k) :
-    ¬ RIMKernelTrivialFromLovett ι F k := by
-  classical
-  intro h
-  have hgzp : AGL24.GZPCondition (fun _ : ι => (∅ : Finset (Fin (1 + 1))))
-      (fun _ => 0) k := by
-    intro κ hκ hpos
-    exfalso
-    have hz : ∀ j, κ j = 0 := fun j => Nat.le_zero.mp (hκ j)
-    simp only [hz] at hpos
-    simp at hpos
-  have hlov : ∀ m : ℕ, LovettThm17 (F := F) m := fun _ => lovettThm17_unconditional
-  set v : Fin 1 × Fin k → MvPolynomial ι F := fun _ => 1 with hv
-  have hmul :
-      (AGL24.RIM F (fun _ : ι => (∅ : Finset (Fin (1 + 1))))).mulVec v = 0 := by
-    funext r
-    exact absurd r.2.property.1 (by simp)
-  have hv0 := h hlov (fun _ : ι => (∅ : Finset (Fin (1 + 1)))) (fun _ => 0) hgzp v hmul
-  have : v (0, ⟨0, hk⟩) = (0 : MvPolynomial ι F) := by rw [hv0]; rfl
-  simp only [hv] at this
-  exact one_ne_zero this
-
 /-! ## The corrected residual: kernel-triviality under the WPC nondegeneracy
 
 The genuine GM-MDS path produces a weakly partition connected edge family (the `k`
@@ -163,5 +136,4 @@ end ArkLib.GMMDS
 
 -- Axiom audit: must report only `[propext, Classical.choice, Quot.sound]` (no `sorryAx`).
 #print axioms ArkLib.GMMDS.rimKernelTrivialFromLovett_refuted
-#print axioms ArkLib.GMMDS.not_rimKernelTrivialFromLovett
 #print axioms ArkLib.GMMDS.rimKernelTrivialFromLovettWPC_of_symbolicFullRank
