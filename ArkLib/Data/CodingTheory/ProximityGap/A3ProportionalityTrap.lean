@@ -27,10 +27,17 @@ affine `(1,c)`-pattern with slope `γ = ∑ aᵣ·γᵣ`, and exactly one of:
   non-constant on every 2-point subset, and — for the repetition code — non-explainable on
   *every* 2-point witness set: the seed has no witnesses at all and is not bad).
 
-Either way the badness/forcing pair required of a sharpness instance fails — no per-block
-single-line stack over a constants-containing code can defeat `UniformObstruction`. The
-escape routes (cross-block kernel intersections, per-block multi-line geometry) are exactly
-the designs this theorem does not cover; the analysis is recorded on issue #334.
+**Scope of the no-go.** The formal content is the algebraic dichotomy above plus
+`no_constant_explanation` (a nonzero-slope combination agrees with *no constant* on any two
+distinct positions). This supports the conclusion that the badness/forcing pair fails — so no
+per-block single-line stack can defeat `UniformObstruction` — only for the repetition code, or
+more generally for codes whose sections on the block are **constant**. It does *not* cover an
+arbitrary code that merely contains the constants: such a code may also contain affine or
+injective sections (e.g. degree-`< 2` Reed–Solomon contains `j ↦ j`), which can explain an
+injective combination on a 2-point witness set; the nonzero-slope branch does not exclude those
+witnesses, and no general-code argument is proved here. The escape routes (non-constant block
+sections, cross-block kernel intersections, per-block multi-line geometry) are exactly the
+designs this file does not cover; the analysis is recorded on issue #334.
 -/
 
 namespace ProximityGap
@@ -55,7 +62,8 @@ theorem combination_affinePattern {ι : Type} [Fintype ι]
 
 /-- **The proportionality trap.** Any combination of same-line affine rows is either constant
 in the position (slope `0`) or has an injective first component (slope `≠ 0`) — the dichotomy
-that kills witness-forcing and badness respectively for any per-block single-line design. -/
+that kills witness-forcing and badness respectively for per-block single-line designs over codes
+whose block sections are constant (see the module docstring for the scope restriction). -/
 theorem combination_dichotomy {ι : Type} [Fintype ι]
     (c : F) (γ : ι → F) (v : ι → Fin 2 → F) (a : ι → F) :
     -- slope zero: the combination is constant in the position

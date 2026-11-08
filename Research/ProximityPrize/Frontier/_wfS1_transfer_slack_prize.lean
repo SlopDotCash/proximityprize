@@ -26,9 +26,11 @@ bounds `M = max_{b≠0}|η_b|` — stays `≤ 1.10` and is **antitone in `r`** (
 all `n ∈ {16,…,256}` at `β = 4`, to depth `r ~ 1.6·ln q`. Crucially, this holds even as `v₂(p−1)`
 is pushed up to `~4μ` at fixed `β = 4`. The famous structured-prime inflation
 (`K ≈ 2.3` at the Fermat prime `p = 65537`, `μ_32`) is a **sub-prize-scale artifact**
-(`β = 3.2`, `v₂(p−1) = 16 ≫ 4μ`): it requires the 2-part of `p−1` to dominate `p−1`, which is
-impossible once `p ≳ n^4`. So at the genuine prize regime the spurious mass does NOT concentrate
-in the nonprincipal energy.
+(`β = 3.2`; `v₂(p−1) = 16 = log₂(p−1)`, i.e. `p − 1` is a pure power of two — note this is
+*below* `4μ = 20` for `n = 32`, `μ = 5`): it occurs when the 2-part of `p−1` is all of `p−1`.
+The `β = 4` probes did not reproduce it, but nothing here proves it cannot recur at larger
+`β` (a Fermat-type prime `p − 1 = 2^k` would again have a full 2-part). So in the *measured*
+prize regime the spurious mass did NOT concentrate in the nonprincipal energy.
 
 (The b = 0 / principal DC term `n^{2r}/p = n^{2r−4}` DOES blow up for `r ≥ 3` — but that is the
 trivial constant-frequency term, excluded from the nonprincipal energy, and never bounds `M`.)
@@ -185,8 +187,6 @@ vanishing at prize scale. So the operative consumer is the `K = 1` collapse belo
 constant is the exact char-0 `√(2e) ≈ 2.33`.
 -/
 
-namespace ArkLib.ProximityGap.Frontier.WFS1
-
 /-- **The measured `K = 1` (char-0-limit) transfer hypothesis.** The deep `n ≤ 1024` measurement
 fits `K_inf = 1`: the nonprincipal char-`p` energy is bounded by the *exact* char-0 Lam–Leung Wick
 anchor (no slack above char-0). This is the per-`r` inequality `Er r ≤ (2r−1)‼·n^r`. -/
@@ -227,22 +227,25 @@ theorem prize_of_charzero_limit
   calc M = Real.sqrt (M ^ 2) := (Real.sqrt_sq hM).symm
     _ ≤ Real.sqrt (2 * Real.exp 1 * n * (r : ℝ)) := Real.sqrt_le_sqrt hsq
 
-/-- **The antitone-anchored reduction (formalizes the MEASURED ladder structure).** The deep
-measurement shows the slack ladder is *antitone in `r`* with the exact `r = 1` Parseval anchor
-`Er 1 ≤ n` (`= 1 − n/p` after normalization). We prove this exact structural shape — a per-`r`
-bound `Er r ≤ (Er 1) · (2r−1)‼ · n^{r−1}` with `Er 1 ≤ n` — is *sufficient* for the `K = 1`
-transfer. Thus the entire residual reduces to the single Parseval anchor `Er 1 ≤ n` PLUS the
-measured antitone normalization, both of which the deep data confirm to `n = 1024`. -/
-theorem charzero_limit_of_anchor_antitone
+/-- **Anchor + ratio-envelope repackaging of the `K = 1` transfer.** From the `r = 1` Parseval
+anchor `Er 1 ≤ n` and the per-`r` ratio envelope `Er r ≤ (Er 1) · (2r−1)‼ · n^{r−1}` (in Wick-ratio
+form `g_r ≤ g_1`, with `g_r := Er r / ((2r−1)‼ · n^r)`), the `K = 1` transfer follows.
+
+**Honesty note.**  This is a near-tautological repackaging, *not* a reduction of the residual to
+the anchor: given the (trivial) anchor, the envelope hypothesis is the `K = 1` target itself in a
+weaker-looking form, and it asserts no antitonicity of the ladder in `r` (only `g_r ≤ g_1` for each
+`r`).  The open content therefore lives entirely in the envelope hypothesis `hEnvelope`, which the
+`n ≤ 1024` measurements support but which is not proved here. -/
+theorem charzero_limit_of_anchor_ratio_envelope
     {n : ℝ} {Er : ℕ → ℝ} (hn : 0 ≤ n)
     (hanchor : Er 1 ≤ n)
-    (hantitone : ∀ r : ℕ, 1 ≤ r →
+    (hEnvelope : ∀ r : ℕ, 1 ≤ r →
       Er r ≤ Er 1 * (Nat.doubleFactorial (2 * r - 1) : ℝ) * n ^ (r - 1)) :
     CharPEnergyTransferCharZeroLimit Er n := by
   intro r hr
   have hd0 : (0 : ℝ) ≤ (Nat.doubleFactorial (2 * r - 1) : ℝ) := by positivity
   have hnr1 : (0 : ℝ) ≤ n ^ (r - 1) := by positivity
-  calc Er r ≤ Er 1 * (Nat.doubleFactorial (2 * r - 1) : ℝ) * n ^ (r - 1) := hantitone r hr
+  calc Er r ≤ Er 1 * (Nat.doubleFactorial (2 * r - 1) : ℝ) * n ^ (r - 1) := hEnvelope r hr
     _ ≤ n * (Nat.doubleFactorial (2 * r - 1) : ℝ) * n ^ (r - 1) := by
         gcongr
     _ = (Nat.doubleFactorial (2 * r - 1) : ℝ) * (n * n ^ (r - 1)) := by ring
@@ -259,4 +262,4 @@ end ArkLib.ProximityGap.Frontier.WFS1
 #print axioms ArkLib.ProximityGap.Frontier.WFS1.prize_sq_transfer_slack_one
 #print axioms ArkLib.ProximityGap.Frontier.WFS1.prize_sq_of_charzero_limit
 #print axioms ArkLib.ProximityGap.Frontier.WFS1.prize_of_charzero_limit
-#print axioms ArkLib.ProximityGap.Frontier.WFS1.charzero_limit_of_anchor_antitone
+#print axioms ArkLib.ProximityGap.Frontier.WFS1.charzero_limit_of_anchor_ratio_envelope

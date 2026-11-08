@@ -48,9 +48,12 @@ wall floor
   is a lower bound on the deep-wall *representation-count* profile — the actual CORE object
   (#509), not a covering statement.
 - **2-power-essential**: the antipodal injection requires `g^m = -1`. An odd-order subgroup has
-  no antipodal partner (`probe_oc_kernel_formula.py`: for odd `n` the depth-`2` kernel mass is
-  `q`-dependent and admits no such combinatorial floor; the analogous count is `0`). The floor
-  `S₀ ≥ n` is available **only** to the 2-power smooth subgroup.
+  no antipodal partner (`-1 ∉ μ_n`), so for odd `n` the depth-`2` kernel mass is `S₀ = 0` at
+  every admissible prime and the floor `S₀ ≥ n` fails. The floor is available **only** to the
+  2-power smooth subgroup. This does not make odd-order zero-sums `q`-dependent accidents:
+  odd-order cyclotomic relations survive in every characteristic (`probe_oc_kernel_formula.py`,
+  odd-`n` control: e.g. `n = 3`, `r = 3` gives `S₀ = 6` for every prime `p ≡ 1 (mod 3)`, from
+  `1 + g + g² = 0`), they are simply a different relation family from antipodal balancing.
 - **Sharp and scale-invariant against the prize**: at depth `r = 2` the prize target is
   `q·(2·2−1)!!·n² = 3·q·n²`, so the dyadic kernel floor `q·n²` is **exactly one third** of the
   prize ceiling for *every* dyadic `n`, production `n = 2^30` included
@@ -65,9 +68,10 @@ This is an **unconditional lower bound** on `centeredShadowMass`, i.e. it certif
 at least a fixed fraction of the prize target; it does **not** provide the *upper* bound the
 prize needs (`DCEnergyBound`), which is exactly the cross-orbit `Σ_γ S_γ²` tail G88 isolates and
 which carries zero algebraic constraint (doctrine v2). The empirical stabilization
-`S₀ = A(n,r)` (the exact antipodal count, `A(n,2)=n`, `A(n,4)=3n(n-1)`) for `p` past a
-saturation threshold `p*` is measured but **not** claimed here (accidental char-`p` zero-sums
-below `p*` inflate `S₀`; only the unconditional `≥` direction is proved). CORE remains OPEN /
+`S₀ = A(n,r)` (the exact antipodal count, `A(n,2)=n`, `A(n,4)=3n(n-1)`) for `p` past an
+observed saturation point is a finite-scan observation (primes `< 8000`), not a proved global
+threshold, and is **not** claimed here (accidental char-`p` zero-sums at small `p` inflate `S₀`;
+only the unconditional `≥` direction is proved). CORE remains OPEN /
 ON-BGK. The value is the exact, kernel-checked, thinness-forced constant on the *floor* side of
 the wall.
 

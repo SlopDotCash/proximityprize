@@ -16,17 +16,21 @@ Equivalently, for the multiplicative complement (in `F* = univ \ {0}`),
 
 This is pure additive-character orthogonality (`∑_{y∈F} ψ(b·y) = 0` for `b ≠ 0`), no Weil bound.
 
-## Why this is recorded (a refutation, not a closure)
+## Why this is recorded (a transfer identity, not a closure)
 
-It **kills the "near-complete subgroup" hope** for the prize floor.  In the prize regime the subgroup
-`μ_n` has constant index `m = (q−1)/n ≈ 2^128`, so it is "almost all" of `F*` — only `m` cosets are
-missing.  One might hope to bound the worst-case period sup-norm `M(μ_n) = max_{b≠0}‖η_b‖` by exploiting
-that `μ_n` is a near-complete sum (the full sum vanishes, so the period is "the missing part", seemingly
-small).  The flip shows this is vacuous: `‖η_b(μ_n)‖` and `‖η_b(F*∖μ_n)‖` differ by **at most `1`**, so
-the worst-case sup-norm of the subgroup equals that of its (huge) complement up to `1`.  Near-completeness
-moves `M` by `≤ 1`; it buys no asymptotic cancellation.  The constant-index/large-subgroup route to the
-floor therefore reduces to the same BGK square-root-cancellation wall as the small-subgroup case — this
-lemma is the one-line proof of that reduction.
+A multiplicative subgroup of index `m` has density `1/m` in `F*`, and its complement `F* ∖ μ_n`
+is the union of the other `m − 1` cosets.  In the prize regime `m = (q−1)/n ≈ 2^128`, so `μ_n` is
+an **extremely sparse** subset of `F*` (density `≈ 2^{-128}`), and it is the *complement* that is
+near-complete (density `1 − 1/m`).  The flip says `‖η_b(μ_n)‖` and `‖η_b(F*∖μ_n)‖` differ by **at
+most `1`**, so the worst-case sup-norm `M = max_{b≠0}‖η_b‖` of the sparse subgroup equals that of
+its near-complete complement up to `1`.  Consequently, rewriting the subgroup period as "minus the
+period of the complement" (using that the full sum vanishes) buys no asymptotic cancellation by
+itself: any bound for one side transfers to the other with additive loss `≤ 1`, and the problem is
+the same square-root-cancellation (BGK-type) question either way.
+
+Scope: this is only the exact complement identity and its `≤ 1` transfer.  It is **not** an
+analytic no-go theorem for every large-subgroup, small-subgroup or index-based cancellation
+strategy; such a claim would need a separate argument.
 
 All elementary; **axiom-clean** (`propext, Classical.choice, Quot.sound`), no `sorry`.
 -/
@@ -57,8 +61,10 @@ theorem eta_add_compl_eq_zero {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {b : F
   exact sum_mulShift_eq_zero hψ hb
 
 /-- **The worst-case period sup-norm is complement-symmetric up to `1`.**  `|‖η_b(G)‖ − ‖η_b(Gᶜ)‖| ≤ 0`,
-i.e. the norms are *equal* (`Gᶜ` here is the full complement).  Hence near-completeness of the subgroup
-gives no leverage: the constant-index/large-subgroup route collapses to the same sup-norm wall. -/
+i.e. the norms are *equal* (`Gᶜ` here is the full complement).  Hence passing from a set to its
+complement (e.g. from the sparse index-`m` subgroup `μ_n` to its dense complement) changes no
+sup-norm: bounds transfer exactly between the two sides.  This is a transfer identity, not an
+analytic no-go for other cancellation strategies. -/
 theorem norm_eta_compl_eq {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {b : F} (hb : b ≠ 0)
     (G : Finset F) : ‖eta ψ Gᶜ b‖ = ‖eta ψ G b‖ := by
   have h : eta ψ Gᶜ b = - eta ψ G b := by

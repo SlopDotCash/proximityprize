@@ -30,7 +30,31 @@ the unique-decoding and curve ingredients. `RS_correlatedAgreement_affineLines` 
 positive variants `RS_correlatedAgreement_affineLines_strict`,
 `RS_correlatedAgreement_affineLines_strict_pos`) cover the regime up to the relevant bound, while
 the `..._johnson_of_betaRec...` results extend the conclusion into the Johnson regime, conditional
-on the recursive `β`-construction and the documented lattice residual.
+on the recursive `β`-construction and the documented lattice residual. Their `hInput` hypotheses
+supply a `KeystoneStrictResidual.BetaCurveInput*` bundle for every received line `u` in the regime
+and every decoded family `P` on its good set (the bundles are per decoded family since the audit-L72
+repair); see `KeystoneStrictResidual` for the obstructions those bundles still carry.
+
+**Closed-endpoint caveat.**  Every non-strict front door here that takes the bare
+`BoundaryCardResidual (k := 1)` (`hBoundaryCard`) is a sound conditional theorem, but that
+residual is refuted at the square-root endpoint in small fields
+(`BoundaryCardResidualAffineLineRefutation.not_boundaryCardResidual_affineLine`: `F = ZMod 5`,
+four points, `deg = 1`, `δ = 1/2`), and off the endpoint it is vacuous.  So these front doors add
+nothing over the strict ones except at `δ = 1 - √ρ`, and there only in parameter regimes where the
+residual is actually discharged.  Endpoint claims should go through a genuinely stronger, guarded
+premise (e.g. `BoundaryCardLatticeData`, which forces a large field) rather than the bare residual. Their `hInput` hypotheses
+supply a `KeystoneStrictResidual.BetaCurveInput*` bundle for every received line `u` in the regime
+and every decoded family `P` on its good set (the bundles are per decoded family since the audit-L72
+repair); see `KeystoneStrictResidual` for the obstructions those bundles still carry.
+
+**Closed-endpoint caveat.**  Every non-strict front door here that takes the bare
+`BoundaryCardResidual (k := 1)` (`hBoundaryCard`) is a sound conditional theorem, but that
+residual is refuted at the square-root endpoint in small fields
+(`BoundaryCardResidualAffineLineRefutation.not_boundaryCardResidual_affineLine`: `F = ZMod 5`,
+four points, `deg = 1`, `δ = 1/2`), and off the endpoint it is vacuous.  So these front doors add
+nothing over the strict ones except at `δ = 1 - √ρ`, and there only in parameter regimes where the
+residual is actually discharged.  Endpoint claims should go through a genuinely stronger, guarded
+premise (e.g. `BoundaryCardLatticeData`, which forces a large field) rather than the bare residual.
 -/
 
 namespace ProximityGap
@@ -46,7 +70,17 @@ variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 
 omit [DecidableEq ι] in
 /-- Legacy closed-boundary affine-line interface. The strict coefficient premise remains
-for compatibility; canonical strict soundness leaves the separate boundary-card input. -/
+for compatibility; canonical strict soundness leaves the separate boundary-card input.
+
+**Status of `hBoundaryCard`.**  The bare `BoundaryCardResidual` is vacuously true off the
+endpoint `δ = 1 - √ρ`, so it only matters there; at the endpoint it is refuted in general:
+`BoundaryCardResidualAffineLineRefutation.not_boundaryCardResidual_affineLine` proves its
+negation at exactly this `k = 1` index (`F = ZMod 5`, four points, `deg = 1`, `δ = 1/2`).  The
+theorem is a sound conditional, but its endpoint conclusion is only obtained where that residual
+is actually discharged.  For `δ < 1 - √ρ` use `RS_correlatedAgreement_affineLines_strict`, which
+needs no boundary residual; for the endpoint use a genuinely stronger guarded premise such as the
+`BoundaryCardLatticeData` front doors below (whose cardinality clause forces `|F| ≥ n + 1`
+whenever a good set is nonempty), scoped to parameters where that data is established. -/
 theorem Compatibility.RS_correlatedAgreement_affineLines_closed
     {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg] [SampleableType F]
     (_hStrictCoeff : StrictCoeffPolysResidual (k := 1) (deg := deg) (domain := domain) (δ := δ))
@@ -113,8 +147,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec_strict
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInput
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u) :
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInput
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P) :
   δ_ε_correlatedAgreementAffineLines (A := F) (F := F) (ι := ι)
     (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) :=
   RS_correlatedAgreement_affineLines_strict (ι := ι) (F := F) (deg := deg)
@@ -139,8 +177,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec_offcentre_strict
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentre
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u) :
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentre
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P) :
   δ_ε_correlatedAgreementAffineLines (A := F) (F := F) (ι := ι)
     (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) :=
   RS_correlatedAgreement_affineLines_strict (ι := ι) (F := F) (deg := deg)
@@ -156,7 +198,9 @@ local-variable `betaRec` capsule and the boundary branch supplied as the already
 
 This is the affine-line counterpart of
 `KeystoneStrictResidual.correlatedAgreement_affine_curves_johnson_of_betaRec_offcentre`, specialized
-to `k = 1`. -/
+to `k = 1`.  The bare `BoundaryCardResidual (k := 1)` it consumes is refuted at the endpoint for
+small fields (`BoundaryCardResidualAffineLineRefutation.not_boundaryCardResidual_affineLine`), so
+the endpoint case of this capstone is conditional on parameters where that residual holds. -/
 theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec_offcentre
     [SampleableType F]
     {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
@@ -168,8 +212,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec_offcentre
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentre
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentre
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hBoundaryCard :
       BoundaryCardResidual (k := 1) (deg := deg) (domain := domain) (δ := δ)) :
   δ_ε_correlatedAgreementAffineLines (A := F) (F := F) (ι := ι)
@@ -195,8 +243,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInput
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInput
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hBoundaryData : ∀ (_hk : 0 < 1) (u : WordStack F (Fin 2) ι),
       δ = 1 - ReedSolomon.sqrtRate deg domain →
       0 < (RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ).card →
@@ -243,8 +295,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec_lattice_residual
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInput
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInput
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hStrictBoundary : ∀ (u : WordStack F (Fin 2) ι) (δ' : ℝ≥0),
       δ' < δ →
       Nat.floor (δ' * Fintype.card ι) = Nat.floor (δ * Fintype.card ι) →
@@ -270,7 +326,9 @@ omit [DecidableEq ι] in
 This is the adapter-only front door for callers that have reduced the genuine `1/n` lattice case
 to concrete good-set cardinality and coefficient-polynomial data, rather than the older
 `BoundaryCardLatticeResidual` surface.  The non-lattice boundary levels are still handled by
-`hStrictBoundary`; this theorem does not prove or assume the exact lattice data. -/
+`hStrictBoundary`.  This theorem does not prove the exact lattice data: it *assumes* it, as the
+explicit hypothesis `hLatticeData : BoundaryCardLatticeData`, and only converts it to the
+`BoundaryCardLatticeResidual` surface (`boundaryCardLatticeResidual_of_lattice_data`). -/
 theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec_lattice_data
     [SampleableType F]
     {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
@@ -282,8 +340,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec_lattice_data
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInput
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInput
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hStrictBoundary : ∀ (u : WordStack F (Fin 2) ι) (δ' : ℝ≥0),
       δ' < δ →
       Nat.floor (δ' * Fintype.card ι) = Nat.floor (δ * Fintype.card ι) →
@@ -321,8 +383,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec_lattice_data_isSqu
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInput
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInput
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hLatticeData :
       ArkLib.BoundaryCardResidual.BoundaryCardLatticeData
         (k := 1) (deg := deg) (domain := domain) (δ := δ)) :
@@ -360,8 +426,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec_quantization_data
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInput
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInput
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hBoundary :
       ArkLib.BoundaryDischarge.BoundaryCardQuantizationData
         (k := 1) (deg := deg) (domain := domain) (δ := δ)) :
@@ -389,8 +459,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec_offcentre_boundary
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentre
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentre
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hBoundaryCard : BoundaryCardResidual (k := 1) (deg := deg) (domain := domain) (δ := δ)) :
   δ_ε_correlatedAgreementAffineLines (A := F) (F := F) (ι := ι)
     (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) :=
@@ -414,8 +488,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec_offcentre_lattice_
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentre
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentre
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hStrictBoundary : ∀ (u : WordStack F (Fin 2) ι) (δ' : ℝ≥0),
       δ' < δ →
       Nat.floor (δ' * Fintype.card ι) = Nat.floor (δ * Fintype.card ι) →
@@ -445,8 +523,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec_offcentre_lattice_
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentre
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentre
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hStrictBoundary : ∀ (u : WordStack F (Fin 2) ι) (δ' : ℝ≥0),
       δ' < δ →
       Nat.floor (δ' * Fintype.card ι) = Nat.floor (δ * Fintype.card ι) →
@@ -477,8 +559,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec_offcentre_quantiza
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentre
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentre
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hBoundary :
       ArkLib.BoundaryDischarge.BoundaryCardQuantizationData
         (k := 1) (deg := deg) (domain := domain) (δ := δ)) :
@@ -513,8 +599,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec_quantization_data_
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInput
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInput
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hBoundary :
       ArkLib.BoundaryDischarge.BoundaryCardQuantizationData
         (k := 1) (deg := deg) (domain := domain) (δ := δ)) :
@@ -540,8 +630,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRecFin_strict
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInputFin
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u) :
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInputFin
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P) :
   δ_ε_correlatedAgreementAffineLines (A := F) (F := F) (ι := ι)
     (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) :=
   RS_correlatedAgreement_affineLines_strict (ι := ι) (F := F) (deg := deg)
@@ -564,8 +658,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec_offcentreFin_stric
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentreFin
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u) :
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentreFin
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P) :
   δ_ε_correlatedAgreementAffineLines (A := F) (F := F) (ι := ι)
     (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) :=
   RS_correlatedAgreement_affineLines_strict (ι := ι) (F := F) (deg := deg)
@@ -588,8 +686,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec_offcentreFin
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentreFin
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentreFin
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hBoundaryCard :
       BoundaryCardResidual (k := 1) (deg := deg) (domain := domain) (δ := δ)) :
   δ_ε_correlatedAgreementAffineLines (A := F) (F := F) (ι := ι)
@@ -615,8 +717,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRecFin
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInputFin
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInputFin
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hBoundaryData : ∀ (_hk : 0 < 1) (u : WordStack F (Fin 2) ι),
       δ = 1 - ReedSolomon.sqrtRate deg domain →
       0 < (RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ).card →
@@ -657,8 +763,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRecFin_lattice_residua
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInputFin
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInputFin
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hStrictBoundary : ∀ (u : WordStack F (Fin 2) ι) (δ' : ℝ≥0),
       δ' < δ →
       Nat.floor (δ' * Fintype.card ι) = Nat.floor (δ * Fintype.card ι) →
@@ -691,8 +801,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRecFin_lattice_data
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInputFin
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInputFin
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hStrictBoundary : ∀ (u : WordStack F (Fin 2) ι) (δ' : ℝ≥0),
       δ' < δ →
       Nat.floor (δ' * Fintype.card ι) = Nat.floor (δ * Fintype.card ι) →
@@ -729,8 +843,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRecFin_lattice_data_is
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInputFin
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInputFin
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hLatticeData :
       ArkLib.BoundaryCardResidual.BoundaryCardLatticeData
         (k := 1) (deg := deg) (domain := domain) (δ := δ)) :
@@ -767,8 +885,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRecFin_quantization_da
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInputFin
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInputFin
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hBoundary :
       ArkLib.BoundaryDischarge.BoundaryCardQuantizationData
         (k := 1) (deg := deg) (domain := domain) (δ := δ)) :
@@ -796,8 +918,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec_offcentreFin_bound
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentreFin
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentreFin
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hBoundaryCard : BoundaryCardResidual (k := 1) (deg := deg) (domain := domain) (δ := δ)) :
   δ_ε_correlatedAgreementAffineLines (A := F) (F := F) (ι := ι)
     (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) :=
@@ -821,8 +947,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec_offcentreFin_latti
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentreFin
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentreFin
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hStrictBoundary : ∀ (u : WordStack F (Fin 2) ι) (δ' : ℝ≥0),
       δ' < δ →
       Nat.floor (δ' * Fintype.card ι) = Nat.floor (δ * Fintype.card ι) →
@@ -852,8 +982,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec_offcentreFin_latti
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentreFin
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentreFin
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hStrictBoundary : ∀ (u : WordStack F (Fin 2) ι) (δ' : ℝ≥0),
       δ' < δ →
       Nat.floor (δ' * Fintype.card ι) = Nat.floor (δ * Fintype.card ι) →
@@ -884,8 +1018,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRec_offcentreFin_quant
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentreFin
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInputOffcentreFin
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hBoundary :
       ArkLib.BoundaryDischarge.BoundaryCardQuantizationData
         (k := 1) (deg := deg) (domain := domain) (δ := δ)) :
@@ -919,8 +1057,12 @@ theorem RS_correlatedAgreement_affineLines_johnson_of_betaRecFin_quantization_da
           (((1 : ℕ) : ENNReal) * (errorBound δ deg domain : ENNReal)) →
       (1 - (LinearCode.rate (ReedSolomon.code domain deg) : ℝ≥0)) / 2 < δ →
       δ < 1 - ReedSolomon.sqrtRate deg domain →
-      ArkLib.KeystoneStrictResidual.BetaCurveInputFin
-        (k := 1) (deg := deg) (domain := domain) (δ := δ) u)
+      ∀ P : F → Polynomial F,
+        (∀ z ∈ RS_goodCoeffsCurve (k := 1) (deg := deg) (domain := domain) u δ,
+          (P z).natDegree < deg ∧
+            δᵣ(∑ t : Fin 2, (z ^ (t : ℕ)) • u t, (P z).eval ∘ domain) ≤ δ) →
+        ArkLib.KeystoneStrictResidual.BetaCurveInputFin
+          (k := 1) (deg := deg) (domain := domain) (δ := δ) u P)
     (hBoundary :
       ArkLib.BoundaryDischarge.BoundaryCardQuantizationData
         (k := 1) (deg := deg) (domain := domain) (δ := δ)) :

@@ -11,7 +11,7 @@ import Mathlib.Tactic.LinearCombination
 
 /-!
 # rou-vanishing-count: the binding-scale far-line incidence is a vanishing sum of `n`-th roots,
-  closed in char 0 by antipodal matching, with an EXPLICIT spurious-free height criterion (#407)
+  closed in char 0 by antipodal matching, with a CONJECTURAL sufficient height heuristic (#407)
 
 This file isolates the object `C1` reduced the prize to.  At the deepest binding scale the far-line
 incidence count (`#{γ : x^a + γ x^b agrees with a deg<k codeword on ≥(1-δ)n points of μ_n}`) equals,
@@ -26,23 +26,43 @@ for the 2-power group `μ_n` (`n = 2^a`) in `F_p`, prize prime `p ~ n·2^128`.
 * `sum_eq_zero_of_antipodal`: an **antipodal** subset (closed under negation, `0 ∉ R`) has zero sum.
   Char-free, via the fixed-point-free involution `x ↦ -x`.  (The CONVERSE — zero sum ⟹ antipodal —
   is the Lam–Leung structure theorem for prime-power order, packaged as the hypothesis
-  `NoSpuriousVanishing`, which over `F_p` requires the height criterion below.)
+  `NoSpuriousVanishing`; its char-0, `n = 2^a` case is proved in `ConverseLamLeung2Power.lean`.
+  Over `F_p` it needs an additional arithmetic input — see the heuristic and the guarded route
+  below; nothing here proves it over `F_p`.)
 
-## What is REDUCED to an EXPLICIT, NAMED, NUMERICALLY-ANCHORED obligation
+## A CONJECTURAL height heuristic (NOT a certified criterion)
 
-The char-`p` count can EXCEED the char-0 count only by a **spurious mod-`p` vanishing**: a subset `R`
-with nonzero char-0 sum `S = ∑_{x∈R} x ∈ ℤ[ζ_n] \ {0}` whose image in `F_p` is `0`.  This happens iff
-`p ∣ N(S)`, `N(S)` the nonzero integer field norm.  `HeightSpuriousFree 𝓗 n p := p > 𝓗 n` (with
-`𝓗 n = max_R |N(S_R)|`) is exactly the spurious-free condition.  Machine-checked THIS SESSION:
-`𝓗 8 = 9 = 3²`, `𝓗 16 = 2401 = 7⁴`, `𝓗 32 ≈ 2^31` — fitting the closed form `(n/2-1)^{n/4}`
-(crude a-priori bound `(n/2)^{n/2}`).
+**Correction (audit 2026-10-28, PG-111).** An earlier version of this section said spurious
+reduction happens *iff* `p ∣ N(S)`, called `p > 𝓗 n` *exactly* the spurious-free condition, and
+claimed small-`n` closures from computed heights. Those statements overclaim; the accurate picture:
 
-**Honest boundary (NOT closed).** `(n/2-1)^{n/4}` has bit-length `~ (n/4)·log₂(n/2)`, exceeding `128`
-near `n = 128`.  So `p > 𝓗 n` holds for the prize prime at `n ∈ {8,16,32,64}` (closing the
-low-exponent direction there) but is **marginal/fails at `n = 128`** — the prize order.  The route
-thus reduces the asymptotic prize to the single named inequality `p > 𝓗 n`, the algebraic-integer
-height of vanishing-root sums — the SAME char-sum/height wall, made explicit and computable, with NO
-independent count-side escape (consistent with C1).
+* The char-`p` count can exceed the char-0 count only by a **spurious mod-`p` vanishing**: a subset
+  `R` with nonzero char-0 sum `S = ∑_{x∈R} x ∈ ℤ[ζ_n] \ {0}` whose image under the *fixed* reduction
+  `ℤ[ζ_n] → F_p` used by the evaluation (the one sending `ζ_n` to the chosen root) is `0`.
+* Such a vanishing implies `p ∣ N(S)` (one direction only). The converse fails in general:
+  `p ∣ N(S)` says `S` vanishes at **some** prime above `p`, not necessarily the fixed one.
+* Consequently `p > max_R |N(S_R)|` is a **sufficient** condition for spurious-freeness, not a
+  necessary one: many smaller primes avoid every relevant norm.
+
+**What is (and is not) formalized here.** In this file `HeightSpuriousFree 𝓗 n p := p > 𝓗 n` is
+plain arithmetic for an *arbitrary* function `𝓗 : ℕ → ℕ`, and `heightConj n := (n/2-1)^{n/4}` is a
+conjectural closed form fitted to off-tree computations (reported values `𝓗 8 = 9`, `𝓗 16 = 2401`,
+`𝓗 32 ≈ 2^31`). There is **no** algebraic integer, norm census, proof that `𝓗 = heightConj`, or
+proof that `HeightSpuriousFree → NoSpuriousVanishing` in this file. The numeric theorems
+`heightConj_values`, `heightConj_closes_to_64`, `heightConj_open_at_128` only evaluate that formula.
+So any height-to-transfer or small-`n` "closure" read off from them is **conditional** on those
+missing bridges.
+
+**The guarded in-tree route.** The actual proved `F_p`-to-norm direction and height gate are
+`FpVanishingBridge.spurious_Fp_vanish_imp_antipodal` (and its `_prize` form, `p > n^{n/2}`), via
+`HeightGateNormBound.gate_2power_antipodal`. They keep the reduction hom `r : 𝓞_K →+* ZMod p`
+(`r ζ = ω`) as an explicit hypothesis and use the crude proved bound `(S.card)^{[K:ℚ]} < p`, not
+`heightConj`.
+
+**Boundary of the heuristic.** `(n/2-1)^{n/4}` has bit-length `~ (n/4)·log₂(n/2)`, exceeding `128`
+near `n = 128`. If the conjectural height were established, the sufficient condition `p > 𝓗 n`
+would hold for the prize prime at `n ∈ {8,16,32,64}` and would fail at `n = 128`; failure of this
+sufficient condition does not by itself produce a spurious vanishing.
 -/
 
 open Finset
@@ -79,26 +99,34 @@ theorem sum_eq_zero_of_antipodal (hchar : (2 : F) ≠ 0) {R : Finset F}
   · exact hx0 hx
 
 /-- The **char-0 / no-spurious** structural hypothesis: a subset `R ⊆ μ` of the `n`-th roots has
-zero sum **iff** it is antipodal (or empty).  Over a char-0 field this is Lam–Leung for `n = 2^a`;
-over `F_p` it is the SAME statement PROVIDED `p > 𝓗 n` (`HeightSpuriousFree`). -/
+zero sum **iff** it is antipodal (or empty).  Over a char-0 field this is Lam–Leung for `n = 2^a`.
+Over `F_p` it is expected to hold when `p` exceeds the norms of all relevant non-antipodal sums (a
+sufficient, not necessary, condition), but no implication from `HeightSpuriousFree` to this `Prop`
+is proved here; see `FpVanishingBridge.spurious_Fp_vanish_imp_antipodal` for the guarded route. -/
 def NoSpuriousVanishing (μ : Finset F) : Prop :=
   ∀ R ⊆ μ, (∑ x ∈ R, x = 0) ↔ (Antipodal R ∨ R = ∅)
 
-/-- **The explicit prize-gating obligation.**  `HeightSpuriousFree 𝓗 n p`: the prize prime `p`
-exceeds the algebraic-integer height `𝓗 n` of all non-antipodal vanishing-root sums — the exact
-condition under which the char-`p` count equals the char-0 count. -/
+/-- **A height comparison (arithmetic only).**  `HeightSpuriousFree 𝓗 n p` is `p > 𝓗 n` for an
+arbitrary function `𝓗`.  When `𝓗 n` is the maximum absolute norm of all non-antipodal root sums,
+this is a **sufficient** (not necessary) condition for the char-`p` count to equal the char-0 count;
+neither that interpretation of `𝓗` nor the implication to `NoSpuriousVanishing` is proved here
+(PG-111). -/
 def HeightSpuriousFree (𝓗 : ℕ → ℕ) (n p : ℕ) : Prop := p > 𝓗 n
 
-/-- Conjectural closed form of the height (machine-anchored at `n = 8, 16, 32`). -/
+/-- Conjectural closed form of the height, fitted to off-tree computations at `n = 8, 16, 32`.
+No proof that it equals the maximum norm is given. -/
 def heightConj (n : ℕ) : ℕ := (n / 2 - 1) ^ (n / 4)
 
-/-- Machine-checked small-size height values. -/
+/-- Evaluation of the conjectural formula at `n = 8, 16` (this checks the formula, not the
+underlying norm census). -/
 theorem heightConj_values : heightConj 8 = 9 ∧ heightConj 16 = 2401 := by
   constructor <;> · unfold heightConj; norm_num
 
-/-- **The honest boundary.**  The height criterion `p > 𝓗 n` is satisfied by the prize prime
-`p ~ n·2^128` for `n ≤ 64` (height `< 2^128`) and is the OPEN wall at `n = 128`
-(`heightConj 128 > 2^128`). -/
+/-- **Arithmetic boundary of the heuristic.**  The conjectural formula satisfies
+`heightConj 64 < 2^128` and `heightConj 128 > 2^128`.  Only if `heightConj` were proved to bound
+the relevant norms would this give the sufficient condition `p > 𝓗 n` for the prize prime
+`p ~ n·2^128` at `n ≤ 64`; at `n = 128` the sufficient condition fails, which is not a proof that
+spurious vanishing occurs. -/
 theorem heightConj_closes_to_64 : heightConj 64 < 2 ^ 128 := by
   unfold heightConj; norm_num
 

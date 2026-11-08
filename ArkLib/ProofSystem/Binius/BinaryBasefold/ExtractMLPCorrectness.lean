@@ -24,10 +24,13 @@ index `ω` off the polynomial via `statementOrderBitsOfIndex ω`, whose `j`-th
 coordinate is the `Fin.rev j`-th bit of `ω`.  The two conventions differ by the
 bit-reversal permutation, so the polynomial extracted by `extractMLP` is the
 *variable-reversed* (`revIndexMLP`) version of the polynomial whose codeword is
-UDR-close to `f`.  Concretely (see `revIndexMLP_eq_self_of_residual` below), a
-residual instance would force `revIndexMLP t = t` for every multilinear `t`, which
-fails already for `t = MLE (w ↦ w 0)` once `ℓ ≥ 2`
-(`extractMLPCorrectnessResidual_ell_eq_one`).
+UDR-close to `f`.  Concretely, an instance of the old (deleted) unreversed extraction
+hypothesis would force `revIndexMLP t = t` for every multilinear `t`, which fails already for
+`t = MLE (w ↦ w 0)` once `ℓ ≥ 2`. (Earlier versions recorded this as machine-checked theorems
+`revIndexMLP_eq_self_of_residual` / `extractMLPCorrectnessResidual_ell_eq_one`; those
+declarations no longer exist — the hypothesis itself was deleted, see the note after
+`firstOracleWitnessConsistencyProp_unique'`.) This endianness is fully characterized by the
+corrected theorem below; it is documented behaviour, not hidden debt.
 
 Additionally, the forward direction of the residual is false even modulo the
 reversal: `extractMLP` runs the decoder at radius `e := Δ₀(f, C)` (the *actual*
@@ -48,8 +51,10 @@ supplies for free.
   direction under the `UDRClose` guard.
 * `firstOracleWitnessConsistencyProp_unique'` — the uniqueness consequence that
   `Relations.lean` actually consumes, proved without any residual instance.
-* `revIndexMLP_eq_self_of_residual`, `extractMLPCorrectnessResidual_ell_eq_one` —
-  the machine-checked obstructions showing the residual as stated forces `ℓ = 1`.
+
+(The obstruction lemmas showing that the old residual forces `ℓ = 1` were removed together with
+the residual hypothesis; no declarations `revIndexMLP_eq_self_of_residual` /
+`extractMLPCorrectnessResidual_ell_eq_one` remain in this file.)
 -/
 
 namespace Binius.BinaryBasefold

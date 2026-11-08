@@ -9,7 +9,7 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Analysis.RCLike.Basic
 
 /-!
-# wf-A11 (#444): the Bourgain–Gamburd / superstrong-approximation affine envelope does NOT bound `M(n)` — an abelianness obstruction
+# wf-A11 (#444): the Bourgain–Gamburd / superstrong-approximation affine envelope and `M(n)` — an (informal) abelianness obstruction
 
 **Angle.** The prize object `M(n) = max_{b≠0}‖η_b‖`, `η_b = ∑_{x∈μ_n} e_p(bx)`, is the
 non-principal eigenvalue of the *additive* Cayley graph `Cay(F_p, μ_n)` (the generalized Paley
@@ -27,12 +27,15 @@ The Bourgain–Gamburd input `gap(SL_d(F_p), S') ≥ c` (Thm A) requires `S'` to
 a **Zariski-dense subgroup of the PERFECT group `SL_d`, `d ≥ 2`** (quasirandomness: smallest
 non-trivial irrep of `SL_2(F_p)` has dimension `(p−1)/2`).
 
-**The obstruction.** The dilation action of `μ_n` is the `d = 1` case. There the linear part is
-`SL_1 = {1}` and the "linear group" controlling the dilation is the **abelian torus** `μ_n ≤ F_p^*`.
-Abelian groups have only `1`-dimensional irreducibles (no quasirandomness), so BG Thm A has no
-analogue: the linear-part gap is `0`. Hence LV Thm 1 gives `gap(G,S) ≥ c·min{0, |S|⁻¹} = 0` — a
-**vacuous** lower bound. The envelope is solvable/amenable, not perfect; superstrong approximation
-fails by design for the multiplicative torus.
+**The obstruction (audit-corrected).** The dilation action of `μ_n` is the `d = 1` case. There
+the linear part is `SL_1 = {1}` and the group controlling the dilation is the **abelian torus**
+`μ_n ≤ F_p^*`.  LV Thm 1 is stated for `SL_d`, `d ≥ 2`; at `d = 1` it is simply **not applicable**
+(it does not "give 0").  Abelian groups have only `1`-dimensional irreducibles (no
+quasirandomness), so BG Thm A has no analogue.  The honest obstruction is: (a) bounded-degree
+Cayley families of abelian groups (e.g. `μ_n ≅ ℤ/n` with the `{±1}` generator) are never uniform
+expanders; (b) if one instead takes the full dilation set `S = μ_n`, the abelian Cayley operator
+is the averaging operator (gap `1`), but then `|S|⁻¹ = 1/n → 0`, so an LV-shaped bound
+`c·min{gap, |S|⁻¹}` would still decay.  Either way no uniform BG-type input appears.
 
 Moreover the BG *non-concentration / Fourier-flatness* input on the additive factor `F_p` is, for
 the uniform measure `u` on `μ_n`, exactly `\hat u(b) = η_b/n`; its sup over `b≠0` is `M(n)/n`. So
@@ -44,19 +47,20 @@ route is circular.
 1. `affine_fourier_input_eq_period` : the BG additive non-concentration input
    `\hat u(b) = (∑_{x∈μ_n} e_p(bx)) / n = η_b / n` is **definitionally** the prize Gauss period
    over `n`. So `‖\hat u(b)‖ = ‖η_b‖ / n`, and `sup_{b≠0}‖\hat u(b)‖ = M(n)/n`. (Circularity.)
-2. `abelian_dilation_gap_le`        : the spectral gap of the cyclic dilation group `μ_n`
-   (`gap = 1 − cos(2π/n)` for the standard symmetric generator) satisfies
-   `1 − cos(2π/n) ≤ (2π/n)²/2 = 2π²/n²`. So `gap_lin → 0`: no uniform lower bound, BG cannot fire.
-3. `abelian_dilation_no_uniform_gap`: for every `c > 0` there is `n` with `gap_lin(n) < c`
-   (the abelian torus is NOT a uniform expander family) — the precise failure of superstrong
-   approximation for the multiplicative subgroup.
-4. `lv_envelope_vacuous`            : the LV Thm 1 lower bound `c·min{gap_lin, s}` is `0` when
-   `gap_lin = 0`; packaged so the affine envelope yields no positive gap, hence no bound on `M`.
+2. `abelian_dilation_gap_le`        : the spectral gap of `Cay(ℤ/n, {±1})` (`= 1 − cos(2π/n)`,
+   one particular bounded-degree generator choice) satisfies `1 − cos(2π/n) ≤ 2π²/n²` → `0`.
+3. `abelian_dilation_no_uniform_gap`: for every `c > 0` there is `n` with that gap `< c` — the
+   `{±1}` Cayley family of `ℤ/n` is not a uniform expander family.  (This is specific to the
+   bounded generator; with `S = μ_n` the gap is `1`, see the obstruction paragraph.)
+4. `lv_envelope_vacuous`            : arithmetic only — the expression `c·min{0, s}` is `0` for
+   `s ≥ 0`.  This does NOT model LV Thm 1 at `d = 1` (which is not applicable there).
 
-**Verdict: OBSTRUCTION.** The Bourgain–Gamburd / superstrong-approximation machinery does not
-apply to the multiplicative dilation action: the natural non-abelian envelope (the affine group)
-has an *abelian* linear part `μ_n`, whose gap collapses; and the only quantity it would control is
-`M(n)/n` itself. No new control on `M(n)` is produced.
+**Verdict: OBSTRUCTION (informal).** The Bourgain–Gamburd / superstrong-approximation machinery
+does not apply to the multiplicative dilation action: the natural envelope (the affine group) has an
+*abelian* linear part `μ_n` (LV Thm 1 is not applicable at `d = 1`, and abelian Cayley families give
+no uniform BG-type input — bounded degree gives gap → 0, full `S = μ_n` gives `|S|⁻¹ → 0`); and the
+only quantity it would control is `M(n)/n` itself. No new control on `M(n)` is produced.  The Lean
+content is items 1–4 above; the verdict is their informal reading.
 -/
 
 set_option linter.style.longLine false
@@ -107,11 +111,11 @@ theorem affine_fourier_input_norm (p : ℕ) (S : Finset ℕ) (b : ℕ) :
 
 /-! ## 2. The abelian dilation gap collapses (no Bourgain–Gamburd input). -/
 
-/-- The spectral gap of the **cyclic** dilation group `μ_n ≅ ℤ/n` with the standard symmetric
-generator `{±1}`: its non-trivial Cayley-graph eigenvalues are `cos(2πk/n)`, the largest being
-`cos(2π/n)`, so the gap is `1 − cos(2π/n)`. This is the *best possible* uniform gap of the abelian
-linear part — and it is the quantity entering LV Thm 1 as `gap(SL_d, S')` in the `d = 1` torus
-analogue. -/
+/-- The spectral gap of the **cyclic** dilation group `μ_n ≅ ℤ/n` with the symmetric generator
+`{±1}`: its non-trivial Cayley-graph eigenvalues are `cos(2πk/n)`, the largest being `cos(2π/n)`,
+so the gap is `1 − cos(2π/n)`.  This is ONE generator choice (bounded degree 2), not a best-possible
+gap: with the full dilation set `S = μ_n` the normalized Cayley operator is averaging and the gap
+is `1`.  There is no `d = 1` instance of LV Thm 1 for this to enter. -/
 noncomputable def abelianDilationGap (n : ℕ) : ℝ := 1 - Real.cos (2 * Real.pi / n)
 
 /-- **The abelian linear-part gap collapses as `n → ∞`.** Using `1 − cos θ ≤ θ²/2`, the cyclic
@@ -132,10 +136,10 @@ theorem abelian_dilation_gap_le (n : ℕ) (hn : 0 < n) :
     field_simp
   rw [heq]
 
-/-- **No uniform gap (the affine torus is not an expander family).** For every target `c > 0`
-there is a dilation order `n` with `abelianDilationGap n < c`. This is the precise statement that
-superstrong approximation FAILS for the multiplicative subgroup: the family `{Cay-eigengap(μ_n)}`
-is not bounded below. Consequently LV Thm 1's `min{gap_lin, |S|⁻¹}` is driven to `0`. -/
+/-- **No uniform gap for the `{±1}` family.** For every target `c > 0` there is `n` with
+`abelianDilationGap n < c`: the Cayley family `Cay(ℤ/n, {±1})` is not a uniform expander family
+(as for any bounded-degree abelian family).  This is about that generator choice only; it is not a
+general failure statement for every generating set of `μ_n`. -/
 theorem abelian_dilation_no_uniform_gap :
     ∀ c : ℝ, 0 < c → ∃ n : ℕ, 0 < n ∧ abelianDilationGap n < c := by
   intro c hc
@@ -166,30 +170,25 @@ theorem abelian_dilation_no_uniform_gap :
 
 /-! ## 3. The Lindenstrauss–Varjú envelope is vacuous for the abelian linear part. -/
 
-/-- The Lindenstrauss–Varjú Theorem 1 lower bound on the affine spectral gap, as a function of the
-linear-part gap `gLin`, the inverse generating-set size `sInv`, and the universal constant `c`:
-`c · min{gLin, sInv}`. (We package only the *bound's value*, not the dynamics; the content here is
-purely that this value is `0` when `gLin = 0`.) -/
+/-- The *shape* of the Lindenstrauss–Varjú Theorem 1 lower bound, `c · min{gLin, sInv}`, as a bare
+real expression.  LV Thm 1 itself requires `SL_d` with `d ≥ 2`; this expression is not an instance
+of it at `d = 1`. -/
 noncomputable def lvLowerBound (c gLin sInv : ℝ) : ℝ := c * min gLin sInv
 
-/-- **The affine envelope gives no gap when the linear part is abelian.** If the linear-part gap is
-`0` (as it is for the abelian dilation torus `μ_n`, in the limit / for no uniform constant), the
-Lindenstrauss–Varjú lower bound `c·min{gLin, sInv}` is `≤ 0` (it is `0` for `sInv ≥ 0`). So the
-affine envelope produces no positive spectral gap, hence cannot certify any nontrivial bound on the
-mixing of the affine walk — and therefore none on `M(n)`. -/
+/-- **Arithmetic: `c·min{0, sInv} = 0` for `sInv ≥ 0`.**  This only evaluates the expression
+`lvLowerBound` at `gLin = 0`.  It is NOT a consequence of LV Thm 1 at `d = 1` (not applicable
+there), and `abelianDilationGap n` is positive for `n ≥ 2`, so `gLin = 0` is not its value. -/
 theorem lv_envelope_vacuous (c sInv : ℝ) (hc : 0 ≤ c) (hs : 0 ≤ sInv) :
     lvLowerBound c 0 sInv = 0 := by
   unfold lvLowerBound
   rw [min_eq_left (le_trans (le_refl 0) hs)]
   · ring
 
-/-- **Synthesis: the BG/superstrong route yields no bound on `M(n)`.** Combining 2+3: since for any
-candidate uniform gap constant `c₀ > 0` there is `n` with the abelian dilation gap below `c₀`
-(`abelian_dilation_no_uniform_gap`), the LV lower bound at that `n` (with `gLin := 0` in the limit)
-is `0` (`lv_envelope_vacuous`). The affine envelope of the multiplicative dilation action is
-solvable with abelian linear part; Bourgain–Gamburd / superstrong approximation does not apply, and
-the only quantity it would feed back is `M(n)/n` (`affine_fourier_input_norm`). No new control on
-`M(n)` is obtained: this angle is an obstruction, not a lever. -/
+/-- **Bundle of 2+3.** Conjoins `abelian_dilation_no_uniform_gap` (the `{±1}` Cayley family of
+`ℤ/n` has no uniform gap) and `lv_envelope_vacuous` (the arithmetic `c·min{0, s} = 0`).  The
+informal reading — BG / superstrong approximation gives no control on `M(n)` because LV Thm 1 is
+not applicable at `d = 1`, abelian Cayley families give no uniform BG input, and the only fed-back
+quantity is `M(n)/n` (`affine_fourier_input_norm`) — is NOT itself proven by this conjunction. -/
 theorem bg_route_no_bound_on_M :
     (∀ c₀ : ℝ, 0 < c₀ → ∃ n : ℕ, 0 < n ∧ abelianDilationGap n < c₀) ∧
     (∀ c sInv : ℝ, 0 ≤ c → 0 ≤ sInv → lvLowerBound c 0 sInv = 0) :=

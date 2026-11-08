@@ -7,13 +7,37 @@ Authors: ArkLib Contributors
 /-!
 # PromotedHypothesesA
 
-Module docstring for `PromotedHypothesesA.lean`.
+An **abstract, law-free sketch** of a group of promoted clustering hypotheses (Group A) about
+the closest-codeword centers `c z` of a line bundle `u₀ + z·u₁`.
+
+Scope caveats (audit PG-041):
+
+* The local class `PromotedHypothesesA.Field` below is *not* Mathlib's `Field`: it only names
+  five operations (`add`, `zero`, `mul`, `one`, `neg`) and imposes **no field laws**
+  (no associativity, distributivity, inverses, finiteness, ...). `vector_add` / `vector_smul`
+  are therefore pointwise applications of uninterpreted operations, not a vector-space
+  structure.
+* The code `C : (ι → F) → Prop` is an arbitrary predicate; no linearity or closure under sums is
+  assumed.
+* Consequently the `H*` definitions are uninterpreted propositions recording the *shape* of each
+  hypothesis; they are neither proved nor assumed anywhere. In particular `H7_BarycentricCenter`
+  takes an arbitrary target word `sum_c` that is **not** related to `c` (there is no finite sum
+  over `F`), so it does not express the barycentric claim "the sum of all centers lies in `C`";
+  as stated it is false in general even over a genuine field (zero code, all `c z = 0`, and a
+  nonzero `sum_c`).
+* The only theorem in this file is `refute_H2_TriangleCluster`: a constant bundle has a single
+  center, so it never satisfies `centers_form_triangle`.
+
+A faithful coding-theory version would use Mathlib's `Field`/`Fintype`, a linear code, and the
+actual finite sum `∑ z, c z`; that is not done here.
 -/
 
--- Formalization and Proofs/Refutations of Promoted Hypotheses (Group A)
+-- Abstract shapes of promoted hypotheses (Group A), plus one trivial refutation (H2).
 
 namespace ProximityGap.PromotedHypothesesA
 
+/-- A bare signature of five operations with **no axioms**; deliberately not Mathlib's `Field`.
+Nothing in this file uses field laws. -/
 class Field (F : Type) where
   add : F → F → F
   zero : F
@@ -52,8 +76,10 @@ theorem refute_H2_TriangleCluster (z₁ z₂ z₃ : F) (c0 : ι → F) :
 def H5_CollinearCenters (z₁ z₂ z₃ : F) : Prop :=
   centers_form_triangle c z₁ z₂ z₃ → H1_LineCluster c
 
--- H7: The sum of all closest codewords over F is in C.
--- We state it as a general property if the sum exists.
+-- H7 (shape only): if every center `c z` satisfies `C`, then the given word `sum_c` satisfies
+-- `C`. `sum_c` is an arbitrary parameter, NOT the sum of the centers (no finite sum over `F`
+-- exists in this law-free sketch), so this is not the barycentric statement and is false for
+-- general `sum_c` (zero code, all `c z = 0`, nonzero `sum_c`). Unproved and unused.
 def H7_BarycentricCenter (sum_c : ι → F) : Prop :=
   (∀ z, C (c z)) → C sum_c
 

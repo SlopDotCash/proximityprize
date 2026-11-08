@@ -347,3 +347,9 @@ Closed the conceptual loop to the single leaf, mechanically:
   landed sidonModNeg; prize prime n^4 ≪ threshold = BGK). The prize is now ONE named char-p Prop with the
   entire reduction mechanized around it; only the bounded-cyclotomic-independence transfer at prize support
   is open = BGK.
+- **Correction (audit 2026-10-28, PG-031):** the "open = BGK" classification above is wrong.
+  `BoundedHalfBasisIndep ζ N C` is **false**, not open, in the prize regime: it needs
+  `(C+1)^N ≤ |F|` (`BoundedCyclotomicIndep.not_boundedHalfBasisIndep_of_card_lt`), and it is refuted
+  in Lean at `n = 16`, `p = 65537`, `ω = 64`, `C = 4` (`not_boundedHalfBasisIndep_zmod65537`; see the
+  `DISPROOF_LOG.md` entry "BoundedHalfBasisIndep … FALSE at the prize prime"). `C` bounds each
+  coefficient, not the support. The reductions from it remain valid conditional implications.

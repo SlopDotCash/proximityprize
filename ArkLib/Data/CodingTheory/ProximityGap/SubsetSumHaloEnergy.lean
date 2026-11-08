@@ -6,25 +6,38 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Algebra.BigOperators.Fin
+import Mathlib.Algebra.Field.ZMod
+import Mathlib.Tactic.NormNum.Prime
 
 /-!
 # The subset-sum halo energy: the large-`n` `δ*` core, made explicit (#389)
 
 Working out the large-`n` (deployed, below-threshold) `δ*`, the census **halo** — non-antipodal
-`E ⊆ [0,2^m)` with `∑_{e∈E} g^e ≡ 0 (mod p)` — reduces *exactly* to **subset-sum collisions** of
-`{g^0,…,g^{N-1}}` (`N = 2^{m-1}`): pairs of subsets `A ≠ B` with `∑_{j∈A} g^j = ∑_{j∈B} g^j` in
-`F_p`.  Its size is the **subset-sum energy** `∑_v r(v)²`, `r(v) = #{A : ∑_{j∈A} x_j = v}`.
+`E ⊆ [0,2^m)` with `∑_{e∈E} g^e ≡ 0 (mod p)` — is related (via `g^{e+N} = −g^e`) to
+**subset-sum collisions** of `{g^0,…,g^{N-1}}` (`N = 2^{m-1}`): pairs of subsets `A ≠ B` with
+`∑_{j∈A} g^j = ∑_{j∈B} g^j` in `F_p`.  These collisions are counted by the **subset-sum energy**
+`∑_v r(v)²`, `r(v) = #{A : ∑_{j∈A} x_j = v}` (ordered subset pairs, not distinct supports).
 
 This file proves the unconditional Cauchy–Schwarz lower bound on that energy:
 
 > **`four_pow_le_card_mul_subsetSum_energy`** — `4^N ≤ |F| · ∑_v r(v)²`.
 
 Equivalently the collision count `∑_v r(v)² − 2^N ≥ 4^N/|F| − 2^N`, which is **strictly
-positive once `|F| < 2^N`**.  Consequence for `δ*`: the halo is empty (so the past-Johnson
-pin `δ* = 1−r/2^μ` holds) exactly in the regime `p ≳ 2^N`; for **deployed `p < 2^N` the halo
-is provably nonempty**, the clean classification fails, and `δ*` drops below `1−r/2^μ` toward
-the Johnson radius — the deployed wall is *real*, governed by this subset-sum energy.  This
-replaces the crude doubly-exponential `N^N` threshold by the sharp `2^N`.
+positive once `|F| < 2^N`** (`subsetSum_energy_gt_of_card_lt`), and the energy equals its
+diagonal floor `2^N` **iff** the subset-sum map is injective (`subsetSum_energy_eq_two_pow_iff`).
+
+**Scope (what is NOT proved).**
+* `|F| < 2^N` is only a pigeonhole *sufficient condition for collisions*; the converse
+  "`p > 2^N` ⟹ distinct subset sums" is FALSE.  Kernel-checked counterexample
+  (`subsetSum_collision_above_two_pow` below): in `F_337`, `g = 191` has order `16`, its first
+  `N = 8` powers are `[1,191,85,59,148,297,111,307]`, and although `337 > 2^8 = 256` the subsets
+  `{0,4,5}` and `{1,2,3,6}` both sum to `109`.  No large-`p` sufficiency threshold for an empty
+  halo is established; a valid route would need a genuine arithmetic separation / norm condition.
+* `∑_v r(v)²` counts ordered pairs of *subsets*, not distinct vanishing supports (overlapping
+  pairs can give several representations of one support), so it is not literally the halo size.
+* No bridge from a subset-sum collision (or its absence) to an exact value of `δ*` or to any
+  fixed-band MCA consequence is proved here; statements such as "the halo is empty, so the
+  past-Johnson pin `δ* = 1−r/2^μ` holds" or "`δ*` drops below `1−r/2^μ`" are motivation only.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.
 -/
@@ -62,10 +75,10 @@ theorem four_pow_le_card_mul_subsetSum_energy (x : Fin N → F) :
     rw [show (4 : ℕ) = 2 * 2 from rfl, mul_pow, sq]
   rw [h4]; exact hcs
 
-/-- **The halo is nonempty below the sharp threshold `2^N`.**  If `|F| < 2^N` then the
-subset-sum energy strictly exceeds `2^N`, i.e. there is at least one nontrivial collision
-`A ≠ B` with equal sum — the deployed census halo is provably nonempty (so the past-Johnson
-pin cannot hold there: `δ*` lies strictly below `1−r/2^μ`). -/
+/-- **Pigeonhole collisions below `2^N`.**  If `|F| < 2^N` then the subset-sum energy strictly
+exceeds `2^N`, i.e. there is at least one nontrivial collision `A ≠ B` with equal sum.  This is a
+sufficient condition for a collision only: collisions can also occur for `|F| > 2^N`
+(`subsetSum_collision_above_two_pow`), and no consequence for `δ*` is proved here. -/
 theorem subsetSum_energy_gt_of_card_lt (x : Fin N → F)
     (hlt : Fintype.card F < 2 ^ N) :
     2 ^ N < ∑ v : F, (subsetSumRep x v) ^ 2 := by
@@ -91,9 +104,9 @@ theorem two_pow_le_subsetSum_energy (x : Fin N → F) :
 /-- **The halo vanishes EXACTLY when the subset-sums are distinct.**  The subset-sum energy
 equals its floor `2^N` iff every value has at most one representing subset — i.e. the sums
 `{∑_{j∈A} x_j : A ⊆ [N]}` are all distinct (no collision).  Combined with
-`subsetSum_energy_gt_of_card_lt` (`|F| < 2^N ⟹ energy > 2^N`), this pins the wall precisely:
-the census halo is empty (so the past-Johnson pin `δ* = 1−r/2^μ` is valid) **iff** the geometric
-sequence `{g^j}` is Sidon for subset sums — automatic above `p ≳ 2^N`, provably violated below. -/
+`subsetSum_energy_gt_of_card_lt`, distinct subset sums are impossible when `|F| < 2^N`; they are
+NOT automatic when `|F| > 2^N` (`subsetSum_collision_above_two_pow`).  This is a statement about
+subset sums only; no equivalence with an empty census halo or with `δ* = 1−r/2^μ` is proved. -/
 theorem subsetSum_energy_eq_two_pow_iff (x : Fin N → F) :
     (∑ v : F, (subsetSumRep x v) ^ 2) = 2 ^ N ↔ ∀ v : F, subsetSumRep x v ≤ 1 := by
   rw [← sum_subsetSumRep x, eq_comm,
@@ -111,6 +124,43 @@ theorem subsetSum_energy_eq_two_pow_iff (x : Fin N → F) :
   · intro h v _
     rcases Nat.le_one_iff_eq_zero_or_eq_one.mp (h v) with h' | h' <;> simp [h']
 
+section Counterexample
+
+/-- `337` is prime (used only for the counterexample below). -/
+theorem prime_337 : Nat.Prime 337 := by norm_num
+
+instance fact_prime_337 : Fact (Nat.Prime 337) := ⟨prime_337⟩
+
+/-- The first `8` powers of `191` in `F_337`. -/
+def geom191 : Fin 8 → ZMod 337 := fun j => 191 ^ (j : ℕ)
+
+/-- `191` has multiplicative order exactly `16` in `F_337` (so `{191^j}` generates the proper
+smooth subgroup `μ_16`, and `191^8 = −1`). -/
+theorem orderOf_191_eq_16 : orderOf (191 : ZMod 337) = 16 := by
+  have h := orderOf_eq_prime_pow (p := 2) (n := 3) (x := (191 : ZMod 337))
+    (by decide) (by decide)
+  rw [h]
+  norm_num
+
+/-- **Refutation of "`p > 2^N` ⟹ distinct subset sums".**  In `F_337` with `N = 8` and
+`x_j = 191^j` (`191` of order `16`), the field is larger than `2^N = 256`, yet the value `109`
+has at least two subset-sum representations: `{0,4,5}` (`1 + 148 + 297`) and `{1,2,3,6}`
+(`191 + 85 + 59 + 111`).  Hence the energy exceeds its floor `2^N` above the pigeonhole
+threshold, and `|F| < 2^N` in `subsetSum_energy_gt_of_card_lt` is not a sharp threshold. -/
+theorem subsetSum_collision_above_two_pow :
+    2 ^ 8 < Fintype.card (ZMod 337) ∧ 1 < subsetSumRep geom191 109 ∧
+      ¬ ∀ v : ZMod 337, subsetSumRep geom191 v ≤ 1 := by
+  have hrep : 1 < subsetSumRep geom191 109 := by
+    unfold subsetSumRep
+    refine Finset.one_lt_card.mpr ⟨{0, 4, 5}, ?_, {1, 2, 3, 6}, ?_, by decide⟩
+    · rw [Finset.mem_filter]; exact ⟨Finset.mem_univ _, by decide⟩
+    · rw [Finset.mem_filter]; exact ⟨Finset.mem_univ _, by decide⟩
+  refine ⟨by rw [ZMod.card]; norm_num, hrep, fun h => ?_⟩
+  have := h 109
+  omega
+
+end Counterexample
+
 end ArkLib.ProximityGap.SubsetSumHalo
 
 -- Axiom audit (expected: propext, Classical.choice, Quot.sound only)
@@ -118,3 +168,5 @@ end ArkLib.ProximityGap.SubsetSumHalo
 #print axioms ArkLib.ProximityGap.SubsetSumHalo.subsetSum_energy_gt_of_card_lt
 #print axioms ArkLib.ProximityGap.SubsetSumHalo.two_pow_le_subsetSum_energy
 #print axioms ArkLib.ProximityGap.SubsetSumHalo.subsetSum_energy_eq_two_pow_iff
+#print axioms ArkLib.ProximityGap.SubsetSumHalo.orderOf_191_eq_16
+#print axioms ArkLib.ProximityGap.SubsetSumHalo.subsetSum_collision_above_two_pow

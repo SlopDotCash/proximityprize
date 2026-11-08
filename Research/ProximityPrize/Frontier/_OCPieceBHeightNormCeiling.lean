@@ -29,17 +29,20 @@ prime-ideal embeddings* (not stacking generators in one `(p, X−ζ)` ideal).
 
 This file probes that seam directly and lands the structural CEILING that closes it as a route.
 
-## The exact certificate identity and the height ceiling
+## The certificate count and the height ceiling
    (probes: `oc_multiembedding_transversality_probe.py`, `oc_height_norm_cap_probe.py`)
 
 For a support-6 height-1 relation `r(X) ∈ ℤ[X]/(X^m + 1)` (six nonzero `±1` coefficients,
 `m = n/2`), let `ζ = ζ_{2m}` and consider the GLOBAL cyclotomic norm certificate
 `N(r) := Res(r, X^m + 1) = ± ∏_{a ∈ (ℤ/2m)^*} r(ζ^a)` — an exact integer. Two exact measurements:
 
-1. **Exact certificate identity** (verified `exact-Res-matches-count = True` at every cell
-   `n ∈ {8,16,32,64}`, all thin `p`): `v_p(N(r)) = #{ a ∈ (ℤ/2m)^* : r(ζ^a) ≡ 0 (mod p) }`, the
-   number of DISTINCT embeddings at which the relation vanishes. The p-adic depth of the arithmetic
-   certificate IS the transversality (embedding-coverage) count — nothing more.
+1. **Certificate inequality** `v_p(N(r)) = Σ_𝔭 v_𝔭(r) ≥ #{ a ∈ (ℤ/2m)^* : r(ζ^a) ≡ 0 (mod p) }`,
+   the number of DISTINCT embeddings at which the relation vanishes, with equality exactly when
+   every such vanishing is simple at its prime `𝔭`. *Correction (audit CW-DL04b-09):* an earlier
+   version claimed EQUALITY at every cell `n ∈ {8,16,32,64}`; that is false — at `n = 32`,
+   `r = 1+X+X²+X⁴−X⁵+X¹¹ ∈ ℤ[X]/(X^16+1)` has `N(r) = 18818 = 2·97²`, so `v_97 = 2`, while only one
+   of the 16 primitive 32nd roots mod 97 is a root of `r`. The theorems below use only `p^k ∣ N`
+   and are unaffected.
 
 2. **The height ceiling.** Each factor obeys the triangle inequality on the unit circle:
    `|r(ζ^a)| ≤ Σ_j |coeff_j| = 6` (the `ℓ¹`-norm / height; verified numerically max `5.17 < 6`).
@@ -60,8 +63,9 @@ best-case product amplification `|⋃ vanishing embeddings|` stays `o(n)` (`1/32
 
 The piece-(b) rank/height wall demanded `p^{Ω(n)}` from stacking primitive relations. The height
 ceiling shows a single bounded-height relation contributes `v_p ≤ φ · log 6 / log p`, and the exact
-certificate identity shows stacking `K` relations that all vanish at the SAME embedding buys
-NOTHING (their common norm-power is the shared embedding count, not `K` times it) — precisely
+certificate count suggests stacking `K` relations that all vanish at the SAME embedding buys
+little (heuristic: the observed common norm-power tracks the shared embedding count, not `K` times
+it, though `v_p` can exceed that count at non-simple vanishing) — precisely
 G56's `v_p = 1`. To reach `p^{Ω(n)}` one would need `Ω(n)` DISTINCT embeddings covered, but the
 census concentrates coverage at `a = 1`. So the naive ideal-stacking / rank-height route
 (counting linearly independent relation rows and applying a Bezout/Smith determinant to one
@@ -149,9 +153,10 @@ below without additional hypotheses beyond `p ≥ 3`), a single support-6 height
 `(k : ℝ) < n`.
 
 So a single bounded-height support-6 relation can never carry the `p^{Ω(n)}` — indeed not even
-`p^{n}` — that the naive rank/height wall of r369 piece (b) demanded.  With the exact certificate
-identity `v_p = #vanishing embeddings` and the empirical coverage concentration at `a = 1`, no
-bounded stack piling at one embedding reaches `Ω(n)` either. -/
+`p^{n}` — that the naive rank/height wall of r369 piece (b) demanded.  The further heuristic that
+no bounded stack piling at one embedding reaches `Ω(n)` rests on the observed certificate count
+(`v_p ≥ #vanishing embeddings`, equality only at simple vanishing — not an identity) and the
+empirical coverage concentration at `a = 1`; it is not proved here. -/
 theorem single_relation_vp_lt_n_of_large_prime
     {p k n : ℕ} (hp : 3 ≤ p) (hn : 1 ≤ n) (hle : p ^ k ≤ 6 ^ (n / 2)) :
     (k : ℝ) < (n : ℝ) := by

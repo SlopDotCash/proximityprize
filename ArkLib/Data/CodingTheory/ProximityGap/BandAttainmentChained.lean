@@ -9,10 +9,12 @@ import Mathlib.LinearAlgebra.Lagrange
 /-!
 # Chained band attainment (#371): the overlap construction
 
-A factor-`k` improvement of the band lower bound: instead of DISJOINT witness
-blocks (`band_attainment`, `r ≈ n/(k+m+1)`), use blocks of `k+m+1` consecutive
-indices stepping by only `m+1` — adjacent blocks overlap in exactly `k`
-points, the maximum the packing law allows.  The explaining codewords are
+An improvement of the band lower bound by roughly the factor `(k+m+1)/(m+1)`
+(asymptotically, for `n ≫ k`; with integer floors the ratio is not exact, and
+`disjoint_band_floor_le_chained_floor` proves only domination): instead of
+DISJOINT witness blocks (`band_attainment`, `r ≈ n/(k+m+1)`), use blocks of
+`k+m+1` consecutive indices stepping by only `m+1` — ADJACENT blocks overlap in
+exactly `k` points, the maximum the packing law allows.  The explaining codewords are
 glued across overlaps by Lagrange interpolation: with
 
   `P₀ := 0`, `P_{j+1} := P_j + (γ_{j+1} − γ_j)·W_j`,
@@ -25,9 +27,13 @@ block index `⌊val/(m+1)⌋` (capped).  Each block witnesses its own scalar:
   **`#badSet(u₀, x^k) ≥ r` whenever `r·(m+1) + k ≤ n` and `r ≤ q`** —
 
 so `r = ⌊(n−k)/(m+1)⌋` is realizable at the band `(1−δ)n ≤ k+m+1`, against the
-packing ceiling `C(n,k+1)/C(k+m+1,k+1)`.  The witness-core family of this
-construction has pairwise overlaps exactly `k` — it is extremal for the
-packing constraint among interval families.
+packing ceiling `C(n,k+1)/C(k+m+1,k+1)`.  In the witness-core family of this
+construction, blocks `B_j = [j(m+1), j(m+1)+k+m+1)` meet in
+`max(0, k+m+1 − |j−l|(m+1))` points: exactly `k` for ADJACENT blocks and
+strictly fewer for more distant ones (e.g. `n = 8, k = 2, m = 1, r = 3`: blocks
+`[0,4), [2,6), [4,8)`, the first and third disjoint).  So every pairwise
+overlap is `≤ k`, as the packing constraint requires, with equality exactly
+for adjacent blocks.
 -/
 
 open Finset Polynomial
@@ -272,7 +278,8 @@ open Classical in
 
   `⌊(n−k)/(m+1)⌋ ≤ sup #badSet ≤ C(n,k+1)/C(k+m+1,k+1)` —
 
-a factor-`(k+m+1)/(m+1)` tighter lower side than the disjoint bracket. -/
+a lower side tighter than the disjoint bracket by roughly the factor `(k+m+1)/(m+1)`
+(asymptotically; integer floors do not give an exact ratio). -/
 theorem band_bracket_chained (dom : Fin n ↪ F) {k m : ℕ} (hk : 1 ≤ k)
     {δ : ℝ≥0}
     (hlo : ((k + m : ℕ) : ℝ≥0) < (1 - δ) * (Fintype.card (Fin n) : ℝ≥0))

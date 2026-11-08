@@ -11,7 +11,7 @@ import ArkLib.Data.CodingTheory.ListDecoding.Bounds
 /-!
 # Elias-volume ceiling for the genuine list-decoding threshold
 
-`GrandChallengeLDThreshold.lean` pins the genuine lattice threshold between a
+`LDThreshold.lean` pins the genuine lattice threshold between a
 Johnson-side floor and the *capacity* ceiling `n - deg`.  This file sharpens the ceiling
 using the proven Elias volume bound (`linear_lambda_ge_elias_volume_eli57`, ABF26
 Lemma 3.7 [Eli57]): for a linear code `C` of dimension `k`,
@@ -97,7 +97,7 @@ volume bound `Vol_q(j/n, n) / q^(n-k)` already exceeds the prize budget `ε*·|F
 the genuine lattice threshold is below `j`.  Combined with
 `linear_lambda_ge_elias_volume_eli57` this places the threshold strictly below the
 entropy radius — sharper than the bare capacity ceiling of
-`GrandChallengeLDThreshold.lean` once `Vol` is instantiated. -/
+`LDThreshold.lean` once `Vol` is instantiated. -/
 theorem listLatticeThreshold_lt_of_elias_volume
     (C : Submodule F (ι → F)) {m j : ℕ} (hm : m ≠ 0)
     (hj0 : 0 < j) (hjn : j < Fintype.card ι)

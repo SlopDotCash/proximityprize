@@ -79,9 +79,11 @@ does not reach the prize saddle.
    identity**: under a Gaussian-floor rate (`α = 2`, `c = a·log m`), the count-vanishing threshold
    `λ*` satisfies `λ*² = (log(p−1) / log m) / a`, so `M ≤ λ*·√n = √((1/a)·n·log(p/n))·√(…)` — the
    prize `√`-envelope, with the SAME `EVT/light-tail` content already proven in C5.
-4. `rate_threshold_grows` — the **load-bearing correction**: the count-vanishing threshold `λ*`
-   (in normalized units, the saddle) is bounded BELOW by a quantity `→ ∞` with `m`, so the rate
-   must be certified at GROWING depth — refuting the "fixed-window ⟹ weaker than cumulants" dodge.
+4. `rate_threshold_grows` — the saddle identity `a·λ*² = k` (with `log P = k·log m`).  This alone
+   does NOT show `λ* → ∞`: it gives `λ*² = k/a`, which grows only if the Gaussian-floor coefficient
+   `a → 0`.  In this file's Weibull model `a = c/log m → 0`, so `λ*² = k·log m/c` does grow; but that
+   growth comes from the MODEL input `a = c/log m`, not from the theorem (audit 2026-10-28,
+   CW-B18-18).  With `a` bounded below the `λ`-window would be fixed.
 
 NO closure is claimed. T12 is `REDUCES-TO-WALL` (primary **F0**; mechanism **F1** via the
 rate↔CGF Legendre conjugacy and **F10** via the convolution-sheaf conductor). The honest residual is
@@ -161,15 +163,17 @@ theorem prizeQuantile_of_gaussianFloorRate
 
 /-! ## 4. The load-bearing correction: the threshold GROWS, so the rate is needed at growing depth -/
 
-/-- **The decoupling dodge FAILS: the saddle threshold grows with `m`.** In the prize regime the
-controlling normalized threshold is `λ*² = (log P)/(a·log m)` with `P = p−1 = m^{β/(β−1)}·…`, so the
-UN-normalized tail depth at which the rate must be certified is `t* = λ*·√(…)` and, crucially, the
-rate must be a Gaussian floor *out to* `λ* → ∞` as the regime scales. Concretely: if the prime grows
-polynomially in `m` (the prize `P ≥ m^k`, `k = β/(β−1) > 1`), then `a·log m·λ*² = log P ≥ k·log m`,
-so `λ*² ≥ k/a → ` a fixed positive floor and, more sharply, the depth `t* = λ*·√n` grows like
-`√(log m)` — a GROWING tail window. Hence the T12 "rate lower bound for all `λ ≥ 1`" must hold on a
-window that grows with `q`, which by log-Legendre duality is the deep-moment (F1) control, NOT a
-fixed-window datum weaker than the cumulants. -/
+/-- **Saddle identity `a·λ*² = k`.** In the prize regime the controlling normalized threshold is
+`λ*² = (log P)/(a·log m)`; if `log P = k·log m` (`k = β/(β−1) > 1`), cancelling `log m > 0` gives
+exactly `a·λ*² = k`.
+
+What this does and does not show (audit 2026-10-28, CW-B18-18): the theorem fixes `λ*² = k/a`; it
+does NOT by itself bound `λ*` below by a quantity `→ ∞`.  The growth of the window comes from the
+model's Gaussian-floor coefficient `a = c/log m → 0`, giving `λ*² = k·log m/c → ∞` (so the depth
+`t* = λ*·√n` scales like `√(n·log m)`).  Under that model input the rate must be certified on a
+window growing with `q`, which by Legendre duality is the deep-moment (F1) control.  If instead `a`
+were bounded below, `λ*` would stay bounded and the "fixed-window" objection would not be refuted by
+this file. -/
 theorem rate_threshold_grows
     {m a P lamStar k : ℝ} (ha : 0 < a) (hmlog : 0 < Real.log m) (hP : 1 < P)
     (hk : Real.log P = k * Real.log m)

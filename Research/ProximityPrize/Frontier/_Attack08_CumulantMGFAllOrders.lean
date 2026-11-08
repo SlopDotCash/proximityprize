@@ -29,12 +29,20 @@ term; it does not, by itself, control the partial sums at order `log m`, and the
 sign-unstable (`_DoorIVEighthCumulantSignUnstable`: the 8th connected cumulant takes both signs
 across admissible prize primes), so no fixed-sign sub-Gaussian envelope propagates.
 
-We record the structural fact: **the Chernoff bound is monotone in EVERY energy moment** — raising
-any single `E_r` (even at the deepest order) cannot lower the MGF, hence cannot tighten the tail.
-So the large-deviation route cannot avoid pinning `E_r` to depth `r ≈ log m`; it is the moment
-method in exponential dress, and inherits the same `r > log_n q` validity wall.
+We record the structural fact: **the truncated MGF is monotone in EVERY energy moment** — raising
+any single `E_r` (even at the deepest order) cannot lower the MGF partial sums, and each term with
+`E_r > 0` is positive.  Heuristically this suggests the large-deviation route must control the
+moments up to depth `r ≈ log m`, i.e. the moment method in exponential dress.
 
-This is a NO-GO for the route (it does not bound `M`), in the project's `*_REFUTED`-style spirit.
+**Scope (audit R-003 extension, 2026-10-28).**  These positivity/monotonicity lemmas do **not**
+prove that every MGF argument must individually certify all moments through a specified
+logarithmic depth, nor any equivalence with a particular BGK/Paley predicate: an upper bound on
+the whole MGF, or on a tail remainder, could in principle come from a separate argument not
+routed through individual moments.  What the file does support is the narrower conclusion that a
+fix of one low-order cumulant (the `κ₄ < 0` lever) does not by itself control the deep moments
+or the partial sums at order `log m`.
+
+This is a NO-GO only for that low-order-cumulant version of the route (it does not bound `M`).
 Axiom target `[propext, Classical.choice, Quot.sound]`.  Issue #464.
 -/
 
@@ -66,8 +74,9 @@ theorem truncMGF_mono {E E' : ℕ → ℝ} {t : ℝ} (ht : 0 ≤ t) (hE : ∀ r,
 `μ > 0`, the Chernoff saddle `t* = s/(? )` activates the term of order `r* ≈ s/μ`; for `s ≈ n·log m`
 and `μ = E_1 = n` this is `r* ≈ log m`.  We record the elementary fact that the single term of order
 `r` in the MGF, `(tʳ/r!)·E_r`, is *strictly positive whenever `E_r > 0`* — so it is a genuine,
-non-droppable contributor.  No fixed finite truncation `N < r*` upper-bounds the true MGF, so the
-route cannot terminate before depth `r*`. -/
+non-droppable contributor: a truncation at `N ≤ r` omits it, so a lower-order partial sum alone is
+not an upper bound for the full MGF (an upper bound would need a separate tail/remainder
+estimate, which this lemma neither supplies nor rules out). -/
 theorem truncMGF_term_pos {E : ℕ → ℝ} {t : ℝ} (ht : 0 < t) {r : ℕ} (hEr : 0 < E r) :
     0 < (t ^ r / r.factorial) * E r := by
   have : (0 : ℝ) < t ^ r / r.factorial := by positivity
@@ -75,9 +84,9 @@ theorem truncMGF_term_pos {E : ℕ → ℝ} {t : ℝ} (ht : 0 < t) {r : ℕ} (hE
 
 /-- **Adding the deepest order cannot lower the MGF.** Extending the truncation from `N` to `N+1`
 adds the nonnegative order-`N` term; the partial sums are monotone increasing in `N` (for `E ≥ 0`).
-This is the formal statement that one cannot truncate the energy series early: the deep moments
-`E_{log m}` are still adding mass at the saddle, which is why the large-deviation route reduces to
-the depth-`log m` energy bound (= BGK/Paley), not to a low-order cumulant fix. -/
+So an early partial sum only lower-bounds later ones: the deep moments `E_{log m}` still add mass,
+and a low-order cumulant fix does not control them.  (This does not by itself prove that the
+large-deviation route is equivalent to the depth-`log m` energy bound or to BGK/Paley.) -/
 theorem truncMGF_le_succ {E : ℕ → ℝ} {t : ℝ} (ht : 0 ≤ t) (hE : ∀ r, 0 ≤ E r) (N : ℕ) :
     truncMGF E t N ≤ truncMGF E t (N + 1) := by
   unfold truncMGF

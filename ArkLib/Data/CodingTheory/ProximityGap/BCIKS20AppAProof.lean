@@ -13,11 +13,19 @@ import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P1MonicWeightRefutation
 /-!
 # BCIKS20 Appendix A: Hensel Lifting Status (Issues #138 & #139)
 
-The rigorous axiom-clean status of the proximity gap mathematical constraints.
+The axiom-clean status of the BCIKS20 Appendix A Hensel-lifting obligations, separating proved
+theorems from unproved statements.
 
-* `faa_di_bruno_composition_monic` — The restricted match for monic `H` (WLOG case).
-* `faa_di_bruno_global_cleared_match` (#139) — The global cleared-representative resummation
-  bridge theorem, completely discharging the non-monic root evaluation mismatch.
+* `faa_di_bruno_composition_monic` (theorem) — The restricted match for monic `H`
+  (`H.leadingCoeff = 1`). This covers only the monic subcase: an irreducible factor over `F(Z)`
+  cannot in general be normalized to a monic element of `F[Z][Y]` (e.g. `Z·Y + 1`), and no
+  normalization/transport theorem from the non-monic setting is proved in-tree.
+* `faa_di_bruno_global_cleared_match` (#139, **OPEN — unproved statement, not a theorem**) — an
+  alias of the `Prop` `globalClearedRepresentativeResummationMatch` (`P2ClearedBridge`). It is a
+  definition of the desired equality, with no proof; it does not discharge the non-monic root
+  evaluation mismatch. Clearing by a leading-coefficient power alone is equivalent to the
+  restricted match for every `H` (`cleared_iff_restricted`), and the non-monic order-zero
+  unrestricted match is refuted (`P2OrderZeroRefutationWitness`).
 * `alpha_weight_bound_refuted` (#138) — The proposed weight-1 invariant is false under the
   current two-field `ClaimA2.Hypotheses`; a valid separable monic counterexample is verified in
   `P1MonicWeightRefutation`.
@@ -32,15 +40,17 @@ open BCIKS20AppendixA
 variable {F : Type} [Field F] {H : F[X][Y]} [Fact (Irreducible H)] [Fact (0 < H.natDegree)]
 variable (x₀ : F) (R : F[X][X][Y]) (hHyp : BCIKS20AppendixA.ClaimA2.Hypotheses x₀ R H)
 
-/-- **Monic Resolution.** The restricted Faà-di-Bruno composition match holds for monic `H`. -/
+/-- **Monic subcase.** The restricted Faà-di-Bruno composition match holds for monic `H`
+(`H.leadingCoeff = 1`). This does not cover non-monic `H : F[X][Y]`. -/
 theorem faa_di_bruno_composition_monic (hlc : H.leadingCoeff = 1) :
     RestrictedFaaDiBrunoMatch H x₀ R hHyp :=
   restrictedFaaDiBrunoMatch_of_monic H x₀ R hHyp hlc
 
-/-- **Issue #139 (non-monic resolution, axiom-clean).** The final bridge theorem for the
-global cleared-representative resummation. -/
-def faa_di_bruno_global_cleared_match (t : ℕ) : Prop :=
-    restrictedFaaDiBrunoSum H x₀ R hHyp t = clearedRepresentativeFaaDiBrunoSum H x₀ R hHyp t
+/-- **Issue #139 (OPEN — unproved statement, not a theorem).** Alias of the canonical proposition
+`globalClearedRepresentativeResummationMatch` (restricted sum = cleared-representative sum at
+order `t`). Nothing in-tree proves it; `#print axioms` below audits only the statement. -/
+abbrev faa_di_bruno_global_cleared_match (t : ℕ) : Prop :=
+  globalClearedRepresentativeResummationMatch H x₀ R hHyp t
 
 /-- **Issue #138 (refuted under current hypotheses).**  The order-1 successor quotient weight
 bound fails for the valid separable monic witness from `P1MonicWeightRefutation`, so the proposed

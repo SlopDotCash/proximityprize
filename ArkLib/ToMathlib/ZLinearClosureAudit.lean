@@ -55,9 +55,10 @@ The module `M = lift(F[X]) + T·lift(F[X])` the target confines coefficients to 
 **multiplicatively closed iff `d_H ≤ 2`**:
 * `d_H ≥ 3`: `T² ∉ M` (`functionFieldT_sq_no_T_repr`) — `M` is not a subring, so the Newton/Hensel
   recursion (which multiplies coefficients and divides by `ζ ∉ M` in general) has **no
-  recursion-local reason** to preserve `M`; any truth of the monic `d_H ≥ 3` target is a global
-  geometric fact — and by FINDING 2 the paper's geometric argument proves the *collapse*, not the
-  T-form target.
+  general span-closure reason** to preserve `M`.  This failure of closure alone does not rule
+  out a proof for the particular recurrence at hand (whose specific coefficients might still stay
+  in `M`); it only shows that such a proof cannot rest on `M` being a subring.  By FINDING 2 the
+  paper's geometric argument proves the *collapse*, not the T-form target.
 * `d_H = 2`: the modulus folds `T²` back into `M`
   (`T_repr_mul_closed_of_natDegree_eq_two`, `functionFieldT_sq_T_repr_of_natDegree_eq_two`), so
   `M` is closed under products — the only regime where a coefficient-recursion attack on the

@@ -42,18 +42,25 @@ So the dichotomy is **two-regime, separated by the onset depth `r₀(n)`** where
 band floor: below `r₀` the density is provably `0` (good-prime certificate); at and above `r₀` bad
 primes appear but the set stays a FIXED finite cardinality → density → 0 in a growing window.
 
-## EXACT growth law of `MAXNORM(n,w)` (NEW, S3 push — `probe_wfS3_mahler_slope.rs`, exact)
+## Growth law of `MAXNORM(n,w)` (S3 push — `probe_wfS3_mahler_slope.rs`; constants CORRECTED)
 
-The crossover weight is pinned by the exact growth law (CORRECTS the prior linear-`n` estimate to
-its exact constant). For `n = 2^μ`, antipodal-free config `A ∈ {−1,0,1}^{φ(n)}` of weight `w`, the
+**Correction (audit 2026-10-28, CW-B18-14).**  An earlier version called the law below "EXACT", named
+"window-with-one-sign-flip" as the extremal family, and claimed `c_w → 1` (`M → 2`).  Both are false:
+the Rudin–Shapiro `±1` polynomial `1+x+x²−x³+x⁴+x⁵−x⁶+x⁷` (weight 8) has `log₂ M ≈ 1.268 > 1.00`, and
+its weight-16 analogue has `log₂ M ≈ 1.837` (recomputed numerically).  So the sign-flip window is not
+extremal, `c_w` is unbounded in `w`, and the values quoted below are lower bounds for `c_w`
+(measured on the sign-flip family only).  The only general bound is `c_w ≤ ½·log₂ w`
+(`M(A) ≤ ‖A‖₂ = √w`), with flat (Rudin–Shapiro type) `±1` polynomials approaching it up to a
+constant.  The qualitative obstruction below only uses `c_w ≥ c_3 > 0`, so it is unaffected.
+ For `n = 2^μ`, antipodal-free config `A ∈ {−1,0,1}^{φ(n)}` of weight `w`, the
 norm `N = ∏_{ζ prim} A(ζ)` satisfies, by equidistribution of the `φ(n)` primitive roots:
 
   **`log₂ MAXNORM(n,w) = φ(n) · c_w · (1 + o(1))`,  `c_w := log₂(extremal weight-w Mahler measure)`.**
 
-Exactly verified (exact integer det `|N|`, extremal family = window-with-one-sign-flip):
-`log₂|N|/φ(n) → {w=3: 0.694, w=4: 0.879, w=6: 0.976, w=8: 1.00}`, monotone ↑ in `w`, with the
-Landau/Mahler cap `c_w ≤ ½ log₂ w` and limit `c_w → 1` (`M → 2`) as `w → ∞`. (The all-ones window
-is NOT extremal — `M(1+x+…+x^{w−1}) = 1`, sublinear; the sign-flip is.)
+Measured on the window-with-one-sign-flip family (exact integer det `|N|`):
+`log₂|N|/φ(n) → {w=3: 0.694, w=4: 0.879, w=6: 0.976, w=8: 1.00}` — LOWER bounds for `c_w`, since this
+family is not extremal (Rudin–Shapiro beats it at `w = 8`, see the correction).  The Landau/Mahler cap
+is `c_w ≤ ½ log₂ w`; `c_w` is unbounded as `w → ∞`.  (The all-ones window gives `M = 1`, `c_w = 0`.)
 
 **Consequence (the SHARP obstruction).** The good-prime hypothesis `MAXNORM(n,2r) < p = n^β` is
 `φ(n)·c_{2r} < β·log₂ n`, i.e. `Θ(n) < Θ(log n)`: FALSE for `n` past `~2^7`. The certified depth
@@ -105,14 +112,14 @@ theorem bad_mem_badPrimeSet {p : ℕ} {norms : Finset ℤ}
   refine mem_biUnion.mpr ⟨N, hmem, ?_⟩
   exact Nat.mem_primeFactors.mpr ⟨hp, hdvd', hNa⟩
 
-/-- **The bad-prime set is FINITE** — trivially, as a `Finset`. This is the structural skeleton of
-the density direction: at any fixed depth `r` (fixed finite `norms`), only finitely many primes are
-bad, so a growing window of prize primes is eventually almost all good. -/
-theorem badPrimeSet_finite (norms : Finset ℤ) : (badPrimeSet norms).Nonempty ∨
-    badPrimeSet norms = ∅ := by
-  rcases (badPrimeSet norms).eq_empty_or_nonempty with h | h
-  · exact Or.inr h
-  · exact Or.inl h
+/-- **The set of bad primes is FINITE.** The set `{p | p.Prime ∧ Bad p norms}` (a priori an arbitrary
+subset of `ℕ`) is finite, because it is contained in the `Finset` `badPrimeSet norms`
+(`bad_mem_badPrimeSet`). This is the structural skeleton of the density direction: at any fixed
+depth `r` (fixed finite `norms`), only finitely many primes are bad.  (Audit 2026-10-28, CW-B18-14:
+replaces a former statement `(badPrimeSet norms).Nonempty ∨ badPrimeSet norms = ∅`, which was an
+excluded-middle tautology.) -/
+theorem badPrimeSet_finite (norms : Finset ℤ) : {p : ℕ | p.Prime ∧ Bad p norms}.Finite :=
+  (badPrimeSet norms).finite_toSet.subset (fun _ hp => bad_mem_badPrimeSet hp.1 hp.2)
 
 /-- **Explicit cardinality bound.** The number of bad primes is at most the sum, over the norms, of
 the number of distinct prime factors of `|N|`: `B(n,r) ≤ Σ_N ω(|N|)`. (Follows from
@@ -154,10 +161,10 @@ theorem density_zero_of_no_bad {norms : Finset ℤ} {windowPrimes : Finset ℕ}
 /-! ## The GOOD-REPRESENTATIVE EXISTENCE theorem (the surviving deliverable at prize scale)
 
 The companion `good_of_maxnorm_lt` certifies a SPECIFIC prime good only when `MAXNORM(n,2r) < p`.
-The S3 growth law (`probe_wfS3_mahler_slope.rs`, exact) pins
+The S3 growth law (`probe_wfS3_mahler_slope.rs`) gives
   `log₂ MAXNORM(n,w) = φ(n)·c_w·(1+o(1))`, `c_w = log₂ (extremal weight-`w` Mahler measure)
-    `∈ (0, ½ log₂ w]`, `c_w → 1` (`M → 2`) as `w → ∞`,
-verified exactly: `log₂|N|/φ(n) → {w=3: .694, w=4: .879, w=6: .976, w=8: 1.00}`. Since the band
+    `∈ (0, ½ log₂ w]`, unbounded in `w` (NOT `→ 1`; Rudin–Shapiro has `c_8 ≥ 1.268` — CW-B18-14),
+with sign-flip-family lower bounds `{w=3: .694, w=4: .879, w=6: .976, w=8: 1.00}`. Since the band
 floor `β·log₂ n` is `Θ(log n)` while `φ(n)·c_w = Θ(n)`, the crossover weight `w*(n,β) → 0`: at
 `n ≥ 2²⁰` even depth `r = 1` is uncertifiable by norm-size. So NO specific prize prime is provably
 good at prize scale — the per-prime route is walled (recorded OBSTRUCTION).
@@ -187,16 +194,7 @@ theorem exists_good_in_window {norms : Finset ℤ} {windowPrimes : Finset ℕ}
       _ ≤ (badPrimeSet norms).card := Finset.card_le_card hsub
   omega
 
-/-- **Quantitative good-count lower bound at prize scale.** The number of GOOD window primes is at
-least `W − B`, with `W = windowPrimes.card` (grows like `n^{β−1}/((n−1)ln n)`, the `TZPrimeSupply`
-PNT-in-AP input) and `B = (badPrimeSet norms).card` (FIXED at fixed depth). Hence for any fixed
-depth `r`, all but a vanishing fraction of prize-window primes are good — even though no SINGLE one
-is certifiable by the norm-size test. (Restatement of `good_window_count_lower` foregrounding the
-density-decay conclusion.) -/
-theorem good_count_ge_window_sub_bad {norms : Finset ℤ} {windowPrimes : Finset ℕ}
-    (hsub : {p ∈ windowPrimes | Bad p norms} ⊆ badPrimeSet norms) :
-    windowPrimes.card - (badPrimeSet norms).card ≤
-      {p ∈ windowPrimes | ¬ Bad p norms}.card :=
-  good_window_count_lower hsub
+/- `good_count_ge_window_sub_bad` (a verbatim restatement of `good_window_count_lower`) was removed
+(audit 2026-10-28, CW-B18-14); use `good_window_count_lower`. -/
 
 end ArkLib.ProximityGap.Frontier.WFS3

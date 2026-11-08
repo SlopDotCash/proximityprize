@@ -26,8 +26,12 @@ floor is `min_{D∈ℕ} max(1/D, (1−ρ)(1−1/D))`. At `ρ = 1/4`:
 So the best integer rung is **1/2**, and `1/2 > 43/96` — no sharpening.
 
 Structural reason (`c_j = n − t_j`, agreement `t_j = core + a_j`, degree cap `4·core ≤ n`, regions
-disjoint `core + Σa_j ≤ n`): for `D = 3`, `Σ c_j = 3n − 3·core − Σa_j ≥ 3n − 3(n/4) − (n−core) ≥ 3n/2`,
-so `max c_j ≥ avg ≥ n/2` — with **no** budget hypothesis. For `D ≤ 2` the `ε*`-budget `Σc_j > n`
+disjoint `core + Σa_j ≤ n`): for `D = 3`, `Σ c_j = 3n − 3·core − Σa_j ≥ 3n − 3·core − (n−core)
+= 2n − 2·core ≥ 3n/2` (using `core ≤ n/4` only in the last step),
+so `max c_j ≥ avg ≥ n/2` — with **no** budget hypothesis. *(Chain corrected 2026-10-28, audit T48:
+the original substituted `core ≤ n/4` in one term while keeping `core` in the other, and the
+displayed middle expression `5n/4 + core` does not by itself give `≥ 3n/2`. The conclusion and the
+averaging proof `total_complement_lower_bound` are unaffected.)* For `D ≤ 2` the `ε*`-budget `Σc_j > n`
 forces `max c_j > n/2`. Concrete 64-block/core-15 D=3 rung would give `33/64 ≈ 0.516`; finer grading
 → `1/2⁺`. All above `43/96` and above the `3/8` good-floor — consistent, no progress.
 

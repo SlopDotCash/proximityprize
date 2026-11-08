@@ -22,16 +22,25 @@ reach**:
   their union.  Via the orchard identity this is **`evenTowerSupply_antipodal_ge`**: the
   deepest-band supply of `x^{2j}` is `≥ C(|R|, j) = Θ(n^j)` on every negation-closed domain.
   So higher even-tower words have *polynomial-but-growing* deep-band supply — nonzero, degree
-  `j = (k+1)/2` in `n` — consistent with the bold pin `δ* = capacity − Θ(1/log n)`.
+  `j = (k+1)/2` in `n` (a lower bound only; see below for why no matching upper bound is
+  claimed).
 
 * **`antipodal_bound_not_tight`** (refutation, machine-checked) — the matching *upper* bound
   `C(n/2, 2)` is **false in small characteristic**: on `μ_{10} = F₁₁^×` the zero-sum-`4`-subset
   count is `20`, strictly above `C(5, 2) = 10`.  The excess comes from char-`p` coincidences
-  (e.g. `1+2+3+5 ≡ 0 (mod 11)` is not a char-`0` root-of-unity relation).  Such coincidences
-  exist only **below** the Sidon/resultant threshold `n² < p`; every deployed/prize field
-  (`q ≈ n·2^128 ≫ n²`) is above it, where the antipodal bound becomes tight (the
-  `AdditiveEnergyResultant` cone).  So `C(n/2, j)` is the *honest* deep-band growth rate on
-  prize fields, a strict lower bound on small fields.  Issue #389.
+  (e.g. `1+2+3+5 ≡ 0 (mod 11)` is not a char-`0` root-of-unity relation).
+
+* **`nonantipodal_zeroSum_quad_mu32_F1153`** (refutation, machine-checked) — such coincidences
+  do **not** disappear above the guard `p > n²`.  In `F₁₁₅₃` (`1153 > 1024 = 32²`) the values
+  `1, 75, 512, 565` are `32`-nd roots of unity summing to `1153 ≡ 0`, and none is the negation
+  of another, so `μ_32 ⊂ F₁₁₅₃` has a non-antipodal zero-sum quadruple and the antipodal count
+  `C(16, 2) = 120` is not exact there.  (Exact enumeration in the 2026-10-28 audit, not
+  formalized here, gives `152` zero-sum 4-subsets of `μ_32 ⊂ F₁₁₅₃`.)  An earlier version of
+  this docstring claimed that every field with `n² < p` makes the antipodal bound tight; that
+  claim is false.  Whether the antipodal count is exact on actual production fields
+  (`q ≈ n·2^128`) needs a theorem with stronger, explicitly stated hypotheses, which this file
+  does not provide.  So `C(n/2, j)` is a proved *lower* bound everywhere; no matching upper
+  bound is claimed.  Issue #389.
 -/
 
 open Finset
@@ -109,7 +118,7 @@ theorem evenTowerSupply_antipodal_ge (dom : Fin n ↪ F) (ν : Fin n → Fin n)
   rw [general_orchard_card dom (by omega : 1 ≤ 2 * j - 1), show 2 * j - 1 + 1 = 2 * j from by omega]
   exact zeroSum_evenSubsets_antipodal_ge dom ν R j hν hνR
 
-/-! ## The reach of the bound: tight on prize fields, strict in small characteristic -/
+/-! ## The reach of the bound: strict in small characteristic, and not exact above `p > n²` -/
 
 section SmallCharCountermodel
 
@@ -143,14 +152,34 @@ theorem mu10_antipodal_lower :
 /-- **The antipodal upper bound `C(n/2, 2)` is NOT tight in small characteristic.**  At
 `μ_{10} ⊂ F₁₁` the proven lower bound `C(5,2) = 10` is *strict*: the zero-sum-`4`-subset count
 is `20`.  The `10` extra quadruples are char-`11` coincidences (e.g. `1+2+3+5 ≡ 0`), not
-char-`0` root-of-unity relations — they vanish above the Sidon threshold `n² < p` where every
-prize field lives, so the bound becomes an equality there but is a strict lower bound here. -/
+char-`0` root-of-unity relations.  Such coincidences are not confined to `p < n²`: see
+`nonantipodal_zeroSum_quad_mu32_F1153`. -/
 theorem antipodal_bound_not_tight :
     Nat.choose 5 2 < (((Finset.univ : Finset (Fin 10)).powersetCard (2 * 2)).filter
         (fun T => ∑ i ∈ T, dom10 i = 0)).card := by
   rw [mu10_F11_zeroSum_quads_eq_twenty]; decide
 
 end SmallCharCountermodel
+
+section AboveSquareGuard
+
+/-- **The guard `p > n²` does not make the antipodal count exact.**  In `F₁₁₅₃`, where
+`1153 > 32² = 1024`: `286` generates `μ_32` (`286^16 = −1`, so `286` has order exactly `32`);
+the four distinct values `1, 75, 512, 565` are `32`-nd roots of unity summing to `0`; and no one
+of them is the negation of another.  So `μ_32 ⊂ F₁₁₅₃` carries a zero-sum quadruple that is not
+a union of two antipodal pairs, and the zero-sum-4-subset count of `μ_32` strictly exceeds the
+antipodal count `C(16, 2)` (the audit's exact enumeration gives `152 > 120`; only the witness is
+checked here). -/
+theorem nonantipodal_zeroSum_quad_mu32_F1153 :
+    32 ^ 2 < 1153 ∧
+    (286 : ZMod 1153) ^ 16 = -1 ∧
+    ((1 : ZMod 1153) + 75 + 512 + 565 = 0) ∧
+    (∀ x ∈ ({1, 75, 512, 565} : Finset (ZMod 1153)),
+      x ^ 32 = 1 ∧ -x ∉ ({1, 75, 512, 565} : Finset (ZMod 1153))) ∧
+    ({1, 75, 512, 565} : Finset (ZMod 1153)).card = 4 := by
+  refine ⟨by norm_num, ?_, ?_, ?_, ?_⟩ <;> decide +kernel
+
+end AboveSquareGuard
 
 end ProximityGap.PairRank
 
@@ -159,3 +188,4 @@ end ProximityGap.PairRank
 #print axioms ProximityGap.PairRank.evenTowerSupply_antipodal_ge
 #print axioms ProximityGap.PairRank.mu10_antipodal_lower
 #print axioms ProximityGap.PairRank.antipodal_bound_not_tight
+#print axioms ProximityGap.PairRank.nonantipodal_zeroSum_quad_mu32_F1153

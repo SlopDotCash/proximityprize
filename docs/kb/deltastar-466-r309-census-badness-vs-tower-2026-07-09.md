@@ -1,5 +1,13 @@
 # #466 R309 — census badness vs the moment tower: two different scales (clarification round)
 
+> **Scope note (2026-10-28 audit, T48).** The separation between exact-constant energy failures
+> (r304) and the looser bounded-constant DC-subtracted tower is a useful clarification. The
+> evidence for the tower side is finite, though: seven primes at `n = 16`, with exact moments to
+> `r = 6` and a fixed-prime log-space search to `r = 400`. It does not establish growing-depth
+> behaviour or uniformity in the prime, so "a single frequency can NEVER cross" and "even
+> census-bad primes satisfy [it] comfortably" describe the tested cells only. A per-prime discriminant
+> observed at `n = 16` is likewise not yet a proved good-prime criterion.
+
 ## Question
 
 Does the depth-3 census badness (r304/r305: exact-Wick violations, ζ-relation webs) infect

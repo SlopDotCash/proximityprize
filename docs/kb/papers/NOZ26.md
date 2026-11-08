@@ -220,7 +220,9 @@ Ring-switching layer:
   (`Hachi/Correctness.lean`) have only standard axiom dependencies.
 - Lemma 6's packing norm growth is complete. The separate Micciancio product-norm and
   Lyubashevsky–Seiler short-invertibility inputs used by the commitment security layer are also
-  proved in their respective modules.
+  proved in their respective modules, over `X^{2^α} + 1` only: `scalarVecMul_mul_l2NormSq_le`,
+  and `isUnit_of_l1Norm_le` under the centered `ℓ₁` hypothesis `‖c‖₁ ≤ κ`, `κ² < q`,
+  `q ≡ 5 (mod 8)` (not the Euclidean-norm form of the informal corollary).
 
 Detailed Lemma 5–6 correspondence and proof status:
 [`../audits/noz26-subfield-lemmas5-6.md`](../audits/noz26-subfield-lemmas5-6.md).

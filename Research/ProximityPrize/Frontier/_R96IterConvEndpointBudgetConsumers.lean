@@ -6,6 +6,7 @@ Authors: ArkLib Contributors
 import Research.ProximityPrize.Frontier._R95IterConvMultiStepPublicConstantConsumers
 import Research.ProximityPrize.Frontier._R91TripleConvIterWickConstantConsumers
 import Research.ProximityPrize.Frontier._R35FullConvLagEnergy
+import Research.ProximityPrize.Frontier._R96IterConvBudgetMonotoneAdapters
 
 /-!
 # LANE B2 (#466 round 96): endpoint budgets for multi-step Wick propagation
@@ -17,6 +18,23 @@ R95 exposes the exact budget needed at each intermediate depth:
 Since the right-hand side is monotone in `t` when `C ≥ 0`, one endpoint budget at the starting
 rung pays the entire interval.  In particular, every r = 3 propagation only needs the scalar
 condition `(m : ℝ) ≤ 4 * C` (spelled as `C * 4` below to match the tower constants).
+
+**Information content of the face-moment consumers (2026-10-29 audit CW-B12-01).**  The
+`sup_pureFace_*` consumers are NOT a nontrivial Wick propagation once `q = |F|` is moderately
+large.  Under `DualFamilyGroupLaw`, `‖λ_j x‖ = 1` for `x ≠ 0`, and `pureFace` sums over the
+`m - 1` nonzero indices, so `‖J j‖² ≤ q` already gives the trivial bound
+`‖pureFace J lam x‖^(2s) ≤ (m-1)^(2s)·q^s`.  The r = 3 head budget `m ≤ 4C` forces
+`C' ≥ C ≥ m/4` (`le_const_of_three_endpoint_budget`), so the published right-hand side is at
+least `(q-1)·(s!/4^s)·m^(2s)·q^s`, and `min_{s ≥ 3} s!/4^s = 3/32`; hence for `q ≥ 12` every
+r = 3 face consumer is weaker than the trivial bound.  Likewise the r = 2 head budget `m ≤ 3C`
+gives `min_{s ≥ 2} s!/3^s = 2/9`, so the r = 2 face consumers are information-free for
+`q ≥ 6`.  The generic-`r` face consumers (budget `m ≤ C·(r+1)`) become information-free once
+`(q-1)·r!/(r+1)^r ≥ 1`.  These declarations are kept as (correct) plumbing; they must not be
+cited as evidence of Wick-level face control.
+
+**Deduplication (audit CW-B12-02).**  The endpoint-named theorems that were statement-identical
+to `_R96IterConvBudgetMonotoneAdapters`'s `*_left_budget_le_const` theorems are now `alias`es of
+those canonical declarations; only the genuinely different consumers keep their own proofs.
 -/
 
 set_option autoImplicit false
@@ -43,19 +61,8 @@ open ArkLib.ProximityGap.Frontier.R95IterConvMultiStepPublicConstantConsumers
 variable {m : ℕ} [NeZero m]
 
 /-- A starting-depth budget pays every later R95 head-rung budget in the propagation interval. -/
-theorem iterConvEnergyWick_add_of_prev_of_endpoint_budget_le_const
-    (J : ZMod m → ℂ) (q r k : ℕ) {C C' : ℝ}
-    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (q : ℝ))
-    (hC0 : 0 ≤ C) (hCC : C ≤ C')
-    (hprev : IterConvEnergyWick J q r C)
-    (hbudget₀ : (m : ℝ) ≤ C * ((r + 1 : ℕ) : ℝ)) :
-    IterConvEnergyWick J q (r + k) C' :=
-  iterConvEnergyWick_add_of_prev_of_budget_le_const J q r k hJ hC0 hCC hprev
-    (fun t hrt _htk =>
-      hbudget₀.trans
-        (mul_le_mul_of_nonneg_left
-          (Nat.cast_le.mpr (Nat.succ_le_succ hrt) : ((r + 1 : ℕ) : ℝ) ≤ ((t + 1 : ℕ) : ℝ))
-          hC0))
+alias iterConvEnergyWick_add_of_prev_of_endpoint_budget_le_const :=
+  R96IterConvBudgetMonotoneAdapters.iterConvEnergyWick_add_of_prev_of_left_budget_le_const
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 variable {lam : ZMod m → F → ℂ} {G : Finset F} {χ : F → ℂ}
@@ -276,17 +283,8 @@ theorem sup_pureFace_from_three_of_twoCharacterWeilInput_maxBudget_endpoint_le_c
 
 /-- A calibrated r = 3 energy certificate propagates to depth `3+k` from the single endpoint
 budget `m ≤ C * 4`. -/
-theorem iterConvEnergyWick_from_three_of_tripleConvEnergyBound_endpoint_le_const
-    (J : ZMod m → ℂ) (q k : ℕ) {B C C' : ℝ}
-    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (q : ℝ))
-    (hC0 : 0 ≤ C) (hCC : C ≤ C')
-    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
-    (hbudget₃ : (m : ℝ) ≤ C * 4)
-    (h : TripleConvEnergyBound J q B) :
-    IterConvEnergyWick J q (3 + k) C' :=
-  iterConvEnergyWick_add_of_prev_of_endpoint_budget_le_const J q 3 k hJ hC0 hCC
-    (iterConvEnergyWick_three_of_tripleConvEnergyBound J q hBC h)
-    (by simpa using hbudget₃)
+alias iterConvEnergyWick_from_three_of_tripleConvEnergyBound_endpoint_le_const :=
+  R96IterConvBudgetMonotoneAdapters.iterConvEnergyWick_from_three_of_tripleConvEnergyBound_left_budget_le_const
 
 /-- A calibrated r = 3 energy certificate checked at a smaller ambient parameter propagates to
 depth `3+k` at a larger ambient parameter, using only the endpoint budget `m ≤ C * 4`. -/
@@ -312,23 +310,8 @@ theorem iterConvEnergyWick_from_three_of_tripleConvEnergyBound_endpoint_le_const
 
 /-- A calibrated r = 3 energy certificate propagates to depth `3+k` and is immediately consumed
 by the public face-moment bound, using only the endpoint budget `m ≤ C * 4`. -/
-theorem sup_pureFace_from_three_of_tripleConvEnergyBound_endpoint_le_const
-    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
-    (J : ZMod m → ℂ) {B C C' : ℝ} (k : ℕ)
-    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (Fintype.card F : ℝ))
-    (hC0 : 0 ≤ C) (hCC : C ≤ C')
-    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
-    (hbudget₃ : (m : ℝ) ≤ C * 4)
-    (h : TripleConvEnergyBound J (Fintype.card F) B) {s : F} (hs : s ≠ 0) :
-    ‖pureFace J lam s‖ ^ (2 * (3 + k))
-      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
-          * (C' ^ (3 + k) * ((3 + k).factorial : ℝ)
-            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ (3 + k)) :=
-  sup_pureFace_add_of_iterConvEnergyWick_prev_of_endpoint_budget_le_const hfam hgrp J
-    hJ hC0 hCC
-    (iterConvEnergyWick_three_of_tripleConvEnergyBound J (Fintype.card F) hBC h)
-    (by simpa using hbudget₃)
-    hs
+alias sup_pureFace_from_three_of_tripleConvEnergyBound_endpoint_le_const :=
+  R96IterConvBudgetMonotoneAdapters.sup_pureFace_from_three_of_tripleConvEnergyBound_left_budget_le_const
 
 /-- A calibrated r = 3 energy certificate checked at any `q ≤ |F|` propagates to depth `3+k`
 and feeds the public face-moment bound, using only the endpoint budget `m ≤ C * 4`. -/
@@ -360,127 +343,33 @@ theorem sup_pureFace_from_three_of_tripleConvEnergyBound_endpoint_le_const_q
 
 /-- Energy-level expanded Jacobi Hermitian input propagates to depth `3+k` from the single
 endpoint budget `m ≤ C * 4`. -/
-theorem iterConvEnergyWick_from_three_of_jacobiHermitianExpandedEnergyBound_endpoint_le_const
-    {B C C' : ℝ} (k : ℕ)
-    (hJ : ∀ j : ZMod m, ‖jacobiCoeff χ lam j‖ ^ 2 ≤ (Fintype.card F : ℝ))
-    (hC0 : 0 ≤ C) (hCC : C ≤ C')
-    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
-    (hbudget₃ : (m : ℝ) ≤ C * 4)
-    (h : JacobiAdditiveTripleHermitianExpandedEnergyBound χ lam B) :
-    IterConvEnergyWick
-      (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F) (3 + k) C' :=
-  iterConvEnergyWick_from_three_of_tripleConvEnergyBound_endpoint_le_const
-    (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F) k
-    hJ hC0 hCC hBC hbudget₃
-    ((jacobiAdditiveTripleHermitianExpandedEnergyBound_iff_tripleConvEnergyBound
-      (χ := χ) (lam := lam) (C := B)).mp h)
+alias iterConvEnergyWick_from_three_of_jacobiHermitianExpandedEnergyBound_endpoint_le_const :=
+  R96IterConvBudgetMonotoneAdapters.iterConvEnergyWick_from_three_of_jacobiHermitianExpandedEnergyBound_left_budget_le_const
 
 /-- Energy-level expanded Jacobi Hermitian input propagates from the r = 3 head and is consumed
 by the public face-moment bound, with only the endpoint budget `m ≤ C * 4`. -/
-theorem sup_pureFace_from_three_of_jacobiHermitianExpandedEnergyBound_endpoint_le_const
-    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
-    {B C C' : ℝ} (k : ℕ)
-    (hJ : ∀ j : ZMod m, ‖jacobiCoeff χ lam j‖ ^ 2 ≤ (Fintype.card F : ℝ))
-    (hC0 : 0 ≤ C) (hCC : C ≤ C')
-    (hBC : B ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
-    (hbudget₃ : (m : ℝ) ≤ C * 4)
-    (h : JacobiAdditiveTripleHermitianExpandedEnergyBound χ lam B) {s : F} (hs : s ≠ 0) :
-    ‖pureFace (fun i : ZMod m => jacobiCoeff χ lam i) lam s‖ ^ (2 * (3 + k))
-      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
-          * (C' ^ (3 + k) * ((3 + k).factorial : ℝ)
-            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ (3 + k)) :=
-  sup_pureFace_from_three_of_tripleConvEnergyBound_endpoint_le_const hfam hgrp
-    (fun i : ZMod m => jacobiCoeff χ lam i) k
-    hJ hC0 hCC hBC hbudget₃
-    ((jacobiAdditiveTripleHermitianExpandedEnergyBound_iff_tripleConvEnergyBound
-      (χ := χ) (lam := lam) (C := B)).mp h) hs
+alias sup_pureFace_from_three_of_jacobiHermitianExpandedEnergyBound_endpoint_le_const :=
+  R96IterConvBudgetMonotoneAdapters.sup_pureFace_from_three_of_jacobiHermitianExpandedEnergyBound_left_budget_le_const
 
 /-- A pointwise r = 3 certificate propagates to depth `3+k` from the single endpoint budget
 `m ≤ C * 4`. -/
-theorem iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_endpoint_le_const
-    (J : ZMod m → ℂ) (q k : ℕ) {B B' C C' : ℝ}
-    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (q : ℝ))
-    (hC0 : 0 ≤ C) (hCC : C ≤ C')
-    (hBB : B ≤ B')
-    (hBC : B' ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
-    (hbudget₃ : (m : ℝ) ≤ C * 4)
-    (hpt : TripleConvPointwiseBound J q B) :
-    IterConvEnergyWick J q (3 + k) C' :=
-  iterConvEnergyWick_add_of_prev_of_endpoint_budget_le_const J q 3 k hJ hC0 hCC
-    (iterConvEnergyWick_three_of_tripleConvPointwiseBound_le J q hBB hBC hpt)
-    (by simpa using hbudget₃)
+alias iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_endpoint_le_const :=
+  R96IterConvBudgetMonotoneAdapters.iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_left_budget_le_const
 
 /-- A pointwise r = 3 certificate checked at a smaller ambient parameter propagates to depth
 `3+k` at a larger ambient parameter, using only the endpoint budget `m ≤ C * 4`. -/
-theorem iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_endpoint_le_const_q
-    (J : ZMod m → ℂ) {q q' : ℕ} (k : ℕ) {B B' C C' : ℝ}
-    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (q' : ℝ))
-    (hC0 : 0 ≤ C) (hCC : C ≤ C') (hqq : q ≤ q')
-    (hBB : B ≤ B')
-    (hBC : B' ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
-    (hbudget₃ : (m : ℝ) ≤ C * 4)
-    (hpt : TripleConvPointwiseBound J q B) :
-    IterConvEnergyWick J q' (3 + k) C' :=
-  iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_le_const_q J k
-    hJ hC0 hCC hqq hBB hBC
-    (by
-      intro t ht3 htk
-      exact hbudget₃.trans
-        (mul_le_mul_of_nonneg_left
-          (by
-            have ht : 4 ≤ t + 1 := Nat.succ_le_succ ht3
-            exact_mod_cast ht)
-          hC0))
-    hpt
+alias iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_endpoint_le_const_q :=
+  R96IterConvBudgetMonotoneAdapters.iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_left_budget_le_const_q
 
 /-- A pointwise r = 3 certificate propagates to depth `3+k` and is immediately consumed by the
 public face-moment bound, using only the endpoint budget `m ≤ C * 4`. -/
-theorem sup_pureFace_from_three_of_tripleConvPointwiseBound_endpoint_le_const
-    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
-    (J : ZMod m → ℂ) {B B' C C' : ℝ} (k : ℕ)
-    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (Fintype.card F : ℝ))
-    (hC0 : 0 ≤ C) (hCC : C ≤ C')
-    (hBB : B ≤ B')
-    (hBC : B' ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
-    (hbudget₃ : (m : ℝ) ≤ C * 4)
-    (hpt : TripleConvPointwiseBound J (Fintype.card F) B) {s : F} (hs : s ≠ 0) :
-    ‖pureFace J lam s‖ ^ (2 * (3 + k))
-      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
-          * (C' ^ (3 + k) * ((3 + k).factorial : ℝ)
-            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ (3 + k)) :=
-  sup_pureFace_add_of_iterConvEnergyWick_prev_of_endpoint_budget_le_const hfam hgrp J
-    hJ hC0 hCC
-    (iterConvEnergyWick_three_of_tripleConvPointwiseBound_le
-      J (Fintype.card F) hBB hBC hpt)
-    (by simpa using hbudget₃)
-    hs
+alias sup_pureFace_from_three_of_tripleConvPointwiseBound_endpoint_le_const :=
+  R96IterConvBudgetMonotoneAdapters.sup_pureFace_from_three_of_tripleConvPointwiseBound_left_budget_le_const
 
 /-- A pointwise r = 3 certificate checked at any `q ≤ |F|` propagates to depth `3+k` and feeds
 the public face-moment bound, using only the endpoint budget `m ≤ C * 4`. -/
-theorem sup_pureFace_from_three_of_tripleConvPointwiseBound_endpoint_le_const_q
-    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
-    (J : ZMod m → ℂ) {q : ℕ} {B B' C C' : ℝ} (k : ℕ)
-    (hJ : ∀ j : ZMod m, ‖J j‖ ^ 2 ≤ (Fintype.card F : ℝ))
-    (hC0 : 0 ≤ C) (hCC : C ≤ C') (hqq : q ≤ Fintype.card F)
-    (hBB : B ≤ B')
-    (hBC : B' ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
-    (hbudget₃ : (m : ℝ) ≤ C * 4)
-    (hpt : TripleConvPointwiseBound J q B) {s : F} (hs : s ≠ 0) :
-    ‖pureFace J lam s‖ ^ (2 * (3 + k))
-      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
-          * (C' ^ (3 + k) * ((3 + k).factorial : ℝ)
-            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ (3 + k)) :=
-  sup_pureFace_from_three_of_tripleConvPointwiseBound_le_const_q hfam hgrp J k
-    hJ hC0 hCC hqq hBB hBC
-    (by
-      intro t ht3 htk
-      exact hbudget₃.trans
-        (mul_le_mul_of_nonneg_left
-          (by
-            have ht : 4 ≤ t + 1 := Nat.succ_le_succ ht3
-            exact_mod_cast ht)
-          hC0))
-    hpt hs
+alias sup_pureFace_from_three_of_tripleConvPointwiseBound_endpoint_le_const_q :=
+  R96IterConvBudgetMonotoneAdapters.sup_pureFace_from_three_of_tripleConvPointwiseBound_left_budget_le_const_q
 
 /-- The r = 3 endpoint budget is equivalent to paying a linear-in-`m` Wick constant up to the
 factor `4`; this records the arithmetic obstruction carried by the bare Cauchy recursion. -/
@@ -506,47 +395,13 @@ theorem not_three_endpoint_budget_of_const_lt {C K : ℝ}
 
 /-- Jacobi six-input propagation from the r = 3 head to depth `3+k`, with only the endpoint
 budget `m ≤ C * 4`. -/
-theorem iterConvEnergyWick_from_three_of_jacobiHermitianSixInput_endpoint_le_const
-    {B B' C C' : ℝ} (k : ℕ)
-    (hJ : ∀ j : ZMod m, ‖jacobiCoeff χ lam j‖ ^ 2 ≤ (Fintype.card F : ℝ))
-    (hC0 : 0 ≤ C) (hCC : C ≤ C')
-    (hBB : B ≤ B')
-    (hBC : B' ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
-    (hbudget₃ : (m : ℝ) ≤ C * 4)
-    (h : JacobiHermitianSixInput χ lam B) :
-    IterConvEnergyWick
-      (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F) (3 + k) C' :=
-  iterConvEnergyWick_from_three_of_tripleConvPointwiseBound_endpoint_le_const
-    (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F) k
-    hJ hC0 hCC hBB hBC hbudget₃
-    ((jacobiHermitianSixInput_iff_tripleConvPointwiseBound
-      (χ := χ) (lam := lam) (C := B)).mp h)
+alias iterConvEnergyWick_from_three_of_jacobiHermitianSixInput_endpoint_le_const :=
+  R96IterConvBudgetMonotoneAdapters.iterConvEnergyWick_from_three_of_jacobiHermitianSixInput_left_budget_le_const
 
 /-- Jacobi six-input propagation from the r = 3 head, consumed by the public face-moment bound,
 with only the endpoint budget `m ≤ C * 4`. -/
-theorem sup_pureFace_from_three_of_jacobiHermitianSixInput_endpoint_le_const
-    (hfam : SubgroupDualFamily G m lam) (hgrp : DualFamilyGroupLaw m lam)
-    {B B' C C' : ℝ} (k : ℕ)
-    (hJ : ∀ j : ZMod m, ‖jacobiCoeff χ lam j‖ ^ 2 ≤ (Fintype.card F : ℝ))
-    (hC0 : 0 ≤ C) (hCC : C ≤ C')
-    (hBB : B ≤ B')
-    (hBC : B' ≤ C ^ 3 * ((Nat.factorial 3 : ℕ) : ℝ))
-    (hbudget₃ : (m : ℝ) ≤ C * 4)
-    (h : JacobiHermitianSixInput χ lam B) {s : F} (hs : s ≠ 0) :
-    ‖pureFace (fun i : ZMod m => jacobiCoeff χ lam i) lam s‖ ^ (2 * (3 + k))
-      ≤ ((Fintype.card F - 1 : ℕ) : ℝ)
-          * (C' ^ (3 + k) * ((3 + k).factorial : ℝ)
-            * ((m : ℝ) * (Fintype.card F : ℝ)) ^ (3 + k)) :=
-  sup_pureFace_add_of_iterConvEnergyWick_prev_of_endpoint_budget_le_const hfam hgrp
-    (fun i : ZMod m => jacobiCoeff χ lam i)
-    hJ hC0 hCC
-    (iterConvEnergyWick_three_of_tripleConvPointwiseBound_le
-      (fun i : ZMod m => jacobiCoeff χ lam i) (Fintype.card F)
-      hBB hBC
-      ((jacobiHermitianSixInput_iff_tripleConvPointwiseBound
-        (χ := χ) (lam := lam) (C := B)).mp h))
-    (by simpa using hbudget₃)
-    hs
+alias sup_pureFace_from_three_of_jacobiHermitianSixInput_endpoint_le_const :=
+  R96IterConvBudgetMonotoneAdapters.sup_pureFace_from_three_of_jacobiHermitianSixInput_left_budget_le_const
 
 end ArkLib.ProximityGap.Frontier.R96IterConvEndpointBudgetConsumers
 

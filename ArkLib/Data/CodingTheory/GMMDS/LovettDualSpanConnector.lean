@@ -36,12 +36,25 @@ large field (`|F| > deg + C(|ι|,2)`) yields distinct field points keeping the m
 
 with the middle Schwartz–Zippel move no longer a residual.
 
-## Non-vacuity
+## Status: both residuals are false as stated (historical wiring)
 
-Each residual is shown satisfiable: both follow from the AGL24 goal
-`GMMDSDualZeroPatternTheorem` itself (`symbolicMinorFromLovett_of_goal` and the trivial
-`dualRowsFromNonsingularEval` shape), so the decomposition introduces no `False` obligation.
-The Schwartz–Zippel layer is genuinely proved (not assumed).
+An earlier version of this section claimed each residual is satisfiable because it "follows
+from the AGL24 goal" or from the symbolic-rank interface. Neither argument shows satisfiability:
+the goal-conditional statement uses the unproved, and in fact refuted (for `k < card ι`),
+target `GMMDSDualZeroPatternTheorem` (`AGL24.not_gmmDsDualZeroPatternTheorem`), and
+`symbolicMinor_of_symbolicFullRank` proves a *different*, WPC-guarded statement. Both residuals
+are refuted, on the same missing-WPC / missing-pin mechanism as the 12th–14th false-residual
+catches (#389):
+
+* `SymbolicMinorFromLovett` is `False` for `1 ≤ k`: at `t = 1`, `e ≡ ∅`, `δ ≡ 0` the
+  `GZPCondition` holds vacuously but `RIMRowIdx e` is empty, so no row selector
+  `Fin 1 × Fin k → RIMRowIdx e` exists (`not_symbolicMinorFromLovett`,
+  `LovettUnconditionalWiring.lean`; cf. `rimKernelTrivialFromLovett_refuted`);
+* `DualRowsFromNonsingularEval` is `False` for `k < card ι` (`not_dualRowsFromNonsingularEval`,
+  `LovettDualRowsDischarge.lean`, the 12th catch).
+
+The connector theorems below remain valid conditional implications; the Schwartz–Zippel layer
+is genuinely proved (not assumed).
 
 Issue #389.
 -/
@@ -58,9 +71,13 @@ Theorem 1.7 (in every coordinate dimension) and a generic zero pattern `(e, δ)`
 `GZPCondition e δ k` and `1 ≤ t`, the reduced intersection matrix `RIM F e` has a square
 `(Fin t × Fin k)` submatrix whose **polynomial** determinant is not identically zero.
 
-This is the field-independent half of step 2: it is exactly the statement that Lovett's
-linear independence of the `V*(k)` family makes the generator minors nonzero (paper p. 3,
-"all `k × k` minors are nonsingular [as polynomials]"). -/
+Intended as the field-independent half of step 2 (Lovett's linear independence of the
+`V*(k)` family makes the generator minors nonzero, paper p. 3). **As stated it is FALSE** for
+every `1 ≤ k`: a bare `GZPCondition` does not force a weakly-partition-connected (or even
+row-bearing) edge family, and at `t = 1`, `e ≡ ∅`, `δ ≡ 0` the RIM has no rows at all
+(`not_symbolicMinorFromLovett`). Note the docstring's `1 ≤ t` is *not* a hypothesis of the
+definition. A faithful version must add the WPC nondegeneracy (cf.
+`RIMKernelTrivialFromLovettWPC`). -/
 def SymbolicMinorFromLovett (ι : Type*) [Fintype ι] [DecidableEq ι]
     (F : Type*) [Field F] (k : ℕ) : Prop :=
   (∀ m : ℕ, LovettThm17 (F := F) m) →
@@ -75,9 +92,9 @@ a nonzero **evaluated** `k × k` minor of the RIM at `φ`, there are dual rows
 `h : GZPCopyIdx δ → (ι → F)`, each supported on its vertex's edge set, whose span is the
 Reed–Solomon dual `dotForm.orthogonal (ReedSolomon.code φ k)`.
 
-This is the field-level half of step 2: the nonsingular evaluated generator's zero-pattern
-parity rows span the dual.  The Schwartz–Zippel choice of `φ` has already been made (it is an
-input here), so this residual is *strictly weaker* than `LovettSystemToDualSpan`. -/
+Intended as the field-level half of step 2. **As stated it is FALSE** whenever
+`k < card ι` (`not_dualRowsFromNonsingularEval`, the 12th catch: `δ ≡ 0` makes the copy index
+empty); the dimensionally pinned repair is `DualRowsFromNonsingularEvalPinned`. -/
 def DualRowsFromNonsingularEval (ι : Type*) [Fintype ι] [DecidableEq ι] [Nonempty ι]
     (F : Type*) [Field F] (k : ℕ) : Prop :=
   ∀ {t : ℕ}, ∀ e : ι → Finset (Fin (t + 1)), ∀ δ : Fin (t + 1) → ℕ,
@@ -116,9 +133,11 @@ discharges `LovettSystemToDualSpan` (step 2 of the bridge).  Axiom-clean.
 
 The middle Schwartz–Zippel layer is **not** a residual here — it is the proven lemma — so this
 strictly sharpens the ledger: step 2 is now `SymbolicMinorFromLovett` ∧
-`DualRowsFromNonsingularEval` (plus the field-size regime), each smaller. The field-size
-regime `FieldLargeForMinor` is unsatisfiable for `2 ≤ k ≤ |ι|` (`not_fieldLargeForMinor`), so
-this connector is vacuous there. -/
+`DualRowsFromNonsingularEval` (plus the field-size regime). The unpinned minor and
+dual-row premises have the refutations described in the module docstring.
+`not_fieldLargeForMinor` also refutes the uniform field-size premise for `2 ≤ k ≤ |ι|`.
+The conditional yields the unpinned target `LovettSystemToDualSpan`, which is refuted for
+`1 ≤ k < |ι|`. -/
 theorem lovettSystemToDualSpan_of_connector {k : ℕ}
     (hminor : SymbolicMinorFromLovett ι F k)
     (hdual : DualRowsFromNonsingularEval ι F k)
@@ -135,17 +154,16 @@ theorem lovettSystemToDualSpan_of_connector {k : ℕ}
   obtain ⟨h, hsupp, hspan⟩ := hdual e δ hgzp φ rows hφ
   exact ⟨φ, h, hsupp, hspan⟩
 
-/-! ## Non-vacuity of the two residuals -/
+/-! ## Goal-conditional and WPC-guarded companions (not satisfiability proofs) -/
 
 omit [DecidableEq ι] [Nonempty ι] [Fintype F] in
-/-- **`DualRowsFromNonsingularEval` is satisfiable from the AGL24 goal.**  The dual-zero-pattern
-boundary supplies the dual rows (forgetting the supplied `φ` and the nonsingularity witness),
-so the dual-repackaging residual cannot be `False` on shape grounds.  Axiom-clean.
+/-- **The dual-row existential, conditional on the AGL24 goal.**  The (unpinned)
+dual-zero-pattern boundary supplies dual rows for its own evaluation points. Axiom-clean.
 
-Note: this uses the goal's *own* `φ`; the residual's conclusion is the dual-row existential for
-*some* compatible `φ`, but to keep the connector faithful the residual is stated with `φ` as an
-input.  The satisfiability we record is the weaker, honest one: the goal produces dual rows for
-its own evaluation points, witnessing that the dual-row shape is inhabited. -/
+This is only an implication from `GMMDSDualZeroPatternTheorem`, which is itself refuted for
+`k < card ι` (`AGL24.not_gmmDsDualZeroPatternTheorem`); it does **not** show that
+`DualRowsFromNonsingularEval` (which takes `φ` as an input and is refuted,
+`not_dualRowsFromNonsingularEval`) is satisfiable. -/
 theorem dualRowsFromNonsingularEval_inhabited_of_goal {k : ℕ}
     (hgoal : AGL24.GMMDSDualZeroPatternTheorem (ι := ι) (F := F) k)
     {t : ℕ} (e : ι → Finset (Fin (t + 1))) (δ : Fin (t + 1) → ℕ)
@@ -157,11 +175,12 @@ theorem dualRowsFromNonsingularEval_inhabited_of_goal {k : ℕ}
   hgoal e δ hgzp
 
 omit [Nonempty ι] [Fintype F] in
-/-- **`SymbolicMinorFromLovett` is satisfiable** whenever the symbolic full-rank interface
-holds for `k`: `exists_nonzero_poly_minor` produces the nonzero polynomial minor from a
-weakly-partition-connected RIM.  This records that residual 1 is *not* `False`; it is the
-in-tree symbolic-rank consequence (modulo the `GZPCondition ⟹ WeaklyPartitionConnected`
-identification, which is the GM-MDS hypergraph direction).  Axiom-clean.
+/-- **The WPC-guarded symbolic minor from the symbolic full-rank interface.**
+`exists_nonzero_poly_minor` produces a nonzero polynomial minor from a weakly-partition-connected
+RIM. This is a *different* statement from `SymbolicMinorFromLovett` (it assumes `1 ≤ t` and WPC
+rather than a bare `GZPCondition`), and does not show that residual satisfiable: the missing
+`GZPCondition ⟹ WeaklyPartitionConnected` step is false (11th catch), and
+`SymbolicMinorFromLovett` itself is refuted (`not_symbolicMinorFromLovett`).  Axiom-clean.
 
 (`omit`s the unused field-finiteness / nonemptiness instances.)
 
@@ -180,7 +199,9 @@ theorem symbolicMinor_of_symbolicFullRank {k : ℕ}
 /-- **The AGL24 dual-zero-pattern boundary, via the connector.**  Composing step 1
 (`gzpToLovettSystem_holds`) with the *repaired* step 2 (`lovettSystemToDualSpan_of_connector`,
 which genuinely runs the encoding move, the **proven** Schwartz–Zippel specialization, and the
-dual repackaging) and Lovett's Theorem 1.7 discharges `GMMDSDualZeroPatternTheorem`.
+dual repackaging) and Lovett's Theorem 1.7 yields `GMMDSDualZeroPatternTheorem`.
+**Vacuous:** the conclusion is refuted for `k < card ι` (`AGL24.not_gmmDsDualZeroPatternTheorem`)
+and the hypotheses `hminor`/`hdual` are refuted as stated; kept as historical wiring.
 
 Unlike a proof that leans on the degenerate empty `V*(k)` system, step 2 here does not use the
 `V` produced by step 1 at all for its mathematics — it rebuilds the genuine RIM minor from

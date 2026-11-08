@@ -1,52 +1,89 @@
 #!/usr/bin/env python3
-"""Residual census for the ArkLib source tree.
+"""Residual census for the ArkLib source tree: a syntactic inventory.
 
-ArkLib encodes open proof obligations as named Prop definitions:
+ArkLib encodes many open proof obligations as named Prop definitions:
 
   def <Name>Residual ... : Prop := ...
 
-End-to-end theorems consume these as hypotheses; the mission metric is the
-number of *open* residuals falling over time.  This script inventories every
-`def` under ArkLib/ or ProximityPrize/ whose name ends in `Residual` and whose result type is
-exactly `Prop` (multiline signatures handled), then conservatively classifies
-each as:
+End-to-end theorems consume these as hypotheses.  This script inventories
+every `def` under ArkLib/ or ProximityPrize/ whose name ends in `Residual` and
+whose result type is exactly `Prop` (multiline signatures handled), and triages
+each one from **source text alone**.
 
-  discharged — a concrete providing declaration exists: a theorem/def
-               elsewhere whose *result type* head is that residual (this
-               covers `: <Name>Residual ...` providers, including ones proved
-               by anonymous constructor `⟨...⟩`), or a `<name>_holds*` /
-               `<name>_proved*` theorem whose result mentions the residual.
-               Providers whose own hypotheses consume a census residual, or
-               whose explicit non-instance binders are extra assumptions not
-               appearing in the provided residual instance, are recorded but do
-               NOT count as a discharge (a conditional reduction is not a
-               proof).  A result that is an equivalence (`R ↔ Q`), whose loosest
-               top-level connective after the head is `→`, `∨` or `=`, or that
-               fixes an argument to a numeral (`R 0` or `R (k := 0)`) is likewise
-               recorded but does not discharge.  When several census residuals
-               share a last name across namespaces, a provider is narrowed via its qualified result head
-               or namespace affinity; if it stays ambiguous it is recorded but
-               does not discharge.
-  refuted    — a concrete declaration proves a negated instance of the residual
-               (for example `theorem ..._false : ¬ FooResidual ...`).  The
-               negation must refute the residual outright: `¬ R ∧ Q` parses as
-               `(¬ R) ∧ Q` and refutes `R`, `¬ (Q ∨ R)` refutes both disjuncts
-               and `¬ (Q → R)` refutes `R`; `¬ R → Q`, `¬ (R ∧ Q)`,
-               `¬ (R ↔ Q)`, `¬ R = Q`, a residual under another head
-               (`¬ IsEmpty R`) and a negated existential (`¬ ∃ h : P, R`)
-               do not establish a refutation by source inspection.
-               This is not a discharge; it means the statement surface is
-               known false or too broad and should be repaired/retired rather
-               than carried as open proof debt.
-  open       — everything else.
+Scope and limits.  Only `ArkLib/**/*.lean` and `ProximityPrize/**/*.lean`
+(including relocated classic extensions) are scanned: residuals under
+`Research/` (including migrated campaign residuals) and named `Prop` or
+structure hypotheses outside the strict suffix pattern are not counted.  Lean
+is never elaborated, so binders, section variables, instance arguments and
+result types are read as text.  Every label is a conservative heuristic, not
+a kernel check: the census is a syntactic inventory, not a verified
+completion ledger, and a `discharged` row is a candidate to review, not a
+certified proof.
 
-A residual name appearing only in hypothesis position (`(h : <Name>Residual
-...)`) is consumption, not provision, and never counts.
+Providers.  A candidate provider of a census residual `R` is a theorem,
+lemma, def or instance whose result has `R` at the head of a *conclusion
+atom*: after outer parentheses and leading `∀` binders are stripped, the
+result is split at top-level `↔`, `→`, `∨`, `∧`, `¬` and relations; the last
+`→` target is the conclusion and each of its top-level conjuncts is an atom.
+Every provider gets a verdict:
 
-Residual-like defs that miss the strict pattern (name contains `Residual` /
-`residual` but not as a `Residual` suffix, or suffix-matching defs whose
-result type is not literally `Prop`) are reported as near-misses but kept out
-of the census.
+  not_provider -- `R` heads the result but is only related to another
+                  proposition (`R ↔ Q`, `R → Q`, `R ∨ Q`, `R = Q`).
+  ambiguous    -- several census residuals share the last name and the
+                  provider could not be narrowed by qualification/namespace.
+  conditional  -- the provider assumes something: a census residual; a
+                  proof-like binder (named `h…`, proposition-shaped, or typed
+                  by a known proposition such as `False` or an in-tree
+                  `Prop`-valued declaration); a premise of the result
+                  (`P → R`, `∀ x ∈ s, R x`, `∀ (h : P), R`); a proof-like
+                  section `variable` that Lean includes in the declaration
+                  (named by `include`, mentioned in the header, or a
+                  dependency of one); or an instance binder missing from the
+                  residual's own binders other than an always-satisfiable one
+                  such as `DecidableEq` (for example `[Fact p.Prime]`,
+                  `[Fintype α]`, or an instance of an in-tree
+                  `class C : Prop`).  A conditional reduction is not a proof.
+  instance     -- no assumption was recognised, but only an *instance* of the
+                  residual family is proved: an argument of `R` is a literal
+                  or compound term, a bound name is passed twice, or a
+                  parameter type is a literal instance of the residual's (a
+                  section variable `pSpec₂ : ProtocolSpec 0` where the
+                  residual is stated for `ProtocolSpec n`).
+  uniform      -- no assumption was recognised and every argument of `R` is
+                  a distinct bound name: a candidate uniform discharge.
+
+Refutations are declarations proving `¬ R ...`.  One counts only when it has
+no proof-like binder, premise, included proof-like section variable or
+`Prop`-class instance assumption, and only when the negation refutes `R`
+outright: `¬ R ∧ Q` parses as `(¬ R) ∧ Q` and refutes `R`, `¬ (Q ∨ R)` refutes
+both disjuncts, and `¬ ∀ x, R x` and `¬ (Q → R)` refute `R`; `¬ R → Q`,
+`¬ (R ∧ Q)`, `¬ (R ↔ Q)`, `¬ R = Q` (and other relations), a residual under
+another head (`¬ IsEmpty R`), a negated existential (`¬ ∃ h : P, R`) and a
+negation under a `∀` inside a conjunct (`¬ B ∧ ∀ x : Empty, ¬ R`, whose binder
+type may be empty) do not establish a refutation by source inspection.
+
+Row status:
+
+  refuted       -- an unconditional refutation exists: some instance is
+                   false, so the family is not uniformly true.  This outranks
+                   every provider; proved instances stay listed, because an
+                   instance proof plus an instance refutation is mixed
+                   parameter-scope coverage, not a contradiction.
+  discharged    -- a `uniform` provider exists (a syntactic candidate only).
+  instance_only -- only `instance` providers exist; their proved regimes are
+                   listed, but the general residual is not discharged.
+  open          -- everything else.
+
+Known blind spots, which are why a `discharged` row still needs review: data
+binders absent from the result are assumed inhabited; an implicit argument
+fixed by unification is caught only when a same-named binder has a literal
+type; section-variable inclusion for definitions is approximated from text;
+and an argument that is a bound name may still have a narrower type than the
+residual's parameter.
+
+A residual name appearing only in hypothesis position is consumption, not
+provision.  Residual-like defs that miss the strict pattern are reported as
+near misses but kept out of the census.
 
 Usage:
   python3 scripts/residual_census.py                 # summary + JSON
@@ -79,17 +116,76 @@ DECL_RE = re.compile(
     r"(?:private\s+|protected\s+|noncomputable\s+|partial\s+|scoped\s+|unsafe\s+|nonrec\s+)*"
     r"(theorem|lemma|def|instance|abbrev|opaque)\s+([^\s({\[:⦃]+)"
 )
+# Type-forming declarations are scanned only to learn which names denote
+# propositions (`structure Foo : Prop`, `class Bar : Prop`, ...).
+TYPE_DECL_RE = re.compile(
+    r"^\s*(?:@\[[^\]]*\]\s*)?"
+    r"(?:private\s+|protected\s+|noncomputable\s+|unsafe\s+)*"
+    r"(class\s+inductive|class|structure|inductive)\s+([^\s({\[:⦃]+)"
+)
 NAMESPACE_RE = re.compile(r"^\s*namespace\s+(\S+)")
 SECTION_RE = re.compile(r"^\s*(?:noncomputable\s+)?section(?:\s+(\S+))?\s*$")
 END_RE = re.compile(r"^\s*end(?:\s+(\S+))?\s*$")
+MUTUAL_RE = re.compile(r"^\s*mutual\s*$")
+VARIABLE_RE = re.compile(r"^(\s*)variable\b(.*)$")
+INCLUDE_OMIT_RE = re.compile(r"^(\s*)(include|omit)\b(.*)$")
 HEAD_IDENT_RE = re.compile(r"[^\s({\[⦃⟨:,]+")
+IDENT_RE = re.compile(r"[^\W\d][\w'!?]*(?:\.[^\W\d][\w'!?]*)*")
+TOKEN_RE = re.compile(r"[^\W\d][\w'!?]*(?:\.[^\W\d][\w'!?]*)*|\d+(?:\.\d+)?|\S")
+UNIVERSE_ARGS_RE = re.compile(r"\.\{[^{}]*\}")
+SORT_LEVEL_RE = re.compile(
+    r"\b(Type|Sort)\s*(?:\*|_(?![\w'])|[uvw][\w']*(?![\w'])|\((?:max|imax)[^()]*\))"
+)
 
 OPEN_BRACKETS = "([{⟨⦃"
 CLOSE_BRACKETS = ")]}⟩⦄"
 
 PROVIDER_KINDS = {"theorem", "lemma", "def", "instance"}
+# Declarations whose bodies (not only headers) decide which section variables
+# Lean includes.  Theorems include section variables only through the header,
+# `include`, and instance dependencies.
+DEF_LIKE_KINDS = {"def", "abbrev", "instance", "opaque"}
+PROP_DECL_KINDS = {"def", "abbrev", "opaque", "structure", "class", "class inductive", "inductive"}
 
 CAMPAIGN_ADDENDUM_PREFIX = "> **Campaign addendum"
+
+SCOPE = "ArkLib/**/*.lean and ProximityPrize/**/*.lean only"
+
+# Last name components that always denote propositions.  In-tree declarations
+# whose result is `Prop` (or a `Prop`-valued family) are added at scan time.
+KNOWN_PROP_HEADS = frozenset(
+    {
+        "False", "True", "Not", "Eq", "Ne", "HEq", "And", "Or", "Iff", "Exists",
+        "Nonempty", "Fact", "NeZero", "IsEmpty", "Subsingleton", "Nontrivial",
+        "Finite", "Infinite", "Countable", "NeverFail", "Disjoint", "Irreducible",
+        "Prime", "IsUnit", "Squarefree", "IsCoprime", "Coprime", "Monotone",
+        "Antitone", "StrictMono", "StrictAnti", "Continuous", "Even", "Odd",
+        "IsPrimitiveRoot", "CharP", "ExpChar", "CharZero", "IsDomain",
+        "NoZeroDivisors", "IsCyclic", "IsField", "LinearIndependent", "Injective",
+        "Surjective", "Bijective", "InjOn", "SurjOn", "BijOn", "MapsTo", "Monic",
+        "Separable", "Splits",
+    }
+)
+# Typeclasses whose instances are propositions (last name component).  In-tree
+# `class ... : Prop` declarations are added at scan time.
+KNOWN_PROP_CLASSES = frozenset(
+    {
+        "Fact", "NeZero", "Nonempty", "Nontrivial", "IsEmpty", "Subsingleton",
+        "Finite", "Infinite", "Countable", "CharP", "ExpChar", "CharZero", "IsDomain",
+        "NoZeroDivisors", "IsCyclic", "IsAlgClosed", "IsGalois", "FiniteDimensional",
+        "IsScalarTower", "SMulCommClass", "IsNoetherianRing", "IsReduced",
+        "PerfectField", "IsSeparable", "Free", "IsCyclotomicExtension",
+    }
+)
+# Instance arguments that every type admits (classically), so an extra binder
+# of one of these classes does not restrict the residual instance proved.
+ALWAYS_SATISFIABLE_CLASSES = frozenset(
+    {"DecidableEq", "DecidablePred", "DecidableRel", "Decidable", "BEq", "LawfulBEq",
+     "Hashable", "Repr", "ToString"}
+)
+LITERAL_RE = re.compile(r"^(?:\d+(?:\.\d+)?|0x[0-9a-fA-F]+|∅|⊥|⊤|true|false|!\[\]|\[\])$")
+
+STATUSES = ("open", "instance_only", "discharged", "refuted")
 
 
 def strip_comments(text: str, *, mask_literals: bool = False) -> str:
@@ -177,14 +273,8 @@ def strip_comments(text: str, *, mask_literals: bool = False) -> str:
     return "".join(out)
 
 
-def split_signature(window: str) -> tuple[str, str]:
-    """Split a declaration tail (after the name) into (binders, result type).
-
-    The signature colon is the first `:` at bracket depth 0 that is not part
-    of `:=`; the signature ends at the first depth-0 `:=`.  Bracket depth
-    tracks (), [], {}, ⟨⟩, ⦃⦄ so binder-internal colons and named arguments
-    `(k := k)` are skipped.
-    """
+def _signature_bounds(window: str) -> tuple[int | None, int]:
+    """(signature colon index or None, index of the first depth-0 `:=`)."""
     depth = 0
     sig_colon = None
     end = len(window)
@@ -202,9 +292,158 @@ def split_signature(window: str) -> tuple[str, str]:
             if sig_colon is None:
                 sig_colon = i
         i += 1
+    return sig_colon, end
+
+
+def split_signature(window: str) -> tuple[str, str]:
+    """Split a declaration tail (after the name) into (binders, result type).
+
+    The signature colon is the first `:` at bracket depth 0 that is not part
+    of `:=`; the signature ends at the first depth-0 `:=`.  Bracket depth
+    tracks (), [], {}, ⟨⟩, ⦃⦄ so binder-internal colons and named arguments
+    `(k := k)` are skipped.
+    """
+    sig_colon, end = _signature_bounds(window)
     if sig_colon is None:
         return window[:end], ""
     return window[:sig_colon], window[sig_colon + 1 : end]
+
+
+def split_declaration(window: str) -> tuple[str, str, str]:
+    """(binders, result type, body after `:=`) of a declaration tail."""
+    sig_colon, end = _signature_bounds(window)
+    body = window[end + 2 :] if end < len(window) else ""
+    if sig_colon is None:
+        return window[:end], "", body
+    return window[:sig_colon], window[sig_colon + 1 : end], body
+
+
+def type_declaration_result(window: str) -> str:
+    """Result type of a `structure`/`class`/`inductive` header, or ``""``.
+
+    The header ends at the first depth-0 `where`, `extends`, `:=`, `|` or
+    `deriving`; a colon after that point belongs to a field or constructor.
+    """
+    flat = flatten_top_level(window)
+    m = re.search(r"(?<![\w'])(?:where|extends|deriving)(?![\w'])|:=|\|", flat)
+    head = window[: m.start()] if m else window
+    sig_colon, _end = _signature_bounds(head)
+    if sig_colon is None:
+        return ""
+    return head[sig_colon + 1 :]
+
+
+def norm_space(text: str) -> str:
+    return " ".join(text.split())
+
+
+def flatten_top_level(text: str, scoped: bool = False) -> str:
+    """`text` with every bracketed region (brackets included) blanked out.
+
+    With `scoped`, the body of a depth-0 binder (see `scope_limit`) is blanked
+    as well.
+    """
+    out = []
+    depth = 0
+    limit = scope_limit(text) if scoped else len(text)
+    for i, c in enumerate(text):
+        if i >= limit:
+            out.append(" ")
+        elif c in OPEN_BRACKETS:
+            depth += 1
+            out.append(" ")
+        elif c in CLOSE_BRACKETS:
+            depth = max(0, depth - 1)
+            out.append(" ")
+        else:
+            out.append(c if depth == 0 else " ")
+    return "".join(out)
+
+
+def matching_close(text: str, start: int) -> int | None:
+    """Index of the bracket closing the one opened at `text[start]`."""
+    depth = 0
+    for i in range(start, len(text)):
+        c = text[i]
+        if c in OPEN_BRACKETS:
+            depth += 1
+        elif c in CLOSE_BRACKETS:
+            depth -= 1
+            if depth == 0:
+                return i
+    return None
+
+
+def strip_outer_parens(text: str) -> str:
+    """Remove parentheses that wrap the whole of `text`."""
+    s = text.strip()
+    while s.startswith("(") and matching_close(s, 0) == len(s) - 1:
+        s = s[1:-1].strip()
+    return s
+
+
+SCOPE_BINDER_RE = re.compile(r"[∀∃]|(?<![\w'.])(?:fun|λ)(?![\w'])")
+
+
+def scope_limit(text: str) -> int:
+    """Index where a depth-0 binder (`∀`, `∃`, `fun`, `λ`) after position 0 starts.
+
+    Such a binder extends as far right as possible, so a connective after it
+    belongs to the binder's body: in `A ∧ ∀ B, R B → C` the `→` is inside the
+    `∀`, not a top-level arrow.
+    """
+    depth = 0
+    for i, c in enumerate(text):
+        if c in OPEN_BRACKETS:
+            depth += 1
+        elif c in CLOSE_BRACKETS:
+            depth = max(0, depth - 1)
+        elif depth == 0 and i > 0 and SCOPE_BINDER_RE.match(text, i):
+            return i
+    return len(text)
+
+
+def depth0_index(text: str, token: str, scoped: bool = False) -> int | None:
+    """Index of the first depth-0 occurrence of `token`.
+
+    With `scoped`, occurrences inside the body of a depth-0 binder are skipped.
+    """
+    depth = 0
+    limit = scope_limit(text) if scoped else len(text)
+    i = 0
+    while i < limit:
+        c = text[i]
+        if c in OPEN_BRACKETS:
+            depth += 1
+        elif c in CLOSE_BRACKETS:
+            depth = max(0, depth - 1)
+        elif depth == 0 and text.startswith(token, i):
+            return i
+        i += 1
+    return None
+
+
+def split_top_level(text: str, sep: str) -> list[str]:
+    """Split `text` at every depth-0 `sep` outside the body of a depth-0 binder."""
+    parts: list[str] = []
+    depth = 0
+    start = 0
+    limit = scope_limit(text)
+    i = 0
+    while i < limit:
+        c = text[i]
+        if c in OPEN_BRACKETS:
+            depth += 1
+        elif c in CLOSE_BRACKETS:
+            depth = max(0, depth - 1)
+        elif depth == 0 and text.startswith(sep, i):
+            parts.append(text[start:i])
+            i += len(sep)
+            start = i
+            continue
+        i += 1
+    parts.append(text[start:])
+    return parts
 
 
 # Lean spells these connectives either way (`unicode(" ∧ ", " /\\ ")`,
@@ -248,54 +487,39 @@ def unicode_connectives(text: str) -> str:
     return "".join(out)
 
 
-def split_forall_prefix(result: str) -> tuple[str, str]:
-    """Retain leading universal binders separately from the result body."""
-    binders: list[str] = []
+def strip_forall_prefix(result: str) -> str:
+    """Strip leading `∀ ...,` binders from a result type."""
     s = result.strip()
     for _ in range(8):
         if not s.startswith("∀"):
             break
-        depth = 0
-        for i, c in enumerate(s):
-            if c in OPEN_BRACKETS:
-                depth += 1
-            elif c in CLOSE_BRACKETS:
-                depth = max(0, depth - 1)
-            elif c == "," and depth == 0:
-                binder = s[1:i].strip()
-                if not binder.startswith(tuple("({[⦃")):
-                    binder = "(" + binder + ")"
-                binders.append(binder)
-                s = s[i + 1 :].strip()
-                break
-        else:
-            return " ".join(binders), ""
-    return " ".join(binders), s
+        comma = depth0_index(s, ",")
+        if comma is None:
+            return ""
+        s = s[comma + 1 :].strip()
+    return s
 
 
-def strip_forall_prefix(result: str) -> str:
-    """Strip leading `∀ ...,` binders from a result type."""
-    return split_forall_prefix(result)[1]
-
-
-def result_head(result: str) -> str:
-    """Head identifier of a result type, stripping leading `∀ ...,` binders."""
-    s = strip_forall_prefix(result)
+def atom_head(text: str) -> str:
+    """Head identifier of an application, ignoring a leading `@`."""
+    s = strip_outer_parens(text)
+    if s.startswith("@"):
+        s = s[1:]
     m = HEAD_IDENT_RE.match(s)
     return m.group(0) if m else ""
 
 
+def result_head(result: str) -> str:
+    """Head identifier of a result type, stripping leading `∀ ...,` binders."""
+    return atom_head(strip_forall_prefix(result))
+
+
 def split_top_level_once(text: str, sep: str) -> tuple[str, str] | None:
     """Split at the first top-level separator inside one binder group."""
-    depth = 0
-    for i, c in enumerate(text):
-        if c in OPEN_BRACKETS:
-            depth += 1
-        elif c in CLOSE_BRACKETS:
-            depth = max(0, depth - 1)
-        elif c == sep and depth == 0:
-            return text[:i], text[i + 1 :]
-    return None
+    idx = depth0_index(text, sep)
+    if idx is None:
+        return None
+    return text[:idx], text[idx + len(sep) :]
 
 
 def is_ident_char(c: str) -> bool:
@@ -364,22 +588,46 @@ def binder_groups(binders: str) -> list[tuple[str, str, str]]:
     return groups
 
 
-def binder_names_and_type(content: str) -> tuple[list[str], str] | None:
-    """Names and type introduced by a binder group with a top-level type colon."""
+ANONYMOUS = "_"
+
+
+def group_entries(opener: str, content: str) -> list[dict]:
+    """Binder entries `{opener, name, type}` for one binder group.
+
+    Anonymous and `_`-prefixed names are kept (an unused hypothesis is still a
+    hypothesis), groups without a type keep their names, and an instance group
+    without a name gets `name=None`.
+    """
     split = split_top_level_once(content, ":")
     if split is None:
-        return None
-    names, typ = split
-    out: list[str] = []
-    for tok in re.findall(r"[^\s,]+", names):
-        tok = tok.strip()
+        if opener == "[":
+            return [{"opener": opener, "name": None, "type": norm_space(content)}]
+        return [
+            {"opener": opener, "name": tok, "type": ""}
+            for tok in content.split()
+            if not any(ch in tok for ch in ":=<>|\\/()")
+        ]
+    names_txt, typ = split
+    default = split_top_level_once(typ, ":=")
+    if default is not None:
+        typ = default[0]
+    typ = norm_space(typ)
+    names: list[str] = []
+    for tok in re.findall(r"[^\s,]+", names_txt):
         tok = tok.strip("(){}[]⦃⦄")
-        if not tok or tok == "_":
+        if not tok or any(ch in tok for ch in ":=<>|\\/"):
             continue
-        if any(ch in tok for ch in ":=<>|\\/"):
-            continue
-        out.append(tok)
-    return out, typ.strip()
+        names.append(ANONYMOUS if tok == "_" else tok)
+    if opener == "[":
+        return [{"opener": opener, "name": names[0] if names else None, "type": typ}]
+    return [{"opener": opener, "name": n, "type": typ} for n in names]
+
+
+def own_entries(binders: str) -> list[dict]:
+    entries: list[dict] = []
+    for opener, content, _close in binder_groups(binders):
+        entries.extend(group_entries(opener, content))
+    return entries
 
 
 # Surface syntax that can only spell a proposition.  `=` is matched only when
@@ -409,7 +657,30 @@ def is_proposition_shaped(typ: str) -> bool:
     )
 
 
-def looks_like_proof_assumption(names: list[str], typ: str) -> bool:
+def type_head_last(typ: str) -> str:
+    """Last name component of the head of a type's codomain, seen through `∀ ...,`.
+
+    The codomain decides: `P → Q` is a proposition exactly when `Q` is.
+    """
+    s = strip_forall_prefix(typ.strip())
+    s = strip_outer_parens(split_top_level(s, "→")[-1])
+    if s.startswith("¬"):
+        return "Not"
+    if s.startswith("@"):
+        s = s[1:]
+    if s.startswith("("):
+        close = matching_close(s, 0)
+        if close is not None:
+            m = re.match(r"\.([^\W\d][\w'!?]*)", s[close + 1 :])
+            return m.group(1) if m else ""
+        return ""
+    m = IDENT_RE.match(s)
+    return m.group(0).rsplit(".", 1)[-1] if m else ""
+
+
+def looks_like_proof_assumption(
+    names: list[str], typ: str, prop_heads: frozenset[str] | set[str] = frozenset()
+) -> bool:
     """Heuristic for explicit binders that are hypotheses rather than data.
 
     We intentionally do not classify every explicit binder absent from a result
@@ -421,7 +692,10 @@ def looks_like_proof_assumption(names: list[str], typ: str) -> bool:
     `coupling` binder of `fiatShamir_hvzkTransfer_of_coupling`
     (ArkLib/OracleReduction/FiatShamir/HVZKTransferReduction.lean), whose
     docstring calls it "an explicit hypothesis" — it was previously recorded
-    as an unconditional provider.
+    as an unconditional provider.  A type headed by a known proposition
+    (`False`, `Fact`, a census residual, an in-tree `Prop`-valued
+    declaration passed in `prop_heads`) is a hypothesis whatever the binder
+    is called: `(p : False)` and `(h : False)` must classify alike.
     """
     typ_flat = " ".join(typ.split())
     if any(name.startswith("h") or name.startswith("H") for name in names):
@@ -432,48 +706,37 @@ def looks_like_proof_assumption(names: list[str], typ: str) -> bool:
     # hypothesis binders whose names do not appear in the residual instance.
     if "Prop" in typ_flat or "¬" in typ_flat:
         return True
+    head = type_head_last(typ_flat)
+    if head and (head in KNOWN_PROP_HEADS or head in prop_heads):
+        return True
     return is_proposition_shaped(typ_flat)
 
 
-def extra_explicit_binders(binders: str, result: str) -> list[str]:
+def extra_explicit_binders(
+    binders: str, result: str, prop_heads: frozenset[str] | set[str] = frozenset()
+) -> list[str]:
     """Proof-like explicit/implicit non-instance binders not used in the result type.
 
     These are proof/data assumptions for a candidate provider rather than
     parameters of the residual instance it provides.  Square-bracket instance
-    binders are ignored because they are typeclass search side conditions.
+    binders are compared with the residual's own instances in `assess`.
     """
     extras: list[str] = []
-    for opener, content, _close in binder_groups(binders):
-        if opener == "[":
+    for entry in own_entries(binders):
+        if entry["opener"] == "[":
             continue
-        parsed = binder_names_and_type(content)
-        if parsed is None:
+        name = entry["name"]
+        if not looks_like_proof_assumption([name], entry["type"], prop_heads):
             continue
-        names, typ = parsed
-        if not looks_like_proof_assumption(names, typ):
-            continue
-        if not names:
-            extras.append("<anonymous>")
-        for name in names:
-            if not mentions_word(result, name):
-                extras.append(name)
+        if name == ANONYMOUS or not mentions_word(result, name):
+            extras.append(name)
     return sorted(set(extras))
 
 
 def has_top_level(text: str, token: str) -> bool:
-    """True when `token` occurs at bracket depth 0 of `text`."""
-    depth = 0
-    i = 0
-    while i < len(text):
-        c = text[i]
-        if c in OPEN_BRACKETS:
-            depth += 1
-        elif c in CLOSE_BRACKETS:
-            depth = max(0, depth - 1)
-        elif depth == 0 and text.startswith(token, i):
-            return True
-        i += 1
-    return False
+    """True when `token` occurs at bracket depth 0 of `text`, outside the body of
+    a depth-0 binder."""
+    return depth0_index(text, token, scoped=True) is not None
 
 
 TOP_LEVEL_CONNECTIVES = ("↔", "→", "∧", "∨", "=")
@@ -530,17 +793,119 @@ def top_level_connective(result: str) -> str | None:
     return min(found, key=CONNECTIVE_PRECEDENCE.__getitem__)
 
 
-def _closes_at_end(s: str) -> bool:
-    """True when the bracket opened by `s[0]` closes at the last character."""
-    depth = 0
-    for i, c in enumerate(s):
-        if c in OPEN_BRACKETS:
-            depth += 1
-        elif c in CLOSE_BRACKETS:
-            depth -= 1
-            if depth == 0:
-                return i == len(s) - 1
-    return False
+BOUNDED_BINDER_OPS = ("∈", "∉", "⊆", "⊂", "⊇", "⊃", "≠", "≤", "≥", "<", ">")
+
+
+def forall_binders(text: str) -> tuple[list[dict], list[str]]:
+    """Binder entries and premises of the binder part of a `∀ ...,`."""
+    text = text.strip()
+    groups = binder_groups(text)
+    if groups:
+        entries: list[dict] = []
+        for opener, content, _close in groups:
+            entries.extend(group_entries(opener, content))
+        return entries, []
+    split = split_top_level_once(text, ":")
+    if split is not None:
+        names, typ = split
+        return [
+            {"opener": "(", "name": n, "type": norm_space(typ)} for n in names.split()
+        ], []
+    flat = flatten_top_level(text)
+    for op in BOUNDED_BINDER_OPS:
+        idx = flat.find(op)
+        if idx != -1:
+            names = text[:idx].split()
+            return [{"opener": "(", "name": n, "type": ""} for n in names], [norm_space(text)]
+    return [{"opener": "(", "name": n, "type": ""} for n in text.split()], []
+
+
+def arrow_binder(part: str) -> list[dict] | None:
+    """Entries when an arrow premise is a dependent binder `(x : T) → ...`."""
+    s = part.strip()
+    groups = binder_groups(s)
+    if len(groups) != 1:
+        return None
+    opener, content, close = groups[0]
+    if not (s.startswith(opener) and s.endswith(close)):
+        return None
+    if split_top_level_once(content, ":") is None:
+        return None
+    return group_entries(opener, content)
+
+
+def _has_relation(text: str) -> bool:
+    flat = flatten_top_level(text, scoped=True)
+    return bool(BARE_EQUAL_RE.search(flat) or COMPARISON_RE.search(flat) or "≠" in flat)
+
+
+def conclusion_atoms(result: str) -> list[dict]:
+    """Split a result type into its conclusion atoms.
+
+    Each atom is ``{"kind", "text", "premises", "binders"}`` where kind is
+    ``atom`` (a plain application), ``negation`` (``¬ X``), ``iff``, ``or``,
+    ``relation`` or ``other``.  Premises collect `→` antecedents and bounded
+    `∀ x ∈ s` conditions; binders collect `∀` and dependent-arrow binders.
+    Precedence follows Lean: `↔` < `→` < `∨` < `∧` < `¬` < relations.
+    """
+    out: list[dict] = []
+
+    def walk(s: str, premises: list[str], binders: list[dict], depth: int,
+             nested_binders: bool = False) -> None:
+        s = strip_outer_parens(s)
+        if depth > 32:
+            out.append({"kind": "other", "text": s, "premises": premises, "binders": binders})
+            return
+        while s.startswith("∀"):
+            comma = depth0_index(s, ",")
+            if comma is None:
+                out.append({"kind": "other", "text": s, "premises": premises, "binders": binders})
+                return
+            entries, bounded = forall_binders(s[1:comma])
+            binders = binders + entries
+            premises = premises + bounded
+            # A `∀` below the top level (`¬ B ∧ ∀ x : Empty, ¬ R`) may range over an
+            # empty type, so a negation under it does not refute anything.
+            nested_binders = nested_binders or depth > 0
+            s = strip_outer_parens(s[comma + 1 :])
+        if has_top_level(s, "↔"):
+            out.append({"kind": "iff", "text": s, "premises": premises, "binders": binders})
+            return
+        parts = split_top_level(s, "→")
+        if len(parts) > 1:
+            new_premises: list[str] = []
+            new_binders: list[dict] = []
+            for part in parts[:-1]:
+                dependent = arrow_binder(part)
+                if dependent is not None:
+                    new_binders.extend(dependent)
+                else:
+                    new_premises.append(norm_space(part))
+            walk(parts[-1], premises + new_premises, binders + new_binders, depth + 1,
+                 nested_binders)
+            return
+        if has_top_level(s, "∨"):
+            out.append({"kind": "or", "text": s, "premises": premises, "binders": binders})
+            return
+        conjuncts = split_top_level(s, "∧")
+        if len(conjuncts) > 1:
+            for c in conjuncts:
+                walk(c, premises, binders, depth + 1, nested_binders)
+            return
+        if s.startswith("¬"):
+            out.append({"kind": "negation", "text": s, "premises": premises, "binders": binders,
+                        "nested_binders": nested_binders})
+            return
+        if _has_relation(s):
+            out.append({"kind": "relation", "text": s, "premises": premises, "binders": binders})
+            return
+        if not atom_head(s) or s.startswith(("∃", "fun", "λ", "Σ", "∑", "∏")):
+            out.append({"kind": "other", "text": s, "premises": premises, "binders": binders})
+            return
+        out.append({"kind": "atom", "text": s, "premises": premises, "binders": binders})
+
+    walk(result.strip(), [], [], 0)
+    return out
 
 
 def _top_level_tokens(s: str) -> list[tuple[int, str]]:
@@ -571,140 +936,236 @@ def _top_level_tokens(s: str) -> list[tuple[int, str]]:
     return out
 
 
-def _refuted_by_not(p: str, fuel: int) -> list[str]:
-    """Heads that `¬ (p)` refutes outright, where `p` is the whole negated proposition."""
-    p = p.strip()
-    if fuel == 0:
-        return []
-    if p.startswith("(") and _closes_at_end(p):
-        return _refuted_by_not(p[1:-1], fuel - 1)
-    if p.startswith("∃"):
-        # A source scan cannot show that the quantified type has a witness.
-        # For example, `¬ ∃ p : False, R` holds even when R is true.
-        return []
-    if p.startswith("∀"):
-        split = split_top_level_once(p, ",")
-        return _refuted_by_not(split[1], fuel - 1) if split else []
-    tokens = _top_level_tokens(p)
-    kinds = {t for _, t in tokens}
-    if "↔" in kinds:
-        return []
-    if "→" in kinds:
-        # `→` is right-associative and `¬ (A → B)` proves `A ∧ ¬ B`.
-        cut = next(i for i, t in tokens if t == "→")
-        return _refuted_by_not(p[cut + 1 :], fuel - 1)
-    if "∨" in kinds:
-        # `¬ (A ∨ B)` proves `¬ A ∧ ¬ B`.
-        cuts = [i for i, t in tokens if t == "∨"]
-        parts = [p[a + 1 : b] for a, b in zip([-1] + cuts, cuts + [len(p)])]
-        return [h for part in parts for h in _refuted_by_not(part, fuel - 1)]
-    if kinds:
-        return []  # `¬ (A ∧ B)` and `¬ (a = b)`-style relations refute neither side.
-    m = HEAD_IDENT_RE.match(p)
-    return [m.group(0).lstrip("@")] if m else []
+def negated_targets(text: str) -> list[tuple[str, list[dict]]]:
+    """(plain atom, inner binders) for each proposition that `¬ X` refutes outright.
 
-
-def negation_targets(negated: str, fuel: int = 16) -> list[str]:
-    """Heads that a result `¬ <negated>` refutes outright.
-
-    `¬` takes its argument at precedence 40, so it binds tighter than `∧`, `∨`,
-    `→` and `↔` and looser than relations: `¬ R ∧ Q` is `(¬ R) ∧ Q` and refutes
-    `R` (a later conjunct `¬ Q` refutes `Q` too); `¬ R → Q`, `¬ R ∨ Q` and
-    `¬ R ↔ Q` refute nothing; `¬ R = Q` is `¬ (R = Q)`.  Within the negated
-    proposition, `¬ (Q ∨ R)` refutes both disjuncts, `¬ (Q → R)` refutes `R`,
-    and `¬ (R ∧ Q)`, `¬ (R ↔ Q)`, `¬ ∃! x, R x`, a residual under another head
-    (`¬ IsEmpty R`) and negated existentials do not establish a refutation
-    by source inspection.
+    `X` may be an application, `∀ x, X'`, `Y → X'` (`¬ (Y → X')` proves `¬ X'`, so the
+    antecedent is proved, not assumed) or `X₁ ∨ X₂` (`¬ (X₁ ∨ X₂)` proves both
+    negations).  `¬ (X₁ ∧ X₂)`, `¬ (X ↔ Y)`, relations, double negations and
+    existentials refute nothing by source inspection.
     """
-    s = negated.strip()
-    if fuel == 0:
+    s = text.strip()
+    if not s.startswith("¬"):
         return []
-    if s.startswith(("∀", "∃")):
-        return _refuted_by_not(s, fuel)  # a binder body runs to the end
-    tokens = _top_level_tokens(s)
-    if any(t in "→∨↔" for _, t in tokens):
-        return []
-    cuts = [i for i, t in tokens if t == "∧"]
-    first, *rest = [s[a + 1 : b] for a, b in zip([-1] + cuts, cuts + [len(s)])]
-    heads = _refuted_by_not(first, fuel)
-    for conjunct in rest:
-        c = conjunct.strip()
-        while c.startswith("(") and _closes_at_end(c):
-            c = c[1:-1].strip()
-        # A universal conjunct may be vacuous on an empty binder type.
-        if c.startswith("¬"):
-            heads += negation_targets(c[1:], fuel - 1)
-    return heads
+    out: list[tuple[str, list[dict]]] = []
 
+    def walk(s: str, binders: list[dict], fuel: int) -> None:
+        s = strip_outer_parens(s)
+        if fuel == 0:
+            return
+        while s.startswith("∀"):
+            comma = depth0_index(s, ",")
+            if comma is None:
+                return
+            entries, _bounded = forall_binders(s[1:comma])
+            binders = binders + entries
+            s = strip_outer_parens(s[comma + 1 :])
+        if has_top_level(s, "↔"):
+            return
+        parts = split_top_level(s, "→")
+        if len(parts) > 1:
+            extra: list[dict] = []
+            for part in parts[:-1]:
+                dependent = arrow_binder(part)
+                if dependent is not None:
+                    extra.extend(dependent)
+            walk(parts[-1], binders + extra, fuel - 1)
+            return
+        disjuncts = split_top_level(s, "∨")
+        if len(disjuncts) > 1:
+            for part in disjuncts:
+                walk(part, binders, fuel - 1)
+            return
+        if has_top_level(s, "∧"):
+            return
+        if s.startswith("¬") or _has_relation(s) or not atom_head(s):
+            return
+        if s.startswith(("∃", "fun", "λ", "Σ", "∑", "∏")):
+            return
+        if any(t in "≠∈∉<>≤≥=" for _, t in _top_level_tokens(s)):
+            return  # `==`, `∈` and comparisons glued to a name (`n≤Q`) are relations too
+        out.append((s, binders))
 
-NUMERAL_RE = re.compile(
-    r"(?:-?\s*(?:[0-9](?:[0-9_]*[0-9])?|0[bB][01_]*[01]|0[oO][0-7_]*[0-7]|"
-    r"0[xX][0-9a-fA-F_]*[0-9a-fA-F])|∅|\[\])"
-)
-
-
-def specialised_arguments(result: str, rname: str) -> list[str]:
-    """Residual-head arguments fixed to literals, named or positional.
-
-    A provider that fixes a parameter of the residual to a numeral (or `∅`)
-    proves one instance, not the residual: `Foo (k := 0)` is typically vacuous.
-    """
-    s = strip_forall_prefix(result)
-    m = re.search(r"(?<![\w.'])(?:[\w.']*\.)?" + re.escape(rname) + r"(?![\w'])", s)
-    if not m:
-        return []
-    rest = s[m.end():]
-    out: list[str] = []
-    arguments: list[str] = []
-    depth = 0
-    start = None
-    for i, c in enumerate(rest):
-        if c in OPEN_BRACKETS:
-            if depth == 0:
-                if start is not None:
-                    arguments.append(rest[start:i])
-                start = i
-            depth += 1
-        elif c in CLOSE_BRACKETS:
-            depth = max(0, depth - 1)
-            if depth == 0 and start is not None:
-                arguments.append(rest[start:i + 1])
-                start = None
-        elif depth == 0:
-            if c.isspace() or c in "∧∨→↔=":
-                if start is not None:
-                    arguments.append(rest[start:i])
-                    start = None
-                if not c.isspace():
-                    break
-            elif start is None:
-                start = i
-    else:
-        if start is not None and depth == 0:
-            arguments.append(rest[start:])
-
-    for argument in arguments:
-        label = "positional"
-        value = argument.strip()
-        if value.startswith("(") and value.endswith(")"):
-            named = re.fullmatch(r"\(\s*([^\s:()]+)\s*:=\s*(.+?)\s*\)", value, re.S)
-            if named:
-                label, value = named.group(1), named.group(2).strip()
-        while value.startswith("(") and value.endswith(")"):
-            # A nonliteral expression retains its operators/delimiters and
-            # still fails the full literal match after surrounding pairs peel.
-            value = value[1:-1].strip()
-        if NUMERAL_RE.fullmatch(value):
-            out.append(f"{label} := {value}")
+    walk(s[1:], [], 16)
     return out
 
 
-def lower_first(name: str) -> str:
-    return name[:1].lower() + name[1:] if name else name
+def negation_targets(negated: str) -> list[str]:
+    """Heads that a result `¬ <negated>` refutes outright (a view of `find_providers`).
+
+    `¬` binds tighter than `∧`, `∨`, `→` and `↔`, so the result is split into
+    conclusion atoms first; a negation under a `∀` introduced inside a conjunct
+    is skipped because the binder type may be empty.
+    """
+    heads: list[str] = []
+    for atom in conclusion_atoms("¬ " + negated):
+        if atom["kind"] != "negation" or atom.get("nested_binders") or atom["premises"]:
+            continue
+        heads.extend(atom_head(inner) for inner, _ in negated_targets(atom["text"]))
+    return heads
+
+
+def residual_arguments(atom: str) -> list[tuple[str | None, str]]:
+    """Top-level arguments of an application: (name or None, text).
+
+    Named arguments `(x := e)` report `x`; every other argument (bare token or
+    bracketed group, brackets kept) is positional.
+    """
+    s = strip_outer_parens(atom)
+    if s.startswith("@"):
+        s = s[1:]
+    m = HEAD_IDENT_RE.match(s)
+    if not m:
+        return []
+    rest = s[m.end() :]
+    args: list[tuple[str | None, str]] = []
+    i = 0
+    while i < len(rest):
+        c = rest[i]
+        if c.isspace():
+            i += 1
+            continue
+        if c in OPEN_BRACKETS:
+            close = matching_close(rest, i)
+            if close is None:
+                args.append((None, rest[i:].strip()))
+                break
+            group = rest[i : close + 1]
+            named = re.match(r"\(\s*([^\s:()]+)\s*:=\s*(.+?)\s*\)$", group, re.S)
+            if named:
+                args.append((named.group(1), norm_space(named.group(2))))
+            else:
+                args.append((None, norm_space(group)))
+            i = close + 1
+            continue
+        j = i
+        stops = OPEN_BRACKETS + CLOSE_BRACKETS
+        while j < len(rest) and not rest[j].isspace() and rest[j] not in stops:
+            j += 1
+        args.append((None, rest[i:j]))
+        i = j if j > i else i + 1
+    return args
+
+
+def bare_identifier(text: str) -> str | None:
+    """The identifier when `text` is just one (possibly parenthesised)."""
+    s = strip_outer_parens(text)
+    if s == "_":
+        return "_"
+    m = IDENT_RE.fullmatch(s)
+    return m.group(0) if m else None
+
+
+def _collapse_parens(tokens: list[str]) -> list[str]:
+    """Drop redundant parentheses: `((x))` becomes `(x)`."""
+    changed = True
+    while changed:
+        changed = False
+        match: dict[int, int] = {}
+        stack: list[int] = []
+        for i, tok in enumerate(tokens):
+            if tok == "(":
+                stack.append(i)
+            elif tok == ")" and stack:
+                match[stack.pop()] = i
+        for i, j in match.items():
+            if i + 1 < len(tokens) and tokens[i + 1] == "(" and match.get(i + 1) == j - 1:
+                tokens = tokens[:i] + tokens[i + 1 : j] + tokens[j + 1 :]
+                changed = True
+                break
+    return tokens
+
+
+def alpha_normalize(text: str, bound: set[str]) -> str:
+    """Token string of `text` with bound names and universe levels erased."""
+    s = UNIVERSE_ARGS_RE.sub("", text)
+    s = SORT_LEVEL_RE.sub(r"\1", s)
+    tokens = _collapse_parens(TOKEN_RE.findall(s))
+    return " ".join("_" if tok in bound else tok for tok in tokens)
+
+
+def literal_instance(provider_type: str, residual_type: str) -> bool:
+    """True when `provider_type` is `residual_type` with some `_` replaced by literals."""
+    p = provider_type.split()
+    r = residual_type.split()
+    if len(p) != len(r) or p == r:
+        return False
+    changed = False
+    for a, b in zip(p, r):
+        if a == b:
+            continue
+        if b == "_" and LITERAL_RE.match(a):
+            changed = True
+            continue
+        return False
+    return changed
+
+
+def command_text(lines: list[str], idx: int, first_rest: str) -> tuple[str, int]:
+    """Text of a multi-line command starting at `lines[idx]` and its last line index.
+
+    Continuation lines are indented more deeply than the command's first line;
+    blank lines are skipped only when an indented continuation follows them.
+    """
+    first = lines[idx]
+    indent = len(first) - len(first.lstrip())
+    parts = [first_rest]
+    j = idx + 1
+    last = idx
+    while j < len(lines):
+        ln = lines[j].rstrip("\n")
+        if not ln.strip():
+            k = j + 1
+            while k < len(lines) and not lines[k].strip():
+                k += 1
+            if k < len(lines) and len(lines[k]) - len(lines[k].lstrip()) > indent:
+                j = k
+                continue
+            break
+        if len(ln) - len(ln.lstrip()) <= indent:
+            break
+        parts.append(ln)
+        last = j
+        j += 1
+    return " ".join(parts), last
+
+
+def body_until_next_command(body: str) -> str:
+    """A declaration body up to the next column-0 line (the next command)."""
+    m = re.search(r"\n(?=\S)", body)
+    return body[: m.start()] if m else body
+
+
+def _one_shot(text: str) -> tuple[str, bool]:
+    """Strip a trailing `in` modifier; report whether it was present."""
+    m = re.search(r"(?:^|\s)in\s*$", text)
+    if m:
+        return text[: m.start()], True
+    return text, False
+
+
+def _dedupe_vars(entries: list[dict]) -> list[dict]:
+    """Keep the innermost declaration of each named section variable."""
+    seen: set[str] = set()
+    out: list[dict] = []
+    for e in reversed(entries):
+        name = e["name"]
+        if name is not None and name != ANONYMOUS:
+            if name in seen:
+                continue
+            seen.add(name)
+        out.append(e)
+    out.reverse()
+    return out
 
 
 def parse_file(path: Path, root: Path) -> list[dict]:
-    """All top-level-ish declarations in one file, with parsed signatures."""
+    """All top-level-ish declarations in one file, with parsed signatures.
+
+    Section `variable`s, `include` and `omit` commands are tracked per
+    namespace/section frame so that each declaration records the section
+    variables in scope (see `included_section_entries`).
+    """
     text = path.read_text(encoding="utf-8", errors="replace")
     # Literal examples can contain entire declaration/namespace lines. Keep
     # their newlines for locations but never inventory those lines as source.
@@ -717,40 +1178,102 @@ def parse_file(path: Path, root: Path) -> list[dict]:
         line_starts.append(pos)
         pos += len(ln)
 
-    ns_stack: list[tuple[str, str | None]] = []  # (kind, name)
+    def new_frame(kind: str, name: str | None) -> dict:
+        return {
+            "kind": kind,
+            "name": name,
+            "vars": [],
+            "includes": set(),
+            "omit_names": set(),
+            "omit_types": set(),
+        }
+
+    file_frame = new_frame("file", None)
+    ns_stack: list[dict] = []
+    pending = {"vars": [], "includes": set(), "omit_names": set(), "omit_types": set()}
     headers: list[dict] = []
+    skip_until = -1
     for idx, raw in enumerate(lines):
+        if idx <= skip_until:
+            continue
         ln = raw.rstrip("\n")
         m = NAMESPACE_RE.match(ln)
         if m:
-            ns_stack.append(("namespace", m.group(1)))
+            ns_stack.append(new_frame("namespace", m.group(1)))
             continue
         if SECTION_RE.match(ln):
-            ns_stack.append(("section", None))
+            ns_stack.append(new_frame("section", None))
+            continue
+        if MUTUAL_RE.match(ln):
+            ns_stack.append(new_frame("mutual", None))
             continue
         if END_RE.match(ln):
             if ns_stack:
                 ns_stack.pop()
             continue
-        m = DECL_RE.match(ln)
+        frame = ns_stack[-1] if ns_stack else file_frame
+        m = VARIABLE_RE.match(ln)
         if m:
-            prefix = ".".join(n for k, n in ns_stack if k == "namespace" and n)
-            headers.append(
-                {
-                    "kind": m.group(1),
-                    "name": m.group(2),
-                    "line": idx + 1,
-                    "start": line_starts[idx],
-                    "sig_from": line_starts[idx] + m.end(2),
-                    "namespace": prefix,
-                }
-            )
+            body, skip_until = command_text(lines, idx, m.group(2))
+            body, once = _one_shot(body)
+            entries = own_entries(body)
+            (pending["vars"] if once else frame["vars"]).extend(entries)
+            continue
+        m = INCLUDE_OMIT_RE.match(ln)
+        if m:
+            body, skip_until = command_text(lines, idx, m.group(3))
+            body, once = _one_shot(body)
+            target = pending if once else frame
+            if m.group(2) == "include":
+                target["includes"].update(re.findall(r"[^\s\[\]()]+", flatten_top_level(body)))
+            else:
+                for opener, content, _close in binder_groups(body):
+                    if opener == "[":
+                        target["omit_types"].add(norm_space(content))
+                target["omit_names"].update(IDENT_RE.findall(flatten_top_level(body)))
+            continue
+        m = DECL_RE.match(ln)
+        kind = name = None
+        if m:
+            kind, name, end_name = m.group(1), m.group(2), m.end(2)
+        else:
+            m = TYPE_DECL_RE.match(ln)
+            if m:
+                kind, name, end_name = " ".join(m.group(1).split()), m.group(2), m.end(2)
+        if kind is None:
+            continue
+        frames = [file_frame] + ns_stack
+        section_vars = [e for f in frames for e in f["vars"]] + pending["vars"]
+        includes = set().union(*(f["includes"] for f in frames)) | pending["includes"]
+        omit_names = set().union(*(f["omit_names"] for f in frames)) | pending["omit_names"]
+        omit_types = set().union(*(f["omit_types"] for f in frames)) | pending["omit_types"]
+        pending = {"vars": [], "includes": set(), "omit_names": set(), "omit_types": set()}
+        prefix = ".".join(f["name"] for f in ns_stack if f["kind"] == "namespace" and f["name"])
+        headers.append(
+            {
+                "kind": kind,
+                "name": name,
+                "line": idx + 1,
+                "start": line_starts[idx],
+                "sig_from": line_starts[idx] + end_name,
+                "namespace": prefix,
+                "section_vars": _dedupe_vars(section_vars),
+                "includes": sorted(includes),
+                "omit_names": sorted(omit_names),
+                "omit_types": sorted(omit_types),
+            }
+        )
 
     decls: list[dict] = []
     rel = path.relative_to(root).as_posix()
     for i, h in enumerate(headers):
         window_end = headers[i + 1]["start"] if i + 1 < len(headers) else len(code)
-        binders, result = split_signature(code[h["sig_from"] : window_end])
+        window = code[h["sig_from"] : window_end]
+        if h["kind"] in {"structure", "class", "class inductive", "inductive"}:
+            binders, result, body = "", type_declaration_result(window), ""
+        else:
+            binders, result, body = split_declaration(window)
+            body = body_until_next_command(body)
         binders, result = unicode_connectives(binders), unicode_connectives(result)
         name = h["name"]
         fq = f"{h['namespace']}.{name}" if h["namespace"] else name
@@ -763,9 +1286,21 @@ def parse_file(path: Path, root: Path) -> list[dict]:
                 "line": h["line"],
                 "binders": binders,
                 "result": result,
+                "body": body if h["kind"] in DEF_LIKE_KINDS else "",
+                "section_vars": h["section_vars"],
+                "includes": h["includes"],
+                "omit_names": h["omit_names"],
+                "omit_types": h["omit_types"],
             }
         )
     return decls
+
+
+def is_prop_valued(result: str) -> bool:
+    """True when a declaration's result type is `Prop` or a `Prop`-valued family."""
+    s = strip_forall_prefix(norm_space(result))
+    parts = split_top_level(s, "→")
+    return re.match(r"Prop(?![\w'])", parts[-1].strip()) is not None
 
 
 def collect(root: Path) -> tuple[list[dict], list[dict], list[dict]]:
@@ -783,6 +1318,8 @@ def collect(root: Path) -> tuple[list[dict], list[dict], list[dict]]:
     residuals: list[dict] = []
     near_misses: list[dict] = []
     for d in all_decls:
+        if d["kind"] not in {"theorem", "lemma", "def", "instance", "abbrev", "opaque"}:
+            continue
         last = d["name"].rsplit(".", 1)[-1]
         if "Residual" not in last and "residual" not in last:
             continue
@@ -815,6 +1352,84 @@ def collect(root: Path) -> tuple[list[dict], list[dict], list[dict]]:
                 }
             )
     return all_decls, residuals, near_misses
+
+
+def prop_vocabulary(all_decls: list[dict]) -> tuple[frozenset[str], frozenset[str]]:
+    """(last names of in-tree `Prop`-valued declarations, in-tree `Prop` classes)."""
+    heads: set[str] = set()
+    classes: set[str] = set()
+    for d in all_decls:
+        if d["kind"] in PROP_DECL_KINDS and is_prop_valued(d["result"]):
+            last = d["name"].rsplit(".", 1)[-1]
+            heads.add(last)
+            if d["kind"].startswith("class"):
+                classes.add(last)
+    return frozenset(heads), frozenset(classes)
+
+
+def included_section_entries(decl: dict) -> list[dict]:
+    """Section variables Lean adds as parameters of `decl` (approximated).
+
+    A variable is included when it is named by `include`, mentioned in the
+    header (for definitions: anywhere in the declaration), a dependency of an
+    included variable, or an instance-implicit variable all of whose variable
+    dependencies are included; `omit` and shadowing by the declaration's own
+    binders exclude it.
+    """
+    variables = decl.get("section_vars") or []
+    if not variables:
+        return []
+    own_names = {e["name"] for e in own_entries(decl["binders"]) if e["name"]}
+    mention_text = decl["binders"] + "\n" + decl["result"]
+    if decl["kind"] in DEF_LIKE_KINDS:
+        mention_text += "\n" + decl.get("body", "")
+    includes = set(decl.get("includes") or [])
+    omit_names = set(decl.get("omit_names") or [])
+    omit_types = set(decl.get("omit_types") or [])
+    var_names = [e["name"] for e in variables if e["name"] and e["name"] != ANONYMOUS]
+
+    def excluded(e: dict) -> bool:
+        if e["name"] and (e["name"] in omit_names or e["name"] in own_names):
+            return True
+        return e["opener"] == "[" and norm_space(e["type"]) in omit_types
+
+    included: set[int] = set()
+    for i, e in enumerate(variables):
+        name = e["name"]
+        if excluded(e) or not name or name == ANONYMOUS:
+            continue
+        if name in includes or mentions_word(mention_text, name):
+            included.add(i)
+    changed = True
+    while changed:
+        changed = False
+        for i in sorted(included):
+            for j, w in enumerate(variables):
+                if j in included or excluded(w) or not w["name"] or w["name"] == ANONYMOUS:
+                    continue
+                if mentions_word(variables[i]["type"], w["name"]):
+                    included.add(j)
+                    changed = True
+        included_names = {variables[i]["name"] for i in included if variables[i]["name"]}
+        for j, w in enumerate(variables):
+            if j in included or w["opener"] != "[" or excluded(w):
+                continue
+            deps = [n for n in var_names if mentions_word(w["type"], n)]
+            if all(n in included_names for n in deps):
+                included.add(j)
+                changed = True
+    return [variables[i] for i in sorted(included)]
+
+
+def effective_entries(decl: dict) -> list[dict]:
+    """Included section variables followed by the declaration's own binders."""
+    sec = [dict(e, source="section") for e in included_section_entries(decl)]
+    own = [dict(e, source="binder") for e in own_entries(decl["binders"])]
+    return sec + own
+
+
+def explicit_parameters(entries: list[dict]) -> list[str]:
+    return [e["name"] or "?" for e in entries if e["opener"] == "("]
 
 
 def _ns_of(fq: str) -> str:
@@ -858,6 +1473,172 @@ def _resolve(candidates: list[dict], head_full: str, provider_ns: str) -> tuple[
     return candidates, True
 
 
+class _ResidualShape:
+    """Parameters of one census residual, as seen by the source scan."""
+
+    def __init__(self, decl: dict | None):
+        entries = effective_entries(decl) if decl else []
+        self.bound = {e["name"] for e in entries if e["name"]}
+        self.explicit = explicit_parameters(entries)
+        self.types = {
+            e["name"]: alpha_normalize(e["type"], self.bound)
+            for e in entries
+            if e["name"] and e["name"] != ANONYMOUS and e["type"]
+        }
+        self.instance_types = [e["type"] for e in entries if e["opener"] == "["]
+
+    def instances(self, keep: set[str]) -> set[str]:
+        """Instance binder types, erasing bound names except those in `keep`."""
+        erase = self.bound - keep
+        return {alpha_normalize(t, erase) for t in self.instance_types}
+
+
+def _argument_label(index: int, name: str | None, explicit: list[str], positional: int) -> str:
+    if name is not None:
+        return name
+    if positional < len(explicit) and explicit[positional] != "?":
+        return explicit[positional]
+    return f"#{index + 1}"
+
+
+def _short(text: str, limit: int = 120) -> str:
+    text = norm_space(text)
+    return text if len(text) <= limit else text[: limit - 1] + "…"
+
+
+def assess(
+    atom: dict,
+    eff: list[dict],
+    shape: _ResidualShape,
+    census_names: list[str],
+    prop_heads: frozenset[str],
+    prop_classes: frozenset[str],
+    refutation: bool = False,
+    extra_bound: frozenset[str] | set[str] = frozenset(),
+) -> dict:
+    """Assumptions and specialisations of one declaration for one residual atom.
+
+    `extra_bound` names variables bound inside the atom itself (the `∀` under a
+    negation `¬ ∀ k, R k`); they are arguments, not assumptions.
+    """
+    entries = eff + [dict(e, source="result") for e in atom["binders"]]
+    bound = {e["name"] for e in entries if e["name"]} | set(extra_bound)
+    text = atom["text"]
+    args = residual_arguments(text)
+    argument_names = {bare_identifier(t) for _n, t in args} - {None, "_"}
+
+    def mentioned(name: str | None) -> bool:
+        return bool(name) and name != ANONYMOUS and (
+            name in argument_names or mentions_word(text, name)
+        )
+
+    consumed: set[str] = set()
+    extra: set[str] = set()
+    section_hyps: set[str] = set()
+    instances: list[str] = []
+    # Names bound by both declarations are taken to denote the same parameter;
+    # other bound names are erased, so renamed type variables still compare.
+    keep = bound & shape.bound
+    residual_instances = shape.instances(keep)
+    for e in entries:
+        if e["opener"] == "[":
+            normalized = alpha_normalize(e["type"], bound - keep)
+            head = type_head_last(e["type"])
+            if normalized in residual_instances or head in ALWAYS_SATISFIABLE_CLASSES:
+                continue
+            if refutation and head not in KNOWN_PROP_CLASSES and head not in prop_classes:
+                continue
+            instances.append(norm_space(e["type"]))
+            continue
+        if mentioned(e["name"]):
+            continue
+        for n in census_names:
+            if mentions_word(e["type"], n):
+                consumed.add(n)
+        if looks_like_proof_assumption([e["name"] or ANONYMOUS], e["type"], prop_heads):
+            extra.add(e["name"] or ANONYMOUS)
+            if e.get("source") == "section":
+                section_hyps.add(e["name"] or ANONYMOUS)
+    for premise in atom["premises"]:
+        for n in census_names:
+            if mentions_word(premise, n):
+                consumed.add(n)
+
+    specialised: list[str] = []
+    seen: dict[str, str] = {}
+    positional = 0
+    for index, (name, arg) in enumerate(args):
+        label = _argument_label(index, name, shape.explicit, positional)
+        if name is None:
+            positional += 1
+        ident = bare_identifier(arg)
+        if ident == "_":
+            continue
+        if ident is not None and ident in bound:
+            if ident in seen:
+                specialised.append(f"{label} := {ident} (same as {seen[ident]})")
+            seen[ident] = label
+            continue
+        specialised.append(f"{label} := {_short(arg, 80)}")
+    parameter_types: list[str] = []
+    for e in entries:
+        name = e["name"]
+        if not name or name == ANONYMOUS or name not in shape.types or not e["type"]:
+            continue
+        mine = alpha_normalize(e["type"], bound)
+        if literal_instance(mine, shape.types[name]):
+            parameter_types.append(f"{name} : {_short(e['type'], 80)}")
+    return {
+        "conditional_on_residuals": sorted(consumed),
+        "extra_explicit_binders": sorted(extra),
+        "section_hypotheses": sorted(section_hyps),
+        "result_premises": [_short(p) for p in atom["premises"]],
+        "extra_instance_assumptions": sorted(set(instances)),
+        "specialised_arguments": specialised,
+        "specialised_parameter_types": parameter_types,
+    }
+
+
+VERDICT_RANK = {
+    "uniform": 0,
+    "unconditional": 0,
+    "instance": 1,
+    "conditional": 2,
+    "ambiguous": 3,
+    "not_provider": 4,
+}
+
+
+def provider_verdict(p: dict) -> str:
+    if p.get("equivalence") or p.get("reduction_only"):
+        return "not_provider"
+    if p.get("ambiguous_name_match"):
+        return "ambiguous"
+    if (
+        p.get("conditional_on_residuals")
+        or p.get("extra_explicit_binders")
+        or p.get("result_premises")
+        or p.get("extra_instance_assumptions")
+    ):
+        return "conditional"
+    if p.get("specialised_arguments") or p.get("specialised_parameter_types"):
+        return "instance"
+    return "uniform"
+
+
+def refutation_verdict(p: dict) -> str:
+    if p.get("ambiguous_name_match"):
+        return "ambiguous"
+    if (
+        p.get("conditional_on_residuals")
+        or p.get("extra_explicit_binders")
+        or p.get("result_premises")
+        or p.get("extra_instance_assumptions")
+    ):
+        return "conditional"
+    return "unconditional"
+
+
 def find_providers(all_decls: list[dict], residuals: list[dict]) -> None:
     """Attach providers/refutations + status to each census row, in place."""
     census_names = sorted({r["name"] for r in residuals})
@@ -867,124 +1648,157 @@ def find_providers(all_decls: list[dict], residuals: list[dict]) -> None:
         r["refutations"] = []
         by_name.setdefault(r["name"], []).append(r)
 
+    decl_at = {(d["file"], d["line"]): d for d in all_decls}
     def_sites = {(r["file"], r["line"]) for r in residuals}
+    shapes = {
+        (r["file"], r["line"]): _ResidualShape(decl_at.get((r["file"], r["line"])))
+        for r in residuals
+    }
+    prop_heads, prop_classes = prop_vocabulary(all_decls)
+    prop_heads = prop_heads | frozenset(census_names)
 
     for d in all_decls:
         if d["kind"] not in PROVIDER_KINDS:
             continue
         if (d["file"], d["line"]) in def_sites:
             continue  # the residual definition itself is never its provider
-        last = d["name"].rsplit(".", 1)[-1]
-        head_full = result_head(d["result"])
-        head_last = head_full.rsplit(".", 1)[-1]
-        forall_binders, result_no_forall = split_forall_prefix(d["result"])
-        all_binders = d["binders"] + " " + forall_binders
-        extra_binders = extra_explicit_binders(all_binders, result_no_forall)
-
-        targets: set[str] = set()
-        if head_last in by_name:
-            targets.add(head_last)
-        for rname in census_names:
-            for stem in (rname, lower_first(rname)):
-                if re.match(re.escape(stem) + r"_(holds|proved)(_|$)", last):
-                    # name-based hit must still mention the residual in its
-                    # result type, else it is about something adjacent.
-                    if mentions_word(d["result"], rname):
-                        targets.add(rname)
-        consumed = [n for n in census_names if mentions_word(all_binders, n)]
-        # `P ↔ Q` states an equivalence; it proves nothing about `P` itself.
-        is_equivalence = has_top_level(result_no_forall, "↔")
-        # `R → Q`, `R ∨ Q`, `R = Q` relate `R` to something else; not a proof of `R`.
-        reduction_only = top_level_connective(d["result"]) in REDUCTION_CONNECTIVES
-        specialised = {rname: specialised_arguments(d["result"], rname) for rname in targets}
+        atoms = conclusion_atoms(d["result"])
         provider_ns = _ns_of(d["fq_name"])
-        for rname in targets:
-            head_for_resolution = head_full if head_last == rname else ""
-            rows, ambiguous = _resolve(by_name[rname], head_for_resolution, provider_ns)
+
+        candidates: dict[str, list[tuple[str, dict]]] = {}
+        refuted: dict[str, list[tuple[str, dict]]] = {}
+        for atom in atoms:
+            if atom["kind"] == "atom":
+                head = atom_head(atom["text"])
+                last = head.rsplit(".", 1)[-1]
+                if last in by_name:
+                    candidates.setdefault(last, []).append((head, atom))
+            elif atom["kind"] == "negation":
+                if atom.get("nested_binders"):
+                    continue
+                for inner, inner_binders in negated_targets(atom["text"]):
+                    head = atom_head(inner)
+                    last = head.rsplit(".", 1)[-1]
+                    if last in by_name:
+                        # Binders under the negation (`¬ ∀ k, R k`) are part of the
+                        # refuted proposition, not assumptions of the refutation.
+                        refuted.setdefault(last, []).append(
+                            (head, dict(atom, text=inner, inner_binders=inner_binders))
+                        )
+
+        whole_head = result_head(d["result"])
+        whole_last = whole_head.rsplit(".", 1)[-1]
+        related_only = whole_last in by_name and whole_last not in candidates
+        if not candidates and not refuted and not related_only:
+            continue
+        eff = effective_entries(d)
+
+        if related_only:
+            stripped = strip_forall_prefix(d["result"])
+            equivalence = has_top_level(stripped, "↔")
+            rows, ambiguous = _resolve(by_name[whole_last], whole_head, provider_ns)
             for row in rows:
-                row["providers"].append(
-                    {
+                record = {
+                    "name": d["fq_name"],
+                    "kind": d["kind"],
+                    "file": d["file"],
+                    "line": d["line"],
+                    "conditional_on_residuals": [],
+                    "extra_explicit_binders": [],
+                    "ambiguous_name_match": ambiguous,
+                    "equivalence": equivalence,
+                    "reduction_only": not equivalence,
+                    "specialised_arguments": [],
+                    "result_premises": [],
+                    "section_hypotheses": [],
+                    "extra_instance_assumptions": [],
+                    "specialised_parameter_types": [],
+                }
+                record["verdict"] = provider_verdict(record)
+                row["providers"].append(record)
+
+        for rname, hits in candidates.items():
+            for head, atom in hits:
+                head_for_resolution = head if "." in head else ""
+                rows, ambiguous = _resolve(by_name[rname], head_for_resolution, provider_ns)
+                for row in rows:
+                    shape = shapes[(row["file"], row["line"])]
+                    found = assess(atom, eff, shape, census_names, prop_heads, prop_classes)
+                    record = {
                         "name": d["fq_name"],
                         "kind": d["kind"],
                         "file": d["file"],
                         "line": d["line"],
-                        "conditional_on_residuals": consumed,
-                        "extra_explicit_binders": extra_binders,
+                        "conditional_on_residuals": found["conditional_on_residuals"],
+                        "extra_explicit_binders": found["extra_explicit_binders"],
                         "ambiguous_name_match": ambiguous,
-                        "equivalence": is_equivalence,
-                        "reduction_only": reduction_only,
-                        "specialised_arguments": specialised.get(rname, []),
+                        "equivalence": False,
+                        "reduction_only": False,
+                        "specialised_arguments": found["specialised_arguments"],
+                        "result_premises": found["result_premises"],
+                        "section_hypotheses": found["section_hypotheses"],
+                        "extra_instance_assumptions": found["extra_instance_assumptions"],
+                        "specialised_parameter_types": found["specialised_parameter_types"],
                     }
-                )
+                    record["verdict"] = provider_verdict(record)
+                    row["providers"].append(record)
 
-        if result_no_forall.startswith("¬"):
-            targets_full = negation_targets(result_no_forall[1:])
-            for neg_head_full in dict.fromkeys(targets_full):
-                neg_head_last = neg_head_full.rsplit(".", 1)[-1]
-                if neg_head_last not in by_name:
-                    continue
-                rows, ambiguous = _resolve(by_name[neg_head_last], neg_head_full, provider_ns)
+        for rname, hits in refuted.items():
+            for head, atom in hits:
+                head_for_resolution = head if "." in head else ""
+                rows, ambiguous = _resolve(by_name[rname], head_for_resolution, provider_ns)
                 for row in rows:
-                    row["refutations"].append(
-                        {
-                            "name": d["fq_name"],
-                            "kind": d["kind"],
-                            "file": d["file"],
-                            "line": d["line"],
-                            "conditional_on_residuals": consumed,
-                            "extra_explicit_binders": extra_binders,
-                            "ambiguous_name_match": ambiguous,
-                        }
+                    shape = shapes[(row["file"], row["line"])]
+                    inner_bound = {e["name"] for e in atom["inner_binders"] if e["name"]}
+                    found = assess(
+                        atom,
+                        eff,
+                        shape,
+                        census_names,
+                        prop_heads,
+                        prop_classes,
+                        refutation=True,
+                        extra_bound=inner_bound,
                     )
+                    record = {
+                        "name": d["fq_name"],
+                        "kind": d["kind"],
+                        "file": d["file"],
+                        "line": d["line"],
+                        "conditional_on_residuals": found["conditional_on_residuals"],
+                        "extra_explicit_binders": found["extra_explicit_binders"],
+                        "ambiguous_name_match": ambiguous,
+                        "result_premises": found["result_premises"],
+                        "section_hypotheses": found["section_hypotheses"],
+                        "extra_instance_assumptions": found["extra_instance_assumptions"],
+                        "refuted_arguments": found["specialised_arguments"],
+                    }
+                    record["verdict"] = refutation_verdict(record)
+                    row["refutations"].append(record)
 
     def dedupe_entries(entries: list[dict]) -> list[dict]:
-        seen: set[tuple] = set()
-        out: list[dict] = []
+        best: dict[tuple, dict] = {}
+        order: list[tuple] = []
         for p in sorted(entries, key=lambda p: (p["file"], p["line"], p["name"])):
-            key = (
-                p["name"],
-                p["file"],
-                p["line"],
-                tuple(p["conditional_on_residuals"]),
-                tuple(p["extra_explicit_binders"]),
-                p["ambiguous_name_match"],
-                p.get("equivalence", False),
-                p.get("reduction_only", False),
-                tuple(p.get("specialised_arguments", [])),
-            )
-            if key in seen:
+            key = (p["name"], p["file"], p["line"])
+            if key not in best:
+                best[key] = p
+                order.append(key)
                 continue
-            seen.add(key)
-            out.append(p)
-        return out
+            if VERDICT_RANK[p["verdict"]] < VERDICT_RANK[best[key]["verdict"]]:
+                best[key] = p
+        return [best[k] for k in order]
 
     for r in residuals:
         r["providers"] = dedupe_entries(r["providers"])
         r["refutations"] = dedupe_entries(r["refutations"])
-        concrete = [
-            p
-            for p in r["providers"]
-            if not p["conditional_on_residuals"]
-            and not p["extra_explicit_binders"]
-            and not p["ambiguous_name_match"]
-            and not p["equivalence"]
-            and not p.get("reduction_only", False)
-            and not p["specialised_arguments"]
-        ]
-        concrete_refutations = [
-            p
-            for p in r["refutations"]
-            if not p["conditional_on_residuals"]
-            and not p["extra_explicit_binders"]
-            and not p["ambiguous_name_match"]
-        ]
-        # A proved negation outranks any apparent provider: a statement
-        # cannot be both discharged and refuted, so the "provider" is a
-        # vacuous or specialised instance the census failed to recognise.
-        if concrete_refutations:
+        verdicts = {p["verdict"] for p in r["providers"]}
+        if any(p["verdict"] == "unconditional" for p in r["refutations"]):
             r["status"] = "refuted"
-        elif concrete:
+        elif "uniform" in verdicts:
             r["status"] = "discharged"
+        elif "instance" in verdicts:
+            r["status"] = "instance_only"
         else:
             r["status"] = "open"
 
@@ -999,46 +1813,114 @@ def top_dir(file: str) -> str:
 def summarize(residuals: list[dict]) -> dict:
     by_dir: dict[str, dict[str, int]] = {}
     for r in residuals:
-        d = by_dir.setdefault(
-            top_dir(r["file"]),
-            {"total": 0, "open": 0, "discharged": 0, "refuted": 0},
-        )
+        d = by_dir.setdefault(top_dir(r["file"]), {"total": 0, **{s: 0 for s in STATUSES}})
         d["total"] += 1
         d[r["status"]] += 1
-    return {
-        "total": len(residuals),
-        "open": sum(1 for r in residuals if r["status"] == "open"),
-        "discharged": sum(1 for r in residuals if r["status"] == "discharged"),
-        "refuted": sum(1 for r in residuals if r["status"] == "refuted"),
-        "by_top_dir": dict(sorted(by_dir.items())),
-    }
+    out: dict = {"total": len(residuals)}
+    for s in STATUSES:
+        out[s] = sum(1 for r in residuals if r["status"] == s)
+    out["by_top_dir"] = dict(sorted(by_dir.items()))
+    return out
+
+
+METADATA = {
+    "kind": "syntactic inventory",
+    "scope": SCOPE,
+    "source_roots": ["ArkLib", "ProximityPrize"],
+    "method": (
+        "Lean source text is scanned without elaboration; binders, section variables, "
+        "instances and result types are read as text."
+    ),
+    "caveat": (
+        "Labels are conservative triage heuristics, not kernel-checked facts. `discharged` "
+        "marks a candidate uniform provider to review, not a verified proof, and these totals "
+        "are not a whole-project or production-completion ledger: Research/ residuals and named "
+        "hypotheses outside the strict `def ...Residual ... : Prop` pattern are not counted."
+    ),
+    "statuses": {
+        "open": "no unconditional provider or refutation was recognised",
+        "instance_only": "only providers of specific instances (literal/compound arguments, "
+        "repeated bound names, or literal parameter types) were recognised",
+        "discharged": "a candidate uniform provider with no recognised assumption was found",
+        "refuted": "a declaration with no recognised assumption proves the negation of some "
+        "instance, so the family is not uniformly true; proved instances stay listed",
+    },
+    "provider_verdicts": {
+        "uniform": "no recognised assumption; every residual argument is a distinct bound name",
+        "instance": "no recognised assumption, but only an instance of the residual is proved",
+        "conditional": "assumes a census residual, a proof-like binder, a result premise, an "
+        "included proof-like section variable, or an instance missing from the residual",
+        "ambiguous": "the residual name could not be resolved across namespaces",
+        "not_provider": "the residual heads the result only as one side of ↔, →, ∨ or =",
+    },
+}
 
 
 def conditional_notes(r: dict) -> str:
     """Human-readable summary of why available providers are conditional."""
-    conds = sorted({c for p in r["providers"] for c in p["conditional_on_residuals"]})
-    binders = sorted({b for p in r["providers"] for b in p.get("extra_explicit_binders", [])})
+    providers = [p for p in r["providers"] if p.get("verdict") == "conditional"]
+    conds = sorted({c for p in providers for c in p["conditional_on_residuals"]})
+    binders = sorted({b for p in providers for b in p.get("extra_explicit_binders", [])})
+    instances = sorted({b for p in providers for b in p.get("extra_instance_assumptions", [])})
+    premises = sum(1 for p in providers if p.get("result_premises"))
     notes = []
     if conds:
         notes.append(f"residual deps: {', '.join(f'`{c}`' for c in conds)}")
     if binders:
         notes.append(f"extra assumptions: {', '.join(f'`{b}`' for b in binders)}")
+    if instances:
+        shown = ", ".join(f"`[{_short(b, 60)}]`" for b in instances[:6])
+        more = f" and {len(instances) - 6} more" if len(instances) > 6 else ""
+        notes.append(f"instance assumptions: {shown}{more}")
+    if premises:
+        notes.append(f"result premises in {premises} provider(s)")
     return "; ".join(notes)
 
 
-def concrete_refutation_labels(r: dict) -> list[str]:
-    refs = [
-        p for p in r.get("refutations", [])
-        if not p["conditional_on_residuals"]
-        and not p["extra_explicit_binders"]
-        and not p["ambiguous_name_match"]
+def _scope_label(p: dict, key: str = "specialised_arguments") -> str:
+    parts = list(p.get(key, [])) + list(p.get("specialised_parameter_types", []))
+    return ", ".join(f"`{_short(s, 70)}`" for s in parts)
+
+
+def instance_labels(r: dict, limit: int = 4) -> list[str]:
+    rows = [p for p in r["providers"] if p.get("verdict") == "instance"]
+    out = [
+        f"`{p['name']}` ({p['file']}:{p['line']}) at {_scope_label(p)}" for p in rows[:limit]
     ]
-    return [f"`{p['name']}` ({p['file']}:{p['line']})" for p in refs]
+    if len(rows) > limit:
+        out.append(f"and {len(rows) - limit} more")
+    return out
+
+
+def concrete_refutation_labels(r: dict) -> list[str]:
+    refs = [p for p in r.get("refutations", []) if p.get("verdict") == "unconditional"]
+    out = []
+    for p in refs:
+        at = _scope_label(p, "refuted_arguments")
+        suffix = f" at {at}" if at else ""
+        out.append(f"`{p['name']}` ({p['file']}:{p['line']}){suffix}")
+    return out
+
+
+def uniform_labels(r: dict, limit: int = 3) -> list[str]:
+    rows = [p for p in r["providers"] if p.get("verdict") == "uniform"]
+    out = [f"`{p['name']}` ({p['file']}:{p['line']})" for p in rows[:limit]]
+    if len(rows) > limit:
+        out.append(f"and {len(rows) - limit} more")
+    return out
+
+
+SECTION_TITLES = {
+    "open": "Open Residuals",
+    "instance_only": "Instance-Only Residuals",
+    "discharged": "Discharged Residuals (syntactic candidates)",
+    "refuted": "Refuted Residuals",
+}
 
 
 def markdown_for_status(residuals: list[dict], status: str) -> list[str]:
     rows = [r for r in residuals if r["status"] == status]
-    out: list[str] = [f"## {status.title()} Residuals", ""]
+    out: list[str] = [f"## {SECTION_TITLES[status]}", ""]
     if not rows:
         return out + ["None.", ""]
     for r in rows:
@@ -1047,10 +1929,17 @@ def markdown_for_status(residuals: list[dict], status: str) -> list[str]:
             notes = conditional_notes(r)
             if notes:
                 suffix = f" — conditional providers only ({notes})"
+        elif status == "instance_only":
+            suffix = " — proved instances only: " + "; ".join(instance_labels(r))
         elif status == "refuted":
             refs = concrete_refutation_labels(r)
             if refs:
                 suffix = f" — refuted by {', '.join(refs)}"
+            proved = instance_labels(r)
+            if proved:
+                suffix += "; proved instances: " + "; ".join(proved)
+        elif status == "discharged":
+            suffix = " — candidate provider: " + ", ".join(uniform_labels(r))
         out.append(f"- `{r['fq_name']}` — `{r['file']}:{r['line']}`{suffix}")
     out.append("")
     return out
@@ -1065,8 +1954,8 @@ def markdown_for_near_misses(near_misses: list[dict]) -> list[str]:
         [
             "These declarations contain `Residual`/`residual` in their name but are outside the",
             "strict `def ...Residual ... : Prop` census convention. They are not counted in the",
-            "strict open/discharged/refuted totals, but they are still audit surfaces for hidden",
-            "proof debt and naming drift.",
+            "strict totals, but they are still audit surfaces for hidden proof debt and naming",
+            "drift.",
             "",
         ]
     )
@@ -1105,54 +1994,86 @@ def extract_campaign_addenda(path: Path) -> list[str]:
     return blocks
 
 
+WIKI_HEADER = [
+    "# ArkLib Residual Census (auto-generated syntactic inventory, v5)",
+    "",
+    "Generated by `python3 scripts/residual_census.py --wiki-out docs/wiki/residual-census.md`.",
+    "",
+    "**Scope.** Only `ArkLib/**/*.lean` and `ProximityPrize/**/*.lean` (including relocated",
+    "classic extensions) are scanned, and only declarations of the strict form",
+    "`def ...Residual ... : Prop` are counted. Residuals under `Research/` (including migrated",
+    "campaign residuals) and named `Prop`/`structure` hypotheses outside the suffix convention",
+    "are not counted, so these totals are neither a whole-project inventory nor a",
+    "production-completion ledger.",
+    "",
+    "**Method.** The census reads Lean source text and never elaborates a declaration. Every",
+    "label is a conservative triage heuristic, not a kernel-checked fact:",
+    "",
+    "- **discharged** — a candidate *uniform* provider was found: the residual is a conclusion",
+    "  of its result (not one side of `↔`, a premise of `→`, a disjunct or an equation side),",
+    "  every argument of the residual is a distinct bound name, and no assumption was recognised",
+    "  (no census residual, proof-like binder, result premise, included proof-like section",
+    "  `variable`, or instance binder missing from the residual's own binders). The listed",
+    "  candidate still needs review: elaborated types and unrecognised side conditions are",
+    "  invisible to a source scan.",
+    "- **instance-only** — only unconditional providers of *instances* were found (an argument",
+    "  fixed to a literal or compound term, a bound name passed twice, or a parameter type",
+    "  specialised to a literal such as `ProtocolSpec 0`). The proved regimes are listed, but the",
+    "  general residual is not discharged.",
+    "- **refuted** — a declaration with no recognised assumption proves the negation of some",
+    "  instance, so the residual family is not uniformly true. A refutation outranks every",
+    "  provider; proved instances stay listed, since an instance proof next to an instance",
+    "  refutation is mixed parameter-scope coverage, not a contradiction. The negation must refute",
+    "  the residual outright; negated existentials, compound negations such as `¬ (R ∧ Q)` and",
+    "  negations under a `∀` inside a conjunct are not counted.",
+    "- **open** — everything else, including residuals with conditional providers only.",
+    "",
+    "The named-residual convention is a modularity pattern, not an incompleteness marker:",
+    "check this census before treating a `*Residual` name as open proof debt, and check the",
+    "listed provider before treating a `discharged` label as a proof.",
+    "",
+]
+
+ADDENDA_NOTE = [
+    "The campaign addenda below are hand-maintained notes that regeneration carries forward",
+    "verbatim. Each describes the dated snapshot it names; none of them is the current generated",
+    "summary, which follows the addenda.",
+    "",
+]
+
+
 def write_wiki_markdown(path: Path, summary: dict, residuals: list[dict], near_misses: list[dict]) -> None:
     """Write the human-facing residual ledger from the same payload as JSON."""
-    lines: list[str] = [
-        "# ArkLib Residual Census (auto-generated, v5)",
-        "",
-        "Generated by `python3 scripts/residual_census.py --wiki-out docs/wiki/residual-census.md`.",
-        "",
-        "The strict production census counts declarations under `ArkLib/` and `ProximityPrize/`",
-        "(including relocated classic extensions), of the form",
-        "`def ...Residual ... : Prop`. A residual is **discharged** only when a concrete",
-        "provider has no residual dependencies, no extra proof-like explicit binders, and no",
-        "ambiguous namespace match. Conditional reductions are useful proof plumbing, but they",
-        "remain **open** until their side conditions are proved. An equivalence (`R ↔ Q`), a",
-        "result whose loosest top-level connective after the residual is `→`, `∨` or `=`, or an",
-        "instance with a parameter fixed to a numeral (`R 0` or `R (k := 0)`) is not a provider.",
-        "A residual is **refuted** when a concrete theorem entails a negated residual instance.",
-        "The census leaves negated existentials unclassified because it does not establish that",
-        "their binder types have witnesses. A proved refutation outranks any apparent provider.",
-        "",
-        "`Research/` stays outside this production census; this is not a research-completion ledger.",
-        "",
-        "The named-residual convention is a modularity pattern, not an incompleteness marker:",
-        "always check this census before treating a `*Residual` name as open proof debt.",
-        "",
-    ]
-    for block in extract_campaign_addenda(path):
+    lines: list[str] = list(WIKI_HEADER)
+    addenda = extract_campaign_addenda(path)
+    if addenda:
+        lines.extend(ADDENDA_NOTE)
+    for block in addenda:
         lines.extend(block.split("\n"))
         lines.append("")
     lines.extend(
         [
             "## Summary",
             "",
-            f"- **Total strict residuals:** {summary['total']}",
+            f"- **Total strict residuals (`ArkLib/` and `ProximityPrize/`):** {summary['total']}",
             f"- **Open:** {summary['open']}",
-            f"- **Discharged:** {summary['discharged']}",
+            f"- **Instance-only:** {summary['instance_only']}",
+            f"- **Discharged (syntactic candidates):** {summary['discharged']}",
             f"- **Refuted:** {summary['refuted']}",
             f"- **Residual-like near misses:** {len(near_misses)} (listed below and in `scripts/residual_census.json`)",
             "",
-            "| top-level directory | total | open | discharged | refuted |",
-            "|---|---:|---:|---:|---:|",
+            "| top-level directory | total | open | instance-only | discharged | refuted |",
+            "|---|---:|---:|---:|---:|---:|",
         ]
     )
     for name, c in summary["by_top_dir"].items():
         lines.append(
-            f"| `{name}` | {c['total']} | {c['open']} | {c['discharged']} | {c['refuted']} |"
+            f"| `{name}` | {c['total']} | {c['open']} | {c['instance_only']} | "
+            f"{c['discharged']} | {c['refuted']} |"
         )
     lines.append("")
     lines.extend(markdown_for_status(residuals, "open"))
+    lines.extend(markdown_for_status(residuals, "instance_only"))
     lines.extend(markdown_for_near_misses(near_misses))
     lines.extend(markdown_for_status(residuals, "refuted"))
     lines.extend(markdown_for_status(residuals, "discharged"))
@@ -1197,7 +2118,12 @@ def main() -> int:
         if not row.get("refutations"):
             row.pop("refutations", None)
         payload_residuals.append(row)
-    payload = {"source_roots": ["ArkLib", "ProximityPrize"], "summary": summary, "residuals": payload_residuals, "near_misses": near_misses}
+    payload = {
+        "metadata": METADATA,
+        "summary": summary,
+        "residuals": payload_residuals,
+        "near_misses": near_misses,
+    }
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(
         json.dumps(payload, indent=1, ensure_ascii=False) + "\n",
@@ -1210,46 +2136,36 @@ def main() -> int:
         write_wiki_markdown(wiki_out, summary, residuals, near_misses)
 
     print(
-        f"residual census: total {summary['total']} | "
-        f"open {summary['open']} | discharged {summary['discharged']} | "
-        f"refuted {summary['refuted']}"
+        f"residual census ({SCOPE}; syntactic heuristic, not a verified ledger): "
+        f"total {summary['total']} | open {summary['open']} | "
+        f"instance-only {summary['instance_only']} | "
+        f"discharged (candidates) {summary['discharged']} | refuted {summary['refuted']}"
     )
-    print("\nby top-level directory (total / open / discharged / refuted):")
+    print("\nby top-level directory (total / open / instance-only / discharged / refuted):")
     for name, c in summary["by_top_dir"].items():
         print(
-            f"  {name:<16} {c['total']:>3} / {c['open']:>3} / "
+            f"  {name:<16} {c['total']:>3} / {c['open']:>3} / {c['instance_only']:>3} / "
             f"{c['discharged']:>3} / {c['refuted']:>3}"
         )
 
-    open_rows = [r for r in residuals if r["status"] == "open"]
-    if open_rows:
-        print(f"\n{len(open_rows)} open residual(s):")
-        for r in open_rows:
-            conds = sorted(
-                {c for p in r["providers"] for c in p["conditional_on_residuals"]}
-            )
-            binders = sorted(
-                {b for p in r["providers"] for b in p.get("extra_explicit_binders", [])}
-            )
-            notes = []
-            if conds:
-                notes.append(f"residual deps: {', '.join(conds)}")
-            if binders:
-                notes.append(f"extra assumptions: {', '.join(binders)}")
-            extra = f"  [only conditional providers, {'; '.join(notes)}]" if notes else ""
-            print(f"  {r['fq_name']}  ({r['file']}:{r['line']}){extra}")
-    refuted_rows = [r for r in residuals if r["status"] == "refuted"]
-    if refuted_rows:
-        print(f"\n{len(refuted_rows)} refuted residual(s):")
-        for r in refuted_rows:
-            refs = [
-                p for p in r["refutations"]
-                if not p["conditional_on_residuals"]
-                and not p["extra_explicit_binders"]
-                and not p["ambiguous_name_match"]
-            ]
-            ref_labels = [f"{p['name']} ({p['file']}:{p['line']})" for p in refs]
-            extra = f"  [refuted by: {', '.join(ref_labels)}]" if refs else ""
+    for status, title in (
+        ("open", "open residual(s)"),
+        ("instance_only", "instance-only residual(s)"),
+        ("refuted", "refuted residual(s)"),
+    ):
+        rows = [r for r in residuals if r["status"] == status]
+        if not rows:
+            continue
+        print(f"\n{len(rows)} {title}:")
+        for r in rows:
+            if status == "open":
+                notes = conditional_notes(r)
+                extra = f"  [only conditional providers, {notes}]" if notes else ""
+            elif status == "instance_only":
+                extra = "  [instances: " + "; ".join(instance_labels(r, limit=2)) + "]"
+            else:
+                refs = concrete_refutation_labels(r)
+                extra = f"  [refuted by: {', '.join(refs)}]" if refs else ""
             print(f"  {r['fq_name']}  ({r['file']}:{r['line']}){extra}")
     if near_misses:
         print(

@@ -7,7 +7,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.MonomialLineListBridge
 import ArkLib.Data.CodingTheory.ProximityGap.FarCosetExplosion
 
 /-!
-# Attack 3: the √-free RS bridge — ABF Thm 5.1 + RS structure (issue #407)
+# Attack 3: a √-free monomial-line count — ABF Thm 5.1 vs RS structure (issue #407)
 
 ## Where the √ enters GCXK25 Thm 3 (= ABF Thm 5.1)
 
@@ -23,38 +23,46 @@ second moment `T² ≤ |G|·E`. ABF p.1192: removing it "would reestablish all k
 "cannot hold in general" — the GCXK25 reduction is generic for *any* linear code, so it must pay the
 worst-case Johnson √ (tight for general codes, [Gur02; GS03]); the open question is the RS special case.
 
-## The RS-specific property that removes the √
+## An RS-specific property of ONE line (the monomial far direction)
 
-For **plain RS on a smooth domain** there is an *exact* far-line incidence identity that the generic
-proof has no access to. The far monomial direction `u₁ = X^k` is **nowhere zero** on `μ_n`
-(smoothness) and the line `u₀ + γ·X^k` meeting a degree-`<k` codeword on a coordinate set `S` is,
-by the **+1-degree lift** (`MonomialLineListBridge.badScalars_monomial_eq_degreeLTSucc`), the
-*same* as a degree-`<k+1` codeword (with `X^k`-coefficient `−γ`) meeting `u₀` on `S` — **at the
-same radius `δ`**. So:
+For **plain RS on a smooth domain** there is an exact incidence identity for the single monomial
+far direction that the generic proof does not use. The far monomial direction `u₁ = X^k` is
+**nowhere zero** on `μ_n` (smoothness) and the line `u₀ + γ·X^k` meeting a degree-`<k` codeword on
+a coordinate set `S` is, by the **+1-degree lift**
+(`MonomialLineListBridge.badScalars_monomial_eq_degreeLTSucc`), the *same* as a degree-`<k+1`
+codeword (with `X^k`-coefficient `−γ`) meeting `u₀` on `S` — **at the same radius `δ`**. So, for
+this one line:
 
-* **No radius map.** RS[k] bad-count at radius `δ` ↔ RS[k+1] agreement-list at radius `δ`. The
-  Johnson transform `δ ↦ 1−√(1−δ)` is *gone* — both sides use the identical `δ`.
-* **Linear, not L².** The fiber count (`LineCodewordIncidence.line_codeword_incidence_le`: a
-  nowhere-zero direction meets a *fixed* word on `≥ w` coords for at most `⌊n/w⌋` scalars `γ`)
-  bounds the incidence by `⌊n/w⌋ · L` — **linear** in the list size, not `L²`. The Cauchy–Schwarz
-  pairwise step is replaced by a deterministic per-codeword fiber partition of `Fin n`.
+* **No radius map on this line.** The RS[k] bad-count of the line `(u₀, X^k)` at radius `δ` is
+  controlled by the RS[k+1] agreement list around `u₀` at the same radius `δ`.
+* **Linear, not L², on this line.** The fiber count
+  (`LineCodewordIncidence.line_codeword_incidence_le`: a nowhere-zero direction meets a *fixed*
+  word on `≥ w` coords for at most `⌊n/w⌋` scalars `γ`) bounds that line's incidence by
+  `⌊n/w⌋ · L` — linear in the list size.
 
-Hence the in-tree `epsMCA_ge_far_incidence` is *literally* the RS-special, √-removed avatar of ABF
-Thm 5.1: it equates `ε_mca` with `#bad/q` exactly (`= I_far/q`), and the monomial bridge bounds
-`#bad ≤ L_{RS[k+1]}(δ)` at the **same** `δ`, with no √ and a linear-in-`L` constant.
+## SCOPE: this is NOT an upper bound on `ε_mca`
 
-## The √-free RS bridge (this file)
+`epsMCA_ge_far_incidence` is a **lower** bound: `#bad(u₀, u₁)/q ≤ ε_mca(C, δ)` for one far line.
+It does NOT equate `ε_mca` (a supremum over all lines) with the incidence of any particular line.
+This file pairs that lower bound with an upper bound `#bad(u₀, X^k) ≤ L` on the SAME smaller
+quantity. Two upper bounds on the same smaller quantity give **no** comparison between the larger
+quantities, so nothing here yields `ε_mca(RS[k], δ) ≤ L/q`, an equality of `ε_mca` with the
+monomial line's incidence, or a general √-free replacement for ABF Thm 5.1 / GCXK25 Thm 3. Such a
+global statement would additionally need a universal direction reduction (every worst-case
+direction is monomial, or reducible to one) or an independent incidence bound for every direction;
+neither is proved here (cf. the general gaps tracked as PG-049 / PG-102 in the 2026-10-28 audit).
 
-`epsMCA_le_listSize_div`: on the far stratum, for the monomial far line `(u₀, X^k)`,
+## What this file proves (`epsMCA_ge_far_incidence_le_listSize`)
 
-  `ε_mca(RS[k], δ) ≥ #bad/q`   (lower, `epsMCA_ge_far_incidence`)   and
-  `#bad ≤ |list_{RS[k+1]}(u₀, δ)|`   (upper, `badScalars_monomial_card_le_listSize`),
+On the far stratum, for the monomial far line `(u₀, X^k)` only,
 
-both at the **identical radius `δ`**. Composing, the MCA bad-count is sandwiched *linearly* by the
-`+1`-lifted list size — the √-free statement. **What remains** is exactly `L_{RS[k+1]}(δ)` — the
-list-decoding size of `RS[μ_n, k+1]` beyond the Johnson bound, which is the *other* grand challenge
-(and the only genuinely open quantity; cf. `LineCodewordIncidence` docstring). The √ is removed for
-the RS special case; the open content has been transported, not eliminated.
+  `#bad/q ≤ ε_mca(RS[k], δ)`   (`epsMCA_ge_far_incidence`)   and
+  `#bad ≤ |list_{RS[k+1]}(u₀, δ)|`   (`badScalars_monomial_card_le_listSize`),
+
+both at the identical radius `δ`. This is a statement about the bad-scalar count of one specific
+line: its count is at most the `+1`-lifted list size, and that count over `q` is a lower bound on
+`ε_mca`. The list size `L_{RS[k+1]}(δ)` beyond Johnson remains open (cf. the
+`LineCodewordIncidence` docstring).
 
 Axiom-clean `[propext, Classical.choice, Quot.sound]`.
 -/
@@ -77,18 +85,17 @@ noncomputable def liftedList (domain : ι ↪ F) (δ : ℝ≥0) (u₀ : ι → F
   exact Finset.univ.filter (fun e : ι → F => e ∈ ReedSolomon.code domain (k + 1) ∧
     ∃ S : Finset ι, (S.card : ℝ≥0) ≥ (1 - δ) * Fintype.card ι ∧ ∀ i ∈ S, e i = u₀ i)
 
-/-- **The √-free RS bridge (ABF Thm 5.1 specialised to plain RS on a smooth domain).**
+/-- **Monomial-line bad count: an `ε_mca` lower bound and a lifted-list upper bound.**
 
-For the monomial far line `(u₀, X^k)` (smooth direction `X^k`, nowhere zero on `μ_n`) that is far
-from `RS[k]` at radius `δ`, the MCA error is sandwiched **at the identical radius `δ`** between the
-bad-scalar incidence over `q` and the size of the `+1`-degree-lifted `RS[k+1]` agreement list:
+For the monomial far line `(u₀, X^k)` that is far from `RS[k]` at radius `δ`, the bad-scalar count
+`#bad` of THIS line satisfies two bounds at the identical radius `δ`:
 
-  `(#bad : ℝ≥0∞)/q ≤ ε_mca(RS[k], δ)`   with   `#bad ≤ |liftedList|`.
+  `(#bad : ℝ≥0∞)/q ≤ ε_mca(RS[k], δ)`   and   `#bad ≤ |liftedList|`.
 
-In particular `ε_mca(RS[k], δ) ≥ (#bad)/q` and `#bad` is **linear** in the `RS[k+1]` list size
-`L := |liftedList|` — no `√(1−δ)` radius map, no `L²`. The Johnson transform and the pairwise
-Cauchy–Schwarz of the generic GCXK25 reduction are both removed by the RS fiber-count identity.
-The only residual is the open list size `L = |liftedList|` of `RS[k+1]` beyond Johnson. -/
+Both bounds are on the same quantity `#bad`, so they do NOT combine to an upper bound
+`ε_mca(RS[k], δ) ≤ |liftedList|/q`: `ε_mca` is a supremum over all lines and the first conjunct is
+only a lower bound on it. A global √-free MCA bound would need a universal direction reduction or
+an independent bound for every direction, which is not proved here. -/
 theorem epsMCA_ge_far_incidence_le_listSize
     (domain : ι ↪ F) (δ : ℝ≥0) (u₀ : ι → F) (k : ℕ) (hk : k + 1 ≤ Fintype.card ι)
     (hfar : FarFromCode (↑(ReedSolomon.code domain k) : Set (ι → F)) δ

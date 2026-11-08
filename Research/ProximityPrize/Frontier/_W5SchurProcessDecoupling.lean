@@ -11,40 +11,43 @@ import Mathlib.Tactic.NormNum
 
 /-!
 # W5 — Biorthogonal / Schur-process (last-passage) avenue: the energy DECOUPLES into a SUM of
-  independent walks (bosonic), NOT a determinantal/Schur correlation — REFUTED with exact structure
-  (#444)
+  independent walks (bosonic), NOT a determinantal/Schur correlation — heuristic no-go backed by
+  frozen probe data (#444)
 
 **Avenue (W5, genuinely-new surface).** Model the period spectrum as a discrete orthogonal-polynomial
 ensemble / Schur (last-passage) process with an EXPLICIT correlation kernel, and read
 `M = max_{b≠0}|η_b|` off the kernel edge.  The hook is that the additive energy
 
-  `E_r := (1/p)·Σ_b |η_b|^{2r} = #{(v,w) ∈ μ_n^r : Σ v = Σ w}`   (char-0, no wraparound at `r < r₀`)
+  `E_r := #{(v,w) ∈ μ_n^r : Σ v = Σ w}`   (char-0 count; it equals the in-`𝔽_p` energy
+  `(1/p)·Σ_b |η_b|^{2r}` only below the `p`-dependent wraparound threshold `r < r₀`)
 
 is a *correlation count* of an `r`-step walk with steps uniform on `μ_n`.  The avenue asks: is that
 count a **Schur / free-fermion (determinantal) correlation** — which would force Tracy–Widom edge
-behaviour and a computable bound on `M` — distinct from the generic determinantal no-go
-(`_A11DeterminantalDeviation`, which refuted determinacy of the *period field* `{η_b}` itself)?
+behaviour and a computable bound on `M` — distinct from a generic determinantal no-go for the
+*period field* `{η_b}` itself (an earlier campaign note; no such Lean file is in-tree — the
+nearest in-tree companion is `_wfT22_determinantal_count_rigidity.lean`)?
 
-## The genuinely-new EXACT structure (the value-add of this file)
+## The decoupling structure (informal; only the single-mode pieces are formalized)
 
 For the prize family `μ_n = 2^a`-th roots of unity, `n = 2^a`, the cyclotomic lattice
 `ℤ[ζ_n]` has `ℤ`-rank `d = φ(n) = n/2` with relation `ζ_n^{n/2} = −1`.  In the power basis
 `{1, ζ, …, ζ^{d−1}}` the `n` step vectors `ζ_n^k` (`k = 0,…,n−1`) are EXACTLY the `2d` signed unit
 vectors `{±e_0, …, ±e_{d−1}}` (since `ζ^{k} = e_k` for `k < d` and `ζ^{k} = −e_{k−d}` for `k ≥ d`).
 Hence a uniform `μ_n`-step is: *pick a coordinate uniformly, take a `±1` step in it* — and the
-`r`-step walk DECOUPLES into `d` independent symmetric `±1` (simple) random walks.  This yields the
-exact closed form (verified exactly vs the brute lattice count, `n ∈ {8,16}`, all `r ≤ 5`, and vs the
-in-`𝔽_p` energy for `r < r₀`, `n ∈ {16,32}` — see `scripts/probes/` notes in the PR):
+`r`-step walk DECOUPLES into `d` independent symmetric `±1` (simple) random walks.  Since `μ_n` is
+closed under negation, `E_r` is the number of closed `2r`-step walks on `ℤ^d` with the `2d = n`
+signed unit steps, which gives the closed form (informal derivation; checked numerically off-Lean
+against the exact closed-walk count on `ℤ^8`, `n = 16`, `r ≤ 5`):
 
-> **Decoupling identity.**
-> `E_r = n^{2r} · d^{-2r} · Σ_{(a₀,…,a_{d−1}), each aⱼ even, Σ aⱼ = 2r}
+> **Decoupling identity (stated, not formalized).**
+> `E_r = Σ_{(a₀,…,a_{d−1}), each aⱼ even, Σ aⱼ = 2r}
 >            (2r)! / ∏ⱼ aⱼ! · ∏ⱼ C(aⱼ, aⱼ/2)`,   `d = n/2`,
-> i.e. `E_r / n^{2r} = ‖p_r‖₂²` is the `2r`-th return moment of a product of `d = φ(n)` independent
-> symmetric `±1` walks.
+> with NO extra prefactor (e.g. `r = 1`: `d · 2 = n = 16`), and `E_r / n^{2r} = ‖p_r‖₂²` is the
+> `2r`-step return probability of the walk with uniform `μ_n` steps.
 
-`EnergyDecoupled n r` below is that right-hand side (as a `ℕ`-valued count, before the `d^{-2r}`
-normalisation); `energyDecoupled_eq_brute_*` freeze the exact agreement with the directly-counted
-lattice energy at the verified `(n,r)`.
+Only the single-composition summand `compSummand` and its `d = 1` base case are formalized below;
+the full multivariate sum and its equality with `E_r` are NOT proved in Lean (no `EnergyDecoupled`
+declaration exists).  The `n = 16` values are recorded as frozen probe data `E16`.
 
 ## Why the Schur / last-passage kernel does NOT apply (the EXACT failing step)
 
@@ -52,28 +55,32 @@ A Schur / free-fermion (last-passage) process requires the step generating funct
 single modes** — `Σ_z P(step = z)·x^z = ∏ᵢ (1 + aᵢ x^{eᵢ})` (fermionic) — so that RSK produces a
 *determinantal* correlation kernel with a Tracy–Widom edge.  The `μ_n` step is instead a **SUM over
 modes** (one `±1` increment in a uniformly chosen coordinate): its generating function is
-`(1/d)·Σ_{k} cos t_k`, a *sum*, i.e. the walk is **bosonic / additive**, not fermionic.  Three exact
-consequences, all recorded as the named no-go data:
+`(1/d)·Σ_{k} cos t_k`, a *sum*, i.e. the walk is **bosonic / additive**, not fermionic.  Three
+consequences, recorded below as frozen probe data (the Lean statements are `decide` checks on
+hard-coded literals, not derivations of the no-go):
 
 1. **The energy moment sequence `{E_r}` is NOT a classical discrete-OP (Meixner/Laguerre/Krawtchouk)
    Hankel sequence.**  Its (char-0) Jacobi recurrence coefficients `(a_k, b_k)` of the `|η|²`-law have
    `a_k`-increments `[52.1, 30.2, 13.3, 5.4, 3.5]` (NOT constant ⟹ not Meixner-affine) and
    `b_k²/(k(k+1)) = [232, 304, 237, 165, 118, 88]` (NOT constant ⟹ not a classical-weight `b_k²`),
    at `n = 16`.  A single-specialization Schur measure has a *classical* weight, hence affine
-   `a_k` and quadratic `b_k²`; the period energy has neither.  (`SchurClassicalWeightRefuted`.)
+   `a_k` and quadratic `b_k²`; the period energy has neither.  (`SchurClassicalWeightRefuted`
+   only checks non-constancy of the hard-coded list `aIncrements16`; the list itself is
+   unverified probe output.)
 
-2. **The field is super-Gaussian, the opposite of determinantal repulsion** (companion fact, already
-   in `_A11DeterminantalDeviation`): kurtosis `κ = 2.81 > 2` at `n = 16`, while ANY determinantal /
+2. **The field is super-Gaussian, the opposite of determinantal repulsion** (companion probe fact,
+   not formalized in-tree): kurtosis `κ = 2.81 > 2` at `n = 16`, while ANY determinantal /
    free-fermion field has `κ ≤ 2`.  A bosonic SUM of independent walks is heavy-tailed, not repulsive.
 
 3. **The energy exceeds the free-fermion (falling-factorial) intensity** by a diverging factor — the
    `r`-point intensity of a rank-`n` projection DPP is `n^{(r)} = n(n−1)⋯(n−r+1)` (maximal repulsion),
    but `E_r / n^{(r)}` runs `1, 3, 15, 107, …` (`n = 16`); the bosonic additive count overshoots the
-   fermionic one. (`EnergyExceedsFreeFermion`.)
+   fermionic one. (`EnergyExceedsFreeFermion` compares the hard-coded `E16` literals with the
+   falling factorials.)
 
 ## What the avenue DOES reduce to (honest landing)
 
-The decoupling is real and exact, and it correctly *names* the regime: `E_r / n^{2r} = ‖p_r‖₂²` is the
+The decoupling (informal, checked numerically) correctly *names* the regime: `E_r / n^{2r} = ‖p_r‖₂²` is the
 self-intersection of a **sum of `d = φ(n)` independent simple walks**, whose Jacobi turnover edge
 `M = 2·max_k b_k` (the in-tree form-(D) identity, `_WallRiemannHilbertEdgeTwoSided`) sits at the
 recurrence-coefficient peak `k* = O(log p)`.  But the bosonic (sum-of-walks) structure gives only the
@@ -117,11 +124,10 @@ lattice walk** to the origin, given a fixed coordinate-occupation composition `c
 (`Σ c = 2r`): it is the multinomial `(2r)! / ∏ (c i)!` times the product of single-mode return
 weights `∏ returnWeight (c i)`.  This is the summand of the decoupling identity for one composition.
 
-`EnergyDecoupled` is the full (un-normalised) lattice-energy count
-`E_r · d^{2r} / n^{2r}`-fold object: it is the integer return count `‖p_r‖₂² · (2d)^{2r}` of the
-product of `d` independent simple `±1` walks, expressed as a sum over compositions.  We package only
-the *single-composition summand* and the *single-mode factor* here (the structural content); the
-full multivariate sum is the verified probe object `EnergyDecoupled` recorded in the docstring. -/
+Summing this over all compositions `c` with `Σ c = 2r` gives (informally) the char-0 energy `E_r`
+itself — the integer closed-walk count `‖p_r‖₂² · (2d)^{2r} = ‖p_r‖₂² · n^{2r}`, with no further
+normalisation.  We package only the *single-composition summand* and the *single-mode factor* here;
+the full multivariate sum is NOT defined or proved in Lean. -/
 def compSummand {d : ℕ} (r : ℕ) (c : Fin d → ℕ) : ℕ :=
   (Nat.factorial (2 * r) / ∏ i, Nat.factorial (c i)) * ∏ i, returnWeight (c i)
 
@@ -134,16 +140,16 @@ theorem compSummand_single (r : ℕ) (c : Fin 1 → ℕ) (hc : c 0 = 2 * r) :
   rw [Fin.prod_univ_one, Fin.prod_univ_one, hc, Nat.div_self (Nat.factorial_pos _),
     returnWeight_even, one_mul]
 
-/-! ### Frozen exact decoupling values (verified vs brute lattice count)
+/-! ### Frozen probe values (not derived in Lean)
 
-These freeze the directly-computed agreement of the decoupling identity with the brute-force lattice
-energy count.  The probe (exact `ℕ` arithmetic) verified, for `n ∈ {8, 16}` and all `r ≤ 5`:
-`EnergyDecoupled n r = E_r^{brute}`, e.g. `n = 16`: `E_1,…,E_5 = 16, 720, 50560, 4649680, 514031616`
-(matching both the brute lattice convolution AND the in-`𝔽_p` energy `(1/p)Σ_b|η_b|^{2r}` for `r < r₀`).
-We record the `n = 16` energy sequence as a `Prop` so the decoupling is a named, checkable fact. -/
+Off-Lean exact arithmetic gives, for `n = 16` (`d = 8`), the char-0 closed-walk counts
+`E_1,…,E_5 = 16, 720, 50560, 4649680, 514031616`, which agree with the composition sum above.  They
+are recorded here as a hard-coded table; Lean does not prove they equal either the composition sum
+or the lattice count. -/
 
-/-- The exact char-0 additive-energy sequence for `n = 16` (`= (1/p)Σ_b|η_b|^{2r}` for `r < r₀ = 5`),
-computed both by the decoupling identity and by the brute lattice count (agreement frozen here). -/
+/-- Frozen table of the char-0 additive-energy sequence for `n = 16`, `r ≤ 5` (off-Lean probe data).
+These are char-0 counts; they coincide with the in-`𝔽_p` energy `(1/p)Σ_b|η_b|^{2r}` only below the
+`p`-dependent wraparound threshold `r₀`. -/
 def E16 : ℕ → ℕ
   | 0 => 1
   | 1 => 16
@@ -157,13 +163,13 @@ def E16 : ℕ → ℕ
 total return mass `n`).  Sanity anchor for the sequence. -/
 theorem E16_one : E16 1 = 16 := rfl
 
-/-- The energy sequence is strictly increasing through the recorded range (the bosonic SUM-of-walks
-self-intersection grows like the Wick `(2r−1)!!·n^r` to leading order, never decaying). -/
+/-- The frozen table is strictly increasing through the recorded range (a `decide` check on the
+literals). -/
 theorem E16_strictMono :
     E16 0 < E16 1 ∧ E16 1 < E16 2 ∧ E16 2 < E16 3 ∧ E16 3 < E16 4 ∧ E16 4 < E16 5 := by
   refine ⟨?_, ?_, ?_, ?_, ?_⟩ <;> decide
 
-/-! ### The Schur / classical-weight refutation (named no-go data)
+/-! ### The Schur / classical-weight heuristic (frozen probe data, not a derivation)
 
 A single-specialization Schur measure carries a *classical* (Meixner/Laguerre/Krawtchouk) weight,
 whose Jacobi coefficients are affine `a_k` and quadratic `b_k²`.  The period energy's `|η|²`-law
@@ -172,20 +178,21 @@ has neither — frozen here as the exact computed `a_k`-increments and `b_k²/(k
 
 /-- The Jacobi `a_k`-increment data of the `|η|²`-law (`n = 16`, char-0, scaled ×10 to stay in ℤ):
 `[521, 302, 133, 54, 35]`.  A classical (Schur) weight forces these to be CONSTANT (affine `a_k`);
-they are not.  This is the EXACT structural obstruction to the Schur-process model. -/
+they are not.  Unverified probe output; the obstruction is heuristic, not formalized. -/
 def aIncrements16 : List ℕ := [521, 302, 133, 54, 35]
 
-/-- The `a_k`-increments are non-constant: the first strictly exceeds the last by more than `10×`,
-so the `|η|²`-law is NOT the moment sequence of a classical-weight (single-specialization Schur)
-measure.  (Meixner/Laguerre/Krawtchouk all give a constant increment.) -/
+/-- The hard-coded list `aIncrements16` is non-constant (its first entry exceeds the last by more
+than `10×`).  This is only a `decide` check on literals: Lean does not connect the list to the
+`|η|²`-law, so the conclusion "not a classical-weight (single-specialization Schur) measure" is
+probe-level evidence, not a theorem. -/
 theorem SchurClassicalWeightRefuted :
     ∃ x ∈ aIncrements16, ∃ y ∈ aIncrements16, y * 10 < x := by
   refine ⟨521, by decide, 35, by decide, by decide⟩
 
 /-- Free-fermion (rank-`n` projection DPP) `r`-point intensity is the falling factorial
 `n^{(r)} = n(n−1)⋯(n−r+1)` (maximal repulsion).  The additive energy `E_r` exceeds it by a diverging
-factor `E_r / n^{(r)} = 1, 3, 15, 107, …` (`n = 16`).  Frozen: `E16 r > fallingFactorial` for `r ≥ 2`,
-witnessing the bosonic (sum-of-walks) overshoot over the fermionic count. -/
+factor (`n = 16`, probe data).  Here only the frozen literals are compared: `E16 r > n^{(r)}` for
+`r = 2, 3, 4`, a `decide` check on hard-coded values. -/
 theorem EnergyExceedsFreeFermion :
     E16 2 > 16 * 15 ∧ E16 3 > 16 * 15 * 14 ∧ E16 4 > 16 * 15 * 14 * 13 := by
   refine ⟨?_, ?_, ?_⟩ <;> decide
@@ -201,8 +208,9 @@ def OffDiagEnvelopeBound (B C nlogp : ℝ) : Prop := B ≤ C * Real.sqrt nlogp
 
 /-- **Honest verdict.**  The W5 Schur-process avenue reduces to the open form-(D) off-diagonal
 envelope bound: GIVEN that bound (with `M = 2B`, the in-tree edge identity), the prize `M ≤ 2C√(n log p)`
-follows; the Schur kernel does not establish it because the bosonic decoupling (proven above) admits
-no determinantal correlation kernel.  This is a *conditional* statement (no CORE claim): it records
+follows.  (Informally, the Schur kernel does not establish it because the bosonic decoupling admits
+no determinantal correlation kernel; the decoupling is proved here only in the `d = 1` base case
+`compSummand_single`.)  This is a *conditional* statement (no CORE claim): it records
 the exact reduction target. -/
 theorem w5_reduces_to_offdiag_envelope
     {B C nlogp M : ℝ} (hM : M = 2 * B) (hB : OffDiagEnvelopeBound B C nlogp) :

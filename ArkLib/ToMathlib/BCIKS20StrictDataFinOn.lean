@@ -117,7 +117,15 @@ def Section5StrictDataFinOn.ofTotal {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ�
 (`tail_zero_of_finite_card_and_degree`, consuming `root`/`mpFin`/`hcardFin`).  Everything
 after `htail` (truncation, linear decomposition, `hPz`) and the conclusion
 (`CurveCoeffPolys` on the good set) are root-free.  We re-prove it verbatim from the
-restricted bundle, routing the tail through `tail_zero_of_finite_card_and_degreeOn`. -/
+restricted bundle, routing the tail through `tail_zero_of_finite_card_and_degreeOn`.
+
+**Actual data dependencies.** In both the original and this mirrored proof the tail vanishing
+`htail` and the truncation identity `htrunc` are computed but **not used** for the conclusion:
+`hrep` and `hdegX` give the linear representative `hlin` directly, and the bundle field `hPz`
+then supplies every evaluation and degree fact.  So this consumer does not depend on the
+matching/counting/tail fields at all; the tail calculation does not prove the remaining
+linearity, and separating this direct representative consumer from the substantive producer
+work is the honest reading. -/
 
 omit [Nonempty ι] [DecidableEq ι] in
 /-- The satisfiable §5 datum yields the per-coefficient curve-polynomial datum on the good set —

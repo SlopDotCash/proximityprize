@@ -6,13 +6,19 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.ExplainableCoreExactCount
 
 /-!
-# The structured-word core dichotomy: the per-word supply is all-or-nothing
+# The low-degree structured-word core dichotomy
 
-Issue #389, resolving the architecture of the supply route. The reduction theorem
-`deep_band_badSet_card_of_supply` only ever invokes the supply at the **structured words**
-`w = Q.eval` (a polynomial evaluation of degree `≤ k+m` — the generated-stack rows and their
-bad-scalar-line shifts `Q₀ + γ·xᵏ`). For such words the explainable-core count is governed by
-a sharp **degree dichotomy**, not a subexponential bound:
+Issue #389, on the architecture of the supply route. The reduction theorem
+`deep_band_badSet_card_of_supply` invokes the supply at the words `w = (Q₀ + γ·Xᵏ).eval`, where
+`Q₀` is the polynomial produced by `DeepBandCoherence.deep_band_witness_mass`.
+
+**Scope caveat (degree range of the actual generator).** The generator in
+`deep_band_witness_mass` takes `Q₀ = ∑_{j < M} c_j Xʲ` with `M = 2k+m+2`, so `deg Q₀` can be as
+large as `2k+m+1`; neither `deep_band_witness_mass` nor `deep_band_badSet_card_of_supply`
+imposes `deg Q₀ ≤ k+m`. The theorems below are proved **only** for words of degree `≤ k+m`
+(resp. `< k`), so they do not describe every word the supply route actually consumes.
+
+For words of degree `≤ k+m` the explainable-core count obeys a sharp **degree dichotomy**:
 
 > **`structuredWord_no_deep_cores`** — if `k ≤ deg Q ≤ k+m` and `k+m+1 ≤ n`, the explainable
 > `(k+m+1)`-cores of `Q.eval` are **exactly empty**.
@@ -24,16 +30,24 @@ The mechanism: a degree-`< k` codeword agreeing with `Q.eval` on `≥ k+m+1` poi
 `(codeword − Q)` — of degree `≤ k+m` — to vanish on `k+m+1` distinct points, hence to be the
 zero polynomial; so the codeword equals `Q`, impossible once `deg Q ≥ k`.
 
-**Consequence (a refutation, not a closure).** The per-word explainable-core supply `B` of the
-words that actually arise is therefore **all-or-nothing**: `0` when `Q` carries genuine
-deep-band degree, `C(n,k+m+1)` when `Q` collapses to a codeword. It is never
-"subexponential-and-positive", so the original per-word-core supply route
-(`deep_band_badSet_card_of_supply`) **cannot by itself prove a strong (large-`#badSet`)
-deep-band failure** — when it is positive it is maximal, giving only `#badSet ≥ 1`. The strong
-failure necessarily comes from the *second-moment* route (`DeepBandSecondMoment.lean`,
-`deep_band_failure_closed_form`), which counts *distinct* coherent-core values rather than a
-single word's cores. This pins precisely why the supply framing had to be replaced by the
-moment framing. (DISPROOF_LOG 2026-06-13.)
+**Consequence, restricted to degree `≤ k+m`.** For a word `Q.eval` with `deg Q ≤ k+m` (and
+`k+m+1 ≤ n`), the explainable-core count is **all-or-nothing**: `0` when `k ≤ deg Q`, and
+`C(n,k+m+1)` when `deg Q < k`. It is never "subexponential-and-positive" in that range.
+
+This does **not** show that the supply route is all-or-nothing on the words the generator
+actually produces, because `deg Q₀` may lie in `(k+m, 2k+m+1]`, where the dichotomy fails.
+Concrete example: on the full domain of `F₇` with `k = 2`, `m = 0`, `Q = X³` (degree
+`3 ≤ 2k+m+1 = 5`), a 3-subset is explainable by an affine polynomial exactly when its elements
+sum to `0`; translation by `c ∈ F₇` permutes triples and shifts the sum by `3c`, so `5` of the
+`35` triples are explainable — neither `0` nor all. (This does not claim the existential
+witness `Q₀` of `deep_band_witness_mass` is `X³`.) Hence the earlier claim that the per-word
+supply route "cannot by itself prove a strong deep-band failure" is **not established** by
+this file; it holds only under the extra hypothesis `deg Q₀ ≤ k+m`, which the generator does not
+provide. The uncapped uniform supply hypothesis `ExplainableCoreSupply` has its own separate
+obstruction (audit finding PG-079). The second-moment route (`DeepBandSecondMoment.lean`,
+`deep_band_failure_closed_form`), which counts distinct coherent-core values, is an independent
+route and is unaffected. (Originally recorded in DISPROOF_LOG 2026-06-13; scope corrected per
+audit finding PG-140.)
 
 ## References
 
@@ -55,8 +69,10 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {n : ℕ} [NeZero n]
 
 open Classical in
-/-- **Structured words of genuine deep-band degree have no deep explainable cores.** If
-`k ≤ deg Q ≤ k+m` and `k+m+1 ≤ n`, then `Q.eval` admits no explainable `(k+m+1)`-core. -/
+/-- **Words of degree in `[k, k+m]` have no deep explainable cores.** If
+`k ≤ deg Q ≤ k+m` and `k+m+1 ≤ n`, then `Q.eval` admits no explainable `(k+m+1)`-core.
+The upper bound `deg Q ≤ k+m` is essential and is not supplied by the deep-band generator,
+whose polynomials can have degree up to `2k+m+1` (see the module docstring). -/
 theorem structuredWord_no_deep_cores (dom : Fin n ↪ F) {k m : ℕ} (hk : 1 ≤ k)
     {Q : F[X]} (hkdeg : k ≤ Q.natDegree) (hdeg : Q.natDegree ≤ k + m)
     (hn : k + m + 1 ≤ n) :

@@ -2,8 +2,9 @@
 
 **Verdict: the paper does not resolve the Johnson→capacity gap.** Its genuinely *unconditional*
 theorem covers only `δ < (1−ρ)/3`, which is **strictly below the Johnson radius** for every rate.
-In the actual open window `(1−√ρ, 1−ρ)` it offers only (a) witness-conditional rigidity that a
-worst-case adversary defeats, or (b) protocol modifications (independent folds / DEEP / STIR) that
+In the actual open window `(1−√ρ, 1−ρ)` it offers only (a) witness-conditional rigidity whose
+witness hypothesis a disjoint-support adversary would violate (a proposed, not yet constructed,
+countermodel — see below), or (b) protocol modifications (independent folds / DEEP / STIR) that
 *change the protocol* rather than prove CA for plain RS. The "complete resolution up to capacity"
 abstract claim comes from **conflating the regime label `Δ≥2` (`k ≤ m−2`) with the much stronger
 rigidity hypothesis `(r+1)k < m+1`**. This is consistent with — not a refutation of — the proven
@@ -38,24 +39,34 @@ So `(1−ρ)/3 < 1−√ρ` for all `ρ∈(0,1)`. The unconditional region is **
 *weaker than the classical Guruswami–Sudan/Johnson list-decoding guarantee the field already had*.
 It contributes **nothing** in the prize window.
 
-## Why the window is genuinely untouched — the disjoint-support adversary (the countermodel)
-In the window `δ > (1−ρ)/3`, every `r` gives `(r+1)k ≥ 3k > m+1`, so **Thm 7.1's hypothesis is
-false** and no codeword is forced. The only remaining tools are:
+## Why the window is not closed by the paper — the disjoint-support adversary (a proposed countermodel, NOT constructed)
+In the region `δ > (1−ρ)/3`, every `r ≥ 2` gives `(r+1)k ≥ 3k > m+1` (up to the `o(1)` rounding), so
+**Thm 7.1's hypothesis is false** and that theorem forces no codeword. The only remaining tools are:
 - **Thm 6.2 (small-union witness):** rigidity *if* two successful challenges have
-  `|T_{z_i} ∪ T_{z_j}| ≤ m−1`. A **worst-case adversary chooses pairwise-disjoint supports** of
-  size `k` (one fresh error support per challenge). Then `|T_{z_i}∪T_{z_j}| = 2k`. In the window
-  `k > (m+1)/3`, so `2k > 2(m+1)/3`, which exceeds `m−1` for all but the smallest codes — the
-  witness hypothesis **fails by construction**, and the global support `S=⋃T_z` has size `≈ Mk ≫ m`,
-  so the line is *not* trapped. The CA premise can hold on many challenges with **no** global
-  structure. This is the standard CA-fails-in-the-window picture; Thm 6.2 does not escape it.
+  `|T_{z_i} ∪ T_{z_j}| ≤ m−1`. A worst-case adversary would like to choose pairwise-disjoint supports
+  of size `k` (one fresh error support per challenge), so that `|T_{z_i}∪T_{z_j}| = 2k`.
+  *Correction (audit T157):* an earlier version argued "`k > (m+1)/3`, so `2k > 2(m+1)/3`, which
+  exceeds `m−1`". That inequality is **reversed**: `2(m+1)/3 > m−1` holds only for `m < 5`, so for
+  every non-tiny code `k > (m+1)/3` does **not** give `2k > m−1`. Indeed, on the intermediate band
+  `(1−ρ)/3 < δ ≤ (1−ρ)/2` (roughly `(m+1)/3 < k ≤ (m−1)/2`) disjoint supports have
+  `2k ≤ m−1` and **satisfy** the Thm 6.2 witness hypothesis. What is true is the statement restricted
+  to the prize window: there `δ > 1−√ρ = (1−ρ)/(1+√ρ) ≥ (1−ρ)/2`, so `k > m/2` and `2k > m > m−1`;
+  only in `(δ_J, δ_c)` does a disjoint-support choice defeat the Thm 6.2 witness hypothesis.
+  Even there this shows only that **this particular hypothesis** fails; it does not by itself show
+  that the line is untrapped or that the CA premise holds with no global structure.
 - **Protocol remedies (Δ=1 MCA independent folds, DEEP/STIR, global locator):** these *modify the
   protocol* (add independent randomness / out-of-domain sampling). They give soundness for the
   *modified* system, not a proximity-gap/CA theorem for the **plain** RS code the prize fixes.
 
-**Concrete countermodel to formalize (probe target):** a small RS code at a window radius with a
-prover whose `M` successful challenges use pairwise-disjoint size-`k` supports — satisfies the CA
-premise on all `M` challenges yet `A,B ∉` any single `Span(H_S)` with `|S| ≤ m−1` (not rigid).
-This machine-checks "no unconditional rigidity in the window," directly contradicting the abstract.
+**Proposed countermodel (open probe target, NOT constructed or machine-checked):** a small RS code at
+a radius in the prize window with a prover whose `M` successful challenges use pairwise-disjoint
+size-`k` supports, satisfying the CA premise on all `M` challenges while `A,B ∉` any single
+`Span(H_S)` with `|S| ≤ m−1` (not rigid). No such instance has been exhibited: one must actually
+produce `A, B` and weight-`k` error vectors `e_{z_i}` with `H e_{z_i}ᵀ = A + z_i B` on disjoint
+supports (with `Mk ≤ n`), and then verify non-rigidity. Until that is done this is a conjectured
+countermodel, it does **not** machine-check "no unconditional rigidity in the window", and it does
+not by itself contradict the paper's abstract. The verdict above rests on the reach calculation for
+Thm 7.1 (sub-Johnson), not on this countermodel.
 
 ## What the paper *does* correctly establish (kept, not disputed)
 - `Δ=0` (capacity) CA premise is information-theoretically vacuous (Thm 5.1/5.2) — matches CS25.

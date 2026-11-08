@@ -25,33 +25,46 @@ nonzero terms, so `max ≥ average` gives, with **no hypothesis whatsoever** bey
 
 > **`worstPeriod_pow_ge_avg`** : `∃ b ≠ 0,  (q·E_r − |G|^{2r})/(q−1) ≤ ‖η_b‖^{2r}`.
 
-This is *itself* the strengthened floor: at `r=1` it reproduces Parseval, and for `r ≥ 2` it strictly
-improves it whenever `E_r` grows super-diagonally (which it does — Wick: `E_r(μ_n) ≈ (2r−1)‼·n^r`).
+This is the `r`-parametric moment-average floor: at `r=1` it reproduces Parseval exactly; for
+`r ≥ 2` its strength depends on how large `E_r` is relative to `|G|^{2r}/q`.  (By Hölder the true normalized
+moments are monotone in `r`, so with the *exact* `E_r` the floor never falls below Parseval; a
+*weakened* energy input can, see below.)
 
 Feeding **any** provable lower bound `E_r ≥ L` into the core (`worstPeriod_pow_ge_of_energy_lb`)
 yields `max^{2r} ≥ (q·L − |G|^{2r})/(q−1)`.  Two clean energy lower bounds are proven here with no
 open input:
 
-* **`rEnergy_ge_diag`** : `E_r(G) ≥ |G|^r` (the diagonal `v=w`), which recovers Parseval and shows
-  the core is never weaker than it;
+* **`rEnergy_ge_diag`** : `E_r(G) ≥ |G|^r` (the diagonal `v=w`).  At `r = 1` this is exact and
+  recovers Parseval.  For `r ≥ 2` the diagonal-only substitute can be *weaker* than Parseval: at
+  `n = 4`, `q = 17`, `r = 2` it gives `max ≥ 1`, versus Parseval's `max ≥ √(13/4)`;
 * **`rEnergy_mono`** : `H ⊆ G ⟹ E_r(H) ≤ E_r(G)` (sub-sum of nonnegative indicators), hence a
   *subgroup* energy lower-bounds the ambient one (e.g. `E_r(μ_n) ≥ E_r(μ_2) = C(2r,r)`).
 
-The genuine *constant ceiling* requires the char-0 Wick growth `E_r(μ_n) ≥ (2r−1)‼·n^r` — the
-real-Gaussian / Lam–Leung **lower** content (`WickEnergyLowerBound`, dual to the in-tree upper
-`GaussPeriodMomentBound.GaussianEnergyBound`).  With it we prove the headline:
+**The exact-Wick input is false; use the falling-factorial form.**  The predicate
+`WickEnergyLowerBound G r` (`E_r(G) ≥ (2r−1)‼·|G|^r`) drops a *negative* finite-size correction and
+fails already at `r = 2`: for an antipodal root group in characteristic `0` (or a thin finite-field
+copy), `E₂ = 3n² − 3n < 3n²`; e.g. `G = {1, −1}` has `E₂ = 6 < 12`
+(`not_wickEnergyLowerBound_pm_one`).  More generally `E_r({±1}) = C(2r, r) < (2r)!/r!` for `r ≥ 2`.
+The theorems `not_ramanujan_of_wickLB` / `worstPeriod_gt_two_sqrt_of_wickLB` remain correct
+conditional implications but their hypothesis does not hold for such `G`.
 
-> **`not_ramanujan_of_wickLB`** / **`worstPeriod_gt_two_sqrt_of_wickLB`** :  if
-> `E_r(μ_n) ≥ (2r−1)‼·n^r` and `q·((2r−1)‼ − 4^r) ≥ n^r`, then `max_{b≠0} ‖η_b‖ > 2√n`.
+The corrected input is the antipodal-matching count with distinct antipodal classes,
+`WickFallingEnergyLowerBound G r` : `E_r(G) ≥ (2r−1)‼·∏_{i<r}(|G| − 2i)` (truncated subtraction).
+It is true whenever `G = −G`, `0 ∉ G` and `char F ≠ 2` (each perfect matching of the `2r` positions,
+each injective choice of `r` antipodal classes and each choice of signs gives a distinct zero-sum
+tuple), but that combinatorial proof is **not formalized** here: it remains an explicit hypothesis.
+With it:
 
-The field trigger `q·((2r−1)‼ − 4^r) ≥ n^r` is satisfiable (positive RHS) exactly when
-`(2r−1)‼ > 4^r`, which first holds at `r = 6` (`11‼ = 10395 > 4096 = 4^6`); there the trigger is
-`q·6299 ≥ n^6` (i.e. `β = log_n q ≳ 6 − log_n 6299 ≈ 5.6`).  So **above this `β` threshold the
-generalized Paley / Cayley graph `Cay(F_q, μ_n)` is NOT Ramanujan** — the prize per-frequency object
-strictly exceeds the Ramanujan bound `2√n`.  This is a clean, axiom-clean theorem: the only genuine
-input is the named char-0 energy lower bound `WickEnergyLowerBound` (the modularity convention; not a
-hidden `sorry`).  It converts the upper-only moment ladder into a two-sided **provably non-Ramanujan**
-statement.
+> **`not_ramanujan_of_fallingWickLB`** / **`worstPeriod_gt_two_sqrt_of_fallingWickLB`** :  if
+> `E_r(G) ≥ L := (2r−1)‼·∏_{i<r}(n − 2i)` and `n^{2r} ≤ q·(L − 4^r·n^r)`, then
+> `max_{b≠0} ‖η_b‖ > 2√n`.
+
+The recomputed trigger `n^{2r} ≤ q·(L − 4^r n^r)` needs `L > 4^r n^r`; since `L/n^r → (2r−1)‼` as
+`n → ∞` with `r` fixed, this first becomes possible at `r = 6` (`11‼ = 10395 > 4096 = 4^6`) for `n`
+large enough, where it reads approximately `q·6299 ≳ n^6` (`β = log_n q ≳ 5.6`), now with the
+explicit finite-size factor `∏_{i<6}(1 − 2i/n)`.  Above that threshold the generalized Paley / Cayley graph
+`Cay(F_q, μ_n)` is not Ramanujan, **conditional** on the named (true but unformalized) falling
+lower bound.  Axiom-clean; no `sorry`.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.  Issue #407.
 -/
@@ -136,8 +149,9 @@ theorem worstPeriod_pow_ge_of_energy_lb {ψ : AddChar F ℂ} (hψ : ψ.IsPrimiti
 /-! ## Clean unconditional energy lower bounds (no open input) -/
 
 /-- **Diagonal lower bound on the additive energy.**  `E_r(G) ≥ |G|^r`: the diagonal pairs `(v,v)`
-(every `v` sums to itself) already number `|G|^r`.  Fully elementary; this is exactly the Parseval
-content and shows the moment-average core is never weaker than Parseval. -/
+(every `v` sums to itself) already number `|G|^r`.  Fully elementary.  At `r = 1` it is exact
+and the core then reproduces Parseval; for `r ≥ 2` feeding only this diagonal bound into the core
+can give a weaker floor than Parseval (e.g. `n = 4`, `q = 17`, `r = 2`: `1` versus `√(13/4)`). -/
 theorem rEnergy_ge_diag (G : Finset F) (r : ℕ) : G.card ^ r ≤ rEnergy G r := by
   classical
   rw [rEnergy]
@@ -174,31 +188,54 @@ theorem rEnergy_mono {H G : Finset F} (hHG : H ⊆ G) (r : ℕ) : rEnergy H r �
 
 /-! ## The constant ceiling: NOT-RAMANUJAN above a `β` threshold -/
 
-/-- **The real-Gaussian / Wick energy LOWER bound** at order `r`: the `r`-fold additive energy of
-the smooth domain is at least the Gaussian value, `E_r(G) ≥ (2r−1)‼·|G|^r`.  This is the **lower**
-companion of `GaussPeriodMomentBound.GaussianEnergyBound` (the in-tree upper bound).  PROVEN in
-char 0 (Lam–Leung: the `(2r−1)‼` perfect antipodal matchings contribute `≈ (2r−1)‼·|G|^r` distinct
-zero-sum tuples when `r ≪ |G|`, with the falling-factorial distinct-class correction `→ 1`); the
-char-`p` transfer is the genuine open input (same wall as the upper bound).  Named here, not
-silently discharged. -/
+/-- **The exact-Wick energy lower bound (over-strong; false in the thin regime)** at order `r`:
+`E_r(G) ≥ (2r−1)‼·|G|^r`.  This is **not** proved in characteristic `0`: the antipodal-matching
+count is `(2r−1)‼·∏_{i<r}(|G| − 2i)`, and dropping the falling-factorial correction is not
+justified in a lower bound because the correction is negative.  For `r = 2` and an antipodal root
+group with characteristic-zero energy, `E₂ = 3n² − 3n < 3n²`; `G = {1, −1}` gives `6 < 12`
+(`not_wickEnergyLowerBound_pm_one`).  Kept only as the hypothesis of the conditional theorems
+`not_ramanujan_of_wickLB` / `worstPeriod_gt_two_sqrt_of_wickLB`; use the corrected
+`WickFallingEnergyLowerBound` instead. -/
 def WickEnergyLowerBound (G : Finset F) (r : ℕ) : Prop :=
   (Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r ≤ (rEnergy G r : ℝ)
 
-/-- **NOT-RAMANUJAN above the `β` threshold (the constant ceiling), `2r`-th-power form.**  Suppose
-the smooth domain `G = μ_n` (`|G| = n`) satisfies the char-0 Wick energy lower bound
-`E_r(G) ≥ (2r−1)‼·n^r` (`WickEnergyLowerBound`) and the field trigger
-`q·((2r−1)‼ − 4^r) ≥ n^r`.  Then there is a nontrivial frequency `b` with
+/-- **The exact Wick input fails at `G = {1, −1}`, `r = 2`.**  Here `E₂ = 6` while
+`(2·2−1)‼·2² = 12` (computed in `ZMod 3`, where `{1, −1}` has its characteristic-zero energy). -/
+theorem not_wickEnergyLowerBound_pm_one :
+    ¬ WickEnergyLowerBound ({1, -1} : Finset (ZMod 3)) 2 := by
+  have hE : rEnergy ({1, -1} : Finset (ZMod 3)) 2 = 6 := by decide
+  have hc : ({1, -1} : Finset (ZMod 3)).card = 2 := by decide
+  unfold WickEnergyLowerBound
+  rw [hE, hc]
+  norm_num
+
+/-- The antipodal-matching value `(2r−1)‼·∏_{i<r}(n − 2i)` (truncated subtraction in `ℕ`): the
+number of zero-sum `2r`-tuples obtained from a perfect matching of the positions, an injective
+choice of `r` antipodal classes, and a sign for each pair, when `G = −G` has `n` elements. -/
+def wickFallingValue (n r : ℕ) : ℕ :=
+  Nat.doubleFactorial (2 * r - 1) * ∏ i ∈ Finset.range r, (n - 2 * i)
+
+/-- **The corrected (falling-factorial) Wick energy lower bound** at order `r`:
+`E_r(G) ≥ (2r−1)‼·∏_{i<r}(|G| − 2i)`.  It holds whenever `G = −G`, `0 ∉ G` and `char F ≠ 2`
+(distinct matched antipodal tuples are distinct zero-sum tuples), but that injection is not
+formalized here, so this is an explicit named hypothesis.  For `r = 2` it reads
+`E₂ ≥ 3n(n − 2)`, consistent with the characteristic-zero value `3n² − 3n`. -/
+def WickFallingEnergyLowerBound (G : Finset F) (r : ℕ) : Prop :=
+  wickFallingValue G.card r ≤ rEnergy G r
+
+/-- **Conditional non-Ramanujan implication from the exact-Wick input, `2r`-th-power form.**  If
+`G` (`|G| = n`) satisfies `E_r(G) ≥ (2r−1)‼·n^r` (`WickEnergyLowerBound`) and the field trigger
+`q·((2r−1)‼ − 4^r) ≥ n^r`, then there is a nontrivial frequency `b` with
 
 > `(2√n)^{2r} < ‖η_b‖^{2r}`.
 
-The trigger has positive RHS — hence is satisfiable — exactly when `(2r−1)‼ > 4^r`, first true at
-`r = 6` (`11‼ = 10395 > 4096`), where it reads `q·6299 ≥ n^6` (`β = log_n q ≳ 5.6`).  So above this
-`β` threshold the worst Gauss period strictly exceeds `(2√n)^{2r}`, i.e. `max_{b≠0} ‖η_b‖ > 2√n`:
-the generalized Paley / Cayley graph `Cay(F_q, μ_n)` is **not Ramanujan**.
+The implication is valid, but its energy hypothesis is false for antipodal root groups with
+characteristic-zero energy (`not_wickEnergyLowerBound_pm_one`; `E₂ = 3n² − 3n`), so this theorem
+does not by itself establish non-Ramanujan behaviour.  The corrected version is
+`not_ramanujan_of_fallingWickLB`.
 
 Proof: moment-average core with `L = (2r−1)‼·n^r`, then `(q·L − n^{2r})/(q−1) > 4^r·n^r = (2√n)^{2r}`
-rearranges to the trigger (multiplying through by `n^r > 0`).  Axiom-clean modulo the single named
-energy input. -/
+rearranges to the trigger (multiplying through by `n^r > 0`). -/
 theorem not_ramanujan_of_wickLB {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F) (r : ℕ)
     (hq : (1 : ℝ) < Fintype.card F) (hG : 0 < G.card) (_hr : 1 ≤ r)
     (hwick : WickEnergyLowerBound G r)
@@ -238,11 +275,12 @@ theorem not_ramanujan_of_wickLB {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G :
   have hslack : (0 : ℝ) < (4 : ℝ) ^ r * n ^ r := mul_pos (by positivity) hnrpos
   nlinarith [hmul, hslack]
 
-/-- **NOT-RAMANUJAN in the natural `B > 2√n` form (the headline).**  Under the same hypotheses as
-`not_ramanujan_of_wickLB`, there is a nontrivial frequency with `2√|G| < ‖η_b‖`: the worst Gauss
-period strictly exceeds the Ramanujan bound, so `Cay(F_q, μ_n)` is **not** a Ramanujan graph.
-Obtained from the `2r`-th-power version by strict monotonicity of `t ↦ t^{2r}` on `ℝ≥0`.
-The single genuine input is the named char-0 energy lower bound `WickEnergyLowerBound`. -/
+/-- **Conditional non-Ramanujan implication, `B > 2√n` form (exact-Wick input).**  Under the same
+hypotheses as `not_ramanujan_of_wickLB`, there is a nontrivial frequency with `2√|G| < ‖η_b‖`.
+Obtained from the `2r`-th-power version by strict monotonicity of `t ↦ t^{2r}` on `ℝ≥0`.  The
+input `WickEnergyLowerBound` is over-strong and false for antipodal root groups with
+characteristic-zero energy; see `worstPeriod_gt_two_sqrt_of_fallingWickLB` for the corrected
+form. -/
 theorem worstPeriod_gt_two_sqrt_of_wickLB {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
     (r : ℕ) (hq : (1 : ℝ) < Fintype.card F) (hG : 0 < G.card) (hr : 1 ≤ r)
     (hwick : WickEnergyLowerBound G r)
@@ -254,6 +292,60 @@ theorem worstPeriod_gt_two_sqrt_of_wickLB {ψ : AddChar F ℂ} (hψ : ψ.IsPrimi
   -- a^{2r} < c^{2r} with c ≥ 0 ⟹ a < c (strict monotonicity of the (2r)-th power)
   exact lt_of_pow_lt_pow_left₀ (2 * r) (norm_nonneg _) hpow
 
+/-! ## The corrected (falling-factorial) Wick input and its recomputed trigger -/
+
+/-- **Conditional non-Ramanujan implication from the corrected Wick input, `2r`-th-power form.**
+If `E_r(G) ≥ L := (2r−1)‼·∏_{i<r}(n − 2i)` (`WickFallingEnergyLowerBound`, `n = |G|`) and the
+recomputed trigger `n^{2r} ≤ q·(L − 4^r·n^r)` holds, then some `b ≠ 0` has
+`(2√n)^{2r} < ‖η_b‖^{2r}`.
+
+Proof: moment-average core with this `L`; the trigger gives `q·L − n^{2r} ≥ q·4^r·n^r`, which is
+strictly larger than `(q−1)·4^r·n^r`. -/
+theorem not_ramanujan_of_fallingWickLB {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
+    (r : ℕ) (hq : (1 : ℝ) < Fintype.card F) (hG : 0 < G.card)
+    (hwick : WickFallingEnergyLowerBound G r)
+    (htrig : (G.card : ℝ) ^ (2 * r)
+        ≤ (Fintype.card F : ℝ)
+          * ((wickFallingValue G.card r : ℝ) - (4 : ℝ) ^ r * (G.card : ℝ) ^ r)) :
+    ∃ b : F, b ≠ 0 ∧ (2 * Real.sqrt (G.card)) ^ (2 * r) < ‖eta ψ G b‖ ^ (2 * r) := by
+  set q : ℝ := (Fintype.card F : ℝ) with hqdef
+  set n : ℝ := (G.card : ℝ) with hndef
+  set L : ℝ := (wickFallingValue G.card r : ℝ) with hLdef
+  have hL : L ≤ (rEnergy G r : ℝ) := by
+    rw [hLdef]
+    exact_mod_cast hwick
+  have hnpos0 : (0 : ℝ) < n := by rw [hndef]; exact_mod_cast hG
+  have hnrpos : (0 : ℝ) < n ^ r := pow_pos hnpos0 r
+  obtain ⟨b, hb, hge⟩ := worstPeriod_pow_ge_of_energy_lb hψ G r L hq hL
+  refine ⟨b, hb, lt_of_lt_of_le ?_ hge⟩
+  have hsqrt_sq : Real.sqrt n ^ 2 = n := Real.sq_sqrt (le_of_lt hnpos0)
+  have hexp : (2 * Real.sqrt n) ^ (2 * r) = (4 : ℝ) ^ r * n ^ r := by
+    have h1 : (2 * Real.sqrt n) ^ (2 * r) = ((2 * Real.sqrt n) ^ 2) ^ r := by
+      rw [← pow_mul]
+    rw [h1]
+    have h2 : (2 * Real.sqrt n) ^ 2 = 4 * n := by
+      rw [mul_pow, hsqrt_sq]; norm_num
+    rw [h2, mul_pow]
+  rw [hexp]
+  have hq1 : (0 : ℝ) < q - 1 := by linarith
+  rw [lt_div_iff₀ hq1]
+  have hslack : (0 : ℝ) < (4 : ℝ) ^ r * n ^ r := mul_pos (by positivity) hnrpos
+  have htrig' : n ^ (2 * r) ≤ q * (L - (4 : ℝ) ^ r * n ^ r) := htrig
+  nlinarith [htrig', hslack]
+
+/-- **Conditional non-Ramanujan implication from the corrected Wick input, `B > 2√n` form.**
+Under the hypotheses of `not_ramanujan_of_fallingWickLB`, some `b ≠ 0` has `2√|G| < ‖η_b‖`.  The
+only non-elementary input is the named, true-but-unformalized `WickFallingEnergyLowerBound`. -/
+theorem worstPeriod_gt_two_sqrt_of_fallingWickLB {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
+    (G : Finset F) (r : ℕ) (hq : (1 : ℝ) < Fintype.card F) (hG : 0 < G.card)
+    (hwick : WickFallingEnergyLowerBound G r)
+    (htrig : (G.card : ℝ) ^ (2 * r)
+        ≤ (Fintype.card F : ℝ)
+          * ((wickFallingValue G.card r : ℝ) - (4 : ℝ) ^ r * (G.card : ℝ) ^ r)) :
+    ∃ b : F, b ≠ 0 ∧ 2 * Real.sqrt (G.card) < ‖eta ψ G b‖ := by
+  obtain ⟨b, hb, hpow⟩ := not_ramanujan_of_fallingWickLB hψ G r hq hG hwick htrig
+  exact ⟨b, hb, lt_of_pow_lt_pow_left₀ (2 * r) (norm_nonneg _) hpow⟩
+
 end ArkLib.ProximityGap.WorstPeriodMomentAvgLower
 
 /-! ## Axiom audit -/
@@ -263,3 +355,6 @@ end ArkLib.ProximityGap.WorstPeriodMomentAvgLower
 #print axioms ArkLib.ProximityGap.WorstPeriodMomentAvgLower.rEnergy_mono
 #print axioms ArkLib.ProximityGap.WorstPeriodMomentAvgLower.not_ramanujan_of_wickLB
 #print axioms ArkLib.ProximityGap.WorstPeriodMomentAvgLower.worstPeriod_gt_two_sqrt_of_wickLB
+#print axioms ArkLib.ProximityGap.WorstPeriodMomentAvgLower.not_wickEnergyLowerBound_pm_one
+#print axioms ArkLib.ProximityGap.WorstPeriodMomentAvgLower.not_ramanujan_of_fallingWickLB
+#print axioms ArkLib.ProximityGap.WorstPeriodMomentAvgLower.worstPeriod_gt_two_sqrt_of_fallingWickLB

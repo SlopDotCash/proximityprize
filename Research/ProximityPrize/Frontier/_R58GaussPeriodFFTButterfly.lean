@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumSecondMoment
+import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumDilationRecursion
 
 /-!
 # LANE B2 (#466 round 58): THE FFT BUTTERFLY on the Gauss-period tower (a DSP/engineering lens)
@@ -23,13 +23,22 @@ and the two half-periods are **exactly orthogonal across the tower**:
 
 The orthogonality is why the second moment is tower-consistent (`∑_b‖η_b(G)‖² = 2∑_b‖η_b(H)‖²`);
 the *pointwise* butterfly cancellation `‖A+B‖ ≤ √2·max‖·‖` that would collapse the sup to the
-Ramanujan bound `√n` is NOT proven here (it is the wall) — but the probe
-`probe_r58_butterfly.py` confirms both identities exactly (`err ~1e-15`) and finds
-`M_n/M_{n/2} < √2` at every tested cell, consistent with the Ramanujan target.
+Ramanujan bound `√n` is NOT proven here (it is the wall) — the probe
+`probe_r58_butterfly.py` confirms both identities numerically (`err ~1e-15`) and reported
+`M_n/M_{n/2} < √2` at its tested cells.  Those sampled ratios do **not** establish a universal
+per-level `√2` halving; that target is not proved, and later probe work in this cone (e.g.
+`_DoorIVWorstBPerLevelGrowthFloor.lean`, ratios `1.75, 1.57, 1.47`) argues against it.
 
-This is a genuinely new structural handle on the tower (the FFT recursion), verified and
-axiom-clean.  It reframes the Paley tower as a **radix-2 signal-flow graph**: the open content
-is exactly "does the butterfly cancel per-frequency, not just in mean".  Issue #466, round 58.
+**Scope (audit R-053/R-083 extension, 2026-10-28).**  The butterfly identity is the same
+coset/dilation recursion as `_Attack09NormRegimeBootstrap.eta_tower_recursion` and
+`_AvW16_CosetTowerRecursion`; `eta_butterfly` is now a wrapper around the canonical
+`SubgroupGaussSumSecondMoment.eta_union_dilate`.  The all-frequency cross-orthogonality
+`sum_cross_eq_zero` is the substantive new identity.  Note that it sums over **all** `b`,
+including `b = 0` where `η_0(H) = |H|`: restricted to nonzero frequencies the cross sum is
+`−|H|²`, not `0`, so a consumer over nonzero frequencies must include that correction.
+
+It reframes the Paley tower as a **radix-2 signal-flow graph**: the open content is "does the
+butterfly cancel per-frequency, not just in mean".  Issue #466, round 58.
 -/
 
 set_option autoImplicit false
@@ -45,20 +54,15 @@ variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
 /-- **THE FFT BUTTERFLY (round-58 main identity).**  For the index-2 coset split
 `G = H ⊔ ζ·H`, the size-`n` Gauss period is the butterfly sum of two size-`n/2` periods:
-`η_b(G) = η_b(H) + η_{ζb}(H)`. -/
+`η_b(G) = η_b(H) + η_{ζb}(H)`.  Wrapper around the canonical dilation recursion
+`SubgroupGaussSumSecondMoment.eta_union_dilate`. -/
 theorem eta_butterfly {ψ : AddChar F ℂ} {G H : Finset F} {ζ : F}
     (hunion : G = H ∪ H.image (fun y => ζ * y))
     (hdisj : Disjoint H (H.image (fun y => ζ * y)))
     (hζ0 : ζ ≠ 0) (b : F) :
     eta ψ G b = eta ψ H b + eta ψ H (ζ * b) := by
-  classical
-  unfold eta
-  rw [hunion, Finset.sum_union hdisj]
-  congr 1
-  rw [Finset.sum_image (fun x _ y _ h => mul_left_cancel₀ hζ0 h)]
-  refine Finset.sum_congr rfl (fun y _ => ?_)
-  congr 1
-  ring
+  rw [hunion]
+  exact eta_union_dilate ψ H hζ0 hdisj b
 
 /-- **CROSS-TOWER ORTHOGONALITY (round-58).**  The two half-periods of the butterfly are
 orthogonal in the frequency mean: `∑_b η_b(H)·conj(η_{ζb}(H)) = 0`, provided `ζ` is not a ratio

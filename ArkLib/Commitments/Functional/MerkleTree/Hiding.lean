@@ -26,16 +26,46 @@ This file provides:
 * `simulatorTranscript` — the simulator-facing transcript generator that keeps opened leaves and
   replaces unopened leaves by a fixed filler before sampling salts and building the transcript.
 * `SimulationBasedHiding` / `simulationBasedHiding_implies_Hiding` — the hybrid proof skeleton:
-  if every real transcript distribution is equal to its simulator distribution, then the existing
-  `Hiding` predicate follows.
+  if every real transcript *program* equals its simulator program, then the existing `Hiding`
+  predicate follows.
+* `outputLaw`, `DistHiding`, `DistSimulationBasedHiding` — the output-law (perfect
+  distributional) versions, with `Hiding.distHiding`, `SimulationBasedHiding.dist`,
+  `distSimulationBasedHiding_implies_DistHiding`, and the resampling example
+  `distHiding_resample_prefix` / `Hiding.distHiding_resample_prefix`.
+
+## Program equality versus output-law equality
+
+`Hiding` and `SimulationBasedHiding` equate raw `OracleComp (spec α)` terms. That is *program
+equivalence*: strictly stronger than equality of output distributions (for example, prefixing the
+salt sampler with a discarded sampling step changes the program but not its output law). It is
+therefore not the advertised perfect-distribution hiding notion and can rule out legitimate
+simulator or hybrid steps. The distributional notion is `DistHiding`, which compares
+`outputLaw` (the `evalDist` measure of the transcript experiment, with the discrete σ-algebra,
+under the chosen `UniformAnswerMeasure (spec α)` interpretation). Program-equality hiding implies
+it (`Hiding.distHiding`). No compiled counterexample separating the two notions is included here.
+
+Scope of `outputLaw`: each oracle query in `sampleSalts` is interpreted as a fresh independent
+uniform answer (no shared cache), and `hashFn` is a fixed public function. This is perfect salted
+hiding with respect to a fixed compression function, not the shared-random-oracle hiding
+experiment in which `hashFn` itself is the lazily sampled oracle.
+
+## Scope of the global no-collision premise
+
+The deterministic binding/uniqueness lemmas in this file take the *global* injectivity premise
+`∀ a b c d, hashFn a b = hashFn c d → a = c ∧ b = d`, which is unsatisfiable for a finite digest
+type with at least two elements (`not_global_hash_injective_of_finite` in `Extraction.lean`).
+They are meaningful only for abstract or infinite digest types and are not the good event of a
+birthday argument. The finite-digest form is `salted_opening_binding_pair_of_queryInjectiveOn`,
+which assumes injectivity only on the two leaf-commitment pairs and the child pairs hashed by the
+two openings (cf. `opening_binding_of_queryInjectiveOn` / `opening_conflict_collision`).
 
 ## What remains probabilistic
 
-The simulator/hybrid layer below proves the exact logical discharge of `Hiding` from a real-to-ideal
-transcript equality. In the random-oracle model, that premise is the usual salting/programming
-argument: unopened salted leaves are replaced by fresh random digest values, with loss bounded by
-salt/query collisions. ArkLib now exposes the right theorem boundary instead of leaving the
-`Hiding` predicate disconnected from simulators.
+The simulator/hybrid layer below proves the exact logical discharge of `Hiding` (resp.
+`DistHiding`) from a real-to-ideal transcript equality premise. In the random-oracle model, that
+premise is the usual salting/programming argument: unopened salted leaves are replaced by fresh
+random digest values, with loss bounded by salt/query collisions. That argument is **not**
+formalized here, and changing program equality to output-law equality does not discharge it.
 -/
 
 namespace InductiveMerkleTree
@@ -102,7 +132,10 @@ theorem salted_completeness {s : Skeleton} (hashFn : α → α → α)
 /-- **Same-salt deterministic binding for salted openings.** If the compression function is
 collision-free, two openings at the same index with the same salt, sibling path, and root cannot
 reveal different underlying leaf values. This is still the deterministic core only: the
-random-oracle collision-probability step remains a separate probabilistic statement. -/
+random-oracle collision-probability step remains a separate probabilistic statement.
+
+The global premise `hinj` is unsatisfiable for finite nontrivial `α`; see the module docstring and
+`salted_opening_binding_pair_of_queryInjectiveOn` for the query-local form. -/
 theorem salted_opening_binding_value {s : Skeleton}
     (idx : SkeletonLeafIndex s) (hashFn : α → α → α)
     (hinj : ∀ a b c d, hashFn a b = hashFn c d → a = c ∧ b = d)
@@ -122,8 +155,10 @@ theorem salted_opening_binding_value {s : Skeleton}
 collision-free, two openings at the same index with the same sibling path and root determine the
 entire salted opening pair: both the salt and the underlying leaf value are equal.
 
-This is still only the deterministic no-collision implication. The random-oracle step that bounds
-the probability of violating the collision-free premise remains separate. -/
+This is still only the deterministic no-collision implication. The global premise `hinj` is
+unsatisfiable for finite nontrivial `α`, so it is not the event whose failure a random-oracle
+birthday bound controls; that role is played by the query-local premise of
+`salted_opening_binding_pair_of_queryInjectiveOn`. -/
 theorem salted_opening_binding_pair {s : Skeleton}
     (idx : SkeletonLeafIndex s) (hashFn : α → α → α)
     (hinj : ∀ a b c d, hashFn a b = hashFn c d → a = c ∧ b = d)
@@ -138,6 +173,33 @@ theorem salted_opening_binding_pair {s : Skeleton}
     opening_binding idx hashFn hinj
       (leafCommit hashFn salt₁ value₁) (leafCommit hashFn salt₂ value₂) rootValue proof h₁ h₂
   exact hinj salt₁ value₁ salt₂ value₂ hcommit
+
+/-- **Query-local pair-level binding for salted openings.** Two openings at the same index with
+the same sibling path and root determine the salted pair, assuming only that `hashFn` is injective
+on the two leaf-commitment inputs `(salt₁, value₁)`, `(salt₂, value₂)` and on the child pairs hashed
+while recomputing the two roots. Unlike `salted_opening_binding_pair`, this premise is satisfiable
+for finite digest types. -/
+theorem salted_opening_binding_pair_of_queryInjectiveOn {s : Skeleton}
+    (idx : SkeletonLeafIndex s) (hashFn : α → α → α)
+    (salt₁ salt₂ value₁ value₂ rootValue : α) (proof : List.Vector α idx.depth)
+    (hinj : HashInjectiveOnQueries hashFn
+      ([(salt₁, value₁), (salt₂, value₂)] ++
+        (openingHashQueries hashFn idx (leafCommit hashFn salt₁ value₁) proof ++
+          openingHashQueries hashFn idx (leafCommit hashFn salt₂ value₂) proof)))
+    (h₁ : getPutativeRootWithHash idx (leafCommit hashFn salt₁ value₁) proof hashFn
+      = rootValue)
+    (h₂ : getPutativeRootWithHash idx (leafCommit hashFn salt₂ value₂) proof hashFn
+      = rootValue) :
+    salt₁ = salt₂ ∧ value₁ = value₂ := by
+  have hpaths := hinj.mono (fun p hp => List.mem_append_right _ hp)
+  have hcommit :
+      leafCommit hashFn salt₁ value₁ = leafCommit hashFn salt₂ value₂ :=
+    (getPutativeRootWithHash_unique_of_queryInjectiveOn hashFn _ hpaths idx proof proof
+      (leafCommit hashFn salt₁ value₁) (leafCommit hashFn salt₂ value₂)
+      (fun _ hp => List.mem_append_left _ hp) (fun _ hp => List.mem_append_right _ hp)
+      (h₁.trans h₂.symm)).1
+  have hpair := hinj (salt₁, value₁) (by simp) (salt₂, value₂) (by simp) hcommit
+  exact Prod.mk.inj hpair
 
 /-- **Honest salted-opening uniqueness.** If a candidate salted pair verifies against the honest
 salted root using the honest authentication path, then it is the honest salt and leaf at that
@@ -521,13 +583,16 @@ variable [DecidableEq α] [SampleableType α]
 
 /-- **Hiding (indistinguishability definition, SNARGs book §18).** A salted Merkle commitment is
 hiding for a fixed opened index set `idxs` if, for *any* two leaf assignments `leaves₁`, `leaves₂`
-that agree on the opened positions, the published transcripts are computationally indistinguishable
-when the salts are drawn from the salt sampler `sampleSalts`. We phrase indistinguishability as
-equality of the induced output distributions of the transcript over the random choice of salts —
-the perfect-hiding specialization; a computational version would replace `=` by an
+that agree on the opened positions, the transcript experiments over the salt sampler `sampleSalts`
+coincide.
+
+**Caveat: this is program equality, not distribution equality.** The two sides are compared as raw
+`OracleComp (spec α)` terms, which is strictly stronger than equality of their output laws. The
+perfect-distribution hiding notion is `DistHiding` (output-law equality), implied by this one via
+`Hiding.distHiding`. A computational version would further replace `=` by an
 indistinguishability relation.
 
-The simulator/hybrid theorem below discharges this predicate from a real-to-simulator transcript
+The simulator/hybrid theorem below discharges this predicate from a real-to-simulator program
 equality premise. -/
 def Hiding {s : Skeleton} (hashFn : α → α → α)
     (sampleSalts : OracleComp (spec α) (LeafData α s))
@@ -571,10 +636,10 @@ theorem openedLeafData_eq_of_agree {s : Skeleton} (filler : α)
     (openedLeafData filler opened leaves₂).get idx
   by_cases hidx : opened idx
   · rw [openedLeafData_get, openedLeafData_get]
-    simp only [hidx, if_true]
+    simp only [hidx, ite_true]
     exact hagree idx hidx
   · rw [openedLeafData_get, openedLeafData_get]
-    simp only [hidx, if_false]
+    simp only [hidx, ite_false]
 
 /-- **Salted Merkle hiding simulator.** Given only the opened leaves (represented by
 `openedLeaves`) and public parameters, fill every unopened position with `filler`, sample the salts,
@@ -592,8 +657,9 @@ noncomputable def simulatorTranscript {s : Skeleton} (hashFn : α → α → α)
   sampleSalts >>= fun salts =>
     pure (openTranscript hashFn salts (openedLeafData filler opened openedLeaves) idxs)
 
-/-- The simulator output distribution is identical for any two witnesses that agree on the opened
-positions; this is the formal "simulator uses only opened leaves" statement. -/
+/-- The simulator program (hence also its output distribution) is identical for any two witnesses
+that agree on the opened positions; this is the formal "simulator uses only opened leaves"
+statement. -/
 theorem simulatorTranscript_eq_of_agree {s : Skeleton} (hashFn : α → α → α)
     (sampleSalts : OracleComp (spec α) (LeafData α s))
     (idxs : List (SkeletonLeafIndex s)) (filler : α)
@@ -614,10 +680,12 @@ def realTranscriptExperiment {s : Skeleton} (hashFn : α → α → α)
       (α × List ((i : SkeletonLeafIndex s) × α × α × List.Vector α i.depth)) :=
   sampleSalts >>= fun salts => pure (openTranscript hashFn salts leaves idxs)
 
-/-- Simulation-based hiding premise for salted Merkle transcripts. There is a fixed filler such
-that every real transcript distribution equals the simulator transcript distribution for the
-opened-only leaf assignment. In the ROM proof, this premise is discharged by the usual salted-leaf
-hybrid/programming argument. -/
+/-- Simulation-based hiding premise for salted Merkle transcripts, **program-equality form**.
+There is a fixed filler such that every real transcript experiment equals, as a raw
+`OracleComp (spec α)` term, the simulator experiment for the opened-only leaf assignment. This is
+stronger than equality of output distributions; the distributional premise is
+`DistSimulationBasedHiding`, implied via `SimulationBasedHiding.dist`. The salted-leaf
+hybrid/programming argument that would discharge either premise is not formalized here. -/
 def SimulationBasedHiding {s : Skeleton} (hashFn : α → α → α)
     (sampleSalts : OracleComp (spec α) (LeafData α s))
     (idxs : List (SkeletonLeafIndex s))
@@ -626,8 +694,8 @@ def SimulationBasedHiding {s : Skeleton} (hashFn : α → α → α)
     realTranscriptExperiment hashFn sampleSalts idxs leaves =
       simulatorTranscript hashFn sampleSalts idxs filler opened leaves
 
-/-- **Hybrid discharge of `Hiding`.** If real transcripts are distributionally equal to the
-opened-leaf simulator for every witness, then the two real transcript distributions for any pair of
+/-- **Hybrid discharge of `Hiding`.** If real transcript programs are equal to the opened-leaf
+simulator program for every witness, then the two real transcript programs for any pair of
 witnesses that agree on opened positions are equal. This is the formal simulator + hybrid argument
 needed to connect the construction to the existing `Hiding` predicate. -/
 theorem simulationBasedHiding_implies_Hiding {s : Skeleton}
@@ -648,6 +716,112 @@ theorem simulationBasedHiding_implies_Hiding {s : Skeleton}
 
 end HidingSimulator
 
+section HidingOutputLaw
+
+open MeasureTheory
+
+variable [UniformAnswerMeasure (spec α)]
+
+/-- The output law of an oracle computation over `spec α`: its `evalDist` measure with the
+discrete σ-algebra on the result type, under the chosen `UniformAnswerMeasure (spec α)`
+interpretation (each query is answered by a fresh independent uniform value; no shared cache). -/
+noncomputable def outputLaw {β : Type _} (mx : OracleComp (spec α) β) : @Measure β ⊤ :=
+  @evalDist (OracleComp (spec α)) _ β ⊤ mx
+
+/-- **Perfect distributional hiding (output-law form).** For any two leaf assignments agreeing
+on the opened positions, the real transcript experiments have the same output law. This is the
+perfect-hiding notion that `Hiding` describes; unlike `Hiding` it does not compare programs. -/
+def DistHiding {s : Skeleton} (hashFn : α → α → α)
+    (sampleSalts : OracleComp (spec α) (LeafData α s))
+    (idxs : List (SkeletonLeafIndex s)) : Prop :=
+  ∀ (leaves₁ leaves₂ : LeafData α s),
+    (∀ i ∈ idxs, leaves₁.get i = leaves₂.get i) →
+    outputLaw (realTranscriptExperiment hashFn sampleSalts idxs leaves₁) =
+      outputLaw (realTranscriptExperiment hashFn sampleSalts idxs leaves₂)
+
+/-- Program-equality hiding implies output-law hiding. -/
+theorem Hiding.distHiding [DecidableEq α] [SampleableType α] {s : Skeleton}
+    {hashFn : α → α → α} {sampleSalts : OracleComp (spec α) (LeafData α s)}
+    {idxs : List (SkeletonLeafIndex s)} (h : Hiding hashFn sampleSalts idxs) :
+    DistHiding hashFn sampleSalts idxs := fun leaves₁ leaves₂ hagree =>
+  congrArg outputLaw (h leaves₁ leaves₂ hagree)
+
+/-- Simulation-based hiding premise, **output-law form**: there is a filler such that every real
+transcript experiment has the same output law as the opened-leaf simulator. -/
+def DistSimulationBasedHiding {s : Skeleton} (hashFn : α → α → α)
+    (sampleSalts : OracleComp (spec α) (LeafData α s))
+    (idxs : List (SkeletonLeafIndex s))
+    (opened : SkeletonLeafIndex s → Prop) [DecidablePred opened] : Prop :=
+  ∃ filler : α, ∀ leaves : LeafData α s,
+    outputLaw (realTranscriptExperiment hashFn sampleSalts idxs leaves) =
+      outputLaw (simulatorTranscript hashFn sampleSalts idxs filler opened leaves)
+
+/-- The program-equality simulation premise implies the output-law one. -/
+theorem SimulationBasedHiding.dist {s : Skeleton} {hashFn : α → α → α}
+    {sampleSalts : OracleComp (spec α) (LeafData α s)}
+    {idxs : List (SkeletonLeafIndex s)}
+    {opened : SkeletonLeafIndex s → Prop} [DecidablePred opened]
+    (h : SimulationBasedHiding hashFn sampleSalts idxs opened) :
+    DistSimulationBasedHiding hashFn sampleSalts idxs opened := by
+  rcases h with ⟨filler, hsim⟩
+  exact ⟨filler, fun leaves => congrArg outputLaw (hsim leaves)⟩
+
+/-- **Hybrid discharge of `DistHiding`.** If every real transcript has the same output law as the
+opened-leaf simulator, then any two witnesses agreeing on opened positions (with `opened ⊆ idxs`)
+give real transcripts with the same output law. -/
+theorem distSimulationBasedHiding_implies_DistHiding {s : Skeleton}
+    (hashFn : α → α → α)
+    (sampleSalts : OracleComp (spec α) (LeafData α s))
+    (idxs : List (SkeletonLeafIndex s))
+    (opened : SkeletonLeafIndex s → Prop) [DecidablePred opened]
+    (hopened_subset : ∀ i, opened i → i ∈ idxs)
+    (hsim : DistSimulationBasedHiding hashFn sampleSalts idxs opened) :
+    DistHiding hashFn sampleSalts idxs := by
+  rcases hsim with ⟨filler, hreal_to_sim⟩
+  intro leaves₁ leaves₂ hagree
+  rw [hreal_to_sim leaves₁, hreal_to_sim leaves₂,
+    simulatorTranscript_eq_of_agree hashFn sampleSalts idxs filler opened leaves₁ leaves₂
+      (fun i hi => hagree i (hopened_subset i hi))]
+
+/-- Prefixing the salt sampler with a discarded computation does not change the output law of a
+real transcript experiment (it does change the program). -/
+theorem outputLaw_realTranscriptExperiment_resample_prefix {s : Skeleton} {γ : Type _}
+    (hashFn : α → α → α) (pre : OracleComp (spec α) γ)
+    (sampleSalts : OracleComp (spec α) (LeafData α s))
+    (idxs : List (SkeletonLeafIndex s)) (leaves : LeafData α s) :
+    outputLaw (realTranscriptExperiment hashFn (pre >>= fun _ => sampleSalts) idxs leaves) =
+      outputLaw (realTranscriptExperiment hashFn sampleSalts idxs leaves) := by
+  unfold outputLaw realTranscriptExperiment
+  rw [bind_assoc]
+  let : MeasurableSpace
+      (α × List ((i : SkeletonLeafIndex s) × α × α × List.Vector α i.depth)) := ⊤
+  exact OracleComp.evalDist_bind_const pre _
+
+/-- **Resampling example accepted by the distributional predicate.** `DistHiding` is invariant
+under prefixing the salt sampler with any discarded computation `pre` (for instance, an extra
+independent salt draw that is thrown away): the two samplers are different programs with the same
+output law. -/
+theorem distHiding_resample_prefix {s : Skeleton} {γ : Type _}
+    (hashFn : α → α → α) (pre : OracleComp (spec α) γ)
+    (sampleSalts : OracleComp (spec α) (LeafData α s))
+    (idxs : List (SkeletonLeafIndex s)) :
+    DistHiding hashFn (pre >>= fun _ => sampleSalts) idxs ↔
+      DistHiding hashFn sampleSalts idxs := by
+  unfold DistHiding
+  simp only [outputLaw_realTranscriptExperiment_resample_prefix]
+
+/-- Concrete instance: if `sampleSalts` satisfies program-equality `Hiding`, then the resampled
+sampler `pre >>= fun _ => sampleSalts` satisfies the distributional `DistHiding`, even though no
+program-equality `Hiding` statement for the resampled sampler is derived here. -/
+theorem Hiding.distHiding_resample_prefix [DecidableEq α] [SampleableType α]
+    {s : Skeleton} {γ : Type _} {hashFn : α → α → α} (pre : OracleComp (spec α) γ)
+    {sampleSalts : OracleComp (spec α) (LeafData α s)}
+    {idxs : List (SkeletonLeafIndex s)} (h : Hiding hashFn sampleSalts idxs) :
+    DistHiding hashFn (pre >>= fun _ => sampleSalts) idxs :=
+  (InductiveMerkleTree.distHiding_resample_prefix hashFn pre sampleSalts idxs).2 h.distHiding
+
+end HidingOutputLaw
+
 end InductiveMerkleTree
 
 /-! ### Axiom audit (issue #119 salted Merkle construction / hiding-definition front doors) -/
@@ -656,6 +830,7 @@ end InductiveMerkleTree
 #print axioms InductiveMerkleTree.salted_completeness
 #print axioms InductiveMerkleTree.salted_opening_binding_value
 #print axioms InductiveMerkleTree.salted_opening_binding_pair
+#print axioms InductiveMerkleTree.salted_opening_binding_pair_of_queryInjectiveOn
 #print axioms InductiveMerkleTree.salted_opening_unique_against_honest_tree
 #print axioms InductiveMerkleTree.multi_salted_openings_unique_against_honest_tree
 #print axioms InductiveMerkleTree.openTranscript
@@ -693,3 +868,9 @@ end InductiveMerkleTree
 #print axioms InductiveMerkleTree.openedLeafData_eq_of_agree
 #print axioms InductiveMerkleTree.simulatorTranscript_eq_of_agree
 #print axioms InductiveMerkleTree.simulationBasedHiding_implies_Hiding
+#print axioms InductiveMerkleTree.Hiding.distHiding
+#print axioms InductiveMerkleTree.SimulationBasedHiding.dist
+#print axioms InductiveMerkleTree.distSimulationBasedHiding_implies_DistHiding
+#print axioms InductiveMerkleTree.outputLaw_realTranscriptExperiment_resample_prefix
+#print axioms InductiveMerkleTree.distHiding_resample_prefix
+#print axioms InductiveMerkleTree.Hiding.distHiding_resample_prefix

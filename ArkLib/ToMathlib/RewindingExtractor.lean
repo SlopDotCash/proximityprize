@@ -13,14 +13,23 @@ import ProximityPrize.Extensions.Data.Probability.Combinatorial
 This file supplies the *framework* that the in-tree
 `Extractor.Straightline` interface cannot express: an extractor that may **re-run** a prover with
 **fresh verifier randomness** starting from a recorded state, and combine the resulting completions
-into a witness. The three ABF26 §6 knowledge-soundness holes
-(`protocol62_knowledgeSound`, `protocol62_rbrKnowledgeSound`, and
-`coordinateWiseSpecialSound_implies_knowledgeSoundness`) are blocked precisely because
-`Verifier.knowledgeSoundness` witnesses with `Extractor.Straightline`
-(`StmtIn → WitOut → FullTranscript → QueryLog → QueryLog → ...`): a single transcript and the logs
-of *one* run, with **no black-box handle to re-invoke/fork the prover**. See the disposition
-`research/proximity-prize/dispositions/oraclereduction-leftovers.md` (decl
+into a witness. It was introduced because `Verifier.knowledgeSoundness` witnesses with
+`Extractor.Straightline` (`StmtIn → WitOut → FullTranscript → QueryLog → QueryLog → ...`): a single
+transcript and the logs of *one* run, with **no black-box handle to re-invoke/fork the prover**. See
+the disposition `research/proximity-prize/dispositions/oraclereduction-leftovers.md` (decl
 `coordinateWiseSpecialSound_implies_knowledgeSoundness`, residual (1)+(2)).
+
+**Scope.** Everything here is a *conditional finite-challenge lemma* over abstract carriers: the
+acceptance predicate `accepts` is an arbitrary input, not the acceptance event of any concrete
+verifier. This file does not connect to any protocol's verifier, transcript, query log, error
+accounting, or replay/forking execution. In particular it does not prove ABF26 L6.6 / L6.8 / L6.10;
+those are proved, with straightline extractors, by the canonical
+`ToyProblem.Spec.oracleVerifier_knowledgeSoundness_winningSetUpperBound`,
+`ToyProblem.Spec.oracleVerifier_rbrKnowledgeSoundnessWorstCase`, and
+`ToyProblem.SimplifiedIOR.verifier_knowledgeSoundness`. The downstream toy aliases
+`protocol62_knowledgeSound`, `protocol62_rbrKnowledgeSound`, and `simplifiedIOR_knowledgeSound`
+instantiate this framework at an acceptance predicate that already assumes the target relation and
+must not be read as those lemmas.
 
 ## What this file delivers
 
@@ -61,9 +70,9 @@ of variation is the *fresh* verifier challenge. Concretely we provide:
    rewinding-flavoured analogue of `Verifier.knowledgeSoundness` whose absence is the documented
    wall.
 
-The final section is a *documented bridge sketch* (`Bridge`) showing how the
-`protocol62_knowledgeSound` shape is expressible through this framework, so a follow-up can consume
-it without re-deriving the interface.
+The final section is a *documented sketch* (prose only) of how a concrete 2-special-sound
+instantiation for ABF26 Construction 6.2 would have to be set up; the abstract `Bridge`
+declarations live in `ArkLib/ToMathlib/StraightlineRewindingBridge.lean`.
 
 ## References
 
@@ -312,9 +321,10 @@ variable {Prefix Challenge Response WitIn StmtIn : Type}
 rewinding extractor; consequently (by `twoSpecialSound_forkingLemma`) whenever a prover beats the
 knowledge error `1/|Challenge|` at a prefix, a witness is extractable.
 
-This is the predicate the three ABF26 §6 holes need: it carries a *re-runnable* extractor (the
-`RewindingExtractor` field) rather than the straightline single-run extractor of
-`Verifier.knowledgeSoundness`. The operational guarantee (a beat-the-error prover yields a witness)
+It carries a *re-runnable* extractor (the `RewindingExtractor` field) rather than the
+straightline single-run extractor of `Verifier.knowledgeSoundness`. It is only as meaningful as the
+`accepts` predicate it is instantiated at: it says nothing about any concrete verifier unless
+`accepts` is that verifier's acceptance event and the two completions come from an actual replay. The operational guarantee (a beat-the-error prover yields a witness)
 is derived from this predicate for free by the forking lemma `extracts` below, so consumers do not
 re-derive it. -/
 def knowledgeSoundnessViaRewinding
@@ -346,58 +356,46 @@ end KnowledgeSoundness
 
 end Extractor
 
-/-! ## Bridge sketch: expressing the `protocol62_knowledgeSound` shape
+/-! ## Sketch: what a concrete rewinding proof for Construction 6.2 would need
 
-This section documents, *without editing the ToyProblem files*, how a follow-up consumes the
-framework above to discharge `protocol62_knowledgeSound`
-(`ArkLib/ProofSystem/ToyProblem/Spec/General.lean :: protocol62_knowledgeSound`). The bridge is
-recorded as a `Prop`-level signature template plus a proven *reduction skeleton*, so the residual
-surface is precisely named.
+This section is prose only. It records the carriers and accounting a follow-up would need to turn
+this abstract framework into a statement about the actual Construction 6.2 verifier. None of the
+steps below is formalized here, and no in-tree theorem currently supplies them.
 
-### The target
+### Status of the target
 
-`protocol62_knowledgeSound` asks for
-`(verifier ...).knowledgeSoundness init impl (outputRelation k C δ) Set.univ ε`
-with `ε = max (ε_mca + |Λ|/|F|) ((1-δ)^t)`. By the disposition
-`oraclereduction-leftovers.md`, this is unprovable against the *straightline*
-`Verifier.knowledgeSoundness` because the extractor must re-run the prover (rewinding).
+ABF26 L6.6 / L6.8 for Construction 6.2 are now proved directly against the straightline
+interfaces (`ToyProblem.Spec.oracleVerifier_knowledgeSoundness_winningSetUpperBound`,
+`ToyProblem.Spec.oracleVerifier_rbrKnowledgeSoundnessWorstCase`), so a rewinding proof is no longer
+needed for those results. The downstream aliases named `protocol62_knowledgeSound` /
+`protocol62_rbrKnowledgeSound` (in `ProximityPrize/Extensions/ProofSystem/ToyProblem/Spec/General.lean`)
+are *not* straightline statements: they restate `knowledgeSoundnessViaRewinding` at the abstract
+predicate `toyAccepts`, which already contains membership in the target relation.
 
-### The carriers for Construction 6.2
+### The carriers a concrete instantiation would use
 
-* `Prefix` := `StmtIn × (the transcript up to the γ-challenge round)`. The γ round is the single
-  challenge round whose resampling drives the fork.
-* `Challenge` := `F` (the combination randomness γ; `Fintype F`, `Nonempty F` from
-  `[SampleableType F]`).
-* `Response` := the prover's spot-check answers, enough for the verifier to decide.
-* `WitIn` := `OutputWitness` = the decoded message pair `(u₁, u₂)`.
-* `relIn` := `outputRelation k C δ` (paper's `R̃²_{C,δ}`).
+* `Prefix` := `StmtIn × (the transcript up to the γ-challenge round)` plus the recorded prover
+  state. The γ round is the single challenge round whose resampling drives the fork.
+* `Challenge` := `F` (the combination randomness γ).
+* `Response` := the prover's claim and spot-check answers, enough for the verifier to decide.
+* `WitIn` := the decoded message pair `(u₁, u₂)`.
+* `accepts` := the **actual verifier's** acceptance event on the completed transcript (this is the
+  piece the current toy instantiation replaces by the stronger, relation-assuming `toyAccepts`).
 
-### The 2-special-sound extractor for Construction 6.2
+### What would have to be proved
 
-Two accepting transcripts that share the prefix and use **distinct** γ₁ ≠ γ₂ give two agreement
-codewords `g₁ = f₁ + γ₁·f₂` and `g₂ = f₁ + γ₂·f₂` in the list `Λ(C, ·, δ)`. Because
-`δ < δ_min(C)` (load-bearing hypothesis), the agreement set is forced and one solves the
-2×2 linear system `[[1,γ₁],[1,γ₂]]·(f₁,f₂)ᵀ = (g₁,g₂)ᵀ` (invertible since γ₁ ≠ γ₂) to recover
-`(f₁, f₂)`, i.e. the `RewindingExtractor` field. This realises
-`Extractor.RewindingExtractor.TwoSpecialSound` with `relIn = outputRelation k C δ`.
+1. *Decoder validity*: from two accepting transcripts on distinct γ₁ ≠ γ₂ that pass the spot
+   checks, the claims are honest combinations of a single message pair close to `(f₁, f₂)`. This
+   needs `δ < δ_min(C)`, the MCA property (ABF26 Remark 6.7), and the list-size bound.
+2. *2×2 solve*: invert `[[1,γ₁],[1,γ₂]]` (this part is proved, as `toySolve_combine`).
+3. *Error accounting*: the MCA failure `ε_mca`, the list term `|Λ(C^{≡2},δ)|/|F|`, and the
+   spot-check term `(1-δ)^t`, e.g. via `Extractor.exists_schedule_with_many_distinct_challenges`
+   (ABF26 Claim B.1).
+4. *Execution bridge*: a replay/forking execution (e.g. `VCVio.CryptoFoundations.forkReplay`)
+   producing the two completions from a malicious prover, with its success-probability loss, and
+   the averaging of per-prefix bounds into a single `Pr[...] ≤ ε`.
 
-### The knowledge-error accounting
-
-The fork fails only when (a) the resampled γ collides or lands outside the agreement-list (MCA
-failure `ε_mca` plus the list-cardinality term `|Λ(C^{≡2},δ)|/|F|`), or (b) the spot-check round
-rejects (`(1-δ)^t`). The `|Λ|/|F|` term is exactly an instance of the collision/large-image bound
-`Extractor.exists_schedule_with_many_distinct_challenges` (ABF26 Claim B.1), and the
-`1/|F|`-flavoured part is `Extractor.twoSpecialSoundKnowledgeError F`. The `max` is the union over
-the two failure modes.
-
-### The reduction skeleton (proven below)
-
-The lemma `Bridge.knowledgeSound_of_rewinding` shows the *shape*: from a rewinding
-knowledge-soundness witness for Construction 6.2 (the framework predicate) one obtains, at every
-prefix where the prover beats the error, an extracted witness in `outputRelation`. The gap between
-this and the
-literal `Verifier.knowledgeSoundness` statement is the **straightline↔rewinding interface
-prefix" into the single averaged `Pr[...] ≤ ε` bound — the genuine residual, named
-`StraightlineOfRewinding` below. No statement is weakened: the residual is the precise, smallest
-missing piece.
+`ArkLib/ToMathlib/StraightlineRewindingBridge.lean` defines `Bridge.StraightlineOfRewinding` and
+proves it at the abstract level, but that bridge only repackages `knowledgeSoundnessViaRewinding`
+per prefix; it does not supply items 1, 3, or 4.
 -/

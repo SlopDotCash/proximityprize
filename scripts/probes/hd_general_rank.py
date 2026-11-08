@@ -17,6 +17,12 @@ Rank is computed by exact modular elimination inside the invariant blocks
 which the substitution preserves (rows: g1 = sum_j e_j + b (+ l), g2 = i - sum_j j e_j - (d+1) b).
 
 Cross-checked against hd1_interpolation_threshold.py for d = 1.
+
+Characteristic scope: "exact" means exact modular elimination over F_P with the fixed prime
+P = 2^31 - 1.  Over Q the integer constraint matrix has rank >= its rank mod P, and over another
+prime field its rank may differ in either direction, so transporting a rank (or an interpolation
+threshold that uses it as an upper bound) to a different characteristic needs its own argument
+or a characteristic-independent row/column bound certificate.
 """
 import math
 import sys

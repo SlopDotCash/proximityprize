@@ -26,10 +26,17 @@ sum / non-principal eigenvalue of the generalized Paley graph `Cay(F_p, μ_n)`):
 
 * **[diB20]** di Benedetto–Garaev–García–González-Sánchez–Shparlinski–Trujillo, *New estimates for
   exponential sums over multiplicative subgroups and intervals in prime fields*, J. Number Theory
-  (2020), arXiv:2003.06165, Thm 3.1: `B ≲ n^{2689/2880} · p^{1/72}`, whose **corollary** for
-  `n > p^{1/4}` is the headline power-saving `B ≤ n^{1 - 31/2880 + o(1)}` (i.e. cancellation
-  exponent `δ = 31/2880 ≈ 0.0108`, the current SOTA). This does **not** reach the conjectured
-  Ramanujan / Paley-Graph value `B ≤ √(2 n ln q)` (`δ = 1/2`); it is the honest open state.
+  (2020), arXiv:2003.06165, Thm 3.1: `B ≲ n^{2689/2880} · p^{1/72}` for `p^{1/4} < n < p^{1/2}`,
+  whose **corollary** for `n > p^{1/4}` is the headline power-saving `B ≤ n^{1 - 31/2880 + o(1)}`
+  (i.e. cancellation exponent `31/2880 ≈ 0.0108` *up to a subpolynomial loss*, the current SOTA).
+  In that paper `≲` is defined (§2) to absorb a factor `p^{o(1)}`: equivalently, for every
+  `ε > 0` there is a constant `C_ε` with `B ≤ C_ε · n^{1 - 31/2880} · p^{ε}` (or, for
+  `n > p^{1/4}`, `B ≤ C_ε · n^{1 - 31/2880 + ε}`). The literature therefore does **not** give a
+  single uniform constant `C` at the exact endpoint exponent `31/2880`; a uniform quantitative
+  instance of `BGKCharSumBound C ψ G δ` is supported by [diB20] only for exponents
+  `δ < 31/2880` (with `C = C(δ)`), or with the subpolynomial factor retained. This does **not**
+  reach the conjectured Ramanujan / Paley-Graph value `B ≤ √(2 n ln q)` (`δ = 1/2`); it is the
+  honest open state.
 
 ## The reduction chain (named inputs + real wiring)
 
@@ -41,7 +48,9 @@ structure, we name TWO inputs and wire them:
    energy of a multiplicative subgroup is sub-`n^3`). NAMED Prop, not proved.
 
 2. `BGKCharSumBound C G δ` : the **character-sum** conclusion
-   `∀ b ≠ 0, ‖η_b‖ ≤ C · n^{1-δ}` (the BGK / di Benedetto bound itself). NAMED Prop, not proved.
+   `∀ b ≠ 0, ‖η_b‖ ≤ C · n^{1-δ}` (a fixed-constant form of the BGK / di Benedetto bound; the
+   literature supplies it only for `δ` strictly below its stated exponent, with `C` depending on
+   the loss, because of the `o(1)` / `p^{o(1)}` factor). NAMED Prop, not proved.
 
 The PROVEN content (axiom-clean) is the *wiring around* these inputs:
 
@@ -49,17 +58,22 @@ The PROVEN content (axiom-clean) is the *wiring around* these inputs:
   at scale `M = (C·n^{1-δ})²` — threads BGK into the live energy/incidence consumer.
 * `diBenedetto_charSum_of_named` / `bgk_charSum_of_named` : the conditional headline
   `B ≤ C·n^{1 - 31/2880}` (di Benedetto) and `B ≤ C·n^{1-δ}` (BGK), each `of_BGK` (i.e. assuming
-  the named character-sum Prop), with the literature exponents pinned as definitions.
-* `worstCaseIncompleteSumBound_diBenedetto` : the di Benedetto exponent, fully threaded into
-  `WorstCaseIncompleteSumBound` at `M = (C·n^{1 - 31/2880})²`.
+  the named character-sum Prop), with the literature exponents pinned as definitions. The
+  exact-endpoint instance at `δ = 31/2880` with a fixed `C` is a *strengthening* of [diB20]
+  (which carries an `o(1)` loss), not a restatement of it.
+* `worstCaseIncompleteSumBound_diBenedetto` : the di Benedetto endpoint exponent, threaded into
+  `WorstCaseIncompleteSumBound` at `M = (C·n^{1 - 31/2880})²` (conditional on that
+  strengthened fixed-constant input).
 * `energy_envelope_of_sumProduct` : the additive-energy input, used (not decorative): the
   4th-moment identity `Σ_b ‖η_b‖⁴ = q·E(G)` plus `SumProductEnergyBound` give the genuine
   `L⁴`-envelope `‖η_b‖⁴ ≤ q·n^{3-c}` per frequency — the elementary half of the BGK chain.
 
-**Honesty (non-negotiable):** `SumProductEnergyBound` and `BGKCharSumBound` are the literature
-theorems, stated as `def … : Prop` and never asserted/`sorry`-ed. The chain *around* them is
-real and axiom-clean. The di Benedetto exponent `δ = 31/2880` is the genuine SOTA and is strictly
-below the prize exponent `1/2`, so this is explicitly a NON-prize-closing result.
+**Honesty (non-negotiable):** `SumProductEnergyBound` and `BGKCharSumBound` are fixed-constant
+forms of literature-type statements, stated as `def … : Prop` and never asserted/`sorry`-ed. The
+chain *around* them is real and axiom-clean. The di Benedetto exponent `31/2880` is the genuine
+SOTA *up to an `o(1)` loss* — the literature gives `BGKCharSumBound C(δ) ψ G δ` for each
+`δ < 31/2880` (in the stated range of `n`), not at the endpoint with one uniform `C` — and it is
+strictly below the prize exponent `1/2`, so this is explicitly a NON-prize-closing result.
 
 All proofs axiom-clean (`propext, Classical.choice, Quot.sound`). Issue #407.
 -/
@@ -90,15 +104,18 @@ def SumProductEnergyBound (G : Finset F) (c : ℝ) : Prop :=
 /-- **BGK / di Benedetto character-sum input** (NAMED, not proved): every nonzero frequency `b`
 has `‖η_b‖ ≤ C · n^{1-δ}`, the power-saving exponential-sum bound for the thin multiplicative
 subgroup `G = μ_n`. `δ` is the cancellation exponent: BGK gives some `δ > 0` (`n^{1-o(1)}`); di
-Benedetto pins `δ = 31/2880`. This is the deep theorem itself, stated as a `def … : Prop` and
-never asserted. -/
+Benedetto gives `n^{1 - 31/2880 + o(1)}`, i.e. this Prop (in its range of `n`) for every
+`δ < 31/2880` with a `δ`-dependent constant, but not at `δ = 31/2880` with one fixed `C`. It is
+stated as a `def … : Prop` and never asserted. -/
 def BGKCharSumBound (C : ℝ) (ψ : AddChar F ℂ) (G : Finset F) (δ : ℝ) : Prop :=
   ∀ b : F, b ≠ 0 → ‖eta ψ G b‖ ≤ C * (G.card : ℝ) ^ (1 - δ)
 
 /-! ## The literature exponents, pinned as definitions -/
 
-/-- **The di Benedetto SOTA cancellation exponent** `δ = 31/2880 ≈ 0.0108`. From [diB20] Thm 3.1
-corollary for `n > p^{1/4}`: `B ≤ n^{1 - 31/2880 + o(1)}`, the best *proven* power saving. -/
+/-- **The di Benedetto SOTA cancellation exponent** `31/2880 ≈ 0.0108`. From [diB20] Thm 3.1
+corollary for `n > p^{1/4}`: `B ≤ n^{1 - 31/2880 + o(1)}`, the best *proven* power saving. Note the
+`o(1)` loss: the literature proves `B ≤ C_ε · n^{1 - 31/2880 + ε}` for each `ε > 0`, so a
+fixed-constant bound at exactly this exponent is stronger than what [diB20] states. -/
 noncomputable def diBenedettoDelta : ℝ := 31 / 2880
 
 /-- **The prize cancellation exponent** `δ = 1/2` (Ramanujan / Paley-Graph-Conjecture value): the
@@ -149,15 +166,19 @@ theorem bgk_charSum_of_named {ψ : AddChar F ℂ} {G : Finset F} {C δ : ℝ}
 
 /-- **The conditional di Benedetto headline `B ≤ C·n^{1 - 31/2880}`** (`of_BGK`): assuming the
 named character-sum Prop at the di Benedetto exponent `δ = 31/2880`, every nonzero frequency
-satisfies `‖η_b‖ ≤ C·n^{1 - 31/2880}`. This is the SOTA bound, pinned at the literature exponent. -/
+satisfies `‖η_b‖ ≤ C·n^{1 - 31/2880}`. The hypothesis is a fixed-constant *endpoint*
+strengthening of the SOTA bound: [diB20] carries an `o(1)` loss in the exponent, so it supplies
+the hypothesis only at exponents strictly below `31/2880` (with a loss-dependent `C`). -/
 theorem diBenedetto_charSum_of_named {ψ : AddChar F ℂ} {G : Finset F} {C : ℝ}
     (h : BGKCharSumBound C ψ G diBenedettoDelta) :
     ∀ b : F, b ≠ 0 → ‖eta ψ G b‖ ≤ C * (G.card : ℝ) ^ (1 - diBenedettoDelta) :=
   h
 
 /-- **The di Benedetto exponent, threaded into the live residual** (`of_BGK`): the named SOTA
-character-sum Prop discharges `WorstCaseIncompleteSumBound` at `M = (C·n^{1 - 31/2880})²`. This is
-the honest SOTA contribution to the interior-`δ*` energy/incidence chain. -/
+character-sum Prop discharges `WorstCaseIncompleteSumBound` at `M = (C·n^{1 - 31/2880})²`. As
+for `diBenedetto_charSum_of_named`, the fixed-`C` endpoint hypothesis is stronger than [diB20]'s
+`o(1)`-loss statement; an unconditional use should instantiate `worstCaseIncompleteSumBound_of_bgk`
+at some `δ < 31/2880` with its loss-dependent constant. -/
 theorem worstCaseIncompleteSumBound_diBenedetto {ψ : AddChar F ℂ} {G : Finset F} {C : ℝ}
     (h : BGKCharSumBound C ψ G diBenedettoDelta) :
     WorstCaseIncompleteSumBound ψ G ((C * (G.card : ℝ) ^ (1 - diBenedettoDelta)) ^ 2) :=

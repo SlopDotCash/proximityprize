@@ -22,10 +22,21 @@ CANDIDATE: there is an absolute `C₀` and a set `Λ` of at most
 Chang gives `D₀ = C₀·α⁻²·log(p/n)` (the WALL); the claim is that 2-power Frobenius orbits of the
 `{-1,0,1}`-relations collapse the dissociated dimension by `μ = log₂ n`.
 
-## Verdict: REDUCES-TO-WALL (F1 primary via Rudin/Khintchine; F0 the balancing reversal).
+## Verdict: REDUCES-TO-WALL (F1 primary via Rudin/Khintchine).
 ## The `1/μ` collapse is REFUTED empirically; the residual `D₀` form IS the wall.
 
-Three independent failures, all at the prize regime (`p` prime, `p ≡ 1 mod n`, `μₙ` proper, β = 4,
+**Correction (audit 2026-10-28, CW-B18-17).**  Failure (3) below — the "F0 balancing reversal" — is
+WITHDRAWN.  It applied `mass ≤ |Spec_α|·M²` with `mass = n(p−n)`, the Parseval mass over ALL `p−1`
+nonzero frequencies; but only the mass ON `Spec_α` is bounded by `|Spec_α|·M²`, and most of the
+Parseval mass sits outside `Spec_α`.  The premise is false: with `|Spec_α| ≤ nD` it would force
+`M² ≥ (p−n)/D`, i.e. `M ≳ n^{3/2}/√D` at `β = 4`, contradicting the trivial `M ≤ n`.  Restricting
+to `Spec_α` gives only `Σ_{b∈Spec_α}|η_b|² ≤ |Spec_α|·M²`, which is not Parseval and forces nothing
+new.  The Lean lemmas of Parts 1 and 3 are correct abstract real arithmetic, but their hypothesis
+`mass ≤ S·M²` is NOT satisfied with `mass = n(p−n)`, `S = |Spec_α|`, so their F0/"reversal"
+interpretation and `constant_cover_forces_absurd_lower`'s conclusion about covers do not follow.
+Failures (1) and (2) stand.
+
+Originally claimed: three independent failures, all at the prize regime (`p` prime, `p ≡ 1 mod n`, `μₙ` proper, β = 4,
 `p ~ n⁴`, NEVER `n = p-1`):
 
 ### (1) F1 — Chang's dimension IS a second-moment object (Rudin ⇐ Khintchine).
@@ -46,7 +57,7 @@ large spectrum to collapse relations along. And the measured dissociated dimensi
 `D₀` as a roughly **constant fraction** (`d/D₀ ≈ 0.18–0.36` at α=0.5 across n=8..64), NOT `D₀/μ`
 (which would force `d/D₀ → 1/μ`, i.e. `0.33,0.25,0.20,0.17,0.14,...`). The `1/μ` collapse does not occur.
 
-### (3) F0 — the balancing step is REVERSED (probe `probe_wfT16_balance_arith.rs`).
+### (3) [WITHDRAWN — false premise, see Correction] F0 — the balancing step is REVERSED (probe `probe_wfT16_balance_arith.rs`).
 Even granting a covering `|Spec_α| ≤ n·D`, combining it with Parseval `Σ_{b≠0}|η_b|² = n(p-n)` yields
 a **LOWER** bound on `M`, never an upper one. Concretely the mass-vs-cardinality inequality
 `mass ≤ |Spec|·M²` gives `M² ≥ mass/|Spec| = n(p-n)/(n·D)`, i.e. `M ≥ √((p-n)/D)`, which is
@@ -59,8 +70,8 @@ upper-bound the sup; it pins the Johnson RMS floor — the conservation law F0 v
 ## Distinctness from prior kills
 A7/A12 killed the Croot–Sisask *almost-period* (primal) object via the L²/L^q norm threshold.
 T16 attacks the *dual* (Chang dissociated-dimension / covering) object — but it lands on the same
-wall by a different door: Chang's dimension is the Rudin/Khintchine second moment (F1), and the
-covering cardinality enters Parseval on the lower-bound side (F0). The `1/μ` Galois refinement, the
+wall by a different door: Chang's dimension is the Rudin/Khintchine second moment (F1).  (The former
+"covering cardinality enters Parseval on the lower-bound side (F0)" claim is withdrawn, CW-B18-17.) The `1/μ` Galois refinement, the
 only genuinely new lever, has no empirical support (squaring breaks the peak).
 
 This file records the load-bearing inequalities axiom-clean. The Frobenius/dimension measurements are
@@ -75,12 +86,16 @@ namespace ArkLib.ProximityGap.Frontier.WfT16
 
 open Real
 
-/-! ## Part 1: the balancing step is a LOWER bound on `M` (F0 reversal). -/
+/-! ## Part 1: abstract balance arithmetic.
+
+CAVEAT (CW-B18-17): these are correct real-arithmetic facts, but the intended instantiation
+`mass = n(p−n)` (full Parseval), `S = |Spec_α| ≤ n·D` does NOT satisfy `mass ≤ S·M²` — that premise is
+false (it would force `M > n`).  So no "F0 reversal" for the prize follows from them. -/
 
 /-- **The Parseval/cardinality balance is a LOWER bound.** If the total spectral mass `mass`
 (here `n(p-n)`) is carried by a set of `S` frequencies each of size `≤ M`, then `mass ≤ S·M²`,
-hence `M² ≥ mass / S`. This is the only relation between a *cardinality* bound `S` and Parseval —
-it bounds `M` from BELOW, the wrong direction for the prize. -/
+hence `M² ≥ mass / S`.  (Applies only to the mass actually carried by those `S` frequencies; the full
+Parseval mass `n(p−n)` is NOT carried by `Spec_α` — CW-B18-17.) -/
 theorem balance_is_lower_bound
     {mass S Msq : ℝ} (hS : 0 < S) (hMass : mass ≤ S * Msq) :
     mass / S ≤ Msq := by
@@ -94,10 +109,9 @@ theorem forced_lower_antitone_in_D
     pmn / D₂ ≤ pmn / D₁ :=
   div_le_div_of_nonneg_left hpmn hD₁ hD₁₂
 
-/-- **Concrete reversal at the prize.** With `pmn = n(p-n)` and `S = n·D`, the forced bound on `M²`
-is `(p-n)/D ≥ n` whenever `D ≤ (p-n)/n = p/n - 1`. At β = 4, `p/n - 1 ≈ n³`, while the Chang
-dimension `D ≤ α⁻²·log(p/n) = O(log n) ≪ n³`, so the forced lower bound is always `≥ n` (Johnson),
-i.e. the balance NEVER drops below the Johnson RMS scale `√n`. -/
+/-- **Arithmetic: `D ≤ pmn/n ⟹ n ≤ pmn/D`.**  (Originally read as "the forced lower bound at the prize
+is `≥ n`"; that reading rested on the false premise `n(p−n) ≤ |Spec_α|·M²` and is withdrawn,
+CW-B18-17.) -/
 theorem forced_lower_at_least_johnson
     {n pmn D : ℝ} (hn : 0 < n) (hD : 0 < D) (hDle : D ≤ pmn / n) :
     n ≤ pmn / D := by
@@ -116,26 +130,22 @@ theorem refined_dim_is_constant_in_n
       = C₀ * (α ^ 2)⁻¹ * (3 * Real.log 2) := by
   field_simp
 
-/-- **The escape would require `O(1)` dissociated dimension, contradicting the lower bound.** If the
-refined cover had only `D = O(1)` cosets (constant in n), then `S = n·D = O(n)` frequencies, and the
-forced lower bound `M² ≥ (p-n)/D` would be `≈ n³/O(1) = Θ(n³)`, i.e. `M ≳ n^{3/2}` — VASTLY above the
-true `M ≈ √(n log)`. So an `O(1)`-coset cover is impossible (it would force a false huge lower bound);
-equivalently, the covering cardinality cannot be the prize lever. Formalized: with `pmn ≥ n³` (β=4)
-and `D` constant, the forced `M²` lower bound exceeds any `K·n` ceiling once `n` is large. -/
+/-- **Arithmetic: `K·n·D < pmn ⟹ K·n < pmn/D`.**  It was originally read as "an `O(1)`-coset cover is
+impossible because it forces `M ≳ n^{3/2}`".  WITHDRAWN (CW-B18-17): the "forced lower bound"
+`M² ≥ (p−n)/D` came from the false premise that the full Parseval mass is carried by `Spec_α`; the
+same argument would "refute" every cover, including Chang's `D₀`.  No conclusion about covers
+follows. -/
 theorem constant_cover_forces_absurd_lower
     {n pmn D K : ℝ} (hn : 0 < n) (hD : 0 < D) (hK : 0 < K)
     (hpmn : K * n * D < pmn) :
     K * n < pmn / D := by
   rw [lt_div_iff₀ hD]; nlinarith [hpmn]
 
-/-! ## Part 3: the conservation-law statement (F0) for this angle. -/
+/-! ## Part 3: abstract arithmetic package (F0 interpretation withdrawn, CW-B18-17). -/
 
-/-- **F0 for T16.** Any bound on `M` whose only inputs are (i) a cardinality/dissociated-dimension
-covering count of the spectrum and (ii) Parseval (the second moment `Σ|η_b|² = n(p-n)`) produces only
-the Johnson RMS scale or a lower bound on `M`. The combination is monotone the wrong way: improving
-the structural input (smaller `D`) worsens the only forced `M`-relation. This is the conservation law:
-second-order arithmetic of the domain (Parseval) plus an `L^∞`/structural count cannot see the √log
-tail; the relation is `M² ≥ (p-n)/D ≥ n`, an equality-flat Johnson floor, never an upper bound. -/
+/-- **Abstract arithmetic package** (`n ≤ pmn/D`, antitone in `D`).  Originally presented as "F0 for
+T16" with `pmn = n(p−n)`; that interpretation used the false premise `n(p−n) ≤ |Spec_α|·M²` and is
+WITHDRAWN (CW-B18-17).  As stated it is only real arithmetic about `pmn / D`. -/
 theorem conservation_law_T16
     {n pmn D : ℝ} (hn : 0 < n) (hD : 0 < D) (hDle : D ≤ pmn / n) :
     -- the unique forced relation is a LOWER bound at the Johnson scale, monotone-decreasing in D:

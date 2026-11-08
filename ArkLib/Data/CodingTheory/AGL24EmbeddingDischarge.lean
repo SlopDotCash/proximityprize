@@ -119,8 +119,7 @@ theorem failure_bound_uniformEmbedding_of_symbolic {k L : ℕ} (hL : 1 ≤ L) {r
   · have hprov := rimFailureProb_of_symbolic hsym htpos e hwpc
     unfold RIMFullRankFailureProbResidual at hprov
     refine hprov.trans ?_
-    gcongr
-    omega
+    gcongr <;> omega
 
 end AGL24
 

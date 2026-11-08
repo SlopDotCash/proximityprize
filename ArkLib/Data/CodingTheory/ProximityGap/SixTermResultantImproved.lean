@@ -7,10 +7,11 @@ import ArkLib.Data.CodingTheory.ProximityGap.SidonParsevalGeneral
 import ArkLib.Data.CodingTheory.ProximityGap.SidonParsevalNthRoots
 import ArkLib.Data.CodingTheory.ProximityGap.SidonLiftAssembly
 import ArkLib.Data.CodingTheory.ProximityGap.ManyTermResultantBound
+import ArkLib.Data.CodingTheory.ProximityGap.GaussianEnergyThreeRepThree
 import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 
 /-!
-# THE SHARP SIX-TERM CYCLOTOMIC RESULTANT BOUND — `|Res|² ≤ 12^{φ(n)}` (the `r = 3` RepThree lift, #407)
+# THE SIX-TERM CYCLOTOMIC RESULTANT BOUND — `|Res|² ≤ 12^{φ(n)}` (distinct exponents only, #407)
 
 This is the **`r = 3` analogue of `SidonResultantImproved.abs_resultant_fourTerm_sq_le`** (the four-term
 `|Res|² ≤ 8^{φ(n)}` Sidon lift). A genuine (non-antipodally-paired) zero-sum **six**-tuple of `n`-th
@@ -25,16 +26,29 @@ For `n = 2^m` and pairwise-distinct exponents, the **sharp Parseval `ℓ²` aver
 > `sixterm_resultant_sq_le` :  `|Res(Φ_n, sixTerm)|² ≤ 12^{φ(n)}`   (i.e. `|Res| ≤ 12^{n/4} = 2^{(log₂12)·n/4} ≈ 2^{0.896 n}`),
 
 **strictly sharper** than the pointwise general bound `ManyTermResultant.abs_resultant_manyTerm_le`
-(`|Res| ≤ 6^{φ(n)} = 6^{n/2} = 2^{1.29 n}`). Probe-verified **tight** (`max |Res| = 12^{n/4} = 144` at
-`n = 8`), and probe-verified that the implied prime threshold is the right scale: a genuine six-term
-relation over `F_p` (`p ≡ 1 mod n`, `μ_n` proper) appears only at primes `p ≤ 12^{n/4}` (e.g. `p = 17`
-for `n = 8`), so **for `p > 12^{n/4}` every genuine six-term relation is forced to vanish ⟹ `RepThree(μ_n)`**.
+(`|Res| ≤ 6^{φ(n)} = 6^{n/2} = 2^{1.29 n}`). Probe-verified tight **within the distinct-exponent
+class** (`max |Res| = 12^{n/4} = 144` at `n = 8`).
 
-This sharpens the `r = 3` energy-rung Sidon threshold (`DCEnergyRungThree.dcEnergyBound_three_of_repThree`,
-which reduces `DCEnergyBound G 3` to `RepThree G`) from the pointwise `p > 6^{n/2}` to the sharp
-`p > 12^{n/4}` — a constructive char-`p` transfer of the order-6 antipodal-pairing residual, the exact
-`r = 3` analogue of the landed `r = 2` four-term lift. (The frontier `r ~ log q` still exceeds any
-fixed-`r` threshold, consistent with the open core; this is the next unconditional rung, not a closure.)
+**Scope: distinct exponents only — this does NOT give `RepThree(μ_n)` for `p > 12^{n/4}`.**  The
+Parseval step needs the six powers `ω^a, …, ω^f` pairwise distinct (`hdist`), so the theorems here
+only exclude genuine six-term relations with six *distinct* roots above `12^{n/4}`.
+`GaussianEnergyThreeRepThree.RepThree` quantifies over all six-tuples, including ones with
+repeated entries, and for those the squared coefficient mass is larger than `6` (e.g. a root
+repeated five times contributes `25`), so the `12^{φ(n)}` bound does not apply.  Exact
+counterexample (`not_repThree_mu8_313` below, kernel-checked): `n = 8`, `p = 313 > 144 = 12^{8/4}`,
+`μ_8 ⊂ F_313` proper (primitive root `5`), and the zero-sum tuple `(1,1,1,1,1,308)` has no
+antipodal pairing, i.e. `1 + 1 + 1 = (−1) + (−1) + 5` in `F_313`.  Its polynomial
+`3 − 2X^4 − X` has resultant `626 = 2·313` with `Φ_8`, exceeding `144`.  The distinct-term
+theorem itself is valid.  Using it for the `r = 3` energy rung still needs (i) bounds for every
+multiplicity profile with its actual squared coefficient mass, and (ii) a full-tuple transfer
+to `RepThree`; neither is in this file.  A numerical extremum of the distinct class also does
+not by itself establish a necessary odd-prime threshold.
+
+So this sharpens only the distinct-exponent part of the `r = 3` energy-rung transfer
+(`DCEnergyRungThree.dcEnergyBound_three_of_repThree` reduces `DCEnergyBound G 3` to `RepThree G`)
+from the pointwise `p > 6^{n/2}` to `p > 12^{n/4}`; the repeated-root tuples remain, and
+`RepThree(μ_n)` above `12^{n/4}` is false in general (see the counterexample).  (The frontier
+`r ~ log q` also exceeds any fixed-`r` threshold.)
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`. Issue #407.
 -/
@@ -176,13 +190,15 @@ theorem eval_sixTerm_castMap {K : Type*} [Field K] (ζ : K) (a b c d e f : ℕ) 
       = ζ ^ a + ζ ^ b + ζ ^ c - ζ ^ d - ζ ^ e - ζ ^ f := by
   rw [← eval_sixTerm_map (Int.castRingHom K) ζ a b c d e f]
 
-/-- **THE CHAR-`p` SIX-TERM LIFT (`r = 3` RepThree transfer).** For `n = 2^m` (`m ≥ 1`), a primitive
-`n`-th root `ω ∈ ZMod p`, a **genuine** six-term relation `ω^a+ω^b+ω^c = ω^d+ω^e+ω^f` over `F_p`
-(distinct ω-powers, `hpara`) that does **not** hold at any complex primitive `n`-th root (`hne`, i.e.
-it is not a char-0 / antipodally-paired relation) forces `p ≤ 12^{φ(n)/2} = 12^{n/4}`. So **for
-`p > 12^{n/4}` there is no genuine six-term relation in `μ_n` — i.e. `RepThree(μ_n)` holds**. This is the
-sharp `r = 3` analogue of `prime_le_of_parallelogram'`, discharging the open char-`p` residual of
-`DCEnergyRungThree.dcEnergyBound_three_of_repThree` above the sharp threshold. -/
+/-- **THE CHAR-`p` SIX-TERM LIFT (distinct-exponent case).** For `n = 2^m` (`m ≥ 1`), a primitive
+`n`-th root `ω ∈ ZMod p`, a six-term relation `ω^a+ω^b+ω^c = ω^d+ω^e+ω^f` over `F_p` (`hpara`)
+whose exponents give pairwise-distinct complex powers (`hdist`) and that does **not** hold at any
+complex primitive `n`-th root (`hne`) forces `p² ≤ 12^{φ(n)}`, i.e. `p ≤ 12^{n/4}`.  So for
+`p > 12^{n/4}` there is no such *distinct-exponent* relation.  This does **not** give
+`RepThree(μ_n)`: that condition also covers tuples with repeated roots, which this theorem
+excludes, and it fails at `n = 8`, `p = 313 > 12^2` (`not_repThree_mu8_313`).  It is the
+distinct-term analogue of `prime_le_of_parallelogram'`, not a discharge of the residual of
+`DCEnergyRungThree.dcEnergyBound_three_of_repThree`. -/
 theorem prime_le_of_genuineSixTerm {m : ℕ} (hm : 1 ≤ m) {p : ℕ} [Fact p.Prime]
     [NeZero ((2 ^ m : ℕ) : ZMod p)] {ω : ZMod p} (hωp : IsPrimitiveRoot ω (2 ^ m))
     {a b c d e f : ℕ}
@@ -227,9 +243,56 @@ theorem prime_le_of_genuineSixTerm {m : ℕ} (hm : 1 ≤ m) {p : ℕ} [Fact p.Pr
   have hbound : R.natAbs ^ 2 ≤ 12 ^ n.totient := sixterm_resultant_sq_le hm hωc hdist
   exact le_trans hsq hbound
 
+/-! ## Repeated roots: `RepThree(μ_8)` fails at `p = 313 > 12^{8/4}`
+
+The distinct-exponent bound above does not control six-tuples with repeated roots.  At
+`n = 8`, `p = 313` (with `5` a primitive `8`-th root of unity mod `313`), the tuple
+`(1,1,1,1,1,308)` of elements of `μ_8` sums to `0` but has no antipodal pairing, so
+`RepThree(μ_8)` is false although `313 > 12^{8/4} = 144`. -/
+
+section RepeatedRootCounterexample
+
+open ArkLib.ProximityGap.GaussianEnergyThreeRepThree
+
+local instance fact_prime_313 : Fact (Nat.Prime 313) := ⟨by norm_num⟩
+
+/-- The repeated-root zero-sum tuple `(1,1,1,1,1,308)` in `ZMod 313` (`308 = −5`). -/
+def repeatTuple313 : Fin 6 → ZMod 313 := ![1, 1, 1, 1, 1, 308]
+
+/-- **`RepThree(μ_8)` fails over `F_313`.**  The tuple `(1,1,1,1,1,308)` lies in `μ_8`, sums to
+`0`, and has no antipodal pairing (no entry equals `−1`). -/
+theorem not_repThree_mu8_313 :
+    ¬ RepThree (Polynomial.nthRootsFinset 8 (1 : ZMod 313)) := by
+  intro h
+  have hmem : repeatTuple313 ∈ Fintype.piFinset
+      (fun _ : Fin (2 * 3) => Polynomial.nthRootsFinset 8 (1 : ZMod 313)) := by
+    rw [Fintype.mem_piFinset]
+    intro i
+    rw [Polynomial.mem_nthRootsFinset (by decide : 0 < 8)]
+    fin_cases i <;> decide
+  have hsum : ∑ i, repeatTuple313 i = 0 := by decide
+  obtain ⟨σ, _hpair, hneg⟩ := h repeatTuple313 hmem hsum
+  have hno : ∀ i : Fin 6, repeatTuple313 i ≠ -repeatTuple313 0 := by decide
+  exact hno (σ 0) (hneg 0)
+
+/-- `5` is a primitive `8`-th root of unity in `F_313`, so `μ_8` is the full (proper) subgroup of
+order `8` used in `not_repThree_mu8_313`. -/
+theorem root5_primitive_mu8_313 : IsPrimitiveRoot (5 : ZMod 313) 8 := by
+  refine IsPrimitiveRoot.mk_of_lt _ (by decide : 0 < 8) (by decide) ?_
+  intro l hl hlt
+  interval_cases l <;> decide
+
+/-- The prime `313` is above the distinct-exponent threshold `12^{8/4} = 144`. -/
+theorem repeat_prime_exceeds_sixTerm_threshold : (12 : ℕ) ^ (8 / 4) < 313 := by
+  norm_num
+
+end RepeatedRootCounterexample
+
 end ArkLib.ProximityGap.SixTermResultant
 
 /-! ## Axiom audit -/
 #print axioms ArkLib.ProximityGap.SixTermResultant.sixterm_resultant_sq_le
 #print axioms ArkLib.ProximityGap.SixTermResultant.parseval_sixTerm_nthRoots
 #print axioms ArkLib.ProximityGap.SixTermResultant.prime_le_of_genuineSixTerm
+#print axioms ArkLib.ProximityGap.SixTermResultant.not_repThree_mu8_313
+#print axioms ArkLib.ProximityGap.SixTermResultant.root5_primitive_mu8_313

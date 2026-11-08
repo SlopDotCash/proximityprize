@@ -22,10 +22,16 @@ The anchors proven here pin the first three Schur values:
 `h_{<0} = 0` (`dividedDifferencePow_eq_zero_of_lt`), `h_0 = 1` (`dividedDifferencePow_eq_one`),
 `h_1 = e_1 = Σ v_i` (`dividedDifferencePow_card_eq_sum`).
 
-So the bad-α criterion of a two-monomial pencil `x^k + α x^b` (the Action–Orbit object) — bad
-at agreement `k+1` ⟺ the deg-`<k` agreeing codeword has its `z^k`-coefficient cancelling the
-pencil's — becomes the **vanishing of a Schur polynomial** `h_{b−k}(v_S) = 0`, i.e. the
-elementary/complete-symmetric vanishing the unified open core `K` counts. This file lands the
+So for the two-monomial pencil `x^k + α x^b` (the Action–Orbit object, `b > k`), by linearity
+the top (`z^k`) coefficient of its interpolant over a `(k+1)`-set `S` is
+`h_0 + α·h_{b−k}(v_S) = 1 + α·h_{b−k}(v_S)`.  The pencil point agrees with a degree-`< k`
+codeword on `S` iff this coefficient vanishes, i.e. iff **`h_{b−k}(v_S) ≠ 0` and
+`α = −1/h_{b−k}(v_S)`**; when `h_{b−k}(v_S) = 0` the coefficient is the constant `1` and *no*
+scalar works on `S`.  (Example on `μ₄ = 𝔽₅ˣ`, `k = 1`, `b = 2`: `S = {1, 2}` has `h_1 = 3 ≠ 0`
+and `α = 3 = −1/3` makes `X + 3X²` equal to `4` at both points, while `S = {1, 4}` has
+`h_1 = 0` and `X + αX²` takes the distinct values `1 + α`, `4 + α` for every `α`.)  The
+`S`-wise bad-scalar readout is therefore the nonvanishing Schur value `h_{b−k}(v_S)` and its
+negated inverse, not Schur vanishing. This file lands the
 exact coefficient identity (the general Schur bridge), generalising the special ladder-stack
 identity `residual_ladder_schur` (which is the `b = k+1`/`h_1 = e_1` instance — matched here by
 `dividedDifferencePow_card_eq_sum`).
@@ -63,7 +69,8 @@ noncomputable def dividedDifferencePow (s : Finset ι) (v : ι → F) (b : ℕ) 
 monomial data `{(v i, (v i)^b)}_{i ∈ s}` is the divided difference of `x^b` over `s`. With
 `#s = k+1` this is the `z^k`-coefficient; for `b ≥ k` the divided difference is the complete
 homogeneous symmetric polynomial `h_{b−k}(v_s)` (Schur / Jacobi–Trudi). This converts the
-two-monomial bad-α criterion into Schur-vanishing — character-sum-free. -/
+two-monomial bad-α criterion into the Schur readout `1 + α·h_{b−k}(v_s) = 0` (so `h_{b−k} ≠ 0`
+and `α = −1/h_{b−k}`) — character-sum-free. -/
 theorem interpolate_pow_coeff_top (hvs : Set.InjOn v s) (b : ℕ) :
     (Lagrange.interpolate s v (fun i => (v i) ^ b)).coeff (#s - 1)
       = dividedDifferencePow s v b :=
@@ -143,7 +150,8 @@ Since `P.coeff m = (−1)^{N−m} e_{N−m}(v_s)`, this is exactly the elementar
 relation `Σ_{j=0}^{N} (−1)^j e_j(v_s) · h_{d−j}(v_s) = 0`. Together with the anchors
 (`dividedDifferencePow_eq_zero_of_lt` = `h_{<0}=0`, `dividedDifferencePow_eq_one` = `h_0=1`) it
 pins **every** Schur value `h_{b−N+1}(v_s)`, character-sum-free — the engine driving the
-two-monomial bad-α criterion `h_{b−k}(v_S) = 0`. The proof is purely the root identity
+two-monomial bad-α criterion `1 + α·h_{b−k}(v_S) = 0` (requiring `h_{b−k}(v_S) ≠ 0`). The proof
+is purely the root identity
 `(v i)^N = −Σ_{m<N} P.coeff m (v i)^m` (from `P(v i) = 0`, `P` monic of degree `N`), summed
 against the divided-difference weights. -/
 theorem dividedDifferencePow_recurrence (b : ℕ) (hb : #s ≤ b) :
@@ -379,8 +387,9 @@ surrogate: `[s] x^b = schurH s v b`. Proved by strong induction on `b`: the thre
 `schurH` are discharged by `dividedDifferencePow_eq_zero_of_lt` (`b < #s−1`),
 `dividedDifferencePow_eq_one` (`b = #s−1`), and `dividedDifferencePow_recurrence` (`b ≥ #s`,
 with the induction hypothesis applied at each strictly-smaller index `b − #s + m`). This is the
-full character-sum-free bridge: it turns the two-monomial bad-α criterion into the vanishing of
-a Schur value `schurH s v b = h_{b−#s+1}(v_s) = 0`. -/
+full character-sum-free bridge: it turns the two-monomial bad-α criterion into the Schur readout
+`1 + α·schurH s v b = 0` with `schurH s v b = h_{b−#s+1}(v_s)`, i.e. the Schur value must be
+**nonzero** and `α = −(schurH s v b)⁻¹`. -/
 theorem dividedDifferencePow_eq_schurH (hvs : Set.InjOn v s) (hs : s.Nonempty) (b : ℕ) :
     dividedDifferencePow s v b = schurH s v b := by
   induction b using Nat.strong_induction_on with

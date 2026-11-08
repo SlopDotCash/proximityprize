@@ -87,7 +87,8 @@ theorem sum_choose_neg_two_pow (m : ℕ) :
 The center value of the palindromic spectrum is exactly the same-parity binomial half. -/
 theorem spectrumCount_peak_two_mul (m : ℕ) :
     2 * spectrumCount m m = 3 ^ m + 1 := by
-  unfold spectrumCount
+  rw [spectrumCount_eq_raw (by omega)]
+  unfold spectrumCountRaw
   -- At r = m the range bound is min m (2m - m) = m, and the parity class is k ≡ m (mod 2).
   have hmin : min m (2 * m - m) = m := by omega
   rw [hmin]
@@ -188,7 +189,7 @@ theorem spectrumCount_peak (m : ℕ) :
 theorem spectrumCount_peak_values :
     spectrumCount 4 4 = 41 ∧ spectrumCount 5 5 = 122 ∧ spectrumCount 6 6 = 365 ∧
     spectrumCount 7 7 = 1094 ∧ spectrumCount 8 8 = 3281 := by
-  refine ⟨?_, ?_, ?_, ?_, ?_⟩ <;> (unfold spectrumCount; decide)
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩ <;> (unfold spectrumCount spectrumCountRaw; decide)
 
 /-- **Strict unimodality (verified, prize tower).** `N_r` is strictly increasing on `0,…,m`
 across `m = 4..8`, hence (with the in-tree palindrome) `r = m` is the unique spectrum maximizer.
@@ -200,7 +201,7 @@ theorem spectrumCount_strict_increase_tower :
     (∀ r < 6, spectrumCount 6 r < spectrumCount 6 (r + 1)) ∧
     (∀ r < 7, spectrumCount 7 r < spectrumCount 7 (r + 1)) ∧
     (∀ r < 8, spectrumCount 8 r < spectrumCount 8 (r + 1)) := by
-  refine ⟨?_, ?_, ?_, ?_, ?_⟩ <;> (intro r hr; interval_cases r <;> (unfold spectrumCount; decide))
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩ <;> (intro r hr; interval_cases r <;> (unfold spectrumCount spectrumCountRaw; decide))
 
 /-- **The peak dominates every depth (verified, prize tower).** For each `m = 4..8` and every
 `r ≠ m` with `r ≤ 2m`, `N_r < N_m`. Certifies `r = m` is the strict argmax of the full spectrum. -/
@@ -211,7 +212,7 @@ theorem spectrumCount_peak_strict_max_tower :
     (intro r hr hne; interval_cases r <;>
       first
         | exact absurd rfl hne
-        | (unfold spectrumCount; decide))
+        | (unfold spectrumCount spectrumCountRaw; decide))
 
 end ProximityGap.Frontier.SubsetSumSpectrum
 

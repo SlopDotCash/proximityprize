@@ -176,7 +176,11 @@ Once the row-span-to-affine-line specialization is supplied, the generic `epsCA`
 
 `epsCA (RScodeSet α deg) δ δ ≤ ‖RScodeSet α deg‖₀ / |F|`.
 
-The only hypothesis here is the numeric bound on δ; the wrapper itself is fully checked. -/
+It has two inputs: the numeric bound `hδ` on δ, and `hAHIV`, the named, still-unproved #88
+residual `ahiv17_rowSpan_to_affineLine_dOverQ_residual` (the row-span-to-affine-line event
+identification).  The wrapper from these two inputs to the `epsCA` bound is fully checked, so
+the result is conditional on `hAHIV`; the unconditional unique-decoding specialization below
+holds only at the weaker `n/q` error level. -/
 theorem ahiv17_epsCA_bound_of_rowSpan_to_affineLine_dOverQ_residual
     [Nonempty ι]
     {deg : ℕ} {α : ι ↪ F} {δ : ℝ≥0}

@@ -18,6 +18,19 @@ import Mathlib
   * `AssocTowerOfAlgebra` : a tower of associative algebras
   * `TowerOfAlgebraEquiv` : an equivalence of towers of algebras
   * `AssocTowerOfAlgebraEquiv` : an equivalence of towers of associative algebras
+
+  ## Interface notes (current scope)
+
+  * `TowerOfAlgebra` stores the scalar action `smul` separately from `towerAlgebraMap` together
+    with `smul_def'` saying it is multiplication through the map; `toAlgebra` below rebuilds the
+    action from the map alone, so the stored action and its compatibility witness are likely
+    redundant.
+  * Neither class has an identity law (`towerAlgebraMap i i _ = RingHom.id _`). Associativity
+    alone is satisfied by non-identity self-maps: for example the constant-term projection
+    `p ↦ C (p.eval 0)` on `F[X]`, used at every comparable pair including `i = i`, is an
+    idempotent ring endomorphism sending `X ↦ 0`. The proved `IsScalarTower` instance is valid for
+    this weaker interface; whether an identity/coherence law is intended should be decided
+    before relying on these classes as genuine towers.
 -/
 
 set_option linter.all false

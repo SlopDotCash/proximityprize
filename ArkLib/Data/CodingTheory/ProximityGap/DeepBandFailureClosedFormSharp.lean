@@ -20,9 +20,16 @@ which is why `+3`: probe `probe_sharp_budget_instantiation.py` records the `+2` 
 failing exactly at `(13,9,2,1)` where the deep bucket has zero slack), giving
 
 > **`deep_band_failure_closed_form_sharp`** — `∃ Q₀ : P·Λ'/q^m ≤ #badSet(Q₀,xᵏ)·Λ'²`
-> at every band radius, no side conditions — **badSet ≳ P/(q^m·Λ')** with
-> `Λ' ≈ max(P/q^(m+1), C'/q)`: a full factor `q` below the landed
-> `Λ ≈ max(P/q^(m+1), C')` wherever `C'` dominates (the sub-bandwidth regime).
+> at every band radius, no side conditions — an **integer** (ℕ-floor) inequality.
+
+In real arithmetic this gives only `#badSet ≥ (P·Λ'/q^m − 1)/Λ'²`, positive only when
+`P·Λ' > q^m`; when `⌊P·Λ'/q^m⌋ = 0` the theorem allows `#badSet = 0`. Here
+`Λ' = ⌊P/q^(m+1)⌋ + ⌊C'/q⌋ + 3 ≍ max(1, P/q^(m+1), C'/q)` — the `+3` is not negligible. The
+improvement over the landed `Λ = ⌊P/q^(m+1)⌋ + C' + 2 ≍ max(1, P/q^(m+1), C')` is the ratio
+`Λ/Λ'`, which approaches a full factor `q` only when `C' ≫ q·max(1, P/q^(m+1))`; merely having
+`C'` dominate `Λ` is not enough. For example at `q = 65537, n = 8, k = 2, m = 1`
+(`P = 70`, `C' = 20`, so `C'` dominates `Λ = 22`) one has `Λ' = 3`, `Λ/Λ' = 22/3` (not about
+`65537`), and the sharp numerator `⌊210/65537⌋` is again `0`.
 
 Probe: budget integer-exact vs TRUE deep-pair counts at six tuples; the sharp floor
 dominates the landed floor everywhere measured (e.g. `4` vs `0` at `(131,16,2,1)`).
@@ -150,9 +157,12 @@ theorem closedForm_budget_sharp (dom : Fin n ↪ F) (k m : ℕ) {M : ℕ}
 
 open Classical in
 /-- **THE SHARP CLOSED-FORM DEEP-BAND FAILURE COUNT.**  At every band radius, with
-`Λ' := P/q^(m+1) + C'/q + 3`:  `∃ Q₀ : P·Λ'/q^m ≤ #badSet(Q₀, x^k)·Λ'²` — the failure
-floor `badSet ≳ P/(q^m·Λ')` with `Λ' ≈ max(P/q^(m+1), C'/q)`, a full factor `q` below
-the landed closed form wherever `C'` dominates. -/
+`Λ' := P/q^(m+1) + C'/q + 3` (ℕ-division):  `∃ Q₀ : P·Λ'/q^m ≤ #badSet(Q₀, x^k)·Λ'²`.
+Because the numerator is floored, in real arithmetic this gives
+`#badSet ≥ (P·Λ'/q^m − 1)/Λ'²`, positive only when `P·Λ' > q^m`. Here
+`Λ' ≍ max(1, P/q^(m+1), C'/q)`; the gain over the landed closed form is `Λ/Λ'`, which is close to
+a factor `q` only when `C' ≫ q·max(1, P/q^(m+1))` (e.g. at `q = 65537, n = 8, k = 2, m = 1` it is
+`22/3`, and both numerators vanish). -/
 theorem deep_band_failure_closed_form_sharp (dom : Fin n ↪ F) {k m : ℕ}
     (hk : 1 ≤ k) {δ : ℝ≥0}
     (hhi : (1 - δ) * (Fintype.card (Fin n) : ℝ≥0) ≤ ((k + m + 1 : ℕ) : ℝ≥0)) :

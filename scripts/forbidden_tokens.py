@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 """Reject axiom-laundering tokens in live library and research source.
 
-By default, scans every .lean file under ArkLib/, Research/, and ProximityPrize/. If one or more paths are
-provided, scans only those Lean files/directories. Fails if live
-(non-comment) code contains (`axiom` text inside a string literal is data):
+By default, scans every .lean file under ArkLib/, Research/, and ProximityPrize/. If one or
+more paths are provided, scans only those Lean files/directories. Fails if live code contains
+(text inside a comment or inside the literal part of a string is data):
   - `native_decide` / `bv_decide` (kernel-bypassing decision procedures),
     `bv_check`, and `decide` configurations that enable native evaluation or
-    whose native flag cannot be established as disabled. Use `-native` or a
-    constructor spelling such as `.false` to disable it explicitly. The scan
-    also rejects direct use of `Lean.ofReduceBool`, `Lean.ofReduceNat`,
-    `Lean.trustCompiler`, `Lean.reduceBool`, and `Lean.reduceNat`, or
+    whose native flag cannot be established as disabled (including inside the
+    `{…}` hole of an interpolated string). Use `-native` or a constructor
+    spelling such as `.false` to disable it explicitly. The scan also rejects
+    direct use of the compiler-trust axioms and native reduction primitives
+    they rely on (`Lean.ofReduceBool`, `Lean.ofReduceNat`, `Lean.trustCompiler`,
+    `Lean.reduceBool`, `Lean.reduceNat`), or
   - an `unsafe` declaration modifier, live `unsafeCast`, or `implemented_by`
     attribute (repository policy: block unsafe decls, unsafeCast, and
     evaluator-diverging `implemented_by`; this is a fast precheck, not a claim
@@ -21,18 +23,20 @@ provided, scans only those Lean files/directories. Fails if live
     it is checked or even declared, while text-based gates still read it: the
     residual census counts an unelaborated `theorem foo_holds : FooResidual`
     after `#exit` as a discharge, or
-  - a custom `axiom` declaration whose name is not an allowlisted, documented
-    residual (see scripts/residual_axioms.txt), with any modifiers (including
-    `public`/`meta` in `module` files) and with the name on a later line or
-    after a comment, or
+  - a custom `axiom` declaration that is not a reviewed residual pinned in
+    scripts/residual_axioms.txt, with any modifiers (including `public`/`meta`
+    in `module` files), with the name on a later line or after a comment, and
+    with any Lean name form (Unicode, `«quoted»`, qualified, `_root_.`).
+    Each manifest entry pins ONE declaration by its fully qualified name, its
+    defining file and a digest of its reviewed signature (the text after the
+    name, comments dropped, plus the in-scope `variable`/`universe`/`open`/
+    `export`/`include`/`omit` commands, which change its elaborated type).
+    A copy under another namespace, a move to another file, or any change to
+    the statement or that context fails until the manifest entry is updated in
+    a reviewed change (`--print-residual-manifest` prints the current pins).
+    Pinning a residual records a documented assumption; it proves nothing, or
   - an `axiom` keyword followed by an antiquotation (`axiom $n` in a syntax
     quotation), which lets a macro declare an axiom under any name, or
-  - a second declaration of an allowlisted residual name. The allowlist stores
-    simple names, so an entry matches an `axiom` declared inside any namespace;
-    without this rule a clone such as
-    `namespace Sneaky … axiom foldOracleVerifier_rbrKnowledgeSoundness : False … end`
-    inherits a documented entry and launders a new axiom under a trusted name.
-    One entry documents exactly one declaration, or
   - a `theorem`/`lemma` whose statement type is `True`, or any bracketing /
     `∧` `∨` `→` `↔` combination built only from `True` (e.g. `(True)`,
     `True ∧ (True)`), which is equally vacuous, unless `True` is rebound by a
@@ -70,30 +74,42 @@ provided, scans only those Lean files/directories. Fails if live
     assembled from string pieces (`"skipKernel" ++ "TC"`) or a `-D` flag passed directly to Lean
     is outside this scan.
 
-Comment and docstring occurrences are ignored. Comments, string/raw-string/char
-literals and guillemet-quoted identifiers are lexed together (see `lex_lean`),
-and identifier boundaries use Lean's own identifier characters (`αbad`, `ébad`,
-`𝔽bad` are names). A string literal whose plain and interpolated readings would
-disagree about what is a comment fails the check rather than being guessed. `sorry`/`admit` are handled
-separately by scripts/sorry_census.py --fail-on-holes; this precheck runs
-before any Lean toolchain is set up, so CI fails fast on laundering attempts.
+Comment and docstring occurrences are ignored. Lexing is shared with
+scripts/sorry_census.py and scripts/check-research-boundary.py
+(scripts/lean_lexer.py): comments (including doc comments, whose body starts
+after `/--`), string/raw-string/char literals, interpolation holes, quoted
+identifiers, identifiers and numbers are lexed together with Lean's own
+identifier characters (`αbad`, `ébad`, `𝔽bad` are names). Whether a `"…"`
+is plain or interpolated depends on its consumer, so every combination of
+readings of the ambiguous literals is lexed; if the readings disagree about
+comments, quoted identifiers or declarations, the check fails rather than
+guessing. `sorry`/`admit` are handled separately by
+scripts/sorry_census.py --fail-on-holes; this precheck runs before any Lean
+toolchain is set up, so CI fails fast on laundering attempts.
 
-The one-declaration rule needs both declarations in the scanned set, so it is
-enforced by the full-tree scan that CI (`.github/workflows/ci.yml`) and
-`scripts/validate.sh` run. A file-scoped invocation still enforces every other
-check and still rejects two declarations of an allowlisted name inside the file
-it was given.
+This is a lexical precheck, not an elaborated declaration or axiom audit: a
+macro or elaborator that builds a declaration without the `axiom` keyword in
+the source is not visible to it. The post-build `scripts/axiom_audit.py`
+checks the flagship declarations' axiom dependencies and lists, from Lean's
+environment metadata, every axiom of the `ArkLib`/`Research` modules it
+imports, each of which must be a pin of this manifest.
 """
 
 from __future__ import annotations
 
+import argparse
+import bisect
 import hashlib
-import json
 import re
+import json
 import subprocess
 import sys
 import tomllib
 from pathlib import Path
+from typing import NamedTuple
+
+import lean_lexer
+from lean_lexer import COMMENT, CODE, ID_FIRST, ID_REST, Reading
 
 # Native reduction primitives can be called directly without a tactic spelling.
 TOKEN_RE = re.compile(
@@ -128,32 +144,14 @@ EXIT_RE = re.compile(r"#exit")
 
 
 # --- Lean identifier characters ---------------------------------------------
-# Mirrors `isLetterLike`, `isSubScriptAlnum`, `isIdFirst` and `isIdRest` in
-# Lean v4.30.0-rc2 (src/lean/Init/Meta/Defs.lean). `Char.isAlpha` and
-# `Char.isAlphanum` are ASCII-only there, so e.g. `ébad`, `αbad` and `𝔽bad` are
-# identifiers but other Unicode letters are not.
-_LETTER_LIKE = (
-    "\u03b1-\u03ba\u03bc-\u03c9"              # lower Greek except λ
-    "\u0391-\u039f\u03a1\u03a2\u03a4-\u03a9"  # upper Greek except Π and Σ
-    "\u03ca-\u03fb"                             # Coptic
-    "\u1f00-\u1ffe"                             # polytonic Greek
-    "\u2100-\u214f"                             # letterlike symbols
-    "\U0001d49c-\U0001d59f"                     # script/double-struck/fraktur
-    "\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u00ff"  # Latin-1 letters except × and ÷
-    "\u0100-\u017f"                             # Latin Extended-A
-)
-_SUBSCRIPT_ALNUM = "\u2080-\u2089\u2090-\u209c\u1d62-\u1d6a\u2c7c"
-ID_FIRST = "A-Za-z_" + _LETTER_LIKE
-ID_REST = "A-Za-z0-9_'!?" + _LETTER_LIKE + _SUBSCRIPT_ALNUM
-_ID_REST_RE = re.compile("[" + ID_REST + "]")
-# One name component: a plain identifier or a guillemet-quoted `«…»` one (which
-# may contain any character but `»`, newlines included).
-_COMP = "(?:[" + ID_FIRST + "][" + ID_REST + "]*|«[^»]*»)"
-# Not preceded by an identifier character, a name separator or an opening
-# guillemet: the following token starts a new identifier/keyword.
-_ID_START = "(?<![" + ID_REST + ".«])"
-# Not followed by an identifier character: the preceding token ends here.
-_ID_END = "(?![" + ID_REST + "])"
+# Shared with the lexer (scripts/lean_lexer.py), which mirrors Lean's
+# `isIdFirst`/`isIdRest`: e.g. `ébad`, `αbad` and `𝔽bad` are identifiers.
+# One name component (a plain identifier or a guillemet-quoted `«…»` one), the
+# token-start / token-end guards, and a possibly qualified declaration name.
+_COMP = lean_lexer.COMP
+_ID_START = lean_lexer.ID_START
+_ID_END = lean_lexer.ID_END
+_NAME = lean_lexer.NAME
 # Lean declaration-modifier `unsafe`, matched as a keyword (see the comment
 # where the old line-anchored form lived). Defined here because it needs
 # `_ID_START` / `_ID_END` above.
@@ -162,7 +160,7 @@ UNSAFE_DECL_RE = re.compile(
     r"(?:(?:public|protected|private|scoped|noncomputable|partial|nonrec|meta|local)\s+)*"
     r"(?:theorem|lemma|def|abbrev|opaque|constant|axiom|instance|structure|inductive|class|example)\b"
 )
-
+_ID_REST_RE = re.compile("[" + ID_REST + "]")
 _ID_FIRST_RE = re.compile("[" + ID_FIRST + "]")
 # `native_decide` is `decide +native` (`Init/Tactics.lean`, `DecideConfig.native`).
 # `elabConfig` elaborates each optConfig item and evaluates the term, so
@@ -403,13 +401,6 @@ def native_eval_hits(live: str, quoted: list[tuple[int, int]]) -> list[tuple[int
             hits.append((m.start(), " ".join(live[m.start() : stop].split())))
     return hits
 
-
-# Capture the declared axiom name so it can be checked against the residual
-# allowlist. The name may be namespaced/contain primes; we keep the simple
-# token as written at the declaration site.
-# Lean declaration names: plain identifiers (possibly namespaced/primed) or
-# guillemet-quoted `«…»` components.
-_NAME = _COMP + r"(?:\." + _COMP + r")*"
 # `axiom` is a reserved keyword in Lean 4, so any live (non-comment) `axiom`
 # token starts an axiom declaration, whatever modifiers, attributes or docstring
 # precede it. Matching the keyword itself (rather than a line-anchored modifier
@@ -431,8 +422,8 @@ AXIOM_RE = re.compile(_ID_START + r"axiom" + _ID_END + r"\s*(" + _NAME + r")")
 AXIOM_ANTIQUOT_RE = re.compile(_ID_START + r"axiom" + _ID_END + r"\s*\$")
 # Text inside a guillemet-quoted identifier (`«an axiom counterfeit'»`) is part
 # of a name, not a command, so an `axiom` match that starts inside one is not a
-# declaration. Quoted-identifier spans come from `lex_lean`, which also lexes
-# string, raw-string and char literals, so a `«` inside a literal (`"«"`,
+# declaration. Quoted-identifier spans come from the shared lexer, which also
+# lexes string, raw-string and char literals, so a `«` inside a literal (`"«"`,
 # `'«'`) never opens a span and cannot hide a real `axiom` command.
 # Declaration heads, matched like `axiom` above: Lean's command parser does not
 # care about line breaks, so `def keep : Nat := 1 theorem t : True := trivial`
@@ -618,16 +609,54 @@ _BRACKET_OPEN = {"(": ")", "[": "]", "{": "}", "⟨": "⟩"}
 _BRACKET_CLOSE = {")", "]", "}", "⟩"}
 
 
-def load_allowlist(path: Path) -> set[str]:
-    """Names of documented residual axioms permitted in live source."""
+class Pin(NamedTuple):
+    """One reviewed residual axiom: exactly one declaration, pinned three ways."""
+
+    fqn: str      # fully qualified name (canonical spelling, see `canonical_name`)
+    file: str     # defining file, relative to the repository root (POSIX)
+    digest: str   # `sha256:` digest of the reviewed signature (`signature_digest`)
+    note: str     # the entry's trailing comment (tracking issue, short note)
+    line: int     # line number in the manifest
+
+
+# `<fully qualified name>  <defining file>  sha256:<64 hex>  # note`
+_MANIFEST_RE = re.compile(
+    r"[ \t]*(" + _NAME + r")[ \t]+(\S+)[ \t]+(sha256:[0-9a-f]{64})[ \t]*(?:#[ \t]*(.*))?\Z"
+)
+
+
+def canonical_name(name: str) -> str:
+    """`name` with redundant guillemets dropped (`«foo».bar` is `foo.bar`)."""
+    return ".".join(c[1:-1] if c.startswith("«") and re.fullmatch(
+        "[" + ID_FIRST + "][" + ID_REST + "]*", c[1:-1]) else c for c in _components(name))
+
+
+def load_manifest(path: Path) -> tuple[dict[str, Pin], list[str]]:
+    """Reviewed residual-axiom pins by fully qualified name, and format errors."""
+    pins: dict[str, Pin] = {}
+    errors: list[str] = []
     if not path.exists():
-        return set()
-    names: set[str] = set()
-    for raw in path.read_text(encoding="utf-8").splitlines():
-        line = raw.split("#", 1)[0].strip()
-        if line:
-            names.add(line.split()[0])
-    return names
+        return pins, errors
+    for number, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        stripped = raw.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        m = _MANIFEST_RE.match(raw)
+        if not m:
+            errors.append(
+                f"{path}:{number}: malformed residual-axiom entry {stripped!r}; expected "
+                f"`<fully qualified name>  <defining file>  sha256:<digest>  # note` "
+                f"(python3 scripts/forbidden_tokens.py --print-residual-manifest prints "
+                f"the current pins)"
+            )
+            continue
+        fqn = canonical_name(m.group(1))
+        if fqn in pins:
+            errors.append(f"{path}:{number}: residual axiom {fqn} is pinned twice "
+                          f"(also line {pins[fqn].line}); one entry documents one declaration")
+            continue
+        pins[fqn] = Pin(fqn, m.group(2), m.group(3), (m.group(4) or "").strip(), number)
+    return pins, errors
 
 
 def scan_plan(args: list[str]) -> tuple[list[Path], bool, list[str]]:
@@ -705,234 +734,250 @@ def lakefile_debug_option_hits(text: str) -> list[tuple[str, str]]:
 
 
 # --- Lean lexing ------------------------------------------------------------
-# Comments, string literals, raw strings, char literals and quoted identifiers
-# must be lexed together: `"/-"` or `'«'` is a literal, not a comment or
-# identifier opener, while `«a -- b»` or `«x'»` is one identifier.
-_CHAR_LIT_RE = re.compile(r"'(?:\\(?:x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|.)|[^\\'\n])'", re.DOTALL)
-_RAW_OPEN_RE = re.compile(r'r(#*)"')
-# Syntax that Lean core parses as `interpolatedStr(term)`, whose `{…}` holes are
-# code (with their own comments and strings): `s!`/`m!`/`f!`/`v!`-style `ident!`
-# prefixes (also `println!`), `throwError`, `throwErrorAt t` and `trace[…]`.
-_INTERP_PREFIX_RE = re.compile(
-    r"(?:[" + ID_REST + r"]!|" + _ID_START + r"throwError" + _ID_END + r"|\])[ \t]*\Z")
-_INTERP_AT_RE = re.compile(_ID_START + r"throwErrorAt" + _ID_END + r"[^\n\"]*\Z")
+# Comments, string literals, raw strings, char literals, quoted identifiers,
+# identifiers and numbers are lexed together by scripts/lean_lexer.py, shared
+# with scripts/sorry_census.py and scripts/check-research-boundary.py: `"/-"`
+# or `'«'` is a literal, `«a -- b»` or `«x'»` is one identifier, and `/--/ "`
+# is still inside a doc comment. `lean_lexer.explore` returns every reading of
+# the file's ambiguous plain/interpolated literals; readings[0] follows the
+# syntactic guess. Command checks run on `Reading.code_text()` (comments and
+# top-level literals blanked); token checks run on the text that is code in
+# some reading, which keeps interpolation holes (`s!"{by decide +native}"`).
 
 
-class LexResult:
-    def __init__(self, n: int):
-        self.mask = [False] * n
-        self.quoted: list[tuple[int, int]] = []
-        # String literals whose plain and interpolated readings end at different
-        # offsets: Lean's choice depends on the parser context.
-        self.ambiguous: list[int] = []
-        # Top-level string/char literal spans (interpolation holes included):
-        # their text is data, never a command such as `axiom`.
-        self.strings: list[tuple[int, int]] = []
-
-
-class _Lexer:
-    def __init__(self, text: str, flip: frozenset[int] = frozenset(), record: bool = True):
-        self.text, self.n, self.flip, self.record = text, len(text), flip, record
-        self.res = LexResult(self.n)
-
-    def _token_start(self, i: int) -> bool:
-        return i == 0 or not _ID_REST_RE.match(self.text[i - 1])
-
-    def _mark(self, a: int, b: int) -> None:
-        if self.record:
-            for k in range(a, min(b, self.n)):
-                self.res.mask[k] = True
-
-    def block_comment(self, i: int) -> int:
-        """`i` is at `/-`; return the offset after the matching `-/`."""
-        text, n, depth, j = self.text, self.n, 1, i + 2
-        while j < n and depth:
-            if text.startswith("/-", j):
-                depth += 1
-                j += 2
-            elif text.startswith("-/", j):
-                depth -= 1
-                j += 2
-            else:
-                j += 1
-        self._mark(i, j)
-        return j
-
-    def guess_interpolated(self, i: int) -> bool:
-        before = self.text[max(0, i - 200):i]
-        return bool(_INTERP_PREFIX_RE.search(before) or _INTERP_AT_RE.search(before))
-
-    def string(self, i: int, interpolated: bool) -> int:
-        """`i` is at `"`; return the offset after the closing `"`."""
-        text, n, j = self.text, self.n, i + 1
-        while j < n:
-            c = text[j]
-            if c == "\\":
-                j += 2
-            elif c == '"':
-                return j + 1
-            elif c == "{" and interpolated:
-                j = self.code(j + 1, nested=True)
-                j += 1  # past the closing `}`
-            else:
-                j += 1
-        return n
-
-    def code(self, i: int, nested: bool = False) -> int:
-        """Lex code from `i`; if `nested`, stop at the `}` closing a `{…}` hole."""
-        text, n, depth = self.text, self.n, 0
-        while i < n:
-            c = text[i]
-            if text.startswith("--", i):
-                j = text.find("\n", i)
-                j = n if j == -1 else j
-                self._mark(i, j)
-                i = j
-            elif text.startswith("/-", i):
-                i = self.block_comment(i)
-            elif c == '"':
-                guess = self.guess_interpolated(i)
-                interp = guess != (i in self.flip)
-                if self.record:
-                    plain_end = _Lexer(text, record=False).string(i, False)
-                    if ("{" in text[i:plain_end]
-                            and _Lexer(text, record=False).string(i, True) != plain_end):
-                        self.res.ambiguous.append(i)
-                j = self.string(i, interp)
-                if self.record and not nested:
-                    self.res.strings.append((i, j))
-                i = j
-            elif c == "r" and self._token_start(i) and (m := _RAW_OPEN_RE.match(text, i)):
-                close = '"' + m.group(1)
-                j = text.find(close, m.end())
-                j = n if j == -1 else j + len(close)
-                if self.record and not nested:
-                    self.res.strings.append((i, j))
-                i = j
-            elif c == "'" and self._token_start(i) and (m := _CHAR_LIT_RE.match(text, i)):
-                if self.record and not nested:
-                    self.res.strings.append((i, m.end()))
-                i = m.end()
-            elif c == "«":
-                j = text.find("»", i + 1)
-                if j == -1:  # unterminated: Lean rejects the file; exempt nothing
-                    i += 1
-                else:
-                    if self.record:
-                        self.res.quoted.append((i, j + 1))
-                    i = j + 1
-            elif nested and c == "{":
-                depth += 1
-                i += 1
-            elif nested and c == "}":
-                if depth == 0:
-                    return i
-                depth -= 1
-                i += 1
-            else:
-                i += 1
-        return n
-
-
-def lex_lean(text: str, flip: frozenset[int] = frozenset()) -> LexResult:
-    """Comment mask and quoted-identifier spans of a Lean source file.
-
-    `flip` lists string-literal offsets whose plain/interpolated reading is
-    inverted relative to the syntactic guess (used to test ambiguity).
-    """
-    lexer = _Lexer(text, flip)
-    lexer.code(0)
-    return lexer.res
-
-
-def ambiguous_literals(text: str, res: LexResult) -> list[int]:
-    """Ambiguous string literals whose other reading changes comment/identifier structure.
-
-    Whether `"…{…}…"` is a plain or an interpolated string depends on the
-    parser (any macro may take `interpolatedStr(term)`). When the two readings
-    differ we lex the file both ways; if that changes which characters are
-    comments or quoted identifiers, the scan cannot be trusted, so it fails.
-    """
-    bad = []
-    for off in res.ambiguous:
-        alt = lex_lean(text, frozenset({off}))
-        if (alt.mask != res.mask or alt.quoted != res.quoted
-                or command_view(text, alt) != command_view(text, res)):
-            bad.append(off)
-    return bad
-
-
-def code_text(text: str, res: LexResult) -> str:
-    """`text` with comments and string/char literals blanked (newlines kept).
-
-    Only this text can hold commands: `#eval IO.println "axiom foo"` declares
-    nothing, so `axiom` inside a literal is data, not a declaration.
-    """
-    blank = list(res.mask)
-    for a, b in res.strings:
-        for k in range(a, min(b, len(blank))):
-            blank[k] = True
-    return "".join(ch if (ch == "\n" or not blank[i]) else " " for i, ch in enumerate(text))
+def non_comment_mask(readings: list[Reading]) -> bytes:
+    """1 for every character that is outside a comment in at least one reading."""
+    acc = 0
+    width = len(readings[0].kind)
+    full = (1 << (8 * width)) - 1 if width else 0
+    ones = int.from_bytes(b"\x01" * width, "big")
+    for reading in readings:
+        acc |= (int.from_bytes(reading.comment_mask(), "big") ^ full) & ones
+    return acc.to_bytes(width, "big")
 
 
 def outside_quoted(offset: int, quoted: list[tuple[int, int]]) -> bool:
-    """Command heads cannot start inside a guillemet identifier."""
-    return not any(a <= offset < b for a, b in quoted)
+    """Command heads cannot start inside a guillemet identifier.
+
+    `quoted` is sorted and its spans do not overlap (lexer order).
+    """
+    i = bisect.bisect_right(quoted, (offset, sys.maxsize)) - 1
+    return i < 0 or not quoted[i][0] <= offset < quoted[i][1]
 
 
-def declaration_heads(code: str, res: LexResult) -> list[re.Match]:
+def declaration_heads(code: str, reading: Reading) -> list[re.Match]:
     """Live declaration heads in source order (`DECL_RE` and `CONSTANT_DECL_RE`)."""
     heads = [m for rx in (DECL_RE, CONSTANT_DECL_RE) for m in rx.finditer(code)
-             if outside_quoted(m.start(), res.quoted)]
+             if outside_quoted(m.start(), reading.quoted)]
     return sorted(heads, key=lambda m: m.start())
 
 
-def axiom_hits(code: str, res: LexResult) -> list[tuple[int, str]]:
-    """Live `axiom` declarations: offset and declared name."""
-    return [(m.start(), m.group(1)) for m in AXIOM_RE.finditer(code)
-            if outside_quoted(m.start(), res.quoted)]
+def axiom_hits(code: str, reading: Reading) -> list[re.Match]:
+    """Live `axiom` declarations (`AXIOM_RE` matches; group 1 is the name)."""
+    return [m for m in AXIOM_RE.finditer(code) if outside_quoted(m.start(), reading.quoted)]
 
 
-def antiquoted_axiom_hits(code: str, res: LexResult) -> list[int]:
+def antiquoted_axiom_hits(code: str, reading: Reading) -> list[int]:
     """Live `axiom $…` heads in syntax quotations: the name comes from elaboration."""
     return [m.start() for m in AXIOM_ANTIQUOT_RE.finditer(code)
-            if outside_quoted(m.start(), res.quoted)]
+            if outside_quoted(m.start(), reading.quoted)]
 
 
-def exit_hits(code: str, res: LexResult) -> list[int]:
+def exit_hits(code: str, reading: Reading) -> list[int]:
     """Offsets of live `#exit` commands."""
-    return [m.start() for m in EXIT_RE.finditer(code) if outside_quoted(m.start(), res.quoted)]
+    return [m.start() for m in EXIT_RE.finditer(code) if outside_quoted(m.start(), reading.quoted)]
 
 
-def command_view(text: str, res: LexResult) -> tuple:
-    """What the checks see under one lexing: axiom, declaration, placebo and `#exit` hits."""
-    code = code_text(text, res)
-    return (axiom_hits(code, res),
-            [(m.start(), m.group(1), m.group(2)) for m in declaration_heads(code, res)],
-            find_true_placebos(text, res),
-            exit_hits(code, res),
-            antiquoted_axiom_hits(code, res))
+def command_view(reading: Reading, code: str | None = None) -> tuple:
+    """What the checks see under one reading: axiom, declaration, placebo and `#exit` hits."""
+    code = reading.code_text() if code is None else code
+    return ([(m.start(), m.group(1)) for m in axiom_hits(code, reading)],
+            [(m.start(), m.group(1), m.group(2)) for m in declaration_heads(code, reading)],
+            find_true_placebos(reading, code),
+            exit_hits(code, reading),
+            antiquoted_axiom_hits(code, reading))
 
 
-def comment_mask(text: str) -> list[bool]:
-    """Return per-char mask: True if the char is inside a comment/docstring."""
-    return lex_lean(text).mask
+def disagreeing_readings(readings: list[Reading], base_code: str) -> list[Reading]:
+    """Readings whose comments, quoted identifiers or commands differ from readings[0].
+
+    Whether `"…{…}…"` is a plain or an interpolated string depends on the
+    parser (any macro may take `interpolatedStr(term)`). If another reading of
+    the ambiguous literals changes which characters are comments or quoted
+    identifiers, or which declarations exist, the scan cannot be trusted.
+    """
+    base = readings[0]
+    view = (base.comment_mask(), base.quoted, command_view(base, base_code))
+    return [r for r in readings[1:] if (r.comment_mask(), r.quoted, command_view(r)) != view]
+
+
+def comment_mask(text: str) -> bytes:
+    """Per-character mask: 1 if the character is inside a comment or docstring."""
+    return lean_lexer.lex(text).comment_mask()
+
+
+# --- Residual-axiom pins ------------------------------------------------------
+# A residual axiom is pinned by its fully qualified name, its defining file and a
+# digest of its reviewed signature. Namespaces follow `namespace`/`section`/
+# `mutual`/`end` (keywords, so matched anywhere, not only at a line start).
+_SCOPE_RE = re.compile(_ID_START + r"(namespace|section|mutual|end)" + _ID_END)
+_LINE_NAME_RE = re.compile(r"[ \t]*(" + _NAME + r")")
+_NEXT_NAME_RE = re.compile(r"\s*(" + _NAME + r")")
+# Commands that change how an axiom's statement elaborates without changing its
+# text: section variables (and which of them are included), universes, and the
+# namespaces opened for name resolution.
+_CONTEXT_RE = re.compile(_ID_START + r"(variable|universe|open|export|include|omit)" + _ID_END)
+# Tokens that only ever start a command (never occur inside a term), so the
+# signature of a bodyless `axiom` ends at the first one after its name. `open`
+# and `set_option` are left out because `open X in t` and `set_option o v in t`
+# are also terms; `unsafe`/`meta` are left out for the same caution (a
+# declaration keyword, which is listed, always follows them as modifiers).
+_COMMAND_KEYWORDS = (
+    "axiom|theorem|lemma|def|abbrev|opaque|instance|example|structure|class|inductive"
+    "|coinductive|mutual|namespace|section|end|private|protected|noncomputable|partial"
+    "|nonrec|public|variable|universe|attribute|export|include|omit|notation|infix"
+    "|infixl|infixr|prefix|postfix|macro|macro_rules|syntax|elab|elab_rules"
+    "|declare_syntax_cat|initialize|builtin_initialize|deriving|add_decl_doc"
+)
+_HASH_COMMAND = r"|@\[|" + _ID_START + r"#[A-Za-z_]"
+_DECL_END_RE = re.compile(_ID_START + r"(?:" + _COMMAND_KEYWORDS + r")" + _ID_END + _HASH_COMMAND)
+_CONTEXT_END_RE = re.compile(
+    _ID_START + r"(?:" + _COMMAND_KEYWORDS + r"|open|set_option)" + _ID_END + _HASH_COMMAND)
+_IN_SUFFIX_RE = re.compile(_ID_START + r"in\Z")
+
+
+class AxiomSite(NamedTuple):
+    start: int          # offset of the `axiom` keyword
+    name: str           # the declared name as written
+    fqn: str | None     # fully qualified name; None if the scopes cannot be followed
+    digest: str         # `signature_digest` of the declaration in its context
+
+
+def normalized_source(reading: Reading, start: int, stop: int) -> str:
+    """Source in `[start, stop)` with comments dropped and code whitespace collapsed.
+
+    Literal text (strings, chars) is kept verbatim.
+    """
+    text, kind = reading.text, reading.kind
+    out: list[str] = []
+    space = False
+    for i in range(start, stop):
+        ch, k = text[i], kind[i]
+        if k == COMMENT or (k == CODE and ch.isspace()):
+            space = True
+            continue
+        if space and out:
+            out.append(" ")
+        space = False
+        out.append(ch)
+    return "".join(out)
+
+
+def signature_digest(signature: str, context: list[str]) -> str:
+    """Digest of an axiom's normalized signature and in-scope context commands."""
+    payload = "".join(f"context {c}\n" for c in context) + f"signature {signature}\n"
+    return "sha256:" + hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def axiom_sites(reading: Reading, code: str) -> list[AxiomSite]:
+    """Every live `axiom` with its fully qualified name and signature digest.
+
+    The signature is the text after the declared name up to the next command
+    (binders, universe parameters and type). Its context is every in-scope
+    `variable`/`universe`/`open`/`export`/`include`/`omit` command, each
+    normalized, outermost scope first; a `… in` form counts only for the
+    declaration right after it. An unbalanced or mismatched `end` makes every
+    later name unknown (`fqn` None), so the pin check fails closed.
+    """
+    axioms = axiom_hits(code, reading)
+    if not axioms:
+        return []
+    quoted = reading.quoted
+    events = [(m.start(), 0, m) for m in _SCOPE_RE.finditer(code)
+              if outside_quoted(m.start(), quoted)]
+    events += [(m.start(), 1, m) for m in _CONTEXT_RE.finditer(code)
+               if outside_quoted(m.start(), quoted)]
+    events += [(m.start(), 2, m) for m in axioms]
+    events.sort(key=lambda e: e[0])
+    heads = [h.start() for h in declaration_heads(code, reading)]
+    # Scope stack entries: [kind, name component or None, context commands].
+    stack: list[list] = []
+    file_context: list[str] = []
+    once: list[tuple[int, str]] = []
+    ok = True
+    sites: list[AxiomSite] = []
+    for off, tag, m in events:
+        if tag == 0:
+            keyword = m.group(1)
+            if keyword == "namespace":
+                name = _NEXT_NAME_RE.match(code, m.end())
+                if not name:
+                    ok = False
+                    continue
+                stack += [["namespace", canonical_name(c), []] for c in _components(name.group(1))]
+            elif keyword == "mutual":
+                stack.append(["mutual", None, []])
+            else:
+                name = _LINE_NAME_RE.match(code, m.end())
+                comps = ([canonical_name(c) for c in _components(name.group(1))]
+                         if name else [None])
+                if keyword == "section":
+                    stack += [["section", c, []] for c in comps]
+                    continue
+                for comp in reversed(comps):  # `end A.B` closes `B`, then `A`
+                    if not stack or stack[-1][1] != comp:
+                        ok = False
+                        break
+                    stack.pop()
+        elif tag == 1:
+            stop = _CONTEXT_END_RE.search(code, m.end())
+            body = normalized_source(reading, m.start(), stop.start() if stop else len(code))
+            if _IN_SUFFIX_RE.search(body):
+                once.append((off, body))
+            else:
+                (stack[-1][2] if stack else file_context).append(body)
+        else:
+            comps = [canonical_name(c) for c in _components(m.group(1))]
+            if comps[0] == "_root_":
+                comps = comps[1:]
+            else:
+                comps = [e[1] for e in stack if e[0] == "namespace"] + comps
+            context = file_context + [c for e in stack for c in e[2]]
+            context += [body for at, body in once
+                        if not any(at < h < off for h in heads)]
+            stop = _DECL_END_RE.search(code, m.end())
+            signature = normalized_source(reading, m.end(), stop.start() if stop else len(code))
+            sites.append(AxiomSite(off, m.group(1), ".".join(comps) if ok else None,
+                                   signature_digest(signature, context)))
+    return sites
+
+
+def repo_path(path: Path, root: Path) -> str:
+    """`path` relative to `root` (POSIX), or its absolute path outside `root`."""
+    resolved = path.resolve()
+    try:
+        return resolved.relative_to(root.resolve()).as_posix()
+    except ValueError:
+        return resolved.as_posix()
 
 
 def simple_name(name: str) -> str:
-    """Final component of a possibly namespaced Lean declaration name."""
-    return name.rsplit(".", 1)[-1]
+    """Final component of a possibly qualified Lean name (`«a.b»` is one component)."""
+    comps = _components(name)
+    return canonical_name(comps[-1]) if comps else name
 
 
-def is_allowlisted(name: str, allowlist: set[str]) -> bool:
-    return name in allowlist or simple_name(name) in allowlist
+def is_residual_like(name: str, residual_names: set[str]) -> bool:
+    """Is `name` obligation-like (a vacuous `True` under it launders a debt)?
 
-
-def is_residual_like(name: str, allowlist: set[str]) -> bool:
+    `residual_names` holds the full and simple names of the pinned residuals.
+    This is a naming heuristic only; authorizing an `axiom` needs its exact pin.
+    """
     final = simple_name(name)
     low = final.lower()
     return (
-        is_allowlisted(name, allowlist)
+        canonical_name(name) in residual_names
+        or final in residual_names
         # Obligation-like names carry the residual suffix in the library's
         # camelCase convention (`fiatShamir_hvzkTransferResidual`,
         # `claim57Residuals`) as well as snake_case (`foo_residual`); matching
@@ -1243,22 +1288,24 @@ def true_is_shadowed(binders: str, decl_start: int, scopes: TrueScopes) -> bool:
     return scopes.shadowed_at(decl_start) or "True" in binder_names(binders)
 
 
-def find_true_placebos(text: str, res: LexResult) -> list[tuple[int, str]]:
+def find_true_placebos(reading: Reading, live: str | None = None) -> list[tuple[int, str]]:
     """Find `theorem`/`lemma` declarations whose statement type is exactly `True`.
 
-    Returns a list of `(line, name)`. Comment/docstring characters are blanked
-    first (newlines preserved, so line numbers stay accurate). For each
+    Returns a list of `(line, name)`. Comment/docstring and literal characters
+    are blanked first (`live`, defaulting to `reading.code_text()`; newlines
+    preserved, so line numbers stay accurate). For each
     declaration head we walk its signature tracking bracket depth, locate the
     top-level statement colon (binder colons live inside brackets) and the
     top-level `:=` that begins the proof, and flag it when the type between them
     is built only from `True` (see `is_vacuous_true`) and `True` is not rebound
-    by a binder, `variable` or file-level declaration (see `true_is_shadowed`). Stopping at `:=` keeps in-proof `have … : True := …`
-    steps from being mistaken for the declaration's statement.
+    by a binder, `variable` or file-level declaration (see `true_is_shadowed`).
+    Stopping at `:=` keeps in-proof `have … : True := …` steps from being
+    mistaken for the declaration's statement.
     """
-    live = code_text(text, res)
-    scopes = TrueScopes(live, res.quoted)
+    live = reading.code_text() if live is None else live
+    scopes = TrueScopes(live, reading.quoted)
     decls = [m for m in PLACEBO_DECL_RE.finditer(live)
-             if outside_quoted(m.start(), res.quoted)]
+             if outside_quoted(m.start(), reading.quoted)]
     hits: list[tuple[int, str]] = []
     for idx, m in enumerate(decls):
         name = m.group(2)
@@ -1287,65 +1334,158 @@ def find_true_placebos(text: str, res: LexResult) -> list[tuple[int, str]]:
     return hits
 
 
+def parse_args(argv: list[str]) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Reject axiom-laundering tokens in live Lean source (CI gate 1).")
+    parser.add_argument("paths", nargs="*",
+                        help="Lean files or directories "
+                             "(default: ArkLib/, Research/ and ProximityPrize/)")
+    parser.add_argument("--allowlist", type=Path, default=ALLOWLIST_PATH,
+                        help="reviewed residual-axiom manifest "
+                             "(default: scripts/residual_axioms.txt)")
+    parser.add_argument("--root", type=Path, default=REPO_ROOT,
+                        help="directory the manifest's file paths are relative to "
+                             "(default: the repository root)")
+    parser.add_argument("--print-residual-manifest", action="store_true",
+                        help="print the pin line of every live axiom in the scanned files "
+                             "(for a reviewed manifest update) and exit")
+    return parser.parse_args(argv)
+
+
+def ambiguity_failure(path: Path, text: str, offset: int) -> str:
+    line = text.count("\n", 0, offset) + 1
+    return (
+        f"{path}:{line}: string literal reads differently as a plain and as an "
+        f"interpolated string, which changes what is a comment, a quoted identifier or "
+        f"a declaration; the scan cannot be trusted here, so rewrite the literal (in a "
+        f"plain string write `{{` as `\\x7b`; `\\{{` is only valid in an interpolated one)"
+    )
+
+
+def print_manifest(sites: list[tuple[Path, str, str, AxiomSite]], pins: dict[str, Pin]) -> int:
+    """Print a manifest line for every live axiom (`--print-residual-manifest`)."""
+    status = 0
+    for path, text, rel, site in sites:
+        if site.fqn is None:
+            line = text.count("\n", 0, site.start) + 1
+            print(f"# {path}:{line}: cannot determine the fully qualified name of axiom "
+                  f"{site.name}")
+            status = 1
+            continue
+        pin = pins.get(site.fqn)
+        note = pin.note if pin and pin.note else "TODO: tracking issue and short note"
+        print(f"{site.fqn}  {rel}  {site.digest}  # {note}")
+    return status
+
+
+def check_axiom(path: Path, text: str, rel: str, site: AxiomSite,
+                pins: dict[str, Pin]) -> str | None:
+    """None if `site` is exactly its reviewed pin, else the failure message."""
+    line = text.count("\n", 0, site.start) + 1
+    where = f"{path}:{line}"
+    if site.fqn is None:
+        return (f"{where}: forbidden custom axiom declaration {site.name}: its fully "
+                f"qualified name cannot be determined (unbalanced or mismatched "
+                f"namespace/section/end), so it cannot match a reviewed pin")
+    pin = pins.get(site.fqn)
+    suggestion = f"`{site.fqn}  {rel}  {site.digest}`"
+    if pin is None:
+        same_name = sorted(p.fqn for p in pins.values()
+                           if simple_name(p.fqn) == simple_name(site.fqn))
+        if same_name:
+            return (f"{where}: forbidden custom axiom declaration {site.name}: "
+                    f"{site.fqn} is not the pinned residual {', '.join(same_name)}; a "
+                    f"scripts/residual_axioms.txt entry pins one fully qualified "
+                    f"declaration in one file, so a copy or relocation under another "
+                    f"namespace is not a documented assumption")
+        full = "" if site.fqn == canonical_name(site.name) else f" ({site.fqn})"
+        return (f"{where}: forbidden custom axiom declaration {site.name}{full}; "
+                f"prove it or state it as an explicit Prop. Only a documented, tracked "
+                f"residual may be pinned in scripts/residual_axioms.txt, after review, as "
+                f"{suggestion}")
+    if pin.file != rel or pin.digest != site.digest:
+        return (f"{where}: residual axiom {site.fqn} does not match its reviewed pin "
+                f"(scripts/residual_axioms.txt:{pin.line} expects {pin.file} "
+                f"{pin.digest}; found {rel} {site.digest}): its statement, an in-scope "
+                f"variable/universe/open/export/include/omit command, or its file changed. "
+                f"Review the new statement; only if it is still the intended documented "
+                f"assumption, update the entry to {suggestion}")
+    return None
+
+
 def main() -> int:
-    files, full_arklib_scan, path_errors = scan_plan(sys.argv[1:])
+    args = parse_args(sys.argv[1:])
+    files, full_arklib_scan, path_errors = scan_plan(args.paths)
     if path_errors:
         print("\n".join(path_errors), file=sys.stderr)
         return 1
 
-    allowlist = load_allowlist(ALLOWLIST_PATH)
+    pins, manifest_errors = load_manifest(args.allowlist)
+    residual_names = set(pins) | {simple_name(fqn) for fqn in pins}
     inherited = InheritedSourcePolicy()
-    failures: list[str] = []
+    failures: list[str] = list(manifest_errors)
     allowed_hits: list[str] = []
     inherited_hits: list[str] = []
-    seen_allowed: set[str] = set()
-    allow_sites: dict[str, list[str]] = {}
+    present: set[str] = set()
+    pinned_sites: dict[str, list[str]] = {}
+    manifest_sites: list[tuple[Path, str, str, AxiomSite]] = []
     for path in files:
         text = path.read_text(encoding="utf-8", errors="replace")
-        lexed = lex_lean(text)
-        mask = lexed.mask
-        for off in ambiguous_literals(text, lexed):
-            line = text.count("\n", 0, off) + 1
+        rel = repo_path(path, args.root)
+        readings, exhausted = lean_lexer.explore(text)
+        base = readings[0]
+        live_text = base.code_text()
+        if args.print_residual_manifest:
+            manifest_sites += [(path, text, rel, s) for s in axiom_sites(base, live_text)]
+            continue
+        if exhausted:
             failures.append(
-                f"{path}:{line}: string literal reads differently as a plain and as an "
-                f"interpolated string, which changes what is a comment; the scan cannot "
-                f"be trusted here, so rewrite the literal (e.g. escape `{{` as `\\{{`)"
+                f"{path}: more than {lean_lexer.DEFAULT_BUDGET} readings of its ambiguous "
+                f"plain/interpolated string literals; the scan cannot be trusted, so "
+                f"rewrite those literals"
             )
-        live_text = code_text(text, lexed)
-        for m in TOKEN_RE.finditer(text):
-            if not mask[m.start()]:
-                line = text.count("\n", 0, m.start()) + 1
-                failures.append(f"{path}:{line}: forbidden token {m.group(1)}")
-        for offset, form in native_eval_hits(live_text, lexed.quoted):
+        reported: set[int] = set()
+        for other in disagreeing_readings(readings, live_text):
+            offset = min(other.flips)
+            if offset not in reported:
+                reported.add(offset)
+                failures.append(ambiguity_failure(path, text, offset))
+        # Code in at least one reading, interpolation holes included.
+        any_live = text if exhausted else lean_lexer.blank(text, lean_lexer.live_mask(readings))
+        for m in TOKEN_RE.finditer(any_live):
+            line = text.count("\n", 0, m.start()) + 1
+            failures.append(f"{path}:{line}: forbidden token {m.group(1)}")
+        for offset, form in native_eval_hits(any_live, base.quoted):
             line = text.count("\n", 0, offset) + 1
             failures.append(f"{path}:{line}: forbidden native evaluation configuration `{form}`")
-        for m in META_DECL_RE.finditer(text):
-            if not mask[m.start()]:
-                line = text.count("\n", 0, m.start()) + 1
-                failures.append(
-                    f"{path}:{line}: forbidden metaprogram declaration `{m.group(0)}` "
-                    f"(adds a kernel declaration, e.g. an axiom, without an `axiom` "
-                    f"keyword; state residuals as `def ...Residual : Prop`)"
-                )
-        for off in exit_hits(live_text, lexed):
+        for m in META_DECL_RE.finditer(any_live):
+            line = text.count("\n", 0, m.start()) + 1
+            failures.append(
+                f"{path}:{line}: forbidden metaprogram declaration `{m.group(0)}` "
+                f"(adds a kernel declaration, e.g. an axiom, without an `axiom` "
+                f"keyword; state residuals as `def ...Residual : Prop`)"
+            )
+        for off in exit_hits(any_live, base):
             line = text.count("\n", 0, off) + 1
             failures.append(
                 f"{path}:{line}: forbidden `#exit` (Lean stops checking the file here, "
                 f"but text-based gates such as the residual census still read what "
                 f"follows; delete the unchecked tail or move it to a scratch file)"
             )
-        for m in DEBUG_OPTION_RE.finditer(text):
-            if not mask[m.start()]:
-                line = text.count("\n", 0, m.start()) + 1
-                failures.append(
-                    f"{path}:{line}: forbidden Lean debug option `debug.{m.group(1)}` "
-                    f"(skips the kernel type checker or replaces the proof with `sorryAx` "
-                    f"without a `sorry` token, so neither the sorry census nor "
-                    f"`#print axioms` can see the hole)"
-                )
-        scopes = TrueScopes(live_text, lexed.quoted)
+        # Debug option names: comments are data, string and char literals stay live
+        # (a metaprogram can build the option name from a string).
+        non_comment = text if exhausted else lean_lexer.blank(text, non_comment_mask(readings))
+        for m in DEBUG_OPTION_RE.finditer(non_comment):
+            line = text.count("\n", 0, m.start()) + 1
+            failures.append(
+                f"{path}:{line}: forbidden Lean debug option `debug.{m.group(1)}` "
+                f"(skips the kernel type checker or replaces the proof with `sorryAx` "
+                f"without a `sorry` token, so neither the sorry census nor "
+                f"`#print axioms` can see the hole)"
+            )
+        scopes = TrueScopes(live_text, base.quoted)
         for m in UNSAFE_DECL_RE.finditer(live_text):
-            if not outside_quoted(m.start(), lexed.quoted):
+            if not outside_quoted(m.start(), base.quoted):
                 continue
             line = text.count("\n", 0, m.start()) + 1
             failures.append(
@@ -1353,13 +1493,13 @@ def main() -> int:
                 f"(repository policy rejects live `unsafe` decls; prove in safe "
                 f"Lean or track a residual — this precheck is not a kernel-escape claim)"
             )
-        decls = declaration_heads(live_text, lexed)
+        decls = declaration_heads(live_text, base)
         for decl_index, dm in enumerate(decls):
             kind, name = dm.group(1), dm.group(2)
             next_decl_start = decls[decl_index + 1].start() if decl_index + 1 < len(decls) else None
             if kind in OPAQUE_KINDS:
                 limit = next_decl_start if next_decl_start is not None else len(live_text)
-                if not opaque_has_body(live_text, dm.end(), limit, lexed.quoted):
+                if not opaque_has_body(live_text, dm.end(), limit, base.quoted):
                     line = text.count("\n", 0, dm.start()) + 1
                     failures.append(
                         f"{path}:{line}: bodyless {kind} declaration {name} introduces an "
@@ -1371,7 +1511,7 @@ def main() -> int:
                 continue
             if kind in {"theorem", "lemma"}:
                 continue
-            if not is_residual_like(name, allowlist):
+            if not is_residual_like(name, residual_names):
                 continue
             end = declaration_header_end(live_text, dm.end(), next_decl_start)
             header = live_text[dm.end():end]
@@ -1385,29 +1525,27 @@ def main() -> int:
                     f"a vacuous {kind} of type True; keep real residual debt as an "
                     f"explicit axiom/Prop, or remove the allowlist entry"
                 )
-        for am_start, name in axiom_hits(live_text, lexed):
-            idx = live_text.count("\n", 0, am_start) + 1
-            if is_allowlisted(name, allowlist):
-                final = simple_name(name)
-                seen_allowed.add(final)
-                allow_sites.setdefault(final, []).append(f"{path}:{idx}")
-                allowed_hits.append(f"{path}:{idx}: allowed documented residual axiom {name}")
-            else:
-                failures.append(
-                    f"{path}:{idx}: forbidden custom axiom declaration {name} "
-                    f"(add to scripts/residual_axioms.txt only if it is a documented, "
-                    f"tracked residual)"
-                )
+        for site in axiom_sites(base, live_text):
+            if site.fqn is not None:
+                present.add(site.fqn)
+            problem = check_axiom(path, text, rel, site, pins)
+            if problem:
+                failures.append(problem)
+                continue
+            where = f"{path}:{text.count(chr(10), 0, site.start) + 1}"
+            pinned_sites.setdefault(site.fqn, []).append(where)
+            allowed_hits.append(f"{where}: allowed documented residual axiom {site.fqn} "
+                                f"(pinned assumption, not a proof)")
 
-        for am_start in antiquoted_axiom_hits(live_text, lexed):
-            idx = live_text.count("\n", 0, am_start) + 1
+        for am_start in antiquoted_axiom_hits(any_live, base):
+            idx = text.count("\n", 0, am_start) + 1
             failures.append(
                 f"{path}:{idx}: forbidden custom axiom declaration with an antiquoted "
                 f"name (`axiom $…` in a syntax quotation lets a macro or elaborator "
                 f"declare an axiom whose name the allowlist never sees)"
             )
 
-        for line_no, name in find_true_placebos(text, lexed):
+        for line_no, name in find_true_placebos(base, live_text):
             if inherited.allows(path, name, "vacuous_true_theorem"):
                 inherited_hits.append(f"{path}:{line_no}: inherited upstream True stub {name} "
                                       "(byte-pinned debt; scripts/upstream-source-policy.json)")
@@ -1419,7 +1557,10 @@ def main() -> int:
                 f"statement or track it by its GitHub issue, not a `True` theorem."
             )
 
-    for lakefile in lakefile_paths(sys.argv[1:]):
+    if args.print_residual_manifest:
+        return print_manifest(manifest_sites, pins)
+
+    for lakefile in lakefile_paths(args.paths):
         try:
             hits = lakefile_debug_option_hits(lakefile.read_text(encoding="utf-8"))
         except (OSError, UnicodeError, tomllib.TOMLDecodeError) as exc:
@@ -1431,19 +1572,16 @@ def main() -> int:
                 f"Lake configuration at {location}"
             )
 
-    for name, sites in sorted(allow_sites.items()):
+    for fqn, sites in sorted(pinned_sites.items()):
         unique_sites = sorted(set(sites))
         if len(unique_sites) > 1:
             failures.append(
-                f"{name}: allowlisted residual axiom declared {len(unique_sites)} times "
+                f"{fqn}: pinned residual axiom declared {len(unique_sites)} times "
                 f"({', '.join(unique_sites)}); one residual_axioms.txt entry documents "
-                f"exactly one declaration, so a second declaration of the same simple name "
-                f"(for example a clone inside a fresh namespace) re-uses the entry to launder "
-                f"a new axiom. Remove the clone, or drop the entry if the documented axiom "
-                f"itself is gone"
+                f"exactly one declaration"
             )
 
-    stale = sorted(allowlist - seen_allowed)
+    stale = sorted(set(pins) - present)
     if full_arklib_scan and stale:
         print(
             "WARNING: residual_axioms.txt entries match no live axiom (discharged? "

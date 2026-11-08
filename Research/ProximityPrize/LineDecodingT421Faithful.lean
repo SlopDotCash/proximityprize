@@ -25,11 +25,12 @@ The "repaired" hypothesis is therefore *goal-equivalent* to the conclusion — i
 restatement of) what it sets out to prove, so it carries no content.
 
 This module gives the **non-circular** repair. The genuine open Guruswami–Sudan content is
-exposed as honest interpolation data — a *single* candidate codeword-pair `v = (v₀, v₁) ∈ C²`
-whose affine line `v₀ + γ·v₁` `µ`-agrees (weight `≥ α`) with the received line `u₀ + γ·u₁` at
-*every* bad scalar `γ` — together with the genuine failure of correlated agreement for that pair.
-This hypothesis is **strictly weaker** than `epsMCA = 0`: it asserts the existence of a shared
-low-degree interpolant covering the bad scalars, *not* the absence of bad scalars. From it the
+exposed as honest interpolation data — a *single*, otherwise arbitrary, candidate pair
+`v = (v₀, v₁)` of words (no membership in `C` or degree bound is assumed; `C` enters only
+through `mcaEvent`) whose affine line `v₀ + γ·v₁` `µ`-agrees (weight `≥ α`) with the received
+line `u₀ + γ·u₁` at *every* bad scalar `γ` — together with the genuine failure of correlated agreement for that pair.
+This hypothesis is **strictly weaker** than `epsMCA = 0`: it asserts the existence of a single
+shared pair `v` covering the bad scalars, *not* the absence of bad scalars. From it the
 **proven** BCIKS20 list-agreement-on-a-curve bound
 (`WeightedAgreement.sufficiently_large_list_agreement_on_curve_implies_correlated_agreement`)
 delivers a real list-size cap on the bad-scalar count:
@@ -38,10 +39,10 @@ delivers a real list-size cap on the bad-scalar count:
 
 i.e. per stack `ε_mca`-contribution `< (M·n + 1)/|F|` — the authentic `a/|F|` shape of T4.21
 (`l = 0` for the affine line, `M` the common denominator of the weight profile `µ`, `n = |ι|`).
-Contrapositive of the curve bound: were there `≥ M·n + 1` bad scalars sharing the interpolant,
+Contrapositive of the curve bound: were there `≥ M·n + 1` bad scalars sharing the pair `v`,
 the curve lemma would force correlated agreement, contradicting its failure.
 
-The remaining genuinely-open content is *constructing* the GS interpolant `v` (the
+The remaining genuinely-open content is *constructing* such a pair `v` (e.g. from the
 Guruswami–Sudan list decoder of `u₀ + Z·u₁` over `F(Z)`); this module faithfully isolates that
 as the explicit, non-circular hypothesis `hcover`/`hfail`, with the extraction itself proven.
 
@@ -70,9 +71,9 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 The *non-circular* replacement for the refuted black-box `lineDecodable_imp_epsMCA_le_target` and
 for the circular `MCAForallDoubleCover` repair (whose hypothesis is provably equivalent to the
 conclusion `ε_mca = 0` via `epsMCA_eq_zero_iff_MCAForallDoubleCover`). The open Guruswami–Sudan
-content is exposed as genuine interpolation data — a *single* candidate codeword-pair
-`v = (v₀, v₁) ∈ C²` whose affine line `v₀ + γ·v₁` `µ`-agrees (weight `≥ α`) with the received
-line `u₀ + γ·u₁` at *every* bad scalar `γ` — together with the genuine failure of correlated
+content is exposed as genuine interpolation data — a *single*, otherwise arbitrary, pair of words
+`v = (v₀, v₁)` (no `v i ∈ C` or degree hypothesis is needed) whose affine line `v₀ + γ·v₁`
+`µ`-agrees (weight `≥ α`) with the received line `u₀ + γ·u₁` at *every* bad scalar `γ` — together with the genuine failure of correlated
 agreement for that pair. From this the **proven** BCIKS20 list-agreement-on-a-curve bound
 (`sufficiently_large_list_agreement_on_curve_implies_correlated_agreement`) gives the real
 list-size cap
@@ -82,7 +83,7 @@ list-size cap
 i.e. per-stack `ε_mca`-contribution `< (M·n + 1)/|F|`, the genuine `a/|F|` shape of T4.21
 (`l = 0` for the affine line; `M` the common denominator of the weight profile `µ`, `n = |ι|`).
 
-The hypothesis is strictly weaker than the conclusion: it asserts a shared low-degree interpolant
+The hypothesis is strictly weaker than the conclusion: it asserts a single shared pair `v`
 covering the bad scalars, **not** the absence of bad scalars. Contrapositive of the curve bound:
 were there `≥ M·n + 1` bad scalars, the curve lemma would force correlated agreement,
 contradicting `hfail`. -/

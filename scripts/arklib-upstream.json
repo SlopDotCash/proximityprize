@@ -1178,6 +1178,75 @@
       ],
       "source_revision": "883e99d61e51264327b5fee859732d047f7d7038",
       "reason": "Generalize the coefficient universe without duplicating the upstream split/fold implementation, retaining the upstream proofs and zero-arity folding cases."
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/FunctionBinding/DegreeConflict.lean",
+      "upstream_blob": "d5840fc8fd6b2db9c5b61cfcfec656a242262e0a",
+      "sha256": "6d0bd897cca53f496c199e61690e977b0513d9258885f4db6fb94b602201ea79",
+      "declarations": [
+        "KZG.CommitmentScheme.findA",
+        "KZG.CommitmentScheme.findABase",
+        "KZG.CommitmentScheme.findACandidates",
+        "KZG.CommitmentScheme.findACandidates_length_le",
+        "KZG.CommitmentScheme.find_a_successful"
+      ],
+      "source_revision": "39c07bdd7f38e9d66912c72cd6ea340bd4c91c50",
+      "reason": "Audit L26: replace full (n+1)-subset enumeration in findA by a fixed n-point base plus one-point extensions (at most |U| interpolations), preserving the subset/card/degree specs."
+    },
+    {
+      "path": "ArkLib/Commitments/Functional/KZG/FunctionBinding/EvaluationBindingConflict.lean",
+      "upstream_blob": "62dc764951929f71174a2bad2b4c3ed7ab9b0387",
+      "sha256": "f8a29e841c86c7d494513f0a29c25e20c538c0db3a8add93898afc56cb03a377",
+      "declarations": [
+        "KZG.CommitmentScheme.chooseSConflict",
+        "KZG.CommitmentScheme.filter_map_conflict_length",
+        "KZG.CommitmentScheme.chooseSConflict_scan_size"
+      ],
+      "source_revision": "39c07bdd7f38e9d66912c72cd6ea340bd4c91c50",
+      "reason": "Audit L26: bounded (n+2)-prefix scan instead of full-field Array.range p scan."
+    },
+    {
+      "path": "ArkLib/Data/CodingTheory/Basic/Distance.lean",
+      "upstream_blob": "64432b6d08a0f12ef03121d587c916e2bf0062af",
+      "sha256": "4e6ebf1a434298f782e6f416943ddd0d8ae2b1657284ea7a6df6ea3d0f5b1648",
+      "declarations": [
+        "Code.possibleDistsToCode",
+        "Code.distToCode",
+        "Code.distToCode_singleton_self",
+        "Code.possibleDistsToCodeIncl",
+        "Code.possibleDistsToCode_subset_incl",
+        "Code.distToCodeIncl",
+        "Code.distToCodeIncl_eq_zero_of_mem"
+      ],
+      "source_revision": "39c07bdd7f38e9d66912c72cd6ea340bd4c91c50",
+      "reason": "Audit L90: document that possibleDistsToCode/distToCode exclude the queried word (distance to C \\ {w}, top at C = {w}) instead of calling distToCode a generalisation of distFromCode; add the genuine inclusive generic distance distToCodeIncl with singleton/in-code boundary lemmas; correct stale header numeric-type claims for Code.dist / dist'. Upstream declarations unchanged in content; standard axioms only."
+    },
+    {
+      "path": "ArkLib/OracleReduction/Execution.lean",
+      "upstream_blob": "18402da0ff5fd7dd8d0d8ad3736267a5ad3dc579",
+      "sha256": "e477ac5c72f68520abdeb0ad52938c8503abd1a5774397d4d39e13bdd4c35b8b",
+      "declarations": [
+        "OracleReduction.runWithLog_eq_runWithLog_reduction",
+        "OracleVerifier.run",
+        "OracleReduction.run",
+        "OracleReduction.runWithLog"
+      ],
+      "source_revision": "39c07bdd7f38e9d66912c72cd6ea340bd4c91c50",
+      "reason": "Mathematical correction: upstream runWithLog_eq_runWithLog_reduction restated run_eq_run_reduction (about run, not runWithLog); it now relates OracleReduction.runWithLog to toReduction.runWithLog up to tuple reassociation. Docstrings of OracleVerifier.run / OracleReduction.run / runWithLog corrected (no query log from run; verifier log records shared-oracle oSpec queries only). Directly checked under Lean 4.35; no callers of the corrected theorem."
+    },
+    {
+      "path": "ArkLib/OracleReduction/OracleInterface.lean",
+      "upstream_blob": "359e581a7da4cc9ee726a4af8e8dd923b2c678c6",
+      "sha256": "76a692bee960e6afb5903fcc70cf5117f57f0a38d7f1990b97343cbf52c206c1",
+      "declarations": [
+        "distanceLE_polynomial_degreeLE",
+        "distanceLE_polynomial_degreeLT_le",
+        "OracleInterface.distanceLE",
+        "OracleInterface.instTensorForall",
+        "OracleInterface.instProdForall"
+      ],
+      "source_revision": "39c07bdd7f38e9d66912c72cd6ea340bd4c91c50",
+      "reason": "Mathematical correction: upstream distanceLE_polynomial_degreeLE was stated for the degree-less-than interface; that statement is kept as distanceLE_polynomial_degreeLT_le and distanceLE_polynomial_degreeLE now proves the bound for instPolynomialDegreeLE (at most d agreements via root counting). Docstrings of distanceLE (agreement-count bound) and instTensorForall/instProdForall (sum-indexed queries; tensor instance identical to product) corrected. Directly checked under Lean 4.35, standard axioms; no in-repo callers of the renamed lemma."
     }
   ]
 }

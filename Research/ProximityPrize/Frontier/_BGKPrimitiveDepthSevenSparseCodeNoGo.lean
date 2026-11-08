@@ -8,6 +8,7 @@ import Research.ProximityPrize.Frontier._R390RelationResultantCertificate
 import Research.ProximityPrize.Frontier._R379SparseOrbitSupportBound
 import Research.ProximityPrize.Frontier._PrizeShapePrimeP30
 import Research.ProximityPrize.Frontier._PrizeShapePrimeP30Second
+import ArkLib.Data.CodingTheory.ProximityGap.SidonSubgroupClosed
 
 /-!
 # Primitive depth seven as a restricted-alphabet single-check code
@@ -450,18 +451,13 @@ theorem production_kelley_scale_exceeds_subgroup :
 
 section Production
 
-/-- An order-`2m` element has the required half-order value `-1`. -/
+/-- An order-`2m` element has the required half-order value `-1`. This is the `orderOf` form
+of the canonical `IsPrimitiveRoot.pow_half_eq_neg_one` (`SidonSubgroupClosed`), to which it
+delegates. -/
 theorem pow_half_eq_neg_one_of_orderOf_eq_two_mul
     {F : Type*} [Field F] {g : F} {m : Nat} (hm : 0 < m)
-    (hord : orderOf g = 2 * m) : g ^ m = -1 := by
-  have hprim : IsPrimitiveRoot g (2 * m) :=
-    IsPrimitiveRoot.iff_orderOf.mpr hord
-  have hsq : g ^ m * g ^ m = 1 := by
-    rw [← pow_add, show m + m = 2 * m by omega]
-    exact hprim.pow_eq_one
-  rcases mul_self_eq_one_iff.mp hsq with hone | hneg
-  · exact absurd hone (hprim.pow_ne_one_of_pos_of_lt hm.ne' (by omega))
-  · exact hneg
+    (hord : orderOf g = 2 * m) : g ^ m = -1 :=
+  (IsPrimitiveRoot.iff_orderOf.mpr hord).pow_half_eq_neg_one rfl hm.ne'
 
 local instance firstPrimeFact :
     Fact (Nat.Prime ArkLib.ProximityGap.PrizeShapePrimeP30.P) :=

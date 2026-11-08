@@ -13,11 +13,15 @@ import ArkLib.Data.CodingTheory.GuruswamiSudan.GSInterpolantSlopedCurve
 (the FULL sloping cost), which at Guruswami–Sudan parameters is `Θ(n)`
 (`≈ (L−1)·(m+½)³·n/(6√ρ)`).  Feeding that flat `Z`-budget `DZ = W` into the sharp window
 budget `sharpBudget … T ≈ 4·DZ·T²` (`SectionNewtonClearedSharp`) with tail horizon
-`T = DX + d·(k−1) ≤ 2D = Θ(n)` gives a matching-count threshold `Θ(n³)` — but the §6
-good-set count is only `|good| > (L−1)·errorBound·|F| = (L−1)·k²/(2·m_J)⁷ = Θ(n²)`
-(the `|F|` cancels in the Johnson branch of `errorBound`).  The in-tree producer therefore
-makes the section-Newton window **vacuous in the genuine regime**, short by a factor `Θ(n)`
-that no choice of `|F|` repairs.
+`T = DX + d·(k−1) ≤ 2D = Θ(n)` gives a *sufficient* matching-count threshold `Θ(n³)` — but the
+§6 good-set count *guaranteed* by the hypotheses is only
+`|good| > (L−1)·errorBound·|F| = (L−1)·k²/(2·m_J)⁷ = Θ(n²)` (the `|F|` cancels in the Johnson
+branch of `errorBound`).  This is a limitation of that *guarantee*, not an impossibility: it
+compares a lower bound on `|good|` with a sufficient threshold, so it does not show that the actual
+good set is too small (larger good sets are not excluded — e.g. for the zero curve the good set is
+all of `F`), nor that every intended window is vacuous.  What it shows is that, at the lazy cap,
+the guaranteed count cannot be used to discharge the window threshold in the genuine regime, short
+by a factor `Θ(n)` that no choice of `|F|` repairs.
 
 **The repair is the rank–nullity slack.**  The GS dimension margin
 `numVars − numConstraints ≈ n/8` is itself `Θ(n)`, so the sloped linear system stays
@@ -27,9 +31,15 @@ solvable at ANY cap `W` satisfying
 * `slopedBudgetCurve < (numVars − numConstraints)·(W + 1)`  (margin count),
 
 i.e. down to `W* ≈ slopedBudgetCurve/(numVars − numConstraints)`,
-`≈ (4/3)·(L−1)·(m+½)³/√ρ` — **constant in `n`**.  Then `sharpBudget ≈ 4·W*·T² = Θ(n²)`, and the good-set count covers
-the window iff `ρ^{3/2} ≳ (m+½)⁵·(2·m_J)⁷`, which holds at the BCIKS20 parameter coupling
-`m ≈ √ρ/(2η)`, `m_J = min(η, √ρ/20)`, for every rate, with room to spare.
+`≈ (4/3)·(L−1)·(m+½)³/√ρ` — **constant in `n`**.  Then `sharpBudget ≈ 4·W*·T² = Θ(n²)`, and
+(heuristically, by the same leading-order asymptotics) the guaranteed good-set count covers the
+window iff `ρ^{3/2} ≳ (m+½)⁵·(2·m_J)⁷`, which is expected at the BCIKS20 parameter coupling
+`m ≈ √ρ/(2η)`, `m_J = min(η, √ρ/20)`.
+
+**Scope (audit L74).**  The asymptotic estimates above are informal motivation.  The Lean theorems
+of this file are exactly the capped slope/count/rank–nullity statements listed below; they do not
+formalize the parameter coupling, the `Θ(·)` comparisons, or any all-rate end-to-end completion of
+the section-Newton window.
 
 This file is `GSInterpolantSlopedCurve.lean` with the cap as a parameter (and the target
 degree `D` generalized away from `gs_degree_bound`, which only the count ever used):

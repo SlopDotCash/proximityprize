@@ -6,6 +6,7 @@ Authors: ArkLib Contributors
 import Mathlib.Algebra.Polynomial.Expand
 import Mathlib.Algebra.Polynomial.Roots
 import Mathlib.Tactic
+import ArkLib.Data.CodingTheory.ProximityGap.CosetExactCount
 
 /-!
 # Round 22 (Issue #232) — the CONSTRUCTIVE PTE FAMILY inside the smooth domain: `expand` lifts
@@ -22,22 +23,38 @@ For `d > 0` and a base set `A` (`|A| = s`), the **lifted polynomial**
 is monic of degree `d·s`, and — being a polynomial in `X^d` — **every coefficient at an index not
 divisible by `d` vanishes** (`liftedPoly_coeff_eq_zero_of_not_dvd`, via `Polynomial.coeff_expand`).
 In particular the entire top window below the leading coefficient is identically zero
-(`liftedPoly_top_window_zero`): the lifted supports have `e₁ = ⋯ = e_{d−1} = 0`. Distinct bases
-give distinct lifts (`liftedPoly_injective`), so **ALL `C(|B|, s)` lifts of `s`-subsets of a base
-`B` are pairwise equal-symmetric up to depth `d−1`** — and the root set of `P_A` is exactly the
-power-map fiber `{x : x^d ∈ A}` (`liftedPoly_eval_eq_zero_iff`), a genuine subset of the smooth
-domain when `B = μ_{n/d} ⊂ μ_n`.
+(`liftedPoly_top_window_zero`). Distinct bases give distinct lifted *polynomials*
+(`liftedPoly_injective`), so the `C(|B|, s)` lifts of `s`-subsets of a base `B` are pairwise
+distinct polynomials with equal (zero) coefficients at depths `1, …, d−1`, over every field. The
+root set of `P_A` in `F` is exactly the power-map preimage `{x : x^d ∈ A}`
+(`liftedPoly_eval_eq_zero_iff`).
+
+**Polynomials versus supports.** Over an arbitrary field these polynomials need not be supports:
+`P_A` need not split, and if `char F ∣ d` its roots repeat. E.g. over `F₃` with `d = 2`, `A = {2}`,
+`P_A = X² + 1` has no root at all (`liftedPoly_two_singleton_two_no_root_zmod3`), so the distinct
+lifts of `{1}` and `{2}` do not give two equal-size root supports. The support reading holds on a
+genuine full split domain: if `F` has a primitive `n`-th root of unity (so `char F ∤ n`),
+`d ∣ n` and `A ⊆ μ_{n/d}`, then the root support `S_A := {x ∈ μ_n : x^d ∈ A}` has exactly `d·|A|`
+elements (`liftedSupport_card`, via `CosetExactCount.fiber_card_eq`),
+`P_A = ∏_{x∈S_A} (X − x)` (`liftedPoly_eq_prod_liftedSupport`), and `A ↦ S_A` is injective on
+subsets of `μ_{n/d}` (`liftedSupport_injOn`). Under exactly these hypotheses `pte_support_family`
+gives `C(n/d, s)` distinct `d·s`-subsets of `μ_n` whose `e₁ = ⋯ = e_{d−1} = 0`.
 
 ## The threshold arithmetic (what this settles)
 
-* PTE families at depth `t ≤ d−1`, `d ∣ n`: size `C(n/d, s)`, support size `w = d·s` —
-  constructive, every field, verified.
+* PTE families at depth `t ≤ d−1`, `d ∣ n`, inside `μ_n` (primitive `n`-th root in `F`): size
+  `C(n/d, s)`, support size `w = d·s` — constructive, verified (`pte_support_family`). The
+  polynomial-only statement `pte_family` holds over every field.
 * The Conjecture-41 deficiency window (equal `e₁,…,e_{w−c}`) requires `w − c ≤ d − 1`, i.e.
-  `d ≥ w−c+1`, forcing `s ≤ w/(w−c+1)`. At **deployment codimension** (`c, w−c = Θ(n)`):
-  `d = Θ(n)`, `s = O(1)`, family `C(n/d, s) = O(1)` — matching the conjecture's `M = O(1)`
-  prediction. Near **capacity** (`c = O(1)`): `s = Θ(w)`, family exponential — matching the
-  proven exponential `c = 2` phase. One construction explains both phases of the 2026/858
-  empirical phase diagram; its size IS the rounds-4–8 depth-collapse wall in deficiency language.
+  `d ≥ w−c+1`, forcing `s = w/d ≤ w/(w−c+1)`. At **deployment codimension** (`c, w−c = Θ(n)`):
+  `d = Θ(n)`, `s = O(1)`, family `C(n/d, s) = O(1)` — consistent with the conjecture's `M = O(1)`
+  prediction. Near **capacity** (`c = O(1)`) the same inequality gives
+  `s ≤ w/(w−c+1) = 1 + O(1/w)`, so (`s` being a positive integer) `s = 1` once `w ≥ 2c − 1`;
+  e.g. `c = 2`, `w = 100` forces `d ≥ 99`, `d ∣ 100`, hence `d = 100`, `s = 1`. With `w = Θ(n)`
+  the lifted family then has size `C(n/d, 1) = n/d = O(1)`. So this shallow construction does
+  **NOT** explain the exponential `c = 2` phase of the 2026/858 empirical phase diagram; that
+  phase needs a different mechanism (not supplied here). The construction accounts only for the
+  `O(1)` deployment-codimension floor.
 * **Honest residue:** whether non-lifted PTE families can beat `C(n/d, s)` in the deep window
   (non-cyclic deficiency at large `p`) is the open core — unchanged, with its constructive floor
   now verified.
@@ -145,8 +162,10 @@ theorem liftedPoly_injective {d : ℕ} (hd : 0 < d) :
 
 /-! ## 3. The lifted support is the power-map fiber -/
 
-/-- **Root characterization:** `P_A(x) = 0 ↔ x^d ∈ A` — the lifted support is exactly the fiber
-preimage of the base under the `d`-th power map (a `d·s`-subset of `μ_n` when `A ⊆ μ_{n/d}`). -/
+/-- **Root characterization:** `P_A(x) = 0 ↔ x^d ∈ A` — the root set of `P_A` in `F` is exactly
+the preimage of the base under the `d`-th power map. It has `d·|A|` elements only under extra
+hypotheses (a primitive `n`-th root of unity in `F`, `d ∣ n`, `A ⊆ μ_{n/d}`): see
+`liftedSupport_card`; over a general field it can be smaller, even empty. -/
 theorem liftedPoly_eval_eq_zero_iff (d : ℕ) (A : Finset F) (x : F) :
     (liftedPoly d A).eval x = 0 ↔ x ^ d ∈ A := by
   unfold liftedPoly
@@ -154,11 +173,13 @@ theorem liftedPoly_eval_eq_zero_iff (d : ℕ) (A : Finset F) (x : F) :
 
 /-! ## 4. The family count -/
 
-/-- **THE PTE FAMILY (headline).** For any base finset `B`, `s ≥ 1`, `d > 0`: the lifts of the
-`s`-subsets of `B` form `C(|B|, s)` pairwise-distinct monic-degree-`sd` polynomials whose
-coefficients agree (all zero) on the ENTIRE top window `{sd−1, …, sd−(d−1)}` — i.e. `C(|B|, s)`
-distinct supports with equal `e₁, …, e_{d−1}`. Instantiated at `B = μ_{n/d}` inside `μ_n`, these
-are genuine smooth-domain PTE families at every depth `t ≤ d−1`. -/
+/-- **THE PTE POLYNOMIAL FAMILY.** For any base finset `B`, `s ≥ 1`, `d > 0`: the lifts of the
+`s`-subsets of `B` form `C(|B|, s)` pairwise-distinct degree-`sd` polynomials whose coefficients
+agree (all zero) on the ENTIRE top window `{sd−1, …, sd−(d−1)}`. This is a statement about
+polynomials only: over a general field they need not split into `sd` distinct roots (see
+`liftedPoly_two_singleton_two_no_root_zmod3`). The support version — `C(n/d, s)` distinct
+`d·s`-subsets of `μ_n` with equal `e₁, …, e_{d−1}` — is `pte_support_family`, under a primitive
+`n`-th root of unity and `d ∣ n`. -/
 theorem pte_family (d s : ℕ) (hd : 0 < d) (hs : 1 ≤ s) (B : Finset F) :
     ∃ Ps : Finset F[X], Ps.card = B.card.choose s ∧
       (∀ P ∈ Ps, P.natDegree = s * d) ∧
@@ -178,6 +199,134 @@ theorem pte_family (d s : ℕ) (hd : 0 < d) (hs : 1 ≤ s) (B : Finset F) :
     have := liftedPoly_top_window_zero hd hAne hj1 hjd
     rwa [hA.2] at this
 
+/-! ## 5. Polynomials are not supports over a general field -/
+
+/-- **Counterexample to the universal support reading.** Over `F₃`, `d = 2`, `A = {2}`: the lift
+`P_A = X² − 2 = X² + 1` has degree `2` but no root in `F₃`, so its root support is empty, not a
+`2`-element set. Hence distinct lifts (here of `{1}` and `{2}`) need not give equal-size supports
+without the split-domain hypotheses of `liftedSupport_card`. -/
+theorem liftedPoly_two_singleton_two_no_root_zmod3 :
+    ∀ x : ZMod 3, (liftedPoly 2 ({2} : Finset (ZMod 3))).eval x ≠ 0 := by
+  intro x
+  rw [Ne, liftedPoly_eval_eq_zero_iff, Finset.mem_singleton]
+  revert x
+  decide
+
+/-! ## 6. The support bridge on a genuine split domain `μ_n` -/
+
+section Support
+
+open ArkLib.ProximityGap.Rigidity
+
+variable [DecidableEq F]
+
+/-- The **lifted support** of `A` inside `μ_n`: the `n`-th roots of unity whose `d`-th power lies
+in `A`. -/
+noncomputable def liftedSupport (n d : ℕ) (A : Finset F) : Finset F :=
+  (nthRootsFinset n (1 : F)).filter (fun x => x ^ d ∈ A)
+
+theorem mem_liftedSupport {n d : ℕ} (hn : 0 < n) {A : Finset F} {x : F} :
+    x ∈ liftedSupport n d A ↔ x ^ n = 1 ∧ x ^ d ∈ A := by
+  rw [liftedSupport, Finset.mem_filter, mem_nthRootsFinset hn (1 : F)]
+
+/-- **Support cardinality.** If `F` has a primitive `n`-th root of unity, `d ∣ n` and
+`A ⊆ μ_{n/d}`, the lifted support has exactly `d·|A|` elements (each power-map fiber over `μ_n`
+has `d` elements, `CosetExactCount.fiber_card_eq`). -/
+theorem liftedSupport_card {ζ : F} {n d : ℕ} (hn : 0 < n) (hdvd : d ∣ n)
+    (hζ : IsPrimitiveRoot ζ n) {A : Finset F} (hA : ∀ a ∈ A, a ^ (n / d) = 1) :
+    (liftedSupport n d A).card = d * A.card := by
+  have hS : liftedSupport n d A = A.biUnion (fun c => fiber n d c) := by
+    ext x
+    rw [mem_liftedSupport hn, Finset.mem_biUnion]
+    constructor
+    · rintro ⟨h1, h2⟩
+      exact ⟨_, h2, (mem_fiber hn).mpr ⟨h1, rfl⟩⟩
+    · rintro ⟨c, hc, hx⟩
+      rw [mem_fiber hn] at hx
+      exact ⟨hx.1, hx.2 ▸ hc⟩
+  rw [hS, Finset.card_biUnion]
+  · rw [Finset.sum_const_nat (m := d), Nat.mul_comm]
+    intro c hc
+    obtain ⟨g, hgn, hgc⟩ := exists_pow_eq_of_mem hn hdvd hζ (hA c hc)
+    exact fiber_card_eq hn hdvd hζ hgn hgc
+  · intro c _ c' _ hcc'
+    rw [Function.onFun, Finset.disjoint_left]
+    intro x hx hx'
+    rw [mem_fiber hn] at hx hx'
+    exact hcc' (hx.2.symm.trans hx'.2)
+
+/-- **The lift splits over its support.** Under the hypotheses of `liftedSupport_card`,
+`P_A = ∏_{x ∈ S_A} (X − x)`; so the vanishing coefficient window of `P_A` is a statement about the
+elementary symmetric functions of the `d·|A|`-element support `S_A`. -/
+theorem liftedPoly_eq_prod_liftedSupport {ζ : F} {n d : ℕ} (hn : 0 < n) (hdvd : d ∣ n)
+    (hζ : IsPrimitiveRoot ζ n) {A : Finset F} (hA : ∀ a ∈ A, a ^ (n / d) = 1) :
+    liftedPoly d A = ∏ x ∈ liftedSupport n d A, (X - C x) := by
+  have hd : 0 < d := Nat.pos_of_dvd_of_pos hdvd hn
+  have hmonic : (liftedPoly d A).Monic :=
+    Monic.expand hd (monic_prod_of_monic _ _ fun a _ => monic_X_sub_C a)
+  have hp0 : liftedPoly d A ≠ 0 := hmonic.ne_zero
+  have hle : (liftedSupport n d A).val ≤ (liftedPoly d A).roots := by
+    rw [Multiset.le_iff_subset (liftedSupport n d A).nodup]
+    intro x hx
+    rw [mem_roots hp0, IsRoot.def, liftedPoly_eval_eq_zero_iff]
+    exact ((mem_liftedSupport hn).mp hx).2
+  have hdeg : (liftedPoly d A).natDegree = Multiset.card (liftedSupport n d A).val := by
+    rw [Finset.card_val, liftedSupport_card hn hdvd hζ hA, liftedPoly_natDegree, Nat.mul_comm]
+  have hcard : Multiset.card (liftedPoly d A).roots ≤ Multiset.card (liftedSupport n d A).val :=
+    hdeg ▸ card_roots' _
+  have hroots : (liftedPoly d A).roots = (liftedSupport n d A).val :=
+    (Multiset.eq_of_le_of_card_le hle hcard).symm
+  rw [Finset.prod_eq_multiset_prod, ← hroots]
+  exact (prod_multiset_X_sub_C_of_monic_of_roots_card_eq hmonic (by rw [hroots, hdeg])).symm
+
+/-- **Distinct bases give distinct supports** on `μ_{n/d}` (the `d`-th power map from `μ_n` onto
+`μ_{n/d}` is surjective, `CosetExactCount.exists_pow_eq_of_mem`). -/
+theorem liftedSupport_injOn {ζ : F} {n d : ℕ} (hn : 0 < n) (hdvd : d ∣ n)
+    (hζ : IsPrimitiveRoot ζ n) {A A' : Finset F} (hA : ∀ a ∈ A, a ^ (n / d) = 1)
+    (hA' : ∀ a ∈ A', a ^ (n / d) = 1) (h : liftedSupport n d A = liftedSupport n d A') :
+    A = A' := by
+  have key : ∀ {A A' : Finset F}, (∀ a ∈ A, a ^ (n / d) = 1) →
+      liftedSupport n d A = liftedSupport n d A' → A ⊆ A' := by
+    intro A A' hA h c hc
+    obtain ⟨g, hgn, hgc⟩ := exists_pow_eq_of_mem hn hdvd hζ (hA c hc)
+    have hg : g ∈ liftedSupport n d A := (mem_liftedSupport hn).mpr ⟨hgn, hgc ▸ hc⟩
+    rw [h] at hg
+    exact hgc ▸ ((mem_liftedSupport hn).mp hg).2
+  exact Finset.Subset.antisymm (key hA h) (key hA' h.symm)
+
+/-- **THE PTE SUPPORT FAMILY (headline).** If `F` has a primitive `n`-th root of unity and
+`d ∣ n`, then for `s ≥ 1` there are `C(n/d, s)` pairwise-distinct `d·s`-subsets `S` of `μ_n` whose
+nodal polynomials `∏_{x∈S} (X − x)` have zero coefficients on the top window
+`{sd−1, …, sd−(d−1)}`, i.e. equal `e₁ = ⋯ = e_{d−1} = 0`. -/
+theorem pte_support_family {ζ : F} {n d s : ℕ} (hn : 0 < n) (hdvd : d ∣ n)
+    (hζ : IsPrimitiveRoot ζ n) (hs : 1 ≤ s) :
+    ∃ Ss : Finset (Finset F), Ss.card = (n / d).choose s ∧
+      (∀ S ∈ Ss, S ⊆ nthRootsFinset n (1 : F) ∧ S.card = d * s ∧
+        ∀ j, 1 ≤ j → j ≤ d - 1 → (∏ x ∈ S, (X - C x)).coeff (s * d - j) = 0) := by
+  have hd : 0 < d := Nat.pos_of_dvd_of_pos hdvd hn
+  have hnd : 0 < n / d := Nat.div_pos (Nat.le_of_dvd hn hdvd) hd
+  have hζd : IsPrimitiveRoot (ζ ^ d) (n / d) :=
+    IsPrimitiveRoot.pow hn hζ (by rw [Nat.mul_div_cancel' hdvd])
+  set B : Finset F := nthRootsFinset (n / d) (1 : F) with hB
+  have hBcard : B.card = n / d := hζd.card_nthRootsFinset
+  have hsub : ∀ A ∈ B.powersetCard s, ∀ a ∈ A, a ^ (n / d) = 1 := by
+    intro A hA a ha
+    exact (mem_nthRootsFinset hnd (1 : F)).mp ((Finset.mem_powersetCard.mp hA).1 ha)
+  refine ⟨(B.powersetCard s).image (liftedSupport n d), ?_, ?_⟩
+  · rw [Finset.card_image_of_injOn, Finset.card_powersetCard, hBcard]
+    intro A hA A' hA' h
+    exact liftedSupport_injOn hn hdvd hζ (hsub A hA) (hsub A' hA') h
+  · intro S hS
+    obtain ⟨A, hA, rfl⟩ := Finset.mem_image.mp hS
+    have hAs : A.card = s := (Finset.mem_powersetCard.mp hA).2
+    refine ⟨Finset.filter_subset _ _, ?_, ?_⟩
+    · rw [liftedSupport_card hn hdvd hζ (hsub A hA), hAs]
+    · intro j hj1 hjd
+      rw [← liftedPoly_eq_prod_liftedSupport hn hdvd hζ (hsub A hA), ← hAs]
+      exact liftedPoly_top_window_zero hd (Finset.card_pos.mp (by omega)) hj1 hjd
+
+end Support
+
 end Round22PTE
 
 #print axioms Round22PTE.liftedPoly_coeff_eq_zero_of_not_dvd
@@ -185,3 +334,8 @@ end Round22PTE
 #print axioms Round22PTE.liftedPoly_injective
 #print axioms Round22PTE.liftedPoly_eval_eq_zero_iff
 #print axioms Round22PTE.pte_family
+#print axioms Round22PTE.liftedPoly_two_singleton_two_no_root_zmod3
+#print axioms Round22PTE.liftedSupport_card
+#print axioms Round22PTE.liftedPoly_eq_prod_liftedSupport
+#print axioms Round22PTE.liftedSupport_injOn
+#print axioms Round22PTE.pte_support_family

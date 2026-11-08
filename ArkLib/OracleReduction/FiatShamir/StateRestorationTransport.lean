@@ -23,9 +23,11 @@ so the eventual coupled `simulateQ` proof can compare both games over the same t
 derivation surface.
 
 Most declarations here are API plumbing over the existing residual/coupling surfaces.  The
-canonical shared-challenge-table soundness and knowledge-soundness residuals are discharged below.
-The knowledge transfer records an optional extracted witness so extractor failure remains a bad
-knowledge-soundness outcome. Zero-knowledge transfer is treated separately.
+canonical shared-challenge-table soundness and knowledge-soundness residuals are discharged below;
+the knowledge transfer is `fiatShamir_knowledgeSoundnessTransferResidual_canonical`, whose
+extractor replays the verifier's challenge log (`verifyQueryLog.snd`). The knowledge transfer
+records an optional extracted witness so extractor failure remains a bad knowledge-soundness
+outcome. Zero-knowledge transfer is treated separately.
 -/
 
 noncomputable section
@@ -2829,10 +2831,15 @@ theorem fiatShamir_runWithLog_simulateQ_fst
 extractor call, from the transformed `runWithLog` game to the explicit adversary execution over
 `oSpec + fsChallengeOracle`.
 
-The proof first discards the query logs because
-`fiatShamirStraightlineExtractorOfStateRestoration` ignores them, then uses
+Scope of this intermediate statement: the extractor call written in the statement is **not** the
+canonical extractor. It re-derives the transcript separately (`Messages.deriveTranscriptFS`) and
+does not read the query logs, so the logs can be discarded; the proof does that, then uses
 `fiatShamir_runWithLog_simulateQ_fst` and the generic `simulateQ`/`OptionT` lift-collapse helper to
-remove the unused one-message verifier challenge layer around the extractor. -/
+remove the unused one-message verifier challenge layer around the extractor. (An earlier version
+said that `fiatShamirStraightlineExtractorOfStateRestoration` ignores the logs; it does not — the
+canonical extractor reads the verifier's challenge log `verifyQueryLog.snd`, which is what the
+log-backed closure `fiatShamir_knowledgeSoundnessTransferResidual_canonical` relies on.
+Re-deriving the transcript after an arbitrary stateful verifier run is not a safe substitute.) -/
 theorem fiatShamirKnowledgeExec_runCollapse
     {σ : Type}
     (impl : QueryImpl (oSpec + fsChallengeOracle StmtIn pSpec) (StateT σ ProbComp))
@@ -3864,7 +3871,8 @@ theorem fiatShamir_knowledgeSoundnessTransferResidual_canonical
   cases stmtOut? <;> rfl
 
 
--- The canonical knowledge transfer replays the verifier-side Fiat-Shamir query log. Re-deriving
+-- The canonical knowledge transfer (`fiatShamir_knowledgeSoundnessTransferResidual_canonical`)
+-- replays the verifier-side Fiat-Shamir query log. Re-deriving the transcript
 -- after verifier execution would allow original-oracle queries to mutate the cached table first.
 -- The direct bridge above preserves verifier rejection and records an optional extracted witness;
 -- the final event comparison retains extractor failure in the native knowledge-soundness event.

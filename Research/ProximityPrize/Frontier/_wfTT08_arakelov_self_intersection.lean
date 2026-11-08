@@ -18,12 +18,14 @@ archimedean places.  The candidate packages the product formula as the Arakelov 
 `deg-hat(div-hat θ_b) = 0` and asserts the "sharp Arakelov inequality" coupling the non-archimedean
 intersection multiplicities against the archimedean Green energy:
 
-> **CANDIDATE:** `House(θ_b)² ≤ n · exp( −2·content_b / φ(n) ) · (1 + spread)`,
+> **CANDIDATE:** `House(θ_b)² ≤ n · exp( −2·content_b / m ) · (1 + spread)`,
 > `content_b := ord_P(θ_b)·log p + (2-adic ord content) ≥ 0`,
 
 claiming that a LARGER non-archimedean arithmetic-intersection content (a "deep" period at the bad
-primes) FORCES a SMALLER archimedean House, and hence (when `content_b ≥ (1/2)φ(n)·log(p/n)`) the
-prize bound `M(n) ≤ √(n·log(p/n))`.
+primes) FORCES a SMALLER archimedean House, and hence (when `content_b ≥ (1/2)m·log(p/n)`) the
+prize bound `M(n) ≤ √(n·log(p/n))`.  Here `m := (p-1)/n = φ(p)/n` is the degree of the period
+field `ℚ(θ_b)`, i.e. the number of Galois conjugates of `θ_b` (the original candidate text wrote
+`φ(n)`; the correct normalising degree is `m`, which is what the probe table below uses).
 
 ## THE ARAKELOV / PRODUCT-FORMULA FACT — the candidate's sign is reversed
 
@@ -66,10 +68,12 @@ with `p = 1 mod n`, `p ≈ n⁴` (β=4), over ALL `φ(p)/n` conjugates:
 In EVERY case `content > 0` (the candidate's hypothesis: genuine non-unit at the bad primes), yet the
 true House `M(n) ≈ 5√n` is FAR ABOVE the candidate's ceiling (which *shrinks* toward a constant ≈1.88
 as content grows), and ALSO above `√n` itself.  The candidate is violated by a factor `≈ 30` at
-n=128 and growing.  The Arakelov truth `content ≥ 0 ∧ House ≥ geom-mean` holds in all 6 cases.
+n=128 and growing.  The Arakelov truth `content ≥ 0 ∧ House ≥ geom-mean` holds in all 5 tabulated cases.
 
-We certify the n=8 / p=4129 row axiom-clean: `content = 0.4081 > 0` (genuine non-unit), candidate
-ceiling `< 2`, true House `> 7`.
+The n=8 / p=4129 row is transcribed into Lean as two **numeric certificates** (§3): they check the
+rational/real inequalities `2 < 7` and `(1/2)·log 8 − 0.4081 < log 7` between the probe's measured
+values.  They are NOT derived from the periods themselves: the values `content = 0.4081`,
+candidate ceiling `< 2` and House `> 7` are imported from the Rust probe, not computed in Lean.
 
 ## The reduction (default outcome — REDUCES to the formalized wall)
 
@@ -114,7 +118,7 @@ namespace ProximityGap.Frontier.ArakelovSelfIntersection
 /-! ## 1. The Arakelov self-pairing identity = product formula (CORRECT direction)
 
 We model the place data abstractly to expose the coupling sign.  For the principal period section
-`θ` of degree `d = φ(n) > 0`:
+`θ` of degree `d = m = (p-1)/n > 0` (the number of conjugates of the period):
 * `A := Σ_{w arch} log|w θ|` is the archimedean log-mass;
 * `C := Σ_{v non-arch} N_v log|θ|_v ≤ 0` is the (non-positive, integer) non-archimedean sum;
 * `deg-hat(div-hat θ) = A + C = 0` is the Arakelov degree of the principal divisor.
@@ -184,8 +188,9 @@ has, maximized over conjugates:
 * true House `M(8) ≈ 7.558 > 7`.
 
 So `House ≈ 7.56` VASTLY exceeds the candidate ceiling `≈ 1.88` — the candidate's content lever
-points the wrong way.  We model the certified row by rational lower/upper witnesses and prove the
-violation axiom-clean. -/
+points the wrong way.  We transcribe the row by rational lower/upper witnesses taken from the probe
+output.  The two theorems below are **numeric transcriptions only**: they verify inequalities between
+those literals and contain no link to the actual period values. -/
 
 /-- The candidate's ceiling at the n=8 row, as a clean upper witness: `√8·e^{−content} < 2`. -/
 def candidateCeilingUpper : ℝ := 2
@@ -193,14 +198,15 @@ def candidateCeilingUpper : ℝ := 2
 /-- A clean lower witness for the true House at the n=8 row: `M(8) > 7`. -/
 def houseLower : ℝ := 7
 
-/-- **The Arakelov candidate is VIOLATED at the n=8, p=4129 Gaussian period.**  The candidate's
-House ceiling (`< 2`) is strictly below the true House (`> 7`): a genuine non-unit period
-(`content = 0.4081 > 0`, exactly the candidate's deep-period hypothesis) has House FAR ABOVE the
-candidate's ceiling, refuting `House ≤ √n·exp(−content)`. -/
+/-- **Numeric transcription of the n=8, p=4129 violation.**  This theorem only checks
+`(2 : ℝ) < 7`, i.e. that the probe's upper witness for the candidate ceiling is below its lower
+witness for the true House.  The witnesses themselves (`√8·e^{−0.4081} < 2`, `M(8) > 7`) come from
+the Rust probe and are not proved in Lean from the period `η_b`. -/
 theorem arakelov_candidate_violated : candidateCeilingUpper < houseLower := by
   unfold candidateCeilingUpper houseLower; norm_num
 
-/-- **Quantitative content-lever sign certificate (n=8 row).**  The candidate predicts
+/-- **Quantitative content-lever sign certificate (n=8 row; numeric transcription).**  This uses only
+the literal measured value `content = 4081/10000` and `House > 7` from the probe, not the period.  The candidate predicts
 `log House ≤ (1/2)·log n − content = (1/2)log 8 − 0.4081 ≈ 0.631`, whereas the real
 `log House = log 7.558 ≈ 2.022`.  Since `2.022 > 0.631`, the candidate's upper bound on `log House`
 is violated.  We certify the load-bearing inequality `(1/2)·log 8 − content < log 7` with

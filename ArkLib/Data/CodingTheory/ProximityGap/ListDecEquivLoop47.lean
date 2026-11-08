@@ -10,10 +10,13 @@ import Mathlib.Tactic
 # Loop 47 (EQUIVALENCE) — "many values at a random point" ⟹ proximity gaps stop at the
 # list-decoding radius (BCHKS §6, Lemma 6.1 / Theorem 1.9), the prize ⟺ list-decoding direction.
 
-The grind's verdict (Loop45/46) is that the #232 prize is *equivalent* to RS list-decoding with
-`q`-independent lists up to `1−ρ−η`. This loop machine-checks the load-bearing direction —
-**list-decoding failure forces a proximity-gap failure with a `q`-independent error** — which is the
-content of BCHKS Theorem 1.9 ("proximity gaps stop at the list decoding radius").
+The grind's (unformalized) verdict (Loop45/46) is that the #232 prize is *equivalent* to RS
+list-decoding with `q`-independent lists up to `1−ρ−η`. BCHKS Theorem 1.9 ("proximity gaps stop at
+the list decoding radius") asserts the direction **list-decoding failure forces a proximity-gap
+failure**. This loop does **not** machine-check that direction: it machine-checks (a) the generic
+many-values lemma and (b) the final *natural-number arithmetic* step of the argument, with the
+source-to-count translation (received word, RS code, list, bad-event definition, and the
+Claim 6.2 bridge producing the bad count) left as an explicit, unproved hypothesis.
 
 ## The combinatorial engine is already in-tree
 
@@ -29,25 +32,33 @@ from `cauchy_schwarz_fiber` by averaging the collision count over the evaluation
 * `manyValues_of_pairwise_agree`: for any family `c : Fin L → (ι → F)` of `L` functions on a finite
   point set `ι`, pairwise agreeing on `≤ A` points, **some point `i` carries
   `L·|ι| ≤ |{c j i}|·(|ι| + L·A)` distinct values** — i.e. `|values at i| ≥ L·|ι|/(|ι|+L·A)`.
-  Applied to a Hamming ball of `> q` Reed–Solomon codewords (`|ι| = q`, `A = k−1 < n`) this yields a
-  point with `Ω(q/n)` distinct values.
-* `thm19_qIndependence_contradiction`: the Theorem 1.9 punchline. If list-decoding fails at the prize
-  radius — a ball holds enough codewords that the bad-scalar count satisfies `q ≤ 2·D·bad`
-  (`bad ≥ q/(2D)`, `D = 2^m = |domain|`) — then **no fixed prize exponent `c₁` survives**: a field
-  with `q > 2·D^{c₁+1}` refutes `bad ≤ D^{c₁}`. Since `D` is fixed by `(ρ,η)` and `q → ∞` is allowed,
-  every `c₁` is eventually beaten. So the prize (a `q`-independent `ε_mca` bound) is **false** the
-  moment list-decoding fails below `1−ρ−η`.
+  Applied to a Hamming ball of `> q` Reed–Solomon codewords (`|ι| = q`, `A = k−1 < n`) this would
+  yield a point with `Ω(q/n)` distinct values (that application is not formalized here).
+* `thm19_qIndependence_contradiction`: a pure natural-number lemma — for `q, D, bad, c₁ : ℕ`,
+  `q ≤ 2·D·bad`, `bad ≤ D^{c₁}` and `q > 2·D^{c₁+1}` are jointly contradictory. It is the arithmetic
+  punchline of Theorem 1.9 *once* a list-decoding failure has been translated into the count
+  inequality `q ≤ 2·D·bad` (`D = 2^m = |domain|`); that translation is not proved here.
+* `prize_false_of_listDecoding_failure`: the same arithmetic lemma restated with the count
+  inequality named `hMany_bridge`; it contains no received word, RS code, list, or bad-event
+  definition.
 
 ## Honest status
 
-This is the *forward* (proof-side-of-the-equivalence) reduction: **list-decoding failure ⟹ prize
-false**. The one piece kept as a cited input is BCHKS Claim 6.2 — the rational-function bridge
-`f(x)=c(x)/(x−α)`, `g(x)=−1/(x−α)` turning "value `z` at `α`" into "`f+z·g` is `γ`-close" — stated as
-the hypothesis `hBridge` in `prize_false_of_listDecoding_failure`; formalizing it over the RS API is
-the next residual. Combined with the converse already in-tree (Loop8/O6′: prize ⟹ `q`-independent
-list), this pins the prize as **equivalent** to RS list-decoding to `1−ρ−η`. The prize remains OPEN;
-this loop proves it is *exactly as hard as* that classical problem, not harder, not easier. See
-`Research/ProximityPrize/DISPROOF_LOG.md` (Loop47).
+The **unproved source-to-count obligation** is: from an actual list-decoding failure (a Hamming ball
+at the prize radius containing `> q` RS codewords), construct a fixed received pair `(f, g)` and a
+bad-event count `bad` (bad combining scalars for an MCA/proximity-gap event) satisfying
+`q ≤ 2·D·bad`. This requires applying `manyValues_of_pairwise_agree` to the ball and BCHKS Claim 6.2
+— the rational-function bridge `f(x)=c(x)/(x−α)`, `g(x)=−1/(x−α)` turning "value `z` at `α`" into
+"`f+z·g` is `γ`-close", together with the far/no-joint property. In this file the whole obligation
+is **assumed** as the hypothesis `hMany_bridge` of `prize_false_of_listDecoding_failure`; there is
+no separate bridge hypothesis `hBridge` and no definition from which `bad` is computed. (See
+`BridgeClaim62Loop48.lean` for a partial bridge; it too still assumes the bad-set geometry.)
+
+Consequently this file does **not** machine-check "list-decoding failure ⟹ prize false", and does
+not establish the claimed equivalence of the prize with RS list-decoding to `1−ρ−η` (the converse
+direction, Loop8/O6′, is likewise a separate claim). This is not an assertion that the cited
+paper's reduction is false — only that its translation is not formalized here. The prize remains
+OPEN. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop47).
 -/
 
 open Finset Probability
@@ -59,11 +70,13 @@ variable {ι F : Type} [Fintype ι] [DecidableEq F]
 /-- **Deterministic "many values at a point" (BCHKS Lemma 6.1, product form).**
 For a family `c : Fin L → (ι → F)` of `L` functions on the finite point set `ι` that pairwise agree
 on at most `A` points, there is a point `i` at which the functions take many distinct values:
-`L·|ι| ≤ |{ c j i : j }| · (|ι| + (L−1)·A)`. Equivalently `|values at i| ≥ L·|ι|/(|ι|+(L−1)·A)`.
+`L·|ι| ≤ |{ c j i : j }| · (|ι| + L·A)`. Equivalently `|values at i| ≥ L·|ι|/(|ι|+L·A)`.
+(The proof's collision bound is `∑ collisions ≤ L²·A`, which gives the `L·A` form stated.)
 
 The proof averages the per-point Cauchy–Schwarz bound `L² ≤ |values_i|·(L + collisions_i)`
 (`cauchy_schwarz_fiber`) against the double-counted collision total
-`∑_i collisions_i ≤ L·(L−1)·A`, then picks the collision-minimising point. -/
+`∑_i collisions_i ≤ L²·A` (crudely bounding the `L·(L−1)` off-diagonal pairs by `L²`), then picks
+the collision-minimising point. -/
 theorem manyValues_of_pairwise_agree [Nonempty ι]
     {L A : ℕ} (c : Fin L → (ι → F))
     (hagree : ∀ j₁ j₂, j₁ ≠ j₂ →
@@ -127,13 +140,13 @@ theorem manyValues_of_pairwise_agree [Nonempty ι]
       _ = L * (b i₀ * (n + L * A)) := by ring
   exact Nat.le_of_mul_le_mul_left hLn hL
 
-/-- **Theorem 1.9 punchline — list-decoding failure breaks `q`-independence.**
-Write `D = 2^m = |domain|` and `bad` for the number of bad combining scalars the §6 construction
-exposes at the chosen point. If list-decoding fails at the prize radius badly enough that
-`q ≤ 2·D·bad` (i.e. `bad ≥ q/(2D)`, the Lemma-6.1 output), then **no fixed prize exponent `c₁`
-survives**: any field with `q > 2·D^{c₁+1}` refutes the `q`-independent prize bound `bad ≤ D^{c₁}`.
-Since `D` is pinned by `(ρ,η)` while `q → ∞` is permitted, the prize is false once list-decoding
-fails below `1−ρ−η`. -/
+/-- **Theorem 1.9 arithmetic punchline (natural numbers only).**
+For natural numbers `q, D, bad, c₁`: `q ≤ 2·D·bad`, `bad ≤ D^{c₁}` and `2·D^{c₁+1} < q` are jointly
+contradictory. Intended reading: `D = 2^m = |domain|` and `bad` the number of bad combining scalars
+that the §6 construction would expose; *if* a list-decoding failure at the prize radius were
+translated into `q ≤ 2·D·bad` (the unproved source-to-count obligation described in the module
+docstring), then no fixed prize exponent `c₁` would survive at fields with `q > 2·D^{c₁+1}`. This
+lemma proves only the arithmetic; it does not prove that the translation holds. -/
 theorem thm19_qIndependence_contradiction
     {q D bad c₁ : ℕ}
     (hbad : q ≤ 2 * D * bad)
@@ -146,14 +159,16 @@ theorem thm19_qIndependence_contradiction
       _ = 2 * D ^ (c₁ + 1) := by ring
   omega
 
-/-- **Assembled equivalence direction: list-decoding failure ⟹ prize false.**
-Given a family of `L > q` Reed–Solomon codewords inside a single Hamming ball at the prize radius
-(pairwise agreement `≤ A = k−1`), the many-values lemma exposes a point with
-`B := L·q/(q+(L−1)A)` distinct values; the cited BCHKS Claim 6.2 rational-function bridge
-(`hBridge`) turns each into a distinct bad combining scalar, so the bad count satisfies
-`q ≤ 2·D·bad`. Then `thm19_qIndependence_contradiction` refutes any `q`-independent prize triple at a
-large enough field. We package the two consumed facts — the many-values output `hMany` (a
-specialization of `manyValues_of_pairwise_agree`) and the bridge `hBridge` — explicitly. -/
+/-- **Arithmetic step with the source-to-count obligation assumed (not a reduction).**
+This is `thm19_qIndependence_contradiction` restated verbatim, with the count inequality named
+`hMany_bridge`. The intended (unformalized) argument: given `L > q` Reed–Solomon codewords inside
+a single Hamming ball at the prize radius (pairwise agreement `≤ A = k−1`), the many-values lemma
+would expose a point with about `L·q/(q+L·A)` distinct values, and the BCHKS Claim 6.2
+rational-function bridge would turn each into a distinct bad combining scalar, giving
+`q ≤ 2·D·bad`. **None of that is formalized here**: there is no received word, RS code, list or
+bad-event definition, and no separate bridge hypothesis — the entire translation is the single
+assumed hypothesis `hMany_bridge`. So this theorem is not a machine-checked
+"list-decoding failure ⟹ prize false" reduction; it is the final arithmetic step only. -/
 theorem prize_false_of_listDecoding_failure
     {q D bad c₁ : ℕ}
     (hMany_bridge : q ≤ 2 * D * bad)   -- many-values + Claim 6.2 bridge ⟹ bad ≥ q/(2D)

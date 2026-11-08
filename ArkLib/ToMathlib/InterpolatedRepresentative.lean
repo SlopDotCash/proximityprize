@@ -58,7 +58,14 @@ the sharp one.
 **NOT consumed**: `gammaGenuine` (the `hrep`-against-`gammaGenuine` shape is UNSATISFIABLE at
 `d_H ≥ 2`, FINDING F6, `GenuinePpolyConverter.not_hrepG_of_two_le_natDegree`); the sharp
 Claim 5.9 budget `Λ(α_t) = 1` (refuted); `PowerSeries.subst` of the shift series (invalid
-off-centre).  The target is `gammaLocal`, where `hrep` is satisfiable.
+off-centre).  The target is `gammaLocal`.  **Caveat (F6-Ω):** the switch to `gammaLocal`
+does NOT escape the order-0 obstruction.  `gammaLocal` has `Bcoeff`-independent constant
+coefficient `α₀ = T/W`, so the ground-line `hrep` against `gammaLocal` is also unsatisfiable
+whenever `2 ≤ H.natDegree`, for every `Bcoeff`
+(`LocalSeriesCorrected.not_hrep_gammaLocal_of_two_le_natDegree`).  The interpolation, counting
+and clearing theorems below are valid implications; at branch degree `≥ 2` their hypotheses
+are jointly unsatisfiable.  Changing the construction technique does not remove this
+structural obstruction; only the `d_H = 1` lane is not obstructed.
 
 ## What this file proves (Phase 2 — the bricks)
 
@@ -477,7 +484,10 @@ theorem interpolatedRep_hrep_hdegX
 
 /-- **Existential form** — the bundle's terminal per-`P` field pair: a representative with
 `hrep` and `hdegX` (and top degree `< #s`) **exists**, produced by interpolation at the loose
-budgets.  This is the satisfiable replacement for the refuted sharp-Claim-5.9 lane. -/
+budgets.  This replaces the refuted sharp-Claim-5.9 lane as an implication, but it is NOT
+satisfiable at `2 ≤ H.natDegree`: its conclusion is the F6-Ω-refuted ground-line `hrep`
+(`LocalSeriesCorrected.hrep_gammaLocal_unsat_of_two_le_natDegree`), so there the hypotheses are
+jointly unsatisfiable. -/
 theorem exists_representative_pair
     (x₀ : F) (R : F[X][X][Y]) (H : F[X][Y])
     [Fact (Irreducible H)] [Fact (0 < H.natDegree)] (hHyp : Hypotheses x₀ R H)

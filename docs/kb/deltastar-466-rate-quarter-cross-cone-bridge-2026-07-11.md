@@ -43,9 +43,13 @@ family (moments of `ĥ` for a nonnegative arithmetic weight `h`):
 
 1. **Completeness ratio** (`swarm_sub_burgess`, kernel): the swarm's incomplete
    sums have length `N = 2^30` over `F_P` with `N⁴ < P < N⁶`, i.e.
-   `θ = log_P N ≈ 0.19 < 1/4` — strictly BELOW the Burgess range; only
-   subgroup-specific (BGK) methods exist there.  The B-side's `J_j` are COMPLETE
-   (ratio 1; individually `√q` by Weil).
+   `θ = log_P N ≈ 0.19 < 1/4` — strictly BELOW the Burgess range, so the
+   general-modulus Burgess estimate does not apply and the known nontrivial bounds
+   are subgroup-specific (BGK).  *(Corrected 2026-10-28, audit T48: this limits those
+   input estimates; it is not an impossibility theorem for every technique.)*  The
+   B-side's `J_j` are COMPLETE (ratio 1). A Jacobi sum `J(χ, χ')` has modulus `√q` by
+   Weil only when `χ`, `χ'` and `χχ'` are all nontrivial; a nontrivial inverse pair
+   gives modulus `1` (the guard was dropped in the original text; cross R-215).
 2. **Moment depth**: B-side open inputs are fixed-depth family averages
    (`OffZeroLagBound ~ √m·q` at depth 1; `OffZeroQuadLagBound ~ m^{3/2}q²` at
    depth 2 / r = 4); the swarm needs a LIST-level statement — the exact second
@@ -55,9 +59,10 @@ family (moments of `ĥ` for a nonnegative arithmetic weight `h`):
    bracketed in `[N(k−1)/24a², N(k−1)/23a²]` → `23` — it counts heavy fibers of
    ONE map, not the number of swarm directions.
 3. A formal reduction would have to transport bounds across the completeness
-   ratio (`2^{−128} ↔ 1`) AND the depth (`list ↔ r = 4`); character-sum
-   technology does neither.  **The campaign's "one wall" convergence is
-   CLASS-level (one exponential-sum master family), not reduction-level.**
+   ratio (`2^{−128} ↔ 1`) AND the depth (`list ↔ r = 4`); no such transport is
+   known or formalized (not a proof that none exists).  **The campaign's "one wall"
+   convergence is CLASS-level (one exponential-sum master family); no reduction
+   between the two walls is known.**
 
 ## Bonus finding (named next target, not landed)
 
@@ -72,9 +77,10 @@ counting (`pool_separation`-style) — flagged for a future round.
 ## Honesty
 
 Neither `SwarmResidual` nor the B-side lag inputs are discharged or transported —
-the bridge is at the (closed) identity layer; the open layers are provably
-different objects.  No δ* movement; bracket `3/8 ≤ δ* ≤ 43/96 + 1/(3·2^30)`
-untouched.
+the bridge is at the (closed) identity layer; the open layers are different
+objects with no known reduction between them.  No δ* movement; bracket
+`3/8 ≤ δ* ≤ 43/96 + 1/(3·2^30)` untouched.  The exact fiber energy `16` and the
+Parseval values `4112` and `177844` at `M = 257` remain valid.
 
 ## Session status (nine rounds, 2026-07-11)
 

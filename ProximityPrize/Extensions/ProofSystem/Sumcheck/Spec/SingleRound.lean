@@ -27,7 +27,7 @@ import ProximityPrize.Extensions.Data.Fin.Basic
 
 We define a single round of the sum-check protocol as a two-message oracle reduction, and prove that
 it is perfect complete and round-by-round knowledge sound. Specification & security proofs of the
-full sum-check protocol are given in `Basic.lean`, following our sequential composition results.
+full sum-check protocol are given in `General.lean`, following our sequential composition results.
 
 ## Protocol Description
 
@@ -646,10 +646,10 @@ soundness / completeness machinery still applies via `toLens`). The routing data
 new
   challenge onto the running challenge vector), matching `oStmtLens.toFunB`'s statement shape.
 - `simOStmt`: answers each inner univariate evaluation query `⟨(), pt⟩` against the *outer*
-  multivariate oracle by `∑ y ∈ (univ.map D) ^ᶠ (n - 1), outerPoly.eval (sumPoint i pt stmtIn y)` —
-  the virtual `|D|^(n-1)`-fold summation, reading the prior `challenges` from the outer statement
-  via
-  `ReaderT`.
+  multivariate oracle by
+  `∑ y ∈ (univ.map D) ^ᶠ (n - 1 - i), outerPoly.eval (sumPoint i pt stmtIn y)` — the virtual
+  `|D|^(n-1-i)`-fold summation, reading the prior `challenges` from the outer statement via
+  `ReaderT`. Each inner query therefore costs `m ^ (n - 1 - i)` outer-oracle queries.
 - `embedOStmt`/`hEqOStmt`: the single output oracle is the (unchanged) input oracle, so we draw it
   from the input side (`.inl`) with definitional type coherence. -/
 noncomputable def sumcheckOracleLens (i : Fin n) :

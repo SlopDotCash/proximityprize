@@ -36,7 +36,8 @@ level). Hence
 Theorems (6, axiom-clean = propext/Classical.choice/Quot.sound, no `sorryAx`):
 `combination_isRoot_iff_ratio` (root ⟺ level), `gcd_root_pow_eq_one` (domain membership),
 `gcd_natDegree_le_max` (the `≤ max(b,c)` cap), `full_split_gives_constant_syzygy` (on-domain assembly),
-`on_domain_admits_imbalance_ge_two` (**the corrective**), `mu_root_iff_level` (packaged reformulation).
+`collapse_forces_imbalance_ge_two` (**the corrective**; renamed from `on_domain_admits_imbalance_ge_two`,
+which took unused domain hypotheses and a free `δ₁`), `mu_root_iff_level` (packaged reformulation).
 
 ## Probe (`probe_syz49_cyclotomic_gcd.py`) — the decisive numbers
 
@@ -75,8 +76,11 @@ the campaign has produced — the μ-basis imbalance residual and the BGK charac
 - **BGK correspondence:** **exact and verified** — `R`-level = additive discrete-log-sum coincidence;
   this is literally the BGK character-sum wall. **Two walls = one statement.**
 - **What was proven:** the exact reduction chain (6 axiom-clean theorems) + the **corrective**
-  `on_domain_admits_imbalance_ge_two`: domain-membership is *compatible with* `ι ≥ 2` (hypotheses
-  satisfiable by the witness), so SYZ48's "domain load-bearing / closes the interior" is **overstated**.
+  `collapse_forces_imbalance_ge_two`: a collapse `C α·W_AC + C β·W_BC = C c₀·W_AB` (`c₀ ≠ 0`, slot
+  degrees `≤ d`) forces `δ₁ ≤ d` for any lower bound `δ₁` on nonzero-syzygy product-degrees, hence
+  `ι ≥ 2` for `d ≥ 4`, with no domain-membership hypothesis.  Combined with the probe-verified
+  (not kernel-checked) on-`μ₁₂` witness, SYZ48's "domain load-bearing / closes the interior" is
+  **overstated**.
 - **New lever?** The genuine gate is re-located: **band-realizability (SYZ42 superadditive-union),
   NOT cyclotomic domain-membership**. CORE remains **OPEN / ON-BGK**, now with the shield in the right
   place and the wall identified as the BGK level-set/character-sum coincidence statement.

@@ -23,13 +23,20 @@ band radius, with no side conditions:
 
 > **`deep_band_failure_closed_form`** — `∃ Q₀ : P·Λ/q^m ≤ #badSet(Q₀, x^k) · Λ²`,
 
-the unconditional deep-band failure count `badSet ≳ P/(q^m·Λ)` with
-`Λ ≈ max(P/q^(m+1), C')`. In the bandwidth zone (`P ≥ C'·q^(m+1)`) this recovers the
-`q/2`-failure of the capacity-failure bandwidth law; **below it the failure count stays
-proportional to the witness mass divided by `q^m·C'` at every band** — the first
-unconditional quantitative failure bound covering the whole deep band, and a proven
-calibration floor for the open supply wall: any positive supply route must beat the
-effective constant `2(C'+2)`.
+an unconditional **integer** inequality. Note the ℕ-floor in the numerator `⌊P·Λ/q^m⌋`: in real
+arithmetic it gives only the floor-adjusted bound
+
+  `#badSet ≥ (P·Λ/q^m − 1) / Λ²`,  `Λ = ⌊P/q^(m+1)⌋ + C' + 2 ≍ max(1, P/q^(m+1), C')`,
+
+which is **positive only when `P·Λ > q^m`** (more precisely, the theorem forces a bad scalar
+exactly when `⌊P·Λ/q^m⌋ ≥ 1`). When the floor vanishes the theorem allows `#badSet = 0`; e.g.
+for the proper smooth instance `q = 65537, n = 8, k = 2, m = 1` one has `P = C(8,4) = 70`,
+`C' = C(4,3)·C(5,1) = 20`, `Λ = 22` and `⌊1540/65537⌋ = 0`, so this moment inequality alone yields
+no positive count there (an independent baseline bad-scalar theorem may). In the bandwidth zone
+(`P ≥ C'·q^(m+1)`, where also `P·Λ ≥ q^m`) the bound is of order `q/2` up to the floors and the
+additive constants in `Λ`; below it, *when the numerator is positive*, the failure count is of
+order the witness mass divided by `q^m·Λ`, with `Λ ≥ C' + 2`. Any positive supply route must
+beat this calibration only in the range where the numerator is positive.
 
 Probe: `scripts/probes/probe_budget_instantiation.py` — budget verified integer-exactly
 against TRUE deep-pair counts (not the `deepPairs_card_le` bound) on six parameter tuples.
@@ -144,9 +151,13 @@ open Classical in
 
   `∃ Q₀ : P·Λ/q^m ≤ #badSet(Q₀, x^k) · Λ²`.
 
-In the bandwidth zone (`P ≥ C'·q^(m+1)`) this is the `≳ q/2` failure; below it the
-failure count stays `≳ P/(2·q^m·(C'+2))` — proportional to the witness mass at every
-band, with no side conditions. -/
+This is an ℕ-division (floor) statement. In real arithmetic it gives
+`#badSet ≥ (P·Λ/q^m − 1)/Λ²`, which is positive only when `P·Λ > q^m`; if `⌊P·Λ/q^m⌋ = 0`
+(e.g. `q = 65537, n = 8, k = 2, m = 1`: `P = 70`, `Λ = 22`, numerator `⌊1540/65537⌋ = 0`) the
+theorem permits `#badSet = 0`. In the bandwidth zone (`P ≥ C'·q^(m+1)`) the bound is of order
+`q/2` up to floors and additive constants; below it, when the numerator is positive, the bound is
+of order `P/(q^m·Λ)` with `Λ = ⌊P/q^(m+1)⌋ + C' + 2`. It is **not** a positive proportional lower
+bound at every band. -/
 theorem deep_band_failure_closed_form (dom : Fin n ↪ F) {k m : ℕ}
     (hk : 1 ≤ k) {δ : ℝ≥0}
     (hhi : (1 - δ) * (Fintype.card (Fin n) : ℝ≥0) ≤ ((k + m + 1 : ℕ) : ℝ≥0)) :

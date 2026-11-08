@@ -18,11 +18,22 @@ names that pattern and proves the conditional exact-staircase law:
 
 Probe-verified supply instances: `(5,2)` at `δ = 2/5` over `F₁₁`/`F₁₃` (landed exactly in
 `MCAWindowInteriorExact.lean`), `(8,3)` at `δ = 1/2` over `p ∈ {1009, 2503, 5003}` —
-all strictly inside the window. The two-regime law (issue #357 round-4 comment): supply
-holds for `q ≫ C(n,t)²` (collision-free regime) and **must fail below Johnson** (the
-literature's `poly(n)/q` bounds), so the layer-attainment boundary is the Johnson radius —
-the window is exactly where the LYM ceiling can be tight, and the prize-scale open core is
-the collision census of the interpolation-scalar map.
+all strictly inside the window. The issue #357 round-4 comment conjectured a two-regime law:
+supply for `q ≫ C(n,t)²` (collision-free regime), and failure of supply below Johnson, making
+the layer-attainment boundary exactly the Johnson radius.
+
+**Audit correction (2026-10-28, PG-058): the "must fail below Johnson" half is FALSE as a
+blanket statement.**  Polynomial (`poly(n)/q`) Johnson-range bounds do not contradict layer
+attainment when the layer size `C(n,t)` is itself polynomial or constant.  Concretely, on the
+first staircase layer `t = n`: `fullLayerSupply_top_of_not_mem` shows that for every code
+containing `0` and missing some word, `FullLayerSupply C 0 n` holds at radius `δ = 0`; e.g. the
+length-4 constant code over `F₅` (Reed–Solomon of dimension 1, Johnson radius
+`1 − √(1/4) = 1/2`) has full-layer supply at `δ = 0 < 1/2`
+(`fullLayerSupply_constCode_F5`).  Any valid "supply fails below Johnson" statement must be
+restricted to an asymptotic interior regime where the layer `C(n,t)` grows super-polynomially,
+with its quantifiers stated and proved; nothing of that kind is proved here.  The
+collision-free-regime half and the prize-scale question (the collision census of the
+interpolation-scalar map) are unaffected.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 -/
@@ -76,9 +87,49 @@ theorem card_le_of_fullLayerSupply {C : Set (ι → A)} {δ : ℝ≥0} {t : ℕ}
     _ ≤ Fintype.card F := by
         simpa using Finset.card_le_univ G
 
+/-! ## Full-layer supply below Johnson: the top layer `t = n` at radius `0` -/
+
+/-- **Top-layer supply at radius `0`.** If `0 ∈ C` and some word `v ∉ C`, then the stack
+`(0, v)` has the single bad scalar `γ = 0` with witness set `S = univ`: the line is the codeword
+`0`, while no codeword agrees with `v` everywhere.  So `FullLayerSupply C 0 n` holds
+(`C(n,n) = 1`).  This refutes the blanket claim that full-layer supply must fail below the
+Johnson radius (the radius `0` is below Johnson for every code of rate `< 1`). -/
+theorem fullLayerSupply_top_of_not_mem {C : Set (ι → A)} (h0 : (0 : ι → A) ∈ C)
+    {v : ι → A} (hv : v ∉ C) :
+    FullLayerSupply (F := F) C 0 (Fintype.card ι) := by
+  classical
+  refine ⟨Matrix.of ![0, v], {0}, by simp, ?_⟩
+  intro γ hγ
+  rw [Finset.mem_singleton] at hγ
+  subst hγ
+  refine ⟨Finset.univ, by simp, ⟨0, h0, fun i _ => by simp⟩, ?_⟩
+  rintro ⟨v₀, -, v₁, hv₁, hagree⟩
+  apply hv
+  have hv₁v : v₁ = v := funext fun i => by
+    simpa using (hagree i (Finset.mem_univ i)).2
+  exact hv₁v ▸ hv₁
+
+/-- The constant code of length `4` over `F₅` (= Reed–Solomon of dimension `1`). -/
+def constCodeF5 : Set (Fin 4 → ZMod 5) := {f | ∀ i j, f i = f j}
+
+/-- **Concrete witness (PG-058).** The length-4 constant code over `F₅` has full-layer supply
+`C(4,4) = 1` at radius `δ = 0`, strictly below its Johnson radius `1 − √(1/4) = 1/2`: the stack
+`(0, (0,0,1,1))` has `γ = 0` as a bad scalar on all coordinates. -/
+theorem fullLayerSupply_constCode_F5 :
+    haveI : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+    FullLayerSupply (F := ZMod 5) constCodeF5 0 4 := by
+  haveI : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+  have h0 : (0 : Fin 4 → ZMod 5) ∈ constCodeF5 := fun _ _ => rfl
+  have hv : (![0, 0, 1, 1] : Fin 4 → ZMod 5) ∉ constCodeF5 := fun h => by
+    have := h 0 2
+    simp at this
+  simpa using fullLayerSupply_top_of_not_mem (F := ZMod 5) h0 hv
+
 /-! ## Source audit -/
 
 #print axioms epsMCA_eq_choose_div_of_fullLayerSupply
 #print axioms card_le_of_fullLayerSupply
+#print axioms fullLayerSupply_top_of_not_mem
+#print axioms fullLayerSupply_constCode_F5
 
 end ProximityGap.MCAFullLayerSupply

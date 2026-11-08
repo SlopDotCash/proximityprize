@@ -184,6 +184,28 @@ that are pure functions of the input statement, the output witness and the trans
 
 Round-by-round guarantees and a guarded first verifier give the following composition theorem.
 
+\begin{remark}[Restricted Round-by-Round Soundness under Append]
+    Round-by-round soundness composes without further assumptions when the first verifier is pure
+    (\texttt{Verifier.append\_rbrSoundness\_of\_pure\_first}). There is no unqualified statement for
+    arbitrary verifiers and shared stateful oracles: the composite schedules $P_1, P_2, V_1, V_2$,
+    while the phases schedule $P_1, V_1, P_2, V_2$. A further restricted binary version for the
+    averaged notions is proved as
+    \texttt{Verifier.append\_rbrSoundness\_keystone\_subsingleton\_unconditional}
+    (\texttt{ArkLib/OracleReduction/Composition/Sequential/AppendRbrSoundnessPhase2Proof.lean}).
+    It requires a deterministic pure first verifier ($V_1 = \mathsf{pure} \circ \mathsf{verify}$),
+    a \texttt{Subsingleton} oracle state, an initial distribution with nonempty support and no
+    failure, a nonempty intermediate statement type, a nonempty second protocol whose first round
+    is a prover message, and component round-by-round soundness from the same initial
+    distribution. Seam-agnostic plain append soundness for a nonempty second protocol is also
+    proved, as \texttt{Verifier.append\_soundness\_total\_pos}
+    (\texttt{AppendSoundnessTotal.lean}). It needs finite inhabited oracle ranges, an inhabited
+    intermediate statement type, and an oracle implementation that preserves state, never fails,
+    and has a state-independent answer law. Residual projectors such as
+    \texttt{appendSoundnessResidual} and \texttt{appendRbrSoundnessResidual} in
+    \texttt{ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean} are
+    conditional interfaces that return their hypothesis.
+\end{remark}
+
 \begin{theorem}[Round-by-Round Knowledge Soundness under a Guarded First Verifier]
     \label{thm:rbr_knowledge_soundness_append_guarded}
     Suppose $V_1$ is guarded: it returns a deterministic verdict when its check passes and aborts

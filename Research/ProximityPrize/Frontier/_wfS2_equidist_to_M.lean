@@ -47,6 +47,22 @@ support stays `≥ c·q` wide — already the proven spread floor). This is a st
 empirically far milder — target than the BGK additive-energy wall: it asks for *flatness of the
 already-bounded total mass*, not a bound on the mass itself.
 
+## Corrections (audit 2026-10-28, CW-B18-13)
+
+* **Which energy.**  `T_r = ∑_{b≠0}‖η_b‖^{2r} = q·E_r − n^{2r}` exactly, i.e. `T_r = q·E'_r` with the
+  NONPRINCIPAL (centered) energy `E'_r := E_r − n^{2r}/q`.  The schematic theorems accept any `Er` with
+  `T_r ≤ q·Er`, so they are correct for both; but the depth-`r` prize chain must be run with `E'_r`.
+  At `r ≈ ln q` the uncentered `E_r` contains the principal term `n^{2r}/q`, which dwarfs the Wick
+  value `(2r−1)‼·n^r`, so "`E_r ≤ K^r·(2r−1)‼·n^r`" is FALSE for the uncentered energy there; the
+  Wick-type bound is only a candidate for `E'_r` (and its char-`p` transfer is the open BGK wall).
+* **What bounded `κ` would mean at `r = 2`.**  `M⁴ ≤ (κ/c)·E₂` with `E₂ = Θ(n²)` gives
+  `M = O((κ/c)^{1/4}·√n)` — square-root-in-`n` (Ramanujan/prize-type) strength, NOT a "Weil-strength"
+  statement.  Bounded `κ` at `r = 2` would therefore force `M = O(√n)`, contradicting the cone's
+  measured growth of `M/√n` (e.g. A15 3.46→4.06→4.24, T18 2.67→4.72, HK2 `M ≈ √(2n ln m)`).  So the
+  depth-2 constant must GROW (heuristically like `(log m)²`); the earlier claim that the probe confirms
+  `κ = O(1)` at `r = 2` is withdrawn.  The probe-reported `κ = O(log n)` refers to the prize depth
+  `r ≈ ln q`, where `κ^{1/2r} → 1`.  Neither is proved here: bounding `κ` is the open content.
+
 This file lands the depth-`r` reduction **schematically** (consuming `T_r`, `N_r`, `E_r`, the
 energy bound, and the support floor as explicit hypotheses, so no unproven input is hidden) and the
 concrete `r = 2` instance built directly on the in-tree fourth moment `∑_b‖η_b‖⁴ = q·E₂`
@@ -90,8 +106,10 @@ Given the three structural inputs of the spread route —
 — the worst-case mass is bounded purely by the energy: `M^{2r} ≤ (κ / c) · E_r`. No
 characteristic-`p` / Weil input; the energy `E_r` enters as a number. Plugging the proven
 char-0/transferred bound `E_r ≤ K^r·(2r-1)‼·n^r` and minimising over `r ≈ ln q` yields the prize
-`M = O(√(n ln q))`. The remaining obligation is reduced from "bound the energy at a structured
-prime" to "bound the equidistribution constant `κ`" (flatness of the bounded mass). -/
+`M = O(√(n ln q))` — PROVIDED `Er` is the nonprincipal energy `E'_r` (`T_r = q·E'_r`); the
+uncentered `E_r` contains `n^{2r}/q` and violates the Wick bound at `r ≈ ln q` (CW-B18-13). The
+remaining obligation is reduced from "bound the energy at a structured prime" to "bound the
+equidistribution constant `κ`" (flatness of the bounded mass) plus the char-`p` energy bound. -/
 theorem M_pow_le_of_equidist
     {Mpow κ Tr Er qEr Nr c q : ℝ}
     (hκ : 0 ≤ κ) (hc : 0 < c) (_hq : 0 < q) (hNr : 0 < Nr)
@@ -126,8 +144,10 @@ certificate `M⁴ ≤ κ·(T₂/N₂)` and the support floor `N₂ ≥ c·q` yie
 
 i.e. the worst-case fourth power of the Gauss sum is controlled by the additive energy with a loss
 that is exactly the equidistribution constant `κ/c`. This is the `r = 2` realisation of the spread
-route: at this depth `M⁴ = O(E₂) = O(n²)` (energy is `Θ(n²)` once `q ≥ n²`), the Weil-strength
-fourth-power bound, *iff* `κ` is bounded — which the probe confirms (`κ = O(1)` at `r = 2`). -/
+route.  With `E₂ = Θ(n²)` (spur-free primes), bounded `κ/c` would give `M = O(√n)` — Ramanujan
+strength, not "Weil strength" — which contradicts the cone's measured growth of `M/√n`; so `κ` at
+`r = 2` must grow with `n` (audit 2026-10-28, CW-B18-13; the former "probe confirms `κ = O(1)` at
+`r = 2`" claim is withdrawn). -/
 theorem M4_le_of_equidist_fourthMoment
     {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
     {M κ Nr c : ℝ}
@@ -171,8 +191,9 @@ theorem M4_le_of_equidist_fourthMoment
 
 /-- **`M`-bound from equidistribution and the energy ceiling (the prize-form chain, depth `r`).**
 The capstone wiring: given the depth-`r` equidistribution `M^{2r} ≤ κ·(T_r/N_r)`, the moment
-ceiling `T_r ≤ q·E_r`, the support floor `N_r ≥ c·q`, AND the (char-0-proven, transfer-pending)
-energy bound `E_r ≤ B_r` (e.g. `B_r = K^r·(2r-1)‼·n^r`), the worst-case mass obeys
+ceiling `T_r ≤ q·E_r`, the support floor `N_r ≥ c·q`, AND an energy bound `E_r ≤ B_r` (e.g.
+`B_r = K^r·(2r-1)‼·n^r`, which is only a candidate for the NONPRINCIPAL energy `E'_r` at `r ≈ ln q`;
+the uncentered energy exceeds it there because of the `n^{2r}/q` term — CW-B18-13), the worst-case mass obeys
 `M^{2r} ≤ (κ/c)·B_r`. This is the single inequality the spread route reduces the prize to:
 the right-hand side is the *known* energy ceiling scaled by the equidistribution loss `κ/c`, with
 no remaining dependence on the prime's structure beyond `κ`. -/

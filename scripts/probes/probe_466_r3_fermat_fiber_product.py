@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 #466 r=3 R304: the off-diagonal quadruple sum via Fermat fiber products —
-exact identities, Möbius stratum accounting, and the per-variety Weil NO-GO.
+exact identities, Möbius stratum accounting, and the per-variety Weil loss record.
 
 Objects (m = 3u', p == 1 mod m, chi = lambda^k order m):
   T_alpha = sum_{ind t == alpha (m), t != 0,1} chi(1-t)
@@ -23,9 +23,15 @@ TESTS:
       signal is q^2-scale while each N4_d's own Weil error lives at
       q^{7/2}-scale (dim-4 middle cohomology) — measured below.
  (V3) NO-GO NUMBERS: torus-sum/q^2 measured vs the A-S ceiling m^3 vs the
-      family-cancellation truth ~ m^2 (equivalently K4 = O(1)); the
-      per-variety route's floor is K4 = O(m) at EVERY q — no q-threshold,
-      no unconditional prize-scale discharge from fixed-variety Weil.
+      family-cancellation truth ~ m^2 (equivalently K4 = O(1)).  Plugging the
+      GENERIC Weil/Betti ceiling (not verified here for this variety) into the
+      per-variety route gives only K4 = O(m) at every q.
+      SCOPE (audit 2026-10-28, L103): that is the current LOSS of one upper-bound
+      method with a generic constant, not a lower bound ("floor") excluding all
+      fixed-variety refinements (sharper Betti numbers, cancellation between
+      cohomology classes, stratum-adapted estimates are not excluded).  The exact
+      torus/stratum identities (V1, V2) and the finite K_off calibration (V4) are
+      the load-bearing content; a V1/V2 identity mismatch exits with status 1.
  (V4) K_off CALIBRATION for the Lean-named input `OffDiagQuadrupleBound`:
         K_off = | sum_c |W(c)|^2 - diagR | / (m^2 q^2),
         W(c) = sum_{j!=0,c-j!=0} J_j J_{c-j},
@@ -152,6 +158,7 @@ def quad_data(p, m, k, ind, zm):
     return abs(tot - diagR) / (m ** 2 * p ** 2), tot, diagR
 
 def main():
+    fails = 0
     print(__doc__.splitlines()[1])
     # (V1) small-p direct torus enumeration
     print("\n(V1) torus/fiber-product identity, direct (t,x,y,z) enumeration:")
@@ -166,6 +173,7 @@ def main():
                   f"{rhs.real:14.4f}{rhs.imag:+.1e}i  "
                   f"|torus|/q^2 = {abs(rhs)/p**2:8.3f} (A-S ceiling ~ m^3 = {m**3})"
                   f"  {'OK' if ok else 'FAIL'}")
+            fails += 0 if ok else 1
     # (V2) Mobius strata
     print("\n(V2) Mobius stratum accounting (moderate p): LHS = sum_d d*mu(m/d)*N4_d;")
     print("     top strata N4_d ~ q^4/(m^3 d) cancel; residual signal is q^2-scale;")
@@ -180,7 +188,9 @@ def main():
             print(f"  m={m:>2} p={p:>4}: avg4th = {lhs:14.2f} mobius = {rhs:14.2f} "
                   f"{'OK' if ok else 'FAIL'}; signal/q^2 = {lhs/p**2:7.3f}; "
                   f"max stratum |N-main|/(q^3.5/(m^3 d)) = {dev:6.3f} "
-                  f"(error scale q^3.5 >> signal q^2: NO main/error split)")
+                  f"(error scale q^3.5 >> signal q^2: no main/error split at the generic "
+                  f"Weil scale)")
+            fails += 0 if ok else 1
     # (V4) K_off calibration
     print("\n(V4) K_off = |quad_total - diagR|/(m^2 q^2) (canonical chi):")
     for m in (9, 12, 15, 18):
@@ -194,6 +204,11 @@ def main():
         print(f"  m={m:>2}: {len(primes)} primes; K_off max = {max(Ks):.3f}, "
               f"median = {sorted(Ks)[len(Ks)//2]:.3f} "
               f"(unconditional ceiling m+2 = {m+2}; open target O(1))")
+    if fails:
+        print(f"\nFAIL: {fails} V1/V2 identity check(s) failed")
+        return 1
+    print("\nPASS: V1 torus identity and V2 Mobius stratum identity on all tested cells")
+    return 0
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

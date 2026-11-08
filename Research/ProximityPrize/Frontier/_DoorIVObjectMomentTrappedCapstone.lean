@@ -36,16 +36,21 @@ Consequently any upper bound `B` on the real sup that one might hope to derive *
 forced through BOTH dead doors:
 
 1. `B` must dominate the iid surrogate (`iidSup ≤ B`) — it cannot beat the extreme-value floor; and
-2. the part of the real sup *above* the surrogate is itself moment-bounded (`δ ≤ Δ`), so reducing it
-   below the moment excess is impossible.
+2. the advantage `δ` is moment-bounded above (`δ ≤ Δ`).
+
+*Correction (audit 2026-10-28, R-220).* `δ ≤ Δ` is an **upper** bound on `δ`; it does not prevent
+reducing `δ` below `Δ` (an earlier version said reducing it below the moment excess is impossible).
+Moreover the formal variables never assert `δ = realSup − iidSup`; that identification is prose
+only. So the scalar implications below do not create a two-sided analytic trap and are not an
+all-method prohibition; they are conjunction/transitivity facts about entered hypotheses.
 
 This is a **refuted-lever constraint capstone** (Lane 1 → Lane 3): it backs the no-fifth-door
 tetrachotomy at the level of the *named open object itself* (not just the mechanism taxonomy). It does
 **not** prove the prize inequality, does **not** give any anti-concentration / cancellation estimate,
 and does **not** claim door (iv) is achievable. Both inputs are pure restatements of measured /
 identity facts carried as hypotheses; the open problem (a genuinely new door-(iv) evaluation) is
-exactly as open as before. The contribution is the *conjunction*: the open object has no slack on
-either side that a non-moment, non-extreme-value lever could grip.
+exactly as open as before. The contribution is the *conjunction* of the two entered facts; it does
+not show that no non-moment, non-extreme-value lever can grip the object.
 
 Probes: `scripts/probes/probe_dooriv_jacobi_cocycle_dispersion_magnitude.py`,
 `scripts/probes/probe_dooriv_cocycle_excess_structure.py`. Issue #444.
@@ -91,9 +96,9 @@ and a door-(i) moment ceiling `Δ ≤ Bm` on the additive-energy excess, then:
 1. the bound `B` must also dominate the extreme-value surrogate (`iidSup ≤ B`), and
 2. the dispersion advantage is capped by the same moment ceiling (`δ ≤ Bm`).
 
-So a hoped-for door-(iv) certificate cannot escape *either* dead door: it must bound the surrogate
-(door i/iii) and its excess is moment-capped (door i). No non-moment lever can pay for the prize from
-the object side. -/
+These are scalar consequences of the entered hypotheses: the bound must dominate the surrogate,
+and `δ` is capped above by `Bm`. They do not show that no non-moment lever can pay for the prize
+(an upper cap on `δ` does not stop `δ` from being smaller; R-220). -/
 theorem candidate_bound_forced_through_dead_doors
     {iidSup realSup δ Δ B Bm : ℝ}
     (hEdge : SurrogateLeReal iidSup realSup)

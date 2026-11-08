@@ -7,6 +7,7 @@ Authors: ArkLib Contributors
 import Research.ProximityPrize.RadiusOneExact
 import ArkLib.Data.CodingTheory.ProximityGap.MCABadCount
 import Research.ProximityPrize.Collapse
+import Research.ProximityPrize.PrizeRateBounds
 
 /-!
 # A second-moment lower bound on the radius-one MCA error, deciding the §1 prize window
@@ -30,16 +31,24 @@ line `(u₀, deepHole)`. Hence
 
   `ε_mca(RS, 1) ≥ (M' - M'²/q)/q`           (`epsMCA_one_ge_second_moment`)
 
-for every `M' ≤ C(n, k+1)`. Optimizing `M' ≈ q/2^{127}` decides the formal §1 MCA prize:
+for every `M' ≤ C(n, k+1)`. Wiring this into the collapsed prize predicate gives
 
-  `not_mcaPrize_of_second_moment` — for `n ≥ 2` and
-  `2^{129} ≤ q ≤ 2^{127}·C(n, ⌊n/2⌋+1)` the formal prize predicate is **false**.
+  `not_mcaPrize_of_second_moment` — at any prize-rate index `j`, if some `M' ≤ C(n, k_j+1)`
+  satisfies the numeric hypotheses `hle : M'² ≤ M'·q` and `hnum : q² < 2^{128}·(M'q - M'²)`,
+  the formal prize predicate is **false**.
 
-Combined with `mcaPrize_of_large_field` (`q ≥ 2^{128}·C(n, k_j+1) ∀j ⟹ TRUE`, already in
-tree) the formal prize is now decided for **all** field sizes except the knife-edge band
-`q ∈ (2^{127}·C(n, k₀+1), 2^{128}·C(n, k₀+1))` — a single bit of `q`, where the truth
-depends on the exact extremal distinct-value count (relative width of the genuinely
-undecided sliver after optimizing constants is `~2^{-127}`).
+*Heuristic range (not formalized).* Choosing `M' ≈ q/2^{127}` makes `hnum` hold whenever
+`2^{129} ≤ q ≲ 2^{127}·C(n, k_j+1)`; no theorem in this file states that range — the formal
+statement takes `M'`, `hle`, `hnum` as explicit numeric inputs.
+
+Combined with `mcaPrize_of_large_field` (`q ≥ 2^{128}·C(n, k_j+1)` for **every** `j` ⟹ TRUE,
+already in tree), and since the negative side may use whichever `j` is best, the formal prize is
+decided for all field sizes outside (roughly) the band
+`q ∈ (2^{127}·max_j C(n, k_j+1), 2^{128}·max_j C(n, k_j+1))`. The maximum over `j` matters: the
+binomial is not always maximal at `j = 0` (e.g. `n = 2` gives `[1, 2, 2, 2]` and `n = 4` gives
+`[4, 6, 4, 4]` across the four rates). The undecided band is a factor-`2` window in `q` (one bit of
+`q`), where the truth depends on the exact extremal distinct-value count; it is not a `~2^{-127}`
+relative sliver.
 
 ## References
 
@@ -137,14 +146,6 @@ over a family `𝒯` of subsets. -/
 noncomputable def collCount (domain : ι ↪ F) (k : ℕ) (𝒯 : Finset (Finset ι)) (u₀ : ι → F) : ℕ :=
   (𝒯.offDiag.filter (fun p => cT domain k p.1 u₀ = cT domain k p.2 u₀)).card
 
-/-- **Per-pair kernel count.** For a fixed pair `(T, T')` of distinct `(k+1)`-subsets, the
-number of words `u₀` with `c_T(u₀) = c_{T'}(u₀)` is `q^{n-1}`. -/
-lemma card_filter_pair_eq (domain : ι ↪ F) {k : ℕ} {T T' : Finset ι}
-    (hT : T.card = k + 1) (hT' : T'.card = k + 1) (hne : T ≠ T') :
-    (Finset.univ.filter (fun u₀ : ι → F => cT domain k T u₀ = cT domain k T' u₀)).card
-      = Fintype.card F ^ (Fintype.card ι - 1) :=
-  card_agree_le domain hT hT' hne
-
 /-- **Second moment.** Summing the collision count over all `q^n` first words gives exactly
 `|𝒯.offDiag|·q^{n-1}`. -/
 lemma sum_collCount (domain : ι ↪ F) {k : ℕ} {𝒯 : Finset (Finset ι)}
@@ -163,7 +164,8 @@ lemma sum_collCount (domain : ι ↪ F) {k : ℕ} {𝒯 : Finset (Finset ι)}
   rw [Finset.sum_congr rfl (fun p hp => ?_)]
   · rw [Finset.sum_const, smul_eq_mul]
   · rw [Finset.mem_offDiag] at hp
-    exact card_filter_pair_eq domain (h𝒯 p.1 hp.1) (h𝒯 p.2 hp.2.1) hp.2.2
+    -- per-pair kernel count `q^{n-1}` (`RadiusOneExact.card_agree_eq`)
+    exact card_agree_eq domain (h𝒯 p.1 hp.1) (h𝒯 p.2 hp.2.1) hp.2.2
 
 /-- **Existence of a low-collision first word.** Some first word `u₀` has at most
 `|𝒯.offDiag|/q` ordered collisions: `q·coll(u₀) ≤ |𝒯.offDiag|`. -/
@@ -357,37 +359,6 @@ lemma epsStar_lt_second_moment_value {M' q : ℕ} (hq : 0 < q)
         ENNReal.mul_lt_mul_right hinvne hinvtop hcast
     _ = (D : ℝ≥0∞) := by
         rw [← mul_assoc, ENNReal.inv_mul_cancel hpow_ne_zero hpow_ne_top, one_mul]
-
-/-- Every prize rate is at most `1/2`. -/
-private lemma prizeRates_le_half (j : Fin 4) : prizeRates j ≤ 1 / 2 := by
-  unfold prizeRates
-  have h2 : (2 : ℝ≥0) ^ (1 : ℕ) ≤ 2 ^ (j.val + 1) :=
-    pow_le_pow_right₀ one_le_two (by omega)
-  rw [pow_one] at h2
-  exact div_le_div_of_nonneg_left (by norm_num) (by norm_num) h2
-
-/-- For `n ≥ 2`, every prize-rate degree satisfies `k_j + 1 ≤ n`. -/
-private lemma prizeRate_floor_add_one_le (j : Fin 4) (hn : 2 ≤ Fintype.card ι) :
-    ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ + 1 ≤ Fintype.card ι := by
-  set k := ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ with hk_def
-  have h2 : (2 : ℝ≥0) ≤ (Fintype.card ι : ℝ≥0) := by exact_mod_cast hn
-  have hkr : (k : ℝ≥0) ≤ (1 / 2) * (Fintype.card ι : ℝ≥0) := by
-    rw [hk_def]
-    refine le_trans (Nat.floor_le (by positivity)) ?_
-    gcongr
-    exact prizeRates_le_half j
-  have hcast : ((k + 1 : ℕ) : ℝ≥0) ≤ (Fintype.card ι : ℝ≥0) := by
-    push_cast
-    calc (k : ℝ≥0) + 1
-        ≤ (1 / 2) * (Fintype.card ι : ℝ≥0) + 1 := by gcongr
-      _ ≤ (1 / 2) * (Fintype.card ι : ℝ≥0) + (1 / 2) * (Fintype.card ι : ℝ≥0) := by
-          gcongr
-          calc (1 : ℝ≥0) = (1 / 2) * 2 := by norm_num
-            _ ≤ (1 / 2) * (Fintype.card ι : ℝ≥0) := by gcongr
-      _ = (Fintype.card ι : ℝ≥0) := by
-          rw [← add_mul]
-          norm_num
-  exact_mod_cast hcast
 
 /-- **Second-moment negative decision for the formal MCA prize.**
 At any prize-rate index `j`, if a family size `M' ≤ C(n, k_j+1)` makes the

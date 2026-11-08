@@ -1,8 +1,8 @@
 {
   "counts": {
-    "files_with_citations": 1385,
+    "files_with_citations": 1383,
     "keys_cited": 83,
-    "total_citation_edges": 1802
+    "total_citation_edges": 1800
   },
   "files": {
     "ArkLib/AGM/Basic.lean": [
@@ -3755,12 +3755,6 @@
     "ProximityPrize/Extensions/ProofSystem/BatchedFri/Security.lean": [
       "BCIKS20"
     ],
-    "ProximityPrize/Extensions/ProofSystem/BatchedFri/Spec/General.lean": [
-      "FRI1216"
-    ],
-    "ProximityPrize/Extensions/ProofSystem/BatchedFri/Spec/SingleRound.lean": [
-      "FRI1216"
-    ],
     "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/General.lean": [
       "DP24"
     ],
@@ -5989,8 +5983,6 @@
     "FRI1216": [
       "ArkLib/Data/Polynomial/CosetChunks.lean",
       "ArkLib/ProofSystem/Fri/Spec/SingleRound.lean",
-      "ProximityPrize/Extensions/ProofSystem/BatchedFri/Spec/General.lean",
-      "ProximityPrize/Extensions/ProofSystem/BatchedFri/Spec/SingleRound.lean",
       "ProximityPrize/Extensions/ProofSystem/Fri/Spec/SingleRound.lean"
     ],
     "GCXK25": [

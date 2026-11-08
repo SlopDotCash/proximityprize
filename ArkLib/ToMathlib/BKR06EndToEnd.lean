@@ -238,15 +238,21 @@ its `_of_family` reduction in `ListDecoding/Bounds.lean`), at the explicit
 instance of the T3.12 close-codeword count at the extension parameters where the BKR06
 construction actually lives.
 
-**Remaining gap to the bare T3.12 front door** (the documented PARAMETER DEFECT /
-base-parameter reconciliation, *not* claimed here):
-* the bare statement's window is `k = ⌊q^α⌋` while the construction's is `k = q^u + 1`
-  (needs close-codeword-count monotonicity in `k` along the nested RS codes, plus the
-  floor bookkeeping `q^u + 1 ≤ ⌊q^α⌋` in the `β² < α` regime);
-* the bare statement quantifies over abstract index types `ι` with `#ι = #F = q`
-  (needs transport of the count along an equivalence `ι ≃ K`);
-* the `α ≤ β²` regime of the bare statement (target `≤ q^0 = 1`) needs only a single
-  exhibited close codeword and is not routed through the tight family. -/
+**Gap to the bare T3.12 front door** (the documented PARAMETER DEFECT / base-parameter
+reconciliation; the theorem above does not claim it). When this section was written, three
+bricks were missing; each is now proved in the later sections of this file:
+* window: the bare statement's window is `k = ⌊q^α⌋` while the construction's is
+  `k = q^u + 1` — close-codeword-count monotonicity in `k` along the nested RS codes
+  (`closeCodewordsRel_mono_code`, `rs_closeCodewords_ncard_mono_window`) and the floor
+  bookkeeping `q^u + 1 ≤ ⌊q^α⌋` (`rs_window_le_floor`, with the band choice
+  `bkr06_band_choice` / `bkr06_band_choice_exponent`);
+* index transport: the bare statement quantifies over abstract index types `ι` with
+  `#ι = #F = q` — transport along an equivalence (`rs_closeCodewords_ncard_transport`, via
+  `hammingDist_comp_equiv` / `relHammingDist_comp_equiv`);
+* the `α ≤ β²` regime (target `≤ q^0 = 1`), handled by a single exhibited close codeword
+  (`rs_close_codewords_card_ge_trivial_regime`).
+These bricks alone do not assemble the bare front door; that assembly is
+`rs_lambda_superpoly_extension_bkr06_proven` in `BKR06BareT312.lean`. -/
 
 /-- **ABF26 T3.12 [BKR06 Cor 2.2] — tight count in `q^{(α−β²)·log q}` exponent form,
 fully proven.**  At the explicit `α := β² + (m·u − v²)/log q`, the constructed pivot's

@@ -10,8 +10,8 @@ import ArkLib.Data.CodingTheory.ProximityGap.FarCosetExplosion
 # The far-threshold maximality lemma (#407, B-count / B3): monomial agreement cap on `μ_n`
 
 For a *smooth* evaluation domain — one with `(dom i)^n = 1` for every `i` (a `μ_n`-coset
-in the FFT subgroup of the prize setting) — the monomial direction `x^b` has a sharp
-agreement ceiling against the Reed–Solomon code:
+in the FFT subgroup of the prize setting) — the monomial direction `x^b` has an
+agreement ceiling (an upper bound, not shown to be attained) against the Reed–Solomon code:
 
 > **`monomial_agreement_le_mod`** — every codeword of `rsCode dom k` (degree `< k`)
 > agrees with the monomial word `w i = (dom i)^b` on at most `(b mod n)` points,
@@ -28,12 +28,18 @@ at most `(b mod n)` (`card_roots'`).
 the monomial direction `x^b` is `FarFromCode` at radius `δ` (in the sense of
 `FarCosetExplosion.FarFromCode`, no codeword agrees on a witness-sized set
 `≥ (1−δ)·n`) whenever `(b mod n) < (1−δ)·n` — equivalently `(b mod n) < n − r` for the
-"covering slack" `r = δ·n`.  So **near capacity the only far monomial directions are the
-LOW exponents** `b` with `(b mod n) ∈ [k, ⌈(1−δ)n⌉)` — corroborating the corrected R1/R2:
-the binding far direction is the lowest far exponent `x^k`, not a high-degree monomial.
+"covering slack" `r = δ·n`.  This is a **sufficient** condition only: the low exponents with
+`(b mod n) ∈ [k, ⌈(1−δ)n⌉)` are certified far, but the converse is false, because the degree
+bound `b mod n` on the agreement need not be attained.  Counterexample: on the proper subgroup
+`μ_8 ⊂ F_17` with `k = 1` (constant code) and `b = 3`, the map `x ↦ x^3` permutes `μ_8`
+(`gcd(3, 8) = 1`), so `x^3` agrees with any constant on at most one point; at `δ = 3/4` the
+witness threshold is `2`, so `x^3` is far although `b mod n = 3 ∉ [1, 2)` (its actual relative
+distance to the code is `7/8`).  So this file does **not** show that only low exponents are far,
+nor that the lowest far exponent `x^k` is the binding/extremal direction; any such
+characterization needs a sharp agreement result, not just this upper bound.
 
-This is the count-lane support for the audit: it pins which monomial directions feed
-`epsMCA_ge_far_incidence` (the EXACT, `p`-independent `δ*` object).  Issue #407.
+This is count-lane support: it certifies some monomial directions as inputs to
+`epsMCA_ge_far_incidence`.  Issue #407.
 -/
 
 open Finset Polynomial
@@ -103,9 +109,9 @@ open Classical in
 is `FarFromCode` (no codeword of `rsCode dom k` agrees on a witness-sized set
 `≥ (1−δ)·n`) at radius `δ`, provided `k ≤ (b mod n)` and `(b mod n) < (1−δ)·n`.
 
-So near capacity (witness budget `(1−δ)·n` close to `n`) the far monomial directions
-are exactly the **low** exponents `b` with `(b mod n) ∈ [k, (1−δ)n)`; the lowest far
-exponent `x^k` is the binding one. -/
+This is a sufficient condition only: other monomial directions can also be far (e.g. on
+`μ_8 ⊂ F_17` with `k = 1`, `δ = 3/4`, the direction `x^3` is far although `3 ∉ [1, 2)`),
+so it does not identify all far directions or a binding/extremal exponent. -/
 theorem monomial_FarFromCode_of_mod_lt (dom : Fin n ↪ F)
     (hsmooth : ∀ i, (dom i) ^ n = 1) {k b : ℕ} {δ : ℝ≥0}
     (hkb : k ≤ b % n) (hlt : (b % n : ℝ≥0) < (1 - δ) * (n : ℝ≥0)) :

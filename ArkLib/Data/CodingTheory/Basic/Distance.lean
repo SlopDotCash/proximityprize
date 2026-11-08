@@ -54,7 +54,9 @@ public import CompPoly.Data.Nat.Bitwise
   - Code rate: `ℚ≥0` — `LinearCode.rate`, `ρ C` (in `Basic/LinearCode.lean`).
 
   The computable variants do not share a single type: `dist'` (`‖C‖₀'`) and `distFromCode'`
-  (`Δ₀'(u, C)`) are `ℕ∞`, matching their generic counterparts, whereas `relDistFromCode'`
+  (`Δ₀'(u, C)`) are `ℕ∞` (for `distFromCode'` this matches its generic counterpart; for
+  `dist'` it does not — `dist` is `ℕ` and is `0`, not `⊤`, on codes without two distinct
+  elements), whereas `relDistFromCode'`
   (`δᵣ'(u, C)`) is `ℚ≥0` and takes `[Nonempty C]` instead of using a `⊤` element, there
   being no `ℚ≥0∞` (see the TODO below).
 
@@ -68,8 +70,9 @@ public import CompPoly.Data.Nat.Bitwise
     - `hammingDist u v (Δ₀(u, v))`: The Hamming distance between two words `u` and `v`
     - `relHammingDist u v (δᵣ(u, v))`: The relative Hamming distance between two words `u` and `v`
   2. Distance of code:
-    - `dist C (‖"C‖₀)`: The Hamming distance of a code `C`, defined as the infimum (in `ℕ∞`) of the
-      Hamming distances between any two distinct elements of `C`. This is noncomputable.
+    - `dist C (‖"C‖₀)`: The Hamming distance of a code `C`, defined as the infimum (in `ℕ`, so
+      `0` when `C` has no two distinct elements) of the Hamming distances between any two
+      distinct elements of `C`. This is noncomputable.
       + `minDist C`: another statement of `dist C` using equality, we have `dist_eq_minDist`
     - `dist' C (‖C‖₀')`: A computable version of `dist C`, assuming `C` is a `Fintype`.
   3. Distance from a word to a code:
@@ -946,7 +949,11 @@ variable {α : Type*}
          {F : Type*} [DecidableEq F]
          {ι : Type*} [Fintype ι]
 
-/-- The set of possible distances `δf` from a vector `w` to a code `C`.
+/-- The set of possible distances `δf w c` from a vector `w` to the codewords `c ∈ C` with
+`c ≠ w`, i.e. distances from `w` to `C \ {w}` (see `possibleDistsToCode_nonempty_iff`).
+
+Note that the queried word itself is excluded: if `w ∈ C`, the distance `δf w w` is *not*
+recorded. For the distances to *all* of `C` use `possibleDistsToCodeIncl`.
 -/
 def possibleDistsToCode (w : ι → F) (C : Set (ι → F)) (δf : (ι → F) → (ι → F) → α) : Set α :=
   {d : α | ∃ c ∈ C, c ≠ w ∧ δf w c = d}
@@ -981,7 +988,12 @@ lemma possibleDistsToCode_nonempty_iff
 def possibleDists (C : Set (ι → F)) (δf : (ι → F) → (ι → F) → α) : Set α :=
   {d : α | ∃ p ∈ Set.offDiag C, δf p.1 p.2 = d}
 
-/-- A generalisation of `distFromCode` for an arbitrary distance function `δf`.
+/-- The minimum of `δf w c` over codewords `c ∈ C \ {w}` (`⊤` if `C \ {w}` is empty).
+
+This is **not** a generalisation of `distFromCode`: because `possibleDistsToCode` excludes
+`c = w`, for `w ∈ C` it returns the distance to the nearest *other* codeword, and for the
+singleton code `C = {w}` it is `⊤` (`distToCode_singleton_self`) whereas `Δ₀(w, {w}) = 0`.
+The genuine generic distance to a code, which does include `w`, is `distToCodeIncl`.
 -/
 noncomputable def distToCode [LinearOrder α]
                              (w : ι → F) (C : Set (ι → F))
@@ -1002,6 +1014,52 @@ lemma distToCode_of_nonempty {α : Type*} [LinearOrder α]
   distToCode w C δf h₁ = .some ((possibleDistsToCode w C δf).toFinset.min' (by simpa)) := by
   simp [distToCode, Finset.min'_eq_inf', Finset.min_eq_inf_withTop]
   rfl
+
+/-- At the singleton boundary `C = {w}`, `distToCode` is `⊤`: the queried word is excluded. -/
+lemma distToCode_singleton_self {α : Type*} [LinearOrder α] [Zero α]
+    {ι F : Type*} (w : ι → F) (δf : (ι → F) → (ι → F) → α)
+    (h : (possibleDistsToCode w {w} δf).Finite) :
+    distToCode w {w} δf h = ⊤ := by
+  have hempty : possibleDistsToCode w {w} δf = ∅ := by
+    ext d
+    simp [possibleDistsToCode]
+  unfold distToCode
+  simp only [hempty, Set.toFinset_empty, Finset.min_empty]
+
+/-- The set of distances `δf w c` from `w` to **all** codewords `c ∈ C` (including `c = w`
+when `w ∈ C`). Compare `possibleDistsToCode`, which excludes `c = w`. -/
+def possibleDistsToCodeIncl {α : Type*} {ι F : Type*}
+    (w : ι → F) (C : Set (ι → F)) (δf : (ι → F) → (ι → F) → α) : Set α :=
+  δf w '' C
+
+lemma possibleDistsToCode_subset_incl {α : Type*} {ι F : Type*}
+    (w : ι → F) (C : Set (ι → F)) (δf : (ι → F) → (ι → F) → α) :
+    possibleDistsToCode w C δf ⊆ possibleDistsToCodeIncl w C δf := by
+  rintro d ⟨c, hc, -, rfl⟩
+  exact ⟨c, hc, rfl⟩
+
+/-- The genuine generic distance from `w` to a code `C` for a distance function `δf`: the
+minimum of `δf w c` over **all** `c ∈ C` (`⊤` if `C` is empty). Unlike `distToCode`, it
+includes `c = w`. -/
+noncomputable def distToCodeIncl {α : Type*} [LinearOrder α] {ι F : Type*}
+    (w : ι → F) (C : Set (ι → F)) (δf : (ι → F) → (ι → F) → α)
+    (h : (possibleDistsToCodeIncl w C δf).Finite) : WithTop α :=
+  haveI := @Fintype.ofFinite _ h
+  (possibleDistsToCodeIncl w C δf).toFinset.min
+
+/-- In-code boundary: if `w ∈ C`, `δf w w = 0` and `δf w` is nonnegative on `C`, the genuine
+distance `distToCodeIncl w C δf` is `0` (in contrast with `distToCode`). -/
+lemma distToCodeIncl_eq_zero_of_mem {α : Type*} [LinearOrder α] [Zero α] {ι F : Type*}
+    {w : ι → F} {C : Set (ι → F)} {δf : (ι → F) → (ι → F) → α}
+    (h : (possibleDistsToCodeIncl w C δf).Finite) (hw : w ∈ C) (hww : δf w w = 0)
+    (hnonneg : ∀ c ∈ C, 0 ≤ δf w c) :
+    distToCodeIncl w C δf h = ((0 : α) : WithTop α) := by
+  let := @Fintype.ofFinite _ h
+  unfold distToCodeIncl
+  refine le_antisymm (Finset.min_le ?_) (Finset.le_min fun d hd => ?_)
+  · exact Set.mem_toFinset.mpr ⟨w, hw, hww⟩
+  · obtain ⟨c, hc, rfl⟩ := Set.mem_toFinset.mp hd
+    exact WithTop.coe_le_coe.mpr (hnonneg c hc)
 
 /-- Computable version of the distance from a vector `u` to a finite code `C`. -/
 def distFromCode' (C : Set (n → R)) [Fintype C] (u : n → R) : ℕ∞ :=

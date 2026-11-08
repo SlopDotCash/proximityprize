@@ -161,16 +161,16 @@ instance instProd {α β : Type} [Oα : OracleInterface α] [Oβ : OracleInterfa
   toOC.spec := Sum.elim Oα.spec Oβ.spec
   toOC.impl := QueryImpl.addReaderT Oα.toOC.impl Oβ.toOC.impl
 
-/-- The indexed tensor product oracle interface for the dependent product of a type family `v`,
-    indexed by `ι`, each having an oracle interface, is defined as:
-  - The query & response types are the dependent product of the query & response types of the type
-    family.
-  - The oracle, on a given query specifying the index `i` of the type family, will run the oracle of
-    `v i` and return the response.
+/-- Intended: the indexed *tensor* product oracle interface for the dependent product of a type
+    family `v` (a simultaneous query to every component, with query and response types the
+    dependent products `∀ i, (O i).Query` and `∀ i, (O i).Response _`).
 
-This is a low priority instance since we do not expect to have this behavior often. See
-`instProdForall` for the product behavior on the interface (with dependent sums for the query and
-response types). -/
+**Current implementation: identical to `instProdForall`.** The fields below are the same as
+those of `instProdForall`: the query is a dependent *sum* `(i : ι) × (O i).Query` selecting one
+component, and the response is that component's answer. So this low-priority instance does not
+provide the simultaneous tensor semantics described above, and no theorem about such semantics
+exists; it is a redundant duplicate kept for compatibility. Defining the genuine tensor
+interface (or removing this instance after checking callers) is open cleanup. -/
 @[reducible, inline]
 instance (priority := low) instTensorForall {ι : Type u} (v : ι → Type _)
     [O : ∀ i, OracleInterface (v i)] : OracleInterface (∀ i, v i) where
@@ -180,13 +180,13 @@ instance (priority := low) instTensorForall {ι : Type u} (v : ι → Type _)
 
 /-- The indexed product oracle interface for the dependent product of a type family `v`, indexed by
     `ι`, each having an oracle interface, is defined as:
-  - The query & response types are the dependent product of the query & response types of the type
-    family.
-  - The oracle, on a given query specifying the index `i` of the type family, will run the oracle
-    of `v i` and return the response.
+  - The query type is the dependent *sum* `(i : ι) × (O i).Query`: a query names one component
+    `i` together with a query for `v i`.
+  - The oracle, on a query `⟨i, q⟩`, runs the oracle of `v i` on `q` and returns its response
+    (of type `(O i).Response q`).
 
 This is the behavior usually assumed, i.e. when we send multiple oracle messages in a round.
-See `instTensorForall` for the tensor product behavior on the interface. -/
+`instTensorForall` currently has exactly the same fields (see its docstring). -/
 @[reducible, inline]
 instance instProdForall {ι : Type u} (v : ι → Type _) [O : ∀ i, OracleInterface (v i)] :
     OracleInterface (∀ i, v i) where
@@ -254,15 +254,18 @@ lemma mem_agreementQueries {Message : Type*} {O : OracleInterface Message}
     q ∈ O.agreementQueries a b ↔ answer a q = answer b q := by
   simp [agreementQueries]
 
-/-- A message type together with a `OracleInterface` instance is said to have **oracle distance**
-  (at most) `d` if for any two distinct messages, there is at most `d` queries that distinguish
-  them, i.e.
+/-- A message type together with a `OracleInterface` instance satisfies `distanceLE O d` if any
+  two distinct messages **agree** on at most `d` queries, i.e. for `a ≠ b`
 
   `#{q | OracleInterface.answer a q = OracleInterface.answer b q} ≤ d`.
 
-  This property corresponds to the distance of a code, when the oracle instance is to encode the
-  message and the query is a position of the codeword. In particular, it applies to
-  `(Mv)Polynomial`. -/
+  Despite the name, this is an *agreement-count upper bound*: the predicate counts the queries on
+  which the two answers are **equal** (`agreementQueries`), not the queries that distinguish them.
+  Complementing, it is equivalent to a *distance lower bound*: distinct messages are distinguished
+  by at least `Fintype.card O.Query - d` queries. When the oracle encodes the message as a codeword
+  and queries are codeword positions, `distanceLE O d` says the code has minimum distance at least
+  `n - d` (where `n` is the number of positions). In particular, it applies to `(Mv)Polynomial`
+  evaluation oracles via root-counting bounds. -/
 def distanceLE {Message : Type*} (O : OracleInterface Message)
     [Fintype O.Query] [∀ q, DecidableEq (O.toOC.spec q)] (d : ℕ) : Prop :=
   ∀ a b : Message, a ≠ b → (O.agreementQueries a b).card ≤ d
@@ -375,10 +378,45 @@ theorem distanceLE_polynomial_degreeLT :
     simpa only [IsRoot.def, Polynomial.eval_sub] using (Multiset.mem_filter.mp hx).2
   · exact Finset.univ.nodup.filter _
 
-theorem distanceLE_polynomial_degreeLE :
+/-- Weakening of `distanceLE_polynomial_degreeLT` from `d - 1` to `d` agreements, for the
+degree-*less-than*-`d` interface. (This statement was previously, misleadingly, the content of
+`distanceLE_polynomial_degreeLE`; the latter now concerns the degree-at-most-`d` interface.) -/
+theorem distanceLE_polynomial_degreeLT_le :
     distanceLE (instPolynomialDegreeLT R d) d := by
   intro a b hab
   exact le_trans (distanceLE_polynomial_degreeLT a b hab) (Nat.sub_le d 1)
+
+/-- Two distinct univariate polynomials of degree at most `d` over a finite domain agree on at
+most `d` evaluation points: their nonzero difference has degree at most `d`, hence at most `d`
+roots. For `d = 0` this says distinct constants never agree. -/
+theorem distanceLE_polynomial_degreeLE :
+    distanceLE (instPolynomialDegreeLE R d) d := by
+  simp only [distanceLE, ne_eq, instPolynomialDegreeLE, Subtype.forall,
+    mem_degreeLE, Subtype.mk.injEq]
+  intro p hp p' hp' hNe
+  have hEvalRoot : ∀ q ∈ Finset.univ, p.eval q = p'.eval q ↔ q ∈ (p - p').roots := by
+    intro q _
+    simp only [mem_roots', ne_eq, IsRoot.def, Polynomial.eval_sub]
+    constructor <;> intro h
+    · constructor
+      · intro h'; contrapose! hNe; exact sub_eq_zero.mp h'
+      · simp [h]
+    · exact sub_eq_zero.mp h.2
+  conv =>
+    enter [1, 1]
+    apply Finset.filter_congr hEvalRoot
+  have hRoots : (p - p').roots.card ≤ d := by
+    have hSubNe : p - p' ≠ 0 := sub_ne_zero_of_ne hNe
+    have hSubDegLe : (p - p').degree ≤ d := le_trans (degree_sub_le p p') (max_le hp hp')
+    have hCard : ((p - p').roots.card : WithBot ℕ) ≤ d :=
+      le_trans (Polynomial.card_roots hSubNe) hSubDegLe
+    exact_mod_cast hCard
+  refine le_trans ?_ hRoots
+  apply Multiset.card_le_card
+  rw [Multiset.le_iff_subset]
+  · intro x hx
+    exact (Multiset.mem_filter.mp hx).2
+  · exact Finset.univ.nodup.filter _
 
 /-- Schwartz-Zippel-type distance bound for multivariable polynomials of degree ≤ d.
     The bound is `Fintype.card σ * d * Fintype.card R ^ (Fintype.card σ - 1)` (the earlier

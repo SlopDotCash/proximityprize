@@ -31,7 +31,8 @@ to round `i.castSucc` then samples the challenge.
 `langOut`.
 
 The implication is the classical **union bound over rounds**, whose two protocol-independent
-ingredients are already proven axiom-clean in `Security/RoundByRound.lean`:
+ingredients are already proven axiom-clean in the downstream round-by-round extension
+(`ProximityPrize/Extensions/OracleReduction/Security/RoundByRound.lean`):
 
 * the *first-crossing / pigeonhole* core (`exists_challenge_flip_of_full`): a run that starts
   rejecting (`sf` false at round `0`, since `stmtIn ∉ langIn` via `toFun_empty`) but ends accepting
@@ -49,11 +50,20 @@ the per-round game's flip probability (the trailing prover / verifier / later-ro
 full run threads but the round-by-round game omits contribute only failure mass, the
 *failure-monotone* direction whose reusable `simulateQ … |>.run'` transports
 `probEvent_simulateQ_run'_elimM_trailing_le`, `probEvent_simulateQ_run'_bind_trailing_le`, … are
-proven in `Security/RoundByRound.lean`) — is the single genuinely measure-theoretic step. It is
-taken here as **one explicit named hypothesis** `hMarginal`, exactly the "deepest measure-theoretic
-step as one named hyp" allowed by the keystone contract. Everything else (the existential
-unpacking, the pigeonhole first-crossing, the union bound, the language/`toFun` bookkeeping, and the
-error summation) is proven and axiom-clean.
+proven in that same extension module) — is the genuinely measure-theoretic step.
+
+**Scope of the retained hypothesis.** The named hypothesis `hMarginal : MarginalBridge …` is
+*stronger* than a local per-round marginal transport: it already asserts that the full-run accept
+probability is bounded by the **sum** over challenge rounds of the per-round game flip
+probabilities. It therefore packages the first-crossing (pigeonhole) step and the union bound as
+well as the marginal transport, so the theorems in *this* file do not themselves use the pigeonhole
+or union-bound lemmas listed above. What is proven here is only the final assembly: the existential
+unpacking of `rbrSoundness`, chaining `hMarginal` with the per-round bounds, and the error
+summation. In particular this file does not establish `MarginalBridge` for arbitrary (stateful)
+shared-oracle implementations; the unconditional bridge is in fact false for a state-mutating
+`impl` (see the Boolean-state counterexample in the header of `MarginalBridgeProof.lean`), and the
+in-tree discharge `Verifier.marginalBridge_holds` (`MarginalBridgeProof.lean`) assumes state
+preservation, never-failing and a state-independent response law for `impl`.
 
 ## Results
 
@@ -69,8 +79,9 @@ error summation) is proven and axiom-clean.
   oracle-keystone residuals `hProj`, `hInnerRbr` already present in `sumcheckSoundnessResidual_holds`,
   plus the named marginal step `hMarginal`).
 
-No `sorry`/`admit`. The single genuine measure-theoretic residual is the named hypothesis
-`hMarginal`; the combinatorial union-bound assembly is proven and axiom-clean.
+No `sorry`/`admit`. The retained residual is the named hypothesis `hMarginal`, which (as explained
+above) includes the first-crossing/union-bound conclusion itself; the final assembly from
+`hMarginal` and the per-round bounds is proven and axiom-clean.
 -/
 
 noncomputable section
@@ -124,19 +135,24 @@ def fullRunAcceptProb
     (simulateQ (impl.addLift challengeQueryImpl : QueryImpl _ (StateT σ ProbComp))
       ((Reduction.mk prover verifier).run stmtIn witIn).run).run' (← init))
 
-/-- **The per-round marginal-domination hypothesis** (the single measure-theoretic residual of the
-`rbrSoundness → soundness` bridge).
+/-- **The marginal-bridge hypothesis** (the retained residual of the `rbrSoundness → soundness`
+bridge).
 
 For a state function `sf` whose per-round flip probabilities are each bounded by `rbrSoundnessError`,
 the full honest soundness-run accept probability is at most the **sum over challenge rounds** of the
-round-by-round game's per-round flip probabilities. This is the failure-monotone marginal bridge:
-the trailing prover / verifier / later-round steps threaded by the full run but omitted by the
-per-round game contribute only failure mass (the reusable `simulateQ … |>.run'` trailing-drop
-transports `probEvent_simulateQ_run'_elimM_trailing_le`, `probEvent_simulateQ_run'_bind_trailing_le`,
-… proven in `Security/RoundByRound.lean`), so each full-run flip marginal is dominated by the
-corresponding per-round game marginal, and the first-crossing pigeonhole
-(`exists_challenge_flip_of_full`) plus the finite union bound (`probEvent_le_sum_of_imp_exists`)
-assemble those marginals into the sum.
+round-by-round game's per-round flip probabilities.
+
+Note the scope: this `Prop` is not merely a local per-round marginal transport. Its conclusion is
+already the summed bound, so it packages (i) the per-round marginal domination (the trailing
+prover / verifier / later-round steps threaded by the full run but omitted by the per-round game
+contribute only failure mass; cf. the trailing-drop transports
+`probEvent_simulateQ_run'_elimM_trailing_le`, `probEvent_simulateQ_run'_bind_trailing_le` in
+`ProximityPrize/Extensions/OracleReduction/Security/RoundByRound.lean`), (ii) the first-crossing
+pigeonhole (`exists_challenge_flip_of_full`) and (iii) the finite union bound
+(`probEvent_le_sum_of_imp_exists`). It is a hypothesis, not a theorem: it is **false** for some
+state-mutating shared-oracle implementations (the Boolean-state counterexample in the header of
+`MarginalBridgeProof.lean`), and the in-tree discharge `Verifier.marginalBridge_holds` requires
+state-preserving, never-failing implementations with a state-independent response law.
 
 Packaged as a `def` so the LogUp specializations can reference it without re-spelling the prover /
 oracle-spec types. -/
@@ -160,13 +176,15 @@ def MarginalBridge
 Given:
 * `hRbr : rbrSoundness init impl langIn langOut verifier rbrSoundnessError` — the round-by-round
   soundness, i.e. a state function `sf` with per-round flip bounds `rbrSoundnessError`; and
-* `hMarginal : MarginalBridge …` — the single measure-theoretic residual (see `MarginalBridge`),
+* `hMarginal : MarginalBridge …` — the retained residual (see `MarginalBridge`; it already
+  contains the summed first-crossing/union-bound conclusion),
 
 the verifier is plain-sound with error `∑ i, rbrSoundnessError i`.
 
-The proof is the union bound: chain `hMarginal` (full run ≤ sum of per-round game probabilities)
-with the per-round bounds from `hRbr` (each per-round game probability ≤ `rbrSoundnessError i`),
-summed via `Finset.sum_le_sum`, and coerce the `ℝ≥0` sum into `ℝ≥0∞`. -/
+The proof is a direct application of the assumed bound: chain `hMarginal` (full run ≤ sum of
+per-round game probabilities) with the per-round bounds from `hRbr` (each per-round game
+probability ≤ `rbrSoundnessError i`), summed via `Finset.sum_le_sum`, and coerce the `ℝ≥0` sum into
+`ℝ≥0∞`. The pigeonhole/union-bound reasoning is part of the hypothesis, not of this proof. -/
 theorem rbrSoundness_imp_soundness_of_marginal
     {langIn : Set StmtIn} {langOut : Set StmtOut}
     {verifier : Verifier oSpec StmtIn StmtOut pSpec}
@@ -226,8 +244,8 @@ soundness of `sumcheckVerifier` with error `sumcheckSoundnessError`, *provided*:
 * `sumcheckSoundnessError = ∑ i, rbrSoundnessError i` (the union-bound error, supplied as a named
   equation `hError`); and
 
-* the single measure-theoretic marginal-domination residual `hMarginal` (specialized to
-  `sumcheckVerifier`).
+* the marginal-bridge residual `hMarginal` (specialized to `sumcheckVerifier`), which already
+  asserts the summed first-crossing/union-bound bound (see `Verifier.MarginalBridge`).
 
 The implication is just `rbrSoundness_imp_soundness_of_marginal` followed by rewriting the error to
 the supplied `sumcheckSoundnessError`. -/
@@ -258,9 +276,12 @@ inputs only
 * `hInnerRbr` — the inner concrete sum-check oracle reduction's round-by-round soundness (the
   oracle-level multi-round sum-check keystone);
 * `hError` — the union-bound error equation `sumcheckSoundnessError = ∑ rbrSoundnessError`;
-* `hMarginal` — the single measure-theoretic marginal-domination residual.
+* `hMarginal` — the marginal-bridge residual (it includes the summed first-crossing/union-bound
+  conclusion; see `Verifier.MarginalBridge`).
 
-This is the form in which `hRbrToSound` is closed for issue #13. -/
+This is the form in which `hRbrToSound` is closed for issue #13: the slot is replaced by the
+explicit hypothesis `hMarginal`, which is not discharged here (and is false for some
+state-mutating implementations; see `MarginalBridgeProof.lean`). -/
 theorem sumcheckSoundnessResidual_holds_of_rbr
     (sumcheckSoundnessError : ℝ≥0)
     {rbrSoundnessError : (logupSumcheckPSpec F n M params).ChallengeIdx → ℝ≥0}

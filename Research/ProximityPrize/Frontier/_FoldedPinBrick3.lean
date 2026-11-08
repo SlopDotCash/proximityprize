@@ -32,7 +32,10 @@ generic module alphabet `A` (a generic `F`-submodule code `C ≤ (ι → A)`,
    directions carry zero bad scalars (`mcaEvent_false_of_direction_mem`); `mcaEvent` is
    invariant under shifting the direction by a codeword
    (`mcaEvent_direction_sub_codeword_iff`).  Verbatim generalizations of the
-   `LineListMCAWeld` originals — module operations only, no field-alphabet facts.
+   `LineListMCAWeld` originals — module operations only, no field-alphabet facts.  (Known
+   duplication: the `A = F` originals live in the upstream-pinned ArkLib module
+   `LineListMCAWeld.lean`, which cannot be re-derived from these here; the same-named
+   generic copies are kept in this namespace until they can move into a library extension.)
 2. **The line-list vocabulary, generic alphabet** (§2): `lineAgreeSet`, `directionZeroSet`
    (a "zero coordinate" of a folded word is a whole zero *block*), `lineBadScalars`,
    `lineAppearingCodewords`, and the two named budget `Prop`s `FarLineListBudget` /
@@ -66,7 +69,7 @@ between brick 1's span machinery (`FrsCloseListSpanBound`, gap G2) and this bric
 appearing anywhere on a far folded line number `poly(1/η)`) — one named counting statement,
 zero character sums.
 
-**Honest scope / relation to the prize (dossier §11.6).** `isPrizeClosure := False`.
+**Honest scope / relation to the prize (dossier §11.6).** Not a prize closure (see §7).
 Goal-(A)-adjacent banking (FRI/STIR/WHIR fold); does NOT touch plain-RS δ\* (goal (B)):
 `FoldingTransferNoGo.folding_transfer_no_go` stands.  The generic weld also applies to plain
 RS, where it reproduces the existing `LineListMCAWeld` shape — no new plain-RS strength (the
@@ -425,7 +428,6 @@ invariance) to a large-zero direction, or its direction is genuinely far
 so it applies at the folded alphabet. -/
 theorem epsMCA_le_of_farLineListBudgeted [NoZeroSMulDivisors F A]
     (C : Submodule F (ι → A)) (a : ℕ) (δ : ℝ≥0) {L Bfar Bnear : ℕ}
-    (haC : (1 - δ) * (Fintype.card ι : ℝ≥0) ≤ (a : ℝ≥0))
     (haF : ∀ m : ℕ, (1 - δ) * (Fintype.card ι : ℝ≥0) ≤ (m : ℝ≥0) → a ≤ m)
     (hfarL : FarLineListBudget (F := F) ((C : Set (ι → A))) a δ L)
     (hfit : ∀ z : ℕ, z < a → L * ((Fintype.card ι - z) / (a - z)) ≤ Bfar)
@@ -470,7 +472,6 @@ open Classical in
 the target, `δ ≤ δ*(C, ε*)`. -/
 theorem le_mcaDeltaStar_of_farLineListBudgeted [NoZeroSMulDivisors F A]
     (C : Submodule F (ι → A)) (a : ℕ) (δ : ℝ≥0) (εstar : ℝ≥0∞) {L Bfar Bnear : ℕ}
-    (haC : (1 - δ) * (Fintype.card ι : ℝ≥0) ≤ (a : ℝ≥0))
     (haF : ∀ m : ℕ, (1 - δ) * (Fintype.card ι : ℝ≥0) ≤ (m : ℝ≥0) → a ≤ m)
     (hfarL : FarLineListBudget (F := F) ((C : Set (ι → A))) a δ L)
     (hfit : ∀ z : ℕ, z < a → L * ((Fintype.card ι - z) / (a - z)) ≤ Bfar)
@@ -481,7 +482,7 @@ theorem le_mcaDeltaStar_of_farLineListBudgeted [NoZeroSMulDivisors F A]
       ((C : Set (ι → A))) εstar :=
   ProximityGap.MCAThresholdLedger.le_mcaDeltaStar_of_good
     (F := F) (A := A) ((C : Set (ι → A))) εstar hδ1
-    (le_trans (epsMCA_le_of_farLineListBudgeted C a δ haC haF hfarL hfit hlow) hBudget)
+    (le_trans (epsMCA_le_of_farLineListBudgeted C a δ haF hfarL hfit hlow) hBudget)
 
 /-! ### §5. The folded headline — gap G4 closed as a conditional reduction -/
 
@@ -501,7 +502,6 @@ inputs: `FarLineListBudget` at the folded alphabet is the re-aimed gap G3 (the G
 claims either. -/
 theorem frs_epsMCA_le_of_farLineListBudgeted
     (domain : ι ↪ F) (k s : ℕ) (ω : F) (a : ℕ) (δ : ℝ≥0) {L Bfar Bnear : ℕ}
-    (haC : (1 - δ) * (Fintype.card ι : ℝ≥0) ≤ (a : ℝ≥0))
     (haF : ∀ m : ℕ, (1 - δ) * (Fintype.card ι : ℝ≥0) ≤ (m : ℝ≥0) → a ≤ m)
     (hfarL : FarLineListBudget (F := F)
       ((ReedSolomon.Folded.frsCode domain k s ω : Submodule F (ι → Fin s → F)) :
@@ -515,7 +515,7 @@ theorem frs_epsMCA_le_of_farLineListBudgeted
         Set (ι → Fin s → F)) δ
       ≤ ((max Bfar Bnear : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) :=
   epsMCA_le_of_farLineListBudgeted
-    (ReedSolomon.Folded.frsCode domain k s ω) a δ haC haF hfarL hfit hlow
+    (ReedSolomon.Folded.frsCode domain k s ω) a δ haF hfarL hfit hlow
 
 end Folded
 
@@ -576,15 +576,12 @@ theorem not_uniform_lineAppearing_budget_of_lt_card [NoZeroSMulDivisors F A]
     (le_trans (aligned_lineAppearingCodewords_card_ge C a ha hu₁ hne) (hall 0 u₁))
     (not_le.mpr hL)
 
-/-! ### §7. Honest classification -/
+/-! ### §7. Honest classification
 
-/-- Honest classification: this brick closes gap G4 of the folded-pin map as a conditional
-reduction (deployment-facing, FRI/STIR/WHIR); it does NOT close, advance, or bound the
-plain-RS δ\* prize core (dossier §11.6 goal (B)) — `FoldingTransferNoGo` stands, and the
-named budgets are OPEN. -/
-def isPrizeClosure : Prop := False
-
-theorem not_prizeClosure : ¬ isPrizeClosure := id
+This brick closes gap G4 of the folded-pin map as a conditional reduction (deployment-facing,
+FRI/STIR/WHIR); it does NOT close, advance, or bound the plain-RS δ\* prize core (dossier §11.6
+goal (B)) — `FoldingTransferNoGo` stands, and the named budgets are OPEN.  (This classification is
+prose only; no Lean declaration encodes it.) -/
 
 end ProximityGap.FoldedPinWeld
 
@@ -605,4 +602,3 @@ end ProximityGap.FoldedPinWeld
 #print axioms ProximityGap.FoldedPinWeld.frs_epsMCA_le_of_farLineListBudgeted
 #print axioms ProximityGap.FoldedPinWeld.aligned_lineAppearingCodewords_card_ge
 #print axioms ProximityGap.FoldedPinWeld.not_uniform_lineAppearing_budget_of_lt_card
-#print axioms ProximityGap.FoldedPinWeld.not_prizeClosure

@@ -13,6 +13,12 @@ completed construction is owned by `append_perfectCompleteness_msg_proof`; the d
 proof and private machinery are archived in the integration audit. This module introduces no
 residual or admitted construction. The retired aggregate response classes are explicit pointwise
 finite/inhabited response families.
+
+**Scope.** Besides the message-seam direction facts (`hn`, `hDir`, `hDir₂`) and `NeverFail init`,
+each theorem here assumes the substantive oracle restriction `hImplSupp`: for every query and
+every state `s`, the support of the stateful response `(impl q).run s` (first component) is the
+*full* support of the raw query, independent of `s`. Stateful implementations whose response
+support shrinks or depends on the state (e.g. caching/mutating oracles) are **not** covered.
 -/
 
 open OracleComp OracleSpec ProtocolSpec

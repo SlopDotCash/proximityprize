@@ -39,20 +39,28 @@ order-`h` subgroup realizes the all-zero `(p₁, …, p_{h-1})` statistic
   `exists_many_vanishing_powersum_subsets` — **at least `C(n/h, m)` distinct `(m·h)`-subsets of
   `G` have `∑_{x∈S} x^i = 0` for every `1 ≤ i < h`.**
 
-Taking `h = 2^j > t` this is a `q`-independent, field-independent, super-polynomial concentration
-of `(∑x, ∑x², …, ∑x^t)` at the single target `0` — the general-`t` round-8.
+Taking `h = 2^j > t` this is a `q`-independent, field-independent concentration of
+`(∑x, ∑x², …, ∑x^t)` at the single target `0` — the general-`t` round-8 — with count at least
+`C(N, m)`, `N = n/h`. **Growth caveat:** `C(N, m)` is super-polynomial in `n` only along parameter
+sequences where the number of cosets `m` grows with `N` and stays away from both endpoints (e.g.
+`m = ⌊θN⌋` with fixed `0 < θ < 1`, giving `2^{Θ(N)}`, provided `h` is small enough that `N`
+itself grows polynomially in `n`). For fixed `m` (e.g. `m = 2`) it is only polynomial,
+`Θ(N^m)`, and at `m = N` it equals `1`. The asymptotic variables (`n`, `h`, `m` as functions of the
+growing parameter) must be fixed before calling the count super-polynomial.
 
-## Honest scope: the method reaches near capacity only, not the deep interior
+## Honest scope: depth arithmetic, not a method barrier
 
-`cosetUnion_superpoly_moment_depth` records the structural limit: a *super-polynomially* large
-coset concentration (`m ≥ 2` cosets) of moment-depth `t` (`t < h`) has subset size
-`a = m·h ≥ 2(t+1)`, i.e. **`t < a/2`**. So the construction can kill at most `< a/2` consecutive
-moments while keeping a super-polynomial count: the moment-depth `t` is bounded by half the
-agreement size `a`. The radius is `δ = 1 − a/n`; matching the deep interior near the Johnson
-radius would require moment-depth `t` comparable to `a` (so that `δ` is pushed down toward
-`1 − √ρ`), which this construction provably cannot supply. The deep interior of the Johnson→
-capacity gap therefore genuinely needs an idea beyond coset concentration — consistent with the
-in-tree Weil no-go (`SubgroupCharacterSumNoGo.weil_recovers_root_count_not_better`).
+`cosetUnion_superpoly_moment_depth` is simple depth arithmetic: a union of `m ≥ 2` cosets of
+an order-`h` subgroup with moment-depth `t < h` has subset size `a = m·h ≥ 2(t+1)`, i.e.
+`t < a/2`. (The name is historical: `m ≥ 2` alone does NOT make the count `C(N, m)`
+super-polynomial — see the growth caveat above.) Within *this single-order coset-union
+construction*, the moment-depth is therefore below half the agreement size `a`. The radius is
+`δ = 1 − a/n`; reaching the deep interior near the Johnson radius would require moment-depth `t`
+comparable to `a`, which this construction does not supply. This is NOT a theorem excluding all
+coset-based (or other) concentration strategies in a Johnson-interior regime: it says nothing
+about other constructions (e.g. hybrid unions with cross-atom cancellation, cf.
+`HybridConcentrationDepthNoGo`), and no asymptotic regime or count lower bound for a barrier is
+stated or proved here.
 
 All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 
@@ -175,11 +183,12 @@ theorem cosetUnion_injOn {ζ : F} {h : ℕ} (hζ : IsPrimitiveRoot ζ h) (hh : 0
 `(m·h)`-subsets** of the smooth domain, each realizing the all-zero `(p₁, …, p_{h-1})` statistic:
 every power sum `∑_{x∈S} x^i = 0` for `1 ≤ i < h`.
 
-Taking `h = 2^j > t` this is a **`q`-independent, super-polynomial concentration of the
+Taking `h = 2^j > t` this is a **`q`-independent concentration of the
 `(∑x, ∑x², …, ∑x^t)` statistic at the single target `0`** — the general-`t` form of the
-round-8 (`t = 2`, order-4) result, and the list-decoding lower-bound ingredient of issue #232.
+round-8 (`t = 2`, order-4) result, and a list-decoding lower-bound ingredient of issue #232.
 It lower-bounds the fleet's open fiber count `N2(0,0)` (and its `t`-dimensional analogue) by
-`C(n/h, m)`. -/
+`C(n/h, m)`. That count is super-polynomial only when `m` grows with `n/h` away from both
+endpoints; for fixed `m` it is polynomial, and at `m = n/h` it is `1`. -/
 theorem exists_many_vanishing_powersum_subsets {ζ : F} {h : ℕ} (hζ : IsPrimitiveRoot ζ h)
     (hh : 0 < h) (R : Finset F) (hR : ∀ g ∈ R, g ≠ 0)
     (hdisj : (R : Set F).PairwiseDisjoint (fun g => coset ζ h g)) (m : ℕ) :
@@ -200,12 +209,15 @@ theorem exists_many_vanishing_powersum_subsets {ζ : F} {h : ℕ} (hζ : IsPrimi
     exact ⟨by rw [cosetUnion_card hζ T hgT hdisjT, hTcard],
       fun i hi1 hih => cosetUnion_powersum_zero hζ T hgT hdisjT hi1 hih⟩
 
-/-- **Honest depth no-go (structural limit of the method).** A *super-polynomially*-counted coset
-concentration (`m ≥ 2` cosets, count `C(n/h, m) ≥ C(n/h, 2)`) of moment-depth `t` (`t < h`) has
-subset size `a = m·h ≥ 2(t+1)`. So the moment-depth obeys `t < a/2`: the construction kills at
-most fewer than half the coordinates of its agreement set. Pushing the radius `δ = 1 − a/n` down
-toward the Johnson radius needs moment-depth `t` comparable to `a`, which this construction
-provably cannot supply — the deep interior needs an idea beyond coset concentration. -/
+/-- **Depth arithmetic for single-order coset unions.** A union of `m ≥ 2` cosets of an order-`h`
+subgroup with moment-depth `t < h` has subset size `a = m·h ≥ 2(t+1)`, so `t < a/2`.
+
+This is elementary arithmetic about the coset-union construction only. Despite the (historical)
+name, `m ≥ 2` does not make the count `C(n/h, m)` super-polynomial (fixed `m = 2` gives a
+quadratic count, and `m = n/h` gives `1`, so `C(n/h, m) ≥ C(n/h, 2)` also fails in general);
+super-polynomial growth needs `m` growing with `n/h` away from both endpoints. The theorem does
+not exclude other concentration strategies, and draws no conclusion about the Johnson-interior
+regime without separately fixed asymptotic parameters. -/
 theorem cosetUnion_superpoly_moment_depth {h m t : ℕ} (hm : 2 ≤ m) (ht : t < h) :
     2 * (t + 1) ≤ m * h := by
   calc 2 * (t + 1) ≤ 2 * h := by omega

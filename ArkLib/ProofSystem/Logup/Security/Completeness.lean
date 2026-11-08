@@ -25,27 +25,31 @@ Completeness therefore follows from `OracleReduction.append_completeness`, suppl
 * embedded-sumcheck completeness with error `0` (the honest sumcheck run is deterministic and
   correct).
 
-Both sub-facts, and the composition lemma `OracleReduction.append_completeness` itself, are blocked
-by missing upstream security lemmas introduced *outside* `ArkLib/ProofSystem/Logup/**`, which this
-development is not permitted to modify:
+When this facade was written, both sub-facts and the composition lemma were described as blocked
+by missing upstream security lemmas outside `ArkLib/ProofSystem/Logup/**`: the composition step
+`OracleReduction.append_completeness` exposes the sequential-composition completeness obligation as
+an explicit `hAppendCompleteness` hypothesis (an honest named residual interface, not a hidden
+`sorryAx`); no generic multi-round `Sumcheck.Spec.oracleReduction` completeness theorem existed;
+and lifting through `logupSumcheckContextLens` needed the lens completeness instance demanded by
+`OracleReduction.liftContextLegacy_completeness`.
 
-* `OracleReduction.append_completeness` currently exposes the sequential-composition completeness
-  obligation as an explicit `hAppendCompleteness` hypothesis. This is an honest named residual
-  interface, not a hidden `sorryAx`.
-* No full generic `Sumcheck.Spec.oracleReduction` completeness theorem exists in-tree. The generic
-  single-round sumcheck reduction has `oracleReduction_perfectCompleteness`, but
-  `Sumcheck.Spec.oracleReduction` is the `seqCompose` of those rounds and no seq-compose
-  completeness theorem is available for this use.
-* Lifting the generic sumcheck reduction through `logupSumcheckContextLens` would additionally
-  require the lens completeness instance demanded by
-  `OracleReduction.liftContextLegacy_completeness`.
+**Current status (that blanket wall description is obsolete).** The relevant restricted theorems
+now exist in other modules: the message-seam append keystones (`append_completeness_msg`,
+`OracleReduction.append_completeness_msg_proof`, `appendCompletenessResidual_wired` in
+`LogupCompletenessWired.lean`), the oracle-lift/sumcheck half
+`sumcheckCompletenessResidual_unconditional` (`SumcheckCompletenessUncond.lean`, with the lens
+completeness instance), the outer half `outerCompletenessResidual_of_neverFail`, and the concrete
+end-to-end close `logup_completeness_final` (`LogupCompletenessFinal.lean`). They keep explicit
+implementation/totality guards (`NeverFail init`, `hImplSupp`, and the state-preservation /
+never-failing / state-independent-answer side conditions) and are statements about the encoded
+LogUp verifier and its checks; they are not theorems for arbitrary stateful implementations.
 
-Consequently `logup_completeness` is closed via the genuine composition skeleton, with a named
-residual `Prop` (`SubPhaseCompletenessResidual`) standing for the upstream-blocked
-sub-completeness facts. For callers that can discharge only one side at a time,
-`Security/SubPhaseSplit.lean` exposes the same residual as `OuterCompletenessResidual` and
-`SumcheckCompletenessResidual`. The pole-probability lemmas the outer half relies on are fully
-proven.
+This module itself still closes `logup_completeness_of_residual` via the composition skeleton,
+with the named residual `Prop` `SubPhaseCompletenessResidual` and the explicit append hypothesis;
+this retained conditional facade is not a new missing proof. For callers that can discharge only
+one side at a time, `Security/SubPhaseSplit.lean` exposes the same residual as
+`OuterCompletenessResidual` and `SumcheckCompletenessResidual`. The pole-probability lemmas the
+outer half relies on are fully proven.
 -/
 
 open scoped NNReal ENNReal
@@ -219,23 +223,22 @@ theorem logupOracleReduction_eq_append :
   fails.
 * The embedded sumcheck (`sumcheckOracleReduction`) is complete with error `0`.
 
-WALL (upstream security/composition gaps, outside `ArkLib/ProofSystem/Logup/**`, not modifiable
-here):
+Historical WALL description (when this residual was introduced; now superseded):
 
-* Outer completeness requires unfolding `Reduction.run (outerOracleReduction …)`. The prover and
-  verifier of the outer phase are themselves `sorryAx`-free, and the failure event is exactly the
-  pole event bounded by `probEvent_pole_le`. This direction is in principle closable in-tree but is
-  not finished here.
-* Sumcheck completeness is blocked: `sumcheckOracleReduction` is a `liftContext` of
-  `Sumcheck.Spec.oracleReduction`. No full `Sumcheck.Spec` completeness theorem exists in-tree, and
-  the lift also needs the corresponding `OracleContext.Lens.IsComplete` instance for
-  `logupSumcheckContextLens`.
-* The top-level composition step uses `OracleReduction.append_completeness`, whose current API
-  carries the append-completeness theorem as an explicit hypothesis instead of hiding it behind an
-  incomplete proof.
+* Outer completeness required unfolding `Reduction.run (outerOracleReduction …)`; the failure
+  event is exactly the pole event bounded by `probEvent_pole_le`. This half is now proved
+  (`outerCompletenessResidual_of_neverFail`, under `NeverFail init`).
+* Sumcheck completeness was blocked: `sumcheckOracleReduction` is a `liftContext` of
+  `Sumcheck.Spec.oracleReduction`, and no multi-round `Sumcheck.Spec` completeness theorem or
+  lens `IsComplete` instance existed. This half is now proved
+  (`sumcheckCompletenessResidual_unconditional`, under `NeverFail init` and `hImplSupp`).
+* The top-level composition step uses `OracleReduction.append_completeness`, whose API carries the
+  append-completeness theorem as an explicit hypothesis; the LogUp instance is now discharged by
+  `appendCompletenessResidual_wired` under the honest-implementation side conditions.
 
-This is therefore kept as an explicit named residual `Prop` (no `sorry`); the main theorem
-`logup_completeness_of_residual` consumes it. -/
+The residual is kept as an explicit named `Prop` (no `sorry`); the main theorem
+`logup_completeness_of_residual` consumes it. Its conjuncts have conditional providers under the
+guards just listed; see `logup_completeness_final` for the assembled end-to-end statement. -/
 def SubPhaseCompletenessResidual : Prop :=
     (outerOracleReduction oSpec F n M params).completeness init impl
         (inputRelation F n M) (midRelation F n M params) (logupCompletenessError F n) ∧

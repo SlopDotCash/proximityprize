@@ -64,7 +64,7 @@ Eq. 55). This module instruments the split exactly as CO25 does:
   `hybGameEagerSplit_diag` with `KeyLemmaHybrids.hybGameEager`);
 - `Hyb3Strict` — `Hyb₃` with the hit-only verifier bridge;
 - **`hyb34Step_of_strictSplit`** (proven): any two coupling bounds
-  `Δ(Hyb₃, Hyb₃Strict) ≤ εA` (the bad-event mass) and `Δ(Hyb₃Strict, Hyb₄) ≤ εB` (the
+  `Δ(Hyb₃, Hyb₃Strict) ≤ εA` (bounded by, not equal to, the bad-event mass) and `Δ(Hyb₃Strict, Hyb₄) ≤ εB` (the
   hit-path collapse) with `εA + εB ≤ claim5_24Bound` assemble into the full
   `Hyb34StepResidual`. The two coupling bounds themselves are the open research core; they
   require CO25's §5.6 trace analysis (Lemmas 5.8–5.10 applied to the verifier's replayed
@@ -895,8 +895,13 @@ variable [SaltCodec U δ Salt]
 
 /-- `Hyb₃` with the **hit-only** verifier bridge: the prover runs against the real eager
 Eq. 16 bridge; the verifier replays against the *committed memo only*, aborting on any fresh
-`gᵢ` key. `Δ(Hyb₃, Hyb3Strict)` is exactly the CO25 Claim 5.24 bad-event mass (the verifier
-leaves the replay path); `Δ(Hyb3Strict, Hyb₄)` is the pure-replay collapse. -/
+`gᵢ` key. By identical-until-bad, `Δ(Hyb₃, Hyb3Strict)` is **at most** the CO25 Claim 5.24
+bad-event mass (the probability that the verifier leaves the replay path). It is not equal to
+it in general: on a bad execution where the real `Hyb₃` run also ends in `none` (e.g. it
+aborts after the bridge miss), both games output `none` and that execution contributes no
+TV. Equality would need extra non-abort/distinguishability conditions, which are not stated
+here. `Δ(Hyb3Strict, Hyb₄)` is the pure-replay collapse. (`hyb34Step_of_strictSplit` only
+consumes the two TV bounds as hypotheses, so this inequality reading is all it uses.) -/
 noncomputable def Hyb3Strict [SampleableType U]
     (T_H T_P : Type) [LawfulTraceNablaImpl T_H T_P StmtIn U] (δ : ℕ)
     (Salt : Type) [SaltCodec U δ Salt]
@@ -920,13 +925,17 @@ end SplitSkeleton
 
 section Assembly
 
-/-- **CO25 Eq. 55 proof skeleton (proven)**: if the `Hyb₃`-to-strict divergence (the
-bad-event mass `εA`: the verifier's `D2SQuery` run makes a fresh `gᵢ` query or aborts off
+/-- **CO25 Eq. 55 proof skeleton (proven)**: if the `Hyb₃`-to-strict divergence (bounded by
+`εA`, e.g. an upper bound on the bad-event mass where the verifier's `D2SQuery` run makes a fresh `gᵢ` query or aborts off
 the replay path) and the strict-to-`Hyb₄` collapse cost (`εB`: pure replay equals the
 basic-FS verifier, on the hit path) sum to at most `claim5_24Bound`, then the full
 `Hyb34StepResidual` holds. The two hypotheses are the genuinely open probabilistic core of
 Claim 5.24 (they require the §5.6 trace analysis applied to the verifier's replayed trace);
-the deterministic bricks of this module are the toolkit for `hB`. -/
+the deterministic bricks of this module are the toolkit for `hB`.
+
+For zero-permutation protocols (`pSpec.totalNumPermQueries = 0`), `hA`/`hB`/`hsum` cannot all
+hold at `L = 0`, since `claim5_24Bound U tₕ tₚ tₚᵢ 0 < 0` (`claim5_24Bound_neg_of_L_eq_zero`)
+while the two distances are nonnegative. -/
 theorem hyb34Step_of_strictSplit [SampleableType U]
     (T_H T_P : Type) [LawfulTraceNablaImpl T_H T_P StmtIn U] (δ : ℕ)
     (Salt : Type) [SaltCodec U δ Salt]

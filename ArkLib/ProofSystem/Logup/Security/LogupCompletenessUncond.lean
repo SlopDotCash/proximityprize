@@ -32,8 +32,8 @@ reduction chain.
    fusion, the proven `Sumcheck.Spec.oracleReductionToReductionResidual_of_binary` reduces the
    unbounded-round Sumcheck bridge `oracleReductionToReductionResidual` to the single per-round
    single-round bridge `hPerRound`
-   (`(SingleRound.oracleReduction i).toReduction = SingleRound.reduction i`, a `liftContext`
-   commutation fact orthogonal to the seqCompose fusion). Feeding that bridge into
+   (`(SingleRound.oracleReduction i).toReduction = SingleRound.reduction i`, orthogonal to the
+   seqCompose fusion; it holds, see the residual surface below). Feeding that bridge into
    `Sumcheck.Spec.oracleReduction_perfectCompleteness_of_bridge` (which discharges everything else
    via the proven `reduction_perfectCompleteness`) yields the inner perfect completeness `hInner`
    for `logupConcreteSumcheckOracleReduction` between `innerSumcheckRelIn` and
@@ -51,14 +51,20 @@ reduction chain.
 
 ## Residual surface (`logup_completeness_uncond`)
 
-The smallest honest residual set on this route:
+The residual set on this route:
 
 * `hInit : NeverFail init` — the standard completeness initialization assumption.
-* `hPerRound` — the per-round single-round `liftContext`-commutation bridge for the inner sum-check.
+* `hPerRound` — the per-round single-round bridge for the inner sum-check. It holds: canonical
+  ArkLib's round verifiers both read the prover message, and
+  `Sumcheck.Spec.SingleRound.oracleReduction_toReduction_eq_reduction`
+  (`BridgeAndAppendResiduals.lean`) proves it for every round. It is kept as a hypothesis here
+  only for signature stability; callers can supply that theorem. (A former downstream oracle
+  verifier ignored the prover message, and for it `hPerRound` was false for `n ≥ 1`; that verifier
+  is retired.)
   (NOTE: the CubeFiber route — `sumcheckCompletenessResidual_unconditional` in
-  `SumcheckCompletenessUncond.lean`, consumed by `logup_completeness_final` — avoids even this,
-  and `OracleCompletenessThreaded.lean` documents why the bridge route should be considered
-  superseded: the analogous unbounded-round `toReduction = reduction` equation is false in general.)
+  `SumcheckCompletenessUncond.lean`, consumed by `logup_completeness_final` — avoids even this
+  hypothesis. Under the canonical message-reading verifiers the multi-round sum-check bridge
+  also holds (`Sumcheck.Spec.oracleReductionToReductionResidual_holds`).)
 * `hImplSupp` — the standard oracle-implementation support-faithfulness condition (shared by every
   `*_perfectCompleteness` brick in-tree).
 * `hAppend` — the non-perfect outer⊕sumcheck append-composition completeness (dischargeable via
@@ -128,8 +134,9 @@ that bridge from the proven binary fusion (`binaryVerifierFusion_holds`) plus th
 `hPerRound`, via the proven `Sumcheck.Spec.oracleReductionToReductionResidual_of_binary`. -/
 
 /-- **Inner multi-round sum-check oracle perfect completeness, modulo the per-round bridge.**
-The only residual is `hPerRound`, the single-round `liftContext`-commutation fact; the deep
-unbounded-round verifier fusion is discharged by the proven binary keystone. -/
+The only residual is `hPerRound`; the deep unbounded-round verifier fusion is discharged by the
+proven binary keystone. `hPerRound` is supplied by
+`Sumcheck.Spec.SingleRound.oracleReduction_toReduction_eq_reduction`. -/
 theorem inner_sumcheck_perfectCompleteness_of_perRound
     (hPerRound : ∀ i,
       (Sumcheck.Spec.SingleRound.oracleReduction F n (logupSumcheckDegree M params)
@@ -165,7 +172,8 @@ Chains `inner_sumcheck_perfectCompleteness_of_perRound` (the inner oracle comple
 proven `sumcheckCompletenessResidual_of_inner`, whose `proj_complete` obligation is the theorem
 `SumcheckLensProjComplete_unconditional` (the claim-true `midRelation` membership *is* the zero-sum
 claim). The only residuals are `hPerRound`, `hInit`, `hImplSupp` — **no** honest-support
-hypothesis (the historical `hHonest` was unsatisfiable; see the module docstring). -/
+hypothesis (the historical `hHonest` was unsatisfiable; see the module docstring). `hPerRound`
+holds (`Sumcheck.Spec.SingleRound.oracleReduction_toReduction_eq_reduction`). -/
 theorem sumcheckCompletenessResidual_of_perRound
     (hPerRound : ∀ i,
       (Sumcheck.Spec.SingleRound.oracleReduction F n (logupSumcheckDegree M params)
@@ -190,10 +198,11 @@ The full LogUp oracle reduction is complete with error `logupCompletenessError F
 pole-rejection half is proven in-tree from `NeverFail init`, and the **embedded sum-check** half is
 discharged modulo the per-round bridge (the deep unbounded-round verifier fusion having been closed
 by the proven binary keystone, and the `proj_complete` obligation being the theorem
-`SumcheckLensProjComplete_unconditional`). The smallest honest residual set:
+`SumcheckLensProjComplete_unconditional`). The residual set:
 
 * `hInit : NeverFail init` — standard completeness initialization;
-* `hPerRound` — the per-round single-round `liftContext`-commutation bridge;
+* `hPerRound` — the per-round single-round bridge, which holds
+  (`Sumcheck.Spec.SingleRound.oracleReduction_toReduction_eq_reduction`);
 * `hImplSupp` — the standard oracle-implementation support-faithfulness condition;
 * `hAppend` — the non-perfect outer⊕sumcheck append-composition completeness.
 

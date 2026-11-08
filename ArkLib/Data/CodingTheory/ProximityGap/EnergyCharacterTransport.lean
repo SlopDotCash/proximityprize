@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SubgroupGaussSumFourthMoment
 
 /-!
-# The quantitative character-sum ⟺ additive-energy transport (Issue #389, the unifying brick)
+# Quantitative character-sum ⟹ additive-energy transport (one-way for upper bounds; Issue #389)
 
 The proximity-gap / sub-Johnson programme has seven faces (incomplete character sums of a
 multiplicative subgroup `H = μ_n`, the additive energy `E(H)`, the Sidon/parallelogram count,
@@ -20,27 +20,31 @@ through the **exact** Parseval moment identities:
 * `subgroup_gaussSum_fourthMoment : ∑_b ‖η_b‖⁴ = q·E(H)`  (fourth moment, no Weil).
 
 The exact identities relate *aggregates*; they do not, by themselves, transport a worst-case bound
-on the sup of one face to a bound on the other. This file supplies that **quantitative transport**,
-making Forms 1↔2 *bidirectionally* equivalent up to the explicit constants in the moments. Both
-directions are pure `ℝ`-arithmetic on the two moment identities plus the trivial frequency
-`η_0 = |H|`; **no Weil, no Stepanov, no sum-product input**:
+on the sup of one face to a bound on the other. This file supplies the following quantitative
+consequences. They are **one-way for upper bounds** — they do **not** make Forms 1 and 2
+bidirectionally equivalent up to constants. All are pure `ℝ`-arithmetic on the two moment
+identities plus the trivial frequency `η_0 = |H|` (valid for any finset `H`); **no Weil, no
+Stepanov, no sum-product input**:
 
 * `addEnergy_le_of_charSum_bound` :  `∀ b≠0, ‖η_b‖ ≤ B  ⟹  q·E(H) ≤ |H|⁴ + B²·(q·|H| − |H|²)`.
   Equivalently (`addEnergy_le_of_charSum_bound'`)  `E(H) ≤ |H|⁴/q + B²·|H|`.
-  *A sharp character-sum bound transports to a sharp energy bound.* This is the precise sense in
-  which "a `√n` cancellation bound makes `μ_n` essentially Sidon," and it is the exact arrow the
-  literature uses without spelling out the constant.
+  *A character-sum upper bound transports to an energy upper bound* (Form 1 ⟹ Form 2).
 * `exists_charSum_ge_of_energy` :  some `b≠0` has `‖η_b‖⁴ ≥ (q·E(H) − |H|⁴)/(q−1)`.
-  *A large energy forces a large character sum* (the converse arrow, pigeonhole on the fourth
-  moment). Together with the floor `E(H) ≥ |H|²` this is the analytic obstruction.
-* `sidon_order_of_sqrt_charSum` :  the headline unification. In the range `|H|² ≤ q` (i.e.
-  `n ≤ √q`), a square-root-cancellation character bound `‖η_b‖ ≤ C·√n` forces
-  `E(H) ≤ (1+C²)·n²` — energy of *Sidon order* (`n²`), only a constant above the absolute floor
-  `n²` (the diagonal floor `E(G) ≥ |G|²`) and the SidonModNeg floor `3n²−3n`. So Forms 1, 2, 3 all assert the
-  same single fact: *`μ_n` behaves like a random/Sidon set up to `n ≈ √q`.* This pins the
-  sub-Johnson list size — and hence `δ*` — at its random value throughout the window, conditional
-  only on the one open scalar `B(μ_n)` (proven for `n = O(log q)`; the deployed `n = 2³²` is the
-  Stepanov/Weil wall).
+  This is a **lower** bound on the maximum (the max dominates the punctured average); it is *not*
+  an upper bound on `B` in terms of `E`.  The only reverse upper bound available from these
+  identities is the direct one, `B⁴ ≤ q·E(H) − |H|⁴`, so `E = O(n²)` gives at best
+  `B ≤ O((q·n²)^{1/4})` (or `O((q·n)^{1/4})` after using the multiplicity of subgroup frequencies,
+  not done here) — which is **not** `O(√n)` when `q` is large.  To force a period strictly above
+  `√n` via this average one needs `q·E(H) − |H|⁴ > (q−1)·|H|²`; merely `E(H) > |H|⁴/q` is not enough
+  (a singleton has `E = 1 > 1/q`, yet every period has norm `1 = √n`).
+* `sidon_order_of_sqrt_charSum` :  in the range `|H|² ≤ q` (i.e. `n ≤ √q`), a
+  square-root-cancellation character bound `‖η_b‖ ≤ C·√n` forces `E(H) ≤ (1+C²)·n²` — energy of
+  *Sidon order* (`n²`), only a constant above the diagonal floor `E(H) ≥ |H|²`.  This is the
+  one-way implication Form 1 ⟹ Form 2.  Sidon-order energy is **not** the same as exact
+  SidonModNeg (energy `3n²−3n`), the converse (Form 2 ⟹ Form 1 with `B = O(√n)`) is not proved,
+  and no MCA/list-size incidence dictionary is supplied here, so this file does **not** pin the
+  sub-Johnson list size or `δ*`.  The scalar `B(μ_n)` itself remains open (known for
+  `n = O(log q)`; the deployed `n = 2³²` is the Stepanov/Weil wall).
 
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #389.
@@ -177,9 +181,10 @@ theorem exists_charSum_ge_of_energy {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) 
   rw [← Finset.mul_sum, herase4, Finset.sum_const, nsmul_eq_mul, hcardR] at hlt
   exact lt_irrefl _ hlt
 
-/-- **Converse transport, divided form: `max_{b≠0} ‖η_b‖⁴ ≥ (q·E(G) − |G|⁴)/(q−1)`.** The honest
-analytic obstruction: combined with the diagonal floor `E(G) ≥ |G|²`, an energy above
-the random value `|G|⁴/q` forces a character sum strictly above `√|G|`. -/
+/-- **Converse transport, divided form: `max_{b≠0} ‖η_b‖⁴ ≥ (q·E(G) − |G|⁴)/(q−1)`.** A lower
+bound on the maximal period, not an upper bound.  It forces a character sum strictly above `√|G|`
+only when `q·E(G) − |G|⁴ > (q−1)·|G|²`; an energy merely above the random value `|G|⁴/q` does not
+suffice (e.g. a singleton: `E = 1 > 1/q`, all periods of norm `1 = √|G|`). -/
 theorem exists_charSum_ge_of_energy' {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
     (hq : 1 < Fintype.card F) :
     ∃ b : F, b ≠ 0 ∧
@@ -191,13 +196,12 @@ theorem exists_charSum_ge_of_energy' {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
   obtain ⟨b, hb0, hb⟩ := exists_charSum_ge_of_energy hψ G hq
   exact ⟨b, hb0, by rw [div_le_iff₀ hq1]; linarith [hb]⟩
 
-/-- **The headline unification (Forms 1 ⇔ 2 ⇔ 3).** In the range `n ≤ √q` (`|G|² ≤ q`), a
+/-- **Form 1 ⟹ Form 2 (one-way).** In the range `n ≤ √q` (`|G|² ≤ q`), a
 square-root-cancellation character-sum bound `‖η_b‖ ≤ C·√n` for all `b≠0` forces the additive
-energy to Sidon order: `E(G) ≤ (1+C²)·n²`. So the analytic Form 1 (`√n` cancellation), the
-combinatorial Form 2 (`n²` energy), and the Sidon Form 3 (energy at the `3n²−3n` floor) coincide
-up to a constant: each asserts that `μ_n` is essentially a random/Sidon set up to `n ≈ √q`. This
-pins the sub-Johnson list size, and hence `δ*`, at its random value across the window — conditional
-on the single open scalar `B(μ_n)`. -/
+energy to Sidon order: `E(G) ≤ (1+C²)·n²`.  Only this direction is proved: Sidon-order energy does
+not by itself give `√n` cancellation (the reverse upper bound from the moments is only
+`B ≤ (q·E)^{1/4}`), is weaker than exact SidonModNeg (`3n²−3n`), and no list-size/`δ*` incidence
+dictionary is supplied, so this theorem does not pin the sub-Johnson list size or `δ*`. -/
 theorem sidon_order_of_sqrt_charSum {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Finset F)
     {C : ℝ} (hq : 0 < Fintype.card F)
     (hsq : (G.card : ℝ) ^ 2 ≤ (Fintype.card F : ℝ))

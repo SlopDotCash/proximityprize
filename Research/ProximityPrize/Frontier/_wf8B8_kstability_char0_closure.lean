@@ -13,7 +13,7 @@ import Mathlib.Tactic.Positivity
 import Mathlib.Tactic.Linarith
 
 /-!
-# wf-B8: char-0 closure of the W5 dyadic K-stability cross bound (issue #444)
+# wf-B8: char-0 W5 dyadic K-stability cross bound, conditional on the dyadic convolution (issue #444)
 
 The W5 inductive engine (`Frontier/_wf7W5_kstability_tower.lean`, `kstability_step` /
 `kstability_tower`, axiom-clean) ascends the dyadic tower `μ_{n/2} → μ_n` with a *fixed* constant
@@ -21,8 +21,14 @@ The W5 inductive engine (`Frontier/_wf7W5_kstability_tower.lean`, `kstability_st
 
 > `crossA_r ≤ K^r·(Wick(n,r) − 2·Wick(n/2,r))`,    `Wick(n,r) = (2r−1)‼·n^r`.
 
-This file **CLOSES that input in characteristic 0 with `K = 1`**, unconditionally, for every
-dyadic level and every `r`. The closure is purely combinatorial-algebraic and rests on two facts:
+This file proves that input in characteristic 0 with `K = 1` **conditionally on the dyadic
+energy convolution (1) below, taken as the hypothesis `hconv`** (not proven in Lean). The
+argument is purely combinatorial-algebraic and rests on two facts.
+
+**Redundancy note.** For the *uniform* char-0 Wick bound `A_r(μ_n) ≤ (2r−1)‼·n^r` this file and
+the tower are unnecessary: `DyadicEnergyK1.zeroSumCount_le_doubleFactorial_dyadic` holds for ANY
+finset of `2^k`-th roots, so instantiating it at `G = μ_n` gives the uniform Wick bound directly.
+The cross bound here is only of interest as a model for the char-`p` K-stability step.
 
 ## (1) The exact char-0 dyadic energy convolution (`-1 ∈ H`)
 
@@ -30,7 +36,9 @@ For `n = 2^μ`, `μ ≥ 2`, the subgroup of squares `H = μ_{n/2}` is **closed u
 (`−1 = g^{n/2}` is an even power), so every antipodal pair `(z, −z)` of an `n`-th root lies
 *entirely* inside one coset of `H` (`H` or `ζH`), and the two cosets are antipodal-isomorphic.
 Partitioning a negation-balanced `2r`-tuple of `μ_n` by coset membership therefore yields the
-exact binomial convolution (verified exactly by `probe_wf8B8_char0_cross.py` to `n = 32`, `r ≤ 5`):
+exact binomial convolution (checked numerically by `probe_wf8B8_char0_cross.py` to `n = 32`,
+`r ≤ 5`; mathematically plausible since `Q(ζ_n)` has basis `{1, ζ}` over `Q(ζ_{n/2})`, but
+**NOT proven in Lean** — it enters `cross_le_wick_cross` only as the hypothesis `hconv`):
 
 > `E_r(μ_n) = ∑_{j=0}^{r} C(2r,2j)·E_j(H)·E_{r−j}(H)`,   `E_0 = 1`.
 
@@ -42,7 +50,7 @@ so the cross is the strict interior `crossE_r = ∑_{j=1}^{r−1} C(2r,2j)·E_j(
 `DyadicEnergyK1.zeroSumCount_le_doubleFactorial_dyadic` proves, axiom-clean, `E_j(H) ≤ (2j−1)‼·|H|^j`
 for any set of `2^k`-th roots over a char-0 field — the negation-pairing / Lam–Leung Wick bound.
 
-## The closure (this file, `K = 1`, EXACT)
+## The conditional cross bound (this file, `K = 1`)
 
 Bounding each interior factor by its Wick value and summing,
 
@@ -59,15 +67,17 @@ evaluates the interior sum (subtract the two endpoint `(2r−1)‼`) to `(2r−1
 
 i.e. the **`K = 1` K-stability cross bound** (`cross_le_wick_cross`). Feeding it to
 `kstability_step` ascends the Wick bound up one dyadic level with `K = 1`; iterating from a finite
-base (`kstability_tower`) gives `A_r(μ_n) ≤ Wick(n,r)` for **every** tower level — the rigorous
-n-extrapolation in char 0 (the empirical K1 turned into a theorem).
+base (`kstability_tower`) would give `A_r(μ_n) ≤ Wick(n,r)` for every tower level, conditionally
+on `hconv` at each level — a conclusion already available unconditionally from the per-set bound (2).
 
 ## What is PROVEN here vs the char-`p` boundary
 
 PROVEN (axiom-clean `propext, Classical.choice, Quot.sound`): the Wick convolution identity over ℕ
 and the real-arithmetic cross bound `cross_le_wick_cross` from the convolution + per-set Wick
-hypotheses (both supplied by proven substrate in char 0). This is a *complete* char-0 closure of the
-W5 input — there is no residual in characteristic 0.
+hypotheses. The per-set Wick hypothesis `hwick` is supplied by proven substrate
+(`zeroSumCount_le_doubleFactorial_dyadic`); the convolution hypothesis `hconv` is NOT proven in Lean
+(no in-tree theorem states it). This is therefore a conditional reduction, not a complete closure:
+the residual in characteristic 0 is the dyadic convolution identity `hconv`.
 
 CHAR-`p` BOUNDARY (the precisely-pinned obstruction, NOT closed here; see `_wf8B1_kurtosis_cap`):
 in char `p` the per-set energies acquire a *spurious excess* `E_r(μ_n) = E_r^{(0)} + spur_r(n)`
@@ -75,11 +85,11 @@ from short antipodal-free `±1`-relations of `2^μ`-th roots that vanish mod `p`
 bound survives iff `spur_r(n) ≤ 2·spur_r(n/2) + O(n^{2r}/q)` (dyadic spur subadditivity). At the r=2
 level this is exactly the `_wf8B1` kurtosis obstruction: `spur_2 = 0` at every prime scanned at the
 prize scale `p ≳ n^4` (probe `probe_wf8B8_charp_cross.py`: `spur = 0`, `K ≤ 1` for `n = 8…1024`,
-`r = 2,3`, exact-integer), but `spur_2 > 0` occurs at small "resonance" primes (`5, 17, 97, 193, 257`
-— Fermat-prime collapses, all `≪ n^4`). Whether `spur = 0` at the *specific* prize prime
+`r = 2,3`, exact-integer), but `spur_2 > 0` occurs at small "resonance" primes (`5, 17, 97, 193, 257`, all
+`≪ n^4`; of these `5, 17, 257` are Fermat primes while `97 = 3·2^5+1` and `193 = 3·2^6+1` are not). Whether `spur = 0` at the *specific* prize prime
 `p = Θ(n^4)` for the prize point `n = 2^30` (where `p ≪ 2^n`, outside the `_wf8B1` exact-energy
 regime `p > 2^n`) is the same open ANT input as faces 3↔4 of the δ* core — NOT closed by elementary
-means. The char-0 closure here isolates the char-`p` gap to exactly the spur term.
+means. Modulo `hconv`, the char-0 bound here isolates the char-`p` gap to the spur term.
 
 Issues #389, #407, #444. Lane B8.
 -/
@@ -273,8 +283,9 @@ theorem wick_conv_interior {r : ℕ} (hr : 1 ≤ r) :
 `|H| = h ≥ 0`, and let `E : ℕ → ℝ` be the negation-closed energies of `H` (`E j = E_j(H)`,
 `E 0 = 1`, all `≥ 0`). Suppose:
 
-* `hconv` : `E_r(μ_n) = ∑_{j=0}^r C(2r,2j)·E j·E (r−j)` — the **exact char-0 dyadic convolution**
-  (from `−1 ∈ H`; the two endpoint terms are `E r` each, so `crossE_r = ∑_{j=1}^{r−1} …`);
+* `hconv` : `E_r(μ_n) = ∑_{j=0}^r C(2r,2j)·E j·E (r−j)` — the **char-0 dyadic convolution**
+  (heuristically from `−1 ∈ H`; the two endpoint terms are `E r` each, so
+  `crossE_r = ∑_{j=1}^{r−1} …`). This is an ASSUMPTION: it is not proven in Lean;
 * `hwick` : `∀ j ≤ r, E j ≤ (2j−1)‼·h^j` — the **per-set char-0 Wick bound** (proven substrate
   `zeroSumCount_le_doubleFactorial_dyadic`).
 
@@ -283,7 +294,7 @@ Writing `Eμn := E_r(μ_n)` and the cross `crossE_r := Eμn − 2·(E r)`, then
 > `crossE_r ≤ (2r−1)‼·((2h)^r − 2·h^r)`,
 
 which is exactly `Wick(n,r) − 2·Wick(n/2,r)` with `n = 2h`. Hence the `K = 1` per-level
-K-stability hypothesis of `kstability_step` holds in char 0. -/
+K-stability hypothesis of `kstability_step` holds in char 0 *whenever `hconv` holds*. -/
 theorem cross_le_wick_cross {r : ℕ} (hr : 1 ≤ r) {h Eμn : ℝ} (hh : 0 ≤ h)
     (E : ℕ → ℝ) (hE0 : E 0 = 1) (hEnonneg : ∀ j, 0 ≤ E j)
     (hconv : Eμn = ∑ j ∈ Finset.range (r + 1),

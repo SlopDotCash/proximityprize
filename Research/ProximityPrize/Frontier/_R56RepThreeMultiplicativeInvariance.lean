@@ -25,14 +25,29 @@ of `G`.  So the flatness deficit `∑_c (q·rep3 G c − |G|³)²` — the DC-su
 
   `∑_c (q·rep3(c) − |G|³)² = (deficit at 0) + |G| · ∑_{cosets O} (q·rep3(O) − |G|³)²`.
 
-i.e. the depth-3 flatness problem has only `(q−1)/|G|` genuine degrees of freedom (the distinct
-Gauss periods), NOT `q`.  This is exactly the reduction to the Gauss-period index set
+**Status of this identity: informal, not formalized here.**  It follows from coset-constancy and
+the coset partition of `𝔽_q^*`, but this file does not prove the full decomposition.  What is
+machine-checked is the per-orbit piece: `rep3_varianceSummand_orbit_sum_eq_card_mul` (each orbit
+contributes `|G|` equal summands) and `rep3_varianceSummand_orbit_le_total` (one orbit's share is
+at most the total).
+
+Heuristically, then, the depth-3 flatness problem has only `(q−1)/|G|` genuine degrees of freedom
+(the distinct Gauss periods), NOT `q`.  This is exactly the reduction to the Gauss-period index set
 `𝔽_q^* / G` that the character-sum picture also sees (each nontrivial `η_b` depends only on the
 coset of `b`), now made explicit on the additive side.
 
 `rep3_orbit_const` packages the coset-constancy.  This does not break the wall (the per-coset
 values are still governed by Paley/BGK), but it is the correct structural normalization of the
 round-55 variance and a genuinely `μ_n`-specific fact.  Issue #466, round 56.  Axiom-clean.
+
+**Hypothesis forms.**  The pointwise/levelset/supremum consequences are stated once, under the
+R55 variance hypothesis (`…_of_variance`).  The round-52/53 quadratic-excess regime is obtained
+by instantiating that hypothesis with `variance_bound_of_quadraticExcess hψ G hexc hC hn` (and
+`0 < |G|` from `40 ≤ |G|`); this is recorded only for the pointwise interval
+(`rep3_mem_mean_sqrt15_interval_of_quadraticExcess`) and the linear thin-regime envelope
+(`rep3_le_one_add_sqrt15_card_of_quadraticExcess`).  The remaining `_of_quadraticExcess` twins
+and the `Nat.floor` round-trip restatement `rep3_real_le_linear_of_variance` (identical to
+`rep3_le_one_add_sqrt15_card_of_variance`) were removed as duplicates.
 -/
 
 set_option autoImplicit false
@@ -299,23 +314,6 @@ theorem abs_rep3_deviation_le_of_variance (G : Finset F)
           rw [mul_pow, mul_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 15)]
   rwa [Real.sqrt_sq_eq_abs, Real.sqrt_sq htarget_nonneg] at hsqrt
 
-/-- **Concrete quadratic-excess deviation bound.**  The round-52/53 regime (`E = C |G|²`,
-`C ≤ 44`, `|G| ≥ 40`) feeds the quotient-normalized R56 discrepancy estimate directly. -/
-theorem abs_rep3_deviation_le_of_quadraticExcess {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
-    (G : Finset F)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G) {C : ℝ}
-    (hexc : Depth3ExcessBounded G (C * (G.card : ℝ) ^ 2))
-    (hC : C ≤ 44) (hn : 40 ≤ (G.card : ℝ))
-    {c : F} (hc : c ≠ 0) :
-    |(Fintype.card F : ℝ) * (rep3 G c : ℝ) - (G.card : ℝ) ^ 3|
-      ≤ Real.sqrt 15 * (Fintype.card F : ℝ) * (G.card : ℝ) := by
-  have hGposR : (0 : ℝ) < (G.card : ℝ) := by linarith
-  have hGpos : 0 < G.card := by exact_mod_cast hGposR
-  exact abs_rep3_deviation_le_of_variance G hmul hinv h0 hGpos
-    (variance_bound_of_quadraticExcess hψ G hexc hC hn) hc
-
 /-- **Centered pointwise flatness from variance.**  Dividing the R56 discrepancy estimate by
 `q = |F|` converts it into the natural statement that every nonzero target has `rep3 G c`
 within `sqrt 15 * |G|` of the random-model value `|G|³ / q`. -/
@@ -352,24 +350,6 @@ theorem abs_rep3_centered_le_of_variance (G : Finset F)
     le_of_mul_le_mul_left (by rwa [htarget_mul]) hqpos
   simpa [centered] using hres
 
-/-- **Concrete centered pointwise flatness.**  Under the round-52/53 quadratic-excess regime,
-every nonzero target has `rep3 G c = |G|³ / |F| + O(|G|)` with the explicit constant
-`sqrt 15`. -/
-theorem abs_rep3_centered_le_of_quadraticExcess {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
-    (G : Finset F)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G) {C : ℝ}
-    (hexc : Depth3ExcessBounded G (C * (G.card : ℝ) ^ 2))
-    (hC : C ≤ 44) (hn : 40 ≤ (G.card : ℝ))
-    {c : F} (hc : c ≠ 0) :
-    |(rep3 G c : ℝ) - (G.card : ℝ) ^ 3 / (Fintype.card F : ℝ)|
-      ≤ Real.sqrt 15 * (G.card : ℝ) := by
-  have hGposR : (0 : ℝ) < (G.card : ℝ) := by linarith
-  have hGpos : 0 < G.card := by exact_mod_cast hGposR
-  exact abs_rep3_centered_le_of_variance G hmul hinv h0 hGpos
-    (variance_bound_of_quadraticExcess hψ G hexc hC hn) hc
-
 /-- **Pointwise upper envelope from variance.**  The centered flatness bound gives an immediate
 nonzero-target upper bound for `rep3 G c`: random-model mean plus the R56 orbit-normalized
 fluctuation. -/
@@ -392,24 +372,6 @@ theorem rep3_le_mean_add_sqrt15_card_of_variance (G : Finset F)
     le_abs_self _
   linarith
 
-/-- **Concrete pointwise upper envelope.**  In the round-52/53 quadratic-excess regime, every
-nonzero target has at most the random-model number of representations plus `sqrt 15 * |G|`. -/
-theorem rep3_le_mean_add_sqrt15_card_of_quadraticExcess {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
-    (G : Finset F)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G) {C : ℝ}
-    (hexc : Depth3ExcessBounded G (C * (G.card : ℝ) ^ 2))
-    (hC : C ≤ 44) (hn : 40 ≤ (G.card : ℝ))
-    {c : F} (hc : c ≠ 0) :
-    (rep3 G c : ℝ)
-      ≤ (G.card : ℝ) ^ 3 / (Fintype.card F : ℝ)
-        + Real.sqrt 15 * (G.card : ℝ) := by
-  have hGposR : (0 : ℝ) < (G.card : ℝ) := by linarith
-  have hGpos : 0 < G.card := by exact_mod_cast hGposR
-  exact rep3_le_mean_add_sqrt15_card_of_variance G hmul hinv h0 hGpos
-    (variance_bound_of_quadraticExcess hψ G hexc hC hn) hc
-
 /-- **Pointwise lower envelope from variance.**  The centered flatness bound also gives the
 matching lower side of the nonzero-target interval around the random-model mean. -/
 theorem mean_sub_sqrt15_card_le_rep3_of_variance (G : Finset F)
@@ -430,24 +392,6 @@ theorem mean_sub_sqrt15_card_le_rep3_of_variance (G : Finset F)
         ≤ (rep3 G c : ℝ) - (G.card : ℝ) ^ 3 / (Fintype.card F : ℝ) :=
     neg_abs_le _
   linarith
-
-/-- **Concrete pointwise lower envelope.**  The round-52/53 quadratic-excess regime places every
-nonzero `rep3 G c` at least the random-model mean minus `sqrt 15 * |G|`. -/
-theorem mean_sub_sqrt15_card_le_rep3_of_quadraticExcess {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
-    (G : Finset F)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G) {C : ℝ}
-    (hexc : Depth3ExcessBounded G (C * (G.card : ℝ) ^ 2))
-    (hC : C ≤ 44) (hn : 40 ≤ (G.card : ℝ))
-    {c : F} (hc : c ≠ 0) :
-    (G.card : ℝ) ^ 3 / (Fintype.card F : ℝ)
-        - Real.sqrt 15 * (G.card : ℝ)
-      ≤ (rep3 G c : ℝ) := by
-  have hGposR : (0 : ℝ) < (G.card : ℝ) := by linarith
-  have hGpos : 0 < G.card := by exact_mod_cast hGposR
-  exact mean_sub_sqrt15_card_le_rep3_of_variance G hmul hinv h0 hGpos
-    (variance_bound_of_quadraticExcess hψ G hexc hC hn) hc
 
 /-- **Pointwise interval from variance.**  Under the R55 variance hypothesis, every nonzero
 representation count lies in the explicit interval
@@ -582,25 +526,6 @@ theorem no_nonzero_rep3_levelset_above_linear_of_variance (G : Finset F)
   have hrep := rep3_le_one_add_sqrt15_card_of_variance G hmul hinv h0 hGpos hfield hvar hc_ne
   linarith
 
-/-- **Concrete no-high-`rep3` levelset in the thin regime.**  The round-52/53
-quadratic-excess atom, together with `|F| ≥ |G|²`, forbids nonzero targets with
-`rep3` count above `(1 + sqrt 15) * |G|`. -/
-theorem no_nonzero_rep3_levelset_above_linear_of_quadraticExcess
-    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
-    (G : Finset F)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G) {C : ℝ}
-    (hexc : Depth3ExcessBounded G (C * (G.card : ℝ) ^ 2))
-    (hC : C ≤ 44) (hn : 40 ≤ (G.card : ℝ))
-    (hfield : G.card ^ 2 ≤ Fintype.card F)
-    {tau : ℝ} (htau : (1 + Real.sqrt 15) * (G.card : ℝ) < tau) :
-    ((Finset.univ.erase (0 : F)).filter (fun c => tau ≤ (rep3 G c : ℝ))) = ∅ := by
-  have hGposR : (0 : ℝ) < (G.card : ℝ) := by linarith
-  have hGpos : 0 < G.card := by exact_mod_cast hGposR
-  exact no_nonzero_rep3_levelset_above_linear_of_variance G hmul hinv h0 hGpos hfield
-    (variance_bound_of_quadraticExcess hψ G hexc hC hn) htau
-
 /-- **Cardinality form of the high-`rep3` exclusion.**  This is the counting-friendly version of
 `no_nonzero_rep3_levelset_above_linear_of_variance`: the nonzero high-representation levelset has
 cardinality zero. -/
@@ -616,24 +541,6 @@ theorem nonzero_rep3_levelset_card_eq_zero_above_linear_of_variance (G : Finset 
     {tau : ℝ} (htau : (1 + Real.sqrt 15) * (G.card : ℝ) < tau) :
     (((Finset.univ.erase (0 : F)).filter (fun c => tau ≤ (rep3 G c : ℝ))).card : ℕ) = 0 := by
   rw [no_nonzero_rep3_levelset_above_linear_of_variance G hmul hinv h0 hGpos hfield hvar htau]
-  rfl
-
-/-- **Concrete cardinality form of the high-`rep3` exclusion.**  In the round-52/53
-quadratic-excess regime and the thin field range, the nonzero high-representation levelset has
-cardinality zero. -/
-theorem nonzero_rep3_levelset_card_eq_zero_above_linear_of_quadraticExcess
-    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
-    (G : Finset F)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G) {C : ℝ}
-    (hexc : Depth3ExcessBounded G (C * (G.card : ℝ) ^ 2))
-    (hC : C ≤ 44) (hn : 40 ≤ (G.card : ℝ))
-    (hfield : G.card ^ 2 ≤ Fintype.card F)
-    {tau : ℝ} (htau : (1 + Real.sqrt 15) * (G.card : ℝ) < tau) :
-    (((Finset.univ.erase (0 : F)).filter (fun c => tau ≤ (rep3 G c : ℝ))).card : ℕ) = 0 := by
-  rw [no_nonzero_rep3_levelset_above_linear_of_quadraticExcess
-    hψ G hmul hinv h0 hexc hC hn hfield htau]
   rfl
 
 /-- **Positive-slack cardinal exclusion.**  A threshold of
@@ -654,24 +561,6 @@ theorem nonzero_rep3_levelset_card_eq_zero_of_linear_add_pos_of_variance (G : Fi
         = 0 := by
   exact nonzero_rep3_levelset_card_eq_zero_above_linear_of_variance G hmul hinv h0 hGpos hfield
     hvar (by linarith)
-
-/-- **Concrete positive-slack cardinal exclusion.**  In the round-52/53 quadratic-excess regime,
-any positive additive slack above `(1 + sqrt 15) * |G|` gives an empty nonzero `rep3` levelset. -/
-theorem nonzero_rep3_levelset_card_eq_zero_of_linear_add_pos_of_quadraticExcess
-    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
-    (G : Finset F)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G) {C : ℝ}
-    (hexc : Depth3ExcessBounded G (C * (G.card : ℝ) ^ 2))
-    (hC : C ≤ 44) (hn : 40 ≤ (G.card : ℝ))
-    (hfield : G.card ^ 2 ≤ Fintype.card F)
-    {eps : ℝ} (heps : 0 < eps) :
-    (((Finset.univ.erase (0 : F)).filter
-      (fun c => (1 + Real.sqrt 15) * (G.card : ℝ) + eps ≤ (rep3 G c : ℝ))).card : ℕ)
-        = 0 := by
-  exact nonzero_rep3_levelset_card_eq_zero_above_linear_of_quadraticExcess
-    hψ G hmul hinv h0 hexc hC hn hfield (by linarith)
 
 /-- **Natural-threshold high-`rep3` exclusion.**  Under the variance and thin-field hypotheses,
 any natural threshold strictly above `(1 + sqrt 15) * |G|` has no nonzero elements with
@@ -699,26 +588,6 @@ theorem nonzero_rep3_nat_levelset_card_eq_zero_above_linear_of_variance (G : Fin
   have hrep := rep3_le_one_add_sqrt15_card_of_variance G hmul hinv h0 hGpos hfield hvar hc_ne
   linarith
 
-/-- **Concrete natural-threshold high-`rep3` exclusion.**  In the round-52/53 quadratic-excess
-regime and the thin-field range, any natural threshold strictly above
-`(1 + sqrt 15) * |G|` has an empty nonzero `rep3` levelset. -/
-theorem nonzero_rep3_nat_levelset_card_eq_zero_above_linear_of_quadraticExcess
-    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
-    (G : Finset F)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G) {C : ℝ}
-    (hexc : Depth3ExcessBounded G (C * (G.card : ℝ) ^ 2))
-    (hC : C ≤ 44) (hn : 40 ≤ (G.card : ℝ))
-    (hfield : G.card ^ 2 ≤ Fintype.card F)
-    {T : ℕ} (hT : (1 + Real.sqrt 15) * (G.card : ℝ) < (T : ℝ)) :
-    (((Finset.univ.erase (0 : F)).filter (fun c => T ≤ rep3 G c)).card : ℕ) = 0 := by
-  have hGposR : 0 < (G.card : ℝ) := by linarith
-  have hGpos : 0 < G.card := by exact_mod_cast hGposR
-  exact nonzero_rep3_nat_levelset_card_eq_zero_above_linear_of_variance G hmul hinv h0
-    hGpos hfield
-    (variance_bound_of_quadraticExcess hψ G hexc hC hn) hT
-
 /-- **Natural-threshold supremum exclusion.**  Under the variance and thin-field hypotheses, if a
 natural threshold lies strictly above `(1 + sqrt 15) * |G|`, then the nonzero `rep3` supremum is
 strictly below that threshold. -/
@@ -738,28 +607,6 @@ theorem nonzero_rep3_sup_lt_nat_threshold_of_variance (G : Finset F)
     exact ⟨1, Finset.mem_erase.mpr ⟨one_ne_zero, Finset.mem_univ 1⟩⟩
   have hzero := nonzero_rep3_nat_levelset_card_eq_zero_above_linear_of_variance G hmul hinv h0
     hGpos hfield hvar hT
-  exact (nat_sup_lt_iff_upper_levelset_card_zero (Finset.univ.erase (0 : F)) hne
-    (fun c => rep3 G c) T).mpr hzero
-
-/-- **Concrete natural-threshold supremum exclusion.**  In the round-52/53 quadratic-excess
-regime, if a natural threshold lies strictly above `(1 + sqrt 15) * |G|`, then the nonzero `rep3`
-supremum is strictly below that threshold. -/
-theorem nonzero_rep3_sup_lt_nat_threshold_of_quadraticExcess
-    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
-    (G : Finset F)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G) {C : ℝ}
-    (hexc : Depth3ExcessBounded G (C * (G.card : ℝ) ^ 2))
-    (hC : C ≤ 44) (hn : 40 ≤ (G.card : ℝ))
-    (hfield : G.card ^ 2 ≤ Fintype.card F)
-    {T : ℕ} (hT : (1 + Real.sqrt 15) * (G.card : ℝ) < (T : ℝ)) :
-    (Finset.univ.erase (0 : F)).sup (fun c => rep3 G c) < T := by
-  classical
-  have hne : (Finset.univ.erase (0 : F)).Nonempty := by
-    exact ⟨1, Finset.mem_erase.mpr ⟨one_ne_zero, Finset.mem_univ 1⟩⟩
-  have hzero := nonzero_rep3_nat_levelset_card_eq_zero_above_linear_of_quadraticExcess
-    hψ G hmul hinv h0 hexc hC hn hfield hT
   exact (nat_sup_lt_iff_upper_levelset_card_zero (Finset.univ.erase (0 : F)) hne
     (fun c => rep3 G c) T).mpr hzero
 
@@ -786,29 +633,6 @@ theorem nonzero_rep3_floor_levelset_card_eq_zero_of_variance (G : Finset F)
   exact nonzero_rep3_nat_levelset_card_eq_zero_above_linear_of_variance G hmul hinv h0
     hGpos hfield hvar hT
 
-/-- **Concrete canonical floor-threshold exclusion.**  In the round-52/53 quadratic-excess
-regime, the nonzero levelset above
-`floor ((1 + sqrt 15) * |G|) + 1` is empty. -/
-theorem nonzero_rep3_floor_levelset_card_eq_zero_of_quadraticExcess
-    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
-    (G : Finset F)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G) {C : ℝ}
-    (hexc : Depth3ExcessBounded G (C * (G.card : ℝ) ^ 2))
-    (hC : C ≤ 44) (hn : 40 ≤ (G.card : ℝ))
-    (hfield : G.card ^ 2 ≤ Fintype.card F) :
-    (((Finset.univ.erase (0 : F)).filter
-      (fun c =>
-        Nat.floor ((1 + Real.sqrt 15) * (G.card : ℝ)) + 1 ≤ rep3 G c)).card : ℕ)
-        = 0 := by
-  have hT : (1 + Real.sqrt 15) * (G.card : ℝ)
-      < ((Nat.floor ((1 + Real.sqrt 15) * (G.card : ℝ)) + 1 : ℕ) : ℝ) := by
-    simpa [Nat.cast_add, Nat.cast_one] using
-      (Nat.lt_floor_add_one ((1 + Real.sqrt 15) * (G.card : ℝ)))
-  exact nonzero_rep3_nat_levelset_card_eq_zero_above_linear_of_quadraticExcess
-    hψ G hmul hinv h0 hexc hC hn hfield hT
-
 /-- **Pointwise integer high-`rep3` bound.**  Under the variance and thin-field hypotheses, every
 nonzero representative has `rep3` at most the canonical integer floor
 `floor ((1 + sqrt 15) * |G|)`. -/
@@ -831,69 +655,6 @@ theorem rep3_le_floor_linear_of_variance (G : Finset F)
   exact le_of_succ_upper_levelset_card_zero (Finset.univ.erase (0 : F)) (fun c => rep3 G c)
     (Nat.floor ((1 + Real.sqrt 15) * (G.card : ℝ))) hzero hc_mem
 
-/-- **Concrete pointwise integer high-`rep3` bound.**  In the round-52/53 quadratic-excess
-regime, every nonzero representative has `rep3` at most
-`floor ((1 + sqrt 15) * |G|)`. -/
-theorem rep3_le_floor_linear_of_quadraticExcess
-    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
-    (G : Finset F)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G) {C : ℝ}
-    (hexc : Depth3ExcessBounded G (C * (G.card : ℝ) ^ 2))
-    (hC : C ≤ 44) (hn : 40 ≤ (G.card : ℝ))
-    (hfield : G.card ^ 2 ≤ Fintype.card F)
-    {c : F} (hc : c ≠ 0) :
-    rep3 G c ≤ Nat.floor ((1 + Real.sqrt 15) * (G.card : ℝ)) := by
-  classical
-  have hc_mem : c ∈ Finset.univ.erase (0 : F) := by
-    exact Finset.mem_erase.mpr ⟨hc, Finset.mem_univ c⟩
-  have hzero := nonzero_rep3_floor_levelset_card_eq_zero_of_quadraticExcess
-    hψ G hmul hinv h0 hexc hC hn hfield
-  exact le_of_succ_upper_levelset_card_zero (Finset.univ.erase (0 : F)) (fun c => rep3 G c)
-    (Nat.floor ((1 + Real.sqrt 15) * (G.card : ℝ))) hzero hc_mem
-
-/-- **Pointwise real high-`rep3` bound.**  Under the variance and thin-field hypotheses, every
-nonzero representative has `rep3`, cast to `ℝ`, at most `(1 + sqrt 15) * |G|`. -/
-theorem rep3_real_le_linear_of_variance (G : Finset F)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G)
-    (hGpos : 0 < G.card)
-    (hfield : G.card ^ 2 ≤ Fintype.card F)
-    (hvar : ∑ z : F,
-        ((Fintype.card F : ℝ) * (rep3 G z : ℝ) - (G.card : ℝ) ^ 3) ^ 2
-          ≤ 15 * (Fintype.card F : ℝ) ^ 2 * (G.card : ℝ) ^ 3)
-    {c : F} (hc : c ≠ 0) :
-    (rep3 G c : ℝ) ≤ (1 + Real.sqrt 15) * (G.card : ℝ) := by
-  have hfloor := rep3_le_floor_linear_of_variance G hmul hinv h0 hGpos hfield hvar hc
-  have hfloorR : (rep3 G c : ℝ)
-      ≤ (Nat.floor ((1 + Real.sqrt 15) * (G.card : ℝ)) : ℝ) := by
-    exact_mod_cast hfloor
-  have hnonneg : 0 ≤ (1 + Real.sqrt 15) * (G.card : ℝ) := by positivity
-  exact le_trans hfloorR (Nat.floor_le hnonneg)
-
-/-- **Concrete pointwise real high-`rep3` bound.**  In the round-52/53 quadratic-excess regime,
-every nonzero representative has `rep3`, cast to `ℝ`, at most `(1 + sqrt 15) * |G|`. -/
-theorem rep3_real_le_linear_of_quadraticExcess
-    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
-    (G : Finset F)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G) {C : ℝ}
-    (hexc : Depth3ExcessBounded G (C * (G.card : ℝ) ^ 2))
-    (hC : C ≤ 44) (hn : 40 ≤ (G.card : ℝ))
-    (hfield : G.card ^ 2 ≤ Fintype.card F)
-    {c : F} (hc : c ≠ 0) :
-    (rep3 G c : ℝ) ≤ (1 + Real.sqrt 15) * (G.card : ℝ) := by
-  have hfloor := rep3_le_floor_linear_of_quadraticExcess hψ G hmul hinv h0 hexc hC hn
-    hfield hc
-  have hfloorR : (rep3 G c : ℝ)
-      ≤ (Nat.floor ((1 + Real.sqrt 15) * (G.card : ℝ)) : ℝ) := by
-    exact_mod_cast hfloor
-  have hnonneg : 0 ≤ (1 + Real.sqrt 15) * (G.card : ℝ) := by positivity
-  exact le_trans hfloorR (Nat.floor_le hnonneg)
-
 /-- **Worst nonzero integer high-`rep3` bound.**  The finite supremum of `rep3` over nonzero field
 elements is at most the canonical floor threshold under the variance and thin-field hypotheses. -/
 theorem nonzero_rep3_sup_le_floor_linear_of_variance (G : Finset F)
@@ -912,28 +673,6 @@ theorem nonzero_rep3_sup_le_floor_linear_of_variance (G : Finset F)
     exact ⟨1, Finset.mem_erase.mpr ⟨one_ne_zero, Finset.mem_univ 1⟩⟩
   have hzero := nonzero_rep3_floor_levelset_card_eq_zero_of_variance G hmul hinv h0 hGpos
     hfield hvar
-  exact (nat_sup_le_iff_succ_upper_levelset_card_zero (Finset.univ.erase (0 : F)) hne
-    (fun c => rep3 G c) (Nat.floor ((1 + Real.sqrt 15) * (G.card : ℝ)))).mpr hzero
-
-/-- **Concrete worst nonzero integer high-`rep3` bound.**  In the round-52/53 quadratic-excess
-regime, the finite supremum of `rep3` over nonzero field elements is at most
-`floor ((1 + sqrt 15) * |G|)`. -/
-theorem nonzero_rep3_sup_le_floor_linear_of_quadraticExcess
-    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
-    (G : Finset F)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G) {C : ℝ}
-    (hexc : Depth3ExcessBounded G (C * (G.card : ℝ) ^ 2))
-    (hC : C ≤ 44) (hn : 40 ≤ (G.card : ℝ))
-    (hfield : G.card ^ 2 ≤ Fintype.card F) :
-    (Finset.univ.erase (0 : F)).sup (fun c => rep3 G c)
-      ≤ Nat.floor ((1 + Real.sqrt 15) * (G.card : ℝ)) := by
-  classical
-  have hne : (Finset.univ.erase (0 : F)).Nonempty := by
-    exact ⟨1, Finset.mem_erase.mpr ⟨one_ne_zero, Finset.mem_univ 1⟩⟩
-  have hzero := nonzero_rep3_floor_levelset_card_eq_zero_of_quadraticExcess
-    hψ G hmul hinv h0 hexc hC hn hfield
   exact (nat_sup_le_iff_succ_upper_levelset_card_zero (Finset.univ.erase (0 : F)) hne
     (fun c => rep3 G c) (Nat.floor ((1 + Real.sqrt 15) * (G.card : ℝ)))).mpr hzero
 
@@ -958,28 +697,6 @@ theorem nonzero_rep3_sup_real_le_linear_of_variance (G : Finset F)
   have hnonneg : 0 ≤ (1 + Real.sqrt 15) * (G.card : ℝ) := by positivity
   exact le_trans hsupR (Nat.floor_le hnonneg)
 
-/-- **Concrete worst nonzero real high-`rep3` bound.**  In the round-52/53 quadratic-excess
-regime, the finite supremum of `rep3` over nonzero field elements, cast to `ℝ`, is at most
-`(1 + sqrt 15) * |G|`. -/
-theorem nonzero_rep3_sup_real_le_linear_of_quadraticExcess
-    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
-    (G : Finset F)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G) {C : ℝ}
-    (hexc : Depth3ExcessBounded G (C * (G.card : ℝ) ^ 2))
-    (hC : C ≤ 44) (hn : 40 ≤ (G.card : ℝ))
-    (hfield : G.card ^ 2 ≤ Fintype.card F) :
-    (((Finset.univ.erase (0 : F)).sup (fun c => rep3 G c) : ℕ) : ℝ)
-      ≤ (1 + Real.sqrt 15) * (G.card : ℝ) := by
-  have hsup := nonzero_rep3_sup_le_floor_linear_of_quadraticExcess
-    hψ G hmul hinv h0 hexc hC hn hfield
-  have hsupR : (((Finset.univ.erase (0 : F)).sup (fun c => rep3 G c) : ℕ) : ℝ)
-      ≤ (Nat.floor ((1 + Real.sqrt 15) * (G.card : ℝ)) : ℝ) := by
-    exact_mod_cast hsup
-  have hnonneg : 0 ≤ (1 + Real.sqrt 15) * (G.card : ℝ) := by positivity
-  exact le_trans hsupR (Nat.floor_le hnonneg)
-
 /-- **Positive-slack worst nonzero real high-`rep3` bound.**  Under the variance and thin-field
 hypotheses, the nonzero `rep3` supremum is strictly below any positive additive slack above
 `(1 + sqrt 15) * |G|`. -/
@@ -996,25 +713,6 @@ theorem nonzero_rep3_sup_real_lt_linear_add_pos_of_variance (G : Finset F)
     (((Finset.univ.erase (0 : F)).sup (fun c => rep3 G c) : ℕ) : ℝ)
       < (1 + Real.sqrt 15) * (G.card : ℝ) + eps := by
   have hsup := nonzero_rep3_sup_real_le_linear_of_variance G hmul hinv h0 hGpos hfield hvar
-  linarith
-
-/-- **Concrete positive-slack worst nonzero real high-`rep3` bound.**  In the round-52/53
-quadratic-excess regime, the nonzero `rep3` supremum is strictly below any positive additive
-slack above `(1 + sqrt 15) * |G|`. -/
-theorem nonzero_rep3_sup_real_lt_linear_add_pos_of_quadraticExcess
-    {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
-    (G : Finset F)
-    (hmul : ∀ {x y : F}, x ∈ G → y ∈ G → x * y ∈ G)
-    (hinv : ∀ {x : F}, x ∈ G → x⁻¹ ∈ G)
-    (h0 : (0 : F) ∉ G) {C : ℝ}
-    (hexc : Depth3ExcessBounded G (C * (G.card : ℝ) ^ 2))
-    (hC : C ≤ 44) (hn : 40 ≤ (G.card : ℝ))
-    (hfield : G.card ^ 2 ≤ Fintype.card F)
-    {eps : ℝ} (heps : 0 < eps) :
-    (((Finset.univ.erase (0 : F)).sup (fun c => rep3 G c) : ℕ) : ℝ)
-      < (1 + Real.sqrt 15) * (G.card : ℝ) + eps := by
-  have hsup := nonzero_rep3_sup_real_le_linear_of_quadraticExcess
-    hψ G hmul hinv h0 hexc hC hn hfield
   linarith
 
 end ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance
@@ -1053,25 +751,13 @@ set_option linter.style.longLine false in
   ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.abs_rep3_deviation_le_of_variance
 set_option linter.style.longLine false in
 #print axioms
-  ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.abs_rep3_deviation_le_of_quadraticExcess
-set_option linter.style.longLine false in
-#print axioms
   ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.abs_rep3_centered_le_of_variance
-set_option linter.style.longLine false in
-#print axioms
-  ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.abs_rep3_centered_le_of_quadraticExcess
 set_option linter.style.longLine false in
 #print axioms
   ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.rep3_le_mean_add_sqrt15_card_of_variance
 set_option linter.style.longLine false in
 #print axioms
-  ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.rep3_le_mean_add_sqrt15_card_of_quadraticExcess
-set_option linter.style.longLine false in
-#print axioms
   ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.mean_sub_sqrt15_card_le_rep3_of_variance
-set_option linter.style.longLine false in
-#print axioms
-  ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.mean_sub_sqrt15_card_le_rep3_of_quadraticExcess
 set_option linter.style.longLine false in
 #print axioms
   ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.rep3_mem_mean_sqrt15_interval_of_variance
@@ -1092,64 +778,28 @@ set_option linter.style.longLine false in
   ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.no_nonzero_rep3_levelset_above_linear_of_variance
 set_option linter.style.longLine false in
 #print axioms
-  ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.no_nonzero_rep3_levelset_above_linear_of_quadraticExcess
-set_option linter.style.longLine false in
-#print axioms
   ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.nonzero_rep3_levelset_card_eq_zero_above_linear_of_variance
-set_option linter.style.longLine false in
-#print axioms
-  ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.nonzero_rep3_levelset_card_eq_zero_above_linear_of_quadraticExcess
 set_option linter.style.longLine false in
 #print axioms
   ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.nonzero_rep3_levelset_card_eq_zero_of_linear_add_pos_of_variance
 set_option linter.style.longLine false in
 #print axioms
-  ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.nonzero_rep3_levelset_card_eq_zero_of_linear_add_pos_of_quadraticExcess
-set_option linter.style.longLine false in
-#print axioms
   ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.nonzero_rep3_nat_levelset_card_eq_zero_above_linear_of_variance
-set_option linter.style.longLine false in
-#print axioms
-  ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.nonzero_rep3_nat_levelset_card_eq_zero_above_linear_of_quadraticExcess
 set_option linter.style.longLine false in
 #print axioms
   ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.nonzero_rep3_sup_lt_nat_threshold_of_variance
 set_option linter.style.longLine false in
 #print axioms
-  ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.nonzero_rep3_sup_lt_nat_threshold_of_quadraticExcess
-set_option linter.style.longLine false in
-#print axioms
   ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.nonzero_rep3_floor_levelset_card_eq_zero_of_variance
-set_option linter.style.longLine false in
-#print axioms
-  ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.nonzero_rep3_floor_levelset_card_eq_zero_of_quadraticExcess
 set_option linter.style.longLine false in
 #print axioms
   ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.rep3_le_floor_linear_of_variance
 set_option linter.style.longLine false in
 #print axioms
-  ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.rep3_le_floor_linear_of_quadraticExcess
-set_option linter.style.longLine false in
-#print axioms
-  ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.rep3_real_le_linear_of_variance
-set_option linter.style.longLine false in
-#print axioms
-  ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.rep3_real_le_linear_of_quadraticExcess
-set_option linter.style.longLine false in
-#print axioms
   ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.nonzero_rep3_sup_le_floor_linear_of_variance
-set_option linter.style.longLine false in
-#print axioms
-  ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.nonzero_rep3_sup_le_floor_linear_of_quadraticExcess
 set_option linter.style.longLine false in
 #print axioms
   ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.nonzero_rep3_sup_real_le_linear_of_variance
 set_option linter.style.longLine false in
 #print axioms
-  ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.nonzero_rep3_sup_real_le_linear_of_quadraticExcess
-set_option linter.style.longLine false in
-#print axioms
   ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.nonzero_rep3_sup_real_lt_linear_add_pos_of_variance
-set_option linter.style.longLine false in
-#print axioms
-  ArkLib.ProximityGap.Frontier.R56RepThreeMultiplicativeInvariance.nonzero_rep3_sup_real_lt_linear_add_pos_of_quadraticExcess

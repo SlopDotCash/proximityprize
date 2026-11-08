@@ -25,16 +25,20 @@ The core pieces are:
   related by an *invertible* `F`-linear recombination of polynomials (`bQ l = ∑ c l m • bP m`,
   `det c ≠ 0`).
 * `preimageSubspace` and friends — the encoder-isomorphism transport: for `A ≤ frsCode` and
-  the encoder injective, the polynomial pre-image subspace `A' := comap encoder A ⊓ degreeLT F k`
+  the encoder injective on `degreeLT F k`, the polynomial pre-image subspace `A' := comap encoder A ⊓ degreeLT F k`
   satisfies `A'.map encoder = A` and `finrank A' = finrank A`, so a basis of `A'` is an
   independent realizing family `P : Fin (dim A) → F[X]` of degrees `< k`.
 * `gk16Claim16StructuralData_at` — assembles the realizing family with, per coordinate, the
   adapted recombination and its `dim A_i`-element orbit-vanishing index set (under
   `dim A ≤ s`), i.e. the full existential body of `GK16Claim16StructuralData` for a single `A`.
 
-The two side conditions are exactly the ones documented on `frs_is_subspaceDesign_gk16`:
-encoder injectivity (`h_encoder_inj`, the `dim_frsCode` hypothesis) and the design-range
-bound `dim A ≤ s` (so the `dim A` dilation exponents are genuine fold indices `< s`).
+The two side conditions are: encoder injectivity **restricted to `degreeLT F k`** (`hinj`;
+for admissible `ω ≠ 0` and `k ≤ s * |ι|` this is
+`ReedSolomon.Folded.frsEvalOnPoints_domRestrict_injective`), and the design-range bound
+`dim A ≤ s` (so the `dim A` dilation exponents are genuine fold indices `< s`). Injectivity
+of the encoder on the whole of `F[X]` is never needed and is never satisfiable
+(`ReedSolomon.Folded.frsEvalOnPoints_not_injective`): the vanishing polynomial of the finitely
+many fold points is a nonzero kernel element.
 The `ω`-degree-separation admissibility (`hω_sep`) is threaded through as the third
 conjunct of the structural data; the multiplicity-counting engine itself
 (`claim16_rootMultiplicity_ge`) and Lemma 12 are already proven.
@@ -142,7 +146,8 @@ section FRS
 variable {F : Type} [Field F] [DecidableEq F] {ι : Type} [Fintype ι] [DecidableEq ι]
 
 /-- The polynomial pre-image subspace of a code subspace `A ≤ frsCode` inside `degreeLT F k`:
-`A' := comap encoder A ⊓ degreeLT F k`. Under encoder injectivity, `A' ≃ A` (so
+`A' := comap encoder A ⊓ degreeLT F k`. Under encoder injectivity on `degreeLT F k`,
+`A' ≃ A` (so
 `finrank A' = finrank A`) and `A'.map encoder = A`. -/
 noncomputable def preimageSubspace (domain : ι ↪ F) (k s : ℕ) (ω : F)
     (A : Submodule F (ι → Fin s → F)) : Submodule F (Polynomial F) :=
@@ -164,27 +169,52 @@ theorem preimageSubspace_map (domain : ι ↪ F) (k s : ℕ) (ω : F)
     obtain ⟨p, hp, rfl⟩ := hx'
     exact ⟨p, ⟨hx, hp⟩, rfl⟩
 
-/-- Finite-dimensionality of the pre-image subspace (it is isomorphic to the finite-
-dimensional code subspace `A` via the injective encoder). -/
-theorem preimageSubspace_finiteDimensional (domain : ι ↪ F) (k s : ℕ) (ω : F)
-    (hinj : Function.Injective (frsEvalOnPoints (ι := ι) (F := F) domain s ω))
-    (A : Submodule F (ι → Fin s → F)) (hA_le : A ≤ frsCode (ι := ι) (F := F) domain k s ω) :
-    FiniteDimensional F (preimageSubspace domain k s ω A) := by
-  have e : (preimageSubspace domain k s ω A) ≃ₗ[F]
-      ((preimageSubspace domain k s ω A).map (frsEvalOnPoints (ι := ι) (F := F) domain s ω)) :=
-    Submodule.equivMapOfInjective _ hinj _
-  rw [preimageSubspace_map domain k s ω A hA_le] at e
-  exact Module.Finite.equiv e.symm
+omit [Fintype ι] [DecidableEq ι] [DecidableEq F] in
+/-- The encoder restricted to the pre-image subspace is injective as soon as it is injective
+on `degreeLT F k` (the pre-image lies inside `degreeLT F k`). -/
+theorem preimageSubspace_domRestrict_injective (domain : ι ↪ F) (k s : ℕ) (ω : F)
+    (hinj : Function.Injective
+      ((frsEvalOnPoints (ι := ι) (F := F) domain s ω).domRestrict (Polynomial.degreeLT F k)))
+    (A : Submodule F (ι → Fin s → F)) :
+    Function.Injective
+      ((frsEvalOnPoints (ι := ι) (F := F) domain s ω).domRestrict
+        (preimageSubspace domain k s ω A)) := by
+  intro p q hpq
+  have hle : preimageSubspace domain k s ω A ≤ Polynomial.degreeLT F k := inf_le_right
+  have h := @hinj ⟨p.1, hle p.2⟩ ⟨q.1, hle q.2⟩ hpq
+  have hval : (p : Polynomial F) = q :=
+    congrArg (fun x : Polynomial.degreeLT F k => (x : Polynomial F)) h
+  exact Subtype.ext hval
 
-/-- `finrank (preimageSubspace A) = finrank A` under encoder injectivity. -/
-theorem preimageSubspace_finrank (domain : ι ↪ F) (k s : ℕ) (ω : F)
-    (hinj : Function.Injective (frsEvalOnPoints (ι := ι) (F := F) domain s ω))
+/-- The pre-image subspace is linearly isomorphic to `A` via the encoder, given encoder
+injectivity on `degreeLT F k`. -/
+noncomputable def preimageSubspaceEquiv (domain : ι ↪ F) (k s : ℕ) (ω : F)
+    (hinj : Function.Injective
+      ((frsEvalOnPoints (ι := ι) (F := F) domain s ω).domRestrict (Polynomial.degreeLT F k)))
     (A : Submodule F (ι → Fin s → F)) (hA_le : A ≤ frsCode (ι := ι) (F := F) domain k s ω) :
-    finrank F (preimageSubspace domain k s ω A) = finrank F A := by
-  have h := (Submodule.equivMapOfInjective (frsEvalOnPoints (ι := ι) (F := F) domain s ω) hinj
-      (preimageSubspace domain k s ω A)).finrank_eq
-  rw [preimageSubspace_map domain k s ω A hA_le] at h
-  exact h
+    (preimageSubspace domain k s ω A) ≃ₗ[F] A :=
+  (LinearEquiv.ofInjective _ (preimageSubspace_domRestrict_injective domain k s ω hinj A)).trans
+    (LinearEquiv.ofEq _ _ (by
+      rw [LinearMap.range_domRestrict]
+      exact preimageSubspace_map domain k s ω A hA_le))
+
+/-- Finite-dimensionality of the pre-image subspace (it is isomorphic to the finite-
+dimensional code subspace `A` via the encoder, injective on `degreeLT F k`). -/
+theorem preimageSubspace_finiteDimensional (domain : ι ↪ F) (k s : ℕ) (ω : F)
+    (hinj : Function.Injective
+      ((frsEvalOnPoints (ι := ι) (F := F) domain s ω).domRestrict (Polynomial.degreeLT F k)))
+    (A : Submodule F (ι → Fin s → F)) (hA_le : A ≤ frsCode (ι := ι) (F := F) domain k s ω) :
+    FiniteDimensional F (preimageSubspace domain k s ω A) :=
+  Module.Finite.equiv (preimageSubspaceEquiv domain k s ω hinj A hA_le).symm
+
+/-- `finrank (preimageSubspace A) = finrank A` under encoder injectivity on
+`degreeLT F k`. -/
+theorem preimageSubspace_finrank (domain : ι ↪ F) (k s : ℕ) (ω : F)
+    (hinj : Function.Injective
+      ((frsEvalOnPoints (ι := ι) (F := F) domain s ω).domRestrict (Polynomial.degreeLT F k)))
+    (A : Submodule F (ι → Fin s → F)) (hA_le : A ≤ frsCode (ι := ι) (F := F) domain k s ω) :
+    finrank F (preimageSubspace domain k s ω A) = finrank F A :=
+  (preimageSubspaceEquiv domain k s ω hinj A hA_le).finrank_eq
 
 omit [DecidableEq ι] [DecidableEq F] in
 theorem preimageSubspace_le_degreeLT (domain : ι ↪ F) (k s : ℕ) (ω : F)
@@ -230,8 +260,9 @@ theorem natDegree_le_of_mem_degreeLT {k : ℕ} (hk : 1 ≤ k) {p : Polynomial F}
 /-! ## The structural data, assembled per subspace -/
 
 /-- **GK16 Claim 16 structural data for a single subspace `A` (the genuinely-unwritten gap,
-now written).** Under the two documented side conditions — encoder injectivity (`hinj`, the
-`dim_frsCode` hypothesis) and the design-range bound `dim A ≤ s` (`hAs`) — together with the
+now written).** Under the two documented side conditions — encoder injectivity on
+`degreeLT F k` (`hinj`; discharged for admissible `ω ≠ 0` with `k ≤ s * |ι|` by
+`ReedSolomon.Folded.frsEvalOnPoints_domRestrict_injective`) and the design-range bound `dim A ≤ s` (`hAs`) — together with the
 `ω`-degree-separation admissibility (`hω_sep`, the hypothesis of
 `foldedWronskian_ne_zero_of_linearIndependent`), this constructs the full existential package
 of `GK16Claim16StructuralData` for the subspace `A`:
@@ -253,7 +284,8 @@ This is `sorry`/axiom-clean. Composed with the proven multiplicity engine
 (see `SubspaceDesign.lean`). -/
 theorem gk16Claim16StructuralData_at
     (domain : ι ↪ F) (k s : ℕ) (ω : F)
-    (hinj : Function.Injective (frsEvalOnPoints domain s ω))
+    (hinj : Function.Injective
+      ((frsEvalOnPoints domain s ω).domRestrict (Polynomial.degreeLT F k)))
     (hk : 1 ≤ k)
     (A : Submodule F (ι → Fin s → F)) (hA_le : A ≤ frsCode domain k s ω)
     (hAs : finrank F A ≤ s)

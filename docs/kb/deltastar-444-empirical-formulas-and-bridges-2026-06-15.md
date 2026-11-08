@@ -26,8 +26,11 @@ either an axiom-clean Lean brick or an honest reduction naming the exact remaini
 - **P5 — Upper bracket (constant gap below capacity).** `DeltaStarConstantGapBelowCapacity.lean`,
   `MCADeltaStarCapacity.lean`: `δ* ≤ 1 − ρ − c_ρ`, `c_ρ ≈ ρ/127`, via the averaging list lower
   bound `maxList(1−(k+t)/n) ≥ C(n,k+t)/q^t`. Plus UDR lower `δ* ≳ (1−ρ)/3`.
-- **P6 — Height-gate vacuity at prize scale.** `HeightGateBindingDepthVacuity.lean`: the natural
-  root-sum-norm route is *proven vacuous* at `n = 2^30` binding depth (LEVER H dead at prize).
+- **P6 — Height-gate envelope at prize scale.** `HeightGateBindingDepthVacuity.lean`: proves
+  only arithmetic — the Parseval/AM–GM *upper* envelope `t^{n/4}` on binding-depth root-sum norms
+  exceeds `2^158` at `n = 2^30`, `t = 256`, so that envelope cannot certify the height gate there.
+  It does not prove a lower bound on any realized norm or any `p`-divisibility, so it is not a
+  machine-checked no-go for LEVER H (corrected 2026-10-28, audit PG-151).
 
 ---
 

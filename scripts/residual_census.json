@@ -1,42 +1,67 @@
 {
- "source_roots": [
-  "ArkLib",
-  "ProximityPrize"
- ],
+ "metadata": {
+  "kind": "syntactic inventory",
+  "scope": "ArkLib/**/*.lean and ProximityPrize/**/*.lean only",
+  "source_roots": [
+   "ArkLib",
+   "ProximityPrize"
+  ],
+  "method": "Lean source text is scanned without elaboration; binders, section variables, instances and result types are read as text.",
+  "caveat": "Labels are conservative triage heuristics, not kernel-checked facts. `discharged` marks a candidate uniform provider to review, not a verified proof, and these totals are not a whole-project or production-completion ledger: Research/ residuals and named hypotheses outside the strict `def ...Residual ... : Prop` pattern are not counted.",
+  "statuses": {
+   "open": "no unconditional provider or refutation was recognised",
+   "instance_only": "only providers of specific instances (literal/compound arguments, repeated bound names, or literal parameter types) were recognised",
+   "discharged": "a candidate uniform provider with no recognised assumption was found",
+   "refuted": "a declaration with no recognised assumption proves the negation of some instance, so the family is not uniformly true; proved instances stay listed"
+  },
+  "provider_verdicts": {
+   "uniform": "no recognised assumption; every residual argument is a distinct bound name",
+   "instance": "no recognised assumption, but only an instance of the residual is proved",
+   "conditional": "assumes a census residual, a proof-like binder, a result premise, an included proof-like section variable, or an instance missing from the residual",
+   "ambiguous": "the residual name could not be resolved across namespaces",
+   "not_provider": "the residual heads the result only as one side of ↔, →, ∨ or ="
+  }
+ },
  "summary": {
   "total": 90,
-  "open": 41,
-  "discharged": 35,
+  "open": 44,
+  "instance_only": 9,
+  "discharged": 23,
   "refuted": 14,
   "by_top_dir": {
    "(root)": {
     "total": 2,
     "open": 1,
+    "instance_only": 0,
     "discharged": 1,
     "refuted": 0
    },
    "Data": {
     "total": 24,
     "open": 8,
-    "discharged": 3,
+    "instance_only": 3,
+    "discharged": 0,
     "refuted": 13
    },
    "OracleReduction": {
     "total": 39,
-    "open": 22,
-    "discharged": 17,
+    "open": 25,
+    "instance_only": 3,
+    "discharged": 11,
     "refuted": 0
    },
    "ProofSystem": {
     "total": 14,
     "open": 10,
-    "discharged": 4,
+    "instance_only": 2,
+    "discharged": 2,
     "refuted": 0
    },
    "ToMathlib": {
     "total": 11,
     "open": 0,
-    "discharged": 10,
+    "instance_only": 1,
+    "discharged": 9,
     "refuted": 1
    }
   }
@@ -70,7 +95,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "AGL24.frankOrientationResidual_of_rootedOutCutTheorem",
@@ -84,7 +114,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -99,7 +134,7 @@
      "name": "AGL24.gmmDsResidual_of_dualZeroPatternTheorem",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/AGL24GMMDSInterface.lean",
-     "line": 74,
+     "line": 85,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hgm"
@@ -107,13 +142,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.GMMDS.gmmDsResidual_of_lovett",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/GMMDS/LovettToGMMDSBridge.lean",
-     "line": 95,
+     "line": 102,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hbridge",
@@ -122,13 +162,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.GMMDS.gmmDsResidual_of_lovett_steps",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/GMMDS/LovettToGMMDSBridge.lean",
-     "line": 118,
+     "line": 125,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hbridge",
@@ -138,13 +183,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.GMMDS.gmmDsResidual_of_lovett_via_steps",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/GMMDS/LovettToGZPDualBridgeReduction.lean",
-     "line": 166,
+     "line": 162,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hlovett",
@@ -154,13 +204,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.GMMDS.gmmDsResidual_unconditional",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/GMMDS/LovettUnconditionalWiring.lean",
-     "line": 105,
+     "line": 112,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hdual",
@@ -171,7 +226,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "refutations": [
@@ -179,10 +239,18 @@
      "name": "not_gmmdsResidual_fin3_zmod2",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean",
-     "line": 96,
+     "line": 99,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "ι := (Fin 3)",
+      "F := (ZMod 2)"
+     ],
+     "verdict": "unconditional"
     }
    ],
    "status": "refuted"
@@ -194,37 +262,70 @@
    "line": 45,
    "providers": [
     {
+     "name": "AGL24.symbolicFullRankResidual_of_nonempty_edges",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/AGL24AppendixAssembly.lean",
+     "line": 216,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "h"
+     ],
+     "ambiguous_name_match": false,
+     "equivalence": false,
+     "reduction_only": false,
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
+    },
+    {
      "name": "AGL24.symbolicFullRank_of_pinning",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/AGL24AppendixAssembly.lean",
-     "line": 129,
+     "line": 231,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
-      "hnonempty",
       "hwitness"
      ],
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Fintype F",
+      "Nonempty ι"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "AGL24.symbolicFullRank_of_classical_imports_pinned",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/AGL24DualZeroPatternPinned.lean",
-     "line": 213,
+     "line": 224,
      "conditional_on_residuals": [
       "FrankOrientationResidual"
      ],
      "extra_explicit_binders": [
       "hfrank",
-      "hgm",
-      "hnonempty"
+      "hgm"
      ],
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Fintype F",
+      "Nonempty ι"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "AGL24.symbolicFullRankResidual_of_evaluated_witness",
@@ -238,7 +339,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "AGL24.symbolicFullRankResidual_of_extension",
@@ -254,48 +360,70 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Algebra F F'",
+      "Field F'"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "AGL24.symbolicFullRank_of_classical_imports",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean",
-     "line": 65,
+     "line": 71,
      "conditional_on_residuals": [
       "FrankOrientationResidual",
       "GMMDSResidual"
      ],
      "extra_explicit_binders": [
       "hfrank",
-      "hgmmds",
-      "hnonempty"
+      "hgmmds"
      ],
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Fintype F",
+      "Nonempty ι"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "AGL24.symbolicFullRank_of_rootedOutCut_and_dualZeroPattern",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/AGL24Issue354Discharge.lean",
-     "line": 40,
+     "line": 50,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hfrank",
-      "hgm",
-      "hnonempty"
+      "hgm"
      ],
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Finite F",
+      "Nonempty ι"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "AGL24.symbolicFullRank_via_lovett_pinned",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/AGL24PinnedConnector.lean",
-     "line": 129,
+     "line": 144,
      "conditional_on_residuals": [
       "FrankOrientationResidual"
      ],
@@ -303,32 +431,46 @@
       "hdual",
       "hfield",
       "hfrank",
-      "hnonempty",
       "hrc"
      ],
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Fintype F",
+      "Nonempty ι"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.GMMDS.symbolicFullRank_lovett_free",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/GMMDS/SymbolicFullRankLovettFree.lean",
-     "line": 93,
+     "line": 99,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hdual",
       "hfield",
       "hfrank",
       "hk",
-      "hminor",
-      "hnonempty"
+      "hminor"
      ],
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Fintype F",
+      "Nonempty ι"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -343,19 +485,28 @@
      "name": "AGL24.rimFailureProb_of_rootedOutCut_and_dualZeroPattern",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/AGL24Issue354Discharge.lean",
-     "line": 60,
+     "line": 67,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hfrank",
       "hgm",
-      "hnonempty",
       "ht",
       "hwpc"
      ],
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "F := (ProximityPrize.Compatibility.uniformOfFintype (ι → F))",
+      "e := ((t * k * (k - 1) : Nat) / (Fintype.card F : ENNReal))"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Nonempty ι"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "AGL24.rimFailureProb_of_symbolic",
@@ -373,7 +524,17 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "F := (ProximityPrize.Compatibility.uniformOfFintype (ι → F))",
+      "e := ((t * k * (k - 1) : ℕ) / (Fintype.card F : ENNReal))"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Nonempty ι"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -382,70 +543,120 @@
    "name": "GKL24FirstMomentResidual",
    "fq_name": "ProximityGap.GKL24FirstMomentResidual",
    "file": "ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean",
-   "line": 1046,
+   "line": 1081,
    "providers": [
     {
      "name": "ProximityGap.GKL24FirstMomentResidual_inTree_card",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean",
-     "line": 1058,
+     "line": 1093,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "B_T := (Fintype.card (ι → F) : ℝ)",
+      "b := (Fintype.card ι : ℝ)"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "instance"
     },
     {
      "name": "ProximityGap.GKL24FirstMomentResidual_inTree_two_delta_card",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean",
-     "line": 1080,
+     "line": 1115,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "B_T := (Fintype.card (ι → F) : ℝ)",
+      "b := (max 1 (2 * (δ : ℝ) * (Fintype.card ι : ℝ)))"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "instance"
     },
     {
      "name": "ProximityGap.GKL24FirstMomentResidual_inTree_delta_add_one_card",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean",
-     "line": 1536,
+     "line": 1627,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "B_T := (Fintype.card (ι → F) : ℝ)",
+      "b := ((δ : ℝ) * (Fintype.card ι : ℝ) + 1)"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "instance"
     }
    ],
-   "status": "discharged"
+   "refutations": [
+    {
+     "name": "ProximityGap.GKL24FirstMomentResidual_false_of_lt_card",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean",
+     "line": 1191,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hlt"
+     ],
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [],
+     "verdict": "conditional"
+    }
+   ],
+   "status": "instance_only"
   },
   {
    "name": "GKL24FirstMomentWitnessCoverResidual",
    "fq_name": "ProximityGap.GKL24FirstMomentWitnessCoverResidual",
    "file": "ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean",
-   "line": 1107,
+   "line": 1149,
    "providers": [
     {
      "name": "ProximityGap.GKL24FirstMomentWitnessCoverResidual_inTree_two_delta_card",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean",
-     "line": 1127,
+     "line": 1169,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "B_T := (Fintype.card (ι → F) : ℝ)",
+      "b := (max 1 (2 * (δ : ℝ) * (Fintype.card ι : ℝ)))"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "instance"
     },
     {
      "name": "ProximityGap.GKL24FirstMomentWitnessCoverResidual_of_maxCorr_cover",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean",
-     "line": 1383,
+     "line": 1474,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hmax"
@@ -453,13 +664,20 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "b := ((p : ℝ) * (Fintype.card ι : ℝ))"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ProximityGap.GKL24FirstMomentWitnessCoverResidual_of_strict_cover",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean",
-     "line": 1400,
+     "line": 1491,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hp_le_one",
@@ -469,13 +687,20 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "b := ((p : ℝ) * (Fintype.card ι : ℝ))"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ProximityGap.GKL24FirstMomentWitnessCoverResidual_of_petal_cover",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean",
-     "line": 1487,
+     "line": 1578,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hpetal"
@@ -483,10 +708,36 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "b := (p * (Fintype.card ι : ℝ))"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
-   "status": "discharged"
+   "refutations": [
+    {
+     "name": "ProximityGap.GKL24FirstMomentWitnessCoverResidual_false_of_lt_one",
+     "kind": "theorem",
+     "file": "ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean",
+     "line": 1211,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hb",
+      "hbad"
+     ],
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [],
+     "verdict": "conditional"
+    }
+   ],
+   "status": "instance_only"
   },
   {
    "name": "randomLinearLambdaLowerFirstMomentResidual",
@@ -506,13 +757,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "CodingTheory.randomLinearLambdaLowerFirstMomentResidual_of_combinatorialWitness",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ListDecoding/Bounds/RandomAndReedSolomon.lean",
-     "line": 461,
+     "line": 476,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "h"
@@ -520,7 +776,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -543,7 +804,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ProximityGap.curveCommonAgreementResidual_of_card_le",
@@ -559,7 +825,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ProximityGap.curveCommonAgreementResidual_of_card_le_e7",
@@ -574,7 +845,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "refutations": [
@@ -585,7 +861,17 @@
      "line": 530,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "k := 1",
+      "deg := 2",
+      "domain := domain7",
+      "δ := (3 / 7 : ℝ≥0)"
+     ],
+     "verdict": "unconditional"
     }
    ],
    "status": "refuted"
@@ -604,7 +890,18 @@
      "line": 154,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "k := 1",
+      "deg := 1",
+      "domain := domain",
+      "δ := (1 : ℝ≥0) / 2",
+      "e := 2"
+     ],
+     "verdict": "unconditional"
     }
    ],
    "status": "refuted"
@@ -613,13 +910,13 @@
    "name": "βHenselSuccTermWeightResidual",
    "fq_name": "BCIKS20.HenselNumerator.βHenselSuccTermWeightResidual",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean",
-   "line": 1654,
+   "line": 1665,
    "providers": [
     {
      "name": "BCIKS20.HenselNumerator.βHenselSuccTermWeightResidual_of_structured",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean",
-     "line": 1755,
+     "line": 1766,
      "conditional_on_residuals": [
       "βHenselSuccTermStructuredWeightResidual"
      ],
@@ -630,7 +927,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -639,13 +941,13 @@
    "name": "βHenselSuccTermStructuredWeightResidual",
    "fq_name": "BCIKS20.HenselNumerator.βHenselSuccTermStructuredWeightResidual",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean",
-   "line": 1735,
+   "line": 1746,
    "providers": [
     {
      "name": "BCIKS20.HenselNumerator.βHenselSuccTermStructuredWeightResidual_holds",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean",
-     "line": 2746,
+     "line": 2797,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDRx0",
@@ -656,7 +958,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -665,7 +972,7 @@
    "name": "FaaDiBrunoSuccSumZeroResidual",
    "fq_name": "BCIKS20.HenselNumerator.FaaDiBrunoSuccSumZeroResidual",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean",
-   "line": 2510,
+   "line": 2542,
    "providers": [
     {
      "name": "BCIKS20.HenselNumerator.faaDiBrunoSuccSumZeroResidual_of_monic",
@@ -679,7 +986,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "BCIKS20.HenselNumerator.faaDiBrunoSuccSumZeroResidual_of_forall_partitionMatchAt",
@@ -693,7 +1005,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "BCIKS20.HenselNumerator.faaDiBrunoSuccSumZeroResidual_of_partitionMatch",
@@ -707,7 +1024,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "BCIKS20.HenselNumerator.faaDiBrunoSuccSumZero_of_restrictedFaaDiBrunoMatch",
@@ -721,7 +1043,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "BCIKS20.HenselNumerator.faaDiBrunoSuccSumZeroResidual_of_leadingCoeff_one",
@@ -735,7 +1062,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "BCIKS20.HenselNumerator.faaDiBrunoSuccSumZero_iff_WfreeMatch_of_leadingCoeff_one",
@@ -743,13 +1075,16 @@
      "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2MonicWfreeGlobal.lean",
      "line": 118,
      "conditional_on_residuals": [],
-     "extra_explicit_binders": [
-      "hlc"
-     ],
+     "extra_explicit_binders": [],
      "ambiguous_name_match": false,
      "equivalence": true,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "not_provider"
     },
     {
      "name": "BCIKS20.HenselNumerator.FaaDiBrunoSuccSumZeroResidual.of_WfreeMatch",
@@ -764,7 +1099,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "BCIKS20.HenselNumerator.FaaDiBrunoSuccSumZeroResidual.of_rangeWfreeMatch",
@@ -779,7 +1119,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "BCIKS20.HenselNumerator.faaDiBrunoSuccSumZeroResidual_iff_coeff_succ_eval",
@@ -791,7 +1136,12 @@
      "ambiguous_name_match": false,
      "equivalence": true,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "not_provider"
     },
     {
      "name": "BCIKS20.HenselNumerator.FaaDiBrunoSuccSumZeroResidual.of_eval_βHenselAssembled_eq_zero",
@@ -805,7 +1155,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "BCIKS20.HenselNumerator.faaDiBrunoSuccSumZeroResidual_of_fullVanishes",
@@ -819,7 +1174,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "BCIKS20.HenselNumerator.faaDiBrunoSuccSumZeroResidual_of_restrictedMatch",
@@ -833,7 +1193,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "refutations": [
@@ -841,7 +1206,7 @@
      "name": "BCIKS20.HenselNumerator.faaDiBrunoSuccSumZeroResidual_false_of_constant_of_nonmonic",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2OrderZeroRefutation.lean",
-     "line": 309,
+     "line": 313,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hc",
@@ -849,13 +1214,18 @@
       "hlc",
       "hp"
      ],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [],
+     "verdict": "conditional"
     },
     {
      "name": "BCIKS20.HenselNumerator.faaDiBrunoSuccSumZeroResidual_false_of_constant_of_leadingCoeff_pow_ne_one",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2OrderZeroRefutation.lean",
-     "line": 321,
+     "line": 325,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hc",
@@ -863,13 +1233,18 @@
       "hp",
       "hpow"
      ],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [],
+     "verdict": "conditional"
     },
     {
      "name": "BCIKS20.HenselNumerator.faaDiBrunoSuccSumZeroResidual_false_of_constant_of_nonmonic_of_evalX_eq",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2OrderZeroRefutation.lean",
-     "line": 335,
+     "line": 339,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hc",
@@ -877,7 +1252,14 @@
       "hlc",
       "hp"
      ],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "hHyp := (ClaimA2.Hypotheses.of_evalX_eq hR0 hdvd hsep)"
+     ],
+     "verdict": "conditional"
     },
     {
      "name": "BCIKS20.HenselNumerator.Witness.faaDiBrunoSuccSumZeroResidual_false",
@@ -886,7 +1268,17 @@
      "line": 175,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "H := myH",
+      "x₀ := (0 : ℚ)",
+      "R := myR",
+      "hHyp := myHyp"
+     ],
+     "verdict": "unconditional"
     }
    ],
    "status": "refuted"
@@ -905,7 +1297,17 @@
      "line": 149,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "H := myH",
+      "x₀ := (0 : ℚ)",
+      "R := myR",
+      "hHyp := myHyp"
+     ],
+     "verdict": "unconditional"
     }
    ],
    "status": "refuted"
@@ -920,7 +1322,7 @@
      "name": "ArkLib.RawGS304.strictCoeffPolysLargeResidual_of_rawGSCargo",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/LocalSeriesProducer.lean",
-     "line": 530,
+     "line": 543,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInput"
@@ -928,13 +1330,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.RawGS304.strictCoeffPolysLargeResidual_of_rawGSCargoProducer",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/LocalSeriesProducer.lean",
-     "line": 552,
+     "line": 565,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInput"
@@ -942,7 +1349,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ProximityGap.strictCoeffPolysLargeResidual_of_residual",
@@ -958,13 +1370,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.FaithfulCurveExtraction.strictCoeffPolysLargeResidual_of_localSeriesDatumOn",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffProducer.lean",
-     "line": 449,
+     "line": 526,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInput"
@@ -972,13 +1389,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.UnifiedExtractionTarget.strictCoeffPolysLargeResidual_of_producer",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/UnifiedExtractionTarget.lean",
-     "line": 99,
+     "line": 130,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hprod"
@@ -986,7 +1408,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "refutations": [
@@ -997,7 +1424,17 @@
      "line": 511,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "k := 1",
+      "deg := 2",
+      "domain := domain7",
+      "δ := (3 / 7 : ℝ≥0)"
+     ],
+     "verdict": "unconditional"
     }
    ],
    "status": "refuted"
@@ -1022,7 +1459,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ProximityGap.strictCoeffPolysExcResidual_mono",
@@ -1039,7 +1481,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "refutations": [
@@ -1052,7 +1499,17 @@
      "extra_explicit_binders": [
       "hb"
      ],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "k := 1",
+      "deg := 2",
+      "domain := domain7",
+      "δ := (3 / 7 : ℝ≥0)"
+     ],
+     "verdict": "conditional"
     },
     {
      "name": "ProximityGap.StrictCanonicalCoeffPolysRefutation.not_strictCoeffPolysExcResidual_one",
@@ -1061,7 +1518,18 @@
      "line": 611,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "k := 1",
+      "deg := 2",
+      "domain := domain7",
+      "δ := (3 / 7 : ℝ≥0)",
+      "b := 1"
+     ],
+     "verdict": "unconditional"
     }
    ],
    "status": "refuted"
@@ -1084,7 +1552,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryCardResidual.boundaryCardLatticeResidual_zero",
@@ -1098,7 +1573,12 @@
      "reduction_only": false,
      "specialised_arguments": [
       "k := 0"
-     ]
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "instance"
     },
     {
      "name": "ArkLib.BoundaryCardResidual.BoundaryCardQuantizationResiduals.lattice",
@@ -1112,7 +1592,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryCardResidual.BoundaryCardLatticeData.toLatticeResidual",
@@ -1126,7 +1611,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryDischarge.boundaryCardLatticeResidual_of_boundary_cards_and_coeffPolys",
@@ -1140,7 +1632,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryDischarge.boundaryCardLatticeResidual_of_lattice_data",
@@ -1154,7 +1653,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "refutations": [
@@ -1165,7 +1671,17 @@
      "line": 252,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "k := 2",
+      "deg := 1",
+      "domain := domain",
+      "δ := 1 - ReedSolomon.sqrtRate 1 domain"
+     ],
+     "verdict": "unconditional"
     }
    ],
    "status": "refuted"
@@ -1174,13 +1690,13 @@
    "name": "BoundaryCardLatticeThresholdResidual",
    "fq_name": "ArkLib.BoundaryLatticeThresholdLeaf.BoundaryCardLatticeThresholdResidual",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/BoundaryLatticeThresholdLeaf.lean",
-   "line": 203,
+   "line": 218,
    "providers": [
     {
      "name": "ArkLib.BoundaryLatticeThresholdLeaf.boundaryCardLatticeThresholdResidual_of_extraction",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/BoundaryLatticeThresholdLeaf.lean",
-     "line": 213,
+     "line": 228,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hExt"
@@ -1188,13 +1704,21 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg",
+      "Nonempty ι"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryLatticeThresholdLeaf.boundaryCardLatticeThresholdResidual_of_canonical",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/BoundaryLatticeThresholdLeaf.lean",
-     "line": 275,
+     "line": 292,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hCanon"
@@ -1202,13 +1726,21 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg",
+      "Nonempty ι"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.LatticeFrontierReduction.boundaryCardLatticeThresholdResidual_of_countFrontier",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/LatticeFrontierReduction.lean",
-     "line": 104,
+     "line": 123,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hProd"
@@ -1216,7 +1748,15 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg",
+      "Nonempty ι"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "refutations": [
@@ -1224,10 +1764,20 @@
      "name": "ArkLib.BoundaryLatticeThresholdRefutation.not_boundaryCardLatticeThresholdResidual",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/BoundaryLatticeThresholdRefutation.lean",
-     "line": 254,
+     "line": 255,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "k := 1",
+      "deg := 1",
+      "domain := domain",
+      "δ := 1 - ReedSolomon.sqrtRate 1 domain"
+     ],
+     "verdict": "unconditional"
     }
    ],
    "status": "refuted"
@@ -1250,7 +1800,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "B := (n.choose k)"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ProximityGap.Ownership.subJohnsonSupplyResidual_above_johnson",
@@ -1265,7 +1822,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "B := ((n ^ 2 / ((k + m + 1) ^ 2 - n * (k - 1))) * (2 * k + m + 1).choose (k + m + 1))"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ProximityGap.PairRank.subJohnsonSupplyResidual_iff_forall",
@@ -1277,7 +1841,12 @@
      "ambiguous_name_match": false,
      "equivalence": true,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "not_provider"
     },
     {
      "name": "ProximityGap.PairRank.subJohnsonSupplyResidual_iff_optimal_le",
@@ -1289,7 +1858,12 @@
      "ambiguous_name_match": false,
      "equivalence": true,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "not_provider"
     },
     {
      "name": "ProximityGap.PairRank.cappedSupplyOptimal_is_least",
@@ -1301,10 +1875,17 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "B := (cappedSupplyOptimal dom k m)"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "instance"
     }
    ],
-   "status": "discharged"
+   "status": "instance_only"
   },
   {
    "name": "SubJohnsonListResidual",
@@ -1330,7 +1911,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     },
     {
      "name": "OracleReduction.appendToReductionResidual_iff_verifier",
@@ -1342,7 +1928,12 @@
      "ambiguous_name_match": false,
      "equivalence": true,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "not_provider"
     }
    ],
    "status": "discharged"
@@ -1351,7 +1942,7 @@
    "name": "appendRbrSoundnessPhase2Residual",
    "fq_name": "Verifier.appendRbrSoundnessPhase2Residual",
    "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRbrKeystone.lean",
-   "line": 296,
+   "line": 301,
    "providers": [
     {
      "name": "Verifier.appendRbrSoundnessPhase2_doomed_subsingleton",
@@ -1369,7 +1960,16 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "S₂ := (S₂.doom)"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Subsingleton σ"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -1399,7 +1999,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Subsingleton σ"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Verifier.appendRbrKnowledgeSoundnessPerRound",
@@ -1418,7 +2025,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -1447,7 +2059,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Subsingleton σ"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Verifier.appendRbrKnowledgeSoundnessPhase2_subsingleton",
@@ -1467,7 +2086,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Subsingleton σ"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -1476,13 +2102,13 @@
    "name": "appendRunRightDistResidual",
    "fq_name": "Prover.appendRunRightDistResidual",
    "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRun.lean",
-   "line": 82,
+   "line": 87,
    "providers": [
     {
      "name": "Prover.appendRunRightDistResidual_holds_msg",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRun.lean",
-     "line": 133,
+     "line": 138,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -1492,13 +2118,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Prover.appendRunRightDistResidual_holds_challenge",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRun.lean",
-     "line": 428,
+     "line": 433,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -1508,19 +2139,29 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Prover.appendRunRightDistResidual_holds",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendRun.lean",
-     "line": 515,
+     "line": 520,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     }
    ],
    "status": "discharged"
@@ -1543,7 +2184,22 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Finite StmtIn",
+      "Fintype (CanonicalSpongeState U)",
+      "Fintype (StmtIn → Vector U SpongeSize.C)",
+      "Fintype (Vector U SpongeSize.C)",
+      "Inhabited (CanonicalSpongeState U)",
+      "Nonempty (Equiv.Perm (CanonicalSpongeState U))",
+      "Nonempty (StmtIn → Vector U SpongeSize.C)",
+      "Nonempty (Vector U SpongeSize.C)",
+      "SampleableType (Vector U SpongeSize.C)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "DuplexSpongeFS.BirthdayBoundPaper.lemma5_8EagerPaperResidual_holds",
@@ -1555,16 +2211,25 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Fintype StmtIn",
+      "Inhabited (CanonicalSpongeState U)",
+      "SampleableType (Vector U SpongeSize.C)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
-   "status": "discharged"
+   "status": "open"
   },
   {
    "name": "duplexSpongeFiatShamir_runCollapseResidual",
    "fq_name": "Reduction.duplexSpongeFiatShamir_runCollapseResidual",
    "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Completeness.lean",
-   "line": 200,
+   "line": 212,
    "providers": [
     {
      "name": "Reduction.duplexSpongeFiatShamir_runCollapse",
@@ -1576,7 +2241,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     },
     {
      "name": "Reduction.duplexSpongeFiatShamir_runCollapseResidual_holds",
@@ -1588,7 +2258,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     }
    ],
    "status": "discharged"
@@ -1597,7 +2272,7 @@
    "name": "duplexSpongeFiatShamirSalted_runCollapseResidual",
    "fq_name": "Reduction.duplexSpongeFiatShamirSalted_runCollapseResidual",
    "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Completeness.lean",
-   "line": 212,
+   "line": 224,
    "providers": [
     {
      "name": "Reduction.duplexSpongeFiatShamirSalted_runCollapse",
@@ -1609,7 +2284,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     }
    ],
    "status": "discharged"
@@ -1630,7 +2310,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     }
    ],
    "status": "discharged"
@@ -1647,7 +2332,7 @@
    "name": "Lemma5_12HonestResidual",
    "fq_name": "DuplexSpongeFS.KeyLemmaFoundations.Lemma5_12HonestResidual",
    "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaFoundations.lean",
-   "line": 629,
+   "line": 673,
    "providers": [
     {
      "name": "DuplexSpongeFS.Sponge316.lemma5_12_honest",
@@ -1659,7 +2344,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     }
    ],
    "status": "discharged"
@@ -1668,7 +2358,7 @@
    "name": "SimulatedProverChallengeBudgetResidual",
    "fq_name": "DuplexSpongeFS.KeyLemmaFoundations.SimulatedProverChallengeBudgetResidual",
    "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaFoundations.lean",
-   "line": 933,
+   "line": 977,
    "providers": [
     {
      "name": "DuplexSpongeFS.SimulatorBudgets.simulatedProverChallengeBudget",
@@ -1680,7 +2370,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     }
    ],
    "status": "discharged"
@@ -1689,7 +2384,7 @@
    "name": "SimulatedProverSharedBudgetResidual",
    "fq_name": "DuplexSpongeFS.KeyLemmaFoundations.SimulatedProverSharedBudgetResidual",
    "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaFoundations.lean",
-   "line": 950,
+   "line": 994,
    "providers": [
     {
      "name": "DuplexSpongeFS.SimulatorBudgets.simulatedProverSharedBudget",
@@ -1701,7 +2396,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     }
    ],
    "status": "discharged"
@@ -1710,7 +2410,7 @@
    "name": "KeyLemmaEagerResidual",
    "fq_name": "DuplexSpongeFS.KeyLemmaFoundations.KeyLemmaEagerResidual",
    "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaFoundations.lean",
-   "line": 970,
+   "line": 1014,
    "providers": [
     {
      "name": "DuplexSpongeFS.KeyLemmaAssembly.keyLemmaEager_of_hybSteps",
@@ -1732,13 +2432,25 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Inhabited (StmtIn × FSSaltedProof pSpec Salt)",
+      "SaltCodec U δ Salt",
+      "SampleableType (OracleFamily (eSpec (U := U) StmtIn pSpec δ))",
+      "SampleableType (OracleFamily (fsChallengeOracle (StmtIn × Salt) pSpec))",
+      "SampleableType (OracleFamily (gSpec (U := U) StmtIn pSpec δ))",
+      "∀ i, Fintype (pSpec.Challenge i)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "DuplexSpongeFS.KeyLemmaAssembly.keyLemmaEager_of_steps_strictSplit",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaAssembly.lean",
-     "line": 146,
+     "line": 152,
      "conditional_on_residuals": [
       "Hyb01StepResidual",
       "Hyb12StepResidual",
@@ -1755,13 +2467,25 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Inhabited (StmtIn × FSSaltedProof pSpec Salt)",
+      "SaltCodec U δ Salt",
+      "SampleableType (OracleFamily (eSpec (U := U) StmtIn pSpec δ))",
+      "SampleableType (OracleFamily (fsChallengeOracle (StmtIn × Salt) pSpec))",
+      "SampleableType (OracleFamily (gSpec (U := U) StmtIn pSpec δ))",
+      "∀ i, Fintype (pSpec.Challenge i)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "DuplexSpongeFS.KeyLemmaHybrids.keyLemmaEager_of_steps",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaHybrids.lean",
-     "line": 815,
+     "line": 826,
      "conditional_on_residuals": [
       "Hyb01StepResidual",
       "Hyb12StepResidual",
@@ -1781,7 +2505,19 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Inhabited (StmtIn × FSSaltedProof pSpec Salt)",
+      "SaltCodec U δ Salt",
+      "SampleableType (OracleFamily (eSpec (U := U) StmtIn pSpec δ))",
+      "SampleableType (OracleFamily (fsChallengeOracle (StmtIn × Salt) pSpec))",
+      "SampleableType (OracleFamily (gSpec (U := U) StmtIn pSpec δ))",
+      "∀ i, Fintype (pSpec.Challenge i)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -1790,7 +2526,7 @@
    "name": "D2sQueryStepGSpecBudgetResidual",
    "fq_name": "DuplexSpongeFS.KeyLemmaFoundations.D2sQueryStepGSpecBudgetResidual",
    "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaFoundations.lean",
-   "line": 1010,
+   "line": 1054,
    "providers": [
     {
      "name": "DuplexSpongeFS.SimulatorBudgets.d2sQueryStepGSpecBudget",
@@ -1802,7 +2538,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     }
    ],
    "status": "discharged"
@@ -1811,7 +2552,7 @@
    "name": "D2fOuterImplSharedBudgetResidual",
    "fq_name": "DuplexSpongeFS.KeyLemmaFoundations.D2fOuterImplSharedBudgetResidual",
    "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaFoundations.lean",
-   "line": 1026,
+   "line": 1070,
    "providers": [
     {
      "name": "DuplexSpongeFS.SimulatorBudgets.d2fOuterImplSharedBudget",
@@ -1823,7 +2564,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     }
    ],
    "status": "discharged"
@@ -1832,7 +2578,7 @@
    "name": "Hyb01StepResidual",
    "fq_name": "DuplexSpongeFS.KeyLemmaHybrids.Hyb01StepResidual",
    "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaHybrids.lean",
-   "line": 714,
+   "line": 719,
    "providers": [],
    "status": "open"
   },
@@ -1840,7 +2586,7 @@
    "name": "Hyb12StepResidual",
    "fq_name": "DuplexSpongeFS.KeyLemmaHybrids.Hyb12StepResidual",
    "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaHybrids.lean",
-   "line": 736,
+   "line": 741,
    "providers": [],
    "status": "open"
   },
@@ -1848,7 +2594,7 @@
    "name": "Hyb23StepResidual",
    "fq_name": "DuplexSpongeFS.KeyLemmaHybrids.Hyb23StepResidual",
    "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaHybrids.lean",
-   "line": 759,
+   "line": 764,
    "providers": [],
    "status": "open"
   },
@@ -1856,13 +2602,13 @@
    "name": "Hyb34StepResidual",
    "fq_name": "DuplexSpongeFS.KeyLemmaHybrids.Hyb34StepResidual",
    "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaHybrids.lean",
-   "line": 778,
+   "line": 789,
    "providers": [
     {
      "name": "DuplexSpongeFS.VerifierReplay.hyb34Step_of_strictSplit",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/VerifierReplay.lean",
-     "line": 930,
+     "line": 939,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hA",
@@ -1872,7 +2618,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "refutations": [
@@ -1890,7 +2641,12 @@
       "hPermInv",
       "hgap"
      ],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -1899,13 +2655,13 @@
    "name": "KeyLemmaEagerSaltedResidual",
    "fq_name": "DuplexSpongeFS.KeyLemmaSalted.KeyLemmaEagerSaltedResidual",
    "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaSalted.lean",
-   "line": 720,
+   "line": 767,
    "providers": [
     {
      "name": "DuplexSpongeFS.KeyLemmaSalted.keyLemmaEagerSalted_of_steps",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaSalted.lean",
-     "line": 750,
+     "line": 797,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "h01",
@@ -1916,7 +2672,16 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Inhabited (StmtIn × FSSaltedProof pSpec Salt)",
+      "SampleableType (OracleFamily (eSpec (U := U) StmtIn pSpec δ))",
+      "SampleableType (OracleFamily (gSpec (U := U) StmtIn pSpec δ))"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -1925,13 +2690,13 @@
    "name": "SubPhaseCompletenessResidual",
    "fq_name": "Logup.SubPhaseCompletenessResidual",
    "file": "ArkLib/ProofSystem/Logup/Security/Completeness.lean",
-   "line": 239,
+   "line": 242,
    "providers": [
     {
      "name": "Logup.subPhaseCompletenessResidual_of_sumcheck",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/OuterCompleteness.lean",
-     "line": 811,
+     "line": 818,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInit",
@@ -1940,19 +2705,29 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Logup.subPhaseCompletenessResidual_iff_split",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/SubPhaseSplit.lean",
-     "line": 174,
+     "line": 184,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
      "equivalence": true,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "not_provider"
     },
     {
      "name": "Logup.subPhaseCompletenessResidual_unconditional",
@@ -1967,7 +2742,16 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Inhabited F",
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -1982,25 +2766,35 @@
      "name": "Logup.outerCompletenessRunResidual_proved",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/OuterCompleteness.lean",
-     "line": 802,
+     "line": 807,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     },
     {
      "name": "Logup.outerCompletenessRunResidual_iff",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/OuterCompleteness.lean",
-     "line": 818,
+     "line": 825,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
      "equivalence": true,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "not_provider"
     }
    ],
    "status": "discharged"
@@ -2015,13 +2809,18 @@
      "name": "Logup.outer_completenessRunFactsResidual",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/OuterCompleteness.lean",
-     "line": 784,
+     "line": 789,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     }
    ],
    "status": "discharged"
@@ -2030,19 +2829,24 @@
    "name": "SubPhaseSoundnessResidual",
    "fq_name": "Logup.SubPhaseSoundnessResidual",
    "file": "ArkLib/ProofSystem/Logup/Security/Soundness.lean",
-   "line": 118,
+   "line": 121,
    "providers": [
     {
      "name": "Logup.subPhaseSoundnessResidual_iff_split",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/SubPhaseSplit.lean",
-     "line": 83,
+     "line": 88,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
      "equivalence": true,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "not_provider"
     }
    ],
    "status": "open"
@@ -2051,7 +2855,7 @@
    "name": "OuterSoundnessResidual",
    "fq_name": "Logup.OuterSoundnessResidual",
    "file": "ArkLib/ProofSystem/Logup/Security/SubPhaseSplit.lean",
-   "line": 70,
+   "line": 73,
    "providers": [
     {
      "name": "Logup.outerSoundnessResidual_holds",
@@ -2069,7 +2873,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -2078,7 +2887,7 @@
    "name": "SumcheckSoundnessResidual",
    "fq_name": "Logup.SumcheckSoundnessResidual",
    "file": "ArkLib/ProofSystem/Logup/Security/SubPhaseSplit.lean",
-   "line": 78,
+   "line": 81,
    "providers": [
     {
      "name": "Logup.issue13_sumcheckSoundnessResidual_projClosed",
@@ -2096,13 +2905,20 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Logup.sumcheckSoundnessResidual_holds_of_rbr",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/RbrToSoundBridge.lean",
-     "line": 264,
+     "line": 285,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hError",
@@ -2113,7 +2929,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Logup.sumcheckSoundnessResidual_proved",
@@ -2130,13 +2953,20 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Logup.sumcheckSoundnessResidual_holds",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/SumcheckSoundnessLift.lean",
-     "line": 195,
+     "line": 214,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInnerRbr",
@@ -2146,7 +2976,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Logup.sumcheckSoundnessResidual_holds_projClosed",
@@ -2164,7 +3001,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Logup.sumcheckSoundnessResidual_holds_wired",
@@ -2183,7 +3027,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -2192,7 +3043,7 @@
    "name": "AppendSoundnessResidual",
    "fq_name": "Logup.AppendSoundnessResidual",
    "file": "ArkLib/ProofSystem/Logup/Security/SubPhaseSplit.lean",
-   "line": 108,
+   "line": 115,
    "providers": [],
    "status": "open"
   },
@@ -2200,19 +3051,24 @@
    "name": "LogupSoundnessBrickResidual",
    "fq_name": "Logup.LogupSoundnessBrickResidual",
    "file": "ArkLib/ProofSystem/Logup/Security/SubPhaseSplit.lean",
-   "line": 115,
+   "line": 122,
    "providers": [
     {
      "name": "Logup.logupSoundnessBrickResidual_iff_subPhase_append",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/SubPhaseSplit.lean",
-     "line": 122,
+     "line": 129,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
      "equivalence": true,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "not_provider"
     }
    ],
    "status": "open"
@@ -2221,7 +3077,7 @@
    "name": "OuterCompletenessResidual",
    "fq_name": "Logup.OuterCompletenessResidual",
    "file": "ArkLib/ProofSystem/Logup/Security/SubPhaseSplit.lean",
-   "line": 163,
+   "line": 170,
    "providers": [
     {
      "name": "Logup.OuterCompletenessResidual_holds",
@@ -2235,13 +3091,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Logup.outerCompletenessResidual_of_neverFail",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/SubPhaseSplit.lean",
-     "line": 252,
+     "line": 265,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInit"
@@ -2249,7 +3110,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -2258,13 +3124,13 @@
    "name": "SumcheckCompletenessResidual",
    "fq_name": "Logup.SumcheckCompletenessResidual",
    "file": "ArkLib/ProofSystem/Logup/Security/SubPhaseSplit.lean",
-   "line": 169,
+   "line": 176,
    "providers": [
     {
      "name": "Logup.sumcheckCompletenessResidual_of_perRound",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/LogupCompletenessUncond.lean",
-     "line": 169,
+     "line": 177,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hImplSupp",
@@ -2274,13 +3140,21 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Logup.sumcheckCompletenessResidual_proved",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/SumcheckCompleteness.lean",
-     "line": 45,
+     "line": 48,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hImplSupp",
@@ -2290,7 +3164,15 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Logup.sumcheckCompletenessResidual_holds",
@@ -2305,7 +3187,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Logup.sumcheckCompletenessResidual_unconditional",
@@ -2320,7 +3209,16 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Inhabited F",
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Logup.sumcheckCompletenessResidual_of_inner",
@@ -2334,7 +3232,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -2343,35 +3248,31 @@
    "name": "AppendCompletenessResidual",
    "fq_name": "Logup.AppendCompletenessResidual",
    "file": "ArkLib/ProofSystem/Logup/Security/SubPhaseSplit.lean",
-   "line": 183,
+   "line": 193,
    "providers": [
     {
      "name": "Logup.appendCompletenessResidual_iff_toReduction",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/LogupCompletenessClose.lean",
-     "line": 139,
-     "conditional_on_residuals": [
-      "OuterCompletenessResidual",
-      "SumcheckCompletenessResidual",
-      "appendToReductionResidual"
-     ],
-     "extra_explicit_binders": [
-      "hBridge"
-     ],
+     "line": 152,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [],
      "ambiguous_name_match": false,
      "equivalence": true,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "not_provider"
     },
     {
      "name": "Logup.appendCompletenessResidual_msgSeam",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/LogupCompletenessMsgSeam.lean",
-     "line": 120,
-     "conditional_on_residuals": [
-      "OuterCompletenessResidual",
-      "SumcheckCompletenessResidual"
-     ],
+     "line": 126,
+     "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "himplNF",
       "himplSP",
@@ -2381,16 +3282,22 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Logup.appendCompletenessResidual_wired",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/LogupCompletenessWired.lean",
-     "line": 190,
-     "conditional_on_residuals": [
-      "SumcheckCompletenessResidual"
-     ],
+     "line": 197,
+     "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
       "hDir₂",
@@ -2402,13 +3309,23 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "hOuter := (outerCompletenessResidual_of_neverFail oSpec F n M params init impl hInit)"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Logup.appendCompletenessResidual_unconditional",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/LogupCompletenessWired.lean",
-     "line": 331,
+     "line": 339,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "himplNF",
@@ -2419,17 +3336,25 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "hOuter := (outerCompletenessResidual_of_neverFail oSpec F n M params init impl hInit)",
+      "hSumcheck := (sumcheckCompletenessResidual_unconditional oSpec F n M params init impl hInit …"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Logup.appendCompletenessResidual_forall",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/LogupCompletenessWired.lean",
-     "line": 353,
-     "conditional_on_residuals": [
-      "OuterCompletenessResidual",
-      "SumcheckCompletenessResidual"
-     ],
+     "line": 361,
+     "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hImplSupp",
       "hInit",
@@ -2441,7 +3366,15 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -2450,13 +3383,13 @@
    "name": "LogupCompletenessBrickResidual",
    "fq_name": "Logup.LogupCompletenessBrickResidual",
    "file": "ArkLib/ProofSystem/Logup/Security/SubPhaseSplit.lean",
-   "line": 206,
+   "line": 216,
    "providers": [
     {
      "name": "Logup.logupCompletenessBrickResidual_holds",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/LogupCompletenessWired.lean",
-     "line": 269,
+     "line": 277,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hImplSupp",
@@ -2469,19 +3402,32 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Logup.logupCompletenessBrickResidual_iff_subPhase_append",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/SubPhaseSplit.lean",
-     "line": 213,
+     "line": 226,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
      "equivalence": true,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "not_provider"
     }
    ],
    "status": "open"
@@ -2508,7 +3454,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "StirIOP.MultiRound.stirCheckingRbrSoundness_of_card_le",
@@ -2524,7 +3475,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "StirIOP.MultiRound.stirCheckingRbrSoundness_of_card_le_e7",
@@ -2539,7 +3497,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "StirIOP.MultiRound.stirCheckingRbrSoundness_of_large",
@@ -2556,7 +3521,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "StirIOP.MultiRound.stirCheckingRbrSoundness_of_one_le_first",
@@ -2570,7 +3540,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "StirIOP.MultiRound.stirCheckingRbrSoundness_of_small_field",
@@ -2586,7 +3561,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "StirIOP.MultiRound.stirCheckingRbrSoundness_mono",
@@ -2603,7 +3585,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "StirIOP.MultiRound.stirCheckingRbrSoundness_of_epsStar_le",
@@ -2617,28 +3604,40 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "StirIOP.MultiRound.stirCheckingRbrSoundness_genuine",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Stir/SubUnitRbr.lean",
-     "line": 863,
+     "line": 865,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "ε_rbr := (stirEpsStar (F := F) (ι := ι) M δ)"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "instance"
     }
    ],
-   "status": "discharged"
+   "status": "instance_only"
   },
   {
    "name": "stirMultiRoundRbrSoundnessResidual",
    "fq_name": "StirIOP.MultiRound.stirMultiRoundRbrSoundnessResidual",
    "file": "ArkLib/ProofSystem/Stir/MultiRoundAssembly.lean",
-   "line": 165,
+   "line": 171,
    "providers": [
     {
      "name": "StirIOP.MultiRound.stirMultiRoundRbrSoundness_mono",
@@ -2655,7 +3654,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "StirIOP.MultiRound.stirMultiRoundRbrSoundness_of_indicator_le",
@@ -2669,7 +3673,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "StirIOP.MultiRound.stirMultiRoundRbrSoundness_indicator",
@@ -2681,10 +3690,17 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "ε_rbr := (fun i => if i = foldChalIdx (F := F) (ι := ι) M then 1 else 0)"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "instance"
     }
    ],
-   "status": "discharged"
+   "status": "instance_only"
   },
   {
    "name": "RingSwitchingKStateResidual",
@@ -2702,7 +3718,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     }
    ],
    "status": "discharged"
@@ -2726,7 +3747,15 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "ε := (epsCA (F := F) (A := F) ((ReedSolomon.code domain k : Set (ι → F))) δ.toNNReal…",
+      "u := .toReal"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "CodingTheory.CS25.DeepHole.deepHoleProbResidual_holds",
@@ -2741,7 +3770,15 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "ε := (epsCA (F := F) (A := F) ((ReedSolomon.code domain k : Set (ι → F))) δ.toNNReal…",
+      "u := .toReal"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "refutations": [
@@ -2752,7 +3789,20 @@
      "line": 286,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "domain := zmod2SingletonDomain",
+      "k := 0",
+      "L := 1",
+      "δ := (0 : ℝ)",
+      "ε := (-1 : ℝ)",
+      "u := (fun _ : PUnit => (0 : ZMod 2))",
+      "p := (fun _ : Fin 1 => (0 : (ZMod 2)[X]))"
+     ],
+     "verdict": "unconditional"
     }
    ],
    "status": "refuted"
@@ -2761,7 +3811,7 @@
    "name": "foldRoundPerfectCompletenessResidual",
    "fq_name": "Fri.Spec.Completeness.foldRoundPerfectCompletenessResidual",
    "file": "ArkLib/ToMathlib/FriComplete.lean",
-   "line": 89,
+   "line": 103,
    "providers": [
     {
      "name": "Fri.Spec.Completeness.foldRoundPerfectCompletenessResidual_holds",
@@ -2773,7 +3823,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     }
    ],
    "status": "discharged"
@@ -2782,7 +3837,7 @@
    "name": "finalFoldRoundPerfectCompletenessResidual",
    "fq_name": "Fri.Spec.Completeness.finalFoldRoundPerfectCompletenessResidual",
    "file": "ArkLib/ToMathlib/FriComplete.lean",
-   "line": 114,
+   "line": 128,
    "providers": [
     {
      "name": "Fri.Spec.Completeness.finalFoldRoundPerfectCompletenessResidual_holds",
@@ -2794,7 +3849,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     }
    ],
    "status": "discharged"
@@ -2815,10 +3875,17 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "s0 := (∑ b : Fin k → Fin 2, A b * tEvals b)"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "instance"
     }
    ],
-   "status": "discharged"
+   "status": "instance_only"
   },
   {
    "name": "secondSumcheckTerminalEndpointResidual",
@@ -2836,7 +3903,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     },
     {
      "name": "Spartan.Spec.Bricks.secondSumcheckTerminalEndpointResidual_of_finalCheckWithClaimValueRelResidual",
@@ -2852,7 +3924,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "discharged"
@@ -2873,7 +3950,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     },
     {
      "name": "Spartan.Spec.Bricks.finalCheckWithClaimValueRelResidual_of_secondSumcheckTerminalEndpointResidual",
@@ -2889,7 +3971,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Spartan.Spec.Bricks.finalCheckWithClaimValueRelResidual_iff_secondSumcheckTerminalEndpointResidual",
@@ -2901,7 +3988,12 @@
      "ambiguous_name_match": false,
      "equivalence": true,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "not_provider"
     }
    ],
    "status": "discharged"
@@ -2922,7 +4014,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     }
    ],
    "status": "discharged"
@@ -2943,7 +4040,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     }
    ],
    "status": "discharged"
@@ -2964,7 +4066,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     }
    ],
    "status": "discharged"
@@ -2973,7 +4080,7 @@
    "name": "composedPIOPResidual",
    "fq_name": "Spartan.Spec.Bricks.composedPIOPResidual",
    "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-   "line": 969,
+   "line": 974,
    "providers": [
     {
      "name": "Spartan.Spec.Bricks.composedPIOPResidual_holds_proof",
@@ -2985,19 +4092,32 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     },
     {
      "name": "Spartan.Spec.Bricks.composedPIOPResidual_of_reduction",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-     "line": 985,
+     "line": 990,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ i, OracleInterface.{0, 0} (pSpecC.Message i)",
+      "∀ i, SampleableType (pSpecC.Challenge i)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "discharged"
@@ -3006,7 +4126,7 @@
    "name": "composedPIOPWithClaimResidual",
    "fq_name": "Spartan.Spec.Bricks.composedPIOPWithClaimResidual",
    "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-   "line": 998,
+   "line": 1003,
    "providers": [
     {
      "name": "Spartan.Spec.Bricks.composedPIOPWithClaimResidual_holds_proof",
@@ -3018,19 +4138,32 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     },
     {
      "name": "Spartan.Spec.Bricks.composedPIOPWithClaimResidual_of_reduction",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/SpartanBricks.lean",
-     "line": 1010,
+     "line": 1015,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ i, OracleInterface.{0, 0} (pSpecC.Message i)",
+      "∀ i, SampleableType (pSpecC.Challenge i)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "discharged"
@@ -3063,7 +4196,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ProximityGap.strictCoeffPolysResidual_of_one_le_mul",
@@ -3077,7 +4217,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ProximityGap.strictCoeffPolysResidual_of_card_le",
@@ -3093,7 +4240,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ProximityGap.strictCoeffPolysResidual_of_card_le_e7",
@@ -3107,13 +4261,20 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.RawGS304.strictCoeffPolysResidual_of_rawGSCargo",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/LocalSeriesProducer.lean",
-     "line": 506,
+     "line": 519,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInput"
@@ -3121,7 +4282,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ProximityGap.strictCoeffPolysResidual_of_large",
@@ -3137,7 +4303,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ProximityGap.strictCoeffPolysResidual_iff_large",
@@ -3149,7 +4320,12 @@
      "ambiguous_name_match": false,
      "equivalence": true,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "not_provider"
     },
     {
      "name": "ProximityGap.strictCoeffPolysResidual_of_strictCoeffPolysExcResidual_zero",
@@ -3165,13 +4341,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.FaithfulCurveExtraction.strictCoeffPolysResidual_of_localSeriesDatumOn",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/StrictCoeffProducer.lean",
-     "line": 425,
+     "line": 502,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInput"
@@ -3179,7 +4360,82 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
+    },
+    {
+     "name": "StirIOP.MultiRound.strictCoeffPolys_all_of_card_le",
+     "kind": "theorem",
+     "file": "ArkLib/ProofSystem/Stir/CheckingVerifier.lean",
+     "line": 1023,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hq",
+      "hδ"
+     ],
+     "ambiguous_name_match": false,
+     "equivalence": false,
+     "reduction_only": false,
+     "specialised_arguments": [],
+     "result_premises": [
+      "0 < k"
+     ],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
+    },
+    {
+     "name": "StirIOP.MultiRound.strictCoeffPolys_all_of_card_le_e7",
+     "kind": "theorem",
+     "file": "ArkLib/ProofSystem/Stir/CheckingVerifier.lean",
+     "line": 1045,
+     "conditional_on_residuals": [],
+     "extra_explicit_binders": [
+      "hq"
+     ],
+     "ambiguous_name_match": false,
+     "equivalence": false,
+     "reduction_only": false,
+     "specialised_arguments": [],
+     "result_premises": [
+      "0 < k"
+     ],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
+    },
+    {
+     "name": "StirIOP.MultiRound.strictCoeffPolys_all_of_large",
+     "kind": "theorem",
+     "file": "ArkLib/ProofSystem/Stir/CheckingVerifier.lean",
+     "line": 1067,
+     "conditional_on_residuals": [
+      "StrictCoeffPolysLargeResidual"
+     ],
+     "extra_explicit_binders": [
+      "hLarge"
+     ],
+     "ambiguous_name_match": false,
+     "equivalence": false,
+     "reduction_only": false,
+     "specialised_arguments": [],
+     "result_premises": [
+      "0 < k"
+     ],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.FaithfulCurveExtraction.strictCoeffPolysResidual_of_curveHenselDatum",
@@ -3193,7 +4449,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.CurveHenselSupply.strictCoeffPolysResidual_of_gsCurveInput",
@@ -3207,13 +4468,20 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero nn"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.FaithfulCurveExtraction.strictCoeffPolysResidual_of_curveFamilyData",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/FaithfulCurveExtraction.lean",
-     "line": 195,
+     "line": 201,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInput"
@@ -3221,13 +4489,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.FaithfulFrontier.strictCoeffPolysResidual_of_faithful_frontier",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/FaithfulFrontierComposition.lean",
-     "line": 302,
+     "line": 308,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInput"
@@ -3235,13 +4508,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.KeystoneStrictResidual.strictCoeffPolysResidual_of_betaRec",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/KeystoneStrictResidual.lean",
-     "line": 411,
+     "line": 622,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInput"
@@ -3249,13 +4527,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.KeystoneStrictResidual.strictCoeffPolysResidual_of_betaRec_offcentre",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/KeystoneStrictResidual.lean",
-     "line": 428,
+     "line": 644,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInput"
@@ -3263,13 +4546,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.KeystoneStrictResidual.strictCoeffPolysResidual_of_betaRec_offcentreFin",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/KeystoneStrictResidual.lean",
-     "line": 445,
+     "line": 666,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInput"
@@ -3277,13 +4565,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.KeystoneStrictResidual.strictCoeffPolysResidual_of_betaRecFin",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/KeystoneStrictResidual.lean",
-     "line": 462,
+     "line": 688,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInput"
@@ -3291,13 +4584,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.KeystoneStrictResidual.strictCoeffPolysResidual_zero",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/KeystoneStrictResidual.lean",
-     "line": 478,
+     "line": 709,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
@@ -3305,13 +4603,18 @@
      "reduction_only": false,
      "specialised_arguments": [
       "k := 0"
-     ]
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "instance"
     },
     {
      "name": "ArkLib.OffcentreFaithful.strictCoeffPolysResidual_of_section5DataOffcentreFaithful",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/OffcentreFaithfulBundle.lean",
-     "line": 202,
+     "line": 215,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInput"
@@ -3319,13 +4622,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.OffcentreKeystone.strictCoeffPolysResidual_of_section5DataOffcentreFin",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/OffcentreKeystoneAssembly.lean",
-     "line": 247,
+     "line": 262,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hInput"
@@ -3333,7 +4641,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ProximityGap.strictCoeffPolysResidual_of_strictCanonicalCoeffPolysResidual",
@@ -3349,7 +4662,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "refutations": [
@@ -3360,7 +4678,17 @@
      "line": 473,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "k := 1",
+      "deg := 2",
+      "domain := domain7",
+      "δ := (3 / 7 : ℝ≥0)"
+     ],
+     "verdict": "unconditional"
     }
    ],
    "status": "refuted"
@@ -3379,7 +4707,17 @@
      "line": 350,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "k := 1",
+      "deg := 2",
+      "domain := domain7",
+      "δ := (3 / 7 : ℝ≥0)"
+     ],
+     "verdict": "unconditional"
     }
    ],
    "status": "refuted"
@@ -3403,7 +4741,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryCardResidual.boundaryCardResidual_of_lattice_residual",
@@ -3420,7 +4763,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryCardResidual.BoundaryCardQuantizationResiduals.toBoundaryCardResidual",
@@ -3434,7 +4782,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryCardResidual.BoundaryCardLatticeData.toBoundaryCardResidual",
@@ -3449,7 +4802,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryCardResidual.boundaryCardResidual_of_not_isSquare_deg_mul_card",
@@ -3467,7 +4827,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryCardResidual.boundaryCardResidual_of_isSquare_deg_mul_card",
@@ -3486,7 +4851,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryCardResidual.BoundaryCardLatticeData.toBoundaryCardResidual_isSquare",
@@ -3503,7 +4873,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryCardResidual.BoundaryCardQuantizationResiduals.toBoundaryCardResidual_isSquare",
@@ -3520,7 +4897,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryDischarge.boundaryCardResidual_of_boundary_cards_and_coeffPolys",
@@ -3534,7 +4918,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryDischarge.BoundaryCardQuantizationData.toBoundaryCardResidual",
@@ -3548,7 +4939,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryDischarge.boundaryCardResidual_of_lattice_data",
@@ -3563,7 +4961,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryDischarge.boundaryCardResidual_of_lattice_data_isSquare",
@@ -3580,7 +4985,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryDischarge.boundaryCardResidual_zero",
@@ -3594,7 +5006,12 @@
      "reduction_only": false,
      "specialised_arguments": [
       "k := 0"
-     ]
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "instance"
     }
    ],
    "refutations": [
@@ -3602,10 +5019,20 @@
      "name": "ArkLib.BoundaryCardResidualAffineLineRefutation.not_boundaryCardResidual_affineLine",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/ProximityGap/BoundaryCardResidualAffineLineRefutation.lean",
-     "line": 121,
+     "line": 130,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "k := 1",
+      "deg := 1",
+      "domain := domain",
+      "δ := 1 - ReedSolomon.sqrtRate 1 domain"
+     ],
+     "verdict": "unconditional"
     },
     {
      "name": "ArkLib.BoundaryCardResidualRefutation.not_boundaryCardResidual",
@@ -3614,7 +5041,17 @@
      "line": 246,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "k := 2",
+      "deg := 1",
+      "domain := domain",
+      "δ := 1 - ReedSolomon.sqrtRate 1 domain"
+     ],
+     "verdict": "unconditional"
     },
     {
      "name": "ArkLib.BoundaryCardStrictInteriorRefutation.not_boundaryCardResidual_nonSquareEndpoint",
@@ -3623,7 +5060,17 @@
      "line": 316,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "k := 1",
+      "deg := 2",
+      "domain := domain",
+      "δ := 1 - ReedSolomon.sqrtRate 2 domain"
+     ],
+     "verdict": "unconditional"
     }
    ],
    "status": "refuted"
@@ -3648,7 +5095,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryCardResidual.boundaryProbabilityResidual_of_lattice_residual",
@@ -3666,7 +5120,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryCardResidual.BoundaryCardLatticeData.toBoundaryProbabilityResidual",
@@ -3682,7 +5143,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryCardResidual.BoundaryCardQuantizationResiduals.toBoundaryProbabilityResidual",
@@ -3697,7 +5165,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryCardResidual.boundaryProbabilityResidual_of_not_isSquare_deg_mul_card",
@@ -3716,7 +5191,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryCardResidual.boundaryProbabilityResidual_of_isSquare_deg_mul_card",
@@ -3736,7 +5218,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryCardResidual.BoundaryCardLatticeData.toBoundaryProbabilityResidual_isSquare",
@@ -3754,7 +5243,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryCardResidual.BoundaryCardQuantizationResiduals.toBoundaryProbResidual_isSquare",
@@ -3772,7 +5268,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryDischarge.BoundaryCardQuantizationData.toBoundaryProbabilityResidual",
@@ -3787,7 +5290,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryDischarge.boundaryProbabilityResidual_of_lattice_data",
@@ -3803,7 +5313,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryDischarge.boundaryProbabilityResidual_of_lattice_data_isSquare",
@@ -3821,7 +5338,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ArkLib.BoundaryDischarge.boundaryProbabilityResidual_zero",
@@ -3835,13 +5359,18 @@
      "reduction_only": false,
      "specialised_arguments": [
       "k := 0"
-     ]
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "instance"
     },
     {
      "name": "ArkLib.FaithfulCurveExtraction.RoundConsumers.boundaryProbabilityResidual_of_strict",
      "kind": "theorem",
      "file": "ArkLib/ToMathlib/CurveFamilyRoundConsumers.lean",
-     "line": 95,
+     "line": 100,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hδ"
@@ -3849,7 +5378,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "ProximityGap.boundaryProbabilityResidual_of_boundaryCardResidual",
@@ -3866,7 +5400,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "NeZero deg"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "refutations": [
@@ -3877,7 +5418,17 @@
      "line": 274,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
-     "ambiguous_name_match": false
+     "ambiguous_name_match": false,
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "refuted_arguments": [
+      "k := 2",
+      "deg := 1",
+      "domain := domain",
+      "δ := 1 - ReedSolomon.sqrtRate 1 domain"
+     ],
+     "verdict": "unconditional"
     }
    ],
    "status": "refuted"
@@ -3886,7 +5437,7 @@
    "name": "reductionAppendCompletenessResidual",
    "fq_name": "Reduction.reductionAppendCompletenessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 350,
+   "line": 363,
    "providers": [
     {
      "name": "Reduction.reductionAppendCompletenessResidual_holds",
@@ -3903,7 +5454,16 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ i, SampleableType (pSpec₂'.Challenge i)",
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Reduction.reductionAppendCompletenessResidual_msg",
@@ -3922,7 +5482,15 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Reduction.reductionAppendCompletenessResidual_total_pos",
@@ -3940,7 +5508,15 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -3949,13 +5525,13 @@
    "name": "reductionAppendPerfectCompletenessResidual",
    "fq_name": "Reduction.reductionAppendPerfectCompletenessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 369,
+   "line": 382,
    "providers": [
     {
      "name": "Reduction.reductionAppendPerfectCompletenessResidual_of_message",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendPerfectCompletenessMsg.lean",
-     "line": 51,
+     "line": 57,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -3967,13 +5543,27 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range q)",
+      "∀ q, Fintype (((oSpec + [pSpec₁.Challenge]ₒ)).Range q)",
+      "∀ q, Fintype (((oSpec + [pSpec₂.Challenge]ₒ)).Range q)",
+      "∀ q, Fintype ((oSpec).Range q)",
+      "∀ q, Inhabited (((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ)).Range q)",
+      "∀ q, Inhabited (((oSpec + [pSpec₁.Challenge]ₒ)).Range q)",
+      "∀ q, Inhabited (((oSpec + [pSpec₂.Challenge]ₒ)).Range q)",
+      "∀ q, Inhabited ((oSpec).Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Reduction.reductionAppendPerfectCompletenessResidual_msg",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendPerfectCompletenessReductionDischarge.lean",
-     "line": 49,
+     "line": 56,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -3985,13 +5575,27 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)",
+      "∀ q, Fintype ((oSpec + [pSpec₁.Challenge]ₒ).Range q)",
+      "∀ q, Fintype ((oSpec + [pSpec₂.Challenge]ₒ).Range q)",
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)",
+      "∀ q, Inhabited ((oSpec + [pSpec₁.Challenge]ₒ).Range q)",
+      "∀ q, Inhabited ((oSpec + [pSpec₂.Challenge]ₒ).Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Reduction.reductionAppendPerfectCompletenessResidual_challenge",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendPerfectCompletenessReductionDischarge.lean",
-     "line": 71,
+     "line": 78,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -4004,13 +5608,21 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Reduction.reductionAppendPerfectCompletenessResidual_holds_of_nonempty_right",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendPerfectCompletenessReductionDischarge.lean",
-     "line": 90,
+     "line": 97,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hImplSupp",
@@ -4022,7 +5634,21 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)",
+      "∀ q, Fintype ((oSpec + [pSpec₁.Challenge]ₒ).Range q)",
+      "∀ q, Fintype ((oSpec + [pSpec₂.Challenge]ₒ).Range q)",
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)",
+      "∀ q, Inhabited ((oSpec + [pSpec₁.Challenge]ₒ).Range q)",
+      "∀ q, Inhabited ((oSpec + [pSpec₂.Challenge]ₒ).Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Reduction.reductionAppendPerfectCompletenessResidual_holds",
@@ -4039,7 +5665,21 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)",
+      "∀ q, Fintype ((oSpec + [pSpec₁.Challenge]ₒ).Range q)",
+      "∀ q, Fintype ((oSpec + [pSpec₂.Challenge]ₒ).Range q)",
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)",
+      "∀ q, Inhabited ((oSpec + [pSpec₁.Challenge]ₒ).Range q)",
+      "∀ q, Inhabited ((oSpec + [pSpec₂.Challenge]ₒ).Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -4048,7 +5688,7 @@
    "name": "appendSoundnessResidual",
    "fq_name": "Verifier.appendSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 406,
+   "line": 419,
    "providers": [
     {
      "name": "Verifier.append_soundness_challenge_residual",
@@ -4067,13 +5707,22 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Inhabited Stmt₂",
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Verifier.append_soundness_msg_residual",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/Composition/Sequential/AppendSoundnessMsgProof.lean",
-     "line": 484,
+     "line": 491,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -4086,7 +5735,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Inhabited Stmt₂"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Verifier.appendSoundnessResidual_total_pos",
@@ -4103,7 +5759,16 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Inhabited Stmt₂",
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -4112,7 +5777,7 @@
    "name": "appendKnowledgeSoundnessResidual",
    "fq_name": "Verifier.appendKnowledgeSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 424,
+   "line": 437,
    "providers": [],
    "status": "open"
   },
@@ -4120,7 +5785,7 @@
    "name": "appendRbrSoundnessResidual",
    "fq_name": "Verifier.appendRbrSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 437,
+   "line": 450,
    "providers": [
     {
      "name": "Verifier.appendRbrSoundnessResidual_of_message_collapse",
@@ -4139,7 +5804,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "init := pure s₀"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Verifier.appendRbrSoundnessResidual_msg_subsingleton",
@@ -4159,7 +5831,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Subsingleton σ"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -4168,7 +5847,7 @@
    "name": "appendRbrKnowledgeSoundnessResidual",
    "fq_name": "Verifier.appendRbrKnowledgeSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 464,
+   "line": 477,
    "providers": [
     {
      "name": "Verifier.appendRbrKnowledgeSoundnessResidual_of_message_collapse",
@@ -4188,7 +5867,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Verifier.appendRbrKnowledgeSoundnessResidual_msg_subsingleton",
@@ -4209,7 +5893,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Subsingleton σ"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Verifier.appendRbrKnowledgeSoundnessResidual_challenge_subsingleton",
@@ -4230,7 +5921,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Subsingleton σ"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Verifier.appendRbrKnowledgeSoundnessResidual_failingDet_subsingleton",
@@ -4249,7 +5947,17 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "V₁ := (⟨fun s tr => OptionT.mk (pure (verify? s tr))⟩ : Verifier oSpec Stmt₁ Stmt₂ pS…"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Inhabited Stmt₂",
+      "Subsingleton σ"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Verifier.appendRbrKnowledgeSoundnessResidual_failingDet_empty",
@@ -4264,7 +5972,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "V₁ := (⟨fun s tr => OptionT.mk (pure (verify? s tr))⟩ : Verifier oSpec Stmt₁ Stmt₂ pS…"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Inhabited Stmt₂"
+     ],
+     "specialised_parameter_types": [
+      "pSpec₂ : ProtocolSpec 0"
+     ],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -4273,7 +5992,7 @@
    "name": "appendCompletenessResidual",
    "fq_name": "OracleReduction.appendCompletenessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 500,
+   "line": 513,
    "providers": [
     {
      "name": "OracleReduction.appendCompletenessResidual_holds",
@@ -4290,7 +6009,15 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "OracleReduction.appendCompletenessResidual_msg",
@@ -4309,7 +6036,15 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -4318,7 +6053,7 @@
    "name": "appendPerfectCompletenessResidual",
    "fq_name": "OracleReduction.appendPerfectCompletenessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 521,
+   "line": 534,
    "providers": [
     {
      "name": "OracleReduction.appendPerfectCompletenessResidual_holds",
@@ -4335,7 +6070,21 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)",
+      "∀ q, Fintype ((oSpec + [pSpec₁.Challenge]ₒ).Range q)",
+      "∀ q, Fintype ((oSpec + [pSpec₂.Challenge]ₒ).Range q)",
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)",
+      "∀ q, Inhabited ((oSpec + [pSpec₁.Challenge]ₒ).Range q)",
+      "∀ q, Inhabited ((oSpec + [pSpec₂.Challenge]ₒ).Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "OracleReduction.appendPerfectCompletenessResidual_msg",
@@ -4353,7 +6102,21 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ q, Fintype ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)",
+      "∀ q, Fintype ((oSpec + [pSpec₁.Challenge]ₒ).Range q)",
+      "∀ q, Fintype ((oSpec + [pSpec₂.Challenge]ₒ).Range q)",
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited ((oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ).Range q)",
+      "∀ q, Inhabited ((oSpec + [pSpec₁.Challenge]ₒ).Range q)",
+      "∀ q, Inhabited ((oSpec + [pSpec₂.Challenge]ₒ).Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -4362,7 +6125,7 @@
    "name": "appendSoundnessResidual",
    "fq_name": "OracleVerifier.appendSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 547,
+   "line": 560,
    "providers": [
     {
      "name": "OracleVerifier.appendSoundnessResidual_msg",
@@ -4381,7 +6144,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Inhabited (Stmt₂ × ∀ i, OStmt₂ i)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "OracleVerifier.appendSoundnessResidual_challenge",
@@ -4400,7 +6170,16 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Inhabited (Stmt₂ × ∀ i, OStmt₂ i)",
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "OracleVerifier.appendSoundnessResidual_total_pos",
@@ -4417,13 +6196,22 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Inhabited (Stmt₂ × ∀ i, OStmt₂ i)",
+      "∀ q, Fintype (oSpec.Range q)",
+      "∀ q, Inhabited (oSpec.Range q)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "OracleVerifier.oracleAppendSoundnessResidual_of_plain",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/LogupSoundnessUncond.lean",
-     "line": 117,
+     "line": 141,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hPlainAppend"
@@ -4431,13 +6219,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Logup.logupAppendSoundnessResidual_of_plain",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Logup/Security/LogupSoundnessUncond.lean",
-     "line": 166,
+     "line": 190,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hPlainAppend"
@@ -4445,7 +6238,20 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "V₁ := (outerVerifier oSpec F n M params)",
+      "V₂ := (sumcheckVerifier oSpec F n M params)"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Fact ((-1 : F) ≠ 1)",
+      "Field F",
+      "Fintype F",
+      "SampleableType F"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -4454,7 +6260,7 @@
    "name": "appendKnowledgeSoundnessResidual",
    "fq_name": "OracleVerifier.appendKnowledgeSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 556,
+   "line": 569,
    "providers": [
     {
      "name": "OracleVerifier.appendKnowledgeSoundnessResidual_of_plain",
@@ -4470,7 +6276,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -4479,7 +6290,7 @@
    "name": "appendRbrSoundnessResidual",
    "fq_name": "OracleVerifier.appendRbrSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 565,
+   "line": 578,
    "providers": [
     {
      "name": "OracleVerifier.appendRbrSoundnessResidual_msg_subsingleton",
@@ -4499,7 +6310,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Subsingleton σ"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -4508,7 +6326,7 @@
    "name": "appendRbrKnowledgeSoundnessResidual",
    "fq_name": "OracleVerifier.appendRbrKnowledgeSoundnessResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 575,
+   "line": 588,
    "providers": [
     {
      "name": "OracleVerifier.appendRbrKnowledgeSoundnessResidual_msg_subsingleton",
@@ -4529,7 +6347,14 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "Subsingleton σ"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "open"
@@ -4538,7 +6363,7 @@
    "name": "appendRunRightResidual",
    "fq_name": "Prover.appendRunRightResidual",
    "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-   "line": 2909,
+   "line": 2922,
    "providers": [
     {
      "name": "Prover.appendRunRightResidual_holds_empty",
@@ -4550,13 +6375,20 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [
+      "pSpec₂ : ProtocolSpec 0"
+     ],
+     "verdict": "instance"
     },
     {
      "name": "Prover.appendRunRightResidual_of_append_run",
      "kind": "theorem",
      "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-     "line": 2932,
+     "line": 2945,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hRun"
@@ -4564,13 +6396,18 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Prover.appendRunRightResidual_holds_msg",
      "kind": "theorem",
      "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-     "line": 2967,
+     "line": 2980,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hDir",
@@ -4580,22 +6417,32 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Prover.appendRunRightResidual_iff_append_run",
      "kind": "theorem",
      "file": "ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean",
-     "line": 2992,
+     "line": 3005,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
      "equivalence": true,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "not_provider"
     }
    ],
-   "status": "discharged"
+   "status": "instance_only"
   },
   {
    "name": "fiatShamir_runCollapseResidual",
@@ -4613,7 +6460,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     },
     {
      "name": "Issue116.fiatShamir_runCollapse_of_runEq",
@@ -4627,7 +6479,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Reduction.fiatShamir_runCollapseResidual_holds",
@@ -4639,7 +6496,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "uniform"
     },
     {
      "name": "FiatShamirCollapse.fiat_shamir_collapse_breakthrough",
@@ -4651,7 +6513,15 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ i, OracleInterface (OStmtIn i)",
+      "∀ i, OracleInterface (pSpec.Message i)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Reduction.fiatShamir_runCollapseResidual_of_run_eq_honestExecution",
@@ -4665,7 +6535,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
    "status": "discharged"
@@ -4680,16 +6555,24 @@
      "name": "Reduction.fiatShamir_soundnessTransferResidual_canonical",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/FiatShamir/StateRestorationTransport.lean",
-     "line": 909,
+     "line": 911,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "fsInit := srInit (same as srInit)",
+      "fsImpl := (fiatShamirCoupledQueryImpl (oSpec := oSpec) (pSpec := pSpec) (StmtIn := StmtIn…"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "instance"
     }
    ],
-   "status": "discharged"
+   "status": "instance_only"
   },
   {
    "name": "fiatShamir_knowledgeSoundnessTransferResidual",
@@ -4701,16 +6584,24 @@
      "name": "Reduction.fiatShamir_knowledgeSoundnessTransferResidual_canonical",
      "kind": "theorem",
      "file": "ArkLib/OracleReduction/FiatShamir/StateRestorationTransport.lean",
-     "line": 3774,
+     "line": 3781,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "fsInit := srInit (same as srInit)",
+      "fsImpl := (fiatShamirCoupledQueryImpl (oSpec := oSpec) (pSpec := pSpec) (StmtIn := StmtIn…"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "instance"
     }
    ],
-   "status": "discharged"
+   "status": "instance_only"
   },
   {
    "name": "fiatShamir_statisticalHVZKTransferResidual",
@@ -4728,7 +6619,17 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "fsInit := (canonicalFSInit (StmtIn := StmtIn) (pSpec := pSpec) init)",
+      "fsImpl := (canonicalFSImpl (StmtIn := StmtIn) impl)"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ i, VCVCompatible (pSpec.Message i)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Reduction.fiatShamir_statisticalHVZKTransferResidual_zero_of_hvzkTransferResidual",
@@ -4745,8 +6646,13 @@
      "equivalence": false,
      "reduction_only": false,
      "specialised_arguments": [
-      "positional := 0"
-     ]
+      "ε := 0"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Reduction.fiatShamir_statisticalHVZKTransferResidual.mono_error",
@@ -4763,7 +6669,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Reduction.fiatShamir_statisticalHVZKTransferResidual.of_zero",
@@ -4779,7 +6690,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Reduction.fiatShamir_statisticalHVZKTransferResidual.of_perfectTransfer",
@@ -4795,10 +6711,15 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     }
    ],
-   "status": "discharged"
+   "status": "open"
   },
   {
    "name": "fiatShamir_hvzkTransferResidual",
@@ -4816,7 +6737,17 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "fsInit := (canonicalFSInit (StmtIn := StmtIn) (pSpec := pSpec) init)",
+      "fsImpl := (canonicalFSImpl (StmtIn := StmtIn) impl)"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ i, VCVCompatible (pSpec.Message i)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Reduction.fiatShamir_hvzkTransfer_of_coupling",
@@ -4830,7 +6761,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Reduction.fiatShamir_hvzkTransferResidual_canonical",
@@ -4844,7 +6780,17 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "fsInit := (canonicalFSInit (StmtIn := StmtIn) (pSpec := pSpec) init)",
+      "fsImpl := (canonicalFSImpl (StmtIn := StmtIn) impl)"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ i, VCVCompatible (pSpec.Message i)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Reduction.fiatShamir_hvzkTransferResidual_canonical_of_perStateCoupling",
@@ -4858,7 +6804,17 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [
+      "fsInit := (canonicalFSInit (StmtIn := StmtIn) (pSpec := pSpec) init)",
+      "fsImpl := (canonicalFSImpl (StmtIn := StmtIn) impl)"
+     ],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [
+      "∀ i, VCVCompatible (pSpec.Message i)"
+     ],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Reduction.fiatShamir_hvzkTransferResidual_of_statisticalHVZKTransferResidual_zero",
@@ -4874,7 +6830,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Reduction.fiatShamir_hvzkTransferResidual_iff_statisticalHVZKTransferResidual_zero",
@@ -4886,7 +6847,12 @@
      "ambiguous_name_match": false,
      "equivalence": true,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "not_provider"
     },
     {
      "name": "Reduction.fiatShamir_hvzkTransferResidual.of_statistical_zero",
@@ -4902,7 +6868,12 @@
      "ambiguous_name_match": false,
      "equivalence": false,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "conditional"
     },
     {
      "name": "Reduction.fiatShamir_hvzkTransferResidual_iff_statistical_zero",
@@ -4914,10 +6885,15 @@
      "ambiguous_name_match": false,
      "equivalence": true,
      "reduction_only": false,
-     "specialised_arguments": []
+     "specialised_arguments": [],
+     "result_premises": [],
+     "section_hypotheses": [],
+     "extra_instance_assumptions": [],
+     "specialised_parameter_types": [],
+     "verdict": "not_provider"
     }
    ],
-   "status": "discharged"
+   "status": "open"
   }
  ],
  "near_misses": [
@@ -5022,7 +6998,7 @@
    "fq_name": "DuplexSpongeFS.KeyLemmaSalted.Hyb01StepResidualS",
    "kind": "def",
    "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaSalted.lean",
-   "line": 596,
+   "line": 633,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5030,7 +7006,7 @@
    "fq_name": "DuplexSpongeFS.KeyLemmaSalted.Hyb12StepResidualS",
    "kind": "def",
    "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaSalted.lean",
-   "line": 618,
+   "line": 655,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5038,7 +7014,7 @@
    "fq_name": "DuplexSpongeFS.KeyLemmaSalted.Hyb23StepResidualS",
    "kind": "def",
    "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaSalted.lean",
-   "line": 641,
+   "line": 678,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5046,7 +7022,7 @@
    "fq_name": "DuplexSpongeFS.KeyLemmaSalted.Hyb34StepResidualS",
    "kind": "def",
    "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaSalted.lean",
-   "line": 661,
+   "line": 706,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5054,7 +7030,7 @@
    "fq_name": "DuplexSpongeFS.Sponge316.Lemma5_12HonestResidualPaper",
    "kind": "def",
    "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma512HonestPaper.lean",
-   "line": 658,
+   "line": 661,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5062,7 +7038,7 @@
    "fq_name": "DuplexSpongeFS.Sponge316.Lemma5_14HonestResidualPaper",
    "kind": "def",
    "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma512HonestPaper.lean",
-   "line": 666,
+   "line": 669,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5070,7 +7046,7 @@
    "fq_name": "DuplexSpongeFS.Sponge316.Lemma5_16HonestResidualPaper",
    "kind": "def",
    "file": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lemma512HonestPaper.lean",
-   "line": 676,
+   "line": 679,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5150,7 +7126,7 @@
    "fq_name": "RingSwitching.BatchingPhase.batchingReduction_perfectCompleteness_residual",
    "kind": "def",
    "file": "ArkLib/ProofSystem/RingSwitching/BatchingPhase.lean",
-   "line": 512,
+   "line": 525,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5206,7 +7182,7 @@
    "fq_name": "StirIOP.MultiRound.stirCheckingRbrSoundnessResidualT",
    "kind": "def",
    "file": "ArkLib/ProofSystem/Stir/MultiRoundSpecT.lean",
-   "line": 359,
+   "line": 364,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5222,7 +7198,7 @@
    "fq_name": "ToyProblem.winningSetSoundness_le_toySoundnessError_mcaSafe_residual",
    "kind": "def",
    "file": "ArkLib/ProofSystem/ToyProblem/Metrics.lean",
-   "line": 362,
+   "line": 495,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5230,7 +7206,7 @@
    "fq_name": "ToyProblem.arklib_lowerBound_irs_t128_residual",
    "kind": "def",
    "file": "ArkLib/ProofSystem/ToyProblem/Metrics.lean",
-   "line": 662,
+   "line": 831,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5238,7 +7214,7 @@
    "fq_name": "ToyProblem.fenziSanso_upperBound_attack_residual",
    "kind": "def",
    "file": "ArkLib/ProofSystem/ToyProblem/Metrics.lean",
-   "line": 697,
+   "line": 866,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5246,7 +7222,7 @@
    "fq_name": "ToyProblem.fenziSanso_upperBound_attack_concrete_residual",
    "kind": "def",
    "file": "ArkLib/ProofSystem/ToyProblem/Metrics.lean",
-   "line": 861,
+   "line": 1066,
    "reason": "name does not end in `Residual`"
   },
   {
@@ -5278,7 +7254,7 @@
    "fq_name": "ArkLib.GSFactorData.section5DataOffcentreFin_of_gradedBundle_residual",
    "kind": "def",
    "file": "ArkLib/ToMathlib/GSGradedBundle.lean",
-   "line": 297,
+   "line": 310,
    "reason": "name does not end in `Residual`"
   },
   {

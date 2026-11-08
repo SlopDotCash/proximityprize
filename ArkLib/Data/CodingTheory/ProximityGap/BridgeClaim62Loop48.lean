@@ -17,23 +17,28 @@ Loop47 (`CandidateListDecEquivLoop47.lean`) reduced the #232 prize's forward dir
 
   `f(x) = c(x)/(x − α)`,  `g(x) = −1/(x − α)`,  so  `f(x) + z·g(x) = (c(x) − z)/(x − α)`.
 
-The algebraic heart of Claim 6.2 is the elementary fact that **at `z = c(α)` this rational function
-is a polynomial** — a *codeword of the once-punctured RS code* — because `(X − α) ∣ (c − c(α))`. So a
-combining scalar `z` that equals some codeword's value at `α` is necessarily *bad* (the line
-`{f + z·g}` meets the code there), and **distinct values give distinct bad scalars**. This loop
-discharges that heart, sorry-free and axiom-clean, decomposing the old black box `hMany_bridge` into
+The algebraic heart of Claim 6.2 is the elementary fact that **at `z = c(α)` the quotient
+`(c − c(α))/(X − α)` is a polynomial** of lower degree, because `(X − α) ∣ (c − c(α))`; its
+evaluation is a codeword of the degree-`(deg − 1)` RS code.  It agrees with the rational line
+point `f(x) + z·g(x)` only at points `x ≠ α` (`bridge_eval_eq_div_of_ne`); at the node itself
+the two differ in general (`bridge_eval_ne_div_at_node`), so the rational-line reading needs the
+punctured domain (`bridge_evalOnPoints_eq_div_of_ne`).  This file proves, sorry-free and
+axiom-clean:
 
-* `bridge_isCodeword` / `bridge_quotient_natDegree_lt` — the proven algebraic core (the bridge
-  function at `z = c(α)` is a polynomial of degree `< deg c`, i.e. a once-punctured codeword);
-* `card_values_le_badScalars` — the proven injectivity/counting step: if every realized value
-  `c.eval α` is a bad scalar (which the bridge *forces*), then `B := #values ≤ bad`;
-* `bad_ge_of_manyValues` — assembling the in-tree `manyValues_of_pairwise_agree` with the bridge to
-  get the bad-count lower bound, with **only the geometric "the line is far / these scalars are bad"
-  hypothesis** kept explicit (the legitimate proximity-gap input), not the whole arithmetic.
+* `bridge_isCodeword` / `bridge_quotient_natDegree_lt` / `bridge_eval_mem_code` — the algebraic
+  core (the quotient exists, has degree `< deg c`, and evaluates to a lower-degree RS codeword);
+* `bridge_evalOnPoints_eq_div_of_ne` — the punctured-domain identification with the rational
+  line point;
+* `card_values_le_badScalars` — the counting step: if every realized value `c.eval α` lies in a
+  set `badSet`, then `B := #values ≤ #badSet` (the value map is the identity, hence injective).
 
-What remains genuinely external is *only* the distance/genericity input (the line is far from the
-code except at the bridge points) — the defining content of a proximity-gap counterexample — not the
-algebra, which is now machine-checked. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop48).
+**What is not proved.**  The hypothesis `hLineMeetsCode` of `realized_values_are_bad` /
+`bad_ge_distinct_values` is equivalent to the membership obligation `∀ c ∈ S, c(α) ∈ badSet`
+itself (`lineMeetsCode_iff`), because the quotient always exists.  No fixed received word or
+line, no closeness transfer, and no MCA no-joint-agreement property is established; the
+statement that these realized values are actually bad scalars for one fixed far line (the
+geometric bridge of Claim 6.2) remains an explicit external assumption, as does the
+many-values input.  See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop48).
 -/
 
 open Finset Polynomial
@@ -46,8 +51,9 @@ variable {F : Type*} [Field F]
 
 /-- **Claim 6.2, algebraic core.** For a polynomial `c` and a domain point `α`, the bridge value
 `z = c.eval α` makes `c − z` divisible by `X − α`: there is a polynomial `quot` with
-`c − C z = (X − C α) · quot`. Concretely `quot = (c(x) − z)/(x − α) = f(x) + z·g(x)` is the line point
-`f + z·g`, and it is an honest polynomial — a codeword of the once-punctured Reed–Solomon code. -/
+`c − C z = (X − C α) · quot`.  At every `x ≠ α`, `quot(x) = (c(x) − z)/(x − α) = f(x) + z·g(x)` is
+the rational line point (`bridge_eval_eq_div_of_ne`); at `x = α` it is not in general
+(`bridge_eval_ne_div_at_node`). -/
 theorem bridge_isCodeword (c : F[X]) (α : F) :
     ∃ quot : F[X], c - C (c.eval α) = (X - C α) * quot := by
   obtain ⟨quot, hquot⟩ := X_sub_C_dvd_sub_C_eval (a := α) (p := c)
@@ -80,11 +86,11 @@ theorem bridge_quotient_natDegree_lt (c : F[X]) (α : F) (hc : 1 ≤ c.natDegree
 /-! ## Part B — counting: many values ⟹ many bad scalars (the proven injectivity step) -/
 
 /-- **Injectivity / counting step of Claim 6.2.** Suppose every value `c.eval α` realized by a
-codeword `c` in a finite family `S` is a *bad combining scalar* (i.e. lands in `badSet`). The bridge
-(Part A) is exactly what guarantees this membership — at `z = c(α)` the line point `f + z·g` is a
-codeword, so `z` is bad. Then the number of *distinct realized values* is a lower bound on the bad
-count: `B := #(S.image (·.eval α)) ≤ #badSet`. This is the honest replacement for the opaque
-`q ≤ 2·D·bad`: the value-to-scalar map is the identity on values, hence trivially injective. -/
+codeword `c` in a finite family `S` lands in `badSet`. Then the number of *distinct realized
+values* is a lower bound on `#badSet`: `B := #(S.image (·.eval α)) ≤ #badSet`, since the
+value-to-scalar map is the identity on values.  The membership hypothesis is assumed, not
+derived: showing each such `z` is a bad scalar for a fixed far line is the geometric part of
+Claim 6.2 and is not proved in this file. -/
 theorem card_values_le_badScalars [DecidableEq F] (α : F) (S : Finset F[X]) (badSet : Finset F)
     (hbad : ∀ c ∈ S, c.eval α ∈ badSet) :
     (S.image (fun c => c.eval α)).card ≤ badSet.card := by
@@ -93,10 +99,11 @@ theorem card_values_le_badScalars [DecidableEq F] (α : F) (S : Finset F[X]) (ba
   rcases Finset.mem_image.mp hz with ⟨c, hcS, rfl⟩
   exact hbad c hcS
 
-/-- **Every realized value is bad — the bridge supplies the membership hypothesis of
-`card_values_le_badScalars` automatically.** Given that the bad set is *defined* to contain every
-scalar at which the line `f + z·g` meets the code (`hLineMeetsCode`), Part A shows `z = c.eval α` is
-such a scalar for every codeword `c`. So the counting hypothesis is discharged from pure algebra. -/
+/-- **Unpacking `hLineMeetsCode`.**  If `badSet` contains `c.eval α` whenever a bridge quotient
+exists for `c ∈ S`, then (since the quotient always exists, Part A) every realized value is in
+`badSet`.  This is a restatement, not a derivation of badness: `hLineMeetsCode` is equivalent to
+the conclusion (`lineMeetsCode_iff`), and `badSet` is an arbitrary finset here, not tied to any
+received line. -/
 theorem realized_values_are_bad (α : F) (S : Finset F[X]) (badSet : Finset F)
     (hLineMeetsCode : ∀ c ∈ S, ∀ quot : F[X],
         c - C (c.eval α) = (X - C α) * quot → c.eval α ∈ badSet) :
@@ -107,11 +114,11 @@ theorem realized_values_are_bad (α : F) (S : Finset F[X]) (badSet : Finset F)
 
 /-! ## Part C — assembly: discharge the Loop47 black box from the bridge + many-values -/
 
-/-- **`bad ≥ B`, proven (no longer assumed).** Combining Parts A and B: if the bad set contains every
-scalar at which the bridge line meets the code, then the number of distinct codeword-values at `α` is
-a genuine lower bound on the bad-scalar count. This is the load-bearing half of Claim 6.2 that
-Loop47 had to assume; it is now a theorem, leaving only the geometric distance input (the definition
-of `badSet`) external. -/
+/-- **`#badSet ≥ B` from the membership hypothesis.** If `badSet` contains every realized value
+`c.eval α` (`hLineMeetsCode`, equivalent to that membership by `lineMeetsCode_iff`), the number
+of distinct codeword values at `α` is at most `#badSet`.  This is only the image-cardinality
+count; the geometric input that these values are bad scalars of one fixed far line (with the
+closeness and no-joint-agreement properties) is not proved and remains external. -/
 theorem bad_ge_distinct_values [DecidableEq F] (α : F) (S : Finset F[X]) (badSet : Finset F)
     (hLineMeetsCode : ∀ c ∈ S, ∀ quot : F[X],
         c - C (c.eval α) = (X - C α) * quot → c.eval α ∈ badSet) :
@@ -144,15 +151,16 @@ theorem manyValues_arith {q D B L A : ℕ}
 We keep only the two genuinely-external inputs:
 * `hManyValues : q ≤ 2·D·B` — the many-values output (from `manyValues_of_pairwise_agree`, a counting
   fact about the ball of `> q` codewords), and
-* `hbridge : B ≤ bad` — *now a theorem* (`bad_ge_distinct_values`), here taken as the abstract
-  consequence `B = #values ≤ #badSet = bad`.
+* `hbridge : B ≤ bad` — an explicit hypothesis.  `bad_ge_distinct_values` supplies it only
+  under its own membership assumption (every realized value lies in the bad set), which is the
+  unproved geometric part of Claim 6.2.
 together with the prize bound `bad ≤ D^c₁` and a large field `2·D^{c₁+1} < q`. The contradiction
-follows. The opaque arithmetic `hMany_bridge` of Loop47 is thereby split into a proven combinatorial
-half and a proven algebraic half. -/
+follows by arithmetic.  The opaque `hMany_bridge` of Loop47 is thereby split into these two
+named inputs; neither is proved here. -/
 theorem prize_false_of_listDecoding_failure_bridged
     {q D B bad c₁ : ℕ}
     (hManyValues : q ≤ 2 * D * B) -- many-values: ball of > q codewords ⟹ ≥ B distinct values
-    (hbridge : B ≤ bad) -- Claim 6.2 (Part C): distinct values ↪ bad scalars (PROVEN)
+    (hbridge : B ≤ bad) -- Claim 6.2 geometric bridge: distinct values ↪ bad scalars (assumed)
     (hprize : bad ≤ D ^ c₁)
     (hq : 2 * D ^ (c₁ + 1) < q) :
     False := by
@@ -161,19 +169,19 @@ theorem prize_false_of_listDecoding_failure_bridged
   exact ArkLib.ProximityGap.ListDecEquivLoop47.prize_false_of_listDecoding_failure
     hMany_bridge hprize hq
 
-/-- **Full assembly (Loop48 capstone): list-decoding failure ⟹ prize false, bridge proven.**
-Chaining `manyValues_arith` (combinatorial half, from the in-tree `manyValues_of_pairwise_agree`),
-`bad ≥ B` (the now-*proven* Claim 6.2 bridge half), the prize bound, and a large field, the prize is
-refuted. The only inputs are the *honest external facts*: the ball holds `> q` codewords pairwise
-agreeing on `≤ A` points (= list-decoding fails at the prize radius), the realized values are bad
-(= the line is far, the proximity-gap distance input), and the field is large relative to the fixed
-domain. No opaque arithmetic remains. -/
+/-- **Full assembly (Loop48): list-decoding failure ⟹ prize false, conditional on the bridge.**
+Chaining `manyValues_arith` (arithmetic on the in-tree `manyValues_of_pairwise_agree` output),
+the assumed `bad ≥ B` (the geometric Claim 6.2 bridge, not proved here), the prize bound, and a
+large field, the arithmetic yields `False`.  The inputs remain explicit hypotheses: the ball
+holds `> q` codewords pairwise agreeing on `≤ A` points (list-decoding failure at the prize
+radius), the realized values are bad scalars of one fixed far line (`hbridge`), and the field is
+large relative to the fixed domain. -/
 theorem prize_false_of_listDecoding_failure_full
     {q D B bad L A c₁ : ℕ}
     (hLq : L * q ≤ B * (q + L * A)) -- many-values output (combinatorial)
     (hqL : q < L) -- list-decoding failure
     (hAD : A + 1 ≤ 2 * D) -- `A = k − 1 ≤ 2D − 1`
-    (hbridge : B ≤ bad) -- Claim 6.2 bridge: distinct values ↪ bad scalars (PROVEN)
+    (hbridge : B ≤ bad) -- Claim 6.2 geometric bridge: distinct values ↪ bad scalars (assumed)
     (hprize : bad ≤ D ^ c₁) -- prize's `q`-independent bound
     (hq : 2 * D ^ (c₁ + 1) < q) : -- large field
     False :=
@@ -213,15 +221,63 @@ theorem bridge_mem_degreeLT (c : F[X]) (α : F) {deg : ℕ}
     omega
 
 /-- **Claim 6.2 over the formalized RS code: the bridge maps `code domain deg` into
-`code domain (deg − 1)`.** Concretely, for a codeword polynomial `c` of degree `< deg` and any domain
-point `α`, the evaluation of the bridge quotient is a genuine codeword of the once-punctured RS code.
-This is the precise statement that "the line `{f + z·g}` meets the code at `z = c(α)`", phrased over
-`ArkLib.Data.CodingTheory.ReedSolomon`. -/
+`code domain (deg − 1)`.** For a codeword polynomial `c` of degree `< deg` and any `α`, the
+evaluation of the bridge quotient is a codeword of the degree-`(deg − 1)` RS code on the same
+domain.  This is a statement about the quotient polynomial only.  It is identified with the
+rational line point `f + z·g` at `z = c(α)` only on domain points `≠ α`
+(`bridge_evalOnPoints_eq_div_of_ne`); this theorem allows domains containing `α`, where the
+identification fails (`bridge_eval_ne_div_at_node`). -/
 theorem bridge_eval_mem_code {ι : Type*} (domain : ι ↪ F) (c : F[X]) (α : F) {deg : ℕ}
     (hc : c ∈ Polynomial.degreeLT F deg)
     {quot : F[X]} (hbridge : c - C (c.eval α) = (X - C α) * quot) :
     ReedSolomon.evalOnPoints domain quot ∈ ReedSolomon.code domain (deg - 1) :=
   Submodule.mem_map_of_mem (bridge_mem_degreeLT c α hc hbridge)
+
+/-! ## Part E — the rational-line interpretation holds only off the node `α`
+
+The quotient polynomial agrees with the rational expression `(c(x) − c(α))/(x − α)` exactly at
+points `x ≠ α`.  At `x = α` the field expression is `0/0 = 0` in Lean, while the quotient takes
+the value `c'(α)` in general, so the identification needs a punctured evaluation domain. -/
+
+/-- **Off the node, the bridge quotient is the rational line point.**  For `x ≠ α`,
+`quot(x) = (c(x) − c(α))/(x − α)`. -/
+theorem bridge_eval_eq_div_of_ne (c : F[X]) (α : F) {quot : F[X]}
+    (hquot : c - C (c.eval α) = (X - C α) * quot) {x : F} (hx : x ≠ α) :
+    quot.eval x = (c.eval x - c.eval α) / (x - α) := by
+  have h := congrArg (Polynomial.eval x) hquot
+  simp only [eval_sub, eval_C, eval_mul, eval_X] at h
+  rw [eq_div_iff (sub_ne_zero.mpr hx), h, mul_comm]
+
+/-- **Punctured-domain bridge.**  On every domain point other than the node `α`, the RS
+evaluation of the bridge quotient equals the rational line point
+`(c(x) − c(α))/(x − α)`.  Together with `bridge_eval_mem_code` this is the precise statement
+"the rational line meets the shifted code at `z = c(α)`" on the punctured domain. -/
+theorem bridge_evalOnPoints_eq_div_of_ne {ι : Type*} (domain : ι ↪ F) (c : F[X]) (α : F)
+    {quot : F[X]} (hquot : c - C (c.eval α) = (X - C α) * quot) {i : ι}
+    (hi : domain i ≠ α) :
+    ReedSolomon.evalOnPoints domain quot i
+      = (c.eval (domain i) - c.eval α) / (domain i - α) :=
+  bridge_eval_eq_div_of_ne c α hquot hi
+
+/-- **The node must be excluded.**  For `c = X` and `α = 0` the bridge quotient is `1`, which
+evaluates to `1` at the node, while the field expression `(c(0) − c(0))/(0 − 0)` is `0`.  So
+`bridge_eval_mem_code`, which accepts domains containing `α`, does not by itself give a
+rational-line equality there. -/
+theorem bridge_eval_ne_div_at_node :
+    ∃ (c quot : F[X]) (α : F), c - C (c.eval α) = (X - C α) * quot ∧
+      quot.eval α ≠ (c.eval α - c.eval α) / (α - α) :=
+  ⟨X, 1, 0, by simp, by simp⟩
+
+/-- **The `hLineMeetsCode` hypothesis is the membership obligation itself.**  Since the
+bridge quotient always exists (`bridge_isCodeword`), the hypothesis of
+`realized_values_are_bad` / `bad_ge_distinct_values` is equivalent to "every realized value
+`c(α)`, `c ∈ S`, lies in `badSet`".  So those theorems do not derive badness from algebra:
+the geometric input (that these scalars are bad for a fixed received line, with the needed
+closeness and no-joint-agreement properties) remains an explicit assumption. -/
+theorem lineMeetsCode_iff (α : F) (S : Finset F[X]) (badSet : Finset F) :
+    (∀ c ∈ S, ∀ quot : F[X], c - C (c.eval α) = (X - C α) * quot → c.eval α ∈ badSet) ↔
+      ∀ c ∈ S, c.eval α ∈ badSet :=
+  ⟨realized_values_are_bad α S badSet, fun h c hc _ _ => h c hc⟩
 
 end ArkLib.ProximityGap.BridgeClaim62Loop48
 
@@ -235,3 +291,7 @@ end ArkLib.ProximityGap.BridgeClaim62Loop48
 #print axioms ArkLib.ProximityGap.BridgeClaim62Loop48.prize_false_of_listDecoding_failure_full
 #print axioms ArkLib.ProximityGap.BridgeClaim62Loop48.bridge_mem_degreeLT
 #print axioms ArkLib.ProximityGap.BridgeClaim62Loop48.bridge_eval_mem_code
+#print axioms ArkLib.ProximityGap.BridgeClaim62Loop48.bridge_eval_eq_div_of_ne
+#print axioms ArkLib.ProximityGap.BridgeClaim62Loop48.bridge_evalOnPoints_eq_div_of_ne
+#print axioms ArkLib.ProximityGap.BridgeClaim62Loop48.bridge_eval_ne_div_at_node
+#print axioms ArkLib.ProximityGap.BridgeClaim62Loop48.lineMeetsCode_iff

@@ -27,6 +27,12 @@ Iterating this inequality supplies a reusable depth-lifting theorem and the clos
 For `|G| ≥ 2`, this is strictly stronger than the all-depth adjacent-swap floor. The proof is
 pure finite counting over an arbitrary finite field. It does not assert an upper energy bound,
 CORE closure, characteristic transfer, capacity, or a value of delta star.
+
+It is, however, weaker than the in-tree permutation floor
+`_LowerBoundPermMatchingFloor.rEnergy_ge_perm` (`|G|.descFactorial r * r! ≤ rEnergy G r`) except
+for very small supports: already at depth three, `3n³ - 2n < 6n(n-1)(n-2)` for every `n ≥ 6`, and
+at higher depth the permutation floor wins by roughly a factor `r!/3`. The cyclic family is kept
+as a self-contained counting argument, not as the strongest available lower floor.
 -/
 
 open Finset

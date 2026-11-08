@@ -28,6 +28,14 @@ There are two honest consumers:
 
 The counter-lemmas state exactly how to refute a proposed profile scheme: find a stack above its
 assigned cap, or find a used profile whose cap is not realized by any member of the proposed family.
+
+**Duplication note.** `StackBadCount`, `StackBounded`, `FamilyBounded`, `FamilyDominates` and
+`UsedProfile` are local copies of definitions repeated across the `Stack*` /
+`Floor*` frontier files (e.g. `_StackOrbitRepresentativeReduction`, `_StackProfileFiberMax`,
+`_StackCandidateFamilyMax`, `StackMaximizerDomination`, `_FloorDominationInterface`,
+`_FloorClosureContract`). `FamilyDominates` is the same predicate as
+`StackOrbitRepresentativeReduction.StackDominatingRepresentativeCover` (over that file's own
+`StackBadCount` copy). The copies have the same bodies but are distinct constants, not unified; there is no canonical substrate home for them yet.
 -/
 
 set_option autoImplicit false

@@ -21,16 +21,31 @@ agrees with itself, so no codeword witnesses), matching `Pr[mcaEvent] = 0`.
   `Pr_{γ}[mcaEvent C δ u₀ u₁ γ] ≤ N_accidental · M / q`.            (`mcaEvent_pr_le_Nacc`)
 
 This is the *sharp* form of the proximity-gap dichotomy reduction: it is non-vacuous on both
-structured and accidental stacks, and `ε_mca(C, δ) ≤ ⨆_u N_accidental(u)·M(u)/q`.  The conjecture is
-now exactly `⨆_u N_accidental(u)·M(u) ≤ poly(n)` — the **accidental** line list-decoding count, which
-is the genuine BCIKS20 / GG25 object (Johnson up to `1 − √ρ`, capacity `1 − ρ` open).
+structured and accidental stacks.
+
+**The support hypothesis `hR` is essential (audit finding PG-147).** Both theorems require
+`hR : ⌊δ·n⌋ < |supp u₁|`. The factor `M = |supp u₁| / (|supp u₁| − ⌊δ·n⌋)` in `NaccMul` is a
+natural-number quotient, and when `hR` fails the denominator is `0`, so `NaccMul = 0`
+(`NaccMul_eq_zero_of_support_le`) even though `Pr[mcaEvent]` can be positive. Example (checked by
+exact enumeration in the audit, not kernel-checked here): the length-4 constant code over `F₁₇` on
+its proper `μ₄` domain, `δ = 1/4`, `u₀ = u₁ = (1,0,0,0)`: at `γ = −1` the line is `0`, explained on
+the full domain while `u₀` has no constant explanation, and this is the only bad scalar, so
+`Pr[mcaEvent] = 1/17`; yet `|supp u₁| = ⌊δ·n⌋ = 1`, so `NaccMul = 0`. Hence the **unrestricted**
+reduction `ε_mca(C, δ) ≤ ⨆_u N_accidental(u)·M(u)/q` does **not** follow from these theorems: the
+supremum may only range over stacks satisfying `hR`, and low-support directions
+(`|supp u₁| ≤ ⌊δ·n⌋`) must be handled separately. Moreover, a uniform bound
+`⨆_{u : hR} N_accidental(u)·M(u) ≤ poly(n)` is a *sufficient* (union-bound) certificate for the
+corresponding part of the MCA conjecture, not an equivalent characterization of it. The
+accidental line list-decoding count is the BCIKS20 / GG25 object (Johnson up to `1 − √ρ`,
+capacity `1 − ρ` open).
 
 ## Main results
 
 * `witnessesAt` — `w` witnesses a bad MCA event at `γ`.
 * `dist_le_of_agree_on` / `witnessesAt_imp_close` — a witness is `δ`-close to the line.
 * `card_mcaEvent_le_Nacc` — `#{γ : mcaEvent} ≤ N_accidental · M`.
-* `mcaEvent_pr_le_Nacc` — `Pr_{γ}[mcaEvent] ≤ N_accidental · M / q`.
+* `mcaEvent_pr_le_Nacc` — `Pr_{γ}[mcaEvent] ≤ N_accidental · M / q` (under `hR`).
+* `NaccMul_eq_zero_of_support_le` — without `hR`, `NaccMul` degenerates to `0`.
 -/
 
 set_option linter.style.longLine false
@@ -95,12 +110,25 @@ theorem witnessesAt_imp_close (C : Set (ι → F)) (δ : ℝ≥0) (hδ : δ ≤ 
 
 open Classical in
 /-- `N_accidental · M`: the count of *witness* codewords times the line-ball factor.  On a
-joint-structured stack this is `0` (no codeword witnesses a bad event). -/
+joint-structured stack this is `0` (no codeword witnesses a bad event).  The factor `M` is a
+natural-number quotient by `|supp u₁| − ⌊δ·n⌋`; it is meaningful only when
+`⌊δ·n⌋ < |supp u₁|`, and is `0` otherwise (`NaccMul_eq_zero_of_support_le`). -/
 noncomputable def NaccMul (C : Finset (ι → F)) (δ : ℝ≥0) (u₀ u₁ : ι → F) : ℕ :=
   (C.filter (fun w => (univ.filter (fun γ : F =>
       witnessesAt (↑C) δ u₀ u₁ w γ)).card ≠ 0)).card
     * ((univ.filter (fun i => u₁ i ≠ 0)).card
         / ((univ.filter (fun i => u₁ i ≠ 0)).card - ⌊(δ : ℝ) * (Fintype.card ι : ℝ)⌋₊))
+
+open Classical in
+/-- **`NaccMul` degenerates without the support hypothesis.**  If `|supp u₁| ≤ ⌊δ·n⌋` (i.e. the
+hypothesis `hR` of `card_mcaEvent_le_Nacc` fails), the natural-number denominator of the
+line-ball factor is `0`, so `NaccMul C δ u₀ u₁ = 0` regardless of how many scalars are bad.
+Hence no bound on `ε_mca` can be read off `NaccMul` for such low-support directions. -/
+theorem NaccMul_eq_zero_of_support_le (C : Finset (ι → F)) (δ : ℝ≥0) (u₀ u₁ : ι → F)
+    (h : (univ.filter (fun i => u₁ i ≠ 0)).card ≤ ⌊(δ : ℝ) * (Fintype.card ι : ℝ)⌋₊) :
+    NaccMul C δ u₀ u₁ = 0 := by
+  unfold NaccMul
+  rw [Nat.sub_eq_zero_of_le h, Nat.div_zero, Nat.mul_zero]
 
 set_option maxHeartbeats 2000000 in
 -- The nested `Finset.filter`/`biUnion` over `witnessesAt` (an existential `Prop`) elaborates
@@ -136,8 +164,11 @@ theorem card_mcaEvent_le_Nacc (C : Finset (ι → F)) (δ : ℝ≥0) (hδ : δ �
 
 open Classical in
 /-- **Sharp per-stack MCA reduction.**  `Pr_{γ}[mcaEvent C δ u₀ u₁ γ] ≤ N_accidental · M / q`.
-Non-vacuous on both structured (`N_accidental = 0`) and accidental stacks.  Taking `⨆` over stacks
-bounds `ε_mca(C, δ)`; the conjecture is exactly `⨆_u N_accidental(u)·M(u) ≤ poly(n)`. -/
+Non-vacuous on both structured (`N_accidental = 0`) and accidental stacks.  The hypothesis `hR`
+cannot be dropped (`NaccMul_eq_zero_of_support_le`; see the module docstring for a stack with
+`Pr = 1/17` but `NaccMul = 0`), so taking `⨆` bounds only the part of `ε_mca(C, δ)` coming from
+stacks with `⌊δ·n⌋ < |supp u₁|`; low-support directions need a separate argument, and a uniform
+bound on `N_accidental·M` is a sufficient certificate, not an equivalent form of the conjecture. -/
 theorem mcaEvent_pr_le_Nacc (C : Finset (ι → F)) (δ : ℝ≥0) (hδ : δ ≤ 1) (u₀ u₁ : ι → F)
     (hR : ⌊(δ : ℝ) * (Fintype.card ι : ℝ)⌋₊ < (univ.filter (fun i => u₁ i ≠ 0)).card) :
     Pr_{let γ ← $ᵖ F}[mcaEvent (↑C) δ u₀ u₁ γ]

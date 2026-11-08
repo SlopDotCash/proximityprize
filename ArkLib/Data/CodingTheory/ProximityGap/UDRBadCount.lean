@@ -18,11 +18,23 @@ The Table-1 row-2 MCA upper bound `ε_mca(C, δ) ≤ O(δn)/|F|` below the uniqu
   `badCount_udr_le` — for a code `C ⊆ F^ι` with the minimum-distance property `hmd` (codewords
   disagreeing on `< d` coordinates are equal), a stack `(u₀,u₁)` whose bad scalars `G` each carry a
   witness set `S γ` of size `≥ t` and witness codeword `w γ` (`= u₀ + γ·u₁` on `S γ`, not
-  pair-joint on `S γ`), in the regime `3(n−t) < d`, satisfies `|G| ≤ 2(n−t)`.
+  pair-joint on `S γ`), under the two guards `t < n` and `3(n−t) < d`, satisfies
+  `|G| ≤ 2(n−t)`.
 
-Since `n − t ≈ δn` (the witness miss budget) and the RS minimum distance is `d = n − k + 1`, this
-gives `ε_mca ≤ 2δn/|F|` below the unique-decoding radius via
-`ProximityGap.epsMCA_le_of_badCount_le`. The proof combines two engines:
+**Scope of the bound (read before citing).** The integer miss budget is `e := n − t`, and the
+guard `t < n` means `e ≥ 1`, so the numerator `2e` is always `≥ 2`. The bound says nothing about
+the grid cell `t = n` (radii `0 ≤ δ < 1/n`, including `δ = 0`). There a nonzero floor cannot be
+avoided: for any proper linear code take `u₀ = 0` and `u₁ ∉ C`. At `γ = 0` the full coordinate
+set witnesses closeness to `C` but cannot jointly explain `u₁`, so `ε_mca ≥ 1/|F|` at every
+radius, including `δ = 0`. Any bound stated for all radii must therefore respect this
+one-scalar floor; a numerator like `2δn`, which is `0` at `δ = 0` and `< 1` for `δ < 1/(2n)`,
+is false there. The guard `3e < d` is also a *one-third-distance* window, not the full
+unique-decoding range `2e < d`.
+
+Combined with `ProximityGap.epsMCA_le_of_badCount_le` and the RS minimum distance
+`d = n − k + 1`, this gives `ε_mca ≤ 2(n − t)/|F|` only for witness sizes `t` with `t < n` and
+`3(n − t) < n − k + 1`. It is not a bound `ε_mca ≤ 2δn/|F|` on the whole unique-decoding range.
+The proof combines two engines:
 
 * `badGamma_affine_card_le` — bad scalars on the affine error line `e₀ + γ·e₁` are pinned to the
   support of `e₁` (`#bad ≤ weight(e₁)`).

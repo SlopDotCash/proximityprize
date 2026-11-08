@@ -10,9 +10,12 @@ import Research.ProximityPrize.Hab25CurveCaptureUD
 # Issues #301/#302/#304 — the first unconditional `UnifiedProducer` instantiation:
 # the unique-decoding window glue
 
-`UnifiedExtractionTarget.lean` (a3fff5b42) pinned **both** #304 cores and the closed-boundary
-Johnson-endpoint keystone to ONE production target: `UnifiedProducer k deg domain δ` — per
-word-stack and count-triggered decoded family, a faithful `CurveFamilyData`.  This file lands
+`UnifiedExtractionTarget.lean` (a3fff5b42) reduced the #304 boundary leaves and the
+closed-boundary Johnson-endpoint keystone to one count-triggered interface:
+`UnifiedProducer k deg domain δ` — per word-stack and count-triggered decoded family, a
+faithful `CurveFamilyData`.  That all-input count-only interface is false in general (an `𝔽₅`
+counterexample strictly inside the Johnson window is recorded there), so it is not a viable
+target outside proved windows such as the one below.  This file lands
 the first **regime-unconditional** instantiation of that target: on the curve unique-decoding
 window
 
@@ -263,8 +266,8 @@ theorem exists_curve_tuple_of_window {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ
 /-! ## §3 — deliverable (a): the producer glue -/
 
 /-- **THE GLUE — `UnifiedProducer` on the unique-decoding window** (deliverable (a)): the
-single production target of `UnifiedExtractionTarget` (both #304 cores + the closed-boundary
-keystone) holds unconditionally on `curveUDWindow k deg n δ`.  The `CurveFamilyData` is the
+count-triggered producer interface of `UnifiedExtractionTarget` (false in general outside such
+windows) holds unconditionally on `curveUDWindow k deg n δ`.  The `CurveFamilyData` is the
 Lagrange curve at centre `0` with the `k + 1` pinned coefficient polynomials. -/
 theorem unifiedProducer_of_window {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     (hdeg : 0 < deg)

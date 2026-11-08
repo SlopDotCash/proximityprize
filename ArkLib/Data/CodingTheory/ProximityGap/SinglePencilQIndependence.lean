@@ -19,10 +19,11 @@ restricts to low degree) is alignable, yet all such sets collapse onto a **singl
 `badScalars ≤ alignableSets` reduction overcounts massively, and the right quantity to bound is the
 **bad-scalar count itself**.
 
-For the worst case the stack is a single-polynomial pencil `u₀ + γ·u₁ = eval(Q₀ + γ·Q₁)` over the
-smooth multiplicative domain `μ_n = {g^i}` (the deep-band witness words `eval(Q₀ + γ·Xᵏ)`). For such
-a pencil this file proves, **unconditionally and axiom-clean**, the structural heart of the whole
-programme:
+This file studies the single-polynomial pencil `u₀ + γ·u₁ = eval(Q₀ + γ·Q₁)` over the smooth
+multiplicative domain `μ_n = {g^i}` (the deep-band witness words `eval(Q₀ + γ·Xᵏ)`).  It does
+**not** prove that such pencils are the worst-case stacks: no worst-stack extremality reduction
+is supplied here, so none of the counts below is an all-stack `epsMCA` bound.  For such a pencil
+this file proves, **unconditionally and axiom-clean**:
 
 > **`single_pencil_aclose_card_le`.** The number of scalars `γ` for which `Q₀ + γ·Q₁` has at least
 > `a` roots in a finite set `μ` (on which `Q₁` never vanishes) is at most `C(|μ|, a)` — **independent
@@ -35,11 +36,13 @@ every bad `γ` is pinned by an `a`-subset `S` of roots, because the product `∏
 forces `γ = γ'`. So distinct bad scalars inject into the `a`-subsets of `μ`, of which there are
 `C(|μ|, a)` — a count that depends only on the *combinatorics* of the root set, never on `|F|`.
 
-This bounds the bad-scalar count by a `q`-independent constant (here `C(n, a)`); the residual
-content of the exact `δ*` prize is the *sharper* constant `2^r·C(2^{μ-1}, r)` of the deployed
-budget, which is a concrete counting question about the **distinct pinned scalars**
-`γ_S = -coeff(Q₀ mod ∏_S(X−ζ))` (the collision structure of the divided-difference map), no longer
-the generic sub-Johnson list-size wall.
+This bounds the bad-scalar count *of a fixed single-polynomial pencil* by a `q`-independent
+constant (here `C(n, a)`).  Comparing with the *sharper* KKH26 constant `2^r·C(2^{μ-1}, r)` is a
+further counting question about the **distinct pinned scalars** `γ_S = -coeff(Q₀ mod ∏_S(X−ζ))`
+(the collision structure of the divided-difference map); and turning any such pencil count into
+an exact `δ*` statement would additionally need a worst-stack reduction (all stacks, not just
+pencils with direction `Xᵏ`), which is not available here.  See the growth and regime caveats
+on `mca_badscalar_sharp` and `mca_badscalar_packing_div`.
 
 All results `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 
@@ -134,10 +137,12 @@ theorem single_pencil_aclose_card_le (Q0 Q1 : F[X]) (μ : Finset F) (a : ℕ) (h
     have : a = 0 := by exact_mod_cast h0
     omega
 
-/-- **Roots-of-unity specialization (the δ* setting).** Over the smooth multiplicative domain
+/-- **Roots-of-unity zero-root specialization.** Over the smooth multiplicative domain
 `μ_n = {ζ : ζⁿ = 1}` of size `n`, for a pencil `Q₀ + γ·Xᵏ` (with `1 ≤ k`, so `Xᵏ` has no root in
-`μ_n` since `0 ∉ μ_n`), the number of scalars `γ` such that `Q₀ + γ·Xᵏ` agrees with a degree-`<k`
-polynomial on at least `a` points of `μ_n` is at most `C(n, a)` — **independent of `|F|`**. -/
+`μ_n` since `0 ∉ μ_n`), the number of scalars `γ` such that the *uncorrected* pencil
+`Q₀ + γ·Xᵏ` has at least `a` **zeros** in `μ_n` (i.e. agrees with the zero codeword there) is at
+most `C(n, a)` — **independent of `|F|`**.  This is not the event "close to some codeword": the
+variable low-degree correction `W` is added in `mca_badscalar_card_le`. -/
 theorem rootsOfUnity_pencil_aclose_card_le (Q0 : F[X]) (μ : Finset F) (k a : ℕ)
     (hk : 1 ≤ k) (ha : 1 ≤ a) (hμ0 : (0 : F) ∉ μ) :
     (Finset.univ.filter (fun γ : F =>
@@ -159,7 +164,11 @@ The number of scalars `γ` for which `Q₀ + γ·Xᵏ` agrees with SOME polynomi
 (a codeword) on at least `a` points of a finite set `μ` (`0 ∉ μ`, `k < a`) is at most `C(|μ|, a)`
 — independent of `|F|`. The codeword freedom is absorbed: each bad `γ` is pinned by an `a`-subset
 `S` of agreement points, since `∏_S(X−ζ)` divides both corrected pencils, and the difference has
-degree `≤ k < a = deg ∏_S`, forcing it to vanish and the `Xᵏ`-coefficients (the scalars) to match. -/
+degree `≤ k < a = deg ∏_S`, forcing it to vanish and the `Xᵏ`-coefficients (the scalars) to match.
+
+Convention: the witness condition is the local `W.natDegree < k`.  For `k ≥ 1` this is exactly
+"`W` has degree `< k`" (the zero polynomial included); at `k = 0` it excludes even `W = 0`, so the
+event is empty there and does **not** coincide with the canonical `degreeLT 0 = {0}` code event. -/
 theorem mca_badscalar_card_le (Q0 : F[X]) (μ : Finset F) (k a : ℕ) (hka : k < a) :
     (Finset.univ.filter (fun γ : F =>
         ∃ W : F[X], W.natDegree < k ∧
@@ -343,10 +352,12 @@ theorem mca_badscalar_general (Q0 Q1 : F[X]) (μ : Finset F) (k a : ℕ) (hka : 
 /-- **Sharp q-independent bad-scalar bound.** Only `k+1` agreement points are needed to pin the
 scalar (a degree-`<k` codeword agreeing on `k+1` points is unique), so the MCA bad-scalar count for
 the single-poly stack `Q₀ + γ·Xᵏ` is `≤ C(|μ|, k+1)`. For `μ = μ_n` (`n = 2^μ`, `k+1 = r`) this is
-`C(2^μ, r)`, **asymptotically equal to the KKH26 supply** `2^r·C(2^{μ-1}, r)`: the ratio
-`C(2^μ, r) / (2^r·C(2^{μ-1}, r)) = ∏_{i<r}(2 − i/2^{μ-1})·2^{-1}·… → 1` as `μ → ∞`. The remaining
-`(1+o(1))` factor is the coset-rigidity content (the pinning `(k+1)`-subsets are coset-structured,
-not arbitrary), the only residual to the exact `δ* = 1 − r/2^μ` pin. -/
+`C(2^μ, r)`.  Compared with the KKH26 supply `2^r·C(2^{μ-1}, r)`, the ratio
+`C(n, r) / (2^r·C(n/2, r)) = ∏_{i<r} (n − i)/(n − 2i)` tends to `1` only when `r` is fixed (more
+generally `r²/n → 0`); it is **not** asymptotically `1` in a constant-rate regime `r = Θ(n)`
+(at `r = n/2` it is `C(n, n/2)/2^{n/2}`, exponential up to a `√n` factor).  This bound concerns
+the single pencil with direction `Xᵏ` only; with no worst-stack reduction it does not pin
+`δ* = 1 − r/2^μ`. -/
 theorem mca_badscalar_sharp (Q0 : F[X]) (μ : Finset F) (k : ℕ) :
     (Finset.univ.filter (fun γ : F =>
         ∃ W : F[X], W.natDegree < k ∧
@@ -468,15 +479,21 @@ theorem mca_badscalar_packing (Q0 : F[X]) (μ : Finset F) (k a : ℕ) (hka : k <
   rwa [hGcard] at this
 
 /-- **Explicit form.** `#bad ≤ C(|μ|, k+1) / C(a, k+1)`. For `μ = μ_n` (`n = 2^μ`, `m=1`,
-`a = r+1`, `k+1 = r`) this is `C(n, r)/(r+1)`, which is `< 2^r·C(2^{μ-1}, r)` (the KKH26 budget)
-for the bulk of the range `r ≤ ~3n/8`, proving `CensusDomination` / the `δ*` pin there. The only
-residual is the top sliver `r → n/2`.
+`a = r+1`, `k+1 = r`) this is `C(n, r)/(r+1)`.  It is **not** below the KKH26 count
+`2^r·C(2^{μ-1}, r)` throughout `r ≤ ~3n/8`: already at `n = 32`, `r = 12`,
+`C(32, 12) = 225792840 > 96911360 = 13·2^12·C(16, 12)`, so `C(n, r)/(r+1)` exceeds the KKH26
+count there.  The comparison holds only for small `r` relative to `n`.  Even where it holds, this
+bounds one pencil with direction `Xᵏ`; no worst-stack extremality reduction is supplied, and the
+general-`Q₁` theorem `mca_badscalar_general` gives only the coarser `C(|μ|, a)` bound.  So this
+does not prove `CensusDomination` or a global `δ*` pin.
 
 **REGIME CAVEAT (verified, `scripts/probes/probe_packing_regime.py`).** This bound lands at the
 *supply* level, not the prize level. For prize-window `δ ∈ (1−√ρ, 1−ρ−Θ(1/log n))` the right side is
 `2^{Θ(n)}` (e.g. `log₂ ≈ 79` at `ρ=1/2, n=128`), exponentially above the prize budget `qε* = n`
-(`log₂ ≈ 7`). So this pins `δ*` in the W5 *supply strip* `(1−ρ−Θ(1/log n), 1−ρ)` — strictly ABOVE the
-window — NOT in the prize window. Reaching the prize `#bad ≤ n` needs the `2^{Θ(n)} → n` collapse =
+(`log₂ ≈ 7`). So at best this bounds single-pencil (`Xᵏ`-direction) bad scalars in the W5
+*supply strip* `(1−ρ−Θ(1/log n), 1−ρ)` — strictly ABOVE the window — and, lacking a worst-stack
+reduction, it pins no global `δ*` even there; it is NOT in the prize window. Reaching the prize
+`#bad ≤ n` needs the `2^{Θ(n)} → n` collapse =
 the W4 sub-exponential cancellation (open). A true bound that does not reach the prize regime. -/
 theorem mca_badscalar_packing_div (Q0 : F[X]) (μ : Finset F) (k a : ℕ) (hka : k < a) :
     (Finset.univ.filter (fun γ : F =>

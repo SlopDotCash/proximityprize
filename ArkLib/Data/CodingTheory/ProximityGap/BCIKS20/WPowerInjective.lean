@@ -6,20 +6,30 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AlphaWeightClearedObstruction
 
 /-!
-# `W = liftToFunctionField H.leadingCoeff` is not a root of unity (non-monic `H`)
+# `W = liftToFunctionField H.leadingCoeff` is not a root of unity (nonunit leading coefficient)
 
 Reusable `W`-power bookkeeping for the BCIKS20 Appendix-A clearing identities. The `W`/`ξ`
 denominators in `βHensel`, `B_coeff`, and the `RestrictedFaaDiBrunoMatch` keystone carry powers of
 `W = liftToFunctionField H.leadingCoeff`; comparisons like `W^d = W^{natDegreeY p}` reduce to the
-exponents only when `W` has no finite multiplicative order — which holds exactly when `H` is
-non-monic (`H.leadingCoeff` a non-unit).
+exponents when `W` has no finite multiplicative order. This file proves the **sufficient**
+condition: `H.leadingCoeff` is a nonunit of `F[X]` (`¬ IsUnit H.leadingCoeff`). It does not
+characterize when `W` has infinite order, and "nonunit leading coefficient" is strictly stronger
+than "non-monic". Three cases must be kept apart:
+
+* monic (`H.leadingCoeff = 1`): `W = 1`, so exponents cannot be recovered;
+* non-monic with a unit (nonzero constant) leading coefficient `c ≠ 1`: `W` is the constant `c`,
+  whose order depends on `c` — e.g. `H = -Y + 1` over `ℚ[X][Y]` has `W = -1` and `W² = W⁰`, while
+  `c = 2` over `ℚ` has infinite order (so nonunit-ness is not necessary). The P2 order-zero
+  refutation witness `H = 2·Y` (`P2OrderZeroRefutationWitness`) is in this case;
+* nonunit leading coefficient: `W` has infinite order (the theorems below).
 
 ## Main results
 
 * `liftToFunctionField_injective` — a public form of the field-coefficient embedding's injectivity
   (a constant `C a` lies below the modulus `H̃`, so `liftBivariate (C a) = liftToFunctionField a`
   is faithful by `liftBivariate_eq_zero_of_natDegree_lt`).
-* `leadingCoeff_pow_inj` — for non-monic `H`, `H.leadingCoeff ^ a = H.leadingCoeff ^ b → a = b`.
+* `leadingCoeff_pow_inj` — if `H.leadingCoeff` is a nonunit,
+  `H.leadingCoeff ^ a = H.leadingCoeff ^ b → a = b`.
 * `W_pow_eq_iff` — `W ^ a = W ^ b ↔ a = b`. The tool for reducing `W`-power identities to their
   exponents (e.g. the order-0 keystone's `W^{R.natDegree}` vs `W^{natDegreeY p}` mismatch).
 -/
@@ -51,8 +61,8 @@ theorem liftToFunctionField_injective :
   exact sub_eq_zero.mp (Polynomial.C_eq_zero.mp h0)
 
 omit [Fact (Irreducible H)] in
-/-- For non-monic `H` (`H.leadingCoeff` a non-unit) the leading coefficient has no finite
-multiplicative order: `lc ^ a = lc ^ b → a = b`. -/
+/-- If `H.leadingCoeff` is a nonunit (a strictly stronger condition than `H` being non-monic) the
+leading coefficient has no finite multiplicative order: `lc ^ a = lc ^ b → a = b`. -/
 theorem leadingCoeff_pow_inj (hlc : ¬ IsUnit H.leadingCoeff) {a b : ℕ}
     (h : H.leadingCoeff ^ a = H.leadingCoeff ^ b) : a = b := by
   have hHdeg : 0 < H.natDegree := (‹Fact (0 < H.natDegree)›).out
@@ -74,8 +84,9 @@ theorem leadingCoeff_pow_inj (hlc : ¬ IsUnit H.leadingCoeff) {a b : ℕ}
   · exact (key hab h.symm).symm
 
 omit [Fact (Irreducible H)] in
-/-- **`W = liftToFunctionField H.leadingCoeff` is not a root of unity** for non-monic `H`:
-`W ^ a = W ^ b ↔ a = b`.  The tool for the `W`-power bookkeeping in the (P1)/(P2) clearing
+/-- **`W = liftToFunctionField H.leadingCoeff` is not a root of unity** when `H.leadingCoeff` is a
+nonunit: `W ^ a = W ^ b ↔ a = b`. (For non-monic `H` with a unit leading coefficient this can fail,
+e.g. `W = -1`.)  The tool for the `W`-power bookkeeping in the (P1)/(P2) clearing
 identities (e.g. reducing the order-0 keystone's `W^{R.natDegree}` vs `W^{natDegreeY p}` to the
 exponent equality). -/
 theorem W_pow_eq_iff (hlc : ¬ IsUnit H.leadingCoeff) (a b : ℕ) :

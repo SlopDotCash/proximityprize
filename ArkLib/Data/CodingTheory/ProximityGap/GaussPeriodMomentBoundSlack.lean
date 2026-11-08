@@ -19,19 +19,29 @@ observation that the moment method does **not** need the energy at its exact cha
 Hence the per-frequency bound `B = max_b‖η_b‖ ≤ √(M_r(S))` carries only the factor `S^{1/2r}`. At the
 optimal depth `r ≈ ln m` (`m = (q-1)/|G|`), `S^{1/2r} = S^{1/(2 ln m)}`; for a **polynomial** slack
 `S = n^A` and a polynomial field `q = n^β` (so `ln m = (β-1) ln n`), this is
-`exp(A/(2(β-1))) = O(1)` — a *constant* factor on the floor `√(2n ln m)`. So the prize floor (up to a
-constant `C`, which only shifts the window's `Θ(1/log n)` term) follows from the **far weaker**
-polynomial-slack energy bound `E_r(μ_n) ≤ n^{O(1)}·(2r-1)‼·n^r`, not the exact `(2r-1)‼·n^r`.
+`exp(A/(2(β-1))) = O(1)` — a *constant* factor on the floor `√(2n ln m)`. So the implication
+"polynomial-slack energy bound `E_r(μ_n) ≤ n^{O(1)}·(2r-1)‼·n^r` at `r ≈ ln m` ⟹ prize floor (up
+to a constant)" is valid.
 
-This relocates the open core to a *poly-slack higher-energy bound* — strictly weaker than the exact
-`GaussianEnergyBound` and than full BGK square-root cancellation. (At `r = 2` it is already KNOWN:
-Heath-Brown–Konyagin give `E_2(μ_n) ≤ n^{5/2}` in the prize range `n < p^{1/4}`, i.e. slack `n^{1/2}`
-over the diagonal `3n²`. The open part is the uniform poly slack up to `r ≈ ln m`.)
+**But this DC-included hypothesis is infeasible at that depth, not an open weaker input.**
+`E_r(G)` here is the full energy, so the moment identity includes the `b = 0` term:
+`q·E_r(G) ≥ ‖η_0‖^{2r} = n^{2r}`, i.e. `E_r(G) ≥ n^{2r}/q` for every `|G| = n`. With `q = n^β`
+(`β > 1` fixed) and `r = c·ln n`, the slack bound would need `n^r ≤ q·n^A·(2r-1)‼`; the left
+side has logarithm `c·(ln n)²`, the right side `O(ln n · ln ln n)`, so it fails for every fixed
+`A` once `n` is large.
+(This is the slack analogue of `DCEnergyEssential.not_gaussianEnergyBound_of_deep` for the exact
+bound.) A feasible poly-slack formulation must subtract the DC term, i.e. bound the erased moment
+`∑_{b≠0} ‖η_b‖^{2r}` (`DCSubtractedMoment.sum_nonzero_moment`,
+`DCEnergyCorrection.DCEnergyBound`); only that version could be compared with per-frequency
+cancellation. (At `r = 2` the poly-slack bound is KNOWN: Heath-Brown–Konyagin give
+`E_2(μ_n) ≤ n^{5/2}` in the range `n < p^{1/4}`, i.e. slack `n^{1/2}` over the diagonal `3n²`; the
+DC term `n^4/q` is negligible there.)
 
 Empirical support (`probe_gp_floor_density_existence.py` + moment-opt probes): the *optimized* bound
 `min_r (Σ_i η_i^{2r})^{1/2r}` stays `≤ 1.07·floor` up to `n = 64` even at the worst prime (whose
 energy slack is `~n^{1.3}`, crushed to `1.18` by the `2r`-th root). This is recorded as an honest
-named conditional, NOT a closure: the uniform poly-slack bound at `r ≈ ln m` is open.
+named conditional, NOT a closure: the DC-included uniform poly-slack bound at `r ≈ ln m` is
+asymptotically false (see above); the DC-subtracted analogue is the open question.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`). Issues #389, #407.
 -/
@@ -70,7 +80,8 @@ theorem eta_pow_le_of_energyBound_slack {ψ : AddChar F ℂ} (hψ : ψ.IsPrimiti
 `r ≥ 1` with slack `S` discharges `WorstCaseIncompleteSumBound` at scale
 `M_r(S) = (q·S·(2r-1)‼·|G|^r)^{1/r}`. The slack enters only as `S^{1/r}` in the squared scale, hence
 as `S^{1/2r}` in `B = max_b‖η_b‖` — a *constant* factor whenever `S` is polynomial in `|G|` and the
-depth is `r ≈ ln m`. -/
+depth is `r ≈ ln m` (though at that depth the DC term makes the polynomial-slack hypothesis itself
+fail for large `n`; see the module docstring). -/
 theorem worstCaseIncompleteSumBound_of_energyBound_slack {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
     {G : Finset F} {r : ℕ} {S : ℝ} (hr : 1 ≤ r) (hS : 0 ≤ S)
     (h : GaussianEnergyBoundWithSlack G r S) :

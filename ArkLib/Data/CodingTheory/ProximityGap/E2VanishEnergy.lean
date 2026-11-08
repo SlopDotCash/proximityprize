@@ -28,11 +28,15 @@ is precisely the energy structure underneath `e₂`.
 Also landed:
 * `e1_sq_eq_offDiag_add_p2` — the order-free Newton split `(∑ s)² = (∑_{offDiag} a·b) + ∑ s²`.
 * `e2_eq` — `e₂(S) = (e₁(S)² − p₂(S))/2`, the Newton identity `e₂ = (p₁² − p₂)/2` over a Finset.
-* `badScalar_of_energy` — the energy locus `{S : e₁(S)² = p₂(S), e₁(S)≠0}` produces the bad scalar
-  `α = −1/e₁(S)` of the pencil.
+* `badScalar_of_energy` — on the energy locus `{S : e₁(S)² = p₂(S), e₁(S)≠0}` it proves only
+  `e₂(S) = 0` and that `α = −1/e₁(S)` satisfies `α·e₁(S) = −1`.  The pencil/MCA reading (that `α`
+  is a bad scalar of the pencil) additionally needs the subset-size, code-membership and
+  no-joint-explanation bridge, which is **not** proved here.
 * `e2_pair` / `e2_pair_ne_zero` — `e₂({a,b}) = a·b`; the **`w=2` floor**: no 2-subset of a zero-free
-  set (`S ⊆ μ_n`) has `e₂=0`, matching the BCH/rigidity floor (numerically `e₂=0` first appears at
-  `w ≥ 4`).
+  set (`S ⊆ μ_n`) has `e₂=0`.  This floor is **only** at width 2: `e₂ = 0` already occurs at width
+  3 inside a proper dyadic subgroup.  Example (audit PG-212): in `μ_32 ⊂ F_97`, `S = {1, 18, 45}`
+  has `e₁ = 64 ≠ 0` and `e₂ = 18 + 45 + 810 = 873 = 9·97 = 0`; with `α = −1/64 = 50`, the pencil
+  `x² + α·x³` is the constant `51` on `S` while `x³` takes the distinct values `1, 12, 42`.
 
 This reduces the K=O(1)-above-δ* claim to **counting the energy locus `e₁² = p₂`** over `(k+2)`-
 subsets of `μ_n` — a q-dependent, character-sum-free combinatorial object, NOT the BGK character-sum
@@ -103,8 +107,10 @@ theorem e2_zero_iff (h2 : (2 : F) ≠ 0) (S : Finset F) :
 gives a bad scalar of the affine pencil `z^{k+1}+α z^{k+2}` at agreement `k+2` exactly when
 `e₂(S)=0` and `e₁(S)≠0`, with `α = −1/e₁(S)`. Reformulated via the energy characterization:
 the bad-`α` value is `−1/e₁(S)` over the subsets `S` with `e₁(S)² = p₂(S)` (the energy locus)
-and `e₁(S) ≠ 0`. This packages the bad-scalar locus as an *energy-constraint locus*, the object
-the SidonModNeg / antipodal count bounds. -/
+and `e₁(S) ≠ 0`. **What is formally proved** is only the algebra: `e₂(S) = 0` and the scalar
+`α = −1/e₁(S)` with `α·e₁(S) = −1`.  The identification of `α` as a bad scalar of the pencil (subset
+size `k+2`, code membership, and no joint explanation) is the separately needed bridge and is not
+proved here. -/
 theorem badScalar_of_energy (h2 : (2 : F) ≠ 0) (S : Finset F)
     (hen : e1 S ^ 2 = p2 S) (hne : e1 S ≠ 0) :
     e2 S = 0 ∧ ∃ α : F, α = -(e1 S)⁻¹ ∧ α * e1 S = -1 := by
@@ -139,8 +145,9 @@ theorem e2_pair (h2 : (2 : F) ≠ 0) {a b : F} (hab : a ≠ b) :
 
 /-- **The `w=2` floor: no 2-subset of a zero-free set has `e₂ = 0`.** If every element of `S` is
 nonzero (e.g. `S ⊆ μ_n`, a multiplicative subgroup) then a 2-subset `{a,b}` has `e₂ = a·b ≠ 0`.
-Hence the elementary-symmetric-vanishing locus is **empty at width 2** — matching the BCH/rigidity
-floor (one needs `w ≥ 4` for `e₂ = 0`, verified numerically). -/
+Hence the elementary-symmetric-vanishing locus is **empty at width 2**.  Nothing is claimed beyond
+width 2: `e₂ = 0` can occur at width 3 in a zero-free subgroup (e.g. `{1, 18, 45} ⊆ μ_32 ⊂ F_97`,
+where `e₂ = 873 = 9·97`; see the module docstring). -/
 theorem e2_pair_ne_zero (h2 : (2 : F) ≠ 0) {a b : F} (hab : a ≠ b) (ha : a ≠ 0) (hb : b ≠ 0) :
     e2 ({a, b} : Finset F) ≠ 0 := by
   rw [e2_pair h2 hab]

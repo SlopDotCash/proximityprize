@@ -8,9 +8,12 @@ import Mathlib
 /-!
 # Dyadic Fourier-uncertainty rigidity of the char-0 lacunary count (Issue #407)
 
-This file isolates and proves the **char-0 rigidity** that the `fourier-uncertainty-dyadic`
-angle targets: the structure of `{0,1}` vectors on `ℤ/N` (`N = 2^μ`) whose first `t-1`
-"frequencies" (power sums / elementary symmetric functions) vanish.
+This file isolates the **char-0 rigidity** that the `fourier-uncertainty-dyadic` angle targets:
+the structure of `{0,1}` vectors on `ℤ/N` (`N = 2^μ`) whose first `t-1` "frequencies" (power
+sums / elementary symmetric functions) vanish. **The rigidity itself is NOT proved here**: it is
+the named, unproved `Prop` `DyadicConsecutiveVanishingRigidity`. What is proved is the algebraic
+engine, the easy (coset-union ⟹ vanishing) direction, and an arithmetic bound on a closed-form
+count formula; see "What is proven here" below.
 
 ## The object and the result
 
@@ -22,51 +25,60 @@ Newton's identities `e_1 = … = e_{t-1} = 0 ⟺ p_1 = … = p_{t-1} = 0`. So th
 
   `f(ζ^j) = 0` for `j = 1, …, t-1`.
 
-> **Theorem (dyadic consecutive-vanishing rigidity, char 0).** Let `t` be **maximal** with
-> `p_1(S) = … = p_{t-1}(S) = 0`. Then **`t` is a power of two**, say `t = τ`, and `S` is a
-> **union of `μ_τ`-cosets** — equivalently the index set `I` is closed under `i ↦ i + N/τ`.
-> Consequently `τ ∣ a`.
+> **Expected statement (dyadic consecutive-vanishing rigidity, char 0; NOT proved here).** Let
+> `ζ` be a primitive `N`-th root of unity in `ℂ` and `t ≥ 1`. If `p_1(S) = … = p_{t-1}(S) = 0`
+> then, with `τ` the least power of two `≥ t`, `S` is a **union of `μ_τ`-cosets** — equivalently
+> the index set `I` is closed under `i ↦ i + N/τ` — and consequently `τ ∣ a` (for `τ ≤ N`).
 
-This is the **complete characterization** of the char-0 lacunary variety
-`vanishingVariety μ_N a t` (`DyadicLacunaryDeltaStar.lean`): it is **nonempty only when `τ ∣ a`**
-(`τ` = least power of two `≥ t`), and then it consists **exactly** of the `μ_τ`-coset-unions of
-total weight `a`. So the **char-0 count is closed**:
+If that statement were available it would characterize the char-0 lacunary variety
+`vanishingVariety μ_N a t` (`DyadicLacunaryDeltaStar.lean`) as the `μ_τ`-coset-unions of total
+weight `a`, giving the expected count
 
   `#vanishingVariety(μ_N, a, t) = C(N/τ, a/τ)`  (number of ways to pick `a/τ` of the `N/τ` cosets),
 
-with `τ = 2^{⌈log₂ t⌉}`. (Verified by exhaustive enumeration `N=8,16` — all `255` gap-`≥2`
-subsets at `N=16` are `μ_τ`-coset-unions with `τ` a power of two; `scripts/probes/_wf_dyadic_*_407.py`.)
+with `τ = 2^{⌈log₂ t⌉}`. **No theorem in this file identifies the cardinality of any actual
+variety with this formula**: `dyadicCharZeroCount` below is only an arithmetic definition of the
+right-hand side. (Exhaustive enumeration evidence: `N=8,16`, all `255` gap-`≥2` subsets at
+`N=16` are `μ_τ`-coset-unions with `τ` a power of two; `scripts/probes/_wf_dyadic_*_407.py`.)
 
 ## Why this matters for `δ*` (and where the wall actually is)
 
 The in-tree `DyadicLacunaryFloor` (`DyadicLacunaryDeltaStar.lean`) reduces `δ*` to bounding
-`#vanishingVariety ≤ C·n`. This file **closes the char-0 side** of that count exactly:
-`#vanishingVariety = C(N/τ, a/τ)`. In the prize window `δ ≤ prizeDeltaStar` the gap `t = a - k`
-is `Θ(n)` so `τ ≈ n` and `N/τ = O(1)`, giving `#vanishingVariety = O(1) ≤ C·n` — the floor is
-**automatic in char 0**. The honest residual is therefore *not* the count itself but the
-**char-`p` transfer**: these `C(N/τ, a/τ)` char-0 words have distinct `e_t`-values, but mod the
-prize prime `q` two of them could collide or extra "defect" words could appear. The rigidity proved
-here removes the combinatorial uncertainty entirely; what remains is exactly the mod-`q` defect
-(the Gauss-period / additive-energy wall documented across the campaign), now cleanly separated.
+`#vanishingVariety ≤ C·n`. Conditional on the rigidity `Prop` *and* on a (not formalized)
+coset-union counting bridge, the char-0 count would be `C(N/τ, a/τ) ≤ 2^{N/τ}`. In the prize
+window the gap `t = a - k` is `Θ(n)`, so `N/τ = O(1)` and the formula is `O(1)`. Note that the
+weaker regime `N/τ = O(log N)` only gives `2^{N/τ} = N^{O(1)}` (polynomial); a linear bound
+`≤ C·N` needs `N/τ ≤ log₂ N + O(1)`. Even granting all of this, the honest residual is the
+**char-`p` transfer**: mod the prize prime `q` char-0 words could collide or extra "defect" words
+could appear — the Gauss-period / additive-energy wall documented across the campaign.
 
 ## What is proven here (axiom-clean)
 
-The mathematical engine is two purely-algebraic facts; both are proved, no analytic input:
-
-1. `cyclicShift_invariant_of_cyclotomicQuotient_dvd` — **the rigidity engine.** If
+1. `cyclicShift_invariant_of_cyclotomicQuotient_dvd`, `cyclotomicQuotient_mul`,
+   `cyclicShift_invariant_of_quotient_dvd` — **the algebraic engine.** If
    `(X^N - 1) ∣ f · (X^M - 1)` in `R[X]` (`R` comm. ring; this holds when the cyclotomic quotient
-   `D = (X^N-1)/(X^M-1)` divides `f`, the forced-cyclotomic-factor conclusion of the vanishing
-   hypothesis), then `f · X^M ≡ f  (mod X^N - 1)`: the coefficient vector of `f` is shift-invariant.
-   This is the exact step that turns "consecutive vanishing power sums" into "coset structure".
-2. `cosetUnion_card`, `dvd_card_of_shiftClosed` — **the count consequence.** An index set
-   `I ⊆ ZMod N` closed under `+ (N/τ)` (a subgroup-of-order-`τ` shift) is a union of its
-   `τ`-element cosets, so `τ ∣ |I|`, and the number of such sets of size `a` is `C(N/τ, a/τ)`.
+   `D = (X^N-1)/(X^M-1)` divides `f`), then `f · X^M ≡ f  (mod X^N - 1)`: the coefficient vector
+   of `f` is shift-invariant. This is the step that would turn a forced cyclotomic factor into
+   coset structure; deriving that factor from vanishing power sums is not formalized.
+2. `shiftClosed_zsmul`, `coset_subset_of_shiftClosed` — an index set closed under `+ s` contains
+   the whole coset `i + ⟨s⟩` of each of its points. (There is **no** formalized cardinality
+   statement here: no `τ ∣ |I|` theorem and no count of shift-closed sets of size `a`.)
+3. `powerSum_vanish_of_shiftClosed` — the easy direction: shift-closed ⟹ every power sum whose
+   twist `ζpow (j*s)` is a nontrivial unit-minus-one vanishes. This shows coset-unions lie
+   *inside* the vanishing set, i.e. it is a **lower** inclusion (a lower bound on the variety's
+   size), not an upper bound.
+4. `dyadicCharZeroCount_le` — the arithmetic fact `[τ ∣ a]·C(N/τ, a/τ) ≤ 2^{N/τ}` about the
+   formula `dyadicCharZeroCount`; it says nothing about any actual variety.
+5. `charZeroCount_closed_of_rigidity` — merely extracts the shift-closure witness from an
+   assumed instance of the rigidity `Prop`.
 
-The "vanishing ⟹ forced cyclotomic factor ⟹ shift-closed" direction (the **converse**, i.e. the
-Lam–Leung input for `2`-power roots) is stated as a named `Prop`
-`DyadicConsecutiveVanishingRigidity` with its cyclotomic-divisibility proof recorded in the
-docstring; its *forward* direction (shift-closed ⟹ all off-subgroup power sums vanish) is proved
-here unconditionally (`powerSum_vanish_of_shiftClosed`), which already pins the count from above.
+The hard direction (vanishing ⟹ forced cyclotomic factor ⟹ shift-closed) is the named, unproved
+`Prop` `DyadicConsecutiveVanishingRigidity`, with its intended cyclotomic-divisibility proof
+recorded in its docstring. An earlier version of that `Prop` quantified over all `t` (including
+`t = 0`, where the conclusion `τ ≤ 2·t` is unsatisfiable) and over arbitrary additive maps
+`ζpow` (including the zero map); it was therefore false for every `μ`
+(`dyadicRigidity_conclusion_false_at_zero` records the `t = 0` obstruction). The current
+statement requires `1 ≤ t` and a genuine primitive root `ζ` with `ζpow i = ζ ^ i.val`.
 
 ## References
 - [ABF26] ePrint 2026/680, Open Problems in List Decoding and Correlated Agreement (#407).
@@ -166,8 +178,9 @@ def powerSum {N : ℕ} (ζpow : ZMod N → R) (I : Finset (ZMod N)) (j : ZMod N)
 shift `s = N/τ` *and* the character `ζpow` is a genuine additive character of `ZMod N` with
 `ζpow (j * s) ≠ 1` (i.e. `τ ∤ j`, so `ζ^{j·s}` is a nontrivial root), then the power sum
 `p_j(I)` vanishes. This is the easy half of the rigidity: coset structure forces all
-off-subgroup frequencies to vanish — it pins the count from above (the variety is contained in
-the coset-unions). The hard converse is `DyadicConsecutiveVanishingRigidity` below.
+off-subgroup frequencies to vanish, so the coset-unions are *contained in* the vanishing set — a
+lower inclusion (lower bound on the variety's size), not an upper bound. The hard converse is
+the unproved `DyadicConsecutiveVanishingRigidity` below.
 
 Hypotheses encode `ζpow` being a character: `ζpow (a+b) = ζpow a * ζpow b` (`hmul`) and the
 shift acting by the scalar `w := ζpow (j*s)` on each summand. -/
@@ -212,10 +225,16 @@ theorem powerSum_vanish_of_shiftClosed {N : ℕ} (ζpow : ZMod N → R)
 
 /-- **THE NAMED CHAR-0 RIGIDITY (the Lam–Leung converse; open input, stated, NOT asserted proven).**
 
-For `N = 2^μ` and `ζ` a primitive `N`-th root of unity in `ℂ`: if `I ⊆ ZMod N` has
-`powerSum ζpow I j = 0` for all `j = 1, …, t-1` (the `t-1` consecutive vanishing frequencies),
-then with `τ` = the least power of two `≥ t`, `I` is closed under the shift `s = N/τ` (a union of
-`μ_τ`-cosets), and `τ` is the maximal such (= the order of the first nonvanishing frequency).
+For `N = 2^μ`, `ζ` a **primitive** `N`-th root of unity in `ℂ` (the character is
+`ζpow i = ζ ^ i.val`) and `1 ≤ t`: if `I ⊆ ZMod N` has `powerSum ζpow I j = 0` for all
+`j = 1, …, t-1` (the `t-1` consecutive vanishing frequencies), then some power of two `τ` with
+`t ≤ τ ≤ 2t` (the least power of two `≥ t` works) has `I` closed under the shift `s = N/τ`
+(a union of `μ_τ`-cosets; for `τ > N` the natural-number quotient `N/τ = 0` makes this
+trivial). The maximality remark in the recorded proof is not part of the formal statement.
+
+Both guards are needed: at `t = 0` no power of two satisfies `τ ≤ 2·t`
+(`dyadicRigidity_conclusion_false_at_zero`), and without primitivity (e.g. the zero map, which is
+additive-to-multiplicative) every power sum vanishes while `I = {0}` is not closed under `+1`.
 
 **Proof (char 0, recorded; ELEMENTARY cyclotomic divisibility — NO Lam–Leung needed):** put
 `f(X) = ∑_{i∈I} X^i`. Then `powerSum ζpow I j = f(ζ^j)`. For `N = 2^μ`, `ζ^j` is a primitive
@@ -235,32 +254,46 @@ and coprimality of distinct cyclotomics — it does **not** invoke Lam–Leung a
 governs the structure of vanishing *relations*; here we only need that a single root forces its
 cyclotomic factor. So the rigidity is *more elementary* than the campaign's analytic core.) This is
 left as a named `Prop` only because a full Lean proof needs Mathlib's cyclotomic-factor /
-`Polynomial.cyclotomic` divisibility API wired against the `ℂ`-character `ζpow`; the *engine*, the
-*forward* direction, and the *count* are all proved above, axiom-clean. Verified exhaustively
+`Polynomial.cyclotomic` divisibility API wired against the `ℂ`-character `ζpow`; the *engine* and
+the *forward* direction are proved above, axiom-clean, while no count of an actual variety is
+formalized (only the arithmetic bound `dyadicCharZeroCount_le` on a formula). Verified exhaustively
 (`scripts/probes/_wf_dyadic_verify_407.py`): `N=8,16` complete, `N=32,64` bounded-weight — every
 gap-`≥2` set is `μ_τ`-coset-supported with `τ` a power of two, `0` anomalies (`255/255` at `N=16`,
 `2516/2516` at `N=32`, `5488/5488` at `N=64`). -/
 def DyadicConsecutiveVanishingRigidity (μ : ℕ) : Prop :=
-  ∀ (ζpow : ZMod (2 ^ μ) → ℂ) (I : Finset (ZMod (2 ^ μ))) (t : ℕ),
-    (∀ a b, ζpow (a + b) = ζpow a * ζpow b) →
-    (∀ j : ℕ, 1 ≤ j → j < t → powerSum ζpow I (j : ZMod (2 ^ μ)) = 0) →
+  ∀ (ζ : ℂ), IsPrimitiveRoot ζ (2 ^ μ) →
+  ∀ (I : Finset (ZMod (2 ^ μ))) (t : ℕ), 1 ≤ t →
+    (∀ j : ℕ, 1 ≤ j → j < t →
+      powerSum (fun i : ZMod (2 ^ μ) => ζ ^ i.val) I (j : ZMod (2 ^ μ)) = 0) →
     ∃ τ : ℕ, (∃ c, τ = 2 ^ c) ∧ t ≤ τ ∧ τ ≤ 2 * t ∧
       ShiftClosed I ((2 ^ μ / τ : ℕ) : ZMod (2 ^ μ))
 
-/-! ## 4. The closed char-0 count (consequence of the rigidity) -/
+/-- **Why the rigidity needs `1 ≤ t`.** At `t = 0` the conclusion of
+`DyadicConsecutiveVanishingRigidity` is unsatisfiable: no power of two `τ` has `τ ≤ 2 · 0`.
+(The earlier, unguarded version of the `Prop` quantified over `t = 0`, where all antecedents hold
+vacuously, and was therefore false for every `μ`.) -/
+theorem dyadicRigidity_conclusion_false_at_zero :
+    ¬ ∃ τ : ℕ, (∃ c, τ = 2 ^ c) ∧ τ ≤ 2 * 0 := by
+  rintro ⟨τ, ⟨c, rfl⟩, h⟩
+  have : 0 < 2 ^ c := by positivity
+  omega
 
-/-- **The closed-form char-0 count.** Given the rigidity, the number of index sets `I ⊆ ZMod N`
-of size `a` with `t-1` consecutive vanishing frequencies equals `C(N/τ, a/τ)` (choose `a/τ` of the
-`N/τ` cosets of `μ_τ`), with `τ` = least power of two `≥ t`; in particular it is `0` unless `τ ∣ a`.
-This is the *closed-form* char-0 floor: in the prize window (`t = Θ(n)`, `τ ≈ n`, `N/τ = O(1)`) it
-is `O(1) ≤ C·n`, so `DyadicLacunaryFloor` holds **in characteristic 0** — the count is no longer
-the obstruction, only the char-`p` transfer is. -/
+/-! ## 4. The expected char-0 count formula (arithmetic only) -/
+
+/-- **The expected closed-form char-0 count (a formula, not a theorem).** This is just the
+arithmetic expression `[τ ∣ a] · C(N/τ, a/τ)` (choose `a/τ` of the `N/τ` cosets of `μ_τ`).
+It is the count one *expects* for index sets `I ⊆ ZMod N` of size `a` with `t-1` consecutive
+vanishing frequencies (`τ` = least power of two `≥ t`), given the unproved rigidity `Prop` *and* a
+coset-union counting bridge. **Neither the bridge nor any identification of an actual variety's
+cardinality with this formula is formalized here**, so nothing in this file proves
+`DyadicLacunaryFloor` in characteristic 0. -/
 def dyadicCharZeroCount (N τ a : ℕ) : ℕ :=
   if τ ∣ a then Nat.choose (N / τ) (a / τ) else 0
 
-/-- In the deep window (least power of two `τ ≥ t` with `N/τ` small), the closed char-0 count is
-small: `dyadicCharZeroCount N τ a ≤ 2 ^ (N / τ)` always (a subset count of the `N/τ` cosets). So
-once `N/τ = O(log N)` the floor `≤ C·N` is automatic in char 0. -/
+/-- Arithmetic bound on the formula: `dyadicCharZeroCount N τ a ≤ 2 ^ (N / τ)` always (it is at
+most a binomial coefficient of `N/τ`). Note `N/τ = O(log N)` only makes this `N^{O(1)}`
+(polynomial); a linear bound `≤ C·N` needs `N/τ ≤ log₂ N + O(1)`. This is a statement about the
+formula only, not about any vanishing variety. -/
 theorem dyadicCharZeroCount_le (N τ a : ℕ) :
     dyadicCharZeroCount N τ a ≤ 2 ^ (N / τ) := by
   unfold dyadicCharZeroCount
@@ -277,24 +310,21 @@ theorem dyadicCharZeroCount_le (N τ a : ℕ) :
       exact Nat.zero_le _
   · exact Nat.zero_le _
 
-/-! ## 5. Bridge: the rigidity closes the char-0 lacunary floor count -/
+/-! ## 5. Extracting the shift-closure witness from the (assumed) rigidity -/
 
-/-- **The char-0 lacunary count is closed by the rigidity** (statement of the consequence as a
-clean implication). If `DyadicConsecutiveVanishingRigidity μ` holds, then every index set with
-`t-1` consecutive vanishing frequencies is `μ_τ`-coset-supported (`τ` = least power of two `≥ t`),
-hence the count is bounded by `2^{N/τ}`. Recorded as the formal link from the open input to the
-closed count; the deep-window smallness (`N/τ = O(1)` at `t = Θ(n)`) then gives the floor.
-
-This is the precise sense in which the `fourier-uncertainty-dyadic` angle **closes the char-0
-side**: modulo the named cyclotomic/Lam–Leung input, the combinatorial count is exactly pinned. -/
+/-- **Shift-closure from the assumed rigidity.** If `DyadicConsecutiveVanishingRigidity μ` holds,
+then every index set with `t-1` (`t ≥ 1`) consecutive vanishing frequencies against a primitive
+root is closed under `+ N/τ` for some power of two `τ ≥ t`. This only unpacks the assumed `Prop`;
+it proves no count. Turning shift-closure into the bound `≤ 2^{N/τ}` on an actual variety would
+additionally need a coset-union counting bridge, which is not formalized here. -/
 theorem charZeroCount_closed_of_rigidity {μ : ℕ}
     (hrig : DyadicConsecutiveVanishingRigidity μ)
-    (ζpow : ZMod (2 ^ μ) → ℂ) (I : Finset (ZMod (2 ^ μ))) (t : ℕ)
-    (hadd : ∀ a b, ζpow (a + b) = ζpow a * ζpow b)
-    (hvanish : ∀ j : ℕ, 1 ≤ j → j < t → powerSum ζpow I (j : ZMod (2 ^ μ)) = 0) :
+    (ζ : ℂ) (hζ : IsPrimitiveRoot ζ (2 ^ μ)) (I : Finset (ZMod (2 ^ μ))) (t : ℕ) (ht : 1 ≤ t)
+    (hvanish : ∀ j : ℕ, 1 ≤ j → j < t →
+      powerSum (fun i : ZMod (2 ^ μ) => ζ ^ i.val) I (j : ZMod (2 ^ μ)) = 0) :
     ∃ τ : ℕ, (∃ c, τ = 2 ^ c) ∧ t ≤ τ ∧
       ShiftClosed I ((2 ^ μ / τ : ℕ) : ZMod (2 ^ μ)) := by
-  obtain ⟨τ, hpow, hle, _, hclosed⟩ := hrig ζpow I t hadd hvanish
+  obtain ⟨τ, hpow, hle, _, hclosed⟩ := hrig ζ hζ I t ht hvanish
   exact ⟨τ, hpow, hle, hclosed⟩
 
 end ProximityGap.DyadicFourierUncertainty
@@ -308,3 +338,4 @@ end ProximityGap.DyadicFourierUncertainty
 #print axioms ProximityGap.DyadicFourierUncertainty.powerSum_vanish_of_shiftClosed
 #print axioms ProximityGap.DyadicFourierUncertainty.dyadicCharZeroCount_le
 #print axioms ProximityGap.DyadicFourierUncertainty.charZeroCount_closed_of_rigidity
+#print axioms ProximityGap.DyadicFourierUncertainty.dyadicRigidity_conclusion_false_at_zero

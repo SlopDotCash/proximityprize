@@ -21,9 +21,14 @@ Reusable helper lemmas supporting
 The four ABF26 §5 theorems (`linear_listSize_to_epsMCA_gcxk25`,
 `rs_epsCA_small_implies_lambda_lt_F_bchks25`, `rs_epsCA_implies_lambda_extended_cs25`,
 `rs_epsCA_separation_bgks20`) bridge the *Grand List-Decoding Challenge* and the *Grand
-MCA Challenge*.  Each cites a substantial external counting/probabilistic argument over a
-*specific* code construction (deep holes, Frobenius/subfield structure, maximal correlated
-agreement domains) whose code-theoretic core is not yet available in-tree.
+MCA Challenge*.  Each cites a substantial counting/probabilistic argument over a *specific* code
+construction (deep holes, Frobenius/subfield structure, maximal correlated agreement domains).
+When this file was written none of those code-theoretic cores was available in-tree. **Status
+update:** that blanket statement is stale for CS25 — the deep-hole route is now closed by
+`CS25JointFar.rs_epsCA_implies_lambda_extended_cs25_complete` (`ToMathlib/CS25JointFar.lean`),
+under explicit parameter/rate/field side conditions (`0 < k`, `0 ≤ η < 1`, `k + 1 ≤ |ι|`,
+`|ι| < |F|`, `0 ≤ δ`, the rate condition `k < n − ⌊δ·n⌋`, and the CA-error cap). The other
+three cores are not claimed here.
 
 This file provides:
 
@@ -33,10 +38,11 @@ This file provides:
 
 2. **The CS25 (ABF26 T5.3) contradiction arithmetic** (`cs25_qeps_le_E`).  This is the
    *clean* half of CS25 Theorem 2: given the two numeric hypotheses on `ε := ε_ca.toReal`
-   and the slack `η`, the list-size threshold algebra closes.  The genuinely external half
-   (the deep-hole + Schwartz–Zippel construction relating `ε_ca` of `RS[k]` to the list of
-   `RS[k+1]`, the paper's "Claim 3") is isolated as a named residual hypothesis in the
-   companion `_of_residuals` theorem in `ListDecodingAndCA.lean`.
+   and the slack `η`, the list-size threshold algebra closes.  The deep-hole + Schwartz–Zippel
+   half (relating `ε_ca` of `RS[k]` to the list of `RS[k+1]`, the paper's "Claim 3") is
+   isolated as a named residual hypothesis in the companion `_of_residuals` theorem in
+   `ListDecodingAndCA.lean`; that residual is now discharged (under the side conditions above)
+   by the `CS25*` files culminating in `CS25JointFar.lean`.
 
 ## References
 

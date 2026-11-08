@@ -17,11 +17,13 @@ The prize cross-surplus counts nonzero short cyclotomic integers `α = ∑_j c_j
 completely, `N(𝔭) = p`, degree-1 prime ideal). Pan–Xu (EUROCRYPT'21) give poly ideal-SVP only for
 **non-split** `q`; the prize `q` is fully split — the named open gap.
 
-The one STRUCTURED feature of the defect locus is the **cross-parity leak**: split a vanishing
+The so-called **cross-parity leak** of the defect locus: split a vanishing
 defect's coefficient vector into its even-power part `A = ∑_{j even} c_j ζ^j` and odd-power part
-`B = ∑_{j odd} c_j ζ^j`. Then `A + B = 0`, i.e. **`A ≡ −B (mod p)`** — and the probe
-(`scripts/probes/probe_407_laneF_crossparity_leak.py`) shows this holds for **100%** of defects with
-the SHARP ratio `g₀ = −A/B = 1` (not `g`), i.e. the law is exactly `A = −B`.
+`B = ∑_{j odd} c_j ζ^j`. Then `A + B = α ≡ 0 (mod 𝔭)`, i.e. `A ≡ −B` — but this is a TAUTOLOGY:
+it is just the vanishing of `α = A + B` restated, so it holds for 100% of defects by definition.
+(Audit 2026-10-28, CW-B18-19: an earlier version presented "`A = −B` for 100% of defects, sharp
+ratio `−A/B = 1`" from probe `scripts/probes/probe_407_laneF_crossparity_leak.py` as a structural
+discovery; it carries no information beyond `α ≡ 0`.)
 
 **The swing (and why it FAILS).** One hopes the cross-parity structure forces the shortest vector of
 the **even sublattice** `𝔭_even = {c supported on even powers}` to be LONG (beating the random-lattice
@@ -89,8 +91,9 @@ theorem fullSum_eq_even_add_odd {d : ℕ} (c : Fin d → R) (g : Fin d → R) :
   omega
 
 /-- **The cross-parity identity (unconditional).** If a defect vanishes mod the split prime
-(`∑_j c_j g_j = 0`), then its even part and odd part are exact negatives: `A = −B`. This is the
-structured leak observed at 100% (with the sharp ratio `−A/B = 1`). -/
+(`∑_j c_j g_j = 0`), then its even part and odd part are exact negatives: `A = −B`.  This is the
+splitting `A + B = ∑ c_j g_j` of the vanishing sum — a tautological rearrangement, which is why the
+"leak" is observed at 100% (CW-B18-19); it is not a structural discovery. -/
 theorem crossParity_of_vanish {d : ℕ} (c : Fin d → R) (g : Fin d → R)
     (hvanish : (∑ j, c j * g j) = 0) :
     evenPart c g = - oddPart c g := by

@@ -25,12 +25,21 @@ shift-invariant statistic are preserved, and the fixed-row centered covariance
 centeredCov m W R = m * (∑ x, W x * R x) - (∑ x, W x) * (∑ x, R x)
 ```
 
-is genuinely shift-non-invariant. Any origin marker computable from `W` is translation-covariant:
-either shift-invariant (autocorrelation values, `|DFT|`, the value multiset, any degree-`k` moment),
-which gives the identity and a sign-reversing shift the *same value*; or shift-equivariant (the
-argmax of a unique extremum, any "distinguished residue" rule, `DFT` phases), for which "align the
-marker to `0`" is a gauge fixing that maps the whole shift orbit to *one* canonical profile. Neither
-class can tell the covariance which physical origin `R_r` uses.
+is genuinely shift-non-invariant. Under the explicit *marker hypothesis* that an origin marker is
+label-free (translation-covariant), it is either shift-invariant (autocorrelation values, `|DFT|`,
+the value multiset, any degree-`k` moment), which gives the identity and a sign-reversing shift the
+*same value*; or shift-equivariant (the argmax of a unique extremum, any label-free "distinguished
+residue" rule, `DFT` phases), for which "align the marker to `0`" is a gauge fixing that maps the
+whole shift orbit to *one* canonical profile. Neither class, once an equivariant marker's value (the
+displacement itself) is discarded and only the canonicalized profile kept, can tell the covariance
+which physical origin `R_r` uses.
+
+**Scope (audit 2026-10-28, L103).** That dichotomy is a hypothesis on the allowed markers, not a
+theorem about all functions of an indexed profile: a marker that uses the given coordinate labels,
+such as `W ↦ W 0`, is generally neither invariant nor equivariant as a residue selector, and an
+actual sponsor construction may supply absolute placement data. Neither is excluded here. The
+theorems below prove only the supplied facts: shift invariance of the mass, the exact `ZMod 7`
+sign-reversal witness, and the argmax-canonicalization collapse of that witness.
 
 ## The exact witness (`ZMod 7`)
 
@@ -44,18 +53,18 @@ class can tell the covariance which physical origin `R_r` uses.
   both equal `![2,0,1,1,1,1,0]`.
 
 So two profiles with the *same* argmax-gauge canonical form have opposite covariance sign against the
-*same* row. Any decision procedure factoring through that canonical form (any equivariant marker) is
-therefore blind to the sign. The companion probe
+*same* row. Any decision procedure factoring only through that canonical form (discarding the
+equivariant marker's value) is therefore blind to the sign. The companion probe
 `scripts/probes/g260_origin_anchor_gauge_nogo.py` verifies the gauge collapse over the whole shift
-orbit universally and shows the simultaneous `r=5,6` sign-reversing shifts persist at `~25%` of all
-shifts as the support fraction thins to `0.03` (prize scale).
+orbit and shows the simultaneous `r=5,6` sign-reversing shifts persist at `~25%` of all shifts at
+its tested cells down to support fraction `0.03` (finite measurements, not an asymptotic theorem).
 
-This is a route no-go, not a Jacobi covariance estimate and not a prize closure. It closes the
-origin-anchor repair G259 left open: the missing datum is absolute row placement itself, equivalently
-the original joint sponsor-prime BGK/Paley covariance proved directly against the row label. The
-weights here are the standard structural surrogate used across G245-G259; the tested property (gauge
-covariance of every `W`-marker versus shift-non-invariance of the target) is structural and stable
-across the surrogate.
+This is a route no-go for label-free origin anchors, not a Jacobi covariance estimate and not a
+prize closure. It closes the label-free form of the origin-anchor repair G259 left open: the missing
+datum is absolute row placement itself, equivalently the original joint sponsor-prime BGK/Paley
+covariance proved directly against the row label. The weights here are the standard structural
+surrogate used across G245-G259; the tested property (gauge covariance of label-free `W`-markers
+versus shift-non-invariance of the target) is checked on that surrogate only.
 -/
 
 open Finset

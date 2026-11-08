@@ -20,9 +20,14 @@ so the `m`-fold distinct sumset of `⟨−2⟩ mod q` is *all* of `ZMod q`.
 
 Numerically (m=7..20), every largest primitive factor `q` of `2^m−1` (Mersenne **and** non-Mersenne:
 17, 73, 89, 43, 151, 257, …) is a Conj 1.12 witness, with the only binding constraint being the order
-bound `2m ≤ 10 log₂ q` (i.e. `q ≥ 2^{m/5}`). So Conj 1.12 follows from "`∃^∞ m: P(2^m−1) ≥ 2^{m/5}`"
-(a large-prime-factor statement, cf. Stewart) — a different, broader sufficient condition than the
-infinitude of Mersenne primes. The covering half is proved here; the large-factor half is open.
+bound `2m ≤ 10 log₂ q` (i.e. `q ≥ 2^{m/5}`). The odd-`m` hypothesis is essential to the injectivity
+step: for **even** `m` with `ord_q(2) = m` one has `2^{m/2} ≡ −1 (mod q)`, so the `2m` signed powers
+collapse to only `m` residues mod `q`, injectivity on `G` fails, and this transfer argument does not
+apply. So the sufficient condition supplied by this argument is
+"there are infinitely many **odd** `m` having a prime `q ∣ 2^m − 1` with `ord_q(2) = m` and
+`q ≥ 2^{m/5}`" (a large-primitive-prime-factor statement, cf. Stewart) — a different, broader
+sufficient condition than the infinitude of Mersenne primes; even `m` would need a separate
+construction. The (generic) covering half is proved here; the odd-`m` large-factor half is open.
 Axiom-clean. Issue #389.
 -/
 

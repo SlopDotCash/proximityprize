@@ -1,5 +1,23 @@
 # Targeted literature survey of the REDUCED form: anti-concentration of `r`-fold subset sums of `μ_n` mod `p` (2026-06-13)
 
+> **Source-scope corrections (2026-10-28 audit, T48; primary abstracts checked).** These correct how
+> the sources are summarized; they are not refutations of the cited results, and this is not a
+> full-paper review.
+> - **Jain–Sah–Sawhney** ([arXiv 2101.07726](https://arxiv.org/abs/2101.07726)) **prove** their
+>   `O(√ε)` real-vector statement rigorously under `n ≥ ε^{−1/2}`; only the sharper `O(ε)`
+>   dependence is conjectural. The remark about inverse Littlewood–Offord exceptional elements is
+>   not a reason to call their established real theorem non-rigorous.
+> - **Hanson–Petridis**, Theorem 1.2 ([arXiv 1905.09134](https://arxiv.org/abs/1905.09134)),
+>   controls sumset containment in a proper root subgroup (optionally with `0` adjoined). It does not
+>   establish the dyadic subgroup's exact second additive energy. The `E₂ = 3n² − 3n` value is a
+>   characteristic-zero count that needs its own transfer hypothesis in `F_p`. The journal entry is
+>   2020, not 2021.
+> - **arXiv 2304.14141** concerns uniformly distributed nonempty subset sums of unit sets, not a
+>   generic all-distinct-subsets threshold.
+>
+> The summary's main warning stands: neither result supplies a finite-field growing-depth moment
+> transfer.
+
 After the direct attack localized the entire prize to a single gate — the Markov bridge
 (`docs/kb/deltastar-DIRECT-ATTACK-markov-mechanism-2026-06-13.md`) needs
 `M_r = Σ_{b≠0}η_b^{2r}` clean (`≤ p·(2r−1)!!·n^r·(1+o(1))`) up to `r ≈ c·ln p`, equivalently

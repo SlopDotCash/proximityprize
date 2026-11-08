@@ -44,9 +44,15 @@ HONESTY NOTES (no fabrication):
   the genuine Johnson-CA-gated open obligation. The `…_of_secure_vectorIOP` versions are
   the non-vacuous wiring: they accept any future `π` with proven security.
 * The complexity legs (`hM`/`hLen`/`hQin`/`hQpf`) of `stir_main` and the per-round error
-  legs (`hfold`/`hrest`) of `stir_rbr_soundness` are constraints on universally-quantified
-  free parameters of the statements (`M`, `proofLen`, …, `ε_fold`, …); they cannot be
-  derived from any construction and are consumed as hypotheses.
+  legs (`hfold`/`hrest`/`hfin`) of `stir_rbr_soundness` are constraints on
+  universally-quantified free parameters of the statements (`M`, `proofLen`, …, `ε_fold`, …);
+  they cannot be derived from any construction and are consumed as hypotheses.
+* The general wiring accepts any secure-with-gap vector IOP over `stirMultiVSpec`; it does
+  not identify the STIR verifier. The error legs follow the 2026-10-28 repair of
+  `stir_rbr_soundness` (audit L36: shift term with `repeatParam_j + s` inside `proximityError`,
+  folding parameter `kᵢ` as the fourth argument of the fold term and of the last shift term,
+  final-round bound `hfin` outside the tail quantifier), and `hF` is the corrected lower-bound
+  field-size condition `FieldSizeCondition`.
 -/
 
 set_option linter.unusedSimpArgs false
@@ -211,7 +217,7 @@ theorem stir_rbr_soundness_of_secure_vectorIOP
       (fun _ => ({ε_fold} ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max' (by simp))
       π)
     (hfold : ε_fold ≤ proximityError F (P.deg / P.foldingParam 0)
-      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.repeatParam 0))
+      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.foldingParam 0))
     (hrest : ∀ j : Fin M,
         (ε_out j ≤ ((Dist.l j.succ : ℝ) ^ 2 / 2) *
           ((degree ι P j.succ : ℝ) / (Fintype.card F - Fintype.card (ι j.succ))) ^ s)
@@ -219,16 +225,15 @@ theorem stir_rbr_soundness_of_secure_vectorIOP
         (ε_shift j ≤
           (1 - Dist.δ j.castSucc) ^ (P.repeatParam j.castSucc) +
            proximityError F (degree ι P j.succ) (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.castSucc) + s +
+            (Dist.δ j.succ) (P.repeatParam j.castSucc + s) +
            proximityError F ((degree ι P j.succ) / P.foldingParam j.succ)
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.succ))
-        ∧
-        ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
+            (Dist.δ j.succ) (P.foldingParam j.succ)))
+    (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
     stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   ⟨3 * M + 3, stirMultiVSpec M (ι 0), stirVSpec_card_challengeIdx, π, hSecure,
-    hfold, hrest⟩
+    hfold, hrest, hfin⟩
 
 /-- **Lemma 5.4 front door (#301, mechanical track)**: `stir_rbr_soundness` instantiated with
 the assembled multi-round object. The existential witnesses are fully constructed —
@@ -236,7 +241,7 @@ the assembled multi-round object. The existential witnesses are fully constructe
 `stirVSpec_card_challengeIdx`), `π := stirMultiRoundIOP` — and the completeness leg of
 `IsSecureWithGapAveraged` is proven. The genuinely open legs are consumed as hypotheses:
 the rbr-soundness residual (`hSound`, Johnson-CA-gated) and the per-round error bounds
-(`hfold`/`hrest`, statements about the free parameters `ε_fold/ε_out/ε_shift/ε_fin`). -/
+(`hfold`/`hrest`/`hfin`, statements about the free parameters `ε_fold/ε_out/ε_shift/ε_fin`). -/
 theorem stir_rbr_soundness_of_residuals
     {M : ℕ} (ι : Fin (M + 1) → Type) [∀ i : Fin (M + 1), Fintype (ι i)]
     {s : ℕ} {P : Params ι F}
@@ -254,7 +259,7 @@ theorem stir_rbr_soundness_of_residuals
       (fun _ => ({ε_fold} ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max' (by simp)))
     -- the open per-round error-bound legs (free-parameter constraints)
     (hfold : ε_fold ≤ proximityError F (P.deg / P.foldingParam 0)
-      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.repeatParam 0))
+      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.foldingParam 0))
     (hrest : ∀ j : Fin M,
         (ε_out j ≤ ((Dist.l j.succ : ℝ) ^ 2 / 2) *
           ((degree ι P j.succ : ℝ) / (Fintype.card F - Fintype.card (ι j.succ))) ^ s)
@@ -262,19 +267,18 @@ theorem stir_rbr_soundness_of_residuals
         (ε_shift j ≤
           (1 - Dist.δ j.castSucc) ^ (P.repeatParam j.castSucc) +
            proximityError F (degree ι P j.succ) (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.castSucc) + s +
+            (Dist.δ j.succ) (P.repeatParam j.castSucc + s) +
            proximityError F ((degree ι P j.succ) / P.foldingParam j.succ)
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.succ))
-        ∧
-        ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
+            (Dist.δ j.succ) (P.foldingParam j.succ)))
+    (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
     stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   stir_rbr_soundness_of_secure_vectorIOP (hParams := hParams) (Codes := Codes)
     ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin
     (stirMultiRoundIOP M (P.φ 0) (degree ι P 0))
     (stirMultiRoundIOP_isSecureWithGap M (P.φ 0) (degree ι P 0) (Dist.δ 0) _ hSound)
-    hfold hrest
+    hfold hrest hfin
 
 /-- **Theorem 5.1 general wiring**: any secure-with-gap vector IOP over the STIR multi-round
 shape discharges the `stir_main` existential, given the rbr error bound and the complexity
@@ -287,9 +291,7 @@ theorem stir_main_of_secure_vectorIOP
     {k proofLen qNumtoInput qNumtoProofstr : ℕ}
     (hk : ∃ p, k = 2 ^ p) (hkGe : k ≥ 4)
     (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
-    (hF : Fintype.card F ≤
-          secpar * 2 ^ secpar * degree ^ 2 * (Fintype.card ι) ^ (7 / 2) /
-            Real.log (1 / rate (code φ degree)))
+    (hF : FieldSizeCondition secpar φ degree)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (π : VectorIOP Unit (OracleStatement ι F) Unit (stirMultiVSpec M ι) F)
     (hSecure : IsSecureWithGapAveraged (stirRelation degree φ 0) (stirRelation degree φ δ) ε_rbr π)
@@ -301,12 +303,8 @@ theorem stir_main_of_secure_vectorIOP
       (cₖ k) * ((Real.log degree) +
         secpar * (Real.log ((Real.log degree) / Real.log (1 / rate (code φ degree)))))) :
     stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
-      (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF := by
-  obtain ⟨c, hc, hMle⟩ := hM
-  obtain ⟨cₖ, hLenle⟩ := hLen
-  obtain ⟨cₖ', hQle⟩ := hQpf
-  exact ⟨3 * M + 3, stirMultiVSpec M ι, ε_rbr, π, hSecure,
-    fun i => ⟨hε i, c, hc, hMle, cₖ, hLenle, hQin, cₖ', hQle⟩⟩
+      (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
+  ⟨3 * M + 3, stirMultiVSpec M ι, ε_rbr, π, hSecure, hε, hM, hLen, hQin, hQpf⟩
 
 /-- **Theorem 5.1 front door (#301, mechanical track)**: `stir_main` instantiated with the
 assembled multi-round object (`n := 3M + 3`, `vPSpec := stirMultiVSpec M ι`,
@@ -321,9 +319,7 @@ theorem stir_main_of_residuals
     {k proofLen qNumtoInput qNumtoProofstr : ℕ}
     (hk : ∃ p, k = 2 ^ p) (hkGe : k ≥ 4)
     (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
-    (hF : Fintype.card F ≤
-          secpar * 2 ^ secpar * degree ^ 2 * (Fintype.card ι) ^ (7 / 2) /
-            Real.log (1 / rate (code φ degree)))
+    (hF : FieldSizeCondition secpar φ degree)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (hSound : stirMultiRoundRbrSoundnessResidual M φ degree δ ε_rbr)
     (hε : ∀ i, ε_rbr i ≤ (1 : ℚ≥0) / (2 ^ secpar))

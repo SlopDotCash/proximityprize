@@ -16,6 +16,16 @@ the downstream interfaces for binary and sequential verifier fusion.
 Canonical Sumcheck uses a dedicated oracle verifier. Its materialization equality
 `Sumcheck.Spec.oracleReduction_toReduction` supplies the exact `hBridge` consumed by LogUp.
 The historical bridge theorem retains its binary and per-round arguments for existing callers.
+
+The per-round bridge `hPerRound`
+(`(SingleRound.oracleReduction i).toReduction = SingleRound.reduction i`) also holds
+unconditionally: canonical `SingleRound.oracleReduction_toReduction`, restated below under its
+downstream name `SingleRound.oracleReduction_toReduction_eq_reduction`. It is not a mere
+`liftContext`-commutation fact: it also asserts that the oracle round verifier and the plain round
+verifier read the same data, which holds for the canonical message-reading verifiers of
+`Sumcheck/Spec/SingleRound.lean`. (An earlier downstream oracle verifier ignored the message and
+re-checked the input claim directly; for that verifier `hPerRound` was false. That verifier is
+retired.)
 -/
 
 open OracleComp OracleSpec ProtocolSpec
@@ -140,7 +150,18 @@ variable {R : Type} [CommSemiring R] [SampleableType R] [DecidableEq R] [Fintype
   {ι : Type} {oSpec : OracleSpec ι} [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)]
 
 omit [Fintype R] [Inhabited R] [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)] in
-/-- The historical Sumcheck `hBridge`, supplied by `oracleReduction_toReduction`. -/
+/-- **The per-round single-round bridge `hPerRound` holds.** Downstream name for canonical
+`SingleRound.oracleReduction_toReduction`: the oracle round verifier and the plain round verifier
+both check the prover message's `D`-sum and take the new target from the message at the
+challenge. -/
+theorem SingleRound.oracleReduction_toReduction_eq_reduction (i : Fin n) :
+    (SingleRound.oracleReduction R n deg D oSpec i).toReduction =
+      SingleRound.reduction R n deg D oSpec i :=
+  SingleRound.oracleReduction_toReduction R n deg D oSpec i
+
+omit [Fintype R] [Inhabited R] [∀ q, Fintype (oSpec.Range q)] [∀ q, Inhabited (oSpec.Range q)] in
+/-- The historical Sumcheck `hBridge`, supplied by `oracleReduction_toReduction`. The binary-fusion
+and per-round arguments are retained only for existing callers and are not used. -/
 theorem oracleReductionToReductionResidual_of_binary
     (hBinaryFusion : OracleVerifier.BinaryVerifierFusion oSpec)
     (hPerRound : ∀ i, (SingleRound.oracleReduction R n deg D oSpec i).toReduction =
@@ -154,3 +175,4 @@ end Sumcheck.Spec
 #print axioms OracleVerifier.seqCompose_toVerifier_of_binary
 #print axioms OracleReduction.seqCompose_toReduction_of_verifier
 #print axioms Sumcheck.Spec.oracleReductionToReductionResidual_of_binary
+#print axioms Sumcheck.Spec.SingleRound.oracleReduction_toReduction_eq_reduction

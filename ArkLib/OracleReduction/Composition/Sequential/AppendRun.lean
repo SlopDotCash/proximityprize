@@ -49,11 +49,16 @@ computation in `oSpec`), and canonical uniform-answer semantics validates indepe
 
 This section states the residual and the keystone at the `evalDist` level, the form actually consumed
 by completeness/soundness proofs (which only ever compare `evalDist`s). `appendRunRightDistResidual`
-is the distribution-level residual; it is **dischargeable** (unlike its syntactic counterpart) by
-assembling the proven left-block / message-seam / interior pieces together with
-`evalDist_bind_comm` at the challenge seam. `append_run_evalDist` reduces the appended run to the
-sequential composition, conditional on that residual, via the *same* seam-split backbone as the
-syntactic `append_run`.
+is the distribution-level residual; unlike its syntactic counterpart it is dischargeable, and it is
+in fact **discharged later in this file for every prover pair**: `appendRunRightDistResidual_holds`
+(by the empty / message-seam / challenge-seam case split, the challenge seam using
+`evalDist_bind_comm`). `append_run_evalDist` reduces the appended run to the sequential
+composition, stated relative to that residual, via the *same* seam-split backbone as the syntactic
+`append_run`.
+
+Scope: this is raw-`evalDist` prover-run factoring. It is distinct from (and does not by itself
+give) universal binary RBR append security or a transport theorem for arbitrary interpreters
+(stateful oracle implementations).
 
 ## Message-seam discharge (unconditional)
 

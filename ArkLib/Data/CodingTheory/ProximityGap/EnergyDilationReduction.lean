@@ -24,9 +24,12 @@ The reduction is exact and elementary (a multiplicative reindexing of each inner
 `y₁`), valid for any `H ⊆ F` closed under `·` and `⁻¹` with `0 ∉ H`. Composed with the
 `SubgroupGaussSumFourthMoment` chain (`q·E(H) = ∑_b ‖η_b‖⁴`) and the
 `EnergyCharacterTransport` brick, it routes the whole programme through the single normalized
-incidence count `T(H) := #{(b,c)∈H² : 1+b−c ∈ H}` — and `T(H) = (1 + o(1))·n²/q` is the
-Stepanov/Weil statement (`E(H) = (1+o(1))·n³/q` for the *full* group; the subgroup deviation from
-this is exactly the sub-Johnson wall).
+incidence count `T(H) := #{(b,c)∈H² : 1+b−c ∈ H}`, with exactly `E(H) = n·T(H)` (`n = |H|`).
+The four-variable random baseline is `E(H) ≈ n⁴/q`, i.e. `T(H) ≈ n³/q` (plus the trivial
+diagonal contribution `E(H) ≥ 2n² − n`); for the *full* unit group (`n = q − 1`) one has
+`E ≈ n³` and `T ≈ n²`. Showing that a proper subgroup's `T(H)` stays near the `n³/q` baseline is
+the Stepanov/Weil-type statement, and the subgroup deviation from it is exactly the sub-Johnson
+wall. (These scalings are heuristic context; the theorems below are the exact identities only.)
 
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #389.

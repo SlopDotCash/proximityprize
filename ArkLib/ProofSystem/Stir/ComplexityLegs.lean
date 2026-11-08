@@ -30,10 +30,12 @@ a hypothesis.
 
 * `complexityLeg_rounds` / `complexityLeg_proofLen` / `complexityLeg_queries` — the generic
   dischargers.
-* `stir_main_of_checkingIOP_small_field_auto` — the unconditional small-field Theorem 5.1
-  front door with the three existential legs supplied automatically (hypothesis surface:
-  `2 ≤ degree`, `2 ≤ k` (implied by `k ≥ 4`), a positive proof-query bracket, and the
-  genuine `hQin`/`hε`/regime hypotheses).
+* `stir_main_of_checkingIOP_small_field_auto` — the small-field Theorem 5.1 front door with
+  the three existential legs supplied automatically (hypothesis surface: `2 ≤ degree`,
+  `2 ≤ k` (implied by `k ≥ 4`), a positive proof-query bracket, and the genuine
+  `hQin`/`hε`/regime hypotheses). Its premises pin `secpar = 0` (see its docstring), so it is
+  not a positive-security STIR complexity theorem; and since the complexity legs are
+  per-instance, it is not a uniform `O(·)` result either.
 
 Axiom-clean: `[propext, Classical.choice, Quot.sound]` (see `#print axioms` at EOF).
 -/
@@ -83,7 +85,10 @@ dischargers above. Remaining hypothesis surface: the regime hypotheses (`hδudr`
 budget facts (`hεlb`/`hε`), the genuine per-instance query constraint `hQin`, the degree bound
 `2 ≤ degree`, and the positive proof-query bracket `hB` (the bracket can be nonpositive for
 tiny rates, so it stays a hypothesis). The HONESTY caveat of the underlying route applies
-verbatim: in this small-field regime `hε` + `hεlb` pin `secpar = 0`. -/
+verbatim: in this small-field regime `hε` + `hεlb` pin `secpar = 0`, so the theorem certifies
+no security. At `secpar = 0` the field-size hypothesis `hF` holds automatically
+(`fieldSizeCondition_zero`); before the 2026-10-28 repair it was an upper bound that read
+`|F| ≤ 0` there, which left this theorem without instances. -/
 theorem stir_main_of_checkingIOP_small_field_auto
     {M : ℕ} (secpar : ℕ)
     {ι : Type} [Fintype ι] [Nonempty ι]
@@ -91,9 +96,7 @@ theorem stir_main_of_checkingIOP_small_field_auto
     {k qNumtoInput : ℕ} (proofLen qNumtoProofstr : ℕ)
     (hk : ∃ p, k = 2 ^ p) (hkGe : k ≥ 4) (hdeg : 2 ≤ degree)
     (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
-    (hF : Fintype.card F ≤
-          secpar * 2 ^ secpar * degree ^ 2 * (Fintype.card ι) ^ (7 / 2) /
-            Real.log (1 / rate (code φ degree)))
+    (hF : FieldSizeCondition secpar φ degree)
     {m : ℕ}
     (hδudr : δ ≤ (1 - (LinearCode.rate (code φ degree) : ℝ≥0)) / 2)
     (hq : (Fintype.card F : ℝ≥0) ≤ ((m : ℝ≥0) - 1) * (Fintype.card ι : ℝ≥0))

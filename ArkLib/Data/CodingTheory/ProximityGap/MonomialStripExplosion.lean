@@ -27,11 +27,18 @@ Hence **every** `c ∈ μ_(n/g)` is `mcaEvent`-bad:
 
   `ε_mca(RS[F, μ_n, k], g/n) ≥ (n/g) / |F|`  whenever  `n − 3g < k ≤ n − 2g`.
 
-In staircase coordinates (`b = g + 1`, band `b`, `d = n − k + 1 ∈ [2b−1, 3b−3]`): the
-strip between the `3b−2` collapse threshold and the boundary row explodes to `n/(b−1)`
-bad scalars for genuine smooth-domain Reed–Solomon codes — matching the collapse theorem
-edge-to-edge (`n − 3g < k` is exactly the complement of `3(b−1) ≤ n − k`), so the two
-theorems together totally determine where the RS staircase is linear vs explosive.
+In staircase coordinates (`b = g + 1`, band `b`, `d = n − k + 1 ∈ [2b−1, 3b−3]`): on every
+band whose error budget `b − 1 = g` **divides the domain order `n`**, the strip between the
+`3b−2` collapse threshold and the boundary row explodes to `n/(b−1)` bad scalars for genuine
+smooth-domain Reed–Solomon codes. On such divisor-supported bands this matches the collapse
+theorem edge-to-edge (`n − 3g < k` is exactly the complement of `3(b−1) ≤ n − k`), so the
+collapse bound `3b−2` is sharp there.
+
+**Scope.** The witness needs `g ∣ n`. This file proves nothing about bands with
+`(b − 1) ∤ n`. On a fixed dyadic domain `n = 2^μ` the construction covers only the bands
+`b = 2^j + 1`; for example `b = 4` would need `3 ∣ 2^μ`, which is impossible. Those bands
+need a separate argument, so the two theorems together do *not* determine the whole
+staircase on a fixed domain.
 
 No `decide`, no per-instance data: the certificates are closed-form for every scale.
 Probe: `probe_mds_pencil_explosion.py` (T1–T6) and the monomial-pair scan at
@@ -267,10 +274,12 @@ divisor `g ∣ n` with `n − 3g < k ≤ n − 2g` (i.e. distance `d = n − k +
 
   `ε_mca(RS[F, μ_n, k], g/n) ≥ (n/g) / |F|`.
 
-In staircase terms: on every band `b` with distance `2b − 1 ≤ d ≤ 3b − 3`, smooth-domain
-RS explodes to `n/(b−1)` bad scalars — the `3b−2` collapse threshold
-(`UniversalStaircaseCollapse` / `MCAStaircaseMaster`) is sharp for Reed–Solomon codes,
-with the two theorems meeting edge-to-edge (`n − 3g < k` ⟺ `¬(3(b−1) ≤ n − k)`). -/
+In staircase terms: on every band `b` with `(b − 1) ∣ n` (the hypothesis `hgn`) and distance
+`2b − 1 ≤ d ≤ 3b − 3`, smooth-domain RS explodes to `n/(b−1)` bad scalars. On those bands the
+`3b−2` collapse threshold (`UniversalStaircaseCollapse` / `MCAStaircaseMaster`) is sharp for
+Reed–Solomon codes, with the two theorems meeting edge-to-edge
+(`n − 3g < k` ⟺ `¬(3(b−1) ≤ n − k)`). Bands with `(b − 1) ∤ n`, such as `b = 4` on a dyadic
+domain, are not covered. -/
 theorem strip_eps_ge [Nonempty (Fin n)] (hord : orderOf γ = n) (hg1 : 1 ≤ g)
     (hgn : g ∣ n) (hk_lo : n - 3 * g < k) (hk_hi : k ≤ n - 2 * g) (hn2g : 2 * g < n) :
     ((n / g : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞)

@@ -1,5 +1,12 @@
 # CORRECTION: the worst-case window list GROWS (~n²), it is NOT the constant dilation orbit (#444)
 
+> **Scope note (2026-10-28 audit, T48).** The retraction of the global constant-list claim stands.
+> The replacement wording needs the same care. The scan covers monomial and 2-term lacunary words
+> only, so its maxima are **sampled lower bounds** on the worst case over all received words. They
+> are not the worst case itself. Read "worst-case" below as "worst among the scanned words".
+> Likewise "`~n²`" and "GROWS" summarize five finite rows. Neither a universal upper bound nor any
+> asymptotic growth rate follows from them.
+
 Honest retraction of the "explicit-smooth-RS list = constant 2 (dilation orbit)" claim (comment 4705186359,
 `listdecoding-dilation-orbit-law-CONFIRMED.md`). A BROAD worst-case scan (all monomial + all 2-term lacunary
 words, `scripts/rust-pg/src/bin/listscan.rs`) shows the worst-case list is NOT constant.

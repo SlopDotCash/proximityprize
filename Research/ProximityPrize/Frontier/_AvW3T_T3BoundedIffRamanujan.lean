@@ -10,9 +10,11 @@ import Mathlib.Tactic
 # `T_3 = O(n^3)` ⟸ `M = O(√n)`: the depth-3 gate is the Ramanujan/sup-norm bound (#444)
 
 The question raised by the refutation of the `(45/4)n^2` law: *is `sup_p T_3(μ_n,p)/n^3` bounded?*
-This file pins the **theoretical answer**: the gate `T_3 = O(n^3)` is implied by — and at the same
-moment-order is essentially equivalent to — the Ramanujan-type sup-norm bound `M = O(√n)` at thin
-primes, via a single Hölder/Parseval inequality. So the gate is **not** a tractable elementary fact
+This file pins the **theoretical answer**: the gate `T_3 = O(n^3)` is implied by the
+Ramanujan-type sup-norm bound `M = O(√n)` at thin primes, via a single Hölder/Parseval inequality.
+It is NOT an equivalence with `M = O(√n)` (audit 2026-10-28, R-220): the single-term converse
+`E_3 ≥ M^6/p` retains `p`, so `E_3 = O(n^3)` yields only `M = O(p^{1/6}·n^{1/2})`, despite the
+file name. So the gate is **not** a tractable elementary fact
 disjoint from the conjecture; it lives at the same place.
 
 ## Set-up (the moment identities, used as named inputs)
@@ -30,14 +32,19 @@ For nonnegative reals `a_b` over a finite index set, `Σ a_b^3 ≤ (max a_b)^2 �
 
 ## Consequence (the determination)
 `M = O(√n)` (Ramanujan at thin primes) `⟹ T_3 = O(n^3)` (gate closes, `0.9583` unconditional).
-Conversely `E_3 ≥ M^6/p` (the single largest term), so a large `M` forces a large `E_3`. Thus the
-worst-case `T_3/n^3` is controlled by, and controls, the worst-case `M/√n` — the gate is the
+Conversely `E_3 ≥ M^6/p` (the single largest term), so a large `M` forces a large `E_3`; but this
+converse retains `p` (`E_3 = O(n^3)` gives only `M = O(p^{1/6} n^{1/2})`), so it is not the reverse
+implication to `M = O(√n)`. Thus the worst-case `T_3/n^3` is controlled by the worst-case `M/√n`,
+and controls it only up to the field-dependent factor `p^{1/6}` — the gate is the
 Ramanujan/BGK sup-norm question at fixed `r=3`, **not** an independent elementary bound. Empirically
 (deep thin-prime scan) `T_3/n^3 ∈ [14, 21]` for `n ≤ 128`, consistent with `M ≈ 3.5–4.5 √n` (the
 Parseval bound is loose by ~7×, so the gate does not literally *require* `M=O(√n)`, only that the
 sumset concentration stay bounded — which is the same wall in fixed-`r` form).
 
 ## THE DETERMINATION (empirical, "by all means necessary", + the proven theory above)
+*Scope (audit 2026-10-28, R-220):* the bullets below are finite scans at two values of `n`. Two
+data points cannot certify a `(log n)^2` growth law, an unbounded ratio, or the asymptotic
+exponent `t_3 = 3`; read "grows like", "hence" and "in the limit" as conjectural extrapolation.
 Deep thin-prime scans (n=32: 30000 primes; n=64: 8000 primes; correct primitive-root reduction):
 * `sup_p T_3/n^3` **plateaus for each fixed `n`** — `14.10` at `n=32` (stable from 1000 to 30000
   primes, worst prime `p=1244993`), `20.64` at `n=64` (stable from 5000 to 8000, `p=17318209`). So for

@@ -235,21 +235,16 @@ budget facts, with the keystone consumed as a black box. This makes precise that
 accounting is genuinely separable from — and consumes without re-proving — the MCA/folding
 frontier. -/
 
-/-- **Named residual (the genuine open per-round soundness math).** `WhirRbrKeystone`
-    abstracts the per-round RBR soundness guarantee: *under the four named per-round
-    budget inequalities (the `errStar`/folding bounds that `whir_rbr_soundness`'s
-    `hBudget` conjunction states verbatim), the protocol's per-challenge RBR knowledge
-    error is bounded by `ε_rbr`*. In the real tree this `Prop` is discharged by composing
-    `GenMutualCorrParams.hasMutualCorrAgreement` (MCA Cor 4.11, gated on
-    `mca_johnson_bound_CONJECTURE`) with the folding list-decoding lemmas L4.20–4.23 and
-    the per-round shift/OOD analyses — i.e. it is precisely the `is_rbr_knowledge_sound`
-    field of `IsSecureWithGapAveraged` for the constructed `π`.
-
-    This is the SINGLE interface point through which the proven §1 accounting depends on
-    the unproven MCA + folding frontier. It is parameterized by an opaque `SoundOk`
-    predicate (the soundness clause of `IsSecureWithGapAveraged …` for budget `ε_rbr`)
-    so this scratch file states the reduction without re-deriving the OracleReduction
-    security machinery. -/
+/-- **Named interface point (opaque; carries no protocol content by itself).**
+    `WhirRbrKeystone … SoundOk` is *literally* `SoundOk (epsRbr …)` for an arbitrary
+    predicate `SoundOk : ℝ≥0 → Prop`. Its type does not mention MCA, folding, correlated
+    agreement or any protocol event. The *intended* instantiation takes `SoundOk e` to be the
+    `is_rbr_knowledge_sound` clause of `IsSecureWithGapAveraged` at error `e` for a constructed WHIR
+    `π`; proving it there would require composing `GenMutualCorrParams.hasMutualCorrAgreement`
+    (MCA Cor 4.11, gated on `mca_johnson_bound_CONJECTURE`) with the folding list-decoding
+    lemmas L4.20–4.23 and the per-round shift/OOD analyses. None of that is done here or by
+    any consumer of this definition: anyone supplying a `WhirRbrKeystone` hypothesis still owes
+    the full semantic connection. The §1 accounting is valid independently of it. -/
 def WhirRbrKeystone
     (ε_fold : (i : Fin (M + 1)) → Fin (fp i) → ℝ≥0) (ε_out : Fin (M + 1) → ℝ≥0)
     (ε_shift : Fin M → ℝ≥0) (ε_fin : ℝ≥0)
@@ -258,10 +253,8 @@ def WhirRbrKeystone
 
 /-- **Reduction adapter: RBR soundness for the budget from the keystone.**
     Given the named keystone (`WhirRbrKeystone`), the per-challenge soundness guarantee
-    holds for `ε_rbr`. PROVEN trivially by unfolding — the *point* is that this is the
-    single black-box consumption of the MCA/folding frontier, with NO new probabilistic
-    content: the §1 accounting and this adapter together reduce `whir_rbr_soundness`'s
-    soundness clause to the keystone. -/
+    holds for `ε_rbr`. This is the identity (`WhirRbrKeystone` unfolds to the conclusion);
+    it adds NO probabilistic content and does not itself relate `SoundOk` to the protocol. -/
 theorem soundOk_epsRbr_of_keystone
     (ε_fold : (i : Fin (M + 1)) → Fin (fp i) → ℝ≥0) (ε_out : Fin (M + 1) → ℝ≥0)
     (ε_shift : Fin M → ℝ≥0) (ε_fin : ℝ≥0) (SoundOk : ℝ≥0 → Prop)
@@ -269,13 +262,13 @@ theorem soundOk_epsRbr_of_keystone
     SoundOk (epsRbr ε_fold ε_out ε_shift ε_fin) := hkey
 
 /-- **Monotone transport of the keystone to a looser per-challenge budget.**
-    If the soundness predicate is *antitone* (a larger error tolerance is easier to
+    If the soundness predicate is *monotone* (a larger error tolerance is easier to
     satisfy — the standard direction for an RBR error bound: `SoundOk e` means "RBR error
     ≤ e", which is upward-closed in `e`), then the keystone at `ε_rbr` transports to any
     `c ≥ ε_rbr`. Combined with §1's `epsRbr_le_of_forall_le`, this shows the keystone for
     the *tight* budget `ε_rbr` yields soundness for any uniform bound `c` dominating all
     four families — the WHIR counterpart of #24's `foldBudget_le_of_keystone`.
-    PROVEN: antitone applied to `epsRbr_le_of_forall_le`. -/
+    PROVEN: monotonicity applied to `epsRbr_le_of_forall_le`. -/
 theorem soundOk_of_keystone_of_forall_le
     (ε_fold : (i : Fin (M + 1)) → Fin (fp i) → ℝ≥0) (ε_out : Fin (M + 1) → ℝ≥0)
     (ε_shift : Fin M → ℝ≥0) (ε_fin : ℝ≥0) (SoundOk : ℝ≥0 → Prop)
@@ -287,31 +280,34 @@ theorem soundOk_of_keystone_of_forall_le
     SoundOk c :=
   hmono (epsRbr_le_of_forall_le ε_fold ε_out ε_shift ε_fin c hfold hout hshift hfin) hkey
 
-/-! ## §3. Reduction of the *existential* `whir_rbr_soundness` to its three obligations
+/-! ## §3. The historical *existential* shape of `whir_rbr_soundness`
 
-`whir_rbr_soundness` (`Whir/RBRSoundness.lean:185`) is
-    `∃ n, ∃ vPSpec, card (vPSpec.ChallengeIdx) = 2*M+2 ∧
-      ∃ π, (IsSecureWithGapAveraged …) ∧ hBudget`.
-The pure logical reduction — *given* the three pieces (challenge-card witness, a `π` with
-its security proof, and the budget proof), the existential closes — is exactly the landed
-`WhirIOP.whir_rbr_soundness_of_secure_gap` (`ToMathlib/WhirBricksConstruction.lean:434`,
-proven by `refine ⟨n, vPSpec, hCard, π, ?_⟩; exact ⟨hSecure, hBudget⟩`).
+An earlier revision of `whir_rbr_soundness` (`Whir/RBRSoundness.lean`) was the existential
+    `∃ n, ∃ vPSpec, card (vPSpec.ChallengeIdx) = 2*M+2 ∧ ∃ π, IsSecureWithGapAveraged …`
+(with the per-round budget inequalities as parameters, in the wrong direction `ε ≤ bound`).
+Any protocol with the right challenge count could witness that existential, so it did not
+identify WHIR. The current statement takes the protocol explicitly,
+    `card (vPSpec.ChallengeIdx) = 2*M+2 ∧ IsSecureWithGapAveraged … π`,
+with budget hypotheses `bound ≤ ε`, and `WhirIOP.Construction.whir_rbr_soundness_of_secure_gap`
+packages it as `⟨hCard, hSecure⟩`.
 
-We reproduce that reduction's *propositional skeleton* abstractly to confirm it is pure
-∃-introduction with no hidden math: the conjunction `Secure ∧ Budget` under an `∃`. -/
+The abstract skeleton below records the old ∃-introduction pattern (`Secure ∧ Budget` under an
+`∃`). It is pure logic with no hidden math and is not tied to the current statement. -/
 
-/-- Abstract skeleton of `whir_rbr_soundness`: a challenge-cardinality fact, a security
-    payload, and a budget payload, packaged existentially. (`Sec`/`Bud` stand for the
-    `IsSecureWithGapAveraged …` and `hBudget` conjunctions.
-    `Spec` and `witness` stand for `VectorSpec` and `π`.) -/
+/-- Abstract skeleton of the historical existential `whir_rbr_soundness`: a
+    challenge-cardinality fact, a security payload, and a budget payload, packaged
+    existentially. (`Sec`/`Bud` stand for the `IsSecureWithGapAveraged …` and budget payloads;
+    `Spec`/`witness` for `VectorSpec`/`π`.) -/
 def whirRbrShape {Spec : Type} (card : Spec → Prop) {Wit : Spec → Type}
     (Sec Bud : (s : Spec) → Wit s → Prop) : Prop :=
   ∃ s : Spec, card s ∧ ∃ w : Wit s, Sec s w ∧ Bud s w
 
-/-- **The existential-assembly reduction (abstract form of `whir_rbr_soundness_of_secure_gap`).**
-    Given a spec `s` with the cardinality witness, a `π = w`, its security proof, and the
-    budget proof, the `whir_rbr_soundness`-shaped existential follows. PROVEN by pure
-    `⟨…⟩` introduction — confirming ask (3b) is plumbing once `π`, `Sec`, `Bud` exist.
+/-- **The existential-assembly reduction** (abstract form of the historical existential
+    packaging; the current `whir_rbr_soundness_of_secure_gap` is the plain pair
+    `⟨hCard, hSecure⟩`). Given a spec `s` with the cardinality witness, a `π = w`, its
+    security proof, and the budget proof, the old `whir_rbr_soundness`-shaped existential
+    follows. PROVEN by pure `⟨…⟩` introduction — confirming ask (3b) is plumbing once `π`,
+    `Sec`, `Bud` exist.
     The remaining content is entirely in producing `Sec s w` (= `IsSecureWithGapAveraged`, which
     needs the §2 keystone + the constructed `π`) and `Bud s w` (= the four budget
     inequalities, whose accounting is §1). -/
@@ -390,16 +386,19 @@ NOT extractable math. (No declarations; pure prose, mirroring #24 §5's
 
     §2–§3 (the reduction of `whir_rbr_soundness` to its residual):
       * `soundOk_epsRbr_of_keystone`, `soundOk_of_keystone_of_forall_le` — the soundness
-        clause consumes the named keystone as a black box (antitone transport to any
-        dominating budget), no double-counting; mirrors #24 `foldBudget_le_of_keystone`.
+        clause consumes the opaque `WhirRbrKeystone` as a black box (identity adapter, and
+        monotone transport to any dominating budget); mirrors #24 `foldBudget_le_of_keystone`.
       * `whirRbrShape_of_secure` — the existential-assembly reduction (abstract form of
         the landed `whir_rbr_soundness_of_secure_gap`): pure ∃-introduction.
 
   NAMED RESIDUAL (NOT proven here — the genuine open per-round soundness math):
-    * `WhirRbrKeystone` — the MCA `errStar` correlated-agreement bound (Cor 4.11, gated on
-      `mca_johnson_bound_CONJECTURE`, `Whir/MutualCorrAgreement.lean:296`) composed with
-      the folding list-decoding lemmas L4.20–4.23 (`Whir/Folding.lean`). This is the
-      `is_rbr_knowledge_sound` content of `IsSecureWithGapAveraged` for the constructed `π`.
+    * `WhirRbrKeystone` — formally just the opaque `SoundOk (epsRbr …)`. Its intended
+      content is the MCA `errStar` correlated-agreement bound (Cor 4.11, gated on
+      `mca_johnson_bound_CONJECTURE`, `Whir/MutualCorrAgreement.lean`) composed with the
+      folding list-decoding lemmas L4.20–4.23 (`Whir/Folding.lean`), i.e. the
+      `is_rbr_knowledge_sound` content of `IsSecureWithGapAveraged` for the constructed `π`; that
+      link (and the protocol event decomposition) is not encoded in the type and remains
+      open.
 
   FLAGGED CONSTRUCTION PLUMBING (correctly NOT attempted — no extractable math):
     * §4(1) the WHIR `VectorIOP π` (Construction 5.1 OracleReduction term) — sibling-owned

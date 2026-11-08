@@ -21,7 +21,11 @@ every such `y` is a root of the **fixed degree-2 polynomial**
 `P(Y) = c̄·Y² − c·c̄·Y + c` (`c̄ = conj c`, leading coefficient `c̄ ≠ 0`), so there are at most
 `deg P = 2` of them.
 
-Consequently the char-`0` additive energy is `E_ℂ(μ_n) = Σ_c r(c)² ≤ 4·|μ_n + μ_n| = O(n²)`,
+Consequently (informal corollary, not formalized here) the char-`0` additive energy is
+`E_ℂ(μ_n) = Σ_c r(c)² ≤ r(0)² + 4·(|μ_n + μ_n| − 1) ≤ n² + 4·(|μ_n + μ_n| − 1) = O(n²)`.
+The zero shift must be kept separately: `repCount_le_two` needs `c ≠ 0`, and for even `n` the
+negation-closed `μ_n` has `r(0) = n`, so the naive `E ≤ 4·|μ_n + μ_n|` is FALSE — for `n = 8`,
+`E = 3·8² − 3·8 = 168 > 132 = 4·33 = 4·|μ_8 + μ_8|`.  The `O(n²)` order is
 far below the char-`p` `|G|^{8/3}` — so the Heath-Brown–Konyagin / Stepanov bound is needed
 *only* to control the prime-characteristic surplus over the char-`0` value, exactly localising
 the open kernel (`StepanovAux` Wronskian) to the char-`p` excess.  Issue #389.

@@ -18,6 +18,12 @@ shows) strictly smaller.
 The probe computes this true rank by direct expansion for small (m, s) in the LD setting
 (and the line setting with node (y0,y1) = (0,1)), compares with the formal rank of
 hd1_interpolation_threshold / hd_general_rank, and rescans the least-agreement threshold.
+
+Checks enforced (exit 1 on failure): the d = 0 rank equals the Guruswami-Sudan count
+m(m+1)/2, and true rank <= formal rank in every row.  All ranks are computed modulo the fixed
+prime P = 2^31 - 1, so they are exact ranks over F_P only; transporting a rank or rank bound to
+another characteristic (or to Q, where the integer matrix's rank is >= its rank mod P) needs its
+own argument or a characteristic-independent certificate.
 """
 import math
 import sys
@@ -188,10 +194,19 @@ def true_rank(d, m, w, D, s, L=None, line=False):
 def main():
     n, k = 1 << 18, 1 << 17
     w = k - 1
+    fails = []
+
+    def check_le(label, r_true, r_formal):
+        # The true system is implied by the formal one, so its rank can never exceed it.
+        if r_true > r_formal:
+            fails.append(f"{label}: true {r_true} > formal {r_formal}")
+
     print("== d=0 sanity (GS): true rank must equal m(m+1)/2")
     for m in [3, 4, 5, 6]:
         r, nr, nc = true_rank(0, m, w, m * 186000, ())
         print(f"  m={m}: true={r} GS={m * (m + 1) // 2} {'OK' if r == m * (m + 1) // 2 else 'DIFF'}")
+        if r != m * (m + 1) // 2:
+            fails.append(f"d=0 m={m}: true {r} != GS {m * (m + 1) // 2}")
 
     print("== d=1 LD: true rank vs formal (TR26-164/nasqret) rank")
     for (m, s) in [(3, 1), (4, 1), (4, 2), (5, 1), (5, 2), (6, 2), (6, 3), (7, 2), (8, 2), (8, 3), (9, 3), (10, 3)]:
@@ -200,6 +215,7 @@ def main():
         r_formal = ld_rank_formula(D, w, s, m)
         print(f"  m={m} s={s}: true={r_true} formal={r_formal} cols(a<m)={nc} rows={nr}  "
               f"ratio true/formal={r_true / r_formal:.3f}", flush=True)
+        check_le(f"d=1 LD m={m} s={s}", r_true, r_formal)
 
     print("== d=2 LD: true rank vs formal rank")
     for (m, s) in [(4, (1, 1)), (5, (2, 1)), (6, (2, 1)), (6, (2, 2)), (8, (2, 1)), (8, (3, 2))]:
@@ -208,6 +224,7 @@ def main():
         r_formal = node_rank(2, m, w, D, s)
         print(f"  m={m} s={s}: true={r_true} formal={r_formal} cols(a<m)={nc}  "
               f"ratio={r_true / r_formal:.3f}", flush=True)
+        check_le(f"d=2 LD m={m} s={s}", r_true, r_formal)
 
     print("== d=1 LINE: true rank vs formal rank")
     for (m, s, L) in [(3, 1, 3), (4, 1, 4), (4, 2, 4), (5, 2, 6), (6, 2, 6)]:
@@ -216,7 +233,14 @@ def main():
         r_formal, _, _ = line_rank_blocks(D, w, s, L, m)
         print(f"  m={m} s={s} L={L}: true={r_true} formal={r_formal} cols={nc} ratio={r_true / r_formal:.3f}",
               flush=True)
+        check_le(f"d=1 LINE m={m} s={s} L={L}", r_true, r_formal)
+
+    if fails:
+        print(f"FAIL: {len(fails)} check(s): {fails}")
+        return 1
+    print("PASS: d=0 GS ranks match; true rank <= formal rank in every row (over F_P)")
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

@@ -13,6 +13,22 @@ Let `n = 2^μ`, `p` prime with `p ≡ 1 (mod n)`, in the **prize regime** `p ≈
 This pins `δ* = 1 − ρ − H(ρ)/(β log₂ n)` (worst-case) and solves both grand challenges (MCA = explicit-RS
 list-decoding to capacity on the smooth FFT domain). Empirically the constant is `≈ 1.2` (n=8…256, multi-prime).
 
+> **Normalization corrections (2026-10-28 audit, T48; cross R-262).** Fix these before calling the
+> forms below exact equivalents.
+> - **Complete monomial sum.** Over the full field the identity is
+>   `Σ_{y∈F_p} e_p(b·y^m) = 1 + m·S_b`, and the nonzero-`y` sum equals `m·S_b`. So the Weil bullet's
+>   `S_b = (1/m)Σ_y e_p(b y^m)` must either exclude `y = 0` or subtract the `1`.
+> - **Jacobi cocycle.** `u_s u_t = (J(χ_0^s, χ_0^t)/√p)·u_{s+t}` holds only when `χ_0^s`, `χ_0^t` and
+>   the product `χ_0^{s+t}` are all nontrivial. For an inverse pair (`s + t ≡ 0 mod m`) one has
+>   `|J| = 1` and `g(χ)g(χ̄) = χ(−1)·p`, so the displayed law fails.
+> - **Raw vs DC-corrected moments.** Keep the distinction drawn in the energy bullet below. Raw-energy
+>   Wick bounds are impossible at production depth because of the principal term `n^(2r)/q`.
+>   Nonprincipal (DC-subtracted) moments are different objects, and they are not shown useless by
+>   that argument.
+>
+> The equivalences claimed among the five forms, and between them and `δ*`, are proposed
+> reformulations, not all proved.
+
 ## Five equivalent forms
 1. **Incomplete character sum** (above). `S_b` is real (`−1 = ζ_n^{n/2} ∈ μ_n`), `= 2Σ_{j} cos(2π b x_j/p)`.
 2. **Gauss-phase DFT.** `S_b = (n/(p−1))[−1 + √p · P(b)]`, `P(b) = Σ_{t=1}^{m−1} u_t · χ̄_0^t(b)`,

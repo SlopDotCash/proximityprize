@@ -1,5 +1,16 @@
 # δ* / #466 — SYZ52: second-syzygy bound closes the balanced-interior `ι≤1` (2026-07-11)
 
+> **Status note (2026-10-28 audit, T48; cross R-014, R-015, R-016, R-020).** The
+> degree-sum/imbalance equivalence `δ₂ ≤ ⌈S/2⌉+1 ⟺ ι ≤ 1` is legitimate conditional arithmetic.
+> "Closes" in the title is historical, though. It reduces `ι ≤ 1` to an unproved second-degree cap,
+> and the SYZ master / uniform-Sylvester / `realizabilityCore` interfaces this lane fed are refuted
+> in-tree. See for example `Frontier/_SW1_F3_MasterHypothesisVacuous.lean` for the vacuous master
+> hypothesis, and R-016 for the uniform Sylvester predicate being false at production parameters.
+> The parenthetical floor remark under `symmetric_floor_of_second_le` below is also reversed. For odd `S`,
+> `⌈S/2⌉ − 1 = ⌊S/2⌋ > ⌊S/2⌋ − 1`, so the referee's `⌈S/2⌉ − 1` is a **larger, stronger** lower bound
+> on `δ₁`, not a looser one. It does not follow from the stated cap `δ₂ ≤ ⌈S/2⌉+1`, which gives only
+> `δ₁ ≥ ⌊S/2⌋ − 1`.
+
 ## One line
 The open balanced-interior half of `ι≤1` at rate 1/2 is EXACTLY the second μ-basis generator
 degree bound `δ₂ ≤ ⌈S/2⌉+1` — proved equivalent to `ι≤1` under SYZ44's degree-sum law. This

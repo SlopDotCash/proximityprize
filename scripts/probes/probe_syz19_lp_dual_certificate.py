@@ -12,11 +12,16 @@ exactly for delta < (1-rho)/(2-rho) = 1/3.  SYZ9 is valid ONLY against the
 degenerate channel (per-subset independent rank accounting).
 
 This probe asks the SYZ19 question: does a RICHER witness-profile LP, built
-from constraints that ALL correspond to already-proven in-tree theorems, still
-certify #bad <= budget throughout the strip?  If yes -> an all-stack dual
-certificate exists (extract dual weights).  If no (LP > budget while empirics
-stay below) -> the known constraints are insufficient; the optimal primal
-support names the missing physical constraint = the next theorem to prove.
+from per-family constraints that correspond to proven in-tree theorems plus an
+ADDITIVE aggregate rank constraint, still certify #bad <= budget throughout the
+strip?  IMPORTANT SCOPE (audit 2026-10-28, finding L120): the per-family rows
+below are proved, but the aggregate row  sum_i (s_i - k) <= n - k  is an
+ASSUMED independence (additive) model, NOT a proved all-stack constraint -- see
+"Aggregate constraint" below for an exact counterexample.  So every LP optimum
+printed here is exact for the assumed additive model only; a value below budget
+would certify #bad <= budget only for stacks whose families' constraint spaces
+are independent (or after replacing the sum by the rank of the joint constraint
+span), and a value above budget does not exhibit any over-budget stack.
 
 Witness model (each row cites the in-tree theorem it encodes)
 ------------------------------------------------------------
@@ -24,7 +29,9 @@ A "degenerate family" is a codeword pair (v0,v1) with a shared core C (the
 joint-agreement locus |C| = s).  On C both u0|C and u1|C are codeword
 restrictions.  Per family:
 
-  * RANK COST = 2*(s-k) out of the 2*(n-k) syndrome-pair budget.
+  * RANK COST = 2*(s-k) out of the 2*(n-k) syndrome-pair budget (codimension of
+      ONE family's constraint space; costs of different families add only when
+      their constraint spaces are independent).
       [ _G86RankCollapseDichotomy.plantable_generic_cap ,
         _G87McaEventSyndromeBridge  -- 2(s-k) parity rows force u0|C,u1|C
         onto the code; a stack with >=64 bad scalars forces a syzygy ]
@@ -41,16 +48,41 @@ restrictions.  Per family:
       [ RS distance: two RS[n,k] codewords agreeing on >= k points are equal;
         CodeGeometry / rsCode_noWeightLE ]
 
-Aggregate constraint: total rank <= 2*(n-k)  [G86/G87 syndrome-pair dim].
+Aggregate constraint (ASSUMED additive model, not proved):
+    sum_i (s_i - k) <= n - k.
+What is proved [G86/G87 syndrome-pair dim] is that the RANK OF THE JOINT
+constraint span of all families is <= 2*(n-k).  Per-core codimensions do not add
+when the constraint spaces overlap, so the summed cost can exceed n-k for genuinely
+contributing families.  Exact counterexample (rate 1/2, delta = 1/3 BOUNDARY, not a
+strict-strip one): F_1009, n=18, k=9, t=12.  Slopes m in {1,2,4,8,16}; domain = the
+ten coordinates x_ij = -m_i-m_j, the hole 0, and seven coordinates 100..106; G =
+prod_{z=100..106}(X-z).  u0 = 0 except u0(0) = G(0); u1(x_ij) = -G(x_ij)*m_i*m_j and
+u1 = 0 at the hole and the G-roots.  For each m the pair (0, G*(mX+m^2)) (degree
+8 < k) has exact joint core = its four incident x_ij plus the seven G-roots (s=11;
+two cores meet in 8 < k), and gamma = 1/m^2 adds the hole (agreement 12 = t);
+nonjoint because a degree<9 u0-explainer vanishing on the 11-point core is zero
+while u0(0) != 0.  So all five families contribute (gammas {1,757,946,741,942}),
+yet their summed cost is 5*(11-9) = 10 > 9 = n-k.  (Five bad scalars do not exceed
+the scalar budget 18; this refutes only the additive aggregate, not a correctly
+guarded theorem.)  A valid all-stack certificate must use the joint constraint-span
+rank, or explicitly assume/prove independence before summing costs.
 
 Budget analogue B = n (production eps* * q ~ n).
 
-LPs computed (all exact rational; small simplex for the knapsack):
+LPs computed (all exact rational; small simplex for the knapsack), all inside the
+assumed additive model:
   LPfix  : SYZ9's certificate -- rank LP with the core PINNED at s=t.
-           opt = (n-k)*(n-t)/(t-k) = R*c/m.
+           opt = (n-k)*(n-t)/(t-k) = R*c/m.  (SYZ9's own validity is for the
+           degenerate channel with per-subset independent rank accounting.)
   LPvar  : rank LP over VARIABLE core size s (knapsack, exact simplex).
            opt = R * max_s yield(s)/(s-k).
-  LP3    : LPvar + Fisher cross-family overlap cap (<= k-1).
+  LP3    : RESTRICTED uniform-core-size model: for each single core size s, take
+           D = min(rank cap, Fisher cross-family overlap cap (<= k-1)) families all
+           of size s; maximize D*yield(s) over s.  It is not a general mixed-size
+           LP (an independent bounded-knapsack replay found no differing optimum on
+           the currently selected rows, but that is a check, not a theorem).
+
+Scope: diagnostic test oracle (T62); see also the rank/generation residuals.
 
 Run:  python3 scripts/probes/probe_syz19_lp_dual_certificate.py
 """
@@ -75,7 +107,9 @@ def yield_bound(n, k, t, s):
 
 def rank_cost(k, s):
     """Proven per-family syndrome-pair rank cost 2(s-k) (G86/G87). We work in
-    units of pairs, so cost = (s-k), budget = (n-k)."""
+    units of pairs, so cost = (s-k), budget = (n-k).  Summing these costs across
+    families against the budget is the ASSUMED additive model (valid only for
+    independent constraint spaces; see module docstring, L120)."""
     return s - k
 
 
@@ -129,9 +163,11 @@ def zone(delta):
 def run():
     print("SYZ19 LP-dual certificate hunt (rate 1/2)")
     print(f"Johnson = 1 - sqrt(1/2) = {JOHNSON:.5f} ; 1/3 = {THIRD:.5f}")
-    print("budget B = n.  All LPs use ONLY proven constraints (see header).")
+    print("budget B = n.  Per-family rows are proven; the summed rank budget")
+    print("sum_i(s_i-k) <= n-k is an ASSUMED additive (independence) model, not an")
+    print("all-stack theorem (see header) -- optima are exact for that model only.")
     print("LPfix = SYZ9 (core pinned s=t) ; LPvar = variable core (rank only) ;")
-    print("LP3 = LPvar + Fisher cross-overlap <= k-1.\n")
+    print("LP3 = uniform-core-size model with Fisher cross-overlap <= k-1.\n")
 
     for n, k in [(32, 16), (64, 32)]:
         R = n - k
@@ -157,7 +193,8 @@ def run():
             lpvar, dual_y, arg = exact_simplex_knapsack(items, R)
             svar = arg["s"] if arg else None
 
-            # LP3: add Fisher cross-overlap cap on D (per core size)
+            # LP3: restricted uniform-core-size model -- all D families share one core
+            # size s; D capped by the additive rank budget and the Fisher overlap cap
             best3, info3 = 0, None
             for it in items:
                 s, y = it["s"], it["val"]
@@ -177,15 +214,19 @@ def run():
     print("READ-OFF")
     print("--------")
     print("* LPfix (SYZ9) dips below budget for every STRIP row and stays above")
-    print("  for above-1/3 rows: the rank certificate DECIDES the strip -- but")
-    print("  ONLY with the core pinned at s=t (the degenerate channel).")
+    print("  for above-1/3 rows -- inside the additive model with the core pinned")
+    print("  at s=t (the degenerate channel, SYZ9's independent-accounting scope).")
+    print("  It is not an all-stack certificate.")
     print("* LPvar / LP3 EXCEED budget across the whole strip AND below Johnson,")
-    print("  driven by minimal cores s=k+1.  The per-family facts are each proven,")
-    print("  but their aggregate is not simultaneously ACHIEVABLE (empirics stay")
-    print("  far below -- see probe_syz7_strip_scan.py).  Missing constraint:")
-    print("  a GLOBAL joint-rank bound -- per-family rank costs do NOT add when")
-    print("  cores share points, so ~R independent minimal-core families is an")
-    print("  impossible primal support.  Names the next theorem (SYZ7 item 3).")
+    print("  driven by minimal cores s=k+1, while empirics stay far below (see")
+    print("  probe_syz7_strip_scan.py).  The per-family facts are each proven, but")
+    print("  the summed rank budget is an assumption: per-family rank costs do NOT")
+    print("  add when constraint spaces overlap (exact F_1009 boundary example in")
+    print("  the header: five contributing families, summed cost 10 > n-k = 9).")
+    print("  So neither the excess nor a sub-budget value is an all-stack verdict.")
+    print("  Missing ingredient: a bound in terms of the RANK of the joint")
+    print("  constraint span (or a proved independence hypothesis) feeding a")
+    print("  bad-count bound.  Names the next theorem (SYZ7 item 3).")
 
 
 if __name__ == "__main__":

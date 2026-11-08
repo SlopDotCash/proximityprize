@@ -28,8 +28,11 @@ is also `≤ |G| = n`. This is the named "M ≤ n trivial ceiling" rung of the L
 
 ## Honesty (the prize is the GAP, untouched)
 
-The ceiling `M ≤ n` is the trivial triangle-inequality bound (`√q`-completion already beats it on
-torsion subgroups, `SubgroupGaussSumWorstCase.norm_eta_torsion_le`); CORE asks for `M ≤ C·√(n·log(p/n))`,
+The ceiling `M ≤ n` is the trivial triangle-inequality bound. The `√q`-completion bound
+(`SubgroupGaussSumWorstCase.norm_eta_torsion_le`) beats it only when `√q < n`, i.e. `q < n²`; in
+the thin regime `q > n²` (in particular `q = n^β`, `β > 2`) one has `√q > n`, so the trivial
+ceiling `n` is the smaller of the two (audit 2026-10-28, R-211). CORE asks for
+`M ≤ C·√(n·log(p/n))`,
 which is exponentially below `n` in the thin prize regime (`n = 2^a`, `q = n^β`). The GAP between the
 proven floor `√n` and the proven ceiling `n` is `√n .. n`; the prize lives at `√(n·log p)` strictly
 inside that gap. This file supplies the SAFE, citable upper rung of the bracket (Lane 2), pure
@@ -92,7 +95,8 @@ theorem worstPeriod_bracket {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) (G : Fin
 /-- **Concrete SHARP two-sided corridor in the prize regime.** Combining the new quadratic-regime
 sharp floor (`worstPeriod_ge_sqrt_card_pred_of_sq_le`) with the trivial ceiling, under `n² ≤ q`
 (`q = n^β, β ≥ 2`) the real worst period is sandwiched
-`√(n−1) ≤ M(μ_n) ≤ n` — the tightest unconditional corridor available, with the floor at its true
+`√(n−1) ≤ M(μ_n) ≤ n` — an unconditional corridor proved here (not claimed to be the tightest
+known in every regime), with the floor at its true
 `√n` value rather than a constant fraction. The prize bound `M ≤ C·√(n·log(q/n))` lives strictly
 inside this corridor; tightening the upper endpoint from `n` to `√(n·log(q/n))` is exactly the
 open prize. -/

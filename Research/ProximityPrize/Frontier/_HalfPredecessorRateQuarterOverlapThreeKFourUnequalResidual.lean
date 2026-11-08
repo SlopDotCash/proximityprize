@@ -22,7 +22,17 @@ seven.  Together with the ten-point off-both matching bound this gives
 `|G| <= 17`.  If `|G| > 16`, every constituent bound is forced to equality:
 there are three exclusive points on each line, one common point, and ten
 off-both points.  The equal-slope closure then forces the reference slopes to
-be unequal.  This isolates the exact remaining one-point residual.
+be unequal.
+
+**Superseded.**  The one-point residual isolated here was subsequently closed:
+`_HalfPredecessorRateQuarterOverlapThreeKFourUnequalClosure.card_le_sixteen_of_overlap_three_core_cap`
+proves `|G| <= 16` under exactly the hypotheses of
+`card_le_seventeen_of_overlap_three_core_cap`.  Hence the 17-bound is strictly
+weaker than the current result, and the extra hypothesis `16 < |G|` of
+`overlap_three_core_cap_saturation_of_sixteen_lt_card` can never hold; both are
+kept only as historical intermediate steps.  The live content of this file is the
+exclusive-point and reference-union bounds (`reference_pointsOn_union_card_le_seven`),
+which the closure consumes.
 -/
 
 set_option autoImplicit false
@@ -352,7 +362,10 @@ theorem reference_pointsOn_union_card_le_seven
   omega
 
 /-- Combining the seven points on the reference lines with the ten-point
-off-both matching bound leaves a single point above the desired sixteen. -/
+off-both matching bound leaves a single point above the desired sixteen.
+
+**Superseded** by `UnequalClosure.card_le_sixteen_of_overlap_three_core_cap`,
+which proves `|G| <= 16` under the same hypotheses. -/
 theorem card_le_seventeen_of_overlap_three_core_cap
     {dom : I ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) I}
     (family : BadScalarRichPointFamily dom 4 delta u)
@@ -376,28 +389,15 @@ theorem card_le_seventeen_of_overlap_three_core_cap
   have hoff := offBothPoints_card_le_ten_of_relevant_core_cap
     family hn hthreshold line1 line2 hline1 hline2 hcore1 hcore2
       hinter hcoreCap
-  have hcover : family.G ⊆
-      (pointsOn family line1 ∪ pointsOn family line2) ∪
-        offBothPoints family line1 line2 := by
-    intro gamma hgamma
-    by_cases hfirst :
-        family.q gamma = line1.1 + C gamma * line1.2
-    · exact Finset.mem_union_left _ (Finset.mem_union_left _
-        ((mem_pointsOn_iff family line1 gamma).mpr ⟨hgamma, hfirst⟩))
-    by_cases hsecond :
-        family.q gamma = line2.1 + C gamma * line2.2
-    · exact Finset.mem_union_left _ (Finset.mem_union_right _
-        ((mem_pointsOn_iff family line2 gamma).mpr ⟨hgamma, hsecond⟩))
-    · exact Finset.mem_union_right _
-        (Finset.mem_filter.mpr ⟨hgamma, hfirst, hsecond⟩)
-  have hcoverCard := Finset.card_le_card hcover
-  have hall := Finset.card_union_le
-    (pointsOn family line1 ∪ pointsOn family line2)
-    (offBothPoints family line1 line2)
+  have hall := card_G_le_pointsOn_union_add_offBothPoints family line1 line2
   omega
 
-/-- **Exact one-point residual.**  If the target `|G| <= 16` fails, then all
-line and off-line bounds saturate and the two reference slopes are unequal. -/
+/-- **Historical one-point residual (superseded, vacuous).**  If the target
+`|G| <= 16` fails, then all line and off-line bounds saturate and the two
+reference slopes are unequal.  The hypothesis `16 < |G|` is unsatisfiable under
+the other hypotheses, by `UnequalClosure.card_le_sixteen_of_overlap_three_core_cap`
+(proved downstream, in a file importing this one), so this theorem has no live
+instances. -/
 theorem overlap_three_core_cap_saturation_of_sixteen_lt_card
     {dom : I ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) I}
     (family : BadScalarRichPointFamily dom 4 delta u)
@@ -433,24 +433,7 @@ theorem overlap_three_core_cap_saturation_of_sixteen_lt_card
   have hoff := offBothPoints_card_le_ten_of_relevant_core_cap
     family hn hthreshold line1 line2 hline1 hline2 hcore1 hcore2
       hinter hcoreCap
-  have hcover : family.G ⊆
-      (pointsOn family line1 ∪ pointsOn family line2) ∪
-        offBothPoints family line1 line2 := by
-    intro gamma hgamma
-    by_cases hfirstEq :
-        family.q gamma = line1.1 + C gamma * line1.2
-    · exact Finset.mem_union_left _ (Finset.mem_union_left _
-        ((mem_pointsOn_iff family line1 gamma).mpr ⟨hgamma, hfirstEq⟩))
-    by_cases hsecondEq :
-        family.q gamma = line2.1 + C gamma * line2.2
-    · exact Finset.mem_union_left _ (Finset.mem_union_right _
-        ((mem_pointsOn_iff family line2 gamma).mpr ⟨hgamma, hsecondEq⟩))
-    · exact Finset.mem_union_right _
-        (Finset.mem_filter.mpr ⟨hgamma, hfirstEq, hsecondEq⟩)
-  have hcoverCard := Finset.card_le_card hcover
-  have hall := Finset.card_union_le
-    (pointsOn family line1 ∪ pointsOn family line2)
-    (offBothPoints family line1 line2)
+  have hall := card_G_le_pointsOn_union_add_offBothPoints family line1 line2
   have hsplit1 := Finset.card_sdiff_add_card_inter
     (pointsOn family line1) (pointsOn family line2)
   have hsplit2 := Finset.card_sdiff_add_card_inter

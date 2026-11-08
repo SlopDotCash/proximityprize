@@ -27,6 +27,16 @@ TEST 3 (the worker's own flagged residue -- the negation-OPEN sub-tower):
   -h^{4i+1}=h^{n/2+4i+1}; n/2 mod 4 determines coset. For 4|n, n/2 even; n/2 mod4 in {0,2}.
   If n/2=2 mod4, -C1=C3 (NOT self => C1 not neg-closed => eta_{C1} COMPLEX). Test collinearity of
   the pair (eta_b(C1), eta_{zeta b}(C1)) then: genuinely 2D?
+
+SCOPE CORRECTIONS (audit 2026-10-28, L103):
+  * The dyadic cells n in {8,16,32} all have 8 | n, hence n/2 = 0 mod 4, so every quarter split
+    there is negation-closed and T3 never exercises the non-closed escape at those cells. An
+    explicit NON-DYADIC control n = 12 (n/2 = 2 mod 4, C1 not negation-closed) is added so the
+    promised non-closed case is actually tested; it is outside the dyadic prize tower.
+  * In T2, shifting b by h in mu_n gives the IDENTICAL full period (h*mu_n = mu_n), not an
+    adjacent quotient class. The adjacent quotient class is b -> g*b (g a primitive root); T2 now
+    uses that, and separately records the trivial identity eta_{hb}(mu_n) = eta_b(mu_n).
+  * In T3, b -> h*b maps C1 to C2, i.e. it pairs two different quarter cosets.
 """
 import numpy as np
 
@@ -82,7 +92,7 @@ def period(p, elems, b):
     e=np.array(elems,dtype=np.int64)
     return np.exp(1j*tp*((b*e)%p)).sum()
 
-for n in (8,16,32):
+for n in (8,16,32,12):  # 12 = non-dyadic control with n/2 = 2 mod 4
     primes=find_primes(n,beta=4,count=2)
     print(f"\n{'='*76}\nn={n}  primes={primes}  n/2 mod4={ (n//2)%4 }\n{'='*76}")
     for p in primes:
@@ -93,12 +103,14 @@ for n in (8,16,32):
         MuN =[pow(h,i,p) for i in range(n)]              # full subgroup
         # TEST 1: worker's A,B individually real?
         imA=max(abs(period(p,Hlow,b).imag) for b in breps[:200])
-        # TEST 2: two adjacent FULL periods eta_b(muN), eta_{hb}(muN) -- collinear? (both real=>yes)
+        # TEST 2: two adjacent FULL periods eta_b(muN), eta_{gb}(muN) (adjacent quotient classes)
+        # -- collinear? (both real=>yes).  NB eta_{hb}(muN) == eta_b(muN) identically (h in muN).
         imFull=max(abs(period(p,MuN,b).imag) for b in breps[:200])
+        idgap=max(abs(period(p,MuN,(h*b)%p)-period(p,MuN,b)) for b in breps[:50])
         # collinearity of adjacent full pair:
         sinmaxFull=0.0
         for b in breps[:400]:
-            F0=period(p,MuN,b); F1=period(p,MuN,(h*b)%p)
+            F0=period(p,MuN,b); F1=period(p,MuN,(g*b)%p)
             cr=(F1*np.conj(F0))
             if abs(F0)>1e-9 and abs(F1)>1e-9:
                 sinmaxFull=max(sinmaxFull, abs(cr.imag)/(abs(F0)*abs(F1)))
@@ -116,7 +128,8 @@ for n in (8,16,32):
             sinmaxC1=sm
             genuine2d = sm>1e-6
         print(f"  p={p:>9} m={m}: [T1] max|Im A_b(Hlow)|={imA:.2e} (real=>trivially collinear)")
-        print(f"            [T2] max|Im eta_b(muN)|={imFull:.2e}  adj-full |sin|max={sinmaxFull:.2e}")
+        print(f"            [T2] max|Im eta_b(muN)|={imFull:.2e}  adj-class (b,gb) |sin|max={sinmaxFull:.2e}"
+              f"  [h-shift identical: max|diff|={idgap:.1e}]")
         if C1 is not None:
             neg = "NEG-CLOSED(real)" if imC1<1e-6 else "NOT neg-closed(COMPLEX)"
             print(f"            [T3] C1={{h^(4i+1)}} max|Im|={imC1:.2e} {neg}"
@@ -125,5 +138,7 @@ print("\nINTERPRETATION:")
 print(" T1/T2: if A_b, eta_b(muN) are REAL (|Im|~0), collinearity is the TRIVIAL neg-closed fact")
 print("        (eta_real_of_neg_closed), already in DISPROOF_LOG. Worker's 'collinear' finding is")
 print("        that known artifact, NOT a new deep-r structure.")
-print(" T3: if a non-neg-closed sub-tower gives genuine2D=True, phase IS 2D there -- but check if")
-print("     such a level is reachable in the dyadic prize tower (worker says no: vacuous).")
+print(" T3: at the dyadic cells (8 | n) every quarter split is neg-closed, so T3 there does NOT test")
+print("     the non-closed escape; only the n=12 control does. If it gives genuine2D=True, phase IS 2D")
+print("     for a non-closed set, but n=12 is outside the dyadic prize tower (worker says such levels")
+print("     are unreachable there: vacuous for the tower, not tested by this probe).")

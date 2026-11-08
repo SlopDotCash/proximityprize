@@ -1334,7 +1334,7 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
 `π := stirCheckingIOP` via the landed `stir_rbr_soundness_of_secure_vectorIOP` wiring. The
 completeness leg is PROVEN; the soundness leg is consumed via the named CA residuals
 (`StrictCoeffPolysResidual` + `PerRoundProximityGap`) through the named bridge
-(`stirCheckingCABridge`); the per-round error legs (`hfold`/`hrest`) are free-parameter
+(`stirCheckingCABridge`); the per-round error legs (`hfold`/`hrest`/`hfin`) are free-parameter
 constraints of the statement. -/
 theorem stir_rbr_soundness_of_checkingIOP_CA
     {M : ℕ} (ι : Fin (M + 1) → Type) [∀ i : Fin (M + 1), Fintype (ι i)]
@@ -1360,7 +1360,7 @@ theorem stir_rbr_soundness_of_checkingIOP_CA
     -- the EXISTING named per-round accounting keystone
     (hPR : PerRoundProximityGap e ProxGapBound)
     (hfold : ε_fold ≤ proximityError F (P.deg / P.foldingParam 0)
-      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.repeatParam 0))
+      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.foldingParam 0))
     (hrest : ∀ j : Fin M,
         (ε_out j ≤ ((Dist.l j.succ : ℝ) ^ 2 / 2) *
           ((degree ι P j.succ : ℝ) / (Fintype.card F - Fintype.card (ι j.succ))) ^ s)
@@ -1368,12 +1368,11 @@ theorem stir_rbr_soundness_of_checkingIOP_CA
         (ε_shift j ≤
           (1 - Dist.δ j.castSucc) ^ (P.repeatParam j.castSucc) +
            proximityError F (degree ι P j.succ) (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.castSucc) + s +
+            (Dist.δ j.succ) (P.repeatParam j.castSucc + s) +
            proximityError F ((degree ι P j.succ) / P.foldingParam j.succ)
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.succ))
-        ∧
-        ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
+            (Dist.δ j.succ) (P.foldingParam j.succ)))
+    (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
     stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   stir_rbr_soundness_of_secure_vectorIOP (hParams := hParams) (Codes := Codes)
@@ -1381,7 +1380,7 @@ theorem stir_rbr_soundness_of_checkingIOP_CA
     (stirCheckingIOP M (P.φ 0) (degree ι P 0))
     (stirCheckingIOP_isSecureWithGap_of_CA M (P.φ 0) (degree ι P 0) (Dist.δ 0) _
       e ProxGapBound hBridge hCA hPR)
-    hfold hrest
+    hfold hrest hfin
 
 /-- **Lemma 5.4 through the CHECKING IOPP, small-field CA discharge**: the same checking front
 door as `stir_rbr_soundness_of_checkingIOP_CA`, but the BCIKS20 strict-coefficient residual family
@@ -1407,7 +1406,7 @@ theorem stir_rbr_soundness_of_checkingIOP_card_le
     (hδsqrt : Dist.δ 0 < 1 - ReedSolomon.sqrtRate (degree ι P 0) (P.φ 0))
     (hq : (Fintype.card F : ℝ≥0) ≤ (Fintype.card (ι 0) : ℝ≥0))
     (hfold : ε_fold ≤ proximityError F (P.deg / P.foldingParam 0)
-      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.repeatParam 0))
+      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.foldingParam 0))
     (hrest : ∀ j : Fin M,
         (ε_out j ≤ ((Dist.l j.succ : ℝ) ^ 2 / 2) *
           ((degree ι P j.succ : ℝ) / (Fintype.card F - Fintype.card (ι j.succ))) ^ s)
@@ -1415,12 +1414,11 @@ theorem stir_rbr_soundness_of_checkingIOP_card_le
         (ε_shift j ≤
           (1 - Dist.δ j.castSucc) ^ (P.repeatParam j.castSucc) +
            proximityError F (degree ι P j.succ) (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.castSucc) + s +
+            (Dist.δ j.succ) (P.repeatParam j.castSucc + s) +
            proximityError F ((degree ι P j.succ) / P.foldingParam j.succ)
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.succ))
-        ∧
-        ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
+            (Dist.δ j.succ) (P.foldingParam j.succ)))
+    (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
     stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   stir_rbr_soundness_of_checkingIOP_CA (hParams := hParams) (Codes := Codes)
@@ -1429,7 +1427,7 @@ theorem stir_rbr_soundness_of_checkingIOP_card_le
     (strictCoeffPolys_all_of_card_le (P.φ 0) (degree ι P 0) (Dist.δ 0)
       hδsqrt hq)
     (PerRoundProximityGap.refl ProxGapBound)
-    hfold hrest
+    hfold hrest hfin
 
 /-- **Lemma 5.4 through the CHECKING IOPP, sharp vacuous CA discharge**: as
 `stir_rbr_soundness_of_checkingIOP_card_le`, but using the `|F| ≤ deg₀² * 10⁷` BCIKS discharge. -/
@@ -1452,7 +1450,7 @@ theorem stir_rbr_soundness_of_checkingIOP_card_le_e7
       ProxGapBound ProxGapBound)
     (hq : (Fintype.card F : ℝ≥0) ≤ (((degree ι P 0) ^ 2 * 10 ^ 7 : ℕ) : ℝ≥0))
     (hfold : ε_fold ≤ proximityError F (P.deg / P.foldingParam 0)
-      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.repeatParam 0))
+      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.foldingParam 0))
     (hrest : ∀ j : Fin M,
         (ε_out j ≤ ((Dist.l j.succ : ℝ) ^ 2 / 2) *
           ((degree ι P j.succ : ℝ) / (Fintype.card F - Fintype.card (ι j.succ))) ^ s)
@@ -1460,12 +1458,11 @@ theorem stir_rbr_soundness_of_checkingIOP_card_le_e7
         (ε_shift j ≤
           (1 - Dist.δ j.castSucc) ^ (P.repeatParam j.castSucc) +
            proximityError F (degree ι P j.succ) (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.castSucc) + s +
+            (Dist.δ j.succ) (P.repeatParam j.castSucc + s) +
            proximityError F ((degree ι P j.succ) / P.foldingParam j.succ)
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.succ))
-        ∧
-        ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
+            (Dist.δ j.succ) (P.foldingParam j.succ)))
+    (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
     stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   stir_rbr_soundness_of_checkingIOP_CA (hParams := hParams) (Codes := Codes)
@@ -1473,7 +1470,7 @@ theorem stir_rbr_soundness_of_checkingIOP_card_le_e7
     ProxGapBound ProxGapBound hBridge
     (strictCoeffPolys_all_of_card_le_e7 (P.φ 0) (degree ι P 0) (Dist.δ 0) hq)
     (PerRoundProximityGap.refl ProxGapBound)
-    hfold hrest
+    hfold hrest hfin
 
 /-- **Lemma 5.4 through the CHECKING IOPP, large-sector CA discharge**: as
 `stir_rbr_soundness_of_checkingIOP_CA`, but the BCIKS20 input is the #304 honest
@@ -1499,7 +1496,7 @@ theorem stir_rbr_soundness_of_checkingIOP_large
       ProximityGap.StrictCoeffPolysLargeResidual (ι := ι 0) (F := F)
         (k := k) (deg := degree ι P 0) (domain := P.φ 0) (δ := Dist.δ 0))
     (hfold : ε_fold ≤ proximityError F (P.deg / P.foldingParam 0)
-      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.repeatParam 0))
+      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.foldingParam 0))
     (hrest : ∀ j : Fin M,
         (ε_out j ≤ ((Dist.l j.succ : ℝ) ^ 2 / 2) *
           ((degree ι P j.succ : ℝ) / (Fintype.card F - Fintype.card (ι j.succ))) ^ s)
@@ -1507,12 +1504,11 @@ theorem stir_rbr_soundness_of_checkingIOP_large
         (ε_shift j ≤
           (1 - Dist.δ j.castSucc) ^ (P.repeatParam j.castSucc) +
            proximityError F (degree ι P j.succ) (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.castSucc) + s +
+            (Dist.δ j.succ) (P.repeatParam j.castSucc + s) +
            proximityError F ((degree ι P j.succ) / P.foldingParam j.succ)
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.succ))
-        ∧
-        ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
+            (Dist.δ j.succ) (P.foldingParam j.succ)))
+    (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
     stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   stir_rbr_soundness_of_checkingIOP_CA (hParams := hParams) (Codes := Codes)
@@ -1520,14 +1516,14 @@ theorem stir_rbr_soundness_of_checkingIOP_large
     ProxGapBound ProxGapBound hBridge
     (strictCoeffPolys_all_of_large (P.φ 0) (degree ι P 0) (Dist.δ 0) hLarge)
     (PerRoundProximityGap.refl ProxGapBound)
-    hfold hrest
+    hfold hrest hfin
 
 /-- **Lemma 5.4 through the CHECKING IOPP, small-field UNCONDITIONAL soundness discharge**
 (#301 Part B): `stir_rbr_soundness` discharged through `π := stirCheckingIOP` in the regime
 `|F| ≤ (m−1)·|ι₀|` and the unique-decoding branch `δ₀ ≤ (1−ρ₀)/2`, with NO
 correlated-agreement residual, NO checking bridge, and NO per-round-gap keystone. The lower-bound
 hypothesis `hεlb` says the fold-round error budget dominates the vacuous `err⋆ ≥ 1` threshold;
-the usual `hfold`/`hrest` hypotheses are still the statement's advertised per-round upper
+the usual `hfold`/`hrest`/`hfin` hypotheses are still the statement's advertised per-round upper
 bounds. -/
 theorem stir_rbr_soundness_of_checkingIOP_small_field
     {M : ℕ} (ι : Fin (M + 1) → Type) [∀ i : Fin (M + 1), Fintype (ι i)]
@@ -1549,7 +1545,7 @@ theorem stir_rbr_soundness_of_checkingIOP_small_field
       proximityError F (degree ι P 0)
         (LinearCode.rate (code (P.φ 0) (degree ι P 0))) (Dist.δ 0) m ≤ ε_fold)
     (hfold : ε_fold ≤ proximityError F (P.deg / P.foldingParam 0)
-      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.repeatParam 0))
+      (rate (code (P.φ 0) P.deg)) (Dist.δ 0) (P.foldingParam 0))
     (hrest : ∀ j : Fin M,
         (ε_out j ≤ ((Dist.l j.succ : ℝ) ^ 2 / 2) *
           ((degree ι P j.succ : ℝ) / (Fintype.card F - Fintype.card (ι j.succ))) ^ s)
@@ -1557,12 +1553,11 @@ theorem stir_rbr_soundness_of_checkingIOP_small_field
         (ε_shift j ≤
           (1 - Dist.δ j.castSucc) ^ (P.repeatParam j.castSucc) +
            proximityError F (degree ι P j.succ) (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.castSucc) + s +
+            (Dist.δ j.succ) (P.repeatParam j.castSucc + s) +
            proximityError F ((degree ι P j.succ) / P.foldingParam j.succ)
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.succ))
-        ∧
-        ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
+            (Dist.δ j.succ) (P.foldingParam j.succ)))
+    (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
     stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   stir_rbr_soundness_of_secure_vectorIOP (hParams := hParams) (Codes := Codes)
@@ -1572,7 +1567,7 @@ theorem stir_rbr_soundness_of_checkingIOP_small_field
       hδudr hq
       (fun _ => ({ε_fold} ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max' (by simp))
       (fun i _hi => le_trans hεlb (Finset.le_max' _ _ (by simp))))
-    hfold hrest
+    hfold hrest hfin
 
 /-- **Theorem 5.1 through the CHECKING IOPP**: `stir_main` discharged with
 `π := stirCheckingIOP` via the landed `stir_main_of_secure_vectorIOP` wiring. The
@@ -1586,9 +1581,7 @@ theorem stir_main_of_checkingIOP_CA
     {k proofLen qNumtoInput qNumtoProofstr : ℕ}
     (hk : ∃ p, k = 2 ^ p) (hkGe : k ≥ 4)
     (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
-    (hF : Fintype.card F ≤
-          secpar * 2 ^ secpar * degree ^ 2 * (Fintype.card ι) ^ (7 / 2) /
-            Real.log (1 / rate (code φ degree)))
+    (hF : FieldSizeCondition secpar φ degree)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (e ProxGapBound : Fin (M + 1) → ℝ≥0)
     (hBridge : stirCheckingCABridge M φ degree δ ε_rbr e ProxGapBound)
@@ -1621,9 +1614,7 @@ theorem stir_main_of_checkingIOP_card_le
     {k proofLen qNumtoInput qNumtoProofstr : ℕ}
     (hk : ∃ p, k = 2 ^ p) (hkGe : k ≥ 4)
     (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
-    (hF : Fintype.card F ≤
-          secpar * 2 ^ secpar * degree ^ 2 * (Fintype.card ι) ^ (7 / 2) /
-            Real.log (1 / rate (code φ degree)))
+    (hF : FieldSizeCondition secpar φ degree)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (ProxGapBound : Fin (M + 1) → ℝ≥0)
     (hBridge : stirCheckingCABridge M φ degree δ ε_rbr ProxGapBound ProxGapBound)
@@ -1653,9 +1644,7 @@ theorem stir_main_of_checkingIOP_card_le_e7
     {k proofLen qNumtoInput qNumtoProofstr : ℕ}
     (hk : ∃ p, k = 2 ^ p) (hkGe : k ≥ 4)
     (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
-    (hF : Fintype.card F ≤
-          secpar * 2 ^ secpar * degree ^ 2 * (Fintype.card ι) ^ (7 / 2) /
-            Real.log (1 / rate (code φ degree)))
+    (hF : FieldSizeCondition secpar φ degree)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (ProxGapBound : Fin (M + 1) → ℝ≥0)
     (hBridge : stirCheckingCABridge M φ degree δ ε_rbr ProxGapBound ProxGapBound)
@@ -1685,9 +1674,7 @@ theorem stir_main_of_checkingIOP_large
     {k proofLen qNumtoInput qNumtoProofstr : ℕ}
     (hk : ∃ p, k = 2 ^ p) (hkGe : k ≥ 4)
     (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
-    (hF : Fintype.card F ≤
-          secpar * 2 ^ secpar * degree ^ 2 * (Fintype.card ι) ^ (7 / 2) /
-            Real.log (1 / rate (code φ degree)))
+    (hF : FieldSizeCondition secpar φ degree)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (ProxGapBound : Fin (M + 1) → ℝ≥0)
     (hBridge : stirCheckingCABridge M φ degree δ ε_rbr ProxGapBound ProxGapBound)
@@ -1727,9 +1714,7 @@ theorem stir_main_of_checkingIOP_small_field
     {k proofLen qNumtoInput qNumtoProofstr : ℕ}
     (hk : ∃ p, k = 2 ^ p) (hkGe : k ≥ 4)
     (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
-    (hF : Fintype.card F ≤
-          secpar * 2 ^ secpar * degree ^ 2 * (Fintype.card ι) ^ (7 / 2) /
-            Real.log (1 / rate (code φ degree)))
+    (hF : FieldSizeCondition secpar φ degree)
     {m : ℕ}
     (hδudr : δ ≤ (1 - (LinearCode.rate (code φ degree) : ℝ≥0)) / 2)
     (hq : (Fintype.card F : ℝ≥0) ≤ ((m : ℝ≥0) - 1) * (Fintype.card ι : ℝ≥0))

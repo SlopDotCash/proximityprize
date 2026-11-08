@@ -30,12 +30,22 @@ relation/check mismatch impossible by design.  Main results:
 * `queryRoundChainDeliveryHypothesis` — the cleanly re-scoped remaining delivery hypothesis:
   honest FRI oracles (the fold-phase output) satisfy `queryCheckerAccepts`.  This is where the
   per-round algebraic content (folding consistency ⟹ guards pass) genuinely lives; unlike the
-  original residual it is *true by design* for honest runs and carries no mismatch.
+  original residual it carries no relation/check mismatch and is *expected* to hold for honest
+  runs, but it is **not proved**.
 
 Together with the discharged fold-round / final-round / fold-phase / reduction-level items,
-this completes the issue-#341 disposition: every originally-filed residual is proven,
+this completes the issue-#341 *disposition*: every originally-filed residual is proven,
 discharged, or — for the suspected-false query item — repaired into a theorem plus a
 well-posed delivery hypothesis.
+
+**Status for completion reports.** `queryRound_perfectCompleteness_repaired` proves query
+completeness only for inputs that already satisfy runtime checker acceptance and output pinning
+(conjoined into its input relation), so its proof does not analyze the verifier loop body. The
+fold-phase delivery into that stronger relation, `queryRoundChainDeliveryHypothesis`, is
+**visible, open #341 proof debt**: it is neither an axiom nor a completed honest-chain algebraic
+proof. Because it is named as a hypothesis rather than a strict residual, the generated
+strict-residual census does not list it; completion reports must therefore count it explicitly
+and must not describe FRI query-phase completeness as fully proved.
 -/
 
 open OracleSpec OracleComp ProtocolSpec NNReal Domain
@@ -143,7 +153,8 @@ mathematics, isolated with no relation/check mismatch.  Unlike the original susp
 surface, the hypothesis is faithful: it states exactly the missing honest-run support invariant,
 with no extra side conditions and no weakening of the query checker.  It is intentionally named as
 a hypothesis rather than a strict residual so the generated strict-residual census tracks only
-unscoped proof surfaces; the open work remains visible here for the future delivery proof.  Route
+unscoped proof surfaces; that naming does **not** make it proved — it is open #341 proof debt
+(not an axiom), and the open work remains visible here for the future delivery proof.  Route
 available in-tree: the proven `foldPhasePerfectCompletenessStatement_holds` gives the
 base-relation half; the checker-acceptance half strengthens it on the honest-run support (the
 `Reduction.perfectCompleteness_strengthen_support` pattern of

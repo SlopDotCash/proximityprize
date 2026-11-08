@@ -8,11 +8,12 @@ import ArkLib.Data.CodingTheory.ProximityGap.LineIncidenceSpectral
 /-!
 # The Shaw operator: the unified unknown of the Proximity Prize (#389, #371)
 
-Every reduction of the prize δ\* — the residual `(R) = worst − average`, the higher-order-MDS
+Several reductions of the prize δ\* — the residual `(R) = worst − average`, the higher-order-MDS
 failure-correction `κ_d`, the off-diagonal spectral error of the line–ball incidence operator, the
-worst-case incomplete character sum `max|η_b|`, the higher additive energies `E_r` — collapses to a
-**single** quantity. This file names it the **Shaw operator** and proves the exact identity that
-makes the far-line incidence (hence δ\*) a *closed function* of it.
+worst-case incomplete character sum `max|η_b|`, the higher additive energies `E_r` — are
+*heuristically* related to one spectral quantity. This file names it the **Shaw operator** and
+proves the exact identity expressing each line–ball incidence in terms of it. (That the other
+residuals are reformulations of a Shaw bound is **not** proved here.)
 
 > **`shawError S s₀ s₁`** `:= ∑_{ψ≠0, ψ⊥s₁} ∑_{s∈S} ψ(s₀−s)` — the off-trivial spectral error of
 > the line–ball incidence on direction `s₁`.
@@ -20,9 +21,17 @@ makes the far-line incidence (hence δ\*) a *closed function* of it.
 > **`incidence_eq_average_add_shaw`** — `#{γ : s₀+γ·s₁ ∈ S} · |V| = |F| · (|S| + 𝒮)`. The trivial
 > character contributes exactly the average `|F|·|S|`; **everything else is the Shaw operator.**
 
-So `incidence = average + (|F|/|V|)·𝒮`, exactly and unconditionally. Since
-`δ* = sup{δ : max-far-line-incidence(δ) ≤ q·ε*}` (`MCAThresholdLedger`), δ\* is determined by the
-worst-case value of `𝒮` over far lines — the one open input, now a single named object. Axiom-clean.
+So `incidence = |F|·|S|/|V| + (|F|/|V|)·𝒮`, exactly and unconditionally. Since
+`δ* = sup{δ : max-far-line-incidence(δ) ≤ q·ε*}` (`MCAThresholdLedger`), δ\* is governed by the
+worst-case value of `𝒮` over the *far, MCA-admissible* lines only. **Caveat (scope):** the
+universal budget `MCAShawConjecture S B` below quantifies over *all* lines, including the zero
+direction `s₁ = 0`, where `𝒮 = |V| − |S|` (if `s₀ ∈ S`) or `𝒮 = −|S|` (if `s₀ ∉ S`)
+(`shawError_zero_direction_of_mem`, `shawError_zero_direction_of_not_mem`). Hence for a nonempty
+proper `S` it forces `B ≥ max(|S|, |V| − |S|) ≥ |V|/2` (`MCAShawConjecture.zero_direction_bounds`,
+`MCAShawConjecture.card_le_two_mul`): it is **not** a small-error statement and is not the prize
+reformulation. A restricted residual over far / unexplained lines would need its own definition
+and an explicit bridge to the MCA threshold (deleting `s₁ = 0` alone does not remove
+code-contained, fully explained lines); neither is supplied here. Axiom-clean.
 -/
 set_option linter.style.longLine false
 
@@ -78,23 +87,78 @@ theorem incidence_eq_average_add_shaw (S : Finset V) (s₀ s₁ : V) :
     · rw [if_neg hd, if_neg (fun h => hd h.1)]
 
 
-/-- **The Proximity-Prize Shaw conjecture — the single closed open input.**
-For a finite `F`-module `V` (the RS word space `V = ι → F` is the prize instance), a δ-ball `S ⊆ V`,
-and budget `B`: on every line `s₀ + γ·s₁` the Shaw operator (off-trivial spectral error of the
-line–ball incidence) stays within `B`. By `incidence_eq_average_add_shaw` this is EXACTLY that the
-incidence never exceeds the average by more than `(|V|/|F|)·B`, i.e. δ\* reaches the prize window.
-Every prior residual — `(R)=worst−average`, the higher-order-MDS failure `κ_d`, the higher additive
-energies `E_r`, the worst-case incomplete character sum `max|η_b|` — is a reformulation of this one
-bound. It does NOT reduce to Johnson (the average term is strictly capacity-side) nor to a
-Weil/Parseval bound (W4-weak on `s₁^⊥` for `n ≪ √q`); this is the irreducible prize content, a
-closed bound on a single named operator with no remaining residual and no incomputable lemma. -/
+/-- **The universal (all-lines) Shaw budget.**
+For a finite `F`-module `V` (the RS word space `V = ι → F` is the prize instance), a set `S ⊆ V`
+(e.g. a δ-ball), and budget `B`: on **every** line `s₀ + γ·s₁` — with no far-direction or
+unexplained-agreement restriction, and including `s₁ = 0` — the Shaw operator stays within `B`.
+By `incidence_eq_average_add_shaw` this says the incidence deviates from the average
+`|F|·|S|/|V|` by at most `(|F|/|V|)·B` on every line.
+
+**This is not the prize reformulation.** Because zero directions are included, for nonempty proper
+`S` it forces `B ≥ max(|S|, |V| − |S|) ≥ |V|/2` (`MCAShawConjecture.zero_direction_bounds`,
+`MCAShawConjecture.card_le_two_mul`), so no small-error interpretation is available. A prize-
+relevant residual must restrict to far / unexplained lines and come with an explicit bridge to the
+MCA threshold; that the other residuals (`(R)`, `κ_d`, `E_r`, `max|η_b|`) are reformulations of
+such a bound is not proved here. -/
 def MCAShawConjecture (S : Finset V) (B : ℝ) : Prop :=
   ∀ s₀ s₁ : V, ‖shawError (F := F) S s₀ s₁‖ ≤ B
 
-/-- **The closed δ\* certificate.** A Shaw budget `B` on the δ-ball `S` pins every line–ball
-incidence to `average ± (|V|/|F|)·B` — closed two-sided control of the incidence, with no open
-residual, directly from the landed decomposition `incidence_eq_average_add_shaw`. Specialized to the
-RS word space this is the δ\* statement: incidence ≤ q·ε* up to the prize radius. -/
+/-- **Zero direction, base point in `S`.** On the degenerate line `s₁ = 0` with `s₀ ∈ S`, every
+`γ` is incident, and the Shaw operator equals `|V| − |S|`. -/
+theorem shawError_zero_direction_of_mem (S : Finset V) {s₀ : V} (hs₀ : s₀ ∈ S) :
+    shawError (F := F) S s₀ 0 = (Fintype.card V : ℂ) - (S.card : ℂ) := by
+  have h := incidence_eq_average_add_shaw (F := F) S s₀ 0
+  have hfilt : (univ.filter (fun γ : F => s₀ + γ • (0 : V) ∈ S)) = univ := by
+    ext γ; simp [hs₀]
+  rw [hfilt, Finset.card_univ] at h
+  have hF : (Fintype.card F : ℂ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
+  have h' := mul_left_cancel₀ hF h
+  linear_combination -h'
+
+/-- **Zero direction, base point outside `S`.** On the degenerate line `s₁ = 0` with `s₀ ∉ S`, no
+`γ` is incident, and the Shaw operator equals `−|S|`. -/
+theorem shawError_zero_direction_of_not_mem (S : Finset V) {s₀ : V} (hs₀ : s₀ ∉ S) :
+    shawError (F := F) S s₀ 0 = -(S.card : ℂ) := by
+  have h := incidence_eq_average_add_shaw (F := F) S s₀ 0
+  have hfilt : (univ.filter (fun γ : F => s₀ + γ • (0 : V) ∈ S)) = ∅ := by
+    ext γ; simp [hs₀]
+  rw [hfilt, Finset.card_empty, Nat.cast_zero, zero_mul] at h
+  have hF : (Fintype.card F : ℂ) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
+  have h' : (S.card : ℂ) + shawError (F := F) S s₀ 0 = 0 :=
+    (mul_eq_zero.mp h.symm).resolve_left hF
+  linear_combination h'
+
+/-- **The universal Shaw budget is never small (zero-direction lower bounds).** Any `B` with
+`MCAShawConjecture S B` satisfies `|V| − |S| ≤ B` when `S` is nonempty and `|S| ≤ B` when `S` is
+proper. -/
+theorem MCAShawConjecture.zero_direction_bounds {S : Finset V} {B : ℝ}
+    (h : MCAShawConjecture (F := F) S B) :
+    (S.Nonempty → (Fintype.card V : ℝ) - S.card ≤ B) ∧
+      ((∃ s₀, s₀ ∉ S) → (S.card : ℝ) ≤ B) := by
+  refine ⟨fun ⟨s₀, hs₀⟩ => ?_, fun ⟨s₀, hs₀⟩ => ?_⟩
+  · have h1 := h s₀ 0
+    rw [shawError_zero_direction_of_mem (F := F) S hs₀] at h1
+    have hcast : ((Fintype.card V : ℂ) - (S.card : ℂ))
+        = (((Fintype.card V : ℝ) - (S.card : ℝ) : ℝ) : ℂ) := by push_cast; ring
+    rw [hcast, Complex.norm_real, Real.norm_eq_abs] at h1
+    exact le_trans (le_abs_self _) h1
+  · have h1 := h s₀ 0
+    rwa [shawError_zero_direction_of_not_mem (F := F) S hs₀, norm_neg,
+      Complex.norm_natCast] at h1
+
+/-- **The universal Shaw budget is at least `|V|/2` for nonempty proper `S`.** -/
+theorem MCAShawConjecture.card_le_two_mul {S : Finset V} {B : ℝ}
+    (h : MCAShawConjecture (F := F) S B) (hne : S.Nonempty) (hproper : ∃ s₀, s₀ ∉ S) :
+    (Fintype.card V : ℝ) ≤ 2 * B := by
+  have h1 := h.zero_direction_bounds.1 hne
+  have h2 := h.zero_direction_bounds.2 hproper
+  linarith
+
+/-- **Two-sided incidence control from a Shaw budget (conditional).** A universal Shaw budget `B`
+on `S` pins every line–ball incidence to `|F|·|S|/|V| ± (|F|/|V|)·B` (stated after multiplying by
+`|V|`), directly from the decomposition `incidence_eq_average_add_shaw`. Since the universal
+budget forces `B ≥ |V|/2` for nonempty proper `S` (`MCAShawConjecture.zero_direction_bounds`),
+this does not by itself give a prize-scale δ\* statement. -/
 theorem incidence_pinned_of_shawBound (S : Finset V) (B : ℝ)
     (h : MCAShawConjecture (F := F) S B) (s₀ s₁ : V) :
     ‖((univ.filter (fun γ : F => s₀ + γ • s₁ ∈ S)).card : ℂ) * (Fintype.card V : ℂ)
@@ -161,6 +225,10 @@ theorem average_sub_shawBound_le_incidence (S : Finset V) (B : ℝ)
 end ArkLib.ProximityGap.ShawOperator
 
 #print axioms ArkLib.ProximityGap.ShawOperator.incidence_eq_average_add_shaw
+#print axioms ArkLib.ProximityGap.ShawOperator.shawError_zero_direction_of_mem
+#print axioms ArkLib.ProximityGap.ShawOperator.shawError_zero_direction_of_not_mem
+#print axioms ArkLib.ProximityGap.ShawOperator.MCAShawConjecture.zero_direction_bounds
+#print axioms ArkLib.ProximityGap.ShawOperator.MCAShawConjecture.card_le_two_mul
 #print axioms ArkLib.ProximityGap.ShawOperator.incidence_pinned_of_shawBound
 #print axioms ArkLib.ProximityGap.ShawOperator.incidence_le_average_add_shawBound
 #print axioms ArkLib.ProximityGap.ShawOperator.average_sub_shawBound_le_incidence

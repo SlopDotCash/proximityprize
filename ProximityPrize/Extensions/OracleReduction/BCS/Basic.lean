@@ -230,7 +230,12 @@ the source oracle reduction while replacing each oracle message by a commitment.
 `opening_realizes_query_log` should say that the opening phase opens exactly the oracle queries made
 by the verifier with the retained `(message, decommitment)` witnesses.  Both are left as `Prop`
 fields because their
-eventual statement depends on the query-log API being stabilized. -/
+eventual statement depends on the query-log API being stabilized.
+
+**Caller-defined obligations.**  The "should say" above is intent only: nothing in this structure
+pins the two propositions to a source oracle reduction, a committed transcript, or an executed
+verifier query log (the structure does not even take a source reduction).  Any two propositions,
+e.g. `True`, are accepted. -/
 structure BCSCompiledPhases {StmtMid WitMid : Type}
     (CommitmentType : pSpec.MessageIdx → Type) (e : pSpec.MessageIdx ≃ Fin m) where
   interaction :
@@ -818,15 +823,18 @@ theorem BCSPhaseRealizationFrontier.ofOpeningLogBridge {StmtMid WitMid : Type}
     BCSPhaseRealizationFrontier phases :=
   ⟨hInteraction, hBridge hLog⟩
 
-/-- **Proof-carrying compiled phases** (issue #342, the API-level repair): a
+/-- **Proof-carrying compiled phases** (issue #342, a partial API-level repair): a
 `BCSCompiledPhases` together with *proofs* of its two realization payloads.  The base
 structure keeps its `Prop` payload fields (the eventual generic compiler must be able to
 *state* the obligations before constructing the proofs, and their final shape depends on
-the query-log API), but instances of this extension cannot smuggle vacuous payloads:
-whatever propositions the payload fields carry must actually be proved.  Downstream
-files that want the realization content as hypotheses should take a
-`BCSCompiledPhasesLawful` (or its `realizationFrontier`) instead of a bare
-`BCSCompiledPhases`. -/
+the query-log API).  This extension prevents *unproved* payloads: whatever propositions the
+payload fields carry must actually be proved.  It does **not** prevent *vacuous* payloads: the
+propositions themselves are still chosen by the caller and are not tied to any source reduction,
+transcript, or query log, so choosing both as `True` inhabits it for arbitrary phases
+(`BCSCompiledPhasesLawful.ofTrivialPayloads`).  A `BCSCompiledPhasesLawful` hypothesis therefore
+carries semantic realization content only through the specific propositions an instance
+chooses; pinning them to an actual source reduction and executed query log remains deferred with
+the generic compiler. -/
 structure BCSCompiledPhasesLawful {StmtMid WitMid : Type}
     (CommitmentType : pSpec.MessageIdx → Type) (e : pSpec.MessageIdx ≃ Fin m) extends
     BCSCompiledPhases (oSpec := oSpec) (pSpec := pSpec) (pSpecCom := pSpecCom)
@@ -847,7 +855,10 @@ theorem BCSCompiledPhasesLawful.realizationFrontier {StmtMid WitMid : Type}
     BCSPhaseRealizationFrontier phases.toBCSCompiledPhases :=
   ⟨phases.interaction_realization_holds, phases.opening_realization_holds⟩
 
-/-- Lawful compiled phases supply the opening-log bridge for any typed opening log. -/
+/-- Lawful compiled phases supply the opening-log bridge for any typed opening log.
+
+The proof ignores `log` entirely: it just returns the (caller-chosen) opening payload proof, so
+this bridge records no relation between the log and the opening phase. -/
 theorem BCSCompiledPhasesLawful.openingLogBridge {StmtMid WitMid : Type}
     {CommitmentType : pSpec.MessageIdx → Type} {e : pSpec.MessageIdx ≃ Fin m}
     (phases : BCSCompiledPhasesLawful (oSpec := oSpec) (pSpec := pSpec)
@@ -856,6 +867,26 @@ theorem BCSCompiledPhasesLawful.openingLogBridge {StmtMid WitMid : Type}
     (log : BCSOpeningLogFrontier (pSpec := pSpec) (Oₘ := Oₘ) CommitmentType) :
     BCSOpeningLogBridge phases.toBCSCompiledPhases log :=
   fun _ => phases.opening_realization_holds
+
+omit Oₘ in
+/-- **Witness that the lawful interface does not constrain realization semantics.**  Any pair of
+correctly typed interaction/opening phases becomes `BCSCompiledPhasesLawful` by choosing both
+realization payloads to be `True`. -/
+def BCSCompiledPhasesLawful.ofTrivialPayloads {StmtMid WitMid : Type}
+    {CommitmentType : pSpec.MessageIdx → Type} {e : pSpec.MessageIdx ≃ Fin m}
+    (interaction :
+      Reduction oSpec StmtIn WitIn StmtMid WitMid (pSpec.renameMessage CommitmentType))
+    (opening :
+      Reduction oSpec StmtMid WitMid StmtOut WitOut (pSpec.BCSOpeningPhase pSpecCom e)) :
+    BCSCompiledPhasesLawful (oSpec := oSpec) (pSpec := pSpec)
+      (pSpecCom := pSpecCom) (StmtIn := StmtIn) (WitIn := WitIn) (StmtOut := StmtOut)
+      (WitOut := WitOut) (StmtMid := StmtMid) (WitMid := WitMid) CommitmentType e where
+  interaction := interaction
+  opening := opening
+  interaction_realizes_oracle_messages := True
+  opening_realizes_query_log := True
+  interaction_realization_holds := True.intro
+  opening_realization_holds := True.intro
 
 /-- `BCSCompiledPhases.toReduction` is exactly the appended BCS transform on the packaged
 interaction and opening phases. This small bridge lets downstream code unfold the current compiler
@@ -1847,3 +1878,4 @@ generic compiler construction or the completeness/soundness preservation theorem
 #print axioms OracleReduction.BCSCompilerFrontierReady.ofOpeningLogBridgeAndSecurity
 #print axioms OracleReduction.BCSCompiledPhasesLawful.realizationFrontier
 #print axioms OracleReduction.BCSCompiledPhasesLawful.openingLogBridge
+#print axioms OracleReduction.BCSCompiledPhasesLawful.ofTrivialPayloads

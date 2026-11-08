@@ -21,8 +21,13 @@ the fourth is determined, so at most one choice). That gives
 
 > `‖η_b‖^4 ≤ (q·n^3 − n^4)/n = n^2·(q − n)`,   hence   `M(n) ≤ √n · (q − n)^{1/4}`,
 
-the **first unconditional sub-√q ceiling** (`n^2(q-n) < q^2 ⟺ n^2 < q`), binding in the band
-`q ~ n^2`. No char-`p` energy input, no Lam–Leung, no BGK: a real theorem.
+an **unconditional quartic upper envelope**. The envelope is below `√q` exactly when
+`n^2(q − n) < q^2`; `n^2 < q` is *sufficient* for this but **not necessary** (e.g. `n = 4`,
+`q = 13`, where `μ_4 ≤ F_13^*` has index 3: `16·9 = 144 < 169` although `16 < 13` fails; the
+envelope is `2√3 < √13`). The envelope is also only useful in a narrow band: when `q − n ≥ n^2`
+it is `≥ n` and hence dominated by the triangle bound `M(n) ≤ n`; it beats the triangle bound
+exactly when `q − n < n^2`. (An upper-envelope inequality is not an iff characterization of the
+actual maximum `M(n)`.) No char-`p` energy input, no Lam–Leung, no BGK: a real theorem.
 
 Axiom-clean. Issue #407.
 -/
@@ -122,9 +127,11 @@ theorem eta_quartic_le_uncond {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {G : F
 `eta_quartic_le_uncond`: for every nonzero frequency `b₀`,
 `‖η_{b₀}‖ ≤ √n · (q − n)^{1/4}`,  `q = |F|`, `n = |G|`.
 Since this holds for *every* `b₀ ≠ 0` it bounds the worst-case period
-`M(n) = max_{b≠0}‖η_b‖ ≤ √n·(q−n)^{1/4}`. Genuinely sub-`√q`: the square is
-`n·√(q−n) < n·√q`, and `M < √q ⟺ n^2 < q`, binding in the band `q ~ n^2`.
-Unconditional — no char-`p` energy hypothesis, no BGK, no Lam–Leung. -/
+`M(n) = max_{b≠0}‖η_b‖ ≤ √n·(q−n)^{1/4}`. The envelope `√n·(q−n)^{1/4}` is `< √q` exactly
+when `n^2(q − n) < q^2`; `n^2 < q` is sufficient but not necessary (`n = 4`, `q = 13`:
+`144 < 169`, envelope `2√3 < √13`), and the envelope bound is an upper bound on `M(n)`, not an
+iff characterization of when `M(n) < √q`. It improves on the triangle bound `M(n) ≤ n` only when
+`q − n < n^2`. Unconditional — no char-`p` energy hypothesis, no BGK, no Lam–Leung. -/
 theorem eta_le_uncond_norm {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {G : Finset F}
     (hbij : ∀ u ∈ G, G.image (fun y => u * y) = G) (h0 : (0 : F) ∉ G) (hne : G.Nonempty)
     {b₀ : F} (hb₀ : b₀ ≠ 0) :

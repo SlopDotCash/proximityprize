@@ -860,39 +860,28 @@ theorem residualPetalCoordinateFiber_card_le_three_of_six_le_secant_core
       htheta0.1 htheta1.1 htheta2.1 htheta3.1
       h01 h02 h03 h12 h13 h23 htheta2On htheta3On
 
-/-- **Population bound for the three-hole cells.**  Every survivor uses
-three of the five distinguished-petal coordinates, while each coordinate is
-used by at most three survivors. -/
-theorem regularOffResidualSecant_card_le_five_of_six_le_secant_core
+/-- **Petal incidence double count.**  Every regular outsider off the residual secant agrees with
+exactly three of the five distinguished-petal coordinates, so summing the coordinate fibers over
+the petal counts each such outsider three times. -/
+theorem sum_residualPetalCoordinateFiber_card_eq
     {dom : I ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) I}
     (family : BadScalarRichPointFamily dom 4 delta u)
     (hn : Fintype.card I = 16)
-    (hthreshold :
-      ⌈(1 - delta) * (Fintype.card I : NNReal)⌉₊ = 9)
-    (residual : UniqueEightCoreResidual family)
-    (hsix : 6 ≤
-      (jointCore dom (u 0) (u 1)
-        (residualSecantLine residual).1
-        (residualSecantLine residual).2).card) :
-    (regularOffResidualSecant family residual).card ≤ 5 := by
+    (residual : UniqueEightCoreResidual family) :
+    (∑ i ∈ secantPetal family residual.source residual.gamma residual.beta,
+        (residualPetalCoordinateFiber family residual i).card) =
+      (regularOffResidualSecant family residual).card * 3 := by
   let O := regularOffResidualSecant family residual
   let P := secantPetal family residual.source residual.gamma residual.beta
   let A : F → Finset I := fun theta =>
     residualSecantPetalAgreement family residual theta
   let Fib : I → Finset F := fun i => residualPetalCoordinateFiber family residual i
-  have hPcard : P.card = 5 := by
-    simpa only [P] using residualSecantPetal_card residual
   have hAdata : ∀ theta ∈ O, A theta ⊆ P ∧ (A theta).card = 3 := by
     intro theta htheta
     have hdata := offResidualSecant_two_triple_data
       family hn residual (by simpa only [O] using htheta)
     exact ⟨by simpa only [A, P] using hdata.2.2.1,
       by simpa only [A] using hdata.2.2.2⟩
-  have hFib : ∀ i, (Fib i).card ≤ 3 := by
-    intro i
-    simpa only [Fib] using
-      residualPetalCoordinateFiber_card_le_three_of_six_le_secant_core
-        family hn hthreshold residual hsix i
   have hswap : (∑ theta ∈ O, (A theta).card) =
       ∑ i ∈ P, (Fib i).card := by
     calc
@@ -921,12 +910,42 @@ theorem regularOffResidualSecant_card_le_five_of_six_le_secant_core
       (∑ theta ∈ O, (A theta).card) = ∑ _theta ∈ O, 3 := by
         exact Finset.sum_congr rfl fun theta htheta => (hAdata theta htheta).2
       _ = O.card * 3 := by simp
+  change (∑ i ∈ P, (Fib i).card) = O.card * 3
+  rw [← hswap, hleft]
+
+/-- **Population bound for the three-hole cells.**  Every survivor uses
+three of the five distinguished-petal coordinates, while each coordinate is
+used by at most three survivors. -/
+theorem regularOffResidualSecant_card_le_five_of_six_le_secant_core
+    {dom : I ↪ F} {delta : NNReal} {u : WordStack F (Fin 2) I}
+    (family : BadScalarRichPointFamily dom 4 delta u)
+    (hn : Fintype.card I = 16)
+    (hthreshold :
+      ⌈(1 - delta) * (Fintype.card I : NNReal)⌉₊ = 9)
+    (residual : UniqueEightCoreResidual family)
+    (hsix : 6 ≤
+      (jointCore dom (u 0) (u 1)
+        (residualSecantLine residual).1
+        (residualSecantLine residual).2).card) :
+    (regularOffResidualSecant family residual).card ≤ 5 := by
+  let O := regularOffResidualSecant family residual
+  let P := secantPetal family residual.source residual.gamma residual.beta
+  let Fib : I → Finset F := fun i => residualPetalCoordinateFiber family residual i
+  have hPcard : P.card = 5 := by
+    simpa only [P] using residualSecantPetal_card residual
+  have hFib : ∀ i, (Fib i).card ≤ 3 := by
+    intro i
+    simpa only [Fib] using
+      residualPetalCoordinateFiber_card_le_three_of_six_le_secant_core
+        family hn hthreshold residual hsix i
+  have hcount : (∑ i ∈ P, (Fib i).card) = O.card * 3 :=
+    sum_residualPetalCoordinateFiber_card_eq family hn residual
   have hright : (∑ i ∈ P, (Fib i).card) ≤ P.card * 3 := by
     calc
       (∑ i ∈ P, (Fib i).card) ≤ ∑ _i ∈ P, 3 :=
         Finset.sum_le_sum fun i _hi => hFib i
       _ = P.card * 3 := by simp
-  rw [← hswap, hleft, hPcard] at hright
+  rw [hcount, hPcard] at hright
   change O.card ≤ 5
   omega
 

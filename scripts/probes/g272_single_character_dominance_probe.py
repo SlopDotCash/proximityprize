@@ -20,8 +20,14 @@ Q(j) := n * Porbit(j)  is the signed orbit-mass vector; sum_j Q(j) = p*A_r - P(0
 
 DECISIVE QUESTION (rank-1). Does the SINGLE order-2 (quadratic / Legendre-on-quotient) Plancherel
 term  What(chi2) * conj(Rhat(chi2))  track sign(A_r) where the coarse even/odd families fail?
-If yes -> target factors through one Jacobi covariance; if no -> irreducibly multi-character, and we
-formalize the calibrated single-char no-go.
+If yes on the tested cells -> evidence the target factors through one Jacobi covariance; if no ->
+the CHOSEN quadratic-character sign proxy fails, and we formalize that calibrated single-char no-go.
+
+SCOPE (audit 2026-10-28, L103). The four exact witnesses refute only the specific proxy
+"sign(A_r) = +/- sign(What(chi2) * Rhat(chi2))" on the tested cells. They do NOT show that every
+single-character invariant is useless, nor that every useful covariance estimate must be
+irreducibly multi-character: other characters, weighted single-character bounds, or magnitude
+(not sign) information from one character are untouched.
 
 CRITICAL: the order-2 term is the product of the SEPARATE transforms of the G-invariant profiles W
 and R restricted to the quotient Z_m, i.e. What(chi2)*Rhat(chi2), NOT the order-2 Fourier coefficient
@@ -282,11 +288,13 @@ def main():
     frac = single_char_matches / cells if cells else 0
     print()
     if single_char_matches == cells:
-        print("VERDICT: single order-2 Plancherel term DOMINATES sign in ALL cells -> factors through one Jacobi covariance.")
+        print("VERDICT: single order-2 Plancherel term matches sign in ALL tested cells (finite evidence only).")
     else:
         print(f"VERDICT: single order-2 Plancherel term FAILS to track sign in "
               f"{cells - single_char_matches}/{cells} cells (match rate {frac:.3f}).")
-        print("         -> single-character dominance is DEAD; frontier is irreducibly MULTI-character.")
+        print("         -> the quadratic-character SIGN PROXY is refuted (exact witnesses above).")
+        print("         This does not show every single-character invariant fails or that every")
+        print("         useful covariance estimate is irreducibly multi-character.")
     sys.exit(0)
 
 

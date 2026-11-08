@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.SidonLiftAssembly
 
 /-!
-# THE CLOSED "NO PARALLELOGRAM" THEOREM — `μ_n ⊂ F_p` IS SIDON FOR `p > 2^n` (#389)
+# THE CLOSED "NO PARALLELOGRAM" THEOREM — `μ_n ⊂ F_p` IS SIDON MOD `±` FOR `p > 4^{φ(n)}` (#389)
 
 Assembling the cyclotomic resultant bricks into the closed lifting:
 
@@ -14,9 +14,12 @@ Assembling the cyclotomic resultant bricks into the closed lifting:
 * `abs_resultant_le` — `|R| ≤ 4^{φ(n)}` (`= 2^n` for `n = 2^m`);
 * `resultant_map_eq_zero_of_primitiveRoot` — a parallelogram mod `p` forces `p ∣ R`.
 
-Combined via `Int.le_of_dvd`: a nontrivial parallelogram in `μ_n ⊂ F_p` forces `p ≤ 4^{φ(n)}`.
-Hence **for `p > 4^{φ(n)}` there is no nontrivial parallelogram** — `μ_n` is a Sidon set, with no
-Weil and no Stepanov.  Issue #389.
+Combined via `Int.le_of_dvd`: a nontrivial parallelogram in `μ_n ⊂ F_p` whose four-term
+polynomial is nonzero at every primitive complex `n`-th root forces `p ≤ 4^{φ(n)}`.
+Hence **for `p > 4^{φ(n)}` there is no nontrivial nonzero-sum parallelogram** — `μ_n` is Sidon
+**modulo negation** (`r(c) ≤ 2` for `c ≠ 0`), with no Weil and no Stepanov.  It is not fully
+Sidon when `n` is even: the antipodal zero-sum coincidences `ω^i + ω^{i+n/2} = 0` survive (they
+are exactly the case excluded by the nonvanishing hypotheses, and give `r(0) = n`).  Issue #389.
 -/
 
 open Polynomial Complex

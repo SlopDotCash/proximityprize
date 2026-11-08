@@ -15,7 +15,7 @@ list-decodable codes, such as in the Guruswami-Guo 2025 bounds for Reed-Solomon 
 * `intersectionMultiplicity`: The sum of dimensions of the intersections of a subspace `W`
   with a family of subspaces `H`.
 * `IsTauSubspaceDesign`: The property that a family `H` forms a `τ`-subspace design
-  for a given dimension bound `s`.
+  for a given dimension bound `s` (test spaces are required to be finite-dimensional).
 
 ## Main theorems
 * `intersectionMultiplicity_mono`: The intersection multiplicity is monotonically
@@ -36,10 +36,24 @@ noncomputable def intersectionMultiplicity (W : Submodule F V) : ℕ :=
 
 /-- The definition of a strong `τ`-subspace design.
 A family `H` of subspaces is an `(s, τ)`-strong subspace design if for every
-subspace `W` of dimension at most `s`, its intersection multiplicity with `H`
-is bounded by `τ`. -/
+finite-dimensional subspace `W` of dimension at most `s`, its intersection multiplicity
+with `H` is bounded by `τ`.
+
+The explicit `FiniteDimensional F W` guard is needed because the ambient space `V` is
+not assumed finite-dimensional, and Mathlib's `Module.finrank` is `0` on
+infinite-dimensional modules: without the guard, an infinite-dimensional `W` (e.g. `⊤`)
+would be treated as a test space of "dimension `0`". When `V` is finite-dimensional the
+guard is automatic and this is the usual definition. -/
 def IsTauSubspaceDesign (s τ : ℕ) : Prop :=
-  ∀ W : Submodule F V, Module.finrank F W ≤ s → intersectionMultiplicity H W ≤ τ
+  ∀ W : Submodule F V, FiniteDimensional F W → Module.finrank F W ≤ s →
+    intersectionMultiplicity H W ≤ τ
+
+/-- In a finite-dimensional ambient space the finite-dimensionality guard in
+`IsTauSubspaceDesign` is automatic. -/
+lemma isTauSubspaceDesign_iff_of_finiteDimensional [FiniteDimensional F V] (s τ : ℕ) :
+    IsTauSubspaceDesign H s τ ↔
+      ∀ W : Submodule F V, Module.finrank F W ≤ s → intersectionMultiplicity H W ≤ τ :=
+  ⟨fun h W hW => h W inferInstance hW, fun h W _ hW => h W hW⟩
 
 -- Monotonicity lemma
 lemma intersectionMultiplicity_mono [FiniteDimensional F V] {W₁ W₂ : Submodule F V} (h : W₁ ≤ W₂) :

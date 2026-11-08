@@ -16,6 +16,15 @@ records the matching arithmetic obstruction.  The combined
 `puncturedWeight + singletonProfile <= 2B` budget contains every individual raw weighted summand,
 so in the common `2a <= n` range the raw singleton route cannot fit any `B` with
 `2B < |F|^k`.
+
+**Scope caveat.**  Several theorems below assume the uniform hypothesis
+`UniformZeroDirectionSafe dom k a` (safety on *every* affine line).  That hypothesis is
+unsatisfiable whenever `a ≤ n` (`not_uniformZeroDirectionSafe_of_le`: the zero line with the zero
+codeword matches on all `n` coordinates), so in the intended `0 < a`, `2a ≤ n` range those
+`hZeroSafe` refutations are vacuously true implications with no instances, and the final
+unsafe-or-budget-failure alternative is already satisfied by its unsafe branch.  The inequalities
+are valid implications, but they do not constitute remaining production arithmetic; a meaningful
+version needs per-line safety or a quantifier restricted to far/unexplained lines.
 -/
 
 set_option autoImplicit false
@@ -29,6 +38,20 @@ open ProximityGap.SpikeFloor ProximityGap
 
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {n : ℕ} [NeZero n]
+
+omit [Fintype F] in
+/-- **Uniform zero-direction safety is impossible once `a ≤ n`.**  The trivial zero line
+(`u₀ = u₁ = 0`) and the zero codeword (which lies in every RS submodule, including `k = 0`) agree
+on all `n` zero-direction coordinates.  Hence every hypothesis `UniformZeroDirectionSafe dom k a`
+is unsatisfiable in the intended `0 < a`, `2a ≤ n` regime, and the "unsafe" branch of any
+unsafe-or-budget-failure alternative is already witnessed by this zero line. -/
+theorem not_uniformZeroDirectionSafe_of_le
+    (dom : Fin n ↪ F) (k : ℕ) {a : ℕ} (ha : a ≤ n) :
+    ¬ UniformZeroDirectionSafe dom k a := by
+  classical
+  refine (not_uniformZeroDirectionSafe_iff_exists_line_codeword_zeroAgreement_ge dom k a).mpr
+    ⟨0, 0, 0, Submodule.zero_mem _, ?_⟩
+  simpa [directionZeroAgreementSet, directionZeroSet] using ha
 
 /-- The combined exact singleton-profile budget contains every raw weighted MDS singleton term
 whose profile envelope `D` dominates that raw term. -/
@@ -177,7 +200,9 @@ theorem not_uniformWeightPlusExactSingletonProfileBudgeted_lowRaw_of_two_mul_le
 open Classical in
 /-- Full scanner-facing raw singleton obstruction.  In the common range `2a <= n`, raw dominance
 and `2B < |F|^k` force either zero-direction saturation or failure of the combined exact
-singleton-profile budget. -/
+singleton-profile budget.  Note that for `a ≤ n` the first disjunct always holds (the zero line
+with the zero codeword, `not_uniformZeroDirectionSafe_of_le`), so this alternative carries no
+information about the budget in that range. -/
 theorem unsafe_or_not_uniformWeightPlusExactSingletonProfileBudgeted_rawFieldPow_of_two_mul_le
     (dom : Fin n ↪ F) (k a B : ℕ) (D : ℕ → ℕ)
     (ha : 0 < a) (h2a : 2 * a ≤ n)
@@ -198,6 +223,7 @@ theorem unsafe_or_not_uniformWeightPlusExactSingletonProfileBudgeted_rawFieldPow
 
 section SourceAudit
 
+#print axioms not_uniformZeroDirectionSafe_of_le
 #print axioms rawFieldPowSingletonProfileBudget_term_le
 #print axioms not_uniformWeightPlusExactSingletonProfileBudgeted_of_rawFieldPow_term_gt
 #print axioms exists_rawFieldPowSingletonProfileBudget_term_gt_of_two_mul_le

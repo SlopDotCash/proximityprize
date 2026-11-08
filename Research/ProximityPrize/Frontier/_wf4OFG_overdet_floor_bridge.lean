@@ -30,7 +30,8 @@ every stack's mcaEvent bad-scalar count is `≤ q·ε* = budget`.  We isolate th
 and, packaging the radius side, `OverDetFloorGood_of_perStackBudget`.  This is the *correct*
 reduction of the D3 lower side to a single per-stack counting Prop — unconditional, axiom-clean.
 
-## The HONEST refutation (probe `probe_wf4OFG_true_mcaevent_floor.py`, char-0, exact)
+## The HONEST refutation — PROBE EVIDENCE ONLY, not formalized
+(probe `probe_wf4OFG_true_mcaevent_floor.py`, char-0, exact)
 
 The over-det bricks do **NOT** supply `PerStackBadScalarBudget` at the binding radius
 `δbind = (n−s*)/n`, `s* = n/2−1` (ρ=1/4).  The relevant quantity for `epsMCA` is the **distinct-γ
@@ -62,9 +63,13 @@ free Johnson-side lower bound here.
 * `epsMCA_le_of_perStackBudget` — UNCONDITIONAL bridge: a uniform per-stack distinct-γ count bound
   `B` with `B/q ≤ ε*` gives `epsMCA C δ ≤ ε*`.  This is the exact reduction of the D3 lower side.
 * `OverDetFloorGood_of_perStackBudget` — the same, packaged as the D3 residual `OverDetFloorGood`.
-* `overdet_incidence_does_not_supply_budget` — a documented `Prop` recording the probe refutation:
-  the per-stack budget `PerStackBadScalarBudget C δbind n` is **false** at `δbind=(n−s*)/n` (the
-  distinct-γ count exceeds `n`), so the over-det bricks cannot close the lower side at that radius.
+* `epsMCA_gt_of_stack_over_budget` — the machine-checkable SHAPE of the refutation: one
+  over-budget stack makes the radius bad.
+* NOT formalized: the probe's claim that `PerStackBadScalarBudget C δbind n` fails for the RS code
+  over a large prime field at `δbind = (n−s*)/n`.  No Lean statement in this file encodes that
+  setting (an earlier placeholder Prop over `ZMod 2` was vacuous — over a 2-element field every
+  per-stack count is `≤ 2 ≤ n` — and has been removed); the refutation rests on the probe table
+  above.
 -/
 
 open scoped NNReal ENNReal ProbabilityTheory
@@ -120,8 +125,9 @@ open Classical in
 /-- **PROVEN (axiom-clean): `OverDetFloorGood` from the per-stack budget.**  Given the radius is in
 range (`δbind ≤ 1`) and every stack carries `≤ B` distinct mcaEvent-bad scalars with `B/q ≤ ε*`,
 the D3 lower-side residual holds.  This discharges the *consumer* obligation: the remaining content
-is exactly the counting Prop `PerStackBadScalarBudget C δbind B`.  (The probe below refutes that
-Prop at `B = budget`, `δbind = (n−s*)/n`.) -/
+is exactly the counting Prop `PerStackBadScalarBudget C δbind B`.  (The probe recorded in the module
+docstring reports that this Prop fails for the RS code at `B = budget`, `δbind = (n−s*)/n`; that
+refutation is not formalized.) -/
 theorem OverDetFloorGood_of_perStackBudget (C : Set (ι → A)) (εstar : ℝ≥0∞) (δbind : ℝ≥0) {B : ℕ}
     (hδ : δbind ≤ 1)
     (hB : PerStackBadScalarBudget (F := F) (A := A) C δbind B)
@@ -146,19 +152,11 @@ theorem epsMCA_gt_of_stack_over_budget (C : Set (ι → A)) (δ : ℝ≥0) (εst
   have := mcaEvent_prob_le_epsMCA (F := F) (A := A) C δ u
   rwa [prob_uniform_eq_card_filter_div_card] at this
 
-/-- **HONEST refutation record (probe `probe_wf4OFG_true_mcaevent_floor.py`).**  The per-stack
-budget `PerStackBadScalarBudget C δbind n` is **FALSE** at the over-det binding radius
-`δbind = (n−s*)/n`, `s* = n/2−1`, budget `= n`: exact char-0 enumeration finds a stack (even a pure
-over-det **monomial** at n=12: distinct-γ count 17 > 12; multi-term 61 > 12) whose distinct-γ count
-exceeds `n`.  Consequently the over-det incidence bricks **cannot** discharge `OverDetFloorGood` at
-that radius; by `epsMCA_gt_of_stack_over_budget` the radius is in fact bad, so the floor
-`δbind ≤ δ*` is refuted there.  This is a `def … : Prop` documenting the refuted statement (NOT a
-theorem): the per-stack count IS the distinct-γ count `epsMCA` governs, NOT the campaign's
-`(subset, γ)` incidence `I(n)`, and the former is over budget at `δbind`. -/
-def OverDetIncidenceSuppliesBudgetAtBinding : Prop :=
-  ∀ (n : ℕ) (C : Set (Fin n → ZMod 2)) (δbind : ℝ≥0),
-    PerStackBadScalarBudget (F := ZMod 2) (A := ZMod 2) C δbind n
--- REFUTED by probe at n∈{8,12}, δbind=(n-(n/2-1))/n: distinct-γ count > n on a single stack.
+/-! The probe refutation of `PerStackBadScalarBudget C δbind n` at the binding radius
+(RS code, `p ≡ 1 (mod n)`, `p > n⁴`, `δbind = (n−s*)/n`, `n ∈ {8, 12}`) is recorded only in the
+module docstring and `probe_wf4OFG_true_mcaevent_floor.py`; it is not formalized here.  Turning it
+into a theorem would require an explicit RS stack over a large prime field together with a
+certified count of its distinct mcaEvent-bad scalars, fed to `epsMCA_gt_of_stack_over_budget`. -/
 
 end ProximityGap.Frontier.wf4OFG
 

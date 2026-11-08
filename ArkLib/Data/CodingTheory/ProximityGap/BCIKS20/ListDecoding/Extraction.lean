@@ -62,7 +62,9 @@ lemma eq512_cartesian_product_blowup (a b : F[Z][X][Y]) (hab : a ≠ b) :
 
 omit [DecidableEq F] [DecidableEq (RatFunc F)] [Finite F] in
 /-- Mapping `Y² - X` by any coefficient hom sending `X` to `0` shows the current
-ring-level `Separable` conjunct is stronger than the paper's fraction-field separability. -/
+ring-level `Separable` conjunct is stronger than the paper's fraction-field separability
+(`Y² - X` is fraction-field-separable when `char F ≠ 2`; the ring-level failure proved here holds
+in every characteristic). -/
 lemma eq512_strong_separable_unsat
     (g : F[Z][X] →+* F) (hgX : g (Polynomial.C (Polynomial.X : Polynomial F) : F[Z][X]) = 0) :
     ¬ (((Polynomial.X : F[Z][X][Y]) ^ 2
@@ -309,8 +311,11 @@ The statement still uses a specification stronger than the intended paper statem
   is *not a field*. By `separable_def`, this unfolds to a Bézout identity
   `a · Rᵢ + b · Rᵢ.derivative = 1` with `a, b : F[Z][X][Y]` — coprimality *in the polynomial
   ring* — which is **unsatisfiable** for genuinely-arising irreducible factors: the companion
-  witness `eq512_strong_separable_unsat` proves that `Y² − X` (an irreducible, squarefree,
-  fraction-field-separable factor of the shape a `ModifiedGuruswami` solution produces, since
+  witness `eq512_strong_separable_unsat` proves (in every characteristic) that `Y² − X` (an
+  irreducible, squarefree factor — fraction-field-separable when `char F ≠ 2`; in characteristic
+  `2` its `Y`-derivative vanishes and it is inseparable over `F(Z,X)` too, while e.g.
+  `Y² + Y − X` is fraction-field-separable in every characteristic — of the shape a
+  `ModifiedGuruswami` solution produces, since
   `D_Y Q < D_X / k` permits `Y`-degree ≥ 2) is **not** `Separable` over `F[Z][X]`, because
   `Separable.map` would force its `Z, X ↦ 0` image `Y²` to be squarefree. The paper means
   separability of `Rᵢ` over the *fraction field* `F(Z,X)`, equivalently nonvanishing of

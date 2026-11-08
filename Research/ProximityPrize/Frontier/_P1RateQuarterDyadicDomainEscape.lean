@@ -31,11 +31,19 @@ coset-shaped root sets have 2-power sizes.
    `k − 1 − m = 134217727` — deficit `2²⁴ + 1` (kernel: `two_level_blocked`).
    Coset-union variants reduce by the substitution `y = x^{2^j}` to the same
    problem one level down (self-similar).
-3. **Exhaustive-ish dyadic census** at `μ_256 ⊂ F_65537` (domain = the literal
-   256th roots of unity): exact Bezout solution dimension **0** across every
-   dyadic-structured geometry (subgroup-coset truncations, coset unions,
-   two-level shared sets, random domain subsets, arcs); the stall census on the
-   dyadic domain never exceeded the two-pencil capacity `2(N−T+1) = 230 < 256`.
+3. **Small dyadic battery** at `μ_256 ⊂ F_65537` (domain = the literal 256th
+   roots of unity; not exhaustive): exact Bezout solution dimension **0** on
+   genuine subgroup-coset truncations, coset unions, random domain subsets and
+   cyclic arcs, but dimension **8** on the two-level shared set (`μ_32`-cosets
+   plus common extra roots) — the binomial-dependence family
+   `α(x^32 − s₀) + β(x^32 − s₂) = λ(x^32 − s₄)` times the shared-root factor.
+   That shape is excluded as an escape by the triple-point coverage count of
+   item 2, not by Bezout dimension.  The stall census on the dyadic domain never
+   exceeded the two-pencil capacity `2(N−T+1) = 230 < 256`.  (An earlier probe
+   version built its "subgroups" and "cosets" as strides of a numerically
+   sorted list of `μ_256`, which are arbitrary subsets, and reported dimension
+   `0` everywhere; corrected after the 2026-10-28 repository audit, finding
+   L115.)
 
 **Consequence (the decisive answer):** the Stepanov-weld refutation CANNOT be
 transported to `μ_{2^30}` — `StallResidual` on the literal dyadic domain is

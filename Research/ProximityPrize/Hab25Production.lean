@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.Hab25BranchDichotomy
+import ArkLib.ToMathlib.SurfaceFactorProduction
 import Mathlib.LinearAlgebra.Lagrange
 
 /-!
@@ -391,68 +392,38 @@ lemma branchOfCurveTuple_coeff_natDegree_lt {L : ℕ} (hL : 0 < L) (a : Fin L �
     omega
   omega
 
-/-- Coefficient `Z`-degree bound for powers: if every coefficient of `p ∈ F[Z][X]` has
-`Z`-degree `≤ m`, every coefficient of `p^b` has `Z`-degree `≤ b·m`. -/
-lemma coeff_pow_natDegree_le {p : (F₀[X])[X]} {m : ℕ}
-    (hp : ∀ i, (p.coeff i).natDegree ≤ m) (b : ℕ) :
-    ∀ i, ((p ^ b).coeff i).natDegree ≤ b * m := by
-  induction b with
-  | zero =>
-      intro i
-      rw [pow_zero, Polynomial.coeff_one]
-      split_ifs <;> simp
-  | succ b ih =>
-      intro i
-      rw [pow_succ, Polynomial.coeff_mul]
-      refine Polynomial.natDegree_sum_le_of_forall_le _ _ fun x hx => ?_
-      refine le_trans Polynomial.natDegree_mul_le ?_
-      have h1 := ih x.1
-      have h2 := hp x.2
-      have h3 : (b + 1) * m = b * m + m := by ring
-      omega
-
-/-- **The defect budget of `branch_capture_dichotomy`, proven**: a candidate with
+/-- **The defect budget of `branch_capture_dichotomy`**: a candidate with
 coefficient `Z`-degrees `≤ m` has evaluation defect `R.eval pHat` with coefficient
 `Z`-degrees `≤ B + deg_Y R · m` — at `m = L−1` this is the issue's quantitative margin
-`M_defect = B + D_Y·(L−1)`. -/
+`M_defect = B + D_Y·(L−1)`.  This is a restatement of the canonical
+`ArkLib.SurfaceFactorProduction.eval_coeff_natDegree_le`. -/
 theorem eval_defect_coeff_natDegree_le {R : (F₀[X])[X][Y]} {pHat : (F₀[X])[X]} {B m : ℕ}
     (hRB : ∀ b a : ℕ, ((R.coeff b).coeff a).natDegree ≤ B)
     (hp : ∀ i, (pHat.coeff i).natDegree ≤ m) (i : ℕ) :
-    ((Polynomial.eval pHat R).coeff i).natDegree ≤ B + R.natDegree * m := by
-  rw [Polynomial.eval_eq_sum_range, Polynomial.finset_sum_coeff]
-  refine Polynomial.natDegree_sum_le_of_forall_le _ _ fun b hb => ?_
-  rw [Polynomial.coeff_mul]
-  refine Polynomial.natDegree_sum_le_of_forall_le _ _ fun x hx => ?_
-  refine le_trans Polynomial.natDegree_mul_le ?_
-  have h1 := hRB b x.1
-  have h2 := coeff_pow_natDegree_le hp b x.2
-  have hble : b ≤ R.natDegree := Nat.lt_succ_iff.mp (Finset.mem_range.mp hb)
-  have hmul : b * m ≤ R.natDegree * m := Nat.mul_le_mul_right m hble
-  omega
+    ((Polynomial.eval pHat R).coeff i).natDegree ≤ B + R.natDegree * m :=
+  ArkLib.SurfaceFactorProduction.eval_coeff_natDegree_le hRB hp i
 
 /-! ## The capstones -/
 
-/-- **Candidate production from the coordinate upgrade (the capstone).** Given the cell
-surface (`(Y − C (P γ)) ∣ R|_γ`), the interpolant coefficient budget `B`, and the Claim-5.10
-coordinate upgrade at `k` coordinates, a cell larger than the defect budget
-`B + deg_Y R·(L−1)` forces the **global branch**: `(Y − C pHat) ∣ R` for the explicit
-Lagrange candidate — exactly the input of `pinning_of_global_branch` and
-`cell_card_le_of_global_branch`, closing the chain the day Claim 5.10 lands. -/
-theorem global_branch_of_coordinate_upgrade {n L k : ℕ} (hk : 0 < k) (hL : 0 < L)
+/-- **Pinned cell ⇒ global branch.**  If every scalar of a cell `E` has its decoded
+polynomial pinned to the Lagrange curve through the coordinates `T`
+(`P γ = ∑ⱼ C(γʲ)·aⱼ`), the cell surface `(Y − C (P γ)) ∣ R|_γ` holds on `E`, and `E` is larger
+than the defect budget `B + deg_Y R·(L−1)`, then the explicit Lagrange candidate is a global
+branch: `(Y − C pHat) ∣ R`. -/
+theorem global_branch_of_pinned_cell {n L : ℕ} (hL : 0 < L)
     {domain : Fin n ↪ F₀} {u : WordStack F₀ (Fin L) (Fin n)}
     (R : (F₀[X])[X][Y]) {B : ℕ}
     (hRB : ∀ b a : ℕ, ((R.coeff b).coeff a).natDegree ≤ B)
-    (E : Finset F₀) (P : F₀ → F₀[X]) (T : Finset (Fin n)) (hT : T.card = k)
-    (hdeg : ∀ γ ∈ E, (P γ).degree < (k : ℕ))
+    (E : Finset F₀) (P : F₀ → F₀[X]) (T : Finset (Fin n))
+    (hpin : ∀ γ ∈ E, P γ =
+      ∑ j : Fin L, Polynomial.C (γ ^ (j : ℕ)) * lagrangeCurveTuple domain u T j)
     (hdvdP : ∀ γ ∈ E, (Polynomial.X - Polynomial.C (P γ)) ∣
       R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ)))
-    (hupg : CoordinateUpgrade domain u E P T)
     (hbig : B + R.natDegree * (L - 1) < E.card) :
     (Polynomial.X - Polynomial.C
         (branchOfCurveTuple (fun j => lagrangeCurveTuple domain u T j))) ∣ R := by
   classical
   set pHat := branchOfCurveTuple (fun j => lagrangeCurveTuple domain u T j) with hpHat
-  have hpin := curve_pinning_of_coordinate_upgrade hk hT hdeg hupg
   have hcoeff : ∀ i, (pHat.coeff i).natDegree ≤ L - 1 := by
     intro i
     have h1 := branchOfCurveTuple_coeff_natDegree_lt hL
@@ -473,6 +444,27 @@ theorem global_branch_of_coordinate_upgrade {n L k : ℕ} (hk : 0 < k) (hL : 0 <
       exact hdvdP γ hγ
     have hcard := Finset.card_le_card hsub
     omega
+
+/-- **Candidate production from the coordinate upgrade (the capstone).** Given the cell
+surface (`(Y − C (P γ)) ∣ R|_γ`), the interpolant coefficient budget `B`, and the Claim-5.10
+coordinate upgrade at `k` coordinates, a cell larger than the defect budget
+`B + deg_Y R·(L−1)` forces the **global branch**: `(Y − C pHat) ∣ R` for the explicit
+Lagrange candidate — exactly the input of `pinning_of_global_branch` and
+`cell_card_le_of_global_branch`, closing the chain the day Claim 5.10 lands. -/
+theorem global_branch_of_coordinate_upgrade {n L k : ℕ} (hk : 0 < k) (hL : 0 < L)
+    {domain : Fin n ↪ F₀} {u : WordStack F₀ (Fin L) (Fin n)}
+    (R : (F₀[X])[X][Y]) {B : ℕ}
+    (hRB : ∀ b a : ℕ, ((R.coeff b).coeff a).natDegree ≤ B)
+    (E : Finset F₀) (P : F₀ → F₀[X]) (T : Finset (Fin n)) (hT : T.card = k)
+    (hdeg : ∀ γ ∈ E, (P γ).degree < (k : ℕ))
+    (hdvdP : ∀ γ ∈ E, (Polynomial.X - Polynomial.C (P γ)) ∣
+      R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ)))
+    (hupg : CoordinateUpgrade domain u E P T)
+    (hbig : B + R.natDegree * (L - 1) < E.card) :
+    (Polynomial.X - Polynomial.C
+        (branchOfCurveTuple (fun j => lagrangeCurveTuple domain u T j))) ∣ R :=
+  global_branch_of_pinned_cell hL R hRB E P T
+    (curve_pinning_of_coordinate_upgrade hk hT hdeg hupg) hdvdP hbig
 
 /-- **The unconditional candidate-production dichotomy.** With only the proven supplies —
 decode data, the counting numerics, and the cell surface — every cell either produces a
@@ -504,25 +496,8 @@ theorem global_branch_or_card_le {n L k : ℕ} (hk : 0 < k) (hkn : k ≤ n) (hL 
       lagrangeCurveTuple_natDegree_lt hk domain u hTcard j
     refine ⟨pHat, branchOfCurveTuple_natDegree_lt hk hadeg,
       fun i => branchOfCurveTuple_coeff_natDegree_lt hL a i, ?_⟩
-    have hcoeff : ∀ i, (pHat.coeff i).natDegree ≤ L - 1 := by
-      intro i
-      have h1 := branchOfCurveTuple_coeff_natDegree_lt hL a i
-      rw [← hpHat] at h1
-      omega
-    have hdefect : ∀ i, ((Polynomial.eval pHat R).coeff i).natDegree
-        ≤ B + R.natDegree * (L - 1) := eval_defect_coeff_natDegree_le hRB hcoeff
-    rcases branch_capture_dichotomy R pHat hdefect with hgl | hbound
-    · exact hgl
-    · exfalso
-      have hsub : E' ⊆ Finset.univ.filter (fun γ : F₀ =>
-          (Polynomial.X - Polynomial.C (pHat.map (Polynomial.evalRingHom γ))) ∣
-            R.map (Polynomial.mapRingHom (Polynomial.evalRingHom γ))) := by
-        intro γ hγ
-        refine Finset.mem_filter.mpr ⟨Finset.mem_univ _, ?_⟩
-        rw [hpHat, branchOfCurveTuple_map_eval, ← hpin γ hγ]
-        exact hdvdP γ (hE'sub hγ)
-      have hcard := Finset.card_le_card hsub
-      omega
+    exact global_branch_of_pinned_cell hL R hRB E' P T hpin
+      (fun γ hγ => hdvdP γ (hE'sub hγ)) hbig
   · right
     omega
 
@@ -543,6 +518,8 @@ open CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame in
 #print axioms branchOfCurveTuple_map_eval
 open CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame in
 #print axioms eval_defect_coeff_natDegree_le
+open CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame in
+#print axioms global_branch_of_pinned_cell
 open CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame in
 #print axioms global_branch_of_coordinate_upgrade
 open CodingTheory.ProximityGap.Hab25Core.Hab25JohnsonEndgame in

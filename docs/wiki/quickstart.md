@@ -143,6 +143,14 @@ interaction implementation train, not the current package versions.
 
 ## Recommended Validation
 
+Install the Python regression dependencies in your active virtual environment first
+(Python 3.12, the version CI uses; older interpreters are not tested):
+
+```bash
+python3 -m pip install -r scripts/requirements-validation.txt
+```
+
+CI installs the same pinned dependencies on Python 3.12 before running the validation wrapper.
 For a convenient routine check, run:
 
 ```bash
@@ -372,6 +380,12 @@ lake exe toyproblem-runtime
 lake exe hachi-runtime
 lake exe sumcheck-runtime
 lake exe fri-extractor-runtime
+python3 ./scripts/forbidden_tokens.py
+python3 ./scripts/sorry_census.py --fail-on-holes
+# build the modules the audit imports (flagship modules, some outside the
+# ProximityGap umbrella, and the pinned residual-axiom modules) before auditing:
+python3 ./scripts/axiom_audit.py --print-modules | xargs ./scripts/lake-locked.sh build
+python3 ./scripts/axiom_audit.py
 ./scripts/check-imports.sh
 uv run --no-project --python 3.12 python ./scripts/check-docs-integrity.py
 uv run --no-project --python 3.12 python ./scripts/kb/lint.py
@@ -423,6 +437,41 @@ the default build.
   acceptance modules. It also runs on feature-base stacked PRs. Its read-only job restores,
   but never saves, the dependency and build caches and does not retain checkout credentials. Passing
   this check does not waive the full validation/axiom gate for the eventual `main` target.
+- The validation wrapper enforces the issue #47 verification gates: a fast precheck rejecting
+  `native_decide`/`bv_decide`/custom `axiom` declarations in live source
+  (`scripts/forbidden_tokens.py`, which main CI also runs as a separate early step), a
+  comment-stripped sorry census requiring zero live holes
+  (`scripts/sorry_census.py --fail-on-holes`), and a `#print axioms` sweep over the pinned
+  flagship list (`scripts/axiom_audit.py` reading `scripts/flagship_axioms.txt`) that must stay
+  within `propext`, `Classical.choice`, `Quot.sound`. Renaming or deleting a pinned flagship
+  theorem without updating the list is a hard failure. Because some pinned flagship modules live
+  outside the ProximityGap umbrella, the audit's modules
+  (`python3 ./scripts/axiom_audit.py --print-modules`: the flagship modules and the modules of
+  the residual axioms pinned in `scripts/residual_axioms.txt`) are built before it runs. The same
+  audit lists, from Lean's environment metadata, every axiom declared in an `ArkLib`/`Research`
+  module of that import closure and fails unless each is a pinned residual declared in its pinned
+  module; this covers every name form and axioms added without the `axiom` keyword, but only
+  inside that closure.
+- The declaration scanner restricts leading indentation to the current line, so
+  large masked block comments do not cause repeated scans of all following blank lines.
+- The forbidden-token precheck rejects every custom `axiom` *except* the
+  documented, tracked residuals pinned in
+  [`../../scripts/residual_axioms.txt`](../../scripts/residual_axioms.txt) (route (a)
+  of #111). Each entry pins one declaration by fully qualified name, defining file and
+  a digest of its signature plus in-scope `variable`/`universe`/`open`/`export`/`include`/
+  `omit` commands, and names the issue that owns its eventual discharge. An undocumented
+  `axiom`, a copy of a pinned name under another namespace, a moved declaration, or a
+  changed statement or context fails the gate until the entry is updated after review;
+  `python3 ./scripts/forbidden_tokens.py --print-residual-manifest` prints the current
+  pins. A stale entry (matching no live axiom) prints a warning to prompt cleanup. A pin is
+  a documented assumption, not a proof. `scripts/forbidden_tokens.py` also accepts
+  explicit Lean files or directories for focused checks; stale-entry warnings are only
+  meaningful on the default full-tree scan.
+- The forbidden-token precheck, the sorry census and `scripts/check-research-boundary.py`
+  share one lexer, [`../../scripts/lean_lexer.py`](../../scripts/lean_lexer.py), so a
+  construct cannot be code for one gate and a comment for another. It lexes every
+  combination of plain/interpolated readings of ambiguous string literals and fails closed
+  past its budget. It is lexical, not an elaborated declaration or axiom audit.
 - [`../../.github/workflows/check-imports.yml`](../../.github/workflows/check-imports.yml)
   checks pinned canonical-source provenance, the library/research boundary, and the generated
   `ArkLib.lean`, `ProximityPrize.lean`, `ProximityPrize/Extensions.lean`, and Research umbrellas,

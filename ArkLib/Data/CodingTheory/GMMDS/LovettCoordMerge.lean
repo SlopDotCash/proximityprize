@@ -33,13 +33,21 @@ the two old multiplicities, and re-indexing the remaining `n−2` coordinates or
   coordinates are added; every other coordinate is relocated bijectively.)
 * `mergeVec_shape` — clause (iii) for the merged vector: interior coordinates stay `≤ 1`
   (the merged value sits at the new *last* coordinate, exempt from (iii)).
-* `mergeMeet_lower` / `mergeMeet_zero_of_mem` — the meet-weight only *increases* under the merge,
-  and the increase is **zero** for any index set containing the merge candidate `i*` (since `i*`
-  zeros both merged coordinates), in particular for the full set in a primitive system.
+## Proved elsewhere (not in this file)
 
-The remaining clause-(ii) bound for index sets *not* containing `i*` is exactly Lovett's
-Lemma 2.4 (tight constraints are singletons or the whole set), isolated as the named residual
-`MergeMDS` in `LovettMergeBranch.lean`.
+The meet-weight behaviour under the merge is proved in `LovettMergeMeet.lean`, not here: the
+merged meet at the new last coordinate is at least the sum of the two absorbed meets
+(`mergeMeet_last_ge`, with `vAbs_vMeet_le_mergeMeet` for the total), and it is **zero** for any
+index set containing the merge candidate `i*` (`mergeMeet_last_zero_of_mem`,
+`mergeMeet_vAbs_eq_of_mem`), in particular for the full set in a primitive system
+(`mergeSys_mds_univ`).
+
+The clause-(ii) bound for index sets *not* containing `i*` needs Lovett's Lemma 2.4 (tight
+constraints are singletons or the whole set). It is no longer pending: `LovettMergeVStar.lean`
+proves it inside the minimal-counterexample frame (`mergeSys_mds_general`) and assembles
+`mergeSys_isVStar`; the merge branch itself is closed by `LovettMergeIndepProof.lovettMergeIndep`.
+(Earlier versions of this note cited `mergeMeet_lower`, `mergeMeet_zero_of_mem` and a residual
+`MergeMDS`; no declarations with those names exist.)
 
 Issue #389.
 -/

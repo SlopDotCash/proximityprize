@@ -20,10 +20,21 @@ binds the prover's helper oracles —
   `z = signPoint u₀` the Lagrange delta (`lagrangeKernel_signPoint`) extracts
   `domainIdentityTerm k u₀ = 0` for every group `k` and row `u₀`.
 
-The remaining half of the obligation is the partial-fraction clearing chain: `DIT ≡ 0` and
+The second half of the obligation is the partial-fraction clearing chain: `DIT ≡ 0` and
 helper mass `0` force the grand-sum identity at `x` (inputs:
 `helperValue_mul_denominatorProduct`, the `SoundnessConverse` count algebra), placing `x` in the
 sharp Schwartz–Zippel locus — the round-2 monotonicity of the claim-based RBR state function.
+This algebra is **supplied below** (it is not a remaining gap), under explicit pole-free
+hypotheses on the challenge:
+
+* `helpers_eq_helperValue_of_DIT_zero` / `helper_mass_eq_grand_sum_of_DIT_zero` — a vanishing
+  domain-identity term at a pole-free row (`hden`) pins each helper value, hence the helper mass,
+  to the honest partial-fraction value;
+* `consistentClaim_eq_termSum` (with `termSum_orient`) — under full consistency and nonvanishing
+  denominators, the helper claim is the ungrouped LogUp partial-fraction total;
+* `consistentClaim_eq_neg_perMNumerator_div` — for a challenge avoiding every pole value in `A`
+  (`hx`), the claim equals `-(perMNumerator A …).eval x / ∏ a ∈ A, (x + a)`.
+
 Axiom-clean.
 -/
 

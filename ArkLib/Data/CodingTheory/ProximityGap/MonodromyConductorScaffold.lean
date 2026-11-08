@@ -14,29 +14,37 @@ arithmetic-geometry constituents, with the *provable arithmetic glue* between th
 
 ## The program (honest map of what is open and why)
 
-The prize sup-norm bound is, by Rojas-León (arXiv:2207.12439) / Katz [Kat88], a **theorem as `q → ∞`**:
-the Gauss sums `G(χ^s)` are the Frobenius traces of an explicit hypergeometric sheaf whose geometric
-monodromy group is the full `GL(1)^f` (the only relations being Hasse–Davenport), so by Deligne's
-equidistribution they are asymptotically independent and `M(n) ≈ √(n·ln q)`.
+**Correction (audit 2026-10-28, PG-107): the cited source does not prove the prize maximum.** An
+earlier version of this header said the prize sup-norm bound `M(n) ≈ √(n·ln q)` is "a theorem as
+`q → ∞`" by Rojas-León (arXiv:2207.12439) / Katz [Kat88]. That overstates the source. Rojas-León's
+Theorem 1 fixes the dimension, the exponent vectors and the twists over a base finite field and
+proves **torus equidistribution over extension fields as the extension degree `m → ∞`**, under
+independence hypotheses. Such fixed-dimensional weak equidistribution does **not** give a uniform
+deterministic maximum over a growing family of subgroup periods (`n → ∞` with `q`), nor the
+extreme-value (`√(n·ln q)`, Gumbel-scale) behaviour of that maximum. An effective growing-parameter
+equidistribution statement plus a separate maximum argument would be needed before any source could
+be said to prove this bound; neither is formalized here, and the cited source does not supply them.
+The `√(n·ln q)` scale is a heuristic / conjectural target, not a cited theorem.
 
-The prize is the **effective version at the fixed prize `q`**.  By Deligne's Weil II, an equidistribution
-statement is effective with discrepancy controlled by the **conductor** (rank + Swan/Artin conductors of
-the singularities) of the relevant sheaf:
-  `| q·E_r − |G|^{2r} − q·(2r-1)‼·|G|^r |  ≤  conductor(r) · √q`.
-The two inputs are therefore:
+**What this file formalizes.** The definitions below are scalar moment inequalities on the additive
+energy `rEnergy G r`; there is no sheaf, monodromy group, or conductor construction in Lean. The
+words "Deligne", "conductor" and "monodromy" name the *intended* (unformalized) geometric source of
+each scalar hypothesis, not anything proved or specialized here:
 
-* **(I) `DeligneEffectiveEquidistribution`** — Deligne's Weil II for this family: the cumulant deviates
-  from the Wick value by at most `cond · √q`.  This is a *theorem of arithmetic geometry* (Deligne),
-  NOT formalisable in current Mathlib (no étale cohomology), so it is carried as a named hypothesis.
+* **(I) `DeligneEffectiveEquidistribution`** — the scalar inequality "the `r`-th energy cumulant
+  deviates from the Wick value by at most `cond · √q`". The intended source is a Weil-II-type
+  estimate for a suitable sheaf; no such sheaf or estimate is constructed or proved, so this is an
+  **unformalized geometric input** carried as a hypothesis (with `cond` an arbitrary real).
 
-* **(II) `ConductorGeometricBound`** — the conductor of the `r`-fold multiplicative convolution of the
-  Gauss-sum sheaf is `≤ K^r` for a constant `K = O(1)` in the prize regime `n ≪ √q`.  This is the
-  **recognized OPEN core** (equivalent to BGK square-root cancellation for subgroup character sums;
-  SOTA `n^{1−1/2880}`, half a power short).  Carried as a named hypothesis.
+* **(II) `ConductorGeometricBound`** — the scalar inequality `cond ≤ K^r`. Its docstring below
+  records that the naive reading "`cond` is a sheaf conductor and `K = O(1)`" is **false** (the
+  conductor is rank-driven `~ n^{2r-1}`); the meaningful content is an effective cancellation base
+  `K`, which is the recognized open core (BGK-type square-root cancellation for subgroup character
+  sums; SOTA `n^{1−1/2880}`, half a power short). Carried as a hypothesis.
 
-`(I) ∧ (II) ⟹ EffectiveConductorBound` is then **pure arithmetic**, proven below — that is the entire
-provable content of "the monodromy/conductor toolkit".  The toolkit does NOT discharge (I) or (II): (I)
-needs unformalised étale machinery; (II) IS the open problem.  Honest modular scaffolding, no fabrication.
+`(I) ∧ (II) ⟹ EffectiveConductorBound` is then **pure arithmetic**, proven below — the valid
+conditional content of this file. It discharges neither (I) nor (II), and it does not prove any
+specialization of the cited geometric results.
 -/
 
 open ArkLib.ProximityGap.SubgroupGaussSumSecondMoment
@@ -50,10 +58,13 @@ namespace ArkLib.ProximityGap.MonodromyConductorScaffold
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
-/-- **(I) Deligne effective equidistribution (Weil II), as a named hypothesis.**  The cumulant deviates
-from the real-Gaussian (Wick) value by at most `cond · √q`, where `cond` is the conductor of the relevant
-hypergeometric sheaf at order `r`.  This is Deligne's theorem of arithmetic geometry applied to the
-Gauss-sum family — TRUE but not formalisable in current Mathlib (no étale cohomology), hence a hypothesis. -/
+/-- **(I) "Deligne effective equidistribution", as a named scalar hypothesis.**  The cumulant
+deviates from the real-Gaussian (Wick) value by at most `cond · √q`, for an arbitrary real `cond`.
+The intended source is a Weil-II-type estimate for a suitable sheaf attached to the Gauss-sum
+family, with `cond` its conductor; no such sheaf, conductor or estimate is constructed or proved
+(Mathlib has no étale cohomology), and the cited fixed-dimensional equidistribution theorems do
+not by themselves give this inequality uniformly in a growing `n` (PG-107).  Hence an
+unformalized hypothesis, not a proved specialization. -/
 def DeligneEffectiveEquidistribution (G : Finset F) (r : ℕ) (cond : ℝ) : Prop :=
   (Fintype.card F : ℝ) * (rEnergy G r : ℝ) - (G.card : ℝ) ^ (2 * r)
     ≤ (Fintype.card F : ℝ) * ((Nat.doubleFactorial (2 * r - 1) : ℝ) * (G.card : ℝ) ^ r)
@@ -74,8 +85,8 @@ which the prize `n ≪ √p` violates by construction). -/
 def ConductorGeometricBound (cond K : ℝ) (r : ℕ) : Prop :=
   cond ≤ K ^ r
 
-/-- **The monodromy/conductor toolkit, its entire provable content.**  Deligne effective equidistribution
-(I) plus the geometric conductor bound (II) yield `EffectiveConductorBound` — and hence, via
+/-- **The monodromy/conductor toolkit, its provable (conditional) content.**  The scalar
+hypotheses (I) and (II) yield `EffectiveConductorBound` — and hence, via
 `KatzEffectiveGaussSum.worstCaseIncompleteSumBound_of_effectiveConductorBound`, the per-frequency bound
 and the `δ*` floor.  This is the modular reduction of the open input to its two arithmetic-geometry
 constituents; the implication is pure arithmetic (monotonicity of the error term), proven here. -/
@@ -97,8 +108,9 @@ theorem effectiveConductorBound_of_deligne_and_conductor {G : Finset F} {r : ℕ
 
 /-- **End-to-end geometric reduction (modular).**  The two arithmetic-geometry inputs discharge the
 in-tree `WorstCaseIncompleteSumBound` at the effective Katz scale.  Composing with the proven downstream
-chain pins `δ*` at the prize floor — conditional ONLY on (I) Deligne Weil II for this family and (II) the
-`K = O(1)` conductor bound (the open core).  Everything between is machine-checked. -/
+chain pins `δ*` at the prize floor — conditional on the two scalar hypotheses (I) (an
+unformalized geometric input, not proved for this family) and (II) (the effective `K = O(1)`
+cancellation base, the open core).  Everything between is machine-checked. -/
 theorem worstCaseIncompleteSumBound_of_geometricInputs {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive)
     {G : Finset F} {r : ℕ} {cond K : ℝ} (hr : 1 ≤ r)
     (hI : DeligneEffectiveEquidistribution G r cond)

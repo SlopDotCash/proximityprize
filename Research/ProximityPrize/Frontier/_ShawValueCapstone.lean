@@ -24,6 +24,13 @@ This file is deliberately elementary and axiom-clean: it proves that the normali
 Nothing here proves the open Gauss-period bound. It packages the reduction target so later formal
 work can cite one exact capstone instead of repeatedly re-normalizing the same inequality.
 
+**Conventions (parallel module).**  This file is a parallel capstone to
+`Frontier/ShawValueCapstone.lean`, with different conventions: here `shawValue q n M` divides by
+`shawScale q n = sqrt(n·log(q/n))`, whereas `ShawValueCapstone.lean` uses `shawValue M n L` with
+`prizeScale n L = sqrt(n·L)`.  Separately, `_NoFifthDoorTetrachotomy.lean` uses the name
+`prizeScale n = sqrt n` for a different scale.  These live in distinct namespaces, so there is no
+Lean clash, but the shared names do not denote the same quantity across modules.
+
 The final `O(1)` theorem records the precise Shaw-value essay slogan: on any positive-scale prize
 family, `Sh(n)=O(1)` is equivalent to the square-root `CORE` bound with one absolute constant.
 -/
@@ -163,9 +170,11 @@ theorem shawOOneOn_iff_corePrizeBoundOn_of_pos_lt {ι : Type*} {q n M : ι → �
     (fun i => shawScale_pos_of_pos_lt (hn i) (hnq i))
 
 
-/-- Plancherel/Johnson-floor normalization: if `sqrt n ≤ M`, then Shaw's value is at least
+/-- Assumed-floor normalization: if `sqrt n ≤ M`, then Shaw's value is at least
 `sqrt n / sqrt(n log(q/n))`.  This records the floor in normalized units without claiming any
-upper bound. -/
+upper bound.  `sqrt n ≤ M` is a HYPOTHESIS here, not an unconditional fact: Parseval only gives
+`M² ≥ n(q − n)/(q − 1)`, and `sqrt n ≤ M` can fail in the regime `q > n > 0` (e.g. `q = 5`,
+`n = 4`, `μ_n = F_5^×`: every nonzero period is `-1`, so `M = 1 < 2 = sqrt n`). -/
 theorem shawValue_floor_of_sqrt_le {q n M : ℝ} (hscale : 0 < shawScale q n)
     (hfloor : Real.sqrt n ≤ M) :
     Real.sqrt n / shawScale q n ≤ shawValue q n M := by
@@ -182,8 +191,9 @@ theorem shawValue_trivial_ceiling_of_le {q n M : ℝ} (hscale : 0 < shawScale q 
 
 /-- Two-sided Shaw-value corridor.  If a raw Gauss-period norm is trapped between a lower certificate
 `L` and an upper certificate `U`, then the normalized Shaw value is trapped between the same
-certificates divided by the prize scale.  This is pure normalization bookkeeping: it packages the
-Plancherel/Johnson floor and any available ceiling in the dimensionless units used by Shaw's
+certificates divided by the prize scale.  This is pure normalization bookkeeping: it packages any
+available lower certificate (e.g. an assumed `sqrt n` floor, or the Parseval floor
+`sqrt(n(q − n)/(q − 1))`) and any available ceiling in the dimensionless units used by Shaw's
 `prize ↔ Sh(n)=O(1)` capstone, without asserting any new analytic bound. -/
 theorem shawValue_mem_corridor_of_mem_raw_corridor {q n M L U : ℝ} (hscale : 0 < shawScale q n)
     (hlo : L ≤ M) (hhi : M ≤ U) :
@@ -255,11 +265,13 @@ theorem uniformShawInterval_iff_uniformRawScaledInterval_of_pos_lt {ι : Type*}
   exact uniformShawInterval_iff_uniformRawScaledInterval (q := q) (n := n) (M := M)
     (L := L) (U := U) (fun i => shawScale_pos_of_pos_lt (hn i) (hnq i))
 
-/-- The explicit Johnson-floor/trivial-ceiling corridor in Shaw units: from
+/-- The explicit assumed-floor/trivial-ceiling corridor in Shaw units: from
 `sqrt n ≤ M ≤ n` one gets
-`sqrt n / sqrt(n log(q/n)) ≤ Sh(q,n) ≤ n / sqrt(n log(q/n))`.  This records exactly where the
-kernel-checked floor and elementary ceiling sit after Shaw normalization; it is not a cancellation
-estimate and makes no claim toward closing CORE. -/
+`sqrt n / sqrt(n log(q/n)) ≤ Sh(q,n) ≤ n / sqrt(n log(q/n))`.  This records where an *assumed*
+`sqrt n` floor and the elementary ceiling sit after Shaw normalization; it is not a cancellation
+estimate and makes no claim toward closing CORE.  The floor `sqrt n ≤ M` is a hypothesis, not a
+kernel-checked fact: it can fail even when `q > n > 0` (`q = 5`, `n = 4`: `M = 1 < 2`); the
+unconditional Parseval floor is only `M² ≥ n(q − n)/(q − 1)`. -/
 theorem shawValue_floor_ceiling_corridor {q n M : ℝ} (hscale : 0 < shawScale q n)
     (hfloor : Real.sqrt n ≤ M) (hceil : M ≤ n) :
     Real.sqrt n / shawScale q n ≤ shawValue q n M ∧
@@ -267,8 +279,8 @@ theorem shawValue_floor_ceiling_corridor {q n M : ℝ} (hscale : 0 < shawScale q
   exact shawValue_mem_corridor_of_mem_raw_corridor (q := q) (n := n) (M := M)
     (L := Real.sqrt n) (U := n) hscale hfloor hceil
 
-/-- Prize-regime form of the Johnson-floor/trivial-ceiling corridor, discharging scale positivity
-from `q > n > 0`. -/
+/-- Prize-regime form of the assumed-floor/trivial-ceiling corridor, discharging scale positivity
+from `q > n > 0`.  The floor `sqrt n ≤ M` is still assumed; `q > n > 0` does not imply it. -/
 theorem shawValue_floor_ceiling_corridor_of_pos_lt {q n M : ℝ}
     (hn : 0 < n) (hnq : n < q) (hfloor : Real.sqrt n ≤ M) (hceil : M ≤ n) :
     Real.sqrt n / shawScale q n ≤ shawValue q n M ∧

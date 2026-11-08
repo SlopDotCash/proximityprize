@@ -7,6 +7,7 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.LocalSeriesProducer
 import Research.ProximityPrize.Hab25CurveCellStrictExtraction
 import ArkLib.ToMathlib.LocalSeriesBaseRationalReading
+import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.StrictCoeffPolysExceptional
 
 /-!
 # Issue #304 — fixing the most-common-cell interface direction
@@ -27,9 +28,10 @@ Weaken the producer interface from the pinned good set to an arbitrary finset `S
 * `LocalSeriesDatumOnSub k S P` — `FaithfulCurveExtraction.LocalSeriesDatumOn` with every
   per-`z` demand quantified over `z ∈ S` instead of `z ∈ RS_goodCoeffsCurve u δ`
   (note the pinned structure used `u, δ, domain, deg` ONLY through the good set, and `k`
-  only through `hn`; so the sub-finset variant needs only `(k, S, P)`);
+  only through `hn`; so the sub-finset variant needs only `(k, S, P)`), and with the
+  domain truncation length `m` split from the curve length `n` (see "Two-length correction");
 * round-trip welds `…Sub_of_localSeriesDatumOn` / `localSeriesDatumOn_of_…Sub_good`
-  (the new interface is a conservative generalization) and the new freedom
+  (the new interface generalizes the pinned one; the converse needs `m = n`) and the new freedom
   `LocalSeriesDatumOnSub.mono` (restriction to any sub-finset — impossible at the pinned
   interface, and exactly what "pass to the most common cell" needs);
 * `localSeriesDatumOnSub_of_rawGS` — the raw-GS producer of `LocalSeriesProducer.lean`,
@@ -41,31 +43,44 @@ Weaken the producer interface from the pinned good set to an arbitrary finset `S
   `claim57_pigeonhole`'s ACTUAL per-cell output shape (`hshape` + `∃ c ∈ Index, T < |cell c|`),
   with the genuinely deep per-cell residuals isolated as named hypotheses.
 
-## Downstream soundness (the counting only needs ≥-many points — verified)
+## Downstream counting (the counting only needs ≥-many points)
 
 The pinned consumers (`CurveFamilyData.hPz`, `KeystoneCapstone.CurveCoeffPolys`,
 `StrictCoeffPolysResidual`) quantify over the WHOLE good set, but the underlying counting
-chain in `Curves.lean` is already sub-finset-ready:
-`decoded_family_coefficients_of_coeff_polys_core`,
-`decoded_family_coefficients_assemble_codeword_curve`, and
-`decoded_sum_polynomial_family_on_codeword_curve_implies_jointAgreement` all work on an
-arbitrary `S'` with ONLY the cardinality thresholds `|S'| > l + 1` and
-`|S'| ≥ (|ι| + 1)·(l + 1)` — and they consume a SPECIFIC decoded family `P`, so a
-`P`-dependent most-common cell is fine.  This file proves the full chain:
+chain is already sub-finset-ready: the canonical single-family cores
+`subset_single_decoded_family_coeff_polys_implies_jointAgreement_core` / `_of_pos`
+(`StrictCoeffPolysExceptional.lean`) work on an arbitrary `S'` with ONLY the threshold
+`|S'| ≥ (|ι| + 1)·(l + 1)` (the strict bound `|S'| > l + 1` they also take follows from it,
+`lt_of_card_succ_mul_le`), and they consume a SPECIFIC decoded family `P`, so a `P`-dependent
+most-common cell is fine.  This file proves:
 
-* `hPz_of_localSeriesDatumOnSub` — the per-`z` Hensel pin `P z = ∑ (z − x₀)^t • c t` on `S`
-  (the `S`-generic re-assembly of `curveHenselDatum_of_truncatedLocalRoot_genuine_on` +
+* `hPz_of_localSeriesDatumOnSub` — the per-`z` Hensel pin `P z = ∑_{t<n} (z − x₀)^t • c t` on
+  `S` (the `S`-generic re-assembly of `curveHenselDatum_of_truncatedLocalRoot_genuine_on` +
   `eval_identity_of_curveHensel`, all of whose per-`z` bricks were already good-set-free);
 * `curveCoeffPolys_of_localSeriesDatumOnSub` / `coeffPolyWitness_of_localSeriesDatumOnSub` —
   the coefficient-interpolant extraction on `S` (via the already-finset-generic
   `curveCoeffPolys_of_curveFamily`);
-* `jointAgreement_of_localSeriesDatumOnSub` — **the threshold capstone**: a sub-finset datum
-  on ANY `S'` with `|S'| > l + 1` and `|S'| ≥ (|ι| + 1)·(l + 1)`, for a decoded family `P`
-  on `S'`, already yields the §6 `jointAgreement` conclusion — so the weakening is sound
-  end-to-end, and the most-common cell can replace the good set as soon as the pigeonhole
-  threshold `T` is taken `≥ (|ι| + 1)·(l + 1)`;
-* `jointAgreement_of_pigeonhole_cell` — the composed Steps-5–7 skeleton: claim57 per-cell
-  output at threshold `T = (|ι| + 1)·(l + 1)` + per-cell analytic cargo ⟹ `jointAgreement`.
+* `jointAgreement_of_exists_localSeriesDatumOnSub` (and `_of_pos`) — **the threshold
+  implication**: if, for every decoded family `P`, some carrier `S'` inside the good set with
+  `|S'| ≥ (|ι| + 1)·(l + 1)` carries a `LocalSeriesDatumOnSub`, then the §6 `jointAgreement`
+  conclusion holds;
+* `jointAgreement_of_pigeonhole_output_of_pos` — the composed Steps-5–7 skeleton: a Claim-5.7
+  cell of size `> (|ι| + 1)·k` inside the good set, with analytic cargo on that cell ⟹
+  `jointAgreement`.
+
+These are implications, not closures: the analytic cargo (`LocalSeriesDatumOnSub` on the
+selected cell) is a hypothesis.
+
+**Two-length correction (PG-319 shape).**  The pinned `LocalSeriesDatumOn` uses one length `n`
+for both the domain-variable truncation and the curve length `n < k + 2`; since the Hensel pin
+gives `P z = trunc_n (localSeries)`, the pinned cargo forces `natDegree (P z) < k + 1` and so
+cannot be supplied at all when the decoded polynomials have domain degree `≥ k + 1` (e.g.
+`p = 10¹² + 39`, 12-point domain, `deg = 3`, `k = 1`, `P z = X²`).  `LocalSeriesDatumOnSub`,
+`TruncReadingOnSub` and `Claim57CellDatum` here keep the truncation length `m` separate from the
+curve length `n`, so this degree obstruction is removed; the pinned interface embeds only as the
+`m = n` case.  Whether the remaining analytic cargo can be supplied in the regimes of interest is
+NOT claimed (see below; in particular the base-rationality route is jointly unsatisfiable at
+`2 ≤ H.natDegree`).
 
 ## Honest scope — the isolated deep residuals
 
@@ -113,7 +128,17 @@ the pinned good set `RS_goodCoeffsCurve u δ` replaced by an arbitrary carrier f
 Every per-`z` field is demanded at members of `S` only.  Instantiating
 `S := RS_goodCoeffsCurve u δ` recovers the landed structure exactly
 (`localSeriesDatumOnSub_of_localSeriesDatumOn` / `localSeriesDatumOn_of_localSeriesDatumOnSub_good`);
-instantiating `S :=` a claim57 incidence cell is the §5 "pass to the most common cell". -/
+instantiating `S :=` a claim57 incidence cell is the §5 "pass to the most common cell".
+
+**Two separate lengths.**  The pinned structure uses one length `n` both for the
+domain-variable truncation `PowerSeries.trunc n` and for the number of curve coefficients
+(`n < k + 2`).  Since `hPz_of_localSeriesDatumOnSub` proves `P z = trunc_n (localSeries)`, that
+conflation forces `natDegree (P z) < n ≤ k + 1` at every carrier point, so the pinned shape has
+no inhabitant whenever the decoded polynomials have domain degree `≥ k + 1` (possible once
+`deg > k + 1`).  This sub-finset structure therefore keeps the domain-variable truncation length
+`m` (unbounded; it only has to dominate the support of the local series, via `hvanish`)
+separate from the curve length `n < k + 2`.  The pinned structure is the special case `m = n`
+(`localSeriesDatumOnSub_of_localSeriesDatumOn` / `localSeriesDatumOn_of_localSeriesDatumOnSub_good`). -/
 structure LocalSeriesDatumOnSub (k : ℕ) (S : Finset F) (P : F → Polynomial F) : Type where
   /-- the expansion centre. -/
   x₀ : F
@@ -127,6 +152,8 @@ structure LocalSeriesDatumOnSub (k : ℕ) (S : Finset F) (P : F → Polynomial F
   hξ : ξ x₀ R H hHyp ≠ 0
   hlc : H.leadingCoeff = 1
   hR : R.Separable
+  /-- the domain-variable truncation length of the local series (no bound in terms of `k`). -/
+  m : ℕ
   /-- the number of curve coefficients (at most `k + 1`). -/
   n : ℕ
   hn : n < k + 2
@@ -136,11 +163,12 @@ structure LocalSeriesDatumOnSub (k : ℕ) (S : Finset F) (P : F → Polynomial F
   rootOn : (z : F) → z ∈ S → rationalRoot (H_tilde' H) z
   /-- per-`z` unit condition at members of `S`. -/
   hx : ∀ z (hz : z ∈ S), (π_z z (rootOn z hz)) (ξ x₀ R H hHyp) ≠ 0
-  /-- tail vanishing of the genuine Hensel coefficients from `n` on (`z`-free). -/
-  hvanish : ∀ t, n ≤ t → αGenuine H x₀ R hHyp t = 0
-  /-- the per-`z` base-rational reading on `S`. -/
+  /-- tail vanishing of the genuine Hensel coefficients from `m` on (`z`-free). -/
+  hvanish : ∀ t, m ≤ t → αGenuine H x₀ R hHyp t = 0
+  /-- the per-`z` base-rational reading on `S`: the length-`m` domain truncation is the
+  length-`n` curve specialization. -/
   htrunc : ∀ z (hz : z ∈ S),
-    (PowerSeries.trunc n (localSeries hHyp z (rootOn z hz) (hx z hz)) : Polynomial F)
+    (PowerSeries.trunc m (localSeries hHyp z (rootOn z hz) (hx z hz)) : Polynomial F)
       = ∑ t ∈ Finset.range n, (z - x₀) ^ t • c t
   /-- the decoded-side GS matching-factor divisibility on `S`. -/
   hdvd : ∀ z (hz : z ∈ S),
@@ -160,7 +188,7 @@ noncomputable def LocalSeriesDatumOnSub.mono {k : ℕ} {S S' : Finset F} {P : F 
     (hsub : S' ⊆ S) (d : LocalSeriesDatumOnSub k S P) :
     LocalSeriesDatumOnSub k S' P :=
   { x₀ := d.x₀, R := d.R, H := d.H, hIrr := d.hIrr, hPos := d.hPos, hHyp := d.hHyp,
-    hξ := d.hξ, hlc := d.hlc, hR := d.hR, n := d.n, hn := d.hn, c := d.c,
+    hξ := d.hξ, hlc := d.hlc, hR := d.hR, m := d.m, n := d.n, hn := d.hn, c := d.c,
     rootOn := fun z hz => d.rootOn z (hsub hz),
     hx := fun z hz => d.hx z (hsub hz),
     hvanish := d.hvanish,
@@ -177,7 +205,8 @@ section RoundTrip
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
-/-- The pinned datum is the sub-finset datum at `S := RS_goodCoeffsCurve u δ`. -/
+/-- The pinned datum is the sub-finset datum at `S := RS_goodCoeffsCurve u δ`, with equal
+truncation and curve lengths `m = n`. -/
 noncomputable def localSeriesDatumOnSub_of_localSeriesDatumOn
     {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}
@@ -186,21 +215,30 @@ noncomputable def localSeriesDatumOnSub_of_localSeriesDatumOn
     LocalSeriesDatumOnSub k
       (RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ) P :=
   { x₀ := d.x₀, R := d.R, H := d.H, hIrr := d.hIrr, hPos := d.hPos, hHyp := d.hHyp,
-    hξ := d.hξ, hlc := d.hlc, hR := d.hR, n := d.n, hn := d.hn, c := d.c,
+    hξ := d.hξ, hlc := d.hlc, hR := d.hR, m := d.n, n := d.n, hn := d.hn, c := d.c,
     rootOn := d.rootOn, hx := d.hx, hvanish := d.hvanish, htrunc := d.htrunc,
     hdvd := d.hdvd, hcong := d.hcong }
 
-/-- Conversely, a sub-finset datum at the full good set is the pinned datum. -/
+/-- Conversely, a sub-finset datum at the full good set whose truncation length equals its
+curve length (`d.m = d.n`) is the pinned datum.  Without `d.m = d.n` there is no converse:
+the pinned shape forces `natDegree (P z) < k + 1` on the good set, the sub-finset shape does
+not. -/
 noncomputable def localSeriesDatumOn_of_localSeriesDatumOnSub_good
     {k deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0}
     {u : WordStack F (Fin (k + 1)) ι} {P : F → Polynomial F}
     (d : LocalSeriesDatumOnSub k
-      (RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ) P) :
+      (RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ) P)
+    (hmn : d.m = d.n) :
     FaithfulCurveExtraction.LocalSeriesDatumOn
       (k := k) (deg := deg) (domain := domain) (δ := δ) u P :=
   { x₀ := d.x₀, R := d.R, H := d.H, hIrr := d.hIrr, hPos := d.hPos, hHyp := d.hHyp,
     hξ := d.hξ, hlc := d.hlc, hR := d.hR, n := d.n, hn := d.hn, c := d.c,
-    rootOn := d.rootOn, hx := d.hx, hvanish := d.hvanish, htrunc := d.htrunc,
+    rootOn := d.rootOn, hx := d.hx,
+    hvanish := fun t ht => d.hvanish t (hmn ▸ ht),
+    htrunc := fun z hz => by
+      have h := d.htrunc z hz
+      rw [hmn] at h
+      exact h,
     hdvd := d.hdvd, hcong := d.hcong }
 
 end RoundTrip
@@ -212,36 +250,41 @@ section RawGSSub
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
 /-- **The §5 base-rational reading on a selected carrier.**
-This is `RawGS304.TruncReadingOn` with the pinned good set replaced by an arbitrary finset `S`.
-It is the deep Claim-5.9 / Prop.-5.5 residual needed by the corrected most-common-cell interface;
-all other fields of `LocalSeriesDatumOnSub` below are derived from raw GS cell cargo. -/
+This is `RawGS304.TruncReadingOn` with the pinned good set replaced by an arbitrary finset `S`,
+and with the domain-variable truncation length `m` separated from the curve length `n` (see
+`LocalSeriesDatumOnSub`).  It is the deep Claim-5.9 / Prop.-5.5 residual needed by the
+corrected most-common-cell interface; all other fields of `LocalSeriesDatumOnSub` below are
+derived from raw GS cell cargo. -/
 def TruncReadingOnSub {S : Finset F} (P : F → Polynomial F)
     {H : F[X][Y]} [Fact (Irreducible H)] [hPos : Fact (0 < H.natDegree)]
-    {R : F[X][X][Y]} (hHyp : Hypotheses (0 : F) R H) (n : ℕ) (c : ℕ → F[X])
+    {R : F[X][X][Y]} (hHyp : Hypotheses (0 : F) R H) (m n : ℕ) (c : ℕ → F[X])
     (hfiber : ∀ z ∈ S, Polynomial.evalEval z ((P z).eval 0) H = 0) : Prop :=
   ∀ z (hz : z ∈ S)
     (hx : (π_z z (RawGS304.rootOnOfFiber hPos.out hfiber z hz)) (ξ 0 R H hHyp) ≠ 0),
-    (PowerSeries.trunc n
+    (PowerSeries.trunc m
         (localSeries hHyp z (RawGS304.rootOnOfFiber hPos.out hfiber z hz) hx) :
       Polynomial F) = ∑ t ∈ Finset.range n, (z - 0) ^ t • c t
 
 omit [Fintype F] in
 /-- **Selected-carrier Claim-5.9 from base-rationality.**
 The raw `TruncReadingOnSub` input is derivable from the §5 base-rationality statement
-`αGenuine t = lift (c t)` below `n`, plus tail vanishing from `n` on.  The resulting curve
-coefficients are the transposed coefficients from `LocalSeriesBaseRationalReading`. -/
+`αGenuine t = lift (c t)` below `n`, plus tail vanishing from `n` on.  The domain truncation
+length is `n` itself, and the curve length is any `N` exceeding every `natDegree (c t)`; no
+relation between `n` and `N` is needed.  The resulting curve coefficients are the transposed
+coefficients from `LocalSeriesBaseRationalReading`. -/
 theorem truncReadingOnSub_of_baseRational {S : Finset F} {P : F → Polynomial F}
     {H : F[X][Y]} [hIrr : Fact (Irreducible H)] [hPos : Fact (0 < H.natDegree)]
     {R : F[X][X][Y]} (hHyp : Hypotheses (0 : F) R H)
-    (hlc : H.leadingCoeff = 1) {n N : ℕ} {c : ℕ → F[X]} (hnN : n ≤ N)
+    (hlc : H.leadingCoeff = 1) {n N : ℕ} {c : ℕ → F[X]}
     (hdeg : ∀ t < n, (c t).natDegree < N)
     (hfiber : ∀ z ∈ S, Polynomial.evalEval z ((P z).eval 0) H = 0)
     (hbase : ∀ t < n, αGenuine H 0 R hHyp t = liftToFunctionField (H := H) (c t))
     (hvanish : ∀ t, n ≤ t → αGenuine H 0 R hHyp t = 0) :
-    TruncReadingOnSub P hHyp N (transposedCurveCoeffs 0 n c) hfiber := by
+    TruncReadingOnSub P hHyp n N (transposedCurveCoeffs 0 n c) hfiber := by
   intro z hz hx
-  exact htrunc_of_base_rational hHyp (Match304.ξ_ne_zero H 0 R hHyp) hlc z
-    (RawGS304.rootOnOfFiber hPos.out hfiber z hz) hx hnN hdeg hbase hvanish
+  rw [trunc_localSeries_of_base_rational hHyp (Match304.ξ_ne_zero H 0 R hHyp) hlc z
+      (RawGS304.rootOnOfFiber hPos.out hfiber z hz) hx le_rfl hbase hvanish,
+    sum_C_eval_eq_transposed_curve_sum 0 c hdeg z]
 
 /-- **`LocalSeriesDatumOnSub` from raw GS output on an arbitrary carrier.**
 This is the corrected most-common-cell producer: the raw factor/root/divisibility/avoidance
@@ -254,18 +297,18 @@ noncomputable def localSeriesDatumOnSub_of_rawGS
     [hIrr : Fact (Irreducible H)] [hPos : Fact (0 < H.natDegree)]
     (hHyp : Hypotheses (0 : F) R H)
     (hlc : H.leadingCoeff = 1) (hR : R.Separable)
-    {n : ℕ} (hn : n < k + 2) (c : ℕ → F[X])
+    {m n : ℕ} (hn : n < k + 2) (c : ℕ → F[X])
     (hfiber : ∀ z ∈ S, Polynomial.evalEval z ((P z).eval 0) H = 0)
     (hdvdRaw : ∀ z ∈ S,
       (Polynomial.X - Polynomial.C (P z)) ∣
         R.map (Polynomial.mapRingHom (Polynomial.evalRingHom z)))
     (havoid : ∀ z ∈ S, (elimPoly hPos.out (ξ 0 R H hHyp)).eval z ≠ 0)
-    (hvanish : ∀ t, n ≤ t → αGenuine H 0 R hHyp t = 0)
-    (htrunc : TruncReadingOnSub P hHyp n c hfiber) :
+    (hvanish : ∀ t, m ≤ t → αGenuine H 0 R hHyp t = 0)
+    (htrunc : TruncReadingOnSub P hHyp m n c hfiber) :
     LocalSeriesDatumOnSub k S P :=
   { x₀ := 0, R := R, H := H, hIrr := hIrr, hPos := hPos, hHyp := hHyp,
     hξ := Match304.ξ_ne_zero H 0 R hHyp,
-    hlc := hlc, hR := hR, n := n, hn := hn, c := c,
+    hlc := hlc, hR := hR, m := m, n := n, hn := hn, c := c,
     rootOn := RawGS304.rootOnOfFiber hPos.out hfiber,
     hx := RawGS304.hx_of_elimPoly_avoidance hHyp havoid
       (RawGS304.rootOnOfFiber hPos.out hfiber),
@@ -277,15 +320,18 @@ noncomputable def localSeriesDatumOnSub_of_rawGS
 
 /-- **`LocalSeriesDatumOnSub` from raw GS plus base-rationality.**
 This is the `htrunc`-free selected-carrier producer: base-rationality below `n` derives the
-Claim-5.9 reading at truncation length `N`; tail vanishing is then restricted from `n` to `N`
-for the output datum. -/
+Claim-5.9 reading with domain truncation length `n` and curve length `N < k + 2` (the latter
+only has to exceed the `z`-degrees of the base-rational coefficients `c t`).
+
+Caveat: by `LocalSeriesCorrected.baseRational_inputs_false_of_two_le_natDegree`, the pair
+`hbase`/`hvanish` is jointly unsatisfiable once `2 ≤ H.natDegree`. -/
 noncomputable def localSeriesDatumOnSub_of_rawGS_baseRational
     {k : ℕ} {S : Finset F} {P : F → Polynomial F}
     {R : F[X][X][Y]} {H : F[X][Y]}
     [hIrr : Fact (Irreducible H)] [hPos : Fact (0 < H.natDegree)]
     (hHyp : Hypotheses (0 : F) R H)
     (hlc : H.leadingCoeff = 1) (hR : R.Separable)
-    {n N : ℕ} (hN : N < k + 2) (hnN : n ≤ N) (c : ℕ → F[X])
+    {n N : ℕ} (hN : N < k + 2) (c : ℕ → F[X])
     (hdeg : ∀ t < n, (c t).natDegree < N)
     (hfiber : ∀ z ∈ S, Polynomial.evalEval z ((P z).eval 0) H = 0)
     (hdvdRaw : ∀ z ∈ S,
@@ -296,9 +342,8 @@ noncomputable def localSeriesDatumOnSub_of_rawGS_baseRational
     (hvanish : ∀ t, n ≤ t → αGenuine H 0 R hHyp t = 0) :
     LocalSeriesDatumOnSub k S P :=
   localSeriesDatumOnSub_of_rawGS hHyp hlc hR hN (transposedCurveCoeffs 0 n c)
-    hfiber hdvdRaw havoid
-    (fun t ht => hvanish t (hnN.trans ht))
-    (truncReadingOnSub_of_baseRational hHyp hlc hnN hdeg hfiber hbase hvanish)
+    hfiber hdvdRaw havoid hvanish
+    (truncReadingOnSub_of_baseRational hHyp hlc hdeg hfiber hbase hvanish)
 
 /-- **The corrected cell weld.**
 If the selected carrier `S` lies inside one Claim-5.7 incidence cell at the centre `0`, then cell
@@ -312,11 +357,11 @@ noncomputable def localSeriesDatumOnSub_of_cell
     (hcell : ∀ z ∈ S, z ∈ GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc)
     (hHyp : Hypotheses (0 : F) (rep cc.1) cc.2)
     (hlc : cc.2.leadingCoeff = 1) (hR : (rep cc.1).Separable)
-    {n : ℕ} (hn : n < k + 2) (c : ℕ → F[X])
+    {m n : ℕ} (hn : n < k + 2) (c : ℕ → F[X])
     (havoid : ∀ z ∈ S,
       (elimPoly hPos.out (ξ 0 (rep cc.1) cc.2 hHyp)).eval z ≠ 0)
-    (hvanish : ∀ t, n ≤ t → αGenuine cc.2 0 (rep cc.1) hHyp t = 0)
-    (htrunc : TruncReadingOnSub P hHyp n c
+    (hvanish : ∀ t, m ≤ t → αGenuine cc.2 0 (rep cc.1) hHyp t = 0)
+    (htrunc : TruncReadingOnSub P hHyp m n c
       (fun z hz => (RawGS304.cell_conditions_of_mem (hcell z hz)).2)) :
     LocalSeriesDatumOnSub k S P :=
   localSeriesDatumOnSub_of_rawGS hHyp hlc hR hn c
@@ -326,7 +371,8 @@ noncomputable def localSeriesDatumOnSub_of_cell
 
 /-- **The corrected cell weld from base-rationality.**
 Cell membership supplies the raw GS facts, and base-rationality supplies the truncation reading;
-the caller no longer has to provide `TruncReadingOnSub` directly. -/
+the caller no longer has to provide `TruncReadingOnSub` directly.  (Same `2 ≤ H.natDegree`
+caveat as `localSeriesDatumOnSub_of_rawGS_baseRational`.) -/
 noncomputable def localSeriesDatumOnSub_of_cell_baseRational
     {k : ℕ} {S : Finset F} {P : F → Polynomial F}
     {ι' : Type} {rep : ι' → (F[X])[X][Y]} {S₀ : Finset F} {cc : ι' × F[X][Y]}
@@ -334,7 +380,7 @@ noncomputable def localSeriesDatumOnSub_of_cell_baseRational
     (hcell : ∀ z ∈ S, z ∈ GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc)
     (hHyp : Hypotheses (0 : F) (rep cc.1) cc.2)
     (hlc : cc.2.leadingCoeff = 1) (hR : (rep cc.1).Separable)
-    {n N : ℕ} (hN : N < k + 2) (hnN : n ≤ N) (c : ℕ → F[X])
+    {n N : ℕ} (hN : N < k + 2) (c : ℕ → F[X])
     (hdeg : ∀ t < n, (c t).natDegree < N)
     (havoid : ∀ z ∈ S,
       (elimPoly hPos.out (ξ 0 (rep cc.1) cc.2 hHyp)).eval z ≠ 0)
@@ -342,7 +388,7 @@ noncomputable def localSeriesDatumOnSub_of_cell_baseRational
       αGenuine cc.2 0 (rep cc.1) hHyp t = liftToFunctionField (H := cc.2) (c t))
     (hvanish : ∀ t, n ≤ t → αGenuine cc.2 0 (rep cc.1) hHyp t = 0) :
     LocalSeriesDatumOnSub k S P :=
-  localSeriesDatumOnSub_of_rawGS_baseRational hHyp hlc hR hN hnN c hdeg
+  localSeriesDatumOnSub_of_rawGS_baseRational hHyp hlc hR hN c hdeg
     (fun z hz => (RawGS304.cell_conditions_of_mem (hcell z hz)).2)
     (fun z hz => (RawGS304.cell_conditions_of_mem (hcell z hz)).1)
     havoid hbase hvanish
@@ -351,7 +397,8 @@ noncomputable def localSeriesDatumOnSub_of_cell_baseRational
 This is the exact per-cell producer surface left after the combinatorial pigeonhole:
 the carrier is the incidence cell itself, and membership in that cell supplies the raw GS
 fiber/divisibility facts.  The remaining fields are the genuine §5 analytic cargo
-(`htrunc`, tail vanishing, monic/separable/avoidance data). -/
+(`htrunc`, tail vanishing, monic/separable/avoidance data).  As in `LocalSeriesDatumOnSub`, the
+domain truncation length `m` is kept separate from the curve length `n < k + 2`. -/
 structure Claim57CellDatum (k : ℕ) (P : F → Polynomial F) : Type 2 where
   ι' : Type
   rep : ι' → (F[X])[X][Y]
@@ -362,16 +409,17 @@ structure Claim57CellDatum (k : ℕ) (P : F → Polynomial F) : Type 2 where
   hHyp : Hypotheses (0 : F) (rep cc.1) cc.2
   hlc : cc.2.leadingCoeff = 1
   hR : (rep cc.1).Separable
+  m : ℕ
   n : ℕ
   hn : n < k + 2
   c : ℕ → F[X]
   havoid : (letI := hPos
     ∀ z ∈ GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc,
       (elimPoly hPos.out (ξ 0 (rep cc.1) cc.2 hHyp)).eval z ≠ 0)
-  hvanish : ∀ t, n ≤ t → αGenuine cc.2 0 (rep cc.1) hHyp t = 0
+  hvanish : ∀ t, m ≤ t → αGenuine cc.2 0 (rep cc.1) hHyp t = 0
   htrunc : (letI := hIrr; letI := hPos
     TruncReadingOnSub (S := GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc)
-      P hHyp n c
+      P hHyp m n c
       (fun _ hz => (RawGS304.cell_conditions_of_mem (rep := rep) (x₀ := 0) (qz := P)
         (S := S₀) (c := cc) hz).2))
 
@@ -390,13 +438,14 @@ noncomputable def Claim57CellDatum.localSeriesDatumOnSub {k : ℕ} {P : F → Po
     (cc := d.cc) (fun z hz => hz) d.hHyp d.hlc d.hR d.hn d.c d.havoid d.hvanish
     d.htrunc
 
-/-- Build the bundled Claim57-cell datum from base-rationality, deriving `htrunc` internally. -/
+/-- Build the bundled Claim57-cell datum from base-rationality, deriving `htrunc` internally.
+(Same `2 ≤ H.natDegree` caveat as `localSeriesDatumOnSub_of_rawGS_baseRational`.) -/
 noncomputable def Claim57CellDatum.of_baseRational {k : ℕ} {P : F → Polynomial F}
     {ι' : Type} {rep : ι' → (F[X])[X][Y]} {S₀ : Finset F} {cc : ι' × F[X][Y]}
     [hIrr : Fact (Irreducible cc.2)] [hPos : Fact (0 < cc.2.natDegree)]
     (hHyp : Hypotheses (0 : F) (rep cc.1) cc.2)
     (hlc : cc.2.leadingCoeff = 1) (hR : (rep cc.1).Separable)
-    {n N : ℕ} (hN : N < k + 2) (hnN : n ≤ N) (c : ℕ → F[X])
+    {n N : ℕ} (hN : N < k + 2) (c : ℕ → F[X])
     (hdeg : ∀ t < n, (c t).natDegree < N)
     (havoid : ∀ z ∈ GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc,
       (elimPoly hPos.out (ξ 0 (rep cc.1) cc.2 hHyp)).eval z ≠ 0)
@@ -413,22 +462,23 @@ noncomputable def Claim57CellDatum.of_baseRational {k : ℕ} {P : F → Polynomi
   hHyp := hHyp
   hlc := hlc
   hR := hR
+  m := n
   n := N
   hn := hN
   c := transposedCurveCoeffs 0 n c
   havoid := havoid
-  hvanish := fun t ht => hvanish t (hnN.trans ht)
+  hvanish := hvanish
   htrunc :=
-    truncReadingOnSub_of_baseRational hHyp hlc hnN hdeg
+    truncReadingOnSub_of_baseRational hHyp hlc hdeg
       (fun _ hz => (RawGS304.cell_conditions_of_mem (rep := rep) (x₀ := 0) (qz := P)
         (S := S₀) (c := cc) hz).2)
       hbase hvanish
 
 omit [Fintype F] in
 /-- **The actual pigeonhole-output weld.**
-Given an index set of Claim-5.7 cells, a pigeonhole-selected large cell, containment of every
-indexed cell in the ambient good carrier, and analytic cargo on each indexed cell, select the
-large carrier and expose it as a `LocalSeriesDatumOnSub`.
+Given an index set of Claim-5.7 cells and a pigeonhole-selected large cell that lies in the
+ambient good carrier and carries analytic cargo, expose that cell as a `LocalSeriesDatumOnSub`.
+Only the selected cell needs containment and cargo; the other indexed cells are unconstrained.
 
 This is the shape emitted by `claim57_pigeonhole`: the large object is a cell *inside* the
 good set, not a cell containing the whole good set. -/
@@ -436,76 +486,49 @@ theorem exists_localSeriesDatumOnSub_of_pigeonhole_output {k T : ℕ}
     {P : F → Polynomial F} {ι' : Type} {rep : ι' → (F[X])[X][Y]}
     {S₀ good : Finset F} {Index : Finset (ι' × F[X][Y])}
     (hlarge : ∃ cc ∈ Index,
-      T < (GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc).card)
-    (hsub : ∀ cc ∈ Index, ∀ z ∈ GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc,
-      z ∈ good)
-    (hdatum : ∀ cc ∈ Index,
-      Nonempty (LocalSeriesDatumOnSub k
-        (GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc) P)) :
+      T < (GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc).card ∧
+        (∀ z ∈ GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc, z ∈ good) ∧
+        Nonempty (LocalSeriesDatumOnSub k
+          (GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc) P)) :
     ∃ S' : Finset F,
       T < S'.card ∧
         (∀ z ∈ S', z ∈ good) ∧
           Nonempty (LocalSeriesDatumOnSub k S' P) := by
-  obtain ⟨cc, hcc, hcard⟩ := hlarge
-  exact ⟨GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc, hcard,
-    hsub cc hcc, hdatum cc hcc⟩
+  obtain ⟨cc, _hcc, hcard, hsub, hdatum⟩ := hlarge
+  exact ⟨GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc, hcard, hsub, hdatum⟩
 
 omit [Fintype F] in
-/-- **Pigeonhole-output weld from base-rational per-index fields.**
-This is the previous selection theorem with the cellwise `LocalSeriesDatumOnSub` cargo produced
-internally by `localSeriesDatumOnSub_of_cell_baseRational`.  The remaining hypotheses are exactly
-per-index analytic facts for the Claim57 cells: Hensel hypotheses, monicity/separability,
-avoidance, base-rationality below `n`, degree bounds, and tail vanishing. -/
+/-- **Pigeonhole-output weld from base-rational fields on the selected cell.**
+This is the previous selection theorem with the `LocalSeriesDatumOnSub` cargo of the selected
+large cell `cc` produced internally by `localSeriesDatumOnSub_of_cell_baseRational`.  The
+remaining hypotheses are analytic facts for that one Claim57 cell: Hensel hypotheses,
+monicity/separability, avoidance, base-rationality below `n`, degree bounds, and tail vanishing.
+(Same `2 ≤ H.natDegree` caveat as `localSeriesDatumOnSub_of_rawGS_baseRational`.) -/
 theorem exists_localSeriesDatumOnSub_of_pigeonhole_baseRational_output {k T : ℕ}
     {P : F → Polynomial F} {ι' : Type} {rep : ι' → (F[X])[X][Y]}
     {S₀ good : Finset F} {Index : Finset (ι' × F[X][Y])}
-    (hlarge : ∃ cc ∈ Index,
-      T < (GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc).card)
-    (hsub : ∀ cc ∈ Index, ∀ z ∈ GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc,
-      z ∈ good)
-    (hIrr : ∀ cc ∈ Index, Irreducible cc.2)
-    (hPos : ∀ cc ∈ Index, 0 < cc.2.natDegree)
-    (hHyp : ∀ cc (hcc : cc ∈ Index),
-      letI : Fact (Irreducible cc.2) := ⟨hIrr cc hcc⟩
-      letI : Fact (0 < cc.2.natDegree) := ⟨hPos cc hcc⟩
-      Hypotheses (0 : F) (rep cc.1) cc.2)
-    (hlc : ∀ cc ∈ Index, cc.2.leadingCoeff = 1)
-    (hR : ∀ cc ∈ Index, (rep cc.1).Separable)
-    (n N : ι' × F[X][Y] → ℕ) (c : ι' × F[X][Y] → ℕ → F[X])
-    (hN : ∀ cc ∈ Index, N cc < k + 2)
-    (hnN : ∀ cc ∈ Index, n cc ≤ N cc)
-    (hdeg : ∀ cc (_hcc : cc ∈ Index), ∀ t < n cc, (c cc t).natDegree < N cc)
-    (havoid : ∀ cc (hcc : cc ∈ Index),
-      letI : Fact (Irreducible cc.2) := ⟨hIrr cc hcc⟩
-      letI : Fact (0 < cc.2.natDegree) := ⟨hPos cc hcc⟩
-      ∀ z ∈ GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc,
-        (elimPoly (hPos cc hcc)
-          (ξ 0 (rep cc.1) cc.2 (hHyp cc hcc))).eval z ≠ 0)
-    (hbase : ∀ cc (hcc : cc ∈ Index),
-      letI : Fact (Irreducible cc.2) := ⟨hIrr cc hcc⟩
-      letI : Fact (0 < cc.2.natDegree) := ⟨hPos cc hcc⟩
-      ∀ t < n cc,
-        αGenuine cc.2 0 (rep cc.1) (hHyp cc hcc) t =
-          liftToFunctionField (H := cc.2) (c cc t))
-    (hvanish : ∀ cc (hcc : cc ∈ Index),
-      letI : Fact (Irreducible cc.2) := ⟨hIrr cc hcc⟩
-      letI : Fact (0 < cc.2.natDegree) := ⟨hPos cc hcc⟩
-      ∀ t, n cc ≤ t → αGenuine cc.2 0 (rep cc.1) (hHyp cc hcc) t = 0) :
+    (cc : ι' × F[X][Y]) (_hcc : cc ∈ Index)
+    (hcard : T < (GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc).card)
+    (hsub : ∀ z ∈ GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc, z ∈ good)
+    [hIrr : Fact (Irreducible cc.2)] [hPos : Fact (0 < cc.2.natDegree)]
+    (hHyp : Hypotheses (0 : F) (rep cc.1) cc.2)
+    (hlc : cc.2.leadingCoeff = 1) (hR : (rep cc.1).Separable)
+    {n N : ℕ} (hN : N < k + 2) (c : ℕ → F[X])
+    (hdeg : ∀ t < n, (c t).natDegree < N)
+    (havoid : ∀ z ∈ GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc,
+      (elimPoly hPos.out (ξ 0 (rep cc.1) cc.2 hHyp)).eval z ≠ 0)
+    (hbase : ∀ t < n,
+      αGenuine cc.2 0 (rep cc.1) hHyp t = liftToFunctionField (H := cc.2) (c t))
+    (hvanish : ∀ t, n ≤ t → αGenuine cc.2 0 (rep cc.1) hHyp t = 0) :
     ∃ S' : Finset F,
       T < S'.card ∧
         (∀ z ∈ S', z ∈ good) ∧
-          Nonempty (LocalSeriesDatumOnSub k S' P) := by
-  obtain ⟨cc, hcc, hcard⟩ := hlarge
-  letI : Fact (Irreducible cc.2) := ⟨hIrr cc hcc⟩
-  letI : Fact (0 < cc.2.natDegree) := ⟨hPos cc hcc⟩
-  refine ⟨GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc, hcard,
-    hsub cc hcc, ⟨?_⟩⟩
-  exact localSeriesDatumOnSub_of_cell_baseRational
-    (S := GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc)
-    (P := P) (rep := rep) (S₀ := S₀) (cc := cc)
-    (fun z hz => hz) (hHyp cc hcc) (hlc cc hcc) (hR cc hcc)
-    (hN cc hcc) (hnN cc hcc) (c cc) (hdeg cc hcc)
-    (havoid cc hcc) (hbase cc hcc) (hvanish cc hcc)
+          Nonempty (LocalSeriesDatumOnSub k S' P) :=
+  ⟨GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc, hcard, hsub,
+    ⟨localSeriesDatumOnSub_of_cell_baseRational
+      (S := GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc)
+      (P := P) (rep := rep) (S₀ := S₀) (cc := cc)
+      (fun z hz => hz) hHyp hlc hR hN c hdeg havoid hbase hvanish⟩⟩
 
 end RawGSSub
 
@@ -532,7 +555,7 @@ theorem hPz_of_localSeriesDatumOnSub {k : ℕ} {S : Finset F} {P : F → Polynom
   let a₀ : PowerSeries F :=
     PowerSeries.C ((π_z z (d.rootOn z hz))
       (BCIKS20.HenselNumerator.βHensel d.H d.x₀ d.R d.hHyp 0))
-  have hvanishAlpha : ∀ t, d.n ≤ t →
+  have hvanishAlpha : ∀ t, d.m ≤ t →
       BetaToCurveCoeffPolys.αFromBeta d.x₀ d.R d.H d.hHyp
         (BetaRecGenuineBridge.BcoeffSigned d.H d.x₀ d.R) t = 0 := by
     intro t ht
@@ -593,13 +616,23 @@ variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
 omit [DecidableEq ι] in
+/-- With `ι` nonempty and `0 < k`, the counting threshold `(|ι| + 1) · k ≤ m` already forces
+the strict bound `k < m` that the Curves consumers also ask for; the front doors below
+therefore only take the threshold and derive the strict bound here. -/
+theorem lt_of_card_succ_mul_le {k m : ℕ} (hk : 0 < k)
+    (h : (Fintype.card ι + 1) * k ≤ m) : k < m := by
+  have hι : 0 < Fintype.card ι := Fintype.card_pos
+  nlinarith
+
+omit [DecidableEq ι] in
 /-- **Joint agreement from a `P`-dependent large selected carrier.**
 The existing curve-counting bridge fixes a carrier before it chooses a decoded family. The
 BCIKS20 most-common-cell step naturally goes the other way: choose a decoded family `P` on the
 whole good set, then pass to a large cell depending on `P`. This front door internalizes that
 order. For each full-good decoded family, it accepts a large subcarrier inside the good set and
-a coefficient-polynomial witness on that subcarrier, then runs the same assembly and counting
-proof to produce `jointAgreement`. -/
+a coefficient-polynomial witness on that subcarrier, and delegates the counting to the canonical
+single-family core
+`subset_single_decoded_family_coeff_polys_implies_jointAgreement_core`. -/
 theorem jointAgreement_of_exists_sub_coeffPolyWitness {l deg : ℕ} [NeZero deg]
     {domain : ι ↪ F} {δ : ℝ≥0} {u : WordStack F (Fin (l + 2)) ι}
     (hInput : ∀ P : F → Polynomial F,
@@ -608,8 +641,7 @@ theorem jointAgreement_of_exists_sub_coeffPolyWitness {l deg : ℕ} [NeZero deg]
           δᵣ(∑ t : Fin (l + 2), (z ^ (t : ℕ)) • u t,
             (P z).eval ∘ domain) ≤ δ) →
       ∃ S' : Finset F,
-        S'.card > l + 1 ∧
-          S'.card ≥ (Fintype.card ι + 1) * (l + 1) ∧
+        S'.card ≥ (Fintype.card ι + 1) * (l + 1) ∧
           (∀ z ∈ S',
             z ∈ RS_goodCoeffsCurve (k := l + 1) (deg := deg) (domain := domain) u δ) ∧
           ∃ B : ℕ → Polynomial F,
@@ -620,17 +652,11 @@ theorem jointAgreement_of_exists_sub_coeffPolyWitness {l deg : ℕ} [NeZero deg]
   obtain ⟨P, hdecodedGood⟩ :=
     exists_decoded_polynomial_family_of_subset_goodCoeffsCurve
       (k := l + 1) (deg := deg) (domain := domain) (δ := δ) u (fun z hz => hz)
-  obtain ⟨S', hcard, hcard₁, hS', B, hBdeg, hcoeff⟩ := hInput P hdecodedGood
-  obtain ⟨A, hAdeg, hPcoeff⟩ :=
-    decoded_family_coefficients_of_coeff_polys_core
-      (l := l) (deg := deg) (S' := S') (P := P) B
-      hBdeg (fun z hz => (hdecodedGood z (hS' z hz)).1) hcoeff
-  obtain ⟨v, hv, hPcurve⟩ :=
-    decoded_family_coefficients_assemble_codeword_curve
-      (deg := deg) (domain := domain) P A hAdeg hPcoeff
-  exact decoded_sum_polynomial_family_on_codeword_curve_implies_jointAgreement
-    (u := u) (deg := deg) (domain := domain) (δ := δ) (v := v)
-    hv hcard hcard₁ P (fun z hz => hdecodedGood z (hS' z hz)) hPcurve
+  obtain ⟨S', hcard₁, hS', B, hBdeg, hcoeff⟩ := hInput P hdecodedGood
+  exact subset_single_decoded_family_coeff_polys_implies_jointAgreement_core
+    (l := l) (deg := deg) (domain := domain) (δ := δ) (u := u) (S' := S')
+    (lt_of_card_succ_mul_le (ι := ι) (Nat.succ_pos l) hcard₁) hcard₁ P
+    (fun z hz => hdecodedGood z (hS' z hz)) B hBdeg hcoeff
 
 omit [DecidableEq ι] in
 /-- **Joint agreement from a `P`-dependent sub-finset local-series producer.**
@@ -646,19 +672,18 @@ theorem jointAgreement_of_exists_localSeriesDatumOnSub {l deg : ℕ} [NeZero deg
           δᵣ(∑ t : Fin (l + 2), (z ^ (t : ℕ)) • u t,
             (P z).eval ∘ domain) ≤ δ) →
       ∃ S' : Finset F,
-        S'.card > l + 1 ∧
-          S'.card ≥ (Fintype.card ι + 1) * (l + 1) ∧
+        S'.card ≥ (Fintype.card ι + 1) * (l + 1) ∧
           (∀ z ∈ S',
             z ∈ RS_goodCoeffsCurve (k := l + 1) (deg := deg) (domain := domain) u δ) ∧
           Nonempty (LocalSeriesDatumOnSub (l + 1) S' P)) :
     jointAgreement (C := ReedSolomon.code domain deg) (δ := δ) (W := u) :=
   jointAgreement_of_exists_sub_coeffPolyWitness (domain := domain) (δ := δ) (u := u)
     (fun P hdecoded => by
-      obtain ⟨S', hcard, hcard₁, hS', hd⟩ := hInput P hdecoded
+      obtain ⟨S', hcard₁, hS', hd⟩ := hInput P hdecoded
       obtain ⟨d⟩ := hd
       obtain ⟨B, hBdeg, hcoeff⟩ :=
         coeffPolyWitness_of_localSeriesDatumOnSub (deg := deg) d
-      exact ⟨S', hcard, hcard₁, hS', B, hBdeg, hcoeff⟩)
+      exact ⟨S', hcard₁, hS', B, hBdeg, hcoeff⟩)
 
 omit [DecidableEq ι] in
 /-- **Joint agreement from a large Claim-5.7 cell with analytic cargo.**
@@ -674,20 +699,20 @@ theorem jointAgreement_of_exists_claim57CellDatum {l deg : ℕ} [NeZero deg]
           δᵣ(∑ t : Fin (l + 2), (z ^ (t : ℕ)) • u t,
             (P z).eval ∘ domain) ≤ δ) →
       ∃ d : Claim57CellDatum (l + 1) P,
-        d.carrier.card > l + 1 ∧
-          d.carrier.card ≥ (Fintype.card ι + 1) * (l + 1) ∧
+        d.carrier.card ≥ (Fintype.card ι + 1) * (l + 1) ∧
           ∀ z ∈ d.carrier,
             z ∈ RS_goodCoeffsCurve (k := l + 1) (deg := deg) (domain := domain) u δ) :
     jointAgreement (C := ReedSolomon.code domain deg) (δ := δ) (W := u) :=
   jointAgreement_of_exists_localSeriesDatumOnSub (domain := domain) (δ := δ) (u := u)
     (fun P hdecoded => by
-      obtain ⟨d, hcard, hcard₁, hS⟩ := hInput P hdecoded
-      exact ⟨d.carrier, hcard, hcard₁, hS, ⟨d.localSeriesDatumOnSub⟩⟩)
+      obtain ⟨d, hcard₁, hS⟩ := hInput P hdecoded
+      exact ⟨d.carrier, hcard₁, hS, ⟨d.localSeriesDatumOnSub⟩⟩)
 
 omit [DecidableEq ι] in
 /-- Positive-`k` version of
 `jointAgreement_of_exists_sub_coeffPolyWitness`, in the native residual shape
-`u : Fin (k + 1) → ι → F`. -/
+`u : Fin (k + 1) → ι → F`.  The `Fin (k + 1) ↦ Fin (l + 2)` reindexing is the canonical one in
+`subset_single_decoded_family_coeff_polys_implies_jointAgreement_of_pos`. -/
 theorem jointAgreement_of_exists_sub_coeffPolyWitness_of_pos {k deg : ℕ} [NeZero deg]
     (hk : 0 < k)
     {domain : ι ↪ F} {δ : ℝ≥0} {u : WordStack F (Fin (k + 1)) ι}
@@ -697,8 +722,7 @@ theorem jointAgreement_of_exists_sub_coeffPolyWitness_of_pos {k deg : ℕ} [NeZe
           δᵣ(∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t,
             (P z).eval ∘ domain) ≤ δ) →
       ∃ S' : Finset F,
-        S'.card > k ∧
-          S'.card ≥ (Fintype.card ι + 1) * k ∧
+        S'.card ≥ (Fintype.card ι + 1) * k ∧
           (∀ z ∈ S',
             z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ) ∧
           ∃ B : ℕ → Polynomial F,
@@ -706,51 +730,14 @@ theorem jointAgreement_of_exists_sub_coeffPolyWitness_of_pos {k deg : ℕ} [NeZe
               ∀ z ∈ S', ∀ j < deg, (P z).coeff j = (B j).eval z) :
     jointAgreement (C := ReedSolomon.code domain deg) (δ := δ) (W := u) := by
   classical
-  let l : ℕ := k - 1
-  have hlk : l + 1 = k := by omega
-  have hlen : l + 2 = k + 1 := by omega
-  let u' : Fin (l + 2) → ι → F := fun i => u (finCongr hlen i)
-  have hgood_eq :
-      RS_goodCoeffsCurve (k := l + 1) (deg := deg) (domain := domain) u' δ =
-        RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ := by
-    simpa [u', hlk] using
-      (RS_goodCoeffsCurve_finCongr_core (F := F) (ι := ι)
-        (k := l + 1) (k' := k) (deg := deg) (domain := domain) (δ := δ)
-        (by omega : (l + 1) + 1 = k + 1) u)
-  have hja' :
-      jointAgreement (C := ReedSolomon.code domain deg) (δ := δ) (W := u') := by
-    refine jointAgreement_of_exists_sub_coeffPolyWitness
-      (domain := domain) (δ := δ) (u := u') ?_
-    intro P hdecoded
-    have hdecoded_orig :
-        ∀ z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ,
-          (P z).natDegree < deg ∧
-            δᵣ(∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t,
-              (P z).eval ∘ domain) ≤ δ := by
-      intro z hz
-      have hz' :
-          z ∈ RS_goodCoeffsCurve (k := l + 1) (deg := deg) (domain := domain) u' δ := by
-        simpa [hgood_eq] using hz
-      have hsum :
-          (∑ t : Fin (l + 2), (z ^ (t : ℕ)) • u' t) =
-            ∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t := by
-        simpa [u'] using
-          (curve_sum_reindex_equiv_core (F := F) (ι := ι) (e := finCongr hlen) z u
-            (fun t : Fin (k + 1) => (t : ℕ)))
-      exact ⟨(hdecoded z hz').1, by simpa [hsum] using (hdecoded z hz').2⟩
-    obtain ⟨S', hcard, hcard₁, hS', B, hBdeg, hcoeff⟩ := hInput P hdecoded_orig
-    refine ⟨S', ?_, ?_, ?_, B, ?_, hcoeff⟩
-    · simpa [hlk] using hcard
-    · simpa [hlk] using hcard₁
-    · intro z hz
-      simpa [hgood_eq] using hS' z hz
-    · intro j hj
-      simpa [hlen] using hBdeg j hj
-  exact jointAgreement_reindex_equiv_core
-    (F := F) (ι := ι) (C := ReedSolomon.code domain deg) (δ := δ)
-    (W := u) (W' := u') (e := (finCongr hlen).symm)
-    (by intro i x; simp [u'])
-    hja'
+  obtain ⟨P, hdecodedGood⟩ :=
+    exists_decoded_polynomial_family_of_subset_goodCoeffsCurve
+      (k := k) (deg := deg) (domain := domain) (δ := δ) u (fun z hz => hz)
+  obtain ⟨S', hcard₁, hS', B, hBdeg, hcoeff⟩ := hInput P hdecodedGood
+  exact subset_single_decoded_family_coeff_polys_implies_jointAgreement_of_pos
+    (deg := deg) (domain := domain) (δ := δ) hk (u := u) (S' := S')
+    (lt_of_card_succ_mul_le (ι := ι) hk hcard₁) hcard₁ P
+    (fun z hz => hdecodedGood z (hS' z hz)) B hBdeg hcoeff
 
 omit [DecidableEq ι] in
 /-- Positive-`k` native residual-shape front door from selected-carrier local-series data. -/
@@ -763,19 +750,18 @@ theorem jointAgreement_of_exists_localSeriesDatumOnSub_of_pos {k deg : ℕ} [NeZ
           δᵣ(∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t,
             (P z).eval ∘ domain) ≤ δ) →
       ∃ S' : Finset F,
-        S'.card > k ∧
-          S'.card ≥ (Fintype.card ι + 1) * k ∧
+        S'.card ≥ (Fintype.card ι + 1) * k ∧
           (∀ z ∈ S',
             z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ) ∧
           Nonempty (LocalSeriesDatumOnSub k S' P)) :
     jointAgreement (C := ReedSolomon.code domain deg) (δ := δ) (W := u) :=
   jointAgreement_of_exists_sub_coeffPolyWitness_of_pos (domain := domain) (δ := δ) (u := u)
     hk (fun P hdecoded => by
-      obtain ⟨S', hcard, hcard₁, hS', hd⟩ := hInput P hdecoded
+      obtain ⟨S', hcard₁, hS', hd⟩ := hInput P hdecoded
       obtain ⟨d⟩ := hd
       obtain ⟨B, hBdeg, hcoeff⟩ :=
         coeffPolyWitness_of_localSeriesDatumOnSub (deg := deg) d
-      exact ⟨S', hcard, hcard₁, hS', B, hBdeg, hcoeff⟩)
+      exact ⟨S', hcard₁, hS', B, hBdeg, hcoeff⟩)
 
 omit [DecidableEq ι] in
 /-- Positive-`k` native residual-shape front door from a large Claim-5.7 cell with analytic
@@ -789,22 +775,21 @@ theorem jointAgreement_of_exists_claim57CellDatum_of_pos {k deg : ℕ} [NeZero d
           δᵣ(∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t,
             (P z).eval ∘ domain) ≤ δ) →
       ∃ d : Claim57CellDatum k P,
-        d.carrier.card > k ∧
-          d.carrier.card ≥ (Fintype.card ι + 1) * k ∧
+        d.carrier.card ≥ (Fintype.card ι + 1) * k ∧
           ∀ z ∈ d.carrier,
             z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ) :
     jointAgreement (C := ReedSolomon.code domain deg) (δ := δ) (W := u) :=
   jointAgreement_of_exists_localSeriesDatumOnSub_of_pos (domain := domain) (δ := δ) (u := u)
     hk (fun P hdecoded => by
-      obtain ⟨d, hcard, hcard₁, hS⟩ := hInput P hdecoded
-      exact ⟨d.carrier, hcard, hcard₁, hS, ⟨d.localSeriesDatumOnSub⟩⟩)
+      obtain ⟨d, hcard₁, hS⟩ := hInput P hdecoded
+      exact ⟨d.carrier, hcard₁, hS, ⟨d.localSeriesDatumOnSub⟩⟩)
 
 omit [DecidableEq ι] in
 /-- **Joint agreement directly from Claim-5.7 pigeonhole output.**
 For every decoded family `P`, it is enough to provide the actual finite cell index output of
-`claim57_pigeonhole`: a cell of size greater than `(card ι + 1) * k`, every indexed cell lying
-inside the good set, and analytic cargo on each indexed cell.  The proof selects the large cell
-and runs the sub-finset counting consumer. -/
+`claim57_pigeonhole` together with one selected cell of size greater than `(card ι + 1) * k`
+that lies inside the good set and carries analytic cargo.  The proof selects that cell and runs
+the sub-finset counting consumer. -/
 theorem jointAgreement_of_pigeonhole_output_of_pos {k deg : ℕ} [NeZero deg]
     (hk : 0 < k)
     {domain : ι ↪ F} {δ : ℝ≥0} {u : WordStack F (Fin (k + 1)) ι}
@@ -815,37 +800,31 @@ theorem jointAgreement_of_pigeonhole_output_of_pos {k deg : ℕ} [NeZero deg]
             (P z).eval ∘ domain) ≤ δ) →
       ∃ (ι' : Type) (rep : ι' → (F[X])[X][Y]) (S₀ : Finset F)
         (Index : Finset (ι' × F[X][Y])),
-        (∃ cc ∈ Index,
+        ∃ cc ∈ Index,
           (Fintype.card ι + 1) * k <
-            (GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc).card) ∧
-          (∀ cc ∈ Index,
-            ∀ z ∈ GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc,
+              (GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc).card ∧
+            (∀ z ∈ GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc,
               z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ) ∧
-            (∀ cc ∈ Index,
-              Nonempty (LocalSeriesDatumOnSub k
-                (GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc) P))) :
+            Nonempty (LocalSeriesDatumOnSub k
+              (GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc) P)) :
     jointAgreement (C := ReedSolomon.code domain deg) (δ := δ) (W := u) :=
   jointAgreement_of_exists_localSeriesDatumOnSub_of_pos (domain := domain) (δ := δ) (u := u)
     hk (fun P hdecoded => by
-      obtain ⟨ι', rep, S₀, Index, hlarge, hsub, hdatum⟩ := hInput P hdecoded
+      obtain ⟨ι', rep, S₀, Index, hlarge⟩ := hInput P hdecoded
       obtain ⟨S', hcard, hS, hd⟩ :=
         exists_localSeriesDatumOnSub_of_pigeonhole_output
           (k := k) (T := (Fintype.card ι + 1) * k) (P := P) (rep := rep)
           (S₀ := S₀)
           (good := RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ)
-          (Index := Index) hlarge hsub hdatum
-      refine ⟨S', ?_, Nat.le_of_lt hcard, hS, hd⟩
-      have hk_le : k ≤ (Fintype.card ι + 1) * k := by
-        simpa [one_mul] using
-          Nat.mul_le_mul_right k (Nat.succ_le_succ (Nat.zero_le (Fintype.card ι)))
-      exact lt_of_le_of_lt hk_le hcard)
+          (Index := Index) hlarge
+      exact ⟨S', Nat.le_of_lt hcard, hS, hd⟩)
 
 omit [DecidableEq ι] in
 /-- **Correlated agreement from actual Claim-5.7 pigeonhole output plus an explicit boundary
 branch.**  This is the same strict-branch route as
 `correlatedAgreement_affine_curves_of_claim57CellDatum_and_boundary`, but phrased one layer
 closer to `claim57_pigeonhole`: the strict input is an indexed cell family with a large selected
-cell and cellwise `LocalSeriesDatumOnSub` cargo. -/
+cell carrying `LocalSeriesDatumOnSub` cargo. -/
 theorem correlatedAgreement_affine_curves_of_pigeonhole_output_and_boundary {k : ℕ}
     {deg : ℕ} {domain : ι ↪ F} {δ : ℝ≥0} [NeZero deg]
     (hδ : δ ≤ 1 - ReedSolomon.sqrtRate deg domain)
@@ -863,15 +842,13 @@ theorem correlatedAgreement_affine_curves_of_pigeonhole_output_and_boundary {k :
               (P z).eval ∘ domain) ≤ δ) →
           ∃ (ι' : Type) (rep : ι' → (F[X])[X][Y]) (S₀ : Finset F)
             (Index : Finset (ι' × F[X][Y])),
-            (∃ cc ∈ Index,
+            ∃ cc ∈ Index,
               (Fintype.card ι + 1) * k <
-                (GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc).card) ∧
-              (∀ cc ∈ Index,
-                ∀ z ∈ GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc,
+                  (GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc).card ∧
+                (∀ z ∈ GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc,
                   z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ) ∧
-                (∀ cc ∈ Index,
-                  Nonempty (LocalSeriesDatumOnSub k
-                    (GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc) P)))
+                Nonempty (LocalSeriesDatumOnSub k
+                  (GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc) P))
     (hBoundary : ∀ (_hk : 0 < k) (u : WordStack F (Fin (k + 1)) ι),
       Pr_{
         let z ← $ᵖ F}[δᵣ(∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t,
@@ -908,15 +885,13 @@ theorem correlatedAgreement_affine_curves_of_strict_pigeonhole_output {k : ℕ}
               (P z).eval ∘ domain) ≤ δ) →
           ∃ (ι' : Type) (rep : ι' → (F[X])[X][Y]) (S₀ : Finset F)
             (Index : Finset (ι' × F[X][Y])),
-            (∃ cc ∈ Index,
+            ∃ cc ∈ Index,
               (Fintype.card ι + 1) * k <
-                (GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc).card) ∧
-              (∀ cc ∈ Index,
-                ∀ z ∈ GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc,
+                  (GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc).card ∧
+                (∀ z ∈ GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc,
                   z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ) ∧
-                (∀ cc ∈ Index,
-                  Nonempty (LocalSeriesDatumOnSub k
-                    (GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc) P))) :
+                Nonempty (LocalSeriesDatumOnSub k
+                  (GuruswamiSudan.OverRatFunc.Claim57.cell rep 0 P S₀ cc) P)) :
     δ_ε_correlatedAgreementCurves (k := k) (A := F) (F := F) (ι := ι)
       (C := ReedSolomon.code domain deg) (δ := δ) (ε := errorBound δ deg domain) :=
   correlatedAgreement_affine_curves_of_pigeonhole_output_and_boundary
@@ -945,8 +920,7 @@ theorem correlatedAgreement_affine_curves_of_claim57CellDatum_and_boundary {k : 
             δᵣ(∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t,
               (P z).eval ∘ domain) ≤ δ) →
           ∃ d : Claim57CellDatum k P,
-            d.carrier.card > k ∧
-              d.carrier.card ≥ (Fintype.card ι + 1) * k ∧
+            d.carrier.card ≥ (Fintype.card ι + 1) * k ∧
               ∀ z ∈ d.carrier,
                 z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ)
     (hBoundary : ∀ (_hk : 0 < k) (u : WordStack F (Fin (k + 1)) ι),
@@ -984,8 +958,7 @@ theorem correlatedAgreement_affine_curves_of_strict_claim57CellDatum {k : ℕ}
             δᵣ(∑ t : Fin (k + 1), (z ^ (t : ℕ)) • u t,
               (P z).eval ∘ domain) ≤ δ) →
           ∃ d : Claim57CellDatum k P,
-            d.carrier.card > k ∧
-              d.carrier.card ≥ (Fintype.card ι + 1) * k ∧
+            d.carrier.card ≥ (Fintype.card ι + 1) * k ∧
               ∀ z ∈ d.carrier,
                 z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ) :
     δ_ε_correlatedAgreementCurves (k := k) (A := F) (F := F) (ι := ι)
@@ -1011,8 +984,7 @@ theorem jointAgreement_of_exists_cell_strictCoeffPolys_of_pos {n k deg : ℕ}
             (P z).eval ∘ domain) ≤ δ) →
       ∃ (E : Finset F) (R : (F[X])[X][Y]) (w : F[X][Y]) (Bw : ℕ)
         (T : Finset (Fin n)) (S : Fin n → Finset F),
-        E.card > k ∧
-          E.card ≥ (Fintype.card (Fin n) + 1) * k ∧
+        E.card ≥ (Fintype.card (Fin n) + 1) * k ∧
           (∀ z ∈ E,
             z ∈ RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ) ∧
           Irreducible R ∧
@@ -1030,13 +1002,13 @@ theorem jointAgreement_of_exists_cell_strictCoeffPolys_of_pos {n k deg : ℕ}
   refine jointAgreement_of_exists_sub_coeffPolyWitness_of_pos
     (domain := domain) (δ := δ) (u := u) hk ?_
   intro P hdecoded
-  obtain ⟨E, R, w, Bw, T, S, hEcard, hEthresh, hEgood, hRirr, hwdvd, hB, hdvdP,
+  obtain ⟨E, R, w, Bw, T, S, hEthresh, hEgood, hRirr, hwdvd, hB, hdvdP,
     hT, hSE, hcard, hagree⟩ := hInput P hdecoded
   obtain ⟨B, hBdeg, hcoeff⟩ :=
     BCIKS20.CurveCellStrictExtraction.strict_coeffPolys_of_cell
       (domain := domain) (u := u) (k := k)
       hRirr hwdvd (by omega : k + 1 - 1 ≤ k) hB E P hdvdP T hT S hSE hcard hagree
-  exact ⟨E, hEcard, hEthresh, hEgood, B, (fun j _ => hBdeg j),
+  exact ⟨E, hEthresh, hEgood, B, (fun j _ => hBdeg j),
     fun z hz j _ => hcoeff z hz j⟩
 
 end JointAgreement
@@ -1045,7 +1017,7 @@ end Threshold304
 
 end ArkLib
 
-/-! ## Axiom audit (Parts 1–2) -/
+/-! ## Axiom audit (Parts 1–5) -/
 #print axioms ArkLib.Threshold304.LocalSeriesDatumOnSub
 #print axioms ArkLib.Threshold304.LocalSeriesDatumOnSub.mono
 #print axioms ArkLib.Threshold304.localSeriesDatumOnSub_of_localSeriesDatumOn
@@ -1065,6 +1037,7 @@ end ArkLib
 #print axioms ArkLib.Threshold304.hPz_of_localSeriesDatumOnSub
 #print axioms ArkLib.Threshold304.curveCoeffPolys_of_localSeriesDatumOnSub
 #print axioms ArkLib.Threshold304.coeffPolyWitness_of_localSeriesDatumOnSub
+#print axioms ArkLib.Threshold304.lt_of_card_succ_mul_le
 #print axioms ArkLib.Threshold304.jointAgreement_of_exists_sub_coeffPolyWitness
 #print axioms ArkLib.Threshold304.jointAgreement_of_exists_localSeriesDatumOnSub
 #print axioms ArkLib.Threshold304.jointAgreement_of_exists_claim57CellDatum

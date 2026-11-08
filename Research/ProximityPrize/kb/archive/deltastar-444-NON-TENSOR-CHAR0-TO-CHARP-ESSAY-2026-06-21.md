@@ -5,6 +5,33 @@
 Prior bricks: `_AvNonTensorAutocorrAverage.lean`, `_NT_5_scratch.lean`, `_AvW0_BesselWickDomination.lean`,
 `_NoExcessOnsetThreshold.lean`. Probes: `scripts/probes/probe_nt6_*.py`.*
 
+> **Correction banner (2026-10-28 repository audit, R-112 / R-113).** Historical note; read
+> with these corrections.
+>
+> 1. **Derivative identity.** The predicate `(k+1)·u_{k+1} ≤ a·u_k` means `U'(t) ⪯ a·U(t)`
+>    coefficientwise, **not** `t·U'(t) ⪯ a·U(t)` as written below (the exp atom `u_k = 1/k!`
+>    satisfies the former with equality at `a = 1` but fails the latter at `t²`: `1 ≤ 1/2` is
+>    false). Nor is it a coefficientwise bound on `U'/U`: for the Bessel atom
+>    `U = 1 + t + t²/4 + t³/36 + …` (index `1`), `U'/U = 1 − t/2 + t²/3 + …` is not `⪯ 1`.
+>    The index-addition theorem is a valid upper bound; it is not an equality theorem for
+>    cumulants or independence.
+> 2. **Energy wiring.** `_AvNT_CumulantAdditivityEngine.lean` proves inequalities on newly
+>    defined rational sequences. It does not import or prove the identification
+>    `E_r^{c0} = (2r)!·c^{(m)}_r`, so "the char-0 Wick energy step is a THEOREM" below means
+>    "the sequence step is a theorem; the energy reading is conditional on that identification".
+> 3. **`OnsetExceedsSaddle` is not the wall.** The framework in `_NoExcessOnsetThreshold.lean`
+>    used a ring hom between *fields*; every such hom is injective, so `NoWraparound` /
+>    `OnsetExceedsSaddle` held automatically there, and no hom from a char-0 field to `F_p`
+>    exists at all. The framework now takes an arbitrary commutative collision ring (e.g. the
+>    integer ring), records the field-source vacuity as theorems, and has a genuine nonzero wrap
+>    instance. For the production residue map the static no-wrap statement is **false**: the
+>    DC floor `n^{2r} ≤ p·E_r` with `n = 2^30`, `p < 2^159`, `r = 6` gives
+>    `p·(2r−1)!!·n^r < 2^353 < 2^360 = n^{2r}`, so `W_6 > 0`, and padding propagates the wrap
+>    to every larger depth including the saddle. The correct open target allows the DC
+>    contribution and asks for a quantitative DC-subtracted excess budget. Every "OPEN (the
+>    wall, correct static form)" statement about `OnsetExceedsSaddle` / `W_{r*} = 0` below is
+>    superseded by this.
+
 ---
 
 ## 1. Why the dilution theorem forces a non-tensor proof, and the char-0 Wick mechanism as the unique non-tensor source of the r-linear saving
@@ -66,7 +93,10 @@ and `n=16`).** At EVERY prime, at the FIRST depth where `W_r` turns positive, th
 sparse new p-adic relations), so any *per-step ratio* `W_{r+1}/W_r` is enormous at onset. **The
 wraparound energy obeys NO per-step log-derivative bound — `WrapCrossBounded` is the wrong object.**
 
-The CORRECT prize-relevant residual is the **static** `NoWraparound` at the saddle:
+*(Superseded — see the banner: the static no-wrap statement below is vacuous in the old field
+framework and false for the production residue map; the correct residual is a quantitative
+DC-subtracted excess budget.)* The essay originally proposed as residual the **static**
+`NoWraparound` at the saddle:
 
 > `W_{r*} = 0` at `r* = ⌈ln p⌉` on the prize prime — `OnsetExceedsSaddle`
 > (`_NoExcessOnsetThreshold`).
@@ -100,8 +130,8 @@ wall in a different coordinate.
 
 **(NEW — the engine, this file) the cumulant-additivity convolution lemma.** Instead of *naming* the
 char-0 step, PROVE the machine that produces it. Define the **log-derivative index**: `u : ℕ → ℚ` has
-index `≤ a` iff `(k+1)·u_{k+1} ≤ a·u_k` for all `k` (i.e. `t·U'(t) ⪯ a·U(t)` coefficientwise for
-`U(t) = Σ u_k t^k`). Then:
+index `≤ a` iff `(k+1)·u_{k+1} ≤ a·u_k` for all `k` (i.e. `U'(t) ⪯ a·U(t)` coefficientwise for
+`U(t) = Σ u_k t^k`; corrected from `t·U'(t)`, see the banner). Then:
 
 * **Base atom** (`besselCoeff_logDerivIndex_one`): `b_k = 1/(k!)²` has index `≤ 1`
   (`(k+1)b_{k+1} = 1/(k!(k+1)!) ≤ 1/(k!)² = b_k`). `exp` (`e_k = 1/k!`) has index *exactly* `1`.
@@ -132,7 +162,8 @@ a real advance: the prior bricks carried this step as a *named input*; it is now
 open dependency (modulo the Bessel identity `E_r^{c0} = (2r)!·cpow b (n/2) r`, itself the in-tree
 `_AvW0` STEP-1, verified exactly at `n=8,16`). It strictly beats the tensor lift in char-0.
 
-**Exact remaining char-p lemma (the open wall, named in its correct STATIC form):**
+**Remaining char-p lemma as originally named (superseded — false at production by the DC
+floor, see the banner; the live target is a DC-subtracted quantitative excess budget):**
 
 > `OnsetExceedsSaddle` (`_NoExcessOnsetThreshold`): at `r* = ⌈ln p⌉`, the prize prime admits NO
 > nonzero `≤ 2r*`-term `±1`-relation of `2^a`-th roots vanishing mod `𝔭` — equivalently `W_{r*} = 0`.
@@ -194,4 +225,5 @@ route needs and corrects the shape of the remaining char-p obligation.
 | char-0 `r`-linear Wick step `E_{r+1}^{c0} ≤ (2r+1)·n·E_r^{c0}` | **PROVEN** (mod Bessel identity) | same, `besselPow_energyStep` |
 | engine step strictly below tensor ceiling | **PROVEN** | same, `besselPow_le_tensor_step` |
 | `WrapCrossBounded` (`_NT_5` per-step residual) | **REFUTED near onset** (probe) | `probe_nt6_wraparound_perstep_fails.py` |
-| `OnsetExceedsSaddle` / `W_{r*}=0` at prize prime | **OPEN** (the wall, correct static form) | `_NoExcessOnsetThreshold.OnsetExceedsSaddle` |
+| `OnsetExceedsSaddle` / `W_{r*}=0` at prize prime | **NOT the wall** (2026-10-28): vacuous for a field source; false at production by the DC floor | `_NoExcessOnsetThreshold.OnsetExceedsSaddle`, `not_noWraparound_of_dcFloor` |
+| DC-subtracted quantitative excess budget at the saddle | **OPEN** (live char-p target) | — |

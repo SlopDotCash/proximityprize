@@ -14,7 +14,14 @@ import ArkLib.ProofSystem.Sumcheck.Spec.SingleRoundBridge
 `LiftContextCoherent` (`coh`) is **unconditional**, and the per-round bridge
 `(oracleReduction i).toReduction = reduction i` reduces from the two residuals `{coh, hSimpleBridge}`
 down to the SINGLE Simple-level base bridge `hSimpleBridge`
-(`Simple.oracleReduction.toReduction = Simple.reduction`, the single-round verifier-fusion). -/
+(`Simple.oracleReduction.toReduction = Simple.reduction`, the single-round verifier-fusion).
+
+That remaining premise holds: it is canonical ArkLib's `Simple.oracleReduction_eq_reduction`, since
+both `Simple.oracleVerifier` and `Simple.verifier` read the prover message. The per-round bridge
+also holds directly, without this coherence, as
+`SingleRound.oracleReduction_toReduction_eq_reduction`
+(`Logup/Security/BridgeAndAppendResiduals.lean`);
+the hypotheses of `singleRound_toReduction_eq_reduction_of` are no longer used by its proof. -/
 
 open OracleComp OracleSpec ProtocolSpec
 namespace Sumcheck.Spec.SingleRound
@@ -31,7 +38,8 @@ residual of `hPerRound` is hereby discharged. -/
 
 /-- **The per-round bridge, reduced to ONLY `hSimpleBridge`.** With `coh` discharged via the proven
 `CubeFiber`, `(oracleReduction i).toReduction = reduction i` follows from the single remaining
-residual `hSimpleBridge` (the Simple-level single-round verifier-fusion). -/
+premise `hSimpleBridge` (the Simple-level single-round verifier-fusion), which canonical ArkLib
+proves as `Simple.oracleReduction_eq_reduction`. -/
 theorem perRound_of_simpleBridge
     (hSimpleBridge : (Simple.oracleReduction R deg D oSpec).toReduction = Simple.reduction R deg D oSpec)
     (i : Fin n) :

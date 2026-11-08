@@ -35,10 +35,16 @@ gives the **effective density lower bound**
      ≥ (1 − ε) · n^β / (φ(n) · log(n^β))`,                         (TZ)
 
 where `π(x; n, 1) = #{p ≤ x : p prime, p ≡ 1 (mod n)}` is the prime-counting function in the
-progression and `ε = ε(n, β) = o(1)` is the explicit (effective) TZ error term. On paper this
-holds unconditionally for every fixed `β > 12/5` (and for every `β > 1` under Montgomery's
-conjecture); the deep proof (log-free zero-density / Linnik–Heath-Brown estimates for Dirichlet
-`L`-functions) is far beyond present-day formalization and is **not** attempted here.
+progression and `ε = ε(n, β) = o(1)` is the explicit (effective) TZ error term.  Scope of the
+paper input: the clean `(1 − ε)` form with `ε = o(1)` is what [TZ24] gives for `β > 12/5` along
+moduli of controlled arithmetic structure (e.g. fixed `m`, i.e. fixed-radical towers
+`n = 2^7·m`, or powerful moduli); for arbitrary growing `m` the cited corollary's error keeps a
+dependence on the powerful part / radical of the modulus and on a possible exceptional (Siegel)
+zero, so `(TZ)` is **not** claimed here to hold uniformly over all `n = 2^7·m`.  (Under
+Montgomery's conjecture one may take any `β > 1`.)  The deep proof (log-free zero-density /
+Linnik–Heath-Brown estimates for Dirichlet `L`-functions) is far beyond present-day
+formalization and is **not** attempted here; whichever modulus family a consumer uses, `(TZ)` is
+supplied as the named hypothesis below.
 
 We name `(TZ)` as the `Prop`-valued hypothesis `ThornerZamanPNTinAP n β ε`. This is the
 *right* sufficient input because:
@@ -199,8 +205,11 @@ partial summation to the polynomial short interval `[n^β, 2·n^β]`): the windo
 `p ≡ 1 (mod n)` has cardinality at least the density expression
 `tzDensityLB n β ε = (1 − ε) · n^β / (φ(n) · log(n^β))`.
 
-On paper this holds unconditionally for every fixed `β > 12/5` with an explicit effective error
-`ε = o(1)` (and for every `β > 1` under Montgomery's conjecture).  The deep analytic proof
+On paper [TZ24] gives this, with an explicit effective error `ε = o(1)`, for `β > 12/5` along
+moduli of controlled structure (fixed `m`, i.e. fixed-radical towers, or powerful moduli); for
+arbitrary growing `m` the error depends on the powerful part / radical of `n` and on a possible
+exceptional zero, so no uniform-in-`m` claim is made (and any `β > 1` suffices under
+Montgomery's conjecture).  The deep analytic proof
 (log-free zero-density / Linnik–Heath-Brown estimates for Dirichlet `L`-functions) is far beyond
 present-day formalization; following the project convention it lives as this `Prop`, consumed
 downstream by an explicit hypothesis.  It is **not** an `axiom` and is **not** proven here. -/

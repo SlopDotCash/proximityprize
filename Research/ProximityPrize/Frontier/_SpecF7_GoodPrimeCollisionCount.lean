@@ -7,6 +7,7 @@ Authors: ArkLib Contributors (target F7 — the combinatorial half of the good-p
 import Research.ProximityPrize.Frontier._SpecS3_GaloisReduction
 import Mathlib.Data.Nat.Factorization.Basic
 import Mathlib.NumberTheory.Divisors
+import Research.ProximityPrize.Frontier._AlmostAllPrimesWick
 
 /-!
 # Spec F7 — the COMBINATORIAL half of the good-prime collision count (#444)
@@ -151,15 +152,9 @@ section NormModel
 factor is `≥ 2`, so `2 ^ (#primeFactors) ≤ ∏ primeFactors ≤ N`; take `log₂`. This is the
 per-pair exclusion: a fixed nonzero norm `N` rules out at most `Nat.log 2 N` primes. -/
 theorem card_primeFactors_le_natLog {N : ℕ} (hN : 1 ≤ N) :
-    N.primeFactors.card ≤ Nat.log 2 N := by
-  classical
-  have hpow : 2 ^ N.primeFactors.card ≤ N := by
-    calc 2 ^ N.primeFactors.card
-        = ∏ _p ∈ N.primeFactors, 2 := by rw [Finset.prod_const]
-      _ ≤ ∏ p ∈ N.primeFactors, p :=
-          Finset.prod_le_prod' (fun p hp => (Nat.prime_of_mem_primeFactors hp).two_le)
-      _ ≤ N := Nat.le_of_dvd hN (Nat.prod_primeFactors_dvd N)
-  exact (Nat.le_log_iff_pow_le (by norm_num) (by omega)).mpr hpow
+    N.primeFactors.card ≤ Nat.log 2 N :=
+  -- thin wrapper over the canonical copy in `_AlmostAllPrimesWick`
+  ArkLib.ProximityGap.Frontier.AlmostAllPrimesWick.card_primeFactors_le_natLog hN
 
 /-- **(B.1) the bad-prime set of a single distinct pair, abstract norm model.** A pair of
 char-`0`-distinct complete-homogeneous values is carried by a nonzero norm `N`; the primes at which

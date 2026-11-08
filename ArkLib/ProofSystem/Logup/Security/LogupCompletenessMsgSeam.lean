@@ -33,13 +33,19 @@ clash (`Issue13Status.lean`), and this file must remain importable from the comp
   and the append blocker closed: residual surface = `{hSumcheck}` (the embedded-sumcheck
   completeness half) plus `NeverFail init`, `0 < n`, and the honest-`impl` side conditions.
 
-Caveat on the remaining `hSumcheck`: as currently *stated*, `SumcheckCompletenessResidual`
-ranges over `midRelation = Set.univ` and is therefore unsatisfiable in general (the completeness
-twin of the fixed soundness `midLanguage` degeneracy noted in the 2026-06-09 issue-#13 audit).
-The append discharge below is relation-agnostic (the keystone
-`OracleReduction.append_completeness_msg` is generic in the relations), so it survives the
-upcoming corrected claim-true `midRelation` unchanged; only the *consumer* statements
-re-elaborate against the corrected relation.
+Historical caveat on `hSumcheck` (resolved): when this file was written,
+`SumcheckCompletenessResidual` ranged over `midRelation = Set.univ` and was therefore
+unsatisfiable in general (the completeness twin of the soundness `midLanguage` degeneracy noted
+in the 2026-06-09 issue-#13 audit). That lesson stands for the old relation, but it no longer
+describes the current code: `midRelation` (`Completeness.lean`) is now the claim-true relation
+`{p | logupOuterSumcheckClaim … = 0}`, the embedded-sumcheck half is supplied by
+`sumcheckCompletenessResidual_unconditional` (`SumcheckCompletenessUncond.lean`), and the
+genuinely instantiated end-to-end route is `logup_completeness_final`
+(`LogupCompletenessFinal.lean`, with the concrete witness `logup_completeness_final_instantiable`),
+under `0 < n`, `NeverFail init`, `hImplSupp` and the honest-implementation side conditions. The
+append discharge below is relation-agnostic (the keystone `OracleReduction.append_completeness_msg`
+is generic in the relations), so it carried over unchanged to the corrected relation; `hSumcheck`
+remains an explicit hypothesis of `logup_completeness_msgSeam` in this file only.
 
 No `sorry`, no new axioms.
 -/

@@ -26,14 +26,19 @@ dies on the remaining two (`decide`). Hence `LinearStaircaseUpper T3 4` fails wh
 `b = 4` hypothesis of the conjecture (distance `> 8`) holds:
 `generalStaircaseConjecture_refuted`.
 
-**The unified law** (every datum across `b = 2, 3, 4` now coheres): general-code band-`b`
-collapse to the spike value holds iff `d ≥ 3b − 2`; the `(b−1)`-tupled-column codes explode
-at `d = 3b − 3`. The landed `b = 2, 3` theorems are exactly the first instances
-(`4 = 3·2−2`, `7 = 3·3−2`); the corrected surface `TheGeneralStaircaseLaw` (stated below,
-never asserted) carries the `b ≥ 4` instances. The explosion witnesses are maximally
-non-MDS — parallel matroid classes of size `b − 1` — so the gap to the RS/MDS threshold
-(`d ≥ 2b`, directed-search-supported) is exactly parallel-class capacity: the staircase
-below half-distance is a **matroid-sensitive** quantity.
+**The proposed unified law** (consistent with every datum across `b = 2, 3, 4`): `d ≥ 3b − 2`
+is proposed as a **universal worst-case sufficient threshold** for general-code band-`b`
+collapse to the spike value, and the `(b−1)`-tupled-column codes show that it cannot be lowered
+to `3b − 3` as a *worst-case* threshold (they explode at `d = 3b − 3`). It is **not** an
+instance-wise "iff": collapse can hold far below `3b − 2` for particular codes (e.g. the full
+code `F^ι` has distance `1` yet `ε_mca = 0` at every radius). The landed `b = 2, 3` theorems are
+exactly the first instances (`4 = 3·2−2`, `7 = 3·3−2`); the surface `TheGeneralStaircaseLaw`
+(stated below as a definition, not asserted here) carries the `b ≥ 4` instances — the sufficient
+direction was later proved in `MCAStaircaseMaster.badScalar_card_le_of_dist`. The explosion
+witnesses are maximally non-MDS — parallel matroid classes of size `b − 1`. (At the time, the
+RS/MDS threshold `d ≥ 2b` was directed-search-supported and suggested a matroid-sensitive gap;
+that MDS surface was later **refuted** by `MCAMDSStaircaseRefuted.mdsStaircaseConjecture_refuted`,
+so no MDS/general separation at the staircase-threshold level survives.)
 
 All results are `sorry`-free and axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 -/
@@ -180,8 +185,8 @@ theorem mcaEvent_t (g : Fin 5) :
 
 open Classical in
 /-- **The refutation:** `GeneralStaircaseConjecture` is false — `T3` satisfies the `b = 4`
-distance hypothesis, yet the tripled-column stack has five bad scalars in band 4. The
-general-code collapse threshold is `3b − 2`, not `2b + 1`. -/
+distance hypothesis, yet the tripled-column stack has five bad scalars in band 4. So `2b + 1`
+is not a universal worst-case sufficient threshold; the proposed one is `3b − 2`. -/
 theorem generalStaircaseConjecture_refuted : ¬ GeneralStaircaseConjecture := by
   intro h
   have hLSU : LinearStaircaseUpper T3 4 :=
@@ -211,9 +216,11 @@ theorem generalStaircaseConjecture_refuted : ¬ GeneralStaircaseConjecture := by
       _ ≤ _ := Finset.card_le_card hsub
   omega
 
-/-- **The unified general-code surface** (`d ≥ 3b − 2`; stated, never asserted): the landed
-`b = 2, 3` collapse theorems are exactly its first instances, and the `(b−1)`-tupled-column
-codes witness sharpness at `d = 3b − 3` for `b = 2, 3, 4`. -/
+/-- **The unified general-code surface** (`d ≥ 3b − 2`; a proposed universal worst-case
+*sufficient* threshold, stated here as a definition, not asserted): the landed `b = 2, 3`
+collapse theorems are exactly its first instances, and the `(b−1)`-tupled-column codes show the
+threshold cannot be lowered to `3b − 3` in the worst case for `b = 2, 3, 4`. It is not an
+instance-wise characterization (the full code has distance `1` and `ε_mca = 0`). -/
 def TheGeneralStaircaseLaw : Prop :=
   ∀ (ι : Type) (inst1 : Fintype ι) (inst2 : Nonempty ι) (inst3 : DecidableEq ι)
     (F : Type) (inst4 : Field F) (inst5 : Fintype F) (inst6 : DecidableEq F)

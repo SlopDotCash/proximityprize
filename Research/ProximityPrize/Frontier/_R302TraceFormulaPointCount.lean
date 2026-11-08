@@ -33,9 +33,12 @@ coefficients into coset slices `Aᶜ` and taking the DFT over `ℤ/m`:
    collapses onto the single full-spectrum object `Ŝ(a)`:
    **`FullDFTFlat K` (`∀ a, ‖Ŝ(a)‖ ≤ K·√(mq)`) ⟹
      `DistStratumEnergyBound ((K³+9K+18)²)`**
-   (`distStratumEnergyBound_of_fullDFTFlat`).  The Prop is calibrated:
-   `K = √m` holds unconditionally (`fullDFTFlat_sqrt_m`, recovering the
-   baseline), Parseval pins the AVERAGE of `‖Ŝ‖²` at `≤ m·q` exactly
+   (`distStratumEnergyBound_of_fullDFTFlat`; only this direction is proved —
+   `FullDFTFlat` is SUFFICIENT for, not equivalent to, the DIST bound).  The Prop
+   is calibrated: `K = √m` holds unconditionally (`fullDFTFlat_sqrt_m`), but
+   plugged into the proved constant it gives `(m^{3/2}+9√m+18)² ≥ m³`, i.e. an
+   `O(m³)` DIST bound — WEAKER than R300's `distStratumEnergyBound_trivial`
+   constant `m²`; the open content is `K = O(1)`.  Parseval pins the AVERAGE of `‖Ŝ‖²` at `≤ m·q` exactly
    (`hatSfun_energy_le`, i.e. flat-on-average with `K = 1`), and the probe
    measures `sup_a ‖Ŝ(a)‖²/(mq) ∈ [1, 4.7]`, flat in `q`, at BOTH m = 9 and
    m = 12 — the first open instance.  The reduction is strict: a SEXTIC moment
@@ -47,10 +50,16 @@ coefficients into coset slices `Aᶜ` and taking the DFT over `ℤ/m`:
 Galois average over the `φ(m)` characters `χ = λ^k` obeys the Fu–Wan-style
 trace formula (I3):
   `∑_k ‖T_α⁽ᵏ⁾‖² = ∑_{d∣m} d·μ(m/d)·N_d(α)`,
-`N_d(α) = #{(t,s) ∈ C_α² : (1−t)/(1−s) ∈ (F_q^*)^d}` — Möbius-weighted counts
-of `F_q`-points on explicit Fermat-type varieties
-(`m²·d·N_d(α) = #{(x,y,z) ∈ (F_q^*)³ : 1−g^α x^m = (1−g^α y^m)·z^d}`, identity
-I4, verified by direct enumeration).  This is the exact mechanism behind the
+`N_d(α) = #{(t,s) ∈ C_α² : t ≠ 1, s ≠ 1, (1−t)/(1−s) ∈ (F_q^*)^d}` —
+Möbius-weighted counts of `F_q`-points on explicit Fermat-type varieties
+(identity I4:
+`m²·d·N_d(α) = #{(x,y,z) ∈ (F_q^*)³ : g^α x^m ≠ 1, g^α y^m ≠ 1,
+  1−g^α x^m = (1−g^α y^m)·z^d}`).
+The two zero-factor exclusions are needed: at `α = 0` the points with
+`x^m = y^m = 1` lie on the variety (e.g. `q = 19, m = 9, α = 0, d = 1`: the
+unrestricted variety has `1539` points, `m²·d·N = 81`).  The corrected I4 was
+re-checked by enumeration at `q = 19, m = 9` and `q = 37, m ∈ {9, 12}` (all
+`α`, all `d ∣ m`); it is a probe identity, not a Lean statement.  This is the exact mechanism behind the
 m = 9 integer phenomenon (R301), now proved to persist at m = 12.  MECHANISM
 CAVEAT (the honest refutation content): the Weil main terms of the `N_d` cancel
 IDENTICALLY (`∑_{d∣m} μ(m/d) = 0`), so the point count is PURE error term — no
@@ -60,7 +69,10 @@ cannot discharge `FullDFTFlat` with an absolute `K`: per-mode, Weil gives only
 square-root cancellation ACROSS the `m` Jacobi angles inside each mode —
 Katz-style vertical equidistribution, exactly as calibrated in the R300 kb
 note.  Naming a sheaf-theoretic surrogate would launder the gap; the honest
-Lean-side open object is `FullDFTFlat` (equivalently `DistStratumEnergyBound`).
+Lean-side open object is `FullDFTFlat` (a SUFFICIENT condition for
+`DistStratumEnergyBound`; no converse is proved, and heuristically a single
+mode with `‖Ŝ‖ = K√(mq)` contributes only `≈ K⁶m²q³` to `E_DIST`, so an
+absolute-constant DIST bound is compatible with `K ≈ (Cm)^{1/6}`).
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`).  Issue #466, LANE B2.
 -/
@@ -784,8 +796,9 @@ theorem hatSfun_energy_le {ψ : AddChar (ZMod (3 * u')) ℂ} (hψ : ψ.IsPrimiti
         exact mul_le_mul_of_nonneg_left hbound h0
     _ = ((3 * u' : ℕ) : ℝ) ^ 2 * q := by ring
 
-/-- Calibration: `FullDFTFlat` holds unconditionally with `K = √m` (the
-baseline; the open content is `K = O(1)`). -/
+/-- Calibration: `FullDFTFlat` holds unconditionally with `K = √m`.  This does NOT
+recover the `m²` baseline: through `distStratumEnergyBound_of_fullDFTFlat` it gives
+the constant `(m^{3/2}+9√m+18)² ≥ m³`; the open content is `K = O(1)`. -/
 theorem fullDFTFlat_sqrt_m (ψ : AddChar (ZMod (3 * u')) ℂ)
     {J : ZMod (3 * u') → ℂ} {q : ℕ} (hJ : ∀ x, ‖J x‖ ^ 2 ≤ (q : ℝ)) :
     FullDFTFlat ψ J q (Real.sqrt ((3 * u' : ℕ) : ℝ)) := by

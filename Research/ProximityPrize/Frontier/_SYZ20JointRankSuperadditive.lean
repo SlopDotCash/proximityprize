@@ -219,7 +219,9 @@ the maximum over `s` at every relevant threshold `t` as a decidable `ℕ` fact a
 budget `B = 64`.  `yield s t = (n−s)/(t−s)` for `s < t`, else `n−s`; merge cost `= s−k+1`. -/
 
 /-- Merge-corrected integer channel bound for one core size `s` at length `n`, dimension `k`,
-threshold `t` (all `ℕ`, truncated division). -/
+threshold `t` (all `ℕ`, truncated division).  The local `yieldS` is the same expression as the
+canonical `SYZ21.yieldS`; it is inlined only because this file does not import SYZ21 (which
+pulls in the RS vanishing-dimension substrate). -/
 def mergeBound (n k t s : ℕ) : ℕ :=
   let yieldS := if t ≤ s then n - s else (n - s) / (t - s)
   ((n - k) / (s - k + 1)) * yieldS

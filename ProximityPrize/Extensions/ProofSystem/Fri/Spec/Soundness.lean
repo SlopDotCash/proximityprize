@@ -27,8 +27,12 @@ import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.General
 Candidate per-round and total error definitions for the FRI protocol soundness
 analysis. These definitions follow the structure of the BCIKS20 proximity gap
 bounds and Schwartz-Zippel query consistency bounds, but are not yet tied to a
-soundness theorem — they are accounting placeholders pending the sequential
-composition infrastructure needed for the full soundness proof.
+proved soundness theorem — they are accounting placeholders. The `EndToEnd`
+section below only adds *conditional* assembly theorems whose conclusions are
+supplied as hypotheses (see that section's scope note). The proved FRI results are
+the canonical `Fri.Spec.soundness` and `Fri.Spec.rbr_soundness` in
+`ArkLib/ProofSystem/Fri/Spec/Soundness.lean`, at their own errors `soundnessError`
+and `challengeError`, not at the `totalError` defined here.
 
 ## References
 
@@ -110,16 +114,28 @@ theorem queryError_le_totalError (δ : ℝ≥0) :
 
 The FRI oracle reduction `Fri.Spec.reduction` is, definitionally, the binary append of the
 folding phase `reductionFold` (the `seqCompose`d non-final folding rounds followed by the final
-folding round) and the query phase `QueryRound.queryOracleReduction`.  The theorems below tie the
-error-accounting definitions above (`roundError`, `queryError`, `totalError`) to the *actual* FRI
-verifier failure probability, by assembling the end-to-end soundness statement from per-round and
-per-phase soundness facts through the codebase-standard sequential-composition keystones
-(`OracleVerifier.seqCompose_soundness`, `OracleVerifier.append_soundness`) and their named seam
-residuals — exactly the structure already used for the completeness side in
-`Fri/Spec/Completeness.lean` (issue #117) and for Batched FRI in `BatchedFri/Security.lean`.
+folding round) and the query phase `QueryRound.queryOracleReduction`.  The two definitional
+unfoldings (`reduction_verifier_eq_append`, `reductionFold_verifier_eq_append`) are genuine.  The
+soundness theorems below only *route* hypotheses, with the same error-accounting shape as the
+completeness side in `Fri/Spec/Completeness.lean` (issue #117) and Batched FRI in
+`BatchedFri/Security.lean`.  They do not apply the proved generic theorems
+`OracleVerifier.seqCompose_soundness` and `OracleVerifier.append_soundness`.
 
-The headline statement is `reduction_soundness_totalError`: the composed FRI verifier is sound
-with soundness error *exactly* `totalError k s d l δ = (∑ i, roundError δ i) + queryError`. -/
+**Scope: conditional aliases, not a FRI soundness proof.**  The sequential residual `h_seq` *is*
+the `seqCompose` soundness conclusion, and `OracleVerifier.appendSoundnessResidual` is
+definitionally the appended soundness conclusion.  Hence the conclusion of each theorem below is
+(up to unfolding `totalError` and `+ 0`) one of its own hypotheses (`h_seq`, `h_residual`,
+`h_res2`); the per-round and per-phase facts (`h_round`, `h_fold`, `h_query`, `h_final`) do no
+logical work.  The obligations left open at the `totalError` budget are:
+
+* per-round soundness of each FRI folding round at `roundError δ i` (the BCIKS20 proximity-gap
+  analysis tied to the actual round verifier), and query-phase soundness at `queryError`;
+* the sequential composition of the folding rounds (`h_seq`): the proved
+  `OracleVerifier.seqCompose_soundness` needs guarded component verifiers with bounds uniform over
+  deterministic oracle states, which these statements neither assume nor use;
+* the binary append seams (`h_residual`, `h_res1`, `h_res2`).  For a nonempty trailing protocol,
+  `OracleVerifier.appendSoundnessResidual_total_pos` (`AppendSoundnessTotal.lean`) discharges this
+  residual under honest-implementation side conditions, but it is not wired into this file. -/
 
 section EndToEnd
 
@@ -147,11 +163,11 @@ theorem reductionFold_verifier_eq_append :
         (FinalFoldPhase.finalFoldOracleReduction (k := k) s d).verifier := rfl
 
 omit [NeZero l] in
-/-- **Round-by-round layer.** If each non-final FRI folding round is sound with the
-BCIKS20-accounted per-round error `roundError δ i`, then (through the `seqCompose` soundness
-keystone, whose deep content is the named sequential-composition residual `h_seq`) the
-`seqCompose`d folding-round verifier is sound with the summed error `∑ i, roundError δ i` —
-the exact fold-phase contribution to `totalError`. -/
+/-- **Round-by-round layer (identity alias).** The hypothesis `h_seq` is already exactly the
+conclusion: soundness of the `seqCompose`d folding-round verifier at the summed error
+`∑ i, roundError δ i`.  The theorem returns `h_seq` unchanged, so the per-round facts `h_round`
+are not used to derive anything.  This records the intended fold-phase contribution to
+`totalError`; it is not a proof that per-round soundness composes. -/
 theorem foldRounds_seqCompose_soundness
     [∀ i, ∀ j, SampleableType ((FoldPhase.pSpec (ω := ω) s i).Challenge j)]
     (δ : ℝ≥0)
@@ -175,11 +191,11 @@ theorem foldRounds_seqCompose_soundness
   h_seq
 
 omit [NeZero l] in
-/-- **Fold-phase seam.** Soundness of the folding phase `reductionFold` with additive error,
-assembled from soundness of the `seqCompose`d non-final folding rounds and soundness of the final
-folding round via the binary append keystone.  In the `totalError` accounting the final fold
-round contributes no additional proximity error (`finalError = 0`): its degree check is deferred
-to the query phase. -/
+/-- **Fold-phase seam (conditional alias).** Soundness of the folding phase `reductionFold` with
+additive error.  The seam residual `h_residual` is definitionally this conclusion, so `h_folds` and
+`h_final` only fix the error terms.  In the `totalError` accounting the final fold round
+contributes no additional proximity error (`finalError = 0`): its degree check is deferred to the
+query phase. -/
 theorem reductionFold_soundness_of_append
     [∀ i, ∀ j, SampleableType ((FoldPhase.pSpec (ω := ω) s i).Challenge j)]
     [hFinalChallenge : ∀ j, SampleableType ((FinalFoldPhase.pSpec F).Challenge j)]
@@ -212,9 +228,9 @@ theorem reductionFold_soundness_of_append
   h_residual
 
 omit [NeZero l] in
-/-- **Top seam (additive form).** Soundness of the composed FRI reduction `Fri.Spec.reduction`
-with additive error `foldError + queryErrorBound`, assembled from soundness of the folding phase
-and soundness of the query round via the binary append keystone. -/
+/-- **Top seam (additive form, conditional alias).** Soundness of the composed FRI reduction
+`Fri.Spec.reduction` with additive error `foldError + queryErrorBound`.  The conclusion is
+definitionally the seam residual `h_residual`; `h_fold` and `h_query` only fix the error terms. -/
 theorem reduction_soundness_of_phases
     [∀ i, ∀ j, SampleableType ((FoldPhase.pSpec (ω := ω) s i).Challenge j)]
     [hFinalChallenge : ∀ j, SampleableType ((FinalFoldPhase.pSpec F).Challenge j)]
@@ -257,15 +273,14 @@ theorem reduction_soundness_of_phases
   exact h_residual
 
 omit [NeZero l] in
-/-- **End-to-end FRI soundness theorem at the `totalError` budget.**
+/-- **FRI soundness at the `totalError` budget (conditional alias).**
 
-If the folding phase is sound with the summed per-round proximity-gap error
-`∑ i, roundError δ i` and the query phase is sound with the query-consistency error
-`queryError`, then the composed FRI verifier is sound with soundness error *exactly*
-`totalError k s d l δ`.  This is the formal soundness theorem that the error-accounting
-definitions above were deferred pending: `totalError` is no longer a free-floating budget but
-the actual failure-probability bound of the composed FRI verifier, conditional on the per-phase
-facts and the named binary-append seam residual. -/
+The statement has the intended shape: the folding phase sound at the summed per-round
+proximity-gap error `∑ i, roundError δ i`, the query phase sound at `queryError`, and the composed
+FRI verifier sound at `totalError k s d l δ`.  Logically, however, the conclusion is the seam
+residual `h_residual` itself (up to unfolding `totalError`), so this theorem does not prove that
+`totalError` bounds the composed verifier's failure probability.  The per-phase facts `h_fold`,
+`h_query` and the binary-append seam remain open hypotheses (see the section scope note). -/
 theorem reduction_soundness_totalError
     [∀ i, ∀ j, SampleableType ((FoldPhase.pSpec (ω := ω) s i).Challenge j)]
     [hFinalChallenge : ∀ j, SampleableType ((FinalFoldPhase.pSpec F).Challenge j)]
@@ -308,12 +323,13 @@ theorem reduction_soundness_totalError
     langIn langMid langOut h_fold h_query h_residual
 
 omit [NeZero l] in
-/-- **Round-by-round FRI soundness theorem.** The composed FRI verifier is sound at the
-`totalError` budget, assembled all the way from *per-round* soundness facts: each non-final
-folding round sound at `roundError δ i`, the final folding round sound at error `0` (its check
-is deferred to the query phase in this accounting), and the query round sound at `queryError`,
-chained through the `seqCompose` and binary-append soundness keystones with their named seam
-residuals. -/
+/-- **Round-by-round FRI soundness (conditional alias).** States soundness of the composed FRI
+verifier at the `totalError` budget in terms of *per-round* facts: each non-final folding round
+sound at `roundError δ i`, the final folding round sound at error `0` (its check is deferred to
+the query phase in this accounting), and the query round sound at `queryError`.  Each layer returns
+its residual, so the conclusion is the last seam residual `h_res2` after the error rewrite
+`∑ + 0 + queryError = totalError`; `h_seq` is itself the fold-phase composite.  This is bookkeeping
+for the intended decomposition, not a proof of FRI soundness from per-round soundness. -/
 theorem reduction_soundness_totalError_of_rounds
     [∀ i, ∀ j, SampleableType ((FoldPhase.pSpec (ω := ω) s i).Challenge j)]
     [hFinalChallenge : ∀ j, SampleableType ((FinalFoldPhase.pSpec F).Challenge j)]

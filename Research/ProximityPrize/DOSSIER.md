@@ -231,6 +231,10 @@ for every common-tail length `m`, by iterating the exact characteristic-`p` recu
 depth-three cyclic floor. It also proves strict improvement over the adjacent-swap floor for
 nontrivial support. This is an unconditional reusable **lower** bound. It is not an upper energy
 bound, characteristic transfer, capacity result, or CORE closure.
+It is also not the strongest known lower bound: the cyclic floors are weaker than the
+permutation-matching floor `rEnergy_ge_perm` (`|G|.descFactorial r * r! ≤ rEnergy G r`,
+`_LowerBoundPermMatchingFloor.lean`) except for `|G| ≤ 5` at depth three and `|G| ≤ 4` at
+depth four.
 
 ### 4.4 G330 order-eight spectrum boundary
 
@@ -254,16 +258,26 @@ mathematical claims to unconditional ones.
 
 ## 5. Residual census versus production completion
 
-The 2026-08-16 regeneration at `b72890393` reports:
+`scripts/residual_census.py` is a syntactic inventory of `ArkLib/**/*.lean` and `ProximityPrize/**/*.lean` only: it counts strict
+`def ...Residual ... : Prop` declarations and triages their providers from source text, without
+elaborating Lean. Residuals under `Research/` (including migrated campaign residuals) and named
+`Prop`/structure hypotheses are outside its scope, and its `discharged` label marks a candidate
+provider to review, not a verified proof. The current classification is the generated summary in
+[`docs/wiki/residual-census.md`](../../docs/wiki/residual-census.md) and
+`scripts/residual_census.json`; quote totals from there, together with that scope.
 
-- 117 strict `def ...Residual ... : Prop` declarations;
-- 69 open, 47 discharged, and one refuted;
-- 79 residual-like near misses outside the strict suffix/type convention.
+Dated snapshots of the same inventory, retained as campaign addenda on the wiki page:
 
-The historical 2026-07-11 snapshot was 108 total, 62 open, 45 discharged, one refuted, and 76
-near misses. Both snapshots are retained and explicitly dated in
-[`docs/wiki/residual-census.md`](../../docs/wiki/residual-census.md); only the 2026-08-16 figures are the
-current totals.
+- 2026-07-11 (SYZ54): 108 strict declarations (62 open, 45 discharged, one refuted) and 76
+  residual-like near misses;
+- 2026-08-16 (`b72890393`): 117 strict declarations (69 open, 47 discharged, one refuted) and 79
+  residual-like near misses.
+
+Neither snapshot is the current total. The 2026-10-28 repository review found that the
+classifier then in use labelled some conditional or instance-specific providers `discharged`
+(equivalence lemmas, section and instance hypotheses, fixed-parameter instances). The hardened
+classifier adds an `instance-only` status, so totals from before and after that change are not
+comparable.
 
 The strict census is not the production completion ledger. In particular,
 `UniformSylvesterInjective`, `StripSyzygyControlledCeiling`, and `hrank` are theorem-facing named
@@ -300,8 +314,9 @@ python3 scripts/residual_census.py --wiki-out docs/wiki/residual-census.md
 ```
 
 Residual regeneration preserves blockquotes whose first line begins with `Campaign addendum`.
-Keep historical snapshots explicitly dated, add a current audited block, and ensure the summary
-and `scripts/residual_census.json` agree before publication.
+Keep every addendum explicitly dated and worded as a snapshot, never as "the current totals":
+the generated summary is the only current figure, and it must agree with
+`scripts/residual_census.json` before publication.
 
 ## 8. Next work
 
@@ -2423,9 +2438,11 @@ witness incomparability, absorption dichotomy, collinear two-cover boost
 ≥ 352,321,537 ≥ k = 2^28) → `_P1RateQuarterNonCollinearTriple.lean`
 (`triple_pencil_rigidity`, `shared_triple_dichotomy`; collapse-to-collinear
 refuted by an explicit RS[32,8]/F₃₇ non-collinear triple) →
-`_P1RateQuarterSharedFreshTripleP1Refuted.lean`
-(`sharedFreshTripleFree_canonicalDomain_refuted`: the residual is FALSE at
-the literal canonical P1 domain, generator-symbolic μ₁₆-coset certificate)
+`_P1RateQuarterSharedFreshTripleRefuted.lean`
+(`not_sharedFreshTripleFree`: the residual is FALSE on every injective P1
+domain, via a 480,946,859-scalar shared-fresh family; the canonical-domain
+generator-symbolic μ₁₆-coset certificate
+`_P1RateQuarterSharedFreshTripleP1Refuted.lean` is an alternative witness)
 — per-coordinate escape charges DEAD. Counting arc:
 `_P1RateQuarterPencilCountCharge.lean` (exact rider caps, alignment ladder,
 ten-rider Johnson crossover at A ≥ 539,356,427) →

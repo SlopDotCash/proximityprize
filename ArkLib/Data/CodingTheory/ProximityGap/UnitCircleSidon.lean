@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.RepCountCharZeroBound
 
 /-!
-# `μ_n` IS A SIDON SET OVER ℂ (#389) — the heart of the small-subgroup δ* pin
+# `μ_n` IS A SIDON SET OVER ℂ (#389) — the heart of the small-subgroup energy identity
 
 The deployed proximity prize lives in the **small-subgroup regime** `n ≪ √p` (NTT length `n`,
 field `F_p`, `p = 2¹²⁸`), not the hard Garcia–Voloch regime `t ~ √p`.  There the Garcia–Voloch
@@ -20,8 +20,10 @@ This is the elementary heart (conjugation `= inversion` on the unit circle), and
 conjectural.  It is what makes the lifting argument work: a nontrivial additive parallelogram in
 `μ_n ⊂ F_p` forces `p ∣ Res(Φ_n, X^i + X^j − X^k − X^l)`, a **nonzero** integer (nonzero *because*
 of this lemma), of size `≤ 4^{φ(n)} = 2^n`.  Hence for `p > 2^n` the subgroup `μ_n ⊂ F_p` is Sidon,
-`E(μ_n) = 3n² − 3n` exactly, and (via `additiveEnergy_le_of_repCount_le_two`) δ* is pinned to its
-char-0 value for every smooth-RS code of length `n < log₂ p`.  No Weil, no Stepanov.  Issue #389.
+`E(μ_n) = 3n² − 3n` exactly (via `additiveEnergy_le_of_repCount_le_two`), with no Weil and no
+Stepanov input.  That is an additive-energy identity; it does **not** by itself pin δ* for
+smooth-RS codes of length `n < log₂ p`, since no general bridge from the energy of `μ_n` to
+`δ*`, `ε_mca`, list sizes or incidence for every such code is proved here.  Issue #389.
 -/
 
 open Complex

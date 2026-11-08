@@ -15,7 +15,11 @@ quantity (so BGK would be only a lossy over-estimate, not the true δ*).
   (forced anomaly). E_2 = 3n²−3n exact → Johnson only.
 - **M ↔ Gauss (HD): exact identity, but vacuous** — constant-index (prize, index m~2^128) classical
   Gauss bound `M ≤ ((m−1)√q+1)/m ~ √q` is TRIVIAL; HD reduces phase DOF n−1→n/4, residual Θ(n) free.
-- **L² floor: M ≥ √n always** (exact).
+- **L² floor: M ≥ √n always** (exact). *(Corrected 2026-10-28, audit T48: not exact as stated. The
+  nonzero Parseval mean is `n(p − n)/(p − 1)`, so the valid universal floor is
+  `M ≥ √(n(p − n)/(p − 1))`, slightly below `√n`. At the proper subgroup `μ₈ ⊆ F₁₇` the two real
+  periods are `(−1 ± √17)/2`, so `M = (1 + √17)/2 ≈ 2.56 < √8 ≈ 2.83`. This does not rule out a
+  stronger lower bound under additional thin-field assumptions.)*
 
 ## The decisive finding (regime dichotomy)
 Since δ*↔I↔Λ is **tight**, the whole question is: **is the tight worst-case incidence polynomial or
@@ -28,6 +32,13 @@ exponential at the prize?** Answer (verified):
   below-capacity radius is **EXPONENTIAL `2^{nH(ρ+c)}`**. ⟹ δ* genuinely **IS** the exponential-incidence
   threshold = BGK/additive-energy wall, established **via the TIGHT combinatorial side directly** — NOT
   a lossy-M artifact. There is no lossy edge to "escape": the tight quantity itself is the wall.
+
+*(Scope note 2026-10-28, audit T48: the constant-rate "EXPONENTIAL `2^{nH(ρ+c)}`" worst-incidence
+assertion lacks its guards. An incidence count of bad scalars is at most `q`, and an exponential
+count of subsets does not become an exponential count of distinct scalars or codewords without the
+actual codeword, image and field-budget conditions. "δ* is definitionally the radius where worst-case
+I crosses B" also conflicts with the later finding that far-line incidence is a proxy, not the MCA
+`δ*` (`farline-incidence-is-plotkin-proxy-not-mca-deltastar.md`).)*
 
 ## Resolution of the user's hypothesis
 The hypothesis "the walls only *appear* equal via the √-lossy edges, and the tight δ* is poly-bounded"

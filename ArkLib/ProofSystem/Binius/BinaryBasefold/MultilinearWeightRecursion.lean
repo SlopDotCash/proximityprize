@@ -5,24 +5,24 @@ Authors: ArkLib Contributors
 -/
 
 import Mathlib
+import ArkLib.Data.CodingTheory.Prelims
 
 /-!
 # Binius multilinear-weight even/odd recursion (issue #33)
 
 The testBit even/odd splits + multilinearWeight_split: the binary-tower multilinear weight recursion
 feeding the fold-step consistency. Pure GF(2)-tower bit algebra.
+
+All statements are about the shared production definition `multilinearWeight`
+(`ArkLib/Data/CodingTheory/Prelims.lean`), whose `j`-th factor selects `r j` when bit `j` of the
+index is set (so bit `0` is the least significant bit) and `1 - r j` otherwise. An earlier
+version of this file carried a verbatim local copy of that definition; the theorems now apply to
+the production definition directly.
 -/
 
 open Finset
 
 namespace Issue33Binius
-
-/-- Tensor product weight `⊗_{j<ϑ}(1 - r_j, r_j)` at index `i` given challenges `r`.
-This is a verbatim copy of `ArkLib`'s `multilinearWeight`
-(`ArkLib/Data/CodingTheory/Prelims.lean:23`), kept local so the file is self-contained.
-The `j`-th factor selects `r_j` when the `j`-th bit of `i` is set, else `1 - r_j`. -/
-def multilinearWeight {F : Type*} [CommRing F] {ϑ : ℕ} (r : Fin ϑ → F) (i : Fin (2 ^ ϑ)) : F :=
-  ∏ j : Fin ϑ, if i.val.testBit j.val then r j else 1 - r j
 
 /-! ### The two binary-tower bit facts (pure `Nat.testBit` algebra)
 
@@ -141,12 +141,14 @@ theorem multilinearWeight_split {ϑ : ℕ} (r : Fin (ϑ + 1) → F) (i : Fin (2 
   -- `(1 - r0) * w + r0 * w = w`.
   ring
 
-/-! ### Single-challenge base case (sanity check that the convention matches ArkLib)
+/-! ### Single-challenge base case
 
 `challengeTensorExpansion 1 (fun _ => c) = ![1 - c, c]` — the `n = 1` base of the
-expansion (cf. `Prelude.lean:1911 challengeTensorExpansion_one`).  We verify our
-`multilinearWeight` reproduces it, pinning down that the bit/orientation convention here
-is the same `multilinearWeight` ArkLib uses (testBit = MSB-of-index ↔ challenge j). -/
+expansion (cf. `challengeTensorExpansion_one` in `Prelude.lean`).  With one challenge there is
+only one bit, so this check cannot detect a reversal of the bit order.  The orientation is
+pinned by the definition (bit `j` of the index, with bit `0` the least significant, selects
+challenge `r j`) and by `multilinearWeight_even` / `multilinearWeight_odd` above, where the
+least significant bit of the row index selects `r 0`. -/
 
 /-- `multilinearWeight (single challenge c) 0 = 1 - c` and `... 1 = c`. -/
 theorem multilinearWeight_one (c : F) :

@@ -21,7 +21,7 @@ count-balanced 6-tuples over `G` is exactly
 
 This is assembled from a complete combinatorial chain, every link axiom-clean:
 * the three per-image-size value multiplicities `20 / 360 / 720`
-  (`image_count_two`, `E3Shape21Scratch.image_count_four`, `image_count_six`);
+  (`image_count_two`, `ArkLib.ProximityGap.Frontier.E3Shape21.image_count_four`, `image_count_six`);
 * the negation-closed `2i`-subset count `C(|G|/2, i)` (`E3SubsetCount.negClosed_subset_count`);
 * the partition `negSymCount_partition_negClosed`, closed by `strata_sum_eq_closed`.
 

@@ -91,7 +91,8 @@ def centeredCov (p : ℕ) [NeZero p] (W R : ZMod p → ℤ) : ℤ :=
 
 /-! ### Exact sponsor cell `(p, n) = (113, 8)`: an in-window interior sign change
 
-`G = ⟨15⟩ = {1,15,18,44,69,95,98,112} ≤ F₁₁₃^*`, order 8. `W_G(x) = #{(y,z) ∈ G² : 2y - z = x}`.
+`G = ⟨18⟩ = {1,15,18,44,69,95,98,112} ≤ F₁₁₃^*`, order 8 (not `⟨15⟩`, which has order 4).
+`W_G(x) = #{(y,z) ∈ G² : 2y - z = x}`.
 The two rows below are the exact adjacent-rank rows `R_r = dp_r ⋆ dp_{r-1}` tabulated over
 `ZMod 113` by residue, for `r = 2` and `r = 4` (and the reflection `r = 7`).
 
@@ -100,7 +101,8 @@ To keep the covariance sums kernel-checkable at `p = 113` we route each residue 
 `Fin.sum_univ_eq_sum_range`, so `decide` reduces a plain `range`-sum of integers rather than
 enumerating `ZMod`/`Fin` modular arithmetic. -/
 
-/-- `ℕ`-indexed table for the sponsor gate `W_G`, `G = ⟨15⟩ ≤ F₁₁₃^*` (order 8). `∑ = 64 = n²`. -/
+/-- `ℕ`-indexed table for the sponsor gate `W_G`, `G = ⟨18⟩ = {1,15,18,44,69,95,98,112} ≤ F₁₁₃^*`
+(order 8). `∑ = 64 = n²`. -/
 def wf : ℕ → ℤ := fun i =>
   (([0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 1,
      0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0,

@@ -165,7 +165,8 @@ private theorem spectrumCount_as_filter (m r : ℕ) (hr : r ≤ 2 * m) :
     spectrumCount m r
       = ∑ k ∈ (range (2 * m + 1)).filter (fun k => admDepth m k r),
           m.choose k * 2 ^ k := by
-  unfold spectrumCount
+  rw [spectrumCount_eq_raw hr]
+  unfold spectrumCountRaw
   apply Finset.sum_congr
   · apply Finset.ext
     intro k
@@ -256,8 +257,10 @@ theorem spectrumTotal_values :
     spectrumTotal 1 = 4 ∧ spectrumTotal 2 = 15 ∧ spectrumTotal 3 = 54 ∧ spectrumTotal 4 = 189 := by
   refine ⟨?_, ?_, ?_, ?_⟩ <;> (unfold spectrumTotal spectrumCount; decide)
 
-/-- Cross-check: the closed form agrees with the direct definition at `n = 16` (`m = 8`):
-`T(8) = 3^7·11 = 24057`. -/
+/-- Evaluation of the closed form at `n = 16` (`m = 8`): `T(8) = 3^7·11 = 24057`.  This is
+proved by rewriting with `spectrumTotal_closed`, so it is a corollary of the closed form, NOT an
+independent cross-check against the direct definition (the independent `decide` checks are the
+small values in `spectrumTotal_values`). -/
 theorem spectrumTotal_n16 : spectrumTotal 8 = 24057 := by
   rw [spectrumTotal_closed 8 (by norm_num)]; norm_num
 

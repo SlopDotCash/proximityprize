@@ -34,7 +34,8 @@ theorem sumcheckOracleLens_toLens_eq_oCtxLens_stmt (i : Fin n) :
     (sumcheckOracleLens R n deg D oSpec i).toLens = (oCtxLens R n deg D i).stmt :=
   rfl
 
-/-- The canonical per-round bridge in the historical context-lifting interface. -/
+/-- The canonical per-round bridge in the historical context-lifting interface. The hypotheses
+`coh` and `hSimpleBridge` are unused; they are kept so existing callers still elaborate. -/
 theorem singleRound_toReduction_eq_reduction_of (i : Fin n)
     (coh : OracleVerifier.LiftContextCoherent (sumcheckOracleLens R n deg D oSpec i)
       (Simple.oracleReduction R deg D oSpec).verifier)
@@ -43,7 +44,9 @@ theorem singleRound_toReduction_eq_reduction_of (i : Fin n)
     (oracleReduction R n deg D oSpec i).toReduction = reduction R n deg D oSpec i :=
   oracleReduction_toReduction R n deg D oSpec i
 
-/-- The per-round bridge for all rounds, with the historical arguments. -/
+/-- The per-round bridge for all rounds, with the historical arguments. Both hypotheses are
+unused; the unconditional form is `SingleRound.oracleReduction_toReduction_eq_reduction`
+(`Logup/Security/BridgeAndAppendResiduals.lean`). -/
 theorem perRound_of
     (coh : ∀ i, OracleVerifier.LiftContextCoherent (sumcheckOracleLens R n deg D oSpec i)
       (Simple.oracleReduction R deg D oSpec).verifier)

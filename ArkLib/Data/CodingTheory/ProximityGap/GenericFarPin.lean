@@ -21,7 +21,13 @@ the full ownership bound is ATTAINED.  This converts the round-63 tube
 measurement (`56 = C(8,3)` for generic far directions, beating the ladder's
 spectrum `40`) into a theorem: the generic far class is the measured-and-now-
 proven frontrunner for the threshold `ε_mca`, and the spectrum family is
-provably NOT the extremizer whenever `C(n,k+1)` exceeds the spectrum mass.
+provably NOT the extremizer whenever `C(n,k+1)` exceeds the spectrum mass *and* the
+field-size guard `C(n,k+1)² ≤ q` holds.
+
+**Scope.** Every statement here keeps the guard `hsmall : C(n,k+1)² ≤ q`, which forces the
+attained count `C(n,k+1) ≤ √q`. Without that guard the theorem says nothing. In particular it
+does not justify an unrestricted census equality `#badSet = C(n,k+1)` when `C(n,k+1)` is
+comparable to or exceeds `q`, since a bad-scalar set has at most `q` elements.
 -/
 
 open Finset Polynomial

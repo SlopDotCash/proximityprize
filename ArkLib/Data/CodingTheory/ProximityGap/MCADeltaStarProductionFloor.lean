@@ -14,22 +14,29 @@ formal threshold `mcaDeltaStar = sSup {δ : ε_mca(C, δ) ≤ ε*}`:
 
 * `mcaDeltaStar_rs_ge_band` — for every Reed–Solomon code with `k + 3(b−1) ≤ n` and
   `b/|F| ≤ ε*`: the whole band-`b` radius is good, so `(b−1)/n ≤ δ*(RS, ε*)`.
-* `mcaDeltaStar_rs_ge_at_secpar` — **the production instantiation** at the prize security
-  level `ε* = 2⁻¹²⁸`: whenever the field satisfies `b · 2¹²⁸ ≤ |F|` (every production
-  deployment: STIR/WHIR/FRI fields have `|F| ≥ 2¹⁹²`),
+* `mcaDeltaStar_rs_ge_at_secpar` — the instantiation at the prize security level
+  `ε* = 2⁻¹²⁸`: whenever the field satisfies `b · 2¹²⁸ ≤ |F|` (an explicit hypothesis),
 
   `(b − 1)/n  ≤  δ*(RS[F, domain, k], 2⁻¹²⁸)`.
 
-  Taking the largest admissible band `b = ⌊(n−k)/3⌋ + 1` this reads:
+  Taking the largest admissible band `b = ⌊(n−k)/3⌋ + 1` this reads
+  `δ*(RS, 2⁻¹²⁸) ≥ (1 − ρ)/3 − O(1/n)` for every Reed–Solomon code whose field satisfies
+  `(⌊(n−k)/3⌋ + 1) · 2¹²⁸ ≤ |F|` (roughly `|F| ≳ 2¹²⁸ · n(1−ρ)/3`); smaller bands `b` need
+  correspondingly smaller fields, and `b = 1` needs `|F| ≥ 2¹²⁸`.
 
-  **`δ*(RS, 2⁻¹²⁸) ≥ (1 − ρ)/3 − O(1/n)` — machine-checked, for every production-scale
-  Reed–Solomon code.**
+  **Scope.**  The field-size hypothesis is not automatic for deployed systems.  Not every
+  FRI/STIR/WHIR deployment uses a field of size `≥ 2¹⁹²`: for example, Plonky2's
+  `PoseidonGoldilocksConfig` uses the Goldilocks field (order `2⁶⁴ − 2³² + 1 < 2⁶⁴`) with a
+  quadratic extension, of size `< 2¹²⁸`, so even `b = 1` is outside this theorem at
+  `ε* = 2⁻¹²⁸` for that configuration (checked against the Plonky2 sources on 2026-10-28; this
+  is one documented configuration, not a survey of deployments).  The theorem applies to the
+  parameter family satisfying its hypotheses, whatever system it comes from.
 
 This is the highest *exact-regime* lower pin of the prize threshold the campaign has
 established: below it `ε_mca` is not merely bounded but exactly the staircase
-`(⌊δn⌋+1)/|F|` (the `MCAStaircaseExact` theorems), and at production field sizes every
-staircase value sits far below `2⁻¹²⁸`. Above it the landscape transitions: the boundary
-rows are **arithmetic** (`MCARSBoundaryArithmetic`: the bad-γ locus is the rational-point
+`(⌊δn⌋+1)/|F|` (the `MCAStaircaseExact` theorems), and for fields with
+`(⌊δn⌋+1) · 2¹²⁸ ≤ |F|` the staircase value is at most `2⁻¹²⁸`. Above it the landscape
+transitions: the boundary rows are **arithmetic** (`MCARSBoundaryArithmetic`: the bad-γ locus is the rational-point
 set of a determinant curve — the finite-scale prototype of the window's conjectured
 root-of-unity barrier), the `[(1−ρ)/3, (1−ρ)/2)` strip is certificate-instrumented
 (d ≥ 2b cell data), and the window `(1−√ρ, 1−ρ−Θ(1/log n))` — where the prize δ* lives —
@@ -75,12 +82,13 @@ theorem mcaDeltaStar_rs_ge_band (domain : ι ↪ F) {k b : ℕ} (hb : 1 ≤ b)
     exact_mod_cast (by omega : b - 1 < b)
 
 open Classical in
-/-- **THE PRODUCTION-SCALE δ\* FLOOR.** At the prize security level `ε* = 2⁻¹²⁸`, for every
-Reed–Solomon code over a production-size field (`b · 2¹²⁸ ≤ |F|`):
+/-- **THE δ\* FLOOR AT `ε* = 2⁻¹²⁸`.** For every Reed–Solomon code over a field with
+`b · 2¹²⁸ ≤ |F|` (an explicit hypothesis, not satisfied by every deployed field):
 
   `(b − 1)/n ≤ δ*(RS[F, domain, k], 2⁻¹²⁸)` whenever `k + 3(b−1) ≤ n`.
 
-With `b = ⌊(n−k)/3⌋ + 1`: `δ* ≥ (1−ρ)/3 − O(1/n)`, machine-checked. -/
+With `b = ⌊(n−k)/3⌋ + 1`, and provided `(⌊(n−k)/3⌋ + 1) · 2¹²⁸ ≤ |F|`:
+`δ* ≥ (1−ρ)/3 − O(1/n)`, machine-checked. -/
 theorem mcaDeltaStar_rs_ge_at_secpar (domain : ι ↪ F) {k b : ℕ} (hb : 1 ≤ b)
     (hkb : k + 3 * (b - 1) ≤ Fintype.card ι) (hk : 1 ≤ k)
     (hq : (b : ℝ≥0∞) * 2 ^ 128 ≤ (Fintype.card F : ℝ≥0∞)) :

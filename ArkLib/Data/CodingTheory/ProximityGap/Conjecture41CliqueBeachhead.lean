@@ -11,16 +11,18 @@ import Mathlib.Data.ZMod.Basic
 import Mathlib.Tactic
 
 /-!
-# Round 19 (Issue #232) — the Conjecture-41 BEACHHEAD: the universal (clique) obstruction is the
-# Lagrange-numerator basis, and large primes kill it
+# Round 19 (Issue #232) — the Conjecture-41 BEACHHEAD: the clique locators are the
+# Lagrange-numerator basis (single-block facts; large primes do NOT remove the double-block kernel)
 
 ePrint 2026/858's **Conjecture 41** ("Open-Set Rank Lemma at `c ≥ 3`") is the live prize-shaped
 list conjecture: for supports `E₁,…,E_m` of size `w = D−c` and distinct `γᵢ`, the constraint
 matrix `A = [N_{Eᵢ} | γᵢ·N_{Eᵢ}]` has full rank for all `p` above an effective threshold —
 equivalently the worst-case list obeys `M ≤ ⌊(2D−1)/c⌋`, predicting `M = O(1)` at the Johnson
 radius at deployment codimension. The paper identifies **the universal obstruction at every `c`:
-the `(w+1)`-clique** — supports = all `w`-subsets of a `(w+1)`-vertex set `W` — realizable only at
-small primes (their triangle `c=2, p=113` and tetrahedron `c=3, p=61` counterexamples).
+the `(w+1)`-clique** — supports = all `w`-subsets of a `(w+1)`-vertex set `W` — with
+counterexamples reported at small primes (their triangle `c=2, p=113` and tetrahedron `c=3, p=61`
+examples).  Note that the clique's *raw* double-block rank deficiency is not a small-prime
+phenomenon (see the correction below); only the non-degenerate counterexamples are.
 
 This file proves the two structural ingredients any resolution must combine, and the `c = 1`
 instance of the mechanism, all self-contained:
@@ -36,17 +38,30 @@ instance of the mechanism, all self-contained:
   by ALL clique normals is zero — **the universal obstruction carries no `c = 1` kernel over any
   field**. This is the rank statement of Conjecture 41 for the clique configuration at `c = 1`.
 
-* **The large-`p` transfer engine** (`det_map_zmod_ne_zero`): an integer matrix with `det ≠ 0`
-  stays nonsingular mod every prime `p ∤ det` — the precise "effective Schwartz–Zippel threshold"
-  mechanism by which the conjecture's small-`p` clique counterexamples (their `p = 61, 113`) die
-  at large `p`: the obstruction lives exactly at the primes dividing one integer determinant.
+* **The large-`p` transfer lemma** (`det_map_zmod_ne_zero`): an integer matrix with `det ≠ 0`
+  stays nonsingular mod every prime `p ∤ det`.  This only helps for a square matrix whose
+  integer determinant is actually nonzero; it says nothing when the determinant is `0`.
+
+**Correction: the clique double-block system is rank-deficient at every prime.**  The
+single-block facts above do NOT imply that clique rank obstructions disappear at large primes.
+`Round20CliqueKernel.clique_kernel_mem` (in `Conjecture41CliqueKernelStructure.lean`) gives
+twisted double-block kernel vectors `(s₁, s₂)` over EVERY field, and
+`Round20CliqueKernel.cliqueKernelSpace_finrank_ge` (in `Conjecture41CliqueRankDeficient.lean`)
+shows the kernel has dimension `≥ |W|`.  Concretely, in the square case `w = 3`, `c = 3`,
+`D = 6` with `W = {0,1,2,3}`, `γ(α) = α` and weight supported at `0`, the pair `s₁ = 0`,
+`s₂ = ev₀ = (1,0,0,0,0,0)` is a nonzero kernel vector of all `12` normal constraints at every
+prime `p ≥ 5`, so the `12 × 12` integer determinant is identically `0` and
+`det_map_zmod_ne_zero` cannot apply.  These kernel vectors are syndromes of errors supported on
+`W`, so they may fall in Conjecture 41's degeneracy branch; this does not refute an
+admissible-syndrome / list statement.  An effective prime threshold needs an actual nonzero
+minor (on the non-degenerate part), which is not supplied here.
 
 **Honest scope.** This does NOT prove Conjecture 41: the open content is the rank of the
-`γ`-twisted DOUBLE blocks `[N | γN]` at `c ≥ 3` for ARBITRARY (non-clique) support families. What
-is proven here: the clique family — the conjectured universal worst case — has the exact
-Lagrange-numerator structure, trivial kernel at `c = 1` over every field, and its higher-`c`
-exceptional primes are confined to divisors of a single integer determinant. These are the
-beachhead facts for the general attack.
+`γ`-twisted DOUBLE blocks `[N | γN]` at `c ≥ 2`, modulo the degenerate syndromes, including for
+non-clique support families.  What is proven here: the clique locators have the exact
+Lagrange-numerator structure, the single-block (`c = 1`) annihilator is trivial over every
+field, and a generic nonzero-determinant reduction mod `p`.  The single-block facts do not
+bound the full double-block rank, which is deficient for cliques at every prime (see above).
 -/
 
 open Polynomial Finset
@@ -216,10 +231,12 @@ theorem clique_syndrome_kernel_trivial (W : Finset F) (hW : W.Nonempty) (s : Fin
 
 /-! ## 3. The large-`p` transfer engine -/
 
-/-- **The effective Schwartz–Zippel threshold mechanism.** An integer matrix with `det ≠ 0` stays
-nonsingular modulo every prime not dividing its determinant: the exceptional primes of any
-rank-deficiency obstruction (the conjecture's clique counterexamples at `p = 61, 113`) are
-confined to the divisors of ONE integer determinant. -/
+/-- **Nonzero-determinant reduction mod `p`.** An integer matrix with `det ≠ 0` stays
+nonsingular modulo every prime not dividing its determinant.  This confines exceptional primes
+only for a square integer matrix (or minor) whose determinant is *known* to be nonzero.  It
+does not apply to the full clique double-block system, whose determinant is identically `0`
+(the kernel of `Round20CliqueKernel.clique_kernel_mem` exists over every field); an effective
+threshold needs an actual nonzero minor, which is not supplied here. -/
 theorem det_map_zmod_ne_zero {N : ℕ} (M : Matrix (Fin N) (Fin N) ℤ) (p : ℕ) [Fact (Nat.Prime p)]
     (hdet : ¬ (p : ℤ) ∣ M.det) :
     (M.map (Int.cast : ℤ → ZMod p)).det ≠ 0 := by

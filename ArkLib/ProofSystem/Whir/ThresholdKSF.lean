@@ -133,10 +133,18 @@ theorem rbrKnowledgeSoundness_indicator (verifier : Verifier oSpec StmtIn StmtOu
 
 /-- **Bounded-flip RBR knowledge soundness for the threshold state function**: like
 `rbrKnowledgeSoundness_indicator`, but the budget at the threshold challenge round `c` is an
-explicit hypothesis `hFlip` bounding the flip-event probability (the event that the partial
-transcript's predicate is false before `c` yet true after the challenge — for the WHIR checked
-verifier this is the Schwartz–Zippel salvage event, bounded by `maxLen/|F|` via
-`probEvent_salvage_le`). All other challenge rounds keep budget `0`. -/
+explicit hypothesis `hFlip`. All other challenge rounds keep budget `0`.
+
+**What `hFlip` actually measures.** Its event is only `¬ pred c.castSucc stmtIn x.1`, i.e. that
+the predicate is false on the partial transcript *before* the threshold challenge; no salvage
+equation or challenge-dependent condition appears in it. It is **not** the Schwartz–Zippel
+salvage event of the WHIR checked verifier. Moreover, because `hConcat` applies to every round
+`≤ c`, for an input outside the relation (`hEmpty`) the predicate is false on every prefix up to
+`c`, so this event has probability `1 - Pr[⊥]` in the sampling game (`= 1` for a never-failing
+prover). Hence this helper cannot supply a budget `ε < 1` for a proper input relation with a bad
+input; the indicator theorem below (total budget `1`) is the honest statement. A genuinely
+challenge-dependent budget needs a non-threshold state function that tracks the predicate past
+the challenge (see the scope note in `Whir/SubUnitRbr.lean`). -/
 theorem rbrKnowledgeSoundness_of_flipBound (verifier : Verifier oSpec StmtIn StmtOut pSpec)
     (relIn : Set (StmtIn × Unit)) (relOut : Set (StmtOut × WitOut))
     (pred : (m : Fin (n + 1)) → StmtIn → Transcript m pSpec → Prop)

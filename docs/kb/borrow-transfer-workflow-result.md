@@ -5,6 +5,14 @@ failing step at prize scale (explicit thin n=p^0.19 2-power μ_{2^a}, large dim)
 
 ## Outcome: 2 NARROW, 7 BLOCK, 0 CLOSE. (judge didn't auto-run; synthesis below is mine.)
 
+> **Correction (2026-10-28 audit, T48).** The T2 conclusions "that half is CLOSED" and "the 'all
+> received words' quantifier is ELIMINATED" are withdrawn. A few generic received words with zero
+> bad scalars (`μ_16`, `k = 4`, two radii) are samples. A generic-position theorem for another object
+> (BGM for random evaluation points) does not show that the explicit antipodal monomial directions
+> maximize the bad count over **every** received stack. That extremality statement, and the bridge
+> from this incidence count to the actual MCA bad-scalar event, remain open inputs. The finite
+> diagnostics are kept as evidence of where failures were observed.
+
 ### NARROWS
 - **T2 genericity→graceful higher-MDS (I took this over; the most informative).** PROVEN computationally:
   in the prize WINDOW the higher-MDS failures concentrate ENTIRELY at the explicit antipodal/tower received
@@ -31,7 +39,9 @@ failing step at prize scale (explicit thin n=p^0.19 2-power μ_{2^a}, large dim)
 - T9 p-adic adelic local-global: the archimedean+𝔭-adic product formula leaks back to the excess count.
 
 ## Net
-The strategy worked as a DIAGNOSTIC: T2 narrowed the prize to its tightest form — **bound the explicit,
-q-independent, saturating cyclotomic incidence I_∞(δ) over the antipodal monomial directions** — and proved
-the generic-received-word half outright. T3 gives the deepest reason it's hard (the fold recurses). It did NOT
+The strategy worked as a DIAGNOSTIC: T2 proposed a narrowed form — **bound the explicit,
+q-independent, saturating cyclotomic incidence I_∞(δ) over the antipodal monomial directions** — and
+observed zero bad scalars for the sampled generic received words. That narrowing is conditional on the
+missing extremality and MCA-bridge inputs (see the correction above); it did not prove a
+generic-received-word half. T3 gives the deepest reason it's hard (the fold recurses). It did NOT
 close. Next: the I_∞ direct-attack campaign (100-approaches → essays → attack list → assault).

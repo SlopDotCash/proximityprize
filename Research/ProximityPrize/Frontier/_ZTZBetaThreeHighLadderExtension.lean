@@ -24,10 +24,12 @@ Windows: `n = 8192 → [8192³, 2·8192³] = [2^39, 2^40] = [549755813888, 10995
 `n = 16384 → [16384³, 2·16384³] = [2^42, 2^43] = [4398046511104, 8796093022208]`.
 
 **Why β = 3 (prize relevance).**  The polynomial-field δ* ceiling consumer
-`kkh26_mcaDeltaStar_le_of_TZ` needs `β ≥ 3`; the whole β = 2 certificate ladder
-(`tzPrimeSupply_…_two`, up to `n = 2^30` in `_W16TZPrizeScaleP30.lean`) cannot feed it,
-as recorded there.  Extending the **cubic** ladder is therefore genuine
-prize-consumer progress.
+`kkh26_mcaDeltaStar_le_of_TZ` has no `β` hypothesis; it needs only its budget inequality
+`hcount`.  The "β = 2 cannot feed it" caveat recorded in `_W16TZPrizeScaleP30.lean` is specific
+to `μ = 7` (`s = 128`) at `n = 2^30` — at small `μ` the β = 2 rungs do satisfy the budget (e.g.
+`μ = 2`, `r = 2`, `n = 2^30`: budget `0.8 < 20`).  Since the budget decreases and the supply
+grows with β, larger-β ladders such as this **cubic** one widen the range of `(μ, r)` the
+consumer can reach.
 
 **Certificate technology (mirrors `_ZTZBetaThreeLadderExtension.lean` /
 `_W16TZPrizeScaleP30.lean`).**  The window primes here are 40–43 bits, sieved

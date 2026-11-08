@@ -44,10 +44,18 @@ each a single named fact about the global GS objects (the exact output shape of 
 SectionFactor / FactorPigeonhole / branch-collapse lane).  `glue_split_of_prod` connects the
 irreducible-factorization form `evalX (C x₀) R = ∏ᵢ Hᵢ` to `hsplit`.
 
-NOTE on inlining: `ArkLib.ToMathlib.BCIKS20BundleAssembler` and
-`ArkLib.ToMathlib.XiCertReduction` are on `main` but their `.olean`s are NOT built
-("object file does not exist"), so Parts 0a/0b re-elaborate the needed declarations
-VERBATIM from those sources (both sources verified green + axiom-clean standalone).
+**Scope caveat (F7).** The global producer route (`Section5StrictDataFinOn.ofProducersOn_global`,
+`hcoeffPoly_witness_of_producersOn_global`, and the uses of
+`DecodedRootSupply.mpFin_of_decoded_roots`) consumes the branch certificate `hbr` / `hbranch`,
+which `BranchSeparationUnsat.branchCert_eq_zero` refutes for `2 ≤ H.natDegree`. That route can
+therefore be non-vacuous only for linear `H`; higher-degree callers must supply pointwise roots
+(`DecodedProximateRoot` / `PerZProximateRoot`).
+
+NOTE on imports: an earlier version re-elaborated the needed declarations of
+`ArkLib.ToMathlib.XiCertReduction` and `ArkLib.ToMathlib.BCIKS20BundleAssembler` verbatim here
+(as "Parts 0a/0b"), under the same fully qualified names, because their `.olean`s were missing in
+one local build.  That made this module impossible to import together with either source.  The
+copies have been removed and both modules are imported instead.
 -/
 import ArkLib.ToMathlib.BCIKS20BundleAssembler
 import ArkLib.ToMathlib.XiCertReduction
@@ -71,18 +79,10 @@ open scoped BigOperators ENNReal ProbabilityTheory LinearCode
 
 namespace ArkLib
 
-/-! ## Part 0a — inlined VERBATIM from `ArkLib/ToMathlib/XiCertReduction.lean`
-(source on `main`, `.olean` not built; declarations unchanged). -/
-
-namespace XiCertReduction
-
-open PowerSeries
-open ProximityPrize.BCIKS20.GammaGenuine
-
-variable {F : Type} [Field F]
-variable {H : F[X][Y]} [Fact (Irreducible H)] [Fact (0 < H.natDegree)]
-
-end XiCertReduction
+/-! The `ξ`-certificate closure lemmas (`XiCertReduction.xiCert_isUnit`, `xi_ne_zero`, …) used
+below come from `ArkLib.ToMathlib.XiCertReduction`, and the producers
+`RootOn304.Section5StrictDataFinOn.ofProducersOn` / `…_gradedSigned` from
+`ArkLib.ToMathlib.BCIKS20BundleAssembler` (formerly inlined here as Parts 0a/0b). -/
 
 namespace RootOn304
 
@@ -90,15 +90,18 @@ open CorrelatedAgreementListDecodingClosed
 open BetaToCurveCoeffPolys
 open HcardDischarge
 
-/-! ## Part 0b — inlined VERBATIM from `ArkLib.ToMathlib.BCIKS20BundleAssembler.lean`
-(source on `main`, `.olean` not built; declarations unchanged). -/
-
 section ProducersOn
 
 open BetaRecGenuineBridge
 
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
+
+/-! ## Part 1 — NEW (#304): the per-place inputs ELIMINATED
+
+The assembler from purely global structural data: matching set constructed, roots decoded,
+`hx` discharged by the `ξ`-certificate unit closure, `hξ` unconditional, the §6 discriminant
+taken to be the branch certificate itself. -/
 
 omit [Nonempty ι] [Fintype ι] [DecidableEq ι] in
 /-- **The split from the factorization**: selecting one factor of

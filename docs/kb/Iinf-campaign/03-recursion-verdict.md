@@ -36,6 +36,17 @@ Wick energy (clean, recordable). But the prize lives in char-p at r≈log q, and
 the exponential realizability subset-sum, the irrecoverable √2 singleton arc — hits the SAME irreducible wall.
 No closure. The campaign's deepest, most self-similar attack confirms the open core with maximal precision.
 
+> **Scope correction (2026-10-28 audit, T48; cross R-113/PG-073).** The note first keeps the
+> char-0 / char-p distinction (item 1 above). The update below then declares characteristic `p`
+> "a red herring" after one large-prime match (`q = 2e9`, `n = 32`). That inference is withdrawn.
+> - **One prime proves nothing about all primes.** A single matching prime does not establish
+>   `q`-independence, and thin-field exceptions to char-0 transfer exist above `n³`. The failure of
+>   one transversal fold does not exclude all alternative factorizations or counting arguments.
+> - **Orbit counts.** `#orbits = Θ(n)` must divide the incidence by the actual orbit size. Reading
+>   `I_∞ = n` as if the incidence and the orbit count were the same number conflates them. "Exactly"
+>   for the `n/4` plateau law is a fit at five values of `n`.
+> - **Newton.** The step `e_2 = 0 ⟺ e_1² = p_2` needs `2` invertible in the field.
+
 ## UPDATE: orbits workflow (q-independence CONFIRMED + structure found, my "O(1)" corrected)
 - p-INDEPENDENCE rigorously confirmed: at q=97(<n^4) count=3 (polluted); at q=2e9(>n^4) count=23 = EXACT char-0.
   So char-0 = q>>n^4 object exactly. The q-independent incidence is the right (finite) prize object; char-p is a red herring.

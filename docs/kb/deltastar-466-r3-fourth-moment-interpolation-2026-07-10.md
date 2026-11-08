@@ -12,7 +12,11 @@ interpolated rung.
 power-mean forces `∑_a‖Ŝ‖⁴ ≥ (m²q)²/m = m³q²`; the EXACT diagonal
 ({j₁,j₂} = {k₁,k₂} additive quadruples) contributes `2(1−2/m)²·m³q²` — probe
 measures the diagonal share at `≈ 1.12·m³q²` for m = 9 rising toward 2.  The
-correct flat scale is **K₄·m³·q²**.
+diagonal is **not** a lower bound on `∑_a‖Ŝ‖⁴` (the complex off-diagonal terms
+can have negative real total; exact integer-cyclotomic counterexample at p = 13,
+m = 12, k = 1: `M4 = 227196 < 391572 = m·D`, and the probe's off/diag column is
+often negative); only the power-mean floor `≥ m³q²`-scale is a valid lower bound.
+The correct flat scale is **K₄·m³·q²**.
 
 ## 2. Möbius at the 4th moment (the coordinator's question, resolved positively)
 

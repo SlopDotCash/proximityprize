@@ -11,10 +11,10 @@ import ArkLib.ToMathlib.BCIKS20PointwiseConditional
 /-!
 # Curve Coefficient Polynomial Reconstruction from the Beta Recursion
 
-This module formalizes the end-to-end reconstruction of the curve coefficient polynomials
-$\text{CurveCoeffPolys}$ from the Hensel-lift numerator recurrence $\beta_t$, completing the
-list-decoding
-agreement chain of [BCIKS20] §5.
+This module packages a **conditional** reconstruction of the curve coefficient polynomials
+$\text{CurveCoeffPolys}$ around the Hensel-lift numerator recurrence $\beta_t$, for the
+list-decoding agreement chain of [BCIKS20] §5 (see "Scope" below for exactly which steps are
+hypotheses).
 
 ### Reconstructive Chain
 
@@ -28,8 +28,15 @@ The reduction proceeds through the following algebraic links:
 4. **Coefficient Interpolation:** The linear representative is evaluated at coordinate points,
    yielding the polynomial interpolation of the curve coefficients $B_j$ over the agreement set.
 
-This module formalizes these steps unconditionally, routing the algebraic results of
-`BetaMatchingVanishes` and `Claim59Conditional`.
+**Scope (conditional; not an unconditional reconstruction).** The end theorem
+`curveCoeffPolys_of_betaRec` assumes, besides the matching-set data (`mp`, `hcard`) and the
+substitution facts (`hsubst`, `hγ`), a bivariate polynomial representative `hrep` of `γ`, its
+`X`-degree bound `hdegX`, and the complete per-`z` evaluation/degree bridge `hPz`. Its conclusion
+is obtained entirely from `hrep`, `hdegX` and `hPz` (via
+`curveCoeffPolys_of_linear_representative`); the tail-vanishing/truncation steps 1–2 are computed
+in the proof (routing `BetaMatchingVanishes`
+and `Claim59Conditional`) but are not used to derive the conclusion. Steps 3–4 are therefore
+supplied by hypotheses, not derived from the beta recursion.
 
 ## References
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon Codes*,
@@ -155,8 +162,18 @@ theorem curveCoeffPolys_of_linear_representative
 
 /-! ## The end-to-end reconstruction: `betaRec` implies `CurveCoeffPolys` -/
 
-/-- End-to-end list-decoding agreement chain showing that the Hensel-lift numerator recurrence
-$\beta_t$ reconstructs the curve coefficient polynomials $B_j$. -/
+/-- Curve coefficient polynomials from a degree-`≤ 1` representative and the specialisation
+bridge, stated with the full `betaRec` hypothesis surface.
+
+**Actual data dependencies.** The conclusion is obtained from `hrep` and `hdegX` alone (the
+linear decomposition of `Ppoly` gives `hlin`), after which the assumed bridge `hPz` supplies all
+the evaluation and degree facts for `curveCoeffPolys_of_linear_representative`. The proof also
+computes the `betaRec` tail vanishing `htail` (from `mp`/`hcard`), the truncation identity
+`htrunc` (from `hsubst`/`hγ`) and their consistency `_hconsistent`, but none of these is used to
+reach the conclusion, so the theorem does **not** show that the numerator recurrence `β_t`
+reconstructs the `B_j`. Connecting the beta/matching/counting chain to an actually constructed
+representative or bridge remains open. The hypotheses are kept for compatibility with existing
+callers. -/
 theorem curveCoeffPolys_of_betaRec
     (x₀ : F) (R : F[X][X][Y]) (H : F[X][Y])
     [Fact (Irreducible H)] [Fact (0 < H.natDegree)] (hHyp : Hypotheses x₀ R H)

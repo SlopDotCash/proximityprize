@@ -38,8 +38,22 @@ surface moves from an opaque `∃ B` interpolation statement to the structured
 `FaithfulFrontierData` whose every field is a recognized BCIKS20 §5/§6 ingredient with its own
 named production lane (graded GS bundle — (iii)–(v) proven by re-grading; `MonicHighYResidual`
 — now boundary-pinned by `MonicResidualBoundary`; the §6 counting inequality; the matching
-window; the truncation tail; the per-place readings).  Nothing is discharged vacuously: the
-producer hypothesis is `Type`-valued data, exactly like the in-tree `hCell` branch.
+window; the truncation tail; the per-place readings).  The producer hypothesis is `Type`-valued
+data, exactly like the in-tree `hCell` branch — but a data type can be empty, so this is not an
+existence argument.
+
+## Honest status
+
+`CountFrontierProducer` *strengthens* the count-only `UnifiedExtractionTarget.UnifiedProducer`
+(`unifiedProducer_of_countFrontier`), and that count-only producer is **false in general, even
+strictly inside the Johnson window** (the `𝔽₅`, `deg = 1`, `k = 1`, `δ = 7/20` counterexample
+in `UnifiedExtractionTarget`; arithmetic core `UnifiedExtractionTarget.no_affine_values_zmod5`).
+So `CountFrontierProducer k deg domain δ` is **uninhabited** in such regimes, and the reductions
+below are valid conditional implications only.  The counterexample does not by itself refute
+the closed-boundary consumer `correlatedAgreementCurves_closedBoundary_assembly_of_frontier`,
+which demands the count-only producer only at the exact boundary `δ = 1 − √ρ` on the
+square-lattice branch; whether it is inhabited there is open.  The bare count-only producer is
+not equivalent to the original BCIKS20 task, which carries a probability trigger. 
 
 ## References
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon
@@ -67,7 +81,12 @@ exceeds the bare count trigger `k` (the weakest trigger any consumer supplies �
 implied by the lattice threshold count `(n+1)·k < |good|`), and every admissible per-`z`
 decoding `P`, a faithful frontier bundle.  Unlike `FaithfulFrontierProducer` this carries
 **no** strict-Johnson guards, so it is *consumable at the exact closed boundary endpoint*
-`δ = 1 − √ρ`, where the guarded producers are vacuously unusable. -/
+`δ = 1 − √ρ`, where the guarded producers are vacuously unusable.
+
+Because it implies the count-only `UnifiedExtractionTarget.UnifiedProducer`, this type is
+**empty** whenever that producer fails — e.g. at `F = 𝔽₅`, `deg = 1`, `k = 1`, `δ = 7/20`
+(see `UnifiedExtractionTarget`).  It is a conditional interface, not a viable all-input
+production target. -/
 def CountFrontierProducer (k deg : ℕ) (domain : ι ↪ F) (δ : ℝ≥0) : Type :=
   ∀ u : WordStack F (Fin (k + 1)) ι,
     k < (RS_goodCoeffsCurve (k := k) (deg := deg) (domain := domain) u δ).card →

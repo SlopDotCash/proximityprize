@@ -650,7 +650,8 @@ membership of the difference `zeroClearingPolyFull − evalX (C x₀) (Δ_X^1 R)
 Closing it requires routing the `H ∣ evalX (C x₀) R` arithmetic into that quotient-membership — the
 genuine non-per-term global-resummation step (note the bare W-divisor target without `hHyp` is
 generically false whenever the `Y`-degree strictly drops, `natDegreeY p < R.natDegree`, since then
-the mismatch factors `lc^{R.natDegree − i} ≠ 1` survive). -/
+the mismatch factors `lc^{R.natDegree − i} − 1` survive wherever `lc^{R.natDegree − i} ≠ 1`, which
+`lc ≠ 1` alone does not guarantee). -/
 theorem restrictedMatchAt_zero_iff_zeroClearingPolyFull_lift
     (x₀ : F) (R : F[X][X][Y]) (hHyp : ClaimA2.Hypotheses x₀ R H)
     (hd : 2 ≤ R.natDegree) :
@@ -918,8 +919,10 @@ omit [Fact (Irreducible H)] [Fact (0 < H.natDegree)] in
 polynomial `zeroClearingPolyFull − evalX (C x₀) (Δ_X^1 R)` is the explicit single sum
 `∑_{i ≤ R.natDegree} C (p.coeff i · (lc^{R.natDegree − i} − 1)) · X^i`, where
 `p = evalX (C x₀) (Δ_X^1 R)`.  Each `Y`-power `i` carries the mismatch factor `lc^{d−i} − 1`,
-which vanishes only at `i = d` (and at indices where `p.coeff i = 0`); for every other `i < d`
-with `p.coeff i ≠ 0` and `lc ≠ 1` it survives — the source of the #139 obstruction. -/
+which vanishes at `i = d`, at indices where `p.coeff i = 0`, and at indices with `lc^{d−i} = 1`;
+for every other `i < d` (`p.coeff i ≠ 0` and `lc^{d−i} ≠ 1` — note `lc ≠ 1` alone does not
+suffice, e.g. `lc = 2` over `F₃` has `lc^2 = 1`) it survives — the source of the #139
+obstruction. -/
 theorem zeroClearingPolyFull_sub_eq (x₀ : F) (R : F[X][X][Y]) :
     zeroClearingPolyFull H x₀ R
       - Bivariate.evalX (Polynomial.C x₀) (hasseDerivX 1 (hasseDerivY 0 R))
@@ -1034,14 +1037,20 @@ theorem zeroClearingPolyFull_sub_mem_of_partitionMatchAt_zero
 The explicit order-zero membership above carries the per-`Y`-degree mismatch factor
 `lc^{R.natDegree − i} − 1` (`lc = H.leadingCoeff`). When `H` is **monic** (`lc = 1`) every such
 factor vanishes, the difference sum is identically `0`, and the carved order-zero core is closed
-*unconditionally* — no global resummation is needed. For **non-monic** `H` (`lc ≠ 1`) the
+*unconditionally* — no global resummation is needed. For **non-monic** `H` (`lc ≠ 1`; more
+precisely when the relevant powers `lc^{R.natDegree − i} ≠ 1`, which `lc ≠ 1` alone does not
+guarantee: e.g. `lc = 2` over `F₃` has `lc^2 = 1`) the
 membership is, by contrast, GENUINELY FALSE for generic `R` even under the full `ClaimA2.Hypotheses`
 (`dvd_evalX` AND `separable_evalX`): the two hypotheses constrain `evalX (C x₀) R`, but the
 order-zero numerator depends on `p = evalX (C x₀) (Δ_X^1 R)`, the transverse `X`-Hasse derivative,
-which is unconstrained by either field of `Hypotheses`. Concretely, with `F = ℚ`,
-`H = X·Y² + Y + X` (so `lc = X`, monic-fails), `evalX (C 0) R = H · (Y + X)` (separable, so both
-hypotheses hold) and a generic transverse part, the difference sum is NOT in `⟨H_tilde' H⟩` (verified
-by exact division by the monic generator `H_tilde' H`). Hence `RestrictedFaaDiBrunoMatchAt … 0` is
+which is unconstrained by either field of `Hypotheses`. A kernel-checked instance is
+`BCIKS20.HenselNumerator.Witness.orderZero_match_false` in `P2OrderZeroRefutationWitness` (`F = ℚ`, `H = 2·Y` with constant leading coefficient `2`,
+`R = X_mid²·Y² + 2·Y + X_mid`, `x₀ = 0`, `evalX (C 0) R = H`): there the order-zero core is
+refuted under the full `ClaimA2.Hypotheses`.  (An earlier version of this note used
+`H = X·Y² + Y + X` with `evalX (C 0) R = H · (Y + X)`; that polynomial is separable over the
+fraction field `ℚ(X)` but **not** over the coefficient ring `ℚ[X]` that `separable_evalX` refers
+to — specializing `X ↦ 0` gives `Y · Y = Y²`, which is inseparable — so it does not satisfy
+`ClaimA2.Hypotheses` and is not a valid illustration.) Hence `RestrictedFaaDiBrunoMatchAt … 0` is
 NOT a theorem from `ClaimA2.Hypotheses` alone in the non-monic regime: the recursively-defined
 `βHenselAssembled` order-1 coefficient (the recursion RHS) does not, in general, agree with the
 genuine root quantity `hasseEvalAtRoot` (the LHS). The order-zero match is therefore part of the

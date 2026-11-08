@@ -339,9 +339,13 @@ theorem mcaBadWitness_card_le_pn_of_common {MC : Submodule F (ι → F)} {δ p :
 
 /-- **Per-stack bad count from the witness cover.**  The per-stack bad-combiner set `mcaBad` is
 covered by the per-codeword witness sets over any carrier `T ⊇ C` (`mcaBad_subset_biUnion_…`), so
-`|mcaBad| ≤ ∑_{w ∈ T} |mcaBadWitness w|`.  Combined with the per-codeword first-moment bounds
-(`mcaBadWitness_card_le_compl_common` etc.), this lifts the GKL24 first moment from individual
-codewords to the per-stack count that the GCXK25 list-decoding→MCA reduction consumes. -/
+`|mcaBad| ≤ ∑_{w ∈ T} |mcaBadWitness w|`.  The hypothesis `hT` requires `T` to contain **every**
+codeword of `MC`, not merely the codewords close to the stack, so for a nonzero `F`-linear code
+`|T| ≥ |MC| ≥ |F|`.  Combined with the per-codeword first-moment bounds
+(`mcaBadWitness_card_le_compl_common` etc.) this gives a per-stack count summed over the whole code;
+the list-size-scaled count that the GCXK25 list-decoding→MCA reduction needs would require a
+separate theorem covering `mcaBad` by the witness sets of a short list of relevant close
+codewords, which is not proved here. -/
 theorem mcaBad_card_le_sum_mcaBadWitness {MC : Submodule F (ι → F)} {δ : ℝ≥0} {u₀ u₁ : ι → F}
     (T : Finset (ι → F)) (hT : ∀ w ∈ (MC : Set (ι → F)), w ∈ T) :
     (mcaBad (F := F) (MC : Set (ι → F)) δ u₀ u₁).card
@@ -352,9 +356,11 @@ theorem mcaBad_card_le_sum_mcaBadWitness {MC : Submodule F (ι → F)} {δ : ℝ
 /-- **Per-stack first-moment bound `|mcaBad| ≤ |T|·max(1, 2δn)`.**  Combining the witness cover
 (`mcaBad_card_le_sum_mcaBadWitness`) with the per-codeword bound
 (`mcaBadWitness_card_le_two_delta_mul_card`) over a codeword carrier `T`: the per-stack bad set has
-size at most `|T|` times the per-codeword radius `max(1, 2δn)`.  With `|T|` the list size `L`, this is
-the per-stack first-moment input of the GCXK25 list-decoding→MCA reduction (here at the in-tree `2δn`
-radius). -/
+size at most `|T|` times the per-codeword radius `max(1, 2δn)`.  Together `hT` and `hTsub` force
+the members of `T` to be exactly the codewords of `MC`, so `|T| = |MC|`: `T` cannot be taken to be
+a list of `L` close codewords unless that list already contains the whole code.  This is therefore
+the coarse whole-code carrier bound, not the list-size-scaled per-stack input of the GCXK25
+list-decoding→MCA reduction; that input needs its own uniform cover by close-list witnesses. -/
 theorem mcaBad_card_le_carrier_two_delta {MC : Submodule F (ι → F)} {δ : ℝ≥0} {u₀ u₁ : ι → F}
     (T : Finset (ι → F)) (hT : ∀ w ∈ (MC : Set (ι → F)), w ∈ T)
     (hTsub : ∀ w ∈ T, w ∈ (MC : Set (ι → F))) :
@@ -373,10 +379,16 @@ theorem mcaBad_card_le_carrier_two_delta {MC : Submodule F (ι → F)} {δ : ℝ
         rw [Finset.sum_const, nsmul_eq_mul]
 
 /-- **`ε_mca` bound from a codeword carrier (GKL24 first moment → MCA error).**  For any carrier `T`
-covering the code, `ε_mca(C, δ) ≤ |T|·max(1, 2δn) / |F|`.  This is the end-to-end bridge: the entire
-GKL24 first-moment chain (sunflower count → per-codeword `2δn` → per-stack carrier bound) feeds the
-`ε_mca` glue (`epsMCA_le_ofReal_of_forall_mcaBad_card_le`).  The bound is parameterized by `|T|`, so
-a sharper cover (the `L` close codewords) plugs straight in to give the list-size-scaled MCA error. -/
+covering the code, `ε_mca(C, δ) ≤ |T|·max(1, 2δn) / |F|`, obtained by feeding the per-stack carrier
+bound (`mcaBad_card_le_carrier_two_delta`) into the `ε_mca` glue
+(`epsMCA_le_ofReal_of_forall_mcaBad_card_le`).
+
+**Scope.**  The hypotheses `hT` and `hTsub` make the members of `T` exactly the codewords of `MC`,
+so `|T| = |MC|`.  A close list of `L` codewords does **not** plug in here unless it covers the whole
+code.  For a nonzero `F`-linear code `|MC| ≥ |F|` and `max(1, 2δn) ≥ 1`, so the delivered bound is
+at least `1` and adds nothing to the trivial `ε_mca ≤ 1`; it is informative only for the zero code.
+A list-size-scaled MCA error needs a separate theorem covering `mcaBad` uniformly by the witness
+sets of the relevant close-list codewords; that coverage obligation remains open. -/
 theorem epsMCA_le_two_delta_of_carrier {MC : Submodule F (ι → F)} {δ : ℝ≥0}
     (T : Finset (ι → F)) (hT : ∀ w ∈ (MC : Set (ι → F)), w ∈ T)
     (hTsub : ∀ w ∈ T, w ∈ (MC : Set (ι → F))) :

@@ -22,14 +22,26 @@ This file proves the **geometric stratification** that organizes the entire cens
   difference class never form a wide circuit**. Probe-verified: zero violations at `μ₈`
   and `μ₁₆`.
 
-Together with the supply families (`MCAIncidenceCensus`): every wide circuit uses at most
-two points per nondegenerate parabola, and the full census is the line-incidence
-distribution `Σ_L C(N_L, 3)` of a union of parabolas with root-of-unity points — the
-horizontal lines meet each parabola once (`N = ⌊n/2⌋`), the vertical line is the
-degenerate parabola itself (`N = n/2`), and slanted lines meet each parabola at most
-twice with incidence governed by bounded vanishing sums of `2^k`-th roots (the
-antipodal multiset law). The production-scale census is the solution census of these
-line–parabola systems.
+Together with the supply families (`MCAIncidenceCensus`): every wide circuit (three pairwise
+*disjoint* pairs, i.e. six distinct positions, as `Distinct6` requires) uses at most two points
+per nondegenerate parabola.
+
+**What is not proved here (audit finding PG-143).** The full wide-circuit census is **not** the
+raw line-incidence count `Σ_L C(N_L, 3)`. That raw count also includes collinear triples of
+pair-points whose pairs *share a position*, which are not six-position wide circuits: every
+fixed-root star `{x, y}` (fixed `x`, varying `y`) lies on the line `m = x·(e − x)`. Example: in
+the proper `μ₈ ⊆ F₁₇`, the pairs `{1,2}, {1,4}, {1,8}` give pair-points `(3,2), (5,4), (9,8)`
+on the line `m = e − 1`, yet they are not a wide circuit. A correct census must keep an explicit
+disjoint-pair (six-distinct-position) filter. The fiber counts also differ from the naive
+"one point per parabola" picture: a horizontal line `m = m₀` can meet a nondegenerate parabola
+`e² = c·m` **twice** (at `e` and `−e`) — e.g. in the same `μ₈ ⊆ F₁₇` the pairs `{1,2}` and
+`{16,15}` have the same product `2`, distinct sums `3` and `14`, and the same difference class —
+so a horizontal line carries up to `2·⌊n/2⌋` (not `⌊n/2⌋`) points from the nondegenerate
+parabolas; a vertical line `e = e₀ ≠ 0` meets each nondegenerate parabola at most once (and the
+degenerate antipodal line `e = 0` not at all), while `e = 0` itself carries exactly the `n/2`
+antipodal pairs (for even `n`); slanted lines meet each parabola at most twice. Turning these
+incidences into the production-scale census (with the disjointness filter) remains open; the
+polynomial identity and Vandermonde lemmas below are unaffected.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.
 

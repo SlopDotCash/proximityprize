@@ -18,7 +18,7 @@ Attack on the **single open core** of the `δ*` floor
 > `#{distinct h_r(R) : R ∈ binom(μ_s, k+1)} ≤ n · C(s+r−1, r)`
 via the *multiset / coefficient-vector* structure of `h_r`.
 
-## The structure (this file makes it precise and PROVES it)
+## The structure (proved here: the multiset count identity; ASSUMED: the factorization `hfac`)
 
 The complete-homogeneous symmetric polynomial of degree `r` in the `k+1` nodes `R` is, by definition,
 the sum over size-`r` **multisets** of `R` of the product of the chosen nodes:
@@ -28,13 +28,15 @@ single power `ζ^{Σ_{x ∈ M} idx x}`, with the index-sum taken **mod `s`** (si
 the multisets by their index-sum class `m ∈ ZMod s` gives
   `h_r(R) = Σ_{m ∈ ZMod s} c_m(R) · ζ^m`,    `c_m(R) := #{M : index-sum(M) ≡ m (mod s)}`.
 So the value `h_r(R)` is **a fixed `ℤ`-linear functional of the coefficient vector**
-`coeffVec R := (c_0(R), …, c_{s−1}(R)) : ZMod s → ℕ`. Two consequences, both proven here:
+`coeffVec R := (c_0(R), …, c_{s−1}(R)) : ZMod s → ℕ`. (This factorization is argued informally
+above; in Lean it is NOT proved but taken as the explicit hypothesis `hfac` of the reduction
+lemmas.) Two consequences:
 
 * **Multiset-count identity (the conserved total):** `Σ_{m ∈ ZMod s} c_m(R) = C(k+r, r)`
   — the coefficient vector is a composition of the total multiset count `C((k+1)+r−1, r)` into `s`
   parts. (`multisetCount_sum_coeff`, `sum_coeff_eq_choose`.)
-* **The spectrum is a quotient of the coefficient-vector set:** `h_r` factors through `coeffVec`
-  (`spectrum_image_factor`), so over ANY family `B` of node sets
+* **The spectrum is a quotient of the coefficient-vector set:** GIVEN the factorization hypothesis
+  `hfac` (that `h_r` factors through `coeffVec`; assumed, not proved here) (`spectrum_image_factor`), over ANY family `B` of node sets
   `#{distinct h_r(R) : R ∈ B} ≤ #{distinct coeffVec(R) : R ∈ B}` (`distinct_h_le_distinct_coeffVec`).
   The spectrum bound is therefore **REDUCED to a bound on the number of achievable coefficient
   vectors**: if `#{distinct coeffVec} ≤ poly · C(s+r−1, r)` then the same bounds the spectrum
@@ -45,7 +47,8 @@ What this file does NOT close: the *cardinality* of the achievable coefficient-v
 (`#{distinct coeffVec(R)} ≤ poly · C(s+r−1, r)`) — that is the residual the reduction lands the floor
 on. The conserved total `Σ c_m = C(k+r,r)` is proven (a composition into `s` parts has at most
 `C((s)+(C(k+r,r))−1, …)` representatives, far too many; the *achievable* set is the open input). The
-honest content here: the multiset-count identity + the spectrum-≤-coeffVec reduction, axiom-clean.
+honest content here: the multiset-count identity + the spectrum-≤-coeffVec reduction conditional on
+the assumed factorization `hfac`, axiom-clean.
 -/
 
 set_option autoImplicit false
@@ -184,9 +187,10 @@ theorem multisetTotal_le_chooseCH {s r k : ℕ} (hk : k + 1 ≤ s) :
 /-- **Conserved-total sanity, `s = 16, k+1 = 4` (so `k = 3`), `r = 2`.** The multiset total is
 `C(k+r, r) = C(5, 2) = 10` (the per-set count of size-2 multisets of a 4-element node set), and the
 F1 ceiling is `chooseCH 16 2 = C(17, 2) = 136` — so each set contributes a composition of `10` into
-`16` classes, machine-checked below the ceiling. (The probe's `#distinct h_2(μ_16) = 1848` is the
-spectrum OVER all `C(16,4) = 1820` sets — `> 136`, whence the `poly = n` factor lands on the
-coefficient-vector count, NOT on the per-set total.) -/
+`16` classes, machine-checked below the ceiling. (Exact `ℤ[ζ_16]` enumeration gives
+`#distinct h_2 = 801` over all `C(16,4) = 1820` four-subsets of `μ_16` — `> 136`, whence the
+`poly = n` factor lands on the coefficient-vector count, NOT on the per-set total. The figure `1848`
+sometimes quoted is the count over the `C(16,5) = 4368` five-subsets, i.e. `k+1 = 5`.) -/
 theorem total_concrete : Nat.choose (3 + 2) 2 = 10 ∧ Nat.choose (16 + 2 - 1) 2 = 136
     ∧ Nat.choose (3 + 2) 2 ≤ Nat.choose (16 + 2 - 1) 2 := by
   refine ⟨by decide, by decide, by decide⟩

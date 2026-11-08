@@ -10,7 +10,17 @@ import Research.ProximityPrize.LineDecodingSpec
 # Resolved selected-threshold prize specifications for repaired line-decoding data
 
 This module packages the selected-threshold bracket wrappers from
-`LineDecodingGrandChallengesPrizeSpec` with the faithful MCA lattice-resolution predicate.
+`Research.ProximityPrize.LineDecodingSpec` with the faithful MCA lattice-resolution predicate.
+
+## Honest scope — vacuous at every prize rate
+
+The prize-rate hypotheses consumed here (`MCAForallDoubleCover`, per-bad-scalar double cover,
+`mcaBadCount = 0`, `∀ γ, ¬ mcaEvent`, `epsMCA = 0` for `RS[domain, ⌊prizeRates j · n⌋]`) are all
+**false**: see `not_MCAForallDoubleCover_prizeRateRS`,
+`not_forall_badScalarDoubleCover_prizeRateRS`, `not_forall_mcaBadCount_eq_zero_prizeRateRS`, `not_forall_not_mcaEvent_prizeRateRS` and
+`epsMCA_prizeRateRS_ne_zero` in `Research.ProximityPrize.LineDecoding3` (audit 2026-10-28,
+CW-B21-01).  Every prize-rate declaration in this module therefore has an unsatisfiable hypothesis
+and a vacuous conclusion; it is kept only as API shape, not as a prize-facing result.
 -/
 
 namespace ProximityGap

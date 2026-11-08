@@ -97,20 +97,10 @@ theorem subsetDilationEquiv_sum (G : Finset F) (hG : IsMulSubgroup G)
       exact pointDilationEquiv_apply_val G hG ha x
     _ = a * ∑ x ∈ S.1, x.1 := by rw [Finset.mul_sum]
 
-/-- Marked-pair source for the physical row `W_G`. -/
-abbrev MarkedPair (G : Finset F) := {x : F // x ∈ G} × {y : F // y ∈ G}
-
-/-- Adjacent subset source for the physical row `R_r`. -/
-abbrev AdjacentSubsetPair (G : Finset F) (r : Nat) := SubsetAt G r × SubsetAt G (r - 1)
-
-/-- Marked difference phase `2*y-x`. -/
-def markedDifferencePhase (G : Finset F) (z : MarkedPair G) : F :=
-  2 * z.2.1 - z.1.1
-
-/-- Adjacent subset-sum difference phase. -/
-noncomputable def subsetDifferencePhase (G : Finset F) (r : Nat)
-    (z : AdjacentSubsetPair G r) : F :=
-  (∑ x ∈ z.1.1, x.1) - ∑ y ∈ z.2.1, y.1
+/-! The physical-row sources `MarkedPair`/`AdjacentSubsetPair`, their phases
+`markedDifferencePhase`/`subsetDifferencePhase`, the fibre histogram `phaseFiberCount`, and the
+rows `markedDifferenceMultiplicity`/`subsetDifferenceMultiplicity` are the canonical declarations
+of `BGKC12TranslateIntersectionReduction`; this file only adds their dilation symmetry. -/
 
 /-- Multiplication by a subgroup member on marked pairs. -/
 noncomputable def markedPairDilationEquiv (G : Finset F) (hG : IsMulSubgroup G)
@@ -147,30 +137,17 @@ theorem subsetDifferencePhase_dilation (G : Finset F) (hG : IsMulSubgroup G)
     subsetDilationEquiv_sum G hG ha (r - 1) z.2]
   ring
 
-/-- Number of points in a phase fibre. -/
-noncomputable def fiberCount {X : Type*} [Fintype X]
-    (phi : X -> F) (t : F) : Nat :=
-  (Finset.univ.filter fun x => phi x = t).card
-
 /-- Equivariant phase maps have orbit-invariant fibre cardinalities. -/
-theorem fiberCount_smul {X : Type*} [Fintype X]
+theorem fiberCount_smul {X : Type*} [Fintype X] [DecidableEq X]
     (phi : X -> F) (e : X ≃ X) {a : F} (ha0 : a ≠ 0)
     (hphase : forall x, phi (e x) = a * phi x) (t : F) :
-    fiberCount phi (a * t) = fiberCount phi t := by
+    phaseFiberCount phi (a * t) = phaseFiberCount phi t := by
   classical
   let E : {x : X // phi x = t} ≃ {x : X // phi x = a * t} :=
     e.subtypeEquiv fun x => by
       rw [hphase]
       exact (mul_right_inj' ha0).symm
-  simpa [fiberCount, Fintype.card_subtype] using (Fintype.card_congr E).symm
-
-/-- The marked-difference row `W_G`. -/
-noncomputable def markedDifferenceMultiplicity (G : Finset F) (t : F) : Nat :=
-  fiberCount (markedDifferencePhase G) t
-
-/-- The adjacent subset-difference row `R_r`. -/
-noncomputable def subsetDifferenceMultiplicity (G : Finset F) (r : Nat) (t : F) : Nat :=
-  fiberCount (subsetDifferencePhase G r) t
+  simpa [phaseFiberCount, Fintype.card_subtype] using (Fintype.card_congr E).symm
 
 /-- Exact `G`-orbit invariance of the marked/intersection row. -/
 theorem markedDifferenceMultiplicity_smul (G : Finset F) (hG : IsMulSubgroup G)
@@ -194,42 +171,8 @@ section LiteralRows
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
-/-- Literal shifted-intersection row `#{y in G : 2*y-t in G}`. -/
-def doubledTranslateIntersection (G : Finset F) (t : F) : Nat :=
-  (G.filter fun y => 2 * y - t ∈ G).card
-
-/-- The marked phase fibre is exactly the literal shifted-intersection row. -/
-theorem markedDifferenceMultiplicity_eq_doubledTranslateIntersection
-    (G : Finset F) (t : F) :
-    markedDifferenceMultiplicity G t = doubledTranslateIntersection G t := by
-  classical
-  unfold markedDifferenceMultiplicity fiberCount doubledTranslateIntersection
-  refine Finset.card_bij (fun z _hz => z.2.1) ?_ ?_ ?_
-  · intro z hz
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hz
-    refine Finset.mem_filter.mpr ⟨z.2.2, ?_⟩
-    have hx : 2 * z.2.1 - t = z.1.1 := by
-      unfold markedDifferencePhase at hz
-      linear_combination hz
-    exact hx.symm ▸ z.1.2
-  · intro z hz z' hz' heq
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hz hz'
-    unfold markedDifferencePhase at hz hz'
-    have hx : (z.1.1 : F) = 2 * z.2.1 - t := by linear_combination -hz
-    have hx' : (z'.1.1 : F) = 2 * z'.2.1 - t := by linear_combination -hz'
-    apply Prod.ext
-    · apply Subtype.ext
-      exact hx.trans ((congrArg (fun y : F => 2 * y - t) heq).trans hx'.symm)
-    · exact Subtype.ext heq
-  · intro y hy
-    simp only [Finset.mem_filter] at hy
-    let x : {x : F // x ∈ G} := ⟨2 * y - t, hy.2⟩
-    let y' : {y : F // y ∈ G} := ⟨y, hy.1⟩
-    refine ⟨(x, y'), ?_, rfl⟩
-    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-    unfold markedDifferencePhase
-    dsimp [x, y']
-    ring
+/-! `doubledTranslateIntersection` and `markedDifferenceMultiplicity_eq_doubledTranslateIntersection`
+are reused from `BGKC12TranslateIntersectionReduction`. -/
 
 /-- **Exact zero-orbit dichotomy.**  For a multiplicative subgroup, the marked row at zero is
 all of `G` when `2` belongs to `G`, and empty otherwise. -/
@@ -276,58 +219,16 @@ section ActualC12
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
-/-- Reassociate the two Newton joins into marked variables and adjacent subset variables. -/
-def reassociateNewtonPairs (G : Finset F) (r : Nat) :
-    (NewtonJoin G r × NewtonJoin G (r - 1)) ≃
-      (MarkedPair G × AdjacentSubsetPair G r) where
-  toFun p := ((p.1.1, p.2.1), (p.1.2, p.2.2))
-  invFun p := ((p.1.1, p.2.1), (p.1.2, p.2.2))
-  left_inv := by intro p; rfl
-  right_inv := by intro p; rfl
-
-/-- The Newton collision equation is equality of the two separated difference phases. -/
-theorem newton_collision_iff_difference_collision (G : Finset F) (r : Nat)
-    (p : NewtonJoin G r × NewtonJoin G (r - 1)) :
-    newtonJoinPhase G 1 r p.1 = newtonJoinPhase G 2 (r - 1) p.2 ↔
-      markedDifferencePhase G (reassociateNewtonPairs G r p).1 =
-        subsetDifferencePhase G r (reassociateNewtonPairs G r p).2 := by
-  simp only [reassociateNewtonPairs, newtonJoinPhase, markedDifferencePhase,
-    subsetDifferencePhase, Nat.cast_one, one_mul, Nat.cast_ofNat]
-  constructor <;> intro h <;> linear_combination -h
-
-/-- Actual `C12` is the cross collision of the two separated physical rows. -/
-theorem newtonJoinCollisionCount_one_two_eq_differenceCrossCollision
-    (G : Finset F) (r : Nat) :
-    newtonJoinCollisionCount G 1 r 2 (r - 1) =
-      phaseCrossCollisionCount (markedDifferencePhase G) (subsetDifferencePhase G r) := by
-  classical
-  unfold newtonJoinCollisionCount phaseCrossCollisionCount
-  calc
-    (∑ x : NewtonJoin G r, ∑ y : NewtonJoin G (r - 1),
-        if newtonJoinPhase G 1 r x = newtonJoinPhase G 2 (r - 1) y then 1 else 0) =
-        ∑ p : NewtonJoin G r × NewtonJoin G (r - 1),
-          if newtonJoinPhase G 1 r p.1 = newtonJoinPhase G 2 (r - 1) p.2 then 1 else 0 := by
-      exact (Fintype.sum_prod_type
-        (fun p : NewtonJoin G r × NewtonJoin G (r - 1) =>
-          if newtonJoinPhase G 1 r p.1 = newtonJoinPhase G 2 (r - 1) p.2
-          then 1 else 0)).symm
-    _ = ∑ p : MarkedPair G × AdjacentSubsetPair G r,
-          if markedDifferencePhase G p.1 = subsetDifferencePhase G r p.2 then 1 else 0 := by
-      apply Fintype.sum_equiv (reassociateNewtonPairs G r)
-      intro p
-      simp only [newton_collision_iff_difference_collision]
-    _ = ∑ x : MarkedPair G, ∑ y : AdjacentSubsetPair G r,
-          if markedDifferencePhase G x = subsetDifferencePhase G r y then 1 else 0 := by
-      rw [Fintype.sum_prod_type]
+/-! `reassociateNewtonPairs`, `newton_collision_iff_difference_collision`, and
+`newtonJoinCollisionCount_one_two_eq_differenceCrossCollision` are reused from
+`BGKC12TranslateIntersectionReduction`. -/
 
 /-- The actual favourable cross-collision count is the inner product `sum_t W(t)R(t)`. -/
 theorem newtonJoinCollisionCount_one_two_eq_orbitCorrelation
     (G : Finset F) (r : Nat) :
     newtonJoinCollisionCount G 1 r 2 (r - 1) =
       ∑ t : F, markedDifferenceMultiplicity G t * subsetDifferenceMultiplicity G r t := by
-  rw [newtonJoinCollisionCount_one_two_eq_differenceCrossCollision,
-    BGKLateNewtonTwoColourPhysicalBridge.phaseCrossCollisionCount_eq_fiberInner]
-  rfl
+  exact newtonJoinCollisionCount_one_two_eq_translateCorrelation G r
 
 /-- One summand of the `W/R` alignment. -/
 noncomputable def c12OrbitSummand (G : Finset F) (r : Nat) (t : F) : Nat :=
@@ -427,24 +328,8 @@ theorem newtonJoinCollisionCount_one_two_divisible_by_card
     ∑ c ∈ T, c12OrbitSummand G r c, ?_⟩
   exact newtonJoinCollisionCount_one_two_eq_card_mul_orbitBracket G T hG tr r
 
-/-- The local copy of the denominator-cleared centered `C12` alignment. -/
-noncomputable def c12CenteredAlignment (G : Finset F) (r : Nat) : Int :=
-  (Fintype.card F : Int) * (newtonJoinCollisionCount G 1 r 2 (r - 1) : Int) -
-    (G.card : Int) ^ 2 *
-      ((G.card.choose r : Int) * G.card.choose (r - 1))
-
-/-- The orbit lane's local numerator is exactly the centered-alignment declaration in the
-translate/intersection reduction.  The two definitions use respectively actual `C12` and its
-`W/R` factorization; the existing centered decomposition identifies them without loss. -/
-theorem c12CenteredAlignment_eq_translateIntersectionAlignment
-    (G : Finset F) (r : Nat) :
-    c12CenteredAlignment G r =
-      ArkLib.ProximityGap.Frontier.BGKC12TranslateIntersectionReduction.c12CenteredAlignment
-        G r := by
-  have h :=
-    card_mul_newtonJoinCollisionCount_one_two_eq_massProduct_add_centeredAlignment G r
-  unfold c12CenteredAlignment
-  linear_combination h
+/-! The centered alignment numerator `c12CenteredAlignment` is the canonical declaration of
+`BGKC12TranslateIntersectionReduction` (no local copy). -/
 
 /-- The exact orbit-representative bracket governing the centered alignment. -/
 noncomputable def c12CenteredOrbitBracket (G T : Finset F) (r : Nat) : Int :=
@@ -459,10 +344,12 @@ quotient-sized signed bracket.  This is an integrality/compression statement, no
 theorem c12CenteredAlignment_eq_card_mul_orbitBracket
     (G T : Finset F) (hG : IsMulSubgroup G) (tr : DilationTransversal G T) (r : Nat) :
     c12CenteredAlignment G r = (G.card : Int) * c12CenteredOrbitBracket G T r := by
-  rw [c12CenteredAlignment, c12CenteredOrbitBracket,
-    newtonJoinCollisionCount_one_two_eq_card_mul_orbitBracket G T hG tr]
-  push_cast
-  ring
+  have h :=
+    card_mul_newtonJoinCollisionCount_one_two_eq_massProduct_add_centeredAlignment G r
+  rw [newtonJoinCollisionCount_one_two_eq_card_mul_orbitBracket G T hG tr] at h
+  unfold c12CenteredOrbitBracket
+  push_cast at h ⊢
+  linear_combination -h
 
 /-- Centered arithmetic corollary: `A_r` is divisible by `|G|`. -/
 theorem c12CenteredAlignment_divisible_by_card
@@ -500,7 +387,6 @@ end OrbitCompression
 #print axioms doubledTranslateIntersection_zero
 #print axioms newtonJoinCollisionCount_one_two_eq_orbitCorrelation
 #print axioms newtonJoinCollisionCount_one_two_eq_card_mul_orbitBracket
-#print axioms c12CenteredAlignment_eq_translateIntersectionAlignment
 #print axioms c12CenteredAlignment_eq_card_mul_orbitBracket
 #print axioms scaled_centeredAlignment_lower_iff_orbitBracket_lower
 

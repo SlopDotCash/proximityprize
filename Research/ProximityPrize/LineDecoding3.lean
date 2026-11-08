@@ -9,12 +9,32 @@ import ArkLib.Data.CodingTheory.ProximityGap.LineDecodingBadScalarCount
 import Research.ProximityPrize.Lattice2
 
 /-!
-# Grand Challenge adapters for the repaired line-decoding coverage theorem
+# Grand Challenge adapters for the double-cover / zero-error line-decoding surface
 
-`LineDecodingCoverage.lean` proves the corrected coverage-to-vanishing direction for ABF26
-Theorem 4.21. This module exposes the consumer-facing Grand MCA Challenge adapters: the explicit
-double-cover hypothesis gives a lower witness, and hence a faithful lattice-threshold witness,
-without using the refuted black-box `lineDecodable_imp_epsMCA_le_target` surface.
+`LineDecodingCoverage.lean` proves the coverage-to-vanishing direction for ABF26 Theorem 4.21:
+the explicit double-cover hypothesis gives `epsMCA = 0`.  This module repackages that as Grand MCA
+Challenge lower witnesses, without using the refuted black-box
+`lineDecodable_imp_epsMCA_le_target` surface.
+
+## Honest scope — the prize-rate adapters are vacuous
+
+Every hypothesis consumed here (`MCAForallDoubleCover`, per-bad-scalar double cover,
+`mcaBadCount = 0`, `∀ γ, ¬ mcaEvent`, `epsMCA = 0`) implies `epsMCA C δ = 0`; by
+`epsMCA_eq_zero_iff_MCAForallDoubleCover` they are all goal-equivalent restatements of a
+**zero-error** target (see the circularity note in `LineDecodingT421Faithful.lean`).  For any
+proper Reed–Solomon code that target is false: `one_div_card_le_epsMCA_of_succ_le_card` below
+proves `1/|F| ≤ epsMCA(RS[k], δ)` at *every* radius `δ` whenever `k + 1 ≤ n` (one-spike plant),
+and every ABF26 prize rate has `k = ⌊ρ_j n⌋ < n` (`prizeRateRS_floor_lt_card`).  Hence
+`not_MCAForallDoubleCover_prizeRateRS`, `not_forall_badScalarDoubleCover_prizeRateRS`,
+`not_forall_mcaBadCount_eq_zero_prizeRateRS`, `not_forall_not_mcaEvent_prizeRateRS` and
+`epsMCA_prizeRateRS_ne_zero`: **every prize-rate RS adapter in this module and in the
+downstream `LineDecodingSpec`, `LineDecodingResolvedSpec` and `LineDecodingSpecLowOutput`
+cones has an unsatisfiable hypothesis, so its conclusion is vacuous.**  These declarations are
+kept only as API shape; they are not a coverage theorem, a prize-facing endpoint or a replacement
+path for any nonzero-budget MCA bound.  Consumers needing a genuine bound must route through a
+nonzero-budget statement (e.g. `epsMCA_le_of_forall_gs_curve_cover`, or the GS list-size cap of
+`LineDecodingT421Faithful.lean`).  The general-`C` `ofDoubleCover` constructors are satisfiable
+only for degenerate codes (e.g. the full space), where they are restatements of `epsMCA = 0`.
 -/
 
 namespace ProximityGap
@@ -23,13 +43,101 @@ open scoped NNReal
 
 set_option linter.unusedDecidableInType false
 
+section PrizeRateVacuity
+
+open scoped ENNReal
+
+variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
+variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
+
+/-- **Zero-error MCA is impossible for a proper Reed–Solomon code.**  If `k + 1 ≤ n`, the one-spike
+plant (`epsMCA_ge_spike` with `t = 1`) gives `1/|F| ≤ epsMCA(RS[k], δ)` at every radius `δ`. -/
+theorem one_div_card_le_epsMCA_of_succ_le_card (domain : ι ↪ F) {k : ℕ}
+    (hk : k + 1 ≤ Fintype.card ι) (δ : ℝ≥0) :
+    (1 : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤
+      epsMCA (F := F) (A := F) (ReedSolomon.code domain k : Set (ι → F)) δ := by
+  have hn : 1 ≤ Fintype.card ι := Fintype.card_pos
+  have hq : 1 ≤ Fintype.card F := Fintype.card_pos
+  have hδ : ((1 - δ) * Fintype.card ι : ℝ≥0) ≤ (Fintype.card ι - 1 + 1 : ℕ) := by
+    rw [Nat.sub_add_cancel hn]
+    exact mul_le_of_le_one_left zero_le tsub_le_self
+  simpa using epsMCA_ge_spike domain k 1 δ (by omega) hq hδ
+
+omit [DecidableEq ι] in
+/-- Every ABF26 prize degree is strictly below the block length: `⌊ρ_j n⌋ < n`. -/
+theorem prizeRateRS_floor_lt_card (j : Fin 4) :
+    ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ < Fintype.card ι := by
+  have hn : (0 : ℝ≥0) < Fintype.card ι := by exact_mod_cast Fintype.card_pos
+  have hρ : prizeRates j < 1 := by
+    unfold prizeRates
+    rw [div_lt_one (by positivity)]
+    exact one_lt_pow₀ one_lt_two (by omega)
+  have hlt : prizeRates j * (Fintype.card ι : ℝ≥0) < Fintype.card ι := by
+    simpa using mul_lt_mul_of_pos_right hρ hn
+  exact (Nat.floor_lt zero_le).mpr hlt
+
+/-- At every ABF26 prize rate and every radius, `epsMCA(RS, δ) ≥ 1/|F|`. -/
+theorem one_div_card_le_epsMCA_prizeRateRS (domain : ι ↪ F) (j : Fin 4) (δ : ℝ≥0) :
+    (1 : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤
+      epsMCA (F := F) (A := F)
+        (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F)) δ :=
+  one_div_card_le_epsMCA_of_succ_le_card domain (prizeRateRS_floor_lt_card j) δ
+
+/-- At every ABF26 prize rate and every radius, `epsMCA(RS, δ) ≠ 0`: the zero-error target of the
+double-cover adapters is false. -/
+theorem epsMCA_prizeRateRS_ne_zero (domain : ι ↪ F) (j : Fin 4) (δ : ℝ≥0) :
+    epsMCA (F := F) (A := F)
+        (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F)) δ ≠ 0 := by
+  intro h0
+  have h := one_div_card_le_epsMCA_prizeRateRS domain j δ
+  rw [h0, nonpos_iff_eq_zero, ENNReal.div_eq_zero_iff] at h
+  rcases h with h | h
+  · exact one_ne_zero h
+  · exact ENNReal.natCast_ne_top _ h
+
+/-- The `MCAForallDoubleCover` hypothesis is unsatisfiable at every prize rate. -/
+theorem not_MCAForallDoubleCover_prizeRateRS (domain : ι ↪ F) (j : Fin 4) (δ : ℝ≥0) :
+    ¬ MCAForallDoubleCover (F := F) (A := F)
+      (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F)) δ :=
+  fun hcov => epsMCA_prizeRateRS_ne_zero domain j δ
+    (epsMCA_eq_zero_of_forall_double_cover _ δ hcov)
+
+/-- The per-bad-scalar double-cover hypothesis is unsatisfiable at every prize rate. -/
+theorem not_forall_badScalarDoubleCover_prizeRateRS (domain : ι ↪ F) (j : Fin 4) (δ : ℝ≥0) :
+    ¬ ∀ (u : Code.WordStack F (Fin 2) ι) (γ : F),
+      MCABadScalarDoubleCover (F := F) (A := F)
+        (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
+        δ (u 0) (u 1) γ :=
+  fun hcov => epsMCA_prizeRateRS_ne_zero domain j δ
+    (epsMCA_eq_zero_of_badScalarDoubleCover _ δ hcov)
+
+/-- The zero-bad-count hypothesis is unsatisfiable at every prize rate. -/
+theorem not_forall_mcaBadCount_eq_zero_prizeRateRS (domain : ι ↪ F) (j : Fin 4) (δ : ℝ≥0) :
+    ¬ ∀ u : Code.WordStack F (Fin 2) ι,
+      mcaBadCount (F := F)
+        (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
+        δ (u 0) (u 1) = 0 :=
+  fun hzero => epsMCA_prizeRateRS_ne_zero domain j δ
+    (epsMCA_eq_zero_of_forall_mcaBadCount_eq_zero (F := F) (A := F) _ δ hzero)
+
+/-- The no-bad-event hypothesis is unsatisfiable at every prize rate. -/
+theorem not_forall_not_mcaEvent_prizeRateRS (domain : ι ↪ F) (j : Fin 4) (δ : ℝ≥0) :
+    ¬ ∀ (u : Code.WordStack F (Fin 2) ι) (γ : F),
+      ¬ mcaEvent (F := F)
+        (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
+        δ (u 0) (u 1) γ :=
+  fun hno => epsMCA_prizeRateRS_ne_zero domain j δ
+    (epsMCA_eq_zero_of_forall_not_mcaEvent (F := F) (A := F) _ δ hno)
+
+end PrizeRateVacuity
+
 section LowerWitness
 
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
-/-- **Grand-MCA lower witness from the repaired line-decoding coverage data.** Once the exposed
-double-cover data is available, `epsMCA(C, δ) = 0`, hence any `ε_star` accepts radius `δ` as a
+/-- **Grand-MCA lower witness from double-cover data.** Given the double-cover hypothesis
+(goal-equivalent to `epsMCA = 0`), `epsMCA(C, δ) = 0`, hence any `ε_star` accepts radius `δ` as a
 lower witness. -/
 def GrandChallenges.MCALowerWitness.ofDoubleCover (C : Set (ι → F)) (δ ε_star : ℝ≥0)
     (hδ_le_one : δ ≤ 1)
@@ -40,7 +148,7 @@ def GrandChallenges.MCALowerWitness.ofDoubleCover (C : Set (ι → F)) (δ ε_st
     simp
 
 /-- Grand-MCA lower witness from the named per-bad-scalar double-cover obligations. This is the
-same repaired coverage path as `MCALowerWitness.ofDoubleCover`, but with the local GS extraction
+same double-cover path as `MCALowerWitness.ofDoubleCover`, but with the local GS extraction
 target exposed directly. -/
 def GrandChallenges.MCALowerWitness.ofBadScalarDoubleCover
     (C : Set (ι → F)) (δ ε_star : ℝ≥0)
@@ -75,9 +183,10 @@ def GrandChallenges.MCALowerWitness.of_forall_not_mcaEvent
     rw [epsMCA_eq_zero_of_forall_not_mcaEvent (F := F) (A := F) C δ hno]
     simp
 
-/-- Grand-MCA lower witness from a direct vanishing-`ε_mca` frontier. This is the
-prize-facing endpoint of the #140 exactness route: `ε_mca = 0` repacks as the repaired
-double-cover surface, then uses the existing lower-witness front door. -/
+/-- Grand-MCA lower witness from a direct vanishing-`ε_mca` hypothesis: `ε_mca = 0` repacks as
+the double-cover surface, then uses the existing lower-witness front door.  The hypothesis
+`ε_mca = 0` is false for every proper Reed–Solomon code (`one_div_card_le_epsMCA_of_succ_le_card`),
+so this is not a prize-facing endpoint. -/
 def GrandChallenges.MCALowerWitness.of_epsMCA_eq_zero
     (C : Set (ι → F)) (δ ε_star : ℝ≥0)
     (hδ_le_one : δ ≤ 1)
@@ -86,9 +195,10 @@ def GrandChallenges.MCALowerWitness.of_epsMCA_eq_zero
   GrandChallenges.MCALowerWitness.ofDoubleCover C δ ε_star hδ_le_one
     ((epsMCA_eq_zero_iff_MCAForallDoubleCover C δ).mp heps)
 
-/-- Prize-rate specialization of repaired double-cover data.  At any ABF26 prize rate, an
+/-- Prize-rate specialization of double-cover data.  At any ABF26 prize rate, an
 explicit `MCAForallDoubleCover` hypothesis for the corresponding Reed-Solomon code gives a
-one-sided MCA lower witness at `epsStar`. -/
+one-sided MCA lower witness at `epsStar`.  The hypothesis is unsatisfiable
+(`not_MCAForallDoubleCover_prizeRateRS`), so the statement is vacuous. -/
 theorem GrandChallenges.exists_prize_mcaLowerWitness_ofDoubleCover
     (domain : ι ↪ F) (j : Fin 4) (δ : ℝ≥0)
     (hδ_le_one : δ ≤ 1)
@@ -178,8 +288,9 @@ section LatticeWitness
 variable {ι : Type} [Fintype ι] [Nonempty ι] [DecidableEq ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
-/-- A repaired double-cover target makes the faithful MCA lattice threshold exist. This is the
-line-decoding replacement path that avoids the refuted black-box target entirely. -/
+/-- A double-cover hypothesis makes the faithful MCA lattice threshold exist.  It avoids the
+refuted black-box target, but the hypothesis is goal-equivalent to `epsMCA = 0`, which fails for
+every proper Reed–Solomon code; it is not a usable replacement path. -/
 theorem mcaThresholdExists_ofDoubleCover (C : Set (ι → F)) (δ ε_star : ℝ≥0)
     (hδ_le_one : δ ≤ 1)
     (hcov : MCAForallDoubleCover (F := F) (A := F) C δ) :
@@ -187,7 +298,7 @@ theorem mcaThresholdExists_ofDoubleCover (C : Set (ι → F)) (δ ε_star : ℝ�
   mcaThresholdExists_of_MCALowerWitness C ε_star
     (MCALowerWitness.ofDoubleCover C δ ε_star hδ_le_one hcov)
 
-/-- The faithful MCA threshold created from repaired double-cover data satisfies the MCA bound. -/
+/-- The faithful MCA threshold created from double-cover data satisfies the MCA bound. -/
 theorem mcaThreshold_spec_ofDoubleCover (C : Set (ι → F)) (δ ε_star : ℝ≥0)
     (hδ_le_one : δ ≤ 1)
     (hcov : MCAForallDoubleCover (F := F) (A := F) C δ) :
@@ -196,7 +307,7 @@ theorem mcaThreshold_spec_ofDoubleCover (C : Set (ι → F)) (δ ε_star : ℝ�
   mcaThreshold_spec C ε_star
     (mcaThresholdExists_ofDoubleCover C δ ε_star hδ_le_one hcov)
 
-/-- Repaired double-cover data gives the lattice lower bracket for the faithful MCA threshold. -/
+/-- Double-cover data gives the lattice lower bracket for the faithful MCA threshold. -/
 theorem latticeIndexOf_le_mcaThreshold_ofDoubleCover
     (C : Set (ι → F)) (δ ε_star : ℝ≥0)
     (hδ_le_one : δ ≤ 1)
@@ -348,7 +459,7 @@ theorem latticeIndexOf_le_mcaThreshold_of_epsMCA_eq_zero
       (mcaThresholdExists_of_epsMCA_eq_zero C δ ε_star hδ_le_one heps)
       (GrandChallenges.MCALowerWitness.of_epsMCA_eq_zero C δ ε_star hδ_le_one heps)
 
-/-- Prize-rate repaired double-cover data makes the corresponding faithful MCA lattice threshold
+/-- Prize-rate double-cover data makes the corresponding faithful MCA lattice threshold
 exist. -/
 theorem mcaThresholdExists_prize_ofDoubleCover
     (domain : ι ↪ F) (j : Fin 4) (δ : ℝ≥0)
@@ -362,7 +473,7 @@ theorem mcaThresholdExists_prize_ofDoubleCover
     (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
     δ epsStar hδ_le_one hcov
 
-/-- The faithful MCA threshold selected from prize-rate repaired double-cover data satisfies the
+/-- The faithful MCA threshold selected from prize-rate double-cover data satisfies the
 MCA bound. -/
 theorem mcaThreshold_spec_prize_ofDoubleCover
     (domain : ι ↪ F) (j : Fin 4) (δ : ℝ≥0)
@@ -511,7 +622,7 @@ theorem mcaThreshold_spec_prize_of_epsMCA_eq_zero
     (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
     δ epsStar hδ_le_one heps
 
-/-- Prize-rate repaired double-cover data gives the lower bracket for the corresponding faithful
+/-- Prize-rate double-cover data gives the lower bracket for the corresponding faithful
 MCA threshold. -/
 theorem latticeIndexOf_le_mcaThreshold_prize_ofDoubleCover
     (domain : ι ↪ F) (j : Fin 4) (δ : ℝ≥0)
@@ -615,7 +726,7 @@ theorem latticeIndexOf_le_mcaThreshold_prize_of_epsMCA_eq_zero
     (ReedSolomon.code domain ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F))
     δ epsStar hδ_le_one heps
 
-/-- Prize-rate repaired double-cover data packages threshold existence, satisfaction, and the
+/-- Prize-rate double-cover data packages threshold existence, satisfaction, and the
 lower lattice bracket for the selected faithful MCA threshold. -/
 theorem mcaThreshold_spec_and_lower_bracket_prize_ofDoubleCover
     (domain : ι ↪ F) (j : Fin 4) (δ : ℝ≥0)
@@ -724,7 +835,7 @@ theorem mcaThreshold_spec_and_lower_bracket_prize_of_epsMCA_eq_zero
   · exact mcaThreshold_spec_of_epsMCA_eq_zero C δ epsStar hδ_le_one heps
   · exact latticeIndexOf_le_mcaThreshold_of_epsMCA_eq_zero C δ epsStar hδ_le_one heps
 
-/-- Prize-rate repaired double-cover data, together with an explicit upper witness, packages the
+/-- Prize-rate double-cover data, together with an explicit upper witness, packages the
 selected faithful MCA threshold with its satisfy fact and both lattice brackets. -/
 theorem mcaThreshold_spec_and_bracket_prize_ofDoubleCover
     (domain : ι ↪ F) (j : Fin 4) (δ : ℝ≥0)
@@ -863,9 +974,9 @@ theorem mcaThreshold_spec_and_bracket_prize_of_epsMCA_eq_zero
   · exact latticeIndexOf_le_mcaThreshold_of_epsMCA_eq_zero C δ epsStar hδ_le_one heps
   · exact mcaThreshold_lt_MCAUpperWitness C epsStar hne whi hδhi
 
-/-- Per-rate repaired double-cover data resolves the faithful MCA lattice prize existentially.
-This is the prize-facing aggregation of the #140 repaired coverage theorem through the existing
-lower-witness lattice front door. -/
+/-- Per-rate double-cover data resolves the faithful MCA lattice prize existentially, through the
+existing lower-witness lattice front door. **Vacuous for proper RS codes** (see the module's honest-scope note).  The hypothesis is unsatisfiable at
+every prize rate (`not_MCAForallDoubleCover_prizeRateRS`). -/
 theorem exists_mcaPrizeLatticeResolved_ofDoubleCover
     (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
     (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
@@ -926,7 +1037,8 @@ theorem exists_mcaPrizeLatticeResolved_of_forall_not_mcaEvent
 
 /-- Per-rate direct vanishing `ε_mca` frontiers resolve the faithful MCA lattice prize
 existentially. The proof explicitly routes through the indexed #140 exactness bridge to the
-repaired double-cover surface. -/
+double-cover surface.  The hypothesis is unsatisfiable at every prize rate
+(`epsMCA_prizeRateRS_ne_zero`). -/
 theorem exists_mcaPrizeLatticeResolved_of_epsMCA_eq_zero
     (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
     (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
@@ -943,7 +1055,7 @@ theorem exists_mcaPrizeLatticeResolved_of_epsMCA_eq_zero
           ⌊prizeRates j * (Fintype.card ι : ℝ≥0)⌋₊ : Set (ι → F)))
       δ heps)
 
-/-- Repaired double-cover frontiers and explicit upper witnesses bracket all four faithful MCA
+/-- Double-cover frontiers and explicit upper witnesses bracket all four faithful MCA
 prize thresholds. -/
 def mcaPrizeLattice_bracketed_ofDoubleCover_and_upperWitnesses
     (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
@@ -964,8 +1076,8 @@ def mcaPrizeLattice_bracketed_ofDoubleCover_and_upperWitnesses
         (δ j) epsStar (hδ_le_one j) (hcov j))
     whi hδhi
 
-/-- Repaired double-cover frontiers and adjacent explicit upper witnesses resolve the four-rate
-MCA prize lattice at the repaired lower-frontier lattice indices. -/
+/-- Double-cover frontiers and adjacent explicit upper witnesses resolve the four-rate
+MCA prize lattice at the double-cover lower-frontier lattice indices. -/
 theorem mcaPrizeLatticeResolved_ofDoubleCover_and_adjacent_upperWitnesses
     (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
     (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
@@ -1015,7 +1127,7 @@ def mcaPrizeLattice_bracketed_ofBadScalarDoubleCover_and_upperWitnesses
     whi hδhi
 
 /-- Named per-bad-scalar double-cover frontiers and adjacent explicit upper witnesses resolve the
-four-rate MCA prize lattice at the repaired lower-frontier lattice indices. -/
+four-rate MCA prize lattice at the double-cover lower-frontier lattice indices. -/
 theorem mcaPrizeLatticeResolved_ofBadScalarDoubleCover_and_adjacent_upperWitnesses
     (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
     (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
@@ -1067,7 +1179,7 @@ def mcaPrizeLattice_bracketed_of_mcaBadCount_zero_and_upperWitnesses
     whi hδhi
 
 /-- Zero bad-scalar counts and adjacent explicit upper witnesses resolve the four-rate MCA prize
-lattice at the repaired lower-frontier lattice indices. -/
+lattice at the double-cover lower-frontier lattice indices. -/
 theorem mcaPrizeLatticeResolved_of_mcaBadCount_zero_and_adjacent_upperWitnesses
     (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
     (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
@@ -1120,7 +1232,7 @@ def mcaPrizeLattice_bracketed_of_forall_not_mcaEvent_and_upperWitnesses
     whi hδhi
 
 /-- Direct no-bad-event frontiers and adjacent explicit upper witnesses resolve the four-rate MCA
-prize lattice at the repaired lower-frontier lattice indices. -/
+prize lattice at the double-cover lower-frontier lattice indices. -/
 theorem mcaPrizeLatticeResolved_of_forall_not_mcaEvent_and_adjacent_upperWitnesses
     (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
     (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
@@ -1174,7 +1286,7 @@ def mcaPrizeLattice_bracketed_of_epsMCA_eq_zero_and_upperWitnesses
     whi hδhi
 
 /-- Direct vanishing `ε_mca` frontiers and adjacent explicit upper witnesses resolve the four-rate
-MCA prize lattice at the repaired lower-frontier lattice indices. -/
+MCA prize lattice at the double-cover lower-frontier lattice indices. -/
 theorem mcaPrizeLatticeResolved_of_epsMCA_eq_zero_and_adjacent_upperWitnesses
     (domain : ι ↪ F) (δ : Fin 4 → ℝ≥0)
     (hδ_le_one : ∀ j : Fin 4, δ j ≤ 1)
@@ -1329,3 +1441,11 @@ set_option linter.style.longLine false in
 #print axioms ProximityGap.GrandChallengesLattice.mcaPrizeLatticeResolved_of_epsMCA_eq_zero_and_adjacent_upperWitnesses
 
 end ProximityGap
+
+/-! ## Axiom audit — prize-rate vacuity lemmas -/
+#print axioms ProximityGap.one_div_card_le_epsMCA_of_succ_le_card
+#print axioms ProximityGap.epsMCA_prizeRateRS_ne_zero
+#print axioms ProximityGap.not_MCAForallDoubleCover_prizeRateRS
+#print axioms ProximityGap.not_forall_badScalarDoubleCover_prizeRateRS
+#print axioms ProximityGap.not_forall_mcaBadCount_eq_zero_prizeRateRS
+#print axioms ProximityGap.not_forall_not_mcaEvent_prizeRateRS

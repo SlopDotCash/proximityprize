@@ -39,11 +39,27 @@ Contents (everything below is fully proved, no placeholders):
 4. A concrete kernel-checked instance over `ZMod 5`: domain of 3 points, code = the
    constant words (Reed-Solomon with `k = 1`), agreement threshold `a = 2 = k + t`,
    explicit `f₁ = ![0,1,2]`, `f₂ = ![0,1,4]`.  Exactly THREE bad scalars `{2, 3, 4}`
-   out of five, each with its own explicit codeword witness, the witnesses pairwise
+   out of five, each with an explicit codeword witness on its own 2-point agreement set
+   (constants `0, 4, 0` for `γ = 2, 3, 4`: the constants of `γ = 2` and `γ = 4` coincide,
+   but their agreement sets `{0,2}` and `{0,1}` differ), the witnesses pairwise
    inconsistent; the pair has no correlated agreement; bad fraction `3/5`.
+5. `mcaBadLocal` — the production-shaped (set-local) bad event, matching the shape of
+   `ProximityGap.Errors.mcaEvent` (ABF26 Def. 4.3) with an integer threshold `a` in place
+   of `(1 - δ)·n`: ONE set `S`, `|S| ≥ a`, on which the line matches a codeword and the
+   pair is not jointly explained.  `mcaBad_imp_mcaBadLocal` /
+   `mcaBadCount_le_mcaBadLocalCount` are the adapter (global ⇒ local), and
+   `local_not_global_example` shows the converse fails.
 
-Honest scope.  The bridge reduces an MCA-error lower bound exactly to constructing
-`(f₁, f₂, Γ)` with `|Γ| / |F|` large and no shared agreement set.  The instance here
+Honest scope.  `mcaBad` below is a **stronger, global** bad event than the actual MCA event:
+it requires that NO threshold-sized set jointly explains both rows, whereas the actual MCA
+event only requires no joint explanation on the SAME set that witnesses the scalar's
+closeness.  Counting `mcaBad` scalars is therefore a valid *sufficient* route to an MCA
+lower bound (every `mcaBad` scalar is locally bad), but it is not exact and can miss actual
+bad scalars: with the zero code, `n = 4`, threshold `2`, `u₀ = u₁ = (0,0,1,1)`, `γ = -1`,
+the line word is zero and `S = {2,3}` is an actual bad witness, while `{0,1}` jointly
+explains the rows, so `mcaBad` is false (`local_not_global_example`).  The bridge reduces an
+MCA-error lower bound to constructing `(f₁, f₂, Γ)` with `|Γ| / |F|` large and no shared
+agreement set (a sufficient, not necessary, condition).  The instance here
 realizes the full pipeline at toy scale (`n = 3`, `|F| = 5`, spread fraction `3/5`).
 What remains open — and is NOT claimed here — is the prize-scale version: smooth-domain
 RS with `|F| < 2^256`, `δ*` strictly between `1 - √ρ` and `1 - ρ`, and a pencil whose
@@ -76,10 +92,12 @@ def corrAgree (C : Finset (ι → F)) (a : ℕ) (f1 f2 : ι → F) : Prop :=
   ∃ S : Finset ι, a ≤ S.card ∧ ∃ u ∈ C, ∃ v ∈ C,
     (∀ x ∈ S, f1 x = u x) ∧ (∀ x ∈ S, f2 x = v x)
 
-/-- The MCA bad event at scalar `γ`: the pencil word `f1 + γ·f2` is close to the code,
-yet the pair `(f1, f2)` has no correlated agreement.  This is the per-scalar event whose
-probability (over uniform `γ`) the mutual-correlated-agreement error must dominate, so
-counting scalars satisfying it is exactly an MCA-error lower bound for the line. -/
+/-- The **global** bad event at scalar `γ`: the pencil word `f1 + γ·f2` is close to the code,
+yet the pair `(f1, f2)` has no correlated agreement on ANY threshold-sized set.  This is
+stronger than the actual (set-local) MCA bad event `mcaBadLocal`, which only forbids a joint
+explanation on the same set witnessing closeness: every `mcaBad` scalar is `mcaBadLocal`
+(`mcaBad_imp_mcaBadLocal`), so counting `mcaBad` scalars is a valid sufficient MCA-error lower
+bound, but not an exact one (`local_not_global_example`). -/
 def mcaBad (C : Finset (ι → F)) (a : ℕ) (f1 f2 : ι → F) (γ : F) : Prop :=
   closeAt C a (pencil f1 f2 γ) ∧ ¬ corrAgree C a f1 f2
 
@@ -93,9 +111,46 @@ instance (C : Finset (ι → F)) (a : ℕ) (f1 f2 : ι → F) : Decidable (corrA
 instance (C : Finset (ι → F)) (a : ℕ) (f1 f2 : ι → F) : DecidablePred (mcaBad C a f1 f2) :=
   fun γ => inferInstanceAs (Decidable (closeAt C a (pencil f1 f2 γ) ∧ ¬ corrAgree C a f1 f2))
 
-/-- The number of MCA-bad scalars on the pencil through `f1` in direction `f2`. -/
+/-- The number of globally bad (`mcaBad`) scalars on the pencil through `f1` in direction
+`f2`; a lower bound for the actual MCA bad count `mcaBadLocalCount`. -/
 def mcaBadCount (C : Finset (ι → F)) (a : ℕ) (f1 f2 : ι → F) : ℕ :=
   (Finset.univ.filter (mcaBad C a f1 f2)).card
+
+/-- The **production-shaped (set-local) MCA bad event** at scalar `γ`: a single set `S` of size
+`≥ a` on which the pencil word matches a codeword, and on which the pair `(f1, f2)` is NOT
+jointly explained by two codewords.  This mirrors `ProximityGap.Errors.mcaEvent` (ABF26
+Definition 4.3), with the integer threshold `a` in place of `(1 - δ)·n`. -/
+def mcaBadLocal (C : Finset (ι → F)) (a : ℕ) (f1 f2 : ι → F) (γ : F) : Prop :=
+  ∃ S : Finset ι, a ≤ S.card ∧ (∃ c ∈ C, ∀ x ∈ S, pencil f1 f2 γ x = c x) ∧
+    ¬ ∃ u ∈ C, ∃ v ∈ C, (∀ x ∈ S, f1 x = u x) ∧ (∀ x ∈ S, f2 x = v x)
+
+instance (C : Finset (ι → F)) (a : ℕ) (f1 f2 : ι → F) : DecidablePred (mcaBadLocal C a f1 f2) :=
+  fun γ => inferInstanceAs (Decidable (∃ S : Finset ι, a ≤ S.card ∧
+    (∃ c ∈ C, ∀ x ∈ S, pencil f1 f2 γ x = c x) ∧
+    ¬ ∃ u ∈ C, ∃ v ∈ C, (∀ x ∈ S, f1 x = u x) ∧ (∀ x ∈ S, f2 x = v x)))
+
+/-- The number of actual (set-local) MCA-bad scalars on the pencil. -/
+def mcaBadLocalCount (C : Finset (ι → F)) (a : ℕ) (f1 f2 : ι → F) : ℕ :=
+  (Finset.univ.filter (mcaBadLocal C a f1 f2)).card
+
+omit [Fintype F] in
+/-- **Adapter: global ⇒ local.** Every globally bad scalar is an actual (set-local) MCA-bad
+scalar, witnessed by the agreement set of its closeness witness. -/
+theorem mcaBad_imp_mcaBadLocal (C : Finset (ι → F)) (a : ℕ) (f1 f2 : ι → F) (γ : F)
+    (h : mcaBad C a f1 f2 γ) : mcaBadLocal C a f1 f2 γ := by
+  obtain ⟨⟨c, hc, hagree⟩, hnc⟩ := h
+  refine ⟨Finset.univ.filter fun x => pencil f1 f2 γ x = c x, hagree,
+    ⟨c, hc, fun x hx => (Finset.mem_filter.mp hx).2⟩, ?_⟩
+  rintro ⟨u, hu, v, hv, h1, h2⟩
+  exact hnc ⟨_, hagree, u, hu, v, hv, h1, h2⟩
+
+/-- The global count lower-bounds the actual (set-local) MCA bad count. -/
+theorem mcaBadCount_le_mcaBadLocalCount (C : Finset (ι → F)) (a : ℕ) (f1 f2 : ι → F) :
+    mcaBadCount C a f1 f2 ≤ mcaBadLocalCount C a f1 f2 := by
+  unfold mcaBadCount mcaBadLocalCount
+  refine Finset.card_le_card fun γ hγ => ?_
+  simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hγ ⊢
+  exact mcaBad_imp_mcaBadLocal C a f1 f2 γ hγ
 
 omit [DecidableEq ι] [Fintype F] in
 /-- Converse sanity direction: if the pair `(f1, f2)` has correlated agreement on `S`
@@ -161,8 +216,9 @@ on a 3-point domain.  Agreement threshold `a = 2 = k + t` with `t = 1`.
 `f₁ = (0, 1, 2)` and `f₂ = (0, 1, 4)`; the pencil word at `γ` is `(0, 1 + γ, 2 + 4γ)`.
 Coordinate collisions happen at `γ = 4` (coords 0,1), `γ = 2` (coords 0,2), and `γ = 3`
 (coords 1,2), so exactly the three scalars `{2, 3, 4}` give close words, each witnessed
-by a different constant on a different 2-point set, while `f₁` itself is injective, so
-the pair has no correlated agreement at threshold 2. -/
+on a different 2-point set (by the constants `0`, `4`, `0` respectively — the constants
+for `γ = 2` and `γ = 4` coincide), while `f₁` itself is injective, so the pair has no
+correlated agreement at threshold 2. -/
 
 /-- Constant words: Reed-Solomon with `k = 1` over a 3-point domain. -/
 def C5 : Finset (Fin 3 → ZMod 5) :=
@@ -237,6 +293,22 @@ theorem concrete_badFraction :
 /-- Anti-degeneracy guard: the scalar set is nonempty and the code has all five
 constants, so the instance exercises the bridge with genuine content. -/
 theorem instance_nondegenerate : Gam5.card = 3 ∧ C5.card = 5 ∧ mcaBad C5 2 g1 g2 2 := by
+  decide
+
+/-! ## The global event is strictly stronger than the actual MCA event -/
+
+/-- The zero code on a 4-point domain. -/
+def Z4 : Finset (Fin 4 → ZMod 5) := {0}
+
+/-- The seed row `(0, 0, 1, 1)`. -/
+def h4 : Fin 4 → ZMod 5 := ![0, 0, 1, 1]
+
+/-- **`mcaBad` loses actual bad scalars.** Zero code, `n = 4`, threshold `2`,
+`u₀ = u₁ = (0,0,1,1)`, `γ = -1`: the line word is zero, and `S = {2,3}` is an actual
+(set-local) MCA bad witness, but `{0,1}` jointly explains both rows, so the global `mcaBad`
+event fails. -/
+theorem local_not_global_example :
+    mcaBadLocal Z4 2 h4 h4 (-1) ∧ ¬ mcaBad Z4 2 h4 h4 (-1) := by
   decide
 
 end R15MCAGap

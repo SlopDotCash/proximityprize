@@ -22,12 +22,18 @@ Master form of `rs_uptoCapacity_false_rate12_n256`: the negative side of the pri
 Chains the axiom-clean entropy-volume lower bound `rs_lambda_ge_capacity_exponent`
 (`|Λ| ≥ q^E/(n+1)`) with the `rpow`/`logb` overflow bridge `threshold_lt_pow_div`. Since
 `H_q(δ) > δ` for `δ ∈ (0, (q−1)/q]` (`qEntropy_gt_self`), the exponent `E` is positive at the
-capacity radius `δ = 1 − ρ` for every rate, so the overflow holds once `n` is large enough relative
-to the prize budget `ε* = 2^{-128}`. The rate-`1/2`, `n = 256` instance
-(`rs_uptoCapacity_false_rate12_n256`) is exactly this theorem with the numerics discharged.
+capacity radius `δ = 1 − ρ` for every rate.  Positivity alone does **not** give the overflow
+hypothesis, even for large `n`: `E/n = H_q(δ) − δ` shrinks like `h(δ)/ln q` as the field grows,
+while the budget `log_q((n+1)·ε*·q)` tends to `1`, and RS domains only constrain `n ≤ q`.  For
+example at rate `1/2`, even `n`, `δ = 1/2`, one has `E ≈ n·ln 2/ln q`, so any `q > 2^{n²}` gives
+`E` below about `1/n` and the overflow fails for arbitrarily large `n`.  The overflow needs a
+**joint `(n, q)` regime** controlling `ln q` in terms of `n`; no such general regime is proved
+here.  The rate-`1/2`, `n = 256` instance (`rs_uptoCapacity_false_rate12_n256`) is this theorem
+with the numerics discharged under the explicit window `2^128 ≤ q ≤ 2^256`.
 
-So the negative side — the list-decoding bound is unattainable at capacity — holds uniformly across
-the prize-rate family, in one statement. Axiom-clean (`[propext, Classical.choice, Quot.sound]`).
+So the theorem below is the conditional negative side: at every rate and radius, **if** the
+capacity exponent overflows the budget, the list-decoding bound fails; whether the overflow holds
+depends on the joint `(n, q)` parameters.  Axiom-clean (`[propext, Classical.choice, Quot.sound]`).
 
 ## References
 - [ABF26] Arnon, Boneh, Fenzi. *Open Problems in List Decoding and Correlated Agreement*. 2026. #232.

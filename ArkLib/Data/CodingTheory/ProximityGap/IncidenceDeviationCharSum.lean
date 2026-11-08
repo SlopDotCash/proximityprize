@@ -50,6 +50,14 @@ once per term; it does **not** make the prize budget reachable for any nonzero `
 cancellation `∑_b conj(η_b)ψ(b·s₀) ≲ √q · B`, which is the open Paley/BCHKS-1.12 problem and is
 NOT supplied by this file.
 
+**Scope of the model.** Everything here lives in the one-dimensional `V = F` model of
+`IncidencePeriodBridge`. There, `s₁ ≠ 0` forces the deviation support to be empty and
+`I(s₀, s₁) = |G|` exactly; `s₁ = 0` makes the "line" a single point, with deviation support
+`F \ {0}`. So the "annihilator-hyperplane cancellation wall" described above has no nontrivial
+instance in this model. The relevant wall would live in the `(n − k)`-dimensional syndrome
+quotient of the prize, and no in-tree theorem identifies that geometry with this one. The
+triangle inequalities proved here are correct as stated.
+
 This is the intermediate brick consumed by the bridge theorem
 `CharSumDeltaStarBridge.le_mcaDeltaStar_of_uniformCharSumBound`.
 

@@ -52,8 +52,18 @@ unconditionally by a residual-free keystone.
 
 ## Honesty
 
-No `sorry`/`axiom`; nothing is asserted beyond the fold. The leaves (1) and witnesses (2) are
-open, named hypotheses — exactly the remaining #114 rbr surface.
+No `sorry`/`axiom`; nothing is asserted beyond the fold. In the generic fold theorem of this file
+the leaves (1) and witnesses (2) are named hypotheses — that conditional scope is correct for the
+fold itself. They are no longer all open in tree, however: four forwarding-phase determinism
+witnesses are discharged below, and
+`Bricks.composedRbrKnowledgeSoundnessPreserving_of_sumcheck_rounds`
+(`ShortPhaseRbrKnowledgeLeaves.lean`) discharges all five non-sum-check short-phase leaves. That
+theorem is still **conditional**: it takes the canonical sum-check per-round knowledge bounds
+`hRound2`/`hRound3` (`Sumcheck.Spec.RoundKnowledge` at degrees 2 and 3) as explicit hypotheses,
+besides its side conditions (`[Subsingleton σ]`, `0 < ℓ_m`, `0 < ℓ_n`, initializer and
+nonemptiness facts); an earlier unconditional zero-flip completion was retired. Its concrete
+per-round budget is described at `composedRbrError`, including error `1` at the unbound RLC seam.
+See also the tight chains in `ComposedTightRbrKnowledge.lean` and the 8-phase apex.
 -/
 
 open OracleComp OracleSpec ProtocolSpec
@@ -241,8 +251,12 @@ private theorem composedPSpec_dir_seam
 
 /-- The folded per-round rbr knowledge error of the composed Spartan PIOP: the eight per-phase
 error families combined through `ChallengeIdx.sumEquiv` at each of the seven (right-associated)
-seams — exactly the error produced by the keystone fold. For the canonical leaves this is `2/|R|`
-on each sum-check round, `0` elsewhere. -/
+seams — exactly the error produced by the keystone fold. For the concrete leaves of the
+short-phase theorem `composedRbrKnowledgeSoundnessPreserving_of_sumcheck_rounds`
+(`ShortPhaseRbrKnowledgeLeaves.lean`, conditional on the sum-check round bounds) the budget is:
+`0` at the message/adapter rounds, `ℓ_m/|R|` at the initial `firstChallenge` round
+(Schwartz–Zippel), `3/|R|` per first-sum-check round, `1` at the unbound `linearCombination` (RLC)
+seam, and `2/|R|` per second-sum-check round. -/
 def composedRbrError
     (err₁ : (⟨!v[.P_to_V], !v[Witness R pp]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0)
     (err₂ : (⟨!v[.V_to_P], !v[FirstChallenge R pp]⟩ : ProtocolSpec 1).ChallengeIdx → ℝ≥0)
@@ -688,7 +702,10 @@ Four of the seven left-operand determinism witnesses of the fold are discharged 
 forwarding phases compile (`toVerifier`) to pure-deterministic verifiers, by
 `OracleVerifier.toVerifier_eq_pure_of_collapse` + `simulateQ_pure`. The remaining three
 (`firstSumcheck`/`secondSumcheck` — failing-deterministic, the sum-check `else failure` shape —
-and the oracle-querying `prependRLCTarget`) are open, named obligations of the wiring layer. -/
+and the oracle-querying `prependRLCTarget`) are not discharged in this file; the short-phase
+theorem in `ShortPhaseRbrKnowledgeLeaves.lean` supplies what its route needs (e.g.
+`prependRLCTarget_toVerifier_pure`), so they are not open obligations of that composed statement
+(which remains conditional only on the sum-check round bounds `hRound2`/`hRound3`). -/
 
 /-- The `firstMessage` (`SendSingleWitness`) verifier compiles to a pure-deterministic verifier:
 its `verify` is `pure stmt`. Supplies `verify₁`/`hV₁` of the fold. -/

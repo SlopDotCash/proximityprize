@@ -64,7 +64,9 @@ unconditional split `#bad ≤ #pool + #fresh` it gives
 
 Proved here: `fresh_card_le_codim` (the abstract quotient-codimension bound),
 `fresh_scalars_card_le_syndrome` (its syndrome-space specialization, `finrank W = 2(n − k)`), and
-`bad_card_le_pool_add_fresh_rank` (the composed accounting).  **Net advance: lemma 1 "bound
+`bad_card_le_pool_add_fresh_rank` (the composed accounting; caveat: its `Fin p` family is not
+tied to `B`, so it is just `#(B ∖ P) ≤ codim E` plus SYZ29 —
+`bad_card_le_pool_add_fresh_rank_of_indexed` indexes the vectors by the fresh scalars).  **Net advance: lemma 1 "bound
 `#fresh`" ⤳ "the fresh contributions are independent modulo the core envelope `E`"** — the
 support-geometry input (each fresh functional escapes `U'`, SYZ18-distinct), which is the residual.
 
@@ -228,25 +230,52 @@ theorem fresh_scalars_card_le_syndrome {F : Type*} [Field F] {ι : Type*} [Finty
   have h := fresh_card_le_codim E f hindep
   rwa [finrank_syndromePair C] at h
 
-/-- **The composed complete accounting.**  With the SYZ29 unconditional split
-`#bad ≤ #pool + #fresh` and the fresh codimension bound: if the fresh part `B ∖ P` is enumerated
-by `p` vectors independent modulo `E`, then
+/-- **The composed accounting (abstract form).**  With the SYZ29 unconditional split
+`#bad ≤ #pool + #fresh`: if `#(B ∖ P) ≤ finrank W − finrank E`, then
 
   `#bad ≤ #pool + (finrank W − finrank E)`.
 
-Composed with `SYZ29.bad_card_le_pool_of_attribution` (`#pool ≤ ∑(n − sᵢ)`) and
-`fresh_scalars_card_le_syndrome` (`finrank W = 2(n − k)`) this is the honest
-`#bad ≤ ∑(n − sᵢ) + (2(n − k) − finrank E)` — the whole lemma-1 accounting, modulo the
-independence-mod-`E` residual. -/
+This is pure arithmetic on top of SYZ29; the fresh-count hypothesis is stated directly. -/
+theorem bad_card_le_pool_add_of_fresh_le_codim {F W : Type*} [Field F] [DecidableEq F]
+    [AddCommGroup W] [Module F W] [FiniteDimensional F W]
+    (B P : Finset F) (E : Submodule F W)
+    (hfresh : (B \ P).card ≤ finrank F W - finrank F E) :
+    B.card ≤ P.card + (finrank F W - finrank F E) := by
+  have hsplit := SYZ29.bad_card_le_pool_add_fresh B P
+  omega
+
+/-- **The composed accounting, with functionals indexed by the fresh scalars.**  If each fresh
+scalar `b ∈ B ∖ P` carries a vector `f b ∈ W` and these are linearly independent modulo `E`, then
+`#bad ≤ #pool + (finrank W − finrank E)`.  Indexing by `B ∖ P` ties the count to the fresh
+scalars themselves; *which* vectors are attached (the witness functionals) and why they are
+independent mod `E` remains the lemma-1 residual. -/
+theorem bad_card_le_pool_add_fresh_rank_of_indexed {F W : Type*} [Field F] [DecidableEq F]
+    [AddCommGroup W] [Module F W] [FiniteDimensional F W]
+    (B P : Finset F) (E : Submodule F W) (f : ↥(B \ P) → W)
+    (hindep : LinearIndependent F (fun b => E.mkQ (f b))) :
+    B.card ≤ P.card + (finrank F W - finrank F E) := by
+  refine bad_card_le_pool_add_of_fresh_le_codim B P E ?_
+  have hcard : (B \ P).card ≤ finrank F (W ⧸ E) := by
+    have h := hindep.fintype_card_le_finrank
+    simpa using h
+  have hq : finrank F (W ⧸ E) + finrank F E = finrank F W :=
+    Submodule.finrank_quotient_add_finrank E
+  omega
+
+/-- **The composed accounting (`Fin p`-indexed form, decorative linkage).**  If `#(B ∖ P) = p` and
+some `p` vectors are independent modulo `E`, then `#bad ≤ #pool + (finrank W − finrank E)`.
+Caveat: nothing links `f` to `B` — the hypotheses amount exactly to `#(B ∖ P) ≤ codim E`, so this
+is `bad_card_le_pool_add_of_fresh_le_codim` in disguise, not "the whole lemma-1 accounting".  The
+lemma-1 content (attaching the witness functionals of the fresh scalars and proving their
+independence mod `E`) is the residual; see `bad_card_le_pool_add_fresh_rank_of_indexed` for the
+form indexed by the fresh scalars. -/
 theorem bad_card_le_pool_add_fresh_rank {F W : Type*} [Field F] [DecidableEq F]
     [AddCommGroup W] [Module F W] [FiniteDimensional F W]
     (B P : Finset F) (E : Submodule F W) {p : ℕ} (f : Fin p → W)
     (hfresh_eq : (B \ P).card = p)
     (hindep : LinearIndependent F (fun i => E.mkQ (f i))) :
-    B.card ≤ P.card + (finrank F W - finrank F E) := by
-  have hsplit := SYZ29.bad_card_le_pool_add_fresh B P
-  have hfresh := fresh_card_le_codim E f hindep
-  omega
+    B.card ≤ P.card + (finrank F W - finrank F E) :=
+  bad_card_le_pool_add_of_fresh_le_codim B P E (hfresh_eq ▸ fresh_card_le_codim E f hindep)
 
 end Fresh
 
@@ -261,4 +290,6 @@ end ArkLib.ProximityGap.Frontier.SYZ30
 #print axioms ArkLib.ProximityGap.Frontier.SYZ30.syz30_two_block_floor
 #print axioms ArkLib.ProximityGap.Frontier.SYZ30.fresh_card_le_codim
 #print axioms ArkLib.ProximityGap.Frontier.SYZ30.fresh_scalars_card_le_syndrome
+#print axioms ArkLib.ProximityGap.Frontier.SYZ30.bad_card_le_pool_add_of_fresh_le_codim
+#print axioms ArkLib.ProximityGap.Frontier.SYZ30.bad_card_le_pool_add_fresh_rank_of_indexed
 #print axioms ArkLib.ProximityGap.Frontier.SYZ30.bad_card_le_pool_add_fresh_rank

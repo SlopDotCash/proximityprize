@@ -20,12 +20,17 @@ By the `μ_n`-orbit partition (`GaussPeriodOrbitPartition`), `η` is constant on
 
 **Why `r = 2` is not redundant with `r = 1`** (efficiency discipline): the second moment exposes
 only `E_1 = n` (always, thinness-blind), whereas the fourth moment exposes the **additive energy**
-`E(G) = E_2` — the *first* thinness-sensitive moment. The probe `probe_coset_fourth_census.py`
-confirms `E(μ_n) = Θ(n²)` with `E/n² ∈ [2.25, 3.56]` **bounded** (the thin/Sidon regime: `μ_n` is a
-near-Sidon set, so its additive energy stays at the Sidon floor `≈ 2n²−n`, *not* the thick `Θ(n³)`).
-So the *average* coset fourth moment is `≈ E·n/(q−1)·… = Θ(n²)`, i.e. the typical coset still sits at
-the Parseval scale `‖η‖² ≈ √(E/n)·√n = Θ(√n)`. The `M⁴/avg` ratio grows (`6.7 → 51` over the probe
-range) — confirming the fourth moment, like the second, does **not** beat the wall at fixed `r`
+`E(G) = E_2` — the *first* thinness-sensitive moment. On the thin subgroups it tested, the probe
+`probe_coset_fourth_census.py` observed `E(μ_n)/n² ∈ [2.25, 3.56]` (near the Sidon floor
+`≈ 2n²−n`, not the thick `Θ(n³)`). This is a finite empirical observation, **not** a proved uniform
+law `E = Θ(n²)` over all subgroups (audit PG-048): e.g. for the full nonzero subgroup
+`G = F_p^×` (`n = p−1`) direct counting gives `E = n³ − n² + n`, and the proved floor
+`E ≥ n⁴/q` (`addEnergy_ge`) already forces cubic energy whenever `n` is a constant fraction of `q`.
+In the tested thin regime (`E ≈ c·n²`, `q ≫ n²`) the nonzero fourth moment `q·E − n⁴` gives a mean
+`(q·E − n⁴)/(q−1) ≈ E = Θ(n²)` for `‖η_b‖⁴`, i.e. a root-mean-fourth-power `‖η_b‖ ≈ E^{1/4} =
+Θ(√n)` — the Parseval scale (`‖η_b‖ = Θ(√n)`, `‖η_b‖² = Θ(n)`). A moment mean alone does not
+establish what a *typical* frequency does. The observed `M⁴/avg` ratio grows (`6.7 → 51` over the
+probe range), consistent with the fourth moment, like the second, not beating the wall at fixed `r`
 (the moment route needs `r ~ log m`). Honest scope: this is an EXACT structural identity exposing
 the energy, NOT a CORE bound.
 

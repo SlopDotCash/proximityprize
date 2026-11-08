@@ -21,7 +21,7 @@ the bridge for random *functions*; the permutation analogue needs the conditiona
 fact that, for a uniform `π : Equiv.Perm X` conditioned on extending a partial injection `c`,
 the value `π a` at a fresh point `a` is **uniform over the unused outputs** `X \ c.values`.
 
-This file proves the counting core, with no probability semantics:
+This file proves the counting core:
 
 * `Extends π c` — `π` agrees with the association list `c`;
 * `extendsFinset_card_eq_of_fresh` — the **swap-trick uniformity**: for fresh `a` and two
@@ -29,11 +29,20 @@ This file proves the counting core, with no probability semantics:
   `c ⧺ [(a, b')]` are equinumerous (post-compose with `Equiv.swap b b'`);
 * `extends_apply_ne_of_used` — an extension of `c` never sends a fresh input to a used
   output (injectivity), so the marginal is supported on the unused outputs;
-* `extendsFinset_eq_biUnion` — the partition of the extensions of `c` by the value at `a`.
+* `extendsFinset_eq_biUnion` — the partition of the extensions of `c` by the value at `a`;
 
-The probabilistic layer (uniform-permutation marginalization, the `simulateQ` induction
-mirroring `EagerTable.lean`, and the per-step birthday bounds for CO25 Lemma 5.8) builds on
-these in follow-up increments.
+and, on top of it, the **local probability laws** (actual `PMF` statements, not only counting):
+
+* `uniformOfFinset_extends_step` — the forward uniform chain rule: drawing uniformly among the
+  extensions of `c` equals drawing the value at a fresh input uniformly among the unused outputs
+  and then uniformly among the extensions of the grown cache;
+* `uniformOfFinset_extends_step_inv` — the inverse-direction chain rule (preimage of a fresh
+  output uniform among the unused keys).
+
+Still not in this file: the `simulateQ` game bridge (the induction, mirroring the random-function
+eager table of `ToVCVio/OracleComp/RandomOracleEagerTableDep.lean`, that turns these per-step laws
+into the eager–lazy equivalence for the permutation oracle) and the per-step birthday bounds for
+CO25 Lemma 5.8.
 
 Axiom-clean: `[propext, Classical.choice, Quot.sound]` (see `#print axioms` at EOF).
 -/

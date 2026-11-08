@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Stepanov weld reconnaissance: subgroup escapes over F_P, solution-space
-dimension of escapes, and the proportional-rows harvest collapse.
+dimension of escapes, and the (conditional) proportional-rows scalar pin.
 
 Final round of the #466 P1 rate-quarter three-pencil arc (follow-up to
 probe_rate_quarter_p1_dimension_deficit.py).  Questions:
@@ -14,13 +14,21 @@ probe_rate_quarter_p1_dimension_deficit.py).  Questions:
      Verify the lambda/coset-class witness exactly over F_P (158-bit arithmetic).
   B. Solution-space DIMENSION of the subgroup escape: at a synthetic scale where
      the coset escape fits (q = 1009, n | q-1), compute the exact dimension of
-     {(r,s) in V_X x V_Y : (r+s)|_Z = 0} for coset configurations — expected
-     exactly 1 (the coset line).  Dimension <= 1 means both rows of each pencil
-     difference are PROPORTIONAL.
-  C. The proportional-rows harvest collapse, measured exactly: realize the
-     synthetic coset triple as pencils + stack and census the harvest — each
-     pencil should collect at most ONE rider per foreign region (the cancellation
-     scalar is pinned: r0 + gamma*r1 = (1+gamma*mu)*r0).
+     {(r,s) in V_X x V_Y : (r+s)|_Z = 0} for coset configurations.  MEASURED
+     (exact rank over F_1009, not a numerical rank): 112 variables, rank 56,
+     nullity 56 = k - n — NOT 1.  Structural reason: multiplying the binomial
+     identity A + lam*B = (1+lam)*C by any h with deg h < k - n gives the k - n
+     independent solutions (h*A, lam*h*B).  So the escape space is NOT
+     one-dimensional, and the two rows of a pencil difference need NOT be
+     proportional: e.g. rows (X*A, A) (used by section D below) have the
+     nonconstant ratio X.  Only "dimension <= 1 => rows proportional" is valid,
+     and its hypothesis fails here.
+  C. CONDITIONAL lemma, measured exactly: IF a pencil difference has
+     constant-proportional rows (r0, mu*r0) with mu != 0, the cancellation scalar
+     is pinned (r0 + gamma*mu*r0 = (1+gamma*mu)*r0 = 0 forces gamma = -1/mu), so
+     that pencil collects at most one rider per foreign region.  Section B shows
+     this branch does NOT cover the whole escape family; no one-dimensional
+     escape dichotomy and no universal classification is established here.
 
 All exact; deterministic.
 """
@@ -165,12 +173,27 @@ dim = nv - rref_rank(rows, q)
 gen_dim = max(0, 2 * ks - (len(X) + len(Y) + len(Z)))
 print(f"  exact solution dim = {dim} (vars {nv}); generic prediction ="
       f" {gen_dim}; coset EXCESS = {dim - gen_dim}")
-print("  (dim - generic = 1 => the escape line is the coset solution; if the")
-print("   total dim were <= 1 in the fully-aligned P1 regime, both rows of each")
-print("   difference are forced PROPORTIONAL)")
+# On Z the coset vanishing polys z_X = x^n - s_X, z_Y = x^n - s_Y are the nonzero
+# constants s_Z - s_X, s_Z - s_Y, and deg rho, deg sig < ks - n_s <= |Z|, so the
+# solutions are exactly {(rho, c*rho)} with c = -(s_Z - s_X)/(s_Z - s_Y): a
+# (ks - n_s)-dimensional space (one solution per multiplier h = rho).
+assert ks - n_s <= len(Z)
+assert dim == ks - n_s, "escape space should have dimension k - n (multiplier family)"
+escape_dim_B = dim
+c_ratio = (-(svals[2] - svals[0]) * pow(svals[2] - svals[1], q - 2, q)) % q
+for dgr in (0, 1):  # multipliers h = 1 and h = X are independent solutions
+    vec = [0] * nv
+    vec[dgr] = 1
+    vec[len(B1) + dgr] = c_ratio
+    assert all(sum(r[j] * vec[j] for j in range(nv)) % q == 0 for r in rows)
+print(f"  dim = k - n = {ks - n_s}: every multiplier h of degree < k - n gives a")
+print("  solution; h = 1 and h = X are verified independent kernel vectors.")
+print("  => the escape space is NOT one-dimensional: two rows of a difference can")
+print("     have the NONCONSTANT ratio X (section D uses rows (X*A, A)), so")
+print("     'dim <= 1 => rows proportional' does not apply here.")
 
 print("\n" + "=" * 78)
-print("C. Proportional rows pin the cancellation scalar (exact, synthetic)")
+print("C. CONDITIONAL: constant-proportional rows pin the cancellation scalar")
 print("=" * 78)
 # pencil2 - pencil1 = (a, mu*a) with a = z_X-ish; the vote equation at i (u =
 # pencil2 there): a(i) + gamma*mu*a(i) = 0 with a(i) != 0 => gamma = -1/mu.
@@ -185,8 +208,10 @@ for i in region[:50]:
             sols.add(gamma)
 print(f"  vote-equation solutions over 50 region coords: {sorted(sols)};"
       f" pinned value -1/mu = {sorted(pinned)}; equal: {sols == pinned}")
-print("  => a proportional-difference pencil harvests <= 1 rider per foreign")
-print("     region — the collapse is exact and coordinate-independent.")
+print("  => IF a difference has constant-proportional rows (r0, mu*r0), mu != 0,")
+print("     that pencil harvests <= 1 rider per foreign region (gamma = -1/mu).")
+print("     Conditional only: section B shows the escape family also contains")
+print("     non-proportional row pairs, which this lemma does not cover.")
 
 print("\n" + "=" * 78)
 print("D. END-TO-END synthetic refutation census: the coset triple with an")
@@ -295,8 +320,11 @@ print("\n" + "=" * 78)
 print("VERDICT")
 print("=" * 78)
 print("  * If section A found a divisor: FullyAlignedTripleFree (round-3")
-print("    residual) is FALSE for adversarial domains — the honest residual is")
-print("    the DICHOTOMY: margin somewhere OR all difference row-pairs")
-print("    proportional (dim<=1).  All known escapes are dim-1 coset lines.")
-print("  * The proportional branch is kernel-provable: pinned scalar per foreign")
-print("    region + junk<=N-3(T-4)+3(k-1) coords => budget holds.")
+print("    residual) is FALSE for adversarial domains.")
+print("  * NO one-dimensional escape dichotomy is established: the synthetic coset")
+print(f"    escape space has dimension k - n = {escape_dim_B} (section B), not 1, and")
+print("    row pairs with nonconstant ratio X exist (section D).  No corrected")
+print("    universal classification of escapes is claimed here.")
+print("  * Conditional lemma only: a difference with constant-proportional rows")
+print("    (r0, mu*r0), mu != 0, pins its cancellation scalar to -1/mu (section C);")
+print("    this branch does not cover the whole escape family.")

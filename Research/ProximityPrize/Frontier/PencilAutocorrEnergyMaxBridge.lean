@@ -15,35 +15,47 @@ worst multiplicative autocorrelation `M = max_{ρ≠1} |S ∩ ρ·S|`:
 
   `|S|·(|S|−1) ≤ (|G|−1)·M`,   i.e.   `M ≥ |S|(|S|−1)/(|G|−1)`.
 
-This file lands the SECOND-moment (energy) companion, which is the SHARPER and exact lever for the
-thin subgroup. With the two double-counts
+This file records the SECOND-moment (energy) relations.  With the two double-counts
 
   `∑_{ρ∈G} |S ∩ ρ·S| = |S|²`         (`autocorr_sum_eq_sq`),
   `∑_{ρ∈G} |S ∩ ρ·S|² = E_×(S)`      (the multiplicative energy),
 
-the elementary bound `∑ a_ρ² ≤ (max_ρ a_ρ)·(∑ a_ρ)` (a number is `≤` the max times its weight) gives
+the elementary bound `∑ a_ρ² ≤ (max_ρ a_ρ)·(∑ a_ρ)` gives
 
-> **`E_×(S) ≤ M₀ · |S|²`** where `M₀ = max_{ρ∈G} |S ∩ ρ·S|`   (`mulEnergy_le_maxAutocorr_mul_sq`),
+> `E_×(S) ≤ M₀ · |S|²` where `M₀` bounds `|S ∩ ρ·S|` for ALL `ρ ∈ G`
+> (`mulEnergy_le_maxAutocorr_mul_sq`).
 
-equivalently the energy lower bound on the worst autocorrelation `M₀ ≥ E_×(S)/|S|²`
-(`maxAutocorr_ge_mulEnergy_div_sq`).
+**Caveat: the all-shift maximum is trivial.**  The maximum over ALL shifts, including `ρ = 1`, is not
+the object `M = max_{ρ≠1}` of the pigeonhole bound.  For EVERY finite `S` the identity shift gives
+`|S ∩ 1·S| = |S|` (`autocorr_one_eq_card`), and every overlap is at most `|S|` (`autocorr_le_card`),
+so `max_{ρ∈G} |S ∩ ρ·S| = |S|` regardless of energy or subgroup structure
+(`card_le_of_forall_autocorr_le`).  Since `E_×(S) ≤ |S|³` always, the all-shift energy bound
+`M₀ ≥ E_×(S)/|S|²` is never stronger than this trivial `M₀ ≥ |S|`, and it is NOT a sharpening of the
+nontrivial-shift pigeonhole bound.  For example `S = {1, 2}` in `𝔽₇ˣ` has all-shift maximum `2`
+while its maximum over nonidentity shifts is `1`.  In particular the subgroup conclusion
+`|H| ≤ M₀` (`subgroup_maxAutocorr_ge_card`, `subgroup_maxAutocorr_ge_card_of_support`) follows
+immediately from `hM₀ 1`; the energy and support proofs given for it are alternative derivations,
+not evidence of a nontrivial rigidity phenomenon.
 
-**Why this is the SHARP face (not boundary-mapping).**  For the prize object `S = H = μ_n` the
-multiplicative energy is EXACTLY `E_×(H) = |H|³` (`subgroup_multiplicativeEnergy_eq_card_cube`), so the
-energy bound forces `M₀ ≥ |H|³/|H|² = |H|` — the EXACT all-or-nothing maximum
-(`subgroup_autocorr_le_card` + `exists_nontrivial_shift_autocorr_eq_card` pin `M₀ = |H|`).  The
-first-moment pigeonhole only delivers `M ≥ |H|(|H|−1)/(|G|−1) = Θ(|H|²/|G|)`, which for the prize
-regime `|G| = q ≈ |H|^β` is `≈ |H|^{2−β} → 0` — vacuous.  The energy lever is the one that recovers the
-true `Θ(|H|)` rigidity, confirming the unsigned multiplicative autocorrelation of the subgroup carries
-its full mass on the diagonal-of-shifts with NO spreading: any √(log) cancellation must live in the
-SIGNED phase, never the unsigned overlap (consistent with the in-tree honest-scope notes).
+**The meaningful nontrivial energy bridge.**  Removing the identity contribution from both moment sums
+gives, for any `M` bounding the overlaps at every `ρ ≠ 1`,
+
+> `E_×(S) ≤ |S|² + M · |S|(|S| − 1)`,  i.e.  `E_×(S) − |S|² ≤ M · (|S|² − |S|)`
+> (`mulEnergy_le_sq_add_maxNontrivial_mul`),
+
+which holds for all finite `S` (including the empty and singleton cases, where both sides reduce to
+`|S|²`).  This is the energy counterpart of `autocorr_max_pigeonhole`; it is a genuine constraint on
+the nonidentity maximum.
+
+The generic inequalities `sum_sq_le_max_mul_sum`, `mulEnergy_le_maxAutocorr_mul_sq`, and the
+support-energy Cauchy–Schwarz floor below are correct and reusable.
 
 **Honest scope.**  This is a sign-free additive/multiplicative-combinatorics structural brick: the
 exact second-moment relation between the worst autocorrelation and the multiplicative energy.  It is
 NOT a CORE closure, NOT thinness-essential (it holds for any finite group), and makes NO capacity /
-beyond-Johnson / growth-law claim (ASYMPTOTIC GUARD untouched).  It SHARPENS the pigeonhole lever and
-re-derives the subgroup's exact `M₀ = |H|` from energy, but the prize `M(n) ≤ C√(n log(p/n))` lives in
-the SIGNED character sum, which this does not touch.
+beyond-Johnson / growth-law claim (ASYMPTOTIC GUARD untouched).  The all-shift statements do not
+sharpen the nontrivial-shift pigeonhole lever (see the caveat above), and the prize
+`M(n) ≤ C√(n log(p/n))` lives in the SIGNED character sum, which this does not touch.
 
 Axiom-clean (`propext`, `Classical.choice`, `Quot.sound`); no `sorry`.  Issues #407, #444.
 -/
@@ -65,6 +77,49 @@ theorem sum_sq_le_max_mul_sum (a : G → ℕ) {M₀ : ℕ} (hM₀ : ∀ ρ : G, 
   rw [pow_two]
   exact Nat.mul_le_mul_right _ (hM₀ ρ)
 
+/-- The identity-shift overlap is the whole set: `|S ∩ 1·S| = |S|`. -/
+theorem autocorr_one_eq_card (S : Finset G) : (S ∩ dilate (1 : G) S).card = S.card := by
+  have : dilate (1 : G) S = S := by
+    unfold dilate; simp
+  rw [this, Finset.inter_self]
+
+/-- Every autocorrelation overlap is at most `|S|`. -/
+theorem autocorr_le_card (S : Finset G) (ρ : G) : (S ∩ dilate ρ S).card ≤ S.card :=
+  Finset.card_le_card Finset.inter_subset_left
+
+/-- **The all-shift maximum is trivially `|S|`.**  Any bound `M₀` on the overlaps at ALL shifts
+(including `ρ = 1`) satisfies `|S| ≤ M₀`, for every finite set `S`; together with `autocorr_le_card`
+this pins `max_{ρ∈G} |S ∩ ρ·S| = |S|` independently of energy or subgroup structure. -/
+theorem card_le_of_forall_autocorr_le (S : Finset G) {M₀ : ℕ}
+    (hM₀ : ∀ ρ : G, (S ∩ dilate ρ S).card ≤ M₀) : S.card ≤ M₀ :=
+  autocorr_one_eq_card S ▸ hM₀ 1
+
+/-- **The nontrivial-shift energy bridge.**  If `M` bounds the overlaps at every nonidentity shift,
+then, removing the identity contribution `|S|²` from the energy and `|S|` from the first moment,
+
+  `E_×(S) ≤ |S|² + M · |S|(|S| − 1)`,
+
+i.e. `E_×(S) − |S|² ≤ M · (|S|² − |S|)`.  This holds for every finite `S` (for `|S| ≤ 1` both sides
+are `|S|²`) and is the energy companion of `autocorr_max_pigeonhole`. -/
+theorem mulEnergy_le_sq_add_maxNontrivial_mul (S : Finset G) {M : ℕ}
+    (hM : ∀ ρ : G, ρ ≠ 1 → (S ∩ dilate ρ S).card ≤ M) :
+    ∑ ρ : G, (S ∩ dilate ρ S).card ^ 2 ≤ S.card ^ 2 + M * (S.card * (S.card - 1)) := by
+  classical
+  have hsplit : ∑ ρ : G, (S ∩ dilate ρ S).card ^ 2
+      = (S ∩ dilate (1 : G) S).card ^ 2
+        + ∑ ρ ∈ Finset.univ.erase (1 : G), (S ∩ dilate ρ S).card ^ 2 := by
+    rw [← Finset.sum_erase_add _ _ (Finset.mem_univ (1 : G))]
+    ring
+  have hnt : ∑ ρ ∈ Finset.univ.erase (1 : G), (S ∩ dilate ρ S).card ^ 2
+      ≤ M * ∑ ρ ∈ Finset.univ.erase (1 : G), (S ∩ dilate ρ S).card := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_le_sum (fun ρ hρ => ?_)
+    rw [pow_two]
+    exact Nat.mul_le_mul_right _ (hM ρ (Finset.ne_of_mem_erase hρ))
+  rw [PencilAutocorrSumDoubleCount.autocorr_sum_nontrivial_eq] at hnt
+  rw [hsplit, autocorr_one_eq_card]
+  exact Nat.add_le_add_left hnt _
+
 /-- **The multiplicative-energy upper bound by the worst autocorrelation.**  With the autocorrelation
 double-count `∑_ρ |S ∩ ρS| = |S|²`, the energy `E_×(S) = ∑_ρ |S ∩ ρS|²` is at most `M₀·|S|²` where
 `M₀` is the worst (over ALL `ρ`, including the trivial shift) autocorrelation:
@@ -80,12 +135,12 @@ theorem mulEnergy_le_maxAutocorr_mul_sq (S : Finset G) {M₀ : ℕ}
           sum_sq_le_max_mul_sum (fun ρ => (S ∩ dilate ρ S).card) hM₀
     _ = M₀ * S.card ^ 2 := by rw [hsum]
 
-/-- **Subgroup exactness via energy.**  For the prize object `S = H` (a multiplicative subgroup, the
-thin `μ_n`), the energy bound `E_×(H) ≤ M₀·|H|²` combined with the EXACT energy `E_×(H) = |H|³`
-forces the worst autocorrelation `M₀ ≥ |H|` whenever `H` is nonempty.  Together with
-`subgroup_autocorr_le_card` (`M₀ ≤ |H|`), this RE-DERIVES `M₀ = |H|` from the energy lever alone —
-the unsigned multiplicative autocorrelation of the subgroup is maximally concentrated, no spreading
-to exploit. -/
+/-- **Subgroup all-shift bound via energy (an alternative derivation of a trivial fact).**  For a
+nonempty multiplicative subgroup `H`, the energy bound `E_×(H) ≤ M₀·|H|²` combined with the exact
+energy `E_×(H) = |H|³` gives `|H| ≤ M₀`.  Because `M₀` bounds the overlap at ALL shifts, including
+`ρ = 1`, the same conclusion holds for every finite set directly from `hM₀ 1`
+(`card_le_of_forall_autocorr_le`); this theorem therefore carries no subgroup-specific rigidity
+information about the nonidentity shifts. -/
 theorem subgroup_maxAutocorr_ge_card {H : Finset G} {M₀ : ℕ}
     (hmul : ∀ a ∈ H, ∀ b ∈ H, a * b ∈ H)
     (hinv : ∀ a ∈ H, a⁻¹ ∈ H)
@@ -131,8 +186,9 @@ fiber is bounded by `M₀`, and only `K` shifts have a nonzero fiber, then the f
 
 where `K = #{ρ : |S ∩ ρS| ≠ 0}` is the autocorrelation-support size.  This is the exact support
 version of the first-moment pigeonhole: a large set cannot have both small overlap fibers and small
-dilation-difference support.  For a subgroup the support is `H` and the inequality becomes the sharp
-`|H|² ≤ |H|·M₀`, hence again `|H| ≤ M₀` after cancellation. -/
+dilation-difference support.  For a subgroup the support is `H` and the inequality becomes
+`|H|² ≤ |H|·M₀`, hence again `|H| ≤ M₀` after cancellation (which, for the all-shift `M₀`, is
+already immediate from the identity shift). -/
 theorem sq_card_le_support_mul_maxAutocorr (S : Finset G) {M₀ : ℕ}
     (hM₀ : ∀ ρ : G, (S ∩ dilate ρ S).card ≤ M₀) :
     S.card ^ 2
@@ -203,11 +259,12 @@ theorem subgroup_support_mul_energy_eq_card_four (H : Finset G)
   rw [subgroup_support_card_eq H hmul hinv hne,
     subgroup_multiplicativeEnergy_eq_card_cube hmul hinv]
   ring
-/-- **Subgroup exactness from support-aware pigeonhole.**  For a multiplicative subgroup `H`, the
-autocorrelation support has size exactly `|H|`; therefore the support-aware pigeonhole bound alone
-already forces the worst overlap bound `M₀` to be at least `|H|` (for nonempty `H`).  This is the
-first-moment support counterpart to `subgroup_maxAutocorr_ge_card`, and pins the same all-or-nothing
-subgroup rigidity without invoking the squared-energy identity. -/
+/-- **Subgroup all-shift bound from support-aware pigeonhole.**  For a multiplicative subgroup `H`,
+the autocorrelation support has size exactly `|H|`; therefore the support-aware pigeonhole bound
+gives `|H| ≤ M₀` (for nonempty `H`).  This is the first-moment support counterpart to
+`subgroup_maxAutocorr_ge_card`.  As there, `M₀` bounds the identity-shift overlap `|H|`, so the
+conclusion is immediate from `hM₀ 1` (`card_le_of_forall_autocorr_le`) and is not a nontrivial
+subgroup rigidity statement. -/
 theorem subgroup_maxAutocorr_ge_card_of_support {H : Finset G} {M₀ : ℕ}
     (hmul : ∀ a ∈ H, ∀ b ∈ H, a * b ∈ H)
     (hinv : ∀ a ∈ H, a⁻¹ ∈ H)
@@ -230,6 +287,10 @@ open ProximityGap.Frontier.PencilAutocorrelation in
 #print axioms sum_sq_le_max_mul_sum
 open ProximityGap.Frontier.PencilAutocorrelation in
 #print axioms mulEnergy_le_maxAutocorr_mul_sq
+open ProximityGap.Frontier.PencilAutocorrelation in
+#print axioms card_le_of_forall_autocorr_le
+open ProximityGap.Frontier.PencilAutocorrelation in
+#print axioms mulEnergy_le_sq_add_maxNontrivial_mul
 open ProximityGap.Frontier.PencilAutocorrelation in
 #print axioms subgroup_maxAutocorr_ge_card
 open ProximityGap.Frontier.PencilAutocorrelation in

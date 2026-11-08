@@ -50,8 +50,10 @@ codes, and "sufficiently large `n`". We capture these uniformly as follows:
   when `|Λ(C, δ)| ≤ ℓ`.
 - `large_alphabet_barrier_bdg24_agl23` — ABF26 T3.10: any code attaining the generalized
   Singleton bound requires exponential-in-`1/η` alphabet.
-- `random_linear_lambda_lower_glmrsw22` — ABF26 T3.11 [GLMRSW22 Thm 4.1]: random linear
-  code of appropriate rate has list size lower-bounded with high probability.
+- `random_linear_lambda_lower_glmrsw22` — ABF26 T3.11 [GLMRSW22 Thm 4.1]: some linear code
+  of dimension `⌈ρ n⌉` has list size above the GLMRSW22 floor bound (existential form; the
+  paper's high-probability random-code estimate is the separate, still-open
+  random-generator-matrix surface).
 
 ### Lower bounds — Reed-Solomon (§3.2)
 

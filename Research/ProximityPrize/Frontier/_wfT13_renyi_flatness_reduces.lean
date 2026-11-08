@@ -30,7 +30,27 @@ spectrum (the Rényi-`α` collision moment): `ε_α := (E_{α−1})^{1/(2(α−1
 `E_t := Σ_{b≠0} |η_b|^{2t}` the (non-principal) additive-energy moment at real depth `t = α − 1`.
 So `α = 2 ↔ t = 1` (the second moment / energy), `α → ∞ ↔ t → ∞` (so `ε_α → max_{b≠0}|η_b|/n = M/n =
 ε_∞`, since `(Σ_{b≠0} x_b^{2t})^{1/(2t)} → max_b x_b`). This matches the measured endpoints and the
-monotone interpolation `ε_α ↑ ε_∞` (probe `probe_wfT13_renyi_flatness.rs`, β = 4, n ≤ 256).
+monotone interpolation `ε_α ↑ ε_∞` (probe `probe_wfT13_renyi_flatness.rs`, β = 4, n ≤ 256) — for a
+MEAN-normalized variant only; the Lean `epsFlat` satisfies `ε_α ↓ ε_∞` (see Corrections).
+
+## Corrections (audit 2026-10-28, CW-B18-16) — read before the reduction map
+
+* **Direction of monotonicity.**  With the Lean definition `epsFlat`, `n·ε_α = (Σ_{b≠0}|η_b|^{2t})^{1/(2t)}`
+  (`t = α−1`) is an UN-normalized `ℓ^{2t}` sum norm.  For every finite `t` it is `≥ max_{b≠0}|η_b|`
+  and it DECREASES in `t`, so `ε_α ≥ ε_∞` and `ε_α ↓ ε_∞` — not `ε_α ↑ ε_∞` as stated below.  Hence the
+  free `θ = 1` interpolation `ε_∞ ≤ ε_α` HOLDS for the defined object (it is the F1 step
+  `M ≤ (E_r)^{1/(2r)}`).  The R3 "input lies below the target" argument and the reading of
+  `monotone_flatness_below_sup` as a statement about the defined `ε_α` are RETRACTED.
+* **The measured values.**  The probe values `ε_{α*} ≈ 0.129 < ε_∞ ≈ 0.53` cannot be values of the
+  defined `epsFlat` (which is `≥ ε_∞`, and `≫ 1` at those parameters since the sum runs over `≈ p`
+  frequencies); they presumably refer to a MEAN-normalized quantity
+  `((1/(p−1))·Σ_{b≠0}|η_b|^{2t})^{1/(2t)}/n`, for which `ε_α ↑ ε_∞` is correct.  That quantity is not
+  formalized here; `T13_instance_prize_scale` only checks real-number facts about `53/100, 13/100`.
+* **"F7 energy" label.**  At `α = 2`, `(n·ε_2)² = Σ_{b≠0}|η_b|² = pn − n²` is the PARSEVAL mass (second
+  moment), which is a known constant — not the additive energy (that is the fourth moment
+  `Σ_b |η_b|⁴ = p·E₂`).  Read "energy" at `α = 2` below as "second moment".
+
+R1 (the re-coordinatization identity) and R2 (`α* − 2 = c/log m → 0`) are unaffected.
 
 ## The exact reduction map (T13 ⟶ F7/F1)
 
@@ -51,7 +71,8 @@ hoped-for "third-order log-density variance" datum that distinguishes `α*` from
 `α`-derivative of the Rényi divergence weighted by `(α* − 2) = c/log m → 0`. So at the prize scale
 `ε_{α*}` converges to `ε_2` = energy = **F7**; the offset buys a vanishing amount of tail weight.
 
-**(R3) The interpolation `ε_∞ ≤ ε_{α*}^{θ}` is information-free unless `θ` is pinned by the answer.**
+**(R3) [RETRACTED for the defined `epsFlat`, see Corrections; valid only for the mean-normalized
+variant.] The interpolation `ε_∞ ≤ ε_{α*}^{θ}` is information-free unless `θ` is pinned by the answer.**
 Rényi divergence is monotone non-decreasing in the order, so `ε_α ≤ ε_∞` for every finite `α` (the
 sup is the `α=∞` endpoint; measured: `ε_α ↑ ε_∞`). With `0 < ε_{α*} < ε_∞ < 1` the interpolation
 `ε_∞ ≤ ε_{α*}^{θ}` forces the exponent `θ = log ε_∞ / log ε_{α*} ∈ (0,1)` — and this `θ` is a
@@ -73,8 +94,9 @@ The interpolation step is the log-convexity (Lyapunov / Hölder) inequality for 
    (R3)**: for `0 < y < x < 1` the interpolation `x ≤ y^θ` forces `θ ≤ log x/log y < 1`, and it holds
    with EQUALITY at `θ = log x/log y` (`x = y^{log x/log y}`); so it is a tautology pinned by
    `x = ε_∞` (the answer), information-free as an upper bound on `ε_∞`.
-5. `monotone_flatness_below_sup` — the **Rényi-monotonicity wrong-side fact**: `ε_{α*} < ε_∞` (the
-   input lies strictly BELOW the target), so it cannot upper-bound `ε_∞` for free.
+5. `monotone_flatness_below_sup` — the trivial order fact `0 < y < x ⟹ ¬ x ≤ y`.  (Its intended
+   reading `ε_{α*} < ε_∞` is FALSE for the defined `epsFlat`, which satisfies `ε_α ≥ ε_∞`;
+   CW-B18-16.)
 
 NO closure is claimed. T13 is `REDUCES-TO-WALL` (primary **F7**: Rényi-2 = energy; mechanism **F1**:
 the flatness is the deep-moment `L^{2r}` ladder at `r = α−1`, and the interpolation is the
@@ -118,9 +140,9 @@ theorem flatness_eq_moment_bound {n Energy α : ℝ} (hn : n ≠ 0) :
 
 /-! ## 2. (F7 pin) The flatness at the energy order `α = 2` is the additive energy -/
 
-/-- **(R1 at `α = 2`) The flatness at the energy order is the additive energy** — fence **F7**.
-`(n · ε_2)² = E_1 = Σ_{b≠0}|η_b|²` (the non-principal second moment / additive energy). So the
-Rényi-2 flatness IS the energy; there is no escape from F7 at the critical order. -/
+/-- **(R1 at `α = 2`) The flatness at order `2` is the second moment.**
+`(n · ε_2)² = E_1 = Σ_{b≠0}|η_b|²`, the non-principal second moment, which by Parseval equals the
+constant `pn − n²` — NOT the additive energy (the fourth moment); audit 2026-10-28, CW-B18-16. -/
 theorem epsFlat_two_is_energy {n Energy : ℝ} (hn : n ≠ 0) (hE : 0 ≤ Energy) :
     (n * epsFlat n Energy 2) ^ 2 = Energy := by
   rw [flatness_eq_moment_bound hn]
@@ -191,11 +213,10 @@ theorem interpolation_is_tautology {x y : ℝ} (hx : 0 < x) (hy : 0 < y) (hy1 : 
 
 /-! ## 5. (R3) Rényi-monotonicity: the input flatness lies strictly below the target -/
 
-/-- **(R3) The super-critical flatness lies strictly below the sup flatness** (Rényi monotonicity:
-`ε_α ↑ ε_∞`). Concretely, encode the monotonicity at the level of the realized values: with the
-measured prize-scale numbers (`ε_{α*}`, `ε_∞`) the input is strictly below the target, the wrong
-side for a free upper bound — recovering `ε_∞` needs the exponent `θ < 1`, i.e. the answer. We state
-the abstract content: `0 < y < x` forbids `x ≤ y` (no free `θ = 1` interpolation). -/
+/-- **Trivial order fact `0 < y < x ⟹ ¬ x ≤ y`.**  It was intended to encode "the super-critical
+flatness lies strictly below the sup flatness".  That reading is FALSE for the defined `epsFlat`
+(an un-normalized `ℓ^{2t}` norm, so `ε_α ≥ ε_∞` and the free `θ = 1` interpolation holds); it is
+only meaningful for a mean-normalized variant not formalized here (CW-B18-16). -/
 theorem monotone_flatness_below_sup {x y : ℝ} (_hy0 : 0 < y) (hyx : y < x) :
     ¬ (x ≤ y) := not_le.mpr hyx
 
@@ -204,12 +225,12 @@ theorem monotone_flatness_below_sup {x y : ℝ} (_hy0 : 0 < y) (hyx : y < x) :
 /-- **HEADLINE (T13 REDUCES-TO-WALL, F7 primary / F1 mechanism).** The Rényi-α flatness factor at the
 super-critical order `α* = 2 + c/log m`:
 
-* **is the energy/moment functional** — `n·ε_α = (E_{α−1})^{1/(2(α−1))}` (R1), with `(n·ε_2)² = E_1`
-  the additive energy at the critical order (**F7**);
+* **is the moment functional** — `n·ε_α = (E_{α−1})^{1/(2(α−1))}` (R1), with `(n·ε_2)² = E_1`
+  the second moment (Parseval mass, not the additive energy — CW-B18-16) at the critical order;
 * **collapses to the energy order at prize scale** — the flatness depth `r* = α*−1` exceeds `1` by
   `c/log m → 0` (R2), so `ε_{α*} → ε_2` = energy;
-* **its interpolation `ε_∞ ≤ ε_{α*}^θ` is a tautology pinned by the answer** — `θ = log ε_∞/log ε_{α*}
-  ∈ (0,1)` realizes equality `ε_∞ = ε_{α*}^θ` (R3), carrying no estimate beyond the moment ladder.
+* the last conjunct is the real-number fact `0 < y < x < 1 ⟹ log x/log y < 1`; the intended R3
+  reading (with `y = ε_{α*} < x = ε_∞`) is retracted for the defined `epsFlat` (CW-B18-16).
 
 Hence T13 reduces, at `β = 4`, `n = 2^30`, to the additive-energy / deep-moment wall (F7/F1); the
 prize `M(n) ≤ C√(n log(p/n))` is UNCHANGED / OPEN. -/
@@ -225,14 +246,15 @@ theorem T13_reduces_to_energy_wall
    superCritical_depth_to_one,
    interpolation_exponent_lt_one hy0 hyx hx1⟩
 
-/-- **Non-vacuity at the prize scale (`n = 64`, `β ≈ 4`, measured).** Probe
+/-- **Instantiation at `n = 64` (real-number sanity check only).** Probe
 `probe_wfT13_renyi_flatness.rs` at `n = 64`, `p = 16777601 ≈ n⁴` measures
 `ε_∞ = M/n ≈ 0.5300` (`M ≈ 33.918`), `ε_{α*} ≈ 0.12855` at `α* = 2.0801`, and the forced
 interpolation exponent `θ = log ε_∞ / log ε_{α*} ≈ 0.3095 < 1`. With `x = 53/100` (just above the
 measured `ε_∞`) and `y = 13/100` (just below the measured `ε_{α*}`) the reduction package holds:
 `0 < y < x < 1`, the interpolation is a tautology with `θ < 1`, and the flatness is the energy. This
-certifies the obstruction is about the genuine thin-subgroup spectrum, not vacuous. (`E₁ = 256` is a
-placeholder positive energy; the structural facts are field-universal.) -/
+does NOT certify anything about the thin-subgroup spectrum: the measured values come from a
+mean-normalized variant, not the defined `epsFlat` (which is `≥ ε_∞`), and `E₁ = 256` is a
+placeholder.  It is a sanity instantiation of real-number identities only (CW-B18-16). -/
 theorem T13_instance_prize_scale :
     ((64 : ℝ) * epsFlat 64 256 2 = momentMBound 256 1)
     ∧ (((64 : ℝ) * epsFlat 64 256 2) ^ 2 = 256)

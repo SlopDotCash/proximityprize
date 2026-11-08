@@ -13,12 +13,18 @@ import ProximityPrize.Extensions.ProofSystem.Sumcheck.Spec.SingleRound
 LogUp Protocol 2 keystone chain — to one genuinely-deep, value-level (monad-free) residual:
 
   `hRoundFaithful` : for round `i`, outer round statement `os` and honest outer oracles `oos`, the
-  `|D|^(n-1)`-fold fold of the *outer multivariate* oracle polynomial `(oos ()).1` over the
-  boolean/domain subcube at `sumPoint i pt os y` equals the *inner round univariate* oracle answer
-  `OracleInterface.answer (((sumcheckOracleLens …).toLens.proj (os, oos)).2 ()) pt`.
+  `|D|^(n-1-i)`-fold fold of the *outer multivariate* oracle polynomial `(oos ()).1` over the
+  survivor subcube `Fin (n-1-i) → R` at `sumPoint i pt os y` equals the *inner round univariate*
+  oracle answer `OracleInterface.answer (((sumcheckOracleLens …).toLens.proj (os, oos)).2 ()) pt`.
 
-This file **discharges the mechanical layers** of that identity and **isolates its one genuinely
-combinatorial residual** as the single explicit named hypothesis `hCubeFiber` (no `sorry`/`admit`):
+**Status: proved, no residual.** The combinatorial core `CubeFiber` is proved
+(`cubeFiber_holds`), and `coh_proven` gives the per-round identity with no hypothesis. The
+historical description below (which treated `hCubeFiber` as an outstanding residual) is kept with
+corrections.
+
+This file **discharges the mechanical layers** of that identity and, in its first part, packages
+its combinatorial core as the named hypothesis `hCubeFiber` (no `sorry`/`admit`), which the end of
+the file then proves:
 
 * The fold collapses to a `Finset.sum` via `foldl_add_eq_sum` (the same brick used by
   `SimpleRoundCoherent.simOStmt_run_simOracle`).
@@ -29,14 +35,19 @@ combinatorial residual** as the single explicit named hypothesis `hCubeFiber` (n
   evaluation at `pt` equals
   `∑ x ∈ (univ.map D) ^ᶠ (n' - i), eval (Fin.insertNth i pt (Fin.append challenges x ∘ Fin.cast _)) poly`.
 
-The **only** content not discharged here is the equality of the two cube summations — the
-`|D|^(n-1)`-fold `sumPoint` fold over `Fin (n-1) → R` versus the `|D|^(n'-i)`-fold round-polynomial
-sum over `Fin (n'-i) → R` (the fiber/coordinate-bookkeeping matching prior `challenges` against the
-dummy summation slots `k < i` of `sumPoint`). It is carried as the explicit named hypothesis
-`hCubeFiber`, exactly mirroring how LogUp carries `logupSumcheckPolynomial_finalEval` and Spartan
-carries `zeroCheckEval_simOracle`. The main theorem `roundFaithful_of_cubeFiber` then produces the
-`hRoundFaithful` shape consumed verbatim by `SimpleRoundCoherent.coh_of`, and
-`coh_of_cubeFiber` packages the resulting `∀ i` coherence.
+The remaining content is the equality of the two cube summations — the `|D|^(n-1-i)`-fold
+`sumPoint` sum over the survivor cube `Fin (n-1-i) → R` versus the `|D|^(n'-i)`-fold
+round-polynomial sum over `Fin (n'-i) → R` (with `n = n' + 1` these are the same cube; `sumPoint`
+reads the prior `challenges` into the slots `k < i`, `pt` into slot `i`, and the survivor index
+into the slots `k > i`). It is first carried as the named hypothesis `hCubeFiber` (mirroring how
+LogUp carries `logupSumcheckPolynomial_finalEval` and Spartan carries `zeroCheckEval_simOracle`):
+`roundFaithful_of_cubeFiber` produces the `hRoundFaithful` shape consumed verbatim by
+`SimpleRoundCoherent.coh_of`, and `coh_of_cubeFiber` packages the resulting `∀ i` coherence. It is
+then **proved**: `sumPoint_eq_insertNth` identifies each `sumPoint` with the round polynomial's
+evaluation point, giving `cubeFiber_holds`, and `coh_proven` is the unconditional per-round
+identity. (An earlier formula summed over `Fin (n-1) → R` with `i` ignored dummy coordinates; the
+current lens uses the corrected survivor dimension `n-1-i`, so no dummy coordinates or `|D|^i`
+multiplicity arise.)
 -/
 
 open OracleComp OracleSpec OracleInterface ProtocolSpec Finset Polynomial MvPolynomial
@@ -119,18 +130,16 @@ theorem answer_proj_eval_succ {n' : ℕ} (i : Fin (n' + 1))
   -- which by the bridge lemma is the multivariate evaluation at the `insertNth` point.
   rw [← eval_eq_eval_mv_eval_finSuccEquivNth]
 
-/-- **The single named combinatorial residual.** The `|D|^(n-1)`-fold `sumPoint` sum over
-`Fin (n-1) → R` equals the round-polynomial survivor-cube sum over `Fin (n'-i) → R` with the round
-coordinate fixed to `pt`. This is the genuine coordinate / fiber bookkeeping: `sumPoint` reads the
-prior `challenges` into the slots `k < i` and the running summation index `y k` into the remaining
-slots `k ≥ i`, so the effective evaluation point matches `Fin.insertNth i pt (Fin.append challenges
-x ∘ …)` — but only on the `n' - i` "free" tail coordinates. The `i` slots `k < i` of the summation
-index `y` are *ignored* by `sumPoint` (it uses `challenges` there), so the `Fin (n-1) → R` fold ranges
-over `i` extra dummy coordinates relative to the `Fin (n'-i) → R` round-polynomial cube. This fiber
-collapse (and any `|D|^i` multiplicity it carries) is the substantive content; it is the direct
-analogue of LogUp's `logupSumcheckPolynomial_finalEval` closed-form identity, and is carried here as
-an explicit named hypothesis rather than asserted — it is exactly the genuinely-deep value-level
-core that `SimpleRoundCoherent.lean` already factored out as `hRoundFaithful`. -/
+/-- **The named combinatorial core (proved below as `cubeFiber_holds`).** The `|D|^(n-1-i)`-fold
+`sumPoint` sum over the survivor cube `Fin (n-1-i) → R` equals `Polynomial.eval pt` of the round
+polynomial (whose survivor-cube sum ranges over `Fin (n'-i) → R` when `n = n' + 1`). This is the
+coordinate bookkeeping: `sumPoint` reads the prior `challenges` into the slots `k < i`, `pt` into
+slot `i`, and the survivor index `y` into the slots `k > i`, so the evaluation point is exactly
+`Fin.insertNth i pt (Fin.append challenges y ∘ …)` (`sumPoint_eq_insertNth`). With the corrected
+survivor dimension `n-1-i` there are no ignored dummy coordinates and no `|D|^i` multiplicity
+(an earlier formulation over `Fin (n-1) → R` had both). It is the direct analogue of LogUp's
+`logupSumcheckPolynomial_finalEval` closed-form identity; it is stated as a `Prop` so that the
+first part of this file can consume it as a hypothesis, and `cubeFiber_holds` proves it. -/
 abbrev CubeFiber (i : Fin n) : Prop :=
   ∀ (os : StatementRound R n i.castSucc) (oos : ∀ i, OracleStatement R n deg i) (pt : R),
     ∑ y ∈ (univ.map D) ^ᶠ (n - 1 - i), (oos ()).1.eval (sumPoint R n i pt os y)
@@ -227,8 +236,13 @@ theorem cubeFiber_holds (i : Fin n) : CubeFiber (R := R) (deg := deg) (D := D) i
 
 /-- **Per-round round-polynomial faithfulness, UNCONDITIONALLY** — `coh_of_cubeFiber` with the
 now-proven `cubeFiber_holds`. This is exactly the `hRoundFaithful` shape `SimpleRoundCoherent.coh_of`
-consumes, with NO residual hypothesis, discharging `hPerRound` and making the per-round
-`LiftContextCoherent` (hence the multi-round sum-check oracle bridge of issue #13) unconditional. -/
+consumes, with NO residual hypothesis, making the per-round routing coherence
+`LiftContextCoherent` unconditional (`SingleRoundCohWired.coh_proven_inst`). By itself it does
+**not** discharge `hPerRound` or the multi-round oracle-to-plain bridge of issue #13:
+`SingleRoundCohWired.perRound_of_simpleBridge` additionally consumes the Simple-level bridge
+`hSimpleBridge : (Simple.oracleReduction …).toReduction = Simple.reduction …` (supplied under the
+canonical message-checking semantics by `Simple.oracleReduction_eq_reduction`), and the
+multi-round assembly is a separate step. -/
 theorem coh_proven (i : Fin n) (os : StatementRound R n i.castSucc)
     (oos : ∀ i, OracleStatement R n deg i) (pt : R) :
     (((univ.map D) ^ᶠ (n - 1 - i)).toList).foldl

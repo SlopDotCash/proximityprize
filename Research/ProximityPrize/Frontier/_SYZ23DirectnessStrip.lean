@@ -198,8 +198,7 @@ end SumLowerBound
 
 section Leak
 
-/-- Bad-scalar yield of one core of size `s` (length `n`, threshold `t`, truncated `ℕ`). -/
-def yieldS (n t s : ℕ) : ℕ := if t ≤ s then n - s else (n - s) / (t - s)
+/-! The per-core bad-scalar yield is the canonical `SYZ21.yieldS` (in scope via `open`). -/
 
 /-- The **support-overlap cost** of a core of size `s` whose support meets the running union in
 `o` points: the SYZ21 shortening bound `max(0,s−k)` minus the support-intersection bound
@@ -216,7 +215,7 @@ theorem crudeCost_nested (k s : ℕ) (h : k ≤ s) : crudeCost k s s = 0 := by
 def profileCost (k : ℕ) (P : List (ℕ × ℕ)) : ℕ :=
   (P.map (fun p => crudeCost k p.1 p.2)).sum
 
-/-- Total certified yield of a profile. -/
+/-- Total certified yield of a profile (per-core yield `SYZ21.yieldS`). -/
 def profileYield (n t : ℕ) (P : List (ℕ × ℕ)) : ℕ :=
   (P.map (fun p => yieldS n t p.1)).sum
 

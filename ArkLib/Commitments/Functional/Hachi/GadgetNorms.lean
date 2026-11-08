@@ -38,8 +38,13 @@ variable {q : ℕ} [NeZero q] [Fact (Nat.Prime q)] [BEq (ZMod q)] [LawfulBEq (ZM
   (Φ : CyclotomicModulus (ZMod q)) [IsCyclotomic Φ]
 
 omit [NeZero q] [IsCyclotomic Φ] in
-/-- The degree bound needed to read off gadget coefficients: `deg φ` does not exceed the degree
-of the modulus polynomial. -/
+/-- `deg φ` does not exceed the degree of the modulus polynomial, for a modulus of positive
+degree that need not be cyclotomic.
+
+For a cyclotomic modulus this is the shared `Rq.phi_natDegree_le_degree` (re-exported as
+`Ajtai.phi_natDegree_le_degree`), which needs no positive-degree premise. The gadget
+coefficient lemma `gadgetDecompose_coeff` used below does not consume this lemma, and nothing
+else in the tree does; it is kept only as a compatibility name for the non-cyclotomic case. -/
 theorem natDegree_le_degree_toPoly (h : 1 ≤ Φ.φ.natDegree) :
     (Φ.φ.natDegree : WithBot ℕ) ≤ Φ.φ.toPoly.degree := by
   have hnd : 1 ≤ Φ.φ.toPoly.natDegree := by

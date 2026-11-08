@@ -7,9 +7,20 @@ import ArkLib.Data.CodingTheory.ProximityGap.LamLeungMultisetAntipodal
 import Research.ProximityPrize.Frontier._E3StrataCount
 import Mathlib.Tactic
 
-/-! Scratch: the per-P fiber count for shape-(2,1). If this lands, shape-(2,1)=360 follows by
-summing over P. Fiber bijection: c ↦ ({i∈P : c i = x}, {i∈Pᶜ : c i = y}) to a product of
-two `powersetCard`s. -/
+/-! # E₃ shape-(2,1) stratum count
+
+The size-4 image contribution to the E₃ strata partition (consumed by `_E3Assembly`).
+For four distinct values `x, -x, y, -y`:
+
+* `fiber_card`: the per-`P` fiber count, via the fiber bijection
+  `c ↦ ({i∈P : c i = x}, {i∈Pᶜ : c i = y})` onto a product of two `powersetCard`s;
+* `balanced_valued_count`: summing over `P`, `400` balanced tuples are valued in `{x,-x,y,-y}`;
+* `valued_noX_count`: `20` of them have no `x` (and, by the `x ↔ y` mirror, `20` have no `y`);
+* `shape21`: hence `360 = 400 - 20 - 20` have image exactly `{x,-x,y,-y}`;
+* `image_count_four`: the same count in the `piFinset G` form the strata partition consumes.
+
+Only `x ≠ y` and `x ≠ -y` are assumed; `-x ≠ -y` and `-x ≠ y` follow by injectivity of
+negation. (The file name keeps its historical `Scratch` suffix; the namespace is project-scoped.) -/
 
 open ArkLib.ProximityGap.Frontier.E3StrataCount (twoValue_count)
 
@@ -19,7 +30,7 @@ set_option autoImplicit false
 
 open Finset
 
-namespace E3Shape21Scratch
+namespace ArkLib.ProximityGap.Frontier.E3Shape21
 
 variable {F : Type*} [Field F] [DecidableEq F] [Fintype F]
 
@@ -27,12 +38,14 @@ variable {F : Type*} [Field F] [DecidableEq F] [Fintype F]
 and `±y` off `P` (balanced: `|Pᶜ|/2` y's) number `C(|P|,|P|/2)·C(|Pᶜ|,|Pᶜ|/2)`. (Here `x,-x,y,-y`
 are 4 distinct values.) -/
 theorem fiber_card (P : Finset (Fin 6)) (x y : F)
-    (hx : x ≠ -x) (hy : y ≠ -y) (hxy : x ≠ y) (hxy' : x ≠ -y) (hmxy : -x ≠ y) (hmxy' : -x ≠ -y) :
+    (hx : x ≠ -x) (hy : y ≠ -y) (hxy : x ≠ y) (hxy' : x ≠ -y) :
     ((Finset.univ.filter (fun c : Fin 6 → F =>
         (∀ i, i ∈ P → (c i = x ∨ c i = -x)) ∧ (∀ i, i ∉ P → (c i = y ∨ c i = -y))
         ∧ (Finset.univ.filter (fun i => c i = x)).card = P.card / 2
         ∧ (Finset.univ.filter (fun i => c i = y)).card = Pᶜ.card / 2))).card
       = Nat.choose P.card (P.card / 2) * Nat.choose Pᶜ.card (Pᶜ.card / 2) := by
+  have hmxy : -x ≠ y := fun h => hxy' (by rw [← h, neg_neg])
+  have hmxy' : -x ≠ -y := fun h => hxy (neg_injective h)
   classical
   -- value distinctness helpers
   have hxny : x ≠ -y := hxy'
@@ -163,12 +176,14 @@ theorem fiber_card (P : Finset (Fin 6)) (x y : F)
 set when `|P|` is even (balance forces even x-positions) and is empty for odd `|P|`; the resulting
 even-guarded binomial sum is `400` (`decide`). -/
 theorem balanced_valued_count (x y : F)
-    (hx : x ≠ -x) (hy : y ≠ -y) (hxy : x ≠ y) (hxy' : x ≠ -y) (hmxy : -x ≠ y) (hmxy' : -x ≠ -y) :
+    (hx : x ≠ -x) (hy : y ≠ -y) (hxy : x ≠ y) (hxy' : x ≠ -y) :
     ((Finset.univ.filter (fun c : Fin 6 → F =>
         (∀ i, c i = x ∨ c i = -x ∨ c i = y ∨ c i = -y)
         ∧ (Finset.univ.filter (fun i => c i = x)).card = (Finset.univ.filter (fun i => c i = -x)).card
         ∧ (Finset.univ.filter (fun i => c i = y)).card = (Finset.univ.filter (fun i => c i = -y)).card))).card
       = 400 := by
+  have hmxy : -x ≠ y := fun h => hxy' (by rw [← h, neg_neg])
+  have hmxy' : -x ≠ -y := fun h => hxy (neg_injective h)
   classical
   rw [Finset.card_eq_sum_card_fiberwise
       (f := fun c => Finset.univ.filter (fun i => c i = x ∨ c i = -x))
@@ -193,7 +208,7 @@ theorem balanced_valued_count (x y : F)
             (∀ i, i ∈ P → (c i = x ∨ c i = -x)) ∧ (∀ i, i ∉ P → (c i = y ∨ c i = -y))
             ∧ (Finset.univ.filter (fun i => c i = x)).card = P.card / 2
             ∧ (Finset.univ.filter (fun i => c i = y)).card = Pᶜ.card / 2)) from ?_]
-    · exact fiber_card P x y hx hy hxy hxy' hmxy hmxy'
+    · exact fiber_card P x y hx hy hxy hxy'
     · ext c
       simp only [Finset.mem_filter, Finset.mem_univ, true_and]
       constructor
@@ -306,79 +321,18 @@ theorem balanced_valued_count (x y : F)
         rw [Finset.mem_filter] at hi hi'; exact hx (hi.2 ▸ hi'.2)
     rw [hsplit, hbx]; exact ⟨_, rfl⟩
 
-/-- Among balanced tuples valued in `{x,-x,y,-y}`, those with image exactly `{x,-x}` are the
-ones with `x` in 3 positions (valued in `{x,-x}`, balanced) — `C(6,3)=20` of them. -/
-theorem valued_image_two (x y : F)
-    (hx : x ≠ -x) (hy : y ≠ -y) (hxy : x ≠ y) (hxy' : x ≠ -y) (hmxy : -x ≠ y) (hmxy' : -x ≠ -y) :
-    ((Finset.univ.filter (fun c : Fin 6 → F =>
-        (∀ i, c i = x ∨ c i = -x ∨ c i = y ∨ c i = -y)
-        ∧ (Finset.univ.filter (fun i => c i = x)).card = (Finset.univ.filter (fun i => c i = -x)).card
-        ∧ (Finset.univ.filter (fun i => c i = y)).card = (Finset.univ.filter (fun i => c i = -y)).card)).filter
-      (fun c => Finset.image c Finset.univ = {x, -x})).card = 20 := by
-  classical
-  rw [show (20 : ℕ) = Nat.choose (Fintype.card (Fin 6)) 3 by decide,
-      ← twoValue_count (ι := Fin 6) 3 x hx]
-  congr 1
-  ext c
-  simp only [Finset.mem_filter, Fintype.mem_piFinset, Finset.mem_univ, true_and]
-  -- helper: a tuple valued in {x,-x} has #x + #(-x) = 6
-  have twoSum : (∀ i, c i ∈ ({x, -x} : Finset F)) →
-      (Finset.univ.filter (fun i => c i = x)).card + (Finset.univ.filter (fun i => c i = -x)).card = 6 := by
-    intro hval
-    have hdisj : Disjoint (Finset.univ.filter (fun i => c i = x)) (Finset.univ.filter (fun i => c i = -x)) := by
-      rw [Finset.disjoint_left]; intro i hi hi'
-      rw [Finset.mem_filter] at hi hi'; exact hx (hi.2 ▸ hi'.2)
-    have hcov : (Finset.univ.filter (fun i => c i = x)) ∪ (Finset.univ.filter (fun i => c i = -x)) = Finset.univ := by
-      ext i; simp only [Finset.mem_union, Finset.mem_filter, Finset.mem_univ, true_and, iff_true]
-      rcases Finset.mem_insert.mp (hval i) with h | h
-      · exact Or.inl h
-      · exact Or.inr (Finset.mem_singleton.mp h)
-    have hu := Finset.card_union_of_disjoint hdisj
-    rw [hcov, Finset.card_univ, Fintype.card_fin] at hu; omega
-  constructor
-  · rintro ⟨⟨_, hbx, _⟩, himg⟩
-    have hval2 : ∀ i, c i ∈ ({x, -x} : Finset F) :=
-      fun i => himg ▸ Finset.mem_image_of_mem c (Finset.mem_univ i)
-    exact ⟨hval2, by have := twoSum hval2; omega⟩
-  · rintro ⟨hval2, hk⟩
-    have hsum := twoSum hval2
-    have hnegx3 : (Finset.univ.filter (fun i => c i = -x)).card = 3 := by omega
-    have hempty : ∀ w : F, w ≠ x → w ≠ -x → (Finset.univ.filter (fun i => c i = w)).card = 0 := by
-      intro w hwx hwnx
-      rw [Finset.card_eq_zero, Finset.filter_eq_empty_iff]; intro i _ hci
-      rcases Finset.mem_insert.mp (hval2 i) with h | h
-      · exact hwx (hci ▸ h)
-      · exact hwnx (hci ▸ Finset.mem_singleton.mp h)
-    refine ⟨⟨fun i => ?_, ?_, ?_⟩, ?_⟩
-    · rcases Finset.mem_insert.mp (hval2 i) with h | h
-      · exact Or.inl h
-      · exact Or.inr (Or.inl (Finset.mem_singleton.mp h))
-    · rw [hk, hnegx3]
-    · rw [hempty y (fun h => hxy h.symm) (fun h => hmxy h.symm),
-          hempty (-y) (fun h => hxy' h.symm) (fun h => hmxy' h.symm)]
-    · apply Finset.Subset.antisymm
-      · intro w hw; rw [Finset.mem_image] at hw; obtain ⟨i, _, hi⟩ := hw; exact hi ▸ hval2 i
-      · intro w hw
-        rw [Finset.mem_image]
-        rcases Finset.mem_insert.mp hw with h | h
-        · have hpos : 0 < (Finset.univ.filter (fun i => c i = x)).card := by rw [hk]; norm_num
-          obtain ⟨i, hi⟩ := Finset.card_pos.mp hpos; rw [Finset.mem_filter] at hi
-          exact ⟨i, Finset.mem_univ i, by rw [hi.2]; exact h.symm⟩
-        · have h' := Finset.mem_singleton.mp h
-          have hpos : 0 < (Finset.univ.filter (fun i => c i = -x)).card := by rw [hnegx3]; norm_num
-          obtain ⟨i, hi⟩ := Finset.card_pos.mp hpos; rw [Finset.mem_filter] at hi
-          exact ⟨i, Finset.mem_univ i, by rw [hi.2]; exact h'.symm⟩
-
 /-- Among balanced tuples valued in `{x,-x,y,-y}`, those with **no `x`-pair** (`#x = 0`) are the
-ones valued in `{y,-y}` with `y` in 3 positions — `C(6,3) = 20` (the `x ↔ y` mirror of
-`valued_image_two`, charted by `#x=0` instead of `image={y,-y}`). -/
+ones valued in `{y,-y}` with `y` in 3 positions — `C(6,3) = 20` (charted by `#x=0` rather
+than by `image={y,-y}`; the `x ↔ y` mirror gives the `#y=0` class). -/
 theorem valued_noX_count (x y : F)
-    (hx : x ≠ -x) (hy : y ≠ -y) (hxy : x ≠ y) (hxy' : x ≠ -y) (hmxy : -x ≠ y) (hmxy' : -x ≠ -y) :
+    (hx : x ≠ -x) (hy : y ≠ -y) (hxy : x ≠ y) (hxy' : x ≠ -y) :
     ((Finset.univ.filter (fun c : Fin 6 → F =>
         (∀ i, c i = x ∨ c i = -x ∨ c i = y ∨ c i = -y)
         ∧ (Finset.univ.filter (fun i => c i = x)).card = (Finset.univ.filter (fun i => c i = -x)).card
         ∧ (Finset.univ.filter (fun i => c i = y)).card = (Finset.univ.filter (fun i => c i = -y)).card)).filter
       (fun c => (Finset.univ.filter (fun i => c i = x)).card = 0)).card = 20 := by
+  have hmxy : -x ≠ y := fun h => hxy' (by rw [← h, neg_neg])
+  have hmxy' : -x ≠ -y := fun h => hxy (neg_injective h)
   classical
   rw [show (20 : ℕ) = Nat.choose (Fintype.card (Fin 6)) 3 by decide,
       ← twoValue_count (ι := Fin 6) 3 y hy]
@@ -433,24 +387,26 @@ theorem valued_noX_count (x y : F)
 sub-image classes `#x=0` (image `{y,-y}`) and `#y=0` (image `{x,-x}`), each of size `20`
 (`valued_noX_count`); so `360 = 400 - 20 - 20`. -/
 theorem shape21 (x y : F)
-    (hx : x ≠ -x) (hy : y ≠ -y) (hxy : x ≠ y) (hxy' : x ≠ -y) (hmxy : -x ≠ y) (hmxy' : -x ≠ -y) :
+    (hx : x ≠ -x) (hy : y ≠ -y) (hxy : x ≠ y) (hxy' : x ≠ -y) :
     ((Finset.univ.filter (fun c : Fin 6 → F =>
         (∀ i, c i = x ∨ c i = -x ∨ c i = y ∨ c i = -y)
         ∧ (Finset.univ.filter (fun i => c i = x)).card = (Finset.univ.filter (fun i => c i = -x)).card
         ∧ (Finset.univ.filter (fun i => c i = y)).card = (Finset.univ.filter (fun i => c i = -y)).card)).filter
       (fun c => Finset.image c Finset.univ = {x, -x, y, -y})).card = 360 := by
+  have hmxy : -x ≠ y := fun h => hxy' (by rw [← h, neg_neg])
+  have hmxy' : -x ≠ -y := fun h => hxy (neg_injective h)
   classical
   set A := Finset.univ.filter (fun c : Fin 6 → F =>
       (∀ i, c i = x ∨ c i = -x ∨ c i = y ∨ c i = -y)
       ∧ (Finset.univ.filter (fun i => c i = x)).card = (Finset.univ.filter (fun i => c i = -x)).card
       ∧ (Finset.univ.filter (fun i => c i = y)).card = (Finset.univ.filter (fun i => c i = -y)).card)
     with hAdef
-  have hAcard : A.card = 400 := balanced_valued_count x y hx hy hxy hxy' hmxy hmxy'
+  have hAcard : A.card = 400 := balanced_valued_count x y hx hy hxy hxy'
   have hx20 : (A.filter (fun c => (Finset.univ.filter (fun i => c i = x)).card = 0)).card = 20 :=
-    valued_noX_count x y hx hy hxy hxy' hmxy hmxy'
+    valued_noX_count x y hx hy hxy hxy'
   -- y-mirror, with the `A`-predicate reordering absorbed
   have hy20 : (A.filter (fun c => (Finset.univ.filter (fun i => c i = y)).card = 0)).card = 20 := by
-    have hmir := valued_noX_count y x hy hx (Ne.symm hxy) (Ne.symm hmxy) (Ne.symm hxy') (Ne.symm hmxy')
+    have hmir := valued_noX_count y x hy hx (Ne.symm hxy) (Ne.symm hmxy)
     rw [← hmir]
     congr 1
     ext c
@@ -542,14 +498,16 @@ theorem shape21 (x y : F)
 balanced 6-tuples of `G` with image exactly `{x,-x,y,-y}` number `360` (`shape21`); the `∀z`-balance
 collapses to `#x=#(-x) ∧ #y=#(-y)` on tuples valued in the 4-set. -/
 theorem image_count_four (G : Finset F) (x y : F)
-    (hx : x ≠ -x) (hy : y ≠ -y) (hxy : x ≠ y) (hxy' : x ≠ -y) (hmxy : -x ≠ y) (hmxy' : -x ≠ -y)
+    (hx : x ≠ -x) (hy : y ≠ -y) (hxy : x ≠ y) (hxy' : x ≠ -y)
     (hxG : x ∈ G) (hnxG : -x ∈ G) (hyG : y ∈ G) (hnyG : -y ∈ G) :
     ((Fintype.piFinset (fun _ : Fin 6 => G)).filter
       (fun c => (∀ z : F, (Finset.univ.filter (fun i => c i = z)).card
                        = (Finset.univ.filter (fun i => c i = -z)).card)
               ∧ Finset.image c Finset.univ = {x, -x, y, -y})).card = 360 := by
+  have hmxy : -x ≠ y := fun h => hxy' (by rw [← h, neg_neg])
+  have hmxy' : -x ≠ -y := fun h => hxy (neg_injective h)
   classical
-  rw [← shape21 x y hx hy hxy hxy' hmxy hmxy']
+  rw [← shape21 x y hx hy hxy hxy']
   congr 1
   ext c
   simp only [Finset.mem_filter, Fintype.mem_piFinset, Finset.mem_univ, true_and]
@@ -599,17 +557,15 @@ theorem image_count_four (G : Finset F) (x y : F)
             (fun h => hzny (by rw [← neg_neg z, h]))
             (fun h => hzy (by rw [← neg_neg z, h, neg_neg]))]
 
-end E3Shape21Scratch
+end ArkLib.ProximityGap.Frontier.E3Shape21
 
-#print axioms E3Shape21Scratch.fiber_card
+#print axioms ArkLib.ProximityGap.Frontier.E3Shape21.fiber_card
 
-#print axioms E3Shape21Scratch.balanced_valued_count
+#print axioms ArkLib.ProximityGap.Frontier.E3Shape21.balanced_valued_count
 
-#print axioms E3Shape21Scratch.valued_image_two
+#print axioms ArkLib.ProximityGap.Frontier.E3Shape21.valued_noX_count
 
-#print axioms E3Shape21Scratch.valued_noX_count
-
-#print axioms E3Shape21Scratch.shape21
+#print axioms ArkLib.ProximityGap.Frontier.E3Shape21.shape21
 
 
-#print axioms E3Shape21Scratch.image_count_four
+#print axioms ArkLib.ProximityGap.Frontier.E3Shape21.image_count_four

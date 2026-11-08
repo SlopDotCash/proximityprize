@@ -13,18 +13,21 @@ suggested follow-up is to use the EXACT fiber per overlap level rather than the
 coarse floor q^(M-(m+1)) that sum_N2_le_sharp lumps all deep pairs at.
 
 `sum_N2_le_sharp` (DeepBandSecondMomentSharp.lean) counts EVERY deep pair at the
-floor q^(M-(m+1)), which equals the exact fiber ONLY at the shallowest deep
-overlap j = k+1. For overlap j = k+d with d ≥ 2 the exact fiber deep_fiber_eq
-gives q^(M-(2m+1-d)) — a factor q^(d-1) SMALLER. So the genuinely-sharp second
-moment stratifies the deep sum by overlap level.
+floor q^(M-(m+1)). For overlap j = k+d (1 ≤ d ≤ m) the exact fiber deep_fiber_eq
+gives q^(M-(2m+1-d)), so coarse/exact = q^((2m+1-d)-(m+1)) = q^(m-d): the floor
+equals the exact fiber ONLY at the DEEPEST overlap d = m (j = k+m), and is a factor
+q^(m-d) LARGER at every shallower level d < m (largest gain q^(m-1) at d = 1).
+E.g. m = 2: at d = 2 both are q^(M-3), at d = 1 the exact fiber is q^(M-4). So the
+genuinely-sharp second moment stratifies the deep sum by overlap level.
 
 This file proves the FULLY OVERLAP-STRATIFIED sharp deep-stratum sum:
 
   Σ_{deep pairs p} #{c : pred p c}
-     ≤ Σ_{d=1}^{m}  (#pairs at overlap k+d) · q^(M-(2m+1-d))
+     = Σ_{d=1}^{m}  (#pairs at overlap k+d) · q^(M-(2m+1-d))
 
-an EQUALITY in the fiber per pair (deep_fiber_eq), strictly sharper than the
-uniform floor whenever any deep pair has overlap ≥ k+2.
+(an EQUALITY, from the exact fiber per pair, deep_fiber_eq), never worse than the
+uniform floor and strictly sharper than it whenever some deep pair has overlap
+k+d with d < m (i.e. overlap ≤ k+m-1).
 -/
 
 open Finset Polynomial
@@ -146,7 +149,8 @@ open Classical in
 pair-coherence sum equals the sum over overlap levels `d ∈ {1, …, m}` of
 `(#level-d pairs) · q^(M-(2m+1-d))` — EXACT fiber at every level, strictly
 sharper than `sum_N2_le_sharp`'s uniform floor `q^(M-(m+1))` whenever some deep
-pair has overlap `≥ k+2` (where the level fiber is `q^(d-1)` times smaller). -/
+pair has overlap `k+d` with `d < m` (where the level fiber is `q^(m-d)` times
+smaller); at the deepest level `d = m` the two coincide. -/
 theorem sum_deep_stratified_eq (dom : Fin n ↪ F) (k m : ℕ) {M : ℕ}
     (hM : 2 * (k + m + 1) ≤ M) :
     (∑ p ∈ (((((Finset.univ : Finset (Fin n)).powersetCard (k + m + 1)) ×ˢ
@@ -165,8 +169,10 @@ theorem sum_deep_stratified_eq (dom : Fin n ↪ F) (k m : ℕ) {M : ℕ}
 open Classical in
 /-- **CONSISTENCY with the coarse floor.**  The stratified sum is `≤` the floor
 `(#deep pairs)·q^(M-(m+1))` used by `sum_N2_le_sharp` — i.e. the new exact form
-is genuinely no worse, and strictly better at every level `d ≥ 2`.  (Sanity check
-that the sharp stratification dominates the existing sharp bound.) -/
+is genuinely no worse (this theorem is the non-strict comparison only).  Per level
+the exact fiber is smaller by the factor `q^(m-d)`: equal at the deepest level
+`d = m`, strictly smaller at every level `d < m` (when `q ≥ 2`).  (Sanity check that
+the sharp stratification dominates the existing sharp bound.) -/
 theorem sum_deep_stratified_le_floor (dom : Fin n ↪ F) (k m : ℕ) {M : ℕ}
     (hM : 2 * (k + m + 1) ≤ M) :
     (∑ d ∈ Finset.Icc 1 m,

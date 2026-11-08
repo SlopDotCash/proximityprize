@@ -943,18 +943,22 @@ def spartanRelIn :
 /-- **NAMED RESIDUAL — composed Spartan PIOP existence.** The fully composed Spartan oracle
 reduction, over *some* combined protocol specification `pSpecC`, of input context the bare R1CS
 statement (`Statement`, `OracleStatement`, `Witness`) and output context the terminal statement
-after the final check. Obtained by iterated `OracleReduction.append` of the seven phases — the
-`AppendCoherent` side conditions chain automatically from the leaves, by
-`OracleVerifier.Append.AppendCoherent.oracleReductionAppend`. Stated as a residual because two of the
-seven leaves (the sum-check phases) are themselves residuals
-(`firstSumcheckResidual`, `secondSumcheckResidual`).
+after the final check. Obtained by iterated `OracleReduction.append` of the seven phases (in the
+API of the time, with `AppendCoherent` side conditions chained from the leaves; that side-instance
+API no longer exists in the current tree). It was stated as a residual because
+two of the seven leaves (the sum-check phases) were themselves residuals
+(`firstSumcheckResidual`, `secondSumcheckResidual`); both are now discharged
+(`firstSumcheckResidual_holds`, `secondSumcheckResidual_holds` above), and the composition itself
+is assembled as `Bricks.composedPIOP_Rc` (`ArkLib/ProofSystem/Spartan/Composition.lean`).
 
 We existentially quantify the combined `pSpecC` (rather than spelling out the `Fin.vsum`/`++ₚ`
 arithmetic) so the residual records exactly the protocol-level obligation without committing to a
 brittle size normal form. -/
--- **Why this is a `sorry`-tracked residual, not an assembled term.**  Iterating
+-- **Historical note (superseded): why this was kept as a residual rather than an assembled term.**
+-- The composition is now assembled (`Bricks.composedPIOP_Rc`, `Spartan/Composition.lean`), so the
+-- obstacles below are no longer open; the note is kept for the record.  At the time, iterating
 -- `OracleReduction.append` over the seven phases (`firstMessage ▷ firstChallenge ▷ firstSumcheck ▷
--- sendEvalClaim ▷ linearCombination ▷ secondSumcheck ▷ finalCheck`) does *not* yet type-check:
+-- sendEvalClaim ▷ linearCombination ▷ secondSumcheck ▷ finalCheck`) did *not* yet type-check:
 --   1. **Witness threading.** `firstMessage` (a `SendSingleWitness` phase) outputs witness `Unit`,
 --      so `append` demands the next phase consume input witness `Unit`; but `oracleReduction.firstChallenge`
 --      is currently declared with input witness `Witness R pp` (`ProofSystem/Spartan/Basic.lean`).
@@ -962,9 +966,10 @@ brittle size normal form. -/
 --      `AppendCoherent` instance for each left-operand verifier (chained by
 --      `AppendCoherent.append`/`oracleReductionAppend` from the leaves).  No leaf instance exists
 --      yet — synthesis fails first at `(oracleReduction.firstMessage …).verifier`.
--- These are real, open engineering obligations.  We therefore keep the composition as the honest
--- existence residual below, `sorry`-gated (tracked by `scripts/sorry_census.py`) rather than
--- assembled by non-compiling/laundered code.  See issue #114 and the append keystone (#25/#433).
+-- These were real, open engineering obligations at the time, so the composition was kept as the
+-- existence residual below rather than assembled by non-compiling/laundered code (issue #114,
+-- append keystone #25/#433). The residual `Prop` below is retained as an interface; it is not a
+-- `sorry`.
 
 def composedPIOPResidual : Prop :=
   ∃ (N : ℕ) (pSpecC : ProtocolSpec N) (_ : ∀ i, OracleInterface.{0, 0} (pSpecC.Message i))
@@ -977,11 +982,11 @@ def composedPIOPResidual : Prop :=
 omit [IsDomain R] [Fintype R] [DecidableEq R] in
 /-- **Parameterized existence.** Once *any* concrete composed Spartan oracle reduction `Rc` (over
 some combined spec `pSpecC`) with the correct input/output context is supplied, the existence
-residual holds. The genuine open obligation is the construction of `Rc` — iterating
-`OracleReduction.append` over the seven phases, which is gated on the per-phase `AppendCoherent`
-instances and the challenge-seam append keystone (see the comment block above). This lemma records
-that the existence residual is *exactly* that construction obligation, with no remaining
-probabilistic or relational content. -/
+residual holds. The obligation was the construction of `Rc` — iterating `OracleReduction.append`
+over the seven phases, gated on the per-phase `AppendCoherent` instances and the challenge-seam
+append keystone (see the historical comment block above); that construction now exists
+(`Bricks.composedPIOP_Rc`). This lemma records that the existence residual is *exactly* that
+construction obligation, with no probabilistic or relational content. -/
 theorem composedPIOPResidual_of_reduction
     {N : ℕ} {pSpecC : ProtocolSpec N}
     [∀ i, OracleInterface.{0, 0} (pSpecC.Message i)] [∀ i, SampleableType (pSpecC.Challenge i)]
@@ -1038,10 +1043,11 @@ def composedCompletenessStatement
 -- `composedCompletenessStatement … (composedPIOP …) …` via `noncomputable constant` — a disguised
 -- axiom (an unproven inhabitant of the perfect-completeness `Prop`) that, moreover, does not parse
 -- in Lean 4 and is not caught by `scripts/forbidden_tokens.py` (which flags `axiom`, not
--- `constant`/`opaque`).  Composed perfect completeness is *not* available: it would follow from
--- `OracleReduction.append_perfectCompleteness`, which is itself an unproven library-wide residual
--- (the `Prover.append_run` / `simulateQ`-support keystone, #25/#433).  The honest surface is the
--- `composedCompletenessStatement` obligation above; it has no proof yet.
+-- `constant`/`opaque`).  When that was removed, composed perfect completeness was not available
+-- (the append keystones #25/#433 were unproven).  **Current status:** it is now proved for the
+-- assembled composition, with no leaf hypotheses, as `Bricks.composedCompletenessStatement_proven`
+-- (`ArkLib/ProofSystem/Spartan/ComposedCompletenessFinal.lean`), under the standard
+-- honest-implementation side conditions; see the status paragraph at the end of this file.
 
 /-- Target-carrying version of `composedCompletenessStatement`, for a composed Spartan reduction
 ending at `finalCheckWithClaim`. -/
@@ -1210,10 +1216,13 @@ def composedRbrKnowledgeSoundnessStatement
 
 -- **No `composedRbrKnowledgeSoundness_holds` here.**  As with completeness above, an earlier
 -- revision asserted this composed RBR knowledge-soundness `Prop` via `noncomputable constant` — a
--- disguised, non-parsing axiom.  RBR knowledge soundness for the composition is *not* available: it
--- would follow from `OracleVerifier.append_rbrKnowledgeSoundness` (per-round `2/|R|` sum-check error
--- combined via `ChallengeIdx.sumEquiv`), which is an unproven library-wide residual.  The honest
--- surface is the `composedRbrKnowledgeSoundnessStatement` obligation above; it has no proof yet.
+-- disguised, non-parsing axiom.  At that time the append rbr-knowledge keystone was unproven.
+-- **Current status:** the seven-seam fold for the assembled composition is proved conditionally,
+-- `Bricks.composedRbrKnowledgeSoundnessStatement_of_leaves`
+-- (`ArkLib/ProofSystem/Spartan/ComposedRbrKnowledgeSoundness.lean`), reducing this statement to
+-- the eight per-phase rbr-KS leaves and the verifier determinism witnesses; it is not proved
+-- unconditionally here (see the status paragraph at the end of this file and the short-phase /
+-- tight variants in `Spartan/ShortPhaseRbrKnowledgeLeaves.lean`, `ComposedTightRbrKnowledge.lean`).
 
 /-- Target-carrying version of `composedRbrKnowledgeSoundnessStatement`, for composed Spartan
 verifiers ending at `finalCheckWithClaim`. -/
@@ -1446,20 +1455,23 @@ theorem composedRbrKnowledgeSoundnessWithClaimSecondSumcheckEvalStatement_of_bro
 
 The seven-phase composition `Rc` (firstMessage ▷ firstChallenge ▷ firstSumcheck ▷ sendEvalClaim ▷
 linearCombination ▷ secondSumcheck ▷ finalCheck) is a single, well-typed `OracleReduction` once it
-is assembled by iterating `OracleReduction.append`. Two genuinely-open engineering obligations gate
-the *assembly* of `Rc` (independent of the proofs below): the per-phase
-`OracleVerifier.Append.AppendCoherent` instances and the challenge-seam append keystone (the
-message-seam keystone `OracleReduction.append_perfectCompleteness_msg_proof` does not apply when a
-phase boundary is a *challenge* seam, as for `firstChallenge`/`linearCombination`).
+is assembled by iterating `OracleReduction.append`. When this section was written, two engineering
+obligations gated that assembly: the per-phase `OracleVerifier.Append.AppendCoherent` instances and
+the challenge-seam append keystone (the message-seam keystone
+`OracleReduction.append_perfectCompleteness_msg_proof` does not apply at a *challenge* seam, as for
+`firstChallenge`/`linearCombination`). Both are now resolved: the composition is assembled as
+`Bricks.composedPIOP_Rc` (`Spartan/Composition.lean`), and the challenge-seam keystones exist
+(see `Spartan/ComposedCompleteness.lean`).
 
-We therefore take the assembled reduction `Rc` and its two end-to-end security guarantees as
-explicit hypotheses and derive the named composed statements of this file from them. The
-hypotheses are exactly the composed perfect-completeness / round-by-round knowledge soundness facts
-that an iterated-`append` assembly would produce (total completeness error `0`; per-round RBR error
-`2/|R|` on the two sum-check phases, `0` elsewhere), so no probabilistic or relational content is
-hidden — only the assembly of `Rc` and the append keystones remain open. These theorems are
-axiom-clean and non-vacuous: each conclusion is the corresponding named `…Statement` `Prop`, and
-each hypothesis is its defeq unfolding. -/
+The theorems below take an arbitrary reduction `Rc` and its two end-to-end security guarantees as
+explicit hypotheses and derive the named composed statements of this file from them (they are
+converters, not end-to-end results). The concrete composed results for `Bricks.composedPIOP_Rc`
+are listed in the status paragraph at the end of this file (completeness proved; rbr knowledge
+soundness conditional on leaves; the concrete per-round budget of the short-phase variant, itself
+conditional on the sum-check round bounds, is `ℓ_m/|R|` at the initial challenge, `3/|R|` per
+first-sum-check round, `1` at the RLC seam and `2/|R|` per second-sum-check round). These
+theorems are axiom-clean and non-vacuous: each conclusion is the corresponding named `…Statement`
+`Prop`, and each hypothesis is its defeq unfolding. -/
 
 omit [IsDomain R] [Fintype R] [DecidableEq R] in
 /-- **Composed Spartan PIOP perfect completeness (parameterized).** Given the assembled composed
@@ -1547,10 +1559,18 @@ results. The genuine statements about the actual assembled composition
   (`ArkLib/ProofSystem/Spartan/ComposedRbrKnowledgeSoundness.lean`) — the seven-seam keystone
   fold at `Rc := composedPIOP_Rc`, reducing the obligation to the eight per-phase rbr-KS leaves
   and the seven verifier determinism witnesses (the former challenge-seam `hSeamZero` residuals
-  are discharged by `appendRbrKnowledgeSeamZero_proven`).
+  are discharged by `appendRbrKnowledgeSeamZero_proven`). A relation-preserving short-phase
+  variant with the five non-sum-check leaves discharged is
+  `Bricks.composedRbrKnowledgeSoundnessPreserving_of_sumcheck_rounds`
+  (`Spartan/ShortPhaseRbrKnowledgeLeaves.lean`), with error `1` at the unbound RLC seam; it is
+  still conditional on the canonical sum-check per-round knowledge bounds `hRound2`/`hRound3`.
+* **Target-carrying completeness with the semantic value relation (open):**
+  `composedCompletenessWithClaimValueRelStatement` still needs the semantic final-target threading
+  (D1, issue #329) described in its audit note.
 
-Hold the `spartan_piop_*` names until the rbr layer's remaining inputs are discharged and the
-headline statements are instantiable. -/
+These supersede the older "not available / no proof yet" remarks earlier in this file, which are
+kept only as historical notes. Hold the `spartan_piop_*` names until the rbr layer's remaining
+inputs are discharged and the headline statements are instantiable. -/
 
 #print axioms composedPIOPResidual_of_reduction
 #print axioms composedPIOPWithClaimResidual_of_reduction

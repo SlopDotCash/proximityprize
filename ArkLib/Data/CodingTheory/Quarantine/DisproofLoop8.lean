@@ -31,10 +31,15 @@ list size must be bounded by a constant independent of `q`** at every prize rate
 
 > **Disproof reduction (O6).** If, at some prize rate `ρ` and fixed gap `η > 0`, the minimal
 > pivot-covering faithful GS list size at radius `δ = 1−ρ−η` grows without bound as `q → ∞`, then no
-> universal constant triple works and `UniversalGSListMassBound` (hence the prize) is **false**.
+> universal constant triple works for this **GS list-mass certificate** (`UniversalGSListMassBound`
+> fails). This does **not** by itself refute the prize: the in-tree chain only gives the *forward*
+> implications GS list mass ⟹ GS error ⟹ actual `epsMCAgs` (an *upper* bound `epsMCAgs ≤ ℓ/q`), and
+> no reverse implication or equivalence is proved. Failure of a sufficient upper-bound certificate
+> leaves the actual epsilon inequality open; refuting the prize would additionally require a lower
+> bound on the actual `epsMCAgs`.
 
-This is exactly the dual of the open Reed–Solomon problem: *list-decodability up to capacity with
-`q`-independent list size below `1−ρ`*. This file proves the `q`-independence extraction and the
+The certificate question is exactly the dual of the open Reed–Solomon problem:
+*list-decodability up to capacity with `q`-independent list size below `1−ρ`*. This file proves the `q`-independence extraction and the
 refutation arithmetic, sorry-free and axiom-clean.
 
 **Disproof of the disproof (O6).** The antecedent — a `q`-unbounded list size at a prize rate and a
@@ -72,17 +77,19 @@ theorem listsize_gt_numerator_refutes_mass
 /-- **The punchline of O6.** For any fixed `q`-independent numerator `B` (i.e. any candidate
 universal constant triple, which determines `B` before the field is chosen), a sufficiently large
 list size exceeds it: `∃ ℓ, B < ℓ`. Combined with `listsize_gt_numerator_refutes_mass`, a list size
-that grows without bound as `q → ∞` eventually breaks the mass bound for that fixed `B` — disproving
-the universal conjecture. The remaining (open) content is realizing such growth at a prize rate and
+that grows without bound as `q → ∞` eventually breaks the mass bound for that fixed `B` — refuting
+the universal GS list-mass certificate (not, by itself, the prize: that also needs a lower bound on
+the actual `epsMCAgs`). The remaining (open) content is realizing such growth at a prize rate and
 fixed gap. -/
 theorem listsize_can_exceed_any_numerator (B : ℝ) : ∃ ℓ : ℕ, B < (ℓ : ℝ) :=
   exists_nat_gt B
 
 /-- **Quantitative refutation skeleton.** Suppose at every field size in a sequence `q` the minimal
 faithful pivot-covering GS list size is `ℓ(q)`, and the universal conjecture supplies a fixed
-numerator `B`. If for *some* `q > 0` we have `ℓ(q) > B`, the universal bound is violated at that
+numerator `B`. If for *some* `q > 0` we have `ℓ(q) > B`, the list-mass clause is violated at that
 field. This packages the reduction in one implication: a single over-the-numerator instance kills a
-candidate constant triple. -/
+candidate constant triple *for the GS list-mass certificate*; it says nothing about the actual
+`epsMCAgs` at that field. -/
 theorem single_instance_over_numerator_refutes
     {ℓ q B : ℝ} (hq : 0 < q) (hgt : B < ℓ)
     (hmass : ℓ / q ≤ (1 / q) * B) : False :=

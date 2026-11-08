@@ -5,6 +5,21 @@ Date: 2026-06-25
 Status: transfer obstruction for Kopparty's arXiv:2601.07137 noisy-character recovery theorem;
 not a prize proof.
 
+> **Scope correction (2026-10-28 audit, T48; abstract-level source check only).** The sparse-density
+> obstruction below is correct, and so is the full-field versus subgroup information mismatch. Two
+> scope guards were missing.
+> - **Degree regime.** `d <= sqrt(q)` is not the paper's asymptotic hypothesis `d = o(sqrt(q))`.
+>   Under the stronger prize-scale assumptions `q >= n^4`, `d <= n` and `n -> infinity`, we get
+>   `d <= q^(1/4) = o(sqrt(q))`, so the hypothesis holds. The weaker line `q >= n^2` alone allows
+>   `d = sqrt(q)`, which is not `o(sqrt(q))`. So "the degree condition may be harmless" needs the
+>   `q >= n^4` regime, not only `q >= n^2`. The Lean gate's `d <= Real.sqrt q` conclusion is a
+>   correct inequality, but it is not by itself the paper's degree hypothesis.
+> - **Recovery is up to square factors.** For the quadratic character, Kopparty's abstract recovers
+>   the polynomial only up to perfect-square factors, not exactly.
+>
+> These guards do not affect the density gate. They only qualify the "degree side is inside the
+> theorem's range" reading.
+
 Source checked: https://arxiv.org/abs/2601.07137.  The paper recovers a low-degree polynomial from
 noisy values of a character composition on the full field `F_q`; the degree regime is `o(q^(1/2))`
 and the error tolerance is a constant fraction of the `q` field positions.

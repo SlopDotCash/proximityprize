@@ -523,9 +523,22 @@ theorem mcaDeltaStar_ge_of_farLineListBudgeted_largeZeroSplit
 open Classical in
 /-- **The low-profile fiber obligation is satisfiable** (skeptic guard against the round-1
 vacuity mode): the field-power envelope `M t = q^(k−t)` realizes the exact hypothesis shape
-consumed by `mcaDeltaStar_ge_of_farLineListBudgeted_lowProfileFibers` below.  The open
-production question is only its *size* (`M t ≪ q^(k−t)` on low fibers), never its
-satisfiability. -/
+consumed by `mcaDeltaStar_ge_of_farLineListBudgeted_lowProfileFibers` below.
+
+**The field-power envelope is exact, so it cannot be improved for this raw fiber.**  For a
+faithful Reed–Solomon code (`k ≤ n`, injective `dom`), restriction to any `t ≤ k` coordinates
+is surjective (Lagrange interpolation) with kernel of dimension `k − t`, so every
+`coordinateAgreementFiber dom k u₀ S` with `S.card = t ≤ k` has *exactly* `q^(k−t)` codewords.
+The large-zero / zero-direction-safety hypotheses restrict the line `(u₀, u₁)`, not the fiber
+itself, so a bound `M t ≪ q^(k−t)` is impossible as soon as the safe class is nonempty.  It is
+nonempty already in tiny cases: over `F₅` with `n = 3`, `k = 1`, `a = 2`, `dom = (0, 1, 2)`,
+`u₁ = (0, 0, 1)`, `u₀ = (0, 1, 0)`, the zero set `{0, 1}` has size `a` and every constant codeword
+agrees with `u₀` on at most one of its points, yet at `t = 0`, `S = ∅` the fiber is all `5`
+constant codewords, forcing `M 0 ≥ 5 = q^(1−0)`.  (2026-10-28 audit, PG-318; source-level
+derivation, not a Lean theorem.)  A smaller low-profile bound therefore needs a different object:
+restrict the candidate codewords by actual line / stratum eligibility before counting, or keep
+the exact MDS fiber size and change the counting argument.  The theorems in this file are not
+affected; only this proposed improvement route is closed. -/
 theorem lowProfileFiber_obligation_satisfiable
     (dom : Fin n ↪ F) (k a : ℕ) :
     ∀ u₀ u₁ : Fin n → F, ¬ SupportEligibleLineDirection a u₁ →
@@ -544,7 +557,8 @@ obligation shrinks to:
 * `hlowFiber` — the **low-profile fiber theorem** (`t < k` only): on zero-set-`≥ a`,
   zero-direction-safe lines, every `t`-subset of the direction's zero set has at most `M t`
   codewords agreeing with the offset there (satisfiable —
-  `lowProfileFiber_obligation_satisfiable`);
+  `lowProfileFiber_obligation_satisfiable`; for `k ≤ n` the raw fiber has exactly `q^(k−t)`
+  elements, so `M t = q^(k−t)` is the best possible choice here, see that docstring);
 * `hsafeFit` — the arithmetic fit of the extended envelope
   `t ↦ if t < k then M t else 1` under `B_safe` on large-zero directions.
 

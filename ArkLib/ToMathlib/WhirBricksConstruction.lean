@@ -15,19 +15,19 @@ import ArkLib.ProofSystem.Whir.RBRSoundness
 import ArkLib.ProofSystem.Whir.RbrBudgetAccounting
 
 /-!
-# WHIR VectorSpec challenge budget (scratch brick B)
+# WHIR transcript scaffolding and VectorSpec skeletons (scratch brick B)
 
-Prior to this file, `ArkLib/ProofSystem/Whir/` contained only soundness *ingredients*
-(folding lemmas, block-relative distance, MCA/Johnson machinery) and the statement-only
-`whir_rbr_soundness` (`Whir/RBRSoundness.lean`), whose docstring records that the WHIR Vector
-IOPP `π` (paper Construction 5.1) "is built nowhere in ArkLib yet, so the `∃ π` cannot be
-introduced."
+`whir_rbr_soundness` (`Whir/RBRSoundness.lean`) is a statement about an explicitly supplied WHIR
+Vector IOPP `π`; ArkLib does not yet contain a protocol that implements paper Construction 5.1.
 
-This file closes the first *protocol-spec bookkeeping* gap.  It builds a genuine, `sorry`-free
-`VectorSpec` with exactly `2 * M + 2` verifier challenges — the challenge budget that
-`whir_rbr_soundness` quantifies over — and no prover-message payload.  It does not yet construct
-the WHIR `VectorIOP` object `π`; the honest fold/OOD messages, verifier, completeness, and
-round-by-round soundness proof remain the larger #113 construction work.
+This file provides protocol-spec bookkeeping for that construction work: a named slot type for the
+Construction 5.1 transcript with directions and payload lengths (`PaperTranscriptSlot`,
+`whirPaperTranscriptVectorSpec`, whose slot order is not chronological, see below), adapters that
+package supplied transcript data and verifier logic as a `VectorIOP`, algebraic-consistency
+predicates, and two skeleton `VectorSpec`s with exactly `2 * M + 2` verifier challenges
+(`whirVectorSpec` has no prover messages at all).  It does not construct the WHIR `VectorIOP`: the
+honest adaptive prover, the verifier checks, completeness and round-by-round soundness remain the
+larger #113 construction work.
 
 ## References
 
@@ -51,16 +51,24 @@ def OStmt (ι F : Type) : Unit → Type := fun _ => ι → F
 
 instance : OracleInterface (OStmt ι F ()) := OracleInterface.instFunction
 
-/-! ### Faithful paper transcript scaffold
+/-! ### Paper transcript slot scaffold
 
 Construction 5.1 has more transcript structure than the RBR error-budget skeleton below: an initial
 sumcheck, per-transition folded-oracle/OOD/shift/sumcheck slots, and a final polynomial/randomness
-check.  The inductive type here records that ordered paper schedule as finite data, so the eventual
-honest prover can depend on earlier verifier challenges.  It is still syntax: the algebraic prover,
-verifier checks, completeness, and RBR soundness are separate obligations.
+check.  The inductive type here names those slots, with their directions and payload lengths, as
+finite data.  It does **not** record their chronological order: `whirPaperTranscriptVectorSpec`
+places the slots in the order of `Fintype.equivFin (PaperTranscriptSlot P)`, an unspecified
+enumeration, and nothing here proves that sumcheck challenge `s` precedes message `s + 1`, that an
+out-of-domain challenge precedes its reply, or that one round precedes the next.  A finite
+equivalence fixes the number of slots, not a schedule, so an adaptive honest prover cannot rely on
+earlier challenges yet; a faithful adaptive transcript needs an explicit interleaved schedule.
+Names such as "paper-order" below refer to these paper slots, not to a chronological order.  The
+algebraic prover, verifier checks, completeness and RBR soundness are separate obligations.
 -/
 
-/-- The ordered high-level transcript slots of WHIR Construction 5.1.
+/-- The high-level transcript slots of WHIR Construction 5.1, as a finite type.  The
+constructors list the slot kinds of one round in paper order, but no ordering of the slots is
+attached to the type.
 
 For `i : Fin M`, `i.succ : Fin (M + 1)` denotes the transition round from the previous oracle to
 the next folded oracle.  The `mainShiftChallenge` payload represents the batch of shift samples
@@ -78,7 +86,7 @@ inductive PaperTranscriptSlot {M : ℕ} {ιs : Fin (M + 1) → Type} (P : Params
   | finalRandomness : PaperTranscriptSlot P
   deriving DecidableEq, Fintype
 
-/-- Direction of a faithful WHIR Construction 5.1 transcript slot. -/
+/-- Direction of a WHIR Construction 5.1 transcript slot. -/
 def paperTranscriptSlotDirection {M : ℕ} {ιs : Fin (M + 1) → Type} {P : Params ιs F} :
     PaperTranscriptSlot P → Direction
   | .initialSumcheckMessage _ => Direction.P_to_V
@@ -92,10 +100,15 @@ def paperTranscriptSlotDirection {M : ℕ} {ιs : Fin (M + 1) → Type} {P : Par
   | .finalPolynomial => Direction.P_to_V
   | .finalRandomness => Direction.V_to_P
 
-/-- Field-vector payload length of each faithful WHIR Construction 5.1 transcript slot.
+/-- Field-vector payload length of each WHIR Construction 5.1 transcript slot.
 
 The `d` parameter is the paper's sumcheck-message degree budget.  Folded-oracle and final-polynomial
-messages are represented extensionally as field vectors over their evaluation domains. -/
+messages are represented extensionally as field vectors over their evaluation domains.  These
+lengths have not been checked against the paper: for instance the shift batch of transition `i`
+has length `P.repeatParam i.succ`, while the shift term of `whir_rbr_soundness` for the same
+transition is stated for `P.repeatParam i.castSucc` shift queries (with the combination
+coefficient carried in the same slot, a matching length would be `P.repeatParam i.castSucc + 1`).
+-/
 def paperTranscriptSlotLength {M : ℕ} {ιs : Fin (M + 1) → Type}
     [∀ i : Fin (M + 1), Fintype (ιs i)] (P : Params ιs F) (d : ℕ) :
     PaperTranscriptSlot P → ℕ
@@ -110,11 +123,13 @@ def paperTranscriptSlotLength {M : ℕ} {ιs : Fin (M + 1) → Type}
   | .finalPolynomial => 2 ^ P.varCount (Fin.last M)
   | .finalRandomness => P.repeatParam (Fin.last M)
 
-/-- The faithful paper-order WHIR transcript scaffold as a `VectorSpec`.
+/-- The WHIR paper-slot transcript scaffold as a `VectorSpec`.
 
-This is the protocol shape that a Construction 5.1 `VectorIOP` should target.  It differs from the
-block-ordered skeleton below because prover messages and verifier challenges are interleaved in the
-order needed for the honest prover's state updates. -/
+Its slot directions and payload lengths are those of `PaperTranscriptSlot`, but position `k` holds
+the slot `(Fintype.equivFin (PaperTranscriptSlot P)).symm k`, an unspecified enumeration.  Prover
+messages and verifier challenges are therefore interleaved in *some* order, not provably the
+chronological order of Construction 5.1 that an adaptive honest prover needs; a protocol over this
+shape follows Construction 5.1 only once an explicit schedule is fixed. -/
 noncomputable def whirPaperTranscriptVectorSpec {M : ℕ} {ιs : Fin (M + 1) → Type}
     [∀ i : Fin (M + 1), Fintype (ιs i)] (P : Params ιs F) (d : ℕ) :
     ProtocolSpec.VectorSpec (Fintype.card (PaperTranscriptSlot P)) where
@@ -526,9 +541,10 @@ omit [Field F] [SampleableType F] in
 /-- A prover-side adapter that emits the prover-message slots from supplied paper transcript data.
 
 This is not yet the WHIR honest prover: the real prover must compute `PaperTranscriptData` from the
-input oracle and prior verifier challenges.  This adapter is the first actual `OracleProver` object
-over the paper-order protocol shape, isolating the remaining algebraic transcript-generation
-problem from ArkLib's prover-state API. -/
+input oracle and prior verifier challenges, whereas this adapter fixes the data at input time and
+its `receiveChallenge` discards every challenge.  It is an `OracleProver` object over the
+paper-slot protocol shape, isolating the remaining algebraic transcript-generation problem from
+ArkLib's prover-state API. -/
 noncomputable def paperTranscriptOracleProver {M : ℕ} {ιs : Fin (M + 1) → Type}
     [∀ i : Fin (M + 1), Fintype (ιs i)] (P : Params ιs F) (d : ℕ)
     (makeTranscript :
@@ -542,7 +558,7 @@ noncomputable def paperTranscriptOracleProver {M : ℕ} {ιs : Fin (M + 1) → T
   output := fun _ => pure ((true, fun e => nomatch e), ())
 
 omit [Field F] [SampleableType F] in
-/-- A verifier-side adapter for the faithful paper-order transcript shape.
+/-- A verifier-side adapter for the paper-slot transcript shape `whirPaperTranscriptVectorSpec`.
 
 The supplied `verify` computation is the real WHIR verifier logic still to be built: it receives
 the public statement and all verifier challenges, and may query the input oracle and prover-message
@@ -563,12 +579,13 @@ noncomputable def paperTranscriptOracleVerifier {M : ℕ} {ιs : Fin (M + 1) →
   OracleProofVerifier.ofVerify verify
 
 omit [Field F] [SampleableType F] in
-/-- Package supplied paper-order transcript generation and verifier logic as an actual WHIR-shaped
-`VectorIOP`.
+/-- Package supplied transcript generation and verifier logic as a `VectorIOP` over the
+paper-slot `VectorSpec` `whirPaperTranscriptVectorSpec`.
 
-This is the first `VectorIOP` constructor over the faithful Construction 5.1 `VectorSpec`.  It is
-intentionally an adapter: perfect completeness and RBR soundness still require instantiating
-`verify` with the algebraic WHIR checks and proving the corresponding security obligations. -/
+It is intentionally an adapter: the prover emits transcript data fixed at input time
+(`paperTranscriptOracleProver` ignores the verifier's challenges), and perfect completeness and RBR
+soundness still require instantiating `verify` with the algebraic WHIR checks and proving the
+corresponding security obligations. -/
 noncomputable def paperTranscriptVectorIOP {M : ℕ} {ιs : Fin (M + 1) → Type}
     [∀ i : Fin (M + 1), Fintype (ιs i)] (P : Params ιs F) (d : ℕ)
     (makeTranscript :
@@ -622,7 +639,8 @@ theorem paperTranscriptVectorIOP_isSecureWithGap_of_complete_and_rbr {M : ℕ}
     simpa only [paperTranscriptVectorIOP, OracleProof.toOracleVerifier] using hRbr
 
 omit [Fintype F] [DecidableEq F] [SampleableType F] in
-/-- Folding challenges for each WHIR transition, read from the paper-order transcript schedule.
+/-- Folding challenges for each WHIR transition, read from the named challenge slots of the paper
+transcript data.
 
 The first transition uses the initial sumcheck challenges.  Transition `k+1` uses the main
 sumcheck challenges from the previous main-loop slot `k`, matching Construction 5.1's challenge
@@ -660,7 +678,7 @@ omit [Fintype F] [DecidableEq F] [SampleableType F] in
 /-- Domain bridge needed to state that a paper-order folded-oracle message is an actual
 `Fold.fold_k` output.
 
-The folding library computes on `BlockRelDistance.indexPowT (S i) (P.φ i) k`, while the WHIR
+The folding library computes on `BlockRelDistance.Generic.indexPowT (S i) (P.φ i) k`, while the WHIR
 parameter record exposes the next paper domain as `ιs (i+1)`.  A real Construction 5.1 prover must
 either provide this identification or strengthen `Params` so the identification is definitional. -/
 structure PaperFoldDomainBridge {M : ℕ} {ιs : Fin (M + 1) → Type}
@@ -1146,9 +1164,11 @@ theorem paperTranscriptSlotPayload_finalPolynomial_of_algebraicConsistency {M : 
 
 Construction 5.1 has real prover-message slots: a folded-function oracle / sumcheck message and an
 out-of-domain answer, paired with the folding and out-of-domain/shift verifier challenges.  The
-existing `whirVectorSpec` below is still the minimal all-challenge budget skeleton required by the
-current `whir_rbr_soundness` statement.  These semantic indices record the faithful per-round shape
-that the eventual `VectorIOP` constructor must refine into ArkLib's `ProtocolSpec.VectorSpec`.
+existing `whirVectorSpec` below is a minimal all-challenge skeleton that meets the `2 * M + 2`
+challenge-count pin of `whir_rbr_soundness`; it has no prover messages, so it cannot host
+Construction 5.1.  These semantic indices record a coarse aggregated per-round shape (two message
+roles and two challenge roles per round, with no chronology) that an eventual `VectorIOP`
+constructor would refine into ArkLib's `ProtocolSpec.VectorSpec`.
 -/
 
 /-- The two prover-message roles in each WHIR round of the Construction 5.1 skeleton. -/
@@ -1207,10 +1227,11 @@ noncomputable def semanticMessageIdxEquivFin (M : ℕ) :
 
 /-! ### A WHIR `VectorSpec` with real prover-message slots
 
-The all-challenge `whirVectorSpec` below is the exact shape currently consumed by
-`whir_rbr_soundness`.  The next construction layer is a bona fide ArkLib `VectorSpec` with both
-prover-message and verifier-challenge indices.  We keep the prover-message block first and the
-challenge block second; interleaving those slots into the exact paper transcript order is a later
+The all-challenge `whirVectorSpec` below meets the `2 * M + 2` challenge-count pin of
+`whir_rbr_soundness` but has no prover messages.  The next construction layer is a bona fide
+ArkLib `VectorSpec` with both prover-message and verifier-challenge indices.  We keep the
+prover-message block first and the challenge block second, so this is not the paper's interaction
+order either; interleaving those slots into the paper transcript order is a later
 transport/equivalence brick.
 -/
 
@@ -1367,16 +1388,16 @@ omit [Field F] [Fintype F] [DecidableEq F] [SampleableType F] in
       (whirBlockVectorSpec_messageIdxEquivFin M).symm i :=
   rfl
 
-/-! ### The WHIR protocol-spec direction vector
+/-! ### The all-challenge WHIR skeleton
 
-WHIR runs `M + 1` rounds; each round contributes **two** verifier challenges (the folding
-challenge and the out-of-domain / shift challenge).  We model the whole interaction with `2*M+2`
-challenge slots, all `V_to_P`.  This is the minimal `VectorSpec` whose `ChallengeIdx` cardinality
-and total challenge length are exactly `2 * M + 2`, matching the `whir_rbr_soundness` requirement
-`Fintype.card vPSpec.ChallengeIdx = 2 * M + 2`.  The full
-`2 P_to_V`/`2 V_to_P`-per-round WHIR interleaving is the faithful refinement of this skeleton; the
-challenge budget — the load-bearing datum the soundness statement quantifies over — is realised
-exactly here. -/
+Under an aggregated reading of Construction 5.1, WHIR's `M + 1` rounds contribute **two** verifier
+challenges each (the folding challenge and the out-of-domain / shift challenge).  We model that
+count with `2*M+2` challenge slots, all `V_to_P`.  This is the minimal `VectorSpec` whose
+`ChallengeIdx` cardinality and total challenge length are exactly `2 * M + 2`, matching the count
+pin `Fintype.card vPSpec.ChallengeIdx = 2 * M + 2` of `whir_rbr_soundness`.  It has no prover
+messages, so no protocol over it implements Construction 5.1, and the count pin alone does not
+identify WHIR; the unbundled paper transcript has `(∑ i, foldingParam i) + 2 * M + 1` challenges
+(`Whir/ChallengeCardPin.lean`). -/
 @[reducible]
 def whirVectorSpec (M : ℕ) : ProtocolSpec.VectorSpec (2 * M + 2) where
   dir := fun _ => Direction.V_to_P
@@ -1602,27 +1623,27 @@ instance (M : ℕ) :
     ∀ j, OracleInterface (((whirVectorSpec M).toProtocolSpec F).Message j) :=
   fun j => (whirVectorSpec_messageIdx_isEmpty (F := F) M).elim j
 
-/-! ### `whir_rbr_soundness` existential assembly
+/-! ### `whir_rbr_soundness` packaging
 
-The top-level WHIR soundness statement in `RBRSoundness.lean` is an existential over a concrete
-`VectorIOP`, its `IsSecureWithGapAveraged` proof, and the per-round budget. The theorem below
-packages a candidate protocol `π`, its security proof, and the paper's fold/out/shift/final
-inequalities into the existential statement.
+The WHIR soundness statement `whir_rbr_soundness` in `RBRSoundness.lean` is a `Prop` about an
+explicitly supplied `VectorIOP` `π`: a `2 * M + 2` challenge-count pin together with
+`IsSecureWithGapAveraged` at a per-round budget that dominates the Theorem 5.2 bounds.  The
+theorems below only package a supplied pin and a supplied `IsSecureWithGapAveraged` proof into that statement.
 
-This intentionally does **not** construct `π`; it isolates the remaining protocol/completeness/RBR
-knowledge-soundness obligation from the now-checked existential and budget assembly. -/
+They do **not** construct a protocol, and they do not make the statement certify WHIR: that needs
+`π` to implement Construction 5.1, which no protocol in ArkLib does yet. -/
 section RBRSoundnessAssembly
 
 variable {M : ℕ}
 variable {ιs : Fin (M + 1) → Type} [∀ i : Fin (M + 1), Fintype (ιs i)]
 
 omit [SampleableType F] [Fintype ι] [Nonempty ι] in
-/-- Assemble `whir_rbr_soundness` from a concrete WHIR `VectorIOP`, its
-`IsSecureWithGapAveraged` proof, and the named per-round bounds from Theorem 5.2.
+/-- Package `whir_rbr_soundness` for a supplied `VectorIOP` `π` from its challenge-count pin and
+its `IsSecureWithGapAveraged` proof at the per-round budget.
 
-This is the exact downstream witness-introduction step for issue #113.  It keeps the hard residual
-honest: callers must still provide the actual Construction 5.1 protocol `π`, supply its
-`IsSecureWithGapAveraged` proof, and discharge the fold/OOD/shift/final numeric inequalities. -/
+This is pure packaging (`⟨hChallengeCard, hSecure⟩`).  The budget hypotheses only state that the
+chosen errors dominate the Theorem 5.2 bounds; the security content is entirely the supplied
+`hSecure`, and the result says something about WHIR only when `π` implements Construction 5.1. -/
 theorem whir_rbr_soundness_of_secure_gap
     [SampleableType F] {d dstar : ℕ}
     {P : Params ιs F} {S : ∀ i : Fin (M + 1), Finset (ιs i)}
@@ -1641,18 +1662,16 @@ theorem whir_rbr_soundness_of_secure_gap
           Fintype (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := h.inst1 0
         let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
           Nonempty (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := h.inst2 0
-        ∀ j : Fin ((P.foldingParam 0) + 1),
-          let errStar_0 j := h.errStar 0 j (h.C 0 j) (h.Gen_α 0 j).parℓ (h.δ 0)
+        let errStar_0 j := h.errStar 0 j (h.C 0 j) (h.Gen_α 0 j).parℓ (h.δ 0)
         ∀ j : Fin (P.foldingParam 0),
-          ε_fold 0 j ≤ ((dstar * (h.dist 0 j.castSucc)) / Fintype.card F) + (errStar_0 j.succ))
+          ((dstar * (h.dist 0 j.castSucc)) / Fintype.card F) + (errStar_0 j.succ) ≤ ε_fold 0 j)
     (h_out :
-        ∀ i : Fin (M + 1),
-          ε_out i ≤
-            2^(P.varCount i) * (h.dist i 0)^2 / (2 * Fintype.card F))
+        ∀ i : Fin M,
+          2^(P.varCount i.succ) * (h.dist i.succ 0)^2 / (2 * Fintype.card F) ≤ ε_out i.succ)
     (h_shift :
         ∀ i : Fin M,
-          ε_shift i ≤ (1 - (h.δ i.castSucc))^(P.repeatParam i.castSucc)
-            + ((h.dist i.succ 0) * (P.repeatParam i.castSucc) + 1) / Fintype.card F)
+          (1 - (h.δ i.castSucc))^(P.repeatParam i.castSucc)
+            + (h.dist i.succ 0) * (P.repeatParam i.castSucc + 1) / Fintype.card F ≤ ε_shift i)
     (h_fold_i :
         let maxDeg := (Finset.univ : Finset (Fin m_0)).sup (fun i => wPoly₀.degreeOf (Fin.succ i))
         let dstar := 1 + (wPoly₀.degreeOf 0) + maxDeg
@@ -1661,12 +1680,12 @@ theorem whir_rbr_soundness_of_secure_gap
           Fintype (BlockRelDistance.Generic.indexPowT (S i) (P.φ i) j) := h.inst1
         let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
           Nonempty (BlockRelDistance.Generic.indexPowT (S i) (P.φ i) j) := h.inst2
-        ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
-          let errStar i j := h.errStar i j (h.C i j) (h.Gen_α i j).parℓ (h.δ i)
-        ∀ i : Fin (M + 1), ∀ j : Fin (P.foldingParam i),
-          ε_fold i j ≤ d * (h.dist i j.castSucc) / Fintype.card F + errStar i j.succ)
+        let errStar i j := h.errStar i j (h.C i j) (h.Gen_α i j).parℓ (h.δ i)
+        ∀ i : Fin M, ∀ j : Fin (P.foldingParam i.succ),
+          d * (h.dist i.succ j.castSucc) / Fintype.card F + errStar i.succ j.succ
+            ≤ ε_fold i.succ j)
     (h_fin :
-        ε_fin ≤ (1 - h.δ (Fin.last M))^(P.repeatParam (Fin.last M)))
+        (1 - h.δ (Fin.last M))^(P.repeatParam (Fin.last M)) ≤ ε_fin)
     {n : ℕ} {vPSpec : ProtocolSpec.VectorSpec n}
     (hChallengeCard : Fintype.card (vPSpec.ChallengeIdx) = 2 * M + 2)
     (π : VectorIOP Unit (OracleStatement (ιs 0) F) Unit vPSpec F)
@@ -1681,17 +1700,17 @@ theorem whir_rbr_soundness_of_secure_gap
     whir_rbr_soundness (F := F) (M := M) ιs (d := d) (dstar := dstar)
       (P := P) (S := S) (hParams := hParams) (h := h)
       hm_0 (σ₀ := σ₀) (wPoly₀ := wPoly₀) (δ := δ)
-      ε_fold ε_out ε_shift ε_fin h_fold_0 h_out h_shift h_fold_i h_fin := by
-  refine ⟨n, vPSpec, hChallengeCard, π, ?_⟩
-  exact hSecure
+      ε_fold ε_out ε_shift ε_fin h_fold_0 h_out h_shift h_fold_i h_fin vPSpec π :=
+  ⟨hChallengeCard, hSecure⟩
 
 omit [Fintype ι] [Nonempty ι] in
-/-- Assemble `whir_rbr_soundness` using the checked scratch WHIR `VectorSpec`.
+/-- `whir_rbr_soundness_of_secure_gap` specialized to the scratch skeleton `whirVectorSpec M`,
+whose `2 * M + 2` challenge count is `whirVectorSpec_card_challengeIdx`.
 
-This specializes `whir_rbr_soundness_of_secure_gap` to `whirVectorSpec M`, so callers of the
-scratch construction no longer have to pass the challenge-cardinality witness manually.  It remains
-purely downstream plumbing: callers still supply the concrete WHIR `VectorIOP`, its
-`IsSecureWithGapAveraged` proof, and the paper budget inequalities. -/
+`whirVectorSpec M` has no prover-message slots (`whirVectorSpec_messageIdx_isEmpty`), so no
+`π` over it can implement Construction 5.1, whose prover sends folded oracles, out-of-domain
+replies and sumcheck messages.  This theorem therefore only discharges the count pin for a
+message-free skeleton; it cannot certify WHIR for any choice of `π`. -/
 theorem whir_rbr_soundness_of_whirVectorSpec_secure_gap
     [SampleableType F] {d dstar : ℕ}
     {P : Params ιs F} {S : ∀ i : Fin (M + 1), Finset (ιs i)}
@@ -1710,18 +1729,16 @@ theorem whir_rbr_soundness_of_whirVectorSpec_secure_gap
           Fintype (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := h.inst1 0
         let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
           Nonempty (BlockRelDistance.Generic.indexPowT (S 0) (P.φ 0) j) := h.inst2 0
-        ∀ j : Fin ((P.foldingParam 0) + 1),
-          let errStar_0 j := h.errStar 0 j (h.C 0 j) (h.Gen_α 0 j).parℓ (h.δ 0)
+        let errStar_0 j := h.errStar 0 j (h.C 0 j) (h.Gen_α 0 j).parℓ (h.δ 0)
         ∀ j : Fin (P.foldingParam 0),
-          ε_fold 0 j ≤ ((dstar * (h.dist 0 j.castSucc)) / Fintype.card F) + (errStar_0 j.succ))
+          ((dstar * (h.dist 0 j.castSucc)) / Fintype.card F) + (errStar_0 j.succ) ≤ ε_fold 0 j)
     (h_out :
-        ∀ i : Fin (M + 1),
-          ε_out i ≤
-            2^(P.varCount i) * (h.dist i 0)^2 / (2 * Fintype.card F))
+        ∀ i : Fin M,
+          2^(P.varCount i.succ) * (h.dist i.succ 0)^2 / (2 * Fintype.card F) ≤ ε_out i.succ)
     (h_shift :
         ∀ i : Fin M,
-          ε_shift i ≤ (1 - (h.δ i.castSucc))^(P.repeatParam i.castSucc)
-            + ((h.dist i.succ 0) * (P.repeatParam i.castSucc) + 1) / Fintype.card F)
+          (1 - (h.δ i.castSucc))^(P.repeatParam i.castSucc)
+            + (h.dist i.succ 0) * (P.repeatParam i.castSucc + 1) / Fintype.card F ≤ ε_shift i)
     (h_fold_i :
         let maxDeg := (Finset.univ : Finset (Fin m_0)).sup (fun i => wPoly₀.degreeOf (Fin.succ i))
         let dstar := 1 + (wPoly₀.degreeOf 0) + maxDeg
@@ -1730,12 +1747,12 @@ theorem whir_rbr_soundness_of_whirVectorSpec_secure_gap
           Fintype (BlockRelDistance.Generic.indexPowT (S i) (P.φ i) j) := h.inst1
         let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
           Nonempty (BlockRelDistance.Generic.indexPowT (S i) (P.φ i) j) := h.inst2
-        ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
-          let errStar i j := h.errStar i j (h.C i j) (h.Gen_α i j).parℓ (h.δ i)
-        ∀ i : Fin (M + 1), ∀ j : Fin (P.foldingParam i),
-          ε_fold i j ≤ d * (h.dist i j.castSucc) / Fintype.card F + errStar i j.succ)
+        let errStar i j := h.errStar i j (h.C i j) (h.Gen_α i j).parℓ (h.δ i)
+        ∀ i : Fin M, ∀ j : Fin (P.foldingParam i.succ),
+          d * (h.dist i.succ j.castSucc) / Fintype.card F + errStar i.succ j.succ
+            ≤ ε_fold i.succ j)
     (h_fin :
-        ε_fin ≤ (1 - h.δ (Fin.last M))^(P.repeatParam (Fin.last M)))
+        (1 - h.δ (Fin.last M))^(P.repeatParam (Fin.last M)) ≤ ε_fin)
     (π : VectorIOP Unit (OracleStatement (ιs 0) F) Unit (whirVectorSpec M) F)
     (hSecure :
       let max_ε_folds : (i : Fin (M + 1)) → ℝ≥0 :=
@@ -1748,9 +1765,8 @@ theorem whir_rbr_soundness_of_whirVectorSpec_secure_gap
     whir_rbr_soundness (F := F) (M := M) ιs (d := d) (dstar := dstar)
       (P := P) (S := S) (hParams := hParams) (h := h)
       hm_0 (σ₀ := σ₀) (wPoly₀ := wPoly₀) (δ := δ)
-      ε_fold ε_out ε_shift ε_fin h_fold_0 h_out h_shift h_fold_i h_fin := by
-  refine ⟨2 * M + 2, whirVectorSpec M, whirVectorSpec_card_challengeIdx M, π, ?_⟩
-  exact hSecure
+      ε_fold ε_out ε_shift ε_fin h_fold_0 h_out h_shift h_fold_i h_fin (whirVectorSpec M) π :=
+  ⟨whirVectorSpec_card_challengeIdx M, hSecure⟩
 
 end RBRSoundnessAssembly
 

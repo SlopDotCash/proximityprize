@@ -11,7 +11,8 @@ import Mathlib.Tactic
 
 Lead C1: the parallelogram (`DyadicTowerRecursion.period_parallelogram`) gives, for the dyadic period
 variance `V_μ = max_{b≠0}‖η_b^{(μ)}‖²`, the recursion `V_μ ≤ 4·ratio_μ·V_{μ-1}` where `ratio_μ ∈ (0,1]`
-is the per-level deficit (the worst level-μ frequency's two sub-periods are sub-maximal). MEASURED
+is the per-level ratio `V_μ / (4·V_{μ-1})` (a deficit can come from sub-maximal sub-periods and/or
+from phase cancellation between them, cf. `EtaCosetSplit.eta_split_deficit_eq`). MEASURED
 `ratio_μ ≈ 0.7`, so `V_μ ≤ 2.8·V_{μ-1}` ⟹ `M ≤ n^{0.74..0.88}` — **below the analytic SOTA di Benedetto
 `n^{0.989}`** (the gap to prize `√n` is the residual: the deficit plateaus at ~0.7, not 0.5).
 
@@ -23,9 +24,13 @@ This file formalizes the recursion's consequence, conditional on a uniform defic
 > i.e. `M ≤ n^{log₂(4c)/2}·√(V_0)`. For `c < 1/2` this beats `√n`; the measured `c≈0.7` gives the
 > sub-SOTA exponent `log₂(2.8)/2 ≈ 0.74`.
 
-The single open input is the uniform per-level deficit `ratio_μ ≤ c < 1` (equiv: the worst level-μ
-frequency `b` does not make BOTH `‖η_b^{(μ-1)}‖` and `‖η_{bω}^{(μ-1)}‖` maximal — the worst-frequency
-sets interleave under the `ω`-shift). That inequality is the C1 "deficit brick", still open.
+The single open input is the **uniform** per-level deficit `ratio_μ ≤ c < 1`, with one constant `c`
+for all levels. This is *not* equivalent to the qualitative statement that the worst level-`μ`
+frequency `b` does not make both `‖η_b^{(μ-1)}‖` and `‖η_{bω}^{(μ-1)}‖` maximal: non-attainment at
+each level gives `ratio_μ < 1` level by level but no uniform `c < 1`, and conversely a deficit can
+arise from phase cancellation (a nonzero twist) even when both sub-period magnitudes are maximal.
+That uniform inequality is the C1 "deficit brick", still open; the theorems below are conditional on
+it.
 
 Issue #407.
 -/

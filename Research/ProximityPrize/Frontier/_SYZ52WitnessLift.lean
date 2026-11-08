@@ -33,9 +33,10 @@ proves the **structural core** of the verdict.
 * **Control.**  Random pencil stacks at the same `n = 14`, `k = 7`, `s = 10` have max non-`mca`
   bad count `6` (mean `1.07`, p95 `3`): the strip's small-bad-set behaviour holds generically, so
   the witness stacks' `≥ 19` is a genuine effect of the `ι = 2` general-position geometry, **not** a
-  small-field artifact.  (Radius `δ = 4/14 = 2/7 ≈ 0.286` sits right at the Johnson edge
-  `1 − √(1/2) ≈ 0.293`, where large proximity-gap bad-sets are theory-consistent — so this defeats
-  the *merge/yield accounting*, it is not a proof of strip falsification.)
+  small-field artifact.  (Radius `δ = 4/14 = 2/7 ≈ 0.286` is **below** the Johnson radius
+  `1 − √(1/2) ≈ 0.293`, hence *outside* the decisive strip `(Johnson, 1/3)` — so this defeats
+  the *merge/yield accounting* at this radius, it is not a strip result of any kind.  All `mca`-bad
+  counts in this section are probe output, not proved.)
 
 ## The mechanism — why the shields diverge (this file)
 
@@ -63,9 +64,10 @@ SYZ22 pencil budget `n − 1 = 13`, the pencil-yield ceiling `12`, *and* `n = 14
 count reaches `≥ 19`, versus a random-pencil non-`mca` baseline of `6`.  So the `ι = 2`
 general-position geometry **defeats the merge/yield accounting route** SYZ32 used: any valid shield
 must invoke the genuine near-Johnson proximity-gap list bound, not the pencil-yield/merge
-combinatorics.  This is **not** a strip falsification (radius `2/7` sits at the Johnson edge, where
-large bad-sets are theory-consistent), but it does close off the SYZ22/SYZ32 counting route for the
-band-realizable interior witnesses.  CORE remains OPEN / ON-BGK, with the accounting route now
+combinatorics.  This is **not** a strip falsification (radius `2/7 ≈ 0.286` is below the Johnson
+radius `≈ 0.293`, outside the decisive strip), but — on the probe evidence — it does close off the
+SYZ22/SYZ32 counting route for these band-realizable witnesses.  CORE remains OPEN / ON-BGK, with
+the accounting route now
 pinned as inadequate.
 
 ## What is proved here (axiom-clean, pure `ℕ`)
@@ -105,8 +107,9 @@ theorem overlap_lt_k_of_realizable {d t k : ℕ} (h : Realizable d d d t k) :
 No pairwise core overlap of a balanced realizable profile reaches the RS-uniqueness threshold `k`,
 so the merge that collapsed the SYZ32 near-duplicate cluster to a single pencil cannot fire here:
 the three cores are in general position.  This is the mechanism separating the SYZ32 stack-vacuous
-crack (overlap `≥ k`, merges, `mca`-bad `= 0`) from the SYZ50/52 interior witnesses (overlap `< k`,
-never merge, `mca`-bad `> n − 1`). -/
+crack (overlap `≥ k`, merges) from the SYZ50/52 band witnesses (overlap `< k`, never merge).  Only
+the overlap/merge statement is proved here; the `mca`-bad counts (`0` for SYZ32, `≥ 19 > n − 1` for
+the `μ₁₄` witnesses) are probe output (`probe_syz52_witness_lift.py`), not theorems. -/
 theorem merge_unavailable_of_realizable {d t k : ℕ} (h : Realizable d d d t k) :
     ¬ MergeApplies d t k := by
   have := overlap_lt_k_of_realizable h

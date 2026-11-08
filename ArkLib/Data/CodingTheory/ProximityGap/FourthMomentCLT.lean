@@ -7,18 +7,27 @@ import ArkLib.Data.CodingTheory.ProximityGap.DCEnergyCorrection
 import ArkLib.Data.CodingTheory.ProximityGap.DCSubtractedMoment
 
 /-!
-# The sub-Gaussian fourth moment of the Gauss period (#407)
+# A Gaussian-comparison fourth-moment bound for the Gauss periods (#407)
 
-The `r = 2` instance of the corrected DC-subtracted energy bound is the **sub-Gaussian fourth moment**
-— the kurtosis input of the period central limit theorem (C14). From `DCEnergyBound G 2` and the
-DC-subtracted moment identity `∑_{b≠0}‖η_b‖^4 = q·E_2 − |G|^4`:
+The `r = 2` instance of the corrected DC-subtracted energy bound is a **Gaussian-comparison
+fourth-moment upper bound** for the Gauss periods. From the explicit assumption
+`DCEnergyBound G 2` and the DC-subtracted moment identity `∑_{b≠0}‖η_b‖^4 = q·E_2 − |G|^4`:
 
 > **`fourth_moment_le_of_dc`** — `DCEnergyBound G 2 ⟹ ∑_{b≠0}‖η_b‖^4 ≤ 3·q·|G|²`.
 
-Together with the exact second moment `∑_{b≠0}‖η_b‖² = q·|G| − |G|²` this gives the period kurtosis
-`≤ 3·(1+o(1))` — the **Gaussian** value, i.e. the period is sub-Gaussian at the 4th moment (the
-provable instance of the CLT; `E_2 = 3|G|²−3|G|` for `q > 2^{|G|}`). The full CLT (all moments,
-`r ≈ ln q`) is `A_r ≤ Wick` = BGK.
+Together with the exact second moment `∑_{b≠0}‖η_b‖² = q·|G| − |G|²` this bounds the normalized
+fourth moment (kurtosis) of the periods over `b ≠ 0` by `3·q(q−1)/(q−|G|)²`, i.e. by the real
+Gaussian value `3` up to a `1 + O(|G|/q)` factor. `DCEnergyBound G 2` is a hypothesis here; it holds
+e.g. when `E_2 = 3|G|² − 3|G|` (Sidon mod negation, proved for `G = μ_n` with `n = 2^m`, `p > 2^n`
+in `SidonModNegEnergyEquality.lean`).
+
+**This is not a central limit theorem.** An upper bound on one moment (or even on all moments,
+`A_r ≤ Wick`) does not give distributional convergence to a Gaussian: that needs a normalization
+and convergence (not mere domination) of moments or distributions. For instance a fixed Rademacher
+`±1` variable has every even moment `1 ≤ (2r−1)!!` and is not Gaussian. The all-moment
+inequalities `A_r ≤ Wick` up to `r ≈ ln q` (the BGK-type target) would give high-order tail
+bounds; a period CLT would be a separate statement with its own hypotheses and conclusion, and is
+not formalized here.
 
 Issue #407.
 -/
@@ -30,8 +39,9 @@ namespace ArkLib.ProximityGap.FourthMomentCLT
 
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
-/-- **Sub-Gaussian fourth moment.** Under `DCEnergyBound G 2`, the DC-subtracted fourth moment is at most
-the Gaussian value: `∑_{b≠0}‖η_b‖^4 ≤ 3·q·|G|²`. This is the kurtosis input of the period CLT. -/
+/-- **Gaussian-comparison fourth-moment bound.** Under the explicit assumption
+`DCEnergyBound G 2`, the DC-subtracted fourth moment is at most the Gaussian-comparison value:
+`∑_{b≠0}‖η_b‖^4 ≤ 3·q·|G|²`. An upper bound only; it does not by itself give a CLT. -/
 theorem fourth_moment_le_of_dc {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {G : Finset F}
     (h : DCEnergyBound G 2) :
     ∑ b ∈ univ.erase (0 : F), ‖eta ψ G b‖ ^ 4

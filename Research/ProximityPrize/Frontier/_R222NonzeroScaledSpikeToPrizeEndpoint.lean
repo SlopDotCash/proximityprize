@@ -13,6 +13,15 @@ raw nonzero frequency carrier.  The R220 quotient-vs-raw probe shows that a
 quotient-coset `+2` spike budget lifts to the raw frequency carrier with the
 spike term multiplied by the coset size.  This file records the corresponding
 raw-frequency-safe prize endpoint with spike budget `2 * |G|`.
+
+**Carrier caveat (audit R-034, 2026-10-28).**  The premise `hcard` equates the
+cardinality `q - 1` of the **raw** nonzero carrier with the quotient-tower index
+`DyadicTowerIndex PrizeTopIndex depth`.  With the certified top index
+`PrizeTopIndex = 2^128 + 192`, the production raw carrier satisfies this only at
+`depth = 30` (`R204PrizeTowerLargeIndex.productionQ_sub_one_eq_dyadicTowerIndex_thirty`),
+i.e. the quotient by the trivial subgroup; `depth` here is therefore *not* the
+quotient depth of the child `G`, and this endpoint is not a quotient-depth
+instantiation.
 -/
 
 open Finset AddChar

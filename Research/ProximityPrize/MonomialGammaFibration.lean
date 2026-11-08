@@ -5,6 +5,7 @@ Authors: ArkLib Contributors
 -/
 import Research.ProximityPrize.KKH26RegimeSplit
 import ArkLib.Data.CodingTheory.ProximityGap.MCAEquivariance
+import ArkLib.Data.CodingTheory.ProximityGap.MCAEigenstackOrbitLaw
 
 /-!
 # The monomial γ-coset fibration: `badSet = c·badSet` for monomial stacks, every radius (#371)
@@ -38,8 +39,12 @@ So the bad-scalar set fibers over `γ ↦ c·γ`: its nonzero part is a disjoint
    reduction (probe section D: e.g. `|B∖0| = 24 = 3 orbits × 8` at `(97, 8, d = 1)`).
 3. **It is a γ-space fibration, not a stack-space one**: `mcaEvent_monomial`
    (`MCAMonomialEquivariance`) and the rotation/translation engine transport badness between
-   *stacks* at the same `γ`; this brick is the first in-tree statement that moves the
-   *scalar* while fixing the stack — the structure the bad-set censuses actually quotient by.
+   *stacks* at the same `γ`; this brick moves the *scalar* while fixing the stack — the
+   structure the bad-set censuses actually quotient by. It is not the first such statement:
+   `MonomialSpectrumEquivariance.monomial_badSet_mul_invariant` already proves `γ ↦ γ·g`
+   invariance for the adjacent monomial Reed–Solomon stack; this file generalizes it to an
+   arbitrary monomial pair `(a, b)` on `evalCode`. The orbit arithmetic is delegated to the
+   canonical `MCAEigenstack.orderOf_dvd_card_of_mul_mem` / `orderOf_le_card_of_mul_mem`.
 
 Probe: `scripts/probes/probe_monomial_gamma_fibration.py` (pre-registered, exit 0) —
 invariance `badSet = c·badSet` and `ord(c)`-divisibility at `(p, n) ∈ {(17,8), (97,8),
@@ -180,83 +185,22 @@ theorem badScalars_image_mul_eq {p : ℕ} [Fact p.Prime] {g : ZMod p}
 
 /-- **Divisibility from multiplicative invariance** (generic): a finite set of nonzero field
 elements invariant under `γ ↦ γ·c` (`c` of finite multiplicative order) has cardinality
-divisible by `ord(c)` — peel free `⟨c⟩`-orbits one at a time. -/
-theorem card_dvd_of_mul_invariant {F : Type*} [Field F] [DecidableEq F] {c : F}
+divisible by `ord(c)`. Thin wrapper around the canonical
+`MCAEigenstack.orderOf_dvd_card_of_mul_mem` (stated there for a unit of a finite field). The
+bound `N` is a vestigial parameter kept for signature compatibility. -/
+theorem card_dvd_of_mul_invariant {F : Type} [Field F] [Fintype F] [DecidableEq F] {c : F}
     (hc : IsOfFinOrder c) :
     ∀ N : ℕ, ∀ S : Finset F, S.card ≤ N → (0 : F) ∉ S →
       (∀ γ, γ ∈ S ↔ γ * c ∈ S) → orderOf c ∣ S.card := by
-  have hm : 0 < orderOf c := hc.orderOf_pos
-  have hcpow : c ^ orderOf c = 1 := pow_orderOf_eq_one c
-  intro N
-  induction N with
-  | zero =>
-    intro S hS _ _
-    rw [Nat.le_zero.mp hS]
-    exact dvd_zero _
-  | succ N ih =>
-    intro S hS h0 hinv
-    rcases S.eq_empty_or_nonempty with rfl | ⟨γ, hγ⟩
-    · simp
-    have hγ0 : γ ≠ 0 := fun h => h0 (h ▸ hγ)
-    -- the full ⟨c⟩-orbit of γ
-    set O := (Finset.range (orderOf c)).image (fun k => γ * c ^ k) with hOdef
-    have horbmem : ∀ k : ℕ, γ * c ^ k ∈ S := by
-      intro k
-      induction k with
-      | zero => simpa using hγ
-      | succ k ihk =>
-        have := (hinv (γ * c ^ k)).mp ihk
-        rwa [mul_assoc, ← pow_succ] at this
-    have hOsub : O ⊆ S := by
-      intro x hx
-      obtain ⟨k, _, rfl⟩ := Finset.mem_image.mp hx
-      exact horbmem k
-    have hinjOn : Set.InjOn (fun k => γ * c ^ k) ↑(Finset.range (orderOf c)) := by
-      intro i hi j hj hij
-      have hipow : c ^ i = c ^ j := mul_left_cancel₀ hγ0 hij
-      exact pow_injOn_Iio_orderOf
-        (by simpa using Finset.mem_range.mp (Finset.mem_coe.mp hi))
-        (by simpa using Finset.mem_range.mp (Finset.mem_coe.mp hj)) hipow
-    have hOcard : O.card = orderOf c := by
-      rw [hOdef, Finset.card_image_of_injOn hinjOn, Finset.card_range]
-    -- the orbit is itself invariant under `· * c` (both directions)
-    have hOinv : ∀ x, x ∈ O ↔ x * c ∈ O := by
-      intro x
-      constructor
-      · rintro hx
-        obtain ⟨k, hk, rfl⟩ := Finset.mem_image.mp hx
-        refine Finset.mem_image.mpr ⟨(k + 1) % orderOf c, Finset.mem_range.mpr
-          (Nat.mod_lt _ hm), ?_⟩
-        rw [pow_mod_orderOf, pow_succ, mul_assoc]
-      · rintro hx
-        obtain ⟨k, _, hk⟩ := Finset.mem_image.mp hx
-        -- x·c = γ·cᵏ  ⟹  x = γ·c^{k + ord − 1}
-        have hx2 : x = γ * c ^ ((k + (orderOf c - 1)) % orderOf c) := by
-          rw [pow_mod_orderOf, pow_add]
-          have hxc : x * (c * c ^ (orderOf c - 1)) = γ * c ^ k * c ^ (orderOf c - 1) := by
-            rw [← mul_assoc, hk]
-          rw [← pow_succ', show (orderOf c - 1) + 1 = orderOf c from by omega, hcpow,
-            mul_one] at hxc
-          rw [hxc, mul_assoc]
-        rw [hx2]
-        exact Finset.mem_image.mpr ⟨_, Finset.mem_range.mpr (Nat.mod_lt _ hm), rfl⟩
-    -- peel: S ∖ O is smaller, still invariant, still 0-free
-    have hsdiff_inv : ∀ γ', γ' ∈ S \ O ↔ γ' * c ∈ S \ O := by
-      intro γ'
-      simp only [Finset.mem_sdiff]
-      constructor
-      · rintro ⟨hS', hO'⟩
-        exact ⟨(hinv γ').mp hS', fun h => hO' ((hOinv γ').mpr h)⟩
-      · rintro ⟨hS', hO'⟩
-        exact ⟨(hinv γ').mpr hS', fun h => hO' ((hOinv γ').mp h)⟩
-    have hcard_sdiff : (S \ O).card = S.card - orderOf c := by
-      rw [Finset.card_sdiff, Finset.inter_eq_left.mpr hOsub, hOcard]
-    have hOle : orderOf c ≤ S.card := hOcard ▸ Finset.card_le_card hOsub
-    have hrec := ih (S \ O) (by omega) (fun h => h0 (Finset.mem_sdiff.mp h).1) hsdiff_inv
-    rw [hcard_sdiff] at hrec
-    have hsum : S.card = (S.card - orderOf c) + orderOf c := (Nat.sub_add_cancel hOle).symm
-    rw [hsum]
-    exact Nat.dvd_add hrec dvd_rfl
+  intro _ S _ h0 hinv
+  have hc0 : c ≠ 0 := by
+    rintro rfl
+    obtain ⟨m, hm, hpow⟩ := isOfFinOrder_iff_pow_eq_one.mp hc
+    rw [zero_pow (Nat.pos_iff_ne_zero.mp hm)] at hpow
+    exact zero_ne_one hpow
+  have h := ProximityGap.MCAEigenstack.orderOf_dvd_card_of_mul_mem (α := Units.mk0 c hc0) S
+    (fun γ hγ => by rw [Units.val_mk0, mul_comm]; exact (hinv γ).mp hγ) h0
+  rwa [← orderOf_units, Units.val_mk0] at h
 
 /-! ## The headline divisibilities -/
 
@@ -384,52 +328,23 @@ theorem orderOf_le_card_badScalars_erase_zero_of_nonzero_bad {p : ℕ} [Fact p.P
           (monoWord g a) (monoWord g b) γ)).erase 0).card := by
   classical
   set c : ZMod p := g ^ b * (g ^ a)⁻¹ with hcdef
-  set Bad := (Finset.univ.filter (fun γ : ZMod p =>
-      mcaEvent (F := ZMod p) (A := ZMod p) (evalCode g n d) δ
-        (monoWord g a) (monoWord g b) γ)).erase 0 with hBaddef
-  set O := (Finset.range (orderOf c)).image (fun k => γ * c ^ k) with hOdef
-  have npos : 0 < n := Nat.pos_of_ne_zero (NeZero.ne n)
   have hga : (g : ZMod p) ^ a ≠ 0 := pow_ne_zero _ hg0
   have hc0 : c ≠ 0 := by
     rw [hcdef]
     exact mul_ne_zero (pow_ne_zero _ hg0) (inv_ne_zero hga)
-  have hcfin : IsOfFinOrder c := by
-    refine isOfFinOrder_iff_pow_eq_one.mpr ⟨n, npos, ?_⟩
-    have hgn : g ^ n = 1 := hg ▸ pow_orderOf_eq_one g
-    rw [hcdef, mul_pow, inv_pow, ← pow_mul, ← pow_mul, mul_comm b n, mul_comm a n, pow_mul,
-      pow_mul, hgn, one_pow, one_pow, inv_one, mul_one]
-  have horbmem : ∀ k : ℕ, γ * c ^ k ∈ Bad := by
-    intro k
-    induction k with
-    | zero =>
-        rw [hBaddef]
-        simp [hγ0, hγbad]
-    | succ k ih =>
-        have hbadk : mcaEvent (F := ZMod p) (A := ZMod p) (evalCode g n d) δ
-            (monoWord g a) (monoWord g b) (γ * c ^ k) := by
-          simpa [hBaddef] using (Finset.mem_erase.mp ih).2
-        have hbadnext :
-            mcaEvent (F := ZMod p) (A := ZMod p) (evalCode g n d) δ
-              (monoWord g a) (monoWord g b) ((γ * c ^ k) * c) := by
-          simpa [c] using (mcaEvent_monoStack_gamma_mul hg hg0 d a b δ (γ * c ^ k)).mp hbadk
-        rw [hBaddef]
-        refine Finset.mem_erase.mpr ⟨?_, ?_⟩
-        · exact mul_ne_zero hγ0 (pow_ne_zero _ hc0)
-        · simpa [pow_succ, mul_assoc] using hbadnext
-  have hOsub : O ⊆ Bad := by
-    intro x hx
-    obtain ⟨k, _, rfl⟩ := Finset.mem_image.mp hx
-    exact horbmem k
-  have hinjOn : Set.InjOn (fun k => γ * c ^ k) ↑(Finset.range (orderOf c)) := by
-    intro i hi j hj hij
-    have hipow : c ^ i = c ^ j := mul_left_cancel₀ hγ0 hij
-    exact pow_injOn_Iio_orderOf
-      (by simpa using Finset.mem_range.mp (Finset.mem_coe.mp hi))
-      (by simpa using Finset.mem_range.mp (Finset.mem_coe.mp hj)) hipow
-  have hOcard : O.card = orderOf c := by
-    rw [hOdef, Finset.card_image_of_injOn hinjOn, Finset.card_range]
-  rw [← hOcard]
-  exact Finset.card_le_card hOsub
+  have h := ProximityGap.MCAEigenstack.orderOf_le_card_of_mul_mem (α := Units.mk0 c hc0)
+    (S := (Finset.univ.filter (fun γ : ZMod p =>
+      mcaEvent (F := ZMod p) (A := ZMod p) (evalCode g n d) δ
+        (monoWord g a) (monoWord g b) γ)).erase 0)
+    (fun x hx => by
+      obtain ⟨hx0, hxbad⟩ := Finset.mem_erase.mp hx
+      rw [Finset.mem_filter] at hxbad
+      rw [Units.val_mk0, mul_comm]
+      refine Finset.mem_erase.mpr ⟨mul_ne_zero hx0 hc0, ?_⟩
+      rw [Finset.mem_filter]
+      exact ⟨Finset.mem_univ _, (mcaEvent_monoStack_gamma_mul hg hg0 d a b δ x).mp hxbad.2⟩)
+    (Finset.mem_erase.mpr ⟨hγ0, Finset.mem_filter.mpr ⟨Finset.mem_univ _, hγbad⟩⟩) hγ0
+  rwa [← orderOf_units, Units.val_mk0] at h
 
 open Classical in
 /-- Adjacent-pair one-orbit lower bound: one nonzero bad scalar forces at least `n` nonzero

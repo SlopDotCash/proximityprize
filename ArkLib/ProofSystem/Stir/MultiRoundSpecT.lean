@@ -30,9 +30,14 @@ This file lands the wire shape itself:
 * `chalCoordT` — reading the `j`-th field element off a committed `t`-point vector
   challenge (the multi-point analogue of `chalFE`).
 
-Next bricks (tracked on issue #301): the `t`-point checking computation (fold the
-binding/consistency checks over all `t` coordinates), its `simulateQ` collapse and
-completeness, and the door-die soundness re-run with product flip bounds.
+Later in this file (not future work): the `t`-point checking computation (`checkingCompT`,
+folding the binding/consistency checks over all `t` coordinates, with its Boolean form
+`checkingBoolT`), its `simulateQ` collapse (`simulateQ_checkingCompT`), and the resulting
+verifier/prover/IOP (`stirCheckingVerifierT`, `stirMultiRoundProverT`, `stirCheckingIOPT`).
+
+Still open (tracked on issue #301): completeness of the `t`-point IOP is not proved in this file,
+and the door-die soundness re-run with product flip bounds is the explicit open target
+`stirCheckingRbrSoundnessResidualT` (stated at the end of this file, consumed as a hypothesis).
 
 Axiom-clean: `[propext, Classical.choice, Quot.sound]` (audited at end of file).
 -/

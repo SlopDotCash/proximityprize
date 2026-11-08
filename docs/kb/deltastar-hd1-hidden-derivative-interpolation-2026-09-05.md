@@ -208,6 +208,15 @@ Rate 1/2, budget `2¹²²` (`|F| ≈ 2²⁵⁰`, `ε* = 2⁻¹²⁸`), grid `m �
 Johnson is `0.29289`; the certified gain is `+0.016` in δ, i.e. `1.7·10⁷` positions at `n = 2³⁰`.
 At `|F| ≈ n·2¹³⁸` (budget `≈ 2^{log n + 10}`) **no radius is certified** for any `n`.
 
+**Correction (audit 2026-10-28, L105).** The radius search bisects over the agreement `a` and
+skipped a family whenever its endpoint failed, assuming the ledger seed estimate decreases in
+`a`. That is false: with `(n,w,m,s,L,B) = (6,2,2,1,2,5711)` and exact ranks, `a = 5` passes
+(`51390 < 5711·9`) while `a = 6` fails (`119856 > 5711·16`), and the old search returned no
+radius. Each δ above is still a certified radius (both gates pass at the reported `a`), but it is
+not proved to be the largest certified radius on the grid, and "no radius is certified" means
+"none found by the search". `hd1_line_ledger.least_passing` now scans small ranges exhaustively
+and labels prize-scale results as bisection candidates (`scripts/tests/test_hd1_line_ledger_search.py`).
+
 **Honest classification of row 5.**  The interpolation gate is exact (this note).  The ledger's
 geometric inputs (`whole_surface_seed_bound`, the cut and singular branches, the
 `(n−w)/(a−w)` incidence factor, the no-large-pencil/strong-alignment bridge, and the

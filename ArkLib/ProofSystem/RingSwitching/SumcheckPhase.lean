@@ -862,11 +862,12 @@ theorem iteratedSumcheckOracleReduction_perfectCompleteness_proved
     h_relIn r1
   exact ⟨_, rfl, h_rel_out, rfl, rfl⟩
 
-/-- **Schwartz-Zippel bound for the bad sumcheck extraction event.**
-  Proof strategy (follows `foldStep_doom_escape_probability_bound`):
-  1. **Implication**: Show that extraction failure implies the `badSumcheckEventProp`.
-  2. **Monotonicity**: Conclude `Pr[doom] ≤ Pr[badSumcheckEvent]` via `prob_mono`.
-  3. **Schwartz–Zippel**: Bound `Pr[badSumcheckEvent]` by `2/|L|`. -/
+/-- **Unit bound for the bad sumcheck extraction event.** The statement is
+`Pr ≤ roundKnowledgeError = 1` and the proof is `prEvent_le_one`; there is no Schwartz–Zippel
+derivation here. The intended sharp route (extraction failure ⇒ `badSumcheckEventProp`, then
+`probEvent_badSumcheckEventProp_degree_two_le` for `2/|L|`) is blocked because the generic RBR
+event lets the post-challenge witness, hence the ground-truth round polynomial, vary with the
+sampled challenge; the fixed-polynomial `2/|L|` lemma does not address that adaptivity. -/
 lemma iteratedSumcheck_doom_escape_probability_bound [Fintype L] [DecidableEq L] [IsDomain L]
     (i : Fin ℓ')
     (stmtOStmtIn : (Statement (L := L) (ℓ := ℓ') (RingSwitchingBaseContext κ L K ℓ P) (Fin.castSucc i)) × (∀ j, aOStmtIn.OStmtIn j))
@@ -881,6 +882,9 @@ lemma iteratedSumcheck_doom_escape_probability_bound [Fintype L] [DecidableEq L]
   change _ ≤ ((1 : ℝ≥0) : ENNReal)
   exact prEvent_le_one _
 
+/-- Per-round RBR knowledge soundness of the iterated sum-check verifier **at the trivial
+error `1`** (`roundKnowledgeError`): the proof is `prEvent_le_one`, so no nontrivial soundness
+guarantee is provided. -/
 theorem iteratedSumcheckOracleVerifier_rbrKnowledgeSoundness [IsDomain L] (i : Fin ℓ') :
     (iteratedSumcheckOracleVerifier κ L K P ℓ ℓ' aOStmtIn i).rbrKnowledgeSoundnessAveraged init impl
       (relIn := sumcheckRoundRelation κ L K P ℓ ℓ' h_l aOStmtIn i.castSucc)
@@ -1375,8 +1379,12 @@ def coreInteractionOracleReduction :=
 
 variable {σ : Type} {init : ProbComp σ} {impl : QueryImpl []ₒ (StateT σ ProbComp)}
 
-/-- Perfect completeness for large-field reduction (Sumcheck ++ FinalSum), conditional on the
-explicit iterated-sumcheck round completeness residual. -/
+/-- Perfect completeness for large-field reduction (Sumcheck ++ FinalSum), stated as an
+**identity wrapper**: the hypothesis `hAppendPerfectCompleteness` is already the full
+conclusion and the proof returns it, so `hRounds` is unused. This is not a derivation from the
+iterated-sumcheck round completeness; the genuine round/final completeness results and the
+guarded final reconstruction are proved separately in this file and remain available
+independently. -/
 theorem coreInteraction_perfectCompleteness [IsDomain L] [IsDomain K]
     (hRounds : iteratedSumcheckOracleReduction_perfectCompleteness_residual
       (κ := κ) (L := L) (K := K) (P := P) (ℓ := ℓ) (ℓ' := ℓ') (h_l := h_l)
@@ -1407,10 +1415,13 @@ theorem coreInteraction_perfectCompleteness [IsDomain L] [IsDomain K]
     (impl := impl) := by
   exact hAppendPerfectCompleteness
 
-/-- Per-round knowledge error for the iterated sumcheck rounds. -/
+/-- Per-round knowledge error for the iterated sumcheck rounds: the trivial unit bound `1` (see
+`roundKnowledgeError` for why the fixed-polynomial `2/|L|` lemma does not yet apply). -/
 def iteratedSumcheckRoundKnowledgeError (_ : Fin ℓ') : ℝ≥0 := 1
 
-/-- standard sumcheck error -/
+/-- Core-interaction RBR error: the iterated rounds contribute the trivial unit error `1`
+(`iteratedSumcheckRoundKnowledgeError`), the final step `finalSumcheckRbrKnowledgeError`. This is
+not the standard `2/|L|`-per-round sum-check error. -/
 def coreInteractionRbrKnowledgeError (j : (pSpecCoreInteraction L ℓ').ChallengeIdx) : ℝ≥0 :=
   Sum.elim
     (f := fun i =>
@@ -1421,7 +1432,10 @@ def coreInteractionRbrKnowledgeError (j : (pSpecCoreInteraction L ℓ').Challeng
 
 -- Future work: iteratedSumcheckLoop_rbrKnowledgeSoundness
 
-/-- RBR knowledge soundness for large-field reduction (Sumcheck ++ FinalSum) -/
+/-- RBR knowledge soundness for large-field reduction (Sumcheck ++ FinalSum), stated as an
+**identity wrapper**: the hypothesis `hAppendRbrKnowledgeSoundness` is already the full
+conclusion and the proof returns it. Core-interaction RBR knowledge soundness is not proved
+here. -/
 theorem coreInteraction_rbrKnowledgeSoundness [IsDomain L] [IsDomain K]
     (hAppendRbrKnowledgeSoundness :
       (coreInteractionOracleVerifier κ L K P ℓ ℓ' h_l aOStmtIn).rbrKnowledgeSoundnessAveraged

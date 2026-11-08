@@ -15,10 +15,13 @@ hypothesis is false for `n ≥ 64`). This file gives the SAME conclusion from th
 hypothesis `DCEnergyBound` (`A_r ≤ Wick`, true at the prize):
 
 > **`eta_sq_le_dcOptimized`** — from `DCEnergyBound G r` at `r ≥ max(1, ln q)`, for every `b ≠ 0`,
-> `‖η_b‖² ≤ 2e·|G|·r`. At `r = ⌈ln q⌉`: the prize sup-norm `M ≤ √(2e·n·ln q)`, **non-vacuous**.
+> `‖η_b‖² ≤ 2e·|G|·r`. At `r = ⌈ln q⌉`: the prize sup-norm `M ≤ √(2e·n·⌈ln q⌉)`
+> (the ceiling is retained; `√(2e·n·ln q)` itself would need a separate rounding allowance,
+> e.g. `⌈ln q⌉ ≤ ln q + 1`, which costs a factor `≤ √(1 + 1/ln q)`).
 
 This is the corrected end-to-end conditional prize bound: the only open input is `A_r ≤ Wick`
-(= the BGK / Anomaly-Suppression inequality), measured true at every prize prime.
+(= the BGK / Anomaly-Suppression inequality), supported by probe measurements at the tested prize
+primes but not proved.
 
 Issue #407.
 -/
@@ -31,9 +34,10 @@ namespace ArkLib.ProximityGap.DCOptimized
 variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
 
 /-- **Corrected optimized sup-norm bound.** From the DC-subtracted energy bound `DCEnergyBound G r` at
-order `r ≥ max(1, ln q)`, every non-trivial Gauss period obeys `‖η_b‖² ≤ 2e·|G|·r`. At `r = ⌈ln q⌉` this
-is the prize `M ≤ √(2e·n·ln q)` — and unlike the in-tree `eta_le_optimized`, the hypothesis is TRUE at
-the prize parameters. -/
+order `r ≥ max(1, ln q)`, every non-trivial Gauss period obeys `‖η_b‖² ≤ 2e·|G|·r`. At
+`r = ⌈ln q⌉` this is `M ≤ √(2e·n·⌈ln q⌉)` (not literally `√(2e·n·ln q)`) — and unlike the in-tree
+`eta_le_optimized`, the hypothesis is not known to be false at the prize parameters (it is
+measured true there by probes, but not proved). -/
 theorem eta_sq_le_dcOptimized {ψ : AddChar F ℂ} (hψ : ψ.IsPrimitive) {G : Finset F} {r : ℕ}
     (hr : 1 ≤ r) (hrq : Real.log (Fintype.card F) ≤ r) (h : DCEnergyBound G r) {b : F} (hb : b ≠ 0) :
     ‖eta ψ G b‖ ^ 2 ≤ 2 * Real.exp 1 * (G.card : ℝ) * (r : ℝ) := by

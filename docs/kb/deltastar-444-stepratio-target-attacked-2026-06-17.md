@@ -1,5 +1,22 @@
 # Attacking the target `E_{r+1} ≤ (2r+1)·n·E_r` from every angle (#444)
 
+> **Later status (linked 2026-10-28, audit T48).** Two statements below are superseded.
+> 1. **`max_{t≠0} c_2(t) = 2` is not a finite-field fact.** The two-unit-circles argument is
+>    complex geometry and does not transfer automatically to `F_p`. At the thin cell
+>    `μ₆₄ ⊆ F₁₇₃₁₈₂₀₉` (`p > 64⁴`), the nonzero difference `5424630` has four representations
+>    `b − a`: `(1, 5424631)`, `(15071653, 3178074)`, `(14140135, 2246556)` and
+>    `(11893578, 17318208)` (exact check, audit evidence `kb25-scope-and-difference-check.json`).
+> 2. **Char-`p` step-ratio monotonicity is not "the remaining open input": it is false at concrete
+>    cells.** `Research/ProximityPrize/Frontier/_CharPStepRatioMonotoneFails.lean` shows the gap
+>    `(2r+3)E_{r+1}² − (2r+1)E_r E_{r+2}` is negative for the exact energy triples at
+>    `n = 32, p = 786433, r = 3` and `n = 64, p = 2752513, r = 2`. The Lean file kernel-checks the gap
+>    arithmetic for those supplied energies; the energies themselves come from the exact
+>    convolution probe, and the audit re-computed them. This is the earlier refutation, linked
+>    here, not a new discovery.
+>
+> The conditional reduction `_StepRatioMonotone.stepRatio_le_one_of_antitone_base` remains a valid
+> implication, but its antitone hypothesis fails at those cells.
+
 The localized prize: prove the char-`p` step bound `E_{r+1}(μ_n;F_p) ≤ (2r+1)·n·E_r` (⟺ `E_r ≤
 (2r−1)‼·n^r`, the Wick/sub-Gaussian bound) to depth `r ≈ log p`. Every angle attacked directly
 (machine `crossterm_attack.py`/`crossterm2.py`, no sub-agents — weekly-capped).

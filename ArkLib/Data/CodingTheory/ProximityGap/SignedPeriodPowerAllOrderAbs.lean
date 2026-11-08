@@ -42,9 +42,20 @@ This is still a LOWER constraint on `M` (it bounds the signed residual *by* `M`:
 *force* the signed odd residual `q·W_r − n^r` small), NOT an UPPER bound on `M`. So it is **NOT** a
 CORE closure and cannot be — bounding `M` from above at `r ≈ log q` is the open BGK wall. Its value:
 it extends the even-floor pin to the ODD grade, locating the signed odd residual `q·W_r − n^r`
-(which is `≠ 0` over `F_q`, `= 0` over ℂ by `OddZeroSumCountVanish`) inside the `±(q−1)M^r` band, so
-the entire all-order signed object is now M-controlled, not just the even one. NON-MOMENT (the bound
-is on the SIGNED real residual, not a `|·|^{2r}` energy packaging), field-universal, EXTEND of the
+inside the `±(q−1)M^r` band, so the entire all-order signed object is now M-controlled, not just
+the even one.
+
+*Zero count versus zero residual.* `OddZeroSumCountVanish` concerns the **count** `W_r = 0` (over ℂ
+at odd `r`); that leaves the residual `q·0 − n^r = −n^r ≠ 0`, not `0`.  A nonzero residual therefore
+does **not** by itself detect finite-field-only coincidences: e.g. at `r = 1` any nonempty zero-free
+`S ⊆ F_q` has `W_1 = 0` and residual `−|S| ≠ 0` with no odd zero-sum coincidence at all (this
+diagonal case is `card_pow_le_qsub_one_mul_max_pow_of_zeroSumCount_eq_zero` below).  What
+`F_q`-only coincidences change is `W_r` itself (making it positive where it vanishes over ℂ).
+
+*Moment status.* The bound is stated for the signed real residual; at odd `r` it is not an
+absolute-moment statement.  At **even** `r` on a negation-closed `S` the periods are real and
+`η_ψ^r = |η_ψ|^r`, so there the signed sum coincides with the absolute moment (PG-144; see
+`SubgroupGaussSumRawMoment.N0_eq_rEnergy_of_neg_closed`).  Field-universal, EXTEND of the
 canonical bridge + even floor. `CORE  M(μ_n) ≤ C·√(n·log(q/n))  OPEN.`
 
 Issues #444, #407.
@@ -133,9 +144,11 @@ theorem signedPeriodPow_re_abs_le {S : Finset F} (r : ℕ) {M : ℝ}
 The consumer form of `signedPeriodPow_re_abs_le`: dividing the two-sided bracket by the positive count
 `q − 1` of nonzero characters solves for `M^r` and lower-bounds it by the signed residual. For ODD `r`
 this is genuinely new (the even floor's `signedPeriodPow_le_card_mul_max_pow` only reaches even `r`):
-any odd-order signed zero-sum residual `q·W_r − n^r` — which is `≠ 0` precisely via the `F_q`-reduction
-(`OddZeroSumCountVanish`: it is `0` over ℂ) — FORCES the period max `M` up. So the deep odd `F_q`-only
-zero-sum coincidences, the located locus of the BGK wall, are exactly the source of an `M`-lower push.
+any nonzero odd-order signed residual `q·W_r − n^r` FORCES the period max `M` up.  A nonzero
+residual is **not** specific to `F_q`-only coincidences: when `W_r = 0` (e.g. over ℂ at odd `r`,
+`OddZeroSumCountVanish`, or `r = 1` with `0 ∉ S`) the residual is `−n^r ≠ 0` and gives the diagonal
+push of `card_pow_le_qsub_one_mul_max_pow_of_zeroSumCount_eq_zero`.  `F_q`-only coincidences act by
+changing `W_r`, which moves the residual within the band.
 Honest scope: a LOWER bound on `M` (the prize wants an UPPER bound), NOT a CORE closure. CORE OPEN. -/
 theorem max_pow_ge_abs_signed_div {S : Finset F} (r : ℕ) {M : ℝ}
     (hpos : 0 < ((univ.erase (0 : AddChar F ℂ)).card : ℝ))

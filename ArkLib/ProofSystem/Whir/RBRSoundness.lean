@@ -14,8 +14,10 @@ import ArkLib.ProofSystem.Whir.ProximityGen
 /-!
 # Round by round soundness theorem
 
-This file formalizes the round by round soundness theorem of the WHIR IOPP,
-introduced in the Section 5 [ACFY24].
+This file states the round by round soundness theorem of the WHIR IOPP (Theorem 5.2 of
+Section 5 of [ACFY24]) as a `Prop`, `whir_rbr_soundness`, about an explicitly supplied
+protocol. Nothing here proves it, and ArkLib does not yet contain a protocol that implements
+Construction 5.1 (see the docstring of `whir_rbr_soundness`).
 
 ## References
 
@@ -33,7 +35,16 @@ introduced in the Section 5 [ACFY24].
   and not for a generic l.
 
 - In Construction 5.1 and Theorem 5.2,
-  we use M + 1 iterations instead of M, for ease of representation in Lean
+  we use M + 1 iterations instead of M, for ease of representation in Lean:
+  rounds are indexed by `Fin (M + 1)`, round `0` is the initial sumcheck and round `i.succ`
+  (`i : Fin M`) is the paper's main-loop iteration `i + 1`.
+
+## Statement shape
+
+`whir_rbr_soundness` takes each per-round error as a budget that must dominate the analytic
+Theorem 5.2 bound (`bound ≤ ε`), constrains the out-of-domain and main-round folding errors only
+on the main rounds, uses the shift term `ℓ_{i+1,0} · (t_i + 1) / |F|`, and takes the protocol
+`π` as an explicit argument instead of quantifying over it existentially.
 
 ## Tags
 Open question: should we aim to add tags?
@@ -162,26 +173,61 @@ def whirRelation
     : Set ((Unit × ∀ i, (OracleStatement ι F i)) × Unit) :=
   { ⟨⟨_, oracle⟩, _⟩ | δᵣ(oracle (), smoothCode φ varCount) ≤ err }
 
-/-- Theorem 5.2: **Round-by-round soundness of the WHIR Vector IOPP**
+/-- Theorem 5.2: **round-by-round soundness of the WHIR Vector IOPP**, stated for an explicitly
+  supplied protocol `π`. This is a `Prop`-valued statement, not a proved theorem.
 
-  **ABF26 mapping.** This is the top-level WHIR soundness theorem; its proof composes
-  (a) the BCIKS20/CapacityBounds-style ε_ca / ε_mca bounds (ABF26 §4.2.2 / §4.3)
-  with (b) the folding-preserves-list-decoding lemmas in `Whir/Folding.lean`
-  (L4.21–L4.23, corresponding to ABF26 T3.4 specialized to FRS). The `errStar` and
-  `ε_fold` rate-distance ingredients line up with ABF26's `epsMCA` (Def 4.3); the
-  per-round shifting/folding error budget is the WHIR-side accounting of those
-  abstract bounds.
+  `whir_rbr_soundness … h_fold_0 h_out h_shift h_fold_i h_fin vPSpec π` says that `vPSpec` has
+  `2 * M + 2` challenge slots and that `π` is `IsSecureWithGapAveraged` (perfectly complete for
+  exact codewords, prover-averaged round-by-round knowledge sound for
+  `whirRelation m_0 (P.φ 0) (h.δ 0)`) at the constant per-challenge budget `max (ε_fold, ε_out, ε_shift, ε_fin)`.
 
-  DISPOSITION (2026-06-04): open — the deepest obligation, gated on (a) the full MCA chain and
-  (b) a construction that does not yet exist in the tree. The conclusion is an *existential* that
-  must **construct** an `n`-message Vector IOPP `π : VectorIOP …` realizing the WHIR protocol
-  (Construction 5.1) and then prove `IsSecureWithGapAveraged` for it with per-round error `ε_rbr`.
-  No such `π` is built anywhere in ArkLib yet, so the `∃ π` cannot be introduced. Even granting the
-  construction, the `IsSecureWithGapAveraged` bound composes the folding list-decoding lemmas
-  (`Whir/Folding.lean` L4.20–4.23, open) with the MCA `errStar` bounds (`mca_rsc`/`mca_linearCode`,
-  open). This is therefore strictly downstream of every other WHIR sorry: it requires the protocol
-  construction *plus* the entire upstream chain, not a folding/MCA lemma in isolation.
-  Honest-stop: exact gap = (WHIR IOPP construction `π`) + (folding L4.20–4.23) + (MCA Cor 4.11). -/
+  **Budget direction.** Each hypothesis requires the chosen error to *dominate* the analytic
+  Theorem 5.2 bound (`bound ≤ ε`): an upper bound on a failure probability justifies every larger
+  budget and no smaller one. Round-by-round knowledge soundness is monotone in the budget, so
+  asking for every dominating budget is the same as asking for the analytic bounds themselves
+  when they are finite. An earlier revision required `ε ≤ bound`, which demanded security at
+  every smaller budget, including zero.
+
+  **Per-round bounds.** Round `0` is the initial sumcheck and round `i.succ` (`i : Fin M`) is the
+  paper's main-loop iteration `i + 1`; `ℓ` is `h.dist`, `t` is `P.repeatParam`, `δ` is `h.δ`,
+  `m` is `P.varCount` and `err*` is `h.errStar` (with `parℓ` of size `2`).
+  * `h_fold_0`: `d* · ℓ_{0,j} / |F| + err*(C_{0,j+1}, δ_0) ≤ ε_fold 0 j`.
+  * `h_out`: `2^{m_{i+1}} · ℓ_{i+1,0}² / (2|F|) ≤ ε_out i.succ`, on main rounds only. Round `0`
+    has no out-of-domain sample (the transcript scaffold `PaperTranscriptSlot` also has
+    out-of-domain slots only for the main rounds), so `ε_out 0` is unconstrained; it can only
+    enlarge the budget.
+  * `h_shift`: `(1 - δ_i)^{t_i} + ℓ_{i+1,0} · (t_i + 1) / |F| ≤ ε_shift i`.
+  * `h_fold_i`: `d · ℓ_{i+1,j} / |F| + err*(C_{i+1,j+1}, δ_{i+1}) ≤ ε_fold i.succ j`, on main
+    rounds only, so round `0` keeps the `d*` bound of `h_fold_0` rather than `d = max d* 3`.
+  * `h_fin`: `(1 - δ_M)^{t_M} ≤ ε_fin`.
+  These were re-derived from the per-round arguments, not re-checked line by line against the
+  ePrint text: a cheating sumcheck message of degree below `d` (`d*` in round `0`) agrees with
+  the honest message of a fixed list codeword at a random point with probability at most
+  `d / |F|` (union over the `ℓ` list codewords, plus the folding error `err*`); two distinct
+  list codewords agree at a random out-of-domain point with probability at most `2^m / |F|`
+  (union over the `ℓ² / 2` pairs); in the shift round all `t` queries avoid the disagreement set
+  with probability at most `(1 - δ)^t`, and the `γ`-combination of the `t + 1` new constraints
+  (a polynomial of degree at most `t + 1` in `γ`) fails for a fixed list codeword with
+  probability at most `(t + 1) / |F|`. An earlier revision wrote the shift term as
+  `(ℓ · t + 1) / |F|`.
+
+  **Protocol identification.** An earlier revision quantified existentially over `π` and pinned
+  only the challenge count. That does not exclude a verifier that reads the whole input oracle,
+  checks exact code membership and ignores its challenges, so even a proof would not have
+  certified WHIR. Here `π` is an explicit argument: the statement certifies WHIR only when `π`
+  is a protocol that implements Construction 5.1. None exists in ArkLib yet. `whirVectorIOP`
+  (`Whir/Protocol.lean`) accepts every transcript, and the checked verifier
+  `Whir302Checked.whirVerifyChecked` never queries the input oracle, so all-zero prover messages
+  pass all of its checks (`Whir302Checked.whirCheckingBool_allZero`). The `2 * M + 2` count is
+  only a cardinality constraint, inherited from an aggregated-challenge reading of
+  Construction 5.1: the unbundled paper transcript `whirPaperTranscriptVectorSpec` has
+  `(∑ i, P.foldingParam i) + 2 * M + 1` challenges (`Whir/ChallengeCardPin.lean`), so that
+  conjunct holds there only when the folding parameters sum to `1`.
+
+  **Status: open.** A proof for a protocol implementing Construction 5.1 needs that construction,
+  the folding list-decoding lemmas (`Whir/Folding.lean`, L4.20–4.23) and the MCA `errStar` bounds
+  (Corollary 4.11, open in the `√ρ` regime). In ABF26 terms, `errStar` corresponds to `epsMCA`
+  (Def 4.3) and the folding lemmas to ABF26 T3.4 specialized to FRS. -/
 def whir_rbr_soundness
     [SampleableType F] {d dstar : ℕ}
   -- P : set of M + 1 parameters including foldingParamᵢ, varCountᵢ, φᵢ, repeatParamᵢ,
@@ -204,18 +250,16 @@ def whir_rbr_soundness
           Fintype (indexPowT (S 0) (P.φ 0) j) := h.inst1 0
         let _ : ∀ j : Fin ((P.foldingParam 0) + 1),
           Nonempty (indexPowT (S 0) (P.φ 0) j) := h.inst2 0
-        ∀ j : Fin ((P.foldingParam 0) + 1),
-          let errStar_0 j := h.errStar 0 j (h.C 0 j) (h.Gen_α 0 j).parℓ (h.δ 0)
+        let errStar_0 j := h.errStar 0 j (h.C 0 j) (h.Gen_α 0 j).parℓ (h.δ 0)
         ∀ j : Fin (P.foldingParam 0),
-          ε_fold 0 j ≤ ((dstar * (h.dist 0 j.castSucc)) / Fintype.card F) + (errStar_0 j.succ))
+          ((dstar * (h.dist 0 j.castSucc)) / Fintype.card F) + (errStar_0 j.succ) ≤ ε_fold 0 j)
     (h_out :
-        ∀ i : Fin (M + 1),
-          ε_out i ≤
-            2^(P.varCount i) * (h.dist i 0)^2 / (2 * Fintype.card F))
+        ∀ i : Fin M,
+          2^(P.varCount i.succ) * (h.dist i.succ 0)^2 / (2 * Fintype.card F) ≤ ε_out i.succ)
     (h_shift :
         ∀ i : Fin M,
-          ε_shift i ≤ (1 - (h.δ i.castSucc))^(P.repeatParam i.castSucc)
-            + ((h.dist i.succ 0) * (P.repeatParam i.castSucc) + 1) / Fintype.card F)
+          (1 - (h.δ i.castSucc))^(P.repeatParam i.castSucc)
+            + (h.dist i.succ 0) * (P.repeatParam i.castSucc + 1) / Fintype.card F ≤ ε_shift i)
     (h_fold_i :
         let maxDeg := (Finset.univ : Finset (Fin m_0)).sup (fun i => wPoly₀.degreeOf (Fin.succ i))
         let dstar := 1 + (wPoly₀.degreeOf 0) + maxDeg
@@ -224,25 +268,23 @@ def whir_rbr_soundness
           Fintype (indexPowT (S i) (P.φ i) j) := h.inst1
         let _ : ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
           Nonempty (indexPowT (S i) (P.φ i) j) := h.inst2
-        ∀ i : Fin (M + 1), ∀ j : Fin ((P.foldingParam i) + 1),
-          let errStar i j := h.errStar i j (h.C i j) (h.Gen_α i j).parℓ (h.δ i)
-        ∀ i : Fin (M + 1), ∀ j : Fin (P.foldingParam i),
-          ε_fold i j ≤ d * (h.dist i j.castSucc) / Fintype.card F + errStar i j.succ)
+        let errStar i j := h.errStar i j (h.C i j) (h.Gen_α i j).parℓ (h.δ i)
+        ∀ i : Fin M, ∀ j : Fin (P.foldingParam i.succ),
+          d * (h.dist i.succ j.castSucc) / Fintype.card F + errStar i.succ j.succ
+            ≤ ε_fold i.succ j)
     (h_fin :
-        ε_fin ≤ (1 - h.δ (Fin.last M))^(P.repeatParam (Fin.last M))) : Prop :=
-    ∃ n : ℕ,
-    ∃ vPSpec : ProtocolSpec.VectorSpec n,
+        (1 - h.δ (Fin.last M))^(P.repeatParam (Fin.last M)) ≤ ε_fin)
+    {n : ℕ} (vPSpec : ProtocolSpec.VectorSpec n)
+    (π : VectorIOP Unit (OracleStatement (ι 0) F) Unit vPSpec F) : Prop :=
     Fintype.card (vPSpec.ChallengeIdx) = 2 * M + 2 ∧
-      ∃ π :
-        VectorIOP Unit (OracleStatement (ι 0) F) Unit vPSpec F,
-        let max_ε_folds : (i : Fin (M + 1)) → ℝ≥0 :=
+      (let max_ε_folds : (i : Fin (M + 1)) → ℝ≥0 :=
           fun i => (univ : Finset (Fin (P.foldingParam i))).sup (ε_fold i)
         let ε_rbr : vPSpec.ChallengeIdx → ℝ≥0 :=
           fun _ => (univ.image max_ε_folds ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max'
             (by simp)
         VectorIOP.IsSecureWithGapAveraged (whirRelation m_0 (P.φ 0) 0)
                          (whirRelation m_0 (P.φ 0) (h.δ 0))
-                          ε_rbr π
+                          ε_rbr π)
 
 
 end RBR

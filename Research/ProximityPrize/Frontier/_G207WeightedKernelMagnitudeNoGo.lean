@@ -26,17 +26,23 @@ This file records exact-integer cells refuting magnitude suppression in **both**
 `M_r² = A_r² · q³ / (Q_W · Q_R)`,   with the exact integers
 `A_r = q·Σ_t W_G(t) R_r(t) − n²·C(n,r)·C(n,r−1)`,
 `Q_W = Σ_t (q·W_G(t) − n²)²`  (`= q³·Var W_G`),
-`Q_R = Σ_t (q·R_r(t) − n²·C(n,r)·C(n,r−1))²`  (`= q³·Var R_r`).
+`Q_R = Σ_t (q·R_r(t) − C(n,r)·C(n,r−1))²`  (`= q³·Var R_r`; `R_r` has total mass
+`C(n,r)·C(n,r−1)`, so that is the mean of `q·R_r(t)`).
+
+(Correction, audit finding L102: an earlier revision of this file and its probe centered `Q_R` at
+`n²·C(n,r)·C(n,r−1)` instead, which inflated `Q_R` by exactly `q·((n²−1)·C(n,r)·C(n,r−1))²` and made
+the recorded `M_r²` a different statistic.  The `Q_R` constants below are the corrected ones; both
+comparison directions survive the correction.)
 
 (All three are exact integers reproduced independently by the recorded probe.)
 
 The four recorded cells (`n = 8`, `2 ∉ G` so `φ₂` is non-degenerate) are:
 
-* injective `F_449`: `A₅ = 449560`, `Q_W = 11063360`, `Q_R = 27405361854544`;
-* injective `F_113`: `A₅ = -13128`, `Q_W = 354368`,  `Q_R = 6892278488672`
+* injective `F_449`: `A₅ = 449560`, `Q_W = 11063360`, `Q_R = 21192376144`;
+* injective `F_113`: `A₅ = -13128`, `Q_W = 354368`,  `Q_R = 494187872`
     (the same injective cell recorded in `G206`);
-* non-injective `F_41`: `A₅ = 10536`,  `Q_W = 74128`,   `Q_R = 2500562364688`;
-* non-injective `F_73`: `A₅ = -19616`, `Q_W = 212576`,  `Q_R = 4452321373312`.
+* non-injective `F_41`: `A₅ = 10536`,  `Q_W = 74128`,   `Q_R = 3459088`;
+* non-injective `F_73`: `A₅ = -19616`, `Q_W = 212576`,  `Q_R = 106736512`.
 
 Comparison of `M_r²` across cells is a purely decidable integer inequality after cross-multiplying:
 `M_r²(a) > M_r²(b) ↔ A_a²·q_a³·Q_{W,b}·Q_{R,b} > A_b²·q_b³·Q_{W,a}·Q_{R,a}`.
@@ -44,9 +50,9 @@ Comparison of `M_r²` across cells is a purely decidable integer inequality afte
 The two witnesses are:
 
 * `no_magnitude_suppression` — the injective cell `F_449` has *larger* `M₅²` than the
-  non-injective cell `F_41` (`0.0603 > 0.0000413`): injectivity does **not** suppress magnitude.
+  non-injective cell `F_41` (`≈ 78.03 > ≈ 29.84`): injectivity does **not** suppress magnitude.
 * `no_magnitude_separation` — the non-injective cell `F_73` has *larger* `M₅²` than the
-  injective cell `F_113` (`0.000158 > 0.000102`): the magnitude ranges *overlap*, so there is
+  injective cell `F_113` (`≈ 6.597 > ≈ 1.420`): the magnitude ranges *overlap*, so there is
   no separation law in the reverse direction either.
 
 Together they give the calibrated consumer `no_magnitude_single_depth_certificate`: the normalized
@@ -79,7 +85,7 @@ structure Cell where
   A : ℤ
   /-- `Q_W = Σ_t (q·W_G(t) − n²)² = q³·Var W_G` (exact integer, `> 0`). -/
   QW : ℤ
-  /-- `Q_R = Σ_t (q·R_r(t) − n²·C(n,r)·C(n,r−1))² = q³·Var R_r` (exact integer, `> 0`). -/
+  /-- `Q_R = Σ_t (q·R_r(t) − C(n,r)·C(n,r−1))² = q³·Var R_r` (exact integer, `> 0`). -/
   QR : ℤ
 
 /-- The squared normalized magnitude comparison, cross-multiplied to a pure integer relation:
@@ -90,21 +96,21 @@ def M2gt (a b : Cell) : Prop :=
 
 /-! ## Recorded cells (`n = 8`, exact integers from the probe) -/
 
-/-- Injective cell `F_449`, depth `r = 5`.  `M₅² ≈ 0.0603`. -/
+/-- Injective cell `F_449`, depth `r = 5`.  `M₅² ≈ 78.03`. -/
 def cell449 : Cell :=
-  { q := 449, inj := true, A := 449560, QW := 11063360, QR := 27405361854544 }
+  { q := 449, inj := true, A := 449560, QW := 11063360, QR := 21192376144 }
 
-/-- Injective cell `F_113`, depth `r = 5` (the `G206` injective cell).  `M₅² ≈ 0.000102`. -/
+/-- Injective cell `F_113`, depth `r = 5` (the `G206` injective cell).  `M₅² ≈ 1.420`. -/
 def cell113 : Cell :=
-  { q := 113, inj := true, A := -13128, QW := 354368, QR := 6892278488672 }
+  { q := 113, inj := true, A := -13128, QW := 354368, QR := 494187872 }
 
-/-- Non-injective cell `F_41`, depth `r = 5`.  `M₅² ≈ 0.0000413`. -/
+/-- Non-injective cell `F_41`, depth `r = 5`.  `M₅² ≈ 29.84`. -/
 def cell41 : Cell :=
-  { q := 41, inj := false, A := 10536, QW := 74128, QR := 2500562364688 }
+  { q := 41, inj := false, A := 10536, QW := 74128, QR := 3459088 }
 
-/-- Non-injective cell `F_73`, depth `r = 5`.  `M₅² ≈ 0.000158`. -/
+/-- Non-injective cell `F_73`, depth `r = 5`.  `M₅² ≈ 6.597`. -/
 def cell73 : Cell :=
-  { q := 73, inj := false, A := -19616, QW := 212576, QR := 4452321373312 }
+  { q := 73, inj := false, A := -19616, QW := 212576, QR := 106736512 }
 
 /-! ## Positivity of the recorded denominators (so `M2gt` is the genuine magnitude order) -/
 

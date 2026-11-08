@@ -109,7 +109,12 @@ theorem beta_strong_eq_betaRec (x₀ : F) (R : F[X][X][Y]) (H : F[X][Y])
 /-- **The strong Hensel-lift coefficient `α_strong`**, built from `β_strong` (the L13-honest
 analogue of `α`).  Its denominators are *identical* to those of `α`/`αFromBeta`; the numerator is
 the strong (betaRec-routed) one.  Because `beta_strong_embedEq` pins the numerator's embedding,
-`α_strong` is definitionally the `betaRec`-built coefficient `BetaToCurveCoeffPolys.αFromBeta`. -/
+`α_strong` is *propositionally* equal to the `betaRec`-built coefficient
+`BetaToCurveCoeffPolys.αFromBeta` (`L13Milestone.alpha_strong_eq_alphaFromBeta`, by rewriting with
+`beta_strong_embedEq`).  The equality is not definitional: `β_strong` goes through the opaque
+`Exists.choose` of `β_regular_strong`.  (Defining `β_strong` directly as `betaRec` would remove
+this choice/identification scaffolding; neither form discharges the legacy numerator `β`'s
+weight/identification requirements.) -/
 noncomputable def α_strong (x₀ : F) (R : F[X][X][Y]) (H : F[X][Y])
     [Fact (Irreducible H)] [Fact (0 < H.natDegree)] (hHyp : Hypotheses x₀ R H)
     (Bcoeff : (i₁ : ℕ) → {m : ℕ} → Nat.Partition m → 𝒪 H) (t : ℕ) : 𝕃 H :=

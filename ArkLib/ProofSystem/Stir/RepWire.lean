@@ -1530,9 +1530,7 @@ theorem stir_main_of_checkingIOP_rep
     {k proofLen qNumtoInput qNumtoProofstr : ℕ}
     (hk : ∃ p, k = 2 ^ p) (hkGe : k ≥ 4)
     (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
-    (hF : Fintype.card F ≤
-          secpar * 2 ^ secpar * degree ^ 2 * (Fintype.card ι) ^ (7 / 2) /
-            Real.log (1 / LinearCode.rate (code φ degree)))
+    (hF : FieldSizeCondition secpar φ degree)
     (hε : ∀ i, stirEpsStarRep (F := F) (ι := ι) M δ t i ≤ (1 : ℚ≥0) / (2 ^ secpar))
     (hM : ∃ c > 0, M ≤ c * (Real.log degree / Real.log k))
     (hLen : ∃ cₖ : ℕ → ℝ, proofLen ≤ (Fintype.card ι) + (cₖ k) * (Real.log degree))
@@ -1542,14 +1540,11 @@ theorem stir_main_of_checkingIOP_rep
         secpar * (Real.log ((Real.log degree) /
           Real.log (1 / LinearCode.rate (code φ degree)))))) :
     stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
-      (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF := by
-  obtain ⟨c, hc, hMle⟩ := hM
-  obtain ⟨cₖ, hLenle⟩ := hLen
-  obtain ⟨cₖ', hQle⟩ := hQpf
-  exact ⟨3 * M + 3, stirMultiVSpecRep M ι t, stirEpsStarRep (F := F) (ι := ι) M δ t,
+      (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
+  ⟨3 * M + 3, stirMultiVSpecRep M ι t, stirEpsStarRep (F := F) (ι := ι) M δ t,
     stirCheckingIOPRep M φ degree t,
     stirCheckingIOPRep_isSecureWithGap_genuine M φ degree δ t,
-    fun i => ⟨hε i, c, hc, hMle, cₖ, hLenle, hQin, cₖ', hQle⟩⟩
+    hε, hM, hLen, hQin, hQpf⟩
 
 end WeldRep
 
