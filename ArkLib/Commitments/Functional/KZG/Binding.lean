@@ -352,7 +352,7 @@ lemma binding_game_ext_eq_binding_game {n : ℕ} {AuxState : Type} [SampleableTy
           = (fun a => (Groups.PowerSrs.generate (g₁ := g₁) (g₂ := g₂) n a,
               Groups.PowerSrs.generate (g₁ := g₁) (g₂ := g₂) n a))
               <$> (simulateQ randomOracle (Groups.sampleNonzeroZMod (p := p))).run' ∅ := by
-            rw [← StateT.run'_map_comm, ← simulateQ_map]
+            rw [← StateT.run'_map_comm, ← simulateQ_map, map_eq_bind_pure_comp]
             rfl
       _ = (fun a => (Groups.PowerSrs.generate (g₁ := g₁) (g₂ := g₂) n a,
               Groups.PowerSrs.generate (g₁ := g₁) (g₂ := g₂) n a))
@@ -401,6 +401,14 @@ lemma binding_game_ext_eq_binding_game {n : ℕ} {AuxState : Type} [SampleableTy
       pure (some (τ, srs, cm, query, resp₁, resp₂, accept₁, accept₂, proof₁, proof₂))
   rw [hkeygen]
   simp only [map_eq_bind_pure_comp, bind_assoc, pure_bind, Function.comp]
+  change (do
+    let τ ← sample
+    (simulateQ impl (bodyBase τ)).run' (∅ : unifSpec.QueryCache)) =
+      Option.map proj <$> (do
+        let τ ← sample
+        (simulateQ impl (bodyExt τ)).run' (∅ : unifSpec.QueryCache))
+  rw [map_bind]
+  simp only [map_eq_bind_pure_comp, Function.comp_def]
   change (OptionT.mk (do
     let τ ← sample
     (simulateQ impl (bodyBase τ)).run' (∅ : unifSpec.QueryCache))).run =
@@ -592,7 +600,7 @@ lemma binding_cond_le_t_sdh_cond {n : ℕ} {AuxState : Type} [SampleableType G�
           st₁ hresult₁ rfl
       have hproof :
           (Option.map (fun result : RunResult => result.1.1 0) result₁).getD (1 : G₁) =
-            out₁.1.1 0 := by simp [hrun₁]
+            out₁.1.1 0 := by rw [hrun₁]; rfl
       rw [hproof]
       exact hverif.symm.trans haccept₁
     have hverify₂ :
@@ -619,7 +627,7 @@ lemma binding_cond_le_t_sdh_cond {n : ℕ} {AuxState : Type} [SampleableType G�
           st₂ hresult₂ rfl
       have hproof :
           (Option.map (fun result : RunResult => result.1.1 0) result₂).getD (1 : G₁) =
-            out₂.1.1 0 := by simp [hrun₂]
+            out₂.1.1 0 := by rw [hrun₂]; rfl
       rw [hproof]
       exact hverif.symm.trans haccept₂
     exact map_binding_to_t_sdh_of_two_valid_openings (p := p) (g₁ := g₁) (g₂ := g₂)
@@ -630,8 +638,7 @@ lemma binding_cond_le_t_sdh_cond {n : ℕ} {AuxState : Type} [SampleableType G�
       ((Option.map (fun result : RunResult => result.2) result₂).getD false)
       (Groups.PowerSrs.generate (g₁ := g₁) (g₂ := g₂) n τ) rfl hresp hg₁ hpair
       hverify₁ hverify₂
-  simpa only [bindingGameExt, kzg, OptionT.mk, pSpec', impl, sample, body, run₁, run₂,
-      pack, gameComp, P, Q] using hmono
+  exact hmono
 
 omit [DecidableEq G₁] [Module (ZMod p) (Additive G₁)]
   [Module (ZMod p) (Additive G₂)] in
@@ -669,8 +676,7 @@ lemma t_sdh_game_eq {n : ℕ} {AuxState : Type} [SampleableType G₁]
     QueryImpl.addLift
       (randomOracle : QueryImpl unifSpec (StateT unifSpec.QueryCache ProbComp))
       (challengeQueryImpl (pSpec := pSpec'))
-  simpa only [bindingGameExt, bindingReduction, kzg, OptionT.mk, pSpec', impl, scheme,
-      OptionT.run_map] using
+  exact
     OptionT.map_mk_bind_eq_of_body
       (sample := (Groups.sampleNonzeroZMod (p := p) : ProbComp (ZMod p)))
       (body₁ := fun τ => (simulateQ impl (do
@@ -715,7 +721,7 @@ lemma t_sdh_game_eq {n : ℕ} {AuxState : Type} [SampleableType G₁]
       (hBody := by
         intro τ
         dsimp only
-        refine StateT.map_run'_eq_of_map_eq _ _ _ _ (∅ : unifSpec.QueryCache) ?_
+        refine StateT.map_run'_eq_of_map_eq (∅ : unifSpec.QueryCache) ?_
         simp only [simulateQ_bind, simulateQ_pure, map_eq_bind_pure_comp, bind_assoc]
         congr 1)
 
@@ -761,6 +767,7 @@ theorem binding {g₁ : G₁} {g₂ : G₂} (hg₁ : g₁ ≠ 1)
       t_sdh_game_eq (g₁ := g₁) (g₂ := g₂) (pairing := pairing) adversary
     _ ≤ tSdhError := t_sdh_error_bound (g₁ := g₁) (g₂ := g₂) (pairing := pairing)
       tSdhError htSdh adversary)
+  rfl
 
 end Binding
 

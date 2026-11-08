@@ -120,7 +120,7 @@ theorem appendRbrKnowledgePhase2SeamReconcile_proof [Subsingleton σ]
               let challenge ← liftComp (pSpec₂.getChallenge i₂)
                 (oSpec + [pSpec₂.Challenge]ₒ)
               return (transcript, challenge))).run' s] by
-    simpa only [hBODY, simulateQ_run'_bind_of_subsingleton] using hkey
+    simp only [hBODY, simulateQ_run'_bind_of_subsingleton] at hkey ⊢; exact hkey
   -- The challenge value-type equality at the phase-2 index.
   have hChTy : (pSpec₁ ++ₚ pSpec₂).Challenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂)
       = pSpec₂.Challenge i₂ := by

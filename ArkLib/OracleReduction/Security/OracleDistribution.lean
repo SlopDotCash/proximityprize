@@ -241,7 +241,7 @@ theorem probOutput_uniform_marginal
     pure (g q)
   change Pr[= y | M] = (Fintype.card (spec.Range q) : ℝ≥0∞)⁻¹
   have hsum : ∑ z, Pr[= z | M] = 1 := by
-    exact sum_probOutput_eq_one (HasEvalPMF.probFailure_eq_zero M)
+    exact sum_probOutput_eq_one (by simp)
   have hconst : ∑ _z : spec.Range q, Pr[= y | M] = 1 := by
     rw [← hsum]
     apply Finset.sum_congr rfl
@@ -267,8 +267,7 @@ lemma probEvent_uniform_query_eq
   change Pr[ (fun x => x = y) ∘ (fun g => g q) | (OracleDistribution.uniform spec).sample ] =
     Pr[ (· = y) | (OracleDistribution.uniform spec).sample >>=
       pure ∘ (fun g : OracleFamily spec => g q) ]
-  rw [probEvent_bind_pure_comp]
-  rfl
+  exact (probEvent_bind_pure_comp _ _ _).symm
 
 end MarginalLaws
 

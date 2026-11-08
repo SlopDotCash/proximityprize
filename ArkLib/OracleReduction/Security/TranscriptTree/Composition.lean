@@ -641,7 +641,7 @@ theorem SplitData.sndAt_isStructured :
     S.src.IsStructured (S₁.append S₂) → (path : LeafPath S.fst) →
     (S.sndAt path).IsStructured S₂
   | _, .boundary rp, hS, _ =>
-      rp.tree_isStructured (by simpa [SplitData.src] using hS)
+      rp.tree_isStructured hS
   | _, .msg i h m₁ child, hS, path => by
       have hS' : child.src.IsStructured (S₁.append S₂) := by
         simpa [SplitData.src, ChallengeTree.IsStructured] using hS
@@ -686,7 +686,9 @@ theorem appendSplit_fst_isStructured
     (hT : T.IsStructured (S₁.append S₂)) :
       T.appendSplit.fst.IsStructured S₁ :=
   SplitData.fst_isStructured (splitDataOfTree (r := 0) T)
-    (by rw [splitDataOfTree_src]; exact hT)
+    (by
+      have hsrc := splitDataOfTree_src (arity₁ := S₁.arity) (arity₂ := S₂.arity) (r := 0) T
+      rw [hsrc]; exact hT)
 
 /-- Every suffix tree selected by a first-stage leaf of a structured appended tree is structured. -/
 theorem appendSplit_sndAt_isStructured
@@ -695,7 +697,9 @@ theorem appendSplit_sndAt_isStructured
     (path : LeafPath T.appendSplit.fst) :
       (T.appendSplit.sndAt path).IsStructured S₂ :=
   SplitData.sndAt_isStructured (splitDataOfTree (r := 0) T)
-    (by rw [splitDataOfTree_src]; exact hT) path
+    (by
+      have hsrc := splitDataOfTree_src (arity₁ := S₁.arity) (arity₂ := S₂.arity) (r := 0) T
+      rw [hsrc]; exact hT) path
 
 section Membership
 
@@ -776,7 +780,10 @@ theorem leftPrefix_concat {i : Fin m} (pre : Transcript i.castSucc pSpec₁)
   refine Fin.lastCases ?_ (fun j => ?_) idx <;>
     simp only [leftPrefix, Transcript.concat, Fin.snoc_last, Fin.snoc_castSucc, Fin.val_castSucc,
       Fin.val_castAdd, Fin.val_succ] <;>
-    exact cast_eq_iff_heq.mpr (cast_heq _ _).symm
+    simp only [Fin.snoc, Fin.val_last, Fin.val_castSucc, Fin.is_lt, dite_true, lt_self_iff_false,
+      dite_false, leftPrefix] <;>
+    exact eq_of_heq (((cast_heq _ _).trans (cast_heq _ _)).trans
+      ((cast_heq _ _).trans (cast_heq _ _)).symm)
 
 /-- Two casts into a common type are equal as soon as their arguments are `HEq`. Lets cast-equality
 goals be discharged by reasoning about the (cast-free) underlying values. -/
@@ -809,7 +816,9 @@ theorem rightPrefix_concat (tr₁ : FullTranscript pSpec₁) {i : Fin n}
          first
            | rfl
            | exact HEq.rfl
-           | (exact (heq_cast_iff_heq _ _ _).mpr HEq.rfl))
+           | exact cast_heq _ _
+           | (exact (heq_cast_iff_heq _ _ _).mpr HEq.rfl)
+           | (exact (heq_cast_iff_heq _ _ _).mpr (cast_heq _ _)))
 
 /-- A right-suffix transcript, prefixed by a full left transcript, is a transcript of the appended
 source tree (membership form: induction on the certificate, no `LeafPath` peeling). -/
@@ -818,8 +827,9 @@ theorem RightProj.mem_transcripts_append :
     (pre₂ : Transcript r pSpec₂) → {tr₂ : FullTranscript pSpec₂} →
     tr₂ ∈ R.tree.transcripts pre₂ → tr₁ ++ₜ tr₂ ∈ R.src.transcripts (rightPrefix tr₁ pre₂)
   | _, .leaf, tr₁, pre₂, tr₂, htr₂ => by
-      simp only [RightProj.tree, RightProj.src, transcripts, List.mem_singleton] at htr₂ ⊢
-      rw [htr₂]; exact (rightPrefix_leaf_eq_append _ _).symm
+      simp only [RightProj.tree, RightProj.src, transcripts] at htr₂ ⊢
+      rw [List.mem_singleton.mp htr₂]
+      exact List.mem_singleton.mpr (rightPrefix_leaf_eq_append _ _).symm
   | _, .msg i h m₂ child, tr₁, pre₂, tr₂, htr₂ => by
       simp only [RightProj.tree, transcripts] at htr₂
       simp only [RightProj.src, transcripts]
@@ -885,7 +895,8 @@ theorem appendSplit_fullTranscripts_append_of_mem
     (htr₂ : tr₂ ∈ (T.appendSplit.sndAt path).fullTranscripts) :
       path.fullTranscript ++ₜ tr₂ ∈ T.fullTranscripts := by
   have key := SplitData.mem_transcripts_append (splitDataOfTree (r := 0) T) default path htr₂
-  rw [splitDataOfTree_src] at key
+  have hsrc := splitDataOfTree_src (arity₁ := arity₁) (arity₂ := arity₂) (r := 0) T
+  rw [hsrc] at key
   have hpre : leftPrefix (default : Transcript (0 : Fin (m + 1)) pSpec₁)
       = (default : Transcript (0 : Fin (m + n + 1)) (pSpec₁ ++ₚ pSpec₂)) := by
     funext idx; exact idx.elim0

@@ -130,20 +130,18 @@ section RandomOracleBinding
 This is the ArkLib-facing form of VCVio's SNARGs §18.5 theorem. A two-phase adversary first
 commits to a claimed root, then opens one position. If the combined adversary has total query bound
 `qb`, the probability that verification accepts while the query-log extractor disagrees with the
-opened `(leaf, proof)` pair is bounded by the birthday collision term plus the one-shot
-unqueried-root guessing term:
-
-`((qb + s.depth)^2) / (2 * |α|) + 1 / |α|`.
+opened `(leaf, proof)` pair is bounded by VCVio's exact stopping-time numerator
+`extractabilityROMErrorNumerator s qb` (birthday collisions plus unqueried-root guessing) divided
+by `|α|`.
 
 Thus the deterministic no-collision binding lemmas in this file now have the probabilistic
 random-oracle step required by issue #119. -/
 theorem randomOracle_extractability_bound [DecidableEq α] [Fintype α] [Inhabited α]
-    {s : Skeleton} (𝒜 : Adversary α s) (qb : ℕ)
+    [IsUniformSpec (spec α)] {s : Skeleton} (𝒜 : Adversary α s) (qb : ℕ)
     (h_IsQueryBound_qb : 𝒜.IsTwoPhaseTotalQueryBound qb) :
-    Pr[AdversaryWinsExtractabilityGame | extractabilityGame 𝒜] ≤
-      ((qb + s.depth) ^ 2 : ENNReal) / (2 * Fintype.card α)
-      + 1 / (Fintype.card α) :=
-  extractability 𝒜 qb h_IsQueryBound_qb
+    Pr[OpeningExtractionFailure | extractabilityGame 𝒜] ≤
+      (extractabilityROMErrorNumerator s qb : ENNReal) * (Fintype.card α : ENNReal)⁻¹ :=
+  extractability_rom_bound 𝒜 qb h_IsQueryBound_qb
 
 end RandomOracleBinding
 

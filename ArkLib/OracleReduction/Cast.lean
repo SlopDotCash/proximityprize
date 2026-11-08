@@ -54,7 +54,7 @@ theorem cast_id :
     Prover.cast rfl rfl = (id : Prover oSpec StmtIn WitIn StmtOut WitOut pSpec₁ → _) := by
   funext; simp [Prover.cast]; ext <;> simp
   · funext _ _; simp [MessageIdx.cast, bind_pure]
-  · funext _ _; simp [ChallengeIdx.cast]
+  · apply heq_of_eq; funext _ _; simp [ChallengeIdx.cast]
   · rfl
 
 instance instDCast₂ : DCast₂ Nat ProtocolSpec
@@ -326,7 +326,7 @@ theorem cast_processRound (j : Fin n₁)
           (cast (by subst_vars; simp [Prover.cast]; rfl) currentResult)) := by
   subst hn; subst hSpec; congr 1; ext <;> simp [Prover.cast]
   · funext _ _; simp [MessageIdx.cast, bind_pure]
-  · funext _ _; simp [ChallengeIdx.cast]
+  · apply heq_of_eq; funext _ _; simp [ChallengeIdx.cast]
   · rfl
 
 theorem cast_runToRound (j : Fin (n₁ + 1)) (stmt : StmtIn) (wit : WitIn)
@@ -336,7 +336,7 @@ theorem cast_runToRound (j : Fin (n₁ + 1)) (stmt : StmtIn) (wit : WitIn)
         ((P.cast hn hSpec).runToRound (Fin.cast (congrArg (· + 1) hn) j) stmt wit) := by
   subst hn; subst hSpec; congr 1; ext <;> simp [Prover.cast]
   · funext _ _; simp [MessageIdx.cast, bind_pure]
-  · funext _ _; simp [ChallengeIdx.cast]
+  · apply heq_of_eq; funext _ _; simp [ChallengeIdx.cast]
   · rfl
 
 theorem cast_run (stmt : StmtIn) (wit : WitIn)
@@ -358,6 +358,7 @@ theorem cast_run (stmt : StmtIn) (transcript : FullTranscript pSpec₁) :
   simp only [Verifier.run, Verifier.cast, FullTranscript.cast, dcast₂]
   unfold Transcript.cast
   simp
+  congr 1; funext i; exact (eq_of_heq ((cast_heq _ _).trans (cast_heq _ _))).symm
 
 end Verifier
 

@@ -199,6 +199,7 @@ theorem append_continueFromTo_right_msg_partial (hn : 0 < n)
         {u' : pSpec₂.Transcript j₂}, HEq u u' →
         HEq (Transcript.appendRight T₁ u) (Transcript.appendRight T₁ u') := by
       intro j₁ j₂ hj u u' hu; subst hj; rw [eq_of_heq hu]
+    rw [bind_pure_comp]
     refine map_heq_congr
       (congrArg (fun j : Fin (n + 1) => pSpec₂.Transcript j × P₂.PrvState j) eR)
       (congrArg (fun j : Fin (m + n + 1) =>

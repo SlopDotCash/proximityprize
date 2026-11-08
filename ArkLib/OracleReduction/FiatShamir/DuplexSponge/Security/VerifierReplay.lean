@@ -312,8 +312,7 @@ theorem d2sCodecBridgeImplMemo_commit
                   × D2SAlgoMemo StmtIn U δ Salt pSpec)))) := h
           simp only [support_pure, Set.mem_singleton_iff, Option.some.injEq,
             Prod.mk.injEq] at h
-          obtain ⟨hr, hm⟩ := h
-          subst hr; subst hm
+          obtain ⟨rfl, rfl⟩ := h
           refine ⟨?_, [bridgeMemoEntry (Salt := Salt) gq r], rfl⟩
           exact lookupD2SAlgoMemo_insert_self_of_none memo
             (bridgeMemoEntry (Salt := Salt) gq r) hl
@@ -674,8 +673,7 @@ theorem memoCoherentTable_keystone
                     × D2SAlgoMemo StmtIn U δ Salt pSpec)))) := h
           simp only [support_pure, Set.mem_singleton_iff, Option.some.injEq,
             Prod.mk.injEq] at h
-          obtain ⟨hr, hm⟩ := h
-          subst hr; subst hm
+          obtain ⟨rfl, rfl⟩ := h
           have hfresh := deserialize_of_mem_support_bridge_table c gq msgs hparse r ho
           refine ⟨hfresh, hcoh.insert gq r fun msgs' hparse' => ?_⟩
           rw [hparse'] at hparse
@@ -912,7 +910,7 @@ noncomputable def Hyb3Strict [SampleableType U]
     SPMF (Option (StmtIn × StmtOut × pSpec.Messages
       × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec)
       × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec))) :=
-  𝒟[hybGameEagerSplit (T_H := T_H) (T_P := T_P) δ
+  𝒮[hybGameEagerSplit (T_H := T_H) (T_P := T_P) δ
       (OracleDistribution.uniform (fsChallengeOracle (StmtIn × Salt) pSpec))
       (d2sCodecBridgeImplMemo (StmtIn := StmtIn) (δ := δ) (Salt := Salt))
       (d2sCodecBridgeImplMemoHitOnly (StmtIn := StmtIn) (δ := δ) (Salt := Salt))

@@ -410,7 +410,7 @@ noncomputable def Hyb0 [SampleableType U]
     SPMF (Option (StmtIn × StmtOut × pSpec.Messages
       × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec)
       × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec))) :=
-  𝒟[duplexSpongeFiatShamirGameRemappedEager (T_H := T_H) (T_P := T_P) δ
+  𝒮[duplexSpongeFiatShamirGameRemappedEager (T_H := T_H) (T_P := T_P) δ
       (D_DS StmtIn U) oImpl V P]
 
 /-- CO25 §5.8 `Hyb₁`: prover and verifier run against the §5.4 simulator `D2SQuery^g` with
@@ -428,7 +428,7 @@ noncomputable def Hyb1 [SampleableType U]
     SPMF (Option (StmtIn × StmtOut × pSpec.Messages
       × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec)
       × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec))) :=
-  𝒟[hybGameEager (T_H := T_H) (T_P := T_P) δ
+  𝒮[hybGameEager (T_H := T_H) (T_P := T_P) δ
       (OracleDistribution.uniform (gSpec (U := U) StmtIn pSpec δ))
       (gImplEncodedForwardMemo (StmtIn := StmtIn) (δ := δ) Salt)
       (hyb1Line4TraceEager (δ := δ)) oImpl V P]
@@ -448,7 +448,7 @@ noncomputable def Hyb2 [SampleableType U]
     SPMF (Option (StmtIn × StmtOut × pSpec.Messages
       × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec)
       × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec))) :=
-  𝒟[hybGameEager (T_H := T_H) (T_P := T_P) δ
+  𝒮[hybGameEager (T_H := T_H) (T_P := T_P) δ
       (OracleDistribution.uniform (eSpec (U := U) StmtIn pSpec δ))
       (gImplDecodedChallengeMemo (StmtIn := StmtIn) (δ := δ) Salt)
       (hyb2Line4TraceEager (δ := δ)) oImpl V P]
@@ -472,7 +472,7 @@ noncomputable def Hyb3 [SampleableType U]
     SPMF (Option (StmtIn × StmtOut × pSpec.Messages
       × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec)
       × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec))) :=
-  𝒟[hybGameEager (T_H := T_H) (T_P := T_P) δ
+  𝒮[hybGameEager (T_H := T_H) (T_P := T_P) δ
       (OracleDistribution.uniform (fsChallengeOracle (StmtIn × Salt) pSpec))
       (d2sCodecBridgeImplMemo (StmtIn := StmtIn) (δ := δ) (Salt := Salt))
       (hyb3Line4SaltErase Salt) oImpl V P]
@@ -489,7 +489,7 @@ noncomputable def Hyb4
     SPMF (Option (StmtIn × StmtOut × pSpec.Messages
       × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec)
       × QueryLog (oSpec + fsChallengeOracle StmtIn pSpec))) :=
-  𝒟[basicFiatShamirGameEagerRand
+  𝒮[basicFiatShamirGameEagerRand
       (OracleDistribution.uniform (fsChallengeOracle StmtIn pSpec)) oImpl V P']
 
 omit [∀ i, VCVCompatible (pSpec.Challenge i)] [∀ i, DecidableEq (pSpec.Message i)] in
@@ -504,7 +504,7 @@ lemma hyb0_eq_duplexSpongeRemappedEager [SampleableType U]
     (P : OracleComp (oSpec + duplexSpongeChallengeOracle StmtIn U)
       (StmtIn × pSpec.Messages)) :
     Hyb0 T_H T_P δ oImpl V P
-      = 𝒟[duplexSpongeFiatShamirGameRemappedEager (T_H := T_H) (T_P := T_P) δ
+      = 𝒮[duplexSpongeFiatShamirGameRemappedEager (T_H := T_H) (T_P := T_P) δ
           (D_DS StmtIn U) oImpl V P] := rfl
 
 omit [SpongeSize] [VCVCompatible StmtIn] [∀ i, VCVCompatible (pSpec.Challenge i)]
@@ -520,7 +520,7 @@ lemma hyb4_eq_basicFiatShamirEagerRand
     (P' : OracleComp ((oSpec + fsChallengeOracle StmtIn pSpec) + unifSpec)
       (StmtIn × pSpec.Messages)) :
     Hyb4 oImpl V P'
-      = 𝒟[basicFiatShamirGameEagerRand
+      = 𝒮[basicFiatShamirGameEagerRand
           (OracleDistribution.uniform (fsChallengeOracle StmtIn pSpec)) oImpl V P'] := rfl
 
 end Ladder

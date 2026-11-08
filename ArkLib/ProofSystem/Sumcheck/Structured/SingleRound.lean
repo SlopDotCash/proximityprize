@@ -341,7 +341,7 @@ def getRoundProverFinalOutput (i : Fin ℓ)
       t' := witIn.t',
       H := ⟨projectedH, by
         have hp := witIn.H.property
-        simpa using
+        exact
           (fixFirstVariablesOfMQP_degreeLE (L := L) (ℓ := ℓ - i) (v := ⟨1, by omega⟩)
             (poly := witIn.H.val) (challenges := challenges) (deg := d) hp)
       ⟩
@@ -450,10 +450,10 @@ instance instRoundOracleVerifierAppendCoherent [Oₛ : ∀ i, OracleInterface (O
       (roundOracleVerifier (L := L) ℓ D Context (OStmtIn := OStmtIn) d i) where
   hCohInl := fun a k h => by
     have : a = k := by
-      simpa only [roundOracleVerifier, Function.Embedding.coeFn_mk, Sum.inl.injEq] using h
+      exact Sum.inl.inj h
     subst this; rfl
   hCohInr := fun a k h => by
-    simp only [roundOracleVerifier, Function.Embedding.coeFn_mk, reduceCtorEq] at h
+    simp [roundOracleVerifier] at h
 
 /-- The structured per-round oracle *reduction*'s verifier is definitionally `roundOracleVerifier`,
 so it inherits `AppendCoherent`. -/

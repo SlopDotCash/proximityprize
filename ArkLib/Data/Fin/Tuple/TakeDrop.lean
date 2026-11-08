@@ -122,6 +122,7 @@ theorem ofFn_rtake_get {α : Type*} {m : ℕ} (l : List α) (h : m ≤ l.length)
 theorem get_rtake_eq_rtake_get_comp_cast {α : Type*} {m : ℕ} (l : List α) (h : m ≤ l.length) :
     (l.rtake m).get = rtake m h l.get ∘ Fin.cast (by simp [List.rtake]; omega) := by
   ext i
+  rw [Function.comp_apply, List.get_eq_getElem, rtake_apply]
   simp [List.rtake, natAdd, Fin.cast]
 
 /-- Alternative version with `v : Fin n → α` instead of `l : List α`. -/
@@ -129,6 +130,7 @@ theorem get_rtake_ofFn_eq_rtake_comp_cast {α : Type*} {m : ℕ} (v : Fin n → 
     ((List.ofFn v).rtake m).get =
       rtake m h v ∘ Fin.cast (by simp [List.rtake]; omega) := by
   ext i
+  rw [Function.comp_apply, List.get_eq_getElem, rtake_apply]
   simp [List.rtake, natAdd, Fin.cast]
 
 /-

@@ -176,7 +176,7 @@ theorem optionLift_rbrKnowledgeSoundness [Inhabited Stmt₂]
     exact hsucc
   | some s =>
     -- precompose the prover and defer to the inner per-round bound at `s`.
-    simpa using hBound s w P.someStmt i
+    exact hBound s w P.someStmt i
 
 /-- **Output-statement adaptation of a prover.** Replaces the prover's output statement type
 (discarding the statement to `default`); the interaction rounds are untouched, so all partial runs
@@ -251,7 +251,7 @@ theorem failingDet_optionized_rbrKnowledgeSoundness [Inhabited Stmt₂]
         first | exact hsome.symm | exact hsome },
     ?_⟩
   intro s w P i
-  simpa using hBound s w (P.defaultOutputStmt (StmtB := Stmt₂)) i
+  exact hBound s w (P.defaultOutputStmt (StmtB := Stmt₂)) i
 
 /-- **The failing-deterministic rbr knowledge-soundness append keystone (`Subsingleton σ`,
 message seam).** The capstone of the optionization reduction: appending a *failing*-deterministic
@@ -330,11 +330,6 @@ theorem append_pure_failingDet
       = ⟨fun s tr => OptionT.mk (pure (v₂? (v₁ s tr.fst) tr.snd))⟩ := by
   unfold Verifier.append
   congr 1
-  funext s tr
-  refine OptionT.ext ?_
-  simp only [OptionT.run_bind, OptionT.run_pure, OptionT.run_mk, Option.elimM, pure_bind,
-    Option.elim_some]
-  cases h : v₂? (v₁ s tr.fst) tr.snd <;> simp
 
 /-- **Failing-deterministic left, total-deterministic right.** -/
 theorem append_failingDet_pure

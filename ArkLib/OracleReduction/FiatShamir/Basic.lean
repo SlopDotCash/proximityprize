@@ -283,7 +283,7 @@ theorem fiatShamir_run_eq_oneMessage
                   [(FiatShamirProtocolSpec (pSpec := pSpec)).Challenge]ₒ))))
             (R.fiatShamir.verifier.verify stmtIn transcript).run)
         return (⟨transcript, ctxOut⟩, ← stmtOut.getM)) := by
-  simpa only using
+  exact
     (Reduction.run_of_prover_first
       (pSpec := FiatShamirProtocolSpec (pSpec := pSpec))
       stmtIn witIn R.fiatShamir)
@@ -331,7 +331,7 @@ theorem fiatShamir_runCollapseResidual_of_run_eq_honestExecution
           (oSpec + (fsChallengeOracle StmtIn pSpec + chSpec)))
         ((oSpec + fsChallengeOracle StmtIn pSpec) + chSpec)) =
     simulateQ impl (R.fiatShamirHonestExecution stmtIn witIn).run
-  simpa [chSpec, QueryImpl.addLift_def, QueryImpl.liftTarget_self] using
+  exact
     simulateQ_add_liftComp_add_assoc_left
       (spec₁ := oSpec) (spec₂ := fsChallengeOracle StmtIn pSpec) (spec₃ := chSpec)
       impl
@@ -763,7 +763,7 @@ theorem fiatShamir_completeness_of_perfect_honestExecution_mono_error
   unfold Reduction.perfectCompletenessFromRun at hHonest
   exact fiatShamir_completeness_of_honestExecution_mono_error init impl relIn relOut
     (completenessError₁ := 0) (completenessError₂ := completenessError)
-    R hCollapse hHonest (zero_le completenessError)
+    R hCollapse hHonest zero_le
 
 /-- Basic Fiat-Shamir completeness at any target error follows from perfect completeness of the
 explicit honest-execution experiment and the named run-equality residual. -/
@@ -782,7 +782,7 @@ theorem fiatShamir_completeness_of_perfect_runEq_mono_error
   unfold Reduction.perfectCompletenessFromRun at hHonest
   exact fiatShamir_completeness_of_runEq_mono_error init impl relIn relOut
     (completenessError₁ := 0) (completenessError₂ := completenessError)
-    R hRun hHonest (zero_le completenessError)
+    R hRun hHonest zero_le
 
 /-- Basic Fiat-Shamir completeness can be transported to a smaller input relation, larger output
 relation, and arbitrary target error from perfect completeness of the explicit honest-execution
@@ -804,7 +804,7 @@ theorem fiatShamir_completeness_of_perfect_honestExecution_mono_relations_error
   exact fiatShamir_completeness_of_honestExecution_mono_relations_error init impl
     (relIn := relIn) (relIn' := relIn') (relOut := relOut) (relOut' := relOut')
     (completenessError₁ := 0) (completenessError₂ := completenessError)
-    R hCollapse hHonest hIn hOut (zero_le completenessError)
+    R hCollapse hHonest hIn hOut zero_le
 
 /-- Basic Fiat-Shamir completeness can be transported to a smaller input relation, larger output
 relation, and arbitrary target error from perfect completeness of the explicit honest-execution
@@ -826,7 +826,7 @@ theorem fiatShamir_completeness_of_perfect_runEq_mono_relations_error
   exact fiatShamir_completeness_of_runEq_mono_relations_error init impl
     (relIn := relIn) (relIn' := relIn') (relOut := relOut) (relOut' := relOut')
     (completenessError₁ := 0) (completenessError₂ := completenessError)
-    R hRun hHonest hIn hOut (zero_le completenessError)
+    R hRun hHonest hIn hOut zero_le
 
 -- Future work: discharge `fiatShamir_run_eq_honestExecution` itself.  The outer challenge-collapse
 -- residual is now a theorem once that run equality is supplied; the remaining content is the
@@ -1201,7 +1201,7 @@ theorem fiatShamir_statisticalHVZKTransferResidual.of_zero
       fiatShamir_statisticalHVZKTransferResidual init impl fsInit fsImpl rel 0 R) :
     fiatShamir_statisticalHVZKTransferResidual init impl fsInit fsImpl rel ε R :=
   fiatShamir_statisticalHVZKTransferResidual.mono_error init impl fsInit fsImpl
-    rel R hTransfer (zero_le ε)
+    rel R hTransfer zero_le
 
 /-- Basic Fiat-Shamir statistical HVZK follows immediately from a discharged simulator-transfer
 residual. This theorem names the target surface for the future malicious-verifier/Fiat-Shamir

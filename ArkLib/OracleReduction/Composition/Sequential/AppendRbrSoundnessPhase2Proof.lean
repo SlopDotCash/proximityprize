@@ -106,11 +106,11 @@ theorem StateFunction.verify_notMem_lang_of_full_false
   have hrun : (V₁.run stmt tr) = (pure (verify stmt tr) : OptionT (OracleComp oSpec) Stmt₂) := by
     subst hVerify; rfl
   rw [hrun]
-  change some (verify stmt tr) ∈ _root_.support
+  change some (verify stmt tr) ∈ MonadAttach.support
     (StateT.run' (simulateQ impl (pure (some (verify stmt tr)) :
       OracleComp oSpec (Option Stmt₂))) s)
   rw [simulateQ_pure]
-  change some (verify stmt tr) ∈ _root_.support
+  change some (verify stmt tr) ∈ MonadAttach.support
     (Prod.fst <$> (pure (some (verify stmt tr)) : StateT σ ProbComp _).run s)
   rw [StateT.run_pure]
   simp [map_pure]
@@ -307,7 +307,7 @@ theorem appendDoomed_phase2_seam_reconcile [Subsingleton σ]
               let challenge ← liftComp (pSpec₂.getChallenge i₂)
                 (oSpec + [pSpec₂.Challenge]ₒ)
               return (transcript, challenge))).run' s] by
-    simpa only [hBODY, simulateQ_run'_bind_of_subsingleton] using hkey
+    simp only [hBODY, simulateQ_run'_bind_of_subsingleton] at hkey ⊢; exact hkey
   -- The challenge value-type equality at the phase-2 index.
   have hChTy : (pSpec₁ ++ₚ pSpec₂).Challenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂)
       = pSpec₂.Challenge i₂ := by
@@ -538,7 +538,7 @@ theorem appendRbrSoundnessPhase2_doomed_subsingleton [Subsingleton σ]
   -- STEP 1: transport the appended game to the seam-factored game via `phase2_body_heq`.
   have hbody := phase2_body_heq prover stmtIn witIn i₂ hn hDir hDir₂
   have hd : HEq
-      (𝒟[init >>= fun s =>
+      (𝒮[init >>= fun s =>
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp))
           (do
             let ⟨transcript, _⟩ ←
@@ -546,7 +546,7 @@ theorem appendRbrSoundnessPhase2_doomed_subsingleton [Subsingleton σ]
             let challenge ←
               liftComp ((pSpec₁ ++ₚ pSpec₂).getChallenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂)) _
             return (transcript, challenge))).run' s])
-      (𝒟[init >>= fun s =>
+      (𝒮[init >>= fun s =>
         (simulateQ (impl.addLift challengeQueryImpl : QueryImpl (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) (StateT σ ProbComp))
           (do
             let ⟨transcript₁, ctxIn₂⟩ ← liftM ((Prover.fst prover).run stmtIn witIn)
@@ -555,7 +555,7 @@ theorem appendRbrSoundnessPhase2_doomed_subsingleton [Subsingleton σ]
               liftComp ((pSpec₁ ++ₚ pSpec₂).getChallenge (ChallengeIdx.inr (pSpec₁ := pSpec₁) i₂)) _
             return (Transcript.appendRight transcript₁ r.1, challenge))).run' s]) := by
     have heq_evalDist : ∀ {A B : Type} (hAB : A = B) (a : ProbComp A) (b : ProbComp B),
-        HEq a b → HEq (𝒟[a]) (𝒟[b]) := by
+        HEq a b → HEq (𝒮[a]) (𝒮[b]) := by
       intro A B hAB a b hab; subst hAB; rw [eq_of_heq hab]
     have heq_simrun : ∀ {A B : Type} (s : σ) (hAB : A = B)
         (a : OracleComp (oSpec + [(pSpec₁ ++ₚ pSpec₂).Challenge]ₒ) A)

@@ -73,7 +73,7 @@ def Transcript.removeSalt {k : Fin (n + 1)} (transcript : (pSpec.addSalt Salt).T
 
 /-- Extract the salt from a (partial) transcript of a salted protocol -/
 def Transcript.extractSalt {k : Fin (n + 1)} (transcript : (pSpec.addSalt Salt).Transcript k) :
-    (i : pSpec.MessageIdxUpTo k) → Salt ⟨i.val.castLE (by omega), by simpa using i.property⟩ :=
+    (i : pSpec.MessageIdxUpTo k) → Salt ⟨i.val.castLE (by omega), i.property⟩ :=
   fun i => by
     letI data := transcript i
     dsimp [addSalt, SliceLT.sliceLT, take, Fin.castLE] at data ⊢

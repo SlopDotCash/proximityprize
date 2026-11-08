@@ -149,8 +149,12 @@ lemma tensorWeight_totalDegree (n : ℕ) (idx : Fin (2 ^ n)) :
     have h1 : (if idx.val % 2 = 0 then 1 - MvPolynomial.X (Fin.last n)
           else (MvPolynomial.X (Fin.last n) : MvPolynomial (Fin (n + 1)) L)).totalDegree ≤ 1 := by
       split
-      · refine le_trans (MvPolynomial.totalDegree_sub _ _) ?_
-        simp [MvPolynomial.totalDegree_one, MvPolynomial.totalDegree_X]
+      · rw [sub_eq_add_neg, neg_eq_neg_one_mul]
+        refine le_trans (MvPolynomial.totalDegree_add _ _) (max_le ?_ ?_)
+        · simp [MvPolynomial.totalDegree_one]
+        · refine le_trans (MvPolynomial.totalDegree_mul _ _) ?_
+          rw [show (-1 : MvPolynomial (Fin (n + 1)) L) = MvPolynomial.C (-1) by simp,
+            MvPolynomial.totalDegree_C, MvPolynomial.totalDegree_X]
       · simp [MvPolynomial.totalDegree_X]
     have h2 : (MvPolynomial.rename Fin.castSucc
           (tensorWeight L n ⟨idx.val / 2, halfLt idx⟩)).totalDegree ≤ n :=
@@ -160,7 +164,7 @@ lemma tensorWeight_totalDegree (n : ℕ) (idx : Fin (2 ^ n)) :
 /-- The tensor combination has total degree at most `n`. -/
 lemma tensorComb_totalDegree (n : ℕ) (a : Fin (2 ^ n) → L) :
     (tensorComb L n a).totalDegree ≤ n := by
-  refine le_trans (MvPolynomial.totalDegree_finset_sum _ _) ?_
+  refine le_trans (MvPolynomial.totalDegree_finsetSum _ _) ?_
   refine Finset.sup_le fun idx _ => ?_
   refine le_trans (MvPolynomial.totalDegree_mul _ _) ?_
   have := tensorWeight_totalDegree L n idx

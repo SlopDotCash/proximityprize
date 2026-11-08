@@ -172,8 +172,10 @@ theorem lemma_3_2 (ψ : B → A) (hψ : Function.Surjective ψ) :
 /-- [CO25, Lemma 3.2] composition equation: $\psi^{-1} \circ \psi_*(\mathcal{U}(B)) = \mathcal{U}(B)$. -/
 theorem lemma_3_2_paperEquation (ψ : B → A) (hψ : Function.Surjective ψ) :
     ((uniformPreimageSampler ψ hψ) ∘ pushforward ψ) (𝒰 B) = 𝒰 B := by
-  simpa [uniformPreimageSampler, pushforward, 𝒰, Functor.map] using
-    (bind_sampleUniformPreimage_eq_uniform (ψ := ψ) hψ)
+  show (PMF.map ψ ($ᵖ B)).bind (sampleUniformPreimage ψ hψ) = $ᵖ B
+  rw [PMF.map, PMF.bind_bind]
+  simp only [Function.comp_apply, PMF.pure_bind]
+  exact bind_sampleUniformPreimage_eq_uniform (ψ := ψ) hψ
 
 /-- [CO25, Lemma 3.2] in the standard total variation distance format: $\delta( \mathcal{U}(B), \psi^{-1} \circ \psi_*(\mathcal{U}(B)) ) = 0$. -/
 theorem lemma_3_2_paperNotation (ψ : B → A) (hψ : Function.Surjective ψ) :

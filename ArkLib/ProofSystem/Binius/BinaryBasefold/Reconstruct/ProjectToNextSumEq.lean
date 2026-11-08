@@ -107,20 +107,6 @@ theorem projectToNextSumcheckPoly_sum_eq {𝓑 : Fin 2 ↪ L} (i : Fin ℓ)
         Fin.snoc_last]
   rw [Finset.sum_congr rfl (fun x _ => hfix x)]
   simp only [projectToNextSumcheckPoly]
-  change
-    ∑ x ∈ ((SumcheckDomain.uniform 𝓑 ℓ).drop (↑i.castSucc + 1)).cube,
-        MvPolynomial.eval
-          (fun k : Fin ((ℓ - ↑i.castSucc) - 1) =>
-            (Fin.append x (fun j => j.elim0) ∘ Fin.cast (by omega)) k)
-          (fixFirstVariablesOfMQP (ℓ - ↑i.castSucc)
-            ⟨1, by have := i.2; simp only [Fin.val_castSucc]; omega⟩ Hᵢ.val
-            (fun _ => rᵢ))
-      =
-    ∑ x ∈ (Finset.univ.map 𝓑) ^ᶠ (ℓ - ↑i.succ),
-        MvPolynomial.eval x
-          (fixFirstVariablesOfMQP (ℓ - ↑i.castSucc)
-            ⟨1, by have := i.2; simp only [Fin.val_castSucc]; omega⟩ Hᵢ.val
-            (fun _ => rᵢ))
   simp only [SumcheckDomain.drop_uniform]
   rw [show (Finset.univ.map 𝓑) ^ᶠ (ℓ - ↑i.succ)
       = (SumcheckDomain.uniform 𝓑 (ℓ - ↑i.succ)).cube from rfl]

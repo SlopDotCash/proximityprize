@@ -56,7 +56,6 @@ theorem projectToMidSumcheckPoly_at_last_eval {L : Type} [CommRing L] (ℓ : ℕ
     rw [dif_neg (by omega)]
     simp only [Sum.elim_inr, Nat.sub_zero]
   rw [hpt]
-  rfl
 
 #print axioms Sumcheck.Structured.projectToMidSumcheckPoly_at_last_eval
 

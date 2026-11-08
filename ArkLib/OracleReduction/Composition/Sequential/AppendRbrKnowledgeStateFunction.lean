@@ -148,7 +148,6 @@ theorem appendExtractMid_gt {WitMid₁ : Fin (m+1)→Type} {WitMid₂ : Fin (n+1
   dsimp only [Fin.append, Fin.addCases, Fin.tail, Fin.castLT, Fin.cast]
   rw [dif_neg (show ¬ (idx:ℕ) < m from by omega)]
   rw [dif_neg (show ¬ (idx:ℕ) = m from by omega)]
-  simp only [id_eq]
   refine HEq.trans (cast_heq _ _) (HEq.trans (cast_heq _ _) ?_)
   refine dcongr_heq (HEq.trans (HEq.trans (cast_heq _ _) (cast_heq _ _))
       (HEq.trans (cast_heq _ _) hheq)) (fun _ _ _ => rfl) (fun _ _ => ?_)
@@ -177,7 +176,6 @@ theorem appendExtractMid_cross {WitMid₁ : Fin (m+1)→Type} {WitMid₂ : Fin (
   dsimp only [Fin.append, Fin.addCases, Fin.tail, Fin.castLT, Fin.cast]
   rw [dif_neg (show ¬ (idx:ℕ) < m from by omega)]
   rw [dif_pos (show (idx:ℕ) = m from hi)]
-  simp only [id_eq]
   refine HEq.trans (cast_heq _ _) (HEq.trans (cast_heq _ _) ?_)
   refine dcongr_heq (a₁ := _) (a₂ := cast E₂.eqIn (E₂.extractMid ⟨0, hn⟩ (verify stmt₁ trf) trs hin))
     ?hw (fun _ _ _ => rfl) (fun _ _ => ?hf)
@@ -365,8 +363,9 @@ theorem concat_snd_heq_phase2 {roundIdx : Fin (m + n)} (hge : m ≤ (roundIdx : 
     -- the LHS `Fin.snoc ((tr.snd cast)) msg₂`: split on whether `av` is the last position
     simp only [Fin.snoc]
     by_cases hlast : av = (roundIdx : ℕ) - m
-    · rw [dif_neg (show ¬ av < (roundIdx : ℕ) - m from by omega),
-          dif_neg (show ¬ m + (a' : ℕ) < (roundIdx : ℕ) from by omega)]
+    · rw [dif_neg (show ¬ av < (roundIdx : ℕ) - m from by omega)]
+      simp only [Transcript.concat, Fin.snoc]
+      rw [dif_neg (show ¬ m + (a' : ℕ) < (roundIdx : ℕ) from by omega)]
       -- both sides are `msg` (the new message), up to casts
       refine HEq.trans (cast_heq _ _) ?_
       refine HEq.trans (cast_heq _ _) ?_
@@ -376,6 +375,7 @@ theorem concat_snd_heq_phase2 {roundIdx : Fin (m + n)} (hge : m ≤ (roundIdx : 
       rw [dif_pos (show av < (roundIdx : ℕ) - m from hlt2)]
       rw [dif_neg (show ¬ (roundIdx : Fin (m + n)).castSucc ≤ m from by
             simp only [Fin.val_castSucc]; omega)]
+      simp only [Transcript.concat, Fin.snoc]
       rw [dif_pos (show m + (a' : ℕ) < (roundIdx : ℕ) from by omega)]
       refine HEq.trans (cast_heq _ _) ?_
       refine HEq.trans (cast_heq _ _) (HEq.trans ?_ (cast_heq _ _).symm)
@@ -407,11 +407,11 @@ theorem run_pos_of_mem_rel
   have hrun : (V₁.run stmt₁ trFst) = (pure (verify stmt₁ trFst) : OptionT (OracleComp oSpec) Stmt₂) := by
     subst hVerify; rfl
   rw [hrun]
-  change some (verify stmt₁ trFst) ∈ _root_.support
+  change some (verify stmt₁ trFst) ∈ MonadAttach.support
     (StateT.run' (simulateQ impl (pure (some (verify stmt₁ trFst)) :
       OracleComp oSpec (Option Stmt₂))) s)
   rw [simulateQ_pure]
-  change some (verify stmt₁ trFst) ∈ _root_.support
+  change some (verify stmt₁ trFst) ∈ MonadAttach.support
     (Prod.fst <$> (pure (some (verify stmt₁ trFst)) : StateT σ ProbComp _).run s)
   rw [StateT.run_pure]
   simp [map_pure]
@@ -451,7 +451,7 @@ def KnowledgeStateFunction.append {WitMid₁ : Fin (m+1)→Type} {WitMid₂ : Fi
     -- The witness-cast coherence: `cast (append.eqIn) witMid = cast E₁.eqIn (cast (appendWitMid_le …))`.
     have hwit : cast (Extractor.RoundByRound.append E₁ E₂ verify).eqIn witMid
         = cast E₁.eqIn (cast (appendWitMid_le h0) witMid) := by
-      rw [cast_cast]
+      exact eq_of_heq ((cast_heq _ _).trans ((cast_heq _ _).trans (cast_heq _ _)).symm)
     rw [hwit]
     -- Now reduce to `kSF₁.toFun_empty`, re-indexing `⟨0,_⟩ : Fin (m+1)` as `0` and `.fst = default`.
     refine Iff.trans (kSF₁.toFun_empty stmtIn (cast (appendWitMid_le h0) witMid)) (Iff.of_eq ?_)
@@ -557,7 +557,7 @@ def KnowledgeStateFunction.append {WitMid₁ : Fin (m+1)→Type} {WitMid₂ : Fi
         (by simpa using tr.snd) with htrs_def
       -- The phase-1 prefix as a genuine full transcript (`roundIdx ≥ m`, so the domain is all `m`).
       have hmin : min (roundIdx : ℕ) m = m := by omega
-      set trFst : pSpec₁.FullTranscript := (by simpa [hmin] using tr.fst) with htrFst_def
+      set trFst : pSpec₁.FullTranscript := (cast (by simp only [Fin.val_castSucc, hmin]; rfl) tr.fst) with htrFst_def
       have htrFst_heq : (trFst : pSpec₁.FullTranscript) ≍ tr.fst := cast_heq _ _
       by_cases hcross : (roundIdx : ℕ) = m
       · -- CROSSING (`roundIdx = m`): goal's `roundIdx.castSucc.val = m ≤ m` lands in `kSF₁`.
@@ -721,14 +721,19 @@ def KnowledgeStateFunction.append {WitMid₁ : Fin (m+1)→Type} {WitMid₂ : Fi
         -- Close the goal by transporting `key` across the index/statement/transcript/witness
         -- coherences. The goal's verify-statement is on `tr.fst`; `key`'s is on `trFst`; equal.
         -- `convert` auto-unifies the defeq legs; the remaining goals are dispatched uniformly.
+        have hmp : ∀ {α β : Type} (h : α = β) (a : α), HEq (h.mp a) a := fun h a => by
+          subst h; rfl
         convert key using 2 <;>
           first
             | (apply Fin.ext; omega)
+            | (simp only [Fin.val_castSucc]; done)
             | (congr 1; exact eq_of_heq (HEq.trans (cast_heq _ _) htrFst_heq.symm))
             | exact cast_heq _ _
             | exact hExtEq
             | exact hExtEq.symm
             | exact eq_of_heq hExtEq
+            | exact htrs_def.symm
+            | exact congrArg (verify stmt₁) (eq_of_heq ((hmp _ _).trans htrFst_heq.symm))
             | exact (eq_of_heq hExtEq).symm
   -- `toFun_full`: at the last round the appended verifier's output factors through `V₂` on
   -- `verify stmt₁ tr.fst` (the `Verifier.append` run, which `pure`-binds `V₁`'s deterministic
@@ -785,7 +790,6 @@ def KnowledgeStateFunction.append {WitMid₁ : Fin (m+1)→Type} {WitMid₂ : Fi
         subst hVerify
         show (do return ← V₂.verify (← (pure (verify stmt₁ trFst))) (FullTranscript.snd tr)) = _
         rw [pure_bind]
-        simp only [Verifier.run, bind_pure]
       rw [hrun] at hPos
       -- `kSF₂.toFun_full` (over the empty phase 2, `last 0`) yields the phase-2 leg, which since
       -- `n = 0` is the round-`0` state — `kSF₂.toFun_empty` then puts `(verify …, cast eqIn …)` in
@@ -849,7 +853,6 @@ def KnowledgeStateFunction.append {WitMid₁ : Fin (m+1)→Type} {WitMid₂ : Fi
         subst hVerify
         show (do return ← V₂.verify (← (pure (verify stmt₁ (FullTranscript.fst tr)))) _) = _
         rw [pure_bind]
-        simp only [Verifier.run, bind_pure]
       rw [hrun] at hPos
       -- transfer the positive-probability hypothesis to `kSF₂.toFun_full`.
       have hPr := kSF₂.toFun_full (verify stmt₁ (FullTranscript.fst tr)) (FullTranscript.snd tr)

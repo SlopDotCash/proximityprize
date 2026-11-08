@@ -160,6 +160,12 @@ local instance : ∀ q, Fintype ((fsChallengeOracle StmtIn pSpec).Range q) :=
 local instance : ∀ q, Inhabited ((fsChallengeOracle StmtIn pSpec).Range q) :=
   fun q => inferInstanceAs (Inhabited (pSpec.Challenge q.1))
 
+/-- These games interpret finite oracle answers uniformly. Keep that interpretation local and
+explicit after VCVio replaced its bundled finite-oracle evaluation instances. -/
+noncomputable local instance legacyUniformSpec {ι' : Type} (spec : OracleSpec ι')
+    [∀ t, Fintype (spec.Range t)] [∀ t, Inhabited (spec.Range t)] : IsUniformSpec spec :=
+  IsUniformSpec.ofFintypeInhabited spec
+
 /-- Flavor of a single query index of the DSFS adversary's oracle
 `oSpec + duplexSpongeChallengeOracle StmtIn U`: either the shared ambient oracle `oSpec`, or one
 of the three duplex-sponge query flavors `(h, p, p⁻¹)` of CO25 §5.4. Used to phrase the

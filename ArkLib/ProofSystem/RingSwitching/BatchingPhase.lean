@@ -240,11 +240,10 @@ instance instOracleVerifierAppendCoherent :
     OracleVerifier.Append.AppendCoherent
       (oracleVerifier κ L K P ℓ ℓ' h_l (aOStmtIn := aOStmtIn)) where
   hCohInl := fun a k h => by
-    have : a = k := by
-      simpa only [oracleVerifier, Function.Embedding.coeFn_mk, Sum.inl.injEq] using h
+    have : a = k := Sum.inl.inj h
     subst this; rfl
   hCohInr := fun a k h => by
-    simp only [oracleVerifier, Function.Embedding.coeFn_mk, reduceCtorEq] at h
+    simp [oracleVerifier] at h
 
 open OracleInterface in
 omit [NeZero κ] [Fintype L] [SampleableType L] [Fintype K] [DecidableEq K]
@@ -271,7 +270,7 @@ lemma oracleVerifier_verify_collapse
          else pure (failureState κ L K P ℓ ℓ' stmt (FullTranscript.messages tr ⟨0, by rfl⟩))
          : OptionT (OracleComp []ₒ) _) := by
   simp only [oracleVerifier]
-  rw [simulateQ_optionT_bind]
+  erw [simulateQ_optionT_bind]
   erw [simulateQ_simOracle2_query]
   -- `simulateQ (simOracle2 …) (query) = OptionT.lift (pure (answer …))`. Reduce the lift-bind at
   -- the `.run` level via `OptionT.run_bind_lift` (+ `pure_bind`), then push `simulateQ` through
@@ -510,7 +509,7 @@ noncomputable def batchingKnowledgeStateFunction :
     -- Collapse the inner verifier body (the message query is the load-bearing step) to the
     -- deterministic `if performCheck … then stmtOutAccept else failureState` via the collapse
     --   lemma.
-    rw [oracleVerifier_verify_collapse] at hmem
+    erw [oracleVerifier_verify_collapse] at hmem
     -- The verifier run is now query-free (`pure`/`if`). Case-split the verifier's accept/reject
     -- decision (`split`), then collapse each `pure` branch to a singleton support.
     split at hmem <;>
@@ -538,9 +537,9 @@ noncomputable def batchingKnowledgeStateFunction :
     --   `sumcheckRoundRelationProp`.
     -- The `embed = Sum.inl` map gives `oStmtOut = oStmtLast`, so `hrel` matches up to that cast.
     · rw [if_pos (by assumption)]
-      convert hrel using 3
+      convert hrel using 3 <;> rfl
     · rw [if_neg (by assumption)]
-      convert hrel using 3
+      convert hrel using 3 <;> rfl
 
 /-! ## Security Properties -/
 
@@ -646,19 +645,19 @@ theorem batching_consistency_of_multpoly [IsDomain L] [IsDomain K]
   have hproj : (projectToMidSumcheckPoly ℓ' t' m 0 Fin.elim0).val.eval
         (fun j => (if b j == 1 then (1 : L) else 0))
       = (m.val * t'.val).eval (fun j => (if b j == 1 then (1 : L) else 0)) := by
-    rw [projectToMidSumcheckPoly_eq_fixVars]
+    erw [projectToMidSumcheckPoly_eq_fixVars]
     erw [fixFirstVariablesOfMQP_eval]
     refine congrArg (fun g => eval g (m.val * t'.val)) ?_
     funext i
     simp only [Equiv.trans_apply, finCongr_apply]
     rcases hsym : finSumFinEquiv.symm (Fin.cast (by simp) i) with j | j
-    · simp only [Sum.elim_inl]
+    · erw [Sum.elim_inl]
       have hji : j = i := by
         have hi := congrArg finSumFinEquiv hsym
         rw [Equiv.apply_symm_apply] at hi
         apply Fin.ext
         have hval := congrArg Fin.val hi
-        simpa [finSumFinEquiv_apply_left] using hval.symm
+        exact hval.symm
       rw [hji]
     · exact j.elim0
   rw [MvPolynomial.eval_mul, hm b] at hproj
@@ -703,10 +702,11 @@ theorem batchingReduction_perfectCompleteness_proved [IsDomain L] [IsDomain K]
       (aOStmtIn := aOStmtIn) (init := init) (impl := impl) := by
   classical
   haveI : Nonempty L := ⟨0⟩
+  letI := legacyUniformSpec ([]ₒ + [(pSpecBatching κ L K P).Challenge]ₒ)
   rw [batchingReduction_perfectCompleteness_residual,
     OracleReduction.unroll_2_message_reduction_perfectCompleteness (oSpec := []ₒ)
     (pSpec := pSpecBatching (κ := κ) (L := L) (K := K) (P := P)) (init := init) (impl := impl)
-    (hInit := hInit) (hDir0 := by rfl) (hDir1 := by rfl)
+    (hInit := hInit) (hDir0 := by simp [pSpecBatching]) (hDir1 := by simp [pSpecBatching])
     (hImplSupp := by simp only [Set.fmap_eq_image, IsEmpty.forall_iff, implies_true])]
   intro stmtIn oStmtIn witIn h_relIn
   obtain ⟨h_t'_eq, h_claim, h_compat⟩ := h_relIn
@@ -727,6 +727,7 @@ theorem batchingReduction_perfectCompleteness_proved [IsDomain L] [IsDomain K]
     simp only [FullTranscript.messages, FullTranscript.challenges, FullTranscript.mk2]
     rw [if_pos hcheck]
     simp only [pure_bind, batchingAcceptStatement, oracleVerifier]
+    rfl
   -- relation membership of the honest accept output
   have h_rel_out : ∀ r1 : Fin κ → L,
       ((batchingAcceptStatement κ L K P ℓ ℓ' stmtIn
@@ -752,21 +753,22 @@ theorem batchingReduction_perfectCompleteness_proved [IsDomain L] [IsDomain K]
     rw [probFailure_bind_eq_zero_iff]
     refine ⟨?_, fun r1 _ => ?_⟩
     · simp only [OptionT.probFailure_liftM, OracleComp.probFailure_liftComp,
-        HasEvalPMF.probFailure_eq_zero]
-    · rw [probFailure_map]
+        probFailure_eq_zero]
+    · erw [OracleComp.liftComp_pure, liftM_pure, pure_bind]
+      beta_reduce
+      erw [OracleComp.liftComp_pure, liftM_pure, pure_bind, hverify]
+      rw [probFailure_map]
       erw [OracleComp.liftComp_pure]
       apply probFailure_pure
   · -- Correctness: the honest output lies in the batching output relation.
     intro x hx
-    simp only [OptionT.mem_support_iff, OptionT.run_bind, support_bind, Set.mem_iUnion,
-      OptionT.run_pure, support_pure, Set.mem_singleton_iff, exists_prop, OptionT.run_map,
-      OptionT.run_monadLift, support_map, support_liftM,
-      Set.mem_image, _root_.map_pure] at hx
-    obtain ⟨r1, -, x_1, hx1, rfl⟩ := hx
-    change x_1 ∈ _root_.support (pure _ : OptionT (OracleComp _) _) at hx1
-    simp only [OptionT.mem_support_iff, OptionT.run_pure, support_pure, Set.mem_preimage,
-      Set.mem_singleton_iff, Option.some.injEq] at hx1
-    subst hx1
+    rw [mem_support_bind_iff] at hx
+    obtain ⟨r1, -, hx⟩ := hx
+    erw [OracleComp.liftComp_pure, liftM_pure, pure_bind] at hx
+    beta_reduce at hx
+    erw [OracleComp.liftComp_pure, liftM_pure, pure_bind, hverify] at hx
+    erw [OracleComp.liftComp_pure, _root_.map_pure, support_pure] at hx
+    subst hx
     exact ⟨h_rel_out r1, rfl, rfl⟩
 
 
@@ -1000,7 +1002,7 @@ lemma batching_rbrExtractionFailureEvent_accept_pack_or_embed
     Fin.reduceLast,
     Fin.mk_one] at hBeforeFalse hAfterTrue
   simp only [batchingRbrExtractor, Fin.mk_one] at hBeforeFalse
-  rw [if_pos hAccept] at hAfterTrue
+  erw [if_pos hAccept] at hAfterTrue
   unfold sumcheckRoundRelationProp masterKStateCore at hAfterTrue
   have hCompat : aOStmtIn.initialCompatibility ⟨witMid.t', stmtOStmtIn.2⟩ := by
     simpa using hAfterTrue.2.2
@@ -1089,10 +1091,10 @@ lemma batching_doom_accept_imply_bad_of_bridges
     Fin.reduceLast,
     Fin.mk_one] at hBeforeFalse hAfterTrue
   simp only [batchingRbrExtractor, Fin.mk_one] at hBeforeFalse
-  rw [if_pos hAccept] at hAfterTrue
+  erw [if_pos hAccept] at hAfterTrue
   have hRel : sumcheckRoundRelationProp κ L K P ℓ ℓ' h_l aOStmtIn 0
       (batchingAcceptStatement κ L K P ℓ ℓ' stmtOStmtIn.1 msg0 y) stmtOStmtIn.2 witMid := by
-    simpa [batchingAcceptStatement] using hAfterTrue
+    exact hAfterTrue
   have hRelUnfold := hRel
   unfold sumcheckRoundRelationProp masterKStateCore at hRelUnfold
   have hCompat : aOStmtIn.initialCompatibility ⟨witMid.t', stmtOStmtIn.2⟩ := by

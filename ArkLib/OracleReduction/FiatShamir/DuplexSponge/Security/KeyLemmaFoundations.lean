@@ -145,6 +145,11 @@ lemma isQueryBoundP_deAbort {ι' : Type} {spec : OracleSpec ι'} {α : Type} [In
     IsQueryBoundP (deAbort oa) p b :=
   (isQueryBoundP_map_iff _ _ _).mpr h
 
+/-- Finite inhabited oracle ranges read as uniform, as the bundled legacy instances did. -/
+noncomputable local instance legacyUniformSpec {ι' : Type} (spec : OracleSpec ι')
+    [∀ t, Fintype (spec.Range t)] [∀ t, Inhabited (spec.Range t)] : IsUniformSpec spec :=
+  IsUniformSpec.ofFintypeInhabited spec
+
 /-- F8b — `deAbort` moves at most the abort mass: the TV distance between the de-aborted
 computation and the sub-probability original is bounded by the abort probability. Consumed by
 the Hyb₄ → witness bridge together with the §5.7 abort analysis (`Pr[abort] ≤ Pr[E]`). -/
@@ -522,7 +527,7 @@ lemma d2sCodecBridgeImpl_run_left_budget
       simp only [hmb, OptionT.run_bind, pure_bind, OptionT.run_lift,
         HasQuery.instOfMonadLift_query]
       unfold Option.elimM
-      rw [bind_assoc]
+      erw [OptionT.run_lift, bind_assoc]
       simp only [pure_bind, Option.elim]
       refine (isQueryBoundP_query_bind_iff _ _ _ _).mpr
         ⟨Or.inr one_pos, fun ch => ?_⟩

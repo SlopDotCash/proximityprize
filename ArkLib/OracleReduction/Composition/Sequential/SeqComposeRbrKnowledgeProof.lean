@@ -74,7 +74,7 @@ private theorem idxToSigma_inl (s : (pSpec 0).ChallengeIdx) :
   have hsplit : (Fin.splitSum (n := n)
       (ChallengeIdx.inl (pSpec₁ := pSpec 0)
         (pSpec₂ := ProtocolSpec.seqCompose (fun i => pSpec i.succ)) s).1) = ⟨0, s.1⟩ := by
-    rw [Fin.splitSum_succ]; erw [Fin.dappend_left]
+    erw [Fin.splitSum_succ]; erw [Fin.dappend_left]
   have hfst : (seqComposeChallengeIdxToSigma (pSpec := pSpec)
       (ChallengeIdx.inl (pSpec₁ := pSpec 0)
         (pSpec₂ := ProtocolSpec.seqCompose (fun i => pSpec i.succ)) s)).fst = (0 : Fin (m + 1)) :=
@@ -105,7 +105,7 @@ private theorem idxToSigma_inr
         (pSpec₂ := ProtocolSpec.seqCompose (fun i => pSpec i.succ)) s).1)
       = ⟨(Fin.splitSum (n := fun i => n i.succ) s.1).fst.succ,
           (Fin.splitSum (n := fun i => n i.succ) s.1).snd⟩ := by
-    rw [Fin.splitSum_succ]; erw [Fin.dappend_right]
+    erw [Fin.splitSum_succ]; erw [Fin.dappend_right]
   have hfst : (seqComposeChallengeIdxToSigma (pSpec := pSpec)
       (ChallengeIdx.inr (pSpec₁ := pSpec 0)
         (pSpec₂ := ProtocolSpec.seqCompose (fun i => pSpec i.succ)) s)).fst =
@@ -319,9 +319,12 @@ theorem seqCompose_rbrKnowledgeSoundness_failingDet
     · -- empty trailing seam (`m = 0`): the tail `seqCompose` is 0-round; the residual-free
       -- failing-det empty keystone applies with no direction/state-regime hypotheses
       subst hm
-      exact Verifier.append_rbrKnowledgeSoundness_failingDet_empty (verify? 0)
+      exact @Verifier.append_rbrKnowledgeSoundness_failingDet_empty _ _ _ _ _ _ _ _ _ _ _ _
+        (@ProtocolSpec.instSampleableTypeChallengeSeqCompose 0 (fun i => n i.succ)
+          (fun i => pSpec i.succ) (fun i j => inferInstance))
+        _ _ _ _ (verify? 0)
         (Verifier.seqCompose (Stmt ∘ Fin.succ) (fun i => V (Fin.succ i)))
-        hInit (hNEW (Fin.succ 0)) h0 hTail
+        _ _ _ _ _ hInit (hNEW (Fin.succ 0)) h0 hTail
     · -- message seam: the tail is nonempty and starts with a `P_to_V` message
       obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hm.ne'
       have hn : 0 < Fin.vsum (fun i => n (Fin.succ i)) := by
