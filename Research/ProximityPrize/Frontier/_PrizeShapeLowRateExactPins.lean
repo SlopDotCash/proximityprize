@@ -248,15 +248,18 @@ theorem firstPrime_rateSixteenth_deltaStar_eq_half :
           (2 ^ 30) (2 ^ 26 - 1) =
         (ReedSolomon.code dom (2 ^ 26) :
           Set (Fin (2 ^ 30) → ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)) := by
-    simpa only [dom, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 26)] using
-      (ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon
-        ArkLib.ProximityGap.PrizeShapePrimeP30.g
-        ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g hg0
-        (2 ^ 26 - 1))
+    have h := ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon
+      ArkLib.ProximityGap.PrizeShapePrimeP30.g
+      ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g hg0
+      (2 ^ 26 - 1)
+    rw [Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 26)] at h
+    exact h
   rw [← hcode] at hcount
-  simpa only [halfPredecessorRadius,
-    ArkLib.ProximityGap.Frontier.R382HalfRadiusPinConnector.halfPredecessorRadius]
-    using hcount
+  have hradius : halfPredecessorRadius (2 ^ 30) =
+      ArkLib.ProximityGap.Frontier.R382HalfRadiusPinConnector.halfPredecessorRadius (2 ^ 30) :=
+    rfl
+  rw [hradius]
+  exact hcount
 
 /-- **Unconditional first-prime rate-`1/8` pin.**  The complete exceptional-line
 pruning and third-moment incidence theorem bounds the literal predecessor bad-scalar
@@ -290,15 +293,18 @@ theorem firstPrime_rateEighth_deltaStar_eq_half :
           (2 ^ 30) (2 ^ 27 - 1) =
         (ReedSolomon.code dom (2 ^ 27) :
           Set (Fin (2 ^ 30) → ZMod ArkLib.ProximityGap.PrizeShapePrimeP30.P)) := by
-    simpa only [dom, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 27)] using
-      (ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon
-        ArkLib.ProximityGap.PrizeShapePrimeP30.g
-        ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g hg0
-        (2 ^ 27 - 1))
+    have h := ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon
+      ArkLib.ProximityGap.PrizeShapePrimeP30.g
+      ArkLib.ProximityGap.PrizeShapePrimeP30.orderOf_g hg0
+      (2 ^ 27 - 1)
+    rw [Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 27)] at h
+    exact h
   rw [← hcode] at hcount
-  simpa only [halfPredecessorRadius,
-    ArkLib.ProximityGap.Frontier.R382HalfRadiusPinConnector.halfPredecessorRadius]
-    using hcount
+  have hradius : halfPredecessorRadius (2 ^ 30) =
+      ArkLib.ProximityGap.Frontier.R382HalfRadiusPinConnector.halfPredecessorRadius (2 ^ 30) :=
+    rfl
+  rw [hradius]
+  exact hcount
 
 /-- At the second certified prime, a literal `2n` bad-count bound at `17/32` gives a
 strictly-beyond-half operational lower pin. -/
@@ -384,11 +390,12 @@ theorem secondPrime_rateSixteenth_seventeenThirtyTwo_le_deltaStar :
           (2 ^ 30) (2 ^ 26 - 1) =
         (ReedSolomon.code dom (2 ^ 26) :
           Set (Fin (2 ^ 30) → ZMod ArkLib.ProximityGap.PrizeShapePrimeP30Second.P)) := by
-    simpa only [dom, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 26)] using
-      (ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon
-        ArkLib.ProximityGap.PrizeShapePrimeP30Second.g
-        ArkLib.ProximityGap.PrizeShapePrimeP30Second.orderOf_g hg0
-        (2 ^ 26 - 1))
+    have h := ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon
+      ArkLib.ProximityGap.PrizeShapePrimeP30Second.g
+      ArkLib.ProximityGap.PrizeShapePrimeP30Second.orderOf_g hg0
+      (2 ^ 26 - 1)
+    rw [Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 26)] at h
+    exact h
   rw [← hcode] at hcount
   simpa only [show 2 * 2 ^ 30 = 2 ^ 31 by norm_num] using hcount
 

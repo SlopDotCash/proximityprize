@@ -84,14 +84,18 @@ theorem firstPrime_rateSixteenth_deltaStar_eq_half_local :
       evalCode PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 26 - 1) =
         (ReedSolomon.code firstPrimeDomain (2 ^ 26) :
           Set (Fin (2 ^ 30) → ZMod PrizeShapePrimeP30.P)) := by
-    simpa only [firstPrimeDomain, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 26)] using
-      (ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon
-        PrizeShapePrimeP30.g PrizeShapePrimeP30.orderOf_g
-        (ProximityGap.KKH26RegimeSplit.ne_zero_of_orderOf_eq
-          PrizeShapePrimeP30.orderOf_g) (2 ^ 26 - 1))
+    have h := ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon
+      PrizeShapePrimeP30.g PrizeShapePrimeP30.orderOf_g
+      (ProximityGap.KKH26RegimeSplit.ne_zero_of_orderOf_eq
+        PrizeShapePrimeP30.orderOf_g) (2 ^ 26 - 1)
+    rw [Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 26)] at h
+    exact h
   rw [← hcode] at hcount
-  simpa only [halfPredecessorRadius,
-    ArkLib.ProximityGap.Frontier.R382HalfRadiusPinConnector.halfPredecessorRadius] using hcount
+  have hradius : halfPredecessorRadius (2 ^ 30) =
+      ArkLib.ProximityGap.Frontier.R382HalfRadiusPinConnector.halfPredecessorRadius (2 ^ 30) :=
+    rfl
+  rw [hradius]
+  exact hcount
 
 /-- At rate `1/16`, the same open-endpoint phenomenon forbids a witness. -/
 theorem not_grandMCAChallengeRS_rateSixteenth :
@@ -107,11 +111,12 @@ theorem not_grandMCAChallengeRS_rateSixteenth :
             Set (Fin (2 ^ 30) → ZMod PrizeShapePrimeP30.P)) =
           evalCode PrizeShapePrimeP30.g (2 ^ 30) (2 ^ 26 - 1) := by
       symm
-      simpa only [firstPrimeDomain, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 26)] using
-        (ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon
-          PrizeShapePrimeP30.g PrizeShapePrimeP30.orderOf_g
-          (ProximityGap.KKH26RegimeSplit.ne_zero_of_orderOf_eq
-            PrizeShapePrimeP30.orderOf_g) (2 ^ 26 - 1))
+      have h := ProximityGap.KKH26RegimeSplit.evalCode_eq_reedSolomon
+        PrizeShapePrimeP30.g PrizeShapePrimeP30.orderOf_g
+        (ProximityGap.KKH26RegimeSplit.ne_zero_of_orderOf_eq
+          PrizeShapePrimeP30.orderOf_g) (2 ^ 26 - 1)
+      rw [Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 26)] at h
+      exact h
     have heps : (epsStar : ENNReal) =
         (((2 ^ 128 : ℕ) : ENNReal)⁻¹ : ENNReal) := by
       norm_num [epsStar, div_eq_mul_inv]

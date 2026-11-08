@@ -61,7 +61,7 @@ theorem mem_common (i : Coord) : i ∈ common ↔ i.val < commonSize := by
     obtain ⟨a,_,ha⟩ := Finset.mem_map.mp hi
     have he := congrArg Fin.val ha
     have hb := a.isLt
-    dsimp [commonEmb] at he
+    change a.val = i.val at he
     omega
   · intro hi
     exact Finset.mem_map.mpr ⟨⟨i.val,hi⟩,Finset.mem_univ _,Fin.ext rfl⟩
@@ -74,7 +74,7 @@ theorem mem_group (j : Fin 3) (i : Coord) : i ∈ group j ↔
     obtain ⟨a,_,ha⟩ := Finset.mem_map.mp hi
     have he := congrArg Fin.val ha
     have hb := a.isLt
-    dsimp [groupEmb] at he
+    change commonSize + j.val * groupSize + a.val = i.val at he
     simp only [n,commonSize,groupSize] at *
     omega
   · rintro ⟨hlo,hhi⟩
@@ -83,7 +83,7 @@ theorem mem_group (j : Fin 3) (i : Coord) : i ∈ group j ↔
       omega⟩,
       Finset.mem_univ _,?_⟩
     apply Fin.ext
-    dsimp [groupEmb]
+    change commonSize + j.val * groupSize + (i.val - (commonSize + j.val * groupSize)) = i.val
     omega
 
 theorem core_card (j : Fin 3) : (core j).card = 715827881 := by
@@ -160,18 +160,31 @@ theorem z_mem : z ∈ prodCode := by
   exact lt_of_le_of_lt Polynomial.degree_le_natDegree
     (by exact_mod_cast (locator_natDegree_le.trans_lt (by norm_num : commonSize < k)))
 
-theorem xz_mem : xz ∈ prodCode := by
-  change ∃ q : Polynomial (ZMod sponsorP), q.degree < k ∧ xz = fun i => q.eval (g ^ i.val)
-  refine ⟨locator * Polynomial.X,?_,?_⟩
+private theorem eval_locator_mul_mem {F : Type} [Field F] [Fintype F] [DecidableEq F]
+    {m n k : ℕ} [NeZero n] (dom : Fin n ↪ F) (roots : Fin m → F) (hmk : m + 1 < k) :
+    (fun i => (∏ a : Fin m, (Polynomial.X - Polynomial.C (roots a))).eval (dom i) * dom i) ∈
+      ProximityGap.SpikeFloor.rsCode dom k := by
+  refine ⟨(∏ a : Fin m, (Polynomial.X - Polynomial.C (roots a))) * Polynomial.X, ?_, ?_⟩
   · apply lt_of_le_of_lt (Polynomial.degree_mul_le _ _)
-    have hz : locator.degree ≤ (commonSize : ℕ) :=
-      Polynomial.degree_le_natDegree.trans (by exact_mod_cast locator_natDegree_le)
-    have hx : (Polynomial.X : Polynomial (ZMod sponsorP)).degree ≤ (1 : ℕ) :=
-      Polynomial.degree_X_le
-    exact (add_le_add hz hx).trans_lt (by norm_num)
+    have hdeg : (∏ a : Fin m, (Polynomial.X - Polynomial.C (roots a))).natDegree ≤ m := by
+      refine (Polynomial.natDegree_prod_le _ _).trans ?_
+      calc
+        _ ≤ ∑ _a : Fin m, (1 : ℕ) := by
+          apply Finset.sum_le_sum
+          intro a _
+          exact (Polynomial.natDegree_sub_le _ _).trans (by simp)
+        _ = m := by simp
+    have hz : (∏ a : Fin m, (Polynomial.X - Polynomial.C (roots a))).degree ≤ (m : WithBot ℕ) :=
+      Polynomial.degree_le_natDegree.trans (by exact_mod_cast hdeg)
+    have hx : (Polynomial.X : Polynomial F).degree ≤ (1 : WithBot ℕ) := Polynomial.degree_X_le
+    exact (add_le_add hz hx).trans_lt (by exact_mod_cast hmk)
   · funext i
-    simp only [Polynomial.eval_mul,Polynomial.eval_X]
-    rfl
+    simp only [Polynomial.eval_mul, Polynomial.eval_X]
+
+theorem xz_mem : xz ∈ prodCode :=
+  eval_locator_mul_mem (smoothDom g n orderOf_g)
+    (fun a : Fin commonSize => g ^ a.val)
+    (by norm_num : commonSize + 1 < k)
 
 theorem v1_mem (j : Fin 3) : v1 j ∈ prodCode := prodCode.smul_mem _ z_mem
 theorem v0_mem (j : Fin 3) : v0 j ∈ prodCode := prodCode.smul_mem _ xz_mem
@@ -411,7 +424,7 @@ theorem scalar_injective {j j' : Fin 3} {i i' : Coord}
     intro m
     rw [← pow_mul,Nat.mul_comm,pow_mul]
     have hfull : g ^ n = 1 := by
-      simpa only [orderOf_g] using pow_orderOf_eq_one g
+      simpa only [orderOf_g, n, Nat.reducePow] using pow_orderOf_eq_one g
     rw [hfull,one_pow]
   have hp := congrArg (fun a : ZMod sponsorP => a ^ n) hh
   simp only [mul_pow,hg,mul_one] at hp
@@ -512,8 +525,9 @@ theorem firstPrime_fullScale_upper :
   have hbridge : evalCode g (2 ^ 30) (2 ^ 29 - 1)
       = ((prodCode : Submodule (ZMod sponsorP) (Fin (2 ^ 30) → ZMod sponsorP)) :
           Set (Fin (2 ^ 30) → ZMod sponsorP)) := by
-    simpa only [prodCode, Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 29)] using
-      (evalCode_eq_rsCode orderOf_g (2 ^ 29 - 1))
+    have h := evalCode_eq_rsCode orderOf_g (2 ^ 29 - 1)
+    rw [Nat.sub_add_cancel (by norm_num : 1 ≤ 2 ^ 29)] at h
+    exact h
   rw [hbridge]
   let u : WordStack (ZMod sponsorP) (Fin 2) (Fin (2 ^ 30)) :=
     fun r => if r = 0 then u0 else u1

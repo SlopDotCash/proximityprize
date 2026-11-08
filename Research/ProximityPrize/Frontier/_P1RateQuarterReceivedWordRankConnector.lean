@@ -241,12 +241,16 @@ theorem twoPencils_eval_eq_of_two_labels_each_agree
     (hdelta₀ : (b + C delta₀ * s).eval x = u₀ + delta₀ * u₁)
     (hdelta₁ : (b + C delta₁ * s).eval x = u₀ + delta₁ * u₁) :
     a.eval x = b.eval x ∧ r.eval x = s.eval x := by
-  have hA := ProximityGap.affine_eq_of_two_smul_points hgamma
-    (by simpa only [eval_add, eval_mul, eval_C, smul_eq_mul] using hgamma₀)
-    (by simpa only [eval_add, eval_mul, eval_C, smul_eq_mul] using hgamma₁)
-  have hB := ProximityGap.affine_eq_of_two_smul_points hdelta
-    (by simpa only [eval_add, eval_mul, eval_C, smul_eq_mul] using hdelta₀)
-    (by simpa only [eval_add, eval_mul, eval_C, smul_eq_mul] using hdelta₁)
+  have hgamma₀' : a.eval x + gamma₀ • r.eval x = u₀ + gamma₀ • u₁ := by
+    simpa only [eval_add, eval_mul, eval_C, smul_eq_mul] using hgamma₀
+  have hgamma₁' : a.eval x + gamma₁ • r.eval x = u₀ + gamma₁ • u₁ := by
+    simpa only [eval_add, eval_mul, eval_C, smul_eq_mul] using hgamma₁
+  have hdelta₀' : b.eval x + delta₀ • s.eval x = u₀ + delta₀ • u₁ := by
+    simpa only [eval_add, eval_mul, eval_C, smul_eq_mul] using hdelta₀
+  have hdelta₁' : b.eval x + delta₁ • s.eval x = u₀ + delta₁ • u₁ := by
+    simpa only [eval_add, eval_mul, eval_C, smul_eq_mul] using hdelta₁
+  have hA := ProximityGap.affine_eq_of_two_smul_points hgamma hgamma₀' hgamma₁'
+  have hB := ProximityGap.affine_eq_of_two_smul_points hdelta hdelta₀' hdelta₁'
   exact ⟨hA.1.trans hB.1.symm, hA.2.trans hB.2.symm⟩
 
 /-- Degree-facing cap: genuinely distinct degree-`<k` pencils can be mixed

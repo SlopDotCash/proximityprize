@@ -84,7 +84,6 @@ theorem lamTransform_mul (hfam : SubgroupDualFamily G m lam)
         refine (Fintype.sum_bijective (fun w => z * w) (mulLeft_bijective₀ z hz0)
           (fun w => f z * g w * lam i (z * w))
           (fun v => f z * g (z⁻¹ * v) * lam i v) (fun w => ?_)).symm
-        dsimp only
         rw [← mul_assoc, inv_mul_cancel₀ hz0, one_mul]
 
 end ArkLib.ProximityGap.Frontier.R35TransformRingHom

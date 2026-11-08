@@ -109,7 +109,9 @@ theorem peel_telescope (A : ℕ → Submodule K V) (D : ℕ) :
     finrank K (accum A D) + ∑ i ∈ Finset.range D, finrank K ↥(accum A i ⊓ A i)
       = ∑ i ∈ Finset.range D, finrank K (A i) := by
   induction D with
-  | zero => simp [accum]
+  | zero =>
+    simp only [Finset.range_zero, Finset.sum_empty, add_zero]
+    exact finrank_bot K V
   | succ D ih =>
     have hstep : finrank K ↥(accum A D ⊔ A D) + finrank K ↥(accum A D ⊓ A D)
         = finrank K (accum A D) + finrank K (A D) :=

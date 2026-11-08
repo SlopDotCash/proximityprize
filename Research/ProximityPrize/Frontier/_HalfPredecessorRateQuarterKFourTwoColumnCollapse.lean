@@ -87,9 +87,9 @@ theorem support_eq_contained_pair_of_nonzero_chord
       have hj : j.1 = key1 ∨ j.1 = key2 ∨ j.1 = x := by
         simpa only [S, Finset.mem_insert, Finset.mem_singleton] using j.2
       rcases hj with h | h | h
-      · simpa only [h] using hkey1
-      · simpa only [h] using hkey2
-      · simpa only [h] using hxPmem
+      · simpa only [h] using SetLike.mem_coe.mpr hkey1
+      · simpa only [h] using SetLike.mem_coe.mpr hkey2
+      · simpa only [h] using SetLike.mem_coe.mpr hxPmem
     have hmono := Submodule.finrank_mono hspanLe
     have hlower : 3 <= finrank F P := by
       rw [finrank_span_eq_card hSLI] at hmono
@@ -147,8 +147,9 @@ theorem support_eq_contained_pair_of_nonzero_chord
     have hsingle : finrank F (span F ({v left} : Set V)) <= 1 := by
       have hspan : finrank F (span F ({v left} : Set V)) <=
           ({v left} : Finset V).card := by
-        simpa using finrank_span_finset_le_card (R := F)
-          ({v left} : Finset V)
+        have h := finrank_span_finset_le_card (R := F) ({v left} : Finset V)
+        rw [Finset.coe_singleton] at h
+        exact h
       simpa only [Finset.card_singleton] using hspan
     have hUpper : finrank F W <= 3 := by
       calc
@@ -254,9 +255,8 @@ theorem regularMissedEdge_eq_of_two_contained_columns
     simp only [V, sourceComplement, Finset.card_sdiff,
       Finset.inter_univ, Finset.card_univ, hn, hcore]
   have hMDS4 : IndependentUpTo (F := F) col 4 := by
-    simpa only [col, C0, sourceComplementCode, domV] using
-      reedSolomon_eight_four_quotientColumns_independentUpTo_four
-        domV hVcard
+    exact reedSolomon_eight_four_quotientColumns_independentUpTo_four
+      domV hVcard
   have hpairs : ({rep.left, rep.right} : Finset ↑V) = {key1, key2} := by
     apply support_eq_contained_pair_of_nonzero_chord
       P col (rowPlane_finrank_le_two C0 v0 v1) hMDS4
