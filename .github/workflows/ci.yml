@@ -235,7 +235,7 @@ jobs:
         if: always() && (steps.library-build.outcome == 'success' || steps.library-build.outcome == 'failure')
         run: |
           bundle="$RUNNER_TEMP/arklib-lean-extensions"
-          jq -es '
+          jq -ces '
             if length != 3 or any(.[]; .label != "library_build") then
               error("Expected one library timing record from each build phase")
             else {
