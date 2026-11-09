@@ -24,7 +24,7 @@ PART D  The COSET FAMILY (Lean theorem `coset_family_refutes_F1`): n = 4d, three
 Exactness tool (SYZ53): a line word u0+z*u1 is s-close iff for some s-subset S the RS_k|S
 parity checks H_S (GRS dual, dim s-k) satisfy H_S(u0)+z*H_S(u1)=0 -- affine in z, so each S
 contributes at most one candidate z (or all of F when both vanish: common agreement set,
-mca-correlated, filtered per SYZ32).  For n<=20, all C(n,s) subsets are enumerated: the bad-z
+joint on that subset only). Nonjoint witnesses on other subsets still count.  For n<=20, all C(n,s) subsets are enumerated: the bad-z
 set of every stack is EXACT at any prime.
 """
 from __future__ import annotations
@@ -234,7 +234,7 @@ class ExactCloseness:
                 assert not np.any(matvec_mod(H[mi], v, p)), "GRS parity construction broken"
 
     def bad_z(self, u0: list[int], u1: list[int]):
-        """Return (bad_set, inf_close, mca)."""
+        """Return (nonjoint_bad_set, inf_close, any_joint_subset)."""
         p = self.p
         U0 = np.array(u0, dtype=np.int64) % p
         U1 = np.array(u1, dtype=np.int64) % p
@@ -320,8 +320,7 @@ def lift_test(alpha: list[int], k: int, s: int, p: int, cores: list[list[int]],
         raw = len(bad) + (1 if inf else 0)
         maxraw = max(maxraw, raw)
         if mca:
-            mcas += 1
-            continue
+            mcas += 1  # A different subset may still witness MCA badness.
         stacks += 1
         maxbad = max(maxbad, raw)
         dist[raw] = dist.get(raw, 0) + 1
@@ -453,7 +452,7 @@ def main() -> int:
     cores = cores_of(S_AB, S_AC, S_BC, T)
     assert all(len(C) == s for C in cores)
     resB = lift_test(pts, k, s, p, cores, eng20_41, seed=101, trials=int(os.environ.get("SW1_B_TRIALS", "800")))
-    print(f"    stacks(noncorr)={resB['stacks']} mca-filtered={resB['mca']}  max mca-bad={resB['maxbad']}  "
+    print(f"    stacks={resB['stacks']} joint-subset-stacks={resB['mca']}  max mca-bad={resB['maxbad']}  "
           f"max raw={resB['maxraw']}  dist(top)={sorted(resB['dist'].items())[-6:]}")
     print(f"    EXCESS vs ceiling 18: {resB['maxbad'] - 18:+d}   vs budget 19: {resB['maxbad'] - 19:+d}")
 
@@ -554,7 +553,7 @@ def main() -> int:
             rowsD.append((nn, q, gmax, ceiling, budget))
             print(f"      p={q:<11} (log2={np.log2(q):5.2f})  binomial syzygy exact: OK  "
                   f"max mca-bad={gmax:<3} raw={graw:<3} EXCESS vs ceiling={gmax - ceiling:+d} "
-                  f"vs budget={gmax - budget:+d}  stacks={gst} mca-filtered={gmca}  "
+                  f"vs budget={gmax - budget:+d}  stacks={gst} joint-subset-stacks={gmca}  "
                   f"tail={sorted(agg.items())[-5:]}  [{time.time() - tq:.0f}s]")
 
     # ------------------------------------------------------------------ summary
