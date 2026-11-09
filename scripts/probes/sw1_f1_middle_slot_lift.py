@@ -4,7 +4,7 @@ SW1-F1 -- lift test of the SYZ71 (6,6,6) linear-slot occupant AND of the p-unifo
 coset family that refutes `UniformSylvesterInjective` (Frontier/_SW1_F1_UniformSylvesterRefuted).
 
 Deterministic; prints PASS/FAIL and exits nonzero on FAIL.  Exact modular arithmetic only
-(Python ints; numpy int64 with an overflow-safe split product for p up to 2^31).
+(Python ints; numpy int64 below 2^31, Python-object arrays for larger fields).
 
 PART A  Replicate the SYZ71 F_41, mu_20 occupant of the first middle slot (6,6,6) at
         product-degree 7 (linear cofactors), verify it exactly, and note that it is itself an
@@ -191,6 +191,8 @@ def vanishing_eval(omega: int, support: list[int], p: int) -> int:
 def matvec_mod(H: np.ndarray, u: np.ndarray, p: int) -> np.ndarray:
     """(H @ u) mod p for H (..., m) int64 entries in [0,p), u (m,) in [0,p); overflow-safe for
     p < 2^31 and m <= 32 by splitting u into 15-bit halves."""
+    if H.dtype == object or u.dtype == object:
+        return (H @ u) % p
     if p < (1 << 24):
         return np.einsum("...j,j->...", H, u) % p
     lo = u & 0x7FFF
@@ -211,7 +213,9 @@ class ExactCloseness:
         self.subs = np.array(subs, dtype=np.int64)           # (m, s)
         m = len(subs)
         r = s - k
-        H = np.zeros((m, r, s), dtype=np.int64)
+        # Above this range, parity minors may overflow signed 64-bit arithmetic.
+        self.dtype = np.int64 if p < (1 << 31) else object
+        H = np.zeros((m, r, s), dtype=self.dtype)
         for mi, S in enumerate(subs):
             a = [alpha[j] for j in S]
             for j in range(s):
@@ -230,22 +234,26 @@ class ExactCloseness:
         for mi in (0, m // 2, m - 1):
             S = subs[mi]
             for e in range(k):
-                v = np.array([pow(alpha[j], e, p) for j in S], dtype=np.int64)
+                v = np.array([pow(alpha[j], e, p) for j in S], dtype=self.dtype)
                 assert not np.any(matvec_mod(H[mi], v, p)), "GRS parity construction broken"
 
     def bad_z(self, u0: list[int], u1: list[int]):
         """Return (nonjoint_bad_set, inf_close, any_joint_subset)."""
         p = self.p
-        U0 = np.array(u0, dtype=np.int64) % p
-        U1 = np.array(u1, dtype=np.int64) % p
+        U0 = np.array(u0, dtype=self.dtype) % p
+        U1 = np.array(u1, dtype=self.dtype) % p
         g0 = U0[self.subs]                                  # (m, s)
         g1 = U1[self.subs]
-        a0 = np.einsum("mrs,ms->mr", self.H, g0) % p if p < (1 << 24) else \
-            (np.einsum("mrs,ms->mr", self.H, (g0 >> 15)) % p * (1 << 15)
-             + np.einsum("mrs,ms->mr", self.H, (g0 & 0x7FFF)) % p) % p
-        a1 = np.einsum("mrs,ms->mr", self.H, g1) % p if p < (1 << 24) else \
-            (np.einsum("mrs,ms->mr", self.H, (g1 >> 15)) % p * (1 << 15)
-             + np.einsum("mrs,ms->mr", self.H, (g1 & 0x7FFF)) % p) % p
+        if self.dtype is object:
+            a0 = (self.H * g0[:, None, :]).sum(axis=2) % p
+            a1 = (self.H * g1[:, None, :]).sum(axis=2) % p
+        else:
+            a0 = np.einsum("mrs,ms->mr", self.H, g0) % p if p < (1 << 24) else \
+                (np.einsum("mrs,ms->mr", self.H, (g0 >> 15)) % p * (1 << 15)
+                 + np.einsum("mrs,ms->mr", self.H, (g0 & 0x7FFF)) % p) % p
+            a1 = np.einsum("mrs,ms->mr", self.H, g1) % p if p < (1 << 24) else \
+                (np.einsum("mrs,ms->mr", self.H, (g1 >> 15)) % p * (1 << 15)
+                 + np.einsum("mrs,ms->mr", self.H, (g1 & 0x7FFF)) % p) % p
         a1zero = ~np.any(a1, axis=1)
         a0zero = ~np.any(a0, axis=1)
         inf = bool(a1zero.any())
