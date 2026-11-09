@@ -55,11 +55,14 @@ theorem symbolicFullRank_of_rootedOutCut_and_dualZeroPattern {k : Nat}
   letI : DecidableEq ι := Classical.decEq ι
   letI : DecidableEq F := Classical.decEq F
   letI := Fintype.ofFinite F
-  intro t ht e hwpc v hker
-  exact symbolicFullRank_of_classical_imports (ι := ι) (F := F)
-    (frankOrientationResidual_of_rootedOutCutTheorem (ι := ι) hfrank)
-    (gmmDsResidual_of_dualZeroPatternTheorem (ι := ι) (F := F) hgm)
-    ht e hwpc v hker
+  apply symbolicFullRank_of_pinning (ι := ι) (F := F) (k := k)
+  intro t ht e hne hwpc
+  obtain ⟨O, r, hroot, hcross⟩ :=
+    frankOrientationResidual_of_rootedOutCutTheorem hfrank ht e hne hwpc
+  have hgzp := gzp_of_orientation O r k hne hroot hcross
+  obtain ⟨φ, d, h, hsupp, hspan⟩ :=
+    gmmDsResidual_of_dualZeroPatternTheorem (F := F) hgm e _ hgzp
+  exact ⟨φ, pinning_of_dual_span φ e h hsupp hspan⟩
 
 /-- The issue #354 RIM probability surface from the same boundaries. The probability estimate
 itself is `rimFailureProb_of_symbolic`. Valid conditional; vacuous for `k < card ι` since `hgm`

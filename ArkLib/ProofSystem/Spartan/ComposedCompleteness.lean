@@ -739,18 +739,11 @@ obligations are taken as named hypotheses, with the intermediate relations pinne
 concrete in-tree chain (`firstMessageRelOut` → `firstSumcheckRelInBF` →
 `firstSumcheckRelOutBF` → … → `secondSumcheckRelInBF` → `secondSumcheckRelOutBF`):
 
-* `h₂` — `firstChallenge` (supplied downstream by `completedFirstChallenge_perfectCompleteness`
-  from `FirstChallengeComplete.lean`, re-pointed in `ComposedCompletenessFinal.lean` as
-  `completedFirstChallenge_perfectCompleteness_consumer`; the module was once recorded here as
-  build-broken, which is historical);
-* `h₄`/`h₅` — `sendEvalClaim` / `linearCombination` (pure forwarding phases; supplied
-  downstream by the parametric leaf theorems used in `ComposedCompletenessFinal.lean`);
-* `h₆` — `prependRLCTarget` into `secondSumcheckRelInBF`: the honest-target obligation.
-  `secondSumcheckRelInBF` pins the target to the honest linear-combination value; the current
-  adapter (`Composition.lean`) emits exactly that weighted claim sum (an earlier
-  existence-only adapter emitted target `0`), and the obligation is discharged downstream by
-  `prependRLCTarget_perfectCompleteness_secondSumcheckRelInBF` along the honesty-carrying
-  relation chain;
+* `h₂` — first-challenge completeness at the bridge-free first-sumcheck input relation,
+  supplied by `completedFirstChallenge_perfectCompleteness_consumer`;
+* `h₄`/`h₅` — evaluation-claim and linear-combination completeness at their seam relations;
+* `h₆` — completeness of the honest weighted-claim adapter into `secondSumcheckRelInBF`,
+  supplied by `prependRLCTarget_perfectCompleteness_secondSumcheckRelInBF`;
 * `h₈` — `finalCheck` (`CheckClaim` completeness into `finalCheckRelOut`).
 
 All five are discharged together in

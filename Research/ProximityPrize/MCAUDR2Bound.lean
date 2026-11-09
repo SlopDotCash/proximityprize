@@ -7,23 +7,16 @@ import Research.ProximityPrize.MCAUDRBound
 import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.JointAgreement
 
 /-!
-# List-cover MCA bounds for linear codes (beyond the unique-decoding radius)
+# List-cover MCA bounds for linear codes
 
-The full unique-decoding-radius Reed–Solomon bound `ε_mca(RS, δ) ≤ n/q` for `δ ≤ relUDR`
-(regime `2(n − t) < n − k + 1`, `t = ⌈(1-δ)n⌉`) is `UDRwire.epsMCA_rs_udr_le_full` in
-`Research.ProximityPrize.MCAUDRBound`, with bad-count core
-`UDRwire.badCount_udr_le_jointAgreement`. (This file previously carried verbatim copies of both,
-`UDR2.badCount_udr2_le` / `UDR2.epsMCA_rs_udr2_le`, under a header that wrongly claimed the
-in-tree bound only reached the factor-3 regime; they were removed and their consumers retargeted.)
+`MCAUDRBound` proves `ε_mca(RS, δ) ≤ n/q` for `δ ≤ relUDR` in the regime
+`2(n − t) < n − k + 1`, where `t = ⌈(1−δ)n⌉`. The historical names
+`badCount_udr2_le` and `epsMCA_rs_udr2_le` expose that argument with their original hypotheses.
 
-This file keeps the genuinely new multi-curve generalisation: if every bad witness lies on one of
-`L` codeword curves `v₀ j + γ • v₁ j` (a structural list cover), the bad count is `≤ L·(n − t)`,
-with no minimum-distance hypothesis.
-
-## Main results
-
-* `badCount_listcover_le` — the `L`-curve bad-count core.
-* `epsMCA_le_of_listCover` — `ε_mca(C, δ) ≤ L·(n − t)/q`, conditional on an explicit list cover.
+The multi-curve result is conditional on a structural list cover. If every bad witness lies on
+one of `L` fixed codeword curves `v₀ j + γ • v₁ j`, with `v₁ j` agreeing with the received line's
+direction on at least `t` coordinates, then the bad-scalar count is at most `L · (n − t)`. This
+argument does not require a minimum-distance hypothesis.
 
 ## References
 
@@ -42,16 +35,41 @@ namespace ProximityGap.UDR2
 set_option linter.unusedSectionVars false
 set_option linter.unusedFintypeInType false
 set_option linter.unusedDecidableInType false
+set_option linter.unusedVariables false
 
 variable {ι : Type} [Fintype ι] [DecidableEq ι] [Nonempty ι]
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 
-/-- **Multi-curve bad-count bound (Johnson/capacity-reaching, given the GS list cover).** Given `L`
-codeword-pairs `(v₀ j, v₁ j)` each agreeing with `(u₀,u₁)` per-coordinate on a set `S₀ j` of size
-`≥ t`, such that every bad witness `w_γ` lies on *one* of the `L` curves (`w_γ = v₀ j + γ•v₁ j`),
-the MCA bad-scalar count is `≤ L·(n-t)`.  No minimum-distance hypothesis: the witness-to-curve
-assignment is supplied by the list cover (the GS list-decoding output), so this reaches any radius
-where such a cover exists (Johnson, capacity). Each curve contributes `≤ |supp e₁ j| ≤ n-t` roots. -/
+/-- Full-UDR bad-count bound for a supplied global codeword pair, under the historical
+`UDR2` name. -/
+theorem badCount_udr2_le (C : Submodule F (ι → F)) (u₀ u₁ : ι → F) (d t : ℕ)
+    (hmd : ∀ a ∈ C, ∀ b ∈ C, (univ.filter (fun i => a i ≠ b i)).card < d → a = b)
+    (hreg : 2 * (Fintype.card ι - t) < d)
+    (v₀ v₁ : ι → F) (hv₀ : v₀ ∈ C) (hv₁ : v₁ ∈ C)
+    (S₀ : Finset ι) (hS₀ : t ≤ S₀.card)
+    (hv₀S : ∀ i ∈ S₀, v₀ i = u₀ i) (hv₁S : ∀ i ∈ S₀, v₁ i = u₁ i)
+    (G : Finset F) (S : F → Finset ι) (w : F → ι → F)
+    (hSt : ∀ γ ∈ G, t ≤ (S γ).card)
+    (hwC : ∀ γ ∈ G, w γ ∈ C)
+    (hwS : ∀ γ ∈ G, ∀ i ∈ S γ, w γ i = u₀ i + γ • u₁ i)
+    (hno : ∀ γ ∈ G, ¬ pairJointAgreesOn (C : Set (ι → F)) (S γ) u₀ u₁) :
+    G.card ≤ Fintype.card ι - t :=
+  UDRwire.badCount_udr_le_jointAgreement C u₀ u₁ d t hmd hreg
+    v₀ v₁ hv₀ hv₁ S₀ hS₀ hv₀S hv₁S G S w hSt hwC hwS hno
+
+open Classical in
+/-- Full-UDR Reed–Solomon MCA bound with the historical witness-size premise. -/
+theorem epsMCA_rs_udr2_le (α : ι ↪ F) (k : ℕ) [NeZero k] (hk : k ≤ Fintype.card ι) (δ : ℝ≥0)
+    (hδ_udr : δ ≤ Code.relativeUniqueDecodingRadius (ReedSolomon.code α k : Set (ι → F)))
+    (htn : ⌈(1 - δ) * (Fintype.card ι : ℝ≥0)⌉₊ < Fintype.card ι)
+    (hreg : 2 * (Fintype.card ι - ⌈(1 - δ) * (Fintype.card ι : ℝ≥0)⌉₊) < Fintype.card ι - k + 1) :
+    epsMCA (F := F) (A := F) (ReedSolomon.code α k : Set (ι → F)) δ
+      ≤ (Fintype.card ι : ℕ) / (Fintype.card F : ℝ≥0∞) :=
+  UDRwire.epsMCA_rs_udr_le_full α k hk δ hδ_udr hreg
+
+/-- Given a cover of every bad witness by one of `L` affine codeword curves, the number of
+bad scalars is at most `L · (n − t)`. Each curve direction agrees with `u₁` on at least `t`
+coordinates, which bounds the number of possible roots contributed by that curve. -/
 theorem badCount_listcover_le (C : Submodule F (ι → F)) (u₀ u₁ : ι → F) (t L : ℕ)
     (v₀ v₁ : Fin L → ι → F)
     (hv₀ : ∀ j, v₀ j ∈ C) (hv₁ : ∀ j, v₁ j ∈ C)
@@ -104,11 +122,11 @@ received line `(u 0, u 1)` there are `L` codeword-pairs `(v₀ j, v₁ j)` with 
 `S₀ j` of size `≥ t`, such that *every* codeword agreeing with the line on a set of size `≥ (1-δ)n`
 lies on one of the `L` curves, then `ε_mca(C, δ) ≤ L·(n-t)/q`.
 
-No minimum-distance / unique-decoding hypothesis: the cover is the GS list-decoding output, so this
-reaches any radius where the list cover exists (Johnson, capacity).  The cover is a structural
-hypothesis (every close codeword at every `γ` lies on one of `L` fixed curves); it is *not* the
-counting inequality `RSCurveListSizeResidual` (`|G.image cw| · (k·n) < |G|` along a good curve),
-and no bridge from that residual to this cover is proved in-tree. -/
+The bound applies at any radius where the stated cover is available. The separate
+`RSCurveListSizeResidual` bounds `(G.image cw).card * (k * |ι|)` by `|G|` with a strict
+inequality for a chosen codeword family along a good curve. The structural cover here
+requires a family of fixed affine curves that contains every close codeword. This theorem
+takes that cover as a hypothesis. -/
 theorem epsMCA_le_of_listCover (C : Submodule F (ι → F)) (δ : ℝ≥0) (t L : ℕ)
     (hcover : ∀ u : Code.WordStack F (Fin 2) ι,
       ∃ (v₀ v₁ : Fin L → ι → F) (S₀ : Fin L → Finset ι),

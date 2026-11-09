@@ -234,23 +234,26 @@ def findABase {L : ℕ} (U : Finset (Fin L)) (n : ℕ) : Finset (Fin L) :=
 
 /-- The `findA` candidates: the base `findABase U n` extended by one further element of `U`. -/
 def findACandidates {L : ℕ} (U : Finset (Fin L)) (n : ℕ) : List (Finset (Fin L)) :=
-  ((U.sort (· ≤ ·)).filter fun i => decide (i ∉ findABase U n)).map
-    fun i => insert i (findABase U n)
+  let base := findABase U n
+  ((U.sort (· ≤ ·)).filter fun i => decide (i ∉ base)).map fun i => insert i base
 
 /-- Step 4a (from the paper reduction):
     find a subset whose interpolation polynomial has degree `n`.
 
-The search fixes the first `n` elements `T` of `U` and only tries the `|U| - n` one-point
-extensions `insert i T`; if all of them interpolate with degree `< n`, the degree-`< n`
-interpolant on `T` fits all of `U` (`find_a_successful`). This replaces enumerating all
-`(n + 1)`-element subsets of `U`: at most `U.card` interpolations are performed
-(`findACandidates_length_le`). -/
+For distinct query points, the search fixes the first `n` elements `T` of `U` and tries only
+the one-point extensions `insert i T`. If all of them interpolate with degree `< n`, the
+interpolant on `T` fits all of `U` (`find_a_successful`). This path performs at most `U.card`
+interpolations (`findACandidates_length_le`). Repeated query points retain the original
+enumeration of all `(n + 1)`-element subsets. -/
 def findA {L : ℕ} (U : Finset (Fin L)) (n : ℕ)
     (query : Fin L → ZMod p) (response : Fin L → ZMod p) :
     Option (Finset (Fin L)) :=
-  (findACandidates U n).find? fun s => (CLagrange.interpolate s query response).degree = n
+  let candidates :=
+    if (U.image query).card = U.card then findACandidates U n
+    else ((U.sort (· ≤ ·)).sublistsLen (n + 1)).map List.toFinset
+  candidates.find? fun s => (CLagrange.interpolate s query response).degree = n
 
-/-- Cost statement for `findA`: it interpolates at most `U.card` candidate sets. -/
+/-- The distinct-query branch of `findA` tries at most `U.card` interpolations. -/
 lemma findACandidates_length_le {L : ℕ} (U : Finset (Fin L)) (n : ℕ) :
     (findACandidates U n).length ≤ U.card := by
   unfold findACandidates
@@ -303,8 +306,15 @@ lemma find_a_subset {L : ℕ} (U A : Finset (Fin L)) (n : ℕ)
     (hres : some A = findA U n query response) :
     A ⊆ U := by
   unfold findA at hres
-  obtain ⟨i, hiU, -, rfl⟩ := mem_findACandidates.mp (List.mem_of_find?_eq_some hres.symm)
-  exact Finset.insert_subset hiU (findABase_subset U n)
+  dsimp only at hres
+  split at hres
+  · obtain ⟨i, hiU, -, rfl⟩ := mem_findACandidates.mp (List.mem_of_find?_eq_some hres.symm)
+    exact Finset.insert_subset hiU (findABase_subset U n)
+  · obtain ⟨l, hl_mem, rfl⟩ := List.mem_map.mp (List.mem_of_find?_eq_some hres.symm)
+    have hl_sub := (List.mem_sublistsLen.mp hl_mem).1
+    intro x hx
+    have hx_l : x ∈ l := by simpa using hx
+    simpa using hl_sub.subset hx_l
 
 /-- A successful `findA` result has cardinality `n + 1`. -/
 lemma find_a_card {L : ℕ} (U A : Finset (Fin L)) (n : ℕ)
@@ -312,8 +322,13 @@ lemma find_a_card {L : ℕ} (U A : Finset (Fin L)) (n : ℕ)
     (hres : some A = findA U n query response) :
     A.card = n + 1 := by
   unfold findA at hres
-  obtain ⟨i, hiU, hiT, rfl⟩ := mem_findACandidates.mp (List.mem_of_find?_eq_some hres.symm)
-  rw [Finset.card_insert_of_notMem hiT, findABase_card hiU hiT]
+  dsimp only at hres
+  split at hres
+  · obtain ⟨i, hiU, hiT, rfl⟩ := mem_findACandidates.mp (List.mem_of_find?_eq_some hres.symm)
+    rw [Finset.card_insert_of_notMem hiT, findABase_card hiU hiT]
+  · obtain ⟨l, hl_mem, rfl⟩ := List.mem_map.mp (List.mem_of_find?_eq_some hres.symm)
+    obtain ⟨hl_sub, hl_len⟩ := List.mem_sublistsLen.mp hl_mem
+    rw [List.toFinset_card_of_nodup ((U.sort_nodup (· ≤ ·)).sublist hl_sub), hl_len]
 
 /-- A successful `findA` result has interpolation degree exactly `n`. -/
 lemma find_a_deg {L : ℕ} (U A : Finset (Fin L)) (n : ℕ)
@@ -366,7 +381,7 @@ lemma find_a_successful {L : ℕ} (U : Finset (Fin L)) (n : ℕ)
     match hc : findA U n query response with
     | none => rfl
     | some _ => simp [hc] at h_not
-  unfold findA at h_none
+  simp only [findA, ite_eq_left (Finset.card_image_of_injOn hqueryU)] at h_none
   rw [List.find?_eq_none] at h_none
   simp only [decide_eq_true_eq] at h_none
   -- Derive n < U.card from hinterp and degree_interpolate_lt
@@ -382,7 +397,7 @@ lemma find_a_successful {L : ℕ} (U : Finset (Fin L)) (n : ℕ)
   -- Use the `findA` base `T`, of size `n`.
   set T := findABase U n with hT_def
   have hTU : T ⊆ U := findABase_subset U n
-  have hTcard : T.card = n := findABase_card_of_le hScard_gt.le
+  have hTcard : T.card = n := findABase_card_of_le (by omega)
   have h_deg_lt : ∀ i ∈ U, i ∉ T →
       (CLagrange.interpolate (insert i T) query response).degree < ↑n := by
     intro i hiU hiT

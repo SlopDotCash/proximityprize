@@ -6,7 +6,6 @@ Checked-in source owns later API ports. Generate separate review candidates with
 scripts/integration/extract_downstream_extensions.py --output-dir <directory>.
 -/
 import ArkLib.OracleReduction.VectorIOR
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 
 /-
 Copyright (c) 2024-2025 ArkLib Contributors. All rights reserved.
@@ -15,6 +14,7 @@ Authors: Quang Dao
 -/
 
 import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
+import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 
 /-!
 # Vector Interactive Oracle Reductions
@@ -66,19 +66,20 @@ namespace VectorIOP
 variable {Statement Witness : Type} {ιₛ : Type} {OStatement : ιₛ → Type}
   [∀ i, OracleInterface (OStatement i)]
 
--- `VectorIOP.IsSecure` (gap-free completeness + rbr knowledge soundness bundle) was deleted in
--- the 2026-06-10 proof-debt audit: zero instances and zero consumers anywhere in the tree.
-
-/-- Perfect completeness and prover-averaged round-by-round knowledge soundness for a
-vector IOP of proximity. This is the historical `VectorIOP.IsSecureWithGap` contract. -/
+/-- Perfect completeness paired with the historical prover-averaged RBR knowledge bound. -/
 class IsSecureWithGapAveraged
     (completeRelation soundRelation : Set ((Statement × ∀ i, OStatement i) × Witness))
     (ε_rbr : vPSpec.ChallengeIdx → ℝ≥0)
-    (vectorIOP : VectorIOP Statement OStatement Witness vPSpec A) where
-  /-- Perfect completeness for the completeness relation. -/
+    (vectorIOP : VectorIOP Statement OStatement Witness vPSpec A) : Prop where
+  /-- Perfect completeness for `completeRelation`. -/
   is_complete : vectorIOP.perfectCompleteness (pure ()) isEmptyElim completeRelation
-  /-- Prover-averaged round-by-round knowledge soundness for the soundness relation. -/
+  /-- Prover-averaged knowledge soundness for `soundRelation`. -/
   is_rbr_knowledge_sound : OracleProof.rbrKnowledgeSoundnessAveraged
     (pure ()) isEmptyElim soundRelation vectorIOP.toOracleVerifier ε_rbr
+
+-- `VectorIOP.IsSecure` (gap-free completeness + rbr knowledge soundness bundle) was deleted in
+-- the 2026-06-10 proof-debt audit: zero instances and zero consumers anywhere in the tree.
+-- The live interface is `IsSecureWithGap` below (specialize `completeRelation = soundRelation`
+-- to recover the gap-free notion).
 
 end VectorIOP

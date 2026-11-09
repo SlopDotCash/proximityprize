@@ -105,7 +105,8 @@ theorem M_eq_zero_of_paramsSum_eq_one (P : Params ιs F)
 /-- **The bridge at its honest gate**: `whir_rbr_soundness_of_checkedVectorIOP_rbr` with the
 challenge-cardinality pin replaced by its exact characterization `∑ foldingParam = 1` (the
 unit-fold instance — see `whirPaper_challengeCard_eq_iff`). Hypotheses are verbatim those of the
-bridge; only the structural gate is restated in its true form. The remaining gate is `hSound`.
+bridge; only the structural gate is restated in its true form. The remaining gate is the supplied
+prover-averaged bound `hSound`.
 It is not open mathematics for the checked verifier as it stands: that verifier never queries
 the input oracle (`whirCheckingBool_allZero`), so, as recorded in `CheckedObliviousness.lean`,
 `hSound` cannot hold when a δ-far input exists and the per-challenge budgets sum to less than one.
@@ -157,11 +158,7 @@ theorem whir_rbr_soundness_of_checkedVectorIOP_rbr_unitFold
     (hSound : OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim
       (whirRelation m_0 (P.φ 0) (h.δ 0))
       (paperTranscriptOracleVerifier P d' (whirVerifyChecked P d'))
-      (fun _ =>
-        (Finset.univ.image
-            (fun i => (Finset.univ : Finset (Fin (P.foldingParam i))).sup (ε_fold i))
-          ∪ {ε_fin} ∪ Finset.univ.image ε_out ∪ Finset.univ.image ε_shift).max'
-          (by simp))) :
+      (fun _ => whirRbrBudgetValue P ε_fold ε_out ε_shift ε_fin)) :
     whir_rbr_soundness (F := F) (M := M) ιs (d := d) (dstar := dstar)
       (P := P) (S := S) (hParams := hParams) (h := h)
       hm_0 (σ₀ := σ₀) (wPoly₀ := wPoly₀) (δ := δ)

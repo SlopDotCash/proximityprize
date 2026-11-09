@@ -1571,8 +1571,8 @@ theorem whirRbrBudgetValue_isLUB {M : ℕ} {ιs : Fin (M + 1) → Type}
   Issue113WHIR.epsRbr_isLUB (fp := P.foldingParam) ε_fold ε_out ε_shift ε_fin
 
 omit [Fintype ι] [Nonempty ι] in
-/-- The named WHIR RBR budget in `IsSecureWithGapAveraged` equals the inline `ε_rbr` expression
-from `whir_rbr_soundness` by definition. -/
+/-- Using the named WHIR RBR budget in `IsSecureWithGapAveraged` is definitionally the same as using the
+inline `ε_rbr` expression from `whir_rbr_soundness`. -/
 theorem whirSecureWithGap_namedBudget_iff_inline {M : ℕ}
     {ιs : Fin (M + 1) → Type} [∀ i : Fin (M + 1), Fintype (ιs i)]
     {P : Params ιs F} {m_0 : ℕ} [Smooth (P.φ 0)] [Nonempty (ιs 0)]
@@ -1627,8 +1627,8 @@ instance (M : ℕ) :
 
 The WHIR soundness statement `whir_rbr_soundness` in `RBRSoundness.lean` is a `Prop` about an
 explicitly supplied `VectorIOP` `π`: a `2 * M + 2` challenge-count pin together with
-`IsSecureWithGapAveraged` at a per-round budget that dominates the Theorem 5.2 bounds.  The
-theorems below only package a supplied pin and a supplied `IsSecureWithGapAveraged` proof into that statement.
+`IsSecureWithGapAveraged` at a per-round budget that dominates the Theorem 5.2 bounds.  The theorems below
+only package a supplied pin and a supplied `IsSecureWithGapAveraged` proof into that statement.
 
 They do **not** construct a protocol, and they do not make the statement certify WHIR: that needs
 `π` to implement Construction 5.1, which no protocol in ArkLib does yet. -/
@@ -1689,14 +1689,9 @@ theorem whir_rbr_soundness_of_secure_gap
     {n : ℕ} {vPSpec : ProtocolSpec.VectorSpec n}
     (hChallengeCard : Fintype.card (vPSpec.ChallengeIdx) = 2 * M + 2)
     (π : VectorIOP Unit (OracleStatement (ιs 0) F) Unit vPSpec F)
-    (hSecure :
-      let max_ε_folds : (i : Fin (M + 1)) → ℝ≥0 :=
-        fun i => (Finset.univ : Finset (Fin (P.foldingParam i))).sup (ε_fold i)
-      let ε_rbr : vPSpec.ChallengeIdx → ℝ≥0 :=
-        fun _ => (Finset.univ.image max_ε_folds ∪ {ε_fin} ∪ Finset.univ.image ε_out ∪
-          Finset.univ.image ε_shift).max' (by simp)
-      VectorIOP.IsSecureWithGapAveraged (whirRelation m_0 (P.φ 0) 0)
-        (whirRelation m_0 (P.φ 0) (h.δ 0)) ε_rbr π) :
+    (hSecure : VectorIOP.IsSecureWithGapAveraged (whirRelation m_0 (P.φ 0) 0)
+      (whirRelation m_0 (P.φ 0) (h.δ 0))
+      (fun _ => whirRbrBudgetValue P ε_fold ε_out ε_shift ε_fin) π) :
     whir_rbr_soundness (F := F) (M := M) ιs (d := d) (dstar := dstar)
       (P := P) (S := S) (hParams := hParams) (h := h)
       hm_0 (σ₀ := σ₀) (wPoly₀ := wPoly₀) (δ := δ)
@@ -1754,14 +1749,9 @@ theorem whir_rbr_soundness_of_whirVectorSpec_secure_gap
     (h_fin :
         (1 - h.δ (Fin.last M))^(P.repeatParam (Fin.last M)) ≤ ε_fin)
     (π : VectorIOP Unit (OracleStatement (ιs 0) F) Unit (whirVectorSpec M) F)
-    (hSecure :
-      let max_ε_folds : (i : Fin (M + 1)) → ℝ≥0 :=
-        fun i => (Finset.univ : Finset (Fin (P.foldingParam i))).sup (ε_fold i)
-      let ε_rbr : (whirVectorSpec M).ChallengeIdx → ℝ≥0 :=
-        fun _ => (Finset.univ.image max_ε_folds ∪ {ε_fin} ∪ Finset.univ.image ε_out ∪
-          Finset.univ.image ε_shift).max' (by simp)
-      VectorIOP.IsSecureWithGapAveraged (whirRelation m_0 (P.φ 0) 0)
-        (whirRelation m_0 (P.φ 0) (h.δ 0)) ε_rbr π) :
+    (hSecure : VectorIOP.IsSecureWithGapAveraged (whirRelation m_0 (P.φ 0) 0)
+      (whirRelation m_0 (P.φ 0) (h.δ 0))
+      (fun _ => whirRbrBudgetValue P ε_fold ε_out ε_shift ε_fin) π) :
     whir_rbr_soundness (F := F) (M := M) ιs (d := d) (dstar := dstar)
       (P := P) (S := S) (hParams := hParams) (h := h)
       hm_0 (σ₀ := σ₀) (wPoly₀ := wPoly₀) (δ := δ)

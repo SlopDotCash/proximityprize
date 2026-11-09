@@ -9,6 +9,7 @@ import ArkLib.ProofSystem.Stir.SubUnitRbr
 import ArkLib.ProofSystem.Stir.SwitchAttack
 import ArkLib.Data.Probability.ProductMarginal
 import ProximityPrize.Extensions.ProofSystem.Component.SendWitness
+import ProximityPrize.Extensions.OracleReduction.VectorIOR
 
 set_option linter.style.longFile 0
 set_option linter.unusedSimpArgs false
@@ -52,11 +53,12 @@ Contents (all mirroring `Stir/SubUnitRbr.lean`, the landed `t = 1` template):
    `stirFlipRep_le_out ≤ ((|F|−1)/|F|)^t`.
 4. **The discharge**: `stirEpsStarRep` (the `(·)^t` budget),
    `stirCheckingRepRbrSoundness_genuine` (T1-rep, outright — no CA residuals, no vacuity),
-   `stirCheckingIOPRep_isSecureWithGap_genuine` (hypothesis-free), and
-   `stir_main_of_checkingIOP_rep` (Theorem 5.1 with the rep witness; the `hε` leg is
-   satisfiable for every `secpar` by choosing `t` — `stirEpsStarRep_le_pow_max` gives the
-   uniform `((|F|−1)/|F|)^t` domination; the analytic choice of `t(secpar)` is the
-   caller's).
+   `stirCheckingIOPRep_isSecureWithGap_genuine` (perfect completeness and the proved
+   averaged bound), `stir_main_of_checkingIOP_rep` (the historical averaged statement),
+   and `stir_main_of_checkingIOP_repFixedPrefix` (given fixed-prefix soundness).
+   The `hε` leg is satisfiable for every `secpar` by
+   choosing `t`, using the uniform bound `((|F|−1)/|F|)^t` from
+   `stirEpsStarRep_le_pow_max`.
 
 HONESTY: the out-challenge base `(|F|−1)/|F|` reflects the worst-case one-point pair
 deviation of the degenerate identity-fold model; achieving small budgets thus needs
@@ -1493,8 +1495,8 @@ theorem stirCheckingRepRbrSoundness_genuine :
           rw [stirEpsStarRep, if_neg h2, if_neg hmod2]
           simp)
 
-/-- **`IsSecureWithGapAveraged` for the t-repetition checking IOPP, hypothesis-free**: perfect
-completeness (the core) + the genuine `(·)^t` rbr soundness (T1-rep). -/
+/-- Perfect completeness and the proved averaged `(·)^t` soundness bound for the
+t-repetition checking IOPP. -/
 theorem stirCheckingIOPRep_isSecureWithGap_genuine :
     IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ)
       (stirEpsStarRep (F := F) (ι := ι) M δ t) (stirCheckingIOPRep M φ deg t) where
@@ -1520,10 +1522,35 @@ theorem stirEpsStarRep_le_pow_max (i : ((stirMultiVSpecRep M ι t).toProtocolSpe
     · rw [if_neg hm]
       exact zero_le
 
-/-- **Theorem 5.1 through the t-repetition checking IOPP** (#335 A1): `stir_main` with the
-soundness leg PROVEN at the `(·)^t` budget; the `hε` leg is satisfiable for every `secpar`
-by choosing `t` large enough (the bases are `< 1`), and the remaining legs are the
-statement's own free parameters. -/
+/-- **Theorem 5.1 through the t-repetition checking IOPP** (#335 A1), given
+fixed-prefix soundness at the `(·)^t` budget. The `hε` leg is satisfiable for every
+`secpar` by choosing `t` large enough since the bases are `< 1`. -/
+theorem stir_main_of_checkingIOP_repFixedPrefix
+    {M : ℕ} (secpar : ℕ) (t : ℕ)
+    {φ : ι ↪ F} {degree : ℕ} [hsmooth : Smooth φ]
+    {k proofLen qNumtoInput qNumtoProofstr : ℕ}
+    (hk : ∃ p, k = 2 ^ p) (hkGe : k ≥ 4)
+    (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
+    (hF : FieldSizeCondition secpar φ degree)
+    (hSound : OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
+      (stirRelation degree φ δ) (stirCheckingIOPRep M φ degree t).toOracleVerifier
+      (stirEpsStarRep (F := F) (ι := ι) M δ t))
+    (hε : ∀ i, stirEpsStarRep (F := F) (ι := ι) M δ t i ≤ (1 : ℚ≥0) / (2 ^ secpar))
+    (hM : ∃ c > 0, M ≤ c * (Real.log degree / Real.log k))
+    (hLen : ∃ cₖ : ℕ → ℝ, proofLen ≤ (Fintype.card ι) + (cₖ k) * (Real.log degree))
+    (hQin : (qNumtoInput : ℝ) ≥ secpar / (-Real.log (1 - δ)))
+    (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
+      (cₖ k) * ((Real.log degree) +
+        secpar * (Real.log ((Real.log degree) /
+          Real.log (1 / LinearCode.rate (code φ degree)))))) :
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+      (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
+  ⟨3 * M + 3, stirMultiVSpecRep M ι t, stirEpsStarRep (F := F) (ι := ι) M δ t,
+    stirCheckingIOPRep M φ degree t,
+    ⟨stirCheckingIOPRep_perfectCompleteness M φ degree t, hSound⟩,
+    hε, hM, hLen, hQin, hQpf⟩
+
+/-- The repetition witness for the historical prover-averaged STIR statement. -/
 theorem stir_main_of_checkingIOP_rep
     {M : ℕ} (secpar : ℕ) (t : ℕ)
     {φ : ι ↪ F} {degree : ℕ} [hsmooth : Smooth φ]
@@ -1579,3 +1606,4 @@ end StirIOP
 #print axioms StirIOP.MultiRound.stirCheckingIOPRep_isSecureWithGap_genuine
 #print axioms StirIOP.MultiRound.stirEpsStarRep_le_pow_max
 #print axioms StirIOP.MultiRound.stir_main_of_checkingIOP_rep
+#print axioms StirIOP.MultiRound.stir_main_of_checkingIOP_repFixedPrefix

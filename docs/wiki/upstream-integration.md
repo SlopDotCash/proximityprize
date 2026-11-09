@@ -59,8 +59,14 @@ proofs of the distinct prover-averaged games use the explicit `Averaged` contrac
 compatibility modules. The [security migration](../../scripts/integration/nov07-rbr-migration.json)
 records the original contracts and caller changes. The canonical fixed-prefix results can feed
 the historical averaged results through the proved implications in that layer.
-The downstream WHIR and STIR witnesses package the averaged game in `VectorIOP.IsSecureWithGapAveraged`.
-Canonical clients use the fixed-prefix `VectorIOP.IsSecureWithGap`.
+The downstream `VectorIOP.IsSecureWithGapAveraged` package pairs completeness with an averaged
+bound. `StirIOP.stir_main` and `StirIOP.stir_rbr_soundness` keep the historical averaged game.
+Their `FixedPrefix` siblings share the corrected field-size and error formulas, including the
+final error bound when there are no transitions. STIR's proved averaged witnesses remain
+available, and the fixed-prefix assembly takes evidence for that game at the same budget.
+WHIR's `whir_rbr_soundness` keeps the historical averaged game, as do its placeholder and
+small-field packages. `whir_rbr_soundness_fixedPrefix` uses the same corrected error budget and
+challenge count. Its checked-verifier front door takes a fixed-prefix bound.
 
 The full oracle sum-check completeness theorem now belongs to `Sumcheck.Spec.General`.
 Existing downstream calls with initialization and support arguments delegate to it. The
@@ -158,7 +164,30 @@ equal evaluation vectors and therefore equal folded values. The original UDR-clo
 from the stronger arbitrary-function result; global disagreement alone is insufficient
 ([proof audit](../../scripts/integration/binius-fold-locality-migration.json)).
 
+The [GKR circuit model](../../ProximityPrize/Extensions/ProofSystem/GKR/Circuit.lean) and
+[polynomial line restriction](../../ProximityPrize/Extensions/Data/MvPolynomial/LineRestriction.lean)
+preserve the foundations imported in [PR #216](https://github.com/SlopDotCash/proximityprize/pull/216)
+from the upstream GKR development. The degree bounds reuse the integrated polynomial APIs.
+These modules cover layered evaluation, ordered wiring predicates, and the restriction of a
+multilinear polynomial to a univariate line.
+
 ## Compatibility APIs
+
+The downstream [randomized state restoration](../../ProximityPrize/Extensions/Interaction/Oracle/Security/StateRestorationRandomized.lean)
+and [native Sumcheck soundness](../../ProximityPrize/Extensions/ProofSystem/Sumcheck/Interaction/StateRestorationSoundness.lean)
+modules port the corresponding sources from [PR #216 at `e36fe8a90`](https://github.com/SlopDotCash/proximityprize/tree/e36fe8a90889ddbc1eea94b76370911b0195c92c).
+The restoration proofs use VCVio's logged random-oracle execution to account for interleaved
+private sampling and fresh queries. The Sumcheck client uses a Unit witness to certify ordinary
+soundness for the native verifier, with both expected and bounded query formulations.
+
+The historical [verifier context-lifting bound](../../ProximityPrize/Extensions/OracleReduction/LiftContext/Reduction.lean)
+applies to every input under explicit output preservation for all compatible statements.
+`Verifier.liftContext_probEvent_le_of_not_mem` uses the canonical lens law for invalid inputs.
+
+The [historical STIR specifications](../../ArkLib/ProofSystem/Stir/PaperStatements.lean)
+from the same PR retain the strict soundness relation, uniform constants, and a protocol chosen
+before the distance and list-size bounds. These proposition definitions carry no verifier-query
+count or proof of the paper's concrete protocol.
 
 | Development | Canonical API | Retained downstream surface |
 | --- | --- | --- |
@@ -169,6 +198,7 @@ from the stronger arbitrary-function result; global disagreement alone is insuff
 | Failing discrete coupling | Canonical measure TV through the checked PMF bridge | `ProximityPrize.Compatibility.CompletedPMFCoupling` keeps explicit `PMF (Option α)` completions, infinite countable supports, and equal `none` mass; the SPMF-specific path is an import shim |
 | Reachability and probability | Native measure semantics separates these concepts | `ProximityPrize.Compatibility.DiscreteProbability` records the old discrete zero-event law and proves its uniform-oracle and `OptionT` instances |
 | Polynomial splitting and folding | `Polynomial.splitNth` and `FoldingPolynomial.polyFold` | Legacy coefficient/reconstruction lemmas delegate to canonical proofs; `Polynomial.foldNth` abbreviates the canonical fold |
+| Univariate discriminants | Mathlib's `Polynomial.discr` uses the conventional sign and resultant size | [`DiscriminantSeparableConverse`](../../ArkLib/ToMathlib/DiscriminantSeparableConverse.lean) owns the historical `Univariate.discriminant` and proves its sign and size correction |
 | Constrained Reed–Solomon codes | `ReedSolomon.constrainedCode` and `multiConstrainedCode` use `Domain.SmoothCosetFftDomain` | `ReedSolomon.Compatibility.{constrainedCode,multiConstrainedCode}` retain arbitrary `Smooth` embeddings and `Type*` universes; both equality-to-canonical lemmas are `rfl` ([audit](../../scripts/integration/dependency-dedup.json)) |
 | Modified Guruswami interpolants | Canonical existence uses positive multiplicity | `ProximityGap.Compatibility.modified_guruswami_has_a_solution_of_degree_bounds` preserves the older arbitrary-multiplicity interface under explicit degree budgets; positive multiplicities use the canonical construction |
 | Grand challenges | Canonical adjacent integer-grid boundaries and `Code.Lambda` | Research retains its different maximal-radius / legacy-list-size model under `Continuous*` names and `continuousGrandListDecodingChallenge`; see [collision audit](../../scripts/integration/public-fqn-consolidation.json) |
@@ -329,6 +359,24 @@ contributions use explicitly named `CanonicalBatchingSeam` interfaces. The
 checked two-input countermodel. The shared `Verifier.reduction_run_run_nf` now delegates to
 canonical execution through `ProximityPrize.Compatibility.ReductionRunNormalForm`.
 
+## Concrete-group KZG hardness hypotheses
+
+The downstream trapdoor-recovery module uses `Classical.choice` to recover the exponent from
+the public verifier SRS leg. The concrete-game adversaries use that recovery under `pure`,
+so they make zero oracle queries and win with probability one. The t-SDH attack requires
+`g₂ ≠ 1`. The ARSDH attack also requires `g₁ ≠ 1` and `D + 2 ≤ p`.
+[Trapdoor recovery](../../ProximityPrize/Extensions/Commitments/Functional/KZG/ConcreteTrapdoor.lean) ·
+[Concrete-game refutations](../../ProximityPrize/Extensions/Commitments/Functional/KZG/ConcreteVacuity.lean)
+
+In the canonical binding reductions, pairing nondegeneracy forces `g₂ ≠ 1`, and function
+binding already assumes `g₁ ≠ 1` and `n + 2 ≤ p`. The concrete-group hardness hypotheses
+are therefore unsatisfiable for an error below one at those parameters. At error one or
+above, a success-probability bound follows from the ordinary upper bound of one. The
+formal results concern unrestricted concrete-group functions. Efficient adversaries and
+generic-group encodings require separate hardness arguments.
+[Evaluation binding](../../ArkLib/Commitments/Functional/KZG/Binding.lean) ·
+[Function binding](../../ArkLib/Commitments/Functional/KZG/FunctionBinding/Basic.lean)
+
 ## Integrating another upstream snapshot
 
 For proofs with large concrete finite intervals, prove the interval identity and bound with
@@ -450,3 +498,29 @@ set, and whole codeword membership for an arbitrary number of factors before ins
 production finite set. The full-scale incidence construction keeps all fifty-five public
 contracts and its original kernel certificate while using these private symbolic proofs; see
 [the locator migration audit](../../scripts/integration/incidence-full-scale-symbolic-migration.json).
+
+## Historical benchmark replay
+
+The October transfer review records a separate benchmark checkout pinned to
+`ed2b68c4a330d76dc4ab6693eec81b685b493270` and Lean 4.32.2. Its recorded fresh kernel
+replays cover 38,274 declarations for the upper submission and 108,676 for the lower submission.
+These counts describe the archived benchmark dependency closures. [October transfer review](https://github.com/SlopDotCash/proximityprize/blob/e36fe8a90889ddbc1eea94b76370911b0195c92c/docs/wiki/upstream-proof-transfer.md#L1067-L1085)
+
+Use the historical integration's detached worktree to reproduce the reference checks. The
+wrapper selects the reference's own toolchain and uses the shared build lock for candidate
+builds. Keep its Lake artifacts in that worktree.
+
+```sh
+git fetch https://github.com/SlopDotCash/proximityprize e36fe8a90889ddbc1eea94b76370911b0195c92c
+git worktree add --detach ../proximity-prize-reference-216 e36fe8a90889ddbc1eea94b76370911b0195c92c
+cd ../proximity-prize-reference-216
+git submodule update --init external/proximity-prize
+./scripts/proximity-prize-reference.sh cache
+./scripts/proximity-prize-reference.sh upper
+./scripts/proximity-prize-reference.sh replay-upper
+./scripts/proximity-prize-reference.sh lower
+./scripts/proximity-prize-reference.sh replay-lower
+```
+
+The same archived tree contains the immutable upstream PR manifests and their read-only
+fetch helper. [October upstream inventories](https://github.com/SlopDotCash/proximityprize/tree/e36fe8a90889ddbc1eea94b76370911b0195c92c/docs/upstream) · [Reference helper](https://github.com/SlopDotCash/proximityprize/blob/e36fe8a90889ddbc1eea94b76370911b0195c92c/scripts/arklib-reference.py)

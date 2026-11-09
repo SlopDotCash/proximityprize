@@ -59,6 +59,7 @@ theorem proximity_gap_RSCodes_johnson_of_betaRec [SampleableType F] {k t : ℕ} 
       (Affine.AffSpanFinsetCollection C)
       δ
       (errorBound δ deg domain) :=
+  -- The canonical theorem uses fewer hypotheses. Keep the legacy arguments for existing callers.
   proximity_gap_RSCodes (ι := ι) (F := F) (k := k) (t := t) (deg := deg)
     (domain := domain) hdeg C hδ hε
 

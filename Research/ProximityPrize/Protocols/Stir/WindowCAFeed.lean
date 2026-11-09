@@ -10,7 +10,7 @@ import Research.ProximityPrize.Support.UnifiedProducerWindowGlue
 # Issue #301 — the window CA feed: the checking bridge's `hCA` leg from the
 # `UnifiedProducer` window glue
 
-`stirCheckingCABridge` (the named open soundness bridge of #301) consumes the full
+`stirCheckingCABridge` and `stirCheckingCAFixedPrefixBridge` consume the full
 positive-width strict residual family `∀ k' > 0, StrictCoeffPolysResidual` at the protocol
 proximity parameter `δ`.  Until now the only unconditional sources of that family were the
 small-field discharges (`|F| ≤ |ι|`, `|F| ≤ deg²·10⁷`) — regimes that pin `secpar = 0`
@@ -29,8 +29,8 @@ small-field discharges (`|F| ≤ |ι|`, `|F| ≤ deg²·10⁷`) — regimes that
 **What this changes for #301 at `secpar > 0`**: unlike the small-field routes, nothing here
 forces `ε_rbr ≥ 1` — the window discharge of `hCA` is compatible with sub-unit budgets
 `ε_rbr ≤ 2^{−secpar}` at `secpar > 0`.  The remaining open soundness surface at sub-unit
-budgets is therefore exactly the protocol-level bridge `stirCheckingCABridge` itself
-(CA ⟹ per-round flip-probability bounds), plus `stir_main`'s own free-parameter legs.
+budgets is the relevant protocol-level bridge, plus `stir_main`'s own free-parameter legs
+for the fixed-prefix route.
 
 HONESTY (regime): the window at width `k'` forces `δ ≲ (1−ρ)/(k'+2)`; demanding it at every
 width (as the bridge's `∀ k'` family requires) confines `δ` to the zero-error corner
@@ -98,7 +98,7 @@ theorem stir_main_of_checkingIOP_window
     (hF : FieldSizeCondition secpar φ degree)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (ProxGapBound : Fin (M + 1) → ℝ≥0)
-    (hBridge : stirCheckingCABridge M φ degree δ ε_rbr ProxGapBound ProxGapBound)
+    (hBridge : stirCheckingCAFixedPrefixBridge M φ degree δ ε_rbr ProxGapBound ProxGapBound)
     (hdeg : 0 < degree)
     (hwin : ∀ k' : ℕ, 0 < k' →
       ArkLib.UnifiedProducerWindowGlue.curveUDWindow k' degree (Fintype.card ι) δ)
@@ -109,7 +109,7 @@ theorem stir_main_of_checkingIOP_window
     (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
       (cₖ k) * ((Real.log degree) +
         secpar * (Real.log ((Real.log degree) / Real.log (1 / rate (code φ degree)))))) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   stir_main_of_checkingIOP_CA secpar hk hkGe δ hδub hF ε_rbr
     ProxGapBound ProxGapBound hBridge
@@ -132,7 +132,7 @@ theorem stir_main_of_checkingIOP_window_corner
     (hF : FieldSizeCondition secpar φ degree)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (ProxGapBound : Fin (M + 1) → ℝ≥0)
-    (hBridge : stirCheckingCABridge M φ degree δ ε_rbr ProxGapBound ProxGapBound)
+    (hBridge : stirCheckingCAFixedPrefixBridge M φ degree δ ε_rbr ProxGapBound ProxGapBound)
     (hfloor : Nat.floor (δ * (Fintype.card ι : ℝ≥0)) = 0)
     (hdeg_le : degree ≤ Fintype.card ι)
     (hε : ∀ i, ε_rbr i ≤ (1 : ℚ≥0) / (2 ^ secpar))
@@ -142,7 +142,7 @@ theorem stir_main_of_checkingIOP_window_corner
     (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
       (cₖ k) * ((Real.log degree) +
         secpar * (Real.log ((Real.log degree) / Real.log (1 / rate (code φ degree)))))) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   stir_main_of_checkingIOP_CA secpar hk hkGe δ hδub hF ε_rbr
     ProxGapBound ProxGapBound hBridge

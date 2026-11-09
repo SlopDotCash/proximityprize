@@ -27,9 +27,9 @@ below is not silently declared complete by that migration.
 ## Former registered external assumptions
 
 `scripts/residual_axioms.txt` pins no live axiom, and the tree declares no custom
-`axiom`. All nine former entries are now theorems of the canonical ArkLib modules
-whose `#print axioms` lists only `propext`, `Classical.choice` and `Quot.sound`
-(checked on the 4.35 integration tree):
+`axiom`. The table records the canonical replacements and the removed Binius
+declaration. The replacement theorems' `#print axioms` reports use only
+`propext`, `Classical.choice` and `Quot.sound` on the Lean 4.35 integration tree.
 
 | Source under `ArkLib/` | Former axioms, now theorems |
 |---|---|

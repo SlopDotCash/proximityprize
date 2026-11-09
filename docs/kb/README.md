@@ -21,8 +21,8 @@ It should help with:
 If you only need the practical workflow:
 
 1. If a Lean file cites `[KEY]`, start at `docs/kb/papers/KEY.md`.
-2. If that page does not exist yet, add the BibTeX entry first if needed. Main-branch automation
-   will open a follow-up PR for missing cited paper pages and source metadata after merge.
+2. If that page does not exist yet, add the BibTeX entry if needed and regenerate the KB.
+   Commit the scaffolded page, source metadata, and tracked indexes with the citation.
 3. If your PR changes how ArkLib uses or interprets a paper, update the corresponding KB page in
    the same PR.
 4. Before sending a paper-driven PR for review, attach the relevant KB paper pages or use
@@ -125,8 +125,8 @@ If you are unsure where to start, use [`index.md`](index.md) first.
 
 1. Add the BibTeX entry in `blueprint/src/references.bib`.
 2. If you already know the ArkLib-specific summary, add or update `docs/kb/papers/KEY.md`.
-3. If you only need the stub, leave it out of the PR; the generated-files workflow will propose
-   it after merge.
+3. Run `uv run --no-project --python 3.12 python ./scripts/kb/regenerate.py` and commit
+   the tracked indexes and any scaffolded paper or source pages in the same PR.
 4. Run `uv run --no-project --python 3.12 python ./scripts/kb/lint.py`.
 
 ### I am updating a paper-backed development

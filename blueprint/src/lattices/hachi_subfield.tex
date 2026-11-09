@@ -2,8 +2,7 @@
 
 This section covers Hachi~\cite{NOZ26} \S3, Lemma~5:
 the fixed subring $R_q^H$ is a \emph{field} and is isomorphic to $\F_{q^k}$.
-The packing map $\psi$ and the trace formula of Theorem~2 (the rest of \S3) are formalized as
-well, with no \texttt{sorry} and no custom axiom.
+The packing map $\psi$ and the trace formula of Theorem~2 (the rest of \S3) are also formalized.
 
 Throughout, $d = 2^\alpha$, $R_q = \Z_q[X]/(X^{d}+1)$ with $q$ an odd prime, $k = 2^\kappa$ a
 divisor of $d/2$ (i.e.\ $2k \mid d$), and $H = \langle \sigma_{-1}, \sigma_{4k+1}\rangle$.
@@ -182,7 +181,8 @@ entire $-1 \notin \langle q\rangle$ content of the swap. \emph{(Until 2026-10-28
 registered custom \texttt{axiom}, not a \texttt{sorry}; it is now a theorem.)}
 \end{lemma}
 
-\begin{proof}\uses{lem:neg_one_notMem, lem:order_q, lem:two_factors}
+\begin{proof}
+\leanok\uses{lem:neg_one_notMem, lem:order_q, lem:two_factors}
 First, no irreducible factor $p$ of $X^{2^\alpha}+1$ is associated to $p^{\mathrm{rev}}$
 (\texttt{not\_associated\_reverse\_self}). In the field $K = \F_q[X]/(p)$ let $\zeta$ be
 the class of $X$. Then $\zeta^{2^\alpha} = -1$, so, $q$ being odd, $\zeta$ has order
@@ -197,8 +197,9 @@ $2^{\alpha-1} + 1$ distinct roots of a polynomial of degree $2^{\alpha-1}$
 Second, $X^{2^\alpha}+1$ is self-reciprocal, so $p_1^{\mathrm{rev}} p_2^{\mathrm{rev}} = p_1 p_2$.
 As $p_1, p_2$ are prime, and neither divides its own reversal (the reversal has the same degree,
 the constant term of $X^{2^\alpha}+1$ being nonzero, so it would be associated to it), we get
-$p_2 \mid p_1^{\mathrm{rev}}$ and $p_1 \mid p_2^{\mathrm{rev}}$. Comparing with $p_1^{\mathrm{rev}} p_2^{\mathrm{rev}} = p_1 p_2$, the
-two cofactors multiply to $1$, so $p_1^{\mathrm{rev}} \sim p_2$.
+$p_2 \mid p_1^{\mathrm{rev}}$ and $p_1 \mid p_2^{\mathrm{rev}}$. Comparing with
+$p_1^{\mathrm{rev}} p_2^{\mathrm{rev}} = p_1 p_2$, the two cofactors multiply to $1$, so
+$p_1^{\mathrm{rev}} \sim p_2$.
 \end{proof}
 
 \begin{lemma}[$-1 \notin \langle q\rangle$]\label{lem:neg_one_notMem}
@@ -240,7 +241,6 @@ Theorem~\ref{thm:core_unit}; its inverse is again $\sigma_{-1}$-fixed (apply $\s
 $a a^{-1} = 1$ and cancel the unit), so it lies in $R_q^{\sigma_{-1}}$.
 \end{proof}
 
-The proof works directly in $S$ via the reverse identity and a divisibility argument, rather than
-constructing the explicit CRT product $R_q \cong K\times K$. No \texttt{sorry} or custom axiom
-remains in this chain; \ref{lem:no_selfReciprocal}, formerly a registered custom \texttt{axiom}, is
-now a theorem.
+The Lean proof works directly in $S$ via the reverse identity and a divisibility argument.
+It uses the factor-swap theorem (Lemma~\ref{lem:no_selfReciprocal}) to construct the field
+in \texttt{Subfield/Field.lean}.

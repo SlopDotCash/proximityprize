@@ -29,11 +29,10 @@ exposed as honest interpolation data — a *single*, otherwise arbitrary, candid
 `v = (v₀, v₁)` of words (no membership in `C` or degree bound is assumed; `C` enters only
 through `mcaEvent`) whose affine line `v₀ + γ·v₁` `µ`-agrees (weight `≥ α`) with the received
 line `u₀ + γ·u₁` at *every* bad scalar `γ` — together with the genuine failure of correlated agreement for that pair.
-This hypothesis is **strictly weaker** than `epsMCA = 0`: it asserts the existence of a single
-shared pair `v` covering the bad scalars, *not* the absence of bad scalars. From it the
-**proven** BCIKS20 list-agreement-on-a-curve bound
+The cover allows bad scalars and requires them to share one pair `v`. The BCIKS20
+list-agreement-on-a-curve theorem
 (`WeightedAgreement.sufficiently_large_list_agreement_on_curve_implies_correlated_agreement`)
-delivers a real list-size cap on the bad-scalar count:
+bounds their count when correlated agreement strictly fails:
 
   `mcaBadCount C δ u₀ u₁ < M·n + 1`,
 
@@ -83,10 +82,9 @@ list-size cap
 i.e. per-stack `ε_mca`-contribution `< (M·n + 1)/|F|`, the genuine `a/|F|` shape of T4.21
 (`l = 0` for the affine line; `M` the common denominator of the weight profile `µ`, `n = |ι|`).
 
-The hypothesis is strictly weaker than the conclusion: it asserts a single shared pair `v`
-covering the bad scalars, **not** the absence of bad scalars. Contrapositive of the curve bound:
-were there `≥ M·n + 1` bad scalars, the curve lemma would force correlated agreement,
-contradicting `hfail`. -/
+The cover supplies a single pair `v` that agrees on every bad scalar. With at least
+`M·n + 1` bad scalars, the curve lemma would force correlated agreement, contradicting
+`hfail`. The positive-denominator premise `hM` is retained for callers of this wrapper. -/
 theorem mcaBadCount_lt_of_gs_curve_cover
     (C : Set (ι → F)) (δ : ℝ≥0) (u₀ u₁ : ι → F)
     (μ : ι → Set.Icc (0 : ℚ) 1) (M : ℕ) (hM : 0 < M)

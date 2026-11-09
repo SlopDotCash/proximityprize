@@ -21,6 +21,16 @@ The [disproof log](DISPROOF_LOG.md) preserves the detailed anti-repeat record.
 - [Standalone snapshot, 2026-08-16](#standalone-snapshot-2026-08-16)
 - [Campaign dossier through 2026-07-11](#campaign-dossier-through-2026-07-11)
 
+## Source correction: the all-word supply has the exact binomial budget
+
+`ProximityGap.Ownership.explainableCoreSupply_iff` identifies the uniform supply
+condition with `n.choose (k+m+1) ≤ B` for every evaluation domain. The zero
+codeword explains every core. The all-word list consumer therefore requires
+`n ≤ A` when `k+m+1 ≤ n` and supplies a budget at least `n.choose (k+m+1)`.
+At `m = 0` its count inequality can force at most one bad scalar. The
+production proximity theorem and polynomial worst-case list-size bounds in
+the production sub-Johnson regime remain open.
+
 ## Source correction: the binder-floor route remains conditional
 
 The retained campaign §9 says the binder obstruction is gone “at every scale” and

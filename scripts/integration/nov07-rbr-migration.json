@@ -1028,7 +1028,8 @@
       "ProximityPrize/Extensions/OracleReduction/VectorIOR.lean": "689e4945263ac867718619777b7802344a317c57549fc6335ee74de5fd8650d5"
     },
     "axiom_reports": 8,
-    "axiom_output_sha256": "4b10221d45185ee2d677afdaaf3248f990227d67cad8f06060d538f072a4b24f"
+    "axiom_output_sha256": "4b10221d45185ee2d677afdaaf3248f990227d67cad8f06060d538f072a4b24f",
+    "receipt_revision": "b6998db65a088ccfdb1592099fd3a1c569a5a9d7"
   },
   "binius_query_transport": {
     "source_declaration": "Verifier.rbrKnowledgeSoundness_implies_rbrKnowledgeSoundnessAveraged",
@@ -1105,7 +1106,8 @@
       "ArkLib/ProofSystem/Plonk/PermutationCheck.lean": "0c4377df130fe41a59cd245b713c194315dcf71c00c308cdfb593994c46f23bd",
       "ArkLib/ProofSystem/Plonk/Composition.lean": "7797a3dd2b6fda8e497b2a838c6a5ece217bb31decb6874f358187b2d44fcc1c"
     },
-    "focused_log_sha256": "2192bf69bbd1fef702b2a9bdb695aa2e5412a5c9415cd7cea50f417b8c715827"
+    "focused_log_sha256": "2192bf69bbd1fef702b2a9bdb695aa2e5412a5c9415cd7cea50f417b8c715827",
+    "receipt_revision": "b6998db65a088ccfdb1592099fd3a1c569a5a9d7"
   },
   "stir_averaged_security": {
     "tested_upstream_revision": "31ff7ddf9bc209ffaeab516359cd17f47d9bd6f1",
@@ -1128,6 +1130,29 @@
     },
     "validation": "Nine exact current source checks passed in a private overlay with rebuilt changed canonical prerequisites and reused transitive artifacts.",
     "axiom_reports": 12,
-    "axiom_output_sha256": "f459a00ec143a70b8291b8647674b11861d5910e578f5d56dad7171fa32a620b"
+    "axiom_output_sha256": "f459a00ec143a70b8291b8647674b11861d5910e578f5d56dad7171fa32a620b",
+    "receipt_revision": "b6998db65a088ccfdb1592099fd3a1c569a5a9d7"
+  },
+  "reconciled_integration": {
+    "reviewed_base": "585e735a755a2a53d6d5b53732fafe0042e3f034",
+    "incoming_revision": "b6998db65a088ccfdb1592099fd3a1c569a5a9d7",
+    "selective_compatibility_port": "7724077bc05c8ce5456e050b88d54ec86b2fd521",
+    "stir_contract_port": "ae7a0f4be11f2428d5a19396950ab386b03e8c3f",
+    "whir_contract_port": "53e68d581c121da9b8684f603bd253e3f5e0f709",
+    "historical_averaged_contracts": [
+      "StirIOP.stir_main",
+      "StirIOP.stir_rbr_soundness",
+      "whir_rbr_soundness"
+    ],
+    "fixed_prefix_contracts": [
+      "StirIOP.stir_mainFixedPrefix",
+      "StirIOP.stir_rbr_soundnessFixedPrefix",
+      "whir_rbr_soundness_fixedPrefix"
+    ],
+    "focused_validation": {
+      "selective_compatibility_port": "Lean 4.35 replay passed 12 changed modules and four consumers with 98 standard-only axiom reports.",
+      "stir_contract_port": "Lean 4.35 replay passed the contract owners, callers, and zero-transition regression.",
+      "whir_contract_port": "Lean 4.35 replay passed both packages and rejected averaged evidence for the fixed-prefix entry point."
+    }
   }
 }

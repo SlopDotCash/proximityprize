@@ -5,7 +5,6 @@ Authors: ArkLib Contributors
 -/
 import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Stir.MultiRoundAssembly
-import ArkLib.ProofSystem.Whir.ThresholdKSF
 
 /-!
 # The shell residual, discharged at the honest indicator budget (#347)
@@ -15,9 +14,8 @@ likely-false at sub-1 budgets — the shell accepts everything, and the genuine 
 obligation was discharged on the CHECKING verifier (`stirCheckingRbrSoundness_genuine`,
 #301).  What IS true of the shell, and is proven here, is the **indicator-budget
 discharge**: rbr knowledge soundness at the budget `1` concentrated on the initial fold
-challenge and `0` everywhere else — the statement-constant threshold state function
-(`pred := the input relation`, transcript-independent) through
-`ThresholdKSF.rbrKnowledgeSoundness_indicator`.
+challenge and `0` everywhere else. The state function agrees with the input relation
+at the root and is true after the fold challenge, so the bound holds at each fixed prefix.
 
 * **`stirMultiRoundRbrSoundness_indicator`** — the residual HOLDS at
   `fun i => if i = foldChalIdx then 1 else 0`;
@@ -53,32 +51,41 @@ def foldChalIdx (M : ℕ) : ((stirMultiVSpec M ι).toProtocolSpec F).ChallengeId
       simp
     exact h⟩
 
-/-- **The shell residual at the honest indicator budget** (`1` at the fold challenge,
-`0` elsewhere): the statement-constant threshold state function discharges it. -/
+private theorem stirMultiRoundRbrSoundnessFixedPrefix_indicator
+    (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0) :
+    stirMultiRoundRbrSoundnessFixedPrefix M φ deg δ
+      (fun i => if i = foldChalIdx (F := F) (ι := ι) M then 1 else 0) :=
+  stirRbrKnowledgeSoundnessFixedPrefix_of_one_le_first M φ deg δ
+    (stirMultiRoundIOP M φ deg).toOracleVerifier _ (fun i hi => by
+      have h : i = foldChalIdx (F := F) (ι := ι) M := Subtype.ext (Fin.ext hi)
+      simp [h])
+
+/-- The averaged shell residual holds at the indicator budget, with `1` at the fold challenge
+and `0` elsewhere. -/
 theorem stirMultiRoundRbrSoundness_indicator (M : ℕ) (φ : ι ↪ F) (deg : ℕ)
     (δ : ℝ≥0) :
     stirMultiRoundRbrSoundnessResidual M φ deg δ
-      (fun i => if i = foldChalIdx (F := F) (ι := ι) M then 1 else 0) := by
-  unfold stirMultiRoundRbrSoundnessResidual OracleProof.rbrKnowledgeSoundnessAveraged
-    OracleVerifier.rbrKnowledgeSoundnessAveraged
-  exact ThresholdKSF.rbrKnowledgeSoundness_indicator (pure ()) isEmptyElim
-    ((stirMultiRoundIOP M φ deg).toOracleVerifier.toVerifier
-      (Oₛₒ := fun i : Empty => nomatch i))
-    (stirRelation deg φ δ) acceptRejectOracleRel
-    (fun _ stmtIn _ => (stmtIn, ()) ∈ stirRelation deg φ δ)
-    (foldChalIdx (F := F) (ι := ι) M)
-    (fun stmtIn w => by rfl)
-    (fun m _ stmtIn tr msg h => h)
+      (fun i => if i = foldChalIdx (F := F) (ι := ι) M then 1 else 0) :=
+  OracleProof.rbrKnowledgeSoundness_implies_rbrKnowledgeSoundnessAveraged
+    (stirMultiRoundRbrSoundnessFixedPrefix_indicator M φ deg δ)
 
-/-- The secure-with-gap package for the assembled shell IOPP at the indicator budget,
-through the existing general wiring. -/
+/-- Fixed-prefix security for the assembled shell IOPP at the indicator budget. -/
+theorem stirMultiRoundIOP_isSecureWithGap_indicatorFixedPrefix (M : ℕ) (φ : ι ↪ F) (deg : ℕ)
+    (δ : ℝ≥0) :
+    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ)
+      (fun i => if i = foldChalIdx (F := F) (ι := ι) M then 1 else 0)
+      (stirMultiRoundIOP M φ deg) :=
+  stirMultiRoundIOP_isSecureWithGap M φ deg δ _
+    (stirMultiRoundRbrSoundnessFixedPrefix_indicator M φ deg δ)
+
+/-- The historical averaged security package at the shell's indicator budget. -/
 theorem stirMultiRoundIOP_isSecureWithGap_indicator (M : ℕ) (φ : ι ↪ F) (deg : ℕ)
     (δ : ℝ≥0) :
     IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ)
       (fun i => if i = foldChalIdx (F := F) (ι := ι) M then 1 else 0)
       (stirMultiRoundIOP M φ deg) :=
-  stirMultiRoundIOP_isSecureWithGap M φ deg δ _
-    (stirMultiRoundRbrSoundness_indicator M φ deg δ)
+  ⟨(stirMultiRoundIOP_isSecureWithGap_indicatorFixedPrefix M φ deg δ).is_complete,
+    stirMultiRoundRbrSoundness_indicator M φ deg δ⟩
 
 end MultiRound
 
@@ -87,3 +94,4 @@ end StirIOP
 /-! ## Axiom audit — all kernel-clean. -/
 #print axioms StirIOP.MultiRound.stirMultiRoundRbrSoundness_indicator
 #print axioms StirIOP.MultiRound.stirMultiRoundIOP_isSecureWithGap_indicator
+#print axioms StirIOP.MultiRound.stirMultiRoundIOP_isSecureWithGap_indicatorFixedPrefix

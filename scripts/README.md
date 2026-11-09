@@ -6,10 +6,9 @@ separate classic downstream library ownership in `lakefile.toml`.
 `validate.sh` retains the upstream acceptance/runtime checks and downstream
 proof-source/Python/flagship gates. Use `lake-locked.sh` for build-capable local
 Lake commands; `--lint` adds the classic downstream style baseline.
-`upstream-source-policy.json` records ten inherited `True` stubs by upstream
-revision, path, exact file digest, and declaration; these are explicit debt,
-not proofs of the intended identities. Native evaluation and custom axioms
-cannot be exempted through that baseline.
+`upstream-source-policy.json` pins inherited placeholder exceptions to the
+upstream revision, source digest, and declaration. The current pin has no
+placeholder exceptions. Native evaluation and custom axioms cannot be exempted.
 
 
 This directory contains various utility scripts for the ArkLib project.
@@ -69,6 +68,8 @@ This directory contains various utility scripts for the ArkLib project.
   nested in tactics, terms, extensible interpolated strings, and diagnostic-capturing commands.
   The plugin supplies precise syntax diagnostics; it is not presented as a sandbox against
   arbitrary hostile Lean metaprogramming, so the independent source pass remains mandatory
+- **`StopTacticPlugin.lean`** - end-of-module check for Lean's admitting `stop` tactic.
+  Runs in the four default library targets and `ArkLibTest`. Ordinary `stop` names are accepted.
 - **`forbidden_tokens.py`** - CI gate 1, a pre-build lexical precheck: rejects `native_decide`-style
   evaluation, `unsafe` declarations, metaprograms that add declarations, vacuous `: True`
   placebos (except byte-pinned inherited upstream stubs listed in
@@ -82,8 +83,8 @@ This directory contains various utility scripts for the ArkLib project.
   lexical only, not an elaborated declaration or axiom audit
 - **`axiom_audit.py`** - CI gate 3, post-build: `#print axioms` over the flagship declarations in
   `flagship_axioms.txt`, plus an inventory from Lean metadata requiring every axiom of the
-  imported `ArkLib`/`Research` modules to be a pinned residual (`--print-modules` lists the
-  modules to build first)
+  imported `ArkLib`, `ProximityPrize`, and `Research` modules to be a pinned residual
+  (`--print-modules` lists the modules to build first)
 
 ### Dependency Analysis
 - **`dependency_analysis/`** - Complete dependency analysis toolkit
@@ -158,7 +159,7 @@ bash scripts/build_timing_report.sh --help
 # Run only the Lean-native source-policy gate
 lake exe lint-style
 
-# Test the build-time suppression plugin against accepted and rejected syntax fixtures
+# Test the build-time source-policy plugins against accepted and rejected syntax fixtures
 ./scripts/test-lint-plugin.sh
 
 ```
@@ -307,14 +308,9 @@ uv run --no-project --python 3.12 python scripts/module_times.py update .lake/bu
 
 ## Requirements
 
-- **uv**, which selects **Python 3.12** for Python scripts. `validate.sh` runs the `scripts/tests`
-  regressions, the forbidden-token precheck, the sorry census, the axiom audit and the docs/KB
-  checks through `uv run --no-project --python 3.12`. The regressions add the pinned
-  `requirements-validation.txt` (`numpy==2.4.4`, whose own metadata requires Python 3.11 or newer)
-  with `--with-requirements`. Older interpreters are not tested in CI and are not supported, even
-  where a script happens to run on one.
-- The issue tracker `sorry-tracker.py` is separate from the validation entry point: its workflow
-  (`.github/workflows/sorry-tracker.yml`) runs it on Python 3.11 with its own pinned
+- `uv` selects Python 3.12 for validation. The Python regressions use the pinned
+  `requirements-validation.txt` dependencies. Direct Python runs use the same version and pins.
+- The separate `sorry-tracker.py` workflow runs Python 3.11 with
   `requirements-sorry-tracker.txt`.
 - Lean 4 (for Lean scripts)
 - Graphviz (for dependency visualization)
@@ -322,8 +318,7 @@ uv run --no-project --python 3.12 python scripts/module_times.py update .lake/bu
 ## Notes
 
 - Most scripts should be run from the ArkLib root directory
-- Scripts that import third-party packages (for example the `numpy` probe regressions under
-  `scripts/tests`) need `uv run --with-requirements scripts/requirements-validation.txt`
+- Direct Python runs of tests with third-party imports need the matching dependencies installed
 - Some scripts may require specific Lean toolchain versions
 - `validate.sh` is the recommended local wrapper; use the lower-level scripts directly when you
   want to run or debug one piece in isolation

@@ -8,16 +8,16 @@ They are intentionally lightweight and use only the Python standard library.
 
 - `sync_from_bib.py` - export `blueprint/src/references.bib` into
   `docs/kb/_generated/references.json`
-- `extract_lean_citations.py` - scan `ArkLib/**/*.lean` and generate
+- `extract_lean_citations.py` - scan Lean sources in `ArkLib/`, `Research/`, and `ProximityPrize/` and generate
   `docs/kb/_generated/lean-citations.json`
-- `extract_declarations.py` - scan `ArkLib/**/*.lean` and generate
+- `extract_declarations.py` - scan Lean sources in `ArkLib/`, `Research/`, and `ProximityPrize/` and generate
   `docs/kb/_generated/declarations.json`, a catalog of every declaration
   (file, line, kind, namespace, name, brief signature, docstring head)
 - `find_dedup_candidates.py` - derive `docs/kb/_generated/dedup-report.md`
   from the catalog: same-short-name groups across files + cross-file
   near-duplicate docstrings, a review aid for spotting duplication in PRs
 - `regenerate.py` - refresh all generated indexes and scaffold missing cited paper pages
-- `check_generated.py` - check that the committed generated indexes are fresh on `main`
+- `check_generated.py` - check that the committed generated indexes match the current checkout
 - `scaffold_paper.py KEY` - create a stub paper page and source metadata file for `KEY`
 - `lint.py` - validate paper-page structure and report cited keys without paper pages
 - `review_context.py` - resolve citation keys, KB paper pages, and external URLs for review
@@ -40,25 +40,14 @@ uv run --no-project --python 3.12 python ./scripts/kb/review_context.py --files 
 
 ## Intended Workflow
 
-1. Update `blueprint/src/references.bib`
-2. Update an existing paper page when the PR changes ArkLib's interpretation or use of that paper
-3. Do not commit `docs/kb/_generated/**` changes in feature PRs
-4. Let the main-branch KB workflow update one rolling follow-up PR for regenerated indexes and
-   missing cited paper/source stubs
+1. Update `blueprint/src/references.bib`.
+2. Update the paper page when the PR changes ArkLib's interpretation or use of that paper.
+3. Run `uv run --no-project --python 3.12 python ./scripts/kb/regenerate.py`.
+4. Review and commit the tracked indexes and any scaffolded paper or source pages with the
+   source changes.
 
-Run `uv run --no-project --python 3.12 python ./scripts/kb/regenerate.py` locally when you need to inspect the generated state.
-Commit the generated results only from the main-branch automation, not from ordinary feature PRs.
-
-The workflow runs nightly and can be dispatched manually. Changes to bibliography or KB source
-inputs also trigger an immediate refresh. Ordinary Lean merges are coalesced into the next nightly
-run instead of creating one generated PR per merge. The rolling PR uses the stable
-`automation/kb-generated` branch and explicitly dispatches its four fixed validation workflows so
-bot-authored checks do not wait for contributor approval. The normal human-review requirement
-still applies before auto-merge can complete.
-
-Do not use GitHub's **Update branch** action on the rolling PR. Merging a newer base into the bot
-branch does not rerun generation and can make its indexes stale. Dispatch the KB workflow manually
-or wait for the next scheduled run; it rebuilds the rolling branch from the latest `main`.
+The read-only [KB workflow](../../.github/workflows/kb-generated.yml) verifies the committed
+state on relevant PRs and pushes to `main`. It can also run on demand.
 
 ## Review Workflow Notes
 

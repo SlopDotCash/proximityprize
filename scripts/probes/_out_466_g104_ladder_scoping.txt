@@ -12,8 +12,6 @@ below, with inline corrections marked [CORRECTION].
     subtuple sum is an integer in [1, p-1], so never 0 mod p), giving >= 2^216
     primitive 8-tuples and, by pigeonhole over p sum values, a target with
     >= ceil(2^216/p) = 2^58 representations, far above 4*n^(2/3) = 2^22.
-    (Audit evidence: archive25-primitive-family-impossibility.json.)  An in-tree
-    exact countercertificate at arity 11 is
     scripts/probes/probe_466_g104_primitive_concentration_factorial_no_go.py:
     11! = 39916800 primitive ordered tuples share one sum, exceeding both the s=13
     threshold 14207588 and the uniform cap 4194304.

@@ -7,7 +7,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.SubJohnsonListSupply
 import ArkLib.Data.CodingTheory.ProximityGap.DeepBandSubJohnsonSharpRate
 
 /-!
-# Production deep-band bad-set count is gated solely on the open core (#389)
+# Conditional production deep-band bad-set count (#389)
 
 The boundary-pinning files (`DeepBandProductionSubJohnson`,
 `…General`, `…SharpRate`) proved the in-tree above-Johnson discharge provably
@@ -24,11 +24,12 @@ them at `m = 0` and conjoins the sharp-rate vacuity, yielding the precise statem
 > `SubJohnsonListBound` **alone** produces the bad-set count
 > `C(n,k+1) ≤ #badSet · |F|⁰ · (L·C(A,k+1))`, **and** the in-tree above-Johnson
 > route that would otherwise supply this bound is provably unavailable
-> (`¬ n(k−1) < (k+1)²`).  So `SubJohnsonListBound` is the *sole* remaining input.
+> (`¬ n(k−1) < (k+1)²`).
 
-This does **not** close the open core (the sub-Johnson list bound stays the named
-open obligation) — it pins, in the actual consumer form, that the open core is the
-only gate left in the deployed regime, and that no in-tree route sidesteps it.
+`subJohnsonListBound_supply_budget` shows that every input to this consumer
+satisfies `C(n,k+1) ≤ L·C(A,k+1)`. The displayed inequality at `m = 0` can
+therefore force at most one bad scalar. A smaller supply budget requires a
+restriction on received words or a bound directly on coherent fibers.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.
 -/
@@ -44,10 +45,9 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 variable {n : ℕ} [NeZero n]
 
 open Classical in
-/-- **The open core is the sole remaining gate in the production band.**  For the
-first deep band (`m = 0`) at rate `≤ k/(k+4)` (`5 ≤ k`, `k + 4 ≤ n`), the open core
-`SubJohnsonListBound dom k 0 L A` alone yields the deep-band bad-scalar count, *and*
-the in-tree above-Johnson discharge is provably inapplicable there. -/
+/-- In the first deep band (`m = 0`) at rate `≤ k/(k+4)` (`5 ≤ k`, `k + 4 ≤ n`),
+`SubJohnsonListBound dom k 0 L A` gives the bad-scalar count. The in-tree
+above-Johnson discharge is inapplicable in this band. -/
 theorem production_badSet_gated_on_open_core (dom : Fin n ↪ F) {k : ℕ}
     (hk5 : 5 ≤ k) (hn : k + 4 ≤ n) {δ : ℝ≥0}
     (hhi : (1 - δ) * (Fintype.card (Fin n) : ℝ≥0) ≤ ((k + 0 + 1 : ℕ) : ℝ≥0))

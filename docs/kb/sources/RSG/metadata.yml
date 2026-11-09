@@ -2,4 +2,4 @@ bibkey: RSG
 source_kind: bibliography-only
 canonical_url: https://github.com/leanEthereum/leanVM-b/blob/main/misc/ring-switching-generalized.pdf
 committed_artifacts: []
-notes: "Scaffolded from references.bib for Ring switching, generalized."
+notes: "Reference metadata transferred with ArkLib PR 1256 at 475b3d56f2120cd4eaa6b449ff8974886fa71fdd."

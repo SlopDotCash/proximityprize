@@ -166,19 +166,61 @@ relation — but for the SHELL verifier (`verify = pure true`), which accepts ev
 nontrivial rbr budget can be discharged (see the warning at `stirCheckingRbrSoundnessResidual`,
 `CheckingVerifier.lean`).  The genuine open obligation of #301 lives on the CHECKING verifier:
 `stirCheckingRbrSoundnessResidual` + `stirCheckingCABridge` (`CheckingVerifier.lean`).  This def
-is retained only because `stirMultiRoundIOP_isSecureWithGap` below is general wiring over it;
-do not try to discharge it at a sub-1 budget.  Consumed as a hypothesis below; NOT fabricated. -/
+is retained for the averaged analysis of the shell. Do not try to discharge it at a sub-1 budget. -/
 def stirMultiRoundRbrSoundnessResidual (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0) : Prop :=
   OracleProof.rbrKnowledgeSoundnessAveraged (pure ()) isEmptyElim
     (stirRelation deg φ δ) (OracleProof.toOracleVerifier (stirMultiRoundIOP M φ deg)) ε_rbr
 
-/-- The assembled multi-round STIR IOPP is `IsSecureWithGapAveraged`, given the (open) rbr-soundness
-residual: the completeness leg is the proven `stirMultiRoundIOP_perfectCompleteness`. -/
+/-- The fixed-prefix soundness obligation for the shell IOPP's secure-with-gap package. -/
+def stirMultiRoundRbrSoundnessFixedPrefix (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0)
+    (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0) : Prop :=
+  OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
+    (stirRelation deg φ δ) (OracleProof.toOracleVerifier (stirMultiRoundIOP M φ deg)) ε_rbr
+
+/-- Either STIR verifier satisfies fixed-prefix knowledge soundness when the first challenge
+has unit budget. The state agrees with the input relation at the root and is true afterwards,
+so after the first challenge there is no bad transition for any fixed prefix. -/
+theorem stirRbrKnowledgeSoundnessFixedPrefix_of_one_le_first
+    (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0)
+    (verifier : OracleProofVerifier []ₒ Unit (OracleStatement ι F)
+      ((stirMultiVSpec M ι).toProtocolSpec F))
+    (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
+    (h1 : ∀ i : (stirMultiVSpec M ι).ChallengeIdx, (i.1 : ℕ) = 0 → 1 ≤ ε_rbr i) :
+    OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim (stirRelation deg φ δ)
+      verifier ε_rbr := by
+  refine ⟨fun _ => Unit,
+    { extractIn := fun _ _ => ()
+      extractMid := fun _ _ _ _ => ()
+      extractOut := fun _ _ _ => () },
+    { toFun := fun m stmtIn _ _ => (m : ℕ) = 0 → (stmtIn, ()) ∈ stirRelation deg φ δ
+      toFun_empty := fun stmtIn witIn h => h rfl
+      toFun_next := fun m hdir stmtIn tr msg witMid h => by
+        intro hc0
+        exfalso
+        rw [show ((stirMultiVSpec M ι).toProtocolSpec F).dir m = (stirMultiVSpec M ι).dir m
+          from rfl, stirVSpec_dir_eq_msg_iff] at hdir
+        have hm0 : (m : ℕ) = 0 := by simpa using hc0
+        omega
+      toFun_full := fun stmtIn tr witOut _ => by
+        intro hlast
+        exfalso
+        simp only [Fin.val_last] at hlast
+        omega }, ?_⟩
+  intro stmtIn i transcript
+  by_cases h0 : (i.1 : ℕ) = 0
+  · refine le_trans (prEvent_le_one _) ?_
+    exact_mod_cast h1 i h0
+  · refine le_trans (le_of_eq ((OracleComp.prEvent_eq_zero_iff _ _).2 ?_)) (by positivity)
+    rintro challenge _ ⟨w, hno, -⟩
+    exact hno fun hc => absurd (by simpa using hc) h0
+
+/-- The assembled multi-round STIR IOPP is `IsSecureWithGap`, given fixed-prefix
+soundness. The completeness leg is the proven `stirMultiRoundIOP_perfectCompleteness`. -/
 theorem stirMultiRoundIOP_isSecureWithGap (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
-    (hSound : stirMultiRoundRbrSoundnessResidual M φ deg δ ε_rbr) :
-    IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
+    (hSound : stirMultiRoundRbrSoundnessFixedPrefix M φ deg δ ε_rbr) :
+    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
       (stirMultiRoundIOP M φ deg) where
   is_complete := stirMultiRoundIOP_perfectCompleteness M φ deg _
   is_rbr_knowledge_sound := hSound
@@ -211,7 +253,7 @@ theorem stir_rbr_soundness_of_secure_vectorIOP
         Dist.δ j < (1 - Bstar (rate (code (P.φ j) (degree ι P j)))))
     (ε_fold : ℝ≥0) (ε_out : Fin M → ℝ≥0) (ε_shift : Fin M → ℝ≥0) (ε_fin : ℝ≥0)
     (π : VectorIOP Unit (OracleStatement (ι 0) F) Unit (stirMultiVSpec M (ι 0)) F)
-    (hSecure : IsSecureWithGapAveraged
+    (hSecure : IsSecureWithGap
       (stirRelation (degree ι P 0) (P.φ 0) 0)
       (stirRelation (degree ι P 0) (P.φ 0) (Dist.δ 0))
       (fun _ => ({ε_fold} ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max' (by simp))
@@ -230,7 +272,7 @@ theorem stir_rbr_soundness_of_secure_vectorIOP
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
             (Dist.δ j.succ) (P.foldingParam j.succ)))
     (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
-    stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
+    stir_rbr_soundnessFixedPrefix (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   ⟨3 * M + 3, stirMultiVSpec M (ι 0), stirVSpec_card_challengeIdx, π, hSecure,
     hfold, hrest, hfin⟩
@@ -239,8 +281,8 @@ theorem stir_rbr_soundness_of_secure_vectorIOP
 the assembled multi-round object. The existential witnesses are fully constructed —
 `n := 3M + 3`, `vPSpec := stirMultiVSpec M (ι 0)` (challenge count `2M + 2` by the landed
 `stirVSpec_card_challengeIdx`), `π := stirMultiRoundIOP` — and the completeness leg of
-`IsSecureWithGapAveraged` is proven. The genuinely open legs are consumed as hypotheses:
-the rbr-soundness residual (`hSound`, Johnson-CA-gated) and the per-round error bounds
+`IsSecureWithGap` is proven. The genuinely open legs are consumed as hypotheses:
+the fixed-prefix soundness bound (`hSound`) and the per-round error bounds
 (`hfold`/`hrest`/`hfin`, statements about the free parameters `ε_fold/ε_out/ε_shift/ε_fin`). -/
 theorem stir_rbr_soundness_of_residuals
     {M : ℕ} (ι : Fin (M + 1) → Type) [∀ i : Fin (M + 1), Fintype (ι i)]
@@ -255,7 +297,7 @@ theorem stir_rbr_soundness_of_residuals
         Dist.δ j < (1 - Bstar (rate (code (P.φ j) (degree ι P j)))))
     (ε_fold : ℝ≥0) (ε_out : Fin M → ℝ≥0) (ε_shift : Fin M → ℝ≥0) (ε_fin : ℝ≥0)
     -- the open rbr-soundness residual, at the statement's prescribed `ε_rbr`
-    (hSound : stirMultiRoundRbrSoundnessResidual M (P.φ 0) (degree ι P 0) (Dist.δ 0)
+    (hSound : stirMultiRoundRbrSoundnessFixedPrefix M (P.φ 0) (degree ι P 0) (Dist.δ 0)
       (fun _ => ({ε_fold} ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max' (by simp)))
     -- the open per-round error-bound legs (free-parameter constraints)
     (hfold : ε_fold ≤ proximityError F (P.deg / P.foldingParam 0)
@@ -272,7 +314,7 @@ theorem stir_rbr_soundness_of_residuals
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
             (Dist.δ j.succ) (P.foldingParam j.succ)))
     (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
-    stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
+    stir_rbr_soundnessFixedPrefix (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   stir_rbr_soundness_of_secure_vectorIOP (hParams := hParams) (Codes := Codes)
     ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin
@@ -294,7 +336,7 @@ theorem stir_main_of_secure_vectorIOP
     (hF : FieldSizeCondition secpar φ degree)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (π : VectorIOP Unit (OracleStatement ι F) Unit (stirMultiVSpec M ι) F)
-    (hSecure : IsSecureWithGapAveraged (stirRelation degree φ 0) (stirRelation degree φ δ) ε_rbr π)
+    (hSecure : IsSecureWithGap (stirRelation degree φ 0) (stirRelation degree φ δ) ε_rbr π)
     (hε : ∀ i, ε_rbr i ≤ (1 : ℚ≥0) / (2 ^ secpar))
     (hM : ∃ c > 0, M ≤ c * (Real.log degree / Real.log k))
     (hLen : ∃ cₖ : ℕ → ℝ, proofLen ≤ (Fintype.card ι) + (cₖ k) * (Real.log degree))
@@ -302,15 +344,15 @@ theorem stir_main_of_secure_vectorIOP
     (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
       (cₖ k) * ((Real.log degree) +
         secpar * (Real.log ((Real.log degree) / Real.log (1 / rate (code φ degree)))))) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   ⟨3 * M + 3, stirMultiVSpec M ι, ε_rbr, π, hSecure, hε, hM, hLen, hQin, hQpf⟩
 
 /-- **Theorem 5.1 front door (#301, mechanical track)**: `stir_main` instantiated with the
 assembled multi-round object (`n := 3M + 3`, `vPSpec := stirMultiVSpec M ι`,
-`π := stirMultiRoundIOP M φ degree`), with the completeness leg of `IsSecureWithGapAveraged` proven.
-Consumed as hypotheses (the genuinely open legs): the rbr-soundness residual (`hSound`,
-Johnson-CA-gated), the rbr error bound (`hε`), and the complexity claims about the free
+`π := stirMultiRoundIOP M φ degree`), with the completeness leg of `IsSecureWithGap` proven.
+The wiring consumes the fixed-prefix soundness bound (`hSound`), the rbr error bound
+(`hε`), and the complexity constraints on the free
 parameters `M`/`proofLen`/`qNumtoInput`/`qNumtoProofstr` (`hM`/`hLen`/`hQin`/`hQpf`). -/
 theorem stir_main_of_residuals
     {M : ℕ} (secpar : ℕ)
@@ -321,7 +363,7 @@ theorem stir_main_of_residuals
     (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
     (hF : FieldSizeCondition secpar φ degree)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
-    (hSound : stirMultiRoundRbrSoundnessResidual M φ degree δ ε_rbr)
+    (hSound : stirMultiRoundRbrSoundnessFixedPrefix M φ degree δ ε_rbr)
     (hε : ∀ i, ε_rbr i ≤ (1 : ℚ≥0) / (2 ^ secpar))
     (hM : ∃ c > 0, M ≤ c * (Real.log degree / Real.log k))
     (hLen : ∃ cₖ : ℕ → ℝ, proofLen ≤ (Fintype.card ι) + (cₖ k) * (Real.log degree))
@@ -329,7 +371,7 @@ theorem stir_main_of_residuals
     (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
       (cₖ k) * ((Real.log degree) +
         secpar * (Real.log ((Real.log degree) / Real.log (1 / rate (code φ degree)))))) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   stir_main_of_secure_vectorIOP secpar hk hkGe δ hδub hF ε_rbr
     (stirMultiRoundIOP M φ degree)
@@ -344,6 +386,7 @@ end StirIOP
 
 #print axioms StirIOP.MultiRound.stirMultiRoundIOP
 #print axioms StirIOP.MultiRound.stirMultiRoundIOP_perfectCompleteness
+#print axioms StirIOP.MultiRound.stirRbrKnowledgeSoundnessFixedPrefix_of_one_le_first
 #print axioms StirIOP.MultiRound.stirMultiRoundIOP_isSecureWithGap
 #print axioms StirIOP.stir_rbr_soundness_of_secure_vectorIOP
 #print axioms StirIOP.stir_rbr_soundness_of_residuals

@@ -125,6 +125,26 @@ theorem fieldSizeCondition_zero {ι : Type} [Fintype ι] (φ : ι ↪ F) (degree
     FieldSizeCondition 0 φ degree := by
   simp [FieldSizeCondition]
 
+private def stirMainSpec
+    (secpar : ℕ) [SampleableType F]
+    {ι : Type} [Fintype ι] [Nonempty ι]
+    {φ : ι ↪ F} {degree : ℕ} [Smooth φ]
+    (k proofLen qNumtoInput qNumtoProofstr : ℕ) (δ : ℝ≥0)
+    (secure : ∀ {n : ℕ} {vPSpec : ProtocolSpec.VectorSpec n},
+      (vPSpec.ChallengeIdx → ℝ≥0) → VectorIOP Unit (OracleStatement ι F) Unit vPSpec F → Prop) : Prop :=
+  ∃ n : ℕ,
+  ∃ vPSpec : ProtocolSpec.VectorSpec n,
+  ∃ ε_rbr : vPSpec.ChallengeIdx → ℝ≥0,
+  ∃ π : VectorIOP Unit (OracleStatement ι F) Unit vPSpec F,
+  secure ε_rbr π
+  ∧ (∀ i, ε_rbr i ≤ (1 : ℚ≥0) / (2 ^ secpar))
+  ∧ (∃ c > 0, M ≤ c * (Real.log degree / Real.log k))
+  ∧ (∃ cₖ : ℕ → ℝ, proofLen ≤ (Fintype.card ι) + (cₖ k) * (Real.log degree))
+  ∧ (qNumtoInput : ℝ) ≥ secpar / (-Real.log (1 - δ))
+  ∧ ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
+    (cₖ k) * ((Real.log degree) +
+      secpar * (Real.log ((Real.log degree) / Real.log (1/rate (code φ degree)))))
+
 /-- Theorem 5.1 : STIR main theorem (front-door statement).
   Consider the following ingredients,
   a security parameter `secpar`
@@ -153,6 +173,9 @@ theorem fieldSizeCondition_zero {ι : Type} [Fintype ι] (φ : ι ↪ F) (degree
   - The complexity conjuncts sit outside the quantifier `∀ i` of the rbr-error bound. Before
     2026-10-28 they were nested under it, so a protocol with no challenges satisfied all of
     them vacuously.
+
+  This compatibility statement uses the historical prover-averaged game.
+  `stir_mainFixedPrefix` uses the same budget with fixed-prefix security.
 -/
 def stir_main
     (secpar : ℕ) [SampleableType F]
@@ -162,34 +185,73 @@ def stir_main
   (hk : ∃ p, k = 2 ^ p) (hkGe : k ≥ 4)
   (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
   (hF : FieldSizeCondition secpar φ degree) : Prop :=
-  ∃ n : ℕ,
-  ∃ vPSpec : ProtocolSpec.VectorSpec n,
-  ∃ ε_rbr : vPSpec.ChallengeIdx → ℝ≥0,
-  ∃ π : VectorIOP Unit (OracleStatement ι F) Unit vPSpec F,
-  IsSecureWithGapAveraged (stirRelation degree φ 0)
-                  (stirRelation degree φ δ)
-                  ε_rbr π
-  ∧ (∀ i, ε_rbr i ≤ (1 : ℚ≥0) / (2 ^ secpar))
-  ∧ (∃ c > 0, M ≤ c * (Real.log degree / Real.log k))
-  ∧ (∃ cₖ : ℕ → ℝ, proofLen ≤ (Fintype.card ι) + (cₖ k) * (Real.log degree))
-  ∧ (qNumtoInput : ℝ) ≥ secpar / (-Real.log (1 - δ))
-  ∧ ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
-    (cₖ k) * ((Real.log degree) +
-      secpar * (Real.log ((Real.log degree) / Real.log (1/rate (code φ degree)))))
-  -- STATUS (updated 2026-10-28): front-door statement with the limitations listed in the
-  -- docstring. `MultiRoundAssembly.lean` constructs `stirMultiRoundIOP` (shell verifier) and the
-  -- general wiring `stir_main_of_secure_vectorIOP`; `CheckingVerifier.lean` adds the checking
-  -- verifier and its conditional CA/bridge routes. Within the single-domain identity-fold
-  -- checking model the soundness leg is proved outright (`stir_main_of_checkingIOP_genuine`,
-  -- `SubUnitRbr.lean`; `stir_main_of_checkingIOP_rep`, `RepWire.lean`). Paper-STIR folding
-  -- (degree reduction) and its Johnson-regime correlated-agreement inputs are carried only by
-  -- the conditional routes, and the complexity conjuncts remain per-instance constraints.
+  stirMainSpec (M := M) (φ := φ) (degree := degree) secpar k proofLen qNumtoInput qNumtoProofstr δ
+    (IsSecureWithGapAveraged (stirRelation degree φ 0) (stirRelation degree φ δ))
+
+/-- The STIR Theorem 5.1 statement with fixed-prefix round-by-round security. -/
+def stir_mainFixedPrefix
+    (secpar : ℕ) [SampleableType F]
+  {ι : Type} [Fintype ι] [Nonempty ι]
+  {φ : ι ↪ F} {degree : ℕ} [hsmooth : Smooth φ]
+  {k proofLen qNumtoInput qNumtoProofstr : ℕ}
+  (hk : ∃ p, k = 2 ^ p) (hkGe : k ≥ 4)
+  (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
+  (hF : FieldSizeCondition secpar φ degree) : Prop :=
+  stirMainSpec (M := M) (φ := φ) (degree := degree) secpar k proofLen qNumtoInput qNumtoProofstr δ
+    (IsSecureWithGap (stirRelation degree φ 0) (stirRelation degree φ δ))
 
 end MainTheorem
 
 section RBRSoundness
 
 open LinearCode
+
+private def stirRbrSoundnessSpec
+    [SampleableType F] (s : ℕ) (P : Params ι F)
+    [∀ i : Fin (M + 1), Nonempty (ι i)] (Dist : Distances M)
+    (ε_fold : ℝ≥0) (ε_out ε_shift : Fin M → ℝ≥0) (ε_fin : ℝ≥0)
+    (secure : ∀ {n : ℕ} {vPSpec : ProtocolSpec.VectorSpec n},
+      (vPSpec.ChallengeIdx → ℝ≥0) → VectorIOP Unit (OracleStatement (ι 0) F) Unit vPSpec F → Prop) : Prop :=
+    ∃ n : ℕ,
+    -- There exists an `n`-message vector IOPP,
+    ∃ vPSpec : ProtocolSpec.VectorSpec n,
+    -- such that there are `2 * M + 2` challenges from the verifier to the prover,
+    Fintype.card (vPSpec.ChallengeIdx) = 2 * M + 2 ∧
+    -- ∃ vector IOPP π with the aforementioned `vPSpec`, and for
+    -- `Statement = Unit, Witness = Unit, OracleStatement(ι₀, F)` such that
+    ∃ π : VectorIOP Unit (OracleStatement (ι 0) F) Unit vPSpec F,
+    let ε_rbr : vPSpec.ChallengeIdx → ℝ≥0 :=
+      fun _ => ({ε_fold} ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max' (by simp)
+    secure ε_rbr π ∧
+    -- `ε_fold ≤ errStar(degree₀/foldingParam₀, ρ₀, δ₀, foldingParam₀)`
+      ε_fold ≤ proximityError F (P.deg / P.foldingParam 0) (rate (code (P.φ 0) P.deg))
+                 (Dist.δ 0) (P.foldingParam 0)
+      ∧
+      -- Note here that `j : Fin M`, so we need to cast into `Fin (M + 1)` for indexing of
+      -- `Dist.δ` and `P.repeatParam`. To get `j`, we use `.castSucc`, whereas to get `j + 1`,
+      -- we use `.succ`.
+      -- Because of the difference in indexing between the paper and the code, we essentially have
+      -- `j = i - 1` compared to the paper.
+      -- `ε_out_{j+1} ≤ l_{j+1}²/2 * (degree_{j+1} / (|F| - |ι_{j+1}|))^s`
+      (∀ j : Fin M,
+        ε_out j ≤ ((Dist.l j.succ : ℝ) ^ 2 / 2) *
+          ((degree ι P j.succ : ℝ) / (Fintype.card F - Fintype.card (ι j.succ))) ^ s
+        ∧
+        -- `ε_shift_{j+1} ≤ (1 - δ_j)^repeatParam_j`
+        -- `+ errStar(degree_{j+1}, ρ_{j+1}, δ_{j+1}, repeatParam_j + s)`
+        -- `+ errStar(degree_{j+1}/foldingParam_{j+1}, ρ_{j+1}, δ_{j+1}, foldingParam_{j+1})`
+        ε_shift j ≤
+          (1 - Dist.δ j.castSucc) ^ (P.repeatParam j.castSucc)  +
+          -- proximityError(degreeⱼ, ρ(codeⱼ), δⱼ, repeatParam_j + s), where codeⱼ = code φⱼ degreeⱼ
+           proximityError F (degree ι P j.succ) (rate (code (P.φ j.succ) (degree ι P j.succ)))
+            (Dist.δ j.succ) (P.repeatParam j.castSucc + s) +
+          -- proximityError(degreeⱼ / foldingParamⱼ, ρ(codeⱼ), δⱼ, foldingParamⱼ)
+           proximityError F ((degree ι P j.succ) / P.foldingParam j.succ)
+            (rate (code (P.φ j.succ) (degree ι P j.succ)))
+            (Dist.δ j.succ) (P.foldingParam j.succ))
+      ∧
+      -- The final bound is outside the tail quantifier and also applies at `M = 0`.
+      ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))
 
 /-- Lemma 5.4: Round-by-round soundness of the STIR IOPP
   Consider parameters:
@@ -206,7 +268,7 @@ open LinearCode
   `∀ i ∈ {1, ..., M}, δᵢ < (1 - ρᵢ - 1/|ιᵢ|)` and `δᵢ < (1 - BStar(ρᵢ))`
   then there exists a `vector IOPP π` with parameters as above such that
   `ε_fold ≤ errStar(degree₀/foldingParam₀, ρ₀, δ₀, foldingParam₀)`
-  `ε_outᵢ ≤ lᵢ²/2 * (degreeᵢ/ |F| - |ιᵢ|)^s`
+  `ε_outᵢ ≤ lᵢ²/2 * (degreeᵢ / (|F| - |ιᵢ|))^s`
   `ε_shiftᵢ ≤ (1 - δ_{i-1})^repeatParam_{i-1} + errStar(degreeᵢ, ρᵢ, δᵢ, t_{i-1} + s)`
     `+ errStar(degreeᵢ/foldingParamᵢ, ρᵢ, δᵢ, foldingParamᵢ)`
   `ε_fin ≤ (1 - δ_M)^repeatParam_M`
@@ -233,6 +295,9 @@ open LinearCode
   - `π` is existentially quantified: any vector IOP with `2M + 2` challenges that is
     secure-with-gap for the two `stirRelation`s at the max of these errors witnesses the
     statement; nothing pins `π` to the STIR verifier.
+
+  This compatibility statement uses the historical prover-averaged game.
+  `stir_rbr_soundnessFixedPrefix` uses the same budget with fixed-prefix security.
 -/
 def stir_rbr_soundness
     [SampleableType F] {s : ℕ}
@@ -246,55 +311,26 @@ def stir_rbr_soundness
           - 1 / Fintype.card (ι j) : ℝ) ∧
         Dist.δ j < (1 - Bstar (rate (code (P.φ j) (degree ι P j)))))
     (ε_fold : ℝ≥0) (ε_out : Fin M → ℝ≥0) (ε_shift : Fin M → ℝ≥0) (ε_fin : ℝ≥0) : Prop :=
-    ∃ n : ℕ,
-    -- There exists an `n`-message vector IOPP,
-    ∃ vPSpec : ProtocolSpec.VectorSpec n,
-    -- such that there are `2 * M + 2` challenges from the verifier to the prover,
-    Fintype.card (vPSpec.ChallengeIdx) = 2 * M + 2 ∧
-    -- ∃ vector IOPP π with the aforementioned `vPSpec`, and for
-    -- `Statement = Unit, Witness = Unit, OracleStatement(ι₀, F)` such that
-    ∃ π : VectorIOP Unit (OracleStatement (ι 0) F) Unit vPSpec F,
-    let ε_rbr : vPSpec.ChallengeIdx → ℝ≥0 :=
-      fun _ => ({ε_fold} ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max' (by simp)
+  stirRbrSoundnessSpec ι s P Dist ε_fold ε_out ε_shift ε_fin
     (IsSecureWithGapAveraged (stirRelation (degree ι P 0) (P.φ 0) 0)
-                    (stirRelation (degree ι P 0) (P.φ 0) (Dist.δ 0))
-                    ε_rbr π) ∧
-    -- `ε_fold ≤ errStar(degree₀/foldingParam₀, ρ₀, δ₀, foldingParam₀)`
-      ε_fold ≤ proximityError F (P.deg / P.foldingParam 0) (rate (code (P.φ 0) P.deg))
-                 (Dist.δ 0) (P.foldingParam 0)
-      ∧
-      -- Note here that `j : Fin M`, so we need to cast into `Fin (M + 1)` for indexing of
-      -- `Dist.δ` and `P.repeatParam`. To get `j`, we use `.castSucc`, whereas to get `j + 1`,
-      -- we use `.succ`.
-      -- Because of the difference in indexing between the paper and the code, we essentially have
-      -- `j = i - 1` compared to the paper.
-      -- `ε_out_{j+1} ≤ l_{j+1}²/2 * (degree_{j+1}/ |F| - |ι_{j+1}|)^s`
-      (∀ j : Fin M,
-        ε_out j ≤ ((Dist.l j.succ : ℝ) ^ 2 / 2) *
-          ((degree ι P j.succ : ℝ) / (Fintype.card F - Fintype.card (ι j.succ))) ^ s
-        ∧
-        -- `ε_shift_{j+1} ≤ (1 - δ_j)^repeatParam_j`
-        -- `+ errStar(degree_{j+1}, ρ_{j+1}, δ_{j+1}, repeatParam_j + s)`
-        -- `+ errStar(degree_{j+1}/foldingParam_{j+1}, ρ_{j+1}, δ_{j+1}, foldingParam_{j+1})`
-        ε_shift j ≤
-          (1 - Dist.δ j.castSucc) ^ (P.repeatParam j.castSucc)  +
-          -- proximityError(degreeⱼ, ρ(codeⱼ), δⱼ, repeatParam_j + s), where codeⱼ = code φⱼ degreeⱼ
-           proximityError F (degree ι P j.succ) (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.repeatParam j.castSucc + s) +
-          -- proximityError(degreeⱼ / foldingParamⱼ, ρ(codeⱼ), δⱼ, foldingParamⱼ)
-           proximityError F ((degree ι P j.succ) / P.foldingParam j.succ)
-            (rate (code (P.φ j.succ) (degree ι P j.succ)))
-            (Dist.δ j.succ) (P.foldingParam j.succ))
-      ∧
-      -- `ε_fin ≤ (1 - δ_M)^repeatParam_M`, outside the tail quantifier so it also binds at `M = 0`
-      ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))
-  -- STATUS (updated 2026-10-28): front-door statement with the limitations listed in the
-  -- docstring. `MultiRoundSpec.lean`, `FullChain.lean` and `MultiRoundAssembly.lean` realize the
-  -- `2 * M + 2` challenge shape and the general wiring `stir_rbr_soundness_of_secure_vectorIOP`;
-  -- `CheckingVerifier.lean` instantiates it with the checking verifier, conditionally on the
-  -- named CA/bridge residuals (or the small-field vacuous-budget route). The per-round
-  -- `proximityError` obligations remain tied to the BCIKS/STIR proximity-gap residuals in the
-  -- Johnson / sqrt-rho list-decoding regime.
+      (stirRelation (degree ι P 0) (P.φ 0) (Dist.δ 0)))
+
+/-- The STIR Lemma 5.4 statement with fixed-prefix round-by-round security. -/
+def stir_rbr_soundnessFixedPrefix
+    [SampleableType F] {s : ℕ}
+    {P : Params ι F}
+    [h_nonempty : ∀ i : Fin (M + 1), Nonempty (ι i)]
+    {hParams : ParamConditions ι P} {Dist : Distances M}
+    {Codes : CodeParams ι P Dist}
+    (hδ₀ : Dist.δ 0 < (1 - Bstar (rate (code (P.φ 0) P.deg))))
+    (hδᵢ : ∀ {j : Fin (M + 1)}, j ≠ 0 →
+        Dist.δ j < (1 - rate (code (P.φ j) (degree ι P j))
+          - 1 / Fintype.card (ι j) : ℝ) ∧
+        Dist.δ j < (1 - Bstar (rate (code (P.φ j) (degree ι P j)))))
+    (ε_fold : ℝ≥0) (ε_out : Fin M → ℝ≥0) (ε_shift : Fin M → ℝ≥0) (ε_fin : ℝ≥0) : Prop :=
+  stirRbrSoundnessSpec ι s P Dist ε_fold ε_out ε_shift ε_fin
+    (IsSecureWithGap (stirRelation (degree ι P 0) (P.φ 0) 0)
+      (stirRelation (degree ι P 0) (P.φ 0) (Dist.δ 0)))
 
 end RBRSoundness
 
@@ -303,6 +339,8 @@ end StirIOP
 /- Axiom audit for the STIR main theorem residual front doors (#24). -/
 #print axioms StirIOP.stir_main
 #print axioms StirIOP.stir_rbr_soundness
+#print axioms StirIOP.stir_mainFixedPrefix
+#print axioms StirIOP.stir_rbr_soundnessFixedPrefix
 /- Parameter-regime checks added by the 2026-10-28 audit repair (L36). -/
 #print axioms StirIOP.not_lt_one_sub_Bstar_rate_of_card_le
 #print axioms StirIOP.ParamConditions.rate_lt_one

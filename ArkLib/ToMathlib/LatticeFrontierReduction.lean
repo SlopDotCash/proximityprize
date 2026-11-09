@@ -53,7 +53,7 @@ below are valid conditional implications only.  The counterexample does not by i
 the closed-boundary consumer `correlatedAgreementCurves_closedBoundary_assembly_of_frontier`,
 which demands the count-only producer only at the exact boundary `δ = 1 − √ρ` on the
 square-lattice branch; whether it is inhabited there is open.  The bare count-only producer is
-not equivalent to the original BCIKS20 task, which carries a probability trigger. 
+not equivalent to the original BCIKS20 task, which carries a probability trigger.
 
 ## References
 * [BCIKS20] Ben-Sasson, Carmon, Ishai, Kopparty, Saraf, *Proximity Gaps for Reed–Solomon

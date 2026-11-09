@@ -26,9 +26,9 @@ label is a conservative triage heuristic, not a kernel-checked fact:
 - **refuted** — a declaration with no recognised assumption proves the negation of some
   instance, so the residual family is not uniformly true. A refutation outranks every
   provider; proved instances stay listed, since an instance proof next to an instance
-  refutation is mixed parameter-scope coverage, not a contradiction. The negation must refute
-  the residual outright; negated existentials, compound negations such as `¬ (R ∧ Q)` and
-  negations under a `∀` inside a conjunct are not counted.
+  refutation is mixed parameter-scope coverage, not a contradiction. Negated
+  existentials and negations under a universal introduced beneath a connective do not
+  count because their domains may have no witnesses.
 - **open** — everything else, including residuals with conditional providers only.
 
 The named-residual convention is a modularity pattern, not an incompleteness marker:
@@ -58,74 +58,16 @@ summary, which follows the addenda.
 > CORE. See the dossier v3 §6 SYZ54 addendum and `deltastar-466-syz53-*-2026-07-11.md`. This block
 > is historical evidence, not the current total; preserve it when regenerating the file.
 
-> **Campaign addendum — historical audit snapshot (2026-08-16 at `b72890393`).** At that commit
-> the regenerated strict census contained **117 residuals: 69 open, 47 discharged, and one
-> refuted**, plus 79 residual-like near misses. Those were the totals of the summary and JSON
-> generated at that commit (an `ArkLib/`-only syntactic classification, before the 2026-10-28
-> classifier change); they are not the current summary below. Relative to the
+> **Campaign addendum — current audit (2026-08-16 at `b72890393`).** The regenerated strict
+> census contains **117 residuals: 69 open, 47 discharged, and one refuted**, plus 79 residual-like
+> near misses. Those are the current totals in the summary and JSON below. Relative to the
 > historical 2026-07-11 snapshot, the strict totals changed 108 → 117, open 62 → 69, discharged
 > 45 → 47, refuted 1 → 1, and near misses 76 → 79. The SYZ70/SYZ71 and all-depth cyclic-floor
-> additions introduced no new strict `*Residual` declaration. This syntactic census still does not
+> additions introduce no new strict `*Residual` declaration. This syntactic census still does not
 > count every theorem-facing named `Prop` or structure field: in particular
 > `UniformSylvesterInjective`, `StripSyzygyControlledCeiling`, and `hrank` remain open production
 > obligations outside the strict suffix convention. The production δ* conjecture therefore
-> remains **OPEN / ON-BGK**. All campaign addenda are deliberately preserved by regeneration.
-
-> **Campaign addendum — strict coefficient-extraction refutations (2026-10-22).** The strict
-> coefficient-extraction surface is now refuted, not open: two kernel-checked counterexamples in
-> `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CanonicalCoeffExtractionRefutation.lean`
-> kill every form of it at `k = 1`, `deg = 2`, `δ = 3/7` over `GaloisField 2 64` on a
-> seven-point domain. `not_strictCanonicalCoeffPolysResidual` refutes the uniqueness clause of
-> `StrictCanonicalCoeffPolysResidual`; `not_strictCoeffPolysResidual` refutes the broad
-> coefficient-interpolation statement; and `not_strictCoeffPolysLargeResidual` refutes the
-> large-good-set sector, which by `strictCoeffPolysResidual_iff_large` carries its whole content.
-> All three names are classified `refuted` below: since the census precedence fix, a proved
-> negation outranks the vacuous `k = 0` provider
-> `ArkLib.KeystoneStrictResidual.strictCoeffPolysResidual_zero` (whose hypothesis `0 < 0` is
-> unsatisfiable), so `StrictCoeffPolysResidual` is no longer labelled `discharged`. Every
-> conditional adapter
-> that consumes these surfaces — notably
-> `strictCoeffPolysResidual_of_strictCanonicalCoeffPolysResidual` and
-> `correlatedAgreement_affine_curves_of_largeResidual` — is therefore vacuous, and the §5
-> strict-interior targets must repair the statement (fix a canonical decoder, or restrict to the
-> unique-decoding regime) rather than try to discharge it. The δ* conjecture is untouched and
-> remains **OPEN**.
->
-> **Update (exceptional-set repair, 2026-10-22).** The honest repair `StrictCoeffPolysExcResidual b`
-> (coefficient identity required only outside an exceptional set of size `≤ b`) is refuted too, for
-> every budget `2b + 2 < |F|`: `not_strictCoeffPolysExcResidual_of_two_mul_add_two_lt_card` and its
-> concrete `b = 1` instance `not_strictCoeffPolysExcResidual_one` use a block decoder whose
-> `coeff 1` is the indicator of a `(b + 1)`-point parameter block. That name has no competing
-> provider, so it is classified `refuted` below, and the exceptional-set keystones
-> `correlatedAgreement_affine_curves_of_strict_coeff_polys_exc` /
-> `correlatedAgreement_affine_curves_strict_of_strict_coeff_polys_exc` are conditional reductions
-> from a refuted hypothesis at every meaningful `ε = errorBound + b/|F|`. Budgets
-> `b ≥ (|F| - 2)/2` are not refuted here and no satisfiability claim is made there.
->
-> **Update (geometric §5 root, 2026-10-22).** `CurveCommonAgreementResidual`
-> (`BCIKS20/Curves/CoeffExtractionResidual.lean`), the geometric form from which the broad algebraic
-> form follows by `strictCoeffPolysResidual_of_commonAgreement`, is refuted at the same witness:
-> `not_curveCommonAgreementResidual`. It is classified `refuted` below, and its three
-> `curveCommonAgreementResidual_of_*` providers are conditional/vacuous adapters. Totals at that
-> merge (2026-10-28), before the classifier hardening recorded in the next addendum: 89 strict
-> residuals, 41 open, 35 discharged, 13 refuted; they are not the current summary below.
-
-> **Campaign addendum — census classifier hardening (2026-10-28 repository review, T04/L11).**
-> The review showed that `scripts/residual_census.py` could label conditional or
-> instance-specific results `discharged`. It ignored section hypotheses added by `include`,
-> instance assumptions such as `[i : Assumed]` with `Assumed : Prop`, proof binders whose names do
-> not start with `h` (for example `(p : False)`), and premises written in the result type; its
-> name-based branch accepted any result that mentioned a residual; and it collapsed specialised
-> instances (fixed sizes, an indicator error, a fixed claimed sum, an empty trailing protocol)
-> into one `discharged` family label. The review also documented four LogUp rows marked
-> `discharged` only through `_iff` equivalence lemmas, which an earlier fix had already
-> reclassified `open`. The classifier now reads conclusion atoms, section variables,
-> `include`/`omit`, instance binders and parameter types, adds the `instance-only` status, and
-> keeps the proved instances of refuted rows listed. No Lean theorem changed, so totals before
-> and after this change are not comparable, and the census remains a syntactic inventory
-> (now of `ArkLib/` and `ProximityPrize/`), not a verified completion ledger. The review's raw rerun at `d1670497f`
-> (89 strict residuals: 44 open, 44 labelled discharged, 1 refuted) was likewise a tool
-> classification, not a certified total.
+> remains **OPEN / ON-BGK**. Both campaign addenda are deliberately preserved by regeneration.
 
 ## Summary
 
@@ -148,12 +90,12 @@ summary, which follows the addenda.
 
 - `AGL24.FrankUncrossingResidual` — `ArkLib/Data/CodingTheory/AGL24FrankDescent.lean:264`
 - `AGL24.FrankOrientationResidual` — `ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean:42` — conditional providers only (residual deps: `FrankUncrossingResidual`; extra assumptions: `hfrank`, `hres`)
-- `AGL24.SymbolicFullRankResidual` — `ArkLib/Data/CodingTheory/AGL24SymbolicRank.lean:45` — conditional providers only (residual deps: `FrankOrientationResidual`, `GMMDSResidual`, `SymbolicFullRankResidual`; extra assumptions: `h`, `h'`, `hdual`, `hfield`, `hfrank`, `hgm`, `hgmmds`, `hk`, `hminor`, `hrc`, `hwitness`; instance assumptions: `[Algebra F F']`, `[Field F']`, `[Finite F]`, `[Fintype F]`, `[Nonempty ι]`)
+- `AGL24.SymbolicFullRankResidual` — `ArkLib/Data/CodingTheory/AGL24SymbolicRank.lean:45` — conditional providers only (residual deps: `FrankOrientationResidual`, `GMMDSResidual`, `SymbolicFullRankResidual`; extra assumptions: `h`, `h'`, `hdual`, `hfield`, `hfrank`, `hgm`, `hgmmds`, `hk`, `hminor`, `hnonempty`, `hrc`, `hwitness`; instance assumptions: `[Algebra F F']`, `[Field F']`, `[Finite F]`, `[Fintype F]`, `[Nonempty ι]`)
 - `AGL24.RIMFullRankFailureProbResidual` — `ArkLib/Data/CodingTheory/AGL24UnionBound.lean:100` — conditional providers only (residual deps: `SymbolicFullRankResidual`; extra assumptions: `hfrank`, `hgm`, `hsym`, `ht`, `hwpc`; instance assumptions: `[Nonempty ι]`)
 - `CodingTheory.randomLinearLambdaLowerFirstMomentResidual` — `ArkLib/Data/CodingTheory/ListDecoding/Bounds/RandomAndReedSolomon.lean:143` — conditional providers only (extra assumptions: `h`, `hG`)
 - `BCIKS20.HenselNumerator.βHenselSuccTermWeightResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean:1665` — conditional providers only (residual deps: `βHenselSuccTermStructuredWeightResidual`; extra assumptions: `hStructured`, `hterm`)
 - `BCIKS20.HenselNumerator.βHenselSuccTermStructuredWeightResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean:1746` — conditional providers only (extra assumptions: `hDRx0`, `hRgraded`, `hW`, `hdHd`)
-- `ProximityGap.Ownership.SubJohnsonListResidual` — `ArkLib/Data/CodingTheory/ProximityGap/SubJohnsonListSupply.lean:76`
+- `ProximityGap.Ownership.SubJohnsonListResidual` — `ArkLib/Data/CodingTheory/ProximityGap/SubJohnsonListSupply.lean:68`
 - `Verifier.appendRbrSoundnessPhase2Residual` — `ArkLib/OracleReduction/Composition/Sequential/AppendRbrKeystone.lean:301` — conditional providers only (extra assumptions: `hDir`, `hDir₂`, `hInitNF`, `hS₂`, `hn`; instance assumptions: `[Subsingleton σ]`)
 - `Verifier.appendRbrKnowledgeSoundnessPerRoundResidual` — `ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeSoundness.lean:60` — conditional providers only (residual deps: `appendRbrKnowledgeSoundnessPhase2Residual`; extra assumptions: `hBound₁`, `hBound₂`, `hDir`, `hDir₂`, `hInitNF`, `hNEW₂`, `hNE₂`, `hPhase2`, `hn`; instance assumptions: `[Subsingleton σ]`)
 - `Verifier.appendRbrKnowledgeSoundnessPhase2Residual` — `ArkLib/OracleReduction/Composition/Sequential/AppendRbrKnowledgeSoundness.lean:340` — conditional providers only (extra assumptions: `hBound₂`, `hDir`, `hDir₂`, `hInitNF`, `hNEW₂`, `hReconcile`, `hReconcilePos`, `hn`; instance assumptions: `[Subsingleton σ]`)
@@ -196,8 +138,8 @@ summary, which follows the addenda.
 - `ProximityGap.GKL24FirstMomentResidual` — `ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean:1081` — proved instances only: `ProximityGap.GKL24FirstMomentResidual_inTree_card` (ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean:1093) at `B_T := (Fintype.card (ι → F) : ℝ)`, `b := (Fintype.card ι : ℝ)`; `ProximityGap.GKL24FirstMomentResidual_inTree_two_delta_card` (ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean:1115) at `B_T := (Fintype.card (ι → F) : ℝ)`, `b := (max 1 (2 * (δ : ℝ) * (Fintype.card ι : ℝ)))`; `ProximityGap.GKL24FirstMomentResidual_inTree_delta_add_one_card` (ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean:1627) at `B_T := (Fintype.card (ι → F) : ℝ)`, `b := ((δ : ℝ) * (Fintype.card ι : ℝ) + 1)`
 - `ProximityGap.GKL24FirstMomentWitnessCoverResidual` — `ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean:1149` — proved instances only: `ProximityGap.GKL24FirstMomentWitnessCoverResidual_inTree_two_delta_card` (ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean:1169) at `B_T := (Fintype.card (ι → F) : ℝ)`, `b := (max 1 (2 * (δ : ℝ) * (Fintype.card ι : ℝ)))`
 - `ProximityGap.Ownership.SubJohnsonSupplyResidual` — `ArkLib/Data/CodingTheory/ProximityGap/JohnsonSplitSupply.lean:258` — proved instances only: `ProximityGap.PairRank.cappedSupplyOptimal_is_least` (ArkLib/Data/CodingTheory/ProximityGap/SubJohnsonSupplyReframe.lean:145) at `B := (cappedSupplyOptimal dom k m)`
-- `StirIOP.MultiRound.stirCheckingRbrSoundnessResidual` — `ArkLib/ProofSystem/Stir/CheckingVerifier.lean:978` — proved instances only: `StirIOP.MultiRound.stirCheckingRbrSoundness_genuine` (ArkLib/ProofSystem/Stir/SubUnitRbr.lean:865) at `ε_rbr := (stirEpsStar (F := F) (ι := ι) M δ)`
-- `StirIOP.MultiRound.stirMultiRoundRbrSoundnessResidual` — `ArkLib/ProofSystem/Stir/MultiRoundAssembly.lean:171` — proved instances only: `StirIOP.MultiRound.stirMultiRoundRbrSoundness_indicator` (ArkLib/ProofSystem/Stir/ShellRbrIndicator.lean:58) at `ε_rbr := (fun i => if i = foldChalIdx (F := F) (ι := ι) M then 1 else…`
+- `StirIOP.MultiRound.stirCheckingRbrSoundnessResidual` — `ArkLib/ProofSystem/Stir/CheckingVerifier.lean:978` — proved instances only: `StirIOP.MultiRound.stirCheckingRbrSoundness_genuine` (ArkLib/ProofSystem/Stir/SubUnitRbr.lean:864) at `ε_rbr := (stirEpsStar (F := F) (ι := ι) M δ)`
+- `StirIOP.MultiRound.stirMultiRoundRbrSoundnessResidual` — `ArkLib/ProofSystem/Stir/MultiRoundAssembly.lean:170` — proved instances only: `StirIOP.MultiRound.stirMultiRoundRbrSoundness_indicator` (ArkLib/ProofSystem/Stir/ShellRbrIndicator.lean:65) at `ε_rbr := (fun i => if i = foldChalIdx (F := F) (ι := ι) M then 1 else…`
 - `ArkLib.RingSwitching.Phases.BatchingConsistencyResidual` — `ArkLib/ToMathlib/RSPhases.lean:128` — proved instances only: `ArkLib.RingSwitching.Phases.batchingConsistencyResidual_sum` (ArkLib/ToMathlib/RSPhases.lean:133) at `s0 := (∑ b : Fin k → Fin 2, A b * tEvals b)`
 - `Prover.appendRunRightResidual` — `ProximityPrize/Extensions/OracleReduction/Composition/Sequential/Append.lean:2922` — proved instances only: `Prover.appendRunRightResidual_holds_empty` (ArkLib/OracleReduction/Composition/Sequential/EmptyAppend.lean:84) at `pSpec₂ : ProtocolSpec 0`
 - `Reduction.fiatShamir_soundnessTransferResidual` — `ProximityPrize/Extensions/OracleReduction/FiatShamir/Basic.lean:812` — proved instances only: `Reduction.fiatShamir_soundnessTransferResidual_canonical` (ArkLib/OracleReduction/FiatShamir/StateRestorationTransport.lean:911) at `fsInit := srInit (same as srInit)`, `fsImpl := (fiatShamirCoupledQueryImpl (oSpec := oSpec) (pSpec := pSpe…`
@@ -267,7 +209,7 @@ drift.
 
 ## Refuted Residuals
 
-- `AGL24.GMMDSResidual` — `ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean:54` — refuted by `not_gmmdsResidual_fin3_zmod2` (ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean:99) at `ι := (Fin 3)`, `F := (ZMod 2)`
+- `AGL24.GMMDSResidual` — `ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean:54` — refuted by `not_gmmdsResidual_fin3_zmod2` (ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean:97) at `ι := (Fin 3)`, `F := (ZMod 2)`
 - `ProximityGap.CurveCommonAgreementResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CoeffExtractionResidual.lean:43` — refuted by `ProximityGap.StrictCanonicalCoeffPolysRefutation.not_curveCommonAgreementResidual` (ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/CanonicalCoeffExtractionRefutation.lean:530) at `k := 1`, `deg := 2`, `domain := domain7`, `δ := (3 / 7 : ℝ≥0)`
 - `ProximityGap.RSCurveListSizeResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/ListSizeResidual.lean:50` — refuted by `ProximityGap.RSCurveListSizeRefutation.not_rsCurveListSizeResidual` (ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves/ListSizeResidualRefutation.lean:154) at `k := 1`, `deg := 1`, `domain := domain`, `δ := (1 : ℝ≥0) / 2`, `e := 2`
 - `BCIKS20.HenselNumerator.FaaDiBrunoSuccSumZeroResidual` — `ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/HenselNumerator.lean:2542` — refuted by `BCIKS20.HenselNumerator.Witness.faaDiBrunoSuccSumZeroResidual_false` (ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/P2OrderZeroRefutationWitness.lean:175) at `H := myH`, `x₀ := (0 : ℚ)`, `R := myR`, `hHyp := myHyp`

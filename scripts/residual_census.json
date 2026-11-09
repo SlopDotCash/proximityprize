@@ -239,7 +239,7 @@
      "name": "not_gmmdsResidual_fin3_zmod2",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean",
-     "line": 99,
+     "line": 97,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
@@ -374,14 +374,15 @@
      "name": "AGL24.symbolicFullRank_of_classical_imports",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/AGL24GrandAssembly.lean",
-     "line": 71,
+     "line": 65,
      "conditional_on_residuals": [
       "FrankOrientationResidual",
       "GMMDSResidual"
      ],
      "extra_explicit_binders": [
       "hfrank",
-      "hgmmds"
+      "hgmmds",
+      "hnonempty"
      ],
      "ambiguous_name_match": false,
      "equivalence": false,
@@ -485,7 +486,7 @@
      "name": "AGL24.rimFailureProb_of_rootedOutCut_and_dualZeroPattern",
      "kind": "theorem",
      "file": "ArkLib/Data/CodingTheory/AGL24Issue354Discharge.lean",
-     "line": 67,
+     "line": 70,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [
       "hfrank",
@@ -1891,7 +1892,7 @@
    "name": "SubJohnsonListResidual",
    "fq_name": "ProximityGap.Ownership.SubJohnsonListResidual",
    "file": "ArkLib/Data/CodingTheory/ProximityGap/SubJohnsonListSupply.lean",
-   "line": 76,
+   "line": 68,
    "providers": [],
    "status": "open"
   },
@@ -3615,7 +3616,7 @@
      "name": "StirIOP.MultiRound.stirCheckingRbrSoundness_genuine",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Stir/SubUnitRbr.lean",
-     "line": 865,
+     "line": 864,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,
@@ -3637,7 +3638,7 @@
    "name": "stirMultiRoundRbrSoundnessResidual",
    "fq_name": "StirIOP.MultiRound.stirMultiRoundRbrSoundnessResidual",
    "file": "ArkLib/ProofSystem/Stir/MultiRoundAssembly.lean",
-   "line": 171,
+   "line": 170,
    "providers": [
     {
      "name": "StirIOP.MultiRound.stirMultiRoundRbrSoundness_mono",
@@ -3684,7 +3685,7 @@
      "name": "StirIOP.MultiRound.stirMultiRoundRbrSoundness_indicator",
      "kind": "theorem",
      "file": "ArkLib/ProofSystem/Stir/ShellRbrIndicator.lean",
-     "line": 58,
+     "line": 65,
      "conditional_on_residuals": [],
      "extra_explicit_binders": [],
      "ambiguous_name_match": false,

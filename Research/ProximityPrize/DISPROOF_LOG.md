@@ -10639,6 +10639,15 @@ constraint the refutation proved is required. NOT a full closure: it bounds the 
 not the per-scalar worst case; the per-scalar gap remains the open wall, but it is now precisely
 localized to "is the worst-case-γ core count `≪` the line average `C(n,a)/q`?"
 
+**Formal scope update.** `explainableCoreSupply_iff` proves the exact uniform
+budget `C(n,k+m+1)` on every evaluation domain by taking the zero codeword as
+the received word. The [#312](https://github.com/SlopDotCash/proximityprize/pull/312)
+consumer lemmas in `SubJohnsonListSupply.lean` give `n ≤ A` when
+`k+m+1 ≤ n` and `C(n,k+m+1) ≤ L·C(A,k+m+1)`. The first-band count
+in `production_badSet_gated_on_open_core` at `m = 0` can force at most one bad scalar.
+This is a limit of the all-word budget. The list-size and production proximity
+problems remain open.
+
 ## 2026-06-13 — smooth-domain δ* tracks subgroup ARITHMETIC, not smoothness (QR-bad / 2-power-good)
 
 A structural finding from the exact m=0 (cubic) supply on two smooth domains, both
@@ -14750,7 +14759,6 @@ Single convention for all `c*` statements in this log: the crossing offset is
 the budget is `n`, and "binding" means the first size `s` at which the max-over-directions count is
 `≤ n`. Measured exact values under this convention (no extrapolation):
 
-| object | n | k / ρ | c* (or s*) |
 **Lane mission:** `SinglePencilQIndependence.mca_badscalar_packing` (axiom-clean) gives the packing
 bound `#bad · C(a,k+1) ≤ C(|μ|,k+1)`, landing in the W5 SUPPLY STRIP. Its `mca_badscalar_sharp`
 docstring flags the honest residual to the exact δ* prize pin as: *"the pinning (k+1)-subsets are
@@ -33705,6 +33713,7 @@ what makes MITM counting trivial: match half-subset moment vectors against `(t, 
 
 **Exact death table, n = 32, rate 1/4 (constraints e₂..e_{a−8}):**
 | a | constraints | p = 97 | p = 193 |
+| object | n | k / ρ | c* (or s*) |
 |---|---|---|---|
 | ρ=1/4 axis, k=n/4 | 8, 12, 16, 20, 32 | ρ=1/4 | c* = 3, 4, 3, 4, 5 |
 | fixed n, rate sweep | 16 | k=2..6 | c* = 3, 4, 3, 4, 3 |
@@ -48510,6 +48519,223 @@ scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsolatedCountResi
 Evidence class: Lean proof certificate; all declarations of the file use only `propext`,
 `Classical.choice` and `Quot.sound`.
 
+### [164-isolated-count-positive-characteristic] Positive characteristic does not repair the unrestricted isolated count residual
+
+Date: 2026-10-30. Target:
+`ProximityGap.Frontier.AntipodalEvenOddDescent.IsolatedCountResidual`, declared in
+`Frontier/_AntipodalEvenOddDescent.lean`. This extends the rational witness in
+`Frontier/_IsolatedCountResidualRefuted.lean` to positive characteristic and general
+fields; it does not claim production Delta Star closure.
+
+`Frontier/_IsolatedCountPositiveCharacteristic.lean` verifies that for the interpolant
+`E(u) = -u²/6 + 7u/6` and `O = 1` at `k = 1`, the three elements `0, 1, 2` are isolated
+roots of `E(X²) - X·O(X²)` whenever `2` and `3` are nonzero in `F`. The set `{0, 1, 2}`
+has cardinality 3, contradicting the claimed cap `k + 1 = 2`.
+
+The theorem `not_isolatedCountResidual_of_char_gt_three` specializes this to every field
+of prime characteristic `p > 3` (which includes both sponsor fields), while
+`not_isolatedCountResidual_of_char_zero` covers characteristic zero. Therefore merely
+restricting the unrestricted residual to positive characteristic cannot repair it.
+The intended halved-subgroup domain restriction and degree/head bounds on `E` remain
+outside this statement and are not refuted.
+
+Reproduction:
+
+```
+scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_IsolatedCountPositiveCharacteristic.lean
+scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsolatedCountPositiveCharacteristic
+```
+
+Evidence class: Lean proof certificate; all declarations use only `propext`,
+`Classical.choice`, and `Quot.sound`.
+
+---
+
+### [agl24-rim-failure-prob-boundary-instances] Two boundary instances outside the Lemma 3.1 assembly
+
+Date: 2026-11-01. Target: the [AGL24] §3 "Lemma 3.1 interface"
+`AGL24.RIMFullRankFailureProbResidual` in `ArkLib/Data/CodingTheory/AGL24UnionBound.lean`.
+This is a route-map note prompted by the review of PR #334; it is neither a closure nor a
+refutation claim, and the recorded census status of the residual remains
+open-with-conditional-providers.
+
+`ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean` kernel-checks two boundary
+instances of the interface predicate:
+
+- at the empty one-slot family the reduced intersection matrix has no rows, the deficit
+  set is everything, and its outer measure under the uniform tuple distribution is
+  `1` (`rimRankDeficitSet_empty_family`, `toOuterMeasure_deficit_empty_family_eq_one`);
+- at the complete two-slot family, which is genuinely 2-weakly-partition-connected
+  (`wpc_two_complete_family`), the all-zero evaluation is a deficit point with kernel
+  witness `(0, 1)` (`zero_eval_mem_rimRankDeficitSet_complete_family`), so a point-mass
+  distribution on it gives the deficit set measure `1`
+  (`toOuterMeasure_deficit_complete_family_pure_eq_one`).
+
+Each example violates the predicate when the proposed upper bound is below `1`.
+The empty family violates the WPC hypothesis. The complete two-slot family meets WPC,
+but the all-zero tuple has mass zero under every evaluation-embedding-mapped PMF,
+since embeddings `Fin 2 ↪ ZMod 2` take two distinct values. Neither example falls
+under the `hres` hypothesis of `conditional_failure_bound`. Consequently such boundary facts delimit the predicate without refuting the
+interface, and exact counterexample-style submissions at non-WPC families or
+non-injective masses are a dead end recorded here for anti-repeat. The real referencing
+gap — the bridge from the uniform-over-tuples bound to the embedding-mapped evaluation
+PMF that `conditional_failure_bound` consumes — is PR #338.
+
+Reproduction at the final PR commit:
+
+```
+scripts/pg-iterate.sh ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean
+scripts/lake-locked.sh build ArkLib.Data.CodingTheory.AGL24FailureProbGuard
+```
+
+Evidence class: Lean proof certificate; all declarations of the file use only `propext`,
+`Classical.choice` and `Quot.sound`. Full repository and hosted gates must be reported
+separately.
+---
+
+### [164-isolated-noncoset-sharp-bound] The degree-only cap is exactly `2k - 1`
+
+Date: 2026-11-06. Target:
+`IsoSparsityMasonStothers.IsolatedNonCosetCountResidual`, on the antipodal
+isolated-root path. The earlier rational certificate refutes the recorded cap at
+`k = 3`; this result classifies its rational instances for every `k`.
+
+[`_IsolatedNonCosetSharpBound.lean`](Frontier/_IsolatedNonCosetSharpBound.lean)
+proves `isolated_roots_card_le`: over any field, if `deg A, deg O < k`, every
+finite set of roots of `A² - X O²` at which `O` is nonzero has at most `2k - 1`
+elements. Nonvanishing of `O` at a selected root makes `O` nonzero; the odd degree
+of `X O²` prevents its cancellation with the even-degree square `A²`.
+
+`exists_sharp_isolated_roots` attains this bound over `ℚ` for every positive `k`.
+Split `Q(T) = product_{i=1}^{2k-1}(T-i)` as `A(T²) - T O(T²)` using the existing
+`Polynomial.splitNth` API. The distinct squares `1², ..., (2k-1)²` are roots of
+`A² - X O²`. At each positive lift `i`, `Q(i) = 0` but `Q(-i) ≠ 0`, which proves
+`O(i²) ≠ 0`. Both halves have degree below `k`.
+At `k = 3`, this gives the common negatives of the earlier rational witnesses;
+the five-root example itself is existing work.
+
+Consequently `isolatedNonCosetCountResidual_rat_iff` proves
+`IsolatedNonCosetCountResidual ℚ k ↔ k ≤ 2`. In particular, no degree-only
+universal replacement bound smaller than `2k - 1` can hold at a positive `k`.
+The original residual is unchanged. This does not impose a halved-subgroup
+domain or realize the high-head/low-tail decoded family. Those structural
+restrictions, the Kelley/BGK input and the production threshold remain open.
+
+Reproduce with the pinned toolchain:
+
+```sh
+./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsoSparsityMasonStothers ArkLib.Data.Polynomial.SplitFold
+./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_IsolatedNonCosetSharpBound.lean
+./scripts/validate.sh
+```
+
+The four public declarations print their complete axiom dependencies; only
+`propext`, `Classical.choice` and `Quot.sound` are permitted. No new axiom or
+named residual is introduced. This is a degree-only classification, not a
+production counterexample or a closure of #164.
+
+### [SYZ72-middle-band-sampled-search] Strengthening the first middle-band witness test (2026-10-30)
+
+Date: 2026-10-30. Target: the `(6,6,6)` / product-degree-`7` middle-band slot of the F1 arc
+(`SYZ59.middleBand`) and the `F_41`, `mu_20` occupant recorded by SYZ70/SYZ71 (PR #5). Two
+results; both are reproducible exact-arithmetic probes. No Lean declaration is added or changed.
+
+**(1) The PR #5 hit test is not a certificate.** `scripts/probes/probe_syz71_linear_middle_slot.py`
+reported a hit whenever the `6 x 4` evaluation matrix of `(W_AC, X*W_AC, W_BC, X*W_BC)` on `S_AB`
+has rank `< 4`. A constant cofactor is a linear cofactor of degree `0`, so every *floor-attained*
+triple also passes: if a nontrivial constant relation `a*W_AC + b*W_BC = 0` holds on `S_AB`, then
+`(a, 0, b, 0)` is a kernel vector. Such a triple has minimal syzygy product degree
+`6 = max(a,b,c)`, which is exactly what `SYZ59.middleBand` excludes; a middle-band occupant needs
+`delta_1 = 7 = max + 1`. Rank `< 4` is therefore necessary but not sufficient, and it cannot
+distinguish the two classes. (The same script also aborted before printing its verdict on a
+`cp1252` console, because one final `sanity` line contained a non-ASCII glyph.)
+
+The *recorded* `F_41` witness is nonetheless genuine. The strict certificate in (2) accepts it with
+`s_AC = 29 + 10X`, `s_BC = 30 + X`, `s_AB = 9 + 11X`, all three slot products of degree `7`,
+constant-cofactor rank `3` and leftover `T = {20, 32}`. Nothing in PR #5 is withdrawn; only the
+test that produced it was too weak to serve as evidence, and it is now hardened (plus the console
+crash fixed).
+
+**(2) The probe samples the slot at 15 selected primes.** The new probe
+`scripts/probes/probe_syz72_middle_band_sweep.py` certifies `delta_1 = 7` exactly — rank `< 4` on
+`S_AB`; the combination divided by `W_AB` to recover `s_AB`; at least one slot product of degree
+exactly `7`; the `7 x 3` constant-cofactor matrix of full rank `3`; the combination nonzero on the
+leftover `T` — and then runs the prime sweep that
+[`AGENTS.md`](AGENTS.md) mandates before any small-`p` verdict is trusted in either direction.
+The sweep uses `mu_20` at 15 selected primes `p = 1 (mod 20)` from `41` through
+`2147484041`. At each prime it draws 20,000 `(S_AC, S_BC)` pairs with replacement and
+checks all `C(8,6) = 28` legal `S_AB` supports for each draw. The 560,000 checks per prime
+include possible repetitions and the 28 checks within a draw share a support pair.
+
+```
+           p   configs  rank<=3 certified    hit fraction
+          41    560000        8         8   1.43e-05
+          61    560000        5         5   8.93e-06
+         101    560000        2         2   3.57e-06
+ 181 … 2147484041 (12 primes, each)  560000   0   0   0
+```
+
+A separate scan checks all 20,720 configurations from the specified index progression pairs
+and legal third supports at each of `p = 41, 101, 1048601`. It finds zero certified occupants
+within that family.
+The `rank<=3` and `certified` columns agree on this random sample. The
+`--demo-false-positive` control separately replays an `F_41` triple that passes the original
+rank test and has constant-cofactor rank 2.
+
+A separate exact search found a witness at `p = 181` despite the zero-hit sample for that prime.
+The probe replays these supports and verifies their cofactors:
+
+```
+S_AC = [1, 150, 56, 59, 46, 42]
+S_BC = [74, 146, 180, 107, 122, 35]
+S_AB = [162, 31, 125, 19, 135, 139]
+T    = [22, 159]
+s_AC = 37 + 134X
+s_BC = 55 + X
+s_AB = 87 + 135X
+```
+
+All three products have degree 7 and the constant-cofactor matrix has rank 3. This witness
+establishes occupancy at `p = 181` independently of the random sample.
+
+**Scope.** The positive witnesses establish occupancy at their respective primes.
+Zero-hit rows apply to the tested support configurations. The existence of occupants
+outside those samples and at other primes remains open. `UniformSylvesterInjective`,
+`iota <= 1`, the over-budget genuine-stack lift, and production `delta*` remain OPEN / ON-BGK.
+
+Reproduction at the PR commit:
+
+```
+python scripts/probes/probe_syz72_middle_band_sweep.py --demo-false-positive   # ~5 min, exit 0
+python scripts/probes/probe_syz71_linear_middle_slot.py                        # ~50 s, exit 0
+```
+
+Evidence class: reproducible exact-arithmetic computation. No Lean file is added or modified by
+this entry, so no axiom read applies.
+### [164-unrestricted-fiber-count-residual-refuted] Scalar quantification loses the instance
+
+Date: 2026-10-13. Target: `ProximityGap.Frontier.FrobeniusEnergyDescent.FiberCountResidual`
+in `Frontier/_FrobeniusEnergyDescent.lean`, a named input to the historical tower-descent route.
+
+The declared proposition quantifies over arbitrary real `Ep`, `EC`, `W`, and `Wick` and asserts
+`Ep = EC + W` and `EC ≤ Wick` imply `W ≤ Wick - EC`. The positive values
+`Ep = 2`, `EC = W = Wick = 1` satisfy both premises and violate the conclusion.
+`not_fiberCountResidual` refutes this exact formulation; adding nonnegativity alone cannot fix it.
+
+The pointwise successor `FiberCountResidualAt EC W Wick` records the fiber allowance for specified
+values. `open_core_iff_fiberCountResidualAt` proves it is equivalent to `Ep ≤ Wick` under the
+exact split, and `open_core_of_fiberCountResidualAt` consumes only that instance bound. The old
+definition and consumer remain available for compatibility, explicitly identified as having a
+false universal antecedent.
+
+Scope: this is a statement-level refutation and an algebraic interface repair, not a new bound
+for actual subgroup collisions. The scalar raw-energy target must not be confused with the
+DC-subtracted production target. `_R317DeepShadowCollisionHeadroom.lean` gives the existing exact
+production headroom with the additional `n^(2r)` term. No arithmetic fiber estimate, production
+counterexample, or closure of #164 is claimed.
+
+Reproduce with `scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_FrobeniusEnergyDescent.lean`.
+The three added theorems print their axioms for inspection.
 ## [466-G80O-product-divisor-interval] The Cilleruelo-Garaev PRODUCT TRICK formalized: subgroup-interval counts obey T(W)² ≤ D·n below √p, with the entire subgroup/rigidity/counting skeleton machine-checked and the missing analytic input reduced to a NAT-ONLY divisor lemma — the first CG-type mechanism in-tree (axiom-clean skeleton; DivisorBound named) (2026-07-10)
 
 Lane: direct Fable 5 (`Frontier/_G80OProductDivisorInterval.lean`, real locked build, both
@@ -48781,145 +49007,6 @@ near the Johnson boundary the monomial baseline collapses to O(1) while the elev
 floor stays ≈ n−√(nk) — no constant C survives unless monomial baselines are proven to grow
 there. The dossier-§6 survivor (b) "bounded spread-excess law" is dead as stated; the
 surviving open question is the monomial-baseline growth law at boundary cells. CORE OPEN.
-### [164-isolated-count-positive-characteristic] Positive characteristic does not repair the unrestricted isolated count residual
-
-Date: 2026-10-30. Target:
-`ProximityGap.Frontier.AntipodalEvenOddDescent.IsolatedCountResidual`, declared in
-`Frontier/_AntipodalEvenOddDescent.lean`. This extends the rational witness in
-`Frontier/_IsolatedCountResidualRefuted.lean` to positive characteristic and general
-fields; it does not claim production Delta Star closure.
-
-`Frontier/_IsolatedCountPositiveCharacteristic.lean` verifies that for the interpolant
-`E(u) = -u²/6 + 7u/6` and `O = 1` at `k = 1`, the three elements `0, 1, 2` are isolated
-roots of `E(X²) - X·O(X²)` whenever `2` and `3` are nonzero in `F`. The set `{0, 1, 2}`
-has cardinality 3, contradicting the claimed cap `k + 1 = 2`.
-
-The theorem `not_isolatedCountResidual_of_char_gt_three` specializes this to every field
-of prime characteristic `p > 3` (which includes both sponsor fields), while
-`not_isolatedCountResidual_of_char_zero` covers characteristic zero. Therefore merely
-restricting the unrestricted residual to positive characteristic cannot repair it.
-The intended halved-subgroup domain restriction and degree/head bounds on `E` remain
-outside this statement and are not refuted.
-
-Reproduction:
-
-```
-scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_IsolatedCountPositiveCharacteristic.lean
-scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsolatedCountPositiveCharacteristic
-```
-
-Evidence class: Lean proof certificate; all declarations use only `propext`,
-`Classical.choice`, and `Quot.sound`.
-
----
-
-### [agl24-rim-failure-prob-boundary-instances] Two boundary instances outside the Lemma 3.1 assembly
-
-Date: 2026-11-01. Target: the [AGL24] §3 "Lemma 3.1 interface"
-`AGL24.RIMFullRankFailureProbResidual` in `ArkLib/Data/CodingTheory/AGL24UnionBound.lean`.
-This is a route-map note prompted by the review of PR #334; it is neither a closure nor a
-refutation claim, and the recorded census status of the residual remains
-open-with-conditional-providers.
-
-`ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean` kernel-checks two boundary
-instances of the interface predicate:
-
-- at the empty one-slot family the reduced intersection matrix has no rows, the deficit
-  set is everything, and its outer measure under the uniform tuple distribution is
-  `1` (`rimRankDeficitSet_empty_family`, `toOuterMeasure_deficit_empty_family_eq_one`);
-- at the complete two-slot family, which is genuinely 2-weakly-partition-connected
-  (`wpc_two_complete_family`), the all-zero evaluation is a deficit point with kernel
-  witness `(0, 1)` (`zero_eval_mem_rimRankDeficitSet_complete_family`), so a point-mass
-  distribution on it gives the deficit set measure `1`
-  (`toOuterMeasure_deficit_complete_family_pure_eq_one`).
-
-Each example violates the predicate when the proposed upper bound is below `1`.
-The empty family violates the WPC hypothesis. The complete two-slot family meets WPC,
-but the all-zero tuple has mass zero under every evaluation-embedding-mapped PMF,
-since embeddings `Fin 2 ↪ ZMod 2` take two distinct values. Neither example falls
-under the `hres` hypothesis of `conditional_failure_bound`. Consequently such boundary facts delimit the predicate without refuting the
-interface, and exact counterexample-style submissions at non-WPC families or
-non-injective masses are a dead end recorded here for anti-repeat. The real referencing
-gap — the bridge from the uniform-over-tuples bound to the embedding-mapped evaluation
-PMF that `conditional_failure_bound` consumes — is PR #338.
-
-Reproduction at the final PR commit:
-
-```
-scripts/pg-iterate.sh ArkLib/Data/CodingTheory/AGL24FailureProbGuard.lean
-scripts/lake-locked.sh build ArkLib.Data.CodingTheory.AGL24FailureProbGuard
-```
-
-Evidence class: Lean proof certificate; all declarations of the file use only `propext`,
-`Classical.choice` and `Quot.sound`. Full repository and hosted gates must be reported
-separately.
----
-
-### [164-isolated-noncoset-sharp-bound] The degree-only cap is exactly `2k - 1`
-
-Date: 2026-11-06. Target:
-`IsoSparsityMasonStothers.IsolatedNonCosetCountResidual`, on the antipodal
-isolated-root path. The earlier rational certificate refutes the recorded cap at
-`k = 3`; this result classifies its rational instances for every `k`.
-
-[`_IsolatedNonCosetSharpBound.lean`](Frontier/_IsolatedNonCosetSharpBound.lean)
-proves `isolated_roots_card_le`: over any field, if `deg A, deg O < k`, every
-finite set of roots of `A² - X O²` at which `O` is nonzero has at most `2k - 1`
-elements. Nonvanishing of `O` at a selected root makes `O` nonzero; the odd degree
-of `X O²` prevents its cancellation with the even-degree square `A²`.
-
-`exists_sharp_isolated_roots` attains this bound over `ℚ` for every positive `k`.
-Split `Q(T) = product_{i=1}^{2k-1}(T-i)` as `A(T²) - T O(T²)` using the existing
-`Polynomial.splitNth` API. The distinct squares `1², ..., (2k-1)²` are roots of
-`A² - X O²`. At each positive lift `i`, `Q(i) = 0` but `Q(-i) ≠ 0`, which proves
-`O(i²) ≠ 0`. Both halves have degree below `k`.
-At `k = 3`, this gives the common negatives of the earlier rational witnesses;
-the five-root example itself is existing work.
-
-Consequently `isolatedNonCosetCountResidual_rat_iff` proves
-`IsolatedNonCosetCountResidual ℚ k ↔ k ≤ 2`. In particular, no degree-only
-universal replacement bound smaller than `2k - 1` can hold at a positive `k`.
-The original residual is unchanged. This does not impose a halved-subgroup
-domain or realize the high-head/low-tail decoded family. Those structural
-restrictions, the Kelley/BGK input and the production threshold remain open.
-
-Reproduce with the pinned toolchain:
-
-```sh
-./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IsoSparsityMasonStothers ArkLib.Data.Polynomial.SplitFold
-./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_IsolatedNonCosetSharpBound.lean
-./scripts/validate.sh
-```
-
-The four public declarations print their complete axiom dependencies; only
-`propext`, `Classical.choice` and `Quot.sound` are permitted. No new axiom or
-named residual is introduced. This is a degree-only classification, not a
-production counterexample or a closure of #164.
-
-### [164-unrestricted-fiber-count-residual-refuted] Scalar quantification loses the instance
-
-Date: 2026-10-13. Target: `ProximityGap.Frontier.FrobeniusEnergyDescent.FiberCountResidual`
-in `Frontier/_FrobeniusEnergyDescent.lean`, a named input to the historical tower-descent route.
-
-The declared proposition quantifies over arbitrary real `Ep`, `EC`, `W`, and `Wick` and asserts
-`Ep = EC + W` and `EC ≤ Wick` imply `W ≤ Wick - EC`. The positive values
-`Ep = 2`, `EC = W = Wick = 1` satisfy both premises and violate the conclusion.
-`not_fiberCountResidual` refutes this exact formulation; adding nonnegativity alone cannot fix it.
-
-The pointwise successor `FiberCountResidualAt EC W Wick` records the fiber allowance for specified
-values. `open_core_iff_fiberCountResidualAt` proves it is equivalent to `Ep ≤ Wick` under the
-exact split, and `open_core_of_fiberCountResidualAt` consumes only that instance bound. The old
-definition and consumer remain available for compatibility, explicitly identified as having a
-false universal antecedent.
-
-Scope: this is a statement-level refutation and an algebraic interface repair, not a new bound
-for actual subgroup collisions. The scalar raw-energy target must not be confused with the
-DC-subtracted production target. `_R317DeepShadowCollisionHeadroom.lean` gives the existing exact
-production headroom with the additional `n^(2r)` term. No arithmetic fiber estimate, production
-counterexample, or closure of #164 is claimed.
-
-Reproduce with `scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_FrobeniusEnergyDescent.lean`.
-The three added theorems print their axioms for inspection.
 ## [164-nt2-two-power-cyclotomic-trace] The 2-power trace hypothesis is a theorem
 
 Date: 2026-11-06. Target: the trace input of
@@ -48948,81 +49035,3 @@ Stickelberger bound, and does not close `δ*` or issue #164.
 ./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_TwoPowerCyclotomicTrace.lean
 ./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._TwoPowerCyclotomicTrace
 ```
-### [SYZ72-middle-band-sampled-search] Strengthening the first middle-band witness test (2026-10-30)
-
-Date: 2026-10-30. Target: the `(6,6,6)` / product-degree-`7` middle-band slot of the F1 arc
-(`SYZ59.middleBand`) and the `F_41`, `mu_20` occupant recorded by SYZ70/SYZ71 (PR #5). Two
-results; both are reproducible exact-arithmetic probes. No Lean declaration is added or changed.
-
-**(1) The PR #5 hit test is not a certificate.** `scripts/probes/probe_syz71_linear_middle_slot.py`
-reported a hit whenever the `6 x 4` evaluation matrix of `(W_AC, X*W_AC, W_BC, X*W_BC)` on `S_AB`
-has rank `< 4`. A constant cofactor is a linear cofactor of degree `0`, so every *floor-attained*
-triple also passes: if a nontrivial constant relation `a*W_AC + b*W_BC = 0` holds on `S_AB`, then
-`(a, 0, b, 0)` is a kernel vector. Such a triple has minimal syzygy product degree
-`6 = max(a,b,c)`, which is exactly what `SYZ59.middleBand` excludes; a middle-band occupant needs
-`delta_1 = 7 = max + 1`. Rank `< 4` is therefore necessary but not sufficient, and it cannot
-distinguish the two classes. (The same script also aborted before printing its verdict on a
-`cp1252` console, because one final `sanity` line contained a non-ASCII glyph.)
-
-The *recorded* `F_41` witness is nonetheless genuine. The strict certificate in (2) accepts it with
-`s_AC = 29 + 10X`, `s_BC = 30 + X`, `s_AB = 9 + 11X`, all three slot products of degree `7`,
-constant-cofactor rank `3` and leftover `T = {20, 32}`. Nothing in PR #5 is withdrawn; only the
-test that produced it was too weak to serve as evidence, and it is now hardened (plus the console
-crash fixed).
-
-**(2) The probe samples the slot at 15 selected primes.** The new probe
-`scripts/probes/probe_syz72_middle_band_sweep.py` certifies `delta_1 = 7` exactly — rank `< 4` on
-`S_AB`; the combination divided by `W_AB` to recover `s_AB`; at least one slot product of degree
-exactly `7`; the `7 x 3` constant-cofactor matrix of full rank `3`; the combination nonzero on the
-leftover `T` — and then runs the prime sweep that
-[`AGENTS.md`](AGENTS.md) mandates before any small-`p` verdict is trusted in either direction.
-The sweep uses `mu_20` at 15 selected primes `p = 1 (mod 20)` from `41` through
-`2147484041`. At each prime it draws 20,000 `(S_AC, S_BC)` pairs with replacement and
-checks all `C(8,6) = 28` legal `S_AB` supports for each draw. The 560,000 checks per prime
-include possible repetitions and the 28 checks within a draw share a support pair.
-
-```
-           p   configs  rank<=3 certified    hit fraction
-          41    560000        8         8   1.43e-05
-          61    560000        5         5   8.93e-06
-         101    560000        2         2   3.57e-06
- 181 … 2147484041 (12 primes, each)  560000   0   0   0
-```
-
-A separate scan checks all 20,720 configurations from the specified index progression pairs
-and legal third supports at each of `p = 41, 101, 1048601`. It finds zero certified occupants
-within that family.
-The `rank<=3` and `certified` columns agree on this random sample. The
-`--demo-false-positive` control separately replays an `F_41` triple that passes the original
-rank test and has constant-cofactor rank 2.
-
-A separate exact search found a witness at `p = 181` despite the zero-hit sample for that prime.
-The probe replays these supports and verifies their cofactors:
-
-```
-S_AC = [1, 150, 56, 59, 46, 42]
-S_BC = [74, 146, 180, 107, 122, 35]
-S_AB = [162, 31, 125, 19, 135, 139]
-T    = [22, 159]
-s_AC = 37 + 134X
-s_BC = 55 + X
-s_AB = 87 + 135X
-```
-
-All three products have degree 7 and the constant-cofactor matrix has rank 3. This witness
-establishes occupancy at `p = 181` independently of the random sample.
-
-**Scope.** The positive witnesses establish occupancy at their respective primes.
-Zero-hit rows apply to the tested support configurations. The existence of occupants
-outside those samples and at other primes remains open. `UniformSylvesterInjective`,
-`iota <= 1`, the over-budget genuine-stack lift, and production `delta*` remain OPEN / ON-BGK.
-
-Reproduction at the PR commit:
-
-```
-python scripts/probes/probe_syz72_middle_band_sweep.py --demo-false-positive   # ~5 min, exit 0
-python scripts/probes/probe_syz71_linear_middle_slot.py                        # ~50 s, exit 0
-```
-
-Evidence class: reproducible exact-arithmetic computation. No Lean file is added or modified by
-this entry, so no axiom read applies.

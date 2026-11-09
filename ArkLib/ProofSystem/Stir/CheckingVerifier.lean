@@ -41,9 +41,9 @@ prover but a *forwarding shell* verifier (`verify := pure true`). This file buil
   invariant all consistency checks compare equal values, and the final low-degree check passes
   because the `δ = 0` relation `stirRelation deg φ 0` forces the input codeword into the code
   (`mem_of_relDistFromCode_le_zero`).
-* `stirCheckingRbrSoundnessResidual` + `stirCheckingCABridge` — the soundness side, HONESTLY
-  split: the rbr knowledge soundness of the checking verifier is the named open residual; the
-  bridge residual states that it follows from the EXISTING Johnson-CA residuals
+* `stirCheckingRbrSoundnessResidual` + `stirCheckingCABridge` — the averaged soundness
+  residual and the corresponding bridge. The bridge derives that residual from the Johnson-CA
+  assumptions
   (`ProximityGap.StrictCoeffPolysResidual`, the §5/Johnson-regime correlated-agreement
   extraction) plus the per-round accounting keystone
   (`ArkLib.ProofSystem.Stir.ErrorAccumulation.PerRoundProximityGap`). The general bridge is the
@@ -51,7 +51,7 @@ prover but a *forwarding shell* verifier (`verify := pure true`). This file buil
 * `stir_rbr_soundness_of_checkingIOP_CA` / `stir_main_of_checkingIOP_CA` — the headline
   existentials discharged through the landed `…_of_secure_vectorIOP` front doors, with the
   completeness leg PROVEN (this file) and the soundness leg consumed via
-  (CA residuals + bridge residual).
+  the CA residuals and `stirCheckingCAFixedPrefixBridge`.
 * `strictCoeffPolys_all_of_card_le` plus
   `stir_rbr_soundness_of_checkingIOP_card_le` / `stir_main_of_checkingIOP_card_le` — the
   small-field route: `|F| ≤ |ι|` discharges the full positive-width
@@ -1235,77 +1235,96 @@ theorem stirCheckingCABridge_of_small_field
     stirCheckingCABridge M φ deg δ ε_rbr e ProxGapBound :=
   fun _ _ => stirCheckingRbrSoundness_of_small_field M φ deg δ hδ hq ε_rbr hε
 
-/-- **The checking IOPP is `IsSecureWithGapAveraged`**, with the completeness leg PROVEN
-(`stirCheckingIOP_perfectCompleteness`) and the soundness leg consumed as the named
-checking-verifier residual. -/
+/-- The fixed-prefix soundness obligation for the checking IOPP's secure-with-gap package. -/
+def stirCheckingRbrSoundnessFixedPrefix (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0)
+    (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0) : Prop :=
+  OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
+    (stirRelation deg φ δ) (stirCheckingIOP M φ deg).toOracleVerifier ε_rbr
+
+/-- The protocol-level CA bridge for security packages that need a bound at each fixed prefix. -/
+def stirCheckingCAFixedPrefixBridge (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0)
+    (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
+    (e ProxGapBound : Fin (M + 1) → ℝ≥0) : Prop :=
+  (∀ k : ℕ, 0 < k →
+    ProximityGap.StrictCoeffPolysResidual (ι := ι) (F := F)
+      (k := k) (deg := deg) (domain := φ) (δ := δ)) →
+  PerRoundProximityGap e ProxGapBound →
+  stirCheckingRbrSoundnessFixedPrefix M φ deg δ ε_rbr
+
+/-- **The checking IOPP is `IsSecureWithGap`**, with the completeness leg PROVEN
+(`stirCheckingIOP_perfectCompleteness`) and the soundness leg supplied as a fixed-prefix
+checking-verifier bound. -/
 theorem stirCheckingIOP_isSecureWithGap (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
-    (hSound : stirCheckingRbrSoundnessResidual M φ deg δ ε_rbr) :
-    IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
+    (hSound : stirCheckingRbrSoundnessFixedPrefix M φ deg δ ε_rbr) :
+    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
       (stirCheckingIOP M φ deg) where
   is_complete := stirCheckingIOP_perfectCompleteness M φ deg
   is_rbr_knowledge_sound := hSound
 
-/-- `IsSecureWithGapAveraged` for the checking IOPP from the named CA residuals + bridge. -/
+/-- `IsSecureWithGap` for the checking IOPP from the named CA residuals + bridge. -/
 theorem stirCheckingIOP_isSecureWithGap_of_CA (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (e ProxGapBound : Fin (M + 1) → ℝ≥0)
-    (hBridge : stirCheckingCABridge M φ deg δ ε_rbr e ProxGapBound)
+    (hBridge : stirCheckingCAFixedPrefixBridge M φ deg δ ε_rbr e ProxGapBound)
     (hCA : ∀ k : ℕ, 0 < k →
       ProximityGap.StrictCoeffPolysResidual (ι := ι) (F := F)
         (k := k) (deg := deg) (domain := φ) (δ := δ))
     (hPR : PerRoundProximityGap e ProxGapBound) :
-    IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
+    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
       (stirCheckingIOP M φ deg) :=
   stirCheckingIOP_isSecureWithGap M φ deg δ ε_rbr
-    (stirCheckingRbrSoundness_of_CA M φ deg δ ε_rbr e ProxGapBound hBridge hCA hPR)
+    (hBridge hCA hPR)
 
-/-- `IsSecureWithGapAveraged` for the checking IOPP in the small-field regime, with the BCIKS20
+/-- `IsSecureWithGap` for the checking IOPP in the small-field regime, with the BCIKS20
 strict-coefficient residual family discharged. The only remaining soundness hypothesis is the
 protocol-level checking bridge. -/
 theorem stirCheckingIOP_isSecureWithGap_of_card_le [DecidableEq ι]
     (M : ℕ) (φ : ι ↪ F) (deg : ℕ) [NeZero deg] (δ : ℝ≥0)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (ProxGapBound : Fin (M + 1) → ℝ≥0)
-    (hBridge : stirCheckingCABridge M φ deg δ ε_rbr ProxGapBound ProxGapBound)
+    (hBridge : stirCheckingCAFixedPrefixBridge M φ deg δ ε_rbr ProxGapBound ProxGapBound)
     (hδ : δ < 1 - ReedSolomon.sqrtRate deg φ)
     (hq : (Fintype.card F : ℝ≥0) ≤ (Fintype.card ι : ℝ≥0)) :
-    IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
+    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
       (stirCheckingIOP M φ deg) :=
   stirCheckingIOP_isSecureWithGap M φ deg δ ε_rbr
-    (stirCheckingRbrSoundness_of_card_le M φ deg δ ε_rbr ProxGapBound hBridge hδ hq)
+    (hBridge (strictCoeffPolys_all_of_card_le φ deg δ hδ hq)
+      (PerRoundProximityGap.refl ProxGapBound))
 
-/-- `IsSecureWithGapAveraged` for the checking IOPP in the sharp vacuous regime
+/-- `IsSecureWithGap` for the checking IOPP in the sharp vacuous regime
 `|F| ≤ deg^2 * 10^7`, with the BCIKS20 strict-coefficient residual family discharged. -/
 theorem stirCheckingIOP_isSecureWithGap_of_card_le_e7 [DecidableEq ι]
     (M : ℕ) (φ : ι ↪ F) (deg : ℕ) [NeZero deg] (δ : ℝ≥0)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (ProxGapBound : Fin (M + 1) → ℝ≥0)
-    (hBridge : stirCheckingCABridge M φ deg δ ε_rbr ProxGapBound ProxGapBound)
+    (hBridge : stirCheckingCAFixedPrefixBridge M φ deg δ ε_rbr ProxGapBound ProxGapBound)
     (hq : (Fintype.card F : ℝ≥0) ≤ ((deg ^ 2 * 10 ^ 7 : ℕ) : ℝ≥0)) :
-    IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
+    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
       (stirCheckingIOP M φ deg) :=
   stirCheckingIOP_isSecureWithGap M φ deg δ ε_rbr
-    (stirCheckingRbrSoundness_of_card_le_e7 M φ deg δ ε_rbr ProxGapBound hBridge hq)
+    (hBridge (strictCoeffPolys_all_of_card_le_e7 φ deg δ hq)
+      (PerRoundProximityGap.refl ProxGapBound))
 
-/-- `IsSecureWithGapAveraged` for the checking IOPP from the #304 large-sector residual family. -/
+/-- `IsSecureWithGap` for the checking IOPP from the #304 large-sector residual family. -/
 theorem stirCheckingIOP_isSecureWithGap_of_large [DecidableEq ι]
     (M : ℕ) (φ : ι ↪ F) (deg : ℕ) (δ : ℝ≥0)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (ProxGapBound : Fin (M + 1) → ℝ≥0)
-    (hBridge : stirCheckingCABridge M φ deg δ ε_rbr ProxGapBound ProxGapBound)
+    (hBridge : stirCheckingCAFixedPrefixBridge M φ deg δ ε_rbr ProxGapBound ProxGapBound)
     (hLarge : ∀ k : ℕ, 0 < k →
       ProximityGap.StrictCoeffPolysLargeResidual (ι := ι) (F := F)
         (k := k) (deg := deg) (domain := φ) (δ := δ)) :
-    IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
+    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
       (stirCheckingIOP M φ deg) :=
   stirCheckingIOP_isSecureWithGap M φ deg δ ε_rbr
-    (stirCheckingRbrSoundness_of_large M φ deg δ ε_rbr ProxGapBound hBridge hLarge)
+    (hBridge (strictCoeffPolys_all_of_large φ deg δ hLarge)
+      (PerRoundProximityGap.refl ProxGapBound))
 
-/-- **`IsSecureWithGapAveraged` for the checking IOPP in the small-field regime `|F| ≤ (m−1)·|ι|`,
+/-- **`IsSecureWithGap` for the checking IOPP in the small-field regime `|F| ≤ (m−1)·|ι|`,
 with NO residual hypotheses** (#301 Part B): completeness is the landed
 `stirCheckingIOP_perfectCompleteness`; soundness is the small-field discharge
-(`stirCheckingRbrSoundness_of_small_field`) — no CA family, no bridge, no per-round-gap
+at fixed prefixes — no CA family, no bridge, no per-round-gap
 keystone. -/
 theorem stirCheckingIOP_isSecureWithGap_small_field
     (M : ℕ) (φ : ι ↪ F) (deg : ℕ) [NeZero deg] (δ : ℝ≥0) {m : ℕ}
@@ -1314,10 +1333,12 @@ theorem stirCheckingIOP_isSecureWithGap_small_field
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (hε : ∀ i : (stirMultiVSpec M ι).ChallengeIdx, (i.1 : ℕ) = 0 →
       proximityError F deg (LinearCode.rate (code φ deg)) δ m ≤ ε_rbr i) :
-    IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
+    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ) ε_rbr
       (stirCheckingIOP M φ deg) :=
   stirCheckingIOP_isSecureWithGap M φ deg δ ε_rbr
-    (stirCheckingRbrSoundness_of_small_field M φ deg δ hδ hq ε_rbr hε)
+    (stirRbrKnowledgeSoundnessFixedPrefix_of_one_le_first M φ deg δ
+      (stirCheckingIOP M φ deg).toOracleVerifier ε_rbr
+      (fun i hi => le_trans (one_le_proximityError_of_card_le φ δ hδ hq) (hε i hi)))
 
 end Soundness
 
@@ -1334,7 +1355,7 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
 `π := stirCheckingIOP` via the landed `stir_rbr_soundness_of_secure_vectorIOP` wiring. The
 completeness leg is PROVEN; the soundness leg is consumed via the named CA residuals
 (`StrictCoeffPolysResidual` + `PerRoundProximityGap`) through the named bridge
-(`stirCheckingCABridge`); the per-round error legs (`hfold`/`hrest`/`hfin`) are free-parameter
+(`stirCheckingCAFixedPrefixBridge`); the error legs (`hfold`/`hrest`/`hfin`) are free-parameter
 constraints of the statement. -/
 theorem stir_rbr_soundness_of_checkingIOP_CA
     {M : ℕ} (ι : Fin (M + 1) → Type) [∀ i : Fin (M + 1), Fintype (ι i)]
@@ -1350,7 +1371,7 @@ theorem stir_rbr_soundness_of_checkingIOP_CA
     (ε_fold : ℝ≥0) (ε_out : Fin M → ℝ≥0) (ε_shift : Fin M → ℝ≥0) (ε_fin : ℝ≥0)
     (e ProxGapBound : Fin (M + 1) → ℝ≥0)
     -- the named open CA-bridge residual for the checking verifier
-    (hBridge : stirCheckingCABridge M (P.φ 0) (degree ι P 0) (Dist.δ 0)
+    (hBridge : stirCheckingCAFixedPrefixBridge M (P.φ 0) (degree ι P 0) (Dist.δ 0)
       (fun _ => ({ε_fold} ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max' (by simp))
       e ProxGapBound)
     -- the EXISTING named Johnson-CA residual (BCIKS20 §5 strict extraction)
@@ -1373,7 +1394,7 @@ theorem stir_rbr_soundness_of_checkingIOP_CA
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
             (Dist.δ j.succ) (P.foldingParam j.succ)))
     (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
-    stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
+    stir_rbr_soundnessFixedPrefix (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   stir_rbr_soundness_of_secure_vectorIOP (hParams := hParams) (Codes := Codes)
     ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin
@@ -1400,7 +1421,7 @@ theorem stir_rbr_soundness_of_checkingIOP_card_le
         Dist.δ j < (1 - Bstar (rate (code (P.φ j) (degree ι P j)))))
     (ε_fold : ℝ≥0) (ε_out : Fin M → ℝ≥0) (ε_shift : Fin M → ℝ≥0) (ε_fin : ℝ≥0)
     (ProxGapBound : Fin (M + 1) → ℝ≥0)
-    (hBridge : stirCheckingCABridge M (P.φ 0) (degree ι P 0) (Dist.δ 0)
+    (hBridge : stirCheckingCAFixedPrefixBridge M (P.φ 0) (degree ι P 0) (Dist.δ 0)
       (fun _ => ({ε_fold} ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max' (by simp))
       ProxGapBound ProxGapBound)
     (hδsqrt : Dist.δ 0 < 1 - ReedSolomon.sqrtRate (degree ι P 0) (P.φ 0))
@@ -1419,7 +1440,7 @@ theorem stir_rbr_soundness_of_checkingIOP_card_le
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
             (Dist.δ j.succ) (P.foldingParam j.succ)))
     (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
-    stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
+    stir_rbr_soundnessFixedPrefix (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   stir_rbr_soundness_of_checkingIOP_CA (hParams := hParams) (Codes := Codes)
     ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin
@@ -1445,7 +1466,7 @@ theorem stir_rbr_soundness_of_checkingIOP_card_le_e7
         Dist.δ j < (1 - Bstar (rate (code (P.φ j) (degree ι P j)))))
     (ε_fold : ℝ≥0) (ε_out : Fin M → ℝ≥0) (ε_shift : Fin M → ℝ≥0) (ε_fin : ℝ≥0)
     (ProxGapBound : Fin (M + 1) → ℝ≥0)
-    (hBridge : stirCheckingCABridge M (P.φ 0) (degree ι P 0) (Dist.δ 0)
+    (hBridge : stirCheckingCAFixedPrefixBridge M (P.φ 0) (degree ι P 0) (Dist.δ 0)
       (fun _ => ({ε_fold} ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max' (by simp))
       ProxGapBound ProxGapBound)
     (hq : (Fintype.card F : ℝ≥0) ≤ (((degree ι P 0) ^ 2 * 10 ^ 7 : ℕ) : ℝ≥0))
@@ -1463,7 +1484,7 @@ theorem stir_rbr_soundness_of_checkingIOP_card_le_e7
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
             (Dist.δ j.succ) (P.foldingParam j.succ)))
     (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
-    stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
+    stir_rbr_soundnessFixedPrefix (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   stir_rbr_soundness_of_checkingIOP_CA (hParams := hParams) (Codes := Codes)
     ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin
@@ -1489,7 +1510,7 @@ theorem stir_rbr_soundness_of_checkingIOP_large
         Dist.δ j < (1 - Bstar (rate (code (P.φ j) (degree ι P j)))))
     (ε_fold : ℝ≥0) (ε_out : Fin M → ℝ≥0) (ε_shift : Fin M → ℝ≥0) (ε_fin : ℝ≥0)
     (ProxGapBound : Fin (M + 1) → ℝ≥0)
-    (hBridge : stirCheckingCABridge M (P.φ 0) (degree ι P 0) (Dist.δ 0)
+    (hBridge : stirCheckingCAFixedPrefixBridge M (P.φ 0) (degree ι P 0) (Dist.δ 0)
       (fun _ => ({ε_fold} ∪ {ε_fin} ∪ univ.image ε_out ∪ univ.image ε_shift).max' (by simp))
       ProxGapBound ProxGapBound)
     (hLarge : ∀ k : ℕ, 0 < k →
@@ -1509,7 +1530,7 @@ theorem stir_rbr_soundness_of_checkingIOP_large
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
             (Dist.δ j.succ) (P.foldingParam j.succ)))
     (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
-    stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
+    stir_rbr_soundnessFixedPrefix (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   stir_rbr_soundness_of_checkingIOP_CA (hParams := hParams) (Codes := Codes)
     ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin
@@ -1558,7 +1579,7 @@ theorem stir_rbr_soundness_of_checkingIOP_small_field
             (rate (code (P.φ j.succ) (degree ι P j.succ)))
             (Dist.δ j.succ) (P.foldingParam j.succ)))
     (hfin : ε_fin ≤ (1 - Dist.δ (Fin.last M)) ^ (P.repeatParam (Fin.last M))) :
-    stir_rbr_soundness (s := s) (hParams := hParams) (Codes := Codes)
+    stir_rbr_soundnessFixedPrefix (s := s) (hParams := hParams) (Codes := Codes)
       ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin :=
   stir_rbr_soundness_of_secure_vectorIOP (hParams := hParams) (Codes := Codes)
     ι hδ₀ hδᵢ ε_fold ε_out ε_shift ε_fin
@@ -1584,7 +1605,7 @@ theorem stir_main_of_checkingIOP_CA
     (hF : FieldSizeCondition secpar φ degree)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (e ProxGapBound : Fin (M + 1) → ℝ≥0)
-    (hBridge : stirCheckingCABridge M φ degree δ ε_rbr e ProxGapBound)
+    (hBridge : stirCheckingCAFixedPrefixBridge M φ degree δ ε_rbr e ProxGapBound)
     (hCA : ∀ k' : ℕ, 0 < k' →
       ProximityGap.StrictCoeffPolysResidual (ι := ι) (F := F)
         (k := k') (deg := degree) (domain := φ) (δ := δ))
@@ -1596,7 +1617,7 @@ theorem stir_main_of_checkingIOP_CA
     (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
       (cₖ k) * ((Real.log degree) +
         secpar * (Real.log ((Real.log degree) / Real.log (1 / rate (code φ degree)))))) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   stir_main_of_secure_vectorIOP secpar hk hkGe δ hδub hF ε_rbr
     (stirCheckingIOP M φ degree)
@@ -1617,7 +1638,7 @@ theorem stir_main_of_checkingIOP_card_le
     (hF : FieldSizeCondition secpar φ degree)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (ProxGapBound : Fin (M + 1) → ℝ≥0)
-    (hBridge : stirCheckingCABridge M φ degree δ ε_rbr ProxGapBound ProxGapBound)
+    (hBridge : stirCheckingCAFixedPrefixBridge M φ degree δ ε_rbr ProxGapBound ProxGapBound)
     (hδsqrt : δ < 1 - ReedSolomon.sqrtRate degree φ)
     (hq : (Fintype.card F : ℝ≥0) ≤ (Fintype.card ι : ℝ≥0))
     (hε : ∀ i, ε_rbr i ≤ (1 : ℚ≥0) / (2 ^ secpar))
@@ -1627,7 +1648,7 @@ theorem stir_main_of_checkingIOP_card_le
     (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
       (cₖ k) * ((Real.log degree) +
         secpar * (Real.log ((Real.log degree) / Real.log (1 / rate (code φ degree)))))) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   stir_main_of_checkingIOP_CA secpar hk hkGe δ hδub hF ε_rbr
     ProxGapBound ProxGapBound hBridge
@@ -1647,7 +1668,7 @@ theorem stir_main_of_checkingIOP_card_le_e7
     (hF : FieldSizeCondition secpar φ degree)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (ProxGapBound : Fin (M + 1) → ℝ≥0)
-    (hBridge : stirCheckingCABridge M φ degree δ ε_rbr ProxGapBound ProxGapBound)
+    (hBridge : stirCheckingCAFixedPrefixBridge M φ degree δ ε_rbr ProxGapBound ProxGapBound)
     (hq : (Fintype.card F : ℝ≥0) ≤ ((degree ^ 2 * 10 ^ 7 : ℕ) : ℝ≥0))
     (hε : ∀ i, ε_rbr i ≤ (1 : ℚ≥0) / (2 ^ secpar))
     (hM : ∃ c > 0, M ≤ c * (Real.log degree / Real.log k))
@@ -1656,7 +1677,7 @@ theorem stir_main_of_checkingIOP_card_le_e7
     (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
       (cₖ k) * ((Real.log degree) +
         secpar * (Real.log ((Real.log degree) / Real.log (1 / rate (code φ degree)))))) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   stir_main_of_checkingIOP_CA secpar hk hkGe δ hδub hF ε_rbr
     ProxGapBound ProxGapBound hBridge
@@ -1677,7 +1698,7 @@ theorem stir_main_of_checkingIOP_large
     (hF : FieldSizeCondition secpar φ degree)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (ProxGapBound : Fin (M + 1) → ℝ≥0)
-    (hBridge : stirCheckingCABridge M φ degree δ ε_rbr ProxGapBound ProxGapBound)
+    (hBridge : stirCheckingCAFixedPrefixBridge M φ degree δ ε_rbr ProxGapBound ProxGapBound)
     (hLarge : ∀ k' : ℕ, 0 < k' →
       ProximityGap.StrictCoeffPolysLargeResidual (ι := ι) (F := F)
         (k := k') (deg := degree) (domain := φ) (δ := δ))
@@ -1688,7 +1709,7 @@ theorem stir_main_of_checkingIOP_large
     (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
       (cₖ k) * ((Real.log degree) +
         secpar * (Real.log ((Real.log degree) / Real.log (1 / rate (code φ degree)))))) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   stir_main_of_checkingIOP_CA secpar hk hkGe δ hδub hF ε_rbr
     ProxGapBound ProxGapBound hBridge
@@ -1728,7 +1749,7 @@ theorem stir_main_of_checkingIOP_small_field
     (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
       (cₖ k) * ((Real.log degree) +
         secpar * (Real.log ((Real.log degree) / Real.log (1 / rate (code φ degree)))))) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   stir_main_of_secure_vectorIOP secpar hk hkGe δ hδub hF ε_rbr
     (stirCheckingIOP M φ degree)

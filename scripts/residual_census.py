@@ -54,13 +54,8 @@ Every provider gets a verdict:
 
 Refutations are declarations proving `¬ R ...`.  One counts only when it has
 no proof-like binder, premise, included proof-like section variable or
-`Prop`-class instance assumption, and only when the negation refutes `R`
-outright: `¬ R ∧ Q` parses as `(¬ R) ∧ Q` and refutes `R`, `¬ (Q ∨ R)` refutes
-both disjuncts, and `¬ ∀ x, R x` and `¬ (Q → R)` refute `R`; `¬ R → Q`,
-`¬ (R ∧ Q)`, `¬ (R ↔ Q)`, `¬ R = Q` (and other relations), a residual under
-another head (`¬ IsEmpty R`), a negated existential (`¬ ∃ h : P, R`) and a
-negation under a `∀` inside a conjunct (`¬ B ∧ ∀ x : Empty, ¬ R`, whose binder
-type may be empty) do not establish a refutation by source inspection.
+`Prop`-class instance assumption. Negations under a universal introduced
+beneath a connective do not count, since its domain may be empty.
 
 Row status:
 
@@ -74,8 +69,8 @@ Row status:
                    listed, but the general residual is not discharged.
   open          -- everything else.
 
-Known blind spots, which are why a `discharged` row still needs review: data
-binders absent from the result are assumed inhabited; an implicit argument
+Known blind spots, which are why a `discharged` row still needs review: some
+data binders outside the result are assumed inhabited; an implicit argument
 fixed by unification is caught only when a same-named binder has a literal
 type; section-variable inclusion for definitions is approximated from text;
 and an argument that is a bound name may still have a narrower type than the
@@ -101,6 +96,12 @@ import json
 import re
 import sys
 from pathlib import Path
+
+# Tests also load this CLI by path through importlib.
+script_dir = str(Path(__file__).resolve().parent)
+if script_dir not in sys.path:
+    sys.path.insert(0, script_dir)
+import lean_lexer
 
 
 def configure_stdio() -> None:
@@ -185,92 +186,34 @@ ALWAYS_SATISFIABLE_CLASSES = frozenset(
 )
 LITERAL_RE = re.compile(r"^(?:\d+(?:\.\d+)?|0x[0-9a-fA-F]+|∅|⊥|⊤|true|false|!\[\]|\[\])$")
 
+INHABITED_RESULT_TYPES = frozenset({"Nat", "ℕ", "Int", "ℤ", "Bool", "Unit", "PUnit", "True"})
+KNOWN_EMPTY_TYPE_RE = re.compile(r"(?:_root_\.)?(?:False|Empty|PEmpty|Fin\s+(?:0|\(\s*0\s*\)))")
 STATUSES = ("open", "instance_only", "discharged", "refuted")
 
 
+ASCII_CONNECTIVES = {"<->": "↔", "->": "→", "/\\": "∧", "\\/": "∨"}
+ASCII_OR_QUOTED_RE = re.compile(r'"(?:[^"\\]|\\.)*"|«[^»]*»|<->|->|/\\|\\/', re.S)
+LITERAL_MARKER = "…"
+
+
+def unicode_connectives(text: str) -> str:
+    """Normalize Lean's ASCII connectives outside string literals and quoted names."""
+    return ASCII_OR_QUOTED_RE.sub(
+        lambda m: ASCII_CONNECTIVES.get(m[0], m[0]), text
+    )
+
+
 def strip_comments(text: str, *, mask_literals: bool = False) -> str:
-    """Blank out line comments, block comments, and docstrings (newlines kept).
-
-    String literals in live code are not comments: a ``"/-"`` or ``"--"``
-    inside a double-quoted string must not open a phantom block/line
-    comment and hide the declarations that follow it from the census.
-    Inside a block comment, comment scanning wins (Lean lexes the comment
-    first), so string markers there are not treated as string starts.
-    """
-    out = list(text)
-    i, n, depth = 0, len(text), 0
-
-    def blank_literal(start: int, end: int) -> None:
-        if mask_literals:
-            for index in range(start, end):
-                if text[index] != "\n":
-                    out[index] = " "
-
-    while i < n:
-        if depth == 0 and text[i] == "«":
-            # Comment markers and quotes in escaped identifiers are name text.
-            end = text.find("»", i + 1)
-            i = n if end < 0 else end + 1
-            continue
-        if depth == 0 and text[i] == "r" and (
-            i == 0 or not is_ident_char(text[i - 1])
-        ):
-            quote = i + 1
-            while quote < n and text[quote] == "#":
-                quote += 1
-            if quote < n and text[quote] == '"':
-                delimiter = '"' + text[i + 1:quote]
-                end = text.find(delimiter, quote + 1)
-                end = n if end < 0 else end + len(delimiter)
-                blank_literal(i, end)
-                i = end
-                continue
-        if depth == 0 and text[i] == "'" and (i == 0 or not is_ident_char(text[i - 1])):
-            # An apostrophe inside a name such as A'B'Residual is not a quote.
-            # Skip char literals whole so a '"' character cannot start a string.
-            if i + 2 < n and text[i + 2] == "'":
-                blank_literal(i, i + 3)
-                i += 3
-                continue
-            if i + 3 < n and text[i + 1] == "\\" and text[i + 3] == "'":
-                blank_literal(i, i + 4)
-                i += 4
-                continue
-        if depth == 0 and text[i] == '"':
-            start = i
-            i += 1
-            while i < n and text[i] != '"':
-                if text[i] == "\\" and i + 1 < n:
-                    i += 2
-                else:
-                    i += 1
-            if i < n:
-                i += 1
-            blank_literal(start, i)
-            continue
-        if depth == 0 and text.startswith("--", i):
-            j = text.find("\n", i)
-            j = n if j == -1 else j
-            for k in range(i, j):
-                out[k] = " "
-            i = j
-        elif text.startswith("/-", i):
-            depth += 1
-            out[i] = " "
-            if i + 1 < n:
-                out[i + 1] = " "
-            i += 2
-        elif depth > 0 and text.startswith("-/", i):
-            depth -= 1
-            out[i] = " "
-            if i + 1 < n:
-                out[i + 1] = " "
-            i += 2
-        else:
-            if depth > 0 and text[i] != "\n":
-                out[i] = " "
-            i += 1
-    return "".join(out)
+    """Blank comments, optionally retaining each literal as one opaque token."""
+    reading = lean_lexer.lex(text)
+    if not mask_literals:
+        keep = reading.comment_mask().translate(bytes.maketrans(b"\x00\x01", b"\x01\x00"))
+        return lean_lexer.blank(text, keep)
+    code = list(reading.code_text())
+    for start, _ in reading.strings:
+        # A blank would erase a positional argument from the declaration type.
+        code[start] = LITERAL_MARKER
+    return "".join(code)
 
 
 def _signature_bounds(window: str) -> tuple[int | None, int]:
@@ -446,47 +389,6 @@ def split_top_level(text: str, sep: str) -> list[str]:
     return parts
 
 
-# Lean spells these connectives either way (`unicode(" ∧ ", " /\\ ")`,
-# `unicode(" ∨ ", " \\/ ")`, `" <-> "` and `unicodeSymbol " → " " -> "` in
-# Lean v4.30.0-rc2).  `<->` must be rewritten before `->`.
-ASCII_CONNECTIVES = (("<->", "↔"), ("->", "→"), ("/\\", "∧"), ("\\/", "∨"))
-
-
-def unicode_connectives(text: str) -> str:
-    """Spell Lean's ASCII connectives `<->`, `->`, `/\\`, `\\/` as `↔`, `→`, `∧`, `∨`.
-
-    Every connective check below matches the Unicode tokens, so without this a
-    result such as `R -> False` reads as a bare application of `R` and counts
-    as a discharge.  String literals and «quoted» names are copied unchanged.
-    """
-    out: list[str] = []
-    i = 0
-    while i < len(text):
-        c = text[i]
-        if c == '"':
-            j = i + 1
-            while j < len(text) and text[j] != '"':
-                j += 2 if text[j] == "\\" else 1
-            out.append(text[i : j + 1])
-            i = j + 1
-            continue
-        if c == "«":
-            j = text.find("»", i + 1)
-            j = len(text) - 1 if j == -1 else j
-            out.append(text[i : j + 1])
-            i = j + 1
-            continue
-        for ascii_form, symbol in ASCII_CONNECTIVES:
-            if text.startswith(ascii_form, i):
-                out.append(symbol)
-                i += len(ascii_form)
-                break
-        else:
-            out.append(c)
-            i += 1
-    return "".join(out)
-
-
 def strip_forall_prefix(result: str) -> str:
     """Strip leading `∀ ...,` binders from a result type."""
     s = result.strip()
@@ -523,7 +425,7 @@ def split_top_level_once(text: str, sep: str) -> tuple[str, str] | None:
 
 
 def is_ident_char(c: str) -> bool:
-    return c.isalnum() or c in "_'!?"
+    return c.isalnum() or c in "_'"
 
 
 def mentions_word(text: str, word: str) -> bool:
@@ -836,7 +738,10 @@ def arrow_binder(part: str) -> list[dict] | None:
 
 def _has_relation(text: str) -> bool:
     flat = flatten_top_level(text, scoped=True)
-    return bool(BARE_EQUAL_RE.search(flat) or COMPARISON_RE.search(flat) or "≠" in flat)
+    return bool(
+        BARE_EQUAL_RE.search(flat) or COMPARISON_RE.search(flat)
+        or any(op in flat for op in ("==", "≠", "∈", "∉", "⊆", "⊂", "⊇", "⊃", "≤", "≥"))
+    )
 
 
 def conclusion_atoms(result: str) -> list[dict]:
@@ -864,8 +769,8 @@ def conclusion_atoms(result: str) -> list[dict]:
             entries, bounded = forall_binders(s[1:comma])
             binders = binders + entries
             premises = premises + bounded
-            # A `∀` below the top level (`¬ B ∧ ∀ x : Empty, ¬ R`) may range over an
-            # empty type, so a negation under it does not refute anything.
+            # A universal beneath a connective can be vacuous over an empty
+            # user-defined domain, even when its variable occurs in the residual.
             nested_binders = nested_binders or depth > 0
             s = strip_outer_parens(s[comma + 1 :])
         if has_top_level(s, "↔"):
@@ -908,101 +813,32 @@ def conclusion_atoms(result: str) -> list[dict]:
     return out
 
 
-def _top_level_tokens(s: str) -> list[tuple[int, str]]:
-    """Depth-0 connectives and relations of `s`, as (index, token).
-
-    Relations include `=` (also in `==`), `≠`, `∈`, `∉` and comparisons.
-    The `=` of `:=` and `=>` is ignored.  Scanning stops at a
-    depth-0 `∀`, `∃`, `λ` or `fun`, whose body runs to the end of `s`.
-    """
-    out: list[tuple[int, str]] = []
-    depth = 0
-    for i, c in enumerate(s):
-        if c in OPEN_BRACKETS:
-            depth += 1
-        elif c in CLOSE_BRACKETS:
-            depth = max(0, depth - 1)
-        elif depth == 0:
-            if c in "∀∃λ" or (
-                s.startswith("fun", i)
-                and (i == 0 or not is_ident_char(s[i - 1]))
-                and s[i + 3 : i + 4].isspace()
-            ):
-                break
-            if c in "↔→∨∧≠∈∉<>≤≥":
-                out.append((i, c))
-            elif c == "=" and s[i - 1 : i] != ":" and s[i + 1 : i + 2] != ">":
-                out.append((i, c))
-    return out
-
-
-def negated_targets(text: str) -> list[tuple[str, list[dict]]]:
-    """(plain atom, inner binders) for each proposition that `¬ X` refutes outright.
-
-    `X` may be an application, `∀ x, X'`, `Y → X'` (`¬ (Y → X')` proves `¬ X'`, so the
-    antecedent is proved, not assumed) or `X₁ ∨ X₂` (`¬ (X₁ ∨ X₂)` proves both
-    negations).  `¬ (X₁ ∧ X₂)`, `¬ (X ↔ Y)`, relations, double negations and
-    existentials refute nothing by source inspection.
-    """
-    s = text.strip()
-    if not s.startswith("¬"):
+def negated_atoms(text: str, fuel: int = 16) -> list[tuple[str, list[dict]]]:
+    """Return the residual applications whose universal closures `¬ text` refutes."""
+    if fuel == 0:
         return []
-    out: list[tuple[str, list[dict]]] = []
-
-    def walk(s: str, binders: list[dict], fuel: int) -> None:
-        s = strip_outer_parens(s)
-        if fuel == 0:
-            return
-        while s.startswith("∀"):
-            comma = depth0_index(s, ",")
-            if comma is None:
-                return
-            entries, _bounded = forall_binders(s[1:comma])
-            binders = binders + entries
-            s = strip_outer_parens(s[comma + 1 :])
-        if has_top_level(s, "↔"):
-            return
-        parts = split_top_level(s, "→")
-        if len(parts) > 1:
-            extra: list[dict] = []
-            for part in parts[:-1]:
-                dependent = arrow_binder(part)
-                if dependent is not None:
-                    extra.extend(dependent)
-            walk(parts[-1], binders + extra, fuel - 1)
-            return
-        disjuncts = split_top_level(s, "∨")
-        if len(disjuncts) > 1:
-            for part in disjuncts:
-                walk(part, binders, fuel - 1)
-            return
-        if has_top_level(s, "∧"):
-            return
-        if s.startswith("¬") or _has_relation(s) or not atom_head(s):
-            return
-        if s.startswith(("∃", "fun", "λ", "Σ", "∑", "∏")):
-            return
-        if any(t in "≠∈∉<>≤≥=" for _, t in _top_level_tokens(s)):
-            return  # `==`, `∈` and comparisons glued to a name (`n≤Q`) are relations too
-        out.append((s, binders))
-
-    walk(s[1:], [], 16)
-    return out
-
-
-def negation_targets(negated: str) -> list[str]:
-    """Heads that a result `¬ <negated>` refutes outright (a view of `find_providers`).
-
-    `¬` binds tighter than `∧`, `∨`, `→` and `↔`, so the result is split into
-    conclusion atoms first; a negation under a `∀` introduced inside a conjunct
-    is skipped because the binder type may be empty.
-    """
-    heads: list[str] = []
-    for atom in conclusion_atoms("¬ " + negated):
-        if atom["kind"] != "negation" or atom.get("nested_binders") or atom["premises"]:
-            continue
-        heads.extend(atom_head(inner) for inner, _ in negated_targets(atom["text"]))
-    return heads
+    s = strip_outer_parens(text)
+    if s.startswith(("∃", "¬")) or not s:
+        return []
+    if s.startswith("∀"):
+        comma = depth0_index(s, ",")
+        if comma is None:
+            return []
+        entries, _bounded = forall_binders(s[1:comma])
+        return [(atom, entries + binders) for atom, binders in negated_atoms(s[comma + 1 :], fuel - 1)]
+    if has_top_level(s, "↔"):
+        return []
+    arrow = depth0_index(s, "→", scoped=True)
+    if arrow is not None:
+        # ¬(P → Q) implies ¬Q. The antecedent is not a proof premise.
+        entries = arrow_binder(s[:arrow]) or []
+        return [(atom, entries + binders) for atom, binders in negated_atoms(s[arrow + 1 :], fuel - 1)]
+    disjuncts = split_top_level(s, "∨")
+    if len(disjuncts) > 1:
+        return [target for part in disjuncts for target in negated_atoms(part, fuel - 1)]
+    if has_top_level(s, "∧") or _has_relation(s) or not atom_head(s):
+        return []
+    return [(s, [])]
 
 
 def residual_arguments(atom: str) -> list[tuple[str | None, str]]:
@@ -1167,9 +1003,7 @@ def parse_file(path: Path, root: Path) -> list[dict]:
     variables in scope (see `included_section_entries`).
     """
     text = path.read_text(encoding="utf-8", errors="replace")
-    # Literal examples can contain entire declaration/namespace lines. Keep
-    # their newlines for locations but never inventory those lines as source.
-    code = strip_comments(text, mask_literals=True)
+    code = unicode_connectives(strip_comments(text, mask_literals=True))
     lines = code.splitlines(keepends=True)
 
     line_starts: list[int] = []
@@ -1274,7 +1108,6 @@ def parse_file(path: Path, root: Path) -> list[dict]:
         else:
             binders, result, body = split_declaration(window)
             body = body_until_next_command(body)
-        binders, result = unicode_connectives(binders), unicode_connectives(result)
         name = h["name"]
         fq = f"{h['namespace']}.{name}" if h["namespace"] else name
         decls.append(
@@ -1550,12 +1383,22 @@ def assess(
                 continue
             instances.append(norm_space(e["type"]))
             continue
-        if mentioned(e["name"]):
+        typ = strip_outer_parens(e["type"])
+        in_result = mentioned(e["name"])
+        if KNOWN_EMPTY_TYPE_RE.fullmatch(typ) and (refutation or not in_result):
+            extra.add(e["name"] or ANONYMOUS)
+            continue
+        if in_result:
             continue
         for n in census_names:
             if mentions_word(e["type"], n):
                 consumed.add(n)
-        if looks_like_proof_assumption([e["name"] or ANONYMOUS], e["type"], prop_heads):
+        # A quantified result may be vacuous when its unrepresented domain
+        # is empty. Only bypass that check for familiar inhabited types.
+        quantified_assumption = e.get("source") == "result" and typ not in INHABITED_RESULT_TYPES
+        if quantified_assumption or looks_like_proof_assumption(
+            [e["name"] or ANONYMOUS], e["type"], prop_heads
+        ):
             extra.add(e["name"] or ANONYMOUS)
             if e.get("source") == "section":
                 section_hyps.add(e["name"] or ANONYMOUS)
@@ -1676,12 +1519,11 @@ def find_providers(all_decls: list[dict], residuals: list[dict]) -> None:
             elif atom["kind"] == "negation":
                 if atom.get("nested_binders"):
                     continue
-                for inner, inner_binders in negated_targets(atom["text"]):
+                for inner, inner_binders in negated_atoms(atom["text"][1:]):
                     head = atom_head(inner)
                     last = head.rsplit(".", 1)[-1]
                     if last in by_name:
-                        # Binders under the negation (`¬ ∀ k, R k`) are part of the
-                        # refuted proposition, not assumptions of the refutation.
+                        # Binders under the negation are in the refuted proposition.
                         refuted.setdefault(last, []).append(
                             (head, dict(atom, text=inner, inner_binders=inner_binders))
                         )
@@ -2023,9 +1865,9 @@ WIKI_HEADER = [
     "- **refuted** — a declaration with no recognised assumption proves the negation of some",
     "  instance, so the residual family is not uniformly true. A refutation outranks every",
     "  provider; proved instances stay listed, since an instance proof next to an instance",
-    "  refutation is mixed parameter-scope coverage, not a contradiction. The negation must refute",
-    "  the residual outright; negated existentials, compound negations such as `¬ (R ∧ Q)` and",
-    "  negations under a `∀` inside a conjunct are not counted.",
+    "  refutation is mixed parameter-scope coverage, not a contradiction. Negated",
+    "  existentials and negations under a universal introduced beneath a connective do not",
+    "  count because their domains may have no witnesses.",
     "- **open** — everything else, including residuals with conditional providers only.",
     "",
     "The named-residual convention is a modularity pattern, not an incompleteness marker:",

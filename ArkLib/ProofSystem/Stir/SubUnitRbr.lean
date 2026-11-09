@@ -56,9 +56,8 @@ Contents:
    challenges: `(|F|−1)/|F|`).
 4. **The discharge**: `stirEpsStar` (the genuine budget), `stirCheckingRbrSoundness_genuine`
    (T1), `stirCheckingCABridge_genuine` (T2 — the named open bridge of #301, a fortiori),
-   `stirCheckingIOP_isSecureWithGap_genuine` (the first hypothesis-free `IsSecureWithGapAveraged`
-   for the assembled STIR IOPP at a non-vacuous budget), and
-   `stir_main_of_checkingIOP_genuine` (Theorem 5.1 with the soundness leg proven).
+   `stirCheckingIOP_isSecureWithGap_genuine` and `stir_main_of_checkingIOP_genuine`
+   (packaging results that take fixed-prefix soundness at the same budget).
 
 HONESTY NOTES:
 * `stirEpsStar` is the model's TRUE security level: the switch prover (send the codeword
@@ -931,21 +930,49 @@ theorem stirCheckingCABridge_genuine (e ProxGapBound : Fin (M + 1) → ℝ≥0) 
     stirCheckingCABridge M φ deg δ (stirEpsStar (F := F) (ι := ι) M δ) e ProxGapBound :=
   fun _ _ => stirCheckingRbrSoundness_genuine M φ deg δ
 
-/-- **The first hypothesis-free `IsSecureWithGapAveraged` for the assembled STIR checking IOPP at a
-non-vacuous budget**: perfect completeness (landed) + the genuine rbr soundness (T1). -/
+/-- Secure-with-gap packaging at the genuine budget given a fixed-prefix bound. -/
+theorem stirCheckingIOP_isSecureWithGap_genuineFixedPrefix
+    (hSound : stirCheckingRbrSoundnessFixedPrefix M φ deg δ
+      (stirEpsStar (F := F) (ι := ι) M δ)) :
+    IsSecureWithGap (stirRelation deg φ 0) (stirRelation deg φ δ)
+      (stirEpsStar (F := F) (ι := ι) M δ) (stirCheckingIOP M φ deg) :=
+  stirCheckingIOP_isSecureWithGap M φ deg δ _ hSound
+
+/-- Perfect completeness and the proved averaged bound at the genuine checking budget. -/
 theorem stirCheckingIOP_isSecureWithGap_genuine :
     IsSecureWithGapAveraged (stirRelation deg φ 0) (stirRelation deg φ δ)
       (stirEpsStar (F := F) (ι := ι) M δ) (stirCheckingIOP M φ deg) :=
-  stirCheckingIOP_isSecureWithGap M φ deg δ _
-    (stirCheckingRbrSoundness_genuine M φ deg δ)
-
+  ⟨stirCheckingIOP_perfectCompleteness M φ deg,
+    stirCheckingRbrSoundness_genuine M φ deg δ⟩
 
 /-- **Theorem 5.1 through the checking IOPP at the GENUINE budget** (#301): `stir_main`
-discharged with the soundness leg PROVEN (no CA residuals, no bridge hypothesis, no vacuity)
-— the caller supplies only the statement's own free-parameter legs (`hε`/`hM`/`hLen`/`hQin`/
-`hQpf` and the field/degree constraints).  HONESTY: the `hε` leg pins `secpar` to the genuine
-security of the single-query wire model (`ε⋆ ≤ 2^{-secpar}`); real `secpar` requires the
-`t`-repetition wire model (the budget is essentially tight by the switch-prover attack). -/
+given fixed-prefix soundness and the statement's free-parameter constraints. The `hε` leg pins
+`secpar` to the genuine security of the single-query wire model (`ε⋆ ≤ 2^{-secpar}`). The
+`t`-repetition wire model is needed for larger security parameters. -/
+theorem stir_main_of_checkingIOP_genuineFixedPrefix
+    {M : ℕ} (secpar : ℕ)
+    {φ : ι ↪ F} {degree : ℕ} [hsmooth : Smooth φ]
+    {k proofLen qNumtoInput qNumtoProofstr : ℕ}
+    (hk : ∃ p, k = 2 ^ p) (hkGe : k ≥ 4)
+    (δ : ℝ≥0) (hδub : δ < 1 - 1.05 * Real.sqrt (degree / Fintype.card ι))
+    (hF : FieldSizeCondition secpar φ degree)
+    (hSound : stirCheckingRbrSoundnessFixedPrefix M φ degree δ
+      (stirEpsStar (F := F) (ι := ι) M δ))
+    (hε : ∀ i, stirEpsStar (F := F) (ι := ι) M δ i ≤ (1 : ℚ≥0) / (2 ^ secpar))
+    (hM : ∃ c > 0, M ≤ c * (Real.log degree / Real.log k))
+    (hLen : ∃ cₖ : ℕ → ℝ, proofLen ≤ (Fintype.card ι) + (cₖ k) * (Real.log degree))
+    (hQin : (qNumtoInput : ℝ) ≥ secpar / (-Real.log (1 - δ)))
+    (hQpf : ∃ cₖ : ℕ → ℝ, qNumtoProofstr ≤
+      (cₖ k) * ((Real.log degree) +
+        secpar * (Real.log ((Real.log degree) / Real.log (1 / LinearCode.rate (code φ degree)))))) :
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+      (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
+  stir_main_of_secure_vectorIOP secpar hk hkGe δ hδub hF
+    (stirEpsStar (F := F) (ι := ι) M δ) (stirCheckingIOP M φ degree)
+    (stirCheckingIOP_isSecureWithGap_genuineFixedPrefix M φ degree δ hSound)
+    hε hM hLen hQin hQpf
+
+/-- The single-domain checking witness for the historical averaged statement. -/
 theorem stir_main_of_checkingIOP_genuine
     {M : ℕ} (secpar : ℕ)
     {φ : ι ↪ F} {degree : ℕ} [hsmooth : Smooth φ]
@@ -962,10 +989,10 @@ theorem stir_main_of_checkingIOP_genuine
         secpar * (Real.log ((Real.log degree) / Real.log (1 / LinearCode.rate (code φ degree)))))) :
     stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
-  stir_main_of_secure_vectorIOP secpar hk hkGe δ hδub hF
-    (stirEpsStar (F := F) (ι := ι) M δ) (stirCheckingIOP M φ degree)
-    (stirCheckingIOP_isSecureWithGap_genuine M φ degree δ)
-    hε hM hLen hQin hQpf
+  ⟨3 * M + 3, stirMultiVSpec M ι, stirEpsStar (F := F) (ι := ι) M δ,
+    stirCheckingIOP M φ degree,
+    stirCheckingIOP_isSecureWithGap_genuine M φ degree δ,
+    hε, hM, hLen, hQin, hQpf⟩
 
 end Weld
 
@@ -990,5 +1017,7 @@ end
 #print axioms StirIOP.MultiRound.stirCheckingRbrSoundness_genuine
 #print axioms StirIOP.MultiRound.stirCheckingCABridge_genuine
 #print axioms StirIOP.MultiRound.stirCheckingIOP_isSecureWithGap_genuine
+#print axioms StirIOP.MultiRound.stirCheckingIOP_isSecureWithGap_genuineFixedPrefix
 #print axioms StirIOP.MultiRound.stir_main_of_checkingIOP_genuine
+#print axioms StirIOP.MultiRound.stir_main_of_checkingIOP_genuineFixedPrefix
 #print axioms ThresholdKSF.rbrKnowledgeSoundness_of_flipBounds

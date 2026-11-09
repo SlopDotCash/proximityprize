@@ -46,7 +46,7 @@ This file instantiates the bounded-flip threshold shell
    * `whirChecked_rbrKnowledgeSoundness_smallField` /
      `whirCheckedVectorIOP_isSecureWithGap_smallField` — the UNCONDITIONAL discharge in the
      small-field regime `|F| ≤ maxLen` (where the budget is ≥ 1), giving the full
-     `IsSecureWithGapAveraged` package for the checked WHIR `VectorIOP` at the task's budget shape.
+     `IsSecureWithGapAveraged` package for the checked WHIR `VectorIOP` at the task's budget.
 
 ## HONESTY: why the unconditional `hFlip` at `maxLen/|F| < 1` is NOT provable here
 
@@ -671,17 +671,16 @@ theorem whirChecked_rbrKnowledgeSoundness_smallField (δ : ℝ≥0) (L : ℕ)
   exact whirChecked_rbrKnowledgeSoundness_of_flipBound P d (m0 := m0) δ _
     (fun stmtIn witIn prover => le_trans (_root_.prEvent_le_one _) hone)
 
-/-- **The full security package (small-field regime)**: completeness (proven in
-`CheckedVerifier.lean`) and the small-field RBR discharge give `IsSecureWithGapAveraged` for
-the checked WHIR `VectorIOP` at the task's budget shape. -/
+/-- In the small-field regime, completeness and the averaged RBR bound give the checked WHIR
+`VectorIOP` its prover-averaged security package at the stated budget. -/
 theorem whirCheckedVectorIOP_isSecureWithGap_smallField (δ : ℝ≥0) (L : ℕ)
     (hL : Fintype.card F ≤ L) :
     VectorIOP.IsSecureWithGapAveraged (whirRelation m0 (P.φ 0) 0) (whirRelation m0 (P.φ 0) δ)
       (fun i => if i = finalRandomnessChallengeIdx P d
         then (L : ℝ≥0) / (Fintype.card F : ℝ≥0) else 0)
       (whirCheckedVectorIOP P d) :=
-  whirCheckedVectorIOP_isSecureWithGap_of_rbr P d (m0 := m0) δ _
-    (whirChecked_rbrKnowledgeSoundness_smallField P d (m0 := m0) δ L hL)
+  ⟨whirCheckedVectorIOP_perfectCompleteness_whirRelation P d (m0 := m0),
+    whirChecked_rbrKnowledgeSoundness_smallField P d (m0 := m0) δ L hL⟩
 
 /-- The analogous small-field discharge for `Protocol.lean`'s named residual (the pure-`true`
 placeholder `VectorIOP`), at the same budget shape — the threshold state function is

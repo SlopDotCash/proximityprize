@@ -994,9 +994,7 @@ theorem whirCheckedVectorIOP_perfectCompleteness_whirRelation (P : Params ιs F)
       (whirRelation m0 (P.φ 0) 0) :=
   whirCheckedVectorIOP_perfectCompleteness P d (whirRelation m0 (P.φ 0) 0)
 
-/-- With the completeness leg PROVEN for the checking verifier, `IsSecureWithGapAveraged` for the
-checked WHIR `VectorIOP` reduces to the single RBR knowledge-soundness residual (which is now
-a *genuine* obligation, not the falsehood it was for the pure-`true` shell). -/
+/-- Package completeness and the supplied prover-averaged RBR bound for the checked verifier. -/
 theorem whirCheckedVectorIOP_isSecureWithGap_of_rbr (P : Params ιs F) (d : ℕ) {m0 : ℕ}
     [ReedSolomon.Smooth (P.φ 0)] [Nonempty (ιs 0)] (δ : ℝ≥0)
     (εRbr : (whirPaperTranscriptVectorSpec P d).ChallengeIdx → ℝ≥0)
@@ -1008,6 +1006,17 @@ theorem whirCheckedVectorIOP_isSecureWithGap_of_rbr (P : Params ιs F) (d : ℕ)
   paperTranscriptVectorIOP_isSecureWithGap_of_complete_and_rbr P d
     (whirMakeTranscript P d) (whirVerifyChecked P d)
     (whirCheckedVectorIOP_perfectCompleteness_whirRelation P d (m0 := m0)) hSound
+
+/-- Package completeness and the supplied fixed-prefix RBR bound for the checked verifier. -/
+theorem whirCheckedVectorIOP_isSecureWithGap_fixedPrefix_of_rbr (P : Params ιs F) (d : ℕ) {m0 : ℕ}
+    [ReedSolomon.Smooth (P.φ 0)] [Nonempty (ιs 0)] (δ : ℝ≥0)
+    (εRbr : (whirPaperTranscriptVectorSpec P d).ChallengeIdx → ℝ≥0)
+    (hSound : OracleProof.rbrKnowledgeSoundness (pure ()) isEmptyElim
+      (whirRelation m0 (P.φ 0) δ)
+      (paperTranscriptOracleVerifier P d (whirVerifyChecked P d)) εRbr) :
+    VectorIOP.IsSecureWithGap (whirRelation m0 (P.φ 0) 0) (whirRelation m0 (P.φ 0) δ)
+      εRbr (whirCheckedVectorIOP P d) :=
+  ⟨whirCheckedVectorIOP_perfectCompleteness_whirRelation P d (m0 := m0), hSound⟩
 
 end Whir302Checked
 
@@ -1034,3 +1043,5 @@ end Whir302Checked
 #print axioms Whir302Checked.whirCheckedVectorIOP_perfectCompleteness
 #print axioms Whir302Checked.whirCheckedVectorIOP_perfectCompleteness_whirRelation
 #print axioms Whir302Checked.whirCheckedVectorIOP_isSecureWithGap_of_rbr
+
+#print axioms Whir302Checked.whirCheckedVectorIOP_isSecureWithGap_fixedPrefix_of_rbr

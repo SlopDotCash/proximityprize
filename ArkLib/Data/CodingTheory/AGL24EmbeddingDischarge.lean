@@ -5,9 +5,9 @@ Authors: TrapLord, ArkLib Contributors
 -/
 
 import Mathlib
-import ArkLib.Data.Probability.Notation
 import ArkLib.Data.CodingTheory.AGL24ConditionalAssembly
 import ArkLib.Data.CodingTheory.AGL24ProbDischarge
+import ArkLib.Data.Probability.Notation
 
 /-!
 # [AGL24] Theorem 1.1 under uniform evaluation embeddings, conditional on Theorem 2.11
@@ -42,7 +42,7 @@ that of `conditional_failure_bound` and `rimFailureProb_of_symbolic`; this file 
 sharpen it to the paper's `C(n,r)(t^r 2^{(t−1)k}/(q−n))^r` form.
 -/
 
-open Finset ListDecodable
+open Finset ListDecodable ProximityPrize.Compatibility
 open scoped ENNReal
 
 namespace AGL24
@@ -55,12 +55,12 @@ omit [Nonempty ι] [DecidableEq F] in
 costs at most the factor `#(ι → F) / #(ι ↪ F)` against the uniform distribution on all
 tuples, for every event. -/
 theorem toOuterMeasure_map_uniformEmbedding_le [Nonempty (ι ↪ F)] (A : Set (ι → F)) :
-    ((ProximityPrize.Compatibility.uniformOfFintype (ι ↪ F)).map (fun φ i => φ i)).toOuterMeasure A
+    ((uniformOfFintype (ι ↪ F)).map (fun φ i => φ i)).toOuterMeasure A
       ≤ ((Fintype.card (ι → F) : ℝ≥0∞) / Fintype.card (ι ↪ F)) *
-        (ProximityPrize.Compatibility.uniformOfFintype (ι → F)).toOuterMeasure A := by
+        (uniformOfFintype (ι → F)).toOuterMeasure A := by
   classical
-  rw [PMF.toOuterMeasure_map_apply, ProximityPrize.Compatibility.toOuterMeasure_uniformOfFintype_apply,
-    ProximityPrize.Compatibility.toOuterMeasure_uniformOfFintype_apply]
+  rw [PMF.toOuterMeasure_map_apply, toOuterMeasure_uniformOfFintype_apply,
+    toOuterMeasure_uniformOfFintype_apply]
   have hcard : Fintype.card ((fun φ : ι ↪ F => fun i => φ i) ⁻¹' A) ≤ Fintype.card A :=
     Fintype.card_le_of_injective
       (fun x => ⟨(fun i => x.1 i), x.2⟩)
@@ -102,7 +102,7 @@ theorem failure_bound_uniformEmbedding_of_symbolic {k L : ℕ} (hL : 1 ≤ L) {r
       ≤ ((L * (Fintype.card ι - k) : ℕ) : ℝ))
     [Nonempty (ι ↪ F)]
     (hsym : SymbolicFullRankResidual (ι := ι) F k) :
-    (ProximityPrize.Compatibility.uniformOfFintype (ι ↪ F)).toOuterMeasure
+    (uniformOfFintype (ι ↪ F)).toOuterMeasure
         {φ : ι ↪ F | ¬ Lambda (ReedSolomon.code φ k : Set (ι → F)) r ≤ (L : ℕ∞)}
       ≤ (Fintype.card (WpcIndex ι k L) : ℝ≥0∞) *
         (((Fintype.card (ι → F) : ℝ≥0∞) / Fintype.card (ι ↪ F)) *
@@ -112,14 +112,14 @@ theorem failure_bound_uniformEmbedding_of_symbolic {k L : ℕ} (hL : 1 ≤ L) {r
   obtain ⟨t', e, hwpc⟩ := idx
   unfold RIMFullRankFailureProbResidual
   refine (toOuterMeasure_map_uniformEmbedding_le _).trans ?_
-  refine mul_le_mul_right ?_ _
+  refine mul_le_mul_of_nonneg_left ?_ zero_le
   obtain ⟨t, ht⟩ := t'
   rcases Nat.eq_zero_or_pos t with rfl | htpos
   · simp [RIMRankDeficitSet_of_t_eq_zero]
   · have hprov := rimFailureProb_of_symbolic hsym htpos e hwpc
     unfold RIMFullRankFailureProbResidual at hprov
     refine hprov.trans ?_
-    gcongr <;> omega
+    gcongr
 
 end AGL24
 

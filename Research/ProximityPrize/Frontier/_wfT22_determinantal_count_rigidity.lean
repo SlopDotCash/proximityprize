@@ -49,9 +49,8 @@ over `b∈F_p^*` is the *maximally NON-simple* object: every atom has multiplici
 `n = 2^{30}`. Consequently the level-set count `N(t) = #{b : η_b/√n > t}` is ALWAYS a multiple of
 `n` — it is `n × #{cosets with η_i > t√n}`. A point configuration whose every point has multiplicity
 `n` admits no repulsion (`ρ_2` on the diagonal is `~ n²`, the opposite sign of a DPP's `0`). The
-determinantal hypothesis with log-variance rigidity is therefore false by construction *for the
-multiset over all `b`*; the coset-level process over the distinct values is untouched.
-Formalized below as
+determinantal hypothesis with log-variance rigidity fails for the multiset over all `b`.
+The argument leaves the process indexed by cosets open. Formalized below as
 `exceedanceCount_eq_fiberSize_mul_card`, `exceedance_count_dvd_fiberSize`, and
 `degenerate_not_simple`.
 
@@ -159,7 +158,8 @@ theorem degenerate_not_simple
 
 /-! ### Obstruction 2 — the surviving sup-deduction depends ONLY on the energy moment (fence F1) -/
 
-/-- The energy-Markov count bound for `a_b = (η_b/√n)²`, from `MomentCountSupBound`. -/
+/-- A nonnegative family's `r`-th power sum below `T^r` bounds every value by `T`.
+This applies `MomentCountSupBound` to `a_b = (η_b / √n)²`. -/
 theorem forall_le_of_sum_pow_lt (a : ι → ℝ) (ha : ∀ i, 0 ≤ a i) (T : ℝ) (hT : 0 < T) (r : ℕ)
     (hbound : ∑ b, (a b) ^ r < T ^ r) : ∀ b, a b ≤ T :=
   ArkLib.ProximityGap.MomentCountSupBound.forall_le_of_sum_pow_lt a ha T hT r hbound

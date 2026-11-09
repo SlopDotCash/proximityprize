@@ -11,29 +11,18 @@ public import ArkLib.Commitments.Functional.KZG.FunctionBinding.TauInQueries
 /-!
 # Adversary model of the KZG hardness assumptions
 
-`Groups.tSdhAssumption` and `Groups.arsdhAssumption` (in the upstream-pinned module
-`ArkLib.Commitments.Functional.KZG.HardnessAssumptions`) bound the adversaries of an explicit
-class `Adv`. That module proves `not_tSdhAssumption_univ` and `not_arsdhAssumption_univ`: over
-all Lean functions neither assumption holds below error `1`. This module adds the explicit
-adversaries behind that statement, and the consequences for a class `Adv`.
+The canonical `Groups.tSdhAssumption` and `Groups.arsdhAssumption` take an explicit adversary
+class. This file exhibits concrete-group adversaries showing why `Set.univ` cannot model hardness
+below error one under the stated group and field hypotheses.
 
-## Exhaustive-search adversaries
+Given public `g₂ ^ τ` with `g₂ ≠ 1`, `exhaustiveDlog` recovers `τ`. The t-SDH adversary uses
+offset zero and the sampler's nonzero trapdoor. The ARSDH adversary chooses a size-`D + 1` set
+avoiding `τ` when `p ≥ D + 2` and `g₁ ≠ 1`. A separate t-SDH witness uses `(0, 1)` when
+`g₁ = 1`.
 
-Given the public `g₂ ^ τ` with `g₂ ≠ 1` in a group of prime order `p`, the function
-`exhaustiveDlog` recovers `τ`, after which t-SDH is solved by `(c, h) = (0, g₁ ^ (1 / τ))`
-(setup samples `τ ≠ 0`), and ARSDH is solved by choosing a size-`D + 1` set avoiding `τ` (when
-`p ≥ D + 2` and `g₁ ≠ 1`). If `g₁ = 1`, the t-SDH condition is met by `(0, 1)` outright:
-
-* `tSdhExperiment_exhaustiveAdversary_eq_one`, `tSdhExperiment_trivialGenerator_eq_one`,
-  `arsdhExperiment_exhaustiveAdversary_eq_one`: these adversaries win with probability one.
-
-## Adversary classes
-
-Hardness is antitone in the class (`tSdhAssumption.mono`, `arsdhAssumption.mono`), and any class
-witnessing hardness below error one must exclude the exhaustive-search adversary
-(`tSdhExhaustiveAdversary_not_mem_of_assumption`). A coherent computational model additionally
-needs `Adv` to be resource-bounded and closed under the reductions in use; that security model
-is not formalized here.
+An adversary class witnessing t-SDH hardness below error one must exclude this exhaustive
+adversary. The computational interpretation still requires a resource-bounded class and the
+relevant reduction-membership conditions.
 -/
 
 @[expose] public section
@@ -70,7 +59,7 @@ def tSdhConstAdversary (D : ℕ) (out : Vector G₁ (D + 1) × Vector G₂ 2 →
 omit [PrimeOrderWith G₁ p] [PrimeOrderWith G₂ p] in
 /-- A constant-output t-SDH adversary that wins for every nonzero trapdoor wins with
 probability one. -/
-lemma tSdhExperiment_constAdversary_eq_one [∀ i, SampleableType (unifSpec.Range i)]
+lemma tSdhExperiment_constAdversary_eq_one
     {g₁ : G₁} {g₂ : G₂} (D : ℕ) (out : Vector G₁ (D + 1) × Vector G₂ 2 → ZMod p × G₁)
     (hwin : ∀ τ : ZMod p, τ ≠ 0 →
       tSdhCondition (g₁ := g₁)
@@ -107,8 +96,8 @@ lemma exhaustiveDlog_pow {G : Type} [Group G] [PrimeOrderWith G p] {g : G} (hg :
   exact sub_eq_zero.1 (zmod_eq_zero_of_gpow_eq_one hord hdiv)
 
 /-- The exhaustive-search t-SDH adversary: recover `τ` from the public `g₂ ^ τ` by exhaustive
-discrete logarithm and answer with `c = 0`, `h = g₁ ^ (1 / τ)`. It lies in the full
-class `Set.univ`. -/
+discrete logarithm and answer with `c = 0`, `h = g₁ ^ (1 / τ)`. It lies in the unrestricted
+adversary class quantified by `tSdhAssumption`. -/
 noncomputable def tSdhExhaustiveAdversary (g₁ : G₁) (g₂ : G₂) (D : ℕ) :
     tSdhAdversary D (G₁ := G₁) (G₂ := G₂) (p := p) :=
   tSdhConstAdversary D fun srs =>
@@ -117,7 +106,7 @@ noncomputable def tSdhExhaustiveAdversary (g₁ : G₁) (g₂ : G₂) (D : ℕ) 
 omit [PrimeOrderWith G₁ p] in
 /-- For a nontrivial `g₂`, the exhaustive-search adversary wins the t-SDH game with
 probability one. -/
-theorem tSdhExperiment_exhaustiveAdversary_eq_one [∀ i, SampleableType (unifSpec.Range i)]
+theorem tSdhExperiment_exhaustiveAdversary_eq_one
     {g₁ : G₁} {g₂ : G₂} (hg₂ : g₂ ≠ 1) (D : ℕ) :
     tSdhExperiment (g₁ := g₁) (g₂ := g₂) D (tSdhExhaustiveAdversary (p := p) g₁ g₂ D) = 1 := by
   refine tSdhExperiment_constAdversary_eq_one D _ fun τ hτ => ?_
@@ -129,11 +118,27 @@ theorem tSdhExperiment_exhaustiveAdversary_eq_one [∀ i, SampleableType (unifSp
 omit [PrimeOrderWith G₂ p] in
 /-- For a degenerate `g₁ = 1`, the t-SDH winning condition is met by the constant answer
 `(c, h) = (0, 1)` with probability one, whatever `g₂` is. -/
-theorem tSdhExperiment_trivialGenerator_eq_one [∀ i, SampleableType (unifSpec.Range i)]
+theorem tSdhExperiment_trivialGenerator_eq_one
     {g₂ : G₂} (D : ℕ) :
     tSdhExperiment (g₁ := (1 : G₁)) (g₂ := g₂) D
       (tSdhConstAdversary (p := p) D fun _ => (0, 1)) = 1 :=
   tSdhExperiment_constAdversary_eq_one D _ fun τ hτ => ⟨by simpa using hτ, by simp⟩
+
+omit [PrimeOrderWith G₁ p] in
+/-- **The unrestricted t-SDH assumption is unsatisfiable below error one.** Since
+`tSdhAssumption` at `Set.univ` quantifies over every function-valued adversary, including exhaustive
+discrete-logarithm search, it fails for every `error < 1` as soon as `g₂ ≠ 1` (or `g₁ = 1`, by
+`tSdhExperiment_trivialGenerator_eq_one`). Hypotheses of the form `tSdhAssumption D Set.univ ε` with
+`ε < 1` are therefore contradictory, and theorems conditioned on them carry no computational
+content; see the module docstring. -/
+theorem not_tSdhAssumption_of_lt_one
+    {g₁ : G₁} {g₂ : G₂} (hg₂ : g₂ ≠ 1) (D : ℕ) {error : ℝ≥0} (herror : error < 1) :
+    ¬ tSdhAssumption (g₁ := g₁) (g₂ := g₂) (p := p) D Set.univ error := by
+  intro h
+  have h1 := h (tSdhExhaustiveAdversary (p := p) g₁ g₂ D) (Set.mem_univ _)
+  rw [tSdhExperiment_exhaustiveAdversary_eq_one hg₂] at h1
+  have h2 : (error : ℝ≥0∞) < 1 := by exact_mod_cast herror
+  exact absurd (lt_of_le_of_lt h1 h2) (lt_irrefl _)
 
 /-- An ARSDH adversary that ignores its query cache and deterministically outputs `out srs`. -/
 def arsdhConstAdversary (D : ℕ)
@@ -144,7 +149,7 @@ def arsdhConstAdversary (D : ℕ)
 omit [PrimeOrderWith G₂ p] in
 /-- A constant-output ARSDH adversary that wins for every nonzero trapdoor wins with
 probability one. -/
-lemma arsdhExperiment_constAdversary_eq_one [∀ i, SampleableType (unifSpec.Range i)]
+lemma arsdhExperiment_constAdversary_eq_one
     {g₁ : G₁} {g₂ : G₂} (D : ℕ)
     (out : Vector G₁ (D + 1) × Vector G₂ 2 → Finset (ZMod p) × G₁ × G₁)
     (hwin : ∀ τ : ZMod p, τ ≠ 0 →
@@ -178,7 +183,7 @@ noncomputable def arsdhExhaustiveAdversary (g₁ : G₁) (g₂ : G₂) (D : ℕ)
 
 /-- For nontrivial `g₁, g₂` and `p ≥ D + 2`, the exhaustive-search adversary wins the ARSDH game
 with probability one. -/
-theorem arsdhExperiment_exhaustiveAdversary_eq_one [∀ i, SampleableType (unifSpec.Range i)]
+theorem arsdhExperiment_exhaustiveAdversary_eq_one
     {g₁ : G₁} {g₂ : G₂} (hg₁ : g₁ ≠ 1) (hg₂ : g₂ ≠ 1) {D : ℕ} (hp : p ≥ D + 2) :
     arsdhExperiment (g₁ := g₁) (g₂ := g₂) D (arsdhExhaustiveAdversary (p := p) g₁ g₂ D) = 1 := by
   refine arsdhExperiment_constAdversary_eq_one D _ fun τ _ => ?_
@@ -188,36 +193,76 @@ theorem arsdhExperiment_exhaustiveAdversary_eq_one [∀ i, SampleableType (unifS
   exact ⟨KZG.CommitmentScheme.choose_s_middle_card (p := p) hp τ,
     KZG.CommitmentScheme.choose_s_middle_eval_ne_zero τ, hg₁, rfl⟩
 
-/-! ### Adversary classes
+/-- **The unrestricted ARSDH assumption is unsatisfiable below error one** whenever
+`g₁ ≠ 1`, `g₂ ≠ 1`, and `p ≥ D + 2`, for the same reason as `not_tSdhAssumption_of_lt_one`. -/
+theorem not_arsdhAssumption_of_lt_one
+    {g₁ : G₁} {g₂ : G₂} (hg₁ : g₁ ≠ 1) (hg₂ : g₂ ≠ 1) {D : ℕ} (hp : p ≥ D + 2)
+    {error : ℝ≥0} (herror : error < 1) :
+    ¬ arsdhAssumption (g₁ := g₁) (g₂ := g₂) (p := p) D Set.univ error := by
+  intro h
+  have h1 := h (arsdhExhaustiveAdversary (p := p) g₁ g₂ D) (Set.mem_univ _)
+  rw [arsdhExperiment_exhaustiveAdversary_eq_one hg₁ hg₂ hp] at h1
+  have h2 : (error : ℝ≥0∞) < 1 := by exact_mod_cast herror
+  exact absurd (lt_of_le_of_lt h1 h2) (lt_irrefl _)
 
-A meaningful computational assumption must restrict the adversary class, for example to a
-resource-bounded family closed under the reductions in use. -/
+/-! ### Adversary-class-indexed assumptions
+
+A meaningful computational assumption must restrict the adversary class (for example to a
+resource-bounded family closed under the reductions in use). The former downstream names below alias the canonical class-indexed assumptions. -/
+
+/-- t-SDH hardness against the adversary class `Adv`. -/
+abbrev tSdhAssumptionFor
+    {g₁ : G₁} {g₂ : G₂} (D : ℕ) (Adv : Set (tSdhAdversary D (G₁ := G₁) (G₂ := G₂) (p := p)))
+    (error : ℝ≥0) : Prop :=
+  tSdhAssumption (g₁ := g₁) (g₂ := g₂) D Adv error
+
+/-- ARSDH hardness against the adversary class `Adv`. -/
+abbrev arsdhAssumptionFor
+    {g₁ : G₁} {g₂ : G₂} (D : ℕ) (Adv : Set (arsdhAdversary D (G₁ := G₁) (G₂ := G₂) (p := p)))
+    (error : ℝ≥0) : Prop :=
+  arsdhAssumption (g₁ := g₁) (g₂ := g₂) D Adv error
 
 omit [PrimeOrderWith G₁ p] [PrimeOrderWith G₂ p] in
-/-- t-SDH hardness is antitone in the adversary class. -/
-theorem tSdhAssumption.mono
+/-- The unrestricted t-SDH assumption is the class-indexed one at the full class. -/
+theorem tSdhAssumption_iff_univ
+    {g₁ : G₁} {g₂ : G₂} (D : ℕ) (error : ℝ≥0) :
+    tSdhAssumption (g₁ := g₁) (g₂ := g₂) (p := p) D Set.univ error ↔
+      tSdhAssumptionFor (g₁ := g₁) (g₂ := g₂) (p := p) D Set.univ error :=
+  Iff.rfl
+
+omit [PrimeOrderWith G₂ p] in
+/-- The unrestricted ARSDH assumption is the class-indexed one at the full class. -/
+theorem arsdhAssumption_iff_univ
+    {g₁ : G₁} {g₂ : G₂} (D : ℕ) (error : ℝ≥0) :
+    arsdhAssumption (g₁ := g₁) (g₂ := g₂) (p := p) D Set.univ error ↔
+      arsdhAssumptionFor (g₁ := g₁) (g₂ := g₂) (p := p) D Set.univ error :=
+  Iff.rfl
+
+omit [PrimeOrderWith G₁ p] [PrimeOrderWith G₂ p] in
+/-- Class-indexed t-SDH hardness is antitone in the adversary class. -/
+theorem tSdhAssumptionFor.mono
     {g₁ : G₁} {g₂ : G₂} {D : ℕ} {Adv Adv' : Set (tSdhAdversary D (G₁ := G₁) (G₂ := G₂) (p := p))}
-    {error : ℝ≥0} (h : tSdhAssumption (g₁ := g₁) (g₂ := g₂) D Adv error) (hsub : Adv' ⊆ Adv) :
-    tSdhAssumption (g₁ := g₁) (g₂ := g₂) D Adv' error :=
+    {error : ℝ≥0} (h : tSdhAssumptionFor (g₁ := g₁) (g₂ := g₂) D Adv error) (hsub : Adv' ⊆ Adv) :
+    tSdhAssumptionFor (g₁ := g₁) (g₂ := g₂) D Adv' error :=
   fun A hA => h A (hsub hA)
 
 omit [PrimeOrderWith G₂ p] in
-/-- ARSDH hardness is antitone in the adversary class. -/
-theorem arsdhAssumption.mono
+/-- Class-indexed ARSDH hardness is antitone in the adversary class. -/
+theorem arsdhAssumptionFor.mono
     {g₁ : G₁} {g₂ : G₂} {D : ℕ}
     {Adv Adv' : Set (arsdhAdversary D (G₁ := G₁) (G₂ := G₂) (p := p))}
-    {error : ℝ≥0} (h : arsdhAssumption (g₁ := g₁) (g₂ := g₂) D Adv error)
+    {error : ℝ≥0} (h : arsdhAssumptionFor (g₁ := g₁) (g₂ := g₂) D Adv error)
     (hsub : Adv' ⊆ Adv) :
-    arsdhAssumption (g₁ := g₁) (g₂ := g₂) D Adv' error :=
+    arsdhAssumptionFor (g₁ := g₁) (g₂ := g₂) D Adv' error :=
   fun A hA => h A (hsub hA)
 
 omit [PrimeOrderWith G₁ p] in
-/-- Any t-SDH assumption below error one must exclude the exhaustive-search adversary from its
-class. -/
-theorem tSdhExhaustiveAdversary_not_mem_of_assumption
-    [∀ i, SampleableType (unifSpec.Range i)] {g₁ : G₁} {g₂ : G₂} (hg₂ : g₂ ≠ 1) {D : ℕ}
+/-- Any class-indexed t-SDH assumption below error one must exclude the exhaustive-search
+adversary. -/
+theorem tSdhExhaustiveAdversary_not_mem_of_assumptionFor
+    {g₁ : G₁} {g₂ : G₂} (hg₂ : g₂ ≠ 1) {D : ℕ}
     {Adv : Set (tSdhAdversary D (G₁ := G₁) (G₂ := G₂) (p := p))} {error : ℝ≥0}
-    (herror : error < 1) (h : tSdhAssumption (g₁ := g₁) (g₂ := g₂) D Adv error) :
+    (herror : error < 1) (h : tSdhAssumptionFor (g₁ := g₁) (g₂ := g₂) D Adv error) :
     tSdhExhaustiveAdversary (p := p) g₁ g₂ D ∉ Adv := by
   intro hmem
   have h1 := h _ hmem
