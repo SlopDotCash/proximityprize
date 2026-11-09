@@ -232,7 +232,8 @@ def certified_bad_count(st, u0, pack, a):
         coeffs = interp_poly([int(st.xs[t]) for t in T], [int(w[t]) for t in T], q)
         cv = poly_eval_vec(coeffs, st.xs, q)
         agr = int((cv == w).sum())
-        assert agr >= a, f'CERTIFICATE FAILED gamma={g}: agreement {agr} < {a}'
+        if agr < a:
+            raise AssertionError(f'CERTIFICATE FAILED gamma={g}: agreement {agr} < {a}')
         ok[g] = agr
     return len(ok), sorted(ok.keys())
 
