@@ -32,8 +32,15 @@ from probe_syz28_d3_coplanar_crack import (rref_rank_nullbasis, dual_basis_cache
 from probe_syz52_witness_lift import (find_witnesses, build_interp_tensor, _agr_masks, cores_of)
 
 # ------------------------------------------------------------------ prime helpers
+# Least strong pseudoprime to bases 2..37 (Sorenson-Webster, Thm 1.1).
+# Match the exactness boundary used by probe_ztz_beta3_ladder.is_prime.
+_MR12_DET_LIMIT = 318665857834031151167461
+
+
 def is_prime(m):
     if m < 2: return False
+    if m >= _MR12_DET_LIMIT:
+        raise ValueError(f"12-base Miller-Rabin is only proven exact below {_MR12_DET_LIMIT}")
     for q in (2,3,5,7,11,13,17,19,23,29,31,37):
         if m % q == 0: return m == q
     d=m-1; r=0
@@ -48,7 +55,11 @@ def is_prime(m):
     return True
 
 def next_prime_1modn(target, n):
-    """smallest prime p >= target with p == 1 (mod n)."""
+    """Smallest prime p >= target with p == 1 (mod n), within the exact MR range.
+
+    Raise if the search reaches the deterministic bound; never label an
+    unverified probable prime as an exact prime-field sweep instance.
+    """
     p = target + ((1 - target) % n)
     if p < target: p += n
     while not is_prime(p): p += n
