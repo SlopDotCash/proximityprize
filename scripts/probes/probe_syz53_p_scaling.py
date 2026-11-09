@@ -115,19 +115,29 @@ def exact_badz(u0, u1, alpha, k, s, p):
     return bad, inf, mca, wholefield
 
 # ------------------------------------------------------------------ lift test (exact, any p)
+def _require(condition, detail):
+    """Keep exactness checks active when Python runs with optimization enabled."""
+    if not condition:
+        raise AssertionError(detail)
+
+
 def _crosscheck(u0,u1,alpha,k,s,p,tensor,bad,inf,wf):
-    """Independent validation of exact_badz vs the SYZ52 brute range(p) is_close scan.
-    (When wf=True a common-agreement subset makes the whole pencil s-close; that stack is
-    joint on that subset, while exact_badz reports nonjoint finite candidates -- brute is then
-    all of F and we only check bad is a subset.)"""
+    """Independently compare exact_badz with the SYZ52 brute range(p) scan.
+
+    When wf=True, a common-agreement subset predicts that every finite pencil value is
+    s-close, so check the full finite field as well as the reported candidates' inclusion.
+    A joint subset does not erase nonjoint witnesses on other subsets.
+    """
     def is_close(w): return len(_agr_masks(w,tensor))>0
     n=len(alpha)
     brute=set(z for z in range(p) if is_close([(u0[j]+z*u1[j])%p for j in range(n)]))
     if wf:
-        assert bad<=brute, f"BADZ SUBSET FAIL p={p}"
+        _require(brute==set(range(p)), f"WHOLEFIELD PREMISE FAIL p={p}: brute={sorted(brute)}")
+        _require(bad<=brute, f"BADZ SUBSET FAIL p={p}")
     else:
-        assert brute==bad, f"BADZ MISMATCH p={p}: exact={sorted(bad)} brute={sorted(brute)}"
-        assert is_close(u1)==inf, f"INF MISMATCH p={p}"
+        _require(brute==bad, f"BADZ MISMATCH p={p}: exact={sorted(bad)} brute={sorted(brute)}")
+    _require(is_close(u1)==inf, f"INF MISMATCH p={p}")
+
 
 def lift_test_exact(alpha, k, s, p, cores, seed=1, trials=1200, verify=False):
     """Fully EXACT, big-int-safe SYZ32 lift test at any prime p."""
