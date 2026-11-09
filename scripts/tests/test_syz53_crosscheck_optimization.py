@@ -10,15 +10,17 @@ PROBES = Path(__file__).resolve().parents[1] / "probes"
 
 
 class SYZ53CrosscheckOptimization(unittest.TestCase):
-    def run_optimized_crosscheck(self, bad, inf, wholefield, expected_error):
+    def run_optimized_crosscheck(
+        self, bad, inf, wholefield, expected_error, u0=(0, 0, 1, 1), u1=(0, 1, 0, 1)
+    ):
         code = textwrap.dedent(
             f"""
             import sys
             sys.path.insert(0, {str(PROBES)!r})
             import probe_syz53_p_scaling as probe
 
-            u0 = [0, 0, 1, 1]
-            u1 = [0, 1, 0, 1]
+            u0 = {list(u0)!r}
+            u1 = {list(u1)!r}
             alpha = [1, 2, 3, 4]
             p = 5
             tensor = probe.build_interp_tensor(alpha, 1, 2, p)
@@ -51,14 +53,19 @@ class SYZ53CrosscheckOptimization(unittest.TestCase):
             {0, 1}, True, False, "BADZ MISMATCH p=5"
         )
 
-    def test_wholefield_bad_set_is_checked_as_a_subset(self):
+    def test_wholefield_claim_requires_the_full_finite_field(self):
         self.run_optimized_crosscheck(
-            {5}, True, True, "BADZ SUBSET FAIL p=5"
+            {1, 4}, True, True, "WHOLEFIELD PREMISE FAIL p=5"
+        )
+
+    def test_genuine_wholefield_result_passes(self):
+        self.run_optimized_crosscheck(
+            {2}, True, True, None, u1=(0, 0, 2, 2)
         )
 
     def test_infinity_candidate_is_checked(self):
         self.run_optimized_crosscheck(
-            {0, 1, 4}, False, False, "INF MISMATCH p=5"
+            {2}, False, True, "INF MISMATCH p=5", u1=(0, 0, 2, 2)
         )
 
 
