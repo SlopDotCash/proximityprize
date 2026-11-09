@@ -13,7 +13,7 @@ from pathlib import Path
 import re
 import subprocess
 
-from extract_downstream_extensions import remap_imports
+from extract_downstream_extensions import current_extension_module, remap_imports
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -27,7 +27,7 @@ def main() -> int:
     historical = json.loads((ROOT / "scripts/integration/downstream-extensions.json").read_text())
     # The extraction receipt describes its original integration commit. Adapt
     # destinations when reading it instead of rewriting historical provenance.
-    mapping = {source: target.replace("ProximityPrize.Extensions", "ArkLib.Extensions", 1)
+    mapping = {source: current_extension_module(target)
                for source, target in historical.items()}
     canonical = set(json.loads((ROOT / "scripts/arklib-upstream.json").read_text())["files"])
     paths = subprocess.check_output(

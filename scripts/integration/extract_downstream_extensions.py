@@ -437,12 +437,21 @@ def remap_imports(text: str, mapping: dict[str, str]) -> str:
     return text
 
 
+def current_extension_module(module: str) -> str:
+    """Resolve a historical extraction destination without rewriting its receipt."""
+    old = "ProximityPrize.Extensions"
+    if module == old or module.startswith(old + "."):
+        return "ArkLib.Extensions" + module[len(old):]
+    return module
+
+
 def prune_exact(root: Path, mapping: dict[str, str], upstream_revision: str,
                 upstream_semantic: dict[tuple, tuple[str, Command]]) -> dict:
     """Prune only exact current-source duplicates; never regenerate manual ports."""
     prepared = {}
     records = {}
-    for module in mapping.values():
+    for historical_module in mapping.values():
+        module = current_extension_module(historical_module)
         path = module.replace(".", "/") + ".lean"
         # This file is now a hand-authored compatibility API, rather than an
         # extraction template. Its aliases and PMF bridges have their own checks.
