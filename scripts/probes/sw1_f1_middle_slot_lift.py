@@ -317,14 +317,14 @@ def lift_test(alpha: list[int], k: int, s: int, p: int, cores: list[list[int]],
         if not any(u1):
             continue
         bad, inf, mca = engine.bad_z(u0, u1)
-        raw = len(bad) + (1 if inf else 0)
+        raw = len(bad) + (1 if inf else 0)  # Projective diagnostic only.
         maxraw = max(maxraw, raw)
         if mca:
             mcas += 1
             continue
         stacks += 1
-        maxbad = max(maxbad, raw)
-        dist[raw] = dist.get(raw, 0) + 1
+        maxbad = max(maxbad, len(bad))
+        dist[len(bad)] = dist.get(len(bad), 0) + 1
     return dict(maxbad=maxbad, maxraw=maxraw, stacks=stacks, mca=mcas, dist=dist)
 
 

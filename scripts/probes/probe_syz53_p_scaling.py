@@ -142,13 +142,13 @@ def lift_test_exact(alpha, k, s, p, cores, seed=1, trials=1200, verify=False):
         if all(x==0 for x in u1): continue
         bad,inf,mca,wf=exact_badz(u0,u1,alpha,k,s,p)
         if verify: _crosscheck(u0,u1,alpha,k,s,p,tensor,bad,inf,wf)
-        raw=len(bad)+(1 if inf else 0)
+        raw=len(bad)+(1 if inf else 0)  # Projective diagnostic only; budget is finite.
         if wf: wholefield+=1
         maxraw=max(maxraw,raw)
         if mca: continue                              # SYZ32 correlated-agreement filter
         stacks+=1
-        if raw>maxbad: maxbad=raw
-        dist[raw]=dist.get(raw,0)+1
+        if len(bad)>maxbad: maxbad=len(bad)
+        dist[len(bad)]=dist.get(len(bad),0)+1
     return dict(d=dmat, maxbad=maxbad, maxraw=maxraw, stacks=stacks,
                 wholefield=wholefield, dist=dist)
 
