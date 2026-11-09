@@ -5,10 +5,10 @@
 [`scripts/arklib-upstream.json`](../../scripts/arklib-upstream.json) records the
 reviewed canonical upstream revision and file inventory. `scripts/update-lib.sh`
 uses that inventory to regenerate the `module` / `public import` root
-`ArkLib.lean`, the classic `ProximityPrize.lean` and `ProximityPrize/Extensions.lean` umbrellas, and the
+`ArkLib.lean`, the classic `ArkLib/Downstream.lean` and `ArkLib/Extensions.lean` umbrellas, and the
 marked downstream-library ownership block in `lakefile.toml`. Stage added or
 removed source files before regeneration. `scripts/check-imports.sh` checks these
-surfaces together with `Research/ProximityPrize/All.lean` and the library/research
+surfaces together with `ArkLib/Research/ProximityGap/All.lean` and the library/research
 boundary. It also runs `scripts/integration/check_consolidation.py` once to
 verify canonical Git provenance and the full import graph. New canonical modules must be added to the reviewed upstream inventory;
 classic downstream modules retain their separate Lake library ownership.
@@ -22,33 +22,32 @@ then verify the compatibility imports through the package build.
 `docs/kb/_generated/declarations.json` and `dedup-report.md` are ignored local
 catalogs; `scripts/kb/check_generated.py` materializes them when absent. Tracked
 bibliography and citation exports still require regeneration and commitment in
-this downstream repository. The source trees for these catalogs are `ArkLib/`,
-`Research/`, and `ProximityPrize/`.
+this downstream repository. The source tree for these catalogs is `ArkLib/`, including its research and test subtrees.
+Catalog inclusion is not a production-proof or acceptance claim.
 
 Edit the source of truth, not the output.
 
 | Path | What it is | Edit directly? | Source of truth / refresh path |
 | --- | --- | --- | --- |
 | `CLAUDE.md` | compatibility symlink | No | Edit `AGENTS.md` |
-| `ArkLib.lean`, `ProximityPrize.lean`, `ProximityPrize/Extensions.lean`, generated Lake ownership block | canonical and classic production module surfaces | No | `./scripts/update-lib.sh`; verify with `./scripts/check-imports.sh` |
-| `Research/ProximityPrize/All.lean` | research import surface | No | `python3 scripts/update-research-lib.py` |
-| `scripts/residual_census.json`, `docs/wiki/residual-census.md` | syntactic strict production residual inventory of `ArkLib/` and `ProximityPrize/` with source locations (heuristic labels, not a verified completion ledger) | Only the `> **Campaign addendum` blocks of the wiki page, which regeneration carries forward | `python3 scripts/residual_census.py --wiki-out docs/wiki/residual-census.md` |
+| `ArkLib.lean`, `ArkLib/Downstream.lean`, `ArkLib/Extensions.lean`, generated Lake ownership block | canonical and classic production module surfaces | No | `./scripts/update-lib.sh`; verify with `./scripts/check-imports.sh` |
+| `ArkLib/Research/ProximityGap/All.lean` | research import surface | No | `python3 scripts/update-research-lib.py` |
+| `scripts/residual_census.json`, `docs/wiki/residual-census.md` | syntactic strict production residual inventory of `ArkLib/` excluding research and tests with source locations (heuristic labels, not a verified completion ledger) | Only the `> **Campaign addendum` blocks of the wiki page, which regeneration carries forward | `python3 scripts/residual_census.py --wiki-out docs/wiki/residual-census.md` |
 | `.lake/` | build artifacts and cache | No | `./scripts/lake-locked.sh build`, `./scripts/lake-locked.sh exe cache get` |
-| `blueprint/lean_decls` | referenced Lean declarations | No | official Lean blueprint post-parse callback over `blueprint/src/`; `leanblueprint web` refreshes it in CI |
-| `blueprint/web/`, `blueprint/print/` | generated blueprint output | No | `leanblueprint web`, `leanblueprint pdf`, or `./scripts/build-web.sh` |
-| `blueprint/src/print.pdf` | generated blueprint PDF inside source tree | No | `leanblueprint pdf` |
-| `home_page/docs/` | copied API docs for the site | No | `./scripts/build-web.sh` |
+| `website/blueprint/lean_decls` | referenced Lean declarations | No | official Lean blueprint post-parse callback over `website/blueprint/src/`; `scripts/blueprint-ci.py render` refreshes it in CI |
+| `website/blueprint/web/`, `website/blueprint/print/` | generated blueprint output | No | `scripts/blueprint-ci.py render` or `./scripts/build-web.sh` |
+| `website/blueprint/src/print.pdf` | generated blueprint PDF inside source tree | No | `scripts/blueprint-ci.py render` |
+| `build/site/docs/` | copied API docs for the site | No | `./scripts/build-web.sh` |
 | `dependency_graphs/` | generated dependency visualizations | No | rerun scripts under `scripts/dependency_analysis/` |
 | `scripts/axiom_baseline.json` | kernel-level accounting of existing `sorryAx` debt | No | `./scripts/lake-locked.sh exe axiomsweep --update-baseline` after a complete locked build, only for verified closures or renames of existing debt. Baseline edits cannot authorize new debt. Native-trust taint prevents the update |
 | `docs/kb/_generated/references.json` | normalized bibliography export | No | `python3 ./scripts/kb/sync_from_bib.py` |
 | `docs/kb/_generated/lean-citations.json` | generated map from Lean files to cited keys | No | `python3 ./scripts/kb/extract_lean_citations.py` |
-| `docs/kb/_generated/declarations.json` | local declaration catalog across `ArkLib/`, `Research/`, and `ProximityPrize/` (file, line, kind, namespace, name, brief signature, docstring head) | No | `python3 ./scripts/kb/extract_declarations.py` |
+| `docs/kb/_generated/declarations.json` | local declaration catalog across the unified `ArkLib/` tree (file, line, kind, namespace, name, brief signature, docstring head) | No | `python3 ./scripts/kb/extract_declarations.py` |
 | `docs/kb/_generated/dedup-report.md` | duplicate-candidate review aid (same-short-name groups + cross-file near-duplicate docstrings) derived from the catalog | No | `python3 ./scripts/kb/find_dedup_candidates.py` |
 
 ## Important Notes
 
-- The generators use tracked source paths in their respective `ArkLib/`, `ProximityPrize/`,
-  and `Research/` trees and fail if untracked Lean files would be skipped.
+- The generators use tracked source paths under `ArkLib/` and fail if untracked Lean files would be skipped.
   `git add` new paths before regenerating or running validation.
 - The generator wraps any `public import` that would exceed 100 characters, placing its module
   name on an indented continuation line.
@@ -58,7 +57,7 @@ Edit the source of truth, not the output.
   side can omit modules. The canonical upstream inventory uses the
   [current file headers](module-system.md#the-canonical-file-shape); retained classic extensions
   keep their separate Lake target and source format.
-  Keep compile-time canaries in the mirrored `ArkLibTest/` path, where `lake test` checks them
+  Keep compile-time canaries in the mirrored `ArkLib/Tests/` path, where `lake test` checks them
   without exporting test helpers through the production umbrella.
 - Run `uv run --no-project --python 3.12 python ./scripts/kb/regenerate.py` when bibliography or
   Lean citations change. Commit the tracked indexes and any new cited-paper pages or source
@@ -124,11 +123,16 @@ are intentionally excluded from this commitment check.
 
 ## Research evidence retention
 
-The standalone campaign retains `scripts/probes/`, `_nubs_research/`,
-`_research_357/`, `_research_ll/`, and `scratchpad/` as research evidence.
-The pre-migration cleanup proposal in issue #2 is not authorization to treat
-unreferenced probes as disposable. Neither absence from CI nor a missing filename
-mention establishes that an experiment's conclusions were distilled elsewhere.
+Research evidence lives in `scripts/probes/` and `docs/research/`. The root
+scratch and personal research directories were removed during the repository
+layout cleanup. Their eight unique files were relocated, including the original
+byte-preserved Lam–Leung source extraction and standalone finite-field witness.
+The unbuilt witness lives under `scripts/probes/lean/`; it is not a production
+theorem. See [repository layout](repository-layout.md) for the move map.
+
+Neither absence from CI nor a missing filename mention establishes that an
+experiment's conclusions were distilled elsewhere. Review claims before deleting
+remaining evidence.
 
 Run `python3 scripts/kb/audit_probe_retention.py --output /tmp/probe-retention.json`
 from a clean snapshot with every tracked file present (use a fresh worktree if
@@ -173,7 +177,7 @@ not the archive's own summary lines, for these (2026-10-28 audit, T48/T45):
 - `scripts/probes/_out_g92_n32.txt` and `scripts/probes/_out_g92_n16.txt`: the
   "C=3 VIOLATED (in evidence)", "C=2 violated" and "[C=3 VERDICT]" lines are the same
   ratio of two search lower bounds. The n=32 C=3 claim is retracted in-tree:
-  `Research/ProximityPrize/Frontier/_G101FMonomialBaselineGrowth.lean` certifies a
+  `ArkLib/Research/ProximityGap/Frontier/_G101FMonomialBaselineGrowth.lean` certifies a
   monomial baseline of at least 8 at n=32, a=11, so the best ratio known there is
   23/8. In the n=16, k=2, q=65617, a=5 row the winning "spread" `x^0+1*x^4` is the
   `x^4` monomial class modulo the code (worstBad is invariant under codeword

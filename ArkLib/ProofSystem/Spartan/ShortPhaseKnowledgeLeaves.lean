@@ -4,18 +4,18 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
-import ProximityPrize.Compatibility.SpartanSendEvalClaim
-import ProximityPrize.Compatibility.SpartanLinearCombination
-import ProximityPrize.Compatibility.SpartanFirstChallenge
-import ProximityPrize.Compatibility.SumcheckKnowledge
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Compatibility.SpartanSendEvalClaim
+import ArkLib.Compatibility.SpartanLinearCombination
+import ArkLib.Compatibility.SpartanFirstChallenge
+import ArkLib.Compatibility.SumcheckKnowledge
 import ArkLib.ProofSystem.Spartan.ComposedRbrKnowledgeSoundness
 import ArkLib.ProofSystem.Spartan.SumcheckKnowledgeLeaves
 import ArkLib.ProofSystem.Spartan.PrependRLCDeterminism
 import ArkLib.ProofSystem.Spartan.SumcheckDeterminismWitnesses
 import ArkLib.ProofSystem.Spartan.FinalCheckRbrKnowledgeLeaf
 
-import ProximityPrize.Compatibility.PureKnowledge
+import ArkLib.Compatibility.PureKnowledge
 
 /-!
 

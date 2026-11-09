@@ -6,7 +6,7 @@ Status: abstract transfer guardrail; not a prize proof.
 
 ## Artifact
 
-- Lean: `Research/ProximityPrize/Frontier/_PaleyDoubleSumSingletonGate.lean`
+- Lean: `ArkLib/Research/ProximityGap/Frontier/_PaleyDoubleSumSingletonGate.lean`
 
 ## Inputs Checked
 

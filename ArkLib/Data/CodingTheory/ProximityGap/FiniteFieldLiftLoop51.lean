@@ -41,7 +41,7 @@ as large as the `K`-side one, which Loop50 bounds). If `φ` is **injective on th
   which Dirichlet lets us avoid. This norm/prime-avoidance existence is **not** formalized here.
 * `hbad` in `prize_false_finiteField_of_lifting` — the bridge from the subset-sumset size to the
   §7 bad-scalar count over `L` (the Lemma-6.1/attack lower bound) is an explicit hypothesis.
-See `Research/ProximityPrize/DISPROOF_LOG.md` (O16/Loop51).
+See `docs/research/proximity-gap/DISPROOF_LOG.md` (O16/Loop51).
 -/
 
 open Finset

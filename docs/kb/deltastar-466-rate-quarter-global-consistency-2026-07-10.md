@@ -12,7 +12,7 @@ Formal kernel (pg-iterate ✅ OK 18s, 8 audited theorems, all on
 `[propext, Classical.choice, Quot.sound]`, no `sorry`/`axiom`):
 
 ```text
-Research/ProximityPrize/Frontier/_P1RateQuarterGlobalConsistencyCharge.lean
+ArkLib/Research/ProximityGap/Frontier/_P1RateQuarterGlobalConsistencyCharge.lean
 ```
 
 Probe: `scripts/probes/probe_rate_quarter_p1_global_consistency.py`

@@ -7,10 +7,10 @@ formalization structure.
 
 - [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) is canonical for style, docstrings, naming,
   and citation policy.
-- `blueprint/src/` contains blueprint sources; `leanblueprint web` refreshes `blueprint/lean_decls`.
-- `blueprint/web/` and `blueprint/print/` are outputs.
+- `website/blueprint/src/` contains blueprint sources; `scripts/blueprint-ci.py render` refreshes `website/blueprint/lean_decls`.
+- `website/blueprint/web/` and `website/blueprint/print/` are outputs.
 - [`../kb/README.md`](../kb/README.md) holds per-paper pages and formalization status.
-- [`../../BACKGROUND.md`](../../BACKGROUND.md) explains the underlying theory, compares ArkLib's
+- [`../../docs/project/background.md`](../project/background.md) explains the underlying theory, compares ArkLib's
   oracle reductions with the literature, and lists the standard references. Per-paper detail
   belongs in the KB, not there.
 
@@ -30,7 +30,7 @@ For substantial contributions, discuss the blueprint-first workflow described in
    mathematics and relevant hypotheses directly.
 2. Give the module docstring a `## References` section and brief provenance. Link to the KB
    paper page or audit for paper-specific statement/version mappings, coverage and gaps.
-3. Add the matching BibTeX entry to `blueprint/src/references.bib`.
+3. Add the matching BibTeX entry to `website/blueprint/src/references.bib`.
 4. For durable paper context, create or update `docs/kb/papers/KEY.md` for the same citation key.
    Regenerate the KB and commit its tracked indexes and any scaffolded pages or source metadata
    with the citation.
@@ -43,7 +43,7 @@ Lean declarations describe the mathematics independently of a source's numbering
 The same result can occur in several papers; the KB records those correspondences, and the
 wiki routes contributors to them.
 
-- `blueprint/src/references.bib` is the bibliographic source of truth.
+- `website/blueprint/src/references.bib` is the bibliographic source of truth.
 - `docs/kb/papers/KEY.md` is the preferred repository-local landing page for a cited paper key.
 - `docs/kb/sources/KEY/metadata.yml` records source provenance and optional local artifacts.
 - `docs/kb/_generated/lean-citations.json` is the generated map from Lean files to cited keys.
@@ -55,7 +55,7 @@ wiki routes contributors to them.
 For a local preview of the docs + blueprint website:
 
 ```bash
-DISABLE_EQUATIONS=1 ./scripts/build-web.sh
+DISABLE_EQUATIONS=1 uv run --no-project --python 3.12 --with leanblueprint bash scripts/build-web.sh
 ```
 
 The nondefault `ArkLibBlueprint` library imports dependency declarations cited only by the
@@ -64,23 +64,31 @@ blueprint, including the abstract binary tower. It keeps those references availa
 For a direct declaration check, run:
 
 ```bash
-lake build ArkLib ArkLibBlueprint
-lake exe checkdecls blueprint/lean_decls
+./scripts/lake-locked.sh build ArkLib ArkLibBlueprint
+./scripts/lake-locked.sh exe checkdecls website/blueprint/lean_decls
 ```
 
-If blueprint output matters and `leanblueprint` is missing:
+Blueprint rendering requires a TeX Live installation with `latexmk` and the
+configured TeX engine, plus `plastex` and the `leanblueprint` plugin in the same
+Python environment. The preview command above provides the Python dependencies.
+For the renderer alone, use:
 
 ```bash
-uv tool install --python 3.12 leanblueprint
+uv run --no-project --python 3.12 --with leanblueprint python scripts/blueprint-ci.py render
 ```
+
+The wrapper renders the relocated sources under `website/blueprint/src/` and
+assembles `build/site/`. The upstream `leanblueprint` CLI assumes a root-level
+`blueprint/` directory; use the repository wrapper for this layout. Missing tools
+or outputs fail the build instead of producing an incomplete deployment.
 
 ### Continuous integration
 
 [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) renders the blueprint PDF and HTML
 on a separate read-only runner using the pinned TeXLive action. Its artifact contains only the
-rendered PDF, web directory and generated `blueprint/lean_decls`; it contains no Lean build
+rendered PDF, web directory and generated `website/blueprint/lean_decls`; it contains no Lean build
 cache. The required `build` job checks rendering success explicitly, then runs the normal Lean
-validation and `lake exe checkdecls blueprint/lean_decls` against its existing `ArkLibBlueprint`
+validation and `lake exe checkdecls website/blueprint/lean_decls` against its existing `ArkLibBlueprint`
 build. Rendering or declaration failures block the build check on PRs and merge groups too.
 The renderer installs `leanblueprint` with pip inside the TeX Live container, where the
 runner's uv is not available. It is the only CI step that does not run Python through uv.
@@ -89,10 +97,10 @@ On trusted main pushes, the pinned
 [`leanprover-community/docgen-action`](https://github.com/leanprover-community/docgen-action)
 generates API documentation from that same Lean build in an isolated `docbuild` project.
 A following step adds `ArkLibBlueprint:docs`, since the action selects only default-target API
-facets. The local preview builds `ArkLib:docs` then `ArkLibBlueprint:docs` sequentially for the
-same coverage; both facets update shared indexes.
+facets. The local preview builds the documentation facets for all four default libraries
+and `ArkLibBlueprint`; the facets update shared indexes.
 
-The read-only build assembles the rendered blueprint and API pages under `home_page/` and
+The read-only build assembles the rendered blueprint and API pages under ignored `build/site/` and
 uploads the site. A separate Pages-privileged job deploys it only after a successful main push.
 PR-head jobs receive neither Pages nor OIDC write permission.
 
@@ -103,6 +111,6 @@ These break the PDF build (and therefore the whole publish workflow):
 - Math in `\section`/`\subsection` titles reaches hyperref's PDF bookmarks, where
   commands such as `\cong` raise a fatal `Improper alphabetic constant`. Wrap any
   math in a title with `\texorpdfstring{$...$}{plain-text fallback}`.
-- Every `@key{...}` in `blueprint/src/references.bib` must be unique; a duplicate
+- Every `@key{...}` in `website/blueprint/src/references.bib` must be unique; a duplicate
   key makes BibTeX error out and leaves all citations unresolved.
-- Only use macros that are defined in `blueprint/src/macros/`.
+- Only use macros that are defined in `website/blueprint/src/macros/`.

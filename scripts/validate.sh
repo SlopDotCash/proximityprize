@@ -78,6 +78,9 @@ trap cleanup EXIT
 echo "# Checking Python regressions"
 uv run --no-project --python 3.12 --with-requirements scripts/requirements-validation.txt python -m unittest discover -s scripts/tests
 
+echo "# Checking repository layout"
+python3 scripts/check-layout.py
+
 echo "# Checking canonical provenance and generated import surfaces"
 ./scripts/check-imports.sh
 
@@ -101,7 +104,7 @@ echo "# Building compile-time acceptance clients"
 echo ""
 echo "# Checking ArkLibTest warning budget"
 uv run --no-project --python 3.12 python ./scripts/check-warning-log.py "$build_log" \
-  --path-prefix ArkLibTest/ \
+  --path-prefix ArkLib/Tests/ \
   --label "ArkLibTest warnings (including admissions)"
 
 echo ""

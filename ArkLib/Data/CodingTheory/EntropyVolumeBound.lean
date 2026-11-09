@@ -8,7 +8,7 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Log.Base
 import ArkLib.Data.CodingTheory.BinomialEntropyBound
 import ArkLib.Data.CodingTheory.Basic.Entropy
-import ProximityPrize.Extensions.Data.CodingTheory.HammingBallVolume
+import ArkLib.Extensions.Data.CodingTheory.HammingBallVolume
 
 /-!
 # The q-ary entropy / Hamming-ball volume lower bound (ABF26 Corollary 3.8)

@@ -3,7 +3,7 @@ kind: paper
 bibkey: KZG10
 title: "Constant-Size Commitments to Polynomials and Their Applications"
 year: 2010
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://www.iacr.org/archive/asiacrypt2010/6477178/6477178.pdf
 source_metadata: ../sources/KZG10/metadata.yml
 status: seeded
@@ -41,4 +41,4 @@ core KZG definitions.
 ## Source Access
 
 - Source metadata: [`../sources/KZG10/metadata.yml`](../sources/KZG10/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

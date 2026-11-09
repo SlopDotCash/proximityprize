@@ -48,7 +48,7 @@ Frobenius orbit sitting in the gap is exactly the unestablished beyond-Johnson c
 hard **necessary structural condition** the conjecture must satisfy (under the Frobenius-stability
 and `F_p`-input assumptions) — *all bad scalars have bounded degree over `F_p`*, hence lie in the
 bounded subfield `F_{p^{lcm(1,…,⌊C⌋)}}` — but not a disproof.
-See `Research/ProximityPrize/DISPROOF_LOG.md` (O3).
+See `docs/research/proximity-gap/DISPROOF_LOG.md` (O3).
 -/
 
 namespace ArkLib.ProximityGap.DisproofLoop6

@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
+
+repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$repo_dir"
+
+# Authored assets and generated output have separate homes.
+DEST="build/site"
+mkdir -p "$DEST"
+cp -a website/library/. "$DEST/"
 
 # Build the Lean Project Documentation
 echo "Fetching Cache..."
@@ -13,45 +21,21 @@ echo "Building Project Documentation..."
     ResearchProximityPrize:docs ProximityPrizeExtensions:docs ArkLibBlueprint:docs
 
 # Build the Blueprint
-if [ -d "blueprint" ]; then
-    echo "Building Blueprint..."
-    cd blueprint
-    if command -v leanblueprint &> /dev/null; then
-        leanblueprint pdf
-        leanblueprint web
-    else
-        echo "Warning: 'leanblueprint' command not found. Skipping blueprint generation."
-        echo "To install: uv tool install --python 3.12 leanblueprint"
-    fi
-    cd ..
-    ./scripts/lake-locked.sh exe checkdecls blueprint/lean_decls
-fi
+echo "Building Blueprint..."
+uv run --no-project --python 3.12 python scripts/blueprint-ci.py render
+./scripts/lake-locked.sh exe checkdecls website/blueprint/lean_decls
 
 # Prepare the Website Directory
 echo "Assembling Website..."
-DEST="home_page"
-
-# Ensure destination directories exist
 mkdir -p "$DEST/docs"
-mkdir -p "$DEST/blueprint"
 
 # Copy Documentation
 if [ -d ".lake/build/doc" ]; then
     echo "Copying docs..."
-    cp -r .lake/build/doc/* "$DEST/docs/"
+    cp -a .lake/build/doc/. "$DEST/docs/"
 else
-    echo "Warning: Docs build directory not found."
-fi
-
-# Copy Blueprint
-if [ -d "blueprint/web" ]; then
-    echo "Copying blueprint (HTML)..."
-    cp -r blueprint/web/* "$DEST/blueprint/"
-fi
-
-if [ -f "blueprint/print/print.pdf" ]; then
-    echo "Copying blueprint (PDF)..."
-    cp "blueprint/print/print.pdf" "$DEST/blueprint.pdf"
+    echo "Error: Docs build directory not found." >&2
+    exit 1
 fi
 
 echo "Website build complete in $DEST/"

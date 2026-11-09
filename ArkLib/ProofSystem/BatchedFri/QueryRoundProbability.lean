@@ -5,8 +5,8 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.Data.Probability.Notation
-import ProximityPrize.Extensions.ProofSystem.BatchedFri.Security
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.Main
+import ArkLib.Extensions.ProofSystem.BatchedFri.Security
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.Main
 import ArkLib.OracleReduction.Completeness
 import ArkLib.ToMathlib.FriQueryRoundProb
 

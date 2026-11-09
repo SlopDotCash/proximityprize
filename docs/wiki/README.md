@@ -10,6 +10,7 @@ For reusable cross-cutting workflows that are not tied to one repo area, see
 
 - [`quickstart.md`](quickstart.md) - canonical agent command and validation playbook.
 - [`repo-map.md`](repo-map.md) - where to edit and how the main subtrees relate.
+- [`repository-layout.md`](repository-layout.md) - root layout, moves and evidence retention.
 - [`generated-files.md`](generated-files.md) - derived outputs and their sources of truth.
 - [`upstream-integration.md`](upstream-integration.md) - canonical ArkLib source ownership,
   downstream extensions, and the fetch-only upstream integration workflow.
@@ -80,6 +81,6 @@ For reusable cross-cutting workflows that are not tied to one repo area, see
 - [`../../README.md`](../../README.md) - project overview.
 - [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) - style, naming, docstrings, citations, and
   large contributions.
-- [`../../ROADMAP.md`](../../ROADMAP.md) - status: what is complete, in progress, and planned.
-- [`../../BACKGROUND.md`](../../BACKGROUND.md) - background theory and references, and how
+- [`../../docs/project/roadmap.md`](../project/roadmap.md) - status: what is complete, in progress, and planned.
+- [`../../docs/project/background.md`](../project/background.md) - background theory and references, and how
   ArkLib's oracle reductions compare with the literature.

@@ -3,7 +3,7 @@ kind: paper
 bibkey: GCXK25
 title: "From List-Decodability to Proximity Gaps"
 year: "2025"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eprint.iacr.org/2025/870
 source_metadata: ../sources/GCXK25/metadata.yml
 status: stub
@@ -38,4 +38,4 @@ TODO: record important missing theorems, abstractions, or proof gaps.
 ## Source Access
 
 - Source metadata: [`../sources/GCXK25/metadata.yml`](../sources/GCXK25/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

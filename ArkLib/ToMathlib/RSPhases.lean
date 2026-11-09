@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.ProofSystem.Sumcheck.Domain
-import ProximityPrize.Extensions.Data.MvPolynomial.Multilinear
+import ArkLib.Extensions.ProofSystem.Sumcheck.Domain
+import ArkLib.Extensions.Data.MvPolynomial.Multilinear
 
 /-!
 # Ring-Switching Phase Bricks

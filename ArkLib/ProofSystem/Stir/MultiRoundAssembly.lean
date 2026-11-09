@@ -4,13 +4,13 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
-import ProximityPrize.Extensions.ProofSystem.Stir.MainThm
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Extensions.ProofSystem.Stir.MainThm
 import ArkLib.ProofSystem.Stir.MultiRoundSpec
 import ArkLib.ProofSystem.Stir.RoundVector
 import ArkLib.ProofSystem.Stir.RoundCompleteness
 import ArkLib.OracleReduction.Completeness
-import ProximityPrize.Compatibility.ConstantOutputCompleteness
+import ArkLib.Compatibility.ConstantOutputCompleteness
 
 /-!
 # Issue #301 (STIR, mechanical track): the (M+1)-round STIR Vector IOPP assembly.

@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.WeightedAgreement
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.Curves
-import ProximityPrize.Extensions.Data.Probability.Instances
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.WeightedAgreement
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.Curves
+import ArkLib.Extensions.Data.Probability.Instances
 import Mathlib.FieldTheory.Finite.Basic
 import Mathlib.Tactic.NormNum.Prime
 

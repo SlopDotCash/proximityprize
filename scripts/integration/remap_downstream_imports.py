@@ -24,10 +24,14 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="Report stale callers without writing")
     args = parser.parse_args()
-    mapping = json.loads((ROOT / "scripts/integration/downstream-extensions.json").read_text())
+    historical = json.loads((ROOT / "scripts/integration/downstream-extensions.json").read_text())
+    # The extraction receipt describes its original integration commit. Adapt
+    # destinations when reading it instead of rewriting historical provenance.
+    mapping = {source: target.replace("ProximityPrize.Extensions", "ArkLib.Extensions", 1)
+               for source, target in historical.items()}
     canonical = set(json.loads((ROOT / "scripts/arklib-upstream.json").read_text())["files"])
     paths = subprocess.check_output(
-        ["git", "ls-files", "-z", "--", "ArkLib/*.lean", "Research/*.lean"], cwd=ROOT
+        ["git", "ls-files", "-z", "--", "ArkLib/*.lean"], cwd=ROOT
     ).decode().split("\0")
     changed = []
     for relative in paths:

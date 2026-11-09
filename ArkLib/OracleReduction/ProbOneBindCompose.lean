@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Compatibility.DiscreteProbability
-import ProximityPrize.Extensions.OracleReduction.Security.Basic
+import ArkLib.Compatibility.DiscreteProbability
+import ArkLib.Extensions.OracleReduction.Security.Basic
 import ArkLib.ToMathlib.ProbEventBindOne
 
 /-!

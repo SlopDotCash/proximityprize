@@ -26,7 +26,7 @@ StackBadCount(u) <= StackBadCount(r).
 The frontier file
 
 ```text
-Research/ProximityPrize/Frontier/_StackCandidateFamilyMax.lean
+ArkLib/Research/ProximityGap/Frontier/_StackCandidateFamilyMax.lean
 ```
 
 now defines:

@@ -18,13 +18,13 @@
 .nvim.lua
 
 # Print files for local viewing
-/blueprint/print/
+/website/blueprint/print/
 
 # Web files for local viewing
-/blueprint/web/
+/website/blueprint/web/
 
 # Print file in blueprint src
-/blueprint/src/print.pdf
+/website/blueprint/src/print.pdf
 
 /.claude/
 /.cursor/
@@ -84,9 +84,8 @@ references/
 # Generated dependency analysis files
 /dependency_graphs/
 
-# Generated documentation and temporary comparison
-/home_page/docs/
-/home_page/docs_original/
+# Assembled library website; website/library/ contains authored assets only.
+/build/site/
 
 # Generated codedb index snapshot (regenerate locally; not repo content)
 /codedb.snapshot

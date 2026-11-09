@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import ArkLib.ProofSystem.Spartan.FirstSumcheckFaithful
 import ArkLib.OracleReduction.SimOracleFoldlM
-import ProximityPrize.Extensions.Data.Matrix.Basic
+import ArkLib.Extensions.Data.Matrix.Basic
 
 /-!
 # First-phase inner matrix-vector fold reconstruction (issue #114)

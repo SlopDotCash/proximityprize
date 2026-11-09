@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.Curves
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.Curves
 import ArkLib.ProofSystem.Stir.ErrorBoundBridge
-import ProximityPrize.Extensions.ProofSystem.Stir.ProximityGap
+import ArkLib.Extensions.ProofSystem.Stir.ProximityGap
 
 /-!
 # STIR proximity gap, proved from the BCIKS20 keystone

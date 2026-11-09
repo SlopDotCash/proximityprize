@@ -59,7 +59,7 @@ This is exactly the in-tree core-vs-list split
 unrestricted `n`-core-empty family is infinite at each fixed `n`), *not* the codeword list `L`.
 On the probe evidence the cyclic-sieving lever gives **no list boost** over a random domain; the
 route REDUCES to the same named open core (`SubJohnsonListBound`'s `L`).
-**No closure, no refutation — a precise reduction.** See `Research/ProximityPrize/DISPROOF_LOG.md`.
+**No closure, no refutation — a precise reduction.** See `docs/research/proximity-gap/DISPROOF_LOG.md`.
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); finite/elementary.
 -/

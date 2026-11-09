@@ -4,12 +4,12 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
 
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
-import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.CoreInteractionPhase
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Extensions.ProofSystem.Binius.BinaryBasefold.CoreInteractionPhase
 import ArkLib.ProofSystem.Binius.BinaryBasefold.ExtractMLPCorrectness
 import ArkLib.ProofSystem.Binius.BinaryBasefold.FinalRelation
-import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.ReductionLogic
-import ProximityPrize.Extensions.ProofSystem.Binius.FRIBinius.Prelude
+import ArkLib.Extensions.ProofSystem.Binius.BinaryBasefold.ReductionLogic
+import ArkLib.Extensions.ProofSystem.Binius.FRIBinius.Prelude
 import ArkLib.OracleReduction.LiftContext.Coherence
 import ArkLib.OracleReduction.LiftContext.OracleStatementPreserving
 

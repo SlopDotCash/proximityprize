@@ -6,7 +6,7 @@ Status: abstract transfer/exponent guardrail; not a prize proof.
 
 ## Artifact
 
-- Lean: `Research/ProximityPrize/Frontier/_BurgessBoxCoverExponentGate.lean`
+- Lean: `ArkLib/Research/ProximityGap/Frontier/_BurgessBoxCoverExponentGate.lean`
 
 ## Point
 

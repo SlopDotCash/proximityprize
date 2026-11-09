@@ -46,7 +46,8 @@ jobs:
         with:
           persist-credentials: false
 
-      # Keep the existing renderer image and commands on a runner without Lean build caches.
+      # Keep the renderer on a runner without Lean build caches. The wrapper uses the
+      # official renderer commands with the relocated website/blueprint source root.
       # The renderer installs leanblueprint with pip inside the TeX Live container, which cannot
       # see the runner's uv. Host-side Python in this job runs through uv as elsewhere.
       - name: Render blueprint PDF and HTML
@@ -63,11 +64,7 @@ jobs:
             pip install --upgrade pip requests wheel
             pip install pygraphviz --config-settings="--global-option=build_ext" --config-settings="--global-option=-L/usr/lib/graphviz/" --config-settings="--global-option=-R/usr/lib/graphviz/"
             pip install leanblueprint
-            leanblueprint pdf
-            mkdir -p home_page
-            cp blueprint/print/print.pdf home_page/blueprint.pdf
-            leanblueprint web
-            cp -r blueprint/web home_page/blueprint
+            python3 scripts/blueprint-ci.py render
 
       - name: Set up uv
         uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
@@ -329,7 +326,12 @@ jobs:
           path: .
 
       - name: Check generated blueprint declarations
-        run: lake exe checkdecls blueprint/lean_decls
+        run: lake exe checkdecls website/blueprint/lean_decls
+
+      - name: Prepare authored library site assets
+        run: |
+          mkdir -p build/site
+          cp -a website/library/. build/site/
 
       # Reuse the existing project build for API documentation on trusted main pushes.
       # The blueprint was rendered separately; this action cannot publish from the read-only job.
@@ -339,10 +341,10 @@ jobs:
           DISABLE_EQUATIONS: 1
         with:
           blueprint: false
-          homepage: home_page
+          homepage: build/site
           build-page: false
           deploy: false
-          references: blueprint/src/references.bib
+          references: website/blueprint/src/references.bib
 
       # The action selects API facets from defaultTargets. Add the nondefault blueprint root
       # in its existing docbuild project so the abstract declaration links have published pages.
@@ -353,9 +355,9 @@ jobs:
         run: |
           cd docbuild
           lake build ArkLibBlueprint:docs
-          cp -a .lake/build/doc/. ../home_page/docs/
+          cp -a .lake/build/doc/. ../build/site/docs/
 
-      # The pinned docgen action writes blueprint/API output under `homepage` and, with
+      # The pinned docgen action writes API output under `homepage` and, with
       # build-page false, its own deploy path is exactly `${homepage}/`. Transfer that directory
       # instead of recompiling the project in the privileged publisher. This artifact contains
       # no credentials and is only deployed after a main push.
@@ -364,7 +366,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: arklib-pages-site
-          path: home_page
+          path: build/site
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 1

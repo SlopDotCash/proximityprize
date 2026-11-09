@@ -35,7 +35,7 @@ certify a prize conclusion, and neither can occurrences nested inside the result
 in an arrow premise or binder type, such as `True ∧ (continuousMcaPrize domain → True)`.
 This remains a syntactic audit; it does not establish
 that a predicate's definition captures the intended mathematical statement.
-The manifest uses `Research.ProximityPrize.Resolution` for the retained resolution
+The manifest uses `ArkLib.Research.ProximityGap.Resolution` for the retained resolution
 declarations. A dry run also rejects active `ArkLib`/`Research` modules whose
 source no longer exists; pending future entries remain permitted.
 Delimiter and predicate searches ignore quoted identifiers, strings and character literals,

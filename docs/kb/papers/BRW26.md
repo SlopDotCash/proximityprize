@@ -3,7 +3,7 @@ kind: paper
 bibkey: BRW26
 title: "Flock: Fast Proving for Batch Boolean Computations"
 year: 2026
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/BRW26/metadata.yml
 canonical_url: https://eprint.iacr.org/2026/1329
 status: seeded
@@ -51,7 +51,7 @@ small field to a packed opening by coordinate packing and weighted scalar recons
 ## Source Access
 
 - [Cryptology ePrint Archive, 2026/1329](https://eprint.iacr.org/2026/1329).
-- [Bibliography](../../../blueprint/src/references.bib), key `BRW26`.
+- [Bibliography](../../../website/blueprint/src/references.bib), key `BRW26`.
 - Locators: Appendix B pp. 36–40; multiplication matrices B.2.1 and B.4; list/out-of-domain
   analysis Appendix C.
 

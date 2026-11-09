@@ -3,7 +3,7 @@
 
 Checks:
 1. `CLAUDE.md` is a symlink to `AGENTS.md`, including Git text checkouts
-2. Local markdown links in maintained documentation and Research resolve
+2. Local markdown links in maintained documentation resolve
 3. No Markdown files remain under ArkLib
 
 Exit code 0 if all checks pass, 1 otherwise.
@@ -86,10 +86,10 @@ def tracked_markdown_files() -> list[Path]:
     )
     return [
         AGENTS_PATH,
+        REPO_ROOT / "README.md",
+        REPO_ROOT / "CONTRIBUTING.md",
         REPO_ROOT / "scripts" / "README.md",
         *docs_md,
-        *sorted((REPO_ROOT / "Research").rglob("*.md")),
-        *sorted((REPO_ROOT / "ProximityPrize").rglob("*.md")),
     ]
 
 

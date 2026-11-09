@@ -10,7 +10,7 @@ import Mathlib.Algebra.Module.Pi
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.LinearCombination
-import ProximityPrize.Extensions.Data.CodingTheory.InterleavedCode
+import ArkLib.Extensions.Data.CodingTheory.InterleavedCode
 
 /-!
 # Two-line correlated-agreement extraction (proximity gap, linear codes)

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.ProofSystem.Spartan.Basic
+import ArkLib.Extensions.ProofSystem.Spartan.Basic
 
 /-!
 # Degree bounds for the Spartan sum-check virtual polynomials (issue #114)

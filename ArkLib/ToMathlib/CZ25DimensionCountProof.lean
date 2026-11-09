@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import ArkLib.Data.CodingTheory.ListDecoding.CZ25DesignToLambda
 import ArkLib.Data.CodingTheory.ListDecoding.CZ25SpanDimension
-import ProximityPrize.Extensions.Data.CodingTheory.Basic.Distance
+import ArkLib.Extensions.Data.CodingTheory.Basic.Distance
 import Mathlib.InformationTheory.Hamming
 
 /-!

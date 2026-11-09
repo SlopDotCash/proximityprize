@@ -7,7 +7,7 @@ readers familiar with provers, verifiers, oracles, and soundness.
 The interaction layer is meant to replace the legacy layer (`ArkLib/OracleReduction/`). The
 [README](../../README.md#two-layers) gives an overview of the two layers,
 [Limitations of the legacy layer](legacy-layer-limitations.md) explains why the replacement is
-needed, and the public [roadmap](../../ROADMAP.md#priority-replace-the-legacy-layer) holds the migration
+needed, and the public [roadmap](../project/roadmap.md#priority-replace-the-legacy-layer) holds the migration
 plan.
 
 A protocol is an interaction tree with prover and verifier strategies. The prover's continuation

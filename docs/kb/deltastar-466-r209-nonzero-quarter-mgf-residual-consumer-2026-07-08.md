@@ -4,15 +4,15 @@ Status: landed as a checked interface cleanup.
 
 Artifact:
 
-- `Research/ProximityPrize/Frontier/_R209NonzeroQuarterMGFResidualConsumer.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_R209NonzeroQuarterMGFResidualConsumer.lean`
 
 Checks:
 
 ```text
-scripts/pg-iterate.sh -q Research/ProximityPrize/Frontier/_R209NonzeroQuarterMGFResidualConsumer.lean
+scripts/pg-iterate.sh -q ArkLib/Research/ProximityGap/Frontier/_R209NonzeroQuarterMGFResidualConsumer.lean
 ✅ OK (11s)
 
-./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._R209NonzeroQuarterMGFResidualConsumer
+./scripts/lake-locked.sh build ArkLib.Research.ProximityGap.Frontier._R209NonzeroQuarterMGFResidualConsumer
 Build completed successfully
 ```
 

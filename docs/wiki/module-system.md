@@ -9,7 +9,7 @@ to say what crosses the boundary. The upstream reference is
 **Every canonical upstream ArkLib file is a module, including the generated root
 `ArkLib.lean`** (issue #795). The downstream repository also retains classic extension files
 with separate Lake ownership; see [upstream-integration.md](upstream-integration.md).
-`ArkLibTest/`, Research, and the `lean_exe` roots under `scripts/` are deliberately classic.
+`ArkLib/Tests/`, Research, and the `lean_exe` roots under `scripts/` are deliberately classic.
 
 If you are writing or fixing a file today, go to [the canonical file shape](#the-canonical-file-shape)
 and [when a build breaks](#when-a-build-breaks), which lists the errors the module system produces
@@ -23,7 +23,7 @@ enforced, and the handful of places where ArkLib had to give ground.
 | A `module` file may only import `module` files | Lean, at header elaboration (`cannot import non-`module` X from `module``) |
 | Every canonical ArkLib file is a module | the generated root `ArkLib.lean` is a module and `public import`s the complete canonical source inventory, so a classic canonical file fails the build |
 | The `ArkLib` library uses the module system | `requiresModuleSystem = true` on the `ArkLib` `lean_lib` in `lakefile.toml` |
-| `ArkLibTest/` may stay classic | `allowNonModules = true` on the `ArkLibTest` `lean_lib` |
+| `ArkLib/Tests/` may stay classic | `allowNonModules = true` on the `ArkLibTest` `lean_lib` |
 | The header's shape | `lake exe lint-style` (see below) |
 
 The generated source inventory separates canonical module ownership from classic downstream
@@ -152,10 +152,10 @@ the index equalities they need, as Binary Basefold's composed bundles do. No Ark
 the compatibility option `backward.proofsInPublic`; try both fixes before reaching for it, and
 never use `backward.privateInPublic`, which logs a warning at every access site.
 
-### Why `ArkLibTest/` stays classic
+### Why `ArkLib/Tests/` stays classic
 
 A classic file imports at `.private` level and sees everything, including proof bodies. That matters
-because `ArkLibTest/` holds many `#guard_msgs` assertions wrapped around `#print axioms`, and
+because `ArkLib/Tests/` holds many `#guard_msgs` assertions wrapped around `#print axioms`, and
 `#print axioms` walks proof bodies, which are private to a module importer. Migrating the test tree
 would change that output and break every one of those guards. mathlib leaves `Archive` classic for
 the same reason. `allowNonModules = true` on the `ArkLibTest` library records the decision.

@@ -3,14 +3,14 @@ on:
   push:
     branches: [feat/first-sponsor-udr-floor]
     paths:
-      - Research/ProximityPrize/All.lean
-      - Research/ProximityPrize/Frontier/_FirstSponsorUDRFloor.lean
+      - ArkLib/Research/ProximityGap/All.lean
+      - ArkLib/Research/ProximityGap/Frontier/_FirstSponsorUDRFloor.lean
       - .github/workflows/first-sponsor-udr.yml
   workflow_dispatch:
   pull_request:
     paths:
-      - Research/ProximityPrize/All.lean
-      - Research/ProximityPrize/Frontier/_FirstSponsorUDRFloor.lean
+      - ArkLib/Research/ProximityGap/All.lean
+      - ArkLib/Research/ProximityGap/Frontier/_FirstSponsorUDRFloor.lean
       - .github/workflows/first-sponsor-udr.yml
 permissions:
   contents: read
@@ -72,11 +72,11 @@ jobs:
             ${{ runner.os }}-arklib-build-
       - run: ./scripts/lake-locked.sh exe cache get
       - name: Build the consumer with package options and source-policy plugin
-        run: ./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._FirstSponsorUDRFloor
+        run: ./scripts/lake-locked.sh build ArkLib.Research.ProximityGap.Frontier._FirstSponsorUDRFloor
       - name: Check canonical consumer and source axioms
         run: |
           set -o pipefail
-          lake env lean -DautoImplicit=false Research/ProximityPrize/Frontier/_FirstSponsorUDRFloor.lean | tee udr-axioms.log
+          lake env lean -DautoImplicit=false ArkLib/Research/ProximityGap/Frontier/_FirstSponsorUDRFloor.lean | tee udr-axioms.log
           python3 - <<'PY'
           import re
           from pathlib import Path

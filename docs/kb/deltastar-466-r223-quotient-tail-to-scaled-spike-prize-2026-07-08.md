@@ -6,7 +6,7 @@ Date: 2026-07-08
 
 Added:
 
-- `Research/ProximityPrize/Frontier/_R223QuotientTailToScaledSpikePrize.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_R223QuotientTailToScaledSpikePrize.lean`
 
 The file introduces the quotient-tail interface that matches the R220 raw-vs-quotient
 measurement:
@@ -39,7 +39,7 @@ remain the live mathematical obligations.
 ## Verification
 
 ```bash
-./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R223QuotientTailToScaledSpikePrize.lean
+./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_R223QuotientTailToScaledSpikePrize.lean
 ```
 
 Result:

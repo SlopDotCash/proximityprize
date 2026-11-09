@@ -66,7 +66,7 @@ requiresModuleSystem = true
 [[lean_lib]]
 name = "ArkLibTest"
 roots = []
-globs = ["ArkLibTest.+"]
+globs = ["ArkLib.Tests.+"]
 plugins = ["ArkLibLintPlugin:shared", "StopTacticPlugin:shared"]
 allowNonModules = true
 
@@ -2750,13 +2750,14 @@ globs = [
 
 [[lean_lib]]
 name = "ResearchProximityPrize"
-roots = ["Research.ProximityPrize"]
+roots = ["ArkLib.Research.ProximityGap"]
 allowNonModules = true
 plugins = ["StopTacticPlugin:shared"]
 
 [[lean_lib]]
 name = "ProximityPrizeExtensions"
-roots = ["ProximityPrize"]
+roots = []
 allowNonModules = true
 plugins = ["StopTacticPlugin:shared"]
+globs = ["ArkLib.Downstream", "ArkLib.Extensions.*", "ArkLib.Compatibility.+"]
 # END DOWNSTREAM LIBRARIES

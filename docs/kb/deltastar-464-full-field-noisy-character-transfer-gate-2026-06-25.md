@@ -26,7 +26,7 @@ and the error tolerance is a constant fraction of the `q` field positions.
 
 ## Artifact
 
-- Lean: `Research/ProximityPrize/Frontier/_FullFieldNoisyCharacterTransferGate.lean`
+- Lean: `ArkLib/Research/ProximityGap/Frontier/_FullFieldNoisyCharacterTransferGate.lean`
 
 ## Point
 

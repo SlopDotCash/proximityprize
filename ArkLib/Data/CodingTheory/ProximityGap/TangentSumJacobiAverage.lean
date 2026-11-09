@@ -35,7 +35,7 @@ exact house control.** An earlier version of this header stated I3 unqualified, 
   bounds on the magnitudes `|T_h|` to a bound on `max_b |η_b|` needs Fourier inversion with phase /
   coherence accounting; "all house concentration is carried by `T`" is not a proved equivalence.
 
-See the archived `Research/ProximityPrize/kb/archive/RESEARCH_SYNTHESIS_407_TANGENT.md` for the
+See the archived `docs/research/proximity-gap/archive/RESEARCH_SYNTHESIS_407_TANGENT.md` for the
 research-lane findings on the I3 route. The identity **I4** proved in this file does **not** depend
 on I3: it holds for arbitrary multiplicative characters `χ, φ` (including trivial ones). This brick
 puts `T` on the Jacobi-sum surface; it does not by itself control the house.

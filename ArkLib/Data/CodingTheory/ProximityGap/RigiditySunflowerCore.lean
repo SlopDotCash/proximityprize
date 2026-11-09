@@ -41,7 +41,7 @@ R25 (`RigidityGeneralT1.lean`, `t = 1` ⟹ antipodally closed) and R26
 separate, proved finite-characteristic condition.  The finite-field rigidity hypotheses tried
 so far have been refuted in-tree: the bounded half-basis independence premise
 (`BoundedCyclotomicIndep.lean`, refuted at `n = 16`, `p = 65537` in the
-`Research/ProximityPrize/DISPROOF_LOG.md` section "BoundedHalfBasisIndep (the named char-p prize
+`docs/research/proximity-gap/DISPROOF_LOG.md` section "BoundedHalfBasisIndep (the named char-p prize
 core): FALSE at the prize prime"; audit finding PG-031), and the research lane's SW1
 master hypotheses (`DISPROOF_LOG.md` entry `1-SW1-strip-route-refuted`).
 

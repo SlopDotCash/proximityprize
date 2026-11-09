@@ -10,7 +10,7 @@ Reed–Solomon proximity-gap campaign for the
 [Ethereum Foundation Proximity Prize](https://proximityprize.org/). Start with
 the [δ* programme guide](docs/wiki/deltastar-programme.md), the
 [live issues](https://github.com/SlopDotCash/proximityprize/issues), and the
-[Proximity Gap agent guide](Research/ProximityPrize/AGENTS.md).
+[Proximity Gap agent guide](docs/research/proximity-gap/AGENTS.md).
 
 The campaign uses the complete upstream ArkLib library as its canonical foundation,
 including the original library overview below. Lean module and package names remain
@@ -20,11 +20,23 @@ implementations. See the [integration guide](docs/wiki/upstream-integration.md).
 
 The default build includes `ArkLib`, `ArkLibExtensions`, `ProximityPrizeExtensions`,
 and `ResearchProximityPrize`. The research root imports
-`Research.ProximityPrize.PROXIMITY_PRIZE_WORKBENCH`, which includes its generated
+`ArkLib.Research.ProximityGap.PROXIMITY_PRIZE_WORKBENCH`, which includes its generated
 research module index. `ArkLib.lean` separately re-exports the complete canonical
 library. Research and downstream extensions may import canonical ArkLib; canonical
 ArkLib must not import either downstream layer. Existing upstream proof admissions
 remain recorded as inherited debt and are not claims of completed proofs.
+
+## Repository layout
+
+- `ArkLib/`: library sources, downstream extensions, research and acceptance tests,
+  with separate Lake ownership and import boundaries.
+- `docs/`: project guides, research records, design documents and the knowledge base.
+- `scripts/`: tooling and reproducible computational probes.
+- `website/`: static library assets, blueprint sources and research websites.
+
+The [repository map](docs/wiki/repo-map.md) explains the build surfaces; the
+[layout guide](docs/wiki/repository-layout.md) records moved paths. Generated
+website output belongs in ignored `build/site/`.
 
 ## Formal verification library foundation
 
@@ -67,7 +79,7 @@ interfaces and results differ.
    - We then apply the **Fiat-Shamir transform**, which removes interaction: the prover derives
      the verifier's random challenges by querying a hash function, modeled as a random oracle.
 
-   [ROADMAP.md](ROADMAP.md) records which composition, lifting and transform interfaces are
+   [docs/project/roadmap.md](docs/project/roadmap.md) records which composition, lifting and transform interfaces are
    formalized in each layer.
 5. Our formalization follows the view of IORs as the central information-theoretic object
    underlying modern SNARKs, and the current abstractions of the interactive BCS and Fiat-Shamir
@@ -75,7 +87,7 @@ interfaces and results differ.
    is computational: it rests on discrete-logarithm or pairing assumptions, on lattice assumptions
    such as Module-SIS, or on collision resistance of a hash function, or on an idealized model such
    as a hash function modeled as a random oracle.
-   [BACKGROUND.md](BACKGROUND.md) surveys both the information-theoretic proof models and these
+   [docs/project/background.md](docs/project/background.md) surveys both the information-theoretic proof models and these
    computational arguments and commitments, with their security notions, the compilers that combine
    them into SNARKs, and the planned post-quantum and universally composable security results. It
    also compares ArkLib's interactive oracle reductions with the definitions in the literature.
@@ -96,7 +108,7 @@ does not by itself prove a theorem about the other.
   and can express more protocols, in particular protocols whose shape depends on earlier
   messages. It is meant to replace the legacy layer.
 
-[ROADMAP.md](ROADMAP.md#priority-replace-the-legacy-layer) records what each layer formalizes and
+[docs/project/roadmap.md](docs/project/roadmap.md#priority-replace-the-legacy-layer) records what each layer formalizes and
 how far the migration has progressed. [Current status](docs/design/00-current-status.md) records the
 interaction layer's implemented interfaces and remaining gaps, and the
 [design documents](docs/design/README.md) specify it.
@@ -111,7 +123,7 @@ what the interaction layer does instead.
 Developing the interaction layer is the project's priority. The migration proceeds in three
 stages: feature parity, then porting protocols one at a time with a proved equivalence to the
 legacy version, then deleting the legacy layer. The
-[roadmap](ROADMAP.md#priority-replace-the-legacy-layer) details the plan and its progress. Until
+[roadmap](docs/project/roadmap.md#priority-replace-the-legacy-layer) details the plan and its progress. Until
 the port is complete, ArkLib makes no backward-compatibility guarantees and does not promise
 deprecation periods.
 
@@ -140,7 +152,7 @@ Around the core:
 - [`ArkLib/AGM/`](ArkLib/AGM/) holds algebraic group model representations.
 - [`ArkLib/ToCompPoly/`](ArkLib/ToCompPoly/) and [`ArkLib/ToMathlib/`](ArkLib/ToMathlib/) hold
   local bridges to, and extensions of, ArkLib's dependencies.
-- [`ArkLibTest/`](ArkLibTest/) holds compile-time acceptance tests.
+- [`ArkLib/Tests/`](ArkLib/Tests/) holds compile-time acceptance tests.
 
 ArkLib depends on [Mathlib](https://github.com/leanprover-community/mathlib4),
 [VCVio](https://github.com/Verified-zkEVM/VCVio) (oracle computations, probability, resource
@@ -150,7 +162,7 @@ records the exact revisions.
 
 ## What is formalized
 
-[ROADMAP.md](ROADMAP.md) is the status catalog. It lists each formalized protocol and commitment
+[docs/project/roadmap.md](docs/project/roadmap.md) is the status catalog. It lists each formalized protocol and commitment
 scheme (Sum-check, FRI, batched FRI, Binary Basefold, ring switching, FRI-Binius, Spartan, Plonk,
 KZG, Hachi and STIR components) with its headline theorems, error bounds and known limitations,
 says which implementations are executable, and lists the work in progress and planned directions.

@@ -14,7 +14,7 @@ Primality is exact: deterministic Miller-Rabin with the witness set
 our candidates are < 2^44 ~ 1.8e13, comfortably inside that bound.
 
 Output is paste-ready Lean certificate lines for
-  Research/ProximityPrize/Frontier/_ZTZBetaThreeHighLadderExtension.lean
+  ArkLib/Research/ProximityGap/Frontier/_ZTZBetaThreeHighLadderExtension.lean
 """
 
 # Deterministic Miller-Rabin witnesses (exact below 3.3e24).

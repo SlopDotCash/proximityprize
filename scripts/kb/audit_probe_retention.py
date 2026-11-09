@@ -16,8 +16,8 @@ from collections import defaultdict
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-EVIDENCE_ROOTS = ('scripts/probes/', '_nubs_research/', '_research_357/',
-                  '_research_ll/', 'scratchpad/')
+EVIDENCE_ROOTS = ('scripts/probes/', 'docs/research/sources/',
+                  'docs/research/hbk-stepanov-extraction.md')
 
 
 def inventory() -> dict:

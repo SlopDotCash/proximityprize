@@ -4,7 +4,7 @@ Date: 2026-06-25
 
 ## Artifact
 
-- Lean: `Research/ProximityPrize/Frontier/_FixedParameterLimitTransferGate.lean`
+- Lean: `ArkLib/Research/ProximityGap/Frontier/_FixedParameterLimitTransferGate.lean`
 - Status: abstract finite gate; no arithmetic theorem claimed.
 
 ## Inputs checked

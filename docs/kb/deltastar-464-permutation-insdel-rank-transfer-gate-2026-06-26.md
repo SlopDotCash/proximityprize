@@ -30,7 +30,7 @@ being the exceptional point.
 New file:
 
 ```text
-Research/ProximityPrize/Frontier/_D4PermutationInsdelRankTransferGate.lean
+ArkLib/Research/ProximityGap/Frontier/_D4PermutationInsdelRankTransferGate.lean
 ```
 
 New declarations:

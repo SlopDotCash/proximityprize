@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Katerina Hristova, František Silváši, Julian Sutherland, Ilia Vlasov
 -/
 
-import ProximityPrize.Extensions.Data.Polynomial.Bivariate
+import ArkLib.Extensions.Data.Polynomial.Bivariate
 import ArkLib.Data.Polynomial.Prelims
 import Mathlib.FieldTheory.RatFunc.Defs
 import Mathlib.RingTheory.Ideal.Quotient.Defs

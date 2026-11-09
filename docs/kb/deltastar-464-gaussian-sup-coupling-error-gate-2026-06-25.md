@@ -6,7 +6,7 @@ Status: abstract transfer/slack guardrail; not a prize proof.
 
 ## Artifact
 
-- `Research/ProximityPrize/Frontier/_GaussianSupCouplingErrorGate.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_GaussianSupCouplingErrorGate.lean`
 
 ## Local PDF Checked
 

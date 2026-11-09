@@ -31,7 +31,7 @@ trap on_error ERR
 current_dir="$fixture_tmp/current"
 source_root="$fixture_tmp/root"
 mkdir -p "$current_dir" "$source_root/ArkLib" "$source_root/ArkLibTest"
-for module in ArkLib/Fast ArkLib/Slow ArkLib/New ArkLib/Kept ArkLibTest/Check; do
+for module in ArkLib/Fast ArkLib/Slow ArkLib/New ArkLib/Kept ArkLib/Tests/Check; do
   : > "$source_root/$module.lean"
 done
 
@@ -164,7 +164,7 @@ grep -Fq -- 'summed over all 5 modules: 55s before, 48s after (-7s (-12.6%)).' "
 grep -Fq -- '| 12 | 18 | -6 | <code>ArkLib/Slow.lean</code> |' "$report"
 grep -Fq -- '| 1.0 | 2.0 | -1.0 | <code>ArkLib/Fast.lean</code> |' "$report"
 grep -Fq -- '| 0.850 | - | - | <code>ArkLib/New.lean</code> |' "$report"
-grep -Fq -- '| 4.2 | - | - | <code>ArkLibTest/Check.lean</code> |' "$report"
+grep -Fq -- '| 4.2 | - | - | <code>ArkLib/Tests/Check.lean</code> |' "$report"
 if grep -Fq -- 'ArkLibLintPlugin' "$report" || grep -Fq -- 'c.o' "$report"; then
   echo 'the rebuilt-module table must list only ArkLib modules' >&2
   exit 1

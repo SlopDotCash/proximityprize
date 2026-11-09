@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.Probability.Notation
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.LineDecoding
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.LineDecoding
 import ArkLib.Data.CodingTheory.ProximityGap.LineDecodingCoverage
 import ArkLib.Data.CodingTheory.ProximityGap.LineDecodingRefutation
 

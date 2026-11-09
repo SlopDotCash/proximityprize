@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.Data.CodingTheory.SubspaceDesign
-import ProximityPrize.Extensions.Data.Probability.Instances
+import ArkLib.Extensions.Data.CodingTheory.SubspaceDesign
+import ArkLib.Extensions.Data.Probability.Instances
 
 /-!
 # A τ-subspace-design has few fully-vanishing coordinates (issue #389, GG25 §4.3 toward B2)

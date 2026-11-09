@@ -3,7 +3,7 @@ kind: paper
 bibkey: ACFY24stir
 title: "STIR: Reed-Solomon proximity testing with fewer queries"
 year: 2024
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/ACFY24stir/metadata.yml
 status: seeded
 related_concepts:
@@ -120,4 +120,4 @@ claimed low-degree polynomial.
 ## Source Access
 
 - Source metadata: [`../sources/ACFY24stir/metadata.yml`](../sources/ACFY24stir/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

@@ -3,8 +3,8 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ProximityPrize.Extensions.ProofSystem.Sumcheck.Spec.SingleRound
-import ProximityPrize.Extensions.OracleReduction.LiftContext.OracleReduction
+import ArkLib.Extensions.ProofSystem.Sumcheck.Spec.SingleRound
+import ArkLib.Extensions.OracleReduction.LiftContext.OracleReduction
 
 /-!
 # The single-round sumcheck reduction bridge

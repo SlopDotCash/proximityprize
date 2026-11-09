@@ -64,7 +64,7 @@ is considered.
 Lean artifact:
 
 ```text
-Research/ProximityPrize/Frontier/_R221ZeroThresholdSurvivalObstruction.lean
+ArkLib/Research/ProximityGap/Frontier/_R221ZeroThresholdSurvivalObstruction.lean
 ```
 
 It proves:

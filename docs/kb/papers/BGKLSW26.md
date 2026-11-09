@@ -3,7 +3,7 @@ kind: paper
 bibkey: BGKLSW26
 title: "BitZ: proofs and commitments in arbitrary rings through binary fields"
 year: 2026
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eprint.iacr.org/2026/2141
 source_metadata: ../sources/BGKLSW26/metadata.yml
 status: seeded
@@ -76,10 +76,10 @@ Writing `M = 2 · T · ℓ · N²`, the native Round 1 probability bound is
   of binary encoding (`Nat.eq_of_sum_pow_two_mul_eq`) and the tensor-pairing rearrangement.
 
 Acceptance clients under
-[`ArkLibTest/Commitments/Functional/BitZ/`](../../../ArkLibTest/Commitments/Functional/BitZ/)
+[`ArkLib/Tests/Commitments/Functional/BitZ/`](../../../ArkLib/Tests/Commitments/Functional/BitZ)
 exercise the range hypotheses and their failure at the overflow boundary, round bounds,
 semiring injectivity, and the OOD theorem applied to CompPoly evaluation tables. The separate
-[sampler regression](../../../ArkLibTest/Data/MvPolynomial/PrimeFingerprintProbability.lean)
+[sampler regression](../../../ArkLib/Tests/Data/MvPolynomial/PrimeFingerprintProbability.lean)
 distinguishes the intended distribution from uniform sampling over all prime/point pairs.
 The clients pin headline theorem dependencies to `propext`, `Classical.choice` and `Quot.sound`.
 
@@ -125,7 +125,7 @@ The clients pin headline theorem dependencies to `propext`, `Classical.choice` a
 
 - [Public ePrint paper and revision history](https://eprint.iacr.org/2026/2141)
 - [Source metadata](../sources/BGKLSW26/metadata.yml)
-- [Repository bibliography](../../../blueprint/src/references.bib)
+- [Repository bibliography](../../../website/blueprint/src/references.bib)
 
 ## Computability audit
 

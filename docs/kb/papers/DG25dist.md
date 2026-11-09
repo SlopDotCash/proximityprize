@@ -3,7 +3,7 @@ kind: paper
 bibkey: DG25dist
 title: "On the distribution of the distances of random words"
 year: "2025"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/DG25dist/metadata.yml
 status: stub
 related_modules:
@@ -40,4 +40,4 @@ The refinements themselves, which would sharpen Corollary 3.8 rather than being 
 ## Source Access
 
 - Source metadata: [`../sources/DG25dist/metadata.yml`](../sources/DG25dist/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

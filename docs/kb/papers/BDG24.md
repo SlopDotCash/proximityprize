@@ -3,7 +3,7 @@ kind: paper
 bibkey: BDG24
 title: "Improved field size bounds for higher order {MDS} codes"
 year: "2024"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/BDG24/metadata.yml
 status: seeded
 related_modules:
@@ -42,4 +42,4 @@ Nothing from this paper is formalized separately; its linear-code barrier is sub
 ## Source Access
 
 - Source metadata: [`../sources/BDG24/metadata.yml`](../sources/BDG24/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

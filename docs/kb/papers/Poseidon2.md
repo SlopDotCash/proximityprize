@@ -3,7 +3,7 @@ kind: paper
 bibkey: Poseidon2
 title: "Poseidon2: A Faster Version of the Poseidon Hash Function"
 year: 2023
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eprint.iacr.org/2023/323
 source_metadata: ../sources/Poseidon2/metadata.yml
 status: seeded
@@ -51,4 +51,4 @@ implementation over the `KoalaBear` field.
 ## Source Access
 
 - Source metadata: [`../sources/Poseidon2/metadata.yml`](../sources/Poseidon2/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

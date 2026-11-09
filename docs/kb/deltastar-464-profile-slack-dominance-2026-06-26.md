@@ -26,7 +26,7 @@ budget margin, this still feeds the open-core incidence bound.
 The new frontier file is:
 
 ```text
-Research/ProximityPrize/Frontier/_ProfileFiberSlackDominance.lean
+ArkLib/Research/ProximityGap/Frontier/_ProfileFiberSlackDominance.lean
 ```
 
 It introduces:

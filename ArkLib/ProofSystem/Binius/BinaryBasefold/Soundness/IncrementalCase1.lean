@@ -10,9 +10,9 @@ Schwartz–Zippel bound (degree ≤ 1 fold difference, butterfly-matrix
 non-degeneracy) summed by a union bound over the disagreement set.
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.DG25
-import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Compliance
+import ArkLib.Extensions.ProofSystem.Binius.BinaryBasefold.Compliance
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.IncrementalHelpers
-import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.Lift
+import ArkLib.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.Lift
 import ArkLib.ProofSystem.Binius.BinaryBasefold.BaseFoldDetBrick
 import CompPoly.Fields.Binary.Tower.Prelude
 

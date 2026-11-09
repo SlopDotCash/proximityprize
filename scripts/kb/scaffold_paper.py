@@ -43,7 +43,7 @@ def build_paper_template(key: str, entry: dict[str, object]) -> str:
         f"bibkey: {key}\n"
         f"title: {yaml_quote(title)}\n"
         f"year: {yaml_quote(year)}\n"
-        "bib_source: blueprint/src/references.bib\n"
+        "bib_source: website/blueprint/src/references.bib\n"
         f"{canonical_url_line}"
         f"source_metadata: ../sources/{key}/metadata.yml\n"
         "status: stub\n"
@@ -64,7 +64,7 @@ def build_paper_template(key: str, entry: dict[str, object]) -> str:
         "## Source Access\n\n"
         f"- Source metadata: [`../sources/{key}/metadata.yml`](../sources/{key}/metadata.yml)\n"
         "- Public reference: "
-        "[`blueprint/src/references.bib`](../../../blueprint/src/references.bib)\n"
+        "[`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)\n"
     )
 
 

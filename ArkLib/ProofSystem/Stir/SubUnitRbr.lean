@@ -4,13 +4,13 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Stir.CheckingVerifier
 import ArkLib.ProofSystem.Whir.ThresholdKSF
 import ArkLib.OracleReduction.FullPredKSF
 import ArkLib.ProofSystem.Whir.SubUnitRbr
 import ArkLib.Data.Probability.MarginalBound
-import ProximityPrize.Extensions.ProofSystem.Component.SendWitness
+import ArkLib.Extensions.ProofSystem.Component.SendWitness
 
 
 /-!

@@ -66,7 +66,7 @@ remaining work; no fabrication here.
 The shared `SchwartzZippelCore` module owns the polynomial evaluation and uniform-marginal
 salvage lemmas. This module adds the comap variant and the checked-verifier clients.
 -/
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Whir.ThresholdKSF
 import ArkLib.ProofSystem.Whir.CheckedVerifier
 import ArkLib.ProofSystem.Whir.SchwartzZippelCore

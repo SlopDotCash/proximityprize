@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
 
-import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Basic
+import ArkLib.Extensions.ProofSystem.Binius.BinaryBasefold.Basic
 
 /-!
 ## Binary expansion of an index as a challenge vector

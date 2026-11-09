@@ -3,9 +3,9 @@
 **Status: LANDED, axiom-clean.** Two new Lean files, every `#print axioms` a subset of
 `[propext, Classical.choice, Quot.sound]`, 0 `sorryAx`, verified with `scripts/pg-iterate.sh`:
 
-- `Research/ProximityPrize/Frontier/_SYZ57TextbookFacts.lean` — Task A, the Bézout
+- `ArkLib/Research/ProximityGap/Frontier/_SYZ57TextbookFacts.lean` — Task A, the Bézout
   seed behind SYZ44's `RankNullity` (✅ OK 5s, axioms `[propext, Quot.sound]`).
-- `Research/ProximityPrize/Frontier/_SYZ57TransportWire.lean` — Task B, the wire (iv)
+- `ArkLib/Research/ProximityGap/Frontier/_SYZ57TransportWire.lean` — Task B, the wire (iv)
   transport reduced to a named counting dictionary (✅ OK 13s, axioms
   `[propext, Classical.choice, Quot.sound]`).
 
@@ -115,4 +115,4 @@ closed** — the counting dictionary (bridge + attribution) is the genuine remai
 
 No δ* pin, no unconditional degree-sum law, no closed transport. Both SYZ57 files are axiom-clean
 partials that discharge the Mathlib-reachable slice and name the two genuinely-open textbook /
-attribution residues precisely. Nothing here belongs in `Research/ProximityPrize/DISPROOF_LOG.md`.
+attribution residues precisely. Nothing here belongs in `docs/research/proximity-gap/DISPROOF_LOG.md`.

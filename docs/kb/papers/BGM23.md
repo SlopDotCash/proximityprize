@@ -3,7 +3,7 @@ kind: paper
 bibkey: BGM23
 title: "Generic Reed-Solomon codes achieve list-decoding capacity"
 year: "2023"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/BGM23/metadata.yml
 status: stub
 related_modules:
@@ -38,4 +38,4 @@ The whole paper. It is context for `rs_random_domain_lambda_le`, not an input to
 ## Source Access
 
 - Source metadata: [`../sources/BGM23/metadata.yml`](../sources/BGM23/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

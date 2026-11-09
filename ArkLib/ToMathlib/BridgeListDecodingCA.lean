@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
-import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
-import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
-import ProximityPrize.Extensions.Data.MvPolynomial.SchwartzZippelCounting
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.Errors
+import ArkLib.Extensions.Data.CodingTheory.ListDecodability
+import ArkLib.Extensions.Data.CodingTheory.ReedSolomon
+import ArkLib.Extensions.Data.MvPolynomial.SchwartzZippelCounting
 import ArkLib.Data.CodingTheory.Connections.EpsMCABadGlue
 import ArkLib.ToMathlib.Bridge2GCXK25
 import Mathlib.Analysis.SpecialFunctions.Pow.Real

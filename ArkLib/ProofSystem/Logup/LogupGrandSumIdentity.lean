@@ -6,8 +6,8 @@ Authors: ArkLib Contributors
 
 import ArkLib.ProofSystem.Logup.Common
 import ArkLib.ProofSystem.Logup.Sumcheck.SumcheckPolynomial
-import ProximityPrize.Extensions.Data.MvPolynomial.SchwartzZippelCounting
-import ProximityPrize.Compatibility.UniformProbability
+import ArkLib.Extensions.Data.MvPolynomial.SchwartzZippelCounting
+import ArkLib.Compatibility.UniformProbability
 
 /-!
 # LogUp grand-sum logarithmic-derivative identity + Schwartz-Zippel soundness (issue #13)

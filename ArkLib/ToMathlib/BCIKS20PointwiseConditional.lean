@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib
-import ProximityPrize.Extensions.Data.Polynomial.RationalFunctions
+import ArkLib.Extensions.Data.Polynomial.RationalFunctions
 import ArkLib.ToMathlib.PowerSeriesSubstCoeff
 import ArkLib.ToMathlib.FiniteSeriesToPoly
 
@@ -34,7 +34,7 @@ the power series ring.
 
 * [Ben-Sasson, E., Carmon, D., Ishai, Y., Kopparty, S., and Saraf, S., *Proximity Gaps
     for Reed-Solomon Codes*][BCIKS20] (ePrint 2020/654; entry `BCIKS20` in
-    `blueprint/src/references.bib`)
+    `website/blueprint/src/references.bib`)
 -/
 
 set_option linter.style.longLine false

@@ -4,12 +4,12 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Spartan.MidChainWithTarget
 import ArkLib.ProofSystem.Spartan.TightRLCKernel
 import ArkLib.ProofSystem.Spartan.SumcheckPhaseRbr
 import ArkLib.ProofSystem.Spartan.ComposedCompletenessLeaves
-import ProximityPrize.Compatibility.PureKnowledge
+import ArkLib.Compatibility.PureKnowledge
 
 /-!
 # The tight mid-chain rbr knowledge-soundness leaves (issue #329, X-lane)

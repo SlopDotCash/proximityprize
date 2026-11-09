@@ -26,7 +26,7 @@ artifact pins the second obligation.
 The frontier file
 
 ```text
-Research/ProximityPrize/Frontier/_QuotientFiberConstancyGate.lean
+ArkLib/Research/ProximityGap/Frontier/_QuotientFiberConstancyGate.lean
 ```
 
 defines:

@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.SubJohnsonListBound
 import ArkLib.Data.CodingTheory.ProximityLeaves2
-import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
+import ArkLib.Extensions.Data.CodingTheory.ListDecodability
 
 /-!
 # The sub-Johnson `Λ` bound for Reed–Solomon codes (#389, the LD⇒MCA input)

@@ -1,7 +1,7 @@
 # δ* #444 — the airtight CONDITIONAL two-sided entropy pin (modulo BGK + TZ)
 
 **Date:** 2026-06-15
-**File:** `Research/ProximityPrize/Frontier/DeltaStarConditionalEntropyPin.lean`
+**File:** `ArkLib/Research/ProximityGap/Frontier/DeltaStarConditionalEntropyPin.lean`
 **Status:** axiom-clean (`[propext, Classical.choice, Quot.sound]`), real `lake build` passes
 (8358 jobs). **CONDITIONAL, not unconditional** — δ* is NOT claimed proven.
 

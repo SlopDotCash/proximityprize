@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import Mathlib
-import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ArkLib.Extensions.Data.CodingTheory.ReedSolomon
 import ArkLib.Data.CodingTheory.AGL24DeterministicChain
 import ArkLib.Data.CodingTheory.AGL24ListDecodingBridge
 

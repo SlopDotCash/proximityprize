@@ -34,7 +34,7 @@ The prize saddle is growing-depth: `r` is on the order of `log q` or `log(q/n)`,
 ## Lean Surface
 
 New in
-`Research/ProximityPrize/Frontier/_D3TsangHighMomentRangeGate.lean`:
+`ArkLib/Research/ProximityGap/Frontier/_D3TsangHighMomentRangeGate.lean`:
 
 ```lean
 DiagonalRange

@@ -52,7 +52,7 @@ so it is closed for every prize rate (`r_lo ≥ 18`).
 
 ## Artifacts
 
-- `Research/ProximityPrize/Frontier/Sweep_A34_LacunaryResultantS128.lean`
+- `ArkLib/Research/ProximityGap/Frontier/Sweep_A34_LacunaryResultantS128.lean`
   — axiom-clean (`[propext, Classical.choice, Quot.sound]`, no `sorry`/`native_decide`):
   - `oddEvalProductSq_le_l2SqOn_pow` — slack-free Parseval+AM-GM product bound.
   - `natAbs_resultant_cyclotomic_sq_le_l2SqOn_pow` — `|Res|² ≤ (l2SqOn h R)^h`.

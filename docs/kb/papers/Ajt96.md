@@ -3,7 +3,7 @@ kind: paper
 bibkey: Ajt96
 title: "Generating hard instances of lattice problems (extended abstract)"
 year: "1996"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/Ajt96/metadata.yml
 status: seeded
 related_modules:
@@ -41,4 +41,4 @@ Ajtai commitments.
 ## Source Access
 
 - Source metadata: [`../sources/Ajt96/metadata.yml`](../sources/Ajt96/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

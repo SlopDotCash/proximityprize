@@ -368,11 +368,14 @@ class Reporting(CensusCase):
     def test_outputs_declare_scope_and_method(self):
         payload, wiki = self.run_cli(FOO + "theorem t (k : Nat) : FooResidual k := trivial\n")
         self.assertEqual(payload["metadata"]["scope"],
-                         "ArkLib/**/*.lean and ProximityPrize/**/*.lean only")
+                         "ArkLib/**/*.lean excluding ArkLib/Research/** and ArkLib/Tests/**")
+        self.assertEqual(payload["metadata"]["excluded_source_prefixes"],
+                         ["ArkLib/Research/", "ArkLib/Tests/"])
         self.assertEqual(payload["metadata"]["kind"], "syntactic inventory")
         self.assertEqual(payload["summary"]["discharged"], 1)
         self.assertIn("instance_only", payload["summary"])
-        self.assertIn("Only `ArkLib/**/*.lean` and `ProximityPrize/**/*.lean`", wiki)
+        self.assertIn("Production `ArkLib/**/*.lean`", wiki)
+        self.assertIn("`ArkLib/Research/` and `ArkLib/Tests/` are excluded", wiki)
         self.assertIn("never elaborates", wiki)
         self.assertIn("**Instance-only:** 0", wiki)
         self.assertNotIn("concrete provider", wiki)

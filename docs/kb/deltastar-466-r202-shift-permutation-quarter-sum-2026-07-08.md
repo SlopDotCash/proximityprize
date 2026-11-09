@@ -4,12 +4,12 @@ Status: landed as a checked finite-set consumer.
 
 Artifact:
 
-- `Research/ProximityPrize/Frontier/_R202ShiftPermutationQuarterSum.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_R202ShiftPermutationQuarterSum.lean`
 
 Lean check:
 
 ```text
-scripts/pg-iterate.sh -q Research/ProximityPrize/Frontier/_R202ShiftPermutationQuarterSum.lean
+scripts/pg-iterate.sh -q ArkLib/Research/ProximityGap/Frontier/_R202ShiftPermutationQuarterSum.lean
 ✅ OK (18s)
 ```
 

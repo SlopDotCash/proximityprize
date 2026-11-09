@@ -5,7 +5,7 @@
 > requested scoping map: every lemma between the in-tree substrate and a
 > "folded-RS `ε_mca ≤ poly(n)/q` up to capacity" theorem, with what exists, what is missing,
 > and effort estimates. Brick 1 is LANDED:
-> `Research/ProximityPrize/Frontier/_FoldedPinBrick1.lean`
+> `ArkLib/Research/ProximityGap/Frontier/_FoldedPinBrick1.lean`
 > (compile-verified via `pg-iterate`, all `#print axioms = [propext, Classical.choice,
 > Quot.sound]`, 0 `sorry`).
 
@@ -128,7 +128,7 @@ bankable.
 
 ## 4. Brick 1 — what was landed (all axiom-clean, `pg-iterate` 211s, 0 sorry)
 
-`Research/ProximityPrize/Frontier/_FoldedPinBrick1.lean`, namespace
+`ArkLib/Research/ProximityGap/Frontier/_FoldedPinBrick1.lean`, namespace
 `ProximityGap.FoldedPin`:
 
 - `VanishBudget H θ` + `VanishBudget.mono` — the local hypothesis the survival induction

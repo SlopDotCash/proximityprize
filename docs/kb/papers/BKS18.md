@@ -3,7 +3,7 @@ kind: paper
 bibkey: BKS18
 title: "Worst-case to average case reductions for the distance to a code"
 year: "2018"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/BKS18/metadata.yml
 status: mapped
 ---

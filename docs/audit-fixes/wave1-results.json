@@ -30,17 +30,17 @@
         {
           "id": "ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean",
           "status": "fixed",
-          "summary": "Canonical upstream module: kept ours, byte-identical to HEAD. The 3-way apply had pasted the old 4.30 theorem bodies into the canonical file. Re-applied the audit intent in the downstream extension ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/AHIV22.lean: the docstring of ahiv17_epsCA_bound_of_rowSpan_to_affineLine_dOverQ_residual now says it is conditional on the unproved #88 residual hAHIV, not that 'the only hypothesis is the numeric bound'. comment_only_check OK on the extension."
+          "summary": "Canonical upstream module: kept ours, byte-identical to HEAD. The 3-way apply had pasted the old 4.30 theorem bodies into the canonical file. Re-applied the audit intent in the downstream extension ArkLib/Extensions/Data/CodingTheory/ProximityGap/AHIV22.lean: the docstring of ahiv17_epsCA_bound_of_rowSpan_to_affineLine_dOverQ_residual now says it is conditional on the unproved #88 residual hAHIV, not that 'the only hypothesis is the numeric bound'. comment_only_check OK on the extension."
         },
         {
           "id": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/Main.lean",
           "status": "fixed",
-          "summary": "Canonical upstream module: kept ours in all 3 hunks, byte-identical to HEAD. Upstream already says 'greater than errorBound' in Theorem 1.4. The audit intent was moved to the extension ProximityPrize/Extensions/.../BCIKS20/AffineLines/Main.lean, which now holds the betaRec front doors. That extension is needed for compilation: the already-applied KeystoneStrictResidual change made BetaCurveInput* take a decoded family P (audit-L72). (1) All 26 hInput hypotheses now use the per-P form '∀ P, (good-set decoding hyp) → BetaCurveInput* … u P'. (2) Added the module caveats on hInput and the closed endpoint. (3) Added the hBoundaryCard status and endpoint-refutation notes. (4) Corrected the lattice_data docstring, which claimed it 'does not prove or assume' the lattice data when it takes hLatticeData as a hypothesis."
+          "summary": "Canonical upstream module: kept ours in all 3 hunks, byte-identical to HEAD. Upstream already says 'greater than errorBound' in Theorem 1.4. The audit intent was moved to the extension ArkLib/Extensions/.../BCIKS20/AffineLines/Main.lean, which now holds the betaRec front doors. That extension is needed for compilation: the already-applied KeystoneStrictResidual change made BetaCurveInput* take a decoded family P (audit-L72). (1) All 26 hInput hypotheses now use the per-P form '∀ P, (good-set decoding hyp) → BetaCurveInput* … u P'. (2) Added the module caveats on hInput and the closed endpoint. (3) Added the hBoundaryCard status and endpoint-refutation notes. (4) Corrected the lattice_data docstring, which claimed it 'does not prove or assume' the lattice data when it takes hLatticeData as a hypothesis."
         },
         {
           "id": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineSpaces.lean",
           "status": "fixed",
-          "summary": "Canonical upstream module: kept ours, byte-identical to HEAD. The audit side re-appended the old betaRec affine-space theorems. Ported the audit's per-P hInput signatures to where those theorems live now: the extension ProximityPrize/Extensions/.../BCIKS20/AffineSpaces.lean (4 theorems). Did the same in the other broken downstream callers, BCIKS20/ReedSolomonGap.lean (1) and ProximityGap/Folding.lean (1, the k = 2^k-1 subdomain form). `./scripts/lake-locked.sh build` of all four extension modules succeeded (9657 jobs), with axioms propext, Classical.choice and Quot.sound."
+          "summary": "Canonical upstream module: kept ours, byte-identical to HEAD. The audit side re-appended the old betaRec affine-space theorems. Ported the audit's per-P hInput signatures to where those theorems live now: the extension ArkLib/Extensions/.../BCIKS20/AffineSpaces.lean (4 theorems). Did the same in the other broken downstream callers, BCIKS20/ReedSolomonGap.lean (1) and ProximityGap/Folding.lean (1, the k = 2^k-1 subdomain form). `./scripts/lake-locked.sh build` of all four extension modules succeeded (9657 jobs), with axioms propext, Classical.choice and Quot.sound."
         }
       ],
       "files_changed": [
@@ -52,11 +52,11 @@
         "ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean",
         "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/Main.lean",
         "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/AffineSpaces.lean",
-        "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/AHIV22.lean",
-        "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/Main.lean",
-        "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/AffineSpaces.lean",
-        "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/ReedSolomonGap.lean",
-        "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/Folding.lean"
+        "ArkLib/Extensions/Data/CodingTheory/ProximityGap/AHIV22.lean",
+        "ArkLib/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/Main.lean",
+        "ArkLib/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/AffineSpaces.lean",
+        "ArkLib/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/ReedSolomonGap.lean",
+        "ArkLib/Extensions/Data/CodingTheory/ProximityGap/Folding.lean"
       ],
       "checks": [
         "lean-check EntropyVolumeUpperBound.lean: OK (0 warnings)",
@@ -64,18 +64,18 @@
         "lean-check InterleavedFinOneEq.lean: OK (0 warnings)",
         "cmp vs HEAD 91519a5b2: identical for canonical Family.lean, AHIV22.lean, BCIKS20/AffineLines/Main.lean, BCIKS20/AffineSpaces.lean",
         "comment_only_check ListDecoding/Bounds/General.lean: OK",
-        "comment_only_check ProximityPrize/Extensions/.../ProximityGap/AHIV22.lean: OK",
+        "comment_only_check ArkLib/Extensions/.../ProximityGap/AHIV22.lean: OK",
         "./scripts/lake-locked.sh build of the ProximityPrize extension modules BCIKS20.AffineLines.Main, BCIKS20.AffineSpaces, BCIKS20.ReedSolomonGap and ProximityGap.Folding (rebuilds the changed KeystoneStrictResidual and the canonical modules): Build completed successfully (9657 jobs), axioms clean",
         "grep for conflict markers in the 8 group files: 0 remaining"
       ],
-      "remaining": "ProximityPrize/Extensions/Data/Polynomial/RationalFunctions.lean only mentions KeystoneStrictResidual in a docstring and needed no compile fix. Its audit honesty note (that the β witness does not determine β) belongs with the conflicted canonical ArkLib/Data/Polynomial/RationalFunctions.lean in another group, so I did not apply it and released my claim on that file. I also released my claim on ArkLib/ToMathlib/KeystoneStrictResidual.lean without editing it. The extension AffineSpaces.lean has an existing 'remove set_option linter.style.longFile 2500' lint, which I left alone."
+      "remaining": "ArkLib/Extensions/Data/Polynomial/RationalFunctions.lean only mentions KeystoneStrictResidual in a docstring and needed no compile fix. Its audit honesty note (that the β witness does not determine β) belongs with the conflicted canonical ArkLib/Data/Polynomial/RationalFunctions.lean in another group, so I did not apply it and released my claim on that file. I also released my claim on ArkLib/ToMathlib/KeystoneStrictResidual.lean without editing it. The extension AffineSpaces.lean has an existing 'remove set_option linter.style.longFile 2500' lint, which I left alone."
     },
     {
       "findings": [
         {
           "id": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean",
           "status": "already_fixed",
-          "summary": "This is a pinned canonical upstream module. I kept ours, which is byte-identical to HEAD. The theirs block was the old 4.30 section-6 code, including the `axiom large_agreement_set_on_curve_implies_correlated_agreement` and the `JohnsonCorrelatedAgreementCurves` Prop surface. The fix's intent (no false axiom) is already met in 4.35: upstream proves `large_agreement_set_on_curve_implies_correlated_agreement'` with `0 < deg`, and the moved downstream section in ProximityPrize/Extensions/.../BCIKS20/Curves.lean has no axioms."
+          "summary": "This is a pinned canonical upstream module. I kept ours, which is byte-identical to HEAD. The theirs block was the old 4.30 section-6 code, including the `axiom large_agreement_set_on_curve_implies_correlated_agreement` and the `JohnsonCorrelatedAgreementCurves` Prop surface. The fix's intent (no false axiom) is already met in 4.35: upstream proves `large_agreement_set_on_curve_implies_correlated_agreement'` with `0 < deg`, and the moved downstream section in ArkLib/Extensions/.../BCIKS20/Curves.lean has no axioms."
         },
         {
           "id": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Guruswami.lean",
@@ -85,7 +85,7 @@
         {
           "id": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/ReedSolomonGap.lean",
           "status": "already_fixed",
-          "summary": "Pinned canonical module. I kept ours (identical to HEAD). Theirs re-added a modified `proximity_gap_RSCodes_johnson_of_betaRec`, but that theorem now lives in ProximityPrize/Extensions/.../BCIKS20/ReedSolomonGap.lean as a wrapper. Any change to its `BetaCurveInput ... u P` shape belongs to that extension file, which is outside this batch."
+          "summary": "Pinned canonical module. I kept ours (identical to HEAD). Theirs re-added a modified `proximity_gap_RSCodes_johnson_of_betaRec`, but that theorem now lives in ArkLib/Extensions/.../BCIKS20/ReedSolomonGap.lean as a wrapper. Any change to its `BetaCurveInput ... u P` shape belongs to that extension file, which is outside this batch."
         },
         {
           "id": "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/WeightedAgreement.lean",
@@ -137,7 +137,7 @@
           "held_by": "canonical upstream pin (scripts/arklib-upstream.json)"
         }
       ],
-      "remaining": "The old-tree P-indexed `BetaCurveInput ... u P` wrappers (`proximity_gap_RSCodes_johnson_of_betaRec`, `folding_preserves_distance_johnson_of_betaRec`) come from conflict hunks in the canonical ReedSolomonGap and Folding modules. Their 4.35 home is the ProximityPrize/Extensions files, which are outside this batch, so any follow-up audit for that intent should check ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/ReedSolomonGap.lean. The DG25 MainResults comment correction is deferred because the module is pinned upstream."
+      "remaining": "The old-tree P-indexed `BetaCurveInput ... u P` wrappers (`proximity_gap_RSCodes_johnson_of_betaRec`, `folding_preserves_distance_johnson_of_betaRec`) come from conflict hunks in the canonical ReedSolomonGap and Folding modules. Their 4.35 home is the ProximityPrize/Extensions files, which are outside this batch, so any follow-up audit for that intent should check ArkLib/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/ReedSolomonGap.lean. The DG25 MainResults comment correction is deferred because the module is pinned upstream."
     },
     {
       "findings": [
@@ -149,7 +149,7 @@
         {
           "id": "ArkLib/Data/CodingTheory/ProximityGap/MCAEventCosetInvariance.lean",
           "status": "fixed",
-          "summary": "Kept the 4.35 import `ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors` and added `Mathlib.Algebra.Field.ZMod`, which the audit's checked ZMod 5 counterexample `DistanceCounterexample.bad_event_not_determined_by_distance` (PG-062) needs. The corrected prose (bad set depends on the coset, not on distance alone) merged cleanly. lean-check OK, standard axioms only."
+          "summary": "Kept the 4.35 import `ArkLib.Extensions.Data.CodingTheory.ProximityGap.Errors` and added `Mathlib.Algebra.Field.ZMod`, which the audit's checked ZMod 5 counterexample `DistanceCounterexample.bad_event_not_determined_by_distance` (PG-062) needs. The corrected prose (bad set depends on the coset, not on distance alone) merged cleanly. lean-check OK, standard axioms only."
         },
         {
           "id": "ArkLib/Data/CodingTheory/ProximityGap/ProximityGenerators.lean",
@@ -504,7 +504,7 @@
         {
           "id": "ArkLib/OracleReduction/Security/Basic.lean",
           "status": "fixed",
-          "summary": "This is a canonical upstream module (listed in scripts/arklib-upstream.json, and check_consolidation.py requires it to match upstream byte for byte). I restored it to the HEAD content, which is the 4.35 upstream text. The 4.35 version already carries the audit fix's intent: `knowledgeSoundnessWith` runs the extractor with `.run` and keeps extraction failure as `none`, scored as a bad event, and the docstring explains why. The theirs-side `mono_error`/`mono_relations` already exist in ProximityPrize/Extensions/OracleReduction/Security/Basic.lean, and theirs' old-signature id proof was not needed. The non-conflicting additions (the regression theorem `Verifier.id_not_knowledgeSoundness_empty_relIn` and the helper `OracleComp.run_liftM_optionT_add_eq_map_some`) were moved into the downstream extension and adapted to the 4.35 `Aux` quantifier."
+          "summary": "This is a canonical upstream module (listed in scripts/arklib-upstream.json, and check_consolidation.py requires it to match upstream byte for byte). I restored it to the HEAD content, which is the 4.35 upstream text. The 4.35 version already carries the audit fix's intent: `knowledgeSoundnessWith` runs the extractor with `.run` and keeps extraction failure as `none`, scored as a bad event, and the docstring explains why. The theirs-side `mono_error`/`mono_relations` already exist in ArkLib/Extensions/OracleReduction/Security/Basic.lean, and theirs' old-signature id proof was not needed. The non-conflicting additions (the regression theorem `Verifier.id_not_knowledgeSoundness_empty_relIn` and the helper `OracleComp.run_liftM_optionT_add_eq_map_some`) were moved into the downstream extension and adapted to the 4.35 `Aux` quantifier."
         },
         {
           "id": "ArkLib/OracleReduction/Security/ImplicationsCore.lean",
@@ -514,7 +514,7 @@
         {
           "id": "ArkLib/OracleReduction/Security/Rewinding.lean",
           "status": "fixed",
-          "summary": "Canonical upstream module, restored to HEAD byte for byte. The audit note (NARG predicates are memoryless-oracle notions, not ROM/ideal-permutation; the expectedCostBound counts oracle cost only) was moved into the module docstring of ProximityPrize/Extensions/OracleReduction/Security/Rewinding.lean and reworded for 4.35 VCVio (`Pr{…}[…]` under `UniformAnswerMeasure`). comment_only_check OK."
+          "summary": "Canonical upstream module, restored to HEAD byte for byte. The audit note (NARG predicates are memoryless-oracle notions, not ROM/ideal-permutation; the expectedCostBound counts oracle cost only) was moved into the module docstring of ArkLib/Extensions/OracleReduction/Security/Rewinding.lean and reworded for 4.35 VCVio (`Pr{…}[…]` under `UniformAnswerMeasure`). comment_only_check OK."
         },
         {
           "id": "ArkLib/OracleReduction/Security/RoundByRound.lean",
@@ -551,13 +551,13 @@
         "ArkLib/ProofSystem/BatchedFri/QueryRoundRSAffineLineSoundness.lean",
         "ArkLib/ProofSystem/BatchedFri/QueryRoundRSCurveSoundness.lean",
         "ArkLib/ProofSystem/BatchedFri/QueryRoundSoundness.lean",
-        "ProximityPrize/Extensions/OracleReduction/Security/Basic.lean",
-        "ProximityPrize/Extensions/OracleReduction/Security/Rewinding.lean"
+        "ArkLib/Extensions/OracleReduction/Security/Basic.lean",
+        "ArkLib/Extensions/OracleReduction/Security/Rewinding.lean"
       ],
       "checks": [
         "git diff --quiet HEAD on ArkLib/OracleReduction/Security/{Basic,Rewinding,RoundByRound}.lean: identical to HEAD (canonical pin preserved)",
-        "lean-check ProximityPrize/Extensions/OracleReduction/Security/Basic.lean: OK (0 warnings), with the new regression theorem",
-        "comment_only_check ProximityPrize/Extensions/OracleReduction/Security/Rewinding.lean: OK",
+        "lean-check ArkLib/Extensions/OracleReduction/Security/Basic.lean: OK (0 warnings), with the new regression theorem",
+        "comment_only_check ArkLib/Extensions/OracleReduction/Security/Rewinding.lean: OK",
         "lean-check ArkLib/OracleReduction/Security/ImplicationsCore.lean: OK (1 warning, present in HEAD)",
         "lean-check ArkLib/ProofSystem/BatchedFri/QueryRoundProbability.lean: OK (13 warnings)",
         "lake-locked build ArkLib.ProofSystem.BatchedFri.QueryRoundProbability: success",
@@ -568,7 +568,7 @@
         "grep for conflict markers in all 8 files: none; no added sorry/admit/axiom"
       ],
       "deferred_edits": [],
-      "remaining": "The four BatchedFri files rely on `friDegree` and the friDegree-ported definitions in ProximityPrize/Extensions/ProofSystem/BatchedFri/Security.lean, which CONFLICT-8 holds. They compiled against that file as it stood at check time; if CONFLICT-8 changes those signatures, these files need to be checked again. The index still shows the conflicted files as UU, so the orchestrator must `git add` them. I wrote the canonical Security files' content from `git show HEAD`, not with checkout."
+      "remaining": "The four BatchedFri files rely on `friDegree` and the friDegree-ported definitions in ArkLib/Extensions/ProofSystem/BatchedFri/Security.lean, which CONFLICT-8 holds. They compiled against that file as it stood at check time; if CONFLICT-8 changes those signatures, these files need to be checked again. The index still shows the conflicted files as UU, so the orchestrator must `git add` them. I wrote the canonical Security files' content from `git show HEAD`, not with checkout."
     },
     {
       "findings": [
@@ -580,27 +580,27 @@
         {
           "id": "ArkLib/ProofSystem/BatchedFri/Security.lean",
           "status": "fixed",
-          "summary": "Canonical upstream-pinned module, so I kept ours; the file is now byte-identical to 91519a5b2. I moved the audit fixes (L70 `friDegree` replacing degree `2 ^ n`, plus the L101 `Fₛ` affine-span repair) into the downstream ProximityPrize/Extensions/ProofSystem/BatchedFri/Security.lean. 72 of the patch's 80 hunks applied directly. I redid the 8 rejected hunks by hand in 4.35 names (CanonicalBatchingSeam, fri_soundness_canonicalIndependent), adding `(s := s) (d := d)` to `friSoundnessQueryLift` and `friSoundnessTotalErrorAccounting`. Other ports: the `fri_query_soundness` docstring now uses `friDegree` and carries the L70 note; `not_zero_mem_toFinset` became `mem_toFinset_iff_mem` plus `not_zero_mem`; `(α := 1)` was added in `exists_not_fri_query_soundness`. The L69 hunk was dropped because `batchedFRIOracleLensReduction` no longer exists in 4.35. The extension builds, and QueryRound* consumers now find `friDegree`."
+          "summary": "Canonical upstream-pinned module, so I kept ours; the file is now byte-identical to 91519a5b2. I moved the audit fixes (L70 `friDegree` replacing degree `2 ^ n`, plus the L101 `Fₛ` affine-span repair) into the downstream ArkLib/Extensions/ProofSystem/BatchedFri/Security.lean. 72 of the patch's 80 hunks applied directly. I redid the 8 rejected hunks by hand in 4.35 names (CanonicalBatchingSeam, fri_soundness_canonicalIndependent), adding `(s := s) (d := d)` to `friSoundnessQueryLift` and `friSoundnessTotalErrorAccounting`. Other ports: the `fri_query_soundness` docstring now uses `friDegree` and carries the L70 note; `not_zero_mem_toFinset` became `mem_toFinset_iff_mem` plus `not_zero_mem`; `(α := 1)` was added in `exists_not_fri_query_soundness`. The L69 hunk was dropped because `batchedFRIOracleLensReduction` no longer exists in 4.35. The extension builds, and QueryRound* consumers now find `friDegree`."
         },
         {
           "id": "ArkLib/ProofSystem/BatchedFri/Spec/General.lean",
           "status": "fixed",
-          "summary": "Canonical pinned module, so I kept ours (identical to HEAD). The L69 prover/verifier lift-coherence fix does not apply to 4.35: the coefficient-carrying `batchedFRIOracleLens` and `liftedFRI` are retired and canonical `batchedFRIreduction` materializes the batching output itself. The inputRelation-scope intent went downstream: I corrected the stale 'DEFINITION COMPLETED' comment in ProximityPrize/Extensions/ProofSystem/BatchedFri/Spec/General.lean. It now says the relation is one common agreement set of relative size at least 1 - δ with the witnesses, not per-word distance δ, and is exact evaluation only at δ = 0. comment_only_check OK."
+          "summary": "Canonical pinned module, so I kept ours (identical to HEAD). The L69 prover/verifier lift-coherence fix does not apply to 4.35: the coefficient-carrying `batchedFRIOracleLens` and `liftedFRI` are retired and canonical `batchedFRIreduction` materializes the batching output itself. The inputRelation-scope intent went downstream: I corrected the stale 'DEFINITION COMPLETED' comment in ArkLib/Extensions/ProofSystem/BatchedFri/Spec/General.lean. It now says the relation is one common agreement set of relative size at least 1 - δ with the witnesses, not per-word distance δ, and is exact evaluation only at δ = 0. comment_only_check OK."
         },
         {
           "id": "ArkLib/ProofSystem/BatchedFri/Spec/SingleRound.lean",
           "status": "already_fixed",
-          "summary": "Canonical pinned module, so I kept ours. Ours' `batchSpec` docstring already says the combined word is a virtual oracle and the prover sends no message, which is the audit's intent. Separately, I fixed the stale downstream comment in ProximityPrize/Extensions/ProofSystem/BatchedFri/Spec/SingleRound.lean: it claimed 'No δ' and 'honest evaluation', but canonical `BatchingRound.inputRelation δ` is a common-agreement-set relation. comment_only_check OK."
+          "summary": "Canonical pinned module, so I kept ours. Ours' `batchSpec` docstring already says the combined word is a virtual oracle and the prover sends no message, which is the audit's intent. Separately, I fixed the stale downstream comment in ArkLib/Extensions/ProofSystem/BatchedFri/Spec/SingleRound.lean: it claimed 'No δ' and 'honest evaluation', but canonical `BatchingRound.inputRelation δ` is a common-agreement-set relation. comment_only_check OK."
         },
         {
           "id": "ArkLib/ProofSystem/Binius/BinaryBasefold/Basic.lean",
           "status": "fixed",
-          "summary": "Canonical pinned module, so I kept ours (identical to HEAD). The audit's scope docstrings went to the downstream extension ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Basic.lean, which holds these declarations: pending-block semantics for `foldingBadEventAtBlock`, a docstring for `badEventExistsProp`, the relaxed-relation scope of `masterKStateCore`, and a history note on `foldStepRelOutProp` (extension Steps/Fold.lean has no sorry). The audit's `roundRelation_eq_univ_of_lt` became `roundRelationProp_of_lt`, proved via `badEventExistsProp_of_lt`. It is stated for the extension's `roundRelationProp`, because canonical 4.35 `roundRelation` (HasIncrementalBadEvent) is a different definition. lean-check OK."
+          "summary": "Canonical pinned module, so I kept ours (identical to HEAD). The audit's scope docstrings went to the downstream extension ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Basic.lean, which holds these declarations: pending-block semantics for `foldingBadEventAtBlock`, a docstring for `badEventExistsProp`, the relaxed-relation scope of `masterKStateCore`, and a history note on `foldStepRelOutProp` (extension Steps/Fold.lean has no sorry). The audit's `roundRelation_eq_univ_of_lt` became `roundRelationProp_of_lt`, proved via `badEventExistsProp_of_lt`. It is stated for the extension's `roundRelationProp`, because canonical 4.35 `roundRelation` (HasIncrementalBadEvent) is a different definition. lean-check OK."
         },
         {
           "id": "ArkLib/ProofSystem/Binius/BinaryBasefold/Code.lean",
           "status": "fixed",
-          "summary": "Canonical pinned module, so I kept ours. The audit docstring for `extractUDRCodeword` (it is not a Berlekamp–Welch decoder, only the choice-based `UDRCodeword`) went to ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Code.lean, where that definition now lives. The docstring notes that the definition delegates to canonical `uniqueDecodingCodeword`. comment_only_check OK."
+          "summary": "Canonical pinned module, so I kept ours. The audit docstring for `extractUDRCodeword` (it is not a Berlekamp–Welch decoder, only the choice-based `UDRCodeword`) went to ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Code.lean, where that definition now lives. The docstring notes that the definition delegates to canonical `uniqueDecodingCodeword`. comment_only_check OK."
         },
         {
           "id": "ArkLib/ProofSystem/Binius/BinaryBasefold/CoreInteractionPhase.lean",
@@ -610,7 +610,7 @@
         {
           "id": "ArkLib/ProofSystem/Binius/BinaryBasefold/Prelude.lean",
           "status": "already_fixed",
-          "summary": "Canonical pinned module, so I kept ours. The downstream copy of `iterated_fold_eq_matrix_form` in ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Prelude.lean already says the matrix form's convention is proved by `single_point_localized_fold_matrix_form_eq_iterated_fold`. That is the audit's intent (no outstanding bit-order bridge), so no edit was made."
+          "summary": "Canonical pinned module, so I kept ours. The downstream copy of `iterated_fold_eq_matrix_form` in ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Prelude.lean already says the matrix form's convention is proved by `single_point_localized_fold_matrix_form_eq_iterated_fold`. That is the audit's intent (no outstanding bit-order bridge), so no edit was made."
         }
       ],
       "files_changed": [
@@ -622,25 +622,25 @@
         "ArkLib/ProofSystem/Binius/BinaryBasefold/Code.lean",
         "ArkLib/ProofSystem/Binius/BinaryBasefold/CoreInteractionPhase.lean",
         "ArkLib/ProofSystem/Binius/BinaryBasefold/Prelude.lean",
-        "ProximityPrize/Extensions/ProofSystem/BatchedFri/Security.lean",
-        "ProximityPrize/Extensions/ProofSystem/BatchedFri/Spec/General.lean",
-        "ProximityPrize/Extensions/ProofSystem/BatchedFri/Spec/SingleRound.lean",
-        "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Basic.lean",
-        "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Code.lean"
+        "ArkLib/Extensions/ProofSystem/BatchedFri/Security.lean",
+        "ArkLib/Extensions/ProofSystem/BatchedFri/Spec/General.lean",
+        "ArkLib/Extensions/ProofSystem/BatchedFri/Spec/SingleRound.lean",
+        "ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Basic.lean",
+        "ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Code.lean"
       ],
       "checks": [
         "lean-check ArkLib/ProofSystem/BatchedFri/QuerySoundnessSmallField.lean: OK (9 warnings; axioms propext/Classical.choice/Quot.sound only)",
-        "lean-check ProximityPrize/Extensions/ProofSystem/BatchedFri/Security.lean: OK (86 warnings; the long-file warning was already there)",
-        "./scripts/lake-locked.sh build ProximityPrize.Extensions.ProofSystem.BatchedFri.Security: Build completed successfully",
+        "lean-check ArkLib/Extensions/ProofSystem/BatchedFri/Security.lean: OK (86 warnings; the long-file warning was already there)",
+        "./scripts/lake-locked.sh build ArkLib.Extensions.ProofSystem.BatchedFri.Security: Build completed successfully",
         "lean-check ArkLib/ProofSystem/BatchedFri/CosetInjectivity.lean (downstream importer): OK",
-        "lean-check ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Basic.lean: OK (19 warnings)",
-        "comment_only_check ProximityPrize/Extensions/ProofSystem/BatchedFri/Spec/General.lean: OK",
-        "comment_only_check ProximityPrize/Extensions/ProofSystem/BatchedFri/Spec/SingleRound.lean: OK",
-        "comment_only_check ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Code.lean: OK",
+        "lean-check ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Basic.lean: OK (19 warnings)",
+        "comment_only_check ArkLib/Extensions/ProofSystem/BatchedFri/Spec/General.lean: OK",
+        "comment_only_check ArkLib/Extensions/ProofSystem/BatchedFri/Spec/SingleRound.lean: OK",
+        "comment_only_check ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Code.lean: OK",
         "Canonical files (BatchedFri Security/Spec/General/Spec/SingleRound, BinaryBasefold Basic/Code/CoreInteractionPhase/Prelude): git diff 91519a5b2 is empty (byte-identical to the upstream pin)",
         "grep for conflict markers in all 8 group files: none remain"
       ],
-      "remaining": "The L70 `friDegree` API now lives in ProximityPrize/Extensions/ProofSystem/BatchedFri/Security.lean. The other BatchedFri conflict files (QueryRoundProbability, QueryRoundSoundness, QueryRoundRSAffineLineSoundness, QueryRoundRSCurveSoundness) belong to other groups; their resolvers should build against this extension (`friDegree`, `friSoundnessQueryLift (s := s) (d := d)`, `friSoundnessTotalErrorAccounting (d := d)`, `card_subdomainZero_lt_card_field`). I also claimed the extension Prelude.lean and CoreInteractionPhase.lean but left them unchanged. Separately, canonical Steps/Commit.lean and Steps/Fold.lean (modified by other agents) mention `roundRelation_eq_univ_of_lt` in docstrings, and that lemma exists nowhere. The downstream analogue I added is `roundRelationProp_of_lt` in the extension Basic.lean."
+      "remaining": "The L70 `friDegree` API now lives in ArkLib/Extensions/ProofSystem/BatchedFri/Security.lean. The other BatchedFri conflict files (QueryRoundProbability, QueryRoundSoundness, QueryRoundRSAffineLineSoundness, QueryRoundRSCurveSoundness) belong to other groups; their resolvers should build against this extension (`friDegree`, `friSoundnessQueryLift (s := s) (d := d)`, `friSoundnessTotalErrorAccounting (d := d)`, `card_subdomainZero_lt_card_field`). I also claimed the extension Prelude.lean and CoreInteractionPhase.lean but left them unchanged. Separately, canonical Steps/Commit.lean and Steps/Fold.lean (modified by other agents) mention `roundRelation_eq_univ_of_lt` in docstrings, and that lemma exists nowhere. The downstream analogue I added is `roundRelationProp_of_lt` in the extension Basic.lean."
     },
     {
       "findings": [
@@ -853,12 +853,12 @@
         {
           "id": "ArkLib/ProofSystem/ToyProblem/Definitions.lean",
           "status": "already_fixed",
-          "summary": "Canonical module, restored to HEAD. In 4.35 it already defines only the fixed-encoder RelationFor / RelaxedRelationFor / winningSetFor; the existential-encoding fix is already present. The audit's existential-encoding docstrings and lemmas belong in the downstream extension, so I ported them to ProximityPrize/Extensions/ProofSystem/ToyProblem/Definitions.lean: relation_one_row_of_mem, mem_winningSet_iff_exists_agree, not_relaxedRelationFor_of_not_relaxedRelation, relaxedRelationFor_zero_iff, winningSetFor_zero_eq, and the one-way-bridge section docs. While there I replaced the deprecated if_true with ite_true. The extension lean-check passes with 0 warnings."
+          "summary": "Canonical module, restored to HEAD. In 4.35 it already defines only the fixed-encoder RelationFor / RelaxedRelationFor / winningSetFor; the existential-encoding fix is already present. The audit's existential-encoding docstrings and lemmas belong in the downstream extension, so I ported them to ArkLib/Extensions/ProofSystem/ToyProblem/Definitions.lean: relation_one_row_of_mem, mem_winningSet_iff_exists_agree, not_relaxedRelationFor_of_not_relaxedRelation, relaxedRelationFor_zero_iff, winningSetFor_zero_eq, and the one-way-bridge section docs. While there I replaced the deprecated if_true with ite_true. The extension lean-check passes with 0 warnings."
         },
         {
           "id": "ArkLib/ProofSystem/ToyProblem/Spec/General.lean",
           "status": "already_fixed",
-          "summary": "Canonical module; keeping the 'ours' side reproduces HEAD exactly. 4.35 already uses the fixed-encoding inputRelationFor / outputRelationFor, with docstrings explaining why the fixed encoder matters. The audit's existential-encoding docstring notes on inputRelation / outputRelation were ported to ProximityPrize/Extensions/ProofSystem/ToyProblem/Spec/General.lean, where those definitions now live (comment-only check OK)."
+          "summary": "Canonical module; keeping the 'ours' side reproduces HEAD exactly. 4.35 already uses the fixed-encoding inputRelationFor / outputRelationFor, with docstrings explaining why the fixed encoder matters. The audit's existential-encoding docstring notes on inputRelation / outputRelation were ported to ArkLib/Extensions/ProofSystem/ToyProblem/Spec/General.lean, where those definitions now live (comment-only check OK)."
         },
         {
           "id": "ArkLib/ProofSystem/ToyProblem/Metrics.lean",
@@ -895,15 +895,15 @@
         "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ProofSystem/Whir/RBRSoundnessCheckedBridge.lean",
         "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ProofSystem/Whir/WhirVectorIOPProof.lean",
         "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ToMathlib/BCIKS20Concrete.lean",
-        "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ProximityPrize/Extensions/ProofSystem/ToyProblem/Definitions.lean",
-        "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ProximityPrize/Extensions/ProofSystem/ToyProblem/Spec/General.lean",
+        "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/Extensions/ProofSystem/ToyProblem/Definitions.lean",
+        "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/Extensions/ProofSystem/ToyProblem/Spec/General.lean",
         "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/docs/wiki/proximity-prize-leaderboard.md"
       ],
       "checks": [
         "SingleRound.lean, ToyProblem/Definitions.lean, ToyProblem/Spec/General.lean: byte-identical to 91519a5b2 (git diff --numstat empty), so the canonical pin is preserved",
-        "lean-check ProximityPrize/Extensions/ProofSystem/ToyProblem/Definitions.lean: OK (0 warnings)",
-        "comment_only_check ProximityPrize/Extensions/ProofSystem/ToyProblem/Spec/General.lean: OK",
-        "lake-locked build ProximityPrize.Extensions.ProofSystem.ToyProblem.SoundnessBounds ArkLib.ToMathlib.ToyProblemViolation ArkLib.ToMathlib.KoalaBearCode: success",
+        "lean-check ArkLib/Extensions/ProofSystem/ToyProblem/Definitions.lean: OK (0 warnings)",
+        "comment_only_check ArkLib/Extensions/ProofSystem/ToyProblem/Spec/General.lean: OK",
+        "lake-locked build ArkLib.Extensions.ProofSystem.ToyProblem.SoundnessBounds ArkLib.ToMathlib.ToyProblemViolation ArkLib.ToMathlib.KoalaBearCode: success",
         "lean-check ArkLib/ProofSystem/ToyProblem/Metrics.lean: OK (4 pre-existing lint warnings)",
         "lake-locked build ArkLib.ProofSystem.Whir.CheckedVerifier ArkLib.ProofSystem.Whir.RBRSoundness ArkLib.ToMathlib.WhirBricksConstruction ArkLib.ProofSystem.Whir.RBRSoundnessCheckedBridge: success",
         "lean-check ArkLib/ProofSystem/Whir/RBRSoundnessCheckedBridge.lean: OK (0 warnings)",
@@ -934,27 +934,27 @@
           "summary": "4 conflicts in the h_fold_0/h_fold_i hypotheses of two theorems (whir_rbr_soundness_of_secure_gap and the whirVectorSpec variant). Took theirs' corrected shape: no spurious forall j over Fin (k+1), and the main-round fold bound runs over i : Fin M with the arrow pointing at ε_fold i.succ j. This matches the uncommitted corrected whir_rbr_soundness in RBRSoundness.lean. Kept the 4.35 name BlockRelDistance.Generic.indexPowT."
         },
         {
-          "id": "blueprint/src/lattices/hachi_subfield.tex",
+          "id": "website/blueprint/src/lattices/hachi_subfield.tex",
           "status": "fixed",
           "summary": "5 conflicts. Kept ours' intro and added that the chain has no sorry and no custom axiom (true: no_selfReciprocal_factor is a theorem in Subfield/Field.lean). Took theirs' fixes: lem:two_factors added to \\uses, the duplicated proof sketch moved out of the lemma statement, and the status bullets made more precise. Made the history note shorter. The imported proof cited a lemma that does not exist; it now cites the real 4.35 lemma not_associated_reverse_self, with the step wording adjusted to match."
         },
         {
-          "id": "blueprint/src/oracle_reductions/composition.tex",
+          "id": "website/blueprint/src/oracle_reductions/composition.tex",
           "status": "fixed",
           "summary": "10 conflicts, plus several non-conflict hunks where theirs' '(restricted)'/'(conditional...)' titles and RBR bodies citing 4.30 downstream declarations had been applied around ours' bodies. Restored the HEAD (4.35) text, which describes the genuine guarded-verifier theorems (Append/Security.lean append_soundness and append_knowledgeSoundness, and the General.lean seqCompose theorems, are real proofs; RBR append is sorry and marked Admitted). Re-applied audit T40's intent by fixing the intro sentence: it wrongly said soundness and knowledge soundness were admitted; it now says which results are proved under which hypotheses and that only the generic RBR contracts remain sorry."
         },
         {
-          "id": "blueprint/src/oracle_reductions/defs.tex",
+          "id": "website/blueprint/src/oracle_reductions/defs.tex",
           "status": "already_fixed",
           "summary": "3 conflicts resolved to ours. Ours already scores extractor failure as a bad event and explains why. It also states that the library has no KS-implies-soundness implication, and cites the canonical guarded GuardedForm.knowledgeSoundness_of_rbrKnowledgeSoundnessWorstCase. Theirs' 4.30 residual-based text does not apply. File equals HEAD."
         },
         {
-          "id": "blueprint/src/oracle_reductions/fiat_shamir.tex",
+          "id": "website/blueprint/src/oracle_reductions/fiat_shamir.tex",
           "status": "already_fixed",
           "summary": "1 conflict resolved to ours: the upstream 'Implementation Considerations' remark. Theirs edited a downstream 4.30 'Grant Closeout Status' DSFS remark that the 4.35 integration does not carry, so there is nothing to re-apply. File equals HEAD."
         },
         {
-          "id": "blueprint/src/proof_systems/stir.tex",
+          "id": "website/blueprint/src/proof_systems/stir.tex",
           "status": "already_fixed",
           "summary": "3 conflicts resolved to ours. The 4.35 page honestly marks Construction 5.2, Lemma 5.4 and Theorem 5.1 as unformalized targets with formalization-target remarks, which already covers the audit's concern about overclaimed STIR front doors. Theirs' 4.30 front-door and checking-IOP sections do not apply. File equals HEAD."
         }
@@ -962,12 +962,12 @@
       "files_changed": [
         "ArkLib/ToMathlib/BCIKS20GlobalAssembler.lean",
         "ArkLib/ToMathlib/WhirBricksConstruction.lean",
-        "blueprint/src/lattices/hachi_subfield.tex",
-        "blueprint/src/oracle_reductions/composition.tex",
+        "website/blueprint/src/lattices/hachi_subfield.tex",
+        "website/blueprint/src/oracle_reductions/composition.tex",
         "ArkLib/ToMathlib/OracleCompEvalDistBindComm.lean",
-        "blueprint/src/oracle_reductions/defs.tex",
-        "blueprint/src/oracle_reductions/fiat_shamir.tex",
-        "blueprint/src/proof_systems/stir.tex"
+        "website/blueprint/src/oracle_reductions/defs.tex",
+        "website/blueprint/src/oracle_reductions/fiat_shamir.tex",
+        "website/blueprint/src/proof_systems/stir.tex"
       ],
       "checks": [
         "lean-check.sh ArkLib/ToMathlib/BCIKS20GlobalAssembler.lean: OK (0 warnings), axioms only propext/Classical.choice/Quot.sound",
@@ -981,7 +981,7 @@
     {
       "findings": [
         {
-          "id": "blueprint/src/proof_systems/whir.tex",
+          "id": "website/blueprint/src/proof_systems/whir.tex",
           "status": "fixed",
           "summary": "Kept ours (upstream 4.35 WHIR blueprint) for both hunks. Theirs replaced the out-of-domain lemma and the RBR error itemization with 4.30-only front-door blocks whose labels (thm:whir_folding_preserves_list_decoding, lem:whir_ood_bound, rem:whir_mca_status, ...) do not exist in this tree. The fix's intent (do not present whir_rbr_soundness as a proved theorem) is already met in ours, where the \\lean link is commented out as 'not currently formalized'. All markers removed."
         },
@@ -1022,7 +1022,7 @@
         }
       ],
       "files_changed": [
-        "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/blueprint/src/proof_systems/whir.tex",
+        "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/website/blueprint/src/proof_systems/whir.tex",
         "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/docs/kb/papers/JM24.md",
         "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/docs/kb/papers/LS18.md",
         "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/docs/kb/papers/Mic07.md",
@@ -1126,7 +1126,7 @@
           {
             "id": "L01",
             "status": "already_fixed",
-            "summary": "In the current 4.35 tree the canonical ArkLib/OracleReduction/Security/Basic.lean (upstream-pinned) defines knowledgeSoundness through knowledgeSoundnessWith. That game runs the extractor's OptionT layer with `.run` and keeps `extractedWitIn? : Option WitIn` in the observation. A `none` result therefore counts as bad whenever relOut holds, and a failed protocol run still counts as non-acceptance. Oracle, Proof and OracleProof knowledge soundness all delegate to this definition. ImplicationsCore.lean has retired the vacuity theorem `knowledgeSoundness_vacuous` and the unconditional rbr corollary; nothing in ArkLib, ProximityPrize or Research references them any more. Its header and the genuine rbr-to-knowledge transport docstrings were reworded honestly (comment-only change, already in tree from an earlier agent; the file is HELD-BY CONFLICT-7). The acceptance regression is `Verifier.id_not_knowledgeSoundness_empty_relIn` in ProximityPrize/Extensions/OracleReduction/Security/Basic.lean (uncommitted, added earlier; the file is HELD-BY CONFLICT-7). It proves the accept-all identity verifier with relIn = ∅ and relOut = univ is not knowledge sound at any error < 1 for any extractor, which covers the always-failing one. The identity-extractor proof (`Verifier.id_knowledgeSoundness`) is in the canonical file, and the genuine transport `rbrKnowledgeSoundness_implies_knowledgeSoundness_genuine_of_marginal` is in ImplicationsCore.lean."
+            "summary": "In the current 4.35 tree the canonical ArkLib/OracleReduction/Security/Basic.lean (upstream-pinned) defines knowledgeSoundness through knowledgeSoundnessWith. That game runs the extractor's OptionT layer with `.run` and keeps `extractedWitIn? : Option WitIn` in the observation. A `none` result therefore counts as bad whenever relOut holds, and a failed protocol run still counts as non-acceptance. Oracle, Proof and OracleProof knowledge soundness all delegate to this definition. ImplicationsCore.lean has retired the vacuity theorem `knowledgeSoundness_vacuous` and the unconditional rbr corollary; nothing in ArkLib, ProximityPrize or Research references them any more. Its header and the genuine rbr-to-knowledge transport docstrings were reworded honestly (comment-only change, already in tree from an earlier agent; the file is HELD-BY CONFLICT-7). The acceptance regression is `Verifier.id_not_knowledgeSoundness_empty_relIn` in ArkLib/Extensions/OracleReduction/Security/Basic.lean (uncommitted, added earlier; the file is HELD-BY CONFLICT-7). It proves the accept-all identity verifier with relIn = ∅ and relOut = univ is not knowledge sound at any error < 1 for any extractor, which covers the always-failing one. The identity-extractor proof (`Verifier.id_knowledgeSoundness`) is in the canonical file, and the genuine transport `rbrKnowledgeSoundness_implies_knowledgeSoundness_genuine_of_marginal` is in ImplicationsCore.lean."
           },
           {
             "id": "L03",
@@ -1139,11 +1139,11 @@
         ],
         "checks": [
           "lean-check.sh ArkLib/OracleReduction/FiatShamir/DuplexSponge/Basic.lean: OK (0 warnings)",
-          "lean-check.sh ProximityPrize/Extensions/OracleReduction/Security/Basic.lean (regression Verifier.id_not_knowledgeSoundness_empty_relIn): OK (0 warnings)",
+          "lean-check.sh ArkLib/Extensions/OracleReduction/Security/Basic.lean (regression Verifier.id_not_knowledgeSoundness_empty_relIn): OK (0 warnings)",
           "comment_only_check.py ArkLib/OracleReduction/Security/ImplicationsCore.lean: OK, only comments/docstrings changed",
           "grep: no remaining `Statement × Bool)` relations or `knowledgeSoundness_vacuous` uses in ArkLib/ProximityPrize/Research; no external callers of DuplexSpongeFS straightlineKnowledgeSoundness/StraightlineExtractor"
         ],
-        "remaining": "I did not edit the canonical upstream-pinned Security/Basic.lean or RoundByRound.lean: both are already correct in 4.35. Two in-tree edits that belong to these findings sit in files HELD-BY CONFLICT-7: ImplicationsCore.lean (comment-only) and ProximityPrize/Extensions/OracleReduction/Security/Basic.lean (the regression theorem). Both check cleanly, so whoever owns those files should keep them as they are."
+        "remaining": "I did not edit the canonical upstream-pinned Security/Basic.lean or RoundByRound.lean: both are already correct in 4.35. Two in-tree edits that belong to these findings sit in files HELD-BY CONFLICT-7: ImplicationsCore.lean (comment-only) and ArkLib/Extensions/OracleReduction/Security/Basic.lean (the regression theorem). Both check cleanly, so whoever owns those files should keep them as they are."
       }
     },
     {
@@ -1154,7 +1154,7 @@
           {
             "id": "L33",
             "status": "partially_fixed",
-            "summary": "Checked against the 4.35 tree. The canonical upstream ToyProblem/Definitions.lean now has only fixed-encoder relations (RelationFor / RelaxedRelationFor / winningSetFor). The existential-encoding relations survive only downstream, in ProximityPrize/Extensions/ProofSystem/ToyProblem/Definitions.lean. That file names them honestly, has a one-row degeneracy lemma (mem_winningSet_iff_exists_agree), one-way bridges, violation transport (not_relaxedRelationFor_of_not_relaxedRelation) and the v=0 exact bridge (winningSetFor_zero_eq). This came from the earlier partial work and is held by CONFLICT-12. Metrics.lean (also held by CONFLICT-12) already documents that the scalar is degenerate and that the 64-bit residual is refuted, and it compiles. The partial edit in KoalaBearAttackInstance.lean did not compile: after the upstream consolidation, bare `ViolatingInstance` and `winningSetRatio` resolve to the canonical fixed-encoder versions. I qualified them as `ExistentialEncoding.ViolatingInstance` / `ExistentialEncoding.winningSetRatio` in `attackInstance`, `attackInstance_winningSetRatio_eq_one` and `not_forall_winningSet_ncard_le_four`. The file now compiles with no sorryAx, and it proves the L33 counterexample in the kernel: koalaIRS_soundnessError_eq_one, not_arklib_lowerBound_irs_t128_residual, not_forall_winningSet_ncard_le_four, attackInstance_winningSetFor_eq_empty and relaxedRelation_and_not_relaxedRelationFor. Before this fix, koalaIRS_soundnessError_eq_one and the results built on it went through sorryAx because of the elaboration errors. The KoalaBearWinningSetProof.lean header was already rewritten to state the conditional status: the cap and the refutation are false for the existential winningSet, the |T|>=3 versus 2-subset point is corrected, and the valid linearity and counting lemmas are kept. It compiles. Still open (documented, not done): re-pointing ToyParams.soundnessError and the leaderboard metric targets to the fixed-encoder winningSetDensity, which is issue #18 encoder alignment and needs edits in the CONFLICT-12-held Metrics.lean."
+            "summary": "Checked against the 4.35 tree. The canonical upstream ToyProblem/Definitions.lean now has only fixed-encoder relations (RelationFor / RelaxedRelationFor / winningSetFor). The existential-encoding relations survive only downstream, in ArkLib/Extensions/ProofSystem/ToyProblem/Definitions.lean. That file names them honestly, has a one-row degeneracy lemma (mem_winningSet_iff_exists_agree), one-way bridges, violation transport (not_relaxedRelationFor_of_not_relaxedRelation) and the v=0 exact bridge (winningSetFor_zero_eq). This came from the earlier partial work and is held by CONFLICT-12. Metrics.lean (also held by CONFLICT-12) already documents that the scalar is degenerate and that the 64-bit residual is refuted, and it compiles. The partial edit in KoalaBearAttackInstance.lean did not compile: after the upstream consolidation, bare `ViolatingInstance` and `winningSetRatio` resolve to the canonical fixed-encoder versions. I qualified them as `ExistentialEncoding.ViolatingInstance` / `ExistentialEncoding.winningSetRatio` in `attackInstance`, `attackInstance_winningSetRatio_eq_one` and `not_forall_winningSet_ncard_le_four`. The file now compiles with no sorryAx, and it proves the L33 counterexample in the kernel: koalaIRS_soundnessError_eq_one, not_arklib_lowerBound_irs_t128_residual, not_forall_winningSet_ncard_le_four, attackInstance_winningSetFor_eq_empty and relaxedRelation_and_not_relaxedRelationFor. Before this fix, koalaIRS_soundnessError_eq_one and the results built on it went through sorryAx because of the elaboration errors. The KoalaBearWinningSetProof.lean header was already rewritten to state the conditional status: the cap and the refutation are false for the existential winningSet, the |T|>=3 versus 2-subset point is corrected, and the valid linearity and counting lemmas are kept. It compiles. Still open (documented, not done): re-pointing ToyParams.soundnessError and the leaderboard metric targets to the fixed-encoder winningSetDensity, which is issue #18 encoder alignment and needs edits in the CONFLICT-12-held Metrics.lean."
           }
         ],
         "files_changed": [
@@ -1185,12 +1185,12 @@
           {
             "id": "L69",
             "status": "already_fixed",
-            "summary": "The defective `batchedFRIOracleLens` / `liftedFRI` / `batchedFRIOracleLensReduction` lift is gone after the upstream consolidation. No `embedOStmt` routing is left for Batched FRI. Canonical `BatchedFri.Spec.batchedFRIreduction` (ArkLib/ProofSystem/BatchedFri/Spec/General.lean:88) appends an explicit batching round that materializes the combined oracle before FRI, and `batchedFRI_perfectCompleteness` in EndToEnd.lean proves its honest completeness. The leftover `liftingLens` in ProximityPrize/Extensions/.../Spec/General.lean is only a value-level `ofOutputOnly` projection, and a comment there already records the retirement. An earlier agent had already corrected the Coherence.lean prose: `hfaith` alone does not give `toVerifier_comm`, and `hlift` is an independent value-level output condition. I also fixed that prose's stale pointer: it now names the retired lift and the canonical reduction instead of `liftingLens`. This was a comment-only edit and the comment-only check passed."
+            "summary": "The defective `batchedFRIOracleLens` / `liftedFRI` / `batchedFRIOracleLensReduction` lift is gone after the upstream consolidation. No `embedOStmt` routing is left for Batched FRI. Canonical `BatchedFri.Spec.batchedFRIreduction` (ArkLib/ProofSystem/BatchedFri/Spec/General.lean:88) appends an explicit batching round that materializes the combined oracle before FRI, and `batchedFRI_perfectCompleteness` in EndToEnd.lean proves its honest completeness. The leftover `liftingLens` in ArkLib/Extensions/.../Spec/General.lean is only a value-level `ofOutputOnly` projection, and a comment there already records the retirement. An earlier agent had already corrected the Coherence.lean prose: `hfaith` alone does not give `toVerifier_comm`, and `hlift` is an independent value-level output condition. I also fixed that prose's stale pointer: it now names the retired lift and the canonical reduction instead of `liftingLens`. This was a comment-only edit and the comment-only check passed."
           },
           {
             "id": "L70",
             "status": "fixed",
-            "summary": "An earlier agent's partial edits turned out to be complete, and I checked them against 4.35. In ProximityPrize/Extensions/ProofSystem/BatchedFri/Security.lean, `friDegree s d = 2^(∑ s)*d` is now threaded through every Claim 8.2/8.3 residual and adapter in place of the full-rate degree `2^n`. The same change is in QueryRoundProbability, QueryRoundSoundness, QueryRoundRSAffineLineSoundness, QueryRoundRSCurveSoundness and QuerySoundnessSmallField; a grep finds no `2^n` code degree left. New supporting lemmas: `reedSolomon_code_subdomainZero_two_pow_eq_top` records why the old target was a tautology; `sqrtRate_friDegree_lt_one` gives a nonempty low-rate regime; `exists_not_fri_query_soundness` shows a word outside the code fails the target; `card_subdomainZero_lt_card_field` covers the impossible affine-line `hq`. The small-field front doors are now honestly labelled vacuous, with the proofs `not_card_field_le_card_subdomainZero` and `not_prob_gt_mul_errorBound_of_card_le`. `fri_round_consistency_completeness` is documented as full-rate only and not Claim 8.1. The malicious-verifier acceptance bound in the large-field regime is still open research (#304), and the prose says so."
+            "summary": "An earlier agent's partial edits turned out to be complete, and I checked them against 4.35. In ArkLib/Extensions/ProofSystem/BatchedFri/Security.lean, `friDegree s d = 2^(∑ s)*d` is now threaded through every Claim 8.2/8.3 residual and adapter in place of the full-rate degree `2^n`. The same change is in QueryRoundProbability, QueryRoundSoundness, QueryRoundRSAffineLineSoundness, QueryRoundRSCurveSoundness and QuerySoundnessSmallField; a grep finds no `2^n` code degree left. New supporting lemmas: `reedSolomon_code_subdomainZero_two_pow_eq_top` records why the old target was a tautology; `sqrtRate_friDegree_lt_one` gives a nonempty low-rate regime; `exists_not_fri_query_soundness` shows a word outside the code fails the target; `card_subdomainZero_lt_card_field` covers the impossible affine-line `hq`. The small-field front doors are now honestly labelled vacuous, with the proofs `not_card_field_le_card_subdomainZero` and `not_prob_gt_mul_errorBound_of_card_le`. `fri_round_consistency_completeness` is documented as full-rate only and not Claim 8.1. The malicious-verifier acceptance bound in the large-field regime is still open research (#304), and the prose says so."
           },
           {
             "id": "L101",
@@ -1202,7 +1202,7 @@
           "ArkLib/OracleReduction/LiftContext/Coherence.lean"
         ],
         "checks": [
-          "lean-check.sh ProximityPrize/Extensions/ProofSystem/BatchedFri/Security.lean: OK (86 warnings); axioms are only propext/Classical.choice/Quot.sound",
+          "lean-check.sh ArkLib/Extensions/ProofSystem/BatchedFri/Security.lean: OK (86 warnings); axioms are only propext/Classical.choice/Quot.sound",
           "lean-check.sh ArkLib/ProofSystem/BatchedFri/QueryRoundAnalysis.lean: OK",
           "lean-check.sh ArkLib/ProofSystem/BatchedFri/QueryRoundProbability.lean: OK",
           "lean-check.sh ArkLib/ProofSystem/BatchedFri/QuerySoundnessSmallField.lean: OK",
@@ -1507,7 +1507,7 @@
           {
             "id": "L36.1",
             "status": "already_fixed",
-            "summary": "Rate-1 empty regime: canonical 4.35 ParamConditions already uses h_smooth_lt : degree_i < |iota_i| (upstream MainThm.lean is pinned, so it was not edited). Added nonvacuity lemmas not_lt_one_sub_Bstar_rate_of_card_le, ParamConditions.rate_lt_one, ParamConditions.zero_lt_one_sub_Bstar_rate(_zero) in ProximityPrize/Extensions/ProofSystem/Stir/MainThm.lean."
+            "summary": "Rate-1 empty regime: canonical 4.35 ParamConditions already uses h_smooth_lt : degree_i < |iota_i| (upstream MainThm.lean is pinned, so it was not edited). Added nonvacuity lemmas not_lt_one_sub_Bstar_rate_of_card_le, ParamConditions.rate_lt_one, ParamConditions.zero_lt_one_sub_Bstar_rate(_zero) in ArkLib/Extensions/ProofSystem/Stir/MainThm.lean."
           },
           {
             "id": "L36.2",
@@ -1551,7 +1551,7 @@
           }
         ],
         "files_changed": [
-          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ProximityPrize/Extensions/ProofSystem/Stir/MainThm.lean",
+          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/Extensions/ProofSystem/Stir/MainThm.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ProofSystem/Stir/RbrFrontDoor.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ProofSystem/Stir/MultiRoundAssembly.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ProofSystem/Stir/CheckingVerifier.lean",
@@ -1563,14 +1563,14 @@
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ProofSystem/Stir/SeamComposition.lean"
         ],
         "checks": [
-          "lean-check.sh ProximityPrize/Extensions/ProofSystem/Stir/MainThm.lean: OK; new lemmas use only [propext, Classical.choice, Quot.sound]",
-          "lake-locked.sh build ProximityPrize.Extensions.ProofSystem.Stir.MainThm ArkLib.ProofSystem.Stir.MultiRoundAssembly ArkLib.ProofSystem.Stir.RbrFrontDoor ArkLib.ProofSystem.Stir.CheckingVerifier: Build completed successfully",
+          "lean-check.sh ArkLib/Extensions/ProofSystem/Stir/MainThm.lean: OK; new lemmas use only [propext, Classical.choice, Quot.sound]",
+          "lake-locked.sh build ArkLib.Extensions.ProofSystem.Stir.MainThm ArkLib.ProofSystem.Stir.MultiRoundAssembly ArkLib.ProofSystem.Stir.RbrFrontDoor ArkLib.ProofSystem.Stir.CheckingVerifier: Build completed successfully",
           "lake-locked.sh build ArkLib.ProofSystem.Stir.{SubUnitRbr,RepWire,NumericLegs,ComplexityLegs,RoundProtocol,SeamComposition}: Build completed successfully (5362 jobs)",
           "comment_only_check.py RoundProtocol.lean, SeamComposition.lean: OK, comments only",
-          "lean-check.sh Research/ProximityPrize/Protocols/Stir/WindowCAFeed.lean: DEPS-FAILED. Its import build fails in unrelated ProximityPrize/Extensions/Data/CodingTheory/SubspaceDesign.lean:393 (another batch's file); WindowCAFeed already uses FieldSizeCondition and only passes it through"
+          "lean-check.sh ArkLib/Research/ProximityGap/Protocols/Stir/WindowCAFeed.lean: DEPS-FAILED. Its import build fails in unrelated ArkLib/Extensions/Data/CodingTheory/SubspaceDesign.lean:393 (another batch's file); WindowCAFeed already uses FieldSizeCondition and only passes it through"
         ],
         "deferred_edits": [],
-        "remaining": "Re-check Research/ProximityPrize/Protocols/Stir/WindowCAFeed.lean once SubspaceDesign.lean (another batch) compiles. Canonical upstream ArkLib/ProofSystem/Stir/MainThm.lean was not touched; all repairs are in the downstream extension and its callers. ArkLib/ProofSystem/Stir/Complexity.lean (M_bound rename) is in the tree from another fix, was not claimed by B046, and was built only as a transitive dependency. Uniform big-O complexity and tying pi to the real STIR verifier remain open, as documented."
+        "remaining": "Re-check ArkLib/Research/ProximityGap/Protocols/Stir/WindowCAFeed.lean once SubspaceDesign.lean (another batch) compiles. Canonical upstream ArkLib/ProofSystem/Stir/MainThm.lean was not touched; all repairs are in the downstream extension and its callers. ArkLib/ProofSystem/Stir/Complexity.lean (M_bound rename) is in the tree from another fix, was not claimed by B046, and was built only as a transitive dependency. Uniform big-O complexity and tying pi to the real STIR verifier remain open, as documented."
       }
     },
     {
@@ -1642,7 +1642,7 @@
           "lean-check.sh ArkLib/ToMathlib/KeystoneStrictResidual.lean: OK (4 warnings: deprecated dif_pos and haveI style lints; no errors; axioms only propext/Classical.choice/Quot.sound)",
           "lake-locked.sh build ArkLib.ToMathlib.{BetaInputSupply,BCIKS20Concrete,BetaIdentify,L13Milestone,MpFinSupply,OffcentreKeystoneAssembly,BetaWeightGradedSupply,MatchingGeometryProducers}: Build completed successfully (9683 jobs)",
           "lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.{CurvesBridge,FieldDischarge} ArkLib.ToMathlib.{FaithfulCurveExtraction,PlaceGeometrySupply}: Build completed successfully (9690 jobs)",
-          "lake-locked.sh build ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Folding ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.Main: Build completed successfully (9652 jobs)"
+          "lake-locked.sh build ArkLib.Extensions.Data.CodingTheory.ProximityGap.Folding ArkLib.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.Main: Build completed successfully (9652 jobs)"
         ],
         "remaining": "Not done: a nonempty intended-regime inhabitant for any of the four bundles. The independent obstructions listed in the KeystoneStrictResidual module docstring rule it out without new research, and the docstrings now say so. BCIKS20Concrete.lean is held by CONFLICT-12 and has merge status UU; its current content already has the per-P fix and compiles, so that batch should keep it as is when resolving. HcardDischarge.lean was left unchanged: Section5StrictDataFin already binds P, and the brief excludes it."
       }
@@ -1761,8 +1761,8 @@
           "./scripts/lake-locked.sh build ArkLib.Data.CodingTheory.ProximityGap.MCAStepFunction: Build completed successfully",
           "lean-check.sh ArkLib/Data/CodingTheory/ProximityGap/MCAFiniteTable.lean: OK, 0 warnings",
           "lean-check.sh ArkLib/Data/CodingTheory/ProximityGap/CrossingPin.lean (consumer): OK",
-          "lean-check.sh Research/ProximityPrize/Frontier/_MCAGoodRadiusMaximum.lean (consumer): OK",
-          "lean-check.sh Research/ProximityPrize/Frontier/_MCAAdjacentFloorExactPin.lean (consumer): OK",
+          "lean-check.sh ArkLib/Research/ProximityGap/Frontier/_MCAGoodRadiusMaximum.lean (consumer): OK",
+          "lean-check.sh ArkLib/Research/ProximityGap/Frontier/_MCAAdjacentFloorExactPin.lean (consumer): OK",
           "No lines over 100 characters and no sorry, admit or axiom in either file"
         ],
         "remaining": "Nothing remains for PG-027. MCAExactPin.lean and docs/kb/deltastar-357-compiled-knowledge.md already cite the new lemmas (not_good_and_bad_above, eq_one_of_band_premises, eq_one_of_finite_floor_table_premises), and I did not edit either file."
@@ -1810,7 +1810,7 @@
           {
             "id": "L15",
             "status": "partially_fixed",
-            "summary": "State-coherence part: ImplicationsCore conditional implications are honest; MarginalBridgeProof header and RbrToSoundBridge prose (partial edits already in tree from an earlier agent) correctly state that MarginalBridge already packages the summed first-crossing/union-bound conclusion, is false for state-mutating impls, and that marginalBridge_holds needs himplSP/himplNF/himplVB. I verified these claims against the 4.35 source and corrected stale path pointers in RbrToSoundBridge.lean: the trailing-drop, pigeonhole and union-bound lemmas live in ProximityPrize/Extensions/OracleReduction/Security/RoundByRound.lean, not ArkLib Security/RoundByRound.lean. Legacy one-shot part: after the upstream consolidation, canonical ArkLib RoundByRound.lean proves rbrKnowledgeSoundnessOneShot_implies_rbrKnowledgeSoundness through the relation-aware toRoundByRoundOfRel. That conversion passes the same logged game and needs no log irrelevance. The default-log toRoundByRound is now only a data conversion with no security claim, so the missing-implication issue is resolved upstream. Canonical files are pinned, so I left them alone. The restricted binary plain-RBR discharge (append_rbrSoundness_keystone_subsingleton_unconditional) exists, and its guards are recorded in the deferred blueprint edit."
+            "summary": "State-coherence part: ImplicationsCore conditional implications are honest; MarginalBridgeProof header and RbrToSoundBridge prose (partial edits already in tree from an earlier agent) correctly state that MarginalBridge already packages the summed first-crossing/union-bound conclusion, is false for state-mutating impls, and that marginalBridge_holds needs himplSP/himplNF/himplVB. I verified these claims against the 4.35 source and corrected stale path pointers in RbrToSoundBridge.lean: the trailing-drop, pigeonhole and union-bound lemmas live in ArkLib/Extensions/OracleReduction/Security/RoundByRound.lean, not ArkLib Security/RoundByRound.lean. Legacy one-shot part: after the upstream consolidation, canonical ArkLib RoundByRound.lean proves rbrKnowledgeSoundnessOneShot_implies_rbrKnowledgeSoundness through the relation-aware toRoundByRoundOfRel. That conversion passes the same logged game and needs no log irrelevance. The default-log toRoundByRound is now only a data conversion with no security claim, so the missing-implication issue is resolved upstream. Canonical files are pinned, so I left them alone. The restricted binary plain-RBR discharge (append_rbrSoundness_keystone_subsingleton_unconditional) exists, and its guards are recorded in the deferred blueprint edit."
           },
           {
             "id": "T40",
@@ -1820,7 +1820,7 @@
           {
             "id": "L16",
             "status": "partially_fixed",
-            "summary": "Verified in the current tree. The NARG predicates live in ProximityPrize/Extensions/OracleReduction/Security/Rewinding.lean, and VCVio UniformAnswerMeasure gives independent per-query uniform answers. That module's header, already in the tree, documents the memoryless-oracle semantics, the Boolean repeated-query separation, the missing ROM / ideal-permutation interpretation, and the oracle-cost-only time clause. The DSFS aliases in DuplexSponge/Basic.lean already carry caveats, but they point at `Security/Rewinding.lean`, which is ambiguous: the canonical ArkLib file of that name holds no such definitions. That file is HELD-BY B001, so the pointer fix is deferred. I did not do the parameterized-interpreter redesign; the predicates stay explicitly labeled as memoryless-oracle notions, which is the honest option the brief allows."
+            "summary": "Verified in the current tree. The NARG predicates live in ArkLib/Extensions/OracleReduction/Security/Rewinding.lean, and VCVio UniformAnswerMeasure gives independent per-query uniform answers. That module's header, already in the tree, documents the memoryless-oracle semantics, the Boolean repeated-query separation, the missing ROM / ideal-permutation interpretation, and the oracle-cost-only time clause. The DSFS aliases in DuplexSponge/Basic.lean already carry caveats, but they point at `Security/Rewinding.lean`, which is ambiguous: the canonical ArkLib file of that name holds no such definitions. That file is HELD-BY B001, so the pointer fix is deferred. I did not do the parameterized-interpreter redesign; the predicates stay explicitly labeled as memoryless-oracle notions, which is the honest option the brief allows."
           }
         ],
         "files_changed": [
@@ -1829,19 +1829,19 @@
         "checks": [
           "python3 comment_only_check.py ArkLib/ProofSystem/Logup/Security/RbrToSoundBridge.lean: OK (only comments/docstrings changed)",
           "Line-length check: no new lines over 100 characters introduced in RbrToSoundBridge.lean (the remaining long lines were already in baseline 91519a5b2)",
-          "grep confirmed that cited lemmas exist: exists_challenge_flip_of_full, probEvent_le_sum_of_imp_exists, probEvent_simulateQ_run'_{bind,elimM}_trailing_le in ProximityPrize/Extensions/OracleReduction/Security/RoundByRound.lean; marginalBridge_holds takes himplSP/_himplNF/himplVB",
+          "grep confirmed that cited lemmas exist: exists_challenge_flip_of_full, probEvent_le_sum_of_imp_exists, probEvent_simulateQ_run'_{bind,elimM}_trailing_le in ArkLib/Extensions/OracleReduction/Security/RoundByRound.lean; marginalBridge_holds takes himplSP/_himplNF/himplVB",
           "grep confirmed that Verifier.append_rbrSoundness and append_rbrKnowledgeSoundness are sorry in canonical ArkLib/OracleReduction/Composition/Sequential/Append/Security.lean, while append_soundness and seqCompose_soundness are proved under guarded hypotheses"
         ],
         "deferred_edits": [
           {
-            "path": "blueprint/src/oracle_reductions/composition.tex",
+            "path": "website/blueprint/src/oracle_reductions/composition.tex",
             "held_by": "CONFLICT-13",
-            "edit": "After thm:rbr_knowledge_soundness_append (Admitted), add a remark naming the downstream restricted plain-RBR discharge with its guards, e.g.: \\begin{remark}[Restricted Round-by-Round Soundness under Append] The generic append_rbrSoundness contract is admitted, and the unqualified statement fails for arbitrary shared stateful oracles: the composite schedules $P_1,P_2,V_1,V_2$, while the phases schedule $P_1,V_1,P_2,V_2$. A restricted binary version is proved as \\texttt{Verifier.append\\_rbrSoundness\\_keystone\\_subsingleton\\_unconditional} (ArkLib/OracleReduction/Composition/Sequential/AppendRbrSoundnessPhase2Proof.lean). It requires a deterministic pure first verifier ($V_1 = \\mathsf{pure}\\circ\\mathsf{verify}$), a Subsingleton oracle state, an init with nonempty support and no failure, Nonempty Stmt2, a nonempty second protocol whose first round is a prover message, and component round-by-round soundness from the same init. Seam-agnostic plain append soundness for a nonempty second protocol is also proved, as \\texttt{Verifier.append\\_soundness\\_total\\_pos} (AppendSoundnessTotal.lean). It needs finite inhabited oracle ranges, Inhabited Stmt2, and an oracle implementation that preserves state, never fails, and has a state-independent answer law. Residual projectors such as appendSoundnessResidual and appendRbrSoundnessResidual in ProximityPrize/Extensions/.../Append.lean are conditional interfaces that return their hypothesis. \\end{remark}. Use \\texttt rather than \\lean unless checkdecls covers these modules."
+            "edit": "After thm:rbr_knowledge_soundness_append (Admitted), add a remark naming the downstream restricted plain-RBR discharge with its guards, e.g.: \\begin{remark}[Restricted Round-by-Round Soundness under Append] The generic append_rbrSoundness contract is admitted, and the unqualified statement fails for arbitrary shared stateful oracles: the composite schedules $P_1,P_2,V_1,V_2$, while the phases schedule $P_1,V_1,P_2,V_2$. A restricted binary version is proved as \\texttt{Verifier.append\\_rbrSoundness\\_keystone\\_subsingleton\\_unconditional} (ArkLib/OracleReduction/Composition/Sequential/AppendRbrSoundnessPhase2Proof.lean). It requires a deterministic pure first verifier ($V_1 = \\mathsf{pure}\\circ\\mathsf{verify}$), a Subsingleton oracle state, an init with nonempty support and no failure, Nonempty Stmt2, a nonempty second protocol whose first round is a prover message, and component round-by-round soundness from the same init. Seam-agnostic plain append soundness for a nonempty second protocol is also proved, as \\texttt{Verifier.append\\_soundness\\_total\\_pos} (AppendSoundnessTotal.lean). It needs finite inhabited oracle ranges, Inhabited Stmt2, and an oracle implementation that preserves state, never fails, and has a state-independent answer law. Residual projectors such as appendSoundnessResidual and appendRbrSoundnessResidual in ArkLib/Extensions/.../Append.lean are conditional interfaces that return their hypothesis. \\end{remark}. Use \\texttt rather than \\lean unless checkdecls covers these modules."
           },
           {
             "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Basic.lean",
             "held_by": "B001",
-            "edit": "In the failureProbability and rewindingKnowledgeSoundness alias docstring caveats, replace '(see `Security/Rewinding.lean`)' and '; see `Security/Rewinding.lean`.' with references to `ProximityPrize/Extensions/OracleReduction/Security/Rewinding.lean` (module header 'Oracle semantics of the non-interactive (NARG) predicates'). The canonical ArkLib Security/Rewinding.lean does not define these predicates. Comment-only change."
+            "edit": "In the failureProbability and rewindingKnowledgeSoundness alias docstring caveats, replace '(see `Security/Rewinding.lean`)' and '; see `Security/Rewinding.lean`.' with references to `ArkLib/Extensions/OracleReduction/Security/Rewinding.lean` (module header 'Oracle semantics of the non-interactive (NARG) predicates'). The canonical ArkLib Security/Rewinding.lean does not define these predicates. Comment-only change."
           }
         ],
         "remaining": "I could not make two edits because other batches hold the files: composition.tex (held by CONFLICT-13) and DuplexSponge/Basic.lean (held by B001). The exact text is in deferred_edits. Two things are not done. First, the L16 interpreter-parameterized NARG games or a ROM bridge: the predicates stay documented as memoryless-oracle notions. Second, retiring or threading logs through the canonical one-shot RBR surface: that file is pinned to upstream, and upstream already supplies a valid one-shot implication through toRoundByRoundOfRel."
@@ -1869,7 +1869,7 @@
           }
         ],
         "files_changed": [
-          "Research/ProximityPrize/Frontier/_G260OriginAnchorGaugeNoGo.lean",
+          "ArkLib/Research/ProximityGap/Frontier/_G260OriginAnchorGaugeNoGo.lean",
           "scripts/probes/g217_phase_alignment_probe.py",
           "scripts/probes/g252_joint_phase_lock_probe.py",
           "scripts/probes/g260_origin_anchor_gauge_nogo.py",
@@ -1895,7 +1895,7 @@
           "scripts/probes/hdinf_continuum_lp.py"
         ],
         "checks": [
-          "comment_only_check.py Research/ProximityPrize/Frontier/_G260OriginAnchorGaugeNoGo.lean: OK (only comments/docstrings changed)",
+          "comment_only_check.py ArkLib/Research/ProximityGap/Frontier/_G260OriginAnchorGaugeNoGo.lean: OK (only comments/docstrings changed)",
           "python3 -W error -m py_compile on all edited probes: OK",
           "python3 -m pytest scripts/tests/test_g286_hull_separator.py scripts/tests/test_hd1_line_ledger_search.py -q: 9 passed",
           "g286_hull_zero_probe.py: GATES A-E PASS, rc=0; audit replays V={1,2} and centered example give verified nonzero separators",
@@ -1930,26 +1930,26 @@
           {
             "id": "L85",
             "status": "partially_fixed",
-            "summary": "After the upstream consolidation, the canonical relations (ArkLib/.../BinaryBasefold/Relations.lean KnowledgeInvariant, HasIncrementalBadEvent) use a genuine incremental bad event with no True branch. The relaxed relation the finding describes now lives in ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Basic.lean. That file already carries the L85 documentation and a roundRelationProp_of_lt lemma showing the interior relation is trivial. It is held by CONFLICT-8, so I did not edit it, but a read-only lean-check passes. I documented the relaxed semantics on the Historical commitKStateProp in the extension Steps/Commit.lean (comment-only check OK): for m=0 it holds for every input, for m=1 it does whenever i.succ<l, and the canonical commitKnowledgeStateFunction uses HasIncrementalBadEvent instead. The question of whether intended composition needs a non-vacuous intermediate invariant is still open; the prose now states this honestly."
+            "summary": "After the upstream consolidation, the canonical relations (ArkLib/.../BinaryBasefold/Relations.lean KnowledgeInvariant, HasIncrementalBadEvent) use a genuine incremental bad event with no True branch. The relaxed relation the finding describes now lives in ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Basic.lean. That file already carries the L85 documentation and a roundRelationProp_of_lt lemma showing the interior relation is trivial. It is held by CONFLICT-8, so I did not edit it, but a read-only lean-check passes. I documented the relaxed semantics on the Historical commitKStateProp in the extension Steps/Commit.lean (comment-only check OK): for m=0 it holds for every input, for m=1 it does whenever i.succ<l, and the canonical commitKnowledgeStateFunction uses HasIncrementalBadEvent instead. The question of whether intended composition needs a non-vacuous intermediate invariant is still open; the prose now states this honestly."
           },
           {
             "id": "L86",
             "status": "fixed",
-            "summary": "The realization-payload API now lives in ProximityPrize/Extensions/OracleReduction/BCS/Basic.lean; the canonical BCS/Basic.lean is the 84-line upstream stub. In that extension file: the BCSCompiledPhases docstring now says both realization Props are caller-defined obligations, not pinned to any source reduction, transcript or query log. The false claim that BCSCompiledPhasesLawful 'cannot smuggle vacuous payloads' is corrected: it prevents unproved payloads, not vacuous ones. The openingLogBridge docstring now says the proof ignores the log. A new def, BCSCompiledPhasesLawful.ofTrivialPayloads, shows that any phases become lawful with True/True payloads; it compiles and uses only propext and Quot.sound. In TransparentEndToEnd.lean I added a scope note to the module doc calling the example a public-opening composition smoke test, not a compiled-oracle one: no verifier uses the sent commitment, and the opening verifier ignores the transcript. I also qualified the 'nontrivial' and 'genuinely-oracle' claims and added notes to the interaction verifier, the two realization obligations and phasesLawful. These were comment-only edits. Transparent.lean needed no change."
+            "summary": "The realization-payload API now lives in ArkLib/Extensions/OracleReduction/BCS/Basic.lean; the canonical BCS/Basic.lean is the 84-line upstream stub. In that extension file: the BCSCompiledPhases docstring now says both realization Props are caller-defined obligations, not pinned to any source reduction, transcript or query log. The false claim that BCSCompiledPhasesLawful 'cannot smuggle vacuous payloads' is corrected: it prevents unproved payloads, not vacuous ones. The openingLogBridge docstring now says the proof ignores the log. A new def, BCSCompiledPhasesLawful.ofTrivialPayloads, shows that any phases become lawful with True/True payloads; it compiles and uses only propext and Quot.sound. In TransparentEndToEnd.lean I added a scope note to the module doc calling the example a public-opening composition smoke test, not a compiled-oracle one: no verifier uses the sent commitment, and the opening verifier ignores the transcript. I also qualified the 'nontrivial' and 'genuinely-oracle' claims and added notes to the interaction verifier, the two realization obligations and phasesLawful. These were comment-only edits. Transparent.lean needed no change."
           }
         ],
         "files_changed": [
           "ArkLib/ToMathlib/CorrelatedAgreementListDecodingClosed.lean",
-          "ProximityPrize/Extensions/OracleReduction/BCS/Basic.lean",
+          "ArkLib/Extensions/OracleReduction/BCS/Basic.lean",
           "ArkLib/ProofSystem/BCS/TransparentEndToEnd.lean",
-          "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Steps/Commit.lean"
+          "ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Steps/Commit.lean"
         ],
         "checks": [
           "lean-check.sh ArkLib/ToMathlib/CorrelatedAgreementListDecodingClosed.lean: OK (2 warnings, both pre-existing haveI warnings)",
-          "lean-check.sh ProximityPrize/Extensions/OracleReduction/BCS/Basic.lean: OK (14 warnings, all unused-section-variable warnings in code I did not touch); the new ofTrivialPayloads uses only [propext, Quot.sound]",
+          "lean-check.sh ArkLib/Extensions/OracleReduction/BCS/Basic.lean: OK (14 warnings, all unused-section-variable warnings in code I did not touch); the new ofTrivialPayloads uses only [propext, Quot.sound]",
           "comment_only_check.py ArkLib/ProofSystem/BCS/TransparentEndToEnd.lean: OK",
-          "comment_only_check.py ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Steps/Commit.lean: OK",
-          "lean-check.sh ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Basic.lean (read-only, held by CONFLICT-8): OK (19 warnings)"
+          "comment_only_check.py ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Steps/Commit.lean: OK",
+          "lean-check.sh ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Basic.lean (read-only, held by CONFLICT-8): OK (19 warnings)"
         ],
         "deferred_edits": [],
         "remaining": "L85: the extension Binius Basic.lean is held by CONFLICT-8. It already contains the L85 docstrings and roundRelationProp_of_lt, and it compiles, so no edit to it is deferred. Whether intermediate composition needs a non-vacuous invariant is an open design question; the canonical upstream relations already use a genuine incremental bad event. L86: pinning the realization predicates to an actual source reduction and executed query log stays deferred with the generic BCS compiler, and this is now documented. I did not lean-check downstream modules that import the edited BCS extension (TransparentEndToEnd, AppendSoundnessMsg, CompletenessPreservation); the only change they see is one added def with a new name."
@@ -2040,7 +2040,7 @@
           {
             "id": "L82",
             "status": "fixed",
-            "summary": "The defect is already gone at the source level. After the upstream consolidation, the canonical getSumcheckRoundPoly keeps variable 0 (original coordinate i) free and sums the remaining variables over D.drop(i+1). The verifier sums over D.points i, and projectToNextSumcheckPoly fixes variable 0, so all three consume coordinates in the same front-first order. The asymmetric counterexample (D0={0}, D1={1}, H=X0) is now accepted. Domain.lean and Structured/SingleRound.lean are pinned upstream files and were left untouched. To prove the heterogeneous semantics, I added three kernel-checked theorems to the downstream extension ProximityPrize/Extensions/ProofSystem/Sumcheck/Structured/SingleRound.lean, each using only the standard axioms: sum_getSumcheckRoundPoly (for any domain family D, the verifier's sum over D.points i equals the witness sum over (D.drop i).cube), sum_projectToNextSumcheckPoly (the next-round claim over (D.drop (i+1)).cube for any D), and the helper sum_eval_cons_cast_piFinset."
+            "summary": "The defect is already gone at the source level. After the upstream consolidation, the canonical getSumcheckRoundPoly keeps variable 0 (original coordinate i) free and sums the remaining variables over D.drop(i+1). The verifier sums over D.points i, and projectToNextSumcheckPoly fixes variable 0, so all three consume coordinates in the same front-first order. The asymmetric counterexample (D0={0}, D1={1}, H=X0) is now accepted. Domain.lean and Structured/SingleRound.lean are pinned upstream files and were left untouched. To prove the heterogeneous semantics, I added three kernel-checked theorems to the downstream extension ArkLib/Extensions/ProofSystem/Sumcheck/Structured/SingleRound.lean, each using only the standard axioms: sum_getSumcheckRoundPoly (for any domain family D, the verifier's sum over D.points i equals the witness sum over (D.drop i).cube), sum_projectToNextSumcheckPoly (the next-round claim over (D.drop (i+1)).cube for any D), and the helper sum_eval_cons_cast_piFinset."
           },
           {
             "id": "L83",
@@ -2054,11 +2054,11 @@
           }
         ],
         "files_changed": [
-          "ProximityPrize/Extensions/ProofSystem/Sumcheck/Structured/SingleRound.lean",
+          "ArkLib/Extensions/ProofSystem/Sumcheck/Structured/SingleRound.lean",
           "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lookahead.lean"
         ],
         "checks": [
-          "lean-check.sh ProximityPrize/Extensions/ProofSystem/Sumcheck/Structured/SingleRound.lean: OK (2 warnings, both on declarations that were already there; #print axioms for the new theorems shows only propext, Classical.choice, Quot.sound)",
+          "lean-check.sh ArkLib/Extensions/ProofSystem/Sumcheck/Structured/SingleRound.lean: OK (2 warnings, both on declarations that were already there; #print axioms for the new theorems shows only propext, Classical.choice, Quot.sound)",
           "lean-check.sh ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/Lookahead.lean: OK (0 warnings)",
           "lake env lean on a scratch copy of Backtrack.lean with the deferred patch applied: 0 errors, same 5 warnings as the original",
           "git apply --check -p1 /private/tmp/claude-501/-Users-nubs-proximityprize/10b57008-a981-4406-94db-0b9bb052fad3/scratchpad/B010/B010-Backtrack.diff: applies cleanly to the current tree"
@@ -2102,8 +2102,8 @@
           "scripts/probes/probe_466_r3_fourth_moment.py",
           "scripts/probes/_out_466_r3_fourth_moment.txt",
           "scripts/probes/probe_466_w15_multibase_ladder.py",
-          "Research/ProximityPrize/Frontier/_R303FourthMomentInterpolation.lean",
-          "Research/ProximityPrize/Frontier/_W15SafeBranchLinearCeiling.lean",
+          "ArkLib/Research/ProximityGap/Frontier/_R303FourthMomentInterpolation.lean",
+          "ArkLib/Research/ProximityGap/Frontier/_W15SafeBranchLinearCeiling.lean",
           "docs/kb/deltastar-466-g172-ratehalf-syzygy-gap-slack-2026-07-11.md",
           "docs/kb/deltastar-466-g170-general-envelope-2026-07-11.md",
           "docs/kb/deltastar-466-r3-fourth-moment-interpolation-2026-07-10.md"
@@ -2122,7 +2122,7 @@
         ],
         "deferred_edits": [
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "Line ~230 (G170 no-go): change 'd = 1 (field-independent over p in {101,1009,65537,10^6+3})' to 'd = 1 at each of the sampled primes p in {101,1009,65537,10^6+3} (agreement at sampled primes, not a proof of field-independence)'. G172 entry (~lines 51157-51175): add an erratum. The probe cover builders previously allowed union < n. On genuine ambient covers the Sylvester probe still finds 0 kernels over 455 covers, but the margin probe finds min margin d1-budget = 0 (141 of 65457 triples, including odd a+b+c with imbalance 1, e.g. n=28 s=19 t=4 (a,b,c)=(6,6,9)). So 'MAX imbalance over 5542 triples', 'iota=1 only at even a+b+c' and 'min margin 1' are non-cover artifacts, and 'all field-independent' means agreement at the sampled primes."
           }
@@ -2148,7 +2148,7 @@
           {
             "id": "L98",
             "status": "fixed",
-            "summary": "The declaration had moved to ProximityPrize/Extensions/Data/CodingTheory/Connections/ListDecodingAndCA.lean; the pinned canonical module now only has the proved, properly guarded rs_Lambda_extended_le_of_epsCa_int_radius. I added the CS25 regime guards to the def rs_epsCA_implies_lambda_extended_cs25: _hkn (k+1 <= n), _hs_pos (0 < |F| - n) and _hkS (k < n - floor(delta n)). These exclude the n=1, k=1 full-rate counterexample. The docstring records the counterexample and the repair. rs_epsCA_implies_lambda_extended_cs25_of_residuals_prop now carries the new hypotheses. ArkLib/ToMathlib/CS25JointFar.lean's rs_epsCA_implies_lambda_extended_cs25_complete_prop now passes hkn, hs_pos and hkS, so the guarded proposition is proved for every admissible parameter choice by the complete deep-hole chain, and its docstring is updated. Caveat: the real lake build of CS25JointFar never got the build lock, so this end-to-end chain was only checked through a concatenated scratch file."
+            "summary": "The declaration had moved to ArkLib/Extensions/Data/CodingTheory/Connections/ListDecodingAndCA.lean; the pinned canonical module now only has the proved, properly guarded rs_Lambda_extended_le_of_epsCa_int_radius. I added the CS25 regime guards to the def rs_epsCA_implies_lambda_extended_cs25: _hkn (k+1 <= n), _hs_pos (0 < |F| - n) and _hkS (k < n - floor(delta n)). These exclude the n=1, k=1 full-rate counterexample. The docstring records the counterexample and the repair. rs_epsCA_implies_lambda_extended_cs25_of_residuals_prop now carries the new hypotheses. ArkLib/ToMathlib/CS25JointFar.lean's rs_epsCA_implies_lambda_extended_cs25_complete_prop now passes hkn, hs_pos and hkS, so the guarded proposition is proved for every admissible parameter choice by the complete deep-hole chain, and its docstring is updated. Caveat: the real lake build of CS25JointFar never got the build lock, so this end-to-end chain was only checked through a concatenated scratch file."
           }
         ],
         "files_changed": [
@@ -2156,20 +2156,20 @@
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ProofSystem/RingSwitching/SumcheckPhase.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ProofSystem/Whir/Folding.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ProofSystem/Whir/FoldingListDecodingReduction.lean",
-          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ProximityPrize/Extensions/Data/CodingTheory/Connections/ListDecodingAndCA.lean",
+          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/Extensions/Data/CodingTheory/Connections/ListDecodingAndCA.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ToMathlib/CS25JointFar.lean"
         ],
         "checks": [
           "comment_only_check.py ArkLib/ProofSystem/RingSwitching/BatchingPhase.lean: OK (only comments/docstrings changed)",
           "comment_only_check.py ArkLib/ProofSystem/RingSwitching/SumcheckPhase.lean: OK (only comments/docstrings changed)",
           "lean-check.sh ArkLib/ProofSystem/Whir/Folding.lean: OK (36 warnings, 14s)",
-          "lean-check.sh ProximityPrize/Extensions/Data/CodingTheory/Connections/ListDecodingAndCA.lean: OK (1 warning, 159s)",
+          "lean-check.sh ArkLib/Extensions/Data/CodingTheory/Connections/ListDecodingAndCA.lean: OK (1 warning, 159s)",
           "./scripts/lake-locked.sh build ArkLib.ProofSystem.Whir.Folding: FAILED in the dependency ArkLib.ProofSystem.Whir.MutualCorrAgreement, which another batch has edited and which I did not touch, so the Folding olean could not be rebuilt",
           "lake env lean on a scratch concatenation of Folding.lean + FoldingListDecodingReduction.lean: no errors; sum_lt_sum_of_le_of_lt_of_ne_top, folding_listdecoding_of_round_events, folding_listdecoding_lt_of_round_events and folding_listdecoding_of_round_events_strict are axiom-clean [propext, Classical.choice, Quot.sound]",
           "lake env lean on a scratch concatenation of Extensions/ListDecodingAndCA + the ToMathlib CS25 chain through CS25JointFar: the only errors are at concatenated-file lines 2189-2229, all inside CS25DeepHole (a file I did not touch), caused by namespace/notation opens leaking across the concatenated files. CS25JointFar.rs_epsCA_implies_lambda_extended_cs25_complete_prop elaborates with the new arguments, but its axiom list shows sorryAx, inherited from the errored DeepHole declarations. So this is not a clean result.",
           "./scripts/lake-locked.sh build ArkLib.ToMathlib.CS25JointFar: never ran; it waited on the checkout lock, held by other agents, for more than 45 minutes before I stopped waiting"
         ],
-        "remaining": "The orchestrator still needs these real module builds: (1) ArkLib.ToMathlib.CS25JointFar, plus Research/ProximityPrize/CS25BCHKSBridges.lean and Support/AxiomSweep.lean, which import it. This is the only module-level confirmation for the L98 chain, since the scratch check shows sorryAx inherited from concatenation errors. (2) ArkLib.ProofSystem.Whir.FoldingListDecodingReduction, once the other batch's Whir/MutualCorrAgreement.lean builds again. Open L96 work: make the Check-1 failure a real verifier rejection, or carry a reject flag through later phases, and prove subunit batching and sumcheck RBR errors, which needs the adaptive post-challenge witness bridge. Open L97 work: tie the GenMutualCorrParams generator codes, embeddings and degree to the folding chain of the input code, and prove the reverse-event bridge. scripts/integration/downstream-extension-audit.json still lists the old line numbers for the edited CS25 declarations; it is an initial-source record and I did not regenerate it."
+        "remaining": "The orchestrator still needs these real module builds: (1) ArkLib.ToMathlib.CS25JointFar, plus ArkLib/Research/ProximityGap/CS25BCHKSBridges.lean and Support/AxiomSweep.lean, which import it. This is the only module-level confirmation for the L98 chain, since the scratch check shows sorryAx inherited from concatenation errors. (2) ArkLib.ProofSystem.Whir.FoldingListDecodingReduction, once the other batch's Whir/MutualCorrAgreement.lean builds again. Open L96 work: make the Check-1 failure a real verifier rejection, or carry a reject flag through later phases, and prove subunit batching and sumcheck RBR errors, which needs the adaptive post-challenge witness bridge. Open L97 work: tie the GenMutualCorrParams generator codes, embeddings and degree to the folding chain of the input code, and prove the reverse-event bridge. scripts/integration/downstream-extension-audit.json still lists the old line numbers for the edited CS25 declarations; it is an initial-source record and I did not regenerate it."
       }
     },
     {
@@ -2233,12 +2233,12 @@
         ],
         "files_changed": [
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/scripts/probes/g207_weighted_kernel_magnitude_nogo.py",
-          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/Research/ProximityPrize/Frontier/_G207WeightedKernelMagnitudeNoGo.lean",
+          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/Research/ProximityGap/Frontier/_G207WeightedKernelMagnitudeNoGo.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/scripts/probes/oc_g224_witness_exact.py",
-          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/Research/ProximityPrize/Frontier/_G224NewtonParityPacketNoGo.lean",
+          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/Research/ProximityGap/Frontier/_G224NewtonParityPacketNoGo.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/scripts/probes/fable_syz69_quadrant.py",
-          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/Research/ProximityPrize/Frontier/_G205LateAlignmentSignNoGo.lean",
-          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/Research/ProximityPrize/DISPROOF_LOG.md",
+          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/Research/ProximityGap/Frontier/_G205LateAlignmentSignNoGo.lean",
+          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/docs/research/proximity-gap/DISPROOF_LOG.md",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/scripts/kb/regenerate.py"
         ],
         "checks": [
@@ -2267,7 +2267,7 @@
           {
             "id": "R-137",
             "status": "fixed",
-            "summary": "Rewrote the Research/ProximityPrize/Frontier/_RUD_MathlibAssessment.lean docstring as a dated 2026-06 textual inventory. It drops the IRREDUCIBLE-AG-CEILING verdict, adds a correction section that cross-links L57 and the refutation, and states the repaired core with its collinearity and characteristic guards. Replaced the tautology rudnevCore_is_the_whole_gap with rudnevCore_conditional against the repaired core, documented as a wiring check only. Nothing else references the old name."
+            "summary": "Rewrote the ArkLib/Research/ProximityGap/Frontier/_RUD_MathlibAssessment.lean docstring as a dated 2026-06 textual inventory. It drops the IRREDUCIBLE-AG-CEILING verdict, adds a correction section that cross-links L57 and the refutation, and states the repaired core with its collinearity and characteristic guards. Replaced the tautology rudnevCore_is_the_whole_gap with rudnevCore_conditional against the repaired core, documented as a wiring check only. Nothing else references the old name."
           },
           {
             "id": "L58",
@@ -2277,7 +2277,7 @@
         ],
         "files_changed": [
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ToMathlib/Combinatorics/Additive/RudnevIncidence.lean",
-          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/Research/ProximityPrize/Frontier/_RUD_MathlibAssessment.lean",
+          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/Research/ProximityGap/Frontier/_RUD_MathlibAssessment.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ToMathlib/BetaMatchingVanishesOn.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ToMathlib/CurvePlaceReadingSupply.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ToMathlib/IncidenceBound.lean",
@@ -2288,7 +2288,7 @@
         "checks": [
           "lean-check.sh ArkLib/ToMathlib/Combinatorics/Additive/RudnevIncidence.lean: OK (17 warnings, all pre-existing deprecated-import, unused-variable and unused-simp-argument warnings); not_naiveIncidenceBound_zmod5 uses only [propext, Classical.choice, Quot.sound]",
           "./scripts/lake-locked.sh build ArkLib.ToMathlib.Combinatorics.Additive.RudnevIncidence: Build completed successfully",
-          "lean-check.sh Research/ProximityPrize/Frontier/_RUD_MathlibAssessment.lean: OK (0 warnings), standard axioms",
+          "lean-check.sh ArkLib/Research/ProximityGap/Frontier/_RUD_MathlibAssessment.lean: OK (0 warnings), standard axioms",
           "lean-check.sh ArkLib/ToMathlib/CurvePlaceReadingSupply.lean: OK (0 warnings), new _on decls axiom-clean",
           "lean-check.sh ArkLib/ToMathlib/IncidenceBound.lean: OK (0 warnings), new _on decls axiom-clean",
           "comment_only_check.py BetaMatchingVanishesOn.lean: OK only comments/docstrings changed",
@@ -2328,21 +2328,21 @@
           }
         ],
         "files_changed": [
-          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ProximityPrize/Extensions/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean",
+          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/Extensions/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ToMathlib/ToyProblemRewinding.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ToMathlib/RewindingExtractor.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ToMathlib/StraightlineRewindingBridge.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ProofSystem/Spartan/FinalCheckRbrKnowledgeLeaf.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ProofSystem/Spartan/ComposedCompletenessLeaves.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ProofSystem/Spartan/ComposedRbrKnowledgeWithClaimFinal.lean",
-          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/blueprint/src/proof_systems/simple_protocols.tex",
+          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/website/blueprint/src/proof_systems/simple_protocols.tex",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/docs/wiki/issue-317-binius-residuals.md",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/docs/wiki/issue-317-open-math-hypotheses.md",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/docs/wiki/issue-329-tight-rbrks-patterns.md",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/docs/wiki/Binius_Closeout_Audit.md"
         ],
         "checks": [
-          "comment_only_check.py ProximityPrize/Extensions/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean: OK (comments/docstrings only)",
+          "comment_only_check.py ArkLib/Extensions/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean: OK (comments/docstrings only)",
           "comment_only_check.py ArkLib/ToMathlib/ToyProblemRewinding.lean: OK",
           "comment_only_check.py ArkLib/ToMathlib/RewindingExtractor.lean: OK",
           "comment_only_check.py ArkLib/ToMathlib/StraightlineRewindingBridge.lean: OK",
@@ -2354,7 +2354,7 @@
         ],
         "deferred_edits": [
           {
-            "path": "ProximityPrize/Extensions/ProofSystem/ToyProblem/Spec/General.lean",
+            "path": "ArkLib/Extensions/ProofSystem/ToyProblem/Spec/General.lean",
             "held_by": "CONFLICT-12",
             "edit": "Docstring-only edits, no code changes. (1) Module header, the paragraph from 'The `prover` / `verifier` / `oracleReduction` triple is complete. The soundness lemmas `protocol62_knowledgeSound` (L6.6) ...' to '... exactly what is needed downstream.': replace it with text saying the real L6.6/L6.8 theorems are the canonical ToyProblem.Spec.oracleVerifier_knowledgeSoundness_winningSetUpperBound (Spec/KnowledgeSoundness.lean) and ToyProblem.Spec.oracleVerifier_rbrKnowledgeSoundnessWorstCase (canonical Spec/General.lean). The rewinding section of this extension is only the 2x2 reconstruction algebra for the abstract predicate toyAccepts, and the legacy aliases protocol62_knowledgeSound / protocol62_rbrKnowledgeSound are not L6.6/L6.8: their types contain no verifier, t, encoder, MCA/list error or knowledge-state function, and no theorem takes an hBridge hypothesis. (2) Last paragraph of the '### Rewinding extractor for Construction 6.2' section docstring ('We therefore supply the genuine mathematical content ... single named bridge residual `Bridge.StraightlineOfRewinding`.'): replace with 'We record the 2x2 reconstruction algebra as an Extractor.knowledgeSoundnessViaRewinding witness for the abstract acceptance predicate toyAccepts below; this is not a statement about the actual verifier.' (3) toyAccepts docstring: append 'This is NOT verifier acceptance: its first conjunct already assumes the target membership (pre, decode pre) ∈ outputRelation C δ, and outputRelation reads only the statement (its witness component input.2 is unused), so any extractor meets the target whenever toyAccepts holds; no spot checks, MCA decoding, or decoder validity are derived.' (4) toyRewindingExtractor_twoSpecialSound docstring: replace 'membership transfers by `rfl`' with 'membership is the assumed conjunct of toyAccepts (returned as hmem); the solve is valid algebra but not needed for membership, because outputRelation ignores the witness'. (5) protocol62_knowledgeSoundnessViaRewinding docstring: replace with 'Abstract 2-special-sound rewinding witness for the relation-assuming predicate toyAccepts. Not knowledge soundness of Construction 6.2: see the canonical oracleVerifier_knowledgeSoundness_winningSetUpperBound / oracleVerifier_rbrKnowledgeSoundnessWorstCase.' (6) protocol62_knowledgeSound docstring, the whole block from '**Lemma 6.6 of [ABF26]**' to '`hBridge`; no global axiom is introduced.': replace with '**Legacy alias, not Lemma 6.6.** Definitionally protocol62_knowledgeSoundnessViaRewinding; its type mentions no verifier, spot-check count, encoder, error term, or bridge hypothesis. The real L6.6 is ToyProblem.Spec.oracleVerifier_knowledgeSoundness_winningSetUpperBound. Do not cite this as L6.6.' (7) protocol62_rbrKnowledgeSound docstring: the same with L6.8 -> ToyProblem.Spec.oracleVerifier_rbrKnowledgeSoundnessWorstCase. (8) Rename the axiom-audit header '/-! ### Axiom audit (issue #18 ToyProblem bridge residual frontiers) -/' to '/-! ### Axiom audit (legacy rewinding-algebra aliases; not L6.6/L6.8 proofs) -/'. Optional code addition: `theorem outputRelation_witness_irrelevant (C δ) (x) (w w') : (x, w) ∈ outputRelation k C δ ↔ (x, w') ∈ outputRelation k C δ := Iff.rfl`. Check with comment_only_check.py, or with lean-check.sh if the lemma is added."
           },
@@ -2467,7 +2467,7 @@
           {
             "id": "L51",
             "status": "fixed",
-            "summary": "The finding still applied in 4.35: UnifiedExtractionTarget advertised the count-only `UnifiedProducer` as 'the single production target'. I rewrote the module docstring (new title; the 'disposition' claim is removed; an 'Honest status' section states the F5 / deg=1 / k=1 / delta=7/20 counterexample strictly inside the Johnson window). That section says what the counterexample does not refute (BCIKS20, the probability-triggered producers, the fixed-radius closed-boundary consumer), points to the proved UD window (`UnifiedProducerWindowGlue.unifiedProducer_of_window`, which the counterexample violates: 7 > 6), and asks that future targets restore their real triggers. I corrected the UnifiedProducer and keystone docstrings and added the kernel-checked arithmetic core `no_affine_values_zmod5` (standard axioms only). The translation of the full enumerated instance into a Lean refutation of `UnifiedProducer` is still only argued in the docstring, not compiled. LatticeFrontierReduction: removed the 'nothing is discharged vacuously' existence claim (a Type can be empty). I documented that `CountFrontierProducer` is empty wherever `UnifiedProducer` fails, and that the closed-boundary consumer is not refuted by the counterexample. I also corrected the 'single production target' prose in Research/ProximityPrize/Support/UnifiedProducerWindowGlue.lean."
+            "summary": "The finding still applied in 4.35: UnifiedExtractionTarget advertised the count-only `UnifiedProducer` as 'the single production target'. I rewrote the module docstring (new title; the 'disposition' claim is removed; an 'Honest status' section states the F5 / deg=1 / k=1 / delta=7/20 counterexample strictly inside the Johnson window). That section says what the counterexample does not refute (BCIKS20, the probability-triggered producers, the fixed-radius closed-boundary consumer), points to the proved UD window (`UnifiedProducerWindowGlue.unifiedProducer_of_window`, which the counterexample violates: 7 > 6), and asks that future targets restore their real triggers. I corrected the UnifiedProducer and keystone docstrings and added the kernel-checked arithmetic core `no_affine_values_zmod5` (standard axioms only). The translation of the full enumerated instance into a Lean refutation of `UnifiedProducer` is still only argued in the docstring, not compiled. LatticeFrontierReduction: removed the 'nothing is discharged vacuously' existence claim (a Type can be empty). I documented that `CountFrontierProducer` is empty wherever `UnifiedProducer` fails, and that the closed-boundary consumer is not refuted by the counterexample. I also corrected the 'single production target' prose in ArkLib/Research/ProximityGap/Support/UnifiedProducerWindowGlue.lean."
           },
           {
             "id": "L100",
@@ -2478,13 +2478,13 @@
         "files_changed": [
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ToMathlib/UnifiedExtractionTarget.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ToMathlib/LatticeFrontierReduction.lean",
-          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/Research/ProximityPrize/Support/UnifiedProducerWindowGlue.lean",
+          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/Research/ProximityGap/Support/UnifiedProducerWindowGlue.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean"
         ],
         "checks": [
           "lean-check.sh ArkLib/ToMathlib/UnifiedExtractionTarget.lean: OK (0 warnings); no_affine_values_zmod5 uses only [propext, Classical.choice, Quot.sound]",
           "comment_only_check.py ArkLib/ToMathlib/LatticeFrontierReduction.lean: OK (only comments/docstrings changed)",
-          "comment_only_check.py Research/ProximityPrize/Support/UnifiedProducerWindowGlue.lean: OK (only comments/docstrings changed)",
+          "comment_only_check.py ArkLib/Research/ProximityGap/Support/UnifiedProducerWindowGlue.lean: OK (only comments/docstrings changed)",
           "lean-check.sh ArkLib/Data/CodingTheory/Connections/GKL24FirstMoment.lean: OK (2 warnings, not inspected; new lemmas use only standard axioms)"
         ],
         "deferred_edits": [
@@ -2517,20 +2517,20 @@
           "ArkLib/ProofSystem/Whir/MutualCorrAgreement.lean",
           "ArkLib/ProofSystem/Whir/ProximityGen.lean",
           "ArkLib/ProofSystem/Whir/MCAJohnsonSmallField.lean",
-          "Research/ProximityPrize/Protocols/Whir/MCAConjectureEllaryReduction.lean",
-          "Research/ProximityPrize/Protocols/Whir/MCAConjecturePairReduction.lean",
-          "Research/ProximityPrize/Protocols/Whir/MCARscPairUDR.lean",
-          "Research/ProximityPrize/Protocols/Whir/GenMutualCorrParamsUDR.lean",
-          "Research/ProximityPrize/Protocols/Whir/FoldingGenMutualCorrParamsUDR.lean"
+          "ArkLib/Research/ProximityGap/Protocols/Whir/MCAConjectureEllaryReduction.lean",
+          "ArkLib/Research/ProximityGap/Protocols/Whir/MCAConjecturePairReduction.lean",
+          "ArkLib/Research/ProximityGap/Protocols/Whir/MCARscPairUDR.lean",
+          "ArkLib/Research/ProximityGap/Protocols/Whir/GenMutualCorrParamsUDR.lean",
+          "ArkLib/Research/ProximityGap/Protocols/Whir/FoldingGenMutualCorrParamsUDR.lean"
         ],
         "checks": [
           "lean-check ArkLib/ProofSystem/Whir/MutualCorrAgreement.lean: OK (4 warnings, all already there before this change); new theorem one_le_errStar_of_allStack_proximityBound is axiom-clean",
           "comment_only_check ArkLib/ProofSystem/Whir/ProximityGen.lean: OK (only comments changed)",
           "lean-check ArkLib/ProofSystem/Whir/MCAJohnsonSmallField.lean: OK (1 warning), built against the rebuilt MutualCorrAgreement olean",
           "temporary pattern test file (deleted afterwards): `rintro _ n` / `intro _` after unfolding a guarded `let` Prop, and `fun j => by simpa using j.isLt : Fin.valEmbedding j < Fintype.card (Fin 2)`: OK",
-          "lake-locked build of the Research consumer modules: FAILED in the unrelated file ProximityPrize/Extensions/Data/CodingTheory/SubspaceDesign.lean:393. That file has no diff against 91519a5b2, so an upstream dependency probably changed under another batch. It is an import of the Research consumers, so the 5 edited Research files (Ellary/PairReduction, MCARscPairUDR, Gen/FoldingGenMutualCorrParamsUDR) could not be elaborated yet"
+          "lake-locked build of the Research consumer modules: FAILED in the unrelated file ArkLib/Extensions/Data/CodingTheory/SubspaceDesign.lean:393. That file has no diff against 91519a5b2, so an upstream dependency probably changed under another batch. It is an import of the Research consumers, so the 5 edited Research files (Ellary/PairReduction, MCARscPairUDR, Gen/FoldingGenMutualCorrParamsUDR) could not be elaborated yet"
         ],
-        "remaining": "The 5 edited Research consumer files have not been elaborated, because the unrelated ProximityPrize/Extensions/Data/CodingTheory/SubspaceDesign.lean (another batch's breakage) blocks their import chain. Once that is fixed, rerun lean-check on Research/ProximityPrize/Protocols/Whir/{MCAConjectureEllaryReduction,MCAConjecturePairReduction,MCARscPairUDR,GenMutualCorrParamsUDR,FoldingGenMutualCorrParamsUDR}.lean. Each edit is one line (`intro _` after `unfold`, or `specialize hmca (fun j => by simpa using j.isLt)`), and the patterns were checked in isolation. No other file proves or assumes mca_rsc / mca_johnson_bound_CONJECTURE directly; the rest only delegate to these theorems."
+        "remaining": "The 5 edited Research consumer files have not been elaborated, because the unrelated ArkLib/Extensions/Data/CodingTheory/SubspaceDesign.lean (another batch's breakage) blocks their import chain. Once that is fixed, rerun lean-check on ArkLib/Research/ProximityGap/Protocols/Whir/{MCAConjectureEllaryReduction,MCAConjecturePairReduction,MCARscPairUDR,GenMutualCorrParamsUDR,FoldingGenMutualCorrParamsUDR}.lean. Each edit is one line (`intro _` after `unfold`, or `specialize hmca (fun j => by simpa using j.isLt)`), and the patterns were checked in isolation. No other file proves or assumes mca_rsc / mca_johnson_bound_CONJECTURE directly; the rest only delegate to these theorems."
       }
     },
     {
@@ -2541,7 +2541,7 @@
           {
             "id": "L71",
             "status": "partially_fixed",
-            "summary": "After the 4.35 upstream consolidation the all-or-empty set is gone. Canonical `fiberwiseDisagreementSet` (ArkLib/ProofSystem/Binius/BinaryBasefold/Code.lean, pinned upstream) is the true per-fiber image set. `fiberwiseDisagreementSetPerFiber` in ProximityPrize/Extensions/.../Code.lean delegates to it definitionally. Extension Compliance.lean `fold_error_containment_all` and FoldDistance.lean `disagreement_fold_subset_fiberwiseDisagreement` now prove genuine per-fiber locality: agreement on the fiber over y implies agreement of the folded values at y. The coarse surface survives only as the honestly named `Compatibility.globalDisagreementDestinations`, documented as making no locality claim. Two cosmetic items in extension Code.lean remain: the stale lemma name `fiberwiseDisagreementSetPerFiber_subset_legacy_of_ne_zero` (its subset is now an equality, proved by `fun _ hy => hy`), and the `fiberwiseClose` and `UDRClose_of_fiberwiseClose` docstrings, which omit the explicit UDR conjunct (the transfer is a `.1` projection). Both are deferred because that file is held by CONFLICT-8. The wiki K4 entry is stale too and held by B016. Canonical pinned Binius modules were not edited."
+            "summary": "After the 4.35 upstream consolidation the all-or-empty set is gone. Canonical `fiberwiseDisagreementSet` (ArkLib/ProofSystem/Binius/BinaryBasefold/Code.lean, pinned upstream) is the true per-fiber image set. `fiberwiseDisagreementSetPerFiber` in ArkLib/Extensions/.../Code.lean delegates to it definitionally. Extension Compliance.lean `fold_error_containment_all` and FoldDistance.lean `disagreement_fold_subset_fiberwiseDisagreement` now prove genuine per-fiber locality: agreement on the fiber over y implies agreement of the folded values at y. The coarse surface survives only as the honestly named `Compatibility.globalDisagreementDestinations`, documented as making no locality claim. Two cosmetic items in extension Code.lean remain: the stale lemma name `fiberwiseDisagreementSetPerFiber_subset_legacy_of_ne_zero` (its subset is now an equality, proved by `fun _ hy => hy`), and the `fiberwiseClose` and `UDRClose_of_fiberwiseClose` docstrings, which omit the explicit UDR conjunct (the transfer is a `.1` projection). Both are deferred because that file is held by CONFLICT-8. The wiki K4 entry is stale too and held by B016. Canonical pinned Binius modules were not edited."
           },
           {
             "id": "L73",
@@ -2569,7 +2569,7 @@
         ],
         "deferred_edits": [
           {
-            "path": "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Code.lean",
+            "path": "ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Code.lean",
             "held_by": "CONFLICT-8",
             "edit": "(a) Add a docstring to `fiberwiseDisagreementSetPerFiber_subset_legacy_of_ne_zero`: 'Historical name. After the upstream consolidation the canonical `fiberwiseDisagreementSet` IS the per-fiber image set (the old positive-step all-or-empty filter survives only as `Compatibility.globalDisagreementDestinations` in Soundness/FoldDistance.lean), so this inclusion is definitional equality; `h_steps` is unused.' Optionally add `fiberwiseDisagreementSetPerFiber_eq : fiberwiseDisagreementSetPerFiber ... = fiberwiseDisagreementSet ... := rfl`. (b) Replace the `fiberwiseClose` docstring 'f^(i) is fiberwise close to C^(i) if 2 * d^(i)(f^(i), C^(i)) < d_{i+steps}' with one that states BOTH conjuncts: ordinary UDR closeness `2 * Δ₀(f, C^(i)) < d_i` AND `2 * d^(i)(f, C^(i)) < d_{i+steps}`, and notes that redundancy of the first conjunct is not proved here. (c) Change the live `UDRClose_of_fiberwiseClose` (about line 1175) docstring to 'Projection of the explicit UDR conjunct of `fiberwiseClose` (`h.1`); this is not a proof that fiberwise closeness alone implies UDR closeness.'"
           },
@@ -2595,31 +2595,31 @@
           {
             "id": "L63",
             "status": "fixed",
-            "summary": "The finding no longer applies to canonical ArkLib/Data/CodingTheory/ListDecodability.lean. Upstream now defines Code.Lambda, IsListDecodable and IsUniquelyDecodable with Set.encard, so I left that canonical module untouched. The ncard defect lives on in the legacy ListDecodable API at ProximityPrize/Extensions/Data/CodingTheory/ListDecodability.lean, which 115 consumer files use. Changing that definition was out of scope, so I made its documentation honest instead. listDecodable, uniqueDecodable and Lambda now carry finiteness caveats: an infinite point list has ncard 0, the Fin 1 -> Q counterexample is given, Lambda = top means unbounded finite sizes, and each points to the canonical encard API. Lambda's caveat also names the existing finite bridges in ProximityPrize/Compatibility/ListSize.lean (legacyLambda_eq_canonical, _of_finite_code, _of_finite_pointLists). In GGR11Interleaved.lean and GGR11Reconnect.lean, the 'infinite-list regime' prose is corrected: Lambda = top means unbounded finite list sizes, not that a list is infinite. GGR11PerWordBound's docstring now says its right-hand side is faithful only for finite base point lists."
+            "summary": "The finding no longer applies to canonical ArkLib/Data/CodingTheory/ListDecodability.lean. Upstream now defines Code.Lambda, IsListDecodable and IsUniquelyDecodable with Set.encard, so I left that canonical module untouched. The ncard defect lives on in the legacy ListDecodable API at ArkLib/Extensions/Data/CodingTheory/ListDecodability.lean, which 115 consumer files use. Changing that definition was out of scope, so I made its documentation honest instead. listDecodable, uniqueDecodable and Lambda now carry finiteness caveats: an infinite point list has ncard 0, the Fin 1 -> Q counterexample is given, Lambda = top means unbounded finite sizes, and each points to the canonical encard API. Lambda's caveat also names the existing finite bridges in ArkLib/Compatibility/ListSize.lean (legacyLambda_eq_canonical, _of_finite_code, _of_finite_pointLists). In GGR11Interleaved.lean and GGR11Reconnect.lean, the 'infinite-list regime' prose is corrected: Lambda = top means unbounded finite list sizes, not that a list is infinite. GGR11PerWordBound's docstring now says its right-hand side is faithful only for finite base point lists."
           },
           {
             "id": "L79",
             "status": "fixed",
-            "summary": "I triaged this as a naming, strict-reduction and documentation issue. The prose in GGR11Interleaved.lean (module doc, section heading, GGR11TreeStructure, GGR11TreeWitness, GGR11TreeFrontier and the _le_exp docstrings) no longer calls the frontier 'strictly smaller'. It now says the frontier is a purely numerical function with no tree data. It also says the frontier is logically equivalent to GGR11PerWordBound, with the chain written as an iff. That converse, treeStructure_of_perWordBound / treeStructure_iff_perWordBound, already exists in ArkLib/ToMathlib/GGR11Divergence.lean. I first added a duplicate of it, then removed it and pointed the prose at the existing lemma. I also removed stale 'no in-tree analogue / remains external' claims in GGR11Interleaved.lean, GGR11Reconnect.lean, GGR11EraseDecodeTree.lean and the lambda_le_ggr11 docstring in ProximityPrize/Extensions/Data/CodingTheory/InterleavedCode.lean. Those places now cite the real finite-list construction in GGR11TreeConstruction: ggr11_treeStructure_of_budgets, lambda_le_ggr11_holds and lambda_le_ggr11_holds_of_finite. The ggr11_tree_count_le counting lemma is kept as it was."
+            "summary": "I triaged this as a naming, strict-reduction and documentation issue. The prose in GGR11Interleaved.lean (module doc, section heading, GGR11TreeStructure, GGR11TreeWitness, GGR11TreeFrontier and the _le_exp docstrings) no longer calls the frontier 'strictly smaller'. It now says the frontier is a purely numerical function with no tree data. It also says the frontier is logically equivalent to GGR11PerWordBound, with the chain written as an iff. That converse, treeStructure_of_perWordBound / treeStructure_iff_perWordBound, already exists in ArkLib/ToMathlib/GGR11Divergence.lean. I first added a duplicate of it, then removed it and pointed the prose at the existing lemma. I also removed stale 'no in-tree analogue / remains external' claims in GGR11Interleaved.lean, GGR11Reconnect.lean, GGR11EraseDecodeTree.lean and the lambda_le_ggr11 docstring in ArkLib/Extensions/Data/CodingTheory/InterleavedCode.lean. Those places now cite the real finite-list construction in GGR11TreeConstruction: ggr11_treeStructure_of_budgets, lambda_le_ggr11_holds and lambda_le_ggr11_holds_of_finite. The ggr11_tree_count_le counting lemma is kept as it was."
           }
         ],
         "files_changed": [
-          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ProximityPrize/Extensions/Data/CodingTheory/ListDecodability.lean",
+          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/Extensions/Data/CodingTheory/ListDecodability.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ToMathlib/GGR11Interleaved.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ToMathlib/GGR11Reconnect.lean",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/ToMathlib/GGR11EraseDecodeTree.lean",
-          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ProximityPrize/Extensions/Data/CodingTheory/InterleavedCode.lean"
+          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/Extensions/Data/CodingTheory/InterleavedCode.lean"
         ],
         "checks": [
-          "comment_only_check.py ProximityPrize/Extensions/Data/CodingTheory/ListDecodability.lean: OK (only comments/docstrings changed)",
+          "comment_only_check.py ArkLib/Extensions/Data/CodingTheory/ListDecodability.lean: OK (only comments/docstrings changed)",
           "comment_only_check.py ArkLib/ToMathlib/GGR11Interleaved.lean: OK (only comments/docstrings changed)",
           "comment_only_check.py ArkLib/ToMathlib/GGR11Reconnect.lean: OK",
           "comment_only_check.py ArkLib/ToMathlib/GGR11EraseDecodeTree.lean: OK",
-          "comment_only_check.py ProximityPrize/Extensions/Data/CodingTheory/InterleavedCode.lean: OK",
+          "comment_only_check.py ArkLib/Extensions/Data/CodingTheory/InterleavedCode.lean: OK",
           "lean-check.sh ArkLib/ToMathlib/GGR11Interleaved.lean: OK (0 warnings); #print axioms output shows only propext, Classical.choice, Quot.sound",
-          "lean-check.sh ProximityPrize/Extensions/Data/CodingTheory/ListDecodability.lean: OK (0 warnings)"
+          "lean-check.sh ArkLib/Extensions/Data/CodingTheory/ListDecodability.lean: OK (0 warnings)"
         ],
-        "remaining": "The legacy ListDecodable.Lambda, listDecodable and uniqueDecodable in ProximityPrize/Extensions/Data/CodingTheory/ListDecodability.lean are still defined with ncard. Only their documentation was changed. Moving them to encard, or migrating the 115 consumer files to canonical Code.Lambda, would be a large refactor outside this batch. The existing finite bridges in ProximityPrize/Compatibility/ListSize.lean connect the legacy and canonical APIs. The canonical upstream modules (ArkLib/Data/CodingTheory/ListDecodability.lean, InterleavedCode.lean) are not edited; the former is already encard-based."
+        "remaining": "The legacy ListDecodable.Lambda, listDecodable and uniqueDecodable in ArkLib/Extensions/Data/CodingTheory/ListDecodability.lean are still defined with ncard. Only their documentation was changed. Moving them to encard, or migrating the 115 consumer files to canonical Code.Lambda, would be a large refactor outside this batch. The existing finite bridges in ArkLib/Compatibility/ListSize.lean connect the legacy and canonical APIs. The canonical upstream modules (ArkLib/Data/CodingTheory/ListDecodability.lean, InterleavedCode.lean) are not edited; the former is already encard-based."
       }
     },
     {
@@ -2737,7 +2737,7 @@
           {
             "id": "L47",
             "status": "already_fixed",
-            "summary": "After the upstream consolidation, ArkLib/ProofSystem/RingSwitching/Profile.lean only re-exports the canonical Packing/Profile.lean. That canonical module says outright that a trace or automorphism switch with A = L (Hachi's §3 head) is not an instance for finite nontrivial L and κ > 0, because the inverse laws force |A| = |L|^(2^κ). It points Hachi to its own interfaces. blueprint/src/proof_systems/ring_switching.tex now lists the reconstruction laws, the row inverse law and base compatibility, makes the same non-instance statement, and describes Hachi's separate finite-coordinate packing head. The claim that the profile supports the Hachi A = L case and the 'leaf proofs in progress' note are both gone. No edit was needed."
+            "summary": "After the upstream consolidation, ArkLib/ProofSystem/RingSwitching/Profile.lean only re-exports the canonical Packing/Profile.lean. That canonical module says outright that a trace or automorphism switch with A = L (Hachi's §3 head) is not an instance for finite nontrivial L and κ > 0, because the inverse laws force |A| = |L|^(2^κ). It points Hachi to its own interfaces. website/blueprint/src/proof_systems/ring_switching.tex now lists the reconstruction laws, the row inverse law and base compatibility, makes the same non-instance statement, and describes Hachi's separate finite-coordinate packing head. The claim that the profile supports the Hachi A = L case and the 'leaf proofs in progress' note are both gone. No edit was needed."
           },
           {
             "id": "L48",
@@ -2943,7 +2943,7 @@
           {
             "id": "L17",
             "status": "fixed",
-            "summary": "Confirmed. The canonical upstream games Commitment.bindingGame and functionBindingGame (ArkLib/Commitments/Functional/Basic.lean, pinned byte-for-byte, so not edited) still run keygen with `.run' s` and then restart the security phase from the pre-setup state s. That models a reset oracle. In the downstream extension ProximityPrize/Extensions/Commitments/Functional/Basic.lean I added a 'Setup models' section that documents the reset semantics. It also adds explicitly named setup-state-threaded variants: threadedBindingGame / threadedBinding, threadedFunctionBindingGame / threadedFunctionBinding, and the public-setup extractability game. These variants keep private sampling and public oracle state apart: a separate `setupImpl` interprets keygen queries (so private trapdoor randomness can be kept out of the shared state), and the post-setup state is passed to the adversary/opening phase run by `impl`. I added the predicate SetupPreservesState and the proved theorem threadedBindingGame_eq_bindingGame_of_setup_preserves_state, which shows that with setupImpl := impl the threaded game equals the canonical reset game whenever setup leaves the state unchanged. The canonical reset games are kept as they are, as the reset model. Downstream KZG proofs, which are canonical, are not migrated."
+            "summary": "Confirmed. The canonical upstream games Commitment.bindingGame and functionBindingGame (ArkLib/Commitments/Functional/Basic.lean, pinned byte-for-byte, so not edited) still run keygen with `.run' s` and then restart the security phase from the pre-setup state s. That models a reset oracle. In the downstream extension ArkLib/Extensions/Commitments/Functional/Basic.lean I added a 'Setup models' section that documents the reset semantics. It also adds explicitly named setup-state-threaded variants: threadedBindingGame / threadedBinding, threadedFunctionBindingGame / threadedFunctionBinding, and the public-setup extractability game. These variants keep private sampling and public oracle state apart: a separate `setupImpl` interprets keygen queries (so private trapdoor randomness can be kept out of the shared state), and the post-setup state is passed to the adversary/opening phase run by `impl`. I added the predicate SetupPreservesState and the proved theorem threadedBindingGame_eq_bindingGame_of_setup_preserves_state, which shows that with setupImpl := impl the threaded game equals the canonical reset game whenever setup leaves the state unchanged. The canonical reset games are kept as they are, as the reset model. Downstream KZG proofs, which are canonical, are not migrated."
           },
           {
             "id": "L18",
@@ -2952,10 +2952,10 @@
           }
         ],
         "files_changed": [
-          "ProximityPrize/Extensions/Commitments/Functional/Basic.lean"
+          "ArkLib/Extensions/Commitments/Functional/Basic.lean"
         ],
         "checks": [
-          "lean-check.sh ProximityPrize/Extensions/Commitments/Functional/Basic.lean: OK (0 warnings)",
+          "lean-check.sh ArkLib/Extensions/Commitments/Functional/Basic.lean: OK (0 warnings)",
           "grep sorry/admit/axiom in edited file: none",
           "line-length >100 check: none",
           "grep for consumers of renamed extractabilityGame/extractabilityExperiment: only the historical scripts/integration/downstream-extension-audit.json record (initial-source ledger, not a live check)"
@@ -2999,31 +2999,31 @@
           {
             "id": "L31",
             "status": "wont_fix_documented",
-            "summary": "Confirmed on 4.35. The correction-time parameter is still inert; the defining module is now the downstream ProximityPrize/Extensions/Data/CodingTheory/Erasure.lean. I added `CodingTheory.HasErasureDecoder C`, a functional predicate with no runtime parameter. `SupportsErasureCorrection C _ecor` is now defined as `HasErasureDecoder C` and its docstring says the parameter is inert. Two new lemmas make this checkable: `supportsErasureCorrection_iff` (proved by Iff.rfl) and `supportsErasureCorrection C ecor`, which holds for every ecor. A new `hasErasureDecoder` proves decoder existence for every set C, getting uniqueness from the canonical `eq_of_consistent_with_erased` instead of its own copy. `additive_code_supports_erasure_correction_grs25` is now a one-line corollary. Its docstring and the SoundnessBounds module summary no longer credit the O((s*n)^3) time; they state that only decoder existence is proved, that it holds for any set, and that ecor = 0 means nothing. A real runtime bound needs an algorithm and cost model, which ArkLib does not have."
+            "summary": "Confirmed on 4.35. The correction-time parameter is still inert; the defining module is now the downstream ArkLib/Extensions/Data/CodingTheory/Erasure.lean. I added `CodingTheory.HasErasureDecoder C`, a functional predicate with no runtime parameter. `SupportsErasureCorrection C _ecor` is now defined as `HasErasureDecoder C` and its docstring says the parameter is inert. Two new lemmas make this checkable: `supportsErasureCorrection_iff` (proved by Iff.rfl) and `supportsErasureCorrection C ecor`, which holds for every ecor. A new `hasErasureDecoder` proves decoder existence for every set C, getting uniqueness from the canonical `eq_of_consistent_with_erased` instead of its own copy. `additive_code_supports_erasure_correction_grs25` is now a one-line corollary. Its docstring and the SoundnessBounds module summary no longer credit the O((s*n)^3) time; they state that only decoder existence is proved, that it holds for any set, and that ecor = 0 means nothing. A real runtime bound needs an algorithm and cost model, which ArkLib does not have."
           },
           {
             "id": "L32",
             "status": "fixed",
-            "summary": "Confirmed: the downstream `simplified_iop_soundness_listDecoding_lb` in ProximityPrize/Extensions/ProofSystem/ToyProblem/SoundnessBounds.lean is witnessed by the all-zero honest instance. The canonical upstream ArkLib SoundnessBounds already proves the genuine L6.12 (`exists_winningSetFor_ncard_ge_of_lambda_lt_card` / `listDecoding_le_winningSetDensity`): it uses a violating instance against the fixed-encoding relation and gives the bound N*F/(F+2N). That file also notes that N*F/(F+N-1) is only an intermediate bound. Fix: renamed the downstream theorem to `winningSet_zeroInstance_ncard_ge_listDecoding_expr`, keeping the statement and proof unchanged. Its docstring now calls it an honest-instance cardinality fact, says it is not a soundness lower bound, and points to the canonical theorem. Replaced the stale L6.12 proof-recipe, 'all four steps PROVEN' and faithfulness-note prose with an accurate section. Fixed the overclaiming helper docstrings and the #print anchors, and removed leftover junk proof comments (including one about using sorryAx). Rewrote the ToyStep4.lean prose to match the actual types: it is a cardinality bridge with injective challenges only, does not require distinct list codewords, has no violation certificate, and is not the L6.12 attack. Updated callers: AxiomSweep now prints axioms for the canonical L6.12, a doc reference in Instances.lean now names the canonical lemma, and the issue-18 audit doc has a superseded note."
+            "summary": "Confirmed: the downstream `simplified_iop_soundness_listDecoding_lb` in ArkLib/Extensions/ProofSystem/ToyProblem/SoundnessBounds.lean is witnessed by the all-zero honest instance. The canonical upstream ArkLib SoundnessBounds already proves the genuine L6.12 (`exists_winningSetFor_ncard_ge_of_lambda_lt_card` / `listDecoding_le_winningSetDensity`): it uses a violating instance against the fixed-encoding relation and gives the bound N*F/(F+2N). That file also notes that N*F/(F+N-1) is only an intermediate bound. Fix: renamed the downstream theorem to `winningSet_zeroInstance_ncard_ge_listDecoding_expr`, keeping the statement and proof unchanged. Its docstring now calls it an honest-instance cardinality fact, says it is not a soundness lower bound, and points to the canonical theorem. Replaced the stale L6.12 proof-recipe, 'all four steps PROVEN' and faithfulness-note prose with an accurate section. Fixed the overclaiming helper docstrings and the #print anchors, and removed leftover junk proof comments (including one about using sorryAx). Rewrote the ToyStep4.lean prose to match the actual types: it is a cardinality bridge with injective challenges only, does not require distinct list codewords, has no violation certificate, and is not the L6.12 attack. Updated callers: AxiomSweep now prints axioms for the canonical L6.12, a doc reference in Instances.lean now names the canonical lemma, and the issue-18 audit doc has a superseded note."
           }
         ],
         "files_changed": [
-          "ProximityPrize/Extensions/Data/CodingTheory/Erasure.lean",
-          "ProximityPrize/Extensions/ProofSystem/ToyProblem/SoundnessBounds.lean",
+          "ArkLib/Extensions/Data/CodingTheory/Erasure.lean",
+          "ArkLib/Extensions/ProofSystem/ToyProblem/SoundnessBounds.lean",
           "ArkLib/ToMathlib/ToyStep4.lean",
-          "ProximityPrize/Extensions/Data/Probability/Instances.lean",
-          "Research/ProximityPrize/Support/AxiomSweep.lean",
+          "ArkLib/Extensions/Data/Probability/Instances.lean",
+          "ArkLib/Research/ProximityGap/Support/AxiomSweep.lean",
           "docs/kb/audits/issue-18-toyproblem-residuals-2026-06-06.md"
         ],
         "checks": [
-          "lean-check.sh ProximityPrize/Extensions/Data/CodingTheory/Erasure.lean: OK (0 warnings)",
-          "lake-locked.sh build ProximityPrize.Extensions.Data.CodingTheory.Erasure: Build completed successfully (built before the final deprecation-only tactic tweak; declarations unchanged)",
-          "lean-check.sh ProximityPrize/Extensions/ProofSystem/ToyProblem/SoundnessBounds.lean: OK (4 warnings, all pre-existing deprecation/unused-var warnings in untouched code); axioms of the renamed lemma: propext, Classical.choice, Quot.sound only",
+          "lean-check.sh ArkLib/Extensions/Data/CodingTheory/Erasure.lean: OK (0 warnings)",
+          "lake-locked.sh build ArkLib.Extensions.Data.CodingTheory.Erasure: Build completed successfully (built before the final deprecation-only tactic tweak; declarations unchanged)",
+          "lean-check.sh ArkLib/Extensions/ProofSystem/ToyProblem/SoundnessBounds.lean: OK (4 warnings, all pre-existing deprecation/unused-var warnings in untouched code); axioms of the renamed lemma: propext, Classical.choice, Quot.sound only",
           "comment_only_check.py ArkLib/ToMathlib/ToyStep4.lean: OK only comments/docstrings changed",
-          "comment_only_check.py ProximityPrize/Extensions/Data/Probability/Instances.lean: OK only comments/docstrings changed",
-          "lean-check.sh Research/ProximityPrize/Support/AxiomSweep.lean: OK (0 warnings); canonical exists_winningSetFor_ncard_ge_of_lambda_lt_card uses only standard axioms"
+          "comment_only_check.py ArkLib/Extensions/Data/Probability/Instances.lean: OK only comments/docstrings changed",
+          "lean-check.sh ArkLib/Research/ProximityGap/Support/AxiomSweep.lean: OK (0 warnings); canonical exists_winningSetFor_ncard_ge_of_lambda_lt_card uses only standard axioms"
         ],
-        "remaining": "I did not edit ProximityPrize/Extensions/ProofSystem/ToyProblem/Definitions.lean, which is held by CONFLICT-12. It only mentions `CodingTheory.SupportsErasureCorrection` in prose, which is still accurate, so no deferred edit is needed. scripts/integration/downstream-extension-audit.json still lists the old name `ToyProblem.simplified_iop_soundness_listDecoding_lb`. I left it alone because it is a historical extraction record, and the extension headers say checked-in source owns later API ports. The orchestrator should rebuild the Erasure extension olean, because its proof tactics changed after my last build; the declarations are unchanged. The rename removes the old public name with no deprecated alias. A repo grep found no other callers."
+        "remaining": "I did not edit ArkLib/Extensions/ProofSystem/ToyProblem/Definitions.lean, which is held by CONFLICT-12. It only mentions `CodingTheory.SupportsErasureCorrection` in prose, which is still accurate, so no deferred edit is needed. scripts/integration/downstream-extension-audit.json still lists the old name `ToyProblem.simplified_iop_soundness_listDecoding_lb`. I left it alone because it is a historical extraction record, and the extension headers say checked-in source owns later API ports. The orchestrator should rebuild the Erasure extension olean, because its proof tactics changed after my last build; the declarations are unchanged. The rename removes the old public name with no deprecated alias. A repo grep found no other callers."
       }
     },
     {
@@ -3314,7 +3314,7 @@
             "edit": "In the docstrings of frs_list_decoding_capacity_cz25_of_coordFiberCap_injective_prop (around line 258) and frs_list_decoding_capacity_cz25_of_coordFiberCap_injective_eta_eq_one_div_nat_prop (around line 325), append a 'Legacy, vacuous interface' paragraph. It should say: hEinj (injectivity of frsEvalOnPoints on all of F[X]) is unsatisfiable by ReedSolomon.Folded.frsEvalOnPoints_not_injective, and hω_sep over arbitrary-degree families is false over every finite field. Callers should use the admissible variants (frs_list_decoding_capacity_cz25_of_coordFiberCap_admissible_prop / _admissible_eta_eq_one_div_nat_prop). Comments only; no signature changes."
           }
         ],
-        "remaining": "The upstream chain still has the whole-F[X] hEinj hypotheses, outside this brief's cited files. These are in ProximityPrize/Extensions/Data/CodingTheory/SubspaceDesign.lean (frs_is_subspaceDesign_gk16_of_injective around line 621, frs_is_subspaceDesign_cz25Profile_of_injective around line 849, and line 384) and in ArkLib/Data/CodingTheory/ProximityGap/GK16FrsTransport.lean (finrank_frsPullback_eq/_le, finrank_frsVanish_eq/_le, frs_degreeBudget_of_finrank_le). They could be weakened to degreeLT-restricted injectivity the same way as GK16Structural. GK16Admissible.lean already documents and kernel-refutes the global form. The L65 'i.e.' wording in the pinned Folded.lean would need an upstream-pin docstring adaptation if it is to be tightened further."
+        "remaining": "The upstream chain still has the whole-F[X] hEinj hypotheses, outside this brief's cited files. These are in ArkLib/Extensions/Data/CodingTheory/SubspaceDesign.lean (frs_is_subspaceDesign_gk16_of_injective around line 621, frs_is_subspaceDesign_cz25Profile_of_injective around line 849, and line 384) and in ArkLib/Data/CodingTheory/ProximityGap/GK16FrsTransport.lean (finrank_frsPullback_eq/_le, finrank_frsVanish_eq/_le, frs_degreeBudget_of_finrank_le). They could be weakened to degreeLT-restricted injectivity the same way as GK16Structural. GK16Admissible.lean already documents and kernel-refutes the global form. The L65 'i.e.' wording in the pinned Folded.lean would need an upstream-pin docstring adaptation if it is to be tightened further."
       }
     },
     {
@@ -7034,7 +7034,7 @@
           {
             "id": "T159",
             "status": "fixed",
-            "summary": "kb doc and the module docstring of Research/ProximityPrize/Frontier/_SYZ6FinerGradingCeiling.lean: the 'B -> infinity, tends to 1/3 from above, unattained infimum' claim is replaced. On the fixed 2^30 domain the block count must be B=2^j with j<=30. The fixed-domain optimum was computed exactly: C=B/2-1 for even j and B/2-2 for odd j, minimum at B=2^30 with radius 357913941/2^30 = 1/3 - 1/(3*2^30), which is below 1/3. The arithmetic side conditions were checked at that point. The wrong 2^13 example is corrected (3 does not divide 2^13-(2^12-1); the true optimum there is 358088703/2^30). The doc notes that no Lean proof exists for gradings finer than 1024."
+            "summary": "kb doc and the module docstring of ArkLib/Research/ProximityGap/Frontier/_SYZ6FinerGradingCeiling.lean: the 'B -> infinity, tends to 1/3 from above, unattained infimum' claim is replaced. On the fixed 2^30 domain the block count must be B=2^j with j<=30. The fixed-domain optimum was computed exactly: C=B/2-1 for even j and B/2-2 for odd j, minimum at B=2^30 with radius 357913941/2^30 = 1/3 - 1/(3*2^30), which is below 1/3. The arithmetic side conditions were checked at that point. The wrong 2^13 example is corrected (3 does not divide 2^13-(2^12-1); the true optimum there is 358088703/2^30). The doc notes that no Lean proof exists for gradings finer than 1024."
           },
           {
             "id": "T160",
@@ -7054,7 +7054,7 @@
           {
             "id": "T163",
             "status": "fixed",
-            "summary": "docs/kb/Iinf-campaign/05-qindep-workflow-verdict.md and the module and theorem docstrings of Research/ProximityPrize/Frontier/_PIndependenceLangWeil.lean: the product of residuals vanishes at a satisfied point, not at agreement on every point. The roots of the product R_S are the union of the per-point roots, while the per-subset bad set is their common root set: at most one element, nonempty only if all gamma_z coincide. The p-independence 'brick' and the prize-scale = char-0 conclusion are marked not established, and the headline brick count is corrected. The Lean root-count theorems are kept as correct generic facts, with docstrings saying they do not prove that the incidence is independent of q."
+            "summary": "docs/kb/Iinf-campaign/05-qindep-workflow-verdict.md and the module and theorem docstrings of ArkLib/Research/ProximityGap/Frontier/_PIndependenceLangWeil.lean: the product of residuals vanishes at a satisfied point, not at agreement on every point. The roots of the product R_S are the union of the per-point roots, while the per-subset bad set is their common root set: at most one element, nonempty only if all gamma_z coincide. The p-independence 'brick' and the prize-scale = char-0 conclusion are marked not established, and the headline brick count is corrected. The Lean root-count theorems are kept as correct generic facts, with docstrings saying they do not prove that the incidence is independent of q."
           },
           {
             "id": "T164",
@@ -7071,12 +7071,12 @@
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/docs/kb/collinearity-vs-count-CRUX-RESOLVED-2026-06-14.md",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/docs/kb/Iinf-campaign/05-qindep-workflow-verdict.md",
           "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/docs/kb/deltastar-as-lacunary-polynomial-root-count.md",
-          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/Research/ProximityPrize/Frontier/_SYZ6FinerGradingCeiling.lean",
-          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/Research/ProximityPrize/Frontier/_PIndependenceLangWeil.lean"
+          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/Research/ProximityGap/Frontier/_SYZ6FinerGradingCeiling.lean",
+          "/Users/nubs/proximityprize/.claude/worktrees/cw-fixes-435/ArkLib/Research/ProximityGap/Frontier/_PIndependenceLangWeil.lean"
         ],
         "checks": [
-          "comment_only_check.py Research/ProximityPrize/Frontier/_SYZ6FinerGradingCeiling.lean: OK (only comments/docstrings changed)",
-          "comment_only_check.py Research/ProximityPrize/Frontier/_PIndependenceLangWeil.lean: OK (only comments/docstrings changed)",
+          "comment_only_check.py ArkLib/Research/ProximityGap/Frontier/_SYZ6FinerGradingCeiling.lean: OK (only comments/docstrings changed)",
+          "comment_only_check.py ArkLib/Research/ProximityGap/Frontier/_PIndependenceLangWeil.lean: OK (only comments/docstrings changed)",
           "python3 -m pytest scripts/tests/test_documentation_boundary.py -q: 8 passed, 17 subtests passed",
           "Python exact recomputation of the SYZ6 lattice optimum for B=2^j, j=4..30: reproduces SYZ4 (j=6) and SYZ6 (j=10); minimum 357913941/2^30 at j=30; P < 1073741826*2^128 verified",
           "Hand-verified the binomial counterexamples x^12-x^4 (8 roots in mu_16), x^10-x^2, x^18-x^6"
@@ -7290,14 +7290,14 @@
           {
             "id": "PG-362",
             "status": "fixed",
-            "summary": "Confirmed in the current 4.35 source (file not touched in git diff 91519a5b2): Research/ProximityPrize/Frontier/PencilAutocorrEnergyMaxBridge.lean presented the all-shift energy bound E<=M0*|S|^2 as a sharper rigidity lever than the nontrivial-shift pigeonhole bound. In fact M0 = max over all rho equals |S| for every S, because of the identity shift. Fix: rewrote the module doc (removed the 'Why this is the SHARP face' claim). It now carries an explicit caveat with the S={1,2} in F7* example, says the subgroup conclusion |H|<=M0 follows immediately from hM0 1, and records the correct nontrivial bridge. I fixed the docstrings of subgroup_maxAutocorr_ge_card, sq_card_le_support_mul_maxAutocorr and subgroup_maxAutocorr_ge_card_of_support to match. I added four proved theorems: autocorr_one_eq_card, autocorr_le_card, card_le_of_forall_autocorr_le (the all-shift maximum is trivially |S|), and mulEnergy_le_sq_add_maxNontrivial_mul (E <= |S|^2 + M*|S|(|S|-1) for M bounding the overlaps at every rho != 1, valid for all finite S including empty and singleton sets). The generic inequalities are kept; nothing was removed or renamed, so the downstream consumer _PencilAutocorrLambdaRootBound is unaffected."
+            "summary": "Confirmed in the current 4.35 source (file not touched in git diff 91519a5b2): ArkLib/Research/ProximityGap/Frontier/PencilAutocorrEnergyMaxBridge.lean presented the all-shift energy bound E<=M0*|S|^2 as a sharper rigidity lever than the nontrivial-shift pigeonhole bound. In fact M0 = max over all rho equals |S| for every S, because of the identity shift. Fix: rewrote the module doc (removed the 'Why this is the SHARP face' claim). It now carries an explicit caveat with the S={1,2} in F7* example, says the subgroup conclusion |H|<=M0 follows immediately from hM0 1, and records the correct nontrivial bridge. I fixed the docstrings of subgroup_maxAutocorr_ge_card, sq_card_le_support_mul_maxAutocorr and subgroup_maxAutocorr_ge_card_of_support to match. I added four proved theorems: autocorr_one_eq_card, autocorr_le_card, card_le_of_forall_autocorr_le (the all-shift maximum is trivially |S|), and mulEnergy_le_sq_add_maxNontrivial_mul (E <= |S|^2 + M*|S|(|S|-1) for M bounding the overlaps at every rho != 1, valid for all finite S including empty and singleton sets). The generic inequalities are kept; nothing was removed or renamed, so the downstream consumer _PencilAutocorrLambdaRootBound is unaffected."
           }
         ],
         "files_changed": [
-          "Research/ProximityPrize/Frontier/PencilAutocorrEnergyMaxBridge.lean"
+          "ArkLib/Research/ProximityGap/Frontier/PencilAutocorrEnergyMaxBridge.lean"
         ],
         "checks": [
-          "lean-check.sh Research/ProximityPrize/Frontier/PencilAutocorrEnergyMaxBridge.lean: OK (3 warnings, 679s); all 11 `#print axioms` lines (including the two new theorems) print the expected 'depends on axioms: [propext, ...' prefix (rest of each line cut off in the captured output); no sorry"
+          "lean-check.sh ArkLib/Research/ProximityGap/Frontier/PencilAutocorrEnergyMaxBridge.lean: OK (3 warnings, 679s); all 11 `#print axioms` lines (including the two new theorems) print the expected 'depends on axioms: [propext, ...' prefix (rest of each line cut off in the captured output); no sorry"
         ],
         "remaining": "The W2-061 brief file is missing, so I could not confirm which findings were in the batch. I took it to be PG-362, the only section in the live reports whose size fits. If the orchestrator still has the brief's finding list, check it: about 12.8KB of the original 212726-byte brief may have held 1-3 more small findings that I did not identify or address. The ### subfindings PG-363..PG-445 inside the PG-362 section are separate wave-1 units in units.json and were not re-done here."
       }
@@ -8616,12 +8616,12 @@
         "files_changed": [
           "ArkLib/Data/CodingTheory/ProximityGap/CrossCellShkredovBound.lean",
           "ArkLib/Data/CodingTheory/ProximityGap/KKH26DeltaStarPinAllWitness.lean",
-          "Research/ProximityPrize/Frontier/_wfHJ1_SubspaceSUnitCountVacuous.lean",
-          "Research/ProximityPrize/Frontier/_FS6AlmostAllPrimesWickRung.lean",
-          "Research/ProximityPrize/Frontier/_R54Depth3PerFrequencyChain.lean",
-          "Research/ProximityPrize/Frontier/_RMTBoundedDepthUniversalityNoGo.lean",
-          "Research/ProximityPrize/Frontier/_OCPieceBHeightNormCeiling.lean",
-          "Research/ProximityPrize/Frontier/REnergyGeneralCharPLowerBound.lean",
+          "ArkLib/Research/ProximityGap/Frontier/_wfHJ1_SubspaceSUnitCountVacuous.lean",
+          "ArkLib/Research/ProximityGap/Frontier/_FS6AlmostAllPrimesWickRung.lean",
+          "ArkLib/Research/ProximityGap/Frontier/_R54Depth3PerFrequencyChain.lean",
+          "ArkLib/Research/ProximityGap/Frontier/_RMTBoundedDepthUniversalityNoGo.lean",
+          "ArkLib/Research/ProximityGap/Frontier/_OCPieceBHeightNormCeiling.lean",
+          "ArkLib/Research/ProximityGap/Frontier/REnergyGeneralCharPLowerBound.lean",
           "docs/kb/deltastar-466-r305-depth3-excess-complete-classification-2026-07-09.md",
           "docs/kb/deltastar-466-g228-jacobi-fanout-no-go-2026-07-12.md"
         ],
@@ -8635,317 +8635,317 @@
         ],
         "deferred_edits": [
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "GENERAL: the log is currently doubled. Copy A runs from line 1 and copy B from the second title at line 25543. For the early region, copy B line = copy A line + 25267. Apply each edit below to both copies (or once after dedup). CW-DL05a-01: deduplicate the log. Keep one copy plus the unique spans, delete the second '# Disproof Log' title at line 25543, and update the #506 maintenance note with the real line count. Optionally add a CI repeated-block hash check."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL03a-01 / CW-DL07b-03 (about line 14043/39310, text 'whenever q is large enough (n=8 p<=193 all r tested), confirming it is an ASYMPTOTIC bound', and the surrounding form-A/B paragraph). Replace with: 'B HOLDS at the small primes p<=193 and FAILS at p>=577 for n=8, r=4. crossCell(mu8,mu4,4)=168-2*36=96 at p=97,193,577,2593, so crossCell*p=18528<=30464 at p=193 but 55392>30464 at p=577. At fixed r crossCell stabilizes at its char-0 value while crossCell*q grows linearly in q, so any q-independent budget fails for all large q whenever char-0 crossCell>0, and the bound cannot hold in the limit q/(2^r|H|^r)->infinity. Any open form must use a q-scaled budget (e.g. A_r<=Wick).' Remove 'true only asymptotically' and 'satisfiable only in the limit'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL03a-02 (line 12522/37789, 'At the moment optimum r* ≈ log_n q ≈ 79'). State that the cumulant uses the 2r-fold additive energy T_r, while Shkredov's E_3=Σ r_{G-G}^3 is a different object (mu_8 in F_4129: 712 vs 5120). Drop or justify the E_3->moment transfer. Replace 'r* ≈ log_n q ≈ 79' with 'log_n q = 158/30 ≈ 5.27; the Wick M-bound is minimized at r=110 (2^18.890)'. Replace '2^30.65 best over all r' with 'its value at r=79 (the Shkredov exponent decreases in r)'. Note that the nearby depth 128 is a third convention."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL03a-03 (O178, line 12709/37976 'Re-kurt → 3.0. Tail is **Rayleigh `e^{-R²}`**'; C31, line 13802/39069 'COMPLEX GAUSSIAN by CLT'). Add a correction: for even n, eta_b is real (-1 in mu_n), so E|z|^4/(E|z|^2)^2 and Re-kurtosis are the same statistic. The right references are real-Gaussian: (2r-1)!! and tail e^{-R^2/2}. Replace 'COMPLEX GAUSSIAN' and E|z|^{2r}/r!->1 with the real-Gaussian (2r-1)!! normalization, or name the complex object actually measured."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL03a-04 (line 13187/38454 'RESULT 3 — the char-0 bound is a VALID upper bound'). Relabel B_char0 as a heuristic. The all-frequency cosh sum includes b=0 (eta_0=n), so arccosh(Σ)/y>=n, and B_char0=7.90<8 and 15.06<16 come from p*I0(2y)^{n/2} undercounting the principal term. Use DCSubtractedCoshMGF for bound claims, and call the 'BEATS' rows artifacts of the substitution."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL03a-05 / CW-DL07b-04. Add ONE superseding entry near O181 (line 15523) / the Reconciliation (about 39811+) / the L1 settlement / O193. Fix a single crossing definition, budget and binding convention, and give the exact measured c*(n,k) table (e.g. c*=3,4,3,4,5 at n=8,12,16,20,32 for rho=1/4; O193 n=8,k=2 s*=5). Mark the C01/C50 'rigorous char-0 UPPER bound n/4 / rho-uniform', the O181 'c*=k-1, Johnson-locked, delta*->1/2', the L1 's*=2k-1', the 'Theta(1/n) below capacity' and the 'c*/n->0' limit claims as superseded finite-data extrapolations. The P1 data (n=32, rho=1/8 -> 23/32; n=16, rho=1/4 -> 9/16) already contradict n/4."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL03a-06 / CW-DL07a-03 (C32, line 13610/38877 'No square-root cancellation is visible; the prize exponent `1/2` is nowhere in the measured data.'). Replace with: 'Every measured M (7.48, 13.11, 19.21) is BELOW the prize-shape bound sqrt(2n log(p/n)) (10.15, 14.90, 23.08). The high finite-n log M/log n ratios include the log factor, consistent with D13/D14 M=n^{1/2+o(1)}.' Also fix the 'mu_n Sidon' label (E_2=3n^2-3n, not Sidon) and the claim that the di Benedetto range p^{1/4}<H<p^{1/2} is 'outside the prize band n≪√p' (it lies inside)."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL03a-07 (C09, about line 13166 of the snapshot; search 'C09'). At beta=5, n=2^30, change the first rung beating trivial from r=10 to r=6 (30β+log2((2r-1)!!)<30r: r=5 gives 159.88>150, r=6 gives 163.34<180)."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL03a-08 (line 13147/38414 'nonzero Fourier coeffs has ≤ n−t zeros'). Change to '|supp f| ≥ n−t+1, i.e. at most t−1 zeros (Tao, n prime)'. Remove the item-3 inference from I(16)=89 being prime. Change 'the loosest VALID fewnomial bound' (line 13151/38418) to 'the tightest valid fewnomial bound'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL03a-09 / CW-DL07b-06 (C38, line 13904/39171 'E_mult ≈ 56–100% of |B|³'). Replace with '≈ 9–56% of |B|³' (7680/24^3=0.556, 5754880/400^3=0.090, 61440/48^3=0.556). Drop 'A coset union has the maximal multiplicative energy for its size'. Change '|B·B| ~ 2n' to '|B·B| = 2|B| in rows 1 and 3 (|B·B|/n = 6, 308, 6)'. In the C38 table, row 3 E/|B|^2 changes from 3.8 to 26.67."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL03a-10 (C36, line 13665/38932 'does not even apply to the subgroup object'). Remove the claims 'does not apply / collapses to deg P'. HBK is itself a Stepanov bound for subgroups, and separability of X^n-1 does not stop high-order vanishing. Keep the exponent arithmetic e_min>1 for beta>=3 as the valid kill."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL03a-11 (C45, line 13971/39238 'provably-at-Johnson', and 13979/39246 'tracks the `√n` (L2 = Johnson) scale'). Replace with: 'the Johnson agreement is sqrt(kn)=n*sqrt(rho), equal to sqrt(n) only at k=1 (probe rows use k=2,4: e.g. Johnson 5.66 vs sqrt(n)=4 at n=16,k=2)'. Change 'provably-at-Johnson' to 'heuristically capped near the L2 scale'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL03a-12 (I037, line 14895/40162 'M ≤ ρ(B)+1/ρ(B)', and 14923/40190 'ρ(A)≤ρ(B)+1/ρ(B) is a theorem'). Replace the bridge with ρ(A) ≤ ρ(B)+(n−1)/ρ(B). Note x+(n−1)/x ≥ 2√(n−1) (3.464 at n=4, 5.292 at n=8), so the (B) values 2.9273 and 5.0017 are impossible under the correct bridge and must be redone. The NO-GAIN verdict is unchanged."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL03b-01 / CW-DL07b-01 (line 15336/40603 'PROVEN (Lean, axiom-clean — `Frontier/_AR_DyadicButterflyDecorrelation.lean`)', line 15381/40648 'NEW PROVEN BRICK (`Frontier/_AR_FaithfulnessThreshold.lean`', and the close43_lite_verify.lean citation). Annotate each: '[AUDIT: Lean brick never landed — no such file or declarations in any commit; partial substitutes: Frontier/_Attack01DyadicButterfly.lean (butterfly identity, trivial doubling) and DCEnergyEssential.energy_ge_dc / not_gaussianEnergyBound_of_card_pow_gt]'. Downgrade 'PROVEN' to 'claimed (not in tree)'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL03b-02 / CW-DL07b-05 (wf-D5, line 15104/40371 'μ_n IS a Sidon (perfect-difference)'). Replace with 'μ_n is Sidon modulo negation (rep≤2), not additively Sidon: −1∈μ_n gives x+(−x)=0 for all n/2 antipodal pairs (μ_4={1,4,13,16}⊂F_17: 1+16=4+13); E_2=3n²−3n > 2n²−n; |S+S|=33 (n=8), 129 (n=16)'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL03b-06 (O186, line 15896/41163 'ZERO premature, ZERO overclaimed'; O181 heading at line 15523 'THE r=5 RUNG PROVEN ... #bad₅ ≤ K'). Add a correction banner to O186: 'Superseded: the floor needs TWO inputs and BCHKS 1.12 is strictly stronger than the BGK sup-bound (see the later correction, about line 17541ff of the snapshot); identifying M(mu_n) with BCHKS 1.12 was the forbidden overstatement'. Retitle O181: 'Lean proves 2·formula≤K; #bad₅=formula is computed, not proved'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL03b-07 / CW-DL07b-07 (line 15391/40658 'faithfulness caps the usable depth from ABOVE — since (2r−1)‼ ≤ (2r)^r, faithful ⟺'). Change ⟺ to ⟹ (necessary only). Add: 'exact check at n=64, q=64^4: faithful for r≤6, not for r=7..67, faithful again for r≥68 (best faithful M≈64.11 at r=68, still above sqrt(64 ln q)≈32.6). The loss is automatic: M_r^{2r}=q(2r−1)!!n^r ≥ qE_r ≥ n^{2r} gives M_r≥n (DCEnergyEssential)'. In the faithfulness-window prize numbers, either state q=n^4 (r*=4, M=1.92e9) or use q=n·2^128 (r*=5, M=3.71e9). Remove the label 'M ~ q^{1/2r*}'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL04a-01 / CW-DL08a-01 (line 19186/44453 'the base is comfortably `≈2/3<1`', from 'char-0-faithful E_2=2n²−n'). Replace with: 'E_2=3n²−3n (−1∈μ_n), so R_dc(1)=(3n²−3n−n⁴/q)/(3n²−3n³/q) → (n−1)/n. Exact: 0.8715 (n=8,p=4129), 0.9364 (n=16), 0.9685 (n=32). At n=64, p=17318209 (β≈4.008), E_2=13632 gives R_dc(1)=1.1093>1, so the base A_2≤3nA_1 FAILS there. The antitone margin 5/3−Q_1=(15n−25)/(9(n−1)²) already shrinks exactly in char 0 (Gaussian Q_r=(2r+3)/(2r+1)), so it is not char-p co-degradation.' List the base among the co-degrading conditions."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL04a-02 (H1 amplification, about snapshot line 18505-18530; search 'eigenvalue q*n^2' / 'capped at c'). Drop the |η_b|² weight from Q(x), or say the kernel identity K(l'/l)=q·n·1_{μ_n} holds only for the unweighted form. Change 'gain capped at c=q*n' to 'c=q·n²' (x=1_{μ_n}: <x,Kx>=qn³)."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL04a-03 / CW-DL08a-06(J1) (J1 'r ≈ ln q ≈ 172 (prize)'; search 'ln q ≈ 172' or '172 (prize)'). Change to 'r ≈ ln q ≈ 83 (q≈n^4=2^120; ≈110 for q≈2^158)'. The Lean docstring is already fixed."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL04a-04 / CW-DL08a-06(Route-1) (line 18622/43889 'slack_r ~ n^{2r}/q (`log₂ ≈ 10⁹⁶⁰`'). Replace with 'slack_r ~ n^{2r}/q (log₂ ≈ 5182 at q=2^158 / 5220 at q=2^120, r=89; the Wick term is ≈10^965.5)'. Give W_r one definition, the char-0 excess E_r − E_r^{char0}: W_3(17)=10440 at line 18636/43903 is the char-0 excess (E_3=15560 exact), while E_3−15n³=7880."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL04a-05 (line 20873/46140 'r=3 calibrated open core (r23, C=40 probe-safe)'). Change to 'C=40 in TripleConvEnergyBound normalization (≈1.88 in IterConvEnergyWick normalization C^r·r!·(mq)^r)'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL04b-01 / CW-DL08b-04 (line 22141/47408 '**n=16 CLOSED**: 40 bad primes ever, max 41521'). Change 40 to 57. This was recomputed exactly over all primes p≡1 mod 16 up to 6^8 (57 bad, largest bad prime 41521, 13 violators, largest violator 641), matching r52. In r52, change β≈6.29 to β≈6.34 for p=3487801441 at n=32."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL04b-02 (r304 entry at line 22097/47364, the '480-quantization at n∈{16,32}' sentence). Restrict to n=32 (gcd 480 over the 460 bad primes in [32768,3e5]). State that the n=16 quantum is 48 (excess 96 at p=11489)."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL04b-03 / CW-DL08b-02 (FS6, snapshot lines 21883-21886 and 47150/47153; search 'n⁴(k+4)/(45'). Replace n⁴(k+4)/(45s) with n⁵(k+4)/(45s)."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL04b-04 / CW-DL08b-03 (line 21585/46852 'a DEEP-r phenomenon (r≈β≈129 at prize)'). Replace with 'a shallow phenomenon: crossover at r=6 at prize scale (n=2^30, q=n·2^128, β=158/30≈5.27; log2(n^5/(q·9!!))=−17.9, log2(n^6/(q·11!!))=+8.7)'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL04b-05 / CW-DL08b-01 (line 21605/46872 'the composed RHS ... = 0.919·budget'). Change to '0.9353·budget (the _R27GMixedAudit total, valid only under the unproven post-limit odd allowance Θ≤0.002B; Ea+Eb+3√(EaEb) alone is 0.9244, and with the measured Θ≈0.0285 the total is ≈1.04 > budget)'. Add 'superseded by r28 refutation'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL04b-06 / CW-DL08b-06 (line 22001/47268 'envelope overshoots by ≈ 7·10¹⁰'). Change to '≈ 5.25·10¹⁰ (2^39.5/√(2·158·ln 2))'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL04b-07 (line 22978/48245 '274177 (10; = 2^7·2141+1... a Fermat-adjacent'). Replace with '274177 (10; = 2^8·1071+1, a prime factor of F6 = 2^64+1)'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL04b-08 (r369, lines 22950-22956/48217-48223). Remove the claims 'LINEAR units' / '(720 ... n-independent)' / n-linearity, and fix the line 'Cross-check at n=32: the minimal violators' s6h1 masses were also 46080-quantized' (linearity would predict 23040; n=32 excesses include 5760, 11520, 23040). State the unit 46080=720·64 as measured at n=64 only (excess 184320=4·46080 at p=264961). Also fix the heading text 'with LINEAR units'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL04b-09 (OC-PIECEB entry at line 23746/49013, 'v_p(N(r)) = #vanishing embeddings EXACTLY'). Restate as 'v_p(N(r)) = Σ_𝔭 v_𝔭(r) ≥ #vanishing embeddings, equality only at simple vanishing'. Cite n=32, r=1+X+X²+X⁴−X⁵+X¹¹: N=18818=2·97², v_97=2, but only 1 vanishing root (and N=74498, v_193=2). Revise the stacking 'mechanism' sentence to a heuristic. The Lean docstring is already fixed."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL05a-02 (lines 24121 and 24143: two '## [466-G80R-primitive-padding-envelope-refuted]' sections). Merge them, keeping the fuller second version (24143-24194). Its copy-B duplicates also go away with the dedup."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL05a-03 (I027 PAPR/merit, around line 1458-1504 / 26725+; search 'n^{1.75}' or '1.75'). Replace n^{1.75} with n^{5/4} (β=4, m~n³). Fix the extremal formula to h=(ρ4−1)^{1/4}m^{1/4}√n, replacing '(mn)^{1/4} ~ n·m^{1/4}'. Note that the excess over the trivial bound M≤n is only n^{1/4}; the verdict is unchanged."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL05a-04 (line 1339/26606 '**`Θ(p²/n)`, LINEAR in the vertex count `p`.**'). Replace with '`(p²−1)/n+1`, QUADRATIC in p at fixed n (~p²/n)'. Fix the 'terwDim_strictMono_in_p (linear, never saturates)' gloss to '(strictly increasing, never saturates)'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL05a-05 (many probe citations, roughly 25648-26967 in the snapshot = copy B of the early region). For each cited probe_*.py/.rs absent from git ls-files, add '(deleted in 8416cfb0f; recover via 8416cfb0f^:<path>)', or mark the numbers 'historical / not reproducible from the tree'. Remove 'reproducible, exit 0' and 'committed on branch main' where untrue. Fix the nonexistent hash 2690fef9cc80... (git cat-file fails). Mark the HD1-HD8/G82 /tmp/arklib-reports probes as not preserved."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL05a-06 (line 598/25865 'Lane: round-13 Lane M (dossier §23)' has no heading). Insert a heading above it, e.g. '## [r13-laneM-moment-optimized-supnorm] Lane M: moment-optimized sup-norm (`_MomentOptimizedSupNorm.lean`, `supNorm_le_of_wallHolds`)'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL05a-07 (G80P heading at line 25231/50542 and its headline 'the formal in-chain explanation of the classical CG p^{1/3}/β=3 barrier'). Reword to 'the rigidity window K>√p and the saddle K~√(2πn/log q) overlap only for p≲n/log q (β≤1, essentially empty since n|p−1)'. Drop the claim to formally explain β=3, which the entry itself calls ledger prose, not a Lean theorem."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL05b-01 (O11 Corollary E, line 4438/29705 'radius (η ≈ 1/64) ≫ the breach threshold 2^{75} ⟹ **δ*_C < 1−ρ−1/64', and line 4899/30166 'δ*_C < 1 − ρ − 1/64 for ALL smooth prime fields'). Restate with η=1/128 (m'=128; count Σ_{odd s≤63}C(64,s)2^s≈2^100.4) giving δ*_C ≤ 1−ρ−1/128. At η=1/64 the count is ≈3^32≈2^50.7 < 2^75, so 1/64 is unsupported. No tracked wiki/KB page quotes 1/64; 06-AVERAGED-PA.md is external."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL05b-02 (F17, line 4253/29520 'the prize fully solved at this concrete scale' and the 'EXACT two-sided delta* crossover' text). Relabel as a one-word crossover (DeltaStarExactCrossoverF17 counts lines against one fixed word). Cite the witness w'=[15,12,15,6,1,6,3,1,7,6,5,8,7,6,2,4] on x=1..16, which has 13 > B=10 lines with agreement ≥4 (e.g. (0,6), (1,13)), so the code-level threshold is not 3/4. Remove 'prize fully solved' and 'prize-faithful' (G=F17^× has n=p−1)."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL05b-03 (line 4507/29774 'the bound's home is exactly rate ≥ 1/3'). Replace with 'the 2a>w regime is nonempty iff ρ > 3−2√2 ≈ 0.1716; rate 1/4 is covered near the Johnson end (n=16, k=4, a=7, w=13 gives co-occurrence ≤ 6)'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL05b-04 (O30 birthday estimate, snapshot 29801-29805 / copy A 4534-4538; search 'birthday'). Drop 'exactly'. Report observed/predicted = 0.736/0.773/0.900 at q=17/41/73. Define the predictor: M²/2q = 68.05/32.72/19.17 from mean M, whereas the stated 73/30/17 are inconsistent (30 and 17 fall below (EM)²/2q)."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL05b-05 (C29, snapshot 27395-27415 / copy A 2128-2148; search 'HORN A'). Qualify 'all measured prize-faithfully (... p >> n^3)': the HORN A rows use n=16 with p=193, 769, 3329 < 4096. Only the HORN B rows satisfy p>n³."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL05b-06 (line 2934/28201 'fixed gap `η=0.2`: radius drops below Johnson → max list `1` (unique decoding), as predicted.'). Replace with 'η=0.2 < η0=√(1/2)−1/2=0.2071, so δ=0.30 lies between Johnson (0.2929) and capacity. The list 1 at p=5,7,11 comes from integer rounding of the agreement, not from large_gap_forces_below_johnson (which needs η>η0).'"
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL05b-07 (lines 3116, 3142, 3480 and the Loop38/39/44/Loop13 text, copy B +25267; 'is the theorem BCIKS 2025/2055', 'proven (BCIKS 2025/2055)', 'proven on the entire large-gap side'). Relabel as conditional on hround / ℓ≤B. Cite the n-carrying forms as the actual bounds: BCIKS a > O_ρ(n/η^5); Hab25 |E| ≤ (ℓ^7/3)(ρn)^2 with named GS residuals; the GS decoder wiring is absent from mathlib (P1)."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL05b-08 (line 2533/27800 'provably FAILS at order 3 for μ_n', and the C44 'DESTROYS' text). Qualify: 'reedSolomonFrame_not_isHigherMDS_three_of_sumZeroPairs proves ¬IsHigherMDS K 3 for the dimension-3 RS frame on domains with three disjoint antipodal pairs; no transfer to k=ρn is proved'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL05b-09 (line 4158/29425 'the prize threshold `ε*·q` is astronomically larger'). Replace with 'at the critical field q=n·2^128 the budget is ε*·q=n, so the margin is the factor N (M=n/N<n), not astronomical'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL05b-10. Mark each untracked probe citation as absent/historical: probe_conjecture_refute_c46/C47, probe_c40/c39/c14/c29/c24/c26/c27/c05/c10, probe_407_actionorbit_generalf_*, probe_kkh26_fold_transport, o7_fixed_gap_probe.py, and the O11-O13 scripts in /home/nubs/proximity-research. Mark KKH26.fold_same_KKH_pair_once_of_even_cofactor and foldBranches_split_once_of_odd_cofactor as 'not in any .lean file'. For CandidateBridgeLoop16 (line 1975/27242, 3424/28691, and the C40 citation) add 'file removed 2026-06-08 in a7ff2e966/ca2a11ff0; see JohnsonListBound.lean'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL07a-01 (O165/O167, around snapshot 36024-36087; search 'kkh26_deltaStar_pin_lowdegree' / 'infinite unconditional'). State the guard p > (2^μ)^{2^{μ−1}} = n^{n/2} (log2 p > 1.6e10 at μ=30) and the p-dependent ε* = C(2^μ,r)/r/p. Describe the unconditional region as a huge-field statement, not prize parameters. The docstring is already fixed."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL07a-04 (C19, line 13535/38802 '`rad(E) ≈ (a−b)/2 ≈ n/2`', and 13540). Replace with 'rad(E) ≤ deg E = a/2' (table radE²: 14, 43). Change MS rhs ≈ 3n/2 to ≈ 3a/2. Fix the circular definition 'E = u^{a/2}+γu^{b/2}−cE' (write c_even or similar)."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL07a-05 (line 13105/38372 'Binding witness is ALWAYS two cosets of a SMALL subgroup.'). Replace with 'Binding witnesses are μ_d-translates of a short arc: n=8 {0,1,2,3} is an interval; n=16 {0,1,2}∪{8,9,10} is two μ_2-translates of an arc (three μ_2-cosets); only n=32 is two μ_4-cosets'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL07a-06 (line 13655/38922 '(`p<=sqrt(n)`, deep in the FORBIDDEN full-group regime `n=p-1`)'). Replace with '(never met: n | p−1 forces p>n, i.e. β>1 for every subgroup; the full group has β≈1)'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL07b-02 (snapshot 41779-41781, 41821-41822, and the copy-A duplicates; search 'exactly when p > n^3' / 'p > n³'). Replace 'char-p energy equals char-0 exactly when p > n^3' with the measured largest-norm-prime cutoffs. Counterexamples: n=16, r=3, p=41521 gives E_3=51040 vs 50560; n=8, r=4, p=1201 gives 190184 vs 190120; n=8, r=3, p=337<512 already equal (p=313 gives 5168). The Lean header is already fixed."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL07b-08 (O180 capacity shoulder, snapshot 40711-40714; search '1/2 at rho=1/2' / '273'). Relabel the shoulder rows as ρ=1/4 (3/4·C(16,4)/5=273, 3/4·C(8,2)/3=7), or recompute at ρ=1/2 (1072.5, 10.5)."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL08a-04 (J1/I1/P4/P2, snapshot 44135-44138, 43640, 42688, 42777-42780). Restrict 'no short genuine char-p relation at ANY prime', 'E_2=3n(n−1) exact at β=4 n≤128' and 'E_3 p-invariant' to the tested primes. Cite the counterexample n=64, p=17318209 (β≈4.008): ζ^8+ζ^13−ζ^14−ζ^20=0 at ζ=g^53-root, E_2=13632≠12096. Relabel the P2 witnesses p=194977 and 2164417 as β≈3.51, not p~n^4."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL08a-05 (C8, snapshot 42248-42250; search 'R_1' / 'EXACTLY'). Replace 'R_1'=1 EXACTLY' and Σ_{b≠0}|η|²=(q−1)n with Σ_{b≠0}|η_b|²=n(q−n), A_1=n(q−n)/(q−1), R_1'=(q−n)/(q−1) (=0.99977 at n=16, q=65537). Tight only asymptotically."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL08a-06 erratum line. T08 (line 17811/43078 'all 6 cases') -> 'all 5 cases'. A02 (line 17188/42455 'all five n') -> 'all four n (8,12,16,24)'. A15: m4/m2² lies in 2.91–3.11, not (2,3). Route-1: log2 ≈5182, Wick ≈10^965.5. J1: ln q≈83–110. T24 (line 18331/43598 'beta=log_p n=0.250 EXACT') -> 'log_n p = 4 (p≈n^4)'. P3: 'Var=n' -> Var_b|η_b|²≈2n² (Var η_b=n). C11: e(r,4)=1+1/r² has infimum 1, not attained; r=399 is just the sweep end. H3: |τ(χ)|=√q only for nontrivial χ (trivial gives −1)."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL08b-05 (line 21973/47240 '(`second_moment_unbounded_in_window`)'). Replace with '(`secondMoment_unbounded_of_le`, `window_interior_secondMoment_silent` in _R1SecondMomentSqrtBarrier.lean)'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL08b-07 (r12 gate-reach floor, snapshot 45666-45671; search 'gate'). Use ceil(p^{2/n}/2)−1 for the strict cutoff, or state that the table is for the probed primes slightly above n^4 (at p=n^4 exactly, depths 4 and 2 fail strictly)."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL08b-08 (Galois-orbit dedup, lines 22460-22500/47727-47767). Present it as a heuristic. Align the measured table to n: line 22466 compares 37.8, 43.5, 160.7 with '(32, 32, 128)', whereas n·φ(n)=32, 128, 512 for n=8, 16, 32, so 43.5<128 contradicts 'safe lower bound'. Orbit freeness is not shown. Fix line 22471 '+½ in depth' (dividing by n·φ≈n²/2 gives about +1 in r) and the (log_n Q+1)/2 formula."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL09a-01 (G86S entry at line 50584 '`_G86SharpReconstructionIdentity.lean` proves the exact identity', the G87P/G87W 'in-tree axiom-clean G86S' lines, and the deferral entry at line 51117). Annotate G86S, G87P, G87W and G87B: 'Lean file never committed; headline removed, see [466-G87P-G87W-g86-deferral]'. Extend the 51117 deferral note to retract the G86S entry. Relabel the identity (correct: both sides equal (S+T)!/∏x_i!q_i!) as a prose derivation."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL09a-02 (line 22945/48212 'check: 322560 = 78·n²·1.23'). Replace with '322560 = 78.75·n² ≈ 1.77× headroom (181760)'."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL09b-01 (G88V, line 51256 'The probe's p ∈ [97, 1153] sit exactly between 6^{φ(8)} = 1296 and', plus Addendum 2 calling the φ(ord) coverage law height-explained). Replace with 'all probe primes are below 6^{φ(8)}=1296 (max 1153), so the sufficient gate p>6^{φ(m)} covers only orders ≤4 (6²=36); order-8 rigidity needs a sharper exact-norm argument'. Qualify the Addendum-2 seam-closure verdict to match."
           },
           {
-            "path": "Research/ProximityPrize/DISPROOF_LOG.md",
+            "path": "docs/research/proximity-gap/DISPROOF_LOG.md",
             "held_by": "B014",
             "edit": "CW-DL09b-02 (G228, snapshot 52067-52069; search 'one-term Jacobi' / '2^-64'). Write the values as approximate ('≈2^-64 (P1) / ≈2^-64.5 (P2)'; the stated bound gives f² slightly above 2^-128 / 2^-129). Cite the rigorous G229 bounds < 2^-63.5 / < 2^-64. The KB note is already annotated."
           }

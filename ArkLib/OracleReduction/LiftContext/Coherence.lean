@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.OracleReduction.LiftContext.OracleReduction
+import ArkLib.Extensions.OracleReduction.LiftContext.OracleReduction
 
 /-!
 # Oracle-routing coherence core for `LiftContextCoherent` (design note #433)

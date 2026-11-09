@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Reject axiom-laundering tokens in live library and research source.
 
-By default, scans every .lean file under ArkLib/, Research/, and ProximityPrize/.
+By default, scans every .lean file under ArkLib/, excluding acceptance clients in
+ArkLib/Tests/. Research and downstream extensions remain in the proof-audit scope.
 Pass paths to scan particular Lean files or directories. Fails if live code
 contains any of the following. Interpolation holes can contain live terms.
   - `native_decide` / `bv_decide` (kernel-bypassing decision procedures),
@@ -665,8 +666,12 @@ def load_manifest(path: Path) -> tuple[dict[str, Pin], list[str]]:
 
 def scan_plan(args: list[str]) -> tuple[list[Path], bool, list[str]]:
     """Return files to scan, whether this is a full-ArkLib scan, and path errors."""
+    def proof_sources(directory: Path) -> set[Path]:
+        return {file for file in directory.rglob("*.lean")
+                if not file.is_relative_to(directory / "Tests")}
+
     if not args:
-        return sorted(f for name in ("ArkLib", "Research", "ProximityPrize") for f in Path(name).rglob("*.lean")), True, []
+        return sorted(proof_sources(Path("ArkLib"))), True, []
 
     files: set[Path] = set()
     full_arklib_scan = False
@@ -687,14 +692,14 @@ def scan_plan(args: list[str]) -> tuple[list[Path], bool, list[str]]:
 
         nested_arklib = path / "ArkLib"
         if nested_arklib.is_dir():
-            files.update(nested_arklib.rglob("*.lean"))
-            files.update((path / "Research").rglob("*.lean"))
-            files.update((path / "ProximityPrize").rglob("*.lean"))
+            files.update(proof_sources(nested_arklib))
             full_arklib_scan = True
         else:
-            files.update(path.rglob("*.lean"))
             if path.resolve() == arklib_root:
+                files.update(proof_sources(path))
                 full_arklib_scan = True
+            else:
+                files.update(path.rglob("*.lean"))
 
     return sorted(files), full_arklib_scan, errors
 
@@ -1332,7 +1337,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         description="Reject axiom-laundering tokens in live Lean source (CI gate 1).")
     parser.add_argument("paths", nargs="*",
                         help="Lean files or directories "
-                             "(default: ArkLib/, Research/ and ProximityPrize/)")
+                             "(default: ArkLib/, excluding ArkLib/Tests/)")
     parser.add_argument("--allowlist", type=Path, default=ALLOWLIST_PATH,
                         help="reviewed residual-axiom manifest "
                              "(default: scripts/residual_axioms.txt)")

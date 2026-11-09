@@ -26,9 +26,9 @@ for (const asset of assets) {
 }
 const files = { "index.html": html };
 for (const [name, source, marker] of [
-  ["mission.md", "mine/MISSION.md", "mission-version:"],
-  ["skill.md", "mine/claude/proximity-prize/SKILL.md", "bootstrap-version:"],
-  ["codex.md", "mine/codex/AGENTS.md", "bootstrap-version:"],
+  ["mission.md", "docs/contributing/agent-workflows/MISSION.md", "mission-version:"],
+  ["skill.md", "docs/contributing/agent-workflows/claude/proximity-prize/SKILL.md", "bootstrap-version:"],
+  ["codex.md", "docs/contributing/agent-workflows/codex/AGENTS.md", "bootstrap-version:"],
 ]) {
   const value = readFileSync(resolve(out, name), "utf8");
   if (value !== readFileSync(resolve(root, source), "utf8") || !value.includes(marker)) fail(`Stale onboarding file: ${name}`);

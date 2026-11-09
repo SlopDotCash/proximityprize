@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.ToMathlib.CurveFamilyHensel
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.Main
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.Main
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.Errors
 
 /-!
 # Issue #304 — anti-vacuity of the faithful surface + the affine-lines front door

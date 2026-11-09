@@ -1,5 +1,8 @@
 # Issue 2: campaign dependencies beyond Frontier
 
+> Historical migration record. Current source locations are documented in
+> [repository layout](repository-layout.md); earlier destinations below describe that migration.
+
 This slice follows the reusable algebra move in PR #189. It relocates 210
 campaign modules into `Research/ProximityPrize`, preserving declaration names,
 theorem statements, and proof bodies. The recorded path substitutions and the
@@ -20,7 +23,7 @@ Three boundaries need different treatment:
   `BCIKS20.LocalSeriesProducer`. Its theorem declarations and proofs remain intact.
 - `ToMathlib/RestrictedSumsetGeneral.lean` retains the general restricted-sumset
   theorem. Its three MCA-specific corollaries move to
-  `Research/ProximityPrize/Connections/RestrictedSumsetMCA.lean`, consumed by the
+  `ArkLib/Research/ProximityGap/Connections/RestrictedSumsetMCA.lean`, consumed by the
   relocated `MCAPlateauWindow` module.
 
 The generated library roots contain 1,711 ArkLib imports and 3,295 Research

@@ -12,7 +12,7 @@ core to exactly w = z0 elements; intersections only shrink):
 so m <= N*(w - lam) / (w^2 - N*lam).
 
 Companion Lean file:
-Research/ProximityPrize/Frontier/_FSMA_SecondMomentPairPartition.lean
+ArkLib/Research/ProximityGap/Frontier/_FSMA_SecondMomentPairPartition.lean
 """
 from fractions import Fraction
 import math

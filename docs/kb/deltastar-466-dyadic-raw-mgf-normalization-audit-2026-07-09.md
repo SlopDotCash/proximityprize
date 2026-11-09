@@ -57,7 +57,7 @@ the raw R209 budget.
 The axiom-clean formal brick is:
 
 ```text
-Research/ProximityPrize/Frontier/
+ArkLib/Research/ProximityGap/Frontier/
   _DyadicRawQuarterMGFRefuted.lean
 ```
 
@@ -83,7 +83,7 @@ Validation:
 
 ```text
 scripts/pg-iterate.sh \
-  Research/ProximityPrize/Frontier/_DyadicRawQuarterMGFRefuted.lean
+  ArkLib/Research/ProximityGap/Frontier/_DyadicRawQuarterMGFRefuted.lean
 ✅ OK (26s), no sorryAx
 ```
 

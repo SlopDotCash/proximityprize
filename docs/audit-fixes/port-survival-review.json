@@ -634,37 +634,37 @@
    "set": "restB"
   },
   {
-   "path": "blueprint/src/lattices/hachi_subfield.tex",
+   "path": "website/blueprint/src/lattices/hachi_subfield.tex",
    "verdict": "preserved",
    "note": "No-sorry/no-axiom status and axiom history present; the proof sketch uses not_associated_reverse_self, which exists. All \\lean refs exist.",
    "set": "restB"
   },
   {
-   "path": "blueprint/src/oracle_reductions/composition.tex",
+   "path": "website/blueprint/src/oracle_reductions/composition.tex",
    "verdict": "preserved",
    "note": "Rewritten upstream, then amended in wave 2: Admitted labels, a restricted-RBR remark, the shared-oracle schedule caveat and residual projectors as conditional interfaces. All 40 \\lean refs and named restricted theorems exist.",
    "set": "restB"
   },
   {
-   "path": "blueprint/src/oracle_reductions/defs.tex",
+   "path": "website/blueprint/src/oracle_reductions/defs.tex",
    "verdict": "preserved",
    "note": "Knowledge-soundness definition states extractor failure is bad, with the vacuity caveat. The implications prose was replaced upstream by guarded-verifier theorems, so the old \"two named transport residuals\" text is obsolete. \\lean refs exist (ProtocolSpec.Type is the structure field «Type»).",
    "set": "restB"
   },
   {
-   "path": "blueprint/src/oracle_reductions/fiat_shamir.tex",
+   "path": "website/blueprint/src/oracle_reductions/fiat_shamir.tex",
    "verdict": "obsolete",
    "note": "Upstream #1362 rewrite removed the DuplexSponge audit passage with the file names; no such names remain in the tex. \\lean refs exist (fsChallengeOracle and deriveTranscriptFS are aliases).",
    "set": "restB"
   },
   {
-   "path": "blueprint/src/proof_systems/stir.tex",
+   "path": "website/blueprint/src/proof_systems/stir.tex",
    "verdict": "obsolete",
    "note": "Upstream #1291 withdrew the Section 5 theorems; they are now labelled unformalized targets with no \\lean link, so the front-door caveats have nothing to qualify. The rate defect is fixed in Lean: ParamConditions.h_smooth_lt is degree < card.",
    "set": "restB"
   },
   {
-   "path": "blueprint/src/proof_systems/whir.tex",
+   "path": "website/blueprint/src/proof_systems/whir.tex",
    "verdict": "obsolete",
    "note": "The prose that overclaimed is gone; thm:whir_rbr_soundness has a commented-out \\lean and no leanok, and scope notes live in RBRSoundness.lean and WhirBricksConstruction.lean. Its TODO \"not currently formalized\" understates the existing Prop but makes no false claim.",
    "set": "restB"
@@ -785,7 +785,7 @@
   {
    "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Basic.lean",
    "verdict": "preserved",
-   "note": "Both memoryless-oracle caveats are present; the path is now the full ProximityPrize/Extensions/OracleReduction/Security/Rewinding.lean plus a section name, which exists."
+   "note": "Both memoryless-oracle caveats are present; the path is now the full ArkLib/Extensions/OracleReduction/Security/Rewinding.lean plus a section name, which exists."
   },
   {
    "path": "ArkLib/OracleReduction/FiatShamir/DuplexSponge/Security/KeyLemmaSalted.lean",
@@ -918,22 +918,22 @@
    "note": "The 'Still not in this file' paragraph is present and now points at `RandomOracleEagerTableDep.lean` in place of `EagerTable.lean`."
   },
   {
-   "path": "Research/ProximityPrize/DOSSIER.md",
+   "path": "docs/research/proximity-gap/DOSSIER.md",
    "verdict": "preserved",
    "note": "The §5 scope/snapshot rewrite is present; the scope sentence now covers `ArkLib/**` and `ProximityPrize/**`, matching main's census SCOPE."
   },
   {
-   "path": "Research/ProximityPrize/Frontier/_R325BinomialRecurrenceReturnBound.lean",
+   "path": "ArkLib/Research/ProximityGap/Frontier/_R325BinomialRecurrenceReturnBound.lean",
    "verdict": "preserved",
    "note": "T129 corrections present; the closing `exp(O(r))` sentence continues with an added caveat."
   },
   {
-   "path": "Research/ProximityPrize/Frontier/_SYZ26LiftingTest.lean",
+   "path": "ArkLib/Research/ProximityGap/Frontier/_SYZ26LiftingTest.lean",
    "verdict": "preserved",
    "note": "The L121 scope correction is present; the lost line was reflowed (line 93)."
   },
   {
-   "path": "Research/ProximityPrize/MCALatticeExact.lean",
+   "path": "ArkLib/Research/ProximityGap/MCALatticeExact.lean",
    "verdict": "preserved",
    "note": "The band-scope docs and `lt_two_mul_add_three_of_fieldBand` are present; only the local `hΣ` was renamed `hSig`."
   },

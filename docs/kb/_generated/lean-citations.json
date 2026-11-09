@@ -1,8 +1,8 @@
 {
   "counts": {
-    "files_with_citations": 1384,
+    "files_with_citations": 1390,
     "keys_cited": 83,
-    "total_citation_edges": 1801
+    "total_citation_edges": 1807
   },
   "files": {
     "ArkLib/AGM/Basic.lean": [
@@ -236,6 +236,10 @@
     ],
     "ArkLib/Commitments/Ordinary/Ajtai/Simple/Security.lean": [
       "Ajt96"
+    ],
+    "ArkLib/Compatibility/AGM.lean": [
+      "JM24",
+      "LPS24"
     ],
     "ArkLib/Data/CodingTheory/AGL24AgreementForcing.lean": [
       "AGL24"
@@ -2723,6 +2727,190 @@
     "ArkLib/Data/Probability/DistinctTuples.lean": [
       "AGL24"
     ],
+    "ArkLib/Extensions/Commitments/Functional/Hachi/InnerOuter/Arithmetic.lean": [
+      "LS18",
+      "NOZ26",
+      "NS24"
+    ],
+    "ArkLib/Extensions/Commitments/Functional/Hachi/InnerOuter/Correctness.lean": [
+      "NOZ26",
+      "NS24"
+    ],
+    "ArkLib/Extensions/Commitments/Functional/Hachi/InnerOuter/Security.lean": [
+      "LS18",
+      "NOZ26",
+      "NS24"
+    ],
+    "ArkLib/Extensions/Commitments/Functional/KZG/ConcreteVacuity.lean": [
+      "KZG10"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/Basic/LinearCode.lean": [
+      "BCGM25"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/Connections/ListDecodingAndCA.lean": [
+      "ABF26",
+      "BCHKS25",
+      "CS25",
+      "GCXK25"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/DivergenceOfSets.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/ExtensionCodes.lean": [
+      "ABF26",
+      "BCFW25"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/InterleavedCode.lean": [
+      "ABF26",
+      "AHIV22",
+      "BCIKS20",
+      "DG25",
+      "GGR11"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/JohnsonBound/Family.lean": [
+      "ABF26",
+      "Joh62"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/ListDecodability.lean": [
+      "ACFY24",
+      "ACFY24stir"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/PolishchukSpielman/PolishchukSpielman.lean": [
+      "BCIKS20",
+      "PS94",
+      "Spi95"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/ProximityGap/AHIV22.lean": [
+      "AHIV22"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/BWMatrix.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/JointAgreement.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/Main.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Guruswami.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/WeightedAgreement.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/ProximityGap/Basic.lean": [
+      "BCIKS20",
+      "DG25"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/ProximityGap/Errors.lean": [
+      "ABF26",
+      "ACFY24",
+      "ACFY25",
+      "BCIKS20",
+      "Hab25"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/ProximityGap/LineDecoding.lean": [
+      "ABF26",
+      "GG25"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/ReedSolomon.lean": [
+      "ACFY24"
+    ],
+    "ArkLib/Extensions/Data/CodingTheory/SubspaceDesign.lean": [
+      "ABF26",
+      "GG25",
+      "GK16",
+      "GX13"
+    ],
+    "ArkLib/Extensions/Data/Lattices/CyclotomicRing/NormBounds/Basic.lean": [
+      "NOZ26",
+      "NS24"
+    ],
+    "ArkLib/Extensions/Data/Lattices/CyclotomicRing/NormBounds/MicciancioYoung.lean": [
+      "Mic07",
+      "NOZ26",
+      "NS24"
+    ],
+    "ArkLib/Extensions/Data/Polynomial/Indicator.lean": [
+      "ACFY24"
+    ],
+    "ArkLib/Extensions/Data/Polynomial/RationalFunctions.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Extensions/Data/Polynomial/Trivariate.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Extensions/Data/Probability/Combinatorial.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Extensions/OracleReduction/BCS/Basic.lean": [
+      "BCS16",
+      "ChiesaYogev2024"
+    ],
+    "ArkLib/Extensions/OracleReduction/Basic.lean": [
+      "BCS16"
+    ],
+    "ArkLib/Extensions/OracleReduction/VectorIOR.lean": [
+      "BCS16"
+    ],
+    "ArkLib/Extensions/ProofSystem/BatchedFri/Security.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/General.lean": [
+      "DP24"
+    ],
+    "ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness.lean": [
+      "DP24"
+    ],
+    "ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/BadBlocks.lean": [
+      "DP24"
+    ],
+    "ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/FoldDistance.lean": [
+      "DP24"
+    ],
+    "ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhaseSoundness.lean": [
+      "DP24"
+    ],
+    "ArkLib/Extensions/ProofSystem/Fri/Spec/SingleRound.lean": [
+      "FRI1216"
+    ],
+    "ArkLib/Extensions/ProofSystem/Fri/Spec/Soundness.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Extensions/ProofSystem/Plonk/Basic.lean": [
+      "GWZC19"
+    ],
+    "ArkLib/Extensions/ProofSystem/Stir/Combine.lean": [
+      "ACFY24stir"
+    ],
+    "ArkLib/Extensions/ProofSystem/Stir/MainThm.lean": [
+      "ACFY24stir"
+    ],
+    "ArkLib/Extensions/ProofSystem/Stir/ProximityGap.lean": [
+      "ACFY24stir",
+      "BCIKS20"
+    ],
+    "ArkLib/Extensions/ProofSystem/ToyProblem/Definitions.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Extensions/ProofSystem/ToyProblem/Impl/IRS.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Extensions/ProofSystem/ToyProblem/SoundnessBounds.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Extensions/ProofSystem/ToyProblem/Spec/General.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Extensions/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean": [
+      "ABF26"
+    ],
     "ArkLib/OracleReduction/Basic.lean": [
       "BCS16"
     ],
@@ -3060,6 +3248,791 @@
     ],
     "ArkLib/ProofSystem/Whir/RBRSoundness.lean": [
       "ACFY24"
+    ],
+    "ArkLib/Research/ProximityGap/BCIKS20/Arith.lean": [
+      "BCHKS25",
+      "BCIKS20",
+      "Hab25"
+    ],
+    "ArkLib/Research/ProximityGap/BCIKS20/Bundle.lean": [
+      "BCIKS20",
+      "Hab25"
+    ],
+    "ArkLib/Research/ProximityGap/BCIKS20/Capture.lean": [
+      "BCIKS20",
+      "Hab25"
+    ],
+    "ArkLib/Research/ProximityGap/BCIKS20/Improve.lean": [
+      "BCIKS20",
+      "Hab25"
+    ],
+    "ArkLib/Research/ProximityGap/BCIKS20/StrictCoeffPolysShare.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Research/ProximityGap/CapacityBounds.lean": [
+      "ABF26",
+      "BCGM25",
+      "BCHKS25",
+      "CS25",
+      "DG25",
+      "GG25",
+      "Hab25"
+    ],
+    "ArkLib/Research/ProximityGap/CapacityBoundsProofs.lean": [
+      "BCHKS25",
+      "CS25",
+      "GG25"
+    ],
+    "ArkLib/Research/ProximityGap/Collapse.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Connections/SmoothDomainMCAWitness.lean": [
+      "ABF26",
+      "GCXK25"
+    ],
+    "ArkLib/Research/ProximityGap/Decision.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/BurgessIndexOvershoot.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/CAtoMCALineLocalization.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/CrossCellCircleMethodSplit.lean": [
+      "ABF26",
+      "BCHKS25"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/CrossStepCeilingInsufficient.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/CrossStepRungFour.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/CrossStepRungFourDeficit.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/CrossStepRungOne.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/CrossStepRungOneDeficit.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/CrossStepRungThree.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/CrossStepRungTwo.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/CumulantOnsetNoGo.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/CurveDecodability.lean": [
+      "GG25",
+      "Jo26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/CyclotomicNormDefectThreshold.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/DeltaStarConditionalEntropyPin.lean": [
+      "ABF26",
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/DeltaStarPinF13Order4Deg2.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/EffKatzConductorBarrier.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/EnergyRatioSupNormLower.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/EquivariancePinN12.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/Face1JohnsonRadiusCap.lean": [
+      "ABF26",
+      "BCIKS20"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/I031LogTargetForm.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/KKH26ConcreteCeilingN8.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/Kappa6Rung.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/ListCenterEntropyCeiling.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/MomentMethodPrizeDepthNoGo.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/PowerSumLogConvexSpacing.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/PowerSumRatioMeanFloor.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/PowerSumRatioMonotone.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/PrizeConditionalPinCapstone.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/SliceRankDiagonalVacuous.lean": [
+      "ABF26",
+      "BCHKS25"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/SpurBadPrimeCeiling.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/SpurBadPrimeChebotarev.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/Sweep_A02_AutocorrelationRecursion.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/Sweep_A06_PFreeInvariantBridge.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/Sweep_A11_ThinnessEssential.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/Sweep_A12_PhaseAlignmentTower.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/Sweep_A16_OrbitCountW4.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/Sweep_A24_HDFreeDOF.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/Sweep_A27_CondLDtoMCA.lean": [
+      "ABF26",
+      "GG25",
+      "Jo26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/Sweep_A33_Realizability.lean": [
+      "ABF26",
+      "GG25"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/Sweep_A34_LacunaryResultantS128.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/ThornerZamanS128.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/WF407W2_L2nover4.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/WF407W2_L3_3pow.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/WF407W2_L5_s256.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/WF407_AnchorsImport.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/WF407_B2Curve.lean": [
+      "GG25",
+      "Jo26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/WF407_B3_s128.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/WF407_T02Shkredov.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/WF407_T13DyadicDeviation.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/WF407_T24_PFreeDefectGate.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/WF407_T389_03_PhaseInert.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_A5FullSymmetryStackReduction.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_AnomalyLocalization.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_Attack10LDtoMCAJohnsonCeiling.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_AttackThinnessBootstrap_GirthVsEnergy.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_AvBV2_VarianceOverPrimesCertificationDeficit.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_AvCP_AlmostAllPrimesNoWraparound.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_AvD1_AverageBVSupplyReformulation.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_AvD1_KKH26S128.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_AvD2_LinnikWindowCountRequired.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_AvD3_ParsevalThresholdS128.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_AvF3_UniformNoWraparoundTheory.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_AvJ_UnconditionalBeat.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_AvLSP_AlmostAllPrimesLargeSieve.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_AvLadderSaddleAssembly.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_AvT3a_DiBenedettoBeatAssembly.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_AvUNIF_BestForallQExponent.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_AvW3_Depth3BadPrimeSet.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_B2ExplainingCurveList.lean": [
+      "GG25",
+      "Jo26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_B2StackAgreementWeld.lean": [
+      "ABF26",
+      "GG25",
+      "Jo26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_B2StructuredCloseSetBudget.lean": [
+      "GG25",
+      "Jo26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_BGKSOTAInsufficiency.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_BadPrimeBoundCore.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_BchksF4_GoodPrimeLinnik.lean": [
+      "ABF26",
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_BetaGatedRatioGate.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_BridgeExplicitGaussPhase.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_CirculantTraceEnergy.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_ClosedWalkPowerSum.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_CollisionExcessPartition.lean": [
+      "ABF26",
+      "BCHKS25"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_DCStieltjesRatioAntitoneEquivalence.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_DeltaStarDefinitive.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_DyadicDeviationDecayEnvelope.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_DyadicJacobiCocycleNonContraction.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_E2NegationStructure.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_E2VanishWidthFourLaw.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_EtaCosetInvariance.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_EtaFrequencyParity.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_FoldedPinBrick1.lean": [
+      "GG25",
+      "GK16"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_FoldedPinBrick3.lean": [
+      "GG25"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_FrobeniusEnergyDescent.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_GG25AffineFactorInstance.lean": [
+      "GG25"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_GG25CurveDecodNextBrick.lean": [
+      "GG25",
+      "Jo26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_GG25CurveDecodabilityOpener.lean": [
+      "GG25",
+      "Jo26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_GG25LineToAffine.lean": [
+      "GG25"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_GaussPhaseFlatnessAlgebra.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_ImprimitiveRatioLevelSet.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_L3c_AdditiveCharNonAlgebraicityBarrier.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_LewkoWeilRothThresholdMiss.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_NoExcessOnsetThreshold.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_NonPrincipalClosedWalkTrace.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_PrizeFloorOfBGK.lean": [
+      "ABF26",
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_R1SecondMomentSqrtBarrier.lean": [
+      "ABF26",
+      "GCXK25"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_RMTBoundedDepthUniversalityNoGo.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_SYZ10BCIKS57Chunk1.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_SYZ11BCIKS57Chunk3.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_SYZ13BCIKS57Chunk4.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_SYZ14BCIKS57Chunk2.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_SYZ15TLoadedInterfaceRepair.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_SYZ16Claim58Truncation.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_SYZ17XDegreeBudget.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_SYZ8CellPackageSupply.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_SpecF7_GoodPrimeCollisionCount.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_SpectralTraceZeroSignForcing.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_SpurEvenValuationTwoSquares.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_StickelbergerAnnihilatorNoGo.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_SymmetricEtaRealBridge.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_TZDirichletUnconditional.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_TZSubquarticBookkeeping.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_ThornerZamanPNTStatement.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_TowerSpikeBetaGate.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_U1MinimalSupplyInput.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_U2FieldSizeBudgetGate.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_W17CurveDecodStitching.lean": [
+      "GG25",
+      "Jo26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_WorstBSetCosetClosed.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_ZJLR26CapacityPinAssembly.lean": [
+      "CZ25",
+      "GG25",
+      "GK16",
+      "Jo26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_ZT413EpsilonPackaging.lean": [
+      "ABF26",
+      "GG25"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_ZTZBetaFiveLadderExtension.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_ZTZBetaFourCeilingWiring.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_ZTZBetaFourHighLadderExtension.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_ZTZBetaFourLadderExtension.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_ZTZBetaFourPrizeScaleLadder.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_ZTZBetaThreeFiveCeilingWiring.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_ZTZBetaThreeFivePrizeScaleLadder.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_ZTZBetaThreeHighLadderExtension.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_ZTZBetaThreeLadderExtension.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_ZW17RecursivePeeling.lean": [
+      "GG25",
+      "Jo26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_wf2NG_partition_rank_vacuous.lean": [
+      "ABF26",
+      "BCHKS25"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_wf407_tower.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_wf5E1_WassersteinUnionNoGo.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_wf5M1_HeightCountRoute.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_wf5M2_stickelberger_depth.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_wf5M3_crossstep_ceiling.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_wf5R1_crosscell_wick_descent.lean": [
+      "ABF26",
+      "BCHKS25"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_wf6C1_chebotarev_badprime_count.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_wf6P3_nonprincipal_crossstep.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_wf7W7_NewtonSlopeDCDominance.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_wf8B4_dcMGF_gaussian_obstruction.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_wfA05_galois_orbit_count.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_wfA08_twoadic_newton_polygon.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_wfS4_galois_concentration_obstruction.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_wfS4_orbit_partition_law.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_wfS4_stickelberger_perweight_threshold.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Frontier/_wfTT06_coupled_productformula_house.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/GG25CurveDecodabilityB2Capstone.lean": [
+      "GG25",
+      "Jo26"
+    ],
+    "ArkLib/Research/ProximityGap/GeneralSpikeLowerBound.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/GrandChallenges.lean": [
+      "ABF26",
+      "BCHKS25",
+      "Hab25"
+    ],
+    "ArkLib/Research/ProximityGap/Hab25CellDichotomyWiring.lean": [
+      "BCIKS20",
+      "Hab25"
+    ],
+    "ArkLib/Research/ProximityGap/Hab25CoordinateUpgradeWeld.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Research/ProximityGap/Hab25Core.lean": [
+      "BCHKS25",
+      "BCIKS20",
+      "Hab25"
+    ],
+    "ArkLib/Research/ProximityGap/Hab25FactorBudgetSupply.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Research/ProximityGap/Hab25Johnson.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Research/ProximityGap/Hab25JohnsonCountWiring.lean": [
+      "ABF26",
+      "BCIKS20",
+      "Hab25"
+    ],
+    "ArkLib/Research/ProximityGap/Hab25JohnsonDichotomy.lean": [
+      "BCIKS20",
+      "Hab25"
+    ],
+    "ArkLib/Research/ProximityGap/Hab25JohnsonDischarge.lean": [
+      "BCIKS20",
+      "Hab25"
+    ],
+    "ArkLib/Research/ProximityGap/Hab25JohnsonPackageSupply.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Research/ProximityGap/Hab25RichCoordinateGate.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Research/ProximityGap/Hab25SlackWeld.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Research/ProximityGap/Hab25UniqueRichFactor.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Research/ProximityGap/JohnsonBoundRealLower.lean": [
+      "Hab25"
+    ],
+    "ArkLib/Research/ProximityGap/KKH26DimGeneralSharpInterleavedPin.lean": [
+      "Jo26"
+    ],
+    "ArkLib/Research/ProximityGap/LDThresholdElias.lean": [
+      "Eli57"
+    ],
+    "ArkLib/Research/ProximityGap/Lattice2.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/LegacyWorkbench.lean": [
+      "KKH26"
+    ],
+    "ArkLib/Research/ProximityGap/LineDecodingT421Faithful.lean": [
+      "ABF26",
+      "BCIKS20",
+      "GG25"
+    ],
+    "ArkLib/Research/ProximityGap/ListClosedForm.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/ListDecodingConjectureRefutation.lean": [
+      "ABF26",
+      "CS25"
+    ],
+    "ArkLib/Research/ProximityGap/MCABadCountRatio.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/MCABracket.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/MCAConjectureProgress.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/MCADeltaStarBracket.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/MCAEndpointLower.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/MCAEndpointUpper.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/MCAGS.lean": [
+      "ABF26",
+      "GG25",
+      "Hab25"
+    ],
+    "ArkLib/Research/ProximityGap/MCAGSBounds.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/MCAGSFieldUniversal.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/MCAGSKernels.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/MCAGSUniversalReduction.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/MCAGSWitness.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/MCAJohnsonAssembly.lean": [
+      "ABF26",
+      "BCIKS20",
+      "Hab25"
+    ],
+    "ArkLib/Research/ProximityGap/MCAJohnsonClustering.lean": [
+      "ABF26",
+      "BCIKS20"
+    ],
+    "ArkLib/Research/ProximityGap/MCAJohnsonDegreeOne.lean": [
+      "ABF26",
+      "BCIKS20",
+      "PS94"
+    ],
+    "ArkLib/Research/ProximityGap/MCALatticeExact.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/MCALatticeOverflowSharp.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/MCAMiddleBand.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/MCAPlateauWindow.lean": [
+      "ABF26",
+      "BCHKS25",
+      "CS25",
+      "DG25"
+    ],
+    "ArkLib/Research/ProximityGap/MCASecondMoment.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/MCAUDR2Bound.lean": [
+      "ABF26",
+      "BCIKS20"
+    ],
+    "ArkLib/Research/ProximityGap/MCAUpperWitnessSunflower.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/MCAZeroUpperBound.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Overreach.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/PROXIMITY_PRIZE_WORKBENCH.lean": [
+      "ABF26",
+      "CS25"
+    ],
+    "ArkLib/Research/ProximityGap/ProductionJohnsonBudget.lean": [
+      "Hab25"
+    ],
+    "ArkLib/Research/ProximityGap/Protocols/Stir/WindowCAFeed.lean": [
+      "ACFY24",
+      "BCIKS20"
+    ],
+    "ArkLib/Research/ProximityGap/RSListThresholdConditionalPin.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/RSListThresholdGapBracket.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/RSListThresholdJohnsonGeneral.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/RSListThresholdJohnsonPin.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/RSListThresholdOverflowSharp.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/RSListThresholdOverflowSharpGen.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/RSListThresholdPin.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/RSListThresholdPinGeneral.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/RSListThresholdPinRate12.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/RSListThresholdStrictRate12.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/RSListThresholdTrappedRate12.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/RadiusOne.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/RadiusOneExact.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Resolution.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/ResolutionWitness.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/SubsetSumErdosHeilbronn.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/SubsetSumRadiusOne.lean": [
+      "ABF26"
+    ],
+    "ArkLib/Research/ProximityGap/Support/BCGM25MCAPreservation.lean": [
+      "BCGM25"
+    ],
+    "ArkLib/Research/ProximityGap/Support/UnifiedProducerWindowGlue.lean": [
+      "BCIKS20"
+    ],
+    "ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder.lean": [
+      "DKT26"
+    ],
+    "ArkLib/Tests/ProofSystem/Binius/BinaryBasefold/Soundness/Incremental.lean": [
+      "DP24"
+    ],
+    "ArkLib/Tests/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhase.lean": [
+      "DP24"
+    ],
+    "ArkLib/Tests/ProofSystem/Stir/MainThm.lean": [
+      "ACFY24stir"
+    ],
+    "ArkLib/Tests/ProofSystem/Stir/ProximityGap.lean": [
+      "ACFY24stir"
+    ],
+    "ArkLib/Tests/ToMathlib/RingTheory/Nullstellensatz/BidegreeIncidence.lean": [
+      "BCPZZ26"
     ],
     "ArkLib/ToCompPoly/Multilinear/NestedEvaluationTree.lean": [
       "NOZ26"
@@ -3618,961 +4591,6 @@
     ],
     "ArkLib/ToMathlib/ZLinearClosureAudit.lean": [
       "BCIKS20"
-    ],
-    "ProximityPrize/Compatibility/AGM.lean": [
-      "JM24",
-      "LPS24"
-    ],
-    "ProximityPrize/Extensions/Commitments/Functional/Hachi/InnerOuter/Arithmetic.lean": [
-      "LS18",
-      "NOZ26",
-      "NS24"
-    ],
-    "ProximityPrize/Extensions/Commitments/Functional/Hachi/InnerOuter/Correctness.lean": [
-      "NOZ26",
-      "NS24"
-    ],
-    "ProximityPrize/Extensions/Commitments/Functional/Hachi/InnerOuter/Security.lean": [
-      "LS18",
-      "NOZ26",
-      "NS24"
-    ],
-    "ProximityPrize/Extensions/Commitments/Functional/KZG/ConcreteVacuity.lean": [
-      "KZG10"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/Basic/LinearCode.lean": [
-      "BCGM25"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/Connections/ListDecodingAndCA.lean": [
-      "ABF26",
-      "BCHKS25",
-      "CS25",
-      "GCXK25"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/DivergenceOfSets.lean": [
-      "BCIKS20"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/ExtensionCodes.lean": [
-      "ABF26",
-      "BCFW25"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean": [
-      "BCIKS20"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/InterleavedCode.lean": [
-      "ABF26",
-      "AHIV22",
-      "BCIKS20",
-      "DG25",
-      "GGR11"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/JohnsonBound/Family.lean": [
-      "ABF26",
-      "Joh62"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/ListDecodability.lean": [
-      "ACFY24",
-      "ACFY24stir"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/PolishchukSpielman/PolishchukSpielman.lean": [
-      "BCIKS20",
-      "PS94",
-      "Spi95"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/AHIV22.lean": [
-      "AHIV22"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/BWMatrix.lean": [
-      "BCIKS20"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/JointAgreement.lean": [
-      "BCIKS20"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/Main.lean": [
-      "BCIKS20"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean": [
-      "BCIKS20"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Guruswami.lean": [
-      "BCIKS20"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/WeightedAgreement.lean": [
-      "BCIKS20"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/Basic.lean": [
-      "BCIKS20",
-      "DG25"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/Errors.lean": [
-      "ABF26",
-      "ACFY24",
-      "ACFY25",
-      "BCIKS20",
-      "Hab25"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/LineDecoding.lean": [
-      "ABF26",
-      "GG25"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/ReedSolomon.lean": [
-      "ACFY24"
-    ],
-    "ProximityPrize/Extensions/Data/CodingTheory/SubspaceDesign.lean": [
-      "ABF26",
-      "GG25",
-      "GK16",
-      "GX13"
-    ],
-    "ProximityPrize/Extensions/Data/Lattices/CyclotomicRing/NormBounds/Basic.lean": [
-      "NOZ26",
-      "NS24"
-    ],
-    "ProximityPrize/Extensions/Data/Lattices/CyclotomicRing/NormBounds/MicciancioYoung.lean": [
-      "Mic07",
-      "NOZ26",
-      "NS24"
-    ],
-    "ProximityPrize/Extensions/Data/Polynomial/Indicator.lean": [
-      "ACFY24"
-    ],
-    "ProximityPrize/Extensions/Data/Polynomial/RationalFunctions.lean": [
-      "BCIKS20"
-    ],
-    "ProximityPrize/Extensions/Data/Polynomial/Trivariate.lean": [
-      "BCIKS20"
-    ],
-    "ProximityPrize/Extensions/Data/Probability/Combinatorial.lean": [
-      "ABF26"
-    ],
-    "ProximityPrize/Extensions/OracleReduction/BCS/Basic.lean": [
-      "BCS16",
-      "ChiesaYogev2024"
-    ],
-    "ProximityPrize/Extensions/OracleReduction/Basic.lean": [
-      "BCS16"
-    ],
-    "ProximityPrize/Extensions/OracleReduction/VectorIOR.lean": [
-      "BCS16"
-    ],
-    "ProximityPrize/Extensions/ProofSystem/BatchedFri/Security.lean": [
-      "BCIKS20"
-    ],
-    "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/General.lean": [
-      "DP24"
-    ],
-    "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness.lean": [
-      "DP24"
-    ],
-    "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/BadBlocks.lean": [
-      "DP24"
-    ],
-    "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/FoldDistance.lean": [
-      "DP24"
-    ],
-    "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhaseSoundness.lean": [
-      "DP24"
-    ],
-    "ProximityPrize/Extensions/ProofSystem/Fri/Spec/SingleRound.lean": [
-      "FRI1216"
-    ],
-    "ProximityPrize/Extensions/ProofSystem/Fri/Spec/Soundness.lean": [
-      "BCIKS20"
-    ],
-    "ProximityPrize/Extensions/ProofSystem/Plonk/Basic.lean": [
-      "GWZC19"
-    ],
-    "ProximityPrize/Extensions/ProofSystem/Stir/Combine.lean": [
-      "ACFY24stir"
-    ],
-    "ProximityPrize/Extensions/ProofSystem/Stir/MainThm.lean": [
-      "ACFY24stir"
-    ],
-    "ProximityPrize/Extensions/ProofSystem/Stir/ProximityGap.lean": [
-      "ACFY24stir",
-      "BCIKS20"
-    ],
-    "ProximityPrize/Extensions/ProofSystem/ToyProblem/Definitions.lean": [
-      "ABF26"
-    ],
-    "ProximityPrize/Extensions/ProofSystem/ToyProblem/Impl/IRS.lean": [
-      "ABF26"
-    ],
-    "ProximityPrize/Extensions/ProofSystem/ToyProblem/SoundnessBounds.lean": [
-      "ABF26"
-    ],
-    "ProximityPrize/Extensions/ProofSystem/ToyProblem/Spec/General.lean": [
-      "ABF26"
-    ],
-    "ProximityPrize/Extensions/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/BCIKS20/Arith.lean": [
-      "BCHKS25",
-      "BCIKS20",
-      "Hab25"
-    ],
-    "Research/ProximityPrize/BCIKS20/Bundle.lean": [
-      "BCIKS20",
-      "Hab25"
-    ],
-    "Research/ProximityPrize/BCIKS20/Capture.lean": [
-      "BCIKS20",
-      "Hab25"
-    ],
-    "Research/ProximityPrize/BCIKS20/Improve.lean": [
-      "BCIKS20",
-      "Hab25"
-    ],
-    "Research/ProximityPrize/BCIKS20/StrictCoeffPolysShare.lean": [
-      "BCIKS20"
-    ],
-    "Research/ProximityPrize/CapacityBounds.lean": [
-      "ABF26",
-      "BCGM25",
-      "BCHKS25",
-      "CS25",
-      "DG25",
-      "GG25",
-      "Hab25"
-    ],
-    "Research/ProximityPrize/CapacityBoundsProofs.lean": [
-      "BCHKS25",
-      "CS25",
-      "GG25"
-    ],
-    "Research/ProximityPrize/Collapse.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Connections/SmoothDomainMCAWitness.lean": [
-      "ABF26",
-      "GCXK25"
-    ],
-    "Research/ProximityPrize/Decision.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/BurgessIndexOvershoot.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/CAtoMCALineLocalization.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/CrossCellCircleMethodSplit.lean": [
-      "ABF26",
-      "BCHKS25"
-    ],
-    "Research/ProximityPrize/Frontier/CrossStepCeilingInsufficient.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/CrossStepRungFour.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/CrossStepRungFourDeficit.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/CrossStepRungOne.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/CrossStepRungOneDeficit.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/CrossStepRungThree.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/CrossStepRungTwo.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/CumulantOnsetNoGo.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/CurveDecodability.lean": [
-      "GG25",
-      "Jo26"
-    ],
-    "Research/ProximityPrize/Frontier/CyclotomicNormDefectThreshold.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/DeltaStarConditionalEntropyPin.lean": [
-      "ABF26",
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/DeltaStarPinF13Order4Deg2.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/EffKatzConductorBarrier.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/EnergyRatioSupNormLower.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/EquivariancePinN12.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/Face1JohnsonRadiusCap.lean": [
-      "ABF26",
-      "BCIKS20"
-    ],
-    "Research/ProximityPrize/Frontier/I031LogTargetForm.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/KKH26ConcreteCeilingN8.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/Kappa6Rung.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/ListCenterEntropyCeiling.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/MomentMethodPrizeDepthNoGo.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/PowerSumLogConvexSpacing.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/PowerSumRatioMeanFloor.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/PowerSumRatioMonotone.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/PrizeConditionalPinCapstone.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/SliceRankDiagonalVacuous.lean": [
-      "ABF26",
-      "BCHKS25"
-    ],
-    "Research/ProximityPrize/Frontier/SpurBadPrimeCeiling.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/SpurBadPrimeChebotarev.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/Sweep_A02_AutocorrelationRecursion.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/Sweep_A06_PFreeInvariantBridge.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/Sweep_A11_ThinnessEssential.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/Sweep_A12_PhaseAlignmentTower.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/Sweep_A16_OrbitCountW4.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/Sweep_A24_HDFreeDOF.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/Sweep_A27_CondLDtoMCA.lean": [
-      "ABF26",
-      "GG25",
-      "Jo26"
-    ],
-    "Research/ProximityPrize/Frontier/Sweep_A33_Realizability.lean": [
-      "ABF26",
-      "GG25"
-    ],
-    "Research/ProximityPrize/Frontier/Sweep_A34_LacunaryResultantS128.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/ThornerZamanS128.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/WF407W2_L2nover4.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/WF407W2_L3_3pow.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/WF407W2_L5_s256.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/WF407_AnchorsImport.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/WF407_B2Curve.lean": [
-      "GG25",
-      "Jo26"
-    ],
-    "Research/ProximityPrize/Frontier/WF407_B3_s128.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/WF407_T02Shkredov.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/WF407_T13DyadicDeviation.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/WF407_T24_PFreeDefectGate.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/WF407_T389_03_PhaseInert.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_A5FullSymmetryStackReduction.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_AnomalyLocalization.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_Attack10LDtoMCAJohnsonCeiling.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_AttackThinnessBootstrap_GirthVsEnergy.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_AvBV2_VarianceOverPrimesCertificationDeficit.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_AvCP_AlmostAllPrimesNoWraparound.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_AvD1_AverageBVSupplyReformulation.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_AvD1_KKH26S128.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_AvD2_LinnikWindowCountRequired.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_AvD3_ParsevalThresholdS128.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_AvF3_UniformNoWraparoundTheory.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_AvJ_UnconditionalBeat.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_AvLSP_AlmostAllPrimesLargeSieve.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_AvLadderSaddleAssembly.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_AvT3a_DiBenedettoBeatAssembly.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_AvUNIF_BestForallQExponent.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_AvW3_Depth3BadPrimeSet.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_B2ExplainingCurveList.lean": [
-      "GG25",
-      "Jo26"
-    ],
-    "Research/ProximityPrize/Frontier/_B2StackAgreementWeld.lean": [
-      "ABF26",
-      "GG25",
-      "Jo26"
-    ],
-    "Research/ProximityPrize/Frontier/_B2StructuredCloseSetBudget.lean": [
-      "GG25",
-      "Jo26"
-    ],
-    "Research/ProximityPrize/Frontier/_BGKSOTAInsufficiency.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_BadPrimeBoundCore.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_BchksF4_GoodPrimeLinnik.lean": [
-      "ABF26",
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_BetaGatedRatioGate.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_BridgeExplicitGaussPhase.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_CirculantTraceEnergy.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_ClosedWalkPowerSum.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_CollisionExcessPartition.lean": [
-      "ABF26",
-      "BCHKS25"
-    ],
-    "Research/ProximityPrize/Frontier/_DCStieltjesRatioAntitoneEquivalence.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_DeltaStarDefinitive.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_DyadicDeviationDecayEnvelope.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_DyadicJacobiCocycleNonContraction.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_E2NegationStructure.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_E2VanishWidthFourLaw.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_EtaCosetInvariance.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_EtaFrequencyParity.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_FoldedPinBrick1.lean": [
-      "GG25",
-      "GK16"
-    ],
-    "Research/ProximityPrize/Frontier/_FoldedPinBrick3.lean": [
-      "GG25"
-    ],
-    "Research/ProximityPrize/Frontier/_FrobeniusEnergyDescent.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_GG25AffineFactorInstance.lean": [
-      "GG25"
-    ],
-    "Research/ProximityPrize/Frontier/_GG25CurveDecodNextBrick.lean": [
-      "GG25",
-      "Jo26"
-    ],
-    "Research/ProximityPrize/Frontier/_GG25CurveDecodabilityOpener.lean": [
-      "GG25",
-      "Jo26"
-    ],
-    "Research/ProximityPrize/Frontier/_GG25LineToAffine.lean": [
-      "GG25"
-    ],
-    "Research/ProximityPrize/Frontier/_GaussPhaseFlatnessAlgebra.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_ImprimitiveRatioLevelSet.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_KKH26s128ThornerZamanBridge.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_L3c_AdditiveCharNonAlgebraicityBarrier.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_LewkoWeilRothThresholdMiss.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_NoExcessOnsetThreshold.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_NonPrincipalClosedWalkTrace.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_PrizeFloorOfBGK.lean": [
-      "ABF26",
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_R1SecondMomentSqrtBarrier.lean": [
-      "ABF26",
-      "GCXK25"
-    ],
-    "Research/ProximityPrize/Frontier/_RMTBoundedDepthUniversalityNoGo.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_SYZ10BCIKS57Chunk1.lean": [
-      "BCIKS20"
-    ],
-    "Research/ProximityPrize/Frontier/_SYZ11BCIKS57Chunk3.lean": [
-      "BCIKS20"
-    ],
-    "Research/ProximityPrize/Frontier/_SYZ13BCIKS57Chunk4.lean": [
-      "BCIKS20"
-    ],
-    "Research/ProximityPrize/Frontier/_SYZ14BCIKS57Chunk2.lean": [
-      "BCIKS20"
-    ],
-    "Research/ProximityPrize/Frontier/_SYZ15TLoadedInterfaceRepair.lean": [
-      "BCIKS20"
-    ],
-    "Research/ProximityPrize/Frontier/_SYZ16Claim58Truncation.lean": [
-      "BCIKS20"
-    ],
-    "Research/ProximityPrize/Frontier/_SYZ17XDegreeBudget.lean": [
-      "BCIKS20"
-    ],
-    "Research/ProximityPrize/Frontier/_SYZ8CellPackageSupply.lean": [
-      "BCIKS20"
-    ],
-    "Research/ProximityPrize/Frontier/_SpecF7_GoodPrimeCollisionCount.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_SpectralTraceZeroSignForcing.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_SpurEvenValuationTwoSquares.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_StickelbergerAnnihilatorNoGo.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_SymmetricEtaRealBridge.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_TZDirichletUnconditional.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_TZSubquarticBookkeeping.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_ThornerZamanPNTStatement.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_TowerSpikeBetaGate.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_U1MinimalSupplyInput.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_U2FieldSizeBudgetGate.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_W17CurveDecodStitching.lean": [
-      "GG25",
-      "Jo26"
-    ],
-    "Research/ProximityPrize/Frontier/_WorstBSetCosetClosed.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_ZJLR26CapacityPinAssembly.lean": [
-      "CZ25",
-      "GG25",
-      "GK16",
-      "Jo26"
-    ],
-    "Research/ProximityPrize/Frontier/_ZT413EpsilonPackaging.lean": [
-      "ABF26",
-      "GG25"
-    ],
-    "Research/ProximityPrize/Frontier/_ZTZBetaFiveLadderExtension.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_ZTZBetaFourCeilingWiring.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_ZTZBetaFourHighLadderExtension.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_ZTZBetaFourLadderExtension.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_ZTZBetaFourPrizeScaleLadder.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_ZTZBetaThreeFiveCeilingWiring.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_ZTZBetaThreeFivePrizeScaleLadder.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_ZTZBetaThreeHighLadderExtension.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_ZTZBetaThreeLadderExtension.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/Frontier/_ZW17RecursivePeeling.lean": [
-      "GG25",
-      "Jo26"
-    ],
-    "Research/ProximityPrize/Frontier/_wf2NG_partition_rank_vacuous.lean": [
-      "ABF26",
-      "BCHKS25"
-    ],
-    "Research/ProximityPrize/Frontier/_wf407_tower.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_wf5E1_WassersteinUnionNoGo.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_wf5M1_HeightCountRoute.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_wf5M2_stickelberger_depth.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_wf5M3_crossstep_ceiling.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_wf5R1_crosscell_wick_descent.lean": [
-      "ABF26",
-      "BCHKS25"
-    ],
-    "Research/ProximityPrize/Frontier/_wf6C1_chebotarev_badprime_count.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_wf6P3_nonprincipal_crossstep.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_wf7W7_NewtonSlopeDCDominance.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_wf8B4_dcMGF_gaussian_obstruction.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_wfA05_galois_orbit_count.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_wfA08_twoadic_newton_polygon.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_wfS4_galois_concentration_obstruction.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_wfS4_orbit_partition_law.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_wfS4_stickelberger_perweight_threshold.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Frontier/_wfTT06_coupled_productformula_house.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/GG25CurveDecodabilityB2Capstone.lean": [
-      "GG25",
-      "Jo26"
-    ],
-    "Research/ProximityPrize/GeneralSpikeLowerBound.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/GrandChallenges.lean": [
-      "ABF26",
-      "BCHKS25",
-      "Hab25"
-    ],
-    "Research/ProximityPrize/Hab25CellDichotomyWiring.lean": [
-      "BCIKS20",
-      "Hab25"
-    ],
-    "Research/ProximityPrize/Hab25CoordinateUpgradeWeld.lean": [
-      "BCIKS20"
-    ],
-    "Research/ProximityPrize/Hab25Core.lean": [
-      "BCHKS25",
-      "BCIKS20",
-      "Hab25"
-    ],
-    "Research/ProximityPrize/Hab25FactorBudgetSupply.lean": [
-      "BCIKS20"
-    ],
-    "Research/ProximityPrize/Hab25Johnson.lean": [
-      "BCIKS20"
-    ],
-    "Research/ProximityPrize/Hab25JohnsonCountWiring.lean": [
-      "ABF26",
-      "BCIKS20",
-      "Hab25"
-    ],
-    "Research/ProximityPrize/Hab25JohnsonDichotomy.lean": [
-      "BCIKS20",
-      "Hab25"
-    ],
-    "Research/ProximityPrize/Hab25JohnsonDischarge.lean": [
-      "BCIKS20",
-      "Hab25"
-    ],
-    "Research/ProximityPrize/Hab25JohnsonPackageSupply.lean": [
-      "BCIKS20"
-    ],
-    "Research/ProximityPrize/Hab25RichCoordinateGate.lean": [
-      "BCIKS20"
-    ],
-    "Research/ProximityPrize/Hab25SlackWeld.lean": [
-      "BCIKS20"
-    ],
-    "Research/ProximityPrize/Hab25UniqueRichFactor.lean": [
-      "BCIKS20"
-    ],
-    "Research/ProximityPrize/JohnsonBoundRealLower.lean": [
-      "Hab25"
-    ],
-    "Research/ProximityPrize/KKH26DimGeneralSharpInterleavedPin.lean": [
-      "Jo26"
-    ],
-    "Research/ProximityPrize/LDThresholdElias.lean": [
-      "Eli57"
-    ],
-    "Research/ProximityPrize/Lattice2.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/LegacyWorkbench.lean": [
-      "KKH26"
-    ],
-    "Research/ProximityPrize/LineDecodingT421Faithful.lean": [
-      "ABF26",
-      "BCIKS20",
-      "GG25"
-    ],
-    "Research/ProximityPrize/ListClosedForm.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/ListDecodingConjectureRefutation.lean": [
-      "ABF26",
-      "CS25"
-    ],
-    "Research/ProximityPrize/MCABadCountRatio.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/MCABracket.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/MCAConjectureProgress.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/MCADeltaStarBracket.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/MCAEndpointLower.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/MCAEndpointUpper.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/MCAGS.lean": [
-      "ABF26",
-      "GG25",
-      "Hab25"
-    ],
-    "Research/ProximityPrize/MCAGSBounds.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/MCAGSFieldUniversal.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/MCAGSKernels.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/MCAGSUniversalReduction.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/MCAGSWitness.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/MCAJohnsonAssembly.lean": [
-      "ABF26",
-      "BCIKS20",
-      "Hab25"
-    ],
-    "Research/ProximityPrize/MCAJohnsonClustering.lean": [
-      "ABF26",
-      "BCIKS20"
-    ],
-    "Research/ProximityPrize/MCAJohnsonDegreeOne.lean": [
-      "ABF26",
-      "BCIKS20",
-      "PS94"
-    ],
-    "Research/ProximityPrize/MCALatticeExact.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/MCALatticeOverflowSharp.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/MCAMiddleBand.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/MCAPlateauWindow.lean": [
-      "ABF26",
-      "BCHKS25",
-      "CS25",
-      "DG25"
-    ],
-    "Research/ProximityPrize/MCASecondMoment.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/MCAUDR2Bound.lean": [
-      "ABF26",
-      "BCIKS20"
-    ],
-    "Research/ProximityPrize/MCAUpperWitnessSunflower.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/MCAZeroUpperBound.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Overreach.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/PROXIMITY_PRIZE_WORKBENCH.lean": [
-      "ABF26",
-      "CS25"
-    ],
-    "Research/ProximityPrize/ProductionJohnsonBudget.lean": [
-      "Hab25"
-    ],
-    "Research/ProximityPrize/Protocols/Stir/WindowCAFeed.lean": [
-      "ACFY24",
-      "BCIKS20"
-    ],
-    "Research/ProximityPrize/RSListThresholdConditionalPin.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/RSListThresholdGapBracket.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/RSListThresholdJohnsonGeneral.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/RSListThresholdJohnsonPin.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/RSListThresholdOverflowSharp.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/RSListThresholdOverflowSharpGen.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/RSListThresholdPin.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/RSListThresholdPinGeneral.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/RSListThresholdPinRate12.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/RSListThresholdStrictRate12.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/RSListThresholdTrappedRate12.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/RadiusOne.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/RadiusOneExact.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Resolution.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/ResolutionWitness.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/SubsetSumErdosHeilbronn.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/SubsetSumRadiusOne.lean": [
-      "ABF26"
-    ],
-    "Research/ProximityPrize/Support/BCGM25MCAPreservation.lean": [
-      "BCGM25"
-    ],
-    "Research/ProximityPrize/Support/UnifiedProducerWindowGlue.lean": [
-      "BCIKS20"
     ]
   },
   "keys": {
@@ -4808,6 +4826,19 @@
       "ArkLib/Data/CodingTheory/ReedSolomon/Multiplicity.lean",
       "ArkLib/Data/CodingTheory/SubspaceDesign.lean",
       "ArkLib/Data/Probability/Combinatorial.lean",
+      "ArkLib/Extensions/Data/CodingTheory/Connections/ListDecodingAndCA.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ExtensionCodes.lean",
+      "ArkLib/Extensions/Data/CodingTheory/InterleavedCode.lean",
+      "ArkLib/Extensions/Data/CodingTheory/JohnsonBound/Family.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ProximityGap/Errors.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ProximityGap/LineDecoding.lean",
+      "ArkLib/Extensions/Data/CodingTheory/SubspaceDesign.lean",
+      "ArkLib/Extensions/Data/Probability/Combinatorial.lean",
+      "ArkLib/Extensions/ProofSystem/ToyProblem/Definitions.lean",
+      "ArkLib/Extensions/ProofSystem/ToyProblem/Impl/IRS.lean",
+      "ArkLib/Extensions/ProofSystem/ToyProblem/SoundnessBounds.lean",
+      "ArkLib/Extensions/ProofSystem/ToyProblem/Spec/General.lean",
+      "ArkLib/Extensions/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean",
       "ArkLib/OracleReduction/Security/RoundByRound.lean",
       "ArkLib/ProofSystem/ToyProblem/ConstrainedCode.lean",
       "ArkLib/ProofSystem/ToyProblem/Definitions.lean",
@@ -4820,6 +4851,165 @@
       "ArkLib/ProofSystem/ToyProblem/Spec/General.lean",
       "ArkLib/ProofSystem/ToyProblem/Spec/KnowledgeSoundness.lean",
       "ArkLib/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean",
+      "ArkLib/Research/ProximityGap/CapacityBounds.lean",
+      "ArkLib/Research/ProximityGap/Collapse.lean",
+      "ArkLib/Research/ProximityGap/Connections/SmoothDomainMCAWitness.lean",
+      "ArkLib/Research/ProximityGap/Decision.lean",
+      "ArkLib/Research/ProximityGap/Frontier/BurgessIndexOvershoot.lean",
+      "ArkLib/Research/ProximityGap/Frontier/CAtoMCALineLocalization.lean",
+      "ArkLib/Research/ProximityGap/Frontier/CrossCellCircleMethodSplit.lean",
+      "ArkLib/Research/ProximityGap/Frontier/CrossStepCeilingInsufficient.lean",
+      "ArkLib/Research/ProximityGap/Frontier/CrossStepRungFour.lean",
+      "ArkLib/Research/ProximityGap/Frontier/CrossStepRungFourDeficit.lean",
+      "ArkLib/Research/ProximityGap/Frontier/CrossStepRungOne.lean",
+      "ArkLib/Research/ProximityGap/Frontier/CrossStepRungOneDeficit.lean",
+      "ArkLib/Research/ProximityGap/Frontier/CrossStepRungThree.lean",
+      "ArkLib/Research/ProximityGap/Frontier/CrossStepRungTwo.lean",
+      "ArkLib/Research/ProximityGap/Frontier/CumulantOnsetNoGo.lean",
+      "ArkLib/Research/ProximityGap/Frontier/CyclotomicNormDefectThreshold.lean",
+      "ArkLib/Research/ProximityGap/Frontier/DeltaStarConditionalEntropyPin.lean",
+      "ArkLib/Research/ProximityGap/Frontier/DeltaStarPinF13Order4Deg2.lean",
+      "ArkLib/Research/ProximityGap/Frontier/EffKatzConductorBarrier.lean",
+      "ArkLib/Research/ProximityGap/Frontier/EnergyRatioSupNormLower.lean",
+      "ArkLib/Research/ProximityGap/Frontier/EquivariancePinN12.lean",
+      "ArkLib/Research/ProximityGap/Frontier/Face1JohnsonRadiusCap.lean",
+      "ArkLib/Research/ProximityGap/Frontier/I031LogTargetForm.lean",
+      "ArkLib/Research/ProximityGap/Frontier/Kappa6Rung.lean",
+      "ArkLib/Research/ProximityGap/Frontier/MomentMethodPrizeDepthNoGo.lean",
+      "ArkLib/Research/ProximityGap/Frontier/PowerSumLogConvexSpacing.lean",
+      "ArkLib/Research/ProximityGap/Frontier/PowerSumRatioMeanFloor.lean",
+      "ArkLib/Research/ProximityGap/Frontier/PowerSumRatioMonotone.lean",
+      "ArkLib/Research/ProximityGap/Frontier/PrizeConditionalPinCapstone.lean",
+      "ArkLib/Research/ProximityGap/Frontier/SliceRankDiagonalVacuous.lean",
+      "ArkLib/Research/ProximityGap/Frontier/SpurBadPrimeCeiling.lean",
+      "ArkLib/Research/ProximityGap/Frontier/SpurBadPrimeChebotarev.lean",
+      "ArkLib/Research/ProximityGap/Frontier/Sweep_A02_AutocorrelationRecursion.lean",
+      "ArkLib/Research/ProximityGap/Frontier/Sweep_A06_PFreeInvariantBridge.lean",
+      "ArkLib/Research/ProximityGap/Frontier/Sweep_A11_ThinnessEssential.lean",
+      "ArkLib/Research/ProximityGap/Frontier/Sweep_A12_PhaseAlignmentTower.lean",
+      "ArkLib/Research/ProximityGap/Frontier/Sweep_A16_OrbitCountW4.lean",
+      "ArkLib/Research/ProximityGap/Frontier/Sweep_A24_HDFreeDOF.lean",
+      "ArkLib/Research/ProximityGap/Frontier/Sweep_A27_CondLDtoMCA.lean",
+      "ArkLib/Research/ProximityGap/Frontier/Sweep_A33_Realizability.lean",
+      "ArkLib/Research/ProximityGap/Frontier/WF407W2_L2nover4.lean",
+      "ArkLib/Research/ProximityGap/Frontier/WF407_AnchorsImport.lean",
+      "ArkLib/Research/ProximityGap/Frontier/WF407_T02Shkredov.lean",
+      "ArkLib/Research/ProximityGap/Frontier/WF407_T13DyadicDeviation.lean",
+      "ArkLib/Research/ProximityGap/Frontier/WF407_T24_PFreeDefectGate.lean",
+      "ArkLib/Research/ProximityGap/Frontier/WF407_T389_03_PhaseInert.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_A5FullSymmetryStackReduction.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_AnomalyLocalization.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_Attack10LDtoMCAJohnsonCeiling.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_AttackThinnessBootstrap_GirthVsEnergy.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_AvBV2_VarianceOverPrimesCertificationDeficit.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_AvCP_AlmostAllPrimesNoWraparound.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_AvF3_UniformNoWraparoundTheory.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_AvJ_UnconditionalBeat.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_AvLSP_AlmostAllPrimesLargeSieve.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_AvLadderSaddleAssembly.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_AvT3a_DiBenedettoBeatAssembly.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_AvUNIF_BestForallQExponent.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_AvW3_Depth3BadPrimeSet.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_B2StackAgreementWeld.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_BGKSOTAInsufficiency.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_BadPrimeBoundCore.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_BchksF4_GoodPrimeLinnik.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_BetaGatedRatioGate.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_BridgeExplicitGaussPhase.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_CirculantTraceEnergy.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_ClosedWalkPowerSum.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_CollisionExcessPartition.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_DCStieltjesRatioAntitoneEquivalence.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_DyadicDeviationDecayEnvelope.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_DyadicJacobiCocycleNonContraction.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_E2NegationStructure.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_E2VanishWidthFourLaw.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_EtaCosetInvariance.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_EtaFrequencyParity.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_FrobeniusEnergyDescent.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_GaussPhaseFlatnessAlgebra.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_ImprimitiveRatioLevelSet.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_L3c_AdditiveCharNonAlgebraicityBarrier.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_LewkoWeilRothThresholdMiss.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_NoExcessOnsetThreshold.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_NonPrincipalClosedWalkTrace.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_PrizeFloorOfBGK.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_R1SecondMomentSqrtBarrier.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_RMTBoundedDepthUniversalityNoGo.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_SpecF7_GoodPrimeCollisionCount.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_SpectralTraceZeroSignForcing.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_SpurEvenValuationTwoSquares.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_StickelbergerAnnihilatorNoGo.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_SymmetricEtaRealBridge.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_TowerSpikeBetaGate.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_WorstBSetCosetClosed.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_ZT413EpsilonPackaging.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_wf2NG_partition_rank_vacuous.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_wf407_tower.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_wf5E1_WassersteinUnionNoGo.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_wf5M1_HeightCountRoute.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_wf5M2_stickelberger_depth.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_wf5M3_crossstep_ceiling.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_wf5R1_crosscell_wick_descent.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_wf6C1_chebotarev_badprime_count.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_wf6P3_nonprincipal_crossstep.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_wf7W7_NewtonSlopeDCDominance.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_wf8B4_dcMGF_gaussian_obstruction.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_wfA05_galois_orbit_count.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_wfA08_twoadic_newton_polygon.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_wfS4_galois_concentration_obstruction.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_wfS4_orbit_partition_law.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_wfS4_stickelberger_perweight_threshold.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_wfTT06_coupled_productformula_house.lean",
+      "ArkLib/Research/ProximityGap/GeneralSpikeLowerBound.lean",
+      "ArkLib/Research/ProximityGap/GrandChallenges.lean",
+      "ArkLib/Research/ProximityGap/Hab25JohnsonCountWiring.lean",
+      "ArkLib/Research/ProximityGap/Lattice2.lean",
+      "ArkLib/Research/ProximityGap/LineDecodingT421Faithful.lean",
+      "ArkLib/Research/ProximityGap/ListClosedForm.lean",
+      "ArkLib/Research/ProximityGap/ListDecodingConjectureRefutation.lean",
+      "ArkLib/Research/ProximityGap/MCABadCountRatio.lean",
+      "ArkLib/Research/ProximityGap/MCABracket.lean",
+      "ArkLib/Research/ProximityGap/MCAConjectureProgress.lean",
+      "ArkLib/Research/ProximityGap/MCADeltaStarBracket.lean",
+      "ArkLib/Research/ProximityGap/MCAEndpointLower.lean",
+      "ArkLib/Research/ProximityGap/MCAEndpointUpper.lean",
+      "ArkLib/Research/ProximityGap/MCAGS.lean",
+      "ArkLib/Research/ProximityGap/MCAGSBounds.lean",
+      "ArkLib/Research/ProximityGap/MCAGSFieldUniversal.lean",
+      "ArkLib/Research/ProximityGap/MCAGSKernels.lean",
+      "ArkLib/Research/ProximityGap/MCAGSUniversalReduction.lean",
+      "ArkLib/Research/ProximityGap/MCAGSWitness.lean",
+      "ArkLib/Research/ProximityGap/MCAJohnsonAssembly.lean",
+      "ArkLib/Research/ProximityGap/MCAJohnsonClustering.lean",
+      "ArkLib/Research/ProximityGap/MCAJohnsonDegreeOne.lean",
+      "ArkLib/Research/ProximityGap/MCALatticeExact.lean",
+      "ArkLib/Research/ProximityGap/MCALatticeOverflowSharp.lean",
+      "ArkLib/Research/ProximityGap/MCAMiddleBand.lean",
+      "ArkLib/Research/ProximityGap/MCAPlateauWindow.lean",
+      "ArkLib/Research/ProximityGap/MCASecondMoment.lean",
+      "ArkLib/Research/ProximityGap/MCAUDR2Bound.lean",
+      "ArkLib/Research/ProximityGap/MCAUpperWitnessSunflower.lean",
+      "ArkLib/Research/ProximityGap/MCAZeroUpperBound.lean",
+      "ArkLib/Research/ProximityGap/Overreach.lean",
+      "ArkLib/Research/ProximityGap/PROXIMITY_PRIZE_WORKBENCH.lean",
+      "ArkLib/Research/ProximityGap/RSListThresholdConditionalPin.lean",
+      "ArkLib/Research/ProximityGap/RSListThresholdGapBracket.lean",
+      "ArkLib/Research/ProximityGap/RSListThresholdJohnsonGeneral.lean",
+      "ArkLib/Research/ProximityGap/RSListThresholdJohnsonPin.lean",
+      "ArkLib/Research/ProximityGap/RSListThresholdOverflowSharp.lean",
+      "ArkLib/Research/ProximityGap/RSListThresholdOverflowSharpGen.lean",
+      "ArkLib/Research/ProximityGap/RSListThresholdPin.lean",
+      "ArkLib/Research/ProximityGap/RSListThresholdPinGeneral.lean",
+      "ArkLib/Research/ProximityGap/RSListThresholdPinRate12.lean",
+      "ArkLib/Research/ProximityGap/RSListThresholdStrictRate12.lean",
+      "ArkLib/Research/ProximityGap/RSListThresholdTrappedRate12.lean",
+      "ArkLib/Research/ProximityGap/RadiusOne.lean",
+      "ArkLib/Research/ProximityGap/RadiusOneExact.lean",
+      "ArkLib/Research/ProximityGap/Resolution.lean",
+      "ArkLib/Research/ProximityGap/ResolutionWitness.lean",
+      "ArkLib/Research/ProximityGap/SubsetSumErdosHeilbronn.lean",
+      "ArkLib/Research/ProximityGap/SubsetSumRadiusOne.lean",
       "ArkLib/ToMathlib/BGKS20AllButOne.lean",
       "ArkLib/ToMathlib/BadLineWitnessProof.lean",
       "ArkLib/ToMathlib/Bridge2BCHKS25.lean",
@@ -4838,179 +5028,7 @@
       "ArkLib/ToMathlib/RewindingExtractor.lean",
       "ArkLib/ToMathlib/StraightlineRewindingBridge.lean",
       "ArkLib/ToMathlib/ToyProblemRewinding.lean",
-      "ArkLib/ToMathlib/ToyStep4.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/Connections/ListDecodingAndCA.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ExtensionCodes.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/InterleavedCode.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/JohnsonBound/Family.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/Errors.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/LineDecoding.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/SubspaceDesign.lean",
-      "ProximityPrize/Extensions/Data/Probability/Combinatorial.lean",
-      "ProximityPrize/Extensions/ProofSystem/ToyProblem/Definitions.lean",
-      "ProximityPrize/Extensions/ProofSystem/ToyProblem/Impl/IRS.lean",
-      "ProximityPrize/Extensions/ProofSystem/ToyProblem/SoundnessBounds.lean",
-      "ProximityPrize/Extensions/ProofSystem/ToyProblem/Spec/General.lean",
-      "ProximityPrize/Extensions/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean",
-      "Research/ProximityPrize/CapacityBounds.lean",
-      "Research/ProximityPrize/Collapse.lean",
-      "Research/ProximityPrize/Connections/SmoothDomainMCAWitness.lean",
-      "Research/ProximityPrize/Decision.lean",
-      "Research/ProximityPrize/Frontier/BurgessIndexOvershoot.lean",
-      "Research/ProximityPrize/Frontier/CAtoMCALineLocalization.lean",
-      "Research/ProximityPrize/Frontier/CrossCellCircleMethodSplit.lean",
-      "Research/ProximityPrize/Frontier/CrossStepCeilingInsufficient.lean",
-      "Research/ProximityPrize/Frontier/CrossStepRungFour.lean",
-      "Research/ProximityPrize/Frontier/CrossStepRungFourDeficit.lean",
-      "Research/ProximityPrize/Frontier/CrossStepRungOne.lean",
-      "Research/ProximityPrize/Frontier/CrossStepRungOneDeficit.lean",
-      "Research/ProximityPrize/Frontier/CrossStepRungThree.lean",
-      "Research/ProximityPrize/Frontier/CrossStepRungTwo.lean",
-      "Research/ProximityPrize/Frontier/CumulantOnsetNoGo.lean",
-      "Research/ProximityPrize/Frontier/CyclotomicNormDefectThreshold.lean",
-      "Research/ProximityPrize/Frontier/DeltaStarConditionalEntropyPin.lean",
-      "Research/ProximityPrize/Frontier/DeltaStarPinF13Order4Deg2.lean",
-      "Research/ProximityPrize/Frontier/EffKatzConductorBarrier.lean",
-      "Research/ProximityPrize/Frontier/EnergyRatioSupNormLower.lean",
-      "Research/ProximityPrize/Frontier/EquivariancePinN12.lean",
-      "Research/ProximityPrize/Frontier/Face1JohnsonRadiusCap.lean",
-      "Research/ProximityPrize/Frontier/I031LogTargetForm.lean",
-      "Research/ProximityPrize/Frontier/Kappa6Rung.lean",
-      "Research/ProximityPrize/Frontier/MomentMethodPrizeDepthNoGo.lean",
-      "Research/ProximityPrize/Frontier/PowerSumLogConvexSpacing.lean",
-      "Research/ProximityPrize/Frontier/PowerSumRatioMeanFloor.lean",
-      "Research/ProximityPrize/Frontier/PowerSumRatioMonotone.lean",
-      "Research/ProximityPrize/Frontier/PrizeConditionalPinCapstone.lean",
-      "Research/ProximityPrize/Frontier/SliceRankDiagonalVacuous.lean",
-      "Research/ProximityPrize/Frontier/SpurBadPrimeCeiling.lean",
-      "Research/ProximityPrize/Frontier/SpurBadPrimeChebotarev.lean",
-      "Research/ProximityPrize/Frontier/Sweep_A02_AutocorrelationRecursion.lean",
-      "Research/ProximityPrize/Frontier/Sweep_A06_PFreeInvariantBridge.lean",
-      "Research/ProximityPrize/Frontier/Sweep_A11_ThinnessEssential.lean",
-      "Research/ProximityPrize/Frontier/Sweep_A12_PhaseAlignmentTower.lean",
-      "Research/ProximityPrize/Frontier/Sweep_A16_OrbitCountW4.lean",
-      "Research/ProximityPrize/Frontier/Sweep_A24_HDFreeDOF.lean",
-      "Research/ProximityPrize/Frontier/Sweep_A27_CondLDtoMCA.lean",
-      "Research/ProximityPrize/Frontier/Sweep_A33_Realizability.lean",
-      "Research/ProximityPrize/Frontier/WF407W2_L2nover4.lean",
-      "Research/ProximityPrize/Frontier/WF407_AnchorsImport.lean",
-      "Research/ProximityPrize/Frontier/WF407_T02Shkredov.lean",
-      "Research/ProximityPrize/Frontier/WF407_T13DyadicDeviation.lean",
-      "Research/ProximityPrize/Frontier/WF407_T24_PFreeDefectGate.lean",
-      "Research/ProximityPrize/Frontier/WF407_T389_03_PhaseInert.lean",
-      "Research/ProximityPrize/Frontier/_A5FullSymmetryStackReduction.lean",
-      "Research/ProximityPrize/Frontier/_AnomalyLocalization.lean",
-      "Research/ProximityPrize/Frontier/_Attack10LDtoMCAJohnsonCeiling.lean",
-      "Research/ProximityPrize/Frontier/_AttackThinnessBootstrap_GirthVsEnergy.lean",
-      "Research/ProximityPrize/Frontier/_AvBV2_VarianceOverPrimesCertificationDeficit.lean",
-      "Research/ProximityPrize/Frontier/_AvCP_AlmostAllPrimesNoWraparound.lean",
-      "Research/ProximityPrize/Frontier/_AvF3_UniformNoWraparoundTheory.lean",
-      "Research/ProximityPrize/Frontier/_AvJ_UnconditionalBeat.lean",
-      "Research/ProximityPrize/Frontier/_AvLSP_AlmostAllPrimesLargeSieve.lean",
-      "Research/ProximityPrize/Frontier/_AvLadderSaddleAssembly.lean",
-      "Research/ProximityPrize/Frontier/_AvT3a_DiBenedettoBeatAssembly.lean",
-      "Research/ProximityPrize/Frontier/_AvUNIF_BestForallQExponent.lean",
-      "Research/ProximityPrize/Frontier/_AvW3_Depth3BadPrimeSet.lean",
-      "Research/ProximityPrize/Frontier/_B2StackAgreementWeld.lean",
-      "Research/ProximityPrize/Frontier/_BGKSOTAInsufficiency.lean",
-      "Research/ProximityPrize/Frontier/_BadPrimeBoundCore.lean",
-      "Research/ProximityPrize/Frontier/_BchksF4_GoodPrimeLinnik.lean",
-      "Research/ProximityPrize/Frontier/_BetaGatedRatioGate.lean",
-      "Research/ProximityPrize/Frontier/_BridgeExplicitGaussPhase.lean",
-      "Research/ProximityPrize/Frontier/_CirculantTraceEnergy.lean",
-      "Research/ProximityPrize/Frontier/_ClosedWalkPowerSum.lean",
-      "Research/ProximityPrize/Frontier/_CollisionExcessPartition.lean",
-      "Research/ProximityPrize/Frontier/_DCStieltjesRatioAntitoneEquivalence.lean",
-      "Research/ProximityPrize/Frontier/_DyadicDeviationDecayEnvelope.lean",
-      "Research/ProximityPrize/Frontier/_DyadicJacobiCocycleNonContraction.lean",
-      "Research/ProximityPrize/Frontier/_E2NegationStructure.lean",
-      "Research/ProximityPrize/Frontier/_E2VanishWidthFourLaw.lean",
-      "Research/ProximityPrize/Frontier/_EtaCosetInvariance.lean",
-      "Research/ProximityPrize/Frontier/_EtaFrequencyParity.lean",
-      "Research/ProximityPrize/Frontier/_FrobeniusEnergyDescent.lean",
-      "Research/ProximityPrize/Frontier/_GaussPhaseFlatnessAlgebra.lean",
-      "Research/ProximityPrize/Frontier/_ImprimitiveRatioLevelSet.lean",
-      "Research/ProximityPrize/Frontier/_L3c_AdditiveCharNonAlgebraicityBarrier.lean",
-      "Research/ProximityPrize/Frontier/_LewkoWeilRothThresholdMiss.lean",
-      "Research/ProximityPrize/Frontier/_NoExcessOnsetThreshold.lean",
-      "Research/ProximityPrize/Frontier/_NonPrincipalClosedWalkTrace.lean",
-      "Research/ProximityPrize/Frontier/_PrizeFloorOfBGK.lean",
-      "Research/ProximityPrize/Frontier/_R1SecondMomentSqrtBarrier.lean",
-      "Research/ProximityPrize/Frontier/_RMTBoundedDepthUniversalityNoGo.lean",
-      "Research/ProximityPrize/Frontier/_SpecF7_GoodPrimeCollisionCount.lean",
-      "Research/ProximityPrize/Frontier/_SpectralTraceZeroSignForcing.lean",
-      "Research/ProximityPrize/Frontier/_SpurEvenValuationTwoSquares.lean",
-      "Research/ProximityPrize/Frontier/_StickelbergerAnnihilatorNoGo.lean",
-      "Research/ProximityPrize/Frontier/_SymmetricEtaRealBridge.lean",
-      "Research/ProximityPrize/Frontier/_TowerSpikeBetaGate.lean",
-      "Research/ProximityPrize/Frontier/_WorstBSetCosetClosed.lean",
-      "Research/ProximityPrize/Frontier/_ZT413EpsilonPackaging.lean",
-      "Research/ProximityPrize/Frontier/_wf2NG_partition_rank_vacuous.lean",
-      "Research/ProximityPrize/Frontier/_wf407_tower.lean",
-      "Research/ProximityPrize/Frontier/_wf5E1_WassersteinUnionNoGo.lean",
-      "Research/ProximityPrize/Frontier/_wf5M1_HeightCountRoute.lean",
-      "Research/ProximityPrize/Frontier/_wf5M2_stickelberger_depth.lean",
-      "Research/ProximityPrize/Frontier/_wf5M3_crossstep_ceiling.lean",
-      "Research/ProximityPrize/Frontier/_wf5R1_crosscell_wick_descent.lean",
-      "Research/ProximityPrize/Frontier/_wf6C1_chebotarev_badprime_count.lean",
-      "Research/ProximityPrize/Frontier/_wf6P3_nonprincipal_crossstep.lean",
-      "Research/ProximityPrize/Frontier/_wf7W7_NewtonSlopeDCDominance.lean",
-      "Research/ProximityPrize/Frontier/_wf8B4_dcMGF_gaussian_obstruction.lean",
-      "Research/ProximityPrize/Frontier/_wfA05_galois_orbit_count.lean",
-      "Research/ProximityPrize/Frontier/_wfA08_twoadic_newton_polygon.lean",
-      "Research/ProximityPrize/Frontier/_wfS4_galois_concentration_obstruction.lean",
-      "Research/ProximityPrize/Frontier/_wfS4_orbit_partition_law.lean",
-      "Research/ProximityPrize/Frontier/_wfS4_stickelberger_perweight_threshold.lean",
-      "Research/ProximityPrize/Frontier/_wfTT06_coupled_productformula_house.lean",
-      "Research/ProximityPrize/GeneralSpikeLowerBound.lean",
-      "Research/ProximityPrize/GrandChallenges.lean",
-      "Research/ProximityPrize/Hab25JohnsonCountWiring.lean",
-      "Research/ProximityPrize/Lattice2.lean",
-      "Research/ProximityPrize/LineDecodingT421Faithful.lean",
-      "Research/ProximityPrize/ListClosedForm.lean",
-      "Research/ProximityPrize/ListDecodingConjectureRefutation.lean",
-      "Research/ProximityPrize/MCABadCountRatio.lean",
-      "Research/ProximityPrize/MCABracket.lean",
-      "Research/ProximityPrize/MCAConjectureProgress.lean",
-      "Research/ProximityPrize/MCADeltaStarBracket.lean",
-      "Research/ProximityPrize/MCAEndpointLower.lean",
-      "Research/ProximityPrize/MCAEndpointUpper.lean",
-      "Research/ProximityPrize/MCAGS.lean",
-      "Research/ProximityPrize/MCAGSBounds.lean",
-      "Research/ProximityPrize/MCAGSFieldUniversal.lean",
-      "Research/ProximityPrize/MCAGSKernels.lean",
-      "Research/ProximityPrize/MCAGSUniversalReduction.lean",
-      "Research/ProximityPrize/MCAGSWitness.lean",
-      "Research/ProximityPrize/MCAJohnsonAssembly.lean",
-      "Research/ProximityPrize/MCAJohnsonClustering.lean",
-      "Research/ProximityPrize/MCAJohnsonDegreeOne.lean",
-      "Research/ProximityPrize/MCALatticeExact.lean",
-      "Research/ProximityPrize/MCALatticeOverflowSharp.lean",
-      "Research/ProximityPrize/MCAMiddleBand.lean",
-      "Research/ProximityPrize/MCAPlateauWindow.lean",
-      "Research/ProximityPrize/MCASecondMoment.lean",
-      "Research/ProximityPrize/MCAUDR2Bound.lean",
-      "Research/ProximityPrize/MCAUpperWitnessSunflower.lean",
-      "Research/ProximityPrize/MCAZeroUpperBound.lean",
-      "Research/ProximityPrize/Overreach.lean",
-      "Research/ProximityPrize/PROXIMITY_PRIZE_WORKBENCH.lean",
-      "Research/ProximityPrize/RSListThresholdConditionalPin.lean",
-      "Research/ProximityPrize/RSListThresholdGapBracket.lean",
-      "Research/ProximityPrize/RSListThresholdJohnsonGeneral.lean",
-      "Research/ProximityPrize/RSListThresholdJohnsonPin.lean",
-      "Research/ProximityPrize/RSListThresholdOverflowSharp.lean",
-      "Research/ProximityPrize/RSListThresholdOverflowSharpGen.lean",
-      "Research/ProximityPrize/RSListThresholdPin.lean",
-      "Research/ProximityPrize/RSListThresholdPinGeneral.lean",
-      "Research/ProximityPrize/RSListThresholdPinRate12.lean",
-      "Research/ProximityPrize/RSListThresholdStrictRate12.lean",
-      "Research/ProximityPrize/RSListThresholdTrappedRate12.lean",
-      "Research/ProximityPrize/RadiusOne.lean",
-      "Research/ProximityPrize/RadiusOneExact.lean",
-      "Research/ProximityPrize/Resolution.lean",
-      "Research/ProximityPrize/ResolutionWitness.lean",
-      "Research/ProximityPrize/SubsetSumErdosHeilbronn.lean",
-      "Research/ProximityPrize/SubsetSumRadiusOne.lean"
+      "ArkLib/ToMathlib/ToyStep4.lean"
     ],
     "ACFY24": [
       "ArkLib/Data/CodingTheory/Basic/BlockRelDistance.lean",
@@ -5029,40 +5047,42 @@
       "ArkLib/Data/Domain/CosetFftDomain/Pullback.lean",
       "ArkLib/Data/Polynomial/FoldingPolynomial.lean",
       "ArkLib/Data/Polynomial/Indicator.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ListDecodability.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ProximityGap/Errors.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ReedSolomon.lean",
+      "ArkLib/Extensions/Data/Polynomial/Indicator.lean",
       "ArkLib/ProofSystem/Whir/BlockRelDistance.lean",
       "ArkLib/ProofSystem/Whir/Folding.lean",
       "ArkLib/ProofSystem/Whir/MutualCorrAgreement.lean",
       "ArkLib/ProofSystem/Whir/ProximityGen.lean",
       "ArkLib/ProofSystem/Whir/RBRSoundness.lean",
-      "ArkLib/ToMathlib/WhirBricksConstruction.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ListDecodability.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/Errors.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ReedSolomon.lean",
-      "ProximityPrize/Extensions/Data/Polynomial/Indicator.lean",
-      "Research/ProximityPrize/Protocols/Stir/WindowCAFeed.lean"
+      "ArkLib/Research/ProximityGap/Protocols/Stir/WindowCAFeed.lean",
+      "ArkLib/ToMathlib/WhirBricksConstruction.lean"
     ],
     "ACFY24stir": [
       "ArkLib/Data/CodingTheory/ListDecodability.lean",
       "ArkLib/Data/Domain/CosetFftDomain/Pullback.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ListDecodability.lean",
+      "ArkLib/Extensions/ProofSystem/Stir/Combine.lean",
+      "ArkLib/Extensions/ProofSystem/Stir/MainThm.lean",
+      "ArkLib/Extensions/ProofSystem/Stir/ProximityGap.lean",
       "ArkLib/ProofSystem/Stir/Combine.lean",
       "ArkLib/ProofSystem/Stir/MainThm.lean",
       "ArkLib/ProofSystem/Stir/OutOfDomSmpl.lean",
       "ArkLib/ProofSystem/Stir/ProximityGap.lean",
       "ArkLib/ProofSystem/Stir/Quotienting.lean",
       "ArkLib/ProofSystem/Stir/RoundProtocol.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ListDecodability.lean",
-      "ProximityPrize/Extensions/ProofSystem/Stir/Combine.lean",
-      "ProximityPrize/Extensions/ProofSystem/Stir/MainThm.lean",
-      "ProximityPrize/Extensions/ProofSystem/Stir/ProximityGap.lean"
+      "ArkLib/Tests/ProofSystem/Stir/MainThm.lean",
+      "ArkLib/Tests/ProofSystem/Stir/ProximityGap.lean"
     ],
     "ACFY25": [
       "ArkLib/Data/CodingTheory/ProximityGap/BadGammaAffineCount.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Errors.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/TheoremQUpperReduction.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/UDRBadCount.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ProximityGap/Errors.lean",
       "ArkLib/ToMathlib/L46DiffStackRS.lean",
-      "ArkLib/ToMathlib/L46GSLowerBound.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/Errors.lean"
+      "ArkLib/ToMathlib/L46GSLowerBound.lean"
     ],
     "AFK22": [
       "ArkLib/ToMathlib/RewindingExtractor.lean",
@@ -5137,8 +5157,8 @@
       "ArkLib/Data/CodingTheory/ProximityGap/AHIV22.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/AHIV22Support.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/LineDecoding.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/InterleavedCode.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/AHIV22.lean"
+      "ArkLib/Extensions/Data/CodingTheory/InterleavedCode.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ProximityGap/AHIV22.lean"
     ],
     "Ajt96": [
       "ArkLib/Commitments/Ordinary/Ajtai/Simple/Scheme.lean",
@@ -5151,7 +5171,7 @@
     ],
     "BCFW25": [
       "ArkLib/Data/CodingTheory/ExtensionCodes.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ExtensionCodes.lean"
+      "ArkLib/Extensions/Data/CodingTheory/ExtensionCodes.lean"
     ],
     "BCGM25": [
       "ArkLib/Data/CodingTheory/Basic/LinearCode.lean",
@@ -5165,10 +5185,10 @@
       "ArkLib/Data/CodingTheory/ProximityGenerator/MDSGenerator.lean",
       "ArkLib/Data/CodingTheory/ProximityGenerator/PolynomialGenerator.lean",
       "ArkLib/Data/CodingTheory/ProximityGenerator/TensorGenerator.lean",
+      "ArkLib/Extensions/Data/CodingTheory/Basic/LinearCode.lean",
       "ArkLib/ProofSystem/Fri/ErrorBounds.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/Basic/LinearCode.lean",
-      "Research/ProximityPrize/CapacityBounds.lean",
-      "Research/ProximityPrize/Support/BCGM25MCAPreservation.lean"
+      "ArkLib/Research/ProximityGap/CapacityBounds.lean",
+      "ArkLib/Research/ProximityGap/Support/BCGM25MCAPreservation.lean"
     ],
     "BCHKS25": [
       "ArkLib/Data/CodingTheory/Connections/ListDecodingAndCA/BCHKS25.lean",
@@ -5207,23 +5227,23 @@
       "ArkLib/Data/Polynomial/SymbolicInterpolationParameters.lean",
       "ArkLib/Data/Polynomial/SymbolicInterpolationSupport.lean",
       "ArkLib/Data/Polynomial/SymbolicInterpolationSurplus.lean",
+      "ArkLib/Extensions/Data/CodingTheory/Connections/ListDecodingAndCA.lean",
       "ArkLib/ProofSystem/ToyProblem/Impl/IRS.lean",
       "ArkLib/ProofSystem/ToyProblem/Leaderboard.lean",
       "ArkLib/ProofSystem/ToyProblem/Spec/General.lean",
+      "ArkLib/Research/ProximityGap/BCIKS20/Arith.lean",
+      "ArkLib/Research/ProximityGap/CapacityBounds.lean",
+      "ArkLib/Research/ProximityGap/CapacityBoundsProofs.lean",
+      "ArkLib/Research/ProximityGap/Frontier/CrossCellCircleMethodSplit.lean",
+      "ArkLib/Research/ProximityGap/Frontier/SliceRankDiagonalVacuous.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_CollisionExcessPartition.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_wf2NG_partition_rank_vacuous.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_wf5R1_crosscell_wick_descent.lean",
+      "ArkLib/Research/ProximityGap/GrandChallenges.lean",
+      "ArkLib/Research/ProximityGap/Hab25Core.lean",
+      "ArkLib/Research/ProximityGap/MCAPlateauWindow.lean",
       "ArkLib/ToMathlib/BadLineWitnessProof.lean",
-      "ArkLib/ToMathlib/Bridge2BCHKS25.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/Connections/ListDecodingAndCA.lean",
-      "Research/ProximityPrize/BCIKS20/Arith.lean",
-      "Research/ProximityPrize/CapacityBounds.lean",
-      "Research/ProximityPrize/CapacityBoundsProofs.lean",
-      "Research/ProximityPrize/Frontier/CrossCellCircleMethodSplit.lean",
-      "Research/ProximityPrize/Frontier/SliceRankDiagonalVacuous.lean",
-      "Research/ProximityPrize/Frontier/_CollisionExcessPartition.lean",
-      "Research/ProximityPrize/Frontier/_wf2NG_partition_rank_vacuous.lean",
-      "Research/ProximityPrize/Frontier/_wf5R1_crosscell_wick_descent.lean",
-      "Research/ProximityPrize/GrandChallenges.lean",
-      "Research/ProximityPrize/Hab25Core.lean",
-      "Research/ProximityPrize/MCAPlateauWindow.lean"
+      "ArkLib/ToMathlib/Bridge2BCHKS25.lean"
     ],
     "BCIKS20": [
       "ArkLib/Data/CodingTheory/DivergenceOfSets.lean",
@@ -5330,10 +5350,60 @@
       "ArkLib/Data/Polynomial/RationalFunctionsCore.lean",
       "ArkLib/Data/Polynomial/RationalFunctionsStrong.lean",
       "ArkLib/Data/Polynomial/Trivariate.lean",
+      "ArkLib/Extensions/Data/CodingTheory/DivergenceOfSets.lean",
+      "ArkLib/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
+      "ArkLib/Extensions/Data/CodingTheory/InterleavedCode.lean",
+      "ArkLib/Extensions/Data/CodingTheory/PolishchukSpielman/PolishchukSpielman.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/BWMatrix.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/JointAgreement.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/Main.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Guruswami.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/WeightedAgreement.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ProximityGap/Basic.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ProximityGap/Errors.lean",
+      "ArkLib/Extensions/Data/Polynomial/RationalFunctions.lean",
+      "ArkLib/Extensions/Data/Polynomial/Trivariate.lean",
+      "ArkLib/Extensions/ProofSystem/BatchedFri/Security.lean",
+      "ArkLib/Extensions/ProofSystem/Fri/Spec/Soundness.lean",
+      "ArkLib/Extensions/ProofSystem/Stir/ProximityGap.lean",
       "ArkLib/ProofSystem/BatchedFri/Security.lean",
       "ArkLib/ProofSystem/Stir/ProximityGap.lean",
       "ArkLib/ProofSystem/Stir/ProximityGapProof.lean",
       "ArkLib/ProofSystem/Whir/ProximityGen.lean",
+      "ArkLib/Research/ProximityGap/BCIKS20/Arith.lean",
+      "ArkLib/Research/ProximityGap/BCIKS20/Bundle.lean",
+      "ArkLib/Research/ProximityGap/BCIKS20/Capture.lean",
+      "ArkLib/Research/ProximityGap/BCIKS20/Improve.lean",
+      "ArkLib/Research/ProximityGap/BCIKS20/StrictCoeffPolysShare.lean",
+      "ArkLib/Research/ProximityGap/Frontier/Face1JohnsonRadiusCap.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_SYZ10BCIKS57Chunk1.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_SYZ11BCIKS57Chunk3.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_SYZ13BCIKS57Chunk4.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_SYZ14BCIKS57Chunk2.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_SYZ15TLoadedInterfaceRepair.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_SYZ16Claim58Truncation.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_SYZ17XDegreeBudget.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_SYZ8CellPackageSupply.lean",
+      "ArkLib/Research/ProximityGap/Hab25CellDichotomyWiring.lean",
+      "ArkLib/Research/ProximityGap/Hab25CoordinateUpgradeWeld.lean",
+      "ArkLib/Research/ProximityGap/Hab25Core.lean",
+      "ArkLib/Research/ProximityGap/Hab25FactorBudgetSupply.lean",
+      "ArkLib/Research/ProximityGap/Hab25Johnson.lean",
+      "ArkLib/Research/ProximityGap/Hab25JohnsonCountWiring.lean",
+      "ArkLib/Research/ProximityGap/Hab25JohnsonDichotomy.lean",
+      "ArkLib/Research/ProximityGap/Hab25JohnsonDischarge.lean",
+      "ArkLib/Research/ProximityGap/Hab25JohnsonPackageSupply.lean",
+      "ArkLib/Research/ProximityGap/Hab25RichCoordinateGate.lean",
+      "ArkLib/Research/ProximityGap/Hab25SlackWeld.lean",
+      "ArkLib/Research/ProximityGap/Hab25UniqueRichFactor.lean",
+      "ArkLib/Research/ProximityGap/LineDecodingT421Faithful.lean",
+      "ArkLib/Research/ProximityGap/MCAJohnsonAssembly.lean",
+      "ArkLib/Research/ProximityGap/MCAJohnsonClustering.lean",
+      "ArkLib/Research/ProximityGap/MCAJohnsonDegreeOne.lean",
+      "ArkLib/Research/ProximityGap/MCAUDR2Bound.lean",
+      "ArkLib/Research/ProximityGap/Protocols/Stir/WindowCAFeed.lean",
+      "ArkLib/Research/ProximityGap/Support/UnifiedProducerWindowGlue.lean",
       "ArkLib/ToMathlib/BCIKS20Concrete.lean",
       "ArkLib/ToMathlib/BCIKS20ConcreteJohnson.lean",
       "ArkLib/ToMathlib/BCIKS20Conditional.lean",
@@ -5475,57 +5545,7 @@
       "ArkLib/ToMathlib/XiAtIncidenceSupply.lean",
       "ArkLib/ToMathlib/XiCertReduction.lean",
       "ArkLib/ToMathlib/XiOrderInterp.lean",
-      "ArkLib/ToMathlib/ZLinearClosureAudit.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/DivergenceOfSets.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/GuruswamiSudan/GuruswamiSudan.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/InterleavedCode.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/PolishchukSpielman/PolishchukSpielman.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/BWMatrix.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/JointAgreement.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/AffineLines/Main.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/Curves.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/ListDecoding/Guruswami.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/BCIKS20/WeightedAgreement.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/Basic.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/Errors.lean",
-      "ProximityPrize/Extensions/Data/Polynomial/RationalFunctions.lean",
-      "ProximityPrize/Extensions/Data/Polynomial/Trivariate.lean",
-      "ProximityPrize/Extensions/ProofSystem/BatchedFri/Security.lean",
-      "ProximityPrize/Extensions/ProofSystem/Fri/Spec/Soundness.lean",
-      "ProximityPrize/Extensions/ProofSystem/Stir/ProximityGap.lean",
-      "Research/ProximityPrize/BCIKS20/Arith.lean",
-      "Research/ProximityPrize/BCIKS20/Bundle.lean",
-      "Research/ProximityPrize/BCIKS20/Capture.lean",
-      "Research/ProximityPrize/BCIKS20/Improve.lean",
-      "Research/ProximityPrize/BCIKS20/StrictCoeffPolysShare.lean",
-      "Research/ProximityPrize/Frontier/Face1JohnsonRadiusCap.lean",
-      "Research/ProximityPrize/Frontier/_SYZ10BCIKS57Chunk1.lean",
-      "Research/ProximityPrize/Frontier/_SYZ11BCIKS57Chunk3.lean",
-      "Research/ProximityPrize/Frontier/_SYZ13BCIKS57Chunk4.lean",
-      "Research/ProximityPrize/Frontier/_SYZ14BCIKS57Chunk2.lean",
-      "Research/ProximityPrize/Frontier/_SYZ15TLoadedInterfaceRepair.lean",
-      "Research/ProximityPrize/Frontier/_SYZ16Claim58Truncation.lean",
-      "Research/ProximityPrize/Frontier/_SYZ17XDegreeBudget.lean",
-      "Research/ProximityPrize/Frontier/_SYZ8CellPackageSupply.lean",
-      "Research/ProximityPrize/Hab25CellDichotomyWiring.lean",
-      "Research/ProximityPrize/Hab25CoordinateUpgradeWeld.lean",
-      "Research/ProximityPrize/Hab25Core.lean",
-      "Research/ProximityPrize/Hab25FactorBudgetSupply.lean",
-      "Research/ProximityPrize/Hab25Johnson.lean",
-      "Research/ProximityPrize/Hab25JohnsonCountWiring.lean",
-      "Research/ProximityPrize/Hab25JohnsonDichotomy.lean",
-      "Research/ProximityPrize/Hab25JohnsonDischarge.lean",
-      "Research/ProximityPrize/Hab25JohnsonPackageSupply.lean",
-      "Research/ProximityPrize/Hab25RichCoordinateGate.lean",
-      "Research/ProximityPrize/Hab25SlackWeld.lean",
-      "Research/ProximityPrize/Hab25UniqueRichFactor.lean",
-      "Research/ProximityPrize/LineDecodingT421Faithful.lean",
-      "Research/ProximityPrize/MCAJohnsonAssembly.lean",
-      "Research/ProximityPrize/MCAJohnsonClustering.lean",
-      "Research/ProximityPrize/MCAJohnsonDegreeOne.lean",
-      "Research/ProximityPrize/MCAUDR2Bound.lean",
-      "Research/ProximityPrize/Protocols/Stir/WindowCAFeed.lean",
-      "Research/ProximityPrize/Support/UnifiedProducerWindowGlue.lean"
+      "ArkLib/ToMathlib/ZLinearClosureAudit.lean"
     ],
     "BCPZZ26": [
       "ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Certificates.lean",
@@ -5553,14 +5573,15 @@
       "ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/Johnson/FiniteBounds.lean",
       "ArkLib/Data/CodingTheory/HiddenDerivative/Substitution.lean",
       "ArkLib/Data/CodingTheory/HiddenDerivative/Variables.lean",
+      "ArkLib/Tests/ToMathlib/RingTheory/Nullstellensatz/BidegreeIncidence.lean",
       "ArkLib/ToMathlib/RingTheory/Nullstellensatz/BidegreeIncidence.lean"
     ],
     "BCS16": [
+      "ArkLib/Extensions/OracleReduction/BCS/Basic.lean",
+      "ArkLib/Extensions/OracleReduction/Basic.lean",
+      "ArkLib/Extensions/OracleReduction/VectorIOR.lean",
       "ArkLib/OracleReduction/Basic.lean",
-      "ArkLib/OracleReduction/VectorIOR.lean",
-      "ProximityPrize/Extensions/OracleReduction/BCS/Basic.lean",
-      "ProximityPrize/Extensions/OracleReduction/Basic.lean",
-      "ProximityPrize/Extensions/OracleReduction/VectorIOR.lean"
+      "ArkLib/OracleReduction/VectorIOR.lean"
     ],
     "BDG24": [
       "ArkLib/Data/CodingTheory/ListDecodability/Bounds/LargeAlphabet.lean",
@@ -5645,19 +5666,19 @@
       "ArkLib/Data/CodingTheory/ProximityGap/UpToCapacityFalseGeneral.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/UpToCapacityListDecodingFalse.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/ValueSpreadSecondMoment.lean",
+      "ArkLib/Extensions/Data/CodingTheory/Connections/ListDecodingAndCA.lean",
+      "ArkLib/Research/ProximityGap/CapacityBounds.lean",
+      "ArkLib/Research/ProximityGap/CapacityBoundsProofs.lean",
+      "ArkLib/Research/ProximityGap/ListDecodingConjectureRefutation.lean",
+      "ArkLib/Research/ProximityGap/MCAPlateauWindow.lean",
+      "ArkLib/Research/ProximityGap/PROXIMITY_PRIZE_WORKBENCH.lean",
       "ArkLib/ToMathlib/BridgeListDecodingCA.lean",
       "ArkLib/ToMathlib/CS25Claim3.lean",
       "ArkLib/ToMathlib/CS25Claim3Counting.lean",
       "ArkLib/ToMathlib/CS25DeepHole.lean",
       "ArkLib/ToMathlib/CS25DeepHoleFinish.lean",
       "ArkLib/ToMathlib/CS25DeepHoleFinish2.lean",
-      "ArkLib/ToMathlib/CS25JointFar.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/Connections/ListDecodingAndCA.lean",
-      "Research/ProximityPrize/CapacityBounds.lean",
-      "Research/ProximityPrize/CapacityBoundsProofs.lean",
-      "Research/ProximityPrize/ListDecodingConjectureRefutation.lean",
-      "Research/ProximityPrize/MCAPlateauWindow.lean",
-      "Research/ProximityPrize/PROXIMITY_PRIZE_WORKBENCH.lean"
+      "ArkLib/ToMathlib/CS25JointFar.lean"
     ],
     "CW07": [
       "ArkLib/Data/CodingTheory/ListDecodability/Bounds.lean",
@@ -5675,21 +5696,21 @@
       "ArkLib/Data/CodingTheory/ProximityGap/GWFiberChargeRepair.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/GWInterpolation.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/GWKernelReduction.lean",
-      "ArkLib/ToMathlib/CZ25DimensionCountProof.lean",
-      "Research/ProximityPrize/Frontier/_ZJLR26CapacityPinAssembly.lean"
+      "ArkLib/Research/ProximityGap/Frontier/_ZJLR26CapacityPinAssembly.lean",
+      "ArkLib/ToMathlib/CZ25DimensionCountProof.lean"
     ],
     "ChiesaYogev2024": [
-      "ProximityPrize/Extensions/OracleReduction/BCS/Basic.lean"
+      "ArkLib/Extensions/OracleReduction/BCS/Basic.lean"
     ],
     "DG25": [
       "ArkLib/Data/CodingTheory/InterleavedCode.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Basic.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/DG25/Basic.lean",
+      "ArkLib/Extensions/Data/CodingTheory/InterleavedCode.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ProximityGap/Basic.lean",
       "ArkLib/ProofSystem/Binius/BinaryBasefold/Soundness/Incremental.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/InterleavedCode.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/Basic.lean",
-      "Research/ProximityPrize/CapacityBounds.lean",
-      "Research/ProximityPrize/MCAPlateauWindow.lean"
+      "ArkLib/Research/ProximityGap/CapacityBounds.lean",
+      "ArkLib/Research/ProximityGap/MCAPlateauWindow.lean"
     ],
     "DG25dist": [
       "ArkLib/Data/CodingTheory/ListDecodability/Bounds/Linear.lean",
@@ -5907,6 +5928,7 @@
       "ArkLib/ProofSystem/ToyProblem/Impl/IRS.lean",
       "ArkLib/ProofSystem/ToyProblem/Leaderboard.lean",
       "ArkLib/ProofSystem/ToyProblem/Spec/General.lean",
+      "ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder.lean",
       "ArkLib/ToMathlib/Analysis/SpecificLimits/GeometricBounds.lean",
       "ArkLib/ToMathlib/Combinatorics/Enumerative/IncidenceProduct.lean",
       "ArkLib/ToMathlib/LinearAlgebra/Matrix/Rank.lean",
@@ -5921,6 +5943,11 @@
       "ArkLib/Data/CodingTheory/Connections/ListDecodingAndCA.lean"
     ],
     "DP24": [
+      "ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/General.lean",
+      "ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/BadBlocks.lean",
+      "ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/FoldDistance.lean",
+      "ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhaseSoundness.lean",
+      "ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness.lean",
       "ArkLib/ProofSystem/Binius/BinaryBasefold/Code.lean",
       "ArkLib/ProofSystem/Binius/BinaryBasefold/Compliance.lean",
       "ArkLib/ProofSystem/Binius/BinaryBasefold/CoreInteractionPhase/Protocol.lean",
@@ -5955,13 +5982,10 @@
       "ArkLib/ProofSystem/RingSwitching/Packing/Profile.lean",
       "ArkLib/ProofSystem/RingSwitching/Packing/TensorPrefix.lean",
       "ArkLib/ProofSystem/RingSwitching/Packing.lean",
+      "ArkLib/Tests/ProofSystem/Binius/BinaryBasefold/Soundness/Incremental.lean",
+      "ArkLib/Tests/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhase.lean",
       "ArkLib/ToMathlib/KStateWeaken.lean",
-      "ArkLib/ToMathlib/RSPhases.lean",
-      "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/General.lean",
-      "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/BadBlocks.lean",
-      "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/FoldDistance.lean",
-      "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/QueryPhaseSoundness.lean",
-      "ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness.lean"
+      "ArkLib/ToMathlib/RSPhases.lean"
     ],
     "DP25": [
       "ArkLib/Data/CodingTheory/ExtensionCodes.lean"
@@ -5971,7 +5995,7 @@
       "ArkLib/Data/CodingTheory/ListDecodability/Bounds.lean",
       "ArkLib/Data/CodingTheory/ListDecoding/Bounds/General.lean",
       "ArkLib/Data/CodingTheory/ListDecoding/Bounds.lean",
-      "Research/ProximityPrize/LDThresholdElias.lean"
+      "ArkLib/Research/ProximityGap/LDThresholdElias.lean"
     ],
     "EthStark21": [
       "ArkLib/Data/Polynomial/CosetChunks.lean"
@@ -5985,8 +6009,8 @@
     ],
     "FRI1216": [
       "ArkLib/Data/Polynomial/CosetChunks.lean",
-      "ArkLib/ProofSystem/Fri/Spec/SingleRound.lean",
-      "ProximityPrize/Extensions/ProofSystem/Fri/Spec/SingleRound.lean"
+      "ArkLib/Extensions/ProofSystem/Fri/Spec/SingleRound.lean",
+      "ArkLib/ProofSystem/Fri/Spec/SingleRound.lean"
     ],
     "GCXK25": [
       "ArkLib/Data/CodingTheory/Connections/EpsMCABadGlue.lean",
@@ -6001,11 +6025,11 @@
       "ArkLib/Data/CodingTheory/ProximityGap/InterleavedListMCACollapse.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/MCADictionaryBracket.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/SqrtFreeRSBridge.lean",
+      "ArkLib/Extensions/Data/CodingTheory/Connections/ListDecodingAndCA.lean",
+      "ArkLib/Research/ProximityGap/Connections/SmoothDomainMCAWitness.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_R1SecondMomentSqrtBarrier.lean",
       "ArkLib/ToMathlib/Bridge2GCXK25.lean",
-      "ArkLib/ToMathlib/BridgeListDecodingCA.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/Connections/ListDecodingAndCA.lean",
-      "Research/ProximityPrize/Connections/SmoothDomainMCAWitness.lean",
-      "Research/ProximityPrize/Frontier/_R1SecondMomentSqrtBarrier.lean"
+      "ArkLib/ToMathlib/BridgeListDecodingCA.lean"
     ],
     "GG25": [
       "ArkLib/Data/CodingTheory/ProximityGap/CapacityBounds/Frs/LineDecoding.lean",
@@ -6022,36 +6046,36 @@
       "ArkLib/Data/CodingTheory/ProximityGap/LineDecoding.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/LineDecodingCoverage.lean",
       "ArkLib/Data/CodingTheory/SubspaceDesign.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/LineDecoding.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/SubspaceDesign.lean",
-      "Research/ProximityPrize/CapacityBounds.lean",
-      "Research/ProximityPrize/CapacityBoundsProofs.lean",
-      "Research/ProximityPrize/Frontier/CurveDecodability.lean",
-      "Research/ProximityPrize/Frontier/Sweep_A27_CondLDtoMCA.lean",
-      "Research/ProximityPrize/Frontier/Sweep_A33_Realizability.lean",
-      "Research/ProximityPrize/Frontier/WF407_B2Curve.lean",
-      "Research/ProximityPrize/Frontier/_B2ExplainingCurveList.lean",
-      "Research/ProximityPrize/Frontier/_B2StackAgreementWeld.lean",
-      "Research/ProximityPrize/Frontier/_B2StructuredCloseSetBudget.lean",
-      "Research/ProximityPrize/Frontier/_FoldedPinBrick1.lean",
-      "Research/ProximityPrize/Frontier/_FoldedPinBrick3.lean",
-      "Research/ProximityPrize/Frontier/_GG25AffineFactorInstance.lean",
-      "Research/ProximityPrize/Frontier/_GG25CurveDecodNextBrick.lean",
-      "Research/ProximityPrize/Frontier/_GG25CurveDecodabilityOpener.lean",
-      "Research/ProximityPrize/Frontier/_GG25LineToAffine.lean",
-      "Research/ProximityPrize/Frontier/_W17CurveDecodStitching.lean",
-      "Research/ProximityPrize/Frontier/_ZJLR26CapacityPinAssembly.lean",
-      "Research/ProximityPrize/Frontier/_ZT413EpsilonPackaging.lean",
-      "Research/ProximityPrize/Frontier/_ZW17RecursivePeeling.lean",
-      "Research/ProximityPrize/GG25CurveDecodabilityB2Capstone.lean",
-      "Research/ProximityPrize/LineDecodingT421Faithful.lean",
-      "Research/ProximityPrize/MCAGS.lean"
+      "ArkLib/Extensions/Data/CodingTheory/ProximityGap/LineDecoding.lean",
+      "ArkLib/Extensions/Data/CodingTheory/SubspaceDesign.lean",
+      "ArkLib/Research/ProximityGap/CapacityBounds.lean",
+      "ArkLib/Research/ProximityGap/CapacityBoundsProofs.lean",
+      "ArkLib/Research/ProximityGap/Frontier/CurveDecodability.lean",
+      "ArkLib/Research/ProximityGap/Frontier/Sweep_A27_CondLDtoMCA.lean",
+      "ArkLib/Research/ProximityGap/Frontier/Sweep_A33_Realizability.lean",
+      "ArkLib/Research/ProximityGap/Frontier/WF407_B2Curve.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_B2ExplainingCurveList.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_B2StackAgreementWeld.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_B2StructuredCloseSetBudget.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_FoldedPinBrick1.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_FoldedPinBrick3.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_GG25AffineFactorInstance.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_GG25CurveDecodNextBrick.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_GG25CurveDecodabilityOpener.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_GG25LineToAffine.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_W17CurveDecodStitching.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_ZJLR26CapacityPinAssembly.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_ZT413EpsilonPackaging.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_ZW17RecursivePeeling.lean",
+      "ArkLib/Research/ProximityGap/GG25CurveDecodabilityB2Capstone.lean",
+      "ArkLib/Research/ProximityGap/LineDecodingT421Faithful.lean",
+      "ArkLib/Research/ProximityGap/MCAGS.lean"
     ],
     "GGR11": [
       "ArkLib/Data/CodingTheory/ListDecodability/Bounds/Interleaved.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/ListRecoveryInterleavedGap.lean",
-      "ArkLib/ToMathlib/GGR11Reconnect.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/InterleavedCode.lean"
+      "ArkLib/Extensions/Data/CodingTheory/InterleavedCode.lean",
+      "ArkLib/ToMathlib/GGR11Reconnect.lean"
     ],
     "GHSZ02": [
       "ArkLib/Data/CodingTheory/ListDecodability/Bounds/ReedSolomon.lean",
@@ -6072,9 +6096,9 @@
       "ArkLib/Data/CodingTheory/SubspaceDesign.lean",
       "ArkLib/Data/Polynomial/ClassicalWronskian.lean",
       "ArkLib/Data/Polynomial/FoldedWronskian.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/SubspaceDesign.lean",
-      "Research/ProximityPrize/Frontier/_FoldedPinBrick1.lean",
-      "Research/ProximityPrize/Frontier/_ZJLR26CapacityPinAssembly.lean"
+      "ArkLib/Extensions/Data/CodingTheory/SubspaceDesign.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_FoldedPinBrick1.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_ZJLR26CapacityPinAssembly.lean"
     ],
     "GLMRSW22": [
       "ArkLib/Data/CodingTheory/ListDecodability/Bounds/Linear.lean",
@@ -6107,12 +6131,12 @@
       "ArkLib/ToMathlib/CZ25DimensionCountProof.lean"
     ],
     "GWZC19": [
-      "ArkLib/ProofSystem/Plonk/PermutationCheck.lean",
-      "ProximityPrize/Extensions/ProofSystem/Plonk/Basic.lean"
+      "ArkLib/Extensions/ProofSystem/Plonk/Basic.lean",
+      "ArkLib/ProofSystem/Plonk/PermutationCheck.lean"
     ],
     "GX13": [
       "ArkLib/Data/CodingTheory/SubspaceDesign.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/SubspaceDesign.lean"
+      "ArkLib/Extensions/Data/CodingTheory/SubspaceDesign.lean"
     ],
     "GZ23": [
       "ArkLib/Data/CodingTheory/ListDecodability/Bounds/ReedSolomon.lean",
@@ -6156,25 +6180,25 @@
       "ArkLib/Data/CodingTheory/ProximityGap/BCIKS20/Weld.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/Hab25HeavyPoints.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/LineDecoding.lean",
+      "ArkLib/Extensions/Data/CodingTheory/ProximityGap/Errors.lean",
+      "ArkLib/Research/ProximityGap/BCIKS20/Arith.lean",
+      "ArkLib/Research/ProximityGap/BCIKS20/Bundle.lean",
+      "ArkLib/Research/ProximityGap/BCIKS20/Capture.lean",
+      "ArkLib/Research/ProximityGap/BCIKS20/Improve.lean",
+      "ArkLib/Research/ProximityGap/CapacityBounds.lean",
+      "ArkLib/Research/ProximityGap/GrandChallenges.lean",
+      "ArkLib/Research/ProximityGap/Hab25CellDichotomyWiring.lean",
+      "ArkLib/Research/ProximityGap/Hab25Core.lean",
+      "ArkLib/Research/ProximityGap/Hab25JohnsonCountWiring.lean",
+      "ArkLib/Research/ProximityGap/Hab25JohnsonDichotomy.lean",
+      "ArkLib/Research/ProximityGap/Hab25JohnsonDischarge.lean",
+      "ArkLib/Research/ProximityGap/JohnsonBoundRealLower.lean",
+      "ArkLib/Research/ProximityGap/MCAGS.lean",
+      "ArkLib/Research/ProximityGap/MCAJohnsonAssembly.lean",
+      "ArkLib/Research/ProximityGap/ProductionJohnsonBudget.lean",
       "ArkLib/ToMathlib/GSSurfaceRadicalSupply.lean",
       "ArkLib/ToMathlib/L46DiffStackRS.lean",
-      "ArkLib/ToMathlib/L46GSLowerBound.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/Errors.lean",
-      "Research/ProximityPrize/BCIKS20/Arith.lean",
-      "Research/ProximityPrize/BCIKS20/Bundle.lean",
-      "Research/ProximityPrize/BCIKS20/Capture.lean",
-      "Research/ProximityPrize/BCIKS20/Improve.lean",
-      "Research/ProximityPrize/CapacityBounds.lean",
-      "Research/ProximityPrize/GrandChallenges.lean",
-      "Research/ProximityPrize/Hab25CellDichotomyWiring.lean",
-      "Research/ProximityPrize/Hab25Core.lean",
-      "Research/ProximityPrize/Hab25JohnsonCountWiring.lean",
-      "Research/ProximityPrize/Hab25JohnsonDichotomy.lean",
-      "Research/ProximityPrize/Hab25JohnsonDischarge.lean",
-      "Research/ProximityPrize/JohnsonBoundRealLower.lean",
-      "Research/ProximityPrize/MCAGS.lean",
-      "Research/ProximityPrize/MCAJohnsonAssembly.lean",
-      "Research/ProximityPrize/ProductionJohnsonBudget.lean"
+      "ArkLib/ToMathlib/L46GSLowerBound.lean"
     ],
     "JH01": [
       "ArkLib/Data/CodingTheory/ListDecodability/Bounds/ReedSolomon.lean",
@@ -6183,7 +6207,7 @@
     ],
     "JM24": [
       "ArkLib/AGM/Basic.lean",
-      "ProximityPrize/Compatibility/AGM.lean"
+      "ArkLib/Compatibility/AGM.lean"
     ],
     "Jo26": [
       "ArkLib/Data/CodingTheory/InterleavedCode/ExactAgreement.lean",
@@ -6218,25 +6242,25 @@
       "ArkLib/Data/CodingTheory/ProximityGap/MarkedCurveDecodableMonotone.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/SubspaceAvoidance.lean",
       "ArkLib/Data/CodingTheory/ProximityGenerator/Interleaving.lean",
-      "Research/ProximityPrize/Frontier/CurveDecodability.lean",
-      "Research/ProximityPrize/Frontier/Sweep_A27_CondLDtoMCA.lean",
-      "Research/ProximityPrize/Frontier/WF407_B2Curve.lean",
-      "Research/ProximityPrize/Frontier/_B2ExplainingCurveList.lean",
-      "Research/ProximityPrize/Frontier/_B2StackAgreementWeld.lean",
-      "Research/ProximityPrize/Frontier/_B2StructuredCloseSetBudget.lean",
-      "Research/ProximityPrize/Frontier/_GG25CurveDecodNextBrick.lean",
-      "Research/ProximityPrize/Frontier/_GG25CurveDecodabilityOpener.lean",
-      "Research/ProximityPrize/Frontier/_W17CurveDecodStitching.lean",
-      "Research/ProximityPrize/Frontier/_ZJLR26CapacityPinAssembly.lean",
-      "Research/ProximityPrize/Frontier/_ZW17RecursivePeeling.lean",
-      "Research/ProximityPrize/GG25CurveDecodabilityB2Capstone.lean",
-      "Research/ProximityPrize/KKH26DimGeneralSharpInterleavedPin.lean"
+      "ArkLib/Research/ProximityGap/Frontier/CurveDecodability.lean",
+      "ArkLib/Research/ProximityGap/Frontier/Sweep_A27_CondLDtoMCA.lean",
+      "ArkLib/Research/ProximityGap/Frontier/WF407_B2Curve.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_B2ExplainingCurveList.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_B2StackAgreementWeld.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_B2StructuredCloseSetBudget.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_GG25CurveDecodNextBrick.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_GG25CurveDecodabilityOpener.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_W17CurveDecodStitching.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_ZJLR26CapacityPinAssembly.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_ZW17RecursivePeeling.lean",
+      "ArkLib/Research/ProximityGap/GG25CurveDecodabilityB2Capstone.lean",
+      "ArkLib/Research/ProximityGap/KKH26DimGeneralSharpInterleavedPin.lean"
     ],
     "Joh62": [
       "ArkLib/Data/CodingTheory/JohnsonBound/Family.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges/ListDecoding.lean",
       "ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/PairwiseJohnson.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/JohnsonBound/Family.lean"
+      "ArkLib/Extensions/Data/CodingTheory/JohnsonBound/Family.lean"
     ],
     "KKH26": [
       "ArkLib/Data/CodingTheory/ListDecodability/Bounds/KKH26.lean",
@@ -6281,44 +6305,44 @@
       "ArkLib/Data/CodingTheory/ProximityGap/SubCeilingLadder.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/TwoPowerSubsetSumSpectrum.lean",
       "ArkLib/Data/CodingTheory/ProximityGap/WindowTwoLayerThreshold.lean",
-      "Research/ProximityPrize/Frontier/DeltaStarConditionalEntropyPin.lean",
-      "Research/ProximityPrize/Frontier/KKH26ConcreteCeilingN8.lean",
-      "Research/ProximityPrize/Frontier/ListCenterEntropyCeiling.lean",
-      "Research/ProximityPrize/Frontier/Sweep_A34_LacunaryResultantS128.lean",
-      "Research/ProximityPrize/Frontier/ThornerZamanS128.lean",
-      "Research/ProximityPrize/Frontier/WF407W2_L3_3pow.lean",
-      "Research/ProximityPrize/Frontier/WF407W2_L5_s256.lean",
-      "Research/ProximityPrize/Frontier/WF407_B3_s128.lean",
-      "Research/ProximityPrize/Frontier/_AvD1_AverageBVSupplyReformulation.lean",
-      "Research/ProximityPrize/Frontier/_AvD1_KKH26S128.lean",
-      "Research/ProximityPrize/Frontier/_AvD2_LinnikWindowCountRequired.lean",
-      "Research/ProximityPrize/Frontier/_AvD3_ParsevalThresholdS128.lean",
-      "Research/ProximityPrize/Frontier/_BchksF4_GoodPrimeLinnik.lean",
-      "Research/ProximityPrize/Frontier/_DeltaStarDefinitive.lean",
-      "Research/ProximityPrize/Frontier/_KKH26s128ThornerZamanBridge.lean",
-      "Research/ProximityPrize/Frontier/_PrizeFloorOfBGK.lean",
-      "Research/ProximityPrize/Frontier/_TZDirichletUnconditional.lean",
-      "Research/ProximityPrize/Frontier/_TZSubquarticBookkeeping.lean",
-      "Research/ProximityPrize/Frontier/_ThornerZamanPNTStatement.lean",
-      "Research/ProximityPrize/Frontier/_U1MinimalSupplyInput.lean",
-      "Research/ProximityPrize/Frontier/_U2FieldSizeBudgetGate.lean",
-      "Research/ProximityPrize/Frontier/_ZTZBetaFiveLadderExtension.lean",
-      "Research/ProximityPrize/Frontier/_ZTZBetaFourCeilingWiring.lean",
-      "Research/ProximityPrize/Frontier/_ZTZBetaFourHighLadderExtension.lean",
-      "Research/ProximityPrize/Frontier/_ZTZBetaFourLadderExtension.lean",
-      "Research/ProximityPrize/Frontier/_ZTZBetaFourPrizeScaleLadder.lean",
-      "Research/ProximityPrize/Frontier/_ZTZBetaThreeFiveCeilingWiring.lean",
-      "Research/ProximityPrize/Frontier/_ZTZBetaThreeFivePrizeScaleLadder.lean",
-      "Research/ProximityPrize/Frontier/_ZTZBetaThreeHighLadderExtension.lean",
-      "Research/ProximityPrize/Frontier/_ZTZBetaThreeLadderExtension.lean",
-      "Research/ProximityPrize/LegacyWorkbench.lean"
+      "ArkLib/Research/ProximityGap/Frontier/DeltaStarConditionalEntropyPin.lean",
+      "ArkLib/Research/ProximityGap/Frontier/KKH26ConcreteCeilingN8.lean",
+      "ArkLib/Research/ProximityGap/Frontier/ListCenterEntropyCeiling.lean",
+      "ArkLib/Research/ProximityGap/Frontier/Sweep_A34_LacunaryResultantS128.lean",
+      "ArkLib/Research/ProximityGap/Frontier/ThornerZamanS128.lean",
+      "ArkLib/Research/ProximityGap/Frontier/WF407W2_L3_3pow.lean",
+      "ArkLib/Research/ProximityGap/Frontier/WF407W2_L5_s256.lean",
+      "ArkLib/Research/ProximityGap/Frontier/WF407_B3_s128.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_AvD1_AverageBVSupplyReformulation.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_AvD1_KKH26S128.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_AvD2_LinnikWindowCountRequired.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_AvD3_ParsevalThresholdS128.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_BchksF4_GoodPrimeLinnik.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_DeltaStarDefinitive.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_KKH26s128ThornerZamanBridge.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_PrizeFloorOfBGK.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_TZDirichletUnconditional.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_TZSubquarticBookkeeping.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_ThornerZamanPNTStatement.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_U1MinimalSupplyInput.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_U2FieldSizeBudgetGate.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_ZTZBetaFiveLadderExtension.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_ZTZBetaFourCeilingWiring.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_ZTZBetaFourHighLadderExtension.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_ZTZBetaFourLadderExtension.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_ZTZBetaFourPrizeScaleLadder.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_ZTZBetaThreeFiveCeilingWiring.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_ZTZBetaThreeFivePrizeScaleLadder.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_ZTZBetaThreeHighLadderExtension.lean",
+      "ArkLib/Research/ProximityGap/Frontier/_ZTZBetaThreeLadderExtension.lean",
+      "ArkLib/Research/ProximityGap/LegacyWorkbench.lean"
     ],
     "KSY14": [
       "ArkLib/Data/CodingTheory/ReedSolomon/Multiplicity.lean"
     ],
     "KZG10": [
       "ArkLib/Commitments/Functional/KZG/Basic.lean",
-      "ProximityPrize/Extensions/Commitments/Functional/KZG/ConcreteVacuity.lean"
+      "ArkLib/Extensions/Commitments/Functional/KZG/ConcreteVacuity.lean"
     ],
     "KZG10TR": [
       "ArkLib/Commitments/Functional/KZG/Binding.lean"
@@ -6345,7 +6369,7 @@
     ],
     "LPS24": [
       "ArkLib/AGM/Basic.lean",
-      "ProximityPrize/Compatibility/AGM.lean"
+      "ArkLib/Compatibility/AGM.lean"
     ],
     "LS18": [
       "ArkLib/Commitments/Functional/Hachi/Composition.lean",
@@ -6360,8 +6384,8 @@
       "ArkLib/Data/Lattices/CyclotomicRing/NormBounds/LyubashevskySeiler.lean",
       "ArkLib/Data/Lattices/CyclotomicRing/NormBounds.lean",
       "ArkLib/Data/Lattices/CyclotomicRing/PowTwo.lean",
-      "ProximityPrize/Extensions/Commitments/Functional/Hachi/InnerOuter/Arithmetic.lean",
-      "ProximityPrize/Extensions/Commitments/Functional/Hachi/InnerOuter/Security.lean"
+      "ArkLib/Extensions/Commitments/Functional/Hachi/InnerOuter/Arithmetic.lean",
+      "ArkLib/Extensions/Commitments/Functional/Hachi/InnerOuter/Security.lean"
     ],
     "MS77": [
       "ArkLib/Data/CodingTheory/ListDecodability/Bounds/Linear.lean",
@@ -6371,7 +6395,7 @@
       "ArkLib/Commitments/Functional/Hachi/Params.lean",
       "ArkLib/Data/Lattices/CyclotomicRing/NormBounds/MicciancioYoung.lean",
       "ArkLib/Data/Lattices/CyclotomicRing/NormBounds.lean",
-      "ProximityPrize/Extensions/Data/Lattices/CyclotomicRing/NormBounds/MicciancioYoung.lean"
+      "ArkLib/Extensions/Data/Lattices/CyclotomicRing/NormBounds/MicciancioYoung.lean"
     ],
     "NOZ26": [
       "ArkLib/Commitments/Functional/Hachi/Basic.lean",
@@ -6451,6 +6475,11 @@
       "ArkLib/Data/Lattices/ModuleSIS.lean",
       "ArkLib/Data/Lattices/Vectors.lean",
       "ArkLib/Data/MvPolynomial/Multilinear.lean",
+      "ArkLib/Extensions/Commitments/Functional/Hachi/InnerOuter/Arithmetic.lean",
+      "ArkLib/Extensions/Commitments/Functional/Hachi/InnerOuter/Correctness.lean",
+      "ArkLib/Extensions/Commitments/Functional/Hachi/InnerOuter/Security.lean",
+      "ArkLib/Extensions/Data/Lattices/CyclotomicRing/NormBounds/Basic.lean",
+      "ArkLib/Extensions/Data/Lattices/CyclotomicRing/NormBounds/MicciancioYoung.lean",
       "ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness/Basic.lean",
       "ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness/CommittedScalar.lean",
       "ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness/Escape.lean",
@@ -6469,12 +6498,7 @@
       "ArkLib/ProofSystem/RingSwitching/Packing.lean",
       "ArkLib/ProofSystem/RingSwitching/RoundVerifiers.lean",
       "ArkLib/ToCompPoly/Multilinear/NestedEvaluationTree.lean",
-      "ArkLib/ToMathlib/RewindingExtractor.lean",
-      "ProximityPrize/Extensions/Commitments/Functional/Hachi/InnerOuter/Arithmetic.lean",
-      "ProximityPrize/Extensions/Commitments/Functional/Hachi/InnerOuter/Correctness.lean",
-      "ProximityPrize/Extensions/Commitments/Functional/Hachi/InnerOuter/Security.lean",
-      "ProximityPrize/Extensions/Data/Lattices/CyclotomicRing/NormBounds/Basic.lean",
-      "ProximityPrize/Extensions/Data/Lattices/CyclotomicRing/NormBounds/MicciancioYoung.lean"
+      "ArkLib/ToMathlib/RewindingExtractor.lean"
     ],
     "NS24": [
       "ArkLib/Commitments/Functional/Hachi/Basic.lean",
@@ -6502,19 +6526,19 @@
       "ArkLib/Data/Lattices/CyclotomicRing/NormBounds.lean",
       "ArkLib/Data/Lattices/CyclotomicRing/PowTwo.lean",
       "ArkLib/Data/Lattices/ModuleSIS.lean",
+      "ArkLib/Extensions/Commitments/Functional/Hachi/InnerOuter/Arithmetic.lean",
+      "ArkLib/Extensions/Commitments/Functional/Hachi/InnerOuter/Correctness.lean",
+      "ArkLib/Extensions/Commitments/Functional/Hachi/InnerOuter/Security.lean",
+      "ArkLib/Extensions/Data/Lattices/CyclotomicRing/NormBounds/Basic.lean",
+      "ArkLib/Extensions/Data/Lattices/CyclotomicRing/NormBounds/MicciancioYoung.lean",
       "ArkLib/OracleReduction/Security/CoordinateWiseSpecialSoundness/SingleRound.lean",
       "ArkLib/ProofSystem/Component/SendChallenge.lean",
-      "ArkLib/ProofSystem/Component/SendClaim.lean",
-      "ProximityPrize/Extensions/Commitments/Functional/Hachi/InnerOuter/Arithmetic.lean",
-      "ProximityPrize/Extensions/Commitments/Functional/Hachi/InnerOuter/Correctness.lean",
-      "ProximityPrize/Extensions/Commitments/Functional/Hachi/InnerOuter/Security.lean",
-      "ProximityPrize/Extensions/Data/Lattices/CyclotomicRing/NormBounds/Basic.lean",
-      "ProximityPrize/Extensions/Data/Lattices/CyclotomicRing/NormBounds/MicciancioYoung.lean"
+      "ArkLib/ProofSystem/Component/SendClaim.lean"
     ],
     "PS94": [
       "ArkLib/Data/CodingTheory/PolishchukSpielman/PolishchukSpielman.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/PolishchukSpielman/PolishchukSpielman.lean",
-      "Research/ProximityPrize/MCAJohnsonDegreeOne.lean"
+      "ArkLib/Extensions/Data/CodingTheory/PolishchukSpielman/PolishchukSpielman.lean",
+      "ArkLib/Research/ProximityGap/MCAJohnsonDegreeOne.lean"
     ],
     "Poseidon2": [
       "ArkLib/Data/Hash/Poseidon2.lean"
@@ -6530,7 +6554,7 @@
     ],
     "Spi95": [
       "ArkLib/Data/CodingTheory/PolishchukSpielman/PolishchukSpielman.lean",
-      "ProximityPrize/Extensions/Data/CodingTheory/PolishchukSpielman/PolishchukSpielman.lean"
+      "ArkLib/Extensions/Data/CodingTheory/PolishchukSpielman/PolishchukSpielman.lean"
     ],
     "ZCF24": [
       "ArkLib/ProofSystem/Binius/BinaryBasefold/General.lean",
@@ -6545,9 +6569,7 @@
     ]
   },
   "lean_roots": [
-    "ArkLib",
-    "Research",
-    "ProximityPrize"
+    "ArkLib"
   ],
   "reference_source": "docs/kb/_generated/references.json"
 }

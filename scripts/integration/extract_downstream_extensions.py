@@ -414,7 +414,7 @@ def module_name(path: str) -> str:
 
 
 def extension_path(path: str) -> str:
-    return "ProximityPrize/Extensions/" + path.removeprefix("ArkLib/")
+    return "ArkLib/Extensions/" + path.removeprefix("ArkLib/")
 
 
 def canonical_owner_modules(path: str, removed: list[dict]) -> set[str]:
@@ -446,7 +446,7 @@ def prune_exact(root: Path, mapping: dict[str, str], upstream_revision: str,
         path = module.replace(".", "/") + ".lean"
         # This file is now a hand-authored compatibility API, rather than an
         # extraction template. Its aliases and PMF bridges have their own checks.
-        if path == "ProximityPrize/Extensions/Data/CodingTheory/ProximityGap/Errors.lean":
+        if path == "ArkLib/Extensions/Data/CodingTheory/ProximityGap/Errors.lean":
             continue
         target = root / path
         if not target.exists():
@@ -495,7 +495,7 @@ def prune_exact(root: Path, mapping: dict[str, str], upstream_revision: str,
     report = {
         "upstream_revision": upstream_revision,
         "method": "identical normalized command, namespace and active context in current source and upstream",
-        "manual_ports_preserved": ["ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors"],
+        "manual_ports_preserved": ["ArkLib.Extensions.Data.CodingTheory.ProximityGap.Errors"],
         "summary": {"files": len(records), "commands": sum(len(r["removed"]) for r in records.values())},
         "files": records,
     }
@@ -545,8 +545,8 @@ end N
     without_duplicate = interrupted_doc[:duplicate_doc.start] + interrupted_doc[duplicate_doc.end:]
     assert '/--' not in without_duplicate and '-- Explanation' not in without_duplicate
     assert remap_imports('import ArkLib.A\n-- import ArkLib.A\n',
-                         {"ArkLib.A": "ProximityPrize.Extensions.A"}) == (
-        'import ProximityPrize.Extensions.A\n-- import ArkLib.A\n')
+                         {"ArkLib.A": "ArkLib.Extensions.A"}) == (
+        'import ArkLib.Extensions.A\n-- import ArkLib.A\n')
     assert declaration_names('namespace A\nprivate def helper := 1\ndef φ := 1\nend A\n') == {"A.φ"}
     contexts = '''namespace A.B
 section Scope

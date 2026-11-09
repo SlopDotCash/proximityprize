@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ProximityPrize.Compatibility.SpartanLinearCombination
+import ArkLib.Compatibility.SpartanLinearCombination
 import ArkLib.ProofSystem.Spartan.Composition
 import ArkLib.ProofSystem.Spartan.ComposedCompletenessLeaves
 import ArkLib.ProofSystem.Spartan.FirstSumcheckBridgeFree

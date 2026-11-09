@@ -10,8 +10,8 @@ The production conjecture remains open.
 - Repository: https://github.com/SlopDotCash/proximityprize
 - Current tracker: https://github.com/SlopDotCash/proximityprize/issues/164
 - Research: https://proximityprize.pages.dev/
-- Read `AGENTS.md`, `Research/ProximityPrize/AGENTS.md`,
-  `Research/ProximityPrize/DOSSIER.md`, and `Research/ProximityPrize/DISPROOF_LOG.md`.
+- Read `AGENTS.md`, `docs/research/proximity-gap/AGENTS.md`,
+  `docs/research/proximity-gap/DOSSIER.md`, and `docs/research/proximity-gap/DISPROOF_LOG.md`.
 - Read the tracker's recent comments and open pull requests before choosing work.
   Check the current dossier if the tracker has moved.
 

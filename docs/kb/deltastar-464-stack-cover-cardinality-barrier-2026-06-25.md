@@ -26,7 +26,7 @@ This note attacks the first option by a pure counting test.
 The frontier file
 
 ```text
-Research/ProximityPrize/Frontier/_StackRepresentativeCoverCardinality.lean
+ArkLib/Research/ProximityGap/Frontier/_StackRepresentativeCoverCardinality.lean
 ```
 
 now proves:

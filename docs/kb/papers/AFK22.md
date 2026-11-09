@@ -3,7 +3,7 @@ kind: paper
 bibkey: AFK22
 title: "Fiat-Shamir Transformation of Multi-Round Interactive Proofs"
 year: "2022"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eprint.iacr.org/2021/1377
 source_metadata: ../sources/AFK22/metadata.yml
 status: seeded
@@ -63,4 +63,4 @@ that turns (coordinate-wise) special soundness into knowledge soundness.
 ## Source Access
 
 - Source metadata: [`../sources/AFK22/metadata.yml`](../sources/AFK22/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

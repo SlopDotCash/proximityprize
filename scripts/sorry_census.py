@@ -2,7 +2,8 @@
 """Deterministic sorry/admit census for the library and research source trees.
 
 Produces a per-declaration inventory of every `sorry`/`admit` token under
-ArkLib/, Research/, and ProximityPrize/, distinguishing real proof holes from docstring/comment mentions.
+ArkLib/ (including research and extensions, excluding ArkLib/Tests/), distinguishing
+real proof holes from docstring/comment mentions.
 With --fail-on-holes (the CI gate), exits non-zero if any live hole exists.
 
 Usage:
@@ -465,7 +466,8 @@ def library_search_admit_tokens(text: str, mask: list[bool]) -> list[tuple[int, 
 
 def census(root: Path) -> list[dict]:
     rows: list[dict] = []
-    for f in sorted(f for name in ("ArkLib", "Research", "ProximityPrize") for f in (root / name).rglob("*.lean")):
+    for f in sorted(path for path in (root / "ArkLib").rglob("*.lean")
+                    if not path.is_relative_to(root / "ArkLib/Tests")):
         text = f.read_text(encoding="utf-8", errors="replace")
         mask = strip_comments_map(text)
         lines = text.splitlines()

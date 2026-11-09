@@ -7,8 +7,8 @@ Authors: ArkLib Contributors
 import ArkLib.ProofSystem.Spartan.FirstSumcheckCubeSum
 import ArkLib.ProofSystem.Spartan.FirstChallengeCoherent
 import ArkLib.ProofSystem.Sumcheck.Spec.General
-import ProximityPrize.Extensions.ProofSystem.Sumcheck.Domain
-import ProximityPrize.Extensions.OracleReduction.LiftContext.OracleReduction
+import ArkLib.Extensions.ProofSystem.Sumcheck.Domain
+import ArkLib.Extensions.OracleReduction.LiftContext.OracleReduction
 
 /-!
 # The Spartan first sum-check oracle reduction (issue #114)

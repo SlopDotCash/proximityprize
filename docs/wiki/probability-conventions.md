@@ -12,7 +12,7 @@ when the statement also uses cardinalities. Do not add sampler assumptions to pu
 or counting statements that never sample.
 
 In mixed compatibility modules, put the sampler binder on each native-output theorem rather
-than on the whole section. The [curve-residual client](../../ArkLibTest/Compatibility/CurveResidualSampling.lean)
+than on the whole section. The [curve-residual client](../../ArkLib/Tests/Compatibility/CurveResidualSampling.lean)
 checks that the retained PMF residuals and their cardinality bridge need no native sampler.
 
 Import `ArkLib.Data.Probability.Uniform` and open `ProbabilityTheory` to use the scoped,

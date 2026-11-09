@@ -3,7 +3,7 @@ kind: paper
 bibkey: listdecoding
 title: "Algorithmic results in list decoding"
 year: 2007
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/listdecoding/metadata.yml
 status: seeded
 related_concepts:
@@ -49,4 +49,4 @@ protocol-specific paper.
 ## Source Access
 
 - Source metadata: [`../sources/listdecoding/metadata.yml`](../sources/listdecoding/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

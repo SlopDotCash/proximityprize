@@ -3,7 +3,7 @@ kind: paper
 bibkey: AGL24
 title: "Randomly punctured Reed-Solomon codes achieve list-decoding capacity over linear-sized fields"
 year: "2024"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/AGL24/metadata.yml
 status: seeded
 related_modules:
@@ -49,4 +49,4 @@ context.
 ## Source Access
 
 - Source metadata: [`../sources/AGL24/metadata.yml`](../sources/AGL24/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

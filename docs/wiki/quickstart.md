@@ -8,7 +8,7 @@ The authoritative upstream revision and module inventory are recorded in
 build includes `ArkLib`, the classic downstream `ArkLibExtensions`, the research
 library `ResearchProximityPrize`, and `ProximityPrizeExtensions`. Existing ArkLib
 imports remain valid; downstream declarations extracted from overlapping modules
-live under `ProximityPrize/Extensions/` and import the authoritative definitions.
+live under `ArkLib/Extensions/` and import the authoritative definitions.
 
 Use `./scripts/lake-locked.sh build <targets>` and
 `./scripts/lake-locked.sh exe cache get` for local builds and cache fetches. The
@@ -180,7 +180,7 @@ ArkLib declaration types and bodies, without a baseline exception. See
 ./scripts/validate.sh
 ```
 
-### Added, renamed, or deleted files under `ArkLib/` or `Research/ProximityPrize/`
+### Added, renamed, or deleted files under `ArkLib/` or `ArkLib/Research/ProximityGap/`
 
 ```bash
 git add path/to/newfile.lean
@@ -193,14 +193,14 @@ and verifies that the committed import surfaces match the tracked source.
 
 ### Compile-time acceptance tests
 
-Place examples and regression tests under `ArkLibTest/`, mirroring the production module path.
+Place examples and regression tests under `ArkLib/Tests/`, mirroring the production module path.
 Run `lake test` to build them; `./scripts/validate.sh` runs this target by default and rejects all
 test warnings, including admissions. Stage new tests so source linting and the trust inventory
 include them. Production modules must not import tests.
 
 Typed Interaction PRs also have a focused hosted check, including when stacked on a feature
-branch. It compiles all tracked modules under `ArkLib/Interaction/`, `ArkLibTest/Interaction/`,
-`ArkLib/ProofSystem/Sumcheck/Interaction/` and `ArkLibTest/ProofSystem/Sumcheck/Interaction/` with
+branch. It compiles all tracked modules under `ArkLib/Interaction/`, `ArkLib/Tests/Interaction/`,
+`ArkLib/ProofSystem/Sumcheck/Interaction/` and `ArkLib/Tests/ProofSystem/Sumcheck/Interaction/` with
 the existing build-time source-policy plugin and rejects every warning in those modules,
 including admissions. This is early feedback, not a replacement for `lake test` or the full
 validation/axiom gate before merging to `main`. The semantic acceptance requirements live in
@@ -272,7 +272,7 @@ a zero-debt rule: no baseline edit can green it, and `--update-baseline` refuses
 while such taint is present — remove the dependency instead.
 
 CI enforces both the fixture matrix and the library regression check (see `ci.yml`).
-It also runs `scripts/source-trust-audit.py` over every tracked Lean file under `ArkLib/` and `ArkLibTest/`.
+It also runs `scripts/source-trust-audit.py` over every tracked Lean file under `ArkLib/` and `ArkLib/Tests/`.
 That deterministic, comment/string-aware inventory reports source-only constructs that an
 environment sweep cannot see reliably: admissions in examples or defaults/autoparams and
 constructs in files outside the imported roots. Compare this inventory with the PR base when
@@ -302,12 +302,17 @@ For website or blueprint output, run:
 ./scripts/validate.sh --site
 ```
 
-`./scripts/build-web.sh` assembles the site, and skips blueprint generation if `leanblueprint`
-is not installed. If blueprint output matters, install it first:
+`./scripts/build-web.sh` assembles the site in ignored `build/site/` from the
+sources under `website/`. Rendering requires TeX Live (`latexmk` and the configured
+engine), plus plasTeX and the leanblueprint plugin in one Python environment.
+Provide the Python renderer dependencies with:
 
 ```bash
-uv tool install --python 3.12 leanblueprint
+uv run --no-project --python 3.12 --with leanblueprint bash scripts/build-web.sh
 ```
+
+Missing tools or outputs fail the build. See [blueprint and citations](blueprint-and-citations.md)
+for the standalone renderer and CI workflow.
 
 ## Important Notes
 
@@ -408,11 +413,8 @@ If you specifically need to regenerate `ArkLib.lean`, use:
 ./scripts/update-lib.sh
 ```
 
-If blueprint output matters and `leanblueprint` is missing:
-
-```bash
-uv tool install --python 3.12 leanblueprint
-```
+For blueprint output, use `scripts/blueprint-ci.py render` with the TeX/Python
+requirements described in [blueprint and citations](blueprint-and-citations.md).
 
 ## CI Mapping
 
@@ -485,7 +487,7 @@ the default build.
   past its budget. It is lexical, not an elaborated declaration or axiom audit.
 - [`../../.github/workflows/check-imports.yml`](../../.github/workflows/check-imports.yml)
   checks pinned canonical-source provenance, the library/research boundary, and the generated
-  `ArkLib.lean`, `ProximityPrize.lean`, `ProximityPrize/Extensions.lean`, and Research umbrellas,
+  `ArkLib.lean`, `ArkLib/Downstream.lean`, `ArkLib/Extensions.lean`, and Research umbrellas,
   including their Lake ownership. Both this workflow and the main CI run without path filters
   for PRs targeting `main` and for merge groups, so a generated-root-only change or a change to
   an integration script or manifest still runs validation. Focused regression tests in

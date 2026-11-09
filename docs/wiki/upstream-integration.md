@@ -32,7 +32,7 @@ The upstream kernel baseline lists five solicited declarations. The source censu
 written proof holes underlying them to the exact upstream blobs. Upstream also proved the tuple
 identities that previously had byte-pinned `True` stubs.
 
-The [higher-universe polynomial client](../../ArkLibTest/Compatibility/PolynomialUniverses.lean)
+The [higher-universe polynomial client](../../ArkLib/Tests/Compatibility/PolynomialUniverses.lean)
 instantiates the reviewed SplitFold APIs and `Bivariate.degreeX_le_natWeightedDegree` at
 `ULift.{1} ℚ : Type 1`. It checks coefficient extraction, recombination, folding, and the
 weighted-degree bound through canonical imports, with kernel axiom reports. Generic downstream
@@ -41,7 +41,7 @@ clients and the complete package build remain part of validation.
 Downstream-only modules and compatibility theorems belong to the extension layer. Existing
 import paths can stay stable through separate Lake ownership, while the canonical umbrella
 remains a module and exports the complete upstream library. Additional declarations formerly
-embedded in shared files are consolidated under `ProximityPrize/Extensions/`, preserving their
+embedded in shared files are consolidated under `ArkLib/Extensions/`, preserving their
 mathematical namespaces. Their extraction manifest records the original sources and the
 declarations replaced by canonical implementations.
 
@@ -51,7 +51,7 @@ Run the surface generators after staging added or removed Lean files; do not edi
 umbrellas or library-glob blocks by hand.
 
 The Research arithmetic certificates share the verified square-and-multiply implementation in
-[`Support/BinaryPower.lean`](../../Research/ProximityPrize/Support/BinaryPower.lean). Certificate
+[`Support/BinaryPower.lean`](../../ArkLib/Research/ProximityGap/Support/BinaryPower.lean). Certificate
 statements continue to use ordinary monoid powers. The W16 rung generator imports the shared proof.
 
 At this pin, `rbrSoundness` and `rbrKnowledgeSoundness` use the fixed-prefix games. Downstream
@@ -116,7 +116,7 @@ Its historical newest-first input relation and terminal algebra remain explicit 
 results; changed-language completeness and knowledge declarations have `_native` names. The final
 step uses the native deterministic guard and knowledge-state engine. The full core RBR wrapper
 still requires its explicit append-RBR premise. The [migration audit](../../scripts/integration/fribinius-core-native-migration.json)
-records renamed commands, original sources and kernel checks; a [coefficient-view regression](../../ArkLibTest/Compatibility/FRIBiniusEncoding.lean)
+records renamed commands, original sources and kernel checks; a [coefficient-view regression](../../ArkLib/Tests/Compatibility/FRIBiniusEncoding.lean)
 distinguishes the encodings before any challenge. Its retained round-zero counterexample concerns
 only the historical bad-event predicate.
 
@@ -164,8 +164,8 @@ equal evaluation vectors and therefore equal folded values. The original UDR-clo
 from the stronger arbitrary-function result; global disagreement alone is insufficient
 ([proof audit](../../scripts/integration/binius-fold-locality-migration.json)).
 
-The [GKR circuit model](../../ProximityPrize/Extensions/ProofSystem/GKR/Circuit.lean) and
-[polynomial line restriction](../../ProximityPrize/Extensions/Data/MvPolynomial/LineRestriction.lean)
+The [GKR circuit model](../../ArkLib/Extensions/ProofSystem/GKR/Circuit.lean) and
+[polynomial line restriction](../../ArkLib/Extensions/Data/MvPolynomial/LineRestriction.lean)
 preserve the foundations imported in [PR #216](https://github.com/SlopDotCash/proximityprize/pull/216)
 from the upstream GKR development. The degree bounds reuse the integrated polynomial APIs.
 These modules cover layered evaluation, ordered wiring predicates, and the restriction of a
@@ -173,14 +173,14 @@ multilinear polynomial to a univariate line.
 
 ## Compatibility APIs
 
-The downstream [randomized state restoration](../../ProximityPrize/Extensions/Interaction/Oracle/Security/StateRestorationRandomized.lean)
-and [native Sumcheck soundness](../../ProximityPrize/Extensions/ProofSystem/Sumcheck/Interaction/StateRestorationSoundness.lean)
+The downstream [randomized state restoration](../../ArkLib/Extensions/Interaction/Oracle/Security/StateRestorationRandomized.lean)
+and [native Sumcheck soundness](../../ArkLib/Extensions/ProofSystem/Sumcheck/Interaction/StateRestorationSoundness.lean)
 modules port the corresponding sources from [PR #216 at `e36fe8a90`](https://github.com/SlopDotCash/proximityprize/tree/e36fe8a90889ddbc1eea94b76370911b0195c92c).
 The restoration proofs use VCVio's logged random-oracle execution to account for interleaved
 private sampling and fresh queries. The Sumcheck client uses a Unit witness to certify ordinary
 soundness for the native verifier, with both expected and bounded query formulations.
 
-The historical [verifier context-lifting bound](../../ProximityPrize/Extensions/OracleReduction/LiftContext/Reduction.lean)
+The historical [verifier context-lifting bound](../../ArkLib/Extensions/OracleReduction/LiftContext/Reduction.lean)
 applies to every input under explicit output preservation for all compatible statements.
 `Verifier.liftContext_probEvent_le_of_not_mem` uses the canonical lens law for invalid inputs.
 
@@ -192,7 +192,7 @@ count or proof of the paper's concrete protocol.
 | Development | Canonical API | Retained downstream surface |
 | --- | --- | --- |
 | Algebraic group representations | `AGM.GroupRepresentation` uses one coefficient per finite basis index | `ProximityPrize.Compatibility.AGM.ListRepresentation` retains the list model and completed handle simulator; explicit length-aware bridges connect the representations |
-| Pure knowledge transport | Canonical round-by-round definitions and shared-state game mixture | [`PureKnowledge`](../../ProximityPrize/Compatibility/PureKnowledge.lean) owns the preserved arbitrary-witness extraction, carry/pushforward, and pure-phase flip lemmas; [provenance](../../scripts/integration/pure-knowledge-consolidation.json) records both former owners |
+| Pure knowledge transport | Canonical round-by-round definitions and shared-state game mixture | [`PureKnowledge`](../../ArkLib/Compatibility/PureKnowledge.lean) owns the preserved arbitrary-witness extraction, carry/pushforward, and pure-phase flip lemmas; [provenance](../../scripts/integration/pure-knowledge-consolidation.json) records both former owners |
 | Tight terminal completeness | Canonical `CheckClaim` is a pure pass-through | `finalCheckPure` delegates `finalCheckTight`; both keep terminal identities in semantic relations. The full and pure completeness wrappers share the seven-seam fold in `TightComposedCompleteness`; [mapping](../../scripts/integration/binius-spartan-final-fqn-consolidation.json) archives the consolidated proof copies |
 | Uniform probabilities | VCVio native sampling and event measures | `ProximityPrize.Compatibility.UniformProbability` proves the finite PMF/native event bridge |
 | Failing discrete coupling | Canonical measure TV through the checked PMF bridge | `ProximityPrize.Compatibility.CompletedPMFCoupling` keeps explicit `PMF (Option α)` completions, infinite countable supports, and equal `none` mass; the SPMF-specific path is an import shim |
@@ -203,9 +203,9 @@ count or proof of the paper's concrete protocol.
 | Modified Guruswami interpolants | Canonical existence uses positive multiplicity | `ProximityGap.Compatibility.modified_guruswami_has_a_solution_of_degree_bounds` preserves the older arbitrary-multiplicity interface under explicit degree budgets; positive multiplicities use the canonical construction |
 | Grand challenges | Canonical adjacent integer-grid boundaries and `Code.Lambda` | Research retains its different maximal-radius / legacy-list-size model under `Continuous*` names and `continuousGrandListDecodingChallenge`; see [collision audit](../../scripts/integration/public-fqn-consolidation.json) |
 | Ring-switching coordinates | Canonical columns recover the packed right factor; rows recover the left factor | Historical recovery helper names now state their formulas using the authoritative coordinate operations; `binaryTowerProfile` delegates to `tensorProductProfile` |
-| Partial polynomial evaluation | `fixFirstVariablesOfMQP` fixes a prefix; the next challenge uses `Fin.snoc` | Legacy wrappers delegate the canonical evaluation/substitution/transition laws; [convention clients](../../ArkLibTest/Compatibility/RingSwitchingCoordinates.lean) distinguish the former suffix convention ([audit](../../scripts/integration/ringswitching-conventions.json)) |
+| Partial polynomial evaluation | `fixFirstVariablesOfMQP` fixes a prefix; the next challenge uses `Fin.snoc` | Legacy wrappers delegate the canonical evaluation/substitution/transition laws; [convention clients](../../ArkLib/Tests/Compatibility/RingSwitchingCoordinates.lean) distinguish the former suffix convention ([audit](../../scripts/integration/ringswitching-conventions.json)) |
 | Binary Basefold basis and fibers | Pinned CompPoly owns intermediate-basis reconstruction; canonical fibers require destination ≤ ℓ | Historical basis names re-export their owners. The broader rate-tail fiber and low-row-bit matrix evaluator retain explicit compatibility proofs ([audit](../../scripts/integration/binius-basis-consolidation.json)) |
-| Binary Basefold unique decoder | Canonical `uniqueDecodingCodeword` owns the implementation | `UDRCodeword` retains its full original positional metadata/proof interface and delegates the canonical decoder; a generic positional client checks the unchanged API ([audit](../../scripts/integration/binius-decoder-consolidation.json), [regression](../../ArkLibTest/Compatibility/BiniusDecoder.lean)) |
+| Binary Basefold unique decoder | Canonical `uniqueDecodingCodeword` owns the implementation | `UDRCodeword` retains its full original positional metadata/proof interface and delegates the canonical decoder; a generic positional client checks the unchanged API ([audit](../../scripts/integration/binius-decoder-consolidation.json), [regression](../../ArkLib/Tests/Compatibility/BiniusDecoder.lean)) |
 | Ordinary commitment adversaries | VCVio's `CommitmentScheme.BindingAdversary` / `HidingAdversary` use `ProbComp` | `OracleBindingAdversary` / `OracleHidingAdversary` retain arbitrary oracle specs and separate committer/verifier keys |
 | Toy-problem winning sets | Canonical instances pin a linear encoder; `winningSetDensity` is their combinatorial supremum | `ToyProblem.ExistentialEncoding` retains the distinct legacy instance/ratio API that existentially quantifies encoders for an arbitrary code set |
 | Canonical polynomial coefficients | CompPoly's constructors and coefficient maps | The former downstream univariate module is a compatibility import rather than another implementation |
@@ -213,9 +213,9 @@ count or proof of the paper's concrete protocol.
 Do not substitute `Code.Lambda` and `ListDecodable.Lambda` without a bridge. Canonical
 `Code.Lambda` uses `Set.encard`, so an infinite list has cardinality `⊤`; the legacy definition
 uses `Set.ncard` cast to `ℕ∞`, which gives `0` for an infinite set. Retained statements use the
-intended name explicitly. The [finite list-size bridges](../../ProximityPrize/Compatibility/ListSize.lean)
+intended name explicitly. The [finite list-size bridges](../../ArkLib/Compatibility/ListSize.lean)
 prove equality when point lists or the code are finite, including finite codes over infinite
-alphabets. [Acceptance clients](../../ArkLibTest/Compatibility/ListSize.lean) check that boundary
+alphabets. [Acceptance clients](../../ArkLib/Tests/Compatibility/ListSize.lean) check that boundary
 and the distinct values for an infinite point list. Likewise, a generic probability theorem may
 require the discrete
 support contract: arbitrary native measures need not assign positive mass to each reachable
@@ -247,7 +247,7 @@ The historical `ArkLib.ToMathlib.SPMFBindComm` path now imports canonical
 `MeasureTheory.Measure.bind_bind_swap`; the SPMF-specific declaration is retired. The native law
 requires s-finite prefix measures and a jointly measurable continuation, and also applies to
 subprobability measures with missing mass. The concrete state-preserving simulation swaps live in
-[StatePreservingSimulation](../../ProximityPrize/Compatibility/StatePreservingSimulation.lean).
+[StatePreservingSimulation](../../ArkLib/Compatibility/StatePreservingSimulation.lean).
 They derive commutation from the existing handler-state guarantee and canonical uniform
 `ProbComp` semantics. No program assumption or global discrete instance is added. Their original
 `OptionTStateT` names remain available through `RunUnroll`.
@@ -365,8 +365,8 @@ The downstream trapdoor-recovery module uses `Classical.choice` to recover the e
 the public verifier SRS leg. The concrete-game adversaries use that recovery under `pure`,
 so they make zero oracle queries and win with probability one. The t-SDH attack requires
 `g₂ ≠ 1`. The ARSDH attack also requires `g₁ ≠ 1` and `D + 2 ≤ p`.
-[Trapdoor recovery](../../ProximityPrize/Extensions/Commitments/Functional/KZG/ConcreteTrapdoor.lean) ·
-[Concrete-game refutations](../../ProximityPrize/Extensions/Commitments/Functional/KZG/ConcreteVacuity.lean)
+[Trapdoor recovery](../../ArkLib/Extensions/Commitments/Functional/KZG/ConcreteTrapdoor.lean) ·
+[Concrete-game refutations](../../ArkLib/Extensions/Commitments/Functional/KZG/ConcreteVacuity.lean)
 
 In the canonical binding reductions, pairing nondegeneracy forces `g₂ ≠ 1`, and function
 binding already assumes `g₁ ≠ 1` and `n + 2 ≤ p`. The concrete-group hardness hypotheses
@@ -446,7 +446,7 @@ debt remain active; new helper axiom checks are recorded separately.
 The canonical sumcheck verifier checks the prover's message polynomial. The old downstream
 input-oracle rejection argument therefore does not establish a constant knowledge state or
 zero-error soundness for that verifier. The checked regression in
-`ArkLibTest/Compatibility/SumcheckMessageSemantics.lean` uses `ZMod 2`, input polynomial `X`,
+`ArkLib/Tests/Compatibility/SumcheckMessageSemantics.lean` uses `ZMod 2`, input polynomial `X`,
 domain `{1}`, target `0`, message `0`, and challenge `0`: the input relation fails, the canonical
 verifier accepts, and the output relation holds. Exact retired proofs and dependent Logup
 capstones are archived in `scripts/integration/sumcheck-message-semantics-retirements.json`.
@@ -458,7 +458,7 @@ instance or automatic proof; it does not discharge the upstream knowledge-soundn
 
 The completed downstream Spartan first-challenge phase has the explicit entry point
 `Spartan.Spec.oracleReduction.completedFirstChallenge`, defined in
-[`SpartanFirstChallenge.lean`](../../ProximityPrize/Compatibility/SpartanFirstChallenge.lean).
+[`SpartanFirstChallenge.lean`](../../ArkLib/Compatibility/SpartanFirstChallenge.lean).
 It consumes the post-first-message `Unit` witness and reuses the completed concrete prover and
 native verifier. Canonical `oracleReduction.firstChallenge` retains its inherited admitted
 definition and its original `Witness R pp` input interface. The completed

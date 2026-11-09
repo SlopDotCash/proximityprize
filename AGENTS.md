@@ -41,7 +41,7 @@ the source of inherited upstream admissions when integrating another snapshot.
 3. If you add, rename, or delete files under `ArkLib/`, `git add` new paths before validation.
 4. If you also want Lean style linting, run `./scripts/validate.sh --lint`.
 5. For docstring or docs work, `./scripts/validate.sh --docs` is a convenient add-on check.
-6. Only build site or blueprint output when touching `blueprint/` or `home_page/`:
+6. Only build site or blueprint output when touching `website/blueprint/` or `website/library/`:
    `./scripts/validate.sh --site`.
 
 ## Where To Work
@@ -51,7 +51,11 @@ the source of inherited upstream admissions when integrating another snapshot.
 - `ArkLib/ProofSystem/` - protocol formalizations built on the core.
 - `ArkLib/Commitments/` - commitments and opening arguments.
 - `ArkLib/ToMathlib/` - local mathematical extensions; publication follows the repository destination rule above.
-- `blueprint/src/` - deep design docs and bibliography.
+- `ArkLib/Extensions/`, `ArkLib/Compatibility/` - retained downstream APIs.
+- `ArkLib/Research/ProximityGap/` - campaign Lean modules; preserve the research import boundary.
+- `ArkLib/Tests/` - acceptance clients, built separately by `lake test`.
+- `docs/research/proximity-gap/` - campaign guides, dossier, disproof log and archive.
+- `website/` - all website sources; `website/blueprint/src/` holds the bibliography and exposition.
 - `scripts/` - repo utilities.
 
 ## Guardrails
@@ -71,11 +75,11 @@ the source of inherited upstream admissions when integrating another snapshot.
 - Lean defaults: `autoImplicit = false`; the long-file linter cap is `1500` unless a file opts
   out locally.
 - `ArkLib.lean` is generated; do not hand-edit it.
-- Edit source, not derived output such as `.lake/`, `blueprint/web/`, `blueprint/print/`,
-  `dependency_graphs/`, or `home_page/docs/`.
+- Edit source, not derived output such as `.lake/`, `website/blueprint/web/`, `website/blueprint/print/`,
+  `dependency_graphs/`, or `website/library/docs/`.
 - Pre-existing `sorry` blocks exist in active formalizations; distinguish existing gaps from new
   regressions.
-- If a PR changes commands, repo structure, generated outputs, or the blueprint/citation
+- If a PR changes commands, repo structure, generated outputs, or the website/blueprint/citation
   workflow, update the matching page in [`docs/wiki/`](docs/wiki/README.md) in the same PR.
 - Promote recurring agent learnings into [`docs/wiki/`](docs/wiki/README.md); do not let stable
   guidance live only in ephemeral notes.
@@ -86,7 +90,7 @@ If you are working on the Proximity Prize / proximity-gap formalization (standal
 successor to the historical ArkLib campaign), read the dedicated agent guide **before** touching
 that cone — it has the build recipe you need to avoid clogging the machine:
 
-- [`Research/ProximityPrize/CLAUDE.md`](Research/ProximityPrize/CLAUDE.md)
+- [`docs/research/proximity-gap/CLAUDE.md`](docs/research/proximity-gap/CLAUDE.md)
   (`CLAUDE.md` there is a symlink to `AGENTS.md`): build/concurrency/honesty rules,
   the standalone #164 control plane, historical campaign ledger, substrate API map, references,
   and pitfall catalogue.
@@ -95,15 +99,22 @@ that cone — it has the build recipe you need to avoid clogging the machine:
   (~2-3 min even no-op) and takes the build lock (serializes all agents). Instead run
   `scripts/pg-warm.sh` ONCE (pre-builds the substrate oleans), then iterate per-attempt with
   `scripts/pg-iterate.sh <file>` (= `lake env lean`, ~30-75s, **no lock → fully parallel**).
-- **Start here:** `Research/ProximityPrize/DOSSIER.md` for the current standalone
+- **Start here:** `docs/research/proximity-gap/DOSSIER.md` for the current standalone
   control plane and post-v3 result ledger, then
-  `Research/ProximityPrize/Frontier/README.md` and
-  `Research/ProximityPrize/PROXIMITY_PRIZE_WORKBENCH.lean` §5 for the detailed lane history and substrate.
+  `docs/research/proximity-gap/frontier.md` and
+  `ArkLib/Research/ProximityGap/PROXIMITY_PRIZE_WORKBENCH.lean` §5 for the detailed lane history and substrate.
 - **Open-residual map (whole project):**
   [`docs/wiki/residual-census.md`](docs/wiki/residual-census.md) — the generated census owns
   current counts and audited provider statuses. The "named residual" convention is modularity,
   not incompleteness, and the strict syntactic census is not the production-theorem completion
   ledger.
+
+## Repository layout
+
+Keep Lean sources in `ArkLib/`, prose in `docs/`, tools and probes in `scripts/`,
+and website sources in `website/`. Do not recreate personal research or scratch
+folders at the root. See [`docs/wiki/repository-layout.md`](docs/wiki/repository-layout.md)
+for the move map and evidence homes. The layout gate checks tracked paths.
 
 ## Deeper Docs
 
@@ -121,5 +132,5 @@ that cone — it has the build recipe you need to avoid clogging the machine:
 - [`README.md`](README.md) - project overview.
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) - style, naming, docstrings, citations, and large
   contributions.
-- [`ROADMAP.md`](ROADMAP.md) - planned directions.
-- [`BACKGROUND.md`](BACKGROUND.md) - background references.
+- [`docs/project/roadmap.md`](docs/project/roadmap.md) - planned directions.
+- [`docs/project/background.md`](docs/project/background.md) - background references.

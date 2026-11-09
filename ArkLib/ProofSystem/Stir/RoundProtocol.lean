@@ -4,13 +4,13 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Eliza
 -/
 
-import ProximityPrize.Extensions.OracleReduction.Basic
-import ProximityPrize.Extensions.OracleReduction.VectorIOR
-import ProximityPrize.Extensions.OracleReduction.Security.Basic
-import ProximityPrize.Extensions.Data.CodingTheory.Basic.RelativeDistance
-import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
-import ProximityPrize.Extensions.ProofSystem.Stir.Combine
-import ProximityPrize.Extensions.ProofSystem.Stir.MainThm
+import ArkLib.Extensions.OracleReduction.Basic
+import ArkLib.Extensions.OracleReduction.VectorIOR
+import ArkLib.Extensions.OracleReduction.Security.Basic
+import ArkLib.Extensions.Data.CodingTheory.Basic.RelativeDistance
+import ArkLib.Extensions.Data.CodingTheory.ReedSolomon
+import ArkLib.Extensions.ProofSystem.Stir.Combine
+import ArkLib.Extensions.ProofSystem.Stir.MainThm
 
 /-!
 # STIR fold-and-combine round: a real protocol object

@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 
 def get_relative_path(current_file, target_path):
@@ -12,7 +13,7 @@ GLOBAL_NAV_HTML = """
             <a href="{root}docs/">Documentation</a>
             <a href="{root}blueprint/">Blueprint (Web)</a>
             <a href="{root}blueprint.pdf">Blueprint (PDF)</a>
-            <a href="https://github.com/Verified-zkEVM/ArkLib" target="_blank">GitHub</a>
+            <a href="https://github.com/SlopDotCash/proximityprize" target="_blank">GitHub</a>
         </div>
     </div>
 </div>
@@ -28,6 +29,8 @@ def inject_nav(directory, root_dir):
                 if file == "navbar.html":
                     continue
                 file_path = os.path.join(root, file)
+                if os.path.islink(file_path):
+                    continue
                 
                 # Calculate relative paths
                 rel_css = get_relative_path(file_path, css_path)
@@ -51,8 +54,8 @@ def inject_nav(directory, root_dir):
                     
                     # Inject Nav HTML after <body>
                     nav_html = GLOBAL_NAV_HTML.format(root=rel_root)
-                    if "<body>" in content:
-                        content = content.replace("<body>", f"<body>{nav_html}")
+                    content = re.sub(r"(<body\b[^>]*>)", lambda match: match[1] + nav_html,
+                                     content, count=1, flags=re.IGNORECASE)
                     
                     with open(file_path, "w", encoding="utf-8") as f:
                         f.write(content)
@@ -65,7 +68,7 @@ if __name__ == "__main__":
         print("Usage: uv run --no-project --python 3.12 python inject_nav.py <target_directory_base>")
         sys.exit(1)
         
-    base_dir = sys.argv[1] # e.g., home_page
+    base_dir = sys.argv[1] # e.g., build/site
     
     # Inject in docs
     docs_dir = os.path.join(base_dir, "docs")

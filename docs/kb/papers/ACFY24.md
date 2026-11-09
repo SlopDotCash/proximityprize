@@ -3,7 +3,7 @@ kind: paper
 bibkey: ACFY24
 title: "WHIR: Reed-Solomon Proximity Testing with Super-Fast Verification"
 year: 2024
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eprint.iacr.org/2024/1586
 source_metadata: ../sources/ACFY24/metadata.yml
 status: seeded
@@ -64,4 +64,4 @@ folding/proximity-gap development; there is no WHIR protocol folder under `ArkLi
 ## Source Access
 
 - Source metadata: [`../sources/ACFY24/metadata.yml`](../sources/ACFY24/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

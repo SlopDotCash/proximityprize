@@ -8,7 +8,7 @@ import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 import CompPoly.Multivariate.Operations
 import CompPoly.Multivariate.MvPolyEquiv
 import CompPoly.Multivariate.Rename
-import ProximityPrize.Extensions.Data.MvPolynomial.Multilinear
+import ArkLib.Extensions.Data.MvPolynomial.Multilinear
 
 /-!
 # Computable multilinear extension (`CMvPolynomial` carrier)

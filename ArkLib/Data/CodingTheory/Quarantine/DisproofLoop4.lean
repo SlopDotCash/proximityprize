@@ -39,7 +39,7 @@ that bridge must be supplied separately for each construction — so it does not
 of every listed vanishing-polynomial construction.
 
 This file proves that wall as a sorry-free, axiom-clean real-arithmetic lemma. It does **not**
-prove the conjecture — it refutes the refutations. See `Research/ProximityPrize/DISPROOF_LOG.md`.
+prove the conjecture — it refutes the refutations. See `docs/research/proximity-gap/DISPROOF_LOG.md`.
 -/
 
 namespace ArkLib.ProximityGap.DisproofLoop4

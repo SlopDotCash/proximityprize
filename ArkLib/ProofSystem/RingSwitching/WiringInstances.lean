@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.RingSwitching.Spec
-import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.Append
+import ArkLib.Extensions.OracleReduction.Composition.Sequential.Append
 import ArkLib.OracleReduction.Composition.Sequential.SeqComposeMsgCompleteness
 
 /-!

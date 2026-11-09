@@ -234,7 +234,7 @@ but historically the first unconditional multi-scalar deep-band bound.
 
 **The wall, isolated.** Improving the supply *below Johnson agreement* for arbitrary
 off-code words is quantitatively the classical sub-Johnson list-size question for
-Reed–Solomon codes (analysis logged in `Research/ProximityPrize/DISPROOF_LOG.md`, 2026-06-12).
+Reed–Solomon codes (analysis logged in `docs/research/proximity-gap/DISPROOF_LOG.md`, 2026-06-12).
 This is a heuristic correspondence, not a proved equivalence. The machine-checked
 incidence bounds (for example `LineCodewordIncidence.line_list_incidence_le`) control
 bad scalars by a *line-union* list — codewords close to some point of the whole line —
@@ -276,7 +276,7 @@ Our results constrain any proof: it must operate strictly below the failure zone
 Theorem 5.5, it must fail for the coefficient family at band depths where
 `C(n,k+m+1) ≥ (1+D)q^{m+1}`, and by Theorem 6.1 a sufficiently strong version implies
 sub-Johnson list-size bounds. The known refutations and no-gos accumulated by this
-programme (the in-tree `Research/ProximityPrize/DISPROOF_LOG.md`: 60+ entries, including the
+programme (the in-tree `docs/research/proximity-gap/DISPROOF_LOG.md`: 60+ entries, including the
 prime-field counterexamples to MCA-up-to-capacity and the production-vacuity of
 agreement-capped supplies) chart the approaches that cannot work.
 

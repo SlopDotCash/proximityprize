@@ -14,7 +14,7 @@ So rank < 4 at six points is *necessary but not sufficient* for middle-band
 occupancy.  This probe replaces the hit test with a certificate that pins
 `delta_1 = 7 = max + 1` exactly, and applies it to sampled support configurations
 at selected primes, following the small-field discipline in
-`Research/ProximityPrize/AGENTS.md`.
+`docs/research/proximity-gap/AGENTS.md`.
 
 THE CERTIFICATE  (n = 20, d = 6, k = 10, t = 2; SYZ50.Realizable 6 6 6 2 10)
 ---------------------------------------------------------------------------

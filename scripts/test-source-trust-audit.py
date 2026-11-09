@@ -27,17 +27,21 @@ class SourceTrustAuditTests(unittest.TestCase):
             try:
                 os.chdir(directory)
                 subprocess.run(["git", "init", "-q"], check=True)
-                for path in ["ArkLib/Production.lean", "ArkLibTest/Acceptance.lean",
+                for path in ["ArkLib/Production.lean", "ArkLib/Tests/Acceptance.lean",
+                             "ArkLib/Research/ProximityGap/Research.lean",
+                             "ArkLib/Extensions/Retained.lean",
                              "scripts/DeliberatelyInvalid.lean"]:
                     source = Path(path)
                     source.parent.mkdir(parents=True, exist_ok=True)
                     source.write_text("example : True := by sorry\n", encoding="utf-8")
                 subprocess.run(["git", "add", "."], check=True)
                 tree = subprocess.check_output(["git", "write-tree"], text=True).strip()
-                expected = {"ArkLib/Production.lean", "ArkLibTest/Acceptance.lean"}
+                expected = {"ArkLib/Production.lean", "ArkLib/Tests/Acceptance.lean",
+                            "ArkLib/Research/ProximityGap/Research.lean",
+                            "ArkLib/Extensions/Retained.lean"}
                 for ref in [None, tree]:
                     self.assertEqual({path for path, _ in AUDIT.tracked_sources(ref)}, expected)
-                    self.assertEqual(AUDIT.counts(AUDIT.scan_tree(ref))["admission"], 2)
+                    self.assertEqual(AUDIT.counts(AUDIT.scan_tree(ref))["admission"], 4)
             finally:
                 os.chdir(previous)
 

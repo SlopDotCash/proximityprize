@@ -2,7 +2,7 @@
 
 ## What landed
 
-`Research/ProximityPrize/Frontier/_R331OrbitChebyshevSurplusWeld.lean`
+`ArkLib/Research/ProximityGap/Frontier/_R331OrbitChebyshevSurplusWeld.lean`
 (axiom-clean; three theorems).
 
 The weld of the session's two arcs:

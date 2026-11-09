@@ -93,7 +93,7 @@ the component bounds.
 with `OracleComp.prEvent_bind_split_le`. `Append/NoAmbient.lean` specializes these results to
 empty ambient oracles, where both bounds can use one initialization. Its soundness theorem
 requires no fallback, including when the intermediate statement type is empty.
-`ArkLibTest/OracleReduction/Composition/Sequential/OrdinaryComposition.lean` checks these APIs,
+`ArkLib/Tests/OracleReduction/Composition/Sequential/OrdinaryComposition.lean` checks these APIs,
 extractor execution, exact axiom dependencies, and a suffix that queries a shared counter.
 
 ## Round-by-round soundness
@@ -122,7 +122,7 @@ per-challenge errors. Sumcheck, Packing, Binary Basefold, Spartan and Plonk use 
 completeness interfaces above. Each client supplies its own component and honest-oracle premises.
 Binary Basefold's `General.lean` composes its actual core and query through the proved guarded
 completeness and RBR interfaces. Its completeness premise is strict honest encoding;
-its RBR guarantee uses the relaxed relation. `ArkLibTest/ProofSystem/Binius/BinaryBasefold/General.lean`
+its RBR guarantee uses the relaxed relation. `ArkLib/Tests/ProofSystem/Binius/BinaryBasefold/General.lean`
 checks an inhabited full initial premise, sampled acceptance and the actual append boundary.
 
 ## Clients and validation
@@ -151,7 +151,7 @@ Basefold, and `Binius.FRIBinius.RingSwitch.fullVerifier_knowledgeSoundness` for 
 followed by Binary Basefold (see [ring-switching consumers](ring-switching-consumers.md)).
 
 Run `./scripts/validate.sh --axioms` for the library, compile-time tests, runtime checks, and
-axiom regression gate. `ArkLibTest/OracleReduction/Composition/Sequential/` covers challenge
+axiom regression gate. `ArkLib/Tests/OracleReduction/Composition/Sequential/` covers challenge
 routing, rejecting verifiers, raw query-order failure, and the need for suffix correctness at
 the state left by the prefix. It also contains a simulated factorization example outside the
 raw execution conditions. `RetiredCompleteness.lean` checks that the unsupported fixed-initial-state

@@ -3,7 +3,7 @@ Copyright (c) 2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ProximityPrize.Extensions.ProofSystem.Fri.Spec.General
+import ArkLib.Extensions.ProofSystem.Fri.Spec.General
 import ArkLib.OracleReduction.Completeness
 import ArkLib.ProofSystem.Fri.Spec.HonestFolding
 

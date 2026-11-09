@@ -3,7 +3,7 @@ kind: paper
 bibkey: Hab25
 title: "A note on mutual correlated agreement for {Reed-Solomon} codes"
 year: "2025"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eprint.iacr.org/2025/2110
 source_metadata: ../sources/Hab25/metadata.yml
 status: mapped

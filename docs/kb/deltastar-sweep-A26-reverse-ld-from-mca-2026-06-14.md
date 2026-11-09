@@ -80,6 +80,6 @@ collapse floor below `⌊√(n(k−1))⌋` would, via the same engine, scale thi
 interleaved list lower bound below the Johnson radius.
 
 Artifacts:
-- `Research/ProximityPrize/Frontier/Sweep_A26_ReverseLDFromMCA.lean`
+- `ArkLib/Research/ProximityGap/Frontier/Sweep_A26_ReverseLDFromMCA.lean`
 - `scripts/probes/sweep_A26_reverse_ld_from_mca.py`
 - `scripts/probes/sweep_A26_interleaved_subjohnson.py`

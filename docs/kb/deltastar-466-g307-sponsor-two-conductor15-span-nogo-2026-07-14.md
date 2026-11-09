@@ -142,6 +142,6 @@ now fenced. CORE remains open / on-BGK.
 
 ## Artifacts
 
-- Lean: `Research/ProximityPrize/Frontier/_G307SponsorTwoConductorFifteenSpanNoGo.lean`
+- Lean: `ArkLib/Research/ProximityGap/Frontier/_G307SponsorTwoConductorFifteenSpanNoGo.lean`
 - Probe: `scripts/probes/g307_sponsor_two_conductor15_span_nogo.py`
 - Ledger: `[466-G307-sponsor-two-conductor15-span-nogo]`
