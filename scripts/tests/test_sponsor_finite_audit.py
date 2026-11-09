@@ -1,5 +1,6 @@
 # Copyright (c) 2026 Jonas-Augustinus-Linus.
 # Released under MIT and Apache-2.0; see LICENSE-MIT and LICENSE.
+# Authors: Jonas Augustinus (GitHub: Jonas-Augustinus-Linus)
 """The first-sponsor arithmetic audit must reject false certificates under -O."""
 
 from pathlib import Path

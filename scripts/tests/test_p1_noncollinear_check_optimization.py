@@ -1,3 +1,7 @@
+# Copyright (c) 2026 Jonas Augustinus. All rights reserved.
+# Released under the MIT and Apache 2.0 licenses as described in
+# LICENSE-MIT and LICENSE.
+# Authors: Jonas Augustinus (GitHub: Jonas-Augustinus-Linus)
 """P1 non-collinear witness checks must survive Python optimization."""
 from pathlib import Path
 import subprocess

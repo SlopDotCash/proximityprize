@@ -342,6 +342,12 @@ def cores_of(S_AB, S_AC, S_BC, T):
     return [A, B, C]
 
 
+def core_indices(pts, cores):
+    """Translate field-value cores to the coordinate indices used by lift_test."""
+    positions = {value: i for i, value in enumerate(pts)}
+    return [[positions[value] for value in core] for core in cores]
+
+
 # ----------------------------------------------------------------------------- linear-slot search
 def linear_slot_rows(pts, S_AC, S_BC, p):
     excl = set(S_AC) | set(S_BC)
@@ -457,7 +463,7 @@ def main() -> int:
     print("\n[B] exact lift test of the occupant cores at p=41: n=20 k=10 s=14, budget 19, ceiling 18")
     s = 2 * d + 2
     eng20_41 = ExactCloseness(pts, k, s, p)
-    cores = cores_of(S_AB, S_AC, S_BC, T)
+    cores = core_indices(pts, cores_of(S_AB, S_AC, S_BC, T))
     assert all(len(C) == s for C in cores)
     resB = lift_test(pts, k, s, p, cores, eng20_41, seed=101, trials=int(os.environ.get("SW1_B_TRIALS", "800")))
     print(f"    stacks={resB['stacks']} joint-subset-stacks={resB['mca']}  max mca-bad={resB['maxbad']}  "
@@ -498,7 +504,8 @@ def main() -> int:
                     print(f"    p={q}: occupant verification FAIL: {e}")
                     fails += 1
                     continue
-                r = lift_test(ptsq, k, s, q, cores_of(SAB, SAC, SBC, Tq), eng, seed=11 + q,
+                r = lift_test(ptsq, k, s, q, core_indices(ptsq, cores_of(SAB, SAC, SBC, Tq)),
+                              eng, seed=11 + q,
                               trials=int(os.environ.get("SW1_C_TRIALS", "300")))
                 lifted.append(r["maxbad"])
         rowsC.append((q, len(hits), exp, lifted))
@@ -550,7 +557,8 @@ def main() -> int:
                     continue
                 if eng is None:
                     eng = ExactCloseness(ptsq, kk, ss, q)
-                r = lift_test(ptsq, kk, ss, q, cores_of(SAB, SAC, SBC, T), eng, seed=31 + q + vi,
+                r = lift_test(ptsq, kk, ss, q, core_indices(ptsq, cores_of(SAB, SAC, SBC, T)),
+                              eng, seed=31 + q + vi,
                               trials=trials)
                 gmax = max(gmax, r["maxbad"])
                 graw = max(graw, r["maxraw"])

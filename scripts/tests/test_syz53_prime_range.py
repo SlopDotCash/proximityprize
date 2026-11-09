@@ -1,3 +1,7 @@
+# Copyright (c) 2026 Jonas Augustinus. All rights reserved.
+# Released under the MIT and Apache 2.0 licenses as described in
+# LICENSE-MIT and LICENSE.
+# Authors: Jonas Augustinus (GitHub: Jonas-Augustinus-Linus)
 """The exact SYZ53 p-sweep must not select a composite as its prime field."""
 from math import isqrt
 from pathlib import Path
