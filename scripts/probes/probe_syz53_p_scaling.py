@@ -76,9 +76,10 @@ def exact_badz(u0, u1, alpha, k, s, p):
         a0 = H_S(u0),  a1 = H_S(u1)  in F_p^{s-k}.
       * a0 + z a1 = 0  (a0 parallel a1) -> candidate bad z  (line s-close on S)
       * a1 == 0                          -> u1 itself s-close on S  ('inf' pencil point)
-      * a0 == 0 AND a1 == 0              -> COMMON agreement set  => mca-correlated (SYZ32)
+      * a0 == 0 AND a1 == 0              -> COMMON agreement set (joint on this subset only)
                                             AND that subset admits all z (wholefield-on-S)
-    Returns (bad_set, inf_close, mca, wholefield)."""
+    Returns (nonjoint_bad_set, inf_close, any_joint_subset, wholefield).
+    A joint subset is diagnostic: it does not invalidate other nonjoint witnesses."""
     subs,Hs=subset_parity(alpha,k,s,p)
     u0=[x%p for x in u0]; u1=[x%p for x in u1]
     bad=set(); inf=False; mca=False; wholefield=False
@@ -106,7 +107,7 @@ def exact_badz(u0, u1, alpha, k, s, p):
 def _crosscheck(u0,u1,alpha,k,s,p,tensor,bad,inf,wf):
     """Independent validation of exact_badz vs the SYZ52 brute range(p) is_close scan.
     (When wf=True a common-agreement subset makes the whole pencil s-close; that stack is
-    mca-filtered so exact_badz reports only the finite parallel-candidate set -- brute is then
+    joint on that subset, while exact_badz reports nonjoint finite candidates -- brute is then
     all of F and we only check bad is a subset.)"""
     def is_close(w): return len(_agr_masks(w,tensor))>0
     n=len(alpha)
@@ -145,7 +146,7 @@ def lift_test_exact(alpha, k, s, p, cores, seed=1, trials=1200, verify=False):
         raw=len(bad)+(1 if inf else 0)
         if wf: wholefield+=1
         maxraw=max(maxraw,raw)
-        if mca: continue                              # SYZ32 correlated-agreement filter
+        # A joint subset does not erase nonjoint witnesses on other subsets.
         stacks+=1
         if raw>maxbad: maxbad=raw
         dist[raw]=dist.get(raw,0)+1
