@@ -112,10 +112,17 @@ def _crosscheck(u0,u1,alpha,k,s,p,tensor,bad,inf,wf):
     n=len(alpha)
     brute=set(z for z in range(p) if is_close([(u0[j]+z*u1[j])%p for j in range(n)]))
     if wf:
-        assert bad<=brute, f"BADZ SUBSET FAIL p={p}"
+        _require(bad<=brute, f"BADZ SUBSET FAIL p={p}")
     else:
-        assert brute==bad, f"BADZ MISMATCH p={p}: exact={sorted(bad)} brute={sorted(brute)}"
-        assert is_close(u1)==inf, f"INF MISMATCH p={p}"
+        _require(brute==bad, f"BADZ MISMATCH p={p}: exact={sorted(bad)} brute={sorted(brute)}")
+        _require(is_close(u1)==inf, f"INF MISMATCH p={p}")
+
+
+def _require(condition, detail):
+    """Keep exactness checks active when Python runs with optimization enabled."""
+    if not condition:
+        raise AssertionError(detail)
+
 
 def lift_test_exact(alpha, k, s, p, cores, seed=1, trials=1200, verify=False):
     """Fully EXACT, big-int-safe SYZ32 lift test at any prime p."""
