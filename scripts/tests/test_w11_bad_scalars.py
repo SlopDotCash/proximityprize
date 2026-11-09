@@ -11,6 +11,26 @@ import probe_w11_c3_kill as probe
 
 
 class BadScalarCertificates(unittest.TestCase):
+    def test_engine_count_disagreement_is_rejected_under_optimization(self):
+        code = textwrap.dedent(
+            f"""
+            import sys
+            sys.path.insert(0, {str(Path(__file__).resolve().parents[1] / 'probes')!r})
+            import probe_w11_c3_kill as probe
+            probe._require_certified_count(7, 3)
+            """
+        )
+        for flag in ("-O", "-OO"):
+            with self.subTest(flag=flag):
+                result = subprocess.run(
+                    [sys.executable, flag, "-c", code],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                self.assertNotEqual(result.returncode, 0, result.stdout)
+                self.assertIn("engine 7 != certified 3", result.stderr)
+
     def test_bad_interpolation_certificate_is_rejected_under_optimization(self):
         code = textwrap.dedent(
             f"""
