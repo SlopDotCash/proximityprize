@@ -180,34 +180,44 @@ def row_certificate(u, Sj):
     return None
 
 
+def require(condition, detail):
+    """Keep the witness checks active when Python optimization removes asserts."""
+    if not condition:
+        raise AssertionError(detail)
+
+
 def check(cert) -> None:
     S, lines, u0, u1 = cert["S"], cert["lines"], cert["u0"], cert["u1"]
     triple = cert["triple"]
     g1, g2, g3 = GAMMAS
     # P1 shape
-    assert 2 * T_SMALL - N_SMALL > 0
-    assert 3 * T_SMALL - 2 * N_SMALL < 0
-    assert 2 * T_SMALL <= N_SMALL + K_SMALL - 1
-    assert 4 * K_SMALL == N_SMALL
+    require(2 * T_SMALL - N_SMALL > 0, "pairwise overlap floor must be positive")
+    require(3 * T_SMALL - 2 * N_SMALL < 0, "triple-overlap floor must be negative")
+    require(2 * T_SMALL <= N_SMALL + K_SMALL - 1, "joint-set size constraint failed")
+    require(4 * K_SMALL == N_SMALL, "small-field rate constraint failed")
     # literal P1: rigidity premise not forced
     T, N, k = 592794966, 2**30, 2**28
-    assert 3 * T - 2 * N == -369098750 < 0 and not (3 * T - 2 * N >= k)
+    require(3 * T - 2 * N == -369098750 < 0 and not (3 * T - 2 * N >= k),
+            "literal P1 triple-overlap premise changed")
     # witnesses
     for j, g in enumerate(GAMMAS):
-        assert len(S[j]) == T_SMALL
+        require(len(S[j]) == T_SMALL, f"witness {j} has the wrong size")
         for e in S[j]:
-            assert pval(lines[j], e) == (u0[e] + g * u1[e]) % Q, (j, e)
+            require(pval(lines[j], e) == (u0[e] + g * u1[e]) % Q, (j, e))
     # joint set
     for e in J:
-        assert pval(Q0, e) == u0[e] and pval(Q1, e) == u1[e]
+        require(pval(Q0, e) == u0[e] and pval(Q1, e) == u1[e],
+                f"joint codeword mismatch at {e}")
     # shared fresh coordinate: first triple point
     i = triple[0]
-    assert all(i in S[j] for j in range(3)) and i not in J
+    require(all(i in S[j] for j in range(3)) and i not in J,
+            "shared fresh coordinate is not in all witnesses off J")
     # triple overlap below k (rigidity escape) yet all of `triple` is common
     common = set(S[0]) & set(S[1]) & set(S[2])
-    assert set(triple) <= common and len(common) < K_SMALL
+    require(set(triple) <= common and len(common) < K_SMALL,
+            "triple overlap does not witness the claimed rigidity escape")
     # non-absorption: u and (q0,q1) differ at i, and in the u0 row
-    assert pval(Q0, i) != u0[i], "need first-row mismatch for the Lean cert"
+    require(pval(Q0, i) != u0[i], "need first-row mismatch for the Lean cert")
     # NON-collinearity: predicted p3 from the (1,2) pencil differs from p3
     w1 = [(cb - ca) * inv(g2 - g1) % Q
           for ca, cb in itertools.zip_longest(lines[0], lines[1],
@@ -217,18 +227,20 @@ def check(cert) -> None:
     pred3 = [(a + g3 * b) % Q
              for a, b in itertools.zip_longest(w0, w1, fillvalue=0)]
     mismatches = [x for x in DOMAIN if pval(pred3, x) != pval(lines[2], x)]
-    assert mismatches, "triple unexpectedly collinear"
+    require(mismatches, "triple unexpectedly collinear")
     # but the pencil prediction DOES hold on the triple overlap
     for t in triple:
-        assert pval(pred3, t) == pval(lines[2], t)
+        require(pval(pred3, t) == pval(lines[2], t),
+                f"pencil prediction fails on triple overlap at {t}")
     # row-unexplainability certificates (u0 row) for each witness
     certs = []
     for j in range(3):
         rc = row_certificate(u0, S[j])
-        assert rc is not None, f"u0 row explainable on witness {j}"
+        require(rc is not None, f"u0 row explainable on witness {j}")
         certs.append(rc)
     # non-absorption certificate: u0 = q0 on J, q0 mismatch at i
-    assert all(pval(Q0, e) == u0[e] for e in J[:K_SMALL])
+    require(all(pval(Q0, e) == u0[e] for e in J[:K_SMALL]),
+            "first-row codeword does not match u0 on its pinned core")
     print("NON-COLLINEAR shared-fresh triple at P1 shape verified (F_37):")
     print(f"  A1 roots = {cert['A1']}, A2 roots = {cert['A2']}, "
           f"r = {cert['r']}")
