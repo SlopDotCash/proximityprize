@@ -32,8 +32,15 @@ from probe_syz28_d3_coplanar_crack import (rref_rank_nullbasis, dual_basis_cache
 from probe_syz52_witness_lift import (find_witnesses, build_interp_tensor, _agr_masks, cores_of)
 
 # ------------------------------------------------------------------ prime helpers
+# Least strong pseudoprime to bases 2..37 (Sorenson-Webster, Thm 1.1).
+# Match the exactness boundary used by probe_ztz_beta3_ladder.is_prime.
+_MR12_DET_LIMIT = 318665857834031151167461
+
+
 def is_prime(m):
     if m < 2: return False
+    if m >= _MR12_DET_LIMIT:
+        raise ValueError(f"12-base Miller-Rabin is only proven exact below {_MR12_DET_LIMIT}")
     for q in (2,3,5,7,11,13,17,19,23,29,31,37):
         if m % q == 0: return m == q
     d=m-1; r=0
@@ -48,7 +55,11 @@ def is_prime(m):
     return True
 
 def next_prime_1modn(target, n):
-    """smallest prime p >= target with p == 1 (mod n)."""
+    """Smallest prime p >= target with p == 1 (mod n), within the exact MR range.
+
+    Raise if the search reaches the deterministic bound; never label an
+    unverified probable prime as an exact prime-field sweep instance.
+    """
     p = target + ((1 - target) % n)
     if p < target: p += n
     while not is_prime(p): p += n
@@ -76,9 +87,10 @@ def exact_badz(u0, u1, alpha, k, s, p):
         a0 = H_S(u0),  a1 = H_S(u1)  in F_p^{s-k}.
       * a0 + z a1 = 0  (a0 parallel a1) -> candidate bad z  (line s-close on S)
       * a1 == 0                          -> u1 itself s-close on S  ('inf' pencil point)
-      * a0 == 0 AND a1 == 0              -> COMMON agreement set  => mca-correlated (SYZ32)
+      * a0 == 0 AND a1 == 0              -> COMMON agreement set (joint on this subset only)
                                             AND that subset admits all z (wholefield-on-S)
-    Returns (bad_set, inf_close, mca, wholefield)."""
+    Returns (nonjoint_bad_set, inf_close, any_joint_subset, wholefield).
+    A joint subset is diagnostic: it does not invalidate other nonjoint witnesses."""
     subs,Hs=subset_parity(alpha,k,s,p)
     u0=[x%p for x in u0]; u1=[x%p for x in u1]
     bad=set(); inf=False; mca=False; wholefield=False
@@ -103,19 +115,29 @@ def exact_badz(u0, u1, alpha, k, s, p):
     return bad, inf, mca, wholefield
 
 # ------------------------------------------------------------------ lift test (exact, any p)
+def _require(condition, detail):
+    """Keep exactness checks active when Python runs with optimization enabled."""
+    if not condition:
+        raise AssertionError(detail)
+
+
 def _crosscheck(u0,u1,alpha,k,s,p,tensor,bad,inf,wf):
-    """Independent validation of exact_badz vs the SYZ52 brute range(p) is_close scan.
-    (When wf=True a common-agreement subset makes the whole pencil s-close; that stack is
-    mca-filtered so exact_badz reports only the finite parallel-candidate set -- brute is then
-    all of F and we only check bad is a subset.)"""
+    """Independently compare exact_badz with the SYZ52 brute range(p) scan.
+
+    When wf=True, a common-agreement subset predicts that every finite pencil value is
+    s-close, so check the full finite field as well as the reported candidates' inclusion.
+    A joint subset does not erase nonjoint witnesses on other subsets.
+    """
     def is_close(w): return len(_agr_masks(w,tensor))>0
     n=len(alpha)
     brute=set(z for z in range(p) if is_close([(u0[j]+z*u1[j])%p for j in range(n)]))
     if wf:
-        assert bad<=brute, f"BADZ SUBSET FAIL p={p}"
+        _require(brute==set(range(p)), f"WHOLEFIELD PREMISE FAIL p={p}: brute={sorted(brute)}")
+        _require(bad<=brute, f"BADZ SUBSET FAIL p={p}")
     else:
-        assert brute==bad, f"BADZ MISMATCH p={p}: exact={sorted(bad)} brute={sorted(brute)}"
-        assert is_close(u1)==inf, f"INF MISMATCH p={p}"
+        _require(brute==bad, f"BADZ MISMATCH p={p}: exact={sorted(bad)} brute={sorted(brute)}")
+    _require(is_close(u1)==inf, f"INF MISMATCH p={p}")
+
 
 def lift_test_exact(alpha, k, s, p, cores, seed=1, trials=1200, verify=False):
     """Fully EXACT, big-int-safe SYZ32 lift test at any prime p."""
@@ -142,13 +164,13 @@ def lift_test_exact(alpha, k, s, p, cores, seed=1, trials=1200, verify=False):
         if all(x==0 for x in u1): continue
         bad,inf,mca,wf=exact_badz(u0,u1,alpha,k,s,p)
         if verify: _crosscheck(u0,u1,alpha,k,s,p,tensor,bad,inf,wf)
-        raw=len(bad)+(1 if inf else 0)
+        raw=len(bad)+(1 if inf else 0)  # Projective diagnostic only; budget is finite.
         if wf: wholefield+=1
         maxraw=max(maxraw,raw)
-        if mca: continue                              # SYZ32 correlated-agreement filter
+        # A joint subset does not erase nonjoint witnesses on other subsets.
         stacks+=1
-        if raw>maxbad: maxbad=raw
-        dist[raw]=dist.get(raw,0)+1
+        if len(bad)>maxbad: maxbad=len(bad)
+        dist[len(bad)]=dist.get(len(bad),0)+1
     return dict(d=dmat, maxbad=maxbad, maxraw=maxraw, stacks=stacks,
                 wholefield=wholefield, dist=dist)
 
