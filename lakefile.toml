@@ -57,7 +57,7 @@ requiresModuleSystem = true
 # Build this nondefault root explicitly before checking the blueprint or generating its API docs.
 [[lean_lib]]
 name = "ArkLibBlueprint"
-srcDir = "blueprint"
+srcDir = "website/blueprint"
 roots = ["ArkLibBlueprint"]
 requiresModuleSystem = true
 

@@ -6,6 +6,7 @@ import importlib.util
 from pathlib import Path
 import subprocess
 import tempfile
+import tomllib
 import unittest
 
 spec = importlib.util.spec_from_file_location("repository_layout", Path(__file__).parents[1] / "check-layout.py")
@@ -14,6 +15,15 @@ spec.loader.exec_module(layout)
 
 
 class RepositoryLayoutTests(unittest.TestCase):
+    def test_configured_library_roots_exist_after_relocation(self):
+        config = tomllib.loads((layout.ROOT / "lakefile.toml").read_text())
+        for library in config["lean_lib"]:
+            for module in library.get("roots", []):
+                with self.subTest(library=library["name"], module=module):
+                    source = (layout.ROOT / library.get("srcDir", ".")
+                              / Path(*module.split(".")).with_suffix(".lean"))
+                    self.assertTrue(source.is_file(), f"Missing configured Lean root: {source}")
+
     def test_authored_html_is_visible_and_generated_output_stays_ignored(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
