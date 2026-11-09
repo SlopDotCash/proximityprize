@@ -157,6 +157,19 @@ The lattice transfer proves `IncidenceCanonicalConstant.firstPrime_constant_floo
 at `221512373/1073741824`. The next integer fails this particular cube budget,
 not the full canonical assumptions.
 
+## Independent arithmetic check
+
+Run `python3 scripts/probes/probe_sponsor_finite_audit.py` to reproduce the
+construction certificate, finite interpolation witness, and stated moment budgets.
+Its certificate checks also run under `python3 -O`, `python3 -OO`, and
+`PYTHONOPTIMIZE`; an invalid generator must raise rather than emit a certificate.
+For example, substituting `G = 1` violates the exact-order requirement for the
+production domain used by `IncidenceFullScaleCores.firstPrime_fullScale_upper`.
+The regression command is
+`python3 -m unittest discover -s scripts/tests -p test_sponsor_finite_audit.py`.
+This check audits the arithmetic evidence; the Lean theorem and its assumptions
+require their separate kernel check.
+
 ## Construction audit
 
 Let `c = 536870910`, `a = 178956971`. Partition coordinates into the common
