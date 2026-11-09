@@ -4,6 +4,8 @@
 """Keep removed scratch roots from returning through later contributions."""
 import importlib.util
 from pathlib import Path
+import subprocess
+import tempfile
 import unittest
 
 spec = importlib.util.spec_from_file_location("repository_layout", Path(__file__).parents[1] / "check-layout.py")
@@ -12,6 +14,21 @@ spec.loader.exec_module(layout)
 
 
 class RepositoryLayoutTests(unittest.TestCase):
+    def test_authored_html_is_visible_and_generated_output_stays_ignored(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / ".gitignore").write_bytes((layout.ROOT / ".gitignore").read_bytes())
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            for path, expected in [("website/library/new-source.html", 1),
+                                   ("website/library/nested/new-source.html", 1),
+                                   ("build/site/index.html", 0),
+                                   ("downloaded-paper.html", 0)]:
+                with self.subTest(path=path):
+                    result = subprocess.run(
+                        ["git", "-c", "core.excludesFile=/dev/null", "check-ignore",
+                         "--no-index", "-q", path], cwd=root)
+                    self.assertEqual(result.returncode, expected)
+
     def test_conventional_roots_and_nested_research_are_allowed(self):
         self.assertEqual([], layout.violations([
             "README.md", ".github/workflows/ci.yml", "ArkLib.lean",
