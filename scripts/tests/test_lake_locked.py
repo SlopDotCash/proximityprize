@@ -46,6 +46,9 @@ import sys
 import time
 root = Path(os.environ["FAKE_LAKE_STATE"])
 role = sys.argv[-1]
+if role.endswith(":shared"):
+    # The wrapper links the source-policy plugins before each build; answer at once.
+    sys.exit(0)
 active = root / "active"
 try:
     active.mkdir()
