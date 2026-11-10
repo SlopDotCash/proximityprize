@@ -108,6 +108,12 @@ jobs:
         if: inputs.phase == 'canonical'
         run: lake exe cache get
 
+      # Lake 4.35 starts one `<plugin>:shared` link job per module of a `requiresModuleSystem`
+      # library; concurrent links of the same .so race and fail with "no such file or directory".
+      # Linking each plugin once first leaves those jobs nothing to rebuild.
+      - name: Link the source-policy plugins once
+        run: lake build ArkLibLintPlugin:shared StopTacticPlugin:shared
+
       - name: Build and time the prebuild targets
         run: |
           bundle="$RUNNER_TEMP/arklib-lean-$PREBUILD_PHASE"
