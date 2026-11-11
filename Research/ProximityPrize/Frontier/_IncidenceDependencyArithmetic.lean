@@ -389,17 +389,18 @@ theorem projected_relation_incidence_budget {F I Coord : Type*} [Field F]
   have hi := shared_support_incidence_budget Q
   omega
 
-/-- A short full-support relation between actual decoding errors forces every
-decoded head onto one affine line. No rank-activity hypothesis is required. -/
-theorem affine_heads_of_small_error_relation {F I Coord : Type*} [Field F]
+/-- If each decoding error participates in a relation, a coordinate covered by only one
+error set contributes no error. A total incidence budget below twice the distance
+then forces all decoded heads onto one affine code line. -/
+theorem affine_heads_of_small_error_incidence {F I Coord : Type*} [Field F]
     [Fintype I] [Fintype Coord] [DecidableEq I] [DecidableEq Coord]
     (C : Submodule F (Coord → F)) (u₀ u₁ : Coord → F)
-    (w : I → (Coord → F)) (γ c : I → F) (Q : I → Finset Coord)
-    (D t : ℕ) (hw : ∀ i, w i ∈ C) (hc : ∀ i, c i ≠ 0)
+    (w : I → (Coord → F)) (γ : I → F) (Q : I → Finset Coord)
+    (D : ℕ) (hw : ∀ i, w i ∈ C)
     (hagree : ∀ i x, x ∉ Q i → w i x = u₀ x + γ i * u₁ x)
-    (hweight : ∀ i, (Q i).card ≤ t)
-    (hsmall : Fintype.card I * t < 2 * D)
-    (hrel : (∑ i, c i • (u₀ + γ i • u₁ - w i)) = 0)
+    (hsmall : (∑ i, (Q i).card) < 2 * D)
+    (hactive : ∀ i, ∃ c : I → F,
+      (∑ j, c j • (u₀ + γ j • u₁ - w j)) = 0 ∧ c i ≠ 0)
     (i₀ i₁ : I) (hγ : γ i₀ ≠ γ i₁)
     (hdistance : ∀ v ∈ C, ∀ B : Finset Coord, B.card < D →
       (∀ x ∉ B, v x = 0) → v = 0) :
@@ -409,7 +410,8 @@ theorem affine_heads_of_small_error_relation {F I Coord : Type*} [Field F]
   have houtside : ∀ i x, x ∉ S → w i x = u₀ x + γ i * u₁ x := by
     intro i x hx
     by_cases hxi : x ∈ Q i
-    · have hj : ∀ j, j ≠ i → x ∉ Q j := by
+    · obtain ⟨c, hrel, hci⟩ := hactive i
+      have hj : ∀ j, j ≠ i → x ∉ Q j := by
         intro j hji hxj
         apply hx
         simp only [S, sharedSupport, Finset.mem_filter, Finset.mem_univ, true_and]
@@ -425,13 +427,10 @@ theorem affine_heads_of_small_error_relation {F I Coord : Type*} [Field F]
           ring
         · simp
       rw [he] at hz
-      exact (sub_eq_zero.mp ((mul_eq_zero.mp hz).resolve_left (hc i))).symm
+      exact (sub_eq_zero.mp ((mul_eq_zero.mp hz).resolve_left hci)).symm
     · exact hagree i x hxi
   have hcard : S.card < D := by
     have hi := shared_support_incidence_budget Q
-    have hwgt := Finset.sum_le_sum (fun i (_ : i ∈ Finset.univ) => hweight i)
-    have hsum : (∑ _i : I, t) = Fintype.card I * t := by simp
-    rw [hsum] at hwgt
     change 2 * S.card ≤ _ at hi
     omega
   let V := (γ i₀ - γ i₁)⁻¹ • (w i₀ - w i₁)
@@ -458,6 +457,29 @@ theorem affine_heads_of_small_error_relation {F I Coord : Type*} [Field F]
   change w i x - (U x + γ i * V x) = 0
   rw [houtside i x hx, hU x hx, hV x hx]
   ring
+
+/-- A short full-support relation between actual decoding errors forces every
+decoded head onto one affine line. No rank-activity hypothesis is required. -/
+theorem affine_heads_of_small_error_relation {F I Coord : Type*} [Field F]
+    [Fintype I] [Fintype Coord] [DecidableEq I] [DecidableEq Coord]
+    (C : Submodule F (Coord → F)) (u₀ u₁ : Coord → F)
+    (w : I → (Coord → F)) (γ c : I → F) (Q : I → Finset Coord)
+    (D t : ℕ) (hw : ∀ i, w i ∈ C) (hc : ∀ i, c i ≠ 0)
+    (hagree : ∀ i x, x ∉ Q i → w i x = u₀ x + γ i * u₁ x)
+    (hweight : ∀ i, (Q i).card ≤ t)
+    (hsmall : Fintype.card I * t < 2 * D)
+    (hrel : (∑ i, c i • (u₀ + γ i • u₁ - w i)) = 0)
+    (i₀ i₁ : I) (hγ : γ i₀ ≠ γ i₁)
+    (hdistance : ∀ v ∈ C, ∀ B : Finset Coord, B.card < D →
+      (∀ x ∉ B, v x = 0) → v = 0) :
+    ∃ U V, U ∈ C ∧ V ∈ C ∧ ∀ i, w i = U + γ i • V := by
+  have hsum : (∑ i, (Q i).card) ≤ Fintype.card I * t := by
+    calc
+      (∑ i, (Q i).card) ≤ ∑ _i : I, t :=
+        Finset.sum_le_sum (fun i _ ↦ hweight i)
+      _ = _ := by simp
+  exact affine_heads_of_small_error_incidence C u₀ u₁ w γ Q D hw hagree
+    (lt_of_le_of_lt hsum hsmall) (fun i ↦ ⟨c, hrel, hc i⟩) i₀ i₁ hγ hdistance
 
 /-- Error plane of an affine family of decoded heads. -/
 def affineErrorPlane {F Coord : Type*} [Field F]
@@ -712,3 +734,4 @@ end ProximityGap.IncidenceDependencyArithmetic
 #print axioms ProximityGap.IncidenceDependencyArithmetic.shared_support_incidence_budget
 #print axioms ProximityGap.IncidenceDependencyArithmetic.projected_relation_incidence_budget
 #print axioms ProximityGap.IncidenceDependencyArithmetic.affine_heads_of_small_error_relation
+#print axioms ProximityGap.IncidenceDependencyArithmetic.affine_heads_of_small_error_incidence
