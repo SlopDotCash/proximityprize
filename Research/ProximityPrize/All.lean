@@ -3350,3 +3350,4 @@ import Research.ProximityPrize.Support.GG25RandomRSMCAProof
 import Research.ProximityPrize.Support.KK25NearCapacityProof
 import Research.ProximityPrize.Support.RateEliasCapacity
 import Research.ProximityPrize.Support.UnifiedProducerWindowGlue
+import Research.ProximityPrize.T3CeilingColumnZeroLaw
