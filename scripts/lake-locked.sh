@@ -170,4 +170,13 @@ if [[ -d "$MATHLIB_PKG" ]] \
   lake exe cache get || echo "lake-locked: cache get failed; continuing (build may be slow)" >&2
 fi
 
+# 4. Source-policy plugins: link each shared library once before the main build.
+#    In a `requiresModuleSystem` library, Lake 4.35 starts one `<plugin>:shared` link job per
+#    module, and concurrent clang links of the same .so race ("no such file or directory").
+#    With the plugins already up to date, those jobs only replay the trace.
+if [[ "${1:-}" == "build" ]]; then
+  lake build ArkLibLintPlugin:shared StopTacticPlugin:shared \
+    || echo "lake-locked: plugin pre-link failed; continuing with the requested build" >&2
+fi
+
 lake "$@"
