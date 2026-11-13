@@ -26,6 +26,12 @@ _MR_BASES = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37)
 _MR12_DET_LIMIT = 318665857834031151167461
 
 
+def _require(condition, detail):
+    """Keep the certificate re-checks active under Python optimization."""
+    if not condition:
+        raise AssertionError(detail)
+
+
 def is_prime(n: int) -> bool:
     if n < 2:
         return False
@@ -118,13 +124,15 @@ def main():
         print(f"# found {len(res)} primes p = 1 (mod {n}) of shape p-1 = 2^e * c (c odd prime)")
         # sanity re-check every returned prime independently
         for (p, c, e, g) in res:
-            assert p - 1 == 2 ** e * c, (p, c, e)
-            assert is_prime(c) and c % 2 == 1
-            assert (p - 1) % n == 0
-            assert pow(g, p - 1, p) == 1
-            assert pow(g, (p - 1) // 2, p) != 1
-            assert pow(g, (p - 1) // c, p) != 1
-            assert lo <= p <= hi
+            _require(p - 1 == 2 ** e * c, f"p - 1 != 2^e * c for {(p, c, e)}")
+            _require(is_prime(c) and c % 2 == 1, f"cofactor {c} is not an odd prime")
+            _require((p - 1) % n == 0, f"p = {p} is not 1 mod n = {n}")
+            _require(pow(g, p - 1, p) == 1, f"Fermat check fails for p={p}, g={g}")
+            _require(pow(g, (p - 1) // 2, p) != 1,
+                     f"g^((p-1)/2) = 1 for p={p}, g={g}")
+            _require(pow(g, (p - 1) // c, p) != 1,
+                     f"g^((p-1)/c) = 1 for p={p}, g={g}, c={c}")
+            _require(lo <= p <= hi, f"p = {p} is outside [n^4, 2n^4]")
         # Lean prime theorems
         for (p, c, e, g) in res:
             print(f"private theorem prime_{p} : Nat.Prime {p} :=")
