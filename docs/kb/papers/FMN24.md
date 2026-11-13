@@ -3,7 +3,7 @@ kind: paper
 bibkey: FMN24
 title: "Lattice-Based Polynomial Commitments: Towards Asymptotic and Concrete Efficiency"
 year: "2024"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eprint.iacr.org/2023/846
 source_metadata: ../sources/FMN24/metadata.yml
 status: seeded
@@ -63,4 +63,4 @@ the combinatorial structure `SS(S, ℓ, k)` that ArkLib formalizes.
 ## Source Access
 
 - Source metadata: [`../sources/FMN24/metadata.yml`](../sources/FMN24/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
-import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.General
+import ArkLib.Extensions.OracleReduction.Composition.Sequential.General
 
 /-!
 # Failing-determinism is preserved by sequential composition (issue #29)

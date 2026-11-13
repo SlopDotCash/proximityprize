@@ -55,7 +55,7 @@ This directory contains various utility scripts for the ArkLib project.
   hazardous-Unicode checks, and commented-out declarations (`ERR_COMMENT_DECL`). Delete commented
   declaration code or restore it; keyword-led prose, strings, and block comments remain allowed.
   The comment fixtures in `LintStyleFixtures/` run with `lake exe lint-style --self-test` and
-  `test-lint-plugin.sh`. It verifies that each canonical upstream Lean file and tracked `ArkLibTest/`
+  `test-lint-plugin.sh`. It verifies that each canonical upstream Lean file and tracked `ArkLib/Tests/`
   file belongs to the corresponding import closure, and independently rejects forbidden option and `nolint`-attribute syntax
   even if module code captures diagnostics or mutates Lean's in-process linter registry. The same
   lexical pass rejects raised elaboration budgets (`set_option maxHeartbeats`, `maxRecDepth`, and
@@ -256,7 +256,7 @@ lake build AxiomSweepTestFixtures
 ### Source Trust Inventory
 
 `source-trust-audit.py` complements axiomsweep by lexically scanning every tracked
-Lean file under `ArkLib/` and `ArkLibTest/`, whether imported or not. It masks nested comments, strings,
+Lean file under `ArkLib/` and `ArkLib/Tests/`, whether imported or not. It masks nested comments, strings,
 and quoted identifiers, then inventories exact admission, `example`, explicit-`axiom`, and
 native/compiler-trust reference tokens. This sees admissions in examples and
 defaults/autoparams that attach to no environment declaration. It deliberately reports rather
@@ -324,5 +324,5 @@ uv run --no-project --python 3.12 python scripts/module_times.py update .lake/bu
   want to run or debug one piece in isolation
 - `validate.sh` enforces a zero non-`sorry` warning budget across canonical ArkLib modules
 - New `ArkLib/**/*.lean` files must be staged before `update-lib.sh` or `check-imports.sh`
-- New `Research/ProximityPrize/**/*.lean` files must be staged before
+- New `ArkLib/Research/ProximityGap/**/*.lean` files must be staged before
   `update-research-lib.py` or `check-imports.sh`; untracked files are an error, not an omission

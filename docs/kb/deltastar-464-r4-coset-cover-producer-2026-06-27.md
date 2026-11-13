@@ -29,7 +29,7 @@ front, not a closure.
 
 Added:
 
-- `Research/ProximityPrize/Frontier/_R4CosetCoverProducer.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_R4CosetCoverProducer.lean`
 
 Main declarations:
 
@@ -44,7 +44,7 @@ Main declarations:
 Validation:
 
 ```bash
-./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R4CosetCoverProducer.lean
+./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_R4CosetCoverProducer.lean
 ```
 
 Result: OK, axiom audit only reports the usual `propext` line.

@@ -1,4 +1,0 @@
-import Research.ProximityPrize.PROXIMITY_PRIZE_WORKBENCH
-import Research.ProximityPrize.Frontier._ActiveErrorAffineCollapse
-import Research.ProximityPrize.Frontier._IncidenceDependencyArithmetic
-import Research.ProximityPrize.Frontier._SixErrorRankSupportMultiplicity

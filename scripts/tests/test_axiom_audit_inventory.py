@@ -1,7 +1,7 @@
 """Post-build axiom inventory from Lean metadata (repository audit 2026-10-28, T02/T03).
 
 `scripts/axiom_audit.py` lists every axiom constant declared in an imported
-`ArkLib`, `ProximityPrize`, or `Research` module from Lean's environment. It sees
+`ArkLib` module (including research and extensions) from Lean's environment. It sees
 every name form and axioms added without the `axiom` keyword and requires each to be a
 residual pinned in `scripts/residual_axioms.txt` with the same fully qualified
 name and module. The Lean-gated test runs the generated command on the pinned
@@ -71,8 +71,9 @@ class Inventory(unittest.TestCase):
 
     def test_command_filters_the_audited_roots(self):
         command = axiom_audit.inventory_command()
-        for root in ("ArkLib", "ProximityPrize", "Research"):
+        for root in ("ArkLib",):
             self.assertIn(f"mod.getRoot == `{root}", command)
+        self.assertNotIn("mod.getRoot == `ArkLib.Research", command)
         self.assertIn(".axiomInfo", command)
 
 
@@ -93,11 +94,11 @@ class LeanMetadata(unittest.TestCase):
     def test_default_inventory_detects_unused_extension_axiom(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            extension = root / "ProximityPrize/Extensions/InventoryFixture.lean"
+            extension = root / "ArkLib/Extensions/InventoryFixture.lean"
             extension.parent.mkdir(parents=True)
             audit = root / "Inventory.lean"
             audit.write_text(
-                "import Lean\nimport ProximityPrize.Extensions.InventoryFixture\n"
+                "import Lean\nimport ArkLib.Extensions.InventoryFixture\n"
                 "#print axioms fixtureClean\n" + axiom_audit.inventory_command(),
                 encoding="utf-8",
             )
@@ -124,7 +125,7 @@ class LeanMetadata(unittest.TestCase):
                     if unexpected_axiom:
                         self.assertEqual(len(failures), 1)
                         self.assertIn(
-                            "fixtureUnused: axiom declared in ProximityPrize.Extensions.InventoryFixture",
+                            "fixtureUnused: axiom declared in ArkLib.Extensions.InventoryFixture",
                             failures[0],
                         )
                     else:

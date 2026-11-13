@@ -4,11 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Eliza
 -/
 
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
-import ProximityPrize.Extensions.OracleReduction.Basic
-import ProximityPrize.Extensions.OracleReduction.VectorIOR
-import ProximityPrize.Extensions.OracleReduction.Security.Basic
-import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Extensions.OracleReduction.Basic
+import ArkLib.Extensions.OracleReduction.VectorIOR
+import ArkLib.Extensions.OracleReduction.Security.Basic
+import ArkLib.Extensions.OracleReduction.Security.RoundByRound
 import ArkLib.Data.Polynomial.Interface
 import ArkLib.ProofSystem.Whir.Folding
 import ArkLib.ProofSystem.Whir.RBRSoundness

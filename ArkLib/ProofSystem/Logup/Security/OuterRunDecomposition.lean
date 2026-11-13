@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ProximityPrize.Compatibility.ReductionRunNormalForm
+import ArkLib.Compatibility.ReductionRunNormalForm
 import ArkLib.OracleReduction.RunUnroll
 import ArkLib.OracleReduction.ProcessRoundSupport
 import ArkLib.ProofSystem.Logup.Protocol

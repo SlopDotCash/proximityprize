@@ -7,8 +7,8 @@ Authors: Chung Thai Nguyen
 import ArkLib.Data.Hash.DuplexSponge
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Preliminaries
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Defs
-import ProximityPrize.Extensions.OracleReduction.Security.Basic
-import ProximityPrize.Extensions.OracleReduction.Security.Rewinding
+import ArkLib.Extensions.OracleReduction.Security.Basic
+import ArkLib.Extensions.OracleReduction.Security.Rewinding
 
 /-!
 # Substrate for Duplex-Sponge Fiat-Shamir
@@ -150,7 +150,7 @@ Caveat: the underlying `Verifier.failureProbability` measures a raw `OracleComp`
 receive independent fresh uniform answers (a memoryless oracle), not answers from a cached random
 function or an ideal permutation. It matches the paper's definition only once an interpretation
 bridge to the intended oracle model is supplied (see
-`ProximityPrize/Extensions/OracleReduction/Security/Rewinding.lean`, section "Oracle semantics
+`ArkLib/Extensions/OracleReduction/Security/Rewinding.lean`, section "Oracle semantics
 of the non-interactive (NARG) predicates"). -/
 abbrev failureProbability
     {Message : Type}
@@ -185,7 +185,7 @@ Caveat: the underlying `Verifier.rewindingKnowledgeSoundness` is a memoryless-or
 random-function cache or ideal-permutation interpreter is shared across prover, verifier and
 extractor), and its time clause bounds expected oracle cost only. It does not by itself express the
 paper's ideal-permutation / random-oracle notion; see
-`ProximityPrize/Extensions/OracleReduction/Security/Rewinding.lean` (section "Oracle semantics
+`ArkLib/Extensions/OracleReduction/Security/Rewinding.lean` (section "Oracle semantics
 of the non-interactive (NARG) predicates"). -/
 abbrev rewindingKnowledgeSoundness
     {Message : Type}

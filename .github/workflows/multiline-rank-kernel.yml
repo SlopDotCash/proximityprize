@@ -4,9 +4,9 @@ on:
     branches: [research/multiline-relation-shortening]
   pull_request:
     paths:
-      - Research/ProximityPrize/Frontier/_IncidenceDependencyArithmetic.lean
-      - Research/ProximityPrize/multiline-relation-shortening.md
-      - Research/ProximityPrize.lean
+      - ArkLib/Research/ProximityGap/Frontier/_IncidenceDependencyArithmetic.lean
+      - docs/research/proximity-gap/multiline-relation-shortening.md
+      - ArkLib/Research/ProximityGap.lean
       - scripts/probes/probe_multiline_pair_difference_cap.py
       - scripts/probes/probe_multiline_triple_anchor.py
       - .github/workflows/multiline-rank-kernel.yml
@@ -49,7 +49,7 @@ jobs:
       - name: Check twenty-one declarations and audit axioms
         run: |
           set -o pipefail
-          lake env lean Research/ProximityPrize/Frontier/_IncidenceDependencyArithmetic.lean | tee multiline-axioms.log
+          lake env lean ArkLib/Research/ProximityGap/Frontier/_IncidenceDependencyArithmetic.lean | tee multiline-axioms.log
           python3 - <<'PY'
           import re
           from pathlib import Path

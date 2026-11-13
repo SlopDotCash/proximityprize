@@ -1,6 +1,6 @@
 import ArkLib.ProofSystem.Logup.Security.Completeness
 import ArkLib.OracleReduction.Completeness
-import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
+import ArkLib.Extensions.OracleReduction.Security.RoundByRound
 import ArkLib.ProofSystem.Logup.Security.OuterRun
 import ArkLib.ProofSystem.Logup.Security.OuterAcceptance
 import ArkLib.OracleReduction.RunUnroll

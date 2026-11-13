@@ -39,18 +39,18 @@ longer overclaims ordinary Linnik or prize closure.
 Local artifacts:
 
 - `docs/kb/deltastar-DOSSIER-v2-2026-06-22.md`
-- `Research/ProximityPrize/CLAUDE.md`
+- `docs/research/proximity-gap/CLAUDE.md`
 - `docs/wiki/residual-census.md`
 - `docs/references/proximity-gap-paley-spectrum/README.md`
-- `Research/ProximityPrize/LegacyWorkbench.lean`
+- `ArkLib/Research/ProximityGap/LegacyWorkbench.lean`
 - `ArkLib/Data/CodingTheory/ProximityGap/KKH26ThornerZaman.lean`
-- `Research/ProximityPrize/Frontier/_AssaultV2_FloorLocalizationN32.lean`
-- `Research/ProximityPrize/Frontier/_FloorLinnikRungInstances.lean`
-- `Research/ProximityPrize/Frontier/_FloorLinnikThornerZamanArrow.lean`
-- `Research/ProximityPrize/Frontier/_FloorLinnikTZClosure.lean`
-- `Research/ProximityPrize/Frontier/_AvD2_LinnikWindowCountRequired.lean`
-- `Research/ProximityPrize/Frontier/_FloorBadRamificationDisjoint.lean`
-- `Research/ProximityPrize/Frontier/_FloorBadDefectTowerInvariant.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_AssaultV2_FloorLocalizationN32.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_FloorLinnikRungInstances.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_FloorLinnikThornerZamanArrow.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_FloorLinnikTZClosure.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_AvD2_LinnikWindowCountRequired.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_FloorBadRamificationDisjoint.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_FloorBadDefectTowerInvariant.lean`
 - `scripts/probes/probe_444_floorbad_ramif.py`
 - `scripts/probes/probe_444_floorbad_defect_tower_invariant.py`
 

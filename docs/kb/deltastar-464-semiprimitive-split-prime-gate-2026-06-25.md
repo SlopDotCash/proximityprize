@@ -38,7 +38,7 @@ because the smooth evaluation domain is a dyadic subgroup `mu_n` of `F_p^*`.
 The frontier file
 
 ```text
-Research/ProximityPrize/Frontier/_SemiprimitiveSplitPrimeFieldGate.lean
+ArkLib/Research/ProximityGap/Frontier/_SemiprimitiveSplitPrimeFieldGate.lean
 ```
 
 The file proves the elementary obstruction:

@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import CompPoly.ToMathlib.Polynomial.BivariateDegree
 import ArkLib.Data.CodingTheory.PolishchukSpielman
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Guruswami
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Guruswami
 import ArkLib.ToMathlib.Polynomial.EvalExt
 import Mathlib.LinearAlgebra.Matrix.ToLin
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas

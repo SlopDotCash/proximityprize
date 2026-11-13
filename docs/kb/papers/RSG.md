@@ -2,7 +2,7 @@
 kind: paper
 bibkey: RSG
 title: "Ring switching, generalized"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/RSG/metadata.yml
 canonical_url: https://github.com/leanEthereum/leanVM-b/blob/main/misc/ring-switching-generalized.pdf
 status: seeded
@@ -43,7 +43,7 @@ read "The idea comes from Lev Soukhanov, `[[alloc]init]`."
 ## Source Access
 
 - [Public note](https://github.com/leanEthereum/leanVM-b/blob/main/misc/ring-switching-generalized.pdf).
-- [Bibliography](../../../blueprint/src/references.bib), key `RSG`.
+- [Bibliography](../../../website/blueprint/src/references.bib), key `RSG`.
 
 ## Native transfer provenance
 

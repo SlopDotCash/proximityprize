@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import ArkLib.ToMathlib.MatchingExtractor
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Agreement
-import ProximityPrize.Extensions.Data.CodingTheory.GuruswamiSudan.Basic
+import ArkLib.Extensions.Data.CodingTheory.GuruswamiSudan.Basic
 
 /-!
 # Core 3 — the GS-over-`F(Z)` multiplicity-vanishing core, unified and reduced

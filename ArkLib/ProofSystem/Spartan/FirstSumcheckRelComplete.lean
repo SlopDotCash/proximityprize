@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import ArkLib.ProofSystem.Spartan.FirstSumcheckCubeSum
 import ArkLib.ProofSystem.Spartan.SumcheckCubeBridge
-import ProximityPrize.Extensions.ProofSystem.Sumcheck.Spec.SingleRound
+import ArkLib.Extensions.ProofSystem.Sumcheck.Spec.SingleRound
 
 /-!
 # The honest first sum-check projection satisfies the inner sum-check relation (issue #114)

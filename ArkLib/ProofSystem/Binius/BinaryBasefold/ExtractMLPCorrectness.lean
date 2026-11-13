@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Relations
+import ArkLib.Extensions.ProofSystem.Binius.BinaryBasefold.Relations
 import ArkLib.Data.CodingTheory.BerlekampWelch.BerlekampWelch
 
 /-!
@@ -15,7 +15,7 @@ endianness mismatch that made the old unreversed formulation false for `ℓ ≥ 
 
 ## The mismatch
 
-The downstream `extractMLP` (`ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Basic`)
+The downstream `extractMLP` (`ArkLib.Extensions.ProofSystem.Binius.BinaryBasefold.Basic`)
 reconstructs the multilinear polynomial from the decoded
 novel-basis coefficient vector via `Nat.binaryFinMapToNat`, which is **little-endian**:
 the hypercube point `w` is sent to the coefficient index whose `j`-th bit is `w j`.

@@ -13,8 +13,8 @@ Generates a Lean file importing each flagship module and running
 
 Axiom inventory: the same Lean file also imports the module of every residual
 axiom pinned in scripts/residual_axioms.txt and lists, from Lean's environment
-metadata, every axiom constant declared in an `ArkLib`, `ProximityPrize`, or
-`Research` module of its import closure. Each one must be a pinned residual with
+metadata, every axiom constant declared in an `ArkLib` module of its import
+closure, including research and extensions. Each one must be a pinned residual with
 the same fully qualified name and defining module. Unlike the lexical
 precheck (scripts/forbidden_tokens.py) this sees every declaration-name form and
 axioms added without the `axiom` keyword (a macro, an elaborator, a native
@@ -44,7 +44,7 @@ ALLOWED = {"propext", "Classical.choice", "Quot.sound"}
 MANIFEST = Path(__file__).resolve().parent / "flagship_axioms.txt"
 RESIDUALS = Path(__file__).resolve().parent / "residual_axioms.txt"
 INVENTORY_TAG = "AXIOM-INVENTORY"
-AUDITED_ROOTS = ("ArkLib", "ProximityPrize", "Research")
+AUDITED_ROOTS = ("ArkLib",)
 
 
 def inventory_command(roots: tuple[str, ...] = AUDITED_ROOTS) -> str:

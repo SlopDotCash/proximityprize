@@ -48,7 +48,7 @@ collapse back to the Paley spectrum — any proof must use the short/banded stru
 *Later status (linked 2026-10-28, audit T48):* the norm/index identity above keeps its conditional
 lattice meaning. The follow-on saturation route (r325/r329) later named `BinomialBadPrimeLaw` as its
 sole input, and that law is refuted:
-`Research/ProximityPrize/Frontier/_W12BinomialBadPrimeRefuted.lean` proves it unsatisfiable at
+`ArkLib/Research/ProximityGap/Frontier/_W12BinomialBadPrimeRefuted.lean` proves it unsatisfiable at
 every prime of the `n = 32` and `n = 64` census windows. The census fact `|N(d)|/p ∈ {2,4,8}` is a
 finite observation at the 92 recorded primes.
 

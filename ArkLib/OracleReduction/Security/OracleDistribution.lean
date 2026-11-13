@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen
 -/
 
-import ProximityPrize.Extensions.OracleReduction.Execution
+import ArkLib.Extensions.OracleReduction.Execution
 import VCVio.OracleComp.Constructions.SampleableType.Measure
 
 /-!

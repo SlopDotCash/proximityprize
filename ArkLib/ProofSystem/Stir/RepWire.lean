@@ -4,12 +4,12 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Stir.SubUnitRbr
 import ArkLib.ProofSystem.Stir.SwitchAttack
 import ArkLib.Data.Probability.ProductMarginal
-import ProximityPrize.Extensions.ProofSystem.Component.SendWitness
-import ProximityPrize.Extensions.OracleReduction.VectorIOR
+import ArkLib.Extensions.ProofSystem.Component.SendWitness
+import ArkLib.Extensions.OracleReduction.VectorIOR
 
 set_option linter.style.longFile 0
 set_option linter.unusedSimpArgs false

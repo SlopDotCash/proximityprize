@@ -6,14 +6,14 @@ Authors: Chung Thai Nguyen, Quang Dao
 import ArkLib.ToVCVio.Oracle
 import ArkLib.ToVCVio.SimOracle
 import ArkLib.ToVCVio.Lemmas
-import ProximityPrize.Extensions.OracleReduction.Execution
+import ArkLib.Extensions.OracleReduction.Execution
 import VCVio.OracleComp.SimSemantics.Append
 import VCVio.OracleComp.SimSemantics.SimulateQ
 import Mathlib.Basic.ENNReal.Basic
 import VCVio.OracleComp.EvalDist
-import ProximityPrize.Extensions.OracleReduction.OracleInterface
+import ArkLib.Extensions.OracleReduction.OracleInterface
 import VCVio.EvalDist.Instances.OptionT
-import ProximityPrize.Extensions.Data.Probability.Instances
+import ArkLib.Extensions.Data.Probability.Instances
 
 /-!
 ## Monad-to-Logic Bridge Lemmas

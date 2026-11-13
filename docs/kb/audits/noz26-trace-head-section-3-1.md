@@ -98,18 +98,18 @@ proof derives the check from Theorem 2 (`traceH_psi_mul_conj`) and does not use 
   verifier aborts on a failed check (`failure`), so rejection is absorbing. `traceHeadPackage`
   composes in front of `bridgePackage ▷ quadEvalPackage` with no adapter, and the composite starts
   at `relScalarEval` and ends at the evaluation step's output relation
-  (`ArkLibTest/Commitments/Functional/Hachi/TraceHead/Composition.lean`). The composite carries the
+  (`ArkLib/Tests/Commitments/Functional/Hachi/TraceHead/Composition.lean`). The composite carries the
   evaluation step's own escape event.
 - **Non-vacuity:** the library module `TraceHead/Conformance.lean` states the accepting condition
   through the shared layer (`trace_head_conforms`) and the exact correspondence
   `check ∧ relPolyEval(output) ↔ relScalarEval ∧ Y = honestMessage` (`trace_head_accepts_iff`).
-  The fixture `ArkLibTest/ProofSystem/RingSwitching/Conformance/Hachi.lean` at
+  The fixture `ArkLib/Tests/ProofSystem/RingSwitching/Conformance/Hachi.lean` at
   `q = 5`, `d = 2`, `k = 1`, through `trace_head_conforms`, exhibits a nonconstant polynomial
   on the honest side and shows that, for a false claim, no sent ring value satisfies the
   shared-layer condition against the same weak opening. Its opening-relation fixtures accept
   exactly `ψ⁻¹` of the ring evaluation (`openingClaimRel_iff_honest`), reject the claimed values
   `0`, and accept the rows' constant coefficients `(1, 3)` of `1 + 2X + 3Y + 4XY` in order, so a row
-  swap would be caught. `ArkLibTest/Commitments/Functional/Hachi/TraceHead/ProperSubring.lean`
+  swap would be caught. `ArkLib/Tests/Commitments/Functional/Hachi/TraceHead/ProperSubring.lean`
   repeats the honest and false-claim instances at `d = 8`, `k = 2`, where the exponent of `σ₉` is
   not `1` modulo `2d`; its data are base-field numerals, so it does not compute `σ₉` on an element
   outside `ZMod q`. The check alone does not reject a false claim: for the claim `0`, the message

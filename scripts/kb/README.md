@@ -6,7 +6,7 @@ They are intentionally lightweight and use only the Python standard library.
 
 ## Scripts
 
-- `sync_from_bib.py` - export `blueprint/src/references.bib` into
+- `sync_from_bib.py` - export `website/blueprint/src/references.bib` into
   `docs/kb/_generated/references.json`
 - `extract_lean_citations.py` - scan Lean sources in `ArkLib/`, `Research/`, and `ProximityPrize/` and generate
   `docs/kb/_generated/lean-citations.json`
@@ -40,7 +40,7 @@ uv run --no-project --python 3.12 python ./scripts/kb/review_context.py --files 
 
 ## Intended Workflow
 
-1. Update `blueprint/src/references.bib`.
+1. Update `website/blueprint/src/references.bib`.
 2. Update the paper page when the PR changes ArkLib's interpretation or use of that paper.
 3. Run `uv run --no-project --python 3.12 python ./scripts/kb/regenerate.py`.
 4. Review and commit the tracked indexes and any scaffolded paper or source pages with the

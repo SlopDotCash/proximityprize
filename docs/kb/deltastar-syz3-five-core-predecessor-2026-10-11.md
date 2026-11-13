@@ -56,7 +56,7 @@ construction and is not a transfer theorem.
 The five-core construction itself remains an exact-arithmetic probe and is not
 yet a kernel-checked Lean theorem. Separately, the existing three-core SYZ3
 certificate now has an axiom-clean canonical consumer in
-`Research/ProximityPrize/Frontier/_SYZ3OverBudgetStackWitness.lean`:
+`ArkLib/Research/ProximityGap/Frontier/_SYZ3OverBudgetStackWitness.lean`:
 `firstPrime_predecessor_worstCaseIncidence_refuted` directly refutes the
 first-field `WorstCaseIncidenceBounded` premise at this predecessor, and
 `firstPrime_predecessor_mcaDeltaStar_le` sends the same witness through the

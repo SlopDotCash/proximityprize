@@ -3,9 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ProximityPrize.Compatibility.AveragedRbr.Security.Execution
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
-import ProximityPrize.Extensions.ProofSystem.Sumcheck.Spec.SingleRound
+import ArkLib.Compatibility.AveragedRbr.Security.Execution
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Extensions.ProofSystem.Sumcheck.Spec.SingleRound
 
 /-!
 # Round-by-round *plain* soundness from round-by-round *knowledge* soundness (issue #13, residual

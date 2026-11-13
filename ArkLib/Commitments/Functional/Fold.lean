@@ -4,12 +4,12 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao
 -/
 
-import ProximityPrize.Extensions.Commitments.Functional.Basic
+import ArkLib.Extensions.Commitments.Functional.Basic
 import Batteries.Data.Vector.Basic
-import ProximityPrize.Extensions.OracleReduction.OracleInterface
+import ArkLib.Extensions.OracleReduction.OracleInterface
 import Mathlib.Data.FinEnum
 import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Basic
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.Basic
 
 /-!
 # Folding-based Polynomial Commitment Schemes

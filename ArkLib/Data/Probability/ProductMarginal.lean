@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 -- ([propext, Classical.choice, Quot.sound] per decl; verified 2026-06-10 via
 -- `lake env lean /tmp/a2_prodmarginal.lean`).
-import ProximityPrize.Compatibility.DiscreteProbability
+import ArkLib.Compatibility.DiscreteProbability
 import ArkLib.Data.Probability.MarginalBound
 
 /-!

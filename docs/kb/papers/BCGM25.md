@@ -3,7 +3,7 @@ kind: paper
 bibkey: BCGM25
 title: "All Polynomial Generators Preserve Distance with Mutual Correlated Agreement"
 year: 2025
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eprint.iacr.org/2025/2051
 source_metadata: ../sources/BCGM25/metadata.yml
 status: seeded
@@ -72,4 +72,4 @@ printed, is in [`../audits/bcgm25-mca-generators.md`](../audits/bcgm25-mca-gener
 ## Source Access
 
 - Source metadata: [`../sources/BCGM25/metadata.yml`](../sources/BCGM25/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

@@ -9,7 +9,7 @@ import Mathlib
 import ArkLib.Data.CodingTheory.AGL24NonzeroMinor
 import ArkLib.Data.CodingTheory.AGL24DetDegree
 import ArkLib.Data.CodingTheory.AGL24UnionBound
-import ProximityPrize.Extensions.Data.MvPolynomial.Interpolation
+import ArkLib.Extensions.Data.MvPolynomial.Interpolation
 
 /-!
 # [AGL24] discharging the probabilistic residual via Schwartz–Zippel (issue #354, stage 2)

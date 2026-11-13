@@ -3,7 +3,7 @@ kind: paper
 bibkey: BKR06
 title: "Subspace polynomials and list decoding of Reed-Solomon codes"
 year: "2006"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/BKR06/metadata.yml
 status: seeded
 related_modules:
@@ -55,4 +55,4 @@ Corollary 2.2 itself. An arbitrary-real extension is also open and would require
 ## Source Access
 
 - Source metadata: [`../sources/BKR06/metadata.yml`](../sources/BKR06/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

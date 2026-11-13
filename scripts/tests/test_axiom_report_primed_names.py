@@ -33,7 +33,7 @@ def nodep(name):
 def run_flagship_gate(decls, output):
     with tempfile.TemporaryDirectory() as folder:
         manifest = Path(folder) / "flagships.txt"
-        manifest.write_text("".join(f"Research.ProximityPrize.Resolution {d}\n"
+        manifest.write_text("".join(f"ArkLib.Research.ProximityGap.Resolution {d}\n"
                                     for d in decls))
         result = subprocess.CompletedProcess([], 0, output, "")
         err = io.StringIO()

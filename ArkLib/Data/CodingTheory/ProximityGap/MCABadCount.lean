@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
-import ProximityPrize.Extensions.Data.Probability.Instances
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.Errors
+import ArkLib.Extensions.Data.Probability.Instances
 
 /-!
 # The Grand MCA Challenge as a finite extremal count

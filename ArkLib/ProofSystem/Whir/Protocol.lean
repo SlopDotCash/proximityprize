@@ -1,4 +1,4 @@
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ToMathlib.WhirBricksConstruction
 
 /-!

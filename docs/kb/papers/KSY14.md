@@ -3,7 +3,7 @@ kind: paper
 bibkey: KSY14
 title: "High-rate codes with sublinear-time decoding"
 year: "2014"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/KSY14/metadata.yml
 status: seeded
 related_concepts:
@@ -79,4 +79,4 @@ Lean transcription.
 ## Source Access
 
 - Source metadata: [`../sources/KSY14/metadata.yml`](../sources/KSY14/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

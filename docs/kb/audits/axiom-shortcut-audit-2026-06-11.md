@@ -104,9 +104,9 @@ shortcut surfaces.
   (`ArkLib/ProofSystem/Stir/MultiRoundAssembly.lean:224`).
 - #302 tracks the WHIR/MCA residuals:
   - `MutualCorrAgreement.K4GradedFactorCellResidual`
-    (`Research/ProximityPrize/Protocols/Whir/MCAJohnsonBound.lean:46`)
+    (`ArkLib/Research/ProximityGap/Protocols/Whir/MCAJohnsonBound.lean:46`)
   - `MutualCorrAgreement.K4ComponentResidual`
-    (`Research/ProximityPrize/Protocols/Whir/MCAJohnsonBound.lean:64`)
+    (`ArkLib/Research/ProximityGap/Protocols/Whir/MCAJohnsonBound.lean:64`)
 
 ## Closed Stale Findings
 

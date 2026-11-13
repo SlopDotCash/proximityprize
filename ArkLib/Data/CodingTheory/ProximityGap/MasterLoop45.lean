@@ -46,7 +46,7 @@ Status of the target statement:
 `master_prize_from_poly_orbit_count` is sorry-free and axiom-clean, but it is only the arithmetic
 step modulo the real-valued `PolyOrbitCount`.  Candidate for other agents: prove the target
 statement in the small-gap band together with the event bridge, or refute it. See
-`Research/ProximityPrize/DISPROOF_LOG.md` (Loop45).
+`docs/research/proximity-gap/DISPROOF_LOG.md` (Loop45).
 -/
 
 namespace ArkLib.ProximityGap.MasterLoop45

@@ -3,9 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Steps.Fold
-import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Steps.Relay
-import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Steps.Commit
+import ArkLib.Extensions.ProofSystem.Binius.BinaryBasefold.Steps.Fold
+import ArkLib.Extensions.ProofSystem.Binius.BinaryBasefold.Steps.Relay
+import ArkLib.Extensions.ProofSystem.Binius.BinaryBasefold.Steps.Commit
 import ArkLib.OracleReduction.Composition.Sequential.AppendRbrKnowledgeOracleLift
 import ArkLib.OracleReduction.Composition.Sequential.KnowledgeFailure
 /-!

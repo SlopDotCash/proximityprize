@@ -207,7 +207,7 @@ With zero query repetitions, the query-error term is one, so the total soundness
 vacuous. The earlier probability-to-binding and proximity consequences require a positive query
 count; the new knowledge theorem covers zero queries explicitly.
 
-`ArkLibTest/ProofSystem/Fri/Soundness.lean` and `Extraction.lean` contain guarded kernel-axiom
+`ArkLib/Tests/ProofSystem/Fri/Soundness.lean` and `Extraction.lean` contain guarded kernel-axiom
 checks for the executable bridge and public security and extraction theorems.
 `scripts/FriExtractorRuntime.lean` exercises small immutable histories and exact instruction
 counts as compiled code. The proofs avoid the unfinished general round-by-round-to-ordinary

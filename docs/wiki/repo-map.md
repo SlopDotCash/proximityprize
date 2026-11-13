@@ -1,51 +1,53 @@
 # Repo Map
 
-## Proximity Prize downstream surfaces
+## Main surfaces
 
-The canonical ArkLib modules described below come from the revision pinned in
-[`scripts/arklib-upstream.json`](../../scripts/arklib-upstream.json). Downstream
-code extends those definitions through three additional default libraries:
+```text
+ArkLib/
+  Data/, Interaction/, OracleReduction/, Commitments/, ProofSystem/
+  ToMathlib/, ToCompPoly/, ToVCVio/    library foundations and local extensions
+  Extensions/, Compatibility/       retained downstream APIs
+  Research/ProximityGap/             campaign Lean modules and workbench
+  Tests/                            compile-time acceptance clients
+docs/
+  project/                          background, roadmap and migration history
+  research/proximity-gap/            dossier, disproof log, guides and archive
+  contributing/agent-workflows/       mission and agent onboarding
+  testing/                          test guidance
+  wiki/, design/, kb/               maintained reference documentation
+scripts/                            build tools, audits and computational probes
+website/
+  library/                          authored static library-site assets
+  blueprint/                        exposition, bibliography and blueprint Lean root
+  deltastar-paper/, truthmining/     existing research websites
+external/                           existing external submodule
+build/site/                         ignored assembled library site
+```
 
-- `ArkLibExtensions` owns classic downstream-only files that retain existing
-  `ArkLib.*` import paths; generated explicit globs prevent these files from
-  weakening the canonical library's module-system policy.
-- `ProximityPrizeExtensions` owns the classic `ProximityPrize/` tree,
-  which retains unique declarations from overlapping downstream modules and
-  imports the canonical ArkLib owners. The extraction provenance and import map
-  live under `scripts/integration/`.
-- `ResearchProximityPrize` owns `Research/ProximityPrize/`, its workbench, dossier,
-  and campaign records. Research can import the library; ArkLib cannot import
-  Research. Research evidence remains retained even where it is outside the
-  ordinary build surface.
+The [layout guide](repository-layout.md) records previous paths and evidence
+relocations. Only standard project, license, agent and Lean package files remain
+at the repository root.
+
+## Build and import boundaries
+
+The canonical inventory in `scripts/arklib-upstream.json` still defines exactly
+which modules `ArkLib.lean` re-exports. It is unchanged by the physical cleanup.
+`ArkLibExtensions` owns classic downstream additions. `ProximityPrizeExtensions`
+owns `ArkLib.Extensions.*`, `ArkLib.Compatibility.*` and `ArkLib.Downstream`.
+`ResearchProximityPrize` owns the research root `ArkLib.Research.ProximityGap`;
+its generated index imports the retained campaign modules. `ArkLibTest` owns
+`ArkLib.Tests.*` and remains the `lake test` driver. The existing target IDs are
+kept for command compatibility; the source paths now share one Lean root.
+
+Research and acceptance clients can import the library. Production modules
+cannot import research or tests. Existing mathematical declaration namespaces,
+including `ProximityPrize.*`, remain intact; Lean import paths follow the new
+file locations. Distinct upstream and downstream results are preserved.
 
 `scripts/update-lib.sh` regenerates the canonical umbrella and downstream
 ownership configuration. `scripts/update-research-lib.py` regenerates the
 research umbrella. Use the shared build wrapper described in
 [quickstart](quickstart.md), and publish only to `SlopDotCash/proximityprize`.
-
-This repo is easiest to navigate by subtree, not by individual file name.
-Many developments are paper-scoped and spread across several modules.
-
-## Main Surfaces
-
-```text
-ArkLib/
-  Data/               foundational math, coding theory, polynomials, probability, etc.
-  Interaction/        typed prover, verifier, and reduction foundations
-  OracleReduction/    core IOR abstractions and security theory
-  Commitments/        commitments and opening arguments
-  AGM/                algebraic group model representations
-  ProofSystem/        protocol families and higher-level proofs
-  ToMathlib/          local additions not upstreamed to Mathlib
-  ToCompPoly/         local additions not upstreamed to CompPoly
-ArkLibTest/           compile-time tests, acceptance cases, and runtime checks
-blueprint/src/        blueprint sources and references.bib
-docs/kb/             persistent paper, concept, audit, and query knowledge base
-docs/wiki/            reference pages and conventions
-docs/design/          interaction-layer design chapters and status
-scripts/              repo utilities
-home_page/            site assets and assembled website root
-```
 
 ## Conceptual Layering
 
@@ -106,7 +108,7 @@ home_page/            site assets and assembled website root
 - Moving reusable helper lemmas that ideally belong upstream: start in `ArkLib/ToMathlib/`,
   or `ArkLib/ToCompPoly/`, depending on the upstream project. Generic VCVio additions go upstream
   directly; ArkLib imports their public owner modules.
-- Updating theory docs, references, or long-form exposition: start in `blueprint/src/`.
+- Updating theory docs, references, or long-form exposition: start in `website/blueprint/src/`.
 - Updating repository-local paper summaries, audits, or reference context: start in `docs/kb/`.
 
 ## Navigation Notes
@@ -158,8 +160,8 @@ home_page/            site assets and assembled website root
   `(7n - 3) / |F|`. `Plonk/Assembly/CircuitExtraction.lean` extracts the original circuit witness
   with error `(7(ℓ + n) - 3) / |F|` (`Plonk.Assembly.Circuit.oracleVerifier_knowledgeSoundnessWith`).
   Concrete cycle, satisfaction, and decoder checks live in
-  `ArkLibTest/ProofSystem/Plonk/Relation.lean`;
-  `ArkLibTest/ProofSystem/Plonk/Encoding.lean` checks order-four encoding over a prime field,
+  `ArkLib/Tests/ProofSystem/Plonk/Relation.lean`;
+  `ArkLib/Tests/ProofSystem/Plonk/Encoding.lean` checks order-four encoding over a prime field,
   including rejected gates, inconsistent copies, and incorrect public inputs.
 
 - `ProofSystem/Plonk/GrandProduct/` formalizes the Plonk permutation grand product:
@@ -214,7 +216,7 @@ home_page/            site assets and assembled website root
   `ToCompPoly/Univariate/Size.lean`. These size facts count stored coefficients, not execution cost.
   Compiled small cases run
   with `lake exe fri-extractor-runtime`; classic trust checks live in
-  `ArkLibTest/ProofSystem/Fri/Extraction.lean`.
+  `ArkLib/Tests/ProofSystem/Fri/Extraction.lean`.
   `RoundConsistency.lean` connects local checks to word folding. Generic persistent-event
   state functions, adaptive accumulation, and the acceptance-to-soundness bridge live in
   `OracleReduction/Security/{BadEvents,Accumulation,Acceptance}.lean`. These proofs use that
@@ -265,8 +267,8 @@ home_page/            site assets and assembled website root
   `ToMathlib/MvPolynomial/CoeffBound`. `Data/MvPolynomial/PrimeFingerprint` contains counting
   bounds; `PrimeFingerprintProbability` adds the two-stage native sampler.
   `Data/MvPolynomial/LinearMvExtension` owns `powAlgHom` coefficient recovery and injectivity.
-  Acceptance clients live under `ArkLibTest/Commitments/Functional/BitZ/`, including a CompPoly
-  evaluation-table application, and `ArkLibTest/Data/MvPolynomial/PrimeFingerprintProbability`.
+  Acceptance clients live under `ArkLib/Tests/Commitments/Functional/BitZ/`, including a CompPoly
+  evaluation-table application, and `ArkLib/Tests/Data/MvPolynomial/PrimeFingerprintProbability`.
 - Hachi commitment-scheme modules live under `ArkLib/Commitments/Functional/Hachi/` and formalize
   the Greyhound [NS24] / Hachi [NOZ26] *inner-outer* Ajtai lattice commitment over a cyclotomic
   ring `Rq Φ`. The folder is organized by paper section;
@@ -301,7 +303,7 @@ home_page/            site assets and assembled website root
     nothing here depends on its field identification. The importable library module
     `TraceHead/Conformance.lean` states the accepting condition through the shared `sliceRel`
     (`trace_head_conforms`); concrete fixtures remain in
-    `ArkLibTest/ProofSystem/RingSwitching/Conformance/Hachi.lean`.
+    `ArkLib/Tests/ProofSystem/RingSwitching/Conformance/Hachi.lean`.
   - `EvalSplit.lean` (§4, Eq. (12)) — the matrix split underlying the evaluation argument:
     multilinear evaluation `eval p (xl ++ xh)` factors as the vector–matrix–vector product
     `mb(xl) ⬝ᵥ (toMatrix p *ᵥ mb(xh))` (`evalSplit_eq_eval`), with the inverse reshape
@@ -764,7 +766,7 @@ home_page/            site assets and assembled website root
   statement, full transcript and output witness exist together
   (`Verifier.forall_rbrSoundness_iff_rbrKnowledgeSoundness_iff`), because
   only then does a round-by-round extractor exist (`Extractor.RoundByRound.exists_nonempty_iff`);
-  `ArkLibTest/OracleReduction/RoundByRoundCharacterization.lean` checks the separating example.
+  `ArkLib/Tests/OracleReduction/RoundByRoundCharacterization.lean` checks the separating example.
   `Security/Guarded.lean` defines guarded verifiers, independent of any security notion:
   `Verifier.IsGuardedWith`/`IsGuarded`, their data form `Verifier.GuardedForm` (check and verdict
   map as fields), `GuardedForm.append`, the seam run lemma `Verifier.append_run_guardedLeft`, and
@@ -808,8 +810,8 @@ home_page/            site assets and assembled website root
   applies to every count certificate, and the
   [native composition priorities](../design/05-roadmap.md#native-resource-composition) record
   the remaining client and resource-closure proofs.
-  Acceptance clients are `ArkLibTest/OracleReduction/MeasuredExtraction.lean` and
-  `ArkLibTest/Interaction/Oracle/Security/{StateRestorationBudget,MeasuredPathBudgets}.lean`.
+  Acceptance clients are `ArkLib/Tests/OracleReduction/MeasuredExtraction.lean` and
+  `ArkLib/Tests/Interaction/Oracle/Security/{StateRestorationBudget,MeasuredPathBudgets}.lean`.
   `VCVio.OracleComp.QueryTracking.DeterminedCost`
   turns the handler's recorded-cost bound into an all-path bound when every permitted response
   equals the handler's answer.
@@ -916,7 +918,7 @@ home_page/            site assets and assembled website root
   `multilinearBatchGenerator` presents the same coefficients at index `Fin ((2^t - 1) + 1)`.
   Composite knowledge soundness remains out of scope because batching has no extractor.
   Executable examples, concrete soundness applications, and axiom checks are in
-  `ArkLibTest/ProofSystem/BatchedFri.lean`.
+  `ArkLib/Tests/ProofSystem/BatchedFri.lean`.
 - Binary sequential composition lives in `OracleReduction/Composition/Sequential/Append/`,
   exported by `Composition/Sequential/Append.lean`:
   - `Append/Basic.lean` — the `append` operations on provers, verifiers, and reductions, their
@@ -960,7 +962,7 @@ home_page/            site assets and assembled website root
   forms from explicit fallback maps. `LiftContext/Purity.lean` transports output purity and guarded
   forms through context lifting.
   See [sequential composition](sequential-composition.md) for theorem selection and hypotheses.
-  `ArkLibTest/OracleReduction/Composition/Sequential/` contains acceptance examples, query-order
+  `ArkLib/Tests/OracleReduction/Composition/Sequential/` contains acceptance examples, query-order
   and shared-state counterexamples, and axiom assertions, built by `lake test`.
 
   These proofs run on `HEq` transport, since transcripts and prover states are families indexed by
@@ -1010,7 +1012,7 @@ home_page/            site assets and assembled website root
   contextual opening. Completeness uses exact encodings, security unique-radius compatibility.
   `Packing/OpeningAdapter` transports a standard `MLIOPCS` to the contextual opening contract
   through a zero-round projection, preserving completeness and round-by-round security.
-  `ArkLibTest/ProofSystem/RingSwitching/Packing/RingSwitch/{UnequalRankSuffix,Quirky}` instantiate full protocols
+  `ArkLib/Tests/ProofSystem/RingSwitching/Packing/RingSwitch/{UnequalRankSuffix,Quirky}` instantiate full protocols
   with effective ranks four/three over different fields and exact error sum below one. Their
   transparent polynomial oracles are specification fixtures, not commitment schemes.
   Hachi's §3.1 trace head uses `PackingData.ofBaseOpening`, `packedMLE`, its own `ClaimLayout`
@@ -1043,6 +1045,6 @@ home_page/            site assets and assembled website root
 
 ## Acceptance tests
 
-`ArkLibTest/` mirrors production module paths for compile-time examples and regression tests.
+`ArkLib/Tests/` mirrors production module paths for compile-time examples and regression tests.
 `lake test` builds all test modules; the default validation wrapper runs it. Tests stay outside
 the generated `ArkLib.lean` umbrella and production modules must not import them.

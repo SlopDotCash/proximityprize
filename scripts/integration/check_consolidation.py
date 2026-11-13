@@ -21,7 +21,10 @@ from extract_downstream_extensions import lexical_mask
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE_ROOTS = ("ArkLib", "ArkLibTest", "Research", "ProximityPrize")
+SOURCE_ROOTS = ("ArkLib",)
+# Keep recognizing obsolete local roots so a stale import fails rather than being
+# mistaken for an external dependency after the source directories disappear.
+LOCAL_IMPORT_ROOTS = SOURCE_ROOTS + ("ArkLibTest", "Research", "ProximityPrize")
 IMPORT = re.compile(
     r"(?m)^[ \t]*(?:(?:public|meta)\s+)*import\s+(?:all\s+)?([^\n]+)"
 )
@@ -96,7 +99,7 @@ def check(require_ancestor: bool = False) -> tuple[list[str], dict[str, int]]:
     canonical_modules = {module_name(p) for p in canonical} | {"ArkLib"}
     for name, relative in sorted(sources.items()):
         direct = imports((ROOT / relative).read_text())
-        local = [target for target in direct if target.split(".")[0] in SOURCE_ROOTS]
+        local = [target for target in direct if target.split(".")[0] in LOCAL_IMPORT_ROOTS]
         graph[name] = sorted(set(local))
         for target in local:
             if target not in sources:

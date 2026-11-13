@@ -4,8 +4,8 @@ Date: 2026-07-08
 
 Artifacts:
 
-- `Research/ProximityPrize/Frontier/_R224OrbitTailLiftToQuotientTail.lean`
-- `Research/ProximityPrize/Frontier/_R225GaussOrbitTailLift.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_R224OrbitTailLiftToQuotientTail.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_R225GaussOrbitTailLift.lean`
 
 ## Result
 
@@ -46,8 +46,8 @@ turns a quotient-orbit score domination hypothesis into the exact
 Fast lanes:
 
 ```bash
-./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R224OrbitTailLiftToQuotientTail.lean
-./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R225GaussOrbitTailLift.lean
+./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_R224OrbitTailLiftToQuotientTail.lean
+./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_R225GaussOrbitTailLift.lean
 ```
 
 Status: passed.

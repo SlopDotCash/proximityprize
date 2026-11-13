@@ -3,9 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.Errors
 import ArkLib.Data.CodingTheory.ProximityGap.LineBallIntersection
-import ProximityPrize.Extensions.Data.Probability.Instances
+import ArkLib.Extensions.Data.Probability.Instances
 
 /-!
 # Reducing the MCA grand-challenge conjecture to the line list-decoding count `N_line`

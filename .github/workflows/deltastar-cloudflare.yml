@@ -5,8 +5,9 @@ on:
     branches: [main]
     paths: &site-paths
       - "website/deltastar-paper/**"
-      - "mine/**"
-      - "Research/ProximityPrize/**"
+      - "docs/contributing/agent-workflows/**"
+      - "ArkLib/Research/ProximityGap/**"
+      - "docs/research/proximity-gap/**"
       - "docs/kb/**"
       - "scripts/probes/**"
       - ".github/workflows/deltastar-cloudflare.yml"

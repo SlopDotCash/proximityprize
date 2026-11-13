@@ -33,7 +33,7 @@ The current KB policy is:
 
 ## Maintenance Rules
 
-- `blueprint/src/references.bib` is the bibliographic source of truth.
+- `website/blueprint/src/references.bib` is the bibliographic source of truth.
 - The BibTeX key is the canonical identifier across Lean, bibliography, and KB pages.
 - Keep process guidance here in `docs/wiki/`; keep paper content in `docs/kb/`.
 - Prefer persistent pages over branch-local scratch notes when the result will help future PRs or

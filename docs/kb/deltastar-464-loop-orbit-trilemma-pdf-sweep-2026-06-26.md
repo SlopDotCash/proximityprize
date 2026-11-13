@@ -148,7 +148,7 @@ not FloorClosureBudgetedMaxAtField
 ```
 
 This is now machine-checked in
-`Research/ProximityPrize/Frontier/_FloorClosureContract.lean`:
+`ArkLib/Research/ProximityGap/Frontier/_FloorClosureContract.lean`:
 
 ```lean
 not_linnikBudgetedMaxField_iff_each_member_above_or_beaten

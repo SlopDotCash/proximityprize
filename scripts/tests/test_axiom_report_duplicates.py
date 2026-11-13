@@ -30,7 +30,7 @@ class DuplicateAxiomReports(unittest.TestCase):
     def test_flagship_gate_rejects_any_forbidden_report(self):
         with tempfile.TemporaryDirectory() as folder:
             manifest = Path(folder) / "flagships.txt"
-            manifest.write_text(f"Research.ProximityPrize.Collapse {DECL}\n")
+            manifest.write_text(f"ArkLib.Research.ProximityGap.Collapse {DECL}\n")
             for output in (BAD + GOOD, GOOD + BAD, BAD + STANDARD, STANDARD + BAD):
                 result = subprocess.CompletedProcess([], 0, output, "")
                 with self.subTest(output=output), patch.object(axiom_audit, "MANIFEST", manifest), \

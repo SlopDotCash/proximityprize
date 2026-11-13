@@ -25,8 +25,8 @@ records the exact pins, collision bound, interpolation scope, and conditional
 di Benedetto comparison used on the page. Do not turn conditional estimates or
 best registered certificates into an unconditional state-of-the-art claim.
 
-The canonical onboarding files are `mine/MISSION.md`,
-`mine/claude/proximity-prize/SKILL.md`, and `mine/codex/AGENTS.md`. The prebuild
+The canonical onboarding files are `docs/contributing/agent-workflows/MISSION.md`,
+`docs/contributing/agent-workflows/claude/proximity-prize/SKILL.md`, and `docs/contributing/agent-workflows/codex/AGENTS.md`. The prebuild
 copies them into the site's committed `public/` files. Commit regenerated copies
 when changing those sources. Do not edit the copies directly.
 

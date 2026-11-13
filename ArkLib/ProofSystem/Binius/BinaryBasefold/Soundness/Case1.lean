@@ -5,12 +5,12 @@ Authors: ArkLib Contributors, Chung Thai Nguyen, Quang Dao
 -/
 
 import ArkLib.ProofSystem.Binius.BinaryBasefold.FoldDetDischarge
-import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Code
+import ArkLib.Extensions.ProofSystem.Binius.BinaryBasefold.Code
 import ArkLib.Data.Probability.TensorSchwartzZippel
 import ArkLib.Data.Probability.PrUnionBound
 import ArkLib.Data.CodingTheory.ProximityGap.DG25
-import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Compliance
-import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.Lift
+import ArkLib.Extensions.ProofSystem.Binius.BinaryBasefold.Compliance
+import ArkLib.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.Lift
 
 /-!
 # Binary Basefold first-case soundness

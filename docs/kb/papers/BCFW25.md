@@ -3,7 +3,7 @@ kind: paper
 bibkey: BCFW25
 title: "Linear time accumulation schemes"
 year: "2025"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eprint.iacr.org/2025/753
 source_metadata: ../sources/BCFW25/metadata.yml
 status: seeded
@@ -98,4 +98,4 @@ same list size as the interleaved base code, which `ABF26` restates as its Lemma
 ## Source Access
 
 - Source metadata: [`../sources/BCFW25/metadata.yml`](../sources/BCFW25/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

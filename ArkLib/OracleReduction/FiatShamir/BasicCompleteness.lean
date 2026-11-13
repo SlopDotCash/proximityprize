@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.OracleReduction.FiatShamir.Basic
-import ProximityPrize.Extensions.OracleReduction.LiftContext.Reduction
+import ArkLib.Extensions.OracleReduction.FiatShamir.Basic
+import ArkLib.Extensions.OracleReduction.LiftContext.Reduction
 
 /-!
   # Discharging Basic Fiat-Shamir Completeness (#116)

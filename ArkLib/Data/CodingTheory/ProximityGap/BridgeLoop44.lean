@@ -39,7 +39,7 @@ be polynomial there too (matching Loops 9/11/13); the event-level transfer from 
 reduction does **not** need 861's constant `K_ρ` — a polynomial `N ≤ (2^m)^d` is enough. This
 separates 861's deployment-grade `O(1)/|F|` (which Q2 would give) from the #232 prize's
 `poly(2^m)/|F|` (for which a polynomial `N` suffices). See
-`Research/ProximityPrize/DISPROOF_LOG.md` (Loop44).
+`docs/research/proximity-gap/DISPROOF_LOG.md` (Loop44).
 -/
 
 namespace ArkLib.ProximityGap.BridgeLoop44

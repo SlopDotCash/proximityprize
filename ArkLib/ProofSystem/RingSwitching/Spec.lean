@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
 import ArkLib.ProofSystem.RingSwitching.Prelude
-import ProximityPrize.Extensions.ProofSystem.Sumcheck.Structured.SingleRound
+import ArkLib.Extensions.ProofSystem.Sumcheck.Structured.SingleRound
 
 /-! ## Protocol Specs for Ring-Switching
 This module contains the protocol specs, oracle index bounds,

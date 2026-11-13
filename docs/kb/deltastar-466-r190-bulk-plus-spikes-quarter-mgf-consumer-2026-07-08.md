@@ -14,7 +14,7 @@ R190 turns that target into a Lean consumer for the named R188 residual
 ## Lean artifact
 
 File:
-`Research/ProximityPrize/Frontier/_R190BulkPlusSpikesQuarterMGF.lean`.
+`ArkLib/Research/ProximityGap/Frontier/_R190BulkPlusSpikesQuarterMGF.lean`.
 
 New residual:
 
@@ -39,8 +39,8 @@ DyadicQuarterMGFBound s t
 ## Verification
 
 ```text
-./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._R188QuarterMGFTowerConsumer
-./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R190BulkPlusSpikesQuarterMGF.lean
+./scripts/lake-locked.sh build ArkLib.Research.ProximityGap.Frontier._R188QuarterMGFTowerConsumer
+./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_R190BulkPlusSpikesQuarterMGF.lean
 ```
 
 R190 passed the fast Lean check in 6 seconds and printed the expected axiom

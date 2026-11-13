@@ -3,9 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
-import ProximityPrize.Extensions.Data.CodingTheory.JohnsonBound.Family
-import ProximityPrize.Compatibility.ListSize
+import ArkLib.Extensions.Data.CodingTheory.ReedSolomon
+import ArkLib.Extensions.Data.CodingTheory.JohnsonBound.Family
+import ArkLib.Compatibility.ListSize
 
 /-!
 # Reed–Solomon Johnson list-size at the `Lambda` level (#371 / #389 floor lane)

@@ -3,7 +3,7 @@ kind: paper
 bibkey: NOZ26
 title: "Hachi: Efficient Lattice-Based Multilinear Polynomial Commitments over Extension Fields"
 year: "2026"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eprint.iacr.org/2026/156
 source_metadata: ../sources/NOZ26/metadata.yml
 status: active-audit
@@ -238,5 +238,5 @@ Detailed Lemma 5–6 correspondence and proof status:
 ## Source Access
 
 - Source metadata: [`../sources/NOZ26/metadata.yml`](../sources/NOZ26/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib) (key `NOZ26`)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib) (key `NOZ26`)
 - ePrint: https://eprint.iacr.org/2026/156

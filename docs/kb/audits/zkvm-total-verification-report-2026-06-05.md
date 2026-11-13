@@ -48,7 +48,7 @@ Primary public sources:
 Primary local sources:
 
 - `README.md`
-- `ROADMAP.md`
+- `docs/project/roadmap.md`
 - `docs/wiki/proximity-prize-leaderboard.md`
 - `docs/kb/audits/proximity-prize/GRIND-LEDGER.md`
 - `docs/kb/audits/open-problems-list-decoding-and-correlated-agreement.md`

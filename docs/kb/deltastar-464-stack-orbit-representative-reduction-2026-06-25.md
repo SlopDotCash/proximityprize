@@ -9,7 +9,7 @@ Status: **interface progress**, not a delta-star proof.
 I added:
 
 ```text
-Research/ProximityPrize/Frontier/_StackOrbitRepresentativeReduction.lean
+ArkLib/Research/ProximityGap/Frontier/_StackOrbitRepresentativeReduction.lean
 ```
 
 This is the stack-side analogue of the already-proven period/frequency quotient reductions
@@ -197,7 +197,7 @@ every relevant stack is represented, or dominated, by the proposed binder/monomi
 A companion file now records the basic size obstruction:
 
 ```text
-Research/ProximityPrize/Frontier/_StackRepresentativeCoverCardinality.lean
+ArkLib/Research/ProximityGap/Frontier/_StackRepresentativeCoverCardinality.lean
 ```
 
 It proves that if every representative has relation fiber size at most `K`, then a representative

@@ -6,7 +6,7 @@ Status: semantic guardrail for the off-BGK bad-prime lane; not a prize proof.
 
 ## Artifact
 
-- Lean: `Research/ProximityPrize/Frontier/_AssaultV2_FloorLocalizationN32.lean`
+- Lean: `ArkLib/Research/ProximityGap/Frontier/_AssaultV2_FloorLocalizationN32.lean`
 
 ## Point
 

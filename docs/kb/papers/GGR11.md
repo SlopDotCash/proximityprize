@@ -3,7 +3,7 @@ kind: paper
 bibkey: GGR11
 title: "List Decoding Tensor Products and Interleaved Codes"
 year: "2011"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://doi.org/10.1137/090778274
 source_metadata: ../sources/GGR11/metadata.yml
 status: seeded

@@ -148,7 +148,7 @@ u -> normalize(u) -> compress(u) -> r
 where each step preserves or increases `StackBadCount`.
 
 This is now a checked proof socket in
-`Research/ProximityPrize/Frontier/_MaximizerCarryingReduction.lean`.  The Lean theorem
+`ArkLib/Research/ProximityGap/Frontier/_MaximizerCarryingReduction.lean`.  The Lean theorem
 
 ```lean
 deltaStar_pin_of_someMaximizerReachesFamily

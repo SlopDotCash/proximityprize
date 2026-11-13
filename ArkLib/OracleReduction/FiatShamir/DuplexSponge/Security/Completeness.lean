@@ -5,7 +5,7 @@ Authors: Quang Dao
 -/
 
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Defs
-import ProximityPrize.Extensions.OracleReduction.Security.Basic
+import ArkLib.Extensions.OracleReduction.Security.Basic
 
 /-!
 # Completeness of Duplex-Sponge Fiat-Shamir (partial bridge)

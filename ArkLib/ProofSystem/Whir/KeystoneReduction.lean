@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.Curves
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.Curves
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.Errors
 import ArkLib.ProofSystem.Whir.RbrBudgetAccounting
 import Mathlib.Data.Finset.Lattice.Fold
 import Mathlib.Data.Finset.Max

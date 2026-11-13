@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alexander Hicks
 -/
 
-import ProximityPrize.Extensions.ProofSystem.ToyProblem.Definitions
-import ProximityPrize.Extensions.Data.CodingTheory.InterleavedCode
+import ArkLib.Extensions.ProofSystem.ToyProblem.Definitions
+import ArkLib.Extensions.Data.CodingTheory.InterleavedCode
 
 /-!
 # Toy-problem violation bridge (ABF26 §6.4.1)

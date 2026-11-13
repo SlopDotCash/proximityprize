@@ -10,7 +10,7 @@ import ArkLib.ToMathlib.LinearAlgebra.LagrangeLine
 # Hab25 §3 Step S6 deep kernel — the unique affine pair, by Lagrange descent
 
 The deepest remaining node of the Haböck §3 endgame
-(`Research/ProximityPrize/Hab25Johnson.lean`) was S6: every decoded codeword of
+(`ArkLib/Research/ProximityGap/Hab25Johnson.lean`) was S6: every decoded codeword of
 the **generic fold** `f₀ + Z·f₁` over `K = F(Z)` is an **affine pair**
 `p = a + Z·b` with `a, b ∈ F[X]` of degree `< k` — the paper packages this inside the Hensel
 lift (`R_{i,j} = (Y − (a+Zb))^{p^f}`). This file proves the affine-pair extraction itself by a

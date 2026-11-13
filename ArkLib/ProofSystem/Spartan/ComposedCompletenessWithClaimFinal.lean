@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import ArkLib.ProofSystem.Spartan.ComposedCompletenessFinal
 import ArkLib.ProofSystem.Spartan.ComposedCompletenessLeaves
-import ProximityPrize.Extensions.ProofSystem.Component.ReduceClaim
+import ArkLib.Extensions.ProofSystem.Component.ReduceClaim
 import ArkLib.ProofSystem.Spartan.TightCompletenessProven
 import ArkLib.ProofSystem.Spartan.TightTerminalToValueRel
 

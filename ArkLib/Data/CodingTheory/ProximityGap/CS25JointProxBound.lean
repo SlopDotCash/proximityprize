@@ -3,9 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ProximityPrize.Extensions.Data.CodingTheory.InterleavedCode
+import ArkLib.Extensions.Data.CodingTheory.InterleavedCode
 import ArkLib.Data.CodingTheory.ProximityGap.CS25SecondMomentReduction
-import ProximityPrize.Extensions.Data.CodingTheory.HammingBallVolume
+import ArkLib.Extensions.Data.CodingTheory.HammingBallVolume
 import ArkLib.Data.CodingTheory.ProximityGap.CS25BallEntropy
 import ArkLib.Data.CodingTheory.EntropyVolumeUpperBall
 

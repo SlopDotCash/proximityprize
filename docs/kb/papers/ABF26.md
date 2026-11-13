@@ -3,7 +3,7 @@ kind: paper
 bibkey: ABF26
 title: "Open Problems in List Decoding and Correlated Agreement"
 year: "2026"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://proximityprize.org/
 source_metadata: ../sources/ABF26/metadata.yml
 status: seeded
@@ -347,5 +347,5 @@ guard `k ≤ ringChar F` for degree-`< k` messages.
 ## Source Access
 
 - Source metadata: [`../sources/ABF26/metadata.yml`](../sources/ABF26/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)
 - Prize site: <https://proximityprize.org/>

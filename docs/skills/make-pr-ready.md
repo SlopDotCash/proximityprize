@@ -86,7 +86,7 @@ merge-ready.
   ```
 
   Subtract the curated docs a PR may legitimately add (`docs/kb/papers/`, `docs/kb/sources/`,
-  `docs/wiki/`, `docs/skills/`, `blueprint/`, and top-level pages like
+  `docs/wiki/`, `docs/skills/`, `website/blueprint/`, and top-level pages like
   `README`/`ROADMAP`/`CONTRIBUTING`/`BACKGROUND`) — a real `docs/kb/papers/<KEY>.md` or `docs/wiki/` page stays.
   For anything left that reads as a working plan, **warn the user**, naming each file and whether
   it is untracked, staged, or already committed, and let them decide. Leave untracked plans
@@ -221,7 +221,7 @@ merge-ready.
   or renumbered, or the same mathematics appears in several sources.
 - Make sure every paper cited in a module docstring uses a citation key (e.g. `[BCIKS20]`), the
   module docstring has a `## References` section, and every key has a matching BibTeX entry in
-  `blueprint/src/references.bib` (see the citation policy in
+  `website/blueprint/src/references.bib` (see the citation policy in
   [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) and the workflow in
   [`../wiki/blueprint-and-citations.md`](../wiki/blueprint-and-citations.md)).
 - Regenerate the derived metadata when its inputs change and commit the tracked indexes and any
@@ -235,7 +235,7 @@ merge-ready.
   Review the derived diff for stale paths, dangling keys, and missing entries.
 
 - `kb/lint.py` does **not** verify that every cited key has a BibTeX entry. Check for dangling
-  keys yourself: grep each `[KEY]` used in docstrings against `blueprint/src/references.bib` and
+  keys yourself: grep each `[KEY]` used in docstrings against `website/blueprint/src/references.bib` and
   add any missing entry (then regenerate). A key can be "present-looking" but actually a different
   paper — confirm the entry's title/authors match the citation, not just that the key exists.
 - Know the `kb/lint.py` severity split: a **paper page whose `bibkey` has no BibTeX entry** is an
@@ -248,7 +248,7 @@ merge-ready.
 - A validate/kb failure is not necessarily yours: it can be **pre-existing on `main`** (e.g. a kb
   paper page merged before its BibTeX entry). Attribute it (`git show origin/main:<file>`), but
   fix it in your PR anyway if cheap — it blocks *your* CI regardless of who introduced it.
-- Also check for **duplicate BibTeX keys**: `grep -oE '^@[a-z]+\{[^,]+' blueprint/src/references.bib
+- Also check for **duplicate BibTeX keys**: `grep -oE '^@[a-z]+\{[^,]+' website/blueprint/src/references.bib
   | sort | uniq -d`. Neither `kb/lint` nor the sync script flags a key defined twice (the JSON dict
   silently collapses it), but it is real bib cruft a reviewer will hit. Keep the better-formatted
   entry and delete the other.
@@ -299,8 +299,8 @@ the old path and fix them.
   parenthesised path), and **only** in `AGENTS.md`, `scripts/README.md`, and `docs/**/*.md` (minus
   `_generated/`). Note it resolves links inside backticks too, so do not write a literal
   link-shaped example in prose — it will be chased and reported broken. It does **not** see:
-  bare or backticked paths anywhere, `.lean` docstrings, `blueprint/**`, `.github/**`, or the
-  top-level `README.md` / `CONTRIBUTING.md` / `ROADMAP.md` / `BACKGROUND.md`.
+  bare or backticked paths anywhere, `.lean` docstrings, `website/blueprint/**`, `.github/**`, or the
+  top-level `README.md` / `CONTRIBUTING.md` / `docs/project/roadmap.md` / `docs/project/background.md`.
 - `kb/lint.py` does **not** validate the `related_modules:` paths in `docs/kb/papers/*.md`
   frontmatter. A module listed there can be long gone and lint still passes.
 
@@ -365,7 +365,7 @@ Then check the places a path grep structurally cannot reach:
 
 - `docs/kb/papers/*.md` — `related_modules:` frontmatter (unlinted; also verify the entries still
   make sense after a move, not just that they resolve).
-- `blueprint/src/**/*.tex` — `\texttt{ArkLib/...}` path mentions, plus `\lean{Decl.Name}` refs to
+- `website/blueprint/src/**/*.tex` — `\texttt{ArkLib/...}` path mentions, plus `\lean{Decl.Name}` refs to
   declarations that died with the file. Only `./scripts/validate.sh --site` checks the latter.
 - [`../wiki/repo-map.md`](../wiki/repo-map.md) — the structure map goes stale on *every* move,
   rename, and delete, and nothing verifies it.
@@ -450,7 +450,7 @@ a declaration docstring with another:
 ```bash
 C='(B|C|D|E|F|G|M|R|S)-?[0-9]+(\.[0-9]+)?'
 git grep -nE "milestone|prototype|design [DG][0-9]|Phase-[A-Z]|§[0-9]+ [A-Z][0-9]|\b${C}\b" \
-  -- ArkLib/ blueprint/src/
+  -- ArkLib/ website/blueprint/src/
 grep -rnE "[^A-Za-z_]${C}[^A-Za-z_0-9.]" --include='*.lean' ArkLib/   # \b-free fallback, see below
 ```
 

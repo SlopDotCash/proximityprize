@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.CoeffExtractionVacuous
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.Main
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.Main
 
 /-!
 # Issue #304 — UNCONDITIONAL BCIKS20 correlated agreement in the vacuous regime

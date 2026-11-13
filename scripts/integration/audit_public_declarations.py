@@ -22,7 +22,7 @@ from extract_downstream_extensions import (
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE_ROOTS = ("ArkLib", "ProximityPrize", "Research")
+SOURCE_ROOTS = ("ArkLib",)
 PUBLIC = re.compile(r"(?:@\[[^\]]*\]\s*)*public\s")
 
 
@@ -60,7 +60,8 @@ def audit(root: Path = ROOT, limit: int = 50) -> dict:
     source_count = record_count = 0
     for path in sorted(set(paths)):
         file = root / path
-        if not path.endswith(".lean") or not file.is_file():
+        if (not path.endswith(".lean") or not file.is_file()
+                or path.startswith("ArkLib/Tests/")):
             continue
         source = file.read_bytes()
         source_count += 1

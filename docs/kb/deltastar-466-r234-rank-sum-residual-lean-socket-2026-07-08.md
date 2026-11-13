@@ -6,7 +6,7 @@ cache lock.
 ## File
 
 ```text
-Research/ProximityPrize/Frontier/_R234RankSumResidualMGFConsumer.lean
+ArkLib/Research/ProximityGap/Frontier/_R234RankSumResidualMGFConsumer.lean
 ```
 
 ## Formal shape
@@ -66,7 +66,7 @@ Attempted command:
 
 ```bash
 scripts/pg-iterate.sh -q \
-  Research/ProximityPrize/Frontier/_R234RankSumResidualMGFConsumer.lean
+  ArkLib/Research/ProximityGap/Frontier/_R234RankSumResidualMGFConsumer.lean
 ```
 
 Observed failure:

@@ -3,7 +3,7 @@ Copyright (c) 2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 import ArkLib.OracleReduction.RunUnroll
-import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
+import ArkLib.Extensions.OracleReduction.Security.RoundByRound
 
 /-!
 # Two-stage seam *completeness* union bound

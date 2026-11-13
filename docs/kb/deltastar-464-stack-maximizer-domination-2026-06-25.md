@@ -9,7 +9,7 @@ Status: **interface progress with a warning**, not a delta-star proof.
 The landed module is:
 
 ```text
-Research/ProximityPrize/Frontier/StackMaximizerDomination.lean
+ArkLib/Research/ProximityGap/Frontier/StackMaximizerDomination.lean
 ```
 
 The file defines the actual stack bad-scalar count again, locally and standalone:
@@ -80,7 +80,7 @@ Failure of every such certificate is equivalently an above-budget stack.
 I also added the finite-family version:
 
 ```text
-Research/ProximityPrize/Frontier/_StackCandidateFamilyMax.lean
+ArkLib/Research/ProximityGap/Frontier/_StackCandidateFamilyMax.lean
 ```
 
 The main predicates are:

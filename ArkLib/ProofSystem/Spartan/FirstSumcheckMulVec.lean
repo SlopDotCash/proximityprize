@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.ProofSystem.Spartan.FirstSumcheckRowSum
-import ProximityPrize.Extensions.Data.MvPolynomial.Multilinear
+import ArkLib.Extensions.Data.MvPolynomial.Multilinear
 
 /-!
 # First-phase inner fold reconstructs the matrix-vector product (issue #114)

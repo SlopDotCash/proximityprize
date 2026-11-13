@@ -3,7 +3,7 @@ kind: paper
 bibkey: BSS08
 title: "Short PCPs with polylog query complexity"
 year: 2008
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://doi.org/10.1137/050646445
 source_metadata: ../sources/BSS08/metadata.yml
 status: seeded
@@ -40,4 +40,4 @@ and this page can be dropped.
 ## Source Access
 
 - Source metadata: [`../sources/BSS08/metadata.yml`](../sources/BSS08/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

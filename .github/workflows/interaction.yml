@@ -4,9 +4,9 @@ on:
   pull_request:
     paths:
       - 'ArkLib/Interaction/**'
-      - 'ArkLibTest/Interaction/**'
+      - 'ArkLib/Tests/Interaction/**'
       - 'ArkLib/ProofSystem/Sumcheck/Interaction/**'
-      - 'ArkLibTest/ProofSystem/Sumcheck/Interaction/**'
+      - 'ArkLib/Tests/ProofSystem/Sumcheck/Interaction/**'
       - 'lakefile.toml'
       - 'lake-manifest.json'
       - 'lean-toolchain'
@@ -82,9 +82,9 @@ jobs:
         run: |
           set -euo pipefail
           mapfile -t modules < <(
-            git ls-files -- 'ArkLib/Interaction/*.lean' 'ArkLibTest/Interaction/*.lean' \
+            git ls-files -- 'ArkLib/Interaction/*.lean' 'ArkLib/Tests/Interaction/*.lean' \
               'ArkLib/ProofSystem/Sumcheck/Interaction/*.lean' \
-              'ArkLibTest/ProofSystem/Sumcheck/Interaction/*.lean' |
+              'ArkLib/Tests/ProofSystem/Sumcheck/Interaction/*.lean' |
               LC_ALL=C sort | sed 's/\.lean$//;s,/,.,g'
           )
           if (( ${#modules[@]} == 0 )); then
@@ -100,8 +100,8 @@ jobs:
           uv run --no-project --python 3.12 python scripts/check-warning-log.py "$RUNNER_TEMP/interaction-build.log" \
             --path-prefix ArkLib/Interaction/ --label 'Interaction warnings (including admissions)'
           uv run --no-project --python 3.12 python scripts/check-warning-log.py "$RUNNER_TEMP/interaction-build.log" \
-            --path-prefix ArkLibTest/Interaction/ --label 'Interaction acceptance warnings'
+            --path-prefix ArkLib/Tests/Interaction/ --label 'Interaction acceptance warnings'
           uv run --no-project --python 3.12 python scripts/check-warning-log.py "$RUNNER_TEMP/interaction-build.log" \
             --path-prefix ArkLib/ProofSystem/Sumcheck/Interaction/ --label 'Typed Sumcheck warnings'
           uv run --no-project --python 3.12 python scripts/check-warning-log.py "$RUNNER_TEMP/interaction-build.log" \
-            --path-prefix ArkLibTest/ProofSystem/Sumcheck/Interaction/ --label 'Typed Sumcheck acceptance warnings'
+            --path-prefix ArkLib/Tests/ProofSystem/Sumcheck/Interaction/ --label 'Typed Sumcheck acceptance warnings'

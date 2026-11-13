@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Compatibility.SpartanSendEvalClaim
-import ProximityPrize.Compatibility.SpartanLinearCombination
-import ProximityPrize.Compatibility.SpartanFirstChallenge
+import ArkLib.Compatibility.SpartanSendEvalClaim
+import ArkLib.Compatibility.SpartanLinearCombination
+import ArkLib.Compatibility.SpartanFirstChallenge
 import ArkLib.OracleReduction.Composition.Sequential.AppendChallengeSeamChallenge
 import ArkLib.OracleReduction.Composition.Sequential.AppendSeamBridges
 import ArkLib.OracleReduction.Composition.Sequential.AppendSeamBridges2

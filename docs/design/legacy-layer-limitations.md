@@ -7,8 +7,8 @@ layer is sorry-free and carries the formalized protocols, but its representation
 the interaction layer removes. This page lists them, each with the source that shows it and what
 the interaction layer does instead.
 
-For what each layer has formalized, read the [roadmap](../../ROADMAP.md) and the
-[current status](00-current-status.md). The [roadmap](../../ROADMAP.md#priority-replace-the-legacy-layer)
+For what each layer has formalized, read the [roadmap](../project/roadmap.md) and the
+[current status](00-current-status.md). The [roadmap](../project/roadmap.md#priority-replace-the-legacy-layer)
 also holds the migration plan.
 
 ## The limitations

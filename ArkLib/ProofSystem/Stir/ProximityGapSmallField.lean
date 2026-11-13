@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.Stir.ProximityGapProof
-import ProximityPrize.Compatibility.UniformProbability
+import ArkLib.Compatibility.UniformProbability
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.CorrelatedAgreementSmallField
 
 namespace STIR

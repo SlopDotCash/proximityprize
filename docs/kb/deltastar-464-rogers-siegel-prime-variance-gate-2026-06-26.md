@@ -31,7 +31,7 @@ no logical force on the adversarial prize prime.
 
 ## Lean Surface
 
-New in `Research/ProximityPrize/Frontier/_D2RogersSiegelVarianceGate.lean`:
+New in `ArkLib/Research/ProximityGap/Frontier/_D2RogersSiegelVarianceGate.lean`:
 
 ```lean
 uniform_prime_bound_of_pointwise_coupling

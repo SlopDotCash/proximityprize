@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.Logup.Security.RbrToSoundBridge
 import ArkLib.OracleReduction.RunUnroll
-import ProximityPrize.Compatibility.ReductionRunNormalForm
+import ArkLib.Compatibility.ReductionRunNormalForm
 import ArkLib.OracleReduction.ProcessRoundSupport
 
 /-!

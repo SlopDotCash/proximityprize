@@ -18,6 +18,15 @@ END = "# END DOWNSTREAM LIBRARIES"
 STOP_TACTIC_PLUGIN = 'plugins = ["StopTacticPlugin:shared"]'
 # Retained source whose direct elaboration exceeds the ordinary build budget.
 EXCLUDED = {"ArkLib/ToMathlib/GHSZ02LargeNProof.lean"}
+SPECIALIZED_PREFIXES = (
+    "ArkLib/Research/", "ArkLib/Tests/", "ArkLib/Extensions/", "ArkLib/Compatibility/",
+)
+SPECIALIZED_ROOTS = {"ArkLib/Extensions.lean", "ArkLib/Downstream.lean"}
+
+
+def specialized_path(path: str) -> bool:
+    """Sources owned by the dedicated classic downstream/research/test libraries."""
+    return path in SPECIALIZED_ROOTS or path.startswith(SPECIALIZED_PREFIXES)
 
 
 def module_name(path: str) -> str:
@@ -64,20 +73,18 @@ def main() -> int:
     if missing:
         raise SystemExit("Canonical upstream files are missing:\n" + "\n".join(missing))
     canonical = {module_name(path) for path in canonical_paths}
-    extensions = {module_name(path) for path in tracked - canonical_paths - EXCLUDED}
+    specialized = {path for path in tracked if specialized_path(path)}
+    extensions = {module_name(path)
+                  for path in tracked - canonical_paths - EXCLUDED - specialized}
     lines = ["module", ""]
     for module in sorted(canonical):
         lines.extend(["public import", "  " + module] if len(module) + 14 > 100
                      else ["public import " + module])
     (ROOT / "ArkLib.lean").write_text("\n".join(lines) + "\n")
 
-    globs = extension_globs(extensions, canonical)
-    # A compressed glob must not pick up a performance-excluded source file.
-    excluded = {module_name(path) for path in EXCLUDED}
-    if any(any(name == glob.removesuffix(".*").removesuffix(".+") or
-                   name.startswith(glob[:-2] + ".") for name in excluded)
-           for glob in globs if glob.endswith((".*", ".+"))):
-        globs = extension_globs(extensions, canonical | excluded)
+    # Never compress across another library's ownership or the performance exclusion.
+    blockers = canonical | {module_name(path) for path in EXCLUDED | specialized}
+    globs = extension_globs(extensions, blockers)
     block = "\n".join([
         BEGIN,
         "# Classic downstream modules retain their import paths. The later explicit",
@@ -86,9 +93,10 @@ def main() -> int:
         "allowNonModules = true", STOP_TACTIC_PLUGIN, "globs = [",
         *["  " + json.dumps(glob, ensure_ascii=False) + "," for glob in globs],
         "]", "", "[[lean_lib]]", 'name = "ResearchProximityPrize"',
-        'roots = ["Research.ProximityPrize"]', "allowNonModules = true", STOP_TACTIC_PLUGIN, "",
+        'roots = ["ArkLib.Research.ProximityGap"]', "allowNonModules = true", STOP_TACTIC_PLUGIN, "",
         "[[lean_lib]]", 'name = "ProximityPrizeExtensions"',
-        'roots = ["ProximityPrize"]', "allowNonModules = true", STOP_TACTIC_PLUGIN, END,
+        "roots = []", "allowNonModules = true", STOP_TACTIC_PLUGIN,
+        'globs = ["ArkLib.Downstream", "ArkLib.Extensions.*", "ArkLib.Compatibility.+"]', END,
     ])
     config_path = ROOT / "lakefile.toml"
     config = config_path.read_text()
@@ -97,19 +105,17 @@ def main() -> int:
         raise SystemExit("Missing downstream-library markers in lakefile.toml")
     config_path.write_text(before + block + rest.split(END, 1)[1])
     extension_paths = subprocess.check_output(
-        ["git", "ls-files", "--", "ProximityPrize/Extensions/*.lean"],
+        ["git", "ls-files", "--", "ArkLib/Extensions/*.lean"],
         cwd=ROOT, text=True).splitlines()
-    target = ROOT / "ProximityPrize/Extensions.lean"
+    target = ROOT / "ArkLib/Extensions.lean"
     target.parent.mkdir(exist_ok=True)
     target.write_text("".join("import " + module_name(path) + "\n"
                               for path in sorted(set(extension_paths))))
     downstream_paths = subprocess.check_output(
-        ["git", "ls-files", "--", "ProximityPrize/*.lean"],
+        ["git", "ls-files", "--", "ArkLib/Compatibility/*.lean"],
         cwd=ROOT, text=True).splitlines()
-    other_modules = sorted({module_name(path) for path in downstream_paths
-                            if not path.startswith("ProximityPrize/Extensions/")
-                            and path != "ProximityPrize/Extensions.lean"})
-    (ROOT / "ProximityPrize.lean").write_text("import ProximityPrize.Extensions\n" +
+    other_modules = sorted({module_name(path) for path in downstream_paths})
+    (ROOT / "ArkLib/Downstream.lean").write_text("import ArkLib.Extensions\n" +
         "".join("import " + module + "\n" for module in other_modules))
     print(f"Generated ArkLib: {len(canonical)} canonical imports; "
           f"ArkLibExtensions: {len(extensions)} modules in {len(globs)} globs.")

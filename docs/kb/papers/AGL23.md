@@ -3,7 +3,7 @@ kind: paper
 bibkey: AGL23
 title: "{AG} codes have no list-decoding friends: approaching the generalized Singleton bound requires exponential alphabets"
 year: "2023"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/AGL23/metadata.yml
 status: seeded
 related_modules:
@@ -56,4 +56,4 @@ constants extracted from the source's proof
 ## Source Access
 
 - Source metadata: [`../sources/AGL23/metadata.yml`](../sources/AGL23/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

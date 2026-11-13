@@ -67,7 +67,7 @@ Conjecture / BGK wall, **unchanged**.
 - `scripts/probes/wf407_T16-pgl2_charface.py` — full period vector + 4-map normalizer action.
 - `scripts/probes/wf407_T16-pgl2_orbitlaw.py` — `inv=x↦−x` on `ℤ/m`, orbit law `~m/2`.
 - `scripts/probes/wf407_T16-pgl2_concentration.py` — GM<B + domain-inversion trivial reindex.
-- `Research/ProximityPrize/Frontier/WF407_T16PGL2CharFace.lean` — axiom-clean
+- `ArkLib/Research/ProximityGap/Frontier/WF407_T16PGL2CharFace.lean` — axiom-clean
   brick (`eta_inv_reindex`, `image_inv_eq_self_of_inv_mem`, `eta_dominv_eq_of_inv_mem`, plus the
   compatibility wrappers `eta_image_inv_invariant`, `image_inv_self_of_invClosed`,
   `eta_dominv_eq` that keep a redundant `0 ∉ G` argument): the L2 fact

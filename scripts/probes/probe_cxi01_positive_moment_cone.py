@@ -7,7 +7,7 @@ integer arithmetic, that the full-depth column s=r is zero while the other
 r columns form a triangular matrix with determinant product_{j=1}^r j!.
 
 Consequently the common nonnegative recession cone is exactly the ray e_r:
-all positive matching moments determine/constrain shallow directions, but no
+all positive matching moments deterdocs/contributing/agent-workflows/constrain shallow directions, but no
 positive-moment LP, SOS polynomial with zero constant term, or rational dual
 combination sees added mass at the fully-disjoint atom.
 """

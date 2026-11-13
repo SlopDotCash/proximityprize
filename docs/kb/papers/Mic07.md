@@ -3,7 +3,7 @@ kind: paper
 bibkey: Mic07
 title: "Generalized compact knapsacks, cyclic lattices, and efficient one-way functions"
 year: "2007"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/Mic07/metadata.yml
 status: seeded
 related_modules:
@@ -39,4 +39,4 @@ the analytic core of the norm-growth bound in the weak-binding argument.
 ## Source Access
 
 - Source metadata: [`../sources/Mic07/metadata.yml`](../sources/Mic07/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

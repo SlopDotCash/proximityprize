@@ -6,8 +6,8 @@ Authors: ArkLib Contributors
 
 import Mathlib.Data.Real.Basic
 import Mathlib.Data.NNReal.Basic
-import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
-import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ArkLib.Extensions.Data.CodingTheory.ListDecodability
+import ArkLib.Extensions.Data.CodingTheory.ReedSolomon
 /-!
 # Issue #141 scratch: RS List-Decoding Beyond Johnson Radius
 

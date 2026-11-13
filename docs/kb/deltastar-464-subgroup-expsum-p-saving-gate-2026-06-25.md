@@ -6,7 +6,7 @@ Status: local PDF routing + exponent guardrail, not a prize proof.
 
 ## Artifact
 
-- Lean: `Research/ProximityPrize/Frontier/_SubgroupExpSumPSavingGate.lean`
+- Lean: `ArkLib/Research/ProximityGap/Frontier/_SubgroupExpSumPSavingGate.lean`
 
 ## Local PDFs checked
 

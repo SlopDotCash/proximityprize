@@ -9,7 +9,7 @@ Status: **tail-amplification interface**, not a delta-star proof.
 The file
 
 ```text
-Research/ProximityPrize/Frontier/_PropagationTailGate.lean
+ArkLib/Research/ProximityGap/Frontier/_PropagationTailGate.lean
 ```
 
 formalizes the only finite way a distributional tail bound can beat the one-atom obstruction.

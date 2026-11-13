@@ -4,14 +4,14 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
-import ProximityPrize.Extensions.ProofSystem.Spartan.Basic
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Extensions.ProofSystem.Spartan.Basic
 import ArkLib.ProofSystem.Spartan.FirstSumcheckReduction
 import ArkLib.ProofSystem.Spartan.SecondSumcheckReduction
 import ArkLib.ProofSystem.Spartan.R1CSMleEquivalence
-import ProximityPrize.Extensions.ProofSystem.Component.CheckClaim
+import ArkLib.Extensions.ProofSystem.Component.CheckClaim
 import ArkLib.ProofSystem.Sumcheck.Spec.General
-import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.Append
+import ArkLib.Extensions.OracleReduction.Composition.Sequential.Append
 
 set_option linter.style.longFile 1800
 

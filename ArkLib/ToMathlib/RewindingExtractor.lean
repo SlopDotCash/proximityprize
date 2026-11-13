@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.Data.Probability.Instances
-import ProximityPrize.Extensions.Data.Probability.Combinatorial
+import ArkLib.Extensions.Data.Probability.Instances
+import ArkLib.Extensions.Data.Probability.Combinatorial
 
 /-!
 # Rewinding / forking extractors (framework)
@@ -368,7 +368,7 @@ ABF26 L6.6 / L6.8 for Construction 6.2 are now proved directly against the strai
 interfaces (`ToyProblem.Spec.oracleVerifier_knowledgeSoundness_winningSetUpperBound`,
 `ToyProblem.Spec.oracleVerifier_rbrKnowledgeSoundnessWorstCase`), so a rewinding proof is no longer
 needed for those results. The downstream aliases named `protocol62_knowledgeSound` /
-`protocol62_rbrKnowledgeSound` (in `ProximityPrize/Extensions/ProofSystem/ToyProblem/Spec/General.lean`)
+`protocol62_rbrKnowledgeSound` (in `ArkLib/Extensions/ProofSystem/ToyProblem/Spec/General.lean`)
 are *not* straightline statements: they restate `knowledgeSoundnessViaRewinding` at the abstract
 predicate `toyAccepts`, which already contains membership in the target relation.
 

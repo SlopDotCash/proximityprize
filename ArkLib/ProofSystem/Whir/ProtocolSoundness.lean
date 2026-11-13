@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Whir.Protocol
 import ArkLib.ProofSystem.Whir.ProtocolCompleteness
 import ArkLib.ProofSystem.Whir.ThresholdKSF
@@ -12,7 +12,7 @@ import ArkLib.ProofSystem.Whir.CheckedVerifier
 import ArkLib.ProofSystem.Whir.WhirVectorIOPProof
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.RemainingCore
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.LocalSeriesProducer
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.Errors
 
 /-!
 # WHIR Vector IOP Soundness and the Johnson MCA Bound (Issue #302)

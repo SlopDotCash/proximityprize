@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.Curves
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.Curves
 import ArkLib.ToMathlib.BetaToCurveCoeffPolys
 import ArkLib.ToMathlib.BCIKS20PointwiseConditional
 import ArkLib.ToMathlib.CorrelatedAgreementListDecodingClosed
@@ -42,7 +42,7 @@ the correlated agreement list-decoding results.
 
 * [Ben-Sasson, E., Carmon, D., Ishai, Y., Kopparty, S., and Saraf, S., *Proximity Gaps
     for Reed-Solomon Codes*][BCIKS20] (ePrint 2020/654; entry `BCIKS20` in
-    `blueprint/src/references.bib`)
+    `website/blueprint/src/references.bib`)
 -/
 
 open Polynomial Polynomial.Bivariate BCIKS20AppendixA BCIKS20AppendixA.ClaimA2 ToRatFunc Ideal

@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.Data.CodingTheory.ProximityGap.DG25.ReedSolomon
-import ProximityPrize.Compatibility.UniformProbability
+import ArkLib.Compatibility.UniformProbability
 
 /-!
 # DG25 tensor proximity gap — contrapositive forms

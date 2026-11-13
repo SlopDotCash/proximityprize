@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.JointAgreement
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ErrorBound
-import ProximityPrize.Compatibility.UniformProbability
+import ArkLib.Compatibility.UniformProbability
 
 /-!
 # Correlated agreement for parameterized curves — unique-decoding regime

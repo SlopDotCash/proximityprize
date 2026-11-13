@@ -5,9 +5,9 @@ Authors: ArkLib Contributors
 -/
 
 import Mathlib
-import ProximityPrize.Extensions.Data.CodingTheory.Basic.Distance
-import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
-import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ArkLib.Extensions.Data.CodingTheory.Basic.Distance
+import ArkLib.Extensions.Data.CodingTheory.ListDecodability
+import ArkLib.Extensions.Data.CodingTheory.ReedSolomon
 
 /-!
 # BKR06 closeness bridge + prime-power witness sequence

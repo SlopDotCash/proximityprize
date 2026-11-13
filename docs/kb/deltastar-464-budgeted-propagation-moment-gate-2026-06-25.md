@@ -36,7 +36,7 @@ than `B` threshold atoms.
 The frontier file
 
 ```text
-Research/ProximityPrize/Frontier/_BudgetedPropagationMomentGate.lean
+ArkLib/Research/ProximityGap/Frontier/_BudgetedPropagationMomentGate.lean
 ```
 
 defines the threshold predicate

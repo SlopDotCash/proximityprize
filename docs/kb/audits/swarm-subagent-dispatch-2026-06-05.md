@@ -62,7 +62,7 @@ python3 ./scripts/kb/check_generated.py
 
 Use `./scripts/validate.sh --lint` only when Lean style linting is part of the task. Use
 `./scripts/validate.sh --docs` for docstring or docs work. Use `./scripts/validate.sh --site` only
-when touching `blueprint/` or `home_page/`.
+when touching `website/blueprint/` or `website/library/`.
 
 ## Goals
 
