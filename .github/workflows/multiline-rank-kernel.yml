@@ -68,7 +68,7 @@ jobs:
       - name: Check active-error collapse and audit axioms
         run: |
           set -o pipefail
-          ./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._ActiveErrorAffineCollapse
+          ./scripts/lake-locked.sh build ArkLib.Research.ProximityGap.Frontier._ActiveErrorAffineCollapse
           lake env lean ArkLib/Research/ProximityGap/Frontier/_ActiveErrorAffineCollapse.lean | tee active-error-axioms.log
           python3 - <<'PY'
           import re

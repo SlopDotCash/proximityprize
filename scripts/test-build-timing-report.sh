@@ -30,7 +30,7 @@ trap on_error ERR
 
 current_dir="$fixture_tmp/current"
 source_root="$fixture_tmp/root"
-mkdir -p "$current_dir" "$source_root/ArkLib" "$source_root/ArkLibTest"
+mkdir -p "$current_dir" "$source_root/ArkLib/Tests"
 for module in ArkLib/Fast ArkLib/Slow ArkLib/New ArkLib/Kept ArkLib/Tests/Check; do
   : > "$source_root/$module.lean"
 done
@@ -66,7 +66,7 @@ rows = [
     encoding="utf-8",
 )
 (current_dir / "test_path.log").write_text(
-    "✔ [7/8] Built ArkLibTest.Check (4.2s)\n"
+    "✔ [7/8] Built ArkLib.Tests.Check (4.2s)\n"
     "✔ [8/8] Built ArkLib.Fast (9.9s)\n",
     encoding="utf-8",
 )
@@ -121,7 +121,7 @@ assert table["modules"] == {
     "ArkLib.Kept": {"seconds": 30.0, "decimals": 0},
     "ArkLib.New": {"seconds": 0.85, "decimals": 3},
     "ArkLib.Slow": {"seconds": 12.0, "decimals": 0},
-    "ArkLibTest.Check": {"seconds": 4.2, "decimals": 1},
+    "ArkLib.Tests.Check": {"seconds": 4.2, "decimals": 1},
 }, table["modules"]
 PY
 

@@ -25,6 +25,7 @@ Output: per-rung witness tables + generated Lean code blocks (stdout + scratch f
 """
 
 import sys
+import tempfile
 
 MR_BASES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41]
 DET_LIMIT = 3317044064679887385961981  # deterministic MR limit for these bases
@@ -178,8 +179,6 @@ def s128_budget_note():
 
 def main():
     ks = list(range(16, 31))
-    scratch = ("/private/tmp/claude-501/-Users-shawwalters-ethereumroadmap-upstream-"
-               "lean-research-ArkLib/515e83f2-d331-468d-84dd-89b67f383ddf/scratchpad")
     all_rows = {}
     for k in ks:
         rows = sieve_rung(k)
@@ -188,8 +187,7 @@ def main():
               f"last={rows[-1][0]}, a={rows[0][2]}, max c={max(c for _, c, _, _ in rows)}")
     print("\n[s=128 ceiling budget honesty check at n = 2^30]")
     s128_budget_note()
-    import os
-    os.makedirs(scratch, exist_ok=True)
+    scratch = tempfile.mkdtemp(prefix="w16-tz-prize-scale-")
     for k in ks:
         with open(f"{scratch}/rung_{k}.lean", "w") as f:
             f.write(emit_rung(k, all_rows[k]))

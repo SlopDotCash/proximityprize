@@ -617,6 +617,9 @@ only gate 1; nothing audits the transitive axioms it never reports.
 
 ## Retained probe dependencies
 
+The W16 TZ prime-witness probe writes its generated `rung_<k>.lean` files to a fresh
+system temporary directory and prints that directory on completion.
+
 The G210 depth-two flatness certificate uses explicit runtime checks, so `python3 -O
 scripts/probes/g210_tail_floor_flatness_certificate.py` still verifies the direct/primitive
 partition identity, floor equivalence, and collision relations. Run
