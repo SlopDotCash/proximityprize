@@ -61,6 +61,37 @@ theorem full_support_relation_on_active
   exact ⟨fun j ↦ c j,
     relation_sum_restrict e A (fun j hj ↦ (hA j).mpr hj) c hc, hci⟩
 
+/-- All relation-active decoded heads lie on one affine code line when their total
+error-set incidence is less than twice the code distance, over any field. -/
+theorem affine_heads_of_active_error_incidence
+    {F I Coord : Type*} [Field F] [Fintype I] [Finite Coord]
+    (C : Submodule F (Coord → F)) (u₀ u₁ : Coord → F)
+    (w : I → (Coord → F)) (γ : I → F) (Q : I → Finset Coord)
+    (A : Finset I)
+    (hA : ∀ i, i ∈ A ↔ ∃ c : I → F,
+      (∑ j, c j • (u₀ + γ j • u₁ - w j) = 0) ∧ c i ≠ 0)
+    (D : ℕ) (hw : ∀ i ∈ A, w i ∈ C)
+    (hagree : ∀ i ∈ A, ∀ x ∉ Q i, w i x = u₀ x + γ i * u₁ x)
+    (hsmall : (∑ i : A, (Q i).card) < 2 * D)
+    (i₀ i₁ : A) (hγ : γ i₀ ≠ γ i₁)
+    (hdistance : ∀ v ∈ C, ∀ B : Finset Coord, B.card < D →
+      (∀ x ∉ B, v x = 0) → v = 0) :
+    ∃ U V, U ∈ C ∧ V ∈ C ∧ ∀ i ∈ A, w i = U + γ i • V := by
+  classical
+  letI : Fintype Coord := Fintype.ofFinite Coord
+  let e : I → (Coord → F) := fun i ↦ u₀ + γ i • u₁ - w i
+  have hactive : ∀ i : A, ∃ c : A → F,
+      (∑ j, c j • e j) = 0 ∧ c i ≠ 0 := by
+    intro i
+    obtain ⟨c, hc, hci⟩ := (hA i).mp i.property
+    exact ⟨fun j ↦ c j, relation_sum_restrict e A (fun j hj ↦ (hA j).mpr hj) c hc, hci⟩
+  obtain ⟨U, V, hU, hV, hline⟩ :=
+    IncidenceDependencyArithmetic.affine_heads_of_small_error_incidence
+      C u₀ u₁ (fun i : A ↦ w i) (fun i : A ↦ γ i) (fun i : A ↦ Q i) D
+      (fun i ↦ hw i i.property) (fun i ↦ hagree i i.property)
+      hsmall hactive i₀ i₁ hγ hdistance
+  exact ⟨U, V, hU, hV, fun i hi ↦ hline ⟨i, hi⟩⟩
+
 /-- All relation-active decoded heads lie on one affine code line under the active-family
 size and error-budget bounds. Inactive heads need not satisfy this conclusion. -/
 theorem affine_heads_of_active_errors
@@ -94,3 +125,4 @@ end ProximityGap.ActiveErrorAffineCollapse
 #print axioms ProximityGap.ActiveErrorAffineCollapse.relation_sum_restrict
 #print axioms ProximityGap.ActiveErrorAffineCollapse.full_support_relation_on_active
 #print axioms ProximityGap.ActiveErrorAffineCollapse.affine_heads_of_active_errors
+#print axioms ProximityGap.ActiveErrorAffineCollapse.affine_heads_of_active_error_incidence

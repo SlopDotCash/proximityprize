@@ -5,6 +5,7 @@ on:
   pull_request:
     paths:
       - ArkLib/Research/ProximityGap/Frontier/_IncidenceDependencyArithmetic.lean
+      - ArkLib/Research/ProximityGap/Frontier/_ActiveErrorAffineCollapse.lean
       - docs/research/proximity-gap/multiline-relation-shortening.md
       - ArkLib/Research/ProximityGap.lean
       - scripts/probes/probe_multiline_pair_difference_cap.py
@@ -46,7 +47,7 @@ jobs:
             incidence-dependencies-${{ runner.os }}-
       - name: Fetch dependency cache
         run: ./scripts/lake-locked.sh exe cache get
-      - name: Check twenty-one declarations and audit axioms
+      - name: Check relation arithmetic declarations and audit axioms
         run: |
           set -o pipefail
           lake env lean ArkLib/Research/ProximityGap/Frontier/_IncidenceDependencyArithmetic.lean | tee multiline-axioms.log
@@ -56,11 +57,30 @@ jobs:
           text = Path('multiline-axioms.log').read_text()
           assert 'sorryAx' not in text
           matches = re.findall(r"'(ProximityGap\.IncidenceDependencyArithmetic\.[^']+)'\s+(?:depends on axioms:\s*\[([^\]]*)\]|(does not depend on any axioms))",text)
-          expected = {'coordinate_count_bound','shortened_subspace_bound','quotient_shortening_bound','received_space_shortening_bound','relation_component_shared_support','relation_core_shared_support','relation_core_shortening','relation_core_dimension','projected_relation_shortening','affine_parameters_mem_code','affine_error_plane_support','affine_head_relation_shortening','affine_support_pair_cover','three_pair_cover_card','three_head_support_budget','dependency_necessary','dependency_from_coordinate_ledger','literal_dependency_excluded','shared_support_incidence_budget','projected_relation_incidence_budget','affine_heads_of_small_error_relation'}
+          expected = {'coordinate_count_bound','shortened_subspace_bound','quotient_shortening_bound','received_space_shortening_bound','relation_component_shared_support','relation_core_shared_support','relation_core_shortening','relation_core_dimension','projected_relation_shortening','affine_parameters_mem_code','affine_error_plane_support','affine_head_relation_shortening','affine_support_pair_cover','three_pair_cover_card','three_head_support_budget','dependency_necessary','dependency_from_coordinate_ledger','literal_dependency_excluded','shared_support_incidence_budget','projected_relation_incidence_budget','affine_heads_of_small_error_relation','affine_heads_of_small_error_incidence'}
           assert {name.rsplit('.',1)[1] for name,_,_ in matches} == expected
-          assert len(matches) == 21
+          assert len(matches) == len(expected)
           for name,names,no_axioms in matches:
               if not no_axioms:
                   assert set(name.strip() for name in names.split(',')) <= {'propext','Classical.choice','Quot.sound'}
-          print('Twenty-one structural and finite-ledger declarations kernel checked')
+          print('Structural and finite-ledger declarations kernel checked')
+          PY
+      - name: Check active-error collapse and audit axioms
+        run: |
+          set -o pipefail
+          ./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._ActiveErrorAffineCollapse
+          lake env lean ArkLib/Research/ProximityGap/Frontier/_ActiveErrorAffineCollapse.lean | tee active-error-axioms.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path('active-error-axioms.log').read_text()
+          matches = re.findall(r"'ProximityGap\.ActiveErrorAffineCollapse\.([^']+)'\s+(?:depends on axioms:\s*\[([^\]]*)\]|(does not depend on any axioms))", text)
+          expected = {'relation_sum_restrict', 'full_support_relation_on_active',
+                      'affine_heads_of_active_errors', 'affine_heads_of_active_error_incidence'}
+          assert {name for name, _, _ in matches} == expected
+          assert len(matches) == len(expected)
+          for name, names, no_axioms in matches:
+              if not no_axioms:
+                  assert set(axiom.strip() for axiom in names.split(',')) <= {'propext', 'Classical.choice', 'Quot.sound'}, name
+          print('Active-error collapse declarations kernel checked')
           PY
