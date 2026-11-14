@@ -3,7 +3,7 @@ kind: paper
 bibkey: CGKY25
 title: "On the Fiat-Shamir Security of Succinct Arguments from Functional Commitments"
 year: 2025
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eprint.iacr.org/2025/902
 source_metadata: ../sources/CGKY25/metadata.yml
 status: seeded
@@ -40,4 +40,4 @@ the ARSDH-style extraction argument for functional commitments.
 ## Source Access
 
 - Source metadata: [`../sources/CGKY25/metadata.yml`](../sources/CGKY25/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

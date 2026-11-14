@@ -14,7 +14,7 @@ Formal kernel (compiles clean, 11 audited theorems all
 `[propext, Classical.choice, Quot.sound]`, no `sorry`, no `axiom`):
 
 ```text
-Research/ProximityPrize/Frontier/_P1RateQuarterNonCollinearTriple.lean
+ArkLib/Research/ProximityGap/Frontier/_P1RateQuarterNonCollinearTriple.lean
 ```
 
 Probe: `scripts/probes/probe_rate_quarter_p1_noncollinear_triple.py`

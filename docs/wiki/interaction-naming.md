@@ -363,6 +363,6 @@ For virtual oracles, rename old `mapSource` uses to `substSource` before renamin
 `Interaction` is unchanged. File and import paths remain unchanged.
 
 After migration, run `lake build` and `lake test`. The
-[source examples](../../ArkLibTest/Interaction/Oracle/SourceExample.lean) distinguish query sums
-from paired queries; the [context examples](../../ArkLibTest/Interaction/Oracle/ResourceExample.lean)
+[source examples](../../ArkLib/Tests/Interaction/Oracle/SourceExample.lean) distinguish query sums
+from paired queries; the [context examples](../../ArkLib/Tests/Interaction/Oracle/ResourceExample.lean)
 exercise disjointness, aliasing, dependent interpretation, and promise preservation.

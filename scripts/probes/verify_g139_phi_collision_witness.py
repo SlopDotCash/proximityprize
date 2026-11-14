@@ -16,12 +16,15 @@ For power-of-two orders, it also verifies the lightweight exact-order contract
 so the same code path is suitable for proposed production-scale witnesses.  It
 assumes the supplied modulus is prime; for the retained production row, pair it
 with `verify_g139_n2e30_arithmetic_contract.py`, which verifies primality.
+JSON certificate fields must be exact integers; fractional values and booleans
+are rejected rather than converted into a different witness.
 """
 
 from __future__ import annotations
 
 import argparse
 from dataclasses import asdict, dataclass
+from decimal import Decimal
 import json
 from pathlib import Path
 
@@ -189,23 +192,37 @@ def verify_witness(
     )
 
 
+def certificate_integer(value: object, field_name: str) -> int:
+    """Read an exact integer without truncating or rounding a JSON number."""
+    if isinstance(value, bool):
+        raise ValueError(f"{field_name}: a boolean is not a certificate integer")
+    if isinstance(value, float) and not value.is_integer():
+        raise ValueError(f"{field_name}: certificate integers must be finite and integral")
+    if isinstance(value, Decimal) and (
+        not value.is_finite() or value != value.to_integral_value()
+    ):
+        raise ValueError(f"{field_name}: certificate integers must be finite and integral")
+    return int(value)
+
+
 def verify_from_record(record: dict[str, object]) -> WitnessVerification:
     return verify_witness(
         label=str(record.get("label", "witness")),
-        n=int(record["n"]),
-        p=int(record["p"]),
-        generator=int(record["generator"]),
-        r=int(record["r"]),
-        s=int(record["s"]),
-        u=int(record["u"]) if record.get("u") is not None else None,
+        n=certificate_integer(record["n"], "n"),
+        p=certificate_integer(record["p"], "p"),
+        generator=certificate_integer(record["generator"], "generator"),
+        r=certificate_integer(record["r"], "r"),
+        s=certificate_integer(record["s"], "s"),
+        u=certificate_integer(record["u"], "u") if record.get("u") is not None else None,
         u_exponent=(
-            int(record["u_exponent"]) if record.get("u_exponent") is not None else None
+            certificate_integer(record["u_exponent"], "u_exponent")
+            if record.get("u_exponent") is not None else None
         ),
     )
 
 
 def load_witnesses(path: Path) -> list[dict[str, object]]:
-    data = json.loads(path.read_text())
+    data = json.loads(path.read_text(encoding="utf-8"), parse_float=Decimal)
     if isinstance(data, dict):
         return [data]
     if isinstance(data, list):

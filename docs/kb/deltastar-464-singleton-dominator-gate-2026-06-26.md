@@ -26,7 +26,7 @@ surface.
 The frontier guardrail
 
 ```text
-Research/ProximityPrize/Frontier/FloorNecessaryNotSufficient.lean
+ArkLib/Research/ProximityGap/Frontier/FloorNecessaryNotSufficient.lean
 ```
 
 now defines:

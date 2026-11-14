@@ -19,19 +19,27 @@ CORE_MASKS = [
 ]
 
 
+def _require(condition, detail):
+    """Keep the certificate checks active under Python optimization."""
+    if not condition:
+        raise AssertionError(detail)
+
+
 def inverse(value: int) -> int:
     return pow(value, P - 2, P)
 
 
 base_generator = pow(G, M, P)
-assert pow(base_generator, BASE_LENGTH, P) == 1
-assert pow(base_generator, BASE_LENGTH // 2, P) == P - 1
+_require(pow(base_generator, BASE_LENGTH, P) == 1,
+         "base generator order does not divide 64")
+_require(pow(base_generator, BASE_LENGTH // 2, P) == P - 1,
+         "base generator is not a primitive 64th root of unity")
 domain = [pow(base_generator, i, P) for i in range(BASE_LENGTH)]
 cores = [
     {i for i in range(BASE_LENGTH) if (mask >> i) & 1}
     for mask in CORE_MASKS
 ]
-assert all(len(core) == 33 for core in cores)
+_require(all(len(core) == 33 for core in cores), "a core does not have 33 points")
 
 
 def core_constraint(core: set[int]) -> list[int]:
@@ -131,23 +139,26 @@ fingerprint = [
     vector[15] * inverse(vector[6]) % P for vector in raw_directions
 ]
 
-assert len(constraint_rows) == 3
-assert len(directions) == 93
-assert len(set(directions)) == 93
-assert all(vector[6] != 0 for vector in raw_directions)
-assert len(set(fingerprint)) == 93
+_require(len(constraint_rows) == 3, "constraint rank is not 3")
+_require(len(directions) == 93, "there are not 93 defect directions")
+_require(len(set(directions)) == 93, "the 93 projective directions are not distinct")
+_require(all(vector[6] != 0 for vector in raw_directions),
+         "coordinate 6 is zero on a defect direction")
+_require(len(set(fingerprint)) == 93, "the (6, 15) chart does not separate all 93 classes")
 
 length = BASE_LENGTH * M
 lifted_directions = len(directions) * M
-assert length == 2**30
-assert lifted_directions == 1_560_281_088
-assert lifted_directions - length == 29 * M == 486_539_264
+_require(length == 2**30, "lifted length is not 2^30")
+_require(lifted_directions == 1_560_281_088, "lifted direction count is not 93 * 2^24")
+_require(lifted_directions - length == 29 * M == 486_539_264,
+         "excess over length is not 29 * 2^24")
 
 # A union of fewer than q proper hyperplanes cannot cover a finite vector
 # space over F_q.  First avoid the 93m denominator kernels; after fixing that
 # vector, avoid one collision hyperplane for every pair of directions.
-assert len(directions) * M < P
-assert lifted_directions * (lifted_directions - 1) // 2 < P
+_require(len(directions) * M < P, "denominator kernels do not fit below q")
+_require(lifted_directions * (lifted_directions - 1) // 2 < P,
+         "collision hyperplanes do not fit below q")
 
 print(
     "base=64 cores=3 core_size=33 constraint_rank=3 "

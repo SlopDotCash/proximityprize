@@ -49,10 +49,9 @@ mechanism probe. δᵣ(MC^⋈κ) = δᵣ(MC) **deferred** (real proof over
   `zeroExtend` transported to module alphabets (plan's S3 said so; had been left F-pinned);
   module docstring + stale MCA TODO cleaned. Remaining recorded debt: consumer files still
   name the distance arg `γ` (cosmetic), Stir sibling added to S7 list below.
-  **KB `_generated` correction: `docs/wiki/generated-files.md` forbids committing
-  `docs/kb/_generated/**` from feature PRs (workflow `kb-generated.yml` owns them) — both KB
-  commits were DROPPED from the branch; the "stale on main" observation is explained by
-  workflow-context generation, not neglect.**
+  **Historical KB workflow:** At this point the generated-file workflow owned
+  `docs/kb/_generated/**`, so both KB commits were dropped from the branch. The current
+  [generated-file policy](../../wiki/generated-files.md) describes the replacement workflow.
 
 Remaining: S7 (abf26 bridge, on #505) + S8 (#610/#611 coordination), refined per above.
 

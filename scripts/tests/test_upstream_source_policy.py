@@ -59,6 +59,25 @@ class UpstreamSourcePolicy(unittest.TestCase):
         self.assertFalse(InheritedSourcePolicy(self.root).allows(
             self.path, "old_stub", "vacuous_true_theorem"))
 
+    def test_specialized_copies_cannot_inherit_canonical_exceptions(self):
+        copies = []
+        for name in ("ArkLib/Extensions/Tuple.lean",
+                     "ArkLib/Research/ProximityGap/Tuple.lean",
+                     "ArkLib/Tests/Tuple.lean"):
+            copy = self.root / name
+            copy.parent.mkdir(parents=True)
+            copy.write_bytes(self.path.read_bytes())
+            copies.append(copy)
+            # Even a copied exception with a matching file name and digest cannot
+            # make downstream bytes part of the reviewed canonical inventory.
+            self.baseline["exceptions"].append(dict(self.entry, file=name))
+        self.write_baseline()
+        policy = InheritedSourcePolicy(self.root)
+        self.assertTrue(policy.allows(self.path, "old_stub", "vacuous_true_theorem"))
+        for copy in copies:
+            with self.subTest(path=copy.relative_to(self.root).as_posix()):
+                self.assertFalse(policy.allows(copy, "old_stub", "vacuous_true_theorem"))
+
     def test_revision_change_invalidates_exceptions(self):
         self.baseline["revision"] = "0" * 40
         self.write_baseline()

@@ -47,6 +47,22 @@
 
 using Poly = std::array<int, 4>;
 
+struct PolyHash {
+  std::size_t operator()(const Poly& polynomial) const {
+    std::size_t value = 0;
+    for (int coefficient : polynomial) value = value * 0x9e3779b1u + coefficient;
+    return value;
+  }
+};
+
+// Hash collisions are resolved by full coefficient equality. A packed base-p
+// uint64 key is not injective once p^4 exceeds 2^64 (already at p=65537).
+using SplitRoots = std::unordered_map<Poly, std::array<int, 3>, PolyHash>;
+
+static bool polynomial_less(const Poly& a, const Poly& b) {
+  return std::lexicographical_compare(a.rbegin(), a.rend(), b.rbegin(), b.rend());
+}
+
 struct Context {
   int p;
 
@@ -96,7 +112,7 @@ struct Context {
 
   Poly add(const Poly& a, const Poly& b) const {
     Poly out{};
-    for (int i = 0; i < 4; ++i) out[i] = mod(a[i] + b[i]);
+    for (int i = 0; i < 4; ++i) out[i] = mod(static_cast<long long>(a[i]) + b[i]);
     return out;
   }
 
@@ -115,12 +131,6 @@ struct Context {
   int eval(const Poly& a, int x) const {
     int out = 0;
     for (int i = 3; i >= 0; --i) out = mod(static_cast<long long>(out) * x + a[i]);
-    return out;
-  }
-
-  std::uint64_t key(const Poly& a) const {
-    std::uint64_t out = 0;
-    for (int i = 3; i >= 0; --i) out = out * p + a[i];
     return out;
   }
 
@@ -373,7 +383,7 @@ int main(int argc, char** argv) {
 
   std::vector<std::array<int, 3>> triples;
   std::vector<Poly> monic;
-  std::unordered_map<std::uint64_t, std::array<int, 3>> split_roots;
+  SplitRoots split_roots;
   std::vector<Poly> split_polynomials;
   for (int a = 0; a < 16; ++a) {
     for (int b = a + 1; b < 16; ++b) {
@@ -384,7 +394,7 @@ int main(int argc, char** argv) {
         monic.push_back(locator);
         for (int scalar = 1; scalar < p; ++scalar) {
           const Poly polynomial = ctx.scale(scalar, locator);
-          split_roots[ctx.key(polynomial)] = roots;
+          split_roots[polynomial] = roots;
           split_polynomials.push_back(polynomial);
         }
       }
@@ -437,13 +447,11 @@ int main(int argc, char** argv) {
   std::vector<Poly> extensions;
   for (const Poly& candidate : split_polynomials) {
     if (candidate == line_a || candidate == line_b) continue;
-    if (!split_roots.count(ctx.key(ctx.sub(candidate, line_a)))) continue;
-    if (!split_roots.count(ctx.key(ctx.sub(candidate, line_b)))) continue;
+    if (!split_roots.count(ctx.sub(candidate, line_a))) continue;
+    if (!split_roots.count(ctx.sub(candidate, line_b))) continue;
     extensions.push_back(candidate);
   }
-  std::sort(extensions.begin(), extensions.end(), [&ctx](const Poly& a, const Poly& b) {
-    return ctx.key(a) < ctx.key(b);
-  });
+  std::sort(extensions.begin(), extensions.end(), polynomial_less);
   extensions.erase(std::unique(extensions.begin(), extensions.end()), extensions.end());
 
   struct Candidate {
@@ -471,14 +479,11 @@ int main(int argc, char** argv) {
       std::vector<Poly> neighbors;
       for (const Poly& candidate : split_polynomials) {
         if (candidate == first_line) continue;
-        if (split_roots.count(ctx.key(ctx.sub(candidate, first_line)))) {
+        if (split_roots.count(ctx.sub(candidate, first_line))) {
           neighbors.push_back(candidate);
         }
       }
-      std::sort(neighbors.begin(), neighbors.end(),
-                [&ctx](const Poly& a, const Poly& b) {
-                  return ctx.key(a) < ctx.key(b);
-                });
+      std::sort(neighbors.begin(), neighbors.end(), polynomial_less);
       neighbors.erase(std::unique(neighbors.begin(), neighbors.end()),
                       neighbors.end());
       if (first_line == monic_orbit_representatives.front()) {
@@ -487,7 +492,7 @@ int main(int argc, char** argv) {
       }
       for (std::size_t i = 0; i < neighbors.size(); ++i) {
         for (std::size_t j = i + 1; j < neighbors.size(); ++j) {
-          if (!split_roots.count(ctx.key(ctx.sub(neighbors[j], neighbors[i])))) {
+          if (!split_roots.count(ctx.sub(neighbors[j], neighbors[i]))) {
             continue;
           }
           record_candidate({zero, first_line, neighbors[i], neighbors[j]});

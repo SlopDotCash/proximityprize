@@ -6,8 +6,8 @@ Authors: ArkLib Contributors
 
 import ArkLib.Data.Probability.Notation
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Prelude
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.BWMatrix
-import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.AffineLines.BWMatrix
+import ArkLib.Extensions.Data.CodingTheory.ReedSolomon
 
 /-!
 # Good coefficients for parameterized curves ([BCIKS20] §6.1)

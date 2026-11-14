@@ -7,7 +7,7 @@
 >    `b − a`: `(1, 5424631)`, `(15071653, 3178074)`, `(14140135, 2246556)` and
 >    `(11893578, 17318208)` (exact check, audit evidence `kb25-scope-and-difference-check.json`).
 > 2. **Char-`p` step-ratio monotonicity is not "the remaining open input": it is false at concrete
->    cells.** `Research/ProximityPrize/Frontier/_CharPStepRatioMonotoneFails.lean` shows the gap
+>    cells.** `ArkLib/Research/ProximityGap/Frontier/_CharPStepRatioMonotoneFails.lean` shows the gap
 >    `(2r+3)E_{r+1}² − (2r+1)E_r E_{r+2}` is negative for the exact energy triples at
 >    `n = 32, p = 786433, r = 3` and `n = 64, p = 2752513, r = 2`. The Lean file kernel-checks the gap
 >    arithmetic for those supplied energies; the energies themselves come from the exact

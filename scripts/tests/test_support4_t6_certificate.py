@@ -80,6 +80,30 @@ class ThresholdConsistency(unittest.TestCase):
             with self.assertRaises(ValueError):
                 probe.verify_certificate(tampered)
 
+    def test_legacy_receipt_checks_every_original_field_at_default_threshold(self):
+        modern = probe.score(probe.KNOWN_U0, probe.KNOWN_U1, details=True)
+        legacy = {key: value for key, value in modern.items() if key not in ("threshold", "model")}
+        legacy["witnesses"] = [
+            {key: value for key, value in witness.items() if key != "checks"}
+            for witness in modern["witnesses"]
+        ]
+        legacy = json.loads(json.dumps(legacy))
+        self.assertEqual(probe.verify_certificate(legacy), legacy)
+        with self.assertRaises(ValueError):
+            probe.verify_certificate(dict(legacy, bad_scalars=[]))
+        legacy["witnesses"][0]["support_ratios"][0] = -1
+        with self.assertRaises(ValueError):
+            probe.verify_certificate(legacy)
+
+    def test_invalid_modern_metadata_does_not_fall_back_to_legacy(self):
+        saved = probe.score(probe.KNOWN_U0, probe.KNOWN_U1, details=True)
+        for key in ("threshold", "model"):
+            with self.subTest(missing=key), self.assertRaises(ValueError):
+                probe.verify_certificate({name: value for name, value in saved.items() if name != key})
+        for tampered in (dict(saved, model="unknown"), dict(saved, threshold=None)):
+            with self.assertRaises(ValueError):
+                probe.verify_certificate(tampered)
+
     def test_witness_checker_is_independent(self):
         coeffs = [0, 3, 8, 1]
         evals = [probe.evaluate(coeffs, x) for x in range(1, 17)]

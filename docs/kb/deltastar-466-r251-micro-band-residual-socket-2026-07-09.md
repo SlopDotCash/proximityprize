@@ -8,7 +8,7 @@ Issue: #466 / Proximity Prize
 Lean socket:
 
 ```text
-Research/ProximityPrize/Frontier/_R251MicroBandResidualSocket.lean
+ArkLib/Research/ProximityGap/Frontier/_R251MicroBandResidualSocket.lean
 ```
 
 It proves the finite-carrier accounting lemma behind R249:
@@ -39,7 +39,7 @@ Command:
 
 ```bash
 scripts/pg-iterate.sh -q \
-  Research/ProximityPrize/Frontier/_R251MicroBandResidualSocket.lean
+  ArkLib/Research/ProximityGap/Frontier/_R251MicroBandResidualSocket.lean
 ```
 
 Result:

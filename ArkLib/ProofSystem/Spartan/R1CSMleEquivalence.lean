@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.Data.MvPolynomial.Multilinear
+import ArkLib.Extensions.Data.MvPolynomial.Multilinear
 import ArkLib.ProofSystem.ConstraintSystem.R1CS
-import ProximityPrize.Extensions.ProofSystem.Spartan.Basic
+import ArkLib.Extensions.ProofSystem.Spartan.Basic
 
 /-!
 # Spartan R1CS-to-sumcheck MLE equivalences (issue #114)

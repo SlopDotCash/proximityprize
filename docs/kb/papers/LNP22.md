@@ -3,7 +3,7 @@ kind: paper
 bibkey: LNP22
 title: "Lattice-Based Zero-Knowledge Proofs and Applications: Shorter, Simpler, and More General"
 year: "2022"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/LNP22/metadata.yml
 related_modules:
   - ArkLib/Data/Lattices/CyclotomicRing/Core.lean
@@ -60,4 +60,4 @@ it is cited to the paper that states it in the form ArkLib uses.
 ## Source Access
 
 - Source metadata: [`../sources/LNP22/metadata.yml`](../sources/LNP22/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

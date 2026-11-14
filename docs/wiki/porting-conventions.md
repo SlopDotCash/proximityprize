@@ -31,7 +31,7 @@ got there.
   appendix [`docs/design/reed-solomon-port-correspondence.md`](../design/reed-solomon-port-correspondence.md))
   and in the pull request description. The appendix holds the declaration-by-declaration notes
   per destination file.
-- **Acceptance tests** in `ArkLibTest/` may derive a source-shaped statement from the ported one,
+- **Acceptance tests** in `ArkLib/Tests/` may derive a source-shaped statement from the ported one,
   to show that nothing was lost. The test comment says what the statement is ("the special case
   `w = 1`", "the form with the guard `D ≤ n - 2`"). The test's name describes the mathematics,
   not `source_*`.
@@ -57,7 +57,7 @@ Check: search module and declaration docstrings for `Ported from`, the snapshot 
   declarations, so those results belong in `PartitionSupport/`.
 - Put a generic result with its generic owner. A joint-kernel lemma about matrices goes to the
   linear-algebra layer, not to the protocol-specific module that first used it.
-- Concrete instances without a production consumer go to `ArkLibTest/`. Examples are table rows
+- Concrete instances without a production consumer go to `ArkLib/Tests/`. Examples are table rows
   and results with hard-coded parameters such as `n = 2 ^ 16`. The generic API they instantiate
   stays in `ArkLib/`.
 
@@ -70,7 +70,7 @@ Check: search module and declaration docstrings for `Ported from`, the snapshot 
   - nonvanishing lemmas (`foo_ne_zero`).
   One sentence stating the characterization is enough.
 - Cite papers by citation key (`[BCPZZ26]`), never by authors and title in running text. The key
-  must have an entry in `blueprint/src/references.bib`
+  must have an entry in `website/blueprint/src/references.bib`
   (see [`blueprint-and-citations.md`](blueprint-and-citations.md)).
 
 ## Line length
@@ -87,7 +87,7 @@ while staying within the limit.
 3. No declaration name has a paper acronym, a paper variable name, or a `source`/`paper` marker.
 4. Every public definition has a docstring, and so do membership, `_apply` and API theorems.
 5. Every paper is cited by a key that is in `references.bib`.
-6. The module layout follows the present API, and concrete instances are in `ArkLibTest/`.
+6. The module layout follows the present API, and concrete instances are in `ArkLib/Tests/`.
 7. The PR diff contains only its own slice. A stacked PR says what it is stacked on and is rebased
    once its parent lands.
 8. The ledger row and the correspondence appendix record the port history.

@@ -138,8 +138,8 @@ both use the proof-only count.
 | `OracleReduction/Composition/Sequential/GuardedCompleteness.prEvent_guarded_map` | 6 | 20 | 4 | Resolved: `OptionT.prEvent_bind_guard`. |
 | `OracleReduction/Security/RbrGame.prEvent_optionT_simulateQ_addLift_getChallenge_first_bind_le_convex` | 22 | 33 | 29 | **R1** (+5): `prEvent_bind_le_prEvent_add_mul_prEvent_not` is the honest subprobability form and leaves `Pr{¬p}`; `1 - Pr{p}` is recovered from `prEvent_add_prEvent_not` and uniform-sampler losslessness under a proof-local discrete space (R4). **R2** (+2): a `change` exposes the `OptionT.lift` prefix so `OptionT.prEvent_lift` applies. |
 | `Interaction/Oracle/Composition.run_preserves_measure` | 13 | 23 | 13 | Resolved by the upstream generic AE bind-event law (VCVio #771). |
-| `ArkLibTest/.../SharedStateCounterexample.first_perfectCompleteness` | 5 | 15 | 4 | Resolved: native lift/map simplification. |
-| `ArkLibTest/.../SharedStateCounterexample.second_perfectCompleteness` | 5 | 14 | 4 | Resolved: same. |
+| `ArkLib/Tests/.../SharedStateCounterexample.first_perfectCompleteness` | 5 | 15 | 4 | Resolved: native lift/map simplification. |
+| `ArkLib/Tests/.../SharedStateCounterexample.second_perfectCompleteness` | 5 | 14 | 4 | Resolved: same. |
 | `OracleReduction/Composition/Sequential/GuardedCompleteness.completeness_iff_of_guarded_verifier` | 24 | 32 | 24 | Resolved: one normal form instead of duplicated directions. |
 | `Commitments/Functional/KZG/Binding.binding_game_ext_eq_binding_game` | 146 | 153 | 146 | Resolved: reverse `prEvent_map` on the projected condition, then `OptionT.ext` on the game; no separate program-equality statement. |
 | `OracleReduction/Composition/Sequential/Append/Completeness.completeness_of_pure_states` | 9 | 15 | 6 | Resolved: goal-inferred bind lower bound. |
@@ -155,7 +155,7 @@ goal), `PolishchukSpielman/Degrees.ps_degX_bound` (restored with `grind +qlia [n
 Polynomial.natDegree_mul]`), `BCIKS20/ListDecoding/Extraction.pg_sum_natDegreeY_Rset_le_natDegreeY_Q`,
 `Errors.mcaError_le_epsCa_of_two_mul_lt_dist`, and
 `Subfield/Algebra.fold_density_le_eps_ca_of_not_joint_proximity` (23 → 26 → 12). The test
-`ArkLibTest/.../Completeness.rejecting_not_perfect` is back to 5 lines. Smaller probability-facing
+`ArkLib/Tests/.../Completeness.rejecting_not_perfect` is back to 5 lines. Smaller probability-facing
 rows (KZG `binding`, `t_sdh_game_eq`, FunctionBinding, `Security/Basic.completeness_relOut_mono`,
 `Functional/Basic`, `KZG/Correctness`, `TerminalMeasure`, `TranscriptTree`, the Ajtai binding
 reduction, and the sequential-composition tests) are at or below their pre-#903 size.

@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.OracleReduction.OracleInterface
+import ArkLib.Extensions.OracleReduction.OracleInterface
 
 /-!
 # `simOracle` `foldlM` collapse

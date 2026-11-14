@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.AgreementCount
-import ProximityPrize.Extensions.Data.CodingTheory.InterleavedCode
+import ArkLib.Extensions.Data.CodingTheory.InterleavedCode
 
 /-!
 # HeavyCodeword

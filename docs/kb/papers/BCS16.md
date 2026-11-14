@@ -3,7 +3,7 @@ kind: paper
 bibkey: BCS16
 title: "Interactive Oracle Proofs"
 year: 2016
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/BCS16/metadata.yml
 status: seeded
 related_concepts:
@@ -56,4 +56,4 @@ specializations.
 ## Source Access
 
 - Source metadata: [`../sources/BCS16/metadata.yml`](../sources/BCS16/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

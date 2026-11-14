@@ -3,7 +3,7 @@ kind: paper
 bibkey: GLMRSW22
 title: "Bounds for list-decoding and list-recovery of random linear codes"
 year: "2022"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/GLMRSW22/metadata.yml
 status: seeded
 related_modules:
@@ -53,4 +53,4 @@ Theorem 4.1 itself, and the list-recovery half of the paper, which ArkLib does n
 ## Source Access
 
 - Source metadata: [`../sources/GLMRSW22/metadata.yml`](../sources/GLMRSW22/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

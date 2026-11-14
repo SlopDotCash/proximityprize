@@ -6,7 +6,7 @@ Status: budget-scale guardrail; not a prize proof.
 
 ## Artifact
 
-- Lean: `Research/ProximityPrize/Frontier/_JohnsonOverheadTightBudgetGate.lean`
+- Lean: `ArkLib/Research/ProximityGap/Frontier/_JohnsonOverheadTightBudgetGate.lean`
 
 ## Point
 

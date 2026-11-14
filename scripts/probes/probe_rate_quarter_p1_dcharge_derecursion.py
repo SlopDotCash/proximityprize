@@ -35,6 +35,12 @@ K = 2**28
 T = 592794966
 
 
+def _require(condition, detail):
+    """Keep the derecursion checks active under Python optimization."""
+    if not condition:
+        raise AssertionError(detail)
+
+
 def isqrt(x):
     return math.isqrt(x)
 
@@ -171,7 +177,7 @@ def main():
                 ok = False
     print(f"  level-0 aligned identity + level-1 flow-map inclusion over 100 "
           f"instances x 6 scalars: {'ALL OK' if ok else 'VIOLATIONS'}")
-    assert ok
+    _require(ok, "level-0 identity or level-1 flow-map inclusion fails")
 
 
 if __name__ == "__main__":
@@ -193,10 +199,12 @@ def mds_pool_second_charge():
     """
     print("\n== MDS-pool second charge (F in [k, N-T]) ==")
     j = isqrt(T * (K - 1))
-    assert j == 398907491 and j * j <= T * (K - 1) < (j + 1) ** 2
+    _require(j == 398907491 and j * j <= T * (K - 1) < (j + 1) ** 2,
+             "floor(sqrt(T(k-1))) is not 398907491")
     t1max = T - j
     print(f"  max level-2 threshold t1 = T - floor(sqrt(T(k-1))) = {t1max}")
-    assert t1max == 193887475 and t1max < K - 1
+    _require(t1max == 193887475 and t1max < K - 1,
+             "max level-2 threshold is not 193887475 below k-1")
     print(f"  threshold collapse: t1max = {t1max} < k-1 = {K - 1}  "
           f"-> level-2 Johnson can NEVER fire (t1^2 = {t1max**2} < "
           f"t1(k-1) = {t1max * (K - 1)})")
@@ -206,15 +214,16 @@ def mds_pool_second_charge():
         jz = isqrt((N - F) * (K - 1))
         jp = isqrt(F * (K - 1))
         t1 = T - jz
-        assert t1 < K - 1, F
-        assert jz + jp > T, F  # two-Johnson band nonempty
+        _require(t1 < K - 1, f"F = {F}: level-2 threshold is not below k-1")
+        _require(jz + jp > T, f"F = {F}: two-Johnson band is empty")
         w = jz - (T - jp)
         if worst_band is None or w < worst_band[1]:
             worst_band = (F, w)
     for F in (K, N - T):  # endpoints exactly
         jz = isqrt((N - F) * (K - 1))
         jp = isqrt(F * (K - 1))
-        assert T - jz < K - 1 and jz + jp > T
+        _require(T - jz < K - 1 and jz + jp > T,
+                 f"F = {F}: endpoint threshold or band check fails")
         print(f"  F = {F}: t1 = {T - jz}, band = ({T - jp}, {jz}], "
               f"width {jz - (T - jp)}")
     print(f"  narrowest band over sweep: width {worst_band[1]} at F = "

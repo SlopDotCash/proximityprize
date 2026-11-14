@@ -49,7 +49,7 @@ class ResidualCensusTests(unittest.TestCase):
 
     def test_provider_in_relocated_extension_preserves_discharge(self):
         canonical = self.root / "ArkLib" / "Data" / "A.lean"
-        extension = self.root / "ProximityPrize" / "Extensions" / "Data" / "A.lean"
+        extension = self.root / "ArkLib" / "Extensions" / "Data" / "A.lean"
         canonical.parent.mkdir(parents=True)
         extension.parent.mkdir(parents=True)
         canonical.write_text(HEADER + "def FooResidual : Prop := True\n" + FOOTER)
@@ -60,13 +60,13 @@ class ResidualCensusTests(unittest.TestCase):
         self.assertEqual(len(residuals), 1)
         self.assertEqual(residuals[0]["status"], "discharged")
         self.assertEqual(residuals[0]["providers"][0]["file"],
-                         "ProximityPrize/Extensions/Data/A.lean")
+                         "ArkLib/Extensions/Data/A.lean")
 
     def test_relocated_residual_stays_in_production_census(self):
-        source = self.root / "ProximityPrize" / "Extensions" / "Data" / "A.lean"
-        research = self.root / "Research" / "A.lean"
+        source = self.root / "ArkLib" / "Extensions" / "Data" / "A.lean"
+        research = self.root / "ArkLib" / "Research" / "ProximityGap" / "A.lean"
         source.parent.mkdir(parents=True)
-        research.parent.mkdir()
+        research.parent.mkdir(parents=True)
         source.write_text(HEADER + "def FooResidual : Prop := True\n" + FOOTER)
         research.write_text(HEADER +
             "theorem fooResidual_holds : FooResidual := trivial\n" + FOOTER)
@@ -74,8 +74,26 @@ class ResidualCensusTests(unittest.TestCase):
         self.census.find_providers(decls, residuals)
         self.assertEqual(len(residuals), 1)
         self.assertEqual(residuals[0]["status"], "open")
-        self.assertEqual(residuals[0]["file"], "ProximityPrize/Extensions/Data/A.lean")
+        self.assertEqual(residuals[0]["file"], "ArkLib/Extensions/Data/A.lean")
         self.assertEqual(self.census.top_dir(residuals[0]["file"]), "Data")
+
+    def test_research_and_test_declarations_cannot_discharge_production_residuals(self):
+        source = self.root / "ArkLib" / "Extensions" / "Data" / "A.lean"
+        source.parent.mkdir(parents=True)
+        source.write_text(HEADER + "def FooResidual : Prop := True\n" + FOOTER)
+        for name in ("ArkLib/Research/ProximityGap/Probe.lean", "ArkLib/Tests/Probe.lean"):
+            path = self.root / name
+            path.parent.mkdir(parents=True)
+            path.write_text(HEADER +
+                "def ExcludedResidual : Prop := True\n"
+                "theorem fooResidual_holds : FooResidual := trivial\n" + FOOTER)
+        decls, residuals, near_misses = self.census.collect(self.root)
+        self.census.find_providers(decls, residuals)
+        self.assertEqual({decl["file"] for decl in decls}, {"ArkLib/Extensions/Data/A.lean"})
+        self.assertEqual([row["name"] for row in residuals], ["FooResidual"])
+        self.assertEqual(residuals[0]["status"], "open")
+        self.assertEqual(residuals[0]["providers"], [])
+        self.assertEqual(near_misses, [])
 
     def test_general_provider_discharges(self):
         got = self.statuses(

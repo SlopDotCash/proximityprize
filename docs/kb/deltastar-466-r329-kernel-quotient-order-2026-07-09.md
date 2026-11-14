@@ -2,7 +2,7 @@
 
 > **Later status (linked 2026-10-28, audit T48).** `BinomialBadPrimeLaw`, named below as the next
 > open target, has since been refuted.
-> `Research/ProximityPrize/Frontier/_W12BinomialBadPrimeRefuted.lean` proves it unsatisfiable at
+> `ArkLib/Research/ProximityGap/Frontier/_W12BinomialBadPrimeRefuted.lean` proves it unsatisfiable at
 > every prime of the `n = 32` census window `[2^20, 2^22]` and the `n = 64` window `[2^24, 2^26]`.
 > The argument uses the exact binomial resultant closed forms and is all-integer. R346
 > (`deltastar-466-r346-n64-binomial-law-refutation-2026-07-09.md`) had already found an `n = 64`

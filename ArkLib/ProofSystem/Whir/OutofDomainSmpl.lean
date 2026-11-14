@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Poulami Das (Least Authority), Alexander Hicks
 -/
 
-import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
-import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
-import ProximityPrize.Extensions.Data.MvPolynomial.Multilinear
+import ArkLib.Extensions.Data.CodingTheory.ReedSolomon
+import ArkLib.Extensions.Data.CodingTheory.ListDecodability
+import ArkLib.Extensions.Data.MvPolynomial.Multilinear
 import ArkLib.Data.Probability.Notation
 import ArkLib.ToMathlib.CountingAgreementBricks
 

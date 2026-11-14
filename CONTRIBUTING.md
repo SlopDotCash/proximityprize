@@ -4,7 +4,7 @@ We enthusiastically welcome contributions to ArkLib!
 
 Whether you are fixing bugs, improving documentation, or adding new formalizations, your input is valuable. We particularly encourage contributions that address:
 
-* **Active formalizations:** The [ROADMAP](ROADMAP.md) lists what is complete, what is in progress, and the planned directions, with links to the tracking issues.
+* **Active formalizations:** The [ROADMAP](docs/project/roadmap.md) lists what is complete, what is in progress, and the planned directions, with links to the tracking issues.
 * **Open Issues:** Please see the [list of open issues](https://github.com/Verified-zkEVM/ArkLib/issues) for bugs, requested features, and specific formalization tasks. Issues tagged as `good first issue` or `help wanted` are great places to start.
 * **Solicited proofs:** Some true external results are stated in the library with their proofs deliberately left open for contributors; see [issue #1352](https://github.com/Verified-zkEVM/ArkLib/issues/1352).
 * **Documentation:** Start with [AGENTS.md](AGENTS.md) for the one-screen guide, then the [wiki](docs/wiki/README.md) for commands, conventions and workflows.
@@ -124,10 +124,10 @@ identifiers and syntax quotations are reserved for the same reason.
 
 ### Acceptance Tests
 
-Keep compile-time examples and regression tests in `ArkLibTest/`, mirroring production paths.
+Keep compile-time examples and regression tests in `ArkLib/Tests/`, mirroring production paths.
 `lake test` builds them, and `./scripts/validate.sh` runs the test target with a zero-warning budget.
 Stage new tests before validation. Production modules must not import tests; both trees share the
-source-style policy and build-time lint plugin. See [ArkLibTest/README.md](ArkLibTest/README.md).
+source-style policy and build-time lint plugin. See [docs/testing/README.md](docs/testing/README.md).
 
 Use acceptance examples with satisfiable hypotheses that exercise the claimed behavior. When an
 error bound is intended to be nontrivial, include an instance with error below one. Exercise a
@@ -286,7 +286,7 @@ When translating theorem statements into names, we use standard mappings for sym
   `Qq` dependencies. When a proof needs to unfold a definition a dependency did not expose, add
   `import all M` naming the module that *declares* it. Do not write a per-declaration `@[expose]`
   while the blanket section is present, and do not reach for `backward.privateInPublic`. Files
-  under `ArkLibTest/` stay classic on purpose. The error-to-fix table in
+  under `ArkLib/Tests/` stay classic on purpose. The error-to-fix table in
   [`docs/wiki/module-system.md`](docs/wiki/module-system.md) covers every failure the port
   produced.
 * **Operators**: Put spaces on both sides of `:`, `:=`, and infix operators. Place them before a line break rather than at the start of the next line.
@@ -344,7 +344,7 @@ We aim for consistent representations of equivalent statements:
 ### Compatibility Policy
 
 ArkLib makes no backward-compatibility guarantees and does not promise deprecation periods. This
-holds in particular until the [migration](ROADMAP.md#priority-replace-the-legacy-layer) from the
+holds in particular until the [migration](docs/project/roadmap.md#priority-replace-the-legacy-layer) from the
 legacy layer (`ArkLib/OracleReduction/`) to the interaction layer (`ArkLib/Interaction/`) is
 complete; [README.md](README.md#two-layers) describes both layers.
 
@@ -396,7 +396,7 @@ When referencing papers in the module docstring:
   ```
   Format: `* [Author Last Name, First Initial, *Title*][citation_key]`.
 
-* **Add BibTeX entries**: All academic papers must have entries in `blueprint/src/references.bib`. When adding a new paper, add the BibTeX entry, use the citation key in your Lean file, and list it in the References section.
+* **Add BibTeX entries**: All academic papers must have entries in `website/blueprint/src/references.bib`. When adding a new paper, add the BibTeX entry, use the citation key in your Lean file, and list it in the References section.
 
 * **Non-academic references**: Implementation references (GitHub repos, specifications) may include
   URLs directly in the module docstring and typically do not need BibTeX entries.

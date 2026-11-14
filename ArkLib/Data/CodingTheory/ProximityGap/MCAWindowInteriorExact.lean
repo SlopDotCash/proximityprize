@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.MCALYMCeiling
-import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ArkLib.Extensions.Data.CodingTheory.ReedSolomon
 
 /-!
 # The first exact window-interior `ε_mca` value (#357 round 4)

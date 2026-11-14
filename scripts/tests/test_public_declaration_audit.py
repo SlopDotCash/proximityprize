@@ -55,6 +55,24 @@ class PublicDeclarationAuditTests(unittest.TestCase):
             self.assertNotEqual(report["duplicates"]["first"][0]["command_sha256"],
                                 report["duplicates"]["first"][1]["command_sha256"])
 
+    def test_research_stays_in_scope_but_acceptance_fixtures_do_not(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            paths = ["ArkLib/Extensions/Production.lean",
+                     "ArkLib/Research/ProximityGap/Research.lean",
+                     "ArkLib/Tests/Acceptance.lean"]
+            for path in paths:
+                source = root / path
+                source.parent.mkdir(parents=True, exist_ok=True)
+                source.write_text("def sharedName := 1\n")
+            with patch("audit_public_declarations.subprocess.check_output",
+                       return_value=("\0".join(paths) + "\0").encode()):
+                report = audit(root)
+            self.assertEqual(report["source_files"], 2)
+            self.assertEqual(report["public_named_records"], 2)
+            self.assertEqual({row["path"] for row in report["duplicates"]["sharedName"]},
+                             set(paths[:2]))
+
 
 if __name__ == "__main__":
     unittest.main()

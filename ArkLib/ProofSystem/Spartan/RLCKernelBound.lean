@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
-import ProximityPrize.Compatibility.SpartanLinearCombination
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Compatibility.SpartanLinearCombination
 import ArkLib.ProofSystem.Spartan.ShortPhaseRbrKnowledgeLeaves
 import ArkLib.ToMathlib.LinearFormKernelCard
 

@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.Data.CodingTheory.ReedSolomon.Multiplicity
-import ProximityPrize.Extensions.Data.CodingTheory.SubspaceDesign
+import ArkLib.Extensions.Data.CodingTheory.SubspaceDesign
 import ArkLib.Data.CodingTheory.ProximityGap.GK16RootCounting
 import Mathlib.Algebra.Polynomial.FieldDivision
 

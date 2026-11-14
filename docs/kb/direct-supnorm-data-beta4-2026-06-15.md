@@ -6,7 +6,7 @@
 >   β≥4" are not established. Recorded thin exceptions exist: at `n = 64`, `p = 17318209`
 >   (`p > n⁴`), the additive energy is `E_2 = 13632`, above both the char-0 value `12096` and the
 >   Wick value `12288` (T91 / G173; the same cell is recorded as a transfer-false norm-divisor
->   witness in `Research/ProximityPrize/Frontier/_wfS7_galois_spread.lean`). The measurements stay
+>   witness in `ArkLib/Research/ProximityGap/Frontier/_wfS7_galois_spread.lean`). The measurements stay
 >   as history.
 > - **The norm paragraph overreaches.** The minimum nonzero norm of a short non-antipodal sum is `2`
 >   (for example `N(1 − ζ) = 2`), but a minimum controls neither the maximum nor a typical value. It

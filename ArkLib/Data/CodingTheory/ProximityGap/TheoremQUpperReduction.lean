@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.Errors
 import ArkLib.Data.CodingTheory.ProximityGap.MCALowerBound
 import ArkLib.Data.CodingTheory.ProximityGap.BadGammaAffineCount
 import ArkLib.Data.CodingTheory.ProximityGap.TheoremQAssembly

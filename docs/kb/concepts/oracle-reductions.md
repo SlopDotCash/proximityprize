@@ -229,7 +229,7 @@ polynomial-commitment pattern.
   layer and the basis of the BCS transform.
 - `ChiesaYogev2024` — *Building Cryptographic Proofs from Hash Functions* (Chiesa, Yogev): the
   textbook ArkLib's formalization mostly follows; recorded in
-  [`../../../blueprint/src/references.bib`](../../../blueprint/src/references.bib) and referenced in
+  [`../../../website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib) and referenced in
   the Fiat-Shamir layer ([`../../../ArkLib/OracleReduction/FiatShamir/Basic.lean`](../../../ArkLib/OracleReduction/FiatShamir/Basic.lean)).
 
 ## Notes

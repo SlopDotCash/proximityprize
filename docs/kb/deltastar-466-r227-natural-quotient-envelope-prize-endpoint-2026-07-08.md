@@ -6,7 +6,7 @@ Date: 2026-07-08
 
 Added:
 
-- `Research/ProximityPrize/Frontier/_R227NaturalQuotientEnvelopePrizeEndpoint.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_R227NaturalQuotientEnvelopePrizeEndpoint.lean`
 
 Main declarations:
 
@@ -49,13 +49,13 @@ bookkeeping.
 Dependency build:
 
 ```bash
-./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._R226GaussQuotientTailPrizeEndpoint
+./scripts/lake-locked.sh build ArkLib.Research.ProximityGap.Frontier._R226GaussQuotientTailPrizeEndpoint
 ```
 
 Focused check:
 
 ```bash
-./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R227NaturalQuotientEnvelopePrizeEndpoint.lean
+./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_R227NaturalQuotientEnvelopePrizeEndpoint.lean
 ```
 
 Result:

@@ -1,0 +1,229 @@
+/-
+Copyright (c) 2026 ArkLib Contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: ArkLib Contributors
+-/
+import Mathlib.Analysis.SpecialFunctions.Pow.Real
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
+import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+import ArkLib.Data.CodingTheory.ProximityGap.MomentCountSupBound
+
+/-!
+# T22 (G5-2): determinantal repulsion → log-rigidity of the period exceedance COUNT — REFUTED
+   (multiset DPP model REFUTED; coset-level process untouched; surviving sup-deduction REDUCES-TO-WALL F1)
+
+**Candidate (architect G5-2).** Model the normalized non-principal eigenvalue multiset
+`X_n = {η_b/√n : b ∈ F_p^*}` of the generalized-Paley Cayley matrix `C = Cay(F_p, μ_n)` as a
+DETERMINANTAL point process (after "Gaussianization") with a Christoffel–Darboux kernel `K_n`, and
+claim the exceedance count `N(t) = #{b≠0 : η_b > t√n}` obeys determinantal log-RIGIDITY
+`Var(N(t)) ≤ c·log(p/n)` (sub-Poissonian, the `−K(s,u)²` repulsion) plus a sub-Gaussian mean
+`E[N(t)] ≤ m·e^{−t²/2}`, forcing `t_max ≤ √(2 log m)(1+o(1))`, i.e. `M(n) ≤ √(2 n log(p/n))`.
+The proposed NEW open statement: the Paley eigenvalue process is determinantal with log-rigidity.
+
+**Verdict: REFUTED for the multiset model.** A determinantal model of the multiset
+`{η_b/√n : b ∈ F_p^*}` (each value repeated `n` times) is impossible: that configuration is not
+simple. *Scope caveat (audit CW-B18-23):* this says nothing about the process over the
+`(p−1)/n` DISTINCT coset values `η_i`, which is the natural object for the candidate; whether
+that simple configuration admits a determinantal/log-rigid description is not addressed here. The
+only half of the argument that touches the prize sup-bound is the sub-Gaussian MEAN estimate, which
+for the deterministic period family is certified only through the energy moments `E_r` via Markov —
+i.e. it is the existing in-tree `MomentCountSupBound.forall_le_of_sum_pow_lt` route, fence **F1**.
+The variance/rigidity half is *inert* for an upper bound on `t_max`. Two machine-checked obstructions.
+
+## The structural fact (Podestá–Videla; arXiv 2604.06513, 2026; Liu–Zhou Thm 115)
+
+`η_b = Σ_{x∈μ_n} e_p(bx)` depends only on the cyclotomic coset `b·μ_n`. The graph `Cay(F_p, μ_n)`
+is `Γ(k,p)` with `k = (p−1)/n` classes; its spectrum is the principal eigenvalue `n` (degree) plus
+the **`k = (p−1)/n` Gaussian periods `η_i`, each with multiplicity exactly `n`**. So as `b` ranges
+over `F_p^*` (which has `p−1 = k·n` elements) the multiset `{η_b}` takes only `k = (p−1)/n` DISTINCT
+values, **each repeated exactly `n` times**. (Verified exactly:
+`scripts/probes/probe_wfT22_paley_degeneracy.py` — e.g. `p=73,n=8`: 9 distinct periods, all
+multiplicity 8; `p=257,n=16`: 16 distinct, all multiplicity 16. The prize scale is `n=2^30`.)
+
+## Obstruction 1 — the "process" is `n`-fold atomic, NOT simple ⟹ NOT determinantal (REFUTED)
+
+A determinantal point process with a Christoffel–Darboux *projection* kernel is **a.s. simple**
+(Hough–Krishnapur–Peres–Virág): no two particles coincide, and the kernel vanishes on the diagonal
+— that vanishing IS the `−K(s,u)²` repulsion the candidate invokes. The Paley eigenvalue multiset
+over `b∈F_p^*` is the *maximally NON-simple* object: every atom has multiplicity exactly
+`n = 2^{30}`. Consequently the level-set count `N(t) = #{b : η_b/√n > t}` is ALWAYS a multiple of
+`n` — it is `n × #{cosets with η_i > t√n}`. A point configuration whose every point has multiplicity
+`n` admits no repulsion (`ρ_2` on the diagonal is `~ n²`, the opposite sign of a DPP's `0`). The
+determinantal hypothesis with log-variance rigidity fails for the multiset over all `b`.
+The argument leaves the process indexed by cosets open. Formalized below as
+`exceedanceCount_eq_fiberSize_mul_card`, `exceedance_count_dvd_fiberSize`, and
+`degenerate_not_simple`.
+
+## Obstruction 2 — the surviving sup-deduction is the energy/Markov count = fence F1
+
+Strip the (false) DPP scaffolding and ask only for the operative implication `… ⟹ t_max ≤ √(2 log m)`.
+The input that does the work is the MEAN bound `E[N(t)] ≤ m·e^{−t²/2}` (a first-moment / sub-Gaussian
+statement). For the *deterministic* family the only certificate of `E[N(t)] = #{b : η_b/√n > t}` is
+Markov on the `2r`-th moment:
+   `#{b : η_b/√n > t} ≤ (Σ_b (η_b/√n)^{2r}) / t^{2r} = q·A_r / (n^r t^{2r})`,
+which is **exactly** `MomentCountSupBound.forall_le_of_sum_pow_lt` (the integer-count-rounds-to-zero
+form) with `a_b = (η_b/√n)²`. The VARIANCE bound `Var(N) ≤ c log m` adds *nothing* to an upper bound
+on `t_max`: a smaller variance does not lower the largest `t` with `N(t) ≥ 1`; only the mean (energy)
+does. We formalize this *inertness* (`tMax_le_of_moment` and `variance_irrelevant_to_tMax`): the
+largest exceeded threshold is bounded by the energy moment ALONE, with the count's variance as a free
+parameter that never enters. So the only live half of T22 is fence **F1**.
+
+Axiom target: `[propext, Classical.choice, Quot.sound]`. Issue #444, candidate T22.
+-/
+
+open Finset
+
+set_option linter.unusedSectionVars false
+
+namespace ProximityGap.Frontier.WfT22DeterminantalCountRigidity
+
+/-! ### Obstruction 1 — `n`-fold degeneracy of the period multiset (REFUTED DPP hypothesis) -/
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+variable {κ : Type*} [DecidableEq κ]
+
+/-- The exceedance count of a real family `η` above threshold `T`. For the periods this is
+`N(T) = #{b : η_b > T}` (with `η_b` already normalized by `√n`). -/
+noncomputable def exceedanceCount (η : ι → ℝ) (T : ℝ) : ℕ :=
+  (Finset.univ.filter (fun i => T < η i)).card
+
+/-- **The period multiset is constant on fibers of the cyclotomic-coset map.** Abstract model:
+`η` factors through a "coset label" `c : ι → κ` (`η i = val (c i)`), exactly as the Paley period
+`η_b = η_{b·μ_n}` depends only on the coset `b·μ_n`. -/
+def FactorsThroughCoset (η : ι → ℝ) (c : ι → κ) (val : κ → ℝ) : Prop :=
+  ∀ i, η i = val (c i)
+
+/-- **Every fiber of the coset map has exactly `n` indices** (the Paley fact: each Gaussian period
+has multiplicity `n = (p−1)/k` among the `b ∈ F_p^*`). -/
+def UniformFiberSize (c : ι → κ) (n : ℕ) : Prop :=
+  ∀ y, (Finset.univ.filter (fun i => c i = y)).card = n
+
+/-- **Exact `n`-fold multiplicity of the exceedance count.** If the periods factor through a coset
+map whose every fiber has exactly `n` elements, then for every threshold `T`, `N(T)` is exactly
+`n` times the number of coset labels whose value exceeds `T`. -/
+theorem exceedanceCount_eq_fiberSize_mul_card
+    (η : ι → ℝ) (c : ι → κ) (val : κ → ℝ) (n : ℕ)
+    (hfac : FactorsThroughCoset η c val) (hfib : UniformFiberSize c n) (T : ℝ) :
+    exceedanceCount η T = n * ((Finset.univ.image c).filter (fun y => T < val y)).card := by
+  classical
+  unfold exceedanceCount
+  set good : Finset κ := (Finset.univ.image c).filter (fun y => T < val y) with hgood
+  have hset :
+      (Finset.univ.filter (fun i => T < η i))
+        = good.biUnion (fun y => Finset.univ.filter (fun i => c i = y)) := by
+    ext i
+    simp only [hgood, Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_biUnion,
+      Finset.mem_image]
+    constructor
+    · intro hi
+      exact ⟨c i, ⟨⟨i, rfl⟩, by rw [hfac i] at hi; exact hi⟩, rfl⟩
+    · rintro ⟨y, ⟨_, hval⟩, hcy⟩
+      rw [hfac i, hcy]; exact hval
+  rw [hset]
+  rw [Finset.card_biUnion]
+  · rw [Finset.sum_congr rfl (fun y hy => hfib y), Finset.sum_const, smul_eq_mul, Nat.mul_comm]
+  · intro x _ y _ hxy
+    simp only [Finset.disjoint_left, Finset.mem_filter, Finset.mem_univ, true_and]
+    intro i hix hiy
+    exact hxy (hix ▸ hiy ▸ rfl)
+
+/-- **CORE REFUTATION (the degeneracy).** If the periods factor through a coset map whose every
+fiber has exactly `n` elements, then the exceedance count `N(T)` is a multiple of `n` for every
+threshold `T`. So `N(T) ∈ {0, n, 2n, …}` — it can never be `1`, and the underlying point
+configuration is `n`-fold atomic, hence NOT simple, hence NOT a determinantal point process with a
+Christoffel–Darboux projection kernel (those are a.s. simple, with `ρ_2 = 0` on the diagonal). -/
+theorem exceedance_count_dvd_fiberSize
+    (η : ι → ℝ) (c : ι → κ) (val : κ → ℝ) (n : ℕ)
+    (hfac : FactorsThroughCoset η c val) (hfib : UniformFiberSize c n) (T : ℝ) :
+    n ∣ exceedanceCount η T := by
+  rw [exceedanceCount_eq_fiberSize_mul_card η c val n hfac hfib T]
+  exact dvd_mul_right n _
+
+/-- **The degenerate family is not simple at any positive multiplicity `n ≥ 2`.** A determinantal
+point process with a projection (Christoffel–Darboux) kernel is a.s. simple: its exceedance counts
+take the value `1` for thresholds isolating a single particle. Here, when `n ≥ 2`, NO threshold ever
+yields count `1` (the count is a multiple of `n`), so the period family violates simplicity and
+cannot be such a DPP. This is the formal refutation of the determinantal hypothesis. -/
+theorem degenerate_not_simple
+    (η : ι → ℝ) (c : ι → κ) (val : κ → ℝ) (n : ℕ) (hn : 2 ≤ n)
+    (hfac : FactorsThroughCoset η c val) (hfib : UniformFiberSize c n) (T : ℝ) :
+    exceedanceCount η T ≠ 1 := by
+  intro h1
+  have hdvd : n ∣ exceedanceCount η T :=
+    exceedance_count_dvd_fiberSize η c val n hfac hfib T
+  rw [h1] at hdvd
+  -- n ∣ 1 with n ≥ 2 is impossible
+  have := Nat.le_of_dvd (by norm_num) hdvd
+  omega
+
+/-! ### Obstruction 2 — the surviving sup-deduction depends ONLY on the energy moment (fence F1) -/
+
+/-- A nonnegative family's `r`-th power sum below `T^r` bounds every value by `T`.
+This applies `MomentCountSupBound` to `a_b = (η_b / √n)²`. -/
+theorem forall_le_of_sum_pow_lt (a : ι → ℝ) (ha : ∀ i, 0 ≤ a i) (T : ℝ) (hT : 0 < T) (r : ℕ)
+    (hbound : ∑ b, (a b) ^ r < T ^ r) : ∀ b, a b ≤ T :=
+  ArkLib.ProximityGap.MomentCountSupBound.forall_le_of_sum_pow_lt a ha T hT r hbound
+
+/-- **The largest exceeded threshold is bounded by the energy moment ALONE.** Package the deduction
+`t_max ≤ …`: from a moment certificate `Σ_b a_b^r ≤ B < T^r` we get `∀ b, a_b ≤ T`, i.e. the largest
+`T` with `exceedanceCount = …` positive is below the energy scale `B^{1/r}`. The bound is a function
+of `(B, r, T)` — the FIRST-MOMENT (energy) data — and nothing else. -/
+theorem tMax_le_of_moment (a : ι → ℝ) (ha : ∀ i, 0 ≤ a i) (T : ℝ) (hT : 0 < T) (r : ℕ)
+    (B : ℝ) (hB1 : ∑ b, (a b) ^ r ≤ B) (hB2 : B < T ^ r) :
+    exceedanceCount a T = 0 := by
+  have hle := forall_le_of_sum_pow_lt a ha T hT r (lt_of_le_of_lt hB1 hB2)
+  rw [exceedanceCount, Finset.card_eq_zero, Finset.filter_eq_empty_iff]
+  intro b _
+  exact not_lt.mpr (hle b)
+
+/-- **INERTNESS OF THE VARIANCE (the core of Obstruction 2).** The candidate's mechanism is that a
+small variance `Var(N) ≤ c·log m` strengthens the conclusion. It does not. We model "variance" as an
+arbitrary real `V` carried alongside the moment certificate, and show the sup-conclusion
+(`∀ b, a_b ≤ T`, the only thing relevant to `t_max`) holds with `V` *completely free* — it never
+appears in the hypotheses that force the bound. Hence the determinantal log-rigidity half of T22
+contributes nothing to the upper bound on `M`; the energy moment does all the work. This is the
+formal sense in which T22's "new" lever is inert and the live content is exactly fence F1. -/
+theorem variance_irrelevant_to_tMax
+    (a : ι → ℝ) (ha : ∀ i, 0 ≤ a i) (T : ℝ) (hT : 0 < T) (r : ℕ)
+    (B : ℝ) (hB1 : ∑ b, (a b) ^ r ≤ B) (hB2 : B < T ^ r)
+    (V : ℝ) (_hV : 0 ≤ V) :          -- `V` = the claimed rigidity variance; ENTIRELY UNUSED
+    ∀ b, a b ≤ T :=
+  forall_le_of_sum_pow_lt a ha T hT r (lt_of_le_of_lt hB1 hB2)
+
+/-! ### The combined verdict -/
+
+/-- **T22 verdict (one statement).** For the Paley period family modelled as `η` factoring through
+the cyclotomic-coset map with uniform fiber size `n ≥ 2`:
+
+* **(REFUTED, Obstruction 1)** every exceedance count is a multiple of `n`, so it is never `1`; the
+  configuration is `n`-fold atomic, violating the simplicity that any Christoffel–Darboux DPP
+  requires — the determinantal log-rigidity hypothesis is false for the multiset over all `b`
+  (the process over the distinct coset values is not addressed).
+* **(REDUCES-TO-WALL F1, Obstruction 2)** the only half of the argument that bounds the prize sup is
+  the energy-Markov count `forall_le_of_sum_pow_lt`; the rigidity variance `V` is a free parameter
+  that never enters the bound.
+
+Both are packaged: the count is `n`-divisible (so `≠ 1`), AND the sup-bound conclusion is reached
+from the energy moment with the variance `V` unused. -/
+theorem T22_refuted_and_reduces_F1
+    (η : ι → ℝ) (c : ι → κ) (val : κ → ℝ) (n : ℕ) (hn : 2 ≤ n)
+    (hfac : FactorsThroughCoset η c val) (hfib : UniformFiberSize c n)
+    (a : ι → ℝ) (ha : ∀ i, 0 ≤ a i) (T : ℝ) (hT : 0 < T) (r : ℕ)
+    (B : ℝ) (hB1 : ∑ b, (a b) ^ r ≤ B) (hB2 : B < T ^ r)
+    (V : ℝ) (hV : 0 ≤ V) :
+    (∀ S : ℝ, exceedanceCount η S ≠ 1) ∧ (∀ b, a b ≤ T) := by
+  refine ⟨?_, ?_⟩
+  · intro S
+    exact degenerate_not_simple η c val n hn hfac hfib S
+  · exact variance_irrelevant_to_tMax a ha T hT r B hB1 hB2 V hV
+
+end ProximityGap.Frontier.WfT22DeterminantalCountRigidity
+
+/-! ## Axiom audit -/
+#print axioms ProximityGap.Frontier.WfT22DeterminantalCountRigidity.exceedance_count_dvd_fiberSize
+#print axioms ProximityGap.Frontier.WfT22DeterminantalCountRigidity.exceedanceCount_eq_fiberSize_mul_card
+#print axioms ProximityGap.Frontier.WfT22DeterminantalCountRigidity.degenerate_not_simple
+#print axioms ProximityGap.Frontier.WfT22DeterminantalCountRigidity.forall_le_of_sum_pow_lt
+#print axioms ProximityGap.Frontier.WfT22DeterminantalCountRigidity.tMax_le_of_moment
+#print axioms ProximityGap.Frontier.WfT22DeterminantalCountRigidity.variance_irrelevant_to_tMax
+#print axioms ProximityGap.Frontier.WfT22DeterminantalCountRigidity.T22_refuted_and_reduces_F1

@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.ReedSolomonJohnson
-import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
-import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ArkLib.Extensions.Data.CodingTheory.ListDecodability
+import ArkLib.Extensions.Data.CodingTheory.ReedSolomon
 
 /-!
 # Reed–Solomon list size up to the Johnson radius (#232)

@@ -22,7 +22,7 @@ validation, not a fresh rebuild of every dependency.
 
 ## Collision lower bound
 
-`Research/ProximityPrize/Frontier/REnergyCyclicFloorAllDepth.lean` proves
+`ArkLib/Research/ProximityGap/Frontier/REnergyCyclicFloorAllDepth.lean` proves
 `rEnergy_ge_cyclic_floor_all_depth`: E_r >= 3 N^r - 2 N^(r-2) for r >= 3,
 where E_r counts ordered pairs of equal-sum r-tuples from a finite-field subset
 of size N. `swap_floor_lt_cyclic_floor_all_depth_of_two_le` proves strict
@@ -38,7 +38,7 @@ the all-depth theorem's axiom audit contains no `sorryAx` or project axiom.
 The site selects best registered entries from `scripts/probes/hdd_certificates.py`
 at n = 262144. Exact integer feasibility goes beyond Johnson at the listed rates.
 The rate-1/16 threshold is feasible, with no tightness assertion. The core is in
-`Research/ProximityPrize/Frontier/_HDdInterpolationCore.lean`; the full conclusion
+`ArkLib/Research/ProximityGap/Frontier/_HDdInterpolationCore.lean`; the full conclusion
 also needs an external theorem. These certificates do not establish the prize's
 list-size budget or MCA claim. Attribute the method to the
 [Brakensiek et al. paper](https://eccc.weizmann.ac.il/report/2026/164/).
@@ -54,7 +54,7 @@ exponent 2689/2880 + 1/18 = 2849/2880, approximately 0.98924.
 The proposed stronger-energy recalibration uses H^(65/72) p^(1/72), hence
 65/72 + 1/18 = 23/24, approximately 0.95833. Add the p factor exactly once.
 This arithmetic comparison is proved in
-`Research/ProximityPrize/Frontier/_AvCR_DiBenedettoWired.lean`.
+`ArkLib/Research/ProximityGap/Frontier/_AvCR_DiBenedettoWired.lean`.
 
 Its `DiBenedettoThm31Sidon` structure includes the specialized analytic conclusion
 as a hypothesis. `sidon_corollary_of_thm31` consumes that structure; it does not

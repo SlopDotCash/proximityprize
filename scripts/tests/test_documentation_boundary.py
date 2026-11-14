@@ -3,6 +3,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import tempfile
 import tomllib
@@ -40,6 +41,8 @@ class DocumentationBoundaryTests(unittest.TestCase):
         docs = self.root / "docs"
         docs.mkdir()
         (self.root / "AGENTS.md").write_text("")
+        (self.root / "README.md").write_text("")
+        (self.root / "CONTRIBUTING.md").write_text("")
         scripts = self.root / "scripts"
         scripts.mkdir()
         (scripts / "README.md").write_text("")
@@ -53,11 +56,23 @@ class DocumentationBoundaryTests(unittest.TestCase):
                          ["Broken link in docs/example.md: missing-real.md"])
 
     def test_research_documents_are_checked(self):
-        folder = self.root / "Research" / "ProximityPrize"
+        folder = self.root / "docs" / "research" / "proximity-gap"
         folder.mkdir(parents=True)
         doc = folder / "AGENTS.md"
         doc.write_text("Research guide.\n")
         self.assertIn(doc, self.checker.tracked_markdown_files())
+
+    def test_root_overview_and_contribution_documents_are_checked(self):
+        (self.root / "AGENTS.md").write_text("")
+        scripts = self.root / "scripts"
+        scripts.mkdir()
+        (scripts / "README.md").write_text("")
+        for name in ("README.md", "CONTRIBUTING.md"):
+            (self.root / name).write_text("[missing](missing.md)\n")
+        self.assertCountEqual(self.checker.check_markdown_links(), [
+            "Broken link in README.md: missing.md",
+            "Broken link in CONTRIBUTING.md: missing.md",
+        ])
 
     def test_markdown_visibility_boundaries(self):
         cases = {
@@ -147,6 +162,9 @@ class WebsiteDocumentationTargets(unittest.TestCase):
             scripts = root / "scripts"
             scripts.mkdir()
             (scripts / "build-web.sh").write_text((repo / "scripts/build-web.sh").read_text())
+            for name in ("blueprint-ci.py", "inject_nav.py"):
+                (scripts / name).write_text((repo / "scripts" / name).read_text())
+            shutil.copytree(repo / "website/library", root / "website/library")
             calls = root / "calls.jsonl"
             lake = scripts / "lake-locked.sh"
             lake.write_text("#!/usr/bin/env python3\n"
@@ -156,19 +174,27 @@ class WebsiteDocumentationTargets(unittest.TestCase):
                             "if any(arg.endswith(':docs') for arg in sys.argv[1:]):\n"
                             " p = pathlib.Path('.lake/build/doc')\n"
                             " p.mkdir(parents=True, exist_ok=True)\n"
-                            " (p / 'index.html').write_text('API fixture')\n")
+                            " (p / 'index.html').write_text('<html><head></head><body>API fixture</body></html>')\n")
             lake.chmod(0o755)
             binary = root / "bin"
             binary.mkdir()
-            blueprint = binary / "leanblueprint"
-            blueprint.write_text("#!/usr/bin/env python3\n"
-                                 "import pathlib, sys\n"
-                                 "p = pathlib.Path('print/print.pdf' if sys.argv[1] == 'pdf' "
-                                 "else 'web/index.html')\n"
-                                 "p.parent.mkdir(parents=True, exist_ok=True)\n"
-                                 "p.write_text('blueprint fixture')\n")
-            blueprint.chmod(0o755)
-            (root / "blueprint").mkdir()
+            for name, output in (("latexmk", "../print/print.pdf"),
+                                 ("plastex", "../web/index.html")):
+                tool = binary / name
+                tool.write_text("#!/usr/bin/env python3\n"
+                                "import pathlib\n"
+                                f"p = pathlib.Path({output!r})\n"
+                                "p.parent.mkdir(parents=True, exist_ok=True)\n"
+                                "p.write_text('<html><head></head><body>blueprint fixture</body></html>')\n"
+                                "pathlib.Path('../lean_decls').write_text('Nat.add')\n")
+                tool.chmod(0o755)
+            uv = binary / "uv"
+            uv.write_text("#!/usr/bin/env python3\n"
+                          "import subprocess, sys\n"
+                          "args = sys.argv[1:]\n"
+                          "raise SystemExit(subprocess.call([sys.executable, *args[args.index('python')+1:]]))\n")
+            uv.chmod(0o755)
+            (root / "website/blueprint/src").mkdir(parents=True)
             env = dict(os.environ, DOCS_TEST_CALLS=str(calls),
                        PATH=str(binary) + os.pathsep + os.environ["PATH"])
             subprocess.run(["bash", "scripts/build-web.sh"], cwd=root, env=env,
@@ -178,9 +204,14 @@ class WebsiteDocumentationTargets(unittest.TestCase):
                     for target in command[1:] if target.endswith(":docs")]
             self.assertCountEqual(docs, expected)
             self.assertIn(["build", "ArkLibBlueprint"], commands)
-            self.assertIn(["exe", "checkdecls", "blueprint/lean_decls"], commands)
-            self.assertTrue((root / "home_page/docs/index.html").is_file())
-            self.assertTrue((root / "home_page/blueprint/index.html").is_file())
+            self.assertIn(["exe", "checkdecls", "website/blueprint/lean_decls"], commands)
+            self.assertTrue((root / "build/site/index.html").is_file())
+            self.assertTrue((root / "build/site/docs/index.html").is_file())
+            self.assertTrue((root / "build/site/blueprint/index.html").is_file())
+            self.assertTrue((root / "build/site/blueprint.pdf").is_file())
+            self.assertFalse((root / "website/library/docs").exists())
+            self.assertFalse((root / "website/library/blueprint").exists())
+            self.assertFalse((root / "blueprint").exists())
 
 
 if __name__ == "__main__":

@@ -11,7 +11,7 @@ Issue source: https://github.com/lalalune/ArkLib/issues/464.
 File:
 
 ```text
-Research/ProximityPrize/Frontier/RatioProfileDegreeObstruction.lean
+ArkLib/Research/ProximityGap/Frontier/RatioProfileDegreeObstruction.lean
 ```
 
 This pass adds:
@@ -87,8 +87,8 @@ structured per-line incidence layer.
 ## Validation
 
 ```text
-./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/RatioProfileDegreeObstruction.lean
-./scripts/lake-locked.sh build Research.ProximityPrize.Frontier.RatioProfileDegreeObstruction
+./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/RatioProfileDegreeObstruction.lean
+./scripts/lake-locked.sh build ArkLib.Research.ProximityGap.Frontier.RatioProfileDegreeObstruction
 ```
 
 The new theorem audit lines report only the standard Lean axioms:

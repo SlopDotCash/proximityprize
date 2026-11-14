@@ -81,7 +81,7 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         nargs="+",
         default=DEFAULT_LEAN_ROOTS,
-        help="Root directories to scan for .lean files (default: ArkLib, Research, and ProximityPrize)",
+        help="Root directories to scan for .lean files (default: ArkLib (including research and tests))",
     )
     parser.add_argument(
         "--references-json",

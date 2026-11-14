@@ -1,0 +1,355 @@
+/-
+Copyright (c) 2026 Ember Arlynx. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Ember Arlynx, Tobias Rothmann
+-/
+import ArkLib.Commitments.Functional.KZG.HardnessAssumptions
+import ArkLib.Extensions.Commitments.Functional.KZG.ConcreteTrapdoor
+
+/-!
+# Unrestricted t-SDH and ARSDH in concrete groups
+
+This file mechanizes a refutation of ArkLib's `Groups.tSdhAssumption` and `Groups.arsdhAssumption`
+at the full adversary class `Set.univ` over concrete prime-order groups. The $t$-SDH assumption
+underlies the KZG polynomial commitment scheme [KZG10]. ArkLib's hardness game gives the adversary the structured
+reference string as concrete group elements, including the verifier leg $g_2^{\tau}$.
+
+The refutation is that a `Classical.choice`-definable adversary is a legal inhabitant of the
+adversary type. From $g_2^{\tau}$ the extractor `dlogOf` (built from ArkLib's own
+`Groups.exists_zmod_power_of_generator`) recovers the trapdoor $\tau : \mathbb{Z}/p$ and returns a
+winning element with probability $1$:
+
+* `not_tSdhAssumption` — `tauExtractingAdversary` wins `tSdhExperiment` below every error `< 1`.
+* `binding_hypotheses_unsatisfiable` — the hypotheses bundling KZG binding to `tSdhAssumption`
+  with the full adversary class are jointly unsatisfiable.
+* `not_arsdhAssumption` / `arsdh_binding_hypotheses_unsatisfiable` — the same for the algebraic
+  RSDH variant, using `arsdhExtractingAdversary` on a challenge set avoiding the trapdoor.
+
+Canonical binding uses an explicit adversary class and a reduction-membership premise.
+Hardness against efficient adversaries remains open. A generic-group model restricts how adversaries
+access group elements. An algebraic-group representation requirement specifies outputs.
+Excluding unbounded computation of their coefficients requires a separate efficiency bound.
+The generic bound in upstream PR #655's companion `GgmEndToEnd` file is outside this port.
+
+## References
+
+* Boneh, D., and Boyen, X., *Short Signatures Without Random Oracles*.
+* [Kate, A., Zaverucha, G. M., and Goldberg, I., *Constant-Size Commitments to Polynomials and
+    Their Applications*][KZG10]
+* Shoup, V., *Lower Bounds for Discrete Logarithms and Related Problems*.
+* Maurer, U., *Abstract Models of Computation in Cryptography*.
+* Fuchsbauer, G., Kiltz, E., and Loss, J., *The Algebraic Group Model and its Applications*.
+-/
+
+open OracleSpec OracleComp
+open scoped NNReal ENNReal
+
+namespace ArkLibVacuity
+
+section Dlog
+
+variable {p : ℕ} [Fact (Nat.Prime p)]
+
+/-- Every value in the support of ArkLib's trapdoor sampler is nonzero. -/
+lemma sampleNonzeroZMod_ne_zero {τ : ZMod p}
+    (hτ : τ ∈ support (Groups.sampleNonzeroZMod (p := p))) : τ ≠ 0 := by
+  have hp : 1 < p := Nat.Prime.one_lt Fact.out
+  have : NeZero (p - 1) := ⟨Nat.pos_iff_ne_zero.mp (Nat.sub_pos_of_lt hp)⟩
+  have : NeZero p := ⟨Nat.pos_iff_ne_zero.mp (Nat.zero_lt_of_lt hp)⟩
+  rw [Groups.sampleNonzeroZMod, support_map] at hτ
+  obtain ⟨i, -, rfl⟩ := hτ
+  have hi := i.isLt
+  have hlt : (i : ℕ) + 1 < p := by omega
+  intro hzero
+  simp only at hzero
+  have hdvd : (((i : ℕ) + 1 : ℕ) : ZMod p) = 0 := by push_cast; exact hzero
+  rw [ZMod.natCast_eq_zero_iff] at hdvd
+  exact absurd (Nat.le_of_dvd (Nat.succ_pos _) hdvd) (not_le.mpr hlt)
+
+/-- ArkLib's trapdoor sampler never fails. -/
+lemma probFailure_sampleNonzeroZMod : prFail (Groups.sampleNonzeroZMod (p := p)) = 0 :=
+  OracleComp.prFail_eq_zero _
+
+end Dlog
+
+section Refutation
+
+-- `PrimeOrderWith G₁ p` is deliberately absent: the t-SDH solution the adversary returns
+-- lives in `G₁` as a bare group element, so nothing in this section needs `G₁` prime-order.
+variable {p : ℕ} [Fact (Nat.Prime p)]
+  {G₁ : Type} [Group G₁] {g₁ : G₁}
+  {G₂ : Type} [Group G₂] [PrimeOrderWith G₂ p] {g₂ : G₂}
+
+/-- The winning t-SDH adversary. It reads `g₂ ^ τ` out of the *verifier* leg of the SRS,
+recovers `τ` by `Classical.choice`, and returns the t-SDH solution at offset `c = 0`.
+It makes ZERO oracle queries: all of its work happens under `pure`, which the free monad
+`ProbComp` does not charge for. -/
+noncomputable def tauExtractingAdversary (hg₂ : g₂ ≠ 1) (D : ℕ) :
+    Groups.tSdhAdversary (G₁ := G₁) (G₂ := G₂) (p := p) D :=
+  fun srs => pure (some (0, g₁ ^ (1 / dlogOf (p := p) hg₂ srs.2[1]).val))
+
+/-- The t-SDH game with the exhibited adversary collapses to a single `map` over the
+trapdoor sampler: the adversary has already recovered `τ`. -/
+lemma game_run_eq (hg₂ : g₂ ≠ 1) (D : ℕ) :
+    (Groups.tSdhGame (g₁ := g₁) (g₂ := g₂) D
+      (tauExtractingAdversary (G₁ := G₁) (g₁ := g₁) (g₂ := g₂) (p := p) hg₂ D)).run
+      = (fun τ : ZMod p => some (τ, (0 : ZMod p), g₁ ^ (1 / τ).val))
+          <$> Groups.sampleNonzeroZMod := by
+  simp [Groups.tSdhGame, tauExtractingAdversary, Groups.PowerSrs.generate,
+    Groups.PowerSrs.tower, dlogOf_pow hg₂]
+
+/-- The exhibited adversary wins the t-SDH game with probability exactly `1`. -/
+theorem tSdhExperiment_tauExtractingAdversary (hg₂ : g₂ ≠ 1) (D : ℕ) :
+    Groups.tSdhExperiment (g₁ := g₁) (g₂ := g₂) D
+      (tauExtractingAdversary (G₁ := G₁) (g₁ := g₁) (g₂ := g₂) (p := p) hg₂ D) = 1 := by
+  classical
+  let game := Groups.tSdhGame (g₁ := g₁) (g₂ := g₂) D
+    (tauExtractingAdversary (g₁ := g₁) (p := p) hg₂ D)
+  change Pr{let x ← OptionT.mk game.run}[Groups.tSdhCondition (g₁ := g₁) x] = 1
+  rw [OptionT.prEvent_mk_eq_one_iff, show game.run = _ from game_run_eq (g₁ := g₁) hg₂ D]
+  intro o ho
+  rw [support_map] at ho
+  obtain ⟨τ, hτ, rfl⟩ := ho
+  exact ⟨_, rfl, by simp [Groups.tSdhCondition, sampleNonzeroZMod_ne_zero hτ]⟩
+
+/-- **The refutation.** `tSdhAssumption` at `Set.univ` is false for every error bound `< 1`,
+at every degree `D`, in every prime-order group pair with a nontrivial `g₂`.
+No hypothesis about the size of `p` is needed: this is not an asymptotic statement. -/
+theorem not_tSdhAssumption (hg₂ : g₂ ≠ 1) (D : ℕ) (error : ℝ≥0) (herr : (error : ℝ≥0∞) < 1) :
+    ¬ Groups.tSdhAssumption (p := p) (G₁ := G₁) (G₂ := G₂) (g₁ := g₁) (g₂ := g₂) D Set.univ error := by
+  intro h
+  have hle := h (tauExtractingAdversary (G₁ := G₁) (g₁ := g₁) (g₂ := g₂) (p := p) hg₂ D) (Set.mem_univ _)
+  rw [tSdhExperiment_tauExtractingAdversary (g₁ := g₁) hg₂ D] at hle
+  exact absurd (lt_of_le_of_lt hle herr) (lt_irrefl 1)
+
+omit [PrimeOrderWith G₂ p] in
+/-- **The other regime.** For any error bound `≥ 1`, `tSdhAssumption` at `Set.univ` holds: a
+success probability is always `≤ 1`. For a nontrivial verifier generator,
+`not_tSdhAssumption` covers the other regime `error < 1`. -/
+theorem tSdhAssumption_trivial_of_one_le (D : ℕ) (error : ℝ≥0)
+    (herr : (1 : ℝ≥0∞) ≤ (error : ℝ≥0∞)) :
+    Groups.tSdhAssumption (p := p) (G₁ := G₁) (G₂ := G₂) (g₁ := g₁) (g₂ := g₂) D Set.univ error := by
+  intro adversary _
+  refine le_trans ?_ herr
+  rw [Groups.tSdhExperiment]
+  exact prEvent_le_one _
+
+/-! ### Canary
+
+A gate that accepts everything is a broken gate. The two lemmas below check that
+`tSdhExperiment` is not *constantly* `1` — i.e. that the probability-1 theorem above is a
+statement about the exhibited adversary and not an artifact of the probability machinery. -/
+
+/-- An adversary that simply gives up. -/
+def givingUpAdversary (D : ℕ) : Groups.tSdhAdversary (G₁ := G₁) (G₂ := G₂) (p := p) D :=
+  fun _ => pure none
+
+omit [PrimeOrderWith G₂ p] in
+/-- CANARY: giving up loses with probability `1`, so `tSdhExperiment` discriminates. -/
+theorem tSdhExperiment_givingUpAdversary (D : ℕ) :
+    Groups.tSdhExperiment (g₁ := g₁) (g₂ := g₂) D
+      (givingUpAdversary (G₁ := G₁) (G₂ := G₂) (p := p) D) = 0 := by
+  classical
+  let game := Groups.tSdhGame (g₁ := g₁) (g₂ := g₂) D
+    (givingUpAdversary (G₁ := G₁) (G₂ := G₂) (p := p) D)
+  change Pr{let x ← OptionT.mk game.run}[Groups.tSdhCondition (g₁ := g₁) x] = 0
+  rw [OptionT.prEvent_mk_eq_zero_iff]
+  intro x hx
+  simp [game, givingUpAdversary] at hx
+
+/-- CANARY: consequently the probability-1 result is not vacuous — the two adversaries
+are genuinely separated by the experiment. -/
+theorem experiment_discriminates (hg₂ : g₂ ≠ 1) (D : ℕ) :
+    Groups.tSdhExperiment (g₁ := g₁) (g₂ := g₂) D
+      (givingUpAdversary (G₁ := G₁) (G₂ := G₂) (p := p) D)
+    ≠ Groups.tSdhExperiment (g₁ := g₁) (g₂ := g₂) D
+      (tauExtractingAdversary (G₁ := G₁) (g₁ := g₁) (g₂ := g₂) (p := p) hg₂ D) := by
+  rw [tSdhExperiment_givingUpAdversary (g₁ := g₁) (g₂ := g₂) D,
+    tSdhExperiment_tauExtractingAdversary (g₁ := g₁) hg₂ D]
+  exact zero_ne_one
+
+end Refutation
+
+section BindingIsVacuous
+
+variable {p : ℕ} [Fact (Nat.Prime p)]
+  {G₁ : Type} [Group G₁] [PrimeOrderWith G₁ p] {g₁ : G₁}
+  {G₂ : Type} [Group G₂] [PrimeOrderWith G₂ p] {g₂ : G₂}
+  {Gₜ : Type} [Group Gₜ] [PrimeOrderWith Gₜ p]
+  [Module (ZMod p) (Additive G₁)] [Module (ZMod p) (Additive G₂)]
+  [Module (ZMod p) (Additive Gₜ)]
+
+/-- `binding`'s own pairing hypothesis forces the G₂ generator to be nontrivial,
+because the pairing is `ZMod p`-bilinear and therefore kills the identity. -/
+lemma g₂_ne_one_of_pairing_ne_zero
+    (pairing : (Additive G₁) →ₗ[ZMod p] (Additive G₂) →ₗ[ZMod p] (Additive Gₜ))
+    (hpair : pairing (Additive.ofMul g₁) (Additive.ofMul g₂) ≠ 0) : g₂ ≠ 1 := by
+  intro h
+  apply hpair
+  rw [show (Additive.ofMul g₂) = 0 from congrArg Additive.ofMul h]
+  exact map_zero _
+
+/-- Pairing nondegeneracy excludes the full adversary class from t-SDH binding below
+error one. The canonical binding theorem also permits smaller classes. -/
+theorem binding_hypotheses_unsatisfiable
+    (pairing : (Additive G₁) →ₗ[ZMod p] (Additive G₂) →ₗ[ZMod p] (Additive Gₜ))
+    (hpair : pairing (Additive.ofMul g₁) (Additive.ofMul g₂) ≠ 0)
+    (n : ℕ) (tSdhError : ℝ≥0) (herr : (tSdhError : ℝ≥0∞) < 1) :
+    ¬ Groups.tSdhAssumption (p := p) (G₁ := G₁) (G₂ := G₂) (g₁ := g₁) (g₂ := g₂) n Set.univ tSdhError :=
+  not_tSdhAssumption (g₁ := g₁) (g₂_ne_one_of_pairing_ne_zero pairing hpair) n tSdhError herr
+
+end BindingIsVacuous
+
+/-! ## ARSDH at the full adversary class
+
+The unrestricted adversary chooses a size-`D + 1` set avoiding `τ`. This requires
+`p ≥ D + 2`, the same field-size condition used by canonical function binding.
+-/
+
+section ArsdhRefutation
+
+open CompPoly CompPoly.CPolynomial
+
+-- The combinatorial helpers below are group-free — they need only `ZMod p`. The group and
+-- sampling instances enter with the second `variable` block, just before the adversary.
+variable {p : ℕ} [Fact (Nat.Prime p)]
+
+/-- A computable vanishing product is nonzero outside its support.
+Adapted from Tobias Rothmann's native KZG function-binding support to keep this
+refutation independent of the commitment protocol and its security theorem. -/
+private lemma vanishingProduct_eval_ne_zero {S : Finset (ZMod p)} {τ : ZMod p}
+    (hτS : τ ∉ S) :
+    (∏ s ∈ S, (X - C s : CPolynomial (ZMod p))).eval τ ≠ 0 := by
+  have hpoly : (∏ s ∈ S, (X - C s : CPolynomial (ZMod p))).toPoly =
+      ∏ s ∈ S, (Polynomial.X - Polynomial.C s) := by
+    have h : ∀ x : CPolynomial (ZMod p), x.toPoly = ringEquiv x := fun _ => rfl
+    simp_rw [h, map_prod, map_sub, ← h, X_toPoly, C_toPoly]
+  rw [eval_toPoly, hpoly, Polynomial.eval_prod, Finset.prod_ne_zero_iff]
+  intro s hs
+  simp only [Polynomial.eval_sub, Polynomial.eval_X, Polynomial.eval_C]
+  exact fun h => hτS (by simpa [sub_eq_zero.mp h] using hs)
+
+/-- When `p ≥ D + 2` there is a size-`D+1` subset of `ZMod p` avoiding any given `τ`.
+Not an algorithm — `Finset.exists_subset_card_eq` on `univ.erase τ`. -/
+lemma exists_finset_card_avoiding (D : ℕ) (hpD : D + 2 ≤ p) (τ : ZMod p) :
+    ∃ S : Finset (ZMod p), S.card = D + 1 ∧ τ ∉ S := by
+  have : NeZero p := ⟨Nat.pos_iff_ne_zero.mp (Nat.Prime.pos Fact.out)⟩
+  have hcard : D + 1 ≤ (Finset.univ.erase τ).card := by
+    rw [Finset.card_erase_of_mem (Finset.mem_univ τ), Finset.card_univ, ZMod.card]
+    omega
+  obtain ⟨t, ht_sub, ht_card⟩ := Finset.exists_subset_card_eq hcard
+  exact ⟨t, ht_card, fun h => (Finset.mem_erase.mp (ht_sub h)).1 rfl⟩
+
+/-- The trapdoor-indexed choice of avoiding set. Choice-definable, like `dlogOf`. -/
+noncomputable def chosenFinset (D : ℕ) (hpD : D + 2 ≤ p) (τ : ZMod p) : Finset (ZMod p) :=
+  (exists_finset_card_avoiding (p := p) D hpD τ).choose
+
+lemma chosenFinset_card (D : ℕ) (hpD : D + 2 ≤ p) (τ : ZMod p) :
+    (chosenFinset (p := p) D hpD τ).card = D + 1 :=
+  (exists_finset_card_avoiding (p := p) D hpD τ).choose_spec.1
+
+lemma chosenFinset_not_mem (D : ℕ) (hpD : D + 2 ≤ p) (τ : ZMod p) :
+    τ ∉ chosenFinset (p := p) D hpD τ :=
+  (exists_finset_card_avoiding (p := p) D hpD τ).choose_spec.2
+
+variable {G₁ : Type} [Group G₁] [PrimeOrderWith G₁ p] {g₁ : G₁}
+  {G₂ : Type} [Group G₂] [PrimeOrderWith G₂ p] {g₂ : G₂}
+
+/-- The winning ARSDH adversary. As with `t`-SDH it recovers `τ` from `g₂ ^ τ` in the verifier
+leg of the SRS by `Classical.choice`, then returns the ARSDH solution: a size-`D+1` set `S`
+avoiding `τ`, the nontrivial element `g₁`, and `g₁ ^ (1 / Z_S(τ))`. ZERO oracle queries. -/
+noncomputable def arsdhExtractingAdversary (hg₂ : g₂ ≠ 1) (D : ℕ) (hpD : D + 2 ≤ p) :
+    Groups.arsdhAdversary (G₁ := G₁) (G₂ := G₂) (p := p) D :=
+  fun srs =>
+    pure (some
+      (chosenFinset (p := p) D hpD (dlogOf (p := p) hg₂ srs.2[1]),
+        g₁,
+        g₁ ^ (1 / (∏ s ∈ chosenFinset (p := p) D hpD (dlogOf (p := p) hg₂ srs.2[1]),
+          (X - C s : CPolynomial (ZMod p))).eval (dlogOf (p := p) hg₂ srs.2[1])).val))
+
+omit [PrimeOrderWith G₁ p] in
+/-- The ARSDH game with the exhibited adversary collapses to a single `map` over the trapdoor
+sampler: the adversary has already recovered `τ`, so `S`, `h₁`, `h₂` are functions of `τ`. -/
+lemma arsdh_game_run_eq (hg₂ : g₂ ≠ 1) (D : ℕ) (hpD : D + 2 ≤ p) :
+    (Groups.arsdhGame (g₁ := g₁) (g₂ := g₂) D
+      (arsdhExtractingAdversary (G₁ := G₁) (g₁ := g₁) (g₂ := g₂) (p := p) hg₂ D hpD)).run
+      = (fun τ : ZMod p => some
+          (τ, chosenFinset (p := p) D hpD τ, g₁,
+            g₁ ^ (1 / (∏ s ∈ chosenFinset (p := p) D hpD τ,
+              (X - C s : CPolynomial (ZMod p))).eval τ).val))
+          <$> Groups.sampleNonzeroZMod := by
+  simp [Groups.arsdhGame, arsdhExtractingAdversary, Groups.PowerSrs.generate,
+    Groups.PowerSrs.tower, dlogOf_pow hg₂]
+
+/-- The exhibited adversary wins the ARSDH game with probability exactly `1`. -/
+theorem arsdhExperiment_arsdhExtractingAdversary (hg₁ : g₁ ≠ 1) (hg₂ : g₂ ≠ 1)
+    (D : ℕ) (hpD : D + 2 ≤ p) :
+    Groups.arsdhExperiment (g₁ := g₁) (g₂ := g₂) D
+      (arsdhExtractingAdversary (G₁ := G₁) (g₁ := g₁) (g₂ := g₂) (p := p) hg₂ D hpD) = 1 := by
+  classical
+  let game := Groups.arsdhGame (g₁ := g₁) (g₂ := g₂) D
+    (arsdhExtractingAdversary (g₁ := g₁) (p := p) hg₂ D hpD)
+  change Pr{let x ← OptionT.mk game.run}[Groups.arsdhCondition D x] = 1
+  rw [OptionT.prEvent_mk_eq_one_iff,
+    show game.run = _ from arsdh_game_run_eq (g₁ := g₁) hg₂ D hpD]
+  intro o ho
+  rw [support_map] at ho
+  obtain ⟨τ, _, rfl⟩ := ho
+  refine ⟨_, rfl, chosenFinset_card (p := p) D hpD τ, ?_, hg₁, rfl⟩
+  exact vanishingProduct_eval_ne_zero (chosenFinset_not_mem (p := p) D hpD τ)
+
+/-- **The refutation, for ARSDH.** `arsdhAssumption` at `Set.univ` is false for every error bound
+`< 1` (at every degree `D` with `p ≥ D + 2`, in every prime-order group pair with nontrivial
+`g₁, g₂`). Same `Classical.choice` adversary, same argument as `not_tSdhAssumption`. -/
+theorem not_arsdhAssumption (hg₁ : g₁ ≠ 1) (hg₂ : g₂ ≠ 1) (D : ℕ) (hpD : D + 2 ≤ p)
+    (error : ℝ≥0) (herr : (error : ℝ≥0∞) < 1) :
+    ¬ Groups.arsdhAssumption (p := p) (G₁ := G₁) (G₂ := G₂) (g₁ := g₁) (g₂ := g₂) D Set.univ error := by
+  intro h
+  have hle := h (arsdhExtractingAdversary (G₁ := G₁) (g₁ := g₁) (g₂ := g₂) (p := p) hg₂ D hpD) (Set.mem_univ _)
+  rw [arsdhExperiment_arsdhExtractingAdversary (g₁ := g₁) hg₁ hg₂ D hpD] at hle
+  exact absurd (lt_of_le_of_lt hle herr) (lt_irrefl 1)
+
+omit [PrimeOrderWith G₂ p] in
+/-- **The other error regime, for ARSDH.** For any error bound `≥ 1`, `arsdhAssumption` at `Set.univ` holds. Combined with `not_arsdhAssumption`, this exhausts the error regimes when
+`D + 2 ≤ p`, which is the regime consumed by `function_binding`. -/
+theorem arsdhAssumption_trivial_of_one_le (D : ℕ) (error : ℝ≥0)
+    (herr : (1 : ℝ≥0∞) ≤ (error : ℝ≥0∞)) :
+    Groups.arsdhAssumption (p := p) (G₁ := G₁) (G₂ := G₂) (g₁ := g₁) (g₂ := g₂) D Set.univ error := by
+  intro adversary _
+  refine le_trans ?_ herr
+  rw [Groups.arsdhExperiment]
+  exact prEvent_le_one _
+
+/-- CANARY: an ARSDH adversary that gives up loses with probability `1`, so `arsdhExperiment`
+discriminates — the probability-`1` result above is about the exhibited adversary, not an
+artifact of the machinery. -/
+def arsdhGivingUpAdversary (D : ℕ) : Groups.arsdhAdversary (G₁ := G₁) (G₂ := G₂) (p := p) D :=
+  fun _ => pure none
+
+omit [PrimeOrderWith G₂ p] in
+theorem arsdhExperiment_givingUpAdversary (D : ℕ) :
+    Groups.arsdhExperiment (g₁ := g₁) (g₂ := g₂) D
+      (arsdhGivingUpAdversary (G₁ := G₁) (G₂ := G₂) (p := p) D) = 0 := by
+  classical
+  let game := Groups.arsdhGame (g₁ := g₁) (g₂ := g₂) D
+    (arsdhGivingUpAdversary (G₁ := G₁) (G₂ := G₂) (p := p) D)
+  change Pr{let x ← OptionT.mk game.run}[Groups.arsdhCondition D x] = 0
+  rw [OptionT.prEvent_mk_eq_zero_iff]
+  intro x hx
+  simp [game, arsdhGivingUpAdversary] at hx
+
+/-- Nontrivial generators and the field-size condition of function binding exclude the
+full adversary class below error one. -/
+theorem arsdh_binding_hypotheses_unsatisfiable (hg₁ : g₁ ≠ 1) (hg₂ : g₂ ≠ 1)
+    (n : ℕ) (hp : n + 2 ≤ p) (arsdhError : ℝ≥0) (herr : (arsdhError : ℝ≥0∞) < 1) :
+    ¬ Groups.arsdhAssumption (p := p) (G₁ := G₁) (G₂ := G₂) (g₁ := g₁) (g₂ := g₂) n Set.univ arsdhError :=
+  not_arsdhAssumption (g₁ := g₁) hg₁ hg₂ n hp arsdhError herr
+
+end ArsdhRefutation
+
+end ArkLibVacuity
+
+#print axioms ArkLibVacuity.not_tSdhAssumption
+#print axioms ArkLibVacuity.tSdhAssumption_trivial_of_one_le
+#print axioms ArkLibVacuity.not_arsdhAssumption
+#print axioms ArkLibVacuity.arsdhAssumption_trivial_of_one_le

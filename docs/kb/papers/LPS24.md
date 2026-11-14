@@ -3,7 +3,7 @@ kind: paper
 bibkey: LPS24
 title: "On Knowledge-Soundness of Plonk in {ROM} from Falsifiable Assumptions"
 year: 2024
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eprint.iacr.org/2024/994
 source_metadata: ../sources/LPS24/metadata.yml
 status: seeded
@@ -57,4 +57,4 @@ knowledge-soundness, which matches ArkLib's long-term protocol ambitions.
 ## Source Access
 
 - Source metadata: [`../sources/LPS24/metadata.yml`](../sources/LPS24/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

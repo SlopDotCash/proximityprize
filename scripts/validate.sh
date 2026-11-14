@@ -78,6 +78,9 @@ trap cleanup EXIT
 echo "# Checking Python regressions"
 uv run --no-project --python 3.12 --with-requirements scripts/requirements-validation.txt python -m unittest discover -s scripts/tests
 
+echo "# Checking repository layout"
+python3 scripts/check-layout.py
+
 echo "# Checking canonical provenance and generated import surfaces"
 ./scripts/check-imports.sh
 
@@ -101,7 +104,7 @@ echo "# Building compile-time acceptance clients"
 echo ""
 echo "# Checking ArkLibTest warning budget"
 uv run --no-project --python 3.12 python ./scripts/check-warning-log.py "$build_log" \
-  --path-prefix ArkLibTest/ \
+  --path-prefix ArkLib/Tests/ \
   --label "ArkLibTest warnings (including admissions)"
 
 echo ""
@@ -147,14 +150,14 @@ echo "# Running measured FRI extractor runtime checks"
 ./scripts/lake-locked.sh exe fri-extractor-runtime
 
 # CI gate 3: flagship theorems depend only on the standard axioms, and every
-# axiom of an audited ArkLib/Research module is a pinned residual. Build every
+# axiom of an audited library or research module is a pinned residual. Build every
 # module the audit imports (flagship and pinned-residual modules) explicitly
 # first, since some sit outside the default `lake build` targets.
 echo ""
 echo "# Axiom audit (flagship theorems, residual-axiom inventory)"
-uv run --no-project --python 3.12 python ./scripts/axiom_audit.py --print-modules \
+uv run --no-project --python 3.12 python scripts/axiom_audit.py --print-modules \
   | xargs ./scripts/lake-locked.sh build
-uv run --no-project --python 3.12 python ./scripts/axiom_audit.py
+uv run --no-project --python 3.12 python scripts/axiom_audit.py
 
 echo ""
 echo "# Testing build timing report fixtures"

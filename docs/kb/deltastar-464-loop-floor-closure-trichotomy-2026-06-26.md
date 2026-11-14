@@ -32,7 +32,7 @@ FloorClosureAtField
 in
 
 ```text
-Research/ProximityPrize/Frontier/_FloorClosureContract.lean
+ArkLib/Research/ProximityGap/Frontier/_FloorClosureContract.lean
 ```
 
 It deliberately sits after the Linnik/TZ arithmetic layer.  If localization and least-prime supply

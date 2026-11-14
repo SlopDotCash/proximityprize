@@ -3,7 +3,7 @@ kind: paper
 bibkey: BBS24
 title: "Formal Verification of the Sumcheck Protocol"
 year: 2024
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/BBS24/metadata.yml
 status: seeded
 related_modules:
@@ -40,4 +40,4 @@ It provides direct comparison context for the repo's sum-check specification lay
 ## Source Access
 
 - Source metadata: [`../sources/BBS24/metadata.yml`](../sources/BBS24/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

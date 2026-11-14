@@ -3,13 +3,13 @@ Copyright (c) 2025 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
-import ProximityPrize.Compatibility.AveragedRbr.Security.Execution
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Compatibility.AveragedRbr.Security.Execution
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.Data.Probability.Notation
-import ProximityPrize.Compatibility.UniformProbability
-import ProximityPrize.Extensions.OracleReduction.Security.Basic
+import ArkLib.Compatibility.UniformProbability
+import ArkLib.Extensions.OracleReduction.Security.Basic
 import ArkLib.ToVCVio.Simulation
-import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
+import ArkLib.Extensions.OracleReduction.Security.RoundByRound
 import ArkLib.ToVCVio.Lemmas
 
 /-!

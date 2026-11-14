@@ -3,7 +3,7 @@ kind: paper
 bibkey: GaoKL24
 title: "Linear Proximity Gap for Linear Codes within the 1.5 Johnson Bound"
 year: "2024"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eprint.iacr.org/2024/1810
 source_metadata: ../sources/GaoKL24/metadata.yml
 status: stub
@@ -38,4 +38,4 @@ TODO: record important missing theorems, abstractions, or proof gaps.
 ## Source Access
 
 - Source metadata: [`../sources/GaoKL24/metadata.yml`](../sources/GaoKL24/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Logup.Security.SumcheckSoundnessLift
 
 /-!
@@ -32,7 +32,7 @@ to round `i.castSucc` then samples the challenge.
 
 The implication is the classical **union bound over rounds**, whose two protocol-independent
 ingredients are already proven axiom-clean in the downstream round-by-round extension
-(`ProximityPrize/Extensions/OracleReduction/Security/RoundByRound.lean`):
+(`ArkLib/Extensions/OracleReduction/Security/RoundByRound.lean`):
 
 * the *first-crossing / pigeonhole* core (`exists_challenge_flip_of_full`): a run that starts
   rejecting (`sf` false at round `0`, since `stmtIn ∉ langIn` via `toFun_empty`) but ends accepting
@@ -147,7 +147,7 @@ already the summed bound, so it packages (i) the per-round marginal domination (
 prover / verifier / later-round steps threaded by the full run but omitted by the per-round game
 contribute only failure mass; cf. the trailing-drop transports
 `probEvent_simulateQ_run'_elimM_trailing_le`, `probEvent_simulateQ_run'_bind_trailing_le` in
-`ProximityPrize/Extensions/OracleReduction/Security/RoundByRound.lean`), (ii) the first-crossing
+`ArkLib/Extensions/OracleReduction/Security/RoundByRound.lean`), (ii) the first-crossing
 pigeonhole (`exists_challenge_flip_of_full`) and (iii) the finite union bound
 (`probEvent_le_sum_of_imp_exists`). It is a hypothesis, not a theorem: it is **false** for some
 state-mutating shared-oracle implementations (the Boolean-state counterexample in the header of

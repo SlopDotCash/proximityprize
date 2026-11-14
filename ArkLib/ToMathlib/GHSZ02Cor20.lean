@@ -5,9 +5,9 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ListDecoding.GHSZ02Foundations
 import ArkLib.Data.CodingTheory.ListDecoding.Bounds
-import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
-import ProximityPrize.Extensions.Data.CodingTheory.HammingBallVolume
-import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ArkLib.Extensions.Data.CodingTheory.ListDecodability
+import ArkLib.Extensions.Data.CodingTheory.HammingBallVolume
+import ArkLib.Extensions.Data.CodingTheory.ReedSolomon
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Data.Nat.Choose.Bounds
 

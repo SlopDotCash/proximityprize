@@ -3,7 +3,7 @@
 > **Later status (linked 2026-10-28, audit T48).** The positive-gap observations below
 > ("`G_p > 0` throughout", "`|L| ≤ G_0` (growing margin)", "margin GROWING") have been retracted.
 > They rested on an incorrect char-0 energy, a naive integer lift that is wrong at `r ≥ 4`.
-> `Research/ProximityPrize/Frontier/_CharPStepRatioMonotoneFails.lean` exhibits negative char-`p`
+> `ArkLib/Research/ProximityGap/Frontier/_CharPStepRatioMonotoneFails.lean` exhibits negative char-`p`
 > gaps for exact energy triples at `n = 32, p = 786433, r = 3` and `n = 64, p = 2752513, r = 2`.
 > The Lean file kernel-checks the gap arithmetic, and the audit re-computed the supplied energies.
 > So the dominance hypothesis `G_0 + L ≥ 0` fails at concrete cells, and the char-`p` step-ratio

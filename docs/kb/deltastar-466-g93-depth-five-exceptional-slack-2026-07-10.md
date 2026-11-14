@@ -1,7 +1,7 @@
 # G93 retraction: quotient-envelope arithmetic is not a raw-sector decoder
 
 Lean artifact:
-`Research/ProximityPrize/Frontier/_G93DepthFiveExceptionalSlackWeld.lean`.
+`ArkLib/Research/ProximityGap/Frontier/_G93DepthFiveExceptionalSlackWeld.lean`.
 
 G93 originally interpreted the generic scaling-orbit allowance
 

@@ -3,7 +3,7 @@ kind: paper
 bibkey: GWZC19
 title: "Plonk: Permutations over lagrange-bases for oecumenical noninteractive arguments of knowledge"
 year: 2019
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eprint.iacr.org/2019/953.pdf
 source_metadata: ../sources/GWZC19/metadata.yml
 status: seeded
@@ -53,4 +53,4 @@ formalization of the original paper.
 ## Source Access
 
 - Source metadata: [`../sources/GWZC19/metadata.yml`](../sources/GWZC19/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

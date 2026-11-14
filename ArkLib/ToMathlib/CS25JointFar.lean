@@ -262,7 +262,7 @@ theorem rs_epsCA_implies_lambda_extended_cs25_complete
 
 This inhabits the ABF26 T5.3 / CS25 proposition
 `CodingTheory.rs_epsCA_implies_lambda_extended_cs25` (downstream extension
-`ProximityPrize.Extensions.Data.CodingTheory.Connections.ListDecodingAndCA`), whose statement
+`ArkLib.Extensions.Data.CodingTheory.Connections.ListDecodingAndCA`), whose statement
 now carries the same regime guards `hkn`, `hs_pos`, `hkS` used by the complete deep-hole proof
 (they exclude the full-rate instances on which the unguarded statement was false). -/
 theorem rs_epsCA_implies_lambda_extended_cs25_complete_prop

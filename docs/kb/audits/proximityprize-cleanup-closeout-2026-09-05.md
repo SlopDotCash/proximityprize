@@ -21,7 +21,7 @@ campaign eviction plan does not describe this standalone repository.
   `_research_357/` contains a Stepanov extraction; `_research_ll/` contains a
   historical source extraction; `scratchpad/` contains four orbit-arc probes.
   This change deletes none of them. Their names alone do not establish obsolescence.
-- `mine/` and `home_page/` remain product/site surfaces, outside this evidence
+- `docs/contributing/agent-workflows/` and `website/library/` remain product/site surfaces, outside this evidence
   cleanup. Dependency-closed upstream contributions remain a separate review; branch
   disposition is recorded below.
 

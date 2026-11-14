@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Compatibility.SumcheckKnowledge
+import ArkLib.Compatibility.SumcheckKnowledge
 import ArkLib.OracleReduction.Security.RbrKnowledgeTruncate
 import ArkLib.ProofSystem.Spartan.ShortPhaseRbrKnowledgeLeaves
 

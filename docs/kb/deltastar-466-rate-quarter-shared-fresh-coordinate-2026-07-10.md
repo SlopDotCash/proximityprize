@@ -14,9 +14,9 @@ literal-P1 exclusion are **refuted**.
 Formal kernels (no `sorry`, no declared axioms):
 
 ```text
-Research/ProximityPrize/Frontier/_P1RateQuarterSharedFreshCoordinate.lean
-Research/ProximityPrize/Frontier/_P1RateQuarterSharedFreshTripleRefuted.lean
-Research/ProximityPrize/Frontier/_P1RateQuarterCollinearMismatchCharge.lean
+ArkLib/Research/ProximityGap/Frontier/_P1RateQuarterSharedFreshCoordinate.lean
+ArkLib/Research/ProximityGap/Frontier/_P1RateQuarterSharedFreshTripleRefuted.lean
+ArkLib/Research/ProximityGap/Frontier/_P1RateQuarterCollinearMismatchCharge.lean
 ```
 
 Probe: `scripts/probes/probe_rate_quarter_p1_shared_fresh_coordinate.py`

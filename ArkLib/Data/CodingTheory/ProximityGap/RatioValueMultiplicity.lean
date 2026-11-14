@@ -30,7 +30,7 @@ bounded-degree polynomials `P, Q` on the domain; error words `u − c` of a rece
 low-degree in general, so this is an extra representative hypothesis, not automatic for
 Reed–Solomon / generalized-RS lines.
 
-This is the structure side of the H-EXT inverse direction (see `Research/ProximityPrize/DISPROOF_LOG.md` O159): a value
+This is the structure side of the H-EXT inverse direction (see `docs/research/proximity-gap/DISPROOF_LOG.md` O159): a value
 attained with anomalously high multiplicity forces the level set `{x : P(x) = c·Q(x)}` to be large,
 which a nonzero polynomial of bounded degree cannot allow — so high-multiplicity ratios are
 *algebraically structured* (the numerator/denominator must collude, `P − c·Q ≡ 0`).

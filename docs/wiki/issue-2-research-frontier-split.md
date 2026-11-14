@@ -1,5 +1,8 @@
 # Issue 2: Frontier research split
 
+> Historical migration record. Current source locations are documented in
+> [repository layout](repository-layout.md); earlier destinations below describe that migration.
+
 This migration moves 3,090 Lean modules into `Research/ProximityPrize`: the 3,079
 Frontier modules, nine dependent ProximityGap modules, the root workbench, and
 `TmpCheck` under `Scratch`. The ProximityGap workbench becomes `LegacyWorkbench`;
@@ -7,14 +10,14 @@ the root workbench becomes the research library root. Declaration namespaces and
 proof bodies are preserved. Imports change to the new module paths.
 
 `ResearchProximityPrize` is a separate Lake library. Its thin namespace root
-`Research.ProximityPrize` imports `Research.ProximityPrize.PROXIMITY_PRIZE_WORKBENCH`,
+`ArkLib.Research.ProximityGap` imports `ArkLib.Research.ProximityGap.PROXIMITY_PRIZE_WORKBENCH`,
 which remains the research entry point. The default single-root build follows
 imports instead of an all-submodules glob, preserving the explicit lane exclusions. Its generated `All.lean`
 contains 3,084 imports, preserving the four existing expensive-lane exclusions and
 excluding the scratch checker and root itself. `ArkLib.lean` contains 1,900 imports
 after this slice. Generate both roots after staging added or moved Lean files.
 `update-research-lib.py` refuses to rewrite `All.lean` while an untracked
-`Research/ProximityPrize/**/*.lean` file is present, matching `update-lib.sh`.
+`ArkLib/Research/ProximityGap/**/*.lean` file is present, matching `update-lib.sh`.
 
 ```sh
 ./scripts/update-lib.sh

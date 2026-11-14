@@ -53,6 +53,17 @@ from probe_466_windowed_extremal import (Setting, chained_u0, interp_poly,
                                          poly_eval_vec, shared_u0_pool)
 
 
+def _require(condition, message):
+    """Keep certificate and field checks active under python -O/-OO."""
+    if not condition:
+        raise AssertionError(message)
+
+
+def _require_certified_count(engine_count, certified_count):
+    _require(engine_count == certified_count,
+             f'engine {engine_count} != certified {certified_count}')
+
+
 def v2(m):
     r = 0
     while m % 2 == 0:
@@ -232,7 +243,8 @@ def certified_bad_count(st, u0, pack, a):
         coeffs = interp_poly([int(st.xs[t]) for t in T], [int(w[t]) for t in T], q)
         cv = poly_eval_vec(coeffs, st.xs, q)
         agr = int((cv == w).sum())
-        assert agr >= a, f'CERTIFICATE FAILED gamma={g}: agreement {agr} < {a}'
+        if agr < a:
+            raise AssertionError(f'CERTIFICATE FAILED gamma={g}: agreement {agr} < {a}')
         ok[g] = agr
     return len(ok), sorted(ok.keys())
 
@@ -344,7 +356,7 @@ def attack_direction(st, u1, a, rng, budget, label):
         best = (c1, u1b)
     # certify
     ccount, gammas = certified_bad_count(st, best[1], pack, a)
-    assert ccount == best[0], f'engine {best[0]} != certified {ccount}'
+    _require_certified_count(best[0], ccount)
     print(f'  [{label}] FINAL certified worstBad >= {ccount} '
           f'(every gamma certificate-verified) [{time.time()-t0:.0f}s]', flush=True)
     return dict(label=label, count=ccount, u0=best[1].tolist(), gammas=gammas,
@@ -376,7 +388,8 @@ def mono_baseline(st, a, rng, budget):
                         budget['batch'], budget['nchain'], budget['chunk'])
         # certify the per-direction winner
         cc, _ = certified_bad_count(st, u0b if c1 > c0 else u0, pack, a)
-        assert cc == max(c1, c0)
+        _require(cc == max(c1, c0),
+                 f'mono certify {cc} != search {max(c1, c0)}')
         results[j] = ('far', pack['agreemax'], cc)
         print(f'    mono j={j}: agreemax={pack["agreemax"]} worst={cc}', flush=True)
     far = {j: r[2] for j, r in results.items() if r[0] == 'far'}
@@ -395,7 +408,8 @@ def stage_n16(rng):
           f'a^2={a*a}<=nk={n*k})', flush=True)
     out = {}
     for q in (65617, 65633):
-        assert is_prime(q) and q % n == 1 and q >= n ** 4
+        _require(is_prime(q) and q % n == 1 and q >= n ** 4,
+                 f'bad field q={q} for n={n}')
         st = Setting(n, k, q)
         print(f'\n== q={q} v2={v2(q-1)} omega={st.om} C(n,k)={st.P}', flush=True)
         mu8 = sorted({pow(int(x), 2, q) for x in st.xs})

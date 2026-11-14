@@ -3,7 +3,7 @@ kind: paper
 bibkey: ACFY25
 title: "WHIR: Reed-Solomon Proximity Testing with Super-Fast Verification"
 year: "2025"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/ACFY25/metadata.yml
 status: seeded
 related_concepts:
@@ -48,4 +48,4 @@ numbering from the published version matters, while `ACFY24` tracks the earlier 
 ## Source Access
 
 - Source metadata: [`../sources/ACFY25/metadata.yml`](../sources/ACFY25/metadata.yml)
-- Bibliographic record: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Bibliographic record: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

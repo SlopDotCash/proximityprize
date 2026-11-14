@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.ProofSystem.ToyProblem.Spec.SimplifiedIOR
+import ArkLib.Extensions.ProofSystem.ToyProblem.Spec.SimplifiedIOR
 
 /-!
 # Toy-IOR rewinding algebra: kernel-dependency audit & framework usage (not a security proof)
@@ -41,12 +41,12 @@ The actual knowledge-soundness theorems for the toy protocols are the canonical
 
 ## Where the rewinding-algebra content lives
 
-* `ProximityPrize/Extensions/ProofSystem/ToyProblem/Spec/General.lean` —
+* `ArkLib/Extensions/ProofSystem/ToyProblem/Spec/General.lean` —
   `toyCombine`, `toySolve`, `toySolve_combine`, `toyRewindingExtractor`, `toyAccepts`,
   `toyRewindingExtractor_twoSpecialSound`, `protocol62_knowledgeSoundnessViaRewinding`, and the
   legacy aliases `protocol62_knowledgeSound` / `protocol62_rbrKnowledgeSound` (which, despite
   their names, restate the same abstract predicate and are not proofs of L6.6 / L6.8).
-* `ProximityPrize/Extensions/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean` —
+* `ArkLib/Extensions/ProofSystem/ToyProblem/Spec/SimplifiedIOR.lean` —
   the legacy alias `simplifiedIOR_knowledgeSound` (likewise not a proof of L6.10).
 
 The abstract framework consumed by all of the above is

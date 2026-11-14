@@ -4,7 +4,8 @@ import research from "@/data/research.json";
 
 const repo = "https://github.com/SlopDotCash/proximityprize";
 const source = `${repo}/blob/${research.sourceCommit}`;
-const researchRoot = `${source}/Research/ProximityPrize`;
+const researchRoot = `${source}/ArkLib/Research/ProximityGap`;
+const researchDocs = `${source}/docs/research/proximity-gap`;
 const base = process.env.PAGES_BASE_PATH || "";
 
 export default function Page() {
@@ -124,8 +125,8 @@ export default function Page() {
           satisfiable hypothesis. The separately proved upper bound is unaffected.</p>
         <p className="sources"><a href={`${researchRoot}/Frontier/_SW1_F3_MasterHypothesisVacuous.lean`}>Refutation and theorem statements</a></p>
 
-        <p className="sources"><a href={`${researchRoot}/DOSSIER.md`}>Research dossier</a>
-          <a href={`${researchRoot}/DISPROOF_LOG.md`}>Counterexamples and corrections</a></p>
+        <p className="sources"><a href={`${researchDocs}/DOSSIER.md`}>Research dossier</a>
+          <a href={`${researchDocs}/DISPROOF_LOG.md`}>Counterexamples and corrections</a></p>
       </section>
 
       <section id="open" aria-labelledby="open-title">

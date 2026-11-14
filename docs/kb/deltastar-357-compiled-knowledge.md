@@ -66,7 +66,7 @@ The campaign opened with two parallel nine-hypothesis dossiers (c0/c1, ids
 4679526195/4679532059 — note their R/N/S labels are permuted relative to each other) under
 a standing discipline: constraints → why-nobody → larp-check → falsification probe →
 formalize; every refutation lands in
-`Research/ProximityPrize/DISPROOF_LOG.md` as a sorry-free constraint lemma.
+`docs/research/proximity-gap/DISPROOF_LOG.md` as a sorry-free constraint lemma.
 
 ---
 
@@ -263,10 +263,10 @@ I–II (δ < gs_johnson); the pin additionally needs `RegimeIIIGoodness` (c241, 
 
 ---
 
-## 3. Refutations and dead ends (mirror of Research/ProximityPrize/DISPROOF_LOG.md)
+## 3. Refutations and dead ends (mirror of docs/research/proximity-gap/DISPROOF_LOG.md)
 
 The institutional rule: every dead direction is reduced to a sorry-free constraint lemma in
-`Research/ProximityPrize/DISPROOF_LOG.md` (entries O129–O156 plus the #357
+`docs/research/proximity-gap/DISPROOF_LOG.md` (entries O129–O156 plus the #357
 sections cover this campaign). The campaign disposed of **28 attack hypotheses**; the major
 kills, each with its artifact:
 

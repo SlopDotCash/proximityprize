@@ -3,7 +3,7 @@
 The connected machine-checked theory built around the Proximity Prize's open core,
 spanning `ArkLib/Data/CodingTheory/ProximityGap/`. Every theorem below is axiom-clean
 (`[propext, Classical.choice, Quot.sound]`, 0 sorry). The narrative ledger is
-`Research/ProximityPrize/DISPROOF_LOG.md` entries O35–O117 (numbering shared with other swarm lanes from ~O85);
+`docs/research/proximity-gap/DISPROOF_LOG.md` entries O35–O117 (numbering shared with other swarm lanes from ~O85);
 this page is the stable map.
 
 ## The files

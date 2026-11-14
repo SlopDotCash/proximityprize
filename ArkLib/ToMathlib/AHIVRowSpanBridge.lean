@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Shaw, Aristotle (Harmonic)
 -/
 
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.AHIV22
-import ProximityPrize.Extensions.Data.Probability.Instances
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.AHIV22
+import ArkLib.Extensions.Data.Probability.Instances
 
 /-!
 # AHIV17 affine-line probability bridge (issue #88)

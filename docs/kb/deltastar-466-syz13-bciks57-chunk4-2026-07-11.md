@@ -1,7 +1,7 @@
 # SYZ13 — BCIKS 5.7 program, Chunk C4 (`DiscBudgetSupply`) — 2026-07-11
 
 **Issue #466 · lane: BCIKS20 Claim 5.7 per-cell disc-locus package (SYZ10 chunk plan) · file:**
-`Research/ProximityPrize/Frontier/_SYZ13BCIKS57Chunk4.lean`
+`ArkLib/Research/ProximityGap/Frontier/_SYZ13BCIKS57Chunk4.lean`
 
 ## Verdict
 

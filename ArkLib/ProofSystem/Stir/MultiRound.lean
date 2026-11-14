@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.Stir.RoundVector
-import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.General
+import ArkLib.Extensions.OracleReduction.Composition.Sequential.General
 
 /-!
 # The multi-round STIR fold protocol object (#301)

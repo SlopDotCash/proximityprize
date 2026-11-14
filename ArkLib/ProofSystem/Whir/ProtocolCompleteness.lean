@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.ToMathlib.WhirBricksConstruction
 import ArkLib.OracleReduction.Completeness
-import ProximityPrize.Compatibility.ConstantOutputCompleteness
+import ArkLib.Compatibility.ConstantOutputCompleteness
 import ArkLib.ProofSystem.Whir.Protocol
 
 open OracleSpec OracleComp ProtocolSpec NNReal WhirIOP WhirIOP.Construction

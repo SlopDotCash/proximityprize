@@ -6,7 +6,7 @@ spike), the corrected off-diagonal form acquired an unconditional partial theore
 bookkeeping, a two-sided tower⟺sup equivalence at depth, and a machine-checked reduction of its
 r=2 rung to one classical formalization gap (Hasse for elliptic curves). Every claim below has
 been re-verified against the Lean source (theorem names greppable in
-`Research/ProximityPrize/Frontier/`); discrepancies found during verification are
+`ArkLib/Research/ProximityGap/Frontier/`); discrepancies found during verification are
 flagged inline and collected in §5.
 
 Notation throughout: `F = F_q` (`q = p` prime at the prize instance), `μ_n ⊊ F_p^×` the order-`n`
@@ -274,5 +274,5 @@ classical mathematics with pinned formalization gaps — closing them closes the
 **CORE OPEN, ON-BGK. No fabricated closure.**
 
 <sub>🤖 #466 round 21 consolidation lane, 2026-07-07. Supersedes the 2026-07-04 v1 statement.
-Dossier: `Research/ProximityPrize/DOSSIER.md` §25–§30; DISPROOF tags `466-r15-*` …
+Dossier: `docs/research/proximity-gap/DOSSIER.md` §25–§30; DISPROOF tags `466-r15-*` …
 `466-r20-*`.</sub>

@@ -7,7 +7,7 @@ import ArkLib.ToMathlib.BetaWeightInduction
 import ArkLib.ToMathlib.BetaRecursion
 import ArkLib.ToMathlib.WeightLambdaCalculus
 import ArkLib.ToMathlib.HasseDerivNumerators
-import ProximityPrize.Extensions.Data.Polynomial.RationalFunctions
+import ArkLib.Extensions.Data.Polynomial.RationalFunctions
 import Mathlib
 
 /-!

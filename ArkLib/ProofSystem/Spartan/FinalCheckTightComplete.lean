@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import ArkLib.ProofSystem.Spartan.TightFinalLeaf
 import ArkLib.ToVCVio.OracleComp.SimSemantics.SimulateQ
-import ProximityPrize.Compatibility.CheckClaimPassThrough
+import ArkLib.Compatibility.CheckClaimPassThrough
 
 /-!
 # Completeness of the tight terminal pass-through

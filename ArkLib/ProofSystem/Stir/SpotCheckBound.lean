@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.Stir.CheckedFinalBlock
-import ProximityPrize.Extensions.Data.CodingTheory.Basic.RelativeDistance
+import ArkLib.Extensions.Data.CodingTheory.Basic.RelativeDistance
 
 /-!
 # The spot-check salvage bound (#301)

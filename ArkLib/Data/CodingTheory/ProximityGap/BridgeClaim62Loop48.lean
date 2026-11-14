@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.ListDecEquivLoop47
-import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
+import ArkLib.Extensions.Data.CodingTheory.ReedSolomon
 import Mathlib.Algebra.Polynomial.Div
 import Mathlib.Algebra.Polynomial.Degree.Operations
 
@@ -38,7 +38,7 @@ itself (`lineMeetsCode_iff`), because the quotient always exists.  No fixed rece
 line, no closeness transfer, and no MCA no-joint-agreement property is established; the
 statement that these realized values are actually bad scalars for one fixed far line (the
 geometric bridge of Claim 6.2) remains an explicit external assumption, as does the
-many-values input.  See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop48).
+many-values input.  See `docs/research/proximity-gap/DISPROOF_LOG.md` (Loop48).
 -/
 
 open Finset Polynomial

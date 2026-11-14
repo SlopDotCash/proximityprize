@@ -8,7 +8,7 @@ import Mathlib.Algebra.MvPolynomial.PDeriv
 import Mathlib.Algebra.Polynomial.HasseDeriv
 import Mathlib.Combinatorics.Enumerative.Partition.Basic
 import Mathlib.Data.Nat.Choose.Multinomial
-import ProximityPrize.Extensions.Data.Polynomial.RationalFunctions
+import ArkLib.Extensions.Data.Polynomial.RationalFunctions
 import ArkLib.Data.Polynomial.PowerSeriesComposition
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.GammaGenuine
 

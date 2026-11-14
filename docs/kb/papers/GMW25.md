@@ -3,7 +3,7 @@ kind: paper
 bibkey: GMW25
 title: "A Simplified Round-by-round Soundness Proof of FRI"
 year: 2025
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eprint.iacr.org/2025/1993
 source_metadata: ../sources/GMW25/metadata.yml
 status: mapped

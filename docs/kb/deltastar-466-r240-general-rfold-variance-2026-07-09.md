@@ -19,7 +19,7 @@ joint limit at logarithmic depth.
 New file:
 
 ```text
-Research/ProximityPrize/Frontier/_R240GeneralRFoldVariance.lean
+ArkLib/Research/ProximityGap/Frontier/_R240GeneralRFoldVariance.lean
 ```
 
 It introduces the arbitrary-depth representation function:
@@ -971,7 +971,7 @@ bound to the orbit-saved `/ |G|` form.
 Command:
 
 ```bash
-./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R240GeneralRFoldVariance.lean
+./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_R240GeneralRFoldVariance.lean
 ```
 
 Result:

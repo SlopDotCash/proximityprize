@@ -107,7 +107,7 @@ theorem stir_main_of_checkingIOP_small_field_auto
     (hQin : (qNumtoInput : ℝ) ≥ secpar / (-Real.log (1 - δ)))
     (hB : 0 < (Real.log degree) +
       secpar * (Real.log ((Real.log degree) / Real.log (1 / rate (code φ degree))))) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   stir_main_of_checkingIOP_small_field secpar hk hkGe δ hδub hF hδudr hq ε_rbr hεlb hε
     (complexityLeg_rounds M degree k hdeg (by omega))

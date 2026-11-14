@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import ArkLib.ToMathlib.CS25DeepHole
 import ArkLib.ToMathlib.CS25Claim3
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.Errors
 import Mathlib.Data.ZMod.Basic
 
 /-!

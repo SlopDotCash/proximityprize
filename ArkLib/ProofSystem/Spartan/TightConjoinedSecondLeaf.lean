@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
-import ProximityPrize.Compatibility.SumcheckKnowledge
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Compatibility.SumcheckKnowledge
 import ArkLib.ProofSystem.Spartan.SumcheckDeterminismWitnesses
 import ArkLib.ProofSystem.Spartan.SecondSumcheckWithTarget
 import ArkLib.ProofSystem.Spartan.TightMidLeaves

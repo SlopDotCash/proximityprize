@@ -8,7 +8,7 @@ import ArkLib.Data.CodingTheory.ProximityGap.SmoothCubicCapstone
 /-!
 # The cubic/energy supply is SILENT at prize scale (#389, O163)
 
-`Research/ProximityPrize/DISPROOF_LOG.md` O163 states (in PROSE) that the GV/Stepanov
+`docs/research/proximity-gap/DISPROOF_LOG.md` O163 states (in PROSE) that the GV/Stepanov
 additive-energy bound `E(μ_n) ≲ n^{8/3}` makes the energy/cubic supply *silent* at prize
 parameters.  This file proves **absolute** supply bounds `S < 2^128` for the cubic word's
 explainable-3-core count `S` when `n ≤ 2^40` (one conditional on a named GV input, one

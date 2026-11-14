@@ -166,12 +166,12 @@ Pin the exact challenge-index ledger and transitive axioms of exported endpoints
 independent adversarial review and validate the final source with its dependencies.
 The owning trackers record progress; this guide does not duplicate PR status or review logs.
 
-[rsg]: ../../ArkLibTest/ProofSystem/RingSwitching/Packing/RingSwitch/UnequalRankSuffix.lean
-[quirky]: ../../ArkLibTest/ProofSystem/RingSwitching/Packing/RingSwitch/Quirky.lean
-[coordinate]: ../../ArkLibTest/ProofSystem/RingSwitching/Packing/RingSwitch/CoordinateSample.lean
-[zero]: ../../ArkLibTest/ProofSystem/RingSwitching/Packing/RingSwitch/ZeroVariables.lean
+[rsg]: ../../ArkLib/Tests/ProofSystem/RingSwitching/Packing/RingSwitch/UnequalRankSuffix.lean
+[quirky]: ../../ArkLib/Tests/ProofSystem/RingSwitching/Packing/RingSwitch/Quirky.lean
+[coordinate]: ../../ArkLib/Tests/ProofSystem/RingSwitching/Packing/RingSwitch/CoordinateSample.lean
+[zero]: ../../ArkLib/Tests/ProofSystem/RingSwitching/Packing/RingSwitch/ZeroVariables.lean
 [binius]: ../../ArkLib/ProofSystem/Binius/FRIBinius/RingSwitch.lean
-[composite]: ../../ArkLibTest/ProofSystem/RingSwitching/Conformance/BiniusComposition.lean
+[composite]: ../../ArkLib/Tests/ProofSystem/RingSwitching/Conformance/BiniusComposition.lean
 [hachi]: ../../ArkLib/Commitments/Functional/Hachi/TraceHead/Conformance.lean
 
-[two-rounds]: ../../ArkLibTest/ProofSystem/RingSwitching/Packing/RingSwitch/TwoRounds.lean
+[two-rounds]: ../../ArkLib/Tests/ProofSystem/RingSwitching/Packing/RingSwitch/TwoRounds.lean

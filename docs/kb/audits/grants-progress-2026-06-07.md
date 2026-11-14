@@ -24,7 +24,7 @@ target ArkLib, measured against the actual repository state on `main`.
 ## Grant 1 — STIR & WHIR constructions in ArkLib (executable specifications)
 *Awarded: Nethermind · Q4 2025*
 
-### STIR (`ArkLib/ProofSystem/Stir/`, `blueprint/src/proof_systems/stir.tex`)
+### STIR (`ArkLib/ProofSystem/Stir/`, `website/blueprint/src/proof_systems/stir.tex`)
 
 | Component | Lean | Status |
 |---|---|---|
@@ -66,9 +66,9 @@ assembly on top.
 ## Grant 2 — Blueprint STIR and WHIR security theorems
 *Awarded: Least Authority · Q1 2025*
 
-- `blueprint/src/proof_systems/stir.tex`: **complete & cross-linked** (proximity gap, quotient,
+- `website/blueprint/src/proof_systems/stir.tex`: **complete & cross-linked** (proximity gap, quotient,
   OOD, folding facts, combine, degree correction, main thm, RBR soundness).
-- `blueprint/src/proof_systems/whir.tex`: **complete & cross-linked** (MCA defs/lemmas, folding,
+- `website/blueprint/src/proof_systems/whir.tex`: **complete & cross-linked** (MCA defs/lemmas, folding,
   block distance, list-decoding lemmas, OOD, Thm 5.2). The two `*_CONJECTURE` items are correctly
   flagged as open/refuted rather than hidden behind a `sorry`.
 - Blueprint accurately tracks proof status; no fabricated `\leanok` on open statements.
@@ -107,7 +107,7 @@ strict DSFS residuals are post-grant security hardening for the full CO25 Lemma 
 `KeyLemmaEagerResidual`, `D2sQueryStepGSpecBudgetResidual`, and
 `D2fOuterImplSharedBudgetResidual`. See
 [`issue-314-fiat-shamir-closeout-2026-06-10.md`](issue-314-fiat-shamir-closeout-2026-06-10.md).
-**Blueprint gap closed:** `blueprint/src/oracle_reductions/fiat_shamir.tex` now covers the
+**Blueprint gap closed:** `website/blueprint/src/oracle_reductions/fiat_shamir.tex` now covers the
 canonical and duplex-sponge constructions, codec/salted variants, and proof/residual status.
 
 ---
@@ -151,10 +151,10 @@ axioms are the 9 capacity/correlated-agreement antecedents.
 
 ### Blueprint coverage
 
-- `blueprint/src/coding_theory/defs.tex`: **definitions covered** (code distance, RS code,
+- `website/blueprint/src/coding_theory/defs.tex`: **definitions covered** (code distance, RS code,
   proximity gap, list-decodability, smooth/constrained codes).
 - **FRI blueprint section: MISSING** (`proof_systems/fri.tex` did not exist) — **addressed in this
-  pass**, see [`fri.tex`](../../../blueprint/src/proof_systems/fri.tex) (added grounded in the Lean
+  pass**, see [`fri.tex`](../../../website/blueprint/src/proof_systems/fri.tex) (added grounded in the Lean
   names above). Batched-FRI section still TODO.
 
 ---

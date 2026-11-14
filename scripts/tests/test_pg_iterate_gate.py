@@ -15,7 +15,6 @@ import unittest
 from pathlib import Path
 
 SCRIPT = Path(__file__).resolve().parents[1] / "pg-iterate.sh"
-RESIDUAL_ALLOWLIST = Path(__file__).resolve().parents[1] / "residual_axioms.txt"
 # Resolve once: on Windows an unresolved "bash" reaches the WSL stub in
 # System32 before PATH is searched.
 BASH = shutil.which("bash")
@@ -36,18 +35,10 @@ NATIVE_BRICK = "theorem fast : 2 ^ 10 = 1024 := by native_decide\n"
 UNSAFE_BRICK = "unsafe def escape : Nat := 0\n"
 
 
-def documented_residual() -> str:
-    for raw in RESIDUAL_ALLOWLIST.read_text(encoding="utf-8").splitlines():
-        line = raw.split("#", 1)[0].strip()
-        if line:
-            return line.split()[0]
-    return ""
-
-
 @unittest.skipIf(BASH is None, "bash is required")
 class PgIterateGateParity(unittest.TestCase):
     def run_iterate(self, source: str, *, elapsed: str = "", quiet: bool = False,
-                    lake_rc: int = 0):
+                    lake_rc: int = 0, residual_pin: str | None = None):
         with tempfile.TemporaryDirectory(prefix="pg-iterate-test-") as tmp:
             root = Path(tmp)
             probe = root / "Probe.lean"
@@ -63,7 +54,20 @@ class PgIterateGateParity(unittest.TestCase):
                 "FAKE_LAKE_STDOUT": elapsed,
                 "FAKE_LAKE_RC": str(lake_rc),
             }
-            args = [BASH, str(SCRIPT)]
+            script = SCRIPT
+            if residual_pin is not None:
+                scripts = root / "scripts"
+                scripts.mkdir()
+                for name in (SCRIPT.name, "forbidden_tokens.py", "lean_lexer.py",
+                             "check-iteration-output.py"):
+                    shutil.copyfile(SCRIPT.parent / name, scripts / name)
+                digest = "0" * 64
+                (scripts / "residual_axioms.txt").write_text(
+                    f"{residual_pin} ArkLib/Fixture.lean sha256:{digest}\n",
+                    encoding="utf-8",
+                )
+                script = scripts / SCRIPT.name
+            args = [BASH, str(script)]
             if quiet:
                 args.append("-q")
             args.append(str(probe))
@@ -144,19 +148,33 @@ class PgIterateGateParity(unittest.TestCase):
         )
 
     def test_documented_residual_stays_allowed(self):
-        residual = documented_residual()
-        if not residual:
-            self.skipTest("scripts/residual_axioms.txt documents no residual")
+        residual = "Fixture.residual"
         self.assert_accepted(
-            CLEAN, elapsed=f"'brick' depends on axioms: [{residual}]\n")
+            CLEAN, residual_pin=residual,
+            elapsed=f"'brick' depends on axioms: [{residual}]\n",
+        )
 
-    def test_namespaced_residual_matches_its_entry(self):
-        residual = documented_residual()
-        if not residual:
-            self.skipTest("scripts/residual_axioms.txt documents no residual")
+    def test_residual_requires_its_full_name(self):
+        for name in ("residual", "Other.residual", "Other.Fixture.residual"):
+            with self.subTest(name=name):
+                self.assert_rejected(
+                    CLEAN, 2, name, residual_pin="Fixture.residual",
+                    elapsed=f"'brick' depends on axioms: [{name}]\n",
+                )
+
+    def test_quoted_residual_name_can_contain_list_punctuation(self):
         self.assert_accepted(
-            CLEAN,
-            elapsed=f"'brick' depends on axioms: [ArkLib.ProximityGap.{residual}]\n",
+            CLEAN, residual_pin="Fixture.«a,b]c»",
+            elapsed="'brick' depends on axioms: [«Fixture».«a,b]c», propext]\n",
+        )
+        self.assert_rejected(
+            CLEAN, 2, "Other.ax", residual_pin="Fixture.«a,b]c»",
+            elapsed="'brick' depends on axioms: [Fixture.«a,b]c», Other.ax]\n",
+        )
+
+    def test_malformed_name_cannot_normalize_to_a_standard_axiom(self):
+        self.assert_rejected(
+            CLEAN, 2, "?propext", elapsed="'brick' depends on axioms: [?propext]\n",
         )
 
     def test_quiet_mode_does_not_hide_a_failed_audit(self):

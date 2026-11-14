@@ -4,8 +4,8 @@
 ArkLib's interaction layer (`ArkLib/Interaction/`). The
 [current-status page](00-current-status.md) records what has landed and the supported dependency
 versions. Protocol-level status, including the legacy-layer protocol developments, is on the
-public [roadmap](../../ROADMAP.md), which also states the
-[migration plan](../../ROADMAP.md#priority-replace-the-legacy-layer): feature parity, ports with
+public [roadmap](../project/roadmap.md), which also states the
+[migration plan](../project/roadmap.md#priority-replace-the-legacy-layer): feature parity, ports with
 a proved equivalence, then deletion of the legacy layer. The design documents define the model: see the
 [oracle-reduction core](02-oracle-reduction-core.md),
 [oracle execution and security games](03-adversarial-oracle-execution.md), and

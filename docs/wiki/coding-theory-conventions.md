@@ -290,7 +290,7 @@ sorry -- <classification> [Citation].
 
 - `<classification>` ∈ `{external admit, bridge, derived, in-tree admit}`.
 - `[Citation]` is a bibliography key with a statement locator (`[GG25 Cor 4.9]`), and that key
-  must have an entry in [`blueprint/src/references.bib`](../../blueprint/src/references.bib). For
+  must have an entry in [`website/blueprint/src/references.bib`](../../website/blueprint/src/references.bib). For
   a derived item, name the results it follows from instead.
 
 Each such `sorry` should correspond to a row in

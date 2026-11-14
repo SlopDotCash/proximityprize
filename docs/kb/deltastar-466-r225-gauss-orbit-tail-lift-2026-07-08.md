@@ -6,7 +6,7 @@ Date: 2026-07-08
 
 Added:
 
-- `Research/ProximityPrize/Frontier/_R225GaussOrbitTailLift.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_R225GaussOrbitTailLift.lean`
 
 The file proves that the stability hypothesis in R224 is automatic for the
 actual Gauss-period spectrum.  If `G` is a finite multiplicative subgroup and
@@ -41,7 +41,7 @@ formal orbit bookkeeping plus Gauss-period coset invariance.
 ## Verification
 
 ```bash
-./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R225GaussOrbitTailLift.lean
+./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_R225GaussOrbitTailLift.lean
 ```
 
 Result:

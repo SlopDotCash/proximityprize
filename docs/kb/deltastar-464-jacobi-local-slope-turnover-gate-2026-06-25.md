@@ -4,7 +4,7 @@ Date: 2026-06-25
 
 ## Artifact
 
-- Lean: `Research/ProximityPrize/Frontier/_JacobiLocalSlopeTurnoverGate.lean`
+- Lean: `ArkLib/Research/ProximityGap/Frontier/_JacobiLocalSlopeTurnoverGate.lean`
 - Status: Form-D guardrail; not a delta-star proof.
 
 ## Inputs checked

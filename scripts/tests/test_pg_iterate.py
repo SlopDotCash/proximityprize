@@ -27,10 +27,11 @@ class PgIterateDiagnostics(unittest.TestCase):
             result.source_argument = str(source)
             return result
 
-    def test_uses_project_autoimplicit_policy(self):
+    def test_uses_project_autoimplicit_policy_and_full_axiom_names(self):
         result = self.run_wrapper("checked")
         self.assertEqual(result.invoked_arguments,
-                         ["env", "lean", "-DautoImplicit=false", result.source_argument])
+                         ["env", "lean", "-DautoImplicit=false", "-Dpp.fullNames=true",
+                          result.source_argument])
 
     def test_filenames_and_benign_text_do_not_mean_failure(self):
         result = self.run_wrapper(

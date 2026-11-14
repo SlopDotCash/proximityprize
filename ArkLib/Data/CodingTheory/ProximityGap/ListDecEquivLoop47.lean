@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ProximityPrize.Extensions.Data.Probability.Combinatorial
+import ArkLib.Extensions.Data.Probability.Combinatorial
 import Mathlib.Tactic
 
 /-!
@@ -58,7 +58,7 @@ Consequently this file does **not** machine-check "list-decoding failure ⟹ pri
 not establish the claimed equivalence of the prize with RS list-decoding to `1−ρ−η` (the converse
 direction, Loop8/O6′, is likewise a separate claim). This is not an assertion that the cited
 paper's reduction is false — only that its translation is not formalized here. The prize remains
-OPEN. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop47).
+OPEN. See `docs/research/proximity-gap/DISPROOF_LOG.md` (Loop47).
 -/
 
 open Finset Probability

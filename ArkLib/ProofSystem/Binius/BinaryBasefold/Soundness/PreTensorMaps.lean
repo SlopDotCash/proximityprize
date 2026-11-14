@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.Lift
+import ArkLib.Extensions.ProofSystem.Binius.BinaryBasefold.Soundness.Lift
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.IteratedFoldAdvances
 import ArkLib.ProofSystem.Binius.BinaryBasefold.BaseFoldDetBrick
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.FinalConstantWeld

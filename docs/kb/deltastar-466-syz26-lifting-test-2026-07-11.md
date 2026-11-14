@@ -105,6 +105,6 @@ untouched.
 
 Axiom-clean (`propext`/`Classical.choice`/`Quot.sound`); no `sorry`, no `native_decide`.
 ```
-files: Research/ProximityPrize/Frontier/_SYZ26LiftingTest.lean
+files: ArkLib/Research/ProximityGap/Frontier/_SYZ26LiftingTest.lean
        scripts/probes/probe_syz26_lifting_test.py
 ```

@@ -3,7 +3,7 @@ kind: paper
 bibkey: LFKN92
 title: "Algebraic methods for interactive proof systems"
 year: 1992
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://doi.org/10.1145/146585.146605
 source_metadata: ../sources/LFKN92/metadata.yml
 status: seeded
@@ -55,4 +55,4 @@ sum-check protocol formalization under `ProofSystem/Sumcheck`.
 ## Source Access
 
 - Source metadata: [`../sources/LFKN92/metadata.yml`](../sources/LFKN92/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

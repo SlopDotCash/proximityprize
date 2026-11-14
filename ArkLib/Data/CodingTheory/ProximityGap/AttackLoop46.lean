@@ -68,7 +68,7 @@ should keep `|G^{(+ℓ)}|` far below `choose(|G|, ℓ)` — but this is **unprov
 **Honest status.** This loop is `sorry`-free and axiom-clean. All declared results are elementary
 §7 *parameter* identities, prize *comparison* arithmetic, and the trivial subset-count ceiling; none
 is a construction or a subset-sum lower bound. It does **not** prove or refute the O11 bound, so the
-prize remains OPEN. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop46/O11).
+prize remains OPEN. See `docs/research/proximity-gap/DISPROOF_LOG.md` (Loop46/O11).
 -/
 
 namespace ArkLib.ProximityGap.AttackLoop46

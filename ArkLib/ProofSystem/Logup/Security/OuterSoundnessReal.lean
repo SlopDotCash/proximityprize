@@ -3,11 +3,11 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ProximityPrize.Compatibility.UniformProbability
+import ArkLib.Compatibility.UniformProbability
 import ArkLib.ProofSystem.Logup.Security.SoundnessConverse
 import ArkLib.ProofSystem.Logup.Security.OuterRun
 import ArkLib.ProofSystem.Logup.Security.OuterCompleteness
-import ProximityPrize.Extensions.Data.Probability.Instances
+import ArkLib.Extensions.Data.Probability.Instances
 import ArkLib.Data.Probability.MarginalBound
 import Mathlib.Algebra.Polynomial.Roots
 

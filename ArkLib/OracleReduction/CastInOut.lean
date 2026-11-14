@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao, Chung Thai Nguyen
 -/
 
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
-import ProximityPrize.Extensions.OracleReduction.Cast
-import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.Append
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Extensions.OracleReduction.Cast
+import ArkLib.Extensions.OracleReduction.Composition.Sequential.Append
 
 /-!
   # Statement-level casts for oracle reductions and oracle verifiers

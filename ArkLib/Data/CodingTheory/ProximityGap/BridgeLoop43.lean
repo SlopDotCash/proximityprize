@@ -52,7 +52,7 @@ count is:
 
 This brick isolates one sufficient quantity (an `n`-uniform bound on the number of bad
 challenge-orbits); it does not show that the remaining open content of the prize is equivalent to
-it. See `Research/ProximityPrize/DISPROOF_LOG.md` (Loop43).
+it. See `docs/research/proximity-gap/DISPROOF_LOG.md` (Loop43).
 -/
 
 namespace ArkLib.ProximityGap.BridgeLoop43

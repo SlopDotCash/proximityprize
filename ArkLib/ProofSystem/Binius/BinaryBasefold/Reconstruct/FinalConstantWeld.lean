@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Relations
+import ArkLib.Extensions.ProofSystem.Binius.BinaryBasefold.Relations
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.FinalOracleBridge
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.IteratedFoldToLevel
 

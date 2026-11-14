@@ -9,7 +9,7 @@ import Mathlib
 # Li–Wan exact subset-sum equidistribution (the exact `N_fib` value)
 
 New machinery from the 2026-06-13 proximity-prize literature sweep (see the archived
-`Research/ProximityPrize/kb/archive/RESEARCH_SYNTHESIS_389.md`). Li–Wan, *Counting subset sums
+`docs/research/proximity-gap/archive/RESEARCH_SYNTHESIS_389.md`). Li–Wan, *Counting subset sums
 of finite abelian groups* (JCTA 119(1), 2012), Cor. 1.4, concerns a finite abelian group `G`
 (`|G| = s`) and the subset-sum fibre `N(k,b) = #{T ⊆ G : |T| = k, Σ T = b}`, where `T` ranges
 over subsets of the **whole** group `G` and `Σ` is the group operation of `G`.

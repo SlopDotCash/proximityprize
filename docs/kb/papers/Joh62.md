@@ -3,7 +3,7 @@ kind: paper
 bibkey: Joh62
 title: "A new upper bound for error-correcting codes"
 year: "1962"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/Joh62/metadata.yml
 status: seeded
 related_concepts:
@@ -106,4 +106,4 @@ Xplore.
 ## Source Access
 
 - Source metadata: [`../sources/Joh62/metadata.yml`](../sources/Joh62/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

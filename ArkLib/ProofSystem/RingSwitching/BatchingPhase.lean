@@ -4,15 +4,15 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
 
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.RingSwitching.Prelude
 import ArkLib.ProofSystem.RingSwitching.Spec
-import ProximityPrize.Extensions.OracleReduction.Basic
+import ArkLib.Extensions.OracleReduction.Basic
 import ArkLib.OracleReduction.Completeness
 import ArkLib.OracleReduction.Security.GuardedRoundByRound
-import ProximityPrize.Compatibility.DiscreteProbability
-import ProximityPrize.Compatibility.UniformProbability
-import ProximityPrize.Extensions.Data.Probability.Instances
+import ArkLib.Compatibility.DiscreteProbability
+import ArkLib.Compatibility.UniformProbability
+import ArkLib.Extensions.Data.Probability.Instances
 import ArkLib.Data.Probability.Notation
 import CompPoly.Fields.Binary.Tower.TensorAlgebra
 

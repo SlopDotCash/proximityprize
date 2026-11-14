@@ -12,7 +12,7 @@ Formal kernel (pg-iterate ✅ OK 15s, 7 audited theorems, all on
 `[propext, Classical.choice, Quot.sound]`, no `sorry`/`axiom`):
 
 ```text
-Research/ProximityPrize/Frontier/_P1RateQuarterSmallPoolAssembly.lean
+ArkLib/Research/ProximityGap/Frontier/_P1RateQuarterSmallPoolAssembly.lean
 ```
 
 ## 1. Stage (a): `Z`-relative Johnson (new machinery)

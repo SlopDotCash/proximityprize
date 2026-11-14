@@ -184,7 +184,7 @@ def tracked_sources(ref: str | None = None) -> list[tuple[str, str]]:
     if ref is None:
         paths = [
             path
-            for path in git("ls-files", "--", "ArkLib", "ArkLibTest").splitlines()
+            for path in git("ls-files", "--", "ArkLib").splitlines()
             if path.endswith(".lean")
         ]
         return [(path, Path(path).read_text(encoding="utf-8")) for path in sorted(paths)]
@@ -240,7 +240,8 @@ def markdown_report(
     removed = multiset_difference(base, current)
     lines.extend(
         [
-            f"Compared every tracked Lean file under `ArkLib/` and `ArkLibTest/` with `{base_ref}`. "
+            f"Compared every tracked Lean file under `ArkLib/` (including research and tests) "
+            f"with `{base_ref}`. "
             "This report is visibility, not a `sorry`-debt freeze.",
             "",
             "| Construct | Base | Current | Delta |",

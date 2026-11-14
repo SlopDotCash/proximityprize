@@ -8,12 +8,12 @@ import ArkLib.ProofSystem.RingSwitching.Packing.Algebra
 import ArkLib.ProofSystem.RingSwitching.Packing.Prelude
 import ArkLib.ProofSystem.RingSwitching.Packing.Profile
 import ArkLib.ProofSystem.RingSwitching.Packing.ProfileCoordinates
-import ProximityPrize.Extensions.Data.MvPolynomial.Multilinear
-import ProximityPrize.Extensions.OracleReduction.Basic
-import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
+import ArkLib.Extensions.Data.MvPolynomial.Multilinear
+import ArkLib.Extensions.OracleReduction.Basic
+import ArkLib.Extensions.OracleReduction.Security.RoundByRound
 import CompPoly.Fields.Binary.Tower.TensorAlgebra
 import ArkLib.ProofSystem.RingSwitching.Profile
-import ProximityPrize.Extensions.ProofSystem.Sumcheck.Structured
+import ArkLib.Extensions.ProofSystem.Sumcheck.Structured
 import ArkLib.ToMathlib.PolynomialCombinatorialAuxiliary
 import Mathlib.Data.Fintype.Basic
 import Mathlib.Data.Matrix.Basic

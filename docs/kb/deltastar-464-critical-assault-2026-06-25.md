@@ -11,18 +11,18 @@ files, and the searched PDF library.
 Local documents and code surfaces checked:
 
 - `docs/kb/deltastar-DOSSIER-v2-2026-06-22.md`, including the late §16 correction.
-- `Research/ProximityPrize/CLAUDE.md`.
-- `Research/ProximityPrize/LegacyWorkbench.lean`.
+- `docs/research/proximity-gap/CLAUDE.md`.
+- `ArkLib/Research/ProximityGap/LegacyWorkbench.lean`.
 - `ArkLib/Data/CodingTheory/ProximityGap/OpenCoreConditionalPin.lean`.
 - `ArkLib/Data/CodingTheory/ProximityGap/FarCosetExplosion.lean`.
-- `Research/ProximityPrize/Frontier/_AssaultV2_FloorLocalizationN32.lean`.
-- `Research/ProximityPrize/Frontier/_FloorLinnikThornerZamanArrow.lean`.
-- `Research/ProximityPrize/Frontier/_AvCensusF317.lean`.
-- `Research/ProximityPrize/Frontier/_DoorIVOrderedWalkDoobMajorant.lean`.
-- `Research/ProximityPrize/Frontier/_P2ZqIrreducibilityNoGo.lean`.
-- `Research/ProximityPrize/Frontier/_AvDIR9OrderedWalkMajorant.lean`.
-- `Research/ProximityPrize/Frontier/_FloorDominationInterface.lean`.
-- `Research/ProximityPrize/Frontier/_IncidenceSmoothingDeconvolutionBarrier.lean`.
+- `ArkLib/Research/ProximityGap/Frontier/_AssaultV2_FloorLocalizationN32.lean`.
+- `ArkLib/Research/ProximityGap/Frontier/_FloorLinnikThornerZamanArrow.lean`.
+- `ArkLib/Research/ProximityGap/Frontier/_AvCensusF317.lean`.
+- `ArkLib/Research/ProximityGap/Frontier/_DoorIVOrderedWalkDoobMajorant.lean`.
+- `ArkLib/Research/ProximityGap/Frontier/_P2ZqIrreducibilityNoGo.lean`.
+- `ArkLib/Research/ProximityGap/Frontier/_AvDIR9OrderedWalkMajorant.lean`.
+- `ArkLib/Research/ProximityGap/Frontier/_FloorDominationInterface.lean`.
+- `ArkLib/Research/ProximityGap/Frontier/_IncidenceSmoothingDeconvolutionBarrier.lean`.
 - `docs/references/proximity-gap-paley-spectrum/README.md`.
 - `docs/wiki/residual-census.md`.
 

@@ -8,8 +8,9 @@ import ArkLib.ProofSystem.Sumcheck.Spec.SingleRoundCohWired
 
 /-! # Compatibility for multi-round oracle sum-check completeness
 
-The canonical theorem proves perfect completeness for the full oracle protocol. This wrapper
-keeps the initialization and support parameters used by existing downstream calls. -/
+`Sumcheck.Spec.oracleReduction_perfectCompleteness` in `SingleRound.lean` proves perfect
+completeness for the full oracle protocol. This wrapper keeps the initialization and support
+parameters used by existing downstream calls. -/
 
 open OracleComp OracleSpec ProtocolSpec
 namespace Sumcheck.Spec

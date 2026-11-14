@@ -6,16 +6,16 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-TARGET = 'Research/ProximityPrize/All.lean'
-RESEARCH_LEAN = 'Research/ProximityPrize/*.lean'
+TARGET = 'ArkLib/Research/ProximityGap/All.lean'
+RESEARCH_LEAN = 'ArkLib/Research/ProximityGap/*.lean'
 EXCLUDED = {
     TARGET,
-    'Research/ProximityPrize/PROXIMITY_PRIZE_WORKBENCH.lean',
-    'Research/ProximityPrize/Scratch/TmpCheck.lean',
-    'Research/ProximityPrize/Frontier/_FSMA_SecondMomentPairPartition.lean',
-    'Research/ProximityPrize/Frontier/_FSMC_ForcedCoreSpread.lean',
-    'Research/ProximityPrize/Frontier/_P1RateQuarterSharedFreshTripleRefuted.lean',
-    'Research/ProximityPrize/Frontier/_P1RateQuarterCommonFactorConcreteLocatorAttempt.lean',
+    'ArkLib/Research/ProximityGap/PROXIMITY_PRIZE_WORKBENCH.lean',
+    'ArkLib/Research/ProximityGap/Scratch/TmpCheck.lean',
+    'ArkLib/Research/ProximityGap/Frontier/_FSMA_SecondMomentPairPartition.lean',
+    'ArkLib/Research/ProximityGap/Frontier/_FSMC_ForcedCoreSpread.lean',
+    'ArkLib/Research/ProximityGap/Frontier/_P1RateQuarterSharedFreshTripleRefuted.lean',
+    'ArkLib/Research/ProximityGap/Frontier/_P1RateQuarterCommonFactorConcreteLocatorAttempt.lean',
 }
 
 
@@ -46,7 +46,7 @@ def update(root: Path = ROOT) -> int:
     untracked = untracked_research_lean(root)
     if untracked:
         print(
-            'ERROR: Untracked Lean files under Research/ProximityPrize/ are not '
+            'ERROR: Untracked Lean files under ArkLib/Research/ProximityGap/ are not '
             'included in All.lean generation.',
             file=sys.stderr)
         print('Stage them first, then rerun this script:', file=sys.stderr)

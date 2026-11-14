@@ -4,8 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.Data.CodingTheory.SubspaceDesign
-import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
+import ArkLib.Extensions.Data.CodingTheory.SubspaceDesign
+import ArkLib.Extensions.Data.CodingTheory.ListDecodability
 import ArkLib.Data.CodingTheory.ListDecoding.CZ25DesignToLambda
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Algebra.Order.Floor.Extended

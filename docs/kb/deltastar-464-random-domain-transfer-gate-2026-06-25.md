@@ -6,7 +6,7 @@ Status: axiom-clean Lean gate; does not solve the floor.
 
 ## Artifact
 
-- Lean: `Research/ProximityPrize/Frontier/_RandomDomainTransferGate.lean`
+- Lean: `ArkLib/Research/ProximityGap/Frontier/_RandomDomainTransferGate.lean`
 
 ## Inputs checked
 

@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import ArkLib.Data.CodingTheory.EntropyVolumeUpper
 import ArkLib.Data.CodingTheory.QEntropyMonotone
-import ProximityPrize.Extensions.Data.CodingTheory.HammingBallVolume
+import ArkLib.Extensions.Data.CodingTheory.HammingBallVolume
 
 /-!
 # q-ary Hamming-ball volume UPPER bound (sub-capacity)

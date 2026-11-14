@@ -4,9 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Quang Dao
 -/
 
-import ProximityPrize.Compatibility.DiscreteProbability
-import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
-import ProximityPrize.Extensions.ProofSystem.ConstraintSystem.Plonk
+import ArkLib.Compatibility.DiscreteProbability
+import ArkLib.Extensions.OracleReduction.Security.RoundByRound
+import ArkLib.Extensions.ProofSystem.ConstraintSystem.Plonk
 
 /-!
 

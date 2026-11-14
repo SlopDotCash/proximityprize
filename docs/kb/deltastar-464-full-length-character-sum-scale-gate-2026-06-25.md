@@ -6,7 +6,7 @@ Status: abstract transfer/exponent guardrail; not a prize proof.
 
 ## Artifact
 
-- `Research/ProximityPrize/Frontier/_FullLengthCharacterSumScaleGate.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_FullLengthCharacterSumScaleGate.lean`
 
 ## Local PDFs Checked
 

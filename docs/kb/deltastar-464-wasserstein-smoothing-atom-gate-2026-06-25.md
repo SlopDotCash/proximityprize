@@ -9,7 +9,7 @@ Status: **smoothed-tail consumer and obstruction**, not a delta-star proof.
 The file
 
 ```text
-Research/ProximityPrize/Frontier/_WassersteinSmoothingAtomGate.lean
+ArkLib/Research/ProximityGap/Frontier/_WassersteinSmoothingAtomGate.lean
 ```
 
 formalizes the last-mile gate for smoothing-based Wasserstein or discrepancy arguments.

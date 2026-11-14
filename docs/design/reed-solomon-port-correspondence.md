@@ -119,7 +119,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/Interpolation
 
 `FirstOrderCurveCertificate` keeps its name, mathematical fields, and specialization contract. Its interpolant field uses the destination API's `SourceColumn.interpolant`. No declarations were omitted.
 
-The matching `ArkLibTest/Data/CodingTheory/HiddenDerivative/Interpolation/FirstOrder.lean` remains unchanged and covers first-order support, interpolation, rank, and shifted-height cases. No example was added for this data-only declaration.
+The matching `ArkLib/Tests/Data/CodingTheory/HiddenDerivative/Interpolation/FirstOrder.lean` remains unchanged and covers first-order support, interpolation, rank, and shifted-height cases. No example was added for this data-only declaration.
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/Interpolation/FirstOrder/CurveFinite.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
@@ -245,7 +245,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/Interpolation
 
 `firstOrderExponents_subset_degree_two` was not ported because the destination rank theorem accepts arbitrary degree and agreement parameters directly. `firstOrder_rate_curve_matrix_rank_le` was not added because `rank_firstOrderLocalConstraintMatrix_le`, together with the existing first-order rank-count identity, covers it.
 
-The existing `ArkLibTest/Data/CodingTheory/HiddenDerivative/Interpolation/FirstOrder.lean` acceptance file checks strict dimension surplus and the kernel-height bound for concrete two-point rate parameters, constructs a rate certificate over `ZMod 5` and converts it to a curve certificate, and applies the shared specialization theorem to that certificate.
+The existing `ArkLib/Tests/Data/CodingTheory/HiddenDerivative/Interpolation/FirstOrder.lean` acceptance file checks strict dimension surplus and the kernel-height bound for concrete two-point rate parameters, constructs a rate certificate over `ZMod 5` and converts it to a curve certificate, and applies the shared specialization theorem to that certificate.
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/LowRateSemantics.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
@@ -713,7 +713,7 @@ kept internal.
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/Interpolation/RatePartition/Adapter.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
-Renamed `exists_ratePartitionFinite_certificate` to `exists_partitionSupport_curve_certificate_of_finiteRatio`; generalized it by removing `0 < n`, which follows from `0 < D`, `D ≤ rate * n`, and `0 < rate`. Renamed `exists_ratePartitionRate_certificate` to `exists_partitionSupport_curve_certificate_of_paddedRateBlockThreshold` and `exists_ratePartitionMathematical_certificate` to `exists_partitionSupport_curve_certificate_of_rateBlockThreshold`; both are mathematically unchanged and use the renamed threshold and finite-parameter APIs. No public source declarations were omitted. Acceptance cases in `ArkLibTest/Data/CodingTheory/HiddenDerivative/Interpolation/PartitionSupport.lean` check a concrete finite-ratio certificate and certificates from both block-length thresholds.
+Renamed `exists_ratePartitionFinite_certificate` to `exists_partitionSupport_curve_certificate_of_finiteRatio`; generalized it by removing `0 < n`, which follows from `0 < D`, `D ≤ rate * n`, and `0 < rate`. Renamed `exists_ratePartitionRate_certificate` to `exists_partitionSupport_curve_certificate_of_paddedRateBlockThreshold` and `exists_ratePartitionMathematical_certificate` to `exists_partitionSupport_curve_certificate_of_rateBlockThreshold`; both are mathematically unchanged and use the renamed threshold and finite-parameter APIs. No public source declarations were omitted. Acceptance cases in `ArkLib/Tests/Data/CodingTheory/HiddenDerivative/Interpolation/PartitionSupport.lean` check a concrete finite-ratio certificate and certificates from both block-length thresholds.
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/Parameters/RatePartition/MathematicalUniform.lean` and `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/Parameters/RatePartition/UniformEnvelope.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
@@ -902,7 +902,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/Interpolation
 
 `coeff_interpolant_natDegree_le` becomes `SourceColumn.coeff_interpolant_natDegree_le`, beside the generic source-column interpolant. It is generalized to every derivative order and commutative semirings, preserving coefficient height and support during source-column assembly.
 
-The consolidated acceptance cases, including this port's coefficient-height, support-assembly, symbolic-rank, translated-kernel, rank-profile, weighted-degree, and zero-entry examples, are in `ArkLibTest/Data/CodingTheory/HiddenDerivative/Interpolation/FirstOrder.lean`. The concrete `X^2` rank-bound case uses the generalized rank theorem. The per-module `SymbolicRank` test was removed. The test file adds no public ArkLib declaration.
+The consolidated acceptance cases, including this port's coefficient-height, support-assembly, symbolic-rank, translated-kernel, rank-profile, weighted-degree, and zero-entry examples, are in `ArkLib/Tests/Data/CodingTheory/HiddenDerivative/Interpolation/FirstOrder.lean`. The concrete `X^2` rank-bound case uses the generalized rank theorem. The per-module `SymbolicRank` test was removed. The test file adds no public ArkLib declaration.
 
 ## `ArkLib/Data/CodingTheory/HiddenDerivative/Interpolation/Symbolic/WeightedSupport.lean`
 
@@ -1320,7 +1320,7 @@ Renamed `uniformRatePartitionMathematicalMultiplicity`, `uniformRatePartitionMat
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/Parameters/RatePartition/MathematicalUniform.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
-`uniformMathematical_totalJetDegree_le` now uses `partitionSupport_totalJetDegree_le_of_ambient_lower_bound`; its statement and name are unchanged. The acceptance cases in `ArkLibTest/Data/CodingTheory/HiddenDerivative/Parameters/RatePartition.lean` check the mathematical-uniform parameter examples.
+`uniformMathematical_totalJetDegree_le` now uses `partitionSupport_totalJetDegree_le_of_ambient_lower_bound`; its statement and name are unchanged. The acceptance cases in `ArkLib/Tests/Data/CodingTheory/HiddenDerivative/Parameters/RatePartition.lean` check the mathematical-uniform parameter examples.
 
 ## `ArkLib/Data/CodingTheory/HiddenDerivative/Parameters/RatePartition/Moment.lean`
 
@@ -1549,7 +1549,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/Capacity/Weig
 
 `exists_weightedSupport_hiddenDerivativeConstruction`, `weightedSupport_capacity_list_bound_four_mul`, and `weightedSupport_capacity_list_bound` keep their names and mathematical statements. The construction theorem specializes the existing prescribed construction result. The pointwise list bound uses the destination's order-indexed multiplicity API and gives prefactor `4m` with exponent `2d`, refined to `d` under the large-field condition. The packaged theorem provides `WeightedSupportListBound` using the existing multiplicity positivity characterization. The generic `CapacityGapCertificate.ofPointwiseBound` helper was added to the existing capacity owner file; it has no source declaration and turns pointwise finite-list bounds into exact decoder certificates over arbitrary finite coordinate types. `weightedSupportMultiplicity_pos` was not ported because `weightedSupportMultiplicity_pos_iff` together with `WeightedSupportParameters.prescribed_order_lower` and `capacityDerivativeOrder_eq_ceil` covers it.
 
-The acceptance cases in `ArkLibTest/Data/CodingTheory/ReedSolomon/ListDecodability/Capacity.lean` check the construction contract, the pointwise bound constructor, and the packaged theorem at the prescribed sample parameters. The samples put the zero polynomial in the agreement list at a threshold no greater than the block length, and the pointwise-bound case supplies a positive finite list bound.
+The acceptance cases in `ArkLib/Tests/Data/CodingTheory/ReedSolomon/ListDecodability/Capacity.lean` check the construction contract, the pointwise bound constructor, and the packaged theorem at the prescribed sample parameters. The samples put the zero polynomial in the agreement list at a threshold no greater than the block length, and the pointwise-bound case supplies a positive finite list bound.
 
 ## `ArkLib/Data/CodingTheory/ListDecodability/SymbolMap.lean`
 
@@ -1940,7 +1940,7 @@ The declarations `automaticSurplusSlope_mul_finiteLengthSlack_le_margin`, `finit
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/FirstOrder/LowRateFiniteLength.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
-`lowRateEtaSlope` → `lowRateAgreementSlackSlope` and `lowRateEtaSlope_mul_eta_le_fixed_margin` → `lowRateAgreementSlackSlope_mul_slack_le_fixed_margin` use agreement-slack naming. `lowRateFiniteLengthCertifiedAgreement`, `lowRateFiniteLengthCertifiedAgreement_ge_half_slack`, `lowRateFiniteLengthCertifiedAgreement_lt_one`, `lowRateFiniteLengthCertifiedAgreement_pos`, `lowRateFiniteLengthDensityMargin`, `lowRateFiniteLengthDerivativeCap`, `lowRateFiniteLengthJetDegree`, `lowRateFiniteLengthMultiplicity`, `lowRateFiniteLengthRankCount`, `lowRateFiniteLengthRankRoundingConstant`, `lowRateFiniteLengthSlope`, `lowRateFiniteLengthSourceCount`, and `lowRateInverseLengthSlope` retain their names and statements. `lowRateFiniteLengthDensityMargin_pos`, `lowRateFiniteLengthMultiplicity_pos`, `lowRateFiniteLengthSlope_mul_slack_le_margin`, `lowRateFiniteLengthSlope_pos`, `lowRateFiniteLengthSourceDensity_mul_cube_le_sourceCount`, and `lowRateFiniteLength_count_gap` drop the `rho < 1` premise. `lowRateInverseLengthSlope_div_length_le_gain` drops `rho < 1` and the low-rate branch premise. The first-order acceptance cases in `ArkLibTest/Data/CodingTheory/ReedSolomon/ListDecodability/FirstOrder.lean` check slope positivity and the margin, source-count, generic rank-rounding, and count-gap bounds at `rho = 1/16`, `eta = 1/8`, and `n = 64`.
+`lowRateEtaSlope` → `lowRateAgreementSlackSlope` and `lowRateEtaSlope_mul_eta_le_fixed_margin` → `lowRateAgreementSlackSlope_mul_slack_le_fixed_margin` use agreement-slack naming. `lowRateFiniteLengthCertifiedAgreement`, `lowRateFiniteLengthCertifiedAgreement_ge_half_slack`, `lowRateFiniteLengthCertifiedAgreement_lt_one`, `lowRateFiniteLengthCertifiedAgreement_pos`, `lowRateFiniteLengthDensityMargin`, `lowRateFiniteLengthDerivativeCap`, `lowRateFiniteLengthJetDegree`, `lowRateFiniteLengthMultiplicity`, `lowRateFiniteLengthRankCount`, `lowRateFiniteLengthRankRoundingConstant`, `lowRateFiniteLengthSlope`, `lowRateFiniteLengthSourceCount`, and `lowRateInverseLengthSlope` retain their names and statements. `lowRateFiniteLengthDensityMargin_pos`, `lowRateFiniteLengthMultiplicity_pos`, `lowRateFiniteLengthSlope_mul_slack_le_margin`, `lowRateFiniteLengthSlope_pos`, `lowRateFiniteLengthSourceDensity_mul_cube_le_sourceCount`, and `lowRateFiniteLength_count_gap` drop the `rho < 1` premise. `lowRateInverseLengthSlope_div_length_le_gain` drops `rho < 1` and the low-rate branch premise. The first-order acceptance cases in `ArkLib/Tests/Data/CodingTheory/ReedSolomon/ListDecodability/FirstOrder.lean` check slope positivity and the margin, source-count, generic rank-rounding, and count-gap bounds at `rho = 1/16`, `eta = 1/8`, and `n = 64`.
 
 The source declaration `lowRateFiniteLengthRankCount_le_density_add_rounding` is covered by `firstOrderRankCount_floor_le_density_add_rounding`, which is applied directly in `lowRateFiniteLength_count_gap`. The source-count rounding application uses the generic `cube_mul_sourceDensity_le_firstOrderSourceCount` result.
 
@@ -2125,7 +2125,7 @@ Renamed `polynomialCurveProductMCAConstant` to `polynomialCurveProductAgreementC
 
 Did not port `sourceCurveCutJetDegree_le_uniformCaps_of_exponent`, which is covered by `regularPowerBatchedCutJetDegree_le_two_mul` after deriving `τ ≤ 2*n` from `τ ≤ 2*K` and `K ≤ n`. Did not port `sourceCurveInitialMixedDegree_le_uniformCaps_of_exponent`, which is covered by `regularPowerBatchedInitialMixedDegree_le_uniformCaps` with the same derived exponent bound.
 
-Acceptance cases for `product_stage_bound`, stage uniformization, scalar aggregation, the regular-stage bound, the finite-stage bound, and prescribed-coefficient positivity were appended to `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Capacity.lean`.
+Acceptance cases for `product_stage_bound`, stage uniformization, scalar aggregation, the regular-stage bound, the finite-stage bound, and prescribed-coefficient positivity were appended to `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Capacity.lean`.
 
 ## `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Capacity/RatePartition.lean`
 
@@ -2394,7 +2394,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Frob
 
 `frobeniusInitialGraph` keeps its name and is generalized from a `Fin 1` jet-coordinate function to `Option (Fin 1)`, with the challenge coordinate mapped to `X`, and from fields to commutative semirings. `exists_frobeniusGraph_of_symbolic_prime_sample` keeps its name and is generalized from `Fin n` to an arbitrary embedded type `ι`; Frobenius roots are required only at sampled indices. The theorem is derived from the two-term case of `exists_frobeniusPowerGraph_of_symbolic_prime_sample`.
 
-`symbolicSourceFrobeniusAgreement` is not added because the existing `jointTaylorAgreementEquation` in `PolynomialDifferential.TaylorChartAlgebra` covers it. An acceptance case in `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement.lean` recognizes the zero pair on a positive-dimensional prime component from a one-point sparse sample cut.
+`symbolicSourceFrobeniusAgreement` is not added because the existing `jointTaylorAgreementEquation` in `PolynomialDifferential.TaylorChartAlgebra` covers it. An acceptance case in `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement.lean` recognizes the zero pair on a positive-dimensional prime component from a one-point sparse sample cut.
 
 ## `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FrobeniusIncidence.lean`
 
@@ -2410,7 +2410,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordi
 
 `frobeniusRetainedPairFamily`, `mem_frobeniusRetainedPairFamily_iff`, `frobeniusRetainedPairFamily_card_le`, and `exists_exceptional_frobeniusRetainedPairFamily` retain their names. They are generalized from `Fin n` to any finite embedded coordinate type. The retained family is expressed as a filter of the existing correlated-pair family. The cardinality bound uses the joint initial equation; a global root premise is unnecessary because root equations are included in each admissible pair's sample witness. The exceptional-set theorem specializes the existing exceptional-set theorem for correlated pairs.
 
-Historical acceptance cases in `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement.lean` exhibited a nonempty retained family and checked its graph-coordinate degree bound, then exhibited a retained pair and an exceptional set of size zero for a one-point domain with a one-point sample. The current consolidated suite has no retained-family example. No public source declarations were omitted.
+Historical acceptance cases in `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement.lean` exhibited a nonempty retained family and checked its graph-coordinate degree bound, then exhibited a retained pair and an exceptional set of size zero for a one-point domain with a one-point sample. The current consolidated suite has no retained-family example. No public source declarations were omitted.
 
 ## `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Johnson/Agreement.lean`
 
@@ -2444,7 +2444,7 @@ No new declarations. `exists_exceptional_ordinaryEquation_base`, which came from
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary/Equations/Equation.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
-`ReedSolomon.exists_exceptional_ordinaryEquation` → `ReedSolomon.exists_exceptional_ordinaryEquation`. The theorem retains its mathematical content and replaces the `ChallengeHeightLE` premise with the equivalent `CoeffNatDegreeLE` coefficient-height premise. No declarations were omitted. The matching `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary.lean` acceptance case uses a reducible `Y₀²` equation, obtains an exceptional set of size at most two, and exhibits an outside challenge with an exact correlated-pair witness.
+`ReedSolomon.exists_exceptional_ordinaryEquation` → `ReedSolomon.exists_exceptional_ordinaryEquation`. The theorem retains its mathematical content and replaces the `ChallengeHeightLE` premise with the equivalent `CoeffNatDegreeLE` coefficient-height premise. No declarations were omitted. The matching `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary.lean` acceptance case uses a reducible `Y₀²` equation, obtains an exceptional set of size at most two, and exhibits an outside challenge with an exact correlated-pair witness.
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary/UnifiedCurve.lean` and `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary/PolynomialCurve/Equation.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
@@ -2464,7 +2464,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordi
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary/FactorBudget.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
-Renamed `ordinaryFrobeniusPowerMixedDegree` to `ordinaryFrobeniusCurveMixedDegree` and generalized it with the polynomial curve degree `ell`. Renamed and generalized `ordinaryFrobeniusPowerMixedDegree_eq` and `ordinaryFrobeniusPowerMixedDegree_le` to give its exact form and coarse upper bound; the exact form also covers `b = 0`. Renamed `ordinaryPowerFactorRaw` to `ordinaryCurveFactorRaw`, `ordinaryFrobeniusPower_charge_le` to `ordinaryFrobeniusCurve_charge_le`, and `ordinaryPowerFactorRaw_le_mul` to `ordinaryCurveFactorRaw_le_line_mul`. `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary.lean` checks the exact and coarse degree bounds, the Frobenius curve charge, and the curve-to-line charge comparison at positive parameters.
+Renamed `ordinaryFrobeniusPowerMixedDegree` to `ordinaryFrobeniusCurveMixedDegree` and generalized it with the polynomial curve degree `ell`. Renamed and generalized `ordinaryFrobeniusPowerMixedDegree_eq` and `ordinaryFrobeniusPowerMixedDegree_le` to give its exact form and coarse upper bound; the exact form also covers `b = 0`. Renamed `ordinaryPowerFactorRaw` to `ordinaryCurveFactorRaw`, `ordinaryFrobeniusPower_charge_le` to `ordinaryFrobeniusCurve_charge_le`, and `ordinaryPowerFactorRaw_le_mul` to `ordinaryCurveFactorRaw_le_line_mul`. `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary.lean` checks the exact and coarse degree bounds, the Frobenius curve charge, and the curve-to-line charge comparison at positive parameters.
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary/PolynomialCurve/Assembly.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
@@ -2480,7 +2480,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Firs
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary/Factors/IrreducibleEquation.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
-Ported `exists_exceptional_irreducibleOrdinaryEquation` under the same name, using the current `CoeffNatDegreeLE` interface. The theorem gives a bounded exceptional set for sufficiently agreeing, low-degree solutions of an irreducible ordinary equation and an exact correlated-pair representation outside that set in every characteristic. Nothing was omitted. The acceptance case in `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary.lean` applies it to `Y₀` over `ℂ`, obtains an exceptional set of size at most one, and exhibits a point outside it with an exact correlated-pair witness.
+Ported `exists_exceptional_irreducibleOrdinaryEquation` under the same name, using the current `CoeffNatDegreeLE` interface. The theorem gives a bounded exceptional set for sufficiently agreeing, low-degree solutions of an irreducible ordinary equation and an exact correlated-pair representation outside that set in every characteristic. Nothing was omitted. The acceptance case in `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary.lean` applies it to `Y₀` over `ℂ`, obtains an exceptional set of size at most one, and exhibits a point outside it with an exact correlated-pair witness.
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary/PolynomialCurve/Irreducible.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
@@ -2594,7 +2594,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Powe
 
 Did not port `exists_exceptional_frobeniusPower_challenges_of_sample` because `ReedSolomon.exists_exceptional_exactPowerAgreement` in `PowerBatchedPointRecognition` already covers it: sample agreement proves the required common-agreement lower bound, and specialization to `Fin n` gives the source bound.
 
-The singleton-sample characteristic-two acceptance case in `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement.lean` checked the zero sparse Frobenius pullback and both recognition conclusions; it is historical. The current suite retains the separate symbolic sample case over `ZMod 3` with a nonzero second word component.
+The singleton-sample characteristic-two acceptance case in `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement.lean` checked the zero sparse Frobenius pullback and both recognition conclusions; it is historical. The current suite retains the separate symbolic sample case over `ZMod 3` with a nonzero second word component.
 
 ## `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/GraphLineComponent.lean`
 
@@ -2744,7 +2744,7 @@ Renamed `sourceChartHighCuts` to `jointTaylorHighCutList`, `symbolicSourceNumera
 
 The graph-locus inclusion uses `Set.ncard` cut counts and the explicit exponent `2 * K`. The finite incidence bound uses `L ≤ A` and `A - L + 1 ≤ n`, counts agreement indices with `Set.ncard`, and drops the unnecessary positive cut-degree premise. Its specialization uses `jetTotalDegree` and `CoeffNatDegreeLE` and drops the positive jet-degree premise. No public source declarations were omitted; finite index-set encodings are expressed directly with `Set.ncard`.
 
-The matching acceptance module `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart.lean` replaces the high-cut membership example with two concrete singleton-set examples, one for each finite incidence bound.
+The matching acceptance module `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart.lean` replaces the high-cut membership example with two concrete singleton-set examples, one for each finite incidence bound.
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/SingularTail.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 Added `automaticSquarefreeListBoundConstant` and `automaticSquarefreeListExpression_le` with their source names. The theorem specializes the automatic first-order recipe to a rate-only constant times `n / eta²`, using the shared premise theorem from `AutomaticBounds.lean`. No declarations from the source unit were omitted. The matching acceptance file checks the singular-tail zero case and an automatic bound instance at rate `2 / 49`, slack `1 / 100`, and parameters `n = 100`, `D = 1`, `A = 20`.
@@ -2757,7 +2757,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Tayl
 
 The chart numerator exponent defaulted to `2*K` in the source and is explicit in the destination API. Generalized `admissibleChartPairs_card_le` and `admissibleChartPairFamily_card_le` to remove the positive-`k` premise: for `k > 0` they retain the source incidence estimate, and for `k = 0` the degree conditions force every pair to zero, yielding a singleton bound.
 
-The private source helper `jetDegree_pos_of_initialSeparant_ne_zero` was not ported because the destination incidence theorem handles regular-jet counting without its positivity premise. The existing acceptance file `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart.lean` retains the degree-specialization example and adds a concrete admissible-pair example covering specialization and both cardinal bounds.
+The private source helper `jetDegree_pos_of_initialSeparant_ne_zero` was not ported because the destination incidence theorem handles regular-jet counting without its positivity premise. The existing acceptance file `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart.lean` retains the degree-specialization example and adds a concrete admissible-pair example covering specialization and both cardinal bounds.
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart/PairCounting.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
@@ -2789,7 +2789,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Tayl
 
 The common-center argument uses `Polynomial.exists_forall_eval_ne_zero`, added to the public polynomial API and owned by `SpecializationAvoidance`. `exists_forall_jetEvaluation_ne_zero_of_family` replaces `exists_common_symbolicWitness_center` and generalizes it to a finite indexed family of differential equations and solution polynomials. The existing `exists_forall_jetEvaluation_ne_zero` statement is unchanged and specializes the family theorem.
 
-`HasExactCorrelatedPair` was already defined in `MutualCorrelatedAgreement/ExtensionDescent.lean` with the exact polynomial and agreement-set conditions, so it was not redeclared. No other public declaration from the unit was omitted. `ArkLibTest/Data/Polynomial/Differential.lean` checks a common center for two distinct equations. `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart.lean` checks the exceptional-set theorem, a nonempty singleton in the finite-family bound, and finiteness of the full bad-challenge set.
+`HasExactCorrelatedPair` was already defined in `MutualCorrelatedAgreement/ExtensionDescent.lean` with the exact polynomial and agreement-set conditions, so it was not redeclared. No other public declaration from the unit was omitted. `ArkLib/Tests/Data/Polynomial/Differential.lean` checks a common center for two distinct equations. `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart.lean` checks the exceptional-set theorem, a nonempty singleton in the finite-family bound, and finiteness of the full bad-challenge set.
 
 ## `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TupleSpecialization.lean`
 
@@ -2824,7 +2824,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Poly
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/PowerAgreement.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
-`frobeniusPowerCoordinate`, `frobeniusPowerCoordinate_eval`, and `frobeniusPowerCoordinate_natDegree_le` keep their names. The sparse coordinate is defined by expanding `powerBatchedCoordinate`; all three declarations are generalized from fields to commutative semirings. The acceptance case in `ArkLibTest/Data/CodingTheory/ReedSolomon.lean` checks evaluation at `2` and the degree bound for three values with scale `2`.
+`frobeniusPowerCoordinate`, `frobeniusPowerCoordinate_eval`, and `frobeniusPowerCoordinate_natDegree_le` keep their names. The sparse coordinate is defined by expanding `powerBatchedCoordinate`; all three declarations are generalized from fields to commutative semirings. The acceptance case in `ArkLib/Tests/Data/CodingTheory/ReedSolomon.lean` checks evaluation at `2` and the degree bound for three values with scale `2`.
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/PowerAgreement.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
@@ -3077,7 +3077,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordi
 
 `ReedSolomon.HiddenDerivative.exists_exceptional_ordinaryContent` is renamed to `PolynomialDifferential.exists_exceptional_jet_independent_content` and generalized from fields to commutative integral domains. Its coefficient-height bound uses `MvPolynomial.CoeffNatDegreeLE`. The theorem bounds challenges where a nonzero equation independent of its jet specializes to zero; outside the exceptional set, every polynomial input has nonzero specialization.
 
-The acceptance case in `ArkLibTest/Data/Polynomial/Differential.lean` uses a height-one nonconstant coefficient equation that vanishes at challenge zero and checks that zero belongs to an exceptional set of cardinality at most one. Nothing was deferred or left unported.
+The acceptance case in `ArkLib/Tests/Data/Polynomial/Differential.lean` uses a height-one nonconstant coefficient equation that vanishes at challenge zero and checks that zero belongs to an exceptional set of cardinality at most one. Nothing was deferred or left unported.
 
 ## `ArkLib/Data/Polynomial/Differential/DerivativeDescent.lean`
 
@@ -3197,7 +3197,7 @@ Moved `orderZeroVariableEquiv`, `orderZeroAsPolynomial`, `orderZeroOfPolynomial`
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary/Factors/IrreducibleEquation.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
-Renamed `ordinary_jetWeight_eq_degreeOf` to `jetTotalDegree_eq_jetDegree_zero`. The identity is stated through the canonical jet-degree API in the existing `OrderZeroPresentation` owner and replaces a duplicate local calculation. The acceptance case in `ArkLibTest/Data/Polynomial/Differential.lean` computes the jet degree of `orderZeroOfPolynomial (X ^ 2 + 1)` using this theorem.
+Renamed `ordinary_jetWeight_eq_degreeOf` to `jetTotalDegree_eq_jetDegree_zero`. The identity is stated through the canonical jet-degree API in the existing `OrderZeroPresentation` owner and replaces a duplicate local calculation. The acceptance case in `ArkLib/Tests/Data/Polynomial/Differential.lean` computes the jet degree of `orderZeroOfPolynomial (X ^ 2 + 1)` using this theorem.
 
 ## `ArkLib/Data/Polynomial/Differential/RationalTaylor.lean`
 
@@ -3258,7 +3258,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/RootFinding/S
 
 `initialJetEquationOver_mem_restrictBidegree` and `initialJetSeparantOver_mem_restrictBidegree` become `initialJetEquation_mem_restrictBidegree` and `initialJetSeparant_mem_restrictBidegree` for the current `initialJetEquation` and `initialJetSeparant` APIs. The exponent and default-exponent forms of `commonTaylorNumeratorOver_mem_restrictBidegree` and `taylorAgreementEquationOver_mem_restrictBidegree` are each represented by one explicit-exponent theorem with a sufficiency proof. The agreement bound is stated for a received polynomial over `F[X]`. Separate coefficient-degree and jet-degree bounds support the rectangle results; the jet bounds use `jetTotalDegree`. Default-exponent wrappers are covered using `taylorExponentSufficient_two_mul`, and `flattenChallenge_jetDegree_le` is covered by `MvPolynomial.totalDegree_optionEquivRight`. The agreement-equation definition is supplied by main and retained unchanged; no source theorem remains blocked.
 
-The shared coefficient and bidegree results are generalized in `ArkLib/ToMathlib/MvPolynomial/PolynomialCoefficients.lean` and `ArkLib/ToMathlib/RingTheory/MvPolynomial/Bidegree.lean`: `source_mem_restrictBidegree_mono` becomes `mem_restrictBidegree_mono` for arbitrary `MvPolynomial` coefficients; private `challengeHeightLE_clearedSubstitution` becomes `CoeffNatDegreeLE.clearedSubstitution`, generalized to commutative semirings; and `flattenChallenge_challengeDegree_le` becomes `weightedTotalDegree_optionEquivRight_symm_coefficientDegree_le`, generalized to arbitrary variable types and nontrivial commutative semirings. `flattenChallenge_mem_restrictBidegree` is likewise generalized to those variable and semiring assumptions. The acceptance cases are in `ArkLibTest/Data/Polynomial/Differential.lean`, `ArkLibTest/ToMathlib/MvPolynomial.lean`, and `ArkLibTest/ToMathlib/RingTheory/MvPolynomial.lean`.
+The shared coefficient and bidegree results are generalized in `ArkLib/ToMathlib/MvPolynomial/PolynomialCoefficients.lean` and `ArkLib/ToMathlib/RingTheory/MvPolynomial/Bidegree.lean`: `source_mem_restrictBidegree_mono` becomes `mem_restrictBidegree_mono` for arbitrary `MvPolynomial` coefficients; private `challengeHeightLE_clearedSubstitution` becomes `CoeffNatDegreeLE.clearedSubstitution`, generalized to commutative semirings; and `flattenChallenge_challengeDegree_le` becomes `weightedTotalDegree_optionEquivRight_symm_coefficientDegree_le`, generalized to arbitrary variable types and nontrivial commutative semirings. `flattenChallenge_mem_restrictBidegree` is likewise generalized to those variable and semiring assumptions. The acceptance cases are in `ArkLib/Tests/Data/Polynomial/Differential.lean`, `ArkLib/Tests/ToMathlib/MvPolynomial.lean`, and `ArkLib/Tests/ToMathlib/RingTheory/MvPolynomial.lean`.
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/RootFinding/Symbolic/TaylorDerivativeSupport.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
@@ -5269,7 +5269,7 @@ Ported from `ArkLib/ToMathlib/AlgebraicGeometry/Incidence/DerivativeBidegreeExcl
 
 `derivativeBidegreeHypersurface_source_incidence_off_excluded_hybrid_two_of_lt` and `derivativeBidegreeHypersurface_source_incidence_off_excluded_hybrid_two` are covered by `MvPolynomial.cappedBidegreeHypersurface_incidence_off_excluded_hybrid_two`. The destination theorem is generalized to every positive `c` and drops the assumptions `r ≤ j` and `A ≤ n`. Neither source theorem is omitted.
 
-Acceptance cases in `ArkLibTest/ToMathlib/RingTheory/Nullstellensatz.lean` include a rational point on a positive-dimensional coordinate line, with `n = 4`, `A = 2`, `L = 1`, and `k = 0`. The merged acceptance file retains its principal-open, affine-Hilbert, and zero-locus examples.
+Acceptance cases in `ArkLib/Tests/ToMathlib/RingTheory/Nullstellensatz.lean` include a rational point on a positive-dimensional coordinate line, with `n = 4`, `A = 2`, `L = 1`, and `k = 0`. The merged acceptance file retains its principal-open, affine-Hilbert, and zero-locus examples.
 
 Ported from `ArkLib/ToMathlib/AlgebraicGeometry/Incidence/TwoJet.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
@@ -5375,7 +5375,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Poly
 
 Added `regular_principalOpen_graph_restriction`, which gives ideal restriction and cut nonvanishing when a polynomial graph covers the regular principal open of a positive-dimensional prime component. This shared result is used by both component-recognition results.
 
-## `ArkLibTest/Data/CodingTheory/HiddenDerivative/Interpolation/FirstOrder.lean`
+## `ArkLib/Tests/Data/CodingTheory/HiddenDerivative/Interpolation/FirstOrder.lean`
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/Interpolation/FirstOrder/CurveFinite.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
@@ -5397,9 +5397,9 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/RootFinding/F
 
 An acceptance example invokes `FirstOrderCurveCertificate.jetDegree_one_le` on a concrete curve certificate.
 
-## `ArkLibTest/Data/CodingTheory/HiddenDerivative/Parameters/FirstOrder.lean`
+## `ArkLib/Tests/Data/CodingTheory/HiddenDerivative/Parameters/FirstOrder.lean`
 
-Ported from `ArkLibTest/Data/CodingTheory/ReedSolomon/HiddenDerivative/Parameters/FirstOrder.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
+Ported from `ArkLib/Tests/Data/CodingTheory/ReedSolomon/HiddenDerivative/Parameters/FirstOrder.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 Extended the existing acceptance file with a concrete five-part `automaticParameterBounds` case at rate `1/2` and slack `1/8`, concrete closed list and exception envelope cases, a one-stage direct-ratio separant-chain bound, and the cap identity through `firstOrderCurveStageCap_add_height_eq_of_factors`. Removed the redundant ratio restatement; no separate acceptance module was added.
 
@@ -5407,9 +5407,9 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/RootFinding/F
 
 A nonempty singleton solution family exercises both root-coverage theorems, the regular derivative-capped and identity-pair counts, symbolic raw and optimized counts, field raw and optimized counts, the direct field theorem, and the automatic theorem. Descent examples cover characteristic zero at degree zero and characteristic two at actual degree one with total cap three. A concrete finite-characteristic curve certificate invokes both characteristic-guarded certificate bridges.
 
-## `ArkLibTest/Data/CodingTheory/HiddenDerivative/Parameters/RatePartition.lean`
+## `ArkLib/Tests/Data/CodingTheory/HiddenDerivative/Parameters/RatePartition.lean`
 
-Ported from `ArkLibTest/Data/CodingTheory/ReedSolomon/HiddenDerivative/Parameters/RatePartition.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
+Ported from `ArkLib/Tests/Data/CodingTheory/ReedSolomon/HiddenDerivative/Parameters/RatePartition.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 Acceptance cases use the shared envelope record for the scale-1000 recipe and check the scale-300 order bound, length equality, jet and integer guards, total-jet bound, low- and high-rate ratio branches, and envelope existence.
 
@@ -5417,21 +5417,21 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/Parameters/Ra
 
 Acceptance cases check the mathematical-uniform parameter examples.
 
-## `ArkLibTest/Data/CodingTheory/HiddenDerivative/Parameters/RatePartition.lean` — fixed-rate gate cases
+## `ArkLib/Tests/Data/CodingTheory/HiddenDerivative/Parameters/RatePartition.lean` — fixed-rate gate cases
 
-Ported from `ArkLibTest/Data/CodingTheory/ReedSolomon/HiddenDerivative/Interpolation/RatePartition/FixedRateGate.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
+Ported from `ArkLib/Tests/Data/CodingTheory/ReedSolomon/HiddenDerivative/Interpolation/RatePartition/FixedRateGate.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 The aggregate keeps a concrete strict gate at rate `1/2` and gap `1/4`, together with the selected multiplicity's finite checks and finite-parameter existence. The zero-gap boundary case was removed because the theorem's positive-gap hypothesis states the restriction directly.
 
-## `ArkLibTest/Data/CodingTheory/HiddenDerivative/Parameters/RatePartition.lean` — uniform rate-gamma cases
+## `ArkLib/Tests/Data/CodingTheory/HiddenDerivative/Parameters/RatePartition.lean` — uniform rate-gamma cases
 
-Ported from `ArkLibTest/Data/CodingTheory/ReedSolomon/HiddenDerivative/Interpolation/RatePartition/UniformGamma.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
+Ported from `ArkLib/Tests/Data/CodingTheory/ReedSolomon/HiddenDerivative/Interpolation/RatePartition/UniformGamma.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 The acceptance cases check concrete low- and high-rate base bounds and margins for arbitrary and uniform derivative orders, the uniform order's lower bound, and boundary cases for the small-gap and positive-order hypotheses.
-## `ArkLibTest/Data/CodingTheory/HiddenDerivative/Interpolation/PartitionSupport.lean`
+## `ArkLib/Tests/Data/CodingTheory/HiddenDerivative/Interpolation/PartitionSupport.lean`
 The aggregate keeps concrete low- and high-rate base bounds and margins for the uniform derivative order, together with its lower bound.
 
-Ported from `ArkLibTest/Data/CodingTheory/HiddenDerivative/Interpolation/PartitionSupport.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
+Ported from `ArkLib/Tests/Data/CodingTheory/HiddenDerivative/Interpolation/PartitionSupport.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 Added a concrete order-500 finite-ratio surplus acceptance case. The example uses a natural cutoff satisfying the level bound. The old nested test path was removed; the acceptance case is in this consolidated test file.
 
@@ -5439,38 +5439,38 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/Interpolation
 
 An acceptance case checks a concrete scale-300 curve certificate at `δ = 1/5`.
 
-## `ArkLibTest/Data/CodingTheory/HiddenDerivative/Interpolation/PartitionSupport/MomentSource.lean`
+## `ArkLib/Tests/Data/CodingTheory/HiddenDerivative/Interpolation/PartitionSupport/MomentSource.lean`
 
 This test file was later consolidated into
-`ArkLibTest/Data/CodingTheory/HiddenDerivative/Interpolation/PartitionSupport.lean`.
+`ArkLib/Tests/Data/CodingTheory/HiddenDerivative/Interpolation/PartitionSupport.lean`.
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/Interpolation/RatePartition/SourceEstimate.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 The aggregate includes a concrete `d = 500`, `W = 1` instance of `partitionSupport_dimension_gt_moment`, using the lower-tail second-moment bound at logarithm `log 3000`. It checks the numeric rate and scale hypotheses and exercises the dimension conclusion without generic theorem restatements. The source-specific wrapper is not needed because the existing theorem covers it.
-## `ArkLibTest/Data/CodingTheory/HiddenDerivative/Parameters/WeightedSupport.lean`
+## `ArkLib/Tests/Data/CodingTheory/HiddenDerivative/Parameters/WeightedSupport.lean`
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/Parameters/TaylorCutoff.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 An acceptance example checks a concrete small-gap block against both the Taylor cutoff bound `2 * m - 1 < n` and the ambient-dimension bound.
-## `ArkLibTest/Data/CodingTheory/ReedSolomon.lean`
+## `ArkLib/Tests/Data/CodingTheory/ReedSolomon.lean`
 
-Ported from `ArkLibTest/Data/CodingTheory/ReedSolomon.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
+Ported from `ArkLib/Tests/Data/CodingTheory/ReedSolomon.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 Added a concrete nonvacuity example over `ℚ` for one degree-`< 1` solution agreeing at one coordinate, checking the Reed–Solomon specialization.
 
-## `ArkLibTest/Data/CodingTheory/ReedSolomon/ListDecodability.lean`
+## `ArkLib/Tests/Data/CodingTheory/ReedSolomon/ListDecodability.lean`
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/RootFinding/Counting/DirectJetList.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 Added `ZMod 5` acceptance examples showing the zero polynomial as an agreeing root, applying the regular-stage estimate, and obtaining the finite actual-chain, common-order, and coarse bounds from the final theorem.
 
-## `ArkLibTest/Data/CodingTheory/ReedSolomon/ListDecodability/FirstOrder.lean`
+## `ArkLib/Tests/Data/CodingTheory/ReedSolomon/ListDecodability/FirstOrder.lean`
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/FirstOrder/Profile.lean` and `ArkLib/Data/CodingTheory/ReedSolomon/ListDecodability/FirstOrder/Bounds.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 Acceptance cases check the exact-ceiling and closed cardinality bounds, finite-set and explicit-envelope automatic bounds, both slack bounds, and tight and squarefree profile bounds on a concrete singleton family over `ℚ`.
 
-## `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement.lean`
+## `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement.lean`
 
 **Historical port-time test notes, not current suite coverage.** The following descriptions record
 acceptance cases that existed at earlier port revisions. The consolidated suite currently retains
@@ -5481,11 +5481,11 @@ construction, principal-open chart-graph inclusion, admissible Frobenius-pair co
 principal-open Frobenius-graph inclusion; symbolic point recognition with a nonzero second tuple
 component; and derivative-capped challenge, exceptional-set, and first-order incidence bounds.
 
-Ported from `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
+Ported from `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 The earlier joint-chart acceptance case reusing the shared concrete equation and numerator identity remains historical. The former `K = 2`, `k = 1` component graph case is covered by the current shared fixture: it uses the returned graph proof to show the zero regular point lies on the recognized graph. Current coverage is summarized above.
 
-Ported from `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
+Ported from `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 A historical acceptance example used the algebraic-closure prime-component fixture to check a degree-bounded pair and a nonzero common-agreement count. The current suite retains a compact component-agreement case on the shared fixture, producing a degree-bounded tuple with at least one common agreement.
 
@@ -5493,7 +5493,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Poly
 
 Historical acceptance cases checked a positive-dimensional prime component's sample interpolation, graph coverage, and nonzero restricted separant, along with single-tuple and finite-family exact-agreement bounds. The current suite keeps a compact graph-pair instance with the regular zero point on the returned graph; the shared fixture also supports the component-agreement, chart-admissibility, and incidence examples summarized above.
 
-Ported from `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
+Ported from `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 Historical acceptance cases checked polynomial-valued source-prime bounds, a degree-zero chart prime, chart/source/first-order component bounds, and finite incidence counts. Those broader bounds remain historical; the current suite includes principal-open chart-graph inclusion and Frobenius-graph inclusion instances on the shared component fixture.
 
@@ -5501,7 +5501,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordi
 
 A historical acceptance case applied `admissibleFrobeniusPairs_card_le_degreeOf` to a singleton family containing an admissible pair from the concrete component fixture; that specific cardinal-bound example remains historical, and the production theorem is unchanged. The current suite checks a concrete admissible Frobenius pair and the zero point's membership in its graph.
 
-Ported from `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
+Ported from `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 A historical acceptance example applied `exists_admissibleChartTuple_of_primeTaylorComponent_agreements` to the component ideal, agreement cuts, and separant fixtures. The current suite retains a compact instance of this theorem, constructing an admissible tuple and using its returned graph proof to place the zero regular point on that tuple's graph.
 
@@ -5509,7 +5509,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Poly
 
 Historical acceptance cases invoked the sharp fixed-center and terminal-recognition bounds and checked finite regular and exceptional bad-challenge sets. The current consolidated suite retains one nonempty derivative-capped bad-challenge bound instance, as summarized above.
 
-Ported from `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
+Ported from `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 Kept the nonempty two-message ordinary regular-bound instance. Added concrete checks applying `finite_powerBatchedBadChallenges_card_le_derivativeCapped_of_exponent`, `exists_exceptional_regularPowerBatchedAgreement_derivativeCapped_of_exponent`, and `exists_exceptional_frobeniusPowerSeparableSolutions_at`, with their cardinal bounds, to the challenge set `{0}` over `ℂ`. Removed the standalone finite polynomial-tuple collision example to meet the shared file limit; the stronger root-avoiding specialization example remains.
 
@@ -5529,13 +5529,13 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordi
 
 The source declaration `exists_exceptional_frobeniusFactorSolutions` is covered by `exists_exceptional_frobeniusPowerFactorSolutions`, generalized from a single line to polynomial curves with arbitrary tuple length and the current coefficient-height and jet-degree interfaces. The acceptance example checks the tuple-length-one conversion from exact power agreement to an exact correlated pair using `exactCorrelatedPair_of_powerAgreement_one`. No source declaration is left uncovered. A separate single-line wrapper was omitted because the generalized theorem and conversion theorem already provide its statement.
 
-## `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Capacity.lean`
+## `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Capacity.lean`
 
 Acceptance examples at `δ = 1/5` and `n = uniformMathematicalCapacityLength (1/5)`, with the gap hypothesis derived from the integer guards. There is one example each for the extension-field curve, base-field curve and line theorems, over `ℚ` (and `AlgebraicClosure ℚ`). Each exhibits a challenge outside the exceptional set with an exact witness for the zero candidate.
 
-## `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder.lean`
+## `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder.lean`
 
-Ported from `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
+Ported from `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 Acceptance cases check the base-field height theorem at the tight exponent, the base-field certificate theorem, and the extension-field height and certificate theorems. Both certificate cases reuse a certificate for the same one-point zero curve over `ℚ`.
 
@@ -5560,7 +5560,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Firs
 
 Acceptance examples check the low-rate symbolic certificate, complete-list and exact correlated-agreement rate bounds, and finite-field MCA error at concrete `1/16`-rate parameters. They also check branchwise finite-slack bounds, rate bounds, and finite-field MCA error at concrete `1/2`-rate parameters.
 
-## `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/Squarefree.lean`
+## `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/Squarefree.lean`
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/FirstOrder/Squarefree/FactorwiseList.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
@@ -5574,9 +5574,9 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Firs
 
 An acceptance example takes a concrete rational symbolic line certificate (`n = k = A = 2`, `M = B = 1`) and uses `exists_baseExceptional_retainedSquarefreeLineAgreement_of_certificate` to get a challenge at which `0` has an exact correlated pair with the zero line. A second example uses the concrete curve certificate `certificateCurve` with `exists_baseExceptional_retainedSquarefreeCurveAgreement_sharpOptimized_of_certificate` to get exact power agreement. The existing `_of_tail` example still passes and exercises the refactored general theorem with the ordinary-tail charge.
 
-## `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary.lean`
+## `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary.lean`
 
-Ported from `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
+Ported from `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 An acceptance example checks an exceptional set of size at most one and exact power agreement at a challenge outside it for zero messages over `ℂ`.
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordinary/Equations/BaseEquation.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
@@ -5587,9 +5587,9 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordi
 
 An acceptance example applies `exists_baseExceptional_ordinaryPowerEquation` over `ℚ` to the reducible equation `Y₀²` on a three-point domain, with `n = 3`, `D = 1`, `ℓ = 1`, `h = 0`, `B = 2` and `L = A = 3`. The retention threshold `L = D + 2` lies in the free-retention regime that the fixed-split theorems do not reach. The charge `ordinaryUnifiedPowerFactorAtOrHeight 3 1 1 2 0 3 3` simplifies to `2`, and the example exhibits a challenge outside the exceptional set at which the zero root has exact power agreement with the zero word. Main's existing example for `exists_exceptional_ordinaryEquation_base` is unchanged and covers the fixed split.
 
-## `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart.lean`
+## `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart.lean`
 
-Ported from `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart/PointRecognition.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
+Ported from `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart/PointRecognition.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 The acceptance cases consolidate default and exponent-aware point recognition with `K = 2`, `k = 1`, sample values `(0, 1)`, challenge `2`, and the high cut at `l = 1`; the exponent-aware case uses `τ = 1`. The new shared fixture declarations are `quadraticJetSampleEquation` and `quadraticJetSampleEquation_highNumerator_eq`. The equation has order-one numerator `−(Y₀ − 2)²`, which vanishes at the selected jet and is proved nonzero by evaluation at `Y₀ = 0`.
 
@@ -5597,7 +5597,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Ordi
 
 The acceptance case adds a concrete characteristic-two example with a nonzero one-point sample and checks the Frobenius chart reconstruction.
 
-Ported from `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
+Ported from `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 Acceptance examples check both sharp bounds on a concrete nonempty admissible-pair set and its filtered family at `r = 0`; each bound evaluates to one.
 
@@ -5605,15 +5605,15 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Tayl
 
 An acceptance example checks a concrete nonempty singleton challenge set, its regular chart, three agreements, the absence of an exact degree-bounded pair, and the resulting bound of 12.
 
-## `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart/PointRecognition.lean`
+## `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart/PointRecognition.lean`
 
 This test file was later consolidated into
-`ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart.lean`.
+`ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart.lean`.
 
-Ported from `ArkLibTest/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart/PointRecognition.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
+Ported from `ArkLib/Tests/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/TaylorChart/PointRecognition.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 The acceptance cases check the zero case and a sample with second received value `1`, challenge `2`, `K = 2 > k = 1`, and a satisfied cut at `l = 1`. They check the reconstructed affine polynomial, jet, and cleared coefficient conclusions.
-## `ArkLibTest/Data/Polynomial/Differential.lean`
+## `ArkLib/Tests/Data/Polynomial/Differential.lean`
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/RootFinding/Symbolic/FrobeniusCuts.lean` and `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/RootFinding/Symbolic/TaylorCutDegree.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
@@ -5646,7 +5646,7 @@ The shared acceptance example applies `exists_regular_solution_jet_family_of_exp
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/Parameters/TaylorCutoff.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 Acceptance examples exercise the total-degree cast theorem and check `characteristic_bounds_of_max` over `ZMod 5` with `K = 5` and `ν = 3`, yielding the pivot bound at equality.
-Ported from `ArkLibTest/Data/Polynomial/Differential.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
+Ported from `ArkLib/Tests/Data/Polynomial/Differential.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 The singleton `Y₀ = 0` example instantiates `card_mul_le_jetTotalDegree_mul`, the rational recursive count, its square-bound corollary, the agreement-derived regular-branch budget, the generic finite agreement theorem, and the sharp regular-agreement count. The standalone `Y₀ + Y₁` degree illustration was removed to keep the file under 1,500 lines while retaining the main theorem examples.
 
@@ -5670,7 +5670,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Poly
 
 An acceptance example checks the generic initial-separant cap on the recursive equation fixture.
 
-## `ArkLibTest/Data/Probability/Uniform.lean`
+## `ArkLib/Tests/Data/Probability/Uniform.lean`
 
 Ported from `ArkLib/Data/Probability/Notation.lean` at ArkLib revision
 `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
@@ -5685,15 +5685,15 @@ compatibility calculation is covered by VCVio's `probOutput_true_eq_probEvent` f
 `probEvent_eq_tsum_indicator` or its finite variants, so ArkLib adds no wrapper. The three-sample
 PMF computation is not added, and `$ᵖ` plus `Pr_{…}[…]` remain retired syntax.
 
-## `ArkLibTest/ToMathlib/Analysis/SpecificLimits.lean`
+## `ArkLib/Tests/ToMathlib/Analysis/SpecificLimits.lean`
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/Parameters/GeometricCounting.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 Acceptance examples check the ratio bound at `n = K = A = 2`, `k = 1`, `ν = 2`, and `δ = 1/2`, and the count bound for `L = 20`, `m = d = 1`.
 
-## `ArkLibTest/ToMathlib/MvPolynomial.lean`
+## `ArkLib/Tests/ToMathlib/MvPolynomial.lean`
 
-Ported from `ArkLibTest/ToMathlib/MvPolynomial.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
+Ported from `ArkLib/Tests/ToMathlib/MvPolynomial.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 Acceptance cases check both evaluation directions using nonconstant polynomials and distinct values for the distinguished and remaining variables.
 
@@ -5721,7 +5721,7 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Poly
 
 Acceptance cases check a coefficient lift through degree two and its total-degree bound, plus a multivariate lift with a degree-two coefficient and a jet variable. The multivariate case checks that the power-moment map recovers the flattening and that the lift has total degree at most three.
 
-## `ArkLibTest/ToMathlib/RingTheory/MvPolynomial.lean`
+## `ArkLib/Tests/ToMathlib/RingTheory/MvPolynomial.lean`
 
 Ported from `ArkLib/Data/CodingTheory/ReedSolomon/HiddenDerivative/RootFinding/Symbolic/TaylorDerivativeSupport.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
@@ -5731,11 +5731,11 @@ Ported from `ArkLib/Data/CodingTheory/ReedSolomon/MutualCorrelatedAgreement/Firs
 
 The existing acceptance example exercises `weightedTotalDegree_optionEquivRight_symm_coefficientDegree_le`. The unit-specific acceptance file was removed; no replacement first-order acceptance file is added.
 
-Ported from `ArkLibTest/ToMathlib/RingTheory/MvPolynomial.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
+Ported from `ArkLib/Tests/ToMathlib/RingTheory/MvPolynomial.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 
 The acceptance case checks the generic count theorem on a dimension-two coordinate ideal containing one evaluation equation.
 
-## `ArkLibTest/ToMathlib/RingTheory/Nullstellensatz.lean`
+## `ArkLib/Tests/ToMathlib/RingTheory/Nullstellensatz.lean`
 
 Ported from `ArkLib/ToMathlib/AlgebraicGeometry/Incidence/TwoJet.lean` at ArkLib revision `a5aa2677fee4e3a79d6bb05136631cce4a08587d`:
 

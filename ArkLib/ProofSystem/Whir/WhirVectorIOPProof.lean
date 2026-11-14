@@ -26,8 +26,8 @@ open scoped NNReal ProbabilityTheory
 
 /-- **Issue #113 checkpoint (packaging only):** `WhirIOP.whir_rbr_soundness` for a supplied
 protocol `π` over the message-free skeleton `whirVectorSpec M`, from its supplied
-`IsSecureWithGapAveraged` proof.  Despite its name this is not a WHIR soundness result: no
-protocol over `whirVectorSpec M` implements Construction 5.1, and all security content is the hypothesis
+`IsSecureWithGapAveraged` proof.  Despite its name this is not a WHIR soundness result: no protocol over
+`whirVectorSpec M` implements Construction 5.1, and all security content is the hypothesis
 `hSecure`. -/
 theorem whir_vector_iop_breakthrough
     {F : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
@@ -76,14 +76,9 @@ theorem whir_vector_iop_breakthrough
       (1 - h.δ (Fin.last M))^(P.repeatParam (Fin.last M)) ≤ ε_fin)
     (π : VectorIOP Unit (WhirIOP.OracleStatement (ι 0) F) Unit
       (WhirIOP.Construction.whirVectorSpec M) F)
-    (hSecure :
-      let max_ε_folds : (i : Fin (M + 1)) → ℝ≥0 :=
-        fun i => (Finset.univ : Finset (Fin (P.foldingParam i))).sup (ε_fold i)
-      let ε_rbr : (WhirIOP.Construction.whirVectorSpec M).ChallengeIdx → ℝ≥0 :=
-        fun _ => (Finset.univ.image max_ε_folds ∪ {ε_fin} ∪ Finset.univ.image ε_out ∪
-          Finset.univ.image ε_shift).max' (by simp)
-      VectorIOP.IsSecureWithGapAveraged (WhirIOP.whirRelation m_0 (P.φ 0) 0)
-        (WhirIOP.whirRelation m_0 (P.φ 0) (h.δ 0)) ε_rbr π) :
+    (hSecure : VectorIOP.IsSecureWithGapAveraged (WhirIOP.whirRelation m_0 (P.φ 0) 0)
+      (WhirIOP.whirRelation m_0 (P.φ 0) (h.δ 0))
+      (fun _ => WhirIOP.Construction.whirRbrBudgetValue P ε_fold ε_out ε_shift ε_fin) π) :
     WhirIOP.whir_rbr_soundness (F := F) (M := M) ι (d := d) (dstar := dstar)
       (P := P) (S := S) (hParams := hParams) (h := h) hm_0 (σ₀ := σ₀)
       (wPoly₀ := wPoly₀) (δ := δ) ε_fold ε_out ε_shift ε_fin

@@ -11,8 +11,9 @@ from pathlib import Path
 import re
 import lean_lexer
 
-# `«Research»` is Lean's escaped spelling of the same root component.
-RESEARCH_MODULE = re.compile(r'(?:Research|«Research»)(?:\.|$)')
+# Escaped components have the same meaning. Also reject obsolete research roots.
+RESEARCH_MODULE = re.compile(
+    r'(?:(?:ArkLib|«ArkLib»)\.)?(?:Research|«Research»)(?:\.|$)')
 
 
 def research_imports(text: str) -> list[tuple[int, str]]:
@@ -30,16 +31,25 @@ def research_imports(text: str) -> list[tuple[int, str]]:
     return found
 
 
+def production_sources(root: Path) -> list[Path]:
+    """Canonical and extension sources, excluding research and acceptance clients."""
+    sources = [path for path in (root / 'ArkLib').rglob('*.lean')
+               if path.relative_to(root).parts[:2] not in
+               {('ArkLib', 'Research'), ('ArkLib', 'Tests')}]
+    umbrella = root / 'ArkLib.lean'
+    return sorted(sources + ([umbrella] if umbrella.is_file() else []))
+
+
 def main() -> int:
     root = Path(__file__).resolve().parents[1]
     failures = []
-    for path in [root / 'ArkLib.lean', *sorted((root / 'ArkLib').rglob('*.lean'))]:
+    for path in production_sources(root):
         failures.extend(f'{path.relative_to(root).as_posix()}:{line}: forbidden import {module}'
                         for line, module in research_imports(path.read_text(encoding="utf-8")))
     if failures:
         print('\n'.join(failures))
         return 1
-    print('Research import boundary passed: ArkLib does not import Research.')
+    print('Research import boundary passed: production does not import ArkLib.Research.')
     return 0
 
 

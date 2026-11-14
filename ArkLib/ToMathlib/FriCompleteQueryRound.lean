@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.ProofSystem.Fri.Spec.Completeness
+import ArkLib.Extensions.ProofSystem.Fri.Spec.Completeness
 import ArkLib.ToVCVio.Lemmas
 import ArkLib.OracleReduction.Composition.Sequential.ChallengeOracleFintype
 

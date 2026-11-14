@@ -3,7 +3,7 @@ kind: paper
 bibkey: NOZ26
 title: "Hachi: Efficient Lattice-Based Multilinear Polynomial Commitments over Extension Fields"
 year: "2026"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eprint.iacr.org/2026/156
 source_metadata: ../sources/NOZ26/metadata.yml
 status: active-audit
@@ -220,9 +220,9 @@ Ring-switching layer:
   (`Hachi/Correctness.lean`) have only standard axiom dependencies.
 - Lemma 6's packing norm growth is complete. The separate Micciancio product-norm and
   Lyubashevsky–Seiler short-invertibility inputs used by the commitment security layer are also
-  proved in their respective modules, over `X^{2^α} + 1` only: `scalarVecMul_mul_l2NormSq_le`,
-  and `isUnit_of_l1Norm_le` under the centered `ℓ₁` hypothesis `‖c‖₁ ≤ κ`, `κ² < q`,
-  `q ≡ 5 (mod 8)` (not the Euclidean-norm form of the informal corollary).
+  proved for `X^{2^α} + 1` by `scalarVecMul_mul_l2NormSq_le` and `isUnit_of_l1Norm_le`.
+  The short-invertibility result assumes `0 < ‖c‖₁ ≤ κ`, `κ² < q`, and a prime
+  `q ≡ 5 (mod 8)`, with the centered `ℓ₁` norm.
 
 Detailed Lemma 5–6 correspondence and proof status:
 [`../audits/noz26-subfield-lemmas5-6.md`](../audits/noz26-subfield-lemmas5-6.md).
@@ -238,5 +238,5 @@ Detailed Lemma 5–6 correspondence and proof status:
 ## Source Access
 
 - Source metadata: [`../sources/NOZ26/metadata.yml`](../sources/NOZ26/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib) (key `NOZ26`)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib) (key `NOZ26`)
 - ePrint: https://eprint.iacr.org/2026/156

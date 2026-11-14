@@ -49,7 +49,7 @@ So the precise residual ledger after this file: **`SymbolicMinorFromLovett` ∧
 vacuous in the intended regime. The target `GMMDSDualZeroPatternTheorem` is refuted for
 `k < card ι` (`AGL24.not_gmmDsDualZeroPatternTheorem`), `DualRowsFromNonsingularEval` is refuted
 (`not_dualRowsFromNonsingularEval`), and `SymbolicMinorFromLovett` is refuted for `1 ≤ k`
-(`not_symbolicMinorFromLovett`, below). Earlier "satisfiable" claims only exhibited
+(`not_symbolicMinorFromLovett` in `LovettPremisesRefutation.lean`). Earlier "satisfiable" claims only exhibited
 goal-conditional implications, which supply no inhabitant. The theorems below are valid
 conditional wiring, retained as historical records; they do not reduce GM-MDS to true
 residuals.
@@ -128,7 +128,7 @@ is refuted in the intended regime `k < card ι` (`AGL24.not_gmmDsDualZeroPattern
 
 * `DualRowsFromNonsingularEval` is `False` whenever `k < card ι` and an embedding `ι ↪ F`
   exists (`not_dualRowsFromNonsingularEval`, the 12th catch);
-* `SymbolicMinorFromLovett` is `False` whenever `1 ≤ k` (`not_symbolicMinorFromLovett` below):
+* `SymbolicMinorFromLovett` is `False` whenever `1 ≤ k` (`not_symbolicMinorFromLovett` in `LovettPremisesRefutation.lean`):
   at `t = 1`, `e ≡ ∅`, `δ ≡ 0` the `GZPCondition` hypothesis holds vacuously, but the RIM has no
   rows, so no row selector `Fin 1 × Fin k → RIMRowIdx e` exists. This is the same
   missing-WPC mechanism as `rimKernelTrivialFromLovett_refuted` (the 14th catch).
@@ -154,27 +154,6 @@ theorem dualRows_inhabited_of_goal {k : ℕ}
         AGL24.dotForm.orthogonal (ReedSolomon.code φ k) :=
   dualRowsFromNonsingularEval_inhabited_of_goal hgoal e δ hgzp
 
-omit [Nonempty ι] [Fintype F] in
-/-- **`SymbolicMinorFromLovett` is FALSE as stated** for every `1 ≤ k` (and every `ι`, `F`).
-Witness: `t = 1`, the all-empty edge family and `δ ≡ 0`. `GZPCondition` holds vacuously (no
-`κ ≤ 0` has positive total), Lovett's Theorem 1.7 holds (`lovettThm17_unconditional`), but
-`RIMRowIdx (fun _ => ∅)` is empty while `Fin 1 × Fin k` is inhabited, so no row selector exists.
-Same mechanism as `rimKernelTrivialFromLovett_refuted` (#389, 14th catch). Axiom-clean. -/
-theorem not_symbolicMinorFromLovett {k : ℕ} (hk : 1 ≤ k) :
-    ¬ SymbolicMinorFromLovett ι F k := by
-  classical
-  intro h
-  have hgzp : AGL24.GZPCondition (fun _ : ι => (∅ : Finset (Fin (1 + 1))))
-      (fun _ => 0) k := by
-    intro κ hκ hpos
-    exfalso
-    have hz : ∀ j, κ j = 0 := fun j => Nat.le_zero.mp (hκ j)
-    simp only [hz] at hpos
-    simp at hpos
-  obtain ⟨rows, _, _⟩ := h lovettThm17_unconditional_forall
-    (fun _ : ι => (∅ : Finset (Fin (1 + 1)))) (fun _ => 0) hgzp
-  exact absurd (rows (0, ⟨0, hk⟩)).2.property.1 (by simp)
-
 end ArkLib.GMMDS
 
 -- Axiom audit: must report only `[propext, Classical.choice, Quot.sound]` (no `sorryAx`).
@@ -183,4 +162,3 @@ end ArkLib.GMMDS
 #print axioms ArkLib.GMMDS.gmmDsDualZeroPatternTheorem_unconditional
 #print axioms ArkLib.GMMDS.gmmDsResidual_unconditional
 #print axioms ArkLib.GMMDS.dualRows_inhabited_of_goal
-#print axioms ArkLib.GMMDS.not_symbolicMinorFromLovett

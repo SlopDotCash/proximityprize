@@ -3,7 +3,7 @@ kind: paper
 bibkey: codingtheory
 title: "Essential coding theory"
 year: 2012
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/codingtheory/metadata.yml
 status: seeded
 related_concepts:
@@ -51,4 +51,4 @@ support modules.
 ## Source Access
 
 - Source metadata: [`../sources/codingtheory/metadata.yml`](../sources/codingtheory/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

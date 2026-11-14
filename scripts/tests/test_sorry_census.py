@@ -215,7 +215,7 @@ def cli_holes(source: str) -> tuple[int, bool]:
     with tempfile.TemporaryDirectory() as directory:
         root = Path(directory)
         (root / "ArkLib").mkdir()
-        folder = root / "Research" / "ProximityPrize" / "Frontier"
+        folder = root / "ArkLib" / "Research" / "ProximityGap" / "Frontier"
         folder.mkdir(parents=True)
         (folder / "Probe.lean").write_text(source, encoding="utf-8")
         out = root / "census.json"

@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import sys
+import tempfile
 import unittest
 
 
@@ -10,6 +11,22 @@ import extract_downstream_extensions as extractor
 
 
 class ExtensionExtractorTests(unittest.TestCase):
+    def test_pruning_resolves_historical_mapping_without_rewriting_it(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            target = root / "ArkLib/Extensions/Probe.lean"
+            target.parent.mkdir(parents=True)
+            source = "def retained : Nat := 1\n"
+            target.write_text(source)
+            for module in ("ProximityPrize.Extensions.Probe", "ArkLib.Extensions.Probe"):
+                with self.subTest(module=module):
+                    mapping = {"ArkLib.Probe": module}
+                    report = extractor.prune_exact(root, mapping, "reviewed", {})
+                    self.assertEqual(report["summary"], {"files": 0, "commands": 0})
+                    self.assertEqual(mapping, {"ArkLib.Probe": module})
+                    self.assertEqual(target.read_text(), source)
+                    self.assertFalse((root / "ProximityPrize").exists())
+
     def test_source_preservation_and_ambiguous_command_regressions(self):
         extractor.self_test()
 

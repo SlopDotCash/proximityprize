@@ -3,7 +3,7 @@ kind: paper
 bibkey: Spi95
 title: "Computationally efficient error-correcting codes and holographic proofs"
 year: 1995
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/Spi95/metadata.yml
 status: seeded
 related_modules:
@@ -54,4 +54,4 @@ why the corrected statement is used instead of the original formulation.
 ## Source Access
 
 - Source metadata: [`../sources/Spi95/metadata.yml`](../sources/Spi95/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

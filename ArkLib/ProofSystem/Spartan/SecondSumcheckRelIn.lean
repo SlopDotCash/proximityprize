@@ -7,7 +7,7 @@ Authors: ArkLib Contributors
 import ArkLib.ToMathlib.SpartanBricks
 import ArkLib.ProofSystem.Spartan.SumcheckCubeBridge
 import ArkLib.ProofSystem.Sumcheck.Spec.General
-import ProximityPrize.Extensions.ProofSystem.Sumcheck.Domain
+import ArkLib.Extensions.ProofSystem.Sumcheck.Domain
 
 /-!
 # Second sum-check input-relation completeness (issue #114)

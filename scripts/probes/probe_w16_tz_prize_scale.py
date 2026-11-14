@@ -25,14 +25,21 @@ Output: per-rung witness tables + generated Lean code blocks (stdout + scratch f
 """
 
 import sys
+import tempfile
 
 MR_BASES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41]
 DET_LIMIT = 3317044064679887385961981  # deterministic MR limit for these bases
 
 
+def _require(condition, detail):
+    """Keep the witness checks active under Python optimization."""
+    if not condition:
+        raise AssertionError(detail)
+
+
 def is_prime(n: int) -> bool:
     """Deterministic Miller-Rabin for n < 3.3e24."""
-    assert n < DET_LIMIT
+    _require(n < DET_LIMIT, "number is above the deterministic Miller-Rabin limit")
     if n < 2:
         return False
     for p in MR_BASES:
@@ -69,7 +76,7 @@ def find_witness(p: int, c: int) -> int:
     (g^(p-1) = 1 is automatic by Fermat since p is prime and g < p.)"""
     for g in [3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59]:
         if pow(g, (p - 1) // 2, p) != 1 and pow(g, (p - 1) // c, p) != 1:
-            assert pow(g, p - 1, p) == 1
+            _require(pow(g, p - 1, p) == 1, f"Fermat check fails for p={p}, g={g}")
             return g
     raise RuntimeError(f"no small witness for p={p}")
 
@@ -80,7 +87,7 @@ def sieve_rung(k: int, want: int = 20):
     n = 1 << k
     lo, hi = n * n, 2 * n * n
     a = max(k, 2 * k - 20)
-    assert a >= k
+    _require(a >= k, "power-of-two exponent a is below k")
     c_lo = lo >> a
     c_hi = hi >> a
     out = []
@@ -91,13 +98,15 @@ def sieve_rung(k: int, want: int = 20):
             if lo <= p <= hi and is_prime(p):
                 g = find_witness(p, c)
                 # --- independent verification block ---
-                assert p % n == 1, (k, p)
-                assert p - 1 == (1 << a) * c
-                assert c % 2 == 1 and v2(p - 1) == a
-                assert lo <= p <= hi
+                _require(p % n == 1, f"rung k={k}: p={p} is not 1 mod 2^k")
+                _require(p - 1 == (1 << a) * c, f"p={p}: p - 1 is not 2^a * c")
+                _require(c % 2 == 1 and v2(p - 1) == a,
+                         f"p={p}: c is even or v2(p - 1) is not a")
+                _require(lo <= p <= hi, f"rung k={k}: p={p} is outside the window")
                 try:
                     import sympy
-                    assert sympy.isprime(p) and sympy.isprime(c)
+                    _require(sympy.isprime(p) and sympy.isprime(c),
+                             f"sympy rejects p={p} or c={c} as prime")
                 except ImportError:
                     pass
                 out.append((p, c, a, g))
@@ -170,8 +179,6 @@ def s128_budget_note():
 
 def main():
     ks = list(range(16, 31))
-    scratch = ("/private/tmp/claude-501/-Users-shawwalters-ethereumroadmap-upstream-"
-               "lean-research-ArkLib/515e83f2-d331-468d-84dd-89b67f383ddf/scratchpad")
     all_rows = {}
     for k in ks:
         rows = sieve_rung(k)
@@ -180,8 +187,7 @@ def main():
               f"last={rows[-1][0]}, a={rows[0][2]}, max c={max(c for _, c, _, _ in rows)}")
     print("\n[s=128 ceiling budget honesty check at n = 2^30]")
     s128_budget_note()
-    import os
-    os.makedirs(scratch, exist_ok=True)
+    scratch = tempfile.mkdtemp(prefix="w16-tz-prize-scale-")
     for k in ks:
         with open(f"{scratch}/rung_{k}.lean", "w") as f:
             f.write(emit_rung(k, all_rows[k]))

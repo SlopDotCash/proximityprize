@@ -3,8 +3,8 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ProximityPrize.Compatibility.SpartanSendEvalClaim
-import ProximityPrize.Extensions.ProofSystem.Spartan.Basic
+import ArkLib.Compatibility.SpartanSendEvalClaim
+import ArkLib.Extensions.ProofSystem.Spartan.Basic
 import ArkLib.ProofSystem.Spartan.FirstSumcheckBridgeFree
 
 /-!

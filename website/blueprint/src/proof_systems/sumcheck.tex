@@ -1,0 +1,283 @@
+\section{The Sum-Check Protocol}\label{sec:sumcheck}
+
+This section documents our formalization of the sum-check protocol.
+We first describe the sum-check protocol as it is typically described in the literature, and then
+present a modular description that maximally relies on our general oracle reduction framework.
+
+\subsection{Standard Description}\label{sec:sumcheck_standard}
+
+\subsubsection{Protocol Parameters}
+
+The sum-check protocol is parameterized by the following:
+\begin{itemize}
+    \item $R$: the underlying ring (for soundness, required to be finite and an integral domain)
+    \item $n \in \mathbb{N}$: the number of variables (and the number of rounds for the protocol)
+    \item $d \in \mathbb{N}$: the individual degree bound for the polynomial
+    \item $\mathcal{D}: \{0, 1, \ldots, m-1\} \hookrightarrow R$: the set of $m$ evaluation points for each variable, represented as an injection. The image of $\mathcal{D}$ as a finite subset of $R$ is written as $\text{Image}(\mathcal{D})$.
+    \item $\mathcal{O}$: the set of underlying oracles (e.g., random oracles) that may be needed for other reductions. However, the sum-check protocol itself does \emph{not} use any oracles.
+\end{itemize}
+
+\subsubsection{Input and Output Statements}
+
+For the standard description of the sum-check protocol, we specify the complete input and output data:
+
+\paragraph{Input Statement.} The claimed sum $T \in R$.
+
+\paragraph{Input Oracle Statement.} The polynomial $P \in R[X_0, X_1, \ldots, X_{n-1}]_{\leq d}$ of $n$ variables with bounded individual degrees $d$.
+
+\paragraph{Input Witness.} None (the unit type).
+
+\paragraph{Input Relation.} The sum-check relation:
+\[
+\sum_{x \in (\text{Image}(\mathcal{D}))^n} P(x) = T
+\]
+
+\paragraph{Output Statement.} The claimed evaluation $e \in R$ and the challenge vector $(r_0, r_1, \ldots, r_{n-1}) \in R^n$.
+
+\paragraph{Output Oracle Statement.} The same polynomial $P \in R[X_0, X_1, \ldots, X_{n-1}]_{\leq d}$.
+
+\paragraph{Output Witness.} None (the unit type).
+
+\paragraph{Output Relation.} The evaluation relation:
+\[
+P(r_0, r_1, \ldots, r_{n-1}) = e
+\]
+
+\subsubsection{Protocol Description}
+
+The sum-check protocol proceeds in $n$ rounds of interaction between the prover and verifier. The protocol reduces the claim that a multivariate polynomial $P$ sums to a target value $T$ over the domain $(\text{Image}(\mathcal{D}))^n$ to the claim that $P$ evaluates to a specific value $e$ at a random point $(r_0, r_1, \ldots, r_{n-1})$.
+
+In each round, the prover sends a univariate polynomial of bounded degree, and the verifier responds with a random challenge. The verifier performs consistency checks by querying the polynomial oracle at specific evaluation points. After $n$ rounds, the protocol terminates with an output statement asserting that $P(r_0, r_1, \ldots, r_{n-1}) = e$, where the challenges $(r_0, r_1, \ldots, r_{n-1})$ are the random values chosen by the verifier during the protocol execution.
+
+The protocol is described as an oracle reduction, where the polynomial $P$ is accessed only through evaluation queries rather than being explicitly represented.
+
+\subsubsection{Security Properties}
+
+We prove the following security properties for the sum-check protocol:
+
+\begin{theorem}[Perfect Completeness]
+    \label{thm:sumcheck_perfect_completeness}
+    \lean{Sumcheck.Spec.reduction_perfectCompleteness,
+      Sumcheck.Spec.oracleReduction_perfectCompleteness}
+    \leanok
+    \uses{thm:sumcheck_single_round_completeness}
+    The sum-check protocol satisfies perfect completeness. That is, for any valid input statement and oracle statement satisfying the input relation, the protocol accepts with probability 1.
+\end{theorem}
+
+\begin{theorem}[Round-by-Round Knowledge Soundness]
+    \label{thm:sumcheck_rbr_knowledge_soundness_standard}
+    \lean{Sumcheck.Spec.oracleVerifier_rbrKnowledgeSoundness}
+    \leanok
+    \uses{thm:sumcheck_single_round_soundness}
+    Suppose $R$ is finite and an integral domain. Then the sum-check verifier is fixed-prefix round-by-round knowledge sound with error $d / |R|$ at every challenge. The state function is the sequential composition of the single-round state functions of Section~\ref{sec:sumcheck_modular}.
+\end{theorem}
+
+\begin{theorem}[Knowledge Soundness]
+    \label{thm:sumcheck_knowledge_soundness}
+    \lean{Sumcheck.Spec.oracleVerifier_knowledgeSoundness}
+    \leanok
+    \uses{thm:sumcheck_rbr_knowledge_soundness_standard}
+    Suppose $R$ is finite and an integral domain. Then the sum-check protocol satisfies knowledge soundness with error $n \cdot d / |R|$, the sum of the per-challenge errors over its $n$ challenges, where $d$ is the degree bound.
+\end{theorem}
+
+\subsubsection{Implementation Notes}
+
+Our formalization includes several important implementation considerations:
+
+\paragraph{Oracle Reduction Level.} This description of the sum-check protocol stays at the \textbf{oracle reduction} level, describing the protocol before being compiled with concrete cryptographic primitives such as polynomial commitment schemes for $P$. The oracle model allows us to focus on the logical structure and security properties of the protocol without being concerned with the specifics of how polynomial evaluations are implemented or verified.
+
+\paragraph{Abstract Protocol Description.} The protocol description above does not consider implementation details and optimizations that would be necessary in practice. For instance, we do not address computational efficiency, concrete polynomial representations, or specific algorithms for polynomial evaluation. This abstraction allows us to establish the fundamental security properties that any concrete implementation must preserve.
+
+\paragraph{Degree Constraints.} To represent sum-check as a series of Interactive Oracle Reductions (IORs), we implicitly constrain the degree of the polynomials via using subtypes such as $R[X]_{\leq d}$ and appropriate multivariate polynomial degree bounds. This is necessary because the oracle verifier only gets oracle access to evaluating the polynomials, but does not see the polynomials in the clear.
+
+\paragraph{Polynomial Commitments.} When this protocol is compiled to an interactive proof (rather than an oracle reduction), the corresponding polynomial commitment schemes will enforce that the declared degree bounds hold, by letting the (non-oracle) verifier perform explicit degree checks.
+
+\subsubsection{Generalizations Not Covered}
+
+The formalized sum-check does not cover the following generalizations; \texttt{docs/project/roadmap.md} tracks
+planned protocol work.
+
+\begin{itemize}
+    \item \textbf{Variable Degree Bounds:} Generalize to $d : \{0, 1, \ldots, n-1\} \to \mathbb{N}$ and $\mathcal{D} : \{0, 1, \ldots, n-1\} \to (\{0, 1, \ldots, m-1\} \hookrightarrow R)$, allowing different degree bounds and summation domains for each variable.
+
+    \item \textbf{Restricted Challenge Domains:} Generalize the challenges to come from suitable subsets of $R$ (e.g., subtractive sets), rather than the entire domain. This modification is used in lattice-based protocols.
+
+    \item \textbf{Module-based Sum-check:} Extend to sum-check over modules instead of just rings. This would require extending multivariate polynomial evaluation to modules, defining something like $\text{evalModule} : (R^n \to M) \to R[X_0, \ldots, X_{n-1}] \to M$ where $M$ is an $R$-module.
+\end{itemize}
+
+\subsection{Modular Description}\label{sec:sumcheck_modular}
+
+\subsubsection{Round-by-Round Analysis}
+
+Our modular approach breaks down the sum-check protocol into individual rounds, each of which can be analyzed as a two-message Interactive Oracle Reduction. This decomposition allows us to prove security properties compositionally and provides a more granular understanding of the protocol's structure.
+
+\paragraph{Round-Specific Statements.} For the $i$-th round, where $i \in \{0, 1, \ldots, n\}$, the statement contains:
+\begin{itemize}
+    \item $\text{target} \in R$: the target value for sum-check at this round
+    \item $\text{challenges} \in R^i$: the list of challenges sent from the verifier to the prover in previous rounds
+\end{itemize}
+
+The oracle statement remains the same polynomial $P \in R[X_0, X_1, \ldots, X_{n-1}]_{\leq d}$.
+
+\paragraph{Round-Specific Relations.} The sum-check relation for the $i$-th round checks that:
+\[
+\sum_{x \in (\text{Image}(\mathcal{D}))^{n-i}} P(\text{challenges}, x) = \text{target}
+\]
+
+Note that when $i = n$, this becomes the output statement of the sum-check protocol, checking that $P(\text{challenges}) = \text{target}$.
+
+\subsubsection{Individual Round Protocol}
+
+For $i = 0, 1, \ldots, n-1$, the $i$-th round of the sum-check protocol consists of the following:
+
+\paragraph{Step 1: Prover's Message.} The prover sends a univariate polynomial $p_i \in R[X]_{\leq d}$ of degree at most $d$. If the prover is honest, then:
+\[
+p_i(X) = \sum_{x \in (\text{Image}(\mathcal{D}))^{n-i-1}} P(\text{challenges}_0, \ldots, \text{challenges}_{i-1}, X, x)
+\]
+
+Here, $P(\text{challenges}_0, \ldots, \text{challenges}_{i-1}, X, x)$ is the polynomial $P$ evaluated at the concatenation of:
+\begin{itemize}
+    \item the prior challenges $\text{challenges}_0, \ldots, \text{challenges}_{i-1}$
+    \item the $i$-th variable as the new indeterminate $X$
+    \item the remaining values $x \in (\text{Image}(\mathcal{D}))^{n-i-1}$
+\end{itemize}
+
+In the oracle protocol, this polynomial $p_i$ is turned into an oracle for which the verifier can query evaluations at arbitrary points.
+
+\paragraph{Step 2: Verifier's Challenge.} The verifier sends the $i$-th challenge $r_i$ sampled uniformly at random from $R$.
+
+\paragraph{Step 3: Verifier's Check.} The (oracle) verifier performs queries for the evaluations of $p_i$ at all points in $\text{Image}(\mathcal{D})$, and checks that:
+\[
+\sum_{x \in \text{Image}(\mathcal{D})} p_i(x) = \text{target}
+\]
+
+If the check fails, the verifier outputs $\texttt{failure}$. Otherwise, it outputs a statement for the next round as follows:
+\begin{itemize}
+    \item $\text{target}$ is updated to $p_i(r_i)$
+    \item $\text{challenges}$ is updated to the concatenation of the previous challenges and $r_i$
+\end{itemize}
+
+\subsubsection{Single Round Security Analysis}
+
+\begin{definition}[Single Round Protocol]
+    \label{def:sumcheck_single_round}
+    \lean{Sumcheck.Spec.SingleRound.reduction, Sumcheck.Spec.SingleRound.oracleReduction}
+    \leanok
+    The $i$-th round of sum-check consists of:
+    \begin{enumerate}
+        \item \textbf{Input:} A statement containing target value and prior challenges, along with an oracle for the multivariate polynomial
+        \item \textbf{Prover's message:} A univariate polynomial $p_i \in R[X]_{\leq d}$
+        \item \textbf{Verifier's challenge:} A random element $r_i \gets R$
+        \item \textbf{Output:} An updated statement with new target $p_i(r_i)$ and extended challenges
+    \end{enumerate}
+\end{definition}
+
+\begin{theorem}[Single Round Completeness]
+    \label{thm:sumcheck_single_round_completeness}
+    \lean{Sumcheck.Spec.SingleRound.reduction_perfectCompleteness,
+      Sumcheck.Spec.SingleRound.oracleReduction_perfectCompleteness}
+    \leanok
+    \uses{def:sumcheck_single_round, thm:virtual_sumcheck_round_protocol_complete}
+    Each individual round of the sum-check protocol is perfectly complete, from the round-$i$ relation to the round-$(i+1)$ relation.
+\end{theorem}
+
+\begin{theorem}[Single Round Knowledge Soundness]
+    \label{thm:sumcheck_single_round_soundness}
+    \lean{Sumcheck.Spec.SingleRound.verifier_rbrKnowledgeSoundness,
+      Sumcheck.Spec.SingleRound.oracleVerifier_rbrKnowledgeSoundness}
+    \leanok
+    \uses{def:sumcheck_single_round, thm:virtual_sumcheck_round_protocol_rbr_sound}
+    Suppose $R$ is finite and an integral domain. Each individual round of the sum-check protocol is fixed-prefix round-by-round knowledge sound with error $d / |R|$ at its challenge, where $d$ is the degree bound. The round is obtained by lifting the virtual round below along a context lens, which transfers both properties.
+\end{theorem}
+
+\subsubsection{Virtual Protocol Decomposition}
+
+We now proceed to break down this protocol into individual messages, and then specify the predicates that should hold before and after each message is exchanged.
+
+First, it is clear that we can consider each round in isolation. In fact, each round can be seen as an instantiation of the following simpler "virtual" protocol:
+
+\begin{definition}
+    \label{def:virtual_sumcheck_round_protocol}
+    \lean{Sumcheck.Spec.SingleRound.Simple.reduction,
+      Sumcheck.Spec.SingleRound.Simple.oracleReduction}
+    \leanok
+    \begin{enumerate}
+        \item In this protocol, the context is a pair $(p, c)$, where $p$ is now a \emph{univariate} polynomial of degree at most $d$, given as an oracle, and $c \in R$ is public. The predicate / relation is that $\sum_{x \in \text{Image}(\mathcal{D})} p(x) = c$.
+        \item The prover first sends a univariate polynomial $s$ of degree at most $d$. In
+        the honest case, it would just send $p$ itself.
+        \item The verifier samples and sends a random challenge $r \gets R$.
+        \item The verifier checks that $\sum_{x \in \text{Image}(\mathcal{D})} s(x) = c$ and outputs $(s(r), r)$. The predicate on the resulting output context
+        is that $p(r) = s(r)$.
+    \end{enumerate}
+\end{definition}
+
+The reason why this simpler protocol is related to a sum-check round is that we can \emph{emulate} the simpler protocol using variables in the context at the time:
+\begin{itemize}
+    \item The univariate polynomial $p$ is instantiated as $\sum_{x \in (\text{Image}(\mathcal{D}))^{n - i - 1}} P(r_0, \ldots, r_{i - 1}, X, x)$.
+    \item The scalar $c$ is instantiated as $T$ if $i = 0$, and as $s_{i - 1}(r_{i - 1})$ otherwise.
+\end{itemize}
+
+The simpler protocol is perfectly complete. It is sound (and since there is no
+witness, also knowledge sound) since, when $R$ is an integral domain, two distinct polynomials of
+degree at most $d$ agree at a uniformly random $r$ with probability at most $d / |R|$; if the
+claim is false and $s$ passes the check, then $s \neq p$.
+
+\begin{theorem}
+    The virtual sum-check round protocol is perfectly complete.
+    \label{thm:virtual_sumcheck_round_protocol_complete}
+    \lean{Sumcheck.Spec.SingleRound.Simple.reduction_perfectCompleteness,
+      Sumcheck.Spec.SingleRound.Simple.oracleReduction_perfectCompleteness}
+    \leanok
+    \uses{def:perfect_completeness, def:virtual_sumcheck_round_protocol}
+\end{theorem}
+
+Soundness and knowledge soundness of the virtual round follow from its round-by-round knowledge
+soundness below, by the general implications of Section~\ref{sec:security}.
+
+We use the following state function for the simpler protocol.
+
+\begin{definition}[State Function]
+    \label{def:virtual_sumcheck_round_protocol_state_function}
+    The state function for the virtual sum-check round protocol is given by:
+\begin{enumerate}
+    \item The initial state function, and the state function after the prover sends $s$, are the
+    predicate on the initial context, namely that $\sum_{x \in \text{Image}(\mathcal{D})} p(x) = c$.
+    \item The state function for the full transcript (after the verifier sends $r$) is the predicate
+    that either the initial predicate holds, or $\sum_{x \in \text{Image}(\mathcal{D})} s(x) = c$
+    and $p(r) = s(r)$. Essentially, we add in the verifier's check and the output predicate.
+\end{enumerate}
+    \uses{def:state_function, def:virtual_sumcheck_round_protocol}
+\end{definition}
+
+Seen in this light, the simpler protocol satisfies round-by-round knowledge soundness: the only
+challenge moves the state from false to true exactly when the initial claim is false, $s$ passes
+the check (so $s \neq p$), and $p(r) = s(r)$.
+
+\begin{theorem}
+    Suppose $R$ is finite and an integral domain. The virtual sum-check round protocol is
+    fixed-prefix round-by-round knowledge sound with error $d / |R|$.
+    \label{thm:virtual_sumcheck_round_protocol_rbr_sound}
+    \lean{Sumcheck.Spec.SingleRound.Simple.verifier_rbrKnowledgeSoundness,
+      Sumcheck.Spec.SingleRound.Simple.oracleVerifier_rbrKnowledgeSoundness}
+    \leanok
+    \uses{def:round_by_round_knowledge_soundness, def:virtual_sumcheck_round_protocol, def:virtual_sumcheck_round_protocol_state_function}
+\end{theorem}
+
+\subsection{Sum-Check in the Interaction Layer}\label{sec:sumcheck_interaction}
+
+ArkLib also formalizes sum-check in its interaction layer (\texttt{ArkLib/Interaction}), which is
+meant to replace the legacy layer used above, as a protocol tree whose
+prover strategies may keep arbitrary memory and perform effects after each challenge. The
+execution outputs an evaluation claim about the original oracle.
+
+\begin{theorem}[Interaction-layer sum-check security]
+    \label{thm:sumcheck_interaction}
+    \lean{Sumcheck.Interaction.Native.execute_perfectCompleteness,
+      Sumcheck.Interaction.Native.execute_soundness}
+    \leanok
+    Over any commutative semiring and for any challenge distribution, from a true claim about a
+    polynomial of individual degree at most $d$, the honest execution returns a true
+    evaluation claim with probability $1$. Over a finite field $\mathbb{F}$, from a false claim with
+    $k$ rounds remaining and uniform challenges, every prover strategy makes the output claim true
+    with probability at most $k \cdot d / |\mathbb{F}|$.
+\end{theorem}

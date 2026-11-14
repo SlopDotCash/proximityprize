@@ -9,10 +9,10 @@ but a seeded matched-Gaussian simulation does not refute it.
 
 ## Lean bricks
 
-- `Research/ProximityPrize/Frontier/PeriodOrbitQuotientReduction.lean`
+- `ArkLib/Research/ProximityGap/Frontier/PeriodOrbitQuotientReduction.lean`
   validates the representative-cover consumer:
   representative bounds on a coset cover imply all nonzero-frequency period bounds.
-- `Research/ProximityPrize/Frontier/_I031OrbitQuotient.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_I031OrbitQuotient.lean`
   validates the exact image/max quotient collapse:
   the nonzero period-norm spectrum equals the representative period-norm spectrum.
 

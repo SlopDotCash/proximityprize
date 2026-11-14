@@ -51,7 +51,7 @@ Pure arithmetic on the machine-checked `gvRepBound_of_excess_le`:
   and no bridge from it to the MCA/list objects is supplied in this file;
 * any statement about `δ*`, capacity, or beating Johnson. The earlier claims that "the
   entire supply wall closes" and "`δ*` reaches the optimal (capacity-side) value" relied on
-  such further bridges, which are absent (see `Research/ProximityPrize/LegacyWorkbench.lean`:
+  such further bridges, which are absent (see `ArkLib/Research/ProximityGap/LegacyWorkbench.lean`:
   supply is not incidence).
 
 Axiom-clean (`propext, Classical.choice, Quot.sound`); no `sorry`.

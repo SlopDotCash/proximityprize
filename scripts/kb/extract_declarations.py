@@ -291,7 +291,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument(
         "--root", nargs="+", type=Path, default=DEFAULT_LEAN_ROOTS,
-        help="One or more directories to scan (default: the ArkLib, Research, and ProximityPrize trees).",
+        help="One or more directories to scan (default: the unified ArkLib tree, including research and tests).",
     )
     parser.add_argument(
         "--out", type=Path, default=DEFAULT_DECLARATIONS_JSON,

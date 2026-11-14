@@ -3,14 +3,14 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ProximityPrize.Extensions.Data.CodingTheory.GuruswamiSudan.GuruswamiSudan
+import ArkLib.Extensions.Data.CodingTheory.GuruswamiSudan.GuruswamiSudan
 import Mathlib.FieldTheory.RatFunc.AsPolynomial
 
 /-!
 # Guruswami–Sudan interpolation over the rational-function field `K = F(Z)`
 
 This file discharges **Step S2** of the Haböck §3 endgame
-(`Research/ProximityPrize/Hab25Johnson.lean`), which was previously recorded as a
+(`ArkLib/Research/ProximityGap/Hab25Johnson.lean`), which was previously recorded as a
 genuinely-deep residual with the note *"no algebraic-function-field interpolation API in tree"*.
 
 The observation is that the in-tree single-function existence theorem

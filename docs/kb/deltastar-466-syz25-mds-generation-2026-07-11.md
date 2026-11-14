@@ -83,6 +83,6 @@ families provably do). **Unconditional δ\* status untouched.**
 
 Axiom-clean (`propext`/`Classical.choice`/`Quot.sound`); no `sorry`, no `native_decide`.
 ```
-files: Research/ProximityPrize/Frontier/_SYZ25MDSGeneration.lean
+files: ArkLib/Research/ProximityGap/Frontier/_SYZ25MDSGeneration.lean
        scripts/probes/probe_syz25_mds_generation.py
 ```

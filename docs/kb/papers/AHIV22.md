@@ -3,7 +3,7 @@ kind: paper
 bibkey: AHIV22
 title: "Ligero: Lightweight sublinear arguments without a trusted setup"
 year: 2017
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/AHIV22/metadata.yml
 status: seeded
 related_concepts:
@@ -68,4 +68,4 @@ proximity-gap results that inform reusable interleaving and Reed-Solomon proximi
 ## Source Access
 
 - Source metadata: [`../sources/AHIV22/metadata.yml`](../sources/AHIV22/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

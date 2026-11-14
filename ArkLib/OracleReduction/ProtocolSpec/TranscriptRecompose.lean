@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.OracleReduction.ProtocolSpec.SeqCompose
+import ArkLib.Extensions.OracleReduction.ProtocolSpec.SeqCompose
 
 /-!
 # Transcript recomposition for sequentially-composed protocols

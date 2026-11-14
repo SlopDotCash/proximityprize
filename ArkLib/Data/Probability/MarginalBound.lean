@@ -3,9 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ProximityPrize.Compatibility.DiscreteProbability
-import ProximityPrize.Extensions.Data.Probability.Instances
-import ProximityPrize.Extensions.OracleReduction.Security.Basic
+import ArkLib.Compatibility.DiscreteProbability
+import ArkLib.Extensions.Data.Probability.Instances
+import ArkLib.Extensions.OracleReduction.Security.Basic
 
 /-!
 # Marginal domination bricks for run-marginal arguments (issue #13)

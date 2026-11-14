@@ -5,9 +5,9 @@ layer (`ArkLib/Interaction/`) provides on `main`, and the legacy-layer results t
 bear on it. The
 [README](../../README.md#two-layers) gives an overview of the two layers,
 [Limitations of the legacy layer](legacy-layer-limitations.md) explains why the
-interaction layer replaces it, and the [roadmap](../../ROADMAP.md#priority-replace-the-legacy-layer)
+interaction layer replaces it, and the [roadmap](../project/roadmap.md#priority-replace-the-legacy-layer)
 holds the migration plan. Protocol-level status for readers
-outside the framework is on the public [roadmap](../../ROADMAP.md); remaining interaction-layer
+outside the framework is on the public [roadmap](../project/roadmap.md); remaining interaction-layer
 design work is in the [design roadmap](05-roadmap.md).
 
 The typed core, world-backed execution, and oracle composition have landed; the
@@ -111,8 +111,8 @@ temporary adapter with an upstream issue and a deletion test.
 ### ArkLib
 
 The interaction layer lives under `ArkLib/Interaction/` and
-`ArkLib/ProofSystem/Sumcheck/Interaction/`, with acceptance clients under `ArkLibTest/Interaction/`
-and `ArkLibTest/ProofSystem/Sumcheck/`.
+`ArkLib/ProofSystem/Sumcheck/Interaction/`, with acceptance clients under `ArkLib/Tests/Interaction/`
+and `ArkLib/Tests/ProofSystem/Sumcheck/`.
 Naming follows [`docs/wiki/interaction-naming.md`](../wiki/interaction-naming.md).
 
 | Area | Modules | Implementation |
@@ -366,7 +366,7 @@ arbitrary claims. This does not relate the legacy-layer and interaction-layer se
 ### Interaction-layer security
 
 The security modules live under `ArkLib/Interaction/Oracle/Security/`, with acceptance clients
-under `ArkLibTest/Interaction/Oracle/Security/`.
+under `ArkLib/Tests/Interaction/Oracle/Security/`.
 
 | Result | Modules and principal declarations | Landed in |
 |---|---|---|
@@ -442,7 +442,7 @@ their clients are the acceptance examples. The [design roadmap](05-roadmap.md) l
 
 `ArkLib/OracleReduction/` uses `ProtocolSpec n`. The protocol developments on `main` (FRI, Binius,
 ring switching, Spartan, Plonk, Hachi and others) use this layer; their status is on the public
-[roadmap](../../ROADMAP.md). The following legacy results matter for interaction-layer design.
+[roadmap](../project/roadmap.md). The following legacy results matter for interaction-layer design.
 
 - **One round-by-round notion.** `Verifier.rbrSoundness` and `Verifier.rbrKnowledgeSoundness`
   in `Security/RoundByRound.lean` bound the bad event at every fixed transcript prefix. The
@@ -466,7 +466,7 @@ ring switching, Spartan, Plonk, Hachi and others) use this layer; their status i
   round-by-round guarantees of a guarded verifier, with the sum of the per-challenge errors.
 - **End-to-end protocols.** Spartan, Plonk, Binary Basefold, FRI-Binius and the full Sumcheck
   reduction obtain ordinary knowledge soundness through these guarded interfaces; their theorems
-  and error bounds are on the public [roadmap](../../ROADMAP.md). For interaction-layer design, they
+  and error bounds are on the public [roadmap](../project/roadmap.md). For interaction-layer design, they
   fix the statements and errors that a port must reproduce or relate to.
 - **Retired.** The legacy state-restoration definitions (#1409) and the duplex-sponge
   Fiat–Shamir skeleton (#1368) were removed; state restoration now exists only in the interaction layer.

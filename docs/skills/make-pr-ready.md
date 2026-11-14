@@ -32,16 +32,11 @@ merge-ready.
   repository even after `git fetch origin main`. Inspect the PR with
   `gh pr view <number> -R <canonical-owner>/<repo> --json baseRefName,headRefName`, compare the
   configured remote URL, and fetch the canonical base into a separate tracking ref when needed
-  (for example `canonical/main`). Use that canonical ref for all scope and `_generated/`
-  comparisons below.
+  (for example `canonical/main`). Use that canonical ref for the scope comparisons below.
 - Fetch the selected canonical base first (`git fetch origin main` when `origin` is canonical),
-  then compute scope and `_generated/` drift against its remote-tracking ref, not local `main`.
-  The local `main` ref can be many commits stale (e.g. you branched, then the canonical `main`
-  advanced via merges you never pulled). Diffing `main...HEAD` against a stale local `main`
-  inflates the file list and can report phantom `_generated/` drift that actually matches the
-  remote. With a canonical `origin`, use `git diff --stat origin/main...HEAD` for scope and
-  `git diff --quiet origin/main...HEAD -- docs/kb/_generated/` for the CI guard's real view;
-  otherwise substitute the canonical tracking ref selected above.
+  then compute scope against its remote-tracking ref. The local `main` ref may lag behind merges
+  already on the canonical base. With a canonical `origin`, use `git diff --stat origin/main...HEAD`
+  for scope. Otherwise substitute the canonical tracking ref selected above.
 - **Also account for uncommitted work.** `origin/main...HEAD` (three-dot) only shows *committed*
   changes; a make-pr-ready pass often runs with staged/working-tree edits still in flight (e.g. a
   half-finished file). Those appear only in `git diff HEAD` (or `git diff origin/main`, two-dot).
@@ -77,25 +72,6 @@ merge-ready.
   **not** audit or "fix" those files here: it is redundant with the sibling PR and any edit invites
   a merge conflict. Scope the audit/lint/warning-fix work to files this branch actually authored or
   extended (differs from both `origin/main` and the sibling branch).
-- **Test for committed `_generated/` drift explicitly — a clean `git status` does not rule it out.**
-  If the branch committed regenerated outputs, the working tree is clean and nothing in the default
-  `validate.sh` complains, yet CI's first job fails. CI compares the branch tip with the merge
-  base, not with the current `main` tip, so use the three-dot form. One line settles it, and it
-  belongs in step 0:
-
-  ```bash
-  git diff --stat origin/main...HEAD -- docs/kb/_generated/   # any output = the guard will fail
-  ```
-
-- **If `_generated/` drift is already committed** (the branch committed regenerated outputs, not
-  just dirtied the working tree),
-  `git checkout "$(git merge-base HEAD origin/main)" -- docs/kb/_generated/` stages a *revert*, and
-  you must **commit it** for the guard to pass — the guard compares the committed branch tip to
-  the merge base, so an uncommitted revert leaves HEAD still drifted. After staging the revert,
-  `git diff --cached --stat` shows huge index-vs-HEAD numbers for `_generated/` — that is the size
-  of the revert, **not** new drift; do not panic. Confirm the post-commit guard view with
-  `git diff --cached --quiet "$(git merge-base HEAD origin/main)" -- docs/kb/_generated/` (must be
-  clean).
 - **Report stray planning/scratch `.md` files — do not stage them, and do not delete them.** A
   Markdown plan, design note, or working-notes file (`PLAN.md`, `NOTES.md`, `scratch/*.md`, an
   agent handoff/TODO dump) is a working artifact, not repo documentation, and should not land in
@@ -110,7 +86,7 @@ merge-ready.
   ```
 
   Subtract the curated docs a PR may legitimately add (`docs/kb/papers/`, `docs/kb/sources/`,
-  `docs/wiki/`, `docs/skills/`, `blueprint/`, and top-level pages like
+  `docs/wiki/`, `docs/skills/`, `website/blueprint/`, and top-level pages like
   `README`/`ROADMAP`/`CONTRIBUTING`/`BACKGROUND`) — a real `docs/kb/papers/<KEY>.md` or `docs/wiki/` page stays.
   For anything left that reads as a working plan, **warn the user**, naming each file and whether
   it is untracked, staged, or already committed, and let them decide. Leave untracked plans
@@ -245,7 +221,7 @@ merge-ready.
   or renumbered, or the same mathematics appears in several sources.
 - Make sure every paper cited in a module docstring uses a citation key (e.g. `[BCIKS20]`), the
   module docstring has a `## References` section, and every key has a matching BibTeX entry in
-  `blueprint/src/references.bib` (see the citation policy in
+  `website/blueprint/src/references.bib` (see the citation policy in
   [`../../CONTRIBUTING.md`](../../CONTRIBUTING.md) and the workflow in
   [`../wiki/blueprint-and-citations.md`](../wiki/blueprint-and-citations.md)).
 - Regenerate the derived metadata when its inputs change and commit the tracked indexes and any
@@ -256,10 +232,10 @@ merge-ready.
   uv run --no-project --python 3.12 python ./scripts/kb/regenerate.py
   ```
 
-- Inspect the regenerated diff for stale paths, dangling keys, and missing entries. Commit the
-  tracked indexes with the source changes and any required scaffolds.
+  Review the derived diff for stale paths, dangling keys, and missing entries.
+
 - `kb/lint.py` does **not** verify that every cited key has a BibTeX entry. Check for dangling
-  keys yourself: grep each `[KEY]` used in docstrings against `blueprint/src/references.bib` and
+  keys yourself: grep each `[KEY]` used in docstrings against `website/blueprint/src/references.bib` and
   add any missing entry (then regenerate). A key can be "present-looking" but actually a different
   paper — confirm the entry's title/authors match the citation, not just that the key exists.
 - Know the `kb/lint.py` severity split: a **paper page whose `bibkey` has no BibTeX entry** is an
@@ -267,12 +243,12 @@ merge-ready.
   For active papers introduced or substantially extended by this contribution, add substantive
   ArkLib context: the used statements, touchpoint modules, version, generalizations and remaining
   gaps. `uv run --no-project --python 3.12 python scripts/kb/scaffold_paper.py <KEY>` can supply the initial page and metadata;
-  replace its TODOs with project-specific context when available. See
-  [`../kb/README.md`](../kb/README.md).
+  replace its TODOs before staging. Commit the scaffolds and generated registries with the
+  change, and attribute unrelated coverage warnings. See [`../kb/README.md`](../kb/README.md).
 - A validate/kb failure is not necessarily yours: it can be **pre-existing on `main`** (e.g. a kb
   paper page merged before its BibTeX entry). Attribute it (`git show origin/main:<file>`), but
   fix it in your PR anyway if cheap — it blocks *your* CI regardless of who introduced it.
-- Also check for **duplicate BibTeX keys**: `grep -oE '^@[a-z]+\{[^,]+' blueprint/src/references.bib
+- Also check for **duplicate BibTeX keys**: `grep -oE '^@[a-z]+\{[^,]+' website/blueprint/src/references.bib
   | sort | uniq -d`. Neither `kb/lint` nor the sync script flags a key defined twice (the JSON dict
   silently collapses it), but it is real bib cruft a reviewer will hit. Keep the better-formatted
   entry and delete the other.
@@ -323,8 +299,8 @@ the old path and fix them.
   parenthesised path), and **only** in `AGENTS.md`, `scripts/README.md`, and `docs/**/*.md` (minus
   `_generated/`). Note it resolves links inside backticks too, so do not write a literal
   link-shaped example in prose — it will be chased and reported broken. It does **not** see:
-  bare or backticked paths anywhere, `.lean` docstrings, `blueprint/**`, `.github/**`, or the
-  top-level `README.md` / `CONTRIBUTING.md` / `ROADMAP.md` / `BACKGROUND.md`.
+  bare or backticked paths anywhere, `.lean` docstrings, `website/blueprint/**`, `.github/**`, or the
+  top-level `README.md` / `CONTRIBUTING.md` / `docs/project/roadmap.md` / `docs/project/background.md`.
 - `kb/lint.py` does **not** validate the `related_modules:` paths in `docs/kb/papers/*.md`
   frontmatter. A module listed there can be long gone and lint still passes.
 
@@ -389,7 +365,7 @@ Then check the places a path grep structurally cannot reach:
 
 - `docs/kb/papers/*.md` — `related_modules:` frontmatter (unlinted; also verify the entries still
   make sense after a move, not just that they resolve).
-- `blueprint/src/**/*.tex` — `\texttt{ArkLib/...}` path mentions, plus `\lean{Decl.Name}` refs to
+- `website/blueprint/src/**/*.tex` — `\texttt{ArkLib/...}` path mentions, plus `\lean{Decl.Name}` refs to
   declarations that died with the file. Only `./scripts/validate.sh --site` checks the latter.
 - [`../wiki/repo-map.md`](../wiki/repo-map.md) — the structure map goes stale on *every* move,
   rename, and delete, and nothing verifies it.
@@ -474,7 +450,7 @@ a declaration docstring with another:
 ```bash
 C='(B|C|D|E|F|G|M|R|S)-?[0-9]+(\.[0-9]+)?'
 git grep -nE "milestone|prototype|design [DG][0-9]|Phase-[A-Z]|§[0-9]+ [A-Z][0-9]|\b${C}\b" \
-  -- ArkLib/ blueprint/src/
+  -- ArkLib/ website/blueprint/src/
 grep -rnE "[^A-Za-z_]${C}[^A-Za-z_0-9.]" --include='*.lean' ArkLib/   # \b-free fallback, see below
 ```
 
@@ -520,8 +496,8 @@ fundamental composition obligation`). Filter out the ordinary senses first — "
 **Re-derive any number or span a subagent reports.** Counts and row ranges are exactly where
 parallel reviewers disagree with each other and with the source. Settle each from the declaration, not from the report.
 
-Regenerate the KB after deleting or moving a Lean path so its indexes reflect the new location.
-Commit the tracked citation index alongside the source change.
+Regenerate the KB after removing cited modules so the tracked citation index reflects the
+deletions. Review the derived diff and commit it with the source changes.
 
 Finish by re-running `./scripts/update-lib.sh` (then `git add ArkLib.lean`) and
 `./scripts/validate.sh`, and re-run the sweep itself — repointing one reference can introduce
@@ -540,8 +516,8 @@ Only consider the PR merge-ready when:
 
 1. `./scripts/validate.sh` (with `--docs` when appropriate) succeeds.
 2. Every changed `.lean` file builds and meets the production/test warning budgets.
-3. Citation metadata is consistent, and `docs/kb/_generated/` matches the PR base exactly (step 3
-   — it is checked locally, never committed).
+3. Citation metadata is consistent, and the committed KB indexes match regeneration on the
+   PR head (step 3).
 4. The deleted-file sweep in step 4 comes back clean — no reference anywhere in the tree points at
    a path this branch removed. A green `validate.sh` does **not** imply this.
 5. The manual API, docstring and proof-quality checks in step 1 are complete; any performance

@@ -31,12 +31,12 @@ class ReviewContextTests(unittest.TestCase):
         citations_payload = {
             "files": {
                 "ArkLib/Data/Basic.lean": ["PaperA"],
-                "Research/ProximityPrize/Core.lean": ["PaperB", "PaperC"],
+                "ArkLib/Research/ProximityGap/Core.lean": ["PaperB", "PaperC"],
             }
         }
         # Slashes and backslashes should both resolve to the correct keys
         keys = review_context.infer_keys_from_files(
-            [r"ArkLib\Data\Basic.lean", "Research/ProximityPrize/Core.lean"],
+            [r"ArkLib\Data\Basic.lean", "ArkLib/Research/ProximityGap/Core.lean"],
             citations_payload,
         )
         self.assertEqual(keys, {"PaperA", "PaperB", "PaperC"})

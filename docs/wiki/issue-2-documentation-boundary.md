@@ -1,7 +1,7 @@
 # Issue 2: documentation outside the Lean source tree
 
 All 47 Markdown files formerly under `ArkLib/` are removed from that tree.
-Research notes now live under `Research/ProximityPrize/kb/archive/`; the research
+Research notes now live under `ArkLib/Research/ProximityGap/kb/archive/`; the research
 agent guide lives beside the research code, with `CLAUDE.md` linking to `AGENTS.md`.
 The Binius reversal diagnosis is retained under `docs/kb/audits/`, and the two
 short library-extension READMEs are consolidated in `local-extensions.md`.
@@ -9,7 +9,7 @@ short library-extension READMEs are consolidated in `local-extensions.md`.
 The root disproof log was an exact byte-prefix extension of the ProximityGap
 copy: it contained all 4,591,493 bytes of that copy plus a 385-byte section on
 PR #53's region-middle counterexample. The complete version is now
-`Research/ProximityPrize/DISPROOF_LOG.md`; the duplicate is deleted. No log entry
+`docs/research/proximity-gap/DISPROOF_LOG.md`; the duplicate is deleted. No log entry
 is lost. Path references and two mathematical expressions misread as Markdown
 links were reformatted after consolidation.
 

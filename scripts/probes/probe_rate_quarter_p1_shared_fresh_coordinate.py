@@ -56,6 +56,12 @@ from fractions import Fraction
 # small prime field helpers
 # ----------------------------------------------------------------------
 
+def _require(condition, detail):
+    """Keep the countermodel and arithmetic checks active under Python optimization."""
+    if not condition:
+        raise AssertionError(detail)
+
+
 def inv(a: int, p: int) -> int:
     return pow(a, p - 2, p)
 
@@ -79,7 +85,7 @@ def explainable(u: list[int], S: list[int], domain: list[int], k: int,
     """Is there a degree-<k polynomial agreeing with u on S?"""
     if len(S) <= k:
         return True
-    assert k == 2, "probe only needs k = 2"
+    _require(k == 2, "probe only needs k = 2")
     a, b = S[0], S[1]
     L = interpolate_deg1(domain[a], u[a], domain[b], u[b], p)
     return all(poly_eval(L, domain[e], p) == u[e] for e in S)
@@ -139,32 +145,38 @@ def check_countermodel(u0, u1, lines) -> None:
     p = P
     # (a) joint pair on J
     for e in J:
-        assert poly_eval(Q0, DOMAIN[e], p) == u0[e]
-        assert poly_eval(Q1, DOMAIN[e], p) == u1[e]
+        _require(poly_eval(Q0, DOMAIN[e], p) == u0[e],
+                 f"q0 does not match u0 at J-coordinate {e}")
+        _require(poly_eval(Q1, DOMAIN[e], p) == u1[e],
+                 f"q1 does not match u1 at J-coordinate {e}")
     # (b) i not in the maximal joint set of (q0, q1)
-    assert (poly_eval(Q0, I_SHARED, p), poly_eval(Q1, I_SHARED, p)) != \
-        (u0[I_SHARED], u1[I_SHARED])
+    _require((poly_eval(Q0, I_SHARED, p), poly_eval(Q1, I_SHARED, p))
+             != (u0[I_SHARED], u1[I_SHARED]),
+             "the joint pair agrees with the stack at the shared coordinate")
     maximal_joint = [e for e in range(N_SMALL)
                      if poly_eval(Q0, DOMAIN[e], p) == u0[e]
                      and poly_eval(Q1, DOMAIN[e], p) == u1[e]]
-    assert I_SHARED not in maximal_joint
+    _require(I_SHARED not in maximal_joint,
+             "the shared coordinate is in the maximal joint set")
     # (c) each witness: line agreement + threshold size + shared coordinate
     for j, g in enumerate(GAMMAS):
         S = WITNESS[j]
-        assert len(S) == THRESH and I_SHARED in S and I_SHARED not in J
+        _require(len(S) == THRESH and I_SHARED in S and I_SHARED not in J,
+                 f"witness {j} has the wrong size or misses the shared coordinate")
         for e in S:
-            assert poly_eval(lines[j], DOMAIN[e], p) == \
-                (u0[e] + g * u1[e]) % p
+            _require(poly_eval(lines[j], DOMAIN[e], p) == (u0[e] + g * u1[e]) % p,
+                     f"witness {j} line disagrees with the stack at {e}")
     # (d) non-jointness on each witness: the u0 row is unexplainable
     #     (this is the certificate shape transcribed into Lean)
     for j in range(3):
         S = WITNESS[j]
-        assert not explainable(u0, S, DOMAIN, K_SMALL, p), \
-            f"u0 explainable on witness {j}; countermodel broken"
+        _require(not explainable(u0, S, DOMAIN, K_SMALL, p),
+                 f"u0 explainable on witness {j}; countermodel broken")
     # (e) structural laws on the instance
     # distinct values at the shared coordinate (u1(4) = 1 != 0)
     vals = [poly_eval(lines[j], I_SHARED, p) for j in range(3)]
-    assert len(set(vals)) == 3
+    _require(len(set(vals)) == 3,
+             "line values at the shared coordinate are not distinct")
     # pairwise pencils agree with the stack on the pairwise intersections
     for ja, jb in itertools.combinations(range(3), 2):
         ga, gb = GAMMAS[ja], GAMMAS[jb]
@@ -172,15 +184,20 @@ def check_countermodel(u0, u1, lines) -> None:
               for t in range(2)]
         w0 = [(lines[ja][t] - ga * w1[t]) % p for t in range(2)]
         inter = sorted(set(WITNESS[ja]) & set(WITNESS[jb]))
-        assert inter, "pairwise intersection unexpectedly empty"
+        _require(inter, "pairwise intersection unexpectedly empty")
         for e in inter:
-            assert poly_eval(w0, DOMAIN[e], p) == u0[e]
-            assert poly_eval(w1, DOMAIN[e], p) == u1[e]
+            _require(poly_eval(w0, DOMAIN[e], p) == u0[e],
+                     f"pencil w0 disagrees with u0 at {e}")
+            _require(poly_eval(w1, DOMAIN[e], p) == u1[e],
+                     f"pencil w1 disagrees with u1 at {e}")
         # incomparability
-        assert not set(WITNESS[ja]) <= set(WITNESS[jb])
-        assert not set(WITNESS[jb]) <= set(WITNESS[ja])
+        _require(not set(WITNESS[ja]) <= set(WITNESS[jb]),
+                 f"witness {ja} is contained in witness {jb}")
+        _require(not set(WITNESS[jb]) <= set(WITNESS[ja]),
+                 f"witness {jb} is contained in witness {ja}")
         # absorption dichotomy premise fails here, as it must
-        assert len(set(WITNESS[ja]) & set(WITNESS[jb]) & set(J)) < K_SMALL
+        _require(len(set(WITNESS[ja]) & set(WITNESS[jb]) & set(J)) < K_SMALL,
+                 "absorption premise holds on a witness pair")
     # non-collinearity: the three witness codewords are NOT on one pencil
     g1, g2, g3 = GAMMAS
     w1 = [(lines[1][t] - lines[0][t]) * inv(g2 - g1, p) % p for t in range(2)]
@@ -191,7 +208,8 @@ def check_countermodel(u0, u1, lines) -> None:
     U = sorted((set(WITNESS[0]) & set(WITNESS[1]))
                | (set(WITNESS[0]) & set(WITNESS[2]))
                | (set(WITNESS[1]) & set(WITNESS[2])))
-    assert sum(len(S) for S in WITNESS) <= N_SMALL + 2 * len(U)
+    _require(sum(len(S) for S in WITNESS) <= N_SMALL + 2 * len(U),
+             "two-cover bound fails")
     print("countermodel over F_11 verified:")
     print(f"  u0 = {u0}")
     print(f"  u1 = {u1}")
@@ -245,8 +263,10 @@ def random_structural_checks() -> None:
         w1 = [(p2[t] - p1[t]) * inv(g2 - g1, p) % p for t in range(2)]
         w0 = [(p1[t] - g1 * w1[t]) % p for t in range(2)]
         for e in set(S1) & set(S2):
-            assert poly_eval(w0, DOMAIN[e], p) == u0[e]
-            assert poly_eval(w1, DOMAIN[e], p) == u1[e]
+            _require(poly_eval(w0, DOMAIN[e], p) == u0[e],
+                     f"random pencil w0 disagrees with u0 at {e}")
+            _require(poly_eval(w1, DOMAIN[e], p) == u1[e],
+                     f"random pencil w1 disagrees with u1 at {e}")
         checked_pencil += 1
         # Count large intersections for coverage.  Since the reference pair
         # here is defined to be the derived pencil itself, this is not an
@@ -254,7 +274,8 @@ def random_structural_checks() -> None:
         inter = set(S1) & set(S2)
         if len(inter) >= K_SMALL:
             for e in inter:
-                assert poly_eval(w0, DOMAIN[e], p) == u0[e]
+                _require(poly_eval(w0, DOMAIN[e], p) == u0[e],
+                         f"large-intersection pencil disagrees with u0 at {e}")
             checked_large_intersection += 1
     print(f"random pencil law checks passed: {checked_pencil} "
           f"(large-intersection cases: {checked_large_intersection})")
@@ -268,16 +289,16 @@ def p1_arithmetic() -> None:
     N = 2**30
     k = 2**28
     T = 592794966            # predecessorThreshold
-    assert N - T == 480946858
-    assert 2 * T - N == 111848108, "pairwise-intersection floor"
+    _require(N - T == 480946858, "N - T is not 480946858")
+    _require(2 * T - N == 111848108, "pairwise-intersection floor")
     # absorption premise NOT forced: witnesses can miss J beyond k-1
-    assert 3 * T <= 2 * N + k - 1, "triple-J overlap can be < k"
-    assert 3 * T - 2 * N < 0     # even the naive floor is negative
+    _require(3 * T <= 2 * N + k - 1, "triple-J overlap can be < k")
+    _require(3 * T - 2 * N < 0, "naive triple floor is not negative")
     # collinear boost: two-cover floor >= k
     two_cover_floor = -((-(3 * T - N)) // 2)  # ceil((3T-N)/2)
-    assert 3 * T - N == 704643074
-    assert two_cover_floor == 352321537
-    assert two_cover_floor >= k
+    _require(3 * T - N == 704643074, "3T - N is not 704643074")
+    _require(two_cover_floor == 352321537, "two-cover floor is not 352321537")
+    _require(two_cover_floor >= k, "two-cover floor is below k")
     print("P1 arithmetic verified:")
     print(f"  2T-N = {2*T-N} (pairwise intersection floor, positive)")
     print(f"  3T-2N = {3*T-2*N} (absorption premise not forced)")

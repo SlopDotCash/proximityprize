@@ -37,21 +37,21 @@ jobs:
           path: |
             .lake
             !.lake/**/*.setup.json
-          key: incidence-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ hashFiles('lakefile.lean', 'lakefile.toml', 'ArkLib/**/*.lean', 'Research/ProximityPrize/**/*.lean') }}-${{ github.run_id }}-${{ github.run_attempt }}
+          key: incidence-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-${{ hashFiles('lakefile.lean', 'lakefile.toml', 'ArkLib/**/*.lean', 'ArkLib/Research/ProximityGap/**/*.lean') }}-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
             incidence-build-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-
             incidence-dependencies-${{ runner.os }}-
       - name: Fetch dependency cache
         run: ./scripts/lake-locked.sh exe cache get
       - name: Build existing incidence dependency
-        run: ./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IncidenceAverageAnchor
+        run: ./scripts/lake-locked.sh build ArkLib.Research.ProximityGap.Frontier._IncidenceAverageAnchor
       - name: Check research proof
         run: |
           set -o pipefail
-          ./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._IncidenceTripleMass Research.ProximityPrize.Frontier._IncidenceAffineLines
-          lake env lean Research/ProximityPrize/Frontier/_IncidenceTripleMass.lean | tee incidence-axioms.log
-          lake env lean Research/ProximityPrize/Frontier/_IncidenceAffineLines.lean | tee -a incidence-axioms.log
-          lake env lean Research/ProximityPrize/Frontier/_IncidenceCanonicalTriples.lean | tee -a incidence-axioms.log
+          ./scripts/lake-locked.sh build ArkLib.Research.ProximityGap.Frontier._IncidenceTripleMass ArkLib.Research.ProximityGap.Frontier._IncidenceAffineLines
+          lake env lean ArkLib/Research/ProximityGap/Frontier/_IncidenceTripleMass.lean | tee incidence-axioms.log
+          lake env lean ArkLib/Research/ProximityGap/Frontier/_IncidenceAffineLines.lean | tee -a incidence-axioms.log
+          lake env lean ArkLib/Research/ProximityGap/Frontier/_IncidenceCanonicalTriples.lean | tee -a incidence-axioms.log
       - name: Audit research axioms
         run: |
           python3 - <<'PY'

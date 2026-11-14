@@ -59,7 +59,7 @@ For scale `2` and `τ = 1/2`, required `C` is again about `0.59`.
 Artifact:
 
 ```text
-Research/ProximityPrize/Frontier/_R224HalfBandTailConsumer.lean
+ArkLib/Research/ProximityGap/Frontier/_R224HalfBandTailConsumer.lean
 ```
 
 Main declarations:

@@ -25,14 +25,14 @@ QUIET=0; [[ "${1:-}" == "-q" ]] && { QUIET=1; shift; }
 F="${1:?usage: pg-iterate.sh [-q] <file.lean>}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 START=$(date +%s)
-OUT="$(lake env lean -DautoImplicit=false "$F" 2>&1)" && RC=0 || RC=$?
+OUT="$(lake env lean -DautoImplicit=false -Dpp.fullNames=true "$F" 2>&1)" && RC=0 || RC=$?
 ELAPSED=$(( $(date +%s) - START ))
 if (( RC != 0 )); then
   printf '%s\n' "$OUT" >&2
   exit "$RC"
 fi
 # Compiler status above owns compile errors. Inspect only actual admission warnings
-# and printed axiom reports; paths and benign output may contain "errors" or "sorry".
+# and printed axiom reports. Full names match the residual manifest.
 if ! command -v python3 >/dev/null; then
   echo "❌ FAIL: python3 is required for the source and axiom checks." >&2
   exit 1

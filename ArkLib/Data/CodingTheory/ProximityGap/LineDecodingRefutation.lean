@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.Data.Probability.Notation
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.LineDecoding
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.LineDecoding
 import Mathlib.Algebra.Field.ZMod
 
 /-!

@@ -42,8 +42,9 @@ python3 - <<'PYTHON' | xargs ./scripts/lint-style.py "$@"
 import json
 import subprocess
 canonical = set(json.load(open("scripts/arklib-upstream.json"))["files"])
-paths = subprocess.check_output(["git", "ls-files", "--", "ArkLib/*.lean", "Research/*.lean", "ProximityPrize/*.lean"], text=True).splitlines()
-print("\n".join(sorted(set(paths) - canonical)))
+paths = subprocess.check_output(["git", "ls-files", "--", "ArkLib/*.lean"], text=True).splitlines()
+print("\n".join(sorted(path for path in set(paths) - canonical
+                       if not path.startswith("ArkLib/Tests/"))))
 PYTHON
 
 # 2.1 Check for executable bit on Lean files

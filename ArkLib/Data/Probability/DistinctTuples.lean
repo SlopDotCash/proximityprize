@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.Data.Probability.Notation
-import ProximityPrize.Extensions.Data.Probability.Combinatorial
+import ArkLib.Extensions.Data.Probability.Combinatorial
 import ArkLib.Data.Probability.UniformPushforward
 
 /-!

@@ -3,7 +3,7 @@ kind: paper
 bibkey: BCIKS20
 title: "Proximity Gaps for Reed-Solomon Codes"
 year: 2020
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eprint.iacr.org/2020/654
 source_metadata: ../sources/BCIKS20/metadata.yml
 status: seeded
@@ -74,4 +74,4 @@ machinery.
 ## Source Access
 
 - Source metadata: [`../sources/BCIKS20/metadata.yml`](../sources/BCIKS20/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

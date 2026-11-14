@@ -61,6 +61,12 @@ P3_CL = list(range(28, 32))
 # (2^32 != 1 mod P), but 3 (a generator) at the mu_256/F_257 mid-scale.
 
 
+def _require(condition, detail):
+    """Keep the executable P1 certificate checks active under Python optimization."""
+    if not condition:
+        raise AssertionError(detail)
+
+
 def inv(a, p=P_SMALL):
     return pow(a, p - 2, p)
 
@@ -105,7 +111,8 @@ def part1_midscale():
     g = 3
     dom = [pow(g, e, p) for e in range(n)]
     G0, G1, G2, G3 = 3, 1, 2, 4
-    assert pow(G0, 32, p) != 1, "gamma_0 must not be a 32nd root of unity"
+    _require(pow(G0, 32, p) != 1,
+             "gamma_0 must not be a 32nd root of unity")
 
     def xm(x):
         return pow(x, m, p)
@@ -140,20 +147,22 @@ def part1_midscale():
            B_CL + P1_CL[:4], B_CL + P2_CL, B_CL + P3_CL]
     S = [[e for e in range(n) if e % 32 in Scl[j]] for j in range(4)]
     for j in range(4):
-        assert len(S[j]) == 18 * m == 144 >= T_SMALL
+        _require(len(S[j]) == 18 * m == 144 >= T_SMALL,
+                 f"witness {j} has the wrong size")
         for e in S[j]:
-            assert pfun[j][e] == (u0[e] + gammas[j] * u1[e]) % p, (j, e)
+            _require(pfun[j][e] == (u0[e] + gammas[j] * u1[e]) % p, (j, e))
     # non-jointness: pinning certificates
     for j in range(4):
         e0 = not explainable(u0, S[j], dom, K_SMALL)
         e1 = not explainable(u1, S[j], dom, K_SMALL)
-        assert e0 or e1, f"witness {j} jointly explainable"
+        _require(e0 or e1, f"witness {j} jointly explainable")
     # the second-row certificates used in Lean: pinning blocks >= k
-    assert 14 * m >= K_SMALL and 10 * m >= K_SMALL
+    _require(14 * m >= K_SMALL and 10 * m >= K_SMALL,
+             "pinning blocks are smaller than the code dimension")
     for x in [dom[e] for e in range(n) if e % 32 in P1_CL]:
-        assert dirj(1, x) != 1                # partners' mismatch on P_j
+        _require(dirj(1, x) != 1, "partner direction matches the pinned row")
     for x in [dom[e] for e in range(n) if e % 32 in P2_CL]:
-        assert dirj(1, x) != dirj(2, x)       # base's mismatch on P2
+        _require(dirj(1, x) != dirj(2, x), "base directions match on P2")
     # three distinct pencils through the base
     pencils = set()
     for j in (1, 2, 3):
@@ -163,8 +172,8 @@ def part1_midscale():
         pencils.add((tuple(w0), tuple(w1)))
         # sanity: w1 matches dir_j pointwise
         for e in range(n):
-            assert w1[e] == dirj(j, dom[e])
-    assert len(pencils) == 3, "expected three distinct pencils"
+            _require(w1[e] == dirj(j, dom[e]), f"pencil direction mismatch at {e}")
+    _require(len(pencils) == 3, "expected three distinct pencils")
     print("part 1 verified: THREE distinct pencils through one base scalar "
           "at the P1 shape (mu_256/F_257); BasePencilImageCap(2) refuted "
           "at shape")
@@ -172,22 +181,23 @@ def part1_midscale():
 
 def part2_literal_p1():
     m = 2**25
-    assert 32 * m == N
-    assert 18 * m == 603979776 >= T          # witness thresholds
-    assert 14 * m == 469762048 >= K          # partners' pinning block B
-    assert 10 * m == 335544320 >= K          # base's pinning block P1
-    assert 4 * m == 134217728 >= 2 * T - N   # pairwise floors (context)
-    assert 2 * m < K                          # sigma direction degree x^(2m)
+    _require(32 * m == N, "literal P1 domain size changed")
+    _require(18 * m == 603979776 >= T, "literal P1 witness threshold failed")
+    _require(14 * m == 469762048 >= K, "literal P1 partner pinning block failed")
+    _require(10 * m == 335544320 >= K, "literal P1 base pinning block failed")
+    _require(4 * m == 134217728 >= 2 * T - N, "literal P1 pairwise floor changed")
+    _require(2 * m < K, "sigma direction degree is not below K")
     # gamma_0 = 2 is not a 32nd root of unity mod P: 2^32 - 1 not divisible
-    assert pow(2, 32, P) != 1
-    assert P > 2**32 - 1
+    _require(pow(2, 32, P) != 1, "gamma_0 lies in mu_32")
+    _require(P > 2**32 - 1, "literal field is too small for the Proth argument")
     # omega32 = g^(2^25) has order 32
     om = pow(G_P1, m, P)
-    assert pow(om, 32, P) == 1 and pow(om, 16, P) != 1
+    _require(pow(om, 32, P) == 1 and pow(om, 16, P) != 1,
+             "constructed omega does not have order 32")
     # dir difference identity: dir_i - dir_j prop to (x^m - gamma_0), never 0
     for t in range(32):
         x = pow(om, t, P)
-        assert x != 2
+        _require(x != 2, f"gamma_0 entered mu_32 at exponent {t}")
     print("part 2 verified: literal P1 constants for the m = 2^25 fold")
 
 

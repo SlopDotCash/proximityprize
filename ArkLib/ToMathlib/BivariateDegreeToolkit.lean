@@ -7,8 +7,8 @@ Authors: Eliza
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Polynomial.BigOperators
 import Mathlib.Algebra.Polynomial.Roots
-import ProximityPrize.Extensions.Data.Polynomial.Bivariate
-import ProximityPrize.Extensions.Data.Polynomial.Trivariate
+import ArkLib.Extensions.Data.Polynomial.Bivariate
+import ArkLib.Extensions.Data.Polynomial.Trivariate
 
 /-!
 # A reusable weighted/total-degree arithmetic toolkit for bivariate/trivariate polynomials

@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.Logup.Sumcheck.SumcheckPolynomial
 import ArkLib.ProofSystem.Sumcheck.Spec.General
-import ProximityPrize.Extensions.OracleReduction.LiftContext.OracleReduction
+import ArkLib.Extensions.OracleReduction.LiftContext.OracleReduction
 
 /-!
 # LogUp Sumcheck Bridge

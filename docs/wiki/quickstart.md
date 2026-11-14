@@ -8,7 +8,7 @@ The authoritative upstream revision and module inventory are recorded in
 build includes `ArkLib`, the classic downstream `ArkLibExtensions`, the research
 library `ResearchProximityPrize`, and `ProximityPrizeExtensions`. Existing ArkLib
 imports remain valid; downstream declarations extracted from overlapping modules
-live under `ProximityPrize/Extensions/` and import the authoritative definitions.
+live under `ArkLib/Extensions/` and import the authoritative definitions.
 
 Use `./scripts/lake-locked.sh build <targets>` and
 `./scripts/lake-locked.sh exe cache get` for local builds and cache fetches. The
@@ -19,10 +19,10 @@ On a cold checkout, fetch the cache before building. For repeated research proof
 iteration, use `scripts/pg-warm.sh` once and `scripts/pg-iterate.sh <file.lean>`.
 The warm-up script prints the full build log on failure and preserves the build exit status;
 successful runs show only the final two build lines. The iteration wrapper trusts the compiler
-exit status for errors, then checks actual admission warnings and `sorryAx` in printed axiom
-reports. Words such as `errors` or `sorry` in filenames or benign messages do not mean failure.
-It does not generate axiom reports automatically; the project build and kernel audit remain
-required for final verification.
+exit status for errors and checks actual admission warnings, printed axiom dependencies,
+and the repository's forbidden-token policy. Words such as `errors` or `sorry` in filenames
+or benign messages do not cause failure. The project build and kernel audit provide the
+declaration-level checks that single-file iteration cannot generate automatically.
 
 `scripts/validate.sh` combines the canonical upstream compile-time acceptance,
 runtime, style, warning, and probability-retirement checks with downstream Python
@@ -157,10 +157,13 @@ For a convenient routine check, run:
 ./scripts/validate.sh
 ```
 
+CI runs the validation wrapper for pull requests targeting `main`. Deleting a gate input
+or moving it into a documentation path still runs the same checks.
+
 On a cold clone, fetch precompiled dependencies first:
 
 ```bash
-lake exe cache get
+./scripts/lake-locked.sh exe cache get
 ./scripts/validate.sh
 ```
 
@@ -177,7 +180,7 @@ ArkLib declaration types and bodies, without a baseline exception. See
 ./scripts/validate.sh
 ```
 
-### Added, renamed, or deleted files under `ArkLib/` or `Research/ProximityPrize/`
+### Added, renamed, or deleted files under `ArkLib/` or `ArkLib/Research/ProximityGap/`
 
 ```bash
 git add path/to/newfile.lean
@@ -190,14 +193,14 @@ and verifies that the committed import surfaces match the tracked source.
 
 ### Compile-time acceptance tests
 
-Place examples and regression tests under `ArkLibTest/`, mirroring the production module path.
+Place examples and regression tests under `ArkLib/Tests/`, mirroring the production module path.
 Run `lake test` to build them; `./scripts/validate.sh` runs this target by default and rejects all
 test warnings, including admissions. Stage new tests so source linting and the trust inventory
 include them. Production modules must not import tests.
 
 Typed Interaction PRs also have a focused hosted check, including when stacked on a feature
-branch. It compiles all tracked modules under `ArkLib/Interaction/`, `ArkLibTest/Interaction/`,
-`ArkLib/ProofSystem/Sumcheck/Interaction/` and `ArkLibTest/ProofSystem/Sumcheck/Interaction/` with
+branch. It compiles all tracked modules under `ArkLib/Interaction/`, `ArkLib/Tests/Interaction/`,
+`ArkLib/ProofSystem/Sumcheck/Interaction/` and `ArkLib/Tests/ProofSystem/Sumcheck/Interaction/` with
 the existing build-time source-policy plugin and rejects every warning in those modules,
 including admissions. This is early feedback, not a replacement for `lake test` or the full
 validation/axiom gate before merging to `main`. The semantic acceptance requirements live in
@@ -215,6 +218,12 @@ project-specific mathematical Unicode notation, while rejecting invisible contro
 controls, and nonstandard space characters that can conceal source changes. It also rejects
 blanket package-root imports. The normal `lake build` loads ArkLib's Lean syntax-tree plugin, which
 rejects source-level linter suppressions in their actual parsed context.
+The four default libraries and `ArkLibTest` also load a separate syntax-tree
+plugin that rejects Lean's admitting `stop` tactic. It accepts ordinary
+`stop` names and catches tactics inside warning-suppression commands.
+`scripts/test-lint-plugin.sh` runs the syntax-policy fixtures.
+Build optional modules owned by those libraries explicitly to run the check.
+Direct `lake env lean` and `pg-iterate.sh` run without the build-time plugins.
 
 The header policy understands the Lean module system, so `module`, `public import`, `meta import`
 and `import all` all parse, and it pins the canonical header order every file under `ArkLib/`
@@ -263,7 +272,7 @@ a zero-debt rule: no baseline edit can green it, and `--update-baseline` refuses
 while such taint is present — remove the dependency instead.
 
 CI enforces both the fixture matrix and the library regression check (see `ci.yml`).
-It also runs `scripts/source-trust-audit.py` over every tracked Lean file under `ArkLib/` and `ArkLibTest/`.
+It also runs `scripts/source-trust-audit.py` over every tracked Lean file under `ArkLib/` and `ArkLib/Tests/`.
 That deterministic, comment/string-aware inventory reports source-only constructs that an
 environment sweep cannot see reliably: admissions in examples or defaults/autoparams and
 constructs in files outside the imported roots. Compare this inventory with the PR base when
@@ -293,12 +302,17 @@ For website or blueprint output, run:
 ./scripts/validate.sh --site
 ```
 
-`./scripts/build-web.sh` assembles the site, and skips blueprint generation if `leanblueprint`
-is not installed. If blueprint output matters, install it first:
+`./scripts/build-web.sh` assembles the site in ignored `build/site/` from the
+sources under `website/`. Rendering requires TeX Live (`latexmk` and the configured
+engine), plus plasTeX and the leanblueprint plugin in one Python environment.
+Provide the Python renderer dependencies with:
 
 ```bash
-uv tool install --python 3.12 leanblueprint
+uv run --no-project --python 3.12 --with leanblueprint bash scripts/build-web.sh
 ```
+
+Missing tools or outputs fail the build. See [blueprint and citations](blueprint-and-citations.md)
+for the standalone renderer and CI workflow.
 
 ## Important Notes
 
@@ -399,11 +413,8 @@ If you specifically need to regenerate `ArkLib.lean`, use:
 ./scripts/update-lib.sh
 ```
 
-If blueprint output matters and `leanblueprint` is missing:
-
-```bash
-uv tool install --python 3.12 leanblueprint
-```
+For blueprint output, use `scripts/blueprint-ci.py render` with the TeX/Python
+requirements described in [blueprint and citations](blueprint-and-citations.md).
 
 ## CI Mapping
 
@@ -437,10 +448,12 @@ the default build.
   acceptance modules. It also runs on feature-base stacked PRs. Its read-only job restores,
   but never saves, the dependency and build caches and does not retain checkout credentials. Passing
   this check does not waive the full validation/axiom gate for the eventual `main` target.
-- The validation wrapper enforces the issue #47 verification gates: a fast precheck rejecting
-  `native_decide`/`bv_decide`/custom `axiom` declarations in live source
-  (`scripts/forbidden_tokens.py`, which main CI also runs as a separate early step), a
-  comment-stripped sorry census requiring zero live holes
+- The validation wrapper enforces the issue #47 verification gates. Main CI also runs
+  `scripts/forbidden_tokens.py` as an early precheck. It rejects `native_decide`,
+  `bv_decide`, undocumented custom axioms, and options such as `debug.skipKernelTC`
+  that skip checking or admit proofs in live Lean source or `lakefile.toml`.
+  Parsing the Lake configuration requires Python 3.11 or newer. The wrapper also runs a
+  comment-stripped sorry census that rejects holes beyond the pinned upstream baseline
   (`scripts/sorry_census.py --fail-on-holes`), and a `#print axioms` sweep over the pinned
   flagship list (`scripts/axiom_audit.py` reading `scripts/flagship_axioms.txt`) that must stay
   within `propext`, `Classical.choice`, `Quot.sound`. Renaming or deleting a pinned flagship
@@ -448,10 +461,10 @@ the default build.
   outside the ProximityGap umbrella, the audit's modules
   (`python3 ./scripts/axiom_audit.py --print-modules`: the flagship modules and the modules of
   the residual axioms pinned in `scripts/residual_axioms.txt`) are built before it runs. The same
-  audit lists, from Lean's environment metadata, every axiom declared in an `ArkLib`/`Research`
-  module of that import closure and fails unless each is a pinned residual declared in its pinned
-  module; this covers every name form and axioms added without the `axiom` keyword, but only
-  inside that closure.
+  audit uses Lean's environment metadata to list every axiom declared in an `ArkLib`,
+  `ProximityPrize`, or `Research` module in that import closure. Each must be a residual
+  declared in its pinned module. This covers axioms added without the `axiom` keyword
+  within the audited import closure.
 - The declaration scanner restricts leading indentation to the current line, so
   large masked block comments do not cause repeated scans of all following blank lines.
 - The forbidden-token precheck rejects every custom `axiom` *except* the
@@ -474,7 +487,7 @@ the default build.
   past its budget. It is lexical, not an elaborated declaration or axiom audit.
 - [`../../.github/workflows/check-imports.yml`](../../.github/workflows/check-imports.yml)
   checks pinned canonical-source provenance, the library/research boundary, and the generated
-  `ArkLib.lean`, `ProximityPrize.lean`, `ProximityPrize/Extensions.lean`, and Research umbrellas,
+  `ArkLib.lean`, `ArkLib/Downstream.lean`, `ArkLib/Extensions.lean`, and Research umbrellas,
   including their Lake ownership. Both this workflow and the main CI run without path filters
   for PRs targeting `main` and for merge groups, so a generated-root-only change or a change to
   an integration script or manifest still runs validation. Focused regression tests in
@@ -604,15 +617,38 @@ only gate 1; nothing audits the transitive axioms it never reports.
 
 ## Retained probe dependencies
 
-Run the finite monomial-pencil census probes under `scripts/probes/` with standard Python and leave `PYTHONOPTIMIZE` unset. Their entry points reject optimized execution so the certificate checks remain active.
+The W16 TZ prime-witness probe writes its generated `rung_<k>.lean` files to a fresh
+system temporary directory and prints that directory on completion.
 
-The SYZ72 middle-band probe samples 20,000 support pairs at each of 15 selected primes and checks all 28 legal third supports per draw. Run `python3 scripts/probes/probe_syz72_middle_band_sweep.py` to reproduce the sample or pass `--trials` to choose a different positive draw count. Zero-hit rows apply to the sampled supports.
+The G210 depth-two flatness certificate uses explicit runtime checks, so `python3 -O
+scripts/probes/g210_tail_floor_flatness_certificate.py` still verifies the direct/primitive
+partition identity, floor equivalence, and collision relations. Run
+`python3 -m unittest discover -s scripts/tests -p test_g210_flatness_certificate.py` to replay
+the eight published cells and check rejection of corrupted certificates under normal, `-O`,
+and `-OO` execution. These finite computations support the G210 equality criterion;
+they do not establish a production threshold.
+
+Run the finite monomial-pencil census probes under `scripts/probes/` with standard Python
+and leave `PYTHONOPTIMIZE` unset. Their entry points reject optimized execution so the
+certificate checks remain active.
+
+The SYZ72 middle-band probe samples 20,000 support pairs at each of 15 selected primes and
+checks all 28 legal third supports per draw. Run
+`python3 scripts/probes/probe_syz72_middle_band_sweep.py` to reproduce the sample or pass
+`--trials` to choose a different positive draw count. Zero-hit rows apply to the sampled
+supports.
 
 Before deleting a Python probe helper, run `python3 -m unittest discover -s scripts/tests -p test_probe_local_dependencies.py`. This parses retained probe sources without executing experiments and checks statically named `probe_` and `_skeptic_` imports. It catches missing helper files; it does not cover dynamic imports, external packages, or mathematical correctness. Run the affected experiment separately when validating its results.
 
 The R387 Z3 probe uses exit 0 only for all searched branches returning unsat, exit 1 for a checked MCA counterexample, and exit 2 for unresolved results (including timeout). An unresolved exit is not a proof of either outcome.
 
 The R387 MILP probe uses the same unresolved exit 2. Exit 0 means the numerical solver reported every requested branch infeasible; it is not an independently verified infeasibility certificate, and a subset of pivots does not cover all directions. Exit 1 indicates a checked MCA witness.
+
+The source-seven signature probe's `--heuristic-restarts` path searches only
+all-regular signatures. It rejects a different `--regular-count` and all
+`--second-*-intersection` slices instead of silently ignoring them. Omit
+`--heuristic-restarts` to send those constraints to the exact Z3 backend. A
+heuristic miss is not an UNSAT certificate.
 
 G87V’s default census uses batches of at most 4,096 rows and retains one modular row basis per field instead of the full census matrix. It still enumerates every support/sign pattern. Run `python3 -m unittest discover -s scripts/tests -p test_g87v_streaming.py` to compare streamed summaries with materialized small cases. This storage change does not remove the combinatorial runtime cost.
 

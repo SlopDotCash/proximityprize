@@ -60,10 +60,10 @@ post-grant target for completing the CO25 security proof.
 
 ## Documentation Updates
 
-- `blueprint/src/oracle_reductions/fiat_shamir.tex` now describes both canonical FS and the
+- `website/blueprint/src/oracle_reductions/fiat_shamir.tex` now describes both canonical FS and the
   duplex-sponge construction, including `duplexSpongeChallengeOracle`, `ProtocolSpec.Codec`,
   salted DSFS, run-collapse completeness, and the residualized key-lemma status.
-- `blueprint/src/references.bib` now includes `CO25`.
+- `website/blueprint/src/references.bib` now includes `CO25`.
 - `docs/kb/papers/CO25.md` and `docs/kb/sources/CO25/metadata.yml` provide the local paper stub
   required by the KB workflow.
 

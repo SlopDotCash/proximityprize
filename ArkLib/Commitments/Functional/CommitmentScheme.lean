@@ -5,7 +5,7 @@ Authors: Tobias Rothmann
 -/
 
 import VCVio
-import ProximityPrize.Extensions.OracleReduction.Security.Basic
+import ArkLib.Extensions.OracleReduction.Security.Basic
 
 /-!
   # Ordinary Commitment Schemes

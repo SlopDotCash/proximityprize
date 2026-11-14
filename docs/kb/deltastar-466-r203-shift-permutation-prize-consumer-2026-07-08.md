@@ -4,17 +4,17 @@ Status: landed as a checked bridge consumer.
 
 Artifacts:
 
-- `Research/ProximityPrize/Frontier/_R203ShiftPermutationPrizeConsumer.lean`
-- Minor cleanup in `Research/ProximityPrize/Frontier/_R202ShiftPermutationQuarterSum.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_R203ShiftPermutationPrizeConsumer.lean`
+- Minor cleanup in `ArkLib/Research/ProximityGap/Frontier/_R202ShiftPermutationQuarterSum.lean`
   removing an unnecessary decidable-equality assumption.
 
 Lean checks:
 
 ```text
-scripts/pg-iterate.sh -q Research/ProximityPrize/Frontier/_R202ShiftPermutationQuarterSum.lean
+scripts/pg-iterate.sh -q ArkLib/Research/ProximityGap/Frontier/_R202ShiftPermutationQuarterSum.lean
 ✅ OK (18s)
 
-scripts/pg-iterate.sh -q Research/ProximityPrize/Frontier/_R203ShiftPermutationPrizeConsumer.lean
+scripts/pg-iterate.sh -q ArkLib/Research/ProximityGap/Frontier/_R203ShiftPermutationPrizeConsumer.lean
 ✅ OK (20s)
 ```
 

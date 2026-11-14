@@ -11,7 +11,7 @@ Formal kernel (pg-iterate ✅ OK 25s, 10 audited theorems, all on
 `[propext, Classical.choice, Quot.sound]`, no `sorry`/`axiom`):
 
 ```text
-Research/ProximityPrize/Frontier/_P1RateQuarterTwoCoverWindow.lean
+ArkLib/Research/ProximityGap/Frontier/_P1RateQuarterTwoCoverWindow.lean
 ```
 
 Probes: `scripts/probes/probe_rate_quarter_p1_twocover_frustration.py`

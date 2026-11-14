@@ -3,7 +3,7 @@ kind: paper
 bibkey: ChiesaYogev2024
 title: "Building Cryptographic Proofs from Hash Functions"
 year: 2024
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://github.com/hash-based-snargs-book
 source_metadata: ../sources/ChiesaYogev2024/metadata.yml
 status: seeded
@@ -40,4 +40,4 @@ Fiat-Shamir treatment.
 ## Source Access
 
 - Source metadata: [`../sources/ChiesaYogev2024/metadata.yml`](../sources/ChiesaYogev2024/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

@@ -5,8 +5,8 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.ToMathlib.GGR11Interleaved
-import ProximityPrize.Extensions.Data.CodingTheory.Basic.Distance
-import ProximityPrize.Extensions.Data.CodingTheory.JohnsonBound.Family
+import ArkLib.Extensions.Data.CodingTheory.Basic.Distance
+import ArkLib.Extensions.Data.CodingTheory.JohnsonBound.Family
 
 /-!
 # GGR11 divergence lemma and the exact tree-structure ⟺ per-word-bound equivalence

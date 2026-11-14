@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Code
+import ArkLib.Extensions.ProofSystem.Binius.BinaryBasefold.Code
 
 /-!
 # Incremental soundness helper lemmas

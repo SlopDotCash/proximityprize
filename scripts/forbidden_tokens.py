@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 """Reject axiom-laundering tokens in live library and research source.
 
-By default, scans every .lean file under ArkLib/, Research/, and ProximityPrize/. If one or
-more paths are provided, scans only those Lean files/directories. Fails if live code contains
-(text inside a comment or inside the literal part of a string is data):
+By default, scans every .lean file under ArkLib/, excluding acceptance clients in
+ArkLib/Tests/. Research and downstream extensions remain in the proof-audit scope.
+Pass paths to scan particular Lean files or directories. Fails if live code
+contains any of the following. Interpolation holes can contain live terms.
   - `native_decide` / `bv_decide` (kernel-bypassing decision procedures),
     `bv_check`, and `decide` configurations that enable native evaluation or
-    whose native flag cannot be established as disabled (including inside the
-    `{…}` hole of an interpolated string). Use `-native` or a constructor
-    spelling such as `.false` to disable it explicitly. The scan also rejects
-    direct use of the compiler-trust axioms and native reduction primitives
-    they rely on (`Lean.ofReduceBool`, `Lean.ofReduceNat`, `Lean.trustCompiler`,
-    `Lean.reduceBool`, `Lean.reduceNat`), or
+    whose native flag cannot be established as disabled. Use `-native` or a
+    constructor spelling such as `.false` to disable it explicitly. The scan
+    also rejects direct use of `Lean.ofReduceBool`, `Lean.ofReduceNat`,
+    `Lean.trustCompiler`, `Lean.reduceBool`, and `Lean.reduceNat`, or
   - an `unsafe` declaration modifier, live `unsafeCast`, or `implemented_by`
     attribute (repository policy: block unsafe decls, unsafeCast, and
     evaluator-diverging `implemented_by`; this is a fast precheck, not a claim
@@ -102,6 +101,7 @@ import bisect
 import hashlib
 import re
 import json
+import re
 import subprocess
 import sys
 import tomllib
@@ -152,16 +152,14 @@ _COMP = lean_lexer.COMP
 _ID_START = lean_lexer.ID_START
 _ID_END = lean_lexer.ID_END
 _NAME = lean_lexer.NAME
-# Lean declaration-modifier `unsafe`, matched as a keyword (see the comment
-# where the old line-anchored form lived). Defined here because it needs
-# `_ID_START` / `_ID_END` above.
 UNSAFE_DECL_RE = re.compile(
     _ID_START + r"unsafe" + _ID_END + r"\s+"
     r"(?:(?:public|protected|private|scoped|noncomputable|partial|nonrec|meta|local)\s+)*"
     r"(?:theorem|lemma|def|abbrev|opaque|constant|axiom|instance|structure|inductive|class|example)\b"
 )
-_ID_REST_RE = re.compile("[" + ID_REST + "]")
+
 _ID_FIRST_RE = re.compile("[" + ID_FIRST + "]")
+_ID_REST_RE = re.compile("[" + ID_REST + "]")
 # `native_decide` is `decide +native` (`Init/Tactics.lean`, `DecideConfig.native`).
 # `elabConfig` elaborates each optConfig item and evaluates the term, so
 # `(native := (true))` and `(native := flag)` are not the two-character word
@@ -401,6 +399,13 @@ def native_eval_hits(live: str, quoted: list[tuple[int, int]]) -> list[tuple[int
             hits.append((m.start(), " ".join(live[m.start() : stop].split())))
     return hits
 
+
+# Capture the declared axiom name so it can be checked against the residual
+# allowlist. The name may be namespaced/contain primes; we keep the simple
+# token as written at the declaration site.
+# Lean declaration names: plain identifiers (possibly namespaced/primed) or
+# guillemet-quoted `«…»` components.
+_NAME = _COMP + r"(?:\." + _COMP + r")*"
 # `axiom` is a reserved keyword in Lean 4, so any live (non-comment) `axiom`
 # token starts an axiom declaration, whatever modifiers, attributes or docstring
 # precede it. Matching the keyword itself (rather than a line-anchored modifier
@@ -661,8 +666,12 @@ def load_manifest(path: Path) -> tuple[dict[str, Pin], list[str]]:
 
 def scan_plan(args: list[str]) -> tuple[list[Path], bool, list[str]]:
     """Return files to scan, whether this is a full-ArkLib scan, and path errors."""
+    def proof_sources(directory: Path) -> set[Path]:
+        return {file for file in directory.rglob("*.lean")
+                if not file.is_relative_to(directory / "Tests")}
+
     if not args:
-        return sorted(f for name in ("ArkLib", "Research", "ProximityPrize") for f in Path(name).rglob("*.lean")), True, []
+        return sorted(proof_sources(Path("ArkLib"))), True, []
 
     files: set[Path] = set()
     full_arklib_scan = False
@@ -683,14 +692,14 @@ def scan_plan(args: list[str]) -> tuple[list[Path], bool, list[str]]:
 
         nested_arklib = path / "ArkLib"
         if nested_arklib.is_dir():
-            files.update(nested_arklib.rglob("*.lean"))
-            files.update((path / "Research").rglob("*.lean"))
-            files.update((path / "ProximityPrize").rglob("*.lean"))
+            files.update(proof_sources(nested_arklib))
             full_arklib_scan = True
         else:
-            files.update(path.rglob("*.lean"))
             if path.resolve() == arklib_root:
+                files.update(proof_sources(path))
                 full_arklib_scan = True
+            else:
+                files.update(path.rglob("*.lean"))
 
     return sorted(files), full_arklib_scan, errors
 
@@ -745,17 +754,6 @@ def lakefile_debug_option_hits(text: str) -> list[tuple[str, str]]:
 # some reading, which keeps interpolation holes (`s!"{by decide +native}"`).
 
 
-def non_comment_mask(readings: list[Reading]) -> bytes:
-    """1 for every character that is outside a comment in at least one reading."""
-    acc = 0
-    width = len(readings[0].kind)
-    full = (1 << (8 * width)) - 1 if width else 0
-    ones = int.from_bytes(b"\x01" * width, "big")
-    for reading in readings:
-        acc |= (int.from_bytes(reading.comment_mask(), "big") ^ full) & ones
-    return acc.to_bytes(width, "big")
-
-
 def outside_quoted(offset: int, quoted: list[tuple[int, int]]) -> bool:
     """Command heads cannot start inside a guillemet identifier.
 
@@ -778,7 +776,7 @@ def axiom_hits(code: str, reading: Reading) -> list[re.Match]:
 
 
 def antiquoted_axiom_hits(code: str, reading: Reading) -> list[int]:
-    """Live `axiom $…` heads in syntax quotations: the name comes from elaboration."""
+    """Find syntax quotations whose axiom name comes from an antiquotation."""
     return [m.start() for m in AXIOM_ANTIQUOT_RE.finditer(code)
             if outside_quoted(m.start(), reading.quoted)]
 
@@ -789,7 +787,7 @@ def exit_hits(code: str, reading: Reading) -> list[int]:
 
 
 def command_view(reading: Reading, code: str | None = None) -> tuple:
-    """What the checks see under one reading: axiom, declaration, placebo and `#exit` hits."""
+    """What the checks see under one reading: axiom, declaration, placebo and exit hits."""
     code = reading.code_text() if code is None else code
     return ([(m.start(), m.group(1)) for m in axiom_hits(code, reading)],
             [(m.start(), m.group(1), m.group(2)) for m in declaration_heads(code, reading)],
@@ -1339,7 +1337,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         description="Reject axiom-laundering tokens in live Lean source (CI gate 1).")
     parser.add_argument("paths", nargs="*",
                         help="Lean files or directories "
-                             "(default: ArkLib/, Research/ and ProximityPrize/)")
+                             "(default: ArkLib/, excluding ArkLib/Tests/)")
     parser.add_argument("--allowlist", type=Path, default=ALLOWLIST_PATH,
                         help="reviewed residual-axiom manifest "
                              "(default: scripts/residual_axioms.txt)")
@@ -1455,7 +1453,12 @@ def main() -> int:
         for m in TOKEN_RE.finditer(any_live):
             line = text.count("\n", 0, m.start()) + 1
             failures.append(f"{path}:{line}: forbidden token {m.group(1)}")
-        for offset, form in native_eval_hits(any_live, base.quoted):
+        native_forms = {
+            hit
+            for reading in readings
+            for hit in native_eval_hits(lean_lexer.blank(text, reading.code_mask()), reading.quoted)
+        }
+        for offset, form in sorted(native_forms):
             line = text.count("\n", 0, offset) + 1
             failures.append(f"{path}:{line}: forbidden native evaluation configuration `{form}`")
         for m in META_DECL_RE.finditer(any_live):
@@ -1472,17 +1475,14 @@ def main() -> int:
                 f"but text-based gates such as the residual census still read what "
                 f"follows; delete the unchecked tail or move it to a scratch file)"
             )
-        # Debug option names: comments are data, string and char literals stay live
-        # (a metaprogram can build the option name from a string).
-        non_comment = text if exhausted else lean_lexer.blank(text, non_comment_mask(readings))
-        for m in DEBUG_OPTION_RE.finditer(non_comment):
-            line = text.count("\n", 0, m.start()) + 1
-            failures.append(
-                f"{path}:{line}: forbidden Lean debug option `debug.{m.group(1)}` "
-                f"(skips the kernel type checker or replaces the proof with `sorryAx` "
-                f"without a `sorry` token, so neither the sorry census nor "
-                f"`#print axioms` can see the hole)"
-            )
+        for m in DEBUG_OPTION_RE.finditer(text):
+            if any(reading.kind[m.start()] != COMMENT for reading in readings):
+                line = text.count("\n", 0, m.start()) + 1
+                failures.append(
+                    f"{path}:{line}: forbidden Lean debug option `debug.{m.group(1)}` "
+                    f"(skips the kernel type checker or replaces the proof with `sorryAx` "
+                    f"without a `sorry` token)"
+                )
         scopes = TrueScopes(live_text, base.quoted)
         for m in UNSAFE_DECL_RE.finditer(live_text):
             if not outside_quoted(m.start(), base.quoted):
@@ -1537,10 +1537,10 @@ def main() -> int:
             allowed_hits.append(f"{where}: allowed documented residual axiom {site.fqn} "
                                 f"(pinned assumption, not a proof)")
 
-        for am_start in antiquoted_axiom_hits(any_live, base):
-            idx = text.count("\n", 0, am_start) + 1
+        for offset in antiquoted_axiom_hits(live_text, base):
+            line = text.count("\n", 0, offset) + 1
             failures.append(
-                f"{path}:{idx}: forbidden custom axiom declaration with an antiquoted "
+                f"{path}:{line}: forbidden custom axiom declaration with an antiquoted "
                 f"name (`axiom $…` in a syntax quotation lets a macro or elaborator "
                 f"declare an axiom whose name the allowlist never sees)"
             )

@@ -21,8 +21,10 @@ Threshold and model: the agreement threshold (default 9, allowed 7..10) is
 used consistently.  The selected "t6" stratum is the set of codewords with
 exactly six off-support matches and a support ratio fibre of size at least
 threshold - 6 (a three-point fibre at the default 9), so every selected
-codeword reaches the threshold.  Certificates record "threshold" and "model",
-and --verify recomputes at the saved threshold.  Each emitted witness is
+codeword reaches the threshold. Certificates record "threshold" and "model",
+and --verify recomputes at the saved threshold. Receipts from the older format
+omit both fields and are checked at the historical default of 9 against every
+old field. Each emitted witness is
 re-checked independently (direct polynomial evaluation: agreement >= threshold
 and non-jointness), and bad_scalars is cross-checked against direct
 enumeration of the whole codeword table.  (Repository audit 2026-10-28, L118;
@@ -250,17 +252,25 @@ def score(
 
 
 def verify_certificate(saved: dict) -> dict:
-    """Recompute a saved certificate at its own recorded threshold and model."""
-    if not isinstance(saved, dict) or "threshold" not in saved or "model" not in saved:
-        raise ValueError("certificate lacks 'threshold'/'model' (pre-L118 format)")
-    if saved["model"] != MODEL:
+    """Recompute a receipt using its recorded metadata or the legacy default."""
+    if not isinstance(saved, dict):
+        raise ValueError("certificate must be a JSON object")
+    has_threshold = "threshold" in saved
+    has_model = "model" in saved
+    if has_threshold != has_model:
+        raise ValueError("certificate must include both 'threshold' and 'model'")
+    if has_model and saved["model"] != MODEL:
         raise ValueError(f"unsupported certificate model {saved['model']!r}")
     for key, expected in (("field", P), ("domain", DOMAIN), ("support", SUPPORT.tolist())):
         if saved.get(key) != expected:
             raise ValueError(f"certificate {key} does not match this checker")
-    result = score(
-        saved["u0"], saved["u1"], details=True, threshold=saved["threshold"]
-    )
+    threshold = saved["threshold"] if has_threshold else 9  # pre-L118 verifier's default
+    result = score(saved["u0"], saved["u1"], details=True, threshold=threshold)
+    if not has_threshold:
+        del result["threshold"]
+        del result["model"]
+        for witness in result["witnesses"]:
+            del witness["checks"]
     if result != saved:
         raise ValueError("certificate mismatch")
     return result

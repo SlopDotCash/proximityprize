@@ -3,7 +3,7 @@ kind: paper
 bibkey: CHA24
 title: "Fully succinct arguments over the integers from first principles"
 year: 2024
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eprint.iacr.org/2024/1548
 source_metadata: ../sources/CHA24/metadata.yml
 status: seeded
@@ -46,4 +46,4 @@ the multivariate statement. Use BGKLSW26's revision and numbering for that theor
 
 - [Public ePrint paper and revision history](https://eprint.iacr.org/2024/1548)
 - [Source metadata](../sources/CHA24/metadata.yml)
-- [Repository bibliography](../../../blueprint/src/references.bib)
+- [Repository bibliography](../../../website/blueprint/src/references.bib)

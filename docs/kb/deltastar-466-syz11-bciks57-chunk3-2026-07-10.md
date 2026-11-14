@@ -2,7 +2,7 @@
 
 ## What landed
 
-File: `Research/ProximityPrize/Frontier/_SYZ11BCIKS57Chunk3.lean`
+File: `ArkLib/Research/ProximityGap/Frontier/_SYZ11BCIKS57Chunk3.lean`
 (namespace `BCIKS20.CellPencilJohnson.SYZ11`), axiom-clean.
 
 Continues the SYZ10 chunk plan discharging the strictly-smaller Johnson-lane residual

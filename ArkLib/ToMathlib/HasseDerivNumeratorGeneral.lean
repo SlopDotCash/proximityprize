@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 import ArkLib.ToMathlib.HasseDerivNumeratorConcrete
 import ArkLib.ToMathlib.HasseDerivNumerators
-import ProximityPrize.Extensions.Data.Polynomial.RationalFunctions
+import ArkLib.Extensions.Data.Polynomial.RationalFunctions
 import Mathlib
 
 /-!

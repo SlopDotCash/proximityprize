@@ -4,17 +4,17 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chung Thai Nguyen, Quang Dao
 -/
 
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.RingSwitching.Prelude
 import ArkLib.ProofSystem.RingSwitching.Spec
 import ArkLib.ProofSystem.Sumcheck.Structured.RoundLemmas
 import ArkLib.OracleReduction.Security.GuardedRoundByRound
-import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.General
-import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.Append
+import ArkLib.Extensions.OracleReduction.Composition.Sequential.General
+import ArkLib.Extensions.OracleReduction.Composition.Sequential.Append
 import ArkLib.OracleReduction.Completeness
 import ArkLib.Data.Probability.Notation
-import ProximityPrize.Compatibility.DiscreteProbability
-import ProximityPrize.Extensions.OracleReduction.Security.RoundByRound
+import ArkLib.Compatibility.DiscreteProbability
+import ArkLib.Extensions.OracleReduction.Security.RoundByRound
 set_option linter.style.longFile 0
 set_option linter.style.longLine false
 set_option linter.unusedVariables false

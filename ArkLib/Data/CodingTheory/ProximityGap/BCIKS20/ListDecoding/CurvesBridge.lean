@@ -5,10 +5,10 @@ Authors: Quang Dao, Katerina Hristova, Frantisek Silvasi, Julian Sutherland,
          Ilia Vlasov, Chung Thai Nguyen
 -/
 
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.Curves
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.Curves
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.Curves.Assembly
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Agreement
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Guruswami
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Guruswami
 import ArkLib.Data.CodingTheory.ProximityGap.BCKHS25.AffineLineJointAgreement
 import ArkLib.ToMathlib.BCIKS20ConcreteJohnson
 /-!

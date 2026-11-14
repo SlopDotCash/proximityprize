@@ -4,15 +4,15 @@ Status: landed as a checked concrete dilation-recursion bridge.
 
 Artifact:
 
-- `Research/ProximityPrize/Frontier/_R206GaussPeriodDilationPrizeConsumer.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_R206GaussPeriodDilationPrizeConsumer.lean`
 
 Checks:
 
 ```text
-scripts/pg-iterate.sh -q Research/ProximityPrize/Frontier/_R206GaussPeriodDilationPrizeConsumer.lean
+scripts/pg-iterate.sh -q ArkLib/Research/ProximityGap/Frontier/_R206GaussPeriodDilationPrizeConsumer.lean
 ✅ OK (6s)
 
-./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._R206GaussPeriodDilationPrizeConsumer
+./scripts/lake-locked.sh build ArkLib.Research.ProximityGap.Frontier._R206GaussPeriodDilationPrizeConsumer
 Build completed successfully
 ```
 

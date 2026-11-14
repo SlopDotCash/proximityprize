@@ -3,7 +3,7 @@ kind: paper
 bibkey: GHSZ02
 title: "Combinatorial bounds for list decoding"
 year: "2002"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/GHSZ02/metadata.yml
 status: seeded
 related_modules:
@@ -51,4 +51,4 @@ proved in-tree.
 ## Source Access
 
 - Source metadata: [`../sources/GHSZ02/metadata.yml`](../sources/GHSZ02/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

@@ -3,7 +3,7 @@ kind: paper
 bibkey: Eli57
 title: "List decoding for noisy channels"
 year: "1957"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 source_metadata: ../sources/Eli57/metadata.yml
 status: seeded
 related_modules:
@@ -43,4 +43,4 @@ volume estimate — see [`MS77.md`](MS77.md).
 ## Source Access
 
 - Source metadata: [`../sources/Eli57/metadata.yml`](../sources/Eli57/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

@@ -4,11 +4,11 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alexander Hicks
 -/
 
-import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
-import ProximityPrize.Compatibility.ListSize
+import ArkLib.Extensions.Data.CodingTheory.ListDecodability
+import ArkLib.Compatibility.ListSize
 import ArkLib.Data.CodingTheory.ListDecodability.Bounds.Linear
 import ArkLib.Data.CodingTheory.Basic.Entropy
-import ProximityPrize.Extensions.Data.CodingTheory.HammingBallVolume
+import ArkLib.Extensions.Data.CodingTheory.HammingBallVolume
 import ArkLib.Data.CodingTheory.ListDecoding.JH01
 import ArkLib.Data.CodingTheory.ListDecoding.AGL23Barrier
 import ArkLib.Data.CodingTheory.ListDecoding.CZ25CapacityReduction
@@ -16,9 +16,9 @@ import ArkLib.Data.CodingTheory.ListDecoding.CZ25DesignToLambda
 import ArkLib.Data.CodingTheory.ListDecoding.BKR06SubspacePoly
 import ArkLib.ToMathlib.BKR06FiberCount
 import ArkLib.ToMathlib.BKR06Injection
-import ProximityPrize.Extensions.Data.CodingTheory.SubspaceDesign
-import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
-import ProximityPrize.Extensions.Data.Probability.Combinatorial
+import ArkLib.Extensions.Data.CodingTheory.SubspaceDesign
+import ArkLib.Extensions.Data.CodingTheory.ReedSolomon
+import ArkLib.Extensions.Data.Probability.Combinatorial
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.FieldTheory.Finiteness
 import Mathlib.Algebra.Order.Floor.Extended

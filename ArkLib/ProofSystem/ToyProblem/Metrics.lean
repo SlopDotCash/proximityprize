@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alexander Hicks
 -/
 
-import ProximityPrize.Extensions.ProofSystem.ToyProblem.SoundnessBounds
+import ArkLib.Extensions.ProofSystem.ToyProblem.SoundnessBounds
 import ArkLib.ToMathlib.ToyProblemViolation
 import ArkLib.ToMathlib.KoalaBearCode
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal

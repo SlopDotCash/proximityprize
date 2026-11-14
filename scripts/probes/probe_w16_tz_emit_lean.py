@@ -23,7 +23,7 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from probe_w16_tz_prize_scale import sieve_rung  # noqa: E402
 
-DIR = Path(__file__).resolve().parents[2] / "Research/ProximityPrize/Frontier"
+DIR = Path(__file__).resolve().parents[2] / "ArkLib/Research/ProximityGap/Frontier"
 
 HEADER = """/-
 Copyright (c) 2026 ArkLib Contributors. All rights reserved.
@@ -33,7 +33,7 @@ Authors: ArkLib Contributors
 import ArkLib.Data.CodingTheory.ProximityGap.KKH26ThornerZaman
 import Mathlib.NumberTheory.LucasPrimality
 import Mathlib.Tactic.NormNum.Prime
-import Research.ProximityPrize.Support.BinaryPower
+import ArkLib.Research.ProximityGap.Support.BinaryPower
 
 /-!
 # W16 — intermediate dyadic `TZPrimeSupply` rungs `n = 2^{LO} .. 2^{HI}` (#466)

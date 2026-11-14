@@ -2,10 +2,10 @@ import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.P2Close
 import ArkLib.Data.CodingTheory.ProximityGap.BCIKS20.AlphaWeight
 import ArkLib.Data.CodingTheory.ProximityGap.LineDecodingCoverage
 import ArkLib.ProofSystem.Whir.RBRSoundness
-import ProximityPrize.Extensions.OracleReduction.FiatShamir.Basic
+import ArkLib.Extensions.OracleReduction.FiatShamir.Basic
 import ArkLib.ToMathlib.SpartanBricks
 import ArkLib.ToMathlib.OracleZKTransferBricks
-import ProximityPrize.Extensions.OracleReduction.BCS.Basic
+import ArkLib.Extensions.OracleReduction.BCS.Basic
 import ArkLib.ToMathlib.KStateWeaken
 
 -- Removed (de-larp, #171/#169): eight `theorem …_residual : True := by trivial` placebos named

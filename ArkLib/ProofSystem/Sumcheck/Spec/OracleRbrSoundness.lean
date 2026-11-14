@@ -3,9 +3,9 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Sumcheck.Spec.General
-import ProximityPrize.Extensions.OracleReduction.Composition.Sequential.General
+import ArkLib.Extensions.OracleReduction.Composition.Sequential.General
 import ArkLib.ProofSystem.Logup.Sumcheck.SumcheckBridge
 
 /-!

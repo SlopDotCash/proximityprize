@@ -59,6 +59,12 @@ os.environ.setdefault("MKL_NUM_THREADS", "4")
 import numpy as np
 
 
+def _require(condition: bool, detail: str) -> None:
+    """Keep exact probe and certificate checks active under Python optimization."""
+    if not condition:
+        raise AssertionError(detail)
+
+
 def canonical_direction(j: int, jp: int, c: int, k: int):
     """Class of the direction x^j + c*x^jp (j < jp, c != 0) modulo RS_k and scaling.
 
@@ -133,7 +139,8 @@ def inverse_table(q: int) -> np.ndarray:
 
 class Ambient:
     def __init__(self, n: int, k: int, q: int):
-        assert is_prime(q) and (q - 1) % n == 0
+        _require(is_prime(q) and (q - 1) % n == 0,
+                 f"field/order precondition failed q={q} n={n}")
         self.n, self.k, self.q = n, k, q
         om = None
         for g in range(2, q):
@@ -144,7 +151,7 @@ class Ambient:
                 break
         self.om = om
         xs = np.array([pow(om, l, q) for l in range(n)], dtype=np.int64)
-        assert len(set(xs.tolist())) == n
+        _require(len(set(xs.tolist())) == n, f"domain root collision n={n} q={q}")
         self.xs = xs
         subsets = list(itertools.combinations(range(n), k))
         self.P = len(subsets)
@@ -441,18 +448,18 @@ def self_test(rng):
         pk = amb.pack(u1)
         f = int(amb.fast_counts(u0[None, :], pk, a)[0])
         b = amb.brute_count(u0, u1, a, gchunk=4129)
-        assert f == b, f"MISMATCH #{i}: fast={f} brute={b} a={a}"
+        _require(f == b, f"MISMATCH #{i}: fast={f} brute={b} a={a}")
         bl = amb.fast_bad_list(u0, pk, a)
-        assert bl is not None and len(bl) == f, f"badlist mismatch #{i}"
+        _require(bl is not None and len(bl) == f, f"badlist mismatch #{i}")
         _, bg = amb.brute_count(u0, u1, a, gchunk=4129, collect=True)
-        assert bl == sorted(bg), f"badlist content mismatch #{i}"
+        _require(bl == sorted(bg), f"badlist content mismatch #{i}")
     for i in range(4):
         u1 = amb.mono(int(rng.integers(2, 8)))
         pk = amb.pack(u1)
         u0 = chain_seed(amb, u1, 3, rng)
         f = int(amb.fast_counts(u0[None, :], pk, 3)[0])
         b = amb.brute_count(u0, u1, 3, gchunk=4129)
-        assert f == b, f"chain MISMATCH #{i}"
+        _require(f == b, f"chain MISMATCH #{i}")
     print("[SELF-TEST] PASS (counts and bad-lists)", flush=True)
 
 
@@ -552,19 +559,20 @@ def run_cell(amb, a, rng, budget, n_spread_search, forced_pairs, cvals,
         pks = amb.pack(u1s)
         if brute_verify == "full":
             bs = amb.brute_count(spread_wit[skey], u1s, a)
-            assert bs == smax, f"spread brute mismatch {bs} != {smax}"
+            _require(bs == smax, f"spread brute mismatch {bs} != {smax}")
             if jmax is not None:
                 bm = amb.brute_count(mono_wit[jmax], amb.mono(jmax), a)
-                assert bm == mmax, f"mono brute mismatch {bm} != {mmax}"
+                _require(bm == mmax, f"mono brute mismatch {bm} != {mmax}")
             ver = "BRUTE-full"
         else:
             bl = amb.fast_bad_list(spread_wit[skey], pks, a)
-            assert bl is not None and len(bl) == smax
+            _require(bl is not None and len(bl) == smax,
+                     f"spread badlist count mismatch {smax}")
             sample = bl if len(bl) <= 64 else \
                 [bl[i] for i in rng.choice(len(bl), size=64, replace=False)]
             for g in sample:
-                assert amb.check_gamma_bad(spread_wit[skey], u1s, a, g), \
-                    f"gamma {g} not actually bad"
+                _require(amb.check_gamma_bad(spread_wit[skey], u1s, a, g),
+                         f"gamma {g} not actually bad")
             ver = f"per-gamma({len(sample)}/{len(bl)})"
 
     ratio = smax / mmax if mmax else float("inf")

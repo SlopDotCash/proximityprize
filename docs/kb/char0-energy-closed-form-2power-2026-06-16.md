@@ -2,7 +2,7 @@
 
 **Status: PROVED** (modulo the standard cyclotomic min-poly fact, Mathlib-available), independently
 exact-verified for `r ≤ 8`. Landed axiom-clean for `r ≤ 6` in
-`Research/ProximityPrize/Frontier/_CharZeroEnergyClosedForm.lean` (fork/main `7e63de278`).
+`ArkLib/Research/ProximityGap/Frontier/_CharZeroEnergyClosedForm.lean` (fork/main `7e63de278`).
 
 ## Statement
 

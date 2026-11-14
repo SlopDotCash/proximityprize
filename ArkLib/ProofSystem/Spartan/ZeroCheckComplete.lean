@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Extensions.ProofSystem.Spartan.Basic
+import ArkLib.Extensions.ProofSystem.Spartan.Basic
 
 /-!
 # Zero-check completeness: `𝒢 = 0` on R1CS-satisfying instances (issue #114)

@@ -10,7 +10,7 @@ Paley graphs and weak Waring numbers over finite fields*.
 ## Artifact
 
 - Lean:
-  `Research/ProximityPrize/Frontier/_GeneralizedPaleyNatureWaringGate.lean`
+  `ArkLib/Research/ProximityGap/Frontier/_GeneralizedPaleyNatureWaringGate.lean`
 
 ## Point
 

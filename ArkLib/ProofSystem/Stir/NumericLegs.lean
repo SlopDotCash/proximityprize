@@ -162,7 +162,7 @@ theorem stir_main_of_checkingIOP_CA_numeric
     (hF : FieldSizeCondition secpar φ degree)
     (ε_rbr : (stirMultiVSpec M ι).ChallengeIdx → ℝ≥0)
     (e ProxGapBound : Fin (M + 1) → ℝ≥0)
-    (hBridge : stirCheckingCABridge M φ degree δ ε_rbr e ProxGapBound)
+    (hBridge : stirCheckingCAFixedPrefixBridge M φ degree δ ε_rbr e ProxGapBound)
     (hCA : ∀ k' : ℕ, 0 < k' →
       ProximityGap.StrictCoeffPolysResidual (ι := ι) (F := F)
         (k := k') (deg := degree) (domain := φ) (δ := δ))
@@ -172,7 +172,7 @@ theorem stir_main_of_checkingIOP_CA_numeric
     (hQpfPos : 0 < Real.log degree +
       secpar * Real.log (Real.log degree / Real.log (1 / rate (code φ degree))))
     (hQceil : ⌈(secpar : ℝ) / (-Real.log (1 - δ))⌉₊ ≤ qNumtoInput) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   stir_main_of_checkingIOP_CA secpar hk hkGe δ hδub hF ε_rbr
     e ProxGapBound hBridge hCA hPR hε
@@ -207,7 +207,7 @@ theorem stir_main_of_checkingIOP_small_field_numeric
     (hone : ∀ i, ε_rbr i ≤ 1)
     (hdeg2 : 2 ≤ degree)
     (hQceil : ⌈(secpar : ℝ) / (-Real.log (1 - δ))⌉₊ ≤ qNumtoInput) :
-    stir_main (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
+    stir_mainFixedPrefix (M := M) (proofLen := proofLen) (qNumtoInput := qNumtoInput)
       (qNumtoProofstr := qNumtoProofstr) secpar hk hkGe δ hδub hF :=
   stir_main_of_checkingIOP_small_field secpar hk hkGe δ hδub hF hδudr hq ε_rbr hεlb
     (hε_leg_of_secpar_zero hsec hone)

@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.ToMathlib.HasseDerivNumeratorGeneral
 import ArkLib.ToMathlib.HasseDerivNumeratorConcrete
 import ArkLib.ToMathlib.HasseDerivNumerators
-import ProximityPrize.Extensions.Data.Polynomial.RationalFunctions
+import ArkLib.Extensions.Data.Polynomial.RationalFunctions
 import Mathlib
 
 /-!
@@ -46,7 +46,7 @@ for all orders $i_1 \in \mathbb{N}$.
 
 * [Ben-Sasson, E., Carmon, D., Ishai, Y., Kopparty, S., and Saraf, S., *Proximity Gaps
     for Reed-Solomon Codes*][BCIKS20] (ePrint 2020/654; entry `BCIKS20` in
-    `blueprint/src/references.bib`)
+    `website/blueprint/src/references.bib`)
 -/
 
 open Polynomial Polynomial.Bivariate BCIKS20AppendixA BCIKS20AppendixA.ClaimA2

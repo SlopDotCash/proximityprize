@@ -5,11 +5,11 @@ Authors: Chung Thai Nguyen, Quang Dao
 -/
 
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Soundness.QueryPhasePrelims
-import ProximityPrize.Compatibility.BiniusFolding
-import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Prelude
-import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Spec
+import ArkLib.Compatibility.BiniusFolding
+import ArkLib.Extensions.ProofSystem.Binius.BinaryBasefold.Prelude
+import ArkLib.Extensions.ProofSystem.Binius.BinaryBasefold.Spec
 import ArkLib.Data.Misc.Basic
-import ProximityPrize.Extensions.ProofSystem.Binius.BinaryBasefold.Relations
+import ArkLib.Extensions.ProofSystem.Binius.BinaryBasefold.Relations
 import ArkLib.ProofSystem.Binius.BinaryBasefold.Reconstruct.UDRCongruence
 
 /-!

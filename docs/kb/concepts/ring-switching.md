@@ -146,7 +146,7 @@ For implementation steps and a worked example, see
   the decoded committed polynomial's components, and the claimed scalar is the layout-weighted sum
   of its `ψ`-coordinates. This layout has one opening coordinate and introduces no batching
   challenge or sumcheck. Concrete acceptance and rejection fixtures remain in
-  `ArkLibTest/ProofSystem/RingSwitching/Conformance/Hachi.lean`.
+  `ArkLib/Tests/ProofSystem/RingSwitching/Conformance/Hachi.lean`.
 - **HMZ25 `Lift` construction** ([`../papers/HMZ25.md`](../papers/HMZ25.md)): the
   *opposite* direction, `S ≅ R[X]/(φ)` → a field `F` — lift `M z = y` to `R[X]` and evaluate
   at a random `α`. **Formalized generically** in `ProofSystem/RingSwitching/Lift/`

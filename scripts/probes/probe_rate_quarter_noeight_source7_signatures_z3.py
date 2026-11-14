@@ -387,11 +387,6 @@ if __name__ == "__main__":
     parser.add_argument("--regular-count", type=int)
     parser.add_argument("--first-regular", action="store_true")
     args = parser.parse_args()
-    if args.heuristic_restarts:
-        model = heuristic_regular_model(
-            args.signatures, args.max_balanced_witnesses,
-            args.heuristic_restarts, args.heuristic_steps, args.seed)
-        raise SystemExit(0 if model is not None else 1)
     second = None
     if (args.second_root_intersection is None) != \
             (args.second_missed_intersection is None):
@@ -399,6 +394,20 @@ if __name__ == "__main__":
     if args.second_root_intersection is not None:
         second = (args.second_root_intersection,
                   args.second_missed_intersection)
+    if args.heuristic_restarts:
+        # This heuristic searches all-regular rows and does not implement the
+        # exact backend's pair-intersection slice.  Never report SAT for a
+        # different query by silently discarding those restrictions.
+        if args.regular_count is not None and args.regular_count != args.signatures:
+            parser.error("the regular heuristic requires --regular-count to equal --signatures; "
+                         "omit --heuristic-restarts to search mixed regularity")
+        if second is not None:
+            parser.error("the regular heuristic does not support --second-*-intersection; "
+                         "omit --heuristic-restarts to search that slice")
+        model = heuristic_regular_model(
+            args.signatures, args.max_balanced_witnesses,
+            args.heuristic_restarts, args.heuristic_steps, args.seed)
+        raise SystemExit(0 if model is not None else 1)
     result = run(args.signatures, args.max_balanced_witnesses,
                  args.timeout_ms, args.regular_only, second, args.engine,
                  args.regular_balance_only, args.pb_solver, args.threads,

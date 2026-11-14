@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.Errors
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.Errors
 
 /-!
 # Sparse-deviation extremality (#357 promotion 1: the N1 mechanism, provable core)

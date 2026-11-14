@@ -18,13 +18,13 @@ codes ([ABF26] Definition 4.3), with matching machine-checked bounds.
 
 | What | Where |
 |---|---|
-| Agent guide (build recipe, honesty rules, pitfalls, state of knowledge) | [`Research/ProximityPrize/CLAUDE.md`](../../Research/ProximityPrize/CLAUDE.md) |
-| Current standalone completion ledger and post-v3 results | [`Research/ProximityPrize/DOSSIER.md`](../../Research/ProximityPrize/DOSSIER.md#standalone-snapshot-2026-08-16) |
-| Historical full campaign dossier through 2026-07-11 | [`Research/ProximityPrize/DOSSIER.md`](../../Research/ProximityPrize/DOSSIER.md#campaign-dossier-through-2026-07-11) |
+| Agent guide (build recipe, honesty rules, pitfalls, state of knowledge) | [`docs/research/proximity-gap/CLAUDE.md`](../research/proximity-gap/CLAUDE.md) |
+| Current standalone completion ledger and post-v3 results | [`docs/research/proximity-gap/DOSSIER.md`](../research/proximity-gap/DOSSIER.md#standalone-snapshot-2026-08-16) |
+| Historical full campaign dossier through 2026-07-11 | [`docs/research/proximity-gap/DOSSIER.md`](../research/proximity-gap/DOSSIER.md#campaign-dossier-through-2026-07-11) |
 | Compiled campaign knowledge (#357, by theme) | [`docs/kb/deltastar-357-compiled-knowledge.md`](../kb/deltastar-357-compiled-knowledge.md) |
 | Research map (papers + adjacent math + ranked attack vectors) | [`docs/kb/deltastar-research-map.md`](../kb/deltastar-research-map.md) |
-| #444 no-larp companion map (25 directions/status tags) | [`Research/ProximityPrize/kb/archive/deltastar-444-complete-map-25x25-2026-06-17.md`](../../Research/ProximityPrize/kb/archive/deltastar-444-complete-map-25x25-2026-06-17.md) |
-| Refuted approaches with constraint lemmas | [`Research/ProximityPrize/DISPROOF_LOG.md`](../../Research/ProximityPrize/DISPROOF_LOG.md) |
+| #444 no-larp companion map (25 directions/status tags) | [`docs/research/proximity-gap/archive/deltastar-444-complete-map-25x25-2026-06-17.md`](../research/proximity-gap/archive/deltastar-444-complete-map-25x25-2026-06-17.md) |
+| Refuted approaches with constraint lemmas | [`docs/research/proximity-gap/DISPROOF_LOG.md`](../research/proximity-gap/DISPROOF_LOG.md) |
 | Probes (exact small-scale computation) | `scripts/probes/probe_*.py` |
 | **The paper** (the complete machine-checked theory, rounds 64–84) | [`docs/papers/mca-threshold-above-johnson.md`](../papers/mca-threshold-above-johnson.md) |
 | The nine-hypothesis methodology record | [`docs/wiki/deltastar-357-nine-hypotheses-2026-06-11.md`](deltastar-357-nine-hypotheses-2026-06-11.md) |

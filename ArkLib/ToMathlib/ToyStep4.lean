@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alexander Hicks
 -/
 
-import ProximityPrize.Extensions.ProofSystem.ToyProblem.Definitions
-import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
-import ProximityPrize.Extensions.Data.CodingTheory.InterleavedCode
-import ProximityPrize.Extensions.Data.CodingTheory.Basic.RelativeDistance
+import ArkLib.Extensions.ProofSystem.ToyProblem.Definitions
+import ArkLib.Extensions.Data.CodingTheory.ListDecodability
+import ArkLib.Extensions.Data.CodingTheory.InterleavedCode
+import ArkLib.Extensions.Data.CodingTheory.Basic.RelativeDistance
 
 /-!
 # Toy IOR — a distinct-challenge → winning-set cardinality bridge
@@ -17,7 +17,7 @@ injective family of `N` challenges all lying in a winning set
 `Ω^{f₁,f₂}_{v,μ₁,μ₂}` (Definition 6.11) forces `|Ω| ≥ N ≥ N·|F| / (|F| + N − 1)`.
 It is used by the honest-instance lemma
 `ToyProblem.winningSet_zeroInstance_ncard_ge_listDecoding_expr`
-(`ProximityPrize/Extensions/ProofSystem/ToyProblem/SoundnessBounds.lean`).
+(`ArkLib/Extensions/ProofSystem/ToyProblem/SoundnessBounds.lean`).
 
 ## What it does not prove
 

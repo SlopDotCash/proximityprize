@@ -3,7 +3,7 @@ kind: paper
 bibkey: EthStark21
 title: "ethSTARK Documentation"
 year: 2021
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eprint.iacr.org/2021/582
 source_metadata: ../sources/EthStark21/metadata.yml
 status: curated

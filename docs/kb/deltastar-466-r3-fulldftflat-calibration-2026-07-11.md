@@ -60,7 +60,7 @@ quasi-flat (log³ loss).
 
 ## 4. Formal kernel and probe
 
-`Research/ProximityPrize/Frontier/_R305FullDFTFlatCalibration.lean`
+`ArkLib/Research/ProximityGap/Frontier/_R305FullDFTFlatCalibration.lean`
 — axiom-clean (`[propext, Classical.choice, Quot.sound]`, manual reads on all
 five, no sorryAx), pg-iterate 5s.  Theorems: `fullDFTFlat_of_sq`,
 `distStratumEnergyBound_mono`, `distStratumEnergyBound_of_flatSq`,

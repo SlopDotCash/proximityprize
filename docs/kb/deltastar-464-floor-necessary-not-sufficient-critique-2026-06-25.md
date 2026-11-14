@@ -11,7 +11,7 @@ worst-case incidence bound over every word stack / far direction.
 
 The new guardrail is formalized in:
 
-`Research/ProximityPrize/Frontier/FloorNecessaryNotSufficient.lean`
+`ArkLib/Research/ProximityGap/Frontier/FloorNecessaryNotSufficient.lean`
 
 It proves the abstract quantifier fact:
 

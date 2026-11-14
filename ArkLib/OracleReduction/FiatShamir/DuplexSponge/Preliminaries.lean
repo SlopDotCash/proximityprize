@@ -6,9 +6,9 @@ Authors: Chung Thai Nguyen
 
 import ArkLib.Data.Probability.Notation
 import ArkLib.Data.Classes.Serde
-import ProximityPrize.Extensions.Data.Probability.Instances
+import ArkLib.Extensions.Data.Probability.Instances
 import Mathlib.Probability.ProbabilityMassFunction.Constructions
-import ProximityPrize.Compatibility.PMFTotalVariation
+import ArkLib.Compatibility.PMFTotalVariation
 
 /-!
 # Mathematical Preliminaries for Duplex-Sponge Fiat-Shamir

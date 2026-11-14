@@ -9,7 +9,7 @@ Status: **composition bridge**, not a delta-star proof.
 The frontier file
 
 ```text
-Research/ProximityPrize/Frontier/_RefinedProfileFloorBridge.lean
+ArkLib/Research/ProximityGap/Frontier/_RefinedProfileFloorBridge.lean
 ```
 
 connects the refined-profile scanner API to the floor closure contract.

@@ -91,6 +91,6 @@ theorem about the code's MCA/covering threshold. Corrections: the complex Tao bo
 without the nonvanishing-minor hypothesis (`F_23`, `μ_11` counterexample above); the observed prime-n value `s*=k+2`
 exceeds the would-be transferred bound `k+1`; the sparse-word maximum is not the covering radius or MCA threshold
 (T110). Observed (finite runs, not proved): `pg <prime> k` → s*=k+2; `pg <2^mu> k` → s* grows. See also the
-adversarial audit in `Research/ProximityPrize/DISPROOF_LOG.md` ("DFT-uncertainty quantitative core", 2026-06-15),
+adversarial audit in `docs/research/proximity-gap/DISPROOF_LOG.md` ("DFT-uncertainty quantitative core", 2026-06-15),
 which finds the smooth-n growth witnesses to be subgroup-supported artifacts and the classical bounds vacuous for
 separating Johnson from the floor.

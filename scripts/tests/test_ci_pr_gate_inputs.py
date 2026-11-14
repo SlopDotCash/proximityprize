@@ -23,9 +23,9 @@ from unittest.mock import patch
 REPO = Path(__file__).resolve().parents[2]
 WORKFLOWS = REPO / ".github" / "workflows"
 INTEGRATION_INPUTS = [
-    "ProximityPrize.lean",
-    "ProximityPrize/Extensions.lean",
-    "ArkLibTest/Compatibility/Probability.lean",
+    "ArkLib/Downstream.lean",
+    "ArkLib/Extensions.lean",
+    "ArkLib/Tests/Compatibility/Probability.lean",
     "scripts/arklib-upstream.json",
     "scripts/upstream-source-policy.json",
     "scripts/update-library-surfaces.py",
@@ -260,7 +260,7 @@ class KnowledgeBaseInputsCheckedOnPullRequests(unittest.TestCase):
     """KB gate inputs need either validate.sh or the KB workflow on pull requests."""
 
     INPUTS = [
-        "blueprint/src/references.bib",
+        "website/blueprint/src/references.bib",
         "docs/kb/papers/BCIKS20.md",
         "docs/kb/sources/BCIKS20/metadata.yml",
         "docs/kb/_generated/references.json",

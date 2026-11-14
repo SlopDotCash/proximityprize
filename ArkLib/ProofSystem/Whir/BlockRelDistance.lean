@@ -6,8 +6,8 @@ Authors: Poulami Das (Least Authority), Alexander Hicks
 
 import ArkLib.Data.CodingTheory.Basic.BlockRelDistance
 
-import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
-import ProximityPrize.Extensions.Data.CodingTheory.ListDecodability
+import ArkLib.Extensions.Data.CodingTheory.ReedSolomon
+import ArkLib.Extensions.Data.CodingTheory.ListDecodability
 
 /-!
 # Block Relative Distance for smooth Reed-Solomon Codes

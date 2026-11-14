@@ -6,7 +6,7 @@ Status: finite transfer guardrail, not a prize proof.
 
 ## Artifact
 
-- Lean: `Research/ProximityPrize/Frontier/_PolynomialThresholdDiagonalGate.lean`
+- Lean: `ArkLib/Research/ProximityGap/Frontier/_PolynomialThresholdDiagonalGate.lean`
 
 ## Inputs checked
 

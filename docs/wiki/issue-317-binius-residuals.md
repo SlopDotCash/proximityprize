@@ -28,7 +28,7 @@ Current locations, all under `ArkLib/ProofSystem/Binius/BinaryBasefold/`:
   (`preTensorCombine_jointProximityNat_of_fiberwiseClose`); the contrapositive
   `not_jointProximityNat_of_not_fiberwiseClose` is in `Soundness/PreTensorMaps.lean`.
 - Incremental Proposition 4.21.2 statements: the downstream extension
-  `ProximityPrize/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/Incremental.lean`.
+  `ArkLib/Extensions/ProofSystem/Binius/BinaryBasefold/Soundness/Incremental.lean`.
 - Query-phase preliminaries and suffix alignment: `Soundness/QueryPhasePrelims.lean`,
   `Soundness/SuffixFiberAlignment.lean`. No `PreviousSuffixFiberAlignmentResidual`,
   `ExtractMLPCorrectnessResidual`, or `FinalSumcheckStepLogicCompleteResidual` declaration is

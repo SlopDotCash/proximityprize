@@ -33,9 +33,8 @@ class MetaSorry(unittest.TestCase):
     def census(self, text: str) -> list[dict]:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            (root / "Research").mkdir()
-            (root / "ArkLib").mkdir()
-            (root / "Research" / "Probe.lean").write_text(text, encoding="utf-8")
+            (root / "ArkLib/Research/ProximityGap").mkdir(parents=True)
+            (root / "ArkLib/Research/ProximityGap/Probe.lean").write_text(text, encoding="utf-8")
             return [r for r in sorry_census.census(root) if r["kind"] == "hole"]
 
     def test_sorry_api_is_a_hole(self) -> None:

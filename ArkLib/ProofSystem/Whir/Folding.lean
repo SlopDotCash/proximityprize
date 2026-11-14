@@ -5,10 +5,10 @@ Authors: Poulami Das, Miguel Quaresma (Least Authority), Alexander Hicks
 -/
 
 import ArkLib.Data.Probability.Notation
-import ProximityPrize.Extensions.Data.CodingTheory.ReedSolomon
-import ProximityPrize.Extensions.Data.MvPolynomial.LinearMvExtension
-import ProximityPrize.Extensions.Data.Polynomial.SplitFold
-import ProximityPrize.Extensions.Data.Probability.Instances
+import ArkLib.Extensions.Data.CodingTheory.ReedSolomon
+import ArkLib.Extensions.Data.MvPolynomial.LinearMvExtension
+import ArkLib.Extensions.Data.Polynomial.SplitFold
+import ArkLib.Extensions.Data.Probability.Instances
 import ArkLib.ProofSystem.Whir.BlockRelDistance
 import ArkLib.ProofSystem.Whir.MutualCorrAgreement
 

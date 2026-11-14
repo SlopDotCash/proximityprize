@@ -3,7 +3,7 @@ kind: paper
 bibkey: BCPZZ26
 title: "Algorithmic List Decoding of {Reed--Solomon} Codes up to Capacity in the Low-Rate Regime"
 year: "2026"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eccc.weizmann.ac.il/report/2026/164/
 source_metadata: ../sources/BCPZZ26/metadata.yml
 status: stub
@@ -38,4 +38,4 @@ TODO: record important missing theorems, abstractions, or proof gaps.
 ## Source Access
 
 - Source metadata: [`../sources/BCPZZ26/metadata.yml`](../sources/BCPZZ26/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

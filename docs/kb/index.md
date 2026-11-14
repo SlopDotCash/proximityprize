@@ -6,7 +6,7 @@ page under [`papers/`](papers/README.md); that directory, not this list, is the 
 ## Generated Registries
 
 - [`_generated/references.json`](_generated/references.json) - normalized export of
-  `blueprint/src/references.bib`.
+  `website/blueprint/src/references.bib`.
 - [`_generated/lean-citations.json`](_generated/lean-citations.json) - generated map from
   `ArkLib/**/*.lean` to cited BibTeX keys.
 

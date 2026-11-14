@@ -4,8 +4,8 @@ Date: 2026-07-08
 
 Artifacts:
 
-- `Research/ProximityPrize/Frontier/_R223QuotientTailToScaledSpikePrize.lean`
-- `Research/ProximityPrize/Frontier/_R224QuotientTailAutoCarrierPrize.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_R223QuotientTailToScaledSpikePrize.lean`
+- `ArkLib/Research/ProximityGap/Frontier/_R224QuotientTailAutoCarrierPrize.lean`
 
 ## Result
 
@@ -40,13 +40,13 @@ internally via R221.
 Dependency build for the quotient bridge:
 
 ```bash
-./scripts/lake-locked.sh build Research.ProximityPrize.Frontier._R223QuotientTailToScaledSpikePrize
+./scripts/lake-locked.sh build ArkLib.Research.ProximityGap.Frontier._R223QuotientTailToScaledSpikePrize
 ```
 
 Fast lane:
 
 ```bash
-./scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_R224QuotientTailAutoCarrierPrize.lean
+./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_R224QuotientTailAutoCarrierPrize.lean
 ```
 
 Status: passed.

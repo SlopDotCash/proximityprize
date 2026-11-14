@@ -7,7 +7,7 @@ Authors: Quang Dao, Chung Thai Nguyen
 import ArkLib.Data.Probability.Notation
 import ArkLib.Data.Hash.DuplexSponge
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Preliminaries
-import ProximityPrize.Extensions.OracleReduction.FiatShamir.Basic
+import ArkLib.Extensions.OracleReduction.FiatShamir.Basic
 import ArkLib.OracleReduction.FiatShamir.SingleSalt
 
 /-!

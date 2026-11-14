@@ -21,8 +21,8 @@ It should help with:
 If you only need the practical workflow:
 
 1. If a Lean file cites `[KEY]`, start at `docs/kb/papers/KEY.md`.
-2. If that page does not exist yet, add the BibTeX entry first if needed. Main-branch automation
-   will open a follow-up PR for missing cited paper pages and source metadata after merge.
+2. If that page does not exist yet, add the BibTeX entry if needed and regenerate the KB.
+   Commit the scaffolded page, source metadata, and tracked indexes with the citation.
 3. If your PR changes how ArkLib uses or interprets a paper, update the corresponding KB page in
    the same PR.
 4. Before sending a paper-driven PR for review, attach the relevant KB paper pages or use
@@ -59,7 +59,7 @@ You usually do not need to update `docs/kb/` for:
 The BibTeX key is the canonical identifier for a paper across:
 
 - Lean docstring citations like `[BCIKS20]`;
-- `blueprint/src/references.bib`;
+- `website/blueprint/src/references.bib`;
 - paper pages under `docs/kb/papers/`;
 - source metadata under `docs/kb/sources/`.
 
@@ -91,7 +91,7 @@ If you are unsure where to start, use [`index.md`](index.md) first.
 
 ## Maintenance Contract
 
-- `blueprint/src/references.bib` remains the bibliographic source of truth.
+- `website/blueprint/src/references.bib` remains the bibliographic source of truth.
 - `docs/kb/` is the source of truth for ArkLib-specific synthesis and cross-linking.
 - Paper pages should describe what ArkLib uses from a paper, not merely restate the abstract.
 - Prefer stable, reviewable markdown over ad hoc scratch notes. Review verdicts, fix logs, and
@@ -123,10 +123,10 @@ If you are unsure where to start, use [`index.md`](index.md) first.
 
 ### I am adding a new cited paper
 
-1. Add the BibTeX entry in `blueprint/src/references.bib`.
+1. Add the BibTeX entry in `website/blueprint/src/references.bib`.
 2. If you already know the ArkLib-specific summary, add or update `docs/kb/papers/KEY.md`.
-3. If you only need the stub, leave it out of the PR; the generated-files workflow will propose
-   it after merge.
+3. Run `uv run --no-project --python 3.12 python ./scripts/kb/regenerate.py` and commit
+   the tracked indexes and any scaffolded paper or source pages in the same PR.
 4. Run `uv run --no-project --python 3.12 python ./scripts/kb/lint.py`.
 
 ### I am updating a paper-backed development
@@ -143,7 +143,7 @@ If you are unsure where to start, use [`index.md`](index.md) first.
 
 ### Add a new paper
 
-1. Add or update the BibTeX entry in `blueprint/src/references.bib`.
+1. Add or update the BibTeX entry in `website/blueprint/src/references.bib`.
 2. Run `uv run --no-project --python 3.12 python ./scripts/kb/regenerate.py` and commit the
    refreshed indexes and any scaffolded paper page or source metadata.
 3. Add ArkLib-specific context to `docs/kb/papers/KEY.md` where available.
@@ -153,7 +153,7 @@ If you are unsure where to start, use [`index.md`](index.md) first.
 
 For a new cited paper, the minimum acceptable KB update is:
 
-- BibTeX entry in `blueprint/src/references.bib`
+- BibTeX entry in `website/blueprint/src/references.bib`
 - Regenerated indexes and any scaffolded paper page or source metadata
 
 Better, when practical:
@@ -173,7 +173,7 @@ Better, when practical:
 
 Suppose you add `[NEWKEY]` to a Lean module.
 
-1. Add `NEWKEY` to `blueprint/src/references.bib`.
+1. Add `NEWKEY` to `website/blueprint/src/references.bib`.
 2. If the PR should include real paper context, edit:
    - `docs/kb/papers/NEWKEY.md`
    - `docs/kb/sources/NEWKEY/metadata.yml`

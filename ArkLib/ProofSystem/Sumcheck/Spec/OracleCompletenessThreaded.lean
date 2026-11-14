@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import ArkLib.ProofSystem.Sumcheck.Spec.Completeness
-import ProximityPrize.Extensions.ProofSystem.Sumcheck.Spec.SingleRound
+import ArkLib.Extensions.ProofSystem.Sumcheck.Spec.SingleRound
 
 /-!
 # Single-round sum-check completeness compatibility

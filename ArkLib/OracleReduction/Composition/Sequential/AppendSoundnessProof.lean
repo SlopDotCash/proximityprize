@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 import ArkLib.OracleReduction.Composition.Sequential.SeamDecompositionRun
 import ArkLib.OracleReduction.Composition.Sequential.ChallengeSeamBridge
 import ArkLib.OracleReduction.Composition.Sequential.SeamCompleteness
-import ProximityPrize.Compatibility.StatePreservingSimulation
+import ArkLib.Compatibility.StatePreservingSimulation
 
 /-!
 # Sequential-composition soundness: the seam stage-swap under a leading bind

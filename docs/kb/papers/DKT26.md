@@ -3,7 +3,7 @@ kind: paper
 bibkey: DKT26
 title: "{Reed--Solomon} Codes Beyond {Johnson}: Efficient Decoding and Smaller Cryptographic Proofs"
 year: "2026"
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://eprint.iacr.org/2026/2056
 source_metadata: ../sources/DKT26/metadata.yml
 status: stub
@@ -52,4 +52,4 @@ TODO: record important missing theorems, abstractions, or proof gaps.
 ## Source Access
 
 - Source metadata: [`../sources/DKT26/metadata.yml`](../sources/DKT26/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

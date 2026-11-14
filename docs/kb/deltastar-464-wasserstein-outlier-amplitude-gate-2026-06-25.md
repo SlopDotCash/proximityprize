@@ -41,7 +41,7 @@ the same average transport budget.
 The frontier file
 
 ```text
-Research/ProximityPrize/Frontier/_WassersteinOutlierAmplitudeGate.lean
+ArkLib/Research/ProximityGap/Frontier/_WassersteinOutlierAmplitudeGate.lean
 ```
 
 defines

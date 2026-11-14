@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 import Mathlib
-import ProximityPrize.Extensions.Data.MvPolynomial.Multilinear
+import ArkLib.Extensions.Data.MvPolynomial.Multilinear
 
 /-!
 # Plonk / Spartan / RingSwitching algebra

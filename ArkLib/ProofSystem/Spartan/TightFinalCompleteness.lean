@@ -10,7 +10,7 @@ import ArkLib.ProofSystem.Spartan.TightSecondBinding
 import ArkLib.ProofSystem.Spartan.TightConjoinedSecondLeaf
 import ArkLib.ToVCVio.Lemmas
 import ArkLib.ToVCVio.OracleComp.SimSemantics.SimulateQ
-import ProximityPrize.Compatibility.CheckClaimPassThrough
+import ArkLib.Compatibility.CheckClaimPassThrough
 
 /-!
 # Tight terminal completeness: `finalCheckTight` + the binding strengthening (#329, B7, task R2)

@@ -73,7 +73,7 @@ pipeline.**  CORE OPEN, ON-BGK.  No fabricated closure.
 
 ## 5. Formal kernel and probe
 
-`Research/ProximityPrize/Frontier/_R307MomentSandwich.lean`
+`ArkLib/Research/ProximityGap/Frontier/_R307MomentSandwich.lean`
 — axiom-clean (`[propext, Classical.choice, Quot.sound]`, manual reads on all
 four, no sorryAx), pg-iterate 5s.  Theorems: `sixthMoment_sandwich`,
 `eighthMoment_eq_quadConv_energy`, `EighthMomentBound` (named input),

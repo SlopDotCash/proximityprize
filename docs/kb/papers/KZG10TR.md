@@ -3,7 +3,7 @@ kind: paper
 bibkey: KZG10TR
 title: "Polynomial Commitments"
 year: 2010
-bib_source: blueprint/src/references.bib
+bib_source: website/blueprint/src/references.bib
 canonical_url: https://cacr.uwaterloo.ca/techreports/2010/cacr2010-10.pdf
 source_metadata: ../sources/KZG10TR/metadata.yml
 status: seeded
@@ -41,4 +41,4 @@ evaluation-binding reduction because this version includes the security proofs.
 ## Source Access
 
 - Source metadata: [`../sources/KZG10TR/metadata.yml`](../sources/KZG10TR/metadata.yml)
-- Public reference: [`blueprint/src/references.bib`](../../../blueprint/src/references.bib)
+- Public reference: [`website/blueprint/src/references.bib`](../../../website/blueprint/src/references.bib)

@@ -18,7 +18,7 @@ M(d) = Mtop * 2^d.
 The Lean file
 
 ```text
-Research/ProximityPrize/Frontier/_R204PrizeTowerLargeIndex.lean
+ArkLib/Research/ProximityGap/Frontier/_R204PrizeTowerLargeIndex.lean
 ```
 
 records this arithmetic and proves in particular:

@@ -62,39 +62,72 @@ section FunctionBinding
 
 /-! ### Conflicting Evaluation Branch -/
 
+/-- Keep the admissible field representatives below `limit`, in increasing order. -/
+def filterConflictCandidates (limit : ℕ) (αᵢ : ZMod p)
+    (srs : Vector G₁ (n + 1) × Vector G₂ 2) (hn : 1 ≤ n) : Array (ZMod p) :=
+  (Array.range limit).filterMap fun i =>
+    if h : i < p then
+      let x : ZMod p := (⟨i, h⟩ : Fin p)
+      if srs.1[0] ^ x.val ≠ srs.1[1]'(Nat.lt_add_of_pos_left hn) ∧ x ≠ αᵢ then some x
+      else none
+    else none
+
 /-- Step 3a (from the paper reduction): choose `S \ {αᵢ}` for the conflict branch.
 
 The paper chooses a size-`D + 1` set `S` containing `αᵢ` with nonzero vanishing polynomial at
 `τ`; this function returns the part of `S` away from `αᵢ`.
 
-Cost: the search scans only the `n + 2` representatives `0, …, n + 1` (not the whole field).
-At most two candidates are excluded (the unique discrete-log solution of `srs.1[1]` and `αᵢ`),
-so under `p ≥ n + 2` this bounded window already contains `n` admissible values
-(`filter_map_conflict_length`); the scan performs `n + 2` group exponentiations
-(`chooseSConflict_scan_size`). -/
+The search first scans at most `n + 2` representatives. In a group of prime order `p` with
+`srs.1[0] ≠ 1`, at most two representatives fail the filter, so `p ≥ n + 2` guarantees
+that this prefix suffices. If the proper prefix has fewer than `n` hits, the full scan
+preserves the original result for arbitrary groups and SRS values. -/
 def chooseSConflict (αᵢ : ZMod p) (srs : Vector G₁ (n + 1) × Vector G₂ 2)
     (hn : 1 ≤ n) : Finset (ZMod p) :=
-  let arr := (Array.range (n + 2)).filterMap fun i =>
-    if h : i < p then
-      let x : ZMod p := (⟨i, h⟩ : Fin p)
-      if srs.1[0] ^ x.val ≠ srs.1[1]'(Nat.lt_add_of_pos_left hn) ∧ x ≠ αᵢ then
-        some x
-      else none
-    else none
-  arr.take n |>.toList.toFinset -- ∪ {αᵢ} to be the S referenced in the paper
+  let candidates := filterConflictCandidates (min p (n + 2)) αᵢ srs hn
+  let arr := if n ≤ candidates.size ∨ p ≤ n + 2 then candidates
+    else filterConflictCandidates p αᵢ srs hn
+  arr.take n |>.toList.toFinset
 
 omit [PrimeOrderWith G₁ p] [Group G₂] [PrimeOrderWith G₂ p]
   [Module (ZMod p) (Additive G₁)] [Module (ZMod p) (Additive G₂)] in
-/-- The filtered list used by `chooseSConflict` has no duplicate field elements. -/
-lemma filter_map_conflict_nodup
+/-- The prefix optimization returns the same first `n` hits as the full scan. -/
+lemma chooseSConflict_eq_full (αᵢ : ZMod p)
+    (srs : Vector G₁ (n + 1) × Vector G₂ 2) (hn : 1 ≤ n) :
+    chooseSConflict αᵢ srs hn =
+      (((Array.range p).filterMap fun i =>
+        if h : i < p then
+          let x : ZMod p := (⟨i, h⟩ : Fin p)
+          if srs.1[0] ^ x.val ≠ srs.1[1]'(Nat.lt_add_of_pos_left hn) ∧ x ≠ αᵢ then some x
+          else none
+        else none).take n).toList.toFinset := by
+  change chooseSConflict αᵢ srs hn =
+    ((filterConflictCandidates p αᵢ srs hn).take n).toList.toFinset
+  unfold chooseSConflict
+  dsimp only
+  by_cases hfield : p ≤ n + 2
+  · simp [hfield]
+  by_cases hsize : n ≤ (filterConflictCandidates (min p (n + 2)) αᵢ srs hn).size
+  · simp only [hsize, true_or, ite_true]
+    have hprefix : (filterConflictCandidates (min p (n + 2)) αᵢ srs hn).toList <+:
+        (filterConflictCandidates p αᵢ srs hn).toList := by
+      rw [filterConflictCandidates, filterConflictCandidates, Array.toList_filterMap,
+        Array.toList_filterMap, Array.toList_range, Array.toList_range]
+      apply List.IsPrefix.filterMap
+      refine ⟨(List.range (p - min p (n + 2))).map (min p (n + 2) + ·), ?_⟩
+      have hsplit : p = min p (n + 2) + (p - min p (n + 2)) := by omega
+      rw [← List.range_add, ← hsplit]
+    obtain ⟨rest, hrest⟩ := hprefix
+    simp only [Array.take, Array.toList_extract, List.extract_eq_take_drop, List.drop_zero,
+      Nat.sub_zero]
+    rw [← hrest, List.take_append_of_le_length (by simpa only [Array.length_toList] using hsize)]
+  · simp [hsize, hfield]
+
+omit [PrimeOrderWith G₁ p] [Group G₂] [PrimeOrderWith G₂ p]
+  [Module (ZMod p) (Additive G₁)] [Module (ZMod p) (Additive G₂)] in
+private lemma filterConflictCandidates_nodup (limit : ℕ)
     (αᵢ : ZMod p) (srs : Vector G₁ (n + 1) × Vector G₂ 2) (hn : 1 ≤ n) :
-    ((Array.range (n + 2)).filterMap fun i =>
-      if h : i < p then
-        let x : ZMod p := (⟨i, h⟩ : Fin p)
-        if srs.1[0] ^ x.val ≠ srs.1[1]'(Nat.lt_add_of_pos_left hn) ∧ x ≠ αᵢ then some x
-        else none
-      else none).toList.Nodup := by
-  rw [Array.toList_filterMap, Array.toList_range]
+    (filterConflictCandidates limit αᵢ srs hn).toList.Nodup := by
+  rw [filterConflictCandidates, Array.toList_filterMap, Array.toList_range]
   apply List.Nodup.filterMap _ List.nodup_range
   intro a a' b hb hb'
   simp only [Option.mem_def] at hb hb'
@@ -114,37 +147,32 @@ lemma filter_map_conflict_nodup
 
 omit [PrimeOrderWith G₁ p] [Group G₂] [PrimeOrderWith G₂ p]
   [Module (ZMod p) (Additive G₁)] [Module (ZMod p) (Additive G₂)] in
-/-- Cost statement for `chooseSConflict`: the scanned candidate window has exactly `n + 2`
-entries, independent of the field size `p`, and each entry costs one SRS-power test. -/
-lemma chooseSConflict_scan_size :
-    (Array.range (n + 2)).size = n + 2 := Array.size_range
-
-omit [Group G₂] [PrimeOrderWith G₂ p] [Module (ZMod p) (Additive G₁)]
-  [Module (ZMod p) (Additive G₂)] in
-/-- The conflict-branch candidate list contains at least `n` usable elements. -/
-lemma filter_map_conflict_length (hp : p ≥ n + 2) (hn : 1 ≤ n)
-    (αᵢ : ZMod p) (srs : Vector G₁ (n + 1) × Vector G₂ 2) (hgen : srs.1[0] ≠ 1) :
-    ((Array.range (n + 2)).filterMap fun i =>
+/-- The filtered list used by `chooseSConflict` has no duplicate field elements. -/
+lemma filter_map_conflict_nodup
+    (αᵢ : ZMod p) (srs : Vector G₁ (n + 1) × Vector G₂ 2) (hn : 1 ≤ n) :
+    ((Array.range p).filterMap fun i =>
       if h : i < p then
         let x : ZMod p := (⟨i, h⟩ : Fin p)
         if srs.1[0] ^ x.val ≠ srs.1[1]'(Nat.lt_add_of_pos_left hn) ∧ x ≠ αᵢ then some x
         else none
-      else none).size ≥ n := by
-  set arr := (Array.range (n + 2)).filterMap fun i =>
-    if h : i < p then
-      let x : ZMod p := (⟨i, h⟩ : Fin p)
-      if srs.1[0]'(Nat.succ_pos n) ^ x.val ≠ srs.1[1]'(Nat.lt_add_of_pos_left hn) ∧
-          x ≠ αᵢ then some x
-      else none
-    else none
+      else none).toList.Nodup :=
+  filterConflictCandidates_nodup p αᵢ srs hn
+
+omit [Group G₂] [PrimeOrderWith G₂ p] [Module (ZMod p) (Additive G₁)]
+  [Module (ZMod p) (Additive G₂)] in
+private lemma filterConflictCandidates_length (limit : ℕ) (hp : limit ≤ p)
+    (hlimit : n + 2 ≤ limit) (hn : 1 ≤ n)
+    (αᵢ : ZMod p) (srs : Vector G₁ (n + 1) × Vector G₂ 2) (hgen : srs.1[0] ≠ 1) :
+    (filterConflictCandidates limit αᵢ srs hn).size ≥ n := by
+  set arr := filterConflictCandidates limit αᵢ srs hn
   -- Convert Array.size to Finset.card via Nodup
-  have hnodup : arr.toList.Nodup := filter_map_conflict_nodup αᵢ srs hn
+  have hnodup : arr.toList.Nodup := filterConflictCandidates_nodup limit αᵢ srs hn
   rw [show arr.size = arr.toList.toFinset.card from by
     rw [List.toFinset_card_of_nodup hnodup, Array.length_toList]]
   set S := arr.toList.toFinset
-  -- The scanned window: the `n + 2` field elements with representatives `0, …, n + 1`.
-  set W : Finset (ZMod p) := (Finset.range (n + 2)).image (fun k : ℕ => (k : ZMod p))
-  have hWCard : W.card = n + 2 := by
+  -- The scanned window: the field elements with representatives below `limit`.
+  set W : Finset (ZMod p) := (Finset.range (limit)).image (fun k : ℕ => (k : ZMod p))
+  have hWCard : W.card = limit := by
     rw [Finset.card_image_of_injOn, Finset.card_range]
     intro a ha b hb hab
     simp only [Finset.coe_range, Set.mem_Iio] at ha hb
@@ -176,12 +204,12 @@ lemma filter_map_conflict_length (hp : p ≥ n + 2) (hn : 1 ≤ n)
         _ = ↑b.val := congrArg Nat.cast hval
         _ = b := ZMod.natCast_zmod_val b
     -- Any x satisfying the condition is in S
-    have hmem : ∀ x : ZMod p, x.val < n + 2 →
+    have hmem : ∀ x : ZMod p, x.val < limit →
         g₀ ^ x.val ≠ h₁ → x ≠ αᵢ → x ∈ S := by
       intro x hxW hpow hneα
       change x ∈ arr.toList.toFinset
-      simp only [List.mem_toFinset, arr, Array.toList_filterMap, Array.toList_range,
-        List.mem_filterMap, List.mem_range]
+      simp only [List.mem_toFinset, arr, filterConflictCandidates, Array.toList_filterMap,
+        Array.toList_range, List.mem_filterMap, List.mem_range]
       exact ⟨x.val, hxW, by
         simp only [ZMod.val_lt x, dite_true, ZMod.natCast_zmod_val]
         exact ite_eq_left ⟨hpow, hneα⟩⟩
@@ -192,7 +220,7 @@ lemma filter_map_conflict_length (hp : p ≥ n + 2) (hn : 1 ≤ n)
       intro x hx
       rw [Finset.mem_sdiff] at hx
       obtain ⟨hxW, hxS⟩ := hx
-      have hxval : x.val < n + 2 := by
+      have hxval : x.val < limit := by
         obtain ⟨k, hk, rfl⟩ := Finset.mem_image.mp hxW
         rw [Finset.mem_range] at hk
         rwa [ZMod.val_natCast, Nat.mod_eq_of_lt (lt_of_lt_of_le hk hp)]
@@ -219,6 +247,38 @@ lemma filter_map_conflict_length (hp : p ≥ n + 2) (hn : 1 ≤ n)
   have hSdiff := Finset.card_le_card_sdiff_add_card (s := W) (t := S)
   omega
 
+
+omit [Group G₂] [PrimeOrderWith G₂ p] [Module (ZMod p) (Additive G₁)]
+  [Module (ZMod p) (Additive G₂)] in
+/-- The conflict-branch candidate list contains at least `n` usable elements. -/
+lemma filter_map_conflict_length (hp : p ≥ n + 2) (hn : 1 ≤ n)
+    (αᵢ : ZMod p) (srs : Vector G₁ (n + 1) × Vector G₂ 2) (hgen : srs.1[0] ≠ 1) :
+    ((Array.range p).filterMap fun i =>
+      if h : i < p then
+        let x : ZMod p := (⟨i, h⟩ : Fin p)
+        if srs.1[0] ^ x.val ≠ srs.1[1]'(Nat.lt_add_of_pos_left hn) ∧ x ≠ αᵢ then some x
+        else none
+      else none).size ≥ n :=
+  filterConflictCandidates_length p le_rfl hp hn αᵢ srs hgen
+
+omit [Group G₂] [PrimeOrderWith G₂ p] [Module (ZMod p) (Additive G₁)]
+  [Module (ZMod p) (Additive G₂)] in
+/-- In the prime-order reduction with nonidentity base, only the `n + 2` prefix candidates
+are scanned. Each candidate requires one SRS-power test. -/
+lemma chooseSConflict_eq_prefix (hp : p ≥ n + 2) (hn : 1 ≤ n)
+    (αᵢ : ZMod p) (srs : Vector G₁ (n + 1) × Vector G₂ 2) (hgen : srs.1[0] ≠ 1) :
+    chooseSConflict αᵢ srs hn =
+      (((Array.range (n + 2)).filterMap fun i =>
+        if h : i < p then
+          let x : ZMod p := (⟨i, h⟩ : Fin p)
+          if srs.1[0] ^ x.val ≠ srs.1[1]'(Nat.lt_add_of_pos_left hn) ∧ x ≠ αᵢ then some x
+          else none
+        else none).take n).toList.toFinset := by
+  change chooseSConflict αᵢ srs hn =
+    ((filterConflictCandidates (n + 2) αᵢ srs hn).take n).toList.toFinset
+  simp only [chooseSConflict, min_eq_right hp,
+    filterConflictCandidates_length (n + 2) hp le_rfl hn αᵢ srs hgen, true_or, ite_true]
+
 omit [Group G₂] [PrimeOrderWith G₂ p] [Module (ZMod p) (Additive G₁)]
   [Module (ZMod p) (Additive G₂)] in
 /-- `chooseSConflict` returns exactly `n` elements. -/
@@ -226,8 +286,8 @@ lemma choose_s_conflict_size (hp : p ≥ n + 2) (hn : 1 ≤ n)
     (αᵢ : ZMod p) (srs : Vector G₁ (n + 1) × Vector G₂ 2)
     (hgen : srs.1[0] ≠ 1) :
     (chooseSConflict αᵢ srs hn).card = n := by
-  unfold chooseSConflict
-  set arr := (Array.range (n + 2)).filterMap fun i =>
+  rw [chooseSConflict_eq_full]
+  set arr := (Array.range p).filterMap fun i =>
     if h : i < p then
       let x : ZMod p := (⟨i, h⟩ : Fin p)
       if srs.1[0]'(Nat.succ_pos n) ^ x.val ≠ srs.1[1]'(Nat.lt_add_of_pos_left hn) ∧
@@ -250,8 +310,8 @@ omit [PrimeOrderWith G₁ p] [Group G₂] [PrimeOrderWith G₂ p]
 lemma choose_s_conflict_alpha (hn : 1 ≤ n) (αᵢ : ZMod p)
     (srs : Vector G₁ (n + 1) × Vector G₂ 2) :
     ¬ αᵢ ∈ chooseSConflict αᵢ srs hn := by
-  unfold chooseSConflict
-  set arr := (Array.range (n + 2)).filterMap fun i =>
+  rw [chooseSConflict_eq_full]
+  set arr := (Array.range p).filterMap fun i =>
     if h : i < p then
       let x : ZMod p := (⟨i, h⟩ : Fin p)
       if srs.1[0]'(Nat.succ_pos n) ^ x.val ≠ srs.1[1]'(Nat.lt_add_of_pos_left hn) ∧
@@ -290,8 +350,8 @@ lemma choose_s_conflict_tau (hn : 1 ≤ n) (αᵢ : ZMod p) (τ : ZMod p)
     ¬ τ ∈ chooseSConflict αᵢ srs hn := by
   have hsrs_rel : srs.1[0] ^ τ.val = srs.1[1]'(Nat.lt_add_of_pos_left hn) := by
     rw [hsrs]; simp [Groups.PowerSrs.generate, Groups.PowerSrs.tower, Vector.getElem_ofFn]
-  unfold chooseSConflict
-  set arr := (Array.range (n + 2)).filterMap fun i =>
+  rw [chooseSConflict_eq_full]
+  set arr := (Array.range p).filterMap fun i =>
     if h : i < p then
       let x : ZMod p := (⟨i, h⟩ : Fin p)
       if srs.1[0]'(Nat.succ_pos n) ^ x.val ≠ srs.1[1]'(Nat.lt_add_of_pos_left hn) ∧
@@ -362,7 +422,8 @@ lemma h1_ne_one (hn : 1 ≤ n)
     h₁ ≠ 1 := by
     intro S Zₛ h₁
     have cardS : S.card ≤ n := by
-      unfold S chooseSConflict
+      unfold S
+      rw [chooseSConflict_eq_full]
       apply (List.toFinset_card_le _).trans
       simp [Array.take]
     have Zₛ_deg : Zₛ.degree ≤ ↑n :=

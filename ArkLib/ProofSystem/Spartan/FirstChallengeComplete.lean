@@ -4,10 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ArkLib Contributors
 -/
 
-import ProximityPrize.Compatibility.SpartanFirstChallenge
+import ArkLib.Compatibility.SpartanFirstChallenge
 import ArkLib.ProofSystem.Spartan.FirstChallengeCoherent
 import ArkLib.ProofSystem.Spartan.ZeroCheckComplete
-import ProximityPrize.Extensions.ProofSystem.Component.RandomQuery
+import ArkLib.Extensions.ProofSystem.Component.RandomQuery
 
 /-!
 # The Spartan `firstChallenge` phase is (unconditionally) perfectly complete (issue #114)

@@ -25,7 +25,7 @@ This file provides:
    concrete (always-accepting) WHIR `VectorIOP`, concentrating the entire RBR budget on the final
    randomness challenge round, and the corresponding `whirVectorIOP_isSecureWithGap` package.
 -/
-import ProximityPrize.Compatibility.AveragedRbr.Security.RoundByRound
+import ArkLib.Compatibility.AveragedRbr.Security.RoundByRound
 import ArkLib.ProofSystem.Whir.Protocol
 import ArkLib.ProofSystem.Whir.ProtocolCompleteness
 import ArkLib.OracleReduction.Completeness

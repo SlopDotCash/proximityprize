@@ -5,7 +5,7 @@ Authors: ArkLib Contributors
 -/
 
 import ArkLib.ToVCVio.OracleComp.RandomOracleEagerTableDep
-import ProximityPrize.Extensions.OracleReduction.FiatShamir.Basic
+import ArkLib.Extensions.OracleReduction.FiatShamir.Basic
 
 /-!
 # Eager challenge-table sampling for the Fiat-Shamir challenge oracle (#116)

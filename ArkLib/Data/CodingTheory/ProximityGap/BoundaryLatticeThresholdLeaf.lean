@@ -6,7 +6,7 @@ Authors: ArkLib Contributors
 
 import Mathlib.Algebra.Field.ZMod
 import ArkLib.Data.CodingTheory.ProximityGap.BoundaryCardResidual
-import ProximityPrize.Compatibility.UniformProbability
+import ArkLib.Compatibility.UniformProbability
 
 /-!
 # The lattice leaf of the corrected boundary route: quantitative threshold + §5 extraction

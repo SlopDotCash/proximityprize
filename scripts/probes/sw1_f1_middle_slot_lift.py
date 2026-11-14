@@ -4,7 +4,7 @@ SW1-F1 -- lift test of the SYZ71 (6,6,6) linear-slot occupant AND of the p-unifo
 coset family that refutes `UniformSylvesterInjective` (Frontier/_SW1_F1_UniformSylvesterRefuted).
 
 Deterministic; prints PASS/FAIL and exits nonzero on FAIL.  Exact modular arithmetic only
-(Python ints; numpy int64 with an overflow-safe split product for p up to 2^31).
+(Python ints; numpy int64 below 2^31, Python-object arrays for larger fields).
 
 PART A  Replicate the SYZ71 F_41, mu_20 occupant of the first middle slot (6,6,6) at
         product-degree 7 (linear cofactors), verify it exactly, and note that it is itself an
@@ -24,7 +24,7 @@ PART D  The COSET FAMILY (Lean theorem `coset_family_refutes_F1`): n = 4d, three
 Exactness tool (SYZ53): a line word u0+z*u1 is s-close iff for some s-subset S the RS_k|S
 parity checks H_S (GRS dual, dim s-k) satisfy H_S(u0)+z*H_S(u1)=0 -- affine in z, so each S
 contributes at most one candidate z (or all of F when both vanish: common agreement set,
-mca-correlated, filtered per SYZ32).  For n<=20, all C(n,s) subsets are enumerated: the bad-z
+joint on that subset only). Nonjoint witnesses on other subsets still count.  For n<=20, all C(n,s) subsets are enumerated: the bad-z
 set of every stack is EXACT at any prime.
 """
 from __future__ import annotations
@@ -191,6 +191,8 @@ def vanishing_eval(omega: int, support: list[int], p: int) -> int:
 def matvec_mod(H: np.ndarray, u: np.ndarray, p: int) -> np.ndarray:
     """(H @ u) mod p for H (..., m) int64 entries in [0,p), u (m,) in [0,p); overflow-safe for
     p < 2^31 and m <= 32 by splitting u into 15-bit halves."""
+    if H.dtype == object or u.dtype == object:
+        return (H @ u) % p
     if p < (1 << 24):
         return np.einsum("...j,j->...", H, u) % p
     lo = u & 0x7FFF
@@ -211,7 +213,9 @@ class ExactCloseness:
         self.subs = np.array(subs, dtype=np.int64)           # (m, s)
         m = len(subs)
         r = s - k
-        H = np.zeros((m, r, s), dtype=np.int64)
+        # Above this range, parity minors may overflow signed 64-bit arithmetic.
+        self.dtype = np.int64 if p < (1 << 31) else object
+        H = np.zeros((m, r, s), dtype=self.dtype)
         for mi, S in enumerate(subs):
             a = [alpha[j] for j in S]
             for j in range(s):
@@ -230,22 +234,26 @@ class ExactCloseness:
         for mi in (0, m // 2, m - 1):
             S = subs[mi]
             for e in range(k):
-                v = np.array([pow(alpha[j], e, p) for j in S], dtype=np.int64)
+                v = np.array([pow(alpha[j], e, p) for j in S], dtype=self.dtype)
                 assert not np.any(matvec_mod(H[mi], v, p)), "GRS parity construction broken"
 
     def bad_z(self, u0: list[int], u1: list[int]):
-        """Return (bad_set, inf_close, mca)."""
+        """Return (nonjoint_bad_set, inf_close, any_joint_subset)."""
         p = self.p
-        U0 = np.array(u0, dtype=np.int64) % p
-        U1 = np.array(u1, dtype=np.int64) % p
+        U0 = np.array(u0, dtype=self.dtype) % p
+        U1 = np.array(u1, dtype=self.dtype) % p
         g0 = U0[self.subs]                                  # (m, s)
         g1 = U1[self.subs]
-        a0 = np.einsum("mrs,ms->mr", self.H, g0) % p if p < (1 << 24) else \
-            (np.einsum("mrs,ms->mr", self.H, (g0 >> 15)) % p * (1 << 15)
-             + np.einsum("mrs,ms->mr", self.H, (g0 & 0x7FFF)) % p) % p
-        a1 = np.einsum("mrs,ms->mr", self.H, g1) % p if p < (1 << 24) else \
-            (np.einsum("mrs,ms->mr", self.H, (g1 >> 15)) % p * (1 << 15)
-             + np.einsum("mrs,ms->mr", self.H, (g1 & 0x7FFF)) % p) % p
+        if self.dtype is object:
+            a0 = (self.H * g0[:, None, :]).sum(axis=2) % p
+            a1 = (self.H * g1[:, None, :]).sum(axis=2) % p
+        else:
+            a0 = np.einsum("mrs,ms->mr", self.H, g0) % p if p < (1 << 24) else \
+                (np.einsum("mrs,ms->mr", self.H, (g0 >> 15)) % p * (1 << 15)
+                 + np.einsum("mrs,ms->mr", self.H, (g0 & 0x7FFF)) % p) % p
+            a1 = np.einsum("mrs,ms->mr", self.H, g1) % p if p < (1 << 24) else \
+                (np.einsum("mrs,ms->mr", self.H, (g1 >> 15)) % p * (1 << 15)
+                 + np.einsum("mrs,ms->mr", self.H, (g1 & 0x7FFF)) % p) % p
         a1zero = ~np.any(a1, axis=1)
         a0zero = ~np.any(a0, axis=1)
         inf = bool(a1zero.any())
@@ -317,14 +325,13 @@ def lift_test(alpha: list[int], k: int, s: int, p: int, cores: list[list[int]],
         if not any(u1):
             continue
         bad, inf, mca = engine.bad_z(u0, u1)
-        raw = len(bad) + (1 if inf else 0)
+        raw = len(bad) + (1 if inf else 0)  # Projective diagnostic only.
         maxraw = max(maxraw, raw)
         if mca:
-            mcas += 1
-            continue
+            mcas += 1  # A different subset may still witness MCA badness.
         stacks += 1
-        maxbad = max(maxbad, raw)
-        dist[raw] = dist.get(raw, 0) + 1
+        maxbad = max(maxbad, len(bad))
+        dist[len(bad)] = dist.get(len(bad), 0) + 1
     return dict(maxbad=maxbad, maxraw=maxraw, stacks=stacks, mca=mcas, dist=dist)
 
 
@@ -333,6 +340,12 @@ def cores_of(S_AB, S_AC, S_BC, T):
     B = sorted(set(S_AB) | set(S_BC) | set(T))
     C = sorted(set(S_AC) | set(S_BC) | set(T))
     return [A, B, C]
+
+
+def core_indices(pts, cores):
+    """Translate field-value cores to the coordinate indices used by lift_test."""
+    positions = {value: i for i, value in enumerate(pts)}
+    return [[positions[value] for value in core] for core in cores]
 
 
 # ----------------------------------------------------------------------------- linear-slot search
@@ -450,10 +463,10 @@ def main() -> int:
     print("\n[B] exact lift test of the occupant cores at p=41: n=20 k=10 s=14, budget 19, ceiling 18")
     s = 2 * d + 2
     eng20_41 = ExactCloseness(pts, k, s, p)
-    cores = cores_of(S_AB, S_AC, S_BC, T)
+    cores = core_indices(pts, cores_of(S_AB, S_AC, S_BC, T))
     assert all(len(C) == s for C in cores)
     resB = lift_test(pts, k, s, p, cores, eng20_41, seed=101, trials=int(os.environ.get("SW1_B_TRIALS", "800")))
-    print(f"    stacks(noncorr)={resB['stacks']} mca-filtered={resB['mca']}  max mca-bad={resB['maxbad']}  "
+    print(f"    stacks={resB['stacks']} joint-subset-stacks={resB['mca']}  max mca-bad={resB['maxbad']}  "
           f"max raw={resB['maxraw']}  dist(top)={sorted(resB['dist'].items())[-6:]}")
     print(f"    EXCESS vs ceiling 18: {resB['maxbad'] - 18:+d}   vs budget 19: {resB['maxbad'] - 19:+d}")
 
@@ -491,7 +504,8 @@ def main() -> int:
                     print(f"    p={q}: occupant verification FAIL: {e}")
                     fails += 1
                     continue
-                r = lift_test(ptsq, k, s, q, cores_of(SAB, SAC, SBC, Tq), eng, seed=11 + q,
+                r = lift_test(ptsq, k, s, q, core_indices(ptsq, cores_of(SAB, SAC, SBC, Tq)),
+                              eng, seed=11 + q,
                               trials=int(os.environ.get("SW1_C_TRIALS", "300")))
                 lifted.append(r["maxbad"])
         rowsC.append((q, len(hits), exp, lifted))
@@ -543,7 +557,8 @@ def main() -> int:
                     continue
                 if eng is None:
                     eng = ExactCloseness(ptsq, kk, ss, q)
-                r = lift_test(ptsq, kk, ss, q, cores_of(SAB, SAC, SBC, T), eng, seed=31 + q + vi,
+                r = lift_test(ptsq, kk, ss, q, core_indices(ptsq, cores_of(SAB, SAC, SBC, T)),
+                              eng, seed=31 + q + vi,
                               trials=trials)
                 gmax = max(gmax, r["maxbad"])
                 graw = max(graw, r["maxraw"])
@@ -554,7 +569,7 @@ def main() -> int:
             rowsD.append((nn, q, gmax, ceiling, budget))
             print(f"      p={q:<11} (log2={np.log2(q):5.2f})  binomial syzygy exact: OK  "
                   f"max mca-bad={gmax:<3} raw={graw:<3} EXCESS vs ceiling={gmax - ceiling:+d} "
-                  f"vs budget={gmax - budget:+d}  stacks={gst} mca-filtered={gmca}  "
+                  f"vs budget={gmax - budget:+d}  stacks={gst} joint-subset-stacks={gmca}  "
                   f"tail={sorted(agg.items())[-5:]}  [{time.time() - tq:.0f}s]")
 
     # ------------------------------------------------------------------ summary

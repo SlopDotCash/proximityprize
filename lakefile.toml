@@ -40,19 +40,24 @@ name = "ArkLibLintPlugin"
 srcDir = "scripts"
 roots = ["ArkLibLintPlugin"]
 
+[[lean_lib]]
+name = "StopTacticPlugin"
+srcDir = "scripts"
+roots = ["StopTacticPlugin"]
+
 # Every file in the production library is a `module` (issue #795). Lake enforces that here so a
 # reverted or hand-written header fails the build rather than silently dropping a file back to
 # classic elaboration; see docs/wiki/module-system.md.
 [[lean_lib]]
 name = "ArkLib"
-plugins = ["ArkLibLintPlugin:shared"]
+plugins = ["ArkLibLintPlugin:shared", "StopTacticPlugin:shared"]
 requiresModuleSystem = true
 
 # The blueprint also references abstract dependency declarations outside ArkLib's import graph.
 # Build this nondefault root explicitly before checking the blueprint or generating its API docs.
 [[lean_lib]]
 name = "ArkLibBlueprint"
-srcDir = "blueprint"
+srcDir = "website/blueprint"
 roots = ["ArkLibBlueprint"]
 requiresModuleSystem = true
 
@@ -61,8 +66,8 @@ requiresModuleSystem = true
 [[lean_lib]]
 name = "ArkLibTest"
 roots = []
-globs = ["ArkLibTest.+"]
-plugins = ["ArkLibLintPlugin:shared"]
+globs = ["ArkLib.Tests.+"]
+plugins = ["ArkLibLintPlugin:shared", "StopTacticPlugin:shared"]
 allowNonModules = true
 
 # Kernel-level axiom / sorry accounting; see scripts/AxiomSweep.lean.
@@ -150,6 +155,7 @@ globs = ["RetiredProbabilityTestFixtures.+"]
 name = "ArkLibExtensions"
 roots = []
 allowNonModules = true
+plugins = ["StopTacticPlugin:shared"]
 globs = [
   "ArkLib.AGM.RepresentationLemmas",
   "ArkLib.AxiomCheck62",
@@ -2354,6 +2360,7 @@ globs = [
   "ArkLib.ProofSystem.Stir.MultiRoundSpecT",
   "ArkLib.ProofSystem.Stir.MultiRoundSpecTCompleteness",
   "ArkLib.ProofSystem.Stir.NumericLegs",
+  "ArkLib.ProofSystem.Stir.PaperStatements",
   "ArkLib.ProofSystem.Stir.ProximityGapProof",
   "ArkLib.ProofSystem.Stir.ProximityGapSmallField",
   "ArkLib.ProofSystem.Stir.RbrBudgetMono",
@@ -2596,6 +2603,7 @@ globs = [
   "ArkLib.ToMathlib.LineDecodingCoverageProof",
   "ArkLib.ToMathlib.LinearCentreCertificates",
   "ArkLib.ToMathlib.LinearFormKernelCard",
+  "ArkLib.ToMathlib.LinearProjection",
   "ArkLib.ToMathlib.LinearizedHomogeneous",
   "ArkLib.ToMathlib.LinearizedKernel",
   "ArkLib.ToMathlib.LinearizedPattern",
@@ -2742,11 +2750,14 @@ globs = [
 
 [[lean_lib]]
 name = "ResearchProximityPrize"
-roots = ["Research.ProximityPrize"]
+roots = ["ArkLib.Research.ProximityGap"]
 allowNonModules = true
+plugins = ["StopTacticPlugin:shared"]
 
 [[lean_lib]]
 name = "ProximityPrizeExtensions"
-roots = ["ProximityPrize"]
+roots = []
 allowNonModules = true
+plugins = ["StopTacticPlugin:shared"]
+globs = ["ArkLib.Downstream", "ArkLib.Extensions.*", "ArkLib.Compatibility.+"]
 # END DOWNSTREAM LIBRARIES

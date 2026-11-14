@@ -72,7 +72,7 @@ modulus exists.
 
 ## The proven structural skeleton (Lean, axiom-clean)
 
-`Research/ProximityPrize/Frontier/_wf2ND_theta_fixedpoint.lean` —
+`ArkLib/Research/ProximityGap/Frontier/_wf2ND_theta_fixedpoint.lean` —
 `lake build` green (autoImplicit=false, 855 jobs), `#print axioms` = `[propext, Classical.choice,
 Quot.sound]`, no `sorryAx`:
 
@@ -95,6 +95,6 @@ horocycle ⇒ no self-similar law ⇒ Poisson is a fixed point), not a reduction
 
 ## Files
 
-- `Research/ProximityPrize/Frontier/_wf2ND_theta_fixedpoint.lean` (proven, axiom-clean)
+- `ArkLib/Research/ProximityGap/Frontier/_wf2ND_theta_fixedpoint.lean` (proven, axiom-clean)
 - `scripts/probes/probe_wf2ND_theta_fe.py` (exact, reproducible)
 - this note.

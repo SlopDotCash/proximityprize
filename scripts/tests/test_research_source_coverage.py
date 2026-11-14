@@ -19,24 +19,37 @@ spec.loader.exec_module(boundary)
 
 
 class ResearchCoverage(unittest.TestCase):
-    def test_default_and_checkout_scans_include_both_trees(self):
+    def test_default_and_checkout_scans_include_production_and_research_only(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory).resolve()
-            for name in ('ArkLib', 'Research', 'ProximityPrize'):
-                (root / name).mkdir()
-                (root / name / 'Probe.lean').write_text('theorem unfinished : True := by sorry\n')
+            sources = {
+                'ArkLib/Data/Probe.lean',
+                'ArkLib/Extensions/Data/Probe.lean',
+                'ArkLib/Compatibility/Probe.lean',
+                'ArkLib/Research/ProximityGap/Probe.lean',
+            }
+            test_source = root / 'ArkLib/Tests/Probe.lean'
+            for name in sources | {'ArkLib/Tests/Probe.lean'}:
+                path = root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text('theorem unfinished : True := by sorry\n')
             previous = Path.cwd()
             try:
                 os.chdir(root)
-                for arguments in ([], ['.']):
+                for arguments in ([], ['.'], ['ArkLib']):
                     files, full, errors = forbidden_tokens.scan_plan(arguments)
                     self.assertEqual({p.resolve() for p in files},
-                                     {root / name / 'Probe.lean' for name in ('ArkLib', 'Research', 'ProximityPrize')})
+                                     {root / name for name in sources})
+                    self.assertEqual(len(files), len(sources))
                     self.assertTrue(full)
                     self.assertEqual(errors, [])
+                files, full, errors = forbidden_tokens.scan_plan([str(test_source)])
+                self.assertEqual([p.resolve() for p in files], [test_source])
+                self.assertFalse(full)
+                self.assertEqual(errors, [])
                 holes = [row for row in sorry_census.census(root) if row['kind'] == 'hole']
-                self.assertEqual({row['file'] for row in holes},
-                                 {'ArkLib/Probe.lean', 'Research/Probe.lean', 'ProximityPrize/Probe.lean'})
+                self.assertEqual({row['file'] for row in holes}, sources)
+                self.assertEqual(len(holes), len(sources))
             finally:
                 os.chdir(previous)
 
@@ -71,16 +84,60 @@ class ResearchCoverage(unittest.TestCase):
 
     def test_boundary_rejects_each_live_research_import(self):
         self.assertEqual(boundary.research_imports(
-            'import ArkLib.Basic Research.ProximityPrize.All\npublic import Research.Other\n'),
-            [(1, 'Research.ProximityPrize.All'), (2, 'Research.Other')])
+            'import ArkLib.Basic ArkLib.Research.ProximityGap.All\n'
+            'public import ArkLib.Research\npublic import Research.Other\n'),
+            [(1, 'ArkLib.Research.ProximityGap.All'), (2, 'ArkLib.Research'),
+             (3, 'Research.Other')])
 
     def test_boundary_rejects_meta_and_public_meta_imports(self):
         # Lean 4.30 module files accept `meta import` and `public meta import`;
         # both bring Research declarations into the importing module.
         self.assertEqual(boundary.research_imports(
-            'module\nmeta import Research.A\npublic meta import Research.B\n'
-            'import all Research.C\nmeta import ArkLib.Basic\n'),
-            [(2, 'Research.A'), (3, 'Research.B'), (4, 'Research.C')])
+            'module\nmeta import ArkLib.Research.A\npublic meta import ArkLib.Research.B\n'
+            'import all ArkLib.Research.C\nmeta import ArkLib.Basic\n'
+            'meta import Research.Legacy\n'),
+            [(2, 'ArkLib.Research.A'), (3, 'ArkLib.Research.B'),
+             (4, 'ArkLib.Research.C'), (6, 'Research.Legacy')])
+
+    def test_boundary_rejects_escaped_nested_research_components(self):
+        rejected = (
+            'ArkLib.«Research».A',
+            '«ArkLib».Research.A',
+            '«ArkLib».«Research».«ProximityGap».A',
+            '«ArkLib».«Research»',
+        )
+        text = ''.join(f'public meta import all {module}\n' for module in rejected)
+        text += (
+            'import «ArkLib.Research».A\n'
+            'import ArkLib.«Research.A»\n'
+            'import ArkLib.ResearchOther.A\n'
+            'import Other.ArkLib.Research.A\n'
+        )
+        self.assertEqual(boundary.research_imports(text), list(enumerate(rejected, 1)))
+
+    def test_production_boundary_excludes_research_and_test_sources(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            production = {
+                'ArkLib.lean',
+                'ArkLib/Data/Probe.lean',
+                'ArkLib/Extensions/Probe.lean',
+                'ArkLib/Compatibility/Probe.lean',
+                'ArkLib/Downstream/Probe.lean',
+            }
+            excluded = {'ArkLib/Research/ProximityGap/Probe.lean',
+                        'ArkLib/Tests/Probe.lean'}
+            for name in production | excluded:
+                path = root / name
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text('import ArkLib.Research.ProximityGap.All\n')
+            paths = list(boundary.production_sources(root))
+            self.assertEqual({path.relative_to(root).as_posix() for path in paths}, production)
+            findings = [(path.relative_to(root).as_posix(), line, module)
+                        for path in paths
+                        for line, module in boundary.research_imports(path.read_text())]
+            self.assertEqual(set(findings),
+                             {(name, 1, 'ArkLib.Research.ProximityGap.All') for name in production})
 
     def test_boundary_rejects_escaped_research_root(self):
         # Lean 4.30 resolves `«Research».A` to the module `Research.A`; a single
@@ -95,7 +152,7 @@ class ResearchCoverage(unittest.TestCase):
 
     def test_boundary_ignores_nested_comments(self):
         self.assertEqual(boundary.research_imports(
-            '/- outer\n/- nested -/\nimport Research.Hidden\n-/\n'
+            '/- outer\n/- nested -/\nimport ArkLib.Research.Hidden\n-/\n'
             '-- import Research.Hidden\nimport ArkLib.Basic\n'), [])
 
     def test_boundary_handles_unicode_content(self):
@@ -103,11 +160,11 @@ class ResearchCoverage(unittest.TestCase):
             '/- Mathematical notation: ∀ ε > 0, ∃ δ > 0, λ x, x ∈ ℝ ∧ x ∉ ℤ -/\n'
             '-- Note: α → β ↔ γ\n'
             'import ArkLib.Basic\n'
-            'public import Research.UnicodeModule\n'
+            'public import ArkLib.Research.UnicodeModule\n'
         )
         self.assertEqual(
             boundary.research_imports(content),
-            [(4, 'Research.UnicodeModule')]
+            [(4, 'ArkLib.Research.UnicodeModule')]
         )
 
 

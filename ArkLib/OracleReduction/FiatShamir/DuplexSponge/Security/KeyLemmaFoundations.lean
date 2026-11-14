@@ -9,7 +9,7 @@ import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.ProverTransform
 import ArkLib.OracleReduction.FiatShamir.DuplexSponge.Security.BadEvents
 import ArkLib.OracleReduction.Security.OracleDistribution
 import VCVio.EvalDist.MeasureTVDist.Bind
-import ProximityPrize.Compatibility.DiscreteProbability
+import ArkLib.Compatibility.DiscreteProbability
 
 /-!
 # Foundations bricks for the DSFS Key Lemma (CO25 Lemma 5.1)

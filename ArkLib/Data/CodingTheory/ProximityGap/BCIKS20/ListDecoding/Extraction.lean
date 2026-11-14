@@ -5,8 +5,8 @@ Authors: Quang Dao, Katerina Hristova, František Silváši, Julian Sutherland,
          Ilia Vlasov, Chung Thai Nguyen
 -/
 
-import ProximityPrize.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Guruswami
-import ProximityPrize.Extensions.Data.Polynomial.RationalFunctions
+import ArkLib.Extensions.Data.CodingTheory.ProximityGap.BCIKS20.ListDecoding.Guruswami
+import ArkLib.Extensions.Data.Polynomial.RationalFunctions
 
 /-!
 # BCIKS20 §5 list decoding: factor extraction and discriminant non-vanishing
