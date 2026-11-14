@@ -37,6 +37,11 @@ MR_BASES_U64 = (2, 325, 9375, 28178, 450775, 9780504, 1795265022)
 SMALL_PRIMES = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37)
 
 
+def require(condition: bool, detail: str) -> None:
+    if not condition:
+        raise AssertionError(detail)
+
+
 def is_prime_u64(n: int) -> bool:
     """Deterministic Miller--Rabin for ``n < 2^64``."""
     if n < 2:
@@ -75,7 +80,7 @@ def matched_prime(n: int) -> tuple[int, int]:
 
 def subgroup(p: int, n: int) -> tuple[np.ndarray, int, int]:
     """Return powers of an element of exact order ``n`` (``n`` a 2-power)."""
-    assert n > 1 and n & (n - 1) == 0 and (p - 1) % n == 0
+    require(n > 1 and n & (n - 1) == 0 and (p - 1) % n == 0, "invalid subgroup parameters")
     for base in range(2, 1000):
         zeta = pow(base, (p - 1) // n, p)
         if pow(zeta, n, p) == 1 and pow(zeta, n // 2, p) != 1:
@@ -86,7 +91,7 @@ def subgroup(p: int, n: int) -> tuple[np.ndarray, int, int]:
     for _ in range(n):
         values.append(x)
         x = x * zeta % p
-    assert x == 1 and len(set(values)) == n
+    require(x == 1 and len(set(values)) == n, "subgroup generator did not have exact order n")
     return np.asarray(values, dtype=np.uint64), zeta, base
 
 
@@ -172,7 +177,7 @@ def enumerate_records(group: np.ndarray, p: int, r: int) -> Records:
     else:
         raise ValueError("only r=3,4 are implemented")
 
-    assert q == count
+    require(q == count, f"record count mismatch: expected {count}, got {q}")
     order = np.argsort(sums, kind="stable")
     return Records(sums[order], indices[order], weights[order], supports[order])
 
@@ -225,9 +230,9 @@ def census(n: int, r: int) -> None:
             )
 
     populations = support_populations(n, r)
-    assert sum(populations) == n**r
-    assert sum(energy_by_support) == energy
-    assert sum(disjoint_by_support) == disjoint
+    require(sum(populations) == n**r, "support populations do not sum to all ordered words")
+    require(sum(energy_by_support) == energy, "support energies do not sum to total energy")
+    require(sum(disjoint_by_support) == disjoint, "support disjoint counts do not sum to total")
 
     base_by_support, total_by_support, correction_by_support = [], [], []
     for s in range(r + 1):
@@ -241,10 +246,27 @@ def census(n: int, r: int) -> None:
     principal_disjoint = sum(populations[s] * (n - s) ** r for s in range(r + 1))
     total_centered = p * disjoint - principal_disjoint
     correction = total_centered - base_total
-    assert sum(base_by_support) == base_total
-    assert sum(total_by_support) == total_centered
-    assert sum(correction_by_support) == correction
-    assert total_centered == base_total + correction
+    require(sum(base_by_support) == base_total, "support base terms do not sum to the centered base")
+    require(sum(total_by_support) == total_centered, "support totals do not sum to the centered total")
+    require(sum(correction_by_support) == correction, "support corrections do not sum to correction")
+    require(
+        total_centered == base_total + correction,
+        f"centered decomposition failed: T={total_centered}, B={base_total}, C={correction}",
+    )
+
+    expected_anchors = {
+        (128, 3): (30725120, 0),
+        (256, 3): (248903680, 184320),
+        (512, 3): (2001858560, 368640),
+        (128, 4): (27110661760, 2454783744),
+    }
+    if (n, r) in expected_anchors:
+        expected_energy, expected_disjoint = expected_anchors[n, r]
+        require(
+            (energy, disjoint) == (expected_energy, expected_disjoint),
+            f"PPC10 Lean anchor mismatch: expected {(expected_energy, expected_disjoint)}, "
+            f"got {(energy, disjoint)}",
+        )
 
     expected = char_zero_energy(n, r)
     wick = double_factorial_odd(r) * n**r
