@@ -178,7 +178,7 @@ The Lean file proves the integer inequalities; the geometric implications
 remain the previously proved line-cap and pair-union lemmas.
 
 Reproduce with
-`scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_IncidenceFourthMomentDirectBound.lean`.
+`./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_IncidenceFourthMomentDirectBound.lean`.
 
 ## Independent arithmetic check
 
@@ -359,30 +359,3 @@ The production theorem uses t=221512373 and the exact integer cube inequality.
 Both new geometry declarations and the canonical transfer passed the focused
 hosted Lean and axiom check in run 38392632799 at 88a9ebb0e.
 Earlier constant-budget values above document the predecessor proof.
-
-## Direct fourth-moment check against the constant-line floor
-
-`Frontier/_IncidenceFourthMomentDirectBound.lean` formally checks a direct
-fourth-moment replacement for the cube-moment proof. At the production shape
-`n = 2^30`, `m = n+1`, and `d = 2^29`, the proposed lower mass assigns `d+1`
-to every four-distinct tuple (using line-cap three) and `d+1-t` to every other
-tuple with at least two distinct indices (using the pair-union distance
-bound). Its upper mass is the fourth-power mean bound from the same error
-budget `t`.
-
-The exact integer inequalities cross between `t = 170836173` and
-`t = 170836174`. If the scalar moment inequalities are consistent, then
-`t > 170836173`; at the incumbent first-sponsor error budget `t = 221512373`,
-the scalar upper mass already exceeds this direct lower mass. This rules out
-this direct fourth-moment argument as a way to improve the existing
-`221512374/2^30` floor. It is not a counterexample to a canonical witness
-family, does not strengthen or weaken that floor, and does not rule out
-stronger uses of four-witness geometry or other moments.
-
-Reproduce with
-`scripts/pg-iterate.sh Research/ProximityPrize/Frontier/_IncidenceFourthMomentDirectBound.lean`.
-The two declarations use only `[propext]` in their Lean axiom reports. The
-underlying geometric ingredients remain the existing
-`bad_witness_line_cap_three` and `bad_witness_pair_union_distance` results;
-the new file formalizes the exact arithmetic cutoff for the stated scalar
-moment inequalities.
