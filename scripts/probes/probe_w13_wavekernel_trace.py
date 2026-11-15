@@ -27,6 +27,12 @@ def log(msg=""):
     print(msg, flush=True)
 
 
+def require(condition: bool, message: str) -> None:
+    """Keep numerical and domain checks active when Python optimization is enabled."""
+    if not condition:
+        raise RuntimeError(message)
+
+
 # ------------------------------------------------------------------ utilities
 def is_prime(m: int) -> bool:
     if m < 2:
@@ -71,14 +77,14 @@ def find_generator(p: int) -> int:
 
 def mu_subgroup(p: int, n: int):
     """The order-n multiplicative subgroup of F_p^* (requires n | p-1)."""
-    assert (p - 1) % n == 0
+    require(n > 0 and (p - 1) % n == 0, f"W13 subgroup order {n} does not divide p-1")
     g = find_generator(p)
     h = pow(g, (p - 1) // n, p)
     out, x = [], 1
     for _ in range(n):
         out.append(x)
         x = x * h % p
-    assert len(set(out)) == n
+    require(len(set(out)) == n, f"W13 generated subgroup has wrong order: {len(set(out))} != {n}")
     return sorted(out)
 
 
@@ -145,13 +151,13 @@ def apply_triangle(tri_row, powsums):
 
 # ------------------------------------------------------ direct Hashimoto side
 def _exact_int_trace(mat: np.ndarray) -> int:
-    """Trace of a float64 matrix whose entries are exact integers; asserts exactness.
+    """Trace of a float64 matrix whose entries are exact integers; checks exactness.
     float64 matmul is exact for integer values as long as every intermediate stays
-    < 2^53; we assert the trace is within 0.4 of an integer and below 2^53."""
+    < 2^53; the trace must be within 0.4 of an integer and below 2^53."""
     t = float(np.trace(mat))
-    assert abs(t) < 2 ** 53, "int-exactness range exceeded"
+    require(abs(t) < 2 ** 53, "int-exactness range exceeded")
     ti = round(t)
-    assert abs(t - ti) < 0.4, f"non-integer trace {t}"
+    require(abs(t - ti) < 0.4, f"non-integer trace {t}")
     return ti
 
 
@@ -180,7 +186,7 @@ def hashimoto_traces(p: int, mu, mmax: int):
                     continue  # backtracking
                 row[base + j] = 1.0
     # entries of B^m are <= q^{m-1}; keep q^{mmax-1}*E < 2^53
-    assert (q ** (mmax - 1)) * E < 2 ** 53
+    require((q ** (mmax - 1)) * E < 2 ** 53, "Hashimoto trace may exceed float64 exact-integer range")
     traces = []
     P = B.copy()
     traces.append(_exact_int_trace(P))
@@ -229,7 +235,10 @@ def part_F1_F2():
     cases = [(8, 89), (8, 233), (16, 257), (16, 337)]
     triangles = {}
     for n, p in cases:
-        assert is_prime(p) and (p - 1) % n == 0 and (p - 1) // n > 1
+        require(
+            is_prime(p) and (p - 1) % n == 0 and (p - 1) // n > 1,
+            f"invalid W13 F1/F2 cell p={p}, n={n}",
+        )
         mu = mu_subgroup(p, n)
         q = n - 1
         trB, powsums, trN_direct, trK_direct = hashimoto_traces(p, mu, mmax)
@@ -291,12 +300,12 @@ def part_F3():
     n = 16
     rows = []
     for p in (65617, 65633):
-        assert is_prime(p) and (p - 1) % n == 0
+        require(is_prime(p) and (p - 1) % n == 0, f"invalid W13 F3 cell p={p}, n={n}")
         mu = mu_subgroup(p, n)
         eta = eta_via_fft(p, mu)
         # Parseval sanity: sum_b |eta_b|^2 = p*n
         pars = abs(float(np.sum(np.abs(eta) ** 2)) - p * n) / (p * n)
-        assert pars < 1e-9, pars
+        require(pars < 1e-9, f"W13 Parseval relative error {pars} exceeds tolerance")
         er = np.real(eta).copy()
         M = float(np.max(np.abs(er[1:])))  # non-principal sup
         # normalized moments of the non-principal spectrum: m_j = P_j / (p * n^{j/2})
