@@ -59,6 +59,12 @@ EXPECTED_KERNEL_SIZES = {
 }
 
 
+def require(condition: bool, message: str) -> None:
+    """Keep the G315 certificate checks active under Python optimization."""
+    if not condition:
+        raise AssertionError(message)
+
+
 def subgroup_from_root(p: int, n: int, root: int) -> list[int]:
     h = pow(root, (p - 1) // n, p)
     out: list[int] = []
@@ -66,25 +72,28 @@ def subgroup_from_root(p: int, n: int, root: int) -> list[int]:
     for _ in range(n):
         out.append(x)
         x = x * h % p
-    assert x == 1 and len(set(out)) == n
+    require(x == 1 and len(set(out)) == n, f"subgroup construction failed for p={p}, n={n}")
     half = n // 2
     for i in range(half):
-        assert (out[i] + out[i + half]) % p == 0
+        require((out[i] + out[i + half]) % p == 0, f"root pair {i} is not antipodal modulo p={p}")
     return out
 
 
 def certify_proth_prime() -> int:
-    assert PROTH_K % 2 == 1
-    assert PROTH_K < (1 << PROTH_M)
+    require(PROTH_K % 2 == 1, "Proth multiplier must be odd")
+    require(PROTH_K < (1 << PROTH_M), "Proth multiplier exceeds the Proth bound")
     # Proth theorem: this congruence proves PROTH_P is prime.
-    assert pow(PROTH_WITNESS, (PROTH_P - 1) // 2, PROTH_P) == PROTH_P - 1
+    require(
+        pow(PROTH_WITNESS, (PROTH_P - 1) // 2, PROTH_P) == PROTH_P - 1,
+        "Proth primality witness failed",
+    )
     return PROTH_P
 
 
 def subgroup_proth(n: int) -> list[int]:
     p = certify_proth_prime()
-    assert n & (n - 1) == 0
-    assert n <= (1 << PROTH_M)
+    require(n & (n - 1) == 0, f"subgroup order n={n} is not a power of two")
+    require(n <= (1 << PROTH_M), f"subgroup order n={n} exceeds the Proth 2-adic scale")
     return subgroup_from_root(p, n, PROTH_WITNESS)
 
 
@@ -98,8 +107,14 @@ def subset_hist_sparse(group: list[int], p: int, max_r: int) -> list[dict[int, i
             for s, value in list(dp[r - 1].items()):
                 dp[r][(s + x) % p] += value
     for r in range(max_r + 1):
-        assert sum(dp[r].values()) == comb(len(group), r)
-        assert len(dp[r]) == EXPECTED_HIST_SIZES[r]
+        require(
+            sum(dp[r].values()) == comb(len(group), r),
+            f"subset histogram lost mass at rank r={r}",
+        )
+        require(
+            len(dp[r]) == EXPECTED_HIST_SIZES[r],
+            f"G315 subset histogram support changed at rank r={r}: {len(dp[r])}",
+        )
     return [dict(row) for row in dp]
 
 
@@ -109,8 +124,11 @@ def kernel_sparse(group: list[int], p: int, coefficient: int) -> dict[int, int]:
         ay = coefficient * y % p
         for z in group:
             out[(ay - z) % p] += 1
-    assert sum(out.values()) == len(group) ** 2
-    assert len(out) == EXPECTED_KERNEL_SIZES[coefficient]
+    require(sum(out.values()) == len(group) ** 2, "weighted kernel lost mass")
+    require(
+        len(out) == EXPECTED_KERNEL_SIZES[coefficient],
+        f"G315 kernel support changed at coefficient={coefficient}: {len(out)}",
+    )
     return dict(out)
 
 
@@ -198,13 +216,16 @@ def verify_model(handle) -> None:
     for coefficient in COEFFICIENTS:
         for r in RANKS:
             dot = antipodal_model_dot(N, r, coefficient)
-            assert dot == EXPECTED_MODEL_DOTS[coefficient][r]
+            require(
+                dot == EXPECTED_MODEL_DOTS[coefficient][r],
+                f"G315 exact model dot pin failed at coefficient={coefficient}, r={r}: {dot}",
+            )
             emit(handle, f"model coefficient={coefficient} r={r} dot={dot}")
 
 
 def verify_large_field(handle) -> None:
     p = certify_proth_prime()
-    assert p > N * (1 << 128)
+    require(p > N * (1 << 128), "certified Proth prime is below the advertised scale")
     group = subgroup_proth(N)
     dp = subset_hist_sparse(group, p, max(RANKS))
     kernels = {coefficient: kernel_sparse(group, p, coefficient) for coefficient in COEFFICIENTS}
@@ -216,12 +237,18 @@ def verify_large_field(handle) -> None:
         emit(handle, f"kernel coefficient={coefficient} support={len(kernels[coefficient])}")
         for r in RANKS:
             a_value, dot = sparse_alignment_from_dp(dp, kernels[coefficient], p, N, r)
-            assert dot == EXPECTED_MODEL_DOTS[coefficient][r]
-            assert a_value == EXPECTED_A_VALUES[coefficient][r]
+            require(
+                dot == EXPECTED_MODEL_DOTS[coefficient][r],
+                f"G315 large-field/model dot mismatch at coefficient={coefficient}, r={r}",
+            )
+            require(
+                a_value == EXPECTED_A_VALUES[coefficient][r],
+                f"G315 exact alignment pin failed at coefficient={coefficient}, r={r}: {a_value}",
+            )
             if coefficient == 1:
-                assert a_value < 0
+                require(a_value < 0, f"G315 coefficient-1 alignment is not negative at r={r}")
             else:
-                assert a_value > 0
+                require(a_value > 0, f"G315 coefficient-2 alignment is not positive at r={r}")
             emit(handle, f"field coefficient={coefficient} r={r} A={a_value:+d} dot={dot}")
 
 
