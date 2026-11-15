@@ -68,6 +68,12 @@ EXPECTED_SMALL = {
 }
 
 
+def require(condition: bool, message: str) -> None:
+    """Keep the G314 model comparison checks active under optimization."""
+    if not condition:
+        raise AssertionError(message)
+
+
 def factor(x: int) -> list[int]:
     out: list[int] = []
     d = 2
@@ -97,15 +103,18 @@ def subgroup_from_root(p: int, n: int, root: int) -> list[int]:
     for _ in range(n):
         out.append(x)
         x = x * h % p
-    assert x == 1 and len(set(out)) == n
-    assert_antipodal(out, p)
+    require(x == 1 and len(set(out)) == n, f"subgroup construction failed for p={p}, n={n}")
+    require_antipodal(out, p)
     return out
 
 
-def assert_antipodal(group: list[int], p: int) -> None:
+def require_antipodal(group: list[int], p: int) -> None:
     half = len(group) // 2
     for i in range(half):
-        assert (group[i] + group[i + half]) % p == 0
+        require(
+            (group[i] + group[i + half]) % p == 0,
+            f"root pair {i} is not antipodal modulo p={p}",
+        )
 
 
 def subgroup_small(p: int, n: int) -> list[int]:
@@ -113,17 +122,20 @@ def subgroup_small(p: int, n: int) -> list[int]:
 
 
 def certify_proth_prime() -> int:
-    assert PROTH_K % 2 == 1
-    assert PROTH_K < (1 << PROTH_M)
+    require(PROTH_K % 2 == 1, "Proth multiplier must be odd")
+    require(PROTH_K < (1 << PROTH_M), "Proth multiplier exceeds the Proth bound")
     # Proth theorem: this congruence proves PROTH_P is prime.
-    assert pow(PROTH_WITNESS, (PROTH_P - 1) // 2, PROTH_P) == PROTH_P - 1
+    require(
+        pow(PROTH_WITNESS, (PROTH_P - 1) // 2, PROTH_P) == PROTH_P - 1,
+        "Proth primality witness failed",
+    )
     return PROTH_P
 
 
 def subgroup_proth(n: int) -> list[int]:
     p = certify_proth_prime()
-    assert n & (n - 1) == 0
-    assert n <= (1 << PROTH_M)
+    require(n & (n - 1) == 0, f"subgroup order n={n} is not a power of two")
+    require(n <= (1 << PROTH_M), f"subgroup order n={n} exceeds the Proth 2-adic scale")
     return subgroup_from_root(p, n, PROTH_WITNESS)
 
 
@@ -137,7 +149,10 @@ def subset_hist_sparse(group: list[int], p: int, max_r: int) -> list[dict[int, i
             for s, value in list(dp[r - 1].items()):
                 dp[r][(s + x) % p] += value
     for r in range(max_r + 1):
-        assert sum(dp[r].values()) == comb(len(group), r)
+        require(
+            sum(dp[r].values()) == comb(len(group), r),
+            f"subset histogram lost mass at rank r={r}",
+        )
     return [dict(row) for row in dp]
 
 
@@ -148,7 +163,7 @@ def subset_sums_direct(group: list[int], p: int, r: int) -> list[int]:
         for i in indices:
             total = (total + group[i]) % p
         out.append(total)
-    assert len(out) == comb(len(group), r)
+    require(len(out) == comb(len(group), r), f"direct subset enumeration count changed at r={r}")
     return out
 
 
@@ -158,7 +173,7 @@ def kernel_sparse(group: list[int], p: int, coefficient: int) -> dict[int, int]:
         ay = coefficient * y % p
         for z in group:
             out[(ay - z) % p] += 1
-    assert sum(out.values()) == len(group) ** 2
+    require(sum(out.values()) == len(group) ** 2, "weighted kernel lost mass")
     return dict(out)
 
 
@@ -208,7 +223,7 @@ def direct_pair_alignment(group: list[int], p: int, r: int, coefficient: int) ->
         for y in right:
             dot += kernel.get((x - y) % p, 0)
     total = len(left) * len(right)
-    assert total == comb(n, r) * comb(n, r - 1)
+    require(total == comb(n, r) * comb(n, r - 1), f"direct pair count changed at r={r}")
     return p * dot - n * n * total, dot
 
 
@@ -280,7 +295,7 @@ def verify_model_table(handle) -> dict[int, list[int]]:
         ]
         for coefficient in COEFFICIENTS
     }
-    assert model == EXPECTED_MODEL_DOTS
+    require(model == EXPECTED_MODEL_DOTS, f"G314 exact antipodal model table changed: {model}")
     emit(handle, "antipodal-pair model dot table")
     for coefficient in COEFFICIENTS:
         emit(handle, f"coefficient={coefficient}: {model[coefficient]}")
@@ -289,26 +304,35 @@ def verify_model_table(handle) -> dict[int, list[int]]:
 
 def verify_large_field_equals_model(handle, model: dict[int, list[int]]) -> None:
     p = certify_proth_prime()
-    assert p > N * (1 << 128)
+    require(p > N * (1 << 128), "certified Proth prime is below the advertised scale")
     group = subgroup_proth(N)
     rows = field_alignments(group, p, N - 1, COEFFICIENTS)
     emit(handle, f"large Proth prime p={p}=111*2^128+1 witness={PROTH_WITNESS}")
     for coefficient in COEFFICIENTS:
         dots = [dot for _, dot in rows[coefficient]]
-        assert dots == model[coefficient]
+        require(
+            dots == model[coefficient],
+            f"G314 large-field/model dot table mismatch at coefficient={coefficient}",
+        )
         emit(handle, f"large field coefficient={coefficient} dots match model: {dots}")
 
     for r in range(1, N):
         a1, dot1 = rows[1][r - 1]
         a2, dot2 = rows[2][r - 1]
-        assert dot1 == 0
-        assert dot2 == EXPECTED_MODEL_DOTS[2][r - 1]
-        assert a1 < 0 < a2
+        require(dot1 == 0, f"G314 coefficient-1 dot is nonzero at rank r={r}: {dot1}")
+        require(
+            dot2 == EXPECTED_MODEL_DOTS[2][r - 1],
+            f"G314 coefficient-2 dot pin failed at rank r={r}: {dot2}",
+        )
+        require(a1 < 0 < a2, f"G314 large-field sign separation failed at rank r={r}")
 
     for r in (5, 6):
         for coefficient in COEFFICIENTS:
             direct = direct_pair_alignment(group, p, r, coefficient)
-            assert direct == rows[coefficient][r - 1]
+            require(
+                direct == rows[coefficient][r - 1],
+                f"G314 direct field cross-check failed at r={r}, coefficient={coefficient}",
+            )
             emit(
                 handle,
                 f"direct field cross-check r={r} coefficient={coefficient} "
@@ -324,8 +348,14 @@ def verify_small_field_extra_relations(handle, model: dict[int, list[int]]) -> N
         for coefficient in COEFFICIENTS:
             a_value, field_dot = rows[coefficient][r - 1]
             model_dot = model[coefficient][r - 1]
-            assert (a_value, field_dot) == EXPECTED_SMALL[r][coefficient]
-            assert field_dot != model_dot
+            require(
+                (a_value, field_dot) == EXPECTED_SMALL[r][coefficient],
+                f"G314 exact small-field pin failed at r={r}, coefficient={coefficient}",
+            )
+            require(
+                field_dot != model_dot,
+                f"G314 expected extra finite-field relations at r={r}, coefficient={coefficient}",
+            )
             emit(
                 handle,
                 f"small r={r} coefficient={coefficient} "
