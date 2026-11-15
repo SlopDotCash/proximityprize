@@ -2803,6 +2803,7 @@ import ArkLib.Research.ProximityGap.Frontier._SYZ69ParityClassification
 import ArkLib.Research.ProximityGap.Frontier._SYZ6FinerGradingCeiling
 import ArkLib.Research.ProximityGap.Frontier._SYZ70FirstOpenMiddleSlot
 import ArkLib.Research.ProximityGap.Frontier._SYZ71LinearMiddleSlot
+import ArkLib.Research.ProximityGap.Frontier._SYZ72F41MiddleSlotCertificate
 import ArkLib.Research.ProximityGap.Frontier._SYZ8CellPackageSupply
 import ArkLib.Research.ProximityGap.Frontier._SYZ9ChannelRankWall
 import ArkLib.Research.ProximityGap.Frontier._SYZGuardedKernelTwoCore
