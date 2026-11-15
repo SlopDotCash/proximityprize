@@ -28,7 +28,8 @@ The two implementations MUST agree at every m. We also verify:
 All arithmetic is exact Python `int` -- no `float`, no `Fraction` needed, no
 `sympy`/`numpy`/`scipy`. The only division in implementation (B) is `m*(m-1)//2`,
 which is exact because `m*(m-1)` is always even for `m >= 1` (one of `m`, `m-1`
-is even); we `assert (m*(m-1)) % 2 == 0` for sanity at every m.
+is even); we check `prod % 2 == 0` with `_require` for sanity at every m,
+so the guard survives `python -O` (bare `assert` would be compiled out).
 
 This is a (P)/(C) brick: the closed form is a (P) Lean kernel pinned at the
 published cells, and the probe carries an exact integer cross-check (C) that
@@ -37,6 +38,12 @@ extends the pin to m = 11 .. 20.
 from __future__ import annotations
 
 import sys
+
+
+def _require(condition, detail):
+    """Keep the exact-division guards active under Python optimization."""
+    if not condition:
+        raise AssertionError(detail)
 
 
 # ---------------------------------------------------------------------------
@@ -53,9 +60,9 @@ def I_max_binomial(m: int) -> int:
 
     Since m*(m-1) is always even for m >= 1, m*(m-1)//2 is an exact integer
     division (no floor, no truncation, no floating-point)."""
-    assert m >= 1, (m,)
+    _require(m >= 1, f"m must be at least 1, got {m}")
     prod = m * (m - 1)
-    assert prod % 2 == 0, (m, prod)
+    _require(prod % 2 == 0, f"product m*(m-1) is not even for m={m}: prod={prod}")
     return 4 * m * (prod // 2) + 1
 
 
