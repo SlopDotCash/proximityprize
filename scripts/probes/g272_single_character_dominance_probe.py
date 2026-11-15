@@ -42,6 +42,12 @@ import sys
 from math import comb
 
 
+def require(condition: bool, message: str) -> None:
+    """Keep the exact G272 witness audit active under optimized Python."""
+    if not condition:
+        raise AssertionError(message)
+
+
 def is_prime(x: int) -> bool:
     if x < 2:
         return False
@@ -86,7 +92,7 @@ def subgroup(p: int, n: int) -> list:
     for _ in range(n):
         out.append(x)
         x = x * z % p
-    assert x == 1 and len(set(out)) == n
+    require(x == 1 and len(set(out)) == n, f"subgroup construction failed for p={p}, n={n}")
     return out
 
 
@@ -165,12 +171,15 @@ def cell(n, p, r):
     R = adj_corr(hist[r], hist[r - 1], p)
     SW = sum(W)
     SR = sum(R)
-    assert SW == n * n, (p, SW)
-    assert SR == comb(n, r) * comb(n, r - 1), (p, SR)
+    require(SW == n * n, f"p={p}: W mass is {SW}, expected {n * n}")
+    require(
+        SR == comb(n, r) * comb(n, r - 1),
+        f"p={p}: R mass is {SR}, expected {comb(n, r) * comb(n, r - 1)}",
+    )
     Wc = [p * W[x] - SW for x in range(p)]
     Rc = [p * R[x] - SR for x in range(p)]
     T = sum(Wc[x] * Rc[x] for x in range(p))       # = p * A_r
-    assert T % p == 0, (p, "T%p")
+    require(T % p == 0, f"p={p}: covariance numerator {T} is not divisible by p")
     A = T // p
     P0 = Wc[0] * Rc[0]
     m, dlog, classmembers = orbit_data(G, p, n, root)
@@ -189,13 +198,17 @@ def cell(n, p, r):
         # W, R are themselves G-invariant, so constant on each class
         wvals = set(Wc[x] for x in members)
         rvals = set(Rc[x] for x in members)
-        assert len(wvals) == 1 and len(rvals) == 1, (p, "W/R not G-invariant on class", j)
+        require(
+            len(wvals) == 1 and len(rvals) == 1,
+            f"p={p}: W/R are not G-invariant on quotient class {j}",
+        )
         wq[j] = wvals.pop()
         rq[j] = rvals.pop()
     # exact orbit reconstruction: p*A = P0 + n*sum Porbit = P0 + n*sum_j wq[j]*rq[j]
     recon = P0 + n * sum(Porbit)
-    assert recon == T, (p, "orbit reconstruction != p*A", recon, T)
-    assert n * sum(wq[j] * rq[j] for j in range(m)) == T - P0, (p, "WR product decomp")
+    require(recon == T, f"p={p}: orbit reconstruction {recon} != covariance numerator {T}")
+    wr_mass = n * sum(wq[j] * rq[j] for j in range(m))
+    require(wr_mass == T - P0, f"p={p}: W/R product mass {wr_mass} != {T - P0}")
     S = T - P0                                     # = p*A - P0
     # CORRECT single order-2 Plancherel term (exact integers; sign = sign of true term):
     wchi2 = sum(wq[j] * (1 if j % 2 == 0 else -1) for j in range(m))
@@ -249,7 +262,7 @@ def main():
     for e in mismatch:
         print("  ", e)
 
-    # ---- pick + hard-assert the exact witnesses backing the Lean theorem ----
+    # ---- pin the exact witnesses backing the Lean theorem ----
     # The single order-2 Plancherel term is What(chi2)*Rhat(chi2); we record the exact integers
     # wchi2=What(chi2), rchi2=Rhat(chi2), term=wchi2*rchi2. Need all four sign combinations:
     # decoupling (A>0/term<0 and A<0/term>0) refutes same-polarity; agreeing (both<0 and both>0)
@@ -267,22 +280,37 @@ def main():
     print("  same-sign(neg):", [show(c) for c in same_neg[:3]])
     print("  same-sign(pos):", [show(c) for c in same_pos[:3]])
 
-    assert pos_neg and neg_pos and same_neg and same_pos, "missing a sign combination"
+    require(
+        bool(pos_neg and neg_pos and same_neg and same_pos),
+        "missing one of the four required sign combinations",
+    )
     print()
-    print("asserting exact Lean witnesses (canonical model, correct Plancherel term):")
+    print("checking exact Lean witnesses (canonical model, correct Plancherel term):")
     c929 = recorded[929]
-    assert (c929["A"], c929["wchi2"], c929["rchi2"]) == (136655344, 3716, -7746931), ("p=929", c929)
+    require(
+        (c929["A"], c929["wchi2"], c929["rchi2"]) == (136655344, 3716, -7746931),
+        f"G272 exact witness pin failed for p=929: {c929}",
+    )
     c97 = recorded[97]
-    assert (c97["A"], c97["wchi2"], c97["rchi2"]) == (-6285008, 194, 244828), ("p=97", c97)
+    require(
+        (c97["A"], c97["wchi2"], c97["rchi2"]) == (-6285008, 194, 244828),
+        f"G272 exact witness pin failed for p=97: {c97}",
+    )
     c257 = recorded[257]
-    assert (c257["A"], c257["wchi2"], c257["rchi2"]) == (-1051408, -257, 650210), ("p=257", c257)
+    require(
+        (c257["A"], c257["wchi2"], c257["rchi2"]) == (-1051408, -257, 650210),
+        f"G272 exact witness pin failed for p=257: {c257}",
+    )
     c641 = recorded[641]
-    assert (c641["A"], c641["wchi2"], c641["rchi2"]) == (28460944, 1282, 2709507), ("p=641", c641)
+    require(
+        (c641["A"], c641["wchi2"], c641["rchi2"]) == (28460944, 1282, 2709507),
+        f"G272 exact witness pin failed for p=641: {c641}",
+    )
     # term signs
-    assert c929["A"] > 0 and c929["term"] < 0, "p=929 not (A>0,term<0)"
-    assert c97["A"] < 0 and c97["term"] > 0, "p=97 not (A<0,term>0)"
-    assert c257["A"] < 0 and c257["term"] < 0, "p=257 not same-sign(neg)"
-    assert c641["A"] > 0 and c641["term"] > 0, "p=641 not same-sign(pos)"
+    require(c929["A"] > 0 and c929["term"] < 0, "p=929 not (A>0,term<0)")
+    require(c97["A"] < 0 and c97["term"] > 0, "p=97 not (A<0,term>0)")
+    require(c257["A"] < 0 and c257["term"] < 0, "p=257 not same-sign(neg)")
+    require(c641["A"] > 0 and c641["term"] > 0, "p=641 not same-sign(pos)")
     print("  all Lean witnesses match exactly (p=929 A+/t-, p=97 A-/t+, p=257 both-, p=641 both+).")
 
     frac = single_char_matches / cells if cells else 0
