@@ -20,6 +20,12 @@ EXPECTED = {
 }
 
 
+def require(condition: bool, message: str) -> None:
+    """Keep the exact G206 certificate checks active under Python optimization."""
+    if not condition:
+        raise AssertionError(message)
+
+
 def quotient_labels(n: int, p: int) -> list[int]:
     return [pow((2 - u) % p, n, p) if (2 - u) % p else 0
             for u in late.subgroup(p, n)]
@@ -28,12 +34,21 @@ def quotient_labels(n: int, p: int) -> list[int]:
 def main() -> None:
     for n, p in CELLS:
         labels = quotient_labels(n, p)
-        assert len(labels) == n
-        assert len(set(labels)) == n
+        require(len(labels) == n, f"G206 quotient label count changed at n={n}, p={p}")
+        require(
+            len(set(labels)) == n,
+            f"G206 quotient map is not injective at n={n}, p={p}",
+        )
         rows = [late.row(n, p, r) for r in (5, 6)]
         actual = (rows[0]["A"], rows[1]["A"])
-        assert actual == EXPECTED[(n, p)]
-        assert all(row["maxW"] == 1 for row in rows)
+        require(
+            actual == EXPECTED[(n, p)],
+            f"G206 exact A5/A6 witness pin failed at n={n}, p={p}: {actual}",
+        )
+        require(
+            all(row["maxW"] == 1 for row in rows),
+            f"G206 weighted-kernel multiplicity exceeded one at n={n}, p={p}",
+        )
         print(f"n={n} p={p} labels={labels}")
         print(f"  collision_free=True maxW=1 A5={actual[0]} A6={actual[1]}")
 
