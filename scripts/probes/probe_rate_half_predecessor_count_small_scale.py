@@ -348,7 +348,11 @@ def run():
                 if verdict == "REFUTED-AT-ANALOGUE":
                     u0, u1, bad = wit
                     rec = cell.recount(u0, u1)
-                    assert set(rec) == set(bad), "recount mismatch!"
+                    if set(rec) != set(bad):
+                        raise RuntimeError(
+                            f"independent recount mismatch: {len(rec)} != {len(bad)} "
+                            f"(n={n}, p={p}, t={t}, {label})"
+                        )
                     print(f"!! REFUTATION n={n} p={p} t={t} ({label}) "
                           f"stack={sname} count={cnt} > budget={budget}")
                     print(f"   independent recount confirms: {len(rec)} bad gammas")
