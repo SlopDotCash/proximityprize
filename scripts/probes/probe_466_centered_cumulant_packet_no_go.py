@@ -10,6 +10,12 @@ from fractions import Fraction
 from math import comb
 
 
+def require(condition: bool, message: object = "G466 centered-cumulant check failed") -> None:
+    """Keep exact certificate checks active when Python optimization is enabled."""
+    if not condition:
+        raise AssertionError(message)
+
+
 def factor(n: int) -> list[int]:
     out: list[int] = []
     d = 2
@@ -80,10 +86,10 @@ def main() -> None:
         Fraction(4104, 41),
     ]
     expected_k4 = Fraction(-87878392, 2825761)
-    assert raw == expected_raw, raw
-    assert centered == expected_centered, centered
-    assert K[4] == expected_k4, K[4]
-    assert K[4] < 0
+    require(raw == expected_raw, raw)
+    require(centered == expected_centered, centered)
+    require(K[4] == expected_k4, K[4])
+    require(K[4] < 0)
     print("# centered partition-cumulant packet no-go")
     print(f"H=mu_{n} in F_{p}: {H}")
     print(f"raw zero-sum counts M_0..M_4: {raw}")
