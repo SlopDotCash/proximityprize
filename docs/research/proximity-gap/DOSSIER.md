@@ -1072,6 +1072,17 @@ Paley/BGK line of §6/§42. It supersedes no earlier result; it packages them.
   small-field over-budget count is a saturation-regime analogue artifact, and a small-field
   "in-budget" verdict is equally untrustworthy.
 
+  **Exact finite-instance addendum (SYZ52 F17, 2026-11-16).** The new
+  `_SYZ52F17ExplicitOverbudget.lean` certificate turns one `F₁₇`, `n=16`, `k=8` sampled stack
+  into a kernel-checked instance: at radius `5/16` (agreement threshold `11`), every one of the
+  17 field scalars has a folded degree-`<8` word and a support that cannot be jointly explained by
+  two RS codewords. Thus this stack has exactly 17 MCA-bad scalars, exceeding both `n=16` and the
+  stricter `n−1=15` comparison budget. It lies outside the unique-decoding window of
+  `Hab25WindowCount.badScalars_card_le_of_window`: here `2n+k=40`, while
+  `3⌈(1−δ)n⌉=33`, so the theorem's hypothesis fails. This pins down why that cap cannot simply be
+  extended past its stated window. It is not an exhaustive maximum over stacks or a production-
+  field result, and does not alter the SYZ53 prime-scaling conclusion or close production δ*.
+
 - **The imbalance ladder is fully calibrated (SYZ44 + swarm SYZ53 half-gap).** SYZ44
   (`_SYZ44MuBasisDegreeSum.lean`) removes the μ-basis **degree-sum law** `δ₁+δ₂ = a+b+c` from the
   empirical column: it is a one-line Hilbert-function corollary of two standard graded-commutative-
