@@ -30,6 +30,13 @@ Cross-validation and a random-pencil control anchor the numbers.
 
 ## Decisive verdicts
 
+**Post-audit status (2026-11-15):** The numerical results below in the original cross-validation,
+sections A/B, and section E are historical output from the pre-audit classifier. Commit
+`39c07bdd7` changed the probe to classify each finite scalar against both `mcaEvent` clauses and
+to report the point at infinity separately. Do not read the old sampled distribution or its
+`n=16` value as current exact-MCA evidence. The post-audit replay below records what the current
+classifier reproduces; it does not exhaust the stack space or all witnesses.
+
 **Cross-validation (machinery is sound).** The same code reproduces the SYZ32 crack **exactly**:
 SYZ31 near-duplicate cluster (`n=16,k=8,s=11,p=17`) → merge holds `1000/1000`, every stack
 `mca`-correlated, max `mca`-bad `= 0`, raw pool `= 18`. Verbatim SYZ32 stack-vacuous verdict.
@@ -67,7 +74,7 @@ stacks are non-correlated with bad-counts far above the SYZ22 budget and the ran
 shield must invoke the genuine near-Johnson proximity-gap list bound, not the pencil-yield/merge
 combinatorics.
 
-**E. Scale check (n=16, μ₁₆ ⊂ 𝔽₁₇).** Next realizable balanced config `(4,4,4)`, `t=3`, `s=11`:
+**E. Historical scale check (n=16, μ₁₆ ⊂ 𝔽₁₇; superseded below).** Next realizable balanced config `(4,4,4)`, `t=3`, `s=11`:
 overlap `a+t = 7 < 8 = k` (no merge, `8/8`), matroid deficiency `d=0` here, and max `mca`-bad
 `= 18 > 16 = n > 15 = budget`. The anomaly **persists** at the next size — and note `d=0`, so the
 over-budget lift is driven by the general-position no-merge geometry, **not** by matroid
@@ -90,15 +97,13 @@ facts (`mu14_overlap_lt_k`, `syz32_crack_merges`) depend on **no axioms**. No `s
 
 ## Honest status
 
-The band-realizable `ι=2` interior witnesses are **NOT stack-harmless via the SYZ22/SYZ32
-accounting**: the merge shield is provably unavailable (`overlap = d+t < k`), and the lift blows
-past the pencil budget/ceiling and `n` (max `mca`-bad `= 19`, `329/357` over budget, vs a random
-baseline of `6`). This is the **first empirical trace of the `ι=2` structure mattering at stack
-level** — the general-position (non-merging) geometry defeats the merge/yield route, independent of
-matroid deficiency (`d=1` at `n=14`, `d=0` at `n=16`, same anomaly). It is **not** claimed as a
-strip falsification (Johnson-edge radius). The residual is now sharp: the shield must come from the
-genuine near-Johnson proximity-gap list bound, not pencil-yield/merge combinatorics. CORE remains
-OPEN / ON-BGK.
+The band-realizable `ι=2` interior witnesses are **not merge-protected**: the pure-`ℕ` theorem
+`overlap_lt_k_of_realizable` still proves the SYZ32 merge shield unavailable (`overlap = d+t < k`).
+The quoted sampled magnitudes in the July snapshot are pre-audit results; see the 2026-11-15
+replay below for current-classifier output. One current-classifier `n=14` sample still finds a
+finite stack with 15 bad scalars against budget 13, but neither that sample nor the older global
+summary is a strip falsification (the radius is below Johnson). The genuine near-Johnson
+proximity-gap list bound remains the relevant shield. CORE remains OPEN / ON-BGK.
 
 ## Reuse hooks
 
@@ -108,3 +113,20 @@ OPEN / ON-BGK.
 - `probe_syz52_witness_lift.py` `lift_test` — SYZ32-style exact `mca`-bad lift over an **arbitrary**
   domain `alpha` (numpy-vectorized `_agr_masks`); reuse for any on-domain witness lift, and the
   random-pencil control for the strip baseline at a given `(n,k,s)`.
+
+## Post-audit replay (2026-11-15)
+
+The current classifier was replayed on the documented `n=16`, `μ₁₆ ⊂ 𝔽₁₇` case: the existing
+probe selected 8 of its capped 30 support witnesses and sampled 600 stacks per witness. It reports
+`d=[1]` and a maximum exact finite MCA-bad count of **17**, not 18; 17 is also the entire finite
+scalar field, so the previous count of 18 cannot describe finite scalars. The sampled result still
+exceeds the budget `n−1=15`; it is not the global maximum over stacks or witnesses. The previous
+`d=0` statement is likewise not reproduced by that current sample.
+
+The new `probe_syz72_middle_slot_stack_lift.py` joins the certified `F_41` and `F_181` region
+witnesses to this stack-lift classifier. With 1,500 sampled stacks at each field, it reports
+`F_41`: `d=1`, maximum finite MCA-bad count `7` (budget `19`), 17 sampled stacks with `u₁` close;
+and `F_181`: `d=1`, maximum `4` (budget `19`), no sampled `u₁`-close stack. Neither run found an
+over-budget stack. Each scalar classification for a sampled stack is exact; the stack search is
+random, so this does not prove that the region witness cannot lift. See the matching dated entry in
+`docs/research/proximity-gap/DISPROOF_LOG.md` for source revision and exact commands.

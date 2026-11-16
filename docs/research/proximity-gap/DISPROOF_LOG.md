@@ -49035,3 +49035,44 @@ Stickelberger bound, and does not close `δ*` or issue #164.
 ./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_TwoPowerCyclotomicTrace.lean
 ./scripts/lake-locked.sh build ArkLib.Research.ProximityGap.Frontier._TwoPowerCyclotomicTrace
 ```
+
+### [SYZ72-middle-slot-stack-lift-audit] Current-classifier replay of the on-domain candidates
+
+Date: 2026-11-15. Target: the SYZ42/SYZ28 genuine-stack lift gate for the SYZ72
+`(6,6,6)` middle-slot region witnesses. Source snapshot: `a15abf509f39bf87781119462b81d9c5e08a6848`.
+
+The current `probe_syz52_witness_lift.py` classifier (introduced by audit commit
+`39c07bdd7`) checks the MCA-bad predicate separately for each finite scalar and reports the
+point at infinity separately. This replay adds `scripts/probes/probe_syz72_middle_slot_stack_lift.py`
+to feed the already certified F41 and F181 middle-slot witnesses into that classifier, using
+1,500 random all-three-core-degenerate RS stacks per field. Each sampled stack's finite-scalar
+classification is exact; the stack search is not exhaustive.
+
+Observed results:
+
+- F41, `μ20 ⊂ F41`, `(n,k,s)=(20,10,14)`: deficiency `d=1`, maximum exact finite MCA-bad count
+  `7` of budget `19`; 17 of 1,500 sampled stacks have `u1` close. No sampled stack exceeds the
+  budget.
+- F181, `μ20 ⊂ F181`, same profile: `d=1`, maximum `4` of budget `19`; no sampled stack has `u1`
+  close. No sampled stack exceeds the budget.
+- The existing F17 scale probe, `(n,k,s)=(16,8,11)`, selects 8 of 30 capped support witnesses
+  and samples 600 stacks for each. The current classifier reports `d=[1]`, maximum finite
+  MCA-bad count `17` (budget `15`), and maximum finite close count `17`. This is an over-budget
+  sample, not a global maximum. The old snapshot's count `18` cannot be a finite-scalar count in
+  F17; the old `d=0` report is not reproduced by this sample.
+- With `SYZ52_SAMPLE=1`, the current F29 `(14,7,10)` replay finds one sampled witness and 1,500
+  stacks; its maximum exact finite MCA-bad count is `15` (budget `13`). This preserves an
+  over-budget sample at this below-Johnson finite profile but does not reproduce the old global
+  distribution or maximum `19` across all 357 witnesses.
+
+Commands (using the pinned `scripts/requirements-validation.txt`):
+
+```
+uv run --with-requirements scripts/requirements-validation.txt python scripts/probes/probe_syz72_middle_slot_stack_lift.py --trials 1500
+SYZ52_SAMPLE=1 uv run --with-requirements scripts/requirements-validation.txt python scripts/probes/probe_syz52_witness_lift.py
+```
+
+The earlier July n14 distribution/control and the n16 `18`, `d=0` figures came from the
+pre-audit classifier and are historical, not current exact-MCA results. This replay does not
+prove absence of an over-budget lift for any field or support witness and does not establish the
+production near-balance/δ* claim.
