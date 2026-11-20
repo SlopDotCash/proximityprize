@@ -48,7 +48,7 @@ and d1(x) != 0 breaks the u1 side).  So EACH degenerate subset donates up to
 n - t bad scalars, at a rank cost of only 2m rows.
 
 Stacking D degenerate subsets costs 2mD rank out of 2(n-k); as long as
-2mD < 2(n-k) (D <= (n-k)/m - 1 generically) a non-codeword-pair stack exists,
+2mD < 2(n-k) (D <= floor((n-k-1)/m)) a non-codeword-pair stack exists,
 predicting up to
 
     D_max * (n - t)  =  7 * 14  =  98   bad scalars at n = 32  (budget 32!)
@@ -83,6 +83,35 @@ import random
 import sys
 
 MASTER_SEED = 466_88
+
+
+def largest_strict_count(budget: int, cost: int) -> int:
+    """Largest nonnegative integer q with ``q * cost < budget``.
+
+    ``floor(budget / cost) - 1`` equals this only when ``cost`` divides
+    ``budget``. A positive remainder still leaves room for one more block
+    before the product meets the budget.
+    """
+    if cost <= 0:
+        raise ValueError("cost must be positive")
+    if budget <= 0:
+        return 0
+    return (budget - 1) // cost
+
+
+def degenerate_subset_cap(n: int, k: int, m: int) -> int:
+    """Largest D with ``m * D < n - k``.
+
+    One degenerate subset spends ``2m`` rows of the ``2(n-k)``-dimensional
+    syndrome space. Filling that space leaves only the codeword pair.
+    """
+    return largest_strict_count(n - k, m)
+
+
+def generic_planting_cap(n: int, k: int, m: int) -> int:
+    """Largest r with ``m * r < 2(n - k)``."""
+    return largest_strict_count(2 * (n - k), m)
+
 
 # ------------------------------------------------------------------ primality
 
@@ -404,8 +433,8 @@ def run_cell(n, k, t, p, tag, results):
     dom = Domain(n, k, t, p)
     rng = random.Random(f"{MASTER_SEED}-{n}-{p}-{tag}")
     budget, m = n, t - k
-    cap = 2 * (n - k) // m - 1
-    dmax = (n - k) // m - 1          # generic max degenerate subsets
+    cap = generic_planting_cap(n, k, m)
+    dmax = degenerate_subset_cap(n, k, m)
     print(f"\n== CELL n={n} k={k} t={t} p={p} (~2^{math.log2(p):.2f}, {tag})"
           f"  m={m} dim=2(n-k)={2*(n-k)} cap={cap} budget={budget} Dmax={dmax}")
     rows_out = []
@@ -518,7 +547,7 @@ def run_cell(n, k, t, p, tag, results):
 
 def run():
     print("G88 syzygy-configuration hunt (large-field regime)")
-    print("cap = 2(n-k)/(t-k) - 1 (generic planting law, G85);"
+    print("cap = floor((2(n-k)-1)/(t-k)) (strict generic planting law);"
           " budget = n (wall analogue)")
     results = []
     # n=32: p_count = C(32,18)/32 ~ 2^23.8; probe at 2^30 and 2^40 (both >>)
@@ -548,9 +577,9 @@ def run():
     npd, kpd = 1 << 30, 1 << 29
     m = (1 << 24) + 1
     tpd = kpd + m
-    Dmax = (npd - kpd) // m - 1
+    Dmax = degenerate_subset_cap(npd, kpd, m)
     print("\nPRODUCTION EXTRAPOLATION (n=2^30, k=2^29, t-k=2^24+1):")
-    print(f"  D_max = (n-k)/(t-k) - 1 = {Dmax}")
+    print(f"  D_max = floor((n-k-1)/(t-k)) = {Dmax}")
     print(f"  syzygy-channel bad-scalar yield ~ D_max*(n-t) = "
           f"{Dmax * (npd - tpd)} (~2^{math.log2(max(1, Dmax*(npd-tpd))):.2f})"
           f" vs budget n = {npd} (~2^30)")
