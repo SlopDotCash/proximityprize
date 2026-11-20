@@ -9,21 +9,28 @@ For each target modulus n:
   * pick a Lucas witness g (try g=3 first; require g^(p-1)=1, g^((p-1)/2)!=1,
     g^((p-1)/c)!=1 mod p) and only keep primes where g=3 works, for a uniform cert.
 
-Primality is exact: deterministic Miller-Rabin with the witness set
-[2,3,5,7,11,13,17,19,23,29,31,37], which is proven correct for all n < 3.3e24;
-our candidates are < 2^44 ~ 1.8e13, comfortably inside that bound.
+Primality is exact: deterministic Miller-Rabin with the first twelve prime
+bases 2..37, proven for every n < 318665857834031151167461 (Sorenson-Webster
+2015, Thm 1.1). The larger 3.317e24 bound needs the thirteenth base 41.
+`is_prime` refuses inputs at or above the twelve-base bound. The default
+windows are below 2^44, inside the proven range.
 
 Output is paste-ready Lean certificate lines for
   ArkLib/Research/ProximityGap/Frontier/_ZTZBetaThreeHighLadderExtension.lean
 """
 
-# Deterministic Miller-Rabin witnesses (exact below 3.3e24).
+# Twelve-base Miller-Rabin is exact only below _MR12_DET_LIMIT, not below 3.3e24.
 _MR_WITNESSES = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37)
+_MR12_DET_LIMIT = 318665857834031151167461
 
 
 def is_prime(n: int) -> bool:
     if n < 2:
         return False
+    if n >= _MR12_DET_LIMIT:
+        raise ValueError(
+            f"12-base Miller-Rabin is only proven exact below {_MR12_DET_LIMIT}"
+        )
     for p in _MR_WITNESSES:
         if n % p == 0:
             return n == p
