@@ -94,8 +94,8 @@ def min_triple_nonempty(cores):
 def band_sweep(n, trials=60000, seed=0):
     """k=n/2, band 2n/3 < s < 3n/4.  Random full covers, all D.  Tabulate d by (D, over?)."""
     random.seed(seed); k=n//2; alpha=list(range(n)); pts=list(range(n))
-    lo = (2*n)//3 + 1                 # s > 2n/3  (strictly interior)
-    hi = (3*n)//4 - 1                 # s < 3n/4  (strictly interior)
+    lo = (2*n)//3 + 1                 # least s with 3s > 2n
+    hi = (3*n - 1)//4                 # greatest s with 4s < 3n
     if hi < lo: return None
     # cell[(D, over)] -> [count, dpos_count, maxd]
     cell={}

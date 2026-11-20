@@ -94,7 +94,13 @@ def next_prime(x):
 PRIMES=(101,1009,65537,1000003,2147483647)  # incl huge 2^31-1
 
 def band_sizes(n):
-    lo=(2*n)//3+1; hi=(3*n)//4-1
+    """Integer core sizes s with 2n/3 < s < 3n/4, or [] if no such integer.
+
+    The top size is the greatest s with 4s < 3n, which is (3n-1)//4.
+    (3n)//4 - 1 equals that only when 4 divides n; otherwise it drops s
+    (and, for n such as 14 and 18, empties the band).
+    """
+    lo=(2*n)//3+1; hi=(3*n-1)//4
     return list(range(lo,hi+1)) if hi>=lo else []
 
 def enumerate_d3(n, trials=400000, seed=0, include_boundary=True):
