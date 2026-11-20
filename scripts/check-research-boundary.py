@@ -16,19 +16,55 @@ RESEARCH_MODULE = re.compile(
     r'(?:(?:ArkLib|«ArkLib»)\.)?(?:Research|«Research»)(?:\.|$)')
 
 
+# A continuation line that starts with one of these is the next command, not
+# another module name. `all` is handled separately: it is the optional keyword
+# in `import all`, not a module.
+_NEXT_COMMAND = re.compile(
+    r'(?:public|meta|import|open|namespace|end|section|theorem|lemma|def|axiom|'
+    r'opaque|abbrev|noncomputable|private|protected|instance|example|inductive|'
+    r'structure|class|mutual|variable|universe|prelude|module|set_option|#)\b')
+_IMPORT_LINE = re.compile(
+    r'[ \t]*(?:(?:public|meta)[ \t]+)*import(?:[ \t]+all(?=\s|$))?[ \t]*(.*)$')
+
+
 def research_imports(text: str) -> list[tuple[int, str]]:
     if "Research" not in text:
         return []
     # Code in at least one reading of the file's string literals (all of the
     # text if the lexer gives up, which can only add findings).
+    # Lean's import grammar is `public? meta? "import " all? ident`: the symbol
+    # consumes the newline, so the module name may sit on the following line.
+    # A same-line extra token is still reported; that is outside the grammar
+    # and must not hide a research module.
     live, _exhausted = lean_lexer.live_text(text)
+    lines = live.splitlines()
     found = []
-    for number, line in enumerate(live.splitlines(), 1):
-        match = re.match(r'\s*(?:(?:public|meta)\s+)*import\s+(?:all\s+)?(.+)', line)
-        if match:
-            found.extend((number, module) for module in match[1].split()
-                         if RESEARCH_MODULE.match(module))
+    for index, line in enumerate(lines):
+        match = _IMPORT_LINE.match(line)
+        if not match:
+            continue
+        tokens = [(index + 1, module) for module in match.group(1).split()]
+        if not tokens:
+            tokens.extend(_import_continuation(lines, index + 1))
+        found.extend((number, module) for number, module in tokens
+                     if RESEARCH_MODULE.match(module))
     return found
+
+
+def _import_continuation(lines: list[str], start: int) -> list[tuple[int, str]]:
+    """Module tokens of an `import` whose identifier was not on that line."""
+    cursor = start
+    if cursor < len(lines) and lines[cursor].strip() == 'all':
+        cursor += 1
+    if cursor >= len(lines):
+        return []
+    stripped = lines[cursor].strip()
+    if not stripped or _NEXT_COMMAND.match(stripped):
+        return []
+    tokens = stripped.split()
+    if tokens and tokens[0] == 'all':
+        tokens = tokens[1:]
+    return [(cursor + 1, module) for module in tokens]
 
 
 def production_sources(root: Path) -> list[Path]:
