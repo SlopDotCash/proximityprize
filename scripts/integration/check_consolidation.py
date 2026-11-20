@@ -39,6 +39,64 @@ def imports(text: str) -> list[str]:
     return [name for match in IMPORT.finditer(masked) for name in match[1].split()]
 
 
+def local_import_target(token: str) -> str | None:
+    """Dotted local module named by `token`, or None when the import is not local.
+
+    Lean treats a dot-free quoted component as that component's plain name, so
+    `«ArkLib».Foo` and `ArkLib.«Foo»` are both the module `ArkLib.Foo`. A quoted
+    component whose text contains a dot is one atomic name, not a path:
+    `«ArkLib.Foo».Bar` is not `ArkLib.Foo.Bar`. An ill-formed token whose first
+    component is still a local root is returned unchanged so the lookup fails
+    closed instead of treating it as an external dependency.
+    """
+    text = token.strip()
+    if not text:
+        return None
+    parts: list[str] = []
+    index = 0
+    size = len(text)
+    well_formed = True
+    while index < size and well_formed:
+        if text[index] == "«":
+            end = text.find("»", index + 1)
+            inner = "" if end < 0 else text[index + 1:end]
+            if end < 0 or not inner or "." in inner or any(ch.isspace() for ch in inner):
+                well_formed = False
+                break
+            parts.append(inner)
+            index = end + 1
+        else:
+            end = index
+            while end < size and text[end] != ".":
+                if text[end] in "«»":
+                    well_formed = False
+                    break
+                end += 1
+            if not well_formed or end == index:
+                well_formed = False
+                break
+            parts.append(text[index:end])
+            index = end
+        if index < size:
+            if text[index] != "." or index + 1 == size:
+                well_formed = False
+                break
+            index += 1
+    if text.startswith("«"):
+        end = text.find("»")
+        inner = text[1:end] if end > 1 else ""
+        root = inner if inner and "." not in inner else ""
+    else:
+        root = text.split(".", 1)[0]
+    if parts:
+        root = parts[0]
+    if root not in LOCAL_IMPORT_ROOTS:
+        return None
+    if not well_formed:
+        return text
+    return ".".join(parts)
+
+
 def pinned_blobs(revision: str) -> dict[str, str]:
     tree = subprocess.check_output(
         ["git", "ls-tree", "-rz", "--full-tree", revision, "ArkLib"], cwd=ROOT
@@ -99,7 +157,7 @@ def check(require_ancestor: bool = False) -> tuple[list[str], dict[str, int]]:
     canonical_modules = {module_name(p) for p in canonical} | {"ArkLib"}
     for name, relative in sorted(sources.items()):
         direct = imports((ROOT / relative).read_text())
-        local = [target for target in direct if target.split(".")[0] in LOCAL_IMPORT_ROOTS]
+        local = [target for token in direct if (target := local_import_target(token)) is not None]
         graph[name] = sorted(set(local))
         for target in local:
             if target not in sources:
@@ -107,7 +165,8 @@ def check(require_ancestor: bool = False) -> tuple[list[str], dict[str, int]]:
             if name in canonical_modules and target not in canonical_modules:
                 errors.append(f"Canonical module imports downstream/test source: {relative} -> {target}")
 
-    umbrella = imports((ROOT / "ArkLib.lean").read_text())
+    umbrella = [local_import_target(token) or token
+                for token in imports((ROOT / "ArkLib.lean").read_text())]
     counts = Counter(umbrella)
     if set(umbrella) != canonical_modules - {"ArkLib"} or any(n != 1 for n in counts.values()):
         errors.append("ArkLib.lean must re-export every canonical module exactly once")
