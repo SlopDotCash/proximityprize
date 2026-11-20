@@ -12,6 +12,8 @@ and exclude the three lawful Mann families from G136:
 The selected cells are the first primes p = 1 mod n at scale
 p ~= n^(158/30).  The target scale is found using exact integer nth-root
 arithmetic; floating point is used only to print the diagnostic log value.
+Primality is seven-base Miller-Rabin, which is a proof only for
+n < 341550071728321; larger inputs are refused.
 
 Honest scope: finite exact-arithmetic evidence only.  This is not a proof at
 n = 2^30 and not a prize closure.
@@ -81,9 +83,25 @@ def rounded_rational_power(n: int, num: int, den: int) -> int:
     return root
 
 
+# Jaeschke 1993: least odd composite that is a strong pseudoprime to every
+# base in {2, 3, 5, 7, 11, 13, 17}. Seven-base Miller-Rabin proves primality
+# only for n strictly below this integer.
+SEVEN_BASE_DET_LIMIT = 341_550_071_728_321
+SEVEN_BASES = (2, 3, 5, 7, 11, 13, 17)
+
+
 def is_prime(n: int) -> bool:
+    """Deterministic Miller-Rabin for n < SEVEN_BASE_DET_LIMIT.
+
+    Inputs at or above the seven-base pseudoprime are refused. The published
+    production-like cells are near n^(158/30) for n <= 256, all below 2^43.
+    """
     if n < 2:
         return False
+    if n >= SEVEN_BASE_DET_LIMIT:
+        raise ValueError(
+            f"7-base Miller-Rabin is only proven exact below {SEVEN_BASE_DET_LIMIT}"
+        )
     small = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37)
     for p in small:
         if n == p:
@@ -97,8 +115,7 @@ def is_prime(n: int) -> bool:
         s += 1
         d //= 2
 
-    # Deterministic for this run: all tested p are below 341,550,071,728,321.
-    for a in (2, 3, 5, 7, 11, 13, 17):
+    for a in SEVEN_BASES:
         if a >= n:
             continue
         x = pow(a, d, n)
