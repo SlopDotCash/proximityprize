@@ -116,6 +116,10 @@ def lexical_mask(text: str) -> tuple[str, list[tuple[int, int, str]]]:
         elif text.startswith("/-", i):
             start, depth = i, 1
             i += 2
+            # `/--` and `/-!` are tokens; the body starts after them, so `/--/`
+            # does not close the comment (Lean's `finishCommentBlock`).
+            if i < len(text) and text[i] in "-!":
+                i += 1
             while i < len(text) and depth:
                 if text.startswith("/-", i):
                     depth += 1
