@@ -46,6 +46,13 @@ $e=n-2-\lfloor\binom n2/(B+1)\rfloor$, ranging from $787{,}410{,}670$ at
 the smallest budget to $805{,}306{,}367$ at the largest. [Circuit incidence
 bound](../../../ArkLib/Research/ProximityGap/Frontier/CircuitDensity.lean)
 
+For a smooth extension-field example, take $q=912680550401^4$. The prime
+subfield supplies a root of order $2^{30}$. On the entire subgroup the
+budget is $2{,}039{,}086{,}914$. The first bad count is $679{,}695{,}638$
+at all $12{,}910{,}498$ dimensions from $54{,}198{,}367$ through $2^{26}$.
+At dimension one the same field and domain remain safe through
+$791{,}036{,}486$ errors. [Quartic extension and smooth domain](../../../ArkLib/Research/ProximityGap/Frontier/QuarticFieldProductionThreshold.lean)
+
 ## Reducing the upper count to a large cubic
 
 Prove the upper bound for all $5n/8\le e\le e_{\max}$ by selecting $3(e+1)+1$ alleged MCA-bad labels with one degree-at-most-$(k-1)$ witness each. They all have at least $n-e\ge t_0$ agreements. The first-order monomial support $0\le j\le4$, $0\le i\le34-j$, $0\le a<t_0-jd$ gives $165t_0-320d-35n=55(3t_0-n)+320\ge45$ more coefficients than received-line conditions. Thus a nonzero interpolant $Q$ of total $(Z,Y)$-degree at most 34 and value degree at most four contains every selected point $(z,q_z)$ over $\overline{\mathbb F}(X)$.

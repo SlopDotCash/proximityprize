@@ -606,6 +606,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetTwoThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarterPairTripleSignatures
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateApolarBracket
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateQuadraticSafety
+import ArkLib.Research.ProximityGap.Frontier.QuarticFieldProductionThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarticIntrinsicAuxiliary
 import ArkLib.Research.ProximityGap.Frontier.QuotientMaskSelections
 import ArkLib.Research.ProximityGap.Frontier.QuotientSignatureCensus
