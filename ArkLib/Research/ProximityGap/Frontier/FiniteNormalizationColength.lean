@@ -152,8 +152,8 @@ theorem finite_factor_rank_le {L : Type*} [AddCommGroup L] [Module K L] [Module.
 
 /-- One scalar realizes the minimum of the two partial orders on every
 branch, including branches on which one of the partials vanishes identically. -/
-theorem exists_generic_polar [Infinite K] (u v : ι → K⟦X⟧) (huv : ∀ i, u i ≠ 0 ∨ v i ≠ 0) :
-    ∃ c : K, ∀ i, let r := u i + c • v i
+theorem generic_polar_outside (u v : ι → K⟦X⟧) (huv : ∀ i, u i ≠ 0 ∨ v i ≠ 0) :
+    ∃ s : Finset K, ∀ c ∉ s, ∀ i, let r := u i + c • v i
       r ≠ 0 ∧ r.order = min (u i).order (v i).order := by
   classical
   let n (i : ι) := (min (u i).order (v i).order).toNat
@@ -168,8 +168,7 @@ theorem exists_generic_polar [Infinite K] (u v : ι → K⟦X⟧) (huv : ∀ i, 
     rcases le_total (u i).order (v i).order with h | h
     · exact Or.inl (PowerSeries.order_eq_nat.mp ((hn i).trans (min_eq_left h)).symm).1
     · exact Or.inr (PowerSeries.order_eq_nat.mp ((hn i).trans (min_eq_right h)).symm).1
-  obtain ⟨c,hc⟩ := Infinite.exists_notMem_finset (univ.image fun i => -(A i) / B i)
-  refine ⟨c, fun i => ?_⟩
+  refine ⟨univ.image (fun i => -(A i) / B i),fun c hc i => ?_⟩
   have hlead : A i + c * B i ≠ 0 := by
     intro h
     by_cases hzero : B i = 0
@@ -192,6 +191,26 @@ theorem exists_generic_polar [Infinite K] (u v : ι → K⟦X⟧) (huv : ∀ i, 
   intro h
   simp [h] at hord
 
+/-- The slope can be chosen from any specified infinite subfield. A second
+finite forbidden set allows avoidance of a previously fixed polar. -/
+theorem exists_generic_polar_in {k : Type*} [Field k] [Infinite k] (φ : k →+* K)
+    (u v : ι → K⟦X⟧) (huv : ∀ i, u i ≠ 0 ∨ v i ≠ 0) (except : Finset k) :
+    ∃ c ∉ except, ∀ i, let r := u i + φ c • v i
+      r ≠ 0 ∧ r.order = min (u i).order (v i).order := by
+  classical
+  obtain ⟨s,hs⟩ := generic_polar_outside u v huv
+  have hf : (φ ⁻¹' (s : Set K)).Finite := s.finite_toSet.preimage φ.injective.injOn
+  obtain ⟨c,hc⟩ := Infinite.exists_notMem_finset (except ∪ hf.toFinset)
+  refine ⟨c, fun h => hc (mem_union_left _ h), hs (φ c) (fun h => hc (mem_union_right _ ?_))⟩
+  exact hf.mem_toFinset.mpr h
+
+theorem exists_generic_polar [Infinite K] (u v : ι → K⟦X⟧) (huv : ∀ i, u i ≠ 0 ∨ v i ≠ 0) :
+    ∃ c : K, ∀ i, let r := u i + c • v i
+      r ≠ 0 ∧ r.order = min (u i).order (v i).order := by
+  obtain ⟨s,hs⟩ := generic_polar_outside u v huv
+  obtain ⟨c,hc⟩ := Infinite.exists_notMem_finset s
+  exact ⟨c,hs c hc⟩
+
 /-- A nonzero determinant for a branch evaluation matrix gives both
 injectivity and a finite normalization defect over the coefficient field. -/
 theorem finite_defect_of_matrix [DecidableEq ι] (M : Matrix ι ι K⟦X⟧) (hM : M.det ≠ 0) :
@@ -208,6 +227,7 @@ theorem finite_defect_of_matrix [DecidableEq ι] (M : Matrix ι ι K⟦X⟧) (hM
   simpa [r] using h
 
 #print axioms finite_defect_of_matrix
+#print axioms exists_generic_polar_in
 #print axioms exists_generic_polar
 #print axioms finite_factor_rank_le
 #print axioms length_eq_of_finite_defect
