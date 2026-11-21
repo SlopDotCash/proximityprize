@@ -27,6 +27,11 @@ from collections import defaultdict
 from itertools import product
 
 
+def require(condition: bool, detail: str) -> None:
+    if not condition:
+        raise AssertionError(detail)
+
+
 def factor_distinct(x: int):
     out = []
     d = 2
@@ -95,6 +100,14 @@ def analyze(p: int, n: int, r: int):
         corr[s] = total[s] - base[s]
 
     B, T, C = sum(base), sum(total), sum(corr)
+    require(T == B + C, f"support decomposition failed: T={T}, B={B}, C={C}")
+    if (n, p, r) == (16, 65537, 4):
+        expected = (-810016, -1370037600, -49285005504, -232164369024)
+        require(
+            tuple(corr[1:]) == expected,
+            f"SAC01 Lean certificate mismatch: expected {expected}, got {tuple(corr[1:])}",
+        )
+
     l1 = sum(abs(x) for x in corr)
     cancellation = abs(C) / l1 if l1 else 0.0
     print(f"CELL n={n} p={p} r={r} index={(p-1)//n} buckets={len(buckets)}")
