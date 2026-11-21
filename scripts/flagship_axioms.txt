@@ -4,6 +4,9 @@
 # All names verified against source namespaces — a rename or deletion here is a
 # hard CI failure, not a skip (update this list in the same PR as the rename).
 
+# The coordinate derivative resultant of a squarefree parameter polynomial survives
+ArkLib.Research.ProximityGap.Frontier.SquarefreeCoordinateResultant ProximityGap.SquarefreeCoordinateResultant.squarefree_resultant_ne_zero
+
 # Fixed-size supports and normalized scalar labels for the exact MCA test
 ArkLib.Research.ProximityGap.Frontier.ExactSizeMcaSupport ProximityGap.ExactSizeMcaSupport.anchored_failure_iff
 ArkLib.Research.ProximityGap.Frontier.ExactSizeMcaSupport ProximityGap.ExactSizeMcaSupport.error_one_eq_grid
