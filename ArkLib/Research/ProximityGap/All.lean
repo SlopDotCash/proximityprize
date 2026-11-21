@@ -670,6 +670,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterRateQuadraticSafety
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateRichSecants
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateSaturatedCores
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateSharedResultant
+import ArkLib.Research.ProximityGap.Frontier.QuarterRateToleranceCurve
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor
 import ArkLib.Research.ProximityGap.Frontier.QuarticFieldProductionThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarticIntrinsicAuxiliary
