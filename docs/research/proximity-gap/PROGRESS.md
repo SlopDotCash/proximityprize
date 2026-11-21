@@ -2718,3 +2718,6 @@ The hypothesis (2.1) is where characteristic zero enters (independence of the $1
 
 Both exclusions used by the [dyadic list-three note](dyadic-radius-successor-list-three.md) are now Lean theorems whose mathematical hypothesis is (2.1). Still written only: the classification of overlap patterns, the passage from four close codewords to (2.1) through vanisher ratios and cyclotomic units, and the class counts from the partition. The result remains a characteristic-zero one.
 
+### The 32-site affine stabilizer bound now holds directly at both named primes
+
+The GMP replay uses the sponsor generator at each prime and normalizes placements only by domain rotations, inversions, and vertex relabellings. All 29 faithful affine exponent cases have incidence rank at least 23. Each prime has 188 representative records in the 22 nonfaithful cases, and every one fails a face evaluation at zero or the required rank. Thus a saturated quarter-rate quartet on either named 32-site subgroup admits at most two affine exponent symmetries compatible with its four heads. An asymmetric quartet remains possible in those finite fields. [Direct proof and commands](quarter-sixteen-splines.md#direct-affine-stabilizer-bound-at-both-named-primes)
