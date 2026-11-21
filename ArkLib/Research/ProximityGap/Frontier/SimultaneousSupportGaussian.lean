@@ -10,8 +10,8 @@ import ArkLib.Research.ProximityGap.Frontier.ExactSizeMcaSupport
 
 Use an explicit ordering of the domain and an enumeration of the field labels.
 Each support is tested by Lagrange interpolation on its first available anchors.
-The matrix columns are the two received rows. Adding both separate-row equations
-for a selected label tests the dimension lost by imposing joint agreement.
+The matrix columns are the two received rows. Adding the second row at a selected label
+tests the dimension lost by imposing joint agreement. Anchor rows vanish identically.
 -/
 
 namespace ProximityGap.SimultaneousSupportGaussian
@@ -102,30 +102,37 @@ private theorem row_dot (E : Fin n ≃ I) (D : I ↪ F) (s T : Finset I) (i : s)
   simp only [dot, row, hcache, Fin.sum_univ_add, Fin.append_left,
     Fin.append_right, unpack, Equiv.coe_fn_mk, E.symm_apply_apply, Finset.mul_sum, mul_assoc]
 
-/-- All residual rows for one support and one direction. -/
+/-- Residual rows outside the interpolation anchors for one support and direction. -/
 def block (E : Fin n ≃ I) (D : I ↪ F) (s T : Finset I) (u v : F) : List (Fin (n + n) → F) :=
-  (selected (sites E) s).map fun i : s => row E D T i.val u v
+  (selected (sites E) (s \ T)).map fun i => row E D T i.val u v
 
 omit [DecidableEq F] in
 private theorem block_iff (E : Fin n ≃ I) (D : I ↪ F) (s T : Finset I)
     (u v : F) (x : Fin (n + n) → F) :
     (∀ r ∈ block E D s T u v, dot r x = 0) ↔
       ∀ i : s, u * parity D s T (unpack E x).1 i + v * parity D s T (unpack E x).2 i = 0 := by
+  have atAnchor (w : I → F) (i : s) (hi : i.val ∈ T) : parity D s T w i = 0 := by
+    change w i - (Lagrange.interpolate T D w).eval (D i) = 0
+    rw [Lagrange.eval_interpolate_at_node w D.injective.injOn hi, sub_self]
   constructor
   · intro h i
-    rw [← row_dot]
-    exact h _ (List.mem_map.mpr ⟨i, mem_selected _ (mem_sites E) _ i, rfl⟩)
+    by_cases hi : i.val ∈ T
+    · simp [atAnchor _ i hi]
+    · let j : ↥(s \ T) := ⟨i.val, mem_sdiff.mpr ⟨i.property, hi⟩⟩
+      exact (row_dot E D s T i u v x).symm.trans
+        (h _ (List.mem_map.mpr ⟨j, mem_selected _ (mem_sites E) _ j, rfl⟩))
   · intro h r hr
-    obtain ⟨i, _, rfl⟩ := List.mem_map.mp hr
+    obtain ⟨j, _, rfl⟩ := List.mem_map.mp hr
+    let i : s := ⟨j.val, (mem_sdiff.mp j.property).1⟩
     exact (row_dot E D s T i u v x).trans (h i)
 
-/-- Matrix for the selected folds; optionally append both ordinary row blocks at a label. -/
+/-- Matrix for the selected folds; optionally append the second ordinary row block at a label. -/
 def grid (E : Fin n ≃ I) (labels : List F) (D : I ↪ F) (G : Finset F) (S T : G → Finset I)
     (joint : Option G) : List (Fin (n + n) → F) :=
   (selected labels G).flatMap (fun g => block E D (S g) (T g) 1 g.val) ++
     match joint with
     | none => []
-    | some g => block E D (S g) (T g) 1 0 ++ block E D (S g) (T g) 0 1
+    | some g => block E D (S g) (T g) 0 1
 
 /-- Executable dimension of a folded system, with an optional joint support. -/
 def dimension (E : Fin n ≃ I) (labels : List F) (D : I ↪ F) (G : Finset F)
@@ -166,10 +173,21 @@ private theorem grid_iff (E : Fin n ≃ I) (labels : List F) (hl : ∀ g, g ∈ 
     simpa only [List.append_nil, target] using hfold
   | some g =>
     let P := parity D (S g) (T g)
-    change (∀ r ∈ A ++ (_ ++ _), dot r x = 0) ↔
+    change (∀ r ∈ A ++ block E D (S g) (T g) 0 1, dot r x = 0) ↔
       unpack E x ∈ (folded D G S T).ker ⊓ P.ker.prod P.ker
-    simp only [List.forall_mem_append, hfold, block_iff, one_mul, zero_mul, zero_add, add_zero,
-      Submodule.mem_inf, Submodule.mem_prod, LinearMap.mem_ker, funext_iff, Pi.zero_apply, P]
+    simp only [List.forall_mem_append, hfold, block_iff, zero_mul, one_mul, zero_add,
+      Submodule.mem_inf, Submodule.mem_prod, LinearMap.mem_ker, funext_iff, Pi.zero_apply]
+    constructor
+    · rintro ⟨folds, second⟩
+      refine ⟨folds, ?_, second⟩
+      intro i
+      have hs : P ((unpack E x).2) i = 0 := second i
+      have eqn := folds g i
+      change P ((unpack E x).1 + g.val • (unpack E x).2) i = 0 at eqn
+      simpa only [map_add, map_smul, Pi.add_apply, Pi.smul_apply, smul_eq_mul,
+        hs, mul_zero, add_zero] using eqn
+    · rintro ⟨folds, _, second⟩
+      exact ⟨folds, second⟩
 
 /-- Every reported dimension equals the independently defined folded or augmented nullity. -/
 theorem dimension_eq [Finite F] (E : Fin n ≃ I) (labels : List F)

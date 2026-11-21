@@ -14,62 +14,65 @@ namespace ProximityGap.TerminalLinearComponent
 
 variable {I J : Type*} [Fintype I]
 
-/-- On 185 rich sections of a value-linear component, 35 sections have enough mutual
-agreements in every triple to force all 35 onto one secant. -/
-theorem common_triples [DecidableEq I] (M : Finset J) (S : J → Finset I) (U : Finset I)
-    (hn : Fintype.card I = 1073741824) (hm : M.card = 185)
-    (ht : ∀ j ∈ M, 357913943 ≤ (S j).card)
-    (hoff : ∀ i ∉ U, (M.filter (fun j => i ∈ S j)).card ≤ 34)
-    (hon : ∀ i ∈ U, (M.filter (fun j => i ∉ S j)).card ≤ 33) :
-    ∃ W ⊆ M, 35 ≤ W.card ∧ ∀ a ∈ W, ∀ b ∈ W, ∀ c ∈ W,
-      67108863 < (S a ∩ S b ∩ S c).card := by
+/-- Count section/site incidences and select many labels with few misses on the
+identity sites. The second inequality bounds the loss in every selected triple. -/
+theorem triple_incidence_bounds [DecidableEq I] (M : Finset J) (S : J → Finset I) (U : Finset I)
+    (q m t : ℕ) (hq : 0 < q) (hm : M.card = q + m + 1)
+    (ht : ∀ j ∈ M, t ≤ (S j).card)
+    (hoff : ∀ i ∉ U, (M.filter (fun j => i ∈ S j)).card ≤ m + 1)
+    (hon : ∀ i ∈ U, (M.filter (fun j => i ∉ S j)).card ≤ m) :
+    (q + m + 1) * t ≤ q * U.card + (m + 1) * Fintype.card I ∧
+      ∃ W ⊆ M, m + 2 ≤ W.card ∧ ∀ a ∈ W, ∀ b ∈ W, ∀ c ∈ W,
+        q * U.card ≤ q * (S a ∩ S b ∩ S c).card + 3 * (m * U.card) := by
   classical
   let miss (j : J) := (U \ S j).card
-  have hm0 : 185 * 357913943 ≤ ∑ j ∈ M, (S j).card := by
+  have hm0 : (q + m + 1) * t ≤ ∑ j ∈ M, (S j).card := by
     simpa [hm] using (sum_le_sum ht)
   have hs : ∑ j ∈ M, (S j).card = ∑ i, (M.filter fun j => i ∈ S j).card := by
     have eq (j : J) : (S j).card = (univ.filter fun i => i ∈ S j).card := by simp
     simp_rw [eq, card_filter]
     rw [sum_comm]
-  have inc : ∑ i, (M.filter fun j => i ∈ S j).card ≤ U.card * 185 + Uᶜ.card * 34 := by
+  have inc : ∑ i, (M.filter fun j => i ∈ S j).card ≤ U.card * (q + m + 1) + Uᶜ.card * (m + 1) := by
     calc
       _ = ∑ i ∈ U, (M.filter fun j => i ∈ S j).card +
           ∑ i ∈ Uᶜ, (M.filter fun j => i ∈ S j).card :=
         (sum_add_sum_compl U _).symm
-      _ ≤ (∑ _i ∈ U, 185) + (∑ _i ∈ Uᶜ, 34) :=
+      _ ≤ (∑ _i ∈ U, (q + m + 1)) + (∑ _i ∈ Uᶜ, (m + 1)) :=
         Nat.add_le_add (sum_le_sum fun _ _ => (card_filter_le ..).trans_eq hm)
           (sum_le_sum fun i hi => hoff i (mem_compl.mp hi))
       _ = _ := by simp
-  have hcompl := card_add_card_compl U
-  have hU : 185 * 357913943 ≤ U.card * 151 + 34 * 1073741824 := by
+  have hU : (q + m + 1) * t ≤ q * U.card + (m + 1) * Fintype.card I := by
     rw [hs] at hm0
-    omega
-  have hmiss : ∑ j ∈ M, miss j ≤ U.card * 33 := by
+    apply (hm0.trans inc).trans_eq
+    rw [← card_add_card_compl U]
+    ring
+  have hmiss : ∑ j ∈ M, miss j ≤ U.card * m := by
     calc
       _ = ∑ i ∈ U, (M.filter fun j => i ∉ S j).card := by
         simp only [miss, sdiff_eq_filter, card_filter]
         rw [sum_comm]
-      _ ≤ ∑ _i ∈ U, 33 := sum_le_sum hon
+      _ ≤ ∑ _i ∈ U, m := sum_le_sum hon
       _ = _ := by simp
-  let W := M.filter fun j => 151 * miss j ≤ 33 * U.card
-  have hW : 35 ≤ W.card := by
+  let W := M.filter fun j => q * miss j ≤ m * U.card
+  have hW : m + 2 ≤ W.card := by
     by_contra! bad
     have hc := card_sdiff_of_subset (show W ⊆ M from filter_subset ..)
-    have hmany : 151 ≤ (M \ W).card := by omega
-    have hlow : ∑ j ∈ M \ W, (33 * U.card + 1) ≤ ∑ j ∈ M \ W, 151 * miss j := by
+    have hmany : q ≤ (M \ W).card := by omega
+    have hlow : ∑ j ∈ M \ W, (m * U.card + 1) ≤ ∑ j ∈ M \ W, q * miss j := by
       apply sum_le_sum
       intro j hj
       have hnot := (mem_sdiff.mp hj).2
       simp only [W, mem_filter, (mem_sdiff.mp hj).1, true_and, not_le] at hnot
       omega
     have hsum := sum_le_sum_of_subset_of_nonneg (s := M \ W) (t := M)
-      (sdiff_subset ..) (fun j _ _ => Nat.zero_le (151 * miss j))
+      (sdiff_subset ..) (fun j _ _ => Nat.zero_le (q * miss j))
     rw [sum_const, smul_eq_mul] at hlow
     simp only [← mul_sum] at hsum hlow
-    have last := (Nat.mul_le_mul_right (33 * U.card + 1) hmany).trans
-      (hlow.trans (hsum.trans (Nat.mul_le_mul_left 151 hmiss)))
-    omega
-  refine ⟨W, filter_subset .., hW, ?_⟩
+    have last := (Nat.mul_le_mul_right (m * U.card + 1) hmany).trans
+      (hlow.trans (hsum.trans (Nat.mul_le_mul_left q hmiss)))
+    rw [Nat.mul_comm U.card m] at last
+    exact (Nat.mul_lt_mul_of_pos_left (Nat.lt_succ_self _) hq).not_ge last
+  refine ⟨hU, W, filter_subset .., hW, ?_⟩
   intro a ha b hb c hc
   have hA := (mem_filter.mp ha).2
   have hB := (mem_filter.mp hb).2
@@ -79,7 +82,25 @@ theorem common_triples [DecidableEq I] (M : Finset J) (S : J → Finset I) (U : 
   have hcost : U.card ≤ V.card + (miss a + miss b + miss c) :=
     (card_le_card hsub).trans ((card_union_le ..).trans (Nat.add_le_add_left
       ((card_union_le ..).trans (Nat.add_le_add_right (card_union_le ..) _)) _))
-  change 67108863 < V.card
+  have hbnd := Nat.mul_le_mul_left q hcost
+  have habc := Nat.add_le_add (Nat.add_le_add hA hB) hC
+  change q * U.card ≤ q * V.card + 3 * (m * U.card)
+  nlinarith only [hbnd, habc]
+
+/-- On 185 rich sections of a value-linear component, 35 sections have enough mutual
+agreements in every triple to force all 35 onto one secant. -/
+theorem common_triples [DecidableEq I] (M : Finset J) (S : J → Finset I) (U : Finset I)
+    (hn : Fintype.card I = 1073741824) (hm : M.card = 185)
+    (ht : ∀ j ∈ M, 357913943 ≤ (S j).card)
+    (hoff : ∀ i ∉ U, (M.filter (fun j => i ∈ S j)).card ≤ 34)
+    (hon : ∀ i ∈ U, (M.filter (fun j => i ∉ S j)).card ≤ 33) :
+    ∃ W ⊆ M, 35 ≤ W.card ∧ ∀ a ∈ W, ∀ b ∈ W, ∀ c ∈ W,
+      67108863 < (S a ∩ S b ∩ S c).card := by
+  obtain ⟨hU, W, hWM, hW, htr⟩ := triple_incidence_bounds M S U 151 33 357913943
+    (by decide) hm ht hoff hon
+  refine ⟨W, hWM, hW, ?_⟩
+  intro a ha b hb c hc
+  have h := htr a ha b hb c hc
   omega
 
 section PolynomialBounds
@@ -202,10 +223,10 @@ private theorem site_scalar (p : Polynomial K[X]) (x t : K) :
   simpa only [coe_evalRingHom, eval_C] using
     (eval_map_apply (p := p) (evalRingHom x) (C t))
 
-private theorem secant_of_triples (fam : BadScalarRichPointFamily dom 67108864 δ u)
-    (W : Finset F) (hW : 35 ≤ W.card) (hG : W ⊆ fam.G)
+private theorem secant_of_triples {d : ℕ} (fam : BadScalarRichPointFamily dom (d+1) δ u)
+    (W : Finset F) (hW : 1 < W.card) (hG : W ⊆ fam.G)
     (htr : ∀ a ∈ W, ∀ b ∈ W, ∀ c ∈ W,
-      67108863 < (fullAgreement dom (u 0) (u 1) a (fam.q a) ∩
+      d < (fullAgreement dom (u 0) (u 1) a (fam.q a) ∩
         fullAgreement dom (u 0) (u 1) b (fam.q b) ∩
         fullAgreement dom (u 0) (u 1) c (fam.q c)).card) :
     ∃ l ∈ lineParameters fam, W ⊆ pointsOn fam l := by
@@ -220,30 +241,27 @@ private theorem secant_of_triples (fam : BadScalarRichPointFamily dom 67108864 �
   refine ⟨hG hc, third_point_on_secant_line_of_slope_eq hac ?_⟩
   by_contra hne
   have hcap := triple_fullAgreement_card_le_pred_of_slope_ne dom (u 0) (u 1)
-    (by decide : 1 ≤ 67108864) hab hac (fam.degree_lt a (hG ha)) (fam.degree_lt b (hG hb))
+    (by omega : 1 ≤ d+1) hab hac (fam.degree_lt a (hG ha)) (fam.degree_lt b (hG hb))
     (fam.degree_lt c (hG hc)) (Ne.symm hne)
-  exact (htr a ha b hb c hc).not_ge hcap
+  exact (htr a ha b hb c hc).not_ge (by simpa using hcap)
 
-/-- A value-linear irreducible factor covering 185 or more actual terminal witnesses
-is an affine line determined over the base field. Every selected section on that component
-lies on this single genuine secant. -/
-theorem actual_linear (φ : F →+* K) (fam : BadScalarRichPointFamily dom 67108864 δ u)
-    (hn : Fintype.card ι = 1073741824) (ht : 357913943 ≤ ⌈(1 - δ) * (Fintype.card ι : ℝ≥0)⌉₊)
-    (Q f : Polynomial (Polynomial K[X])) (hQ : Q ≠ 0) (hf : Irreducible f)
-    (hfQ : f ∣ Q) (hl : f.natDegree = 1)
-    (hsupp : ∀ j i a, ((Q.coeff j).coeff i).coeff a ≠ 0 →
-      j ≤ 4 ∧ i + j ≤ 34 ∧ a + j * 67108863 < 357913943)
-    (G : Finset F) (hG : G ⊆ fam.G) (hlarge : 185 ≤ G.card)
-    (hcarries : ∀ z ∈ G,
-      f.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ) = 0) :
+/-- A value-linear factor is one base-field secant when the selected witnesses
+contain sufficiently many sections with more than the message degree in common
+on every triple. The two site bounds are the scalar degrees of its coefficients. -/
+theorem secant_of_agreement_selection {d m N : ℕ} (φ : F →+* K)
+    (fam : BadScalarRichPointFamily dom (d+1) δ u)
+    (f : Polynomial (Polynomial K[X])) (hf : Irreducible f) (hl : f.natDegree = 1)
+    (hB : (f.coeff 0).natDegree ≤ m+1) (hA : (f.coeff 1).natDegree ≤ m)
+    (select : ∀ (M : Finset F) (S : F → Finset ι) (U : Finset ι), M.card = N →
+      (∀ z ∈ M, ⌈(1-δ)*(Fintype.card ι : ℝ≥0)⌉₊ ≤ (S z).card) →
+      (∀ i ∉ U, (M.filter (fun z => i ∈ S z)).card ≤ m+1) →
+      (∀ i ∈ U, (M.filter (fun z => i ∉ S z)).card ≤ m) →
+      ∃ W ⊆ M, m+2 ≤ W.card ∧ ∀ a ∈ W, ∀ b ∈ W, ∀ c ∈ W,
+        d < (S a ∩ S b ∩ S c).card)
+    (G : Finset F) (hG : G ⊆ fam.G) (hlarge : N ≤ G.card)
+    (hcarries : ∀ z ∈ G, f.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ) = 0) :
     ∃ l ∈ lineParameters fam, G ⊆ pointsOn fam l := by
   classical
-  have hweight (j : ℕ) (hj : Q.coeff j ≠ 0) : (Q.coeff j).natDegree + j ≤ 34 := by
-    let i := (Q.coeff j).natDegree
-    have hi : (Q.coeff j).coeff i ≠ 0 := by simpa [i] using leadingCoeff_ne_zero.mpr hj
-    exact (hsupp j i ((Q.coeff j).coeff i).natDegree
-      (by simpa using leadingCoeff_ne_zero.mpr hi)).2.1
-  obtain ⟨hB, hA⟩ := factor_degrees Q f hQ hfQ hl hweight
   let A := f.coeff 1
   let B := f.coeff 0
   have hform := f.eq_X_add_C_of_natDegree_le_one hl.le
@@ -263,12 +281,12 @@ theorem actual_linear (φ : F →+* K) (fam : BadScalarRichPointFamily dom 67108
       using congrArg (eval (φ (dom i))) he
   have hrow (i : ι) (z : F) : (row i).eval (φ z) = φ (u 0 i + z * u 1 i) := by
     simp only [row, eval_add, eval_mul, eval_X, eval_C, map_add, map_mul]
-  have hdeg (i : ι) : (R i).natDegree ≤ 34 := by
-    show (ax i * row i + bx i).natDegree ≤ 34
+  have hdeg (i : ι) : (R i).natDegree ≤ m+1 := by
+    show (ax i * row i + bx i).natDegree ≤ m+1
     apply (natDegree_add_le ..).trans
     exact max_le ((natDegree_mul_le ..).trans (Nat.add_le_add (natDegree_map_le.trans hA)
       (affine_degree (φ (u 0 i)) (φ (u 1 i))))) (natDegree_map_le.trans hB)
-  have off (i : ι) (hi : i ∉ U) : (M.filter fun z => i ∈ S z).card ≤ 34 := by
+  have off (i : ι) (hi : i ∉ U) : (M.filter fun z => i ∈ S z).card ≤ m+1 := by
     have hne : R i ≠ 0 := by simpa [U] using hi
     have sub : M.filter (fun z => i ∈ S z) ⊆ M.filter (fun z => (R i).eval (φ z) = 0) := by
       intro z hz
@@ -279,7 +297,7 @@ theorem actual_linear (φ : F →+* K) (fam : BadScalarRichPointFamily dom 67108
       exact hsec i z (hMG hzM)
     exact (card_le_card sub).trans
       ((root_count φ φ.injective _ _ hne (fun _ hz => (mem_filter.mp hz).2)).trans (hdeg i))
-  have onI (i : ι) (hi : i ∈ U) : (M.filter fun z => i ∉ S z).card ≤ 33 := by
+  have onI (i : ι) (hi : i ∈ U) : (M.filter fun z => i ∉ S z).card ≤ m := by
     have hzero : R i = 0 := (mem_filter.mp hi).2
     have hax : ax i ≠ 0 := by
       intro hbad
@@ -300,15 +318,15 @@ theorem actual_linear (φ : F →+* K) (fam : BadScalarRichPointFamily dom 67108
     exact (card_le_card sub).trans
       ((root_count φ φ.injective _ _ hax (fun _ hz => (mem_filter.mp hz).2)).trans
         (natDegree_map_le.trans hA))
-  obtain ⟨W, hWM, hW, htr⟩ := common_triples M S U hn hM
-    (fun z hz => ht.trans (fam.threshold_le z (hG (hMG hz)))) off onI
-  obtain ⟨l, hlFam, hWL⟩ := secant_of_triples fam W hW (hWM.trans (hMG.trans hG)) htr
+  obtain ⟨W, hWM, hW, htr⟩ := select M S U hM
+    (fun z hz => fam.threshold_le z (hG (hMG hz))) off onI
+  obtain ⟨l, hlFam, hWL⟩ := secant_of_triples fam W (by omega) (hWM.trans (hMG.trans hG)) htr
   let y : Polynomial K[X] := C (l.1.map φ) + X * C (l.2.map φ)
   have hy : y.natDegree ≤ 1 := affine_degree ..
   have hval : f.eval y = A * y + B := by
     conv_lhs => rw [hform]
     simp only [eval_add, eval_mul, eval_C, eval_X, A, B]
-  have hdegY : (f.eval y).natDegree ≤ 34 := hval ▸
+  have hdegY : (f.eval y).natDegree ≤ m+1 := hval ▸
     (natDegree_add_le ..).trans (max_le ((natDegree_mul_le ..).trans (Nat.add_le_add hA hy)) hB)
   have hY (z : F) : y.eval (C (φ z)) = (l.1 + C z * l.2).map φ := by
     simp [y, mul_comm (l.2.map φ)]
@@ -331,6 +349,31 @@ theorem actual_linear (φ : F →+* K) (fam : BadScalarRichPointFamily dom 67108
     (hcarries z hz)
   simpa only [coe_eval₂RingHom, eval₂_sub, eval₂_X, eval₂_C, coe_evalRingHom, hY,
     sub_eq_zero] using hv
+
+/-- A value-linear irreducible factor covering 185 or more actual terminal witnesses
+is an affine line determined over the base field. Every selected section on that component
+lies on this single genuine secant. -/
+theorem actual_linear (φ : F →+* K) (fam : BadScalarRichPointFamily dom 67108864 δ u)
+    (hn : Fintype.card ι = 1073741824) (ht : 357913943 ≤ ⌈(1 - δ) * (Fintype.card ι : ℝ≥0)⌉₊)
+    (Q f : Polynomial (Polynomial K[X])) (hQ : Q ≠ 0) (hf : Irreducible f)
+    (hfQ : f ∣ Q) (hl : f.natDegree = 1)
+    (hsupp : ∀ j i a, ((Q.coeff j).coeff i).coeff a ≠ 0 →
+      j ≤ 4 ∧ i + j ≤ 34 ∧ a + j * 67108863 < 357913943)
+    (G : Finset F) (hG : G ⊆ fam.G) (hlarge : 185 ≤ G.card)
+    (hcarries : ∀ z ∈ G,
+      f.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ) = 0) :
+    ∃ l ∈ lineParameters fam, G ⊆ pointsOn fam l := by
+  classical
+  have hweight (j : ℕ) (hj : Q.coeff j ≠ 0) : (Q.coeff j).natDegree + j ≤ 34 := by
+    let i := (Q.coeff j).natDegree
+    have hi : (Q.coeff j).coeff i ≠ 0 := by simpa [i] using leadingCoeff_ne_zero.mpr hj
+    exact (hsupp j i ((Q.coeff j).coeff i).natDegree
+      (by simpa using leadingCoeff_ne_zero.mpr hi)).2.1
+  obtain ⟨hB, hA⟩ := factor_degrees Q f hQ hfQ hl hweight
+  apply secant_of_agreement_selection (d := 67108863) (m := 33) (N := 185)
+    φ fam f hf hl hB hA _ G hG hlarge hcarries
+  intro M S U hM hS off onI
+  exact common_triples M S U hn hM (fun z hz => ht.trans (hS z hz)) off onI
 
 end Actual
 

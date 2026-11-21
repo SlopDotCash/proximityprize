@@ -21,13 +21,14 @@ variable {dom : I ↪ F} {δ : ℝ≥0} {u : WordStack F (Fin 2) I}
 private abbrev Family (dom : I ↪ F) (δ : ℝ≥0) (u : WordStack F (Fin 2) I) :=
   BadScalarRichPointFamily dom 67108864 δ u
 
-/-- The 35 lowest-miss labels have more than the polynomial degree in common among
-each triple. The incidence hypotheses count fit labels off the identity sites and
-missed labels on them. -/
-theorem many_on_secant (fam : Family dom δ u) (M : Finset F)
-    (hM : M ⊆ fam.G) (hm : M.card = 185) (U : Finset I)
-    (hn : Fintype.card I = 1073741824)
-    (ht : 357913943 ≤ ⌈(1 - δ) * (Fintype.card I : ℝ≥0)⌉₊)
+/-- A site-incidence inequality forces 35 actual decoded labels onto a common secant. -/
+theorem extraction_of_geometry {k t m n : ℕ} (fam : BadScalarRichPointFamily dom k δ u)
+    (hk : 0 < k) (hmpos : 0 < m) (hgeom : ∀ c a b l v : ℕ, c ≤ n → (m + 34) * t ≤ c * (m + 34) + (n - c) * 34 →
+      c ≤ a + b + l + v → m * a ≤ 33 * c → m * b ≤ 33 * c → m * l ≤ 33 * c → k ≤ v)
+    (M : Finset F)
+    (hM : M ⊆ fam.G) (hm : M.card = m + 34) (U : Finset I)
+    (hn : Fintype.card I = n)
+    (ht : t ≤ ⌈(1 - δ) * (Fintype.card I : ℝ≥0)⌉₊)
     (hoff : ∀ x ∉ U, (M.filter fun z => x ∈ fullAgreement dom (u 0) (u 1) z (fam.q z)).card ≤ 34)
     (hon : ∀ x ∈ U, (M.filter fun z => x ∉ fullAgreement dom (u 0) (u 1) z (fam.q z)).card ≤ 33) :
     ∃ p ∈ lineParameters fam, 35 ≤ (M ∩ pointsOn fam p).card := by
@@ -38,7 +39,7 @@ theorem many_on_secant (fam : Family dom δ u) (M : Finset F)
     split_ifs with h
     · exact card_filter_le _ _
     · exact hoff x h
-  have hag (z : F) (hz : z ∈ M) : 357913943 ≤ (A z).card := ht.trans (fam.threshold_le z (hM hz))
+  have hag (z : F) (hz : z ∈ M) : t ≤ (A z).card := ht.trans (fam.threshold_le z (hM hz))
   have hab := sum_le_sum hag
   have hre : (∑ z ∈ M, (A z).card) = ∑ x : I, (M.filter fun z => x ∈ A z).card := by
     have hcard (z : F) : (A z).card = ∑ x : I, if x ∈ A z then 1 else 0 := by simp
@@ -52,7 +53,7 @@ theorem many_on_secant (fam : Family dom δ u) (M : Finset F)
   simp only [hUc, hn, hm, Nat.cast_id] at hinc
   have hUle := card_le_univ U
   rw [hn] at hUle
-  have hU : 196734156 ≤ U.card := by omega
+
   have hmre : ∑ z ∈ M, miss z = ∑ x ∈ U, (M.filter fun z => x ∉ A z).card := by
     have he (z : F) : miss z = ∑ x ∈ U, if x ∉ A z then 1 else 0 := by
       rw [← card_filter, filter_notMem_eq_sdiff]
@@ -60,23 +61,23 @@ theorem many_on_secant (fam : Family dom δ u) (M : Finset F)
     rw [sum_comm]
   have hmsum : ∑ z ∈ M, miss z ≤ 33*U.card :=
     hmre.le.trans ((sum_le_sum hon).trans_eq (by simp [Nat.mul_comm]))
-  let good := M.filter fun z => 151*miss z ≤ 33*U.card
+  let good := M.filter fun z => m*miss z ≤ 33*U.card
   have hg : 35 ≤ good.card := by
     by_contra! hsmall
     let bad := M \ good
     have hb := card_sdiff_add_card_eq_card (show good ⊆ M from filter_subset _ _)
     change bad.card+good.card = M.card at hb
-    have hs (z : F) (hz : z ∈ bad) : 33*U.card+1 ≤ 151*miss z := by
+    have hs (z : F) (hz : z ∈ bad) : 33*U.card+1 ≤ m*miss z := by
       obtain ⟨hmz,hg'⟩ := mem_sdiff.mp hz
-      have hh : ¬151*miss z ≤ 33*U.card := fun he => hg' (mem_filter.mpr ⟨hmz,he⟩)
+      have hh : ¬m*miss z ≤ 33*U.card := fun he => hg' (mem_filter.mpr ⟨hmz,he⟩)
       omega
     have hsum := sum_le_sum hs
     rw [sum_const, nsmul_eq_mul, Nat.cast_id, ← Finset.mul_sum] at hsum
     have hsub : ∑ z ∈ bad, miss z ≤ ∑ z ∈ M, miss z :=
       sum_le_sum_of_subset_of_nonneg (sdiff_subset) (by simp)
-    have hbound := hsum.trans (Nat.mul_le_mul_left 151 (hsub.trans hmsum))
-    have h151 := Nat.mul_le_mul_right (33*U.card+1) (show 151 ≤ bad.card by omega)
-    omega
+    have hbound := hsum.trans (Nat.mul_le_mul_left m (hsub.trans hmsum))
+    have impossible := (Nat.mul_le_mul_right (33*U.card+1) (show m ≤ bad.card by omega)).trans hbound
+    exact (not_le.mpr (Nat.mul_lt_mul_of_pos_left (Nat.lt_succ_self _) hmpos)) impossible
   obtain ⟨a, ha, b, hb, hab⟩ := one_lt_card.mp (show 1 < good.card by omega)
   let p := secantParameter fam a b
   have hme : good ⊆ M := filter_subset _ _
@@ -92,10 +93,10 @@ theorem many_on_secant (fam : Family dom δ u) (M : Finset F)
   refine mem_inter.mpr ⟨hme hz,(mem_pointsOn_iff fam p z).mpr ⟨hM (hme hz),?_⟩⟩
   by_contra hnq
   have hpd := lineParameter_degree_lt fam hpar
-  have htcap := fullAgreement_inter_jointCore_card_le dom (u 0) (u 1) (by decide : 1 ≤ 67108864)
+  have htcap := fullAgreement_inter_jointCore_card_le dom (u 0) (u 1) hk
     (fam.degree_lt z (hM (hme hz))) hpd.1 hpd.2 hnq
   let S := A z ∩ (A a ∩ A b)
-  have hcap : S.card ≤ 67108863 := by simpa only [S,A,hpair] using htcap
+  have hcap : S.card ≤ k-1 := by simpa only [S,A,hpair] using htcap
   have hcov : U ⊆ (U \ A a) ∪ (U \ A b) ∪ (U \ A z) ∪ S := by
     intro x hx
     simp only [S, mem_union, mem_sdiff, mem_inter, hx, true_and]
@@ -107,12 +108,32 @@ theorem many_on_secant (fam : Family dom δ u) (M : Finset F)
   have ha' := (mem_filter.mp ha).2
   have hb' := (mem_filter.mp hb).2
   have hz' := (mem_filter.mp hz).2
-  change 151*miss a ≤ 33*U.card at ha'
-  change 151*miss b ≤ 33*U.card at hb'
-  change 151*miss z ≤ 33*U.card at hz'
+  change m*miss a ≤ 33*U.card at ha'
+  change m*miss b ≤ 33*U.card at hb'
+  change m*miss z ≤ 33*U.card at hz'
+  have hlarge := hgeom U.card (miss a) (miss b) (miss z) S.card hUle hinc hmass ha' hb' hz'
   omega
 
 private abbrev Factor (K : Type) [Field K] := Polynomial (Polynomial K[X])
+
+/-- The extraction property used by the linear and quadratic component bounds. -/
+def SecantExtraction {k : ℕ} (fam : BadScalarRichPointFamily dom k δ u) (m : ℕ) : Prop :=
+  ∀ M : Finset F, M ⊆ fam.G → M.card = m → ∀ U : Finset I,
+    (∀ x ∉ U, (M.filter fun z => x ∈ fullAgreement dom (u 0) (u 1) z (fam.q z)).card ≤ 34) →
+    (∀ x ∈ U, (M.filter fun z => x ∉ fullAgreement dom (u 0) (u 1) z (fam.q z)).card ≤ 33) →
+    ∃ p ∈ lineParameters fam, 35 ≤ (M ∩ pointsOn fam p).card
+
+/-- At the second-prime predecessor, 185 labels suffice. -/
+theorem many_on_secant (fam : Family dom δ u) (M : Finset F)
+    (hM : M ⊆ fam.G) (hm : M.card = 185) (U : Finset I)
+    (hn : Fintype.card I = 1073741824)
+    (ht : 357913943 ≤ ⌈(1 - δ) * (Fintype.card I : ℝ≥0)⌉₊)
+    (hoff : ∀ x ∉ U, (M.filter fun z => x ∈ fullAgreement dom (u 0) (u 1) z (fam.q z)).card ≤ 34)
+    (hon : ∀ x ∈ U, (M.filter fun z => x ∉ fullAgreement dom (u 0) (u 1) z (fam.q z)).card ≤ 33) :
+    ∃ p ∈ lineParameters fam, 35 ≤ (M ∩ pointsOn fam p).card := by
+  apply extraction_of_geometry (m := 151) fam (by decide) (by decide) _ M hM hm U hn ht hoff hon
+  intro c a b l v hc hinc hcover ha hb hl
+  omega
 
 /-- Evaluating first at the scalar and then at the domain coordinate commutes with
 specializing the coordinate coefficients before evaluating the scalar. -/
@@ -155,15 +176,14 @@ private theorem nonzero_site (f : Factor K) {A B : Polynomial K[X]}
   exact not_isUnit_X_sub_C x (isUnit_C.mp (isPrimitive_iff_isUnit_of_C_dvd.mp hf _ hdiv))
 
 open Classical in
-/-- At least 185 genuine sections on an irreducible value-linear factor force every
-section on it onto one determined base-field secant. The coefficients of the factor
+/-- Extracting 35 collinear sections on a populous irreducible value-linear factor forces
+every section on it onto one determined base-field secant. The coefficients of the factor
 may lie over an arbitrary extension of the field of labels. -/
-theorem linear_factor_is_head (fam : Family dom δ u) (φ : F →+* K) (f : Factor K)
+theorem linear_factor_is_head_of_extraction {k : ℕ} (fam : BadScalarRichPointFamily dom k δ u) (φ : F →+* K) (f : Factor K)
     (hf : Irreducible f) (hdeg : f.natDegree = 1) (hweight : Bivariate.totalDegree f ≤ 34)
-    (hn : Fintype.card I = 1073741824)
-    (ht : 357913943 ≤ ⌈(1 - δ) * (Fintype.card I : ℝ≥0)⌉₊) :
+    {m : ℕ} (extract : SecantExtraction fam (m+1)) :
     let pop := fam.G.filter fun z => f.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ) = 0
-    184 < pop.card → ∃ p ∈ lineParameters fam, pop ⊆ pointsOn fam p := by
+    m < pop.card → ∃ p ∈ lineParameters fam, pop ⊆ pointsOn fam p := by
   classical
   let A := f.coeff 1
   let B := f.coeff 0
@@ -178,9 +198,9 @@ theorem linear_factor_is_head (fam : Family dom δ u) (φ : F →+* K) (f : Fact
     · simp [B,he]
   have hp := hf.isPrimitive (by omega : f.natDegree ≠ 0)
   let pop := fam.G.filter fun z => f.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ) = 0
-  change 184 < pop.card → _
+  change m < pop.card → _
   intro hpop
-  obtain ⟨M, hsub, hm⟩ := exists_subset_card_eq (show 185 ≤ pop.card by omega)
+  obtain ⟨M, hsub, hm⟩ := exists_subset_card_eq (show m + 1 ≤ pop.card by omega)
   have hspec (z : F) (hz : z ∈ pop) :
       A.eval (C (φ z)) * (fam.q z).map φ + B.eval (C (φ z)) = 0 := by
     have he := (mem_filter.mp hz).2
@@ -202,7 +222,7 @@ theorem linear_factor_is_head (fam : Family dom δ u) (φ : F →+* K) (f : Fact
       (Ar i).eval (φ z) * φ ((fam.q z).eval (dom i)) + (Br i).eval (φ z) = 0 := by
     have he := congrArg (fun w : K[X] => w.eval (φ (dom i))) (hspec z hz)
     simpa only [Ar, Br, eval_add, eval_mul, at_site, eval_map_apply, eval_zero] using he
-  obtain ⟨p,hpLine,h35⟩ := many_on_secant fam M (hsub.trans (filter_subset _ _)) hm U hn ht (by
+  obtain ⟨p,hpLine,h35⟩ := extract M (hsub.trans (filter_subset _ _)) hm U (by
     intro i hi
     have hne : R i ≠ 0 := fun he => hi (mem_filter.mpr ⟨mem_univ _,he⟩)
     apply (root_bound φ (R i) hne ?_).trans (degR i)
@@ -269,6 +289,18 @@ theorem linear_factor_is_head (fam : Family dom δ u) (φ : F →+* K) (f : Fact
   simp only [eval₂_mul,eval₂_sub,eval₂_C,eval₂_X,coe_evalRingHom, el] at he
   have hne := (hunit.map (evalRingHom (C (φ z)))).ne_zero
   exact (map_injective φ φ.injective) (sub_eq_zero.mp ((mul_eq_zero.mp he).resolve_left hne))
+
+open Classical in
+/-- The 185-label specialization at the second-prime sixteenth-rate step. -/
+theorem linear_factor_is_head (fam : Family dom δ u) (φ : F →+* K) (f : Factor K)
+    (hf : Irreducible f) (hdeg : f.natDegree = 1) (hweight : Bivariate.totalDegree f ≤ 34)
+    (hn : Fintype.card I = 1073741824)
+    (ht : 357913943 ≤ ⌈(1 - δ) * (Fintype.card I : ℝ≥0)⌉₊) :
+    let pop := fam.G.filter fun z => f.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ) = 0
+    184 < pop.card → ∃ p ∈ lineParameters fam, pop ⊆ pointsOn fam p := by
+  apply linear_factor_is_head_of_extraction fam φ f hf hdeg hweight
+  intro M hM hm U
+  exact many_on_secant fam M hM hm U hn ht
 
 /-- Every factor of an interpolant whose scalar and value indices sum to at most
 34 inherits that bound. This accepts the coefficient statement of the actual

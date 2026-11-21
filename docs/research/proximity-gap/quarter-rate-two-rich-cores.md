@@ -2,6 +2,12 @@
 
 Let $n=1073741824$, $k=268435456$, $d=k-1$, $e=447392427$ and $t=n-e=626349397$. On every injective $n$-point evaluation domain over a finite field of characteristic greater than $2n$, every received pair has at most $n$ genuinely bad scalar labels at $e$ errors. The first designated prime has integer budget $n$. Its first failing error count therefore lies in **[447392428, 480946859]**. The new lower bound uses the written component estimates from the two-head proof. The subgroup attack at the upper bound is formalized in Lean. [Component estimates](three-rates-two-head-window.md#common-factors-and-the-remaining-intersections) · [Attack on the canonical code](../../../ArkLib/Research/ProximityGap/Frontier/_P1RateQuarterAdjacentExactPin.lean)
 
+## Machine-checked range
+
+A single interpolant of value degree two and scalar-value total degree 34 suffices through **442128987 errors**. At 631612837 agreements it has 34 more coefficients than linear constraints. Removing its scalar content loses at most 34 labels. Its primitive part has at most two irreducible factors of positive value degree. A quadratic factor carries at most 511 labels under the site-incidence estimate. A larger linear factor is an affine secant. Consequently every sufficiently large subfamily supplies a secant with a large common core. Applying that conclusion twice bounds the numerator by $2(e+1)$.
+
+On every injective length-$2^{30}$ domain in characteristic above 1263225672 this upper bound agrees with an explicit two-head construction at every integer error count $402653184\le e\le442128987$. For each prime-field budget $805306370\le B=\lfloor p/2^{128}\rfloor\le884257977$, this gives first failure at $\lfloor B/2\rfloor$ and safe radii exactly below $\lfloor B/2\rfloor/2^{30}$ at every positive width. The first designated prime has a larger budget. The resulting checked first-failure bracket there is **[442128988, 480946859]**. [Exact probability, budget interval and named bracket](../../../ArkLib/Research/ProximityGap/Frontier/QuarterRateQuadraticSafety.lean)
+
 ## Two interpolants
 
 Suppose $n+1$ distinct genuinely bad labels have been selected, each with a degree-at-most-$d$ folded witness $q_z(X)$ and a nonjoint support of at least $t$ sites. Write $T$ for the scalar indeterminate and $Y$ for the folded value. Use coordinate weights $(1,0,d)$ on $(X,T,Y)$. Here $\Delta=3t-3d-n=2$.
