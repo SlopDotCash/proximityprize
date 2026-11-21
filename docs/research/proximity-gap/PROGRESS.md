@@ -2,6 +2,8 @@
 
 The universal rank formula now determines the operational MCA and list cutoffs on every supplied smooth prize code. Evaluating it at large dimensions can be impractical. The table records numerical values and bounds with their verification status. Dated entries preserve intermediate results. [Current reviewer guide](full-prize-review.md) · [November 21 integration assessment](integration-assessment-2026-11-21.md)
 
+The rectangular hyperbola construction at half rate now has exact one-fresh first-failure counts of **357,913,942** and **402,653,185** errors on the two named primes. For every positive quotient degree and every rectangle obeying the construction’s locator and separator degree allocation, the preceding counts allow at most 715,827,884 and 2,013,265,925 one-fresh labels. A three-head first-prime example has 1,073,741,828 bad scalars at the next count, while the second-prime six-head example has 2,415,919,114. Independent verified replay accepted 29,854 declarations for the two restricted label caps and the two actual failure witnesses. The unrestricted first-prime bound is earlier and the second-prime unrestricted predecessor remains open. [Class definition, incidence proof and both witnesses](second-prime-hyperbola-grid.md#how-early-a-rectangular-hyperbola-grid-can-fail)
+
 ## Verified results and open cases
 
 | Question | Result | Verification |

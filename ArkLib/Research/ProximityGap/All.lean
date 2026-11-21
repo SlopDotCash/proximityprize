@@ -771,6 +771,8 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeExceptionalHeadCeilings
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeFourHeadEndpoints
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeHeadDescent
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeHessianTransport
+import ArkLib.Research.ProximityGap.Frontier.FirstPrimeHyperbolaGrid
+import ArkLib.Research.ProximityGap.Frontier.HyperbolaGridObstruction
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeHyperbolaGrid
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeIntrinsicArithmetic
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeJetMultiplication
