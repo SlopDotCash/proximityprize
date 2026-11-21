@@ -42,6 +42,7 @@ import ArkLib.Research.ProximityGap.EtaOffDiagImagCancel
 import ArkLib.Research.ProximityGap.EtaOffDiagRealPairing
 import ArkLib.Research.ProximityGap.EtaShiftRealPartPairing
 import ArkLib.Research.ProximityGap.ExternalDebt
+import ArkLib.Research.ProximityGap.FirstPrimeQuarterPencilReview
 import ArkLib.Research.ProximityGap.Frontier.AbelianCoverPeriodFloor
 import ArkLib.Research.ProximityGap.Frontier.ActualCubicBranchCollisions
 import ArkLib.Research.ProximityGap.Frontier.ActualCubicHodgeIncidences

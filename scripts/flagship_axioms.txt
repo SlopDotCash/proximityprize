@@ -369,3 +369,7 @@ ArkLib.Research.ProximityGap.Frontier.SmoothPowerListDescent ProximityGap.Smooth
 # First-prime quarter-rate successor and its split polynomial pencil
 ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorOneHole ArkLib.ProximityGap.Frontier.QuarterSuccessorOneHole.mass_bounds
 ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorSplitCriterion ArkLib.ProximityGap.Frontier.QuarterSuccessorSplitCriterion.failure_iff
+
+# The named rate-quarter endpoint, rank scan and polynomial-fiber criterion
+ArkLib.Research.ProximityGap.FirstPrimeQuarterPencilReview ProximityPrize.FirstPrimeQuarterPencilReview.threshold_iff
+ArkLib.Research.ProximityGap.FirstPrimeQuarterPencilReview ProximityPrize.FirstPrimeQuarterPencilReview.executable_iff
