@@ -19,6 +19,13 @@ Checks, for dyadic toy instances (n = 8,16,32,64; p = 1 mod n, beta ~ 4):
 import math, cmath
 from fractions import Fraction
 
+
+def require(condition, message):
+    """Make reported finite-cell checks fail the probe on violated claims."""
+    if not condition:
+        raise AssertionError(message)
+
+
 def is_prime(x):
     if x < 2: return False
     for q in range(2, int(x**0.5)+1):
@@ -30,10 +37,9 @@ def good_prime(n, beta=4.0):
     target = int(n**beta)
     p = (target // n) * n + 1
     while True:
-        if is_prime(p) and ((p-1)//n) % 2 == 1 or True:
-            # require v2(p-1) == log2(n): (p-1)/n odd
-            if is_prime(p) and ((p-1)//n) % 2 == 1:
-                return p
+        # Require v2(p-1) == log2(n): (p-1)/n is odd.
+        if is_prime(p) and ((p-1)//n) % 2 == 1:
+            return p
         p += n
 
 def subgroup(n, p):
@@ -52,7 +58,7 @@ def subgroup(n, p):
     x = 1
     for _ in range(n):
         G.add(x); x = (x*h) % p
-    assert len(G) == n
+    require(len(G) == n, f"subgroup has {len(G)} elements, expected {n}")
     return sorted(G), g
 
 def factorize(x):
@@ -116,15 +122,21 @@ def main():
         P1 = sum(distinct); P2 = sum(v*v for v in distinct)
         # exact via counting
         N2 = N_r(G, p, 2); N3 = N_r(G, p, 3); N4 = N_r(G, p, 4)
-        P2_exact = (p*N2 - n**2)//n
-        P3_exact = (p*N3 - n**3)//n
-        P4_exact = (p*N4 - n**4)//n
+        numerators = (p * N2 - n**2, p * N3 - n**3, p * N4 - n**4)
+        for r, numerator in zip((2, 3, 4), numerators):
+            require(numerator % n == 0,
+                    f"n={n} p={p}: power-sum numerator for r={r} is not divisible by n")
+        P2_exact, P3_exact, P4_exact = (numerator // n for numerator in numerators)
         floor = math.sqrt(n*(p-n)/(p-1))
         prize = math.sqrt(n*math.log(p/n))
         print(f"\n n={n} p={p} m={m}  (beta={math.log(p)/math.log(n):.2f})")
-        print(f"  #distinct values = {len(groups)}  (predicted m = {m}): {'OK' if len(groups)==m else 'FAIL'}")
+        require(len(groups) == m,
+                f"n={n} p={p}: found {len(groups)} period values, expected {m}")
+        print(f"  #distinct values = {len(groups)}  (predicted m = {m}): OK")
+        require(set(mults) == {n},
+                f"n={n} p={p}: period multiplicities are {sorted(set(mults))}, expected {n}")
         print(f"  multiplicities: min={min(mults)} max={max(mults)} (predicted n = {n}): "
-              f"{'OK' if set(mults)=={n} else 'FAIL'}")
+              "OK")
         print(f"  P1 = {P1:+.6f} (predicted -1)   P2 = {P2:.4f} (predicted p-n = {p-n}, exact {P2_exact})")
         print(f"  P3 exact = {P3_exact} (v2 = {v2(P3_exact)}), P4 exact = {P4_exact} (v2 = {v2(P4_exact)});"
               f" N2={N2} (pred n), N3={N3}, N4={N4}")
@@ -151,7 +163,7 @@ def main():
     x = 1
     for _ in range(15):
         elems.append(x); x = gf16_mul(x, 2)
-    assert len(set(elems)) == 15
+    require(len(set(elems)) == 15, "F_16 polynomial generator did not have order 15")
     # subgroup of order 3: powers of g^5
     H = [1]
     h = elems[4]  # g^5 is elems[4]? elems[0]=g^1... careful: elems[0]=1? no
@@ -177,6 +189,7 @@ def main():
     dv = sorted(set(per.values()))
     from collections import Counter
     cnt = Counter(per.values())
+    require(len(dv) == 2, f"F_16 semiprimitive periods have {len(dv)} values, expected two")
     print(f"  F_16, |H| = 3, index 5: distinct period values = {dv} with multiplicities {dict(cnt)}")
     print(f"  => {len(dv)} distinct values over 5 cosets: two-valued collapse = "
           f"{'CONFIRMED (semiprimitive; Frobenius identifies cosets)' if len(dv) == 2 else 'NOT seen'}")
@@ -189,4 +202,5 @@ def v2(x):
         x //= 2; k += 1
     return k
 
-main()
+if __name__ == "__main__":
+    main()
