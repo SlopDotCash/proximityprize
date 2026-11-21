@@ -8,6 +8,23 @@ historical evidence, not live issue status or a new proof claim.
 
 The November assessment records the exact four-rate MCA window at production length, including the sharp half-rate endpoint at the boundary prime. It gives the remaining bounds for the two larger named prime fields and distinguishes formally verified results from written improvements. The general prize challenges remain open. [Proof assessment](integration-assessment-2026-11-21.md)
 
+The historical graph dictionary in §2.1 conflates two conjectures. For the generalized
+Paley graph with connection set a multiplicative subgroup of size $n$, the eigenvalues
+away from the constant mode are additive Gauss periods. On the length-128 domain where
+both coding prizes hold, one of these periods has magnitude greater than 64, exceeding
+even $2\sqrt{128}$. The exact Ramanujan ceiling for a connected $n$-regular graph
+is $2\sqrt{n-1}$ on nontrivial eigenvalues. The prime-field bound of order
+$\sqrt{n\log(p/n)}$ is a separate open upper bound. [Joint theorem](../../../ArkLib/Research/ProximityGap/Frontier/PrizeInstancePaleySpectrum.lean)
+
+The classical Paley graph has the nonzero squares as its connection set. Its discrepancy
+conjecture asks for cancellation in sums of the quadratic character over differences
+between two arbitrary sets of size greater than $p^\epsilon$. In coding language, this
+requires controlling shifts that put too many symbols of an affine Reed–Solomon word in
+one common quadratic class. The ledger gives the exact reduction, the finite bounds on
+the two production domains, and the remaining quantifiers.
+[Coding and Paley results](PROGRESS.md#2026-11-21--from-the-coding-prizes-to-classical-paley-discrepancy) ·
+[Kim–Yip–Yoo, Conjecture 2.12](https://arxiv.org/html/2309.09124v3#S2.SS4)
+
 Issue #164 closed on 2026-10-08 when PR #217 merged. That PR characterizes when a greatest good radius exists, and explicitly leaves the production threshold open. [Issue #164](https://github.com/SlopDotCash/proximityprize/issues/164) · [PR #217](https://github.com/SlopDotCash/proximityprize/pull/217)
 
 ## Coordination snapshot — 2026-09-06
