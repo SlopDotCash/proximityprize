@@ -2,6 +2,21 @@
 
 For the second named prime at length $n=2^{30}$ the first failing error count is at most **679477249** at rate one eighth and **565631854** at rate one quarter. These improve the arbitrary-domain exceptional-head bounds by 25165823 and 38347922 errors respectively. Lean verifies both attacks on the named power domain at every positive interleaving width. The eighth-rate mass holds for dimensions 134,217,728 through 394,264,574, and the quarter-rate mass for dimensions 268,435,456 through 508,109,969. [Formal four-head attack](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeFourHeadEndpoints.lean)
 
+## An upper bound across lengths and field budgets
+
+Write $n=16s$ at rate one quarter and $n=32s$ at rate one eighth, with $s\ge2$. Let $B=\lfloor |F|/2^{128}\rfloor$ and assume $0<B\le4n-28s+7$ and $n\le2^{62}$. For any field with a multiplicative element $g$ of order $n$, and every nonzero coset representative $c$, use the domain $cg^i$. Set
+\[
+ C=\min\left(\left\lfloor\frac{n+15s-6}{4}\right\rfloor,
+             \left\lfloor\frac{4n+21s-7-B}{7}\right\rfloor\right).
+\]
+The MCA test fails by **$n-C-1$ errors**, so the operational supremum is at most $(n-C-1)/n$, at every positive interleaving width. A single received pair supplies at least $4n+21s-7C-6$ bad labels. The formula gives the largest core that both fits this allocation and produces a count strictly above the budget. A positive budget makes the field large enough to separate all projected labels in this length range. [Uniform finite-field proof](../../../ArkLib/Research/ProximityGap/Frontier/SmoothCosetFourHeadMass.lean)
+
+The polynomial identity behind the three fibers uses only $w^8=-1$ for a primitive sixteenth root $w$. If $L_{abc}(t)=(t-w^a)(t-w^b)(t-w^c)$, then
+\[
+ L_{0,1,8}(t)-w^2L_{2,9,10}(t)=(1-w^2)L_{3,5,7}(t).
+\]
+Consequently the three difference polynomials have exactly the prescribed roots in every eligible field. Substituting $(X/c)^s$ pulls the root sets back to the coset. [Integral identity and coset evaluation](../../../ArkLib/Research/ProximityGap/Frontier/SmoothCosetCubicSeed.lean)
+
 ## Three pairwise coincidence sets
 
 Let $k$ be the dimension, $s=k/4$, and $D=3s$. The evaluation domain is the multiplicative group of all $n$th roots. Its image under $X\mapsto X^s$ contains the group of sixteenth roots at both rates. Let $w$ have order 16. On this group take exponent triples

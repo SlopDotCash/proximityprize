@@ -20,18 +20,18 @@ variable {F I : Type} [Field F] [Fintype F] [DecidableEq F] [Fintype I] [Nonempt
 variable {dom : I ↪ F} {δ : ℝ≥0} {u : Code.WordStack F (Fin 2) I}
 
 /-- The complete literal family is covered by three distinct large affine
-secants outside at most thirteen scalar labels. -/
-theorem cover_above_budget (fam : Family dom δ u) {p : ℕ} [CharP F p] (hp : 1744830589<p)
+secants outside at most ten scalar labels. -/
+theorem degree_ten_cover (fam : Family dom δ u) {p : ℕ} [CharP F p] (hp : 1744830589<p)
     (hn : Fintype.card I=1073741824) {e : ℕ} (hl : 610000000≤e) (hu : e≤671088639)
     (ht : ⌈(1-δ)*(Fintype.card I:ℝ≥0)⌉₊=1073741824-e)
-    {s : ℕ} (hs : 184 ≤ s) (hsu : s ≤ 512) (hbig : 2*(e+1)+s+13 < fam.G.card) :
+    {s : ℕ} (hs : 48 ≤ s) (hsu : s ≤ 512) (hbig : 2*(e+1)+s+10 < fam.G.card) :
     ∃ H : Finset (LineParameter F), H⊆lineParameters fam ∧ H.card=3 ∧
-      (∀ L∈H, s<(pointsOn fam L).card) ∧ (fam.G \ H.biUnion (pointsOn fam)).card ≤ 13 := by
+      (∀ L∈H, s<(pointsOn fam L).card) ∧ (fam.G \ H.biUnion (pointsOn fam)).card ≤ 10 := by
   classical
   let K := AlgebraicClosure F
   let φ := algebraMap F K
   let _ : CharP K p := charP_of_injective_ringHom φ.injective p
-  obtain ⟨U,E,he,hu,hd,hcov,hcomp⟩ := FiveEighthCubicFactors.components_with_small_heads fam φ hp hn (by omega)
+  obtain ⟨U,E,he,hu,hd,hcov,hcomp⟩ := FiveEighthCubicFactors.degree_ten_components fam φ hp hn (by omega)
   let P := population fam φ
   have mass : fam.G.card ≤ E.card+∑ f∈U, (P f).card :=
     (card_le_card hcov).trans ((card_union_le ..).trans (Nat.add_le_add_left card_biUnion_le _))
@@ -105,6 +105,18 @@ theorem cover_above_budget (fam : Family dom δ u) {p : ℕ} [CharP F p] (hp : 1
     intro z hz
     obtain ⟨hG,hout⟩ := mem_sdiff.mp hz
     exact (mem_union.mp (covers hG)).resolve_right hout
+
+/-- The complete literal family is covered by three distinct large affine
+secants outside at most thirteen scalar labels. -/
+theorem cover_above_budget (fam : Family dom δ u) {p : ℕ} [CharP F p] (hp : 1744830589<p)
+    (hn : Fintype.card I=1073741824) {e : ℕ} (hl : 610000000≤e) (hu : e≤671088639)
+    (ht : ⌈(1-δ)*(Fintype.card I:ℝ≥0)⌉₊=1073741824-e)
+    {s : ℕ} (hs : 184 ≤ s) (hsu : s ≤ 512) (hbig : 2*(e+1)+s+13 < fam.G.card) :
+    ∃ H : Finset (LineParameter F), H⊆lineParameters fam ∧ H.card=3 ∧
+      (∀ L∈H, s<(pointsOn fam L).card) ∧ (fam.G \ H.biUnion (pointsOn fam)).card ≤ 13 := by
+  obtain ⟨H,hH,h3,hlarge,hex⟩ := degree_ten_cover fam hp hn hl hu ht
+    (s:=s) (by omega) hsu (by omega)
+  exact ⟨H,hH,h3,hlarge,hex.trans (by decide)⟩
 
 /-- Specialization to the last predecessor of the five-eighths plateau. -/
 theorem cover_of_two_head_capacity (fam : Family dom δ u) {p : ℕ} [CharP F p] (hp : 1744830589<p)
