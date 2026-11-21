@@ -6,6 +6,7 @@ import Mathlib.Tactic
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.LinearAlgebra.Lagrange
 import ArkLib.ToMathlib.Polynomial.RootMultiplicity
+import ArkLib.Research.ProximityGap.Frontier.FourHeadCrossRatio
 
 /-! # A four-head incidence bound
 
@@ -136,6 +137,92 @@ private theorem degree_le (j : Fin 3) (A B : Fin 4 → F[X]) (d : ℕ)
   apply (sum_le_sum (fun i _ => hh i)).trans
   simp [Fin.sum_univ_succ,weight]
   omega
+
+/-- One side from head zero and the opposite side in each of the three pairings. -/
+def nearSide (v : Fin 4 → R) (i : Fin 3) := v i.succ - v 0
+
+/-- The opposite side to the edge joining zero to the successor of the index. -/
+def farSide (v : Fin 4 → R) : Fin 3 → R := ![v 3-v 2, v 3-v 1, v 2-v 1]
+
+/-- Oriented determinant of three two-row heads. -/
+def triangle (A B : Fin 4 → R) (i j k : Fin 4) :=
+  (A j-A i)*(B k-B i)-(A k-A i)*(B j-B i)
+
+set_option maxRecDepth 8192 in
+/-- Discriminant of the quadratic pencil evaluated on the four heads. -/
+theorem quadratic_discriminant (A B : Fin 4 → R) :
+    (mat 1 A B).det^2 - (mat 0 A B).det*(mat 2 A B).det =
+    triangle A B 0 1 2 * triangle A B 0 1 3 * triangle A B 0 2 3 * triangle A B 1 2 3 := by
+  rw [reduce,reduce,reduce]
+  dsimp [red,minor,quad,triangle]
+  ring
+
+private theorem opposite_identity (A B : Fin 4 → R) (i : Fin 3) :
+    (mat 0 A B).det * (nearSide B i * farSide B i) -
+    (mat 1 A B).det * (nearSide A i * farSide B i + nearSide B i * farSide A i) +
+    (mat 2 A B).det * (nearSide A i * farSide A i) = 0 := by
+  rw [reduce,reduce,reduce]
+  fin_cases i <;> dsimp [nearSide,farSide,red,minor,quad,Fin.succ] <;> ring
+
+/-- At full degree saturation, all three pairs of opposite projective side directions
+are orthogonal for a single nonsingular constant symmetric form. -/
+theorem saturated_direction_form (A B : Fin 4 → F[X]) (d : ℕ)
+    (hA : ∀ i, (A i).natDegree ≤ d) (hB : ∀ i, (B i).natDegree ≤ d)
+    (htr : triangle A B 0 1 2 * triangle A B 0 1 3 *
+      triangle A B 0 2 3 * triangle A B 1 2 3 ≠ 0)
+    (E : Finset F) (hE : E.card = 4*d)
+    (hfit : ∀ x ∈ E, ∃ (S : Finset (Fin 4)) (u v : F), S.card = 2 ∧
+      ∀ i ∈ S, (A i).eval x = u ∧ (B i).eval x = v) :
+    ∃ a b c : F, b^2-a*c ≠ 0 ∧ ∀ i : Fin 3,
+      C a * (nearSide B i * farSide B i) -
+      C b * (nearSide A i * farSide B i + nearSide B i * farSide A i) +
+      C c * (nearSide A i * farSide A i) = 0 := by
+  classical
+  let P := Lagrange.nodal E id
+  have hP : P ≠ 0 := Lagrange.nodal_ne_zero
+  have hdeg : P.natDegree ≤ 4*d := by rw [show P.natDegree = E.card from Lagrange.natDegree_nodal,hE]
+  have coeff (i : Fin 3) : ∃ c : F, (mat i A B).det = C c * P := by
+    by_contra! hh
+    have h := FourHeadCrossRatio.pencil_charge_lt E (fun _ => 1) (mat i A B).det P (4*d)
+      hP hh (degree_le i A B d hA hB) hdeg (by
+        intro x hx
+        obtain ⟨S,u,v,hS,h⟩ := hfit x hx
+        simpa only [hS,show charge 2 = 1 by decide] using local_dvd i A B x u v S h)
+      (fun x hx => by simpa only [pow_one,P,id_eq] using Lagrange.X_sub_C_dvd_nodal id hx)
+    simp [hE] at h
+  obtain ⟨a,ha⟩ := coeff 0
+  obtain ⟨b,hb⟩ := coeff 1
+  obtain ⟨c,hc⟩ := coeff 2
+  refine ⟨a,b,c,?_,?_⟩
+  · intro hyp
+    apply htr
+    rw [← quadratic_discriminant,ha,hb,hc]
+    have hz : C (b^2-a*c) * P^2 = 0 := by rw [hyp,map_zero,zero_mul]
+    simp only [map_sub,map_pow,map_mul] at hz
+    linear_combination hz
+  · intro i
+    have h := opposite_identity A B i
+    rw [ha,hb,hc] at h
+    exact (mul_eq_zero.mp (show P * _ = 0 by linear_combination h)).resolve_left hP
+
+/-- A linear representative of the projective involution on side directions. -/
+def conjugateDirection (a b c : R) (u : R × R) : R × R :=
+  (b*u.1-a*u.2, c*u.1-b*u.2)
+
+/-- Applying the representative twice gives its nonzero projective scalar on a
+nonsingular pencil. -/
+theorem conjugateDirection_twice (a b c : R) (u : R × R) :
+    conjugateDirection a b c (conjugateDirection a b c u) =
+      ((b^2-a*c)*u.1,(b^2-a*c)*u.2) := by
+  ext <;> dsimp [conjugateDirection] <;> ring
+
+/-- The form equation identifies the opposite side with the conjugate projective
+direction by vanishing of their two-by-two determinant. -/
+theorem conjugateDirection_pair (a b c : R) (u v : R × R)
+    (h : a*(u.2*v.2)-b*(u.1*v.2+u.2*v.1)+c*(u.1*v.1)=0) :
+    (conjugateDirection a b c u).1*v.2-(conjugateDirection a b c u).2*v.1 = 0 := by
+  dsimp [conjugateDirection]
+  linear_combination -h
 
 /-- If the first three polynomial heads are noncollinear and the fourth differs
 from each, one quadratic evaluation minor is nonzero. -/
@@ -274,6 +361,10 @@ theorem folded_witness_on_head {I : Type*} [Fintype I] [DecidableEq I] (D : I �
   change _ ≤ U.card+4*d at hu
   omega
 
+#print axioms quadratic_discriminant
+#print axioms saturated_direction_form
+#print axioms conjugateDirection_twice
+#print axioms conjugateDirection_pair
 #print axioms exists_nonzero_minor
 #print axioms sum_charge_le
 #print axioms core_union_bound
