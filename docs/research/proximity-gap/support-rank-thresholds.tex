@@ -104,9 +104,8 @@ A list at $k$ agreements has at most $C_k$ words by interpolation. At $k-1$ agre
 all $q$ multiples of a locator occur in one ball. More generally, for
 $B\ge C_{k+1}$ and $B\ge\lfloor C_k/(k+1)\rfloor$, the first list failure is $n-k$
 if $B<C_k$, and $n-k+1$ otherwise. The proof of the sharper list step appears in
-Section~4.2. At 128-bit tolerance the single condition $q\ge2^{128}\binom{n}{\lfloor n/2\rfloor}$
-suffices at all four prize rates. It can require fields much larger than $2^{256}$
-at long block lengths. The \href{https://github.com/SlopDotCash/proximityprize/blob/d6dc87eefe9bd2a20d9e4f5d207079eaaffdb844/ArkLib/Research/ProximityGap/JointLargeFieldReview.lean}{joint theorem} identifies these counts with the rank answers.
+Section~4.2. At 128-bit tolerance and positive even length, the \href{https://github.com/SlopDotCash/proximityprize/blob/041479b5856356a744188bd634d627524c40090f/ArkLib/Research/ProximityGap/JointLargeFieldCriterion.lean}{exact all-rate criterion} for MCA to pass everywhere and lists to first fail at minimum distance is
+$q\ge2^{128}\binom{n}{\lfloor n/2\rfloor}$. Sufficiency follows by maximality of the central binomial coefficient. At half rate the bound is necessary because the largest $k$-agreement list has exactly $\binom{n}{n/2}$ words. This bound can exceed $2^{256}$ at long block lengths. The \href{https://github.com/SlopDotCash/proximityprize/blob/d6dc87eefe9bd2a20d9e4f5d207079eaaffdb844/ArkLib/Research/ProximityGap/JointLargeFieldReview.lean}{joint rank theorem} evaluates both answers.
 
 \newpage
 \section*{4.\quad A complete four-rate numerical benchmark}
