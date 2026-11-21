@@ -4,7 +4,7 @@ SPDX-License-Identifier: MIT OR Apache-2.0
 -/
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCoordinateWeight
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeActualPopulations
-import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSectionResultant
+import ArkLib.Research.ProximityGap.Frontier.CubicSectionDiscriminant
 import Mathlib.Algebra.Polynomial.Reverse
 import Mathlib.Algebra.Polynomial.Taylor
 import Mathlib.Algebra.Polynomial.Derivative
@@ -230,6 +230,77 @@ open scoped NNReal
 variable {F I : Type} [Field F] [DecidableEq F] [Fintype I]
 variable {dom : I ↪ F} {δ : ℝ≥0} {u : Code.WordStack F (Fin 2) I}
 
+/-- Selected sections of the component where the value derivative specializes nonzero. -/
+noncomputable def simplePopulation {K : Type} [Field K] (fam : Family dom δ u) (φ : F →+* K)
+    (f : Factor K) : Finset F := by
+  classical
+  exact (population fam φ f).filter fun z ↦
+    f.derivative.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ) ≠ 0
+
+/-- At most 130 selected labels of a supported cubic fail the simple-section test. -/
+theorem simple_card {K : Type} [Field K] (fam : Family dom δ u) (φ : F →+* K) (f Q : Factor K)
+    (hc : (3 : K) ≠ 0) (hi : Irreducible f) (hy : f.natDegree = 3) (hQ : Q ≠ 0)
+    (hd : f ∣ Q) (tri : ∀ j i a, ((Q.coeff j).coeff i).coeff a ≠ 0 → i + j ≤ 34) :
+    (population fam φ f).card ≤ (simplePopulation fam φ f).card + 130 := by
+  classical
+  let S := population fam φ f
+  let isMultiple (z : F) := f.derivative.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ) = 0
+  have multiple := CubicSectionDiscriminant.multiple_sections φ f hc hi hy (by decide : 3 ≤ 34)
+    (SecondPrimeSectionResultant.factor_triangle hQ hd tri) S (fun z ↦ (fam.q z).map φ)
+    (fun z hz ↦ (mem_filter.mp hz).2)
+  have partition := Finset.card_filter_add_card_filter_not (s := S) (p := isMultiple)
+  change (S.filter isMultiple).card ≤ 130 at multiple
+  change S.card ≤ (S.filter fun z ↦ ¬isMultiple z).card + 130
+  omega
+
+/-- One chart simultaneously preserves actual selected cubic sections, their received
+agreements, and the exact degree of their specialized value derivatives. The center can avoid
+any additional finite set. Every simple label contributes. -/
+theorem actual_cubic_chart_avoiding {K : Type} [Field K] [Infinite K]
+    (fam : Family dom δ u) (σ : F →+* K) (f : K[X][X][X]) (avoid : Finset K) :
+    let d := 67108863
+    let W := SecondPrimeCoordinateWeight.weight d f
+    ∃ r : K, r ∉ avoid ∧ (∀ i, σ (dom i) ≠ r) ∧
+      ∀ z ∈ simplePopulation fam σ f, let q := (fam.q z).map σ
+        let q' := chart r d q
+        let f' := surfaceChart r W d f
+        q'.natDegree ≤ d ∧ f'.eval₂ (evalRingHom (C (σ z))) q' = 0 ∧
+          (f'.derivative.eval₂ (evalRingHom (C (σ z))) q').natDegree = W - d ∧
+          ∀ i ∈ HalfPredecessorLineCoreGeometry.fullAgreement dom (u 0) (u 1) z (fam.q z),
+            q'.eval ((σ (dom i) - r)⁻¹) =
+              ((σ (dom i) - r)⁻¹) ^ d * σ (u 0 i) + σ z *
+                (((σ (dom i) - r)⁻¹) ^ d * σ (u 1 i)) := by
+  classical
+  let d := 67108863
+  let W := SecondPrimeCoordinateWeight.weight d f
+  let M := population fam σ f
+  let q := fun z => (fam.q z).map σ
+  let R := fun z => f.derivative.eval₂ (evalRingHom (C (σ z))) (q z)
+  let S := M.filter fun z => R z ≠ 0
+  let e : I ↪ K := dom.trans ⟨σ, σ.injective⟩
+  obtain ⟨r, hr, hall⟩ :=
+    common_center S (avoid ∪ univ.map e) R (fun z hz => (mem_filter.mp hz).2)
+  obtain ⟨ha, hs⟩ := notMem_union.mp hr
+  have hsite (i : I) : σ (dom i) ≠ r := fun he => hs (mem_map.mpr ⟨i, mem_univ i, he⟩)
+  refine ⟨r, ha, hsite, ?_⟩
+  intro z hz
+  have hzM := (mem_filter.mp hz).1
+  have hzG := (mem_filter.mp hzM).1
+  have hd := fam.degree_lt z hzG
+  have hq : (q z).natDegree ≤ d := natDegree_map_le.trans (by dsimp [d]; omega)
+  let Fz := f.map (evalRingHom (C (σ z)))
+  have hroot : Fz.eval (q z) = 0 := by simpa only [Fz, eval_map] using (mem_filter.mp hzM).2
+  have hw := section_weight d f (σ z)
+  refine ⟨chart_degree_le r d (q z) hq, ?_, ?_, ?_⟩
+  · rw [← eval_map, surface_fiber, plane_graph _ _ _ _ _ hq hw, hroot, map_zero]
+  · rw [← eval_map, ← derivative_map, surface_fiber]
+    apply derivative_graph_degree _ _ _ _ _ hq hw
+    simpa only [derivative_map, eval_map] using hall z hz
+  · intro i hi'
+    rw [chart_eval r (σ (dom i)) (hsite i) d _ hq, eval_map_apply, (mem_filter.mp hi').2,
+      map_add, map_mul]
+    ring
+
 /-- One chart simultaneously preserves actual selected cubic sections, their received
 agreements, and the exact degree of their specialized value derivatives. At most 161
 labels are discarded in finding the simple sections. -/
@@ -252,40 +323,11 @@ theorem actual_cubic_chart {K : Type} [Field K] [Infinite K]
               ((σ (dom i) - r)⁻¹) ^ d * σ (u 0 i) + σ z *
                 (((σ (dom i) - r)⁻¹) ^ d * σ (u 1 i)) := by
   classical
-  let d := 67108863
-  let W := SecondPrimeCoordinateWeight.weight d f
-  let M := population fam σ f
-  let q := fun z => (fam.q z).map σ
-  let R := fun z => f.derivative.eval₂ (evalRingHom (C (σ z))) (q z)
-  let S := M.filter fun z => R z ≠ 0
-  have hexc := SecondPrimeSectionResultant.secondPrime_multiple_section_cap σ f Q hchar hi hb
-    hQ hdiv htri M q (fun _ hz => (mem_filter.mp hz).2)
-  have hsize : M.card ≤ S.card + 161 := by
-    have hs := M.card_filter_add_card_filter_not (fun z => R z = 0)
-    change (M.filter fun z => R z = 0).card ≤ 161 at hexc
-    have hS : (M.filter fun z => ¬R z = 0) = S := by ext; simp [S]
-    rw [hS] at hs
-    omega
-  let e : I ↪ K := dom.trans ⟨σ, σ.injective⟩
-  obtain ⟨r, hr, hall⟩ := common_center S (univ.map e) R (fun z hz => (mem_filter.mp hz).2)
-  have hsite (i : I) : σ (dom i) ≠ r := fun he => hr (mem_map.mpr ⟨i, mem_univ i, he⟩)
-  refine ⟨r, hsite, S, filter_subset _ _, hsize, ?_⟩
-  intro z hz
-  have hzM := (mem_filter.mp hz).1
-  have hzG := (mem_filter.mp hzM).1
-  have hd := fam.degree_lt z hzG
-  have hq : (q z).natDegree ≤ d := natDegree_map_le.trans (by dsimp [d]; omega)
-  let Fz := f.map (evalRingHom (C (σ z)))
-  have hroot : Fz.eval (q z) = 0 := by simpa only [Fz, eval_map] using (mem_filter.mp hzM).2
-  have hw := section_weight d f (σ z)
-  refine ⟨chart_degree_le r d (q z) hq, ?_, ?_, ?_⟩
-  · rw [← eval_map, surface_fiber, plane_graph _ _ _ _ _ hq hw, hroot, map_zero]
-  · rw [← eval_map, ← derivative_map, surface_fiber]
-    apply derivative_graph_degree _ _ _ _ _ hq hw
-    simpa only [derivative_map, eval_map] using hall z hz
-  · intro i hi'
-    rw [chart_eval r (σ (dom i)) (hsite i) d _ hq, eval_map_apply, (mem_filter.mp hi').2,
-      map_add, map_mul]
-    ring
+  obtain ⟨r, _, hsite, hall⟩ := actual_cubic_chart_avoiding fam σ f ∅
+  have hcard := simple_card fam σ f Q hchar hi hb hQ hdiv htri
+  exact ⟨r, hsite, simplePopulation fam σ f, filter_subset _ _, by omega, hall⟩
+
+#print axioms simple_card
+#print axioms actual_cubic_chart_avoiding
 
 end ArkLib.ProximityGap.Frontier.SecondPrimeMobiusSections
