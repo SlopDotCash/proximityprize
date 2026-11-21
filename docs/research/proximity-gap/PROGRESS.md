@@ -1175,6 +1175,8 @@ For $k/n\to\rho\in(0,1)$ and $\log(p)/n\to c>0$, write $H(\rho)=-\rho\log\rho-(1
 
 A direct count controls labels whose rich polynomial witness satisfies $(X+z)P'=DP$. Over a field of characteristic zero or greater than the degree cap, a nonzero solution is a scalar multiple of $(X+z)^D$. Two agreement coordinates eliminate the multiplier and produce a nonzero scalar polynomial of degree at most $D+1$. This gives conditional thin-field bounds on actual bad challenges belonging to that differential equation. [Polynomial solution and MCA count](../../../ArkLib/Research/ProximityGap/Frontier/ShiftedPowerCurveCount.lean)
 
+For the translated polynomial powers in the companion theorem, the four respective label counts are at most 882,394,513, 956,021,025, 1,033,073,255 and 1,048,369,882 at the four previously certified radii. Each lies below the thinner designated budget of $2^{30}$. The target remains to control witnesses outside these families. [Translated polynomial pencils](../../../ArkLib/Research/ProximityGap/Frontier/PowerPencilCurveCount.lean)
+
 ## Prime-field radii, interpolation charges and four simultaneous witnesses
 
 At a positive multiple $n=128b$, every injection into a prime field of order $p\ge 2^{165}n^2$ meets the 128-bit affine-line MCA bound at the radii in the table. Each lies strictly beyond the finite Johnson radius. At the same radii, every prime field that admits the domain has the listed bound on the worst-case list size for every finite interleaving width. Packing the column into a rational function extends the scalar interpolation bound to all widths. [Four-rate bounds](../../../ArkLib/Research/ProximityGap/Frontier/ScaledFirstOrderSecurity.lean) · [Dao, Kominers and Thaler](https://eprint.iacr.org/2026/2056)
