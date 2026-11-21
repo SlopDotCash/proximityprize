@@ -356,6 +356,7 @@ import ArkLib.Research.ProximityGap.Frontier.LineListMCAWeldRound1
 import ArkLib.Research.ProximityGap.Frontier.LinearBudgetQuadraticInterpolation
 import ArkLib.Research.ProximityGap.Frontier.ListAtBinomialExtremalTwo
 import ArkLib.Research.ProximityGap.Frontier.ListCenterEntropyCeiling
+import ArkLib.Research.ProximityGap.Frontier.ListInterpolationBoundary
 import ArkLib.Research.ProximityGap.Frontier.ListScalarExtension
 import ArkLib.Research.ProximityGap.Frontier.LiuZhouSplitRecursion
 import ArkLib.Research.ProximityGap.Frontier.LogRatioTowerBoundedIncrement
