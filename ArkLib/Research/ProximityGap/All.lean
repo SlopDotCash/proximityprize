@@ -326,6 +326,7 @@ import ArkLib.Research.ProximityGap.Frontier.E3RouteBridge
 import ArkLib.Research.ProximityGap.Frontier.E3StrataCharZero
 import ArkLib.Research.ProximityGap.Frontier.EffKatzConductorBarrier
 import ArkLib.Research.ProximityGap.Frontier.EighthRatePrime159
+import ArkLib.Research.ProximityGap.Frontier.EighthTransverseMobius
 import ArkLib.Research.ProximityGap.Frontier.EnergyLogConvexRatioMonotone
 import ArkLib.Research.ProximityGap.Frontier.EnergyRatioSupNormLower
 import ArkLib.Research.ProximityGap.Frontier.EnergySlackToWraparoundK
@@ -825,7 +826,6 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeFourHeadEndpoints
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeHeadDescent
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeHessianTransport
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeHyperbolaGrid
-import ArkLib.Research.ProximityGap.Frontier.SecondPrimeTetrahedron
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeIntrinsicArithmetic
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeJetMultiplication
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeJetSpecialization
@@ -864,6 +864,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSmoothSeed
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSylvesterFiberMass
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeTerminalCharge
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeTerminalKernel
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeTetrahedron
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeUnrestrictedJetBudget
 import ArkLib.Research.ProximityGap.Frontier.SectionNumeratorCharts
 import ArkLib.Research.ProximityGap.Frontier.SelfConsistencyCeiling
