@@ -165,7 +165,8 @@ def cyclicDomain {M s : ℕ} (g : Fˣ) (hg : orderOf g = s * M) :
       rw [hg]
       exact (finProdFinEquiv (ij'.2, ij'.1)).isLt
 
-private def cyclicLabels {M s : ℕ} (hs : 0 < s) (g : Fˣ) (hg : orderOf g = s * M) :
+/-- The distinct labels of the power-map fibers in a cyclic domain. -/
+def cyclicLabels {M s : ℕ} (hs : 0 < s) (g : Fˣ) (hg : orderOf g = s * M) :
     Fin M ↪ F where
   toFun i := ↑(g ^ (s * i.val))
   inj' := by
@@ -175,25 +176,28 @@ private def cyclicLabels {M s : ℕ} (hs : 0 < s) (g : Fˣ) (hg : orderOf g = s 
       (hg ▸ Nat.mul_lt_mul_of_pos_left i.isLt hs)
       (hg ▸ Nat.mul_lt_mul_of_pos_left j.isLt hs) (Units.ext hij))
 
+/-- Raising a domain coordinate to the fiber size gives its quotient label. -/
+theorem cyclicDomain_pow {M s : ℕ} (hs : 0 < s) (g : Fˣ) (hg : orderOf g = s * M)
+    (ij : Fin M × Fin s) :
+    cyclicDomain g hg ij ^ Fintype.card (Fin s) = cyclicLabels hs g hg ij.1 := by
+  rw [Fintype.card_fin]
+  change ((g : F) ^ (ij.1.val + M * ij.2.val)) ^ s = (g : F) ^ (s * ij.1.val)
+  rw [← pow_mul, Nat.add_mul, Nat.mul_comm ij.1.val s, pow_add]
+  have hz : (g : F) ^ (s * M) = 1 := by
+    simpa only [Units.val_pow_eq_pow_val, Units.val_one] using
+      congrArg Units.val (show g ^ (s * M) = 1 from hg ▸ pow_orderOf_eq_one g)
+  rw [show M * ij.2.val * s = (s * M) * ij.2.val by ac_rfl,
+    pow_mul (g : F) (s*M) ij.2.val, hz, one_pow, mul_one]
+
 /-- The concrete cyclic subgroup case of the binomial bound. -/
 theorem cyclic_list_lower_bound {M s b : ℕ} (hM : 0 < M) (hs : 0 < s)
     (hb : 0 < b) (g : Fˣ) (hg : orderOf g = s * M) :
     (((M - 1).choose b : ℕ) : ℕ∞) ≤
       Code.Lambda (ReedSolomon.code (cyclicDomain g hg) (b * s) : Set (Fin M × Fin s → F))
         (((M * s - (b * s + (s - 1)) : ℕ) : ℝ) / (M * s : ℕ)) := by
-  have hp (ij : Fin M × Fin s) :
-      cyclicDomain g hg ij ^ Fintype.card (Fin s) = cyclicLabels hs g hg ij.1 := by
-    rw [Fintype.card_fin]
-    change ((g : F) ^ (ij.1.val + M * ij.2.val)) ^ s = (g : F) ^ (s * ij.1.val)
-    rw [← pow_mul, Nat.add_mul, Nat.mul_comm ij.1.val s, pow_add]
-    have hz : (g : F) ^ (s * M) = 1 := by
-      simpa only [Units.val_pow_eq_pow_val, Units.val_one] using
-        congrArg Units.val (show g ^ (s * M) = 1 from hg ▸ pow_orderOf_eq_one g)
-    rw [show M * ij.2.val * s = (s * M) * ij.2.val by ac_rfl,
-      pow_mul (g : F) (s*M) ij.2.val, hz, one_pow, mul_one]
   simpa [Fintype.card_prod] using
     list_lower_bound (cyclicDomain g hg) (cyclicLabels hs g hg)
-      (⟨0,hM⟩ : Fin M) (⟨0,hs⟩ : Fin s) b hb hp
+      (⟨0,hM⟩ : Fin M) (⟨0,hs⟩ : Fin s) b hb (cyclicDomain_pow hs g hg)
 
 #print axioms cyclic_list_lower_bound
 
