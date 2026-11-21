@@ -40,6 +40,7 @@ private theorem card_preimage (π : I → J) {m : ℕ}
          sum_congr rfl fun j hj => (congrArg Finset.card (he _ hj)).trans (hfib j)
     _ = _ := by simp
 
+omit [Fintype J] in
 private theorem descends (D : I ↪ F) (E : J ↪ F) (π : I → J) (P : F[X]) {k m : ℕ}
     (hm : 0 < m) (hk : 0 < k) (hP : P.natDegree = m) (hdom : ∀ i, P.eval (D i) = E (π i))
     (hfib : ∀ j, (univ.filter fun i => π i = j).card = m)

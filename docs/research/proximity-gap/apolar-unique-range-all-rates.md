@@ -46,4 +46,17 @@ The following counts are first bad errors at tolerance $2^{-128}$. Each row uses
 | $91343853062927602073649116268957764822404956161$ | 268435458 | 268435456 | 268435458 | 268435458 | 268435458 |
 | $137015778580855056324475321314283763769844695041$ | 402653184 | 268435456 | 402653184 | 402653184 | 402653184 |
 
-For the second row, $p=103079215165\cdot2^{120}+1$, the Proth witness is $3$, and $3^{(p-1)/2^{30}}$ is the order-$2^{30}$ element 92365554320529815296747239188837152885411596825. All displayed first bad errors are positive. Their immediately preceding integers pass, and each relative supremum is the displayed count divided by $2^{30}$. The named original production fields have different budgets. For every positive finite interleaving width the same MCA thresholds follow by exact interleaving stability. The unified safe-side proof is a written proof. Lean verifies the second field, its subgroup order and the bad-side numerator at $3/8$. [Quarter field certificate](../../../ArkLib/Research/ProximityGap/Frontier/RateQuarterApolarBudget.lean) · [Interleaving stability](../../../ArkLib/Data/CodingTheory/ProximityGap/InterleavingStabilityMCA.lean)
+For the second row, $p=103079215165\cdot2^{120}+1$, the Proth witness is $3$, and $3^{(p-1)/2^{30}}$ is the order-$2^{30}$ element 92365554320529815296747239188837152885411596825. All displayed first bad errors are positive. Their immediately preceding integers pass, and each relative supremum is the displayed count divided by $2^{30}$. The named original production fields have different budgets. For every positive finite interleaving width the same MCA thresholds follow by exact interleaving stability. The unified bound (1) has the written proof above. Both rows have complete Lean proofs. The cubic theorem proves the entire half-rate budget interval and the three neighboring rate profiles on the same field. A second proof at the larger field gives a strict real-radius predicate for every positive interleaving width at all four rates. [All four rates on the sharp budget interval](../../../ArkLib/Research/ProximityGap/Frontier/SharpApolarMCA.lean) [Four-rate cutoff](../../../ArkLib/Research/ProximityGap/Frontier/QuarterBudgetFourRates.lean) · [Quarter field certificate](../../../ArkLib/Research/ProximityGap/Frontier/RateQuarterApolarBudget.lean)
+
+## A second proof for entire budget intervals
+
+Lean proves that for $d=n-k-1$, $M_e>e+1$ implies
+$$
+(M_e-1)(n-k+1-2e)\le n
+$$
+when $2e\le n-k$. A regular minor of the minimal apolar pencil after its fixed sites are removed supplies the estimate. Kernels at distinct bad parameters belong to different eigenspaces of one matrix. Their total nullity is bounded by the size of the matrix, and incidences between the varying roots and the remaining domain sites are bounded by the locator's parameter degree. [Actual-MCA count](../../../ArkLib/Research/ProximityGap/Frontier/ApolarMovingCount.lean) · [Linear algebra and root count](../../../ArkLib/Research/ProximityGap/Frontier/ApolarPencilNullity.lean)
+
+At $n=2^{30}$ this proves the following full intervals on all eligible prime fields. Here $B=\lfloor p/2^{128}\rfloor$, $B\ge1$, and first bad counts are integers.
+
+* For every $1\le k\le n/2$ and $B\le 268435455$, the first bad count is $B$.
+* For $k+2a=n$, $k\ge2$, $n<3a$ and $B\le2a+1$, the first bad count is $\min(B,a)$. This applies at rates one quarter, one eighth and one sixteenth. For $2\le j\le a$, the key inequality is $j(2a+3-2j)>n$. Indeed, the left side is $2(j-2)(a-j)+4a-j\ge3a$. At $j=\min(B,a)$, the rank count therefore bounds the preceding step by $j$. The spike or bisimplex supplies the next bad step. [Verified intervals](../../../ArkLib/Research/ProximityGap/Frontier/ApolarSpikeBudgetRange.lean)

@@ -56,6 +56,43 @@ theorem sparse_dvd (H E : Finset K) (w v : K → K) (f : K[X]) {d s : ℕ}
 
 /-- Both interpolation polynomials are obtained from the pencil and its sparse
 fibers. A multiple of the domain vanisher clears every multiplicity. -/
+theorem interpolate_power (power : ℕ) (hpower : 0 < power) (H G : Finset K) (w : K → K[X]) (V : K[X]) (f : K[X][X])
+    {l d s : ℕ} (hG : G.Nonempty) (hV : Lagrange.nodal H id ∣ V)
+    (hw : ∀ i ∈ H, (w i).natDegree ≤ 1) (hf : ∀ j, (f.coeff j).natDegree ≤ l)
+    (hdeg : f.natDegree+s ≤ d) (hm : power *(l+1) < G.card+l)
+    (hsp : ∀ t ∈ G, ∃ E ⊆ H, E.card ≤ s+1 ∧ ∃ v : K → K, ∀ p : K[X], p.natDegree ≤ d →
+      weighted H (RingHom.id K) (fun i => (w i).eval t) p = weighted E (RingHom.id K) v p)
+    (ha : ∀ t ∈ G, ApolarThrough (weighted H (RingHom.id K) (fun i => (w i).eval t))
+      (f.map (evalRingHom t)) s) :
+    ∃ Q B : K[X][X],
+      C V * (Bivariate.swap (representative H C w f))^power =
+        Bivariate.swap f * Q + Lagrange.nodal G C * B ∧ Q.natDegree < G.card ∧
+        (B = 0 ∨ B.natDegree < l) := by
+  classical
+  let P := Bivariate.swap (representative H C w f)
+  have hp : P.natDegree ≤ l+1 := degree_swap _ _ (pencil_coefficient_degree H w f l hw hf)
+  apply interpolate_fiber_quotients G hG (Bivariate.swap f) (C V*P^power) l (degree_swap f l hf)
+  · have hd := (natDegree_C_mul_le V (P^power)).trans (natDegree_pow_le (p := P) (n := power))
+    exact hd.trans_lt ((Nat.mul_le_mul_left power hp).trans_lt hm)
+  · intro t ht
+    obtain ⟨E,hE,hc,v,hrep⟩ := hsp t ht
+    have hd := natDegree_map_le (p := f) (f := evalRingHom t)
+    have hh := sparse_dvd H E (fun i => (w i).eval t) v (f.map (evalRingHom t))
+      hE hc (by omega) hrep (ha t ht)
+    obtain ⟨W,hW⟩ := hV
+    let T := representative H id (fun i => (w i).eval t) (f.map (evalRingHom t))
+    change (Bivariate.swap f).eval (C t) ∣ (C V*P^power).eval (C t)
+    rw [eval_swap,eval_mul,eval_pow,eval_C,show P = _ from rfl,eval_swap,map_representative]
+    have hsite : (evalRingHom t) ∘ (C : K →+* K[X]) = id := by funext i; simp
+    rw [hsite,hW]
+    change _ ∣ (Lagrange.nodal H id*W)*T^power
+    rw [show power = (power-1)+1 by omega, pow_succ]
+    convert hh.mul_right (W*T^(power-1)) using 1
+    dsimp only [T]
+    ring
+
+/-- Both interpolation polynomials are obtained from the pencil and its sparse
+fibers. A multiple of the domain vanisher clears every multiplicity. -/
 theorem interpolate (H G : Finset K) (w : K → K[X]) (V : K[X]) (f : K[X][X])
     {l d s : ℕ} (hG : G.Nonempty) (hV : Lagrange.nodal H id ∣ V)
     (hw : ∀ i ∈ H, (w i).natDegree ≤ 1) (hf : ∀ j, (f.coeff j).natDegree ≤ l)
@@ -67,28 +104,8 @@ theorem interpolate (H G : Finset K) (w : K → K[X]) (V : K[X]) (f : K[X][X])
     ∃ Q B : K[X][X],
       C V * (Bivariate.swap (representative H C w f))^3 =
         Bivariate.swap f * Q + Lagrange.nodal G C * B ∧ Q.natDegree < G.card ∧
-        (B = 0 ∨ B.natDegree < l) := by
-  classical
-  let P := Bivariate.swap (representative H C w f)
-  have hp : P.natDegree ≤ l+1 := degree_swap _ _ (pencil_coefficient_degree H w f l hw hf)
-  apply interpolate_fiber_quotients G hG (Bivariate.swap f) (C V*P^3) l (degree_swap f l hf)
-  · have hd := (natDegree_C_mul_le V (P^3)).trans (natDegree_pow_le (p := P) (n := 3))
-    omega
-  · intro t ht
-    obtain ⟨E,hE,hc,v,hrep⟩ := hsp t ht
-    have hd := natDegree_map_le (p := f) (f := evalRingHom t)
-    have hh := sparse_dvd H E (fun i => (w i).eval t) v (f.map (evalRingHom t))
-      hE hc (by omega) hrep (ha t ht)
-    obtain ⟨W,hW⟩ := hV
-    let T := representative H id (fun i => (w i).eval t) (f.map (evalRingHom t))
-    change (Bivariate.swap f).eval (C t) ∣ (C V*P^3).eval (C t)
-    rw [eval_swap,eval_mul,eval_pow,eval_C,show P = _ from rfl,eval_swap,map_representative]
-    have hsite : (evalRingHom t) ∘ (C : K →+* K[X]) = id := by funext i; simp
-    rw [hsite,hW]
-    change _ ∣ (Lagrange.nodal H id*W)*T^3
-    convert hh.mul_right (W*T^2) using 1
-    dsimp only [T]
-    ring
+        (B = 0 ∨ B.natDegree < l) :=
+  interpolate_power 3 (by decide) H G w V f hG hV hw hf hdeg hm hsp ha
 
 #print axioms lift_agreement
 #print axioms sparse_dvd

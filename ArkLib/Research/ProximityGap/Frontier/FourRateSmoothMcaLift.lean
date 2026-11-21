@@ -109,6 +109,26 @@ theorem reverse_budget_failure (D : I ↪ F) [ReedSolomon.Smooth D] {r : ℕ}
   apply lower_rates_good _ (by simpa using hV) window
   fin_cases j <;> norm_num [prizeDimension,prizeDenominator,hV] at *
 
+/-- A single squaring step already breaks the literal 128-bit safety implication at
+the quarter rate. At 95/128 the base length 128 is safe while length 256 fails. -/
+theorem quarter_doubling_failure (D : I ↪ F) [ReedSolomon.Smooth D]
+    (hn : Fintype.card I = 256) (window : BudgetWindow (Fintype.card F)) :
+    ∃ V : Finset F, V.card = 128 ∧ (∀ i, D i ^ 2 ∈ V) ∧
+      (∀ v ∈ V, (univ.filter (fun i => D i ^ 2 = v)).card = 2) ∧
+      epsMCA (F := F) (ReedSolomon.code (Function.Embedding.subtype (· ∈ V)) 32 :
+        Set (V → F)) (95/128) ≤ ((prizeThreshold : ℝ≥0) : ℝ≥0∞) ∧
+      ((prizeThreshold : ℝ≥0) : ℝ≥0∞) <
+        epsMCA (F := F) (ReedSolomon.code D 64 : Set (I → F)) (95/128) := by
+  classical
+  obtain ⟨V,hV,hmem,hf,_,_⟩ := SmoothPowerMcaDescent.exists_smooth_base D (m := 2)
+    (h := 128) (by decide) hn ⟨7,rfl⟩
+  let : Nonempty V := Fintype.card_pos_iff.mp (by simp [hV])
+  refine ⟨V,hV,hmem,hf,lower_rates_good _ (by simpa using hV) window (Or.inl rfl) _,?_⟩
+  apply power_bad D (m := 1) (h := 256) (k := 64) (by decide) (by decide) (by decide)
+    (by decide) (by decide) hn ⟨8,rfl⟩ window
+  · rw [Nat.choose_eq_descFactorial_div_factorial]; decide
+  · norm_num
+
 /-- At the certified 246-bit prime these bounds apply on every smooth domain of size 2³⁰. -/
 theorem prime246_thresholds (D : I ↪ FourRateListPrime246.K) [ReedSolomon.Smooth D]
     (hn : Fintype.card I = 2^30) (j : Fin 4) (width : ℕ) [NeZero width] :
@@ -117,6 +137,23 @@ theorem prime246_thresholds (D : I ↪ FourRateListPrime246.K) [ReedSolomon.Smoo
         ^⋈ (Fin width)) ((prizeThreshold : ℝ≥0) : ℝ≥0∞) ≤ failureRadius j :=
   threshold_le_failureRadius D (r := 2097152) (by decide) (hn.trans (by decide)) prime246_window j width
 
+/-- The production-length family is inhabited: the multiplicative group of the
+certified prime contains a subgroup of order 2³⁰, since 2³⁰ divides its order. -/
+theorem prime246_exists_four_rates :
+    ∃ D : Fin (2^30) ↪ FourRateListPrime246.K, Nonempty (ReedSolomon.Smooth D) ∧
+      ∀ (j : Fin 4) (width : ℕ) [NeZero width],
+        MCAThresholdLedger.mcaDeltaStar (F := FourRateListPrime246.K)
+          ((ReedSolomon.code D (prizeDimension (ι := Fin (2^30)) j) :
+            Set (Fin (2^30) → FourRateListPrime246.K)) ^⋈ (Fin width))
+          ((prizeThreshold : ℝ≥0) : ℝ≥0∞) ≤ failureRadius j := by
+  classical
+  obtain ⟨D,⟨sm⟩⟩ := SmoothPowerMcaDescent.exists_prime_domain
+    (p := FourRateListPrime246.P) (n := 2^30) (by decide) ⟨30,rfl⟩
+  let := sm
+  exact ⟨D,⟨sm⟩,fun j width _ => prime246_thresholds D (Fintype.card_fin _) j width⟩
+
+#print axioms quarter_doubling_failure
+#print axioms prime246_exists_four_rates
 #print axioms reverse_budget_failure
 #print axioms all_rates_bad
 #print axioms threshold_le_failureRadius
