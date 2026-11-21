@@ -276,6 +276,7 @@ import ArkLib.Research.ProximityGap.Frontier.DiscriminantSquareClass
 import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodMomentLaw
 import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodSecondMoment
 import ArkLib.Research.ProximityGap.Frontier.DividedDifferenceDeflation
+import ArkLib.Research.ProximityGap.Frontier.DyadicCharacterCirculant
 import ArkLib.Research.ProximityGap.Frontier.DyadicGeomeanPrizeVsSqrtN
 import ArkLib.Research.ProximityGap.Frontier.DyadicParityLemma
 import ArkLib.Research.ProximityGap.Frontier.DyadicPeriodCeiling
@@ -440,6 +441,7 @@ import ArkLib.Research.ProximityGap.Frontier.MultUniformAgreementSizeCap
 import ArkLib.Research.ProximityGap.Frontier.MultUpperAgreementBinom
 import ArkLib.Research.ProximityGap.Frontier.NAShaoFloorBridge
 import ArkLib.Research.ProximityGap.Frontier.NVMDyadicTowerObstruction
+import ArkLib.Research.ProximityGap.Frontier.NamedCharacterBlocks
 import ArkLib.Research.ProximityGap.Frontier.NearRamanujanFromDCSaddle
 import ArkLib.Research.ProximityGap.Frontier.NearRamanujanFromSaddle
 import ArkLib.Research.ProximityGap.Frontier.NegSymCountDiagonalFloor
