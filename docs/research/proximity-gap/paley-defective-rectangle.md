@@ -91,7 +91,7 @@ Suppose $a,b\to\infty$, $a\le(p+1)/2$, and $d/(ab)\to\lambda$ for fixed $0<\lamb
 $$
  \limsup\frac{|S|}{ab}\le\sqrt{2\lambda-\lambda^2}.
 $$
-For $a,b=(1+o(1))\sqrt p$, $\lambda=1/2$ and $x/a\to1/4$. Thus the constant is $\sqrt3/2=0.8660254\ldots$. Equivalently the proportion of each of the two nonzero signs is at least $(2-\sqrt3)/4-o(1)$ at this scale, by applying the error bound to the two signs. More generally the estimate gives a strict constant whenever $ab/p$ tends to a constant greater than $1/2$. For balanced sizes $p^\epsilon$ with fixed $\epsilon<1/2$, the condition $d/(ab)<1$ eventually fails. The proof gives no power saving at the boundary $ab\sim p$.
+For $a,b=(1+o(1))\sqrt p$, $\lambda=1/2$ and $x/a\to1/4$. Thus the constant is $\sqrt3/2=0.8660254\ldots$. Lean verifies this asymptotic assertion for every sequence of primes and prescribed sets satisfying the two size limits. [Asymptotic theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyBalancedLimit.lean) Equivalently the proportion of each of the two nonzero signs is at least $(2-\sqrt3)/4-o(1)$ at this scale, by applying the error bound to the two signs. More generally the estimate gives a strict constant whenever $ab/p$ tends to a constant greater than $1/2$. For balanced sizes $p^\epsilon$ with fixed $\epsilon<1/2$, the condition $d/(ab)<1$ eventually fails. The proof gives no power saving at the boundary $ab\sim p$.
 
 ## The degree barrier for every puncturing
 
@@ -146,7 +146,7 @@ The basis argument proving (4) applies with the new degree $s-2e$, denominator p
 
 ## Verification
 
-The argument above is a written proof. The following independent exact checks exercise it in small fields. For each prime in the displayed program, the test considers every admissible coordinate set $A$, every positive size $b$, every admissible $x$ and both choices of sign. For fixed $A,b$ and sign, the maximum of $\pm S+z$ over all sets $B$ is the sum of the $b$ largest individual scores, so the comparisons cover every $B$ of that size. Running this Python 3 program checks 97,211 coordinate sets and 10,922,144 inequalities.
+Lean verifies inequality (1) for every admissible prime and every prescribed pair of sets. It also verifies the concrete upper bound 56,719 on $|S|+z$ for all 256-by-256 rectangles at $p=65537$. The following independent exact checks exercise the bound in small fields. [Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyPrescribedRectangle.lean) For each prime in the displayed program, the test considers every admissible coordinate set $A$, every positive size $b$, every admissible $x$ and both choices of sign. For fixed $A,b$ and sign, the maximum of $\pm S+z$ over all sets $B$ is the sum of the $b$ largest individual scores, so the comparisons cover every $B$ of that size. Running this Python 3 program checks 97,211 coordinate sets and 10,922,144 inequalities.
 
 ```python
 from itertools import combinations

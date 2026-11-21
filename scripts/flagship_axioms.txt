@@ -204,3 +204,7 @@ ArkLib.Research.ProximityGap.Frontier.SecondPrimeActualCubicCap ArkLib.Proximity
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeSmallCubic ArkLib.ProximityGap.Frontier.SecondPrimeSmallCubic.actual_exception
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeSmallCubic ArkLib.ProximityGap.Frontier.SecondPrimeSmallCubic.threshold_of_small_cubic_charge
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeMobiusSections ArkLib.ProximityGap.Frontier.SecondPrimeMobiusSections.actual_cubic_chart
+
+# First-prime quarter-rate interval and the exact apolar endpoint
+ArkLib.Research.ProximityGap.Frontier.QuarterRateApolarBracket ArkLib.ProximityGap.Frontier.QuarterRateApolarBracket.endpoint_mass
+ArkLib.Research.ProximityGap.Frontier.QuarterRateApolarBracket ArkLib.ProximityGap.Frontier.QuarterRateApolarBracket.named_bracket
