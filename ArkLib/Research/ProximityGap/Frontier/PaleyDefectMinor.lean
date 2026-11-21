@@ -1,6 +1,7 @@
 /-
 Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
-SPDX-License-Identifier: MIT OR Apache-2.0
+Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and LICENSE.
+Authors: Proximity Prize Contributors
 -/
 import Mathlib.LinearAlgebra.Matrix.SchurComplement
 import Mathlib.Algebra.Polynomial.Derivative
@@ -138,15 +139,13 @@ noncomputable def normalizedHankel {K : Type*} [Field K] (F : K[X]) (D h : ℕ) 
     Matrix (Fin (h+1)) (Fin (h+1)) K[X] := fun i j =>
   C ((D.descFactorial (i.val + j.val) : K)⁻¹) * derivative^[i.val + j.val] F
 
-/-- A single contact congruence to `e` shifted powers implies the full weighted
-multiplicity of the normalized Hankel determinant. In the Hanson–Petridis
-application `t = X - C b` and the shifted powers are the exceptional signs. -/
-theorem pow_dvd_normalizedHankel_of_contact {K : Type*} [Field K] (F t : K[X])
-    (a c : Fin e → K) (D h s : ℕ) (hD : 2*h ≤ D)
-    (hunit : ∀ k ≤ 2*h, (D.descFactorial k : K) ≠ 0)
-    (hcontact : t ^ (s + 2*h) ∣ F - ∑ l : Fin e, C (c l) * (X + C (a l)) ^ D) :
-    let r := h + 1 - e
-    t ^ (r * s + r * (r - 1)) ∣ (normalizedHankel F D h).det := by
+/-- The normalized derivative matrix of a sum of shifted powers factors through one
+column per summand over the polynomial ring itself. -/
+theorem normalizedHankel_shifted_powers_factors {K : Type*} [Field K]
+    (a c : Fin e → K) (D h : ℕ) (hD : 2*h ≤ D)
+    (hunit : ∀ k ≤ 2*h, (D.descFactorial k : K) ≠ 0) :
+    ∃ (U : Matrix (Fin (h+1)) (Fin e) K[X]) (V : Matrix (Fin e) (Fin (h+1)) K[X]),
+      normalizedHankel (∑ l : Fin e, C (c l) * (X + C (a l)) ^ D) D h = U * V := by
   let W := ∑ l : Fin e, C (c l) * (X + C (a l)) ^ D
   let U : Matrix (Fin (h+1)) (Fin e) K[X] := fun i l =>
     C (c l) * (X + C (a l)) ^ (D - 2*h + (h-i.val))
@@ -171,17 +170,39 @@ theorem pow_dvd_normalizedHankel_of_contact {K : Type*} [Field K] (F t : K[X])
         congr 2
         dsimp [k]
         omega
+  exact ⟨U,V,heq⟩
+
+/-- Polynomial contact with an approximant whose normalized derivative matrix factors
+through `e` columns gives a weighted determinant divisor. -/
+theorem pow_dvd_normalizedHankel_of_factored_contact {K : Type*} [Field K]
+    (F W t : K[X]) (D h s : ℕ) (U : Matrix (Fin (h+1)) (Fin e) K[X])
+    (V : Matrix (Fin e) (Fin (h+1)) K[X]) (heq : normalizedHankel W D h = U * V)
+    (hcontact : t ^ (s + 2*h) ∣ F - W) :
+    let r := h + 1 - e
+    t ^ (r * s + r * (r - 1)) ∣ (normalizedHankel F D h).det := by
   apply pow_dvd_det_of_derivative_approx (normalizedHankel F D h) U V t s
   intro i j
   let k := i.val + j.val
   have hdvd := pow_sub_dvd_iterate_derivative_of_pow_dvd k
-    (show t ^ (s + 2*h) ∣ F - W from hcontact)
+    hcontact
   have hw : s + (h-i.val) + (h-j.val) = s + 2*h - k := by dsimp [k]; omega
   rw [hw, ← heq, Matrix.sub_apply]
   change t ^ (s + 2*h - k) ∣ C ((D.descFactorial k : K)⁻¹) * derivative^[k] F -
     C ((D.descFactorial k : K)⁻¹) * derivative^[k] W
   rw [← mul_sub, ← iterate_derivative_sub]
   exact dvd_mul_of_dvd_right hdvd _
+
+/-- A single contact congruence to `e` shifted powers implies the full weighted
+multiplicity of the normalized Hankel determinant. In the Hanson–Petridis
+application `t = X - C b` and the shifted powers are the exceptional signs. -/
+theorem pow_dvd_normalizedHankel_of_contact {K : Type*} [Field K] (F t : K[X])
+    (a c : Fin e → K) (D h s : ℕ) (hD : 2*h ≤ D)
+    (hunit : ∀ k ≤ 2*h, (D.descFactorial k : K) ≠ 0)
+    (hcontact : t ^ (s + 2*h) ∣ F - ∑ l : Fin e, C (c l) * (X + C (a l)) ^ D) :
+    let r := h + 1 - e
+    t ^ (r * s + r * (r - 1)) ∣ (normalizedHankel F D h).det := by
+  obtain ⟨U,V,heq⟩ := normalizedHankel_shifted_powers_factors a c D h hD hunit
+  exact pow_dvd_normalizedHankel_of_factored_contact F _ t D h s U V heq hcontact
 
 #print axioms pow_dvd_normalizedHankel_of_contact
 #print axioms pow_dvd_det_of_derivative_approx
