@@ -551,6 +551,7 @@ import ArkLib.Research.ProximityGap.Frontier.PackingCoverSharpReach
 import ArkLib.Research.ProximityGap.Frontier.PackingDeflationBandAntitone
 import ArkLib.Research.ProximityGap.Frontier.PackingFloorTwoPowLower
 import ArkLib.Research.ProximityGap.Frontier.PaddedPowerSpecialization
+import ArkLib.Research.ProximityGap.Frontier.PairedSignatureBalance
 import ArkLib.Research.ProximityGap.Frontier.PaleyAbsoluteSlice
 import ArkLib.Research.ProximityGap.Frontier.PaleyAffineSecondMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleyBalancedLimit
