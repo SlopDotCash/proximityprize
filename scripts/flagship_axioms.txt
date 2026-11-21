@@ -296,6 +296,10 @@ ArkLib.Research.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow ArkLib.Proximit
 ArkLib.Research.ProximityGap.Frontier.PrimitiveReceivedInterpolation ArkLib.ProximityGap.Frontier.PrimitiveReceivedInterpolation.raw_primitive_section
 ArkLib.Research.ProximityGap.Frontier.DegreeTenDeficitWindow ArkLib.ProximityGap.Frontier.DegreeTenDeficitWindow.primitive_two_head_bracket
 
+# Third secant from agreement outside two nearly full cores
+ArkLib.Research.ProximityGap.Frontier.ThirdHeadComplement ArkLib.ProximityGap.Frontier.ThirdHeadComplement.six_step_window
+ArkLib.Research.ProximityGap.Frontier.ThirdHeadComplement ArkLib.ProximityGap.Frontier.ThirdHeadComplement.eps_upper
+
 # Exact two-head probabilities and thresholds up to the degree-saturated rate-sixteenth step
 ArkLib.Research.ProximityGap.Frontier.SixteenthSaturatedHeads ArkLib.ProximityGap.Frontier.SixteenthSaturatedHeads.smooth_threshold
 ArkLib.Research.ProximityGap.Frontier.SixteenthSaturatedHeads ArkLib.ProximityGap.Frontier.SixteenthSaturatedHeads.exact_mass
