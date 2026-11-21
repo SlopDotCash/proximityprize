@@ -870,6 +870,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSmoothSeed
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSylvesterFiberMass
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeTerminalCharge
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeTerminalKernel
+import ArkLib.Research.ProximityGap.Frontier.RationalTetrahedronLimits
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeTetrahedron
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeUnrestrictedJetBudget
 import ArkLib.Research.ProximityGap.Frontier.SectionNumeratorCharts

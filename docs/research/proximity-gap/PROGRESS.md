@@ -6,6 +6,8 @@ The rectangular hyperbola construction at half rate now has exact one-fresh firs
 
 At half rate on the second named subgroup, six tetrahedron edges lower the unrestricted first-failure upper bound to **387,740,104 errors**, an improvement of **14,913,081**. Four power fibers have three owners each. After reserving 402,653,182 common roots, 44,739,241 sites take a received value outside all heads and supply six labels each. The same pair has **2,147,483,649** distinct bad scalars at every dimension from 536,870,912 through 686,001,719 and every positive width. Independent verified replay accepted 29,716 declarations. The exact first failure remains open. [Proof and count](second-prime-tetrahedron.md) · [Lean witness](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeTetrahedron.lean)
 
+Allowing arbitrary rational reparameterizations of the 16-node tetrahedron leaves its first over-budget count at **387,740,104** on the second prime. The only possibly better degree is three and it would need four completely split vertex fibers. All seven normalized named-field candidates have at most three. On 32 nodes the exhaustive quintic test has zero solutions in 3,199 five-set orbits. The sextic test with two full fibers has 19 exact hits, all with fourth-largest fiber at most four. A surviving sextic must have vertex sizes exactly **6,5,5,5**, and a surviving septic needs four fibers of size at least six. Lean checks the size constraints and the integer sieve verifies the finite classifications. [Derivation and reproduction](second-prime-tetrahedron.md#rational-quotients-on-sixteen-and-thirty-two-nodes)
+
 ## Verified results and open cases
 
 | Question | Result | Verification |
