@@ -1,0 +1,56 @@
+# A rate-one-eighth threshold at determinant equality
+
+Let $H$ be the multiplicative subgroup of order $n=2^{30}$ in a finite field of characteristic $p>3n^2$, with $k=n/8$. At **626,349,397 errors**, the maximum number of genuinely bad two-row MCA scalars is **1,879,048,194**. At the preceding count, every received pair on every injective domain has at most **1,409,286,144** bad scalars. Consequently for every such field with $1,409,286,144\le\lfloor |F|/2^{128}\rfloor\le1,879,048,193$ the first failing count is exactly **626,349,397**. This gives one threshold for 469,762,050 different integer budgets. The conclusion applies to every positive interleaving width by the row-width identity. This is a written proof. The accompanying checker reconstructs five smaller models and checks the production inequalities exactly. [Checker](../../../scripts/probes/probe_saturated_three_heads.py)
+
+## A pair of received words at the saturated step
+
+Set $d=k-1$, $e=626349397$ and $t=n-e$. The equality $3(t-1)=n+2d$ permits exactly two excess joint-core memberships per zero of a common locator, and one per simple double agreement. We use $c=k-4$ common sites and six double agreements.
+
+Choose an eighth root $\omega$ of order eight. For $i=0,1,2$ let $r_i=\omega^{2i}$ and $f_i=(X-r_i)(X-\omega r_i)$. The coefficient columns in the basis $1,X,X^2$ are $(\omega r_i^2,-(1+\omega)r_i,1)$. They are independent by the Vandermonde determinant. Write $(u_i,v_i,w_i)$ for the rows of the inverse matrix. Thus the three sums $\sum_i f_i u_i,\sum_i f_i v_i,\sum_i f_i w_i$ are $1,X,X^2$. The polynomial vectors
+\[
+ D_i=f_i(X)(u_iX-v_i,\ v_iX-w_i)
+\]
+sum to zero. Each vector defines a direction $\ell_i(X)=(v_iX-w_i)/(u_iX-v_i)$ on the projective line. This is an invertible Möbius transformation. Indeed a singular dual row satisfies $u_iw_i=v_i^2$. With $u_i\ne0$ its functional is proportional to evaluation at $v_i/u_i$, and would force two disjoint quadratics to share a root. With $u_i=0$ it extracts the leading coefficient and cannot annihilate either monic quadratic.
+
+Each $\ell_i$ exchanges both roots of each $f_j$ for $j\ne i$, by the duality identity $u_i ab-v_i(a+b)+w_i=0$ for those pairs $(a,b)$. For $i\ne j$ the maps are distinct, since their defining matrices are projectively proportional only if the corresponding dual rows are. The fixed points of $\ell_j^{-1}\ell_i$ are exactly the roots of the remaining quadratic. These are nonzero, finite and non-antipodal. Consequently the map has neither form $\lambda X$ nor $\lambda/X$.
+
+At each unmarked site retain all three candidate directions. At a marked root of $f_i$ retain just the directions indexed by $j\ne i$. These two give the same output, the other root of $f_i$. The six marked outputs are therefore distinct. Outputs at an unmarked site are pairwise different. For $i\ne j$, a coincidence $\ell_i(x)=\ell_j(y)$ requires $y=\ell_j^{-1}\ell_i(x)$ with $x,y\in H$. Corvaja and Zannier's Theorem 2 bounds their number by $\max((108n^2)^{1/3},12n^2/p)$: $X^n$ and $(\ell_j^{-1}\ell_i(X))^n$ have nonzero derivative, have at most four zeros and poles in total, and are multiplicatively independent modulo constants. Dependence would force the zero and pole of the Möbius map to be $0,\infty$. The next section also gives an elementary bound sufficient for this proof. [Corvaja and Zannier, Theorem 2](https://doi.org/10.4171/jems/409)
+
+For each of the three unordered pairs of directions, delete one unmarked endpoint of every collision between different sites. This is possible since no two marked sites conflict. Fewer than $c$ sites suffice. Extend the deletion set to $c$ unmarked sites and let $V$ be its monic vanishing polynomial. Define three ordered pairs of polynomials by $W_0=0$, $W_1=-VD_0$, $W_2=VD_2$. Their cyclic differences are $VD_i$ and all entries have degree at most $c+3=k-1$. Take the received pair to be zero on the $c$ common sites. At a root of $f_i$ take the shared value of $W_i$ and $W_{i+1}$ (indices modulo three). Partition the $n-c-6$ other sites equally among the three heads and use their assigned values. Each head agrees in both rows on precisely $c+4+(n-c-6)/3=t-1$ sites.
+
+Each remaining head-site incidence specifies a nonzero projective direction of disagreement. There are two different directions at each private site and one at each mark. All these directions are distinct by deletion. Apply a common invertible linear change to both coordinates of every head and the received words so that every direction has nonzero second coordinate. One can choose the pole of the change outside the at most $3n$ used directions. Each incidence now supplies its own finite label $z$, for which the folded word agrees with that head's folded polynomial at the extra site and its $t-1$ core sites. Any jointly fitting pair on this support would equal the given head identically, since $t-1\ge k$ and the domain is injective. It fails at the extra site. This proves literal badness on the indicated support for $2(n-c-6)+6=3(e+1)$ distinct labels. The matching upper bound at this exact step is part of the existing three-head upper-count proof, which starts at its $E-1$. [Upper-count theorem](rate-eighth-three-head-window.md#counting-the-remaining-heads)
+
+## An elementary intersection bound for a Möbius graph
+
+Let $M$ be any Möbius transformation over the field other than $\lambda X$ and $\lambda/X$. After replacing it by $1/M$ if needed, it has a finite nonzero simple zero $\alpha$. Write $M=P/Q$ in lowest terms. For positive integers $A,B,C,T$ with $A\le n$, $AB\le n$, $A-1+(B-1)n<p$, $T<p$ and $ABC>T(A+T-1)$, one has
+\[
+ |H\cap M^{-1}(H)|\ \le\ \left\lfloor\frac{A-1+n(B+C-2)}T\right\rfloor .
+\]
+Consider the $ABC$ rational functions $X^{a+bn}M(X)^{cn}$ for $0\le a<A$, $0\le b<B$, $0\le c<C$. They are linearly independent. In a relation take the least active $c$ and divide by $M^{cn}$. The nonzero sparse polynomial in its coefficient has at most $AB$ monomials with distinct exponents below $p$. Its order at $\alpha$ is below $AB$: applying $(X\,d/dX)^j$ at $\alpha$ for $0\le j<m$ gives a nonsingular Vandermonde matrix on its $m$ occupied exponents, with columns scaled by nonzero powers of $\alpha$. All the other terms vanish to order at least $n$, a contradiction.
+
+Put $D=XPQ$. For each such function $f$ the expression $D^j f^{(j)}/f$ is a polynomial of degree at most $2j$. Starting at 1, the next expression is $D R'+[(a+bn)PQ+cnX(P'Q-PQ')-jD']R$. On $H\cap M^{-1}(H)$ the factor $f$ reduces to $X^a$. To make a linear combination and its first $T-1$ derivatives vanish there, set each reduced polynomial identically zero. These are at most $\sum_{j<T}(A+2j)=T(A+T-1)$ linear equations. There is a nonzero combination by independence. After multiplication by $Q^{(C-1)n}$ it is a nonzero polynomial of degree at most $A-1+n(B+C-2)$. Each common point is a zero of order at least $T$ because the denominator is a unit there and $T<p$. The root count proves the bound. At $(A,B,C,T)=(32768,128,128,8192)$ it gives 33,292,291 per pair. Thus the three pairs consume at most 99,876,873 of the 134,217,724 available common sites.
+
+## Safety immediately before the saturated step
+
+Here $e=626349396$, $t=447392428$. Apply the component construction at the fixed agreement cutoff $t_0$ from the rate-eighth proof, since $t\ge t_0$. All its geometric estimates preceding the final head count depend only on $t_0$ and the component, so apply them to the full bad family with one chosen witness per label. There are at most 74 scalar labels on vertical factors and total positive value degree at most six. A value-linear nonhead carries at most 4095 labels. For nonlinear degree $b=2,3,4,5,6$ respectively the same proof gives a cap $b s_b+8500$ for
+\[
+ (s_2,s_3,s_4,s_5,s_6)=(9000000,17000000,25000000,34000000,46000000).
+\]
+To verify the substitutions, the large-polar surplus requires $(s_b-209)(64/12-27/10)>210\cdot64\cdot6+27\binom{65}{2}$. For the small-polar surplus it suffices that
+\[
+ 16^2(54b-b^2)(\max(17b-1,90)+1)
+ \big[(2b+1)814n/1000-b^2d-b\big]<(s_b+1)n .
+\]
+Both hold for each degree. The degree and exceptional-section allowances are unchanged. [Component estimates and their derivation](rate-eighth-three-head-window.md#large-polar-count)
+
+Call a genuine affine head large above $s_1=\lfloor e/128\rfloor+1$ labels. Every such head with core size $c'$ has $c'\ge z=t-127$, since $(L-1)(t-c')\le e$ for occupancy $L$ when $c'<t$. For a total of $r$ remaining value degrees, the caps $C_0=0,C_1=s_1,C_b=b s_b+8500$ are superadditive on $0,\ldots,6$. Each large head carries at most $e+1$ labels. With $j\le2$ large heads the total is therefore at most $j(e+1)+C_{6-j}+74$.
+
+If some three large heads are noncollinear, their union of joint cores has at least $3z-2d$ sites by the determinant root bound. An outside witness could agree on at most $n-3z+5d<t$ sites, so all labels lie on those three heads. Write $h_i=\max(0,t-1-c_i)$ for their core deficits. The sum of core sizes is at most $n+2d$ even if the core union misses some sites. Thus $\sum h_i\ge3(t-1)-n-2d=3$. Each occupancy is at most $1+\lfloor e/(1+h_i)\rfloor$. For $c_i\ge t-1$ this uses the fact that every bad scalar needs at least one fresh site outside the core, each supplying at most one label on that head. Reduce the three deficits to sum exactly three. The partitions $(3,0,0),(2,1,0),(1,1,1)$ show that the largest total is $2(e+1)+1+\lfloor e/4\rfloor=1409286144$. [Formal determinant cover](../../../ArkLib/Research/ProximityGap/Frontier/ThreeHeadDeterminantCover.lean)
+
+In the remaining case $3\le j\le6$ and all the large heads are collinear. Their union size is at least
+\[
+ V_j=\max\left(jz-\binom j2d,\left\lceil\frac{jz^2}{z+(j-1)d}\right\rceil\right)
+\]
+by pairwise intersection and Cauchy–Schwarz. An inside site supplies at most one distinct fresh scalar to these heads combined, and an outside site supplies at most $j$. The total is at most $jn-(j-1)V_j+C_{6-j}+74$. The resulting caps for $j=0,\ldots,6$ are $276008574,796357971,1352707368,1393186602,1360187344,1306400417,1073744283$. Each is below the noncollinear ceiling. This proves predecessor safety. Monotonicity and Hamming-step constancy give the claimed exact boundary in real radius.
+
+The two ends of the budget interval are realized by the primes $479555224749202520035665083764944545979308179457$ and $639406966672552393635175097136168735336233435137$. The checker supplies their Proth certificates and three interior examples. For $p=m2^{80}+1$ with odd $m<2^{80}$, a witness $a^{(p-1)/2}=-1\bmod p$ forces every prime divisor to be $1\bmod 2^{80}$ by multiplicative order. Each divisor then exceeds $\sqrt p$, proving primality. Each field contains the required subgroup.
