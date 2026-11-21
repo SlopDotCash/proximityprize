@@ -14,6 +14,12 @@ P=113
 N=16
 
 
+def require(condition: bool, message: str) -> None:
+    """Keep the exact G297 coefficient certificate active under Python optimization."""
+    if not condition:
+        raise AssertionError(message)
+
+
 def factors(n:int)->list[int]:
     out=[]
     d=2
@@ -41,7 +47,7 @@ def subgroup(p:int,n:int)->list[int]:
     for _ in range(n):
         out.append(x)
         x=x*h%p
-    assert x==1 and len(set(out))==n
+    require(x==1 and len(set(out))==n, f"subgroup construction failed for p={p}, n={n}")
     return out
 
 
@@ -55,7 +61,10 @@ def subset_hist(G:list[int],p:int,max_r:int)->list[list[int]]:
             for s,v in enumerate(dp[r-1]):
                 if v:dp[r][(s+x)%p]+=v
     for r in range(max_r+1):
-        assert sum(dp[r])==comb(len(G),r)
+        require(
+            sum(dp[r])==comb(len(G),r),
+            f"subset histogram mass failed at r={r}",
+        )
     return dp
 
 
@@ -65,7 +74,7 @@ def difference_corr(a:list[int],b:list[int],p:int)->list[int]:
         if not v:continue
         for y,w in enumerate(b):
             if w:out[(x-y)%p]+=v*w
-    assert sum(out)==sum(a)*sum(b)
+    require(sum(out)==sum(a)*sum(b), "difference correlation lost total mass")
     return out
 
 
@@ -73,13 +82,16 @@ def kernel(G:list[int],p:int,a:int)->list[int]:
     out=[0]*p
     for y in G:
         for z in G:out[(a*y-z)%p]+=1
-    assert sum(out)==len(G)**2
+    require(sum(out)==len(G)**2, f"kernel mass failed for coefficient a={a}")
     # For a != 0, W_a(t)=|aG intersect (G+t)|. At a=0, y has multiplicity n.
     if a:
         aG={a*y%p for y in G}
         Gs=set(G)
         for t in range(p):
-            assert out[t]==sum(1 for x in aG if (x-t)%p in Gs)
+            require(
+                out[t]==sum(1 for x in aG if (x-t)%p in Gs),
+                f"intersection formula failed for a={a}, t={t}",
+            )
     return out
 
 
@@ -90,7 +102,7 @@ def alignment(W:list[int],R:list[int],p:int,n:int)->int:
 def main()->None:
     G=subgroup(P,N)
     Gset=set(G)
-    assert pow(2,N,P)!=1  # target coefficient lies outside G
+    require(pow(2,N,P)!=1, "target coefficient 2 unexpectedly lies in G")
     hist=subset_hist(G,P,6)
     family_W=[kernel(G,P,a) for a in range(P)]
     W1=family_W[1]
@@ -98,10 +110,16 @@ def main()->None:
 
     # Universal identities formalized in Lean: pointwise total mass and coset constancy.
     for t in range(P):
-        assert sum(W[t] for W in family_W)==N*N
+        require(
+            sum(W[t] for W in family_W)==N*N,
+            f"coefficient family total mass failed at t={t}",
+        )
     for a in range(P):
         for u in G:
-            assert family_W[a]==family_W[a*u%P]
+            require(
+                family_W[a]==family_W[a*u%P],
+                f"kernel coset invariance failed for a={a}, u={u}",
+            )
 
     expected={
         5:(-2977296,1727120,4704416),
@@ -112,16 +130,25 @@ def main()->None:
         anchors=[alignment(W,R,P,N) for W in family_W]
         A1,A2=anchors[1],anchors[2]
         D=A2-A1
-        assert (A1,A2,D)==expected[r]
+        require(
+            (A1,A2,D)==expected[r],
+            f"G297 exact witness pin failed at r={r}: {(A1,A2,D)}",
+        )
         # Equal masses cancel the principal term exactly in the deformation.
-        assert D==P*sum((x-y)*z for x,y,z in zip(W2,W1,R))
+        require(
+            D==P*sum((x-y)*z for x,y,z in zip(W2,W1,R)),
+            f"deformation identity failed at r={r}",
+        )
         # The complete coefficient family is zero-sum. The nonzero sum is exactly -A_0.
-        assert sum(anchors)==0
-        assert sum(anchors[1:])==-anchors[0]
-        assert min(anchors)<0<max(anchors)
+        require(sum(anchors)==0, f"full coefficient family is not zero-sum at r={r}")
+        require(sum(anchors[1:])==-anchors[0], f"nonzero family sum failed at r={r}")
+        require(min(anchors)<0<max(anchors), f"full family lacks both signs at r={r}")
         # In this exact witness both signs also occur among nonzero quotient cosets. This is not
         # inferred from the full-family zero sum, where a=0 is a separate possible sign carrier.
-        assert min(anchors[1:])<0<max(anchors[1:])
+        require(
+            min(anchors[1:])<0<max(anchors[1:]),
+            f"nonzero coefficient family lacks both signs at r={r}",
+        )
         # Nonzero coefficients factor through F_p^*/G, and each coset has one anchor value.
         unseen=set(range(1,P))
         coset_values=[]
@@ -130,17 +157,20 @@ def main()->None:
             coset={a*u%P for u in Gset}
             unseen-=coset
             vals={anchors[x] for x in coset}
-            assert len(vals)==1
+            require(len(vals)==1, f"coefficient values vary within coset {coset} at r={r}")
             coset_values.append(vals.pop())
-        assert len(coset_values)==(P-1)//N
+        require(
+            len(coset_values)==(P-1)//N,
+            f"expected {(P-1)//N} nonzero cosets, got {len(coset_values)}",
+        )
         print(
             f'p={P} n={N} r={r}: A1={A1:+d} A2={A2:+d} increment={D:+d}; '
             f'family sum=0, nonzero sum={sum(anchors[1:]):+d}=-A0, '
             f'nonzero range=[{min(anchors[1:]):+d},{max(anchors[1:]):+d}], '
             f'quotient cosets={len(coset_values)}'
         )
-    assert expected[5][0]<0<expected[5][1]
-    assert expected[6][1]<0<expected[6][0]
+    require(expected[5][0]<0<expected[5][1], "rank-5 witness does not reverse anchor signs")
+    require(expected[6][1]<0<expected[6][0], "rank-6 witness does not reverse anchor signs")
     print(
         'G297 PASS: coefficient profiles are coset-constant, the full anchor family sums to zero, '
         'and the same proper dyadic subgroup reverses A1/A2 sign transport at adjacent ranks.'
