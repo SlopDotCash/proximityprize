@@ -603,6 +603,7 @@ import ArkLib.Research.ProximityGap.Frontier.PseudocyclicDefectSum
 import ArkLib.Research.ProximityGap.Frontier.PuncturedFiberAgreement
 import ArkLib.Research.ProximityGap.Frontier.PuncturedFourWordProfile
 import ArkLib.Research.ProximityGap.Frontier.Q1ArisingFamilyDescent
+import ArkLib.Research.ProximityGap.Frontier.QuadraticCubicWindowExample
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetFourRates
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetTwoThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarterPairTripleSignatures
