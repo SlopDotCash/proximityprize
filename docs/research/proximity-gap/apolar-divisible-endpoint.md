@@ -1,6 +1,6 @@
 # The divisible case at the unique-decoding endpoint
 
-Let the domain have $n=k+2e$ sites with $k,e\ge1$ and suppose $e+1$ divides $n+1$. Put $m=(n+1)/(e+1)$ and $s=m-1$. The proposed exact largest scalar MCA numerator, over arbitrary evaluation domains and sufficiently large splitting prime fields, is
+Let the domain have $n=k+2e$ sites with $k,e\ge1$ and suppose $e+1$ divides $n+1$. Put $m=(n+1)/(e+1)$ and $s=m-1$. The exact largest scalar MCA numerator over arbitrary evaluation domains, attained over every sufficiently large splitting prime field, is
 $$
 s(e+1)+1=n-e+1.
 $$

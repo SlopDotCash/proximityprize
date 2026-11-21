@@ -67,7 +67,6 @@ theorem good_iff (dom : Fin n ↪ F) (hk : 1 ≤ k) (hkn : k < n) (hD : 0 < D)
   have hN := (BoundarySecurityBudget.deltaStar_eq_one_iff dom hk hkn hD hqD).mp hsup
   exact (not_le_of_gt hhigh) ((Nat.le_div_iff_mul_le hD).mpr hN)
 
-omit [SampleableType F] in
 open Classical in
 /-- If q ≤ (D−1) choose(n,k+1), the boundary fails the probability test in every
 field size, including sizes far above the square of the security denominator. -/

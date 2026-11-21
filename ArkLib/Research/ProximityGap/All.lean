@@ -64,6 +64,7 @@ import ArkLib.Research.ProximityGap.Frontier.ApolarCubicObstruction
 import ArkLib.Research.ProximityGap.Frontier.ApolarDividedLocator
 import ArkLib.Research.ProximityGap.Frontier.ApolarDividedPolynomial
 import ArkLib.Research.ProximityGap.Frontier.ApolarDividedReversal
+import ArkLib.Research.ProximityGap.Frontier.ApolarEndpointExact
 import ArkLib.Research.ProximityGap.Frontier.ApolarFiberInterpolation
 import ArkLib.Research.ProximityGap.Frontier.ApolarFixedFactors
 import ArkLib.Research.ProximityGap.Frontier.ApolarFixedPencil
@@ -3339,6 +3340,7 @@ import ArkLib.Research.ProximityGap.Frontier._wfTT07_adelic_capacity_house_ceili
 import ArkLib.Research.ProximityGap.Frontier._wfTT08_arakelov_self_intersection
 import ArkLib.Research.ProximityGap.Frontier._wfTT09_adelic_equidist_house_nogo
 import ArkLib.Research.ProximityGap.Frontier._wfTT10_mahler_lehmer_house_kb
+import ArkLib.Research.ProximityGap.FullPrizeContract
 import ArkLib.Research.ProximityGap.GG25CurveDecodabilityB2Capstone
 import ArkLib.Research.ProximityGap.GeneralSpikeLowerBound
 import ArkLib.Research.ProximityGap.GrandChallenges
@@ -3409,6 +3411,7 @@ import ArkLib.Research.ProximityGap.JohnsonCommonCenterRefutation
 import ArkLib.Research.ProximityGap.JohnsonInvariant
 import ArkLib.Research.ProximityGap.KKH26DimGeneralSharpInterleavedPin
 import ArkLib.Research.ProximityGap.KKH26RegimeSplit
+import ArkLib.Research.ProximityGap.KnownDomainReview
 import ArkLib.Research.ProximityGap.LDAttainment
 import ArkLib.Research.ProximityGap.LDEliasCertificate
 import ArkLib.Research.ProximityGap.LDFourRate

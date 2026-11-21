@@ -29,6 +29,55 @@ def TotalDegreeLe {R : Type*} [CommRing R] (f : R[X][X]) (m : ℕ) : Prop :=
 indices are nominal degrees, so the conclusion includes specialized leading terms
 that vanish. -/
 theorem natDegree_resultant_le {R : Type*} [CommRing R] (f g : R[X][X])
+    {b b' m m' : ℕ} (hf : TotalDegreeLe f m) (hg : TotalDegreeLe g m') :
+    (resultant f g b b').natDegree ≤ b*m' + b'*m - b*b' := by
+  classical
+  let A := sylvester f g b b'
+  let w : Fin (b+b') → ℕ := Fin.addCases (fun j => m'+j.val) (fun j => m+j.val)
+  have hentry (r j : Fin (b+b')) (hne : A r j ≠ 0) : (A r j).natDegree + r.val ≤ w j := by
+    induction j using Fin.addCases with
+    | left k =>
+        simp only [A, sylvester, Matrix.of_apply, Fin.addCases_left] at hne ⊢
+        split_ifs at hne ⊢ with h
+        · have hh := hg _ hne
+          have hr := h.1
+          simp [w]
+          omega
+        · exact False.elim (hne rfl)
+    | right k =>
+        simp only [A, sylvester, Matrix.of_apply, Fin.addCases_right] at hne ⊢
+        split_ifs at hne ⊢ with h
+        · have hh := hf _ hne
+          have hr := h.1
+          simp [w]
+          omega
+        · exact False.elim (hne rfl)
+  have hweight : (∑ i, w i) + b*b' = (b*m'+b'*m) + ∑ i : Fin (b+b'), i.val := by
+    rw [Fin.sum_univ_add, Fin.sum_univ_add]
+    simp only [w, Fin.addCases_left, Fin.addCases_right, Fin.val_castAdd, Fin.val_natAdd,
+      Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
+      nsmul_eq_mul]
+    simp only [Nat.cast_id]
+    ring
+  rw [resultant, Matrix.det_apply']
+  apply natDegree_sum_le_of_forall_le
+  intro σ _
+  change (↑↑(Equiv.Perm.sign σ) * ∏ i, A (σ i) i).natDegree ≤ _
+  by_cases hz : ∃ i, A (σ i) i = 0
+  · obtain ⟨i,hi⟩ := hz
+    rw [Finset.prod_eq_zero (f := fun j => A (σ j) j) (Finset.mem_univ i) hi,
+      mul_zero, natDegree_zero]
+    exact Nat.zero_le _
+  · push Not at hz
+    have h := Finset.sum_le_sum (s:=Finset.univ) fun i _ => hentry (σ i) i (hz i)
+    rw [Finset.sum_add_distrib, Equiv.sum_comp σ (fun i => i.val)] at h
+    have hdeg := (natDegree_prod_le Finset.univ (fun i => A (σ i) i))
+    apply natDegree_mul_le.trans
+    rw [natDegree_intCast, zero_add]
+    omega
+
+/-- Apply the canonical coefficient-degree bound when nominal degrees lie inside both triangles. -/
+private theorem resultant_le_of_nominal_le {R : Type*} [CommRing R] (f g : R[X][X])
     {b b' m m' : ℕ} (hbm : b ≤ m) (hbm' : b' ≤ m')
     (hf : TotalDegreeLe f m) (hg : TotalDegreeLe g m') :
     (resultant f g b b').natDegree ≤ b*m' + b'*m - b*b' := by
@@ -48,21 +97,20 @@ theorem quintic_cubic_derivative_resultant_bound {R : Type*} [CommRing R]
     (f g : R[X][X]) (d : ℕ) (hf : TotalDegreeLe f 5)
     (hg : TotalDegreeLe g (5+8*d)) :
     (resultant f g 3 (3+4*d)).natDegree ≤ 21+32*d := by
-  apply (natDegree_resultant_le f g (by omega) (by omega) hf hg).trans
+  apply (resultant_le_of_nominal_le f g (by omega) (by omega) hf hg).trans
   omega
 
 /-- Counting distinct scalar specializations with a common value uses the same
 weighted bound, including specializations dropping the leading value degree. -/
 theorem common_fiber_count {K : Type*} [Field K] (f g : K[X][X])
     {b b' m m' : ℕ} (hfy : f.natDegree ≤ b) (hgy : g.natDegree ≤ b')
-    (hpos : b ≠ 0 ∨ b' ≠ 0) (hbm : b ≤ m) (hbm' : b' ≤ m')
-    (hf : TotalDegreeLe f m) (hg : TotalDegreeLe g m')
+    (hpos : b ≠ 0 ∨ b' ≠ 0) (hf : TotalDegreeLe f m) (hg : TotalDegreeLe g m')
     (hres : resultant f g b b' ≠ 0) (S : Finset K)
     (hS : ∀ z ∈ S, ∃ y : K, (f.map (evalRingHom z)).eval y = 0 ∧
       (g.map (evalRingHom z)).eval y = 0) :
     S.card ≤ b*m' + b'*m - b*b' := by
   classical
-  apply le_trans _ (natDegree_resultant_le f g hbm hbm' hf hg)
+  apply le_trans _ (natDegree_resultant_le f g hf hg)
   by_contra! h
   apply hres
   apply eq_zero_of_natDegree_lt_card_of_eval_eq_zero _ (f := fun z : S => z.val)
