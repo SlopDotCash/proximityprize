@@ -22,6 +22,11 @@ ArkLib.Research.ProximityGap.Frontier.SmoothCubicBudgetWindow ArkLib.ProximityGa
 ArkLib.Research.ProximityGap.Frontier.PolarBasisDegreeLoss ArkLib.ProximityGap.Frontier.PolarBasisDegreeLoss.separate_blocks
 ArkLib.Research.ProximityGap.Frontier.PolarBasisDegreeLoss ArkLib.ProximityGap.Frontier.PolarBasisDegreeLoss.weighted_loss
 
+# Shortening at fixed error count and its sharp finite-field threshold
+ArkLib.Research.ProximityGap.Frontier.LocatorShortening ArkLib.ProximityGap.Frontier.LocatorShortening.eps_le_extension
+ArkLib.Research.ProximityGap.Frontier.ShortenedThreeHeadThreshold ArkLib.ProximityGap.Frontier.ShortenedThreeHeadThreshold.classification
+ArkLib.Research.ProximityGap.Frontier.ShortenedThreeHeadThreshold ArkLib.ProximityGap.Frontier.ShortenedThreeHeadThreshold.second_prime
+
 # Exact rate-one-sixteenth MCA threshold at the second designated prime
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicExact ArkLib.ProximityGap.Frontier.SecondPrimeCubicExact.secondPrime_rateSixteenth
 ArkLib.Research.ProximityGap.Frontier.UniversalCubicThreshold ArkLib.ProximityGap.Frontier.UniversalCubicThreshold.prime_classification
