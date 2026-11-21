@@ -17,6 +17,12 @@ from __future__ import annotations
 from math import comb, gcd
 
 
+def require(condition: bool, message: str) -> None:
+    """Keep exact sponsor and witness checks active under optimized Python."""
+    if not condition:
+        raise AssertionError(message)
+
+
 def factors(n: int) -> list[int]:
     out: list[int] = []
     d = 2
@@ -59,7 +65,7 @@ def subgroup(p: int, n: int, g: int) -> list[int]:
     for _ in range(n):
         out.append(x)
         x = x * h % p
-    assert x == 1 and len(set(out)) == n
+    require(x == 1 and len(set(out)) == n, f"subgroup construction failed for p={p}, n={n}")
     return out
 
 
@@ -76,7 +82,10 @@ def subset_hist(group: list[int], p: int, max_r: int) -> list[list[int]]:
                 if value:
                     cur[(s + x) % p] += value
     for r in range(max_r + 1):
-        assert sum(dp[r]) == comb(len(group), r)
+        require(
+            sum(dp[r]) == comb(len(group), r),
+            f"subset-histogram mass failed at r={r}",
+        )
     return dp
 
 
@@ -87,7 +96,7 @@ def difference_corr(left: list[int], right: list[int], p: int) -> list[int]:
             for y, vy in enumerate(right):
                 if vy:
                     out[(x - y) % p] += vx * vy
-    assert sum(out) == sum(left) * sum(right)
+    require(sum(out) == sum(left) * sum(right), "difference correlation lost total mass")
     return out
 
 
@@ -97,7 +106,7 @@ def weighted_kernel(group: list[int], p: int, coefficient: int) -> list[int]:
         ay = coefficient * y % p
         for z in group:
             out[(ay - z) % p] += 1
-    assert sum(out) == len(group) ** 2
+    require(sum(out) == len(group) ** 2, "weighted kernel lost total mass")
     return out
 
 
@@ -117,7 +126,8 @@ def run_cell(n: int, p: int) -> list[tuple[int, int, int]]:
     g = primitive_root(p)
     m = (p - 1) // n
     group = subgroup(p, n, g)
-    assert m % 7 == 0 and pow(2, n, p) != 1
+    require(m % 7 == 0, f"quotient order m={m} is not divisible by seven")
+    require(pow(2, n, p) != 1, f"coefficient 2 lies in the subgroup for p={p}, n={n}")
     hist = subset_hist(group, p, 6)
     reps = [pow(g, j, p) for j in range(m)]
     kernels = [weighted_kernel(group, p, a) for a in reps]
@@ -133,7 +143,10 @@ def run_cell(n: int, p: int) -> list[tuple[int, int, int]]:
         for u in range(1, m):
             if gcd(u, m) == 1:
                 changed = sum(weight7(j) * values[(u * j) % m] for j in range(m))
-                assert changed == normal
+                require(
+                    changed == normal,
+                    f"order-seven trace depends on generator u={u} at p={p}, r={r}",
+                )
         rows.append((r, target, normal))
     return rows
 
@@ -141,7 +154,7 @@ def run_cell(n: int, p: int) -> list[tuple[int, int, int]]:
 def main() -> None:
     sponsor_m1 = 2**128 + 192
     sponsor_m2 = 2**129 + 13
-    assert gcd(sponsor_m1, sponsor_m2) == 7
+    require(gcd(sponsor_m1, sponsor_m2) == 7, "sponsor quotient gcd is not seven")
     print(f"sponsor m1={sponsor_m1} m2={sponsor_m2} gcd=7")
 
     cells: list[tuple[int, int, int, list[tuple[int, int, int]]]] = []
@@ -154,14 +167,17 @@ def main() -> None:
                 continue
             cells.append((n, p, m, run_cell(n, p)))
 
-    assert cells
+    require(bool(cells), "no manageable sponsor cells were checked")
     agree = 0
     total = 0
     quadrants: set[tuple[int, int]] = set()
     representatives: dict[tuple[int, int], tuple[int, int, int, int, int, int]] = {}
     for n, p, m, rows in cells:
         for r, target, normal in rows:
-            assert target and normal
+            require(
+                target != 0 and normal != 0,
+                f"zero target or normal value at n={n}, p={p}, r={r}",
+            )
             pair = (sign(target), sign(normal))
             total += 1
             agree += pair[0] == pair[1]
@@ -178,11 +194,18 @@ def main() -> None:
 
     # Same-prime, same-subgroup adjacent-rank mismatch reversal.
     witness = run_cell(16, 113)
-    assert witness == [
+    expected_witness = [
         (5, 1727120, -20424976),
         (6, -77440, 1048640),
     ]
-    assert total == 54 and agree == 27 and len(quadrants) == 4
+    require(
+        witness == expected_witness,
+        f"G302 exact Lean witness pin failed: {witness}",
+    )
+    require(
+        total == 54 and agree == 27 and len(quadrants) == 4,
+        f"G302 census summary changed: total={total}, agree={agree}, quadrants={quadrants}",
+    )
     print(
         "PASS: the unique common nonprincipal bounded sponsor order is seven; "
         "its canonical generator-independent trace is sign-decoupled in all four quadrants."
