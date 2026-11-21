@@ -86,7 +86,7 @@ theorem distance_le_twice_radius_of_cycle {I X : Type*} [Fintype I] [Nonempty I]
   simp only [Finset.sum_const, Finset.card_univ, nsmul_eq_mul] at hd hp hh
   have hb : Fintype.card I * D ≤ Fintype.card I * (2 * t) := by
     rw [Nat.mul_comm 2 t, ← Nat.mul_assoc, Nat.mul_two]
-    omega
+    exact hd.trans (ha.trans (Nat.add_le_add hp hh))
   exact Nat.le_of_mul_le_mul_left hb Fintype.card_pos
 
 end ProximityGap.RichPencilCycleBudget
