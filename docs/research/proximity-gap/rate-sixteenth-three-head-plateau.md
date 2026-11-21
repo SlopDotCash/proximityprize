@@ -11,6 +11,8 @@ At $n=2^{30}$ this is the interval from **1565873494** through
 satisfy $0\le\delta<5/8$. This interval adjoins the one determined by
 $\lfloor B/3\rfloor$. [Adjacent interval](uniform-three-head-threshold.md)
 
+At the production length, Lean proves this plateau on every injective domain over every prime field in the displayed budget range, at each positive interleaving width. For finite extensions, the field cardinality gives the budget and characteristic above 1,744,830,589 suffices. The last safe count is 671,088,639 and the first failure is 671,088,640. The proof selects three distinct large polynomial heads with at most thirteen exceptional scalars, then counts fresh agreements separately on collinear and noncollinear triples. The lower construction takes three heads with one exceptional site per head and just fits the domain. [Three-head extraction](../../../ArkLib/Research/ProximityGap/Frontier/FiveEighthThreeHeadCover.lean) · [Fresh-agreement count](../../../ArkLib/Research/ProximityGap/Frontier/PlateauThreeHeadPredecessor.lean) · [Complete threshold](../../../ArkLib/Research/ProximityGap/Frontier/FiveEighthsPlateauThreshold.lean)
+
 ## The last good error count
 
 Take $e=10k-1$, $t=6k+1$, $d=k-1$, and denote the lower endpoint above

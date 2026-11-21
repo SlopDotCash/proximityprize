@@ -82,7 +82,7 @@ theorem collinear_card (fam : BadScalarRichPointFamily dom k δ u) (H : Finset (
 omit [Fintype I] [Nonempty I] in
 /-- A second-order inclusion-exclusion lower bound on the union using uniform
 individual sizes and pairwise overlap bounds. -/
-private theorem union_lower {J : Type} (S : Finset J) (C : J → Finset I)
+theorem union_lower {J : Type} (S : Finset J) (C : J → Finset I)
     {w d : ℕ} (hw : ∀ i ∈ S, w ≤ (C i).card)
     (hd : ∀ i ∈ S, ∀ j ∈ S, i ≠ j → (C i ∩ C j).card ≤ d) :
     S.card*w ≤ (S.biUnion C).card + S.card.choose 2*d := by
