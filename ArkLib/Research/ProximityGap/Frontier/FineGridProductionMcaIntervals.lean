@@ -11,8 +11,8 @@ import ArkLib.Research.ProximityGap.Frontier.ProductionMcaIntervals
 `ProductionMcaIntervals` brackets the operational 128-bit line-MCA supremum at length
 `2³⁰` between a first-order interpolation radius and a power-map failure radius. Every
 prime in `FourRateSmoothMca128.BudgetWindow` exceeds `2^241`, which is more than the
-`2^231` required by `FineGridFirstOrderSecurity.four_rates_wide`. The lower endpoints
-therefore rise to `1265/4096`, `2170/4096`, `2783/4096` and `3197/4096`. The failing
+`2^240` required by `FineGridFirstOrderSecurity.four_rates_wide`. The lower endpoints
+therefore rise to `1269/4096`, `2174/4096`, `2788/4096` and `3201/4096`. The failing
 endpoints are unchanged.
 -/
 
@@ -22,7 +22,7 @@ open CoreDefinitions FourRateSmoothMca128 FourRateSmoothMcaLift
 open scoped NNReal ENNReal
 
 /-- Certified closed-ball good radii in prize-rate order. -/
-noncomputable def safeRadius : Fin 4 → ℝ≥0 := ![1265/4096,2170/4096,2783/4096,3197/4096]
+noncomputable def safeRadius : Fin 4 → ℝ≥0 := ![1269/4096,2174/4096,2788/4096,3201/4096]
 
 /-- Each radius strictly exceeds the corresponding radius of `ProductionMcaIntervals`. -/
 theorem safeRadius_gt (j : Fin 4) : ProductionMcaIntervals.safeRadius j < safeRadius j := by
@@ -43,7 +43,7 @@ theorem endpoints {p : ℕ} [Fact p.Prime] (dom : Fin (2^30) ↪ ZMod p) [ReedSo
   rw [epsMCA_interleaved_eq, epsMCA_eq_mcaError]
   have hlo := hw.1
   rw [ZMod.card] at hlo
-  have hp : 2^171*((2^18)*4096)^2 ≤ p := calc
+  have hp : 2^180*((2^18)*4096)^2 ≤ p := calc
     _ ≤ lowerBudget*2^128 := by decide
     _ ≤ p := (Nat.le_div_iff_mul_le (by decide)).mp hlo
   have h := FineGridFirstOrderSecurity.four_rates_wide (b := 2^18) (by decide) hp dom
@@ -51,7 +51,7 @@ theorem endpoints {p : ℕ} [Fact p.Prime] (dom : Fin (2^30) ↪ ZMod p) [ReedSo
     norm_num [prizeThreshold, ENNReal.ofReal_div_of_pos]
   rw [← ht]
   have hrad : ((safeRadius j : ℝ≥0) : ℝ) =
-      (![1265/4096,2170/4096,2783/4096,3197/4096] : Fin 4 → ℝ) j := by
+      (![1269/4096,2174/4096,2788/4096,3201/4096] : Fin 4 → ℝ) j := by
     fin_cases j <;> norm_num [safeRadius]
   rw [hrad]
   simp only [prizeDimension,Fintype.card_fin]
