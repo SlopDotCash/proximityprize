@@ -491,8 +491,12 @@ import ArkLib.Research.ProximityGap.Frontier.RatioProfileDegreeObstruction
 import ArkLib.Research.ProximityGap.Frontier.RationalFiberEndpoint
 import ArkLib.Research.ProximityGap.Frontier.RawMGFSaddleVacuity
 import ArkLib.Research.ProximityGap.Frontier.RealizerL2NotSup
+import ArkLib.Research.ProximityGap.Frontier.ReciprocalAverageEnergy
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalChartMCA
+import ArkLib.Research.ProximityGap.Frontier.ReciprocalChartMoments
+import ArkLib.Research.ProximityGap.Frontier.ReciprocalEnergyFailure
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalSubsetSeparation
+import ArkLib.Research.ProximityGap.Frontier.ReciprocalTupleEnergy
 import ArkLib.Research.ProximityGap.Frontier.RegimePin
 import ArkLib.Research.ProximityGap.Frontier.RegularTaylorPole
 import ArkLib.Research.ProximityGap.Frontier.ReservedFiberList
