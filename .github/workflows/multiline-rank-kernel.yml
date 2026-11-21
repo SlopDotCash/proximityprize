@@ -5,6 +5,7 @@ on:
   pull_request:
     paths:
       - ArkLib/Research/ProximityGap/Frontier/_IncidenceDependencyArithmetic.lean
+      - ArkLib/Research/ProximityGap/Frontier/_PencilCycleShortening.lean
       - ArkLib/Research/ProximityGap/Frontier/_ActiveErrorAffineCollapse.lean
       - docs/research/proximity-gap/multiline-relation-shortening.md
       - ArkLib/Research/ProximityGap.lean
@@ -110,4 +111,16 @@ jobs:
               if not no_axioms:
                   assert set(axiom.strip() for axiom in names.split(',')) <= {'propext', 'Classical.choice', 'Quot.sound'}, name
           print('Active-error collapse declarations kernel checked')
+          PY
+      - name: Check pencil cycle shortening and audit axioms
+        run: |
+          set -o pipefail
+          lake env lean ArkLib/Research/ProximityGap/Frontier/_PencilCycleShortening.lean | tee pencil-cycle-axioms.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path('pencil-cycle-axioms.log').read_text()
+          result = re.search(r"'ProximityGap\.PencilCycleShortening\.pencilCycle_jumps_mem' depends on axioms:\s*\[([^\]]*)\]", text)
+          assert result is not None
+          assert {axiom.strip() for axiom in result[1].split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}
           PY

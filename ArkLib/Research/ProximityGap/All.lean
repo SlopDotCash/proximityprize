@@ -2078,6 +2078,7 @@ import ArkLib.Research.ProximityGap.Frontier._PaleyCayleyEigenvalue
 import ArkLib.Research.ProximityGap.Frontier._PaleyDoubleSumSingletonGate
 import ArkLib.Research.ProximityGap.Frontier._PencilAutocorrLambdaRootBound
 import ArkLib.Research.ProximityGap.Frontier._PencilAutocorrRMoment
+import ArkLib.Research.ProximityGap.Frontier._PencilCycleShortening
 import ArkLib.Research.ProximityGap.Frontier._PencilSunflowerCore
 import ArkLib.Research.ProximityGap.Frontier._PerCosetDichotomy
 import ArkLib.Research.ProximityGap.Frontier._PerLineOverlapMultiplicityConsumer
