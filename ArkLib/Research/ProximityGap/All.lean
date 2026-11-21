@@ -58,6 +58,7 @@ import ArkLib.Research.ProximityGap.Frontier.AlignedAmalgamation
 import ArkLib.Research.ProximityGap.Frontier.AntipodalSigmaUnique
 import ArkLib.Research.ProximityGap.Frontier.AntipodalVanishingCountLower
 import ArkLib.Research.ProximityGap.Frontier.ApolarAffineKernelSpan
+import ArkLib.Research.ProximityGap.Frontier.ApolarAllFieldPlateau
 import ArkLib.Research.ProximityGap.Frontier.ApolarAntipodalFiber
 import ArkLib.Research.ProximityGap.Frontier.ApolarBorderCoordinates
 import ArkLib.Research.ProximityGap.Frontier.ApolarBorderDescent
