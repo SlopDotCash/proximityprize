@@ -4,9 +4,9 @@ SPDX-License-Identifier: MIT OR Apache-2.0
 -/
 import ArkLib.Research.ProximityGap.Frontier.SaturatedListCliques
 import Mathlib.Algebra.Polynomial.Splits
-import Mathlib.LinearAlgebra.Lagrange
+import ArkLib.Data.Polynomial.FiniteDomainQuotient
 
-/-! # Four completely split message differences at the rate-half Johnson successor
+/-! # Six completely split message differences at the rate-half Johnson successor
 
 An oversized list at 314491700 errors contains four messages with six pairwise
 differences split over the ground field. Each of the six differences has at least
@@ -34,6 +34,8 @@ theorem four_agreement_sets (S : Fin 1073741825 → Finset I)
     simpa only [Fintype.card_fin] using hfree.card_edgeFinset_le
   rw [SimpleGraph.turanNumber_eq, Nat.choose_two_right] at hedges
   norm_num at hedges hsum
+  have hsame : (fullGraph S (536870909+1)).edgeFinset.card =
+      (fullGraph S 536870910).edgeFinset.card := rfl
   omega
 
 /-- A polynomial with all but at most one of its degrees accounted for by
