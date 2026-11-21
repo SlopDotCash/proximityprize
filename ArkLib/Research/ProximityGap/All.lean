@@ -2638,6 +2638,7 @@ import ArkLib.Research.ProximityGap.Frontier._R98QRWeilHeadRungWindowConsumers
 import ArkLib.Research.ProximityGap.Frontier._R99QRWeilTowerHeadPackage
 import ArkLib.Research.ProximityGap.Frontier._REnergyThreeScratch
 import ArkLib.Research.ProximityGap.Frontier._RMTBoundedDepthUniversalityNoGo
+import ArkLib.Research.ProximityGap.Frontier._RSLocatorExtension
 import ArkLib.Research.ProximityGap.Frontier._RSRestrictInjOn
 import ArkLib.Research.ProximityGap.Frontier._RSUDR2ThresholdBridge
 import ArkLib.Research.ProximityGap.Frontier._RThinRealizabilityCodim
@@ -2841,6 +2842,10 @@ import ArkLib.Research.ProximityGap.Frontier._ShawValueSaturationBddCapstone
 import ArkLib.Research.ProximityGap.Frontier._ShawValueScalarEquivalence
 import ArkLib.Research.ProximityGap.Frontier._ShawValueSharpenedBGKCorridorFamily
 import ArkLib.Research.ProximityGap.Frontier._ShawVanishingCoefficient
+import ArkLib.Research.ProximityGap.Frontier._ShortenedDomainExactError
+import ArkLib.Research.ProximityGap.Frontier._ShortenedDomainGoodSide
+import ArkLib.Research.ProximityGap.Frontier._ShortenedDomainPackingPin
+import ArkLib.Research.ProximityGap.Frontier._ShorteningWindowPrime
 import ArkLib.Research.ProximityGap.Frontier._SixErrorRankSupportMultiplicity
 import ArkLib.Research.ProximityGap.Frontier._SparseCoeffZeros
 import ArkLib.Research.ProximityGap.Frontier._SparseRootCheck
@@ -2907,6 +2912,9 @@ import ArkLib.Research.ProximityGap.Frontier._ThirdMomentUpperLineCap
 import ArkLib.Research.ProximityGap.Frontier._ThornerZamanPNTStatement
 import ArkLib.Research.ProximityGap.Frontier._ThreadB_CosetUnionGenFn
 import ArkLib.Research.ProximityGap.Frontier._ThreadD_UnionCountFloor
+import ArkLib.Research.ProximityGap.Frontier._ThreeCoreSecondPrimeArithmetic
+import ArkLib.Research.ProximityGap.Frontier._ThreeCoreSecondPrimeBracket
+import ArkLib.Research.ProximityGap.Frontier._ThreeCoreTwoThirdsFloor
 import ArkLib.Research.ProximityGap.Frontier._ThresholdHalvingCapstone
 import ArkLib.Research.ProximityGap.Frontier._ThresholdHalvingCompose
 import ArkLib.Research.ProximityGap.Frontier._ThresholdHalvingComposeWired
@@ -2939,6 +2947,12 @@ import ArkLib.Research.ProximityGap.Frontier._TwoAdicParityGate
 import ArkLib.Research.ProximityGap.Frontier._TwoAdicStallLocator
 import ArkLib.Research.ProximityGap.Frontier._TwoAdicTropicalFloor
 import ArkLib.Research.ProximityGap.Frontier._TwoAnchorBootstrapFirstStepNoGo
+import ArkLib.Research.ProximityGap.Frontier._TwoCoreMomentApplication
+import ArkLib.Research.ProximityGap.Frontier._TwoCoreMomentForcing
+import ArkLib.Research.ProximityGap.Frontier._TwoCorePackingThreshold
+import ArkLib.Research.ProximityGap.Frontier._TwoLargeCoreCount
+import ArkLib.Research.ProximityGap.Frontier._TwoLinePreUnique
+import ArkLib.Research.ProximityGap.Frontier._TwoLineSpikeThreshold
 import ArkLib.Research.ProximityGap.Frontier._TwoPowerCyclotomicTrace
 import ArkLib.Research.ProximityGap.Frontier._TwoPowerRootDescent
 import ArkLib.Research.ProximityGap.Frontier._TwoSidedCapstone
