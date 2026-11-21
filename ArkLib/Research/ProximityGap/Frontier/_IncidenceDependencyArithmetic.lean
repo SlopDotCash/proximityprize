@@ -369,6 +369,57 @@ theorem shared_support_incidence_budget {I Coord : Type*}
   rw [Finset.sum_comm] at hs
   simpa [Finset.sum_ite, mul_comm] using hs
 
+/-- A relation-active error family containing r independent errors, for r at least three,
+requires at least twice (D + r - 3) total support incidences. -/
+theorem active_error_rank_incidence_budget {F I Coord : Type*} [Field F]
+    [Fintype I] [Finite Coord]
+    (C P : Submodule F (Coord → F)) (e : I → (Coord → F)) (Q : I → Finset Coord)
+    (D r : ℕ) (hD : 0 < D) (hr : 3 ≤ r) (hP : Module.finrank F P ≤ 2)
+    (he : ∀ i, e i ∈ C ⊔ P)
+    (hsupport : ∀ i x, x ∉ Q i → e i x = 0)
+    (hactive : ∀ i, ∃ c : I → F, (∑ j, c j • e j) = 0 ∧ c i ≠ 0)
+    (b : Fin r → I) (hLI : LinearIndependent F (fun j ↦ e (b j)))
+    (hdistance : ∀ v ∈ C, ∀ B : Finset Coord, B.card < D →
+      (∀ x ∉ B, v x = 0) → v = 0) :
+    2 * (D + r - 3) ≤ ∑ i, (Q i).card := by
+  classical
+  letI : Fintype Coord := Fintype.ofFinite Coord
+  let V := Submodule.span F (Set.range e)
+  let W : I → Submodule F (Coord → F) := fun i ↦ Submodule.span F {e i}
+  have hW : ∀ i, ∀ v ∈ W i, ∀ x ∉ Q i, v x = 0 := by
+    intro i v hv x hx
+    change v ∈ Submodule.span F ({e i} : Set (Coord → F)) at hv
+    obtain ⟨a, rfl⟩ := Submodule.mem_span_singleton.mp hv
+    simp [hsupport i x hx]
+  have hvan : ∀ v ∈ V, ∀ x ∉ sharedSupport Q, v x = 0 := by
+    intro v hv x hx
+    let ev : (Coord → F) →ₗ[F] F := LinearMap.proj (R := F) (φ := fun _ : Coord ↦ F) x
+    have hle : V ≤ LinearMap.ker ev := by
+      apply Submodule.span_le.mpr
+      rintro _ ⟨i, rfl⟩
+      obtain ⟨c, hrel, hci⟩ := hactive i
+      have hmem : ∀ j, c j • e j ∈ W j := by
+        intro j
+        exact (W j).smul_mem (c j) (Submodule.subset_span (by simp))
+      have hz := relation_component_shared_support W Q hW _ hmem hrel i x hx
+      change c i * e i x = 0 at hz
+      exact (mul_eq_zero.mp hz).resolve_left hci
+    exact hle hv
+  have hVP : V ≤ C ⊔ P := by
+    apply Submodule.span_le.mpr
+    rintro _ ⟨i, rfl⟩
+    exact he i
+  have hb : Submodule.span F (Set.range (fun j ↦ e (b j))) ≤ V := by
+    apply Submodule.span_mono
+    rintro _ ⟨j, rfl⟩
+    exact ⟨b j, rfl⟩
+  have hrank := Submodule.finrank_mono hb
+  rw [finrank_span_eq_card hLI, Fintype.card_fin] at hrank
+  have hshort := received_space_shortening_bound C V P D hD hVP hP
+    (sharedSupport Q) hvan (hr.trans hrank) hdistance
+  have hbudget := shared_support_incidence_budget Q
+  omega
+
 /-- Global relation shortening expressed directly in the total support budget. -/
 theorem projected_relation_incidence_budget {F I Coord : Type*} [Field F]
     [Fintype I] [Fintype Coord] [DecidableEq I] [DecidableEq Coord]
@@ -735,3 +786,4 @@ end ProximityGap.IncidenceDependencyArithmetic
 #print axioms ProximityGap.IncidenceDependencyArithmetic.projected_relation_incidence_budget
 #print axioms ProximityGap.IncidenceDependencyArithmetic.affine_heads_of_small_error_relation
 #print axioms ProximityGap.IncidenceDependencyArithmetic.affine_heads_of_small_error_incidence
+#print axioms ProximityGap.IncidenceDependencyArithmetic.active_error_rank_incidence_budget
