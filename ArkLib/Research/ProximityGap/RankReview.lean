@@ -89,10 +89,12 @@ private theorem mca_grid (D : I ↪ F) (ε : ℝ≥0) (k : ℕ) (e : Fin (Fintyp
     rw [← relDist_floor_bound_iff_complement_bound, gridPt_mul_card, Nat.floor_natCast]
   simp_rw [ge_iff_le, hcard]
 
+omit [DecidableEq F] [DecidableEq I] in
 /-- The simultaneous rank search classifies every radius on an injective domain. -/
 theorem mcaAnswer_correct [SampleableType F] (D : I ↪ F) (ε : ℝ≥0) (k : ℕ) :
     correctBoundary (Fintype.card I) (mcaAnswer D ε k) (fun δ =>
       mcaError (AffineLineGenerator F) (ReedSolomon.code D k) (δ : ℝ) ≤ (ε : ENNReal)) := by
+  classical
   unfold mcaAnswer
   simp_rw [← epsMCA_eq_mcaError]
   apply firstFailure_correct_of_grid Fintype.card_pos

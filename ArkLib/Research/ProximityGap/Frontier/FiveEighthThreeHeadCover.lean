@@ -19,14 +19,15 @@ open SecondPrimeActualPopulations HalfPredecessorBadEventRichPointBridge HalfPre
 variable {F I : Type} [Field F] [Fintype F] [DecidableEq F] [Fintype I] [Nonempty I] [DecidableEq I]
 variable {dom : I ↪ F} {δ : ℝ≥0} {u : Code.WordStack F (Fin 2) I}
 
-/-- The complete literal family is covered by three distinct large affine
-secants. -/
-theorem primitive_cover (fam : Family dom δ u) {p : ℕ} [CharP F p] (hp : 1744830589<p)
+/-- Above the combined capacity of two heads, the entire family lies on at most
+three value-linear components. Each component with 49 labels determines a base-field secant. -/
+theorem linear_cover (fam : Family dom δ u) {p : ℕ} [CharP F p] (hp : 1744830589<p)
     (hn : Fintype.card I=1073741824) {e : ℕ} (hl : 610000000≤e) (hu : e≤671088639)
-    (ht : ⌈(1-δ)*(Fintype.card I:ℝ≥0)⌉₊=1073741824-e)
-    {s : ℕ} (hs : 48 ≤ s) (hsu : s ≤ 512) (hbig : 2*(e+1)+s < fam.G.card) :
-    ∃ H : Finset (LineParameter F), H⊆lineParameters fam ∧ H.card=3 ∧
-      (∀ L∈H, s<(pointsOn fam L).card) ∧ fam.G ⊆ H.biUnion (pointsOn fam) := by
+    (ht : ⌈(1-δ)*(Fintype.card I:ℝ≥0)⌉₊=1073741824-e) (hbig : 2*(e+1) < fam.G.card) :
+    ∃ U : Finset (Factor (AlgebraicClosure F)), U.card ≤ 3 ∧
+      fam.G ⊆ U.biUnion (population fam (algebraMap F (AlgebraicClosure F))) ∧
+      ∀ f∈U, 48 < (population fam (algebraMap F (AlgebraicClosure F)) f).card →
+        ∃ L∈lineParameters fam, population fam (algebraMap F (AlgebraicClosure F)) f ⊆ pointsOn fam L := by
   classical
   let K := AlgebraicClosure F
   let φ := algebraMap F K
@@ -38,8 +39,8 @@ theorem primitive_cover (fam : Family dom δ u) {p : ℕ} [CharP F p] (hp : 1744
   have occupancy (L : LineParameter F) (hL : L∈lineParameters fam) :
       (pointsOn fam L).card≤(e+1) := TwoLargeCoreCount.line_occupancy_le fam (e:=e) (by omega) ht hL
   have hlin (f : Factor K) (hf : f∈U) (h1 : f.natDegree=1) : (P f).card≤(e+1) := by
-    by_cases hb : s<(P f).card
-    · obtain ⟨L,hL,hp'⟩ := (hcomp f hf).2.2.2 h1 (hs.trans_lt hb)
+    by_cases hb : 48<(P f).card
+    · obtain ⟨L,hL,hp'⟩ := (hcomp f hf).2.2.2 h1 hb
       exact (card_le_card hp').trans (occupancy L hL)
     · omega
   have linear (f : Factor K) (hf : f∈U) : f.natDegree=1 := by
@@ -68,14 +69,36 @@ theorem primitive_cover (fam : Family dom δ u) {p : ℕ} [CharP F p] (hp : 1744
       have hempty : V.card=0 := by omega
       rw [hempty,zero_mul] at hg
       omega
-  have large (f : Factor K) (hf : f∈U) : s<(P f).card := by
+  exact ⟨U,hu,hcov,fun f hf => (hcomp f hf).2.2.2 (linear f hf)⟩
+
+/-- The complete literal family is covered by three distinct large affine
+secants. -/
+theorem primitive_cover (fam : Family dom δ u) {p : ℕ} [CharP F p] (hp : 1744830589<p)
+    (hn : Fintype.card I=1073741824) {e : ℕ} (hl : 610000000≤e) (hu : e≤671088639)
+    (ht : ⌈(1-δ)*(Fintype.card I:ℝ≥0)⌉₊=1073741824-e)
+    {s : ℕ} (hs : 48 ≤ s) (hsu : s ≤ 512) (hbig : 2*(e+1)+s < fam.G.card) :
+    ∃ H : Finset (LineParameter F), H⊆lineParameters fam ∧ H.card=3 ∧
+      (∀ L∈H, s<(pointsOn fam L).card) ∧ fam.G ⊆ H.biUnion (pointsOn fam) := by
+  classical
+  let φ := algebraMap F (AlgebraicClosure F)
+  obtain ⟨U,hu,hcov,hcomp⟩ := linear_cover fam hp hn hl hu ht (by omega)
+  let P := population fam φ
+  have mass : fam.G.card ≤ ∑ f∈U, (P f).card := (card_le_card hcov).trans card_biUnion_le
+  have occupancy (L : LineParameter F) (hL : L∈lineParameters fam) :
+      (pointsOn fam L).card≤(e+1) := TwoLargeCoreCount.line_occupancy_le fam (e:=e) (by omega) ht hL
+  have hlin (f : Factor (AlgebraicClosure F)) (hf : f∈U) : (P f).card≤(e+1) := by
+    by_cases hb : 48<(P f).card
+    · obtain ⟨L,hL,hp'⟩ := hcomp f hf hb
+      exact (card_le_card hp').trans (occupancy L hL)
+    · omega
+  have large (f : Factor (AlgebraicClosure F)) (hf : f∈U) : s<(P f).card := by
     by_contra! small
-    have rest := sum_le_sum (s:=U.erase f) (fun g hg => hlin g (mem_of_mem_erase hg) (linear g (mem_of_mem_erase hg)))
+    have rest := sum_le_sum (s:=U.erase f) (fun g hg => hlin g (mem_of_mem_erase hg))
     simp only [sum_const,smul_eq_mul,card_erase_of_mem hf] at rest
     have hm := sum_erase_add U (fun g => (P g).card) hf
     have hr := Nat.mul_le_mul_right (e+1) (show U.card-1 ≤ 2 by omega)
     omega
-  have existsLine (f : U) := (hcomp f f.property).2.2.2 (linear f f.property) (hs.trans_lt (large f f.property))
+  have existsLine (f : U) := hcomp f f.property (hs.trans_lt (large f f.property))
   choose line hline hsub using existsLine
   let H := univ.image line
   have memH (f : U) : line f∈H := mem_image_of_mem _ (mem_univ _)
