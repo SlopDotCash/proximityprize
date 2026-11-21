@@ -157,3 +157,5 @@ $0\le\delta<j/n$. [MCA and its radius predicate](../../../ArkLib/Data/CodingTheo
 The same two cubic cases extend to all multiples of 16 above this length in characteristic greater than $3n^2$. At rate $1/16$ a quadratic three-head construction also determines the adjacent plateau at $5/8$. [Uniform interval](uniform-three-head-threshold.md) · [Plateau](rate-sixteenth-three-head-plateau.md)
 
 A second proof uses unrestricted value-degree interpolation, the raw Hessian, and two ordinary first polars. [Ordinary-polar proof](second-prime-unrestricted-jets.md)
+
+For the quadratic discriminant, Lean proves that a squarefree bivariate polynomial of positive coordinate degree has a nonzero resultant with its coordinate derivative whenever all integers from one through its degree remain nonzero in the field. The proof uses Gauss's lemma over the rational function field in the parameter. Coefficient factors become units there, and positive-degree factors retain separability. [Squarefree coordinate resultant](../../../ArkLib/Research/ProximityGap/Frontier/SquarefreeCoordinateResultant.lean)
