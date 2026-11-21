@@ -30,3 +30,15 @@ To see this, suppose two distinct values have full fibers $S,T\subset H$, each o
 For a complex primitive $4h$-th root $\zeta$ set $N=\operatorname{Norm}(C(\zeta))$ in the cyclotomic field. Modulo $p$ multiplication by $C$ on $\mathbb Z[Y]/(Y^{2h}+1)$ has at least $h/2$ independent null vectors, since it diagonalizes at the primitive roots $g^b$. Its integer determinant is therefore divisible by $p^{h/2}$. Orthogonality on odd exponents gives mean squared absolute value $\sum_{j<2h}(c_j-c_{j+2h})^2\le4d$ since $S,T$ are disjoint and the sum of $c_j^2$ is $2d$. Arithmetic–geometric mean now gives $|N|\le(4d)^h<p^{h/2}$, so $N=0$. Thus $Y^{2h}+1$ divides $C$ over the integers, and $c_{j+2h}=c_j$ for every $j<2h$. The positive coefficients occur in pairs, contradicting odd $|S|$. In particular, the exact arbitrary-domain example leaves a substantive subgroup-specific question.
 
 The exhaustive small checks recover all 12 bad scalars for $n=12$ over $\mathbb F_{13}$ and all 15 for $n=16$ over $\mathbb F_{31}$, including the case with a padding site. The verifier enumerates all witness sets and tests actual polynomial agreements and nonjointness. [Exhaustive verifier and prime certificate](../../../scripts/probes/probe_power_fiber_endpoint.py)
+
+## Rational functions give a broader construction
+
+Let $n=k+2e$ with $k,e\ge1$. Let $P$ be monic of degree $e+1$, coprime both to a polynomial $B$ and to the domain vanisher $V$. Let $W$ be the degree-at-most-$e$ residue of $V/B$ modulo $P$. Use rows $xW(x)/P(x)$ and $-W(x)/P(x)$ on the evaluation sites. Suppose $P-cB$ is the monic vanisher of a set $A$ of $e+1$ distinct roots, with $c\ne0$. For **each** $t\in A$ for which $E=A\setminus\{t\}$ lies in the domain, let $Q$ be the vanisher of $D\setminus E$. Then $V(X-t)=Q(P-cB)$. Reducing modulo $P$ and cancelling $B$ shows
+$$
+ H_t=\frac{(X-t)W+cQ}{P}
+$$
+is a polynomial. Its degree is at most $(k+e)-(e+1)=k-1$. It agrees with the folded rows at every root of $Q$.
+
+If a codeword polynomial $R$ explained the second row on those same $k+e$ sites, then $RP+W=aQ$ for a constant $a$, by root counting and the degree bound. Modulo $P$ this would imply $Q(c+a(X-t))=0$. But $Q$ is a unit modulo $P$ and the degree-at-most-one polynomial $c+a(X-t)$ is nonzero at $t$. This contradicts $\deg P=e+1\ge2$. All these parameters are therefore bad, including a parameter outside the domain when its other $e$ fiber sites lie inside. [Lean proof of the construction](../../../ArkLib/Research/ProximityGap/Frontier/RationalFiberEndpoint.lean)
+
+In particular, three disjoint $(h+1)$-subsets of a given smooth domain whose monic vanishing polynomials lie on a single affine line suffice to attain the worst-case $3(h+1)$. Write the pencil as $P_0-cB$, with $\deg B\le h$. Disjoint sets force $P_0$ coprime to $B$. If the field has more than $n$ elements, choose $P$ in this pencil avoiding every site, excluding at most one parameter per site. This supplies the stated coprimality and makes all three selected $c$ nonzero. The existence of this configuration on the designated subgroups remains open.

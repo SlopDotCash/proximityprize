@@ -50,16 +50,21 @@ import ArkLib.Research.ProximityGap.Frontier.AlignableLePinnedMaxMult
 import ArkLib.Research.ProximityGap.Frontier.AlignedAmalgamation
 import ArkLib.Research.ProximityGap.Frontier.AntipodalSigmaUnique
 import ArkLib.Research.ProximityGap.Frontier.AntipodalVanishingCountLower
+import ArkLib.Research.ProximityGap.Frontier.ApolarAffineKernelSpan
 import ArkLib.Research.ProximityGap.Frontier.ApolarAntipodalFiber
+import ArkLib.Research.ProximityGap.Frontier.ApolarBorderCoordinates
+import ArkLib.Research.ProximityGap.Frontier.ApolarBorderDescent
 import ArkLib.Research.ProximityGap.Frontier.ApolarChartCancellation
 import ArkLib.Research.ProximityGap.Frontier.ApolarChartDescent
 import ArkLib.Research.ProximityGap.Frontier.ApolarChartNormalization
+import ArkLib.Research.ProximityGap.Frontier.ApolarCoefficientSpan
 import ArkLib.Research.ProximityGap.Frontier.ApolarCoordinateEquations
 import ArkLib.Research.ProximityGap.Frontier.ApolarCoordinateTransport
 import ArkLib.Research.ProximityGap.Frontier.ApolarCubicObstruction
 import ArkLib.Research.ProximityGap.Frontier.ApolarDividedLocator
 import ArkLib.Research.ProximityGap.Frontier.ApolarDividedPolynomial
 import ArkLib.Research.ProximityGap.Frontier.ApolarDividedReversal
+import ArkLib.Research.ProximityGap.Frontier.ApolarEndpointExact
 import ArkLib.Research.ProximityGap.Frontier.ApolarFiberInterpolation
 import ArkLib.Research.ProximityGap.Frontier.ApolarFixedFactors
 import ArkLib.Research.ProximityGap.Frontier.ApolarFixedPencil
@@ -77,6 +82,7 @@ import ArkLib.Research.ProximityGap.Frontier.ApolarParameterTransition
 import ArkLib.Research.ProximityGap.Frontier.ApolarPencilExtraction
 import ArkLib.Research.ProximityGap.Frontier.ApolarPencilNullity
 import ArkLib.Research.ProximityGap.Frontier.ApolarPowerBound
+import ArkLib.Research.ProximityGap.Frontier.ApolarPowerOptimal
 import ArkLib.Research.ProximityGap.Frontier.ApolarPrimitiveKernel
 import ArkLib.Research.ProximityGap.Frontier.ApolarReciprocalCharts
 import ArkLib.Research.ProximityGap.Frontier.ApolarRootTransition
@@ -458,6 +464,7 @@ import ArkLib.Research.ProximityGap.Frontier.RateQuarterPairOverlap
 import ArkLib.Research.ProximityGap.Frontier.RatioImagePermInvariant
 import ArkLib.Research.ProximityGap.Frontier.RatioLevelSet
 import ArkLib.Research.ProximityGap.Frontier.RatioProfileDegreeObstruction
+import ArkLib.Research.ProximityGap.Frontier.RationalFiberEndpoint
 import ArkLib.Research.ProximityGap.Frontier.RawMGFSaddleVacuity
 import ArkLib.Research.ProximityGap.Frontier.RealizerL2NotSup
 import ArkLib.Research.ProximityGap.Frontier.RegimePin
@@ -500,6 +507,7 @@ import ArkLib.Research.ProximityGap.Frontier.SliceRankDiagonalVacuous
 import ArkLib.Research.ProximityGap.Frontier.SmoothDeepMcaThreshold
 import ArkLib.Research.ProximityGap.Frontier.SmoothDomainMcaEquivalence
 import ArkLib.Research.ProximityGap.Frontier.SmoothPowerMcaDescent
+import ArkLib.Research.ProximityGap.Frontier.SmoothRationalFiberObstruction
 import ArkLib.Research.ProximityGap.Frontier.SpanCriterionGeneral
 import ArkLib.Research.ProximityGap.Frontier.SparseSupportIdealSVPLowerBound
 import ArkLib.Research.ProximityGap.Frontier.SpectrumGFAlternatingSum
