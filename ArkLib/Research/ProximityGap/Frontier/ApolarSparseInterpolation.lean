@@ -52,7 +52,7 @@ theorem sparse_dvd (H E : Finset K) (w v : K → K) (f : K[X]) {d s : ℕ}
     omega
   rw [AdjoinRoot.algebraMap_eq,lift_agreement H E w v (AdjoinRoot.of f) hrep _ hd]
   convert quotient_reduced_fiber H E v f hE hc he using 1
-  simp [Lagrange.nodal,eval₂_finsetProd,eval_prod,AdjoinRoot.algebraMap_eq]
+  simp [Lagrange.nodal,eval₂_finsetProd,eval_prod]
 
 /-- Both interpolation polynomials are obtained from the pencil and its sparse
 fibers. A multiple of the domain vanisher clears every multiplicity. -/

@@ -94,6 +94,31 @@ theorem prime246_rate_half_bad (D : I ↪ FourRateListPrime246.K) [ReedSolomon.S
     FourRateSmoothMca128.prime246_window hδ
   simpa only [show 64 * 8388608 = 2^29 by decide] using h
 
+/-- Every dyadic divisor of p−1 is realized by an actual smooth evaluation domain. -/
+theorem exists_prime_domain {p n : ℕ} [Fact p.Prime] (hd : n ∣ p-1) (hn : ∃ e : ℕ, n = 2^e) :
+    ∃ D : Fin n ↪ ZMod p, Nonempty (ReedSolomon.Smooth D) := by
+  classical
+  obtain ⟨g,hg⟩ := IsCyclic.exists_ofOrder_eq_natCard (α := (ZMod p)ˣ)
+  have ho : orderOf g = p-1 := hg.trans (Nat.card_eq_fintype_card.trans (ZMod.card_units _))
+  have hp1 := (Fact.out (p := p.Prime)).one_lt
+  have hg' := orderOf_pow_orderOf_div (x := g) (n := n) (ho ▸ by omega) (ho ▸ hd)
+  let H := Subgroup.zpowers (g ^ (orderOf g / n))
+  let : Fintype H := Fintype.ofFinite H
+  have hc : Fintype.card H = n := Nat.card_eq_fintype_card.symm.trans ((Nat.card_zpowers _).trans hg')
+  let e := Fintype.equivFinOfCardEq hc
+  let D := e.symm.toEmbedding.trans (FourRateList128.domain H)
+  refine ⟨D,⟨⟨H,1,?_,by simpa using hn⟩⟩⟩
+  ext x
+  constructor
+  · intro hx
+    obtain ⟨i,_,rfl⟩ := mem_image.mp hx
+    exact ⟨(e.symm i).val,(e.symm i).property,one_mul _⟩
+  · rintro ⟨v,hv,rfl⟩
+    apply mem_image.mpr
+    refine ⟨e ⟨v,hv⟩,mem_univ _,?_⟩
+    simp [D,FourRateList128.domain]
+    rfl
+
 #print axioms exists_smooth_base
 #print axioms rate_half_bad
 #print axioms prime246_rate_half_bad

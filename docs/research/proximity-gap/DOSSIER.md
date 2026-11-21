@@ -6,7 +6,7 @@ historical evidence, not live issue status or a new proof claim.
 
 ## Current proof status — 2026-11-21
 
-The November assessment records exact results at all four rates on specific fields, the remaining bounds for both named primes, and the assumptions still needed for the boundary-prime half-rate proof. The general prize challenges remain open. [Proof assessment](integration-assessment-2026-11-21.md)
+The November assessment records the exact four-rate MCA window at production length, including the sharp half-rate endpoint at the boundary prime. It gives the remaining bounds for the two larger named prime fields and distinguishes formally verified results from written improvements. The general prize challenges remain open. [Proof assessment](integration-assessment-2026-11-21.md)
 
 Issue #164 closed on 2026-10-08 when PR #217 merged. That PR characterizes when a greatest good radius exists, and explicitly leaves the production threshold open. [Issue #164](https://github.com/SlopDotCash/proximityprize/issues/164) · [PR #217](https://github.com/SlopDotCash/proximityprize/pull/217)
 
