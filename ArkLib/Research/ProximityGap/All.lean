@@ -636,8 +636,10 @@ import ArkLib.Research.ProximityGap.Frontier.ScaledFirstOrderSecurity
 import ArkLib.Research.ProximityGap.Frontier.SchurMinorStaircase
 import ArkLib.Research.ProximityGap.Frontier.SchurRatioRotationEquivariance
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeActualCubicCap
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeActualPolarGcd
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeActualPopulations
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeActualQuarticCap
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeChartPopulation
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeComponentIncidence
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeConditionedCubic
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeConditionedIncidence
@@ -662,8 +664,12 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeKernelCapacity
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeLinearFactor
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeLinearSaturation
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeManyHeadCeilings
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeMobiusIrreducible
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeMobiusSections
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeNonlinearObstruction
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeOrdinaryPolarCharge
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeOrdinarySiteBudget
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeOrdinaryWindow
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeParametricQuadratic
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimePolynomialJetColumns
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimePrimitiveSurface
@@ -679,8 +685,10 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeReverseChart
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeScalarChart
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSectionResultant
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSelectedSectionChart
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSeparableDifferential
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSmallCubic
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSylvesterFiberMass
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeTerminalCharge
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeTerminalKernel
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeUnrestrictedJetBudget
 import ArkLib.Research.ProximityGap.Frontier.SelfConsistencyCeiling
