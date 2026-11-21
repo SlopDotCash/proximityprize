@@ -80,7 +80,7 @@ theorem pencilCycle_jumps_mem {F I M : Type*} [Field F] [Fintype I]
       _ = U i - U (σ i) := by
         rw [← hmeet i]
         abel
-  have hs : (∑ i : I, V (σ i) - V i) = 0 := by
+  have hs : (∑ i : I, (V (σ i) - V i)) = 0 := by
     rw [Finset.sum_sub_distrib, Equiv.sum_comp σ V, sub_self]
   have hu : (∑ i : I, γ i • (V (σ i) - V i)) = 0 := by
     simp only [hscaled, Finset.sum_sub_distrib, Equiv.sum_comp σ U, sub_self]
