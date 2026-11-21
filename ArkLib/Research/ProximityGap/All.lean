@@ -502,6 +502,7 @@ import ArkLib.Research.ProximityGap.Frontier.ReciprocalChartMoments
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalEnergyFailure
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalSubsetSeparation
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalTupleEnergy
+import ArkLib.Research.ProximityGap.Frontier.RecursiveListPacking
 import ArkLib.Research.ProximityGap.Frontier.RegimePin
 import ArkLib.Research.ProximityGap.Frontier.RegularTaylorPole
 import ArkLib.Research.ProximityGap.Frontier.ReservedFiberList
