@@ -8,6 +8,14 @@ If $\binom{B+1}{2}\le p$, then $L_m\le B$ if and only if $L_1\le B$. To prove th
 
 For $p<2^{256}$ and $B=\lfloor p/2^{128}\rfloor$, the hypothesis holds. The [Lean proof](../../../ArkLib/Research/ProximityGap/Frontier/InterleavedListProjection.lean) uses the canonical closed-ball list definition. The equivalence determines the dependence of the prize budget on interleaving arity. Its numerical radius still depends on the scalar code.
 
+## A width-independent threshold over every finite field
+
+For a linear code over a field of size $q$, take an integer budget $B<q$. If a ball can contain only words with at most $E$ errors and $BE\le q$, then $L_m\le B$ if and only if $L_1\le B$. This holds at the same real radius for every positive width. In particular, with $B=\lfloor q/2^{128}\rfloor$, it holds at every radius on every domain of length at most $2^{128}$. It also applies on longer domains at radii admitting at most $2^{128}$ errors. The alphabet size is unrestricted. For example, the result applies on the original length-$2^{30}$ domain after extending either named prime field to any finite degree, with the budget computed from the new field size. Determining the scalar threshold remains necessary. [Lean theorems](../../../ArkLib/Research/ProximityGap/Frontier/InterleavedListProjection.lean)
+
+Suppose all scalar balls meet the budget and an interleaved ball contains $B+1$ distinct words. On the agreement set of any listed word, its values determine it amongst all interleaved codewords. Otherwise some row of the difference of two such words would be a nonzero scalar codeword vanishing on that set. All $q$ multiples of the difference row would lie within the radius of the zero scalar center.
+
+Choose $B$ of the listed words. In each of their mismatch columns, row weights that make the projected word agree with the projected center form a proper hyperplane. The total is at most $BE\le q$, so one weighting avoids every such hyperplane. All $B+1$ words retain their original agreements, and the selected $B$ retain their exact agreement sets. If two projections coincided, at least one of those words would be selected. Its exact agreement set would contain the original agreement set of the other, forcing the two original words to be identical. The projected scalar list therefore has $B+1$ distinct members. Diagonal embedding gives the converse.
+
 ## Extension fields
 
 Suppose a Reed–Solomon evaluation domain is contained in $K$, and codeword coefficients belong to a finite extension $E/K$ of degree $d$. Writing each coefficient and each received symbol in a $K$-basis of $E$ identifies this code isometrically with a $d$-fold interleaving over $K$. Evaluations commute with the coordinate expansion since the domain lies in $K$. An $m$-fold interleaving over $E$ gives $dm$ rows over $K$. In a prize application the numerical budget remains $\lfloor |E|/2^{128}\rfloor$.
