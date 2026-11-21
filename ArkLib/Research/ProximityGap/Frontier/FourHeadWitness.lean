@@ -26,7 +26,7 @@ variable {I F : Type} [Fintype I] [Nonempty I] [DecidableEq I]
 variable [Field F] [Fintype F] [DecidableEq F]
 
 /-- A four-head agreement allocation on an injective Reed–Solomon evaluation domain. -/
-structure Allocation (dom : I ↪ F) (k : ℕ) (δ : ℝ≥0) where
+structure CoreAllocation (dom : I ↪ F) (k : ℕ) (δ : ℝ≥0) where
   head : Fin 4 → F[X]
   background : I → F
   ordinary : Finset I
@@ -40,6 +40,9 @@ structure Allocation (dom : I ↪ F) (k : ℕ) (δ : ℝ≥0) where
   core_rank : ∀ h, k ≤ (core h).card
   core_size : ∀ h, (1 - δ) * (Fintype.card I : ℝ≥0) ≤ (((core h).card + 1 : ℕ) : ℝ≥0)
   ordinary_mismatch : ∀ x ∈ ordinary, ∃ h, (head h).eval (dom x) ≠ background x
+
+/-- The original four-head allocation with four distinct values at each special site. -/
+structure Allocation (dom : I ↪ F) (k : ℕ) (δ : ℝ≥0) extends CoreAllocation dom k δ where
   special_distinct : ∀ x ∈ special, Function.Injective (fun h => (head h).eval (dom x))
 
 variable {dom : I ↪ F} {k : ℕ} {δ : ℝ≥0}
@@ -47,8 +50,13 @@ variable {dom : I ↪ F} {k : ℕ} {δ : ℝ≥0}
 /-- Number of scalar labels supported by the allocation. -/
 def Allocation.count (A : Allocation dom k δ) : ℕ := A.ordinary.card + 4 * A.special.card
 
-/-- The labels are distinct and all give literal MCA events for the same received stack. -/
-theorem exists_bad_scalar_set (A : Allocation dom k δ) (hfour : 4 < Fintype.card F)
+/-- A special site contributes one label for each distinct evaluated head there. -/
+def CoreAllocation.count (A : CoreAllocation dom k δ) : ℕ :=
+  A.ordinary.card + ∑ x : A.special, (univ.image (fun h => (A.head h).eval (dom x.val))).card
+
+/-- The scalar construction allows evaluated heads to coincide at a special site.
+One actual bad label is obtained for each distinct value at that site. -/
+theorem exists_bad_scalar_set_of_values (A : CoreAllocation dom k δ) (hfour : 4 < Fintype.card F)
     (hfield : A.count * A.count < Fintype.card F) :
     ∃ (u : WordStack F (Fin 2) I) (G : Finset F), G.card = A.count ∧
       ∀ γ ∈ G, mcaEvent ((ReedSolomon.code dom k : Submodule F (I → F)) : Set (I → F))
@@ -61,11 +69,15 @@ theorem exists_bad_scalar_set (A : Allocation dom k δ) (hfour : 4 < Fintype.car
     obtain ⟨t, _, ht⟩ := exists_mem_notMem_of_card_lt_card hlt
     exact ⟨t, fun h he => ht (he ▸ mem_image_of_mem (v x) (mem_univ h))⟩
   choose τ hτ using hoff
-  let Slot := (↥A.ordinary) ⊕ (↥A.special × Fin 4)
+  let values (x : A.special) := univ.image (v x.val)
+  let Slot := (↥A.ordinary) ⊕ (Σ x : A.special, ↥(values x))
   have hcard : Fintype.card Slot = A.count := by
-    simp [Slot, Allocation.count, Nat.mul_comm]
+    simp only [Slot, CoreAllocation.count, values, v, Fintype.card_sum, Fintype.card_sigma, Fintype.card_coe]
   let key : Slot → F × F := Sum.elim (fun x => (-dom x.val, 0))
-    (fun p => (-dom p.1.val, (τ p.1.val - v p.1.val p.2)⁻¹))
+    (fun p => (-dom p.1.val, (τ p.1.val - p.2.val)⁻¹))
+  have hval (x : A.special) (r : values x) : τ x.val ≠ r.val := by
+    obtain ⟨h,_,he⟩ := mem_image.mp r.property
+    exact he ▸ hτ x.val h
   have hkey : Function.Injective key := by
     intro a b hab
     cases a with
@@ -74,20 +86,20 @@ theorem exists_bad_scalar_set (A : Allocation dom k δ) (hfour : 4 < Fintype.car
       | inl y =>
         exact congrArg Sum.inl (Subtype.ext (dom.injective (neg_inj.mp (congrArg Prod.fst hab))))
       | inr q =>
-        exact False.elim ((inv_ne_zero (sub_ne_zero.mpr (hτ q.1.val q.2)))
+        exact False.elim ((inv_ne_zero (sub_ne_zero.mpr (hval q.1 q.2)))
           (congrArg Prod.snd hab).symm)
     | inr p =>
       cases b with
       | inl y =>
-        exact False.elim ((inv_ne_zero (sub_ne_zero.mpr (hτ p.1.val p.2)))
+        exact False.elim ((inv_ne_zero (sub_ne_zero.mpr (hval p.1 p.2)))
           (congrArg Prod.snd hab))
       | inr q =>
         obtain ⟨x, h⟩ := p
         obtain ⟨y, j⟩ := q
         have hxy : x = y := Subtype.ext (dom.injective (neg_inj.mp (congrArg Prod.fst hab)))
         subst y
-        have hinv : (τ x.val - v x.val h)⁻¹ = (τ x.val - v x.val j)⁻¹ := congrArg Prod.snd hab
-        have hhj : h = j := A.special_distinct x.val x.property (sub_right_inj.mp (inv_inj.mp hinv))
+        have hinv : (τ x.val - h.val)⁻¹ = (τ x.val - j.val)⁻¹ := congrArg Prod.snd hab
+        have he : h = j := Subtype.ext (sub_right_injective (inv_inj.mp hinv))
         subst j
         rfl
   let keys := univ.image key
@@ -139,11 +151,26 @@ theorem exists_bad_scalar_set (A : Allocation dom k δ) (hfour : 4 < Fintype.car
     · simpa [v, row₁, hns] using hh
     · simp [scalar, key, row₀, row₁, hns]
   | inr p =>
-    obtain ⟨x, h⟩ := p
+    obtain ⟨x, r⟩ := p
+    obtain ⟨h,_,he⟩ := mem_image.mp r.property
     apply hdecode x.val h
     · simpa [row₁, x.property] using (hτ x.val h).symm
-    · simpa [scalar, key, row₀, row₁, x.property, div_eq_mul_inv] using
+    · simpa [scalar, key, row₀, row₁, x.property, div_eq_mul_inv, ←he] using
         (FourHeadQuotient.off_line_agreement (dom x.val) 1 (v x.val h) (τ x.val) t (hτ x.val h)).symm
+
+/-- The labels are distinct and all give literal MCA events for the same received stack. -/
+theorem exists_bad_scalar_set (A : Allocation dom k δ) (hfour : 4 < Fintype.card F)
+    (hfield : A.count * A.count < Fintype.card F) :
+    ∃ (u : WordStack F (Fin 2) I) (G : Finset F), G.card = A.count ∧
+      ∀ γ ∈ G, mcaEvent ((ReedSolomon.code dom k : Submodule F (I → F)) : Set (I → F))
+        δ (u 0) (u 1) γ := by
+  have he : A.toCoreAllocation.count = A.count := by
+    unfold CoreAllocation.count Allocation.count
+    have h (x : A.special) : (univ.image (fun h => (A.head h).eval (dom x.val))).card = 4 := by
+      rw [card_image_of_injective _ (A.special_distinct x.val x.property)]
+      simp
+    simp only [h,sum_const,card_univ,Fintype.card_coe,smul_eq_mul,Nat.mul_comm]
+  exact he ▸ exists_bad_scalar_set_of_values A.toCoreAllocation hfour (he.symm ▸ hfield)
 
 /-- Literal finite-field bad-scalar probability bound from a four-head allocation. -/
 theorem event_mass (A : Allocation dom k δ) (hfour : 4 < Fintype.card F)

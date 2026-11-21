@@ -33,6 +33,39 @@ Choose $d-1$ sites outside the thirteen used fibers, and let $P$ be their monic 
 
 For any four or five of the five heads $P(X)(b_iY+b_i^{-1})$, where $b_i=z^{e_i}$ and $e_i\in\{0,1,2,4,7\}$, all unordered two-term exponents are distinct modulo sixteen. Choose the common vanisher of degree $d-1$ outside these ten fibers. Its roots and the four incident fibers give every word $5d-1$ mandatory sites. Disjoint additional sites raise every word to exactly $t$ chosen agreements since the free supply is $5d+1$ and each deficit is $t-5d+1$. This example preserves all ten pair intersections **after** choosing exactly $t$ sites per word. In contrast, three of the six heads from the previous construction have $6d-1>t$ mandatory sites. Its full six-clique is a statement about actual agreement sets. Lean verifies the cropped five-clique throughout the full integer interval from $5d-1$ through $6d-1$ for every smooth coset of size $16d$. [Kernel-checked exact supports](../../../ArkLib/Research/ProximityGap/Frontier/FiveCroppedSplitPencil.lean)
 
+## Lists with common evaluation sites
+
+Fix $s$ sites and prescribe the same column of width $w$ to every candidate
+at each of them. A center can take arbitrary values there. If each candidate
+agrees with the center at $t>s$ sites, deleting the prescribed sites leaves
+at least $t-s$ agreements per candidate. Since distinct dimension-$k$
+Reed–Solomon words agree in at most $k-1$ columns and already agree at all
+$s$ sites, the remaining pairwise overlap is at most $k-1-s$ when $s<k$.
+The strict Johnson rank bound on the remaining coordinates gives at most
+$n-s$ candidates as soon as
+\[
+ (t-s)^2>(n-s)(k-1-s).
+\]
+This also applies to every family constructed by adding a common word to
+polynomials all divisible by the same split vanishing factor.
+
+At length $n=2^{30}$ the first prime's budget is $n$. Each row gives a
+certified safe error count **within the prescribed evaluation slice**.
+
+| Prescribed sites | Rate $1/8$ | Rate $1/16$ | Upper bound on the slice list |
+|---:|---:|---:|---:|
+| 1 | 694,116,763 | 805,306,371 | 1,073,741,823 |
+| $2^{23}-1$ | 699,221,467 | 815,237,616 | 1,065,353,217 |
+| $2^{26}-1$ | 746,721,448 | | 1,006,632,961 |
+
+Thus a list exceeding the first budget at either next open Hamming step
+must vary at every site. The five cropped power-fiber witnesses above share
+a factor with $2^{26}-1$ roots. Even adding arbitrary new messages with the
+same values at these sites keeps their rate-$1/8$ list under budget through
+746,721,448 errors. This conclusion allows every center and every interleaving
+width. Independent verified kernel replay accepted 28,288 declarations for the general theorem and all three numerical specializations. The unrestricted first failing counts remain open. [Affine-slice
+list theorem and numerical bounds](../../../ArkLib/Research/ProximityGap/Frontier/SharedSiteListBound.lean)
+
 ## What a low-dimensional list can contribute
 
 An affine line of messages contains at most $\lfloor(n-D)/(t-D)\rfloor=3$ members of the list. Its direction vanishes on at most $D$ sites. Each other site agrees with at most one member. More generally let $A$ be an affine $r$-flat of message polynomials. The coordinate evaluations that are constant on $A$ number at most $k-r$. The independent $r$-dimensional direction space consists of polynomials sharing all these roots, and division by their vanisher embeds it in the space of polynomials of degree below $k-c$. At a nonconstant coordinate the received value cuts $A$ in an affine $(r-1)$-flat. Counting agreements gives the recursive upper bound
@@ -48,3 +81,11 @@ Consider six polynomials $P(X)(u_iX^m+v_i)$ of degree at most $D$ on a smooth co
 Represent each head by its coefficient point; signs and the coset scale can be absorbed in one axis. Its secants must then have slopes in $\mu_{16}$. Two parallel secant lines with distinct intercepts cannot both occur: their pairs would require different center values on the same entire power fiber. Normalize two points to $(0,0)$ and $(1,1)$ by translation and independent rescaling of the two axes. This divides all secant slopes by the original pair's slope and hence preserves the allowed root set. Six collinear points would require $6t\le n+5D$, which fails, so there is a third point off the diagonal. Such a point is determined by two distinct slopes in $\mu_{16}\setminus\{1\}$ from the first two points. There are 210 options. After fixing one such third point, every additional diagonal point is determined by its slope to that point. This leaves a finite exhaustive tree over each designated prime field.
 
 For a compatible configuration let $R$ be its total number of secant slopes and $r_i$ the number of their lines through head $i$. Each word must retain all $c+r_i m$ mandatory sites. The unused pool has $n-c-Rm$ sites, with at most one additional agreement per site. A compatible center and cropped supports therefore exist exactly when every $c+r_i m\le t$ and the summed deficits fit in the unused pool. At each nominated prime the exact enumerator visits 122,430 compatible normalized six-point configurations. All fail this test. Thus a cropped saturated $K_6$ excludes this entire ansatz at these two primes. The surviving $K_4$ and $K_5$ constructions describe the obstruction at the first budget, and the second budget already has a punctured Johnson upper bound. [Exact field enumeration](../../../scripts/probes/probe_six_split_power_class.py)
+
+## First step beyond the half-rate Johnson floor
+
+At length $n=2^{30}$, dimension $k=n/2$, and **314,491,700 errors**, every scalar list of more than $n$ words has four distinct messages whose six pairwise differences split over the ground field. Each pair agrees with the center at at least 536,870,910 distinct common positions. This holds on every injective domain. For the two named primes the scalar projection criterion transfers the obstruction to lists exceeding their respective budgets at any positive interleaving width. [Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/HalfListSplitDifferences.lean) · [Scalar projection](interleaved-list-projection.md)
+
+Write $t=759250124$ for the required agreements, $D=k-1$ for the degree cap and $M=n+1$. Choose exactly $t$ agreement positions per message. Balancing the integer number of chosen words at each site gives a lower bound on the total pair intersections. Pairs meeting in fewer than $D-1$ positions contribute at most $D-2$, while every pair contributes at most $D$. The number meeting in at least $D-1$ positions is therefore at least **399,818,008,492,777,800**. A graph on $M$ vertices without a four-clique has at most **384,307,168,918,110,208** edges. For each edge of the resulting clique, divide the polynomial difference by the product of its known linear factors. The quotient has degree at most one, which proves splitting even if its last root lies outside the evaluation domain.
+
+The four messages must also be affinely independent. To see this, suppose a minimal affine relation uses $m\in\{2,3,4\}$ of them. At any evaluation point, exactly $m-1$ messages cannot agree with the center, since the last coefficient is nonzero and the coefficients sum to zero. If $s$ messages agree there, then $(s-(m-2))(s-m)\ge 0$. Sum this inequality over the sites and use the bound of $D$ on each pair intersection. It gives $(2m-3)t\le (m-2)n+$m-1$D$. The displayed parameters violate this inequality for each of the three values of $m$. Thus any example would require at least three independent polynomial differences. This argument concerns affine dimension and leaves open whether such a list exists. The certified half-rate safe floor is still 314,491,699 errors.
