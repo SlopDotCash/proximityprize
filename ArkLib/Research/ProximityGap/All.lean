@@ -48,6 +48,7 @@ import ArkLib.Research.ProximityGap.Frontier.ActualCubicHodgeIncidences
 import ArkLib.Research.ProximityGap.Frontier.ActualTerminalQuartic
 import ArkLib.Research.ProximityGap.Frontier.AdditiveEnergySwapFloors
 import ArkLib.Research.ProximityGap.Frontier.AffineHeadBudget
+import ArkLib.Research.ProximityGap.Frontier.AffineListIncidences
 import ArkLib.Research.ProximityGap.Frontier.AffineMultiplierOverlap
 import ArkLib.Research.ProximityGap.Frontier.AffinePrimitiveDirection
 import ArkLib.Research.ProximityGap.Frontier.AgreementGram
