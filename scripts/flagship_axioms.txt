@@ -6,6 +6,7 @@
 
 # Exact rate-one-sixteenth MCA threshold at the second designated prime
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicExact ArkLib.ProximityGap.Frontier.SecondPrimeCubicExact.secondPrime_rateSixteenth
+ArkLib.Research.ProximityGap.Frontier.UniversalCubicThreshold ArkLib.ProximityGap.Frontier.UniversalCubicThreshold.prime_classification
 
 # All power fibers and the actual second-prime quadratic population cap
 ArkLib.Research.ProximityGap.Frontier.PaddedPowerSpecialization ProximityGap.PaddedPowerSpecialization.power_fiber_count
