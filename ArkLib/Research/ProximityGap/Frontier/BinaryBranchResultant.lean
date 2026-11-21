@@ -172,6 +172,43 @@ theorem binaryValue_unit_left (G : R[X]) (h : ℕ) (hG : G.natDegree ≤ h) (u :
   have H := binaryValue_scale G h hG (u:R) 1 ((↑u⁻¹:R)*z)
   simpa [binaryValue_one_left G h hG, ← mul_assoc] using H
 
+/-- A linear projective divisor forces the literal homogeneous form to
+vanish at its coordinates, without inverting a nonunit denominator. -/
+theorem binaryValue_zero_of_linear_dvd [IsDomain R] (F : R[X]) (h : ℕ) (hF : F.natDegree ≤ h)
+    (a b : R) (ha : a ≠ 0) (hd : C a*X-C b ∣ F) : binaryValue F h b a = 0 := by
+  let φ := algebraMap R (FractionRing R)
+  have hφ : Function.Injective φ := IsFractionRing.injective R (FractionRing R)
+  have hfa : φ a ≠ 0 := by simpa only [map_zero] using hφ.ne ha
+  let u := Units.mk0 (φ a) hfa
+  apply hφ
+  rw [map_binaryValue φ hφ, map_zero]
+  change binaryValue (F.map φ) h (φ b) (↑u : FractionRing R) = 0
+  rw [binaryValue_unit_right _ h (natDegree_map_le.trans hF)]
+  obtain ⟨G,hG⟩ := hd
+  rw [hG]
+  simp [u, hfa]
+
+/-- Every labeled linear factor is a projective root of the unreduced form. -/
+theorem product_sheet_zero [IsDomain R] {ι : Type*} [Fintype ι] (F : R[X])
+    (h : ℕ) (hF : F.natDegree ≤ h) (a b : ι → R) (ha : ∀ i, a i ≠ 0) (u : R)
+    (hprod : F = C u*∏ i, (C (a i)*X-C (b i))) (i : ι) : binaryValue F h (b i) (a i) = 0 := by
+  apply binaryValue_zero_of_linear_dvd _ _ hF _ _ (ha i)
+  rw [hprod]
+  exact dvd_mul_of_dvd_right (Finset.dvd_prod_of_mem _ (Finset.mem_univ i)) _
+
+/-- Homogeneous evaluation preserves addition at a fixed nominal degree. -/
+theorem binaryValue_add (F G : R[X]) (h : ℕ) (b a : R) :
+    binaryValue (F+G) h b a = binaryValue F h b a + binaryValue G h b a := by
+  apply Polynomial.sum_add_index <;> simp [add_mul]
+
+/-- Multiplication of a homogeneous form by a scalar acts on its value. -/
+theorem binaryValue_C_mul (F : R[X]) (h : ℕ) (b a c : R) :
+    binaryValue (C c*F) h b a = c*binaryValue F h b a := by
+  rw [← Polynomial.smul_eq_C_mul, binaryValue, Polynomial.sum_smul_index]
+  · simp [binaryValue, Polynomial.sum, mul_sum, mul_assoc]
+  · simp
+
+#print axioms product_sheet_zero
 #print axioms binaryValue_unit_right
 #print axioms binaryValue_unit_left
 #print axioms recover_original

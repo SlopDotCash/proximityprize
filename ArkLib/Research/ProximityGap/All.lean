@@ -40,6 +40,7 @@ import ArkLib.Research.ProximityGap.EtaOffDiagRealPairing
 import ArkLib.Research.ProximityGap.EtaShiftRealPartPairing
 import ArkLib.Research.ProximityGap.ExternalDebt
 import ArkLib.Research.ProximityGap.Frontier.AbelianCoverPeriodFloor
+import ArkLib.Research.ProximityGap.Frontier.ActualTerminalQuartic
 import ArkLib.Research.ProximityGap.Frontier.AdditiveEnergySwapFloors
 import ArkLib.Research.ProximityGap.Frontier.AffineHeadBudget
 import ArkLib.Research.ProximityGap.Frontier.AffineMultiplierOverlap
@@ -234,6 +235,8 @@ import ArkLib.Research.ProximityGap.Frontier.CubicApolarAttainment
 import ArkLib.Research.ProximityGap.Frontier.CubicApolarEvent
 import ArkLib.Research.ProximityGap.Frontier.CubicApolarExtremum
 import ArkLib.Research.ProximityGap.Frontier.CubicApolarWitness
+import ArkLib.Research.ProximityGap.Frontier.CubicPolarSiteBudget
+import ArkLib.Research.ProximityGap.Frontier.CubicSheetExcess
 import ArkLib.Research.ProximityGap.Frontier.CumulantOnsetNoGo
 import ArkLib.Research.ProximityGap.Frontier.CurveDecodability
 import ArkLib.Research.ProximityGap.Frontier.CyclotomicMeanLogMass
@@ -327,7 +330,6 @@ import ArkLib.Research.ProximityGap.Frontier.FoldedSourceFiber
 import ArkLib.Research.ProximityGap.Frontier.FourFiberThreshold
 import ArkLib.Research.ProximityGap.Frontier.FourFiberTripleAlignment
 import ArkLib.Research.ProximityGap.Frontier.FourHeadCrossRatio
-import ArkLib.Research.ProximityGap.Frontier.PuncturedFourWordProfile
 import ArkLib.Research.ProximityGap.Frontier.FourHeadQuotient
 import ArkLib.Research.ProximityGap.Frontier.FourHeadWitness
 import ArkLib.Research.ProximityGap.Frontier.FourRateList128
@@ -346,6 +348,7 @@ import ArkLib.Research.ProximityGap.Frontier.GaussianEnergyBoundMuNDepthTwo
 import ArkLib.Research.ProximityGap.Frontier.GenericCountSigmaUniform
 import ArkLib.Research.ProximityGap.Frontier.GenericCountTransversal
 import ArkLib.Research.ProximityGap.Frontier.GenericDifferentialFunctionField
+import ArkLib.Research.ProximityGap.Frontier.GenericProjectivePolarGcd
 import ArkLib.Research.ProximityGap.Frontier.GenericSuperDiagonalLower
 import ArkLib.Research.ProximityGap.Frontier.GeometricIncompleteSumNoGo
 import ArkLib.Research.ProximityGap.Frontier.GeometricWordLocator
@@ -521,6 +524,7 @@ import ArkLib.Research.ProximityGap.Frontier.ProjectiveDirectionUnion
 import ArkLib.Research.ProximityGap.Frontier.ProjectiveListTransfer
 import ArkLib.Research.ProximityGap.Frontier.PseudocyclicDefectSum
 import ArkLib.Research.ProximityGap.Frontier.PuncturedFiberAgreement
+import ArkLib.Research.ProximityGap.Frontier.PuncturedFourWordProfile
 import ArkLib.Research.ProximityGap.Frontier.Q1ArisingFamilyDescent
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetFourRates
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetTwoThreshold
@@ -587,6 +591,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeConditionedCubic
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeConditionedIncidence
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeConditionedThreshold
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCoordinateWeight
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicOnly
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicWeightBound
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeDegreeSevenDimension
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeExceptionalCeilings
@@ -706,6 +711,8 @@ import ArkLib.Research.ProximityGap.Frontier.TerminalCollinearHeadCount
 import ArkLib.Research.ProximityGap.Frontier.TerminalCubicBudget
 import ArkLib.Research.ProximityGap.Frontier.TerminalFactorCoverage
 import ArkLib.Research.ProximityGap.Frontier.TerminalLinearComponent
+import ArkLib.Research.ProximityGap.Frontier.TerminalQuarticHessianTransport
+import ArkLib.Research.ProximityGap.Frontier.TerminalQuarticLocalization
 import ArkLib.Research.ProximityGap.Frontier.ThornerZamanInstance
 import ArkLib.Research.ProximityGap.Frontier.ThornerZamanS128
 import ArkLib.Research.ProximityGap.Frontier.ThreeGapPositionalRigidity
