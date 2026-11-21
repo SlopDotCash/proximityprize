@@ -75,6 +75,22 @@ theorem interpolation_dim (dom : ι ↪ F) (u v₁ : ι → F) (s v d t r : ℕ)
   change _ ≤ Module.finrank F (LinearMap.ker M.mulVecLin)
   omega
 
+/-- Identical vanishing of every received-line jet captures all rich sections,
+including a scalar at which the chosen coefficient vector was divided by a vertical factor. -/
+theorem rich_of_jets (dom : ι ↪ F) (u v₁ : ι → F) {r : ℕ} (hr : 0 < r) (ht : 0 < t)
+    (c : Monomials s v d (r*t) → F)
+    (hjets : ∀ x i j, i+j<r → ∑ m, C (c m)*jetTerm m i j (dom x) (u x) (v₁ x) = 0)
+    (g : F) (q : F[X]) (hq : q.natDegree ≤ d) (S : Finset ι) (hS : t ≤ S.card)
+    (hag : ∀ x ∈ S, q.eval (dom x) = u x + g*v₁ x) : specialize c g q = 0 := by
+  apply Polynomial.eq_zero_of_degree_lt_mul_of_pow_X_sub_C_dvd_at_injOn dom S r t dom.injective.injOn hS
+  · intro x hx
+    have hv : GS.vanishesToOrder r (fiber c g) (dom x) (u x+g*v₁ x) := by
+      apply (GS.vanishesToOrder_iff_hasseCoeff ..).mpr
+      intro i j h
+      rw [fiber_jet,hjets x i j h,eval_zero]
+    simpa only [fiber_eval] using hv.dvd_eval q (hag x hx)
+  · exact degree_le_natDegree.trans_lt (by exact_mod_cast specialize_degree c g q hq (Nat.mul_pos hr ht))
+
 /-- A nonzero polynomial with every mixed jet vanishing identically along all the received
 lines. Every sufficiently rich polynomial section is a root on its scalar fiber. -/
 theorem exists_surface (dom : ι ↪ F) (u v₁ : ι → F) {r : ℕ} (hr : 0 < r) (ht : 0 < t)
@@ -101,15 +117,7 @@ theorem exists_surface (dom : ι ↪ F) (u v₁ : ι → F) {r : ℕ} (hr : 0 < 
       intro m _
       rw [coeff_C_mul,coeff_eq_zero_of_natDegree_lt ((jetTerm_degree m i j _ _ _ (by omega)).trans_le
         (by omega : s+1-j ≤ k)),mul_zero]
-  refine ⟨c,hc,hjets,fun g q hq S hS hag => ?_⟩
-  apply Polynomial.eq_zero_of_degree_lt_mul_of_pow_X_sub_C_dvd_at_injOn dom S r t dom.injective.injOn hS
-  · intro x hx
-    have hv : GS.vanishesToOrder r (fiber c g) (dom x) (u x+g*v₁ x) := by
-      apply (GS.vanishesToOrder_iff_hasseCoeff ..).mpr
-      intro i j h
-      rw [fiber_jet,hjets x i j h,eval_zero]
-    simpa only [fiber_eval] using hv.dvd_eval q (hag x hx)
-  · exact degree_le_natDegree.trans_lt (by exact_mod_cast specialize_degree c g q hq (Nat.mul_pos hr ht))
+  exact ⟨c,hc,hjets,rich_of_jets dom u v₁ hr ht c hjets⟩
 
 /-- At the last production agreement count covered by the residual-module argument, a
 quartic of total scalar/value degree fourteen has all the required site jets and sections. -/
