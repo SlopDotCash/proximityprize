@@ -390,8 +390,10 @@ import ArkLib.Research.ProximityGap.Frontier.P8ListDecodingFaceNoLever
 import ArkLib.Research.ProximityGap.Frontier.PackingCoverSharpReach
 import ArkLib.Research.ProximityGap.Frontier.PackingDeflationBandAntitone
 import ArkLib.Research.ProximityGap.Frontier.PackingFloorTwoPowLower
+import ArkLib.Research.ProximityGap.Frontier.PaleyAffineSecondMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleyBilinearDiscrepancy
 import ArkLib.Research.ProximityGap.Frontier.PaleyCosetCancellation
+import ArkLib.Research.ProximityGap.Frontier.PaleyListInterpolation
 import ArkLib.Research.ProximityGap.Frontier.PaleyShiftListRecovery
 import ArkLib.Research.ProximityGap.Frontier.PaleyTranslateInterpolation
 import ArkLib.Research.ProximityGap.Frontier.PencilAutocorrEnergyMaxBridge
