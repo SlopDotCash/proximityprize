@@ -172,15 +172,22 @@ def main():
     print("odd gcds of minor norms, weighted by orbit size:", sorted(candidates.items()))
 
     # Every primitive root gives the same count because odd powers permute the sites.
+    fixed_root_counts = {}
     for p, weighted in sorted(incidences.items()):
         number, remainder = divmod(weighted, 8)
         if remainder:
             raise ArithmeticError("asymmetric primitive-root count")
+        fixed_root_counts[p] = number
         print(f"characteristic {p}: {number} partitions at a fixed primitive root")
         if number:
             triple, root_poly = witnesses[p]
             blocks = [[i for i in range(1, 16) if (s >> i) & 1] for s in triple]
             print(f"  witness exponents {blocks}, root gcd coefficients {root_poly}")
+
+    if (covered, count) != (126126, 15981):
+        raise ArithmeticError(f"unexpected partition and orbit totals: {covered}, {count}")
+    if fixed_root_counts != {3: 2, 7: 0, 17: 1, 31: 1}:
+        raise ArithmeticError(f"unexpected quintic fiber classification: {fixed_root_counts}")
 
 
 if __name__ == "__main__":

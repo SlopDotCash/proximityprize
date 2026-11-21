@@ -3,7 +3,8 @@
 // At each root beta of B:  L_C(beta)^2 (1-lam) L_D(beta) L_B'(beta) beta = N, so
 // L_D(beta) L_B'(beta) beta has constant quadratic character over beta in B, modulo every prime q = 1 mod N.
 #include <cstdio>
-#include <cstdlib>
+#include <charconv>
+#include <cstring>
 #include <cstdint>
 #include <vector>
 #include <thread>
@@ -33,8 +34,21 @@ struct W{ u64 v0[64],v1[64]; int R[64],nr; u64 b0,b1,mask0[8],mask1[8]; u64 B;
     dfs(0,DS,b0,b1,0);
   }
 };
+static bool parse_int(const char *arg, int &value) {
+  const char *end = arg + std::strlen(arg);
+  const auto parsed = std::from_chars(arg, end, value);
+  return parsed.ec == std::errc{} && parsed.ptr == end;
+}
+
 int main(int argc,char**argv){
-  N=atoi(argv[1]); M=atoi(argv[2]); int nth=atoi(argv[3]); DS=N-3*M;
+  int nth;
+  if (argc != 4 || !parse_int(argv[1], N) || !parse_int(argv[2], M) ||
+      !parse_int(argv[3], nth) || (N != 8 && N != 16 && N != 32) ||
+      M < 2 || M > 8 || 3*M > N || nth < 1) {
+    fprintf(stderr, "Usage: pencil N M WORKERS (N=8,16,32; 2<=M<=8; 3*M<=N; WORKERS>=1)\n");
+    return 2;
+  }
+  DS=N-3*M;
   int q=1; for(int i=0;i<NQ;i++){ do{q+=N;}while(!isprime(q));
     int g=2; for(;;g++){bool ok=true; int m=q-1; for(int d=2;d<=m;d++) if(m%d==0){ if(pw(g,(q-1)/d,q)==1){ok=false;break;} while(m%d==0)m/=d; } if(ok)break;}
     std::vector<int> ind(q); long v=1; for(int e=0;e<q-1;e++){ind[v]=e;v=v*g%q;}

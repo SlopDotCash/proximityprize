@@ -323,6 +323,7 @@ import ArkLib.Research.ProximityGap.Frontier.I031ModulusAlphabetRefine
 import ArkLib.Research.ProximityGap.Frontier.I031OrbitCountPartition
 import ArkLib.Research.ProximityGap.Frontier.I031SupTransversalCollapse
 import ArkLib.Research.ProximityGap.Frontier.I031TransversalConcreteCover
+import ArkLib.Research.ProximityGap.Frontier.ImplicitDerivativeBidegree
 import ArkLib.Research.ProximityGap.Frontier.ImplicitDerivativeNumerator
 import ArkLib.Research.ProximityGap.Frontier.ImprimitiveSpikeStructure
 import ArkLib.Research.ProximityGap.Frontier.IncidenceDevL2Offset
@@ -481,6 +482,8 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeComponentIncidence
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeConditionedCubic
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeConditionedIncidence
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeConditionedThreshold
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeDegreeSevenDimension
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeIntrinsicArithmetic
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeQuarticInterpolation
 import ArkLib.Research.ProximityGap.Frontier.SelfConsistencyCeiling
 import ArkLib.Research.ProximityGap.Frontier.ShallowDiagonalRouteNonReach
