@@ -13,6 +13,8 @@ evaluation domain over this field the first bad count is $\lfloor B/3\rfloor$.
 All positive interleaving widths have the same MCA error. This covers
 134,217,726 consecutive integer budgets. Lean also proves the exact worst-pair probability $3(e+1)/p$ for every $671088641\le e\le715827881$ whenever $B\ge2013265923$. [All-domain budget and probability theorem](../../../ArkLib/Research/ProximityGap/Frontier/UniversalCubicBudgetWindow.lean) · [Interleaving theorem](../../../ArkLib/Data/CodingTheory/ProximityGap/InterleavingStabilityMCA.lean)
 
+A second Lean proof uses one coordinate change for the selected cubic sections and both received rows. At most 161 labels are lost. The retained sections force a large common divisor of two ordinary polar resultants. Their local intersection budgets bound the sum of the received multiplicities, so a low-weight cubic has fewer than 1,342,177,249 labels. The proof recovers the named cutoff independently and extends the budget interval to every injective length-$2^{30}$ domain over every finite field of characteristic greater than $1,320,000,000$. [Independent named proof](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeTerminalCharge.lean) · [Full budget interval](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeOrdinaryWindow.lean)
+
 ## An upper bound for every received pair
 
 Write $b(e)$ for the maximum number of bad scalars among all two-row received
