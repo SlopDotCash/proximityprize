@@ -159,34 +159,38 @@ theorem fourth_moment (hF : ringChar F ≠ 2) (T : Finset F)
   simp only [hterm] at hm
   exact_mod_cast hm
 
-/-- A fixed set with coset occupancy `K` against a subgroup, by signed amplification of
-a sample of size `r` and the quadratic fourth moment. -/
-theorem subgroup_sum_fourth_le (hF : ringChar F ≠ 2) (A H : Finset F)
+/-- Signed row weights survive the subgroup sampling identity and disappear from its fourth moment. -/
+theorem weighted_subgroup_sum_fourth_le (hF : ringChar F ≠ 2) (A H : Finset F)
     (hH : IsMulSubgroup H) (hA : (0 : F) ∉ A) (K : ℕ)
     (hK : ∀ x : F, (A ∩ coset H x).card ≤ K) (r : ℕ)
-    (hr : 0 < r) (hrH : r ≤ H.card) (hsmall : r ^ 4 ≤ Fintype.card F) :
-    (∑ a ∈ A, ∑ b ∈ H, quadraticChar F (a - b)) ^ 4 * (r : ℤ)^2 ≤
+    (hr : 0 < r) (hrH : r ≤ H.card) (hsmall : r ^ 4 ≤ Fintype.card F)
+    (w : F → ℤ) (hw : ∀ a ∈ A, w a ^ 4 = 1) :
+    (∑ a ∈ A, w a * ∑ b ∈ H, quadraticChar F (a - b)) ^ 4 * (r : ℤ)^2 ≤
       ((A.card : ℤ) * H.card)^3 * K * fourthConstant (Fintype.card F) * Fintype.card F := by
   classical
   obtain ⟨T, hT, hcard⟩ := Finset.exists_subset_card_eq hrH
   let W := shiftedCharSum (quadraticChar F) T
-  let G (z : F × F) := quadraticChar F z.2 * W (z.2 * z.1)
-  let S := ∑ a ∈ A, ∑ b ∈ H, quadraticChar F (a-b)
+  let G (z : F × F) := w z.1 * (quadraticChar F z.2 * W (z.2 * z.1))
+  let S := ∑ a ∈ A, w a * ∑ b ∈ H, quadraticChar F (a-b)
   let D := A ×ˢ H
   have hrecover : (r : ℤ) * S = ∑ z ∈ D, G z := by
     rw [Finset.sum_product]
     dsimp only [S]
     rw [Finset.mul_sum]
     exact Finset.sum_congr rfl fun a _ => by
-      simpa only [G, W, hcard, shiftedCharSum] using (sum_weighted_sample_rows H T hH hT a).symm
+      simp only [G, ← Finset.mul_sum]
+      rw [mul_left_comm]
+      congr 1
+      simpa only [W, hcard, shiftedCharSum] using (sum_weighted_sample_rows H T hH hT a).symm
   have hcover : ∑ z ∈ D, G z ^ 4 ≤ (K : ℤ) * ∑ x : F, W x ^ 4 := calc
     _ = ∑ a ∈ A, ∑ u ∈ H, W (u*a)^4 := by
       rw [Finset.sum_product]
       apply Finset.sum_congr rfl
-      intro a _
+      intro a ha
       apply Finset.sum_congr rfl
       intro u hu
-      change (quadraticChar F u * W (u*a))^4 = W (u*a)^4
+      change (w a * (quadraticChar F u * W (u*a)))^4 = W (u*a)^4
+      rw [mul_pow, hw a ha, one_mul]
       rcases quadraticChar_dichotomy (ne_zero_of_mem hH hu) with hc | hc <;> rw [hc] <;> ring
     _ = ∑ a ∈ A, ∑ x : F, if a ∈ coset H x then W x ^ 4 else 0 := by
       apply Finset.sum_congr rfl
@@ -228,6 +232,17 @@ theorem subgroup_sum_fourth_le (hF : ringChar F ≠ 2) (A H : Finset F)
         ((fourthConstant (Fintype.card F) : ℤ) * (r : ℤ)^2 * Fintype.card F)) := by
       gcongr
     _ = _ := by simp only [D, Finset.card_product, Nat.cast_mul]; ring
+
+/-- A fixed set with coset occupancy `K` against a subgroup, by signed amplification of
+a sample of size `r` and the quadratic fourth moment. -/
+theorem subgroup_sum_fourth_le (hF : ringChar F ≠ 2) (A H : Finset F)
+    (hH : IsMulSubgroup H) (hA : (0 : F) ∉ A) (K : ℕ)
+    (hK : ∀ x : F, (A ∩ coset H x).card ≤ K) (r : ℕ)
+    (hr : 0 < r) (hrH : r ≤ H.card) (hsmall : r ^ 4 ≤ Fintype.card F) :
+    (∑ a ∈ A, ∑ b ∈ H, quadraticChar F (a - b)) ^ 4 * (r : ℤ)^2 ≤
+      ((A.card : ℤ) * H.card)^3 * K * fourthConstant (Fintype.card F) * Fintype.card F := by
+  simpa using weighted_subgroup_sum_fourth_le hF A H hH hA K hK r hr hrH hsmall
+    (fun _ => 1) (by simp)
 
 /-- A relative power saving whenever `K C q^(1+4δ) ≤ |A||H| r²`. -/
 theorem power_saving_of_fourth_estimate (A H : Finset F) (K r : ℕ) (δ : ℝ)

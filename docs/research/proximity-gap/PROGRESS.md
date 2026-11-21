@@ -1763,6 +1763,22 @@ A power saving for the complete individual $T_0,T_1$ pair remains open.
 [Derivations and exact certificates](paley-product-traces.md#between-two-different-products) ·
 [Lean identities](../../../ArkLib/Research/ProximityGap/Frontier/PaleyMixedProductTraces.lean)
 
+**Full mixed products below square-root size.** On any prime field, for
+a cyclic subgroup of order $n$ divisible by four and $n\ge4p^{1/4}$, the
+relative Paley discrepancy on every two distinct prescribed product strata
+is $O(p^{1/8}/n^{1/3}+p^{-1/8}+n^{-1})$. This saves a power whenever
+$n\ge p^{3/8+\varepsilon}$. At Goldilocks $p=2^{64}-2^{32}+1$ and
+$n=2^{30}$, every such full pair has relative discrepancy **strictly below
+four fifths**. Its two sides each have about one eighth of square-root size.
+In ratio and product coordinates the mixed kernel becomes a signed subgroup
+row evaluated at a fractional-linear map. Its coset occupancy is bounded
+by the positive-characteristic gcd theorem of Corvaja and Zannier, or by the
+repository's integral Stepanov theorem. The signed amplification bound, finite
+Stepanov application, Goldilocks primality, and the two complete exceptional-row
+estimates passed Lean. The two larger named prime fields lie below the new
+size range. [Derivation and constants](paley-mixed-trace-saving.md) ·
+[Finite Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyMixedTraceSaving.lean)
+
 **Fourier energy of a weighted code domain.** Let $D=t+cH$, write
 $S_{xy}=\chi(x-y)$ on $D$, and for complex weights $z$ put
 $\widehat z(r)=\sum_{x\in D}z_x e^{2\pi irx/p}$. For nonzero squares $R$ and
