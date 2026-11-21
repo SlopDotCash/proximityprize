@@ -284,6 +284,7 @@ ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor ArkLib.ProximityGa
 ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor ArkLib.ProximityGap.Frontier.QuarterRateTwoRichFloor.prime_budget_through_saturation
 
 # Smooth extension fields in the quarter-rate two-head interval
+ArkLib.Research.ProximityGap.Frontier.QuarterRateToleranceCurve ArkLib.ProximityGap.Frontier.QuarterRateToleranceCurve.classification
 ArkLib.Research.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow ArkLib.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow.full_grid_mass
 ArkLib.Research.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow ArkLib.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow.complete_curve
 ArkLib.Research.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow ArkLib.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow.complete_rank_answer
