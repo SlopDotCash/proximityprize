@@ -4,6 +4,11 @@
 import json
 
 
+def require(condition, detail):
+    if not condition:
+        raise AssertionError(detail)
+
+
 def interpolation_value(x):
     return x**3 - 35 * x**2 + 574 * x + 720
 
@@ -31,7 +36,7 @@ def main():
     for root in nodes:
         factorization = multiply_coefficients(factorization, [-root, 1])
     factorization = multiply_coefficients(factorization, [900, -40, 1])
-    assert squared_equation == factorization
+    require(squared_equation == factorization, "integer witness factorization mismatch")
     sparse_head = [1632, 0, -257, 5]
     sparse_odd = [2200, -820]
     sparse_equation = multiply_coefficients(sparse_head, sparse_head)
@@ -41,19 +46,38 @@ def main():
     for root in nodes:
         sparse_factorization = multiply_coefficients(sparse_factorization, [-root, 1])
     sparse_factorization = multiply_coefficients(sparse_factorization, [4624, -1820, 25])
-    assert sparse_equation == sparse_factorization
+    require(sparse_equation == sparse_factorization, "sparse-head factorization mismatch")
     for x in range(-32, 33):
-        assert interpolation_value(x)**2 - x * scale**2 == factor_value(x)
-    assert all(interpolation_value(x)**2 == x * scale**2 for x in nodes)
+        require(
+            interpolation_value(x)**2 - x * scale**2 == factor_value(x),
+            f"integer witness sample mismatch at x={x}",
+        )
+    require(
+        all(interpolation_value(x)**2 == x * scale**2 for x in nodes),
+        "integer witness roots do not satisfy the squared equation",
+    )
     moduli = (17, 257, 65537, 2147483647, 2**61 - 1, 2**127 - 1)
     rows = []
     for p in moduli:
-        assert len({x % p for x in nodes}) == 4
-        assert scale % p != 0
-        assert all((interpolation_value(x)**2 - x * scale**2) % p == 0 for x in nodes)
-        assert all((2200 - 820 * x) % p != 0 for x in nodes)
-        assert all(((5*x**3 - 257*x**2 + 1632)**2
-                    - x*(2200 - 820*x)**2) % p == 0 for x in nodes)
+        require(len({x % p for x in nodes}) == 4, f"witness nodes collide modulo {p}")
+        require(scale % p != 0, f"integer witness scale vanishes modulo {p}")
+        require(
+            all((interpolation_value(x)**2 - x * scale**2) % p == 0 for x in nodes),
+            f"integer witness root check failed modulo {p}",
+        )
+        require(
+            all((2200 - 820 * x) % p != 0 for x in nodes),
+            f"sparse odd part vanishes at a witness root modulo {p}",
+        )
+        require(
+            all(
+                ((5 * x**3 - 257 * x**2 + 1632) ** 2 - x * (2200 - 820 * x) ** 2)
+                % p
+                == 0
+                for x in nodes
+            ),
+            f"sparse-head witness root check failed modulo {p}",
+        )
         rows.append({"modulus": p, "distinct_roots": 4, "claimed_cap": 3,
                      "sparse_head_eligible_roots": 4})
 
@@ -65,12 +89,18 @@ def main():
 
     roots = {x for x in range(1, 17)
              if (finite_value(x)**2 - x * finite_odd_value(x)**2) % 17 == 0}
-    assert roots == {1, 2, 4, 8}
-    assert all(finite_odd_value(x) != 0 for x in roots)
+    require(roots == {1, 2, 4, 8}, f"unexpected F_17 witness roots: {sorted(roots)}")
+    require(
+        all(finite_odd_value(x) != 0 for x in roots),
+        "F_17 odd part vanishes at a witness root",
+    )
     subgroup = {x for x in range(1, 17) if pow(x, 8, 17) == 1}
-    assert len(subgroup) == 8
-    assert roots <= subgroup
-    assert all((-x) % 17 not in roots for x in roots)
+    require(len(subgroup) == 8, "F_17 subgroup does not have order eight")
+    require(roots <= subgroup, "F_17 witness root lies outside the order-eight subgroup")
+    require(
+        all((-x) % 17 not in roots for x in roots),
+        "F_17 witness roots are not antipodally isolated",
+    )
     print(json.dumps({
         "status": "PASS",
         "target": "SecondDescentStuckResidual",
