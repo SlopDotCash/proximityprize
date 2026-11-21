@@ -97,6 +97,24 @@ theorem mcaDeltaStar_eq_packing_step {p n N k Q : ℕ} [Fact p.Prime] [NeZero n]
   apply le_antisymm (mcaDeltaStar_le_of_bad _ _ hbad)
   exact shortening_threshold_lower hg hn hfield heven hlarge (by omega) hQ (by omega) hrate hlo
 
+/-- For every length at least 3398 and dimension exactly one sixteenth of the length,
+the integer budgets from the length through its one-fourteenth extension give an exact
+threshold at half the budget, rounded down to a Hamming step. -/
+theorem rateSixteenth_general_window {p n k Q B : ℕ} [Fact p.Prime] {g : ZMod p}
+    (hg : orderOf g = n) (hrate : n = 16 * k) (hn : 3398 ≤ n) (hQ : 2 ≤ Q)
+    (hB : B = p / Q) (hlo : n ≤ B) (hhi : 14 * (B - n) ≤ n) :
+    mcaDeltaStar (F := ZMod p) (A := ZMod p) (evalCode g n (k - 1)) (Q : ℝ≥0∞)⁻¹ =
+      ((B / 2 : ℕ) : ℝ≥0) / (n : ℝ≥0) := by
+  let N := 2 * (B / 2)
+  have hfloor : N ≤ B ∧ B ≤ N + 1 ∧ N / 2 = B / 2 := by dsimp [N]; omega
+  have hdouble : B * 2 ≤ p := calc
+    B * 2 ≤ B * Q := Nat.mul_le_mul_left B hQ
+    _ ≤ p := hB ▸ Nat.div_mul_le_self p Q
+  have : NeZero n := ⟨by omega⟩
+  have : NeZero N := ⟨by omega⟩
+  rw [← hfloor.2.2]
+  apply mcaDeltaStar_eq_packing_step hg <;> omega
+
 /-- At the sponsor length, rate and target error, the window on the even budget supplies every
 arithmetic hypothesis of the shortening and packing arguments. -/
 theorem rateSixteenth_window {p : ℕ} [Fact p.Prime] {g : ZMod p}
@@ -162,6 +180,7 @@ theorem secondPrime_rateSixteenth_shortening_floor :
 #print axioms shortening_threshold_lower
 #print axioms bad_at_packing_step
 #print axioms mcaDeltaStar_eq_packing_step
+#print axioms rateSixteenth_general_window
 #print axioms rateSixteenth_window
 #print axioms shorteningWindowPrime_rateSixteenth_threshold
 
