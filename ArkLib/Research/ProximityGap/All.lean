@@ -325,7 +325,6 @@ import ArkLib.Research.ProximityGap.Frontier.FoldedSourceFiber
 import ArkLib.Research.ProximityGap.Frontier.FourFiberThreshold
 import ArkLib.Research.ProximityGap.Frontier.FourFiberTripleAlignment
 import ArkLib.Research.ProximityGap.Frontier.FourHeadCrossRatio
-import ArkLib.Research.ProximityGap.Frontier.PuncturedFourWordProfile
 import ArkLib.Research.ProximityGap.Frontier.FourHeadQuotient
 import ArkLib.Research.ProximityGap.Frontier.FourHeadWitness
 import ArkLib.Research.ProximityGap.Frontier.FourRateList128
@@ -452,6 +451,7 @@ import ArkLib.Research.ProximityGap.Frontier.P8ListDecodingFaceNoLever
 import ArkLib.Research.ProximityGap.Frontier.PackingCoverSharpReach
 import ArkLib.Research.ProximityGap.Frontier.PackingDeflationBandAntitone
 import ArkLib.Research.ProximityGap.Frontier.PackingFloorTwoPowLower
+import ArkLib.Research.ProximityGap.Frontier.PaddedPowerSpecialization
 import ArkLib.Research.ProximityGap.Frontier.PaleyAffineSecondMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleyBilinearDiscrepancy
 import ArkLib.Research.ProximityGap.Frontier.PaleyCodingCosets
@@ -517,6 +517,7 @@ import ArkLib.Research.ProximityGap.Frontier.ProjectiveDirectionUnion
 import ArkLib.Research.ProximityGap.Frontier.ProjectiveListTransfer
 import ArkLib.Research.ProximityGap.Frontier.PseudocyclicDefectSum
 import ArkLib.Research.ProximityGap.Frontier.PuncturedFiberAgreement
+import ArkLib.Research.ProximityGap.Frontier.PuncturedFourWordProfile
 import ArkLib.Research.ProximityGap.Frontier.Q1ArisingFamilyDescent
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetFourRates
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetTwoThreshold
