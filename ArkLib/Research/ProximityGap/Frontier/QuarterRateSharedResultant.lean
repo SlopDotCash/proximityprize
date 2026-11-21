@@ -18,7 +18,8 @@ open Finset Polynomial Code SecondPrimeQuarticInterpolation
 open HalfPredecessorBadEventRichPointBridge
 open scoped NNReal
 
-private theorem shape {F : Type} [Field F] {s v d t : ℕ} (c : Monomials s v d t → F) :
+/-- The coefficient space bounds both the value degree and the total scalar/value degree. -/
+theorem surface_bounds {F : Type} [Field F] {s v d t : ℕ} (c : Monomials s v d t → F) :
     (surface c).natDegree ≤ v ∧ WeightedSylvesterDegree.TotalDegreeLe (surface c) s := by
   constructor
   · apply natDegree_le_iff_coeff_eq_zero.mpr
@@ -48,8 +49,8 @@ theorem common_resultant {D : I ↪ F} {δ : ℝ≥0} {u : WordStack F (Fin 2) I
   classical
   obtain ⟨a, b, ha, hb, hr⟩ := QuarterRateRichSecants.shared_equations fam hn ht
   refine ⟨a, b, ha, hb, hr, ?_⟩
-  obtain ⟨ya, ta⟩ := shape a
-  obtain ⟨yb, tb⟩ := shape b
+  obtain ⟨ya, ta⟩ := surface_bounds a
+  obtain ⟨yb, tb⟩ := surface_bounds b
   have distinct : Function.Injective (fun z : fam.G => (C (z : F) : F[X])) :=
     C_injective.comp Subtype.val_injective
   have posa : (surface a).natDegree ≠ 0 := by

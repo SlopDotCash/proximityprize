@@ -621,7 +621,11 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetFourRates
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetTwoThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarterPairTripleSignatures
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateApolarBracket
+import ArkLib.Research.ProximityGap.Frontier.QuarterRateCommonPopulation
+import ArkLib.Research.ProximityGap.Frontier.QuarterRateCompleteSafety
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateDoubleInterpolation
+import ArkLib.Research.ProximityGap.Frontier.QuarterRateFactorDivisibility
+import ArkLib.Research.ProximityGap.Frontier.QuarterRateFactorSelection
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateQuadraticSafety
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateRichSecants
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateSaturatedCores
