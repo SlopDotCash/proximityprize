@@ -19,6 +19,12 @@ The [November 21 integration assessment](integration-assessment-2026-11-21.md) r
 | Unit sixth-moment inequality at order 64 | Exactly 182 split primes violate it. The largest is 926510094425921. At 173249 all three repeated-entry tests pass, and the exact integer excess is 7565522944. | [All-prime classification](../../../scripts/probes/probe_order64_sixth_moment_classification.py), [Lean counterexample](../../../ArkLib/Research/ProximityGap/Frontier/SixthMomentSparseCounterexampleWiring.lean) |
 | Workbench flatness conjecture | Quadratic extensions refute the all-finite-fields formulation. The uniform prime-field cancellation bound remains open. | [Lean counterexample](../../../ArkLib/Research/ProximityGap/Frontier/ShawFlatnessSubfieldCounterexample.lean) |
 
+## An exact list size on every supplied evaluation domain
+
+For an injective Reed–Solomon evaluation domain of length $n$, dimension $1\le k\le n$, and any positive interleaving width, the worst list at $n-k$ errors has exactly $\binom nk$ codewords. This is the last grid point before the minimum distance. Distinct words cannot share a set of $k$ agreements with the center. The all-subsets interpolation construction attains the bound on the supplied domain.
+
+Write $C=\binom nk$ and let $B$ be an integer list budget below the field size. If $\lfloor C/(k+1)\rfloor\le B<C$, the first failing error count is $n-k$. If $C\le B<|F|$, the first failing count is $n-k+1$. These statements classify every real radius and specialize directly to $B=\lfloor |F|/2^{128}\rfloor$. In particular, $|F|\ge 2^{128+n}$ implies the second formula for every dimension. Budgets below the first interval require further estimates. [Exact list size and budget windows](../../../ArkLib/Research/ProximityGap/Frontier/ListInterpolationBoundary.lean)
+
 ## 2026-11-21 · An exact MCA threshold from Reed–Solomon shortening
 
 This entry uses downstream source revision `a15abf509f39bf87781119462b81d9c5e08a6848`. The following is a mathematical derivation. Kernel verification will be recorded separately.
