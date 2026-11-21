@@ -1,5 +1,13 @@
 # Disproof Log — ABF26 Proximity Prize Grand Challenge 1 (Issue #232)
 
+## [164-sixth-moment-after-repeated-entry-exclusions] 2026-11-21
+
+The order-64 subgroup modulo 173249 is weak Sidon. Its signature comparisons exclude every unpaired six-term zero sum on at most four antipodal classes. The subgroup still violates the centered unit sixth-moment bound. Its ordered third energy is 4372480 and the excess after multiplication by the field size is 7565522944. A second order-64 example modulo 81818497 satisfies the same inequality $n^5<40p$ used to simplify the orbit budget at the production primes. It has four five-class and two six-class orbits, giving $A_5+2A_6=8$ against a budget of seven. These examples rule out deducing the unit sixth-moment inequality from the repeated-entry exclusions and that numerical size condition alone. [Three exact counts](../../../scripts/probes/probe_sixth_moment_sparse_counterexample.py) · [Formal arithmetic and hypotheses](../../../ArkLib/Research/ProximityGap/Frontier/SixthMomentSparseCounterexample.lean)
+
+## [164-punctured-quarter-fibers] 2026-11-21
+
+At length $n=4m$ and dimension $2m$, suppose each head agrees with a single received word outside its assigned fiber of $X^m$ and a common erased set. If every fiber is assigned and at most $m$ coordinates are erased, all heads coincide. Three weighted heads give a polynomial identity on the retained coordinates. Evaluating that identity on the full domain forces equality by the degree bound. With $m+1$ erased points outside one fiber there is a nonzero locator head and a zero head. The shared-erasure limit for equality is sharp. The obstruction concerns this prescribed support pattern. [Lean proof](../../../ArkLib/Research/ProximityGap/Frontier/PuncturedFiberAgreement.lean) · [Finite rank check](../../../scripts/probes/probe_four_coset_puncturing.py)
+
 ## [164-expanded-common-factor-incidence-cores] 2026-10-11
 
 Author: Mikhail Izhutkin (@mashingaan)
@@ -49123,3 +49131,142 @@ The checked declarations are `mcaEvent_index`, `seventeen_le_badScalar_filter_ca
 This certifies one finite small-field stack, not an exhaustive maximum across stacks or a
 production-field violation. In particular it does not revise the separate SYZ53 large-field
 collapse or resolve production δ*.
+## 2026-11-21 · A positive nonprincipal period exceeds 104498 at the first prize prime
+
+Let $p=365375409332725729550921208179070755120141565953$, $n=2^{30}$ and
+$S=-S\subseteq\mathbb F_p^\times$ have size $n$. There is some nonzero $b$ with
+
+$$
+\sum_{s\in S}\cos(2\pi bs/p)>104498.
+$$
+
+This applies to the production subgroup because its even order puts $-1$ in the subgroup.
+It rules out a uniform ceiling of $2\sqrt n=65536$ at this literal prime. The conjectured
+upper bound with a logarithmic factor is larger. The proof uses a test function and
+integer arithmetic, independently of the subgroup's energy or the values of individual periods.
+
+**Proof.** Pair the elements of $S$ as $\{\pm s_1,\ldots,\pm s_d\}$, with $d=n/2$.
+The map $\pi:\mathbb Z^d\to\mathbb F_p$ taking $e_i$ to $s_i$ sends nearest-neighbor
+steps to Cayley graph steps. For a finitely supported nonnegative function $f$ on the
+lattice, set $F(x)=(\sum_{\pi(v)=x} f(v)^2)^{1/2}$. Write $D=\sum f^2$, $L=\sum f$
+and $E=\langle f,A_{\mathbb Z^d} f\rangle$, using ordinary counting measure. Then
+$\sum F^2=D$ and $\sum F\le L$. For each oriented lattice step $h=\pm e_i$,
+translation by $h$ bijects the fiber over $x$ with the fiber over $x+\pi(h)$.
+Cauchy–Schwarz on these fibers gives
+
+$$
+\sum_{\pi(v)=x}f(v)f(v+h)\le F(x)F(x+\pi(h)).
+$$
+
+Summing over $x,h$ gives $\langle F,A_S F\rangle\ge E$. Subtracting the mean of
+$F$ leaves a test function with squared norm $D-z$ and adjacency form at least
+$E-nz$, where $z=(\sum F)^2/p\le L^2/p$. Suppose $L^2<pD$.
+Since $E\le nD$ by Cauchy–Schwarz on each translate, $(E-nz)/(D-z)$ decreases
+with $z$. The variational principle on the mean-zero space gives
+
+$$
+\lambda_{\max}(A_S|_{\mathbf 1^\perp})\ \ge\ \frac{pE-nL^2}{pD-L^2}.
+$$
+
+The additive characters diagonalize $A_S$. Symmetry of $S$ makes their eigenvalues the
+real cosine sums in the claim.
+
+For $k=0,\ldots,5$, give every vector with precisely $k$ coordinates equal to
+$\pm1$ and all others zero weight $w_k=c_k\,32768^{5-k}$, where
+$(c_0,\ldots,c_5)=(100,319,917,2287,4541,5335)$. Give all other vectors weight zero.
+Layer $k$ has $N_k=2^k\binom{d}{k}$ points. Each has $n-2k$ neighbors on layer
+$k+1$. The remaining neighbors either reduce the layer index or leave the support.
+Thus $D=\sum N_kw_k^2$, $L=\sum N_kw_k$, and
+$E=2\sum_{k<5}N_k(n-2k)w_kw_{k+1}$.
+With these integers $pD-L^2>0$ and
+$104498(pD-L^2)<pE-nL^2<104499(pD-L^2)$. This proves the claim.
+
+Run `python3 -O scripts/probes/probe_paley_abelian_cover_floor.py` for the exact
+fraction and an independent small lattice check of the three layer formulas.
+The graph argument is a written proof. The probe checks its arithmetic.
+The broader covering-graph method is developed by Joel Friedman and Jean-Pierre Tillich.
+[Generalized Alon–Boppana theorems and error-correcting codes](https://www.cs.ubc.ca/~jf/pubs/web_stuff/alon_bopp.pdf).
+
+**How many periods exceed the Ramanujan ceiling?** Let $K$ count *all*
+frequencies whose real eigenvalue exceeds $t=65536$, including zero. The
+orthonormal Fourier coefficients of $F$ have squared magnitudes bounded by
+$L^2/p$, since $\sum F\le L$. Parseval gives total squared magnitude $D$.
+In the adjacency form each frequency contributes its eigenvalue times its
+squared Fourier coefficient. Its eigenvalue is at most $n$, so
+
+$$
+E \le tD+(n-t)K L^2/p.
+$$
+
+Use the four layer weights $(32768^3,2\cdot32768^2,3\cdot32768,2)$, on
+layers zero through three. For a multiplicative subgroup the periods are
+constant on each nonzero coset of size $n$. The number of nonzero cosets
+with period greater than $65536$ is therefore $(K-1)/n$, and is at least
+
+$$
+\frac{1}{n}\left(\frac{p(E-tD)}{(n-t)L^2}-1\right)>125802243.
+$$
+
+Thus at least **125802244 distinct nonzero cosets** exceed this ceiling.
+The same script checks the last strict inequality by integer arithmetic.
+
+## 2026-11-21 — Sharp Paley constant and unit Wick counterexamples in thin prime fields
+
+Let $H=\langle h\rangle\subseteq\mathbb F_p^\times$, $n=|H|$,
+$m=(p-1)/n$ and $\eta_b=\sum_{x\in H}e^{2\pi i bx/p}$.
+The following witnesses have $n=64$, $64^4<p<2\cdot64^4$ and
+$v_2(p-1)=6$, the smallest valuation admitting this subgroup.
+
+| Prime $p$ | Index $m$ | Generator $h$ | Frequency $b$ | Certified period bound | Depths where $bH$ alone exceeds the unit Wick budget |
+|---:|---:|---:|---:|---:|---:|
+| 16,802,369 | 262,537 | 10,536,220 | 8,954,665 | $\eta_b<-40.89$ | 11–15 |
+| 16,890,817 | 263,919 | 13,992,976 | 4,780,558 | $\eta_b<-42.31$ | 9–20 |
+
+In both rows $\log m<25/2$, so $\sqrt{2n\log m}<40$. The second
+row fails the unit Wick test at both $\lceil\log m\rceil=13$ and
+$\lceil\log p\rceil=17$. Exact enumeration gives a strict pass at every
+depth from 2 through 5 in each row. These counterexamples correct the
+thin-regime constant claim in §6 of the [expert problem statement](../../kb/proximity-prize-open-problem-for-number-theorists-2026-06-21.md).
+
+**Verification.** For each residue $c=bh^j\bmod p$, let
+$t=6.28\min(c,p-c)/p$. The reduced true angle lies in $[t,\pi]$.
+Cosine is decreasing there, and its degree-12 Taylor polynomial at $t$
+is an upper bound by the alternating-series remainder. Summing these
+rational polynomial values certifies each negative bound above. The first
+26 terms of the positive exponential series give $\exp(25/2)>m$.
+If $L$ is the certified lower bound on $|\eta_b|$, all $n$ distinct
+frequencies in $bH$ contribute more than $nL^{2r}$ in total. At each
+listed depth this exceeds $p(2r-1)!!n^r$. Orthogonality identifies the
+full nonprincipal moment with $pE_r-n^{2r}$, proving the failure of
+[DCEnergyBound](../../../ArkLib/Data/CodingTheory/ProximityGap/DCEnergyCorrection.lean).
+The frequency candidates were found by enumerating representatives of the
+multiplicative cosets. The certificate uses their explicit witnesses.
+
+A separate set of primes has $5.25<\log_n p<5.30$, a band containing
+the production exponent $158/30$. In each row $h$ has order $n$ and
+the three distinct elements $h,1,h^j$ form an arithmetic progression
+with $h+h^j=2$.
+
+| $n$ | Prime $p$ | $h$ | $j$ | Exact $E_2$ | $pE_2-n^4-3pn^2$ |
+|---:|---:|---:|---:|---:|---:|
+| 64 | 3,183,784,129 | 1,380,119,153 | 24 | 12,864 | 1,833,842,881,088 |
+| 64 | 3,322,894,721 | 3,120,650,132 | 58 | 12,864 | 1,913,970,582,080 |
+| 128 | 133,759,945,217 | 6,645,390,832 | 98 | 50,304 | 154,091,188,454,528 |
+
+These rows were found by factoring norms of $2-\zeta_n-\zeta_n^j$ and
+checking the resulting congruences. The energy has a direct interpretation.
+Negation closure identifies $E_2$ with the ordered zero-sum quadruple
+count. Quadruples with antipodal pairs account for $3n^2-3n$ by
+inclusion-exclusion over the three pairings. In each row
+$h,h^j\notin\{1,-1\}$ and $h\ne h^j$. For each $t\in H$, permuting
+$(t,t,-th,-th^j)$ gives 12 further quadruples with no antipodal pair.
+The unique repeated value $t$ distinguishes these packets. Thus the
+progression forces $E_2\ge 3n^2+9n$ and violates the unit Wick bound
+whenever $9p>n^3$. Direct counts attain this lower bound in all three
+rows. Production-like density alone cannot guarantee even the unit
+depth-two estimate.
+
+Run `python3 -O scripts/probes/probe_paley_minimal_valuation_witness.py`
+to reproduce the checks using integer and rational arithmetic. Bounds with
+an unspecified absolute Paley constant or a $K^r$ moment factor remain
+open, as do the estimates for the designated production primes.

@@ -3,9 +3,10 @@
 > **Standalone repository notice (2026-08-16).** The complete research corpus now lives in
 > [`SlopDotCash/proximityprize`](https://github.com/SlopDotCash/proximityprize), with `main` as the
 > integration branch. Develop on a focused feature branch based on `origin/main`; do not route new
-> work to the retired `lalalune/ArkLib` `research/proximity-prize` branch. Current coordination is
-> [#164](https://github.com/SlopDotCash/proximityprize/issues/164) for the mathematical CORE and
-> independent production-completion audit, and
+> work to the retired `lalalune/ArkLib` `research/proximity-prize` branch. The historical
+> [#164 tracker](https://github.com/SlopDotCash/proximityprize/issues/164) records the mathematical CORE and
+> independent production-completion criteria. October's [PR #217](https://github.com/SlopDotCash/proximityprize/pull/217)
+> closed that issue after formalizing the endpoint convention. See
 > [#2](https://github.com/SlopDotCash/proximityprize/issues/2) for cleanup/upstream carve-out.
 > Issues #1 and #4 were consolidated into #164 on 2026-09-05; their administrative closure does
 > not establish the production theorem. Issue #3 is completed historical state/census work.
@@ -19,7 +20,8 @@ codes ([ABF26] Definition 4.3), with matching machine-checked bounds.
 | What | Where |
 |---|---|
 | Agent guide (build recipe, honesty rules, pitfalls, state of knowledge) | [`docs/research/proximity-gap/CLAUDE.md`](../research/proximity-gap/CLAUDE.md) |
-| Current standalone completion ledger and post-v3 results | [`docs/research/proximity-gap/DOSSIER.md`](../research/proximity-gap/DOSSIER.md#standalone-snapshot-2026-08-16) |
+| November parameter-by-parameter assessment | [Which thresholds are known and which proofs remain open](../research/proximity-gap/integration-assessment-2026-11-21.md) |
+| August standalone completion ledger and post-v3 results | [`docs/research/proximity-gap/DOSSIER.md`](../research/proximity-gap/DOSSIER.md#standalone-snapshot-2026-08-16) |
 | Historical full campaign dossier through 2026-07-11 | [`docs/research/proximity-gap/DOSSIER.md`](../research/proximity-gap/DOSSIER.md#campaign-dossier-through-2026-07-11) |
 | Compiled campaign knowledge (#357, by theme) | [`docs/kb/deltastar-357-compiled-knowledge.md`](../kb/deltastar-357-compiled-knowledge.md) |
 | Research map (papers + adjacent math + ranked attack vectors) | [`docs/kb/deltastar-research-map.md`](../kb/deltastar-research-map.md) |
@@ -43,7 +45,7 @@ scripts/pg-iterate.sh <file>.lean  # per attempt: ~30-75s, lock-free, parallel-s
 Develop in a detached `/tmp` worktree with `.lake` symlinked to the main checkout
 (see the agent guide §2 for the concurrency hazards on this shared tree).
 
-## The state in one paragraph
+## August 2026 programme snapshot
 
 The production conjecture remains **OPEN / ON-BGK**. Exact finite-instance and deep-rung pins,
 threshold ledgers, brackets, reductions, and no-go theorems are machine checked, but none is the
