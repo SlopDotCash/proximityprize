@@ -85,10 +85,12 @@ private theorem shift_bound (s : ZMod p) (H j : ℕ) :
   | succ j ih =>
     rw [Nat.cast_succ, Nat.cast_succ, ← add_assoc]
     have he := shift_one (s+(j : ZMod p)) H
-    have hb := abs_sub (quadraticChar (ZMod p) (s+(j : ZMod p)+(H : ZMod p))) (quadraticChar (ZMod p) (s+(j : ZMod p)))
+    have hb := abs_sub (quadraticChar (ZMod p) (s+(j : ZMod p)+(H : ZMod p)))
+      (quadraticChar (ZMod p) (s+(j : ZMod p)))
     have h1 := abs_char_le (s+(j : ZMod p)+(H : ZMod p))
     have h2 := abs_char_le (s+(j : ZMod p))
-    have ht := abs_sub_le (intervalSum (s+(j : ZMod p)+1) H) (intervalSum (s+(j : ZMod p)) H) (intervalSum s H)
+    have ht := abs_sub_le (intervalSum (s+(j : ZMod p)+1) H)
+      (intervalSum (s+(j : ZMod p)) H) (intervalSum s H)
     rw [he] at ht
     omega
 
@@ -297,7 +299,8 @@ theorem small_nonresidue_of_rectangleSaving {P : ℕ → Prop} (h : RectangleSav
     simpa using ((tendsto_rpow_neg_atTop hδ).comp tendsto_natCast_atTop_atTop).const_mul C
   have hgrowth : Tendsto (fun q : ℕ => (q : ℝ)^α) atTop atTop :=
     (tendsto_rpow_atTop hα).comp tendsto_natCast_atTop_atTop
-  obtain ⟨N₁, hN₁⟩ := eventually_atTop.mp (hdecay.eventually (gt_mem_nhds (show (0:ℝ) < 1 by norm_num)))
+  obtain ⟨N₁, hN₁⟩ := eventually_atTop.mp
+    (hdecay.eventually (gt_mem_nhds (show (0 : ℝ) < 1 by norm_num)))
   obtain ⟨N₂, hN₂⟩ := eventually_atTop.mp (hgrowth.eventually_ge_atTop 2)
   refine ⟨max N (max N₁ N₂), ?_⟩
   intro q hq hP hN
