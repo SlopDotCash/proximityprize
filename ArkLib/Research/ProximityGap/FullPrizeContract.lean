@@ -1,6 +1,7 @@
 /-
 Copyright (c) 2026 Proximity Prize contributors. All rights reserved.
 Released under the MIT and Apache-2.0 licenses as described in LICENSE-MIT and LICENSE.
+Authors: Proximity Prize contributors
 -/
 import ArkLib.Data.CodingTheory.ProximityGap.GrandChallenges
 

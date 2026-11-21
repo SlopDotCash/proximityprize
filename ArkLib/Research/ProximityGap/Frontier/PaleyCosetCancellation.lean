@@ -3,7 +3,9 @@ Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
 Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and LICENSE.
 Authors: Proximity Prize Contributors
 -/
+import ArkLib.Research.ProximityGap.Frontier.MobiusSeamCoordinateSupply
 import ArkLib.Research.ProximityGap.Frontier._PrizeShapePrimeP30Second
+import Mathlib.Basic.Real.Basic
 import Mathlib.NumberTheory.LegendreSymbol.Basic
 import Mathlib.Tactic.Linarith
 
@@ -13,7 +15,9 @@ import Mathlib.Tactic.Linarith
 Multiplication by a quadratic nonresidue changes the sign of the quadratic character.
 The double sum on two sets preserved by this multiplication vanishes. On the second
 production domain its order-`2^30` generator is a nonresidue, so the identity applies
-to any two unions of its multiplicative cosets.
+to any two unions of its multiplicative cosets. A common fractional linear transformation
+of two sets away from its pole multiplies each character entry by a determinant sign
+and one sign from each denominator.
 -/
 
 namespace ProximityGap.PaleyCosetCancellation
@@ -169,6 +173,85 @@ theorem quadraticChar_of_odd_index {p h m : ℕ} [Fact p.Prime] {u : ZMod p}
     obtain ⟨k, hk⟩ := hm
     omega
   simp [hne]
+
+open MobiusSeamCoordinateSupply (Mobius)
+
+/-- On finite nonpoles a common fractional linear transformation changes the Paley
+character matrix by the determinant character and by one sign for each index. -/
+theorem mobius_character_difference (M : Mobius F) {x y : F} (hx : M.den x ≠ 0)
+    (hy : M.den y ≠ 0) :
+    quadraticChar F (M.value x - M.value y) =
+      quadraticChar F M.det * quadraticChar F (M.den x) * quadraticChar F (M.den y) *
+        quadraticChar F (x - y) := by
+  have hdiff : (M.value x - M.value y) * (M.den x * M.den y) = M.det * (x - y) := by
+    dsimp only [MobiusSeamCoordinateSupply.Mobius.value]
+    field_simp [hx, hy]
+    dsimp [MobiusSeamCoordinateSupply.Mobius.num, MobiusSeamCoordinateSupply.Mobius.den,
+      MobiusSeamCoordinateSupply.Mobius.det]
+    ring
+  have hs := quadraticChar_sq_one (mul_ne_zero hx hy)
+  calc
+    _ = quadraticChar F (M.value x - M.value y) * quadraticChar F (M.den x * M.den y) ^ 2 :=
+      by rw [hs, mul_one]
+    _ = _ := by rw [pow_two, ← mul_assoc, ← map_mul, hdiff, map_mul, map_mul]; ring
+
+/-- The weighted character sum on two Möbius images equals the original bilinear form
+with signed row and column weights. This applies with real or complex weights. -/
+theorem mobius_weighted_image_sum {R : Type*} [CommRing R] (M : Mobius F)
+    (hdet : M.det ≠ 0) (A B : Finset F)
+    (hA : ∀ x ∈ A, M.den x ≠ 0) (hB : ∀ y ∈ B, M.den y ≠ 0) (r s : F → R) :
+    (∑ x ∈ A.image M.value, ∑ y ∈ B.image M.value, r x * s y * (quadraticChar F (x - y) : R)) =
+      (quadraticChar F M.det : R) *
+        ∑ x ∈ A, ∑ y ∈ B, (r (M.value x) * (quadraticChar F (M.den x) : R)) *
+          (s (M.value y) * (quadraticChar F (M.den y) : R)) * (quadraticChar F (x - y) : R) := by
+  classical
+  have injA := fun x hx y hy => M.injective_on_finite hdet (hA x hx) (hA y hy)
+  have injB := fun x hx y hy => M.injective_on_finite hdet (hB x hx) (hB y hy)
+  rw [Finset.sum_image injA, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro x hx
+  rw [Finset.sum_image injB, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro y hy
+  rw [mobius_character_difference M (hA x hx) (hB y hy)]
+  push_cast
+  ring
+
+/-- The denominator signs and reindexing in the Möbius pullback preserve squared real weights. -/
+theorem mobius_pullback_sum_sq (M : Mobius F) (hdet : M.det ≠ 0) (A : Finset F)
+    (hA : ∀ x ∈ A, M.den x ≠ 0) (r : F → ℝ) :
+    ∑ x ∈ A, (r (M.value x) * (quadraticChar F (M.den x) : ℝ)) ^ 2 =
+      ∑ y ∈ A.image M.value, (r y) ^ 2 := by
+  classical
+  rw [Finset.sum_image (fun x hx y hy => M.injective_on_finite hdet (hA x hx) (hA y hy))]
+  apply Finset.sum_congr rfl
+  intro x hx
+  have hχ : (quadraticChar F (M.den x) : ℝ) ^ 2 = 1 := by
+    exact_mod_cast quadraticChar_sq_one (hA x hx)
+  rw [mul_pow, hχ, mul_one]
+
+/-- A squared operator-norm bound on the original Paley matrix has exactly the same
+constant on the two images. The row and column supports may be different. -/
+theorem mobius_image_bilinear_bound (M : Mobius F) (hdet : M.det ≠ 0) (A B : Finset F)
+    (hA : ∀ x ∈ A, M.den x ≠ 0) (hB : ∀ y ∈ B, M.den y ≠ 0) (K : ℝ)
+    (hK : ∀ r s : F → ℝ,
+      (∑ x ∈ A, ∑ y ∈ B, r x * s y * (quadraticChar F (x - y) : ℝ)) ^ 2 ≤
+        K ^ 2 * (∑ x ∈ A, r x ^ 2) * (∑ y ∈ B, s y ^ 2))
+    (r s : F → ℝ) :
+    (∑ x ∈ A.image M.value, ∑ y ∈ B.image M.value,
+      r x * s y * (quadraticChar F (x - y) : ℝ)) ^ 2 ≤
+        K ^ 2 * (∑ x ∈ A.image M.value, r x ^ 2) * (∑ y ∈ B.image M.value, s y ^ 2) := by
+  rw [mobius_weighted_image_sum M hdet A B hA hB r s, mul_pow]
+  have hχ : (quadraticChar F M.det : ℝ) ^ 2 = 1 := by
+    exact_mod_cast quadraticChar_sq_one hdet
+  rw [hχ, one_mul, ← mobius_pullback_sum_sq M hdet A hA r,
+    ← mobius_pullback_sum_sq M hdet B hB s]
+  exact hK _ _
+
+#print axioms mobius_image_bilinear_bound
+#print axioms mobius_character_difference
+#print axioms mobius_weighted_image_sum
+#print axioms mobius_pullback_sum_sq
 
 section SecondPrime
 

@@ -19,6 +19,128 @@ The [November 21 integration assessment](integration-assessment-2026-11-21.md) r
 | Unit sixth-moment inequality at order 64 | Exactly 182 split primes violate it. The largest is 926510094425921. At 173249 all three repeated-entry tests pass, and the exact integer excess is 7565522944. | [All-prime classification](../../../scripts/probes/probe_order64_sixth_moment_classification.py), [Lean counterexample](../../../ArkLib/Research/ProximityGap/Frontier/SixthMomentSparseCounterexampleWiring.lean) |
 | Workbench flatness conjecture | Quadratic extensions refute the all-finite-fields formulation. The uniform prime-field cancellation bound remains open. | [Lean counterexample](../../../ArkLib/Research/ProximityGap/Frontier/ShawFlatnessSubfieldCounterexample.lean) |
 
+## 2026-11-21 · From the coding prizes to classical Paley discrepancy
+
+The joint coding theorem covers the order-128 subgroup of the prime field of order
+$p=65\cdot2^{239}+1$. At rates $1/2,1/4,1/8,1/16$ its first bad list error counts are
+$63,97,113,121$. For MCA the half-rate crossing is $62$ errors and the other three rates
+stay within budget through radius one. The proof counts agreement subsets, constructs
+prescribed-product witnesses, and transfers scalar lists to MCA under explicit field-size
+conditions. The length-$2^{30}$ four-rate MCA result has a separate field-budget window.
+[Joint theorem](../../../ArkLib/Research/ProximityGap/Frontier/FourRateSmoothMca128.lean) ·
+[List proof](../../../ArkLib/Research/ProximityGap/Frontier/FourRateList128.lean) ·
+[Production-length window](../../../ArkLib/Research/ProximityGap/Frontier/SharpApolarMCA.lean)
+
+**An exact coding reduction.** For an odd prime, write $S(A,B)=\sum_{b\in B,a\in A}\chi(a+b)$
+for the quadratic character. On coordinates $a\in A$, use the affine Reed–Solomon word
+$a\mapsto a+b$. For $s=\pm1$ let $h_s(b)$ count coordinates where the symbol has character
+$s$. The signed excess is exactly $2h_s(b)-|A|+\mathbf1_{-b\in A}$. If for each sign at
+most $L$ shifts have excess greater than a nonnegative integer $t$, then
+$|S(A,B)|\le t|B|+L|A|$ for every $B$. Conversely, if $|S(A,B)|\le t|B|$ for every
+$|B|\ge m>0$, each exceptional list has size below $m$. This identifies the missing estimate
+in coding language. Every coordinate accepts the same half-alphabet of squares, or of
+nonsquares. A single-symbol center has just $|A|$ agreements across *all* shifts.
+The affine pair $X,1$ has zero MCA-bad scalars in every dimension at least two. Direct
+encoding of the Legendre values also meets a degree obstruction. On at most $(p-1)/2$
+coordinates their off-domain translates have full affine hull over the prime field.
+[Shift-list equivalences and MCA proof](../../../ArkLib/Research/ProximityGap/Frontier/PaleyShiftListRecovery.lean) ·
+[Affine-hull theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyTranslateInterpolation.lean)
+
+**Classical Paley results.** At the second designated production prime the order-$2^{30}$
+generator $g$ is a nonsquare. Simultaneous scaling by $g$ makes $S(A,B)=0$ for every pair
+of unions of its cosets. For two geometric intervals in arbitrary such cosets,
+$|S(A,B)|\le |A|+|B|$. Negating $B$ converts the sum convention above to graph differences.
+At the first prime, the complete subgroup has quadratic row sum $-30929$ at one, and
+all its elements are squares. Thus its ordered difference sum is $-33209760874496$.
+The second-prime zero and interval bound are Lean theorems. The first-prime value is
+an exact GMP evaluation. The scan pairs $g^i$ with $g^{-i}$, treats the two self-inverse
+elements separately, and checks each shard endpoint by modular powering. Direct evaluation
+of every ordered pair at the two small controls reproduced every dyadic subtotal.
+[Cosets and intervals](../../../ArkLib/Research/ProximityGap/Frontier/PaleyCosetCancellation.lean) ·
+[Production character scan](../../../scripts/probes/probe_sponsor_paley_row.cpp)
+
+For arbitrary sets in a finite field of order $q$, put $a=|A|$ and $b=|B|$.
+The kernel-checked second moment yields $q|S|^2\le ab(q-a)(q-b)$ for every nontrivial
+multiplicative character. For the quadratic character, the repository's unconditional Stepanov
+fourth moment gives $r^2|S|^4\le17qa^3b^4$ whenever $1\le r\le b$ and $r^4\le q$.
+Averaging over the $r$-subsets of $B$ yields this bound with no upper limit on $b$.
+Thus $17q^{1+4\delta}\le ar^2$ suffices for a relative saving $q^{-\delta}$.
+For arbitrary balanced sets of size $p^\epsilon$ below the square-root threshold, the
+uniform saving remains open. [Lean estimates](../../../ArkLib/Research/ProximityGap/Frontier/PaleyBilinearDiscrepancy.lean) ·
+[Kim–Yip–Yoo, Conjecture 2.12](https://arxiv.org/html/2309.09124v3#S2.SS4)
+
+**Two graphs on the joint prize instance.** In the classical Paley graph, the subgraph
+induced on the 128 code coordinates is 67-regular and its ordered signed sum is 896.
+Lean checked Euler's criterion at every power of the domain generator. A separate
+integer computation gives clique number 10, independence number 8 and signed matrix
+norm below 30 on these coordinates. The signed matrix $K$ is circulant and symmetric.
+Nine cyclic convolution squarings give $\operatorname{tr}(K^{512})<30^{512}$.
+Every eigenvalue therefore has absolute value below 30. In particular all subsets
+$U,V$ of the domain satisfy $|S(U,-V)|\le30\sqrt{|U||V|}$. Clique enumeration fixes
+one vertex by transitivity, then recursively intersects ordered candidate sets with the
+neighborhood of each chosen vertex. For the generalized graph with connection set
+the same subgroup, Lean instead finds a nonprincipal additive period of magnitude
+greater than $64$. The base-two logarithmic upper bound with constant one holds here
+because $\log_2(p/128)>128$. The uniform prime-field logarithmic estimate remains open.
+[Kernel-checked results](../../../ArkLib/Research/ProximityGap/Frontier/PrizeInstancePaleySpectrum.lean) ·
+[Exact induced-graph calculation](../../../scripts/probes/probe_paley_joint_prize_domain.py)
+
+**Arbitrary subsets of one production coset.** At either named prime let $H$ have order
+$n=2^{30}$. For all $A,B$ in a common affine copy $t+cH$, $c\ne0$, the exact-arithmetic
+certificate gives
+$$
+\left|\sum_{a\in A,b\in B}\chi(a-b)\right|\le K\sqrt{|A||B|},\qquad K_1=449676,\quad K_2=448831.
+$$
+In particular, for sets of size at least $2^{20}$ the relative discrepancy is below
+$0.429$. This covers arbitrary choices of the two subsets *within* the specified copy.
+
+To reproduce the certificate, compile the spectrum probe with C++17 and GMP, then
+run it with arguments `first 128 4` and `second 128 4`. For a generator $g$, the signed matrix on $H$
+has entries $\chi(g)^i v_{j-i}$ with $v_l=\chi(1-g^l)$. Multiplying the rows by signs
+preserves singular values, giving the magnitudes of the discrete Fourier transform of
+$v$. Split the exponents into 128 residue classes. At each frequency modulo $2^{23}$
+sum the certified magnitudes across the classes before maximizing. The row phases in
+the full transform have modulus one. Each radix-two transform uses fixed-point integer
+arithmetic, with GMP square-root enclosures for its roots of unity and error below one
+per row. The largest upper bounds occur at residues 66,773 and 3,625,762, respectively. The row sums
+$-30929$ and $-1441$ at one agree with the independent character scans. Both certified
+operator norms are below $14\sqrt n$. Applying the matrix bound to
+indicator vectors yields the displayed inequality. Translation cancels in $a-b$,
+and scaling contributes the common sign $\chi(c)$. These finite numerical inequalities
+were computed outside Lean. [Certified transform](../../../scripts/probes/probe_sponsor_paley_spectrum.cpp)
+
+**Fourier energy of a weighted code domain.** Let $D=t+cH$, write
+$S_{xy}=\chi(x-y)$ on $D$, and for complex weights $z$ put
+$\widehat z(r)=\sum_{x\in D}z_x e^{2\pi irx/p}$. For nonzero squares $R$ and
+nonsquares $N$, let $E_U=\sum_{r\in U}|\widehat z(r)|^2$. Parseval gives
+$E_R+E_N=p\|z\|_2^2-|\sum z_x|^2$. The quadratic Gauss sum at either prime gives
+$E_R-E_N=\sqrt p\,z^*Sz$. Thus the Fourier matrix with rows from $R$ scaled by
+$\sqrt{2/p}$ and the zero row scaled by $1/\sqrt p$ has Gram matrix $I+S/\sqrt p$
+on $D$. The two certificates give distortion below $2^{-60}$ on every such support.
+For $z_x=e^{-2\pi it'x/p}$ on $H$, this bounds the signed quadratic partition of
+the energies of *all* translated additive periods. Bounding the largest individual
+period remains open. This deduction uses the classical quadratic Gauss sum evaluation
+and the computed operator norm. [Paley Fourier matrix](https://arxiv.org/abs/2011.02907)
+
+A fractional linear map sends the signed matrix on its non-poles to the original
+matrix up to a common sign and row and column signs. The same two operator bounds
+therefore hold on subsets of a common projective image of $H$ in the finite field.
+[Character identity](../../../ArkLib/Research/ProximityGap/Frontier/PaleyCosetCancellation.lean)
+
+There is a limit to covering arbitrary sparse pairs by these images. The ordered
+cross ratios of four distinct elements of $H$ occupy fewer than $n^3$ values,
+since multiplying through by the inverse of the first entry fixes it to one.
+Given $t$ selected finite points whose quadruples avoid these values, at most
+$t+t(t-1)(t-2)n^3$ next points are forbidden. For each ordered triple and
+cross ratio the fourth point is unique on the projective line. The set of
+forbidden cross ratios already includes every ordering of an $H$ quadruple.
+At either prime this bound is below $p$ for $t<2^{22}$. Consequently there
+exists a set of $2^{22}$ points meeting every projective image in at most three.
+Split it into two equal parts to obtain a sparse pair on which these local matrix
+bounds alone give no cancellation. This counting argument concerns the coverage
+of the proof method and makes no claim about the sign of that pair's discrepancy.
+
+
 ## 2026-11-21 · An exact MCA threshold from Reed–Solomon shortening
 
 This entry uses downstream source revision `a15abf509f39bf87781119462b81d9c5e08a6848`. The following is a mathematical derivation. Kernel verification will be recorded separately.
