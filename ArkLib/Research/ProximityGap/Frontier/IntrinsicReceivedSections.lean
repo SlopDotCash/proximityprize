@@ -22,7 +22,8 @@ open JetMultiplierGraph TruncatedJetMultipliers PolynomialJetConstraintSpace
 
 variable {R : Type*} [CommRing R] {K : Type} [Field K]
 
-private theorem coeff_shift_monomial (a w A : R) (i l v t : ℕ) :
+/-- A mixed Taylor coefficient of a single monomial over the scalar coefficient ring. -/
+theorem coeff_shift_monomial (a w A : R) (i l v t : ℕ) :
     (((shift (monomial i (monomial l A)) a w).coeff v).coeff t) =
       ((i.choose v : R) * ((l.choose t : R) * A * a^(l-t))) * w^(i-v) := by
   rw [shift,coeff_map]

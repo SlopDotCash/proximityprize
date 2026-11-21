@@ -33,11 +33,11 @@ variable {dom : I ↪ F} {k : ℕ} {δ : ℝ≥0} {u : WordStack F (Fin 2) I}
 
 /-- Count the actual bad scalars on a family of collinear polynomial secants, including
 uncovered coordinates. Every scalar on these heads has a fresh agreement. -/
-theorem collinear_card (fam : BadScalarRichPointFamily dom k δ u) (H : Finset (LineParameter F))
+theorem collinear_card_image (fam : BadScalarRichPointFamily dom k δ u) (H : Finset (LineParameter F))
     (hH : H ⊆ lineParameters fam) (a b : LineParameter F) (hab : a ≠ b)
     (hdet : ∀ c ∈ H, lineDeterminant a b c = 0) :
     let U := H.biUnion fun c => jointCore dom (u 0) (u 1) c.1 c.2
-    (H.biUnion (pointsOn fam)).card ≤ U.card + (Fintype.card I - U.card)*H.card := by
+    (H.biUnion (pointsOn fam)).card ≤ (U.image (fun i => primitiveScalarAt a b (dom i))).card + (Fintype.card I - U.card)*H.card := by
   classical
   let core (c : LineParameter F) := jointCore dom (u 0) (u 1) c.1 c.2
   let U := H.biUnion core
@@ -76,8 +76,17 @@ theorem collinear_card (fam : BadScalarRichPointFamily dom k δ u) (H : Finset (
       exact mem_union_right _ (mem_image.mpr ⟨(x,c), mem_product.mpr
         ⟨mem_sdiff.mpr ⟨mem_univ x,hxU⟩, hc⟩, hlabel.symm⟩)
   have hsum := (card_le_card hsub).trans (card_union_le _ _)
-  have h := hsum.trans (Nat.add_le_add card_image_le card_image_le)
+  have h := hsum.trans (Nat.add_le_add (le_refl _) card_image_le)
   simpa only [card_product, card_sdiff_of_subset (subset_univ U), card_univ, U, core] using h
+
+/-- Count the actual bad scalars on a family of collinear polynomial secants, including
+uncovered coordinates. Every scalar on these heads has a fresh agreement. -/
+theorem collinear_card (fam : BadScalarRichPointFamily dom k δ u) (H : Finset (LineParameter F))
+    (hH : H ⊆ lineParameters fam) (a b : LineParameter F) (hab : a ≠ b)
+    (hdet : ∀ c ∈ H, lineDeterminant a b c = 0) :
+    let U := H.biUnion fun c => jointCore dom (u 0) (u 1) c.1 c.2
+    (H.biUnion (pointsOn fam)).card ≤ U.card + (Fintype.card I - U.card)*H.card := by
+  exact (collinear_card_image fam H hH a b hab hdet).trans (Nat.add_le_add_right card_image_le _)
 
 omit [Fintype I] [Nonempty I] in
 /-- A second-order inclusion-exclusion lower bound on the union using uniform
