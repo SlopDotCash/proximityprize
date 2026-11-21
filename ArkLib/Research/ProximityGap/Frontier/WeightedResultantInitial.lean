@@ -5,6 +5,8 @@ Authors: Proximity Prize Contributors
 -/
 import ArkLib.Research.ProximityGap.Frontier.WeightedHessianResultant
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeMobiusSections
+import ArkLib.Research.ProximityGap.Frontier.CommonSectionChart
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeScalarChart
 import ArkLib.Research.ProximityGap.Frontier.GenericProjectivePolarGcd
 import ArkLib.Research.ProximityGap.Frontier.ReceivedPolarContacts
 import ArkLib.Data.Polynomial.ResultantSpecialization
@@ -314,3 +316,125 @@ theorem chart_polar_degree (P : K[X][X]) (r c : K) (W d : ℕ)
 #print axioms resultant_degree
 
 end ProximityGap.WeightedResultantInitial
+
+namespace ProximityGap.ActualCubicPolarDegree
+open ArkLib.ProximityGap.Frontier.SecondPrimeScalarChart
+variable {K : Type} [Field K]
+
+/-- The coefficient and discriminant tests used on the scalar-first generic cubic
+are genuinely nonzero for any irreducible original cubic in characteristic away from three. -/
+theorem chart_tests (F : (RatFunc K)[X][X]) (hm : F.natDegree = 3) (h3 : (3:RatFunc K) ≠ 0)
+    (hi : Irreducible (F.map (algebraMap (RatFunc K)[X] (RatFunc (RatFunc K))))) :
+    F.coeff 3 ≠ 0 ∧ F.coeff 0 ≠ 0 ∧ resultant F F.derivative 3 2 ≠ 0 := by
+  let L := RatFunc (RatFunc K)
+  let φ := algebraMap (RatFunc K)[X] L
+  let g := F.map φ
+  have hinj : Function.Injective φ := RatFunc.algebraMap_injective _
+  have hdeg : g.natDegree = 3 := (natDegree_map_eq_of_injective hinj F).trans hm
+  have htop : g.coeff 3 ≠ 0 := by
+    rw [←hdeg, coeff_natDegree]
+    exact leadingCoeff_ne_zero.mpr hi.ne_zero
+  have hcast : (3:L) ≠ 0 := by
+    simpa only [map_ofNat, map_zero] using (algebraMap (RatFunc K) L).injective.ne h3
+  have hdy : g.derivative.coeff 2 ≠ 0 := by
+    rw [coeff_derivative]
+    norm_num
+    exact ⟨htop, hcast⟩
+  have hd : g.derivative ≠ 0 := fun h => hdy (by rw [h, coeff_zero])
+  have hdydeg : g.derivative.natDegree = 2 := by
+    apply le_antisymm _ (le_natDegree_of_ne_zero hdy)
+    have hh := natDegree_derivative_le g
+    omega
+  refine ⟨?_, ?_, ?_⟩
+  · rw [←hm, coeff_natDegree]
+    exact leadingCoeff_ne_zero.mpr (ne_zero_of_natDegree_gt (by rw [hm]; decide : 0 < F.natDegree))
+  · intro hz
+    have hX : (Polynomial.X : L[X]) ∣ g := X_dvd_iff.mpr (by simp [g, hz])
+    have hdiv := (irreducible_X.associated_of_dvd hi hX).dvd_dvd.2
+    have h := Polynomial.natDegree_le_of_dvd hdiv (X_ne_zero (R := L))
+    rw [natDegree_X, hdeg] at h
+    omega
+  · have h := resultant_ne_zero g g.derivative ((separable_iff_derivative_ne_zero hi).mpr hd)
+    rw [hdeg, hdydeg] at h
+    intro hz
+    apply h
+    change resultant (F.map φ) (F.map φ).derivative 3 2 = 0
+    rw [derivative_map, resultant_map_map, hz, map_zero]
+open ArkLib.ProximityGap.Frontier
+open SecondPrimeCoordinateWeight SecondPrimeMobiusSections
+
+set_option maxRecDepth 16384 in
+/-- Outside a finite set of base-field centers every ordinary polar of the
+original irreducible production cubic has its exact expected coordinate
+degree in the common chart. -/
+theorem outside_centers {p : ℕ} [CharP K p] (hp : 67108863 < p)
+    (F : Surface K) (hi : Irreducible F) (hm : F.natDegree = 3) :
+    ∃ avoid : Finset K, ∀ r ∉ avoid, ∀ c : RatFunc K,
+      let G := plane (algebraMap K (RatFunc K) r) (weight 67108863 F) 67108863 (scalarChart F)
+      (resultant G (WeightedResultantInitial.ordinaryPolar G c) 3 3).natDegree =
+        6*weight 67108863 F-9*67108863-3 := by
+  classical
+  let d : ℕ := 67108863
+  let W := weight d F
+  let P := scalarChart F
+  let φ := algebraMap K (RatFunc K)
+  have hmd : P.natDegree = 3 := (value_degree F).trans hm
+  have hchar (n : ℕ) (hpos : 0 < n) (hle : n < p) : (n : RatFunc K) ≠ 0 :=
+    fun hz => (Nat.not_dvd_of_pos_of_lt hpos hle) ((CharP.cast_eq_zero_iff (RatFunc K) p n).mp hz)
+  have hthree : 3 < p := lt_trans (by decide : 3 < 67108863) hp
+  obtain ⟨hl,h0,hr⟩ := chart_tests P hmd (hchar 3 (by decide) hthree)
+    (generic_irreducible F hi (by rw [hm]; decide))
+  let tests : Finset (RatFunc K)[X] := {P.coeff 3, P.coeff 0, resultant P P.derivative 3 2}
+  have htests : ∀ q ∈ tests, q ≠ 0 := by
+    intro q hq
+    simp only [tests, Finset.mem_insert, Finset.mem_singleton] at hq
+    rcases hq with h | h | h
+    · exact ne_of_eq_of_ne h hl
+    · exact ne_of_eq_of_ne h h0
+    · exact ne_of_eq_of_ne h hr
+  refine ⟨CommonSectionChart.forbidden φ tests, fun r he c => ?_⟩
+  have havoid := CommonSectionChart.avoids_tests φ tests htests he
+  have hw (j : ℕ) (hj : P.coeff j ≠ 0) : (P.coeff j).natDegree + d*j ≤ W := by
+    have h := ArkLib.BivariateDegreeToolkit.weight_coeff_le_natWeightedDegree P 1 d
+      (Polynomial.mem_support_iff.mpr hj)
+    exact (by simpa using h : (P.coeff j).natDegree + d*j ≤ Bivariate.natWeightedDegree P 1 d).trans
+      (chart_weight F d)
+  have hW : 3*d ≤ W := calc
+    3*d = d*3 := Nat.mul_comm _ _
+    _ ≤ (P.coeff 3).natDegree+d*3 := Nat.le_add_left _ _
+    _ ≤ W := hw 3 hl
+  exact WeightedResultantInitial.chart_polar_degree P (φ r) c W d (by decide) hW
+    (hchar d (by decide) hp) hmd.le hw (havoid _ (Finset.mem_insert_self ..))
+    (havoid _ (Finset.mem_insert_of_mem (Finset.mem_insert_self ..)))
+    (havoid _ (Finset.mem_insert_of_mem (Finset.mem_insert_of_mem (Finset.mem_singleton_self _))))
+
+open SecondPrimeActualPopulations
+open scoped NNReal
+
+/-- The same center gives all the original simple witnesses their full
+derivative degree and preserves their agreement symbols. At this center
+every ordinary polar of the scalar-field cubic attains the sharp degree. -/
+theorem actual_center [Infinite K] {p : ℕ} [CharP K p] (hp : 67108863 < p)
+    {F I : Type} [Field F] [DecidableEq F] [Fintype I] {dom : I ↪ F} {δ : ℝ≥0}
+    {u : Code.WordStack F (Fin 2) I} (fam : Family dom δ u) (σ : F →+* K)
+    (f : Factor K) (hi : Irreducible f) (hm : f.natDegree = 3) :
+    let d := 67108863
+    let W := weight d f
+    ∃ r : K, (∀ i, σ (dom i) ≠ r) ∧
+      (∀ z ∈ simplePopulation fam σ f,
+        let q' := chart r d ((fam.q z).map σ)
+        let f' := surfaceChart r W d f
+        q'.natDegree ≤ d ∧ f'.eval₂ (evalRingHom (C (σ z))) q' = 0 ∧
+          (f'.derivative.eval₂ (evalRingHom (C (σ z))) q').natDegree = W-d ∧
+          ∀ i ∈ HalfPredecessorLineCoreGeometry.fullAgreement dom (u 0) (u 1) z (fam.q z),
+            q'.eval ((σ (dom i)-r)⁻¹) = ((σ (dom i)-r)⁻¹)^d*σ (u 0 i) +
+              σ z*(((σ (dom i)-r)⁻¹)^d*σ (u 1 i))) ∧
+      ∀ c : RatFunc K,
+        let G := plane (algebraMap K (RatFunc K) r) W d (scalarChart f)
+        (resultant G (WeightedResultantInitial.ordinaryPolar G c) 3 3).natDegree = 6*W-9*d-3 := by
+  obtain ⟨avoid, h⟩ := outside_centers hp f hi hm
+  obtain ⟨r, hr, hs, hq⟩ := actual_cubic_chart_avoiding fam σ f avoid
+  exact ⟨r, hs, hq, h r hr⟩
+
+#print axioms actual_center
+end ProximityGap.ActualCubicPolarDegree
