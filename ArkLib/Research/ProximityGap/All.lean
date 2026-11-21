@@ -40,6 +40,7 @@ import ArkLib.Research.ProximityGap.EtaOffDiagRealPairing
 import ArkLib.Research.ProximityGap.EtaShiftRealPartPairing
 import ArkLib.Research.ProximityGap.ExternalDebt
 import ArkLib.Research.ProximityGap.Frontier.AbelianCoverPeriodFloor
+import ArkLib.Research.ProximityGap.Frontier.ActualCubicHodgeIncidences
 import ArkLib.Research.ProximityGap.Frontier.ActualTerminalQuartic
 import ArkLib.Research.ProximityGap.Frontier.AdditiveEnergySwapFloors
 import ArkLib.Research.ProximityGap.Frontier.AffineHeadBudget

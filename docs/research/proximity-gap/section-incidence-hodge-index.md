@@ -313,6 +313,14 @@ named primes. Factors of value degree two are covered by the elementary
 discriminant count already recorded. The value-linear factors and the count
 on affine heads are unchanged.
 
+## Actual ordinary incidences at the second prime
+
+The [actual cubic incidence theorem](../../../ArkLib/Research/ProximityGap/Frontier/ActualCubicHodgeIncidences.lean) proves the exceptional-scalar and agreement estimates for the original received rows. The resultant of the cubic and its value derivative is nonzero and has scalar degree at most 161. Remove the scalar values where its whole specialization vanishes as a polynomial in the coordinate. Every remaining cubic fiber has degree three and is separable over $k(X)$.
+
+For each retained section, remove agreements where its value derivative vanishes. The derivative on the section has coordinate degree at most $290805098-67108863=223696235$, leaving at least $134217708$ agreements. At each noncore site the received line meets the cubic at no more than 34 scalars. Every remaining pair is an ordinary incidence as defined above. In particular, a counterexample would produce at least $1431655572$ retained sections and at least **192,153,493,012,046,960** ordinary incidence pairs.
+
+The named threshold now follows in Lean from a strict upper bound of **192,153,493,012,046,960** on those pairs. The surface-intersection and ramification estimates in Lemmas 1–4 are the remaining geometric inputs for this route.
+
 ## Scope and what remains
 
 1. *First-order interpolants.* Every factor has weight below $t$, so
