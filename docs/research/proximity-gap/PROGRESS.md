@@ -39,6 +39,10 @@ The universal rank formula now determines the operational MCA and list cutoffs o
 
 For any injective prime-field domain of length $n=4096b$, $b>0$, the line-MCA test at 128-bit security passes at radii **1265/4096, 2170/4096, 2783/4096 and 3197/4096** in decreasing prize-rate order whenever $p\ge2^{171}n^2$. This includes the length-$2^{30}$ code over $65\cdot2^{239}+1$. At these same radii every center and finite interleaving width have list size at most **96741451n, 138925816n, 25849285n and 25632097n**, respectively, for every prime field admitting the domain. [Line-MCA bounds](../../../ArkLib/Research/ProximityGap/Frontier/FineGridProductionMcaIntervals.lean) · [Interleaved list bounds](../../../ArkLib/Research/ProximityGap/Frontier/FineGridWideLists.lean) · [Exact arithmetic](../../../scripts/probes/probe_first_order_fine_grid.py)
 
+## Weighted Hodge bounds on the second named prime
+
+At length $2^{30}$, the weighted section-variance argument gives written lower bounds of **299,100,001**, **514,400,001** and **665,600,001** for the first MCA failure at rates $1/2$, $1/4$ and $1/8$. Lean checks the two interpolants on the received rows in each window, the weighted inequalities and all finite degree allocations. The argument uses surface normalization and ramification estimates in the mathematical proof. [Weighted bounds](weighted-hodge-windows.md) · [Lean certificates](../../../ArkLib/Research/ProximityGap/Frontier/WeightedHodgeWindows.lean) · [Lattice inequalities](../../../ArkLib/Research/ProximityGap/Frontier/HodgeSectionLattice.lean)
+
 ## How to use the general result
 
 The first failing count can also be computed in Lean from explicit finite input data. At 128-bit tolerance the integer budget is the field order divided by $2^{128}$, rounded down. The correctness theorem applies to all four rates and every positive width. Actual numerical evaluation can require a prohibitive number of rank computations. [Executable boundary theorem](../../../ArkLib/Research/ProximityGap/RankExecutable.lean) · [Compiled examples](../../../ArkLib/Tests/ProximityPrize/GrandChallengeReview.lean)
