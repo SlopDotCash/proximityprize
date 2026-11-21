@@ -614,6 +614,7 @@ import ArkLib.Research.ProximityGap.Frontier.Sweep_A49_DyadicRigidityEngine
 import ArkLib.Research.ProximityGap.Frontier.Sweep_A50_SpectrumGeneratingFunction
 import ArkLib.Research.ProximityGap.Frontier.SymmetricTowerBracket
 import ArkLib.Research.ProximityGap.Frontier.SyndromeMotion
+import ArkLib.Research.ProximityGap.Frontier.TerminalCollinearHeadCount
 import ArkLib.Research.ProximityGap.Frontier.TerminalCubicBudget
 import ArkLib.Research.ProximityGap.Frontier.ThornerZamanInstance
 import ArkLib.Research.ProximityGap.Frontier.ThornerZamanS128

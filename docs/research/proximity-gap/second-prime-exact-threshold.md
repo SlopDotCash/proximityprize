@@ -89,6 +89,9 @@ $j n-(j-1)(jz_0-\binom j2 d)$ distinct labels. For $j=3,4$ these
 bounds are 1484783598 and 1224736726. Even allowing $4\cdot4128+34$
 other labels, both fall below $3(e+1)+1$. This completes the upper bound.
 
+
+Lean now checks this final count directly for any selected subset of the literal MCA-bad scalars. Given at most four determined secants with more than 512 labels apiece covering all but 16546 selected labels, their joint-core packing and determinant geometry imply the bound $3(e+1)$ throughout the displayed interval. In the collinear case the formal proof maps every fresh agreement either to the unique scalar at a covered coordinate or to its coordinate and source head outside the union. At the named prime, proving this geometric coverage for each hypothetical sample of $2147483649$ bad labels gives the exact operational threshold by combining the safe predecessor with the existing three-core attack. Establishing that coverage from the polynomial factors, including the cubic and quartic exclusions, remains the outstanding Lean step in this reduction. [Conditional named endpoint and unconditional head count](../../../ArkLib/Research/ProximityGap/Frontier/TerminalCollinearHeadCount.lean)
+
 ## A matching construction on arbitrary domains
 
 Take $671088641\le e\le715827882$, set $t=n-e$, and put
