@@ -289,6 +289,10 @@ ArkLib.Research.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow ArkLib.Proximit
 ArkLib.Research.ProximityGap.Frontier.PrimitiveReceivedInterpolation ArkLib.ProximityGap.Frontier.PrimitiveReceivedInterpolation.raw_primitive_section
 ArkLib.Research.ProximityGap.Frontier.DegreeTenDeficitWindow ArkLib.ProximityGap.Frontier.DegreeTenDeficitWindow.primitive_two_head_bracket
 
+# Exact two-head probabilities and thresholds up to the degree-saturated rate-sixteenth step
+ArkLib.Research.ProximityGap.Frontier.SixteenthSaturatedHeads ArkLib.ProximityGap.Frontier.SixteenthSaturatedHeads.smooth_threshold
+ArkLib.Research.ProximityGap.Frontier.SixteenthSaturatedHeads ArkLib.ProximityGap.Frontier.SixteenthSaturatedHeads.exact_mass
+
 # Value-primitive rich sections and uniform population at arbitrary jet multiplicity
 ArkLib.Research.ProximityGap.Frontier.ScalarRegularJetSurface ArkLib.ProximityGap.Frontier.ScalarRegularJetSurface.rich_on_primitive
 ArkLib.Research.ProximityGap.Frontier.JetSurfaceSafety ArkLib.ProximityGap.Frontier.JetSurfaceSafety.bad_card_le_primitive
