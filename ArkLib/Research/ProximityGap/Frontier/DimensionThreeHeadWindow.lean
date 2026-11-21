@@ -2,7 +2,7 @@
 Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
 Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and LICENSE.
 -/
-import ArkLib.Research.ProximityGap.Frontier.DimensionMultiplierMCA
+import ArkLib.Research.ProximityGap.Frontier.DimensionRaiseMCA
 import ArkLib.Research.ProximityGap.Frontier.UniversalCubicBudgetWindow
 import ArkLib.Research.ProximityGap.Frontier.ExceptionalHeadLocatorMass
 import ArkLib.Research.ProximityGap.Frontier.CircuitDensity
@@ -38,7 +38,7 @@ theorem eps_upper (dom : I ↪ F) (hn : Fintype.card I = n) {p d e : ℕ} [CharP
       ((3*(e+1) : ℕ) : ℝ≥0∞)/(Fintype.card F : ℝ≥0∞) := by
   have ha := TwoCorePackingThreshold.agreement_ceiling e (by change e ≤ 1073741824; omega)
   rw [Fintype.card_fin] at ha
-  exact (DimensionMultiplierMCA.epsMCA_mono_dimension dom hd hd' _
+  exact (DimensionRaiseMCA.eps_mono_dimension dom hd hd' _
     (by rw [hn, ha]; change 67108864 < 1073741824-e; omega)).trans
       (UniversalCubicBudgetWindow.eps_upper dom hn (.inl hp) hl hu)
 
@@ -171,16 +171,7 @@ theorem dimension_one_safe_through (dom : I ↪ F) (hn : Fintype.card I = n) {B 
   rw [ht]
   exact Nat.lt_mul_div_succ _ (by omega)
 
-/-- In prime fields the budget and upper field-size tests suffice. -/
-theorem prime_classification {p B d : ℕ} [Fact p.Prime] (dom : I ↪ ZMod p) (hn : Fintype.card I = n)
-    (hB : p/2^128 = B) (hl : 2013265923 ≤ B) (hu : B ≤ 2147483648)
-    (hd : 2 ≤ d) (hd' : d ≤ k) (hfit : 3*(n-B/3) ≤ n+2*d) (width : ℕ) [NeZero width] :
-    let t := ((B/3 : ℕ) : ℝ≥0)/n
-    mcaDeltaStar (F := ZMod p) ((ReedSolomon.code dom d : Set (I → ZMod p)) ^⋈ (Fin width)) tolerance = t ∧
-      ∀ δ : ℝ≥0, epsMCA (F := ZMod p) ((ReedSolomon.code dom d : Set (I → ZMod p)) ^⋈ (Fin width)) δ ≤ tolerance ↔ δ < t := by
-  exact classification dom hn (p := p) (by omega) (by simpa only [ZMod.card] using hB) hl hu hd hd' hfit width
-
 #print axioms dimension_one_safe_through
 #print axioms exact_eps
-#print axioms prime_classification
+#print axioms classification
 end ArkLib.ProximityGap.Frontier.DimensionThreeHeadWindow

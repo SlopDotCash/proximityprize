@@ -13,9 +13,10 @@ the first failing Hamming error count is $\lfloor B/3\rfloor$, and the operation
 
 ## The dimension range at the production length
 
-Set $n=2^{30}$, $B=\lfloor p/2^{128}\rfloor$ and $j=\lfloor B/3\rfloor$.
-For $2{,}013{,}265{,}923\le B\le2{,}147{,}483{,}648$, every injective
-prime-field domain of length $n$ has first failing count $j$ at each
+Let $n=2^{30}$ and let $q$ be the size of a finite field of characteristic
+above $1{,}744{,}830{,}589$. Set $B=\lfloor q/2^{128}\rfloor$ and
+$j=\lfloor B/3\rfloor$. For $2{,}013{,}265{,}923\le B\le2{,}147{,}483{,}648$, every injective
+domain of length $n$ over the field has first failing count $j$ at each
 positive interleaving width and each message dimension $k$ satisfying
 \[
   \max\!\left(2,\left\lceil\frac{2n-3j}{2}\right\rceil\right)
@@ -24,8 +25,7 @@ positive interleaving width and each message dimension $k$ satisfying
 The good real radii are exactly $0\le\delta<j/n$. The sufficient lower
 dimension decreases from $67{,}108{,}863$ at the first budget to $2$ at
 the last. This covers $4{,}503{,}599{,}694{,}479{,}355$ integer
-budget–dimension pairs. The prime-field conclusion applies when a prime
-has that budget. [Simultaneous dimension and budget theorem](../../../ArkLib/Research/ProximityGap/Frontier/DimensionThreeHeadWindow.lean)
+budget–dimension pairs. Prime fields in the displayed budget range automatically meet the characteristic bound. [Simultaneous dimension and budget theorem](../../../ArkLib/Research/ProximityGap/Frontier/DimensionThreeHeadWindow.lean)
 
 To see the bound, set $t=n-j$. At $k\ge3$ the three-head construction
 requires $3(t-k)\le n-k$, equivalently $3t\le n+2k$. For $k=2$ the
