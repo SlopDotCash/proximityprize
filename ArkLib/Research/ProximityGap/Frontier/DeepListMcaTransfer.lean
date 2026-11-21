@@ -94,7 +94,8 @@ theorem exists_deep_image_gt [Fintype F] (D : I ↪ F) (L : Finset F[X]) {k B : 
 
 open ArkLib.ProximityGap.QuotientCore
 
-private theorem quotient_event (D : I ↪ F) {k : ℕ} (hk : 0 < k) (z : F)
+/-- One off-domain DEEP evaluation gives a bad scalar at the same agreement threshold. -/
+theorem quotient_event (D : I ↪ F) {k : ℕ} (hk : 0 < k) (z : F)
     (hz : ∀ i, D i ≠ z) (u : I → F) (f : F[X]) (hdeg : f.natDegree ≤ k)
     (S : Finset I) (δ : ℝ≥0) (hsize : (1-δ) * Fintype.card I ≤ (S.card : ℝ≥0))
     (hsk : k < S.card) (hagr : ∀ i ∈ S, u i = f.eval (D i)) :

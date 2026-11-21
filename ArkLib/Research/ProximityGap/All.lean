@@ -275,6 +275,7 @@ import ArkLib.Research.ProximityGap.Frontier.FarLineProxyBelowJohnson
 import ArkLib.Research.ProximityGap.Frontier.FermatPowerMoment
 import ArkLib.Research.ProximityGap.Frontier.FiberReverseRatio
 import ArkLib.Research.ProximityGap.Frontier.FieldListAtMinimumDistance
+import ArkLib.Research.ProximityGap.Frontier.FiniteFingerprintCount
 import ArkLib.Research.ProximityGap.Frontier.FiniteObstructionGoodPrime
 import ArkLib.Research.ProximityGap.Frontier.FirstInteriorLevelDirectionBlind
 import ArkLib.Research.ProximityGap.Frontier.FirstOrderChargeFloor
@@ -437,6 +438,7 @@ import ArkLib.Research.ProximityGap.Frontier.ProfileMaximizerCarryingInstance
 import ArkLib.Research.ProximityGap.Frontier.ProjectedShortRelations
 import ArkLib.Research.ProximityGap.Frontier.ProjectiveDirectionIncidence
 import ArkLib.Research.ProximityGap.Frontier.ProjectiveDirectionRigidity
+import ArkLib.Research.ProximityGap.Frontier.ProjectiveListTransfer
 import ArkLib.Research.ProximityGap.Frontier.PseudocyclicDefectSum
 import ArkLib.Research.ProximityGap.Frontier.PuncturedFiberAgreement
 import ArkLib.Research.ProximityGap.Frontier.Q1ArisingFamilyDescent
@@ -479,6 +481,7 @@ import ArkLib.Research.ProximityGap.Frontier.ResolveFieldIndependent
 import ArkLib.Research.ProximityGap.Frontier.RootsOfUnityApproximateSubgroup
 import ArkLib.Research.ProximityGap.Frontier.SalemZygmundChaining
 import ArkLib.Research.ProximityGap.Frontier.SalemZygmundMomentAssemblyA3
+import ArkLib.Research.ProximityGap.Frontier.SameDomainListMca
 import ArkLib.Research.ProximityGap.Frontier.ScaledFirstOrderSecurity
 import ArkLib.Research.ProximityGap.Frontier.SchurMinorStaircase
 import ArkLib.Research.ProximityGap.Frontier.SchurRatioRotationEquivariance
