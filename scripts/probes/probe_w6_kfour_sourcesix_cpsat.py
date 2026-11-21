@@ -24,6 +24,12 @@ import itertools
 from ortools.sat.python import cp_model
 
 
+def require(condition, message):
+    """Keep the independent SAT-model verifier active under Python optimization."""
+    if not condition:
+        raise AssertionError(message)
+
+
 def build(pop, timeout_s):
     m = cp_model.CpModel()
     y = [[m.NewBoolVar(f"y{j}_{q}") for q in range(6)] for j in range(pop)]
@@ -112,7 +118,10 @@ def verify(sigs):
     n = len(sigs)
     fs = [(frozenset(t), frozenset(e)) for t, e in sigs]
     for i, j in itertools.combinations(range(n), 2):
-        assert 3 + len(fs[i][0] & fs[j][0]) <= len(fs[i][1] | fs[j][1])
+        require(
+            3 + len(fs[i][0] & fs[j][0]) <= len(fs[i][1] | fs[j][1]),
+            f"pair law violated for signatures {i} and {j}",
+        )
     from collections import Counter
     wit = Counter()
     nbal = 0
@@ -125,7 +134,7 @@ def verify(sigs):
             wit[(j, k)] += 1
     maxw = max(wit.values()) if wit else 0
     print(f"  VERIFY: balanced={nbal} max_witnesses={maxw}")
-    assert maxw <= 2
+    require(maxw <= 2, f"balanced witness limit exceeded: {maxw}")
 
 
 if __name__ == "__main__":
