@@ -9,6 +9,15 @@ ArkLib.Research.ProximityGap.JointLargeFieldReview ProximityPrize.JointLargeFiel
 ArkLib.Research.ProximityGap.JointLargeFieldReview ProximityPrize.JointLargeFieldReview.rank_answers
 ArkLib.Research.ProximityGap.JointLargeFieldReview ProximityPrize.JointLargeFieldReview.prize_large_field
 
+ArkLib.Research.ProximityGap.JointLargeFieldCriterion ProximityPrize.JointLargeFieldCriterion.all_rates_iff
+ArkLib.Research.ProximityGap.JointLargeFieldCriterion ProximityPrize.JointLargeFieldCriterion.prize_size_iff
+
+# Rate-one-sixteenth smooth-field classification with its characteristic certificate
+ArkLib.Research.ProximityGap.Frontier.SmoothCubicCharacteristic ArkLib.ProximityGap.Frontier.SmoothCubicCharacteristic.characteristic
+ArkLib.Research.ProximityGap.Frontier.SmoothCubicBudgetWindow ArkLib.ProximityGap.Frontier.SmoothCubicBudgetWindow.classification
+ArkLib.Research.ProximityGap.Frontier.SmoothCubicBudgetWindow ArkLib.ProximityGap.Frontier.SmoothCubicBudgetWindow.exact_eps
+ArkLib.Research.ProximityGap.Frontier.SmoothCubicBudgetWindow ArkLib.ProximityGap.Frontier.SmoothCubicBudgetWindow.rank_answer
+
 # Exact rate-one-sixteenth MCA threshold at the second designated prime
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicExact ArkLib.ProximityGap.Frontier.SecondPrimeCubicExact.secondPrime_rateSixteenth
 ArkLib.Research.ProximityGap.Frontier.UniversalCubicThreshold ArkLib.ProximityGap.Frontier.UniversalCubicThreshold.prime_classification

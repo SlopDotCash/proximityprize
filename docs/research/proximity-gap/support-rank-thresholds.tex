@@ -30,7 +30,7 @@
 {\large Affine-line mutual correlated agreement and interleaved list decoding\par}
 \vspace{.5em}
 \textbf{Abstract.}
-For a Reed--Solomon code with prescribed evaluation points, two finite matrix tests determine the first error count at which an affine-line mutual correlated agreement (MCA) budget or an interleaved list budget is exceeded. One test asks whether each of several sets of joint interpolation equations raises the rank of a common matrix. The other counts distinct compatible polynomial tuples by inclusion--exclusion. Both remove received words from the search. The tests are exact at every positive width and include small fields. All eight boundaries are explicit on a length-32 family, a length-128 subgroup and a length-$2^{30}$ subgroup of a 129-bit prime field. At length $2^{30}$ and rate $1/16$, prime-field MCA thresholds follow an exact formula on 581,610,155 consecutive integer budgets. At budget $2^{31}$ all eligible smooth fields first fail at 715,827,882 errors. The general enumeration can be impractical on codes of cryptographic size.
+For a Reed--Solomon code with prescribed evaluation points, two finite matrix tests determine the first error count at which an affine-line mutual correlated agreement (MCA) budget or an interleaved list budget is exceeded. One test asks whether each of several sets of joint interpolation equations raises the rank of a common matrix. The other counts distinct compatible polynomial tuples by inclusion--exclusion. Both remove received words from the search. The tests are exact at every positive width and include small fields. All eight boundaries are explicit on a length-32 family, a length-128 subgroup and a length-$2^{30}$ subgroup of a 129-bit prime field. At length $2^{30}$ and rate $1/16$, smooth-domain MCA thresholds follow an exact formula on 581,610,155 consecutive integer budgets. At budget $2^{31}$ all eligible smooth fields first fail at 715,827,882 errors. The general enumeration can be impractical on codes of cryptographic size.
 
 \section*{1.\quad Parameters and the operational endpoint}
 Let $D=(x_i)_{i\in I}$ be $n>0$ distinct elements of $\F$, and let $1\le k\le n$. Write $C=\rs(D,k)$ for evaluations of polynomials of degree $<k$. The sponsor specifies a multiplicative subgroup of power-of-two order and rate $k/n\in\{1/2,1/4,1/8,1/16\}$. The Lean smooth-domain interface also admits nonzero cosets and permutations of the coordinates. The matrix arguments below apply to any injective domain. The field need not be prime.
@@ -93,6 +93,20 @@ The list budget fails at $e$ errors if and only if, for at least one of the $\bi
 If $\binom L2\le q$, (4) is positive precisely when $\nu_{\{a,b\}}<\nu_\varnothing$ for every pair. Indeed, if even one equality is forced in one row it is forced in every row. Otherwise the single-pair collision kernels are proper subspaces of $\ker A$. The covering argument of Section 2 supplies a scalar compatible tuple avoiding every collision. It extends to $m\ge1$ by adjoining zero rows. If $L=1$, the conditions are vacuous and there is a compatible tuple.
 
 At $\varepsilon=2^{-128}$ and $q<2^{256}$ this corollary always applies. Set $Q=2^{128}$. For $B=\lfloor q/Q\rfloor\ge1$, $B+1\le Q$ and $\binom{B+1}{2}\le BQ\le q$. The case $B=0$ is immediate. This replaces up to $2^{\binom L2}$ nullities per pattern by at most $1+\binom L2$. The $\binom nt^L$ support patterns still make direct computation prohibitive for many inputs. In particular the theorem by itself does not quantify the distance of a production threshold from the Johnson or capacity radius. The latter question motivates the concrete benchmarks below \cite{abf}.
+
+\head{Corollary 4.}
+Let $0\le\varepsilon<1$, $C_k=\binom nk$, and $B=\lfloor\varepsilon q\rfloor$.
+If $B\ge\max(C_k,C_{k+1})$, MCA is safe through radius one and the first failing
+list count is $n-k+1$, for every injective domain and every positive width.
+Indeed, each bad scalar requires a $(k+1)$-subset on which only that scalar can
+interpolate the fold. This bounds the total by $C_{k+1}$ at every radius.
+A list at $k$ agreements has at most $C_k$ words by interpolation. At $k-1$ agreements
+all $q$ multiples of a locator occur in one ball. More generally, for
+$B\ge C_{k+1}$ and $B\ge\lfloor C_k/(k+1)\rfloor$, the first list failure is $n-k$
+if $B<C_k$, and $n-k+1$ otherwise. The proof of the sharper list step appears in
+Section~4.2. At 128-bit tolerance the single condition $q\ge2^{128}\binom{n}{\lfloor n/2\rfloor}$
+suffices at all four prize rates. It can require fields much larger than $2^{256}$
+at long block lengths. The \href{https://github.com/SlopDotCash/proximityprize/blob/d6dc87eefe9bd2a20d9e4f5d207079eaaffdb844/ArkLib/Research/ProximityGap/JointLargeFieldReview.lean}{joint theorem} identifies these counts with the rank answers.
 
 \newpage
 \section*{4.\quad A complete four-rate numerical benchmark}
@@ -248,18 +262,26 @@ Choosing a projection that separates the labels gives $3(e+1)$ distinct labels i
 interior, and more than $B$ at $e=\lfloor B/3\rfloor$ in the following budget window.
 The \href{https://github.com/SlopDotCash/proximityprize/blob/797227d570944e033c0af8fc9fff22e4be8f7e7c/docs/research/proximity-gap/second-prime-exact-threshold.md}{detailed counting proof} and the \href{https://github.com/SlopDotCash/proximityprize/blob/797227d570944e033c0af8fc9fff22e4be8f7e7c/ArkLib/Research/ProximityGap/Frontier/UniversalCubicBudgetWindow.lean}{Lean upper and lower bounds} give the factor estimates, projection and endpoint arithmetic.
 
-\textbf{Field and budget dependence.} For $2{,}013{,}265{,}923\le B\le2^{31}$ and
-$p>1{,}744{,}830{,}589$ the first failure is $\lfloor B/3\rfloor$ on every injective domain.
-At the single budget $B=2^{31}$, smoothness implies that characteristic condition:
-$n\mid q-1$ excludes characteristic two. Writing $q=p^a$, the budget gives
-$2^{159}\le p^a<2^{159}+2^{128}$. Consecutive odd-base powers bracket this interval
-for each $6\le a\le100$, and $3^{101}$ exceeds it. Thus $a\le5$ and the lower field-size bound
-forces the required $p$. The \href{https://github.com/SlopDotCash/proximityprize/blob/797227d570944e033c0af8fc9fff22e4be8f7e7c/ArkLib/Research/ProximityGap/SecondBudgetSmoothReview.lean}{smooth-field theorem} discharges these arithmetic conditions internally.
+\textbf{A curve for every smooth domain.}
+For every injective domain, the high-characteristic proof above gives first failure
+$\lfloor B/3\rfloor$ for $2{,}013{,}265{,}923\le B\le2^{31}$. In the preceding range
+$1{,}565{,}873{,}494\le B\le2{,}013{,}265{,}922$, a separate
+\href{https://github.com/SlopDotCash/proximityprize/blob/34ad8f82ba3449b5304777c7871f07aea71783f4/ArkLib/Research/ProximityGap/Frontier/FiveEighthsPlateauThreshold.lean}{count at the preceding Hamming shell} gives first failure at exactly $5n/8$. Both bounds require only $p>1{,}744{,}830{,}589$ from the characteristic.
+For smooth domains this inequality follows from the field size.
+Write $q=p^a$. The subgroup order gives $n\mid q-1$. For $q<2^{256}$, the two-adic valuation of
+$p^a-1$ and the upper bound on $p^a$ force $a\le8$. A finite check of the resulting
+congruence classes gives $p\ge2{,}013{,}265{,}921$. The budget interval itself implies
+$q<2^{256}$. Thus throughout the 581,610,155 budgets
+\[
+ 1{,}565{,}873{,}494 \le B \le 2^{31},\qquad
+ e_{\rm first}=\max(671{,}088{,}640,\lfloor B/3\rfloor).
+\]
+The \href{https://github.com/SlopDotCash/proximityprize/blob/e5b8fd3690581b735905d5bcb6a282eaf09c8683/ArkLib/Research/ProximityGap/Frontier/SmoothCubicCharacteristic.lean}{characteristic certificate} applies to prime fields and their extensions.
+The \href{https://github.com/SlopDotCash/proximityprize/blob/62ac67e95fd43b01b9ed3561fc4550e4169120f2/ArkLib/Research/ProximityGap/Frontier/SmoothCubicBudgetWindow.lean}{smooth-domain classification and rank theorem} give this literal value of the MCA rank formula throughout the entire interval.
 
-Over prime fields the \href{https://github.com/SlopDotCash/proximityprize/blob/34ad8f82ba3449b5304777c7871f07aea71783f4/ArkLib/Research/ProximityGap/Frontier/ThreeHeadThresholdCurve.lean}{extended classification} gives
-$e_{\rm first}=\max(671{,}088{,}640,\lfloor B/3\rfloor)$ throughout
-$1{,}565{,}873{,}494\le B\le2^{31}$. It also proves $b(e)=3(e+1)$ for all
-$671{,}088{,}640\le e\le715{,}827{,}881$ when $p\ge2{,}305{,}843{,}008{,}139{,}952{,}128$.
+The same \href{https://github.com/SlopDotCash/proximityprize/blob/34ad8f82ba3449b5304777c7871f07aea71783f4/ArkLib/Research/ProximityGap/Frontier/ThreeHeadThresholdCurve.lean}{population and projection bounds} give
+$b(e)=3(e+1)$ for $671{,}088{,}640\le e\le715{,}827{,}881$ on every smooth domain
+in $2{,}305{,}843{,}008{,}139{,}952{,}128\le q<2^{256}$.
 
 \newpage
 \section*{6.\quad Interpretation, evidence and attribution}
