@@ -33,7 +33,7 @@ theorem classification (dom : I ↪ F) (hn : Fintype.card I = n) {p : ℕ} [Char
       exact (UniversalCubicThreshold.predecessor_eps dom hn (.inl hp)).trans
         (by simpa only [Nat.cast_pow, Nat.cast_ofNat] using h)
     · have h := TwoCorePackingThreshold.agreement_ceiling 715827881 (by decide)
-      rw [Fintype.card_fin] at h
+      norm_num only [Fintype.card_fin, TwoCorePackingThreshold.domainLength, Nat.cast_ofNat, Nat.reduceSub] at h
       rw [hn]
       change 67108864 < ⌈(1 - (715827881 : ℝ≥0) / 1073741824) * 1073741824⌉₊
       rw [h]
