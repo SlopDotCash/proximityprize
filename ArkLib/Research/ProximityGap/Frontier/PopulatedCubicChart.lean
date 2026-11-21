@@ -25,17 +25,18 @@ variable {F k I : Type} [Field F] [DecidableEq F] [Field k] [Infinite k] [Fintyp
 
 /-- A populated production cubic yields one center avoiding any prescribed
 sites and a large gcd for every pair of nonzero chart polar resultants. -/
-theorem select (fam : Family dom δ u) (φ : F →+* k) (p₃ : (3:k) ≠ 0)
+theorem select_inequality (fam : Family dom δ u) (φ : F →+* k) (p₃ : (3:k) ≠ 0)
     (f : k[X][X][X]) (hi : Irreducible f) (hf : f.natDegree=3)
     (hw : weight 67108863 f ≤ 290805098) (ht : WeightedSylvesterDegree.TotalDegreeLe f 34)
-    (hp : 1431655733 ≤ (population fam φ f).card) (sites : Finset k) :
+    (sites : Finset k) :
     201326589 ≤ weight 67108863 f ∧ ∃ r ∉ sites,
       let Fraw := chart r (weight 67108863 f) 67108863 (orient f)
       ∀ c₁ c₂ : k, IntegralOrdinaryPolars.polarResultant Fraw (C c₁) ≠ 0 →
         IntegralOrdinaryPolars.polarResultant Fraw (C c₂) ≠ 0 →
-        2*(weight 67108863 f-67108863) ≤ OrdinaryPolarGcdBudget.genericDegree
-          (IntegralOrdinaryPolars.polarResultant Fraw (C c₁))
-          (IntegralOrdinaryPolars.polarResultant Fraw (C c₂)) + 201 := by
+        let g := OrdinaryPolarGcdBudget.genericDegree (IntegralOrdinaryPolars.polarResultant Fraw (C c₁))
+          (IntegralOrdinaryPolars.polarResultant Fraw (C c₂))
+        ((population fam φ f).card-161)*(2*(weight 67108863 f-67108863)-g) ≤
+          390*(6*weight 67108863 f-9*67108863-3-g) := by
   classical
   let M := population fam φ f
   let e : F ↪ k := ⟨φ,φ.injective⟩
@@ -50,13 +51,10 @@ theorem select (fam : Family dom δ u) (φ : F →+* k) (p₃ : (3:k) ≠ 0)
   have top : f.coeff 3 ≠ 0 := hf ▸ leadingCoeff_ne_zero.mpr hi.ne_zero
   have lower : 201326589 ≤ weight 67108863 f := by have := hprof 3 (hraw 3 top); omega
   refine ⟨lower,?_⟩
-  obtain ⟨S,r,_,_,hr,_,_,_,hg⟩ := production_chart p₃ f hi hf _ lower hw (by
+  obtain ⟨S,r,_,_,hr,_,_,_,hg⟩ := production_chart_inequality p₃ f hi hf _ lower (by
     intro j hj
     rw [← (orient_profile f j).1]
-    exact hprof j (hraw j hj)) ht G sites (by
-      change 1342177249 ≤ (M.map e).card
-      rw [card_map]
-      exact le_trans (by decide : 1342177249 ≤ 1431655733) hp) q (by
+    exact hprof j (hraw j hj)) ht G sites q (by
     intro z hz
     obtain ⟨a,ha,rfl⟩ := mem_map.mp hz
     rw [hq]
@@ -65,7 +63,29 @@ theorem select (fam : Family dom δ u) (φ : F →+* k) (p₃ : (3:k) ≠ 0)
     obtain ⟨a,ha,rfl⟩ := mem_map.mp hz
     rw [hq]
     exact (mem_filter.mp ha).2) (RingHom.id k) ∅ (by simp)
-  exact ⟨r,hr,hg⟩
+  refine ⟨r,hr,?_⟩
+  simpa only [G,Finset.card_map] using hg
+
+/-- At the terminal cutoff the polar degree defect is at most 201. -/
+theorem select (fam : Family dom δ u) (φ : F →+* k) (p₃ : (3:k) ≠ 0)
+    (f : k[X][X][X]) (hi : Irreducible f) (hf : f.natDegree=3)
+    (hw : weight 67108863 f ≤ 290805098) (ht : WeightedSylvesterDegree.TotalDegreeLe f 34)
+    (hp : 1431655733 ≤ (population fam φ f).card) (sites : Finset k) :
+    201326589 ≤ weight 67108863 f ∧ ∃ r ∉ sites,
+      let Fraw := chart r (weight 67108863 f) 67108863 (orient f)
+      ∀ c₁ c₂ : k, IntegralOrdinaryPolars.polarResultant Fraw (C c₁) ≠ 0 →
+        IntegralOrdinaryPolars.polarResultant Fraw (C c₂) ≠ 0 →
+        2*(weight 67108863 f-67108863) ≤ OrdinaryPolarGcdBudget.genericDegree
+          (IntegralOrdinaryPolars.polarResultant Fraw (C c₁))
+          (IntegralOrdinaryPolars.polarResultant Fraw (C c₂)) + 201 := by
+  obtain ⟨hl,r,hr,hg⟩ := select_inequality fam φ p₃ f hi hf hw ht sites
+  refine ⟨hl,r,hr,?_⟩
+  dsimp only at hg ⊢
+  intro c₁ c₂ h₁ h₂
+  have H := hg c₁ c₂ h₁ h₂
+  have hmin : 1342177085 ≤ (population fam φ f).card-161 := by omega
+  have h := (Nat.mul_le_mul_right _ hmin).trans H
+  omega
 
 #print axioms select
 end ArkLib.ProximityGap.Frontier.PopulatedCubicChart
