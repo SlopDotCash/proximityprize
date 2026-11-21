@@ -47,3 +47,22 @@ An interleaved ball containing four distinct codewords would project to a scalar
 ## A degree-nine consequence on these same sites
 
 In characteristic zero the degree-nine three-fiber test also has a direct two-stage verification. In the binary tree of exponent parity classes keep, for each color $A$, the potential $v(L_B/L_C)$ at the sites of $A$. A pencil requires it to be constant on $A$, and likewise for the other colors. Within a child of the parity tree the contribution doubles when transported to its parent. The sibling contributes its number of $B$ sites minus its number of $C$ sites, because every cross-child difference has valuation one at that scale. This gives an exact recursion with a consistency check whenever both children contain the color. It yields 60,481,536 labeled colorings across 15 possible root states. Every such state has exactly one zero potential. Choosing that color first, ordering the other two, and fixing an omitted site leaves 1,575,040 unordered triples. Direct testing modulo 97 rejects all of them. The degree-nine norm bound thus excludes three full nonic fibers for **every characteristic above $2^{133}$**, including both named primes. The subgroup in this conclusion has order 32. The corresponding characteristic-zero maps would belong to the class of $N$-unital functions studied by Zhao, who classified levels up to four. [Dyadic enumeration](../../../scripts/probes/probe_mu32_nonic_fibers.py) · [Zhao, On N-Unital Functions](https://arxiv.org/abs/2103.15745)
+
+## Dimension four at the same length
+
+For the rate-eighth code on every smooth length-32 domain the first four-word list occurs at **20 errors**. This result holds in every field containing an element of order 32. For four distinct cubics and one received word, write $m_x$ for the number of agreements at site $x$. Since $m_x\le1+\binom{m_x}{2}$, the total number of agreements is at most $32+6\cdot3=50$. Each pair of cubics contributes at most three equalities. Four lists of thirteen agreements would require 52. Thus a ball at nineteen errors contains at most three codewords.
+
+For the matching example let $z$ be primitive of order 32 and denote the cubic vanisher on the exponents in $A$ by $F_A$. Take
+$$
+A=\{0,1,2\},\qquad B=\{7,9,23\},\qquad C=\{11,25,27\}.
+$$
+Use the four polynomials
+$$
+0,\quad F_A,\quad F_B\frac{F_A(z^6)}{F_B(z^6)},\quad
+F_C\frac{F_A(z^{14})}{F_C(z^{14})}.
+$$
+Both denominators are products of differences of distinct sites. For the pairs $01,02,03,12,13,23$, respectively, the following disjoint exponent sets give equal values:
+$$
+A,\quad B,\quad C,\quad \{6,20\},\quad\{14,28\},\quad\{13,17,21\}.
+$$
+The verifier checks each equality, after clearing denominators, in $\mathbb Z[z]/(z^{16}+1)$. They specialize in any field containing the primitive root. Set the center to the common value at these sixteen sites. The four words have secured 9, 7, 8 and 8 agreements. On the other sixteen sites assign respectively 3, 5, 4 and 4 further agreements. Each of the four distinct polynomials now agrees at twelve sites. The same projection argument gives the threshold at all positive interleaving widths. At budget three the last good integer radius is 19 and the operational supremum is $20/32=5/8$. [Integral equality certificate](../../../scripts/probes/probe_mu32_four_cubics.py)
