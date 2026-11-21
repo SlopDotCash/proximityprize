@@ -13,6 +13,12 @@ import json
 from dataclasses import dataclass
 
 
+def _require(condition, detail):
+    """Keep the refutation ledger and finite-model checks active under Python optimization."""
+    if not condition:
+        raise AssertionError(detail)
+
+
 def poly_eval(coeffs: list[int], x: int, prime: int) -> int:
     value = 0
     for coefficient in reversed(coeffs):
@@ -58,13 +64,16 @@ def check_ledger(params: Parameters) -> dict[str, int]:
     complement = params.complement
     root_core = core - 1
 
-    assert 0 < root_core
-    assert root_core + 3 <= threshold
-    assert complement >= k
-    assert core < k
-    assert root_core + 1 + complement == threshold
-    assert root_core < k
-    assert root_core + 1 < k
+    _require(0 < root_core, "root core is not positive")
+    _require(root_core + 3 <= threshold, "root core plus 3 exceeds the threshold")
+    _require(complement >= k, "complement is below the dimension")
+    _require(core < k, "pair-intersection floor is not below the dimension")
+    _require(
+        root_core + 1 + complement == threshold,
+        "root core plus complement does not recover the threshold",
+    )
+    _require(root_core < k, "root core is not below the dimension")
+    _require(root_core + 1 < k, "root core plus 1 is not below the dimension")
 
     return {
         "N": n,
@@ -102,38 +111,83 @@ def check_finite_model() -> dict[str, object]:
                  for i, x in enumerate(domain)]
     witnesses = [complement | root_core | {x} for x in exceptional]
 
-    assert len(joint_set) == threshold
-    assert len(fiber_points) == params.complement + 1
-    assert len(set(gammas)) == 3
-    assert len(q1) - 1 == core - 1 < params.dimension
-    assert len(q0) - 1 == core < params.dimension
+    _require(
+        len(joint_set) == threshold,
+        f"joint set has {len(joint_set)} points, expected {threshold}",
+    )
+    _require(
+        len(fiber_points) == params.complement + 1,
+        f"fiber has {len(fiber_points)} points, expected {params.complement + 1}",
+    )
+    _require(
+        len(set(gammas)) == 3,
+        f"expected 3 distinct gammas, got {len(set(gammas))}",
+    )
+    _require(
+        len(q1) - 1 == core - 1 < params.dimension,
+        f"q1 degree {len(q1) - 1} is not core - 1 = {core - 1} below the dimension",
+    )
+    _require(
+        len(q0) - 1 == core < params.dimension,
+        f"q0 degree {len(q0) - 1} is not core = {core} below the dimension",
+    )
 
     for point, gamma, witness in zip(exceptional, gammas, witnesses, strict=True):
-        assert len(witness) == threshold
-        assert complement <= witness
-        assert point in witness
-        assert all(
-            (received0[i] + gamma * received1[i]) % prime == 0
-            for i in witness
+        _require(
+            len(witness) == threshold,
+            f"witness for {point} has size {len(witness)}, expected {threshold}",
         )
-        assert received1[point] != 0
+        _require(
+            complement <= witness,
+            f"witness for {point} misses the complement",
+        )
+        _require(
+            point in witness,
+            f"witness misses its exceptional point {point}",
+        )
+        _require(
+            all(
+                (received0[i] + gamma * received1[i]) % prime == 0
+                for i in witness
+            ),
+            f"line does not agree with the stack on the witness for {point}",
+        )
+        _require(
+            received1[point] != 0,
+            f"q1 vanishes at the exceptional point {point}",
+        )
 
         # Any degree-<K joint explanation agreeing on the complement has K
         # distinct zeros, hence is the zero pair.  It then fails at `point`.
-        assert len(complement) >= params.dimension
+        _require(
+            len(complement) >= params.dimension,
+            "complement does not pin a joint pair to zero",
+        )
 
     # The same construction works for every point of J outside the root core,
     # all through any fixed coordinate in the common complement.
     all_fiber_gammas = [(-domain[i]) % prime for i in fiber_points]
-    assert len(set(all_fiber_gammas)) == len(fiber_points)
+    _require(
+        len(set(all_fiber_gammas)) == len(fiber_points),
+        "fiber gammas are not distinct",
+    )
     for point, gamma in zip(fiber_points, all_fiber_gammas, strict=True):
         witness = complement | root_core | {point}
-        assert len(witness) == threshold
-        assert all(
-            (received0[i] + gamma * received1[i]) % prime == 0
-            for i in witness
+        _require(
+            len(witness) == threshold,
+            f"witness for {point} has size {len(witness)}, expected {threshold}",
         )
-        assert received1[point] != 0
+        _require(
+            all(
+                (received0[i] + gamma * received1[i]) % prime == 0
+                for i in witness
+            ),
+            f"line does not agree with the stack on the witness for {point}",
+        )
+        _require(
+            received1[point] != 0,
+            f"q1 vanishes at the exceptional point {point}",
+        )
 
     return {
         "field_order": prime,
