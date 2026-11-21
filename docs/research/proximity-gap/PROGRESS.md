@@ -1793,8 +1793,11 @@ row evaluated at a fractional-linear map. Its coset occupancy is bounded
 by the positive-characteristic gcd theorem of Corvaja and Zannier, or by the
 repository's integral Stepanov theorem. The signed amplification bound, finite
 Stepanov application, Goldilocks primality, and the two complete exceptional-row
-estimates passed Lean. The two larger named prime fields lie below the new
-size range. [Derivation and constants](paley-mixed-trace-saving.md) ·
+estimates passed Lean. The complete theorem on the ordinary Goldilocks sets
+now passes Lean as well, including the two-to-one cyclic reindexing and both
+branch-fiber corrections. At either named prize prime, even setting the
+occupancy and moment constants to one leaves this fourth-moment upper bound
+above the rectangle area. [Full set theorem](../../../ArkLib/Research/ProximityGap/Frontier/GoldilocksMixedTrace.lean) [Derivation and constants](paley-mixed-trace-saving.md) ·
 [Finite Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyMixedTraceSaving.lean)
 
 **Fourier energy of a weighted code domain.** Let $D=t+cH$, write
