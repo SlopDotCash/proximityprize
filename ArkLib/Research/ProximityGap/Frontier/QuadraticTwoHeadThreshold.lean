@@ -21,9 +21,9 @@ variable {F : Type} [Field F] [Fintype F] [DecidableEq F]
 /-- The number of agreements required by the degree-34 quadratic interpolant. -/
 def agreements (n k : ℕ) := (35*n+100*(k-1))/102+1
 
-theorem upper {n k e : ℕ} [NeZero n] (x : Fin n ↪ F) (hk : 1≤k) (rate : 3*k≤n)
+theorem upper_weighted {n k e : ℕ} [NeZero n] (x : Fin n ↪ F) (hk : 1≤k) (rate : 3*k≤n)
     (he : 2080<e) (en : e≤n) (enough : agreements n k ≤ n-e)
-    (hchar : ∀ i : ℕ, 0 < i → i ≤ 2*(agreements n k-1) → (i:F)≠0) :
+    (hchar : ∀ i : ℕ, 0 < i → i ≤ 2*(agreements n k-1-(k-1)) → (i:F)≠0) :
     epsMCA (F:=F) (ReedSolomon.code x k : Set (Fin n → F)) ((e:ℝ≥0)/n) ≤
       ((2*(e+1):ℕ):ℝ≥0∞)/(Fintype.card F) := by
   classical
@@ -35,14 +35,22 @@ theorem upper {n k e : ℕ} [NeZero n] (x : Fin n ↪ F) (hk : 1≤k) (rate : 3*
     rw [Fintype.card_fin,tsub_mul,one_mul,div_mul_cancel₀ _ (by exact_mod_cast NeZero.ne n),
       ←Nat.cast_tsub,Nat.ceil_natCast]
   change fam.G.card ≤ 2*(e+1)
-  have estimate := QuadraticTwoHeadCount.family_cap fam (Fintype.card_fin _) (Nat.add_sub_of_le en)
+  have estimate := QuadraticTwoHeadCount.family_cap_weighted fam (Fintype.card_fin _) (Nat.add_sub_of_le en)
     hk rate he enough (show 35*n+100*(k-1)<102*agreements n k by unfold agreements;omega) grid hchar
   simpa only [Nat.mul_add,Nat.mul_one] using estimate
 
-/-- The exact bad probability, including the case where the two heads exhaust the field. -/
-theorem exact_mass {n k e : ℕ} [NeZero n] (x : Fin n ↪ F) (hk : 2≤k) (rate : 3*k≤n)
-    (he : 2080<e) (pack : n≤k+2*e) (pin : k+e+1≤n) (enough : agreements n k ≤ n-e)
+/-- Upper bound under the unweighted characteristic test. -/
+theorem upper {n k e : ℕ} [NeZero n] (x : Fin n ↪ F) (hk : 1≤k) (rate : 3*k≤n)
+    (he : 2080<e) (en : e≤n) (enough : agreements n k ≤ n-e)
     (hchar : ∀ i : ℕ, 0 < i → i ≤ 2*(agreements n k-1) → (i:F)≠0) :
+    epsMCA (F:=F) (ReedSolomon.code x k : Set (Fin n → F)) ((e:ℝ≥0)/n) ≤
+      ((2*(e+1):ℕ):ℝ≥0∞)/(Fintype.card F) :=
+  upper_weighted x hk rate he en enough (fun i hi bound => hchar i hi (by omega))
+
+/-- The exact bad probability, including the case where the two heads exhaust the field. -/
+theorem exact_mass_weighted {n k e : ℕ} [NeZero n] (x : Fin n ↪ F) (hk : 2≤k) (rate : 3*k≤n)
+    (he : 2080<e) (pack : n≤k+2*e) (pin : k+e+1≤n) (enough : agreements n k ≤ n-e)
+    (hchar : ∀ i : ℕ, 0 < i → i ≤ 2*(agreements n k-1-(k-1)) → (i:F)≠0) :
     epsMCA (F:=F) (ReedSolomon.code x k : Set (Fin n → F)) ((e:ℝ≥0)/n) =
       ((min (Fintype.card F) (2*(e+1)):ℕ):ℝ≥0∞)/(Fintype.card F) := by
   apply le_antisymm _ (by
@@ -50,10 +58,33 @@ theorem exact_mass {n k e : ℕ} [NeZero n] (x : Fin n ↪ F) (hk : 2≤k) (rate
       (by rwa [Fintype.card_fin]) (by rwa [Fintype.card_fin]))
   by_cases supply : 2*(e+1) ≤ Fintype.card F
   · rw [min_eq_right supply]
-    exact upper x (by omega) rate he (by omega) enough hchar
+    exact upper_weighted x (by omega) rate he (by omega) enough hchar
   · rw [min_eq_left (by omega : Fintype.card F≤2*(e+1)),
       ENNReal.div_self (by exact_mod_cast Fintype.card_ne_zero) (ENNReal.natCast_ne_top _)]
     exact epsMCA_le_one _ _
+
+/-- Exact mass under the original unweighted characteristic test. -/
+theorem exact_mass {n k e : ℕ} [NeZero n] (x : Fin n ↪ F) (hk : 2≤k) (rate : 3*k≤n)
+    (he : 2080<e) (pack : n≤k+2*e) (pin : k+e+1≤n) (enough : agreements n k ≤ n-e)
+    (hchar : ∀ i : ℕ, 0 < i → i ≤ 2*(agreements n k-1) → (i:F)≠0) :
+    epsMCA (F:=F) (ReedSolomon.code x k : Set (Fin n → F)) ((e:ℝ≥0)/n) =
+      ((min (Fintype.card F) (2*(e+1)):ℕ):ℝ≥0∞)/(Fintype.card F) :=
+  exact_mass_weighted x hk rate he pack pin enough (fun i hi bound => hchar i hi (by omega))
+
+/-- The weighted discriminant removes the characteristic test from the
+probability formula over every prime field that contains the supplied sites. -/
+theorem prime_mass {p n k e : ℕ} [Fact p.Prime] [NeZero n] (x : Fin n ↪ ZMod p)
+    (hk : 2≤k) (rate : 3*k≤n) (he : 2080<e) (pack : n≤k+2*e)
+    (pin : k+e+1≤n) (enough : agreements n k ≤ n-e)
+    (width : ℕ) [NeZero width] :
+    epsMCA (F:=ZMod p) ((ReedSolomon.code x k : Set (Fin n → ZMod p)) ^⋈ (Fin width)) ((e:ℝ≥0)/n) =
+      ((min p (2*(e+1)):ℕ):ℝ≥0∞)/p := by
+  rw [epsMCA_interleaved_eq]
+  have fieldRoom : n≤p := by simpa using Fintype.card_le_of_injective _ x.injective
+  simpa only [ZMod.card] using exact_mass_weighted x hk rate he pack pin enough (by
+    intro i hi bound zero
+    have pd := Nat.le_of_dvd hi ((CharP.cast_eq_zero_iff (ZMod p) p i).mp zero)
+    omega)
 
 /-- The first failing grid point at tolerance 1/Q, and the full real good interval. -/
 theorem classification {n k Q j : ℕ} [NeZero n] (x : Fin n ↪ F) (Qbig : 2≤Q)
@@ -145,3 +176,5 @@ end ProximityGap.QuadraticTwoHeadThreshold
 
 #print axioms ProximityGap.QuadraticTwoHeadThreshold.production_eighth
 #print axioms ProximityGap.QuadraticTwoHeadThreshold.eighth_family
+
+#print axioms ProximityGap.QuadraticTwoHeadThreshold.prime_mass

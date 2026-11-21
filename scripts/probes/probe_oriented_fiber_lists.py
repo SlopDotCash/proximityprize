@@ -68,14 +68,20 @@ def signature_pool(leaves, levels, deviations, subset_size, limit):
     return sorted(ranked, reverse=True)[:limit]
 
 
-def oriented_counter(order, subset_size):
+def oriented_counter(order, subset_size, omitted=None):
     """Count (degree, exponent mod 2M) for each fixed labelled signature.
 
     Store a cyclic histogram as digits in base 2^M. Each digit counts subsets
     of at most M-2 roots, hence is below this base, including before cyclic
     reduction. Integer multiplication followed by end-around carry of whole
     histograms performs exact cyclic convolution without per-digit carries.
+    Omitted ordinary exponents remove their orientations at the corresponding tree nodes.
     """
+    if omitted is None:
+        omitted = ()
+    elif isinstance(omitted, int):
+        omitted = (omitted,)
+    forbidden = frozenset(omitted)
     bits = order
     width = 2 * order * bits
     mask = (1 << width) - 1
@@ -89,15 +95,18 @@ def oriented_counter(order, subset_size):
         return fold(value << (exponent * bits))
 
     @lru_cache(None)
+    def orientations(node):
+        return tuple(j for j in (node, order-node) if j not in forbidden)
+
+    @lru_cache(None)
     def subtree(node, signature):
         if len(signature) == 1:
             occupancy = signature[0]
-            choices = (1, (1 << (bits * node)) + (1 << (bits * (order - node))),
-                       1 << (bits * order))
-            return {occupancy: choices[occupancy]} if occupancy <= 2 else {}
+            choices = (1, sum(1 << (bits * j) for j in orientations(node)), 1 << (bits * order))
+            return {occupancy: choices[occupancy]} if occupancy <= len(orientations(node)) else {}
         middle = len(signature) // 2
         result = {}
-        for occupancy in range(min(2, min(signature)) + 1):
+        for occupancy in range(min(len(orientations(node)), min(signature)) + 1):
             reduced = tuple(v - occupancy for v in signature)
             left = subtree(node // 2, reduced[:middle])
             right = subtree((order - node) // 2, reduced[middle:])
@@ -109,7 +118,7 @@ def oriented_counter(order, subset_size):
                         joined[size] = joined.get(size, 0) + fold(first * second)
             for size, labels in joined.items():
                 if occupancy == 1:
-                    labels = rotate(labels, node) + rotate(labels, order - node)
+                    labels = sum(rotate(labels, j) for j in orientations(node))
                 elif occupancy == 2:
                     labels = rotate(labels, order)
                 result[size] = result.get(size, 0) + labels
@@ -251,7 +260,55 @@ def antipodal_bound(order, size, level, levels, deviations, limit, expectations)
               f"words={total} overlap={overlap[root]} gain={gain} first_failure<={errors}")
 
 
+def external_reserve_bounds():
+    """Two full anchor fibers, with the common vanisher on a third fiber."""
+    order, size, root, level = 128, 17, 16, 2
+    n = 2**30
+    h = n // order
+    pool = signature_pool(32, range(1, 4), 2, size, 150)
+    count = oriented_counter(order, size)
+    central = count((level,) * 32)
+    opposite = (root + size * (order // 2)) % order
+    overlap = uniform_coincidences(order, size, level)[root]
+    common = sum(central[r] + central[r + order] for r in (root, opposite)) - overlap
+
+    # The integer leaf sum is fixed by negation. Distinct weights give disjoint
+    # sets, even when their word values are supplied by opposite anchor fibers.
+    examples = (
+        (1, 13, ((48, 0, 4), (68, 1, 11), (60, 0, 7)),
+         1245773409, 1077692870, 922101604),
+        (2, 28, ((48, 0, 4), (68, 0, 16), (60, 1, 16), (66, 1, 10), (72, 0, 6)),
+         2539921351, 2197233550, 922447288),
+    )
+    for field, capacity, groups, expected_pool, expected_list, expected_error in examples:
+        used = [2, 2]
+        total = common
+        weights = [w for w, _, _ in groups]
+        require(len(set(weights)) == len(weights) and 64 not in weights, "overlapping weight classes")
+        for weight, anchor, number in groups:
+            r = (root, opposite)[anchor]
+            populations = []
+            for _, signature in pool:
+                if sum(signature) == weight:
+                    row = count(signature)
+                    populations.extend((row[r], row[r + order]))
+            require(number <= len(populations), "too few signature labels")
+            total += sum(sorted(populations, reverse=True)[:number])
+            used[anchor] += number
+        require(used == [capacity, capacity] and total == expected_pool, "selected anchor counts")
+        # Each 17-set misses precisely 109 of the 126 ordinary quotient points.
+        numerator = (order - 2 - size) * total
+        surviving = (numerator + order - 3) // (order - 2)
+        gain = h // capacity
+        errors = n - (size + 1) * h + 1 - gain
+        require(surviving == expected_list and surviving > field * n, "over-budget surviving family")
+        require(errors == expected_error, "error radius")
+        print(f"P{field} third-fiber reserve: bins={used}, pool={total}, "
+              f"words>={surviving}, gain={gain}, first_failure<={errors}")
+
+
 def main():
+    external_reserve_bounds()
     for order, size, level in ((8, 2, 1), (16, 4, 1), (16, 6, 2)):
         antipodal_test(order, size, level)
     antipodal_bound(64, 33, 5, range(3, 8), 3, 30,
