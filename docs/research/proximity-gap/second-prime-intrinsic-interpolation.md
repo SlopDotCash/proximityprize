@@ -66,3 +66,15 @@ In the finite jet inequality use $\mu=64$, $s=10000000$, $E=256$, $m=13$. The so
  \frac{458273591}{48}N -(s+1)49152-256(s+3+13\cdot2080)>0.
 \]
 The surviving labels number at least $2N+1-13-13N/257>3s+26$. The resulting contradiction proves the bound. The proof uses no cancellation estimate and holds on arbitrary injective prime-field domains. An exact threshold at an individual field would additionally require a matching bad instance or a stronger safe count.
+
+## The other three prize rates at the same linear field budget
+
+For every multiple $N$ of 32 with $N\ge2^{30}$ and every prime $p>2N$, the four rates $1/2,1/4,1/8,1/16$ on arbitrary injective domains have bad-scalar count at most $2N$ at the respective **closed radii**
+\[
+ \frac14,\qquad\frac{13}{32},\qquad\frac{17}{32},\qquad\frac58 .
+\]
+Thus $p\ge2^{129}N$ suffices for 128-bit security at all four radii. The half-rate case follows from the [general apolar endpoint](../../../ArkLib/Research/ProximityGap/Frontier/ApolarPowerBound.lean): for $k=N/2$, $e=N/4$ and $N=k+2e$, the numerator is at most $(e+1)\lfloor (N+1)/(e+1)\rfloor\le N+1$. The rate-sixteenth proof is above.
+
+For rate $1/4$ take $t=19N/32$, $d=N/4-1$. For rate $1/8$ take $t=15N/32$, $d=N/8-1$. Both have $t-d=11N/32+1$. With $h=32$ the quadratic interpolant has coefficient surplus $3h(t-d)+2d-(h+1)N=96+2d>0$. An irreducible quadratic with a moving odd part in its discriminant carries at most $16h=512$ labels. The characteristic is greater than the discriminant's coordinate degree. Otherwise separate the two sign components as in the [quadratic proof](second-prime-quadratic-discriminant.md). A group of at least 4096 labels has at least $U=2d+1-66N/4096$ ordinary identity sites. At any one of them at most 32 labels can miss. The 33 least-missing labels on the group each miss at most $32|U'|/(4096-32)$ sites of the actual identity set $U'$ of size at least $U$. Every triple shares more than $d$ sites since $(1-96/4064)U>d$ in both cases. The 33 points therefore lie on a secant, exceeding the factor's total degree of 32. The nonlinear quadratic contributes at most $2\cdot4095+32$ labels.
+
+For a nonlinear value-linear factor, first remove common $X$-content from its coefficients. At a site where the restriction to the received line vanishes identically the leading coefficient is then a nonzero parameter polynomial of degree at most 32. With 4096 or more witnesses the identity set has size at least $(4096t-32N)/(4096-32)$, and again the 33 least-missing points have every triple on more than $d$ common sites. A value-linear factor with two or more collinear witnesses that is an affine line contributes at most $e+1$ by the fresh-site bound. Counting at most two such heads, two nonlinear component allowances and 32 vertical labels leaves $2(e+1)+2(2\cdot4095+32)+32<2N$ in both rows. The assertions here give uniform safe radii; the tests for an exact first bad count require a corresponding failure construction.
