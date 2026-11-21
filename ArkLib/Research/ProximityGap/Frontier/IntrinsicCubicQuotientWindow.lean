@@ -45,14 +45,17 @@ theorem mem_multiples (f : K[X][X][X]) (c : Monomials s b d t → K) :
   change surface c ∈ Ideal.span {f} ↔ f ∣ surface c
   exact Ideal.mem_span_singleton (x := surface c) (y := f)
 
-theorem finite_quotient_window (f : K[X][X][X]) (hf : f ≠ 0) (ht : 0 < t)
+/-- Each multiple also loses the full scalar/value total degree of the divisor.
+Any lower bound on that degree gives a smaller simultaneous coefficient window. -/
+theorem finite_shifted_quotient_window (f : K[X][X][X]) (hf : f ≠ 0) (ht : 0 < t)
+    (loss : ℕ) (hloss : loss ≤ Bivariate.totalDegree f)
     (k : ℕ) (hk : t-weight d f ≤ k*d) (hk0 : 0 < k) :
     finrank K (multiples (s := s) (b := b) (d := d) (t := t) f) ≤
-      Fintype.card (Monomials s (k-1) d (t-weight d f)) := by
+      Fintype.card (Monomials (s-loss) (k-1) d (t-weight d f)) := by
   classical
   let U := multiples (s := s) (b := b) (d := d) (t := t) f
   let L : U →ₗ[K] K[X][X][X] := surfaceLinear.comp U.subtype
-  let M : (Monomials s (k-1) d (t-weight d f) → K) →ₗ[K] K[X][X][X] :=
+  let M : (Monomials (s-loss) (k-1) d (t-weight d f) → K) →ₗ[K] K[X][X][X] :=
     (Algebra.lmul K _ f).comp surfaceLinear
   have hi : Function.Injective L := by
     intro x y he
@@ -73,19 +76,23 @@ theorem finite_quotient_window (f : K[X][X][X]) (hf : f ≠ 0) (ht : 0 < t)
       have hnH : H ≠ 0 := by
         intro hz
         exact hQ (by rw [hH,hz,mul_zero])
-      have hdiv : H ∣ surface c.val := by rw [hH]; exact dvd_mul_left H f
-      have htri := SecondPrimeSectionResultant.factor_triangle hQ hdiv
-        (fun j i a hh => (surface_support c.val hh).2.1)
+      have hcap : Bivariate.totalDegree (surface c.val) ≤ s := by
+        apply Finset.sup_le
+        intro j hj
+        have h1 := leadingCoeff_ne_zero.mpr (mem_support_iff.mp hj)
+        have h2 := leadingCoeff_ne_zero.mpr h1
+        exact (surface_support c.val h2).2.1
+      rw [hH, Bivariate.totalDegree_mul hf hnH] at hcap
       have hw : weight d (surface c.val) ≤ t-1 := weight_le_of_coeff _ _
         (fun j i a hh => by have := (surface_support c.val hh).2.2; omega)
       rw [hH,weight_mul d f H hf hnH] at hw
-      obtain ⟨hc',hform⟩ := exists_coefficients_of_support (s := s) (v := k-1)
+      obtain ⟨hc',hform⟩ := exists_coefficients_of_support (s := s-loss) (v := k-1)
         (d := d) (t := t-weight d f) H (by
           intro j i a hne
           have hy : H.coeff j ≠ 0 := fun hz => hne (by simp [hz])
           have hz : (H.coeff j).coeff i ≠ 0 := fun hz => hne (by simp [hz])
           have hI := le_natDegree_of_ne_zero hz
-          have hJ := htri j hy
+          have hJ := Bivariate.coeff_totalDegree_le H (mem_support_iff.mpr hy)
           have hW := coeff_weight_le d H hne
           have hp : j*d < k*d := by omega
           have hj : j < k := Nat.lt_of_mul_lt_mul_right hp
@@ -98,7 +105,18 @@ theorem finite_quotient_window (f : K[X][X][X]) (hf : f ≠ 0) (ht : 0 < t)
   change finrank K U ≤ _
   omega
 
+/-- The unshifted scalar bound is the zero-loss case. -/
+theorem finite_quotient_window (f : K[X][X][X]) (hf : f ≠ 0) (ht : 0 < t)
+    (k : ℕ) (hk : t-weight d f ≤ k*d) (hk0 : 0 < k) :
+    finrank K (multiples (s := s) (b := b) (d := d) (t := t) f) ≤
+      Fintype.card (Monomials s (k-1) d (t-weight d f)) := by
+  simpa using finite_shifted_quotient_window (s := s) (b := b) (d := d) f hf ht
+    0 (Nat.zero_le _) k hk hk0
+
 end ArkLib.ProximityGap.Frontier.IntrinsicCubicQuotientWindow
+
+open ArkLib.ProximityGap.Frontier.IntrinsicCubicQuotientWindow in
+#print axioms finite_shifted_quotient_window
 
 open ArkLib.ProximityGap.Frontier.IntrinsicCubicQuotientWindow in
 #print axioms finite_quotient_window
