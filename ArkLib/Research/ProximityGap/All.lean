@@ -365,6 +365,7 @@ import ArkLib.Research.ProximityGap.Frontier.FloorResonanceLowerBound
 import ArkLib.Research.ProximityGap.Frontier.FoldedSourceFiber
 import ArkLib.Research.ProximityGap.Frontier.FourFiberThreshold
 import ArkLib.Research.ProximityGap.Frontier.FourFiberTripleAlignment
+import ArkLib.Research.ProximityGap.Frontier.FourHeadCommonRootObstruction
 import ArkLib.Research.ProximityGap.Frontier.FourHeadCoreDeterminant
 import ArkLib.Research.ProximityGap.Frontier.FourHeadCrossRatio
 import ArkLib.Research.ProximityGap.Frontier.FourHeadQuotient

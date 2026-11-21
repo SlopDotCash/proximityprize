@@ -50,6 +50,7 @@ ArkLib.Research.ProximityGap.Frontier.TerminalDimensionThreshold ArkLib.Proximit
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeFourHeadEndpoints ArkLib.ProximityGap.Frontier.SecondPrimeFourHeadEndpoints.ceilings
 ArkLib.Research.ProximityGap.Frontier.SecondPrimePlanarQuartet ArkLib.ProximityGap.Frontier.SecondPrimePlanarQuartet.quarter
 ArkLib.Research.ProximityGap.Frontier.SmoothPlanarQuartetCoset ArkLib.ProximityGap.Frontier.SmoothPlanarQuartetCoset.operational_ceiling
+ArkLib.Research.ProximityGap.Frontier.FourHeadCommonRootObstruction ArkLib.ProximityGap.Frontier.FourHeadCommonRootObstruction.predecessor_cap
 ArkLib.Research.ProximityGap.Frontier.SmoothCosetFourHeadMass ArkLib.ProximityGap.Frontier.SmoothCosetFourHeadMass.operational_ceiling
 
 # Smooth-field and executable equality for the second-budget MCA boundary
