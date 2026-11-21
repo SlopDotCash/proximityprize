@@ -62,7 +62,10 @@ import ArkLib.Research.ProximityGap.Frontier.ApolarFiberInterpolation
 import ArkLib.Research.ProximityGap.Frontier.ApolarFixedFactors
 import ArkLib.Research.ProximityGap.Frontier.ApolarFixedPencil
 import ArkLib.Research.ProximityGap.Frontier.ApolarFixedSupport
+import ArkLib.Research.ProximityGap.Frontier.ApolarFixedTarget
+import ArkLib.Research.ProximityGap.Frontier.ApolarGenericCoprime
 import ArkLib.Research.ProximityGap.Frontier.ApolarHankelMinors
+import ArkLib.Research.ProximityGap.Frontier.ApolarInverseCoordinates
 import ArkLib.Research.ProximityGap.Frontier.ApolarMcaSyndrome
 import ArkLib.Research.ProximityGap.Frontier.ApolarMinimalDegree
 import ArkLib.Research.ProximityGap.Frontier.ApolarMomentCoordinates
@@ -73,9 +76,13 @@ import ArkLib.Research.ProximityGap.Frontier.ApolarPencilNullity
 import ArkLib.Research.ProximityGap.Frontier.ApolarPrimitiveKernel
 import ArkLib.Research.ProximityGap.Frontier.ApolarReciprocalCharts
 import ArkLib.Research.ProximityGap.Frontier.ApolarRootTransition
+import ArkLib.Research.ProximityGap.Frontier.ApolarSparseInterpolation
 import ArkLib.Research.ProximityGap.Frontier.ApolarSparseRankBound
 import ArkLib.Research.ProximityGap.Frontier.ApolarSparseSpecialization
+import ArkLib.Research.ProximityGap.Frontier.ApolarSpikeBudgetRange
 import ArkLib.Research.ProximityGap.Frontier.ApolarSyndromeInterpolation
+import ArkLib.Research.ProximityGap.Frontier.ApolarUnitChart
+import ArkLib.Research.ProximityGap.Frontier.ApolarUnitChartData
 import ArkLib.Research.ProximityGap.Frontier.ArchimedeanPhaseRealDFT
 import ArkLib.Research.ProximityGap.Frontier.ArisingDescentVacuityNoGo
 import ArkLib.Research.ProximityGap.Frontier.AutomaticSeqArchimedeanNoGo
@@ -271,7 +278,9 @@ import ArkLib.Research.ProximityGap.Frontier.FourRateList673
 import ArkLib.Research.ProximityGap.Frontier.FourRateListPrime246
 import ArkLib.Research.ProximityGap.Frontier.FourRatePairBudget
 import ArkLib.Research.ProximityGap.Frontier.FourRateSmoothMca128
+import ArkLib.Research.ProximityGap.Frontier.FourRateSmoothMcaLift
 import ArkLib.Research.ProximityGap.Frontier.FourSecantListBoundary
+import ArkLib.Research.ProximityGap.Frontier.FullFiberMcaLift
 import ArkLib.Research.ProximityGap.Frontier.GaussPeriodR2CeilingGap
 import ArkLib.Research.ProximityGap.Frontier.GaussianEnergyBoundMuNDepthThree
 import ArkLib.Research.ProximityGap.Frontier.GaussianEnergyBoundMuNDepthTwo
@@ -377,6 +386,7 @@ import ArkLib.Research.ProximityGap.Frontier.PowerSumRatioMonotone
 import ArkLib.Research.ProximityGap.Frontier.PrescribedProductList
 import ArkLib.Research.ProximityGap.Frontier.PrescribedProductThreshold
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldCapacityGap
+import ArkLib.Research.ProximityGap.Frontier.PrimeFieldMultiplierHeight
 import ArkLib.Research.ProximityGap.Frontier.PrimeFieldPeriodAlignment
 import ArkLib.Research.ProximityGap.Frontier.Prize407EntropyPinSynthesis
 import ArkLib.Research.ProximityGap.Frontier.PrizeConditionalPinCapstone
@@ -426,6 +436,7 @@ import ArkLib.Research.ProximityGap.Frontier.ResolveFieldIndependent
 import ArkLib.Research.ProximityGap.Frontier.RootsOfUnityApproximateSubgroup
 import ArkLib.Research.ProximityGap.Frontier.SalemZygmundChaining
 import ArkLib.Research.ProximityGap.Frontier.SalemZygmundMomentAssemblyA3
+import ArkLib.Research.ProximityGap.Frontier.ScaledFirstOrderSecurity
 import ArkLib.Research.ProximityGap.Frontier.SchurMinorStaircase
 import ArkLib.Research.ProximityGap.Frontier.SchurRatioRotationEquivariance
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeConditionedCubic
@@ -433,6 +444,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeConditionedIncidence
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeConditionedThreshold
 import ArkLib.Research.ProximityGap.Frontier.SelfConsistencyCeiling
 import ArkLib.Research.ProximityGap.Frontier.ShallowDiagonalRouteNonReach
+import ArkLib.Research.ProximityGap.Frontier.SharpApolarMCA
 import ArkLib.Research.ProximityGap.Frontier.ShawFlatnessSubfieldCounterexample
 import ArkLib.Research.ProximityGap.Frontier.ShawValueBracketCenter
 import ArkLib.Research.ProximityGap.Frontier.ShawValueCapstone
@@ -452,11 +464,14 @@ import ArkLib.Research.ProximityGap.Frontier.SixthMomentSparseCounterexampleWiri
 import ArkLib.Research.ProximityGap.Frontier.SixthMomentTripleCarry
 import ArkLib.Research.ProximityGap.Frontier.SliceRankDiagonalVacuous
 import ArkLib.Research.ProximityGap.Frontier.SmoothDeepMcaThreshold
+import ArkLib.Research.ProximityGap.Frontier.SmoothDomainMcaEquivalence
+import ArkLib.Research.ProximityGap.Frontier.SmoothPowerMcaDescent
 import ArkLib.Research.ProximityGap.Frontier.SpanCriterionGeneral
 import ArkLib.Research.ProximityGap.Frontier.SparseSupportIdealSVPLowerBound
 import ArkLib.Research.ProximityGap.Frontier.SpectrumGFAlternatingSum
 import ArkLib.Research.ProximityGap.Frontier.SpectrumGFCoeffPalindrome
 import ArkLib.Research.ProximityGap.Frontier.SpectrumGFFunctionalEquation
+import ArkLib.Research.ProximityGap.Frontier.SphereVolumeMCA
 import ArkLib.Research.ProximityGap.Frontier.SplitPrimeJointMoments
 import ArkLib.Research.ProximityGap.Frontier.SplitPrimeSixthDensity
 import ArkLib.Research.ProximityGap.Frontier.SpurBadPrimeCeiling

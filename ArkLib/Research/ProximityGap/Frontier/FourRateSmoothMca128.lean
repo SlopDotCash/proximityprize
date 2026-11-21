@@ -29,7 +29,8 @@ abbrev upperBudget : ℕ := 175865058349821587478617952204192862
 /-- Field orders for which the fixed length-128 counts straddle the prize threshold. -/
 def BudgetWindow (q : ℕ) : Prop := lowerBudget ≤ q / 2^128 ∧ q / 2^128 ≤ upperBudget
 
-private theorem prize_band (q : ℕ) (hq : 0 < q) :
+/-- The exact probability tolerance lies between the two adjacent grid numerators. -/
+theorem prize_band (q : ℕ) (hq : 0 < q) :
     (((q/2^128 : ℕ) : ℝ≥0∞) / q ≤ ((prizeThreshold : ℝ≥0) : ℝ≥0∞)) ∧
     (((prizeThreshold : ℝ≥0) : ℝ≥0∞) < ((q/2^128+1 : ℕ) : ℝ≥0∞) / q) := by
   have hp : (q : ℝ≥0∞) ≠ 0 := by exact_mod_cast hq.ne'

@@ -215,6 +215,20 @@ theorem reverse_row_weight (a b : K) :
   rw [reflect_add,reflect_C,pow_one,mul_comm X (C b),reflect_C_mul,reflect_one_X]
   ring
 
+/-- On the syndrome of actual input rows, the reciprocal parameter exchanges the
+two received rows and sends the divided polynomial to its weight-l+1 reflection. -/
+theorem pencil_rows_reversed (H : Finset K) (u v : K → K) (f : Biv) (l : ℕ)
+    (hf : ∀ j, (f.coeff j).natDegree ≤ l) :
+    ApolarSyndromeInterpolation.pencil H v u (reverseCoeffs l f) =
+      reverseCoeffs (l+1) (ApolarSyndromeInterpolation.pencil H u v f) := by
+  unfold ApolarSyndromeInterpolation.pencil
+  rw [← representative_reversed _ _ _ _ _ hf]
+  · simp only [reverse_row_weight]
+  · intro i _
+    apply (natDegree_add_le ..).trans
+    rw [max_le_iff]
+    exact ⟨by simp,(natDegree_mul_le).trans (by simp)⟩
+
 /-- Reciprocal-node interpolation indexed by the image of field inversion equals
 the product over the original nodes with reciprocal site arguments. -/
 theorem nodal_inverse_image [DecidableEq K] (G : Finset K) :
@@ -278,6 +292,72 @@ theorem vanish_of_cleared (f B Bt : Biv) (u : K[X]ˣ) {m k : ℕ} (hk : 0<k)
   exact ⟨Bivariate.swap.injective (by simpa using hb0),
     (mul_eq_zero.mp hs).resolve_left (C_ne_zero.mpr u.ne_zero)⟩
 
+private theorem eval_at_site (f : Biv) (y : K) :
+    f.eval (C y) = (Bivariate.swap f).map (evalRingHom y) := by
+  simpa only [Bivariate.swap_swap_apply] using
+    ApolarSyndromeInterpolation.eval_swap (Bivariate.swap f) y
+
+/-- The locator retains apolarity on the entire inverse parameter chart. -/
+theorem apolar_parameter_reverse (D : Finset K) (w : K → K[X]) (f : Biv) (l s : ℕ)
+    (hw : ∀ y ∈ D, (w y).natDegree ≤ 1) (hf : ∀ j, (f.coeff j).natDegree ≤ l)
+    (ha : ApolarThrough (ApolarRootTransition.measure D C w) f s) :
+    ApolarThrough (ApolarRootTransition.measure D C (fun y => reflect 1 (w y)))
+      (reverseCoeffs l f) s := by
+  have hm (j : ℕ) (hj : j≤s) : ApolarRootTransition.measure D C (fun y => reflect 1 (w y))
+      (reverseCoeffs l f * X^j) = 0 := by
+    have eq := congrArg (reflect (1+l)) (ha (X^j) ((natDegree_X_pow_le _).trans hj))
+    simp only [ApolarRootTransition.measure,LinearMap.sum_apply,LinearMap.smul_apply,
+      Polynomial.leval,smul_eq_mul,reflect_sum,reflect_zero] at eq ⊢
+    rw [← eq]
+    apply sum_congr rfl
+    intro y hy
+    have hev : (reverseCoeffs l f).eval (C y) = reflect l (f.eval (C y)) := by
+      rw [eval_at_site,swap_reverse,eval_at_site,reflect_map]
+    have hdeg : (f.eval (C y)).natDegree ≤ l := by
+      rw [eval_at_site]
+      exact natDegree_map_le.trans (ApolarSyndromeInterpolation.degree_swap f l hf)
+    simp only [LinearMap.coe_mk,AddHom.coe_mk,eval_mul,eval_pow,eval_X] at *
+    rw [hev, ← C_pow,show w y*(f.eval (C y)*C (y^j))=C (y^j)*(w y*f.eval (C y)) by ring,
+      reflect_C_mul,reflect_mul _ _ (hw y hy) hdeg]
+    ring
+  intro p hp
+  apply Polynomial.induction_with_natDegree_le
+    (fun a => ApolarRootTransition.measure D C (fun y => reflect 1 (w y))
+      (reverseCoeffs l f*a) = 0) s (by simp) _ _ p hp
+  · intro j c _ hj
+    rw [← mul_assoc,mul_comm (reverseCoeffs l f) (C c),mul_assoc,← smul_eq_C_mul,
+      map_smul,hm j hj,smul_zero]
+  · intro p q _ _ hp hq
+    rw [mul_add,map_add,hp,hq,add_zero]
+
+/-- Primitivity includes the reciprocal chart's origin when one locator
+coefficient is nonzero of full parameter degree. -/
+theorem reverse_fibers_nonzero (f : Biv) (l : ℕ) (hf : ∀ j, (f.coeff j).natDegree ≤ l)
+    (hfull : ∃ j, (f.coeff j).natDegree=l ∧ f.coeff j≠0)
+    (hprim : ∀ t : K, f.map (evalRingHom t) ≠ 0) (t : K) :
+    (reverseCoeffs l f).map (evalRingHom t) ≠ 0 := by
+  intro h
+  have hz (j : ℕ) : (reflect l (f.coeff j)).eval t = 0 := by
+    simpa only [coeff_map,coeff_reverseCoeffs,coe_evalRingHom,coeff_zero] using
+      congrArg (fun q : K[X] => q.coeff j) h
+  by_cases h₀ : t=0
+  · obtain ⟨j,hj,hj₀⟩ := hfull
+    have z := hz j
+    rw [h₀,← coeff_zero_eq_eval_zero,coeff_reflect,revAt_le (Nat.zero_le l),Nat.sub_zero,
+      ← hj,coeff_natDegree] at z
+    exact (leadingCoeff_ne_zero.mpr hj₀) z
+  · let v := Units.mk0 t h₀
+    apply hprim t⁻¹
+    ext j
+    have z := hz j
+    change (reflect l (f.coeff j)).eval (v:K) = 0 at z
+    rw [ApolarRootTransition.eval_reflect v _ _ (hf j)] at z
+    simpa only [coeff_map,coe_evalRingHom,coeff_zero,Units.val_inv_eq_inv_val,Units.val_mk0,v] using
+      (mul_eq_zero.mp z).resolve_left (pow_ne_zero l v.ne_zero)
+
+#print axioms apolar_parameter_reverse
+#print axioms reverse_fibers_nonzero
+#print axioms pencil_rows_reversed
 #print axioms inverse_fiber
 #print axioms interpolate_inverse
 #print axioms reverse_row_weight

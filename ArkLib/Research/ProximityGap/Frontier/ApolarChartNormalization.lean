@@ -217,16 +217,17 @@ theorem site_unit (x z : K) (H : Finset K) (hx : x ∉ H) (hz : z ∉ H)
 
 /-- Sparse original fibers have the same number of sites in the normalized
 chart, carry transformed weights, and preserve all bounded polynomial tests. -/
-theorem normalized_atoms [DecidableEq K] (m : ℕ → K[X]) (a x z t : K) (hxz : x ≠ z)
+theorem normalized_atoms_exact [DecidableEq K] (m : ℕ → K[X]) (a x z t : K) (hxz : x ≠ z)
     (E : Finset K) (hz : z ∉ E) (w : K → K) {d : ℕ}
     (ha : ∀ j ≤ d, (m j).eval (t+a)=∑ y ∈ E,w y*y^j) :
     let E' := E.image (site x z)
-    E'.card=E.card ∧ ∃ w' : K → K, ∀ p : K[X], p.natDegree ≤ d →
-      ((normalizedFunctional m a x z d) (p.map C)).eval t = weighted E' (RingHom.id K) w' p := by
+    let inv := fun u : K => (z*u-x)/(u-1)
+    E'.card=E.card ∧ ∀ p : K[X], p.natDegree ≤ d →
+      ((normalizedFunctional m a x z d) (p.map C)).eval t = weighted E' (RingHom.id K)
+        (fun u => w (inv u)*(inv u-z)^d) p := by
   classical
   obtain ⟨hcard,hrep⟩ := error_measure_substitute x z hxz E hz w d
-  let inv (u : K) := (z*u-x)/(u-1)
-  refine ⟨hcard,fun u => w (inv u)*(inv u-z)^d,?_⟩
+  refine ⟨hcard,?_⟩
   intro p hp
   let q := substitute d (X-C x) (X-C z) p
   have hq : q.natDegree ≤ d := substitute_degree _ _ _ (by simp) (by simp) hp
@@ -235,6 +236,17 @@ theorem normalized_atoms [DecidableEq K] (m : ℕ → K[X]) (a x z t : K) (hxz :
   simp only [Polynomial.map_sub,Polynomial.map_X,Polynomial.map_C] at hq'
   rw [normalizedFunctional,LinearMap.comp_apply,←hq']
   exact hh.trans (hrep p hp)
+
+/-- Sparse original fibers have the same number of sites in the normalized
+chart, carry transformed weights, and preserve all bounded polynomial tests. -/
+theorem normalized_atoms [DecidableEq K] (m : ℕ → K[X]) (a x z t : K) (hxz : x ≠ z)
+    (E : Finset K) (hz : z ∉ E) (w : K → K) {d : ℕ}
+    (ha : ∀ j ≤ d, (m j).eval (t+a)=∑ y ∈ E,w y*y^j) :
+    let E' := E.image (site x z)
+    E'.card=E.card ∧ ∃ w' : K → K, ∀ p : K[X], p.natDegree ≤ d →
+      ((normalizedFunctional m a x z d) (p.map C)).eval t = weighted E' (RingHom.id K) w' p := by
+  obtain ⟨h1,h2⟩ := normalized_atoms_exact m a x z t hxz E hz w ha
+  exact ⟨h1,_,h2⟩
 
 /-- Preceding rectangular injectivity persists over the parameter-polynomial ring
 after both coordinate changes. -/

@@ -55,6 +55,37 @@ theorem good_iff (dom : Fin n ↪ F) (hk : 1 ≤ k) (hkn : k < n) (hD : 0 < D)
     rw [show k+2-1 = k+1 by omega, Nat.choose_succ_self_right, Fintype.card_fin] at hc
     convert hc using 2
 
+/-- The operational supremum in this interval. At the supremum the closed ball
+includes the first failing Hamming shell. -/
+theorem deltaStar (dom : Fin n ↪ F) (hk : 1 ≤ k) (hkn : k < n) (hD : 0 < D)
+    (hqD : Fintype.card F < D^2) (hlow : n.choose (k+1)/(k+1) ≤ Fintype.card F/D)
+    (hhigh : Fintype.card F/D < n.choose (k+1)) :
+    MCAThresholdLedger.mcaDeltaStar (F := F) (ReedSolomon.code dom k : Set (Fin n → F))
+      (1/(D : ℝ≥0∞)) = 1 - ((k+1 : ℕ) : ℝ≥0)/n := by
+  let r : ℝ≥0 := 1 - ((k+1 : ℕ) : ℝ≥0)/n
+  have hn : 0 < (n : ℝ≥0) := by exact_mod_cast (NeZero.pos n)
+  have hrat : ((k+1 : ℕ) : ℝ≥0)/n ≤ 1 :=
+    (div_le_one hn).mpr (by exact_mod_cast hkn)
+  have hr : (1-r)*(n : ℝ≥0) = ((k+1 : ℕ) : ℝ≥0) := by
+    rw [tsub_tsub_cancel_of_le hrat, div_mul_cancel₀ _ hn.ne']
+  have test := good_iff dom hk hkn hD hqD hlow hhigh
+  simp_rw [← epsMCA_eq_mcaError] at test
+  apply le_antisymm
+  · apply MCAThresholdLedger.mcaDeltaStar_le_of_bad
+    apply lt_of_not_ge
+    intro h
+    exact lt_irrefl _ (hr ▸ (test r).mp h)
+  · apply le_of_forall_lt_imp_le_of_dense
+    intro x hx
+    have hdiff : 1-r < 1-x :=
+      tsub_lt_tsub_left_of_le (show r ≤ 1 from tsub_le_self) hx
+    apply MCAThresholdLedger.le_mcaDeltaStar_of_good _ _ (hx.le.trans tsub_le_self)
+    apply (test x).mpr
+    rw [← hr]
+    exact mul_lt_mul_of_pos_right hdiff hn
+
 end ProximityGap.CircuitBudgetRadius
 
 #print axioms ProximityGap.CircuitBudgetRadius.good_iff
+
+#print axioms ProximityGap.CircuitBudgetRadius.deltaStar

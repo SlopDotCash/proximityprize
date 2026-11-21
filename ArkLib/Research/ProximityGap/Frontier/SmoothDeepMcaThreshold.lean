@@ -54,6 +54,26 @@ theorem smooth_list_lower (D : I ↪ F) [ReedSolomon.Smooth D] {k L a : ℕ} (hk
     rw [eval_comp, eval_mul, eval_C, eval_X, hz i, ← mul_assoc, Units.inv_mul, one_mul]
     exact he i
 
+/-- A common-product fiber alone gives a strict MCA lower bound at a prescribed
+agreement count. This form applies even when the adjacent circuit upper bound is large. -/
+theorem lt_epsMCA_of_product [Nonempty I] (D : I ↪ F) [ReedSolomon.Smooth D]
+    {k a t B L : ℕ} (hk : 0 < k) (ht : t = k+2+a) (htn : t ≤ Fintype.card I)
+    (hlower : Fintype.card I * Fintype.card F ^ a * L < (Fintype.card I).choose t)
+    (hroom : k * (L+1).choose 2 < (Fintype.card F - Fintype.card I) * (L+1-B))
+    (ε : ℝ≥0∞) (hεhi : ε < ((B+1 : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞))
+    (δ : ℝ≥0) (hδ : (1-δ) * (Fintype.card I : ℝ≥0) ≤ t) :
+    ε < epsMCA (F := F) (ReedSolomon.code D k : Set (I → F)) δ := by
+  classical
+  have hl := smooth_list_lower D (k := k+1) (a := a) (L := L) (by omega)
+    (show _ from by simpa only [ht] using hlower)
+  obtain ⟨u₀,u₁,hcount⟩ := DeepListMcaTransfer.exists_bad_count_of_list D δ hk (by omega : k<t)
+    htn hδ (by simpa only [ht] using hl) hroom
+  let G := univ.filter (mcaEvent (F := F) (ReedSolomon.code D k : Set (I → F)) δ u₀ u₁)
+  have lo := MCAWitnessSpread.epsMCA_ge_card_div_of_mcaEvent_set
+    (ReedSolomon.code D k : Set (I → F)) δ ![u₀,u₁] G (fun γ hγ => (mem_filter.mp hγ).2)
+  apply hεhi.trans_le (le_trans ?_ lo)
+  exact ENNReal.div_le_div_right (by exact_mod_cast (show B+1 ≤ G.card from hcount)) _
+
 /-- On an arbitrary smooth coset over a finite field, the operational threshold is
 exact whenever the circuit upper count, product-fiber lower count and DEEP collision
 estimate all straddle the budget at successive agreement counts. -/
@@ -76,17 +96,7 @@ theorem epsMCA_le_iff [Nonempty I] (D : I ↪ F) [ReedSolomon.Smooth D]
   constructor
   · intro safe
     by_contra! bad
-    have hl := smooth_list_lower D (k := k+1) (a := a) (L := L) (by omega)
-      (show _ from by simpa only [ht] using hlower)
-    obtain ⟨u₀,u₁,hcount⟩ := DeepListMcaTransfer.exists_bad_count_of_list D δ hk (by omega : k<t)
-      htn (hstep.mpr bad) (by simpa only [ht] using hl) hroom
-    let G := univ.filter (mcaEvent (F := F) (ReedSolomon.code D k : Set (I → F)) δ u₀ u₁)
-    have lo := MCAWitnessSpread.epsMCA_ge_card_div_of_mcaEvent_set
-      (ReedSolomon.code D k : Set (I → F)) δ ![u₀,u₁] G (fun γ hγ => (mem_filter.mp hγ).2)
-    apply (not_lt_of_ge safe)
-    apply hεhi.trans_le (le_trans ?_ lo)
-    exact ENNReal.div_le_div_right (by exact_mod_cast (show B+1 ≤ G.card from hcount)) _
-
+    exact (not_lt_of_ge safe) (lt_epsMCA_of_product D hk ht htn hlower hroom ε hεhi δ (hstep.mpr bad))
   · intro hδ
     apply le_trans ?_ hεlo
     apply epsMCA_le_of_badCount_le

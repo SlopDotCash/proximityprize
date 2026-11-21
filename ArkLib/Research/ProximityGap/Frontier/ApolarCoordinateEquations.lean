@@ -75,6 +75,50 @@ theorem coordinate_equations (D : Finset ι) (y : ι → Rˣ) (w : ι → R)
     rw [hv,hw]
     exact h.symm
 
+/-- The cleared coordinate congruence for the actual cubic interpolation
+remainders. Both sides lie in the original bivariate polynomial ring. -/
+theorem coordinate_congruence {K J : Type*} [Field K] [IsAlgClosed K]
+    (D : Finset J) (y : J → K[X]ˣ) (w : J → K[X]) (f V B B' Q Q' : K[X][X]) (s : K[X])
+    {r k n m b c : ℕ} (hk : 0 < k) (hf : f.natDegree ≤ r + 1) (hV : V.natDegree ≤ n)
+    (hnodes : ∀ t : K, f.map (evalRingHom t) ≠ 0) (hzero : f.coeff 0 ≠ 0) (hs : s ≠ 0)
+    (hm : B'.natDegree ≤ m) (htwist : b + (k+1)*3 = n + c)
+    (ha : ApolarThrough (ApolarRootTransition.measure D (fun i => (y i:K[X])) w) f (k-1))
+    (h0 : V*(representative D (fun i => (y i:K[X])) w f)^3 = f*Q+C s*B)
+    (h1 : reflect n V*(-representative D (fun i => (↑(y i)⁻¹:K[X]))
+      (fun i => w i*(y i:K[X])^(r+k)) (reflect (r+1) f))^3 =
+      reflect (r+1) f*Q'+C s*B') :
+    Bivariate.swap f ∣ C (X^b) *
+        ArkLib.ProximityGap.Frontier.ApolarReciprocalCharts.reverseCoeffs m (Bivariate.swap B') -
+        C (X^(m+c)) * Bivariate.swap B := by
+  let L := FractionRing K[X]
+  let φ := algebraMap K[X] L
+  let F := f.map φ
+  apply descend_compare (L := L) f B B' m b (m+c) hnodes
+  change AdjoinRoot.root F ^ b * AdjoinRoot.mk F ((reflect m B').map φ) =
+    AdjoinRoot.root F ^ (m+c) * AdjoinRoot.mk F (B.map φ)
+  rcases subsingleton_or_nontrivial (AdjoinRoot F) with hsub | hnon
+  · exact Subsingleton.elim _ _
+  let ψ := (AdjoinRoot.of F).comp φ
+  have hinj := IsFractionRing.injective K[X] L
+  have hF0 : F.eval 0 ≠ 0 := by
+    change (f.map φ).eval 0 ≠ 0
+    rw [← coeff_zero_eq_eval_zero,coeff_map]
+    exact (map_ne_zero_iff φ hinj).mpr hzero
+  obtain ⟨x,hx⟩ := unit_root F hF0
+  have hroot : (f.map ψ).IsRoot (x:AdjoinRoot F) := by
+    rw [hx]
+    simpa only [F,Polynomial.map_map,ψ] using AdjoinRoot.isRoot_root F
+  have hs' : IsUnit (ψ s) := ((map_ne_zero_iff φ hinj).mpr hs).isUnit.map (AdjoinRoot.of F)
+  have h := coordinate_equations D y w f V B B' Q Q' s ψ x hk hf hV hroot hs' ha h0 h1
+  have hclear := clear_twist x (B.map ψ) (B'.map ψ) (natDegree_map_le.trans hm) htwist h
+  have hv (q : K[X][X]) : (q.map ψ).eval (x:AdjoinRoot F) = AdjoinRoot.mk F (q.map φ) := by
+    rw [hx,show q.map ψ = (q.map φ).map (AdjoinRoot.of F) from (Polynomial.map_map φ _ q).symm,
+      eval_map]
+    exact AdjoinRoot.aeval_eq (q.map φ)
+  rw [reflect_map,hv,hv,hx] at hclear
+  exact hclear
+
+#print axioms coordinate_congruence
 #print axioms apolar_map
 #print axioms coordinate_equations
 end ProximityGap.ApolarCoordinateEquations

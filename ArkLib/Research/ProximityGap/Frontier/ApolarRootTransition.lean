@@ -130,6 +130,23 @@ theorem clear_negative (x : Aˣ) (B B' : A[X]) {m k a : ℕ} (hd : B'.natDegree 
     simpa only [Units.val_pow_eq_pow_val,← mul_assoc,← pow_add] using h
   rw [eval_reflect x _ _ hd,hs,pow_add,mul_assoc]
 
+omit [Nontrivial A] in
+/-- Clear an arbitrary common coordinate power in the two chart equations. -/
+theorem clear_twist (x : Aˣ) (B B' : A[X]) {m a n b c : ℕ} (hd : B'.natDegree ≤ m)
+    (he : b + a = n + c)
+    (h : (x:A)^n * B'.eval (↑x⁻¹:A) = (x:A)^a * B.eval (x:A)) :
+    (x:A)^b * (reflect m B').eval (x:A) = (x:A)^(m+c) * B.eval (x:A) := by
+  have hs : (x:A)^b * B'.eval (↑x⁻¹:A) = (x:A)^c * B.eval (x:A) := by
+    apply cancel_unit (x^n)
+    change (x:A)^n * _ = (x:A)^n * _
+    calc
+      _ = (x:A)^b * ((x:A)^n * B'.eval (↑x⁻¹:A)) := by ring
+      _ = (x:A)^(b+a) * B.eval (x:A) := by rw [h,pow_add,mul_assoc]
+      _ = _ := by rw [he,pow_add,mul_assoc]
+  rw [eval_reflect x _ _ hd,pow_add,mul_assoc,← hs]
+  ring
+
+#print axioms clear_twist
 #print axioms cubic_remainders
 #print axioms clear_positive
 #print axioms clear_negative
