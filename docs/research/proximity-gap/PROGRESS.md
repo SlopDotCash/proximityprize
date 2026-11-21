@@ -2,6 +2,8 @@
 
 The universal rank formula now determines the operational MCA and list cutoffs on every supplied smooth prize code. Evaluating it at large dimensions can be impractical. The table records numerical values and bounds with their verification status. Dated entries preserve intermediate results. [Current reviewer guide](full-prize-review.md) · [November 21 integration assessment](integration-assessment-2026-11-21.md)
 
+The rectangular hyperbola construction at half rate now has exact one-fresh first-failure counts of **357,913,942** and **402,653,185** errors on the two named primes. For every positive quotient degree and every rectangle obeying the construction’s locator and separator degree allocation, the preceding counts allow at most 715,827,884 and 2,013,265,925 one-fresh labels. A three-head first-prime example has 1,073,741,828 bad scalars at the next count, while the second-prime six-head example has 2,415,919,114. Independent verified replay accepted 29,854 declarations for the two restricted label caps and the two actual failure witnesses. The unrestricted first-prime bound is earlier and the second-prime unrestricted predecessor remains open. [Class definition, incidence proof and both witnesses](second-prime-hyperbola-grid.md#how-early-a-rectangular-hyperbola-grid-can-fail)
+
 ## Verified results and open cases
 
 | Question | Result | Verification |
@@ -111,9 +113,9 @@ For the separate simultaneous-order test, Varjú’s Corollary 3 gives $|\langle
 
 ## Two interpolants give an all-rate prime-field cutoff through rate one third
 
-For every prime field, every injective domain of length $n\ge65536$, and every dimension $2\le k\le n/3$, put $d=k-1$, $B=\lfloor p/Q\rfloor$ and $j=\lfloor B/2\rfloor$ for an integer $Q\ge2$. If $n\le k+2j$, $k+j+1\le n$, and $3(n-j+1)\ge n+3d+14$, then at every positive interleaving width the safe radii at tolerance $1/Q$ are exactly $\delta<j/n$. A primary interpolant quadratic in value can have any scalar degree allowed by its coefficient surplus. A second, multiplicity-two interpolant has scalar/value total degree sixteen. A factor supporting more sections than their resultant degree must divide both, so its value degree, scalar degree and coordinate weight can be controlled simultaneously. At rate $3/10$, every prime with $B=\lfloor p/2^{128}\rfloor\ge65536$ gives a family on $n=200(\lfloor B/146\rfloor+1)$ sites. This covers parameters beyond the degree-34 interpolation inequality. The remaining prime-field radii and general Paley discrepancy are open. [Component bound](../../../ArkLib/Research/ProximityGap/Frontier/DoubleQuadraticHeadCount.lean) · [Exact mass, first failures and rate-three-tenths family](../../../ArkLib/Research/ProximityGap/Frontier/DoubleQuadraticThreshold.lean)
+For any injective prime-field domain of length $n\ge65536$ and dimension $2\le k\le n/3$, put $d=k-1$, $t=n-e$ and $\Delta=3t-3d-n$. Provided $n\le k+2e$ and $k+e+1\le n$, the exact worst-pair probability at $e$ errors is $\min(p,2(e+1))/p$ at every positive interleaving width whenever $\Delta\ge5$. A margin of four suffices if $6k\ge n+512$ or $186k\le29n$. A margin of three suffices if $54k\ge11n$, or if $k\ge128$ and $186k\le29n$. For an integer $Q\ge2$, set $j=\lfloor p/(2Q)\rfloor$. If $n\le k+2j$, $k+j+1\le n$ and the agreement margin holds at $j-1$ errors, the safe radii at tolerance $1/Q$ are exactly $\delta<j/n$. [Exact mass and budget classification](../../../ArkLib/Research/ProximityGap/Frontier/DoubleQuadraticThreshold.lean)
 
-### Three consecutive finite budget regimes and their limiting curve
+The primitive value-quadratic primary interpolant retains every selected scalar. If more than $2(e+1)$ witnesses remained, the resultant of this surface and an auxiliary of value degree three or four would force a common irreducible factor. That component carries at most $e+1$ witnesses, by weighted discriminant or linear extraction. Removing it from both surfaces forces a second common component on the remaining witnesses. The two components exhaust the primary value degree. At length $2^{30}$ this certifies exact masses through 581,610,154 errors at rate $1/8$ and 648,719,018 errors at rate $1/16$ over every prime field admitting the domain. Over $\mathbb F_{65537}$ at length 65,536 and dimension 19,660 the exact numerator is $2(e+1)$ on all 1,093 grid counts from 22,938 through 24,030. The general Paley discrepancy and remaining prime-field thresholds stay open. [Common-factor theorem](../../../ArkLib/Research/ProximityGap/Frontier/DoubleInterpolationCommonFactor.lean) · [Two successive divisions](../../../ArkLib/Research/ProximityGap/Frontier/DoubleQuadraticHeadCount.lean) · [Fermat field and rate-three-tenths family](../../../ArkLib/Research/ProximityGap/Frontier/DoubleQuadraticThreshold.lean)
 
 Write $h=(n-k)/2$ and assume $h$ is integral, $n\ge65536$, $2\le k<n/3$, and $Q\ge2$. For every prime field and every embedding, the first failing count is
 $$J=\min(B,\max(h,\lfloor B/2\rfloor)),\qquad B=\lfloor p/Q\rfloor,$$
@@ -1763,6 +1765,22 @@ A power saving for the complete individual $T_0,T_1$ pair remains open.
 [Derivations and exact certificates](paley-product-traces.md#between-two-different-products) ·
 [Lean identities](../../../ArkLib/Research/ProximityGap/Frontier/PaleyMixedProductTraces.lean)
 
+**Full mixed products below square-root size.** On any prime field, for
+a cyclic subgroup of order $n$ divisible by four and $n\ge4p^{1/4}$, the
+relative Paley discrepancy on every two distinct prescribed product strata
+is $O(p^{1/8}/n^{1/3}+p^{-1/8}+n^{-1})$. This saves a power whenever
+$n\ge p^{3/8+\varepsilon}$. At Goldilocks $p=2^{64}-2^{32}+1$ and
+$n=2^{30}$, every such full pair has relative discrepancy **strictly below
+four fifths**. Its two sides each have about one eighth of square-root size.
+In ratio and product coordinates the mixed kernel becomes a signed subgroup
+row evaluated at a fractional-linear map. Its coset occupancy is bounded
+by the positive-characteristic gcd theorem of Corvaja and Zannier, or by the
+repository's integral Stepanov theorem. The signed amplification bound, finite
+Stepanov application, Goldilocks primality, and the two complete exceptional-row
+estimates passed Lean. The two larger named prime fields lie below the new
+size range. [Derivation and constants](paley-mixed-trace-saving.md) ·
+[Finite Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyMixedTraceSaving.lean)
+
 **Fourier energy of a weighted code domain.** Let $D=t+cH$, write
 $S_{xy}=\chi(x-y)$ on $D$, and for complex weights $z$ put
 $\widehat z(r)=\sum_{x\in D}z_x e^{2\pi irx/p}$. For nonzero squares $R$ and
@@ -2429,6 +2447,8 @@ For a saturated four-head overrun at the second-prime quarter-rate successor, th
 
 For the second-prime quarter-rate seam, a three-map solution with simple disjoint signed coincidences gives explicit polynomial rows of degree at most $d$. Both rational split directions and conjugate nonsplit directions descend to the actual prime field. A four-head overrun occurs for that data exactly when the double sites give all $4d$ possible direction orbits and the holes add at least nine new directions, or when the double sites give $4d-1$ orbits and the holes add at least eleven. Three concrete fractional linear maps give **36** distinct literal bad scalars at $n=16$, $k=4$, $e=8$ on a selected injective domain in the second prime field. This exceeds twice the test length; the smooth production-domain case remains open. [Converse and witness](quarter-three-slope-reconstruction.md) · [Lean reconstruction](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSlopeReconstruction.lean) · [Exact interpolation check](../../../scripts/probes/probe_quarter_slope_reconstruction.py)
 
+For any four-head overrun, the individual $J$-orbit image of each degree-$m$ direction map on $H$ has at least $n/2+2m-3$ values. This rules out even one map factoring through $X^2$. Two maps of the form $M_i(X^a),M_j(X^b)$ for independent Möbius transformations must have $a+b\le4993531$, excluding a triple of such maps. If the largest map has this form, both companions have degree at least 76. The graph estimates use Corvaja–Zannier. The finite-set restriction and the exact numerical comparisons are kernel-checked. [Proof and scope](quarter-slope-power-barrier.md) · [Lean bounds](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSlopePowerBarrier.lean)
+
 ### Nineteen bad extension-field labels and a shortest elliptic section
 
 All three punctured four-head overlap patterns occur on the sixteen nonzero elements of the field of seventeen elements. The five-double and one-triple patterns each have fifteen ordinary fresh labels and four distinct hole values. Over **every proper extension**, a pair of words on the same prescribed subgroup has **nineteen distinct MCA-bad labels at five errors**. Lean verifies the arbitrary-extension theorem with the three standard axioms, and independent `con-leche --verified` accepted all 22,979 transitive declarations. Two further complete censuses of 25,200 and 92,400 balanced partitions check the binary and quartic symbol systems and the original pencil equations for the remaining patterns. [Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/SmoothSeventeenExtension.lean) · [Explicit centers and finite counts](four-fiber-quadratic-characters.md#the-other-two-overlap-patterns)
@@ -2526,3 +2546,21 @@ The argument uses the ramification budget but not the Hodge index theorem. It is
 
 Lean now covers the Fourier lemma, the odd-pencil class count and the 4-cycle contradiction. The pattern classification, the cyclotomic-unit step and the assembly into the list bound remain written. All of this concerns characteristic zero.
 
+
+### Sixteen-site quarter-rate four-head overruns are excluded at both named primes
+
+At eight agreements on the order-sixteen domain, exceeding 32 represented bad labels would force four seven-site cores and exactly two double sites per edge of the four heads. Every signed-minor layout in this class has a two-dimensional scalar spline kernel after subtracting head zero. The exact label census over all 24 singleton assignments gives a maximum of **22** at each named prime and at 65537. Of the 32,256 weighted assignments, 29,184 yield 16 directions, 2,048 yield 21, and 1,024 yield 22. At characteristic 97 the maximum is **32**, attained by 1,536 of 43,008 assignments. A common shear and direct witness checks turn the projective counts into finite bad labels. The generic inventory also holds over the complex numbers and every splitting prime above $432000^8$.
+
+On the order-32 subgroup, at both named primes and at 65537, the separate degree-seven probe excludes all saturated noncollinear quartets whose pair labels admit a faithful order-four rotation or Klein four action. This covers all four faithful Klein four vertex actions and both reflection classes. A layout with no such symmetry remains open. These small-domain results do not certify a production list bound. [Proof, counts and replay commands](quarter-sixteen-splines.md)
+
+## The odd-redundancy spike and its parity endpoint
+
+On any injective domain in any finite field of size $q$, write $n=k+2h-1$, with $h\ge4$ and $3\le k\le n/3$. The exact MCA error at every $e\le h-2$ is $(e+1)/q$. At $e=h-1$ the numerator lies between $h$ and $h+(h\bmod2)$, so it is exactly $h$ for even $h$. The power-two apolar count specializes at this step to $\max(h,2(\lfloor(h-1)/2\rfloor+1))$. Consequently, at any reciprocal-integer tolerance with integer budget $B\le2h+1$, the first failing index is $\min(B,h)$ except possibly when $B=h$ is odd. This classification covers all positive interleaving widths and does not assume symmetry of the domain. [Upper and lower bounds and arbitrary-domain budget classification](../../../ArkLib/Research/ProximityGap/Frontier/OddRedundancyApolar.lean)
+
+### Arbitrary-center list bounds below Johnson on the large-period domain
+
+At length 1024 in the 237-bit spectral witness field, every received word meets the 128-bit list budget at 702, 479, 315 and 191 agreements at the four sponsor dimensions. The improvement over strict Johnson is 22, 32, 46 and 63 coordinates. Conditioning agreement blocks on an exact intersection with a sampled subset, bounding both coordinate blocks by Cauchy–Schwarz and counting the samples works at every interleaving width. On its order-128 subdomain the half-rate budget holds at 67 agreements and fails at 65. At 66 agreements Lean constructs more than the budget of abstract blocks obeying the pairwise intersection cap. Deciding this last Hamming step for the prime field requires further information about the code or evaluation sites. Independent verified replay accepted 26,826 transitive declarations across the upper bounds and support obstructions. [Proof and exact parameter table](agreement-slice-packing.md)
+
+### Squaring the evaluation domain attains the odd-redundancy endpoint
+
+Let the even length be $n=k+2h-1$, with odd $h\ge 3$ and $k\ge3$. On every smooth finite-field domain, a degree-two map sends pairs of sites onto a quotient of length $n/2$. At dimension $(k+1)/2$ the quotient admits $h+1$ bad scalars at $(h-1)/2$ errors. Pulling back preserves all these bad events at dimension $k$ and $h-1$ errors. Combined with the apolar upper estimate, the exact numerator at this step is $h+1$ whenever $h\ge4$ and $3k\le n$. More generally, a degree-$m$ polynomial with complete fibers transfers a dimension-$b$ witness to every dimension $K$ satisfying $(b-1)m<K\le bm$. [Pullback theorem](../../../ArkLib/Research/ProximityGap/Frontier/FullFiberMcaLift.lean) · [Square construction](../../../ArkLib/Research/ProximityGap/Frontier/OddRedundancySquareLift.lean)
