@@ -83,11 +83,11 @@ open ArkLib.ProximityGap.Frontier.SecondPrimeCoordinateWeight
 
 /-- The scalar and coordinate degrees of the transposed discriminant follow
 from the support of the parent interpolant, including after factorization. -/
-private theorem actual_discriminant_degrees {w : ℕ} (Q f : Factor K) (hQ : Q ≠ 0) (hdiv : f ∣ Q)
+private theorem actual_discriminant_degrees {w d : ℕ} (Q f : Factor K) (hQ : Q ≠ 0) (hdiv : f ∣ Q) (hwd : 2*d≤w)
     (hshape : ∀ j i a, ((Q.coeff j).coeff i).coeff a ≠ 0 →
-      i+j ≤ 34 ∧ a ≤ w) :
+      i+j ≤ 34 ∧ a+j*d ≤ w) :
     let P := (f.coeff 1)^2-4*f.coeff 2*f.coeff 0
-    Bivariate.degreeX (Bivariate.swap P) ≤ 66 ∧ (Bivariate.swap P).natDegree ≤ 2 * w := by
+    Bivariate.degreeX (Bivariate.swap P) ≤ 66 ∧ (Bivariate.swap P).natDegree ≤ 2*(w-d) := by
   classical
   let P := (f.coeff 1)^2-4*f.coeff 2*f.coeff 0
   have ht := factor_totalDegree_le hQ hdiv (fun j i a h => (hshape j i a h).1)
@@ -95,23 +95,23 @@ private theorem actual_discriminant_degrees {w : ℕ} (Q f : Factor K) (hQ : Q �
     rcases Bivariate.coeff_totalDegree_le' f j with h | h
     · omega
     · simp [h]
-  have hWQ : weight 0 Q ≤ w := by
+  have hWQ : weight d Q ≤ w := by
     apply weight_le_of_coeff
     intro j i a h
     have := (hshape j i a h).2
     omega
-  have hW : weight 0 f ≤ w := by
+  have hW : weight d f ≤ w := by
     obtain ⟨g,hg⟩ := hdiv
     rw [hg] at hQ hWQ
-    rw [weight_mul 0 f g (left_ne_zero_of_mul hQ) (right_ne_zero_of_mul hQ)] at hWQ
+    rw [weight_mul d f g (left_ne_zero_of_mul hQ) (right_ne_zero_of_mul hQ)] at hWQ
     omega
-  have degcoord (j : ℕ) : (Bivariate.swap (f.coeff j)).natDegree ≤ w := by
+  have degcoord (j : ℕ) : (Bivariate.swap (f.coeff j)).natDegree ≤ w-j*d := by
     rw [show (Bivariate.swap (f.coeff j)).natDegree = Bivariate.degreeX (f.coeff j) from
       Bivariate.natDegreeY_swap _]
     by_cases hj : f.coeff j = 0
     · simp [hj,Bivariate.degreeX]
     obtain ⟨i,hi,heq,_⟩ := Bivariate.exists_max_index_degreeX (f.coeff j) hj
-    have h := coeff_weight_le 0 f (j := j) (i := i)
+    have h := coeff_weight_le d f (j := j) (i := i)
       (leadingCoeff_ne_zero.mpr (mem_support_iff.mp hi))
     omega
   constructor
@@ -119,15 +119,15 @@ private theorem actual_discriminant_degrees {w : ℕ} (Q f : Factor K) (hQ : Q �
     exact discriminant_height _ _ _ (coeffd 2 (by decide)) (coeffd 1 (by decide))
       (coeffd 0 (by decide)) (by decide) (by decide)
   · simp only [map_sub,map_pow,map_mul,map_ofNat]
-    exact discriminant_height _ _ _ (degcoord 2) (degcoord 1) (degcoord 0) (by omega) (by omega)
+    exact discriminant_height _ _ _ (degcoord 2) (degcoord 1) (degcoord 0) (by simp) (by simp; omega)
 
 open Classical in
 /-- A quadratic of total degree at most 34 has at most 263 moving square fibers.
 The remaining discriminant class is controlled by the same secant extraction as a line. -/
-theorem quadratic_population_of_extraction {k w : ℕ} (fam : BadScalarRichPointFamily dom k δ u) (φ : F →+* K)
+theorem quadratic_population_weighted {k w d : ℕ} (fam : BadScalarRichPointFamily dom k δ u) (φ : F →+* K)
     (Q f : Factor K) (hQ : Q ≠ 0) (hdiv : f ∣ Q) (hf : Irreducible f) (hd : f.natDegree = 2)
-    (hshape : ∀ j i a, ((Q.coeff j).coeff i).coeff a ≠ 0 → i+j ≤ 34 ∧ a ≤ w)
-    (hw : 0 < w) (hchar : ∀ i : ℕ, 0 < i → i ≤ 2 * w → (i : K) ≠ 0)
+    (hshape : ∀ j i a, ((Q.coeff j).coeff i).coeff a ≠ 0 → i+j ≤ 34 ∧ a+j*d ≤ w)
+    (hwd : 2*d ≤ w) (hw : d < w) (hchar : ∀ i : ℕ, 0 < i → i ≤ 2*(w-d) → (i : K) ≠ 0)
     {m : ℕ} (extract : SecantExtraction fam (m+1)) :
     (fam.G.filter fun z => f.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ) = 0).card ≤
       max m 263 := by
@@ -136,8 +136,8 @@ theorem quadratic_population_of_extraction {k w : ℕ} (fam : BadScalarRichPoint
   change pop.card ≤ max m 263
   let P := (f.coeff 1)^2 - 4*f.coeff 2*f.coeff 0
   let D := Bivariate.swap P
-  have hheight := actual_discriminant_degrees Q f hQ hdiv hshape
-  change Bivariate.degreeX D ≤ 66 ∧ D.natDegree ≤ 2*w at hheight
+  have hheight := actual_discriminant_degrees Q f hQ hdiv hwd hshape
+  change Bivariate.degreeX D ≤ 66 ∧ D.natDegree ≤ 2*(w-d) at hheight
   have back : P = Bivariate.swap D := (Bivariate.swap_swap_apply P).symm
   have param (s : K[X]) (V : Polynomial K[X]) (h : P = s.map C * V^2) :
       pop.card ≤ max m 263 := by
@@ -177,6 +177,22 @@ theorem quadratic_population_of_extraction {k w : ℕ} (fam : BadScalarRichPoint
     dsimp only [c] at *
     linear_combination -(4*(f.coeff 2).eval (C (φ a)))*hroot)
   omega
+
+open Classical in
+/-- The unweighted coordinate-height bound is the specialization to value weight zero. -/
+theorem quadratic_population_of_extraction {k w : ℕ} (fam : BadScalarRichPointFamily dom k δ u) (φ : F →+* K)
+    (Q f : Factor K) (hQ : Q ≠ 0) (hdiv : f ∣ Q) (hf : Irreducible f) (hd : f.natDegree = 2)
+    (hshape : ∀ j i a, ((Q.coeff j).coeff i).coeff a ≠ 0 → i+j ≤ 34 ∧ a ≤ w)
+    (hw : 0 < w) (hchar : ∀ i : ℕ, 0 < i → i ≤ 2 * w → (i : K) ≠ 0)
+    {m : ℕ} (extract : SecantExtraction fam (m+1)) :
+    (fam.G.filter fun z => f.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ) = 0).card ≤
+      max m 263 := by
+  apply quadratic_population_weighted (d:=0) (w:=w) fam φ Q f hQ hdiv hf hd
+  · simpa using hshape
+  · simp
+  · exact hw
+  · simpa using hchar
+  · exact extract
 
 /-- At the second-prime sixteenth-rate predecessor, both discriminant cases give at most 263. -/
 theorem quadratic_population_le_263 (fam : Family dom δ u) (φ : F →+* K)
