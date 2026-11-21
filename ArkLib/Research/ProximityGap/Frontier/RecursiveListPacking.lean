@@ -143,7 +143,7 @@ theorem first_failure {ι F : Type} [Fintype ι] [Nonempty ι] [Field F] [Finite
     Lambda (ListInterpolationBoundary.words D k m) δ ≤ B ↔
       δ < ((Fintype.card ι - k : ℕ) : ℝ) / Fintype.card ι := by
   classical
-  letI := Fintype.ofFinite F
+  let := Fintype.ofFinite F
   have hn : (0 : ℝ) < Fintype.card ι := by exact_mod_cast Fintype.card_pos
   constructor
   · contrapose!
@@ -240,7 +240,8 @@ instance : Fact (Nat.Prime P) := ⟨prime_P⟩
 
 theorem smooth_generator :
     IsPrimitiveRoot
-      (43796106634529630153437654754491160841415788829486980815705453267980984100 : ZMod P) 128 := by
+      (43796106634529630153437654754491160841415788829486980815705453267980984100 : ZMod P)
+      128 := by
   apply IsPrimitiveRoot.iff_orderOf.mpr
   apply orderOf_eq_prime_pow (p := 2) (n := 6)
   all_goals rw [← ArkLib.ProximityGap.BinaryPower.binaryPow_eq_pow]; decide
