@@ -34,7 +34,20 @@ open ArkLib.ProximityGap.BinaryPower (binaryPow_eq_pow)
 private theorem prime_462983 : Nat.Prime 462983 := by norm_num
 private theorem prime_2599243 : Nat.Prime 2599243 := by norm_num
 private theorem prime_59494517 : Nat.Prime 59494517 := by norm_num
-private theorem prime_379484152867 : Nat.Prime 379484152867 := by norm_num
+-- A factored Lucas certificate keeps independent kernel replay within its reduction budget.
+private theorem prime_379484152867 : Nat.Prime 379484152867 := by
+  apply lucas_primality 379484152867 3 (by rw [← binaryPow_eq_pow]; decide)
+  intro q hq hd
+  rw [show 379484152867 - 1 = 2 * (3 * (3 * (7 * (13 * (31 * 7473397))))) by decide] at hd
+  simp only [hq.dvd_mul,
+    Nat.prime_dvd_prime_iff_eq hq (by decide : Nat.Prime 2),
+    Nat.prime_dvd_prime_iff_eq hq (by decide : Nat.Prime 3),
+    Nat.prime_dvd_prime_iff_eq hq (by decide : Nat.Prime 7),
+    Nat.prime_dvd_prime_iff_eq hq (by decide : Nat.Prime 13),
+    Nat.prime_dvd_prime_iff_eq hq (by decide : Nat.Prime 31),
+    Nat.prime_dvd_prime_iff_eq hq (by norm_num : Nat.Prime 7473397)] at hd
+  rcases hd with rfl | rfl | rfl | rfl | rfl | rfl | rfl <;>
+    rw [← binaryPow_eq_pow] <;> decide
 
 /-- The 48-bit prime factor in `P - 1`. -/
 theorem prime_202172094073993 : Nat.Prime 202172094073993 := by

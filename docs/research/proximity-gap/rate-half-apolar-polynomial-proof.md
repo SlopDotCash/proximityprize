@@ -1,5 +1,7 @@
 # A polynomial proof of the $h+2$ rate-half MCA bound
 
+The complete polynomial argument, from the received pair through the scalar count and real-radius endpoint, is checked in Lean. The theorem applies on every injective evaluation domain and specializes to the entire smooth-prime budget interval. [Kernel-checked result](../../../ArkLib/Research/ProximityGap/Frontier/SharpApolarMCA.lean)
+
 This proves the unrestricted $h+2$ numerator in the [rate-half predecessor theorem](rate-half-apolar-predecessor.md) using polynomial identities over a field. It provides an alternative to finite-flat duality and sheaf cohomology for this bound.
 
 Keep the syndrome notation of the theorem. Work over an algebraic closure $k$ of the alphabet, with one parameter $T$, and let $K_t=k(T)$. Suppose at least $M>e+1$ parameters are bad, where $n=4h$, $k_{\mathrm{RS}}=2h$, $e=h-1$, and $d=2h-1$. The $(e+1)$-row minors of the syndrome catalecticant vanish identically because they have degree at most $e+1$ in $T$. Take a minimal nonzero apolar form of degree $r\le e$ over $K_t$. The identically zero syndrome pencil can be discarded. Clear denominators to obtain

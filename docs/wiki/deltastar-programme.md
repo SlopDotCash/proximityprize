@@ -15,6 +15,8 @@ The mutual-correlated-agreement threshold programme: pin
 `δ*(C, ε*) = sup{δ : ε_mca(C, δ) ≤ ε*}` for explicit smooth-domain Reed–Solomon
 codes ([ABF26] Definition 4.3), with matching machine-checked bounds.
 
+For the general theorem required by each grand challenge, the attained-radius issue, and the reproducible Lean client, see the [full prize review](../research/proximity-gap/full-prize-review.md).
+
 ## Where everything is
 
 | What | Where |

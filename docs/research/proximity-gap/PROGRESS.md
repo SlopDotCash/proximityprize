@@ -6,7 +6,7 @@ The [November 21 integration assessment](integration-assessment-2026-11-21.md) r
 
 | Question | Result | Verification |
 |---|---|---|
-| Rate $1/16$ MCA at the second designated prime and length $2^{30}$ | The first bad count lies in $[677728038,715827882]$. | [Written cubic bound](second-prime-intrinsic-cubic.md) with [Lean derivative](../../../ArkLib/Research/ProximityGap/Frontier/ImplicitDerivativeNumerator.lean) and [resultant](../../../ArkLib/Research/ProximityGap/Frontier/WeightedSylvesterDegree.lean) ingredients. The [three-core upper bound](../../../ArkLib/Research/ProximityGap/Frontier/_ThreeCoreSecondPrimeBracket.lean) is kernel-checked. |
+| Rate $1/16$ MCA at the second designated prime and length $2^{30}$ | The Lean bracket is $[647627102,715827882]$. A written proof raises the lower endpoint to $677728038$. | [Written cubic bound](second-prime-intrinsic-cubic.md) with [Lean derivative](../../../ArkLib/Research/ProximityGap/Frontier/ImplicitDerivativeNumerator.lean) and [resultant](../../../ArkLib/Research/ProximityGap/Frontier/WeightedSylvesterDegree.lean) ingredients. The [three-core upper bound](../../../ArkLib/Research/ProximityGap/Frontier/_ThreeCoreSecondPrimeBracket.lean) is kernel-checked. |
 | MCA at all four rates for a range of prime fields | At length $2^{30}$ and integer budgets $1\le B\le268435455$, the first bad error count is $B$. | [Apolar threshold theorem](../../../ArkLib/Research/ProximityGap/Frontier/ApolarSpikeBudgetRange.lean) |
 | Four MCA rates on the boundary-prime smooth domain | Over $p=68719477285·2^{120}+1$ at length $n=2^{30}$, the half-rate first bad count is 268435456. At rates 1/4, 1/8 and 1/16 it is 268435458. These endpoints apply at every positive interleaving width. | [Sharp half-rate theorem](../../../ArkLib/Research/ProximityGap/Frontier/SharpApolarMCA.lean) · [Lower three rates](../../../ArkLib/Research/ProximityGap/Frontier/BoundaryLowerRates.lean) |
 | Actual bad-scalar counts in the unique-decoding range | For any injective length-$n$ domain and $k+d<n$, $e\le d$, $2e\le d+1$, the bad parameter count satisfies $M\le e+1$ or $(M-1)(d+2-2e)\le n$. At rate $1/2$ and $n/4-1$ errors this gives $M\le357913942$ for $n=2^{30}$. | [Unconditional Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/ApolarMovingCount.lean), standard axioms only. |
@@ -18,96 +18,6 @@ The [November 21 integration assessment](integration-assessment-2026-11-21.md) r
 | Triple sums at both named primes | The 16,384 cosets of the order-65,536 subgroup have disjoint triple-sum sets. Each set has 46,912,496,205,824 elements. | [Lean coverage](../../../ArkLib/Research/ProximityGap/Frontier/SingleCosetTripleSignatures.lean), [GMP evaluations](../../../scripts/probes/probe_sponsor_clustered_triples.cpp) |
 | Unit sixth-moment inequality at order 64 | Exactly 182 split primes violate it. The largest is 926510094425921. At 173249 all three repeated-entry tests pass, and the exact integer excess is 7565522944. | [All-prime classification](../../../scripts/probes/probe_order64_sixth_moment_classification.py), [Lean counterexample](../../../ArkLib/Research/ProximityGap/Frontier/SixthMomentSparseCounterexampleWiring.lean) |
 | Workbench flatness conjecture | Quadratic extensions refute the all-finite-fields formulation. The uniform prime-field cancellation bound remains open. | [Lean counterexample](../../../ArkLib/Research/ProximityGap/Frontier/ShawFlatnessSubfieldCounterexample.lean) |
-
-## 2026-11-21 · From the coding prizes to classical Paley discrepancy
-
-The joint coding theorem covers the order-128 subgroup of the prime field of order
-$p=65\cdot2^{239}+1$. At rates $1/2,1/4,1/8,1/16$ its first bad list error counts are
-$63,97,113,121$. For MCA the half-rate crossing is $62$ errors and the other three rates
-stay within budget through radius one. The proof counts agreement subsets, constructs
-prescribed-product witnesses, and transfers scalar lists to MCA under explicit field-size
-conditions. The length-$2^{30}$ four-rate MCA result has a separate field-budget window.
-[Joint theorem](../../../ArkLib/Research/ProximityGap/Frontier/FourRateSmoothMca128.lean) ·
-[List proof](../../../ArkLib/Research/ProximityGap/Frontier/FourRateList128.lean) ·
-[Production-length window](../../../ArkLib/Research/ProximityGap/Frontier/SharpApolarMCA.lean)
-
-**An exact coding reduction.** For an odd prime, write $S(A,B)=\sum_{b\in B,a\in A}\chi(a+b)$
-for the quadratic character. On coordinates $a\in A$, use the affine Reed–Solomon word
-$a\mapsto a+b$. For $s=\pm1$ let $h_s(b)$ count coordinates where the symbol has character
-$s$. The signed excess is exactly $2h_s(b)-|A|+\mathbf1_{-b\in A}$. If for each sign at
-most $L$ shifts have excess greater than a nonnegative integer $t$, then
-$|S(A,B)|\le t|B|+L|A|$ for every $B$. Conversely, if $|S(A,B)|\le t|B|$ for every
-$|B|\ge m>0$, each exceptional list has size below $m$. This identifies the missing estimate
-in coding language. Every coordinate accepts the same half-alphabet of squares, or of
-nonsquares. A single-symbol center has just $|A|$ agreements across *all* shifts.
-The affine pair $X,1$ has zero MCA-bad scalars in every dimension at least two. Direct
-encoding of the Legendre values also meets a degree obstruction. On at most $(p-1)/2$
-coordinates their off-domain translates have full affine hull over the prime field.
-[Shift-list equivalences and MCA proof](../../../ArkLib/Research/ProximityGap/Frontier/PaleyShiftListRecovery.lean) ·
-[Affine-hull theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyTranslateInterpolation.lean)
-
-**Classical Paley results.** At the second designated production prime the order-$2^{30}$
-generator $g$ is a nonsquare. Simultaneous scaling by $g$ makes $S(A,B)=0$ for every pair
-of unions of its cosets. For two geometric intervals in arbitrary such cosets,
-$|S(A,B)|\le |A|+|B|$. Negating $B$ converts the sum convention above to graph differences.
-At the first prime, the complete subgroup has quadratic row sum $-30929$ at one, and
-all its elements are squares. Thus its ordered difference sum is $-33209760874496$.
-The second-prime zero and interval bound are Lean theorems. The first-prime value is
-an exact GMP evaluation. The scan pairs $g^i$ with $g^{-i}$, treats the two self-inverse
-elements separately, and checks each shard endpoint by modular powering. Direct evaluation
-of every ordered pair at the two small controls reproduced every dyadic subtotal.
-[Cosets and intervals](../../../ArkLib/Research/ProximityGap/Frontier/PaleyCosetCancellation.lean) ·
-[Production character scan](../../../scripts/probes/probe_sponsor_paley_row.cpp)
-
-For arbitrary sets in a finite field of order $q$, put $a=|A|$ and $b=|B|$.
-The kernel-checked second moment yields $q|S|^2\le ab(q-a)(q-b)$ for every nontrivial
-multiplicative character. For the quadratic character, the repository's unconditional Stepanov
-fourth moment gives $r^2|S|^4\le17qa^3b^4$ whenever $1\le r\le b$ and $r^4\le q$.
-Averaging over the $r$-subsets of $B$ yields this bound with no upper limit on $b$.
-Thus $17q^{1+4\delta}\le ar^2$ suffices for a relative saving $q^{-\delta}$.
-For arbitrary balanced sets of size $p^\epsilon$ below the square-root threshold, the
-uniform saving remains open. [Lean estimates](../../../ArkLib/Research/ProximityGap/Frontier/PaleyBilinearDiscrepancy.lean) ·
-[Kim–Yip–Yoo, Conjecture 2.12](https://arxiv.org/html/2309.09124v3#S2.SS4)
-
-**Two graphs on the joint prize instance.** In the classical Paley graph, the subgraph
-induced on the 128 code coordinates is 67-regular and its ordered signed sum is 896.
-Lean checked Euler's criterion at every power of the domain generator. A separate
-integer computation gives clique number 10, independence number 8 and signed matrix
-norm below 30 on these coordinates. The signed matrix $K$ is circulant and symmetric.
-Nine cyclic convolution squarings give $\operatorname{tr}(K^{512})<30^{512}$.
-Every eigenvalue therefore has absolute value below 30. In particular all subsets
-$U,V$ of the domain satisfy $|S(U,-V)|\le30\sqrt{|U||V|}$. Clique enumeration fixes
-one vertex by transitivity, then recursively intersects ordered candidate sets with the
-neighborhood of each chosen vertex. For the generalized graph with connection set
-the same subgroup, Lean instead finds a nonprincipal additive period of magnitude
-greater than $64$. The base-two logarithmic upper bound with constant one holds here
-because $\log_2(p/128)>128$. The uniform prime-field logarithmic estimate remains open.
-[Kernel-checked results](../../../ArkLib/Research/ProximityGap/Frontier/PrizeInstancePaleySpectrum.lean) ·
-[Exact induced-graph calculation](../../../scripts/probes/probe_paley_joint_prize_domain.py)
-
-**Arbitrary subsets of one production coset.** At either named prime let $H$ have order
-$n=2^{30}$. For all $A,B$ in a common affine copy $t+cH$, $c\ne0$, the exact-arithmetic
-certificate gives
-$$
-\left|\sum_{a\in A,b\in B}\chi(a-b)\right|\le K\sqrt{|A||B|},\qquad K_1=449676,\quad K_2=448831.
-$$
-In particular, for sets of size at least $2^{20}$ the relative discrepancy is below
-$0.429$. This covers arbitrary choices of the two subsets *within* the specified copy.
-
-To reproduce the certificate, compile the spectrum probe with C++17 and GMP, then
-run it with arguments `first 128 4` and `second 128 4`. For a generator $g$, the signed matrix on $H$
-has entries $\chi(g)^i v_{j-i}$ with $v_l=\chi(1-g^l)$. Multiplying the rows by signs
-preserves singular values, giving the magnitudes of the discrete Fourier transform of
-$v$. Split the exponents into 128 residue classes. At each frequency modulo $2^{23}$
-sum the certified magnitudes across the classes before maximizing. The row phases in
-the full transform have modulus one. Each radix-two transform uses fixed-point integer
-arithmetic, with GMP square-root enclosures for its roots of unity and error below one
-per row. The largest upper bounds occur at residues 66,773 and 3,625,762, respectively. The row sums
-$-30929$ and $-1441$ at one agree with the independent character scans. Both certified
-operator norms are below $14\sqrt n$. Applying the matrix bound to
-indicator vectors yields the displayed inequality. Translation cancels in $a-b$,
-and scaling contributes the common sign $\chi(c)$. These finite numerical inequalities
-were computed outside Lean. [Certified transform](../../../scripts/probes/probe_sponsor_paley_spectrum.cpp)
 
 ## 2026-11-21 · An exact MCA threshold from Reed–Solomon shortening
 
@@ -783,7 +693,6 @@ Explicit binary powering in the normalized two-variable torus algebra has an ind
 
 At $n=2^{30}$ there are at most $n^2$ nodes. For any $r,b\le n^2$, $D(b+1)+r\le 2^{120}+2^{61}<2^{128}$. Both coefficient windows $0\le j\le(p-1)/n$ therefore contain enough offsets for this test, even after reserving the last $r$ terms for the shifts. Under the desired Wick bound the same degree floors above apply. The finite-window implication uses the written finite-difference proof. The new theorem `periodic_recurrence_degree` kernel-checks the all-offset implication with *arbitrary* coefficients depending on the residue of $j$ modulo $p$. [Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/NormalizedTraceRecurrenceWidth.lean)
 
-
 ## 2026-11-21 · Six-term relations with two pairs in fourth-root cosets
 
 For the first named production prime, all **2,147,483,643** projective signatures of clean triples having two entries in one coset of the fourth roots of unity are distinct and avoid zero and one. The third entry ranged over the whole order-$2^{30}$ subgroup. The exact GMP run reported `duplicate_tags=0 excess_field_values=0 zeros=0 ones=0`; low 64-bit limbs were already distinct. The second named prime has now completed the same scan with the identical output. Both fields therefore pass. Independent replay with `con-leche --verified` accepted 20,843 declarations covering the numerical-loop reduction, two-pair theorem, rectangle completion and pairing restrictions.
@@ -924,7 +833,6 @@ The prime-field capacity result above also now handles every positive block leng
 
 At $n=2^{30}$, for every split prime $p$ with $1\le B=\lfloor p/2^{128}\rfloor\le181823221$ and every dimension $1\le k\le n/2$, the first bad MCA error count is exactly $B$. The full good real-radius interval is $[0,B/n)$ for every positive interleaving width. At every $e\le181823220$ the actual scalar numerator is exactly $e+1$, by the sixteen-witness pair count and the universal spike, using the ordinary staircase when $e<14$. The prime **61250826226543930850155988052636038260206862337** has budget $180000000$ and a certified order-$2^{30}$ generator. All four prize rates therefore have operational supremum **$180000000/1073741824$** on that single subgroup. All eight Lean axiom audits were standard. The underlying exact count on this interval also follows from the published BCHKS estimate and the integral form of Chojecki, Theorem 5.2. [Proof and prior-work comparison](../../../docs/research/proximity-gap/four-rate-pair-budget.md) · [Complete Lean four-rate theorem](../../../ArkLib/Research/ProximityGap/Frontier/FourRatePairBudget.lean)
 
-
 ### 2026-11-21 — Unconditional apolar incidence bound on actual bad scalar families
 
 For any injective Reed–Solomon evaluation domain of size $n$, parity test degree $d$ with $k+d<n$, and bad-scalar family of size $M$ at a threshold allowing at most $e$ errors, Lean proves $M\le e+1$ or $(M-1)(d+2-2e)\le n$ when $e\le d$ and $2e\le d+1$. This starts with the actual MCA event and discharges both the fixed and moving support cases. If the primitive locator has coordinate degree $s$ and $c<s$ fixed evaluation sites, the checked sharper estimate is $(M-1)(d+c+2-2s)\le n-c$. The argument removes the fixed-site vanisher from the actual syndrome pencil, gives the resulting locator parameter degree $\ell$ the bound $(d+c+2-2s)\ell\le s-c$, and counts incidences through a regular minor's summed rank defects. At $n=2^{30}$, rate $1/2$ and $e=n/4-1$, this yields $M\le357913942$. All composed axioms were `propext`, `Classical.choice`, and `Quot.sound`. [Actual MCA theorem](../../../ArkLib/Research/ProximityGap/Frontier/ApolarMovingCount.lean) · [Scalar specialization](../../../ArkLib/Research/ProximityGap/Frontier/ApolarSparseSpecialization.lean) · [Fixed-coordinate reduction](../../../ArkLib/Research/ProximityGap/Frontier/ApolarFixedFactors.lean) · [Rank-defect incidence bound](../../../ArkLib/Research/ProximityGap/Frontier/ApolarSparseRankBound.lean)
@@ -980,12 +888,11 @@ For fixed field and length all smooth cosets have identical canonical MCA errors
 
 At both named primes, the residues $a^{2^{30}}\bmod p$ for $1\le a\le 2^{20}$ are pairwise distinct by exhaustive modular arithmetic. Thus the only signed rational multipliers in the smooth subgroup with numerator and denominator of absolute value at most $2^{20}$ are $1$ and $-1$. The exact order of $2H$ in $\mathbb F_p^\times/H$ is $42535295865117307932921825928971026456$ at the first prime (eight orbits) and $680564733841876926926749214863536422925$ at the second (one orbit). In particular doubling changes the coset on each step of any 160-step window at either prime. [Exact integer probe](../../../scripts/probes/probe_prime_field_multiplier_height.py)
 
-For any finite set $S$ of primes $p\ge P$ admitting a collision $a^n\equiv b^n\bmod p$ with $1\le a<b\le B$ and $n>0$, Lean proves $P^{|S|}\le B^{n\binom B2}$. All primes in $S$ divide the same positive product of integer power differences. At $n=2^{30}$, $P=2^{158}$ and $B=2^{40}$ this implies $32000|S|<2^{122}$. Combining with the recorded split-prime count above shows fewer than one in 32,000 of the split primes in the production band have any such rational multiplier. The individual $2^{20}$ tests are computational, and the exceptional-count theorem uses only standard Lean axioms. [Lean counting theorem](../../../ArkLib/Research/ProximityGap/Frontier/PrimeFieldMultiplierHeight.lean)
+For any finite set $S$ of primes $p\ge P$ admitting a collision $a^n\equiv b^n\bmod p$ with $1\le a<b\le B$ and $n>0$, Lean proves $P^{|S|}\le B^{n\binom B2}$. All primes in $S$ divide the same positive product of integer power differences. At $n=2^{30}$, $P=2^{158}$ and $B=2^{40}$ this implies $32000|S|<2^{122}$. Combining with the recorded split-prime count above shows fewer than one in 32,000 of the split primes in the production band have any such rational multiplier. The individual $2^{20}$ tests are computational, and the exceptional-count theorem uses only standard Lean axioms. [Lean counting theorem](../../../ArkLib/Research/ProximityGap/Frontier/PrimeFieldMultiplierHeight.lean) · [Bourgain, Konyagin and Shparlinski on small rational heights in cosets](https://arxiv.org/abs/1103.0567)
 
 For every length-$2^{30}$ prime-field subgroup and every $1\le k\le2^{29}$, all budgets $1\le B\le268435455$ now have a checked first bad count of $B$. This extends the previous direct four-rate Lean interval ending at 181823221. For even redundancy $n-k=2a$ with $k\ge2$ and $n<3a$, the same module proves the exact count $\min(B,a)$ for all $1\le B\le2a+1$. This covers the full unique-decoding plateau of all three lower prize rates and relies on the actual MCA rank estimate and the known bisimplex construction. The broader interval is also consistent with earlier analytic BCHKS bounds. [All-field threshold profiles](../../../ArkLib/Research/ProximityGap/Frontier/ApolarSpikeBudgetRange.lean)
 
 Generic coprimality and removal of the fixed vanisher in the cubic proof now have complete kernel-checked interfaces. A maximal-column minor transfers the preceding apolar minimality from the polynomial coefficient ring to the geometric fraction field. At a root of the minimal locator, vanishing of the divided polynomial would then produce an apolar polynomial of one lower degree. The resulting coprimality cancels the divided factor in the fraction field. Gauss's lemma and variable exchange force every integral divisor of a fixed nonzero coordinate polynomial to have parameter height zero. This contradicts a positive-height locator. [Geometric minimality and coprimality](../../../ArkLib/Research/ProximityGap/Frontier/ApolarGenericCoprime.lean) · [Cancellation and constant height](../../../ArkLib/Research/ProximityGap/Frontier/ApolarFixedTarget.lean)
-
 
 ## Four-rate MCA upper bounds on longer smooth domains
 
@@ -1001,6 +908,37 @@ At the next Hamming step, exactly 268435456 errors, the general half-rate cap is
 
 For larger prime fields, a separate interpolation theorem proves line MCA security at $39/128,67/128,86/128,99/128$ in prize-rate order whenever $n$ is a positive multiple of 128 and $p≥2^{165}n^2$. At the same radii the scalar worst-center lists contain at most $173373n,113975n,58872n,52349n$ codewords respectively on any injective domain of that length over a prime field. The former condition includes the 246-bit field at $n=2^{30}$. The three audited declarations report only the standard axioms. [Line MCA and scalar lists](../../../ArkLib/Research/ProximityGap/Frontier/ScaledFirstOrderSecurity.lean)
 
+## 2026-11-21 · The support-counting relaxation fails at the rate-half predecessor
+
+At $n=2^{30}$, $k=n/2$ and $e=n/4-1$, there are **$n+1$ abstract agreement supports** of size $t=805306369$, each owning at least $\binom{t-1}{k}$ private $(k+1)$-subsets. Every pair intersects in at most 603979778 sites. Every triple intersects in at most 469762051 sites, strictly below $k-1$. Thus the sharp circuit count and the secant triple-root cap together permit more than $n$ labels at this predecessor.
+
+The coordinate set is $\mathbb F_4^{14}\times\mathbb F_4$. Start with the graphs of all affine scalar functions on $\mathbb F_4^{14}$, plus one set $W\times\mathbb F_4$ with $|W|=4^{13}$. Each has $n/4$ points and every two share at most $n/16$. Remove one point from each and take complements. Inclusion–exclusion gives the pair and triple bounds. For a fixed support, all shared circuits lie in pair intersections. As the top argument of $\binom{b}{k+1}$ increases from 603979778 up through the next 31 positions, its value at least doubles at every step. Consequently all overlaps together occupy at most $\binom{t-1}{k+1}$ circuits. Pascal's identity gives the required private remainder. The kernel checked the construction and all the finite bounds with only standard axioms. The supports are a model of these counting restrictions. They carry no received words or decoding polynomials. [Formal construction](../../../ArkLib/Research/ProximityGap/Frontier/SupportObstruction.lean)
+
+The volume argument uses [Crites and Stewart’s list-decoding reduction](https://eprint.iacr.org/2025/2046).
+
+The reciprocal-coordinate interpolation is now kernel-checked as well. For a sparse apolar pencil on any zero-free field domain, `paired_coordinates` constructs both signed cubic interpolation equations, with the same parameter vanisher and both remainders of parameter degree below $l$. Inverting a site $y$ changes its weight by $y^d$ and reverses the degree-$d$ test polynomial, including fibers whose affine locator degree drops. The result accepts an arbitrary multiple of the domain vanisher, retains root multiplicities and applies on either parameter chart. The global reversed-parameter apolarity and nonvanishing of every reversed locator fiber, including the origin, are independently kernel-checked from the original hypotheses. All audits report only standard axioms. [Coordinate interpolation](../../../ArkLib/Research/ProximityGap/Frontier/ApolarInverseCoordinates.lean) · [Global parameter reversal](../../../ArkLib/Research/ProximityGap/Frontier/ApolarParameterTransition.lean)
+
+Crites and Stewart's original list-decoding reduction, used in the volume work above, is available locally.  · [Cryptology ePrint 2025/2046](https://eprint.iacr.org/2025/2046)
+
+## Uniform 128-bit line MCA beyond Johnson at the four prize rates
+
+For every length n=128b with b≥1, every prime p≥2^165 n² and every injection of n evaluation points into F_p, Lean now proves line-MCA error at most 2^-128 at the following radii.
+
+| rate | certified safe radius |
+| --- | --- |
+| 1/2 | 39/128 |
+| 1/4 | 67/128 |
+| 1/8 | 86/128 |
+| 1/16 | 99/128 |
+
+These are closed-ball bounds. At length 2^30 the condition is p≥2^225. They apply to the 246-bit prime 65·2^239+1. They exceed the finite-length Johnson radius in each row, including at length 128. Each of the four integer interpolation certificates has a strict surplus at length 128. The four source-minus-constraint surpluses are 546, 2576, 2520 and 116. The normalized column count grows at least linearly with b and the row bound grows at most linearly, so each surplus persists at every multiple. The closed DKT exceptional count is ≤2^37 n². Conservative rounding simplifies the common field-size hypothesis. Computing a smaller upper bound on the error or a matching first bad radius remains a separate problem. [Formal theorem](../../../ArkLib/Research/ProximityGap/Frontier/ScaledFirstOrderSecurity.lean) · [DKT method](https://eprint.iacr.org/2026/2056)
+
+### An isolated Fourier peak survives the production fourth, sixth and eighth moment tests on symmetric sets
+
+At each of the two designated primes there exists a genuine antipodal subset $D\subset\mathbb F_p^\times$, $|D|=n=2^{30}$, with $\eta_1\ge n/2-4\sqrt{n\ln p}$ and $|\eta_b|\le4\sqrt{n\ln p}$ for every $b\notin\{0,\pm1\}$. Its fourth additive moment is exactly $E_2(D)=3n(n-1)$, and $E_3(D)\le15n^3$, $E_4(D)\le105n^4$. One can additionally require $aD\cap bD=\varnothing$ for $1\le a<b\le2^{20}$ and $D\cap2^jD=\varnothing$ for $1\le j\le160$. Thus even simultaneous control at *every other* nontrivial frequency, the three energy tests, and the tested multiplicative disjointness properties permit a peak of linear size. Full multiplicative closure is essential to distinguish a smooth subgroup from this example.
+
+For the written existence proof, choose $m=n/2$ independent anchors $X_i$ with mass $(1+\cos(2\pi x/p))/p$ at $x$, and take all $\pm X_i$. Orthogonality gives expected period $n/2$ at $\pm1$ and zero at every other nonzero frequency. Each anchor contributes a real summand in $[-2,2]$. Hoeffding's inequality and a union bound give exceptional probability at most $2p^{-3}$ for the claimed simultaneous deviations. Zero anchors or coincidences up to sign cost at most $2n^2/p$. For a labeled signed word of length $2r$ whose formal coefficients of the independent anchors are not all zero, condition on all but one anchor with a nonzero coefficient. The probability its sum vanishes is at most $2/p$, since $2r<p$. There are at most $n^{2r}$ words. For $r=2$, excluding every such relation costs at most $2n^4/p$; the three pairings then give exactly $3n(n-1)$ solutions by inclusion-exclusion. For $r=3,4$, the pairable labeled words consume at most $(2r-1)!!n^r-n^{r-1}$ solutions. The pairing count overcounts at least the $n^{r-1}$ words beginning $(x,-x,x,-x)$ and continuing in opposite pairs. Markov's inequality bounds the chance of exhausting this slack by $2n^{r+1}/p$. For the multiplicative tests, consider each forbidden ratio and ordered pair of signed anchors; the same one-variable bound costs at most $2n^2(2^{40}+160)/p$ in total, after removing zero anchors. No tested double power is $\pm1$ at either prime. Summing the exceptional probabilities gives less than $1/64$. These sets cannot be subgroup cosets, since every multiplier in their stabilizer replicates the peak at another frequency. This probabilistic existence proof has not been formalized in Lean.
+
 ### Three almost saturated cores exclude every earlier second-prime witness
 
 At the second production prime set $n=2^{30}=3r+1$, $k=2^{26}$ and $d=k-1$. Suppose the received row pair has **three distinct polynomial head pairs whose joint cores have total size at least $3t-15$**, where $t=n-e$ and $e\le2r-1$. Then the entire row pair has at most $2n$ bad scalars. This includes scalars decoded by other polynomials. In particular, enlarging the previous three-core construction by arbitrarily many further heads cannot produce an earlier violation while those original cores each have size at least $t-5$.
@@ -1010,6 +948,58 @@ Choose one folding polynomial and bad witness for each scalar. A point $(\gamma,
 If the head pairs are collinear over $F(X)$, pair intersections give $h\le n-3t+15+3d$. The three lines together contribute at most $n+2h$ distinct labels. At any occupied site, specialized collinearity permits at most one genuinely fresh scalar across these lines, and every unoccupied site supplies at most three. Each selected point outside these lines agrees on at least $t-3d$ of the $h$ sites. Three outside points consequently agree together on at least $3(t-3d)-2h>d$ sites. Their interpolation determinant has degree at most $d$, so the outside points all lie on a single fourth line as soon as there are at least two. At the limiting $t=r+2=357913943$, the common-site lower bound is $67108864=d+1$. It increases with $t$.
 
 To violate $2n$, this fourth line would have to hold more than $n-2h\ge671088626$ labels. A line with core size $z\le t-2$ has at most $1+\lfloor e/2\rfloor\le357913941$ labels from disjoint fresh agreements. Hence the fourth core would have size at least $t-1$. The four cores would now have total incidence $I\ge4t-16>n+9d/2$, forcing rational collinearity of all four heads by the earlier four-head determinant bound. Their union has size at least $I-6d>2n/3$, so all four together provide fewer than $2n$ labels. This gives a necessary condition for an earlier violation even when the proposed additional witnesses have millions of fresh agreements.
+
+### Four below-capacity failures at production length, and a failure of reverse transfer
+
+A polynomial map of degree $m$ with exactly $m$ evaluation sites above each base site transports every base MCA bad scalar into the code of dimension $mk$ at the same relative radius. On the base witness $S$, interpolate a row as $p$ of degree below $|S|$. If $|S|>k$, an upstairs polynomial $Q$ of degree below $mk$ agreeing with the pulled-back row on every lift coincides with $p\circ P$ on $m|S|$ distinct sites. The degree bound forces polynomial equality, so $p$ has degree below $k$. For $|S|\le k$ direct interpolation suffices. This proves joint refusal on the lifted witness and requires no loss of rate. The power image of every smooth coset of length $mh$ is again smooth of length $h$ when $h$ is dyadic. [Polynomial fiber transfer](../../../ArkLib/Research/ProximityGap/Frontier/FullFiberMcaLift.lean) · [Power projection on arbitrary smooth cosets](../../../ArkLib/Research/ProximityGap/Frontier/SmoothPowerMcaDescent.lean)
+
+In the field-size interval of the preceding length-128 result, **every smooth domain of size $512r$**, including $2^{30}$, violates the 128-bit target at or above the radii **$31/64,95/128,111/128,239/256$** at rates $1/2,1/4,1/8,1/16$, respectively. These are upper bounds on the operational suprema at large lengths. All four are strictly below the corresponding capacities. The proof lifts prescribed-product witnesses on smooth base lengths 128, 256, 256 and 512. The bounds hold for every positive interleaving width. At the three lower rates the actual length-128 power image remains within budget through radius one while arbitrary stacks upstairs violate that same budget. Thus a reverse implication from safety on this quotient to safety upstairs fails, including at the common Hamming-grid points $95/128,111/128,120/128$. The new rate and strict-separation statements are kernel checked with the standard axioms. [All four production bounds and reverse counterexample](../../../ArkLib/Research/ProximityGap/Frontier/FourRateSmoothMcaLift.lean)
+
+### A checked upper bound for every consecutive string of doubled frequencies
+
+For any antipodal $n$-point subset of $\mathbb F_p$ and $b\ne0$, write $A_j=|\eta_{2^jb}|$. If $p\le2^{m+1}$, then for every integer $t\ge0$,
+$$
+\sum_{j=0}^{m-1} A_j + tn \ \le\ mn + 2\sum_{u=0}^{t-1}\binom{m}{u}(t-u).
+$$
+At the first designated prime, every chain of 158 frequencies has mean at most $2^{30}-5316069514/158$. At the second, every chain of 159 has mean at most $2^{30}-5314729034/159$. If the domain is closed under doubling, the same bound holds for each individual frequency because the periods in a chain are identical. This condition fails on both designated subgroups. All four declarations, including the finite-field character evaluation, passed the Lean kernel and standard-axiom audit. [Lean upper bounds](../../../ArkLib/Research/ProximityGap/Frontier/PrimeFieldDoublingChain.lean)
+
+The first $m+1$ binary digits of $bx/p$ identify the field element $x$. Its $j$th digit transition records whether $\cos(2\pi\,2^j bx/p)$ is nonpositive. Choose the preferred transition in column $j$ from the sign of the real period. Every mismatch contributes at least one to $n-A_j$. The initial bit and the set of mismatches recover the word, so at most $2\binom m u$ points have $u$ mismatches. Summing the deficit below $t$ yields the bound. The separate symmetric-set example above gives a large isolated coefficient in spite of small neighbors and simultaneous moment control.
+
+### What the period field discriminant and first two traces determine
+
+Let $H\le\mathbb F_p^\times$ have even order $n$, put $K=\mathbb Q(\zeta_p)^H$, and let $\eta_c=\sum_{x\in cH}\zeta_p^x$ with $c$ ranging over multiplicative cosets. If an algebraic integer $\alpha\in\mathcal O_K$ has $\operatorname{Tr}(\alpha)=-1$ and $\operatorname{Tr}(\alpha^2)=p-n$, then $\alpha$ is one of the actual Gaussian periods. Indeed $\zeta_p,\ldots,\zeta_p^{p-1}$ form an integral basis of $\mathbb Z[\zeta_p]$ permuted by $H$. Invariance forces coefficients constant on each coset, hence the $\eta_c$ are an integral basis of $\mathcal O_K$. Each has trace $-1$. Expanding the product and summing over all dilations gives $\operatorname{Tr}(\eta_c\eta_d)=p\,\mathbf1_{c=d}-n$, since $-H=H$. Writing $\alpha=\sum_c z_c\eta_c$ gives $\sum_c z_c=1$ and $p\sum_c z_c^2-n=p-n$. An integral vector with sum and squared length both one is a positive coordinate vector. Thus the first two traces within the specified period field recover the orbit exactly. Estimating its largest real embedding still requires further information. This is a written argument.
+
+The cubic obstruction now checks as a single theorem. On a normalized length-$n$ domain, a moving primitive locator of coordinate degree $r$ and parameter degree $l$ with minimal apolar syndrome through degree $d$ has at most $3(l+1)$ selected sparse fibers if $n<3(d+2-r)+r$ and those fibers use at most $d-r+1$ sites. The formal statement takes generic coprimality; minimal apolarity implies it by the checked companion theorem. Its proof constructs the cubic interpolation polynomial in each of four charts, compares the coordinate degrees, and uses the strictly negative parameter twist to force divisibility of the fixed domain vanisher. Both the cardinality theorem and the coprimality input passed the pinned Lean kernel with standard axioms. [Cubic obstruction](../../../ArkLib/Research/ProximityGap/Frontier/ApolarCubicObstruction.lean) · [Coprimality from minimality](../../../ArkLib/Research/ProximityGap/Frontier/ApolarGenericCoprime.lean)
+
+The rank bound and four concrete scalar endpoints on the 402653184-budget field passed independent con-leche replay of 37,845 declarations, including the unconditional worst-case count. The locked Lake build of the four-rate modules completed successfully.
+
+## 2026-11-21 · Sharp rate-half and four-rate field window checked end to end
+
+The pinned Lean kernel now proves the unrestricted bad-scalar cap **268435458** on every injective length-$2^{30}$ evaluation domain at dimension $2^{29}$ and **268435455** errors. The proof starts with the actual MCA bad event and discharges sparse syndrome extraction, primitive normalization, chart changes, generic minimality, cubic interpolation and the final fixed-polynomial contradiction. At the next Hamming step the two-line attack supplies 536870914 bad scalars. All six endpoint audits reported only `propext`, `Classical.choice`, and `Quot.sound`. [End-to-end proof](../../../ArkLib/Research/ProximityGap/Frontier/SharpApolarMCA.lean) · [Polynomial argument](rate-half-apolar-polynomial-proof.md)
+
+For every prime-field subgroup of this length whose budget $B=\lfloor p/2^{128}\rfloor$ is in **[268435458, 536870913]**, the exact first bad counts at rates $1/2,1/4,1/8,1/16$ are respectively **268435456**, $\min(B,402653184)$, $\min(B,469762048)$, and $\min(B,503316480)$. The explicit lower endpoint $p=91343853062927602073649116268957764822404956161$ and its companion $p=91343853369979269099964682909737195747164553217$ both have exact rate-half operational supremum $1/4$. The half-rate good predicate is strict at $1/4$ for every positive interleaving width. Budgets $1\le B\le268435455$ have first bad count $B$ at all four rates. The remaining two intervening smooth-domain budgets are 268435456 and 268435457. The designated first and second production examples have larger budgets, $2^{30}$ and $2^{31}$. [All-field interval proof](../../../ArkLib/Research/ProximityGap/Frontier/ApolarSpikeBudgetRange.lean) · [Four-rate profiles](apolar-unique-range-all-rates.md)
+
+### What prevents the optimized first-order estimate from reaching linear budgets
+
+For 1 ≤ M, μ ≥ 2 and D < A ≤ n, the optimized numerical exception charge in DKT, including its minimization over every allowed split, is at least (n−A)(1+max(2D−3,0)). The degree-one derivative stage contributes a fiber degree of at least 1+max(2D−3,0). Its fixed-coordinate ratio is at least one and every split retains at least n−A sites in that term. At n=2^30, k=2^29, and radius 39/128, Lean verifies that this charge is greater than 2^58 for every height and every such choice of caps. A field whose 128-bit budget is around 2^30 therefore needs a sharper mathematical count. This lower bound concerns the proof's numerical estimate, not the actual MCA error. [Kernel-checked lower bound](../../../ArkLib/Research/ProximityGap/Frontier/FirstOrderChargeFloor.lean)
+
+The strict finite-length Johnson comparisons in the four-rate result have also been checked in Lean for every multiplier b≥1. See the [hidden-derivative paper by Brakensiek et al.](https://arxiv.org/abs/2609.08005).
+
+### A single doubling admits no uniform reverse MCA factor
+
+At half rate, for every natural number $R$ there is a prime-field smooth domain of length $4k$ such that its MCA error exceeds $R$ times the error of its actual length-$2k$ squaring image. Both codes use the same Hamming-grid radius $(k-1)/(2k)$. The base numerator is at most $M=\binom{2k}{k+1}$. At $2k+2$ upper-domain agreements, Vandermonde gives $\binom{4k}{2k+2}\ge M^2$. The common-product fiber therefore has more than $RM$ elements once $M>4kR$. Lagrange interpolation and the DEEP transfer yield the required bad scalars on a sufficiently large prime $p\equiv1\pmod{4k}$. This rules out a reverse multiplicative factor depending only on the covering degree, even when that degree is two. A separate theorem fixes the radius at $1/4$ and varies the degree $m$: the length-four base has numerator at most four and the lift of length $4m$ has numerator at least $m+1$. Both existence theorems have only the three standard Lean axioms. [Reverse-transfer obstructions](../../../ArkLib/Research/ProximityGap/Frontier/FiberReverseRatio.lean)
+
+## 2026-11-21 · A quadratic interpolant improves the second-prime lower endpoint
+
+For $n=2^{30}$ and dimension $2^{26}$, every received pair on any injective length-$n$ domain in prime characteristic $p>2n$ has at most **1,867,863,086** MCA-bad scalars at **648,718,870 errors**. This is below the second named prime's budget of 2,147,483,648. Its operational supremum therefore lies between **648718871/n and 715827882/n**. The lower endpoint improves the preceding kernel-checked one by 1,091,769 Hamming steps. The new lower endpoint is a written proof with independently executable integer arithmetic.
+
+At agreement 425022954, a multiplicity-one interpolation polynomial, quadratic in the folded value and of total degree at most $2^{21}$ in the folded value and challenge, exists with a surplus of 2,097,150 coefficients. Every witnessing polynomial gives a global polynomial root upon specialization. If the discriminant has a nonconstant squarefree part in the coordinate variable, an all-square specialization loses at least half its degree in Sylvester matrix rank, which bounds the number of such challenges independently of the coordinate degree. Otherwise the roots are carried by at most two parameter components. For each large component, the norm of a nonidentity in the quadratic parameter extension bounds the number of accidental agreements at each coordinate. This gives a common set of at least 127,275,425 sites, with at most 268,435,456 witness polynomials missing more than 8,388,607 sites there. The rest agree sufficiently often to lie on a single secant. The higher-degree fiber problem at the last predecessor remains open. [Written proof](second-prime-quadratic-discriminant.md) · [Exact checker](../../../scripts/probes/probe_second_prime_quadratic_discriminant.py) · [Earlier kernel theorem](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeConditionedThreshold.lean)
+
+The single squaring step can also cross the literal $2^{-128}$ tolerance. In the established field-size window, every smooth length-256 quarter-rate code exceeds that tolerance at $95/128$, while its length-128 quarter-rate square image is within tolerance at the same grid point. [Kernel-checked tolerance crossing](../../../ArkLib/Research/ProximityGap/Frontier/FourRateSmoothMcaLift.lean)
+
+### Linear scalar list bounds at those same four radii
+
+The same scaled interpolation certificates bound the worst-case scalar lists at the four radii by 173373n, 113975n, 58872n and 52349n respectively. This bound holds for every prime field admitting the chosen n evaluation points without the stronger MCA field-size hypothesis. In particular p ≥ 173373·2^128·n suffices for the scalar 128-bit list test at all four radii. The constants use the finite first-order polynomial list weight and its linear scaling with the message dimension. Lean checked the conversion from lists of polynomials to the code's actual worst-case list function. [Proof](../../../ArkLib/Research/ProximityGap/Frontier/ScaledFirstOrderSecurity.lean)
 
 ### Two cores with total size 713031680 already exclude an earlier second-prime violation
 
@@ -1042,7 +1032,7 @@ For each bad $\gamma\notin E$ choose a witnessing folded polynomial $P_\gamma$. 
 
 At the second production prime and $t=357913943$, the result gives fewer than $2n$ bad scalars for exact multiplier pairs of degree $s\le52195785$. This includes monomial row pairs whose exponents differ by at most this much modulo $n$ in either direction. At $s=1$ the exact uncorrupted bound is $n+5$. Even if 73926474 sites are arbitrary, deleting that many sites gives a Johnson count of at most 15 and hence at most $n+14\cdot73926474<2n$ labels. These are guarantees for a class of received pairs at the production length.
 
-Separately, on the actual second field's subgroup of length 64 at dimension 4, no monomial pair supplies more than 64 bad scalars at 23 agreements. All $64^2$ ordered exponent pairs were tested. The bad counts $0,1,2,4,5,32,64$ occurred for respectively $3496,516,48,16,8,4,8$ pairs. An independent enumeration gave exactly this histogram over $\mathbb F_{257}$ as well. For reproducibility, partition the exponents into seven consecutive blocks of at most ten positions. Every 23-point witness contains four points in one block. Rotation moves the first to 1, leaving only $\binom{9}{3}=84$ interpolating supports. On each support compute the degree-three interpolation residuals $U,V$ for the two rows. Joint sites have $U=V=0$, and all other folded agreements at scalar $\gamma$ have $V\ne0$ and $\gamma=-U/V$. A scalar is bad on this support exactly when the two counts sum to at least 23 and the latter count is positive. The four anchor sites uniquely determine both candidate row polynomials. Rotation supplies the multiplicative orbit of each nonzero scalar under the subgroup of order $64/\gcd(64,a-b)$. This includes arbitrary witness sets and many-fresh-site folds at length 64.
+Separately, on the actual second field's subgroup of length 64 at dimension 4, no monomial pair supplies more than 64 bad scalars at 23 agreements. All $64^2$ ordered exponent pairs were tested. The bad counts $0,1,2,4,5,32,64$ occurred for respectively $3496,516,48,16,8,4,8$ pairs. An independent enumeration gave exactly this histogram over $\mathbb F_{257}$ as well. For reproducibility, partition the exponents into seven consecutive blocks of at most ten positions. Every 23-point witness contains four points in one block. Rotation moves the first to 1, leaving only $\binom{9}{3}=84$ interpolating supports. On each support compute the degree-three interpolation residuals $U,V$ for the two rows. Joint sites have $U=V=0$, and all other folded agreements at scalar $\gamma$ have $V\ne0$ and $\gamma=-U/V$. A scalar is bad on this support exactly when the two counts sum to at least 23 and the latter count is positive. The four anchor sites uniquely determine both candidate row polynomials. Rotation supplies the multiplicative orbit of each nonzero scalar under the subgroup of order $64/\gcd(64,a-b)$. This includes arbitrary witness sets and many-fresh-site folds at length 64. [Exact monomial census](../../../scripts/probes/probe_monomial_mca_length64.py) Run `python3 -B scripts/probes/probe_monomial_mca_length64.py` to reproduce both histograms.
 
 ## A quartic through every rich fold at the second-prime predecessor
 
@@ -1053,6 +1043,62 @@ $$
 for each nonzero monomial $X^a\Gamma^iY^j$. For every scalar $\gamma$ and every degree-at-most-$d$ polynomial $q$ whose fold agrees at least $t$ times, $Q(X,\gamma,q(X))$ vanishes identically. This classifies all such candidates simultaneously, even when several candidates have the same scalar.
 
 For each $0\le j\le4$ and $0\le i\le34-j$, give the coefficient of $\Gamma^iY^j$ all $t-jd$ possible coordinate coefficients. There are $165t-320d=35n+595$ unknowns. At each domain point $x$, demand that $Q(x,\Gamma,u_0(x)+\Gamma u_1(x))$ be the zero polynomial in $\Gamma$. Its degree is at most 34, giving at most $35n$ scalar constraints overall. A nonzero kernel vector exists. At a rich specialization the polynomial in $X$ has degree less than $t$ and at least $t$ distinct roots. The resulting plane curve is defined over $\mathbb F(X)$; converting containment to the required $2n$ scalar bound remains open. This is an explicit finite Guruswami–Sudan interpolation count. [Kernel-checked polynomial and support theorems](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeQuarticInterpolation.lean) · [BCHKS25, §3.1](https://www.math.toronto.edu/swastik/rs-proximity-gaps-2025.pdf)
+
+## 2026-11-21 · The half-rate bad-scalar count at the unique-decoding endpoint
+
+For every injective evaluation domain of size $n=4h$ over a finite field, at dimension $k=2h$ and exactly $h$ errors, at most **$3(h+1)$** scalars can give an individual word close to the code while the pair lacks joint agreement. Substitute $e=h$ and $d=2h-1$ in the verified cubic interpolation bound. At $n=2^{30}$ this gives **805306371**, improving the earlier uniform bound $n=1073741824$. Consequently every length-$2^{30}$ prime-field subgroup with budget $B=\lfloor p/2^{128}\rfloor\ge805306371$ has operational supremum at least **268435457/1073741824**. The new budget interval reached by this argument is **805306371 through 1073741823**. The previously known $n/|F|$ bound already gives the same radius floor on both originally nominated primes, which have budgets $n$ and $2n$. All four new Lean declarations report only `propext`, `Classical.choice` and `Quot.sound`. [Endpoint, mass and operational bounds](../../../ArkLib/Research/ProximityGap/Frontier/ApolarHalfBreakpoint.lean) · [Ben-Sasson et al., Theorems 1.2 and 1.4](https://www.math.toronto.edu/swastik/GS-FRI.pdf)
+
+### A polynomial compatibility test for four fits on a smooth cyclic domain
+
+At half rate, length $n=2^{30}$ and $n/4-1$ errors, the abstract support construction above accommodates $n+1$ labels. The matching `actual_count_upper` certificate bounds the number of literal MCA-bad labels by 357913942 on every injective evaluation domain; the separate `SharpApolarMCA` theorem above strengthens that bound to 268435458. These two results exhibit the missing content in intersection and private-circuit counts alone. [Support model and genuine RS bound](../../../ArkLib/Research/ProximityGap/Frontier/SupportObstruction.lean)
+
+A separate compatibility inequality uses the cyclic order of the evaluation points. Fix four distinct scalars and four decoding polynomials of degree at most $d$, and let $g$ be a multiplicative shift of order greater than $d$. Let $Z$ be any set of common agreement sites. Count in $A$ the starts $x$ of consecutive pairs $(x,gx)$ outside $Z$ for which the same three decoders agree with their received words at both endpoints. If two distinct scalars each have a genuine singleton error somewhere, then $2|Z|+|A\cup\{0\}|< 2d$. For nonzero evaluation sites this gives $2|Z|+|A|\le 2d-2$. Two independent parity checks for the four scalar labels give check polynomials $P,Q$. Their projective value at each singleton error identifies its label. Removing the common nodal factor from $P,Q$ leaves a nonzero folded determinant $P(gX)Q(X)-P(X)Q(gX)$ whose roots include $A$. Its value at zero is zero and its top coefficient cancels, giving two extra units of saving. Nonvanishing only needs the order of $g$ to exceed the degree. [General four-fit theorem](../../../ArkLib/Research/ProximityGap/Frontier/SyndromeMotion.lean)
+
+In particular take **any field and coset of order $4h$**, $h\ge2$, in its multiplicative order, and cut the coset into four consecutive blocks of length $h$. Suppose four degree-$<2h$ polynomials each agree off their assigned block, and all four also agree at the first site of **one** block. Here $|Z|=1$ and $|A|=4(h-1)-1$, contradicting the bound as soon as two distinct decoders each have a genuine error. At least two distinct scalar words thus belong to the code globally, putting both received rows in the code. `not_mca_of_four_arcs` directly excludes the literal MCA event at **every** radius for every scalar under these fits. The locations of the four error sets matter to this conclusion. The kernel checked all seven audited theorems in the cyclic argument with `propext`, `Classical.choice` and `Quot.sound`. [Literal MCA corollary](../../../ArkLib/Research/ProximityGap/Frontier/SyndromeMotion.lean)
+
+**Quartic obstruction at the last predecessor.** At 715827881 errors any overbudget family of $2n+1$ bad scalars forces each available degree-four interpolant of the indicated weighted support to have identically zero coordinate discriminant or generic gcd degree at least **290804865** between that discriminant's two binary first partials. A squarefree generic discriminant permits at most **1772** witness parameters. In a witnessing fiber the polynomial root $P_z$ supplies a squared binary factor of degree 290805079 in the quartic discriminant, including all contacts at infinity. A nonzero Sylvester minor bounds the number of fibers with so much extra multiplicity. The lower-degree and generically highly singular possibilities remain. [Proof and exact constants](second-prime-quadratic-discriminant.md)
+
+**Number of heads needed in any earlier second-prime counterexample.** In a putative overbudget selection at $e\le2r-1$, a secant carrying 513 chosen witnesses has core size at least $t-\lfloor e/512\rfloor\ge356515842$. Two such secants exceed the two-core total cutoff by at least four. Thus at most one secant contains more than 512 chosen witnesses. It contains at most $e+1$; all other lines contain at most 512. Covering the $2n+1$ witnesses would require at least $1+\lceil(2n+1-(e+1))/512\rceil\ge2796204$ distinct affine decoded heads. The conclusion counts actual affine lines in the scalar-polynomial space and allows arbitrarily many fresh sites per witness.
+
+### Exact degree-one boundary for shifted first-order interpolation
+
+For the actual shifted DKT slot inequality with positive multiplicity, a positive first-derivative cap and total jet degree one, the first graded rank is one at multiplicity one and $2m-2$ at multiplicity $m\ge2$. The zeroth graded rank is $m$. A strict slot surplus at any challenge weight requires $3A\ge 2n+D$, which implies $A^2\ge nD$. At line weight one this condition is also sufficient: multiplicity two and height $2(n-A)+1$ already give the surplus. Degree zero cannot have a surplus when $A\le n$.
+
+Consequently every successful positive-cap certificate with $A^2<nD$ incurs the optimized exception-charge floor $(n-A)(1+\max(2D-3,0))$, including its minimization over every permitted split. At the production half-rate test with $n=2^{30}$, $D=2^{29}-1$ and $A=89\cdot2^{23}$, the numerical charge exceeds $2^{58}$ for every such passing certificate. The rank evaluation, exact degree-one classification and charge implications all pass the kernel with standard axioms. [Degree-one boundary and optimized charge](../../../ArkLib/Research/ProximityGap/Frontier/FirstOrderDegreeOneBoundary.lean)
+
+**Double multiplicity reduces the total degree to twelve.** Choose $0\le j\le10$, $0\le i\le12-j$ and $0\le a<2t-jd$. Impose vanishing of $Q$, $Q_X$ and $Q_Y$ on each entire received line. These restrictions have scalar degree at most 12, 12 and 11, so the constraint count is $38n$. The $88(2t)-330d$ variables exceed it by exactly $44,739,866$. For a rich fold, $W(X)=Q(X,\gamma,q(X))$ and $W'(X)$ both vanish at its $t$ agreements, by $W'=Q_X+q'Q_Y$. Each agreement supplies a double root, including over fields of positive characteristic. The bound $\deg W<2t$ proves $W=0$. Lean verified the literal polynomial both here and in the quartic statement, with standard kernel axioms. [Second-order interpolation theorem](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeQuarticInterpolation.lean)
+
+Over $K=\mathbb F(X)$, take the greatest common divisor of the quartic and the degree-twelve polynomial in $K[\Gamma,Y]$. After cancelling it the residual curves are coprime. Projective Bézout bounds their affine common points by $34\cdot12=408$. Consequently a single divisor of value degree at most four **and** total degree at most twelve covers all but 408 of any family of distinct rich labels. For a family of at least $2n+1$ this divisor is nonconstant. This Bézout corollary is a written deduction from the two formally checked interpolation theorems.
+
+For first-order interpolation with $j\le v$ and $i+j\le s$, the exact surplus is $\sum_{j=0}^{v}(s+1-j)(t-jd)-(s+1)n$ when $v\le s$ and $vd<t$. At the predecessor the coefficient of $s+1$ is negative for $v=1,2,3$, and the subtracted term $\sum_j j(t-jd)$ is nonnegative. Thus none of those three value-degree caps passes this particular dimension test. For $v=4$ the first passing total degree is $s=34$, with surplus $595$. The interval where the first-order degree-three count eventually passes starts at $t=369098751$ ($e\le704643073$), obtained from $4t>n+6d$. This is an interpolation feasibility criterion.
+
+### Approximate multipliers with coordinate-dependent shifts
+
+At either designated production prime, fix any nonzero slope $a$ and nonzero scale $v$. At most **47,980,317** points $x\in H$ allow $ax+vt\in H$ for some $1\le t\le 2^{20}$. Even allowing either sign of $t$ covers at most **95,960,634** points, less than 9% of the subgroup. For any single nonzero shift in the field the corresponding cap is **46,341**. This rules out transporting a period by matching a dense fraction of the domain after such coordinate-dependent corrections.
+
+Here is the general count. Write $M_t=|\{x\in H:ax+t\in H\}|$ and let $T$ be a set of nonzero shifts lying in distinct multiplicative $H$-cosets. With $H=-H$ and the fourth additive-energy floor, the exact Sidon implication gives at most two representations of each nonzero difference. For every $t\in T$, ordered unequal solutions $x,y$, and $h\in H$, form the quadruple $(hx,hy,h(ax+t),h(ay+t))$. The first two entries are distinct. Their difference times $a$ fixes the difference of the last two entries, giving at most two possibilities. The first and third entries recover $ht$. Transversality recovers $h,t$ and then $x,y$. Thus $\sum_{t\in T}M_t(M_t-1)\le2(n-1)$. Cauchy–Schwarz gives $S^2\le |T|(S+2(n-1))$ for $S=\sum_{t\in T}M_t$. The single-shift bound also follows by counting unequal pairs by $(ax+t)/(ay+t)$. The Lean kernel checked the pair injection, incidence bound, constants, and fourth-floor implication. Specialization to the two named primes uses the prior exhaustive fourth-moment computation and the exact modular distinctness check through $2^{20}$. [Lean proof](../../../ArkLib/Research/ProximityGap/Frontier/AffineMultiplierOverlap.lean) · [Power-residue check](../../../scripts/probes/probe_prime_field_multiplier_height.py)
+
+The same injection now gives a kernel-checked bound over every finite field, with no fourth-energy-floor assumption. For every nonzero slope, $n^2+n\sum_{t\in T}M_t(M_t-1)\le E_2(H)$. In fact the off-diagonal weighted bound is $\sum_{r\ne0}r_H(r)r_H(ar)$, with $r_H$ the signed difference profile. Dilation permutes all residues, so $2uv\le u^2+v^2$ bounds its full mixed energy by $E_2(H)$. The zero difference contributes exactly $n^2$. Hence any independent energy bound $E_2(H)\le Cn^{2+\alpha}$ excludes a positive fraction of successful coordinate-dependent shifts when $|T|=o(n^{1-\alpha})$, by Cauchy–Schwarz. Shift transversality remains a hypothesis. [General weighted bound](../../../ArkLib/Research/ProximityGap/Frontier/AffineMultiplierOverlap.lean)
+
+### Named prime fields, half rate, one error beyond unique decoding
+
+At $n=4h=2^{30}$, $k=2h$ and $e=h+1=268435457$, one explicit stack on the smooth subgroup in **each named production field** has exactly **$3h+2=805306370$ MCA-bad scalars**. Its unique projective degree-$h$ apolar locator at every nonzero parameter is $Y^h$. For every bad scalar $t$, the divided polynomial at zero is $t/G_C(0)\ne0$, so the domain-vanisher divisibility used at the predecessor fails even as an ordinary point evaluation. For an arbitrary atomic support with $|E|=s+2$, Lean proves that all nonzero errors are roots or all are missed, and proves the replacement polynomial identity $G_EW_f+c=f\sum_y w_y G_{E\setminus\{y\}}$ with $c=\lambda(fY^{s+1})$. Its pinned axiom audit was standard. An independent exhaustive verifier considered all 28,048,800 size-nine error supports for $\mathrm{RS}(32,16)$ over $\mathbb F_{97}$, recovered exactly 26 scalars, and checked each original no-joint witness. The production count is a written proof. It stays within both budgets. [Three-coset family and exact proof](apolar-successor-three-cosets.md) · [Kernel-checked first-defect identity](../../../ArkLib/Research/ProximityGap/Frontier/ApolarSuccessorDefect.lean) · [Exhaustive verifier](../../../scripts/probes/probe_apolar_successor_three_cosets.cpp)
+
+On the same successor step, any pair represented as $N_0/f,N_1/f$ with $\deg f=h$, no poles on the domain and $\deg N_i\le3h-1$ stays within the first budget $n$ whenever a single decoded affine head carries twelve bad parameters. This bounds **all** bad scalars of that pair, including the other decoders. The proof constructs a list of at most four ordinary low-degree polynomials and assigns all parameters from its nonsingleton classes to distinct original domain sites. The fixed-pole and twelve-label hypotheses remain necessary inputs to this result. [Auxiliary-list proof](apolar-successor-three-cosets.md#a-fixed-rational-pencil-with-a-twelve-point-secant-stays-within-the-first-budget)
+
+For any received pair, Lean now proves a first-budget violation at this step requires **at least 268435454 new scalar witnesses**, and a second-budget violation requires **at least 1342177278**. On every new scalar the actual decoder has exactly $h+1$ errors, every nonzero middle apolar locator avoids every error, its projective kernel has at most one point, and the preceding catalecticant is injective. The actual-family proof passed the pinned kernel and forbidden-token gate. [Successor population and rank](../../../ArkLib/Research/ProximityGap/Frontier/ApolarSuccessorPopulation.lean)
+
+For fixed off-domain rows $N_i/f$ with $\deg f=h$ and $\deg N_i\le3h-1$, a single affine decoder head carrying **five** labels now suffices for the whole-stack cap $M\le n$ on either named field. The written proof passes through scalar-normalized error-set polynomials. All nonsingleton classes consume distinct domain roots. Johnson counting controls the singleton classes up to reduced numerator degree $h/4-1$, including when no rich head was assumed and a reduced ratio of that degree is available. At the remaining five-label endpoint $j=h/4$, a larger agreement set for the known head permits a weighted count giving $M\le194$. Moving locators, domain poles, and higher-degree fixed pencils with heads of size at most four remain open. [Five-label proof and exact weighted arithmetic](apolar-successor-three-cosets.md#a-fixed-rational-pencil-with-a-five-point-secant-stays-within-both-named-budgets)
+
+## Exact unrestricted rate-half extremum and a noncoset threshold
+
+For every $l\ge2$, at length $n=4(3l+1)$, dimension $k=n/2$ and $e=3l$ errors, every pair on every injective finite-field evaluation domain has at most **$3l+3$ bad scalars**. Arbitrarily large prime fields attain equality. Choose three complete fibers of the $(e+3)$-rd power map, pad to $n$ sites, and cube the selected coordinates. Every cube label has three selected preimages, giving exactly $e+3$ labels. A single pair of received words witnesses the actual MCA event at each label. The kernel also checks the prime supply for every $l$. [Uniform upper bound and arbitrarily large primes](../../../ArkLib/Research/ProximityGap/Frontier/CubicApolarExtremum.lean) · [Finite power fibers and MCA witnesses](../../../ArkLib/Research/ProximityGap/Frontier/CubicApolarAttainment.lean)
+
+For $n=2^{30}$ and $p=91343852673653315610116111617434743158930931713$, the union has 805306374 sites and leaves 268435450 padding sites. At $e=268435455$ the resulting code has exact worst-case MCA probability **$268435458/p$**. Its first 128-bit failure occurs at that error count, and its good radii at every positive interleaving width satisfy **$\delta<268435455/1073741824$**. The prime supports the official dyadic subgroup. The constructed domain contains 1 and a primitive cube root whose $2^{30}$-th powers differ, so it lies in no level set of $X^{2^{30}}$. The concrete count, exact probability, and real-radius threshold use only the standard Lean axioms. [Concrete extremum and threshold](../../../ArkLib/Research/ProximityGap/Frontier/CubicApolarExtremum.lean) · [Mathematical construction](cubic-apolar-sharpness.md)
+
+### Beyond-Johnson list bounds at every interleaving width
+
+For every positive integer $b$, every prime $p$, every injection of $n=128b$ points into $\mathbb F_p$, and every finite interleaving width, the respective worst-case list sizes at radii $39/128,67/128,86/128,99/128$ are at most $173373n,113975n,58872n,52349n$ at rates $1/2,1/4,1/8,1/16$. The proof establishes the scalar bounds over fields of characteristic zero or at least $n$. It then packs a received column into a polynomial in an indeterminate over the prime field and applies the scalar bound in the rational-function field. Distinct columns remain distinct, so agreement counts are preserved at every width. The four width-independent bounds passed the repository's focused Lean check with only the three standard kernel axioms. The line-MCA bounds at these radii still require a separate exceptional-parameter estimate. [Four interleaved list bounds](../../../ArkLib/Research/ProximityGap/Frontier/ScaledFirstOrderSecurity.lean)
 
 ### Low-degree factors of the quartic cannot carry a second-prime violation
 
@@ -1067,6 +1113,28 @@ $$
 At a site in $U$ every point agrees unless the nonzero polynomial $a(x,\Gamma)$ vanishes at its scalar, so the number of misses over $U$ is at most $34|U|$. The 35 witnesses with fewest misses each miss at most $34|U|/(2048-34)$. Three therefore have more than $d$ common sites. The resulting 35-point secant would divide the degree-two irreducible factor, which is impossible. Counting both components and the exceptions gives $2(2048-1)+34=4128$.
 
 Thus an overbudget row pair forces **every** such interpolant to have an irreducible factor of degree at least three in $Y$. If all positive-$Y$ factors had degree at most two, the nonlinear factors would each contribute at most 4128 witnesses, there would be at most four, and the affine line factors together could account for at most $e+1+3\cdot512$ by the two-core result. Adding the 34 parameter exceptions still falls below $2n$. In particular, for an actual degree-four interpolant the generic quartic discriminant cannot vanish identically: in this characteristic a repeated positive-$Y$ factor leaves no irreducible factor of $Y$-degree three or four. The persistent high-multiplicity discriminant of a separable cubic or quartic remains an open case.
+
+## 2026-11-21 · Exact count at the rate-half unique-decoding endpoint
+
+At $n=4h$, $k=2h$, $e=h$, $h\ge3$, the maximum over finite fields, arbitrary injective evaluation domains and received pairs is exactly $3(h+1)$. The universal cubic bound gives the upper side. To attain it choose three disjoint power fibers of size $h+1$ as part of the domain. Each site $t$ is a separate bad scalar: omit the other $h$ sites of its fiber. Polynomial division gives a folded neighbor on the complement, where the second row has degree one less than the witness size and at least $k$. The same rows work for all three fibers. At production length this gives **805306371** bad scalars, attained on an explicitly constructed domain over $p=267268857013743962100724606304616304664727519233$. Its 128-bit budget is **785432578**. The universal predecessor cap gives the first bad error count **268435456** on this domain. Exhaustive finite checks reproduced 12 and 15 bad scalars at lengths 12 and 16. [Derivation and verification](rate-half-apolar-endpoint.md) · [General constructive lower bound](../../../ArkLib/Research/ProximityGap/Frontier/PowerFiberEndpoint.lean) · [Universal upper bound](../../../ArkLib/Research/ProximityGap/Frontier/ApolarHalfBreakpoint.lean)
+
+For the smooth subgroup of order $4h$, when $h$ is a power of two with $h\ge2$ and $p>(4(h+1))^2$, no degree-$(h+1)$ polynomial has two full fibers in that subgroup. The first $h$ power sums of two such fibers agree. Cyclotomic norm divisibility forces their signed difference to be antipodally invariant, contrary to their disjoint odd cardinalities. This written obstruction applies to both named primes. [Proof](rate-half-apolar-endpoint.md#why-a-different-polynomial-cannot-transplant-this-example-to-the-smooth-subgroup)
+
+### The zero-derivative-cap shifted slot test has exactly the Johnson boundary
+
+For $0<D\le A\le n$ and **each fixed challenge weight** $\ell$, there exist multiplicity, total jet degree and height giving a strict zero-cap slot surplus **if and only if $A^2>nD$**. This includes the integer rounding at the final column layer. Writing $r=mA\bmod D$, twice $D$ times the full source count is $(mA)^2+DmA+r(D-r)$. Since $r\le m(A-D)$, the full count is at most $m(m+1)A^2/(2D)$. Every source prefix is dominated by its row prefix when $A^2\le nD$, and Abel’s inequality preserves this domination under the actual decreasing height weights. Conversely, $m=D(n+1)$ and total jet cap $A(n+1)$ give a strict unweighted surplus at $A^2>nD$, which persists at a sufficiently large finite height. [Exact Johnson boundary](../../../ArkLib/Research/ProximityGap/Frontier/FirstOrderZeroCapJohnson.lean)
+
+For $D<A\le n$ and $A^2\le nD$, any successful shifted slot test, over **all choices** of multiplicity, first-derivative cap, total jet cap, height and challenge weight, forces the optimized exceptional-count charge to be at least $(n-A)(1+\max(2D-3,0))$. Zero multiplicity yields zero columns, zero first-derivative cap is excluded by the exact Johnson boundary, and total degree one with a positive derivative cap would imply $3A\ge 2n+D>3\sqrt{nD}$. At $n=2^{30},\ D=2^{29}-1,\ A=89\cdot2^{23}$ the resulting numerical charge is greater than $2^{58}$. This is a limitation of the certificate cost at the $39/128$ test radius. A matching statement about the actual count of bad challenges is still open. Five kernel-checked declarations use only the standard axioms. [All-parameter lower bound](../../../ArkLib/Research/ProximityGap/Frontier/FirstOrderZeroCapJohnson.lean)
+
+**Cyclic cubic specialization.** For a cubic with generic nonzero square discriminant, the horizontal specialization obstruction also admits a coordinate-degree-independent count. Cardano's Lagrange resolvent is a polynomial of parameter degree at most $3h$. At any good specialization with one polynomial root all three specialized roots lie in the rational-function field, making the resolvent a cube. A squarefree Sylvester minor applied to the union of coordinate factors with exponent one or two modulo three bounds generic exceptions by $25h$. Otherwise the rescaled cubic splits into polynomials in the coordinate after a parameter-only cube-root extension. Dividing by the original leading coefficient gives rational functions, so the conclusion alone does not give original polynomial heads. [Proof and hypotheses](second-prime-quadratic-discriminant.md)
+
+At the last predecessor an irreducible cyclic cubic of the quartic's weighted height and parameter degree at most 34 consequently carries fewer than **3,000,136** selected scalars. Its explicit Kummer parameter gives norm degree at most 513 for the folded agreement at a fixed ordinary site. A million polynomials on one component would force all but 3,650 onto a single polynomial secant, making that secant a generic linear factor of the cubic. The noncyclic cubic case has no such rank-three Kummer parameterization over the original coefficient field. [Argument](second-prime-quadratic-discriminant.md)
+
+### Fixed error regions restrict which four scalar labels can occur
+
+Take four fixed coordinate sets $U_0,U_1,U_2,U_3$ on any field. At every site of $U_i$, all the decoders except possibly $i$ agree with their received words. Fix three distinct labels and vary the fourth, even allowing a different received pair and new polynomials at every fourth label. If $|U_0\cup U_2|,|U_1\cup U_3|\ge k$ and some genuine singleton miss occurs off label 1 in each realization, then **at most $|U_3|$ fourth labels are possible**. Normalize the two parity checks to $P=0$, $Q=0$, $P=Q$, $P=\lambda Q$ on the respective sets. Every linear relation among the vectors $Q|_{U_3}$ persists after multiplication by their respective normalized labels $\lambda$. Interpolation on the two unions proves this relation. Distinct $\lambda$ then give independent vectors in a space of dimension $|U_3|$. [Arbitrary-domain theorem](../../../ArkLib/Research/ProximityGap/Frontier/FourSupportSpectrum.lean)
+
+An exact scalar constraint holds for **four complete fibers of a common monic degree-$h$ polynomial $H$**, each of size $h$, with degree-$<2h$ decoders. Let $\alpha_i$ be the four fiber values and let $\gamma_i$ be the decoder labels. A genuine singleton miss away from label 1 forces $\operatorname{cr}(\gamma)=\operatorname{cr}(\alpha)$, where the normalization sends entries $0,1,2$ to $0,\infty,1$. Indeed $P=(H-\alpha_0)p$ and $Q=(H-\alpha_1)q$ for degree-$<h$ quotients. The $h$ sites of fiber 2 force $p,q$ to be proportional as polynomials. The condition on fiber 3 then determines the ratio. Taking $H=X^h$ gives the four interlaced subgroup cosets in every smooth domain of size $4h$. All five audited declarations depend only on the three standard axioms. [Four decoding polynomials on complete fibers](../../../ArkLib/Research/ProximityGap/Frontier/FourSupportSpectrum.lean)
 
 ### A moving cubic improves the rate-sixteenth bound at the second prime
 
@@ -1104,6 +1172,266 @@ If $F$ had total $(\Gamma,Y)$-degree at least six, every quotient would have tot
 
 At the final predecessor of the second-prime rate-sixteenth bracket, any putative family of $2n+1$ bad scalars must have selected points of affine dimension at least **10,526,872** over the prime field. For a polynomial span of dimension $r$, a Wronskian equation of order $r$ replaces the universal order-$d+1$ derivative in the moving-factor argument. A nonzero differential numerator allows at most $80+136(r-1)$ labels across the quartic/degree-twelve common factors. Identically zero numerators yield polynomial sections over the algebraic parameter field, where the head or small-incidence alternative applies. The previous one-186-point-secant obstruction controls all head contributions. The result is a necessary condition from a written proof. [Wronskian calculation and integer bound](second-prime-quadratic-discriminant.md)
 
+## Capacity and field growth at fixed 128-bit security
+
+Let the block length tend to infinity, let the prime field orders grow faster than every fixed power of the length, and take arbitrary evaluation domains in those fields. If eventually $p\le 2^{\min(k+1,n-k-1)}$, the difference between $1-k/n$ and the operational line-MCA supremum tends to zero. The result holds when the interleaving width is any positive integer at each length. The stronger finite upper test allows $p\le(2^{128}-1)\binom{n}{k+1}$. [Finite sandwich and limits](../../../ArkLib/Research/ProximityGap/Frontier/PrimeFieldCapacityWindow.lean)
+
+For $k/n\to\rho\in(0,1)$ and $\log(p)/n\to c>0$, write $H(\rho)=-\rho\log\rho-(1-\rho)\log(1-\rho)$. If $c<H(\rho)$, the operational radius tends to $1-\rho$. If $c>H(\rho)$, the operational radius equals one for all sufficiently large lengths. These conclusions concern sequences of actual codes on every prescribed domain. The critical exponent and the exact finite thresholds between the known bounds remain open. [Entropy phase theorem](../../../ArkLib/Research/ProximityGap/Frontier/PrimeFieldEntropyPhase.lean)
+
+A direct count controls labels whose rich polynomial witness satisfies $(X+z)P'=DP$. Over a field of characteristic zero or greater than the degree cap, a nonzero solution is a scalar multiple of $(X+z)^D$. Two agreement coordinates eliminate the multiplier and produce a nonzero scalar polynomial of degree at most $D+1$. This gives conditional thin-field bounds on actual bad challenges belonging to that differential equation. [Polynomial solution and MCA count](../../../ArkLib/Research/ProximityGap/Frontier/ShiftedPowerCurveCount.lean)
+
+For the translated polynomial powers in the companion theorem, the four respective label counts are at most 882,394,513, 956,021,025, 1,033,073,255 and 1,048,369,882 at the four previously certified radii. Each lies below the thinner designated budget of $2^{30}$. The target remains to control witnesses outside these families. [Translated polynomial pencils](../../../ArkLib/Research/ProximityGap/Frontier/PowerPencilCurveCount.lean)
+
+## Prime-field radii, interpolation charges and four simultaneous witnesses
+
+At a positive multiple $n=128b$, every injection into a prime field of order $p\ge 2^{165}n^2$ meets the 128-bit affine-line MCA bound at the radii in the table. Each lies strictly beyond the finite Johnson radius. At the same radii, every prime field that admits the domain has the listed bound on the worst-case list size for every finite interleaving width. Packing the column into a rational function extends the scalar interpolation bound to all widths. [Four-rate bounds](../../../ArkLib/Research/ProximityGap/Frontier/ScaledFirstOrderSecurity.lean) · [Dao, Kominers and Thaler](https://eprint.iacr.org/2026/2056)
+
+| Rate | Proven good line radius | Interleaved list-size bound | Proven failing line radius at $p=65\cdot 2^{239}+1$, $n=2^{30}$ |
+|---|---:|---:|---:|
+| $1/2$ | $39/128$ | $173373n$ | $31/64$ |
+| $1/4$ | $67/128$ | $113975n$ | $95/128$ |
+| $1/8$ | $86/128$ | $58872n$ | $111/128$ |
+| $1/16$ | $99/128$ | $52349n$ | $239/256$ |
+
+The line endpoints in each row apply to the same smooth code at the displayed prime and length, for every positive interleaving width. All four failure witnesses arise by pulling received rows back through power maps. The prime admits such a domain. The same tests hold on all smooth domains throughout the field-budget interval in the theorem. The operational supremum lies between the endpoints. The table leaves its value inside that interval open. [Simultaneous bounds](../../../ArkLib/Research/ProximityGap/Frontier/ProductionMcaIntervals.lean) · [Power-map witnesses and domain existence](../../../ArkLib/Research/ProximityGap/Frontier/FourRateSmoothMcaLift.lean)
+
+For every length and nontrivial dimension $1\le k<n$, put $N=\binom n{k+1}$. In *every* finite field and every prescribed domain, if $\lfloor N/(k+1)\rfloor\le\lfloor q/D\rfloor$ and $q\le(D-1)N$, the first failing Hamming count at tolerance $1/D$ is exactly $n-k-1$. The threshold for real radii is $1-(k+1)/n$. The upper bound on bad scalars uses private interpolation circuits. The lower bound uses the second moment of collisions among the $N$ circuits. This field-size interval has no fixed bit cap. [Exact radius predicate and supremum](../../../ArkLib/Research/ProximityGap/Frontier/CircuitBudgetRadius.lean)
+
+The shifted first-order slot test with zero derivative cap passes for some multiplicity, degree and height exactly when $A^2>nD$, where $A$ is the agreement count and $D$ is the maximum message degree. With positive cap and total degree one, the exact line boundary is $3A\ge2n+D$. At the half-rate radius $39/128$, every passing choice of slots at length $2^{30}$ incurs a hybrid exceptional-count charge greater than $2^{58}$. The alternative optimized squarefree bound also exceeds $2n$ at the four displayed radii, even with Taylor exponent zero and the profile hypotheses stated in the theorem. The two designated thin-budget fields allow $n$ and $2n$ bad challenges. These estimates bound the certificate charges. The actual exceptional counts at these radii remain open. [Zero-cap and unrestricted-charge theorems](../../../ArkLib/Research/ProximityGap/Frontier/FirstOrderZeroCapJohnson.lean) · [Degree-one boundary](../../../ArkLib/Research/ProximityGap/Frontier/FirstOrderDegreeOneBoundary.lean) · [Squarefree bound](../../../ArkLib/Research/ProximityGap/Frontier/SquarefreeRetentionFloor.lean) · [Taylor pole example](../../../ArkLib/Research/ProximityGap/Frontier/RegularTaylorPole.lean)
+
+At dimension $2h$, let four disjoint $h$-point blocks be fibers of the same monic degree-$h$ polynomial. Choose a subset $T_i$ of each block on which all four mixed words must agree. With the four fiber values as scalar labels, the prescribed MCA witnesses exist exactly when $\sum_i |T_i|<h$. This covers four interlaced cosets in a cyclic length-$4h$ domain. The general error supports in the prize can have other shapes. [Construction and necessity](../../../ArkLib/Research/ProximityGap/Frontier/FourFiberThreshold.lean) · [Cross-ratio and spectral restrictions](../../../ArkLib/Research/ProximityGap/Frontier/FourSupportSpectrum.lean) · [Polynomial restrictions on consecutive supports](../../../ArkLib/Research/ProximityGap/Frontier/SyndromeMotion.lean)
+
+For a dyadic subgroup $H$ of size $n$, the fourth-energy equality $E_2(H)=3n(n-1)$ implies, in characteristic greater than three, that $H$ contains no zero-sum triple. The deduction from the equality and the resulting cubic Fourier moment are formal. The fourth-energy checks for the two named primes use the separate arithmetic certificates. A related incidence bound controls affine images of $H$ across disjoint shift cosets. On a projection choosing one site in each of the order-16 blocks, the two named fields force at least 3,132,099 disjoint signed relations of weight at most 14. The uniform upper bound on individual nontrivial periods remains open. [Zero triples](../../../ArkLib/Research/ProximityGap/Frontier/DyadicSidonTriple.lean) · [Affine intersections](../../../ArkLib/Research/ProximityGap/Frontier/AffineMultiplierOverlap.lean) · [Projected short relations](../../../ArkLib/Research/ProximityGap/Frontier/ProjectedShortRelations.lean)
+
+The prime-field comparison of lists and proximity uses different finite inequalities from the asymptotic capacity result. Reference copies for this work were downloaded to the shared research cache. [Brakensiek, Chen, Putterman, Zhang and Zheng](https://arxiv.org/abs/2609.08005) · [Montgomery, Vaughan and Wooley on power Gauss sums](https://www.math.purdue.edu/~twooley/publ/1995%20GSUM.pdf) · [Cochrane, Hart, Pinner and Spencer on Waring's number](https://www.math.ksu.edu/~cvs/cochrane_hart_pinner_spencer-waring_subgroup.pdf)
+
+## 2026-11-21 · From the coding prizes to classical Paley discrepancy
+
+The joint coding theorem covers the order-128 subgroup of the prime field of order
+$p=65\cdot2^{239}+1$. At rates $1/2,1/4,1/8,1/16$ its first bad list error counts are
+$63,97,113,121$. For MCA the half-rate crossing is $62$ errors and the other three rates
+stay within budget through radius one. The proof counts agreement subsets, constructs
+prescribed-product witnesses, and transfers scalar lists to MCA under explicit field-size
+conditions. The length-$2^{30}$ four-rate MCA result has a separate field-budget window.
+[Joint theorem](../../../ArkLib/Research/ProximityGap/Frontier/FourRateSmoothMca128.lean) ·
+[List proof](../../../ArkLib/Research/ProximityGap/Frontier/FourRateList128.lean) ·
+[Production-length window](../../../ArkLib/Research/ProximityGap/Frontier/SharpApolarMCA.lean)
+
+**An exact coding reduction.** For an odd prime, write $S(A,B)=\sum_{b\in B,a\in A}\chi(a+b)$
+for the quadratic character. On coordinates $a\in A$, use the affine Reed–Solomon word
+$a\mapsto a+b$. For $s=\pm1$ let $h_s(b)$ count coordinates where the symbol has character
+$s$. The signed excess is exactly $2h_s(b)-|A|+\mathbf1_{-b\in A}$. If for each sign at
+most $L$ shifts have excess greater than a nonnegative integer $t$, then
+$|S(A,B)|\le t|B|+L|A|$ for every $B$. Conversely, if $|S(A,B)|\le t|B|$ for every
+$|B|\ge m>0$, each exceptional list has size below $m$. This identifies the missing estimate
+in coding language. Every coordinate accepts the same half-alphabet of squares, or of
+nonsquares. A single-symbol center has just $|A|$ agreements across *all* shifts.
+The affine pair $X,1$ has zero MCA-bad scalars in every dimension at least two. Direct
+encoding of the Legendre values also meets a degree obstruction. On at most $(p-1)/2$
+coordinates their off-domain translates have full affine hull over the prime field.
+[Shift-list equivalences and MCA proof](../../../ArkLib/Research/ProximityGap/Frontier/PaleyShiftListRecovery.lean) ·
+[Affine-hull theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyTranslateInterpolation.lean)
+
+**Classical Paley results.** At the second designated production prime the order-$2^{30}$
+generator $g$ is a nonsquare. Simultaneous scaling by $g$ makes $S(A,B)=0$ for every pair
+of unions of its cosets. For two geometric intervals in arbitrary such cosets,
+$|S(A,B)|\le |A|+|B|$. Negating $B$ converts the sum convention above to graph differences.
+At the first prime, the complete subgroup has quadratic row sum $-30929$ at one, and
+all its elements are squares. Thus its ordered difference sum is $-33209760874496$.
+The second-prime zero and interval bound are Lean theorems. The first-prime value is
+an exact GMP evaluation. The scan pairs $g^i$ with $g^{-i}$, treats the two self-inverse
+elements separately, and checks each shard endpoint by modular powering. Direct evaluation
+of every ordered pair at the two small controls reproduced every dyadic subtotal.
+[Cosets and intervals](../../../ArkLib/Research/ProximityGap/Frontier/PaleyCosetCancellation.lean) ·
+[Production character scan](../../../scripts/probes/probe_sponsor_paley_row.cpp)
+
+For arbitrary sets in a finite field of order $q$, put $a=|A|$ and $b=|B|$.
+The kernel-checked second moment yields $q|S|^2\le ab(q-a)(q-b)$ for every nontrivial
+multiplicative character. For the quadratic character, the repository's unconditional Stepanov
+fourth moment gives $r^2|S|^4\le17qa^3b^4$ whenever $1\le r\le b$ and $r^4\le q$.
+Averaging over the $r$-subsets of $B$ yields this bound with no upper limit on $b$.
+Thus $17q^{1+4\delta}\le ar^2$ suffices for a relative saving $q^{-\delta}$.
+For arbitrary balanced sets of size $p^\epsilon$ below the square-root threshold, the
+uniform saving remains open. [Lean estimates](../../../ArkLib/Research/ProximityGap/Frontier/PaleyBilinearDiscrepancy.lean) ·
+[Kim–Yip–Yoo, Conjecture 2.12](https://arxiv.org/html/2309.09124v3#S2.SS4)
+
+**Two graphs on the joint prize instance.** In the classical Paley graph, the subgraph
+induced on the 128 code coordinates is 67-regular and its ordered signed sum is 896.
+Lean checked Euler's criterion at every power of the domain generator. A separate
+integer computation gives clique number 10, independence number 8 and signed matrix
+norm below 30 on these coordinates. The signed matrix $K$ is circulant and symmetric.
+Nine cyclic convolution squarings give $\operatorname{tr}(K^{512})<30^{512}$.
+Every eigenvalue therefore has absolute value below 30. In particular all subsets
+$U,V$ of the domain satisfy $|S(U,-V)|\le30\sqrt{|U||V|}$. Clique enumeration fixes
+one vertex by transitivity, then recursively intersects ordered candidate sets with the
+neighborhood of each chosen vertex. For the generalized graph with connection set
+the same subgroup, Lean instead finds a nonprincipal additive period of magnitude
+greater than $64$. The base-two logarithmic upper bound with constant one holds here
+because $\log_2(p/128)>128$. The uniform prime-field logarithmic estimate remains open.
+[Kernel-checked results](../../../ArkLib/Research/ProximityGap/Frontier/PrizeInstancePaleySpectrum.lean) ·
+[Exact induced-graph calculation](../../../scripts/probes/probe_paley_joint_prize_domain.py)
+
+**Arbitrary subsets of one production coset.** At either named prime let $H$ have order
+$n=2^{30}$. For all $A,B$ in a common affine copy $t+cH$, $c\ne0$, the exact-arithmetic
+certificate gives
+$$
+\left|\sum_{a\in A,b\in B}\chi(a-b)\right|\le K\sqrt{|A||B|},\qquad K_1=449676,\quad K_2=448831.
+$$
+In particular, for sets of size at least $2^{20}$ the relative discrepancy is below
+$0.429$. This covers arbitrary choices of the two subsets *within* the specified copy.
+
+To reproduce the certificate, compile the spectrum probe with C++17 and GMP, then
+run it with arguments `first 128 4` and `second 128 4`. For a generator $g$, the signed matrix on $H$
+has entries $\chi(g)^i v_{j-i}$ with $v_l=\chi(1-g^l)$. Multiplying the rows by signs
+preserves singular values, giving the magnitudes of the discrete Fourier transform of
+$v$. Split the exponents into 128 residue classes. At each frequency modulo $2^{23}$
+sum the certified magnitudes across the classes before maximizing. The row phases in
+the full transform have modulus one. Each radix-two transform uses fixed-point integer
+arithmetic, with GMP square-root enclosures for its roots of unity and error below one
+per row. The largest upper bounds occur at residues 66,773 and 3,625,762, respectively. The row sums
+$-30929$ and $-1441$ at one agree with the independent character scans. Both certified
+operator norms are below $14\sqrt n$. Applying the matrix bound to
+indicator vectors yields the displayed inequality. Translation cancels in $a-b$,
+and scaling contributes the common sign $\chi(c)$. These finite numerical inequalities
+were computed outside Lean. [Certified transform](../../../scripts/probes/probe_sponsor_paley_spectrum.cpp)
+
+**Fourier energy of a weighted code domain.** Let $D=t+cH$, write
+$S_{xy}=\chi(x-y)$ on $D$, and for complex weights $z$ put
+$\widehat z(r)=\sum_{x\in D}z_x e^{2\pi irx/p}$. For nonzero squares $R$ and
+nonsquares $N$, let $E_U=\sum_{r\in U}|\widehat z(r)|^2$. Parseval gives
+$E_R+E_N=p\|z\|_2^2-|\sum z_x|^2$. The quadratic Gauss sum at either prime gives
+$E_R-E_N=\sqrt p\,z^*Sz$. Thus the Fourier matrix with rows from $R$ scaled by
+$\sqrt{2/p}$ and the zero row scaled by $1/\sqrt p$ has Gram matrix $I+S/\sqrt p$
+on $D$. The two certificates give distortion below $2^{-60}$ on every such support.
+For $z_x=e^{-2\pi it'x/p}$ on $H$, this bounds the signed quadratic partition of
+the energies of *all* translated additive periods. Bounding the largest individual
+period remains open. This deduction uses the classical quadratic Gauss sum evaluation
+and the computed operator norm. [Paley Fourier matrix](https://arxiv.org/abs/2011.02907)
+
+A fractional linear map sends the signed matrix on its non-poles to the original
+matrix up to a common sign and row and column signs. The same two operator bounds
+therefore hold on subsets of a common projective image of $H$ in the finite field.
+[Character identity](../../../ArkLib/Research/ProximityGap/Frontier/PaleyCosetCancellation.lean)
+
+There is a limit to covering arbitrary sparse pairs by these images. The ordered
+cross ratios of four distinct elements of $H$ occupy fewer than $n^3$ values,
+since multiplying through by the inverse of the first entry fixes it to one.
+Given $t$ selected finite points whose quadruples avoid these values, at most
+$t+t(t-1)(t-2)n^3$ next points are forbidden. For each ordered triple and
+cross ratio the fourth point is unique on the projective line. The set of
+forbidden cross ratios already includes every ordering of an $H$ quadruple.
+At either prime this bound is below $p$ for $t<2^{22}$. Consequently there
+exists a set of $2^{22}$ points meeting every projective image in at most three.
+Split it into two equal parts to obtain a sparse pair on which these local matrix
+bounds alone give no cancellation. This counting argument concerns the coverage
+of the proof method and makes no claim about the sign of that pair's discrepancy.
+
+## 2026-11-21 · The optimized-power apolar bound and the exact lower-rate error curves
+
+The reciprocal interpolation proof now applies to every positive integral power $m$. If $d=n-k-1$, $2e\le n-k$ and $n<m(d+2-e)+e$, then every genuine Reed–Solomon bad-scalar family on every injective length-$n$ evaluation domain satisfies
+$$
+M_e\le\max\left(e+1,\ m\left(1+\left\lfloor\frac{e}{d+2-2e}\right\rfloor\right)\right).
+$$
+The optimized power is $1+\lfloor (n-e)/(d+2-e)\rfloor$. At the unique-decoding endpoint $n=k+2e$, $e>0$, this gives $M_e\le(e+1)\lfloor(n+1)/(e+1)\rfloor$. The proof uses the actual received words. It treats odd and even powers separately in the reciprocal-coordinate interpolation, then descends in the parameter chart. The uniform cubic predecessor result has separately passed independent replay over 39,394 declarations. [Optimized power and endpoint](../../../ArkLib/Research/ProximityGap/Frontier/ApolarPowerBound.lean) · [Arbitrary-power bad-event theorem](../../../ArkLib/Research/ProximityGap/Frontier/SharpApolarMCA.lean) · [Reciprocal-chart argument](../../../ArkLib/Research/ProximityGap/Frontier/ApolarCubicObstruction.lean)
+
+For every prime-field multiplicative subgroup of length $n=k+2a$ with $k\ge2$ and $n\le3a+1$, the scalar MCA numerator equals **$e+1$ at every $0\le e<a$** and **$2a+2$ at $e=a$**. All the upper bounds also hold for arbitrary injective evaluation domains over finite fields. At length $2^{30}$ the exact endpoint numerators are **805306370, 939524098, and 1006632962** at rates $1/4$, $1/8$, and $1/16$, respectively. Thus the full scalar error curves up through $3/8$, $7/16$, and $15/32$ are determined on all three lower-rate production subgroups. The existing rate-sixteenth staircase already established its special case. These statements concern the full numerator and allow comparison with any integer field budget. All six new Lean declarations used only the three standard axioms. [Full curves](../../../ArkLib/Research/ProximityGap/Frontier/ApolarPowerBound.lean)
+
+### Two-sided bounds at the production length
+
+At length `2^30`, every smooth coset over the prime `65·2^239+1` has operational 128-bit line-MCA suprema in the four intervals below, for every positive interleaving width. The lower endpoint passes the exact probability test and the upper endpoint fails it. The subgroup of this length exists in the stated field. The same endpoint tests hold for all primes throughout the field-budget interval of `FourRateSmoothMca128.BudgetWindow`. The upper witnesses come from actual complete power fibers. The lower bounds hold on arbitrary injective evaluation domains. [Kernel-checked simultaneous endpoint tests and suprema](../../../ArkLib/Research/ProximityGap/Frontier/ProductionMcaIntervals.lean)
+
+| Rate | Good radius | Failing radius |
+|---|---:|---:|
+| 1/2 | 39/128 | 31/64 |
+| 1/4 | 67/128 | 95/128 |
+| 1/8 | 86/128 | 111/128 |
+| 1/16 | 99/128 | 239/256 |
+
+### Short congruences after projection onto order-sixteen blocks
+
+At either production prime, choose one arbitrary element of every multiplicative coset of the order-sixteen subgroup inside the order-$2^{30}$ domain. Every such choice contains at least **3,132,099 pairwise disjoint supports** of balanced signed relations of weight at most fourteen. In each relation the positive and negative coefficients are all units, and no two entries come from the same block. Consequently the relations survive a projection keeping just one coordinate per block. The assertion holds for every choice of those coordinates.
+
+Every set of $23,259,482$ anchors has more seven-subsets than there are elements of the larger field. Take two distinct seven-subsets with equal sum, remove their common points and delete the resulting support of at most fourteen anchors. Starting with $2^{26}$ anchors, the same pigeonhole argument still applies before each of the stated number of deletions. Lean checked this packing for arbitrary finite abelian groups and the literal numerical threshold. Each disjoint relation can independently be used with either sign or omitted. Thus for $0<z\le1$ the sum of $z^{\|v\|_1}$ over signed congruence vectors on these coordinates is at least $(1+2z^{14})^{3132099}$. This rules out exact factorization into the individual blocks. It gives a lower bound on uncentered weighted energy and leaves its difference from the zero-frequency contribution open. [Kernel-checked packing](../../../ArkLib/Research/ProximityGap/Frontier/ProjectedShortRelations.lean)
+
+### The polynomial prime-field range and the Montgomery–Vaughan–Wooley conjecture
+
+For $n\mid p-1$ set $k=(p-1)/n$. The complete $k$th-power sum in Montgomery, Vaughan and Wooley (1995) is exactly $S(p,b)=1+k\eta_b(H)$, since every element of $H$ has $k$ preimages among the units. Their explicit conjecture in the introduction gives $|S|\le (1+o(1))\sqrt{2kp\log(kp)}$ as both $k$ and $p/k$ tend to infinity. Thus it would imply the desired big-O period scale whenever $n\le p^{1-\varepsilon}$ for fixed $\varepsilon>0$, since $p/k=n+1/k$ and $\log(kp)=O_\varepsilon(\log k)$. In the production range it identifies the proposed cancellation bound with a dyadic-image restriction, up to constants and the logarithm base, of a classical power Gauss sum conjecture. The unconditional Theorem 1 of that paper assumes $2k\nmid p-1$, whereas every even-order $H$ here has $2k\mid p-1$.
+
+Cochrane, Hart, Pinner and Spencer's Theorem 2.1 instead bounds the error in additive representation counts using the largest period as an input. Their coverage results concern the existence of representations and do not supply that upper bound. The generalized birthday relations above concern the uncentered local representation counts. [Montgomery–Vaughan–Wooley, pp. 1–2](https://www.math.purdue.edu/~twooley/publ/1995%20GSUM.pdf) · [Cochrane–Hart–Pinner–Spencer, Theorem 2.1](https://www.math.ksu.edu/~cvs/cochrane_hart_pinner_spencer-waring_subgroup.pdf)
+
+### The exact four-fiber pattern threshold, including all four literal MCA events
+
+Let $H$ be any monic degree-$h$ polynomial with four complete $h$-point fibers over distinct $\alpha_0,\alpha_1,\alpha_2,\alpha_3$. In each fiber $i$ prescribe an **arbitrary** set of $r_i$ sites at which all four decoders should agree. Require decoder $i$ to agree everywhere outside fiber $i$ and to miss exactly the other $h-r_i$ sites of its own fiber. At code dimension $2h$, with scalar labels $\alpha_i$, this simultaneous decoding pattern with genuine MCA failure for all four scalars exists **if and only if** $\sum_i r_i<h$. The upper bound applies to every tuple of distinct scalar labels and also forces the cross-ratio equality above. In the balanced case, the smallest simultaneous error count is $h-\lfloor(h-1)/4\rfloor$. Taking $H=X^h$ gives this result for the four interlaced index classes in any smooth coset of size $4h$.
+
+For sufficiency, take $M$ to be the nodal polynomial of the prescribed common sites and put $v=MH^2$, $u=M(H^3-(\sum_i\alpha_i)H^2)$. At scalar $\alpha_i$, subtracting $M\prod_{j\ne i}(H-\alpha_j)$ leaves a decoder of degree less than $2h$ with exactly the specified agreements. Each witness includes at least $3h$ sites. Since $2h\le\deg v<3h$, no codeword agrees with $v$ on that witness, which proves the literal MCA event. Conversely, the two normalized check polynomials factor through proportional degree-$<h$ quotients. A nonzero quotient vanishes at every prescribed common site. If all but one decoding word were globally exact, two entire codewords would already span the received pair and preclude MCA failure. This exact result concerns the four prescribed fiber supports. It gives no bound on arbitrary witness patterns at the general prize threshold. All three endpoint declarations passed Lean with only the standard axioms. [Construction, necessity and threshold](../../../ArkLib/Research/ProximityGap/Frontier/FourFiberThreshold.lean)
+
+### The dyadic fourth-energy floor forces the signed third moment
+
+Let $H=-H$ be a multiplicative subgroup of dyadic order $n$ in characteristic greater than three. Its exact fourth-energy floor $E_2=3n(n-1)$ forces **zero ordered zero-sum triples**. Thus the signed cubic Fourier moment over all nonzero frequencies is exactly $-n^3$ for every primitive additive character. Both designated prime fields satisfy the fourth-energy hypothesis by the independent exhaustive modular computation recorded above.
+
+To see this, put $R=\{x\in H:1-x\in H\}$. The floor gives $|R|\le2$. The map $f(x)=(1-x)^{-1}$ preserves $R$ and has $f^3(x)=x$. A fixed point satisfies $(-x)^3=1$. Since $-x\in H$ and the exponent is coprime to three, this gives $x=-1$, which would force $3=0$. Every nonempty orbit therefore has three elements, so $R$ is empty. The earlier G105 identity gives $Z_3=n|R|=0$, and additive-character orthogonality with the zero frequency removed yields the signed moment. The implication and the Fourier identity both passed the pinned Lean kernel. The calculation supplies the zero-triple premise in the depth-six decomposition; its primitive quadruple strata still require separate bounds. [Kernel proof](../../../ArkLib/Research/ProximityGap/Frontier/DyadicSidonTriple.lean)
+
+### Squarefree retention and a genuine regular Taylor pole
+
+The retained squarefree certificate exceeds both named production budgets at all four beyond-Johnson test radii even if its Taylor exponent is replaced by zero. Writing B for the total jet cap, its ordinary and regular components respectively cost at least B(n−A) and B(n−A)(n−D)/(A−D), independently of both retention thresholds and of the height. Every successful beyond-Johnson shifted profile with positive derivative cap needs B≥2. At the four test radii the resulting total lower bounds are respectively greater than 2.16n, 4.51n, 7.13n, and 10.38n. For the actual four certificates the regular component alone exceeds respectively 46n, 114n, 193n, and 349n. At a generally sufficient Taylor exponent its lower bound includes the factor 3D−2 in place of B. These are lower bounds on the stated numerical controller. [Squarefree profile and exact numerical comparisons](../../../ArkLib/Research/ProximityGap/Frontier/SquarefreeRetentionFloor.lean)
+
+A degree-D polynomial solution can itself require a denominator of unbounded order. Over F(T), take the equation (X+T)P′=DP with solution P=(X+T)^D/T^(D−1). At the coordinate origin the initial value and slope are T and D, and the separant is T. The actual rational Taylor coordinate of degree D admits a numerator in F[T] over the denominator T^τ exactly when τ≥D−1. This holds for every field of characteristic zero or greater than D, including both named primes. The example concerns a fixed-center chart with polynomial parameter coordinates. [Kernel-checked differential equation and Taylor-chart lower bound](../../../ArkLib/Research/ProximityGap/Frontier/RegularTaylorPole.lean)
+
+The rational-fiber construction is now proved in Lean. At $n=k+2e$, use the monic degree-$(e+1)$ pencil $P-cB$, domain vanisher $V$, and $W=(V/B)\bmod P$. The rows $xW/P,-W/P$ have a literal bad event for each label $t$ whose other $e$ fiber roots lie in the domain. The denominator $P$ avoids the domain and is coprime to $B$. Thus three disjoint $(h+1)$-subsets with collinear monic vanishers on a smooth domain would suffice for the sharp endpoint; an arbitrary rational denominator is permitted. The companion no-joint proof uses a linear polynomial modulo $P$ and applies to the same agreement set as the fold. [Proof and subgroup criterion](rate-half-apolar-endpoint.md#rational-functions-give-a-broader-construction) · [Kernel-checked identities and event](../../../ArkLib/Research/ProximityGap/Frontier/RationalFiberEndpoint.lean)
+
+The unique-decoding endpoint upper count is now **proved optimal over arbitrary evaluation domains** whenever $e+1$ does not divide $n+1$, for every $n=k+2e$ with positive $k,e$. On every prime $p>n$ splitting $e+1$, one domain and one received pair attain $(e+1)\lfloor(n+1)/(e+1)\rfloor$. The error probability on that same domain is exactly the count divided by $p$, and these examples exist over arbitrarily large primes. Each of the three claims passed Lean on the standard axioms. [Optimality theorem](../../../ArkLib/Research/ProximityGap/Frontier/ApolarPowerOptimal.lean)
+
+When $e+1$ **does** divide $n+1$, deleting one site of a union of full power fibers produces **$n-e+1$** genuinely bad labels on every such splitting prime. The deleted site supplies an additional scalar because only the other sites of its fiber are required in the domain. The deleted-site theorem and all preceding full-fiber results passed Lean with the standard axioms. The matching upper is now kernel-checked using the complete span of the locator coefficients, weak coordinate-degree interpolation, and cleared parameter descent. [Deleted-site construction](../../../ArkLib/Research/ProximityGap/Frontier/PowerFiberEndpoint.lean) · [Divisible endpoint proof](apolar-divisible-endpoint.md)
+
+An irreducible terminal-height quartic whose generic Galois group preserves a pairing of its four roots carries fewer than **4,000,000+150h** bad parameters ($h\le34$). The block labels give a quadratic resolvent of parameter degree at most $4h$. The square-specialization bound either limits its parameters or splits the blocks over a parameter-only quadratic extension. Applying the same Sylvester argument to the two block discriminants uses coefficient-vector heights on this parameter curve. Each genuinely split block then has coefficient pole degree at most $4h$ after one additional quadratic extension; a million witnesses on a component would force a generic polynomial secant. This leaves the primitive quartic Galois groups $A_4,S_4$ for this argument. [Complete reduction](second-prime-quadratic-discriminant.md)
+
+### Operational line-MCA capacity law for arbitrary prime-field evaluation domains
+
+Fix the actual $2^{-128}$ security test, and let $\delta^*$ be the supremum of its good radii in $[0,1]$. For every prime $p$, $0<k<n$, every embedding of $n$ points in $\mathbb F_p$, and every $g>0$, Lean proves the finite sandwich
+$$1-k/n-g\ \le\ \delta^*\ \le\ 1-(k+1)/n$$
+whenever $n\ge N_g$, $2^{128}C_g n^{d_g+1}\le p$, and $p\le(2^{128}-1)\binom{n}{k+1}$. Here $N_g,C_g,d_g$ are the repository's uniform capacity-theorem quantities. The upper bound on its own needs only the binomial field-size condition. Its proof combines actual failure at radius 1 with the equality of the MCA error throughout the last $k+1$ agreements. [Finite bounds](../../../ArkLib/Research/ProximityGap/Frontier/PrimeFieldCapacityWindow.lean)
+
+For any sequence of such embeddings with $n\to\infty$, suppose $p\ge n^d$ eventually for each fixed natural $d$ and $p\le 2^{\min(k+1,n-k-1)}$ eventually. Then $(1-k/n)-\delta^*\to0$. The upper field-size assumption can also be replaced by $p\le(2^{128}-1)\binom{n}{k+1}$ eventually. This yields $\delta^*\to1-\rho$ whenever $k/n\to\rho$. The power-of-two bound follows from the central binomial recurrence and symmetry. The same capacity-gap convergence holds with any sequence of positive interleaving widths. These are actual Lean `Tendsto` statements for the operational supremum. All eight endpoint audits use only `propext`, `Classical.choice` and `Quot.sound`. The law does not determine exact finite radii outside the previously resolved cases. [Limit theorems](../../../ArkLib/Research/ProximityGap/Frontier/PrimeFieldCapacityWindow.lean)
+
+## Three degree-$(h+1)$ rational fibers on the smooth domain
+
+Let $H=\mu_{4h}$, $d=h+1$, and $m\mid h$ with $m\ge2$. If two full degree-$d$ fibers each comprise $h/m$ full $\mu_m$ cosets and one extra site, every third fiber has at most $2h/m\le h$ sites. On each remaining coset the ratio of the two vanishers is a nonzero constant times $(X-a)/(X-b)$, where $a,b$ are the two distinct extra sites. That function takes each value at most once per coset. Lean checks the injection, the count of remaining cosets, and the strict comparison with $d$. Conversely, any two disjoint $d$-element subsets $A,B$ are full fibers of $F_A/(F_A+F_B)$ at 0 and 1, where $F_A,F_B$ are their monic vanishers. Three full fibers for an unrestricted rational pencil on the designated smooth subgroup remain open. [Coset obstruction](../../../ArkLib/Research/ProximityGap/Frontier/SmoothRationalFiberObstruction.lean)
+
+### Fixed domain zeros at the first half-rate successor
+
+The five-label whole-stack bound at $e=2^{28}+1$ now extends, by a written shortening proof, to a fixed degree-$h$ locator with fewer than $h$ distinct roots on the evaluation domain, including repeated roots. A nonzero residual after division by the domain-root polynomial forces all $h+1$ errors outside those roots. Shortening restores a pole-free rational presentation and leaves room for the single possible exceptional scalar. The case of $h$ distinct domain roots and the moving-locator cases remain open. [Fixed-domain-root reduction](apolar-successor-domain-roots.md)
+
+The extra span and weak-coordinate steps in the divisible-case upper argument now pass the pinned Lean kernel. For an affine rectangular polynomial matrix, a minimal primitive kernel vector of degree $l$ has coordinate entries spanning all polynomials of degree at most $l$. If a linear relation on its parameter coefficients existed, scalar multiplication by its reversed relation would make the degree-$l$ coefficient vanish. The terms of smaller degree form another kernel vector because the matrix is affine. Minimality forces that vector to vanish, and primitivity at zero then kills the relation. For the actual normalized syndrome, the identity $qW_f=fW_q$ for apolar $q$ together with generic coprimality implies $f\mid q$, giving the necessary minimality. The proof applies to nonreduced locators. These statements and the weak coordinate-degree interpolation passed with only the standard three axioms. [Affine-kernel lemma](../../../ArkLib/Research/ProximityGap/Frontier/ApolarAffineKernelSpan.lean) · [Actual locator span](../../../ArkLib/Research/ProximityGap/Frontier/ApolarCoefficientSpan.lean) · [Coordinate-boundary interpolation](../../../ArkLib/Research/ProximityGap/Frontier/ApolarBorderCoordinates.lean)
+
+## 2026-11-21 · No four rate-half codewords within nine errors on the 32nd roots of unity
+
+**Result (characteristic zero, computer-assisted).** Over any field of characteristic zero, the code $\mathrm{RS}[32,16]$ evaluated on $\mu_{32}$ has at most **three** codewords in every Hamming ball of radius $9=n/4+1$. The octagon $\mathrm{RS}[8,4]$ on $\mu_8$ has four at radius $3=n/4+1$, and the earlier exhaustive check found none at radius 5 on $\mu_{16}$ over the budget-three prime. So the octagon star behind the $7/24$ list and MCA ceilings has no analogue on 16 or 32 fibers. The statement is about characteristic zero. A configuration modulo one large prime that does not lift is not excluded by this proof, and nothing here is a statement at length $2^{30}$.
+
+**Reduction to split pencils.** Let $n=4b$, $k=2b$ and let four codewords have error sets $E_i$ of size at most $b+1$ against one word. Minimum distance $2b+1$ gives $|E_i\cap E_j|\le1$, and a difference $P_i-P_j$ with $|E_i\cup E_j|=2b+1$ is a constant times $K/L_{E_i\cup E_j}$, where $K=X^n-1$ and $L_S$ is the monic vanisher of $S$. Counting sites by their number of erring heads leaves exactly these overlap graphs on the four heads: the star (one head with $b$ errors, the other three pairwise meeting), a graph containing a triangle whose three overlaps are distinct sites, the pattern with one site where three heads err plus two further overlaps, and the 4-cycle. Two sites with three erring heads would give some pair two common errors.
+
+* A triangle $i,j,l$ with three distinct overlap sites gives $c_{ij}L_{Q_l}+c_{jl}L_{Q_i}+c_{li}L_{Q_j}=0$ with all $c\ne0$, where $Q_i$ is $E_i$ without its two overlap sites. These are three monic, pairwise coprime polynomials of degree $b-1$ with all roots in $\mu_n$ and linearly dependent. Call this a **three-split pencil** of degree $b-1$. The star, every pattern with five or six overlaps, the triangle-plus-edge pattern, and the three-error-site patterns all contain such a triangle.
+* The 4-cycle $0,1,2,3$ with private sets $Q_i$ ($b-1$ points) and overlaps $s_{01},s_{12},s_{23},s_{30}$ gives, modulo $L_{Q_0}$, that $L_{Q_3\cup s_{23}}/L_{Q_1\cup s_{12}}$ is constant on $Q_0$, and the same at every vertex.
+
+**Finite-field census for the $\mu_{32}$ exclusion.** After normalizing the distinguished support by rotations and reflection and ordering the other two supports, the split-prime verifier finds among the filtered supports (i) no degree-seven three-split pencil candidate, (ii) 23 degree-eight candidates, all with antipodally symmetric outer supports, and (iii) 33 candidates $(Q_0,A,C)$ with a seven-point $Q_0$ and disjoint eight-point sets $A,C$ whose vanisher ratio is constant on $Q_0$. Both $A$ and $C$ are antipodally symmetric in all 33 candidates. A characteristic-zero configuration must survive these tests. The counts 23 and 33 enumerate normalized finite-field survivors. They do not count characteristic-zero lifts or quotient by the stabilizer of the distinguished support. Item (i) removes every pattern containing a triangle. In the 4-cycle, (iii) makes both $Q_1\cup\{s_{12}\}$ and $Q_1\cup\{s_{01}\}$ antipodally symmetric. $Q_1$ has seven points, so both completions must add the unique antipode of its unpaired point, forcing $s_{12}=s_{01}$. This contradiction proves the exclusion.
+
+**How the census is made rigorous.** At a root $\beta$ of $B$ in a pencil $A-\lambda B=(1-\lambda)C$ with complement $D$ of the three root sets, $L_C(\beta)^2(1-\lambda)L_D(\beta)L_B'(\beta)\beta=n$. Hence $L_D(\beta)L_B'(\beta)\beta$ lies in one square class of $\mathbb Q(\zeta_{32})$ for all $\beta\in B$. All factors are units away from 2, so the quadratic characters modulo 16 primes $q\equiv1\pmod{32}$ must agree. This is a necessary condition on the pair $(B,D)$ alone and costs one XOR per subset: $1.2\cdot10^{11}$ pairs at degree 8 leave 3736 candidates, $2.3\cdot10^{11}$ at degree 7 leave 748, and the 4-cycle analogue leaves 4077. Each candidate is then decided exactly modulo the 61-bit split prime 1332653270109928577 by enumerating its half splits. A characteristic-zero configuration survives both steps. For the star alone there is a faster test: the three equal locator ratios multiply to a known product, so that product must be a cube, and cubic characters modulo 14 primes $q\equiv1\pmod{96}$ reject all 165288 classes of $T$ in a quarter of a second. Filter-free brute force at lengths 8 and 16 reproduces the filtered counts 19, 23, 7 and 37.
+
+**What a star would have bought.** In the common-direction MCA construction (heads $(XHf_i(X^s),Hf_i(X^s))$, one label $-x$ per ordinary site, three labels per hole in an overlap fiber), a star on $4b$ fibers with $r\approx s/3$ locator roots and $q\approx s/6$ holes per overlap fiber balances all four heads at $(b+\tfrac12)s$ errors, i.e. first-prime ceiling $\approx(\tfrac14+\tfrac1{8b})n$. At $b=2$ this is the known $5/16$. At $b=8$ it would have been $17/64$, below the current $7/24$. That route is closed for structural (characteristic-zero) base configurations on 16 and 32 fibers. A 32-fiber four-head quotient construction therefore needs a base radius of at least 10 for some head.
+
+**Open.** At larger dyadic lengths, the same list bound requires both the exclusion of degree-$n/4-1$ pencils and control of the 4-cycle ratio configurations. Separately, it remains open whether every degree-$n/4$ three-split pencil is an $X^2$-pullback. The finite checks above do not settle the first-prime rate-half MCA threshold or the Paley bound.
+
+Reproduce: [star cube filter](../../../scripts/probes/probe_mu32_star_cube_filter.cpp) · [pencil filter](../../../scripts/probes/probe_mu32_three_split_pencils.cpp) · [4-cycle filter](../../../scripts/probes/probe_mu32_four_cycle_pencils.cpp) · [exact verifier with commands and expected counts](../../../scripts/probes/probe_mu32_split_pencil_verify.py) · [brute-force control](../../../scripts/probes/probe_mu16_split_pencil_bruteforce.py). No Lean formalization yet.
+
+### Exact boundary radius in an unbounded field-size interval
+
+For every evaluation domain in a finite field of size $q$, write $N=\binom n{k+1}$ and suppose $1\le k<n$. If $\lfloor N/(k+1)\rfloor\le\lfloor q/D\rfloor$ and $q\le(D-1)N$, the $1/D$ line-MCA test passes exactly when $(1-\delta)n>k+1$. The first failing Hamming count is $n-k-1$. This follows by combining the detecting-circuit upper bound at $k+2$ agreements with the second-moment lower bound at $k+1$. There is no fixed upper bit-length requirement. Both the real-radius predicate and the exact operational supremum passed Lean on the published source. [Wide field interval](../../../ArkLib/Research/ProximityGap/Frontier/CircuitBudgetRadius.lean)
+
+### The singular Taylor example admits a direct thin-field MCA count
+
+Fix any injective evaluation domain, any received pair, and any degree-at-most-D polynomials q₀,q₁. Count the scalar labels z having an MCA witness on at least A sites whose decoding polynomial P satisfies (X+z)R′=DR for R=P−q₀−zq₁. In characteristic zero or greater than D the count is at most n−A+1+⌊n(n−1)(D+1)/((A−1)(A−2))⌋, for A≥3 and D≥2. Translation by −z reduces the differential equation to the Euler equation, so R is a scalar multiple of (X+z)^D. For a nonzero multiplier, two agreement sites away from −z eliminate that multiplier and constrain z by a nonzero polynomial of degree at most D+1. Their two distinct linear factors are coprime. A zero multiplier costs at most n−A+1 labels because, after fixing one witness, each remaining label needs a unique nonjoint site outside its support.
+
+At n=2³⁰ and the four established radii, the respective caps are 1437633310, 1743989581, 1968032121, and 2137858210, each below the second named prime's budget 2147483648. The bound applies to witnesses on each fixed translated curve for every received pair, including on arbitrary smooth domains. The verified local MCA event bound applies to the full pair when every bad witness satisfies its equation. Proving that arbitrary bad witnesses fall into a controlled collection of curves remains open. [Actual MCA count and two-site incidence proof](../../../ArkLib/Research/ProximityGap/Frontier/ShiftedPowerCurveCount.lean)
+
 ### Irreducible quartic eliminated at the last second-prime predecessor
 
 At $n=2^{30}$, $d=2^{26}-1$ and $t=357913943$, a selected family of $2n+1$ rich labels cannot lie on a degree-four-in-$Y$ irreducible factor of the degree-34 interpolant, even after discarding 34 outliers. The entire degree-119 interpolation space bounds its weighted degree by $302954072$. The numerator of the second implicit derivative in the scalar variable bounds the sum of local multiplicities at the received lines by $1412316443$. Its identically-zero case would split the component into four affine lines over algebraic constants, each carrying at most one selected point. On the remaining possibility, intrinsic interpolation with multiplicity 64 has $40640596161682872$ more variables than scalar constraints. The resulting auxiliary of $Y$-degree at most three would furnish at least $2002579700$ roots of a nonzero scalar resultant of degree at most $268435546$. This excludes the primitive $A_4,S_4$ cases along with all other irreducible quartics. Together with the earlier low-degree-factor argument it leaves a cubic-in-$Y$ component as the necessary factor at this predecessor. The argument is written mathematics; the accompanying executable verifies the discrete estimates. [Proof](second-prime-quartic-intrinsic.md) · [Exact arithmetic](../../../scripts/probes/probe_second_prime_intrinsic_quartic.py)
@@ -1115,3 +1443,16 @@ At the second designated prime and rate $1/16$, a written proof gives a first ba
 The same method bounds the numerator by $2N$ at $5N/8$ errors on **every injective domain** over every prime $p>2N$, for all $N\ge2^{30}$ divisible by 16 and dimension $N/16$. Thus a field of size $p\ge2^{129}N$ suffices for 128-bit line MCA security at closed radius $5/8$ for that rate. This is a uniform written theorem. The exact second-prime threshold, the other prize rates, and a matching attack for the general theorem remain separate questions. [Uniform proof](second-prime-intrinsic-interpolation.md)
 
 The polynomial-multiplier version of the jet interpolation bound raises the first-bad lower endpoint to **677728038** by handling every selected scalar directly. The actual derivative-numerator divisibility statement and the earlier degree-seven kernel dimension have now also been kernel-checked. [Polynomial multiplier proof](second-prime-intrinsic-cubic.md) · [Exact arithmetic](../../../scripts/probes/probe_second_prime_intrinsic_cubic.py) · [Implicit derivative divisibility](../../../ArkLib/Research/ProximityGap/Frontier/ImplicitDerivativeBidegree.lean) · [Dimension theorem](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeDegreeSevenDimension.lean)
+
+### The binary entropy boundary for exponential-size fields
+
+Suppose $n\to\infty$, $k/n\to\rho\in(0,1)$, and $(\log p)/n\to c>0$, using natural logarithms. Every sequence of arbitrary prime-field evaluation domains obeys these two conclusions for the operational $2^{-128}$ line-MCA test.
+
+* For $c<H(\rho)$ the operational radii converge to $1-\rho$.
+* For $c>H(\rho)$ the operational radius is **exactly one eventually**.
+
+Here $H(x)=-x\log x-(1-x)\log(1-x)$. The proof squeezes $n^{-1}\log\binom{n}{k+1}$ between the binary entropy of $(k+1)/n$ and that value minus $n^{-1}\log(n+1)$. On the first side, positive exponential field growth supplies every fixed polynomial field-size lower bound in the capacity theorem, while the binomial supplies the requisite bad shell. On the second side, the detecting-circuit cap already meets the security budget at radius one. The case $c=H(\rho)$ requires finer field-size information and these conclusions leave it open. All five endpoint audits have only the standard axioms. [Entropy bounds and operational phase theorems](../../../ArkLib/Research/ProximityGap/Frontier/PrimeFieldEntropyPhase.lean)
+
+### Exact unrestricted extremum at every unique-decoding endpoint
+
+For all $k,e>0$ and $n=k+2e$, the sharp scalar numerator over arbitrary evaluation domains is now proved in Lean in **both** divisibility cases. It equals $n-e+1$ when $e+1$ divides $n+1$, and $(e+1)\lfloor(n+1)/(e+1)\rfloor$ otherwise. The bound applies to every pair on every finite-field domain. For each prime $p>n$ with $e+1\mid p-1$, one domain and one pair attain the numerator, and the same domain has exact worst-case probability equal to that count divided by $p$. Attaining primes are arbitrarily large. Four unconditional public theorems passed the pinned Lean kernel, the forbidden-token gate and the output gate with only `propext`, `Classical.choice` and `Quot.sound`. The divisible case gains $e$ labels over the previous upper bound. The arbitrary-domain attaining constructions do not establish attainment on a prescribed smooth subgroup. [Complete upper and lower theorem](../../../ArkLib/Research/ProximityGap/Frontier/ApolarEndpointExact.lean) · [Divisible-case proof](apolar-divisible-endpoint.md)

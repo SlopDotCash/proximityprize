@@ -73,8 +73,8 @@ theorem operational_floor {p : ℕ} [Fact p.Prime] {g : ZMod p} (hg : orderOf g=
 local instance : Fact (Nat.Prime PrizeShapePrimeP30.P) := ⟨PrizeShapePrimeP30.prime_P⟩
 local instance : Fact (Nat.Prime PrizeShapePrimeP30Second.P) := ⟨PrizeShapePrimeP30Second.prime_P⟩
 
-/-- The two originally nominated smooth prime fields both enjoy the improved
-rate-half safe-side first-bad lower bound. -/
+/-- Both originally nominated smooth prime fields admit the one-step
+operational floor at rate one half. -/
 theorem named_prime_floors :
     (268435457:ℝ≥0)/1073741824 ≤ mcaDeltaStar (F := ZMod PrizeShapePrimeP30.P)
       (RateHalfApolarThreshold.code PrizeShapePrimeP30.g) (epsStar:ℝ≥0∞) ∧

@@ -6,6 +6,9 @@ probes, and `website/` for website sources. `external/` holds the existing
 submodule. Only standard project, license, agent and Lean package files remain
 at the root. `scripts/check-layout.py` rejects tracked files outside this layout.
 
+The root `PROGRESS.md` symlink opens the shared campaign ledger at
+`docs/research/proximity-gap/PROGRESS.md`.
+
 ## Source organization
 
 | Previous path | Current path |
