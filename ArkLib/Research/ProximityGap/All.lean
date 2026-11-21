@@ -34,6 +34,7 @@ import ArkLib.Research.ProximityGap.Connections.SmoothDomainMCAWitness
 import ArkLib.Research.ProximityGap.CurveUDRBound
 import ArkLib.Research.ProximityGap.DG25Sampling
 import ArkLib.Research.ProximityGap.Decision
+import ArkLib.Research.ProximityGap.DesignatedPrimeJohnson
 import ArkLib.Research.ProximityGap.EtaAutocorrInvolutionPaired
 import ArkLib.Research.ProximityGap.EtaInvolutionFixedPointReal
 import ArkLib.Research.ProximityGap.EtaNormSqRealShiftForm
@@ -54,7 +55,9 @@ import ArkLib.Research.ProximityGap.Frontier.AgreementQuadratic
 import ArkLib.Research.ProximityGap.Frontier.AgreementSetMaximal
 import ArkLib.Research.ProximityGap.Frontier.AgreementSetPacking
 import ArkLib.Research.ProximityGap.Frontier.AgreementSetTuplePacking
+import ArkLib.Research.ProximityGap.Frontier.AgreementSlicePacking
 import ArkLib.Research.ProximityGap.Frontier.AgreementSubsetListPacking
+import ArkLib.Research.ProximityGap.Frontier.AgreementSupportBarrier
 import ArkLib.Research.ProximityGap.Frontier.AlgebraicSectionSpecialization
 import ArkLib.Research.ProximityGap.Frontier.AlignableLePinnedMaxMult
 import ArkLib.Research.ProximityGap.Frontier.AlignedAmalgamation
@@ -296,6 +299,7 @@ import ArkLib.Research.ProximityGap.Frontier.DiscriminantSquareClass
 import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodMomentLaw
 import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodSecondMoment
 import ArkLib.Research.ProximityGap.Frontier.DividedDifferenceDeflation
+import ArkLib.Research.ProximityGap.Frontier.DoubleInterpolationCommonFactor
 import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticHeadCount
 import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticPhase
 import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticThreshold
@@ -534,6 +538,8 @@ import ArkLib.Research.ProximityGap.Frontier.NormalizedTripleEnergy
 import ArkLib.Research.ProximityGap.Frontier.NvIReconcile
 import ArkLib.Research.ProximityGap.Frontier.OctagonTripleTorsion
 import ArkLib.Research.ProximityGap.Frontier.OddExcessLaw
+import ArkLib.Research.ProximityGap.Frontier.OddRedundancyApolar
+import ArkLib.Research.ProximityGap.Frontier.OddRedundancySquareLift
 import ArkLib.Research.ProximityGap.Frontier.OddReturnDeterminant
 import ArkLib.Research.ProximityGap.Frontier.OneErasureDimensionDrop
 import ArkLib.Research.ProximityGap.Frontier.OptimalOverlapPacking
@@ -557,6 +563,7 @@ import ArkLib.Research.ProximityGap.Frontier.PackingCoverSharpReach
 import ArkLib.Research.ProximityGap.Frontier.PackingDeflationBandAntitone
 import ArkLib.Research.ProximityGap.Frontier.PackingFloorTwoPowLower
 import ArkLib.Research.ProximityGap.Frontier.PaddedPowerSpecialization
+import ArkLib.Research.ProximityGap.Frontier.PairedSignatureBalance
 import ArkLib.Research.ProximityGap.Frontier.PaleyAbsoluteSlice
 import ArkLib.Research.ProximityGap.Frontier.PaleyAffineSecondMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleyBalancedLimit
@@ -3836,6 +3843,7 @@ import ArkLib.Research.ProximityGap.J1Cap
 import ArkLib.Research.ProximityGap.JohnsonBoundRealLower
 import ArkLib.Research.ProximityGap.JohnsonCommonCenterRefutation
 import ArkLib.Research.ProximityGap.JohnsonInvariant
+import ArkLib.Research.ProximityGap.JohnsonListBoundary
 import ArkLib.Research.ProximityGap.JointAdjacentFieldReview
 import ArkLib.Research.ProximityGap.JointDyadicCeilings
 import ArkLib.Research.ProximityGap.JointLargeFieldCriterion

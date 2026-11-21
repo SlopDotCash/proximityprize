@@ -76,15 +76,15 @@ private theorem descends (D : I ↪ F) (E : J ↪ F) (π : I → J) (P : F[X]) {
     exact degree_le_natDegree.trans_lt (by exact_mod_cast (Nat.lt_of_mul_lt_mul_right hQ))
 
 /-- Each bad scalar on the base stays bad after pulling both rows back through the
-projection. The upstairs RS dimension is exactly the base dimension times the degree. -/
-theorem mcaEvent_lift (D : I ↪ F) (E : J ↪ F) (π : I → J) (P : F[X]) {k m : ℕ}
-    (hm : 0 < m) (hk : 0 < k) (hP : P.natDegree = m) (hdom : ∀ i, P.eval (D i) = E (π i))
+projection. The upstairs dimension may be any K with (k−1)m<K≤km. -/
+theorem mcaEvent_lift_band (D : I ↪ F) (E : J ↪ F) (π : I → J) (P : F[X]) {k m K : ℕ}
+    (hm : 0 < m) (hk : 0 < k) (lower : (k-1)*m<K) (upper : K≤k*m) (hP : P.natDegree = m) (hdom : ∀ i, P.eval (D i) = E (π i))
     (hfib : ∀ j, (univ.filter fun i => π i = j).card = m) (δ : ℝ≥0) (u₀ u₁ : J → F) (γ : F)
     (hbad : mcaEvent (F := F) (ReedSolomon.code E k : Set (J → F)) δ u₀ u₁ γ) :
-    mcaEvent (F := F) (ReedSolomon.code D (k*m) : Set (I → F)) δ (u₀ ∘ π) (u₁ ∘ π) γ := by
+    mcaEvent (F := F) (ReedSolomon.code D K : Set (I → F)) δ (u₀ ∘ π) (u₁ ∘ π) γ := by
   classical
   let : NeZero k := ⟨hk.ne'⟩
-  let : NeZero (k*m) := ⟨(Nat.mul_pos hk hm).ne'⟩
+  let : NeZero K := ⟨by omega⟩
   obtain ⟨S,hsize,⟨w,hw,hagr⟩,hpair⟩ := hbad
   have hn : Fintype.card I = Fintype.card J * m := by simpa [preimage] using card_preimage π hfib univ
   refine ⟨preimage π S, ?_, ?_, ?_⟩
@@ -92,7 +92,7 @@ theorem mcaEvent_lift (D : I ↪ F) (E : J ↪ F) (π : I → J) (P : F[X]) {k m
     gcongr
   · obtain ⟨q,hq,he⟩ := ReedSolomon.mem_code_iff_eval_of_ne_zero.mp hw
     refine ⟨fun i => (q.comp P).eval (D i), ReedSolomon.mem_code_of_polynomial_of_natDegree_lt_of_eval
-      (q.comp P) (by rw [natDegree_comp,hP]; exact Nat.mul_lt_mul_of_pos_right hq hm)
+      (q.comp P) (by rw [natDegree_comp,hP]; exact (Nat.mul_le_mul_right m (show q.natDegree≤k-1 by omega)).trans_lt lower)
       (fun _ => rfl), ?_⟩
     intro i hi
     change (q.comp P).eval (D i) = u₀ (π i) + γ • u₁ (π i)
@@ -100,19 +100,28 @@ theorem mcaEvent_lift (D : I ↪ F) (E : J ↪ F) (π : I → J) (P : F[X]) {k m
   · rintro ⟨v₀,hv₀,v₁,hv₁,hboth⟩
     obtain ⟨Q₀,hQ₀,he₀⟩ := ReedSolomon.mem_code_iff_eval_of_ne_zero.mp hv₀
     obtain ⟨Q₁,hQ₁,he₁⟩ := ReedSolomon.mem_code_iff_eval_of_ne_zero.mp hv₁
-    obtain ⟨b₀,hb₀,hf₀⟩ := descends D E π P hm hk hP hdom hfib S u₀ Q₀ hQ₀
+    obtain ⟨b₀,hb₀,hf₀⟩ := descends D E π P hm hk hP hdom hfib S u₀ Q₀ (hQ₀.trans_le upper)
       (fun i hi => (he₀ i).trans (hboth i hi).1)
-    obtain ⟨b₁,hb₁,hf₁⟩ := descends D E π P hm hk hP hdom hfib S u₁ Q₁ hQ₁
+    obtain ⟨b₁,hb₁,hf₁⟩ := descends D E π P hm hk hP hdom hfib S u₁ Q₁ (hQ₁.trans_le upper)
       (fun i hi => (he₁ i).trans (hboth i hi).2)
     exact hpair ⟨b₀,hb₀,b₁,hb₁,fun j hj => ⟨hf₀ j hj,hf₁ j hj⟩⟩
 
-/-- Polynomial fiber lifts preserve the rate and can only increase worst-case MCA error. -/
-theorem epsMCA_le [Fintype F] [Nonempty I] [Nonempty J] [DecidableEq I]
-    (D : I ↪ F) (E : J ↪ F) (π : I → J) (P : F[X]) {k m : ℕ}
+/-- Each bad scalar lifts at the rate-preserving endpoint of the dimension interval. -/
+theorem mcaEvent_lift (D : I ↪ F) (E : J ↪ F) (π : I → J) (P : F[X]) {k m : ℕ}
     (hm : 0 < m) (hk : 0 < k) (hP : P.natDegree = m) (hdom : ∀ i, P.eval (D i) = E (π i))
+    (hfib : ∀ j, (univ.filter fun i => π i = j).card = m) (δ : ℝ≥0) (u₀ u₁ : J → F) (γ : F)
+    (hbad : mcaEvent (F := F) (ReedSolomon.code E k : Set (J → F)) δ u₀ u₁ γ) :
+    mcaEvent (F := F) (ReedSolomon.code D (k*m) : Set (I → F)) δ (u₀ ∘ π) (u₁ ∘ π) γ :=
+  mcaEvent_lift_band D E π P hm hk (Nat.mul_lt_mul_of_pos_right (by omega) hm) le_rfl
+    hP hdom hfib δ u₀ u₁ γ hbad
+
+/-- Polynomial fiber lifts preserve the rate and can only increase worst-case MCA error. -/
+theorem epsMCA_le_band [Fintype F] [Nonempty I] [Nonempty J] [DecidableEq I]
+    (D : I ↪ F) (E : J ↪ F) (π : I → J) (P : F[X]) {k m K : ℕ}
+    (hm : 0 < m) (hk : 0 < k) (lower : (k-1)*m<K) (upper : K≤k*m) (hP : P.natDegree = m) (hdom : ∀ i, P.eval (D i) = E (π i))
     (hfib : ∀ j, (univ.filter fun i => π i = j).card = m) (δ : ℝ≥0) :
     epsMCA (F := F) (ReedSolomon.code E k : Set (J → F)) δ ≤
-      epsMCA (F := F) (ReedSolomon.code D (k*m) : Set (I → F)) δ := by
+      epsMCA (F := F) (ReedSolomon.code D K : Set (I → F)) δ := by
   classical
   rw [epsMCA_eq_iSup_badCount_div,epsMCA_eq_iSup_badCount_div]
   apply ENNReal.div_le_div_right _ _
@@ -123,8 +132,18 @@ theorem epsMCA_le [Fintype F] [Nonempty I] [Nonempty J] [DecidableEq I]
   apply Nat.cast_le.mpr
   apply card_le_card
   intro γ hγ
-  exact mem_filter.mpr ⟨mem_univ _, mcaEvent_lift D E π P hm hk hP hdom hfib δ (u 0) (u 1) γ
+  exact mem_filter.mpr ⟨mem_univ _, mcaEvent_lift_band D E π P hm hk lower upper hP hdom hfib δ (u 0) (u 1) γ
     (mem_filter.mp hγ).2⟩
 
+/-- Worst-case MCA mass also transfers at the rate-preserving endpoint. -/
+theorem epsMCA_le [Fintype F] [Nonempty I] [Nonempty J] [DecidableEq I]
+    (D : I ↪ F) (E : J ↪ F) (π : I → J) (P : F[X]) {k m : ℕ}
+    (hm : 0 < m) (hk : 0 < k) (hP : P.natDegree = m) (hdom : ∀ i, P.eval (D i) = E (π i))
+    (hfib : ∀ j, (univ.filter fun i => π i = j).card = m) (δ : ℝ≥0) :
+    epsMCA (F := F) (ReedSolomon.code E k : Set (J → F)) δ ≤
+      epsMCA (F := F) (ReedSolomon.code D (k*m) : Set (I → F)) δ :=
+  epsMCA_le_band D E π P hm hk (Nat.mul_lt_mul_of_pos_right (by omega) hm) le_rfl hP hdom hfib δ
+
+#print axioms epsMCA_le_band
 #print axioms epsMCA_le
 end ProximityGap.FullFiberMcaLift

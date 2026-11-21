@@ -35,6 +35,7 @@ theorem classification {p n k h B Q : ℕ} [Fact p.Prime] [NeZero n] (x : Fin n 
       (by rwa [Fintype.card_fin]) (by omega : 0<Q) (by simpa only [ZMod.card] using budget) low width
     simpa only [Fintype.card_fin,he] using result
   · have he : index B h=B/2 := by unfold index;omega
+    have marginBound := DoubleQuadraticThreshold.margin_le_five n k
     have room := ceiling
     unfold DoubleQuadraticThreshold.agreements at room
     have result := DoubleQuadraticThreshold.prime_classification (k:=k) (j:=B/2) x two
@@ -44,10 +45,10 @@ theorem classification {p n k h B Q : ℕ} [Fact p.Prime] [NeZero n] (x : Fin n 
 /-- At integer errors the exact bad probability itself has the spike numerator
 below half-redundancy, and the saturated two-head numerator from that step
 onward while the variable-degree interpolation bound applies. -/
-theorem mass {p n k h e : ℕ} [Fact p.Prime] [NeZero n] (x : Fin n ↪ ZMod p)
+theorem mass_unconditional {p n k h e : ℕ} [Fact p.Prime] [NeZero n] (x : Fin n ↪ ZMod p)
     (large : 65536≤n) (hk : 2≤k) (length : k+2*h=n) (rate : n<3*h)
     (enough : e + DoubleQuadraticThreshold.agreements n k ≤ n)
-    (field : e<h ∨ 2*(n-e-1)<p) (width : ℕ) [NeZero width] :
+    (width : ℕ) [NeZero width] :
     epsMCA (F:=ZMod p) ((ReedSolomon.code x k : Set (Fin n → ZMod p)) ^⋈ (Fin width)) ((e:ℝ≥0)/n) =
       ((if e<h then e+1 else min p (2*(e+1)) : ℕ):ℝ≥0∞)/p := by
   rw [epsMCA_interleaved_eq]
@@ -56,15 +57,23 @@ theorem mass {p n k h e : ℕ} [Fact p.Prime] [NeZero n] (x : Fin n ↪ ZMod p)
     simpa only [Fintype.card_fin,ZMod.card] using ApolarAllFieldPlateau.preunique_mass (e:=e) x hk
       (by rwa [Fintype.card_fin]) (by rwa [Fintype.card_fin]) low
   · rw [if_neg low]
+    have marginBound := DoubleQuadraticThreshold.margin_le_five n k
     have room := enough
     unfold DoubleQuadraticThreshold.agreements at room
-    have qroom := field.resolve_left low
-    simpa only [ZMod.card] using DoubleQuadraticThreshold.exact_mass (e:=e) x hk (by omega)
-      large (by omega) (by omega) (by omega) (by
-        intro i hi bound zero
-        have pd := Nat.le_of_dvd hi ((CharP.cast_eq_zero_iff (ZMod p) p i).mp zero)
-        omega)
+    have result := DoubleQuadraticThreshold.prime_mass (e:=e) x hk (by omega)
+      large (by omega) (by omega) (by omega) width
+    simpa only [epsMCA_interleaved_eq] using result
+
+/-- Compatibility form with the original characteristic hypothesis. -/
+theorem mass {p n k h e : ℕ} [Fact p.Prime] [NeZero n] (x : Fin n ↪ ZMod p)
+    (large : 65536≤n) (hk : 2≤k) (length : k+2*h=n) (rate : n<3*h)
+    (enough : e + DoubleQuadraticThreshold.agreements n k ≤ n)
+    (_field : e<h ∨ 2*(n-e-1)<p) (width : ℕ) [NeZero width] :
+    epsMCA (F:=ZMod p) ((ReedSolomon.code x k : Set (Fin n → ZMod p)) ^⋈ (Fin width)) ((e:ℝ≥0)/n) =
+      ((if e<h then e+1 else min p (2*(e+1)) : ℕ):ℝ≥0∞)/p :=
+  mass_unconditional x large hk length rate enough width
 
 end ProximityGap.ThreeRegimePrimeThreshold
 #print axioms ProximityGap.ThreeRegimePrimeThreshold.classification
 #print axioms ProximityGap.ThreeRegimePrimeThreshold.mass
+#print axioms ProximityGap.ThreeRegimePrimeThreshold.mass_unconditional
