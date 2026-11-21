@@ -111,6 +111,30 @@ theorem exact_threshold (p n k : ℕ → ℕ) [∀ i, Fact (p i).Prime] [∀ i, 
     rw [Nat.sub_add_cancel jpNat]
     simpa [j,Nat.mul_comm] using Nat.div_mul_le_self (p i/Q) r
 
+/-- The limiting MCA radius equals the field-size slope divided by the
+security denominator and the number of heads. -/
+theorem threshold_limit (p n k : ℕ → ℕ) [∀ i, Fact (p i).Prime] [∀ i, NeZero (n i)]
+    (x : ∀ i, Fin (n i) ↪ ZMod (p i)) [∀ i, ReedSolomon.Smooth (x i)]
+    (r Q : ℕ) (hr : 1≤r) (hQ : 0<Q) (hn : Tendsto n atTop atTop) {slope ρ a : ℝ}
+    (hf : Tendsto (fun i => (p i:ℝ)/n i) atTop (𝓝 slope))
+    (rate : Tendsto (fun i => (k i:ℝ)/n i) atTop (𝓝 ρ)) (positive : 0<ρ)
+    (index : a=slope/Q/r) (ha : 0<a) (core : ρ+a<1)
+    (packing : (r:ℝ)*(1-ρ-a)<1-ρ) (moment : ρ<(1-a)^3)
+    (geometry : 1+((r.choose 2+r:ℕ):ℝ)*ρ < ((r+1:ℕ):ℝ)*(1-a))
+    (supply : (((edges (r+1)).offDiag.card*r : ℕ):ℝ)<slope) :
+    Tendsto (fun i => (mcaDeltaStar (F:=ZMod (p i))
+      (ReedSolomon.code (x i) (k i) : Set (Fin (n i) → ZMod (p i))) (1/(Q:ℝ≥0∞)):ℝ))
+      atTop (𝓝 a) := by
+  have eq := exact_threshold p n k x r Q hr hQ hn hf rate positive index ha core packing moment geometry supply
+  have target : Tendsto (fun i => ((p i/Q/r:ℕ):ℝ)/n i) atTop (𝓝 a) := by
+    rw [index]
+    exact LinearFieldBudgetLimit.floor_limit _ n r hr hn (LinearFieldBudgetLimit.floor_limit p n Q hQ hn hf)
+  apply target.congr'
+  filter_upwards [eq] with i hi
+  rw [hi]
+  simp
+
 end ProximityGap.SmoothManyLinePhase
 #print axioms ProximityGap.SmoothManyLinePhase.eventually_mass
 #print axioms ProximityGap.SmoothManyLinePhase.exact_threshold
+#print axioms ProximityGap.SmoothManyLinePhase.threshold_limit
