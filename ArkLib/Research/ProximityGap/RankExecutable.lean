@@ -5,6 +5,7 @@ SPDX-License-Identifier: MIT OR Apache-2.0
 import ArkLib.Research.ProximityGap.RankReview
 import ArkLib.Research.ProximityGap.Frontier.ListSupportGaussian
 import ArkLib.Research.ProximityGap.Frontier.SimultaneousSupportGaussian
+import ArkLib.Research.ProximityGap.Frontier.TwoParityMca
 
 /-! # Computing operational radii from a presented domain and integer budget
 
@@ -76,9 +77,61 @@ theorem listBoundary_eq [Fintype I] [Fintype F] (points : List I) (hp : ∀ i, i
   push Not
   rfl
 
+/-- Constant-time boundary when two parity checks determine the entire MCA curve. -/
+def twoCheckBoundary (n B : ℕ) : Boundary n :=
+  if B = 0 then some 0 else if h : n ≤ B then none else some ⟨1, by omega⟩
+
+private theorem twoCheckBoundary_eq_scan {n k : ℕ} [Fintype I] [Nonempty I] [Fintype F]
+    [SampleableType F] (E : Fin n ≃ I) (labels : List F) (hl : ∀ g, g ∈ labels)
+    (D : I ↪ F) (B : ℕ) (hn : n = k+2) :
+    twoCheckBoundary n B =
+      scan n (fun e => SimultaneousSupportGaussian.anchoredSafe E labels D k B (n-e.val)) := by
+  let safe (e : Fin (n+1)) := SimultaneousSupportGaussian.anchoredSafe E labels D k B (n-e.val)
+  have card : Fintype.card I = n := (Fintype.card_congr E).symm.trans (Fintype.card_fin n)
+  have npos : (0 : ℝ≥0) < n := by exact_mod_cast (show 0 < n by omega)
+  have qnz : (Fintype.card F : ℝ≥0∞) ≠ 0 := by exact_mod_cast Fintype.card_ne_zero
+  have test (e : Fin (n+1)) : (!safe e) = true ↔ B < (if e.val = 0 then 1 else n) := by
+    have prob := SimultaneousSupportGaussian.anchoredSafe_iff E labels hl D k B e.val (by omega)
+    have grid := epsMCA_eq_mcaError (ReedSolomon.code D k) ((e.val : ℝ≥0)/n)
+    rw [TwoParityMca.profile D (card.trans hn), card] at grid
+    have ge : 1/(n : ℝ≥0) ≤ (e.val : ℝ≥0)/n ↔ e.val ≠ 0 := by
+      rw [div_le_div_iff_of_pos_right npos]
+      exact_mod_cast (show 1 ≤ e.val ↔ e.val ≠ 0 by omega)
+    simp only [ge] at grid
+    have saf : safe e = true ↔ (if e.val = 0 then 1 else n) ≤ B := by
+      rw [show safe e = true ↔ _ from prob]
+      rw [show ((e.val : ℝ) / n) = (((e.val : ℝ≥0)/n : ℝ≥0) : ℝ) by norm_cast,
+        ← grid, ENNReal.div_le_iff qnz (ENNReal.natCast_ne_top _),
+        ENNReal.div_mul_cancel qnz (ENNReal.natCast_ne_top _)]
+      by_cases h : e.val=0 <;> simp [h]
+    simpa only [Bool.not_eq_true', Bool.not_eq_true, not_le] using not_congr saf
+  change twoCheckBoundary n B = Fin.find? (fun e => !safe e)
+  unfold twoCheckBoundary
+  split_ifs with hz hb
+  · symm
+    change (0 : Fin (n+1)) ∈ Fin.find? _
+    exact Fin.mem_find?_iff.mpr ⟨(test 0).mpr (by simp [hz]), by simp⟩
+  · symm
+    have never : ¬ ∃ e, (!safe e)=true := by
+      rintro ⟨e, he⟩
+      have h := (test e).mp he
+      split_ifs at h <;> omega
+    simp only [Fin.find?_eq_dite, never, dite_false]
+  · let one : Fin (n+1) := ⟨1, by omega⟩
+    symm
+    change one ∈ Fin.find? _
+    apply Fin.mem_find?_iff.mpr
+    refine ⟨(test one).mpr (by simpa [one] using Nat.lt_of_not_ge hb), ?_⟩
+    intro j hj hjbad
+    have zero : j.val=0 := by change j.val < 1 at hj; omega
+    have h := (test j).mp hjbad
+    simp [zero] at h
+    omega
+
 /-- Compute the MCA boundary from enumerations of the coordinates and the field. -/
 def mcaBoundary {n : ℕ} (E : Fin n ≃ I) (labels : List F) (D : I ↪ F) (k B : ℕ) : Boundary n :=
-  scan n fun e => SimultaneousSupportGaussian.anchoredSafe E labels D k B (n - e.val)
+  if n = k+2 then twoCheckBoundary n B else
+    scan n fun e => SimultaneousSupportGaussian.anchoredSafe E labels D k B (n - e.val)
 
 /-- Executing the MCA search produces the universal operational answer. -/
 theorem mcaBoundary_eq [Fintype I] [Nonempty I] [Fintype F] [SampleableType F]
@@ -86,6 +139,8 @@ theorem mcaBoundary_eq [Fintype I] [Nonempty I] [Fintype F] [SampleableType F]
     (D : I ↪ F) (ε : ℝ≥0) (k : ℕ) :
     mcaBoundary E labels D k (RankReview.budget F ε) = RankReview.mcaAnswer D ε k := by
   classical
+  unfold mcaBoundary
+  rw [ite_eq_right_iff.mpr (twoCheckBoundary_eq_scan E labels hlabels D _)]
   apply scan_eq_firstFailure
   intro e
   rw [SimultaneousSupportGaussian.anchoredSafe_iff E labels hlabels D k _ e.val

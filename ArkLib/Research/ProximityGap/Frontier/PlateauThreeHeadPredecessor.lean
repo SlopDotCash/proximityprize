@@ -54,13 +54,14 @@ variable {I F : Type} [Fintype I] [Nonempty I] [DecidableEq I] [Field F] [Fintyp
 
 /-- A deficit of x agreements from the plateau forces a noncollinear triple to
 spend at least 3x fresh sites per label on one head, or two fresh sites on two heads. -/
-theorem cap_at_deficit (fam : BadScalarRichPointFamily dom 67108864 δ u) (hn : Fintype.card I=1073741824)
+theorem cap_at_small_deficit (fam : BadScalarRichPointFamily dom 67108864 δ u) (hn : Fintype.card I=1073741824)
     {e x : ℕ} (he : e+x=671088640) (hx : 0<x) (hl : 610000000≤e)
     (ht : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊=402653184+x) (H : Finset (LineParameter F))
     (hH : H ⊆ lineParameters fam) (hthree : H.card ≤ 3)
-    (hbig : ∀ c ∈ H, 184 < (pointsOn fam c).card)
-    (hex : (fam.G \ H.biUnion (pointsOn fam)).card ≤ max 197 (1+e/(3*x))) :
-    fam.G.card ≤ 2*(e+1)+max 197 (1+e/(3*x)) := by
+    (hbig : ∀ c ∈ H, 48 < (pointsOn fam c).card)
+    {allowance : ℕ} (hdef : 1+e/(3*x)≤allowance)
+    (hex : (fam.G \ H.biUnion (pointsOn fam)).card ≤ allowance) :
+    fam.G.card ≤ 2*(e+1)+allowance := by
   classical
   have hdef := Nat.le_max_right 525 (1+e/(3*x))
   let D (l : LineParameter F) := jointCore dom (u 0) (u 1) l.1 l.2
@@ -69,7 +70,7 @@ theorem cap_at_deficit (fam : BadScalarRichPointFamily dom 67108864 δ u) (hn : 
   have ht' : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊ = Fintype.card I - e := by rw [ht,hn]; omega
   have hline (l : LineParameter F) (hl : l ∈ H) : (pointsOn fam l).card ≤ e+1 :=
     TwoLargeCoreCount.line_occupancy_le fam (e:=e) (by omega) ht' (hH hl)
-  have htotal : fam.G.card ≤ max 197 (1+e/(3*x))+B.card := by
+  have htotal : fam.G.card ≤ allowance+B.card := by
     have h : fam.G ⊆ (fam.G \ B) ∪ B := by
       intro x hx
       by_cases hB : x ∈ B
@@ -86,7 +87,7 @@ theorem cap_at_deficit (fam : BadScalarRichPointFamily dom 67108864 δ u) (hn : 
       (pointsOn fam l).card*max 1 ((402653184+x)-(D l).card)+(D l).card ≤ 1073741824 := by
     have h := pointsOn_card_mul_max_add_core_le fam (hH hl)
     rwa [ht,hn] at h
-  have hcore (l : LineParameter F) (hl : l ∈ H) : (1070091824-e) ≤ (D l).card := by
+  have hcore (l : LineParameter F) (hl : l ∈ H) : (1059741824-e) ≤ (D l).card := by
     have h := budget l hl
     have hm := Nat.mul_le_mul (hbig l hl) (Nat.le_max_right 1 ((402653184+x)-(D l).card))
     omega
@@ -101,7 +102,7 @@ theorem cap_at_deficit (fam : BadScalarRichPointFamily dom 67108864 δ u) (hn : 
       exact FSMBCoreAbsorptionLadder.jointCore_inter_jointCore_card_le dom (u 0) (u 1)
         (by decide : 1 ≤ 67108864) h₁.1 h₁.2 h₂.1 h₂.2 (by by_contra! h; exact hij (Prod.ext h.1 h.2))
     have hu := union_lower H D hcore hp
-    change H.card*(1070091824-e) ≤ U.card + H.card.choose 2*67108863 at hu
+    change H.card*(1059741824-e) ≤ U.card + H.card.choose 2*67108863 at hu
     have hnU := card_le_univ U
     rw [hn,H3] at hc
     rw [hn] at hnU
@@ -134,6 +135,18 @@ theorem cap_at_deficit (fam : BadScalarRichPointFamily dom 67108864 δ u) (hn : 
     have h1 := (card_le_card cov).trans (card_union_le ..)
     have h2 := card_union_le (pointsOn fam a) (pointsOn fam b)
     omega
+
+/-- A deficit of x agreements from the plateau forces a noncollinear triple to
+spend at least 3x fresh sites per label on one head, or two fresh sites on two heads. -/
+theorem cap_at_deficit (fam : BadScalarRichPointFamily dom 67108864 δ u) (hn : Fintype.card I=1073741824)
+    {e x : ℕ} (he : e+x=671088640) (hx : 0<x) (hl : 610000000≤e)
+    (ht : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊=402653184+x) (H : Finset (LineParameter F))
+    (hH : H ⊆ lineParameters fam) (hthree : H.card ≤ 3)
+    (hbig : ∀ c ∈ H, 184 < (pointsOn fam c).card)
+    (hex : (fam.G \ H.biUnion (pointsOn fam)).card ≤ max 197 (1+e/(3*x))) :
+    fam.G.card ≤ 2*(e+1)+max 197 (1+e/(3*x)) := by
+  exact cap_at_small_deficit fam hn he hx hl ht H hH hthree
+    (fun c hc => (by decide : 48≤184).trans_lt (hbig c hc)) (Nat.le_max_right ..) hex
 
 /-- The specialized cap at the final predecessor of the five-eighths plateau. -/
 theorem cap (fam : BadScalarRichPointFamily dom 67108864 δ u) (hn : Fintype.card I=1073741824)
