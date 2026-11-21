@@ -313,6 +313,7 @@ import ArkLib.Research.ProximityGap.Frontier.FirstPrimeQuarterSuccessor
 import ArkLib.Research.ProximityGap.Frontier.FirstPrimeSepticCores
 import ArkLib.Research.ProximityGap.Frontier.FisherLevelLocked
 import ArkLib.Research.ProximityGap.Frontier.FisherRSListCap
+import ArkLib.Research.ProximityGap.Frontier.FiveCosetMomentModel
 import ArkLib.Research.ProximityGap.Frontier.FloorAsymptoticRadius
 import ArkLib.Research.ProximityGap.Frontier.FloorClosurePrefixConsumer
 import ArkLib.Research.ProximityGap.Frontier.FloorClosureSuccessorScanner
