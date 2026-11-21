@@ -16,6 +16,12 @@ from fractions import Fraction
 from math import factorial, log
 
 
+def require(condition: bool, message: str) -> None:
+    """Keep the exact moment-cone audit active under optimized Python."""
+    if not condition:
+        raise AssertionError(message)
+
+
 def falling(n: int, m: int) -> int:
     out = 1
     for j in range(m):
@@ -47,10 +53,10 @@ def audit(r: int) -> None:
     for value in diagonal:
         determinant *= value
 
-    assert full_depth_zero
-    assert upper_triangular
-    assert diagonal == expected_diagonal
-    assert determinant > 0
+    require(full_depth_zero, f"r={r}: full-depth column is not zero")
+    require(upper_triangular, f"r={r}: shallow moment matrix is not triangular")
+    require(diagonal == expected_diagonal, f"r={r}: diagonal factorials changed: {diagonal}")
+    require(determinant > 0, f"r={r}: shallow matrix determinant is not positive")
 
     print(
         f"r={r:3d} rows={r:3d} cols={r + 1:3d} "
