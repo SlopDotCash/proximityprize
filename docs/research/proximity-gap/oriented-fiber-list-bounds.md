@@ -56,3 +56,20 @@ Run the following command from the repository root. The standard-library verifie
 ```sh
 python3 scripts/probes/probe_oriented_fiber_lists.py
 ```
+
+## A third fiber for the common vanishing polynomial
+
+At the quarter and eighth rates, remove the ordinary exponent $j=M/4$ from all candidate root sets. The permitted sets already exclude exponents $0,M/2$. Put every one of the $h-1$ common vanishing points on the fiber $X^h=u^j$. This leaves all $h$ positions at each of the two anchors for assigning locator values. If each anchor uses at most $K$ values, every served candidate gains $g=\lfloor h/K\rfloor$ agreements. The quotient has $m=17$, so the distance from the resulting shared center is at most $n-18h+1-g$. [Lean theorem for arbitrary reserved fibers](../../../ArkLib/Research/ProximityGap/Frontier/TwoAnchorListWitness.lean)
+
+| Rate | Budget | Product exponent modulo $M$ | Values per anchor $K$ | Distinct words at least | Extra agreements | First failure at or before |
+|---|---:|---:|---:|---:|---:|---:|
+| $1/4$ | $2^{30}$ | 1 | 1,123 | 1,074,257,931 | 14,939 | 771,736,998 |
+| $1/4$ | $2^{31}$ | 1 | 2,547 | 2,147,852,051 | 6,587 | 771,745,350 |
+| $1/8$ | $2^{30}$ | 16 | 14 | 1,147,731,928 | 599,186 | 922,147,695 |
+| $1/8$ | $2^{31}$ | 16 | 29 | 2,194,094,160 | 289,262 | 922,457,619 |
+
+The exponent-restricted census at the positive anchor drops the orientation $j$. At the negative anchor it drops $j+M/2$ modulo $M$, the image of the same omitted root under negation. This leaves one available orientation and rules out occupancy two at the corresponding reciprocal pair. Every other reciprocal pair still admits two singleton orientations. The negative-anchor root product is shifted by $mM/2$ modulo $M$, so both count the same original constant.
+
+To count a disjoint union, assign signatures to anchors by the sum $s$ of their leaf entries. Negating a selected set exchanges sibling occupancies at every dyadic depth. Each sibling has the same number of descendant leaves, so the operation preserves $s$. For integers $(d,b)$, serve a set at the positive anchor if bit $\lfloor s/2\rfloor\bmod d$ of $b$ is set and at the negative anchor otherwise. In table order these pairs are $(8,229),(7,90),(4,1),(7,57)$. Within each side retain the $K$ largest permitted populations of signed labels. The two original set families are disjoint, and distinct signed labels within one anchor count disjoint root sets. Their sum therefore counts distinct codewords in one ball. Repeating the scalar center and words gives the result at every positive width.
+
+The exact integer verifier reproduces all four rows. It also checks every five-subset of the ordinary quotient roots for five choices of omitted exponent at order 16 and evaluates all eleven words of a third-fiber example on all 128 sites over $\mathbb F_{257}$. Lean checks the passage from any qualifying family to a single ball. The four numerical restricted-signature counts currently use the integer verifier. [Reproduce the four rows](../../../scripts/probes/probe_third_fiber_lists.py)
