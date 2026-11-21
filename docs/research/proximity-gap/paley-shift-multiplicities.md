@@ -44,6 +44,21 @@ At a nonzero $b+u$, this follows by multiplying the sign of the coefficient in $
 
 Each lower bound is $\lfloor W_A(b)^2/4\rfloor$. To see that every one is attained, sum over $b$. The character translates have inner product $p-1$ for equal sites and $-1$ otherwise. For distinct $u,v$ the change of variable $(b+u)/(b+v)$ bijects $\mathbb F_p\setminus\{-v\}$ with $\mathbb F_p\setminus\{1\}$, and $\chi((b+u)(b+v))$ equals the character of the ratio off the pole. Thus $\sum_b W_A(b)^2=a(p-a)$. Exactly $a$ shifts have odd $W_A(b)$ when $a$ is even, and exactly $p-a$ do when $a$ is odd. Subtracting the odd count and dividing by four gives $x(d-x)$ in either case. This accounts for the entire degree and proves the factorization.
 
+## Reconstruction from two coordinates
+
+Let $\widehat P_A$ denote the monic normalization of the central determinant, and put $c_s=\lfloor s/2\rfloor\lfloor(s-1)/2\rfloor$. For two distinct coordinates the unnormalized determinant is the divided difference $((X+u)^d-(X+v)^d)/(u-v)$. For every admissible $A$ there is a polynomial identity
+\[
+  \prod_{\{u,v\}\subseteq A}\widehat P_{\{u,v\}}(X)
+  =\widehat P_A(X)\prod_{b\in\mathbb F_p}(X-b)^{c_{a-z_b}} .
+\]
+At the shift $b$ write $j,k$ for the positive and negative sign counts. Each pair factor has a simple root precisely when its two signs are equal and nonzero. There are $\binom j2+\binom k2$ such pairs. Subtracting $c_{j+k}$ gives precisely $\lfloor(j-k)^2/4\rfloor$, the central multiplicity. Since $c_a-c_{a-1}=\lfloor(a-1)/2\rfloor$, the correction can also be written as $(X^p-X)^{c_a}/\prod_{u\in A}(X+u)^{\lfloor(a-1)/2\rfloor}$. Consequently every central determinant on a puncturing is determined by the same two-coordinate polynomials. Their high common multiplicities at prescribed shifts still require control. [Kernel-checked pair reconstruction](../../../ArkLib/Research/ProximityGap/Frontier/PaleyPairDeterminants.lean)
+
+For three distinct sites $A$, let $G$ denote the number of distinct common roots of the three pair polynomials. At a shift off $-A$ the central order is two for a monochromatic triple and zero otherwise. At $-w$ the order is one precisely when the other two symbols have the same sign. The central degree is $d-1$. It follows that
+\[
+ 4G=p-6-\sum_{w\in A}\chi((u-w)(v-w)),\qquad \{u,v\}=A\setminus\{w\}.
+\]
+In particular the number is either $(p-9)/4$ or $(p-5)/4$ for $p\equiv1\pmod4$, and either $(p-7)/4$ or $(p-3)/4$ for $p\equiv3\pmod4$. The product of the three displayed signs is $\chi(-1)$, which gives those alternatives. The independent polynomial computation checked 1,724 central factorizations and counted all common roots for 6,640 triples. [Exact verifier](../../../scripts/probes/probe_paley_pair_determinants.py)
+
 ## The exact rank at one shift
 
 Take $y=\lfloor(a-z_b)/2\rfloor$. The $y\times y$ northwest submatrix of $J(b)$ has rank exactly $e$, including rank zero for an empty submatrix. To see this for $y>0$, its derivative orders satisfy $i+j\le2y-2<\nu$. It equals

@@ -124,3 +124,27 @@ uniquely determine the two individual polynomials, and the second row
 differs at the fresh site by the choice of $v'$. Hence these are
 $30k+3$ distinct actual bad scalars. The two adjacent grid counts and
 monotonicity prove the budget claim.
+
+## Below the plateau
+
+For $n=2^{30}$ at rate $1/16$, let $610000000\le e<671088640$ and $x=671088640-e$. Every pair on every injective domain of characteristic above 1744830589 has at most
+\[
+ C(e,x)=2(e+1)+\max\!\left(58,1+\left\lfloor e/(3x)\right\rfloor\right)
+\]
+bad scalars. In prime fields with $C(e,x)\le B=\lfloor p/2^{128}\rfloor\le2013265922$, the first failing count is in $[e+1,\min(671088640,\lfloor B/2\rfloor)]$ at every positive interleaving width. The right endpoint uses two exceptional heads or the three-head plateau attack. [Degree-ten bounds](../../../ArkLib/Research/ProximityGap/Frontier/DegreeTenDeficitWindow.lean)
+
+At $t_0=6k+1$ agreements, a first-order interpolant of ordinate degree three and total scalar/ordinate degree ten already exists. The surplus is $38t_0-52(k-1)-11n=90$. At most ten labels are exceptional. A value-linear factor with 49 or more labels gives a genuine head. To see this, choose 49 sections and let $V$ consist of the sites on which that factor vanishes identically along the received line. Outside $V$, at most ten of the sections agree at a given site. Within $V$, at most nine fail to agree, by the scalar degree of the value-leading coefficient. Hence $49t_0\le39|V|+10n$. The eleven sections with fewest misses satisfy $39|V|\le39|S_a\cap S_b\cap S_c|+27|V|$ for each triple. These inequalities force $|S_a\cap S_b\cap S_c|>k-1$. The sections lie on a base-field secant and their eleven distinct scalar roots force the whole degree-ten restriction to vanish. [Interpolant and factor recognition](../../../ArkLib/Research/ProximityGap/Frontier/FiveEighthCubicFactors.lean)
+
+A violation of $2(e+1)+58$ requires three distinct heads carrying at least 49 labels each. If they are noncollinear and their joint core sizes are $c_i$, the determinant gives $\sum c_i\le n+2(k-1)$. Thus either two cores have $c_i\le n-e-2$, or one has $c_i\le n-e-3x$. Distinct labels on one head use disjoint fresh sites. In the first case the two heads together carry at most $e+2$ labels. In the second case the deficient head carries at most $1+\lfloor e/(3x)\rfloor$. For collinear heads, counting distinct fresh scalars on and off the core union suffices. [Core and label bounds](../../../ArkLib/Research/ProximityGap/Frontier/PlateauThreeHeadPredecessor.lean)
+
+When $q\ge\binom{2(e+1)}{2}$ the two-head construction gives the lower probability $2(e+1)/q$. From 610,000,000 through 667,253,847 errors its gap to the uniform upper bound is at most $58/q$. For all 114,507,696 budgets from **1220000060** through **1334507755**, the crossing is in $[\lfloor B/2\rfloor-29,\lfloor B/2\rfloor]$. The preceding 99-step bound extends farther, through budget **1339910288**. [29-step bracket](../../../ArkLib/Research/ProximityGap/Frontier/DegreeTenDeficitWindow.lean) · [99-step bracket](../../../ArkLib/Research/ProximityGap/Frontier/ThreeHeadDeficitWindow.lean)
+
+| Field budget $B$ | First failing Hamming count |
+|---:|---:|
+| 1,330,000,000 | 664,999,971 to 665,000,000 |
+| 1,342,177,280 | 671,078,064 to 671,088,640 |
+| 1,350,000,000 | 671,088,612 to 671,088,640 |
+| 1,400,000,000 | 671,088,637 to 671,088,640 |
+| Every budget from 1,454,025,385 through 1,565,873,493 | 671,088,639 or 671,088,640 |
+
+For the last row take $x=2$. The upper count is the known plateau attack and all pairs are safe at 671,088,638 errors. Deciding the intermediate Hamming step requires a sharper predecessor bound or a matching received pair. [Two-candidate theorem](../../../ArkLib/Research/ProximityGap/Frontier/ThreeHeadDeficitWindow.lean)

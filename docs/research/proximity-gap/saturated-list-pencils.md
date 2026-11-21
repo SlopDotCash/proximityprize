@@ -1,0 +1,50 @@
+# Fully split differences at the production Johnson boundary
+
+Let $n=2^{30}$, $k=n/8$, $D=k-1$, and $t=379625061$. The two nominated field budgets are $n$ and $2n$. Take $M$ distinct scalar Reed–Solomon words of dimension $k$ agreeing with one center on at least $t$ sites each. Choose an arbitrary subset $S_i$ of exactly $t$ sites from each agreement set. Two selected sets meet in at most $D$ sites. Call a pair saturated when its intersection has $D$ elements. Its polynomial difference then has degree $D$ and its roots are precisely those $D$ distinct evaluation points.
+
+## What an oversized list forces
+
+Put $C=\binom M2$ and write $Mt=nq+r$, $0\le r<n$. Counting intersections at each site and balancing the integer point degrees gives
+\[
+\sum_{i<j}|S_i\cap S_j|\ge(n-r)\binom q2+r\binom{q+1}2.
+\]
+Every unsaturated pair contributes at most $D-1$. Subtracting $(D-1)C$ gives these lower bounds on the number of saturated pairs. Turán's theorem gives the indicated complete subgraphs.
+
+| Selected list size | Saturated pairs, at least | Fraction of all pairs | Forced clique |
+| --- | ---: | ---: | ---: |
+| $n+1$ | 410,960,812,476,257,241 | 71.29% | 4 |
+| $2n+1$ | 1,907,347,367,389,145,010 | 82.71% | 6 |
+
+The bound also carries information across groups of words. If a simple graph on $M$ vertices has $E$ edges, some $a$ vertices have at least $\lfloor M\binom{\lfloor2E/M\rfloor}{a}/\binom Ma\rfloor$ common neighbors. Sum $\binom{\deg v}a$ over the vertices and balance the degrees. For the first row, some 48 words have at least 94 common neighbors, all of whose cross differences are saturated. All these statements apply to **every** selection of $t$ agreement sites per word. [Formal intersection and clique bounds](../../../ArkLib/Research/ProximityGap/Frontier/SaturatedListCliques.lean)
+
+A saturated four-clique forces three disjoint full fibers of a nonconstant rational function even after removing common roots. Let $n_j$ count sites lying in exactly $j$ of its four selected sets. Six pair intersections of size $D$ give $6D=\sum_j\binom j2n_j$. Since $\sum_j jn_j=4t$, subtracting overlaps in the union gives $n_3+3n_4\le n+6D-4t$. The four triple intersections sum to $n_3+4n_4\le4(n_3+3n_4)/3$. Some triple therefore has common root count $c\le(n+6D-4t)/3$. For messages $f,g,h$ of this triple take the ratio $(f-h)/(g-h)$ and cancel the monic common-root polynomial. The fibers above $0,1,\infty$ are disjoint sets of precisely $D-c$ distinct domain points. Their common size is at least **14,035,080**. All roots of each difference already lie in its selected pair intersection, which justifies the exact common-root degree in this argument.
+
+## Six actual fully split words on every smooth domain
+
+In fact large full fibers and an actual six-clique occur on all the smooth domains under discussion. Write the domain as $a\mu_n$, put $d=n/16$, and set $Y=(X/a)^d$. Fix a primitive sixteenth root $z$. Each $Y=z^j$ has exactly $d$ simple roots on the domain. Take the following six points $(u_i,v_i)$ in a coefficient plane. The first two are $(0,0)$ and $(1,1)$. For each of $(r,s)=(1,2),(3,4),(7,9),(8,9)$ take the intersection of $v=z^r u$ and $v-1=z^s(u-1)$. Its coordinates are $u=(1-z^s)/(z^r-z^s)$ and $v=z^r u$.
+
+The exponent of $(v_i-v_j)/(u_i-u_j)$ for $i<j$, in lexicographic pair order, is
+\[
+0,1,3,7,8,\quad 2,4,9,9,\quad 5,11,10,\quad 15,12,\quad 9.
+\]
+The three nines correspond to the single triple $\{1,4,5\}$. Each other exponent occurs once. The accompanying certificate computes in $\mathbb Z[Z]/(Z^8+1)$. The denominators and nonzero abscissa differences in homogeneous coordinates have norms that are powers of two. These identities therefore specialize to every field containing a primitive sixteenth root in odd characteristic. [Exact cyclotomic certificate](../../../scripts/probes/probe_six_split_list.py)
+
+Choose $d-1$ sites outside the thirteen used fibers, and let $P$ be their monic vanisher. Take the six messages $P(X)(v_i-u_iY)$. Every difference has exactly $(d-1)+d=D$ simple domain roots. Set the center to zero on the common roots and to each tied pair's value on its whole fiber. All three heads of the repeated fiber give the same value. The numbers of incident fibers for the six words are $5,4,5,5,4,4$. The remaining $2d+1$ sites suffice to bring all three shorter words to **380,283,562** agreements by dividing them equally. The other three already have $6d-1$ agreements. Thus six distinct codewords lie in the same ball even at 693,458,262 errors. At the stated $t$ there are 1,975,503 spare sites. The messages, center, exact pairwise overlap, and lower bound for the canonical worst-center list are verified for every supplied smooth domain. [Kernel-checked smooth witness](../../../ArkLib/Research/ProximityGap/Frontier/SixSplitListWitness.lean)
+
+For any four or five of the five heads $P(X)(b_iY+b_i^{-1})$, where $b_i=z^{e_i}$ and $e_i\in\{0,1,2,4,7\}$, all unordered two-term exponents are distinct modulo sixteen. Choose the common vanisher of degree $d-1$ outside these ten fibers. Its roots and the four incident fibers give every word $5d-1$ mandatory sites. Disjoint additional sites raise every word to exactly $t$ chosen agreements since the free supply is $5d+1$ and each deficit is $t-5d+1$. This example preserves all ten pair intersections **after** choosing exactly $t$ sites per word. In contrast, three of the six heads from the previous construction have $6d-1>t$ mandatory sites. Its full six-clique is a statement about actual agreement sets. Lean verifies the cropped five-clique throughout the full integer interval from $5d-1$ through $6d-1$ for every smooth coset of size $16d$. [Kernel-checked exact supports](../../../ArkLib/Research/ProximityGap/Frontier/FiveCroppedSplitPencil.lean)
+
+## What a low-dimensional list can contribute
+
+An affine line of messages contains at most $\lfloor(n-D)/(t-D)\rfloor=3$ members of the list. Its direction vanishes on at most $D$ sites. Each other site agrees with at most one member. More generally let $A$ be an affine $r$-flat of message polynomials. The coordinate evaluations that are constant on $A$ number at most $k-r$. The independent $r$-dimensional direction space consists of polynomials sharing all these roots, and division by their vanisher embeds it in the space of polynomials of degree below $k-c$. At a nonconstant coordinate the received value cuts $A$ in an affine $(r-1)$-flat. Counting agreements gives the recursive upper bound
+\[
+L_0=1,\qquad L_r=\left\lfloor L_{r-1}\frac{n-k+r}{t-k+r}\right\rfloor.
+\]
+Indeed for $c$ constant coordinates one has $M(t-c)\le L_{r-1}(n-c)$, and the quotient $(n-c)/(t-c)$ increases with $c$. The first two upper bounds are 3 and 11. At affine dimensions 15, 16, and 17 the bounds are 413,761,349, 1,584,055,105, and 6,064,439,257. A list above the first nominated budget requires affine dimension at least 16. The local split examples leave open the simultaneous constraints among a family of that dimension. The punctured Johnson theorem already bounds the second nominated prime at this step. [Punctured list cap](../../../ArkLib/Research/ProximityGap/Frontier/InterleavedListJohnsonPuncture.lean)
+
+## Classification for a common locator and a single power
+
+Consider six polynomials $P(X)(u_iX^m+v_i)$ of degree at most $D$ on a smooth coset of size $n$. Suppose every pair of selected agreement sets, each of size exactly $t$, meets in $D$ sites. Then $P$ has degree $c=D-m$ and $c$ simple roots on the domain. All secants have nonvertical direction. Each pair's remaining $m$ zeros must form one full power fiber, disjoint from the roots of $P$. A nonempty power fiber on a cyclic coset has size $\gcd(n,m)$, so $m\mid n$. Counting the six individual agreements charges at most $n$ sites once, at most $5c$ more at common roots, and at most $15m$ remaining pair incidences. Thus $6t\le n+5D+10m$. At these parameters the inequality forces $m>n/32$, while $m\le D<n/8$; the only possible divisor is $m=n/16$.
+
+Represent each head by its coefficient point; signs and the coset scale can be absorbed in one axis. Its secants must then have slopes in $\mu_{16}$. Two parallel secant lines with distinct intercepts cannot both occur: their pairs would require different center values on the same entire power fiber. Normalize two points to $(0,0)$ and $(1,1)$ by translation and independent rescaling of the two axes. This divides all secant slopes by the original pair's slope and hence preserves the allowed root set. Six collinear points would require $6t\le n+5D$, which fails, so there is a third point off the diagonal. Such a point is determined by two distinct slopes in $\mu_{16}\setminus\{1\}$ from the first two points. There are 210 options. After fixing one such third point, every additional diagonal point is determined by its slope to that point. This leaves a finite exhaustive tree over each designated prime field.
+
+For a compatible configuration let $R$ be its total number of secant slopes and $r_i$ the number of their lines through head $i$. Each word must retain all $c+r_i m$ mandatory sites. The unused pool has $n-c-Rm$ sites, with at most one additional agreement per site. A compatible center and cropped supports therefore exist exactly when every $c+r_i m\le t$ and the summed deficits fit in the unused pool. At each nominated prime the exact enumerator visits 122,430 compatible normalized six-point configurations. All fail this test. Thus a cropped saturated $K_6$ excludes this entire ansatz at these two primes. The surviving $K_4$ and $K_5$ constructions describe the obstruction at the first budget, and the second budget already has a punctured Johnson upper bound. [Exact field enumeration](../../../scripts/probes/probe_six_split_power_class.py)

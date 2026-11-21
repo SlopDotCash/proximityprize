@@ -82,6 +82,26 @@ private theorem refine_fibers {I : Type} [Fintype I] (raw : I → Fin 4)
   · exact high _ 3 (by decide)
   · exact high _ 4 (by decide)
 
+/-- Pair classes of the cubic pencil, indexed by the head absent from each pair. -/
+def bucket (stride i : ℕ) : Fin 4 :=
+  if i = 3*stride ∨ i = 5*stride ∨ i = 7*stride then 0
+  else if i = 2*stride ∨ i = 9*stride ∨ i = 10*stride then 1
+  else if i = 0 ∨ i = stride ∨ i = 8*stride then 2
+  else 3
+
+/-- A residue class in an index of size s times q has s lifts. -/
+theorem count_blocks {s q : ℕ} [NeZero q] (f : Fin q → Fin 4) (j : Fin 4) :
+    (univ.filter (fun x : Fin (s*q) => f x.modNat = j)).card =
+      s*(univ.filter (fun r : Fin q => f r = j)).card := by
+  classical
+  let e : Fin s × Fin q ≃ Fin (s*q) := finProdFinEquiv
+  have he : (univ.filter (fun x : Fin (s*q) => f x.modNat = j)) =
+      ((univ : Finset (Fin s)) ×ˢ (univ.filter (fun r : Fin q => f r = j))).map e.toEmbedding := by
+    ext x
+    rw [mem_map_equiv]
+    simp [e, finProdFinEquiv]
+  simp [he]
+
 /-- The equality pattern of a pair-coincidence fiber at a single site. -/
 def coincide (r : Fin 4) (i j : Fin 3) : Prop :=
   i = j ∨ (r ≠ 3 ∧ i.val ≠ r.val ∧ j.val ≠ r.val)
