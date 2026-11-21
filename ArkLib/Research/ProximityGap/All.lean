@@ -479,6 +479,7 @@ import ArkLib.Research.ProximityGap.Frontier.ListSupportForcedPair
 import ArkLib.Research.ProximityGap.Frontier.ListSupportGaussian
 import ArkLib.Research.ProximityGap.Frontier.ListSupportRank
 import ArkLib.Research.ProximityGap.Frontier.LiuZhouSplitRecursion
+import ArkLib.Research.ProximityGap.Frontier.LocatorShortening
 import ArkLib.Research.ProximityGap.Frontier.LogRatioTowerBoundedIncrement
 import ArkLib.Research.ProximityGap.Frontier.LogRatioTowerExpForm
 import ArkLib.Research.ProximityGap.Frontier.LowDimensionCubicPlateau
@@ -545,6 +546,7 @@ import ArkLib.Research.ProximityGap.Frontier.PaleyDefectDiscrepancy
 import ArkLib.Research.ProximityGap.Frontier.PaleyDefectMinor
 import ArkLib.Research.ProximityGap.Frontier.PaleyHankelDegree
 import ArkLib.Research.ProximityGap.Frontier.PaleyInterpolationContact
+import ArkLib.Research.ProximityGap.Frontier.PaleyInversionTrace
 import ArkLib.Research.ProximityGap.Frontier.PaleyListInterpolation
 import ArkLib.Research.ProximityGap.Frontier.PaleyPairDeterminants
 import ArkLib.Research.ProximityGap.Frontier.PaleyPrescribedRectangle
@@ -772,6 +774,7 @@ import ArkLib.Research.ProximityGap.Frontier.ShawFlatnessSubfieldCounterexample
 import ArkLib.Research.ProximityGap.Frontier.ShawValueBracketCenter
 import ArkLib.Research.ProximityGap.Frontier.ShawValueCapstone
 import ArkLib.Research.ProximityGap.Frontier.ShiftedPowerCurveCount
+import ArkLib.Research.ProximityGap.Frontier.ShortenedThreeHeadThreshold
 import ArkLib.Research.ProximityGap.Frontier.SidonDepthFiveNoWrapNonSharp
 import ArkLib.Research.ProximityGap.Frontier.SidonDepthFiveNonSharp
 import ArkLib.Research.ProximityGap.Frontier.SidonDepthFourNonSharp

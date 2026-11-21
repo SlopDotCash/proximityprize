@@ -26,6 +26,7 @@ The universal rank formula now determines the operational MCA and list cutoffs o
 | Rates $1/8$ and $1/4$ MCA at the second designated prime, length $2^{30}$ | At rate $1/8$ one pair has **2,239,758,344** bad labels at **679,477,249** errors. At rate $1/4$ one pair has **2,214,592,518** bad labels at **553,648,129** errors. Both exceed the budget of 2,147,483,648 at every positive width. | [Eighth-rate theorem](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeFourHeadEndpoints.lean) · [Noncollinear quarter-rate theorem](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimePlanarQuartet.lean) |
 | Rate $1/16$ MCA at the second designated prime and length $2^{30}$ | Last safe count **715827881**, first failure **715827882**, operational supremum **715827882/1073741824**. | [Exact Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeCubicExact.lean) · [Proof of the interval extension](second-prime-exact-threshold.md) |
 | Rate $1/16$ on every smooth length-$2^{30}$ domain in the three-head interval | From $B=1565873494$ through $2147483648$, the first MCA failure is $\max(671088640,\lfloor B/3\rfloor)$, for every finite field admitting the domain and every positive width. The universal rank answer equals that integer. | [Smooth-field threshold and exact error probability](../../../ArkLib/Research/ProximityGap/Frontier/SmoothCubicBudgetWindow.lean) |
+| MCA on shortened domains at the second prime | At each of the **67,108,863** lengths $1006632962\le m\le1073741824$, the first failure is **715827882** at every dimension $2\le K\le m-1006632960$. The supremum is $715827882/m$ for every injective domain and positive width. | [Length and dimension theorem](../../../ArkLib/Research/ProximityGap/Frontier/ShortenedThreeHeadThreshold.lean) · [Probability comparison under shortening](../../../ArkLib/Research/ProximityGap/Frontier/LocatorShortening.lean) |
 | MCA at the second designated prime across dimensions | For every $2\le K\le 2^{26}$ the first failure is **715827882**, on every injective domain of length $2^{30}$ and at every positive width. The same holds over every prime field with budget $2^{31}$. | [Named theorem and budget–dimension classification](../../../ArkLib/Research/ProximityGap/Frontier/TerminalDimensionThreshold.lean) |
 | Rate $1/16$ MCA at budget $2^{31}$ on every smooth length-$2^{30}$ domain | Every positive width is safe exactly below $715827882/2^{30}$ over every eligible finite field. The universal rank formula returns 715827882 throughout this field band. On the second designated prime Lean also proves that the executable returns this value. | [All smooth fields](../../../ArkLib/Research/ProximityGap/SecondBudgetSmoothReview.lean) · [Executable equality](../../../ArkLib/Research/ProximityGap/SecondPrimeRankReview.lean) |
 | Rate $1/16$ MCA on every injective length-$2^{30}$ prime-field domain | For $1565873494\le B=\lfloor p/2^{128}\rfloor\le2147483648$, the first failure is $\max(671088640,\lfloor B/3\rfloor)$ at every positive width. For $671088640\le e\le715827881$ and $p\ge2305843008139952128$, the exact worst-pair error is $3(e+1)/p$. | [Complete threshold curve](../../../ArkLib/Research/ProximityGap/Frontier/ThreeHeadThresholdCurve.lean) |
@@ -1653,6 +1654,24 @@ operator norms are below $14\sqrt n$. Applying the matrix bound to
 indicator vectors yields the displayed inequality. Translation cancels in $a-b$,
 and scaling contributes the common sign $\chi(c)$. These finite numerical inequalities
 were computed outside Lean. [Certified transform](../../../scripts/probes/probe_sponsor_paley_spectrum.cpp)
+
+**Product strata of the subgroup sumset.** For $H=\langle g\rangle$ at each named prime,
+let $T_a=\{x+g^a/x:x\in H\}$. The ordinary signed Paley sums on $T_0,T_1$ are
+$1,617,901,344$ and $-65,858,000$ at the first prime, and $3,686,242,496$ and
+$-1,801,854,912$ at the second. Scaling gives every other product stratum. Each has
+at least $2^{29}$ points and absolute discrepancy below seven times its size. Under
+the verified fourth-energy floor the strata partition the nonzero subgroup sumset.
+On two separately injective exponent intervals in the same stratum, the certified
+one-dimensional Paley spectra bound relative discrepancy by $1.19\%$ when each has
+length at least $2^{27}$. The trace kernel splits into the two indices $i-j$ and
+$i+j-a$. Every complete double Fourier coefficient becomes a sum of at most two
+products of known one-dimensional coefficients. Four exact integer class sums
+suffice for each complete-stratum value. These are computed in GMP. The field
+factorization, trace fiber multiplicity and cyclic sum transport are proved in Lean.
+Cross-stratum rectangles and arbitrary small sets remain open.
+[Derivation and reproducibility](paley-product-traces.md) ·
+[Lean proofs](../../../ArkLib/Research/ProximityGap/Frontier/PaleyInversionTrace.lean) ·
+[Prime verifier](../../../scripts/probes/probe_sponsor_paley_trace.cpp)
 
 **Fourier energy of a weighted code domain.** Let $D=t+cH$, write
 $S_{xy}=\chi(x-y)$ on $D$, and for complex weights $z$ put
