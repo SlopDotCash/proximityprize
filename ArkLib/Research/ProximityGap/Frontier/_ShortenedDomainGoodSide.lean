@@ -2,7 +2,7 @@
 Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and LICENSE.
 -/
-import ArkLib.Research.ProximityGap.Frontier._RSLocatorExtension
+import ArkLib.Research.ProximityGap.Frontier.LocatorShortening
 import ArkLib.Research.ProximityGap.Frontier._HalfPredecessorRateEighthFullWiring
 import ArkLib.Research.ProximityGap.Frontier._PrizeShapeRateHalfBracket
 
@@ -22,32 +22,9 @@ open scoped NNReal
 
 namespace ArkLib.ProximityGap.Frontier.ShortenedDomainGoodSide
 
+open LocatorShortening
+
 variable {F : Type} [Field F] [Fintype F] [DecidableEq F] {n N k : ℕ}
-
-omit [Field F] [DecidableEq F] in
-/-- Embed the old coordinates into a domain of any intermediate length in the same field. -/
-private theorem exists_extended_domain (dom : Fin n ↪ F) (hlen : n ≤ N)
-    (hfield : N ≤ Fintype.card F) :
-    ∃ (old : Fin n ↪ Fin N) (dom' : Fin N ↪ F), old.trans dom' = dom := by
-  classical
-  let A : Finset F := Finset.univ.map dom
-  have hA : A.card = n := by simp [A]
-  obtain ⟨T, hAT, _, hT⟩ := Finset.exists_subsuperset_card_eq
-    (Finset.subset_univ A) (hA.trans_le hlen) (by simpa using hfield)
-  let e := T.equivFinOfCardEq hT
-  let intoT : Fin n ↪ ↥T :=
-    ⟨fun i => ⟨dom i, hAT (Finset.mem_map.mpr ⟨i, Finset.mem_univ _, rfl⟩)⟩,
-      fun _ _ h => dom.injective (congrArg Subtype.val h)⟩
-  refine ⟨intoT.trans e.toEmbedding, e.symm.toEmbedding.trans (Function.Embedding.subtype _), ?_⟩
-  ext i
-  change (e.symm (e (intoT i))).val = dom i
-  rw [e.symm_apply_apply]
-  rfl
-
-private theorem agreement_mass (m t : ℕ) [NeZero m] :
-    (1 - (t : ℝ≥0) / (m : ℝ≥0)) * (m : ℝ≥0) = ((m - t : ℕ) : ℝ≥0) := by
-  have hm : (m : ℝ≥0) ≠ 0 := by exact_mod_cast NeZero.ne m
-  rw [tsub_mul, one_mul, div_mul_cancel₀ _ hm, Nat.cast_tsub]
 
 open Classical in
 /-- Uniform original-domain bound at the predecessor of `(N/2)/n`. -/

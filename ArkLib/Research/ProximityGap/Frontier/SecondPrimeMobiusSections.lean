@@ -210,7 +210,8 @@ theorem common_center [Infinite K] {L : Type*} (M : Finset L) (D : Finset K) (R 
   refine ⟨r, fun h => hr (mem_union_left _ h), fun z hz h => hr (mem_union_right _ ?_)⟩
   exact mem_biUnion.mpr ⟨z, hz, Multiset.mem_toFinset.mpr ((mem_roots (hn z hz)).mpr h)⟩
 
-private theorem section_weight {K : Type} [Field K] (d : ℕ) (f : K[X][X][X]) (z : K) (j : ℕ)
+/-- Scalar specialization preserves the coordinate and value weight bound. -/
+theorem section_weight {K : Type} [Field K] (d : ℕ) (f : K[X][X][X]) (z : K) (j : ℕ)
     (hj : j ∈ (f.map (evalRingHom (C z))).support) :
     ((f.map (evalRingHom (C z))).coeff j).natDegree + j * d ≤
       SecondPrimeCoordinateWeight.weight d f := by
@@ -229,6 +230,69 @@ open scoped NNReal
 
 variable {F I : Type} [Field F] [DecidableEq F] [Fintype I]
 variable {dom : I ↪ F} {δ : ℝ≥0} {u : Code.WordStack F (Fin 2) I}
+
+private theorem surface_coeff_support {K : Type} [Field K] (r : K) (W d : ℕ)
+    (f : K[X][X][X]) (j : ℕ) :
+    ((surfaceChart r W d f).coeff j).support = (f.coeff j).support := by
+  ext i
+  simp only [mem_support_iff, scalar_value_support]
+
+/-- The coordinate change preserves the value degree, including on the zero surface. -/
+theorem surface_value_degree {K : Type} [Field K] (r : K) (W d : ℕ) (f : K[X][X][X]) :
+    (surfaceChart r W d f).natDegree = f.natDegree := by
+  have hs : (surfaceChart r W d f).support = f.support := by
+    ext j
+    simp only [mem_support_iff, ← support_nonempty, surface_coeff_support]
+  simp only [natDegree, degree, hs]
+
+/-- The chart preserves every bound on total scalar and value degree. -/
+theorem surface_triangle {K : Type} [Field K] (r : K) (W d : ℕ) (f : K[X][X][X]) (m : ℕ)
+    (h : WeightedSylvesterDegree.TotalDegreeLe f m) :
+    WeightedSylvesterDegree.TotalDegreeLe (surfaceChart r W d f) m := by
+  intro j hj
+  have hs := surface_coeff_support r W d f j
+  have hf : f.coeff j ≠ 0 := by
+    rwa [← support_nonempty, ← hs, support_nonempty]
+  simpa only [natDegree, degree, hs] using h j hf
+
+/-- The transformed coordinate/value weight cannot exceed the homogenizing weight. -/
+theorem surface_weight_le {K : Type} [Field K] (r : K) (d : ℕ) (f : K[X][X][X]) :
+    let W := SecondPrimeCoordinateWeight.weight d f
+    SecondPrimeCoordinateWeight.weight d (surfaceChart r W d f) ≤ W := by
+  intro W
+  apply SecondPrimeCoordinateWeight.weight_le_of_coeff
+  intro j i a ha
+  have hslot : ((surfaceChart r W d f).coeff j).coeff i ≠ 0 := fun he => ha (by simp [he])
+  have horig := (scalar_value_support r W d f j i).mp hslot
+  have hdeg : ((f.coeff j).coeff i).natDegree + j * d ≤ W :=
+    SecondPrimeCoordinateWeight.coeff_weight_le d f (leadingCoeff_ne_zero.mpr horig)
+  rw [surface_coeff] at ha
+  have h := (le_natDegree_of_ne_zero ha).trans
+    (chart_degree_le r (W - j * d) ((f.coeff j).coeff i) (by omega))
+  omega
+
+/-- One section whose value derivative reaches W−d certifies that the common
+chart retained the exact original coordinate/value weight. -/
+theorem surface_weight_eq_of_simple_degree {K : Type} [Field K] (r z : K) (d : ℕ)
+    (f : K[X][X][X]) (q : K[X]) (hq : q.natDegree ≤ d)
+    (hd : d < SecondPrimeCoordinateWeight.weight d f)
+    (hder : ((surfaceChart r (SecondPrimeCoordinateWeight.weight d f) d f).derivative.eval₂
+      (evalRingHom (C z)) q).natDegree = SecondPrimeCoordinateWeight.weight d f - d) :
+    SecondPrimeCoordinateWeight.weight d
+      (surfaceChart r (SecondPrimeCoordinateWeight.weight d f) d f) =
+      SecondPrimeCoordinateWeight.weight d f := by
+  let W := SecondPrimeCoordinateWeight.weight d f
+  let g := surfaceChart r W d f
+  let v := SecondPrimeCoordinateWeight.weight d g
+  let P := g.map (evalRingHom (C z))
+  have hw : ∀ j ∈ P.support, (P.coeff j).natDegree + j * d ≤ v := section_weight d g z
+  have hl := eval_degree (v - d) d P.derivative q hq (derivative_weight v d P hw)
+  have he : (P.derivative.eval q).natDegree = W - d := by
+    simpa only [P, derivative_map, eval_map, g, W] using hder
+  change v = W
+  have hu : v ≤ W := surface_weight_le r d f
+  change d < W at hd
+  omega
 
 /-- Selected sections of the component where the value derivative specializes nonzero. -/
 noncomputable def simplePopulation {K : Type} [Field K] (fam : Family dom δ u) (φ : F →+* K)

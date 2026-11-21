@@ -85,4 +85,6 @@ $$
 \sum_b W_A(b)^4=24D_4+p(3m^2-2m)-6m^3+14m^2-9m
    -6\sum_{a\in A} W_A(-a)^2.
 $$
-For a fixed row let $n_b=m-\mathbf1_{-b\in A}$. Its fourth elementary symmetric sum satisfies $24e_4=W^4-(6n_b-8)W^2+3n_b^2-6n_b$ by expanding into partitions of four positions. Summing gives the identity using $\sum_b W_A(b)^2=m(p-m)$. Consequently a power saving in the one-sided average elliptic sum relative to $m$ suffices as soon as $m\ge p^{1/3+\gamma}$ for fixed $\gamma>0$. The probe enumerates affine points on each individual curve and verifies the fourth-moment formula on every nonempty domain for $p=3,5,7,11$. [Exact check](../../../scripts/probes/probe_paley_domain_tails.py)
+For a fixed row let $n_b=m-\mathbf1_{-b\in A}$. Its fourth elementary symmetric sum satisfies $24e_4=W^4-(6n_b-8)W^2+3n_b^2-6n_b$ by expanding into partitions of four positions. Summing gives the identity using $\sum_b W_A(b)^2=m(p-m)$. Consequently a power saving in the one-sided average elliptic sum relative to $m$ suffices as soon as $m\ge p^{1/3+\gamma}$ for fixed $\gamma>0$. Lean verifies this identity, its resulting bound on every rectangle, and the exact mean quartic sum $3/(p-2)$ when averaging over all domains of any fixed size from 4 through $p$, for $p\ge5$. [Quartic moment and average in Lean](../../../ArkLib/Research/ProximityGap/Frontier/PaleyQuarticTraceMoment.lean)
+
+The probe enumerates affine points on each individual curve and verifies the fourth-moment formula on every nonempty domain for $p=3,5,7,11$. [Exact check](../../../scripts/probes/probe_paley_domain_tails.py)

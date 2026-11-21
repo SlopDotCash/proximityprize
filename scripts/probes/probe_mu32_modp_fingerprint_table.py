@@ -17,7 +17,7 @@ def isprime(n):
 assert isprime(p) and (p-1)%N==0
 odd=p-1; e=0
 while odd%2==0: odd//=2; e+=1
-assert e>=64
+assert e>=24  # named production primes have 2-adic valuation 36 and 30
 c=2
 while pow(c,(p-1)//2,p)!=p-1: c+=1
 h=pow(c,odd,p)                      # order 2^e
