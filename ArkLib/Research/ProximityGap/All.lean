@@ -774,6 +774,7 @@ import ArkLib.Research.ProximityGap.Frontier.RatioImagePermInvariant
 import ArkLib.Research.ProximityGap.Frontier.RatioLevelSet
 import ArkLib.Research.ProximityGap.Frontier.RatioProfileDegreeObstruction
 import ArkLib.Research.ProximityGap.Frontier.RationalFiberEndpoint
+import ArkLib.Research.ProximityGap.Frontier.RationalTetrahedronLimits
 import ArkLib.Research.ProximityGap.Frontier.RawJacobianWindow
 import ArkLib.Research.ProximityGap.Frontier.RawMGFSaddleVacuity
 import ArkLib.Research.ProximityGap.Frontier.RealizerL2NotSup
@@ -878,7 +879,6 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSmoothSeed
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSylvesterFiberMass
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeTerminalCharge
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeTerminalKernel
-import ArkLib.Research.ProximityGap.Frontier.RationalTetrahedronLimits
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeTetrahedron
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeUnrestrictedJetBudget
 import ArkLib.Research.ProximityGap.Frontier.SectionNumeratorCharts
