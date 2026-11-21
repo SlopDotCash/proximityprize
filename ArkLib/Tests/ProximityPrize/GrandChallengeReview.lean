@@ -47,7 +47,7 @@ theorem halfRateWindow {p : ℕ} [Fact p.Prime] {g : ZMod p}
 /-- For a supplied smooth code, compare the two rank predictions directly with the
 canonical security inequalities at any radius in the closed unit interval. -/
 theorem allRadii {F ι : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
-    [Fintype ι] [Nonempty ι] [DecidableEq ι] (D : ι ↪ F) [ReedSolomon.Smooth D]
+    [Fintype ι] [Nonempty ι] (D : ι ↪ F) [ReedSolomon.Smooth D]
     (k m : ℕ) (hm : 0 < m) (ε δ : ℝ≥0) (hδ : δ ≤ 1)
     (hk : 2 * k = Fintype.card ι ∨ 4 * k = Fintype.card ι ∨
       8 * k = Fintype.card ι ∨ 16 * k = Fintype.card ι) :
@@ -61,7 +61,10 @@ theorem allRadii {F ι : Type} [Field F] [Fintype F] [DecidableEq F] [Sampleable
       match RankReview.listAnswer D ε k m with
       | none => True
       | some e => δ < (e.val : ℝ≥0) / Fintype.card ι) := by
+  classical
   obtain ⟨mca, lists⟩ := RankReview.correctForEveryDomain D ε k hk
-  exact ⟨mca δ hδ, lists m hm δ hδ⟩
+  constructor
+  · cases h : RankReview.mcaAnswer D ε k <;> simpa only [h] using mca δ hδ
+  · cases h : RankReview.listAnswer D ε k m <;> simpa only [h] using lists m hm δ hδ
 
 end ProximityPrize.Review

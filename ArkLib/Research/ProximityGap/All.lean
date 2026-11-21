@@ -282,6 +282,7 @@ import ArkLib.Research.ProximityGap.Frontier.FermatPowerMoment
 import ArkLib.Research.ProximityGap.Frontier.FiberReverseRatio
 import ArkLib.Research.ProximityGap.Frontier.FieldListAtMinimumDistance
 import ArkLib.Research.ProximityGap.Frontier.FiniteFingerprintCount
+import ArkLib.Research.ProximityGap.Frontier.FiniteGaussianNullity
 import ArkLib.Research.ProximityGap.Frontier.FiniteObstructionGoodPrime
 import ArkLib.Research.ProximityGap.Frontier.FirstInteriorLevelDirectionBlind
 import ArkLib.Research.ProximityGap.Frontier.FirstOrderChargeFloor
@@ -364,6 +365,7 @@ import ArkLib.Research.ProximityGap.Frontier.ListCenterEntropyCeiling
 import ArkLib.Research.ProximityGap.Frontier.ListInterpolationBoundary
 import ArkLib.Research.ProximityGap.Frontier.ListScalarExtension
 import ArkLib.Research.ProximityGap.Frontier.ListSupportForcedPair
+import ArkLib.Research.ProximityGap.Frontier.ListSupportGaussian
 import ArkLib.Research.ProximityGap.Frontier.ListSupportRank
 import ArkLib.Research.ProximityGap.Frontier.LiuZhouSplitRecursion
 import ArkLib.Research.ProximityGap.Frontier.LogRatioTowerBoundedIncrement
@@ -520,6 +522,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeConditionedIncidence
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeConditionedThreshold
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeDegreeSevenDimension
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeIntrinsicArithmetic
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimePrimitiveSurface
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeQuarticInterpolation
 import ArkLib.Research.ProximityGap.Frontier.SelfConsistencyCeiling
 import ArkLib.Research.ProximityGap.Frontier.ShallowDiagonalRouteNonReach
