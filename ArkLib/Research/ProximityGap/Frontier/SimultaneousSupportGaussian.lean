@@ -4,6 +4,7 @@ SPDX-License-Identifier: MIT OR Apache-2.0
 -/
 import ArkLib.Research.ProximityGap.Frontier.FiniteGaussianNullity
 import ArkLib.Research.ProximityGap.Frontier.SimultaneousSupportParity
+import ArkLib.Research.ProximityGap.Frontier.ExactSizeMcaSupport
 
 /-! # Executable simultaneous MCA support tests
 
@@ -265,7 +266,79 @@ theorem mcaSafe_iff [Nonempty I] [Fintype I] [Fintype F] [SampleableType F] (E :
   simp only [Finset.Nonempty, mem_filter, violates, decide_eq_true_eq, label_mem labels hlabels,
     mem_profiles, allDrop_iff E labels hlabels, hsize, exists_prop]
 
+/-- Enumerate the remaining labels directly after fixing the affine origin and scale. -/
+def anchoredSets (labels : List F) : ℕ → Finset (Finset F)
+  | 0 => {{0}}
+  | B + 1 => (((labels.toFinset.erase 0).erase 1).powersetCard B).image
+      fun U => insert 0 (insert 1 U)
+
+private theorem mem_anchoredSets (labels : List F) (hl : ∀ g, g ∈ labels)
+    (B : ℕ) (G : Finset F) :
+    G ∈ anchoredSets labels B ↔ G.card = B + 1 ∧ 0 ∈ G ∧ (0 < B → 1 ∈ G) := by
+  cases B with
+  | zero =>
+    simp only [anchoredSets, mem_singleton, Nat.zero_add, lt_self_iff_false, false_implies,
+      and_true]
+    constructor
+    · rintro rfl
+      simp
+    · rintro ⟨h, hz⟩
+      obtain ⟨a, rfl⟩ := card_eq_one.mp h
+      have ha : (0 : F) = a := Finset.mem_singleton.mp hz
+      rw [← ha]
+  | succ B =>
+    simp only [anchoredSets, mem_image, mem_powersetCard, Nat.succ_pos, true_implies]
+    constructor
+    · rintro ⟨U, ⟨hU, hc⟩, rfl⟩
+      have h0 : (0 : F) ∉ U := fun h => notMem_erase _ _ ((mem_erase.mp (hU h)).2)
+      have h1 : (1 : F) ∉ U := fun h => notMem_erase _ _ (hU h)
+      simp [h0, h1, hc]
+    · rintro ⟨hc, hz, ho⟩
+      have ho' : (1 : F) ∈ G.erase 0 := mem_erase.mpr ⟨one_ne_zero, ho⟩
+      refine ⟨(G.erase 0).erase 1, ⟨?_, ?_⟩, ?_⟩
+      · intro x hx
+        obtain ⟨h1, hx'⟩ := mem_erase.mp hx
+        exact mem_erase.mpr ⟨h1, mem_erase.mpr ⟨(mem_erase.mp hx').1,
+          List.mem_toFinset.mpr (hl x)⟩⟩
+      · rw [card_erase_of_mem ho', card_erase_of_mem hz, hc]
+        omega
+      · rw [insert_erase ho', insert_erase hz]
+
+/-- Search only fixed-size support assignments on normalized scalar sets. -/
+def anchoredSafe (E : Fin n ≃ I) (labels : List F) (D : I ↪ F) (k B t : ℕ) : Bool :=
+  let supports := (sites E).toFinset.powersetCard (max t (k + 1))
+  decide (∀ G ∈ anchoredSets labels B,
+    ∀ S ∈ (Fintype.piFinset fun _ : G => supports), allDrop E labels D k G S = false)
+
+/-- The reduced search computes the canonical MCA budget predicate for the supplied domain. -/
+theorem anchoredSafe_iff [Nonempty I] [Fintype I] [Fintype F] [SampleableType F]
+    (E : Fin n ≃ I) (labels : List F) (hl : ∀ g, g ∈ labels) (D : I ↪ F)
+    (k B e : ℕ) (hn : 0 < n) :
+    anchoredSafe E labels D k B (n - e) = true ↔
+      CoreDefinitions.mcaError (CoreDefinitions.AffineLineGenerator F) (ReedSolomon.code D k)
+        ((e : ℝ) / n) ≤ (B : ℝ≥0∞) / Fintype.card F := by
+  let δ : ℝ≥0 := (e : ℝ≥0) / n
+  have hcard : Fintype.card I = n := (Fintype.card_congr E).symm.trans (Fintype.card_fin n)
+  have hfloor : Fintype.card I - ⌊δ * Fintype.card I⌋₊ = n - e := by
+    simp only [hcard, δ, div_mul_cancel₀ _ (by exact_mod_cast hn.ne' : (n : ℝ≥0) ≠ 0),
+      Nat.floor_natCast]
+  have hs (S : Finset I) : S ⊆ (sites E).toFinset :=
+    fun i _ => List.mem_toFinset.mpr (mem_sites E i)
+  change _ ↔ CoreDefinitions.mcaError _ _ (δ : ℝ) ≤ _
+  rw [← not_lt, ExactSizeMcaSupport.anchored_failure_iff D k B δ]
+  simp only [anchoredSafe, decide_eq_true_eq, mem_anchoredSets labels hl, Fintype.mem_piFinset,
+    mem_powersetCard, hs, true_and, ← Bool.not_eq_true, allDrop_iff E labels hl, hfloor]
+  constructor
+  · intro hall ⟨G, hc, hz, ho, S, hS, hd⟩
+    exact hall G ⟨hc, hz, ho⟩ S hS hd
+  · intro h G ⟨hc, hz, ho⟩ S hS hd
+    exact h ⟨G, hc, hz, ho, S, hS, hd⟩
+
+
+
 end ProximityGap.SimultaneousSupportGaussian
 
 #print axioms ProximityGap.SimultaneousSupportGaussian.dimension_eq
 #print axioms ProximityGap.SimultaneousSupportGaussian.mcaSafe_iff
+
+#print axioms ProximityGap.SimultaneousSupportGaussian.anchoredSafe_iff

@@ -4,6 +4,9 @@
 # All names verified against source namespaces — a rename or deletion here is a
 # hard CI failure, not a skip (update this list in the same PR as the rename).
 
+# The coordinate derivative resultant of a squarefree parameter polynomial survives
+ArkLib.Research.ProximityGap.Frontier.SquarefreeCoordinateResultant ProximityGap.SquarefreeCoordinateResultant.squarefree_resultant_ne_zero
+
 # Fixed-size supports and normalized scalar labels for the exact MCA test
 ArkLib.Research.ProximityGap.Frontier.ExactSizeMcaSupport ProximityGap.ExactSizeMcaSupport.anchored_failure_iff
 ArkLib.Research.ProximityGap.Frontier.ExactSizeMcaSupport ProximityGap.ExactSizeMcaSupport.error_one_eq_grid
@@ -16,6 +19,8 @@ ArkLib.Research.ProximityGap.Frontier.FirstPrimeSepticCores ProximityGap.FirstPr
 ArkLib.Research.ProximityGap.Frontier.ReciprocalFiberLists ProximityGap.ReciprocalFiberLists.locator_eq_or_neg
 ArkLib.Research.ProximityGap.Frontier.ReciprocalFiberLists ProximityGap.ReciprocalFiberLists.split_fiber
 ArkLib.Research.ProximityGap.Frontier.ReciprocalFiberLists ProximityGap.ReciprocalFiberLists.split_fibers
+ArkLib.Research.ProximityGap.Frontier.ReciprocalFiberLists ProximityGap.ReciprocalFiberLists.lift_agreements
+ArkLib.Research.ProximityGap.Frontier.ReciprocalFiberLists ProximityGap.ReciprocalFiberLists.rotation_weight
 ArkLib.Research.ProximityGap.Frontier.RecursiveListPacking ProximityGap.RecursiveListPacking.list_bound
 ArkLib.Research.ProximityGap.Frontier.RecursiveListPacking ProximityGap.RecursiveListPacking.four_rates_128
 ArkLib.Research.ProximityGap.Frontier.RecursiveListPacking ProximityGap.RecursiveListPacking.prime_four_rates
@@ -166,3 +171,9 @@ ArkLib.Research.ProximityGap.RankExecutable ProximityPrize.RankExecutable.correc
 ArkLib.Research.ProximityGap.RankExecutable ProximityPrize.RankExecutable.correctForEveryDomain
 ArkLib.Research.ProximityGap.Frontier.SimultaneousSupportGaussian ProximityGap.SimultaneousSupportGaussian.mcaSafe_iff
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeNonlinearObstruction ArkLib.ProximityGap.Frontier.SecondPrimeNonlinearObstruction.actual_factor
+
+# First-failure counts on the order-2^30 budget-one subgroup and comparisons with Johnson
+ArkLib.Research.ProximityGap.RankProductionDomain ProximityPrize.RankProductionDomain.numericalBoundaries
+ArkLib.Research.ProximityGap.RankProductionDomain ProximityPrize.RankProductionDomain.executable_budget_one
+ArkLib.Research.ProximityGap.RankJohnsonComparison ProximityPrize.RankJohnsonComparison.prime246_above
+ArkLib.Research.ProximityGap.RankJohnsonComparison ProximityPrize.RankJohnsonComparison.listAtJohnson_exceeds_one
