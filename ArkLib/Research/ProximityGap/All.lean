@@ -366,6 +366,7 @@ import ArkLib.Research.ProximityGap.Frontier.FiveCroppedSplitPencil
 import ArkLib.Research.ProximityGap.Frontier.FiveEighthCubicFactors
 import ArkLib.Research.ProximityGap.Frontier.FiveEighthThreeHeadCover
 import ArkLib.Research.ProximityGap.Frontier.FiveEighthsPlateauThreshold
+import ArkLib.Research.ProximityGap.Frontier.FiveHeadTrianglePacking
 import ArkLib.Research.ProximityGap.Frontier.FlatSectionWeightedDescent
 import ArkLib.Research.ProximityGap.Frontier.FlatSurfacePopulation
 import ArkLib.Research.ProximityGap.Frontier.FloorAsymptoticRadius
