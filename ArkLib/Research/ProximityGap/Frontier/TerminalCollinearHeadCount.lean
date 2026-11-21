@@ -18,6 +18,9 @@ open Finset Polynomial Code
 open ArkLib.ProximityGap.Frontier.HalfPredecessorBadEventRichPointBridge
 open ArkLib.ProximityGap.Frontier.HalfPredecessorLineCoreGeometry
 open ArkLib.ProximityGap.Frontier.HalfPredecessorSecantLines
+open ArkLib.ProximityGap.Frontier.ThreeHeadDeterminantCover (cover_of_three_noncollinear)
+open ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterDeterminantMultiplicity
+  (threeLineDeterminant)
 open ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterDeterminantCollapse
 open ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterCollapsedClusterInjection
 open ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterPrimitiveDirection
@@ -79,7 +82,7 @@ theorem collinear_card (fam : BadScalarRichPointFamily dom k δ u) (H : Finset (
 omit [Fintype I] [Nonempty I] in
 /-- A second-order inclusion-exclusion lower bound on the union using uniform
 individual sizes and pairwise overlap bounds. -/
-private theorem union_lower {J : Type} [DecidableEq J] (S : Finset J) (C : J → Finset I)
+private theorem union_lower {J : Type} (S : Finset J) (C : J → Finset I)
     {w d : ℕ} (hw : ∀ i ∈ S, w ≤ (C i).card)
     (hd : ∀ i ∈ S, ∀ j ∈ S, i ≠ j → (C i ∩ C j).card ≤ d) :
     S.card*w ≤ (S.biUnion C).card + S.card.choose 2*d := by
@@ -112,7 +115,7 @@ theorem selected_card_of_few_heads (fam : BadScalarRichPointFamily dom k δ u)
     (G : Finset F) (hG : G ⊆ fam.G)
     (hn : Fintype.card I = 1073741824) (hk : k = 67108864) {e : ℕ}
     (hl : 671088640 ≤ e) (hu : e ≤ 715827881)
-    (ht : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊ = 1073741824-e)
+    (ht : ⌈(1 - δ) * (Fintype.card I : ℝ≥0)⌉₊ = 1073741824 - e)
     (H : Finset (LineParameter F)) (hH : H ⊆ lineParameters fam)
     (hfour : H.card ≤ 4) (hbig : ∀ c ∈ H, 512 < (pointsOn fam c).card)
     (hexception : (G \ H.biUnion (pointsOn fam)).card ≤ 16546) :
@@ -166,11 +169,9 @@ theorem selected_card_of_few_heads (fam : BadScalarRichPointFamily dom k δ u)
       rw [hj] at hcount hU <;> norm_num [Nat.choose] at hU <;> omega
   · push Not at hdet
     obtain ⟨c, hc, hnon⟩ := hdet
-    have hnon' : ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterDeterminantMultiplicity.threeLineDeterminant
-        a b c ≠ 0 := by
-      simpa only [ArkLib.ProximityGap.Frontier.HalfPredecessorRateQuarterDeterminantMultiplicity.threeLineDeterminant,
-        lineDeterminant, mul_comm] using hnon
-    have hcover := ArkLib.ProximityGap.Frontier.ThreeHeadDeterminantCover.cover_of_three_noncollinear
+    have hnon' : threeLineDeterminant a b c ≠ 0 := by
+      simpa only [threeLineDeterminant, lineDeterminant, mul_comm] using hnon
+    have hcover := cover_of_three_noncollinear
       fam (show 1 ≤ k by omega) a b c (hH ha) (hH hb) (hH hc) hnon' (by
         have h1 := hcore a ha
         have h2 := hcore b hb
