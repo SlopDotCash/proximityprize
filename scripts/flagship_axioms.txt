@@ -18,9 +18,24 @@ ArkLib.Research.ProximityGap.Frontier.SmoothCubicBudgetWindow ArkLib.ProximityGa
 ArkLib.Research.ProximityGap.Frontier.SmoothCubicBudgetWindow ArkLib.ProximityGap.Frontier.SmoothCubicBudgetWindow.exact_eps
 ArkLib.Research.ProximityGap.Frontier.SmoothCubicBudgetWindow ArkLib.ProximityGap.Frontier.SmoothCubicBudgetWindow.rank_answer
 
+# Single-rate field-size tests for the literal and operational challenges
+ArkLib.Research.ProximityGap.JointAdjacentFieldReview ProximityPrize.JointAdjacentFieldReview.rank_answers
+ArkLib.Research.ProximityGap.JointAdjacentFieldReview ProximityPrize.JointAdjacentFieldReview.prize_rate_size_iff
+ArkLib.Research.ProximityGap.JointAdjacentFieldReview ProximityPrize.JointAdjacentFieldReview.attained_iff
+
+# Concrete quadratic extension and the first-prime two-interpolant proof
+ArkLib.Research.ProximityGap.Frontier.QuadraticCubicWindowExample ArkLib.ProximityGap.Frontier.QuadraticCubicWindowExample.classification
+ArkLib.Research.ProximityGap.Frontier.QuadraticCubicWindowExample ArkLib.ProximityGap.Frontier.QuadraticCubicWindowExample.rank_answer
+ArkLib.Research.ProximityGap.Frontier.QuarterRateRichSecants ArkLib.ProximityGap.Frontier.QuarterRateRichSecants.two_rich_cap
+ArkLib.Research.ProximityGap.Frontier.QuarterRateSharedResultant ArkLib.ProximityGap.Frontier.QuarterRateSharedResultant.common_resultant
 # Independent component and polar columns in the higher-rate safety estimates
 ArkLib.Research.ProximityGap.Frontier.PolarBasisDegreeLoss ArkLib.ProximityGap.Frontier.PolarBasisDegreeLoss.separate_blocks
 ArkLib.Research.ProximityGap.Frontier.PolarBasisDegreeLoss ArkLib.ProximityGap.Frontier.PolarBasisDegreeLoss.weighted_loss
+
+# Shortening at fixed error count and its sharp finite-field threshold
+ArkLib.Research.ProximityGap.Frontier.LocatorShortening ArkLib.ProximityGap.Frontier.LocatorShortening.eps_le_extension
+ArkLib.Research.ProximityGap.Frontier.ShortenedThreeHeadThreshold ArkLib.ProximityGap.Frontier.ShortenedThreeHeadThreshold.classification
+ArkLib.Research.ProximityGap.Frontier.ShortenedThreeHeadThreshold ArkLib.ProximityGap.Frontier.ShortenedThreeHeadThreshold.second_prime
 
 # Exact rate-one-sixteenth MCA threshold at the second designated prime
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicExact ArkLib.ProximityGap.Frontier.SecondPrimeCubicExact.secondPrime_rateSixteenth
@@ -48,6 +63,13 @@ ArkLib.Research.ProximityGap.SecondPrimeRankReview ProximityPrize.SecondPrimeRan
 ArkLib.Research.ProximityGap.Frontier.FourRateBudget32 ProximityGap.FourRateBudget32.mca_threshold
 ArkLib.Research.ProximityGap.Frontier.FourRateBudget32 ProximityGap.FourRateBudget32.list_threshold
 ArkLib.Research.ProximityGap.Frontier.FourRatePrime152 ProximityGap.FourRatePrime152.thresholds
+
+# Independent common-chart proof and terminal budget interval at characteristic above 1,320,000,000
+ArkLib.Research.ProximityGap.Frontier.SecondPrimeTerminalCharge ArkLib.ProximityGap.Frontier.SecondPrimeTerminalCharge.threshold
+ArkLib.Research.ProximityGap.Frontier.SecondPrimeTerminalCharge ArkLib.ProximityGap.Frontier.SecondPrimeTerminalCharge.actual_bad_labels
+ArkLib.Research.ProximityGap.Frontier.SecondPrimeOrdinaryWindow ArkLib.ProximityGap.Frontier.SecondPrimeOrdinaryWindow.classification
+ArkLib.Research.ProximityGap.Frontier.SecondPrimeActualPolarGcd ArkLib.ProximityGap.Frontier.SecondPrimeActualPolarGcd.gcd_of_cubic_chart
+ArkLib.Research.ProximityGap.Frontier.SecondPrimeOrdinaryPolarCharge ArkLib.ProximityGap.Frontier.SecondPrimeOrdinaryPolarCharge.received_charge_of_persistent_gcd
 
 # All power fibers and the actual second-prime quadratic population cap
 ArkLib.Research.ProximityGap.Frontier.PaddedPowerSpecialization ProximityGap.PaddedPowerSpecialization.power_fiber_count
@@ -266,3 +288,12 @@ ArkLib.Research.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow ArkLib.Proximit
 
 ArkLib.Research.ProximityGap.Frontier.PrimitiveReceivedInterpolation ArkLib.ProximityGap.Frontier.PrimitiveReceivedInterpolation.raw_primitive_section
 ArkLib.Research.ProximityGap.Frontier.DegreeTenDeficitWindow ArkLib.ProximityGap.Frontier.DegreeTenDeficitWindow.primitive_two_head_bracket
+
+# Quarter-rate safety on every smooth prize-size domain with budget at least its length
+ArkLib.Research.ProximityGap.Frontier.QuarterRateFactorDivisibility ArkLib.ProximityGap.Frontier.QuarterRateFactorDivisibility.divides
+ArkLib.Research.ProximityGap.Frontier.QuarterRateFactorSelection ArkLib.ProximityGap.Frontier.QuarterRateFactorSelection.two_heads
+ArkLib.Research.ProximityGap.Frontier.QuarterRateCommonPopulation ArkLib.ProximityGap.Frontier.QuarterRateCommonPopulation.head_of_large_population
+ArkLib.Research.ProximityGap.Frontier.QuarterRateCompleteSafety ArkLib.ProximityGap.Frontier.QuarterRateCompleteSafety.family_cap
+ArkLib.Research.ProximityGap.Frontier.QuarterRateCompleteSafety ArkLib.ProximityGap.Frontier.QuarterRateCompleteSafety.predecessor_eps
+ArkLib.Research.ProximityGap.Frontier.QuarterRateCompleteSafety ArkLib.ProximityGap.Frontier.QuarterRateCompleteSafety.smooth_safe
+ArkLib.Research.ProximityGap.Frontier.QuarterRateCompleteSafety ArkLib.ProximityGap.Frontier.QuarterRateCompleteSafety.named_bracket

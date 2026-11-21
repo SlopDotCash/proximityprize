@@ -10,6 +10,8 @@ The formal argument counts factors of the value-cubic interpolant. A cubic can s
 
 The earlier degree-34 interpolation proof establishes the exact numerator through **442128987** errors using a single quadratic interpolant. [Single interpolant](../../../ArkLib/Research/ProximityGap/Frontier/QuarterRateQuadraticSafety.lean)
 
+A second Lean proof covers fields of characteristic greater than **1252698792**. At the predecessor it bounds the population by $n$ on every injective domain. A factor carrying too many labels for a proper intersection divides both interpolants. Every common factor carrying more than 263 labels lies on an actual secant. Counting forces two distinct secants with at least 223696215 labels each, whose overlap bounds the total by $n$. It follows that every smooth domain with $q<2^{256}$ and budget at least $n$ is safe through **447392427** errors at every positive width. [Factor divisibility](../../../ArkLib/Research/ProximityGap/Frontier/QuarterRateFactorDivisibility.lean) · [Secant extraction](../../../ArkLib/Research/ProximityGap/Frontier/QuarterRateCommonPopulation.lean) · [Complete proof](../../../ArkLib/Research/ProximityGap/Frontier/QuarterRateCompleteSafety.lean)
+
 ## Two interpolants
 
 Suppose $n+1$ distinct genuinely bad labels have been selected, each with a degree-at-most-$d$ folded witness $q_z(X)$ and a nonjoint support of at least $t$ sites. Write $T$ for the scalar indeterminate and $Y$ for the folded value. Use coordinate weights $(1,0,d)$ on $(X,T,Y)$. Here $\Delta=3t-3d-n=2$.
