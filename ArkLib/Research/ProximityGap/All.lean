@@ -481,6 +481,7 @@ import ArkLib.Research.ProximityGap.Frontier.RateHalfApolarThreshold
 import ArkLib.Research.ProximityGap.Frontier.RateHalfMobiusProduction
 import ArkLib.Research.ProximityGap.Frontier.RateHalfMobiusSeamArithmetic
 import ArkLib.Research.ProximityGap.Frontier.RateHalfPredecessorRichLines
+import ArkLib.Research.ProximityGap.Frontier.RateHalfRichHeadCensus
 import ArkLib.Research.ProximityGap.Frontier.RateHalfSevenTwentyFourths
 import ArkLib.Research.ProximityGap.Frontier.RateHalfSixteenFiberClasses
 import ArkLib.Research.ProximityGap.Frontier.RateQuarterApolarBudget
