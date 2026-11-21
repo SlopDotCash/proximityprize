@@ -321,6 +321,30 @@ At 694,116,763 errors every closed ball still has at most 1,660,990,722 codeword
 Three of the eight MCA endpoints on these two fields have numerical values in the current proof. All eight list endpoints and the five other MCA endpoints still require a matching safety bound and failure witness at adjacent counts, or an evaluation of the exact rank criterion. The comparison with Johnson answers a different question from finding those integers.
 
 \newpage
+\section*{5.3.\quad A uniform gap below capacity on smooth domains}
+
+For every supplied smooth domain over a field of order $q<2^{256}$, the two thresholds are bounded away from the sponsor's capacity $(n-k+1)/n$. The bounds hold across extension fields and at every positive interleaving width. In the table, $h$ is the minimum code length for the adjacent conclusion.
+
+\begin{center}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Rate & $h$ & Both budgets exceeded & $h$ & MCA error $1$, list size $>q^2$ \\
+\midrule
+$1/2$  & 256 & $127/256$ & 1,024 & $511/1024$   \\
+$1/4$  & 256 & $191/256$ & 1,024 & $767/1024$   \\
+$1/8$  & 256 & $223/256$ & 1,024 & $895/1024$   \\
+$1/16$ & 512 & $479/512$ & 2,048 & $1919/2048$  \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Every radius in a row has the form $1-k/n-1/h$, a distance $1/h+1/n$ below the sponsor's capacity. The first pair of columns gives an upper bound on both operational suprema at $\varepsilon=2^{-128}$. At or above the second radius, some received pair has every scalar bad and some closed ball contains more than $q^2$ codewords. The two witnesses can be different.
+
+\textbf{Lifting the base code.} Write $n=mh$ and $k=mj$. The map $x\mapsto x^m$ sends the smooth domain onto a smooth domain of size $h$, with exactly $m$ preimages per coordinate. Pullback takes a polynomial $f$ of degree less than $j$ to $f(X^m)$ of degree less than $k$. Repeating coordinates preserves relative Hamming distance, so distinct members of a base list give distinct members of the lifted list at the same radius. For MCA, smooth-domain descent shows that a joint interpolant on the lifted agreement set would give one on the base. The budget uses the same field before and after the lift.
+
+\textbf{Why the base counts suffice.} Among $(j+1)$-subsets of the base coset there are at most $h$ products of evaluation points. Subsets with the same product produce distinct polynomials of degree less than $j$ that agree with a common word on $j+1$ sites. In the first two columns $\binom{h}{j+1}>h2^{128}$ exceeds $h\lfloor q/2^{128}\rfloor$. The base circuit criterion likewise gives an over-budget MCA line at this radius. For the last two columns the base saturation theorem gives MCA error one, and $\binom{h}{j+1}>h2^{512}>h q^2$ proves the list claim. The \src{0624b2f4f81353c70938938fb780d390d7d701a7}{SmoothPrizeCapacityTable} theorems check the four integer comparisons in each column. These bounds quantify the capacity gap uniformly. A matching lower bound would be needed to identify a first failure with one of the entries.
+
+\newpage
 \section*{6.\quad Interpretation, evidence and attribution}
 \small
 \textbf{Relation to known results.} The sponsor's companion paper develops the challenge from proximity gaps and correlated agreement and asks what happens between the Johnson and capacity radii on smooth domains \cite{abf}. Ben-Sasson et al.\ prove quantitative proximity-gap statements by analyzing a formal point of an affine space \cite{bciks}. Brakensiek, Gopi and Makam use higher-order MDS properties of evaluation matrices to establish list-decoding capacity for generic Reed--Solomon codes \cite{bgm}. Jeronimo reports asymptotic prime-field bounds with fixed slack from capacity and a polynomial number of exceptions \cite{jeronimo}. The tests here evaluate a specified finite domain and integer budget. Their conclusions require no genericity or random choice of its coordinates. The tools in Sections 2 and 3 are Lagrange interpolation, elementary finite-vector-space counting, and inclusion--exclusion. A concise analytic classification for all production domains would give substantially more information about closeness to capacity than a finite search.
