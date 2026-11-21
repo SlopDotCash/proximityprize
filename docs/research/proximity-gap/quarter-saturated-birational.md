@@ -12,6 +12,16 @@ If $f$ were not birational onto its image, Lüroth's theorem would give a ration
 
 For two sites in one $\phi$-fiber, the evaluated matrices $V$ therefore differ by a common nonzero scalar. They have the same projective kernel, so a fiber containing a double site consists entirely of sites of the same pair stratum. Every such fiber is unramified because the vanishing triple minors have simple roots there. Hence there are exactly $(n-4)/q$ double fibers. Within each fiber the two mismatching heads give at most two fresh projective directions in total. The four singleton sites contribute at most twelve more. Thus all four heads give at most $2(n-4)/q+12\le n+8<2n$ directions, contradicting the hypothesized overrun. The residual irreducible plane curve has degree $2d=536870910$ and geometric genus zero.
 
+## A quarter of the double labels must change under every nontrivial rotation
+
+Fix $\lambda\in H$ other than one. Colour each double site by its unordered head pair and the singleton sites by a separate colour. Let $b$ be the number of **original double sites** $x$ whose colour at $\lambda x$ differs from the colour at $x$. Then
+\[
+ b\ge d+2=268435457.
+\]
+In particular an allocation using contiguous constant-colour runs in any cyclic generator order requires at least **268,435,457 double runs**, without any assumption on their lengths or balance.
+
+To prove this, let $F_1,F_2,F_3,F_4$ be the four degree-$2d$ signed triangle minors with $\sum_i F_i=0$. For each $i$ form $R_i(X)=F_i(\lambda X)/F_i(X)$. A pole must be an original double site at which the labelled pair changes, because the roots are simple and the same triangle contains the same pair at an unchanged site. The product $D_0(X)$ of $X-x$ over the $b$ changed double sites therefore clears every denominator. Each $D_0 R_i$ has degree at most $b$ and leading coefficient $\lambda^{2d}$, since $D_0$ is monic. Also $R_i(0)=1$ for every $i$, since the original minors are nonzero at zero. Subtract $R_4\sum_i F_i$ from $\sum_i R_i F_i=0$. The three entries $D_0(R_i-R_4)$ for $i=1,2,3$ give a polynomial row annihilating the first three signed minors. They have degree less than $b$ and vanish at zero. If they are nonzero, dividing through by $X$ gives a nonzero row of degree at most $b-2$, which is at least $d$ by scalar row rigidity. If all three entries vanish, the rational functions $R_i$ coincide and $f(\lambda X)=f(X)$. Birationality gives $\lambda=1$, contrary to its choice. This also handles $b=0,1$.
+
 ## A finite arithmetic test on the six marked strata
 
 For each head $i$, take the monic locator $K_i(X)$ whose roots are the three edge strata in the triangle omitting $i$. The four triple determinants are their nonzero scalar multiples and satisfy a signed linear relation. Thus **any four coefficient rows** of the four locators must give a singular matrix over the named prime field. An observed rank of four, using even a few coefficients, rigorously excludes that partition without solving for any heads.
