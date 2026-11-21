@@ -5,6 +5,7 @@ on:
   pull_request:
     paths:
       - ArkLib/Research/ProximityGap/Frontier/_IncidenceDependencyArithmetic.lean
+      - ArkLib/Research/ProximityGap/Frontier/_RichPencilCycleBudget.lean
       - ArkLib/Research/ProximityGap/Frontier/_ActiveErrorAffineCollapse.lean
       - docs/research/proximity-gap/multiline-relation-shortening.md
       - ArkLib/Research/ProximityGap.lean
@@ -83,4 +84,18 @@ jobs:
               if not no_axioms:
                   assert set(axiom.strip() for axiom in names.split(',')) <= {'propext', 'Classical.choice', 'Quot.sound'}, name
           print('Active-error collapse declarations kernel checked')
+          PY
+      - name: Check rich pencil cycle budgets and audit axioms
+        run: |
+          set -o pipefail
+          lake env lean ArkLib/Research/ProximityGap/Frontier/_RichPencilCycleBudget.lean | tee rich-pencil-axioms.log
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          text = Path('rich-pencil-axioms.log').read_text()
+          results = re.findall(r"'ProximityGap\.RichPencilCycleBudget\.([^']+)' depends on axioms:\s*\[([^\]]*)\]", text)
+          assert {name for name, _ in results} == {'adjacent_exception_mass_le', 'distance_le_twice_radius_of_cycle'}
+          assert len(results) == 2
+          for name, axioms in results:
+              assert {axiom.strip() for axiom in axioms.split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}, name
           PY
