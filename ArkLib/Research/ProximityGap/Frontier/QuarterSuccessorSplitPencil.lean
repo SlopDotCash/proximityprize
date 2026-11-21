@@ -28,33 +28,35 @@ theorem root_deficits (L D R direction u : ℕ) (bad : 1073741824<L) (pos : 1≤
 private def project : Fin 4 → Fin 3 := ![0,1,2,0]
 
 /-- Three degree-bounded polynomials with the full pair-fiber pattern supply at
-least n+2 actual bad labels in a single received stack at the successor step. -/
-theorem pencil_mass {I F : Type} [Fintype I] [Nonempty I] [DecidableEq I]
+least n+2+6j actual bad labels after trading three ordinary sites for holes per step. -/
+theorem pencil_mass_interval {I F : Type} [Fintype I] [Nonempty I] [DecidableEq I]
     [Field F] [Fintype F] [DecidableEq F] (dom : I ↪ F)
-    (hn : Fintype.card I = 1073741824) (fieldRoom : 1073741826^2 < Fintype.card F)
+    (hn : Fintype.card I = 1073741824) (j : ℕ) (hj : j ≤ 89478487)
+    (fieldRoom : (1073741826+6*j)^2 < Fintype.card F)
     (raw : I → Fin 4) (f : Fin 3 → F[X])
     (degree : ∀ i, (f i).natDegree≤268435454)
     (counts : ∀ j, (univ.filter (fun x => raw x = j)).card =
       (![268435454,268435454,268435454,268435462] : Fin 4 → ℕ) j)
     (pairs : ∀ x i j, (f i).eval (dom x) = (f j).eval (dom x) ↔ coincide (raw x) i j) :
-    (1073741826 : ℝ≥0∞)/Fintype.card F ≤ epsMCA (F:=F)
-      (ReedSolomon.code dom 268435456 : Set (I → F)) (447392428/1073741824) := by
+    ((1073741826+6*j : ℕ) : ℝ≥0∞)/Fintype.card F ≤ epsMCA (F:=F)
+      (ReedSolomon.code dom 268435456 : Set (I → F)) (((447392428+j : ℕ) : ℝ≥0)/1073741824) := by
   classical
-  obtain ⟨col,hf,hc⟩ := refine_fibers raw 268435454 0 89478487 1 counts
+  have rest : 0+3*(89478487-j)+(1+3*j)=268435462 := by omega
+  obtain ⟨col,hf,hc⟩ := refine_fibers raw 268435454 0 (89478487-j) (1+3*j) (rest ▸ counts)
   let select (s : Finset (Fin 8)) := univ.filter fun x => col x ∈ s
-  have scard (s : Finset (Fin 8)) : (select s).card = ∑ i ∈ s, weight 268435454 0 89478487 1 i := by
+  have scard (s : Finset (Fin 8)) : (select s).card = ∑ i ∈ s, weight 268435454 0 (89478487-j) (1+3*j) i := by
     rw [← sum_card_fiberwise_eq_card_filter univ s col]
     exact Finset.sum_congr rfl (fun j _ => hc j)
-  have ccard (i : Fin 3) : (select (coreClasses i)).card=626349395 := by
+  have ccard (i : Fin 3) : (select (coreClasses i)).card=626349395-j := by
     rw [scard]
-    fin_cases i <;> decide
+    fin_cases i <;> norm_num [coreClasses,weight,Finset.sum_insert] <;> omega
   have no_three (x : I) : col x≠3 := by
     intro bad
     have h := hc 3
     have hpos := card_pos.mpr (show (univ.filter fun y => col y=3).Nonempty from ⟨x,mem_filter.mpr ⟨mem_univ _,bad⟩⟩)
     change _ = 0 at h
     omega
-  let A : FourHeadWitness.CoreAllocation dom 268435456 (447392428/1073741824) := {
+  let A : FourHeadWitness.CoreAllocation dom 268435456 (((447392428+j : ℕ) : ℝ≥0)/1073741824) := {
     head := fun h => f (project h)
     background := fun x => (f (owner (col x))).eval (dom x)
     ordinary := select ordinaryClasses
@@ -79,12 +81,13 @@ theorem pencil_mass {I F : Type} [Fintype I] [Nonempty I] [DecidableEq I]
       rw [← hf]
       exact (by decide : ∀ i c, c∈coreClasses i → c≠3 → coincide (coarse c) i (owner c))
         _ _ (mem_filter.mp hx).2 (no_three x)
-    core_rank := fun j => by rw [ccard];decide
-    core_size := fun j => by
+    core_rank := fun _ => by rw [ccard];omega
+    core_size := fun _ => by
       rw [ccard,hn]
-      change (1-(447392428:ℝ≥0)/1073741824)*1073741824 ≤ 626349396
+      change (1-((447392428+j : ℕ) : ℝ≥0)/1073741824)*1073741824 ≤ ((626349395-j+1 : ℕ) : ℝ≥0)
       rw [tsub_mul,one_mul,div_mul_cancel₀ _ (by norm_num)]
-      norm_num
+      rw [tsub_le_iff_right]
+      exact_mod_cast (show 1073741824 ≤ (626349395-j)+1+(447392428+j) by omega)
     ordinary_mismatch := fun x hx => by
       let j := miss (col x)
       have hj : project j.castSucc=j := (by decide : ∀ j:Fin 3, project j.castSucc=j) j
@@ -92,8 +95,9 @@ theorem pencil_mass {I F : Type} [Fintype I] [Nonempty I] [DecidableEq I]
       rw [hj]
       exact fun h => (by decide : ∀ c, c∈ordinaryClasses → ¬coincide (coarse c) (miss c) (owner c)) _
         (mem_filter.mp hx).2 (hf x ▸ (pairs x _ _).1 h) }
-  have ocard : A.ordinary.card=1073741823 := (scard ordinaryClasses).trans (by decide)
-  have spec : A.special.card=1 := hc 7
+  have ocard : A.ordinary.card=1073741823-3*j := (scard ordinaryClasses).trans (by
+    norm_num [ordinaryClasses,weight,Finset.sum_insert];omega)
+  have spec : A.special.card=1+3*j := hc 7
   have roots (x : ↥A.special) : (univ.image fun h => (A.head h).eval (dom x.val)).card=3 := by
     let v (j : Fin 3) := (f j).eval (dom x.val)
     have hx : raw x.val=3 := by rw [← hf,(mem_filter.mp x.property).2];rfl
@@ -110,12 +114,29 @@ theorem pencil_mass {I F : Type} [Fintype I] [Nonempty I] [DecidableEq I]
       · rintro ⟨j,rfl⟩
         exact ⟨j.castSucc,congrArg v ((by decide : ∀ t:Fin 3,project t.castSucc=t) j)⟩
     rw [eq,card_image_of_injective _ inj,card_univ,Fintype.card_fin]
-  have count : A.count=1073741826 := by
+  have count : A.count=1073741826+6*j := by
     simp only [FourHeadWitness.CoreAllocation.count,ocard,roots,sum_const,card_univ,Fintype.card_coe,spec]
-    decide
-  obtain ⟨u,G,hG,hit⟩ := FourHeadWitness.exists_bad_scalar_set_of_values A (by omega) (by rw [count];simpa [pow_two] using fieldRoom)
+    change 1073741823-3*j+(1+3*j)*3=1073741826+6*j
+    omega
+  have room : 4 < Fintype.card F := lt_trans (by nlinarith [Nat.zero_le j] : 4 < (1073741826+6*j)^2) fieldRoom
+  obtain ⟨u,G,hG,hit⟩ := FourHeadWitness.exists_bad_scalar_set_of_values A room (by rw [count];simpa [pow_two] using fieldRoom)
   have mass := MCAWitnessSpread.epsMCA_ge_card_div_of_mcaEvent_set _ _ u G hit
   rwa [hG,count] at mass
+
+/-- Three degree-bounded polynomials with the full pair-fiber pattern supply at
+least n+2 actual bad labels in a single received stack at the successor step. -/
+theorem pencil_mass {I F : Type} [Fintype I] [Nonempty I] [DecidableEq I]
+    [Field F] [Fintype F] [DecidableEq F] (dom : I ↪ F)
+    (hn : Fintype.card I = 1073741824) (fieldRoom : 1073741826^2 < Fintype.card F)
+    (raw : I → Fin 4) (f : Fin 3 → F[X])
+    (degree : ∀ i, (f i).natDegree≤268435454)
+    (counts : ∀ j, (univ.filter (fun x => raw x = j)).card =
+      (![268435454,268435454,268435454,268435462] : Fin 4 → ℕ) j)
+    (pairs : ∀ x i j, (f i).eval (dom x) = (f j).eval (dom x) ↔ coincide (raw x) i j) :
+    (1073741826 : ℝ≥0∞)/Fintype.card F ≤ epsMCA (F:=F)
+      (ReedSolomon.code dom 268435456 : Set (I → F)) (447392428/1073741824) := by
+  exact pencil_mass_interval dom hn 0 (by decide) fieldRoom raw f degree counts pairs
+
 /-- Numeric nonlinear populations from the weighted variance bound, with K=81/100. -/
 theorem variance_numbers :
     ∀ b : Fin 2,
@@ -134,17 +155,18 @@ theorem variance_numbers :
   fin_cases b <;> norm_num
 
 /-- A literal pair of split polynomials of degree d−1 and their difference
-give the sufficient construction directly on the supplied evaluation domain. -/
-theorem mass_of_split_polynomials {I F : Type} [Fintype I] [Nonempty I] [DecidableEq I]
+give the growing bad-label count throughout the allocation interval. -/
+theorem mass_interval_of_split_polynomials {I F : Type} [Fintype I] [Nonempty I] [DecidableEq I]
     [Field F] [Fintype F] [DecidableEq F] (dom : I ↪ F)
-    (hn : Fintype.card I = 1073741824) (fieldRoom : 1073741826^2 < Fintype.card F)
+    (hn : Fintype.card I = 1073741824) (j : ℕ) (hj : j ≤ 89478487)
+    (fieldRoom : (1073741826+6*j)^2 < Fintype.card F)
     (P Q : F[X]) (dp : P.natDegree≤268435454) (dq : Q.natDegree≤268435454)
     (hp : (univ.filter fun x => P.eval (dom x)=0).card=268435454)
     (hq : (univ.filter fun x => Q.eval (dom x)=0).card=268435454)
     (hr : (univ.filter fun x => P.eval (dom x)=Q.eval (dom x)).card=268435454)
     (cop : ∀ x, P.eval (dom x)=0 → Q.eval (dom x)≠0) :
-    (1073741826 : ℝ≥0∞)/Fintype.card F ≤ epsMCA (F:=F)
-      (ReedSolomon.code dom 268435456 : Set (I → F)) (447392428/1073741824) := by
+    ((1073741826+6*j : ℕ) : ℝ≥0∞)/Fintype.card F ≤ epsMCA (F:=F)
+      (ReedSolomon.code dom 268435456 : Set (I → F)) (((447392428+j : ℕ) : ℝ≥0)/1073741824) := by
   classical
   let raw (x : I) : Fin 4 := if P.eval (dom x)=0 then 2 else if Q.eval (dom x)=0 then 1
     else if P.eval (dom x)=Q.eval (dom x) then 0 else 3
@@ -160,7 +182,7 @@ theorem mass_of_split_polynomials {I F : Type} [Fintype I] [Nonempty I] [Decidab
   have c₀ : (univ.filter fun x => raw x=0).card=268435454 := by simpa only [fun x => (tab x).2.2] using hr
   have total := sum_card_fiberwise_eq_card_filter (univ : Finset I) (univ : Finset (Fin 4)) raw
   simp [Fin.sum_univ_succ,hn] at total
-  apply pencil_mass dom hn fieldRoom raw (![0,P,Q] : Fin 3 → F[X]) ?_ ?_ ?_
+  apply pencil_mass_interval dom hn j hj fieldRoom raw (![0,P,Q] : Fin 3 → F[X]) ?_ ?_ ?_
   · intro i; fin_cases i <;> simp [dp,dq]
   · intro i; fin_cases i
     · exact c₀
@@ -180,6 +202,20 @@ theorem mass_of_split_polynomials {I F : Type} [Fintype I] [Nonempty I] [Decidab
     by_cases r : P.eval (dom x)=Q.eval (dom x)
     · fin_cases i <;> fin_cases j <;> simp [coincide,raw,q,Ne.symm q,r]
     · fin_cases i <;> fin_cases j <;> simp [coincide,raw,p,q,Ne.symm p,Ne.symm q,r,Ne.symm r]
+
+/-- A literal pair of split polynomials of degree d−1 and their difference
+give the sufficient construction directly on the supplied evaluation domain. -/
+theorem mass_of_split_polynomials {I F : Type} [Fintype I] [Nonempty I] [DecidableEq I]
+    [Field F] [Fintype F] [DecidableEq F] (dom : I ↪ F)
+    (hn : Fintype.card I = 1073741824) (fieldRoom : 1073741826^2 < Fintype.card F)
+    (P Q : F[X]) (dp : P.natDegree≤268435454) (dq : Q.natDegree≤268435454)
+    (hp : (univ.filter fun x => P.eval (dom x)=0).card=268435454)
+    (hq : (univ.filter fun x => Q.eval (dom x)=0).card=268435454)
+    (hr : (univ.filter fun x => P.eval (dom x)=Q.eval (dom x)).card=268435454)
+    (cop : ∀ x, P.eval (dom x)=0 → Q.eval (dom x)≠0) :
+    (1073741826 : ℝ≥0∞)/Fintype.card F ≤ epsMCA (F:=F)
+      (ReedSolomon.code dom 268435456 : Set (I → F)) (447392428/1073741824) := by
+  exact mass_interval_of_split_polynomials dom hn 0 (by decide) fieldRoom P Q dp dq hp hq hr cop
 
 /-- A split pencil cannot be too close to three disjoint cosets when the
 cleared numerators have degree below the coset order. The witness site is a
@@ -210,6 +246,7 @@ theorem near_coset_impossible {K : Type*} [Field K] {k : ℕ} (a b c x : K)
   have atx := congrArg (Polynomial.eval x) van
   simp [U,V,W,zero,he,hb,hd] at atx
 
+#print axioms mass_interval_of_split_polynomials
 #print axioms near_coset_impossible
 #print axioms variance_numbers
 #print axioms mass_of_split_polynomials
