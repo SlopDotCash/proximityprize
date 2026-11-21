@@ -41,32 +41,13 @@ theorem rankAnswer_of_interior_supremum (D : I ↪ F) (ε : ℝ≥0) (k : ℕ)
     RankReview.mcaAnswer D ε k = some e := by
   classical
   let _ : SampleableType F := SampleableType.ofFintype _
-  let E := (Fintype.equivFin I).symm
-  let labels := (Finset.univ : Finset F).toList
-  have hf (g : F) : g ∈ labels := by simp [labels]
-  let C : Set (I → F) := ReedSolomon.code D k
-  let n := Fintype.card I
-  let B := RankReview.budget F ε
-  let safe (i : Fin (n + 1)) := SimultaneousSupportGaussian.anchoredSafe E labels D k B (n - i.val)
-  have hn : 0 < (n : ℝ≥0) := by exact_mod_cast Fintype.card_pos (α := I)
-  have hb : (e.val : ℝ≥0) / n < 1 := (div_lt_one hn).mpr (by exact_mod_cast he)
-  have hs (i : Fin (n + 1)) : safe i = true ↔ i < e := by
-    let δ := (i.val : ℝ≥0) / n
-    have hg := SimultaneousSupportGaussian.anchoredSafe_iff E labels hf D k B i.val Fintype.card_pos
-    change safe i = true ↔ mcaError (AffineLineGenerator F) (ReedSolomon.code D k)
-      (δ : ℝ) ≤ (B : ℝ≥0∞) / Fintype.card F at hg
-    rw [← epsMCA_eq_mcaError] at hg
-    have hf' := SimultaneousSupportRank.epsMCA_le_iff_floor_budget C δ ε
-    have hb' := safe_iff_of_interior_supremum C ε _ hb hstar δ
-    refine hg.trans (hf'.symm.trans (hb'.trans ?_))
-    rw [div_lt_div_iff_of_pos_right hn]
-    exact_mod_cast Iff.rfl
-  have hit : ∃ i : Fin (n + 1), !safe i := ⟨e, by simpa using (hs e).not.mpr (lt_irrefl _)⟩
-  rw [← RankExecutable.mcaBoundary_eq E labels hf D ε k]
-  change Fin.find? (fun i => !safe i) = some e
-  rw [Fin.find?_eq_some_find_of_exists hit, Option.some.injEq, Fin.find_eq_iff]
-  exact ⟨by simpa using (hs e).not.mpr (lt_irrefl _),
-    fun i hi => by simpa using (hs i).mpr hi⟩
+  have hn : (0 : ℝ≥0) < Fintype.card I := by exact_mod_cast Fintype.card_pos
+  have hb := (div_lt_one hn).mpr (show (e.val : ℝ≥0) < Fintype.card I by exact_mod_cast he)
+  apply FullPrizeReview.correctBoundary_unique Fintype.card_pos (RankReview.mcaAnswer_correct D ε k)
+  intro δ _
+  change mcaError (AffineLineGenerator F) (ReedSolomon.code D k) (δ : ℝ) ≤ _ ↔ _
+  rw [← epsMCA_eq_mcaError]
+  exact safe_iff_of_interior_supremum _ ε _ hb hstar δ
 
 section Named
 open ArkLib.ProximityGap.KKH26
