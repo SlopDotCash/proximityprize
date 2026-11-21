@@ -34,6 +34,7 @@ import ArkLib.Research.ProximityGap.Connections.SmoothDomainMCAWitness
 import ArkLib.Research.ProximityGap.CurveUDRBound
 import ArkLib.Research.ProximityGap.DG25Sampling
 import ArkLib.Research.ProximityGap.Decision
+import ArkLib.Research.ProximityGap.DesignatedPrimeJohnson
 import ArkLib.Research.ProximityGap.EtaAutocorrInvolutionPaired
 import ArkLib.Research.ProximityGap.EtaInvolutionFixedPointReal
 import ArkLib.Research.ProximityGap.EtaNormSqRealShiftForm
@@ -54,7 +55,9 @@ import ArkLib.Research.ProximityGap.Frontier.AgreementQuadratic
 import ArkLib.Research.ProximityGap.Frontier.AgreementSetMaximal
 import ArkLib.Research.ProximityGap.Frontier.AgreementSetPacking
 import ArkLib.Research.ProximityGap.Frontier.AgreementSetTuplePacking
+import ArkLib.Research.ProximityGap.Frontier.AgreementSlicePacking
 import ArkLib.Research.ProximityGap.Frontier.AgreementSubsetListPacking
+import ArkLib.Research.ProximityGap.Frontier.AgreementSupportBarrier
 import ArkLib.Research.ProximityGap.Frontier.AlgebraicSectionSpecialization
 import ArkLib.Research.ProximityGap.Frontier.AlignableLePinnedMaxMult
 import ArkLib.Research.ProximityGap.Frontier.AlignedAmalgamation
@@ -296,6 +299,7 @@ import ArkLib.Research.ProximityGap.Frontier.DiscriminantSquareClass
 import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodMomentLaw
 import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodSecondMoment
 import ArkLib.Research.ProximityGap.Frontier.DividedDifferenceDeflation
+import ArkLib.Research.ProximityGap.Frontier.DoubleInterpolationCommonFactor
 import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticHeadCount
 import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticPhase
 import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticThreshold
@@ -352,6 +356,7 @@ import ArkLib.Research.ProximityGap.Frontier.FirstInteriorLevelDirectionBlind
 import ArkLib.Research.ProximityGap.Frontier.FirstOrderChargeFloor
 import ArkLib.Research.ProximityGap.Frontier.FirstOrderDegreeOneBoundary
 import ArkLib.Research.ProximityGap.Frontier.FirstOrderZeroCapJohnson
+import ArkLib.Research.ProximityGap.Frontier.FirstPrimeHyperbolaGrid
 import ArkLib.Research.ProximityGap.Frontier.FirstPrimeQuarterSuccessor
 import ArkLib.Research.ProximityGap.Frontier.FirstPrimeSepticCores
 import ArkLib.Research.ProximityGap.Frontier.FisherLevelLocked
@@ -361,6 +366,7 @@ import ArkLib.Research.ProximityGap.Frontier.FiveCroppedSplitPencil
 import ArkLib.Research.ProximityGap.Frontier.FiveEighthCubicFactors
 import ArkLib.Research.ProximityGap.Frontier.FiveEighthThreeHeadCover
 import ArkLib.Research.ProximityGap.Frontier.FiveEighthsPlateauThreshold
+import ArkLib.Research.ProximityGap.Frontier.FiveHeadTrianglePacking
 import ArkLib.Research.ProximityGap.Frontier.FlatSectionWeightedDescent
 import ArkLib.Research.ProximityGap.Frontier.FlatSurfacePopulation
 import ArkLib.Research.ProximityGap.Frontier.FloorAsymptoticRadius
@@ -405,6 +411,7 @@ import ArkLib.Research.ProximityGap.Frontier.GenericProjectivePolarGcd
 import ArkLib.Research.ProximityGap.Frontier.GenericSuperDiagonalLower
 import ArkLib.Research.ProximityGap.Frontier.GeometricIncompleteSumNoGo
 import ArkLib.Research.ProximityGap.Frontier.GeometricWordLocator
+import ArkLib.Research.ProximityGap.Frontier.GoldilocksMixedTrace
 import ArkLib.Research.ProximityGap.Frontier.GradedAntipodalVanishingLower
 import ArkLib.Research.ProximityGap.Frontier.HalfListSplitDifferences
 import ArkLib.Research.ProximityGap.Frontier.HalfRadiusListMcaSeparation
@@ -426,6 +433,8 @@ import ArkLib.Research.ProximityGap.Frontier.HodgeSectionLattice
 import ArkLib.Research.ProximityGap.Frontier.HodgeSectionVariance
 import ArkLib.Research.ProximityGap.Frontier.HorizontalJetObstruction
 import ArkLib.Research.ProximityGap.Frontier.HorizontalSectionDeviation
+import ArkLib.Research.ProximityGap.Frontier.HyperbolaGridObstruction
+import ArkLib.Research.ProximityGap.Frontier.HyperbolaRulings
 import ArkLib.Research.ProximityGap.Frontier.I031ChainingBrick
 import ArkLib.Research.ProximityGap.Frontier.I031DilationOrbitReduction
 import ArkLib.Research.ProximityGap.Frontier.I031DistinctPeriodCount
@@ -531,6 +540,8 @@ import ArkLib.Research.ProximityGap.Frontier.NormalizedTripleEnergy
 import ArkLib.Research.ProximityGap.Frontier.NvIReconcile
 import ArkLib.Research.ProximityGap.Frontier.OctagonTripleTorsion
 import ArkLib.Research.ProximityGap.Frontier.OddExcessLaw
+import ArkLib.Research.ProximityGap.Frontier.OddRedundancyApolar
+import ArkLib.Research.ProximityGap.Frontier.OddRedundancySquareLift
 import ArkLib.Research.ProximityGap.Frontier.OddReturnDeterminant
 import ArkLib.Research.ProximityGap.Frontier.OneErasureDimensionDrop
 import ArkLib.Research.ProximityGap.Frontier.OptimalOverlapPacking
@@ -554,6 +565,7 @@ import ArkLib.Research.ProximityGap.Frontier.PackingCoverSharpReach
 import ArkLib.Research.ProximityGap.Frontier.PackingDeflationBandAntitone
 import ArkLib.Research.ProximityGap.Frontier.PackingFloorTwoPowLower
 import ArkLib.Research.ProximityGap.Frontier.PaddedPowerSpecialization
+import ArkLib.Research.ProximityGap.Frontier.PairedSignatureBalance
 import ArkLib.Research.ProximityGap.Frontier.PaleyAbsoluteSlice
 import ArkLib.Research.ProximityGap.Frontier.PaleyAffineSecondMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleyBalancedLimit
@@ -563,13 +575,16 @@ import ArkLib.Research.ProximityGap.Frontier.PaleyCodingCosets
 import ArkLib.Research.ProximityGap.Frontier.PaleyCosetCancellation
 import ArkLib.Research.ProximityGap.Frontier.PaleyDefectDiscrepancy
 import ArkLib.Research.ProximityGap.Frontier.PaleyDefectMinor
+import ArkLib.Research.ProximityGap.Frontier.PaleyDenseCutTransfer
 import ArkLib.Research.ProximityGap.Frontier.PaleyGramFourthMoment
 import ArkLib.Research.ProximityGap.Frontier.PaleyHankelDegree
 import ArkLib.Research.ProximityGap.Frontier.PaleyInterpolationContact
 import ArkLib.Research.ProximityGap.Frontier.PaleyIntervalCriterion
+import ArkLib.Research.ProximityGap.Frontier.PaleyIntervalSpectrum
 import ArkLib.Research.ProximityGap.Frontier.PaleyInversionTrace
 import ArkLib.Research.ProximityGap.Frontier.PaleyListInterpolation
 import ArkLib.Research.ProximityGap.Frontier.PaleyMixedProductTraces
+import ArkLib.Research.ProximityGap.Frontier.PaleyMixedTraceSaving
 import ArkLib.Research.ProximityGap.Frontier.PaleyPairDeterminants
 import ArkLib.Research.ProximityGap.Frontier.PaleyPrescribedRectangle
 import ArkLib.Research.ProximityGap.Frontier.PaleyProjectiveMoment
@@ -666,8 +681,10 @@ import ArkLib.Research.ProximityGap.Frontier.QuadraticTwoHeadCount
 import ArkLib.Research.ProximityGap.Frontier.QuadraticTwoHeadThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetFourRates
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetTwoThreshold
+import ArkLib.Research.ProximityGap.Frontier.QuarterCollinearInterval
 import ArkLib.Research.ProximityGap.Frontier.QuarterOppositeEdgeCharacters
 import ArkLib.Research.ProximityGap.Frontier.QuarterPairTripleSignatures
+import ArkLib.Research.ProximityGap.Frontier.QuarterQuarticPrym
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateApolarBracket
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateCommonPopulation
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateCompleteSafety
@@ -682,6 +699,7 @@ import ArkLib.Research.ProximityGap.Frontier.QuarterRateSaturatedCores
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateSharedResultant
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateToleranceCurve
 import ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor
+import ArkLib.Research.ProximityGap.Frontier.QuarterSlopePowerBarrier
 import ArkLib.Research.ProximityGap.Frontier.QuarterSlopeReconstruction
 import ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorSplitPencil
 import ArkLib.Research.ProximityGap.Frontier.QuarticFieldProductionThreshold
@@ -743,6 +761,7 @@ import ArkLib.Research.ProximityGap.Frontier.RecursiveListPacking
 import ArkLib.Research.ProximityGap.Frontier.RegimePin
 import ArkLib.Research.ProximityGap.Frontier.RegularTaylorPole
 import ArkLib.Research.ProximityGap.Frontier.RepetitionFourCenterAttack
+import ArkLib.Research.ProximityGap.Frontier.RepetitionSecondPrimeThreshold
 import ArkLib.Research.ProximityGap.Frontier.ReservedFiberList
 import ArkLib.Research.ProximityGap.Frontier.ResolveFieldIndependent
 import ArkLib.Research.ProximityGap.Frontier.ReverseHessianAffineSection
@@ -750,6 +769,7 @@ import ArkLib.Research.ProximityGap.Frontier.RootsOfUnityApproximateSubgroup
 import ArkLib.Research.ProximityGap.Frontier.SalemZygmundChaining
 import ArkLib.Research.ProximityGap.Frontier.SalemZygmundMomentAssemblyA3
 import ArkLib.Research.ProximityGap.Frontier.SameDomainListMca
+import ArkLib.Research.ProximityGap.Frontier.SaturatedFaceLabelDistance
 import ArkLib.Research.ProximityGap.Frontier.SaturatedListCliques
 import ArkLib.Research.ProximityGap.Frontier.SaturatedSplitTriangle
 import ArkLib.Research.ProximityGap.Frontier.SaturatedTripleRotation
@@ -852,6 +872,7 @@ import ArkLib.Research.ProximityGap.Frontier.SingleCosetTripleSignatures
 import ArkLib.Research.ProximityGap.Frontier.SixSplitListWitness
 import ArkLib.Research.ProximityGap.Frontier.SixSplitPencil
 import ArkLib.Research.ProximityGap.Frontier.SixteenCosetListLower
+import ArkLib.Research.ProximityGap.Frontier.SixteenFiberMass
 import ArkLib.Research.ProximityGap.Frontier.SixteenthSaturatedHeads
 import ArkLib.Research.ProximityGap.Frontier.SixthMomentAntipodalShape
 import ArkLib.Research.ProximityGap.Frontier.SixthMomentMultiplicativeRectangle
@@ -871,6 +892,7 @@ import ArkLib.Research.ProximityGap.Frontier.SmoothFermatCapacity
 import ArkLib.Research.ProximityGap.Frontier.SmoothFourHeadAssembly
 import ArkLib.Research.ProximityGap.Frontier.SmoothFourHeadColored
 import ArkLib.Research.ProximityGap.Frontier.SmoothFourHeadFibers
+import ArkLib.Research.ProximityGap.Frontier.SmoothHyperbolaGrid
 import ArkLib.Research.ProximityGap.Frontier.SmoothLinearFieldEnvelope
 import ArkLib.Research.ProximityGap.Frontier.SmoothListPackingRadius
 import ArkLib.Research.ProximityGap.Frontier.SmoothManyHeadMass
@@ -878,6 +900,7 @@ import ArkLib.Research.ProximityGap.Frontier.SmoothManyLinePhase
 import ArkLib.Research.ProximityGap.Frontier.SmoothPlanarQuartetCoset
 import ArkLib.Research.ProximityGap.Frontier.SmoothPlanarQuartetSeed
 import ArkLib.Research.ProximityGap.Frontier.SmoothPowerEndpoint
+import ArkLib.Research.ProximityGap.Frontier.SmoothPowerListDescent
 import ArkLib.Research.ProximityGap.Frontier.SmoothPowerMcaDescent
 import ArkLib.Research.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow
 import ArkLib.Research.ProximityGap.Frontier.SmoothQuinticSeventeen
@@ -973,6 +996,8 @@ import ArkLib.Research.ProximityGap.Frontier.TruncatedJetMultipliers
 import ArkLib.Research.ProximityGap.Frontier.TwistedLineCollisionParseval
 import ArkLib.Research.ProximityGap.Frontier.TwoAnchorListWitness
 import ArkLib.Research.ProximityGap.Frontier.TwoDAnnihilatorLineParseval
+import ArkLib.Research.ProximityGap.Frontier.TwoHeadExtraCoset
+import ArkLib.Research.ProximityGap.Frontier.TwoHeadExtraWitness
 import ArkLib.Research.ProximityGap.Frontier.TwoHeadLinearBudget
 import ArkLib.Research.ProximityGap.Frontier.TwoParityMca
 import ArkLib.Research.ProximityGap.Frontier.TwoParityPrize
@@ -1020,6 +1045,7 @@ import ArkLib.Research.ProximityGap.Frontier.WF407_T400_05_defect
 import ArkLib.Research.ProximityGap.Frontier.WeightedHessianResultant
 import ArkLib.Research.ProximityGap.Frontier.WeightedHodgeWindows
 import ArkLib.Research.ProximityGap.Frontier.WeightedResultantInitial
+import ArkLib.Research.ProximityGap.Frontier.WeightedRichLinePacking
 import ArkLib.Research.ProximityGap.Frontier.WeightedSylvesterDegree
 import ArkLib.Research.ProximityGap.Frontier.WickMGFFromTermwise
 import ArkLib.Research.ProximityGap.Frontier.WickMomentCapability
@@ -3830,6 +3856,7 @@ import ArkLib.Research.ProximityGap.J1Cap
 import ArkLib.Research.ProximityGap.JohnsonBoundRealLower
 import ArkLib.Research.ProximityGap.JohnsonCommonCenterRefutation
 import ArkLib.Research.ProximityGap.JohnsonInvariant
+import ArkLib.Research.ProximityGap.JohnsonListBoundary
 import ArkLib.Research.ProximityGap.JointAdjacentFieldReview
 import ArkLib.Research.ProximityGap.JointDyadicCeilings
 import ArkLib.Research.ProximityGap.JointLargeFieldCriterion
@@ -3947,7 +3974,9 @@ import ArkLib.Research.ProximityGap.Resolution
 import ArkLib.Research.ProximityGap.ResolutionWitness
 import ArkLib.Research.ProximityGap.SecondBudgetSmoothReview
 import ArkLib.Research.ProximityGap.SecondPrimeRankReview
+import ArkLib.Research.ProximityGap.SmoothCapacityGap
 import ArkLib.Research.ProximityGap.SmoothListExecutable
+import ArkLib.Research.ProximityGap.SmoothPrizeCapacityTable
 import ArkLib.Research.ProximityGap.SolutionDisproof
 import ArkLib.Research.ProximityGap.SubsetSumErdosHeilbronn
 import ArkLib.Research.ProximityGap.SubsetSumRadiusOne

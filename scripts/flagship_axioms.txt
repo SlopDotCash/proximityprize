@@ -63,6 +63,8 @@ ArkLib.Research.ProximityGap.Frontier.TerminalDimensionThreshold ArkLib.Proximit
 ArkLib.Research.ProximityGap.Frontier.TerminalDimensionThreshold ArkLib.ProximityGap.Frontier.TerminalDimensionThreshold.second_prime
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeFourHeadEndpoints ArkLib.ProximityGap.Frontier.SecondPrimeFourHeadEndpoints.ceilings
 ArkLib.Research.ProximityGap.Frontier.RepetitionFourCenterAttack ArkLib.ProximityGap.Frontier.RepetitionFourCenterAttack.second_prime
+ArkLib.Research.ProximityGap.Frontier.FiveHeadTrianglePacking ArkLib.ProximityGap.Frontier.FiveHeadTrianglePacking.quarter
+ArkLib.Research.ProximityGap.Frontier.FiveHeadTrianglePacking ArkLib.ProximityGap.Frontier.FiveHeadTrianglePacking.eighth_outlier
 ArkLib.Research.ProximityGap.Frontier.SecondPrimePlanarQuartet ArkLib.ProximityGap.Frontier.SecondPrimePlanarQuartet.quarter
 ArkLib.Research.ProximityGap.Frontier.SmoothPlanarQuartetCoset ArkLib.ProximityGap.Frontier.SmoothPlanarQuartetCoset.operational_ceiling
 ArkLib.Research.ProximityGap.Frontier.FourHeadCommonRootObstruction ArkLib.ProximityGap.Frontier.FourHeadCommonRootObstruction.predecessor_cap
@@ -263,6 +265,9 @@ ArkLib.Research.ProximityGap.Frontier.SecondPrimeNonlinearObstruction ArkLib.Pro
 # First-failure counts on the order-2^30 budget-one subgroup and comparisons with Johnson
 ArkLib.Research.ProximityGap.RankProductionDomain ProximityPrize.RankProductionDomain.numericalBoundaries
 ArkLib.Research.ProximityGap.RankProductionDomain ProximityPrize.RankProductionDomain.executable_budget_one
+ArkLib.Research.ProximityGap.DesignatedPrimeJohnson ProximityPrize.DesignatedPrimeJohnson.first_four
+ArkLib.Research.ProximityGap.DesignatedPrimeJohnson ProximityPrize.DesignatedPrimeJohnson.second_lower_rates
+ArkLib.Research.ProximityGap.DesignatedPrimeJohnson ProximityPrize.DesignatedPrimeJohnson.second_eighth_list
 ArkLib.Research.ProximityGap.RankJohnsonComparison ProximityPrize.RankJohnsonComparison.prime246_above
 ArkLib.Research.ProximityGap.RankJohnsonComparison ProximityPrize.RankJohnsonComparison.listAtJohnson_exceeds_one
 
@@ -309,6 +314,9 @@ ArkLib.Research.ProximityGap.Frontier.PrimitiveReceivedInterpolation ArkLib.Prox
 ArkLib.Research.ProximityGap.Frontier.DegreeTenDeficitWindow ArkLib.ProximityGap.Frontier.DegreeTenDeficitWindow.primitive_two_head_bracket
 
 # Third secant from agreement outside two nearly full cores
+ArkLib.Research.ProximityGap.Frontier.TwoHeadExtraCoset ArkLib.ProximityGap.Frontier.TwoHeadExtraCoset.smooth_mass
+ArkLib.Research.ProximityGap.Frontier.TwoHeadExtraCoset ArkLib.ProximityGap.Frontier.TwoHeadExtraCoset.even_ceiling
+ArkLib.Research.ProximityGap.Frontier.TwoHeadExtraWitness ArkLib.ProximityGap.Frontier.TwoHeadExtraWitness.witnesses
 ArkLib.Research.ProximityGap.Frontier.ThirdHeadComplement ArkLib.ProximityGap.Frontier.ThirdHeadComplement.six_step_window
 ArkLib.Research.ProximityGap.Frontier.ThirdHeadComplement ArkLib.ProximityGap.Frontier.ThirdHeadComplement.eps_upper
 
@@ -339,3 +347,14 @@ ArkLib.Research.ProximityGap.CapacityBoundaryReview ProximityPrize.CapacityBound
 # Full probability and list-size lower bound near the production capacity radius
 ArkLib.Research.ProximityGap.JointDyadicCeilings ProximityPrize.JointDyadicCeilings.dense_saturation
 ArkLib.Research.ProximityGap.JointDyadicCeilings ProximityPrize.JointDyadicCeilings.prize_dense
+
+# The real Johnson comparison at every dyadic length from 64
+ArkLib.Research.ProximityGap.JohnsonListBoundary ProximityPrize.JohnsonListBoundary.above_of_nonsquare
+ArkLib.Research.ProximityGap.JohnsonListBoundary ProximityPrize.JohnsonListBoundary.all_rates
+
+# Uniform obstructions lifted along the power map of a smooth domain
+ArkLib.Research.ProximityGap.SmoothPrizeCapacityTable ProximityPrize.SmoothPrizeCapacityTable.failures
+ArkLib.Research.ProximityGap.SmoothPrizeCapacityTable ProximityPrize.SmoothPrizeCapacityTable.saturated
+ArkLib.Research.ProximityGap.SmoothCapacityGap ProximityPrize.SmoothCapacityGap.mca_from_base
+ArkLib.Research.ProximityGap.SmoothCapacityGap ProximityPrize.SmoothCapacityGap.full_from_base
+ArkLib.Research.ProximityGap.Frontier.SmoothPowerListDescent ProximityGap.SmoothPowerListDescent.smooth_list_exceeds_of_count
