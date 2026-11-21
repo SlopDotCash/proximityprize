@@ -183,12 +183,13 @@ theorem named_bracket :
   rw [Fintype.card_fin, ZMod.card] at mass
   exact mass.le.trans (natCast_div_le_inv_of_mul_le (Q := 2^128) (by decide) prime_P.pos (by decide))
 
-/-- Across this interval of integer 128-bit budgets every positive-width MCA test
-passes precisely below the grid point picked by half the budget. -/
-theorem budget_window (dom : I ↪ F) (hn : Fintype.card I = 1073741824)
+/-- An exact two-head predecessor mass, together with the next two-head
+construction, determines the operational crossing on all positive widths. -/
+theorem budget_window_of_mass (dom : I ↪ F) (hn : Fintype.card I = 1073741824)
     {B : ℕ} (hB : Fintype.card F / 2^128 = B)
-    (hl : 805306370 ≤ B) (hu : B ≤ 884257977)
-    (hchar : ∀ i : ℕ, 0 < i → i ≤ 1263225672 → (i : F) ≠ 0)
+    (hl : 805306370 ≤ B) (hu : B ≤ 1073741821)
+    (previous : epsMCA (F:=F) (ReedSolomon.code dom 268435456 : Set (I → F))
+      (((B/2-1 : ℕ) : ℝ≥0)/Fintype.card I) = ((2*((B/2-1)+1) : ℕ) : ℝ≥0∞)/Fintype.card F)
     (width : ℕ) [NeZero width] :
     let r : ℝ≥0 := ((B/2 : ℕ) : ℝ≥0)/1073741824
     mcaDeltaStar (F := F) ((ReedSolomon.code dom 268435456 : Set (I → F)) ^⋈ (Fin width))
@@ -201,16 +202,15 @@ theorem budget_window (dom : I ↪ F) (hn : Fintype.card I = 1073741824)
   let r₀ : ℝ≥0 := ((e-1 : ℕ) : ℝ≥0)/1073741824
   let C := (ReedSolomon.code dom 268435456 : Set (I → F))
   have hlo : 402653185 ≤ e := by dsimp [e]; omega
-  have hhi : e ≤ 442128988 := by dsimp [e]; omega
+  have hhi : e ≤ 536870910 := by dsimp [e]; omega
   have ratio (m : ℕ) :
       ((m : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤ (epsStar : ℝ≥0∞)) ↔ m ≤ B := by
     rw [epsStar_coe_eq_natCast_inv, ← one_div, ← hB]
     exact BoundarySecurityBudget.count_ratio_le_iff Fintype.card_pos (by decide)
   have good : epsMCA (F := F) C r₀ ≤ (epsStar : ℝ≥0∞) := by
-    have h := exact_mass dom hn (e := e-1) (by omega) (by omega) hchar
-    rw [hn] at h
-    rw [show epsMCA (F := F) C r₀ = _ from h, ratio]
-    dsimp [e]
+    rw [hn] at previous
+    apply previous.le.trans
+    apply (ratio _).2
     omega
   have bad : (epsStar : ℝ≥0∞) < epsMCA (F := F) C r := by
     have h := TwoHeadLinearBudget.errors (k := 268435456) (e := e) dom (by omega) (by omega) (by omega)
@@ -244,6 +244,21 @@ theorem budget_window (dom : I ↪ F) (hn : Fintype.card I = 1073741824)
     have bound := mcaDeltaStar_le_of_bad C (epsStar : ℝ≥0∞) unsafeAt
     rw [radius] at bound
     exact hδ.not_ge bound
+
+/-- Across this interval of integer 128-bit budgets every positive-width MCA test
+passes precisely below the grid point picked by half the budget. -/
+theorem budget_window (dom : I ↪ F) (hn : Fintype.card I = 1073741824)
+    {B : ℕ} (hB : Fintype.card F / 2^128 = B)
+    (hl : 805306370 ≤ B) (hu : B ≤ 884257977)
+    (hchar : ∀ i : ℕ, 0 < i → i ≤ 1263225672 → (i : F) ≠ 0)
+    (width : ℕ) [NeZero width] :
+    let r : ℝ≥0 := ((B/2 : ℕ) : ℝ≥0)/1073741824
+    mcaDeltaStar (F := F) ((ReedSolomon.code dom 268435456 : Set (I → F)) ^⋈ (Fin width))
+      (epsStar : ℝ≥0∞) = r ∧
+    ∀ δ : ℝ≥0, epsMCA (F := F) ((ReedSolomon.code dom 268435456 : Set (I → F)) ^⋈ (Fin width))
+      δ ≤ (epsStar : ℝ≥0∞) ↔ δ < r := by
+  apply budget_window_of_mass dom hn hB hl (by omega) _ width
+  exact exact_mass dom hn (by omega) (by omega) hchar
 
 /-- The field-order budget on a prime field automatically gives the characteristic bound. -/
 theorem prime_budget_window {p B : ℕ} [Fact p.Prime] (dom : I ↪ ZMod p)
