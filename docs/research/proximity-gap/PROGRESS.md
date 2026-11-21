@@ -8,6 +8,7 @@ The rectangular hyperbola construction at half rate now has exact one-fresh firs
 
 | Question | Result | Verification |
 |---|---|---|
+| Uniform capacity gap for both grand challenges | On every smooth domain over $q<2^{256}$ at positive width, both 128-bit budgets fail at rates 1/2, 1/4, 1/8, 1/16 by radii **127/256, 191/256, 223/256, 479/512**, respectively, once the length reaches the corresponding denominator. MCA error is 1 and some list exceeds $q^2$ by **511/1024, 767/1024, 895/1024, 1919/2048** at the corresponding minimum lengths. These gaps below the rate complement persist as length increases. | [Four-rate upper bounds](../../../ArkLib/Research/ProximityGap/SmoothPrizeCapacityTable.lean) · [Power-map proof for lists](../../../ArkLib/Research/ProximityGap/Frontier/SmoothPowerListDescent.lean) |
 | Johnson comparison on the two designated primes at length $2^{30}$ | All eight list suprema are strictly above the real finite-length Johnson radius at every positive width. MCA lies strictly below it at all four rates on the first prime and at rates $1/8,1/16$ on the second. At rate $1/8$ on the second prime, a closed ball at 694,116,763 errors, the first integer above Johnson, has at most 1,660,990,722 codewords. The other two MCA signs remain open. The list comparison extends to any smooth dyadic length $n\ge64$ and any tolerance with $\lfloor q\varepsilon\rfloor\ge n$. | [General list theorem](../../../ArkLib/Research/ProximityGap/JohnsonListBoundary.lean) · [Designated-prime MCA and list proofs](../../../ArkLib/Research/ProximityGap/DesignatedPrimeJohnson.lean) |
 | Both operational thresholds on a supplied code | At every eligible dimension, every positive list width and any nonnegative tolerance, finite support-rank tests give the first failing count or certify safety through radius one. | [Universal Lean proof](../../../ArkLib/Research/ProximityGap/RankReview.lean) · [Endpoint convention](../../../ArkLib/Research/ProximityGap/RankBoundary.lean) |
 | Both challenges in sufficiently large fields | If the integer budget covers both $\binom{n}{k}$ and $\binom{n}{k+1}$ at tolerance $ε<1$, every MCA radius through one is safe and the first failing list count is $n-k+1$ at every positive width. On positive even lengths the exact 128-bit criterion for these answers at every eligible rate is $q\ge 2^{128}\binom{n}{\lfloor n/2\rfloor}$. | [Closed joint thresholds](../../../ArkLib/Research/ProximityGap/JointLargeFieldReview.lean) · [Converse](../../../ArkLib/Research/ProximityGap/JointLargeFieldCriterion.lean) |
@@ -1796,8 +1797,11 @@ row evaluated at a fractional-linear map. Its coset occupancy is bounded
 by the positive-characteristic gcd theorem of Corvaja and Zannier, or by the
 repository's integral Stepanov theorem. The signed amplification bound, finite
 Stepanov application, Goldilocks primality, and the two complete exceptional-row
-estimates passed Lean. The two larger named prime fields lie below the new
-size range. [Derivation and constants](paley-mixed-trace-saving.md) ·
+estimates passed Lean. The complete theorem on the ordinary Goldilocks sets
+now passes Lean as well, including the two-to-one cyclic reindexing and both
+branch-fiber corrections. At either named prize prime, even setting the
+occupancy and moment constants to one leaves this fourth-moment upper bound
+above the rectangle area. [Full set theorem](../../../ArkLib/Research/ProximityGap/Frontier/GoldilocksMixedTrace.lean) [Derivation and constants](paley-mixed-trace-saving.md) ·
 [Finite Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyMixedTraceSaving.lean)
 
 **Fourier energy of a weighted code domain.** Let $D=t+cH$, write
@@ -2467,6 +2471,8 @@ For a saturated four-head overrun at the second-prime quarter-rate successor, th
 For the second-prime quarter-rate seam, a three-map solution with simple disjoint signed coincidences gives explicit polynomial rows of degree at most $d$. Both rational split directions and conjugate nonsplit directions descend to the actual prime field. A four-head overrun occurs for that data exactly when the double sites give all $4d$ possible direction orbits and the holes add at least nine new directions, or when the double sites give $4d-1$ orbits and the holes add at least eleven. Three concrete fractional linear maps give **36** distinct literal bad scalars at $n=16$, $k=4$, $e=8$ on a selected injective domain in the second prime field. This exceeds twice the test length; the smooth production-domain case remains open. [Converse and witness](quarter-three-slope-reconstruction.md) · [Lean reconstruction](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSlopeReconstruction.lean) · [Exact interpolation check](../../../scripts/probes/probe_quarter_slope_reconstruction.py)
 
 For any four-head overrun, the individual $J$-orbit image of each degree-$m$ direction map on $H$ has at least $n/2+2m-3$ values. This rules out even one map factoring through $X^2$. Two maps of the form $M_i(X^a),M_j(X^b)$ for independent Möbius transformations must have $a+b\le4993531$, excluding a triple of such maps. If the largest map has this form, both companions have degree at least 76. The graph estimates use Corvaja–Zannier. The finite-set restriction and the exact numerical comparisons are kernel-checked. [Proof and scope](quarter-slope-power-barrier.md) · [Lean bounds](../../../ArkLib/Research/ProximityGap/Frontier/QuarterSlopePowerBarrier.lean)
+
+The four signed minors also map the genus-$2d-1$ four-hole hyperelliptic curve birationally onto a curve on Vinberg's quartic. Pulling back the elliptic-product cover gives a connected degree-four cyclic cover of genus $10d+2m+2r-7$, with both degree-$2(d+m)$ elliptic maps and $0\le r\le2m$. It necessarily ramifies at every one of the $2(d+m)$ cross sites. The elliptic factors obtained this way lie in the ramified cover's Prym. [Proof and exact ramification](quarter-vinberg-cover.md) · [Kernel-checked coordinate identities](../../../ArkLib/Research/ProximityGap/Frontier/QuarterQuarticPrym.lean)
 
 ### Nineteen bad extension-field labels and a shortest elliptic section
 

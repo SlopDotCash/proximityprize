@@ -351,3 +351,10 @@ ArkLib.Research.ProximityGap.JointDyadicCeilings ProximityPrize.JointDyadicCeili
 # The real Johnson comparison at every dyadic length from 64
 ArkLib.Research.ProximityGap.JohnsonListBoundary ProximityPrize.JohnsonListBoundary.above_of_nonsquare
 ArkLib.Research.ProximityGap.JohnsonListBoundary ProximityPrize.JohnsonListBoundary.all_rates
+
+# Uniform obstructions lifted along the power map of a smooth domain
+ArkLib.Research.ProximityGap.SmoothPrizeCapacityTable ProximityPrize.SmoothPrizeCapacityTable.failures
+ArkLib.Research.ProximityGap.SmoothPrizeCapacityTable ProximityPrize.SmoothPrizeCapacityTable.saturated
+ArkLib.Research.ProximityGap.SmoothCapacityGap ProximityPrize.SmoothCapacityGap.mca_from_base
+ArkLib.Research.ProximityGap.SmoothCapacityGap ProximityPrize.SmoothCapacityGap.full_from_base
+ArkLib.Research.ProximityGap.Frontier.SmoothPowerListDescent ProximityGap.SmoothPowerListDescent.smooth_list_exceeds_of_count
