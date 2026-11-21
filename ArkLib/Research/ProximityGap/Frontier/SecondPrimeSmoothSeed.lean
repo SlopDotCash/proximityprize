@@ -61,12 +61,8 @@ private theorem eval_seed (s : ℕ) (j : Fin 3) (a : F) :
     (seed s j).eval a = values (a^s) j := by
   fin_cases j <;> simp [seed, cubic, factor, values]
 
-/-- Pair classes of the cubic pencil, indexed by the head absent from each pair. -/
-def bucket (stride i : ℕ) : Fin 4 :=
-  if i = 3*stride ∨ i = 5*stride ∨ i = 7*stride then 0
-  else if i = 2*stride ∨ i = 9*stride ∨ i = 10*stride then 1
-  else if i = 0 ∨ i = stride ∨ i = 8*stride then 2
-  else 3
+/-- Pair classes of the cubic pencil indexed by the missing head. -/
+abbrev bucket := SmoothFourHeadFibers.bucket
 
 /-- The field evaluations on either smooth quotient determine all pair coincidences. -/
 private theorem table16 : ∀ i : Fin 16, ∀ a b : Fin 3,
@@ -76,18 +72,6 @@ private theorem table16 : ∀ i : Fin 16, ∀ a b : Fin 3,
 private theorem table32 : ∀ i : Fin 32, ∀ a b : Fin 3,
     values (z^i.val) a = values (z^i.val) b ↔ SmoothFourHeadFibers.coincide (bucket 2 i.val) a b := by
   decide
-
-private theorem count_blocks {s q : ℕ} [NeZero q] (f : Fin q → Fin 4) (j : Fin 4) :
-    (univ.filter (fun x : Fin (s*q) => f x.modNat = j)).card =
-      s*(univ.filter (fun r : Fin q => f r = j)).card := by
-  classical
-  let e : Fin s × Fin q ≃ Fin (s*q) := finProdFinEquiv
-  have he : (univ.filter (fun x : Fin (s*q) => f x.modNat = j)) =
-      ((univ : Finset (Fin s)) ×ˢ (univ.filter (fun r : Fin q => f r = j))).map e.toEmbedding := by
-    ext x
-    rw [mem_map_equiv]
-    simp [e, finProdFinEquiv]
-  simp [he]
 
 private theorem eval_power (s q : ℕ) (u : F) (x : Fin N) (hs : PrizeShapePrimeP30Second.g ^ s = u) (hu : u^q = 1) :
     (dom x)^s = u^(x.val%q) := by
@@ -106,7 +90,7 @@ theorem eighth :
   constructor
   · intro j
     change (univ.filter (fun x : Fin (33554432*32) => bucket 2 x.modNat.val = j)).card = _
-    rw [count_blocks (fun r : Fin 32 => bucket 2 r.val) j]
+    rw [SmoothFourHeadFibers.count_blocks (fun r : Fin 32 => bucket 2 r.val) j]
     fin_cases j <;> decide
   · intro x i j
     rw [eval_seed, eval_seed, eval_power 33554432 32 z x (by rw [← binaryPow_eq_pow]; decide) (by decide)]
@@ -121,7 +105,7 @@ theorem quarter :
   constructor
   · intro j
     change (univ.filter (fun x : Fin (67108864*16) => bucket 1 x.modNat.val = j)).card = _
-    rw [count_blocks (fun r : Fin 16 => bucket 1 r.val) j]
+    rw [SmoothFourHeadFibers.count_blocks (fun r : Fin 16 => bucket 1 r.val) j]
     fin_cases j <;> decide
   · intro x i j
     rw [eval_seed, eval_seed, eval_power 67108864 16 w x (by rw [← binaryPow_eq_pow]; decide) (by decide)]
