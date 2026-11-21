@@ -109,6 +109,37 @@ indicator vectors yields the displayed inequality. Translation cancels in $a-b$,
 and scaling contributes the common sign $\chi(c)$. These finite numerical inequalities
 were computed outside Lean. [Certified transform](../../../scripts/probes/probe_sponsor_paley_spectrum.cpp)
 
+**Fourier energy of a weighted code domain.** Let $D=t+cH$, write
+$S_{xy}=\chi(x-y)$ on $D$, and for complex weights $z$ put
+$\widehat z(r)=\sum_{x\in D}z_x e^{2\pi irx/p}$. For nonzero squares $R$ and
+nonsquares $N$, let $E_U=\sum_{r\in U}|\widehat z(r)|^2$. Parseval gives
+$E_R+E_N=p\|z\|_2^2-|\sum z_x|^2$. The quadratic Gauss sum at either prime gives
+$E_R-E_N=\sqrt p\,z^*Sz$. Thus the Fourier matrix with rows from $R$ scaled by
+$\sqrt{2/p}$ and the zero row scaled by $1/\sqrt p$ has Gram matrix $I+S/\sqrt p$
+on $D$. The two certificates give distortion below $2^{-60}$ on every such support.
+For $z_x=e^{-2\pi it'x/p}$ on $H$, this bounds the signed quadratic partition of
+the energies of *all* translated additive periods. Bounding the largest individual
+period remains open. This deduction uses the classical quadratic Gauss sum evaluation
+and the computed operator norm. [Paley Fourier matrix](https://arxiv.org/abs/2011.02907)
+
+A fractional linear map sends the signed matrix on its non-poles to the original
+matrix up to a common sign and row and column signs. The same two operator bounds
+therefore hold on subsets of a common projective image of $H$ in the finite field.
+[Character identity](../../../ArkLib/Research/ProximityGap/Frontier/PaleyCosetCancellation.lean)
+
+There is a limit to covering arbitrary sparse pairs by these images. The ordered
+cross ratios of four distinct elements of $H$ occupy fewer than $n^3$ values,
+since multiplying through by the inverse of the first entry fixes it to one.
+Given $t$ selected finite points whose quadruples avoid these values, at most
+$t+t(t-1)(t-2)n^3$ next points are forbidden. For each ordered triple and
+cross ratio the fourth point is unique on the projective line. The set of
+forbidden cross ratios already includes every ordering of an $H$ quadruple.
+At either prime this bound is below $p$ for $t<2^{22}$. Consequently there
+exists a set of $2^{22}$ points meeting every projective image in at most three.
+Split it into two equal parts to obtain a sparse pair on which these local matrix
+bounds alone give no cancellation. This counting argument concerns the coverage
+of the proof method and makes no claim about the sign of that pair's discrepancy.
+
 ## 2026-11-21 · An exact MCA threshold from Reed–Solomon shortening
 
 This entry uses downstream source revision `a15abf509f39bf87781119462b81d9c5e08a6848`. The following is a mathematical derivation. Kernel verification will be recorded separately.
@@ -1101,6 +1132,29 @@ If $F$ had total $(\Gamma,Y)$-degree at least six, every quotient would have tot
 
 At the final predecessor of the second-prime rate-sixteenth bracket, any putative family of $2n+1$ bad scalars must have selected points of affine dimension at least **10,526,872** over the prime field. For a polynomial span of dimension $r$, a Wronskian equation of order $r$ replaces the universal order-$d+1$ derivative in the moving-factor argument. A nonzero differential numerator allows at most $80+136(r-1)$ labels across the quartic/degree-twelve common factors. Identically zero numerators yield polynomial sections over the algebraic parameter field, where the head or small-incidence alternative applies. The previous one-186-point-secant obstruction controls all head contributions. The result is a necessary condition from a written proof. [Wronskian calculation and integer bound](second-prime-quadratic-discriminant.md)
 
+## Prime-field radii, interpolation charges and four simultaneous witnesses
+
+At a positive multiple $n=128b$, every injection into a prime field of order $p\ge 2^{165}n^2$ meets the 128-bit affine-line MCA bound at the radii in the table. Each lies strictly beyond the finite Johnson radius. At the same radii, every prime field that admits the domain has the listed bound on the worst-case list size for every finite interleaving width. Packing the column into a rational function extends the scalar interpolation bound to all widths. [Four-rate bounds](../../../ArkLib/Research/ProximityGap/Frontier/ScaledFirstOrderSecurity.lean) · [Dao, Kominers and Thaler](https://eprint.iacr.org/2026/2056)
+
+| Rate | Proven good line radius | Interleaved list-size bound | Proven failing line radius at $p=65\cdot 2^{239}+1$, $n=2^{30}$ |
+|---|---:|---:|---:|
+| $1/2$ | $39/128$ | $173373n$ | $31/64$ |
+| $1/4$ | $67/128$ | $113975n$ | $95/128$ |
+| $1/8$ | $86/128$ | $58872n$ | $111/128$ |
+| $1/16$ | $99/128$ | $52349n$ | $239/256$ |
+
+The line endpoints in each row apply to the same smooth code at the displayed prime and length, for every positive interleaving width. All four failure witnesses arise by pulling received rows back through power maps. The prime admits such a domain. The same tests hold on all smooth domains throughout the field-budget interval in the theorem. The operational supremum lies between the endpoints. The table leaves its value inside that interval open. [Simultaneous bounds](../../../ArkLib/Research/ProximityGap/Frontier/ProductionMcaIntervals.lean) · [Power-map witnesses and domain existence](../../../ArkLib/Research/ProximityGap/Frontier/FourRateSmoothMcaLift.lean)
+
+For every length and nontrivial dimension $1\le k<n$, put $N=\binom n{k+1}$. In *every* finite field and every prescribed domain, if $\lfloor N/(k+1)\rfloor\le\lfloor q/D\rfloor$ and $q\le(D-1)N$, the first failing Hamming count at tolerance $1/D$ is exactly $n-k-1$. The threshold for real radii is $1-(k+1)/n$. The upper bound on bad scalars uses private interpolation circuits. The lower bound uses the second moment of collisions among the $N$ circuits. This field-size interval has no fixed bit cap. [Exact radius predicate and supremum](../../../ArkLib/Research/ProximityGap/Frontier/CircuitBudgetRadius.lean)
+
+The shifted first-order slot test with zero derivative cap passes for some multiplicity, degree and height exactly when $A^2>nD$, where $A$ is the agreement count and $D$ is the maximum message degree. With positive cap and total degree one, the exact line boundary is $3A\ge2n+D$. At the half-rate radius $39/128$, every passing choice of slots at length $2^{30}$ incurs a hybrid exceptional-count charge greater than $2^{58}$. The alternative optimized squarefree bound also exceeds $2n$ at the four displayed radii, even with Taylor exponent zero and the profile hypotheses stated in the theorem. The two designated thin-budget fields allow $n$ and $2n$ bad challenges. These estimates bound the certificate charges. The actual exceptional counts at these radii remain open. [Zero-cap and unrestricted-charge theorems](../../../ArkLib/Research/ProximityGap/Frontier/FirstOrderZeroCapJohnson.lean) · [Degree-one boundary](../../../ArkLib/Research/ProximityGap/Frontier/FirstOrderDegreeOneBoundary.lean) · [Squarefree bound](../../../ArkLib/Research/ProximityGap/Frontier/SquarefreeRetentionFloor.lean) · [Taylor pole example](../../../ArkLib/Research/ProximityGap/Frontier/RegularTaylorPole.lean)
+
+At dimension $2h$, let four disjoint $h$-point blocks be fibers of the same monic degree-$h$ polynomial. Choose a subset $T_i$ of each block on which all four mixed words must agree. With the four fiber values as scalar labels, the prescribed MCA witnesses exist exactly when $\sum_i |T_i|<h$. This covers four interlaced cosets in a cyclic length-$4h$ domain. The general error supports in the prize can have other shapes. [Construction and necessity](../../../ArkLib/Research/ProximityGap/Frontier/FourFiberThreshold.lean) · [Cross-ratio and spectral restrictions](../../../ArkLib/Research/ProximityGap/Frontier/FourSupportSpectrum.lean) · [Polynomial restrictions on consecutive supports](../../../ArkLib/Research/ProximityGap/Frontier/SyndromeMotion.lean)
+
+For a dyadic subgroup $H$ of size $n$, the fourth-energy equality $E_2(H)=3n(n-1)$ implies, in characteristic greater than three, that $H$ contains no zero-sum triple. The deduction from the equality and the resulting cubic Fourier moment are formal. The fourth-energy checks for the two named primes use the separate arithmetic certificates. A related incidence bound controls affine images of $H$ across disjoint shift cosets. On a projection choosing one site in each of the order-16 blocks, the two named fields force at least 3,132,099 disjoint signed relations of weight at most 14. The uniform upper bound on individual nontrivial periods remains open. [Zero triples](../../../ArkLib/Research/ProximityGap/Frontier/DyadicSidonTriple.lean) · [Affine intersections](../../../ArkLib/Research/ProximityGap/Frontier/AffineMultiplierOverlap.lean) · [Projected short relations](../../../ArkLib/Research/ProximityGap/Frontier/ProjectedShortRelations.lean)
+
+The prime-field comparison of lists and proximity uses different finite inequalities from the asymptotic capacity result. Reference copies for this work were downloaded to the shared research cache. [Brakensiek, Chen, Putterman, Zhang and Zheng](https://arxiv.org/abs/2609.08005) · [Montgomery, Vaughan and Wooley on power Gauss sums](https://www.math.purdue.edu/~twooley/publ/1995%20GSUM.pdf) · [Cochrane, Hart, Pinner and Spencer on Waring's number](https://www.math.ksu.edu/~cvs/cochrane_hart_pinner_spencer-waring_subgroup.pdf)
+
 ## 2026-11-21 · The support-counting relaxation fails at the rate-half predecessor
 
 At $n=2^{30}$, $k=n/2$ and $e=n/4-1$, there are **$n+1$ abstract agreement supports** of size $t=805306369$, each owning at least $\binom{t-1}{k}$ private $(k+1)$-subsets. Every pair intersects in at most 603979778 sites. Every triple intersects in at most 469762051 sites, strictly below $k-1$. Thus the sharp circuit count and the secant triple-root cap together permit more than $n$ labels at this predecessor.
@@ -1332,3 +1386,28 @@ For any sequence of such embeddings with $n\to\infty$, suppose $p\ge n^d$ eventu
 ## Three degree-$(h+1)$ rational fibers on the smooth domain
 
 Let $H=\mu_{4h}$, $d=h+1$, and $m\mid h$ with $m\ge2$. If two full degree-$d$ fibers each comprise $h/m$ full $\mu_m$ cosets and one extra site, every third fiber has at most $2h/m\le h$ sites. On each remaining coset the ratio of the two vanishers is a nonzero constant times $(X-a)/(X-b)$, where $a,b$ are the two distinct extra sites. That function takes each value at most once per coset. Lean checks the injection, the count of remaining cosets, and the strict comparison with $d$. Conversely, any two disjoint $d$-element subsets $A,B$ are full fibers of $F_A/(F_A+F_B)$ at 0 and 1, where $F_A,F_B$ are their monic vanishers. Three full fibers for an unrestricted rational pencil on the designated smooth subgroup remain open. [Coset obstruction](../../../ArkLib/Research/ProximityGap/Frontier/SmoothRationalFiberObstruction.lean)
+
+### Fixed domain zeros at the first half-rate successor
+
+The five-label whole-stack bound at $e=2^{28}+1$ now extends, by a written shortening proof, to a fixed degree-$h$ locator with fewer than $h$ distinct roots on the evaluation domain, including repeated roots. A nonzero residual after division by the domain-root polynomial forces all $h+1$ errors outside those roots. Shortening restores a pole-free rational presentation and leaves room for the single possible exceptional scalar. The case of $h$ distinct domain roots and the moving-locator cases remain open. [Fixed-domain-root reduction](apolar-successor-domain-roots.md)
+
+The extra span and weak-coordinate steps in the divisible-case upper argument now pass the pinned Lean kernel. For an affine rectangular polynomial matrix, a minimal primitive kernel vector of degree $l$ has coordinate entries spanning all polynomials of degree at most $l$. If a linear relation on its parameter coefficients existed, scalar multiplication by its reversed relation would make the degree-$l$ coefficient vanish. The terms of smaller degree form another kernel vector because the matrix is affine. Minimality forces that vector to vanish, and primitivity at zero then kills the relation. For the actual normalized syndrome, the identity $qW_f=fW_q$ for apolar $q$ together with generic coprimality implies $f\mid q$, giving the necessary minimality. The proof applies to nonreduced locators. These statements and the weak coordinate-degree interpolation passed with only the standard three axioms. [Affine-kernel lemma](../../../ArkLib/Research/ProximityGap/Frontier/ApolarAffineKernelSpan.lean) · [Actual locator span](../../../ArkLib/Research/ProximityGap/Frontier/ApolarCoefficientSpan.lean) · [Coordinate-boundary interpolation](../../../ArkLib/Research/ProximityGap/Frontier/ApolarBorderCoordinates.lean)
+
+## 2026-11-21 · No four rate-half codewords within nine errors on the 32nd roots of unity
+
+**Result (characteristic zero, computer-assisted).** Over any field of characteristic zero, the code $\mathrm{RS}[32,16]$ evaluated on $\mu_{32}$ has at most **three** codewords in every Hamming ball of radius $9=n/4+1$. The octagon $\mathrm{RS}[8,4]$ on $\mu_8$ has four at radius $3=n/4+1$, and the earlier exhaustive check found none at radius 5 on $\mu_{16}$ over the budget-three prime. So the octagon star behind the $7/24$ list and MCA ceilings has no analogue on 16 or 32 fibers. The statement is about characteristic zero. A configuration modulo one large prime that does not lift is not excluded by this proof, and nothing here is a statement at length $2^{30}$.
+
+**Reduction to split pencils.** Let $n=4b$, $k=2b$ and let four codewords have error sets $E_i$ of size at most $b+1$ against one word. Minimum distance $2b+1$ gives $|E_i\cap E_j|\le1$, and a difference $P_i-P_j$ with $|E_i\cup E_j|=2b+1$ is a constant times $K/L_{E_i\cup E_j}$, where $K=X^n-1$ and $L_S$ is the monic vanisher of $S$. Counting sites by their number of erring heads leaves exactly these overlap graphs on the four heads: the star (one head with $b$ errors, the other three pairwise meeting), a graph containing a triangle whose three overlaps are distinct sites, the pattern with one site where three heads err plus two further overlaps, and the 4-cycle. Two sites with three erring heads would give some pair two common errors.
+
+* A triangle $i,j,l$ with three distinct overlap sites gives $c_{ij}L_{Q_l}+c_{jl}L_{Q_i}+c_{li}L_{Q_j}=0$ with all $c\ne0$, where $Q_i$ is $E_i$ without its two overlap sites. These are three monic, pairwise coprime polynomials of degree $b-1$ with all roots in $\mu_n$ and linearly dependent. Call this a **three-split pencil** of degree $b-1$. The star, every pattern with five or six overlaps, the triangle-plus-edge pattern, and the three-error-site patterns all contain such a triangle.
+* The 4-cycle $0,1,2,3$ with private sets $Q_i$ ($b-1$ points) and overlaps $s_{01},s_{12},s_{23},s_{30}$ gives, modulo $L_{Q_0}$, that $L_{Q_3\cup s_{23}}/L_{Q_1\cup s_{12}}$ is constant on $Q_0$, and the same at every vertex.
+
+**Census on $\mu_{32}$.** (i) There is **no** three-split pencil of degree 7. (ii) There are exactly **23** dihedral classes of three-split pencils of degree 8, and every one is the pullback under $X\mapsto X^2$ of one of the 23 classes of degree 4 on $\mu_{16}$. On $\mu_{16}$ four of the 23 are not pullbacks from $\mu_8$, and seven classes of degree 3 exist. (iii) For 7-sets $Q_0$ there are exactly **33** triples $(Q_0,A,C)$ with $A,C$ disjoint 8-sets and $L_A/L_C$ constant on $Q_0$, and in all 33 both $A$ and $C$ are invariant under $x\mapsto-x$. Item (i) removes every pattern containing a triangle. In the 4-cycle, (iii) makes both $Q_1\cup\{s_{12}\}$ and $Q_1\cup\{s_{01}\}$ antipodally symmetric. $Q_1$ has seven points, so its one unpaired point has a single antipode, forcing $s_{12}=s_{01}$. This contradiction proves the result.
+
+**How the census is made rigorous.** At a root $\beta$ of $B$ in a pencil $A-\lambda B=(1-\lambda)C$ with complement $D$ of the three root sets, $L_C(\beta)^2(1-\lambda)L_D(\beta)L_B'(\beta)\beta=n$. Hence $L_D(\beta)L_B'(\beta)\beta$ lies in one square class of $\mathbb Q(\zeta_{32})$ for all $\beta\in B$. All factors are units away from 2, so the quadratic characters modulo 16 primes $q\equiv1\pmod{32}$ must agree. This is a necessary condition on the pair $(B,D)$ alone and costs one XOR per subset: $1.2\cdot10^{11}$ pairs at degree 8 leave 3736 candidates, $2.3\cdot10^{11}$ at degree 7 leave 748, and the 4-cycle analogue leaves 4077. Each candidate is then decided exactly modulo the 61-bit split prime 1332653270109928577 by enumerating its half splits. A characteristic-zero configuration survives both steps. For the star alone there is a faster test: the three equal locator ratios multiply to a known product, so that product must be a cube, and cubic characters modulo 14 primes $q\equiv1\pmod{96}$ reject all 165288 classes of $T$ in a quarter of a second. Filter-free brute force at lengths 8 and 16 reproduces the filtered counts 19, 23, 7 and 37.
+
+**What a star would have bought.** In the common-direction MCA construction (heads $(XHf_i(X^s),Hf_i(X^s))$, one label $-x$ per ordinary site, three labels per hole in an overlap fiber), a star on $4b$ fibers with $r\approx s/3$ locator roots and $q\approx s/6$ holes per overlap fiber balances all four heads at $(b+\tfrac12)s$ errors, i.e. first-prime ceiling $\approx(\tfrac14+\tfrac1{8b})n$. At $b=2$ this is the known $5/16$. At $b=8$ it would have been $17/64$, below the current $7/24$. That route is closed for structural (characteristic-zero) base configurations on 16 and 32 fibers. A 32-fiber four-head quotient construction therefore needs a base radius of at least 10 for some head.
+
+**Open.** Whether every three-split pencil of degree $n/4$ on $\mu_n$ is an $X^2$-pullback for all dyadic $n\ge32$, and whether degree $n/4-1$ pencils are absent for all $n\ge32$. Both together would give list size at most three at radius $n/4+1$ on every dyadic $\mu_n$ in characteristic zero by the same argument. The census gives one level of evidence only. The first-prime rate-half MCA threshold and the Paley bound are untouched.
+
+Reproduce: [star cube filter](../../../scripts/probes/probe_mu32_star_cube_filter.cpp) · [pencil filter](../../../scripts/probes/probe_mu32_three_split_pencils.cpp) · [4-cycle filter](../../../scripts/probes/probe_mu32_four_cycle_pencils.cpp) · [exact verifier with commands and expected counts](../../../scripts/probes/probe_mu32_split_pencil_verify.py) · [brute-force control](../../../scripts/probes/probe_mu16_split_pencil_bruteforce.py). No Lean formalization yet.
