@@ -1708,10 +1708,28 @@ $i+j-a$. Every complete double Fourier coefficient becomes a sum of at most two
 products of known one-dimensional coefficients. Four exact integer class sums
 suffice for each complete-stratum value. These are computed in GMP. The field
 factorization, trace fiber multiplicity and cyclic sum transport are proved in Lean.
-Cross-stratum rectangles and arbitrary small sets remain open.
+The full fixed mixed rectangles and arbitrary small sets remain open.
 [Derivation and reproducibility](paley-product-traces.md) ·
 [Lean proofs](../../../ArkLib/Research/ProximityGap/Frontier/PaleyInversionTrace.lean) ·
 [Prime verifier](../../../scripts/probes/probe_sponsor_paley_trace.cpp)
+
+**Cancellation between product strata.** The union $2H\cup(1+g)H$ contains
+exactly two antipodal points in every product stratum of $H+H$. These cosets
+are disjoint and each has $2^{30}$ points. On arbitrary subsets of the two
+different cosets the Paley operator norm is at most 415408 and 409401 at the
+respective primes. On arbitrary subsets of the whole $2^{31}$-site union the
+bounds are 865084 and 858232. The complete cross sums are −32,869,384,716,288
+and zero. Independently, the $16385$ by $32768$ matrix inside the fixed
+product pair $T_0,T_1$ has norm at most 1283 at either prime, certified by
+integer Gram products. Scaling handles $2^{29}$ fixed product pairs per
+prime. At the second prime, taking $k$ and $l$ consecutive dilations of two
+arbitrary seed subsets in different product parities gives a relative
+rectangular bound $1/k+1/l$. The Sidon property excludes transfer of the
+within-subgroup Fourier row on a ratio diagonal $h$ of two distinct products
+$s,t$ unless $h^2=t/s$, apart from the elementary zero or undefined shift.
+A power saving for the complete individual $T_0,T_1$ pair remains open.
+[Derivations and exact certificates](paley-product-traces.md#between-two-different-products) ·
+[Lean identities](../../../ArkLib/Research/ProximityGap/Frontier/PaleyMixedProductTraces.lean)
 
 **Fourier energy of a weighted code domain.** Let $D=t+cH$, write
 $S_{xy}=\chi(x-y)$ on $D$, and for complex weights $z$ put

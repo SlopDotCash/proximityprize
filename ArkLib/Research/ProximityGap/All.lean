@@ -561,6 +561,7 @@ import ArkLib.Research.ProximityGap.Frontier.PaleyInterpolationContact
 import ArkLib.Research.ProximityGap.Frontier.PaleyIntervalCriterion
 import ArkLib.Research.ProximityGap.Frontier.PaleyInversionTrace
 import ArkLib.Research.ProximityGap.Frontier.PaleyListInterpolation
+import ArkLib.Research.ProximityGap.Frontier.PaleyMixedProductTraces
 import ArkLib.Research.ProximityGap.Frontier.PaleyPairDeterminants
 import ArkLib.Research.ProximityGap.Frontier.PaleyPrescribedRectangle
 import ArkLib.Research.ProximityGap.Frontier.PaleyProjectiveMoment
