@@ -6,6 +6,7 @@ The [November 21 integration assessment](integration-assessment-2026-11-21.md) r
 
 | Question | Result | Verification |
 |---|---|---|
+| Rate $1/16$ MCA at the second designated prime and length $2^{30}$ | The Lean bracket for the first bad count is $[647627102,715827882]$. A written moving-cubic dimension bound improves its lower endpoint to $664797187$. | [Lean bracket](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeConditionedThreshold.lean) · [Written lower bound](second-prime-moving-cubic.md) with [Lean derivative](../../../ArkLib/Research/ProximityGap/Frontier/ImplicitDerivativeNumerator.lean) and [resultant](../../../ArkLib/Research/ProximityGap/Frontier/WeightedSylvesterDegree.lean) ingredients. The [three-core upper bound](../../../ArkLib/Research/ProximityGap/Frontier/_ThreeCoreSecondPrimeBracket.lean) is kernel-checked. |
 | MCA at all four rates for a range of prime fields | At length $2^{30}$ and integer budgets $1\le B\le268435455$, the first bad error count is $B$. | [Apolar threshold theorem](../../../ArkLib/Research/ProximityGap/Frontier/ApolarSpikeBudgetRange.lean) |
 | Four MCA rates on the boundary-prime smooth domain | Over $p=68719477285·2^{120}+1$ at length $n=2^{30}$, the half-rate first bad count is 268435456. At rates 1/4, 1/8 and 1/16 it is 268435458. These endpoints apply at every positive interleaving width. | [Sharp half-rate theorem](../../../ArkLib/Research/ProximityGap/Frontier/SharpApolarMCA.lean) · [Lower three rates](../../../ArkLib/Research/ProximityGap/Frontier/BoundaryLowerRates.lean) |
 | Actual bad-scalar counts in the unique-decoding range | For any injective length-$n$ domain and $k+d<n$, $e\le d$, $2e\le d+1$, the bad parameter count satisfies $M\le e+1$ or $(M-1)(d+2-2e)\le n$. At rate $1/2$ and $n/4-1$ errors this gives $M\le357913942$ for $n=2^{30}$. | [Unconditional Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/ApolarMovingCount.lean), standard axioms only. |
@@ -13,7 +14,6 @@ The [November 21 integration assessment](integration-assessment-2026-11-21.md) r
 | Four MCA rates at length $2^{30}$ for budgets $268435458≤B≤536870913$ | The first bad counts in rate order are $268435456$, $\min(B,402653184)$, $\min(B,469762048)$ and $\min(B,503316480)$. The sharp predecessor count covers every received pair. | [Four-rate window](../../../ArkLib/Research/ProximityGap/Frontier/SharpApolarMCA.lean) · [Polynomial proof](rate-half-apolar-polynomial-proof.md) |
 | List decoding at all four rates | Length 128 over the prime field of order $65\cdot2^{239}+1$ has first bad error counts 63, 97, 113 and 121, for every positive interleaving width. | [Four-rate Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/FourRateListPrime246.lean) |
 | Rate-$1/16$ MCA at length $2^{30}$ | For $1\le B=\lfloor p/2^{128}\rfloor\le1295252617$ and an order-$2^{30}$ domain, the first bad error count is $\min(B,\max(503316480,\lfloor B/2\rfloor))$. | [Lean threshold curve](../../../ArkLib/Research/ProximityGap/Frontier/_TwoLineSpikeThreshold.lean) |
-| Rate-$1/16$ MCA on the second named prime, budget $2^{31}$ | Lean brackets the first failing count between 647627102 and 715827882. A written cubic-component argument raises the lower endpoint to 655110341. | [Lean bracket](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeConditionedThreshold.lean) · [Written cubic bound](second-prime-moving-cubic.md) |
 | Fourth and sixth moments at the two named primes | The order-$2^{30}$ groups have $E_2=3n(n-1)$. The centered sixth-moment inequality reduces to $A_5+2A_6\le134217727$ after excluding repeated configurations. The two remaining orbit counts are unknown. | [Exact GMP checks](../../../scripts/probes/probe_sponsor_sextic.cpp), [Lean reduction](../../../ArkLib/Research/ProximityGap/Frontier/SixthMomentAntipodalShape.lean) |
 | Triple sums at both named primes | The 16,384 cosets of the order-65,536 subgroup have disjoint triple-sum sets. Each set has 46,912,496,205,824 elements. | [Lean coverage](../../../ArkLib/Research/ProximityGap/Frontier/SingleCosetTripleSignatures.lean), [GMP evaluations](../../../scripts/probes/probe_sponsor_clustered_triples.cpp) |
 | Unit sixth-moment inequality at order 64 | Exactly 182 split primes violate it. The largest is 926510094425921. At 173249 all three repeated-entry tests pass, and the exact integer excess is 7565522944. | [All-prime classification](../../../scripts/probes/probe_order64_sixth_moment_classification.py), [Lean counterexample](../../../ArkLib/Research/ProximityGap/Frontier/SixthMomentSparseCounterexampleWiring.lean) |
@@ -1033,7 +1033,7 @@ For each bad $\gamma\notin E$ choose a witnessing folded polynomial $P_\gamma$. 
 
 At the second production prime and $t=357913943$, the result gives fewer than $2n$ bad scalars for exact multiplier pairs of degree $s\le52195785$. This includes monomial row pairs whose exponents differ by at most this much modulo $n$ in either direction. At $s=1$ the exact uncorrupted bound is $n+5$. Even if 73926474 sites are arbitrary, deleting that many sites gives a Johnson count of at most 15 and hence at most $n+14\cdot73926474<2n$ labels. These are guarantees for a class of received pairs at the production length.
 
-Separately, on the actual second field's subgroup of length 64 at dimension 4, no monomial pair supplies more than 64 bad scalars at 23 agreements. All $64^2$ ordered exponent pairs were tested. The bad counts $0,1,2,4,5,32,64$ occurred for respectively $3496,516,48,16,8,4,8$ pairs. An independent enumeration gave exactly this histogram over $\mathbb F_{257}$ as well. For reproducibility, partition the exponents into seven consecutive blocks of at most ten positions. Every 23-point witness contains four points in one block. Rotation moves the first to 1, leaving only $\binom{9}{3}=84$ interpolating supports. On each support compute the degree-three interpolation residuals $U,V$ for the two rows. Joint sites have $U=V=0$, and all other folded agreements at scalar $\gamma$ have $V\ne0$ and $\gamma=-U/V$. A scalar is bad on this support exactly when the two counts sum to at least 23 and the latter count is positive. The four anchor sites uniquely determine both candidate row polynomials. Rotation supplies the multiplicative orbit of each nonzero scalar under the subgroup of order $64/\gcd(64,a-b)$. This includes arbitrary witness sets and many-fresh-site folds at length 64. [Exact monomial census](../../../scripts/probes/probe_monomial_mca_length64.py)
+Separately, on the actual second field's subgroup of length 64 at dimension 4, no monomial pair supplies more than 64 bad scalars at 23 agreements. All $64^2$ ordered exponent pairs were tested. The bad counts $0,1,2,4,5,32,64$ occurred for respectively $3496,516,48,16,8,4,8$ pairs. An independent enumeration gave exactly this histogram over $\mathbb F_{257}$ as well. For reproducibility, partition the exponents into seven consecutive blocks of at most ten positions. Every 23-point witness contains four points in one block. Rotation moves the first to 1, leaving only $\binom{9}{3}=84$ interpolating supports. On each support compute the degree-three interpolation residuals $U,V$ for the two rows. Joint sites have $U=V=0$, and all other folded agreements at scalar $\gamma$ have $V\ne0$ and $\gamma=-U/V$. A scalar is bad on this support exactly when the two counts sum to at least 23 and the latter count is positive. The four anchor sites uniquely determine both candidate row polynomials. Rotation supplies the multiplicative orbit of each nonzero scalar under the subgroup of order $64/\gcd(64,a-b)$. This includes arbitrary witness sets and many-fresh-site folds at length 64. [Exact monomial census](../../../scripts/probes/probe_monomial_mca_length64.py) Run `python3 -B scripts/probes/probe_monomial_mca_length64.py` to reproduce both histograms.
 
 ## A quartic through every rich fold at the second-prime predecessor
 
@@ -1130,3 +1130,129 @@ At the last predecessor an irreducible cyclic cubic of the quartic's weighted he
 Take four fixed coordinate sets $U_0,U_1,U_2,U_3$ on any field. At every site of $U_i$, all the decoders except possibly $i$ agree with their received words. Fix three distinct labels and vary the fourth, even allowing a different received pair and new polynomials at every fourth label. If $|U_0\cup U_2|,|U_1\cup U_3|\ge k$ and some genuine singleton miss occurs off label 1 in each realization, then **at most $|U_3|$ fourth labels are possible**. Normalize the two parity checks to $P=0$, $Q=0$, $P=Q$, $P=\lambda Q$ on the respective sets. Every linear relation among the vectors $Q|_{U_3}$ persists after multiplication by their respective normalized labels $\lambda$. Interpolation on the two unions proves this relation. Distinct $\lambda$ then give independent vectors in a space of dimension $|U_3|$. [Arbitrary-domain theorem](../../../ArkLib/Research/ProximityGap/Frontier/FourSupportSpectrum.lean)
 
 An exact scalar constraint holds for **four complete fibers of a common monic degree-$h$ polynomial $H$**, each of size $h$, with degree-$<2h$ decoders. Let $\alpha_i$ be the four fiber values and let $\gamma_i$ be the decoder labels. A genuine singleton miss away from label 1 forces $\operatorname{cr}(\gamma)=\operatorname{cr}(\alpha)$, where the normalization sends entries $0,1,2$ to $0,\infty,1$. Indeed $P=(H-\alpha_0)p$ and $Q=(H-\alpha_1)q$ for degree-$<h$ quotients. The $h$ sites of fiber 2 force $p,q$ to be proportional as polynomials. The condition on fiber 3 then determines the ratio. Taking $H=X^h$ gives the four interlaced subgroup cosets in every smooth domain of size $4h$. All five audited declarations depend only on the three standard axioms. [Four decoding polynomials on complete fibers](../../../ArkLib/Research/ProximityGap/Frontier/FourSupportSpectrum.lean)
+
+### A moving cubic improves the rate-sixteenth bound at the second prime
+
+For $n=2^{30}$, $d=2^{26}-1$, the second prime, and any injective domain, every pair of words stays inside the $2n$ bad-scalar budget through **655110340 errors**. Thus the first bad Hamming count is at least **655110341**. At $418631484$ agreements a total-degree-five interpolant and a value-degree-three interpolant both contain every rich witness. A cubic common component of total degree five carrying witnesses with nonzero generic $(d+1)$st coordinate derivative contributes at most $21+32d=2147483637$ scalar labels, eleven below budget. This follows by clearing the implicit derivative denominator and counting the parameter degree of the actual Sylvester resultant. If that derivative vanishes generically, truncated Taylor expansion and a separate $X$-degree bound strictly below the characteristic produce a polynomial section over an algebraic extension of the parameter field. Such a section either is an affine codeword head or carries at most 14 witnesses. The written proof also sums the lower-degree factors and isolated points. The count applies to every prime exceeding $22(d+1)(t+1)$; its translation to a first-bad radius here uses the second prime's budget. [Complete written proof](second-prime-moving-cubic.md) · [Lean interpolation](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeQuarticInterpolation.lean) · [Lean resultant count](../../../ArkLib/Research/ProximityGap/Frontier/WeightedSylvesterDegree.lean)
+
+At the still-open predecessor of the three-core attack, a factor of total degree at most 34 carrying 118 rich scalars must contain the entire received scalar line on at least $d+1$ sites. If the factor has a polynomial section over an algebraic extension of the parameter field, the field norm on those sites and interpolation force an affine head. The site count and norm implication passed the Lean kernel. The moving-cubic theorem above is a written proof with checked ingredients; an end-to-end Lean declaration for its derivative argument is pending. The nearby two-direction consistency-lifting preprint is available locally. [Lean site and norm proof](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeComponentIncidence.lean) · [Harsha et al.](https://arxiv.org/abs/2611.09183)
+
+## Second-prime quadratic bound with local cancellation at every evaluation coordinate
+
+For $n=2^{30}$, $d=2^{26}-1$, and prime characteristic $p>2n$, the quadratic interpolation method gives a safe integer allowance $e=648719018$ at budget $2n$. Thus the second prime has supremum at least $648719019/n$. This advances the earlier quadratic bound by 148 coordinates. The proof below refines the [quadratic discriminant argument](second-prime-quadratic-discriminant.md). It is a written proof with exact numerical comparisons.
+
+Set $t=425022806$ and $h=187904820$. The quadratic dictionary $j\le2,\ i+jd<t,\ j+\ell\le h$ has $3ht-(3h-2)d=n(h+1)+2$ monomials. Write the interpolant as $aY^2+bY+c$. Every selected candidate $P_z$ satisfies the polynomial identity $aP_z^2+bP_z+c=0$ upon specializing $Z=z$.
+
+For $a\ne0$, homogenize in the coordinate variable to degrees $t-1-jd$ for each coefficient of $Y^j$. The binary discriminant $\Delta=b^2-4ac$ has even binary degree $2(t-1-d)$ and parameter degree at most $2h$. Every witness specializes it to a binary square, by homogenizing $P_z$ to degree $d$. If $\Delta\ne0$, remove square factors and vertical factors to write $\Delta=s(Z)V^2H$, with $H$ squarefree and homogeneous in the two coordinate variables, and without any parameter-only factor. Its binary degree $r$ is even. If $r>0$, the two binary first partials have nonzero Sylvester resultant over $\bar F(Z)$, since $p>r$ and $H$ is squarefree there. Except where $s(z)=0$ or $V_z$ vanishes identically, $H_z$ is a binary square. Its linear factors show that its partials have gcd degree at least $r/2$. If $H_z=0$ the entire Sylvester matrix is zero instead. The determinant thus acquires vanishing order at least $r/2$ per such witness; its parameter degree is at most $(2r-2)\deg_Z H$. Counting all three classes gives at most $\deg_Zs+\deg_ZV+(4-4/r)\deg_ZH\le8h=1503238560$ labels.
+
+If $r=0$, use the component equation $2aP_z=\lambda V-b$, with $\lambda^2=s(z)$, as in the earlier proof. This includes $\Delta=0$ by using $V=0$. Discard at most $h$ labels where $a(X,z)\equiv0$. For constant $s$ there are at most two signs, and for nonconstant squarefree $s$ there is one irreducible component. From $2n+1$ putative bad scalars, select a component with exactly $M=979789415$ or $1959578829$ labels respectively. Use $D=h+1$ or $2h+2$ respectively as the root bound for nonidentical relations on that component.
+
+At every fixed domain coordinate $x$ let $j$ be the multiplicity of $X-x$ in $a(X,Z)$ over $\bar F(Z)$. The coefficients of $(X-x)^0,\ldots,(X-x)^{j-1}$ in $\lambda V-b$ vanish identically on the component. Indeed each evaluates to zero at all $M>D$ selected labels, while a nonzero such coefficient has at most $D$ labels, by ordinary root counting or the quadratic norm. Compare coefficients of $(X-x)^j$ in the fiber identity. This gives $2a_x(z)P_z(x)=v_x(z,\lambda)$, where $a_x$ is a **nonzero** polynomial of parameter degree at most $h$, and $v_x$ is the corresponding coefficient in $\lambda V-b$. This comparison remains valid at every selected label, including roots of $a_x$. It recovers the incidence test on all $n$ coordinates. The case $a=0,\ b\ne0$ uses the same argument with $bP_z=-c$, one component and no square root. If $b=0$ also, there are at most $h$ labels.
+
+Let $U$ consist of sites where $2a_x(Z)(u(x)+Zv(x))=v_x(Z,\lambda)$ identically on the component. Outside $U$ at most $D$ labels agree per site; on $U$ at most $h$ selected labels miss each site. Hence $|U|\ge (Mt-Dn)/(M-D)>271089477$. A random pair of distinct selected points shares at least $|U|(1-2h/M)$ agreements on $U$ on average. Choose a pair attaining this bound and let $z$ be its number of shared sites in $U$. These force the joint core of their secant. Every point outside the secant must miss at least $z-d$ of those $z$ sites, and across all labels there are at most $hz$ such misses. Thus $M\le e+1+hz/(z-d)$. For the constant-sign case $z>167109951$ gives $hz/(z-d)<314004237$, whereas $M-e-1=331070396$. For the nonsquare case $z>219099714$ gives $hz/(z-d)<270870860$ and $M-e-1=1310859810$. Both contradict the putative violation. The linear case has at least as many available labels and the smaller nonidentity-site cap.
+
+### Dimension of the common interpolation space improves the moving-cubic floor
+
+At the second production prime and rate $1/16$, the moving-cubic argument and a dimension comparison give the written bound
+$$
+664797187/1073741824\ \le\ \delta^*\ \le\ 715827882/1073741824.
+$$
+Set $n=1073741824$, $d=67108863$, $t=408944638$ and $e=n-t$. Suppose $2n+1$ distinct bad scalars have been selected. All polynomials below use coordinate weight one for $X$, weight $d$ for $Y$ and zero for the scalar variable $\Gamma$. Weight below $t$ makes every interpolant vanish identically on each selected polynomial witness when the scalar is specialized.
+
+An interpolant of total $(\Gamma,Y)$-degree at most 9 and $Y$-degree at most 3 exists. Its four rows of coefficients have $10,9,8,7$ choices of scalar exponent, so the dimension surplus is $34t-46d-10n=79691754$. If every positive-$Y$ factor had degree at most two in $Y$, the preceding small-factor bounds would exclude the given witness count: there are at most three affine heads, with $3(e+1)$ labels in total, at most three nonlinear factors with at most 4128 labels each, and at most nine parameter-only labels. These generous bounds sum to less than $2n$. Therefore there is one irreducible cubic-in-$Y$ factor $F$ over $\overline{\mathbb F}_p(X)$, and all other factors of this interpolant are independent of $Y$. At least $2n+1-9$ selected points lie on $F$.
+
+Now take the entire vector space of interpolation polynomials of total $(\Gamma,Y)$-degree at most seven and coordinate weight below $t$. The possible $Y$-degrees are $0,\ldots,6$. There are $35t-77d$ coefficients and at most $8n$ linear conditions, so its dimension is at least **555745287**. Every one of its members vanishes on the same selected points. By plane Bézout over $\overline{\mathbb F}_p(X)$, each nonzero member is divisible by $F$, since at most $7\cdot9$ intersection points would otherwise lie on $F$. Take an integral representative primitive over $\overline{\mathbb F}_p[X]$; Gauss's lemma makes the quotients integral polynomials.
+
+If $F$ had total $(\Gamma,Y)$-degree at least six, every quotient would have total degree at most one in those variables and weight below $t-3d$, since $F$ has weight at least $3d$. The $1,\Gamma,Y$ coefficient slots then give dimension at most **$2(t-3d)+(t-4d)=555745284$**, three below the proved lower bound. Thus $F$ has total degree at most five. The [moving-cubic derivative and inverse-Taylor argument](second-prime-moving-cubic.md) now applies. Its nonzero-derivative cap is at most $21+32d=2147483637$, below the $2147483640$ selected points on $F$. In the identically-zero case either the factor is a single affine head or there are at most $5(n-d)/(t-d)<15$ points there. These contradictions prove goodness at $e=664797186$ errors. Hamming-step constancy gives the lower endpoint above. The decisive dimension comparison is $32t>8n+67d$, whose first integer solution is the stated $t$. This does not require a degree-six cubic derivative bound. The dimension and endpoint comparison here are written mathematics, not a new kernel-verification claim.
+
+At the final predecessor of the second-prime rate-sixteenth bracket, any putative family of $2n+1$ bad scalars must have selected points of affine dimension at least **10,526,872** over the prime field. For a polynomial span of dimension $r$, a Wronskian equation of order $r$ replaces the universal order-$d+1$ derivative in the moving-factor argument. A nonzero differential numerator allows at most $80+136(r-1)$ labels across the quartic/degree-twelve common factors. Identically zero numerators yield polynomial sections over the algebraic parameter field, where the head or small-incidence alternative applies. The previous one-186-point-secant obstruction controls all head contributions. The result is a necessary condition from a written proof. [Wronskian calculation and integer bound](second-prime-quadratic-discriminant.md)
+
+## 2026-11-21 · From the coding prizes to classical Paley discrepancy
+
+The joint coding theorem covers the order-128 subgroup of the prime field of order
+$p=65\cdot2^{239}+1$. At rates $1/2,1/4,1/8,1/16$ its first bad list error counts are
+$63,97,113,121$. For MCA the half-rate crossing is $62$ errors and the other three rates
+stay within budget through radius one. The proof counts agreement subsets, constructs
+prescribed-product witnesses, and transfers scalar lists to MCA under explicit field-size
+conditions. The length-$2^{30}$ four-rate MCA result has a separate field-budget window.
+[Joint theorem](../../../ArkLib/Research/ProximityGap/Frontier/FourRateSmoothMca128.lean) ·
+[List proof](../../../ArkLib/Research/ProximityGap/Frontier/FourRateList128.lean) ·
+[Production-length window](../../../ArkLib/Research/ProximityGap/Frontier/SharpApolarMCA.lean)
+
+**An exact coding reduction.** For an odd prime, write $S(A,B)=\sum_{b\in B,a\in A}\chi(a+b)$
+for the quadratic character. On coordinates $a\in A$, use the affine Reed–Solomon word
+$a\mapsto a+b$. For $s=\pm1$ let $h_s(b)$ count coordinates where the symbol has character
+$s$. The signed excess is exactly $2h_s(b)-|A|+\mathbf1_{-b\in A}$. If for each sign at
+most $L$ shifts have excess greater than a nonnegative integer $t$, then
+$|S(A,B)|\le t|B|+L|A|$ for every $B$. Conversely, if $|S(A,B)|\le t|B|$ for every
+$|B|\ge m>0$, each exceptional list has size below $m$. This identifies the missing estimate
+in coding language. Every coordinate accepts the same half-alphabet of squares, or of
+nonsquares. A single-symbol center has just $|A|$ agreements across *all* shifts.
+The affine pair $X,1$ has zero MCA-bad scalars in every dimension at least two. Direct
+encoding of the Legendre values also meets a degree obstruction. On at most $(p-1)/2$
+coordinates their off-domain translates have full affine hull over the prime field.
+[Shift-list equivalences and MCA proof](../../../ArkLib/Research/ProximityGap/Frontier/PaleyShiftListRecovery.lean) ·
+[Affine-hull theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyTranslateInterpolation.lean)
+
+**Classical Paley results.** At the second designated production prime the order-$2^{30}$
+generator $g$ is a nonsquare. Simultaneous scaling by $g$ makes $S(A,B)=0$ for every pair
+of unions of its cosets. For two geometric intervals in arbitrary such cosets,
+$|S(A,B)|\le |A|+|B|$. Negating $B$ converts the sum convention above to graph differences.
+At the first prime, the complete subgroup has quadratic row sum $-30929$ at one, and
+all its elements are squares. Thus its ordered difference sum is $-33209760874496$.
+The second-prime zero and interval bound are Lean theorems. The first-prime value is
+an exact GMP evaluation. The scan pairs $g^i$ with $g^{-i}$, treats the two self-inverse
+elements separately, and checks each shard endpoint by modular powering. Direct evaluation
+of every ordered pair at the two small controls reproduced every dyadic subtotal.
+[Cosets and intervals](../../../ArkLib/Research/ProximityGap/Frontier/PaleyCosetCancellation.lean) ·
+[Production character scan](../../../scripts/probes/probe_sponsor_paley_row.cpp)
+
+For arbitrary sets in a finite field of order $q$, put $a=|A|$ and $b=|B|$.
+The kernel-checked second moment yields $q|S|^2\le ab(q-a)(q-b)$ for every nontrivial
+multiplicative character. For the quadratic character, the repository's unconditional Stepanov
+fourth moment gives $r^2|S|^4\le17qa^3b^4$ whenever $1\le r\le b$ and $r^4\le q$.
+Averaging over the $r$-subsets of $B$ yields this bound with no upper limit on $b$.
+Thus $17q^{1+4\delta}\le ar^2$ suffices for a relative saving $q^{-\delta}$.
+For arbitrary balanced sets of size $p^\epsilon$ below the square-root threshold, the
+uniform saving remains open. [Lean estimates](../../../ArkLib/Research/ProximityGap/Frontier/PaleyBilinearDiscrepancy.lean) ·
+[Kim–Yip–Yoo, Conjecture 2.12](https://arxiv.org/html/2309.09124v3#S2.SS4)
+
+**Two graphs on the joint prize instance.** In the classical Paley graph, the subgraph
+induced on the 128 code coordinates is 67-regular and its ordered signed sum is 896.
+Lean checked Euler's criterion at every power of the domain generator. A separate
+integer computation gives clique number 10, independence number 8 and signed matrix
+norm below 30 on these coordinates. The signed matrix $K$ is circulant and symmetric.
+Nine cyclic convolution squarings give $\operatorname{tr}(K^{512})<30^{512}$.
+Every eigenvalue therefore has absolute value below 30. In particular all subsets
+$U,V$ of the domain satisfy $|S(U,-V)|\le30\sqrt{|U||V|}$. Clique enumeration fixes
+one vertex by transitivity, then recursively intersects ordered candidate sets with the
+neighborhood of each chosen vertex. For the generalized graph with connection set
+the same subgroup, Lean instead finds a nonprincipal additive period of magnitude
+greater than $64$. The base-two logarithmic upper bound with constant one holds here
+because $\log_2(p/128)>128$. The uniform prime-field logarithmic estimate remains open.
+[Kernel-checked results](../../../ArkLib/Research/ProximityGap/Frontier/PrizeInstancePaleySpectrum.lean) ·
+[Exact induced-graph calculation](../../../scripts/probes/probe_paley_joint_prize_domain.py)
+
+**Arbitrary subsets of one production coset.** At either named prime let $H$ have order
+$n=2^{30}$. For all $A,B$ in a common affine copy $t+cH$, $c\ne0$, the exact-arithmetic
+certificate gives
+$$
+\left|\sum_{a\in A,b\in B}\chi(a-b)\right|\le K\sqrt{|A||B|},\qquad K_1=449676,\quad K_2=448831.
+$$
+In particular, for sets of size at least $2^{20}$ the relative discrepancy is below
+$0.429$. This covers arbitrary choices of the two subsets *within* the specified copy.
+
+To reproduce the certificate, compile the spectrum probe with C++17 and GMP, then
+run it with arguments `first 128 4` and `second 128 4`. For a generator $g$, the signed matrix on $H$
+has entries $\chi(g)^i v_{j-i}$ with $v_l=\chi(1-g^l)$. Multiplying the rows by signs
+preserves singular values, giving the magnitudes of the discrete Fourier transform of
+$v$. Split the exponents into 128 residue classes. At each frequency modulo $2^{23}$
+sum the certified magnitudes across the classes before maximizing. The row phases in
+the full transform have modulus one. Each radix-two transform uses fixed-point integer
+arithmetic, with GMP square-root enclosures for its roots of unity and error below one
+per row. The largest upper bounds occur at residues 66,773 and 3,625,762, respectively. The row sums
+$-30929$ and $-1441$ at one agree with the independent character scans. Both certified
+operator norms are below $14\sqrt n$. Applying the matrix bound to
+indicator vectors yields the displayed inequality. Translation cancels in $a-b$,
+and scaling contributes the common sign $\chi(c)$. These finite numerical inequalities
+were computed outside Lean. [Certified transform](../../../scripts/probes/probe_sponsor_paley_spectrum.cpp)

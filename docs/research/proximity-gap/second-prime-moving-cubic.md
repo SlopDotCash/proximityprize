@@ -1,6 +1,6 @@
 # A moving cubic bound at the second prime
 
-Let $n=2^{30}$, $d=2^{26}-1$, and $p=730750818665451459101842416358141509841924915201$. On any $n$ distinct points of this prime field, the degree-at-most-$d$ Reed–Solomon code has at most $2n$ MCA-bad scalars at $e=655110340$ errors. The first bad error count is at least **655110341**. The three-core example gives the upper bound **715827882**. This is a written proof with separately kernel-checked ingredients.
+Let $n=2^{30}$, $d=2^{26}-1$, and $p=730750818665451459101842416358141509841924915201$. On any $n$ distinct points of this prime field, the degree-at-most-$d$ Reed–Solomon code has at most $2n$ MCA-bad scalars at $e=655110340$ errors. A dimension comparison below extends this bound through **664797186 errors**, so the first bad error count is at least **664797187**. The three-core example gives the upper bound **715827882**. This is a written proof with separately kernel-checked ingredients.
 
 ## Two interpolation polynomials
 
@@ -50,3 +50,17 @@ If every common component has $Y$-degree at most two, the sum of their positive 
 This proves the bound for the full witness-set MCA event. Monotonicity and the integer Hamming grid give the first-bad lower endpoint. The argument bounds the numerator on arbitrary injective domains over primes $p>22(d+1)(t+1)$. The second prime's budget translates it into the security statement above.
 
 [Rate-sixteenth core and packing proofs](rate-sixteenth-mca-threshold-curve.md) · [Lean interpolation](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeQuarticInterpolation.lean) · [Finite incidence and norm-section lemmas](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeComponentIncidence.lean)
+
+## The stronger dimension bound at 664797186 errors
+
+At the second production prime and rate $1/16$, the moving-cubic argument and a dimension comparison give the written bound
+$$
+664797187/1073741824\ \le\ \delta^*\ \le\ 715827882/1073741824.
+$$
+Set $n=1073741824$, $d=67108863$, $t=408944638$ and $e=n-t$. Suppose $2n+1$ distinct bad scalars have been selected. All polynomials below use coordinate weight one for $X$, weight $d$ for $Y$ and zero for the scalar variable $\Gamma$. Weight below $t$ makes every interpolant vanish identically on each selected polynomial witness when the scalar is specialized.
+
+An interpolant of total $(\Gamma,Y)$-degree at most 9 and $Y$-degree at most 3 exists. Its four rows of coefficients have $10,9,8,7$ choices of scalar exponent, so the dimension surplus is $34t-46d-10n=79691754$. If every positive-$Y$ factor had degree at most two in $Y$, the preceding small-factor bounds would exclude the given witness count: there are at most three affine heads, with $3(e+1)$ labels in total, at most three nonlinear factors with at most 4128 labels each, and at most nine parameter-only labels. These generous bounds sum to less than $2n$. Therefore there is one irreducible cubic-in-$Y$ factor $F$ over $\overline{\mathbb F}_p(X)$, and all other factors of this interpolant are independent of $Y$. At least $2n+1-9$ selected points lie on $F$.
+
+Now take the entire vector space of interpolation polynomials of total $(\Gamma,Y)$-degree at most seven and coordinate weight below $t$. The possible $Y$-degrees are $0,\ldots,6$. There are $35t-77d$ coefficients and at most $8n$ linear conditions, so its dimension is at least **555745287**. Every one of its members vanishes on the same selected points. By plane Bézout over $\overline{\mathbb F}_p(X)$, each nonzero member is divisible by $F$, since at most $7\cdot9$ intersection points would otherwise lie on $F$. Take an integral representative primitive over $\overline{\mathbb F}_p[X]$; Gauss's lemma makes the quotients integral polynomials.
+
+If $F$ had total $(\Gamma,Y)$-degree at least six, every quotient would have total degree at most one in those variables and weight below $t-3d$, since $F$ has weight at least $3d$. The $1,\Gamma,Y$ coefficient slots then give dimension at most **$2(t-3d)+(t-4d)=555745284$**, three below the proved lower bound. Thus $F$ has total degree at most five. The [moving-cubic derivative and inverse-Taylor argument](second-prime-moving-cubic.md) now applies. Its nonzero-derivative cap is at most $21+32d=2147483637$, below the $2147483640$ selected points on $F$. In the identically-zero case either the factor is a single affine head or there are at most $5(n-d)/(t-d)<15$ points there. These contradictions prove goodness at $e=664797186$ errors. Hamming-step constancy gives the lower endpoint above. The decisive dimension comparison is $32t>8n+67d$, whose first integer solution is the stated $t$. This does not require a degree-six cubic derivative bound. The dimension and endpoint comparison here are written mathematics, not a new kernel-verification claim.

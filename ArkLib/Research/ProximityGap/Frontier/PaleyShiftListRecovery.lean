@@ -1,11 +1,13 @@
 /-
 Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
-SPDX-License-Identifier: MIT OR Apache-2.0
+Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and LICENSE.
+Authors: Proximity Prize Contributors
 -/
 import ArkLib.Data.CodingTheory.ReedSolomon
 import ArkLib.Extensions.Data.CodingTheory.ProximityGap.Errors
 import Mathlib.NumberTheory.LegendreSymbol.QuadraticChar.Basic
-import Mathlib.Tactic
+import Mathlib.Tactic.GCongr
+import Mathlib.Tactic.LinearCombination
 
 /-!
 # Affine list recovery and quadratic Paley discrepancy
@@ -104,12 +106,14 @@ theorem list_bound_of_discrepancy (A : Finset F) {m : ℕ} (hm : 0 < m) (t : ℤ
     exact (Finset.mem_filter.mp hb).2
   rw [← Finset.mul_sum] at hlt
   have hb := abs_le.mp (h B hlarge)
-  rcases hs with rfl | rfl <;> simp only [Finset.sum_const, nsmul_eq_mul, one_mul, neg_one_mul] at hlt <;> omega
+  rcases hs with rfl | rfl <;>
+    simp only [Finset.sum_const, nsmul_eq_mul, one_mul, neg_one_mul] at hlt <;> omega
 
 /-- Against one ordinary received word, each coordinate agrees with exactly one shift. -/
 theorem singleton_center_total (A : Finset F) (y : F → F) :
     ∑ b : F, (A.filter (fun x => x + b = y x)).card = A.card := by
-  have he (x b : F) : y x - x = b ↔ x + b = y x := by constructor <;> intro h <;> linear_combination -h
+  have he (x b : F) : y x - x = b ↔ x + b = y x := by
+    constructor <;> intro h <;> linear_combination -h
   simpa only [he, mem_univ, filter_true] using
     sum_card_fiberwise_eq_card_filter A univ (fun x => y x - x)
 
