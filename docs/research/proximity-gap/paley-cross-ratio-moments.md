@@ -29,6 +29,13 @@ One can retain infinity on either side using the projective matrix $C(x,z)=\chi(
 
 To recover the original chart for $t\notin A\cup B$, the transformed sum needs weights $\chi(a-t)$ and $\chi(b-t)$ at its two vertices, and the global factor $\chi(-1)$. Hölder allows arbitrary unit target weights. The source weight here depends on the very pole being averaged. Inserting it into $K(t,y)$ cancels $\chi(a-t)$ and restores the original row. Consequently this estimate alone gives no worst-pole conclusion.
 
+Lean proves the fourth-order result over every finite field of odd order $q$ without invoking an external character-sum axiom. If $N$ poles have a partner of size at least $b_0$ with mean row magnitude at least $T$ in the sense $|S|/|B|\ge T$, then
+$$
+N b_0 T^4 \le 3m^2q^2+C m^4 q,
+\qquad C=64\ \text{for }q\ge3251,\quad C=196\ \text{otherwise}.
+$$
+This bounds the exceptional fraction by $h^{-4}(3q/(m^2 b_0)+C/b_0)$ at $T=hm$. At $m,b_0\ge q^{1/3+\gamma}$ it gives a power saving for every $0<4\delta<\min(3\gamma,1/3+\gamma)$ with $h=q^{-\delta}$. In a quadratic extension the subfield example has exactly $1/\sqrt q$ of all poles exceptional at fixed relative threshold and sizes $\sqrt q$. [Formal Gram moment, chart identity and exceptional count](../../../ArkLib/Research/ProximityGap/Frontier/PaleyGramFourthMoment.lean) · [Exact subfield obstruction](paley-square-field-charts.md)
+
 ## The quartic sum in a prescribed chart
 
 For ordered, distinct branch points $a,b,c,d\in A$, put $Q=\sum_x\chi((x-a)(x-b)(x-c)(x-d))$. Set

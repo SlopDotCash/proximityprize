@@ -159,7 +159,9 @@ identifies both rank predictions with the numerical counts. Its symbolic evaluat
 The \href{https://github.com/SlopDotCash/proximityprize/blob/d7087b90e15b9ccb4232d248c47061e49a06c074/ArkLib/Research/ProximityGap/RankJohnsonComparison.lean}{integer comparison and Johnson proofs}
 apply the closed-ball endpoint convention in Section~1.
 
-More generally, capacity has error count $n-k$. Any bad MCA agreement requires at least $k+1$ sites, since both rows interpolate on every $k$-subset. The MCA error is therefore constant from $n-k-1$ errors through radius one. Whenever MCA fails, its first failure is strictly below capacity. For lists, the worst ball at capacity has exactly $\binom nk$ words. With $\varepsilon<1$, the first failure is $n-k+1$ if that binomial fits the budget, and at most $n-k$ otherwise. These \href{https://github.com/SlopDotCash/proximityprize/blob/9d7bba7b3f451feeba585d93d6f6452c27b2aaed/ArkLib/Research/ProximityGap/CapacityBoundaryReview.lean}{capacity comparisons} apply at every eligible rate and every positive list width.
+Arnon, Boneh and Fenzi call the relative minimum distance the capacity radius, so its error count here is $n-k+1$ \cite[p.~5]{abf}. Any bad MCA agreement requires at least $k+1$ sites, since both rows interpolate on every $k$-subset. The MCA error is constant from $n-k-1$ errors through radius one. Whenever MCA fails, its first failure lies at least two errors below capacity. For lists, the worst ball one step below capacity has exactly $\binom nk$ words. With $\varepsilon<1$ the first failure equals capacity if that binomial fits the budget, and lies at least one error below it otherwise. These \href{https://github.com/SlopDotCash/proximityprize/blob/8d0bb3b2d083b61430a7c0cb59e0803a3de16e6a/ArkLib/Research/ProximityGap/CapacityBoundaryReview.lean}{capacity comparisons} apply at every eligible rate and every positive list width.
+
+At 128-bit tolerance under $q<2^{256}$, the largest dyadic length admitting both all-safe MCA and first list failure at $n-k+1$ is 128 at rates $1/2,1/4,1/8$, and 256 at rate $1/16$. At every larger length both binomial counts exceed the budget. The BLS12-381 scalar field realizes the stated outcomes at every eligible dyadic length up through each ceiling. The \href{https://github.com/SlopDotCash/proximityprize/blob/9603b9a0deef879bd9d4caf9c91383ea619e0303/ArkLib/Research/ProximityGap/JointDyadicCeilings.lean}{sharp length theorem} constructs the smooth domains and proves the failures above the ceilings.
 
 \newpage
 \section*{4.2.\quad Eight sharp thresholds on a family of fields}
@@ -247,7 +249,7 @@ The order-$n$ subgroup of the prime field of order $p_2=2^{30}(2^{129}+13)+1$ re
 this case. At $715{,}827{,}881$ errors every received pair meets the budget. One more
 error admits a pair with too many bad scalars. The boundary lies just below $2/3$,
 whereas the Johnson radius $1-\sqrt{(2^{26}-1)/2^{30}}$ exceeds $3/4$.
-The \href{https://github.com/SlopDotCash/proximityprize/blob/797227d570944e033c0af8fc9fff22e4be8f7e7c/ArkLib/Research/ProximityGap/SecondPrimeRankReview.lean}{named rank and executable theorems} prove that both functions return this integer on the designated subgroup. The proof evaluates their outputs by uniqueness of the boundary.
+The \href{https://github.com/SlopDotCash/proximityprize/blob/3c392c0ac2faf4c2931a5a8952826a65bec5026d/ArkLib/Research/ProximityGap/SecondPrimeRankReview.lean}{named rank and executable theorems} prove that both functions return this integer on the designated subgroup. The proof evaluates their outputs by uniqueness of the boundary.
 
 \textbf{Why the crossing is sharp.}
 Let $b(e)$ be the largest number of bad scalars for any one received pair.

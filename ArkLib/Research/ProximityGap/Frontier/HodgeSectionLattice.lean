@@ -12,8 +12,9 @@ orthogonal fibre components. Every intersection number is a hypothesis. The
 surface on which these numbers hold is constructed in
 `docs/research/proximity-gap/section-incidence-hodge-index.md`.
 
-The file also checks the counting step for totally ramified core sites and the
-integer values of the weight-free population bound.
+The file also checks the counting step for totally ramified core sites, the
+packing step and integer values of the tangent-head bound, and the integer
+values of the weight-free population bound.
 -/
 
 set_option autoImplicit false
@@ -165,6 +166,62 @@ theorem terminal_weightFree :
     weightFreeBound 1073741824 357913943 67108863 4 34 34 302954072 = 100872934 := by
   decide
 
+/-- Packing step of Theorem D: `N` sets of size `s` in an `n`-set whose pairwise
+intersections have at most `r` elements satisfy `N * s² ≤ n * (s + (N - 1) * r)`.
+The second-moment count is taken as a hypothesis in the form
+`(∑ |Aᵢ|)² ≤ n * (∑ |Aᵢ| + N (N-1) r)`. -/
+theorem packing_of_second_moment {N s r n total : ℕ} (hsize : total = N * s)
+    (hmoment : total ^ 2 ≤ n * (total + N * (N - 1) * r)) :
+    N * s ^ 2 ≤ n * (s + (N - 1) * r) := by
+  subst hsize
+  rcases Nat.eq_zero_or_pos N with h0 | hpos
+  · subst h0; simp
+  · have h : N * (N * s ^ 2) ≤ N * (n * (s + (N - 1) * r)) := by
+      calc N * (N * s ^ 2) = (N * s) ^ 2 := by ring
+        _ ≤ n * (N * s + N * (N - 1) * r) := hmoment
+        _ = N * (n * (s + (N - 1) * r)) := by ring
+    exact Nat.le_of_mul_le_mul_left h hpos
+
+/-- Integer form of the bound of Theorem D: exceptional scalars, sections of
+large height, sections with many degenerate agreements, and `h` sections for
+each class of tangent heads. -/
+def tangentHeadBound (n t d b g h a W cbar nbar : ℕ) : ℕ :=
+  (4 * b - 2) * g + 1
+    + (4 * ((2 * b - 2) * g + 1) * ((2 * b - 2) * a + 1)
+        + b * (W * (h - b) + h * (W - b * d))) / (cbar + 1)
+    + h * n / (nbar + 1)
+    + h * (n * (t - nbar - cbar - (d + 2 * cbar))
+        / ((t - nbar - cbar) ^ 2 - n * (d + 2 * cbar)))
+
+/-- Theorem D at the last second-prime predecessor: the Johnson-type condition
+holds for the chosen cut-offs and the bounds are 48038 and 99313. -/
+theorem terminal_tangentHead :
+    1073741824 * (67108863 + 2 * 16777216) < (357913943 - 8388608 - 16777216) ^ 2 ∧
+    tangentHeadBound 1073741824 357913943 67108863 3 34 34 290805098 290805098
+      16777216 8388608 = 48038 ∧
+    tangentHeadBound 1073741824 357913943 67108863 4 34 34 302954072 302954072
+      16777216 8388608 = 99313 := by
+  decide
+
+/-- Theorem D for a multiplicity-three interpolant at the last open error count
+of the first-prime rate-1/4 bracket, value degrees two through six. -/
+theorem firstPrime_quarter_tangentHead :
+    1073741824 * (268435455 + 2 * 16777216) < (592794966 - 4194304 - 16777216) ^ 2 ∧
+    tangentHeadBound 1073741824 592794966 268435455 2 23 23 1778384897 1778384897
+      16777216 4194304 = 56175 ∧
+    tangentHeadBound 1073741824 592794966 268435455 3 23 23 1778384897 1778384897
+      16777216 4194304 = 176645 ∧
+    tangentHeadBound 1073741824 592794966 268435455 4 23 23 1778384897 1778384897
+      16777216 4194304 = 374183 ∧
+    tangentHeadBound 1073741824 592794966 268435455 5 23 23 1778384897 1778384897
+      16777216 4194304 = 648789 ∧
+    tangentHeadBound 1073741824 592794966 268435455 6 23 23 1778384897 1778384897
+      16777216 4194304 = 1000463 := by
+  decide
+
+#print axioms packing_of_second_moment
+#print axioms terminal_tangentHead
+#print axioms firstPrime_quarter_tangentHead
 #print axioms sq_le_mul_of_nonpos
 #print axioms bessel_of_hodge
 #print axioms card_large_miss_le

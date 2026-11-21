@@ -5,7 +5,7 @@ Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and L
 import ArkLib.Research.ProximityGap.Frontier.LinearPencilFreshLabels
 import Mathlib.LinearAlgebra.Lagrange
 
-/-! # Four noncollinear polynomial heads with a common locator -/
+/-! # Noncollinear polynomial heads with a common locator -/
 set_option autoImplicit false
 noncomputable section
 open Polynomial Finset
@@ -16,8 +16,8 @@ variable {I F : Type} [Fintype I] [Nonempty I] [DecidableEq I] [Fintype F] [Fiel
 
 /-- Every site outside a head's defining core supplies one fresh label. Locally the
 distinct foreign directions are separated by their two-by-two determinants. -/
-theorem mass (dom : I ↪ F) (k d : ℕ) (δ : ℝ≥0) (U V : Fin 4 → F[X]) (roots : Finset I)
-    (owner : I → Fin 4) (core : Fin 4 → Finset I) (hdeg : roots.card+d+1 < k)
+theorem mass {heads : ℕ} (dom : I ↪ F) (k d : ℕ) (δ : ℝ≥0) (U V : Fin heads → F[X]) (roots : Finset I)
+    (owner : I → Fin heads) (core : Fin heads → Finset I) (hdeg : roots.card+d+1 < k)
     (hU : ∀ j, (U j).natDegree ≤ d) (hV : ∀ j, (V j).natDegree ≤ d)
     (hroot : ∀ j, roots ⊆ core j)
     (hcore : ∀ i x, x ∈ core i → x ∉ roots →
@@ -33,9 +33,9 @@ theorem mass (dom : I ↪ F) (k d : ℕ) (δ : ℝ≥0) (U V : Fin 4 → F[X]) (
       epsMCA (F:=F) (ReedSolomon.code dom k : Set (I → F)) δ := by
   classical
   let J := Lagrange.nodal roots (fun x => dom x)
-  let A (i : Fin 4) := J*U i
-  let B (i : Fin 4) := J*V i
-  let E := (i : Fin 4) × ↥(core i)ᶜ
+  let A (i : Fin heads) := J*U i
+  let B (i : Fin heads) := J*V i
+  let E := (i : Fin heads) × ↥(core i)ᶜ
   let site (e : E) : I := e.2.val
   let key (e : E) : Fin 2 → F :=
     let x := site e
@@ -44,7 +44,7 @@ theorem mass (dom : I ↪ F) (k d : ℕ) (δ : ℝ≥0) (U V : Fin 4 → F[X]) (
   have jc : J.natDegree=roots.card := Lagrange.natDegree_nodal
   have deg {f : F[X]} (h : f.natDegree ≤ d) : (J*f).natDegree ≤ roots.card+d :=
     natDegree_mul_le.trans (add_le_add jc.le h)
-  have coreval (j : Fin 4) (x : I) (hx : x∈core j) :
+  have coreval (j : Fin heads) (x : I) (hx : x∈core j) :
       (A j).eval (dom x)=(A (owner x)).eval (dom x) ∧ (B j).eval (dom x)=(B (owner x)).eval (dom x) := by
     by_cases h : x∈roots
     · have hz : J.eval (dom x)=0 := Lagrange.eval_nodal_at_node h
