@@ -34,14 +34,14 @@ private theorem tangent (x a : ℕ) : (2*a+1)*x ≤ x^2+a*(a+1) := by
     nlinarith
 
 open Classical in
-/-- Integer multiplicities force edges of the saturated-overlap graph. -/
-theorem forced_edges (S : Fin M → Finset I) {t d : ℕ} (hd : 0 < d)
+/-- Count pairs having more than the baseline number of common agreements. -/
+theorem forced_edges_above (S : Fin M → Finset I) {t b c : ℕ}
     (hsize : ∀ i, t ≤ (S i).card)
-    (hpair : ∀ i j, i ≠ j → (S i ∩ S j).card ≤ d) (a : ℕ) :
-    2*a*(M*t) ≤ M*((M-1)*(d-1)) + 2*(fullGraph S d).edgeFinset.card +
+    (hpair : ∀ i j, i ≠ j → (S i ∩ S j).card ≤ b+c) (a : ℕ) :
+    2*a*(M*t) ≤ M*((M-1)*b) + c*(2*(fullGraph S (b+1)).edgeFinset.card) +
       a*(a+1)*Fintype.card I := by
   classical
-  let G := fullGraph S d
+  let G := fullGraph S (b+1)
   have hS : M*t ≤ ∑ i, (S i).card := by
     simpa using Finset.sum_le_sum (s := (univ : Finset (Fin M))) (fun i _ => hsize i)
   have htan : (2*a+1)*(∑ i, (S i).card) ≤
@@ -50,7 +50,7 @@ theorem forced_edges (S : Fin M → Finset I) {t d : ℕ} (hd : 0 < d)
     apply le_trans (Finset.sum_le_sum (fun x _ => tangent ((univ.filter (fun i => x ∈ S i)).card) a))
     simp only [Finset.sum_add_distrib, Finset.sum_const, card_univ, nsmul_eq_mul, Nat.mul_comm]
     exact le_rfl
-  have row (i) : ∑ j, (S i ∩ S j).card ≤ (S i).card + ((M-1)*(d-1) + G.degree i) := by
+  have row (i) : ∑ j, (S i ∩ S j).card ≤ (S i).card + ((M-1)*b + c*G.degree i) := by
     rw [← add_sum_erase univ (fun j => (S i ∩ S j).card) (mem_univ i), inter_self]
     apply Nat.add_le_add_left
     have he : ((univ.erase i).filter (G.Adj i)) = G.neighborFinset i := by
@@ -58,25 +58,35 @@ theorem forced_edges (S : Fin M → Finset I) {t d : ℕ} (hd : 0 < d)
       simp only [mem_filter, mem_erase, mem_univ, and_true, mem_neighborFinset]
       exact ⟨And.right, fun h => ⟨h.ne.symm, h⟩⟩
     calc ∑ j ∈ univ.erase i, (S i ∩ S j).card
-        ≤ ∑ j ∈ univ.erase i, ((d-1) + if G.Adj i j then 1 else 0) := by
+        ≤ ∑ j ∈ univ.erase i, (b + c*(if G.Adj i j then 1 else 0)) := by
           apply sum_le_sum
           intro j hj
           have hn := (mem_erase.mp hj).1.symm
           have hi := hpair i j hn
           by_cases h : G.Adj i j
           · rw [ite_eq_left h]; omega
-          · have hl : ¬d ≤ (S i ∩ S j).card := fun hb => h ⟨hn,hb⟩
+          · have hl : ¬b+1 ≤ (S i ∩ S j).card := fun hb => h ⟨hn,hb⟩
             rw [ite_eq_right h]; omega
-      _ = (M-1)*(d-1) + G.degree i := by
-          rw [sum_add_distrib, ← card_filter, he, G.card_neighborFinset_eq_degree]
+      _ = (M-1)*b + c*G.degree i := by
+          rw [sum_add_distrib, ← Finset.mul_sum, ← card_filter, he, G.card_neighborFinset_eq_degree]
           simp [card_erase_of_mem]
   have hu := Finset.sum_le_sum (s := (univ : Finset (Fin M))) (fun i _ => row i)
   simp only [sum_add_distrib, sum_const, card_univ, Fintype.card_fin, nsmul_eq_mul,
-    G.sum_degrees_eq_twice_card_edges, Nat.cast_id] at hu
+    ← Finset.mul_sum, G.sum_degrees_eq_twice_card_edges, Nat.cast_id] at hu
   have hlo := Nat.mul_le_mul_left (2*a) hS
   rw [Nat.add_mul, one_mul] at htan
-  change _ ≤ _ + 2*G.edgeFinset.card + _
+  change _ ≤ _ + c*(2*G.edgeFinset.card) + _
   omega
+
+open Classical in
+/-- Integer multiplicities force edges of the saturated-overlap graph. -/
+theorem forced_edges (S : Fin M → Finset I) {t d : ℕ} (hd : 0 < d)
+    (hsize : ∀ i, t ≤ (S i).card)
+    (hpair : ∀ i j, i ≠ j → (S i ∩ S j).card ≤ d) (a : ℕ) :
+    2*a*(M*t) ≤ M*((M-1)*(d-1)) + 2*(fullGraph S d).edgeFinset.card +
+      a*(a+1)*Fintype.card I := by
+  obtain ⟨b,rfl⟩ := Nat.exists_eq_succ_of_ne_zero hd.ne'
+  simpa only [Nat.succ_sub_one, one_mul] using forced_edges_above (b := b) (c := 1) S hsize hpair a
 
 open Classical in
 /-- A numerical certificate applying Turán to saturated intersections. -/
@@ -112,17 +122,16 @@ theorem second_budget (S : Fin 2147483649 → Finset I)
 open Code Polynomial
 
 /-- A worst-center scalar list exceeding B produces actual distinct message
-polynomials and exactly t selected agreements per word. Any clique provided by
-the set-family theorem consists of fully split polynomial differences. -/
-theorem from_list {F : Type} [Field F] (D : I ↪ F) {k t B r : ℕ} (hk : 0 < k)
+polynomials and exactly t selected agreements per word. The pair overlaps still satisfy the degree bound when a looser clique threshold is used. -/
+theorem from_list_at_overlap {F : Type} [Field F] (D : I ↪ F) {k t B r s : ℕ} (hk : 0 < k)
     (htn : t ≤ Fintype.card I) (hn : 0 < Fintype.card I)
     (hforce : ∀ S : Fin (B+1) → Finset I, (∀ i, (S i).card = t) →
-      (∀ i j, i ≠ j → (S i ∩ S j).card ≤ k-1) → ¬(fullGraph S (k-1)).CliqueFree r)
+      (∀ i j, i ≠ j → (S i ∩ S j).card ≤ k-1) → ¬(fullGraph S s).CliqueFree r)
     (hlist : (B : ℕ∞) < Lambda (ReedSolomon.code D k : Set (I → F))
       (((Fintype.card I-t : ℕ) : ℝ)/Fintype.card I)) :
     ∃ (y : I → F) (P : Fin (B+1) → F[X]) (S : Fin (B+1) → Finset I),
       Function.Injective P ∧ (∀ i, (P i).natDegree < k) ∧ (∀ i, (S i).card=t) ∧
-      (∀ i x, x ∈ S i → (P i).eval (D x) = y x) ∧ ¬(fullGraph S (k-1)).CliqueFree r := by
+      (∀ i x, x ∈ S i → (P i).eval (D x) = y x) ∧ ¬(fullGraph S s).CliqueFree r := by
   classical
   let _ : NeZero k := ⟨hk.ne'⟩
   let C := (ReedSolomon.code D k : Set (I → F))
@@ -164,6 +173,20 @@ theorem from_list {F : Type} [Field F] (D : I ↪ F) {k t B r : ℕ} (hk : 0 < k
         (mem_filter.mp (hs j hj)).2.symm⟩
     have hpair := ReedSolomon.agree_lt_of_mem_code (hclose i).1 (hclose j).1 (hin.ne hij)
     omega
+
+/-- A worst-center scalar list exceeding B produces actual distinct message
+polynomials and exactly t selected agreements per word. Any clique provided by
+the set-family theorem consists of fully split polynomial differences. -/
+theorem from_list {F : Type} [Field F] (D : I ↪ F) {k t B r : ℕ} (hk : 0 < k)
+    (htn : t ≤ Fintype.card I) (hn : 0 < Fintype.card I)
+    (hforce : ∀ S : Fin (B+1) → Finset I, (∀ i, (S i).card = t) →
+      (∀ i j, i ≠ j → (S i ∩ S j).card ≤ k-1) → ¬(fullGraph S (k-1)).CliqueFree r)
+    (hlist : (B : ℕ∞) < Lambda (ReedSolomon.code D k : Set (I → F))
+      (((Fintype.card I-t : ℕ) : ℝ)/Fintype.card I)) :
+    ∃ (y : I → F) (P : Fin (B+1) → F[X]) (S : Fin (B+1) → Finset I),
+      Function.Injective P ∧ (∀ i, (P i).natDegree < k) ∧ (∀ i, (S i).card=t) ∧
+      (∀ i x, x ∈ S i → (P i).eval (D x) = y x) ∧ ¬(fullGraph S (k-1)).CliqueFree r := by
+  exact from_list_at_overlap D hk htn hn hforce hlist
 
 #print axioms from_list
 
