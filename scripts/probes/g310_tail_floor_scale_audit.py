@@ -31,6 +31,12 @@ PROTH_WITNESS = 5
 PROTH_P = PROTH_K * (1 << PROTH_M) + 1
 
 
+def require(condition: bool, message: str) -> None:
+    """Keep mathematical certificate checks active under ``python -O``."""
+    if not condition:
+        raise AssertionError(message)
+
+
 def factor(x: int) -> dict[int, int]:
     out: dict[int, int] = {}
     d = 2
@@ -62,7 +68,7 @@ def is_prime_small(n: int) -> bool:
 
 
 def primitive_n_root_small(p: int, n: int) -> int:
-    assert (p - 1) % n == 0
+    require((p - 1) % n == 0, f"n={n} does not divide p-1 for p={p}")
     for g in range(2, p):
         if pow(g, n, p) != 1:
             continue
@@ -72,21 +78,24 @@ def primitive_n_root_small(p: int, n: int) -> int:
 
 
 def certify_proth_prime() -> int:
-    assert PROTH_K % 2 == 1
-    assert PROTH_K < (1 << PROTH_M)
+    require(PROTH_K % 2 == 1, "Proth coefficient must be odd")
+    require(PROTH_K < (1 << PROTH_M), "Proth coefficient must be below 2^m")
     p = PROTH_P
     # Proth theorem: this congruence proves p is prime.
-    assert pow(PROTH_WITNESS, (p - 1) // 2, p) == p - 1
+    require(
+        pow(PROTH_WITNESS, (p - 1) // 2, p) == p - 1,
+        "Proth witness failed the primality certificate",
+    )
     return p
 
 
 def primitive_n_root_from_proth(n: int) -> int:
     p = certify_proth_prime()
-    assert n & (n - 1) == 0
-    assert n <= (1 << PROTH_M)
+    require(n & (n - 1) == 0, f"n={n} is not a power of two")
+    require(n <= (1 << PROTH_M), f"n={n} exceeds the Proth 2-adic order")
     g = pow(PROTH_WITNESS, (p - 1) // n, p)
-    assert pow(g, n, p) == 1
-    assert pow(g, n // 2, p) != 1
+    require(pow(g, n, p) == 1, f"candidate root does not have order dividing {n}")
+    require(pow(g, n // 2, p) != 1, f"candidate root has order dividing {n // 2}")
     return g
 
 
@@ -120,7 +129,7 @@ def relation_pair_set(p: int, n: int, g: int) -> set[tuple[int, int]]:
             xe = (1 + pow(g, e, p)) % p
             a = xd * pow(xe, p - 2, p) % p
             if a in group:
-                assert (xd - a * xe) % p == 0
+                require((xd - a * xe) % p == 0, "group ratio did not certify the relation")
                 pairs.add((d, e))
     return pairs
 
@@ -128,13 +137,19 @@ def relation_pair_set(p: int, n: int, g: int) -> set[tuple[int, int]]:
 def analyze(p: int, n: int, g: int) -> dict[str, object]:
     ks, label_pairs = label_pair_set(p, n, g)
     relation_pairs = relation_pair_set(p, n, g)
-    assert label_pairs == relation_pairs
+    require(
+        label_pairs == relation_pairs,
+        f"label collisions disagree with subgroup relations at p={p}, n={n}",
+    )
     floor = 2 * n - 3
     sumsq = sum(k * k for k in ks)
     floor_eq = sumsq == floor
     distinct = not label_pairs
     flat_hist = ks == [2] * (n // 2 - 1) + [1]
-    assert floor_eq == distinct == flat_hist
+    require(
+        floor_eq == distinct == flat_hist,
+        f"tail-floor equivalence failed at p={p}, n={n}, g={g}",
+    )
     return {
         "p": p,
         "n": n,
@@ -163,9 +178,9 @@ def main() -> None:
         emit(out, "reproducing recorded n=32 exceptions")
         for p in (50_177, 51_137):
             row = analyze(p, 32, primitive_n_root_small(p, 32))
-            assert row["sumsq"] == 73
-            assert row["floor"] == 61
-            assert row["pairs"]
+            require(row["sumsq"] == 73, f"p={p}: expected sumsq 73, got {row['sumsq']}")
+            require(row["floor"] == 61, f"p={p}: expected floor 61, got {row['floor']}")
+            require(bool(row["pairs"]), f"p={p}: expected a collision witness")
             emit(out, f"p={p} n=32 sumsq/floor=73/61 pairs={row['pairs']}")
 
         emit(out, f"sweeping n=32 primes from {N32_SWEEP_START} to {N32_SWEEP_LIMIT}")
@@ -185,8 +200,11 @@ def main() -> None:
                     f"p={p} g={row['g']} sumsq/floor={row['sumsq']}/{row['floor']} "
                     f"pairs={row['pairs']}",
                 )
-        assert checked == 4_578
-        assert exceptions == EXPECTED_N32_EXCEPTIONS
+        require(checked == 4_578, f"expected 4578 n=32 primes, checked {checked}")
+        require(
+            exceptions == EXPECTED_N32_EXCEPTIONS,
+            f"n=32 exceptions changed: {exceptions}",
+        )
         emit(out, f"n=32 checked={checked} exceptions={exceptions}")
 
         proth_p = certify_proth_prime()
@@ -197,9 +215,12 @@ def main() -> None:
         )
         for n in (32, 64):
             row = analyze(proth_p, n, primitive_n_root_from_proth(n))
-            assert row["sumsq"] == row["floor"]
-            assert not row["pairs"]
-            assert proth_p > n * (1 << 128)
+            require(
+                row["sumsq"] == row["floor"],
+                f"large-scale n={n} cell missed its floor: {row['sumsq']} != {row['floor']}",
+            )
+            require(not row["pairs"], f"large-scale n={n} cell has collisions: {row['pairs']}")
+            require(proth_p > n * (1 << 128), f"p={proth_p} is not beyond the stated scale")
             emit(
                 out,
                 f"large-scale clean cell n={n} p={proth_p} "
