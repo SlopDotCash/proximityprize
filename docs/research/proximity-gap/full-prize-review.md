@@ -2,7 +2,7 @@
 
 Lean proves an exact finite algebraic formula for **both operational thresholds** on every supplied smooth Reed–Solomon code at the four prize rates. The formulas use ranks of linear systems on the evaluation points to find the first failing integer error count. They can be prohibitively expensive to evaluate. Several production inputs have explicit numerical answers, while others still have only certified numerical bounds. [Universal theorem](../../../ArkLib/Research/ProximityGap/RankReview.lean) · [Numerical integration assessment](integration-assessment-2026-11-21.md)
 
-The [human-review manuscript](support-rank-thresholds.tex) gives proofs of the two rank tests, the four-rate benchmarks at lengths 128 and $2^{30}$, their comparisons with Johnson and the first designated prime’s half-rate ceiling of 313174699 errors. Build the PDF with `tectonic docs/research/proximity-gap/support-rank-thresholds.tex` from the repository root.
+The [human-review manuscript](support-rank-thresholds.tex) proves the two rank criteria, works through four-rate examples at lengths 32, 128 and $2^{30}$, and compares the boundaries with Johnson. It also describes the exact rate-$1/16$ result at the second designated prime and the half-rate ceiling at the first. Build the PDF with `tectonic docs/research/proximity-gap/support-rank-thresholds.tex` from the repository root.
 
 ## Statement and endpoints
 
