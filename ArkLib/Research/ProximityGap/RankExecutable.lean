@@ -6,6 +6,8 @@ import ArkLib.Research.ProximityGap.RankReview
 import ArkLib.Research.ProximityGap.Frontier.ListSupportGaussian
 import ArkLib.Research.ProximityGap.Frontier.SimultaneousSupportGaussian
 import ArkLib.Research.ProximityGap.Frontier.TwoParityMca
+import ArkLib.Research.ProximityGap.Frontier.ListInterpolationBoundary
+import ArkLib.Research.ProximityGap.BoundedChoose
 
 /-! # Computing operational radii from a presented domain and integer budget
 
@@ -48,34 +50,79 @@ theorem scan_eq_firstFailure {n : ℕ} (safe : Fin (n + 1) → Bool) (fails : Fi
 
 variable {F I : Type} [Field F] [DecidableEq F] [DecidableEq I]
 
+/-- Compute a certified list cutoff using only the integer parameters when the packing
+bound applies. A missing value leaves the support search to decide the answer. -/
+def packingBoundary (n k q m B : ℕ) : Boundary n :=
+  let limit := (B + 1) * (k + 1)
+  let count := BoundedChoose.capped n k limit
+  if h : 0 < k ∧ k ≤ n ∧ 0 < m ∧ B < q ∧ count < limit then
+    some ⟨if count ≤ B then n - k + 1 else n - k, by split <;> omega⟩
+  else none
+
+omit [DecidableEq I] in
+/-- A returned packing cutoff is the rank answer on every injective domain of the supplied size. -/
+theorem packingBoundary_correct [Fintype I] [Nonempty I] [Fintype F]
+    (D : I ↪ F) (ε : NNReal) (k m : ℕ) {e : Fin (Fintype.card I + 1)}
+    (result : packingBoundary (Fintype.card I) k (Fintype.card F) m (RankReview.budget F ε) = some e) :
+    some e = RankReview.listAnswer D ε k m := by
+  unfold packingBoundary at result
+  dsimp only at result
+  split at result
+  · rename_i fast
+    obtain ⟨hkp, hk, hm, hq, hcap⟩ := fast
+    rw [BoundedChoose.capped_eq, min_lt_iff] at hcap
+    have hlt := hcap.resolve_right (lt_irrefl _)
+    have packed := (Nat.div_lt_iff_lt_mul (Nat.succ_pos k)).mpr hlt
+    have hc : BoundedChoose.capped (Fintype.card I) k
+        ((RankReview.budget F ε + 1) * (k + 1)) = (Fintype.card I).choose k := by
+      rw [BoundedChoose.capped_eq, min_eq_left hlt.le]
+    cases result
+    apply correctBoundary_unique Fintype.card_pos _ (RankReview.listAnswer_correct D ε k m hk)
+    intro δ _
+    refine (ListSupportRank.lambda_le_floor_iff (K := F) (I := I) (A := Fin m → F)
+      (ListInterpolationBoundary.words D k m) (δ : ℝ) ε).trans ?_
+    have spec := ListInterpolationBoundary.good_iff D hkp hk hm (Nat.le_of_lt_succ packed) hq (δ : ℝ)
+    refine spec.trans ?_
+    dsimp only
+    rw [hc, ← NNReal.coe_lt_coe, NNReal.coe_div, NNReal.coe_natCast, NNReal.coe_natCast]
+  · cases result
+
 /-- Compute the list boundary from a coordinate list, its evaluation map, and an integer budget. -/
 def listBoundary (points : List I) (D : I ↪ F) (n k q m B : ℕ) : Boundary n :=
-  scan n fun e =>
-    if 0 < m ∧ (B + 1).choose 2 ≤ q then
-      ListSupportRank.gaussianPairSafe points D k B (n - e.val)
-    else ListSupportRank.gaussianSafe points D k q m B (n - e.val)
+  match packingBoundary n k q m B with
+  | some e => some e
+  | none =>
+    scan n fun e =>
+      if 0 < m ∧ (B + 1).choose 2 ≤ q then
+        ListSupportRank.gaussianPairSafe points D k B (n - e.val)
+      else ListSupportRank.gaussianSafe points D k q m B (n - e.val)
 
 /-- Executing the list search produces the universal operational answer. -/
 theorem listBoundary_eq [Fintype I] [Fintype F] (points : List I) (hp : ∀ i, i ∈ points)
     (D : I ↪ F) (ε : NNReal) (k m : ℕ) (hn : 0 < Fintype.card I) (hk : k ≤ Fintype.card I) :
     listBoundary points D (Fintype.card I) k (Fintype.card F) m (RankReview.budget F ε) =
       RankReview.listAnswer D ε k m := by
-  apply scan_eq_firstFailure
-  intro e
-  let B := RankReview.budget F ε
-  have hs : (if 0 < m ∧ (B + 1).choose 2 ≤ Fintype.card F then
-        ListSupportRank.gaussianPairSafe points D k B (Fintype.card I - e.val)
-      else ListSupportRank.gaussianSafe points D k (Fintype.card F) m B
-        (Fintype.card I - e.val)) = true ↔
-        Lambda (interleavedCodeSet (κ := Fin m) (ReedSolomon.code D k : Set (I → F)))
-          (1 - ((Fintype.card I - e.val : ℕ) : ℝ) / Fintype.card I) ≤ (B : ℕ∞) := by
-    split_ifs with h
-    · exact ListSupportRank.gaussianPairSafe_iff points hp D k m B _ hn hk h.1 h.2
-    · exact ListSupportRank.gaussianSafe_iff points hp D k m B _ hn hk
-  rw [hs, ListSupportRank.rs_vandermonde_safe_iff D k m _ _ hn hk]
-  unfold RankReview.listFails
-  push Not
-  rfl
+  let : Nonempty I := Fintype.card_pos_iff.mp hn
+  unfold listBoundary
+  split
+  · rename_i e he
+    exact packingBoundary_correct D ε k m he
+  · apply scan_eq_firstFailure
+    intro e
+    let B := RankReview.budget F ε
+    have hs : (if 0 < m ∧ (B + 1).choose 2 ≤ Fintype.card F then
+          ListSupportRank.gaussianPairSafe points D k B (Fintype.card I - e.val)
+        else ListSupportRank.gaussianSafe points D k (Fintype.card F) m B
+          (Fintype.card I - e.val)) = true ↔
+          Lambda (interleavedCodeSet (κ := Fin m) (ReedSolomon.code D k : Set (I → F)))
+            (1 - ((Fintype.card I - e.val : ℕ) : ℝ) / Fintype.card I) ≤ (B : ℕ∞) := by
+      split_ifs with h
+      · exact ListSupportRank.gaussianPairSafe_iff points hp D k m B _ hn hk h.1 h.2
+      · exact ListSupportRank.gaussianSafe_iff points hp D k m B _ hn hk
+    rw [hs, ListSupportRank.rs_vandermonde_safe_iff D k m _ _ hn hk]
+    unfold RankReview.listFails
+    push Not
+    rfl
 
 /-- Constant-time boundary when two parity checks determine the entire MCA curve. -/
 def twoCheckBoundary (n B : ℕ) : Boundary n :=
@@ -128,20 +175,31 @@ private theorem twoCheckBoundary_eq_scan {n k : ℕ} [Fintype I] [Nonempty I] [F
     simp [zero] at h
     omega
 
+/-- The circuit count alone can certify every MCA radius using just the length,
+dimension, and scalar budget. -/
+def circuitsCovered (n k B : ℕ) : Bool :=
+  BoundedChoose.capped n (k + 1) (B + 1) ≤ B
+
+/-- A successful circuit count certificate makes the entire MCA grid safe on every domain. -/
+theorem circuitsCovered_correct [Fintype I] [Nonempty I] [Fintype F] [SampleableType F]
+    (D : I ↪ F) (ε : ℝ≥0) (k : ℕ)
+    (covered : circuitsCovered (Fintype.card I) k (RankReview.budget F ε) = true) :
+    none = RankReview.mcaAnswer D ε k := by
+  apply correctBoundary_unique Fintype.card_pos _ (RankReview.mcaAnswer_correct D ε k)
+  intro δ hδ
+  simp only [iff_true]
+  rw [← epsMCA_eq_mcaError, SimultaneousSupportRank.epsMCA_le_iff_floor_budget]
+  apply ((epsMCA_mono _ hδ).trans (epsMCA_one_le_choose_div D k)).trans
+  apply ENNReal.div_le_div_right
+  have hc : (Fintype.card I).choose (k + 1) ≤ RankReview.budget F ε := by
+    simpa [circuitsCovered, BoundedChoose.capped_eq, min_le_iff] using covered
+  exact_mod_cast hc
+
 /-- Compute the MCA boundary from enumerations of the coordinates and the field. -/
 def mcaBoundary {n : ℕ} (E : Fin n ≃ I) (labels : List F) (D : I ↪ F) (k B : ℕ) : Boundary n :=
-  if n = k+2 then twoCheckBoundary n B else
-    scan n fun e => SimultaneousSupportGaussian.anchoredSafe E labels D k B (n - e.val)
-
-/-- The optimized MCA boundary agrees with the ordinary support scan on an
-exhaustive presentation of the coordinates and scalar labels. -/
-theorem mcaBoundary_eq_scan {n : ℕ} [Fintype I] [Nonempty I] [Fintype F] [SampleableType F]
-    (E : Fin n ≃ I) (labels : List F) (hlabels : ∀ g, g ∈ labels)
-    (D : I ↪ F) (k B : ℕ) :
-    mcaBoundary E labels D k B =
-      scan n (fun e => SimultaneousSupportGaussian.anchoredSafe E labels D k B (n - e.val)) := by
-  unfold mcaBoundary
-  exact ite_eq_right_iff.mpr (twoCheckBoundary_eq_scan E labels hlabels D B)
+  if circuitsCovered n k B then none else
+    if n = k + 2 then twoCheckBoundary n B else
+      scan n fun e => SimultaneousSupportGaussian.anchoredSafe E labels D k B (n - e.val)
 
 /-- Executing the MCA search produces the universal operational answer. -/
 theorem mcaBoundary_eq [Fintype I] [Nonempty I] [Fintype F] [SampleableType F]
@@ -149,19 +207,24 @@ theorem mcaBoundary_eq [Fintype I] [Nonempty I] [Fintype F] [SampleableType F]
     (D : I ↪ F) (ε : ℝ≥0) (k : ℕ) :
     mcaBoundary E labels D k (RankReview.budget F ε) = RankReview.mcaAnswer D ε k := by
   classical
-  rw [mcaBoundary_eq_scan E labels hlabels D]
-  apply scan_eq_firstFailure
-  intro e
-  rw [SimultaneousSupportGaussian.anchoredSafe_iff E labels hlabels D k _ e.val
-    Fintype.card_pos]
-  let δ := gridPt (ι := I) e.val
-  change (mcaError (AffineLineGenerator F) (ReedSolomon.code D k) (δ : ℝ) ≤ _) ↔ _
-  rw [← epsMCA_eq_mcaError, ← not_lt, SimultaneousSupportRank.budget_failure_iff]
-  unfold RankReview.mcaFails
-  have hs (S : Finset I) : ((1 - δ) * Fintype.card I ≤ (S.card : ℝ≥0)) ↔
-      Fintype.card I - e.val ≤ S.card := by
-    rw [← relDist_floor_bound_iff_complement_bound, gridPt_mul_card, Nat.floor_natCast]
-  simp_rw [ge_iff_le, hs]
+  unfold mcaBoundary
+  by_cases covered : circuitsCovered (Fintype.card I) k (RankReview.budget F ε) = true
+  · rw [ite_eq_left covered]
+    exact circuitsCovered_correct D ε k covered
+  · rw [ite_eq_right covered]
+    rw [ite_eq_right_iff.mpr (twoCheckBoundary_eq_scan E labels hlabels D _)]
+    apply scan_eq_firstFailure
+    intro e
+    rw [SimultaneousSupportGaussian.anchoredSafe_iff E labels hlabels D k _ e.val
+      Fintype.card_pos]
+    let δ := gridPt (ι := I) e.val
+    change (mcaError (AffineLineGenerator F) (ReedSolomon.code D k) (δ : ℝ) ≤ _) ↔ _
+    rw [← epsMCA_eq_mcaError, ← not_lt, SimultaneousSupportRank.budget_failure_iff]
+    unfold RankReview.mcaFails
+    have hs (S : Finset I) : ((1 - δ) * Fintype.card I ≤ (S.card : ℝ≥0)) ↔
+        Fintype.card I - e.val ≤ S.card := by
+      rw [← relDist_floor_bound_iff_complement_bound, gridPt_mul_card, Nat.floor_natCast]
+    simp_rw [ge_iff_le, hs]
 
 /-- Both executable boundary functions classify every real radius in the prize contract. -/
 theorem correctForEveryDomain [Fintype I] [Nonempty I] [Fintype F] [SampleableType F]
