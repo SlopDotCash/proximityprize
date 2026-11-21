@@ -5,6 +5,7 @@ Authors: Proximity Prize Contributors
 -/
 import ArkLib.Research.ProximityGap.Frontier.FourRateSmoothMca128
 import ArkLib.Research.ProximityGap.Frontier.SharpApolarMCA
+import ArkLib.Research.ProximityGap.RankReview
 
 /-! Compile-time review of numerical thresholds for affine-line MCA and worst-center lists. -/
 set_option autoImplicit false
@@ -42,5 +43,28 @@ theorem halfRateWindow {p : ℕ} [Fact p.Prime] {g : ZMod p}
     epsMCA (F := ZMod p) (A := Fin width → ZMod p)
       ((RateHalfApolarThreshold.code g) ^⋈ (Fin width)) δ ≤ (epsStar : ℝ≥0∞) ↔ δ < 1 / 4 :=
   SharpApolarMCA.interleaved_good_iff hg hlo hhi width δ
+
+/-- For a supplied smooth code, compare the two rank predictions directly with the
+canonical security inequalities at any radius in the closed unit interval. -/
+theorem allRadii {F ι : Type} [Field F] [Fintype F] [DecidableEq F] [SampleableType F]
+    [Fintype ι] [Nonempty ι] (D : ι ↪ F) [ReedSolomon.Smooth D]
+    (k m : ℕ) (hm : 0 < m) (ε δ : ℝ≥0) (hδ : δ ≤ 1)
+    (hk : 2 * k = Fintype.card ι ∨ 4 * k = Fintype.card ι ∨
+      8 * k = Fintype.card ι ∨ 16 * k = Fintype.card ι) :
+    (CoreDefinitions.mcaError (CoreDefinitions.AffineLineGenerator F)
+        (ReedSolomon.code D k) (δ : ℝ) ≤ (ε : ℝ≥0∞) ↔
+      match RankReview.mcaAnswer D ε k with
+      | none => True
+      | some e => δ < (e.val : ℝ≥0) / Fintype.card ι) ∧
+    ((Lambda (interleavedCodeSet (κ := Fin m) (ReedSolomon.code D k : Set (ι → F)))
+        (δ : ℝ) : ℝ≥0∞) ≤ (ε : ℝ≥0∞) * Fintype.card F ↔
+      match RankReview.listAnswer D ε k m with
+      | none => True
+      | some e => δ < (e.val : ℝ≥0) / Fintype.card ι) := by
+  classical
+  obtain ⟨mca, lists⟩ := RankReview.correctForEveryDomain D ε k hk
+  constructor
+  · cases h : RankReview.mcaAnswer D ε k <;> simpa only [h] using mca δ hδ
+  · cases h : RankReview.listAnswer D ε k m <;> simpa only [h] using lists m hm δ hδ
 
 end ProximityPrize.Review
