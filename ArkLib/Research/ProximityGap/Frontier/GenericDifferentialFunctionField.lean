@@ -28,7 +28,8 @@ section Fraction
 variable (R K : Type*) [CommRing R] [IsDomain R] [Differential R] [Field K]
     [Algebra R K] [IsFractionRing R K]
 
-private def ringJet : R →+* TrivSqZeroExt K K where
+/-- Map a base element to its value and scalar derivative in the dual numbers. -/
+def ringJet : R →+* TrivSqZeroExt K K where
   toFun a := ⟨algebraMap R K a, algebraMap R K a′⟩
   map_one' := by
     apply Prod.ext
