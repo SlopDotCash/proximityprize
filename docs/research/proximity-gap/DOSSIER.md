@@ -225,6 +225,15 @@ at the other 12 sampled primes. The probe separately certifies a witness at `p =
 sample missed. The production question remains open. See `DISPROOF_LOG.md`
 `[SYZ72-middle-band-sampled-search]`.
 
+**Stack-lift audit (2026-11-15).** The certified `F_41` and `F_181` region witnesses were also fed
+to the SYZ52 exact per-scalar MCA classifier over 1,500 randomly sampled RS stacks each. The
+observed maxima were 7/19 and 4/19, respectively; neither sample found an over-budget stack. This
+is not an exhaustive lift test. The same replay corrected the historical `n=16`, `F_17` sampled
+count from 18 to 17 (the field has only 17 finite scalars); 17 still exceeds the `n−1=15` budget.
+The F1 genuine-stack lift remains open. See `DISPROOF_LOG.md`
+`[SYZ72-middle-slot-stack-lift-audit]` and the reproducible probe
+`scripts/probes/probe_syz72_middle_slot_stack_lift.py`.
+
 **Consequence:** the first middle slot is not empty at the algebraic/domain-counting level. This
 refutes an emptiness route and narrows F1 to the over-budget-stack lift. It does **not** discharge
 `UniformSylvesterInjective`, `ι ≤ 1`, or production δ*.
