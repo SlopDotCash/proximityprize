@@ -499,6 +499,7 @@ import ArkLib.Research.ProximityGap.Frontier.NvIReconcile
 import ArkLib.Research.ProximityGap.Frontier.OctagonTripleTorsion
 import ArkLib.Research.ProximityGap.Frontier.OddExcessLaw
 import ArkLib.Research.ProximityGap.Frontier.OddReturnDeterminant
+import ArkLib.Research.ProximityGap.Frontier.OneErasureDimensionDrop
 import ArkLib.Research.ProximityGap.Frontier.OptimalOverlapPacking
 import ArkLib.Research.ProximityGap.Frontier.OptimizedSupFromNonprincipalWick
 import ArkLib.Research.ProximityGap.Frontier.OptimizedSupFromWraparound
