@@ -2684,3 +2684,9 @@ This removes one assumption from the Lean chain: the forcing hypotheses of `thre
 
 The hypothesis (2.1) is where characteristic zero enters (independence of the $1-\zeta^r$). It is false in general modulo a prime, so this theorem does not transfer to the named fields.
 
+### Lean: the 4-cycle exclusion composed on $\mathbb Z/2^{e+1}$
+
+`ProximityGap.DyadicFourCycle.four_cycle_refl` in [DyadicFourCycleExclusion.lean](../../../ArkLib/Research/ProximityGap/Frontier/DyadicFourCycleExclusion.lean): for $e\ge1$, four sets of one odd size $q\ge5$ and four overlap sites in $\mathbb Z/2^{e+1}$, with $2q+2$ of these points in each parity class, cannot satisfy the reflection equations (2.1) at all four vertices of a 4-cycle. It feeds the set-level parity lemma into `four_cycle_false`. Standard axioms only; checked against privately built oleans of its imports.
+
+Both exclusions used by the [dyadic list-three note](dyadic-radius-successor-list-three.md) are now Lean theorems whose mathematical hypothesis is (2.1). Still written only: the classification of overlap patterns, the passage from four close codewords to (2.1) through vanisher ratios and cyclotomic units, and the class counts from the partition. The result remains a characteristic-zero one.
+
