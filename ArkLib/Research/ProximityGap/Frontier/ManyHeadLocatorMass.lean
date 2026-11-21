@@ -47,11 +47,13 @@ private lemma distinct_heads (i : Fin (d + 1) × Fin d) : coeff (target i) ≠ c
   intro he
   exact i.1.succAbove_ne i.2 (Fin.ext (Nat.add_right_cancel he))
 
-private def initialPositions (hn : h + (d + 1) * r ≤ n) : Fin h ↪ Fin n where
+/-- The first sites reserved for the common locator. -/
+def initialPositions (hn : h + (d + 1) * r ≤ n) : Fin h ↪ Fin n where
   toFun x := ⟨x.val, by omega⟩
   inj' _ _ hxy := Fin.ext (congrArg (fun z : Fin n => z.val) hxy)
 
-private def slot (hn : h + (d + 1) * r ≤ n) (j : Fin (d + 1)) : Fin r ↪ Fin n where
+/-- The private sites of one head, interleaved after the common sites. -/
+def slot (hn : h + (d + 1) * r ≤ n) (j : Fin (d + 1)) : Fin r ↪ Fin n where
   toFun x := ⟨h + ((d + 1) * x.val + j.val), by
     have hstep : (d + 1) * x.val + j.val < (d + 1) * (x.val + 1) := by
       simpa only [Nat.mul_add, Nat.mul_one] using Nat.add_lt_add_left j.isLt ((d + 1) * x.val)
@@ -63,16 +65,19 @@ private def slot (hn : h + (d + 1) * r ≤ n) (j : Fin (d + 1)) : Fin r ↪ Fin 
     have hm := Nat.add_right_cancel (Nat.add_left_cancel hval)
     exact Fin.ext (Nat.eq_of_mul_eq_mul_left (Nat.succ_pos d) hm)
 
-private def species (d h : ℕ) (x : Fin n) : Fin (d + 1) :=
+/-- The head owning a private site. -/
+def species (d h : ℕ) (x : Fin n) : Fin (d + 1) :=
   ⟨(x.val - h) % (d + 1), Nat.mod_lt _ (Nat.succ_pos _)⟩
 
-private lemma species_slot (hn : h + (d + 1) * r ≤ n) (j : Fin (d + 1)) (x : Fin r) :
+/-- The owner map recovers the head of each private slot. -/
+lemma species_slot (hn : h + (d + 1) * r ≤ n) (j : Fin (d + 1)) (x : Fin r) :
     species d h (slot hn j x) = j := by
   apply Fin.ext
   change (h + ((d + 1) * x.val + j.val) - h) % (d + 1) = j.val
   simp [Nat.add_mod, Nat.mod_eq_of_lt j.isLt]
 
-private lemma private_disjoint (hn : h + (d + 1) * r ≤ n) (j : Fin (d + 1)) :
+/-- The common sites are disjoint from the slots of any one head. -/
+lemma private_disjoint (hn : h + (d + 1) * r ≤ n) (j : Fin (d + 1)) :
     Disjoint (univ.map (initialPositions hn)) (univ.map (slot hn j)) := by
   apply disjoint_left.mpr
   intro x hx hy
