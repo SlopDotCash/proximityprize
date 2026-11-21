@@ -161,6 +161,8 @@ apply the closed-ball endpoint convention in Section~1.
 
 More generally, capacity has error count $n-k$. Any bad MCA agreement requires at least $k+1$ sites, since both rows interpolate on every $k$-subset. The MCA error is therefore constant from $n-k-1$ errors through radius one. Whenever MCA fails, its first failure is strictly below capacity. For lists, the worst ball at capacity has exactly $\binom nk$ words. With $\varepsilon<1$, the first failure is $n-k+1$ if that binomial fits the budget, and at most $n-k$ otherwise. These \href{https://github.com/SlopDotCash/proximityprize/blob/9d7bba7b3f451feeba585d93d6f6452c27b2aaed/ArkLib/Research/ProximityGap/CapacityBoundaryReview.lean}{capacity comparisons} apply at every eligible rate and every positive list width.
 
+At 128-bit tolerance under $q<2^{256}$, the largest dyadic length admitting both all-safe MCA and first list failure at $n-k+1$ is 128 at rates $1/2,1/4,1/8$, and 256 at rate $1/16$. At every larger length both binomial counts exceed the budget. The BLS12-381 scalar field realizes the stated outcomes at every eligible dyadic length up through each ceiling. The \href{https://github.com/SlopDotCash/proximityprize/blob/9603b9a0deef879bd9d4caf9c91383ea619e0303/ArkLib/Research/ProximityGap/JointDyadicCeilings.lean}{sharp length theorem} constructs the smooth domains and proves the failures above the ceilings.
+
 \newpage
 \section*{4.2.\quad Eight sharp thresholds on a family of fields}
 Put $n=32$, $\varepsilon=2^{-128}$ and $B=\lfloor q/2^{128}\rfloor$. The table applies to every
