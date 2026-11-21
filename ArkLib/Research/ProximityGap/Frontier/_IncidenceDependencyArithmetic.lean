@@ -392,7 +392,7 @@ theorem projected_relation_incidence_budget {F I Coord : Type*} [Field F]
 /-- If each decoding error participates in a relation, a coordinate covered by only one
 error set contributes no error. A total incidence budget below twice the distance
 then forces all decoded heads onto one affine code line. -/
-theorem affine_heads_of_small_error_incidence {F I Coord : Type*} [Field F]
+theorem affine_heads_and_agreement_of_small_error_incidence {F I Coord : Type*} [Field F]
     [Fintype I] [Fintype Coord] [DecidableEq I] [DecidableEq Coord]
     (C : Submodule F (Coord → F)) (u₀ u₁ : Coord → F)
     (w : I → (Coord → F)) (γ : I → F) (Q : I → Finset Coord)
@@ -404,7 +404,8 @@ theorem affine_heads_of_small_error_incidence {F I Coord : Type*} [Field F]
     (i₀ i₁ : I) (hγ : γ i₀ ≠ γ i₁)
     (hdistance : ∀ v ∈ C, ∀ B : Finset Coord, B.card < D →
       (∀ x ∉ B, v x = 0) → v = 0) :
-    ∃ U V, U ∈ C ∧ V ∈ C ∧ ∀ i, w i = U + γ i • V := by
+    ∃ U V, U ∈ C ∧ V ∈ C ∧ (∀ i, w i = U + γ i • V) ∧
+      ∀ x ∉ sharedSupport Q, U x = u₀ x ∧ V x = u₁ x := by
   classical
   let S := sharedSupport Q
   have houtside : ∀ i x, x ∉ S → w i x = u₀ x + γ i * u₁ x := by
@@ -449,7 +450,7 @@ theorem affine_heads_of_small_error_incidence {F I Coord : Type*} [Field F]
     change w i₀ x - γ i₀ * V x = u₀ x
     rw [hV x hx, houtside i₀ x hx]
     ring
-  refine ⟨U, V, hUC, hVC, ?_⟩
+  refine ⟨U, V, hUC, hVC, ?_, fun x hx ↦ ⟨hU x hx, hV x hx⟩⟩
   intro i
   apply sub_eq_zero.mp
   apply hdistance _ (C.sub_mem (hw i) (C.add_mem hUC (C.smul_mem _ hVC))) S hcard
@@ -457,6 +458,53 @@ theorem affine_heads_of_small_error_incidence {F I Coord : Type*} [Field F]
   change w i x - (U x + γ i * V x) = 0
   rw [houtside i x hx, hU x hx, hV x hx]
   ring
+
+/-- If each decoding error participates in a relation, a coordinate covered by only one
+error set contributes no error. A total incidence budget below twice the distance
+then forces all decoded heads onto one affine code line. -/
+theorem affine_heads_of_small_error_incidence {F I Coord : Type*} [Field F]
+    [Fintype I] [Fintype Coord] [DecidableEq I] [DecidableEq Coord]
+    (C : Submodule F (Coord → F)) (u₀ u₁ : Coord → F)
+    (w : I → (Coord → F)) (γ : I → F) (Q : I → Finset Coord)
+    (D : ℕ) (hw : ∀ i, w i ∈ C)
+    (hagree : ∀ i x, x ∉ Q i → w i x = u₀ x + γ i * u₁ x)
+    (hsmall : (∑ i, (Q i).card) < 2 * D)
+    (hactive : ∀ i, ∃ c : I → F,
+      (∑ j, c j • (u₀ + γ j • u₁ - w j)) = 0 ∧ c i ≠ 0)
+    (i₀ i₁ : I) (hγ : γ i₀ ≠ γ i₁)
+    (hdistance : ∀ v ∈ C, ∀ B : Finset Coord, B.card < D →
+      (∀ x ∉ B, v x = 0) → v = 0) :
+    ∃ U V, U ∈ C ∧ V ∈ C ∧ ∀ i, w i = U + γ i • V := by
+  obtain ⟨U, V, hU, hV, hhead, _⟩ :=
+    affine_heads_and_agreement_of_small_error_incidence C u₀ u₁ w γ Q D hw hagree
+      hsmall hactive i₀ i₁ hγ hdistance
+  exact ⟨U, V, hU, hV, hhead⟩
+
+/-- Two distinct code pencils agreeing with the same received pencil off their respective
+exception sets have at least D coordinates in the union of those sets. -/
+theorem le_union_card_of_distinct_code_pencils {F Coord : Type*} [Field F]
+    (C : Submodule F (Coord → F)) (u₀ u₁ U V U' V' : Coord → F)
+    (S T : Finset Coord) [DecidableEq Coord] (D : ℕ)
+    (hU : U ∈ C) (hV : V ∈ C) (hU' : U' ∈ C) (hV' : V' ∈ C)
+    (hS : ∀ x ∉ S, U x = u₀ x ∧ V x = u₁ x)
+    (hT : ∀ x ∉ T, U' x = u₀ x ∧ V' x = u₁ x)
+    (hne : (U, V) ≠ (U', V'))
+    (hdistance : ∀ v ∈ C, ∀ B : Finset Coord, B.card < D →
+      (∀ x ∉ B, v x = 0) → v = 0) :
+    D ≤ (S ∪ T).card := by
+  by_contra! h
+  have huv : ∀ x ∉ S ∪ T, U x = U' x ∧ V x = V' x := by
+    intro x hx
+    have hs := hS x (fun hs ↦ hx (Finset.mem_union.mpr (Or.inl hs)))
+    have ht := hT x (fun ht ↦ hx (Finset.mem_union.mpr (Or.inr ht)))
+    exact ⟨hs.1.trans ht.1.symm, hs.2.trans ht.2.symm⟩
+  have h₀ : U - U' = 0 := hdistance _ (C.sub_mem hU hU') _ h (fun x hx ↦ by
+    change U x - U' x = 0
+    exact sub_eq_zero.mpr (huv x hx).1)
+  have h₁ : V - V' = 0 := hdistance _ (C.sub_mem hV hV') _ h (fun x hx ↦ by
+    change V x - V' x = 0
+    exact sub_eq_zero.mpr (huv x hx).2)
+  exact hne (Prod.ext (sub_eq_zero.mp h₀) (sub_eq_zero.mp h₁))
 
 /-- A short full-support relation between actual decoding errors forces every
 decoded head onto one affine line. No rank-activity hypothesis is required. -/
@@ -735,3 +783,5 @@ end ProximityGap.IncidenceDependencyArithmetic
 #print axioms ProximityGap.IncidenceDependencyArithmetic.projected_relation_incidence_budget
 #print axioms ProximityGap.IncidenceDependencyArithmetic.affine_heads_of_small_error_relation
 #print axioms ProximityGap.IncidenceDependencyArithmetic.affine_heads_of_small_error_incidence
+#print axioms ProximityGap.IncidenceDependencyArithmetic.affine_heads_and_agreement_of_small_error_incidence
+#print axioms ProximityGap.IncidenceDependencyArithmetic.le_union_card_of_distinct_code_pencils
