@@ -556,6 +556,7 @@ import ArkLib.Research.ProximityGap.Frontier.PinnedScalarRatioImage
 import ArkLib.Research.ProximityGap.Frontier.PlasticDyadicPeriod
 import ArkLib.Research.ProximityGap.Frontier.PlateauThreeHeadPredecessor
 import ArkLib.Research.ProximityGap.Frontier.PoissonAveragedMGF
+import ArkLib.Research.ProximityGap.Frontier.PolarBasisDegreeLoss
 import ArkLib.Research.ProximityGap.Frontier.PolynomialJetConstraintSpace
 import ArkLib.Research.ProximityGap.Frontier.PolynomialLocalOrder
 import ArkLib.Research.ProximityGap.Frontier.PolynomialProjectiveHessian
@@ -603,6 +604,7 @@ import ArkLib.Research.ProximityGap.Frontier.PseudocyclicDefectSum
 import ArkLib.Research.ProximityGap.Frontier.PuncturedFiberAgreement
 import ArkLib.Research.ProximityGap.Frontier.PuncturedFourWordProfile
 import ArkLib.Research.ProximityGap.Frontier.Q1ArisingFamilyDescent
+import ArkLib.Research.ProximityGap.Frontier.QuadraticCubicWindowExample
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetFourRates
 import ArkLib.Research.ProximityGap.Frontier.QuarterBudgetTwoThreshold
 import ArkLib.Research.ProximityGap.Frontier.QuarterPairTripleSignatures
