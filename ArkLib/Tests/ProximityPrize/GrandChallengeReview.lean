@@ -5,7 +5,7 @@ Authors: Proximity Prize Contributors
 -/
 import ArkLib.Research.ProximityGap.Frontier.FourRateSmoothMca128
 import ArkLib.Research.ProximityGap.Frontier.SharpApolarMCA
-import ArkLib.Research.ProximityGap.RankReview
+import ArkLib.Research.ProximityGap.RankExecutable
 
 /-! Compile-time review of numerical thresholds for affine-line MCA and worst-center lists. -/
 set_option autoImplicit false
@@ -66,5 +66,19 @@ theorem allRadii {F ι : Type} [Field F] [Fintype F] [DecidableEq F] [Sampleable
   constructor
   · cases h : RankReview.mcaAnswer D ε k <;> simpa only [h] using mca δ hδ
   · cases h : RankReview.listAnswer D ε k m <;> simpa only [h] using lists m hm δ hδ
+
+/-- The two nonzero points in the field with three elements. -/
+private def orderTwo : Fin 2 ↪ ZMod 3 where
+  toFun i := if i = 0 then 1 else 2
+  inj' := by
+    intro a b hab
+    fin_cases a <;> fin_cases b <;> revert hab <;> decide
+
+/- At budget one the repetition code has MCA safety throughout and its list first fails
+at one error. The two further tests exercise failure at zero and safety at every count. -/
+#guard (RankExecutable.mcaBoundary (Equiv.refl (Fin 2)) [0, 1, 2] orderTwo 1 1).isNone
+#guard (RankExecutable.listBoundary [0, 1] orderTwo 2 1 3 1 1).map Fin.val == some 1
+#guard (RankExecutable.listBoundary [0, 1] orderTwo 2 1 3 1 0).map Fin.val == some 0
+#guard (RankExecutable.listBoundary [0, 1] orderTwo 2 1 3 1 3).isNone
 
 end ProximityPrize.Review
