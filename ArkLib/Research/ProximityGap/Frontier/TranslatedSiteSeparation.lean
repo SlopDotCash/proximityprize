@@ -4,7 +4,6 @@ SPDX-License-Identifier: MIT OR Apache-2.0
 -/
 import Mathlib.Combinatorics.Pigeonhole
 import Mathlib.Data.Finset.Prod
-import Mathlib.Data.Fintype.Units
 import Mathlib.FieldTheory.Finite.Basic
 import Mathlib.Tactic
 
@@ -20,16 +19,17 @@ open Finset
 
 /-- After excluding exactly h sites, all translates of the remaining sites by
 one common nonzero dilation of V are pairwise distinct as site-value pairs. -/
-theorem exists_separated {I F : Type*} [Fintype I] [DecidableEq I] [Field F]
-    [Fintype F] [DecidableEq F] (x : I ↪ F) (V : Finset F) (h : ℕ)
+theorem exists_separated_of_differences {I F : Type*} [Fintype I] [DecidableEq I] [Field F]
+    [Fintype F] [DecidableEq F] (x : I ↪ F) (V R : Finset F) (h : ℕ)
+    (covers : ∀ ⦃v w : F⦄, v∈V → w∈V → v≠w → w-v∈R)
     (available : h ≤ Fintype.card I)
-    (room : (univ : Finset I).offDiag.card * V.offDiag.card ≤ (Fintype.card F-1)*h) :
+    (room : (univ : Finset I).offDiag.card * R.card ≤ (Fintype.card F-1)*h) :
     ∃ t : F, t≠0 ∧ ∃ S : Finset I, S.card=h ∧
       ∀ ⦃i j : I⦄, i∉S → j∉S → ∀ ⦃v w : F⦄, v∈V → w∈V →
         x i+t*v=x j+t*w → i=j ∧ v=w := by
   classical
-  let pairs := (univ : Finset I).offDiag ×ˢ V.offDiag
-  let ratio (z : (I×I)×(F×F)) := (x z.1.1 - x z.1.2)/(z.2.2-z.2.1)
+  let pairs := (univ : Finset I).offDiag ×ˢ R
+  let ratio (z : (I×I)×F) := (x z.1.1 - x z.1.2)/z.2
   let units := (univ : Finset F).erase 0
   have hn : units.Nonempty := ⟨1,mem_erase.mpr ⟨one_ne_zero,mem_univ _⟩⟩
   have budget : pairs.card≤units.card*h := by simpa [pairs,units,card_erase_of_mem] using room
@@ -47,13 +47,27 @@ theorem exists_separated {I F : Type*} [Fintype I] [DecidableEq I] [Field F]
   have diff : v≠w := by
     rintro rfl
     exact same (x.injective (add_right_cancel eq))
-  have coll : ((i,j),(v,w)) ∈ collisions := by
+  have coll : ((i,j),w-v) ∈ collisions := by
     apply mem_filter.mpr
     refine ⟨mem_product.mpr ⟨mem_offDiag.mpr ⟨mem_univ _,mem_univ _,same⟩,
-      mem_offDiag.mpr ⟨hv,hw,diff⟩⟩, ?_⟩
+      covers hv hw diff⟩, ?_⟩
     apply (div_eq_iff (sub_ne_zero.mpr diff.symm)).mpr
     linear_combination eq
   exact False.elim (hi (inS (mem_image.mpr ⟨_,coll,rfl⟩)))
+
+/-- After excluding exactly h sites, all translates of the remaining sites by
+one common nonzero dilation of V are pairwise distinct as site-value pairs. -/
+theorem exists_separated {I F : Type*} [Fintype I] [DecidableEq I] [Field F]
+    [Fintype F] [DecidableEq F] (x : I ↪ F) (V : Finset F) (h : ℕ)
+    (available : h ≤ Fintype.card I)
+    (room : (univ : Finset I).offDiag.card * V.offDiag.card ≤ (Fintype.card F-1)*h) :
+    ∃ t : F, t≠0 ∧ ∃ S : Finset I, S.card=h ∧
+      ∀ ⦃i j : I⦄, i∉S → j∉S → ∀ ⦃v w : F⦄, v∈V → w∈V →
+        x i+t*v=x j+t*w → i=j ∧ v=w := by
+  let R := V.offDiag.image (fun z => z.2-z.1)
+  apply exists_separated_of_differences x V R h _ available ((Nat.mul_le_mul_left _ card_image_le).trans room)
+  intro v w hv hw diff
+  exact mem_image.mpr ⟨(v,w),mem_offDiag.mpr ⟨hv,hw,diff⟩,rfl⟩
 
 end ProximityGap.TranslatedSiteSeparation
 #print axioms ProximityGap.TranslatedSiteSeparation.exists_separated

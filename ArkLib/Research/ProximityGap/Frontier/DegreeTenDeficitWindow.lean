@@ -23,25 +23,32 @@ variable {I F : Type} [Fintype I] [Nonempty I] [DecidableEq I] [Field F] [Fintyp
 def ceiling (e x : ℕ) : ℕ := 2*(e+1)+max 58 (1+e/(3*x))
 
 /-- A single received pair obeys the deficit bound on every injective domain. -/
-theorem family_cap (dom : I ↪ F) (hn : Fintype.card I=n) {p e x : ℕ} [CharP F p]
+theorem primitive_family_cap (dom : I ↪ F) (hn : Fintype.card I=n) {p e x : ℕ} [CharP F p]
     (hp : 1744830589<p) (he : e+x=671088640) (hx : 0<x) (hl : 610000000≤e)
     (u : Code.WordStack F (Fin 2) I) :
-    (canonicalBadScalarRichPointFamily dom (k:=k) ((e:ℝ≥0)/n) u (by decide)).G.card≤ceiling e x := by
+    (canonicalBadScalarRichPointFamily dom (k:=k) ((e:ℝ≥0)/n) u (by decide)).G.card≤2*(e+1)+max 48 (1+e/(3*x)) := by
   classical
   let fam := canonicalBadScalarRichPointFamily dom (k:=k) ((e:ℝ≥0)/n) u (by decide)
-  change fam.G.card≤ceiling e x
+  change fam.G.card≤2*(e+1)+max 48 (1+e/(3*x))
   have ht : ⌈(1-(e:ℝ≥0)/n)*(Fintype.card I:ℝ≥0)⌉₊=n-e := by
     rw [hn]
     have h := TwoCorePackingThreshold.agreement_ceiling e (by change e≤1073741824; omega)
     rw [Fintype.card_fin] at h
     exact h
   by_contra! hb
-  have h58 := Nat.le_max_left 58 (1+e/(3*x))
-  unfold ceiling at hb
-  obtain ⟨H,hH,hthree,hbig,hex⟩ := FiveEighthThreeHeadCover.degree_ten_cover fam hp hn hl
+  have h48 := Nat.le_max_left 48 (1+e/(3*x))
+  obtain ⟨H,hH,hthree,hbig,hex⟩ := FiveEighthThreeHeadCover.primitive_cover fam hp hn hl
     (by omega) ht (s:=48) (by decide) (by decide) (by omega)
   exact hb.not_ge (PlateauThreeHeadPredecessor.cap_at_small_deficit fam hn he hx hl (by rw [ht]; dsimp [n]; omega)
-    H hH hthree.le hbig (Nat.le_max_right ..) (hex.trans (by omega)))
+    H hH hthree.le hbig (Nat.le_max_right ..) (by simp [sdiff_eq_empty_iff_subset.mpr hex]))
+
+/-- A single received pair obeys the deficit bound on every injective domain. -/
+theorem family_cap (dom : I ↪ F) (hn : Fintype.card I=n) {p e x : ℕ} [CharP F p]
+    (hp : 1744830589<p) (he : e+x=671088640) (hx : 0<x) (hl : 610000000≤e)
+    (u : Code.WordStack F (Fin 2) I) :
+    (canonicalBadScalarRichPointFamily dom (k:=k) ((e:ℝ≥0)/n) u (by decide)).G.card≤ceiling e x := by
+  have h := primitive_family_cap dom hn hp he hx hl u
+  exact h.trans (Nat.add_le_add_left (max_le_max_right _ (by decide : 48≤58)) _)
 
 /-- The normalized bound at every positive interleaving width. -/
 theorem eps_upper (dom : I ↪ F) (hn : Fintype.card I=n) {p e x : ℕ} [CharP F p]
@@ -113,6 +120,33 @@ theorem two_head_bracket {p B : ℕ} [Fact p.Prime] (dom : I ↪ ZMod p) (hn : F
   rw [show e+1=(B-58)/2 by dsimp [e]; omega, min_eq_right (by omega : B/2≤671088640)] at h
   exact h
 
+/-- Keeping every rich label through value normalization gives a 24-step window. -/
+theorem primitive_two_head_bracket {p B : ℕ} [Fact p.Prime] (dom : I ↪ ZMod p) (hn : Fintype.card I=n)
+    (hB : p/2^128=B) (hl : 1220000050≤B) (hu : B≤1332920935) (width : ℕ) [NeZero width] :
+    let C := ((ReedSolomon.code dom k : Set (I → ZMod p)) ^⋈ (Fin width))
+    (((B-48)/2:ℕ):ℝ≥0)/n ≤ mcaDeltaStar (F:=ZMod p) C tolerance ∧
+      mcaDeltaStar (F:=ZMod p) C tolerance ≤ ((B/2:ℕ):ℝ≥0)/n := by
+  let e := (B-48)/2-1
+  let x := 671088640-e
+  have he : 610000000≤e := by dsimp [e]; omega
+  have heu : e≤666460442 := by dsimp [e]; omega
+  have hx : 0<x := by dsimp [x]; omega
+  have hr : e/(3*x)<48 := (Nat.div_lt_iff_lt_mul (by omega : 0<3*x)).2 (by dsimp [x]; omega)
+  have hcap : 2*(e+1)+max 48 (1+e/(3*x))≤B := by
+    rw [max_eq_left (by omega : 1+e/(3*x)≤48)]; dsimp [e]; omega
+  have eps : epsMCA (F:=ZMod p) ((ReedSolomon.code dom k : Set (I → ZMod p)) ^⋈ (Fin width)) ((e:ℝ≥0)/n)
+      ≤ ((2*(e+1)+max 48 (1+e/(3*x)):ℕ):ℝ≥0∞)/(Fintype.card (ZMod p):ℝ≥0∞) := by
+    rw [epsMCA_interleaved_eq]
+    exact epsMCA_le_of_badCount_le _ _ _ (primitive_family_cap dom hn (p:=p) (by omega)
+      (e:=e) (x:=x) (by dsimp [x]; omega) hx he)
+  have ⟨hgood,hbad⟩ := ThreeHeadDeficitWindow.prime_bracket_of_cap dom hn hB (by omega)
+    (by omega) width hcap eps
+  have hlower := ThreeHeadDeficitWindow.successor_le_supremum dom hn (by dsimp [n]; omega : e<n) width hgood
+  rw [show e+1=(B-48)/2 by dsimp [e]; omega] at hlower
+  rw [min_eq_right (by omega : B/2≤671088640)] at hbad
+  exact ⟨hlower,mcaDeltaStar_le_of_bad _ _ hbad⟩
+
+#print axioms primitive_two_head_bracket
 #print axioms two_head_bracket
 #print axioms prime_supremum_bracket
 #print axioms eps_interval
