@@ -12,11 +12,17 @@ script checks, for every section and every choice of one line per site,
     c * sum(a_x)  >=  (m * (1 - 1/b))**2 ,
 
 the pair inequality for sections in different fibres, the adjunction
-identities c = R.C and a = R.L, and the ramification budget.  The local
-Bessel inequality attains equality for eight combinations.
+identities c = R.C and a = R.L, and the ramification budget.  Equality
+occurs, so the constants in the note cannot be improved in general.
 
-Part 2 evaluates the population bound at the last second-prime predecessor
-(n = 2**30, rate 1/16) for factors of value degree 3 and 4.
+Part 2 evaluates Corollary B and Theorem C of the note at the last
+second-prime predecessor (n = 2**30, rate 1/16) for irreducible factors of
+value degree 3 and 4.  Value degree 2 already has a kernel-checked bound.
+
+Part 3 evaluates Theorem D (rigidity of tangent heads) at the same cubic and
+quartic, and for a multiplicity-three interpolant at the last open error count
+of the first-prime rate-1/4 bracket, after checking that such an interpolant
+exists by counting.
 
 All arithmetic is exact.  Checks are explicit calls, so they also run under
 `python3 -O`.
@@ -123,35 +129,136 @@ def part_one():
     return equalities
 
 
+def incidence_bound(b, a_deg, h_gamma, h_tot):
+    """Theorem A: both forms of the bound on ordinary incidences."""
+    sharp = Fr(4 * b * b, (b - 1) ** 2) * (h_tot - 1) \
+        * ((2 * b - 2) * h_gamma + 1) * ((2 * b - 2) * a_deg + 1)
+    simple = 16 * b * b * (a_deg + 1) * (h_gamma + 1) * (h_tot - 1)
+    check(sharp <= simple, 'the displayed simplification of Theorem A')
+    return simple
+
+
 def population_bound(n, t, d, b, h_gamma, h_tot, a_deg, weight):
-    """Sections with distinct scalars and at least t agreements on one
-    irreducible factor of value degree b >= 2 (Corollary B of the note)."""
-    check(b >= 2 and t > weight - d, 'hypotheses of the population bound')
-    incidences = 16 * b**2 * (a_deg + 1) * (h_gamma + 1) * (h_tot - 1)
-    excluded = (4 * b - 2) * h_gamma + 1
+    """Corollary B: sections with distinct scalars and at least t agreements
+    on one irreducible factor of value degree b >= 2 and weight below t + d."""
+    check(b >= 2 and t > weight - d, 'hypotheses of Corollary B')
+    incidences = incidence_bound(b, a_deg, h_gamma, h_tot)
+    excluded = (4 * b - 2) * h_gamma + 1    # the proof needs (4b-3)*h_gamma
     return excluded + (incidences + h_tot * n) // (t - weight + d)
 
 
+def weight_free_bound(n, t, d, b, h_gamma, h_tot, a_deg):
+    """Theorem C: the same population with no hypothesis on the weight."""
+    check(b >= 2 and t > d, 'hypotheses of Theorem C')
+    beta_x = (2 * b - 2) * h_gamma + 1
+    beta_g = (2 * b - 2) * a_deg + 1
+    head_case = h_tot + Fr(3 * h_gamma * (t + d), t - d)
+    incidences = 4 * b * b * (b - 1) * beta_x ** 2 * beta_g
+    spread_case = Fr(2 * ((h_tot + beta_x) * n + incidences), t - d)
+    return (4 * b - 2) * h_gamma + 1 + int(max(head_case, spread_case))
+
+
+def tangent_head_bound(n, t, d, b, h_gamma, h_tot, a_deg, weight, cbar, nbar):
+    """Theorem D: the bound from rigidity of rational tangent heads.
+
+    Returns None when the Johnson-type condition t'^2 > n d' fails.
+    """
+    beta_x = (2 * b - 2) * h_gamma + 1
+    beta_g = (2 * b - 2) * a_deg + 1
+    budget = 4 * beta_x * beta_g \
+        + b * (weight * (h_tot - b) + h_tot * (weight - b * d))
+    t1, d1 = t - nbar - cbar, d + 2 * cbar
+    if t1 * t1 <= n * d1:
+        return None
+    classes = (n * (t1 - d1)) // (t1 * t1 - n * d1)
+    return (4 * b - 2) * h_gamma + 1 + budget // (cbar + 1) \
+        + (h_tot * n) // (nbar + 1) + h_tot * classes
+
+
+def interpolant_exists(n, t, d, m, value_degree, h_tot):
+    """Counting condition for a polynomial of the given value degree, total
+    scalar/value degree h_tot and weight below m*t that vanishes to order m
+    along every received line."""
+    unknowns = sum((h_tot - l + 1) * (m * t - d * l)
+                   for l in range(value_degree + 1)
+                   if m * t > d * l and h_tot >= l)
+    conditions = n * sum((m - l) * (h_tot - l + 1) for l in range(m))
+    return unknowns > conditions
+
+
+def part_three():
+    """Theorem D at the terminal cubic and in the first-prime rate-1/4 bracket."""
+    n = 2 ** 30
+    d, t = 2 ** 26 - 1, 357913943
+    terminal = []
+    for b, weight, value in ((3, 290805098, 48038), (4, 302954072, 99313)):
+        bound = tangent_head_bound(n, t, d, b, 34, 34, weight, weight,
+                                   2 ** 24, 2 ** 23)
+        check(bound == value, f'tangent-head bound, terminal b={b}')
+        terminal.append((b, bound))
+    d, t, m = 2 ** 28 - 1, n - 480946858, 3
+    check(t == 592794966 and t * t > n * d, 'below the Johnson radius')
+    check(interpolant_exists(n, t, d, m, 6, 23), 'degree 23 suffices')
+    check(not interpolant_exists(n, t, d, m, 6, 22), 'degree 22 does not')
+    check(m * t > 6 * d, 'value degree six fits the weight')
+    expected = {2: 56175, 3: 176645, 4: 374183, 5: 648789, 6: 1000463}
+    rows = []
+    for b, value in expected.items():
+        weight = m * t - 1
+        bound = tangent_head_bound(n, t, d, b, 23, 23, weight, weight,
+                                   2 ** 24, 2 ** 22)
+        check(bound == value, f'tangent-head bound, multiplicity three, b={b}')
+        check(1000 * bound < n, 'below a thousandth of the length')
+        rows.append((b, bound))
+    return terminal, rows
+
+
 def part_two():
+    """The last second-prime predecessor at rate 1/16.
+
+    The weights 290805098 and 302954072 are the ones certified by the Lean
+    theorems actual_cubic and actual_cubic_or_quartic; t - 1 is the weight
+    bound valid for every factor of a supported interpolant.  The four
+    expected values are those of the Lean theorem terminal_bounds.
+    """
     n, d, t = 2 ** 30, 2 ** 26 - 1, 357913943
     check(3 * (t - 2) + 1 == n, 'n = 3r + 1 with t = r + 2')
+    check(t - 290805098 + d == 134217708, 'cubic denominator')
     rows = []
-    for b, need, weight, expected, expected_weighted in (
-        (3, 1431655733, 290805098, 887925, 360973),
-        (4, 2147483615, 302954072, 1577981, 734604),
-    ):
-        bound = population_bound(n, t, d, b, 34, 34, t - 1, t - 1)
-        weighted_bound = population_bound(n, t, d, b, 34, 34, weight, weight)
-        check((bound, weighted_bound) == (expected, expected_weighted), 'Corollary B terminal values')
-        check(1000 * bound < need, 'three orders of magnitude of margin')
-        rows.append((b, bound, weighted_bound, need))
-    return rows
+    expected = {
+        (3, 290805098): 360973,
+        (4, 302954072): 734604,
+        (3, t - 1): 887925,
+        (4, t - 1): 1577981,
+    }
+    required = {3: 1431655733, 4: 2147483615}
+    for (b, weight), value in expected.items():
+        bound = population_bound(n, t, d, b, 34, 34, weight, weight)
+        check(bound == value, f'population bound for b={b}, W={weight}')
+        check(1000 * bound < required[b], 'three orders of magnitude of margin')
+        check((2 * b - 2) * weight + 1 < 2 ** 128, 'characteristic condition')
+        rows.append((b, weight, bound, required[b]))
+    free = []
+    for b, weight in ((3, 290805098), (4, 302954072)):
+        bound = weight_free_bound(n, t, d, b, 34, 34, weight)
+        check(bound < required[b], 'Theorem C also excludes the population')
+        free.append((b, bound))
+    return rows, free
 
 
 if __name__ == '__main__':
     tight = part_one()
     print(f'del Pezzo lattice: all inequalities hold, {tight} equalities')
-    for b, bound, weighted_bound, need in part_two():
-        print(f'value degree {b}: at most {bound} sections, '
-              f'or {weighted_bound} using the actual weight, terminal population {need}')
+    rows, free = part_two()
+    for b, weight, bound, need in rows:
+        print(f'value degree {b}, weight <= {weight}: at most {bound} '
+              f'sections; population to exclude {need}')
+    for b, bound in free:
+        print(f'value degree {b}, no weight hypothesis: at most {bound}')
+    terminal, rows = part_three()
+    for b, bound in terminal:
+        print(f'tangent heads, terminal value degree {b}: at most {bound}')
+    for b, bound in rows:
+        print(f'tangent heads, first prime rate 1/4, value degree {b}: '
+              f'at most {bound}')
     print(f'{CHECKS} explicit checks passed')

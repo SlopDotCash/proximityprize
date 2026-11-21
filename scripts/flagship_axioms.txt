@@ -18,6 +18,10 @@ ArkLib.Research.ProximityGap.Frontier.SmoothCubicBudgetWindow ArkLib.ProximityGa
 ArkLib.Research.ProximityGap.Frontier.SmoothCubicBudgetWindow ArkLib.ProximityGap.Frontier.SmoothCubicBudgetWindow.exact_eps
 ArkLib.Research.ProximityGap.Frontier.SmoothCubicBudgetWindow ArkLib.ProximityGap.Frontier.SmoothCubicBudgetWindow.rank_answer
 
+# Independent component and polar columns in the higher-rate safety estimates
+ArkLib.Research.ProximityGap.Frontier.PolarBasisDegreeLoss ArkLib.ProximityGap.Frontier.PolarBasisDegreeLoss.separate_blocks
+ArkLib.Research.ProximityGap.Frontier.PolarBasisDegreeLoss ArkLib.ProximityGap.Frontier.PolarBasisDegreeLoss.weighted_loss
+
 # Exact rate-one-sixteenth MCA threshold at the second designated prime
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicExact ArkLib.ProximityGap.Frontier.SecondPrimeCubicExact.secondPrime_rateSixteenth
 ArkLib.Research.ProximityGap.Frontier.UniversalCubicThreshold ArkLib.ProximityGap.Frontier.UniversalCubicThreshold.prime_classification
@@ -249,3 +253,9 @@ ArkLib.Research.ProximityGap.Frontier.QuarterRateQuadraticSafety ArkLib.Proximit
 ArkLib.Research.ProximityGap.Frontier.QuarterRateQuadraticSafety ArkLib.ProximityGap.Frontier.QuarterRateQuadraticSafety.prime_budget_window
 ArkLib.Research.ProximityGap.Frontier.QuarterRateQuadraticSafety ArkLib.ProximityGap.Frontier.QuarterRateQuadraticSafety.named_bracket
 ArkLib.Research.ProximityGap.Frontier.ThreeHeadDeficitWindow ArkLib.ProximityGap.Frontier.ThreeHeadDeficitWindow.prime_supremum_bracket
+ArkLib.Research.ProximityGap.Frontier.DegreeTenDeficitWindow ArkLib.ProximityGap.Frontier.DegreeTenDeficitWindow.two_head_bracket
+
+# Quarter-rate saturated core and expanded first-prime interval
+ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor ArkLib.ProximityGap.Frontier.QuarterRateTwoRichFloor.named_bracket
+ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor ArkLib.ProximityGap.Frontier.QuarterRateTwoRichFloor.exact_mass
+ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor ArkLib.ProximityGap.Frontier.QuarterRateTwoRichFloor.prime_budget_window

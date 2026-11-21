@@ -1,6 +1,7 @@
 /-
 Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
-SPDX-License-Identifier: MIT OR Apache-2.0
+Released under the MIT and Apache 2.0 licenses as described in LICENSE-MIT and LICENSE.
+Authors: Proximity Prize Contributors
 -/
 import ArkLib.Research.ProximityGap.Frontier.PaleyShiftListRecovery
 import ArkLib.Research.ProximityGap.Frontier._R16LegendreCosetFace
@@ -35,7 +36,8 @@ theorem four_mul_floor (w : ℤ) : 4 * (w ^ 2 / 4) = w ^ 2 - w % 2 := by
   · rw [hk, show (2*k+1)^2 = 4*(k^2+k)+1 by ring]
     omega
 
-private theorem sum_shift_sq (hp : p ≠ 2) (A : Finset (ZMod p)) :
+/-- Exact second moment of the integer character sums over all field shifts. -/
+theorem sum_shift_sq (hp : p ≠ 2) (A : Finset (ZMod p)) :
     ∑ b : ZMod p, shiftSum A b ^ 2 = (A.card : ℤ) * p - A.card ^ 2 := by
   have h := ArkLib.ProximityGap.Frontier.R16LegendreCosetFace.sum_sq_shiftedQuadSum
     (F := ZMod p) (by rwa [ZMod.ringChar_zmod_n]) (A.map (Equiv.neg _).toEmbedding)
@@ -50,7 +52,8 @@ theorem sum_multiplicity (hp : p ≠ 2) (A : Finset (ZMod p)) :
   let z (b : ZMod p) : ℤ := if -b ∈ A then 1 else 0
   have hz : ∑ b : ZMod p, z b = (A.card : ℤ) := by
     change (∑ b : ZMod p, (fun u : ZMod p => if u ∈ A then (1:ℤ) else 0) ((Equiv.neg _) b)) = _
-    refine ((Equiv.neg (ZMod p)).bijective.sum_comp (fun u => if u ∈ A then (1 : ℤ) else 0)).trans ?_
+    refine ((Equiv.neg (ZMod p)).bijective.sum_comp
+      (fun u => if u ∈ A then (1 : ℤ) else 0)).trans ?_
     rw [Finset.sum_boole]
     have h : univ.filter (fun i => i ∈ A) = A := by ext; simp
     rw [h]
@@ -166,7 +169,8 @@ theorem eq_leadingCoeff_mul_prod_of_local_dvd {K : Type*} [Field K]
   let Q : K[X] := ∏ b ∈ S, (X - C b) ^ m b
   have hm : Q.Monic := monic_prod_of_monic _ _ (fun b _ => (monic_X_sub_C b).pow _)
   have hdeg : Q.natDegree = P.natDegree := by
-    rw [hdegree, show Q = _ from rfl, natDegree_prod_of_monic _ _ (fun b _ => (monic_X_sub_C b).pow _)]
+    rw [hdegree, show Q = _ from rfl,
+      natDegree_prod_of_monic _ _ (fun b _ => (monic_X_sub_C b).pow _)]
     simp
   have hdiv : Q ∣ P := by
     apply Finset.prod_dvd_of_coprime

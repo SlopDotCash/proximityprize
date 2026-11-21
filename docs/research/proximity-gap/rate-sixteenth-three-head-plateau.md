@@ -127,21 +127,21 @@ monotonicity prove the budget claim.
 
 ## Below the plateau
 
-At $n=2^{30}$ and rate $1/16$, let $610000000\le e<671088640$ and write $x=671088640-e$. Every pair on every injective domain of characteristic greater than 1744830589 has at most
+For $n=2^{30}$ at rate $1/16$, let $610000000\le e<671088640$ and $x=671088640-e$. Every pair on every injective domain of characteristic above 1744830589 has at most
 \[
- C(e,x)=2(e+1)+\max\!\left(197,1+\left\lfloor e/(3x)\right\rfloor\right)
+ C(e,x)=2(e+1)+\max\!\left(58,1+\left\lfloor e/(3x)\right\rfloor\right)
 \]
-bad scalars. For a prime field with budget $B=\lfloor p/2^{128}\rfloor$ satisfying $C(e,x)\le B\le2013265922$, the first failing count is in $[e+1,\min(671088640,\lfloor B/2\rfloor)]$ at every positive interleaving width. The right endpoint uses two exceptional heads whenever this beats the three-head failure at the plateau endpoint. [Uniform supremum bracket](../../../ArkLib/Research/ProximityGap/Frontier/ThreeHeadDeficitWindow.lean)
+bad scalars. In prime fields with $C(e,x)\le B=\lfloor p/2^{128}\rfloor\le2013265922$, the first failing count is in $[e+1,\min(671088640,\lfloor B/2\rfloor)]$ at every positive interleaving width. The right endpoint uses two exceptional heads or the three-head plateau attack. [Degree-ten bounds](../../../ArkLib/Research/ProximityGap/Frontier/DegreeTenDeficitWindow.lean)
 
-The factor cover has at most thirteen exceptions. A first-order interpolant and the terminal quartic meet in scalar degree at most 154 away from their common components. A value-linear component with at least 185 sections therefore inherits the original base-field secant bound. A violation of $2(e+1)+197$ requires three distinct heads with at least 185 labels each. Put $t=n-e$. If the heads are noncollinear and their joint cores have sizes $c_i$, the determinant gives $\sum c_i\le n+2(k-1)$. Thus either two cores have $c_i\le t-2$, or one has $c_i\le t-3x$. Fresh sites for distinct labels on the same head are disjoint. In the first case the two heads together carry at most $e+2$ labels, and in the second case the smaller core's head carries at most $1+\lfloor e/(3x)\rfloor$. If the three heads are collinear, the bound on the number of distinct fresh scalars on and off their core union suffices. [Factor recognition](../../../ArkLib/Research/ProximityGap/Frontier/FiveEighthCubicFactors.lean) · [Joint-core deficit](../../../ArkLib/Research/ProximityGap/Frontier/PlateauThreeHeadPredecessor.lean)
+At $t_0=6k+1$ agreements, a first-order interpolant of ordinate degree three and total scalar/ordinate degree ten already exists. The surplus is $38t_0-52(k-1)-11n=90$. At most ten labels are exceptional. A value-linear factor with 49 or more labels gives a genuine head. To see this, choose 49 sections and let $V$ consist of the sites on which that factor vanishes identically along the received line. Outside $V$, at most ten of the sections agree at a given site. Within $V$, at most nine fail to agree, by the scalar degree of the value-leading coefficient. Hence $49t_0\le39|V|+10n$. The eleven sections with fewest misses satisfy $39|V|\le39|S_a\cap S_b\cap S_c|+27|V|$ for each triple. These inequalities force $|S_a\cap S_b\cap S_c|>k-1$. The sections lie on a base-field secant and their eleven distinct scalar roots force the whole degree-ten restriction to vanish. [Interpolant and factor recognition](../../../ArkLib/Research/ProximityGap/Frontier/FiveEighthCubicFactors.lean)
 
-When $q\ge \binom{2(e+1)}{2}$ the two-head construction also gives the lower probability $2(e+1)/q$. Thus from 610,000,000 through 669,955,044 Hamming errors the lower and upper probability bounds differ by at most $197/q$.
+A violation of $2(e+1)+58$ requires three distinct heads carrying at least 49 labels each. If they are noncollinear and their joint core sizes are $c_i$, the determinant gives $\sum c_i\le n+2(k-1)$. Thus either two cores have $c_i\le n-e-2$, or one has $c_i\le n-e-3x$. Distinct labels on one head use disjoint fresh sites. In the first case the two heads together carry at most $e+2$ labels. In the second case the deficient head carries at most $1+\lfloor e/(3x)\rfloor$. For collinear heads, counting distinct fresh scalars on and off the core union suffices. [Core and label bounds](../../../ArkLib/Research/ProximityGap/Frontier/PlateauThreeHeadPredecessor.lean)
 
-For all 119,910,090 budgets from **1220000199** through **1339910288**, the bracket simplifies to $[\lfloor(B-197)/2\rfloor,\lfloor B/2\rfloor]$. Its endpoints are at most 99 Hamming steps apart. This includes 44,657,671 consecutive budgets immediately above the earlier kernel-checked two-head curve. [Simplified bracket](../../../ArkLib/Research/ProximityGap/Frontier/ThreeHeadDeficitWindow.lean)
+When $q\ge\binom{2(e+1)}{2}$ the two-head construction gives the lower probability $2(e+1)/q$. From 610,000,000 through 667,253,847 errors its gap to the uniform upper bound is at most $58/q$. For all 114,507,696 budgets from **1220000060** through **1334507755**, the crossing is in $[\lfloor B/2\rfloor-29,\lfloor B/2\rfloor]$. The preceding 99-step bound extends farther, through budget **1339910288**. [29-step bracket](../../../ArkLib/Research/ProximityGap/Frontier/DegreeTenDeficitWindow.lean) · [99-step bracket](../../../ArkLib/Research/ProximityGap/Frontier/ThreeHeadDeficitWindow.lean)
 
 | Field budget $B$ | First failing Hamming count |
 |---:|---:|
-| 1,330,000,000 | 664,999,901 to 665,000,000 |
+| 1,330,000,000 | 664,999,971 to 665,000,000 |
 | 1,342,177,280 | 671,078,064 to 671,088,640 |
 | 1,350,000,000 | 671,088,612 to 671,088,640 |
 | 1,400,000,000 | 671,088,637 to 671,088,640 |
