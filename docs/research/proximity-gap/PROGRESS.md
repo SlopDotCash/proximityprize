@@ -8,6 +8,7 @@ The universal rank formula now determines the operational MCA and list cutoffs o
 |---|---|---|
 | Both operational thresholds on a supplied code | At every eligible dimension, every positive list width and any nonnegative tolerance, finite support-rank tests give the first failing count or certify safety through radius one. | [Universal Lean proof](../../../ArkLib/Research/ProximityGap/RankReview.lean) · [Endpoint convention](../../../ArkLib/Research/ProximityGap/RankBoundary.lean) |
 | Cross-check at length 128, prime of order $65\cdot2^{239}+1$ | In decreasing rate order the rank formulas give MCA first failures 62, all-safe, all-safe, all-safe and list first failures 63, 97, 113, 121 for every positive width. | [Literal numerical equality in Lean](../../../ArkLib/Research/ProximityGap/RankKnownDomain.lean) |
+| Half-rate MCA at the first designated prime and length $2^{30}$ | Lean places the first failing error count in **[268435457, 313174699]**. At the upper endpoint one received pair has **1073741825** distinct bad scalars, one above the budget. Safety at 313174698 remains open. | [Formal failure and supremum bound](../../../ArkLib/Research/ProximityGap/Frontier/FirstPrimeSepticCores.lean) · [Lower bound](../../../ArkLib/Research/ProximityGap/Frontier/ApolarHalfBreakpoint.lean) |
 | Rate $1/16$ MCA at the second designated prime and length $2^{30}$ | Written first bad count **715827882**. The end-to-end Lean bracket is $[647627102,715827882]$. | [Written exact threshold and field interval](second-prime-exact-threshold.md) · [Lean bracket](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeConditionedThreshold.lean) · [Lean arithmetic](../../../ArkLib/Research/ProximityGap/Frontier/TerminalCubicBudget.lean) |
 | MCA at all four rates for a range of prime fields | At length $2^{30}$ and integer budgets $1\le B\le268435455$, the first bad error count is $B$. | [Apolar threshold theorem](../../../ArkLib/Research/ProximityGap/Frontier/ApolarSpikeBudgetRange.lean) |
 | Four MCA rates on the boundary-prime smooth domain | Over $p=68719477285·2^{120}+1$ at length $n=2^{30}$, the half-rate first bad count is 268435456. At rates 1/4, 1/8 and 1/16 it is 268435458. These endpoints apply at every positive interleaving width. | [Sharp half-rate theorem](../../../ArkLib/Research/ProximityGap/Frontier/SharpApolarMCA.lean) · [Lower three rates](../../../ArkLib/Research/ProximityGap/Frontier/BoundaryLowerRates.lean) |
@@ -24,7 +25,9 @@ The universal rank formula now determines the operational MCA and list cutoffs o
 
 ## How to use the general result
 
-At error count $e$, each failure test uses $L=\lfloor εq\rfloor+1$ witnesses and at least $t=n-e$ agreeing positions. For MCA, choose $L$ distinct scalars and a support per scalar. Joint agreement must cut down the common space of folded solutions for each witness. There are $\binom{q}{L}$ scalar sets and up to $(\sum_{j=t}^{n}\binom{n}{j})^L$ support assignments per set. For lists, choose $L$ supports of exactly $t$ sites, giving $\binom{n}{t}^{L}$ patterns. A positive Vandermonde inclusion–exclusion sum detects distinct compatible codewords. It has $2^{\binom{L}{2}}$ terms per pattern. At 128-bit security and $q<2^{256}$, one base dimension and at most $\binom{L}{2}$ pairwise comparisons per pattern suffice. [MCA criterion](../../../ArkLib/Research/ProximityGap/Frontier/SimultaneousSupportRank.lean) · [List criterion](../../../ArkLib/Research/ProximityGap/Frontier/ListSupportRank.lean) · [Pairwise reduction](../../../ArkLib/Research/ProximityGap/Frontier/ListSupportForcedPair.lean)
+The first failing count can also be computed in Lean from explicit finite input data. At 128-bit tolerance the integer budget is the field order divided by $2^{128}$, rounded down. The correctness theorem applies to all four rates and every positive width. Actual numerical evaluation can require a prohibitive number of rank computations. [Executable boundary theorem](../../../ArkLib/Research/ProximityGap/RankExecutable.lean) · [Compiled examples](../../../ArkLib/Tests/ProximityPrize/GrandChallengeReview.lean)
+
+At error count $e$, each failure test uses $L=\lfloor εq\rfloor+1$ witnesses and at least $t=n-e$ agreeing positions. For MCA, put $s=\max(t,k+1)$. Every actual bad label has a support of exactly $s$ sites. For $1\le B<q$, an affine reparametrization puts two of the $L$ labels at zero and one. The rank test uses $\binom{q-2}{B-1}$ scalar sets and $\binom{n}{s}^L$ support patterns per set. For $B=0$ one may fix the sole label at zero. The entire interval beyond $n-k-1$ errors has the radius-one MCA error. [Fixed-size support theorem](../../../ArkLib/Research/ProximityGap/Frontier/ExactSizeMcaSupport.lean) For lists, choose $L$ supports of exactly $t$ sites, giving $\binom{n}{t}^{L}$ patterns. A positive Vandermonde inclusion–exclusion sum detects distinct compatible codewords. It has $2^{\binom{L}{2}}$ terms per pattern. At 128-bit security and $q<2^{256}$, one base dimension and at most $\binom{L}{2}$ pairwise comparisons per pattern suffice. [MCA criterion](../../../ArkLib/Research/ProximityGap/Frontier/SimultaneousSupportRank.lean) · [List criterion](../../../ArkLib/Research/ProximityGap/Frontier/ListSupportRank.lean) · [Pairwise reduction](../../../ArkLib/Research/ProximityGap/Frontier/ListSupportForcedPair.lean)
 
 The first failing count $e>0$ gives safe radii $[0,e/n)$, which have a supremum and no largest member. Failure at zero gives an empty safe set. If every count passes, one is safe. A small prime-field program cross-checks both rank criteria against exhaustive computation on three length-three codes over fields of sizes three and five, including one width-two list. Numeric production cutoffs beyond the established windows can require further bounds or tractable certificates. [Endpoint proof](../../../ArkLib/Research/ProximityGap/RankBoundary.lean) · [Small-field cross-check](../../../scripts/probes/probe_supplied_domain_rank_thresholds.py)
 
@@ -1113,6 +1116,12 @@ At $n=4h$ and dimension $2h$, let $L_T$ be the actual affine syndrome of the two
 
 Indeed any witness can be represented by $h+1$ error sites, including zero weights when necessary. With $G_E$ their vanisher, the checked atomic identity gives $G_E(0)Z(t)=-C(t)$. Both sides come from global syndrome tests of degrees at most $2h-1$, so there is no decoder-dependent leading moment. As $G_E(0)^n=1$, all bad scalars are roots of $C^n-Z^n$. Its degree is at most $(l+1)n$. The proof also checks over the rational function field that an identically vanishing polynomial is exactly the exceptional proportionality above. The focused locked Lake build completed 9352 jobs. An independent `con-leche --verified` replay accepted all 23,869 declarations for both public conclusions. The source and axiom-output gates passed with only the standard axioms. [Actual smooth-family bound and degeneracy criterion](../../../ArkLib/Research/ProximityGap/Frontier/ApolarSmoothProduct.lean)
 
+### Moving the two finite roots cannot preserve a small error-product fiber
+
+At $n=2^{30}$ in either named prime field, choose distinct finite $a,b$ with $a\ne0$, and discard $a,b$ from the smooth evaluation domain. For every $1\le m\le2n$ and every $1\le r<|H\setminus\{a,b\}|$, the $m$-th powers of the products $\prod_{y\in E}(y-a)/(y-b)$ over the $r$-element subsets $E$ take at least two values. This includes the $h+1$ error sites at the first rate-half successor. Thus a coordinate change sending such a pair of roots to zero and infinity cannot yield a uniform product test meeting either named budget using the domain alone. Particular received rows may still constrain their actual error sets.
+
+For any constant $K$, at most **99,090,433** eligible sites satisfy $(x-a)^m=K(x-b)^m$. For $m<262144$ this follows from injectivity and the ordinary $m$-th-root bound. For larger $m$ the cleared-derivative count gives $2048|S|\le4095+63n+63m$. If all $r$-site products had the same $m$-th power, exchanging one site at a time would put all $n-2$ or more eligible sites in a single fiber. The locked Lake build passed and an independent `con-leche --verified` replay accepted 17,722 declarations for the cardinality estimate and the product obstruction. Lean reported only its three standard axioms. [Verified uniform obstruction](../../../ArkLib/Research/ProximityGap/Frontier/ApolarSmoothProductObstruction.lean)
+
 ### Named prime fields, half rate, one error beyond unique decoding
 
 At $n=4h=2^{30}$, $k=2h$ and $e=h+1=268435457$, one explicit stack on the smooth subgroup in **each named production field** has exactly **$3h+2=805306370$ MCA-bad scalars**. Its unique projective degree-$h$ apolar locator at every nonzero parameter is $Y^h$. For every bad scalar $t$, the divided polynomial at zero is $t/G_C(0)\ne0$, so the domain-vanisher divisibility used at the predecessor fails even as an ordinary point evaluation. For an arbitrary atomic support with $|E|=s+2$, Lean proves that all nonzero errors are roots or all are missed, and proves the replacement polynomial identity $G_EW_f+c=f\sum_y w_y G_{E\setminus\{y\}}$ with $c=\lambda(fY^{s+1})$. Its pinned axiom audit was standard. An independent exhaustive verifier considered all 28,048,800 size-nine error supports for $\mathrm{RS}(32,16)$ over $\mathbb F_{97}$, recovered exactly 26 scalars, and checked each original no-joint witness. The production count is a written proof. It stays within both budgets. [Three-coset family and exact proof](apolar-successor-three-cosets.md) · [Kernel-checked first-defect identity](../../../ArkLib/Research/ProximityGap/Frontier/ApolarSuccessorDefect.lean) · [Exhaustive verifier](../../../scripts/probes/probe_apolar_successor_three_cosets.cpp)
@@ -1289,6 +1298,8 @@ For a dyadic subgroup $H$ of size $n$, the fourth-energy equality $E_2(H)=3n(n-1
 The prime-field comparison of lists and proximity uses different finite inequalities from the asymptotic capacity result. Reference copies for this work were downloaded to the shared research cache. [Brakensiek, Chen, Putterman, Zhang and Zheng](https://arxiv.org/abs/2609.08005) · [Montgomery, Vaughan and Wooley on power Gauss sums](https://www.math.purdue.edu/~twooley/publ/1995%20GSUM.pdf) · [Cochrane, Hart, Pinner and Spencer on Waring's number](https://www.math.ksu.edu/~cvs/cochrane_hart_pinner_spencer-waring_subgroup.pdf)
 
 ## 2026-11-21 · From the coding prizes to classical Paley discrepancy
+
+The prize rank formulas give identical data on each of three indexed order-16 cosets, yet one pair has every classical Paley edge and another has exactly half the edges. Their common coding thresholds are explicit at all four rates. At logarithmic subgroup orders a written application of Weil’s bound realizes every possible signed coset discrepancy. Inversion gives examples preserving support ranks even when both sets are marked inside one domain. In the positive direction, a written second-moment estimate gives the conjectured power saving for almost every simultaneous inverse chart on any two supplied polynomial-size sets, for every nontrivial multiplicative character. Lean also proves the exact translation mean square for every nontrivial character and fixed dilation, in terms of additive energy. The bound at an arbitrary prescribed placement remains open. [Proofs and finite certificates](paley-support-ranks.md) · [Lean translation theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyTranslationEnergy.lean)
 
 The joint coding theorem covers the order-128 subgroup of the prime field of order
 $p=65\cdot2^{239}+1$. At rates $1/2,1/4,1/8,1/16$ its first bad list error counts are
@@ -1479,6 +1490,125 @@ Split it into two equal parts to obtain a sparse pair on which these local matri
 bounds alone give no cancellation. This counting argument concerns the coverage
 of the proof method and makes no claim about the sign of that pair's discrepancy.
 
+## Exact four-rate thresholds at budget two and length sixteen
+
+Let $D$ be any smooth domain of length 16 over a finite field of order $q$
+with $\lfloor q/2^{128}\rfloor=2$. The following are the first failing closed-ball
+error counts. At every positive interleaving width, the security predicate holds
+exactly at real radii strictly below the indicated count divided by 16.
+
+| Rate | First MCA failure | First list failure |
+|---|---:|---:|
+| $1/2$ | 2 | 5 |
+| $1/4$ | 2 | 8 |
+| $1/8$ | 2 | 10 |
+| $1/16$ | 2 | 11 |
+
+For MCA the same first failure holds for every injective length-$n$ domain
+and dimension $k$ with $k+3\le n$ at budget two. For lists, take three distinct words
+at agreement $t$. Two words contribute at most $n+k-1$ agreements with the
+center in total. Three contribute at most $n+3(k-1)$, since every agreement at
+a site after the first uses an agreeing pair. At the first three rates, three
+explicit polynomials attain the next grid point. Their pairwise agreements occur
+on three fibers of the power map of degree $4,2,1$, respectively, together with
+common locator roots. Three constants suffice at the last rate. Lean verifies the
+two answer functions against the full operational review contract for every
+such input field, ordering of the domain, eligible dimension and positive width.
+[Joint theorem](../../../ArkLib/Research/ProximityGap/Frontier/BudgetTwoSixteenReview.lean) ·
+[Uniform witnesses](../../../ArkLib/Research/ProximityGap/Frontier/SixteenCosetListLower.lean) ·
+[MCA theorem](../../../ArkLib/Research/ProximityGap/Frontier/BudgetTwoMcaBoundary.lean)
+
+On the order-16 subgroup of the prime field
+$p=680564733906249808969588989158290882561$, the largest absolute nonprincipal
+additive period belongs to exactly one multiplicative coset. Its least positive
+frequency is $340274770462278292654815367542743271468$, its sign is negative,
+and its magnitude lies in
+$[15.999999991006943333,\;15.999999991006943336]$.
+The degree is 16. On the same code Lean proves a positive period above $16-10^{-8}$
+at a different frequency, together with both coding thresholds.
+[Joint formal statement](../../../ArkLib/Research/ProximityGap/Frontier/BudgetTwoSixteenReview.lean)
+
+The global maximum has an exact-arithmetic certificate outside Lean.
+With $g$ of order 16, eight antipodal pairs determine each period. Signed
+residues for a positive candidate, and the odd residues $2(bg^i\bmod p)-p$
+for a negative candidate, belong to an integer lattice of index $p^7$.
+Eight signed rotations of a short vector give a basis with determinant
+of absolute value $p^7$. The cosine chord bound limits the squared norm
+of any lift capable of winning. Exact inverse-basis bounds and parity leave
+560 positive and 416 negative candidate frequencies after the norm test.
+Rational Taylor bounds separate the two winning cosets from all competitors.
+Run the standard-library Python probe with optimization enabled to reproduce
+the full enumeration and the interval.
+[Extremal-period certificate](../../../scripts/probes/probe_budget_two_sixteen_period.py)
+
+There is also a uniform statement as the prime varies. If a nonempty domain
+$D\subseteq\mathbb F_p$ is covered by $d$ signed representatives, Lean produces
+a nonzero frequency with $|D|-\operatorname{Re}\eta_b<8\pi^2|D|p^{-2/d}$.
+Partition the phases of the representatives into $K$ equal intervals each.
+For $K^d<p$, two frequencies have the same interval in every coordinate.
+At their difference, $1-\cos\theta\le\theta^2/2$ gives a deficit strictly
+below $2\pi^2|D|/K^2$. For a subgroup $H$ of fixed dyadic order $n=2d$,
+one representative of each antipodal pair suffices. Together with the
+dyadic determinant bound earlier in this ledger, this gives
+$$
+\frac{8n}{d}(2p)^{-2/d}\ \le\
+n-\max_{b\ne0}|\eta_b(H)|\ <\ 8\pi^2 n\,p^{-2/d}.
+$$
+In particular the deficit has order $p^{-1/4}$ for order 16 as $p$ ranges
+over primes congruent to one modulo 16. The proof of the right inequality
+is kernel-checked. The left uses the written cyclotomic determinant argument.
+The sparse prime-field upper bound with growing subgroup order remains open.
+[Signed-cover bounds](../../../ArkLib/Research/ProximityGap/Frontier/PrimeFieldPeriodAlignment.lean) ·
+[Dyadic determinant check](../../../scripts/probes/probe_paley_dyadic_period_ceiling.py)
+
+For fixed dyadic $n=2d$, this also bounds the number of candidate vectors in
+the exact search independently of $p$. In the phase lattice of the first $d$
+powers of a generator, every nonzero vector $v$ and its signed rotations form
+a matrix of nonzero determinant divisible by $p^{d-1}$. Nonvanishing follows
+from irreducibility of $X^d+1$ over $\mathbb Q$, and divisibility follows
+because the columns span at most one dimension modulo $p$. Hadamard's
+inequality gives $\|v\|_2\ge p^{1-1/d}$. For a maximizing frequency take
+centered lifts with denominator $m=p$ for its positive sign or odd lifts
+with $m=2p$ for the negative sign. The chord bound gives
+$16\|v\|_2^2/m^2\le n-|\eta_b|$, so $\|v\|_2<2\pi\sqrt d\,p^{1-1/d}$.
+Disjoint balls of radius $\tfrac12 p^{1-1/d}$ around these lattice points
+fit in a ball with that radius added to the search radius. Their volume ratio
+bounds the count by $(1+4\pi\sqrt d)^d$. The order-16 certificate above
+computes a much smaller search region from its explicit basis.
+
+## Production list bounds at the Johnson threshold and one step beyond
+
+For $n=2^{30}$ the following closed balls have list size at most $n$ on
+**every** injective evaluation domain, for every finite interleaving width.
+At rates $1/2,1/4,1/8,1/16$ the certified error counts are respectively
+$314491699,536870913,694116762,805306370$. These are safe at both named
+prime fields' 128-bit budgets. Choose exactly $t=n-e$ agreement sites for
+each word. Distinct resulting sets meet in at most $k-1$ sites. When
+$t^2>n(k-1)$ their centered indicator vectors have strictly negative pairwise
+inner products, giving at most $n$ vectors in their $(n-1)$-dimensional
+span. [Four-rate Lean theorem](../../../ArkLib/Research/ProximityGap/Frontier/InterleavedListJohnsonRank.lean)
+
+At rate $1/8$ the **second** named prime is safe one more step, through
+$694116763$ errors. Here $t=379625061$ and $t^2<n(k-1)$, while
+$t^2>(n-1)(k-1)$. For each coordinate, the agreement sets omitting it have
+at most $n-1$ members by the previous argument on the other coordinates.
+Each set is counted $n-t$ times. Thus the list has at most
+$\lfloor n(n-1)/(n-t)\rfloor=1660990722$ members, below the exact
+budget $2147483648$. This argument bounds every center at every width.
+An over-budget center at the subsequent error count is still unknown.
+[Puncturing proof](../../../ArkLib/Research/ProximityGap/Frontier/InterleavedListJohnsonPuncture.lean)
+
+An independent quadratic estimate at this same grid point gives $1931589824$.
+Write $V=t(n-t)$ and $U=n(k-1)-t^2$. In the centered Gram matrix
+$G_{ij}=n|S_i\cap S_j|-t^2$, the diagonal is $V$ and every off-diagonal
+entry is in $[-t^2,U]$. Summing $(G_{ij}-U)(G_{ij}+t^2)$ over all entries
+and using $\sum G_{ij}\ge0$ and $n\sum G_{ij}^2\ge L^2V^2$ gives
+$L(V^2-nUt^2)\le n(V-U)(V+t^2)$ when $U\le t^2$. Lean checks the
+inequality over arbitrary finite set families and its specialization to the
+canonical list size at the second prime.
+[Quadratic inequality](../../../ArkLib/Research/ProximityGap/Frontier/AgreementQuadratic.lean) ·
+[Production specialization](../../../ArkLib/Research/ProximityGap/Frontier/InterleavedListJohnsonQuadratic.lean)
+
 ## 2026-11-21 · The optimized-power apolar bound and the exact lower-rate error curves
 
 The reciprocal interpolation proof now applies to every positive integral power $m$. If $d=n-k-1$, $2e\le n-k$ and $n<m(d+2-e)+e$, then every genuine Reed–Solomon bad-scalar family on every injective length-$n$ evaluation domain satisfies
@@ -1646,6 +1776,10 @@ Lean verifies the two polar dimension estimates, the budget window arithmetic, t
 
 For the rate-half Reed–Solomon code on the prescribed subgroup $\mu_{16}=\mathbb F_{17}^{\times}$ at radius $4/16$, the worst-case MCA probability is exactly $15/17$. The explicit rows $xW(x)/P(x)$ and $-W(x)/P(x)$ have bad scalars $2,\ldots,16$. For $P=X^5+4X^4+14X^3+11X^2+5X+11$, $B=16X^4+2X^3+16X^2+10$, and $W=12X^4+12X^3+3X^2+10X+15$, the fibers $P/B=1,2,3$ on the domain are respectively $\{10,11,12,14,16\}$, $\{3,5,9,13,15\}$ and $\{2,4,6,7,8\}$. The kernel checks the fiber and Bézout identities, the shared row certificate $P\mid WB-(X^{16}-1)$ and the resulting literal bad events. The apolar upper bound gives equality for the worst-case probability. Both public conclusions use only the standard Lean axioms. [Formal proof](../../../ArkLib/Research/ProximityGap/Frontier/SmoothQuinticSeventeen.lean)
 
+### Simultaneous ratio-lifting counterexamples at the named production primes
+
+At $n=2^{30}$ and $h=n/4$, disjoint supports of exact degree $h-1$ or $h+1$ can have constant vanisher ratio on the entire subgroup $\mu_{262144}$ in either named field while the ratio takes distinct values at the same complex roots. With reduced degree at most $267,185,456$, a collision exists on any five million antipode-closed test sites containing three of each exponent parity. The proof combines projective evaluation counting, a finite-field polynomial estimate for forbidden intersections, and the characteristic-zero parity constraint. A full odd-degree pencil would also require at least $d+2$ translated color mismatches across its three fibers at every nonidentity shift. Explicit trace colorings satisfy all these shift inequalities simultaneously. The existence of a full prescribed $d$-site third fiber remains open. [Proof, including the complex parity argument](production-ratio-lifting.md) · [Integer checks and finite examples](../../../scripts/probes/probe_production_ratio_lifting.py)
+
 ## 2026-11-21 · Exact half-rate list threshold at length 32 and budget three
 
 On every order-32 subgroup in characteristic greater than $2^{128}$ the dimension-16 RS code has worst-case closed-ball list size exactly **three at nine errors**, and a ball with four distinct codewords at ten errors. Both hold at every positive interleaving width. Thus at the 130-bit prime $1020847100762898806271677231708359360513$, and throughout the eligible field window with budget three, the last good integer count is **9**, the first bad count **10** and the operational supremum **5/16**. A cyclotomic norm estimate lifts all relevant vanisher-ratio equalities to characteristic zero, where the degree-seven pencil and four-cycle censuses apply. The largest certified base-two exponent for the odd part of the needed norms is $130246/1024<128$. The same method excludes three full nonic rational fibers on the order-32 subgroup at both named primes. The list result is a written proof with exact integer certificates. The order-16 rational construction over the field of order 17 has a separate kernel-checked proof with 37,877 declarations independently replayed. [Length-32 proof](mu32-list-threshold-large-characteristic.md) · [Exact norm certificate](../../../scripts/probes/probe_mu32_ratio_norm.py) · [Length-16 Lean proof](../../../ArkLib/Research/ProximityGap/Frontier/SmoothQuinticSeventeen.lean)
@@ -1664,6 +1798,22 @@ Lean now verifies that the nonzero polynomial determinant bounds the excess core
 
 Four distinct degree-below-four codewords on $\mu_{32}$ can each agree with one center on 12 sites. Thirteen agreements each are impossible even on an arbitrary 32-site domain, since the six cubic pair differences supply at most 18 extra agreements. The construction verifies sixteen specified pair coincidences in $\mathbb Z[z]/(z^{16}+1)$ and allocates the other sixteen sites to the four words. It applies in every field with an element of order 32 and to every positive interleaving width. At the concrete 130-bit budget-three prime, the first bad counts are now 10 at rate one half, 20 at rate one eighth, and 23 at rate one sixteenth. [Construction and proof](mu32-list-threshold-large-characteristic.md#dimension-four-at-the-same-length) · [Integral arithmetic](../../../scripts/probes/probe_mu32_four_cubics.py)
 
+### Scalar Hessian, finite cubic algebra and Laurent-branch proofs in Lean
+
+For a primitive irreducible scalar-value equation of value degree 2, 3, or 4 and scalar height $m$, divisibility by the actual scalar Hessian gives **at most one distinct scalar** with a value in the fixed coordinate field if the characteristic exceeds $8m+4$ and the value degree. Lean constructs the characteristic-$p$ derivation on the function field, proves every geometric root affine in the scalar, and specializes the same affine function at all rational points. This handles the zero-Hessian alternative in both terminal eliminations. [Reverse Hessian theorem](../../../ArkLib/Research/ProximityGap/Frontier/ReverseHessianAffineSection.lean) · [Site specialization](../../../ArkLib/Research/ProximityGap/Frontier/AlgebraicSectionSpecialization.lean)
+
+For the other cubic case Lean checks the monic binary chart over a finite coordinate quotient, the homogeneous column presentation, and the bound on the dimension of the quotient by products of the two partial derivatives in terms of the local first-polar lengths. Lean identifies the codimension of the bounded polynomial window with the dimension of this actual quotient and gives bounded representatives and homogeneous multipliers. [Polynomial window theorem](../../../ArkLib/Research/ProximityGap/Frontier/RawJacobianWindow.lean)
+
+On a tame Laurent expansion $X=\alpha+t^e$, Lean also proves the coefficient formula and the product rule for differentiation holding $X$ fixed. It verifies the improved order bound for the second derivative at a tangent branch, and proves that at a fixed received line of contact order $s$ the cleared second implicit derivative vanishes to order at least $3j+s$ when the value partial vanishes to order $j$. The comparison between the full curve intersection and the sum of these local quantities is still required for end-to-end verification. [Binary column presentation](../../../ArkLib/Research/ProximityGap/Frontier/MonicRawPolynomialQuotient.lean) · [Finite algebra](../../../ArkLib/Research/ProximityGap/Frontier/JacobianPowerFiniteAlgebra.lean) · [Laurent calculation](../../../ArkLib/Research/ProximityGap/Frontier/TameBranchDerivative.lean)
+
+For the constructive side, distinct normalized two-coordinate evaluation functionals give distinct scalars for a common choice of received rows when their number of unordered pairs is at most the field size. Lean verifies the resulting lower bound for the literal MCA event, including joint nonagreement on each witnessing support. [Witness assembly](../../../ArkLib/Research/ProximityGap/Frontier/LinearPencilFreshLabels.lean)
+
+Lean also identifies the local polar colength with the sum of the branch orders given a finite-defect branch inclusion. For the proper quartic intersection, the padded Sylvester determinant proves the product-of-orders lower bound at each translated site and sums those lower bounds over distinct sites. [Polar colength](../../../ArkLib/Research/ProximityGap/Frontier/FiniteNormalizationColength.lean) · [Local determinant](../../../ArkLib/Research/ProximityGap/Frontier/SylvesterLocalMultiplicity.lean)
+
+### Exact two-head error curves at three sponsor rates
+
+For all $16\mid n$, $n\ge2^{30}$, $n/16\le k\le n/4$, finite fields of characteristic greater than $2n$, and all injective evaluation domains, the exact numerator is $2(e+1)$ from $E=\lceil(n-k)/2\rceil$ through $U=n-\lfloor(n+3(k-1)+4)/3\rfloor-1$. The first failing count is $\lfloor B/2\rfloor$ for every integer budget $2E\le B\le2(U+1)+1$. At production length the upper budget endpoints are **894784855, 1163220311, and 1297438039** for rates $1/4,1/8,1/16$. The proof uses a possibly large scalar-degree, value-quadratic first interpolant and an independent degree-16, value-quartic double interpolant. Noncommon factors are bounded by a nonzero scalar resultant, and the common factors have both value degree at most two and scalar degree at most sixteen. Two large heads must account for every alleged violation, giving cores so large that they cover every witness. This extends the previously reported rate-eighth interval through one half by 44,739,242 errors and the earlier rate-sixteenth upper budget endpoint 1295252617 by 2185422 budgets. The proof is written, with a uniform exact-arithmetic certificate. [Proof](three-rates-two-head-window.md) · [Arithmetic](../../../scripts/probes/probe_three_rates_two_head_window.py)
+
 Lean now proves this threshold for every smooth 32-site evaluation embedding, including arbitrary nonzero coset representatives and coordinate orderings. The cubic scale factors simplify to $s=z+z^3+z^4-z^8-z^9-z^{11}$ and $z^4s$. The integral identities reduce to the single equation $z^{16}=-1$. The real-radius theorem proves that the closed interleaved list has size at most three exactly when $\delta<5/8$. At a 128-bit integer budget of three, the canonical `GrandListResolution` verifies the safe grid index 19 and the first unsafe index 20 for every positive width. Seven exported conclusions passed the independent con-leche checker with 27,841 declarations. [Lean proof and prize resolution](../../../ArkLib/Research/ProximityGap/Frontier/Mu32CubicList.lean)
 
 ### Syndrome-flat profiles and the exceptional characteristic of the smooth octagon
@@ -1671,6 +1821,22 @@ Lean now proves this threshold for every smooth 32-site evaluation embedding, in
 For every linear code the dimensions and inclusions of intersections of its parity-check column spans determine the complete distribution of list sizes at each radius and interleaving width. A binomial inversion counts errors and a finite-flat recursion counts centers. For Reed–Solomon codes, Vandermonde locator normals give the required ranks directly from the prescribed domain. This is practical at small redundancy. On cyclic cosets the resulting syndrome construction gives an exact first-failure table for every length at redundancy three. At any even minimum distance $2e$ with $e\mid n$, the largest list at $e$ errors equals $n/e$.
 
 At length eight and rate one half, eight words at three errors would force eight triples on eight sites with one missing partner per site. A functional on binary cubics reduces their labels to common-sum or common-product triples. Counting through each site forces all eight labels into one fiber of tripling. This rules out eight except in characteristic three, where the eight affine lines of $\mathbb F_9$ avoiding zero attain it. The common-product construction attains seven in the other admissible characteristics. On smooth domains the corresponding first bad counts for budgets from zero through $q$ appear in the proof. Lean verifies the abelian-group incidence argument. The rank probe independently checks tiny histograms, the characteristic-three incidence, and the Goldilocks octagon at widths one and two. Above characteristic $400^4$, the three-error spectrum is $\{0,1,2,3,4,5,7\}$, with exactly eight maximizing syndrome lines. [Proof and scope](syndrome-flat-list-profile.md) · [Executable calculation](../../../scripts/probes/probe_syndrome_flat_list.py)
+
+### Exact quarter-rate list cutoff completes the four-rate list table on 32 sites
+
+For every field of characteristic zero or characteristic above $2^{118}$ with a smooth order-32 domain, four distinct degree-below-eight words first fit one closed Hamming ball at **16 errors**. Fifteen errors would force six pair differences to have total root deficit at most two. A census over 454 orbits of five protected sites excludes the degree-five and degree-seven full fibers and forces antipodal root sets in every surviving degree-six case. The last overlap pattern would give two double roots among the six distinct roots of one degree-seven difference. Four explicit degree-seven words at sixteen errors specialize in every field admitting the domain. The result holds at every positive interleaving width. At the prime $(3\cdot2^{48}+69)2^{80}+1$ and budget three, the first failing radii for rates $1/2,1/4,1/8,1/16$ are **10, 16, 20, 23** of 32. The quarter-rate upper bound has a written proof and reproducible exhaustive check. [Proof, four-rate table and verifiers](mu32-quarter-list-threshold.md)
+
+### Second-prime cubic exclusion with two ordinary polars
+
+A second written proof excludes the terminal cubic using two ordinary first polars and the raw Hessian. The key change is to allow the auxiliary polynomial all 171 value slots below the weight limit and subtract the entire space of multiples of the cubic. With $R$ the sum of received multiplicities, the ordinary polar gcd gives $3R\le2n+16W-35d+532$. The jet surplus stays above $7.11\cdot10^{17}$ across the full cubic weight range. The auxiliary's scalar resultant has degree at most 1200005780 against at least 1342177249 selected labels. This argument removes the Jacobian-power interpolation and sharp singular-branch estimate from the written path to the exact second-prime threshold. Lean checks the unrestricted slot inequality, the uniform production dimension surplus, and local finite and reciprocal-chart derivative estimates. The global polar and jet implications from arbitrary received rows remain to be assembled. [Written reduction](second-prime-unrestricted-jets.md) · [Kernel-checked budget](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeUnrestrictedJetBudget.lean) · [Local Laurent calculation](../../../ArkLib/Research/ProximityGap/Frontier/TameBranchPolarOrders.lean) · [Tame conjugate separation](../../../ArkLib/Research/ProximityGap/Frontier/TameConjugateSeparation.lean)
+
+For the proper quartic, Lean bounds the sum of the canonical received-site orders by **1412316443** from the actual field, domain, rows, weight and irreducible equation. It also checks a literal splitting of a monic cubic after a sixth-power substitution over separably closed coefficients in characteristic different from two and three, and the local finite-algebra polar comparison. [Canonical quartic bound](../../../ArkLib/Research/ProximityGap/Frontier/CanonicalQuarticSiteOrder.lean) · [Cubic splitting](../../../ArkLib/Research/ProximityGap/Frontier/TameCubicPowerSeries.lean) · [Local polar comparison](../../../ArkLib/Research/ProximityGap/Frontier/CompletedFirstPolar.lean)
+
+Lean proves that on a branch of a bivariate equation, the actual scalar Hessian lies in the square of the ideal generated by the two coordinate partials. This holds over a differential ring and supplies the finite-ordinate baseline in the ordinary-polar proof. [Branch ideal](../../../ArkLib/Research/ProximityGap/Frontier/BranchHessianIdeal.lean)
+
+### An exact three-head budget interval at the one-eighth sponsor rate
+
+For every $16\mid n$, $n\ge2^{30}$, arbitrary injective evaluation domain and finite field of characteristic $p>3n^2$, put $k=n/8$, $d=k-1$, $E=\lfloor7n/12\rfloor+1$ and $U=n-\lfloor(n+5d+21)/4\rfloor-1$. The exact worst-case numerator is $3(e+1)$ for every $E\le e\le U$. At production length this yields exact first failure $\lfloor B/3\rfloor$ for every budget **1879048194 through 1912602614** and a first-failure lower bound **637534204** for the second named prime. The auxiliary polynomials use every value degree allowed by their weight. Explicitly subtracting all multiples of the factor changes the weight-space gain from $b v$ to at least $(vW-W^2/2)/d$ at weight $v$. This applies both to received-line jets and to powers of the Jacobian ideal. It rules out sufficiently many rich sections on every nonlinear factor of value degree two through six. A degree-74 double interpolant, a degree-27 triple interpolant, and the determinant and union bounds on three through six affine heads then give the count. The proof is written and all stated finite inequalities have an exact certificate. [Proof](rate-eighth-three-head-window.md) · [Uniform arithmetic](../../../scripts/probes/probe_rate_eighth_three_head_window.py)
 
 ## 2026-11-21 · Larger lists on the two named length-$2^{30}$ domains
 

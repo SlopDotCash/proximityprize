@@ -1,5 +1,9 @@
 # Disproof Log — ABF26 Proximity Prize Grand Challenge 1 (Issue #232)
 
+## [164-coding-ranks-and-paley-discrepancy] 2026-11-21
+
+On the budget-two length-16 prize instance, multipliers 122764 and 6 give cosets with respective signed quadratic discrepancies 256 and zero against the original subgroup. Each coset has the identical indexed Reed–Solomon code. Coefficient reversal on the full nonzero domain also preserves all rank tests on subsets marked together, while inversion can change a complete Paley rectangle to exact half density. A written character-sum proof constructs these examples with one logarithmic side. The polynomial-size regime remains open. [Proof and examples](paley-support-ranks.md)
+
 ## [164-sixth-moment-after-repeated-entry-exclusions] 2026-11-21
 
 The order-64 subgroup modulo 173249 is weak Sidon. Its signature comparisons exclude every unpaired six-term zero sum on at most four antipodal classes. The subgroup still violates the centered unit sixth-moment bound. Its ordered third energy is 4372480 and the excess after multiplication by the field size is 7565522944. A second order-64 example modulo 81818497 satisfies the same inequality $n^5<40p$ used to simplify the orbit budget at the production primes. It has four five-class and two six-class orbits, giving $A_5+2A_6=8$ against a budget of seven. These examples rule out deducing the unit sixth-moment inequality from the repeated-entry exclusions and that numerical size condition alone. [Three exact counts](../../../scripts/probes/probe_sixth_moment_sparse_counterexample.py) · [Formal arithmetic and hypotheses](../../../ArkLib/Research/ProximityGap/Frontier/SixthMomentSparseCounterexample.lean)

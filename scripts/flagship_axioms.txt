@@ -4,6 +4,14 @@
 # All names verified against source namespaces — a rename or deletion here is a
 # hard CI failure, not a skip (update this list in the same PR as the rename).
 
+# Fixed-size supports and normalized scalar labels for the exact MCA test
+ArkLib.Research.ProximityGap.Frontier.ExactSizeMcaSupport ProximityGap.ExactSizeMcaSupport.anchored_failure_iff
+ArkLib.Research.ProximityGap.Frontier.ExactSizeMcaSupport ProximityGap.ExactSizeMcaSupport.error_one_eq_grid
+
+# Literal half-rate failure and operational ceiling at the first production prime
+ArkLib.Research.ProximityGap.Frontier.FirstPrimeSepticCores ProximityGap.FirstPrimeSepticCores.over_budget
+ArkLib.Research.ProximityGap.Frontier.FirstPrimeSepticCores ProximityGap.FirstPrimeSepticCores.threshold_le
+
 # Finite list thresholds from rounded agreement and error-set packing
 ArkLib.Research.ProximityGap.Frontier.ReciprocalFiberLists ProximityGap.ReciprocalFiberLists.locator_eq_or_neg
 ArkLib.Research.ProximityGap.Frontier.ReciprocalFiberLists ProximityGap.ReciprocalFiberLists.split_fiber
@@ -151,3 +159,9 @@ ArkLib.Tests.ProximityPrize.GrandChallengeReview ProximityPrize.Review.allRadii
 ArkLib.Research.ProximityGap.Frontier.ListSupportGaussian ProximityGap.ListSupportRank.gaussianSafe_iff
 ArkLib.Research.ProximityGap.Frontier.ListSupportGaussian ProximityGap.ListSupportRank.gaussianPairSafe_iff
 ArkLib.Research.ProximityGap.Frontier.SecondPrimePrimitiveSurface ArkLib.ProximityGap.Frontier.SecondPrimePrimitiveSurface.actual_components
+
+# Executable numerics and the remaining second-prime components
+ArkLib.Research.ProximityGap.RankExecutable ProximityPrize.RankExecutable.correctAtPrizeTolerance
+ArkLib.Research.ProximityGap.RankExecutable ProximityPrize.RankExecutable.correctForEveryDomain
+ArkLib.Research.ProximityGap.Frontier.SimultaneousSupportGaussian ProximityGap.SimultaneousSupportGaussian.mcaSafe_iff
+ArkLib.Research.ProximityGap.Frontier.SecondPrimeNonlinearObstruction ArkLib.ProximityGap.Frontier.SecondPrimeNonlinearObstruction.actual_factor

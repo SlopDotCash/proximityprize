@@ -92,6 +92,9 @@ other labels, both fall below $3(e+1)+1$. This completes the upper bound.
 
 Lean now checks this final count directly for any selected subset of the literal MCA-bad scalars. Given at most four determined secants with more than 512 labels apiece covering all but 16546 selected labels, their joint-core packing and determinant geometry imply the bound $3(e+1)$ throughout the displayed interval. In the collinear case the formal proof maps every fresh agreement either to the unique scalar at a covered coordinate or to its coordinate and source head outside the union. At the named prime, proving this geometric coverage for each hypothetical sample of $2147483649$ bad labels gives the exact operational threshold by combining the safe predecessor with the existing three-core attack. Establishing that coverage from the polynomial factors, including the cubic and quartic exclusions, remains the outstanding Lean step in this reduction. [Conditional named endpoint and unconditional head count](../../../ArkLib/Research/ProximityGap/Frontier/TerminalCollinearHeadCount.lean)
 
+
+The value-linear factor step also has a direct Lean proof on the selected polynomial sections. For an irreducible factor $A(X,Z)Y+B(X,Z)$ of total $(Z,Y)$-degree at most 34, any 185 rich labels force 35 of their selected points onto one base-field secant. Restricting the factor to that secant produces a polynomial in $Z$ of degree at most 34 with 35 distinct roots. It vanishes identically, and primitivity forces every label carried by the factor onto the same secant. The theorem allows an arbitrary extension field for the coefficients and derives the factor degree bound from the actual interpolation support. [Kernel-checked value-linear exclusion](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeLinearFactor.lean)
+
 ## A matching construction on arbitrary domains
 
 Take $671088641\le e\le715827882$, set $t=n-e$, and put
@@ -142,3 +145,5 @@ consecutive Hamming steps. Consequently the good real radii are exactly
 $0\le\delta<j/n$. [MCA and its radius predicate](../../../ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean)
 
 The same two cubic cases extend to all multiples of 16 above this length in characteristic greater than $3n^2$. At rate $1/16$ a quadratic three-head construction also determines the adjacent plateau at $5/8$. [Uniform interval](uniform-three-head-threshold.md) · [Plateau](rate-sixteenth-three-head-plateau.md)
+
+A second proof uses unrestricted value-degree interpolation, the raw Hessian, and two ordinary first polars. [Ordinary-polar proof](second-prime-unrestricted-jets.md)

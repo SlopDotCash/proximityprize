@@ -415,14 +415,13 @@ theorem mobius_count {m B n A D E : ℕ} {a b K : F} (ha : a ≠ 0) (hab : a ≠
 #print axioms aux_ne_zero
 #print axioms mobius_count
 
-/-- Explicit count for subgroup order `2^30`, valid in every prime characteristic above `2^37`.
-`a` and `b` are the distinct zero and pole of the fractional linear function. -/
-theorem production_count {p : ℕ} [CharP F p] (hp : p.Prime) (hbig : 2^37 < p)
+/-- Weighted count for source subgroup order `2^30` and arbitrary target exponent. -/
+theorem production_exponent_count {p m : ℕ} [CharP F p] (hp : p.Prime) (hbig : 2^37 < p) (hm : 4096*64 ≤ m)
     {a b K : F} (ha : a ≠ 0) (hab : a ≠ b) (S : Finset F)
     (hreg : ∀ x ∈ S, x ≠ 0 ∧ x ≠ a ∧ x ≠ b)
     (hpow : ∀ x ∈ S, x ^ (2^30 : ℕ) = 1)
-    (hratio : ∀ x ∈ S, (x-a)^(2^30 : ℕ) = K * (x-b)^(2^30 : ℕ)) :
-    S.card ≤ 66060289 := by
+    (hratio : ∀ x ∈ S, (x-a)^m = K * (x-b)^m) :
+    2048 * S.card ≤ 4095 + 1073741824 * 63 + m * 63 := by
   let d (j : Fin (4096*64)) := (j : ℕ) % 4096
   let e (j : Fin (4096*64)) := d j + 1073741824 * ((j : ℕ) / 4096)
   have hd (j) : d j < 4096 := Nat.mod_lt _ (by decide)
@@ -449,10 +448,20 @@ theorem production_count {p : ℕ} [CharP F p] (hp : p.Prime) (hbig : 2^37 < p)
     intro hh
     have hle := (Nat.Prime.dvd_factorial hp).mp hh
     omega
-  have h := mobius_count (B := 64) (D := 2048) (A := 4096) (n := 2^30) ha hab hV
-    (by decide) he (by decide) hd (by decide) hfac S hreg (fun x hx j => by
+  exact mobius_count (B := 64) (D := 2048) (A := 4096) (n := m) ha hab hV
+    hm he (by decide) hd (by decide) hfac S hreg (fun x hx j => by
       change x ^ (d j + (2^30 : ℕ)*((j : ℕ)/4096)) = x ^ d j
       rw [pow_add, pow_mul, hpow x hx, one_pow, mul_one]) hratio
+
+/-- Explicit count for subgroup order `2^30`, valid in every prime characteristic above `2^37`.
+`a` and `b` are the distinct zero and pole of the fractional linear function. -/
+theorem production_count {p : ℕ} [CharP F p] (hp : p.Prime) (hbig : 2^37 < p)
+    {a b K : F} (ha : a ≠ 0) (hab : a ≠ b) (S : Finset F)
+    (hreg : ∀ x ∈ S, x ≠ 0 ∧ x ≠ a ∧ x ≠ b)
+    (hpow : ∀ x ∈ S, x ^ (2^30 : ℕ) = 1)
+    (hratio : ∀ x ∈ S, (x-a)^(2^30 : ℕ) = K * (x-b)^(2^30 : ℕ)) :
+    S.card ≤ 66060289 := by
+  have h := production_exponent_count hp hbig (by decide : 4096*64 ≤ 2^30) ha hab S hreg hpow hratio
   omega
 
 /-- The literal Möbius intersection, with the denominator interpreted using totalized field
