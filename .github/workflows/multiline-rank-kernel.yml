@@ -94,8 +94,8 @@ jobs:
           from pathlib import Path
           text = Path('rich-pencil-axioms.log').read_text()
           results = re.findall(r"'ProximityGap\.RichPencilCycleBudget\.([^']+)' depends on axioms:\s*\[([^\]]*)\]", text)
-          assert {name for name, _ in results} == {'adjacent_exception_mass_le', 'distance_le_twice_radius_of_cycle'}
-          assert len(results) == 2
+          assert {name for name, _ in results} == {'adjacent_exception_mass_le', 'distance_le_twice_radius_of_cycle', 'distance_le_twice_radius_of_affine_cycle'}
+          assert len(results) == 3
           for name, axioms in results:
               assert {axiom.strip() for axiom in axioms.split(',')} <= {'propext', 'Classical.choice', 'Quot.sound'}, name
           PY
