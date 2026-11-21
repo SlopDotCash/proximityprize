@@ -4,6 +4,11 @@
 # All names verified against source namespaces — a rename or deletion here is a
 # hard CI failure, not a skip (update this list in the same PR as the rename).
 
+# Finite list thresholds from rounded agreement and error-set packing
+ArkLib.Research.ProximityGap.Frontier.RecursiveListPacking ProximityGap.RecursiveListPacking.list_bound
+ArkLib.Research.ProximityGap.Frontier.RecursiveListPacking ProximityGap.RecursiveListPacking.four_rates_128
+ArkLib.Research.ProximityGap.Frontier.RecursiveListPacking ProximityGap.RecursiveListPacking.prime_four_rates
+
 # Scalar reduction for every interleaving at the prize lengths and field sizes
 ArkLib.Research.ProximityGap.Frontier.InterleavedListProjection ProximityGap.InterleavedListProjection.list_budget_iff_of_length_le
 
@@ -131,3 +136,16 @@ ArkLib.Research.ProximityGap.Frontier.ApolarEndpointExact ArkLib.ProximityGap.Fr
 # Exact interleaved list size on a supplied RS domain and the 128-bit budget windows
 ArkLib.Research.ProximityGap.Frontier.ListInterpolationBoundary ProximityGap.ListInterpolationBoundary.at_dimension_agreement
 ArkLib.Research.ProximityGap.Frontier.ListInterpolationBoundary ProximityGap.ListInterpolationBoundary.prize_good_iff
+
+# Finite field support tests, full operational contract, and concrete benchmark
+ArkLib.Research.ProximityGap.Frontier.ListSupportRank ProximityGap.ListSupportRank.rs_vandermonde_safe_iff
+ArkLib.Research.ProximityGap.Frontier.ListSupportForcedPair ProximityGap.ListSupportRank.prize_forced_pair_safe_iff
+ArkLib.Research.ProximityGap.Frontier.SimultaneousSupportParity ProximityGap.SimultaneousSupportParity.canonical_failure_iff_parity
+ArkLib.Research.ProximityGap.Frontier.BoundaryPairSeparation ProximityGap.BoundaryPairSeparation.epsMCA_exact
+ArkLib.Research.ProximityGap.Frontier.BoundaryFullMass ProximityGap.BoundaryFullMass.mcaError_eq_one
+ArkLib.Research.ProximityGap.RankReview ProximityPrize.RankReview.correctForEveryDomain
+ArkLib.Research.ProximityGap.RankKnownDomain ProximityPrize.RankKnownDomain.numericalBoundaries
+ArkLib.Tests.ProximityPrize.GrandChallengeReview ProximityPrize.Review.allRadii
+ArkLib.Research.ProximityGap.Frontier.ListSupportGaussian ProximityGap.ListSupportRank.gaussianSafe_iff
+ArkLib.Research.ProximityGap.Frontier.ListSupportGaussian ProximityGap.ListSupportRank.gaussianPairSafe_iff
+ArkLib.Research.ProximityGap.Frontier.SecondPrimePrimitiveSurface ArkLib.ProximityGap.Frontier.SecondPrimePrimitiveSurface.actual_components
