@@ -299,6 +299,7 @@ import ArkLib.Research.ProximityGap.Frontier.FoldedSourceFiber
 import ArkLib.Research.ProximityGap.Frontier.FourFiberThreshold
 import ArkLib.Research.ProximityGap.Frontier.FourHeadCrossRatio
 import ArkLib.Research.ProximityGap.Frontier.FourHeadQuotient
+import ArkLib.Research.ProximityGap.Frontier.FourHeadWitness
 import ArkLib.Research.ProximityGap.Frontier.FourRateList128
 import ArkLib.Research.ProximityGap.Frontier.FourRateList641
 import ArkLib.Research.ProximityGap.Frontier.FourRateList673
@@ -358,6 +359,7 @@ import ArkLib.Research.ProximityGap.Frontier.LineListMCAWeldRound1
 import ArkLib.Research.ProximityGap.Frontier.LinearBudgetQuadraticInterpolation
 import ArkLib.Research.ProximityGap.Frontier.ListAtBinomialExtremalTwo
 import ArkLib.Research.ProximityGap.Frontier.ListCenterEntropyCeiling
+import ArkLib.Research.ProximityGap.Frontier.ListInterpolationBoundary
 import ArkLib.Research.ProximityGap.Frontier.ListScalarExtension
 import ArkLib.Research.ProximityGap.Frontier.LiuZhouSplitRecursion
 import ArkLib.Research.ProximityGap.Frontier.LogRatioTowerBoundedIncrement
@@ -537,6 +539,7 @@ import ArkLib.Research.ProximityGap.Frontier.SmoothDomainMcaEquivalence
 import ArkLib.Research.ProximityGap.Frontier.SmoothFermatCapacity
 import ArkLib.Research.ProximityGap.Frontier.SmoothPowerEndpoint
 import ArkLib.Research.ProximityGap.Frontier.SmoothPowerMcaDescent
+import ArkLib.Research.ProximityGap.Frontier.SmoothQuinticSeventeen
 import ArkLib.Research.ProximityGap.Frontier.SmoothRationalFiberObstruction
 import ArkLib.Research.ProximityGap.Frontier.SpanCriterionGeneral
 import ArkLib.Research.ProximityGap.Frontier.SparseSupportIdealSVPLowerBound
