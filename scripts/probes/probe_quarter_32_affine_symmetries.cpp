@@ -1,22 +1,34 @@
 // Exhaust faithful order-four affine exponent symmetries of saturated 32-site quartets.
-// Compile with c++ -O3 -std=c++17. Arithmetic is exact over F_65537.
+// The default exact screen uses F_65537. Define AFFINE_NAMED_FIELDS and link GMP
+// to run the same census directly in the two sponsor fields.
 #include <algorithm>
 #include <array>
 #include <cassert>
 #include <cstdint>
 #include <iostream>
 #include <set>
+#include <stdexcept>
 #include <string>
 #include <utility>
 #include <vector>
 
+#ifdef AFFINE_NAMED_FIELDS
+#include "sponsor_phi_field.hpp"
+#endif
+
 namespace {
-constexpr int prime = 65537;
+#ifdef AFFINE_NAMED_FIELDS
+using Entry = mpz_class;
+constexpr bool named_field = true;
+#else
+using Entry = int;
+constexpr bool named_field = false;
+#endif
 using Affine = std::pair<int, int>;
 using Group = std::array<Affine, 4>;
 using Perm = std::array<int, 4>;
 using Edge = std::pair<int, int>;
-using Row = std::array<int, 24>;
+using Row = std::array<Entry, 24>;
 constexpr Affine identity{1, 0};
 constexpr Perm identity_perm{0, 1, 2, 3};
 constexpr std::array<Edge, 6> edges{{{0, 1}, {0, 2}, {0, 3}, {1, 2}, {1, 3}, {2, 3}}};
@@ -55,6 +67,7 @@ std::set<Group> subgroup_classes() {
     for (auto subgroup : all) {
         auto canonical = subgroup;
         for (auto g : group) {
+            if (named_field && g.first != 1 && g.first != 31) continue;
             auto inverse = *std::find_if(group.begin(), group.end(),
                 [&](Affine h) { return compose(g, h) == identity; });
             Group conjugate;
@@ -67,35 +80,53 @@ std::set<Group> subgroup_classes() {
     return classes;
 }
 
-int residue(int64_t value) {
-    int r = static_cast<int>(value % prime);
-    return r < 0 ? r + prime : r;
-}
-
-int power(int x, int n) {
-    int y = 1;
-    while (n) {
-        if (n & 1) y = residue(int64_t(y)*x);
-        x = residue(int64_t(x)*x);
-        n /= 2;
-    }
-    return y;
-}
-
-struct Field {
-    std::array<int, prime> inverse{};
+struct SplineField {
     std::array<std::array<Row, 6>, 32> rows{};
-    Field() {
-        for (int i = 1; i < prime; ++i) inverse[i] = power(i, prime-2);
-        int z = power(3, (prime-1)/32);
-        assert(power(z, 16) == prime-1);
+#ifdef AFFINE_NAMED_FIELDS
+    Entry p;
+    explicit SplineField(const std::string& name) {
+        auto f = sponsor_field(name);
+        p = f.p;
+        populate(power(f.g, f.n/32, p));
+    }
+    Entry multiply(const Entry& a, const Entry& b) const { return a*b % p; }
+    Entry inverse(const Entry& a) const {
+        Entry out;
+        mpz_invert(out.get_mpz_t(), a.get_mpz_t(), p.get_mpz_t());
+        return out;
+    }
+    void subtract_multiple(Entry& dst, const Entry& scalar, const Entry& value) const {
+        mpz_submul(dst.get_mpz_t(), scalar.get_mpz_t(), value.get_mpz_t());
+        mpz_mod(dst.get_mpz_t(), dst.get_mpz_t(), p.get_mpz_t());
+    }
+#else
+    static constexpr int p = 65537;
+    std::array<int, p> inverses{};
+    explicit SplineField(const std::string&) {
+        inverses[1] = 1;
+        for (int i = 2; i < p; ++i) inverses[i] = p-multiply(p/i, inverses[p%i]);
+        int z = 1;
+        for (int i = 0; i < (p-1)/32; ++i) z = multiply(z, 3);
+        populate(z);
+    }
+    Entry multiply(int a, int b) const { return static_cast<int>(int64_t(a)*b % p); }
+    Entry inverse(int a) const { return inverses[a]; }
+    void subtract_multiple(Entry& dst, int scalar, int value) const {
+        dst -= multiply(scalar, value);
+        if (dst < 0) dst += p;
+    }
+#endif
+    void populate(const Entry& z) {
+        std::array<Entry, 32> powers{1};
+        for (int j = 1; j < 32; ++j) powers[j] = multiply(powers[j-1], z);
+        assert(powers[16] == p-1 && multiply(powers[31], z) == 1);
         for (int i = 0; i < 32; ++i)
             for (int e = 0; e < 6; ++e) {
                 auto [a, b] = edges[e];
                 for (int j = 0; j < 8; ++j) {
-                    int value = power(z, (i*j) % 32);
+                    const auto& value = powers[(i*j) % 32];
                     if (a) rows[i][e][(a-1)*8+j] = value;
-                    rows[i][e][(b-1)*8+j] = prime-value;
+                    rows[i][e][(b-1)*8+j] = p-value;
                 }
             }
     }
@@ -105,16 +136,17 @@ struct Basis {
     std::array<Row, 24> rows{};
     std::array<int, 24> pivots{};
     int rank = 0;
-    void add(Row w, const Field& field) {
+    void add(Row w, const SplineField& field) {
         for (int t = 0; t < rank; ++t) {
-            int j = pivots[t], factor = w[j];
+            int j = pivots[t];
+            Entry factor = w[j];
             if (factor)
-                for (int k = j; k < 24; ++k) w[k] = residue(w[k]-int64_t(factor)*rows[t][k]);
+                for (int k = j; k < 24; ++k) field.subtract_multiple(w[k], factor, rows[t][k]);
         }
         for (int j = 0; j < 24; ++j) {
             if (!w[j]) continue;
-            int scale = field.inverse[w[j]];
-            for (int k = j; k < 24; ++k) w[k] = residue(int64_t(w[k])*scale);
+            Entry scale = field.inverse(w[j]);
+            for (int k = j; k < 24; ++k) w[k] = field.multiply(w[k], scale);
             rows[rank] = w;
             pivots[rank++] = j;
             return;
@@ -157,13 +189,37 @@ std::vector<Orbit> domain_orbits(const Group& group, const std::array<Perm, 4>& 
     return orbits;
 }
 
-int64_t count_survivors(const std::vector<Orbit>& ordinary, size_t i, const Basis& basis,
-                        std::array<int, 6> counts, const Field& field,
+int64_t count_survivors(const std::vector<Orbit>& ordinary, size_t i, Basis& basis,
+                        std::array<int, 6> counts, const SplineField& field,
                         std::array<uint32_t, 6> masks, bool emit,
                         const std::vector<std::array<int, 6>>& relabel, uint32_t stabilizer) {
     if (i == ordinary.size()) {
         if (counts[0] != counts[5] || counts[1] != counts[4] || counts[2] != counts[3]) return 0;
-        if (emit) {
+        if (named_field) {
+            // Saturation requires rank 22 and rank 24 after adjoining the two
+            // head-difference evaluations at zero for each noncollinear face.
+            bool obstruction = basis.rank != 22;
+            for (int a = 0; a < 2 && !obstruction; ++a)
+                for (int b = a+1; b < 3 && !obstruction; ++b)
+                    for (int c = b+1; c < 4 && !obstruction; ++c) {
+                        int saved = basis.rank;
+                        for (int h : {b, c}) {
+                            Row evaluation{};
+                            if (a) evaluation[(a-1)*8] = 1;
+                            evaluation[(h-1)*8] = field.p-1;
+                            basis.add(evaluation, field);
+                        }
+                        obstruction = basis.rank < 24;
+                        basis.rank = saved;
+                    }
+            if (!obstruction) {
+                std::cerr << "Unexcluded layout";
+                for (auto m : masks) std::cerr << ' ' << m;
+                std::cerr << '\n';
+                throw std::runtime_error("a layout passed every face test at zero");
+            }
+        }
+        if (emit && !named_field) {
             std::cout << "layout";
             for (auto m : masks) std::cout << ' ' << m;
             std::cout << '\n';
@@ -186,21 +242,22 @@ int64_t count_survivors(const std::vector<Orbit>& ordinary, size_t i, const Basi
         if (*std::max_element(sizes.begin(), sizes.end()) > 7) continue;
         int minimum = std::max(sizes[0], sizes[5]) + std::max(sizes[1], sizes[4]) + std::max(sizes[2], sizes[3]);
         if (minimum > 14) continue;
-        auto updated = basis;
+        int previous_rank = basis.rank;
         for (auto [site, e] : placement) {
-            updated.add(field.rows[site][e], field);
-            if (updated.rank >= 23) break;
+            basis.add(field.rows[site][e], field);
+            if (basis.rank >= 23) break;
         }
-        if (updated.rank < 23) {
+        if (basis.rank < 23) {
             auto selected = masks;
             for (auto [site, e] : placement) selected[e] |= uint32_t(1) << site;
-            total += count_survivors(ordinary, i+1, updated, sizes, field, selected, emit, relabel, next_stabilizer);
+            total += count_survivors(ordinary, i+1, basis, sizes, field, selected, emit, relabel, next_stabilizer);
         }
+        basis.rank = previous_rank;
     }
     return total;
 }
 
-int64_t census(Group group, std::array<Perm, 4> perms, const Field& field, bool emit = false) {
+int64_t census(Group group, std::array<Perm, 4> perms, const SplineField& field, bool emit = false) {
     auto orbits = domain_orbits(group, perms);
     std::vector<std::array<int, 6>> relabel;
     Perm perm = identity_perm;
@@ -218,6 +275,7 @@ int64_t census(Group group, std::array<Perm, 4> perms, const Field& field, bool 
     std::vector<Affine> centralizer;
     for (int a = 1; a < 32; a += 2) for (int b = 0; b < 32; ++b) {
         Affine f{a, b};
+        if (named_field && a != 1 && a != 31) continue;
         if (std::all_of(group.begin(), group.end(), [&](Affine h) { return compose(f, h) == compose(h, f); }))
             centralizer.push_back(f);
     }
@@ -246,7 +304,8 @@ int64_t census(Group group, std::array<Perm, 4> perms, const Field& field, bool 
             if (a.options.size() != b.options.size()) return a.options.size() < b.options.size();
             return a.size > b.size;
         });
-        total += count_survivors(ordinary, 0, Basis{}, {}, field, {}, emit, relabel, (uint32_t(1) << relabel.size())-1);
+        Basis initial;
+        total += count_survivors(ordinary, 0, initial, {}, field, {}, emit, relabel, (uint32_t(1) << relabel.size())-1);
     }
     return total;
 }
@@ -256,9 +315,13 @@ bool geometric(Affine g) {
 }  // namespace
 
 int main(int argc, char** argv) {
-    bool nonfaithful = argc == 2 && std::string(argv[1]) == "--nonfaithful";
-    if (argc != 1 && !nonfaithful) return 2;
-    Field field;
+    int mode = named_field ? 2 : 1;
+    if (argc < mode) return 2;
+    std::string name = named_field ? argv[1] : "";
+    if (named_field && name != "first" && name != "second") return 2;
+    bool nonfaithful = argc == mode+1 && std::string(argv[mode]) == "--nonfaithful";
+    if (argc != mode && !nonfaithful) return 2;
+    SplineField field(name);
     int cyclic_classes = 0, klein_classes = 0;
     for (auto group : subgroup_classes()) {
         auto order_four = std::find_if(group.begin(), group.end(),

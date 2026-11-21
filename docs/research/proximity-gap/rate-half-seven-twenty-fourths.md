@@ -62,6 +62,33 @@ For $d=6$, take $|S_1|=2$, $|S_2|=|S_3|=3$. The factor $\alpha_1$ is constant an
 
 For $d=7$, each $S_i$ has size three and each $\alpha_i$ has degree at most one. Fix the first block $A$ and parametrize $w(y)=(u+vy)/P_A(y)$ on four points $T_0$. With $b_y=1/\prod_{y'\in T_0\setminus\{y\}}(y-y')$, put $c_j=\sum_{y\in T_0}b_y y^jP_B(y)/P_A(y)$ for $j=0,1,2$. A second block $B$ permits the same weight and an affine factor precisely when $c_0u+c_1v=c_1u+c_2v=0$. This follows by Lagrange interpolation, testing the top coefficient for the four values and for those values multiplied by $y$. Each surviving block gives a projective constraint on $(u,v)$. A third block must have the identical constraint and be disjoint from both. Among the 72 orbits for $T_0$ the computation finds 1122 intersecting pairs of constraint planes, none coincident, and no compatible disjoint triple. This eliminates all septic rows and proves optimality in this class. [Exact finite classification](../../../scripts/probes/probe_four_head_sixteen_fiber_optimum.py)
 
+### The same optimum when a label can use several fresh agreements
+
+Keep the four polynomial pairs on the sixteen-fiber quotient, their coprime common direction of positive maximum degree, and arbitrary received rows as above. At $e=313174698$, **at most $n$ distinct bad scalars can be witnessed by these four heads together**, even if some scalars need several fresh agreements with their assigned head. Thus the first-failure count for this entire four-head construction is exactly $313174699$. An unrestricted received pair can also have labels witnessed by other polynomials.
+
+Suppose the four heads cover $n+1$ distinct bad scalars. Assign each of these scalars to one head whose fold gives its witness, including a site where that head differs from the received pair. Set $t=n-e$, let $c_i$ be the total joint core size of head $i$, and put $b_i=\max(1,t-c_i)$. Each of its $L_i$ assigned scalars needs at least $b_i$ fresh sites outside its core. A given site outside that core agrees with the fold of that head at at most one scalar. Hence $L_i b_i\le n-c_i$ and $L_i\le 1+\lfloor e/b_i\rfloor$. In particular every head must carry at least
+$$
+ \ell=n+1-3(e+1)=134217728
+$$
+labels. This exceeds $1+\lfloor e/3\rfloor$. Also, two heads with $b_i\ge2$ could together with the other two cover at most $2(1+\lfloor e/2\rfloor)+2(e+1)<n+1$. If all $b_i=1$, the one-fresh exclusion above applies. The only case left has exactly one head with $b_i=2$ and three with $b_i=1$. The total core size $E=\sum_i c_i$ and the number $J$ of fresh incidences selected for the assigned scalars then satisfy
+$$
+ E\ge4(t-1)-1=3042268499,\qquad J\ge n+1+\ell=1207959553.
+$$
+For $J$ select $b_i$ distinct fresh sites per assigned scalar. Two different sites used by a single scalar count twice.
+
+As above move every common quotient root into the locator, and let $d\le7$ be the maximum degree of the remaining head differences. There are $R\le(8-d)s-2$ distinct locator roots on the domain. Let $T$ count proper triple sites on the sixteen-point quotient. The following single inequality bounds all choices of the fresh sites:
+$$
+                         3E+2J-4R\le 8n+3sT.
+$$
+At a covered nonlocator site every differing head has the same projective direction from the receiver, so at most one *assigned* incidence can use that site. This holds when the second direction component vanishes too, since then the direction gives no finite folding scalar. Coprimality rules out simultaneous vanishing of the two direction components. Such a covered site contributes at most $11$ if its largest class is a triple, and at most $8$ otherwise. An uncovered nonlocator site contributes at most $8$ because each distinct head value gives at most one scalar. At a locator root all four heads coincide. If covered, it contributes $3\cdot4-4=8$; if uncovered, it supplies at most one scalar, which was assigned to a single head. Summing proves the inequality.
+
+Sort the four counts of proper triples by their omitted head as $t_1\le t_2\le t_3\le t_4$. The difference of the two heads omitted in the first two groups vanishes on the last two groups, so $t_3+t_4\le d$. Consequently $T\le2d$, and equality could hold only if all four counts were equal. For odd $d$ this gives $T\le2d-1$. Thus $3T-4d\le2d-3(d\bmod2)\le12$ over $0\le d\le7$. Substitution gives
+$$
+ 3E\le8n+44s-8-2J\le9126805494,
+ \qquad 3E\ge9126805497.
+$$
+The gap is three. The over-budget witness at the next count supplies the other direction of the restricted optimum. [Exact integer check](../../../scripts/probes/probe_four_head_sixteen_fiber_optimum.py)
+
 ## Restrictions on arbitrary polynomial heads at the preceding error count
 
 At 313174698 errors a witness needs 760567126 agreements. Suppose it obtains one agreement by folding at a fresh coordinate. Its two polynomial rows must then jointly agree with the received pair on at least 760567125 coordinates. On every injective domain of length $n=2^{30}$, at most **118 distinct half-rate polynomial pairs** can reach that joint agreement with any received pair.
