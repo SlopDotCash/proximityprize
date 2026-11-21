@@ -4,6 +4,7 @@ name: 'PR Summary'
 # pull_request_target — the OpenRouter secret and write token are in scope even
 # for fork PRs — because it never builds or executes PR code: it reads the diff
 # and committed source as data, and reads its policy file from the BASE ref (S4).
+# When OPENROUTER_KEY is unavailable, the summary action is skipped with a notice.
 on:
   pull_request_target:
     types: [opened, synchronize, reopened]
@@ -21,7 +22,19 @@ jobs:
   summarize:
     runs-on: ubuntu-latest
     steps:
+      - name: Check summary API key availability
+        id: summary_key
+        env:
+          OPENROUTER_KEY: ${{ secrets.OPENROUTER_KEY }}
+        run: |
+          if [[ -n "$OPENROUTER_KEY" ]]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Generate PR Summary
+        if: steps.summary_key.outputs.available == 'true'
         uses: alexanderlhicks/lean4repo-utils/summary@0.3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -32,3 +45,7 @@ jobs:
           upstream_path: 'ArkLib/ToMathlib/'
           # Default model (deepseek/deepseek-v4-flash). additional_instructions_path
           # defaults to CONTRIBUTING.md (read from the base ref) when unset.
+
+      - name: Report summary skipped
+        if: steps.summary_key.outputs.available != 'true'
+        run: echo "::warning title=PR Summary unavailable::OPENROUTER_KEY is not configured; no AI summary was generated."
