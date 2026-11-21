@@ -89,6 +89,7 @@ import ArkLib.Research.ProximityGap.Frontier.ApolarPowerOptimal
 import ArkLib.Research.ProximityGap.Frontier.ApolarPrimitiveKernel
 import ArkLib.Research.ProximityGap.Frontier.ApolarReciprocalCharts
 import ArkLib.Research.ProximityGap.Frontier.ApolarRootTransition
+import ArkLib.Research.ProximityGap.Frontier.ApolarSmoothProduct
 import ArkLib.Research.ProximityGap.Frontier.ApolarSparseInterpolation
 import ArkLib.Research.ProximityGap.Frontier.ApolarSparseRankBound
 import ArkLib.Research.ProximityGap.Frontier.ApolarSparseSpecialization
@@ -360,6 +361,8 @@ import ArkLib.Research.ProximityGap.Frontier.LargeSieveParsevalCollapse
 import ArkLib.Research.ProximityGap.Frontier.LineBallSingleCodewordEnvelope
 import ArkLib.Research.ProximityGap.Frontier.LineListMCAWeldRound1
 import ArkLib.Research.ProximityGap.Frontier.LinearBudgetQuadraticInterpolation
+import ArkLib.Research.ProximityGap.Frontier.LinearFieldBudgetLimit
+import ArkLib.Research.ProximityGap.Frontier.LinearFieldBudgetRadius
 import ArkLib.Research.ProximityGap.Frontier.ListAtBinomialExtremalTwo
 import ArkLib.Research.ProximityGap.Frontier.ListCenterEntropyCeiling
 import ArkLib.Research.ProximityGap.Frontier.ListInterpolationBoundary
@@ -505,6 +508,7 @@ import ArkLib.Research.ProximityGap.Frontier.ReciprocalChartMoments
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalEnergyFailure
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalSubsetSeparation
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalTupleEnergy
+import ArkLib.Research.ProximityGap.Frontier.RecursiveListPacking
 import ArkLib.Research.ProximityGap.Frontier.RegimePin
 import ArkLib.Research.ProximityGap.Frontier.RegularTaylorPole
 import ArkLib.Research.ProximityGap.Frontier.ReservedFiberList
