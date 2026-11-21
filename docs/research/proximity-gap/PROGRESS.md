@@ -95,6 +95,30 @@ Let a nonzero interpolant of coordinate/value weight below $rt$ satisfy the coef
 
 For any injective prime-field domain of length $n=4096b$, $b>0$, the line-MCA test at 128-bit security passes at radii **1269/4096, 2174/4096, 2788/4096 and 3201/4096** in decreasing prize-rate order whenever $p\ge2^{180}n^2$, and at **1262/4096, 2166/4096, 2780/4096 and 3195/4096** whenever $p\ge2^{165}n^2$. The first hypothesis holds for every prime in the length-$2^{30}$ field-budget interval, including $65\cdot2^{239}+1$, so those four radii are the certified lower endpoints of the length-$2^{30}$ line-MCA intervals. At the wider radii every center and finite interleaving width have list size at most **1369562863n, 649560740n, 2486297660n and 615760719n**, respectively, for every prime field admitting the domain. The rank profile of the first-order interpolation system is summed in closed form: at total jet degree $t$ it equals a tent of base $m-\max(t-M,0)$ capped at height $\min(t,M)+1$. Each slot inequality is then a single kernel evaluation of $\mu+1$ terms, which admits multiplicities up to 876. The earlier term-by-term certificates stopped at multiplicity 170 and radii 1265/4096, 2170/4096, 2783/4096 and 3197/4096. The four wider radii are within 0.0005 of the numerically computed limits 0.3101, 0.5312, 0.6809 and 0.7819 of first-order interpolation, so further gains at these rates need a different interpolation system. [Line-MCA bounds](../../../ArkLib/Research/ProximityGap/Frontier/FineGridProductionMcaIntervals.lean) · [Closed rank profile and certificates](../../../ArkLib/Research/ProximityGap/Frontier/FineGridFirstOrderSecurity.lean) · [Interleaved list bounds](../../../ArkLib/Research/ProximityGap/Frontier/FineGridWideLists.lean) · [Exact arithmetic and parameter search](../../../scripts/probes/probe_first_order_fine_grid.py) · [Numerical limits](../../kb/deltastar-hd1-hidden-derivative-interpolation-2026-09-05.md)
 
+## Line-MCA intervals at length $2^{30}$ for field sizes up to $2^{256}$
+
+The earlier length-$2^{30}$ intervals hold for primes in one field-budget interval. Three further modules give a safe radius and a failing radius for every field size from $2^{164}$ to $2^{256}$.
+
+**Safe side.** The weighted Johnson theorem has no condition on the characteristic or on the evaluation points. Its certificate moments are sums over the jet cutoff. They now have closed forms, so the kernel checks a certificate with a cutoff in the millions in constant time. Over every finite field with at least $2^{128+\beta}$ elements and on every injective domain of length $2^{30}$, the closed ball through the listed number of errors passes the 128-bit line-MCA test at every positive interleaving width.
+
+| $\beta$ | Rate 1/2 | Rate 1/4 | Rate 1/8 | Rate 1/16 |
+|---:|---:|---:|---:|---:|
+| 36 | 264305680 | 441001106 | 590558004 | 709234733 |
+| 40 | 286064053 | 497724075 | 654203879 | 768608494 |
+| 44 | 302702397 | 521162467 | 678319226 | 791028984 |
+| 48 | 309697726 | 530597867 | 687862086 | 799681249 |
+| 56 | 313729682 | 535880485 | 693133819 | 804424509 |
+| 64 | 314371491 | 536714875 | 693962012 | 805167589 |
+| 80 | 314488717 | 536867042 | 694112924 | 805302928 |
+| 96 | 314491625 | 536870816 | 694116667 | 805306284 |
+| Johnson count | 314491699 | 536870913 | 694116762 | 805306370 |
+
+Lean has thirteen exponents, also 38, 52, 60, 72 and 88. From $p\ge2^{225}$ and $p\ge2^{240}$ on, first-order interpolation over prime fields gives the radii of the preceding section, beyond Johnson. Near budget $2^{31}$ the dedicated counts for the designated primes are stronger than this ladder: at half rate it passes the written bound 299100001 of the next section only from exponent 44.
+
+**Failing side.** The power-map failures no longer need a lower bound on the field. Over a field with more than 2048 elements, every smooth domain of length divisible by 512 fails at radii $31/64$, $95/128$, $111/128$ and $239/256$ whenever $\lfloor q/2^{128}\rfloor\le175865058349821587478617952204192862$, and at $63/128$, $95/128$, $111/128$ and $239/256$ whenever $q<2^{256}$. The second statement uses DEEP lists of size $2B+1$ on power images of lengths 256, 256, 256 and 512.
+
+**Combined.** On every smooth domain of length $2^{30}$ the operational supremum lies between the ladder count over $2^{30}$ and the failing radius, for every finite field with at least $2^{128+\beta}$ and fewer than $2^{256}$ elements. Over prime fields with $2^{240}\le p<2^{256}$ the half-rate interval is $[1269/4096,\,63/128]$, and it is $[1262/4096,\,63/128]$ from $p\ge2^{225}$. The suprema inside all of these intervals remain open. [Johnson ladder](../../../ArkLib/Research/ProximityGap/Frontier/JohnsonBudgetLadder.lean) · [Failures without a window](../../../ArkLib/Research/ProximityGap/Frontier/FieldUniformMcaCeilings.lean) · [Intervals](../../../ArkLib/Research/ProximityGap/Frontier/FieldUniformMcaIntervals.lean) · [Exact arithmetic and search](../../../scripts/probes/probe_johnson_budget_ladder.py)
+
 ## Weighted Hodge bounds on the second named prime
 
 At length $2^{30}$, the weighted section-variance argument gives written lower bounds of **299,100,001**, **514,400,001** and **665,600,001** for the first MCA failure at rates $1/2$, $1/4$ and $1/8$. Lean checks the two interpolants on the received rows in each window, the weighted inequalities and all finite degree allocations. The argument uses surface normalization and ramification estimates in the mathematical proof. [Weighted bounds](weighted-hodge-windows.md) · [Lean certificates](../../../ArkLib/Research/ProximityGap/Frontier/WeightedHodgeWindows.lean) · [Lattice inequalities](../../../ArkLib/Research/ProximityGap/Frontier/HodgeSectionLattice.lean)
