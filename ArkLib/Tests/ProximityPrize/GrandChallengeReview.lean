@@ -108,10 +108,14 @@ private def orderFour : Fin 4 ↪ ZMod 5 where
 /- The one-error jump has four bad labels and saturates the probability curve. -/
 run_cmd do
   let boundary (budget : ℕ) :=
-    (RankExecutable.mcaBoundary (Equiv.refl (Fin 4)) [0, 1, 2, 3, 4] orderFour 2 budget).map Fin.val
-  unless boundary 0 == some 0 do throwError "The four-site code fails at zero errors for budget zero"
-  unless boundary 3 == some 1 do throwError "The four-site code fails at one error for budget three"
-  unless (boundary 4).isNone do throwError "The four-site code is safe at every radius for budget four"
+    let answer := RankExecutable.mcaBoundary (Equiv.refl (Fin 4)) [0, 1, 2, 3, 4] orderFour 2 budget
+    answer.map Fin.val
+  unless boundary 0 == some 0 do
+    throwError "The four-site code fails at zero errors for budget zero"
+  unless boundary 3 == some 1 do
+    throwError "The four-site code fails at one error for budget three"
+  unless (boundary 4).isNone do
+    throwError "The four-site code is safe at every radius for budget four"
 
 /- The numerical certificates reach the published 246-bit code without enumerating the field.
 At length eight, the budgets distinguish both interpolation cutoffs and the fallback. -/

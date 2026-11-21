@@ -325,3 +325,7 @@ ArkLib.Research.ProximityGap.CapacityBoundaryReview ProximityPrize.CapacityBound
 ArkLib.Research.ProximityGap.CapacityBoundaryReview ProximityPrize.CapacityBoundaryReview.list_minimum_iff
 ArkLib.Research.ProximityGap.CapacityBoundaryReview ProximityPrize.CapacityBoundaryReview.list_ceiling
 ArkLib.Research.ProximityGap.CapacityBoundaryReview ProximityPrize.CapacityBoundaryReview.prize_mca_dichotomy
+
+# Full probability and list-size lower bound near the production capacity radius
+ArkLib.Research.ProximityGap.JointDyadicCeilings ProximityPrize.JointDyadicCeilings.dense_saturation
+ArkLib.Research.ProximityGap.JointDyadicCeilings ProximityPrize.JointDyadicCeilings.prize_dense
