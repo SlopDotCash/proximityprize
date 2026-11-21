@@ -27,7 +27,8 @@ def shiftSum (A : Finset (ZMod p)) (b : ZMod p) : ℤ :=
 def multiplicity (A : Finset (ZMod p)) (b : ZMod p) : ℕ :=
   ((shiftSum A b) ^ 2 / 4).toNat
 
-private theorem four_mul_floor (w : ℤ) : 4 * (w ^ 2 / 4) = w ^ 2 - w % 2 := by
+/-- The parity is the exact remainder of a squared integer modulo four. -/
+theorem four_mul_floor (w : ℤ) : 4 * (w ^ 2 / 4) = w ^ 2 - w % 2 := by
   rcases Int.even_or_odd w with ⟨k, hk⟩ | ⟨k, hk⟩
   · rw [hk, show (k + k)^2 = 4*k^2 by ring]
     omega
@@ -89,6 +90,70 @@ theorem sum_multiplicity (hp : p ≠ 2) (A : Finset (ZMod p)) :
       exact_mod_cast (show A.card = 2*t+1 by dsimp [t]; omega)
     rw [he, hp'] at hsum
     nlinarith only [hsum]
+
+/-- The signed row sums have zero mean over all shifts. -/
+theorem sum_shift (hp : p ≠ 2) (A : Finset (ZMod p)) :
+    ∑ b : ZMod p, shiftSum A b = 0 := by
+  simp only [shiftSum]
+  rw [sum_comm]
+  apply sum_eq_zero
+  intro u _
+  refine (Fintype.sum_equiv (Equiv.addLeft u) _ _ (fun _ => rfl)).trans ?_
+  exact quadraticChar_sum_zero (by rwa [ZMod.ringChar_zmod_n])
+
+/-- Appending either fixed sign to every shift gives a shifted multiplicity budget
+determined solely by the size of the coordinate set. -/
+theorem sum_signed_multiplicity (hp : p ≠ 2) (A : Finset (ZMod p)) (σ : ℤ)
+    (hs : σ=1 ∨ σ=-1) :
+    ∑ b : ZMod p, (((shiftSum A b+σ)^2/4).toNat) =
+      ((A.card+1)/2)*(p/2+1-(A.card+1)/2) := by
+  let M (b : ZMod p) := ((shiftSum A b+σ)^2/4).toNat
+  have hpair (b : ZMod p) :
+      4*(M b : ℤ) + 4*(multiplicity A b : ℤ) =
+        2*(shiftSum A b)^2 + (2*σ)*shiftSum A b := by
+    have hfloor (t : ℤ) : 4*((t^2/4).toNat : ℤ) = t^2-t%2 := by
+      rw [Int.toNat_of_nonneg (Int.ediv_nonneg (sq_nonneg t) (by decide : (0:ℤ) ≤ 4)),
+        four_mul_floor]
+    simp only [M, multiplicity, hfloor]
+    rcases hs with h|h <;> rw [h] <;>
+      have hpar : (shiftSum A b + σ)%2 + (shiftSum A b)%2 = 1 := by omega
+    all_goals rw [h] at hpar; nlinarith only [hpar]
+  have hsum := Finset.sum_congr (s₁ := (univ : Finset (ZMod p))) rfl (fun b _ => hpair b)
+  simp only [sum_add_distrib, ← mul_sum, sum_shift hp, sum_shift_sq hp, mul_zero, add_zero,
+    ← Nat.cast_sum, sum_multiplicity hp] at hsum
+  obtain ⟨d,hd⟩ := (Fact.out : p.Prime).odd_of_ne_two hp
+  let x := A.card/2
+  let y := (A.card+1)/2
+  have hcard := A.card_le_univ
+  rw [ZMod.card] at hcard
+  have hx : x ≤ d := by dsimp [x]; omega
+  have hy : y ≤ d+1 := by dsimp [y]; omega
+  have hp' : (p : ℤ) = 2*d+1 := by exact_mod_cast hd
+  have hpd : (p-1)/2 = d := by omega
+  have hpd' : p/2=d := by omega
+  rw [hpd] at hsum
+  change 4*((∑ b, M b : ℕ) : ℤ) + 4*((x*(d-x) : ℕ) : ℤ) =
+    2*((A.card : ℤ)*p-A.card^2) at hsum
+  rw [Nat.cast_mul, Nat.cast_sub hx, hp'] at hsum
+  change ∑ b, M b = y*(p/2+1-y)
+  rw [hpd']
+  apply Int.ofNat_inj.mp
+  rw [Nat.cast_mul, Nat.cast_sub hy, Nat.cast_add, Nat.cast_one]
+  by_cases ha : A.card % 2 = 0
+  · have hxy : y=x := by dsimp [x,y]; omega
+    have he : (A.card : ℤ) = 2*x := by
+      exact_mod_cast (show A.card=2*x by dsimp [x]; omega)
+    rw [he] at hsum
+    rw [hxy]
+    nlinarith only [hsum]
+  · have hxy : y=x+1 := by dsimp [x,y]; omega
+    have he : (A.card : ℤ) = 2*x+1 := by
+      exact_mod_cast (show A.card=2*x+1 by dsimp [x]; omega)
+    rw [he] at hsum
+    rw [hxy, Nat.cast_add, Nat.cast_one]
+    nlinarith only [hsum]
+
+#print axioms sum_signed_multiplicity
 
 /-- Once the multiplicities of distinct prescribed roots add up to the full degree,
 the polynomial equals its leading coefficient times the product of those factors. -/
