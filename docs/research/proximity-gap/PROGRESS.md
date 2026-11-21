@@ -6,6 +6,8 @@ The rectangular hyperbola construction at half rate now has exact one-fresh firs
 
 At half rate on the second named subgroup, six tetrahedron edges lower the unrestricted first-failure upper bound to **387,740,104 errors**, an improvement of **14,913,081**. Four power fibers have three owners each. After reserving 402,653,182 common roots, 44,739,241 sites take a received value outside all heads and supply six labels each. The same pair has **2,147,483,649** distinct bad scalars at every dimension from 536,870,912 through 686,001,719 and every positive width. Independent verified replay accepted 29,716 declarations. The exact first failure remains open. [Proof and count](second-prime-tetrahedron.md) · [Lean witness](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeTetrahedron.lean)
 
+At rate one eighth on the second named prime, a written construction gives at least **2,148,807,811** bad scalars on one received pair at **679,477,248 errors**, one error earlier than the previous Lean endpoint. Its four defining cores each have 394,264,575 sites. Thirteen quotient fibers suffice for the variable fractional-linear maps, and the collision allowance leaves 1,324,163 labels above budget. [Construction and verification](eighth-transverse-mobius.md)
+
 ## Verified results and open cases
 
 | Question | Result | Verification |
