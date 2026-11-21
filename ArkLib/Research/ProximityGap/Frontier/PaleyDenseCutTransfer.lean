@@ -22,17 +22,17 @@ variable {α β : Type*}
 /-- A bound on all half-size-or-larger sets controls all ternary weighted sums. -/
 theorem ternary_sum (S : Finset α) (u f : α → ℤ) (H : ℤ)
     (hu : ∀ x ∈ S, |u x| ≤ 1)
-    (hS : ∀ U ⊆ S, S.card ≤ 2*U.card → |∑ x ∈ U, f x| ≤ H) :
-    |∑ x ∈ S, u x * f x| ≤ 3*H := by
+    (hS : ∀ U ⊆ S, S.card ≤ 2 * U.card → |∑ x ∈ U, f x| ≤ H) :
+    |∑ x ∈ S, u x * f x| ≤ 3 * H := by
   classical
   let P := S.filter (fun x => u x = 1)
   let N := S.filter (fun x => u x = -1)
   have hc (U : Finset α) (hU : U ⊆ S) :
       (-H ≤ (∑ x ∈ U, f x) ∧ (∑ x ∈ U, f x) ≤ H) ∨
       (-H ≤ (∑ x ∈ S, f x) - ∑ x ∈ U, f x ∧ (∑ x ∈ S, f x) - ∑ x ∈ U, f x ≤ H) := by
-    by_cases h : S.card ≤ 2*U.card
+    by_cases h : S.card ≤ 2 * U.card
     · exact Or.inl (abs_le.mp (hS U hU h))
-    · have h' : S.card ≤ 2*(S\U).card := by rw [card_sdiff_of_subset hU]; omega
+    · have h' : S.card ≤ 2 * (S\U).card := by rw [card_sdiff_of_subset hU]; omega
       have hc := abs_le.mp (hS (S\U) sdiff_subset h')
       have hd := Finset.sum_sdiff hU (f := f)
       right
@@ -53,11 +53,11 @@ theorem ternary_sum (S : Finset α) (u f : α → ℤ) (H : ℤ)
 theorem weighted_rectangle (A : Finset α) (B : Finset β) (W : α → β → ℤ)
     (u : α → ℤ) (v : β → ℤ) (H : ℤ)
     (hu : ∀ x ∈ A, |u x| ≤ 1) (hv : ∀ b ∈ B, |v b| ≤ 1)
-    (hcut : ∀ U ⊆ A, A.card ≤ 2*U.card → ∀ V ⊆ B, B.card ≤ 2*V.card →
+    (hcut : ∀ U ⊆ A, A.card ≤ 2 * U.card → ∀ V ⊆ B, B.card ≤ 2 * V.card →
       |∑ x ∈ U, ∑ b ∈ V, W x b| ≤ H) :
-    |∑ x ∈ A, u x * ∑ b ∈ B, v b * W x b| ≤ 9*H := by
-  rw [show 9*H=3*(3*H) by ring]
-  apply ternary_sum A u _ (3*H) hu
+    |∑ x ∈ A, u x * ∑ b ∈ B, v b * W x b| ≤ 9 * H := by
+  rw [show 9 * H=3 * (3 * H) by ring]
+  apply ternary_sum A u _ (3 * H) hu
   intro U hU hsize
   rw [Finset.sum_comm]
   simp_rw [← mul_sum]
@@ -69,11 +69,11 @@ theorem weighted_rectangle (A : Finset α) (B : Finset β) (W : α → β → �
 /-- Bounds for dense unweighted cuts control four-cycle energy with a constant loss. -/
 theorem energy_le_dense_cuts (A : Finset α) (B : Finset β) (W : α → β → ℤ) (H : ℤ)
     (hw : ∀ x ∈ A, ∀ b ∈ B, |W x b| ≤ 1)
-    (hcut : ∀ U ⊆ A, A.card ≤ 2*U.card → ∀ V ⊆ B, B.card ≤ 2*V.card →
+    (hcut : ∀ U ⊆ A, A.card ≤ 2 * U.card → ∀ V ⊆ B, B.card ≤ 2 * V.card →
       |∑ x ∈ U, ∑ b ∈ V, W x b| ≤ H) :
-    energy A B W ≤ 9*H*A.card*B.card := by
+    energy A B W ≤ 9 * H * A.card * B.card := by
   have hanchor (t : β) (ht : t ∈ B) (y : α) (hy : y ∈ A) :
-      W y t * (∑ x ∈ A, W x t * ∑ b ∈ B, W y b * W x b) ≤ 9*H := by
+      W y t * (∑ x ∈ A, W x t * ∑ b ∈ B, W y b * W x b) ≤ 9 * H := by
     have h := weighted_rectangle A B W (fun x => W x t) (W y) H
       (fun x hx => hw x hx t ht) (hw y hy) hcut
     calc
@@ -94,7 +94,7 @@ theorem energy_le_dense_cuts (A : Finset α) (B : Finset β) (W : α → β → 
       apply sum_congr rfl
       intro y _
       exact sum_congr rfl fun b _ => by ring
-    _ ≤ ∑ _t ∈ B, ∑ _y ∈ A, 9*H := sum_le_sum fun t ht => sum_le_sum (hanchor t ht)
+    _ ≤ ∑ _t ∈ B, ∑ _y ∈ A, 9 * H := sum_le_sum fun t ht => sum_le_sum (hanchor t ht)
     _ = _ := by simp [mul_comm]
 
 end ProximityGap.PaleyDenseCutTransfer
