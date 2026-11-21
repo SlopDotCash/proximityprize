@@ -28,3 +28,14 @@ Both entries have degree less than $k$. The received entries at each site are th
 The coefficient pairs distinguish different sites by their second coordinate, and distinguish foreign values at a common site by the determinant check. Two different coefficient pairs exclude one proper linear condition on $(a,b)$. Fewer than $p$ such conditions suffice to avoid all collisions simultaneously. Every chosen label agrees on its head's core plus the foreign site. A simultaneous fit to both rows would have to equal the head on every coordinate by polynomial uniqueness on its core, contradicting the second-row mismatch at the foreign site.
 
 The twelve pair fibers give $24s$ labels. The $3s+2$ private sites give $9s+6$ more. The total is $33s+6$, at $n-C-1$ errors. The same attack works at every positive interleaving width by MCA stability. The unrestricted first failing count still needs a matching lower bound.
+
+## Factorization over every smooth coset
+
+Write $b=w^2$, $a=w^{14}=b^{-1}$, $R=t-a$, $S=t+a$, $C=t^2+b$, $D=t^2-a$, $A=RC-bSD$ and $M=bRD-SC$. Use the four planar heads $(0,0)$, $(A,0)$, $(RC,SC)$ and $(RC,bRD)$. The six pair locators in lexicographic edge order are $A,C,R,S,D,M$. In particular
+\[
+ A=(1-b)(t-1)(t-w^2)(t-w^4),\qquad
+ M=-(1-b)(t-w^8)(t-w^{10})(t-w^{12}).
+\]
+The four oriented triangle determinants in lexicographic order are $ACS$, $bARD$, $RCM$ and $bSDM$. Each splits completely over the sixteenth roots in every field containing an element of that order. Among the sixteen fibers, a second-coordinate projection fails to separate a pair at only one slope for each pair of distinct values having distinct first coordinates. A field with more than 256 elements supplies one common projection.
+
+On a coset of length $64m$ the substitution $t=(X/u)^{4m}$ uses the inverse coset representative $u^{-1}$. Choose $m-1,m-1,m,m$ common roots on the four private fibers. Their locator has degree $4m-2$. The four cores have sizes $31m-1,31m-1,31m-2,31m-2$. Their complements supply $132m+6$ labels at $33m+1$ errors. This applies from dimension $16m$ through $31m-2$. The first failing error count for unrestricted received words at the second prime is still open at quarter rate. [Formal coset theorem](../../../ArkLib/Research/ProximityGap/Frontier/SmoothPlanarQuartetCoset.lean)

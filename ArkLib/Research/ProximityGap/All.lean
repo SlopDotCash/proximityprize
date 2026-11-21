@@ -842,6 +842,8 @@ import ArkLib.Research.ProximityGap.Frontier.SmoothFourHeadFibers
 import ArkLib.Research.ProximityGap.Frontier.SmoothLinearFieldEnvelope
 import ArkLib.Research.ProximityGap.Frontier.SmoothManyHeadMass
 import ArkLib.Research.ProximityGap.Frontier.SmoothManyLinePhase
+import ArkLib.Research.ProximityGap.Frontier.SmoothPlanarQuartetCoset
+import ArkLib.Research.ProximityGap.Frontier.SmoothPlanarQuartetSeed
 import ArkLib.Research.ProximityGap.Frontier.SmoothPowerEndpoint
 import ArkLib.Research.ProximityGap.Frontier.SmoothPowerMcaDescent
 import ArkLib.Research.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow
