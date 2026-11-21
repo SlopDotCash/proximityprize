@@ -358,6 +358,8 @@ import ArkLib.Research.ProximityGap.Frontier.LargeSieveParsevalCollapse
 import ArkLib.Research.ProximityGap.Frontier.LineBallSingleCodewordEnvelope
 import ArkLib.Research.ProximityGap.Frontier.LineListMCAWeldRound1
 import ArkLib.Research.ProximityGap.Frontier.LinearBudgetQuadraticInterpolation
+import ArkLib.Research.ProximityGap.Frontier.LinearFieldBudgetLimit
+import ArkLib.Research.ProximityGap.Frontier.LinearFieldBudgetRadius
 import ArkLib.Research.ProximityGap.Frontier.ListAtBinomialExtremalTwo
 import ArkLib.Research.ProximityGap.Frontier.ListCenterEntropyCeiling
 import ArkLib.Research.ProximityGap.Frontier.ListInterpolationBoundary

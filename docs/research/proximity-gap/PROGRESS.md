@@ -1192,6 +1192,16 @@ If $F$ had total $(\Gamma,Y)$-degree at least six, every quotient would have tot
 
 At the final predecessor of the second-prime rate-sixteenth bracket, any putative family of $2n+1$ bad scalars must have selected points of affine dimension at least **10,526,872** over the prime field. For a polynomial span of dimension $r$, a Wronskian equation of order $r$ replaces the universal order-$d+1$ derivative in the moving-factor argument. A nonzero differential numerator allows at most $80+136(r-1)$ labels across the quartic/degree-twelve common factors. Identically zero numerators yield polynomial sections over the algebraic parameter field, where the head or small-incidence alternative applies. The previous one-186-point-secant obstruction controls all head contributions. The result is a necessary condition from a written proof. [Wronskian calculation and integer bound](second-prime-quadratic-discriminant.md)
 
+## Exact line-MCA radius when the field size grows linearly
+
+Let \(n\) be the block length, \(k\ge1\) the dimension, \(Q\ge1\) the security denominator, and \(B=\lfloor q/Q\rfloor\). For every finite field of size \(q\) and every injective evaluation domain, the operational line-MCA radius at error \(1/Q\) is exactly \(B/n\) if
+\[
+ B\ge1,\qquad k+2B\le n,\qquad n<B(n-k+3-2B).
+\]
+At the predecessor \(B-1\) the apolar count bounds every received pair by \(B\) bad scalars. At \(B\) errors a spike gives \(B+1\) distinct bad scalars. Thus the code fails at the supremum. These statements apply to each individual finite instance meeting the displayed inequalities. [Finite theorem and mass bounds](../../../ArkLib/Research/ProximityGap/Frontier/LinearFieldBudgetRadius.lean).
+
+In particular, take any prime fields and any prescribed domains along which \(n\to\infty\), \(p/n\to\lambda\), and \(k/n\to\rho\), with positive dimension eventually. For fixed \(Q\), if \(\rho+2\lambda/Q<1\), all sufficiently large members have first bad count exactly \(\lfloor p/Q\rfloor\), and their operational radii tend to \(\lambda/Q\). This includes \(Q=2^{128}\). It complements the earlier superpolynomial-field classification. The hypotheses classify supplied sequences and do not assert the existence of dyadic smooth domains at every prescribed \(\lambda\). [Eventually exact radii and their limit](../../../ArkLib/Research/ProximityGap/Frontier/LinearFieldBudgetLimit.lean).
+
 ## Low additive energy can coexist with the four known MCA failures
 
 At \(p=65\cdot2^{239}+1\) and \(n=2^{30}\) there is a single evaluation domain \(G\) with order-four additive energy \(E_4(G)\le24n^4\) on which MCA at the four respective radii \(31/64,95/128,111/128,239/256\) has error above the allowed \(2^{-128}\). Here \(E_r\) counts ordered pairs of length-\(r\) tuples with equal sums, allowing repeated sites. The domain is a reciprocal image of a smooth domain. Scaling both received rows preserves the worst-case MCA error exactly. This exhibits a limitation of using bounded-order additive energy as a sufficient statistic on arbitrary evaluation domains. It leaves open what the multiplicative structure of a smooth domain adds. [Exact transport and simultaneous failure](../../../ArkLib/Research/ProximityGap/Frontier/ReciprocalEnergyFailure.lean).
