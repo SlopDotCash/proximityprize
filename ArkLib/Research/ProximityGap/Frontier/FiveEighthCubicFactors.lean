@@ -29,19 +29,19 @@ private theorem factor_sum {A : Type} [DecidableEq A] (U : Multiset A) (D : A �
   calc _ ≤ (U.dedup.map D).sum+(R.map D).sum := Nat.le_add_right _ _
        _ = _ := by conv_rhs => rw [h,Multiset.map_add,Multiset.sum_add]
 
-/-- Every selected label outside thirteen exceptions lies on an irreducible
-component in a total ordinate budget of three. Every component above 512 labels
-has the terminal quartic's bounds and its actual base-field head in degree one. -/
-theorem components [Infinite K] (fam : Family dom δ u) (φ : F →+* K) {p : ℕ} [CharP K p]
+/-- Every selected label outside ten exceptions lies on an irreducible
+component in a total ordinate budget of three. A degree-one component with at
+least 49 labels lies on a genuine base-field head. -/
+theorem degree_ten_components [Infinite K] (fam : Family dom δ u) (φ : F →+* K) {p : ℕ} [CharP K p]
     (hp : 1744830589<p) (hn : Fintype.card I=1073741824)
     (ht : 402653185≤⌈(1-δ)*(Fintype.card I:ℝ≥0)⌉₊) :
     ∃ (U : Finset (Factor K)) (E : Finset F),
-      E.card≤13 ∧ U.card≤3 ∧ (∑ f ∈ U, f.natDegree)≤3 ∧
+      E.card≤10 ∧ U.card≤3 ∧ (∑ f ∈ U, f.natDegree)≤3 ∧
       fam.G ⊆ E ∪ U.biUnion (population fam φ) ∧
       ∀ f ∈ U, 0<f.natDegree ∧
         (f.natDegree=3 → (population fam φ f).card≤1200005270) ∧
         (f.natDegree=2 → (population fam φ f).card≤512) ∧
-        (f.natDegree=1 → 512<(population fam φ f).card →
+        (f.natDegree=1 → 48<(population fam φ f).card →
           ∃ L ∈ lineParameters fam, population fam φ f ⊆ pointsOn fam L) := by
   classical
   let dom' := dom.trans (⟨φ,φ.injective⟩ : F ↪ K)
@@ -56,7 +56,7 @@ theorem components [Infinite K] (fam : Family dom δ u) (φ : F →+* K) {p : �
     change ((fam.q z).map φ).eval (φ (dom i)) = _
     rw [eval_map_apply]
     simpa only [u₀,u₁,map_add,map_mul] using congrArg φ (mem_filter.mp hi).2
-  obtain ⟨c,hc,_,hcurve⟩ := exists_curve (s:=13) (v:=3) (d:=67108863) (t:=402653185) dom' u₀ u₁
+  obtain ⟨c,hc,_,hcurve⟩ := exists_curve (s:=10) (v:=3) (d:=67108863) (t:=402653185) dom' u₀ u₁
     (by decide) (by rw [hn]; simp only [Monomials,Fintype.card_sigma,Fintype.card_prod,Fintype.card_fin]; norm_num [Fin.sum_univ_succ])
   let C₀ := surface c
   have hc0 : C₀≠0 := surface_ne_zero hc
@@ -68,7 +68,7 @@ theorem components [Infinite K] (fam : Family dom δ u) (φ : F →+* K) {p : �
     simp only [coeff_zero]
     by_contra h
     exact hj.not_ge (surface_support c h).1
-  have hdeg (j : ℕ) : (C₀.coeff j).natDegree≤13 := by
+  have hdeg (j : ℕ) : (C₀.coeff j).natDegree≤10 := by
     by_cases hj : C₀.coeff j=0
     · simp [hj]
     · have hh := htotal j hj; omega
@@ -76,7 +76,7 @@ theorem components [Infinite K] (fam : Family dom δ u) (φ : F →+* K) {p : �
     obtain ⟨hdeg,S,hS,ha⟩ := fit z hz
     exact (surface_eval c ..).trans (hcurve _ _ hdeg _ hS ha)
   obtain ⟨P,E,hP,hprim,hdiv,hde,_,exc,hcov⟩ := SecondPrimePrimitiveSurface.primitive_surface φ hc0 fam.G
-    (fun z => (fam.q z).map φ) 13 hdeg h₀
+    (fun z => (fam.q z).map φ) 10 hdeg h₀
   obtain ⟨T,hT,hs,hnT,cover⟩ := SecondPrimePrimitiveSurface.factor_cover P hP hprim
   let U := T.toFinset
   have hyT : P.natDegree≤3 := hde.le.trans hy
@@ -107,10 +107,10 @@ theorem components [Infinite K] (fam : Family dom δ u) (φ : F →+* K) {p : �
     let G := population fam φ f
     have hsub : G⊆fam.G := filter_subset ..
     have root (z : F) (hz : z∈G) : f.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ)=0 := (mem_filter.mp hz).2
-    have divides (hbig : 512<G.card) : f∣Q := by
+    have divides (hbig : 142<G.card) : f∣Q := by
       apply divides_of_many_sections φ f Q hi hpos hft hQtot G (fun z => (fam.q z).map φ)
         (fun z hz => ⟨root z hz,hQroot z (hsub hz)⟩)
-      have hh := Nat.add_le_add (Nat.mul_le_mul_right 34 hdegf) (Nat.mul_le_mul_right 13 hQdeg)
+      have hh := Nat.add_le_add (Nat.mul_le_mul_right 34 hdegf) (Nat.mul_le_mul_right 10 hQdeg)
       omega
     refine ⟨hpos,?_,?_,?_⟩
     · intro h3
@@ -122,16 +122,71 @@ theorem components [Infinite K] (fam : Family dom δ u) (φ : F →+* K) {p : �
       · exact (le_of_not_gt hb).trans (by decide)
     · intro h2
       by_contra! hb
-      have h := SecondPrimeQuadraticFactor.quadratic_population_le fam φ Q f hQ (divides hb) hi h2 (by
+      change 512<G.card at hb
+      have h := SecondPrimeQuadraticFactor.quadratic_population_le fam φ Q f hQ (divides (by omega)) hi h2 (by
         intro j i a he
         obtain ⟨_,hh,hc⟩ := hshape j i a he
         exact ⟨hh,by omega⟩) (by
           intro i hi hj hz
           exact (show ¬ p ≤ i by omega) (Nat.le_of_dvd hi ((CharP.cast_eq_zero_iff K p i).mp hz))) hn ht0
+      change G.card≤330 at h
       omega
     · intro h1 hbig
-      change 512<G.card at hbig
-      exact TerminalLinearComponent.actual_linear φ fam hn ht0 Q f hQ hi (divides hbig) h1 hshape G hsub (by omega) root
+      change 48<G.card at hbig
+      have headdeg (j : ℕ) : (f.coeff j).natDegree ≤ 10-j := by
+        by_cases z : f.coeff j=0
+        · simp [z]
+        · have := hft j z
+          omega
+      apply TerminalLinearComponent.secant_of_agreement_selection (d:=67108863) (m:=9) (N:=49)
+        φ fam f hi h1 (headdeg 0) (headdeg 1) _ G hsub (by omega) root
+      intro M S V hM hS off onI
+      obtain ⟨inc,W,hWM,hW,htr⟩ := TerminalLinearComponent.triple_incidence_bounds
+        M S V 39 9 402653185 (by decide) hM (fun z hz => ht.trans (hS z hz)) off onI
+      refine ⟨W,hWM,hW,?_⟩
+      intro a ha b hb c hc
+      have h := htr a ha b hb c hc
+      rw [hn] at inc
+      omega
 
+/-- Every selected label outside thirteen exceptions lies on an irreducible
+component in a total ordinate budget of three. A degree-one component with at
+least 185 labels lies on a genuine base-field head. -/
+theorem components_with_small_heads [Infinite K] (fam : Family dom δ u) (φ : F →+* K) {p : ℕ} [CharP K p]
+    (hp : 1744830589<p) (hn : Fintype.card I=1073741824)
+    (ht : 402653185≤⌈(1-δ)*(Fintype.card I:ℝ≥0)⌉₊) :
+    ∃ (U : Finset (Factor K)) (E : Finset F),
+      E.card≤13 ∧ U.card≤3 ∧ (∑ f ∈ U, f.natDegree)≤3 ∧
+      fam.G ⊆ E ∪ U.biUnion (population fam φ) ∧
+      ∀ f ∈ U, 0<f.natDegree ∧
+        (f.natDegree=3 → (population fam φ f).card≤1200005270) ∧
+        (f.natDegree=2 → (population fam φ f).card≤512) ∧
+        (f.natDegree=1 → 184<(population fam φ f).card →
+          ∃ L ∈ lineParameters fam, population fam φ f ⊆ pointsOn fam L) := by
+  obtain ⟨U,E,hE,hU,hdeg,hcov,h⟩ := degree_ten_components fam φ hp hn ht
+  refine ⟨U,E,hE.trans (by decide),hU,hdeg,hcov,?_⟩
+  intro f hf
+  obtain ⟨hpos,hcub,hquad,hlin⟩ := h f hf
+  exact ⟨hpos,hcub,hquad,fun h1 hbig => hlin h1 (by omega)⟩
+
+/-- The original 512-label recognition bound. -/
+theorem components [Infinite K] (fam : Family dom δ u) (φ : F →+* K) {p : ℕ} [CharP K p]
+    (hp : 1744830589<p) (hn : Fintype.card I=1073741824)
+    (ht : 402653185≤⌈(1-δ)*(Fintype.card I:ℝ≥0)⌉₊) :
+    ∃ (U : Finset (Factor K)) (E : Finset F),
+      E.card≤13 ∧ U.card≤3 ∧ (∑ f ∈ U, f.natDegree)≤3 ∧
+      fam.G ⊆ E ∪ U.biUnion (population fam φ) ∧
+      ∀ f ∈ U, 0<f.natDegree ∧
+        (f.natDegree=3 → (population fam φ f).card≤1200005270) ∧
+        (f.natDegree=2 → (population fam φ f).card≤512) ∧
+        (f.natDegree=1 → 512<(population fam φ f).card →
+          ∃ L ∈ lineParameters fam, population fam φ f ⊆ pointsOn fam L) := by
+  obtain ⟨U,E,hE,hU,hdeg,hcov,h⟩ := components_with_small_heads fam φ hp hn ht
+  refine ⟨U,E,hE,hU,hdeg,hcov,?_⟩
+  intro f hf
+  obtain ⟨hpos,hcub,hquad,hlin⟩ := h f hf
+  exact ⟨hpos,hcub,hquad,fun h1 hbig => hlin h1 (by omega)⟩
+
+#print axioms components_with_small_heads
 #print axioms components
 end ArkLib.ProximityGap.Frontier.FiveEighthCubicFactors

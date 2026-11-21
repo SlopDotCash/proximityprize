@@ -20,25 +20,26 @@ variable {F I : Type} [Field F] [Fintype F] [DecidableEq F] [Fintype I] [Nonempt
 variable {dom : I ↪ F} {δ : ℝ≥0} {u : Code.WordStack F (Fin 2) I}
 
 /-- The complete literal family is covered by three distinct large affine
-secants outside at most thirteen scalar labels. -/
-theorem cover_of_two_head_capacity (fam : Family dom δ u) {p : ℕ} [CharP F p] (hp : 1744830589<p)
-    (hn : Fintype.card I=1073741824) (ht : ⌈(1-δ)*(Fintype.card I:ℝ≥0)⌉₊=402653185)
-    (hbig : 1342177805 < fam.G.card) :
+secants outside at most ten scalar labels. -/
+theorem degree_ten_cover (fam : Family dom δ u) {p : ℕ} [CharP F p] (hp : 1744830589<p)
+    (hn : Fintype.card I=1073741824) {e : ℕ} (hl : 610000000≤e) (hu : e≤671088639)
+    (ht : ⌈(1-δ)*(Fintype.card I:ℝ≥0)⌉₊=1073741824-e)
+    {s : ℕ} (hs : 48 ≤ s) (hsu : s ≤ 512) (hbig : 2*(e+1)+s+10 < fam.G.card) :
     ∃ H : Finset (LineParameter F), H⊆lineParameters fam ∧ H.card=3 ∧
-      (∀ L∈H, 512<(pointsOn fam L).card) ∧ (fam.G \ H.biUnion (pointsOn fam)).card ≤ 13 := by
+      (∀ L∈H, s<(pointsOn fam L).card) ∧ (fam.G \ H.biUnion (pointsOn fam)).card ≤ 10 := by
   classical
   let K := AlgebraicClosure F
   let φ := algebraMap F K
   let _ : CharP K p := charP_of_injective_ringHom φ.injective p
-  obtain ⟨U,E,he,hu,hd,hcov,hcomp⟩ := FiveEighthCubicFactors.components fam φ hp hn ht.ge
+  obtain ⟨U,E,he,hu,hd,hcov,hcomp⟩ := FiveEighthCubicFactors.degree_ten_components fam φ hp hn (by omega)
   let P := population fam φ
   have mass : fam.G.card ≤ E.card+∑ f∈U, (P f).card :=
     (card_le_card hcov).trans ((card_union_le ..).trans (Nat.add_le_add_left card_biUnion_le _))
   have occupancy (L : LineParameter F) (hL : L∈lineParameters fam) :
-      (pointsOn fam L).card≤671088640 := TwoLargeCoreCount.line_occupancy_le fam (e:=671088639) hn ht hL
-  have hlin (f : Factor K) (hf : f∈U) (h1 : f.natDegree=1) : (P f).card≤671088640 := by
-    by_cases hb : 512<(P f).card
-    · obtain ⟨L,hL,hp'⟩ := (hcomp f hf).2.2.2 h1 hb
+      (pointsOn fam L).card≤(e+1) := TwoLargeCoreCount.line_occupancy_le fam (e:=e) (by omega) ht hL
+  have hlin (f : Factor K) (hf : f∈U) (h1 : f.natDegree=1) : (P f).card≤(e+1) := by
+    by_cases hb : s<(P f).card
+    · obtain ⟨L,hL,hp'⟩ := (hcomp f hf).2.2.2 h1 (hs.trans_lt hb)
       exact (card_le_card hp').trans (occupancy L hL)
     · omega
   have linear (f : Factor K) (hf : f∈U) : f.natDegree=1 := by
@@ -52,24 +53,29 @@ theorem cover_of_two_head_capacity (fam : Family dom δ u) {p : ℕ} [CharP F p]
       have pp := (hcomp g (mem_of_mem_erase hg)).1
       have single := single_le_sum (s:=V) (f:=natDegree) (fun _ _ => Nat.zero_le _) hg
       exact le_antisymm (single.trans (show (∑ t∈V,t.natDegree) ≤ 1 by omega)) pp
-    have hg : ∑ g∈V, (P g).card ≤ V.card*671088640 := by
+    have hg : ∑ g∈V, (P g).card ≤ V.card*(e+1) := by
       simpa using sum_le_sum (s:=V) fun g hg => hlin g (mem_of_mem_erase hg) (other g hg)
     have hm : fam.G.card ≤ E.card+((∑ g∈V,(P g).card)+(P f).card) := by
       simpa [V,sum_erase_add _ _ hf] using mass
     rcases (show f.natDegree=2 ∨ f.natDegree=3 by omega) with h2 | h3
     · have hh := (hcomp f hf).2.2.1 h2
       change (P f).card≤512 at hh
+      have hr := Nat.mul_le_mul_right (e+1) (show V.card≤1 by omega)
+      simp only [one_mul] at hr
       omega
     · have hh := (hcomp f hf).2.1 h3
       change (P f).card≤1200005270 at hh
+      have hempty : V.card=0 := by omega
+      rw [hempty,zero_mul] at hg
       omega
-  have large (f : Factor K) (hf : f∈U) : 512<(P f).card := by
+  have large (f : Factor K) (hf : f∈U) : s<(P f).card := by
     by_contra! small
     have rest := sum_le_sum (s:=U.erase f) (fun g hg => hlin g (mem_of_mem_erase hg) (linear g (mem_of_mem_erase hg)))
     simp only [sum_const,smul_eq_mul,card_erase_of_mem hf] at rest
     have hm := sum_erase_add U (fun g => (P g).card) hf
+    have hr := Nat.mul_le_mul_right (e+1) (show U.card-1 ≤ 2 by omega)
     omega
-  have existsLine (f : U) := (hcomp f f.property).2.2.2 (linear f f.property) (large f f.property)
+  have existsLine (f : U) := (hcomp f f.property).2.2.2 (linear f f.property) (hs.trans_lt (large f f.property))
   choose line hline hsub using existsLine
   let H := univ.image line
   have memH (f : U) : line f∈H := mem_image_of_mem _ (mem_univ _)
@@ -84,10 +90,14 @@ theorem cover_of_two_head_capacity (fam : Family dom δ u) {p : ℕ} [CharP F p]
     obtain ⟨f,hf,hz⟩ := mem_biUnion.mp h
     exact mem_union_right _ (mem_biUnion.mpr ⟨line ⟨f,hf⟩,memH _,hsub ⟨f,hf⟩ hz⟩)
   have hmass := (card_le_card covers).trans (card_union_le ..)
-  have hcount : (H.biUnion (pointsOn fam)).card≤H.card*671088640 := card_biUnion_le.trans
+  have hcount : (H.biUnion (pointsOn fam)).card≤H.card*(e+1) := card_biUnion_le.trans
     ((sum_le_sum (fun L hL => occupancy L (hH hL))).trans_eq (by simp))
   have hnH : H.card≤3 := (card_image_le.trans (by simp : (univ : Finset U).card=U.card).le).trans hu
-  refine ⟨H,hH,by omega,?_,?_⟩
+  have hthree : H.card=3 := by
+    by_contra! hn3
+    have hr := Nat.mul_le_mul_right (e+1) (show H.card≤2 by omega)
+    omega
+  refine ⟨H,hH,hthree,?_,?_⟩
   · intro L hL
     obtain ⟨f,_,rfl⟩ := mem_image.mp hL
     exact (large f f.property).trans_le (card_le_card (hsub f))
@@ -95,6 +105,26 @@ theorem cover_of_two_head_capacity (fam : Family dom δ u) {p : ℕ} [CharP F p]
     intro z hz
     obtain ⟨hG,hout⟩ := mem_sdiff.mp hz
     exact (mem_union.mp (covers hG)).resolve_right hout
+
+/-- The complete literal family is covered by three distinct large affine
+secants outside at most thirteen scalar labels. -/
+theorem cover_above_budget (fam : Family dom δ u) {p : ℕ} [CharP F p] (hp : 1744830589<p)
+    (hn : Fintype.card I=1073741824) {e : ℕ} (hl : 610000000≤e) (hu : e≤671088639)
+    (ht : ⌈(1-δ)*(Fintype.card I:ℝ≥0)⌉₊=1073741824-e)
+    {s : ℕ} (hs : 184 ≤ s) (hsu : s ≤ 512) (hbig : 2*(e+1)+s+13 < fam.G.card) :
+    ∃ H : Finset (LineParameter F), H⊆lineParameters fam ∧ H.card=3 ∧
+      (∀ L∈H, s<(pointsOn fam L).card) ∧ (fam.G \ H.biUnion (pointsOn fam)).card ≤ 13 := by
+  obtain ⟨H,hH,h3,hlarge,hex⟩ := degree_ten_cover fam hp hn hl hu ht
+    (s:=s) (by omega) hsu (by omega)
+  exact ⟨H,hH,h3,hlarge,hex.trans (by decide)⟩
+
+/-- Specialization to the last predecessor of the five-eighths plateau. -/
+theorem cover_of_two_head_capacity (fam : Family dom δ u) {p : ℕ} [CharP F p] (hp : 1744830589<p)
+    (hn : Fintype.card I=1073741824) (ht : ⌈(1-δ)*(Fintype.card I:ℝ≥0)⌉₊=402653185)
+    (hbig : 1342177805 < fam.G.card) :
+    ∃ H : Finset (LineParameter F), H⊆lineParameters fam ∧ H.card=3 ∧
+      (∀ L∈H, 512<(pointsOn fam L).card) ∧ (fam.G \ H.biUnion (pointsOn fam)).card ≤ 13 :=
+  cover_above_budget fam hp hn (e:=671088639) (by decide) (by decide) ht (s:=512) (by decide) (by decide) hbig
 
 /-- Threshold specialized to the three-head geometric predecessor estimate. -/
 theorem cover (fam : Family dom δ u) {p : ℕ} [CharP F p] (hp : 1744830589<p)

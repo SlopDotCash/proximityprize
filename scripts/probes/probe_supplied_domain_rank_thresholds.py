@@ -83,25 +83,26 @@ def direct_mca_counts(domain, k, q):
     code = scalar_code(domain, k, q)
     n = len(domain)
     words = list(product(range(q), repeat=n))
-    restrictions = {}
-    for size in range(n + 1):
-        for support in combinations(range(n), size):
-            restrictions[support] = {tuple(c[i] for i in support) for c in code}
+    # A bit records whether a word agrees with some codeword on that support.
+    # Sorting by cardinality lets the highest set bit recover the largest witness.
+    supports = [s for size in range(n + 1) for s in combinations(range(n), size)]
+    fits = dict.fromkeys(words, 0)
+    for index, support in enumerate(supports):
+        allowed = {tuple(c[i] for i in support) for c in code}
+        for word in words:
+            if tuple(word[i] for i in support) in allowed:
+                fits[word] |= 1 << index
     maxima = [0] * (n + 1)
     for u, v in product(words, repeat=2):
+        jointly_fits = fits[u] & fits[v]
         counts = [0] * (n + 1)
         for gamma in range(q):
-            fold = [(x + gamma * y) % q for x, y in zip(u, v)]
-            largest = -1
-            for codeword in code:
-                agreements = tuple(i for i in range(n) if codeword[i] == fold[i])
-                if len(agreements) <= largest:
-                    continue
-                allowed = restrictions[agreements]
-                if any(tuple(w[i] for i in agreements) not in allowed for w in (u, v)):
-                    largest = len(agreements)
-            for t in range(largest + 1):
-                counts[t] += 1
+            fold = tuple((x + gamma * y) % q for x, y in zip(u, v))
+            witnesses = fits[fold] & ~jointly_fits
+            if witnesses:
+                largest = len(supports[witnesses.bit_length() - 1])
+                for t in range(largest + 1):
+                    counts[t] += 1
         maxima = [max(a, b) for a, b in zip(maxima, counts)]
     return maxima
 
@@ -163,6 +164,14 @@ def main():
                             ('MCA', q, k, t, budget))
         print(f'F_{q}, D={domain}, k={k}, width={m}; increasing required agreements')
         print(f'  exhaustive worst list sizes {lists}, worst MCA counts {scalars}; rank tests agree')
+
+    domain = (1, 2, 4, 3)
+    worst_by_errors = direct_mca_counts(domain, 2, 5)[::-1]
+    check_equal(worst_by_errors, [1, 4, 4, 4, 4], 'order-four subgroup')
+    for budget, expected in [(0, 0), (3, 1)]:
+        actual = next(e for e in range(5) if mca_failure(domain, 2, 5, 4 - e, budget))
+        check_equal(actual, expected, ('order-four rank boundary', budget))
+    print(f'F_5, D={domain}, k=2, 390625 received pairs; worst MCA counts {worst_by_errors}')
 
 
 if __name__ == '__main__':

@@ -24,7 +24,7 @@ private theorem cover_bound {A B : Type} [DecidableEq A] [DecidableEq B]
   induction U using Multiset.induction_on with
   | empty => simp
   | @cons f U ih =>
-    rw [Multiset.toFinset_cons, insert_biUnion, Multiset.map_cons, Multiset.sum_cons, Nat.add_mul]
+    rw [Multiset.toFinset_cons, biUnion_insert, Multiset.map_cons, Multiset.sum_cons, Nat.add_mul]
     exact (card_union_le ..).trans (Nat.add_le_add (h f (Multiset.mem_cons_self ..))
       (ih (fun g hg => h g (Multiset.mem_cons_of_mem hg))))
 
@@ -114,15 +114,13 @@ theorem eps_bound {p : ℕ} [CharP F p] (hp : 468 < p) (dom : I ↪ F) (hn : Fin
   rw [Fintype.card_fin] at ht
   exact ht.ge
 
+local instance : Fact (Nat.Prime PrizeShapePrimeP30Second.P) := ⟨PrizeShapePrimeP30Second.prime_P⟩
+
 /-- The operational floor on the second production prime, including every positive
 interleaving width. The scalar numerator is 4990 below the permitted count. -/
 theorem second_prime_floor (width : ℕ) [NeZero width] :
     (282513457:ℝ≥0)/1073741824 ≤ mcaDeltaStar (F := ZMod PrizeShapePrimeP30Second.P)
       ((RateHalfApolarThreshold.code PrizeShapePrimeP30Second.g) ^⋈ (Fin width)) (epsStar:ℝ≥0∞) := by
-  letI : Fact (Nat.Prime PrizeShapePrimeP30Second.P) := ⟨PrizeShapePrimeP30Second.prime_P⟩
-  rw [mcaDeltaStar_interleaved_eq]
-  apply latticeBoundary_le_mcaDeltaStar_of_predecessor_good (a:=282513457) (by decide)
-    (by decide : 282513457 ≤ n)
   let g := PrizeShapePrimeP30Second.g
   have hg := PrizeShapePrimeP30Second.orderOf_g
   have hg0 := KKH26RegimeSplit.ne_zero_of_orderOf_eq hg
@@ -130,7 +128,10 @@ theorem second_prime_floor (width : ℕ) [NeZero width] :
   have heq : RateHalfApolarThreshold.code g =
       (ReedSolomon.code dom 536870912 : Set (Fin n → ZMod PrizeShapePrimeP30Second.P)) :=
     KKH26RegimeSplit.evalCode_eq_reedSolomon g hg hg0 536870911
-  rw [heq,epsStar_coe_eq_natCast_inv]
+  rw [heq,mcaDeltaStar_interleaved_eq]
+  apply latticeBoundary_le_mcaDeltaStar_of_predecessor_good (a:=282513457) (by decide)
+    (by decide : 282513457 ≤ n)
+  rw [epsStar_coe_eq_natCast_inv]
   apply (eps_bound (p:=PrizeShapePrimeP30Second.P) (by decide) dom (Fintype.card_fin _)).trans
   rw [ZMod.card]
   apply natCast_div_le_inv_of_mul_le (Q:=2^128) (by decide) PrizeShapePrimeP30Second.prime_P.pos

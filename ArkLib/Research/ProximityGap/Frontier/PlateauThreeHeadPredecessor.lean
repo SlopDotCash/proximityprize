@@ -34,40 +34,43 @@ private theorem fresh {m c t n e j : ℕ} (ht : t+e=n) (hj : c+j≤t)
     simp only [Nat.add_one_sub_one]
     omega
 
-private theorem count_three {c₁ c₂ c₃ m₁ m₂ m₃ : ℕ}
-    (hs : c₁+c₂+c₃ ≤ 1207959550)
-    (h₁ : m₁ ≤ 671088640) (h₂ : m₂ ≤ 671088640) (h₃ : m₃ ≤ 671088640)
-    (f₁ : ∀ j, c₁+j≤402653185 → (m₁-1)*j ≤ 671088639)
-    (f₂ : ∀ j, c₂+j≤402653185 → (m₂-1)*j ≤ 671088639)
-    (f₃ : ∀ j, c₃+j≤402653185 → (m₃-1)*j ≤ 671088639) :
-    m₁+m₂+m₃ ≤ 1565873494 := by
-  have a := f₁ 3
-  have b := f₂ 3
-  have c := f₃ 3
-  have d := f₁ 2
-  have e := f₂ 2
-  have f := f₃ 2
+private theorem count_deficit {c₁ c₂ c₃ m₁ m₂ m₃ t e x : ℕ} (hx : 0<x) (ht : t=402653184+x)
+    (hs : c₁+c₂+c₃ ≤ 1207959550) (h₁ : m₁≤e+1) (h₂ : m₂≤e+1) (h₃ : m₃≤e+1)
+    (f₁ : ∀ j, c₁+j≤t → (m₁-1)*j ≤ e) (f₂ : ∀ j, c₂+j≤t → (m₂-1)*j ≤ e)
+    (f₃ : ∀ j, c₃+j≤t → (m₃-1)*j ≤ e) :
+    m₁+m₂+m₃ ≤ 2*(e+1)+(1+e/(3*x)) := by
+  have hpos : 0<3*x := by omega
+  have a := f₁ 2
+  have b := f₂ 2
+  have c := f₃ 2
+  have d (hc : c₁+3*x≤t) := (Nat.le_div_iff_mul_le hpos).2 (f₁ _ hc)
+  have g (hc : c₂+3*x≤t) := (Nat.le_div_iff_mul_le hpos).2 (f₂ _ hc)
+  have h (hc : c₃+3*x≤t) := (Nat.le_div_iff_mul_le hpos).2 (f₃ _ hc)
+  generalize e/(3*x) = allowance at d g h ⊢
   omega
 
 variable {I F : Type} [Fintype I] [Nonempty I] [DecidableEq I] [Field F] [Fintype F] [DecidableEq F]
     {dom : I ↪ F} {δ : ℝ≥0} {u : WordStack F (Fin 2) I}
 
-/-- Any family covered by at most three large heads apart from a bounded
-exception set is safe at the predecessor of the five-eighths plateau. -/
-theorem cap (fam : BadScalarRichPointFamily dom 67108864 δ u) (hn : Fintype.card I=1073741824)
-    (ht : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊=402653185) (H : Finset (LineParameter F))
+/-- A deficit of x agreements from the plateau forces a noncollinear triple to
+spend at least 3x fresh sites per label on one head, or two fresh sites on two heads. -/
+theorem cap_at_small_deficit (fam : BadScalarRichPointFamily dom 67108864 δ u) (hn : Fintype.card I=1073741824)
+    {e x : ℕ} (he : e+x=671088640) (hx : 0<x) (hl : 610000000≤e)
+    (ht : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊=402653184+x) (H : Finset (LineParameter F))
     (hH : H ⊆ lineParameters fam) (hthree : H.card ≤ 3)
-    (hbig : ∀ c ∈ H, 512 < (pointsOn fam c).card)
-    (hex : (fam.G \ H.biUnion (pointsOn fam)).card ≤ 12397) :
-    fam.G.card ≤ 1565873494 := by
+    (hbig : ∀ c ∈ H, 48 < (pointsOn fam c).card)
+    {allowance : ℕ} (hdef : 1+e/(3*x)≤allowance)
+    (hex : (fam.G \ H.biUnion (pointsOn fam)).card ≤ allowance) :
+    fam.G.card ≤ 2*(e+1)+allowance := by
   classical
+  have hdef := Nat.le_max_right 525 (1+e/(3*x))
   let D (l : LineParameter F) := jointCore dom (u 0) (u 1) l.1 l.2
   let B := H.biUnion (pointsOn fam)
   let U := H.biUnion D
-  have ht' : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊ = Fintype.card I - 671088639 := by rw [ht,hn]
-  have hline (l : LineParameter F) (hl : l ∈ H) : (pointsOn fam l).card ≤ 671088640 :=
-    TwoLargeCoreCount.line_occupancy_le fam (by rw [hn]) ht' (hH hl)
-  have htotal : fam.G.card ≤ 12397+B.card := by
+  have ht' : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊ = Fintype.card I - e := by rw [ht,hn]; omega
+  have hline (l : LineParameter F) (hl : l ∈ H) : (pointsOn fam l).card ≤ e+1 :=
+    TwoLargeCoreCount.line_occupancy_le fam (e:=e) (by omega) ht' (hH hl)
+  have htotal : fam.G.card ≤ allowance+B.card := by
     have h : fam.G ⊆ (fam.G \ B) ∪ B := by
       intro x hx
       by_cases hB : x ∈ B
@@ -75,17 +78,18 @@ theorem cap (fam : BadScalarRichPointFamily dom 67108864 δ u) (hn : Fintype.car
       · exact mem_union_left _ (mem_sdiff.mpr ⟨hx,hB⟩)
     exact (card_le_card h).trans ((card_union_le ..).trans (Nat.add_le_add_right hex B.card))
   by_cases hfew : H.card ≤ 2
-  · have hm : B.card ≤ H.card*671088640 := card_biUnion_le.trans
+  · have hm : B.card ≤ H.card*(e+1) := card_biUnion_le.trans
       ((sum_le_sum (fun l hl => hline l hl)).trans_eq (by simp))
+    have hh := Nat.mul_le_mul_right (e+1) hfew
     omega
   have H3 : H.card=3 := by omega
   have budget (l : LineParameter F) (hl : l ∈ H) :
-      (pointsOn fam l).card*max 1 (402653185-(D l).card)+(D l).card ≤ 1073741824 := by
+      (pointsOn fam l).card*max 1 ((402653184+x)-(D l).card)+(D l).card ≤ 1073741824 := by
     have h := pointsOn_card_mul_max_add_core_le fam (hH hl)
     rwa [ht,hn] at h
-  have hcore (l : LineParameter F) (hl : l ∈ H) : 401342466 ≤ (D l).card := by
+  have hcore (l : LineParameter F) (hl : l ∈ H) : (1059741824-e) ≤ (D l).card := by
     have h := budget l hl
-    have hm := Nat.mul_le_mul (hbig l hl) (Nat.le_max_right 1 (402653185-(D l).card))
+    have hm := Nat.mul_le_mul (hbig l hl) (Nat.le_max_right 1 ((402653184+x)-(D l).card))
     omega
   obtain ⟨a,ha,b,hb,hab⟩ := one_lt_card.mp (show 1 < H.card by omega)
   by_cases det : ∀ c ∈ H, lineDeterminant a b c = 0
@@ -98,7 +102,7 @@ theorem cap (fam : BadScalarRichPointFamily dom 67108864 δ u) (hn : Fintype.car
       exact FSMBCoreAbsorptionLadder.jointCore_inter_jointCore_card_le dom (u 0) (u 1)
         (by decide : 1 ≤ 67108864) h₁.1 h₁.2 h₂.1 h₂.2 (by by_contra! h; exact hij (Prod.ext h.1 h.2))
     have hu := union_lower H D hcore hp
-    change H.card*401342466 ≤ U.card + H.card.choose 2*67108863 at hu
+    change H.card*(1059741824-e) ≤ U.card + H.card.choose 2*67108863 at hu
     have hnU := card_le_univ U
     rw [hn,H3] at hc
     rw [hn] at hnU
@@ -124,13 +128,36 @@ theorem cap (fam : BadScalarRichPointFamily dom 67108864 δ u) (hn : Fintype.car
       rw [ht,hn]
       change _ < _ + (D a).card + (D b).card + (D c).card
       omega)
-    have hd (l : LineParameter F) (hl : l ∈ H) (j : ℕ) (hj : (D l).card+j≤402653185) :
-        ((pointsOn fam l).card-1)*j ≤ 671088639 := fresh (by decide) hj (budget l hl)
-    have h := count_three (by omega : (D a).card+(D b).card+(D c).card≤1207959550)
+    have hd (l : LineParameter F) (hl : l ∈ H) (j : ℕ) (hj : (D l).card+j≤402653184+x) :
+        ((pointsOn fam l).card-1)*j ≤ e := fresh (by omega) hj (budget l hl)
+    have h := count_deficit (x:=x) hx rfl (by omega : (D a).card+(D b).card+(D c).card≤1207959550)
       (hline a ha) (hline b hb) (hline c hc) (hd a ha) (hd b hb) (hd c hc)
     have h1 := (card_le_card cov).trans (card_union_le ..)
     have h2 := card_union_le (pointsOn fam a) (pointsOn fam b)
     omega
 
+/-- A deficit of x agreements from the plateau forces a noncollinear triple to
+spend at least 3x fresh sites per label on one head, or two fresh sites on two heads. -/
+theorem cap_at_deficit (fam : BadScalarRichPointFamily dom 67108864 δ u) (hn : Fintype.card I=1073741824)
+    {e x : ℕ} (he : e+x=671088640) (hx : 0<x) (hl : 610000000≤e)
+    (ht : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊=402653184+x) (H : Finset (LineParameter F))
+    (hH : H ⊆ lineParameters fam) (hthree : H.card ≤ 3)
+    (hbig : ∀ c ∈ H, 184 < (pointsOn fam c).card)
+    (hex : (fam.G \ H.biUnion (pointsOn fam)).card ≤ max 197 (1+e/(3*x))) :
+    fam.G.card ≤ 2*(e+1)+max 197 (1+e/(3*x)) := by
+  exact cap_at_small_deficit fam hn he hx hl ht H hH hthree
+    (fun c hc => (by decide : 48≤184).trans_lt (hbig c hc)) (Nat.le_max_right ..) hex
+
+/-- The specialized cap at the final predecessor of the five-eighths plateau. -/
+theorem cap (fam : BadScalarRichPointFamily dom 67108864 δ u) (hn : Fintype.card I=1073741824)
+    (ht : ⌈(1-δ)*(Fintype.card I : ℝ≥0)⌉₊=402653185) (H : Finset (LineParameter F))
+    (hH : H ⊆ lineParameters fam) (hthree : H.card ≤ 3)
+    (hbig : ∀ c ∈ H, 512 < (pointsOn fam c).card)
+    (hex : (fam.G \ H.biUnion (pointsOn fam)).card ≤ 12397) :
+    fam.G.card ≤ 1565873494 := by
+  apply cap_at_deficit fam hn (e:=671088639) (x:=1) (by decide) (by decide) (by decide) ht H hH hthree (fun c hc => (by decide : 184≤512).trans_lt (hbig c hc))
+  exact hex.trans (by decide)
+
+#print axioms cap_at_deficit
 #print axioms cap
 end ArkLib.ProximityGap.Frontier.PlateauThreeHeadPredecessor
