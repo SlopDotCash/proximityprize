@@ -23,7 +23,8 @@ open HalfPredecessorRateQuarterDeterminantMultiplicity HalfPredecessorRateQuarte
 open HalfPredecessorRateQuarterDeterminantCollapse
 open ThreeHeadDeterminantCover TerminalCollinearHeadCount
 
-private theorem fresh {m c t n e j : ℕ} (ht : t+e=n) (hj : c+j≤t)
+/-- Every additional scalar on the same secant uses its own fresh sites. -/
+theorem fresh {m c t n e j : ℕ} (ht : t+e=n) (hj : c+j≤t)
     (h : m*max 1 (t-c)+c ≤ n) : (m-1)*j ≤ e := by
   cases m with
   | zero => simp
@@ -34,7 +35,8 @@ private theorem fresh {m c t n e j : ℕ} (ht : t+e=n) (hj : c+j≤t)
     simp only [Nat.add_one_sub_one]
     omega
 
-private theorem count_deficit {c₁ c₂ c₃ m₁ m₂ m₃ t e x : ℕ} (hx : 0<x) (ht : t=402653184+x)
+/-- A determinant deficit on the sum of the three cores bounds their total occupancy. -/
+theorem count_deficit {c₁ c₂ c₃ m₁ m₂ m₃ t e x : ℕ} (hx : 0<x) (ht : t=402653184+x)
     (hs : c₁+c₂+c₃ ≤ 1207959550) (h₁ : m₁≤e+1) (h₂ : m₂≤e+1) (h₃ : m₃≤e+1)
     (f₁ : ∀ j, c₁+j≤t → (m₁-1)*j ≤ e) (f₂ : ∀ j, c₂+j≤t → (m₂-1)*j ≤ e)
     (f₃ : ∀ j, c₃+j≤t → (m₃-1)*j ≤ e) :
