@@ -2,7 +2,7 @@
 Copyright (c) 2026 Proximity Prize Contributors. All rights reserved.
 SPDX-License-Identifier: MIT OR Apache-2.0
 -/
-import ArkLib.Research.ProximityGap.Frontier.SecondPrimeQuarticInterpolation
+import ArkLib.Research.ProximityGap.Frontier.PrimitiveReceivedInterpolation
 import ArkLib.Research.ProximityGap.Frontier._HalfPredecessorBadEventRichPointBridge
 import Mathlib.RingTheory.Polynomial.Content
 
@@ -83,6 +83,42 @@ theorem factor_cover (P : Polynomial (Polynomial F[X])) (hP : P ≠ 0) (hp : P.I
 
 variable {ι : Type} [Fintype ι] [DecidableEq F]
 
+/-- Every literal bad label lies on the same primitive polynomial of value degree at most four. -/
+theorem all_actual_witnesses {K : Type} [Field K] (φ : F →+* K) (dom : ι ↪ F) (δ : ℝ≥0)
+    (u : Code.WordStack F (Fin 2) ι)
+    (hn : Fintype.card ι = 1073741824)
+    (ht : 357913943 ≤ ⌈(1 - δ) * (Fintype.card ι : ℝ≥0)⌉₊)
+    (fam : BadScalarRichPointFamily dom 67108864 δ u) :
+    ∃ P : Polynomial (Polynomial K[X]), P ≠ 0 ∧ P.IsPrimitive ∧
+      P.natDegree ≤ 4 ∧
+      (∃ Q, Q ≠ 0 ∧ P ∣ Q ∧ ∀ j i a, ((Q.coeff j).coeff i).coeff a ≠ 0 →
+        j ≤ 4 ∧ i + j ≤ 34 ∧ a + j * 67108863 < 357913943) ∧
+      ∀ z ∈ fam.G, P.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ) = 0 := by
+  classical
+  let dom' := dom.trans (⟨φ,φ.injective⟩ : F ↪ K)
+  let u₀ (i : ι) := φ (u 0 i)
+  let u₁ (i : ι) := φ (u 1 i)
+  obtain ⟨c,hc,hline,_⟩ := secondPrime_predecessor_quartic dom' u₀ u₁ hn
+  let Q := surface c
+  have hQ : Q≠0 := surface_ne_zero hc
+  have hy : Q.natDegree ≤ 4 := by
+    apply natDegree_le_iff_coeff_eq_zero.mpr
+    intro j hj
+    ext i a
+    simp only [coeff_zero]
+    by_contra h
+    exact hj.not_ge (surface_support c h).1
+  refine ⟨Q.primPart,primPart_ne_zero _,isPrimitive_primPart _,(natDegree_primPart _).le.trans hy,
+    ⟨Q,hQ,primPart_dvd _,fun _ _ _ hh => surface_support c hh⟩,?_⟩
+  intro z hz
+  apply PrimitiveReceivedInterpolation.raw_primitive_section dom' u₀ u₁ hc (by decide) hline (φ z)
+    ((fam.q z).map φ) (natDegree_map_le.trans (by have := fam.degree_lt z hz; omega))
+    (fullAgreement dom (u 0) (u 1) z (fam.q z)) (ht.trans (fam.threshold_le z hz))
+  intro i hi
+  change ((fam.q z).map φ).eval (φ (dom i)) = _
+  rw [eval_map_apply]
+  simpa only [u₀,u₁,map_add,map_mul] using congrArg φ (mem_filter.mp hi).2
+
 /-- In a literal MCA witness family, only 34 labels can be lost on removing every factor
 depending solely on the scalar and coordinate. All other actual bad witnesses lie on the
 same primitive polynomial of value degree at most four. -/
@@ -96,36 +132,8 @@ theorem actual_witnesses {K : Type} [Field K] (φ : F →+* K) (dom : ι ↪ F) 
       (∃ Q, Q ≠ 0 ∧ P ∣ Q ∧ ∀ j i a, ((Q.coeff j).coeff i).coeff a ≠ 0 →
         j ≤ 4 ∧ i + j ≤ 34 ∧ a + j * 67108863 < 357913943) ∧
       ∀ z ∈ fam.G, z ∉ E → P.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ) = 0 := by
-  classical
-  obtain ⟨Q, hQ, hsupp, hrich⟩ := secondPrime_predecessor_surface
-    (dom.trans ⟨φ, φ.injective⟩) (fun i => φ (u 0 i)) (fun i => φ (u 1 i)) hn
-  have hcoeff {j i : ℕ} (hi : 34 < i) : (Q.coeff j).coeff i = 0 := by
-    ext a
-    simp only [coeff_zero]
-    by_contra h
-    have hbounds := hsupp j i a h
-    omega
-  have hdeg : ∀ j, (Q.coeff j).natDegree ≤ 34 := fun _ =>
-    natDegree_le_iff_coeff_eq_zero.mpr fun _ hi => hcoeff hi
-  have hy : Q.natDegree ≤ 4 := by
-    apply natDegree_le_iff_coeff_eq_zero.mpr
-    intro j hj
-    ext i a
-    simp only [coeff_zero]
-    by_contra h
-    exact hj.not_ge (hsupp j i a h).1
-  have hs (z : F) (hz : z ∈ fam.G) : Q.eval₂ (evalRingHom (C (φ z))) ((fam.q z).map φ) = 0 := by
-    apply hrich (φ z) ((fam.q z).map φ) (natDegree_map_le.trans (by
-      have hd := fam.degree_lt z hz
-      omega))
-      (fullAgreement dom (u 0) (u 1) z (fam.q z)) (ht.trans (fam.threshold_le z hz))
-    intro i hi
-    have hag := (mem_filter.mp hi).2
-    simpa only [Function.Embedding.trans_apply, Function.Embedding.coeFn_mk, eval_map_apply,
-      map_add, map_mul] using congrArg φ hag
-  obtain ⟨P, E, hP, hp, hdvd, hd, hEG, hcard, hz⟩ :=
-    primitive_surface φ hQ fam.G (fun z => (fam.q z).map φ) 34 hdeg hs
-  exact ⟨P, E, hP, hp, hd.trans_le hy, hEG, hcard, ⟨Q, hQ, hdvd, hsupp⟩, hz⟩
+  obtain ⟨P,hP,hprim,hdeg,hQ,hh⟩ := all_actual_witnesses φ dom δ u hn ht fam
+  exact ⟨P,∅,hP,hprim,hdeg,empty_subset _,by simp,hQ,fun z hz _ => hh z hz⟩
 
 /-- The selected bad labels that survive scalar exceptions are covered by at most four
 irreducible components, all with positive value degree and total value-degree budget four. -/
@@ -152,5 +160,6 @@ theorem actual_components {K : Type} [Field K] (φ : F →+* K) (dom : ι ↪ F)
 #print axioms factor_cover
 #print axioms actual_components
 #print axioms primitive_surface
+#print axioms all_actual_witnesses
 #print axioms actual_witnesses
 end ArkLib.ProximityGap.Frontier.SecondPrimePrimitiveSurface

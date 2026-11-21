@@ -60,13 +60,20 @@ lemma private_disjoint (hn : h + (d + 1) * r ≤ n) (j : Fin (d + 1)) :
   change h + ((d + 1) * b.val + j.val) = a.val at he'
   omega
 
-/-- Projective averaging retains an explicit number of bad labels for a common
-locator and `d+1` heads on any injective finite-field domain. -/
-theorem mass_of_count {F : Type} [Field F] [Fintype F] [NeZero n] (dom : Fin n ↪ F) (δ : ℝ≥0)
+open Classical in
+/-- A common locator realizes any bound on the image of its projected keys.
+The first coordinate avoids its roots, and the second is a signed sum of
+two prescribed head coefficients. -/
+theorem mass_of_projectable {F : Type} [Field F] [Fintype F] [NeZero n] (dom : Fin n ↪ F) (δ : ℝ≥0)
     (hn : h + (d + 1) * r ≤ n) (hdegree : h + 2 ≤ k) (hdecode : k ≤ h + r)
     (hsize : (1 - δ) * (n : ℝ≥0) ≤ ((h + r + 1 : ℕ) : ℝ≥0))
-    {L : ℕ} (hL : L≤(d+1)*(n-(h+r))) :
-    ((AveragedPencilProjection.retained L (Fintype.card F) : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤
+    {L : ℕ} (hL : L≤(d+1)*(n-(h+r)))
+    (emb : Fin (d+2) ↪ F) (keep : ℕ)
+    (project : ∀ key : Fin L → Fin 2 → F, Function.Injective key →
+      (∀ i, ∃ z ∉ univ.map (initialPositions hn), ∃ u v : Fin (d+2),
+        key i 0 = -dom z ∧ key i 1 = -(emb u + emb v)) →
+      ∃ a b : F, keep ≤ (univ.image fun i => a*key i 0+b*key i 1).card) :
+    (keep : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤
       epsMCA (F := F) (ReedSolomon.code dom k : Set (Fin n → F)) δ := by
   classical
   let common := univ.map (initialPositions hn)
@@ -81,11 +88,6 @@ theorem mass_of_count {F : Type} [Field F] [Fintype F] [NeZero n] (dom : Fin n �
   let head (i : Fin L) := (E i).1
   let site (i : Fin L) := (E i).2.1
   have outside (i : Fin L) : site i∉C₀ (head i) := (mem_sdiff.mp (E i).2.2).2
-  have hr : 2≤r := by omega
-  have hd : d+2≤n := by
-    have hmul := Nat.mul_le_mul_left (d+1) hr
-    omega
-  let emb : Fin (d+2) ↪ F := (Fin.castLEEmb hd).trans dom
   let b (j : Fin (d+1)) := emb j.castSucc
   let B (i : Fin L) := b (head i)
   let anyPrivate := univ.biUnion privateSites
@@ -136,7 +138,12 @@ theorem mass_of_count {F : Type} [Field F] [Fintype F] [NeZero n] (dom : Fin n �
     apply (Subtype.heq_iff_coe_eq (fun x => ?_)).mpr hx
     change x∈univ \ C₀ (head i) ↔ x∈univ \ C₀ (head j)
     rw [heq]
-  have raw := AveragedPencilProjection.mass_averaged dom k δ (fun i => C₀ (head i)) site
+  obtain ⟨aβ,bβ,kept⟩ := project key hinj (by
+    intro i
+    refine ⟨site i,fun hi => outside i (mem_union_left _ hi),(head i).castSucc,
+      if site i∈anyPrivate then (species d h (site i)).castSucc else Fin.last _,rfl,?_⟩
+    by_cases hs : site i∈anyPrivate <;> simp [key,B,b,c,hs])
+  have raw := AveragedPencilProjection.mass_of_projection dom k δ (fun i => C₀ (head i)) site
     (fun i => H * C (B i) * X) (fun i => H * C (B i ^ 2)) (fun i => H * C (B i))
     (fun x => H.eval (dom x) * c x * dom x) (fun x => H.eval (dom x) * c x ^ 2)
     (fun x => H.eval (dom x) * c x) key (fun _ => degX _) (fun _ => degC _) (fun _ => degC _)
@@ -159,8 +166,25 @@ theorem mass_of_count {F : Type} [Field F] [Fintype F] [NeZero n] (dom : Fin n �
       simp only [eval_mul, eval_C, eval_X, key, Matrix.cons_val_zero, Matrix.cons_val_one,
         Matrix.cons_val_fin_one]
       constructor <;> ring)
-    hinj
-  simpa only [Fintype.card_prod,Fintype.card_fin] using raw
+    aβ bβ
+  exact (ENNReal.div_le_div_right (by exact_mod_cast kept) _).trans raw
+
+/-- Projective averaging retains an explicit number of bad labels for a common
+locator and `d+1` heads on any injective finite-field domain. -/
+theorem mass_of_count {F : Type} [Field F] [Fintype F] [NeZero n] (dom : Fin n ↪ F) (δ : ℝ≥0)
+    (hn : h + (d + 1) * r ≤ n) (hdegree : h + 2 ≤ k) (hdecode : k ≤ h + r)
+    (hsize : (1 - δ) * (n : ℝ≥0) ≤ ((h + r + 1 : ℕ) : ℝ≥0))
+    {L : ℕ} (hL : L≤(d+1)*(n-(h+r))) :
+    ((AveragedPencilProjection.retained L (Fintype.card F) : ℕ) : ℝ≥0∞) / (Fintype.card F : ℝ≥0∞) ≤
+      epsMCA (F := F) (ReedSolomon.code dom k : Set (Fin n → F)) δ := by
+  classical
+  have hr : 2≤r := by omega
+  have hd : d+2≤n := by
+    have hmul := Nat.mul_le_mul_left (d+1) hr
+    omega
+  apply mass_of_projectable dom δ hn hdegree hdecode hsize hL ((Fin.castLEEmb hd).trans dom)
+  intro key hi _
+  simpa only [Fintype.card_fin] using AveragedPencilProjection.exists_retained key hi
 
 /-- Every head also receives a distinct key at each unassigned evaluation site. -/
 theorem mass_over_field {F : Type} [Field F] [Fintype F] [NeZero n] (dom : Fin n ↪ F) (δ : ℝ≥0)

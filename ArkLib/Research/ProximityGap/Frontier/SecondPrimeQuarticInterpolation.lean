@@ -73,6 +73,22 @@ scalar variable, then the evaluation coordinate. -/
 noncomputable def surface (c : Monomials s v d t → F) : Polynomial (Polynomial F[X]) :=
   ofFin fun j => ofFin fun i => ofFin fun a => c ⟨j, i, a⟩
 
+/-- Restricting the trivariate polynomial gives the original interpolation constraint,
+as a formal scalar polynomial over fields of any cardinality. -/
+theorem surface_received_line (c : Monomials s v d t → F) (x a b : F) :
+    (surface c).eval₂ (mapRingHom (evalRingHom x)) (C a+X*C b)=receivedLine c x a b := by
+  classical
+  simp only [surface,ofFin,receivedLine,lineTerm,eval₂_finsetSum,eval₂_monomial,coe_mapRingHom,
+    map_monomial,coe_evalRingHom,eval_monomial,
+    Fintype.sum_sigma,Fintype.sum_prod_type,map_sum]
+  apply Finset.sum_congr rfl
+  intro j _
+  apply Finset.sum_congr rfl
+  intro i _
+  apply Finset.sum_congr rfl
+  intro h _
+  rw [← mul_assoc,C_mul_monomial]
+
 theorem surface_ne_zero {c : Monomials s v d t → F} (hc : c ≠ 0) : surface c ≠ 0 := by
   intro hz
   apply hc
