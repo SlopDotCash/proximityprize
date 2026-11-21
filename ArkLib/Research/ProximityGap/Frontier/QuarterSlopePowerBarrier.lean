@@ -52,6 +52,53 @@ theorem companion_degree (a b : ℕ) (ha : 89478485 ≤ a)
   norm_num at h₁ h₂ hc
   omega
 
+/-- Tally for three independent projective subgroup copies. The four bounds on
+good sites correspond to distinct involution classes, a repeated invariant
+copy, exactly two in a noninvariant class, and one noninvariant class. -/
+theorem subgroup_distance (good miss₁ miss₂ miss₃ : ℕ)
+    (hD : 1073741820 ≤ good + miss₁ + miss₂ + miss₃)
+    (cases : good ≤ 6 * 4993531 + 1 ∨ good ≤ 536870912 + 2 ∨
+      good ≤ 268435455 + 5 * 4993531 + 1 ∨
+      good ≤ 2 * 268435455 + 4993531 / 2 + 1) :
+    534374144 ≤ miss₁ + miss₂ + miss₃ ∧
+      (178124715 ≤ miss₁ ∨ 178124715 ≤ miss₂ ∨ 178124715 ≤ miss₃) := by
+  omega
+
+/-- The function-field gcd inequality for a translated power excludes companions
+below 69,148 at the largest possible degree scale. -/
+theorem translated_companion (a b : ℤ) (ha : 89478485 ≤ a)
+    (hc : (a + b - 2) ^ 2 ≤ 108 * 1073741824 * (b + 1)) : 69148 ≤ b := by
+  by_contra! hb
+  nlinarith [sq_nonneg (a + b - 2 - 89547630)]
+
+/-- With the source power based at zero and infinity the cutoff increases by one. -/
+theorem unshifted_companion (a b : ℤ) (ha : 89478485 ≤ a)
+    (hc : (a + b) ^ 2 ≤ 108 * 1073741824 * b) : 69149 ≤ b := by
+  by_contra! hb
+  nlinarith [sq_nonneg (a + b - 89547633)]
+
+/-- Two successive exponent tests around the first multiple of the domain order. -/
+theorem power_companion (a b k r : ℤ) (ha : 89478485 ≤ a) (hk : 4 ≤ k) (hK : k ≤ 12)
+    (hn : 1073741824 = k * a + r) (hr : 0 ≤ r) (hr' : r < a)
+    (h₁ : a - r ≤ (k - 1) * b) (h₂ : r ≤ k * b) : 4436951 ≤ b := by
+  interval_cases k <;> omega
+
+/-- The fifth-power tests for both companions bound any unshifted power degree. -/
+theorem power_degree_ceiling (a b c : ℤ) (h : a + b + c = 268435455)
+    (hb : 0 < b) (hc : 0 < c)
+    (h₁ : a + b ≤ 5 * b + |5 * a - 1073741824|)
+    (h₂ : a + c ≤ 5 * c + |5 * a - 1073741824|) : a ≤ 201326591 := by
+  by_cases hm : 0 ≤ 5 * a - 1073741824
+  · rw [abs_of_nonneg hm] at h₁ h₂
+    omega
+  · rw [abs_of_neg (by omega : 5 * a - 1073741824 < 0)] at h₁ h₂
+    omega
+
+#print axioms power_companion
+#print axioms power_degree_ceiling
+#print axioms translated_companion
+#print axioms unshifted_companion
+#print axioms subgroup_distance
 #print axioms companion_degree
 #print axioms restricted_image
 #print axioms individual_image
