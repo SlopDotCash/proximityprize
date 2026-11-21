@@ -53,6 +53,7 @@ ArkLib.Research.ProximityGap.Frontier.TerminalDimensionThreshold ArkLib.Proximit
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeFourHeadEndpoints ArkLib.ProximityGap.Frontier.SecondPrimeFourHeadEndpoints.ceilings
 ArkLib.Research.ProximityGap.Frontier.SecondPrimePlanarQuartet ArkLib.ProximityGap.Frontier.SecondPrimePlanarQuartet.quarter
 ArkLib.Research.ProximityGap.Frontier.SmoothPlanarQuartetCoset ArkLib.ProximityGap.Frontier.SmoothPlanarQuartetCoset.operational_ceiling
+ArkLib.Research.ProximityGap.Frontier.FourHeadCommonRootObstruction ArkLib.ProximityGap.Frontier.FourHeadCommonRootObstruction.predecessor_cap
 ArkLib.Research.ProximityGap.Frontier.SmoothCosetFourHeadMass ArkLib.ProximityGap.Frontier.SmoothCosetFourHeadMass.operational_ceiling
 
 # Smooth-field and executable equality for the second-budget MCA boundary
@@ -287,6 +288,7 @@ ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor ArkLib.ProximityGa
 ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor ArkLib.ProximityGap.Frontier.QuarterRateTwoRichFloor.prime_budget_through_saturation
 
 # Smooth extension fields in the quarter-rate two-head interval
+ArkLib.Research.ProximityGap.Frontier.QuarterRateToleranceCurve ArkLib.ProximityGap.Frontier.QuarterRateToleranceCurve.classification
 ArkLib.Research.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow ArkLib.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow.full_grid_mass
 ArkLib.Research.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow ArkLib.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow.complete_curve
 ArkLib.Research.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow ArkLib.ProximityGap.Frontier.SmoothQuarterTwoHeadWindow.complete_rank_answer
