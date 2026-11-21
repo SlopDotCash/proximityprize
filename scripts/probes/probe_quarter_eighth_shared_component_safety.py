@@ -109,11 +109,12 @@ def check(case):
     slots = [0]
     for c in range(1, bmax + 1):
         slots.append(max(slots[c - i] + caps[i] for i in range(1, c + 1)))
+    three_collinear = case.polar_basis and 3 * first_core > N + 2 * d
     bounds = []
     for c in range(bmax + 1):
         residual = (bmax - c) * (m - c) + (companion_y - c) * (h - c)
         for j in range(c + 1):
-            if j <= 2 or (j == 3 and not (case.polar_basis and 3 * first_core > N + 2 * d)):
+            if j <= 2 or (j == 3 and not three_collinear):
                 heads = j * (e + 1)
             else:
                 union = ceil_div(j * first_core**2, first_core + (j - 1) * d)
