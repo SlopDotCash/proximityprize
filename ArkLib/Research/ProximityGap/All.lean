@@ -657,6 +657,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicWitness
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeDegreeSevenDimension
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeExceptionalCeilings
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeExceptionalHeadCeilings
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeFourHeadEndpoints
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeHeadDescent
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeHessianTransport
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeIntrinsicArithmetic
@@ -684,6 +685,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeScalarChart
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSectionResultant
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSelectedSectionChart
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSmallCubic
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSmoothSeed
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeSylvesterFiberMass
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeTerminalKernel
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeUnrestrictedJetBudget
@@ -721,6 +723,7 @@ import ArkLib.Research.ProximityGap.Frontier.SmoothDomainMcaEquivalence
 import ArkLib.Research.ProximityGap.Frontier.SmoothFermatCapacity
 import ArkLib.Research.ProximityGap.Frontier.SmoothFourHeadAssembly
 import ArkLib.Research.ProximityGap.Frontier.SmoothFourHeadColored
+import ArkLib.Research.ProximityGap.Frontier.SmoothFourHeadFibers
 import ArkLib.Research.ProximityGap.Frontier.SmoothLinearFieldEnvelope
 import ArkLib.Research.ProximityGap.Frontier.SmoothManyHeadMass
 import ArkLib.Research.ProximityGap.Frontier.SmoothPowerEndpoint

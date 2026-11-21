@@ -1,6 +1,6 @@
 # Three collinear heads and an interpolated fourth on a smooth domain
 
-For the second named prime at length $n=2^{30}$ the first failing error count is at most **679477249** at rate one eighth and **565631854** at rate one quarter. These improve the arbitrary-domain exceptional-head bounds by 25165823 and 38347922 errors respectively. Both use one simultaneous stack and the original MCA bad-event definition.
+For the second named prime at length $n=2^{30}$ the first failing error count is at most **679477249** at rate one eighth and **565631854** at rate one quarter. These improve the arbitrary-domain exceptional-head bounds by 25165823 and 38347922 errors respectively. Lean verifies both attacks on the named power domain at every positive interleaving width. The eighth-rate mass holds for dimensions 134,217,728 through 394,264,574, and the quarter-rate mass for dimensions 268,435,456 through 508,109,969. [Formal four-head attack](../../../ArkLib/Research/ProximityGap/Frontier/SecondPrimeFourHeadEndpoints.lean)
 
 ## Three pairwise coincidence sets
 
