@@ -16,6 +16,12 @@ from collections import Counter, defaultdict
 from itertools import combinations
 from math import comb
 
+
+def require(condition, message="G268 antipodal certificate check failed"):
+    """Keep exact formula and census checks active under Python optimization."""
+    if not condition:
+        raise AssertionError(message)
+
 Poly = dict[tuple[int, int], int]
 
 
@@ -57,7 +63,7 @@ P2 = LOCAL[2]
 
 
 def antipodal_transfer(n: int, r: int) -> int:
-    assert n % 2 == 0 and n >= 2 * r + 2
+    require(n % 2 == 0 and n >= 2 * r + 2)
     m = n // 2
     first = poly_mul(P1, poly_pow(P0, m - 1, r), r).get((r - 1, r), 0)
     second = poly_mul(poly_mul(P2, P1, r), poly_pow(P0, m - 2, r), r).get(
@@ -128,7 +134,7 @@ def subgroup(p: int, n: int) -> list[int]:
     for _ in range(n):
         out.append(x)
         x = x * zeta % p
-    assert x == 1 and len(set(out)) == n
+    require(x == 1 and len(set(out)) == n)
     return out
 
 
@@ -175,31 +181,31 @@ def main() -> None:
         2: {(1, 1): 1},
     }
     for d in (0, 1, 2):
-        assert LOCAL[d] == expected[d]
-        assert LOCAL[-d] == expected[d]
+        require(LOCAL[d] == expected[d])
+        require(LOCAL[-d] == expected[d])
     print("local transfer polynomials: P0,P±1,P±2 exact (16/16 patterns)")
 
     for n0 in (8, 16, 32, 64, 128):
         for r in (5, 6):
             if n0 >= 2 * r + 2:
-                assert antipodal_transfer(n0, r) == antipodal_closed(n0, r)
+                require(antipodal_transfer(n0, r) == antipodal_closed(n0, r))
     # The n=8 direct enumeration is still meaningful at r=5,6 even though 2r+2<n fails;
     # it tests the pairing-count combinatorics itself, not Lam-Leung completeness.
     for r, want in ((5, 1552), (6, 672)):
         got = brute_antipodal(8, r)
-        assert got == want == antipodal_closed(8, r)
+        require(got == want == antipodal_closed(8, r))
     print("independent n=8 antipodal brute force: J5=1552, J6=672")
 
     good_a5, good_a6 = exact_alignments(8, 2969)
     for r, alignment in ((5, good_a5), (6, good_a6)):
         mass = 8**2 * comb(8, r) * comb(8, r - 1)
-        assert (alignment + mass) % 2969 == 0
-        assert (alignment + mass) // 2969 == antipodal_closed(8, r)
+        require((alignment + mass) % 2969 == 0)
+        require((alignment + mass) // 2969 == antipodal_closed(8, r))
     print("good-prime check: n=8 p=2969 actual J5,J6 equal the antipodal baselines")
 
     a5, a6 = exact_alignments(32, 70753)
-    assert (a5, a6) == (132970510400, -1324791182208)
-    assert 69 * 32**2 < 70753 - 1
+    require((a5, a6) == (132970510400, -1324791182208))
+    require(69 * 32**2 < 70753 - 1)
     print(f"cross-scale exact cell: n=32 p=70753 tau={(70753-1)/32**2} A5={a5} A6={a6}")
 
     n0 = 2**30
@@ -210,10 +216,10 @@ def main() -> None:
     j6 = antipodal_closed(n0, 6)
     b5 = n0 * n0 * comb(n0, 5) * comb(n0, 4)
     b6 = n0 * n0 * comb(n0, 6) * comb(n0, 5)
-    assert p1 * (2**10 * j5) < b5
-    assert p2 * (2**9 * j5) < b5
-    assert p1 * (2**36 * j6) < b6
-    assert p2 * (2**35 * j6) < b6
+    require(p1 * (2**10 * j5) < b5)
+    require(p2 * (2**9 * j5) < b5)
+    require(p1 * (2**36 * j6) < b6)
+    require(p2 * (2**35 * j6) < b6)
     print("sponsor exact deficits:")
     print(f"  P1 rank5 B/(pJ0)={b5/(p1*j5):.12g}; P2={b5/(p2*j5):.12g}")
     print(f"  P1 rank6 B/(pJ0)={b6/(p1*j6):.12g}; P2={b6/(p2*j6):.12g}")

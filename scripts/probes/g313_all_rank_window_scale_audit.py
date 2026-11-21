@@ -31,6 +31,12 @@ PROTH_WITNESS = 5
 PROTH_P = PROTH_K * (1 << PROTH_M) + 1
 
 
+def require(condition: bool, message: str) -> None:
+    """Keep G313's exact all-rank certificate checks active under optimization."""
+    if not condition:
+        raise AssertionError(message)
+
+
 def factor(x: int) -> list[int]:
     out: list[int] = []
     d = 2
@@ -60,7 +66,7 @@ def subgroup_from_root(p: int, n: int, root: int) -> list[int]:
     for _ in range(n):
         out.append(x)
         x = x * h % p
-    assert x == 1 and len(set(out)) == n
+    require(x == 1 and len(set(out)) == n, f"subgroup construction failed for p={p}, n={n}")
     return out
 
 
@@ -69,17 +75,20 @@ def subgroup_small(p: int, n: int) -> list[int]:
 
 
 def certify_proth_prime() -> int:
-    assert PROTH_K % 2 == 1
-    assert PROTH_K < (1 << PROTH_M)
+    require(PROTH_K % 2 == 1, "Proth multiplier must be odd")
+    require(PROTH_K < (1 << PROTH_M), "Proth multiplier exceeds the Proth bound")
     # Proth theorem: this congruence proves PROTH_P is prime.
-    assert pow(PROTH_WITNESS, (PROTH_P - 1) // 2, PROTH_P) == PROTH_P - 1
+    require(
+        pow(PROTH_WITNESS, (PROTH_P - 1) // 2, PROTH_P) == PROTH_P - 1,
+        "Proth primality witness failed",
+    )
     return PROTH_P
 
 
 def subgroup_proth(n: int) -> list[int]:
     p = certify_proth_prime()
-    assert n & (n - 1) == 0
-    assert n <= (1 << PROTH_M)
+    require(n & (n - 1) == 0, f"subgroup order n={n} is not a power of two")
+    require(n <= (1 << PROTH_M), f"subgroup order n={n} exceeds the Proth 2-adic scale")
     return subgroup_from_root(p, n, PROTH_WITNESS)
 
 
@@ -93,7 +102,10 @@ def subset_hist_sparse(group: list[int], p: int, max_r: int) -> list[dict[int, i
             for s, value in list(dp[r - 1].items()):
                 dp[r][(s + x) % p] += value
     for r in range(max_r + 1):
-        assert sum(dp[r].values()) == comb(len(group), r)
+        require(
+            sum(dp[r].values()) == comb(len(group), r),
+            f"subset histogram lost mass at rank r={r}",
+        )
     return [dict(row) for row in dp]
 
 
@@ -104,7 +116,7 @@ def subset_sums_direct(group: list[int], p: int, r: int) -> list[int]:
         for i in indices:
             total = (total + group[i]) % p
         out.append(total)
-    assert len(out) == comb(len(group), r)
+    require(len(out) == comb(len(group), r), f"direct subset enumeration count changed at r={r}")
     return out
 
 
@@ -114,7 +126,7 @@ def kernel_sparse(group: list[int], p: int, coefficient: int) -> dict[int, int]:
         ay = coefficient * y % p
         for z in group:
             out[(ay - z) % p] += 1
-    assert sum(out.values()) == len(group) ** 2
+    require(sum(out.values()) == len(group) ** 2, "weighted kernel lost mass")
     return dict(out)
 
 
@@ -147,7 +159,7 @@ def direct_pair_alignment(group: list[int], p: int, r: int, coefficient: int) ->
         for y in right:
             dot += kernel.get((x - y) % p, 0)
     total = len(left) * len(right)
-    assert total == comb(n, r) * comb(n, r - 1)
+    require(total == comb(n, r) * comb(n, r - 1), f"direct pair count changed at r={r}")
     return p * dot - n * n * total, dot
 
 
@@ -178,8 +190,11 @@ def verify_g300_small(handle) -> None:
     rows = alignments(group, SMALL_G300_P, SMALL_G300_N - 1, (2,))[2]
     sequence = [a for a, _ in rows]
     expected = [392, 128, -7240, -13128, -13128, -7240, 128]
-    assert sequence == expected
-    assert sign(sequence[1]) > 0 and sign(sequence[3]) < 0 and sign(sequence[6]) > 0
+    require(sequence == expected, f"G313 G300 all-rank witness pin failed: {sequence}")
+    require(
+        sign(sequence[1]) > 0 and sign(sequence[3]) < 0 and sign(sequence[6]) > 0,
+        "G313 G300 sign-oscillation witness changed",
+    )
     emit(
         handle,
         "G300 check p=113 n=8 coefficient=2 A_r="
@@ -198,13 +213,13 @@ def verify_g297_small(handle) -> None:
     for r in (5, 6):
         a1, dot1 = rows[1][r - 1]
         a2, dot2 = rows[2][r - 1]
-        assert (a1, a2) == expected[r]
+        require((a1, a2) == expected[r], f"G313 G297 witness pin failed at r={r}: {(a1, a2)}")
         emit(handle, f"small r={r} A1={a1:+d} A2={a2:+d} dots=({dot1},{dot2})")
 
 
 def verify_large_all_ranks(handle) -> None:
     p = certify_proth_prime()
-    assert p > N * (1 << 128)
+    require(p > N * (1 << 128), "certified Proth prime is below the advertised scale")
     group = subgroup_proth(N)
     rows = alignments(group, p, N - 1, (1, 2))
     expected_a2_dots = [
@@ -231,22 +246,35 @@ def verify_large_all_ranks(handle) -> None:
         a1, dot1 = rows[1][r - 1]
         a2, dot2 = rows[2][r - 1]
         total = comb(N, r) * comb(N, r - 1)
-        assert dot1 == 0
-        assert a1 == -(N * N * total)
-        assert dot2 == expected_a2_dots[r - 1]
-        assert a1 < 0 < a2
+        require(dot1 == 0, f"G313 coefficient-1 dot is nonzero at rank r={r}: {dot1}")
+        require(a1 == -(N * N * total), f"G313 coefficient-1 exact value changed at r={r}")
+        require(
+            a1 == p * dot1 - N * N * total and a2 == p * dot2 - N * N * total,
+            f"G313 alignment formula failed at r={r}",
+        )
+        require(
+            dot2 == expected_a2_dots[r - 1],
+            f"G313 coefficient-2 dot pin failed at r={r}: {dot2}",
+        )
+        require(a1 < 0 < a2, f"G313 all-rank sign separation failed at r={r}")
         emit(handle, f"{r:2d} {a1:+d} {dot1} {a2:+d} {dot2}")
 
     for coefficient in (1, 2):
         seq = [a for a, _ in rows[coefficient]]
         for r in range(2, N):
-            assert seq[r - 1] == seq[(N + 1 - r) - 1]
+            require(
+                seq[r - 1] == seq[(N + 1 - r) - 1],
+                f"G313 coefficient-{coefficient} rank reflection failed at r={r}",
+            )
 
     for r in (5, 6):
         for coefficient in (1, 2):
             sparse = rows[coefficient][r - 1]
             direct = direct_pair_alignment(group, p, r, coefficient)
-            assert direct == sparse
+            require(
+                direct == sparse,
+                f"G313 sparse/direct agreement failed at r={r}, coefficient={coefficient}",
+            )
             emit(
                 handle,
                 f"direct cross-check r={r} coefficient={coefficient} "

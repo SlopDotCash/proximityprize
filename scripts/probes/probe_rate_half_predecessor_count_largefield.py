@@ -80,6 +80,13 @@ SAMPLE_N = 10_000          # uniform gamma samples per stack
 NUMPY_P_MAX = (1 << 31) - 1  # int64 exactness bound: p^2 < 2^62
 VERIFY_CAP_EXTRA = 100     # verify up to budget + this many distinct candidates
 
+
+def require(condition, message):
+    """Keep independent witness recounts active under Python optimization."""
+    if not condition:
+        raise RuntimeError(message)
+
+
 # ------------------------------------------------------------------ primality
 
 _MR_BASES = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37)  # deterministic < 3.3e24
@@ -520,8 +527,10 @@ def analyze_stack(dom, checks, name, u0, u1, rng, planted_plan=None):
         recount = sum(
             1 for gam, (_, S) in verified.items()
             if verify_bad(dom, u0, u1, gam, S, alt=True))
-        assert recount == certified, \
-            f"recount mismatch {recount} != {certified} ({name}, p={p})"
+        require(
+            recount == certified,
+            f"recount mismatch {recount} != {certified} ({name}, p={p})",
+        )
     return {
         "stack": name, "certified": certified, "frac": frac,
         "degen_all": degen_all_bad, "refuted": refuted,

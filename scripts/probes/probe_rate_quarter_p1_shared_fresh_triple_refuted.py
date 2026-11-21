@@ -52,16 +52,28 @@ SIDX = [sorted(OIDX + [0, 8]), sorted(OIDX + [1, 9]), sorted(OIDX + [2, 10])]
 I_RESIDUE = 5
 
 
+def _require(condition: bool, detail: str) -> None:
+    """Keep certificate checks active under Python optimization flags."""
+    if not condition:
+        raise AssertionError(detail)
+
+
 def part1_midscale() -> None:
     p, n, m, k = 257, 256, 16, 64
     t_mid = -(-T * n // N)  # ceil(T * n / N) = 142
-    assert t_mid == 142
+    _require(t_mid == 142, "midscale threshold is not 142")
     g = 3
-    assert pow(g, n, p) == 1 and pow(g, n // 2, p) != 1  # order 256
+    _require(
+        pow(g, n, p) == 1 and pow(g, n // 2, p) != 1,
+        "midscale generator does not have order 256",
+    )
     omega = pow(g, m, p)
-    assert pow(omega, 16, p) == 1 and pow(omega, 8, p) != 1
+    _require(
+        pow(omega, 16, p) == 1 and pow(omega, 8, p) != 1,
+        "midscale omega does not have order 16",
+    )
     gammas = [(-pow(omega, 2 * j, p)) % p for j in range(3)]
-    assert len(set(gammas)) == 3
+    _require(len(set(gammas)) == 3, "midscale gammas are not distinct")
 
     def residue(e: int) -> int:
         return e % 16
@@ -72,56 +84,89 @@ def part1_midscale() -> None:
     u1 = [1 if residue(e) in OIDX else 0 for e in range(n)]
     S = [[e for e in range(n) if residue(e) in SIDX[j]] for j in range(3)]
     J = [e for e in range(n) if residue(e) in JIDX]
-    assert len(J) == 9 * m >= t_mid
+    _require(len(J) == 9 * m >= t_mid, "joint set has the wrong size")
     for j in range(3):
-        assert len(S[j]) == 9 * m >= t_mid
+        _require(len(S[j]) == 9 * m >= t_mid, f"S_{j} has the wrong size")
     # agreement: p_j(x) = x^(2m) + gamma_j on S_j
     for j in range(3):
         for e in S[j]:
             x = pow(g, e, p)
             line = (u0[e] + gammas[j] * u1[e]) % p
-            assert (pow(x, 2 * m, p) + gammas[j]) % p == line, (j, e)
+            _require(
+                (pow(x, 2 * m, p) + gammas[j]) % p == line,
+                f"line agreement failed for gamma {j} at point {e}",
+            )
     # joint pair (0,0) on J
-    assert all(u0[e] == 0 and u1[e] == 0 for e in J)
+    _require(
+        all(u0[e] == 0 and u1[e] == 0 for e in J),
+        "the joint pair does not vanish on J",
+    )
     # non-jointness of the u1 row on each S_j: the unique deg-<k candidate
     # through the O-part is the constant 1 (>= k points), mismatch on J-part
     for j in range(3):
         opart = [e for e in S[j] if residue(e) in OIDX]
         jpart = [e for e in S[j] if residue(e) not in OIDX]
-        assert len(opart) == 7 * m >= k and jpart
-        assert all(u1[e] == 1 for e in opart)
-        assert all(u1[e] == 0 for e in jpart)
+        _require(
+            len(opart) == 7 * m >= k and bool(jpart),
+            f"S_{j} does not have the required O-part and J-part sizes",
+        )
+        _require(all(u1[e] == 1 for e in opart), f"u1 is not one on O-part of S_{j}")
+        _require(all(u1[e] == 0 for e in jpart), f"u1 is not zero on J-part of S_{j}")
     # shared fresh coordinate
     i = I_RESIDUE
-    assert all(i in S[j] for j in range(3)) and i not in J
+    _require(
+        all(i in S[j] for j in range(3)) and i not in J,
+        "fresh coordinate is not shared across all S_j outside J",
+    )
     # bonus: i is not even in the maximal joint set of (0,0)
-    assert u1[i] != 0
+    _require(u1[i] != 0, "fresh coordinate is in the maximal joint set")
     print(f"part 1 (mu_256 / F_257, k=64, T={t_mid}): all clauses verified")
 
 
 def part2_literal_p1() -> None:
     m = 2**26
     omega = pow(G, m, P)
-    assert pow(G, N, P) == 1 and pow(G, N // 2, P) != 1     # order 2^30
-    assert pow(omega, 16, P) == 1 and pow(omega, 8, P) != 1  # order 16
+    _require(
+        pow(G, N, P) == 1 and pow(G, N // 2, P) != 1,
+        "literal P1 generator does not have order 2^30",
+    )
+    _require(
+        pow(omega, 16, P) == 1 and pow(omega, 8, P) != 1,
+        "literal P1 omega does not have order 16",
+    )
     gammas = [(-pow(omega, 2 * j, P)) % P for j in range(3)]
-    assert len(set(gammas)) == 3
+    _require(len(set(gammas)) == 3, "literal P1 gammas are not distinct")
     # per-residue line identity: omega^(2t) + gamma_j = 0 iff t in pair(j)
     for j in range(3):
         zeros = [t for t in range(16)
                  if (pow(omega, 2 * t, P) + gammas[j]) % P == 0]
-        assert zeros == sorted([j, j + 8]), (j, zeros)
+        _require(
+            zeros == sorted([j, j + 8]),
+            f"literal P1 zero residues for gamma {j} are {zeros}",
+        )
     # coset-level agreement identity (g^e)^(2^27) = omega^(2*(e mod 16))
     for t in range(16):
         e = 16 * 12345 + t  # arbitrary representative
-        assert pow(pow(G, e, P), 2**27, P) == pow(omega, 2 * t, P)
+        _require(
+            pow(pow(G, e, P), 2**27, P) == pow(omega, 2 * t, P),
+            f"coset identity failed at residue {t}",
+        )
     # thresholds and shape
-    assert 9 * m == 603979776 >= T          # |J|, |S_j| >= T
-    assert 7 * m == 469762048 >= K          # O-part pins the u1 row
-    assert 2**27 < K                         # witness polynomial degree
-    assert JIDX + OIDX and sorted(JIDX + OIDX) == list(range(16))
-    assert all(set(s) <= set(range(16)) and len(s) == 9 for s in SIDX)
-    assert all(I_RESIDUE in s for s in SIDX) and I_RESIDUE not in JIDX
+    _require(9 * m == 603979776 >= T, "literal P1 joint and agreement sets are too small")
+    _require(7 * m == 469762048 >= K, "literal P1 O-part does not pin the u1 row")
+    _require(2**27 < K, "literal P1 witness polynomial degree is too large")
+    _require(
+        JIDX + OIDX and sorted(JIDX + OIDX) == list(range(16)),
+        "J and O residue classes do not partition the domain",
+    )
+    _require(
+        all(set(s) <= set(range(16)) and len(s) == 9 for s in SIDX),
+        "an agreement set has invalid residue classes",
+    )
+    _require(
+        all(I_RESIDUE in s for s in SIDX) and I_RESIDUE not in JIDX,
+        "fresh residue is not shared outside the joint set",
+    )
     print("part 2 (literal P1, coset level): all identities verified")
     print(f"  omega = {omega}")
     print(f"  gammas = {gammas}")

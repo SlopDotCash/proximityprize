@@ -212,8 +212,11 @@ Landed by [PR #5](https://github.com/SlopDotCash/proximityprize/pull/5), merge
 **Computational evidence:**
 
 - `probe_syz71_linear_middle_slot.py` and `probe_syz71_verify_f41.py` exhibit and verify an
-  on-domain `F_41`, `μ_20` occupant. The explicit finite-field witness is not replayed as a Lean
-  theorem.
+  on-domain `F_41`, `μ_20` occupant. `_SYZ72F41MiddleSlotCertificate.lean` now kernel-checks that
+  exact support partition and its minimum syzygy product-degree `7` as
+  `SYZ72.zmod41_regionSyzygyRealizable`. The support sets partition the actual twenty powers of
+  `2` in `F_41`; the proof checks the vanishing polynomials, a degree-seven syzygy, and the absence
+  of any nonzero constant syzygy.
 
 **SYZ72 addendum (2026-10-30).** The PR #5 rank test also accepts floor-attained constant-syzygy
 triples. The strengthened test confirms the recorded `F_41` witness. A reproducible sweep of
@@ -222,9 +225,23 @@ at the other 12 sampled primes. The probe separately certifies a witness at `p =
 sample missed. The production question remains open. See `DISPROOF_LOG.md`
 `[SYZ72-middle-band-sampled-search]`.
 
+**Stack-lift audit (2026-11-15).** The certified `F_41` and `F_181` region witnesses were also fed
+to the SYZ52 exact per-scalar MCA classifier over 1,500 randomly sampled RS stacks each. The
+observed maxima were 7/19 and 4/19, respectively; neither sample found an over-budget stack. This
+is not an exhaustive lift test. The same replay corrected the historical `n=16`, `F_17` sampled
+count from 18 to 17 (the field has only 17 finite scalars); 17 still exceeds the `n−1=15` budget.
+The F1 genuine-stack lift remains open. See `DISPROOF_LOG.md`
+`[SYZ72-middle-slot-stack-lift-audit]` and the reproducible probe
+`scripts/probes/probe_syz72_middle_slot_stack_lift.py`.
+
 **Consequence:** the first middle slot is not empty at the algebraic/domain-counting level. This
 refutes an emptiness route and narrows F1 to the over-budget-stack lift. It does **not** discharge
 `UniformSylvesterInjective`, `ι ≤ 1`, or production δ*.
+
+The Lean certificate is for the region/syzygy layer only. As `F1RegionSyzygyInterface` specifies,
+it does not produce codeword witnesses or an over-budget MCA stack, so the SYZ42/SYZ28 lift gate
+and the production near-balance theorem remain open. Reproduce the formal check with
+`scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_SYZ72F41MiddleSlotCertificate.lean`.
 
 ### 4.3 All-depth cyclic energy floor
 
@@ -1071,6 +1088,17 @@ Paley/BGK line of §6/§42. It supersedes no earlier result; it packages them.
   now doctrine: **never trust a small-p verdict — either way — always run the p-sweep**; a
   small-field over-budget count is a saturation-regime analogue artifact, and a small-field
   "in-budget" verdict is equally untrustworthy.
+
+  **Exact finite-instance addendum (SYZ52 F17, 2026-11-16).** The new
+  `_SYZ52F17ExplicitOverbudget.lean` certificate turns one `F₁₇`, `n=16`, `k=8` sampled stack
+  into a kernel-checked instance: at radius `5/16` (agreement threshold `11`), every one of the
+  17 field scalars has a folded degree-`<8` word and a support that cannot be jointly explained by
+  two RS codewords. Thus this stack has exactly 17 MCA-bad scalars, exceeding both `n=16` and the
+  stricter `n−1=15` comparison budget. It lies outside the unique-decoding window of
+  `Hab25WindowCount.badScalars_card_le_of_window`: here `2n+k=40`, while
+  `3⌈(1−δ)n⌉=33`, so the theorem's hypothesis fails. This pins down why that cap cannot simply be
+  extended past its stated window. It is not an exhaustive maximum over stacks or a production-
+  field result, and does not alter the SYZ53 prime-scaling conclusion or close production δ*.
 
 - **The imbalance ladder is fully calibrated (SYZ44 + swarm SYZ53 half-gap).** SYZ44
   (`_SYZ44MuBasisDegreeSum.lean`) removes the μ-basis **degree-sum law** `δ₁+δ₂ = a+b+c` from the

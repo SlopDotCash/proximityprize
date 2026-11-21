@@ -113,6 +113,12 @@ def coeff1_antipodal_dot(_h: int, _r: int) -> int:
     return 0
 
 
+def require(condition: bool, message: str) -> None:
+    """Keep G316's finite antipodal formula checks active under optimization."""
+    if not condition:
+        raise AssertionError(message)
+
+
 def coeff2_antipodal_dot(h: int, r: int) -> int:
     same_pair = 2 * h * unit_tail(h - 1, r)
     different_pair = 4 * h * (h - 1) * unit_tail(h - 2, r - 1)
@@ -120,7 +126,7 @@ def coeff2_antipodal_dot(h: int, r: int) -> int:
 
 
 def coeff2_r56_closed(n: int, r: int) -> int:
-    assert n % 2 == 0
+    require(n > 0 and n % 2 == 0, f"G316 closed form requires positive even n: {n}")
     h = n // 2
     if r == 5:
         return n * (
@@ -199,9 +205,9 @@ def emit(handle, line: str = "") -> None:
 
 
 def verify_parity(handle) -> None:
-    assert all((a - b) % 2 == 0 for a, b in NEUTRAL)
-    assert all((a - b) % 2 == 0 for a, b in DOUBLE)
-    assert all((a - b) % 2 == 1 for a, b in UNIT)
+    require(all((a - b) % 2 == 0 for a, b in NEUTRAL), "G316 neutral monomial parity changed")
+    require(all((a - b) % 2 == 0 for a, b in DOUBLE), "G316 double monomial parity changed")
+    require(all((a - b) % 2 == 1 for a, b in UNIT), "G316 unit monomial parity changed")
     emit(handle, "parity check: N,D are even and U is odd in deg_u-deg_v")
     emit(handle, "coefficient 1 cases N^h, D*N^(h-1), U^2*N^(h-2) cannot hit adjacent rank")
 
@@ -212,8 +218,8 @@ def verify_against_brute_model(handle) -> None:
         formula = coeff2_antipodal_dot(8, r)
         brute = brute_antipodal_dot(16, r, 2)
         zero = brute_antipodal_dot(16, r, 1)
-        assert formula == brute == expected
-        assert coeff1_antipodal_dot(8, r) == zero == 0
+        require(formula == brute == expected, f"G316 n=16 rank-{r} formula/brute pin failed: {formula}/{brute}")
+        require(coeff1_antipodal_dot(8, r) == zero == 0, f"G316 n=16 rank-{r} coefficient-1 dot changed: {zero}")
     emit(handle, f"n=16 coefficient=2 all ranks: {EXPECTED_N16_ALL_RANKS}")
 
     for n in (32,):
@@ -222,8 +228,14 @@ def verify_against_brute_model(handle) -> None:
             formula = coeff2_antipodal_dot(h, r)
             brute = brute_antipodal_dot(n, r, 2)
             zero = brute_antipodal_dot(n, r, 1)
-            assert formula == brute == EXPECTED_R56[n][r]
-            assert coeff1_antipodal_dot(h, r) == zero == 0
+            require(
+                formula == brute == EXPECTED_R56[n][r],
+                f"G316 n={n} rank-{r} formula/brute pin failed: {formula}/{brute}",
+            )
+            require(
+                coeff1_antipodal_dot(h, r) == zero == 0,
+                f"G316 n={n} rank-{r} coefficient-1 dot changed: {zero}",
+            )
             emit(handle, f"n={n} r={r} formula=brute={formula}")
 
 
@@ -233,10 +245,10 @@ def emit_r56_formula_table(handle) -> None:
         h = n // 2
         r5 = coeff2_antipodal_dot(h, 5)
         r6 = coeff2_antipodal_dot(h, 6)
-        assert coeff2_r56_closed(n, 5) == r5
-        assert coeff2_r56_closed(n, 6) == r6
-        assert r5 == rows[5]
-        assert r6 == rows[6]
+        require(coeff2_r56_closed(n, 5) == r5, f"G316 n={n} closed rank-5 formula changed")
+        require(coeff2_r56_closed(n, 6) == r6, f"G316 n={n} closed rank-6 formula changed")
+        require(r5 == rows[5], f"G316 n={n} rank-5 table changed: {r5}")
+        require(r6 == rows[6], f"G316 n={n} rank-6 table changed: {r6}")
         emit(handle, f"n={n} h={h} r=5 dot={r5} r=6 dot={r6}")
 
 

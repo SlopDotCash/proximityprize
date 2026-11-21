@@ -56,6 +56,12 @@ EXPECTED_A = {
 }
 
 
+def require(condition: bool, message: str) -> None:
+    """Keep exact G317 certificate checks active under Python optimization."""
+    if not condition:
+        raise AssertionError(message)
+
+
 def subgroup_from_root(p: int, n: int, root: int) -> list[int]:
     h = pow(root, (p - 1) // n, p)
     out: list[int] = []
@@ -63,25 +69,28 @@ def subgroup_from_root(p: int, n: int, root: int) -> list[int]:
     for _ in range(n):
         out.append(x)
         x = x * h % p
-    assert x == 1 and len(set(out)) == n
+    require(x == 1 and len(set(out)) == n, "G317 subgroup root does not have exact order n")
     half = n // 2
     for i in range(half):
-        assert (out[i] + out[i + half]) % p == 0
+        require((out[i] + out[i + half]) % p == 0, f"G317 subgroup element {i} is not antipodal")
     return out
 
 
 def certify_proth_prime() -> int:
-    assert PROTH_K % 2 == 1
-    assert PROTH_K < (1 << PROTH_M)
+    require(PROTH_K % 2 == 1, "G317 Proth multiplier must be odd")
+    require(PROTH_K < (1 << PROTH_M), "G317 Proth multiplier is out of range")
     # Proth theorem: this congruence proves PROTH_P is prime.
-    assert pow(PROTH_WITNESS, (PROTH_P - 1) // 2, PROTH_P) == PROTH_P - 1
+    require(
+        pow(PROTH_WITNESS, (PROTH_P - 1) // 2, PROTH_P) == PROTH_P - 1,
+        "G317 Proth primality witness failed",
+    )
     return PROTH_P
 
 
 def subgroup_proth(n: int) -> list[int]:
     p = certify_proth_prime()
-    assert n & (n - 1) == 0
-    assert n <= (1 << PROTH_M)
+    require(n > 0 and n & (n - 1) == 0, f"G317 subgroup order is not a power of two: {n}")
+    require(n <= (1 << PROTH_M), f"G317 subgroup order exceeds Proth exponent: {n}")
     return subgroup_from_root(p, n, PROTH_WITNESS)
 
 
@@ -97,8 +106,14 @@ def subset_hist_sparse(group: list[int], p: int, max_r: int) -> list[dict[int, i
             for s, value in prev:
                 row[(s + x) % p] += value
     for r in range(max_r + 1):
-        assert len(dp[r]) == EXPECTED_HIST_SIZES[r]
-        assert sum(dp[r].values()) == comb(len(group), r)
+        require(
+            len(dp[r]) == EXPECTED_HIST_SIZES[r],
+            f"G317 rank-{r} histogram support changed: {len(dp[r])}",
+        )
+        require(
+            sum(dp[r].values()) == comb(len(group), r),
+            f"G317 rank-{r} histogram mass changed: {sum(dp[r].values())}",
+        )
     return [dict(row) for row in dp]
 
 
@@ -118,9 +133,9 @@ def quotient_weighted_dot(group: list[int], dp: list[dict[int, int]], p: int, co
             nonzero_shift_count += 1
         total += len(group) * value
     if coefficient == 1:
-        assert nonzero_shift_count == 0
+        require(nonzero_shift_count == 0, f"G317 coefficient-1 nonzero shifts: {nonzero_shift_count}")
     else:
-        assert nonzero_shift_count == 63
+        require(nonzero_shift_count == 63, f"G317 coefficient-{coefficient} nonzero shifts: {nonzero_shift_count}")
     return total
 
 
@@ -132,7 +147,7 @@ def emit(handle, line: str = "") -> None:
 
 def verify_large_field(handle) -> None:
     p = certify_proth_prime()
-    assert p > N * (1 << 128)
+    require(p > N * (1 << 128), "G317 Proth prime is below the target scale")
     group = subgroup_proth(N)
     dp = subset_hist_sparse(group, p, RANK)
     total_pairs = comb(N, RANK) * comb(N, RANK - 1)
@@ -143,12 +158,12 @@ def verify_large_field(handle) -> None:
     for coefficient in COEFFICIENTS:
         dot = quotient_weighted_dot(group, dp, p, coefficient)
         a_value = p * dot - N * N * total_pairs
-        assert dot == EXPECTED_DOTS[coefficient]
-        assert a_value == EXPECTED_A[coefficient]
+        require(dot == EXPECTED_DOTS[coefficient], f"G317 coefficient-{coefficient} dot changed: {dot}")
+        require(a_value == EXPECTED_A[coefficient], f"G317 coefficient-{coefficient} A-value changed: {a_value}")
         if coefficient == 1:
-            assert a_value < 0
+            require(a_value < 0, f"G317 coefficient-1 A-value is not negative: {a_value}")
         else:
-            assert a_value > 0
+            require(a_value > 0, f"G317 coefficient-{coefficient} A-value is not positive: {a_value}")
         emit(handle, f"coefficient={coefficient} r={RANK} A={a_value:+d} dot={dot}")
 
 

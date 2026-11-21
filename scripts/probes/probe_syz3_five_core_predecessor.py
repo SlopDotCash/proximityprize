@@ -11,6 +11,12 @@ third-party package is used.
 from math import isqrt
 
 
+def require(condition, message="SYZ3 five-core certificate check failed"):
+    """Keep exact witness checks active when Python optimization is enabled."""
+    if not condition:
+        raise AssertionError(message)
+
+
 N = 2**30
 D = 2**24
 K = 2**29
@@ -35,30 +41,30 @@ def production_slots():
     slots = []
     for j, group in enumerate(groups):
         core = common | group
-        assert len(core) == 33
-        assert len(core) * D >= K
+        require(len(core) == 33)
+        require(len(core) * D >= K)
         for label in range(64):
             if label in core:
                 continue
             multiplier = height(label) + j
-            assert height(label) != j
-            assert 1 <= multiplier <= 9
+            require(height(label) != j)
+            require(1 <= multiplier <= 9)
             slots.append((j, label, multiplier))
-    assert len(slots) == 155
-    assert len({(label, multiplier) for _, label, multiplier in slots}) == len(slots)
-    assert 31 * D + 1 < K
-    assert 33 * D + 1 == N - (31 * D - 1)
-    assert 4 * 31 * D <= BUDGET_SECOND < 5 * 31 * D
+    require(len(slots) == 155)
+    require(len({(label, multiplier) for _, label, multiplier in slots}) == len(slots))
+    require(31 * D + 1 < K)
+    require(33 * D + 1 == N - (31 * D - 1))
+    require(4 * 31 * D <= BUDGET_SECOND < 5 * 31 * D)
     return slots
 
 
 def check_production_field(prime, budget):
     slots = production_slots()
     powers = {a: pow(a, N, prime) for a in range(1, 10)}
-    assert len(set(powers.values())) == 9
+    require(len(set(powers.values())) == 9)
     lower_bound = len(slots) * D
-    assert lower_bound > budget
-    assert lower_bound * Q > prime
+    require(lower_bound > budget)
+    require(lower_bound * Q > prime)
     return {
         "prime": prime,
         "budget": budget,
@@ -124,24 +130,24 @@ def finite_check():
             for i in range(n)
             if i % 64 < 31 or i % 64 in (31 + 2 * j, 32 + 2 * j)
         ]
-        assert len(core) == 66
+        require(len(core) == 66)
         basis = core[:k]
         for i in range(n):
-            assert interpolate(basis, row_one, points[i]) == j * z_values[i] % prime
+            require(interpolate(basis, row_one, points[i]) == j * z_values[i] % prime)
         for i in range(n):
             if i in core:
                 continue
             gamma = -(heights[i] + j) * points[i] % prime
-            assert len(core) + 1 == 67
+            require(len(core) + 1 == 67)
             for index in core + [i]:
                 left = (j * j * z_values[index] * points[index] + gamma * j * z_values[index]) % prime
                 right = (row_zero[index] + gamma * row_one[index]) % prime
-                assert left == right
-            assert interpolate(basis, row_one, points[i]) != row_one[i]
-            assert gamma not in seen
+                require(left == right)
+            require(interpolate(basis, row_one, points[i]) != row_one[i])
+            require(gamma not in seen)
             seen.add(gamma)
             witnesses += 1
-    assert witnesses == 310
+    require(witnesses == 310)
     return {"prime": prime, "generator": generator, "distinct_scalars": witnesses, "excess_over_2N": witnesses - 2 * n}
 
 

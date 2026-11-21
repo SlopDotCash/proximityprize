@@ -219,6 +219,7 @@ import ArkLib.Research.ProximityGap.Frontier.FloorLevelDepthPrimeScaleGate
 import ArkLib.Research.ProximityGap.Frontier.FloorNecessaryNotSufficient
 import ArkLib.Research.ProximityGap.Frontier.FloorResonanceEnergyBridge
 import ArkLib.Research.ProximityGap.Frontier.FloorResonanceLowerBound
+import ArkLib.Research.ProximityGap.Frontier.FoldedSourceFiber
 import ArkLib.Research.ProximityGap.Frontier.GaussPeriodR2CeilingGap
 import ArkLib.Research.ProximityGap.Frontier.GaussianEnergyBoundMuNDepthThree
 import ArkLib.Research.ProximityGap.Frontier.GaussianEnergyBoundMuNDepthTwo
@@ -1798,6 +1799,7 @@ import ArkLib.Research.ProximityGap.Frontier._IncidenceCanonicalWeighted
 import ArkLib.Research.ProximityGap.Frontier._IncidenceConstantLineCap
 import ArkLib.Research.ProximityGap.Frontier._IncidenceDependencyArithmetic
 import ArkLib.Research.ProximityGap.Frontier._IncidenceExteriorLineCap
+import ArkLib.Research.ProximityGap.Frontier._IncidenceFourthMomentDirectBound
 import ArkLib.Research.ProximityGap.Frontier._IncidenceFullScaleCores
 import ArkLib.Research.ProximityGap.Frontier._IncidenceOffsetMomentRatioSandwich
 import ArkLib.Research.ProximityGap.Frontier._IncidenceSmoothingDeconvolutionBarrier
@@ -2779,6 +2781,7 @@ import ArkLib.Research.ProximityGap.Frontier._SYZ49CyclotomicGcd
 import ArkLib.Research.ProximityGap.Frontier._SYZ4DegenerateChannelCeiling
 import ArkLib.Research.ProximityGap.Frontier._SYZ50WitnessRealizability
 import ArkLib.Research.ProximityGap.Frontier._SYZ51AssemblyBypass
+import ArkLib.Research.ProximityGap.Frontier._SYZ52F17ExplicitOverbudget
 import ArkLib.Research.ProximityGap.Frontier._SYZ52SecondSyzygyInteriorClosure
 import ArkLib.Research.ProximityGap.Frontier._SYZ52WitnessLift
 import ArkLib.Research.ProximityGap.Frontier._SYZ53GeneratorGapCalibration
@@ -2803,6 +2806,7 @@ import ArkLib.Research.ProximityGap.Frontier._SYZ69ParityClassification
 import ArkLib.Research.ProximityGap.Frontier._SYZ6FinerGradingCeiling
 import ArkLib.Research.ProximityGap.Frontier._SYZ70FirstOpenMiddleSlot
 import ArkLib.Research.ProximityGap.Frontier._SYZ71LinearMiddleSlot
+import ArkLib.Research.ProximityGap.Frontier._SYZ72F41MiddleSlotCertificate
 import ArkLib.Research.ProximityGap.Frontier._SYZ8CellPackageSupply
 import ArkLib.Research.ProximityGap.Frontier._SYZ9ChannelRankWall
 import ArkLib.Research.ProximityGap.Frontier._SYZGuardedKernelTwoCore

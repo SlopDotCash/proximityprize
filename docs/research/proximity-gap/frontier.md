@@ -239,6 +239,12 @@ pair + DIST rungs m ≥ 12; P1 `SwarmResidual`; W15 strip sliver / Λ ≤ 2 (emp
   progression-based configurations per field at three primes and finds no witnesses there.
   See `DISPROOF_LOG.md` `[SYZ72-middle-band-sampled-search]`. The remaining occupancy cases,
   `ι ≤ 1`, the over-budget lift and production δ* remain open.
+- **SYZ52 F17 (2026-11-16) gives an exact small-scale over-budget instance.** The new Lean
+  certificate fixes a concrete `n=16`, `k=8` stack over `F₁₇` and proves that all 17 scalars are
+  MCA-bad at radius `5/16`, exceeding `n=16` and the stricter `n−1=15` budget. It lies outside the
+  unique-decoding window (`2n+k=40 > 3⌈(1−δ)n⌉=33`), showing the window cap cannot extend
+  uniformly past its hypothesis. It is neither an exhaustive maximum nor evidence about
+  production-field δ*. See `DISPROOF_LOG.md` `[SYZ52-F17-explicit-overbudget]`.
 - **All-depth cyclic energy floor (PR #7): exact lower bound.**
   `REnergyCyclicFloorAllDepth.lean` lifts the depth-three cyclic-orbit floor to every depth at least
   three. It is stronger than the adjacent-swap floor but weaker than the permutation floor

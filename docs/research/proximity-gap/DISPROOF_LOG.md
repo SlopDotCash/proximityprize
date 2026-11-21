@@ -49035,3 +49035,91 @@ Stickelberger bound, and does not close `δ*` or issue #164.
 ./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_TwoPowerCyclotomicTrace.lean
 ./scripts/lake-locked.sh build ArkLib.Research.ProximityGap.Frontier._TwoPowerCyclotomicTrace
 ```
+
+## [SYZ72-F41-Lean-region-certificate] On-domain middle-slot witness checked by Lean
+
+Date: 2026-11-15. Target: the `(6,6,6)` first middle slot of the F1 residual
+(`SYZ59.middleBand 6 6 6 7`) and the earlier exact-arithmetic `F_41`, `μ_20` witness.
+
+`Frontier/_SYZ72F41MiddleSlotCertificate.lean` proves
+`SYZ72.zmod41_regionSyzygyRealizable`: the twenty powers of `2` in `F_41` split into the recorded
+three six-point supports and the two-point leftover; their vanishing polynomials admit a
+degree-seven syzygy; and coefficient comparison rules out any nonzero constant syzygy, proving
+that the minimum product-degree is exactly seven. Consequently
+`SYZ72.zmod41_not_regionMiddleExclusion` refutes the universal region/syzygy middle-exclusion
+statement over `F_41`.
+
+The proof uses only `propext`, `Classical.choice`, and `Quot.sound`. It improves the recorded
+probe evidence to a kernel-checked finite certificate, but remains strictly at the region/syzygy
+layer: it supplies no RS codewords, `mcaEvent` witnesses, or over-budget stack. Thus it does not
+refute the genuine-stack lift gate, establish the production near-balance theorem, or close
+production `δ*`.
+
+Reproduce with:
+
+```
+./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_SYZ72F41MiddleSlotCertificate.lean
+```
+### [SYZ72-middle-slot-stack-lift-audit] Current-classifier replay of the on-domain candidates
+
+Date: 2026-11-15. Target: the SYZ42/SYZ28 genuine-stack lift gate for the SYZ72
+`(6,6,6)` middle-slot region witnesses. Source snapshot: `a15abf509f39bf87781119462b81d9c5e08a6848`.
+
+The current `probe_syz52_witness_lift.py` classifier (introduced by audit commit
+`39c07bdd7`) checks the MCA-bad predicate separately for each finite scalar and reports the
+point at infinity separately. This replay adds `scripts/probes/probe_syz72_middle_slot_stack_lift.py`
+to feed the already certified F41 and F181 middle-slot witnesses into that classifier, using
+1,500 random all-three-core-degenerate RS stacks per field. Each sampled stack's finite-scalar
+classification is exact; the stack search is not exhaustive.
+
+Observed results:
+
+- F41, `μ20 ⊂ F41`, `(n,k,s)=(20,10,14)`: deficiency `d=1`, maximum exact finite MCA-bad count
+  `7` of budget `19`; 17 of 1,500 sampled stacks have `u1` close. No sampled stack exceeds the
+  budget.
+- F181, `μ20 ⊂ F181`, same profile: `d=1`, maximum `4` of budget `19`; no sampled stack has `u1`
+  close. No sampled stack exceeds the budget.
+- The existing F17 scale probe, `(n,k,s)=(16,8,11)`, selects 8 of 30 capped support witnesses
+  and samples 600 stacks for each. The current classifier reports `d=[1]`, maximum finite
+  MCA-bad count `17` (budget `15`), and maximum finite close count `17`. This is an over-budget
+  sample, not a global maximum. The old snapshot's count `18` cannot be a finite-scalar count in
+  F17; the old `d=0` report is not reproduced by this sample.
+- With `SYZ52_SAMPLE=1`, the current F29 `(14,7,10)` replay finds one sampled witness and 1,500
+  stacks; its maximum exact finite MCA-bad count is `15` (budget `13`). This preserves an
+  over-budget sample at this below-Johnson finite profile but does not reproduce the old global
+  distribution or maximum `19` across all 357 witnesses.
+
+Commands (using the pinned `scripts/requirements-validation.txt`):
+
+```
+uv run --with-requirements scripts/requirements-validation.txt python scripts/probes/probe_syz72_middle_slot_stack_lift.py --trials 1500
+SYZ52_SAMPLE=1 uv run --with-requirements scripts/requirements-validation.txt python scripts/probes/probe_syz52_witness_lift.py
+```
+
+The earlier July n14 distribution/control and the n16 `18`, `d=0` figures came from the
+pre-audit classifier and are historical, not current exact-MCA results. This replay does not
+prove absence of an over-budget lift for any field or support witness and does not establish the
+production near-balance/δ* claim.
+### [SYZ52-F17-explicit-overbudget] Exact finite-instance small-scale stack (2026-11-16)
+
+`Frontier/_SYZ52F17ExplicitOverbudget.lean` formalizes a concrete two-word stack over `F₁₇` on
+`μ₁₆`, with `n=16`, `k=8`, and radius `5/16`. For each of the 17 scalars, a literal degree-`<8`
+polynomial agrees with the folded word on at least 11 coordinates. An eight-point interpolation
+core plus a fresh mismatch proves that the selected received component has no RS codeword agreeing
+on that full support; hence the support is not jointly explained by two codewords. The resulting
+`mcaEvent` holds for all field elements, and the exact filtered cardinality is 17, strictly above
+both `n=16` and the stricter comparison budget `n−1=15`. The example is outside the
+unique-decoding hypothesis of `Hab25WindowCount.badScalars_card_le_of_window`: `2n+k=40`, but
+`3⌈(1−δ)n⌉=33`. It therefore shows that the theorem's `n` cap cannot be extended uniformly past
+its stated window; it does not contradict the theorem.
+
+The checked declarations are `mcaEvent_index`, `seventeen_le_badScalar_filter_card`,
+`badScalar_filter_card_eq_17`, and `fifteen_lt_badScalar_filter_card`. The narrow command is:
+
+```
+./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_SYZ52F17ExplicitOverbudget.lean
+```
+
+This certifies one finite small-field stack, not an exhaustive maximum across stacks or a
+production-field violation. In particular it does not revise the separate SYZ53 large-field
+collapse or resolve production δ*.

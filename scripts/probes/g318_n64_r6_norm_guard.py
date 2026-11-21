@@ -51,11 +51,20 @@ EXPECTED_A = {
 }
 
 
+def require(condition: bool, message: str) -> None:
+    """Keep G318's finite norm-guard certificate checks active under optimization."""
+    if not condition:
+        raise AssertionError(message)
+
+
 def certify_proth_prime() -> int:
-    assert PROTH_K % 2 == 1
-    assert PROTH_K < (1 << PROTH_M)
+    require(PROTH_K % 2 == 1, "Proth multiplier must be odd")
+    require(PROTH_K < (1 << PROTH_M), "Proth multiplier exceeds the Proth bound")
     # Proth theorem: this congruence proves PROTH_P is prime.
-    assert pow(PROTH_WITNESS, (PROTH_P - 1) // 2, PROTH_P) == PROTH_P - 1
+    require(
+        pow(PROTH_WITNESS, (PROTH_P - 1) // 2, PROTH_P) == PROTH_P - 1,
+        "Proth primality witness failed",
+    )
     return PROTH_P
 
 
@@ -81,13 +90,13 @@ def emit(handle, line: str = "") -> None:
 def verify_norm_guard(handle) -> None:
     p = certify_proth_prime()
     norm_bound = L1_BOUND ** PHI_N
-    assert p == PROTH_P
-    assert p > norm_bound
-    assert (p - 1) % N == 0
+    require(p == PROTH_P, f"certified prime changed: {p}")
+    require(p > norm_bound, f"norm guard failed: p={p} <= {norm_bound}")
+    require((p - 1) % N == 0, f"certified prime does not contain an order-{N} subgroup")
     root64 = pow(PROTH_WITNESS, (p - 1) // N, p)
-    assert root64 != 1
-    assert pow(root64, N, p) == 1
-    assert pow(root64, N // 2, p) == p - 1
+    require(root64 != 1, "Proth witness produced a trivial order-64 root")
+    require(pow(root64, N, p) == 1, "derived root does not have order dividing 64")
+    require(pow(root64, N // 2, p) == p - 1, "derived root does not have exact order 64")
     emit(handle, f"p={p}=111*2^128+1 is Proth-prime certified by witness {PROTH_WITNESS}")
     emit(handle, f"phi(64)={PHI_N}, l1_bound={L1_BOUND}, norm_bound=14^32={norm_bound}")
     emit(handle, f"norm guard p > 14^32: margin={p - norm_bound}")
@@ -105,11 +114,11 @@ def verify_rank_six_constants(handle) -> None:
     dot2 = coeff2_r6_closed(H)
     a1 = p * dot1 - N * N * total
     a2 = p * dot2 - N * N * total
-    assert dot1 == EXPECTED_DOTS[1]
-    assert dot2 == EXPECTED_DOTS[2]
-    assert a1 == EXPECTED_A[1]
-    assert a2 == EXPECTED_A[2]
-    assert a1 < 0 < a2
+    require(dot1 == EXPECTED_DOTS[1], f"G318 coefficient-1 dot changed: {dot1}")
+    require(dot2 == EXPECTED_DOTS[2], f"G318 coefficient-2 dot changed: {dot2}")
+    require(a1 == EXPECTED_A[1], f"G318 coefficient-1 alignment changed: {a1}")
+    require(a2 == EXPECTED_A[2], f"G318 coefficient-2 alignment changed: {a2}")
+    require(a1 < 0 < a2, "G318 rank-six sign separation failed")
     emit(handle, f"n={N} r={RANK} adjacent_total={total}")
     emit(handle, f"coefficient=1 dot={dot1} A={a1:+d}")
     emit(handle, f"coefficient=2 dot={dot2} A={a2:+d}")

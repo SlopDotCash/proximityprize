@@ -53,13 +53,19 @@ from itertools import combinations, product
 from typing import Iterable
 
 
+def require(condition, message="syzygy witness-quotient check failed"):
+    """Keep exact certificate checks active under Python optimization."""
+    if not condition:
+        raise AssertionError(message)
+
+
 Polynomial = tuple[int, ...]
 Point = tuple[int, Polynomial]
 AffineLine = tuple[Polynomial, Polynomial]
 
 
 def inv(x: int, p: int) -> int:
-    assert x % p != 0
+    require(x % p != 0)
     return pow(x % p, p - 2, p)
 
 
@@ -71,7 +77,7 @@ def trim(poly: Iterable[int], p: int) -> Polynomial:
 
 
 def pad(poly: Polynomial, width: int) -> Polynomial:
-    assert len(poly) <= width
+    require(len(poly) <= width)
     return poly + (0,) * (width - len(poly))
 
 
@@ -153,7 +159,7 @@ def primitive_root(p: int) -> int:
 def line_through(a: Point, b: Point, p: int) -> AffineLine:
     ga, qa = a
     gb, qb = b
-    assert ga != gb and len(qa) == len(qb)
+    require(ga != gb and len(qa) == len(qb))
     scalar = inv(gb - ga, p)
     slope = tuple((y - x) * scalar % p for x, y in zip(qa, qb))
     base = tuple((x - ga * d) % p for x, d in zip(qa, slope))
@@ -220,7 +226,7 @@ def maximum_codeword_matching(graph: dict[int, set[Polynomial]]) -> int:
 
 def guarded_pencil_capacity(n: int, threshold: int) -> int:
     """Capacity of one common-core pencil under ``|D|+2 <= threshold``."""
-    assert threshold <= n
+    require(threshold <= n)
     return 1 + (n - threshold) // 2
 
 
@@ -258,7 +264,7 @@ def check_f11_full_enumeration() -> dict[str, int]:
 
     row0 = [int(x) for x in u0]
     row1 = [int(x) for x in u1]
-    assert 0 not in row1
+    require(0 not in row1)
 
     def degree_one_explainable(row: list[int], support: tuple[int, ...]) -> bool:
         if len(support) <= k:
@@ -301,13 +307,13 @@ def check_f11_full_enumeration() -> dict[str, int]:
         6: {(8, 8)},
         7: {(0, 9)},
     }
-    assert graph == expected
+    require(graph == expected)
     points = [(gamma, next(iter(qs))) for gamma, qs in sorted(graph.items())]
     lines = rich_lines(points, p)
-    assert [len(members) for _line, members in lines] == [3]
-    assert syzygy_component_count(points, lines) == 5
-    assert maximum_codeword_matching(graph) == len(graph) == 7
-    assert all(selected_support[key] for key in selected_support)
+    require([len(members) for _line, members in lines] == [3])
+    require(syzygy_component_count(points, lines) == 5)
+    require(maximum_codeword_matching(graph) == len(graph) == 7)
+    require(all(selected_support[key] for key in selected_support))
     return {
         "bad_scalars": len(graph),
         "distinct_codewords": len({q for qs in graph.values() for q in qs}),
@@ -324,7 +330,7 @@ def check_f97_displayed_construction() -> dict[str, int]:
     bad_threshold, predecessor_threshold = 17, 18
     omega = pow(primitive_root(p), (p - 1) // n, p)
     domain = [pow(omega, e, p) for e in range(n)]
-    assert len(set(domain)) == n and pow(omega, n // 2, p) == p - 1
+    require(len(set(domain)) == n and pow(omega, n // 2, p) == p - 1)
     zeta = pow(omega, 2, p)
 
     exponent_sets = ({0, 1, 8}, {2, 9, 10}, {3, 5, 7})
@@ -334,7 +340,7 @@ def check_f97_displayed_construction() -> dict[str, int]:
         (pc[j] - pa[j]) * inv(pb[j] - pa[j], p) % p
         for j in range(3) if pa[j] != pb[j]
     )
-    assert pc == poly_add(poly_scale(1 - lam, pa, p), poly_scale(lam, pb, p), p)
+    require(pc == poly_add(poly_scale(1 - lam, pa, p), poly_scale(lam, pb, p), p))
     factors = (
         (0,),
         compose_x_power(poly_scale(1 - lam, pa, p), 2, p),
@@ -352,8 +358,8 @@ def check_f97_displayed_construction() -> dict[str, int]:
         pair13 | pair23 | private[2],
     )
     hole = fibre({15})
-    assert all(len(core) == 16 for core in cores)
-    assert len(set().union(*cores)) == 30 and len(hole) == 2
+    require(all(len(core) == 16 for core in cores))
+    require(len(set().union(*cores)) == 30 and len(hole) == 2)
 
     alpha = beta = None
     for aa, bb in product(range(1, p), repeat=2):
@@ -375,17 +381,17 @@ def check_f97_displayed_construction() -> dict[str, int]:
             continue
         alpha, beta = aa, bb
         break
-    assert alpha is not None and beta is not None
+    require(alpha is not None and beta is not None)
 
     u0, u1 = [0] * n, [0] * n
     for e, x in enumerate(domain):
         owners = [i for i, core in enumerate(cores) if e in core]
         if not owners:
-            assert e in hole
+            require(e in hole)
             u0[e], u1[e] = alpha * x % p, beta
         else:
             values = {poly_eval(factors[i], x, p) for i in owners}
-            assert len(values) == 1
+            require(len(values) == 1)
             value = values.pop()
             u0[e], u1[e] = value * x % p, value
 
@@ -393,11 +399,11 @@ def check_f97_displayed_construction() -> dict[str, int]:
     for f, core in zip(factors, cores):
         intercept = poly_mul(f, (0, 1), p)
         direction = f
-        assert len(intercept) - 1 < k and len(direction) - 1 < k
+        require(len(intercept) - 1 < k and len(direction) - 1 < k)
         anchors = sorted(core)[:k]
         forced0 = interpolate([(domain[e], u0[e]) for e in anchors], p)
         forced1 = interpolate([(domain[e], u1[e]) for e in anchors], p)
-        assert forced0 == intercept and forced1 == direction
+        require(forced0 == intercept and forced1 == direction)
         source_lines.append((pad(intercept, k), pad(direction, k)))
 
     points: list[Point] = []
@@ -412,61 +418,61 @@ def check_f97_displayed_construction() -> dict[str, int]:
                 continue
             denominator = (u1[e] - poly_eval(direction, x, p)) % p
             numerator = (poly_eval(intercept, x, p) - u0[e]) % p
-            assert denominator != 0
+            require(denominator != 0)
             gamma = numerator * inv(denominator, p) % p
             q = poly_add(intercept, poly_scale(gamma, direction, p), p)
             point = (gamma, pad(q, k))
             support = set(core) | {e}
-            assert len(support) == bad_threshold
-            assert all(
+            require(len(support) == bad_threshold)
+            require(all(
                 poly_eval(q, domain[j], p) == (u0[j] + gamma * u1[j]) % p
                 for j in support
-            )
+            ))
             # The first k core values force the joint explaining pair to be
             # this source line; it genuinely misses at the fresh coordinate.
-            assert (poly_eval(intercept, x, p), poly_eval(direction, x, p)) != (u0[e], u1[e])
-            assert point not in supports
+            require((poly_eval(intercept, x, p), poly_eval(direction, x, p)) != (u0[e], u1[e]))
+            require(point not in supports)
             points.append(point)
             graph[gamma].add(point[1])
             supports[point] = support
             source_of[point] = i
 
-    assert len(points) == 48 and len(set(points)) == 48
-    assert len(graph) == 36
+    require(len(points) == 48 and len(set(points)) == 48)
+    require(len(graph) == 36)
     all_codewords = {q for qs in graph.values() for q in qs}
-    assert len(all_codewords) == 33
+    require(len(all_codewords) == 33)
     zero = (0,) * k
     zero_labels = {gamma for gamma, qs in graph.items() if zero in qs}
-    assert len(zero_labels) == 16
+    require(len(zero_labels) == 16)
     zero_only_labels = {gamma for gamma, qs in graph.items() if qs == {zero}}
     # This is an explicit Hall obstruction: eight scalar vertices have the
     # singleton neighbour set {0}, so at least seven must remain unmatched.
-    assert len(zero_only_labels) == 8
+    require(len(zero_only_labels) == 8)
     matching = maximum_codeword_matching(graph)
-    assert matching == 29 < len(graph)
+    require(matching == 29 < len(graph))
 
     # Every repeated decoded codeword forces witness intersections into the
     # zero set of u1.  The zero polynomial is the only repeated codeword here.
     zero_positions = {e for e, value in enumerate(u1) if value == 0}
-    assert len(zero_positions) == 16
+    require(len(zero_positions) == 16)
     zero_points = [point for point in points if point[1] == zero]
     for a, b in combinations(zero_points, 2):
-        assert supports[a] & supports[b] <= zero_positions
+        require(supports[a] & supports[b] <= zero_positions)
 
     lines = rich_lines(points, p)
-    assert [len(members) for _line, members in lines] == [16, 16, 16]
-    assert {line for line, _members in lines} == set(source_lines)
-    assert syzygy_component_count(points, lines) == 3
-    assert all(len({source_of[points[j]] for j in members}) == 1 for _line, members in lines)
+    require([len(members) for _line, members in lines] == [16, 16, 16])
+    require({line for line, _members in lines} == set(source_lines))
+    require(syzygy_component_count(points, lines) == 3)
+    require(all(len({source_of[points[j]] for j in members}) == 1 for _line, members in lines))
 
     bad_one_fresh = (n - len(cores[0])) // (bad_threshold - len(cores[0]))
     predecessor_two_fresh = (n - len(cores[0])) // (predecessor_threshold - len(cores[0]))
-    assert bad_one_fresh == 16
-    assert predecessor_two_fresh == guarded_pencil_capacity(n, predecessor_threshold) == 8
-    assert 3 * predecessor_two_fresh == 24 < n
-    assert 4 * predecessor_two_fresh == n
-    assert not (len(zero_positions) < 2 * bad_threshold - n)
-    assert not (len(zero_positions) < 2 * predecessor_threshold - n)
+    require(bad_one_fresh == 16)
+    require(predecessor_two_fresh == guarded_pencil_capacity(n, predecessor_threshold) == 8)
+    require(3 * predecessor_two_fresh == 24 < n)
+    require(4 * predecessor_two_fresh == n)
+    require(not (len(zero_positions) < 2 * bad_threshold - n))
+    require(not (len(zero_positions) < 2 * predecessor_threshold - n))
 
     return {
         "displayed_points": len(points),
@@ -494,25 +500,25 @@ def check_p1_predecessor_arithmetic() -> dict[str, int]:
     saturated_core = (53 * m - 8) // 6
     bad_threshold = saturated_core + 1
     predecessor_threshold = saturated_core + 2
-    assert saturated_core == 592_794_964
-    assert bad_threshold == 592_794_965
-    assert predecessor_threshold == 592_794_966
-    assert k == 4 * m and n == 16 * m
+    require(saturated_core == 592_794_964)
+    require(bad_threshold == 592_794_965)
+    require(predecessor_threshold == 592_794_966)
+    require(k == 4 * m and n == 16 * m)
 
     # The construction is covered by three source pencils.  Source zero has
     # intercept=direction=0, so all of its one-fresh labels use exactly the
     # same decoded polynomial.  This is a symbolic, not enumerative, repeat.
     repeated_zero_codeword_labels = n - saturated_core
-    assert repeated_zero_codeword_labels == 480_946_860
+    require(repeated_zero_codeword_labels == 480_946_860)
 
     per_line = guarded_pencil_capacity(n, predecessor_threshold)
-    assert per_line == 240_473_430
+    require(per_line == 240_473_430)
     three_line_cap = 3 * per_line
     four_line_cap = 4 * per_line
-    assert three_line_cap == 721_420_290 < n
-    assert four_line_cap == 961_893_720 < n
-    assert n - four_line_cap == 111_848_104
-    assert 2 * predecessor_threshold - n == 111_848_108
+    require(three_line_cap == 721_420_290 < n)
+    require(four_line_cap == 961_893_720 < n)
+    require(n - four_line_cap == 111_848_104)
+    require(2 * predecessor_threshold - n == 111_848_108)
 
     return {
         "n": n,

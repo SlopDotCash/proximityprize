@@ -30,6 +30,12 @@ PROTH_P = PROTH_K * (1 << PROTH_M) + 1
 RANKS = (5, 6)
 
 
+def require(condition: bool, message: str) -> None:
+    """Keep the G311 certificate checks active under Python optimization."""
+    if not condition:
+        raise AssertionError(message)
+
+
 def factor(x: int) -> list[int]:
     out: list[int] = []
     d = 2
@@ -59,7 +65,7 @@ def subgroup_from_root(p: int, n: int, root: int) -> list[int]:
     for _ in range(n):
         out.append(x)
         x = x * h % p
-    assert x == 1 and len(set(out)) == n
+    require(x == 1 and len(set(out)) == n, f"subgroup construction failed for p={p}, n={n}")
     return out
 
 
@@ -68,17 +74,20 @@ def subgroup_small(p: int, n: int) -> list[int]:
 
 
 def certify_proth_prime() -> int:
-    assert PROTH_K % 2 == 1
-    assert PROTH_K < (1 << PROTH_M)
+    require(PROTH_K % 2 == 1, "Proth multiplier must be odd")
+    require(PROTH_K < (1 << PROTH_M), "Proth multiplier exceeds the Proth bound")
     # Proth theorem: this congruence proves PROTH_P is prime.
-    assert pow(PROTH_WITNESS, (PROTH_P - 1) // 2, PROTH_P) == PROTH_P - 1
+    require(
+        pow(PROTH_WITNESS, (PROTH_P - 1) // 2, PROTH_P) == PROTH_P - 1,
+        "Proth primality witness failed",
+    )
     return PROTH_P
 
 
 def subgroup_proth(n: int) -> list[int]:
     p = certify_proth_prime()
-    assert n & (n - 1) == 0
-    assert n <= (1 << PROTH_M)
+    require(n & (n - 1) == 0, f"subgroup order n={n} is not a power of two")
+    require(n <= (1 << PROTH_M), f"subgroup order n={n} exceeds the Proth 2-adic scale")
     return subgroup_from_root(p, n, PROTH_WITNESS)
 
 
@@ -92,7 +101,10 @@ def subset_hist_sparse(group: list[int], p: int, max_r: int) -> list[dict[int, i
             for s, value in list(dp[r - 1].items()):
                 dp[r][(s + x) % p] += value
     for r in range(max_r + 1):
-        assert sum(dp[r].values()) == comb(len(group), r)
+        require(
+            sum(dp[r].values()) == comb(len(group), r),
+            f"subset histogram lost mass at rank r={r}",
+        )
     return [dict(row) for row in dp]
 
 
@@ -103,7 +115,7 @@ def subset_sums_direct(group: list[int], p: int, r: int) -> list[int]:
         for i in indices:
             total = (total + group[i]) % p
         out.append(total)
-    assert len(out) == comb(len(group), r)
+    require(len(out) == comb(len(group), r), f"direct subset enumeration count changed at r={r}")
     return out
 
 
@@ -113,7 +125,7 @@ def kernel_sparse(group: list[int], p: int, coefficient: int) -> dict[int, int]:
         ay = coefficient * y % p
         for z in group:
             out[(ay - z) % p] += 1
-    assert sum(out.values()) == len(group) ** 2
+    require(sum(out.values()) == len(group) ** 2, "weighted kernel lost mass")
     return dict(out)
 
 
@@ -143,7 +155,7 @@ def direct_pair_alignment(group: list[int], p: int, r: int, coefficient: int) ->
         for y in right:
             dot += kernel.get((x - y) % p, 0)
     total = len(left) * len(right)
-    assert total == comb(n, r) * comb(n, r - 1)
+    require(total == comb(n, r) * comb(n, r - 1), f"direct pair count changed at r={r}")
     return p * dot - n * n * total, dot
 
 
@@ -163,7 +175,10 @@ def verify_small(handle) -> None:
     for r in RANKS:
         a1, dot1 = sparse_alignment(group, SMALL_P, r, 1)
         a2, dot2 = sparse_alignment(group, SMALL_P, r, 2)
-        assert (a1, a2, a2 - a1) == expected[r]
+        require(
+            (a1, a2, a2 - a1) == expected[r],
+            f"G311 small exact witness pin failed at r={r}: {(a1, a2, a2 - a1)}",
+        )
         emit(
             handle,
             f"small p={SMALL_P} n={N} r={r} "
@@ -188,16 +203,24 @@ def verify_large(handle) -> None:
             1_064_448,
         ),
     }
-    assert p > N * (1 << 128)
+    require(p > N * (1 << 128), "certified Proth prime is below the advertised scale")
     emit(handle, f"large Proth prime p={p}=111*2^128+1 witness={PROTH_WITNESS}")
     for r in RANKS:
         sparse_a1, sparse_dot1 = sparse_alignment(group, p, r, 1)
         sparse_a2, sparse_dot2 = sparse_alignment(group, p, r, 2)
         direct_a1, direct_dot1 = direct_pair_alignment(group, p, r, 1)
         direct_a2, direct_dot2 = direct_pair_alignment(group, p, r, 2)
-        assert (sparse_a1, sparse_a2, sparse_dot1, sparse_dot2) == expected[r]
-        assert (direct_a1, direct_a2, direct_dot1, direct_dot2) == expected[r]
-        assert sparse_a1 < 0 < sparse_a2
+        require(
+            (sparse_a1, sparse_a2, sparse_dot1, sparse_dot2) == expected[r],
+            f"G311 sparse exact witness pin failed at r={r}: "
+            f"{(sparse_a1, sparse_a2, sparse_dot1, sparse_dot2)}",
+        )
+        require(
+            (direct_a1, direct_a2, direct_dot1, direct_dot2) == expected[r],
+            f"G311 direct exact witness pin failed at r={r}: "
+            f"{(direct_a1, direct_a2, direct_dot1, direct_dot2)}",
+        )
+        require(sparse_a1 < 0 < sparse_a2, f"G311 sign reversal missing at r={r}")
         emit(
             handle,
             f"large p={p} n={N} r={r} "

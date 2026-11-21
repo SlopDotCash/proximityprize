@@ -15,8 +15,15 @@ from pathlib import Path
 BASE = Path(__file__).with_name("g302_common_order7_normal_nogo.py")
 SPEC = importlib.util.spec_from_file_location("g302_base", BASE)
 BASE_MODULE = importlib.util.module_from_spec(SPEC)
-assert SPEC.loader is not None
+if SPEC.loader is None:
+    raise ImportError(f"could not load shared exact arithmetic helper from {BASE}")
 SPEC.loader.exec_module(BASE_MODULE)
+
+
+def require(condition: bool, message: str) -> None:
+    """Keep the G307 exact circuit certificate active under Python optimization."""
+    if not condition:
+        raise AssertionError(message)
 
 
 def ramanujan_three(j: int) -> int:
@@ -36,7 +43,8 @@ def run_cell(n: int, p: int, r: int) -> tuple[int, tuple[int, int, int, int]]:
     primitive = BASE_MODULE.primitive_root(p)
     quotient_order = (p - 1) // n
     group = BASE_MODULE.subgroup(p, n, primitive)
-    assert quotient_order % 15 == 0 and pow(2, n, p) != 1
+    require(quotient_order % 15 == 0, f"quotient order {quotient_order} is not divisible by 15")
+    require(pow(2, n, p) != 1, f"coefficient 2 is degenerate in G at p={p}, n={n}")
     histogram = BASE_MODULE.subset_hist(group, p, 6)
     row = BASE_MODULE.difference_corr(histogram[r], histogram[r - 1], p)
     representatives = [pow(primitive, j, p) for j in range(quotient_order)]
@@ -63,7 +71,10 @@ def run_cell(n: int, p: int, r: int) -> tuple[int, tuple[int, int, int, int]]:
                 sum(ramanujan_fifteen(j) * values[(unit * j) % quotient_order]
                     for j in range(quotient_order)),
             )
-            assert changed == features
+            require(
+                changed == features,
+                f"G307 trace coordinates depend on quotient generator unit={unit} at p={p}",
+            )
     return target, features
 
 
@@ -74,8 +85,8 @@ def sign(value: int) -> int:
 def main() -> None:
     sponsor_one = 2**128 + 192
     sponsor_two = 2**129 + 13
-    assert sponsor_two % 75 == 0
-    assert sponsor_one % 5 != 0
+    require(sponsor_two % 75 == 0, "sponsor two is not divisible by the 75-quotient requirement")
+    require(sponsor_one % 5 != 0, "sponsor one unexpectedly admits conductor five")
 
     cells = [
         (8, 241, 30, 5, 177136, (-134448, -1688928, 888808, -4046872)),
@@ -95,10 +106,16 @@ def main() -> None:
 
     oriented = []
     for n, p, quotient_order, r, expected_target, expected_features in cells:
-        assert quotient_order == (p - 1) // n
+        require(quotient_order == (p - 1) // n, f"recorded quotient order changed at p={p}, n={n}")
         target, features = run_cell(n, p, r)
-        assert target == expected_target
-        assert features == expected_features
+        require(
+            target == expected_target,
+            f"G307 exact target pin failed at p={p}, n={n}, r={r}: {target}",
+        )
+        require(
+            features == expected_features,
+            f"G307 exact trace feature pin failed at p={p}, n={n}, r={r}: {features}",
+        )
         row = tuple(sign(target) * coordinate for coordinate in features)
         oriented.append(row)
         print(f"n={n} p={p} m={quotient_order} r={r} target={target:+d} "
@@ -106,10 +123,10 @@ def main() -> None:
 
     for coordinate in range(4):
         total = sum(circuit[index] * oriented[index][coordinate] for index in range(5))
-        assert total == 0
+        require(total == 0, f"G307 positive circuit coordinate {coordinate} is {total}, expected zero")
         print(f"circuit coordinate {coordinate}: {total}")
-    assert all(weight > 0 for weight in circuit)
-    assert {cell[3] for cell in cells} == {5, 6}
+    require(all(weight > 0 for weight in circuit), "G307 separating-circuit weights must be positive")
+    require({cell[3] for cell in cells} == {5, 6}, "G307 circuit cells must cover ranks five and six")
     print("PASS: the exact positive circuit forbids every fixed separator in (P,L3,L5,L15).")
 
 

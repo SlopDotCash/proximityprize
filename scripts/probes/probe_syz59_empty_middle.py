@@ -37,6 +37,11 @@ from itertools import combinations
 from fractions import Fraction
 
 
+def require(condition, detail):
+    if not condition:
+        raise AssertionError(detail)
+
+
 def poly_from_roots(roots, p):
     """monic poly with given roots over F_p, as coeff list low->high."""
     c = [1]
@@ -102,7 +107,7 @@ def min_syzygy_product_degree(polys, p, Dmax):
         basis = _graded_syzygies(polys, p, [D - d for d in degs])
         if basis:
             product, cofactor = syzygy_degrees(basis[0], polys, p)
-            assert product == D, "graded search must attain its own bound"
+            require(product == D, "graded search must attain its own bound")
             return product, cofactor
     return None, None
 
@@ -158,9 +163,9 @@ def check_bridge():
         S = 4 + 4 + 4
         print(f"  p={p}: min syzygy  product_deg={pd}  cofactor_deg={cd}  "
               f"max(a,b,c)=4  ⌊S/2⌋={S//2}  gap={S-2*pd}  ι={S//2-pd}")
-        assert cd == 0, "constant syzygy must have cofactor degree 0"
-        assert pd == 4, "product-degree must equal max(a,b,c)=4 (SYZ47 floor attained)"
-        assert pd == cd + 4, "bridge product = cofactor + max"
+        require(cd == 0, "constant syzygy must have cofactor degree 0")
+        require(pd == 4, "product-degree must equal max(a,b,c)=4 (SYZ47 floor attained)")
+        require(pd == cd + 4, "bridge product = cofactor + max")
     print("  bridge OK: cofactor δ₁=0  ⟺  product δ₁=max=4  (floor TIGHT, not violated)")
 
 
@@ -191,8 +196,8 @@ def check_empty_middle():
         rows.append((S, floor, pd, S // 2, middle))
         print(f"  (a,b,c)=({a},{b},{c}) S={S}: δ₁(product)={pd}  floor=max={floor}  "
               f"⌊S/2⌋={S//2}  middle={middle}")
-    assert all(pd == floor for (_, floor, pd, _, _) in rows), "floor should be attained"
-    assert not any(m for *_, m in rows), "no middle witnesses"
+    require(all(pd == floor for (_, floor, pd, _, _) in rows), "floor should be attained")
+    require(not any(m for *_, m in rows), "no middle witnesses")
     print("  floor OK: each planted constant-syzygy example has δ₁ = max (floor attained).")
     print("  (Not an empty-middle theorem: SYZ71 replays a genuine product-degree-7 (6,6,6)")
     print("   middle witness on mu_20 ⊂ F_41; see probe_syz71_verify_f41.py.)")
