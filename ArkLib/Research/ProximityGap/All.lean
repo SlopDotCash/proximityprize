@@ -290,6 +290,8 @@ import ArkLib.Research.ProximityGap.Frontier.EvenDirectionDescent
 import ArkLib.Research.ProximityGap.Frontier.EvenWitnessReverseCollapse
 import ArkLib.Research.ProximityGap.Frontier.ExactHistogramSquares
 import ArkLib.Research.ProximityGap.Frontier.ExactSizeMcaSupport
+import ArkLib.Research.ProximityGap.Frontier.ExceptionalHeadLayout
+import ArkLib.Research.ProximityGap.Frontier.ExceptionalHeadMass
 import ArkLib.Research.ProximityGap.Frontier.ExplainableAmalgamation
 import ArkLib.Research.ProximityGap.Frontier.F6CliffInstantiationJohnson
 import ArkLib.Research.ProximityGap.Frontier.Face1JohnsonRadiusCap
@@ -473,6 +475,7 @@ import ArkLib.Research.ProximityGap.Frontier.PinnedScalarRatioImage
 import ArkLib.Research.ProximityGap.Frontier.PoissonAveragedMGF
 import ArkLib.Research.ProximityGap.Frontier.PolynomialJetConstraintSpace
 import ArkLib.Research.ProximityGap.Frontier.PolynomialLocalOrder
+import ArkLib.Research.ProximityGap.Frontier.PolynomialProjectiveHessian
 import ArkLib.Research.ProximityGap.Frontier.PolynomialSectionJacobian
 import ArkLib.Research.ProximityGap.Frontier.PositiveCharacteristicHeightDescent
 import ArkLib.Research.ProximityGap.Frontier.PowMapFiberCard
@@ -549,6 +552,7 @@ import ArkLib.Research.ProximityGap.Frontier.RawJacobianWindow
 import ArkLib.Research.ProximityGap.Frontier.RawMGFSaddleVacuity
 import ArkLib.Research.ProximityGap.Frontier.RealizerL2NotSup
 import ArkLib.Research.ProximityGap.Frontier.ReceivedJetContact
+import ArkLib.Research.ProximityGap.Frontier.ReceivedPolarContacts
 import ArkLib.Research.ProximityGap.Frontier.ReceivedPowerSeriesHessian
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalAverageEnergy
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalChartMCA
@@ -579,6 +583,7 @@ import ArkLib.Research.ProximityGap.Frontier.SecondPrimeConditionedThreshold
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCoordinateWeight
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicWeightBound
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeDegreeSevenDimension
+import ArkLib.Research.ProximityGap.Frontier.SecondPrimeExceptionalCeilings
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeHeadDescent
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeIntrinsicArithmetic
 import ArkLib.Research.ProximityGap.Frontier.SecondPrimeKernelCapacity
