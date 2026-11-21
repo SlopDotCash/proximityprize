@@ -426,6 +426,7 @@ import ArkLib.Research.ProximityGap.Frontier.HodgeSectionLattice
 import ArkLib.Research.ProximityGap.Frontier.HodgeSectionVariance
 import ArkLib.Research.ProximityGap.Frontier.HorizontalJetObstruction
 import ArkLib.Research.ProximityGap.Frontier.HorizontalSectionDeviation
+import ArkLib.Research.ProximityGap.Frontier.HyperbolaRulings
 import ArkLib.Research.ProximityGap.Frontier.I031ChainingBrick
 import ArkLib.Research.ProximityGap.Frontier.I031DilationOrbitReduction
 import ArkLib.Research.ProximityGap.Frontier.I031DistinctPeriodCount
@@ -852,6 +853,7 @@ import ArkLib.Research.ProximityGap.Frontier.SingleCosetTripleSignatures
 import ArkLib.Research.ProximityGap.Frontier.SixSplitListWitness
 import ArkLib.Research.ProximityGap.Frontier.SixSplitPencil
 import ArkLib.Research.ProximityGap.Frontier.SixteenCosetListLower
+import ArkLib.Research.ProximityGap.Frontier.SixteenFiberMass
 import ArkLib.Research.ProximityGap.Frontier.SixteenthSaturatedHeads
 import ArkLib.Research.ProximityGap.Frontier.SixthMomentAntipodalShape
 import ArkLib.Research.ProximityGap.Frontier.SixthMomentMultiplicativeRectangle
@@ -871,6 +873,7 @@ import ArkLib.Research.ProximityGap.Frontier.SmoothFermatCapacity
 import ArkLib.Research.ProximityGap.Frontier.SmoothFourHeadAssembly
 import ArkLib.Research.ProximityGap.Frontier.SmoothFourHeadColored
 import ArkLib.Research.ProximityGap.Frontier.SmoothFourHeadFibers
+import ArkLib.Research.ProximityGap.Frontier.SmoothHyperbolaGrid
 import ArkLib.Research.ProximityGap.Frontier.SmoothLinearFieldEnvelope
 import ArkLib.Research.ProximityGap.Frontier.SmoothManyHeadMass
 import ArkLib.Research.ProximityGap.Frontier.SmoothManyLinePhase
