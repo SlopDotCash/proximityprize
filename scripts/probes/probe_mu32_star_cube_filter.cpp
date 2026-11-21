@@ -2,7 +2,8 @@
 // kappa^3 = prod_{e in R} r_x(e) * prod_{p in shared triple} r_x(p), r_x(e)=(x0-e)/(x-e), must be a cube in Q(zeta_N).
 // Tested modulo NQ primes q = 1 mod lcm(N,3) via cubic residue characters.
 #include <cstdio>
-#include <cstdlib>
+#include <charconv>
+#include <cstring>
 #include <cstdint>
 #include <vector>
 #include <thread>
@@ -17,8 +18,20 @@ static bool canon(u64 m){u64 v=rev(m);for(int r=0;r<N;r++){if(rotl(m,r)<m||rotl(
 static bool isprime(int n){if(n<2)return false;for(int d=2;(long)d*d<=n;d++)if(n%d==0)return false;return true;}
 static long pw(long a,long e,long q){long r=1;a%=q;while(e){if(e&1)r=r*a%q;a=a*a%q;e>>=1;}return r;}
 std::mutex mu; std::atomic<long> cnt(0), nT(0);
+static bool parse_int(const char *arg, int &value) {
+  const char *end = arg + std::strlen(arg);
+  const auto parsed = std::from_chars(arg, end, value);
+  return parsed.ec == std::errc{} && parsed.ptr == end;
+}
+
 int main(int argc,char**argv){
-  N=atoi(argv[1]); H=N/4; int nth=atoi(argv[2]);
+  int nth;
+  if (argc != 3 || !parse_int(argv[1], N) || !parse_int(argv[2], nth) ||
+      (N != 8 && N != 16 && N != 32) || nth < 1) {
+    fprintf(stderr, "Usage: cube N WORKERS (N=8,16,32; WORKERS>=1)\n");
+    return 2;
+  }
+  H=N/4;
   int step=(N%3==0)?N:3*N; int q=1;
   for(int i=0;i<NQ;i++){ do{q+=step;}while(!isprime(q));
     int g=2; for(;;g++){bool ok=true; int m=q-1; for(int d=2;d<=m;d++) if(m%d==0){ if(pw(g,(q-1)/d,q)==1){ok=false;break;} while(m%d==0)m/=d; } if(ok)break;}
@@ -50,5 +63,9 @@ int main(int argc,char**argv){
       nT++;
     }});
   for(auto&x:th)x.join();
+  if (nT.load() != static_cast<long>(Ts.size())) {
+    fprintf(stderr, "Incomplete anchor scan\n");
+    return 1;
+  }
   printf("DONE N=%d T=%zu candidates=%ld\n",N,Ts.size(),cnt.load());
 }

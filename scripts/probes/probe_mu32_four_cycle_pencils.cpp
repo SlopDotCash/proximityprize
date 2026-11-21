@@ -1,7 +1,8 @@
 // 4-cycle pattern: Q0 (a = b-1 points), two disjoint b-sets A, C in the complement R with L_A(x)/L_C(x) constant on Q0.
 // D = R \ (A u C) has |R| - 2b points.  key_x(S) = L_S(x0)/L_S(x).  key(A)=key(C) => key_x(R)/key_x(D) is a square.
 #include <cstdio>
-#include <cstdlib>
+#include <charconv>
+#include <cstring>
 #include <cstdint>
 #include <vector>
 #include <thread>
@@ -29,8 +30,20 @@ struct W{ u64 v0[64],v1[64]; int R[64],nr; u64 T;
     dfs(0,DS,b0,b1,0);
   }
 };
+static bool parse_int(const char *arg, int &value) {
+  const char *end = arg + std::strlen(arg);
+  const auto parsed = std::from_chars(arg, end, value);
+  return parsed.ec == std::errc{} && parsed.ptr == end;
+}
+
 int main(int argc,char**argv){
-  N=atoi(argv[1]); int b=N/4; A_=b-1; int nth=atoi(argv[2]); DS=N-A_-2*b;
+  int nth;
+  if (argc != 3 || !parse_int(argv[1], N) || !parse_int(argv[2], nth) ||
+      (N != 16 && N != 32) || nth < 1) {
+    fprintf(stderr, "Usage: cycle N WORKERS (N=16,32; WORKERS>=1)\n");
+    return 2;
+  }
+  int b=N/4; A_=b-1; DS=N-A_-2*b;
   int q=1; for(int i=0;i<NQ;i++){ do{q+=N;}while(!isprime(q));
     int g=2; for(;;g++){bool ok=true; int m=q-1; for(int d=2;d<=m;d++) if(m%d==0){ if(pw(g,(q-1)/d,q)==1){ok=false;break;} while(m%d==0)m/=d; } if(ok)break;}
     std::vector<int> ind(q); long v=1; for(int e=0;e<q-1;e++){ind[v]=e;v=v*g%q;}

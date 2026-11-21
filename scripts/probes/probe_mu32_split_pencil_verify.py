@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exact verification of the candidates printed by the three C++ filters
+"""Exact verification of the candidates printed by the pencil and cycle C++ filters
 
     probe_mu32_three_split_pencils.cpp   (mode "pencil")
     probe_mu32_four_cycle_pencils.cpp    (mode "cycle")
@@ -22,10 +22,27 @@ surviving candidate exactly modulo the 61-bit split prime P below; a characteris
 configuration reduces to one modulo P.  Details: PROGRESS.md, entry
 "No four rate-half codewords within nine errors on the 32nd roots of unity".
 """
+import argparse
 import random
-import sys
+import re
+from math import gcd, isqrt
 
 P = 1332653270109928577  # prime, P = 1 mod 64
+
+
+def verify_split_prime():
+    """Check the factorization and a Lucas witness for the recorded split prime."""
+    odd_factors = (283, 36_789_235_592_699)
+    if P - 1 != 2**7 * odd_factors[0] * odd_factors[1]:
+        raise ArithmeticError("Split-prime factorization does not match")
+    for factor in odd_factors:
+        if any(factor % divisor == 0 for divisor in range(3, isqrt(factor) + 1, 2)):
+            raise ArithmeticError(f"Composite factor in split-prime certificate: {factor}")
+    if pow(3, P - 1, P) != 1 or any(
+        gcd(pow(3, (P - 1) // factor, P) - 1, P) != 1
+        for factor in (2, *odd_factors)
+    ):
+        raise ArithmeticError("Invalid split-prime Lucas witness")
 
 
 def gen(n):
@@ -73,11 +90,56 @@ def half_splits(r, tot, size):
     return hits
 
 
-def candidates(path):
-    for line in open(path):
-        if line.startswith("CAND"):
-            f = line.split()
-            yield int(f[1][2:], 16), int(f[2][2:], 16)
+CANDIDATE = re.compile(r"CAND B=([0-9a-f]{16}) D=([0-9a-f]{16})")
+PENCIL_DONE = re.compile(r"DONE N=(\d+) m=(\d+) B-orbits=(\d+) candidates=(\d+)")
+CYCLE_DONE = re.compile(r"DONE N=(\d+) Q0-orbits=(\d+) candidates=(\d+)")
+EXPECTED = {
+    ("pencil", 32, 7): (748, 0),
+    ("pencil", 32, 8): (3736, 23),
+    ("cycle", 32, None): (4077, 33),
+}
+
+
+def candidates(path, mode, n, m):
+    anchor_size = m if mode == "pencil" else n // 4 - 1
+    remainder_size = n - anchor_size - 2 * (m if mode == "pencil" else n // 4)
+    footer = PENCIL_DONE if mode == "pencil" else CYCLE_DONE
+    records = []
+    seen = set()
+    done = False
+    with open(path, encoding="ascii") as stream:
+        for line_number, line in enumerate(stream, 1):
+            line = line.strip()
+            if not line:
+                continue
+            if done:
+                raise ValueError(f"{path}:{line_number}: data after DONE")
+            if match := CANDIDATE.fullmatch(line):
+                anchor, remainder = record = tuple(int(mask, 16) for mask in match.groups())
+                if (
+                    (anchor | remainder) >> n
+                    or anchor & remainder
+                    or anchor.bit_count() != anchor_size
+                    or remainder.bit_count() != remainder_size
+                    or record in seen
+                ):
+                    raise ValueError(f"{path}:{line_number}: invalid or duplicate candidate masks")
+                seen.add(record)
+                records.append(record)
+            elif match := footer.fullmatch(line):
+                values = tuple(map(int, match.groups()))
+                if values[:-2] != ((n, m) if mode == "pencil" else (n,)):
+                    raise ValueError(f"{path}:{line_number}: DONE parameters do not match")
+                if values[-2] == 0 or values[-1] != len(records):
+                    raise ValueError(f"{path}:{line_number}: incomplete candidate log")
+                done = True
+            else:
+                raise ValueError(f"{path}:{line_number}: unexpected record")
+    if not done:
+        raise ValueError(f"{path}: missing DONE footer")
+    if (expected := EXPECTED.get((mode, n, m))) is not None and len(records) != expected[0]:
+        raise ValueError(f"{path}: expected {expected[0]} candidates, got {len(records)}")
+    return records
 
 
 def antipodal(s, n):
@@ -85,13 +147,31 @@ def antipodal(s, n):
 
 
 def main():
-    mode, n = sys.argv[1], int(sys.argv[2])
+    args_parser = argparse.ArgumentParser(description="Verify a complete finite-pencil candidate scan")
+    modes = args_parser.add_subparsers(dest="mode", required=True)
+    pencil = modes.add_parser("pencil")
+    pencil.add_argument("n", type=int, choices=(8, 16, 32))
+    pencil.add_argument("m", type=int, choices=range(2, 9))
+    pencil.add_argument("path")
+    cycle = modes.add_parser("cycle")
+    cycle.add_argument("n", type=int, choices=(16, 32))
+    cycle.add_argument("path")
+    args = args_parser.parse_args()
+    mode, n = args.mode, args.n
+    m = getattr(args, "m", None)
+    if m is not None and 3 * m > n:
+        args_parser.error("pencil degree requires 3*M <= N")
+    try:
+        records = candidates(args.path, mode, n, m)
+    except (OSError, ValueError) as error:
+        args_parser.error(str(error))
+
+    verify_split_prime()
     g = gen(n)
     pts = [pow(g, i, P) for i in range(n)]
     found = []
     if mode == "pencil":
-        m, path = int(sys.argv[3]), sys.argv[4]
-        for bm, dm in candidates(path):
+        for bm, dm in records:
             bs = [i for i in range(n) if bm >> i & 1]
             s = [i for i in range(n) if not (bm >> i & 1) and not (dm >> i & 1)]
             b0, b1 = pts[bs[0]], pts[bs[1]]
@@ -107,9 +187,8 @@ def main():
                     found.append((tuple(bs), tuple(a), tuple(c)))
         print(f"three-split pencils of degree {m} on mu_{n}: {len(found)}")
     else:
-        path = sys.argv[3]
         b = n // 4
-        for tm, dm in candidates(path):
+        for tm, dm in records:
             ts = [i for i in range(n) if tm >> i & 1]
             s = [i for i in range(n) if not (tm >> i & 1) and not (dm >> i & 1)]
             x0 = pts[ts[0]]
@@ -134,6 +213,9 @@ def main():
                     found.append((tuple(ts), a, tuple(x for x in s if x not in a)))
         print(f"(Q0, A, C) with L_A/L_C constant on Q0 on mu_{n}: {len(found)}")
     sym = all(antipodal(set(x), n) for row in found for x in row[1:])
+    if (expected := EXPECTED.get((mode, n, m))) is not None:
+        if len(found) != expected[1] or not sym:
+            raise ArithmeticError(f"Unexpected census for {mode} n={n}: {len(found)} results, antipodal={sym}")
     print("every listed A and C is antipodally symmetric:", sym)
     for row in found:
         print(" ", row)
