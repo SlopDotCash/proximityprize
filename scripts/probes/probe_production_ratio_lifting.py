@@ -42,6 +42,26 @@ def check_production():
         print(f"{s} sites: exact degree {d}, exponents {lower} > {160 * (s - 1)}, padding {padding}")
 
 
+def check_full_fiber():
+    n = 2**30
+    h = n // 4
+    p = 365375409332725729550921208179070755120141565953
+    require(p > 12 * n**4, "positive-characteristic correction")
+    for d, t in ((h - 1, h - 1), (h + 1, h + 1), (h, h - 1)):
+        points = d + 2 * t
+        coarse = (points**3 + 108 * n**2 - 1) // (108 * n**2)
+        threshold = (13 * points - 7 * n + 324) // 325
+        require(coarse > 8 and threshold == 9085508, "component degree")
+        require(d // (threshold + 1) == 29, "outer degree cap")
+        print(f"degree {d}, protected {t}: orbital degree at least {threshold}")
+    require([i for i in range(2, 30) if (h - 1) % i == 0] == [3, 5, 15, 29],
+            "predecessor outer degrees")
+    require([i for i in range(2, 30) if (h + 1) % i == 0] == [17], "successor outer degree")
+    require(h - 1 == 3 * 5 * 29 * 43 * 113 * 127 and h + 1 == 17 * 15790321,
+            "odd-degree factorizations")
+    require(all(15790321 % a for a in range(2, isqrt(15790321) + 1)), "large prime factor")
+
+
 def rotate(mask, shift, n):
     return ((mask << shift) | (mask >> (n - shift))) & ((1 << n) - 1)
 
@@ -111,6 +131,7 @@ def check_trace_coloring(modulus):
 
 if __name__ == "__main__":
     check_production()
+    check_full_fiber()
     check_translated_ratios(8, 17, (1, 2, 3))
     check_translated_ratios(8, 41, (1, 2, 3))
     check_translated_ratios(16, 97, (2,))
