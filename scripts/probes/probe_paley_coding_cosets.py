@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify Paley discrepancies on two dilates of the order-sixteen budget-two coding domain."""
+"""Check Paley discrepancies on budget-two cosets and on a common inverted smooth domain."""
 
 P = 680564733906249808969588989158290882561
 GENERATOR = 249631592359537775319900728087975376651
@@ -19,6 +19,22 @@ def character(x):
         return -1
     require(residue in (0, 1), "invalid Euler residue")
     return residue
+
+
+def check_inverted_rectangle():
+    prime = 65537
+    right = [*range(1, 12), 13, 8456, 22253, 29382, 54291, 61673, 64033]
+    squares = {x * x % prime for x in range(1, prime)}
+    left = [x for x in range(1, prime) if all((x - y) % prime in squares for y in right)]
+    require(len(left) == len(right) == 18 and len(set(right)) == 18, "wrong rectangle size")
+    require(set(left).isdisjoint(right), "cross difference zero")
+    require(len(squares.intersection(right)) == 9, "inversion weights must balance")
+    inverse_left = [pow(x, -1, prime) for x in left]
+    inverse_right = [pow(y, -1, prime) for y in right]
+    for x in inverse_left:
+        positive = sum((x - y) % prime in squares for y in inverse_right)
+        require(positive == 9, "every inverted row must have nine squares")
+    print("prime=65537 size=18x18 discrepancy=324 inverted_discrepancy=0")
 
 
 def main():
@@ -45,6 +61,8 @@ def main():
         require(discrepancy == 16 * sum(row), "wrong full discrepancy")
         print(f"factor={factor} positive={expected[0]} negative={expected[1]} "
               f"discrepancy={discrepancy}")
+
+    check_inverted_rectangle()
 
 
 if __name__ == "__main__":
