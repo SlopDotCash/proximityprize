@@ -54,6 +54,13 @@ ArkLib.Research.ProximityGap.Frontier.FourRateBudget32 ProximityGap.FourRateBudg
 ArkLib.Research.ProximityGap.Frontier.FourRateBudget32 ProximityGap.FourRateBudget32.list_threshold
 ArkLib.Research.ProximityGap.Frontier.FourRatePrime152 ProximityGap.FourRatePrime152.thresholds
 
+# Independent common-chart proof and terminal budget interval at characteristic above 1,320,000,000
+ArkLib.Research.ProximityGap.Frontier.SecondPrimeTerminalCharge ArkLib.ProximityGap.Frontier.SecondPrimeTerminalCharge.threshold
+ArkLib.Research.ProximityGap.Frontier.SecondPrimeTerminalCharge ArkLib.ProximityGap.Frontier.SecondPrimeTerminalCharge.actual_bad_labels
+ArkLib.Research.ProximityGap.Frontier.SecondPrimeOrdinaryWindow ArkLib.ProximityGap.Frontier.SecondPrimeOrdinaryWindow.classification
+ArkLib.Research.ProximityGap.Frontier.SecondPrimeActualPolarGcd ArkLib.ProximityGap.Frontier.SecondPrimeActualPolarGcd.gcd_of_cubic_chart
+ArkLib.Research.ProximityGap.Frontier.SecondPrimeOrdinaryPolarCharge ArkLib.ProximityGap.Frontier.SecondPrimeOrdinaryPolarCharge.received_charge_of_persistent_gcd
+
 # All power fibers and the actual second-prime quadratic population cap
 ArkLib.Research.ProximityGap.Frontier.PaddedPowerSpecialization ProximityGap.PaddedPowerSpecialization.power_fiber_count
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeQuadraticFactor ProximityGap.SecondPrimeQuadraticFactor.quadratic_population_le_263
