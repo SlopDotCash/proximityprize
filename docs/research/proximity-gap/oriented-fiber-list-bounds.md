@@ -8,8 +8,8 @@ At security $2^{-128}$, the first named prime permits $2^{30}$ words in a closed
 | Second | $1/2$ | 502,118,109 | **502,025,926** | 2,198,117,102 |
 | First | $1/4$ | 771,744,959 | **771,742,301** | 1,074,248,723 |
 | Second | $1/4$ | 771,749,148 | **771,747,593** | 2,147,920,993 |
-| First | $1/8$ | 922,484,737 | **922,365,581** | 1,075,279,395 |
-| Second | $1/8$ | 922,611,581 | **922,568,400** | 2,155,690,992 |
+| First | $1/8$ | 922,365,581 | **922,101,604** | 1,077,692,870 |
+| Second | $1/8$ | 922,568,400 | **922,447,288** | 2,197,233,550 |
 
 ## The locator value at the spare fiber
 
@@ -49,10 +49,57 @@ The four labels with uniform signature require an intersection count. On each ro
 | $1/8$ | First | 16 | 2, 20 | 143,276 | 1,075,279,395 | 381,300 |
 | $1/8$ | Second | 64 | 2, 45 | 143,146 | 2,155,690,992 | 178,481 |
 
+## A third fiber for the common roots at rate one eighth
+
+Take $M=128$, $m=17$, $h=2^{23}$ and root class $16$. After the anchor labels have been chosen, each member $T$ of the candidate family misses exactly $109$ of the $126$ quotient nodes other than $1,-1$. Counting pairs $(T,z)$ with $z$ missed shows that some ordinary fiber $z$ is missed by at least $\lceil109N/126\rceil$ of the $N$ candidates. Keep these candidates and put all $h-1$ roots of $H$ in that fiber. Both anchors now have all $h$ sites available. The $17$ fibers in each retained $T$ still contribute $17h$ agreements. The common zeros and the assigned anchor sites raise this to $18h-1+g$. The Lean theorem takes the population before restriction, finds the fiber and proves a strict lower bound on the canonical worst-center list. [Formal construction and averaging proof](../../../ArkLib/Research/ProximityGap/Frontier/TwoAnchorListWitness.lean)
+
+Start both anchor pools with the two exponent lifts of the uniform vector $(2,\ldots,2)$. These four classes overlap in exactly $143276$ candidates as above. Each additional group in the table specifies a leaf sum $W$, an anchor, and a number of labels. At each group take that many largest label populations at the indicated weight and anchor from the verifier’s finite signature pool. At $1$ the exponent representatives lie over $16$ modulo $128$. At $-1$ the corresponding representatives of $-T$ lie over $80$. Negation preserves the leaf sum, so groups with distinct weights are disjoint even across anchors. No added group has the uniform weight $64$. Within each group the labels partition the candidates, including when two labels give the same field value.
+
+| Prime | Additional groups $(W,\text{anchor},\text{labels})$ | Labels per anchor | Distinct candidates $N$ | Retained at least | Gain $g$ |
+|---|---|---:|---:|---:|---:|
+| First | $(48,+1,4),(68,-1,11),(60,+1,7)$ | 13 | 1,245,773,409 | 1,077,692,870 | 645,277 |
+| Second | $(48,+1,4),(68,+1,16),(60,-1,16),(66,-1,10),(72,+1,6)$ | 28 | 2,539,921,351 | 2,197,233,550 | 299,593 |
+
+With $K$ labels at each anchor, each receives $g=\lfloor h/K\rfloor$ sites. Each retained word has at least $18h-1+g$ agreements with the same center. The resulting list exceeds $2^{30}$ words on the first prime at **922,101,604 errors** and $2^{31}$ on the second at **922,447,288 errors**. The integer recurrence supplies the two candidate populations and the explicit error counts. Exact first failure at either prime still requires a matching all-center safety bound. [Population verifier](../../../scripts/probes/probe_oriented_fiber_lists.py)
+
 The construction applies on the subgroup and every multiplicative coset by precomposing the evaluation polynomials and the center with a nonzero dilation. The first prime is $365375409332725729550921208179070755120141565953$. The second is $730750818665451459101842416358141509841924915201$.
 
-Run the following command from the repository root. The standard-library verifier first enumerates every allowed subset on quotient orders 8 and 16, checks the predicted label counts against direct enumeration and checks the locator equalities by field arithmetic. It also checks the two-anchor intersection recurrence on three small boards. It then verifies the six single-anchor and four double-anchor production counts, root classes, allocations and budgets. The numerical claims use this integer certificate and the written argument. [Reproduction script](../../../scripts/probes/probe_oriented_fiber_lists.py)
+Run the following command from the repository root. The standard-library verifier enumerates every allowed subset on quotient orders 8 and 16, checks the predicted label counts against direct enumeration and checks the locator equalities by field arithmetic. It also checks the two-anchor intersection recurrence on three small boards. It checks six single-anchor counts, four counts with the common roots at the two anchors, and both third-fiber counts, together with their root classes, allocations and budgets. The numerical claims use this integer certificate and the written argument. [Reproduction script](../../../scripts/probes/probe_oriented_fiber_lists.py)
 
 ```sh
 python3 scripts/probes/probe_oriented_fiber_lists.py
 ```
+
+## A third fiber for the common vanishing polynomial
+
+At the quarter and eighth rates, remove the ordinary exponent $j=M/4$ from all candidate root sets. The permitted sets already exclude exponents $0,M/2$. Put every one of the $h-1$ common vanishing points on the fiber $X^h=u^j$. This leaves all $h$ positions at each of the two anchors for assigning locator values. If each anchor uses at most $K$ values, every served candidate gains $g=\lfloor h/K\rfloor$ agreements. The quotient has $m=17$, so the distance from the resulting shared center is at most $n-18h+1-g$. [Lean theorem for arbitrary reserved fibers](../../../ArkLib/Research/ProximityGap/Frontier/TwoAnchorListWitness.lean)
+
+| Rate | Budget | Product exponent modulo $M$ | Values per anchor $K$ | Distinct words at least | Extra agreements | First failure at or before |
+|---|---:|---:|---:|---:|---:|---:|
+| $1/4$ | $2^{30}$ | 1 | 1,123 | 1,074,257,931 | 14,939 | 771,736,998 |
+| $1/4$ | $2^{31}$ | 1 | 2,547 | 2,147,852,051 | 6,587 | 771,745,350 |
+| $1/8$ | $2^{30}$ | 16 | 14 | 1,147,731,928 | 599,186 | 922,147,695 |
+| $1/8$ | $2^{31}$ | 16 | 29 | 2,194,094,160 | 289,262 | 922,457,619 |
+
+The exponent-restricted census at the positive anchor drops the orientation $j$. At the negative anchor it drops $j+M/2$ modulo $M$, the image of the same omitted root under negation. This leaves one available orientation and rules out occupancy two at the corresponding reciprocal pair. Every other reciprocal pair still admits two singleton orientations. The negative-anchor root product is shifted by $mM/2$ modulo $M$, so both count the same original constant.
+
+To count a disjoint union, assign signatures to anchors by the sum $s$ of their leaf entries. Negating a selected set exchanges sibling occupancies at every dyadic depth. Each sibling has the same number of descendant leaves, so the operation preserves $s$. For integers $(d,b)$, serve a set at the positive anchor if bit $\lfloor s/2\rfloor\bmod d$ of $b$ is set and at the negative anchor otherwise. In table order these pairs are $(8,229),(7,90),(4,1),(7,57)$. Within each side retain the $K$ largest permitted populations of signed labels. The two original set families are disjoint, and distinct signed labels within one anchor count disjoint root sets. Their sum therefore counts distinct codewords in one ball. Repeating the scalar center and words gives the result at every positive width.
+
+The exact integer verifier reproduces all four rows. It also checks every five-subset of the ordinary quotient roots for five choices of omitted exponent at order 16 and evaluates all eleven words of a third-fiber example on all 128 sites over $\mathbb F_{257}$. Lean checks the passage from any qualifying family to a single ball. The four numerical restricted-signature counts currently use the integer verifier. [Reproduce the four rows](../../../scripts/probes/probe_third_fiber_lists.py)
+
+## Three and seven serving fibers
+
+Reserve the full subgroup of quotient exponents $0,M/d,\ldots,(d-1)M/d$, with $d=4$ at quarter rate and $d=8$ at eighth rate. Use the last fiber for the $h-1$ common zeros and each of the other $d-1$ fibers to serve locator values. The original candidate sets of size 17 avoid the whole reserved subgroup. Their common root product fixes the same polynomial constant $c$ as in the two-anchor construction.
+
+| Rate | Budget | Serving fibers | Values per serving fiber | Distinct words at least | Extra agreements | First failure at or before |
+|---|---:|---:|---:|---:|---:|---:|
+| $1/4$ | $2^{30}$ | 3 | 887 | 1,073,797,722 | 18,914 | **771,733,023** |
+| $1/4$ | $2^{31}$ | 3 | 2,524 | 2,147,776,086 | 6,647 | **771,745,290** |
+| $1/8$ | $2^{30}$ | 7 | 8 | 1,193,754,620 | 1,048,576 | **921,698,305** |
+| $1/8$ | $2^{31}$ | 7 | 17 | 2,161,068,386 | 493,447 | **922,253,434** |
+
+For each candidate set of exponents $T$ put $s(T)=\sum_{j\in T}\gcd(j,M)$. Its ordinary signature has this leaf sum because a node at exponent $j$ has $\gcd(j,M)$ odd descendants. Every member lies outside the reserved subgroup, so its 2-adic valuation is strictly below that of $M/d$. Adding a multiple of $M/d$ preserves both its valuation and $s(T)$. Assign a set to serving anchor index $(\lfloor s(T)/t\rfloor+b)\bmod(d-1)$, with $(b,t)=(0,3),(0,1),(4,3),(4,3)$ in table order. Each original set has exactly one assigned anchor.
+
+Write $y=u^{aM/d}$ for the quotient root at serving anchor $a$. Translating all original exponents by $-aM/d$ preserves the excluded subgroup and gives the locator identity $L_T(y)=y^{17}L_{T/y}(1)$. Thus the existing signed labels at $1$ give one actual locator value at $y$. The integer verifier fixes original product exponent 1 at quarter rate and 16 at eighth rate. For anchor $a$, it reads the two signed exponent lifts of the rotated product class $r-17aM/d$ modulo $M$, accepting only the assigned sums. Summing the largest allowed signed-label populations on each serving fiber counts disjoint original sets. A fiber with at most $K$ allocated values supplies $\lfloor h/K\rfloor$ agreements, on top of the $17h$ ordinary agreements and the $h-1$ common roots.
+
+Lean constructs one center for arbitrary serving palettes and proves the distinct-word list bound from the common constant, the root sets and the fiber capacities. The exact integer verifier checks the four production populations. At quotient order 16 it also exhausts the restricted histograms and evaluates the resulting degree-bounded words and common centers on all 128 coordinates over $\mathbb F_{257}$. [General allocation and locator theorem](../../../ArkLib/Research/ProximityGap/Frontier/TwoAnchorListWitness.lean) · [Production and finite checks](../../../scripts/probes/probe_serving_subgroup_lists.py)

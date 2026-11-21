@@ -1,6 +1,7 @@
 // Bound every singular value of the quadratic-character matrix on a dyadic subgroup.
 // c++ -O3 -std=c++17 probe_sponsor_paley_spectrum.cpp -lgmpxx -lgmp -o spectrum
 // spectrum first 128 4          (optional fourth argument: smaller subgroup order)
+// spectrum first 128 4 1073741824 double-adjacent   (2H versus (1+g)H)
 //
 // The matrix at (g^i,g^j) is chi(g)^i a[j-i], with a[i]=chi(1-g^i).
 // Its singular values are the magnitudes of the length-n DFT of a. For M residue
@@ -24,17 +25,18 @@ struct Partial {
 };
 
 Partial rows(const Field &f, Word blocks, const std::vector<Pair> &roots,
-             int gen_sign, std::atomic<Word> &next) {
+             int gen_sign, const mpz_class &ratio, std::atomic<Word> &next) {
     const Word length = f.n/blocks, error = fft_error(length);
     const mpz_class step = power(f.g, blocks, f.p);
     std::vector<Pair> v(length);
     Partial out{std::vector<Word>(length/2 + 1), 0, 0};
     for (;;) {
         const Word r = next.fetch_add(1);
-        if (r > blocks/2)
+        // Inverse reflection pairs residues only for the within-coset transform.
+        if (r >= (ratio == 1 ? blocks/2 + 1 : blocks))
             break;
-        const bool paired = r != 0 && 2*r != blocks;
-        const mpz_class start = power(f.g, r, f.p);
+        const bool paired = ratio == 1 && r != 0 && 2*r != blocks;
+        const mpz_class start = ratio * power(f.g, r, f.p) % f.p;
         mpz_class x = start, diff;
         Integer dc = 0, alternating = 0;
         Word zeros = 0;
@@ -48,7 +50,7 @@ Partial rows(const Field &f, Word blocks, const std::vector<Pair> &roots,
             mpz_mul(x.get_mpz_t(), x.get_mpz_t(), step.get_mpz_t());
             mpz_mod(x.get_mpz_t(), x.get_mpz_t(), f.p.get_mpz_t());
         }
-        require(x == start && zeros == (r == 0), "incorrect orbit");
+        require(x == start && zeros == (ratio == 1 && r == 0), "incorrect orbit");
         transform(v, roots);
         require(v[0].re == dc*data_scale && v[0].im == 0 &&
                 v[length/2].re == alternating*data_scale && v[length/2].im == 0,
@@ -66,10 +68,10 @@ Partial rows(const Field &f, Word blocks, const std::vector<Pair> &roots,
 }
 
 int main(int argc, char **argv) try {
-    require(argc == 4 || argc == 5, "usage: spectrum FIELD BLOCKS WORKERS [ORDER]");
+    require(argc >= 4 && argc <= 6, "usage: spectrum FIELD BLOCKS WORKERS [ORDER [double-adjacent]]");
     Field f = sponsor_field(argv[1]);
     const Word blocks = std::stoull(argv[2]), workers = std::stoull(argv[3]);
-    const Word order = argc == 5 ? std::stoull(argv[4]) : f.n;
+    const Word order = argc >= 5 ? std::stoull(argv[4]) : f.n;
     require(order >= 4 && order <= (Word{1} << 30) && f.n % order == 0 &&
             !(order & (order-1)), "invalid dyadic subgroup");
     require(blocks >= 2 && blocks <= order/2 && !(blocks & (blocks-1)), "invalid block count");
@@ -77,6 +79,13 @@ int main(int argc, char **argv) try {
     f.g = power(f.g, f.n / order, f.p);
     f.n = order;
     require(f.p % 4 == 1 && power(f.g, f.n/2, f.p) == f.p-1, "wrong field or generator");
+    mpz_class ratio = 1;
+    if (argc == 6) {
+        require(std::string(argv[5]) == "double-adjacent", "unknown coset pair");
+        // Ratios 1 and g of the summands give output cosets 2H and (1+g)H.
+        ratio = (1+f.g)*((f.p+1)/2) % f.p;
+        require(ratio != 0 && power(ratio, order, f.p) != 1, "cosets overlap");
+    }
     const int gen_sign = mpz_legendre(f.g.get_mpz_t(), f.p.get_mpz_t());
     const Word length = order/blocks;
     const Word bytes = length*sizeof(Pair)*(workers+1) + (length/2+1)*sizeof(Word)*(workers+1);
@@ -86,7 +95,7 @@ int main(int argc, char **argv) try {
     std::vector<std::future<Partial>> tasks;
     for (Word i = 0; i < workers; ++i)
         tasks.push_back(std::async(std::launch::async, rows, std::cref(f), blocks,
-                                   std::cref(roots), gen_sign, std::ref(next)));
+                                   std::cref(roots), gen_sign, std::cref(ratio), std::ref(next)));
     Partial total{std::vector<Word>(length/2+1), 0, 0};
     for (auto &task : tasks) {
         auto part = task.get();
@@ -97,6 +106,9 @@ int main(int argc, char **argv) try {
     }
     require(total.completed == blocks, "incomplete residue coverage");
     const auto largest = std::max_element(total.envelope.begin(), total.envelope.end());
+    if (argc == 6)
+        std::cout << "coset_pair=double-adjacent ratio_sign="
+                  << mpz_legendre(ratio.get_mpz_t(), f.p.get_mpz_t()) << " ";
     std::cout << "field=" << argv[1] << " order=" << order << " blocks=" << blocks
               << " row_length=" << length << " workers=" << workers
               << " generator_sign=" << gen_sign << " row_sum=" << total.dc

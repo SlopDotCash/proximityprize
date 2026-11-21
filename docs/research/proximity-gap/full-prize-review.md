@@ -16,6 +16,8 @@ At 128-bit tolerance with $q<2^{256}$, Lean also settles the literal MCA maximum
 
 Under the same field-size and tolerance assumptions, the largest possible smooth length for simultaneous radius-one MCA safety and first list failure at minimum distance is **128** at rates $1/2,1/4,1/8$ and **256** at rate $1/16$. The BLS12-381 scalar field realizes every eligible dyadic length up to each ceiling, at every positive interleaving width. Above each ceiling, every such field and smooth domain already fails MCA at $n-k-1$ errors and exceeds the list budget at $n-k$ errors. Earlier failure is possible. [Sharp length ceilings and field realization](../../../ArkLib/Research/ProximityGap/JointDyadicCeilings.lean)
 
+For an arbitrary supplied tolerance $ε$, write $B=\lfloor εq\rfloor$ and $N=\binom{n}{k+1}$. When $\binom{B+1}{2}\le q$ (in particular, when $B^2<q$), MCA is safe at the sponsor's capacity radius exactly when $N\le B$. In that case every radius through one is safe. Otherwise a first failure occurs at or before $n-k-1$ errors and there is no largest safe real radius. Without any restriction on the field or tolerance, radius-one safety still requires $Nq\le B(q+N-1)$. [Arbitrary-tolerance circuit criterion](../../../ArkLib/Research/ProximityGap/ToleranceCircuitCriterion.lean)
+
 ## How the formulas determine the answer
 
 At $e$ errors put $t=n-e$, $B=\lfloor εq\rfloor$ and $L=B+1$. Either challenge fails as soon as one of the following tests succeeds. The tests examine supports and finite-field linear equations. Their inputs contain the actual evaluation points. [Answer definitions and correctness](../../../ArkLib/Research/ProximityGap/RankReview.lean)
@@ -41,14 +43,14 @@ For these same codes with positive dimension and $0<B<q$, the first failing list
 
 ## Numerical results at 128-bit security
 
-Over the prime field of order $65\cdot2^{239}+1$, `RankKnownDomain.numericalBoundaries` proves that the universal formulas give the table's length-128 values at every positive width. The proof uses the independently established numerical thresholds and uniqueness of the operational boundary. For length $2^{30}$ over the **same field**, Lean certifies the safe and failing MCA radii shown. The first failure lies strictly above the safe radius and at or below the failing radius. [Literal equality with the rank formulas](../../../ArkLib/Research/ProximityGap/RankKnownDomain.lean) · [Independent length-128 theorem](../../../ArkLib/Research/ProximityGap/KnownDomainReview.lean) · [Length-$2^{30}$ bounds](../../../ArkLib/Research/ProximityGap/Frontier/ProductionMcaIntervals.lean)
+Over the prime field of order $65\cdot2^{239}+1$, `RankKnownDomain.numericalBoundaries` proves that the universal formulas give the table's length-128 values at every positive width. The proof uses the independently established numerical thresholds and uniqueness of the operational boundary. For length $2^{30}$ over the **same field**, Lean certifies the safe and failing MCA radii shown. The first failure lies strictly above the safe radius and at or below the failing radius. [Literal equality with the rank formulas](../../../ArkLib/Research/ProximityGap/RankKnownDomain.lean) · [Independent length-128 theorem](../../../ArkLib/Research/ProximityGap/KnownDomainReview.lean) · [Length-$2^{30}$ bounds](../../../ArkLib/Research/ProximityGap/Frontier/FineGridProductionMcaIntervals.lean)
 
 | Rate | MCA at length 128 | First failing list count at length 128 | Safe MCA radius at length $2^{30}$ | Failing MCA radius at length $2^{30}$ |
 |---|---|---:|---:|---:|
-| 1/2 | First failure at 62 errors | 63 | 39/128 | 31/64 |
-| 1/4 | Safe through radius one | 97 | 67/128 | 95/128 |
-| 1/8 | Safe through radius one | 113 | 86/128 | 111/128 |
-| 1/16 | Safe through radius one | 121 | 99/128 | 239/256 |
+| 1/2 | First failure at 62 errors | 63 | 1269/4096 | 31/64 |
+| 1/4 | Safe through radius one | 97 | 2174/4096 | 95/128 |
+| 1/8 | Safe through radius one | 113 | 2788/4096 | 111/128 |
+| 1/16 | Safe through radius one | 121 | 3201/4096 | 239/256 |
 
 **Complete length-32 family.** Let $B=\lfloor q/2^{128}\rfloor$. On every smooth length-32 domain with $3928630\le B\le10518299$, MCA first fails at 14 and 23 errors at rates $1/2$ and $1/4$. At rates $1/8$ and $1/16$ every radius through one is safe. Lists first fail at 15, 24, 29 and 31 errors in decreasing rate order. These statements hold at every positive width. Lean certifies a concrete realization over the prime $17·2^{147}+1$, including the order of a generator. [Uniform four-rate classification](../../../ArkLib/Research/ProximityGap/Frontier/FourRateBudget32.lean) · [Concrete field and domain](../../../ArkLib/Research/ProximityGap/Frontier/FourRatePrime152.lean)
 
