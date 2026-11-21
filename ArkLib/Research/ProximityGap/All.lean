@@ -2780,6 +2780,7 @@ import ArkLib.Research.ProximityGap.Frontier._SYZ49CyclotomicGcd
 import ArkLib.Research.ProximityGap.Frontier._SYZ4DegenerateChannelCeiling
 import ArkLib.Research.ProximityGap.Frontier._SYZ50WitnessRealizability
 import ArkLib.Research.ProximityGap.Frontier._SYZ51AssemblyBypass
+import ArkLib.Research.ProximityGap.Frontier._SYZ52F17ExplicitOverbudget
 import ArkLib.Research.ProximityGap.Frontier._SYZ52SecondSyzygyInteriorClosure
 import ArkLib.Research.ProximityGap.Frontier._SYZ52WitnessLift
 import ArkLib.Research.ProximityGap.Frontier._SYZ53GeneratorGapCalibration

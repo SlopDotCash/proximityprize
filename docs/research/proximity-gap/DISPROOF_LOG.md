@@ -49100,3 +49100,26 @@ The earlier July n14 distribution/control and the n16 `18`, `d=0` figures came f
 pre-audit classifier and are historical, not current exact-MCA results. This replay does not
 prove absence of an over-budget lift for any field or support witness and does not establish the
 production near-balance/δ* claim.
+### [SYZ52-F17-explicit-overbudget] Exact finite-instance small-scale stack (2026-11-16)
+
+`Frontier/_SYZ52F17ExplicitOverbudget.lean` formalizes a concrete two-word stack over `F₁₇` on
+`μ₁₆`, with `n=16`, `k=8`, and radius `5/16`. For each of the 17 scalars, a literal degree-`<8`
+polynomial agrees with the folded word on at least 11 coordinates. An eight-point interpolation
+core plus a fresh mismatch proves that the selected received component has no RS codeword agreeing
+on that full support; hence the support is not jointly explained by two codewords. The resulting
+`mcaEvent` holds for all field elements, and the exact filtered cardinality is 17, strictly above
+both `n=16` and the stricter comparison budget `n−1=15`. The example is outside the
+unique-decoding hypothesis of `Hab25WindowCount.badScalars_card_le_of_window`: `2n+k=40`, but
+`3⌈(1−δ)n⌉=33`. It therefore shows that the theorem's `n` cap cannot be extended uniformly past
+its stated window; it does not contradict the theorem.
+
+The checked declarations are `mcaEvent_index`, `seventeen_le_badScalar_filter_card`,
+`badScalar_filter_card_eq_17`, and `fifteen_lt_badScalar_filter_card`. The narrow command is:
+
+```
+./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_SYZ52F17ExplicitOverbudget.lean
+```
+
+This certifies one finite small-field stack, not an exhaustive maximum across stacks or a
+production-field violation. In particular it does not revise the separate SYZ53 large-field
+collapse or resolve production δ*.
