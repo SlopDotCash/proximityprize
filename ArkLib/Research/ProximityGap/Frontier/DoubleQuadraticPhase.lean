@@ -60,6 +60,7 @@ private theorem eventually_safe (hQ : 0<Q) (hn : Tendsto n atTop atTop) {slope �
     exact_mod_cast (show 2*(n i:ℝ)<p i+2*e i by linarith only [hc])
   have space : n i≤k i+2*e i := by
     exact_mod_cast (show (n i:ℝ)≤k i+2*e i by linarith only [hp])
+  have marginBound := DoubleQuadraticThreshold.margin_le_five (n i) (k i)
   have bounded := upper (e:=e i) (x i) big degree third en (by omega) (by unfold agreements;omega) (by
     intro u hu bound zero
     have pd := Nat.le_of_dvd hu ((CharP.cast_eq_zero_iff (ZMod (p i)) (p i) u).mp zero)
