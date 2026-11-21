@@ -315,6 +315,9 @@ import ArkLib.Research.ProximityGap.Frontier.FarLineProxyBelowJohnson
 import ArkLib.Research.ProximityGap.Frontier.FermatPowerMoment
 import ArkLib.Research.ProximityGap.Frontier.FiberReverseRatio
 import ArkLib.Research.ProximityGap.Frontier.FieldListAtMinimumDistance
+import ArkLib.Research.ProximityGap.Frontier.FineGridFirstOrderSecurity
+import ArkLib.Research.ProximityGap.Frontier.FineGridProductionMcaIntervals
+import ArkLib.Research.ProximityGap.Frontier.FineGridWideLists
 import ArkLib.Research.ProximityGap.Frontier.FiniteFingerprintCount
 import ArkLib.Research.ProximityGap.Frontier.FiniteGaussianNullity
 import ArkLib.Research.ProximityGap.Frontier.FiniteNormalizationColength

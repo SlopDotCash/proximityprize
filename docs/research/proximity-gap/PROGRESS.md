@@ -27,6 +27,10 @@ The universal rank formula now determines the operational MCA and list cutoffs o
 | Unit sixth-moment inequality at order 64 | Exactly 182 split primes violate it. The largest is 926510094425921. At 173249 all three repeated-entry tests pass, and the exact integer excess is 7565522944. | [All-prime classification](../../../scripts/probes/probe_order64_sixth_moment_classification.py), [Lean counterexample](../../../ArkLib/Research/ProximityGap/Frontier/SixthMomentSparseCounterexampleWiring.lean) |
 | Workbench flatness conjecture | Quadratic extensions refute the all-finite-fields formulation. The uniform prime-field cancellation bound remains open. | [Lean counterexample](../../../ArkLib/Research/ProximityGap/Frontier/ShawFlatnessSubfieldCounterexample.lean) |
 
+## First-order interpolation at multiples of 4096
+
+For any injective prime-field domain of length $n=4096b$, $b>0$, the line-MCA test at 128-bit security passes at radii **1265/4096, 2170/4096, 2783/4096 and 3197/4096** in decreasing prize-rate order whenever $p\ge2^{171}n^2$. This includes the length-$2^{30}$ code over $65\cdot2^{239}+1$. At these same radii every center and finite interleaving width have list size at most **96741451n, 138925816n, 25849285n and 25632097n**, respectively, for every prime field admitting the domain. [Line-MCA bounds](../../../ArkLib/Research/ProximityGap/Frontier/FineGridProductionMcaIntervals.lean) · [Interleaved list bounds](../../../ArkLib/Research/ProximityGap/Frontier/FineGridWideLists.lean) · [Exact arithmetic](../../../scripts/probes/probe_first_order_fine_grid.py)
+
 ## How to use the general result
 
 The first failing count can also be computed in Lean from explicit finite input data. At 128-bit tolerance the integer budget is the field order divided by $2^{128}$, rounded down. The correctness theorem applies to all four rates and every positive width. Actual numerical evaluation can require a prohibitive number of rank computations. [Executable boundary theorem](../../../ArkLib/Research/ProximityGap/RankExecutable.lean) · [Compiled examples](../../../ArkLib/Tests/ProximityPrize/GrandChallengeReview.lean)
