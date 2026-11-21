@@ -315,6 +315,7 @@ import ArkLib.Research.ProximityGap.Frontier.I031ModulusAlphabetRefine
 import ArkLib.Research.ProximityGap.Frontier.I031OrbitCountPartition
 import ArkLib.Research.ProximityGap.Frontier.I031SupTransversalCollapse
 import ArkLib.Research.ProximityGap.Frontier.I031TransversalConcreteCover
+import ArkLib.Research.ProximityGap.Frontier.ImplicitDerivativeNumerator
 import ArkLib.Research.ProximityGap.Frontier.ImprimitiveSpikeStructure
 import ArkLib.Research.ProximityGap.Frontier.IncidenceDevL2Offset
 import ArkLib.Research.ProximityGap.Frontier.InterleavedListProjection

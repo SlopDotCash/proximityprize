@@ -3,7 +3,7 @@ Copyright (c) 2026 ArkLib Contributors. All rights reserved.
 Released under the MIT and Apache-2.0 licenses as described in LICENSE-MIT and LICENSE.
 Authors: ArkLib Contributors
 -/
-import ArkLib.ToMathlib.ResultantDegreeBound
+import ArkLib.Data.Polynomial.ResultantDegree
 import ArkLib.Data.Polynomial.ResultantSpecialization
 
 /-! # The scalar degree of a resultant with total-degree support
@@ -76,13 +76,28 @@ theorem natDegree_resultant_le {R : Type*} [CommRing R] (f g : R[X][X])
     rw [natDegree_intCast, zero_add]
     omega
 
+/-- Apply the canonical coefficient-degree bound when nominal degrees lie inside both triangles. -/
+private theorem resultant_le_of_nominal_le {R : Type*} [CommRing R] (f g : R[X][X])
+    {b b' m m' : ℕ} (hbm : b ≤ m) (hbm' : b' ≤ m')
+    (hf : TotalDegreeLe f m) (hg : TotalDegreeLe g m') :
+    (resultant f g b b').natDegree ≤ b*m' + b'*m - b*b' := by
+  have h₁ (i : ℕ) (hi : i ≤ b) : i+(f.coeff i).natDegree ≤ m := by
+    by_cases h : f.coeff i = 0
+    · simpa [h] using hi.trans hbm
+    · simpa [add_comm] using hf i h
+  have h₂ (i : ℕ) (hi : i ≤ b') : i+(g.coeff i).natDegree ≤ m' := by
+    by_cases h : g.coeff i = 0
+    · simpa [h] using hi.trans hbm'
+    · simpa [add_comm] using hg i h
+  simpa [add_comm] using Polynomial.natDegree_resultant_le_of_coeff_add_le f g b b' m m' h₁ h₂
+
 /-- The degree calculation for the numerator of the order-`d+1` implicit
 coordinate derivative of a quintic having value degree three. -/
 theorem quintic_cubic_derivative_resultant_bound {R : Type*} [CommRing R]
     (f g : R[X][X]) (d : ℕ) (hf : TotalDegreeLe f 5)
     (hg : TotalDegreeLe g (5+8*d)) :
     (resultant f g 3 (3+4*d)).natDegree ≤ 21+32*d := by
-  apply (natDegree_resultant_le f g hf hg).trans
+  apply (resultant_le_of_nominal_le f g (by omega) (by omega) hf hg).trans
   omega
 
 /-- Counting distinct scalar specializations with a common value uses the same
