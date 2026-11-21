@@ -9,7 +9,8 @@ import ArkLib.Research.ProximityGap.Frontier.CircuitDensity
 # Exact all-domain line-MCA radius in a binomial budget interval
 
 Write N for choose(n,k+1) and B for floor(q/D). When floor(N/(k+1)) ≤ B < N
-and q < D², every injective evaluation domain has its first failure at
+and q < D², or when floor(N/(k+1)) ≤ B and q ≤ (D−1)N without a bit cap,
+every injective evaluation domain has its first failure at
 n-k-1 errors for security 1/D. The radius test below concerns every real Hamming
 radius, including the endpoint.
 -/
