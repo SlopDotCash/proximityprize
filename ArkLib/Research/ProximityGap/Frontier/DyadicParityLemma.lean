@@ -130,7 +130,113 @@ theorem dyadic_eq_zero_of_three_centers (e : ℕ) (F c : ZMod (2 ^ (e + 1)) → 
     (H₃ : ∀ i, F (x₃ + i) + F (x₃ - i) = c i) : F = 0 :=
   eq_zero_of_three_centers (2 ^ e) F c hanti (dyadic_frequency e) h12 h13 h23 H₁ H₂ H₃
 
+/-! ### From the reflection equations to antipodal symmetry of sets -/
+
+section Sets
+
+variable (e : ℕ)
+
+/-- Reduction modulo two on `ZMod (2 ^ (e + 1))`; its value is the parity class. -/
+noncomputable def par : ZMod (2 ^ (e + 1)) →+* ZMod 2 :=
+  ZMod.castHom (Dvd.intro_left (2 ^ e) (by ring)) (ZMod 2)
+
+lemma par_half (he : 1 ≤ e) : par e ((2 : ZMod (2 ^ (e + 1))) ^ e) = 0 := by
+  rw [map_pow, map_ofNat]
+  have h2 : (2 : ZMod 2) = 0 := by decide
+  rw [h2, zero_pow (by omega)]
+
+lemma half_add_half : ((2 : ZMod (2 ^ (e + 1))) ^ e) + (2 : ZMod (2 ^ (e + 1))) ^ e = 0 := by
+  have hz : ((2 ^ (e + 1) : ℕ) : ZMod (2 ^ (e + 1))) = 0 := ZMod.natCast_self _
+  have : ((2 : ZMod (2 ^ (e + 1))) ^ e) + (2 : ZMod (2 ^ (e + 1))) ^ e
+      = ((2 ^ (e + 1) : ℕ) : ZMod (2 ^ (e + 1))) := by
+    push_cast
+    ring
+  rw [this, hz]
+
+/-- The antipodal difference of the signed indicator of two sets. -/
+noncomputable def antiDiff (α γ : Finset (ZMod (2 ^ (e + 1)))) (y : ZMod (2 ^ (e + 1))) : ℂ :=
+  ((if y ∈ α then 1 else 0) - (if y + 2 ^ e ∈ α then 1 else 0))
+    - ((if y ∈ γ then 1 else 0) - (if y + 2 ^ e ∈ γ then 1 else 0))
+
+/-- **Parity lemma for sets.** Let `α, γ` be disjoint and let three distinct points of parity
+class `w` satisfy the reflection equations `f⁻(x + i) + f⁻(x - i) = c i` for all odd `i`, where
+`f⁻` is the antipodal difference of `1_α - 1_γ`. Then `α` and `γ` are both closed under the
+antipode `y ↦ y + 2 ^ e` inside the other parity class. -/
+theorem symmetric_on_other_class (he : 1 ≤ e) (α γ : Finset (ZMod (2 ^ (e + 1))))
+    (hdisj : Disjoint α γ) (w : ZMod 2) (c : ZMod (2 ^ (e + 1)) → ℂ)
+    {x₁ x₂ x₃ : ZMod (2 ^ (e + 1))} (h12 : x₁ ≠ x₂) (h13 : x₁ ≠ x₃) (h23 : x₂ ≠ x₃)
+    (hw₁ : par e x₁ = w) (hw₂ : par e x₂ = w) (hw₃ : par e x₃ = w)
+    (R₁ : ∀ i, par e i = 1 → antiDiff e α γ (x₁ + i) + antiDiff e α γ (x₁ - i) = c i)
+    (R₂ : ∀ i, par e i = 1 → antiDiff e α γ (x₂ + i) + antiDiff e α γ (x₂ - i) = c i)
+    (R₃ : ∀ i, par e i = 1 → antiDiff e α γ (x₃ + i) + antiDiff e α γ (x₃ - i) = c i) :
+    (∀ y ∈ α, par e y = w + 1 → y + 2 ^ e ∈ α) ∧ (∀ y ∈ γ, par e y = w + 1 → y + 2 ^ e ∈ γ) := by
+  classical
+  set F : ZMod (2 ^ (e + 1)) → ℂ := fun y ↦ if par e y = w + 1 then antiDiff e α γ y else 0
+    with hF
+  set c' : ZMod (2 ^ (e + 1)) → ℂ := fun i ↦ if par e i = 1 then c i else 0 with hc'
+  have hanti : ∀ y, F (y + 2 ^ e) = -F y := by
+    intro y
+    have hp : par e (y + 2 ^ e) = par e y := by rw [map_add, par_half e he, add_zero]
+    have hh : y + 2 ^ e + 2 ^ e = y := by rw [add_assoc, half_add_half, add_zero]
+    simp only [hF, hp]
+    split_ifs
+    · unfold antiDiff
+      rw [hh]
+      ring
+    · simp
+  have key : ∀ x, par e x = w →
+      (∀ i, par e i = 1 → antiDiff e α γ (x + i) + antiDiff e α γ (x - i) = c i) →
+      ∀ i, F (x + i) + F (x - i) = c' i := by
+    intro x hx R i
+    have hcases : par e i = 0 ∨ par e i = 1 := by
+      generalize par e i = z
+      fin_cases z
+      · exact Or.inl rfl
+      · exact Or.inr rfl
+    rcases hcases with h0 | h1
+    · have hne : w ≠ w + 1 := by
+        intro hcon
+        have h10 : (1 : ZMod 2) = 0 := by
+          have := congrArg (fun t ↦ t - w) hcon
+          simpa using this.symm
+        exact absurd h10 (by decide)
+      simp [hF, hc', map_add, map_sub, hx, h0, hne]
+    · have ha : par e (x + i) = w + 1 := by rw [map_add, hx, h1]
+      have hb : par e (x - i) = w + 1 := by
+        rw [map_sub, hx, h1]
+        have : (-1 : ZMod 2) = 1 := by decide
+        rw [sub_eq_add_neg, this]
+      simp only [hF, hc', ha, hb, h1, ite_true]
+      exact R i h1
+  have hzero : F = 0 :=
+    dyadic_eq_zero_of_three_centers e F c' hanti h12 h13 h23
+      (key x₁ hw₁ R₁) (key x₂ hw₂ R₂) (key x₃ hw₃ R₃)
+  have hval : ∀ y, par e y = w + 1 → antiDiff e α γ y = 0 := by
+    intro y hy
+    have := congrFun hzero y
+    simpa [hF, hy] using this
+  constructor
+  · intro y hyα hy
+    have hyγ : y ∉ γ := Finset.disjoint_left.mp hdisj hyα
+    have h := hval y hy
+    unfold antiDiff at h
+    by_contra hnot
+    by_cases hg : y + 2 ^ e ∈ γ
+    · norm_num [hyα, hyγ, hnot, hg] at h
+    · norm_num [hyα, hyγ, hnot, hg] at h
+  · intro y hyγ hy
+    have hyα : y ∉ α := Finset.disjoint_right.mp hdisj hyγ
+    have h := hval y hy
+    unfold antiDiff at h
+    by_contra hnot
+    by_cases ha : y + 2 ^ e ∈ α
+    · norm_num [hyα, hyγ, hnot, ha] at h
+    · norm_num [hyα, hyγ, hnot, ha] at h
+
+end Sets
+
 end ProximityGap.DyadicParity
 
 #print axioms ProximityGap.DyadicParity.eq_zero_of_three_centers
 #print axioms ProximityGap.DyadicParity.dyadic_eq_zero_of_three_centers
+#print axioms ProximityGap.DyadicParity.symmetric_on_other_class

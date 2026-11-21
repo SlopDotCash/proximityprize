@@ -5,6 +5,8 @@ SPDX-License-Identifier: MIT OR Apache-2.0
 import ArkLib.Research.ProximityGap.RankReview
 import ArkLib.Research.ProximityGap.Frontier.ListSupportGaussian
 import ArkLib.Research.ProximityGap.Frontier.SimultaneousSupportGaussian
+import ArkLib.Data.CodingTheory.ProximityGap.MCAStaircaseRS
+import ArkLib.Data.CodingTheory.ProximityGap.UniversalStaircaseCollapse
 import ArkLib.Research.ProximityGap.Frontier.TwoParityMca
 import ArkLib.Research.ProximityGap.Frontier.ListInterpolationBoundary
 import ArkLib.Research.ProximityGap.BoundedChoose
@@ -202,11 +204,68 @@ theorem circuitsCovered_correct [Fintype I] [Nonempty I] [Fintype F] [Sampleable
     simpa [circuitsCovered, BoundedChoose.capped_eq, min_le_iff] using covered
   exact_mod_cast hc
 
-/-- Compute the MCA boundary from enumerations of the coordinates and the field. -/
+/-- Check whether the staircase upper bound covers the predecessor and the
+spike construction fits at the next error count. -/
+def spikeBoundary (n k B : ℕ) : Boundary n :=
+  if h : k + 3 * (B - 1) ≤ n ∧ k + (B + 1) ≤ n then
+    some ⟨B, by omega⟩
+  else none
+
+omit [DecidableEq I] [DecidableEq F] in
+/-- In the spike window the first failing count is the budget itself on every
+injective domain, including at an arbitrary real tolerance. -/
+theorem spikeBoundary_correct [Fintype I] [Nonempty I] [Fintype F] [SampleableType F]
+    (D : I ↪ F) (ε : ℝ≥0) (k : ℕ) {e : Fin (Fintype.card I + 1)}
+    (res : spikeBoundary (Fintype.card I) k (RankReview.budget F ε) = some e) :
+    some e = RankReview.mcaAnswer D ε k := by
+  classical
+  let B := RankReview.budget F ε
+  change spikeBoundary (Fintype.card I) k B = some e at res
+  unfold spikeBoundary at res
+  split at res
+  · rename_i h
+    obtain ⟨pre, room⟩ := h
+    cases res
+    symm
+    apply correctBoundary_unique Fintype.card_pos (RankReview.mcaAnswer_correct D ε k)
+    intro δ _
+    change mcaError (AffineLineGenerator F) (ReedSolomon.code D k) (δ : ℝ) ≤ _ ↔
+      δ < (B : ℝ≥0) / Fintype.card I
+    rw [← epsMCA_eq_mcaError, SimultaneousSupportRank.epsMCA_le_iff_floor_budget]
+    have hn : 0 < (Fintype.card I : ℝ≥0) := by exact_mod_cast Fintype.card_pos
+    constructor
+    · intro safe
+      by_contra! crossed
+      have fit : B+1 ≤ Fintype.card I := by omega
+      obtain ⟨pos⟩ : Nonempty (Fin (B+1) ↪ I) :=
+        Function.Embedding.nonempty_of_card_le (by simpa using fit)
+      have spike := SpikeFloor.epsMCA_ge_j_div_card (ReedSolomon.code D k)
+        (MCAStaircaseRS.rs_noWeightLE D room) (δ := δ) (by simpa using (div_le_iff₀ hn).mp crossed)
+        (by omega) fit pos (pos.trans D) (b := (1 : F)) one_ne_zero
+      have le := spike.trans safe
+      change ((B+1 : ℕ) : ℝ≥0∞) / Fintype.card F ≤ (B : ℝ≥0∞) / Fintype.card F at le
+      rw [ENNReal.div_le_iff (by simp [Fintype.card_ne_zero]) (ENNReal.natCast_ne_top _),
+        ENNReal.div_mul_cancel (by simp [Fintype.card_ne_zero]) (ENNReal.natCast_ne_top _)] at le
+      exact (Nat.not_succ_le_self B) (by exact_mod_cast le)
+    · exact fun good => SpikeFloor.epsMCA_le_j_div_card (ReedSolomon.code D k)
+        (MCAStaircaseRS.rs_noWeightLE D pre) ((lt_div_iff₀ hn).mp good)
+  · contradiction
+
+/-- Compute the MCA boundary, requesting field labels only when a simultaneous
+support search is necessary. -/
+def mcaBoundaryWith {n : ℕ} (E : Fin n ≃ I) (labels : Unit → List F) (D : I ↪ F)
+    (k B : ℕ) : Boundary n :=
+  match spikeBoundary n k B with
+  | some e => some e
+  | none =>
+    if circuitsCovered n k B then none else
+      if n = k + 2 then twoCheckBoundary n B else
+        let fieldLabels := labels ()
+        scan n fun e => SimultaneousSupportGaussian.anchoredSafe E fieldLabels D k B (n - e.val)
+
+/-- Compute the MCA boundary with a supplied list of field elements. -/
 def mcaBoundary {n : ℕ} (E : Fin n ≃ I) (labels : List F) (D : I ↪ F) (k B : ℕ) : Boundary n :=
-  if circuitsCovered n k B then none else
-    if n = k + 2 then twoCheckBoundary n B else
-      scan n fun e => SimultaneousSupportGaussian.anchoredSafe E labels D k B (n - e.val)
+  mcaBoundaryWith E (fun _ => labels) D k B
 
 /-- Executing the MCA search produces the universal operational answer. -/
 theorem mcaBoundary_eq [Fintype I] [Nonempty I] [Fintype F] [SampleableType F]
@@ -214,24 +273,35 @@ theorem mcaBoundary_eq [Fintype I] [Nonempty I] [Fintype F] [SampleableType F]
     (D : I ↪ F) (ε : ℝ≥0) (k : ℕ) :
     mcaBoundary E labels D k (RankReview.budget F ε) = RankReview.mcaAnswer D ε k := by
   classical
-  unfold mcaBoundary
-  by_cases covered : circuitsCovered (Fintype.card I) k (RankReview.budget F ε) = true
-  · rw [ite_eq_left covered]
-    exact circuitsCovered_correct D ε k covered
-  · rw [ite_eq_right covered]
-    rw [ite_eq_right_iff.mpr (twoCheckBoundary_eq_scan E labels hlabels D _)]
-    apply scan_eq_firstFailure
-    intro e
-    rw [SimultaneousSupportGaussian.anchoredSafe_iff E labels hlabels D k _ e.val
-      Fintype.card_pos]
-    let δ := gridPt (ι := I) e.val
-    change (mcaError (AffineLineGenerator F) (ReedSolomon.code D k) (δ : ℝ) ≤ _) ↔ _
-    rw [← epsMCA_eq_mcaError, ← not_lt, SimultaneousSupportRank.budget_failure_iff]
-    unfold RankReview.mcaFails
-    have hs (S : Finset I) : ((1 - δ) * Fintype.card I ≤ (S.card : ℝ≥0)) ↔
-        Fintype.card I - e.val ≤ S.card := by
-      rw [← relDist_floor_bound_iff_complement_bound, gridPt_mul_card, Nat.floor_natCast]
-    simp_rw [ge_iff_le, hs]
+  unfold mcaBoundary mcaBoundaryWith
+  split
+  next e result => exact spikeBoundary_correct D ε k result
+  next =>
+    by_cases covered : circuitsCovered (Fintype.card I) k (RankReview.budget F ε) = true
+    · rw [ite_eq_left covered]
+      exact circuitsCovered_correct D ε k covered
+    · rw [ite_eq_right covered]
+      rw [ite_eq_right_iff.mpr (twoCheckBoundary_eq_scan E labels hlabels D _)]
+      apply scan_eq_firstFailure
+      intro e
+      rw [SimultaneousSupportGaussian.anchoredSafe_iff E labels hlabels D k _ e.val
+        Fintype.card_pos]
+      let δ := gridPt (ι := I) e.val
+      change (mcaError (AffineLineGenerator F) (ReedSolomon.code D k) (δ : ℝ) ≤ _) ↔ _
+      rw [← epsMCA_eq_mcaError, ← not_lt, SimultaneousSupportRank.budget_failure_iff]
+      unfold RankReview.mcaFails
+      have hs (S : Finset I) : ((1 - δ) * Fintype.card I ≤ (S.card : ℝ≥0)) ↔
+          Fintype.card I - e.val ≤ S.card := by
+        rw [← relDist_floor_bound_iff_complement_bound, gridPt_mul_card, Nat.floor_natCast]
+      simp_rw [ge_iff_le, hs]
+
+/-- Delaying the field enumeration preserves the answer of the public rank evaluator. -/
+theorem mcaBoundaryWith_eq [Fintype I] [Nonempty I] [Fintype F] [SampleableType F]
+    (E : Fin (Fintype.card I) ≃ I) (labels : Unit → List F) (hl : ∀ g, g ∈ labels ())
+    (D : I ↪ F) (ε : ℝ≥0) (k : ℕ) :
+    mcaBoundaryWith E labels D k (RankReview.budget F ε) = RankReview.mcaAnswer D ε k := by
+  have h : (fun _ : Unit => labels ()) = labels := by funext u; cases u; rfl
+  simpa only [mcaBoundary, h] using mcaBoundary_eq E (labels ()) hl D ε k
 
 /-- Both executable boundary functions classify every real radius in the prize contract. -/
 theorem correctForEveryDomain [Fintype I] [Nonempty I] [Fintype F] [SampleableType F]
