@@ -1291,6 +1291,8 @@ The prime-field comparison of lists and proximity uses different finite inequali
 
 ## 2026-11-21 · From the coding prizes to classical Paley discrepancy
 
+The prize rank formulas give identical data on each of three indexed order-16 cosets, yet one pair has every classical Paley edge and another has exactly half the edges. Their common coding thresholds are explicit at all four rates. At logarithmic subgroup orders a written application of Weil’s bound realizes every possible signed coset discrepancy. Inversion gives examples preserving support ranks even when both sets are marked inside one domain. In the positive direction, a written second-moment estimate gives the conjectured power saving for almost every simultaneous inverse chart on any two supplied polynomial-size sets, for every nontrivial multiplicative character. Lean also proves the exact translation mean square for every nontrivial character and fixed dilation, in terms of additive energy. The bound at an arbitrary prescribed placement remains open. [Proofs and finite certificates](paley-support-ranks.md) · [Lean translation theorem](../../../ArkLib/Research/ProximityGap/Frontier/PaleyTranslationEnergy.lean)
+
 The joint coding theorem covers the order-128 subgroup of the prime field of order
 $p=65\cdot2^{239}+1$. At rates $1/2,1/4,1/8,1/16$ its first bad list error counts are
 $63,97,113,121$. For MCA the half-rate crossing is $62$ errors and the other three rates
