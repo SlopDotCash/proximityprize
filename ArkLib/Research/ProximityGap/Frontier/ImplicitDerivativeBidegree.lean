@@ -171,7 +171,7 @@ theorem quintic_cubic_actual_resultant (f : K[X][X]) (j : ℕ)
     (resultant f (numerator f j) f.natDegree (numerator f j).natDegree).natDegree ≤
       21+32*j := by
   obtain ⟨ht, hy⟩ := quintic_cubic_numerator hD f j hf hfy
-  apply (natDegree_resultant_le f (numerator f j) (by omega) (by omega) hf ht).trans
+  apply (natDegree_resultant_le f (numerator f j) hf ht).trans
   exact cubic_degree_arithmetic hfy hy
 
 include hD in
@@ -186,7 +186,6 @@ theorem quintic_cubic_resultant_zero_of_common_fibers (f : K[X][X]) (j : ℕ)
   by_contra hn
   obtain ⟨ht, hy⟩ := quintic_cubic_numerator hD f j hf hfy
   have hh := common_fiber_count f (numerator f j) le_rfl le_rfl (Or.inl hpos)
-    (by omega : f.natDegree ≤ 5) (by omega : (numerator f j).natDegree ≤ 5+8*j)
     hf ht hn S hS
   exact (Nat.not_lt_of_ge (hh.trans (cubic_degree_arithmetic hfy hy))) hcard
 
