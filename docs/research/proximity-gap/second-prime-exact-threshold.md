@@ -137,3 +137,5 @@ the good side and $j$ on the bad side. Thus $b(j-1)\le3j\le B$ and
 $b(j)\ge3j+3>B$. The bad event is monotone and constant between
 consecutive Hamming steps. Consequently the good real radii are exactly
 $0\le\delta<j/n$. [MCA and its radius predicate](../../../ArkLib/Data/CodingTheory/ProximityGap/GrandChallenges.lean)
+
+The same two cubic cases extend to all multiples of 16 above this length in characteristic greater than $3n^2$. At rate $1/16$ a quadratic three-head construction also determines the adjacent plateau at $5/8$. [Uniform interval](uniform-three-head-threshold.md) · [Plateau](rate-sixteenth-three-head-plateau.md)
