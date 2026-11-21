@@ -212,8 +212,11 @@ Landed by [PR #5](https://github.com/SlopDotCash/proximityprize/pull/5), merge
 **Computational evidence:**
 
 - `probe_syz71_linear_middle_slot.py` and `probe_syz71_verify_f41.py` exhibit and verify an
-  on-domain `F_41`, `μ_20` occupant. The explicit finite-field witness is not replayed as a Lean
-  theorem.
+  on-domain `F_41`, `μ_20` occupant. `_SYZ72F41MiddleSlotCertificate.lean` now kernel-checks that
+  exact support partition and its minimum syzygy product-degree `7` as
+  `SYZ72.zmod41_regionSyzygyRealizable`. The support sets partition the actual twenty powers of
+  `2` in `F_41`; the proof checks the vanishing polynomials, a degree-seven syzygy, and the absence
+  of any nonzero constant syzygy.
 
 **SYZ72 addendum (2026-10-30).** The PR #5 rank test also accepts floor-attained constant-syzygy
 triples. The strengthened test confirms the recorded `F_41` witness. A reproducible sweep of
@@ -225,6 +228,11 @@ sample missed. The production question remains open. See `DISPROOF_LOG.md`
 **Consequence:** the first middle slot is not empty at the algebraic/domain-counting level. This
 refutes an emptiness route and narrows F1 to the over-budget-stack lift. It does **not** discharge
 `UniformSylvesterInjective`, `ι ≤ 1`, or production δ*.
+
+The Lean certificate is for the region/syzygy layer only. As `F1RegionSyzygyInterface` specifies,
+it does not produce codeword witnesses or an over-budget MCA stack, so the SYZ42/SYZ28 lift gate
+and the production near-balance theorem remain open. Reproduce the formal check with
+`scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_SYZ72F41MiddleSlotCertificate.lean`.
 
 ### 4.3 All-depth cyclic energy floor
 

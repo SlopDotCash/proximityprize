@@ -49035,3 +49035,28 @@ Stickelberger bound, and does not close `δ*` or issue #164.
 ./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_TwoPowerCyclotomicTrace.lean
 ./scripts/lake-locked.sh build ArkLib.Research.ProximityGap.Frontier._TwoPowerCyclotomicTrace
 ```
+
+## [SYZ72-F41-Lean-region-certificate] On-domain middle-slot witness checked by Lean
+
+Date: 2026-11-15. Target: the `(6,6,6)` first middle slot of the F1 residual
+(`SYZ59.middleBand 6 6 6 7`) and the earlier exact-arithmetic `F_41`, `μ_20` witness.
+
+`Frontier/_SYZ72F41MiddleSlotCertificate.lean` proves
+`SYZ72.zmod41_regionSyzygyRealizable`: the twenty powers of `2` in `F_41` split into the recorded
+three six-point supports and the two-point leftover; their vanishing polynomials admit a
+degree-seven syzygy; and coefficient comparison rules out any nonzero constant syzygy, proving
+that the minimum product-degree is exactly seven. Consequently
+`SYZ72.zmod41_not_regionMiddleExclusion` refutes the universal region/syzygy middle-exclusion
+statement over `F_41`.
+
+The proof uses only `propext`, `Classical.choice`, and `Quot.sound`. It improves the recorded
+probe evidence to a kernel-checked finite certificate, but remains strictly at the region/syzygy
+layer: it supplies no RS codewords, `mcaEvent` witnesses, or over-budget stack. Thus it does not
+refute the genuine-stack lift gate, establish the production near-balance theorem, or close
+production `δ*`.
+
+Reproduce with:
+
+```
+./scripts/pg-iterate.sh ArkLib/Research/ProximityGap/Frontier/_SYZ72F41MiddleSlotCertificate.lean
+```
