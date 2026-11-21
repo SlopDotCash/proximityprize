@@ -87,6 +87,37 @@ The diagonal terms give $E\ge L=n(n-1)^2$. Write $R=n(n-1)(2n-3)$, $C=\binom n4$
 
 If $n\sim\sqrt p$, take $x/n\to1/4$ to obtain $E/n^4\le3/4+o(1)$. For $p\equiv1\pmod4$ this gives $N_4/C\le13/16+o(1)$. For $p\equiv3\pmod4$, the lower estimate at this scale is weaker than $N_4\ge0$, and the upper estimate is $1/4+O(1/n)$. More generally at $n^2/p\to\beta>1/2$ the normalized energy ceiling is $g(\beta)=1/\beta-1/(4\beta^2)$. In the latter prime class it yields a positive asymptotic lower density $(1-3g(\beta))/4$ when $\beta>(3+\sqrt6)/2$. As a finite check, at $p=3,n=3,x=1$ the upper bound for $E$ is $18$, the actual energy. At $p=65537$, every 256-site set satisfies $E\le3{,}196{,}058{,}880$ with $x=63$, so at most 142,536,640 of its 174,792,640 four-subsets are singular. For any two prescribed 256-site sets and any vertex signs, $x=64$ gives an absolute discrepancy of at most 56,829 out of 65,536.
 
+## Additive energy in every chart of a near-extremizer
+
+Suppose $a,b\sim\sqrt p$ and put $c_0=\sqrt3/2$. If the signed discrepancy divided by $ab$ tends in absolute value to $c_0$, then the additive energy of **each side in every common projective chart** is $o(p^{3/2})$, uniformly over the charts. Here $E_+(Y)=\#\{y_1+y_2=y_3+y_4 : y_i\in Y\}$ for the finite image $Y$, after dropping its possible point at infinity. More quantitatively, if one side in some chart satisfies $E_+(Y)\ge\kappa|Y|^3$ along a sequence of primes with fixed $0<\kappa\le2/3$, then
+\[
+ \limsup\frac{|S|}{ab}\le\Phi\!\left((3\kappa/2)^{1/3}\right),\qquad
+ \Phi(\alpha)=
+ \begin{cases}
+    \sqrt{3/4-\alpha},&0\le\alpha\le1/2,\\
+    1-\alpha,&1/2\le\alpha\le1 .
+ \end{cases}
+\]
+The sets, signs and chart may vary at each prime. The factorization of a projective difference changes only the two vertex signs and a global sign. Dropping a pole costs at most $a+b=o(ab)$. [Projective sign transformation](paley-four-site-rank.md#the-signed-four-cycle-controls-a-prescribed-rectangle)
+
+To see how a structured piece contributes, let $Z$ denote the other image and $T\subseteq Y$ have $|T|\gg\sqrt p$ and $|T+T|\le K|T|$ for fixed $K$. Chang's theorem gives a power saving for all unweighted cuts on at least half of $T$ and half of $Z$. Indeed their sizes exceed $p^{4/9+1/36}$ for large $p$ and every such half of $T$ has doubling at most $2K$. Reflection preserves doubling. The dense-cut transfer then gives $o(ab)$ on $T\times Z$ uniformly over both sign functions. This also applies to the union $U$ of any bounded number of disjoint such pieces. If $|U|/|Y|\to\alpha$, Cauchy–Schwarz on $Y\setminus U$ and (1) for the original row squares give the coefficient $c_0\sqrt{1-\alpha}$. Applying (1) afresh to the remaining rectangle does better. Its product of sizes divided by $p$ tends to $1-\alpha$. For $\alpha<1/2$, substituting $\lambda=1/[2(1-\alpha)]$ in the finite row estimate and multiplying by the remaining relative area gives $\sqrt{3/4-\alpha}$. For $\alpha\ge1/2$ use the remaining area itself. [Chang, Theorem 6](https://math.ucr.edu/~mcc/paper/132%20DL.pdf) · [Dense-cut transfer for arbitrary signs](paley-projective-doubling.md#dense-subsets-suffice-despite-arbitrary-vertex-signs)
+
+Write $m=|Y|$ and fix $\rho>0$. While the remaining set $R$ has $E_+(R)>\rho m^3$, we have $|R|>\rho^{1/3}m$ and $E_+(R)>\rho|R|^3$. The Balog–Szemerédi–Gowers theorem supplies a subset of size $\gg_\rho m$ with bounded difference constant, hence bounded doubling by the sum–difference inequality. Remove it. After $O_\rho(1)$ iterations the removed set $U$ is a union as above and $E_+(R)\le\rho m^3$. By Fourier inversion, $E_+(Y)^{1/4}$ is the normalized Fourier $L^4$ norm of $\mathbf1_Y$, so Minkowski gives $E_+(Y)^{1/4}\le E_+(U)^{1/4}+E_+(R)^{1/4}$. [Reiher and Schoen, sum-energy form of Balog–Szemerédi–Gowers](https://arxiv.org/abs/2308.10245)
+
+For $u=|U|$ we have $2u\le p$ eventually. If $r(z)$ counts differences in $U^2$, Pollard's theorem gives $\sum_z(r(z)-t)_+\le(u-t)^2$ for $1\le t<u$. Thus $E_+(U)\le u^2+2\sum_{t=1}^{u-1}(u-t)^2=(2u^3+u)/3$. Minkowski now gives $\kappa^{1/4}\le(2/3)^{1/4}(u/m)^{3/4}+\rho^{1/4}+o(1)$. First pass to the large-prime limit at fixed $\rho$, then let $\rho\downarrow0$ and use continuity and monotonicity of $\Phi$. Every fixed $\kappa>0$ gives a strict improvement on $c_0$, proving the assertion about near-extremizers. The energy argument leaves unrestricted the case of two sets with small normalized energy in every chart. [Pollard's theorem for sums of residue classes](https://londmathsoc.onlinelibrary.wiley.com/doi/10.1112/jlms/s2-8.3.460)
+
+## Overlap in the skew prime class
+
+Suppose $p\equiv3\pmod4$, $|A|=|B|=m\sim\sqrt p$ and $|A\cap B|/m\to\theta$. For the ordinary difference sum, if $1-c_0<\theta<1$ then
+\[
+ \limsup\frac{|S(A,B)|}{m^2}\le
+ \min\!\left\{1-\theta^2,\;
+ \theta(1-\theta)+\sqrt{(1-\theta)\bigl(3/4-\theta(1-\theta)^2\bigr)}\right\}<c_0 .
+\]
+At $\theta=1$ the relative discrepancy tends to zero. Consequently a sequence reaching $c_0$ must have overlap at most $(1-c_0+o(1))m$.
+
+Indeed the sum on $C\times C$ for $C=A\cap B$ vanishes by skew symmetry, giving the first bound. Orient all row sums to make their total nonnegative. Let $u,v$ be their respective averages on $C$ and $B\setminus C$, each divided by $m$. Then $|u|\le 1-|C|/m$, again by skew symmetry. By (1) and Cauchy–Schwarz the limiting constraints give $\theta u^2+(1-\theta)v^2\le c_0^2$. At fixed $u$, the largest possible mean is $\theta u+\sqrt{(1-\theta)(c_0^2-\theta u^2)}$. It increases up to $u=c_0$, so $u\le1-\theta<c_0$ gives the second bound. The argument also applies to vertex signs whose restrictions to $C$ agree up to a single global sign. For disjoint sides this overlap argument allows the original constant.
+
 ## Reproduction
 
 Run `python3 -B scripts/probes/probe_paley_signed_square_root.py`. At $p=3,5,7,11,13$ the program checks all signed source subsets of the admissible sizes up to simultaneous sign reversal, all widths $x$, and the worst target set through the positive part in (1). It checks 614,126 row budgets, computes 1,300 polynomial determinants and their local orders directly, verifies 716 signed pair-product identities, and compares 8,863 principal Gram energies with integer determinants of the four-site minors. The signed Wronskian argument and its consequences are proved above and checked by this finite probe. [Exact verifier](../../../scripts/probes/probe_paley_signed_square_root.py)
