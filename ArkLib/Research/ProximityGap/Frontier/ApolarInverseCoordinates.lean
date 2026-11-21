@@ -131,28 +131,27 @@ theorem measure_forward (D : Finset K) (hD : 0∉D) (w : K → K[X]) :
   change w i • Polynomial.leval (coordinateUnit i:K[X]) = w i • Polynomial.leval (C i)
   rw [coordinateUnit_eq (fun h => hD (h ▸ hi))]
 
-/-- Paired interpolation on the original and reciprocal coordinate charts.
-The returned polynomials Q,B,Qi,Bi are parameter-outer for degree bounds.
-Their swaps appear on the coordinate-outer identities used for descent.
-The polynomial V can be any degree-bounded multiple of the domain vanisher. -/
-theorem paired_coordinates (D G : Finset K) (w : K → K[X]) (f : Biv) (V : K[X])
+/-- Interpolate simultaneously on the forward and reciprocal coordinate charts. The sign
+of the reciprocal representative is absorbed according to the parity of the positive
+power. -/
+theorem paired_power_coordinates (power : ℕ) (hpower : 0 < power) (D G : Finset K) (w : K → K[X]) (f : Biv) (V : K[X])
     (l r s n : ℕ) (hD : 0∉D) (hG : G.Nonempty) (hl : 0<l)
     (hV : Lagrange.nodal D id ∣ V) (hn : V.natDegree ≤ n)
     (hw : ∀ i ∈ D, (w i).natDegree ≤ 1) (hf : ∀ j, (f.coeff j).natDegree ≤ l)
-    (hr : f.natDegree ≤ r) (hm : 3*(l+1) < G.card+l)
+    (hr : f.natDegree ≤ r) (hm : power *(l+1) < G.card+l)
     (hsp : ∀ t ∈ G, ∃ E ⊆ D, E.card ≤ s+1 ∧ ∃ v : K → K, ∀ p : K[X], p.natDegree ≤ r+s →
       weighted D (RingHom.id K) (fun i => (w i).eval t) p = weighted E (RingHom.id K) v p)
     (ha : ∀ t ∈ G, ApolarThrough (weighted D (RingHom.id K) (fun i => (w i).eval t))
       (f.map (evalRingHom t)) s) :
     ∃ Q B Qi Bi : Biv, Q.natDegree < G.card ∧ Qi.natDegree < G.card ∧
       B.natDegree < l ∧ Bi.natDegree < l ∧
-      V.map C*(representative D (fun i => (coordinateUnit i:K[X])) w f)^3 =
+      V.map C*(representative D (fun i => (coordinateUnit i:K[X])) w f)^power =
         f*Bivariate.swap Q+C (Lagrange.nodal G id)*Bivariate.swap B ∧
       reflect n (V.map C)*(-representative D (fun i => (↑(coordinateUnit i)⁻¹:K[X]))
-        (fun i => w i*(coordinateUnit i:K[X])^(r+s)) (reflect r f))^3 =
+        (fun i => w i*(coordinateUnit i:K[X])^(r+s)) (reflect r f))^power =
         reflect r f*Bivariate.swap Qi+C (Lagrange.nodal G id)*Bivariate.swap Bi := by
   classical
-  obtain ⟨Q,B,hB,hQ,hb⟩ := interpolate D G w V f hG hV hw hf
+  obtain ⟨Q,B,hB,hQ,hb⟩ := interpolate_power power hpower D G w V f hG hV hw hf
     (Nat.add_le_add_right hr s) hm hsp ha
   let H := D.image Inv.inv
   let wi := fun i : K => w i⁻¹*C ((i⁻¹)^(r+s))
@@ -174,7 +173,7 @@ theorem paired_coordinates (D G : Finset K) (w : K → K[X]) (f : Biv) (V : K[X]
     rw [← reflect_map]
     simpa only [H,wi,eval_mul,eval_C] using apolar_inverse D hD _ (f.map (evalRingHom t)) r s
       (natDegree_map_le.trans hr) (ha t ht)
-  obtain ⟨Qi,Bi,hBi,hQi,hbi⟩ := interpolate H G wi (reflect n V) (reflect r f) hG
+  obtain ⟨Qi,Bi,hBi,hQi,hbi⟩ := interpolate_power power hpower H G wi (reflect n V) (reflect r f) hG
     (nodal_inverse_dvd D hD V n hn hV) hiw hif
     (Nat.add_le_add_right (natDegree_reflect_le.trans (max_le le_rfl hr)) s) hm hsp' ha'
   have fore := congrArg Bivariate.swap hB
@@ -182,13 +181,41 @@ theorem paired_coordinates (D G : Finset K) (w : K → K[X]) (f : Biv) (V : K[X]
   simp only [map_add,map_mul,map_pow,Bivariate.swap_C,Bivariate.swap_swap_apply,swap_nodal] at fore back
   have hb' : B.natDegree<l := hb.elim (fun h => by simpa [h] using hl) id
   have hbi' : Bi.natDegree<l := hbi.elim (fun h => by simpa [h] using hl) id
-  refine ⟨Q,B,-Qi,-Bi,hQ,by simpa only [natDegree_neg] using hQi,hb',
-    by simpa only [natDegree_neg] using hbi',?_,?_⟩
-  · rw [reindex_forward D hD w f]
+  have hfwd : V.map C*(representative D (fun i => (coordinateUnit i:K[X])) w f)^power =
+      f*Bivariate.swap Q+C (Lagrange.nodal G id)*Bivariate.swap B := by
+    rw [reindex_forward D hD w f]
     exact fore
-  · rw [reflect_map,← reindex_representative D hD w (r+s) (reflect r f),map_neg,map_neg]
+  rcases Nat.even_or_odd power with hpar | hpar
+  · refine ⟨Q,B,Qi,Bi,hQ,hQi,hb',hbi',hfwd,?_⟩
+    rw [hpar.neg_pow,reflect_map,← reindex_representative D hD w (r+s) (reflect r f)]
+    exact back
+  · refine ⟨Q,B,-Qi,-Bi,hQ,by simpa only [natDegree_neg] using hQi,hb',
+      by simpa only [natDegree_neg] using hbi',hfwd,?_⟩
+    rw [hpar.neg_pow,reflect_map,← reindex_representative D hD w (r+s) (reflect r f),map_neg,map_neg]
     dsimp only [H,wi] at back
     linear_combination -back
+
+/-- Paired interpolation on the original and reciprocal coordinate charts.
+The returned polynomials Q,B,Qi,Bi are parameter-outer for degree bounds.
+Their swaps appear on the coordinate-outer identities used for descent.
+The polynomial V can be any degree-bounded multiple of the domain vanisher. -/
+theorem paired_coordinates (D G : Finset K) (w : K → K[X]) (f : Biv) (V : K[X])
+    (l r s n : ℕ) (hD : 0∉D) (hG : G.Nonempty) (hl : 0<l)
+    (hV : Lagrange.nodal D id ∣ V) (hn : V.natDegree ≤ n)
+    (hw : ∀ i ∈ D, (w i).natDegree ≤ 1) (hf : ∀ j, (f.coeff j).natDegree ≤ l)
+    (hr : f.natDegree ≤ r) (hm : 3*(l+1) < G.card+l)
+    (hsp : ∀ t ∈ G, ∃ E ⊆ D, E.card ≤ s+1 ∧ ∃ v : K → K, ∀ p : K[X], p.natDegree ≤ r+s →
+      weighted D (RingHom.id K) (fun i => (w i).eval t) p = weighted E (RingHom.id K) v p)
+    (ha : ∀ t ∈ G, ApolarThrough (weighted D (RingHom.id K) (fun i => (w i).eval t))
+      (f.map (evalRingHom t)) s) :
+    ∃ Q B Qi Bi : Biv, Q.natDegree < G.card ∧ Qi.natDegree < G.card ∧
+      B.natDegree < l ∧ Bi.natDegree < l ∧
+      V.map C*(representative D (fun i => (coordinateUnit i:K[X])) w f)^3 =
+        f*Bivariate.swap Q+C (Lagrange.nodal G id)*Bivariate.swap B ∧
+      reflect n (V.map C)*(-representative D (fun i => (↑(coordinateUnit i)⁻¹:K[X]))
+        (fun i => w i*(coordinateUnit i:K[X])^(r+s)) (reflect r f))^3 =
+        reflect r f*Bivariate.swap Qi+C (Lagrange.nodal G id)*Bivariate.swap Bi :=
+  paired_power_coordinates 3 (by decide) D G w f V l r s n hD hG hl hV hn hw hf hr hm hsp ha
 
 #print axioms paired_coordinates
 #print axioms weighted_inverse

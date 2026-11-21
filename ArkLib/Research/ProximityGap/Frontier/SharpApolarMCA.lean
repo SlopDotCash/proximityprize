@@ -59,18 +59,18 @@ private theorem real_sparse {K : Type*} [Field K] [DecidableEq K] {H S : Finset 
   rw [← specialize_measure]
   exact hforward p hp
 
-private theorem family_bound_of_chart
+private theorem family_bound_power_of_chart (power : ℕ) (hpower : 0 < power)
     {F ι : Type} [Field F] [Fintype F] [DecidableEq F]
     [Fintype ι] [Nonempty ι] [DecidableEq ι] [DecidableEq (AlgebraicClosure F)]
     {dom : ι ↪ F} {k e d : ℕ} {δ : ℝ≥0} {u : WordStack F (Fin 2) ι}
     (fam : BadScalarRichPointFamily dom k δ u) (bad : Finset F) (hsub : bad ⊆ fam.G)
     (hed : e≤d) (hlen : 2*e≤d+1) (hk : 1≤k) (hd : k+d<Fintype.card ι)
     (he : Fintype.card ι-e ≤ ⌈(1-δ)*(Fintype.card ι:ℝ≥0)⌉₊)
-    (hcoord : Fintype.card ι < 3*(d+2-e)+e)
+    (hcoord : Fintype.card ι < power *(d+2-e)+e)
     (hchart : ∀ {H S : Finset (AlgebraicClosure F)} {r l : ℕ}
       (A : Data H S e d r l), 0<r → 0<l → r≤e → 0<A.G.card →
-      A.D.card<3*(d+2-r)+r → A.G.card≤3*(l+1)) :
-    bad.card ≤ max (e+1) (3*(e/(d+2-2*e)+1)) := by
+      A.D.card<power *(d+2-r)+r → A.G.card≤power *(l+1)) :
+    bad.card ≤ max (e+1) (power *(e/(d+2-2*e)+1)) := by
   classical
   by_cases hsmall : bad.card≤e+1
   · exact hsmall.trans (le_max_left ..)
@@ -80,12 +80,17 @@ private theorem family_bound_of_chart
   obtain ⟨r,hre,l,hr,hl,hdegree,⟨A⟩⟩ := of_mca_family φ fam bad hsub hlarge hed hlen hk hd he
   have hn : A.D.card=Fintype.card ι := by rw [A.card_sites];simp
   have hg : A.G.card=bad.card := by rw [A.card_parameters];simp
-  have hG := hchart A hr hl hre (by omega) (by omega)
+  have hmul : e-r ≤ power*(e-r) := by
+    simpa only [one_mul] using Nat.mul_le_mul_right (e-r) (show 1≤power from hpower)
+  have hwidth : d+2-r = d+2-e+(e-r) := by omega
+  have hG := hchart A hr hl hre (by omega) (by
+    rw [hn,hwidth,Nat.mul_add]
+    omega)
   have h' : l*(d+2-2*e)≤e := (Nat.mul_le_mul_left l (by omega : d+2-2*e ≤ d+2-2*r)).trans
     (by simpa only [Nat.mul_comm l] using hdegree.trans hre)
   have hquot := (Nat.le_div_iff_mul_le (by omega : 0<d+2-2*e)).2 h'
   rw [hg] at hG
-  exact (hG.trans (by omega)).trans (le_max_right ..)
+  exact (hG.trans (Nat.mul_le_mul_left power (by omega))).trans (le_max_right ..)
 
 private theorem cap_of_family {p : ℕ} [Fact p.Prime] {g : ZMod p} (hg : orderOf g=1073741824)
     (hFam : ∀ {dom : Fin 1073741824 ↪ ZMod p} {u : WordStack (ZMod p) (Fin 2) (Fin 1073741824)}
@@ -113,6 +118,26 @@ private theorem window_of_cap {p B : ℕ} [Fact p.Prime] {g : ZMod p} (hg : orde
   · exact ApolarSpikeBudgetRange.lower_rate_budget hg (by decide) (by decide) (by decide) hB
       (by omega) (by omega)
 
+/-- For every positive interpolation power satisfying the coordinate inequality, bound the
+number of genuinely bad Reed–Solomon scalars on any finite injective evaluation
+domain. -/
+theorem family_bound_power (power : ℕ) (hpower : 0 < power)
+    {F ι : Type} [Field F] [Fintype F] [DecidableEq F]
+    [Fintype ι] [Nonempty ι] [DecidableEq ι]
+    {dom : ι ↪ F} {k e d : ℕ} {δ : ℝ≥0} {u : WordStack F (Fin 2) ι}
+    (fam : BadScalarRichPointFamily dom k δ u) (bad : Finset F) (hsub : bad ⊆ fam.G)
+    (hed : e≤d) (hlen : 2*e≤d+1) (hk : 1≤k) (hd : k+d<Fintype.card ι)
+    (he : Fintype.card ι-e ≤ ⌈(1-δ)*(Fintype.card ι:ℝ≥0)⌉₊)
+    (hcoord : Fintype.card ι < power *(d+2-e)+e) :
+    bad.card ≤ max (e+1) (power *(e/(d+2-2*e)+1)) := by
+  classical
+  apply family_bound_power_of_chart power hpower fam bad hsub hed hlen hk hd he hcoord
+  intro H S r l A hr hl hre hG hcard
+  apply _root_.ProximityGap.ApolarCubicObstruction.card_le_power power hpower A.D A.G A.w A.f hr (by omega) hl
+    A.degree A.top_height A.bottom_nonzero A.height A.primitive A.weights_affine A.sites_unit
+    A.parameters_unit (Finset.card_pos.mp hG) hcard A.apolar (coprime_data A hr (by omega))
+  exact real_sparse A (by omega)
+
 /-- Uniform cubic apolar bound for the actual Reed–Solomon bad scalar family
 whenever the coordinate inequality and the distance constraints hold. -/
 theorem family_bound
@@ -123,14 +148,8 @@ theorem family_bound
     (hed : e≤d) (hlen : 2*e≤d+1) (hk : 1≤k) (hd : k+d<Fintype.card ι)
     (he : Fintype.card ι-e ≤ ⌈(1-δ)*(Fintype.card ι:ℝ≥0)⌉₊)
     (hcoord : Fintype.card ι < 3*(d+2-e)+e) :
-    bad.card ≤ max (e+1) (3*(e/(d+2-2*e)+1)) := by
-  classical
-  apply family_bound_of_chart fam bad hsub hed hlen hk hd he hcoord
-  intro H S r l A hr hl hre hG hcard
-  apply _root_.ProximityGap.ApolarCubicObstruction.card_le A.D A.G A.w A.f hr (by omega) hl
-    A.degree A.top_height A.bottom_nonzero A.height A.primitive A.weights_affine A.sites_unit
-    A.parameters_unit (Finset.card_pos.mp hG) hcard A.apolar (coprime_data A hr (by omega))
-  exact real_sparse A (by omega)
+    bad.card ≤ max (e+1) (3*(e/(d+2-2*e)+1)) :=
+  family_bound_power 3 (by decide) fam bad hsub hed hlen hk hd he hcoord
 
 /-- At the rate-half predecessor of length 2³⁰, all received pairs on every
 injective evaluation domain have at most 268435458 genuinely bad scalars. -/
@@ -181,13 +200,14 @@ theorem interleaved_good_iff {p : ℕ} [Fact p.Prime] {g : ZMod p} (hg : orderOf
       ((RateHalfApolarThreshold.code g) ^⋈ (Fin width)) δ ≤ (epsStar:ℝ≥0∞) ↔ δ < 1/4 :=
   RateHalfApolarThreshold.interleaved_good_iff hg hlo hhi (predecessor_cap hg) width δ
 
+#print axioms family_bound_power
 #print axioms specialize_measure
 #print axioms coprime_data
 #print axioms real_sparse
-#print axioms family_bound_of_chart
+#print axioms family_bound_power_of_chart
+#print axioms predecessor_cap
 #print axioms family_bound
 #print axioms rate_half_family
-#print axioms predecessor_cap
 #print axioms four_rate_window
 #print axioms boundary_prime
 #print axioms boundary_plus_one

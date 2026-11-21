@@ -10,7 +10,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 DIRECTORIES = {".codex", ".github", "ArkLib", "docs", "external", "scripts", "website"}
 FILES = {".gitattributes", ".gitignore", ".gitmodules", "AGENTS.md", "CLAUDE.md",
-         "AUTHORS", "ArkLib.lean", "CONTRIBUTING.md", "LICENSE", "LICENSE-MIT",
+         "AUTHORS", "PROGRESS.md", "ArkLib.lean", "CONTRIBUTING.md", "LICENSE", "LICENSE-MIT",
          "README.md", "lake-manifest.json", "lakefile.toml", "lean-toolchain"}
 
 
