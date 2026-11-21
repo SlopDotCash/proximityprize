@@ -26,7 +26,7 @@ variable {I F K : Type} [Fintype I] [Nonempty I] [Field F] [Finite F]
 set_option maxHeartbeats 1000000 in
 -- Checking the dependent secant-family identities expands large finite-cardinality expressions.
 /-- At 715827881 errors, exceeding the budget produces a populous irreducible component.
-Its value degree is two, three or four. The cubic and quartic also satisfy their terminal weight bounds. -/
+Its value degree is two, three or four. The cubic and quartic satisfy their weight bounds. -/
 theorem actual_factor (fam : Family dom δ u) (φ : F →+* K) (hn : Fintype.card I = 1073741824)
     (ht : ⌈(1 - δ) * (Fintype.card I : ℝ≥0)⌉₊ = 357913943)
     (hbig : 2147483648 < fam.G.card) :
