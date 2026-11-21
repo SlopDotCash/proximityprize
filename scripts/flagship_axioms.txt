@@ -18,6 +18,10 @@ ArkLib.Research.ProximityGap.Frontier.SmoothCubicBudgetWindow ArkLib.ProximityGa
 ArkLib.Research.ProximityGap.Frontier.SmoothCubicBudgetWindow ArkLib.ProximityGap.Frontier.SmoothCubicBudgetWindow.exact_eps
 ArkLib.Research.ProximityGap.Frontier.SmoothCubicBudgetWindow ArkLib.ProximityGap.Frontier.SmoothCubicBudgetWindow.rank_answer
 
+# Independent component and polar columns in the higher-rate safety estimates
+ArkLib.Research.ProximityGap.Frontier.PolarBasisDegreeLoss ArkLib.ProximityGap.Frontier.PolarBasisDegreeLoss.separate_blocks
+ArkLib.Research.ProximityGap.Frontier.PolarBasisDegreeLoss ArkLib.ProximityGap.Frontier.PolarBasisDegreeLoss.weighted_loss
+
 # Exact rate-one-sixteenth MCA threshold at the second designated prime
 ArkLib.Research.ProximityGap.Frontier.SecondPrimeCubicExact ArkLib.ProximityGap.Frontier.SecondPrimeCubicExact.secondPrime_rateSixteenth
 ArkLib.Research.ProximityGap.Frontier.UniversalCubicThreshold ArkLib.ProximityGap.Frontier.UniversalCubicThreshold.prime_classification

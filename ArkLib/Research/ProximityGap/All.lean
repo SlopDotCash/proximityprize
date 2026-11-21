@@ -561,6 +561,7 @@ import ArkLib.Research.ProximityGap.Frontier.PinnedScalarRatioImage
 import ArkLib.Research.ProximityGap.Frontier.PlasticDyadicPeriod
 import ArkLib.Research.ProximityGap.Frontier.PlateauThreeHeadPredecessor
 import ArkLib.Research.ProximityGap.Frontier.PoissonAveragedMGF
+import ArkLib.Research.ProximityGap.Frontier.PolarBasisDegreeLoss
 import ArkLib.Research.ProximityGap.Frontier.PolynomialJetConstraintSpace
 import ArkLib.Research.ProximityGap.Frontier.PolynomialLocalOrder
 import ArkLib.Research.ProximityGap.Frontier.PolynomialProjectiveHessian
