@@ -101,6 +101,20 @@ Consequently $|D|\le4\cdot230497832882265705$. Returning to ordinary sets,
 $$
 5\big(4\cdot230497832882265705+4n+4\big)<4n^2\le16|T(s)||T(t)|.
 $$
-This proves $5|S|<4|T(s)||T(t)|$. The numerical statement concerns mixed
+The Lean theorem `GoldilocksMixedTrace.full_discrepancy` verifies
+$5|S|<4|T(s)||T(t)|$ on ordinary sets, including the exact-order generator,
+the parity reindexing and the two branch-fiber corrections.
+[Full set theorem](../../../ArkLib/Research/ProximityGap/Frontier/GoldilocksMixedTrace.lean)
+
+The numerical statement concerns mixed
 products. When $s=t$ the rational map degenerates and the two-thirds
 occupancy estimate does not apply.
+
+## The two designated prize primes
+
+For a rectangle with both sides of size $m$, the displayed fourth-moment
+estimate improves on $m^2$ only if $C(p)Lp<m^2r^2$. At either designated
+prize prime, $r\le m\le 2^{29}$ whereas $p>2^{116}$. Even the optimistic
+values $L=C(p)=1$ therefore leave this estimate larger than the trivial
+bound. This calculation concerns the amplification inequality; it imposes
+no lower bound on the actual discrepancy.

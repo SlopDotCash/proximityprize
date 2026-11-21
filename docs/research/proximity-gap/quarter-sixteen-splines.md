@@ -52,3 +52,26 @@ A complex solution would give one for the canonical representative of its subgro
 c++ -O3 -std=c++17 scripts/probes/probe_quarter_32_affine_symmetries.cpp -o /tmp/quarter-affine-symmetries
 /tmp/quarter-affine-symmetries
 ```
+
+### The full affine stabilizer has order at most two
+
+The same exclusion holds for the nonfaithful actions. Thus for a saturated noncollinear quartet of degree at most seven over the complex numbers, at most two affine exponent permutations can preserve the six double strata up to relabelling their vertices.
+
+If the kernel on labels contains a geometric involution, its action fixes the labelled strata individually and contradicts the rotation and reflection certificates for a saturated quartet. Every nonfaithful cyclic action of order four has the square of its generator in the kernel. Where that square is nongeometric, the action on four vertices can be trivial, a transposition, or a double transposition. Each Klein subgroup in the enumeration contains a geometric involution, so it cannot act trivially. Its possible remaining actions have image of order two and a nongeometric order-two kernel. These possibilities yield 22 cases. The probe chooses hole sets up to affine exponent permutations commuting with the given domain action. At each successive orbit it also chooses one edge assignment under the still-available vertex relabellings commuting with the label action. These normalizations preserve the characteristic-zero classification. [Geometric kernel obstruction](quarter-saturated-symmetry.md)
+
+The 65537 rank screen returns 142 records representing 125 distinct layouts, which reduce to 16 orbits under affine exponent permutation and vertex relabelling. To exclude each of these last orbits, append two rows to the incidence matrix $M$ for evaluating $P_b(0)-P_a(0)$ and $P_c(0)-P_a(0)$, for a fixed triple of heads. On a genuine saturated layout $M$ has nullity exactly two. To see this, fix the two rows of the putative quartet and take an arbitrary scalar spline. On heads $0,1,2$ the two Cramer numerators for expressing that spline in the known pair vanish at all fourteen sites of the corresponding triangle, as does the nonzero Cramer denominator. All three have degree at most fourteen. Each numerator is therefore a constant multiple of the denominator. These scalar constants also give the right value at the fourth head, by agreement at its fourteen double sites. It follows that $M$ has rank 22. A noncollinear triple at $X=0$ would then raise the augmented rank to 24.
+
+The checker uses the prime $q=2^{64}-2^{32}+1$. It verifies its primality by checking an element of order $q-1$. For each of the 16 orbits it finds one fixed head triple whose two evaluation rows at zero raise the rank by at most one at **all sixteen** primitive thirty-second roots modulo $q$. Every full-size minor of this augmented matrix is consequently zero over the complex numbers. Indeed write that minor as $D=\sum_{j=0}^{15}c_j\zeta_{32}^j$ with integer coefficients. Every conjugate has absolute value at most $4^{24}$ by the row norm bound. Fourier inversion,
+\[
+c_j=\frac1{16}\sum_{u\text{ odd}\bmod32}\zeta_{32}^{-uj}\sigma_u(D),
+\]
+gives $|c_j|\le4^{24}$. Reduction of $D$ at all sixteen primitive roots gives sixteen roots of its degree-at-most-fifteen coefficient polynomial modulo $q$. Hence every $c_j$ is divisible by $q>4^{24}$, forcing every coefficient to vanish. The triple is collinear at $X=0$. Its face determinant already has fourteen distinct, nonzero roots, which forces it to vanish identically and contradicts saturation.
+
+Each quartet has at least two nonempty incident edges at every vertex, since its per-vertex total is fourteen and each edge size is at most seven. A vertex relabelling that fixes all nonempty edges individually is therefore the identity. It follows that compatible affine permutations act unambiguously on the heads. Their subgroup sits inside the group of order 512. Any subgroup of order greater than two would contain a cyclic or Klein subgroup of order four, all of which have now been excluded. The same conclusion holds over splitting prime fields above $2^{736}$, by the 23-minor norm bound and the integral zero identities for the last 16 orbits. At the two named primes the separate geometric exclusions still apply.
+
+```sh
+/tmp/quarter-affine-symmetries --nonfaithful > /tmp/quarter-affine-survivors.txt
+python3 scripts/probes/verify_quarter_32_affine_survivors.py /tmp/quarter-affine-survivors.txt
+```
+
+[Exact conjugate and rank verification](../../../scripts/probes/verify_quarter_32_affine_survivors.py)

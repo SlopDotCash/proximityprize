@@ -365,3 +365,7 @@ ArkLib.Research.ProximityGap.SmoothPrizeCapacityTable ProximityPrize.SmoothPrize
 ArkLib.Research.ProximityGap.SmoothCapacityGap ProximityPrize.SmoothCapacityGap.mca_from_base
 ArkLib.Research.ProximityGap.SmoothCapacityGap ProximityPrize.SmoothCapacityGap.full_from_base
 ArkLib.Research.ProximityGap.Frontier.SmoothPowerListDescent ProximityGap.SmoothPowerListDescent.smooth_list_exceeds_of_count
+
+# First-prime quarter-rate successor and its split polynomial pencil
+ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorOneHole ArkLib.ProximityGap.Frontier.QuarterSuccessorOneHole.mass_bounds
+ArkLib.Research.ProximityGap.Frontier.QuarterSuccessorSplitCriterion ArkLib.ProximityGap.Frontier.QuarterSuccessorSplitCriterion.failure_iff
