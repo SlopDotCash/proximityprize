@@ -276,6 +276,7 @@ import ArkLib.Research.ProximityGap.Frontier.DilationDoublingLevelSet
 import ArkLib.Research.ProximityGap.Frontier.DilationDoublingMassHalf
 import ArkLib.Research.ProximityGap.Frontier.DilationDoublingMassNoCompose
 import ArkLib.Research.ProximityGap.Frontier.DilationRealSignCocycle
+import ArkLib.Research.ProximityGap.Frontier.DimensionRaiseMCA
 import ArkLib.Research.ProximityGap.Frontier.DiscriminantSquareClass
 import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodMomentLaw
 import ArkLib.Research.ProximityGap.Frontier.DistinctPeriodSecondMoment
@@ -382,7 +383,10 @@ import ArkLib.Research.ProximityGap.Frontier.GeometricIncompleteSumNoGo
 import ArkLib.Research.ProximityGap.Frontier.GeometricWordLocator
 import ArkLib.Research.ProximityGap.Frontier.GradedAntipodalVanishingLower
 import ArkLib.Research.ProximityGap.Frontier.HalfRadiusListMcaSeparation
+import ArkLib.Research.ProximityGap.Frontier.HalfRateIntrinsicPopulation
+import ArkLib.Research.ProximityGap.Frontier.HalfRateJetCapacity
 import ArkLib.Research.ProximityGap.Frontier.HalfRateLinearPopulation
+import ArkLib.Research.ProximityGap.Frontier.HalfRatePopulationCover
 import ArkLib.Research.ProximityGap.Frontier.HalfRateUnrestrictedJetBudget
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorJetInterpolation
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorJetRank
@@ -637,6 +641,7 @@ import ArkLib.Research.ProximityGap.Frontier.RationalFiberEndpoint
 import ArkLib.Research.ProximityGap.Frontier.RawJacobianWindow
 import ArkLib.Research.ProximityGap.Frontier.RawMGFSaddleVacuity
 import ArkLib.Research.ProximityGap.Frontier.RealizerL2NotSup
+import ArkLib.Research.ProximityGap.Frontier.ReceivedHessianCharge
 import ArkLib.Research.ProximityGap.Frontier.ReceivedJetContact
 import ArkLib.Research.ProximityGap.Frontier.ReceivedOrderChartFamily
 import ArkLib.Research.ProximityGap.Frontier.ReceivedPolarContacts
@@ -829,6 +834,7 @@ import ArkLib.Research.ProximityGap.Frontier.TameResultantOrders
 import ArkLib.Research.ProximityGap.Frontier.TerminalCollinearHeadCount
 import ArkLib.Research.ProximityGap.Frontier.TerminalCubicBudget
 import ArkLib.Research.ProximityGap.Frontier.TerminalCubicBudgetWindow
+import ArkLib.Research.ProximityGap.Frontier.TerminalDimensionThreshold
 import ArkLib.Research.ProximityGap.Frontier.TerminalDomainSecurity
 import ArkLib.Research.ProximityGap.Frontier.TerminalFactorCoverage
 import ArkLib.Research.ProximityGap.Frontier.TerminalLinearComponent
