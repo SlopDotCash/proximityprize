@@ -20,9 +20,14 @@ note and does not use the Hodge index theorem. The
 [exact-arithmetic certificate](../../../scripts/probes/probe_tangent_head_windows.py)
 checks both interpolants, the head tests and every degree allocation in each
 window, and reproduces the three committed weighted totals as a regression
-test. Lean checks the counting step of Theorem D′ and sample integer values in
+test. Lean constructs both interpolants on the received rows in each window
+and checks the Johnson-type conditions, the rich-head determinant tests and
+every degree allocation, in
+[TangentHeadWindows.lean](../../../ArkLib/Research/ProximityGap/Frontier/TangentHeadWindows.lean).
+It checks the counting step of Theorem D′ in
 [HodgeSectionLattice.lean](../../../ArkLib/Research/ProximityGap/Frontier/HodgeSectionLattice.lean).
-Lean does not check these three windows.
+The cap itself enters Lean as the definition of a price. Its geometric proof is
+not formalized.
 
 ## The cap
 
