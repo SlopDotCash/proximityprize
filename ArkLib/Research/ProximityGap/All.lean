@@ -300,11 +300,11 @@ import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticHeadCount
 import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticPhase
 import ArkLib.Research.ProximityGap.Frontier.DoubleQuadraticThreshold
 import ArkLib.Research.ProximityGap.Frontier.DyadicCharacterCirculant
+import ArkLib.Research.ProximityGap.Frontier.DyadicFourCycleCount
 import ArkLib.Research.ProximityGap.Frontier.DyadicFrobeniusNorm
 import ArkLib.Research.ProximityGap.Frontier.DyadicGeomeanPrizeVsSqrtN
 import ArkLib.Research.ProximityGap.Frontier.DyadicLocatorSumBarrier
 import ArkLib.Research.ProximityGap.Frontier.DyadicLogWitness237
-import ArkLib.Research.ProximityGap.Frontier.DyadicFourCycleCount
 import ArkLib.Research.ProximityGap.Frontier.DyadicOddPencilCount
 import ArkLib.Research.ProximityGap.Frontier.DyadicParityLemma
 import ArkLib.Research.ProximityGap.Frontier.DyadicPeriodCeiling
