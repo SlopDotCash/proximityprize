@@ -296,18 +296,20 @@ noncomputable def constraintMap {m B : ℕ} (a b K : F) (n : ℕ) (e d : Fin m �
     funext l
     simp [constraint, mul_assoc, mul_sum]
 
-private theorem exists_kernel {m B : ℕ} (a b K : F) (n : ℕ) (e d : Fin m → ℕ) (D W : ℕ)
-    (gap : D*W < B*m) :
-    ∃ w : Weights F m B, w ≠ 0 ∧ constraintMap a b K n e d D W w = 0 := by
+private theorem exists_joint_kernel {m B J : ℕ} (a b : F) (K : Fin J → F)
+    (n : ℕ) (e d : Fin m → ℕ) (D W : ℕ) (gap : J * (D * W) < B * m) :
+    ∃ w : Weights F m B, w ≠ 0 ∧ ∀ i, constraintMap a b (K i) n e d D W w = 0 := by
   classical
-  let L := @constraintMap F _ m B a b K n e d D W
-  have hdim : Module.finrank F (Fin D × Fin W → F) < Module.finrank F (Weights F m B) := by
-    simpa [Weights, Module.finrank_pi_fintype, Module.finrank_pi, Module.finrank_fintype_fun_eq_card, Nat.mul_comm] using gap
+  let L := LinearMap.pi (fun i => @constraintMap F _ m B a b (K i) n e d D W)
+  have hdim : Module.finrank F (Fin J → Fin D × Fin W → F) <
+      Module.finrank F (Weights F m B) := by
+    simpa [Weights, Module.finrank_pi_fintype, Module.finrank_pi,
+      Module.finrank_fintype_fun_eq_card, Nat.mul_comm, Nat.mul_left_comm, Nat.mul_assoc] using gap
   have hn : ¬Function.Injective L := fun hi => (not_le_of_gt hdim)
     (LinearMap.finrank_le_finrank_of_injective hi)
   rw [← LinearMap.ker_eq_bot] at hn
   obtain ⟨w, hw, hne⟩ := (Submodule.ne_bot_iff _).mp hn
-  exact ⟨w, hne, LinearMap.mem_ker.mp hw⟩
+  exact ⟨w, hne, fun i => congrFun (LinearMap.mem_ker.mp hw) i⟩
 
 private theorem constraint_zero_of_kernel {m B : ℕ} (a b K : F) (n : ℕ) (e d : Fin m → ℕ)
     {A D : ℕ} (hA : 0 < A) (hd : ∀ j, d j < A) {w : Weights F m B}
@@ -373,29 +375,30 @@ private theorem aux_degree {m B : ℕ} (a b : F) (n : ℕ) (e : Fin m → ℕ) (
     _ ≤ _ := Nat.add_le_add_right (hE j) _
 
 /-- Multiplicity count for simultaneous subgroup values of a fractional linear function.
-The two affine factors are normalized to leading coefficient one. Their leading-coefficient
-ratio in the original map is absorbed by `K`. -/
-theorem mobius_count {m B n A D E : ℕ} {a b K : F} (ha : a ≠ 0) (hab : a ≠ b)
+The target value may depend on the site. Each permitted target imposes one
+additional block of derivative conditions on the same auxiliary polynomial. -/
+theorem mobius_count_many {m B n A D E J : ℕ} {a b : F} (K : Fin J → F) (ha : a ≠ 0) (hab : a ≠ b)
     {e d : Fin m → ℕ} (hV : (Matrix.vandermonde (fun j => (e j : F))).det ≠ 0)
     (hm : m ≤ n) (hE : ∀ j, e j ≤ E) (hA : 0 < A) (hd : ∀ j, d j < A)
-    (hgap : D * (A + 2*(D-1)) < B*m) (hfac : IsUnit (((D-1).factorial : ℕ) : F))
+    (hgap : J * (D * (A + 2*(D-1))) < B*m) (hfac : IsUnit (((D-1).factorial : ℕ) : F))
     (S : Finset F) (hreg : ∀ x ∈ S, x ≠ 0 ∧ x ≠ a ∧ x ≠ b)
     (hxe : ∀ x ∈ S, ∀ j, x ^ e j = x ^ d j)
-    (hratio : ∀ x ∈ S, (x-a)^n = K * (x-b)^n) : D * S.card ≤ E + n * (B-1) := by
+    (hratio : ∀ x ∈ S, ∃ i, (x-a)^n = K i * (x-b)^n) : D * S.card ≤ E + n * (B-1) := by
   classical
-  obtain ⟨w,hw,hk⟩ := exists_kernel a b K n e d D (A+2*(D-1)) hgap
+  obtain ⟨w,hw,hk⟩ := exists_joint_kernel a b K n e d D (A+2*(D-1)) hgap
   let P := aux a b n e w
   have hP : P ≠ 0 := aux_ne_zero ha hab hV hm hw
   have hmult : ∀ x ∈ S, D ≤ P.rootMultiplicity x := by
     intro x hx
     obtain ⟨hx0,hxa,hxb⟩ := hreg x hx
+    obtain ⟨i, hi⟩ := hratio x hx
     have hW : (clearing a b).eval x ≠ 0 := by
       simp [clearing, lin, hx0, sub_ne_zero.mpr hxa, sub_ne_zero.mpr hxb]
     apply le_rootMultiplicity_of_weighted_vanishing (clearing a b) hP hW hfac
     intro r hr
     rw [show P = aux a b n e w from rfl,
-        eval_weighted_aux a b K n e d w r x (hxe x hx) (hratio x hx),
-        constraint_zero_of_kernel a b K n e d hA hd hk hr, eval_zero, mul_zero]
+        eval_weighted_aux a b (K i) n e d w r x (hxe x hx) hi,
+        constraint_zero_of_kernel a b (K i) n e d hA hd (hk i) hr, eval_zero, mul_zero]
   calc
     D * S.card = ∑ _x ∈ S, D := by simp [Nat.mul_comm]
     _ ≤ ∑ x ∈ S, P.roots.count x := by
@@ -412,6 +415,21 @@ theorem mobius_count {m B n A D E : ℕ} {a b K : F} (ha : a ≠ 0) (hab : a ≠
     _ ≤ P.natDegree := P.card_roots'
     _ ≤ _ := aux_degree a b n e w hE
 
+/-- Multiplicity count for simultaneous subgroup values of a fractional linear function.
+The two affine factors are normalized to leading coefficient one. Their leading-coefficient
+ratio in the original map is absorbed by `K`. -/
+theorem mobius_count {m B n A D E : ℕ} {a b K : F} (ha : a ≠ 0) (hab : a ≠ b)
+    {e d : Fin m → ℕ} (hV : (Matrix.vandermonde (fun j => (e j : F))).det ≠ 0)
+    (hm : m ≤ n) (hE : ∀ j, e j ≤ E) (hA : 0 < A) (hd : ∀ j, d j < A)
+    (hgap : D * (A + 2*(D-1)) < B*m) (hfac : IsUnit (((D-1).factorial : ℕ) : F))
+    (S : Finset F) (hreg : ∀ x ∈ S, x ≠ 0 ∧ x ≠ a ∧ x ≠ b)
+    (hxe : ∀ x ∈ S, ∀ j, x ^ e j = x ^ d j)
+    (hratio : ∀ x ∈ S, (x-a)^n = K * (x-b)^n) : D * S.card ≤ E + n * (B-1) := by
+  apply mobius_count_many (J := 1) (fun _ => K) ha hab hV hm hE hA hd
+    (by simpa using hgap) hfac S hreg hxe
+  exact fun x hx => ⟨0, hratio x hx⟩
+
+#print axioms mobius_count_many
 #print axioms aux_ne_zero
 #print axioms mobius_count
 
