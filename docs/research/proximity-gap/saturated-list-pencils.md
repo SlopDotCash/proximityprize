@@ -33,6 +33,39 @@ Choose $d-1$ sites outside the thirteen used fibers, and let $P$ be their monic 
 
 For any four or five of the five heads $P(X)(b_iY+b_i^{-1})$, where $b_i=z^{e_i}$ and $e_i\in\{0,1,2,4,7\}$, all unordered two-term exponents are distinct modulo sixteen. Choose the common vanisher of degree $d-1$ outside these ten fibers. Its roots and the four incident fibers give every word $5d-1$ mandatory sites. Disjoint additional sites raise every word to exactly $t$ chosen agreements since the free supply is $5d+1$ and each deficit is $t-5d+1$. This example preserves all ten pair intersections **after** choosing exactly $t$ sites per word. In contrast, three of the six heads from the previous construction have $6d-1>t$ mandatory sites. Its full six-clique is a statement about actual agreement sets. Lean verifies the cropped five-clique throughout the full integer interval from $5d-1$ through $6d-1$ for every smooth coset of size $16d$. [Kernel-checked exact supports](../../../ArkLib/Research/ProximityGap/Frontier/FiveCroppedSplitPencil.lean)
 
+## Lists with common evaluation sites
+
+Fix $s$ sites and prescribe the same column of width $w$ to every candidate
+at each of them. A center can take arbitrary values there. If each candidate
+agrees with the center at $t>s$ sites, deleting the prescribed sites leaves
+at least $t-s$ agreements per candidate. Since distinct dimension-$k$
+Reed–Solomon words agree in at most $k-1$ columns and already agree at all
+$s$ sites, the remaining pairwise overlap is at most $k-1-s$ when $s<k$.
+The strict Johnson rank bound on the remaining coordinates gives at most
+$n-s$ candidates as soon as
+\[
+ (t-s)^2>(n-s)(k-1-s).
+\]
+This also applies to every family constructed by adding a common word to
+polynomials all divisible by the same split vanishing factor.
+
+At length $n=2^{30}$ the first prime's budget is $n$. Each row gives a
+certified safe error count **within the prescribed evaluation slice**.
+
+| Prescribed sites | Rate $1/8$ | Rate $1/16$ | Upper bound on the slice list |
+|---:|---:|---:|---:|
+| 1 | 694,116,763 | 805,306,371 | 1,073,741,823 |
+| $2^{23}-1$ | 699,221,467 | 815,237,616 | 1,065,353,217 |
+| $2^{26}-1$ | 746,721,448 | | 1,006,632,961 |
+
+Thus a list exceeding the first budget at either next open Hamming step
+must vary at every site. The five cropped power-fiber witnesses above share
+a factor with $2^{26}-1$ roots. Even adding arbitrary new messages with the
+same values at these sites keeps their rate-$1/8$ list under budget through
+746,721,448 errors. This conclusion allows every center and every interleaving
+width. Independent verified kernel replay accepted 28,288 declarations for the general theorem and all three numerical specializations. The unrestricted first failing counts remain open. [Affine-slice
+list theorem and numerical bounds](../../../ArkLib/Research/ProximityGap/Frontier/SharedSiteListBound.lean)
+
 ## What a low-dimensional list can contribute
 
 An affine line of messages contains at most $\lfloor(n-D)/(t-D)\rfloor=3$ members of the list. Its direction vanishes on at most $D$ sites. Each other site agrees with at most one member. More generally let $A$ be an affine $r$-flat of message polynomials. The coordinate evaluations that are constant on $A$ number at most $k-r$. The independent $r$-dimensional direction space consists of polynomials sharing all these roots, and division by their vanisher embeds it in the space of polynomials of degree below $k-c$. At a nonconstant coordinate the received value cuts $A$ in an affine $(r-1)$-flat. Counting agreements gives the recursive upper bound
