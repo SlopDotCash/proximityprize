@@ -5,7 +5,7 @@ Authors: Proximity Prize Contributors
 -/
 import ArkLib.Research.ProximityGap.Frontier.MobiusSeamCoordinateSupply
 import ArkLib.Research.ProximityGap.Frontier._PrizeShapePrimeP30Second
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.NumberTheory.LegendreSymbol.Basic
 import Mathlib.Tactic.Linarith
 
