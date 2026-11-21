@@ -77,6 +77,11 @@ ArkLib.Research.ProximityGap.Frontier.OnePunctureCubicThreshold ArkLib.Proximity
 ArkLib.Research.ProximityGap.Frontier.OnePunctureCubicThreshold ArkLib.ProximityGap.Frontier.OnePunctureCubicThreshold.classification
 ArkLib.Research.ProximityGap.Frontier.OnePunctureCubicThreshold ArkLib.ProximityGap.Frontier.OnePunctureCubicThreshold.second_prime
 
+# Lossless puncture extension of the two-head probability curve
+ArkLib.Research.ProximityGap.Frontier.PunctureTwoHeadWindow ArkLib.ProximityGap.Frontier.PunctureTwoHeadWindow.stable_eps
+ArkLib.Research.ProximityGap.Frontier.PunctureTwoHeadWindow ArkLib.ProximityGap.Frontier.PunctureTwoHeadWindow.exact_eps
+ArkLib.Research.ProximityGap.Frontier.PunctureTwoHeadWindow ArkLib.ProximityGap.Frontier.PunctureTwoHeadWindow.classification
+
 # Smooth-field and executable equality for the second-budget MCA boundary
 ArkLib.Research.ProximityGap.Frontier.SecondBudgetCharacteristic ArkLib.ProximityGap.Frontier.SecondBudgetCharacteristic.smooth
 ArkLib.Research.ProximityGap.SecondBudgetSmoothReview ProximityPrize.SecondBudgetSmoothReview.classification
