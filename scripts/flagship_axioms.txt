@@ -249,3 +249,8 @@ ArkLib.Research.ProximityGap.Frontier.QuarterRateQuadraticSafety ArkLib.Proximit
 ArkLib.Research.ProximityGap.Frontier.QuarterRateQuadraticSafety ArkLib.ProximityGap.Frontier.QuarterRateQuadraticSafety.named_bracket
 ArkLib.Research.ProximityGap.Frontier.ThreeHeadDeficitWindow ArkLib.ProximityGap.Frontier.ThreeHeadDeficitWindow.prime_supremum_bracket
 ArkLib.Research.ProximityGap.Frontier.DegreeTenDeficitWindow ArkLib.ProximityGap.Frontier.DegreeTenDeficitWindow.two_head_bracket
+
+# Quarter-rate saturated core and expanded first-prime interval
+ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor ArkLib.ProximityGap.Frontier.QuarterRateTwoRichFloor.named_bracket
+ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor ArkLib.ProximityGap.Frontier.QuarterRateTwoRichFloor.exact_mass
+ArkLib.Research.ProximityGap.Frontier.QuarterRateTwoRichFloor ArkLib.ProximityGap.Frontier.QuarterRateTwoRichFloor.prime_budget_window
