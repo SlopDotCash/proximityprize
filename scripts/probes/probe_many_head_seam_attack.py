@@ -61,6 +61,25 @@ def verify(n, k, heads, p):
                      dot(a, word_at[y]) - z*dot(b, word_at[y])) % p == 0, "fold misses")
         explained = at_point(base[:k], [dot(b, word_at[y]) for y in base[:k]], x, p)
         require(explained != dot(b, word_at[x]), "second row has a joint fit")
+    virtual = next(v for v in range(p) if v not in domain)
+    chart = set()
+    for i, _, x, _ in witnesses:
+        a_i = seam[i]
+        if x == a_i:
+            received = (0, 0, 0)
+            c = virtual
+        else:
+            c = next((seam[j] for j, block in enumerate(blocks) if x in block), virtual)
+            nodal = prod(x - y for y in common + seam) % p
+            w = nodal * pow(x-c, -1, p) % p
+            received = (c*w % p, c*c*w % p, w)
+        qi = word(i,x)[i]
+        direction = (qi - received[2]) % p
+        expected = (-x % p, (a_i*c - (a_i+c)*x) % p)
+        actual = tuple((u-head)*pow(direction,-1,p) % p
+                       for u,head in zip(received[:2], (a_i*qi, a_i*a_i*qi)))
+        require(actual == expected and actual not in chart, "explicit pencil chart")
+        chart.add(actual)
     print(f"n={n}, k={k}, heads={heads}, e={e}, literal labels={len(witnesses)}")
 
 
@@ -78,6 +97,19 @@ def main():
         require(k+m*r <= n < k+m*(r+1), "production packing")
         require(prime > m*m*n*n and m*(e+1) > 2*n, "production budget violation")
         print(f"n={n}, k={k}, heads={m}, e={e}, bad labels={m*(e+1)}, extra={n-k-m*r}")
+        if m == 4:
+            pred = e-1
+            t = n-pred
+            require(4*t == n+3*k+4, "predecessor deficit")
+            require(3*(pred+1)+7 < 2*n and 3*pred+4 < 2*n, "four-head barrier")
+            print(f"four exceptional heads at e={pred}: at most {3*(pred+1)+7} labels")
+            endpoint = {4:536870911, 8:671088639}[den]
+            minimum_labels = 2*n+1-3*(endpoint+1)
+            max_cost = endpoint//(minimum_labels-1)
+            incidence = 4*(n-endpoint)-3-max_cost
+            gap = incidence-n-4*(k-1)
+            require(gap == {4:5, 8:1}[den] and 3*endpoint+4 <= 2*n, "arbitrary four heads")
+            print(f"all four heads at e={endpoint}: overbudget core-incidence excess={gap}")
 
 
 if __name__ == "__main__":
