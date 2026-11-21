@@ -369,6 +369,72 @@ theorem shared_support_incidence_budget {I Coord : Type*}
   rw [Finset.sum_comm] at hs
   simpa [Finset.sum_ite, mul_comm] using hs
 
+/-- Three circuits whose head sets intersect pairwise in at most one head charge
+at least three times the minimum pairwise union size in actual error incidences. -/
+theorem three_circuit_incidence {I X : Type*} [Fintype I] [Fintype X]
+    [DecidableEq I] [DecidableEq X] (Q : I → Finset X)
+    (A B C : Finset I) (S T U : Finset X) (D : ℕ)
+    (hAB : (A ∩ B).card ≤ 1) (hAC : (A ∩ C).card ≤ 1) (hBC : (B ∩ C).card ≤ 1)
+    (hS : ∀ x ∈ S, ∃ p : Finset I, p.card = 2 ∧ p ⊆ A ∧ ∀ i ∈ p, x ∈ Q i)
+    (hT : ∀ x ∈ T, ∃ p : Finset I, p.card = 2 ∧ p ⊆ B ∧ ∀ i ∈ p, x ∈ Q i)
+    (hU : ∀ x ∈ U, ∃ p : Finset I, p.card = 2 ∧ p ⊆ C ∧ ∀ i ∈ p, x ∈ Q i)
+    (hST : D ≤ (S ∪ T).card) (hSU : D ≤ (S ∪ U).card) (hTU : D ≤ (T ∪ U).card) :
+    3 * D ≤ ∑ i, (Q i).card := by
+  classical
+  let hits (x : X) : Finset I := Finset.univ.filter (fun i ↦ x ∈ Q i)
+  have one (x : X) (A' : Finset I)
+      (h : ∃ p : Finset I, p.card = 2 ∧ p ⊆ A' ∧ ∀ i ∈ p, x ∈ Q i) :
+      2 ≤ (hits x).card := by
+    obtain ⟨p, hp, _, hx⟩ := h
+    have hsub : p ⊆ hits x := fun i hi ↦ by simp [hits, hx i hi]
+    simpa [hp] using Finset.card_le_card hsub
+  have two (x : X) (A' B' : Finset I) (hab : (A' ∩ B').card ≤ 1)
+      (ha : ∃ p : Finset I, p.card = 2 ∧ p ⊆ A' ∧ ∀ i ∈ p, x ∈ Q i)
+      (hb : ∃ p : Finset I, p.card = 2 ∧ p ⊆ B' ∧ ∀ i ∈ p, x ∈ Q i) :
+      3 ≤ (hits x).card := by
+    obtain ⟨p, hp, hpa, hpx⟩ := ha
+    obtain ⟨q, hq, hqb, hqx⟩ := hb
+    have hinter : (p ∩ q).card ≤ (A' ∩ B').card := by
+      apply Finset.card_le_card
+      intro i hi
+      obtain ⟨hip, hiq⟩ := Finset.mem_inter.mp hi
+      exact Finset.mem_inter.mpr ⟨hpa hip, hqb hiq⟩
+    have hunion : (p ∪ q).card ≤ (hits x).card := by
+      apply Finset.card_le_card
+      intro i hi
+      rcases Finset.mem_union.mp hi with hi | hi
+      · simp [hits, hpx i hi]
+      · simp [hits, hqx i hi]
+    have heq := Finset.card_union_add_card_inter p q
+    omega
+  have hpoint (x : X) :
+      (if x ∈ S ∪ T then 1 else 0) + (if x ∈ S ∪ U then 1 else 0) +
+        (if x ∈ T ∪ U then 1 else 0) ≤ (hits x).card := by
+    by_cases hs : x ∈ S
+    · by_cases ht : x ∈ T
+      · simpa [Finset.mem_union, hs, ht] using two x A B hAB (hS x hs) (hT x ht)
+      · by_cases hu : x ∈ U
+        · simpa [Finset.mem_union, hs, hu] using two x A C hAC (hS x hs) (hU x hu)
+        · simpa [Finset.mem_union, hs, ht, hu] using one x A (hS x hs)
+    · by_cases ht : x ∈ T
+      · by_cases hu : x ∈ U
+        · simpa [Finset.mem_union, ht, hu] using two x B C hBC (hT x ht) (hU x hu)
+        · simpa [Finset.mem_union, hs, ht, hu] using one x B (hT x ht)
+      · by_cases hu : x ∈ U
+        · simpa [Finset.mem_union, hs, ht, hu] using one x C (hU x hu)
+        · simp [Finset.mem_union, hs, ht, hu]
+  have hsum := Finset.sum_le_sum (s := (Finset.univ : Finset X)) (fun x _ ↦ hpoint x)
+  have hcount (W : Finset X) : (∑ x : X, if x ∈ W then (1 : ℕ) else 0) = W.card := by
+    simp [Finset.sum_ite]
+  have hmass : (∑ x, (hits x).card) = ∑ i, (Q i).card := by
+    calc
+      (∑ x, (hits x).card) = ∑ x : X, ∑ i : I, if x ∈ Q i then (1 : ℕ) else 0 := by
+        simp [hits, Finset.sum_ite]
+      _ = ∑ i : I, ∑ x : X, if x ∈ Q i then (1 : ℕ) else 0 := Finset.sum_comm
+      _ = ∑ i, (Q i).card := by simp [hcount]
+  rw [Finset.sum_add_distrib, Finset.sum_add_distrib, hcount, hcount, hcount, hmass] at hsum
+  omega
+
 /-- Global relation shortening expressed directly in the total support budget. -/
 theorem projected_relation_incidence_budget {F I Coord : Type*} [Field F]
     [Fintype I] [Fintype Coord] [DecidableEq I] [DecidableEq Coord]
@@ -735,3 +801,4 @@ end ProximityGap.IncidenceDependencyArithmetic
 #print axioms ProximityGap.IncidenceDependencyArithmetic.projected_relation_incidence_budget
 #print axioms ProximityGap.IncidenceDependencyArithmetic.affine_heads_of_small_error_relation
 #print axioms ProximityGap.IncidenceDependencyArithmetic.affine_heads_of_small_error_incidence
+#print axioms ProximityGap.IncidenceDependencyArithmetic.three_circuit_incidence
