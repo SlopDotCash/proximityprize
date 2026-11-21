@@ -765,6 +765,7 @@ import ArkLib.Research.ProximityGap.Frontier.RepetitionSecondPrimeThreshold
 import ArkLib.Research.ProximityGap.Frontier.ReservedFiberList
 import ArkLib.Research.ProximityGap.Frontier.ResolveFieldIndependent
 import ArkLib.Research.ProximityGap.Frontier.ReverseHessianAffineSection
+import ArkLib.Research.ProximityGap.Frontier.RobustSplitListCliques
 import ArkLib.Research.ProximityGap.Frontier.RootsOfUnityApproximateSubgroup
 import ArkLib.Research.ProximityGap.Frontier.SalemZygmundChaining
 import ArkLib.Research.ProximityGap.Frontier.SalemZygmundMomentAssemblyA3
