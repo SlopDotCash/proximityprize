@@ -49,6 +49,7 @@ Start in a fresh checkout of the review commit with the pinned toolchain and dep
 git rev-parse HEAD
 ./scripts/lake-locked.sh exe cache get
 ./scripts/validate.sh --axioms
+LEAN_ABORT_ON_PANIC=1 lake env lean -DwarningAsError=true ArkLib/Research/ProximityGap/KnownDomainReview.lean
 ```
 
 The default build includes the Research library. The test target imports the theorem modules and checks independently stated numerical conclusions. The flagship manifest checks the transitive axioms of the reviewer endpoints against `propext`, `Classical.choice`, and `Quot.sound`. The optional library-wide regression sweep has its own roots and historical baseline. A green library sweep and an endpoint-level audit answer different questions. [Review client](../../../ArkLib/Tests/ProximityPrize/GrandChallengeReview.lean) · [Endpoint manifest](../../../scripts/flagship_axioms.txt) · [Sweep scope](../../../scripts/AxiomSweep.lean)

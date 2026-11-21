@@ -13,17 +13,16 @@ namespace ProximityPrize.KnownDomainReview
 open ProximityGap ProximityGap.GrandChallenges FullPrizeReview FourRateListPrime246
 open scoped NNReal ENNReal
 
-noncomputable section
-
-private def errorCount (e : ℕ) (he : e ≤ 128) : Boundary (Fintype.card H) :=
+-- The boundary type is indexed by the cardinality of a noncomputably enumerated subgroup.
+private noncomputable def errorCount (e : ℕ) (he : e ≤ 128) : Boundary (Fintype.card H) :=
   some ⟨e, by rw [card_H]; omega⟩
 
 /-- At half rate 62 errors first fail MCA. All three smaller rates pass through radius one. -/
-def mcaAnswer (k : ℕ) : Boundary (Fintype.card H) :=
+noncomputable def mcaAnswer (k : ℕ) : Boundary (Fintype.card H) :=
   if k = 64 then errorCount 62 (by decide) else none
 
 /-- First list-budget failures at dimensions 64, 32, 16 and 8, independent of positive width. -/
-def listAnswer (k _m : ℕ) : Boundary (Fintype.card H) :=
+noncomputable def listAnswer (k _m : ℕ) : Boundary (Fintype.card H) :=
   if k = 64 then errorCount 63 (by decide)
   else if k = 32 then errorCount 97 (by decide)
   else if k = 16 then errorCount 113 (by decide)
@@ -61,7 +60,6 @@ theorem correctForPrime246 :
     fin_cases j <;>
       norm_num [prizeDimension, prizeDenominator, card_H, firstBad, FourRateList128.firstBad,
         listAnswer, errorCount, ← NNReal.coe_lt_coe]
-end
 
 #print axioms correctForPrime246
 end ProximityPrize.KnownDomainReview
