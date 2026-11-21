@@ -533,6 +533,7 @@ import ArkLib.Research.ProximityGap.Frontier.ReciprocalAverageEnergy
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalChartMCA
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalChartMoments
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalEnergyFailure
+import ArkLib.Research.ProximityGap.Frontier.ReciprocalFiberLists
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalSubsetSeparation
 import ArkLib.Research.ProximityGap.Frontier.ReciprocalTupleEnergy
 import ArkLib.Research.ProximityGap.Frontier.RecursiveListPacking
