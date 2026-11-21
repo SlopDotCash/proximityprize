@@ -1,4 +1,4 @@
-"""Exclude all four-head sixteen-fiber one-fresh constructions below 313174699 errors.
+"""Exclude all four-head sixteen-fiber constructions of the stated form below 313174699 errors.
 
 The slot bound uses exact rational dual weights. The remaining Hermite interpolation
 systems are tested over the first prize field. No numerical solver is used.
@@ -61,6 +61,21 @@ def residual_counts():
     expected.extend((7, (13,0,i,3-i), (3,3,3,4)) for i in range(1,4))
     require(residual == expected, 'exact aggregate certificates')
     return residual
+
+
+def multi_fresh_predecessor():
+    errors = 313174698
+    labels = N + 1
+    per_head = labels - 3 * (errors + 1)
+    require(per_head == 134217728 and 1 + errors // 3 < per_head, 'three fresh sites')
+    require(2 * (1 + errors // 2) + 2 * (errors + 1) < labels, 'two deficient heads')
+    core_lower = 4 * (N - errors - 1) - 1
+    fresh_lower = labels + per_head
+    degree_term = max(2 * degree - 3 * (degree % 2) for degree in range(8))
+    upper = 8 * N + (32 + degree_term) * SCALE - 8 - 2 * fresh_lower
+    require(degree_term == 12 and fresh_lower == 1207959553, 'fresh-incidence price')
+    require(3 * core_lower == 9126805497 and upper == 9126805494, 'multi-fresh exclusion')
+    return 3 * core_lower, upper
 
 
 def dot(v, w):
@@ -159,6 +174,7 @@ def septic_case():
 
 
 if __name__ == '__main__':
+    print('multi-fresh triple core lower and upper bounds', multi_fresh_predecessor())
     print('surviving incidence patterns', residual_counts())
     print('sextic distinguished-block orbits and table counts', sextic_case())
     print('septic distinguished-block orbits, intersecting pairs and triples', septic_case())

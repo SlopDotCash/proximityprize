@@ -84,9 +84,10 @@ def write_pool(path, order, spare, degree, minimum):
         visit(0, degree, (), (1,), 0)
 
 
-def census(program, pool, order, degree, spare, cut_a, cut_b, cap, workers):
+def census(program, pool, order, degree, spare, cut_a, cut_b, cap, workers, product_scores=False):
     args = (pool, order, degree, spare, cut_a, cut_b, cap, workers)
-    result = subprocess.check_output([program, *map(str, args)], text=True)
+    command = [program, "--product-scores"] if product_scores else [program]
+    result = subprocess.check_output([*command, *map(str, args)], text=True)
     rows = [tuple(map(int, match)) for match in re.findall(
         r'^bins=(\d+) incidences=(\d+) unique=(\d+)$', result, re.MULTILINE)]
     require(len(rows) == 2, 'two census rows')
@@ -145,6 +146,55 @@ def explicit_words(order, spare, degree, selected, pool_size):
     print(f'F_{p} n={n} explicit_words={len(words)} min_agreements={least_agreements}')
 
 
+def direct_product_scores(fixed, order, spare, cap):
+    """Rerank complete root sets by product and their unshared agreements at other anchors."""
+    step = order // spare
+    anchors = range(step, order, step)
+    signatures = [{a: packed(signature_of({(j-a) % order for j in t}, order)) for a in anchors}
+                  for t in fixed]
+    support = {a: defaultdict(set) for a in anchors}
+    orbits = {}
+    for i, row in enumerate(signatures):
+        for a, v in row.items():
+            support[a][v].add(i)
+            if a & (a-1) or (a, v) in orbits:
+                continue
+            relative = [(j-a) % order for j in fixed[i]]
+            image = {(u*a % order, packed(signature_of({r*u % order for r in relative}, order)))
+                     for u in range(1, order, 2)}
+            for b, other in image:
+                if b == a:
+                    orbits[a, other] = image
+
+    def choose(current):
+        selected = set()
+        for a in anchors:
+            if a & (a-1):
+                continue
+            ranked = []
+            seen = set()
+            for v, members in support[a].items():
+                if v in seen:
+                    continue
+                orbit = orbits[a, v]
+                local = {w for b, w in orbit if b == a}
+                seen.update(local)
+                fresh = sum(not any((b, signatures[i][b]) in current for b in anchors if b != a)
+                            for i in members)
+                ranked.append((-(len(members)+3*fresh), min(local), len(local), orbit))
+            used = 0
+            for _, _, size, orbit in sorted(ranked):
+                if used + size <= cap:
+                    selected.update(orbit)
+                    used += size
+        return selected
+
+    selected = choose(choose(set()))
+    counts = [sum(item in selected for item in row.items()) for row in signatures]
+    bins = max(sum((a, v) in selected for v in support[a]) for a in anchors)
+    return (bins, sum(counts), sum(count > 0 for count in counts))
+
+
 def small_board(program, directory, order, spare, degree, workers):
     """Compute raw signatures, Galois orbits and anchored unions directly from root subsets."""
     pool = directory/'small.pool'
@@ -194,6 +244,12 @@ def small_board(program, directory, order, spare, degree, workers):
     require(actual == expected and any(inc > count > 0 for _, inc, count in expected),
             'direct union and overlapping incidences')
     print(f'M={order} S={spare} degree={degree} subsets={len(all_sites)} direct={expected}')
+    fixed = [t for t in all_sites if sum(t) % order == 0]
+    caps = (1, 3) if order == 16 else (35, 100)
+    refined = [direct_product_scores(fixed, order, spare, cap) for cap in caps]
+    computed, _ = census(program, pool, order, degree, spare, *caps, 1, workers, product_scores=True)
+    require(computed == refined, 'independent product and unshared-population ranking')
+    print(f'M={order} refined={computed}')
     if order == 16:
         explicit_words(order, spare, degree, selected[1], len(b_pool))
 
@@ -218,9 +274,16 @@ def main():
         require(pool.stat().st_size == 20*1923274, 'complete production pool size')
         h, n = 2**23, 2**30
         rows, output = census(program, pool, 128, 9, 16, 9504, 8192, h//6, args.workers)
+        print('Uniform pools')
         print(output, end='')
         require(rows == [(517954,1551671296,1132216224),(1398090,3367652416,2459641984)],
                 'production receipts')
+        rows, output = census(program, pool, 128, 9, 16, h//20, h//8, 1, args.workers,
+                              product_scores=True)
+        print('Product-conditioned pools after one overlap refinement')
+        print(output, end='')
+        require(rows == [(419430,1276465776,1124276896),(1048576,2659659888,2183380672)],
+                'product-conditioned production receipts')
         for (bins, _, size), budget in zip(rows, (n, 2*n)):
             gain = h//(2*bins)
             require(size > budget, 'over-budget list')
