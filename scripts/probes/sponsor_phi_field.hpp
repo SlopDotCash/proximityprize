@@ -36,6 +36,7 @@ inline Field sponsor_field(const std::string &name) {
          {mpz_class("730750818665451459101842416358141509841924915201"),
           mpz_class("192152681249815148642741928588691886362054863855"), 1UL << 30}},
         {"positive-control", {17318209, power(7, (17318209 - 1) / 64, 17318209), 64}},
+        {"primitive-control", {17, 3, 16}},
         {"sextic-control", {97, 8, 16}}};
     return fields.at(name);
 }

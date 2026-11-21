@@ -244,6 +244,7 @@ import ArkLib.Research.ProximityGap.Frontier.CubicPolarDescent
 import ArkLib.Research.ProximityGap.Frontier.CubicPolarSiteBudget
 import ArkLib.Research.ProximityGap.Frontier.CubicSectionDiscriminant
 import ArkLib.Research.ProximityGap.Frontier.CubicSheetExcess
+import ArkLib.Research.ProximityGap.Frontier.CubicSpikeBudgetBoundary
 import ArkLib.Research.ProximityGap.Frontier.CumulantOnsetNoGo
 import ArkLib.Research.ProximityGap.Frontier.CurveDecodability
 import ArkLib.Research.ProximityGap.Frontier.CyclotomicMeanLogMass
@@ -534,6 +535,7 @@ import ArkLib.Research.ProximityGap.Frontier.PaleyListInterpolation
 import ArkLib.Research.ProximityGap.Frontier.PaleyPairDeterminants
 import ArkLib.Research.ProximityGap.Frontier.PaleyPrescribedRectangle
 import ArkLib.Research.ProximityGap.Frontier.PaleyProjectiveMoment
+import ArkLib.Research.ProximityGap.Frontier.PaleyRowSampling
 import ArkLib.Research.ProximityGap.Frontier.PaleyShiftFactorization
 import ArkLib.Research.ProximityGap.Frontier.PaleyShiftListRecovery
 import ArkLib.Research.ProximityGap.Frontier.PaleyShiftMultiplicityBudget
@@ -541,10 +543,12 @@ import ArkLib.Research.ProximityGap.Frontier.PaleyShiftRank
 import ArkLib.Research.ProximityGap.Frontier.PaleySignedFactorization
 import ArkLib.Research.ProximityGap.Frontier.PaleySingleSizeQuadratic
 import ArkLib.Research.ProximityGap.Frontier.PaleySliceSampling
+import ArkLib.Research.ProximityGap.Frontier.PaleySubgroupSignedEnergy
 import ArkLib.Research.ProximityGap.Frontier.PaleySubgroupTransversal
 import ArkLib.Research.ProximityGap.Frontier.PaleyTranslateInterpolation
 import ArkLib.Research.ProximityGap.Frontier.PaleyTranslationEnergy
 import ArkLib.Research.ProximityGap.Frontier.PaleyVirtualSign
+import ArkLib.Research.ProximityGap.Frontier.PaleyWorstShiftFloor
 import ArkLib.Research.ProximityGap.Frontier.PencilAutocorrEnergyMaxBridge
 import ArkLib.Research.ProximityGap.Frontier.PencilAutocorrRootBound
 import ArkLib.Research.ProximityGap.Frontier.PencilAutocorrSubgroupExact
