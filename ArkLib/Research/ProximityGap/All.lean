@@ -902,6 +902,7 @@ import ArkLib.Research.ProximityGap.Frontier.SixSplitPencil
 import ArkLib.Research.ProximityGap.Frontier.SixteenCosetListLower
 import ArkLib.Research.ProximityGap.Frontier.SixteenFiberMass
 import ArkLib.Research.ProximityGap.Frontier.SixteenthSaturatedHeads
+import ArkLib.Research.ProximityGap.Frontier.SixthDegreeThreeHeadWindow
 import ArkLib.Research.ProximityGap.Frontier.SixthMomentAntipodalShape
 import ArkLib.Research.ProximityGap.Frontier.SixthMomentMultiplicativeRectangle
 import ArkLib.Research.ProximityGap.Frontier.SixthMomentSignatureBridge
@@ -922,6 +923,7 @@ import ArkLib.Research.ProximityGap.Frontier.SmoothFourHeadColored
 import ArkLib.Research.ProximityGap.Frontier.SmoothFourHeadFibers
 import ArkLib.Research.ProximityGap.Frontier.SmoothHyperbolaGrid
 import ArkLib.Research.ProximityGap.Frontier.SmoothLinearFieldEnvelope
+import ArkLib.Research.ProximityGap.Frontier.SmoothListPackingRadius
 import ArkLib.Research.ProximityGap.Frontier.SmoothManyHeadMass
 import ArkLib.Research.ProximityGap.Frontier.SmoothManyLinePhase
 import ArkLib.Research.ProximityGap.Frontier.SmoothParityPrime157
@@ -4007,6 +4009,7 @@ import ArkLib.Research.ProximityGap.ResolutionWitness
 import ArkLib.Research.ProximityGap.SecondBudgetSmoothReview
 import ArkLib.Research.ProximityGap.SecondPrimeRankReview
 import ArkLib.Research.ProximityGap.SmoothCapacityGap
+import ArkLib.Research.ProximityGap.SmoothListExecutable
 import ArkLib.Research.ProximityGap.SmoothPrizeCapacityTable
 import ArkLib.Research.ProximityGap.SolutionDisproof
 import ArkLib.Research.ProximityGap.SubsetSumErdosHeilbronn

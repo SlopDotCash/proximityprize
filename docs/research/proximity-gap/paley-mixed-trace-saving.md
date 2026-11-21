@@ -118,3 +118,61 @@ prize prime, $r\le m\le 2^{29}$ whereas $p>2^{116}$. Even the optimistic
 values $L=C(p)=1$ therefore leave this estimate larger than the trivial
 bound. This calculation concerns the amplification inequality; it imposes
 no lower bound on the actual discrepancy.
+
+## A power saving above the cube-root scale
+
+Uniformly for distinct products, the normalized full-stratum sum satisfies
+$$
+\frac{|S|}{|T(s)||T(t)|}\ll p^{1/8}n^{-3/8}+n^{-1},
+\qquad 4\mid n,\quad n\ge4p^{1/4}.
+$$
+Thus $n\ge p^{1/3+\varepsilon}$ gives a power saving. The stronger exponent
+comes from bounding the total occupancy of several cosets at once.
+
+Let $K$ have order $m$, let $f(X)=c(X-a)/(X-b)$ as above, and write $L_i$
+for the occupancies of its regular image in the distinct cosets of $K$, in
+decreasing order. Their total is at most $m$. For any $1\le J\le\sqrt m$,
+take $u=\lfloor(m/J^2)^{1/3}\rfloor$, $A=D=Ju^2$, $C=Ju$, $B=4Ju$.
+For a union of $J$ cosets there are $J$ equations of the form
+$(X-a)^m=K_i(X-b)^m$, one of which holds at each contributing point.
+Impose the cleared derivative constraints for all $K_i$ simultaneously.
+There are at most $JD(A+2(D-1))<BAC$ linear conditions on $BAC$ weights.
+The same auxiliary polynomial works for every point. Its nonvanishing
+uses $AC=J^2u^3\le m$ and the distinct sparse exponents in the field.
+These exponents are at most $A-1+m(C-1)<p$ whenever $m+m^{3/2}\le p$,
+because $A\le m$ and $C=Ju\le\sqrt m$. The multiplicity $D$ also lies
+below the characteristic. Counting roots with multiplicity gives
+$$
+D\sum_{i\le J}L_i\le A-1+m(C-1)+m(B-1).
+$$
+The finite inequality, including the simultaneous linear kernel, is proved
+in Lean. Since $u\ge\tfrac12(m/J^2)^{1/3}$, it gives
+$\sum_{i\le J}L_i\le1+5m/u\ll m^{2/3}J^{2/3}$.
+[Finite simultaneous-coset bound](../../../ArkLib/Research/ProximityGap/Frontier/MobiusSubgroupBound.lean)
+
+Put $h=\lfloor\sqrt m\rfloor$ and extend the list by zeros if necessary.
+For $j\le h$, monotonicity gives $L_j\ll m^{2/3}j^{-1/3}$.
+Thus $\sum_{j\le h}L_j^2\ll m^{4/3}h^{1/3}\ll m^{3/2}$, by summation
+of $j^{-2/3}$. The tail is at most $L_h\sum_jL_j\ll m^{3/2}$.
+If there are fewer than $J$ cosets, the displayed prefix estimate follows
+from the estimate for the actual number of cosets. We have proved
+$\sum_j L_j^2\ll m^{3/2}$.
+
+Partition the images of the positive and negative rows into $A_+, A_-$.
+For either set, the field-indexed signed coset occupancies in the amplified
+fourth moment have absolute mass at most $m^2$. Their squared mass is at
+most $m\sum_jL_j^2\ll m^{5/2}$, since each nonzero coset is indexed
+by $m$ elements. Taking $r=\lfloor p^{1/4}\rfloor\le m$, the signed
+energy inequality gives $r^2 |R_\pm|^4\ll m^{13/2}p$ for each sign.
+Hence $|R_+-R_-|/m^2\ll p^{1/8}m^{-3/8}$. Restoring the exceptional
+rows and the at most two branch values per trace costs $O(n^{-1})$ in
+relative discrepancy. [Signed energy fourth moment](../../../ArkLib/Research/ProximityGap/Frontier/PaleySubgroupSignedEnergy.lean)
+
+For $n\le p^{2/3}$ the cell size $m\le n/2$ satisfies
+$m+m^{3/2}\le p$ for $p\ge5$. For larger $n$, the exact second moment
+$\sum_x|\sum_{y\in B}\chi(x-y)|^2=p|B|-|B|^2$ and Cauchy–Schwarz
+give relative discrepancy at most $2\sqrt p/n$, which is at most
+$2p^{1/8}n^{-3/8}$ as soon as $n\ge p^{3/5}$. This closes the
+large-subgroup range. The two named prize primes lie below the cube-root
+threshold. The finite enumeration of each sponsor's subgroups remains a
+different source of information there.

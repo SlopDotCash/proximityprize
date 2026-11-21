@@ -180,6 +180,126 @@ theorem swept_discrepancy [Fintype F] {u : F} (hu : quadraticChar F u = -1)
   · exact_mod_cast swept_shiftLoss u A k
   · exact_mod_cast swept_shiftLoss u B l
 
+/-- The two directed difference sums obtained from reciprocal dilations have
+opposite signs whenever minus the multiplier is a nonsquare. -/
+theorem reciprocal_sums [Fintype F] (A : Finset F) {q : F}
+    (hq : q ≠ 0) (hsign : quadraticChar F (-q) = -1) :
+    (∑ x ∈ A, ∑ y ∈ A.image (q * ·), quadraticChar F (x-y)) =
+      -(∑ x ∈ A, ∑ y ∈ A.image (q⁻¹ * ·), quadraticChar F (x-y)) := by
+  simp_rw [sum_image (mul_right_injective₀ hq).injOn,
+    sum_image (mul_right_injective₀ (inv_ne_zero hq)).injOn]
+  rw [sum_comm]
+  have hpair (x y : F) : quadraticChar F (y-q*x) = -quadraticChar F (x-q⁻¹*y) := by
+    rw [show y-q*x = (-q)*(x-q⁻¹*y) by field_simp; ring, map_mul, hsign, neg_one_mul]
+  simp_rw [hpair, sum_neg_distrib]
+
+/-- Every nonzero sum of two subgroup elements with prescribed product. -/
+def nonzeroStratum (H : Finset F) (s : F) : Finset F :=
+  ((H ×ˢ H).filter (fun k => k.1*k.2=s ∧ k.1+k.2 ≠ 0)).image (fun k => k.1+k.2)
+
+private theorem mem_nonzeroStratum {H : Finset F} {s z : F} :
+    z ∈ nonzeroStratum H s ↔ ∃ x ∈ H, ∃ y ∈ H, x*y=s ∧ x+y≠0 ∧ x+y=z := by
+  classical
+  simp only [nonzeroStratum, mem_image, mem_filter, mem_product, Prod.exists]
+  grind
+
+/-- Distinct product strata are disjoint away from zero under the additive Sidon condition. -/
+theorem disjoint_strata (H : Finset F) (hS : SidonModNeg H) {s t : F} (hst : s ≠ t) :
+    Disjoint (nonzeroStratum H s) (nonzeroStratum H t) := by
+  apply disjoint_left.mpr
+  intro z hs ht
+  obtain ⟨x,hx,y,hy,hxy,hn,he⟩ := mem_nonzeroStratum.mp hs
+  obtain ⟨u,hu,v,hv,huv,_,hf⟩ := mem_nonzeroStratum.mp ht
+  exact hst (hxy.symm.trans ((product_unique hS hx hy hu hv (he.trans hf.symm) hn).trans huv))
+
+/-- Dilation acts on a product stratum by its square. -/
+theorem scale_stratum (H : Finset F) {q : F} (hq : q≠0)
+    (hf : ∀ x ∈ H, q*x ∈ H) (hb : ∀ x ∈ H, q⁻¹*x ∈ H) (s : F) :
+    (nonzeroStratum H s).image (q * ·) = nonzeroStratum H (q^2*s) := by
+  ext z
+  constructor
+  · intro he
+    obtain ⟨_,ha,rfl⟩ := mem_image.mp he
+    obtain ⟨x,hx,y,hy,hp,hn,rfl⟩ := mem_nonzeroStratum.mp ha
+    exact mem_nonzeroStratum.mpr ⟨q*x,hf x hx,q*y,hf y hy,by rw [←hp]; ring,
+      by rw [← mul_add]; exact mul_ne_zero hq hn, (mul_add ..).symm⟩
+  · intro he
+    obtain ⟨x,hx,y,hy,hp,hn,rfl⟩ := mem_nonzeroStratum.mp he
+    refine mem_image.mpr ⟨q⁻¹*x+q⁻¹*y,mem_nonzeroStratum.mpr
+      ⟨q⁻¹*x,hb x hx,q⁻¹*y,hb y hy,?_,?_,rfl⟩,?_⟩
+    · calc q⁻¹*x*(q⁻¹*y) = q⁻¹^2*(x*y) := by ring
+           _ = s := by rw [hp]; field_simp
+    · rw [← mul_add]
+      exact mul_ne_zero (inv_ne_zero hq) hn
+    · rw [← mul_add, mul_inv_cancel_left₀ hq]
+
+/-- A full nonzero stratum against its two reciprocal product strata has
+zero discrepancy even when the multiplier fails to preserve the source. -/
+theorem reciprocal_strata [Fintype F] (H : Finset F) (hS : SidonModNeg H)
+    {q s : F} (hq : q≠0) (hsign : quadraticChar F (-q) = -1)
+    (hf : ∀ x ∈ H, q*x ∈ H) (hb : ∀ x ∈ H, q⁻¹*x ∈ H) (hd : q^2*s ≠ q⁻¹^2*s) :
+    ∑ x ∈ nonzeroStratum H s, ∑ y ∈ nonzeroStratum H (q^2*s) ∪ nonzeroStratum H (q⁻¹^2*s),
+      quadraticChar F (x-y) = 0 := by
+  have he := reciprocal_sums (nonzeroStratum H s) hq hsign
+  rw [scale_stratum H hq hf hb, scale_stratum H (inv_ne_zero hq) hb (by simpa using hf)] at he
+  simp_rw [sum_union (disjoint_strata H hS hd), sum_add_distrib]
+  omega
+
+#print axioms reciprocal_strata
+
+section SecondPrime
+
+open ArkLib.ProximityGap.PrizeShapePrimeP30Second
+
+local instance : Fact P.Prime := ⟨prime_P⟩
+
+/-- The order-`2^30` subgroup of the second named prime. -/
+def secondDomain : Finset (ZMod P) := univ.filter (fun x => x^(2^30 : ℕ)=1)
+
+/-- On the actual second prime the only externally enumerated premise is
+uniqueness of nonzero pair sums. Every odd generator power gives a distinct
+pair of target strata and exact signed cancellation on their union. -/
+theorem second_reciprocal_strata (hS : SidonModNeg secondDomain) {s : ZMod P} (hs : s ≠ 0) (k : ℕ) :
+    let q := g^(2*k+1)
+    ∑ x ∈ nonzeroStratum secondDomain s,
+      ∑ y ∈ nonzeroStratum secondDomain (q^2*s) ∪ nonzeroStratum secondDomain (q⁻¹^2*s),
+        quadraticChar (ZMod P) (x-y) = 0 := by
+  let q := g^(2*k+1)
+  have hg : g ≠ 0 := by intro he; simpa [he] using second_generator_character
+  have hq : q ≠ 0 := pow_ne_zero _ hg
+  have hminus : quadraticChar (ZMod P) (-1) = 1 := by
+    apply (quadraticChar_one_iff_isSquare (neg_ne_zero.mpr one_ne_zero)).mpr
+    rw [FiniteField.isSquare_neg_one_iff,ZMod.card]
+    decide
+  have hqchar : quadraticChar (ZMod P) (-q) = -1 := by
+    rw [← neg_one_mul, map_mul, hminus, one_mul, show q=g^(2*k+1) from rfl,
+      map_pow,second_generator_character, pow_succ, pow_mul]
+    norm_num
+  have hgN : g^(2^30 : ℕ) = 1 := by rw [← orderOf_g, pow_orderOf_eq_one]
+  have hqN : q^(2^30 : ℕ) = 1 := by
+    change (g^(2*k+1))^(2^30 : ℕ)=1
+    rw [← pow_mul, Nat.mul_comm, pow_mul, hgN, one_pow]
+  have hd : q^2*s ≠ q⁻¹^2*s := by
+    intro he
+    have heq := mul_right_cancel₀ hs he
+    have h₄ : q^4 = 1 := by
+      field_simp [hq] at heq
+      linear_combination heq
+    change (g^(2*k+1))^4=1 at h₄
+    rw [←pow_mul] at h₄
+    have hdvd := orderOf_dvd_of_pow_eq_one h₄
+    rw [orderOf_g] at hdvd
+    omega
+  apply reciprocal_strata secondDomain hS hq hqchar _ _ hd
+  · intro x hx
+    simpa only [secondDomain,mem_filter,mem_univ,true_and,mul_pow,hqN,one_mul] using hx
+  · intro x hx
+    simpa only [secondDomain,mem_filter,mem_univ,true_and,mul_pow,inv_pow,hqN,inv_one,one_mul] using hx
+
+#print axioms second_reciprocal_strata
+
+end SecondPrime
+
 end ProximityGap.PaleyMixedProductTraces
 
 #print axioms ProximityGap.PaleyMixedProductTraces.common_summand_injective
