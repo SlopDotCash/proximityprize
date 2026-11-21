@@ -401,6 +401,7 @@ import ArkLib.Research.ProximityGap.Frontier.HalfRateUnrestrictedJetBudget
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorFourHeadCover
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorJetInterpolation
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorJetRank
+import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorListEquivalence
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorNonlinearPopulation
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorPuncturedList
 import ArkLib.Research.ProximityGap.Frontier.HalfSuccessorSectionBudget
@@ -633,6 +634,7 @@ import ArkLib.Research.ProximityGap.Frontier.ProjectiveDirectionUnion
 import ArkLib.Research.ProximityGap.Frontier.ProjectiveListTransfer
 import ArkLib.Research.ProximityGap.Frontier.PseudocyclicDefectSum
 import ArkLib.Research.ProximityGap.Frontier.PuncturedFiberAgreement
+import ArkLib.Research.ProximityGap.Frontier.PuncturedFourWordLabels
 import ArkLib.Research.ProximityGap.Frontier.PuncturedFourWordProfile
 import ArkLib.Research.ProximityGap.Frontier.Q1ArisingFamilyDescent
 import ArkLib.Research.ProximityGap.Frontier.QuadraticCubicWindowExample
