@@ -77,20 +77,61 @@ private theorem determinant : ∀ r i j, i ∈ labels r → j ∈ labels r → i
     (u r-val (first i) r)*(val (second j) r-v r) ≠ (u r-val (first j) r)*(val (second i) r-v r) := by
   decide
 
+private def dx (r : Fin 16) (i j : Fin 6) := val (first i) r-val (first j) r
+private def dy (r : Fin 16) (i j : Fin 6) := val (second j) r-val (second i) r
+private def representatives (r : Fin 16) (i : Fin 6) : Finset (Fin 6) :=
+  univ.filter fun j => dy r i j ≠ 0 ∧ ∀ k < j, dy r i k ≠ 0 →
+    dx r i j*dy r i k ≠ dx r i k*dy r i j
+
+private theorem rep_card : ∀ r i, (representatives r i).card ≤ 3 := by decide
+
+/-- At an owned point, the six edges supply at most three finite foreign
+directions. Multiple owners can occur only at one of the four vertex fibers. -/
+theorem owned_limits (r : Fin 16) (i : Fin 6) :
+    ((univ.filter fun j : Fin 6 =>
+      val (first j) r = val (first i) r ∧ val (second j) r = val (second i) r).card ≤
+      if r.val % 8 < 4 then 3 else 1) ∧
+    (((univ.filter fun j : Fin 6 => dy r i j ≠ 0).image fun j => dx r i j / dy r i j).card ≤ 3) := by
+  constructor
+  · exact (by decide : ∀ (r : Fin 16) (i : Fin 6),
+      (univ.filter fun j : Fin 6 => val (first j) r = val (first i) r ∧
+        val (second j) r = val (second i) r).card ≤ if r.val % 8 < 4 then 3 else 1) r i
+  · let slope (j : Fin 6) := dx r i j / dy r i j
+    suffices h : (univ.filter fun j : Fin 6 => dy r i j ≠ 0).image slope ⊆
+        (representatives r i).image slope from
+      (card_le_card h).trans ((card_image_le).trans (rep_card r i))
+    intro a ha
+    obtain ⟨j,hj,he⟩ := mem_image.mp ha
+    let fiber := univ.filter fun k : Fin 6 => dy r i k ≠ 0 ∧ slope k = a
+    have hn : fiber.Nonempty := ⟨j, mem_filter.mpr ⟨mem_univ _, (mem_filter.mp hj).2, he⟩⟩
+    let k := fiber.min' hn
+    have hk := (mem_filter.mp (fiber.min'_mem hn)).2
+    refine mem_image.mpr ⟨k, mem_filter.mpr ⟨mem_univ _, hk.1, ?_⟩, hk.2⟩
+    intro l hl hden hcross
+    have heq : slope l = slope k := ((div_eq_div_iff hk.1 hden).mpr hcross).symm
+    have hmem : l ∈ fiber := mem_filter.mpr ⟨mem_univ _, hden, heq.trans hk.2⟩
+    exact (not_lt_of_ge (fiber.min'_le l hmem)) hl
+
+/-- The slot counts at roots, vertex fibers and owned ordinary sites place a
+sharp bound on the smallest active core of any over-budget six-edge allocation. -/
+theorem allocation_limit {r a o c l : ℕ} (hr : r ≤ 402653182) (ha : a ≤ 536870912)
+    (hcores : 6*c ≤ 6*r+2*a+o) (hlabels : l+3*o+6*r ≤ 6*1073741824)
+    (hbudget : 2147483648 < l) : c ≤ 686001719 := by omega
+
 private def cut : Fin 16 → ℕ :=
   ![0, 0, 0, 0, 52195782, 52195782, 52195782, 52195783, 0, 0, 0, 0, 52195783, 52195783, 22369623, 67108864]
 private theorem cut_le : ∀ j, cut j ≤ S := by decide
 
-private abbrev roots := SecondPrimeSixteenFiber.roots cut
-private abbrev core := SecondPrimeSixteenFiber.core cut group
-private abbrev fresh := SecondPrimeSixteenFiber.fresh cut labels
+private abbrev roots := SixteenFiberMass.roots S cut
+private abbrev core := SixteenFiberMass.core S cut group
+private abbrev fresh := SixteenFiberMass.fresh S cut labels
 
 private theorem root_count : roots.card = 402653182 := by
-  rw [roots, SecondPrimeSixteenFiber.roots, card_selected cut cut_le]; decide
+  rw [roots, SixteenFiberMass.card_roots S cut cut_le]; decide
 private theorem core_count (j : Fin 6) : (core j).card = (![686001720, 686001720, 686001720, 686001719, 686001719, 686001719] : Fin 6 → ℕ) j := by
-  rw [core, SecondPrimeSixteenFiber.core, card_selected cut cut_le]; fin_cases j <;> decide
+  rw [core, SixteenFiberMass.card_core S cut group cut_le]; fin_cases j <;> decide
 private theorem fresh_count (j : Fin 6) : (fresh j).card = (![387740104, 372827023, 357913942, 357913941, 343000860, 328087779] : Fin 6 → ℕ) j := by
-  rw [fresh, SecondPrimeSixteenFiber.fresh, card_selected cut cut_le]; fin_cases j <;> decide
+  rw [fresh, SixteenFiberMass.fresh, SixteenFiberMass.card_selected S cut cut_le]; fin_cases j <;> decide
 
 /-- All selected foreign directions produce distinct actual bad scalars for
 one pair at every indicated dimension and positive width. -/
@@ -101,11 +142,11 @@ theorem label_mass {k : ℕ} (hk : 536870912 ≤ k) (hc : k ≤ 686001719) (widt
     simp only [fresh_count, Fin.sum_univ_succ]; decide
   have least (i : Fin 6) : 686001719 ≤ (core i).card := by rw [core_count]; fin_cases i <;> decide
   rw [epsMCA_interleaved_eq]
-  have h := SecondPrimeSixteenFiber.selected_mass cut group dom k D (387740104/1073741824)
+  have h := SixteenFiberMass.selected_mass S cut group dom k D (387740104/1073741824)
     (fun i => lift (first i)) (fun i => lift (second i)) (fun i => val (first i)) (fun i => val (second i))
     u v labels (fun i x => lifted (first i) x) (fun i x => lifted (second i) x)
     agrees misses determinant
-    (by rw [← show roots = SecondPrimeSixteenFiber.roots cut from rfl, root_count]; dsimp [D]; omega)
+    (by rw [show (SixteenFiberMass.roots S cut).card = 402653182 from root_count]; dsimp [D]; omega)
     (fun i => deg _) (fun i => deg _) (fun i => hc.trans (least i)) (by
       intro i
       rw [Fintype.card_fin]
@@ -132,6 +173,8 @@ theorem half (width : ℕ) [NeZero width] :
   have bad := hb.trans_le (label_mass le_rfl (by decide) width)
   exact ⟨bad,mcaDeltaStar_le_of_bad _ _ bad⟩
 
+#print axioms allocation_limit
+#print axioms owned_limits
 #print axioms label_mass
 #print axioms half
 end ArkLib.ProximityGap.Frontier.SecondPrimeTetrahedron

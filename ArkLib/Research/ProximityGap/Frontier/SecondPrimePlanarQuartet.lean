@@ -94,9 +94,9 @@ private abbrev roots := SecondPrimeSixteenFiber.roots cut
 private abbrev core := SecondPrimeSixteenFiber.core cut group
 
 private theorem root_count : roots.card=67108862 := by
-  rw [roots, SecondPrimeSixteenFiber.roots, card_selected cut cut_le]; decide
+  rw [roots, SecondPrimeSixteenFiber.roots, SixteenFiberMass.card_roots _ cut cut_le]; decide
 private theorem core_count (j : Fin 4) : (core j).card=(![520093695,520093695,520093694,520093694] : Fin 4 → ℕ) j := by
-  rw [core, SecondPrimeSixteenFiber.core, card_selected cut cut_le]; fin_cases j <;> decide
+  rw [core, SecondPrimeSixteenFiber.core, SixteenFiberMass.card_core _ cut group cut_le]; fin_cases j <;> decide
 
 private theorem lifted (A : Fin 4 → F) (u : Grid) :
     (lift A).eval (dom (index u))=val A (w^u.1.val) := by

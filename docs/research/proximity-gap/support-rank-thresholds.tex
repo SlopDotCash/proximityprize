@@ -289,6 +289,38 @@ $b(e)=3(e+1)$ for $671{,}088{,}640\le e\le715{,}827{,}881$ on every smooth domai
 in $2{,}305{,}843{,}008{,}139{,}952{,}128\le q<2^{256}$. A \href{https://github.com/SlopDotCash/proximityprize/blob/b8257ffb2d5774f33559205ed3e486302b334cdc/ArkLib/Research/ProximityGap/Frontier/QuadraticCubicWindowExample.lean}{certified quadratic extension} realizes the curve at $q=(1433\cdot2^{69}+1)^2$. Here $B=2{,}102{,}772{,}736$. On its order-$n$ subgroup the last safe grid count is $700{,}924{,}244$ and the first failure is $700{,}924{,}245$ at every positive width.
 
 \newpage
+\section*{5.2.\quad Johnson comparisons on the two designated primes}
+
+Let $n=2^{30}$, $d=k-1$ and $J=1-\sqrt{d/n}$. The two designated fields have budgets $B_1=n$ and $B_2=2n$ at tolerance $2^{-128}$. The entries compare each operational supremum with $J$ at every positive interleaving width.
+
+\begin{center}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+& \multicolumn{2}{c}{First prime} & \multicolumn{2}{c}{Second prime} \\
+\cmidrule(lr){2-3}\cmidrule(l){4-5}
+Rate & MCA & List & MCA & List \\
+\midrule
+$1/2$  & below & above & open & above \\
+$1/4$  & below & above & open & above \\
+$1/8$  & below & above & below & above \\
+$1/16$ & below & above & below & above \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Why all eight list comparisons are strict.} Suppose $B\ge n$ and $nd$ is not a square. Put $t=\lfloor\sqrt{nd}\rfloor+1$. The finite Johnson bound gives list size at most $n$ for $t$ agreements, since $t^2>nd$. The same bound holds until the next Hamming step. That step is $(n-t+1)/n>J$, so the safe radii extend strictly above $J$. For a dyadic $n\ge64$ at any prize rate, $4\mid k$, hence $d\equiv3\pmod4$. Removing factors of four shows that $nd$ cannot be a square. The argument applies to every supplied smooth domain with these parameters. The guaranteed interval above $J$ can be less than one error wide. See \src{7508b0bb3e849862c37b735e00f9133e492192b4}{JohnsonListBoundary}.
+
+\textbf{A whole Hamming step.} At rate $1/8$ on the second prime,
+\[
+ 694{,}116{,}762<nJ<694{,}116{,}763.
+\]
+At 694,116,763 errors every closed ball still has at most 1,660,990,722 codewords, within the budget of 2,147,483,648. Thus the first failing count is at least 694,116,764.
+
+\textbf{MCA.} A single received pair that exceeds budget at $e$ errors places the supremum at or below $e/n$. The witnessed ceilings for the four rates on the first prime and the two lower rates on the second satisfy $(n-e)^2>nd$. The two remaining intervals contain $J$. The inequalities and the whole-step list bound are verified in \src{922284c9987474bd5e1df32a12cd27610b4ffe92}{DesignatedPrimeJohnson}.
+
+Three of the eight MCA endpoints on these two fields have numerical values in the current proof. All eight list endpoints and the five other MCA endpoints still require a matching safety bound and failure witness at adjacent counts, or an evaluation of the exact rank criterion. The comparison with Johnson answers a different question from finding those integers.
+
+\newpage
 \section*{6.\quad Interpretation, evidence and attribution}
 \small
 \textbf{Relation to known results.} The sponsor's companion paper develops the challenge from proximity gaps and correlated agreement and asks what happens between the Johnson and capacity radii on smooth domains \cite{abf}. Ben-Sasson et al.\ prove quantitative proximity-gap statements by analyzing a formal point of an affine space \cite{bciks}. Brakensiek, Gopi and Makam use higher-order MDS properties of evaluation matrices to establish list-decoding capacity for generic Reed--Solomon codes \cite{bgm}. Jeronimo reports asymptotic prime-field bounds with fixed slack from capacity and a polynomial number of exceptions \cite{jeronimo}. The tests here evaluate a specified finite domain and integer budget. Their conclusions require no genericity or random choice of its coordinates. The tools in Sections 2 and 3 are Lagrange interpolation, elementary finite-vector-space counting, and inclusion--exclusion. A concise analytic classification for all production domains would give substantially more information about closeness to capacity than a finite search.
